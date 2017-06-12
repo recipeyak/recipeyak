@@ -9,21 +9,21 @@ const Login = () => (
       </h1>
     </nav>
 
-    <main className="container">
+    <main className="container form-container">
       <form>
         <fieldset>
           <legend>
-            <Link to="/">Login</Link>
+            <Link to="/login">Login</Link>
           </legend>
           <label>Email
-            <input type="email" name="email"/>
+            <input className="input" type="email" name="email"/>
           </label>
           <label>Password
-            <input type="password" name="email"/>
+            <input className="input" type="password" name="email"/>
           </label>
         </fieldset>
+        <p>Or <Link to="/signup">Signup</Link></p>
       </form>
-      <p>Or <Link to="/signup">Signup</Link></p>
 
     </main>
 

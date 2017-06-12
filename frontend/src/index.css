@@ -45,10 +45,19 @@ img {
   width: 100%;
 }
 
+.input {
+  font-size: 1rem;
+  width: 100%;
+}
+
 .center {
   text-align: center;
   justify-self: center;
   align-self: center;
+}
+
+.margin-center {
+  margin: 0 auto;
 }
 
 .nav-right {
@@ -90,6 +99,10 @@ img {
   text-align: center;
   line-height: 2rem;
   text-shadow: 2px 3px 7px rgba(0, 0, 0, 0.1);
+}
+
+.form-container {
+  max-width: 200px;
 }
 
 .container {
