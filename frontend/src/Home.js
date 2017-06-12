@@ -1,18 +1,19 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const Home = () => (
   <div>
 
     <div className="hero">
       <nav className="grid container">
-          <h1 className="col-xs-2">
-            <a className="nav-item" href='/'>Caena</a>
-          </h1>
+        <h1 className="col-xs-2">
+          <Link to="/" className="nav-item">Caena</Link>
+        </h1>
 
-          <div className="col-xs-10 nav-right">
-            <a className="nav-item" href='/signup'>Signup</a>
-            <a className="nav-item" href='/login'>Login</a>
-          </div>
+        <div className="col-xs-10 nav-right">
+          <Link to="/signup" className="nav-item">Signup</Link>
+          <Link to="/login" className="nav-item">Login</Link>
+        </div>
       </nav>
 
       <section className="container">

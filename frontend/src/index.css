@@ -14,8 +14,7 @@ h3,
 h4,
 h5 {
   font-weight: normal;
-  font-family: "Didot";
-  font-family: charter, georiga, serif;
+  font-family: charter, georgia, serif;
 }
 
 .feature > h1,
