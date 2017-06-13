@@ -83,7 +83,16 @@ img {
   margin-top: 5px;
   margin-bottom: 5px;
   border: 1px solid lightgray;
+  background: white;
 }
+
+.input-text > input {
+  border: none;
+  background: none;
+  outline: none;
+  font-size: 1rem;
+}
+
 
 .center {
   text-align: center;

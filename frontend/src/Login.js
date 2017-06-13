@@ -20,13 +20,19 @@ const Login = () => (
           </li>
         </ul>
         <label>Email
-          <input className="input input-text" type="email" name="email" placeholder="name@example.com"/>
+          <div className="input-text">
+            <input className="input" type="email" name="email" placeholder="name@example.com"/>
+          </div>
         </label>
         <label>Password
-          <input className="input input-text" type="password" name="email" />
+          <div className="input-text">
+            <input className="input" type="password" name="password" />
+          </div>
         </label>
         <input type="submit" className="button" value="submit" name=""/>
-        <p><Link to="/password-reset">Forgot password?</Link></p>
+        <p>
+          <Link to="/password-reset">Forgot password?</Link>
+        </p>
       </form>
 
     </main>

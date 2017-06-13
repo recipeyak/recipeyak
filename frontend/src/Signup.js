@@ -19,14 +19,21 @@ const Signup = () => (
             <Link to="/signup">Signup</Link>
           </li>
         </ul>
+
         <label>Email
-          <input className="input input-text" type="email" name="email" placeholder="name@example.com"/>
+          <div className="input-text">
+            <input className="input" type="email" name="email" placeholder="name@example.com"/>
+          </div>
         </label>
         <label>Password
-          <input className="input input-text" type="password" name="email"/>
+          <div className="input-text">
+            <input className="input" type="password" name="password-1" />
+          </div>
         </label>
         <label>Password Again
-          <input className="input input-text" type="password" name="email"/>
+          <div className="input-text">
+            <input className="input" type="password" name="password-2" />
+          </div>
         </label>
         <input type="submit" className="button" value="submit" name=""/>
       </form>
