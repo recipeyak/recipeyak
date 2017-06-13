@@ -186,6 +186,9 @@ img {
   padding-left: 1rem;
   padding-right: 1rem;
 }
+.grid-center {
+  justify-items: center;
+}
 
 @media (min-width: 992px) {
   .container {
