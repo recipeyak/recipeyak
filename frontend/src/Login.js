@@ -11,18 +11,22 @@ const Login = () => (
 
     <main className="container form-container">
       <form>
-        <fieldset>
-          <legend>
+        <ul className="tabs">
+          <li className="active">
             <Link to="/login">Login</Link>
-          </legend>
-          <label>Email
-            <input className="input" type="email" name="email"/>
-          </label>
-          <label>Password
-            <input className="input" type="password" name="email"/>
-          </label>
-        </fieldset>
-        <p>Or <Link to="/signup">Signup</Link></p>
+          </li>
+          <li>
+            <Link to="/signup">Signup</Link>
+          </li>
+        </ul>
+        <label>Email
+          <input className="input input-text" type="email" name="email" placeholder="name@example.com"/>
+        </label>
+        <label>Password
+          <input className="input input-text" type="password" name="email" />
+        </label>
+        <input type="submit" className="button" value="submit" name=""/>
+        <p><Link to="/password-reset">Forgot password?</Link></p>
       </form>
 
     </main>
