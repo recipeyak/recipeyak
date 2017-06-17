@@ -1,0 +1,19 @@
+.grid-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.grid-item {
+  // TODO: Add media query so items fill screen width on mobile
+  margin: 5px;
+  max-width: 385px;
+  display: flex;
+}
+
+// Fixes height of card to be equal to largest one.
+// Maintains constant footer at correct height
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
