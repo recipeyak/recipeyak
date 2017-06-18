@@ -20,10 +20,10 @@ const Base = () => (
       <Route exact path="/" component={ Home }/>
       <Route path="/login" component={ Login }/>
       <Route path="/signup" component={ Signup }/>
-      <Route path="/recipes/" component={ RecipeList }/>
+      <Route exact path="/recipes/" component={ RecipeList }/>
       <Route path="/cart" component={ Cart }/>
       <Route path="/ingredients" component={ Ingredients }/>
-      <Route path="/recipe" component={ Recipe }/>
+      <Route path="/recipes/:id" component={ Recipe }/>
       <Route component={ NoMatch }/>
     </Switch>
   </Router>

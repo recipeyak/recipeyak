@@ -1,0 +1,15 @@
+section.section {
+    padding-top: 10px;
+  }
+
+.recipe-subtitle {
+  display: flex;
+  justify-content: space-between;
+}
+
+.recipe-button {
+  margin-right: 5px;
+  &:after {
+    margin-right: 0px;
+  }
+}
