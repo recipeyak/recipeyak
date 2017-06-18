@@ -6,6 +6,15 @@ class RecipeItem extends React.Component {
   }
   render () {
     const tags = this.props.tags.map(tag => <span key={ tag } className="tag">{ tag }</span>)
+
+    const button = this.props.inCart ? (
+      <button
+        onClick={ () => this.addToCart(this.props.id) }
+        className="button is-primary">Remove from cart</button>) : (
+      <button
+        onClick={ () => this.addToCart(this.props.id) }
+        className="button is-primary">Add to Cart</button>)
+
     return (
         <div className="card ">
           <div className="card-content">
@@ -14,9 +23,7 @@ class RecipeItem extends React.Component {
             <div className="content">{ tags }</div>
           </div>
           <footer className="card-footer">
-            <p className="card-footer-item">
-              <button onClick={ () => this.addToCart(this.props.id) } className="button is-primary">Add to Cart</button>
-            </p>
+            <p className="card-footer-item">{ button }</p>
           </footer>
         </div>
     )

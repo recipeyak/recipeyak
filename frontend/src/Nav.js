@@ -34,22 +34,14 @@ class Navbar extends React.Component {
       </span>
 
       <div className={ 'nav-right nav-menu' + (this.state.showNav ? ' is-active' : '') }>
-        <a className="nav-item">
-          Recipes
-        </a>
-        <a className="nav-item">
-          Cart
-        </a>
-        <a className="nav-item">
-          Logout
-        </a>
+        <Link to="/recipes/" className="nav-item">Recipes</Link>
+        <Link to="/cart" className="nav-item">Cart</Link>
+        <Link to="/login" className="nav-item">Logout</Link>
 
         <div className="nav-item">
           <div className="field is-grouped">
             <p className="control">
-              <a className="button is-primary">
-                Add Recipe
-              </a>
+              <a className="button is-primary">Add Recipe</a>
             </p>
           </div>
         </div>
