@@ -1,11 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import './index.scss'
-
 import Textarea from 'react-textarea-autosize'
-
 import MarkdownIt from 'markdown-it'
+
+import Navbar from './Nav.js'
+
 const md = new MarkdownIt()
 
 class Recipe extends React.Component {
@@ -53,9 +53,7 @@ class Recipe extends React.Component {
     console.log('share recipe')
   }
 
-  saveData (e) {
-    e.preventDefault()
-
+  saveData () {
     this.setState(
       {
         editing: false,
@@ -69,123 +67,130 @@ class Recipe extends React.Component {
 
   render () {
     return (
-      <div>
+      <div className="container">
 
-        <nav className="grid container">
-          <h1 className="col-xs-2">
-            <Link to="/" className="nav-title">Caena</Link>
-          </h1>
+        <Navbar/>
 
-          <div className="col-xs-10 nav-right">
-            <Link to="/cart" className="nav-item">Cart</Link>
-            <Link to="/login" className="nav-item">Add Recipe</Link>
+        <nav className="nav">
+
+          <div className="nav-left">
+            <Link to="/recipe" className="title is-3 nav-item">
+              { this.state.name }
+            </Link>
+          </div>
+
+          <div className="nav-right">
+            <div className="nav-item">
+              <input
+                onClick={ () => this.share() }
+                className="button"
+                type='button'
+                value='share'
+                name='share'/>
+            </div>
+
+            {
+              !this.state.editing &&
+              <div className="nav-item">
+                <input
+                  className="button"
+                  onClick={ () => this.toggleEdit() }
+                  type='button'
+                  value='edit'
+                  name='edit'/>
+              </div>
+            }
+            {
+
+              this.state.editing &&
+              <div className="nav-item">
+                <input
+                  onClick={ () => this.saveData() }
+                  className="button"
+                  type='button'
+                  value='save'
+                  name='save'/>
+              </div>
+            }
+
+            {
+              this.state.editing &&
+              <div className="nav-item">
+                <input
+                  className="button"
+                  onClick={ () => this.toggleEdit() }
+                  type='button'
+                  value='cancel'
+                  name='cancel'/>
+              </div>
+            }
+
           </div>
         </nav>
 
-        <form onSubmit={ (e) => this.saveData(e) } className="grid container">
-          <div className="col-xs-12 flex-space-between">
-            <h2 className="col-xs-12 no-margin center">
-              { this.state.name }
-            </h2>
-
-            <div>
-              <input
-                onClick={ () => this.share() }
-                type='button'
-                className='button is-small no-background'
-                value='share'
-                name='share'/>
-
+        <div className="container columns">
+          <div className="column is-one-third">
+            <section className="box">
+              <h3 className="title is-3" >Ingredients</h3>
               {
-                !this.state.editing &&
-                  <input
-                    onClick={ () => this.toggleEdit() }
-                    type='button'
-                    className='button is-small no-background'
-                    value='edit'
-                    name='edit'/>
+                !this.state.editing
+                ? <div className="content" dangerouslySetInnerHTML={{ __html: md.render(this.state.ingredients) }}></div>
+                : <Textarea
+                    className="textarea"
+                    onChange={ (e) => this.handleChange(e) }
+                    placeholder="enter ingredients"
+                    defaultValue={ this.state.ingredients }
+                    name='ingredients'
+                  />
               }
-              {
-
-                this.state.editing &&
-                  <input
-                   type='submit'
-                   className='button is-small no-background'
-                   value='save'
-                   name='save'/>
-              }
-
-              {
-                this.state.editing &&
-                  <input
-                      onClick={ () => this.toggleEdit() }
-                      type='button'
-                      className='button is-small no-background'
-                      value='cancel'
-                      name='cancel'/>
-              }
-
-            </div>
+            </section>
           </div>
 
-          <section className="col-sm-4 col-xs-12 box">
-            <h3 className="section-title">Ingredients</h3>
-            {
-              !this.state.editing
-              ? <div dangerouslySetInnerHTML={{ __html: md.render(this.state.ingredients) }}></div>
-              : <Textarea
-                  onChange={ (e) => this.handleChange(e) }
-                  className="textarea"
-                  placeholder="enter ingredients"
-                  defaultValue={ this.state.ingredients }
-                  name='ingredients'
-                />
-            }
-          </section>
+          <div className="column">
+            <section className="column box">
+              <div>
+                <div>
+                  <h3 className="title is-3">Preperation</h3>
+                  {
+                    this.state.time != null && !this.state.editing &&
+                      <span>
+                        Time: { this.state.time }
+                      </span>
+                  }
+                  {
+                    this.state.editing &&
+                      <div>
+                        <span>Time: </span>
 
-          <section className="col-sm-8 col-xs-12 box">
-            <div className="flex-space-between">
-              <div className="flex-baseline">
-                <h3 className="section-title">Preperation</h3>
-                {
-                  this.state.time != null && !this.state.editing &&
-                    <span className="prep-time">
-                      Time: { this.state.time }
-                    </span>
-                }
-                {
-                  this.state.editing &&
-                    <div className="prep-time-container">
-                      <span className="prep-time">Time: </span>
-
-                      <div className="input-text">
-                        <input
-                          onChange={ (e) => this.handleChange(e) }
-                          className='input'
-                          type='text'
-                          name='time'
-                          defaultValue={ this.state.time }/>
+                        <div>
+                          <input
+                            className="input"
+                            onChange={ (e) => this.handleChange(e) }
+                            type='text'
+                            name='time'
+                            defaultValue={ this.state.time }/>
+                        </div>
                       </div>
-                    </div>
-                }
+                  }
+                </div>
               </div>
-            </div>
-            {
-              !this.state.editing
-              ? <div dangerouslySetInnerHTML={{ __html: md.render(this.state.steps) }}></div>
-              : <Textarea
-                  onChange={ (e) => this.handleChange(e) }
-                  className="textarea"
-                  placeholder="enter steps"
-                  defaultValue={ this.state.steps }
-                  name='steps'
-                  />
-            }
-          </section>
+              {
+                !this.state.editing
+                ? <div className="content" dangerouslySetInnerHTML={{ __html: md.render(this.state.steps) }}></div>
+                : <Textarea
+                    className="textarea"
+                    onChange={ (e) => this.handleChange(e) }
+                    placeholder="enter steps"
+                    defaultValue={ this.state.steps }
+                    name='steps'
+                    />
+              }
+            </section>
+          </div>
 
-        </form>
+        </div>
 
-        <footer className="center">
+        <footer>
           Caena ※ 2017
         </footer>
 

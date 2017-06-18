@@ -2,7 +2,7 @@ import React from 'react'
 import Navbar from './Nav.js'
 import Recipe from './RecipeItem.js'
 
-// import 'bulma/css/bulma.css'
+import 'bulma/css/bulma.css'
 
 const recipes = [
   {
@@ -61,7 +61,7 @@ const RecipeList = () => {
   )
   return (
     <div className="container">
-      <Navbar></Navbar>
+      <Navbar/>
       <section className="section">
         <div className="grid-container">{ recipeList }</div>
       </section>
