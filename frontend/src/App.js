@@ -10,6 +10,7 @@ import Login from './Login.js'
 import Signup from './Signup.js'
 import RecipeList from './RecipeList.js'
 import NoMatch from './NoMatch.js'
+import Recipe from './Recipe.js'
 
 const Base = () => (
   <Router>
@@ -18,6 +19,7 @@ const Base = () => (
       <Route path="/login" component={ Login }/>
       <Route path="/signup" component={ Signup }/>
       <Route path="/recipes/" component={ RecipeList }/>
+      <Route path="/recipe" component={ Recipe }/>
       <Route component={ NoMatch }/>
     </Switch>
   </Router>

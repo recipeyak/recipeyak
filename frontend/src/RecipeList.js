@@ -2,6 +2,8 @@ import React from 'react'
 import Navbar from './Nav.js'
 import Recipe from './RecipeItem.js'
 
+// import 'bulma/css/bulma.css'
+
 const recipes = [
   {
     id: 12345,
