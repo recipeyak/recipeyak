@@ -4,6 +4,8 @@ import Recipe from './RecipeItem.js'
 
 import recipes from './mockup-data.js'
 
+import 'bulma/css/bulma.css'
+
 const RecipeList = () => {
   const recipeList = recipes.map(recipe =>
     <div className="grid-item" key={ recipe.id }>
@@ -18,7 +20,7 @@ const RecipeList = () => {
   )
   return (
     <div className="container">
-      <Navbar></Navbar>
+      <Navbar/>
       <section className="section">
         <div className="grid-container">{ recipeList }</div>
       </section>
