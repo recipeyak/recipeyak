@@ -80,18 +80,18 @@ class Recipe extends React.Component {
         </nav>
 
         <section className="section">
-          <div className="container columns">
+        <div className="container">
+          <div className="columns">
             <div className="column is-one-third">
                 <h2 className="title">Ingredients</h2>
                 <div className="card">
                   <div className="card-content">
-                    <p className="content">
+                    <div className="content">
                       {
                         !this.state.editing
                         ? <div
                             className="content"
-                            dangerouslySetInnerHTML={{ __html: md.render(this.state.ingredients) }}>
-                          </div>
+                            dangerouslySetInnerHTML={{ __html: md.render(this.state.ingredients) }}/>
                         : <Textarea
                             className="textarea"
                             onChange={ (e) => this.handleChange(e) }
@@ -100,7 +100,7 @@ class Recipe extends React.Component {
                             name='ingredients'
                         />
                       }
-                  </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -171,8 +171,7 @@ class Recipe extends React.Component {
                   {!this.state.editing
                     ? <div
                         className="content"
-                        dangerouslySetInnerHTML={{ __html: md.render(this.state.steps) }}>
-                      </div>
+                        dangerouslySetInnerHTML={{ __html: md.render(this.state.steps) }}/>
                     : <Textarea
                         className="textarea"
                         onChange={ (e) => this.handleChange(e) }
@@ -184,6 +183,7 @@ class Recipe extends React.Component {
                   </div>
                 </div>
             </div>
+          </div>
           </div>
         </section>
 
