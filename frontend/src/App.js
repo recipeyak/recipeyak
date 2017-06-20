@@ -6,8 +6,7 @@ import {
 } from 'react-router-dom'
 
 import Home from './Home.js'
-import Login from './Login.js'
-import Signup from './Signup.js'
+import Login from './LoginSignup.jsx'
 import RecipeList from './RecipeList.js'
 import NoMatch from './NoMatch.js'
 import Ingredients from './Ingredients.jsx'
@@ -19,7 +18,7 @@ const Base = () => (
     <Switch>
       <Route exact path="/" component={ Home }/>
       <Route path="/login" component={ Login }/>
-      <Route path="/signup" component={ Signup }/>
+      <Route path="/signup" component={ Login }/>
       <Route exact path="/recipes/" component={ RecipeList }/>
       <Route path="/cart" component={ Cart }/>
       <Route path="/ingredients" component={ Ingredients }/>
