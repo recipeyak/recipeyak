@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 
 class Navbar extends React.Component {
   constructor (props) {
@@ -34,9 +34,9 @@ class Navbar extends React.Component {
       </span>
 
       <div className={ 'nav-right nav-menu' + (this.state.showNav ? ' is-active' : '') }>
-        <Link to="/recipes/" className="nav-item">Recipes</Link>
-        <Link to="/cart" className="nav-item">Cart</Link>
-        <Link to="/login" className="nav-item">Logout</Link>
+        <NavLink activeClassName="is-active" to="/recipes" className="nav-item">Recipes</NavLink>
+        <NavLink activeClassName="is-active" to="/cart" className="nav-item">Cart</NavLink>
+        <NavLink activeClassName="is-active" to="/login" className="nav-item">Logout</NavLink>
 
         <div className="nav-item">
           <div className="field is-grouped">
