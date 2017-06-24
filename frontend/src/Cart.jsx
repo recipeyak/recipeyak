@@ -8,11 +8,28 @@ import './cart.scss'
 import recipes, { ingredients } from './mockup-data.js'
 const ingre = ingredients.concat(ingredients)
 
-let text = ingre.sort().join('\n')
+const combineLike = (list) => {
+  const items = {}
+  const output = []
 
-for (let i = 0; i < 3; i++) {
-  text += text
+  list.forEach(x => {
+    if (items.hasOwnProperty(x)) {
+      items[x]++
+    } else {
+      items[x] = 1
+    }
+  })
+
+  Object.entries(items).forEach(x => {
+    output.push(x)
+  })
+
+  return output
 }
+
+const text = combineLike(ingre.map(x => x.trim()))
+  .map(x => ({'item': x[0], 'quantity': x[1]}))
+  .map(x => <li key={ x.item }><b>{ x.quantity }x</b> {x.item}</li>)
 
 class Cart extends React.Component {
   render () {
