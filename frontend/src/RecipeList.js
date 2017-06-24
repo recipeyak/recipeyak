@@ -14,6 +14,7 @@ const RecipeList = () => {
         url={ recipe.url }
         title={ recipe.title }
         tags={ recipe.tags }
+        addToCart={ () => console.log('addToCart', recipe.id)}
         author={ recipe.author }
         source={ recipe.source }/>
     </div>
