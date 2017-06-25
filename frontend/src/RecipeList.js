@@ -9,10 +9,13 @@ const RecipeList = inject('store')(observer((props) => {
   const recipeList = props.store.recipes.map(recipe =>
     <div className="grid-item" key={ recipe.id }>
       <Recipe
+        key={ recipe.id }
         id={ recipe.id }
         url={ recipe.url }
         title={ recipe.title }
         tags={ recipe.tags }
+        inCart={ recipe.inCart }
+        removeFromCart={ () => props.store.removeFromCart(recipe.id)}
         addToCart={ () => props.store.addToCart(recipe.id)}
         author={ recipe.author }
         source={ recipe.source }/>
@@ -25,7 +28,7 @@ const RecipeList = inject('store')(observer((props) => {
         <div className="grid-container">{ recipeList }</div>
       </section>
       {/* For debug */}
-      <pre>{JSON.stringify(props.store.cart, null, 2)}</pre>
+      <pre>{JSON.stringify(props.store.recipes, null, 2)}</pre>
     </div>
   )
 }))

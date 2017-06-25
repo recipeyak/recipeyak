@@ -3,13 +3,15 @@ import React from 'react'
 const RecipeItem = props => {
   const tags = props.tags.map(tag => <span key={ tag } className="tag">{ tag }</span>)
 
-  const button = props.inCart ? (
-    <button
+  const button = (
+    <div className="field is-grouped">
+      <button
+      onClick={ () => props.removeFromCart(props.id) }
+      className="button control" disabled={props.inCart === 0}>Remove from cart</button>
+      <button
       onClick={ () => props.addToCart(props.id) }
-      className="button is-primary">Remove from cart</button>) : (
-    <button
-      onClick={ () => props.addToCart(props.id) }
-      className="button is-primary">Add to Cart</button>)
+      className="button is-primary control">Add to Cart ({props.inCart})</button>
+    </div>)
 
   return (
       <div className="card ">
@@ -19,7 +21,7 @@ const RecipeItem = props => {
           <div className="content">{ tags }</div>
         </div>
         <footer className="card-footer">
-          <p className="card-footer-item">{ button }</p>
+          <div className="card-footer-item">{ button }</div>
         </footer>
       </div>
   )
