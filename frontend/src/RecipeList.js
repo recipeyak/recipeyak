@@ -13,7 +13,7 @@ const RecipeList = inject('store')(observer((props) => {
         url={ recipe.url }
         title={ recipe.title }
         tags={ recipe.tags }
-        addToCart={ () => console.log('addToCart', recipe.id)}
+        addToCart={ () => props.store.addToCart(recipe.id)}
         author={ recipe.author }
         source={ recipe.source }/>
     </div>
@@ -24,6 +24,8 @@ const RecipeList = inject('store')(observer((props) => {
       <section className="section">
         <div className="grid-container">{ recipeList }</div>
       </section>
+      {/* For debug */}
+      <pre>{JSON.stringify(props.store.cart, null, 2)}</pre>
     </div>
   )
 }))

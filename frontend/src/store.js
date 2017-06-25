@@ -1,9 +1,13 @@
-import {observable} from 'mobx'
+import {observable, action} from 'mobx'
 import recipes from './mockup-data.js'
 
-const appState = observable({
+const store = observable({
   cart: [],
   recipes: recipes,
 })
 
-export default appState
+store.addToCart = action(id => {
+  store.cart.push(store.recipes.find(recipe => recipe.id === id))
+})
+
+export default store
