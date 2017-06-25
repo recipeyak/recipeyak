@@ -4,5 +4,8 @@ import App from './App'
 import registerServiceWorker from './registerServiceWorker'
 import './grid.scss'
 
-ReactDOM.render(<App />, document.getElementById('root'))
+import {Provider} from 'mobx-react'
+import store from './store.js'
+
+ReactDOM.render(<Provider store={ store }><App /></Provider>, document.getElementById('root'))
 registerServiceWorker()
