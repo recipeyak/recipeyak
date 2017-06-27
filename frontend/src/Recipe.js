@@ -69,7 +69,7 @@ class Recipe extends React.Component {
 
   render () {
     return (
-      <div>
+      <div className="container">
         <Navbar/>
         <nav className="nav">
           <div className="nav-left">

@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const RecipeItem = props => {
   const tags = props.tags.map(tag => <span key={ tag } className="tag">{ tag }</span>)
@@ -16,7 +17,7 @@ const RecipeItem = props => {
   return (
       <div className="card ">
         <div className="card-content">
-          <p className="title"><a href={ props.url }>{ props.title }</a></p>
+          <p className="title"><Link to={ props.url }>{ props.title }</Link></p>
           <p className="subtitle"><a href={ props.source }>{ props.author }</a></p>
           <div className="content">{ tags }</div>
         </div>
