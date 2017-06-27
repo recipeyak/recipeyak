@@ -1,0 +1,45 @@
+.hero-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-image {
+  max-width: 900px;
+  // to make it responsive
+  width: 100%;
+}
+
+div.hero {
+  background-color: inherit;
+}
+
+.column.feature {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.bottom {
+  padding-top: 1rem;
+  background-color: #dbdbdb;
+}
+
+body {
+  height: 100vh;
+}
+
+#root {
+  height: 100%;
+}
+
+.main-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: darkorange;
+}
+
+footer {
+  padding: 1rem;
+}

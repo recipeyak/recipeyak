@@ -2,6 +2,7 @@ import {observable, action} from 'mobx'
 import recipes from './mockup-data.js'
 
 const store = observable({
+  loggedIn: false,
   recipes: recipes,
   get cart () { return this.recipes.filter(recipe => recipe.inCart > 0) },
 })
