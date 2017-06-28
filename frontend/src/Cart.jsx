@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import Navbar from './Nav.js'
-import Recipe from './RecipeItem.js'
+import Navbar from './Nav.jsx'
+import Recipe from './RecipeItem.jsx'
 import './cart.scss'
 import { observer, inject } from 'mobx-react'
 

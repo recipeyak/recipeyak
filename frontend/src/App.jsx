@@ -5,13 +5,13 @@ import {
   Switch,
 } from 'react-router-dom'
 
-import Home from './Home.js'
+import Home from './Home.jsx'
 import Login from './LoginSignup.jsx'
-import RecipeList from './RecipeList.js'
-import NoMatch from './NoMatch.js'
+import RecipeList from './RecipeList.jsx'
+import NoMatch from './NoMatch.jsx'
 import Ingredients from './Ingredients.jsx'
 import Cart from './Cart.jsx'
-import Recipe from './Recipe.js'
+import Recipe from './Recipe.jsx'
 
 const Base = () => (
   <Router>

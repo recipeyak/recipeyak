@@ -6,7 +6,7 @@ import MarkdownIt from 'markdown-it'
 
 import './recipe.scss'
 
-import Navbar from './Nav.js'
+import Navbar from './Nav.jsx'
 
 const md = new MarkdownIt()
 

@@ -1,6 +1,6 @@
 import React from 'react'
-import Navbar from './Nav.js'
-import Recipe from './RecipeItem.js'
+import Navbar from './Nav.jsx'
+import Recipe from './RecipeItem.jsx'
 import { observer, inject } from 'mobx-react'
 
 import 'bulma/css/bulma.css'
