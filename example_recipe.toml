@@ -1,7 +1,6 @@
-[recipe]
-title = 'Curried Roast Chicken, Durban Style'
+[Curried Roast Chicken, Durban Style]
 version = 1.0
-updated = 1979-05-27
+updated = 1979-05-27T07:32:00Z
 source = 'https://cooking.nytimes.com/recipes/8930-curried-roast-chicken-durban-style'
 author = 'Florence Fabricant'
 ingredients = [

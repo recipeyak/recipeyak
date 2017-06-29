@@ -16,5 +16,5 @@ indent_size = 4
 [*.scss]
 indent_size = 2
 
-[*.toml]
+[*.{toml,yml}]
 indent_size = 2
