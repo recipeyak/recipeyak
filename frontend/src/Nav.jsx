@@ -1,14 +1,49 @@
 import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
+import './nav.scss'
+
+const RecipeItem = ({ title, URL, inCart }) => (
+  <li className="search-result">
+    <Link to={ URL }>
+      <h1>{ title }</h1>
+    </Link>
+    {
+      inCart
+      ? <input type="button" className="button" value="- Remove from Cart"/>
+      : <input type="button" className="button" value="+ Add to Cart"/>
+    }
+  </li>
+)
+
+const SearchResults = (recipes) => (
+  <ul className="search-results">
+    { recipes.map(x => RecipeItem(x)) }
+  </ul>
+)
+
+const recipes = [
+  {
+    title: 'Durban Chicken',
+    URL: '/recipe/1',
+    inCart: true,
+  },
+  {
+    title: 'Tomato and Red Bean Salad',
+    URL: '/recipe/2',
+    inCart: false,
+  },
+]
+
+const results = SearchResults(recipes)
+
 class Navbar extends React.Component {
   constructor (props) {
     super(props)
-    this.state = {showNav: false}
-
-    // This binding is necessary to make `this` work in the callback
-    // See https://facebook.github.io/react/docs/handling-events.html
-    this.toggleNav = this.toggleNav.bind(this)
+    this.state = {
+      showNav: false,
+      showSearchResults: false,
+    }
   }
   toggleNav () {
     this.setState((prevState, props) => ({showNav: !prevState.showNav}))
@@ -22,12 +57,21 @@ class Navbar extends React.Component {
         </div>
       </div>
       <div className="nav-center">
-          <p className="control field nav-item">
-            <input className="input" type="text" placeholder="Search..."/>
+          <p className="search-container">
+            <p className="search-box-container control field nav-item ">
+              <input onFocus={ () => this.setState({ showSearchResults: true }) }
+                     onBlur={ () => this.setState({ showSearchResults: false }) }
+                     className="input"
+                     type="text"
+                     placeholder="Search..."/>
+            </p>
+
+            { this.state.showSearchResults && results }
+
           </p>
       </div>
 
-      <span onClick={ this.toggleNav } className={ 'nav-toggle' + (this.state.showNav ? ' is-active' : '') }>
+      <span onClick={ () => this.toggleNav() } className={ 'nav-toggle' + (this.state.showNav ? ' is-active' : '') }>
         <span></span>
         <span></span>
         <span></span>
