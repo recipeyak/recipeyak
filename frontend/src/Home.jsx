@@ -1,10 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { observer, inject } from 'mobx-react'
 
 import './home.scss'
 
-const Home = inject('store')(observer(props => {
+const Home = props => {
   const buttons = props.store.isLoggedIn
         ? (
           <div className="field is-grouped">
@@ -113,6 +112,5 @@ const Home = inject('store')(observer(props => {
     </div>
   )
 }
-))
 
 export default Home

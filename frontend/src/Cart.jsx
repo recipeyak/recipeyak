@@ -3,9 +3,8 @@ import { Link } from 'react-router-dom'
 import Navbar from './Nav.jsx'
 import Recipe from './RecipeItem.jsx'
 import './cart.scss'
-import { observer, inject } from 'mobx-react'
 
-const Cart = inject('store')(observer(props => {
+const Cart = props => {
   const recipeItems = props.store.cart.map(recipe =>
     <Recipe
       key={ recipe.id }
@@ -46,6 +45,6 @@ const Cart = inject('store')(observer(props => {
       </section>
     </div>
   )
-}))
+}
 
 export default Cart

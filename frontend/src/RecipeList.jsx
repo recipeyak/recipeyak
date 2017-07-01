@@ -1,11 +1,10 @@
 import React from 'react'
 import Navbar from './Nav.jsx'
 import Recipe from './RecipeItem.jsx'
-import { observer, inject } from 'mobx-react'
 
 import 'bulma/css/bulma.css'
 
-const RecipeList = inject('store')(observer((props) => {
+const RecipeList = props => {
   const recipeList = props.store.recipes.map(recipe =>
     <div className="grid-item" key={ recipe.id }>
       <Recipe
@@ -31,6 +30,6 @@ const RecipeList = inject('store')(observer((props) => {
       <pre>{JSON.stringify(props.store.recipes, null, 2)}</pre>
     </div>
   )
-}))
+}
 
 export default RecipeList
