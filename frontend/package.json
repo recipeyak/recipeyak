@@ -37,13 +37,16 @@
     "fs-extra": "0.30.0",
     "html-webpack-plugin": "2.24.0",
     "http-proxy-middleware": "0.17.3",
-    "jest": "18.1.0",
+    "jest": "^19.0.0",
+    "jest-enzyme": "^3.4.0",
     "json-loader": "0.5.4",
     "node-sass": "^4.5.3",
     "object-assign": "4.1.1",
     "postcss-loader": "1.2.2",
     "promise": "7.1.1",
     "react-dev-utils": "^0.5.2",
+    "react-dom": "^15.6.1",
+    "react-test-renderer": "^15.6.1",
     "sass-loader": "^6.0.5",
     "style-loader": "0.13.1",
     "url-loader": "0.5.7",
@@ -67,6 +70,7 @@
     "test": "node scripts/test.js --env=jsdom"
   },
   "jest": {
+    "setupTestFrameworkScriptFile": "./node_modules/jest-enzyme/lib/index.js",
     "collectCoverageFrom": [
       "src/**/*.{js,jsx}"
     ],

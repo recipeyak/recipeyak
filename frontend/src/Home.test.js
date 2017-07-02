@@ -1,12 +1,14 @@
-import React from 'react';
-import ReactDOM from 'react-dom'
-import {MemoryRouter} from 'react-router'
+import React from 'react'
+import {shallow} from 'enzyme'
 
 import Home from './Home.jsx';
 
 describe('<Home/>', () => {
   it('renders without crashing', () => {
-    const div = document.createElement('div')
-    ReactDOM.render(<MemoryRouter><Home/></MemoryRouter>, div)
+    shallow(<Home/>)
+  })
+  it('Has some text in footer', () => {
+    const home = shallow(<Home/>)
+    expect(home.find('footer').text()).toEqual('Caena ※ 2017')
   })
 })

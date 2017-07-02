@@ -1,18 +1,22 @@
-import React from 'react';
-import ReactDOM from 'react-dom'
-import {MemoryRouter} from 'react-router'
+import React from 'react'
+import {mount, shallow} from 'enzyme'
 
 import Ingredients from './Ingredients.jsx'
 
 describe('<Ingredients/>', () => {
   it('renders without crashing', () => {
     const ingredients = ['onion', 'tomato', 'potato']
-    const div = document.createElement('div')
-    ReactDOM.render(<MemoryRouter><Ingredients ingredients={ingredients}/></MemoryRouter>, div)
+    mount(<Ingredients ingredients={ingredients}/>)
   })
-  it('displays the ingredients correctly', () => {
+  it('has the correct props', () => {
     const ingredients = ['onion', 'tomato', 'potato']
-    const div = document.createElement('div')
-    ReactDOM.render(<MemoryRouter><Ingredients ingredients={ingredients}/></MemoryRouter>, div)
+    const element = mount(<Ingredients ingredients={ingredients}/>)
+    expect(element.props().ingredients).toEqual(ingredients)
+  })
+  it('displays the correct list', () => {
+    const ingredients = ['onion', 'tomato']
+    const expected = [<li key="onion">onion</li>, <li key="tomato">tomato</li>]
+    const element = shallow(<Ingredients ingredients={ingredients}/>)
+    expect(element.containsAllMatchingElements(expected)).toEqual(true)
   })
 })
