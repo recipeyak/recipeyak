@@ -1,5 +1,6 @@
 import user from './user.js'
 
+describe('User', () => {
 it('Logs in user', () => {
   const beforeState = {
     loggedIn: false
@@ -23,4 +24,6 @@ it('Logs out user', () => {
     user(beforeState, {type: 'LOG_OUT'})
     ).toEqual(afterState)
 })
+})
+
 

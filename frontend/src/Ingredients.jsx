@@ -1,17 +1,13 @@
 import React from 'react'
-import './print-list.scss'
+import {PropTypes} from 'prop-types'
 
-// NOTE: For development purposes only
-import { ingredients } from './mockup-data.js'
-let text = ingredients.join('\n')
-for (let i = 0; i < 3; i++) {
-  text += text
+const Ingredients = props => {
+  const ingredientList = props.ingredients.reduce((acc, val) => (acc + <li>{val}</li>))
+  return (<ul>{ ingredientList }</ul>)
 }
 
-class Ingredients extends React.Component {
-  render () {
-    return (<div className="print-list">{ text }</div>)
-  }
+Ingredients.PropTypes = {
+  ingredients: PropTypes.arrayOf(PropTypes.string).isRequired,
 }
 
 export default Ingredients

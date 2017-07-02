@@ -1,6 +1,6 @@
 import {login, logout, addToCart, removeFromCart, addRecipe, removeRecipe} from './actions.js'
 import {LOG_IN, LOG_OUT, ADD_TO_CART, REMOVE_FROM_CART, ADD_RECIPE, REMOVE_RECIPE} from './actionTypes.js'
-
+describe('Actions', () => {
 it('Should return LOG_IN action', () => {
   const expectedAction = {type: LOG_IN}
   expect(
@@ -47,3 +47,5 @@ it('Should return REMOVE_RECIPE action', () => {
     removeRecipe(recipeId)
     ).toEqual({type: REMOVE_RECIPE, id:recipeId})
 })
+})
+

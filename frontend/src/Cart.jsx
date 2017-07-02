@@ -7,15 +7,11 @@ import './cart.scss'
 const Cart = props => {
   const recipeItems = props.store.cart.map(recipe =>
     <Recipe
+      {...recipe}
       key={ recipe.id }
-      title={ recipe.title }
-      url={ recipe.url }
-      author={ recipe.author }
-      source={ recipe.source }
       removeFromCart={ () => props.store.removeFromCart(recipe.id)}
       addToCart={ () => props.store.addToCart(recipe.id)}
-      tags={ recipe.tags }
-      inCart={ recipe.inCart }/>)
+    />)
   const ingredients = props.store.cart.map(recipe => [recipe.ingredients, recipe.id])
   const ingredientList = ingredients.map((ingredient, id) => <li key={id}>{ingredient}</li>)
   return (

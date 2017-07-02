@@ -1,5 +1,6 @@
 import recipes from './recipes.js'
 
+describe('Recipes', () => {
 it('Adds recipe to recipe list', () => {
   const beforeState = {
     1: {},
@@ -39,3 +40,5 @@ it('Remove non-existent recipe from recipe list', () => {
     recipes({}, {type: 'REMOVE_RECIPE', id:123})
     ).toEqual({})
 })
+})
+

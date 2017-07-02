@@ -1,10 +1,11 @@
 import React from 'react'
+import {PropTypes} from 'prop-types'
 import { Link } from 'react-router-dom'
 
 import './home.scss'
 
 const Home = props => {
-  const buttons = props.store.isLoggedIn
+  const buttons = props.isLoggedIn
         ? (
           <div className="field is-grouped">
             <p className="control">
@@ -111,6 +112,14 @@ const Home = props => {
       </div>
     </div>
   )
+}
+
+Home.defaultProps = {
+  isLoggedIn: false,
+}
+
+Home.PropTypes = {
+  isLoggedIn: PropTypes.bool,
 }
 
 export default Home

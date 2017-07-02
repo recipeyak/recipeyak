@@ -4,7 +4,7 @@ import { Link, NavLink } from 'react-router-dom'
 import './nav.scss'
 
 const RecipeItem = ({ title, URL, inCart }) => (
-  <li className="search-result">
+  <li className="search-result" key="title">
     <Link to={ URL }>
       <h1>{ title }</h1>
     </Link>
@@ -57,7 +57,7 @@ class Navbar extends React.Component {
         </div>
       </div>
       <div className="nav-center">
-          <p className="search-container">
+          <div className="search-container">
             <p className="search-box-container control field nav-item ">
               <input onFocus={ () => this.setState({ showSearchResults: true }) }
                      onBlur={ () => this.setState({ showSearchResults: false }) }
@@ -68,7 +68,7 @@ class Navbar extends React.Component {
 
             { this.state.showSearchResults && results }
 
-          </p>
+          </div>
       </div>
 
       <span onClick={ () => this.toggleNav() } className={ 'nav-toggle' + (this.state.showNav ? ' is-active' : '') }>

@@ -1,6 +1,7 @@
 import store from './store.js'
 import {login, logout, addToCart, removeFromCart, addRecipe, removeRecipe} from './store/actions.js'
 
+describe('Store', () => {
 it('Should handle user actions', () => {
   store.dispatch(login())
   expect(store.getState().user).toEqual({loggedIn: true})
@@ -29,4 +30,5 @@ it('Should handle recipe actions', () => {
   expect(store.getState().recipes).toEqual({123: recipe})
   store.dispatch(removeRecipe(recipe.id))
   expect(store.getState().recipes).toEqual({})
+})
 })

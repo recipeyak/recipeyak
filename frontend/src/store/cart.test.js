@@ -1,5 +1,5 @@
 import cart from './cart.js'
-
+describe('Cart', () => {
 it('Adds recipe to *empty* cart', () => {
   const beforeState = {}
   const afterState = {123: 1}
@@ -52,3 +52,5 @@ it('Remove recipe from cart', () => {
     cart(beforeState, {type: 'REMOVE_FROM_CART', id: 123})
     ).toEqual(afterState)
 })
+})
+
