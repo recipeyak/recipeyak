@@ -21,11 +21,14 @@
 //     .map(x => ({'item': x[0], 'quantity': x[1]}))
 //     .map(x => <li key={ x.item }><b>{ x.quantity }x</b> {x.item}</li>)
 
-const flatten = arr => arr.reduce(
+export const flatten = arr => arr.reduce(
   (acc, val) => acc.concat(
     Array.isArray(val) ? flatten(val) : val
   ),
   []
 )
 
-export { flatten }
+export const deepCopy = obj => Object.keys(obj).reduce((acc, key) => {
+  acc[key] = obj[key]
+  return acc
+}, {})

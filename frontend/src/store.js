@@ -1,9 +1,15 @@
-import recipes from './mockup-data.js'
+import { createStore, combineReducers } from 'redux'
 
-const store = {
-  loggedIn: false,
-  recipes: recipes,
-  cart: [],
-}
+import cart from './store/cart.js'
+import recipes from './store/recipes.js'
+import user from './store/user.js'
+
+export const recipeApp = combineReducers({
+  user,
+  recipes,
+  cart,
+})
+
+let store = createStore(recipeApp)
 
 export default store
