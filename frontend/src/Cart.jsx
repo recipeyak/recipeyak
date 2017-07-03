@@ -1,11 +1,13 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
+
 import Navbar from './Nav.jsx'
 import Recipe from './RecipeItem.jsx'
 import './cart.scss'
 
 const Cart = props => {
-  const recipeItems = props.store.cart.map(recipe =>
+  const recipeItems = props.cart.map(recipe =>
     <Recipe
       {...recipe}
       key={ recipe.id }
@@ -41,6 +43,14 @@ const Cart = props => {
       </section>
     </div>
   )
+}
+
+Cart.defaultProps = {
+  cart: [],
+}
+
+Cart.PropTypes = {
+  cart: PropTypes.arrayOf(PropTypes.number),
 }
 
 export default Cart

@@ -28,6 +28,10 @@ const RecipeList = props => {
   )
 }
 
+RecipeList.defaultProps = {
+  recipes: [],
+}
+
 RecipeList.PropTypes = {
   recipes: PropTypes.arrayOf(recipeType),
 }

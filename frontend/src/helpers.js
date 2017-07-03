@@ -32,3 +32,9 @@ export const deepCopy = obj => Object.keys(obj).reduce((acc, key) => {
   acc[key] = obj[key]
   return acc
 }, {})
+
+export const getIngredients = recipeArray => {
+  return recipeArray.reduce((acc, recipe) => {
+    return acc.concat(recipe.ingredients)
+  }, [])
+}
