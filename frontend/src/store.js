@@ -1,24 +1,15 @@
-import { observable, action } from 'mobx'
-import recipes from './mockup-data.js'
+import { createStore, combineReducers } from 'redux'
 
-const store = observable({
-  loggedIn: false,
-  recipes: recipes,
-  get cart () { return this.recipes.filter(recipe => recipe.inCart > 0) },
+import cart from './store/cart.js'
+import recipes from './store/recipes.js'
+import user from './store/user.js'
+
+export const recipeApp = combineReducers({
+  user,
+  recipes,
+  cart,
 })
 
-store.addToCart = action(id => {
-  const index = store.recipes.findIndex(recipe => recipe.id === id)
-  store.recipes[index].inCart++
-  const recipe = recipes[index]
-  console.log(`Added recipe '${recipe.title}' to cart`)
-})
-
-store.removeFromCart = action(id => {
-  const index = store.recipes.findIndex(recipe => recipe.id === id)
-  store.recipes[index].inCart--
-  const recipe = recipes[index]
-  console.log(`Removed recipe '${recipe.title}' from cart`)
-})
+let store = createStore(recipeApp)
 
 export default store

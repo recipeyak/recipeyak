@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
 
 import Textarea from 'react-textarea-autosize'
 import MarkdownIt from 'markdown-it'
@@ -11,31 +12,21 @@ import Navbar from './Nav.jsx'
 const md = new MarkdownIt()
 
 class Recipe extends React.Component {
-  constructor () {
-    super()
-    const ingredients = `- 1 cup of water
-- 1 teaspoon
-- 1 garlic clove`
-
-    const steps = `1. Mix dry ingredients
-2. Mix wet ingredients
-3. Combine wet and dry ingredients
-4. Bake at 400°F for 1 hour`
-
-    const time = '1 Hour'
+  constructor (props) {
+    super(props)
 
     this.state = {
       editing: false,
-      name: 'Miso Soup',
+      name: this.props.name,
 
-      ingredients: ingredients,
-      steps: steps,
-      time: time,
+      ingredients: this.props.ingredients,
+      steps: this.props.steps,
+      time: this.props.time,
 
       // Note: allows for the state to not be upated and for cancel to still work
-      temp_ingredients: ingredients,
-      temp_steps: steps,
-      temp_time: time,
+      temp_ingredients: this.ingredients,
+      temp_steps: this.steps,
+      temp_time: this.time,
     }
   }
 
@@ -90,7 +81,7 @@ class Recipe extends React.Component {
                       {
                         !this.state.editing
                         ? <div
-                            className="content"
+                            className="content ingredients-list"
                             dangerouslySetInnerHTML={{ __html: md.render(this.state.ingredients) }}/>
                         : <Textarea
                             className="textarea"
@@ -194,6 +185,20 @@ class Recipe extends React.Component {
       </div>
     )
   }
+}
+
+Recipe.defaultProps = {
+  name: 'Recipe Name',
+  ingredients: '',
+  steps: '',
+  time: '',
+}
+
+Recipe.PropTypes = {
+  name: PropTypes.string,
+  ingredients: PropTypes.string,
+  steps: PropTypes.string,
+  time: PropTypes.string,
 }
 
 export default Recipe

@@ -1,11 +1,11 @@
 import React from 'react'
+import { PropTypes } from 'prop-types'
 import { Link } from 'react-router-dom'
-import { observer, inject } from 'mobx-react'
 
 import './home.scss'
 
-const Home = inject('store')(observer(props => {
-  const buttons = props.store.isLoggedIn
+const Home = props => {
+  const buttons = props.isLoggedIn
         ? (
           <div className="field is-grouped">
             <p className="control">
@@ -113,6 +113,13 @@ const Home = inject('store')(observer(props => {
     </div>
   )
 }
-))
+
+Home.defaultProps = {
+  isLoggedIn: false,
+}
+
+Home.PropTypes = {
+  isLoggedIn: PropTypes.bool,
+}
 
 export default Home
