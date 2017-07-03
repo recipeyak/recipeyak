@@ -4,7 +4,7 @@ import { Link, NavLink } from 'react-router-dom'
 import './nav.scss'
 
 const RecipeItem = ({ title, URL, inCart }) => (
-  <li className="search-result">
+  <li key={ title } className="search-result">
     <Link to={ URL }>
       <h1>{ title }</h1>
     </Link>
@@ -43,11 +43,18 @@ class Navbar extends React.Component {
     this.state = {
       showNav: false,
       showSearchResults: false,
+      showDropdown: false,
     }
   }
+
   toggleNav () {
     this.setState((prevState, props) => ({ showNav: !prevState.showNav }))
   }
+
+  toggleDropdown () {
+    this.setState((prevState, props) => ({ showDropdown: !prevState.showDropdown }))
+  }
+
   render () {
     return (
       <nav className="nav">
@@ -57,7 +64,7 @@ class Navbar extends React.Component {
         </div>
       </div>
       <div className="nav-center">
-          <p className="search-container">
+          <div className="search-container">
             <p className="search-box-container control field nav-item ">
               <input onFocus={ () => this.setState({ showSearchResults: true }) }
                      onBlur={ () => this.setState({ showSearchResults: false }) }
@@ -68,7 +75,7 @@ class Navbar extends React.Component {
 
             { this.state.showSearchResults && results }
 
-          </p>
+          </div>
       </div>
 
       <span onClick={ () => this.toggleNav() } className={ 'nav-toggle' + (this.state.showNav ? ' is-active' : '') }>
@@ -77,11 +84,7 @@ class Navbar extends React.Component {
         <span></span>
       </span>
 
-      <div className={ 'nav-right nav-menu' + (this.state.showNav ? ' is-active' : '') }>
-        <NavLink activeClassName="is-active" to="/recipes" className="nav-item">Recipes</NavLink>
-        <NavLink activeClassName="is-active" to="/cart" className="nav-item">Cart</NavLink>
-        <NavLink activeClassName="is-active" to="/login" className="nav-item">Logout</NavLink>
-
+      <div className={ 'overflow-initial nav-right nav-menu' + (this.state.showNav ? ' is-active' : '') }>
         <div className="nav-item">
           <div className="field is-grouped">
             <p className="control">
@@ -89,6 +92,26 @@ class Navbar extends React.Component {
             </p>
           </div>
         </div>
+        <NavLink activeClassName="is-active" to="/recipes" className="nav-item">Recipes</NavLink>
+        <NavLink activeClassName="is-active" to="/cart" className="nav-item">Cart</NavLink>
+        <div onClick={() => this.toggleDropdown() } className="nav-item user-profile">
+          <img alt="user profile" className="user-profile-image" src="https://www.gravatar.com/avatar/ea7be1e5200ad6934add15a721b5b1b0?d=identicon"/>
+          <svg aria-hidden="true" height="11" version="1.1" viewBox="0 0 12 16" width="8">
+            <path d="M0 5l6 6 6-6z"></path>
+          </svg>
+
+          <div className={ 'dropdown ' + (this.state.showDropdown ? 'active' : '')}>
+            <ul>
+              <li>
+                <NavLink activeClassName="is-active" to="/login" className="nav-item">Logout</NavLink>
+              </li>
+              <li>
+                <NavLink activeClassName="is-active" to="/settings" className="nav-item">Settings</NavLink>
+              </li>
+            </ul>
+          </div>
+        </div>
+
       </div>
     </nav>
     )

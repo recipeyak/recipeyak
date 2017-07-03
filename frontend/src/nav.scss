@@ -43,3 +43,50 @@ p.field.search-box-container {
 .search-results > li {
 
 }
+
+// bulma override
+div.overflow-initial {
+  overflow: initial;
+}
+
+// bulma override
+div.nav-item img {
+  max-height: none;
+}
+
+nav.nav {
+  margin-top: 10px;
+}
+
+// bulma override
+.user-profile {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+
+  &-image {
+    height: 45px;
+    width: 45px;
+    margin: 5px;
+    border-radius: 100%;
+    max-height: none;
+  }
+}
+
+.dropdown {
+  display: none;
+  position: absolute;
+  border-radius: 3px;
+  top: 100%;
+  z-index: 100;
+  cursor: default;
+  padding: 5px;
+  margin: 5px;
+  background-color: white;
+  box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
+
+  &.active {
+    display: block;
+  }
+}
+
