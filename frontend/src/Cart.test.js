@@ -1,23 +1,24 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import {MemoryRouter} from 'react-router'
+import {mount} from 'enzyme'
 
-import RecipeList from './RecipeList.jsx'
+import Cart from './Cart.jsx'
 
-describe('<RecipeList/>', () => {
+describe('<Cart/>', () => {
   it('renders without crashing', () => {
-    const recipe = {
-        id: 123,
-        title: 'Some recipe title',
-        author: 'Recipe author',
-        url: '/someurl',
-        source: 'http://example.com/recipeTitle',
-        tags: ['OneTag', 'TwoTag'],
-        inCart: false,
-        removeFromCart: () => console.log('Remove from cart'),
-        addToCart: () => console.log('Add to cart'),
-      }
-    const div = document.createElement('div')
-    ReactDOM.render(<MemoryRouter><RecipeList recipes={[recipe]} /></MemoryRouter>, div)
+    mount(<MemoryRouter><Cart/></MemoryRouter>)
+  })
+  it('accepts props', () => {
+    const recipes = [{
+      id: 123,
+      title: 'Recipe title',
+      tags: ['tagOne', 'tagTwo'],
+      author: 'Recipe author',
+      source: '',
+      url: '',
+      ingredients: ['ingredientOne', 'ingredientTwo'],
+    }]
+    const element = mount(<MemoryRouter><Cart cart={recipes}/></MemoryRouter>)
+    expect(element.find('Cart').props().cart).toEqual(recipes)
   })
 })

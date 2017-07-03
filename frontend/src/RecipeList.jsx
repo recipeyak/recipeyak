@@ -8,7 +8,7 @@ import Recipe from './RecipeItem.jsx'
 import 'bulma/css/bulma.css'
 
 const RecipeList = props => {
-  const recipeList = props.recipes.map(recipe =>
+  let recipeList = props.recipes.map(recipe =>
     <div className="grid-item" key={ recipe.id }>
       <Recipe
         {...recipe}
@@ -18,6 +18,9 @@ const RecipeList = props => {
       />
     </div>
   )
+  if (props.recipes.length === 0) {
+    recipeList = <div className="grid-item">No Recipes</div>
+  }
   return (
     <div className="container">
       <Navbar/>

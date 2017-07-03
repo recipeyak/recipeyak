@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
+import recipeType from './propTypes.js'
 
 import Navbar from './Nav.jsx'
 import Recipe from './RecipeItem.jsx'
@@ -14,7 +15,7 @@ const Cart = props => {
       removeFromCart={ () => props.store.removeFromCart(recipe.id)}
       addToCart={ () => props.store.addToCart(recipe.id)}
     />)
-  const ingredients = props.store.cart.map(recipe => [recipe.ingredients, recipe.id])
+  const ingredients = props.cart.map(recipe => [recipe.ingredients, recipe.id])
   const ingredientList = ingredients.map((ingredient, id) => <li key={id}>{ingredient}</li>)
   return (
     <div className="container">
@@ -34,8 +35,6 @@ const Cart = props => {
                 <ul className="ingredients-list card-content">
                   { ingredientList }
                 </ul>
-                <pre>{ JSON.stringify(props.store.recipes, null, 2)}</pre>
-                <pre>{ JSON.stringify(props.store.cart, null, 2)}</pre>
               </div>
             </div>
           </div>
@@ -50,7 +49,7 @@ Cart.defaultProps = {
 }
 
 Cart.PropTypes = {
-  cart: PropTypes.arrayOf(PropTypes.number),
+  cart: PropTypes.arrayOf(recipeType),
 }
 
 export default Cart
