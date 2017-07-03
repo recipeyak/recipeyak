@@ -1,4 +1,4 @@
-import {observable, action} from 'mobx'
+import { observable, action } from 'mobx'
 import recipes from './mockup-data.js'
 
 const store = observable({

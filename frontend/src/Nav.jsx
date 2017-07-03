@@ -46,7 +46,7 @@ class Navbar extends React.Component {
     }
   }
   toggleNav () {
-    this.setState((prevState, props) => ({showNav: !prevState.showNav}))
+    this.setState((prevState, props) => ({ showNav: !prevState.showNav }))
   }
   render () {
     return (
