@@ -12,12 +12,14 @@ import NoMatch from './NoMatch.jsx'
 import Ingredients from './Ingredients.jsx'
 import Cart from './Cart.jsx'
 import Recipe from './Recipe.jsx'
+import PasswordReset from './PasswordReset.jsx'
 
 const Base = () => (
   <Router>
     <Switch>
       <Route exact path="/" component={ Home }/>
       <Route path="/login" component={ Login }/>
+      <Route path="/password-reset" component={ PasswordReset }/>
       <Route path="/signup" component={ Login }/>
       <Route exact path="/recipes/" component={ RecipeList }/>
       <Route path="/cart" component={ Cart }/>

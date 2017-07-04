@@ -7,32 +7,31 @@ import Recipe from './RecipeItem.jsx'
 
 import 'bulma/css/bulma.css'
 
-const RecipeList = props => {
-  let recipeList = props.recipes.map(recipe =>
+import './recipe-list.scss'
+
+const RecipeList = ({ recipes = [], removeFromCart, addToCart }) => {
+  recipes = recipes.map(recipe =>
     <div className="grid-item" key={ recipe.id }>
       <Recipe
         {...recipe}
         key={ recipe.id }
-        removeFromCart={ () => props.removeFromCart(recipe.id)}
-        addToCart={ () => props.addToCart(recipe.id)}
+        removeFromCart={ () => removeFromCart(recipe.id)}
+        addToCart={ () => addToCart(recipe.id)}
       />
-    </div>
-  )
-  if (props.recipes.length === 0) {
-    recipeList = <div className="grid-item">No Recipes</div>
-  }
+    </div>)
+
+  const recipeList = recipes.length !== 0
+    ? <div className="grid-container">{ recipes }</div>
+    : <div className="no-recipes">No Recipes ☹️</div>
+
   return (
     <div className="container">
       <Navbar/>
       <section className="section">
-        <div className="grid-container">{ recipeList }</div>
+        { recipeList }
       </section>
     </div>
   )
-}
-
-RecipeList.defaultProps = {
-  recipes: [],
 }
 
 RecipeList.PropTypes = {
