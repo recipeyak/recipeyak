@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom'
 
 import './home.scss'
 
-const Home = props => {
-  const buttons = props.isLoggedIn
+const Home = ({ isLoggedIn = false }) => {
+  const buttons = isLoggedIn
         ? (
           <div className="field is-grouped">
             <p className="control">
@@ -112,10 +112,6 @@ const Home = props => {
       </div>
     </div>
   )
-}
-
-Home.defaultProps = {
-  isLoggedIn: false,
 }
 
 Home.PropTypes = {

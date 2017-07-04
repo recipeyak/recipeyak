@@ -3,7 +3,7 @@ import { Link, NavLink } from 'react-router-dom'
 
 import './nav.scss'
 
-const RecipeItem = ({ title, URL, inCart }) => (
+const SearchResult = ({ title, URL, inCart }) => (
   <li key={ title } className="search-result">
     <Link to={ URL }>
       <h1>{ title }</h1>
@@ -18,7 +18,7 @@ const RecipeItem = ({ title, URL, inCart }) => (
 
 const SearchResults = (recipes) => (
   <ul className="search-results">
-    { recipes.map(x => RecipeItem(x)) }
+    { recipes.map(x => SearchResult(x)) }
   </ul>
 )
 

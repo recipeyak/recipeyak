@@ -1,14 +1,15 @@
 import React from 'react'
-import {shallow} from 'enzyme'
+import { MemoryRouter, Route } from 'react-router'
+import {mount, shallow} from 'enzyme'
 
-import Home from './Home.jsx';
+import Home from './Home.jsx'
 
 describe('<Home/>', () => {
   it('renders without crashing', () => {
-    shallow(<Home/>)
+    mount(<MemoryRouter><Home/></MemoryRouter>)
   })
   it('Has some text in footer', () => {
-    const home = shallow(<Home/>)
+    const home = mount(<MemoryRouter><Home/></MemoryRouter>)
     expect(home.find('footer').text()).toEqual('Caena ※ 2017')
   })
 })

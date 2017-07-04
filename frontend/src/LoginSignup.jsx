@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
 const Login = ({ location }) => {
@@ -62,6 +63,10 @@ const Login = ({ location }) => {
         </div>
       </section>
     </div>)
+}
+
+Login.PropTypes = {
+  location: PropTypes.object.isRequired,
 }
 
 export default Login

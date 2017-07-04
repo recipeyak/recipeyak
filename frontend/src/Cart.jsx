@@ -7,14 +7,14 @@ import Navbar from './Nav.jsx'
 import Recipe from './RecipeItem.jsx'
 import './cart.scss'
 
-const Cart = ({ store, cart = [] }) => {
+const Cart = ({ addToCart, removeFromCart, cart = [] }) => {
   const recipeItems = cart.length > 0
     ? cart.map(recipe =>
         <Recipe
           {...recipe}
           key={ recipe.id }
-          removeFromCart={ () => store.removeFromCart(recipe.id)}
-          addToCart={ () => store.addToCart(recipe.id)}
+          removeFromCart={ () => removeFromCart(recipe.id)}
+          addToCart={ () => addToCart(recipe.id)}
         />)
     : <p className="no-recipes">No recipes in cart.</p>
 
@@ -52,6 +52,8 @@ const Cart = ({ store, cart = [] }) => {
 }
 
 Cart.PropTypes = {
+  addToCart: PropTypes.func.isRequired,
+  removeFromCart: PropTypes.func.isRequired,
   cart: PropTypes.arrayOf(recipeType),
 }
 

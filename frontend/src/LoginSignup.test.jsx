@@ -1,14 +1,26 @@
 import React from 'react'
-import {MemoryRouter} from 'react-router'
-import {mount, shallow} from 'enzyme'
+import { MemoryRouter, Route } from 'react-router'
+import { mount } from 'enzyme'
 
-import Recipe from './Recipe.jsx'
+import LoginSignup from './LoginSignup.jsx'
 
-describe('<Recipe/>', () => {
-  it('renders without crashing', () => {
-    mount(<MemoryRouter><Recipe/></MemoryRouter>)
+describe('<LoginSignup/>', () => {
+  it('renders login', () => {
+    const element = mount(
+      <MemoryRouter initialEntries={[ '/login' ]} initialIndex={1}>
+        <Route path="/login" render={LoginSignup}/>
+      </MemoryRouter>)
+    expect(element.text()).toContain('Email')
+    expect(element.text()).toContain('Password')
   })
-  it('has the correct props', () => {
-    const element = mount(<MemoryRouter><Recipe/></MemoryRouter>)
+  it('renders signup', () => {
+    const element = mount(
+      <MemoryRouter initialEntries={[ '/signup' ]} initialIndex={1}>
+        <Route path="/signup" render={LoginSignup}/>
+      </MemoryRouter>
+    )
+    expect(element.text()).toContain('Email')
+    expect(element.text()).toContain('Password')
+    expect(element.text()).toContain('Password Again')
   })
 })

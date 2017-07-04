@@ -1,6 +1,6 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import {MemoryRouter} from 'react-router'
+import React from 'react'
+import { mount } from 'enzyme'
+import { MemoryRouter } from 'react-router'
 import RecipeItem from './RecipeItem.jsx'
 
 describe('RecipeItem', () => {
@@ -16,7 +16,6 @@ describe('RecipeItem', () => {
       removeFromCart: () => console.log('Remove from cart'),
       addToCart: () => console.log('Add to cart'),
     }
-    const div = document.createElement('div');
-    ReactDOM.render(<MemoryRouter><RecipeItem {...recipe} /></MemoryRouter>, div);
+    mount(<MemoryRouter><RecipeItem {...recipe} /></MemoryRouter>)
   })
 })
