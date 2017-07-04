@@ -55,7 +55,7 @@ const Login = ({ location }) => {
                 <p className="control">
                   <input type="submit" className="button is-primary" value="Submit"/>
                 </p>
-                <Link to="/password-reset" className="button is-link">Reset Password?</Link>
+                <Link to="/password-reset" className="button is-link">Forgot Password?</Link>
               </div>
             </div>
           </div>
