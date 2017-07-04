@@ -37,7 +37,7 @@
     "fs-extra": "0.30.0",
     "html-webpack-plugin": "2.24.0",
     "http-proxy-middleware": "0.17.3",
-    "jest": "^19.0.0",
+    "jest": "^19.0.2",
     "jest-enzyme": "^3.4.0",
     "json-loader": "0.5.4",
     "node-sass": "^4.5.3",
