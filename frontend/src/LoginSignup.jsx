@@ -11,7 +11,7 @@ const Login = ({ location }) => {
     </div>
 
   return (
-    <div>
+    <div className="container">
       <nav className="nav">
         <div className="nav-left">
           <div className="nav-item">
@@ -55,8 +55,7 @@ const Login = ({ location }) => {
                 <p className="control">
                   <input type="submit" className="button is-primary" value="Submit"/>
                 </p>
-                {/* TODO: Add link to reset page */}
-                <a className="button is-link">Reset Password?</a>
+                <Link to="/password-reset" className="button is-link">Reset Password?</Link>
               </div>
             </div>
           </div>
