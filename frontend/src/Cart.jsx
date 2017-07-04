@@ -16,7 +16,7 @@ const Cart = ({ store, cart = [] }) => {
           removeFromCart={ () => store.removeFromCart(recipe.id)}
           addToCart={ () => store.addToCart(recipe.id)}
         />)
-    : <p>No recipes in cart. Add some via the Add Recipe button above.</p>
+    : <p className="no-recipes">No recipes in cart.</p>
 
   const ingredients = cart.map(recipe => [recipe.ingredients, recipe.id])
 
@@ -26,7 +26,7 @@ const Cart = ({ store, cart = [] }) => {
           { ingredients.map((ingredient, id) => <li key={id}>{ingredient}</li>) }
         </ul>
       </div>
-    : <p>No ingredients.</p>
+    : <p className="no-recipes">No ingredients.</p>
 
   return (
     <div className="container">
