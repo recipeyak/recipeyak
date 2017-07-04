@@ -7,24 +7,28 @@ import Recipe from './RecipeItem.jsx'
 
 import 'bulma/css/bulma.css'
 
+import './recipe-list.scss'
+
 const RecipeList = ({ recipes = [], removeFromCart, addToCart }) => {
+  recipes = recipes.map(recipe =>
+    <div className="grid-item" key={ recipe.id }>
+      <Recipe
+        {...recipe}
+        key={ recipe.id }
+        removeFromCart={ () => removeFromCart(recipe.id)}
+        addToCart={ () => addToCart(recipe.id)}
+      />
+    </div>)
+
   const recipeList = recipes.length !== 0
-    ? recipes.map(recipe =>
-        <div className="grid-item" key={ recipe.id }>
-          <Recipe
-            {...recipe}
-            key={ recipe.id }
-            removeFromCart={ () => removeFromCart(recipe.id)}
-            addToCart={ () => addToCart(recipe.id)}
-          />
-        </div>)
-    : <div className="grid-item">No Recipes</div>
+    ? <div className="grid-container">{ recipes }</div>
+    : <div className="no-recipes">No Recipes ☹️</div>
 
   return (
     <div className="container">
       <Navbar/>
       <section className="section">
-        <div className="grid-container">{ recipeList }</div>
+        { recipeList }
       </section>
     </div>
   )
