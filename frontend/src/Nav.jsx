@@ -88,7 +88,7 @@ class Navbar extends React.Component {
         <div className="nav-item">
           <div className="field is-grouped">
             <p className="control">
-              <a className="button is-primary">Add Recipe</a>
+              <Link to="/recipes/add" className="button is-primary">Add Recipe</Link>
             </p>
           </div>
         </div>
