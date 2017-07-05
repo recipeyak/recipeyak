@@ -1,27 +1,11 @@
 import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
+import SearchBox from './SearchBox.jsx'
+
 import './nav.scss'
 
-const SearchResult = ({ title, URL, inCart }) => (
-  <li key={ title } className="search-result">
-    <Link to={ URL }>
-      <h1>{ title }</h1>
-    </Link>
-    {
-      inCart
-      ? <input type="button" className="button" value="- Remove from Cart"/>
-      : <input type="button" className="button" value="+ Add to Cart"/>
-    }
-  </li>
-)
-
-const SearchResults = (recipes) => (
-  <ul className="search-results">
-    { recipes.map(x => SearchResult(x)) }
-  </ul>
-)
-
+// TODO: replace this temp data with fetching from the store
 const recipes = [
   {
     title: 'Durban Chicken',
@@ -34,8 +18,6 @@ const recipes = [
     inCart: false,
   },
 ]
-
-const results = SearchResults(recipes)
 
 class Navbar extends React.Component {
   constructor (props) {
@@ -64,18 +46,12 @@ class Navbar extends React.Component {
         </div>
       </div>
       <div className="nav-center">
-          <div className="search-container">
-            <p className="search-box-container control field nav-item ">
-              <input onFocus={ () => this.setState({ showSearchResults: true }) }
-                     onBlur={ () => this.setState({ showSearchResults: false }) }
-                     className="input"
-                     type="text"
-                     placeholder="Search..."/>
-            </p>
-
-            { this.state.showSearchResults && results }
-
-          </div>
+        <SearchBox
+          showSearchResults={ this.state.showSearchResults }
+          results={ recipes }
+          handleOnFocus={ () => this.setState({ showSearchResults: true }) }
+          handleOnBlur={ () => this.setState({ showSearchResults: false }) }
+        />
       </div>
 
       <span onClick={ () => this.toggleNav() } className={ 'nav-toggle' + (this.state.showNav ? ' is-active' : '') }>
