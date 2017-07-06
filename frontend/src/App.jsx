@@ -15,6 +15,8 @@ import Recipe from './Recipe.jsx'
 import PasswordReset from './PasswordReset.jsx'
 import AddRecipe from './AddRecipe.jsx'
 
+import './main.scss'
+
 const Base = () => (
   <Router>
     <Switch>

@@ -24,7 +24,7 @@ const Login = ({ location }) => {
       <section className="section">
         <div className="container">
           <div className="columns">
-            <div className="column is-one-third is-offset-one-third">
+            <div className="column is-one-third is-offset-one-third box">
               <div className="tabs is-boxed">
                 <ul>
                   <li className={ location.pathname === '/login' ? 'is-active' : '' }>
