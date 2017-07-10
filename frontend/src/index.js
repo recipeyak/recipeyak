@@ -1,8 +1,22 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { render } from 'react-dom'
+import { Provider } from 'react-redux'
+
 import App from './App.jsx'
-import registerServiceWorker from './registerServiceWorker'
+
+import store from './store.js'
+
 import './grid.scss'
 
-ReactDOM.render(<App />, document.getElementById('root'))
-registerServiceWorker()
+const rootElement = document.getElementById('root')
+
+if (rootElement != null) {
+  render(
+    <Provider store={ store }>
+      <App />
+    </Provider>,
+    rootElement
+  )
+} else {
+  console.log('error finding root element')
+}

@@ -1,32 +1,34 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import recipeType from './propTypes.js'
 
 import Navbar from './Nav.jsx'
 import Recipe from './RecipeItem.jsx'
+import IngredientsList from './IngredientsList.jsx'
+
 import './cart.scss'
 
-const Cart = ({ addToCart, removeFromCart, cart = [] }) => {
-  const recipeItems = cart.length > 0
-    ? cart.map(recipe =>
+const Cart = ({ addToCart, removeFromCart, cart, recipes }) => {
+  const recipeItems = Object.keys(cart).length > 0
+    ? Object.keys(cart)
+      .map(recipeID => {
+        // check how many times the recipe is in the cart
+        const recipe = recipes[recipeID]
+        recipe.inCart = cart[recipeID]
+        return recipe
+      })
+      .map(recipe =>
         <Recipe
           {...recipe}
-          key={ recipe.id }
+          key={ recipe.name + recipe.id }
           removeFromCart={ () => removeFromCart(recipe.id)}
           addToCart={ () => addToCart(recipe.id)}
         />)
     : <p className="no-recipes">No recipes in cart.</p>
 
-  const ingredients = cart.map(recipe => [recipe.ingredients, recipe.id])
-
-  const ingredientList = ingredients.length > 0
-    ? <div className="card">
-        <ul className="ingredients-list card-content">
-          { ingredients.map((ingredient, id) => <li key={id}>{ingredient}</li>) }
-        </ul>
-      </div>
-    : <p className="no-recipes">No ingredients.</p>
+  const cartRecipes =
+    Object.keys(cart)
+    .map(recipeID => recipes[recipeID])
 
   return (
     <div className="container">
@@ -42,7 +44,7 @@ const Cart = ({ addToCart, removeFromCart, cart = [] }) => {
               <h2 className="title">
                 <Link to="/ingredients">Shopping List</Link>
               </h2>
-                { ingredientList }
+              <IngredientsList recipes={ cartRecipes } />
             </div>
           </div>
         </div>
@@ -54,7 +56,8 @@ const Cart = ({ addToCart, removeFromCart, cart = [] }) => {
 Cart.PropTypes = {
   addToCart: PropTypes.func.isRequired,
   removeFromCart: PropTypes.func.isRequired,
-  cart: PropTypes.arrayOf(recipeType),
+  cart: PropTypes.object.isRequired,
+  recipes: PropTypes.object.isRequired,
 }
 
 export default Cart

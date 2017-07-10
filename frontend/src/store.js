@@ -10,6 +10,6 @@ export const recipeApp = combineReducers({
   cart,
 })
 
-let store = createStore(recipeApp)
+const store = createStore(recipeApp)
 
 export default store

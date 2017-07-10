@@ -17,7 +17,7 @@ const SearchResult = ({ title, URL, inCart }) => (
 
 const SearchResults = (recipes) => (
   <ul className="search-results">
-    { recipes.map(x => SearchResult(x)) }
+    { recipes.map(SearchResult) }
   </ul>
 )
 
@@ -33,7 +33,7 @@ const SearchBox = ({
          onFocus={ () => handleOnFocus() }
          onBlur={ () => handleOnBlur() }
          className="input"
-         type="text"
+         type="search"
          placeholder="Search..."
        />
     </p>

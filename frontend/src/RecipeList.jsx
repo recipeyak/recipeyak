@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { recipeType } from './propTypes.js'
 
 import Navbar from './Nav.jsx'
 import Recipe from './RecipeItem.jsx'
@@ -22,7 +21,7 @@ const RecipeList = ({ recipes = [], removeFromCart, addToCart }) => {
 
   const recipeList = recipes.length !== 0
     ? <div className="grid-container">{ recipes }</div>
-    : <div className="no-recipes">No Recipes ☹️</div>
+    : <div className="no-recipes">No Recipes☹️</div>
 
   return (
     <div className="container">
@@ -35,7 +34,9 @@ const RecipeList = ({ recipes = [], removeFromCart, addToCart }) => {
 }
 
 RecipeList.PropTypes = {
-  recipes: PropTypes.arrayOf(recipeType),
+  recipes: PropTypes.array.isRequired,
+  removeFromCart: PropTypes.func.isRequired,
+  addToCart: PropTypes.func.isRequired,
 }
 
 export default RecipeList
