@@ -17,16 +17,16 @@ const RecipeItem = ({
     ? tags.map(tag => <span key={ tag } className="tag">{ tag }</span>)
     : null
 
-  const button = (
+  const buttons = (
     <div className="field is-grouped">
       <button
         onClick={ () => removeFromCart(id) }
         className="button control"
-        disabled={inCart === 0}>Remove from cart</button>
+        disabled={inCart === 0}>Remove One</button>
       <button
         onClick={ () => addToCart(id) }
         className="button is-primary control"
-        >Add to Cart ({ inCart })</button>
+        >Add Another</button>
     </div>
   )
 
@@ -35,6 +35,7 @@ const RecipeItem = ({
       <div className="card-content">
         <p className="title">
           <Link to={ url }>{ name }</Link>
+          <small>{ '(x' + inCart + ')' }</small>
         </p>
         <p className="subtitle">
           <a href={ source }>{ author }</a>
@@ -42,7 +43,7 @@ const RecipeItem = ({
         <div className="content">{ spanTags }</div>
       </div>
       <footer className="card-footer">
-        <div className="card-footer-item">{ button }</div>
+        <div className="card-footer-item">{ buttons }</div>
       </footer>
     </div>
   )

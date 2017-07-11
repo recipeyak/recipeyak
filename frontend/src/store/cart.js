@@ -11,8 +11,9 @@ const defaultCartState = {
   1: 1,
   2: 3,
 }
+console.log(defaultCartState)
 
-const cart = (state = defaultCartState, action) => {
+const cart = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_TO_CART':
       if (state[action.id] === undefined) {

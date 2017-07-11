@@ -94,7 +94,9 @@ const defaultRecipes = {
   },
 }
 
-export const recipes = (state = defaultRecipes, action) => {
+console.log(defaultRecipes)
+
+export const recipes = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_RECIPE':
       return Object.assign({}, state, { [action.recipe.id]: action.recipe })
