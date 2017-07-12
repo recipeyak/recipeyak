@@ -1,5 +1,5 @@
 import React from 'react'
-// import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
 
 import Navbar from './Nav.jsx'
 
@@ -32,7 +32,7 @@ const AddRecipe = () => (
             </div>
             <div className="field is-grouped">
               <p className="control">
-                <input className="button is-primary" type="button" name="save ingredient" value="Save"/>
+                <input className="button is-primary" type="button" name="save ingredient" value="Add"/>
               </p>
               <p className="control">
                 <input className="button" type="button" name="cancel ingredient" value="✕"/>
@@ -52,7 +52,7 @@ const AddRecipe = () => (
             </div>
             <div className="field is-grouped">
               <p className="control">
-                <input className="button is-primary" type="button" name="save step" value="Save"/>
+                <input className="button is-primary" type="button" name="save step" value="Add"/>
               </p>
               <p className="control">
                 <input className="button" type="button" name="cancel ingredient" value="✕"/>
@@ -61,8 +61,19 @@ const AddRecipe = () => (
           </div>
         </div>
       </div>
+      <p className="flex-center">
+        <input
+          className="button is-large is-primary"
+          type="button"
+          name="cancel ingredient"
+          value="Create Recipe"/>
+      </p>
     </div>
   </div>
 )
+
+AddRecipe.PropTypes = {
+  AddRecipe: PropTypes.func.isRequired,
+}
 
 export default AddRecipe
