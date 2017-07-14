@@ -8,14 +8,15 @@ import 'bulma/css/bulma.css'
 
 import './recipe-list.scss'
 
-const RecipeList = ({ recipes = [], removeFromCart, addToCart }) => {
-  recipes = recipes.map(recipe =>
-    <div className="grid-item" key={ recipe.id }>
+const RecipeList = ({ recipes = {}, cart = {}, removeFromCart, addToCart }) => {
+  recipes = Object.keys(recipes).map(recipeId =>
+    <div className="grid-item" key={ recipeId }>
       <Recipe
-        {...recipe}
-        key={ recipe.id }
-        removeFromCart={ () => removeFromCart(recipe.id)}
-        addToCart={ () => addToCart(recipe.id)}
+        {...recipes[recipeId]}
+        inCart={ cart[recipeId] > 0 ? cart[recipeId] : 0 }
+        key={ recipeId }
+        removeFromCart={ () => removeFromCart(recipeId)}
+        addToCart={ () => addToCart(recipeId)}
       />
     </div>)
 

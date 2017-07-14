@@ -1,4 +1,4 @@
-import store from './store.js'
+import {emptyStore as store} from './store.js'
 import {login, logout, addToCart, removeFromCart, addRecipe, removeRecipe} from './store/actions.js'
 
 describe('Store', () => {

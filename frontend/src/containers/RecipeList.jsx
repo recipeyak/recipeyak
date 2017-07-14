@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 
 import { addToCart, removeFromCart } from '../store/actions.js'
-import Cart from '../Cart.jsx'
+import RecipeList from '../RecipeList.jsx'
 
 const mapStateToProps = state => {
   return {
@@ -21,9 +21,9 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-const ConnectedCart = connect(
+const ConnectedRecipeList = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(Cart)
+)(RecipeList)
 
-export default ConnectedCart
+export default ConnectedRecipeList

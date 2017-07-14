@@ -7,7 +7,7 @@ import {
 
 import Home from './Home.jsx'
 import Login from './LoginSignup.jsx'
-import RecipeList from './RecipeList.jsx'
+import RecipeList from './containers/RecipeList.jsx'
 import NoMatch from './NoMatch.jsx'
 import Ingredients from './Ingredients.jsx'
 import Cart from './containers/Cart.jsx'

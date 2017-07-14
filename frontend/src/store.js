@@ -1,7 +1,7 @@
 import { createStore, combineReducers } from 'redux'
 
 import cart from './store/cart.js'
-import recipes from './store/recipes.js'
+import { recipes, defaultRecipes } from './store/recipes.js'
 import user from './store/user.js'
 
 export const recipeApp = combineReducers({
@@ -10,6 +10,18 @@ export const recipeApp = combineReducers({
   cart,
 })
 
-const store = createStore(recipeApp)
+const defaultData = {
+  recipes: defaultRecipes,
+  cart: {
+    1: 4,
+    2: 0,
+  },
+}
+
+// A "hydrated" store is nice for UI development
+const store = createStore(recipeApp, defaultData)
+
+// We need an empty store for the unit tests
+export const emptyStore = createStore(recipeApp)
 
 export default store

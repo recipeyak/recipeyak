@@ -6,13 +6,6 @@
 // However, if it isn't in the cart, we just remove it, we do not set its
 // times in the cart to 0
 
-// TODO: this is only for testing
-const defaultCartState = {
-  1: 1,
-  2: 3,
-}
-console.log(defaultCartState)
-
 const cart = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_TO_CART':

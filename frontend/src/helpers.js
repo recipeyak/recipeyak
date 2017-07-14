@@ -52,8 +52,6 @@ export const combineRecipeIngredients = (recipes) => {
     .reduce(reduceFlatten, [])
     .reduce(countDupes, {})
 
-  console.log(recipesObject)
-
   return Object.keys(recipesObject)
     .map(key => ({ ingredient: key, occurs: recipesObject[key] }))
     .sort((a, b) => a.ingredient > b.ingredient)

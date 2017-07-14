@@ -41,7 +41,7 @@
 // }
 
 // TODO: this is only for testing
-const defaultRecipes = {
+export const defaultRecipes = {
   1: {
     id: 1,
     name: 'Curried Roast Chicken, Durban Style',
@@ -93,8 +93,6 @@ const defaultRecipes = {
     ],
   },
 }
-
-console.log(defaultRecipes)
 
 export const recipes = (state = {}, action) => {
   switch (action.type) {
