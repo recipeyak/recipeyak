@@ -26,7 +26,7 @@ const RecipeItem = ({
         onClick={ () => addToCart(id) }
         className="button is-primary control"
         >Add Another</button>
-      <span className="tag is-light is-medium">{ inCart }</span>
+      <span className="tag is-light is-medium cart-count-tag">{ inCart }</span>
     </div>
   )
 

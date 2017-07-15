@@ -75,7 +75,6 @@ class AddRecipe extends React.Component {
       <div className="container">
         <Navbar />
         <h1 className="title is-2">Add Recipe</h1>
-        <form onSubmit={ (e) => this.handleSubmit(e) }>
           <div className="field">
             <div className="control">
               <input
@@ -110,6 +109,12 @@ class AddRecipe extends React.Component {
                 <h2 className="title">Ingredients</h2>
                 <div className="box">
                   { ingredients }
+                  <form onSubmit={ (e) => {
+                    e.preventDefault()
+                    if (this.state.ingredient === '') { return }
+                    this.addIngredient(e)
+                  }
+                  }>
                   <div className="field">
                     <div className="control">
                       <input
@@ -141,6 +146,7 @@ class AddRecipe extends React.Component {
                         value="✕"/>
                     </p>
                   </div>
+                  </form>
                 </div>
               </div>
 
@@ -150,12 +156,22 @@ class AddRecipe extends React.Component {
                   <ul>
                     { steps }
                   </ul>
-
+                  <form onSubmit={ (e) => {
+                    e.preventDefault()
+                    if (this.state.step === '') { return }
+                    this.addStep()
+                  }}>
                   <div className="field">
                     <label className="label">Step { steps.length + 1 }</label>
                     <div className="control">
                       <textarea
                         onChange={ (e) => this.handleInputChange(e) }
+                        onKeyPress={ (e) => {
+                          if (this.state.step === '') { return }
+                          if (e.shiftKey && e.key === 'Enter') {
+                            this.addStep()
+                          }
+                        }}
                         value={ this.state.step }
                         className="textarea"
                         placeholder="Add your step here"
@@ -168,7 +184,7 @@ class AddRecipe extends React.Component {
                         onClick={ () => this.addStep() }
                         disabled={ this.state.step === '' }
                         className="button is-primary"
-                        type="button"
+                        type="submit"
                         name="save step"
                         value="Add"/>
                     </p>
@@ -182,6 +198,7 @@ class AddRecipe extends React.Component {
                         value="✕"/>
                     </p>
                   </div>
+                  </form>
                 </div>
               </div>
             </div>
@@ -189,11 +206,12 @@ class AddRecipe extends React.Component {
               <input
                 className="button is-large is-primary"
                 type="submit"
+                onClick={ (e) => this.handleSubmit(e) }
+                onKeyPress={ (e) => this.handleSubmit(e) }
                 name="cancel ingredient"
                 value="Create Recipe"/>
             </p>
           </div>
-        </form>
       </div>
     )
   }

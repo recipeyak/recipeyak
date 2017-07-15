@@ -17,3 +17,8 @@ section.section {
 .pre {
   white-space: pre;
 }
+
+// fix width of tags so buttons aren't pushed around when numbers decrease/increase
+.cart-count-tag {
+  width: 40px;
+}
