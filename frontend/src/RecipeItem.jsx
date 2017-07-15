@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
 const RecipeItem = ({
-    tags,
+    tags = {},
     url,
     source,
     name,
@@ -57,7 +57,7 @@ RecipeItem.PropTypes = {
   author: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
   source: PropTypes.string.isRequired,
-  tags: PropTypes.arrayOf(PropTypes.string).isRequired,
+  tags: PropTypes.arrayOf(PropTypes.string),
   inCart: PropTypes.number.isRequired,
   removeFromCart: PropTypes.func.isRequired,
   addToCart: PropTypes.func.isRequired,

@@ -1,8 +1,10 @@
 import { createStore, combineReducers } from 'redux'
 
 import cart from './store/cart.js'
-import { recipes, defaultRecipes } from './store/recipes.js'
+import { recipes } from './store/recipes.js'
 import user from './store/user.js'
+
+import { defaultRecipes } from './mock-data.js'
 
 export const recipeApp = combineReducers({
   user,

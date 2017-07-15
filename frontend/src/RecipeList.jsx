@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import { recipe as recipeType } from './propTypes.js'
 import Navbar from './Nav.jsx'
 import Recipe from './RecipeItem.jsx'
 
@@ -35,7 +36,7 @@ const RecipeList = ({ recipes = {}, cart = {}, removeFromCart, addToCart }) => {
 }
 
 RecipeList.PropTypes = {
-  recipes: PropTypes.array.isRequired,
+  recipes: PropTypes.arrayOf(recipeType),
   removeFromCart: PropTypes.func.isRequired,
   addToCart: PropTypes.func.isRequired,
 }

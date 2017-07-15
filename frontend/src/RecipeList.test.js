@@ -22,4 +22,15 @@ describe('<RecipeList/>', () => {
     const element = mount(<MemoryRouter><RecipeList recipes={recipes}/></MemoryRouter>)
     expect(element.find('RecipeList').props().recipes).toEqual(recipes)
   })
+  it('handles recipes object without tags', () => {
+    const recipes = [{
+      id: 123,
+      title: 'Recipe title',
+      author: 'Recipe author',
+      source: '',
+      url: '',
+      ingredients: [''],
+    }]
+    mount(<MemoryRouter><RecipeList recipes={recipes}/></MemoryRouter>)
+  })
 })

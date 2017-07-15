@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
+import { recipe as recipeType } from './propTypes.js'
 import Navbar from './Nav.jsx'
 import Recipe from './RecipeItem.jsx'
 import IngredientsList from './IngredientsList.jsx'
@@ -62,7 +63,7 @@ Cart.PropTypes = {
   addToCart: PropTypes.func.isRequired,
   removeFromCart: PropTypes.func.isRequired,
   cart: PropTypes.object.isRequired,
-  recipes: PropTypes.object.isRequired,
+  recipes: PropTypes.objectOf(recipeType).isRequired,
 }
 
 export default Cart

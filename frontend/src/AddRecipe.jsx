@@ -8,7 +8,7 @@ class AddRecipe extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      title: '',
+      name: '',
       author: '',
       source: '',
       time: '',
@@ -25,9 +25,8 @@ class AddRecipe extends React.Component {
 
   handleSubmit (event) {
     event.preventDefault()
-
-    const { title, author, source, time, ingredients, steps } = this.state
-    console.log({ title, author, source, time, ingredients, steps })
+    // TODO: Check that form is filled out before entry
+    this.props.addRecipe(this.state)
   }
 
   addIngredient (event) {
@@ -79,7 +78,7 @@ class AddRecipe extends React.Component {
             <div className="control">
               <input
                 onChange={ (e) => this.handleInputChange(e) }
-                className="input input-title" type="text" placeholder="title" name="title"/>
+                className="input input-title" type="text" placeholder="title" name="name"/>
             </div>
           </div>
           <div className="input-container">
@@ -169,6 +168,7 @@ class AddRecipe extends React.Component {
                         onKeyPress={ (e) => {
                           if (this.state.step === '') { return }
                           if (e.shiftKey && e.key === 'Enter') {
+                            e.preventDefault()
                             this.addStep()
                           }
                         }}
@@ -218,7 +218,7 @@ class AddRecipe extends React.Component {
 }
 
 AddRecipe.PropTypes = {
-  AddRecipe: PropTypes.func.isRequired,
+  addRecipe: PropTypes.func.isRequired,
 }
 
 export default AddRecipe

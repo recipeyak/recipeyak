@@ -13,7 +13,7 @@ import Ingredients from './Ingredients.jsx'
 import Cart from './containers/Cart.jsx'
 import Recipe from './Recipe.jsx'
 import PasswordReset from './PasswordReset.jsx'
-import AddRecipe from './AddRecipe.jsx'
+import AddRecipe from './containers/AddRecipe.jsx'
 
 import './main.scss'
 
