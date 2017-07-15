@@ -9,8 +9,8 @@ import IngredientsList from './IngredientsList.jsx'
 import './cart.scss'
 
 const Cart = ({ addToCart, removeFromCart, cart, recipes }) => {
-  const cartHasItems = Object.keys(cart).reduce((acc, key) => cart[key] > 0 ? true : acc, false)
-  const recipeItems = (Object.keys(cart).length > 0 && cartHasItems)
+  const cartHasItems = cart != null && Object.keys(cart).reduce((acc, key) => cart[key] > 0 ? true : acc, false)
+  const recipeItems = (cart != null && Object.keys(cart).length > 0 && cartHasItems)
     ? Object.keys(cart)
       .map(recipeID => {
         // check how many times the recipe is in the cart
@@ -30,9 +30,10 @@ const Cart = ({ addToCart, removeFromCart, cart, recipes }) => {
         )
     : <p className="no-recipes">No recipes in cart.</p>
 
-  const cartRecipes =
-    Object.keys(cart)
+  const cartRecipes = cart != null
+    ? Object.keys(cart)
     .map(recipeID => recipes[recipeID])
+    : []
 
   return (
     <div className="container">

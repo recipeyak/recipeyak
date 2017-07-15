@@ -27,4 +27,7 @@ describe('<Cart/>', () => {
     )
     expect(element.find('Cart').props().cart).toEqual(cart)
   })
+  it('handles having no data', () => {
+    mount(<MemoryRouter><Cart/></MemoryRouter>)
+  })
 })
