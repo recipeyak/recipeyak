@@ -1,32 +1,38 @@
 import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
-import SearchBox from './SearchBox.jsx'
+import SearchBox from './containers/SearchBox.jsx'
 
 import './nav.scss'
-
-// TODO: replace this temp data with fetching from the store
-const recipes = [
-  {
-    title: 'Durban Chicken',
-    URL: '/recipe/1',
-    inCart: true,
-  },
-  {
-    title: 'Tomato and Red Bean Salad',
-    URL: '/recipe/2',
-    inCart: false,
-  },
-]
 
 class Navbar extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      query: '',
       showNav: false,
       showSearchResults: false,
       showDropdown: false,
     }
+
+    document.addEventListener('mousedown', (e) => this.handleSearchBoxClick(e))
+  }
+
+  handleSearchBoxClick (e) {
+    const el = this.refs.search
+    if (el == null) {
+      console.warn('problem locating search element')
+      return
+    }
+
+    const clickOnSearch = el.contains(e.srcElement)
+    if (!clickOnSearch) {
+      this.setState({ showSearchResults: false })
+    }
+  }
+
+  componentWillUnmount () {
+    document.removeEventListener('mousedown', (e) => this.handleSearchBoxClick(e))
   }
 
   toggleNav () {
@@ -37,6 +43,11 @@ class Navbar extends React.Component {
     this.setState((prevState, props) => ({ showDropdown: !prevState.showDropdown }))
   }
 
+  handleQueryChange (e) {
+    const value = e.target.value
+    this.setState({ query: value })
+  }
+
   render () {
     return (
       <nav className="nav">
@@ -45,12 +56,11 @@ class Navbar extends React.Component {
           <Link to="/" className="title">Caena</Link>
         </div>
       </div>
-      <div className="nav-center">
+      <div ref="search" className="nav-center">
         <SearchBox
           showSearchResults={ this.state.showSearchResults }
-          results={ recipes }
           handleOnFocus={ () => this.setState({ showSearchResults: true }) }
-          handleOnBlur={ () => this.setState({ showSearchResults: false }) }
+          handleQueryChange={ (e) => this.handleQueryChange(e) }
         />
       </div>
 

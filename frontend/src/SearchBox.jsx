@@ -1,44 +1,43 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
 
-const SearchResult = ({ title, URL, inCart }) => (
-  <li key={ title } className="search-result">
-    <Link to={ URL }>
-      <h1>{ title }</h1>
-    </Link>
-    {
-      inCart
-      ? <input type="button" className="button" value="- Remove from Cart"/>
-      : <input type="button" className="button" value="+ Add to Cart"/>
-    }
-  </li>
-)
-
-const SearchResults = (recipes) => (
-  <ul className="search-results">
-    { recipes.map(SearchResult) }
-  </ul>
-)
+import SearchResult from './SearchResult.jsx'
 
 const SearchBox = ({
-  showSearchResults = false,
+  showSearchResults,
   handleOnFocus,
-  handleOnBlur,
-  results = [],
+  recipes = {},
+  cart = {},
+  removeFromCart,
+  addToCart,
+  handleQueryChange,
 }) => (
   <div className="search-container">
-    <p className="search-box-container control field nav-item ">
+    <p className="search-box-container control field nav-item">
       <input
-         onFocus={ () => handleOnFocus() }
-         onBlur={ () => handleOnBlur() }
-         className="input"
-         type="search"
-         placeholder="Search..."
-       />
+        onFocus={ () => handleOnFocus() }
+        onChange={ () => handleQueryChange() }
+        className="input"
+        type="search"
+        placeholder="Search..."
+      />
     </p>
 
-    { showSearchResults && SearchResults(results) }
+    { showSearchResults &&
+      <ul className="search-results">
+        { Object.keys(recipes)
+            .map(recipeID =>
+              <SearchResult
+                key={ recipeID }
+                { ...recipes[recipeID] }
+                removeFromCart={ removeFromCart }
+                addToCart={ addToCart }
+                cart={ cart }
+              />
+            )
+        }
+      </ul>
+    }
 
   </div>
 )
