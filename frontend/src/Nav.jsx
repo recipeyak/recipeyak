@@ -61,6 +61,7 @@ class Navbar extends React.Component {
           showSearchResults={ this.state.showSearchResults }
           handleOnFocus={ () => this.setState({ showSearchResults: true }) }
           handleQueryChange={ (e) => this.handleQueryChange(e) }
+          query={ this.state.query }
         />
       </div>
 

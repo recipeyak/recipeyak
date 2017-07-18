@@ -26,9 +26,9 @@ const Cart = ({ addToCart, removeFromCart, cart = {}, recipes }) => {
           key={ recipe.name + recipe.id }
           removeFromCart={ () => removeFromCart(recipe.id)}
           addToCart={ () => addToCart(recipe.id)}
-        /> : ''
-      )
-        )
+        />
+        : ''
+      ))
     : <p className="no-recipes">No recipes in cart.</p>
 
   const cartRecipes = Object.keys(cart).map(recipeID => recipes[recipeID])
