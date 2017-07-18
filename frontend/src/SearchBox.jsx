@@ -24,6 +24,22 @@ const SearchBox = ({
   query,
 }) => {
   const results = SearchRecipes(recipes, query)
+
+  const resultLimit = 7
+
+  const searchResults =
+    results
+    .slice(0, resultLimit)
+    .map(recipe =>
+      <SearchResult
+        key={ recipe.id }
+        { ...recipe }
+        removeFromCart={ removeFromCart }
+        addToCart={ addToCart }
+        cart={ cart }
+      />
+    )
+
   return (
     <div className="search-container">
       <p className="search-box-container control field nav-item">
@@ -39,16 +55,7 @@ const SearchBox = ({
       { showSearchResults &&
         <ul className="search-results">
           { results.length > 0
-              ? results
-                .map(recipe =>
-                  <SearchResult
-                    key={ recipe.id }
-                    { ...recipe }
-                    removeFromCart={ removeFromCart }
-                    addToCart={ addToCart }
-                    cart={ cart }
-                  />
-                )
+              ? searchResults
               : <li className="no-results">
                   No results for <strong>{ query }</strong>
                 </li>

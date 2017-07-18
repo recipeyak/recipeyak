@@ -20,10 +20,8 @@ class Navbar extends React.Component {
 
   handleSearchBoxClick (e) {
     const el = this.refs.search
-    if (el == null) {
-      console.warn('problem locating search element')
-      return
-    }
+    // this is usually null when the search box is not rendered (active)
+    if (el == null) return
 
     const clickOnSearch = el.contains(e.srcElement)
     if (!clickOnSearch) {
