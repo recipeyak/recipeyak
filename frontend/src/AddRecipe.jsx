@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Navbar from './Nav.jsx'
+import ListItem from './ListItem.jsx'
 
 import './add-recipe.scss'
 
@@ -51,18 +52,30 @@ class AddRecipe extends React.Component {
     ))
   }
 
+  deleteStep (stepIndex) {
+    this.setState(prevState => ({
+      steps: prevState.steps.filter((_, i) => i !== stepIndex),
+    }))
+  }
+
+  updateStep (stepIndex, content) {
+    this.setState(prevState => ({
+      steps: prevState.steps.map((x, index) => {
+        if (index === stepIndex) {
+          return content
+        }
+        return x
+      }),
+    }))
+  }
+
   cancelAddStep () {
     this.setState({ step: '' })
   }
 
   render () {
-    const steps = this.state.steps.map((step, index) => (
-      <li key={ step + index }>
-        <h2 className="label">Step { index + 1 }</h2>
-        <p className="pre">{ step }</p>
-      </li>
-      )
-    )
+    const steps = this.state.steps
+
     const ingredients = this.state.ingredients.map((ingredient, index) => (
       <li className="pre" key={ ingredient + index }>
         { ingredient }
@@ -153,7 +166,16 @@ class AddRecipe extends React.Component {
                 <h2 className="title is-3">Preparation</h2>
                 <div className="box">
                   <ul>
-                    { steps }
+                    {
+                      steps.map((step, i) =>
+                        <ListItem
+                          key={step + i}
+                          index={i}
+                          text={step}
+                          deleteStep={(index) => this.deleteStep(index)}
+                        />
+                      )
+                    }
                   </ul>
                   <form onSubmit={ (e) => {
                     e.preventDefault()

@@ -1,0 +1,17 @@
+.listitem-button-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.listitem-text {
+  white-space: pre-wrap;
+}
+
+.cursor--pointer {
+  cursor: pointer;
+  // need to override all of the default cursors that come with the default
+  // user stylesheet
+  & > * {
+    cursor: pointer;
+  }
+}
