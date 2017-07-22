@@ -47,14 +47,16 @@ class ListItem extends React.Component {
     // TODO: update store
   }
 
-  cancelAddStep () {
+  cancelAddStep (e) {
+    e.stopPropagation()
     this.setState(prevState => ({
       editing: false,
       text: prevState.originalText,
-    }), () => console.log(this.state))
+    }))
   }
 
-  updateStep () {
+  updateStep (e) {
+    e.stopPropagation()
     this.setState({ editing: false })
     this.props.updateStep(this.state.text)
   }
@@ -96,7 +98,7 @@ class ListItem extends React.Component {
             <div className="field is-grouped">
               <p className="control">
                 <input
-                  onClick={ () => this.updateStep() }
+                  onClick={ e => this.updateStep(e) }
                   disabled={ this.state.text === '' }
                   className={ this.state.text === '' ? 'is-hidden button' : 'button' }
                   type="button"
@@ -106,7 +108,7 @@ class ListItem extends React.Component {
               </p>
               <p className="control">
                 <input
-                  onClick={ () => this.cancelAddStep() }
+                  onClick={ e => this.cancelAddStep(e) }
                   disabled={ this.state.text === '' }
                   className={ this.state.text === '' ? 'is-hidden button' : 'button' }
                   type="button"
