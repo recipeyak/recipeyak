@@ -57,7 +57,12 @@ class ListItem extends React.Component {
   updateStep (e) {
     e.stopPropagation()
     this.setState({ editing: false })
-    this.props.updateStep(this.props.index, this.state.text)
+    // if the text is empty, we should just delete the step instead of updating
+    if (this.state.text === '') {
+      this.props.deleteStep(this.props.index)
+    } else {
+      this.props.updateStep(this.props.index, this.state.text)
+    }
   }
 
   deleteStep (index) {
@@ -98,7 +103,6 @@ class ListItem extends React.Component {
               <p className="control">
                 <input
                   onClick={ e => this.updateStep(e) }
-                  disabled={ this.state.text === '' }
                   className="button"
                   type="button"
                   name="save"
@@ -108,7 +112,6 @@ class ListItem extends React.Component {
               <p className="control">
                 <input
                   onClick={ e => this.cancelAddStep(e) }
-                  disabled={ this.state.text === '' }
                   className="button"
                   type="button"
                   name="cancel step"
@@ -120,7 +123,6 @@ class ListItem extends React.Component {
               <p className="control">
                 <input
                   onClick={ () => this.deleteStep(this.props.index) }
-                  disabled={ this.state.text === '' }
                   className="button"
                   type="button"
                   name="delete step"
