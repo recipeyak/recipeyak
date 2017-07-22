@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import './ListItem.scss'
 
@@ -6,10 +7,8 @@ class ListItem extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      originalText: props.text,
       text: props.text || '',
       editing: false,
-      index: props.index,
     }
 
     document.addEventListener('mousedown', (e) => this.handleGeneralClick(e))
@@ -49,16 +48,16 @@ class ListItem extends React.Component {
 
   cancelAddStep (e) {
     e.stopPropagation()
-    this.setState(prevState => ({
+    this.setState((prevState, props) => ({
       editing: false,
-      text: prevState.originalText,
+      text: props.text,
     }))
   }
 
   updateStep (e) {
     e.stopPropagation()
     this.setState({ editing: false })
-    this.props.updateStep(this.state.index, this.state.text)
+    this.props.updateStep(this.props.index, this.state.text)
   }
 
   deleteStep (index) {
@@ -100,7 +99,7 @@ class ListItem extends React.Component {
                 <input
                   onClick={ e => this.updateStep(e) }
                   disabled={ this.state.text === '' }
-                  className={ this.state.text === '' ? 'is-hidden button' : 'button' }
+                  className="button"
                   type="button"
                   name="save"
                   value="Save"
@@ -110,7 +109,7 @@ class ListItem extends React.Component {
                 <input
                   onClick={ e => this.cancelAddStep(e) }
                   disabled={ this.state.text === '' }
-                  className={ this.state.text === '' ? 'is-hidden button' : 'button' }
+                  className="button"
                   type="button"
                   name="cancel step"
                   value="✕"
@@ -120,9 +119,9 @@ class ListItem extends React.Component {
             <div className="field is-grouped">
               <p className="control">
                 <input
-                  onClick={ () => this.deleteStep(this.state.index) }
+                  onClick={ () => this.deleteStep(this.props.index) }
                   disabled={ this.state.text === '' }
-                  className={ this.state.text === '' ? 'is-hidden button' : 'button' }
+                  className="button"
                   type="button"
                   name="delete step"
                   value="delete"
@@ -141,11 +140,16 @@ class ListItem extends React.Component {
         ref="listitem"
         className="cursor--pointer"
       >
-        <label className="label">Step { this.state.index + 1}</label>
+        <label className="label">Step { this.props.index + 1}</label>
         { inner }
       </li>
     )
   }
+}
+
+ListItem.PropTypes = {
+  text: PropTypes.string,
+  index: PropTypes.number,
 }
 
 export default ListItem
