@@ -58,7 +58,7 @@ class ListItem extends React.Component {
   updateStep (e) {
     e.stopPropagation()
     this.setState({ editing: false })
-    this.props.updateStep(this.state.text)
+    this.props.updateStep(this.state.index, this.state.text)
   }
 
   deleteStep (index) {
@@ -91,7 +91,7 @@ class ListItem extends React.Component {
                 defaultValue={ this.state.text }
                 className="textarea"
                 placeholder="Add your step here"
-                name="step"/>
+                name="text"/>
             </div>
           </div>
           <section className="listitem-button-container">

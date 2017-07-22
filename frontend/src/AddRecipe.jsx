@@ -172,6 +172,7 @@ class AddRecipe extends React.Component {
                           key={step + i}
                           index={i}
                           text={step}
+                          updateStep={(index, content) => this.updateStep(index, content)}
                           deleteStep={(index) => this.deleteStep(index)}
                         />
                       )
