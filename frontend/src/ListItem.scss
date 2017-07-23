@@ -15,3 +15,13 @@
     cursor: pointer;
   }
 }
+
+.unsaved-changes {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.is-italic {
+  font-style: italic;
+}

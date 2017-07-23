@@ -9,6 +9,7 @@ class ListItem extends React.Component {
     this.state = {
       text: props.text || '',
       editing: false,
+      unsavedChanges: false,
     }
 
     document.addEventListener('mousedown', (e) => this.handleGeneralClick(e))
@@ -20,13 +21,16 @@ class ListItem extends React.Component {
 
   // ensures that the list item closes when the user clicks outside of the item
   handleGeneralClick (e) {
+    e.stopPropagation()
     const el = this.refs.listitem
     if (el == null) return
     const clickOnListItem = el.contains(e.srcElement)
     if (!clickOnListItem) {
-      this.setState({ editing: false })
+      this.setState((prevState, props) => ({
+        editing: false,
+        unsavedChanges: (prevState.editing && prevState.text !== props.text) || prevState.unsavedChanges,
+      }))
     }
-    // TODO: should we say unsaved changes or should we just save the changes?
   }
 
   handleInputChange (e) {
@@ -34,7 +38,18 @@ class ListItem extends React.Component {
   }
 
   enableEditing () {
-    this.setState({ editing: true })
+    this.setState({
+      editing: true,
+      unsavedChanges: false,
+    })
+  }
+
+  discardChanges () {
+    this.setState((prevState, props) => ({
+      editing: false,
+      text: props.text,
+      unsavedChanges: false,
+    }))
   }
 
   handleFocus (event) {
@@ -56,7 +71,10 @@ class ListItem extends React.Component {
 
   updateStep (e) {
     e.stopPropagation()
-    this.setState({ editing: false })
+    this.setState({
+      editing: false,
+      unsavedChanges: false,
+    })
     // if the text is empty, we should just delete the step instead of updating
     if (this.state.text === '') {
       this.props.deleteStep(this.props.index)
@@ -137,13 +155,29 @@ class ListItem extends React.Component {
         </p>
 
     return (
-      <li
-        onClick={() => this.enableEditing()}
-        ref="listitem"
-        className="cursor--pointer"
-      >
+      <li ref="listitem">
+        <section
+          className="cursor--pointer"
+          onClick={() => this.enableEditing()}>
         <label className="label">Step { this.props.index + 1}</label>
         { inner }
+        </section>
+        {
+          this.state.unsavedChanges &&
+          <section className="unsaved-changes">
+            <span className="is-italic">Unsaved Changes</span>
+            <section>
+              <a onClick={() => this.enableEditing() }
+                className="button is-link">
+                View Edits
+              </a>
+              <a onClick={() => this.discardChanges() }
+                className="button is-link">
+                Discard
+              </a>
+            </section>
+          </section>
+        }
       </li>
     )
   }
