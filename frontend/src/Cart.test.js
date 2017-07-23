@@ -1,7 +1,9 @@
 import React from 'react'
 import { MemoryRouter } from 'react-router'
+import { Provider } from 'react-redux'
 import { mount } from 'enzyme'
 
+import { emptyStore as store } from './store.js'
 import Cart from './Cart.jsx'
 
 describe('<Cart/>', () => {
@@ -21,13 +23,20 @@ describe('<Cart/>', () => {
       123: 1,
     }
     const element = mount(
-      <MemoryRouter>
-        <Cart cart={ cart } recipes={ recipes }/>
-      </MemoryRouter>
+      <Provider store={ store }>
+        <MemoryRouter>
+          <Cart cart={ cart } recipes={ recipes }/>
+        </MemoryRouter>
+      </Provider>
     )
     expect(element.find('Cart').props().cart).toEqual(cart)
   })
   it('handles having no data', () => {
-    mount(<MemoryRouter><Cart/></MemoryRouter>)
+    mount(
+      <Provider store={ store }>
+        <MemoryRouter>
+          <Cart/>
+        </MemoryRouter>
+      </Provider>)
   })
 })

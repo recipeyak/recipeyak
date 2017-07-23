@@ -1,13 +1,20 @@
 import React from 'react'
 import {mount} from 'enzyme'
+import { Provider } from 'react-redux'
 import {MemoryRouter} from 'react-router-dom'
 
+import { emptyStore as store } from './store.js'
 import RecipeList from './RecipeList.jsx'
 import Recipe from './RecipeItem.jsx'
 
 describe('<RecipeList/>', () => {
   it('renders without crashing', () => {
-    mount(<MemoryRouter><RecipeList/></MemoryRouter>)
+    mount(
+      <Provider store={ store }>
+        <MemoryRouter>
+          <RecipeList/>
+        </MemoryRouter>
+      </Provider>)
   })
   it('accepts props', () => {
     const recipes = [{
@@ -19,7 +26,12 @@ describe('<RecipeList/>', () => {
       url: '',
       ingredients: ['ingredientOne', 'ingredientTwo'],
     }]
-    const element = mount(<MemoryRouter><RecipeList recipes={recipes}/></MemoryRouter>)
+    const element = mount(
+      <Provider store={ store }>
+        <MemoryRouter>
+          <RecipeList recipes={recipes}/>
+        </MemoryRouter>
+      </Provider>)
     expect(element.find('RecipeList').props().recipes).toEqual(recipes)
   })
   it('handles recipes object without tags', () => {
@@ -31,6 +43,11 @@ describe('<RecipeList/>', () => {
       url: '',
       ingredients: [''],
     }]
-    mount(<MemoryRouter><RecipeList recipes={recipes}/></MemoryRouter>)
+    mount(
+      <Provider store={ store }>
+        <MemoryRouter>
+          <RecipeList recipes={recipes}/>
+        </MemoryRouter>
+      </Provider>)
   })
 })
