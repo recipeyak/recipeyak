@@ -56,12 +56,12 @@ class ListItem extends React.Component {
     event.target.select()
   }
 
-  addStep () {
+  add () {
     console.log(this.state)
     // TODO: update store
   }
 
-  cancelAddStep (e) {
+  cancel (e) {
     e.stopPropagation()
     this.setState((prevState, props) => ({
       editing: false,
@@ -69,22 +69,22 @@ class ListItem extends React.Component {
     }))
   }
 
-  updateStep (e) {
+  update (e) {
     e.stopPropagation()
     this.setState({
       editing: false,
       unsavedChanges: false,
     })
-    // if the text is empty, we should just delete the step instead of updating
+    // if the text is empty, we should just delete the item instead of updating
     if (this.state.text === '') {
-      this.props.deleteStep(this.props.index)
+      this.props.delete(this.props.index)
     } else {
-      this.props.updateStep(this.props.index, this.state.text)
+      this.props.update(this.props.index, this.state.text)
     }
   }
 
-  deleteStep (index) {
-    this.props.deleteStep(index)
+  delete (index) {
+    this.props.delete(index)
   }
 
   render () {
@@ -93,7 +93,7 @@ class ListItem extends React.Component {
           (e) => {
             e.preventDefault()
             if (this.state.text === '') return
-            this.addStep()
+            this.add()
           }
         }>
 
@@ -107,12 +107,12 @@ class ListItem extends React.Component {
                   if (this.state.text === '') return
                   if (e.shiftKey && e.key === 'Enter') {
                     e.preventDefault()
-                    this.addStep()
+                    this.add()
                   }
                 }}
                 defaultValue={ this.state.text }
                 className="textarea"
-                placeholder="Add your step here"
+                placeholder="Add you text here"
                 name="text"/>
             </div>
           </div>
@@ -120,7 +120,7 @@ class ListItem extends React.Component {
             <div className="field is-grouped">
               <p className="control">
                 <input
-                  onClick={ e => this.updateStep(e) }
+                  onClick={ e => this.update(e) }
                   className="button"
                   type="button"
                   name="save"
@@ -129,10 +129,10 @@ class ListItem extends React.Component {
               </p>
               <p className="control">
                 <input
-                  onClick={ e => this.cancelAddStep(e) }
+                  onClick={ e => this.cancel(e) }
                   className="button"
                   type="button"
-                  name="cancel step"
+                  name="cancel edit"
                   value="✕"
                 />
               </p>
@@ -140,10 +140,10 @@ class ListItem extends React.Component {
             <div className="field is-grouped">
               <p className="control">
                 <input
-                  onClick={ () => this.deleteStep(this.props.index) }
+                  onClick={ () => this.delete(this.props.index) }
                   className="button"
                   type="button"
-                  name="delete step"
+                  name="delete"
                   value="delete"
                 />
               </p>
@@ -159,7 +159,6 @@ class ListItem extends React.Component {
         <section
           className="cursor--pointer"
           onClick={() => this.enableEditing()}>
-        <label className="label">Step { this.props.index + 1}</label>
         { inner }
         </section>
         {
@@ -186,6 +185,8 @@ class ListItem extends React.Component {
 ListItem.PropTypes = {
   text: PropTypes.string,
   index: PropTypes.number,
+  delete: PropTypes.func,
+  update: PropTypes.func,
 }
 
 export default ListItem

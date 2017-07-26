@@ -52,16 +52,16 @@ class AddRecipe extends React.Component {
     ))
   }
 
-  deleteStep (stepIndex) {
+  delete (items, index) {
     this.setState(prevState => ({
-      steps: prevState.steps.filter((_, i) => i !== stepIndex),
+      [items]: prevState[items].filter((_, i) => i !== index),
     }))
   }
 
-  updateStep (stepIndex, content) {
+  update (items, index, content) {
     this.setState(prevState => ({
-      steps: prevState.steps.map((x, index) => {
-        if (index === stepIndex) {
+      [items]: prevState[items].map((x, i) => {
+        if (i === index) {
           return content
         }
         return x
@@ -76,12 +76,7 @@ class AddRecipe extends React.Component {
   render () {
     const steps = this.state.steps
 
-    const ingredients = this.state.ingredients.map((ingredient, index) => (
-      <li className="pre" key={ ingredient + index }>
-        { ingredient }
-      </li>
-      )
-    )
+    const ingredients = this.state.ingredients
 
     return (
       <div className="container">
@@ -120,7 +115,17 @@ class AddRecipe extends React.Component {
               <div className="column is-one-third">
                 <h2 className="title">Ingredients</h2>
                 <div className="box">
-                  { ingredients }
+                  {
+                    ingredients.map((x, i) =>
+                      <ListItem
+                        key={x + i}
+                        index={i}
+                        text={x}
+                        update={(index, content) => this.update('ingredients', index, content, 'ingredients')}
+                        delete={(index) => this.delete('ingredients', index)}
+                      />
+                    )
+                  }
                   <form onSubmit={ (e) => {
                     e.preventDefault()
                     if (this.state.ingredient === '') { return }
@@ -168,13 +173,16 @@ class AddRecipe extends React.Component {
                   <ul>
                     {
                       steps.map((step, i) =>
-                        <ListItem
-                          key={step + i}
-                          index={i}
-                          text={step}
-                          updateStep={(index, content) => this.updateStep(index, content)}
-                          deleteStep={(index) => this.deleteStep(index)}
-                        />
+                        <div>
+                          <label className="label">Step { i + 1}</label>
+                          <ListItem
+                            key={step + i}
+                            index={i}
+                            text={step}
+                            update={(index, content) => this.update('steps', index, content)}
+                            delete={(index) => this.delete('steps', index)}
+                          />
+                        </div>
                       )
                     }
                   </ul>
