@@ -33,7 +33,7 @@ class AddRecipe extends React.Component {
   addIngredient (event) {
     this.setState((prevState) => (
       {
-        ingredients: prevState.ingredients.concat(this.state.ingredient),
+        ingredients: prevState.ingredients.concat(prevState.ingredient.trim()),
         ingredient: '',
       }
     ))
@@ -74,9 +74,7 @@ class AddRecipe extends React.Component {
   }
 
   render () {
-    const steps = this.state.steps
-
-    const ingredients = this.state.ingredients
+    const { ingredients, steps, ingredient, step } = this.state
 
     return (
       <div className="container">
@@ -115,20 +113,22 @@ class AddRecipe extends React.Component {
               <div className="column is-one-third">
                 <h2 className="title">Ingredients</h2>
                 <div className="box">
-                  {
-                    ingredients.map((x, i) =>
-                      <ListItem
-                        key={x + i}
-                        index={i}
-                        text={x}
-                        update={(index, content) => this.update('ingredients', index, content, 'ingredients')}
-                        delete={(index) => this.delete('ingredients', index)}
-                      />
-                    )
-                  }
+                  <ul>
+                    {
+                      ingredients.map((x, i) =>
+                        <ListItem
+                          key={x + i}
+                          index={i}
+                          text={x}
+                          update={(index, content) => this.update('ingredients', index, content, 'ingredients')}
+                          delete={(index) => this.delete('ingredients', index)}
+                        />
+                      )
+                    }
+                  </ul>
                   <form onSubmit={ (e) => {
                     e.preventDefault()
-                    if (this.state.ingredient === '') { return }
+                    if (ingredient === '') return
                     this.addIngredient(e)
                   }
                   }>
@@ -136,7 +136,7 @@ class AddRecipe extends React.Component {
                     <div className="control">
                       <input
                         onChange={ (e) => this.handleInputChange(e) }
-                        value={ this.state.ingredient }
+                        value={ ingredient }
                         className="input input-ingredient"
                         type="text"
                         placeholder="Add your ingredient here"
@@ -147,7 +147,7 @@ class AddRecipe extends React.Component {
                     <p className="control">
                       <input
                         onClick={ () => this.addIngredient() }
-                        disabled={ this.state.ingredient === '' }
+                        disabled={ ingredient === '' }
                         className="button is-primary"
                         type="button"
                         name="add ingredient"
@@ -156,9 +156,9 @@ class AddRecipe extends React.Component {
                     <p className="control">
                       <input
                         onClick={ () => this.cancelAddIngredient() }
-                        className={ this.state.ingredient === '' ? 'is-hidden button' : 'button' }
+                        className={ ingredient === '' ? 'is-hidden button' : 'button' }
                         type="button"
-                        disabled={ this.state.ingredient === '' }
+                        disabled={ ingredient === '' }
                         name="cancel add ingredient"
                         value="✕"/>
                     </p>
@@ -188,7 +188,7 @@ class AddRecipe extends React.Component {
                   </ul>
                   <form onSubmit={ (e) => {
                     e.preventDefault()
-                    if (this.state.step === '') { return }
+                    if (step === '') return
                     this.addStep()
                   }}>
                   <div className="field">
@@ -197,13 +197,13 @@ class AddRecipe extends React.Component {
                       <textarea
                         onChange={ (e) => this.handleInputChange(e) }
                         onKeyPress={ (e) => {
-                          if (this.state.step === '') { return }
+                          if (step === '') return
                           if (e.shiftKey && e.key === 'Enter') {
                             e.preventDefault()
                             this.addStep()
                           }
                         }}
-                        value={ this.state.step }
+                        value={ step }
                         className="textarea"
                         placeholder="Add your step here"
                         name="step"/>
@@ -213,7 +213,7 @@ class AddRecipe extends React.Component {
                     <p className="control">
                       <input
                         onClick={ () => this.addStep() }
-                        disabled={ this.state.step === '' }
+                        disabled={ step === '' }
                         className="button is-primary"
                         type="submit"
                         name="save step"
@@ -222,8 +222,8 @@ class AddRecipe extends React.Component {
                     <p className="control">
                       <input
                         onClick={ () => this.cancelAddStep() }
-                        disabled={ this.state.step === '' }
-                        className={ this.state.step === '' ? 'is-hidden button' : 'button' }
+                        disabled={ step === '' }
+                        className={ step === '' ? 'is-hidden button' : 'button' }
                         type="button"
                         name="cancel step"
                         value="✕"/>
