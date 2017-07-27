@@ -173,10 +173,9 @@ class AddRecipe extends React.Component {
                   <ul>
                     {
                       steps.map((step, i) =>
-                        <div>
+                        <div key={step + i}>
                           <label className="label">Step { i + 1}</label>
                           <ListItem
-                            key={step + i}
                             index={i}
                             text={step}
                             update={(index, content) => this.update('steps', index, content)}
