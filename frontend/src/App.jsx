@@ -13,6 +13,7 @@ import Ingredients from './Ingredients.jsx'
 import Cart from './containers/Cart.jsx'
 import Recipe from './Recipe.jsx'
 import PasswordReset from './PasswordReset.jsx'
+import Settings from './Settings.jsx'
 import AddRecipe from './containers/AddRecipe.jsx'
 
 import './main.scss'
@@ -29,6 +30,7 @@ const Base = () => (
       <Route path="/cart" component={ Cart }/>
       <Route path="/ingredients" component={ Ingredients }/>
       <Route path="/recipes/:id" component={ Recipe }/>
+      <Route path="/settings" component={ Settings }/>
       <Route component={ NoMatch }/>
     </Switch>
   </Router>
