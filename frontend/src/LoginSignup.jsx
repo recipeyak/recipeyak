@@ -2,6 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
+import './LoginSignup.scss'
+
 const Login = ({ location }) => {
   const passwordConfirm = location.pathname === '/signup' &&
     <div className="field">
@@ -52,7 +54,7 @@ const Login = ({ location }) => {
 
               { passwordConfirm }
 
-              <div className="field is-grouped">
+              <div className="field flex-space-between">
                 <p className="control">
                   <input type="submit" className="button is-primary" value="Submit"/>
                 </p>
