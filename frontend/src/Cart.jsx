@@ -47,7 +47,13 @@ const Cart = ({ addToCart, removeFromCart, cart = {}, recipes }) => {
               <h2 className="title">
                 <Link to="/ingredients">Shopping List</Link>
               </h2>
-              { cartHasItems ? <IngredientsList recipes={ cartRecipes } /> : <p className="no-recipes">No ingredients to list.</p> }
+              {
+                cartHasItems
+                  ? <div className="box">
+                      <IngredientsList recipes={ cartRecipes } />
+                    </div>
+                  : <p className="no-recipes">No ingredients to list.</p>
+              }
             </div>
           </div>
         </div>

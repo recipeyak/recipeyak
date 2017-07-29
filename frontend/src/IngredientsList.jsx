@@ -16,11 +16,9 @@ const IngredientsList = ({ recipes }) => {
     }
     )
   return (
-    <div className="box">
-      <ul className="ingredients-list content">
-        { ingredients }
-      </ul>
-    </div>
+    <ul className="ingredients-list content">
+      { ingredients }
+    </ul>
   )
 }
 
