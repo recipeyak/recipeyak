@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import { combineRecipeIngredients } from './helpers.js'
 
-const IngredientsList = ({ recipes }) => {
+const IngredientsList = ({ recipes = [] }) => {
   const ingredients =
     combineRecipeIngredients(recipes)
     .map(ingredient => {
