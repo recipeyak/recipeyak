@@ -28,6 +28,23 @@ const Settings = () => (
             <div className="control">
               <input className="input" type="email" placeholder="example@domain.com" required/>
             </div>
+          </div>
+
+          <div className="field">
+            <label className="label">Color Scheme</label>
+            <div className="control">
+              <div className="select">
+                <select>
+                  <option>Light</option>
+                  <option>Sepia</option>
+                  <option>Dark</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div className="field">
+            <label className="label">Export</label>
 
             <div className="control flex-align-center">
               <a className="button is-link">Export Recipes</a>
@@ -39,6 +56,7 @@ const Settings = () => (
                   <option>as YAML</option>
                 </select>
               </div>
+
             </div>
           </div>
 
