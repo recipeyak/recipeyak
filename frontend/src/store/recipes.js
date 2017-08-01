@@ -23,6 +23,13 @@ export const recipes = (state = {}, action) => {
       const newSteps = [...state[action.id].steps, action.step]
       const newRecipe = Object.assign({}, action.id, { steps: newSteps })
       return Object.assign({}, state, { [action.id]: newRecipe })
+    case 'ADD_INGREDIENT_TO_RECIPE':
+      const newIngredients = [...state[action.id].ingredients, action.step]
+      return Object.assign({}, state, {
+        [action.id]: Object.assign({}, action.id, {
+          ingredients: newIngredients,
+        }),
+      })
     default:
       return state
   }

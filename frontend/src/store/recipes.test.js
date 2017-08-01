@@ -62,4 +62,26 @@ describe('Recipes', () => {
       recipes(beforeState, { type: 'ADD_STEP_TO_RECIPE', id: 1, step: newStep })
     ).toEqual(afterState)
   })
+
+  it('adds an ingredient to the recipe', () => {
+    const beforeState = {
+      1: {
+        ingredients: [],
+      },
+    }
+
+    const newIngredient = 'a new step'
+
+    const afterState = {
+      1: {
+        ingredients: [
+          newIngredient,
+        ],
+      },
+    }
+
+    expect(
+      recipes(beforeState, { type: 'ADD_INGREDIENT_TO_RECIPE', id: 1, step: newIngredient })
+    ).toEqual(afterState)
+  })
 })
