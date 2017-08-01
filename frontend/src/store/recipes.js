@@ -12,18 +12,26 @@
 //    steps = ['Add foo and bar to pot']
 //  }
 // }
+//
+
+import {
+  ADD_RECIPE,
+  REMOVE_RECIPE,
+  ADD_STEP_TO_RECIPE,
+  ADD_INGREDIENT_TO_RECIPE,
+} from './actionTypes.js'
 
 export const recipes = (state = {}, action) => {
   switch (action.type) {
-    case 'ADD_RECIPE':
+    case ADD_RECIPE:
       return Object.assign({}, state, { [action.recipe.id]: action.recipe })
-    case 'REMOVE_RECIPE':
+    case REMOVE_RECIPE:
       return Object.assign({}, state, { [action.id]: undefined })
-    case 'ADD_STEP_TO_RECIPE':
+    case ADD_STEP_TO_RECIPE:
       const newSteps = [...state[action.id].steps, action.step]
       const newRecipe = Object.assign({}, action.id, { steps: newSteps })
       return Object.assign({}, state, { [action.id]: newRecipe })
-    case 'ADD_INGREDIENT_TO_RECIPE':
+    case ADD_INGREDIENT_TO_RECIPE:
       const newIngredients = [...state[action.id].ingredients, action.step]
       return Object.assign({}, state, {
         [action.id]: Object.assign({}, action.id, {
