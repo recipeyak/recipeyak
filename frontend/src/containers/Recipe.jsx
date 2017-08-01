@@ -16,8 +16,14 @@ const mapStateToProps = (state, props) => {
   }
 }
 
+const mapDispatchToProps = dispatch => {
+  return {
+  }
+}
+
 const ConnectedIngredients = connect(
   mapStateToProps,
+  mapDispatchToProps,
 )(Recipe)
 
 export default ConnectedIngredients

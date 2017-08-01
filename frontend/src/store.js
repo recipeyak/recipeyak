@@ -21,7 +21,11 @@ const defaultData = {
 }
 
 // A "hydrated" store is nice for UI development
-const store = createStore(recipeApp, defaultData)
+const store = createStore(
+  recipeApp,
+  defaultData,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+)
 
 // We need an empty store for the unit tests
 export const emptyStore = createStore(recipeApp)
