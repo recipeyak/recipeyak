@@ -5,6 +5,7 @@ import ListItem from './ListItem.jsx'
 import EnhancedInput from './EnhancedInput.jsx'
 
 import './AddRecipe.scss'
+import './Recipe.scss'
 
 class Recipe extends React.Component {
   constructor (props) {
@@ -124,7 +125,7 @@ class Recipe extends React.Component {
                       )
                     }
                   </ul>
-                  { this.addingIngredient
+                  { state.addingIngredient
                   ? <form onSubmit={ (e) => {
                     e.preventDefault()
                     if (state.ingredient === '') return
@@ -162,7 +163,7 @@ class Recipe extends React.Component {
                     </p>
                   </div>
                   </form>
-                  : <p>
+                  : <p className="flex-center">
                       <button
                         onClick={ () => this.addingIngredient() }
                         className="button is-link">
@@ -234,7 +235,7 @@ class Recipe extends React.Component {
                           </p>
                         </div>
                         </form>
-                      : <p>
+                      : <p className="flex-center">
                           <button
                             onClick={ () => this.addingStep() }
                             className="button is-link">
