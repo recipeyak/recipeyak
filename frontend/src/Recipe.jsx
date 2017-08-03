@@ -46,6 +46,7 @@ class Recipe extends React.Component {
     const { state } = this
 
     const {
+      id,
       ingredients,
       steps,
       name,
@@ -129,7 +130,7 @@ class Recipe extends React.Component {
                   ? <form onSubmit={ (e) => {
                     e.preventDefault()
                     if (state.ingredient === '') return
-                    addIngredient(state.ingredient)
+                    addIngredient(id, state.ingredient)
                   }
                   }>
                   <div className="field">
@@ -146,7 +147,7 @@ class Recipe extends React.Component {
                   <div className="field is-grouped">
                     <p className="control">
                       <input
-                        onClick={ () => addIngredient(state.ingredient) }
+                        onClick={ () => addIngredient(id, state.ingredient) }
                         disabled={ state.ingredient === '' }
                         className="button is-primary"
                         type="button"
@@ -253,6 +254,7 @@ class Recipe extends React.Component {
 }
 
 Recipe.PropTypes = {
+  id: PropTypes.number.isRequired,
   ingredients: PropTypes.array.isRequired,
   steps: PropTypes.array.isRequired,
   name: PropTypes.string.isRequired,

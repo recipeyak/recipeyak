@@ -50,10 +50,10 @@ export const addStepToRecipe = (recipeID, step) => {
   }
 }
 
-export const addIngredientToRecipe = (recipeID, ingredient) => {
+export const addIngredientToRecipe = (id, ingredient) => {
   return {
     type: ADD_INGREDIENT_TO_RECIPE,
-    recipeID,
+    id,
     ingredient,
   }
 }

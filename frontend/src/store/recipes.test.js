@@ -63,10 +63,11 @@ describe('Recipes', () => {
     ).toEqual(afterState)
   })
 
-  it('adds an ingredient to the recipe', () => {
+  it("adds an ingredient to the recipe and doesn't delete steps", () => {
     const beforeState = {
       1: {
         ingredients: [],
+        steps: [ 'test' ],
       },
     }
 
@@ -77,11 +78,12 @@ describe('Recipes', () => {
         ingredients: [
           newIngredient,
         ],
+        steps: [ 'test' ],
       },
     }
 
     expect(
-      recipes(beforeState, { type: 'ADD_INGREDIENT_TO_RECIPE', id: 1, step: newIngredient })
+      recipes(beforeState, { type: 'ADD_INGREDIENT_TO_RECIPE', id: 1, ingredient: newIngredient })
     ).toEqual(afterState)
   })
 })

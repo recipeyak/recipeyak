@@ -1,5 +1,7 @@
 import { connect } from 'react-redux'
 
+import { addIngredientToRecipe } from '../store/actions.js'
+
 import Recipe from '../Recipe.jsx'
 
 const mapStateToProps = (state, props) => {
@@ -7,6 +9,7 @@ const mapStateToProps = (state, props) => {
   const recipe = state.recipes[id]
   console.log(recipe)
   return {
+    id: recipe.id,
     ingredients: recipe.ingredients,
     steps: recipe.steps,
     name: recipe.name,
@@ -18,9 +21,8 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    addIngredient: ingredient => {
-      // TODO: actually add ingredient
-      console.log('add ingredient', ingredient)
+    addIngredient: (id, ingredient) => {
+      dispatch(addIngredientToRecipe(id, ingredient))
     },
     addStep: step => {
       console.log('add step', step)
