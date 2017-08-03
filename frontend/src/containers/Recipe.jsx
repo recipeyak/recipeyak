@@ -18,6 +18,13 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    addIngredient: ingredient => {
+      // TODO: actually add ingredient
+      console.log('add ingredient', ingredient)
+    },
+    addStep: step => {
+      console.log('add step', step)
+    },
   }
 }
 

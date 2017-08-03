@@ -42,14 +42,7 @@ class Recipe extends React.Component {
   }
 
   render () {
-    const {
-      handleInputChange,
-      cancelAddIngredient,
-      addingIngredient,
-      cancelAddStep,
-      addingStep,
-      state,
-    } = this
+    const { state } = this
 
     const {
       ingredients,
@@ -82,7 +75,7 @@ class Recipe extends React.Component {
             <div>
               <h3 className="input-author">{ author }</h3>
               <input
-                onChange={ (e) => handleInputChange(e) }
+                onChange={ (e) => this.handleInputChange(e) }
                 defaultValue={ author }
                 className="input input-author"
                 type="text"
@@ -93,7 +86,7 @@ class Recipe extends React.Component {
             <div>
               <h3 className="input-source">{ source }</h3>
               <input
-                onChange={ (e) => handleInputChange(e) }
+                onChange={ (e) => this.handleInputChange(e) }
                 defaultValue={ source }
                 className="input input-source"
                 type="text"
@@ -104,7 +97,7 @@ class Recipe extends React.Component {
             <div>
               <h3 className="input-time">{ time }</h3>
               <input
-                onChange={ (e) => handleInputChange(e) }
+                onChange={ (e) => this.handleInputChange(e) }
                 defaultValue={ time }
                 className="input input-time"
                 type="text"
@@ -131,17 +124,17 @@ class Recipe extends React.Component {
                       )
                     }
                   </ul>
-                  { addingIngredient
+                  { this.addingIngredient
                   ? <form onSubmit={ (e) => {
                     e.preventDefault()
                     if (state.ingredient === '') return
-                    addIngredient()
+                    addIngredient(state.ingredient)
                   }
                   }>
                   <div className="field">
                     <div className="control">
                       <input
-                        onChange={ (e) => handleInputChange(e) }
+                        onChange={ (e) => this.handleInputChange(e) }
                         value={ state.ingredient }
                         className="input input-ingredient"
                         type="text"
@@ -152,7 +145,7 @@ class Recipe extends React.Component {
                   <div className="field is-grouped">
                     <p className="control">
                       <input
-                        onClick={ () => addIngredient() }
+                        onClick={ () => addIngredient(state.ingredient) }
                         disabled={ state.ingredient === '' }
                         className="button is-primary"
                         type="button"
@@ -161,7 +154,7 @@ class Recipe extends React.Component {
                     </p>
                     <p className="control">
                       <input
-                        onClick={ () => cancelAddIngredient() }
+                        onClick={ () => this.cancelAddIngredient() }
                         className="button"
                         type="button"
                         name="cancel add ingredient"
@@ -171,7 +164,7 @@ class Recipe extends React.Component {
                   </form>
                   : <p>
                       <button
-                        onClick={ () => addingIngredient() }
+                        onClick={ () => this.addingIngredient() }
                         className="button is-link">
                         Add another
                       </button>
@@ -202,18 +195,18 @@ class Recipe extends React.Component {
                       ? <form onSubmit={ (e) => {
                         e.preventDefault()
                         if (state.step === '') return
-                        addStep()
+                        addStep(state.step)
                       }}>
                         <div className="field">
                           <label className="label">Step { steps.length + 1 }</label>
                           <div className="control">
                             <textarea
-                              onChange={ (e) => handleInputChange(e) }
+                              onChange={ (e) => this.handleInputChange(e) }
                               onKeyPress={ (e) => {
                                 if (state.step === '') return
                                 if (e.shiftKey && e.key === 'Enter') {
                                   e.preventDefault()
-                                  addStep()
+                                  addStep(state.step)
                                 }
                               }}
                               value={ state.step }
@@ -225,7 +218,6 @@ class Recipe extends React.Component {
                         <div className="field is-grouped">
                           <p className="control">
                             <input
-                              onClick={ () => addStep() }
                               disabled={ state.step === '' }
                               className="button is-primary"
                               type="submit"
@@ -234,7 +226,7 @@ class Recipe extends React.Component {
                           </p>
                           <p className="control">
                             <input
-                              onClick={ () => cancelAddStep() }
+                              onClick={ () => this.cancelAddStep() }
                               className="button"
                               type="button"
                               name="cancel step"
@@ -244,7 +236,7 @@ class Recipe extends React.Component {
                         </form>
                       : <p>
                           <button
-                            onClick={ () => addingStep() }
+                            onClick={ () => this.addingStep() }
                             className="button is-link">
                             Add another
                           </button>
