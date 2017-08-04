@@ -42,10 +42,10 @@ export const addRecipe = recipe => {
   }
 }
 
-export const addStepToRecipe = (recipeID, step) => {
+export const addStepToRecipe = (id, step) => {
   return {
     type: ADD_STEP_TO_RECIPE,
-    recipeID,
+    id,
     step,
   }
 }

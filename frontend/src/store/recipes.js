@@ -28,8 +28,14 @@ export const recipes = (state = {}, action) => {
     case REMOVE_RECIPE:
       return Object.assign({}, state, { [action.id]: undefined })
     case ADD_STEP_TO_RECIPE:
-      const newSteps = [...state[action.id].steps, action.step]
-      const newRecipe = Object.assign({}, action.id, { steps: newSteps })
+      const newSteps =
+        [...state[action.id].steps, action.step]
+
+      const newRecipe =
+        Object.assign({}, state[action.id], {
+          steps: newSteps,
+        })
+
       return Object.assign({}, state, { [action.id]: newRecipe })
     case ADD_INGREDIENT_TO_RECIPE:
 

@@ -44,6 +44,7 @@ describe('Recipes', () => {
   it('adds a step to the recipe', () => {
     const beforeState = {
       1: {
+        title: 'good recipe',
         steps: [],
       },
     }
@@ -52,6 +53,7 @@ describe('Recipes', () => {
 
     const afterState = {
       1: {
+        title: 'good recipe',
         steps: [
           newStep,
         ],

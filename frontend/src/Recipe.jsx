@@ -26,6 +26,10 @@ class Recipe extends React.Component {
     this.setState({ [e.target.name]: e.target.value })
   }
 
+  handleFocus (event) {
+    event.target.select()
+  }
+
   cancelAddIngredient () {
     this.setState({ ingredient: '', addingIngredient: false })
   }
@@ -47,6 +51,11 @@ class Recipe extends React.Component {
     this.setState({ ingredient: '' })
   }
 
+  addStep (id, step) {
+    this.props.addStep(id, step)
+    this.setState({ step: '' })
+  }
+
   render () {
     const { state } = this
 
@@ -58,7 +67,6 @@ class Recipe extends React.Component {
       author,
       source,
       time,
-      addStep,
       updateStep,
       deleteStep,
       updateIngredient,
@@ -141,6 +149,8 @@ class Recipe extends React.Component {
                       <input
                         onChange={ (e) => this.handleInputChange(e) }
                         value={ state.ingredient }
+                        autoFocus
+                        onFocus={ (e) => this.handleFocus(e) }
                         className="input input-ingredient"
                         type="text"
                         placeholder="Add your ingredient here"
@@ -199,7 +209,7 @@ class Recipe extends React.Component {
                       ? <form onSubmit={ (e) => {
                         e.preventDefault()
                         if (state.step === '') return
-                        addStep(state.step)
+                        this.addStep(id, state.step)
                       }}>
                         <div className="field">
                           <label className="label">Step { steps.length + 1 }</label>
@@ -210,9 +220,11 @@ class Recipe extends React.Component {
                                 if (state.step === '') return
                                 if (e.shiftKey && e.key === 'Enter') {
                                   e.preventDefault()
-                                  addStep(state.step)
+                                  this.addStep(id, state.step)
                                 }
                               }}
+                              autoFocus
+                              onFocus={ (e) => this.handleFocus(e) }
                               value={ state.step }
                               className="textarea"
                               placeholder="Add your step here"
