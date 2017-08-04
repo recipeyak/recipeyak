@@ -42,6 +42,11 @@ class Recipe extends React.Component {
     this.setState({ addingIngredient: true })
   }
 
+  addIngredient (id, ingredient) {
+    this.props.addIngredient(id, ingredient)
+    this.setState({ ingredient: '' })
+  }
+
   render () {
     const { state } = this
 
@@ -56,7 +61,6 @@ class Recipe extends React.Component {
       addStep,
       updateStep,
       deleteStep,
-      addIngredient,
       updateIngredient,
       deleteIngredient,
     } = this.props
@@ -64,7 +68,6 @@ class Recipe extends React.Component {
     return (
       <div className="container">
         <Navbar />
-        <h1 className="title is-2">Add Recipe</h1>
           <div className="field">
             <EnhancedInput
               onChange={ (e) => this.updateTitle(e) }
@@ -130,7 +133,7 @@ class Recipe extends React.Component {
                   ? <form onSubmit={ (e) => {
                     e.preventDefault()
                     if (state.ingredient === '') return
-                    addIngredient(id, state.ingredient)
+                    this.addIngredient(id, state.ingredient)
                   }
                   }>
                   <div className="field">
@@ -147,10 +150,9 @@ class Recipe extends React.Component {
                   <div className="field is-grouped">
                     <p className="control">
                       <input
-                        onClick={ () => addIngredient(id, state.ingredient) }
                         disabled={ state.ingredient === '' }
                         className="button is-primary"
-                        type="button"
+                        type="submit"
                         name="add ingredient"
                         value="Add"/>
                     </p>
