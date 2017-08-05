@@ -1,204 +1,280 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
-
-import Textarea from 'react-textarea-autosize'
-import MarkdownIt from 'markdown-it'
-
-import './recipe.scss'
-
 import Navbar from './Nav.jsx'
+import ListItem from './ListItem.jsx'
+import EnhancedTextInput from './EnhancedTextInput.jsx'
 
-const md = new MarkdownIt()
+import './AddRecipe.scss'
+import './Recipe.scss'
 
 class Recipe extends React.Component {
   constructor (props) {
     super(props)
-
     this.state = {
-      editing: false,
-      name: this.props.name,
-
-      ingredients: this.props.ingredients,
-      steps: this.props.steps,
-      time: this.props.time,
-
-      // Note: allows for the state to not be upated and for cancel to still work
-      temp_ingredients: this.ingredients,
-      temp_steps: this.steps,
-      temp_time: this.time,
+      addingStep: false,
+      addingIngredient: false,
+      ingredient: '',
+      step: '',
     }
   }
 
-  toggleEdit () {
-    this.setState(prevState => {
-      return { editing: !prevState.editing }
-    })
-    console.log('toggleEdit to', this.state.editing)
+  handleInputChange (e) {
+    this.setState({ [e.target.name]: e.target.value })
   }
 
-  handleChange (e) {
-    this.setState({ ['temp_' + e.target.name]: e.target.value })
-    console.log('handled change')
+  handleFocus (event) {
+    event.target.select()
   }
 
-  share () {
-    console.log('share recipe')
+  cancelAddIngredient () {
+    this.setState({ ingredient: '', addingIngredient: false })
   }
 
-  saveData () {
-    this.setState(
-      {
-        editing: false,
-        steps: this.state.temp_steps,
-        ingredients: this.state.temp_ingredients,
-        time: this.state.temp_time,
-      }
-    )
-    console.log('saved data')
+  cancelAddStep () {
+    this.setState({ step: '', addingStep: false })
+  }
+
+  addingStep () {
+    this.setState({ addingStep: true })
+  }
+
+  addingIngredient () {
+    this.setState({ addingIngredient: true })
+  }
+
+  addIngredient (id, ingredient) {
+    this.props.addIngredient(id, ingredient)
+    this.setState({ ingredient: '' })
+    this.refs.addIngredientInput.focus()
+  }
+
+  addStep (id, step) {
+    this.props.addStep(id, step)
+    this.setState({ step: '' })
+    this.refs.addStepInput.focus()
   }
 
   render () {
+    const { state } = this
+
+    const {
+      id,
+      ingredients,
+      steps,
+      name,
+      author,
+      source,
+      time,
+      updateStep,
+      deleteStep,
+      updateIngredient,
+      deleteIngredient,
+      updateAuthor,
+      updateSource,
+      updateName,
+      updateTime,
+    } = this.props
+
     return (
       <div className="container">
-        <Navbar/>
-        <nav className="nav">
-          <div className="nav-left">
-            <Link to="/recipe" className="title is-1 nav-item">
-              { this.state.name }
-            </Link>
+        <Navbar />
+          <div className="field">
+            <EnhancedTextInput
+              className="title is-1"
+              onChange={ name => updateName(id, name) }
+              text={ name }
+              name="name"
+            />
           </div>
-        </nav>
+          <div className="input-container">
 
-        <section className="section">
-        <div className="container">
-          <div className="columns">
-            <div className="column is-one-third">
+            <EnhancedTextInput
+              onChange={ author => updateAuthor(id, author) }
+              text={ author }
+              className="title is-4"
+              placeholder="author"
+              name="author"/>
+
+            <EnhancedTextInput
+              onChange={ source => updateSource(id, source) }
+              text={ source }
+              className="title is-4"
+              placeholder="source"
+              name="source"/>
+
+            <EnhancedTextInput
+              onChange={ time => updateTime(id, time) }
+              text={ time }
+              className="title is-4"
+              placeholder="1 hour"
+              name="time"/>
+
+          </div>
+
+          <div className="container">
+            <div className="columns">
+              <div className="column is-one-third">
                 <h2 className="title">Ingredients</h2>
-                <div className="card">
-                  <div className="card-content">
-                    <div className="content">
-                      {
-                        !this.state.editing
-                        ? <div
-                            className="content ingredients-list"
-                            dangerouslySetInnerHTML={{ __html: md.render(this.state.ingredients) }}/>
-                        : <Textarea
-                            className="textarea"
-                            onChange={ (e) => this.handleChange(e) }
-                            placeholder="enter ingredients"
-                            defaultValue={ this.state.ingredients }
-                            name='ingredients'
+                <div className="box">
+                  <ul>
+                    {
+                      ingredients.map((x, i) =>
+                        <ListItem
+                          key={x + i}
+                          index={i}
+                          text={x}
+                          update={(index, content) => updateIngredient(index, content)}
+                          delete={(i) => deleteIngredient(id, i)}
                         />
-                      }
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="column">
-              <div className="recipe-subtitle">
-                <h2 className="title is-3">Preperation</h2>
-                  <div>
-                  <input
-                  onClick={ () => this.share() }
-                  className="button is-info recipe-button"
-                  type='button'
-                  value='share'
-                  name='share'/>
-                  {
-                  !this.state.editing &&
-                    <input
-                      className="button recipe-button"
-                      onClick={ () => this.toggleEdit() }
-                      type='button'
-                      value='edit'
-                      name='edit'/>
-                }
-                {
-
-                  this.state.editing &&
-                    <input
-                      onClick={ () => this.saveData() }
-                      className="button is-primary recipe-button"
-                      type='button'
-                      value='save'
-                      name='save'/>
-                }
-
-                {
-                  this.state.editing &&
-                    <input
-                      className="button is-link recipe-button"
-                      onClick={ () => this.toggleEdit() }
-                      type='button'
-                      value='cancel'
-                      name='cancel'/>
-                }
-                </div>
-              </div>
-                <div className="card">
-                  <div className="card-content">
-                    <div className="content">
-                      {
-                        this.state.time != null && !this.state.editing &&
-                        <span>Time: { this.state.time }</span>
-                      }
-                      {
-                        this.state.editing &&
-                        <div>
-                          <span>Time: </span>
-                          <div>
-                            <input
-                              className="input"
-                              onChange={ (e) => this.handleChange(e) }
-                              type='text'
-                              name='time'
-                              defaultValue={ this.state.time }/>
-                          </div>
-                        </div>
-                      }
-
-                  {!this.state.editing
-                    ? <div
-                        className="content"
-                        dangerouslySetInnerHTML={{ __html: md.render(this.state.steps) }}/>
-                    : <Textarea
-                        className="textarea"
-                        onChange={ (e) => this.handleChange(e) }
-                        placeholder="enter steps"
-                        defaultValue={ this.state.steps }
-                        name='steps'
-                        />}
+                      )
+                    }
+                  </ul>
+                  { state.addingIngredient
+                  ? <form onSubmit={ (e) => {
+                    e.preventDefault()
+                    if (state.ingredient === '') return
+                    this.addIngredient(id, state.ingredient)
+                  }
+                  }>
+                  <div className="field">
+                    <div className="control">
+                      <input
+                        ref='addIngredientInput'
+                        onChange={ (e) => this.handleInputChange(e) }
+                        value={ state.ingredient }
+                        autoFocus
+                        onFocus={ (e) => this.handleFocus(e) }
+                        className="input input-ingredient"
+                        type="text"
+                        placeholder="Add your ingredient here"
+                        name="ingredient"/>
                     </div>
                   </div>
+                  <div className="field is-grouped">
+                    <p className="control">
+                      <input
+                        disabled={ state.ingredient === '' }
+                        className="button is-primary"
+                        type="submit"
+                        name="add ingredient"
+                        value="Add"/>
+                    </p>
+                    <p className="control">
+                      <input
+                        onClick={ () => this.cancelAddIngredient() }
+                        className="button"
+                        type="button"
+                        name="cancel add ingredient"
+                        value="✕"/>
+                    </p>
+                  </div>
+                  </form>
+                  : <p className="flex-center">
+                      <button
+                        onClick={ () => this.addingIngredient() }
+                        className="button is-link">
+                        Add another
+                      </button>
+                    </p>
+                  }
                 </div>
+              </div>
+
+              <div className="column">
+                <h2 className="title is-3">Preparation</h2>
+                <div className="box">
+                  <ul>
+                    {
+                      steps.map((step, i) =>
+                        <div key={step + i}>
+                          <label className="label">Step { i + 1}</label>
+                          <ListItem
+                            index={i}
+                            text={step}
+                            update={(index, content) => updateStep(index, content)}
+                            delete={(index) => deleteStep(id, index)}
+                          />
+                        </div>
+                      )
+                    }
+                  </ul>
+                  { state.addingStep
+                      ? <form onSubmit={ (e) => {
+                        e.preventDefault()
+                        if (state.step === '') return
+                        this.addStep(id, state.step)
+                      }}>
+                        <div className="field">
+                          <label className="label">Step { steps.length + 1 }</label>
+                          <div className="control">
+                            <textarea
+                              ref='addStepInput'
+                              onChange={ (e) => this.handleInputChange(e) }
+                              onKeyPress={ (e) => {
+                                if (state.step === '') return
+                                if (e.shiftKey && e.key === 'Enter') {
+                                  e.preventDefault()
+                                  this.addStep(id, state.step)
+                                }
+                              }}
+                              autoFocus
+                              onFocus={ (e) => this.handleFocus(e) }
+                              value={ state.step }
+                              className="textarea"
+                              placeholder="Add your step here"
+                              name="step"/>
+                          </div>
+                        </div>
+                        <div className="field is-grouped">
+                          <p className="control">
+                            <input
+                              disabled={ state.step === '' }
+                              className="button is-primary"
+                              type="submit"
+                              name="save step"
+                              value="Add"/>
+                          </p>
+                          <p className="control">
+                            <input
+                              onClick={ () => this.cancelAddStep() }
+                              className="button"
+                              type="button"
+                              name="cancel step"
+                              value="✕"/>
+                          </p>
+                        </div>
+                        </form>
+                      : <p className="flex-center">
+                          <button
+                            onClick={ () => this.addingStep() }
+                            className="button is-link">
+                            Add another
+                          </button>
+                        </p>
+                  }
+                </div>
+              </div>
             </div>
           </div>
-          </div>
-        </section>
-
-        <footer>
-          Caena ※ 2017
-        </footer>
-
       </div>
     )
   }
 }
 
-Recipe.defaultProps = {
-  name: 'Recipe Name',
-  ingredients: '',
-  steps: '',
-  time: '',
-}
-
 Recipe.PropTypes = {
-  name: PropTypes.string,
-  ingredients: PropTypes.string,
-  steps: PropTypes.string,
-  time: PropTypes.string,
+  id: PropTypes.number.isRequired,
+  ingredients: PropTypes.array.isRequired,
+  steps: PropTypes.array.isRequired,
+  name: PropTypes.string.isRequired,
+  author: PropTypes.string.isRequired,
+  source: PropTypes.string.isRequired,
+  time: PropTypes.string.isRequired,
+  addStep: PropTypes.func.isRequired,
+  updateStep: PropTypes.func.isRequired,
+  deleteStep: PropTypes.func.isRequired,
+  updateName: PropTypes.func.isRequired,
+  updateIngredient: PropTypes.func.isRequired,
+  deleteIngredient: PropTypes.func.isRequired,
 }
 
 export default Recipe

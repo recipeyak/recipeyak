@@ -7,6 +7,7 @@ export const defaultRecipes = {
     updated: '1979-05-27T07:32:00Z',
     source: 'https://cooking.nytimes.com/recipes/8930-curried-roast-chicken-durban-style',
     author: 'Florence Fabricant',
+    time: '1 hour',
     tags: ['oven'],
     ingredients: [
       '1 3 1/4-pound whole chicken, skinned',
@@ -34,8 +35,9 @@ export const defaultRecipes = {
     url: '/recipes/2/',
     version: 1.0,
     updated: '1979-05-27T07:32:00Z',
-    source: 'https://cooking.nytimes.com/recipes/1017850-soy-sauce-pickled-eggs?action=click&module=Global%20Search%20Recipe%20Card&pgType=search&rank=1',
+    source: 'https://cooking.nytimes.com/recipes/1017850-soy-sauce-pickled-eggs',
     author: 'Sam Sifton',
+    time: '2 hours',
     tags: [],
     ingredients: [
       '1 cup Japanese soy sauce',

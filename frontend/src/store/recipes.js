@@ -12,13 +12,84 @@
 //    steps = ['Add foo and bar to pot']
 //  }
 // }
+//
+
+import {
+  ADD_RECIPE,
+  REMOVE_RECIPE,
+  ADD_STEP_TO_RECIPE,
+  ADD_INGREDIENT_TO_RECIPE,
+  UPDATE_RECIPE_NAME,
+  DELETE_INGREDIENT,
+  DELETE_STEP,
+  UPDATE_RECIPE_SOURCE,
+  UPDATE_RECIPE_AUTHOR,
+  UPDATE_RECIPE_TIME,
+} from './actionTypes.js'
 
 export const recipes = (state = {}, action) => {
   switch (action.type) {
-    case 'ADD_RECIPE':
+    case ADD_RECIPE:
       return Object.assign({}, state, { [action.recipe.id]: action.recipe })
-    case 'REMOVE_RECIPE':
+    case REMOVE_RECIPE:
       return Object.assign({}, state, { [action.id]: undefined })
+    case ADD_STEP_TO_RECIPE:
+      const newSteps =
+        [...state[action.id].steps, action.step]
+
+      const newRecipe =
+        Object.assign({}, state[action.id], {
+          steps: newSteps,
+        })
+
+      return Object.assign({}, state, { [action.id]: newRecipe })
+    case ADD_INGREDIENT_TO_RECIPE:
+
+      const updatedIngredients =
+        [...state[action.id].ingredients, action.ingredient]
+
+      const updatedRecipe =
+        Object.assign({}, state[action.id], {
+          ingredients: updatedIngredients,
+        })
+
+      return Object.assign({}, state, { [action.id]: updatedRecipe })
+    case UPDATE_RECIPE_NAME:
+      return Object.assign({}, state, {
+        [action.id]: Object.assign({}, state[action.id], {
+          name: action.name,
+        }),
+      })
+    case UPDATE_RECIPE_SOURCE:
+      return Object.assign({}, state, {
+        [action.id]: Object.assign({}, state[action.id], {
+          source: action.source,
+        }),
+      })
+    case UPDATE_RECIPE_TIME:
+      return Object.assign({}, state, {
+        [action.id]: Object.assign({}, state[action.id], {
+          time: action.time,
+        }),
+      })
+    case UPDATE_RECIPE_AUTHOR:
+      return Object.assign({}, state, {
+        [action.id]: Object.assign({}, state[action.id], {
+          author: action.author,
+        }),
+      })
+    case DELETE_INGREDIENT:
+      return Object.assign({}, state, {
+        [action.id]: Object.assign({}, state[action.id], {
+          ingredients: state[action.id].ingredients.filter((_, index) => index !== action.index),
+        }),
+      })
+    case DELETE_STEP:
+      return Object.assign({}, state, {
+        [action.id]: Object.assign({}, state[action.id], {
+          steps: state[action.id].steps.filter((_, index) => index !== action.index),
+        }),
+      })
     default:
       return state
   }

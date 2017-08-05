@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Navbar from './Nav.jsx'
 import ListItem from './ListItem.jsx'
 
-import './add-recipe.scss'
+import './AddRecipe.scss'
 
 class AddRecipe extends React.Component {
   constructor (props) {

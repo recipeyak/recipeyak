@@ -9,10 +9,18 @@ import Recipe from './Recipe.jsx'
 
 describe('<Recipe/>', () => {
   it('renders without failure', () => {
+    const props = {
+      ingredients: [],
+      steps: [],
+      name: '',
+      author: '',
+      source: '',
+      time: '',
+    }
     mount(
       <Provider store={ store }>
         <MemoryRouter>
-          <Recipe/>
+          <Recipe {...props}/>
         </MemoryRouter>
       </Provider>)
   })
