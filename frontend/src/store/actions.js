@@ -10,6 +10,9 @@ import {
   UPDATE_RECIPE_NAME,
   DELETE_INGREDIENT,
   DELETE_STEP,
+  UPDATE_RECIPE_SOURCE,
+  UPDATE_RECIPE_AUTHOR,
+  UPDATE_RECIPE_TIME,
 } from './actionTypes.js'
 
 export const login = () => {
@@ -66,6 +69,30 @@ export const updateRecipeName = (id, name) => {
     type: UPDATE_RECIPE_NAME,
     id,
     name,
+  }
+}
+
+export const updateRecipeSource = (id, source) => {
+  return {
+    type: UPDATE_RECIPE_SOURCE,
+    id,
+    source,
+  }
+}
+
+export const updateRecipeAuthor = (id, author) => {
+  return {
+    type: UPDATE_RECIPE_AUTHOR,
+    id,
+    author,
+  }
+}
+
+export const updateRecipeTime = (id, time) => {
+  return {
+    type: UPDATE_RECIPE_TIME,
+    id,
+    time,
   }
 }
 

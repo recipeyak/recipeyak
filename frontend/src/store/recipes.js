@@ -22,6 +22,9 @@ import {
   UPDATE_RECIPE_NAME,
   DELETE_INGREDIENT,
   DELETE_STEP,
+  UPDATE_RECIPE_SOURCE,
+  UPDATE_RECIPE_AUTHOR,
+  UPDATE_RECIPE_TIME,
 } from './actionTypes.js'
 
 export const recipes = (state = {}, action) => {
@@ -55,6 +58,24 @@ export const recipes = (state = {}, action) => {
       return Object.assign({}, state, {
         [action.id]: Object.assign({}, state[action.id], {
           name: action.name,
+        }),
+      })
+    case UPDATE_RECIPE_SOURCE:
+      return Object.assign({}, state, {
+        [action.id]: Object.assign({}, state[action.id], {
+          source: action.source,
+        }),
+      })
+    case UPDATE_RECIPE_TIME:
+      return Object.assign({}, state, {
+        [action.id]: Object.assign({}, state[action.id], {
+          time: action.time,
+        }),
+      })
+    case UPDATE_RECIPE_AUTHOR:
+      return Object.assign({}, state, {
+        [action.id]: Object.assign({}, state[action.id], {
+          author: action.author,
         }),
       })
     case DELETE_INGREDIENT:

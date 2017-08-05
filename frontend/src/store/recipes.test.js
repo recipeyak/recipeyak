@@ -1,6 +1,9 @@
 import recipes from './recipes.js'
 import {
   UPDATE_RECIPE_NAME,
+  UPDATE_RECIPE_SOURCE,
+  UPDATE_RECIPE_AUTHOR,
+  UPDATE_RECIPE_TIME,
   DELETE_INGREDIENT,
   ADD_INGREDIENT_TO_RECIPE,
   ADD_RECIPE,
@@ -169,6 +172,78 @@ describe('Recipes', () => {
       type: DELETE_STEP,
       id: 1,
       index: 1,
+    })).toEqual(afterState)
+  })
+
+  it('updates the recipe source', () => {
+    const beforeState = {
+      1: {
+        id: 1,
+        source: 'example.com',
+      },
+    }
+
+    const newSource = 'abettersource.com'
+
+    const afterState = {
+      1: {
+        id: 1,
+        source: newSource,
+      },
+    }
+
+    expect(recipes(beforeState, {
+      type: UPDATE_RECIPE_SOURCE,
+      id: 1,
+      source: newSource,
+    })).toEqual(afterState)
+  })
+
+  it('updates the recipe author', () => {
+    const beforeState = {
+      1: {
+        id: 1,
+        author: 'donny',
+      },
+    }
+
+    const newAuthor = 'aldo raine'
+
+    const afterState = {
+      1: {
+        id: 1,
+        author: newAuthor,
+      },
+    }
+
+    expect(recipes(beforeState, {
+      type: UPDATE_RECIPE_AUTHOR,
+      id: 1,
+      author: newAuthor,
+    })).toEqual(afterState)
+  })
+
+  it('updates the recipe time', () => {
+    const beforeState = {
+      1: {
+        id: 1,
+        time: '1 hour',
+      },
+    }
+
+    const newTime = '5.12 years'
+
+    const afterState = {
+      1: {
+        id: 1,
+        time: newTime,
+      },
+    }
+
+    expect(recipes(beforeState, {
+      type: UPDATE_RECIPE_TIME,
+      id: 1,
+      time: newTime,
     })).toEqual(afterState)
   })
 })

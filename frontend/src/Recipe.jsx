@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import Navbar from './Nav.jsx'
 import ListItem from './ListItem.jsx'
 import EnhancedInput from './EnhancedInput.jsx'
+import EnhancedTextInput from './EnhancedTextInput.jsx'
 
 import './AddRecipe.scss'
 import './Recipe.scss'
@@ -16,10 +17,6 @@ class Recipe extends React.Component {
       ingredient: '',
       step: '',
     }
-  }
-
-  updateName (name) {
-    this.props.updateName(this.props.id, name)
   }
 
   handleInputChange (e) {
@@ -73,6 +70,10 @@ class Recipe extends React.Component {
       deleteStep,
       updateIngredient,
       deleteIngredient,
+      updateAuthor,
+      updateSource,
+      updateName,
+      updateTime,
     } = this.props
 
     return (
@@ -80,7 +81,7 @@ class Recipe extends React.Component {
         <Navbar />
           <div className="field">
             <EnhancedInput
-              onChange={ (name) => this.updateName(name) }
+              onChange={ name => updateName(id, name) }
               text={ name }
               name="name"
             />
@@ -88,34 +89,25 @@ class Recipe extends React.Component {
           <div className="input-container">
 
             <div>
-              <h3 className="input-author">{ author }</h3>
-              <input
-                onChange={ (e) => this.handleInputChange(e) }
-                defaultValue={ author }
-                className="input input-author"
-                type="text"
-                placeholder="Author"
+              <EnhancedTextInput
+                onChange={ author => updateAuthor(id, author) }
+                text={ author }
+                placeholder="author"
                 name="author"/>
             </div>
 
             <div>
-              <h3 className="input-source">{ source }</h3>
-              <input
-                onChange={ (e) => this.handleInputChange(e) }
-                defaultValue={ source }
-                className="input input-source"
-                type="text"
-                placeholder="http://example.com/dumpling-soup"
+              <EnhancedTextInput
+                onChange={ source => updateSource(id, source) }
+                text={ source }
+                placeholder="source"
                 name="source"/>
             </div>
 
             <div>
-              <h3 className="input-time">{ time }</h3>
-              <input
-                onChange={ (e) => this.handleInputChange(e) }
-                defaultValue={ time }
-                className="input input-time"
-                type="text"
+              <EnhancedTextInput
+                onChange={ time => updateTime(id, time) }
+                text={ time }
                 placeholder="1 hour"
                 name="time"/>
             </div>

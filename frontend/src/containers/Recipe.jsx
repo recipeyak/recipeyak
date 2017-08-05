@@ -6,6 +6,9 @@ import {
   updateRecipeName,
   deleteIngredient,
   deleteStep,
+  updateRecipeSource,
+  updateRecipeAuthor,
+  updateRecipeTime,
 } from '../store/actions.js'
 
 import Recipe from '../Recipe.jsx'
@@ -40,6 +43,15 @@ const mapDispatchToProps = dispatch => {
     },
     deleteStep: (id, index) => {
       dispatch(deleteStep(id, index))
+    },
+    updateSource: (id, source) => {
+      dispatch(updateRecipeSource(id, source))
+    },
+    updateAuthor: (id, author) => {
+      dispatch(updateRecipeAuthor(id, author))
+    },
+    updateTime: (id, time) => {
+      dispatch(updateRecipeTime(id, time))
     },
   }
 }
