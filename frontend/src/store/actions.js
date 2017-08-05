@@ -9,6 +9,7 @@ import {
   ADD_INGREDIENT_TO_RECIPE,
   UPDATE_RECIPE_NAME,
   DELETE_INGREDIENT,
+  DELETE_STEP,
 } from './actionTypes.js'
 
 export const login = () => {
@@ -80,5 +81,13 @@ export const removeRecipe = id => {
   return {
     type: REMOVE_RECIPE,
     id,
+  }
+}
+
+export const deleteStep = (id, index) => {
+  return {
+    type: DELETE_STEP,
+    id,
+    index,
   }
 }

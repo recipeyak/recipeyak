@@ -6,6 +6,7 @@ import {
   ADD_RECIPE,
   REMOVE_RECIPE,
   ADD_STEP_TO_RECIPE,
+  DELETE_STEP,
 } from './actionTypes.js'
 
 describe('Recipes', () => {
@@ -140,6 +141,32 @@ describe('Recipes', () => {
 
     expect(recipes(beforeState, {
       type: DELETE_INGREDIENT,
+      id: 1,
+      index: 1,
+    })).toEqual(afterState)
+  })
+
+  it('deletes a step from a recipe', () => {
+    const beforeState = {
+      1: {
+        id: 1,
+        steps: [
+          'test', 'target',
+        ],
+      },
+    }
+
+    const afterState = {
+      1: {
+        id: 1,
+        steps: [
+          'test',
+        ],
+      },
+    }
+
+    expect(recipes(beforeState, {
+      type: DELETE_STEP,
       id: 1,
       index: 1,
     })).toEqual(afterState)

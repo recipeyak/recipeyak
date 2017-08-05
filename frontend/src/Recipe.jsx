@@ -202,7 +202,7 @@ class Recipe extends React.Component {
                             index={i}
                             text={step}
                             update={(index, content) => updateStep(index, content)}
-                            delete={(index) => deleteStep('steps', index)}
+                            delete={(index) => deleteStep(id, index)}
                           />
                         </div>
                       )
