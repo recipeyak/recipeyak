@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import './EnhancedTextInput.scss'
+
 class EnhancedTextInput extends React.Component {
   constructor (props) {
     super(props)
@@ -60,11 +62,14 @@ class EnhancedTextInput extends React.Component {
     const { name } = this.props
 
     const TextInput =
-      <form onSubmit={ (e) => {
-        e.preventDefault()
-        if (text === '') return
-        this.update()
-      }}>
+      <form
+        className="width-100"
+        onSubmit={ e => {
+          e.preventDefault()
+          if (text === '') return
+          this.update()
+        }}
+      >
 
         <input
           onChange={ e => this.handleInputChange(e) }
@@ -116,12 +121,12 @@ class EnhancedTextInput extends React.Component {
         </section>
 
     return (
-      <section ref="input">
+      <section ref="input" className="flex-grow">
         { !editing
             ? <section>
                 <h2
                   onClick={ () => this.enableEditing() }
-                  className="input-author">
+                  className={ this.props.className }>
                   { text }
                 </h2>
                 { unsavedChanges }
@@ -136,12 +141,14 @@ class EnhancedTextInput extends React.Component {
 EnhancedTextInput.PropTypes = {
   text: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  className: PropTypes.string.isRequired,
+  placeholder: PropTypes.string,
+  className: PropTypes.string,
   onChange: PropTypes.func.isRequired,
 }
 
 EnhancedTextInput.defaultProps = {
   placeholder: 'input text',
+  className: '',
 }
 
 export default EnhancedTextInput

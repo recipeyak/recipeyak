@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Navbar from './Nav.jsx'
 import ListItem from './ListItem.jsx'
-import EnhancedInput from './EnhancedInput.jsx'
 import EnhancedTextInput from './EnhancedTextInput.jsx'
 
 import './AddRecipe.scss'
@@ -80,7 +79,8 @@ class Recipe extends React.Component {
       <div className="container">
         <Navbar />
           <div className="field">
-            <EnhancedInput
+            <EnhancedTextInput
+              className="title is-1"
               onChange={ name => updateName(id, name) }
               text={ name }
               name="name"
@@ -91,18 +91,21 @@ class Recipe extends React.Component {
             <EnhancedTextInput
               onChange={ author => updateAuthor(id, author) }
               text={ author }
+              className="title is-4"
               placeholder="author"
               name="author"/>
 
             <EnhancedTextInput
               onChange={ source => updateSource(id, source) }
               text={ source }
+              className="title is-4"
               placeholder="source"
               name="source"/>
 
             <EnhancedTextInput
               onChange={ time => updateTime(id, time) }
               text={ time }
+              className="title is-4"
               placeholder="1 hour"
               name="time"/>
 
