@@ -1,8 +1,11 @@
 import recipes from './recipes.js'
-
 import {
   UPDATE_RECIPE_NAME,
   DELETE_INGREDIENT,
+  ADD_INGREDIENT_TO_RECIPE,
+  ADD_RECIPE,
+  REMOVE_RECIPE,
+  ADD_STEP_TO_RECIPE,
 } from './actionTypes.js'
 
 describe('Recipes', () => {
@@ -23,7 +26,7 @@ describe('Recipes', () => {
       1: {},
     }
     expect(
-      recipes(beforeState, { type: 'ADD_RECIPE', recipe })
+      recipes(beforeState, { type: ADD_RECIPE, recipe })
       ).toEqual(afterState)
   })
 
@@ -36,13 +39,13 @@ describe('Recipes', () => {
       1: {},
     }
     expect(
-      recipes(beforeState, { type: 'REMOVE_RECIPE', id: 123 })
+      recipes(beforeState, { type: REMOVE_RECIPE, id: 123 })
       ).toEqual(afterState)
   })
 
   it('Remove non-existent recipe from recipe list', () => {
     expect(
-      recipes({}, { type: 'REMOVE_RECIPE', id: 123 })
+      recipes({}, { type: REMOVE_RECIPE, id: 123 })
       ).toEqual({})
   })
 
@@ -66,7 +69,7 @@ describe('Recipes', () => {
     }
 
     expect(
-      recipes(beforeState, { type: 'ADD_STEP_TO_RECIPE', id: 1, step: newStep })
+      recipes(beforeState, { type: ADD_STEP_TO_RECIPE, id: 1, step: newStep })
     ).toEqual(afterState)
   })
 
@@ -90,7 +93,7 @@ describe('Recipes', () => {
     }
 
     expect(
-      recipes(beforeState, { type: 'ADD_INGREDIENT_TO_RECIPE', id: 1, ingredient: newIngredient })
+      recipes(beforeState, { type: ADD_INGREDIENT_TO_RECIPE, id: 1, ingredient: newIngredient })
     ).toEqual(afterState)
   })
 
