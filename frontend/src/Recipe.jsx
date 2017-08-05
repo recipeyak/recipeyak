@@ -18,8 +18,8 @@ class Recipe extends React.Component {
     }
   }
 
-  updateTitle (e) {
-    console.log('updateTitle', e.target.value)
+  updateName (name) {
+    this.props.updateName(this.props.id, name)
   }
 
   handleInputChange (e) {
@@ -78,7 +78,7 @@ class Recipe extends React.Component {
         <Navbar />
           <div className="field">
             <EnhancedInput
-              onChange={ (e) => this.updateTitle(e) }
+              onChange={ (name) => this.updateName(name) }
               text={ name }
               name="name"
             />
@@ -278,6 +278,7 @@ Recipe.PropTypes = {
   addStep: PropTypes.func.isRequired,
   updateStep: PropTypes.func.isRequired,
   deleteStep: PropTypes.func.isRequired,
+  updateName: PropTypes.func.isRequired,
   updateIngredient: PropTypes.func.isRequired,
   deleteIngredient: PropTypes.func.isRequired,
 }

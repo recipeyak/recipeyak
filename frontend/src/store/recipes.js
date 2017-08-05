@@ -19,6 +19,7 @@ import {
   REMOVE_RECIPE,
   ADD_STEP_TO_RECIPE,
   ADD_INGREDIENT_TO_RECIPE,
+  UPDATE_RECIPE_NAME,
 } from './actionTypes.js'
 
 export const recipes = (state = {}, action) => {
@@ -48,6 +49,12 @@ export const recipes = (state = {}, action) => {
         })
 
       return Object.assign({}, state, { [action.id]: updatedRecipe })
+    case UPDATE_RECIPE_NAME:
+      return Object.assign({}, state, {
+        [action.id]: Object.assign({}, state[action.id], {
+          name: action.name,
+        }),
+      })
     default:
       return state
   }

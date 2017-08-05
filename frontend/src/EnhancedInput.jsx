@@ -52,8 +52,8 @@ class EnhancedInput extends React.Component {
     }))
   }
 
-  update (e) {
-    this.props.onChange(e)
+  update () {
+    this.props.onChange(this.state.text)
     this.setState({ editing: false })
   }
 
@@ -77,7 +77,7 @@ class EnhancedInput extends React.Component {
             <div className="field is-grouped">
               <p className="control">
                 <input
-                  onClick={ e => this.update(e) }
+                  onClick={ () => this.update() }
                   className="button"
                   type="button"
                   name="update"

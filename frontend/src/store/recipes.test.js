@@ -1,5 +1,9 @@
 import recipes from './recipes.js'
 
+import {
+  UPDATE_RECIPE_NAME,
+} from './actionTypes.js'
+
 describe('Recipes', () => {
   it('Adds recipe to recipe list', () => {
     const beforeState = {
@@ -86,6 +90,28 @@ describe('Recipes', () => {
 
     expect(
       recipes(beforeState, { type: 'ADD_INGREDIENT_TO_RECIPE', id: 1, ingredient: newIngredient })
+    ).toEqual(afterState)
+  })
+
+  it('updates the name of the recipe', () => {
+    const beforeState = {
+      1: {
+        id: 1,
+        name: 'Before title',
+      },
+    }
+
+    const newName = 'After title'
+
+    const afterState = {
+      1: {
+        id: 1,
+        name: newName,
+      },
+    }
+
+    expect(
+      recipes(beforeState, { type: UPDATE_RECIPE_NAME, id: 1, name: newName })
     ).toEqual(afterState)
   })
 })

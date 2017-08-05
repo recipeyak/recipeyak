@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import {
   addIngredientToRecipe,
   addStepToRecipe,
+  updateRecipeName,
 } from '../store/actions.js'
 
 import Recipe from '../Recipe.jsx'
@@ -29,6 +30,9 @@ const mapDispatchToProps = dispatch => {
     },
     addStep: (id, step) => {
       dispatch(addStepToRecipe(id, step))
+    },
+    updateName: (id, name) => {
+      dispatch(updateRecipeName(id, name))
     },
   }
 }
