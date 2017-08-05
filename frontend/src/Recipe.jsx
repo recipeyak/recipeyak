@@ -88,29 +88,24 @@ class Recipe extends React.Component {
           </div>
           <div className="input-container">
 
-            <div>
-              <EnhancedTextInput
-                onChange={ author => updateAuthor(id, author) }
-                text={ author }
-                placeholder="author"
-                name="author"/>
-            </div>
+            <EnhancedTextInput
+              onChange={ author => updateAuthor(id, author) }
+              text={ author }
+              placeholder="author"
+              name="author"/>
 
-            <div>
-              <EnhancedTextInput
-                onChange={ source => updateSource(id, source) }
-                text={ source }
-                placeholder="source"
-                name="source"/>
-            </div>
+            <EnhancedTextInput
+              onChange={ source => updateSource(id, source) }
+              text={ source }
+              placeholder="source"
+              name="source"/>
 
-            <div>
-              <EnhancedTextInput
-                onChange={ time => updateTime(id, time) }
-                text={ time }
-                placeholder="1 hour"
-                name="time"/>
-            </div>
+            <EnhancedTextInput
+              onChange={ time => updateTime(id, time) }
+              text={ time }
+              placeholder="1 hour"
+              name="time"/>
+
           </div>
 
           <div className="container">

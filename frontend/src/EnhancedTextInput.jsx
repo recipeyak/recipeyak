@@ -40,8 +40,6 @@ class EnhancedTextInput extends React.Component {
 
   handleInputChange (e) {
     this.setState({ text: e.target.value })
-    // this.props.onChange(e)
-    console.log(e.target.name, e.target.value)
   }
 
   discardChanges () {
@@ -62,40 +60,44 @@ class EnhancedTextInput extends React.Component {
     const { name } = this.props
 
     const TextInput =
-      <section>
-          <input
-            onChange={ e => this.handleInputChange(e) }
-            defaultValue={ text }
-            onFocus={ e => this.handleFocus(e) }
-            autoFocus
-            className={ 'input ' + (this.props.className != null && this.props.className) }
-            type="text"
-            placeholder={ this.props.placeholder }
-            name={ name }/>
+      <form onSubmit={ (e) => {
+        e.preventDefault()
+        if (text === '') return
+        this.update()
+      }}>
 
-          <section className="listitem-button-container">
-            <div className="field is-grouped">
-              <p className="control">
-                <input
-                  onClick={ () => this.update() }
-                  className="button"
-                  type="button"
-                  name="update"
-                  value="Update"
-                />
-              </p>
-              <p className="control">
-                <input
-                  onClick={ e => this.discardChanges(e) }
-                  className="button"
-                  type="button"
-                  name="cancel edit"
-                  value="✕"
-                />
-              </p>
-            </div>
-          </section>
+        <input
+          onChange={ e => this.handleInputChange(e) }
+          defaultValue={ text }
+          onFocus={ e => this.handleFocus(e) }
+          autoFocus
+          className={ 'input ' + (this.props.className != null && this.props.className) }
+          type="text"
+          placeholder={ this.props.placeholder }
+          name={ name }/>
+
+        <section className="listitem-button-container">
+          <div className="field is-grouped">
+            <p className="control">
+              <input
+                className="button"
+                type="submit"
+                name="update"
+                value="Update"
+              />
+            </p>
+            <p className="control">
+              <input
+                onClick={ e => this.discardChanges(e) }
+                className="button"
+                type="button"
+                name="cancel edit"
+                value="✕"
+              />
+            </p>
+          </div>
         </section>
+      </form>
 
     const unsavedChanges =
       this.state.unsavedChanges &&
