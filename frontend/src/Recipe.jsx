@@ -49,11 +49,13 @@ class Recipe extends React.Component {
   addIngredient (id, ingredient) {
     this.props.addIngredient(id, ingredient)
     this.setState({ ingredient: '' })
+    this.refs.addIngredientInput.focus()
   }
 
   addStep (id, step) {
     this.props.addStep(id, step)
     this.setState({ step: '' })
+    this.refs.addStepInput.focus()
   }
 
   render () {
@@ -132,7 +134,7 @@ class Recipe extends React.Component {
                           index={i}
                           text={x}
                           update={(index, content) => updateIngredient(index, content)}
-                          delete={(index) => deleteIngredient(index)}
+                          delete={(i) => deleteIngredient(id, i)}
                         />
                       )
                     }
@@ -147,6 +149,7 @@ class Recipe extends React.Component {
                   <div className="field">
                     <div className="control">
                       <input
+                        ref='addIngredientInput'
                         onChange={ (e) => this.handleInputChange(e) }
                         value={ state.ingredient }
                         autoFocus
@@ -215,6 +218,7 @@ class Recipe extends React.Component {
                           <label className="label">Step { steps.length + 1 }</label>
                           <div className="control">
                             <textarea
+                              ref='addStepInput'
                               onChange={ (e) => this.handleInputChange(e) }
                               onKeyPress={ (e) => {
                                 if (state.step === '') return

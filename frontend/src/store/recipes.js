@@ -20,6 +20,7 @@ import {
   ADD_STEP_TO_RECIPE,
   ADD_INGREDIENT_TO_RECIPE,
   UPDATE_RECIPE_NAME,
+  DELETE_INGREDIENT,
 } from './actionTypes.js'
 
 export const recipes = (state = {}, action) => {
@@ -53,6 +54,12 @@ export const recipes = (state = {}, action) => {
       return Object.assign({}, state, {
         [action.id]: Object.assign({}, state[action.id], {
           name: action.name,
+        }),
+      })
+    case DELETE_INGREDIENT:
+      return Object.assign({}, state, {
+        [action.id]: Object.assign({}, state[action.id], {
+          ingredients: state[action.id].ingredients.filter((_, index) => index !== action.index),
         }),
       })
     default:

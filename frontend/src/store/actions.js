@@ -8,6 +8,7 @@ import {
   ADD_STEP_TO_RECIPE,
   ADD_INGREDIENT_TO_RECIPE,
   UPDATE_RECIPE_NAME,
+  DELETE_INGREDIENT,
 } from './actionTypes.js'
 
 export const login = () => {
@@ -64,6 +65,14 @@ export const updateRecipeName = (id, name) => {
     type: UPDATE_RECIPE_NAME,
     id,
     name,
+  }
+}
+
+export const deleteIngredient = (id, index) => {
+  return {
+    type: DELETE_INGREDIENT,
+    id,
+    index,
   }
 }
 

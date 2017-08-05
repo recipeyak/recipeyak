@@ -2,6 +2,7 @@ import recipes from './recipes.js'
 
 import {
   UPDATE_RECIPE_NAME,
+  DELETE_INGREDIENT,
 } from './actionTypes.js'
 
 describe('Recipes', () => {
@@ -113,5 +114,31 @@ describe('Recipes', () => {
     expect(
       recipes(beforeState, { type: UPDATE_RECIPE_NAME, id: 1, name: newName })
     ).toEqual(afterState)
+  })
+
+  it('deletes an ingredient from a recipe', () => {
+    const beforeState = {
+      1: {
+        id: 1,
+        ingredients: [
+          'test', 'target',
+        ],
+      },
+    }
+
+    const afterState = {
+      1: {
+        id: 1,
+        ingredients: [
+          'test',
+        ],
+      },
+    }
+
+    expect(recipes(beforeState, {
+      type: DELETE_INGREDIENT,
+      id: 1,
+      index: 1,
+    })).toEqual(afterState)
   })
 })
