@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from core.models import MyUser
+from core.models import MyUser, Recipe, Ingredient, Step, Tag, Cart, CartItem
 
 
 class UserCreationForm(forms.ModelForm):
@@ -83,3 +83,28 @@ admin.site.register(MyUser, UserAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)
+
+class IngredientsInLine(admin.TabularInline):
+    model = Ingredient
+    extra = 6
+
+class StepsInLine(admin.TabularInline):
+    model = Step
+    extra = 1
+
+class TagsInLine(admin.TabularInline):
+    model = Tag
+
+class RecipeAdmin(admin.ModelAdmin):
+    inlines = [
+        IngredientsInLine,
+        StepsInLine,
+        TagsInLine,
+    ]
+
+admin.site.register(Recipe, RecipeAdmin)
+admin.site.register(Ingredient)
+admin.site.register(Step)
+admin.site.register(Tag)
+admin.site.register(Cart)
+admin.site.register(CartItem)

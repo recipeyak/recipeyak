@@ -63,6 +63,9 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     def is_staff(self):
         return self.is_admin
 
+    def __str__(self):
+        return self.email
+
 class CommonInfo(models.Model):
     """Abstract model for storing common model info"""
     created = models.DateTimeField(auto_now_add=True)
@@ -94,20 +97,32 @@ class Recipe(CommonInfo):
         """Return recipe tags ordered by creation date"""
         return Tag.objects.filter(recipe=self).order_by('created')
 
+    def __str__(self):
+        return f'{self.title} by {self.author}'
+
 class Ingredient(CommonInfo):
     """Recipe ingredient"""
     text = models.CharField(max_length=255)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.text
 
 class Step(CommonInfo):
     """Recipe step"""
     text = models.TextField()
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.text
+
 class Tag(CommonInfo):
     """Recipe tag"""
     text = models.CharField(max_length=255)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.text
 
 class Cart(CommonInfo):
     """Aggregation of recipe cart items"""
@@ -118,8 +133,14 @@ class Cart(CommonInfo):
         """Return cart items ordered by title"""
         return CartItem.objects.filter(cart=self).order_by('recipe__title')
 
+    def __str__(self):
+        return f"{self.user}'s cart"
+
 class CartItem(CommonInfo):
     """Model for recipe and cart count"""
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     count = models.IntegerField()
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.count} - {self.recipe}'
