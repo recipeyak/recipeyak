@@ -62,3 +62,64 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     @property
     def is_staff(self):
         return self.is_admin
+
+class CommonInfo(models.Model):
+    """Abstract model for storing common model info"""
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+class Recipe(CommonInfo):
+    title = models.CharField(max_length=255)
+    author = models.CharField(max_length=255)
+    source = models.CharField(max_length=255)
+    time = models.CharField(max_length=255)
+
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+
+    @property
+    def ingredients():
+        """Return recipe ingredients ordered by creation date"""
+        return Ingredient.objects.filter(recipe=self).order_by('created')
+
+    @property
+    def steps():
+        """Return recipe steps ordered by creation date"""
+        return Step.objects.filter(recipe=self).order_by('created')
+
+    @property
+    def tags():
+        """Return recipe tags ordered by creation date"""
+        return Tag.objects.filter(recipe=self).order_by('created')
+
+class Ingredient(CommonInfo):
+    """Recipe ingredient"""
+    text = models.CharField(max_length=255)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+
+class Step(CommonInfo):
+    """Recipe step"""
+    text = models.TextField()
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+
+class Tag(CommonInfo):
+    """Recipe tag"""
+    text = models.CharField(max_length=255)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+
+class Cart(CommonInfo):
+    """Aggregation of recipe cart items"""
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+
+    @property
+    def items():
+        """Return cart items ordered by title"""
+        return CartItem.objects.filter(cart=self).order_by('recipe__title')
+
+class CartItem(CommonInfo):
+    """Model for recipe and cart count"""
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    count = models.IntegerField()
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
