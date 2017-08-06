@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
 
 class MyUserManager(BaseUserManager):
@@ -20,10 +20,11 @@ class MyUserManager(BaseUserManager):
         """
         user = self.create_user(email=email, password=password)
         user.is_admin = True
+        user.is_superuser = True
         user.save(using=self._db)
         return user
 
-class MyUser(AbstractBaseUser):
+class MyUser(AbstractBaseUser, PermissionsMixin):
     """Custom user model that only requires an email and password"""
     email = models.EmailField(unique=True)
 
