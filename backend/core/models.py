@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
 
@@ -23,6 +24,7 @@ class MyUserManager(BaseUserManager):
         user.is_superuser = True
         user.save(using=self._db)
         return user
+
 
 class MyUser(AbstractBaseUser, PermissionsMixin):
     """Custom user model that only requires an email and password"""
@@ -63,8 +65,19 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     def is_staff(self):
         return self.is_admin
 
+    @property
+    def cart(self):
+        return Cart.objects.get(user=self)
+
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        super(MyUser, self).save(*args, **kwargs)
+        if is_new:
+            Cart.objects.create(user=self)
+
     def __str__(self):
         return self.email
+
 
 class CommonInfo(models.Model):
     """Abstract model for storing common model info"""
@@ -73,6 +86,7 @@ class CommonInfo(models.Model):
 
     class Meta:
         abstract = True
+
 
 class Recipe(CommonInfo):
     title = models.CharField(max_length=255)
@@ -83,22 +97,23 @@ class Recipe(CommonInfo):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
     @property
-    def ingredients():
+    def ingredients(self):
         """Return recipe ingredients ordered by creation date"""
         return Ingredient.objects.filter(recipe=self).order_by('created')
 
     @property
-    def steps():
+    def steps(self):
         """Return recipe steps ordered by creation date"""
         return Step.objects.filter(recipe=self).order_by('created')
 
     @property
-    def tags():
+    def tags(self):
         """Return recipe tags ordered by creation date"""
         return Tag.objects.filter(recipe=self).order_by('created')
 
     def __str__(self):
         return f'{self.title} by {self.author}'
+
 
 class Ingredient(CommonInfo):
     """Recipe ingredient"""
@@ -108,6 +123,7 @@ class Ingredient(CommonInfo):
     def __str__(self):
         return self.text
 
+
 class Step(CommonInfo):
     """Recipe step"""
     text = models.TextField()
@@ -115,6 +131,7 @@ class Step(CommonInfo):
 
     def __str__(self):
         return self.text
+
 
 class Tag(CommonInfo):
     """Recipe tag"""
@@ -124,17 +141,19 @@ class Tag(CommonInfo):
     def __str__(self):
         return self.text
 
+
 class Cart(CommonInfo):
     """Aggregation of recipe cart items"""
-    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     @property
-    def items():
+    def items(self):
         """Return cart items ordered by title"""
         return CartItem.objects.filter(cart=self).order_by('recipe__title')
 
     def __str__(self):
         return f"{self.user}'s cart"
+
 
 class CartItem(CommonInfo):
     """Model for recipe and cart count"""
