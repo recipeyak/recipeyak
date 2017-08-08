@@ -1,3 +1,5 @@
+import hashlib
+
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
@@ -68,6 +70,14 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     @property
     def cart(self):
         return Cart.objects.get(user=self)
+
+    @property
+    def avatar_url(self):
+        md5_email = hashlib.md5(self.email.encode('utf-8')).hexdigest()
+        # indenticons by default `d=identicon`
+        # Avatars with ratings of G only `r=g`
+        # https://secure.gravatar.com/site/implement/images/
+        return f'//www.gravatar.com/avatar/{md5_email}?d=identicon&r=g'
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None

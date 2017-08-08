@@ -23,3 +23,10 @@ def test_create_cart_with_new_user(user):
     A cart should be created when a user is created
     """
     assert user.cart is not None
+
+
+def test_avatar_url(user):
+    """
+    User's avatar url should not change
+    """
+    assert user.avatar_url == "//www.gravatar.com/avatar/bc6a715808d9aae0ddeefb1e47e482a6?d=identicon&r=g"
