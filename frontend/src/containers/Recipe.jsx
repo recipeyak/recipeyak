@@ -16,15 +16,7 @@ import Recipe from '../Recipe.jsx'
 const mapStateToProps = (state, props) => {
   const id = props.match.params.id
   const recipe = state.recipes[id]
-  return {
-    id: recipe.id,
-    ingredients: recipe.ingredients,
-    steps: recipe.steps,
-    name: recipe.name,
-    author: recipe.author,
-    source: recipe.source,
-    time: recipe.time,
-  }
+  return recipe
 }
 
 const mapDispatchToProps = dispatch => {

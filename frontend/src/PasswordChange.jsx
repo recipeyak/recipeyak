@@ -15,14 +15,6 @@ class PasswordChange extends React.Component {
   }
 
   render () {
-    const { password, newPassword, newPasswordAgain } = this.state
-
-    const fieldsNotEmpty = password !== '' && newPassword !== '' && newPasswordAgain !== ''
-    const newPasswordFieldsSame = newPassword === newPasswordAgain
-    const newPasswordFieldsAreNew = newPassword !== password
-
-    const isValid = fieldsNotEmpty && newPasswordFieldsSame && newPasswordFieldsAreNew
-
     return (
       <section className="box">
 
@@ -50,7 +42,7 @@ class PasswordChange extends React.Component {
         </div>
 
         <p className="control">
-          <button disabled={!isValid} className="button is-primary">
+          <button className="button is-primary">
             Update
           </button>
         </p>

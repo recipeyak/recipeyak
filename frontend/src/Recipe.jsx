@@ -61,6 +61,7 @@ class Recipe extends React.Component {
       id,
       ingredients,
       steps,
+      tags,
       name,
       author,
       source,
@@ -86,6 +87,17 @@ class Recipe extends React.Component {
               name="name"
             />
           </div>
+
+          <section className="tags">
+            {
+              tags.map(tag =>
+                <span className="tag is-dark is-medium" key={ tag }>
+                  { tag }
+                </span>
+              )
+            }
+          </section>
+
           <div className="input-container">
 
             <EnhancedTextInput

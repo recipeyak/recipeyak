@@ -7,6 +7,11 @@ section.section {
   background-color: transparent;
 }
 
+// override bulma
+section.section {
+  padding: 1.5rem;
+}
+
 .flex-center {
   display: flex;
   justify-content: center;

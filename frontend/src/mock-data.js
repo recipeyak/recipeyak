@@ -38,7 +38,7 @@ export const defaultRecipes = {
     source: 'https://cooking.nytimes.com/recipes/1017850-soy-sauce-pickled-eggs',
     author: 'Sam Sifton',
     time: '2 hours',
-    tags: [],
+    tags: ['egg'],
     ingredients: [
       '1 cup Japanese soy sauce',
       '¼ cup mirin (sweetened Japanese rice wine)',
