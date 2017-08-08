@@ -71,12 +71,12 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2')}
-        ),
+            'fields': ('email', 'password1', 'password2')}),
     )
     search_fields = ('email',)
     ordering = ('email',)
     filter_horizontal = ()
+
 
 # Now register the new UserAdmin...
 admin.site.register(MyUser, UserAdmin)
@@ -84,16 +84,20 @@ admin.site.register(MyUser, UserAdmin)
 # unregister the Group model from admin.
 admin.site.unregister(Group)
 
+
 class IngredientsInLine(admin.TabularInline):
     model = Ingredient
     extra = 6
+
 
 class StepsInLine(admin.TabularInline):
     model = Step
     extra = 1
 
+
 class TagsInLine(admin.TabularInline):
     model = Tag
+
 
 class RecipeAdmin(admin.ModelAdmin):
     inlines = [
@@ -101,6 +105,7 @@ class RecipeAdmin(admin.ModelAdmin):
         StepsInLine,
         TagsInLine,
     ]
+
 
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Ingredient)
