@@ -12,28 +12,30 @@ const Settings = () => (
 
   <div className="container">
     <Navbar />
-    <h1 className="title is-2">Settings</h1>
-    <section className="columns">
-      <section className="column">
+    <section className="section">
+      <h1 className="title is-2">Settings</h1>
+      <section className="columns">
+        <section className="column">
 
-        <PasswordChange />
+          <PasswordChange />
+
+        </section>
+
+        <section className="column">
+
+          <UserManagement/>
+
+        </section>
+
+        <section className="column">
+
+          <RecipeImporter />
+
+          <ReceiptUploader />
+
+        </section>
 
       </section>
-
-      <section className="column">
-
-        <UserManagement/>
-
-      </section>
-
-      <section className="column">
-
-        <RecipeImporter />
-
-        <ReceiptUploader />
-
-      </section>
-
     </section>
   </div>
 )
