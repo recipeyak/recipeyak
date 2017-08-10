@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 import { recipe as recipeType } from './propTypes.js'
-import Navbar from './Nav.jsx'
+import Base from './Base.jsx'
 import Recipe from './RecipeItem.jsx'
 import IngredientsList from './IngredientsList.jsx'
 
@@ -34,31 +34,28 @@ const Cart = ({ addToCart, removeFromCart, cart = {}, recipes }) => {
   const cartRecipes = Object.keys(cart).map(recipeID => recipes[recipeID])
 
   return (
-    <div className="container">
-      <Navbar/>
-      <section className="section">
-        <div className="container">
-          <div className="columns">
-            <div className="column">
-              <h2 className="title">Recipes</h2>
-              { recipeItems }
-            </div>
-            <div className="column">
-              <h2 className="title">
-                <Link to="/ingredients">Shopping List</Link>
-              </h2>
-              {
-                cartHasItems
-                  ? <div className="box">
-                      <IngredientsList recipes={ cartRecipes } />
-                    </div>
-                  : <p className="no-recipes">No ingredients to list.</p>
-              }
-            </div>
+    <Base>
+      <div className="container">
+        <div className="columns">
+          <div className="column">
+            <h2 className="title">Recipes</h2>
+            { recipeItems }
+          </div>
+          <div className="column">
+            <h2 className="title">
+              <Link to="/ingredients">Shopping List</Link>
+            </h2>
+            {
+              cartHasItems
+                ? <div className="box">
+                    <IngredientsList recipes={ cartRecipes } />
+                  </div>
+                : <p className="no-recipes">No ingredients to list.</p>
+            }
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </Base>
   )
 }
 
