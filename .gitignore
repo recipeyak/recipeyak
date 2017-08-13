@@ -1,1 +1,4 @@
 mockup.pdf
+db.sqlite3
+venv/
+.cache/
