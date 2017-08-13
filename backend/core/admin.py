@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib import admin
+from django.utils.html import format_html
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
@@ -39,7 +40,12 @@ class UserChangeForm(forms.ModelForm):
     the user, but replaces the password field with admin's
     password hash display field.
     """
-    password = ReadOnlyPasswordHashField()
+    # https://stackoverflow.com/a/15630360/3555105
+    password = ReadOnlyPasswordHashField(
+        label="Password",
+        help_text=("Raw passwords are not stored, so there is no way to see "
+                   "this user's password, but you can change the password "
+                   "using <a href=\'../password/\'>this form</a>."))
 
     class Meta:
         model = MyUser
@@ -57,14 +63,21 @@ class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
+    # https://stackoverflow.com/a/40715745/3555105
+    def image_tag(self, obj):
+        return format_html(f'<img src="{obj.avatar_url}" />')
+    image_tag.short_description = 'User Avatar'
+
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
     list_display = ('email', 'is_admin')
     list_filter = ('is_admin',)
+    readonly_fields = ('last_updated', 'created', 'image_tag')
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Permissions', {'fields': ('is_admin',)}),
+        ('Important dates', {'fields': ('last_login', 'last_updated', 'created')})
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
