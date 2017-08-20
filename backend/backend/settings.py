@@ -37,8 +37,49 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'core.apps.CoreConfig',
+
+    'rest_framework',
+
+
+    # authentication / registration via django-rest-auth
+    # http://django-rest-auth.readthedocs.io/en/latest/installation.html
+    'rest_framework.authtoken',
+    'rest_auth',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'rest_auth.registration',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+}
+
+# required for django-rest-auth
+# http://django-rest-auth.readthedocs.io/en/latest/installation.html#registration-optional
+SITE_ID = 1
+
+# Required for using email and on username. http://django-allauth.readthedocs.io/en/latest/advanced.html
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'  # (="username" | "email" | "username_email)
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_VERIFICATION = None
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+
+# django-rest-auth: http://django-rest-auth.readthedocs.io/en/latest/configuration.html#configuration
+# override the default serializer since it uses username which we don't have
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'core.serializers.UserSerializer'
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -53,6 +94,8 @@ MIDDLEWARE = [
 AUTH_USER_MODEL = 'core.MyUser'
 
 ROOT_URLCONF = 'backend.urls'
+
+API_BASE_URL = 'api/v1'
 
 TEMPLATES = [
     {
