@@ -2,3 +2,4 @@ mockup.pdf
 db.sqlite3
 venv/
 .cache/
+.mypy_cache

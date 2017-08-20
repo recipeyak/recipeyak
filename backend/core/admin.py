@@ -75,7 +75,7 @@ class UserAdmin(BaseUserAdmin):
     list_filter = ('is_admin',)
     readonly_fields = ('last_updated', 'created', 'image_tag')
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
+        (None, {'fields': ('email', 'password', 'image_tag')}),
         ('Permissions', {'fields': ('is_admin',)}),
         ('Important dates', {'fields': ('last_login', 'last_updated', 'created')})
     )
