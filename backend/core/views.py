@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
-from rest_framework import viewsets, mixins
+from rest_framework import viewsets, mixins, status
+from rest_framework.response import Response
 
 from .models import Recipe
 from .serializers import RecipeSerializer
@@ -17,3 +18,6 @@ class RecipeViewSet(mixins.CreateModelMixin,
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     permission_classes = [IsOwnerOrAdmin]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

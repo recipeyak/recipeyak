@@ -55,4 +55,20 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('title', 'author', 'source', 'time', 'ingredients', 'steps', 'tags')
+        fields = ('id', 'title', 'author', 'source', 'time', 'ingredients', 'steps', 'tags')
+
+    def create(self, validated_data) -> Recipe:
+        """
+        Since this a nested serializer, we need to write a custom create method.
+        """
+        ingredients = validated_data.pop('ingredients')
+        steps = validated_data.pop('steps')
+        tags = validated_data.pop('tags')
+        recipe = Recipe.objects.create(**validated_data)
+        for ingredient in ingredients:
+            Ingredient.objects.create(recipe=recipe, **ingredient)
+        for step in steps:
+            Step.objects.create(recipe=recipe, **step)
+        for tag in tags:
+            Tag.objects.create(recipe=recipe, **tag)
+        return recipe

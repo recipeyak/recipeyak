@@ -20,27 +20,29 @@ def test_recipe_creation(client, user):
         'source': 'www.exmple.com',
         'time': '1 hour',
         'ingredients': [
-            '1 tablespoon black pepper',
-            '1 pound salt',
-            '1 pound fish',
+            {'text': '1 tablespoon black pepper'},
+            {'text': '1 pound salt'},
+            {'text': '1 pound fish'},
         ],
         'steps': [
-            'place fish in salt',
-            'cover with pepper',
-            'let rest for 1 year',
+            {'text': 'place fish in salt'},
+            {'text': 'cover with pepper'},
+            {'text': 'let rest for 1 year'},
         ],
         'tags': [
-            'oven',
+            {'text': 'oven'},
         ]
     }
 
     res = client.post(f'{BASE_URL}/recipes/', data)
     assert res.status_code == status.HTTP_201_CREATED
 
-    recipe_id = res.json.get('id')
+    recipe_id = res.json().get('id')
     res = client.get(f'{BASE_URL}/recipes/{recipe_id}/')
     assert res.status_code == status.HTTP_200_OK
-    assert res.json() == data
+
+    for key in data.keys():
+        assert data.get(key) == res.json().get(key)
 
 
 def test_recipe_deletion(client, user, recipe):
