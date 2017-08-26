@@ -4,3 +4,4 @@ venv/
 .cache/
 .mypy_cache
 .coverage
+.coverage.*

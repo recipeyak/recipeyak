@@ -15,11 +15,13 @@ djangorestframework==3.6.3
 docopt==0.6.2
 drf-nested-routers==0.90.0
 execnet==1.4.1
+flake8==3.4.1
 idna==2.5
 ipdb==0.10.3
 ipython==6.1.0
 ipython-genutils==0.2.0
 jedi==0.10.2
+mccabe==0.6.1
 mypy==0.521
 oauthlib==2.0.2
 pathtools==0.1.2
@@ -28,10 +30,13 @@ pickleshare==0.7.4
 prompt-toolkit==1.0.15
 ptyprocess==0.5.2
 py==1.4.34
+pycodestyle==2.3.1
+pyflakes==1.5.0
 Pygments==2.2.0
 pytest==3.2.0
 pytest-cov==2.5.1
 pytest-django==3.1.2
+pytest-flake8==0.8.1
 pytest-mypy==0.3.0
 pytest-watch==4.1.0
 pytest-xdist==1.18.2

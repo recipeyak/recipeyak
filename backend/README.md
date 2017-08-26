@@ -19,7 +19,7 @@ python manage.py runserver
 ## TEST
 ```bash
 # /backend/ (venv)
-ptw -- --cov-config .coveragerc --cov
+ptw -- --cov-config .coveragerc --cov --cov-report term:skip-covered --flake8
 # with type checking
-ptw -- --cov-config .coveragerc --cov --mypy
+ptw -- --cov-config .coveragerc --cov --cov-report term:skip-covered --flake8 --mypy
 ```
