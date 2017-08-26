@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  test_python:
     docker:
       - image: circleci/python:3.6.1
 
@@ -8,8 +8,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "backend/requirements.txt" }}
-            - v1-dependencies-
+            - backend-v1--dependencies-{{ checksum "backend/requirements.txt" }}
+            - backend-v1-dependencies-
       - run:
           name: install dependencies
           working_directory: backend
@@ -20,7 +20,7 @@ jobs:
       - save_cache:
           paths:
             - ./backend/venv
-          key: v1-dependencies-{{ checksum "backend/requirements.txt" }}
+          key: backend-v1-dependencies-{{ checksum "backend/requirements.txt" }}
       - run:
           name: run tests
           working_directory: backend
@@ -30,3 +30,32 @@ jobs:
             pytest --cov-config .coveragerc --cov --mypy --junit-xml ~/backend/reports/output.xml
       - store_test_results:
           path: ~/backend/reports
+  test_javascript:
+    docker:
+      - image: circleci/node:6
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - frontend-v1-dependencies-{{ checksum "frontend/package.json" }}
+            - frontend-v1-dependencies-
+      - run:
+          name: install dependencies
+          working_directory: frontend
+          command: |
+            npm install
+      - save_cache:
+          paths:
+            - ./frontend/node_modules
+          key: frontend-v1-dependencies-{{ checksum "frontend/package.json" }}
+      - run:
+          name: run tests
+          working_directory: backend
+          command: npm run test
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test_python
+      - test_javascript
