@@ -1,5 +1,3 @@
-from django.shortcuts import render
-
 from rest_framework import viewsets, mixins, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -29,14 +27,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-class StepViewSet(mixins.CreateModelMixin,
-                  viewsets.GenericViewSet):
+class StepViewSet(viewsets.ModelViewSet):
 
     queryset = Step.objects.all()
     serializer_class = StepSerializer
-    permission_classes = [IsOwnerOrAdmin]
+    permission_classes = [IsAuthenticated]
 
     def create(self, request, recipe_pk=None):
+        """
+        create the step and attach it to the correct recipe
+        """
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             recipe = Recipe.objects.get(pk=recipe_pk)

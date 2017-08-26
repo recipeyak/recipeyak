@@ -21,7 +21,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ingredient
-        fields = ('text',)
+        fields = ('id', 'text',)
 
 
 class StepSerializer(serializers.ModelSerializer):
@@ -31,7 +31,7 @@ class StepSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Step
-        fields = ('text',)
+        fields = ('id', 'text',)
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -41,7 +41,7 @@ class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = ('text',)
+        fields = ('id', 'text',)
 
 
 class RecipeSerializer(serializers.ModelSerializer):
