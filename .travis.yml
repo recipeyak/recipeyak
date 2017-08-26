@@ -1,7 +1,0 @@
-language: node_js
-node_js:
-  - 6
-  - 7
-env:
-  - TEST_DIR=frontend
-script: cd $TEST_DIR && npm install && npm test
