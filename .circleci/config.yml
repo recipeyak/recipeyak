@@ -4,18 +4,19 @@ jobs:
     docker:
       - image: circleci/python:3.6.1
 
-    working_directory: ~/recipe-manager/backend
-
     steps:
       - checkout
       - run:
           name: install dependencies
+          working_directory: backend
           command: |
+            ls
             python3 -m venv venv
             . venv/bin/activate
             pip install -r requirements.txt
       - run:
           name: run tests
+          working_directory: backend
           command: |
             . venv/bin/activate
             pytest
