@@ -14,7 +14,6 @@ jobs:
           name: install dependencies
           working_directory: backend
           command: |
-            ls
             python3 -m venv venv
             . venv/bin/activate
             pip install -r requirements.txt
@@ -27,4 +26,7 @@ jobs:
           working_directory: backend
           command: |
             . venv/bin/activate
-            pytest
+            mkdir reports
+            pytest --cov-config .coveragerc --cov --junit-xml reports/output.xml
+      - store_test_results:
+          path: ~/backend/reports
