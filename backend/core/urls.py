@@ -3,13 +3,14 @@ from django.conf.urls import url, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers
 
-from .views import RecipeViewSet, StepViewSet
+from .views import RecipeViewSet, StepViewSet, TagViewSet
 
 router = DefaultRouter()
 router.register(r'recipes', RecipeViewSet, base_name='recipes')
 
 recipes_router = routers.NestedSimpleRouter(router, r'recipes', lookup='recipe')
 recipes_router.register(r'steps', StepViewSet, base_name='recipe-step')
+recipes_router.register(r'tags', TagViewSet, base_name='recipe-tag')
 
 urlpatterns = [
     # django-rest-auth related urls

@@ -184,7 +184,7 @@ def test_updating_ingredient_of_recipe(client, user, recipe):
     res = client.get(f'{BASE_URL}/recipes/{recipe.id}/ingredients/{ingredient_id}/')
     assert res.status_code == status.HTTP_200_OK
 
-    assert res.json().get('title') == ingredient.text, "ingredient didn't update"
+    assert res.json().get('text') == ingredient.text, "ingredient didn't update"
 
 
 def test_deleting_ingredient_from_recipe(client, user, recipe):
@@ -226,7 +226,7 @@ def test_adding_tag_to_recipe(client, user, recipe):
     res = client.get(f'{BASE_URL}/recipes/{recipe.id}/')
     assert res.status_code == status.HTTP_200_OK
 
-    assert tag.text in (tag.get('text') for tag in res.json().get('tags')), \
+    assert tag.get('text') in (tag.get('text') for tag in res.json().get('tags')), \
         'tag was not in the tags of the recipe'
 
 
@@ -236,9 +236,7 @@ def test_updating_tag_of_recipe(client, user, recipe):
     """
     client.force_authenticate(user)
 
-    tag_id = recipe.tags[0]
-
-    assert tag_id is not None
+    tag_id = recipe.tags[0].id
 
     tag = {
         'text': 'An updated tag',
@@ -250,7 +248,7 @@ def test_updating_tag_of_recipe(client, user, recipe):
     res = client.get(f'{BASE_URL}/recipes/{recipe.id}/tags/{tag_id}/')
     assert res.status_code == status.HTTP_200_OK
 
-    assert res.json().get('title') == tag.text, "tag didn't update"
+    assert res.json().get('text') == tag.get('text'), "tag didn't update"
 
 
 def test_deleting_tag_from_recipe(client, user, recipe):
@@ -259,9 +257,7 @@ def test_deleting_tag_from_recipe(client, user, recipe):
     """
     client.force_authenticate(user)
 
-    tag_id = recipe.tags[0]
-
-    assert tag_id is not None
+    tag_id = recipe.tags[0].id
 
     res = client.delete(f'{BASE_URL}/recipes/{recipe.id}/tags/{tag_id}/')
     assert res.status_code == status.HTTP_204_NO_CONTENT
