@@ -1,4 +1,5 @@
 import hashlib
+from typing import List
 
 from django.db import models
 from django.conf import settings
@@ -40,7 +41,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     last_updated = models.DateField(auto_now=True)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS: List[str] = []
 
     objects = MyUserManager()
 

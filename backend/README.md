@@ -19,5 +19,7 @@ python manage.py runserver
 ## TEST
 ```bash
 # /backend/ (venv)
-ptw
+ptw -- --cov-config .coveragerc --cov
+# with type checking
+ptw -- --cov-config .coveragerc --cov --mypy
 ```

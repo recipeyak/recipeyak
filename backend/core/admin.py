@@ -66,7 +66,7 @@ class UserAdmin(BaseUserAdmin):
     # https://stackoverflow.com/a/40715745/3555105
     def image_tag(self, obj):
         return format_html(f'<img src="{obj.avatar_url}" />')
-    image_tag.short_description = 'User Avatar'
+    image_tag.short_description = 'User Avatar'  # type: ignore
 
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin

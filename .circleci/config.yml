@@ -27,6 +27,6 @@ jobs:
           command: |
             . venv/bin/activate
             mkdir -p ~/backend/reports
-            pytest --cov-config .coveragerc --cov --junit-xml ~/backend/reports/output.xml
+            pytest --cov-config .coveragerc --cov --mypy --junit-xml ~/backend/reports/output.xml
       - store_test_results:
           path: ~/backend/reports
