@@ -51,7 +51,7 @@ jobs:
           key: frontend-v1-dependencies-{{ checksum "frontend/package.json" }}
       - run:
           name: run tests
-          working_directory: backend
+          working_directory: frontend
           command: npm run test
 workflows:
   version: 2

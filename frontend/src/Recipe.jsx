@@ -90,7 +90,7 @@ class Recipe extends React.Component {
 
         <section className="tags">
           {
-            tags.map(tag =>
+            tags && tags.map(tag =>
               <span className="tag is-dark is-medium" key={ tag }>
                 { tag }
               </span>
