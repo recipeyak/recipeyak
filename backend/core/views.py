@@ -19,10 +19,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
         enables us to return a 404 if the person doesn't have access to the
         item instead of throwing a 403 as default
         """
-        if self.request.user.is_admin:
+        user = self.request.user
+        if user.is_admin:
             return Recipe.objects.all()
         else:
-            return Recipe.objects.filter(user=self.request.user)
+            return Recipe.objects.filter(user=user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -36,7 +37,7 @@ class StepViewSet(mixins.CreateModelMixin,
     permission_classes = [IsOwnerOrAdmin]
 
     def create(self, request, recipe_pk=None):
-        serializer = StepSerializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             recipe = Recipe.objects.get(pk=recipe_pk)
             serializer.save(recipe=recipe)
