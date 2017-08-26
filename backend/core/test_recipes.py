@@ -41,8 +41,16 @@ def test_recipe_creation(client, user):
     res = client.get(f'{BASE_URL}/recipes/{recipe_id}/')
     assert res.status_code == status.HTTP_200_OK
 
-    for key in data.keys():
+    for key in ['title', 'author', 'source']:
         assert data.get(key) == res.json().get(key)
+
+    # compare the nested items and ingore the ids as they don't exist them in the
+    # initial data
+    for key in ['ingredients', 'steps', 'tags']:
+        items = data.get(key)
+        new_items = res.json().get(key)
+        for item, new_item in zip(items, new_items):
+            assert item.get('text') == new_item.get('text')
 
 
 def test_recipe_deletion(client, user, recipe):
