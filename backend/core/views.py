@@ -2,22 +2,27 @@ from django.shortcuts import render
 
 from rest_framework import viewsets, mixins, status
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 from .models import Recipe, Step
 from .serializers import RecipeSerializer, StepSerializer
 from .permissions import IsOwnerOrAdmin
 
 
-class RecipeViewSet(mixins.CreateModelMixin,
-                    mixins.RetrieveModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
-                    mixins.ListModelMixin,
-                    viewsets.GenericViewSet):
+class RecipeViewSet(viewsets.ModelViewSet):
 
-    queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
-    permission_classes = [IsOwnerOrAdmin]
+    permission_classes = [IsAuthenticated, IsOwnerOrAdmin]
+
+    def get_queryset(self):
+        """
+        enables us to return a 404 if the person doesn't have access to the
+        item instead of throwing a 403 as default
+        """
+        if self.request.user.is_admin:
+            return Recipe.objects.all()
+        else:
+            return Recipe.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

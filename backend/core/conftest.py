@@ -16,6 +16,16 @@ def user():
 
 
 @pytest.fixture
+def user2():
+    email = 'james@smith.org'
+    password = 'testing123'
+    user = MyUser.objects.create(email=email)
+    user.set_password(password)
+    user.save()
+    return user
+
+
+@pytest.fixture
 def client():
     return APIClient()
 
