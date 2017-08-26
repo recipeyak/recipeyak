@@ -92,7 +92,7 @@ def test_adding_step_to_recipe(client, user, recipe):
     res = client.get(f'{BASE_URL}/recipes/{recipe.id}/')
     assert res.status_code == status.HTTP_200_OK
 
-    assert step.text in (step.get('text') for step in res.json().get('steps')), \
+    assert step.get('text') in (step.get('text') for step in res.json().get('steps')), \
         'step was not in the steps of the recipe'
 
 

@@ -12,12 +12,14 @@ django-allauth==0.32.0
 django-rest-auth==0.9.1
 djangorestframework==3.6.3
 docopt==0.6.2
+drf-nested-routers==0.90.0
 execnet==1.4.1
 idna==2.5
 ipdb==0.10.3
 ipython==6.1.0
 ipython-genutils==0.2.0
 jedi==0.10.2
+mypy==0.521
 oauthlib==2.0.2
 pathtools==0.1.2
 pexpect==4.2.1
@@ -38,6 +40,7 @@ requests-oauthlib==0.8.0
 simplegeneric==0.8.1
 six==1.10.0
 traitlets==4.3.2
+typed-ast==1.0.4
 urllib3==1.22
 watchdog==0.8.3
 wcwidth==0.1.7
