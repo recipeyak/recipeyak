@@ -1,9 +1,9 @@
-from rest_framework import viewsets, mixins, status
+from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from .models import Recipe, Step
-from .serializers import RecipeSerializer, StepSerializer
+from .models import Recipe, Step, Tag
+from .serializers import RecipeSerializer, StepSerializer, TagSerializer
 from .permissions import IsOwnerOrAdmin
 
 
@@ -36,6 +36,25 @@ class StepViewSet(viewsets.ModelViewSet):
     def create(self, request, recipe_pk=None):
         """
         create the step and attach it to the correct recipe
+        """
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            recipe = Recipe.objects.get(pk=recipe_pk)
+            serializer.save(recipe=recipe)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TagViewSet(viewsets.ModelViewSet):
+
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request, recipe_pk=None):
+        """
+        create the tag and attach it to the correct recipe
         """
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
