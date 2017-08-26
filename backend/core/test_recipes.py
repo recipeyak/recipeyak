@@ -160,7 +160,7 @@ def test_adding_ingredient_to_recipe(client, user, recipe):
     res = client.get(f'{BASE_URL}/recipes/{recipe.id}/')
     assert res.status_code == status.HTTP_200_OK
 
-    assert ingredient.text in (ingredient.get('text') for ingredient in res.json().get('ingredients')), \
+    assert ingredient.get('text') in (ingredient.get('text') for ingredient in res.json().get('ingredients')), \
         'ingredient was not in the ingredients of the recipe'
 
 
@@ -170,9 +170,7 @@ def test_updating_ingredient_of_recipe(client, user, recipe):
     """
     client.force_authenticate(user)
 
-    ingredient_id = recipe.ingredients[0]
-
-    assert ingredient_id is not None
+    ingredient_id = recipe.ingredients[0].id
 
     ingredient = {
         'text': 'An updated ingredient',
@@ -184,7 +182,7 @@ def test_updating_ingredient_of_recipe(client, user, recipe):
     res = client.get(f'{BASE_URL}/recipes/{recipe.id}/ingredients/{ingredient_id}/')
     assert res.status_code == status.HTTP_200_OK
 
-    assert res.json().get('text') == ingredient.text, "ingredient didn't update"
+    assert res.json().get('text') == ingredient.get('text'), "ingredient didn't update"
 
 
 def test_deleting_ingredient_from_recipe(client, user, recipe):
@@ -193,9 +191,7 @@ def test_deleting_ingredient_from_recipe(client, user, recipe):
     """
     client.force_authenticate(user)
 
-    ingredient_id = recipe.ingredients[0]
-
-    assert ingredient_id is not None
+    ingredient_id = recipe.ingredients[0].id
 
     res = client.delete(f'{BASE_URL}/recipes/{recipe.id}/ingredients/{ingredient_id}/')
     assert res.status_code == status.HTTP_204_NO_CONTENT
