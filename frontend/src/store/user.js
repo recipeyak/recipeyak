@@ -3,12 +3,17 @@ import {
   LOG_OUT,
 } from './actionTypes.js'
 
-export const user = (state = {}, action) => {
+const defaultState = {
+  loggedIn: false,
+  token: null,
+}
+
+export const user = (state = defaultState, action) => {
   switch (action.type) {
     case LOG_IN:
-      return Object.assign({}, state, { loggedIn: true })
+      return { ...state, loggedIn: true, token: action.token }
     case LOG_OUT:
-      return Object.assign({}, state, { loggedIn: false })
+      return { ...state, loggedIn: false, token: null }
     default:
       return state
   }

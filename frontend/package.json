@@ -55,6 +55,7 @@
     "whatwg-fetch": "2.0.2"
   },
   "dependencies": {
+    "axios": "^0.16.2",
     "bulma": "^0.4.2",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
@@ -70,6 +71,7 @@
     "test": "node scripts/test.js --env=jsdom",
     "test-cov": "node scripts/test.js --env=jsdom --coverage"
   },
+  "proxy": "http://localhost:8000",
   "jest": {
     "setupTestFrameworkScriptFile": "./node_modules/jest-enzyme/lib/index.js",
     "collectCoverageFrom": [

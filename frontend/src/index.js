@@ -18,5 +18,5 @@ if (rootElement != null) {
     rootElement
   )
 } else {
-  console.log('error finding root element')
+  console.error('error finding root element')
 }

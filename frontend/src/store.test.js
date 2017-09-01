@@ -14,12 +14,16 @@ import {
 describe('Store', () => {
   it('Should handle user actions', () => {
     store.dispatch(login())
+
     expect(store.getState().user).toEqual({
       loggedIn: true,
     })
+
     store.dispatch(logout())
+
     expect(store.getState().user).toEqual({
       loggedIn: false,
+      token: null,
     })
   })
 

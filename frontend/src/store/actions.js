@@ -15,9 +15,12 @@ import {
   UPDATE_RECIPE_TIME,
 } from './actionTypes.js'
 
-export const login = () => {
+import axios from 'axios'
+
+export const login = token => {
   return {
     type: LOG_IN,
+    token,
   }
 }
 
@@ -116,5 +119,21 @@ export const deleteStep = (id, index) => {
     type: DELETE_STEP,
     id,
     index,
+  }
+}
+
+function sendLoginInfo (email, password) {
+  return axios.post('/api/v1/rest-auth/login/', { email, password })
+}
+
+export const logUserIn = (email, password) => {
+  return function (dispatch) {
+    sendLoginInfo(email, password)
+      .then(res => {
+        dispatch(login(res.data.key))
+      })
+      .catch(e => {
+        console.warn('error logging in ', e)
+      })
   }
 }
