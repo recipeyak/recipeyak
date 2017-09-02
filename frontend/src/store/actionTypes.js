@@ -1,4 +1,6 @@
 export const LOG_IN = 'LOG_IN'
+export const LOADING_LOGIN = 'LOADING_LOGIN'
+
 export const LOG_OUT = 'LOG_OUT'
 
 export const ADD_TO_CART = 'ADD_TO_CART'

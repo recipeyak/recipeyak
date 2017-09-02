@@ -18,8 +18,13 @@ class Login extends React.Component {
     this.setState({ [e.target.name]: e.target.value })
   }
 
+  handleLogin (e) {
+    e.preventDefault()
+    this.props.login(this.state.email, this.state.password1)
+  }
+
   render () {
-    const { location, login } = this.props
+    const { location, loading } = this.props
     const passwordConfirm = location.pathname === '/signup' &&
       <div className="field">
         <label htmlFor="password2" className="label">Password Again</label>
@@ -61,44 +66,48 @@ class Login extends React.Component {
                   </ul>
                 </div>
 
-                <div className="field">
-                  <label className="label">Email</label>
-                  <p className="control">
-                    <input
-                      onChange={ e => this.handleInputChange(e) }
-                      className="input"
-                      name="email"
-                      type="email"
-                      placeholder="rick.sanchez@me.com"/>
-                  </p>
-                </div>
+                <form onSubmit={e => this.handleLogin(e)}>
+                  <div className="field">
+                    <label className="label">Email</label>
+                    <p className="control">
+                      <input
+                        onChange={ e => this.handleInputChange(e) }
+                        className="input"
+                        autoFocus
+                        name="email"
+                        type="email"
+                        placeholder="rick.sanchez@me.com"/>
+                    </p>
+                  </div>
 
-                <div className="field">
-                  <label htmlFor="password1" className="label">Password</label>
-                  <p className="control">
-                    <input
-                      onChange={ e => this.handleInputChange(e) }
-                      className="input"
-                      type="password"
-                      name="password1"
-                      id="password1"
-                      placeholder="Super secret password."/>
-                  </p>
-                </div>
+                  <div className="field">
+                    <label htmlFor="password1" className="label">Password</label>
+                    <p className="control">
+                      <input
+                        onChange={ e => this.handleInputChange(e) }
+                        className="input"
+                        type="password"
+                        name="password1"
+                        id="password1"
+                        placeholder="Super secret password."/>
+                    </p>
+                  </div>
 
-                { passwordConfirm }
+                  { passwordConfirm }
 
-                <div className="field flex-space-between">
-                  <p className="control">
-                    <input
-                      onClick={ () => login(this.state.email, this.state.password1) }
-                      type="submit"
-                      disabled={ !validLogin }
-                      className="button is-primary"
-                      value="Submit"/>
-                  </p>
-                  <Link to="/password-reset" className="button is-link">Forgot Password?</Link>
-                </div>
+                  <div className="field flex-space-between">
+                    <p className="control">
+                      <button
+                        type="submit"
+                        disabled={ !validLogin }
+                        className={ 'button is-primary ' + (loading ? 'is-loading' : '')}>
+                        Submit
+                      </button>
+                    </p>
+                    <Link to="/password-reset" className="button is-link">Forgot Password?</Link>
+                  </div>
+
+                  </form>
               </div>
             </div>
           </div>

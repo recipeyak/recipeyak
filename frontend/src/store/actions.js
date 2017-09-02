@@ -13,6 +13,7 @@ import {
   UPDATE_RECIPE_SOURCE,
   UPDATE_RECIPE_AUTHOR,
   UPDATE_RECIPE_TIME,
+  LOADING_LOGIN,
 } from './actionTypes.js'
 
 import axios from 'axios'
@@ -122,18 +123,28 @@ export const deleteStep = (id, index) => {
   }
 }
 
+export const loadingLogin = val => {
+  return {
+    type: LOADING_LOGIN,
+    val,
+  }
+}
+
 function sendLoginInfo (email, password) {
   return axios.post('/api/v1/rest-auth/login/', { email, password })
 }
 
 export const logUserIn = (email, password) => {
   return function (dispatch) {
+    dispatch(loadingLogin(true))
     sendLoginInfo(email, password)
       .then(res => {
         dispatch(login(res.data.key))
+        dispatch(loadingLogin(false))
       })
-      .catch(e => {
-        console.warn('error logging in ', e)
+      .catch(err => {
+        dispatch(loadingLogin(false))
+        console.warn('error with login', err)
       })
   }
 }

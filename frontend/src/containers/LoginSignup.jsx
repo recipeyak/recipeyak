@@ -5,14 +5,18 @@ import LoginSignup from '../LoginSignup.jsx'
 
 const mapDispatchToProps = dispatch => {
   return {
-    login: (email, password) => {
-      dispatch(logUserIn(email, password))
-    },
+    login: (email, password) => dispatch(logUserIn(email, password)),
+  }
+}
+
+const mapStateToProps = state => {
+  return {
+    loading: state.loading.login,
   }
 }
 
 const ConnectedLoginSignup = connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(LoginSignup)
 
