@@ -72,11 +72,12 @@ class UserAdmin(BaseUserAdmin):
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
     list_display = ('email', 'is_admin')
-    list_filter = ('is_admin',)
+    list_filter = ('is_superuser', 'is_admin', 'is_active', 'groups')
     readonly_fields = ('last_updated', 'created', 'image_tag')
     fieldsets = (
         (None, {'fields': ('email', 'password', 'image_tag')}),
-        ('Permissions', {'fields': ('is_admin',)}),
+        ('Permissions', {'fields': ('is_admin', 'is_active', 'is_superuser',
+                                    'groups', 'user_permissions')}),
         ('Important dates', {'fields': ('last_login', 'last_updated', 'created')})
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -88,7 +89,7 @@ class UserAdmin(BaseUserAdmin):
     )
     search_fields = ('email',)
     ordering = ('email',)
-    filter_horizontal = ()
+    filter_horizontal = ('groups', 'user_permissions',)
 
 
 # Now register the new UserAdmin...
