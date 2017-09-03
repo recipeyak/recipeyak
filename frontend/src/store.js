@@ -5,6 +5,7 @@ import cart from './store/cart.js'
 import { recipes } from './store/recipes.js'
 import user from './store/user.js'
 import loading from './store/reducers/loading.js'
+import error from './store/reducers/error.js'
 
 import { defaultRecipes } from './mock-data.js'
 
@@ -13,6 +14,7 @@ export const recipeApp = combineReducers({
   recipes,
   cart,
   loading,
+  error,
 })
 
 const defaultData = {

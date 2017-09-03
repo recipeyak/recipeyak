@@ -1,18 +1,18 @@
 import {
-  SET_LOADING_LOGIN,
+  SET_ERROR_LOGIN,
 } from '../actionTypes.js'
 
 const defaultState = {
   login: false,
 }
 
-const loading = (state = defaultState, action) => {
+const error = (state = defaultState, action) => {
   switch (action.type) {
-    case SET_LOADING_LOGIN:
+    case SET_ERROR_LOGIN:
       return { ...state, login: action.val }
     default:
       return state
   }
 }
 
-export default loading
+export default error

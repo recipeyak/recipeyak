@@ -95,6 +95,10 @@ class Login extends React.Component {
 
                   { passwordConfirm }
 
+                  { !!this.props.error &&
+                    <p className="help is-danger">Error with login</p>
+                  }
+
                   <div className="field flex-space-between">
                     <p className="control">
                       <button
@@ -103,6 +107,7 @@ class Login extends React.Component {
                         className={ 'button is-primary ' + (loading ? 'is-loading' : '')}>
                         Submit
                       </button>
+
                     </p>
                     <Link to="/password-reset" className="button is-link">Forgot Password?</Link>
                   </div>

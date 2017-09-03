@@ -13,7 +13,8 @@ import {
   UPDATE_RECIPE_SOURCE,
   UPDATE_RECIPE_AUTHOR,
   UPDATE_RECIPE_TIME,
-  LOADING_LOGIN,
+  SET_LOADING_LOGIN,
+  SET_ERROR_LOGIN,
 } from './actionTypes.js'
 
 import axios from 'axios'
@@ -123,9 +124,16 @@ export const deleteStep = (id, index) => {
   }
 }
 
-export const loadingLogin = val => {
+export const setErrorLogin = val => {
   return {
-    type: LOADING_LOGIN,
+    type: SET_ERROR_LOGIN,
+    val,
+  }
+}
+
+export const setLoadingLogin = val => {
+  return {
+    type: SET_LOADING_LOGIN,
     val,
   }
 }
@@ -136,14 +144,16 @@ function sendLoginInfo (email, password) {
 
 export const logUserIn = (email, password) => {
   return function (dispatch) {
-    dispatch(loadingLogin(true))
+    dispatch(setLoadingLogin(true))
     sendLoginInfo(email, password)
       .then(res => {
         dispatch(login(res.data.key))
-        dispatch(loadingLogin(false))
+        dispatch(setLoadingLogin(false))
+        dispatch(setErrorLogin(false))
       })
       .catch(err => {
-        dispatch(loadingLogin(false))
+        dispatch(setLoadingLogin(false))
+        dispatch(setErrorLogin(true))
         console.warn('error with login', err)
       })
   }

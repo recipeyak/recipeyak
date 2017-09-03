@@ -1,10 +1,10 @@
 import loading from './loading.js'
 import {
-  loadingLogin,
+  setLoadingLogin,
 } from '../actions.js'
 
 describe('loading', () => {
-  it('Adds recipe to recipe list', () => {
+  it('sets loading login', () => {
     const notLoadingState = {
       login: false,
     }
@@ -14,11 +14,11 @@ describe('loading', () => {
     }
 
     expect(
-      loading(notLoadingState, loadingLogin(true))
+      loading(notLoadingState, setLoadingLogin(true))
       ).toEqual(loadingState)
 
     expect(
-      loading(loadingState, loadingLogin(false))
+      loading(loadingState, setLoadingLogin(false))
       ).toEqual(notLoadingState)
   })
 })

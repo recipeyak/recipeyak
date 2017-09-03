@@ -12,6 +12,7 @@ const mapDispatchToProps = dispatch => {
 const mapStateToProps = state => {
   return {
     loading: state.loading.login,
+    error: state.error.login,
   }
 }
 

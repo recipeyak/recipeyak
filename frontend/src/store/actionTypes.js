@@ -1,5 +1,6 @@
 export const LOG_IN = 'LOG_IN'
-export const LOADING_LOGIN = 'LOADING_LOGIN'
+export const SET_LOADING_LOGIN = 'SET_LOADING_LOGIN'
+export const SET_ERROR_LOGIN = 'SET_ERROR_LOGIN'
 
 export const LOG_OUT = 'LOG_OUT'
 
