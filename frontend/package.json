@@ -57,10 +57,12 @@
   "dependencies": {
     "axios": "^0.16.2",
     "bulma": "^0.4.2",
+    "history": "^4.7.2",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-redux": "^5.0.5",
     "react-router-dom": "^4.1.1",
+    "react-router-redux": "^5.0.0-alpha.6",
     "react-textarea-autosize": "5.0.6",
     "redux": "^3.7.1",
     "redux-thunk": "^2.2.0"

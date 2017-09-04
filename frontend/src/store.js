@@ -1,6 +1,12 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 
+import createHistory from 'history/createBrowserHistory'
+import {
+  routerReducer,
+  routerMiddleware,
+} from 'react-router-redux'
+
 import cart from './store/cart.js'
 import { recipes } from './store/recipes.js'
 import user from './store/user.js'
@@ -15,6 +21,7 @@ export const recipeApp = combineReducers({
   cart,
   loading,
   error,
+  routerReducer,
 })
 
 const defaultData = {
@@ -25,13 +32,18 @@ const defaultData = {
   },
 }
 
+export const history = createHistory()
+const router = routerMiddleware(history)
+
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 // A "hydrated" store is nice for UI development
 const store = createStore(
   recipeApp,
   defaultData,
-  composeEnhancers(applyMiddleware(thunk))
+  composeEnhancers(
+    applyMiddleware(thunk, router),
+  )
 )
 
 // We need an empty store for the unit tests

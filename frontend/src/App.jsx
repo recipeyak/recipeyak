@@ -1,9 +1,13 @@
 import React from 'react'
 import {
-  BrowserRouter as Router,
   Route,
   Switch,
 } from 'react-router-dom'
+import {
+  ConnectedRouter,
+} from 'react-router-redux'
+
+import { history } from './store.js'
 
 import Home from './Home.jsx'
 import Login from './containers/LoginSignup.jsx'
@@ -19,7 +23,7 @@ import AddRecipe from './containers/AddRecipe.jsx'
 import './main.scss'
 
 const Base = () => (
-  <Router>
+  <ConnectedRouter history={history}>
     <Switch>
       <Route exact path="/" component={ Home }/>
       <Route path="/login" component={ Login }/>
@@ -33,6 +37,6 @@ const Base = () => (
       <Route path="/settings" component={ Settings }/>
       <Route component={ NoMatch }/>
     </Switch>
-  </Router>
+  </ConnectedRouter>
 )
 export default Base

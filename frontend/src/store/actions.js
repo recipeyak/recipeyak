@@ -17,6 +17,8 @@ import {
   SET_ERROR_LOGIN,
 } from './actionTypes.js'
 
+import { push } from 'react-router-redux'
+
 import axios from 'axios'
 
 export const login = token => {
@@ -150,6 +152,7 @@ export const logUserIn = (email, password) => {
         dispatch(login(res.data.key))
         dispatch(setLoadingLogin(false))
         dispatch(setErrorLogin(false))
+        dispatch(push('/'))
       })
       .catch(err => {
         dispatch(setLoadingLogin(false))
