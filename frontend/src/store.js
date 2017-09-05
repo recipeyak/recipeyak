@@ -1,5 +1,6 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
+import throttle from 'lodash/throttle'
 
 import createHistory from 'history/createBrowserHistory'
 import {
@@ -24,6 +25,14 @@ export const recipeApp = combineReducers({
   routerReducer,
 })
 
+const getToken = () => {
+  try {
+    return localStorage.getItem('token')
+  } catch (e) {
+    return null
+  }
+}
+
 const defaultData = {
   recipes: defaultRecipes,
   cart: {
@@ -31,7 +40,7 @@ const defaultData = {
     2: 0,
   },
   user: {
-    token: localStorage.getItem('token'),
+    token: getToken(),
   },
 }
 
@@ -48,6 +57,14 @@ export const store = createStore(
     applyMiddleware(thunk, router),
   )
 )
+
+store.subscribe(throttle(() => {
+  try {
+    localStorage.setItem('token', store.getState().user.token)
+  } catch (e) {
+    console.warn('failed to set store.user.token in localStorage')
+  }
+}, 1000))
 
 // We need an empty store for the unit tests
 export const emptyStore = createStore(recipeApp)
