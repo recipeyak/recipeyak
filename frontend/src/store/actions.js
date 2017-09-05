@@ -29,6 +29,7 @@ export const login = token => {
 }
 
 export const logout = () => {
+  localStorage.removeItem('token')
   return {
     type: LOG_OUT,
   }
@@ -150,9 +151,10 @@ export const logUserIn = (email, password) => {
     sendLoginInfo(email, password)
       .then(res => {
         dispatch(login(res.data.key))
+        localStorage.setItem('token', res.data.key)
         dispatch(setLoadingLogin(false))
         dispatch(setErrorLogin(false))
-        dispatch(push('/'))
+        dispatch(push('/recipes'))
       })
       .catch(err => {
         dispatch(setLoadingLogin(false))

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Navbar from './Nav.jsx'
+import Navbar from './containers/Nav.jsx'
 
 const Base = ({ children }) => (
   <div className="container">

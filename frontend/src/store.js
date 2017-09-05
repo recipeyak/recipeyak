@@ -30,6 +30,9 @@ const defaultData = {
     1: 4,
     2: 0,
   },
+  user: {
+    token: localStorage.getItem('token'),
+  },
 }
 
 export const history = createHistory()
@@ -38,7 +41,7 @@ const router = routerMiddleware(history)
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 // A "hydrated" store is nice for UI development
-const store = createStore(
+export const store = createStore(
   recipeApp,
   defaultData,
   composeEnhancers(
