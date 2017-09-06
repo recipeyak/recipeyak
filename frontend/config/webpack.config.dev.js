@@ -151,7 +151,8 @@ module.exports = {
           {
             loader: 'postcss-loader',
             options: {
-              plugins: loader => [
+              plugins: () => [
+                require('postcss-flexbugs-fixes'),
                 autoprefixer({
                   browsers: [
                     '>1%',
@@ -159,6 +160,8 @@ module.exports = {
                     'Firefox ESR',
                     'not ie < 9', // React doesn't support IE8 anyway
                   ],
+                  // don't include unused previosu versons of the flexbox spec
+                  flexbox: 'no-2009',
                 }),
               ],
             },
