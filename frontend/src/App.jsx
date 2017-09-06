@@ -1,12 +1,17 @@
 import React from 'react'
 import {
-  BrowserRouter as Router,
   Route,
   Switch,
+  Redirect,
 } from 'react-router-dom'
+import {
+  ConnectedRouter,
+} from 'react-router-redux'
 
-import Home from './Home.jsx'
-import Login from './LoginSignup.jsx'
+import { history, store } from './store.js'
+
+import Home from './containers/Home.jsx'
+import Login from './containers/LoginSignup.jsx'
 import RecipeList from './containers/RecipeList.jsx'
 import NoMatch from './NoMatch.jsx'
 import Ingredients from './containers/IngredientsList.jsx'
@@ -18,21 +23,34 @@ import AddRecipe from './containers/AddRecipe.jsx'
 
 import './main.scss'
 
+const isAuthenticated = () => store.getState().user.token != null
+
+const PrivateRoute = ({ component: Component, ...rest }) => (
+  <Route {...rest} render={props => {
+    return isAuthenticated()
+      ? <Component {...props}/>
+      : <Redirect to={{
+        pathname: '/login',
+        state: { from: props.location },
+      }}/>
+  }}/>
+)
+
 const Base = () => (
-  <Router>
+  <ConnectedRouter history={history}>
     <Switch>
       <Route exact path="/" component={ Home }/>
-      <Route path="/login" component={ Login }/>
-      <Route exact path="/recipes/add" component={ AddRecipe }/>
-      <Route path="/password-reset" component={ PasswordReset }/>
-      <Route path="/signup" component={ Login }/>
-      <Route exact path="/recipes/" component={ RecipeList }/>
-      <Route path="/cart" component={ Cart }/>
-      <Route path="/ingredients" component={ Ingredients }/>
-      <Route path="/recipes/:id" component={ Recipe }/>
-      <Route path="/settings" component={ Settings }/>
+      <Route exact path="/login" component={ Login }/>
+      <PrivateRoute exact path="/recipes/add" component={ AddRecipe }/>
+      <Route exact path="/password-reset" component={ PasswordReset }/>
+      <Route exact path="/signup" component={ Login }/>
+      <PrivateRoute exact path="/recipes/" component={ RecipeList }/>
+      <PrivateRoute exact path="/cart" component={ Cart }/>
+      <PrivateRoute exact path="/ingredients" component={ Ingredients }/>
+      <PrivateRoute exact path="/recipes/:id" component={ Recipe }/>
+      <PrivateRoute exact path="/settings" component={ Settings }/>
       <Route component={ NoMatch }/>
     </Switch>
-  </Router>
+  </ConnectedRouter>
 )
 export default Base

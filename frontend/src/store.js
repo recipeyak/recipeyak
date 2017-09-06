@@ -1,19 +1,33 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux'
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
+import throttle from 'lodash/throttle'
+
+import createHistory from 'history/createBrowserHistory'
+import {
+  routerReducer,
+  routerMiddleware,
+} from 'react-router-redux'
 
 import cart from './store/cart.js'
 import { recipes } from './store/recipes.js'
 import user from './store/user.js'
+import loading from './store/reducers/loading.js'
+import error from './store/reducers/error.js'
 
 import { defaultRecipes } from './mock-data.js'
+
+import { loadState, saveState } from './localStorage'
 
 export const recipeApp = combineReducers({
   user,
   recipes,
   cart,
+  loading,
+  error,
+  routerReducer,
 })
 
-const defaultData = {
+const testData = {
   recipes: defaultRecipes,
   cart: {
     1: 4,
@@ -21,13 +35,34 @@ const defaultData = {
   },
 }
 
+const storedData = loadState()
+
+const defaultData = {
+  ...testData,
+  ...storedData,
+}
+
+export const history = createHistory()
+const router = routerMiddleware(history)
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+
 // A "hydrated" store is nice for UI development
-const store = createStore(
+export const store = createStore(
   recipeApp,
   defaultData,
-  applyMiddleware(thunk),
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  composeEnhancers(
+    applyMiddleware(thunk, router),
+  )
 )
+
+store.subscribe(throttle(() => {
+  saveState({
+    user: {
+      token: store.getState().user.token,
+    },
+  })
+}, 1000))
 
 // We need an empty store for the unit tests
 export const emptyStore = createStore(recipeApp)

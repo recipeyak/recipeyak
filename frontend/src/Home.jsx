@@ -4,12 +4,12 @@ import { Link } from 'react-router-dom'
 
 import './home.scss'
 
-const Home = ({ isLoggedIn = false }) => {
-  const buttons = isLoggedIn
+const Home = ({ loggedIn = false }) => {
+  const buttons = loggedIn
         ? (
           <div className="field is-grouped">
             <p className="control">
-              <Link to="/recipes" className="button is-primary">Add Recipe</Link>
+              <Link to="/recipes" className="button is-link">Recipes</Link>
             </p>
             <p className="control">
               <Link to="/logout" className="button">Logout</Link>
@@ -115,7 +115,7 @@ const Home = ({ isLoggedIn = false }) => {
 }
 
 Home.PropTypes = {
-  isLoggedIn: PropTypes.bool,
+  loggedIn: PropTypes.bool,
 }
 
 export default Home

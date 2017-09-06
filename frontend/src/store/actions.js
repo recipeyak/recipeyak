@@ -13,11 +13,18 @@ import {
   UPDATE_RECIPE_SOURCE,
   UPDATE_RECIPE_AUTHOR,
   UPDATE_RECIPE_TIME,
+  SET_LOADING_LOGIN,
+  SET_ERROR_LOGIN,
 } from './actionTypes.js'
 
-export const login = () => {
+import { push } from 'react-router-redux'
+
+import axios from 'axios'
+
+export const login = token => {
   return {
     type: LOG_IN,
+    token,
   }
 }
 
@@ -116,5 +123,41 @@ export const deleteStep = (id, index) => {
     type: DELETE_STEP,
     id,
     index,
+  }
+}
+
+export const setErrorLogin = val => {
+  return {
+    type: SET_ERROR_LOGIN,
+    val,
+  }
+}
+
+export const setLoadingLogin = val => {
+  return {
+    type: SET_LOADING_LOGIN,
+    val,
+  }
+}
+
+function sendLoginInfo (email, password) {
+  return axios.post('/api/v1/rest-auth/login/', { email, password })
+}
+
+export const logUserIn = (email, password) => {
+  return function (dispatch) {
+    dispatch(setLoadingLogin(true))
+    sendLoginInfo(email, password)
+      .then(res => {
+        dispatch(login(res.data.key))
+        dispatch(setLoadingLogin(false))
+        dispatch(setErrorLogin(false))
+        dispatch(push('/recipes'))
+      })
+      .catch(err => {
+        dispatch(setLoadingLogin(false))
+        dispatch(setErrorLogin(true))
+        console.warn('error with login', err)
+      })
   }
 }

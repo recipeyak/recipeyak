@@ -1,4 +1,7 @@
 export const LOG_IN = 'LOG_IN'
+export const SET_LOADING_LOGIN = 'SET_LOADING_LOGIN'
+export const SET_ERROR_LOGIN = 'SET_ERROR_LOGIN'
+
 export const LOG_OUT = 'LOG_OUT'
 
 export const ADD_TO_CART = 'ADD_TO_CART'

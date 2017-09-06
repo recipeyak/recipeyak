@@ -46,6 +46,10 @@ class Navbar extends React.Component {
     this.setState({ query: value })
   }
 
+  logout = () => {
+    this.props.logout()
+  }
+
   render () {
     return (
       <nav className="nav">
@@ -91,7 +95,7 @@ class Navbar extends React.Component {
                 <Link to="/settings" className="nav-item">Settings</Link>
               </li>
               <li>
-                <Link to="/login" className="nav-item">Logout</Link>
+                <a onClick={ this.logout } className="nav-item">Logout</a>
               </li>
             </ul>
           </div>
