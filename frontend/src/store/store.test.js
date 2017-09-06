@@ -9,7 +9,7 @@ import {
   removeFromCart,
   addRecipe,
   removeRecipe,
-} from './store/actions.js'
+} from './actions.js'
 
 describe('Store', () => {
   it('Should handle user actions', () => {

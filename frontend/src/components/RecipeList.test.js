@@ -3,7 +3,7 @@ import {mount} from 'enzyme'
 import { Provider } from 'react-redux'
 import {MemoryRouter} from 'react-router-dom'
 
-import { emptyStore as store } from './store.js'
+import { emptyStore as store } from '../store/store.js'
 import RecipeList from './RecipeList.jsx'
 import Recipe from './RecipeItem.jsx'
 

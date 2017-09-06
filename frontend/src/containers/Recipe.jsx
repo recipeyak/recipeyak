@@ -11,7 +11,7 @@ import {
   updateRecipeTime,
 } from '../store/actions.js'
 
-import Recipe from '../Recipe.jsx'
+import Recipe from '../components/Recipe.jsx'
 
 const mapStateToProps = (state, props) => {
   const id = props.match.params.id

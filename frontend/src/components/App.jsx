@@ -8,18 +8,18 @@ import {
   ConnectedRouter,
 } from 'react-router-redux'
 
-import { history, store } from './store.js'
+import { history, store } from '../store/store.js'
 
-import Home from './containers/Home.jsx'
-import Login from './containers/LoginSignup.jsx'
-import RecipeList from './containers/RecipeList.jsx'
+import Home from '../containers/Home.jsx'
+import Login from '../containers/LoginSignup.jsx'
+import RecipeList from '../containers/RecipeList.jsx'
 import NoMatch from './NoMatch.jsx'
-import Ingredients from './containers/IngredientsList.jsx'
-import Cart from './containers/Cart.jsx'
-import Recipe from './containers/Recipe.jsx'
+import Ingredients from '../containers/IngredientsList.jsx'
+import Cart from '../containers/Cart.jsx'
+import Recipe from '../containers/Recipe.jsx'
 import PasswordReset from './PasswordReset.jsx'
 import Settings from './Settings.jsx'
-import AddRecipe from './containers/AddRecipe.jsx'
+import AddRecipe from '../containers/AddRecipe.jsx'
 
 import './main.scss'
 

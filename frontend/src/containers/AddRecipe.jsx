@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 
 import { addRecipe } from '../store/actions.js'
-import AddRecipe from '../AddRecipe.jsx'
+import AddRecipe from '../components/AddRecipe.jsx'
 
 const mapDispatchToProps = dispatch => {
   return {

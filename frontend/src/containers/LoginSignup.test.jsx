@@ -3,9 +3,9 @@ import { MemoryRouter, Route } from 'react-router'
 import { Provider } from 'react-redux'
 import { mount } from 'enzyme'
 
-import LoginSignup from './containers/LoginSignup.jsx'
+import LoginSignup from './LoginSignup.jsx'
 
-import { emptyStore as store } from './store.js'
+import { emptyStore as store } from '../store/store.js'
 
 describe('<LoginSignup/>', () => {
   it('renders login', () => {

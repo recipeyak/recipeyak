@@ -3,24 +3,15 @@ import { MemoryRouter } from 'react-router'
 import { Provider } from 'react-redux'
 import { mount } from 'enzyme'
 
-import { emptyStore as store } from './store.js'
+import { emptyStore as store } from '../store/store.js'
+import Nav from './Nav.jsx'
 
-import Recipe from './Recipe.jsx'
-
-describe('<Recipe/>', () => {
+describe('<Nav/>', () => {
   it('renders without failure', () => {
-    const props = {
-      ingredients: [],
-      steps: [],
-      name: '',
-      author: '',
-      source: '',
-      time: '',
-    }
     mount(
       <Provider store={ store }>
         <MemoryRouter>
-          <Recipe {...props}/>
+          <Nav/>
         </MemoryRouter>
       </Provider>)
   })

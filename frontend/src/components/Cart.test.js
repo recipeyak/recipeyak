@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router'
 import { Provider } from 'react-redux'
 import { mount } from 'enzyme'
 
-import { emptyStore as store } from './store.js'
+import { emptyStore as store } from '../store/store.js'
 import Cart from './Cart.jsx'
 
 describe('<Cart/>', () => {

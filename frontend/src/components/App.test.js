@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 
-import { emptyStore as store } from './store.js'
+import { emptyStore as store } from '../store/store.js'
 
 import App from './App'
 

@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 
 import { logout } from '../store/actions.js'
-import Nav from '../Nav.jsx'
+import Nav from '../components/Nav.jsx'
 
 const mapDispatchToProps = dispatch => {
   return {

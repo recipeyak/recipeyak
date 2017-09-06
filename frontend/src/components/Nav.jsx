@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
-import SearchBox from './containers/SearchBox.jsx'
+import SearchBox from '../containers/SearchBox.jsx'
 
 import './nav.scss'
 

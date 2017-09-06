@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 
 import { logUserIn } from '../store/actions.js'
-import LoginSignup from '../LoginSignup.jsx'
+import LoginSignup from '../components/LoginSignup.jsx'
 
 const mapDispatchToProps = dispatch => {
   return {

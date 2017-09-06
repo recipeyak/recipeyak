@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 
-import Ingredients from '../IngredientsList.jsx'
+import Ingredients from '../components/IngredientsList.jsx'
 
 const mapStateToProps = state => {
   const { recipes, cart } = state

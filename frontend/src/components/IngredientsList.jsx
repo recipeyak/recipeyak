@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { combineRecipeIngredients } from './helpers.js'
+import { combineRecipeIngredients } from '../helpers.js'
 
 const IngredientsList = ({ recipes = [] }) => {
   const ingredients =
