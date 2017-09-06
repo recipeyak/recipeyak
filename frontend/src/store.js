@@ -16,6 +16,8 @@ import error from './store/reducers/error.js'
 
 import { defaultRecipes } from './mock-data.js'
 
+import { loadState, saveState } from './localStorage'
+
 export const recipeApp = combineReducers({
   user,
   recipes,
@@ -25,23 +27,19 @@ export const recipeApp = combineReducers({
   routerReducer,
 })
 
-const getToken = () => {
-  try {
-    return localStorage.getItem('token')
-  } catch (e) {
-    return null
-  }
-}
-
-const defaultData = {
+const testData = {
   recipes: defaultRecipes,
   cart: {
     1: 4,
     2: 0,
   },
-  user: {
-    token: getToken(),
-  },
+}
+
+const storedData = loadState()
+
+const defaultData = {
+  ...testData,
+  ...storedData,
 }
 
 export const history = createHistory()
@@ -59,11 +57,11 @@ export const store = createStore(
 )
 
 store.subscribe(throttle(() => {
-  try {
-    localStorage.setItem('token', store.getState().user.token)
-  } catch (e) {
-    console.warn('failed to set store.user.token in localStorage')
-  }
+  saveState({
+    user: {
+      token: store.getState().user.token,
+    },
+  })
 }, 1000))
 
 // We need an empty store for the unit tests
