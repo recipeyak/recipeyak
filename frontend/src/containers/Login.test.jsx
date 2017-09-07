@@ -18,16 +18,4 @@ describe('<Login/>', () => {
     expect(element.text()).toContain('Email')
     expect(element.text()).toContain('Password')
   })
-
-  it('renders signup', () => {
-    const element = mount(
-      <Provider store={ store }>
-        <MemoryRouter initialEntries={[ '/signup' ]} initialIndex={1}>
-          <Route path="/signup" component={Login}/>
-        </MemoryRouter>
-      </Provider>)
-    expect(element.text()).toContain('Email')
-    expect(element.text()).toContain('Password')
-    expect(element.text()).toContain('Password Again')
-  })
 })

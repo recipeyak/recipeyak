@@ -8,17 +8,6 @@ import Signup from './Signup.jsx'
 import { emptyStore as store } from '../store/store.js'
 
 describe('<Signup/>', () => {
-  it('renders login', () => {
-    const element = mount(
-      <Provider store={ store }>
-        <MemoryRouter initialEntries={[ '/login' ]} initialIndex={1}>
-          <Route path="/login" component={Signup}/>
-        </MemoryRouter>
-      </Provider>)
-    expect(element.text()).toContain('Email')
-    expect(element.text()).toContain('Password')
-  })
-
   it('renders signup', () => {
     const element = mount(
       <Provider store={ store }>
