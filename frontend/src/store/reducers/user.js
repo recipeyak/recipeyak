@@ -1,7 +1,7 @@
 import {
   LOG_IN,
   LOG_OUT,
-} from './actionTypes.js'
+} from '../actionTypes.js'
 
 const defaultState = {
   loggedIn: false,

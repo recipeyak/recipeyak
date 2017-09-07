@@ -8,15 +8,15 @@ import {
   routerMiddleware,
 } from 'react-router-redux'
 
-import cart from './cart.js'
-import { recipes } from './recipes.js'
-import user from './user.js'
+import cart from './reducers/cart.js'
+import recipes from './reducers/recipes.js'
+import user from './reducers/user.js'
 import loading from './reducers/loading.js'
 import error from './reducers/error.js'
 
 import { defaultRecipes } from './mock-data.js'
 
-import { loadState, saveState } from '../localStorage'
+import { loadState, saveState } from './localStorage'
 
 export const recipeApp = combineReducers({
   user,

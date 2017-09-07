@@ -25,7 +25,7 @@ import {
   UPDATE_RECIPE_SOURCE,
   UPDATE_RECIPE_AUTHOR,
   UPDATE_RECIPE_TIME,
-} from './actionTypes.js'
+} from '../actionTypes.js'
 
 export const recipes = (state = {}, action) => {
   switch (action.type) {

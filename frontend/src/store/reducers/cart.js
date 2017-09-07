@@ -9,7 +9,7 @@
 import {
   ADD_TO_CART,
   REMOVE_FROM_CART,
-} from './actionTypes.js'
+} from '../actionTypes.js'
 
 const cart = (state = {}, action) => {
   switch (action.type) {
