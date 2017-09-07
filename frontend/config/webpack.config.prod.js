@@ -149,6 +149,7 @@ module.exports = {
               loader: 'css-loader',
               options: {
                 importLoaders: 1,
+                minimize: 1,
               },
             },
             {
@@ -183,6 +184,7 @@ module.exports = {
               loader: 'css-loader',
               options: {
                 importLoaders: 1,
+                minimize: 1,
               },
             },
             'sass-loader',
