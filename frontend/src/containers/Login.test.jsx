@@ -3,16 +3,16 @@ import { MemoryRouter, Route } from 'react-router'
 import { Provider } from 'react-redux'
 import { mount } from 'enzyme'
 
-import LoginSignup from './LoginSignup.jsx'
+import Login from './Login.jsx'
 
 import { emptyStore as store } from '../store/store.js'
 
-describe('<LoginSignup/>', () => {
+describe('<Login/>', () => {
   it('renders login', () => {
     const element = mount(
       <Provider store={ store }>
         <MemoryRouter initialEntries={[ '/login' ]} initialIndex={1}>
-          <Route path="/login" component={LoginSignup}/>
+          <Route path="/login" component={Login}/>
         </MemoryRouter>
       </Provider>)
     expect(element.text()).toContain('Email')
@@ -23,7 +23,7 @@ describe('<LoginSignup/>', () => {
     const element = mount(
       <Provider store={ store }>
         <MemoryRouter initialEntries={[ '/signup' ]} initialIndex={1}>
-          <Route path="/signup" component={LoginSignup}/>
+          <Route path="/signup" component={Login}/>
         </MemoryRouter>
       </Provider>)
     expect(element.text()).toContain('Email')

@@ -11,7 +11,8 @@ import {
 import { history, store } from '../store/store.js'
 
 import Home from '../containers/Home.jsx'
-import Login from '../containers/LoginSignup.jsx'
+import Login from '../containers/Login.jsx'
+import Signup from '../components/Signup.jsx'
 import RecipeList from '../containers/RecipeList.jsx'
 import NoMatch from './NoMatch.jsx'
 import Ingredients from '../containers/IngredientsList.jsx'
@@ -43,7 +44,7 @@ const Base = () => (
       <Route exact path="/login" component={ Login }/>
       <PrivateRoute exact path="/recipes/add" component={ AddRecipe }/>
       <Route exact path="/password-reset" component={ PasswordReset }/>
-      <Route exact path="/signup" component={ Login }/>
+      <Route exact path="/signup" component={ Signup }/>
       <PrivateRoute exact path="/recipes/" component={ RecipeList }/>
       <PrivateRoute exact path="/cart" component={ Cart }/>
       <PrivateRoute exact path="/ingredients" component={ Ingredients }/>
