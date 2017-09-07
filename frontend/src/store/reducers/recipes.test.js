@@ -10,7 +10,7 @@ import {
   REMOVE_RECIPE,
   ADD_STEP_TO_RECIPE,
   DELETE_STEP,
-} from './actionTypes.js'
+} from '../actionTypes.js'
 
 describe('Recipes', () => {
   it('Adds recipe to recipe list', () => {

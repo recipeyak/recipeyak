@@ -3,7 +3,7 @@ import user from './user.js'
 import {
   logout,
   login,
-} from './actions.js'
+} from '../actions.js'
 
 describe('User', () => {
   it('Logs in user adding token', () => {
