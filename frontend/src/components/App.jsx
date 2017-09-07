@@ -12,7 +12,7 @@ import { history, store } from '../store/store.js'
 
 import Home from '../containers/Home.jsx'
 import Login from '../containers/Login.jsx'
-import Signup from '../components/Signup.jsx'
+import Signup from '../containers/Signup.jsx'
 import RecipeList from '../containers/RecipeList.jsx'
 import NoMatch from './NoMatch.jsx'
 import Ingredients from '../containers/IngredientsList.jsx'

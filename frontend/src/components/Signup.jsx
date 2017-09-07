@@ -18,7 +18,7 @@ class Signup extends React.Component {
 
   handleSignup (e) {
     e.preventDefault()
-    this.props.signup(this.state.email, this.state.password1)
+    this.props.signup(this.state.email, this.state.password1, this.state.password2)
   }
 
   render () {
