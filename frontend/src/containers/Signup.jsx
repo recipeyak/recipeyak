@@ -1,24 +1,24 @@
 import { connect } from 'react-redux'
 
-import { logUserIn } from '../store/actions.js'
-import LoginSignup from '../components/LoginSignup.jsx'
+import { signup } from '../store/actions.js'
+import Signup from '../components/Signup.jsx'
 
 const mapDispatchToProps = dispatch => {
   return {
-    login: (email, password) => dispatch(logUserIn(email, password)),
+    signup: (email, password1, password2) => dispatch(signup(email, password1, password2)),
   }
 }
 
 const mapStateToProps = state => {
   return {
-    loading: state.loading.login,
-    error: state.error.login,
+    loading: state.loading.signup,
+    error: state.error.signup,
   }
 }
 
 const ConnectedLoginSignup = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(LoginSignup)
+)(Signup)
 
 export default ConnectedLoginSignup
