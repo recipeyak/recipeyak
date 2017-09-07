@@ -15,6 +15,8 @@ import {
   UPDATE_RECIPE_TIME,
   SET_LOADING_LOGIN,
   SET_ERROR_LOGIN,
+  SET_LOADING_SIGNUP,
+  SET_ERROR_SIGNUP,
 } from './actionTypes.js'
 
 import { push } from 'react-router-redux'
@@ -158,6 +160,42 @@ export const logUserIn = (email, password) => {
         dispatch(setLoadingLogin(false))
         dispatch(setErrorLogin(true))
         console.warn('error with login', err)
+      })
+  }
+}
+
+export const setLoadingSignup = val => {
+  return {
+    type: SET_LOADING_SIGNUP,
+    val,
+  }
+}
+
+export const setErrorSignup = val => {
+  return {
+    type: SET_ERROR_SIGNUP,
+    val,
+  }
+}
+
+function sendSignupInfo (email, password1, password2) {
+  return axios.post('/api/v1/rest-auth/registration/', { email, password1, password2 })
+}
+
+export const signup = (email, password1, password2) => {
+  return function (dispatch) {
+    dispatch(setLoadingSignup(true))
+    sendSignupInfo(email, password1, password2)
+      .then(res => {
+        dispatch(login(res.data.key))
+        dispatch(setLoadingSignup(false))
+        dispatch(setErrorSignup(false))
+        dispatch(push('/recipes'))
+      })
+      .catch(err => {
+        dispatch(setLoadingSignup(false))
+        dispatch(setErrorSignup(true))
+        console.warn('error with registration', err)
       })
   }
 }
