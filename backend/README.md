@@ -11,6 +11,7 @@ pip install -r requirements.txt
 ## DEV
 ```bash
 # /backend/ (venv)
+export DEBUG=1 && \
 python manage.py makemigrations && \
 python manage.py migrate && \
 python manage.py runserver
@@ -19,7 +20,7 @@ python manage.py runserver
 ## TEST
 ```bash
 # /backend/ (venv)
-ptw -- --cov-config .coveragerc --cov --cov-report term:skip-covered --flake8
+DEBUG=1 ptw -- --cov-config .coveragerc --cov --cov-report term:skip-covered --flake8
 # with type checking
-ptw -- --cov-config .coveragerc --cov --cov-report term:skip-covered --flake8 --mypy
+DEBUG=1 ptw -- --cov-config .coveragerc --cov --cov-report term:skip-covered --flake8 --mypy
 ```
