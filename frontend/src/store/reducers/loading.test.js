@@ -2,6 +2,7 @@ import loading from './loading.js'
 import {
   setLoadingLogin,
   setLoadingSignup,
+  setLoadingReset,
 } from '../actions.js'
 
 describe('loading', () => {
@@ -38,6 +39,24 @@ describe('loading', () => {
 
     expect(
       loading(loadingState, setLoadingSignup(false))
+      ).toEqual(notLoadingState)
+  })
+
+  it('sets loading reset', () => {
+    const notLoadingState = {
+      reset: false,
+    }
+
+    const loadingState = {
+      reset: true,
+    }
+
+    expect(
+      loading(notLoadingState, setLoadingReset(true))
+      ).toEqual(loadingState)
+
+    expect(
+      loading(loadingState, setLoadingReset(false))
       ).toEqual(notLoadingState)
   })
 })

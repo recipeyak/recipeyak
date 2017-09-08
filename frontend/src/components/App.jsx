@@ -18,7 +18,7 @@ import NoMatch from './NoMatch.jsx'
 import Ingredients from '../containers/IngredientsList.jsx'
 import Cart from '../containers/Cart.jsx'
 import Recipe from '../containers/Recipe.jsx'
-import PasswordReset from './PasswordReset.jsx'
+import PasswordReset from '../containers/PasswordReset.jsx'
 import Settings from './Settings.jsx'
 import AddRecipe from '../containers/AddRecipe.jsx'
 

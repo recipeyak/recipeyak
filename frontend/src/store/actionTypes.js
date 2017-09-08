@@ -5,6 +5,9 @@ export const SET_ERROR_LOGIN = 'SET_ERROR_LOGIN'
 export const SET_LOADING_SIGNUP = 'SET_LOADING_SIGNUP'
 export const SET_ERROR_SIGNUP = 'SET_ERROR_SIGNUP'
 
+export const SET_LOADING_RESET = 'SET_LOADING_RESET'
+export const SET_ERROR_RESET = 'SET_ERROR_RESET'
+
 export const LOG_OUT = 'LOG_OUT'
 
 export const ADD_TO_CART = 'ADD_TO_CART'
