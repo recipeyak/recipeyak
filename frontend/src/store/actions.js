@@ -17,6 +17,8 @@ import {
   SET_ERROR_LOGIN,
   SET_LOADING_SIGNUP,
   SET_ERROR_SIGNUP,
+  SET_LOADING_RESET,
+  SET_ERROR_RESET,
 } from './actionTypes.js'
 
 import { push } from 'react-router-redux'
@@ -198,4 +200,35 @@ export const signup = (email, password1, password2) => {
         console.warn('error with registration', err)
       })
   }
+}
+
+export const setLoadingReset = val => {
+  return {
+    type: SET_LOADING_RESET,
+    val,
+  }
+}
+
+export const setErrorReset = val => {
+  return {
+    type: SET_ERROR_RESET,
+    val,
+  }
+}
+
+const sendReset = email =>
+  axios.post('/api/v1/rest-auth/password/reset/', { email })
+
+export const reset = email => dispatch => {
+  dispatch(setLoadingReset(true))
+  sendReset(email)
+    .then(res => {
+      dispatch(setLoadingReset(false))
+      dispatch(setErrorReset(false))
+    })
+    .catch(err => {
+      dispatch(setLoadingReset(false))
+      dispatch(setErrorReset(true))
+      console.warn('error with password reset', err)
+    })
 }

@@ -2,6 +2,7 @@ import error from './error.js'
 import {
   setErrorLogin,
   setErrorSignup,
+  setErrorReset,
 } from '../actions.js'
 
 describe('error', () => {
@@ -38,6 +39,24 @@ describe('error', () => {
 
     expect(
       error(errorState, setErrorSignup(false))
+      ).toEqual(notErrorState)
+  })
+
+  it('sets reset error', () => {
+    const notErrorState = {
+      reset: false,
+    }
+
+    const errorState = {
+      reset: true,
+    }
+
+    expect(
+      error(notErrorState, setErrorReset(true))
+      ).toEqual(errorState)
+
+    expect(
+      error(errorState, setErrorReset(false))
       ).toEqual(notErrorState)
   })
 })
