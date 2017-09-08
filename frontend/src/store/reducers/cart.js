@@ -15,14 +15,14 @@ const cart = (state = {}, action) => {
   switch (action.type) {
     case ADD_TO_CART:
       if (state[action.id] === undefined) {
-        return Object.assign({}, state, { [action.id]: 1 })
+        return { ...state, [action.id]: 1 }
       }
-      return Object.assign({}, state, { [action.id]: state[action.id] + 1 })
+      return { ...state, [action.id]: state[action.id] + 1 }
     case REMOVE_FROM_CART:
       if (state[action.id] === 0 || state[action.id] === undefined) {
         return state
       }
-      return Object.assign({}, state, { [action.id]: state[action.id] - 1 })
+      return { ...state, [action.id]: state[action.id] - 1 }
     default:
       return state
   }
