@@ -13,6 +13,7 @@ import recipes from './reducers/recipes.js'
 import user from './reducers/user.js'
 import loading from './reducers/loading.js'
 import error from './reducers/error.js'
+import notification from './reducers/notification.js'
 
 import { defaultRecipes } from './mock-data.js'
 
@@ -25,6 +26,7 @@ export const recipeApp = combineReducers({
   loading,
   error,
   routerReducer,
+  notification,
 })
 
 const testData = {

@@ -1,0 +1,90 @@
+.note {
+  position: fixed;
+  z-index: 101;
+  text-align: center;
+  left: 0;
+  right: 0;
+  padding: 15px 80px;
+  user-select: none;
+  line-height: 1.5rem;
+  animation: fadein .5s;
+  cursor: default;
+  .close {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    height: 30px;
+    width: 30px;
+    border-radius: 15px;
+    box-shadow: inset 0px 0px 5px 5px black;
+    font-size: 1.2rem;
+    font-weight: bold;
+    line-height: 30px;
+    color: rgba(255, 255, 255, .8);
+    background-color: rgba(0, 0, 0, 0.6);
+    opacity: .2;
+    transition: opacity .1s ease-in-out;
+    &:hover {
+      opacity: .15;
+    }
+  }
+  .content {
+    color: white;
+    font-size: 1.75rem;
+  }
+}
+@media only screen and (max-width : 600px) {
+  .note {
+    padding: 12px 25px;
+    .close {
+      height: 20px;
+      font-size: 0.8rem;
+      line-height: 20px;
+      right: 5px;
+      top: 5px;
+      width: 20px;
+    }
+    .content {
+      font-size: 1.3rem;
+    }
+  }
+}
+@media only screen and (max-width : 400px) {
+  .note {
+    padding: 5px 25px 5px 10px;
+    .close {
+      font-size: 0.8rem;
+      height: 20px;
+      line-height: 20px;
+      right: 5px;
+      top: 5px;
+      width: 20px;
+    }
+    .content {
+      font-size: 1.3rem;
+    }
+  }
+}
+.note-top {
+  top: 0;
+}
+.note-bottom {
+  bottom: 0;
+}
+.success {
+  background: #468966;
+}
+.info {
+  background: #1695A3;
+}
+.warning {
+  background: #EB7F00;
+}
+.danger {
+  background: #B64926;
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}

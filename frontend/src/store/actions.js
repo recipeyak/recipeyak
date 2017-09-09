@@ -19,6 +19,8 @@ import {
   SET_ERROR_SIGNUP,
   SET_LOADING_RESET,
   SET_ERROR_RESET,
+  SET_NOTIFICATION,
+  CLEAR_NOTIFICATION,
 } from './actionTypes.js'
 
 import { push } from 'react-router-redux'
@@ -225,10 +227,40 @@ export const reset = email => dispatch => {
     .then(res => {
       dispatch(setLoadingReset(false))
       dispatch(setErrorReset(false))
+      showNotificationWithTimeout(dispatch, { message: 'password reset. check your email.', level: 'success' })
     })
     .catch(err => {
       dispatch(setLoadingReset(false))
       dispatch(setErrorReset(true))
+      showNotificationWithTimeout(dispatch, { message: 'uh oh! problem resetting password', level: 'danger', closeable: true, sticky: true })
       console.warn('error with password reset', err)
     })
+}
+
+export const setNotification = ({ message, closeable, level }) => {
+  return {
+    type: SET_NOTIFICATION,
+    message,
+    closeable,
+    level,
+  }
+}
+
+// https://stackoverflow.com/a/38574266/3555105
+let notificationTimeout = null
+export function showNotificationWithTimeout (dispatch, { message, level, closeable, delay = 2000, sticky }) {
+  clearTimeout(notificationTimeout)
+  dispatch(setNotification({ message, level, closeable }))
+
+  if (!sticky) {
+    notificationTimeout = setTimeout(() => {
+      dispatch(clearNotification())
+    }, delay)
+  }
+}
+
+export const clearNotification = () => {
+  return {
+    type: CLEAR_NOTIFICATION,
+  }
 }

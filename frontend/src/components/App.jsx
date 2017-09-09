@@ -21,6 +21,7 @@ import Recipe from '../containers/Recipe.jsx'
 import PasswordReset from '../containers/PasswordReset.jsx'
 import Settings from './Settings.jsx'
 import AddRecipe from '../containers/AddRecipe.jsx'
+import Notification from '../containers/Notification.jsx'
 
 import './main.scss'
 
@@ -38,6 +39,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
 )
 
 const Base = () => (
+<div>
   <ConnectedRouter history={history}>
     <Switch>
       <Route exact path="/" component={ Home }/>
@@ -53,5 +55,7 @@ const Base = () => (
       <Route component={ NoMatch }/>
     </Switch>
   </ConnectedRouter>
+    <Notification></Notification>
+</div>
 )
 export default Base
