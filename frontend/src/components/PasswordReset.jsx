@@ -20,6 +20,15 @@ class PasswordReset extends React.Component {
   }
 
   render () {
+    const { nonFieldErrors, email } = this.props.error
+
+    const errorHandler = err =>
+      <p className="help is-danger">
+        <ul>
+          {err.map(e => (<li>{e}</li>))}
+        </ul>
+      </p>
+
     return (
       <div className="container">
         <nav className="nav">
@@ -40,22 +49,21 @@ class PasswordReset extends React.Component {
               <div className="column is-one-third is-offset-one-third">
                 <form onSubmit={ this.handleReset }>
                   <h1 className="title is-4">Password Reset</h1>
+
+                  { nonFieldErrors && errorHandler(nonFieldErrors) }
+
                   <div className="field">
                     <label className="label">Email</label>
                     <p className="control">
                       <input
                         onChange={ this.handleInputChange }
-                        className="input"
+                        className={'input' + (email ? ' is-danger' : '')}
                         type="email"
                         name="email"
                         placeholder="rick.sanchez@me.com"/>
                     </p>
+                    { email && errorHandler(email) }
                   </div>
-
-                  {
-                    !!this.props.error &&
-                      <p className="help is-danger">Error with password reset</p>
-                  }
 
                   <div className="field is-grouped">
                     <p className="control">

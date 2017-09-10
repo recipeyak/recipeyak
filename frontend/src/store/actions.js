@@ -253,18 +253,32 @@ const sendReset = email =>
 
 export const reset = email => dispatch => {
   dispatch(setLoadingReset(true))
+  dispatch(setErrorReset({}))
+  dispatch(clearNotification())
   sendReset(email)
     .then(res => {
       dispatch(setLoadingReset(false))
-      dispatch(setErrorReset(false))
       const message = res && res.data && res.data.detail
       showNotificationWithTimeout(dispatch, { message, level: 'success' })
     })
     .catch(err => {
       dispatch(setLoadingReset(false))
-      dispatch(setErrorReset(true))
       showNotificationWithTimeout(dispatch, { message: 'uh oh! problem resetting password', level: 'danger', closeable: true, sticky: true })
       console.warn('error with password reset', err)
+      const badRequest = err.response.status === 400
+      if (err.response && badRequest) {
+        const data = err.response.data
+        console.log(data)
+        dispatch(setErrorReset({
+          email: data['email'],
+          nonFieldErrors: data['non_field_errors'],
+        }))
+      }
+      showNotificationWithTimeout(dispatch, {
+        message: 'problem resetting password',
+        level: 'danger',
+        sticky: true,
+      })
     })
 }
 

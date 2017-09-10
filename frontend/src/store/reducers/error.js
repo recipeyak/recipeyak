@@ -7,7 +7,7 @@ import {
 const error = (state = {
   login: {},
   signup: {},
-  reset: false,
+  reset: {},
 }, action) => {
   switch (action.type) {
     case SET_ERROR_LOGIN:

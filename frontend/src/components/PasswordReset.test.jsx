@@ -6,6 +6,11 @@ import PasswordReset from './PasswordReset.jsx'
 
 describe('<PasswordReset/>', () => {
   it('renders without crashing', () => {
-    mount(<MemoryRouter><PasswordReset/></MemoryRouter>)
+    const props = {
+      error: {},
+      loading: false,
+      reset: () => console.log('test'),
+    }
+    mount(<MemoryRouter><PasswordReset {...props}/></MemoryRouter>)
   })
 })
