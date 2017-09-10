@@ -153,16 +153,30 @@ function sendLoginInfo (email, password) {
 export const logUserIn = (email, password) => {
   return function (dispatch) {
     dispatch(setLoadingLogin(true))
+    dispatch(setErrorLogin({}))
+    dispatch(clearNotification())
     sendLoginInfo(email, password)
       .then(res => {
         dispatch(login(res.data.key))
         dispatch(setLoadingLogin(false))
-        dispatch(setErrorLogin(false))
         dispatch(push('/recipes'))
       })
       .catch(err => {
         dispatch(setLoadingLogin(false))
-        dispatch(setErrorLogin(true))
+        const badRequest = err.response.status === 400
+        if (err.response && badRequest) {
+          const data = err.response.data
+          dispatch(setErrorLogin({
+            email: data['email'],
+            password1: data['password1'],
+            nonFieldErrors: data['non_field_errors'],
+          }))
+        }
+        showNotificationWithTimeout(dispatch, {
+          message: 'problem authenticating',
+          level: 'danger',
+          sticky: true,
+        })
         console.warn('error with login', err)
       })
   }
@@ -191,9 +205,9 @@ export const signup = (email, password1, password2) => {
     dispatch(setLoadingSignup(true))
     // clear previous signup errors
     dispatch(setErrorSignup({}))
+    dispatch(clearNotification())
     sendSignupInfo(email, password1, password2)
       .then(res => {
-        dispatch(clearNotification())
         dispatch(login(res.data.key))
         dispatch(setLoadingSignup(false))
         dispatch(push('/recipes'))

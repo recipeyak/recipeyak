@@ -22,10 +22,18 @@ class Login extends React.Component {
 
   render () {
     const { loading } = this.props
+    const { password1, nonFieldErrors, email } = this.props.error
 
     const validLogin =
       this.state.email !== '' &&
       this.state.password !== ''
+
+    const errorHandler = err =>
+      <p className="help is-danger">
+        <ul>
+          {err.map(e => (<li>{e}</li>))}
+        </ul>
+      </p>
 
     return (
       <div className="container">
@@ -52,18 +60,21 @@ class Login extends React.Component {
                   </ul>
                 </div>
 
+                { nonFieldErrors && errorHandler(nonFieldErrors) }
+
                 <form onSubmit={ e => this.handleLogin(e) }>
                   <div className="field">
                     <label className="label">Email</label>
                     <p className="control">
                       <input
                         onChange={ e => this.handleInputChange(e) }
-                        className="input"
+                        className={'input' + (email ? ' is-danger' : '')}
                         autoFocus
                         name="email"
                         type="email"
                         placeholder="rick.sanchez@me.com"/>
                     </p>
+                    { email && errorHandler(email) }
                   </div>
 
                   <div className="field">
@@ -71,17 +82,14 @@ class Login extends React.Component {
                     <p className="control">
                       <input
                         onChange={ e => this.handleInputChange(e) }
-                        className="input"
+                        className={'input' + (password1 ? ' is-danger' : '')}
                         type="password"
                         name="password"
                         id="password"
                         placeholder="Super secret password."/>
                     </p>
+                    { password1 && errorHandler(password1) }
                   </div>
-
-                  { !!this.props.error &&
-                    <p className="help is-danger">Error with login</p>
-                  }
 
                   <div className="field flex-space-between">
                     <p className="control">

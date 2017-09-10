@@ -5,7 +5,7 @@ import {
 } from '../actionTypes.js'
 
 const error = (state = {
-  login: false,
+  login: {},
   signup: {},
   reset: false,
 }, action) => {
