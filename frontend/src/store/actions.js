@@ -227,7 +227,8 @@ export const reset = email => dispatch => {
     .then(res => {
       dispatch(setLoadingReset(false))
       dispatch(setErrorReset(false))
-      showNotificationWithTimeout(dispatch, { message: 'password reset. check your email.', level: 'success' })
+      const message = res && res.data && res.data.detail
+      showNotificationWithTimeout(dispatch, { message, level: 'success' })
     })
     .catch(err => {
       dispatch(setLoadingReset(false))
