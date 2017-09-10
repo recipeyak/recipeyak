@@ -50,7 +50,7 @@ class Signup extends React.Component {
         <section className="section">
           <div className="container">
             <div className="columns">
-              <div className="column is-one-third is-offset-one-third box">
+              <div className="column is-half-tablet is-offset-one-quarter-tablet is-one-third-desktop is-offset-one-third-desktop box">
                 <div className="tabs is-boxed">
                   <ul>
                     <li>
@@ -70,7 +70,7 @@ class Signup extends React.Component {
                     <p className="control">
                       <input
                         onChange={ e => this.handleInputChange(e) }
-                        className="input"
+                        className={'input' + (email ? ' is-danger' : '')}
                         autoFocus
                         name="email"
                         type="email"
@@ -84,7 +84,7 @@ class Signup extends React.Component {
                     <p className="control">
                       <input
                         onChange={ e => this.handleInputChange(e) }
-                        className="input"
+                        className={'input' + (password1 ? ' is-danger' : '')}
                         type="password"
                         name="password1"
                         id="password1"
@@ -98,7 +98,7 @@ class Signup extends React.Component {
                     <p className="control">
                       <input
                         onChange={ e => this.handleInputChange(e) }
-                        className="input"
+                        className={'input' + (password2 ? ' is-danger' : '')}
                         type="password"
                         name="password2"
                         id="password2"

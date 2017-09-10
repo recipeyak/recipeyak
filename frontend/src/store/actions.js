@@ -208,18 +208,12 @@ export const signup = (email, password1, password2) => {
             password2: data['password2'],
             nonFieldErrors: data['non_field_errors'],
           }))
-          showNotificationWithTimeout(
-            dispatch, {
-              message: 'problem registering account',
-              level: 'danger',
-            })
-        } else {
-          showNotificationWithTimeout(dispatch, {
-            message: 'problem registering account',
-            level: 'danger',
-            sticky: true,
-          })
         }
+        showNotificationWithTimeout(dispatch, {
+          message: 'problem registering account',
+          level: 'danger',
+          sticky: true,
+        })
         dispatch(setLoadingSignup(false))
         console.warn('error with registration', err)
       })

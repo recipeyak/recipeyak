@@ -8,7 +8,7 @@ const error = (state = {
   login: false,
   signup: {},
   reset: false,
-  }, action) => {
+}, action) => {
   switch (action.type) {
     case SET_ERROR_LOGIN:
       return { ...state, login: action.val }
