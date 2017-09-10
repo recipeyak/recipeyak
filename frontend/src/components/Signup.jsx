@@ -23,11 +23,19 @@ class Signup extends React.Component {
 
   render () {
     const { loading } = this.props
+    const { password1, password2, nonFieldErrors, email } = this.props.error
 
     const validSignup =
       this.state.email !== '' &&
       this.state.password1 !== '' &&
       this.state.password2 !== ''
+
+    const errorHandler = err =>
+      <p className="help is-danger">
+        <ul>
+          {err.map(e => (<li>{e}</li>))}
+        </ul>
+      </p>
 
     return (
       <div className="container">
@@ -54,6 +62,8 @@ class Signup extends React.Component {
                   </ul>
                 </div>
 
+                { nonFieldErrors && errorHandler(nonFieldErrors) }
+
                 <form onSubmit={ e => this.handleSignup(e) }>
                   <div className="field">
                     <label className="label">Email</label>
@@ -66,6 +76,7 @@ class Signup extends React.Component {
                         type="email"
                         placeholder="rick.sanchez@me.com"/>
                     </p>
+                  { email && errorHandler(email) }
                   </div>
 
                   <div className="field">
@@ -79,6 +90,7 @@ class Signup extends React.Component {
                         id="password1"
                         placeholder="Super secret password."/>
                     </p>
+                  { password1 && errorHandler(password1) }
                   </div>
 
                   <div className="field">
@@ -92,11 +104,8 @@ class Signup extends React.Component {
                         id="password2"
                         placeholder="Enter your password again."/>
                     </p>
+                  { password2 && errorHandler(password2) }
                   </div>
-
-                  { !!this.props.error &&
-                    <p className="help is-danger">Error with signup</p>
-                  }
 
                   <div className="field flex-space-between">
                     <p className="control">

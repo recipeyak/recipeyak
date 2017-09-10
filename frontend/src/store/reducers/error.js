@@ -4,13 +4,11 @@ import {
   SET_ERROR_RESET,
 } from '../actionTypes.js'
 
-const defaultState = {
+const error = (state = {
   login: false,
-  signup: false,
+  signup: {},
   reset: false,
-}
-
-const error = (state = defaultState, action) => {
+  }, action) => {
   switch (action.type) {
     case SET_ERROR_LOGIN:
       return { ...state, login: action.val }

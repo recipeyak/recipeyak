@@ -189,16 +189,38 @@ function sendSignupInfo (email, password1, password2) {
 export const signup = (email, password1, password2) => {
   return function (dispatch) {
     dispatch(setLoadingSignup(true))
+    // clear previous signup errors
+    dispatch(setErrorSignup({}))
     sendSignupInfo(email, password1, password2)
       .then(res => {
+        dispatch(clearNotification())
         dispatch(login(res.data.key))
         dispatch(setLoadingSignup(false))
-        dispatch(setErrorSignup(false))
         dispatch(push('/recipes'))
       })
       .catch(err => {
+        const badRequest = err.response.status === 400
+        if (err.response && badRequest) {
+          const data = err.response.data
+          dispatch(setErrorSignup({
+            email: data['email'],
+            password1: data['password1'],
+            password2: data['password2'],
+            nonFieldErrors: data['non_field_errors'],
+          }))
+          showNotificationWithTimeout(
+            dispatch, {
+              message: 'problem registering account',
+              level: 'danger',
+            })
+        } else {
+          showNotificationWithTimeout(dispatch, {
+            message: 'problem registering account',
+            level: 'danger',
+            sticky: true,
+          })
+        }
         dispatch(setLoadingSignup(false))
-        dispatch(setErrorSignup(true))
         console.warn('error with registration', err)
       })
   }
