@@ -5,31 +5,32 @@ jobs:
       - image: circleci/python:3.6.1
         environment:
           DEBUG: 1
+          PIPENV_VENV_IN_PROJECT: 1
 
     steps:
       - checkout
+      # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
-            - backend-v1--dependencies-{{ checksum "backend/requirements.txt" }}
+            - backend-v1-dependencies-{{ checksum "backend/Pipfile.lock" }}
+            # used if checksum fails
             - backend-v1-dependencies-
       - run:
           name: install dependencies
           working_directory: backend
           command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install -r requirements.txt
+            sudo pip3 install pipenv
+            pipenv install
       - save_cache:
           paths:
-            - ./backend/venv
-          key: backend-v1-dependencies-{{ checksum "backend/requirements.txt" }}
+            - ./backend/.venv
+          key: backend-v1-dependencies-{{ checksum "backend/Pipfile.lock" }}
       - run:
           name: run tests
           working_directory: backend
           command: |
-            . venv/bin/activate
             mkdir -p ~/backend/reports
-            pytest --cov-config .coveragerc --cov --mypy --junit-xml ~/backend/reports/output.xml
+            pipenv run pytest --cov-config .coveragerc --cov --mypy --junit-xml ~/backend/reports/output.xml
       - store_test_results:
           path: ~/backend/reports
   test_javascript:
