@@ -6,3 +6,5 @@ venv/
 .coverage
 .coverage.*
 .env
+dist/
+.asset-cache
