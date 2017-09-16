@@ -20,7 +20,7 @@ jobs:
           working_directory: backend
           command: |
             sudo pip3 install pipenv
-            pipenv install
+            make install
       - save_cache:
           paths:
             - ./backend/.venv
@@ -30,7 +30,7 @@ jobs:
           working_directory: backend
           command: |
             mkdir -p ~/backend/reports
-            pipenv run pytest --cov-config .coveragerc --cov --mypy --junit-xml ~/backend/reports/output.xml
+            make ci
       - store_test_results:
           path: ~/backend/reports
   test_javascript:
