@@ -100,7 +100,7 @@ class CommonInfo(models.Model):
 
 
 class Recipe(CommonInfo):
-    title = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
     author = models.CharField(max_length=255)
     source = models.CharField(max_length=255)
     time = models.CharField(max_length=255)
@@ -123,7 +123,7 @@ class Recipe(CommonInfo):
         return Tag.objects.filter(recipe=self).order_by('created')
 
     def __str__(self):
-        return f'{self.title} by {self.author}'
+        return f'{self.name} by {self.author}'
 
 
 class Ingredient(CommonInfo):
@@ -159,8 +159,8 @@ class Cart(CommonInfo):
 
     @property
     def items(self):
-        """Return cart items ordered by title"""
-        return CartItem.objects.filter(cart=self).order_by('recipe__title')
+        """Return cart items ordered by name"""
+        return CartItem.objects.filter(cart=self).order_by('recipe__name')
 
     def __str__(self):
         return f"{self.user}'s cart"

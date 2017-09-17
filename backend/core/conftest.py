@@ -33,13 +33,13 @@ def client():
 @pytest.fixture
 def recipe(user):
 
-    title = 'Recipe title'
+    name = 'Recipe name'
     author = 'Recipe author'
     source = 'www.exmple.com'
     time = '1 hour'
 
     recipe = Recipe.objects.create(
-        title=title, author=author, source=source, time=time, user=user)
+        name=name, author=author, source=source, time=time, user=user)
 
     Ingredient.objects.create(text='1 Egg', recipe=recipe)
 

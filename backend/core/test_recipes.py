@@ -15,7 +15,7 @@ def test_recipe_creation(client, user):
     client.force_authenticate(user)
 
     data = {
-        'title': 'Recipe title',
+        'name': 'Recipe name',
         'author': 'Recipe author',
         'source': 'www.exmple.com',
         'time': '1 hour',
@@ -41,7 +41,7 @@ def test_recipe_creation(client, user):
     res = client.get(f'{BASE_URL}/recipes/{recipe_id}/')
     assert res.status_code == status.HTTP_200_OK
 
-    for key in ['title', 'author', 'source']:
+    for key in ['name', 'author', 'source']:
         assert data.get(key) == res.json().get(key)
 
     # compare the nested items and ingore the ids as they don't exist them in the
@@ -73,15 +73,15 @@ def test_recipe_updating(client, user, recipe):
     client.force_authenticate(user)
 
     data = {
-        'title': 'A new title',
+        'name': 'A new name',
     }
 
-    assert recipe.title != data.get('title')
+    assert recipe.name != data.get('name')
 
     res = client.patch(f'{BASE_URL}/recipes/{recipe.id}/', data)
     assert res.status_code == status.HTTP_200_OK
 
-    assert res.json().get('title') == data.get('title')
+    assert res.json().get('name') == data.get('name')
 
 
 def test_adding_step_to_recipe(client, user, recipe):

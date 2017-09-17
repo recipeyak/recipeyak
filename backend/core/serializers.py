@@ -51,11 +51,11 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     steps = StepSerializer(many=True)
     ingredients = IngredientSerializer(many=True)
-    tags = TagSerializer(many=True)
+    tags = TagSerializer(many=True, required=False)
 
     class Meta:
         model = Recipe
-        fields = ('id', 'title', 'author', 'source', 'time', 'ingredients', 'steps', 'tags')
+        fields = ('id', 'name', 'author', 'source', 'time', 'ingredients', 'steps', 'tags')
 
     def create(self, validated_data) -> Recipe:
         """
