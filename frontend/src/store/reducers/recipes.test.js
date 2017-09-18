@@ -1,16 +1,17 @@
 import recipes from './recipes.js'
+
 import {
-  UPDATE_RECIPE_NAME,
-  UPDATE_RECIPE_SOURCE,
-  UPDATE_RECIPE_AUTHOR,
-  UPDATE_RECIPE_TIME,
-  DELETE_INGREDIENT,
-  ADD_INGREDIENT_TO_RECIPE,
-  ADD_RECIPE,
-  REMOVE_RECIPE,
-  ADD_STEP_TO_RECIPE,
-  DELETE_STEP,
-} from '../actionTypes.js'
+  addRecipe,
+  removeRecipe,
+  addStepToRecipe,
+  addIngredientToRecipe,
+  updateRecipeTime,
+  updateRecipeAuthor,
+  updateRecipeName,
+  deleteIngredient,
+  deleteStep,
+  updateRecipeSource,
+} from '../actions.js'
 
 describe('Recipes', () => {
   it('Adds recipe to recipe list', () => {
@@ -30,8 +31,8 @@ describe('Recipes', () => {
       1: {},
     }
     expect(
-      recipes(beforeState, { type: ADD_RECIPE, recipe })
-      ).toEqual(afterState)
+      recipes(beforeState, addRecipe(recipe))
+    ).toEqual(afterState)
   })
 
   it('Remove recipe from recipe list', () => {
@@ -43,14 +44,14 @@ describe('Recipes', () => {
       1: {},
     }
     expect(
-      recipes(beforeState, { type: REMOVE_RECIPE, id: 123 })
-      ).toEqual(afterState)
+      recipes(beforeState, removeRecipe(123))
+    ).toEqual(afterState)
   })
 
   it('Remove non-existent recipe from recipe list', () => {
     expect(
-      recipes({}, { type: REMOVE_RECIPE, id: 123 })
-      ).toEqual({})
+      recipes({}, removeRecipe(123))
+    ).toEqual({})
   })
 
   it('adds a step to the recipe', () => {
@@ -73,7 +74,7 @@ describe('Recipes', () => {
     }
 
     expect(
-      recipes(beforeState, { type: ADD_STEP_TO_RECIPE, id: 1, step: newStep })
+      recipes(beforeState, addStepToRecipe(1, newStep))
     ).toEqual(afterState)
   })
 
@@ -81,7 +82,7 @@ describe('Recipes', () => {
     const beforeState = {
       1: {
         ingredients: [],
-        steps: [ 'test' ],
+        steps: ['test'],
       },
     }
 
@@ -92,12 +93,12 @@ describe('Recipes', () => {
         ingredients: [
           newIngredient,
         ],
-        steps: [ 'test' ],
+        steps: ['test'],
       },
     }
 
     expect(
-      recipes(beforeState, { type: ADD_INGREDIENT_TO_RECIPE, id: 1, ingredient: newIngredient })
+      recipes(beforeState, addIngredientToRecipe(1, newIngredient))
     ).toEqual(afterState)
   })
 
@@ -119,7 +120,7 @@ describe('Recipes', () => {
     }
 
     expect(
-      recipes(beforeState, { type: UPDATE_RECIPE_NAME, id: 1, name: newName })
+      recipes(beforeState, updateRecipeName(1, newName))
     ).toEqual(afterState)
   })
 
@@ -141,12 +142,9 @@ describe('Recipes', () => {
         ],
       },
     }
-
-    expect(recipes(beforeState, {
-      type: DELETE_INGREDIENT,
-      id: 1,
-      index: 1,
-    })).toEqual(afterState)
+    expect(
+      recipes(beforeState, deleteIngredient(1, 1))
+    ).toEqual(afterState)
   })
 
   it('deletes a step from a recipe', () => {
@@ -168,11 +166,9 @@ describe('Recipes', () => {
       },
     }
 
-    expect(recipes(beforeState, {
-      type: DELETE_STEP,
-      id: 1,
-      index: 1,
-    })).toEqual(afterState)
+    expect(
+      recipes(beforeState, deleteStep(1, 1))
+    ).toEqual(afterState)
   })
 
   it('updates the recipe source', () => {
@@ -192,11 +188,9 @@ describe('Recipes', () => {
       },
     }
 
-    expect(recipes(beforeState, {
-      type: UPDATE_RECIPE_SOURCE,
-      id: 1,
-      source: newSource,
-    })).toEqual(afterState)
+    expect(
+      recipes(beforeState, updateRecipeSource(1, newSource))
+    ).toEqual(afterState)
   })
 
   it('updates the recipe author', () => {
@@ -216,11 +210,9 @@ describe('Recipes', () => {
       },
     }
 
-    expect(recipes(beforeState, {
-      type: UPDATE_RECIPE_AUTHOR,
-      id: 1,
-      author: newAuthor,
-    })).toEqual(afterState)
+    expect(
+      recipes(beforeState, updateRecipeAuthor(1, newAuthor))
+    ).toEqual(afterState)
   })
 
   it('updates the recipe time', () => {
@@ -240,10 +232,8 @@ describe('Recipes', () => {
       },
     }
 
-    expect(recipes(beforeState, {
-      type: UPDATE_RECIPE_TIME,
-      id: 1,
-      time: newTime,
-    })).toEqual(afterState)
+    expect(
+      recipes(beforeState, updateRecipeTime(1, newTime))
+    ).toEqual(afterState)
   })
 })
