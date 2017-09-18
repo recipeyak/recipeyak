@@ -33,7 +33,7 @@ class AddRecipe extends React.Component {
   addIngredient (event) {
     this.setState((prevState) => (
       {
-        ingredients: prevState.ingredients.concat(prevState.ingredient.trim()),
+        ingredients: prevState.ingredients.concat({ text: prevState.ingredient.trim() }),
         ingredient: '',
       }
     ))
@@ -46,7 +46,7 @@ class AddRecipe extends React.Component {
   addStep (event) {
     this.setState((prevState) => (
       {
-        steps: prevState.steps.concat(prevState.step.trim()),
+        steps: prevState.steps.concat({ text: prevState.step.trim() }),
         step: '',
       }
     ))
@@ -114,11 +114,11 @@ class AddRecipe extends React.Component {
                 <div className="box">
                   <ul>
                     {
-                      ingredients.map((x, i) =>
+                      ingredients.map((ingredient, i) =>
                         <ListItem
-                          key={x + i}
+                          key={ingredient.text + i}
                           index={i}
-                          text={x}
+                          text={ingredient.text}
                           update={(index, content) => this.update('ingredients', index, content, 'ingredients')}
                           delete={(index) => this.delete('ingredients', index)}
                         />
@@ -172,11 +172,11 @@ class AddRecipe extends React.Component {
                   <ul>
                     {
                       steps.map((step, i) =>
-                        <div key={step + i}>
+                        <div key={step.text + i}>
                           <label className="label">Step { i + 1}</label>
                           <ListItem
                             index={i}
-                            text={step}
+                            text={step.text}
                             update={(index, content) => this.update('steps', index, content)}
                             delete={(index) => this.delete('steps', index)}
                           />

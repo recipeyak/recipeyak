@@ -54,11 +54,29 @@ export const removeFromCart = id => {
   }
 }
 
+const sendPostNewRecipe = (token, recipe) =>
+  axios.post('/api/v1/recipes/', recipe, {
+    headers: {
+      'Authorization': 'Token ' + token,
+    },
+  })
+
 export const addRecipe = recipe => {
   return {
     type: ADD_RECIPE,
     recipe,
   }
+}
+
+export const postNewRecipe = recipe => (dispatch, getState) => {
+  sendPostNewRecipe(getState().user.token, recipe)
+    .then(res => {
+      console.log(res)
+      dispatch(addRecipe)
+    })
+    .catch(err => {
+      console.log(err)
+    })
 }
 
 export const addStepToRecipe = (id, step) => {

@@ -24,7 +24,14 @@ describe('Recipes', () => {
       tags: ['tagOne', 'tagTwo'],
       author: 'Recipe author',
       source: '',
-      ingredients: ['ingredientOne', 'ingredientTwo'],
+      ingredients: [
+        {
+          text: 'ingredientOne',
+        },
+        {
+          text: 'ingredientTwo',
+        },
+      ],
     }
     const afterState = {
       123: recipe,
@@ -62,7 +69,9 @@ describe('Recipes', () => {
       },
     }
 
-    const newStep = 'a new step'
+    const newStep = {
+      text: 'a new step',
+    }
 
     const afterState = {
       1: {
@@ -82,18 +91,28 @@ describe('Recipes', () => {
     const beforeState = {
       1: {
         ingredients: [],
-        steps: ['test'],
+        steps: [
+          {
+            text: 'test',
+          },
+        ],
       },
     }
 
-    const newIngredient = 'a new step'
+    const newIngredient = {
+      text: 'a new step',
+    }
 
     const afterState = {
       1: {
         ingredients: [
           newIngredient,
         ],
-        steps: ['test'],
+        steps: [
+          {
+            text: 'test',
+          },
+        ],
       },
     }
 
@@ -152,7 +171,12 @@ describe('Recipes', () => {
       1: {
         id: 1,
         steps: [
-          'test', 'target',
+          {
+            text: 'test',
+          },
+          {
+            text: 'target',
+          },
         ],
       },
     }
@@ -161,7 +185,9 @@ describe('Recipes', () => {
       1: {
         id: 1,
         steps: [
-          'test',
+          {
+            text: 'test',
+          },
         ],
       },
     }
