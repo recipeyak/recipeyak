@@ -25,6 +25,7 @@ import {
   UPDATE_RECIPE_SOURCE,
   UPDATE_RECIPE_AUTHOR,
   UPDATE_RECIPE_TIME,
+  SET_RECIPES,
 } from '../actionTypes.js'
 
 export const recipes = (state = {}, action) => {
@@ -69,6 +70,8 @@ export const recipes = (state = {}, action) => {
           steps: state[action.id].steps.filter((_, index) => index !== action.index),
         },
       }
+    case SET_RECIPES:
+      return action.recipes
     default:
       return state
   }

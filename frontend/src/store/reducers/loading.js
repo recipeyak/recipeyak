@@ -2,15 +2,15 @@ import {
   SET_LOADING_LOGIN,
   SET_LOADING_SIGNUP,
   SET_LOADING_RESET,
+  SET_LOADING_RECIPES,
 } from '../actionTypes.js'
 
-const defaultState = {
+const loading = (state = {
   login: false,
   signup: false,
   reset: false,
-}
-
-const loading = (state = defaultState, action) => {
+  recipes: false,
+}, action) => {
   switch (action.type) {
     case SET_LOADING_LOGIN:
       return { ...state, login: action.val }
@@ -18,6 +18,8 @@ const loading = (state = defaultState, action) => {
       return { ...state, signup: action.val }
     case SET_LOADING_RESET:
       return { ...state, reset: action.val }
+    case SET_LOADING_RECIPES:
+      return { ...state, recipes: action.val }
     default:
       return state
   }

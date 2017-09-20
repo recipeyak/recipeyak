@@ -18,9 +18,11 @@ import {
   SET_LOADING_SIGNUP,
   SET_ERROR_SIGNUP,
   SET_LOADING_RESET,
+  SET_LOADING_RECIPES,
   SET_ERROR_RESET,
   SET_NOTIFICATION,
   CLEAR_NOTIFICATION,
+  SET_RECIPES,
 } from './actionTypes.js'
 
 import { push } from 'react-router-redux'
@@ -76,6 +78,40 @@ export const postNewRecipe = recipe => (dispatch, getState) => {
     })
     .catch(err => {
       console.log(err)
+    })
+}
+
+const getRecipeList = token =>
+  axios.get('/api/v1/recipes/', {
+    headers: {
+      'Authorization': 'Token ' + token,
+    },
+  })
+
+export const setRecipes = recipes => {
+  return {
+    type: SET_RECIPES,
+    recipes,
+  }
+}
+
+export const setLoadingRecipes = val => {
+  return {
+    type: SET_LOADING_RECIPES,
+    val,
+  }
+}
+
+export const fetchRecipeList = () => (dispatch, getState) => {
+  dispatch(setLoadingRecipes(true))
+  getRecipeList(getState().user.token)
+    .then(res => {
+      dispatch(setRecipes(res.data))
+      dispatch(setLoadingRecipes(false))
+    })
+    .catch(err => {
+      console.warning('error fetching recipe list', err)
+      dispatch(setLoadingRecipes(false))
     })
 }
 

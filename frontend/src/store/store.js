@@ -15,7 +15,7 @@ import loading from './reducers/loading.js'
 import error from './reducers/error.js'
 import notification from './reducers/notification.js'
 
-import { defaultRecipes } from './mock-data.js'
+// import { defaultRecipes } from './mock-data.js'
 
 import { loadState, saveState } from './localStorage'
 
@@ -29,20 +29,7 @@ export const recipeApp = combineReducers({
   notification,
 })
 
-const testData = {
-  recipes: defaultRecipes,
-  cart: {
-    1: 4,
-    2: 0,
-  },
-}
-
-const storedData = loadState()
-
-const defaultData = {
-  ...testData,
-  ...storedData,
-}
+const defaultData = loadState()
 
 export const history = createHistory()
 const router = routerMiddleware(history)
