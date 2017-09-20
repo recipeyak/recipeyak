@@ -35,7 +35,7 @@ jobs:
           path: ~/backend/reports
   test_javascript:
     docker:
-      - image: circleci/node:6
+      - image: circleci/node:7.10.0
         environment:
           DEBUG: 1
 
