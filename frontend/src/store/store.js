@@ -15,8 +15,6 @@ import loading from './reducers/loading.js'
 import error from './reducers/error.js'
 import notification from './reducers/notification.js'
 
-// import { defaultRecipes } from './mock-data.js'
-
 import { loadState, saveState } from './localStorage'
 
 export const recipeApp = combineReducers({

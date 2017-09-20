@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { recipe as recipeType } from './propTypes.js'
 import Base from './Base.jsx'
 import Recipe from './RecipeItem.jsx'
 
@@ -44,7 +43,6 @@ class RecipeList extends React.Component {
 }
 
 RecipeList.PropTypes = {
-  recipes: PropTypes.arrayOf(recipeType),
   removeFromCart: PropTypes.func.isRequired,
   addToCart: PropTypes.func.isRequired,
   fetchRecipeList: PropTypes.func.isRequired,
@@ -52,6 +50,7 @@ RecipeList.PropTypes = {
 
 RecipeList.defaultProps = {
   cart: {},
+  recipes: {},
 }
 
 export default RecipeList

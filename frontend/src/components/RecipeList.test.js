@@ -1,18 +1,19 @@
 import React from 'react'
-import {mount} from 'enzyme'
+import { mount } from 'enzyme'
 import { Provider } from 'react-redux'
-import {MemoryRouter} from 'react-router-dom'
+import { MemoryRouter } from 'react-router-dom'
 
 import { emptyStore as store } from '../store/store.js'
 import RecipeList from './RecipeList.jsx'
-import Recipe from './RecipeItem.jsx'
 
 describe('<RecipeList/>', () => {
   it('renders without crashing', () => {
     mount(
       <Provider store={ store }>
         <MemoryRouter>
-          <RecipeList/>
+          <RecipeList
+            fetchRecipeList={() => true }
+          />
         </MemoryRouter>
       </Provider>)
   })
@@ -29,7 +30,10 @@ describe('<RecipeList/>', () => {
     const element = mount(
       <Provider store={ store }>
         <MemoryRouter>
-          <RecipeList recipes={recipes}/>
+          <RecipeList
+            recipes={recipes}
+            fetchRecipeList={() => true }
+          />
         </MemoryRouter>
       </Provider>)
     expect(element.find('RecipeList').props().recipes).toEqual(recipes)
@@ -46,7 +50,10 @@ describe('<RecipeList/>', () => {
     mount(
       <Provider store={ store }>
         <MemoryRouter>
-          <RecipeList recipes={recipes}/>
+          <RecipeList
+            recipes={recipes}
+            fetchRecipeList={() => true }
+          />
         </MemoryRouter>
       </Provider>)
   })
