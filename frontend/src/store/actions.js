@@ -23,6 +23,7 @@ import {
   SET_NOTIFICATION,
   CLEAR_NOTIFICATION,
   SET_RECIPES,
+  SET_LOADING_ADD_RECIPE,
 } from './actionTypes.js'
 
 import { push } from 'react-router-redux'
@@ -70,14 +71,24 @@ export const addRecipe = recipe => {
   }
 }
 
+export const setLoadingAddRecipe = val => {
+  return {
+    type: SET_LOADING_ADD_RECIPE,
+    val,
+  }
+}
+
 export const postNewRecipe = recipe => (dispatch, getState) => {
+  dispatch(setLoadingAddRecipe(true))
   sendPostNewRecipe(getState().user.token, recipe)
     .then(res => {
-      console.log(res)
       dispatch(addRecipe)
+      dispatch(setLoadingAddRecipe(false))
+      dispatch(push('/recipes'))
     })
     .catch(err => {
-      console.log(err)
+      console.warning(err)
+      dispatch(setLoadingAddRecipe(false))
     })
 }
 

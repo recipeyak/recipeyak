@@ -3,6 +3,8 @@ import {
   setLoadingLogin,
   setLoadingSignup,
   setLoadingReset,
+  setLoadingRecipes,
+  setLoadingAddRecipe,
 } from '../actions.js'
 
 describe('loading', () => {
@@ -57,6 +59,42 @@ describe('loading', () => {
 
     expect(
       loading(loadingState, setLoadingReset(false))
+      ).toEqual(notLoadingState)
+  })
+
+  it('sets loading recipes', () => {
+    const notLoadingState = {
+      recipes: false,
+    }
+
+    const loadingState = {
+      recipes: true,
+    }
+
+    expect(
+      loading(notLoadingState, setLoadingRecipes(true))
+      ).toEqual(loadingState)
+
+    expect(
+      loading(loadingState, setLoadingRecipes(false))
+      ).toEqual(notLoadingState)
+  })
+
+  it('sets loading addRecipe', () => {
+    const notLoadingState = {
+      addRecipe: false,
+    }
+
+    const loadingState = {
+      addRecipe: true,
+    }
+
+    expect(
+      loading(notLoadingState, setLoadingAddRecipe(true))
+      ).toEqual(loadingState)
+
+    expect(
+      loading(loadingState, setLoadingAddRecipe(false))
       ).toEqual(notLoadingState)
   })
 })

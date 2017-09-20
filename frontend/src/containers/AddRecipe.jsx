@@ -3,6 +3,12 @@ import { connect } from 'react-redux'
 import { postNewRecipe } from '../store/actions.js'
 import AddRecipe from '../components/AddRecipe.jsx'
 
+const mapStateToProps = state => {
+  return {
+    loading: state.loading.addRecipe,
+  }
+}
+
 const mapDispatchToProps = dispatch => {
   return {
     addRecipe: recipe => {
@@ -12,7 +18,7 @@ const mapDispatchToProps = dispatch => {
 }
 
 const ConnectedAddRecipe = connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(AddRecipe)
 

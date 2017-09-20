@@ -232,13 +232,14 @@ class AddRecipe extends React.Component {
               </div>
             </div>
             <p className="flex-center">
-              <input
-                className="button is-large is-primary"
+              <button
+                className={ 'button is-large is-primary ' + (this.props.loading ? 'is-loading' : '')}
                 type="submit"
                 onClick={ (e) => this.handleSubmit(e) }
                 onKeyPress={ (e) => this.handleSubmit(e) }
-                name="cancel ingredient"
-                value="Create Recipe"/>
+                name="create recipe">
+                Create Recipe
+              </button>
             </p>
           </div>
     </Base>
@@ -248,6 +249,7 @@ class AddRecipe extends React.Component {
 
 AddRecipe.PropTypes = {
   addRecipe: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
 }
 
 export default AddRecipe
