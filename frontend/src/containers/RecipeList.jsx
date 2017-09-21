@@ -8,6 +8,7 @@ const mapStateToProps = state => {
     cart: state.cart,
     recipes: state.recipes,
     loading: state.loading.recipes,
+    error: state.error.recipes,
   }
 }
 

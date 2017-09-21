@@ -241,6 +241,12 @@ class AddRecipe extends React.Component {
                 Create Recipe
               </button>
             </p>
+            {
+              !!this.props.error &&
+              <p>
+                Error creating recipe
+              </p>
+            }
           </div>
     </Base>
     )

@@ -6,6 +6,7 @@ import AddRecipe from '../components/AddRecipe.jsx'
 const mapStateToProps = state => {
   return {
     loading: state.loading.addRecipe,
+    error: state.error.addRecipe,
   }
 }
 

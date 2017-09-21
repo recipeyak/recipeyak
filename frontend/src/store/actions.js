@@ -24,6 +24,8 @@ import {
   CLEAR_NOTIFICATION,
   SET_RECIPES,
   SET_LOADING_ADD_RECIPE,
+  SET_ERROR_ADD_RECIPE,
+  SET_ERROR_RECIPES,
 } from './actionTypes.js'
 
 import { push } from 'react-router-redux'
@@ -78,8 +80,16 @@ export const setLoadingAddRecipe = val => {
   }
 }
 
+export const setErrorAddRecipe = val => {
+  return {
+    type: SET_ERROR_ADD_RECIPE,
+    val,
+  }
+}
+
 export const postNewRecipe = recipe => (dispatch, getState) => {
   dispatch(setLoadingAddRecipe(true))
+  dispatch(setErrorAddRecipe(false))
   sendPostNewRecipe(getState().user.token, recipe)
     .then(res => {
       dispatch(addRecipe)
@@ -87,8 +97,15 @@ export const postNewRecipe = recipe => (dispatch, getState) => {
       dispatch(push('/recipes'))
     })
     .catch(err => {
-      console.warning(err)
+      console.warn(err)
       dispatch(setLoadingAddRecipe(false))
+      dispatch(setErrorAddRecipe(true))
+
+      showNotificationWithTimeout(dispatch, {
+        message: 'problem creating new recipe',
+        level: 'danger',
+        sticky: true,
+      })
     })
 }
 
@@ -106,6 +123,13 @@ export const setRecipes = recipes => {
   }
 }
 
+export const setErrorRecipes = val => {
+  return {
+    type: SET_ERROR_RECIPES,
+    val,
+  }
+}
+
 export const setLoadingRecipes = val => {
   return {
     type: SET_LOADING_RECIPES,
@@ -115,13 +139,15 @@ export const setLoadingRecipes = val => {
 
 export const fetchRecipeList = () => (dispatch, getState) => {
   dispatch(setLoadingRecipes(true))
+  dispatch(setErrorRecipes(false))
   getRecipeList(getState().user.token)
     .then(res => {
       dispatch(setRecipes(res.data))
       dispatch(setLoadingRecipes(false))
     })
     .catch(err => {
-      console.warning('error fetching recipe list', err)
+      console.warn('error fetching recipe list', err)
+      dispatch(setErrorRecipes(true))
       dispatch(setLoadingRecipes(false))
     })
 }

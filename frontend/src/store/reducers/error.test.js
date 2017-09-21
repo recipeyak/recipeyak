@@ -3,6 +3,8 @@ import {
   setErrorLogin,
   setErrorSignup,
   setErrorReset,
+  setErrorAddRecipe,
+  setErrorRecipes,
 } from '../actions.js'
 
 describe('error', () => {
@@ -24,6 +26,24 @@ describe('error', () => {
       ).toEqual(notErrorState)
   })
 
+  it('sets recipes error', () => {
+    const notErrorState = {
+      recipes: false,
+    }
+
+    const errorState = {
+      recipes: true,
+    }
+
+    expect(
+      error(notErrorState, setErrorRecipes(true))
+      ).toEqual(errorState)
+
+    expect(
+      error(errorState, setErrorRecipes(false))
+      ).toEqual(notErrorState)
+  })
+
   it('sets signup error', () => {
     const notErrorState = {
       signup: false,
@@ -39,6 +59,24 @@ describe('error', () => {
 
     expect(
       error(errorState, setErrorSignup(false))
+      ).toEqual(notErrorState)
+  })
+
+  it('sets addRecipe error', () => {
+    const notErrorState = {
+      addRecipe: false,
+    }
+
+    const errorState = {
+      addRecipe: true,
+    }
+
+    expect(
+      error(notErrorState, setErrorAddRecipe(true))
+      ).toEqual(errorState)
+
+    expect(
+      error(errorState, setErrorAddRecipe(false))
       ).toEqual(notErrorState)
   })
 

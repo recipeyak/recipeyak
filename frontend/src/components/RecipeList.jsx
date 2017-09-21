@@ -14,6 +14,8 @@ class RecipeList extends React.Component {
   }
 
   render () {
+    if (this.props.error) return <Base><p>Error fetching data</p></Base>
+
     if (this.props.loading) return <Base><p>Loading...</p></Base>
 
     const recipes =
@@ -46,6 +48,10 @@ RecipeList.PropTypes = {
   removeFromCart: PropTypes.func.isRequired,
   addToCart: PropTypes.func.isRequired,
   fetchRecipeList: PropTypes.func.isRequired,
+  cart: PropTypes.object,
+  recipes: PropTypes.object,
+  loading: PropTypes.bool,
+  error: PropTypes.bool,
 }
 
 RecipeList.defaultProps = {

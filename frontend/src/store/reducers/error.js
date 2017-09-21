@@ -2,20 +2,28 @@ import {
   SET_ERROR_LOGIN,
   SET_ERROR_SIGNUP,
   SET_ERROR_RESET,
+  SET_ERROR_ADD_RECIPE,
+  SET_ERROR_RECIPES,
 } from '../actionTypes.js'
 
 const error = (state = {
   login: {},
   signup: {},
   reset: {},
+  addRecipe: false,
+  recipes: false,
 }, action) => {
   switch (action.type) {
     case SET_ERROR_LOGIN:
       return { ...state, login: action.val }
     case SET_ERROR_SIGNUP:
       return { ...state, signup: action.val }
+    case SET_ERROR_RECIPES:
+      return { ...state, recipes: action.val }
     case SET_ERROR_RESET:
       return { ...state, reset: action.val }
+    case SET_ERROR_ADD_RECIPE:
+      return { ...state, addRecipe: action.val }
     default:
       return state
   }
