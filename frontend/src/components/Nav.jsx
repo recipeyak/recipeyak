@@ -58,7 +58,7 @@ class Navbar extends React.Component {
           <Link to="/" className="title">Recipe Yak</Link>
         </div>
       </div>
-      <div ref="search" className="nav-center">
+      <div ref="search" className="nav-center align-center">
         <SearchBox
           showSearchResults={ this.state.showSearchResults }
           handleOnFocus={ () => this.setState({ showSearchResults: true }) }

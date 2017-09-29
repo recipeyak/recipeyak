@@ -1,19 +1,3 @@
-// We are expecting the state to be in the following format:
-// {
-//  ID: RECIPE_OBJECT,
-//  1: {
-//    name: 'Curried Roast Chicken, Durban Style',
-//    url: '/recipes/:id/'
-//    version: 1.0,
-//    updated: 1979-05-27T07:32:00Z,
-//    source: 'url',
-//    tags: ['foo', 'bar'],
-//    ingredients = ['30g foo', '15ml bar'],
-//    steps = ['Add foo and bar to pot']
-//  }
-// }
-//
-
 import {
   ADD_RECIPE,
   REMOVE_RECIPE,
@@ -21,11 +5,13 @@ import {
   ADD_INGREDIENT_TO_RECIPE,
   UPDATE_RECIPE_NAME,
   DELETE_INGREDIENT,
+  UPDATE_INGREDIENT,
   DELETE_STEP,
   UPDATE_RECIPE_SOURCE,
   UPDATE_RECIPE_AUTHOR,
   UPDATE_RECIPE_TIME,
   SET_RECIPES,
+  UPDATE_STEP,
 } from '../actionTypes.js'
 
 export const recipes = (state = {}, action) => {
@@ -58,20 +44,48 @@ export const recipes = (state = {}, action) => {
       return { ...state, [action.id]: { ...state[action.id], author: action.author } }
     case DELETE_INGREDIENT:
       return { ...state,
-        [action.id]: {
-          ...state[action.id],
-          ingredients: state[action.id].ingredients.filter((_, index) => index !== action.index),
+        [action.recipeID]: {
+          ...state[action.recipeID],
+          ingredients: state[action.recipeID].ingredients.filter(x => x.id !== action.ingredientID),
+        },
+      }
+    case UPDATE_INGREDIENT:
+      return { ...state,
+        [action.recipeID]: {
+          ...state[action.recipeID],
+          ingredients: state[action.recipeID].ingredients.map(ingre => {
+            if (ingre.id === action.ingredientID) {
+              return { ...ingre, text: action.text }
+            } else {
+              return ingre
+            }
+          }),
         },
       }
     case DELETE_STEP:
       return { ...state,
-        [action.id]: {
-          ...state[action.id],
-          steps: state[action.id].steps.filter((_, index) => index !== action.index),
+        [action.recipeID]: {
+          ...state[action.recipeID],
+          steps: state[action.recipeID].steps.filter(x => x.id !== action.stepID),
+        },
+      }
+    case UPDATE_STEP:
+      return { ...state,
+        [action.recipeID]: {
+          ...state[action.recipeID],
+          steps: state[action.recipeID].steps.map(s => {
+            if (s.id === action.stepID) {
+              return { ...s, text: action.text }
+            } else {
+              return s
+            }
+          }),
         },
       }
     case SET_RECIPES:
-      return action.recipes
+      // convert the array of objects to an object with the recipe.id as the
+      // key, and the recipe as the value
+      return action.recipes.reduce((a, b) => ({ ...a, [b.id]: b }), {})
     default:
       return state
   }

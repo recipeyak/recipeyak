@@ -1,49 +1,61 @@
 import { connect } from 'react-redux'
 
 import {
-  addIngredientToRecipe,
-  addStepToRecipe,
-  updateRecipeName,
-  deleteIngredient,
-  deleteStep,
-  updateRecipeSource,
-  updateRecipeAuthor,
-  updateRecipeTime,
+  addingRecipeIngredient,
+  addingRecipeStep,
+  sendUpdatedRecipeName,
+  deletingIngredient,
+  deletingStep,
+  setRecipeSource,
+  setRecipeAuthor,
+  setRecipeTime,
+  fetchRecipe,
+  updatingIngredient,
+  updatingStep,
 } from '../store/actions.js'
 
 import Recipe from '../components/Recipe.jsx'
 
 const mapStateToProps = (state, props) => {
   const id = props.match.params.id
-  const recipe = state.recipes[id]
+  const recipe = state.recipes[id] ? state.recipes[id] : {}
   return recipe
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    addIngredient: (id, ingredient) => {
-      dispatch(addIngredientToRecipe(id, ingredient))
+    fetchRecipe: id => {
+      dispatch(fetchRecipe(id))
+    },
+    addIngredient: (recipeID, ingredient) => {
+      dispatch(addingRecipeIngredient(recipeID, ingredient))
     },
     addStep: (id, step) => {
-      dispatch(addStepToRecipe(id, step))
+      dispatch(addingRecipeStep(id, step))
     },
     updateName: (id, name) => {
-      dispatch(updateRecipeName(id, name))
+      dispatch(sendUpdatedRecipeName(id, name))
     },
-    deleteIngredient: (id, index) => {
-      dispatch(deleteIngredient(id, index))
+    updateStep: (recipeID, stepID, text) => {
+      dispatch(updatingStep(recipeID, stepID, text))
+    },
+    updateIngredient: (recipeID, ingredientID, text) => {
+      dispatch(updatingIngredient(recipeID, ingredientID, text))
+    },
+    deleteIngredient: (recipeID, ingredientID) => {
+      dispatch(deletingIngredient(recipeID, ingredientID))
     },
     deleteStep: (id, index) => {
-      dispatch(deleteStep(id, index))
+      dispatch(deletingStep(id, index))
     },
     updateSource: (id, source) => {
-      dispatch(updateRecipeSource(id, source))
+      dispatch(setRecipeSource(id, source))
     },
     updateAuthor: (id, author) => {
-      dispatch(updateRecipeAuthor(id, author))
+      dispatch(setRecipeAuthor(id, author))
     },
     updateTime: (id, time) => {
-      dispatch(updateRecipeTime(id, time))
+      dispatch(setRecipeTime(id, time))
     },
   }
 }

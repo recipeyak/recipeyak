@@ -12,14 +12,20 @@ class EnhancedTextInput extends React.Component {
       unsavedChanges: false,
     }
 
-    document.addEventListener('mousedown', (e) => this.handleGeneralClick(e))
+    document.addEventListener('mousedown', this.handleGeneralClick)
   }
 
-  componentWillUnmount () {
-    document.removeEventListener('mousedown', (e) => this.handleGeneralClick(e))
+  // since we initialize the state with the props, and in turn use this.state
+  // as our source of truth, we need to overwrite this.state on prop change
+  componentWillReceiveProps = nextProps => {
+    this.setState({ text: nextProps.text })
   }
 
-  handleGeneralClick (e) {
+  componentWillUnmount = () => {
+    document.removeEventListener('mousedown', this.handleGeneralClick)
+  }
+
+  handleGeneralClick = e => {
     e.stopPropagation()
     const el = this.refs.input
     if (el == null) return
@@ -32,19 +38,19 @@ class EnhancedTextInput extends React.Component {
     }
   }
 
-  handleFocus (e) {
+  handleFocus = e => {
     e.target.select()
   }
 
-  enableEditing () {
+  enableEditing = () => {
     this.setState({ editing: true })
   }
 
-  handleInputChange (e) {
+  handleInputChange = e => {
     this.setState({ text: e.target.value })
   }
 
-  discardChanges () {
+  discardChanges = () => {
     this.setState((_, props) => ({
       text: props.text,
       unsavedChanges: false,
@@ -52,29 +58,21 @@ class EnhancedTextInput extends React.Component {
     }))
   }
 
-  update () {
+  handleSubmit = e => {
+    e.preventDefault()
+    if (this.state.text === '') return
     this.props.onChange(this.state.text)
     this.setState({ editing: false })
   }
 
   render () {
-    const { text, editing } = this.state
-    const { name } = this.props
-
     const TextInput =
-      <form
-        className="width-100"
-        onSubmit={ e => {
-          e.preventDefault()
-          if (text === '') return
-          this.update()
-        }}
-      >
+      <form className="width-100" onSubmit={ this.handleSubmit }>
 
         <input
-          onChange={ e => this.handleInputChange(e) }
-          defaultValue={ text }
-          onFocus={ e => this.handleFocus(e) }
+          onChange={ this.handleInputChange }
+          defaultValue={ this.state.text }
+          onFocus={ this.handleFocus }
           autoFocus
           className={ 'input ' + (this.props.className != null && this.props.className) }
           type="text"
@@ -93,7 +91,7 @@ class EnhancedTextInput extends React.Component {
             </p>
             <p className="control">
               <input
-                onClick={ e => this.discardChanges(e) }
+                onClick={ this.discardChanges }
                 className="button"
                 type="button"
                 name="cancel edit"
@@ -109,11 +107,11 @@ class EnhancedTextInput extends React.Component {
         <section className="unsaved-changes">
           <span className="is-italic">Unsaved Changes</span>
           <section>
-            <a onClick={() => this.enableEditing() }
+            <a onClick={ this.enableEditing }
               className="button is-link">
               View Edits
             </a>
-            <a onClick={() => this.discardChanges() }
+            <a onClick={ this.discardChanges }
               className="button is-link">
               Discard
             </a>
@@ -122,12 +120,12 @@ class EnhancedTextInput extends React.Component {
 
     return (
       <section ref="input" className="flex-grow">
-        { !editing
+        { !this.state.editing
             ? <section>
                 <h2
-                  onClick={ () => this.enableEditing() }
+                  onClick={ this.enableEditing }
                   className={ this.props.className }>
-                  { text }
+                  { this.state.text }
                 </h2>
                 { unsavedChanges }
               </section>

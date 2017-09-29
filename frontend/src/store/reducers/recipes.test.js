@@ -11,12 +11,17 @@ import {
   deleteIngredient,
   deleteStep,
   updateRecipeSource,
+  updateIngredient,
+  updateStep,
 } from '../actions.js'
 
 describe('Recipes', () => {
   it('Adds recipe to recipe list', () => {
     const beforeState = {
-      1: {},
+      1: {
+        id: 1,
+        title: 'a meh recipe',
+      },
     }
     const recipe = {
       id: 123,
@@ -34,8 +39,8 @@ describe('Recipes', () => {
       ],
     }
     const afterState = {
-      123: recipe,
-      1: {},
+      ...beforeState,
+      [recipe.id]: recipe,
     }
     expect(
       recipes(beforeState, addRecipe(recipe))
@@ -121,6 +126,89 @@ describe('Recipes', () => {
     ).toEqual(afterState)
   })
 
+  it('it updates a step', () => {
+    const beforeState = {
+      1: {
+        ingredients: [
+          {
+            id: 1,
+            text: 'a new step',
+          },
+        ],
+        steps: [
+          {
+            id: 1,
+            text: 'test',
+          },
+        ],
+      },
+    }
+
+    const text = 'new text'
+
+    const afterState = {
+      1: {
+        ingredients: [
+          {
+            id: 1,
+            text: 'a new step',
+          },
+        ],
+        steps: [
+          {
+            id: 1,
+            text: text,
+          },
+        ],
+      },
+    }
+
+    expect(
+      recipes(beforeState, updateStep(1, 1, text))
+    ).toEqual(afterState)
+  })
+
+
+  it('it updates an ingredient', () => {
+    const beforeState = {
+      1: {
+        ingredients: [
+          {
+            id: 1,
+            text: 'a new step',
+          },
+        ],
+        steps: [
+          {
+            text: 'test',
+          },
+        ],
+      },
+    }
+
+    const text = 'new text'
+
+    const afterState = {
+      1: {
+        ingredients: [
+          {
+            id: 1,
+            text,
+          },
+        ],
+        steps: [
+          {
+            text: 'test',
+          },
+        ],
+      },
+    }
+
+    expect(
+      recipes(beforeState, updateIngredient(1, 1, text))
+    ).toEqual(afterState)
+  })
+
   it('updates the name of the recipe', () => {
     const beforeState = {
       1: {
@@ -148,7 +236,14 @@ describe('Recipes', () => {
       1: {
         id: 1,
         ingredients: [
-          'test', 'target',
+          {
+            id: 1,
+            text: 'test',
+          },
+          {
+            id: 2,
+            text: 'target',
+          },
         ],
       },
     }
@@ -157,7 +252,10 @@ describe('Recipes', () => {
       1: {
         id: 1,
         ingredients: [
-          'test',
+          {
+            id: 2,
+            text: 'target',
+          },
         ],
       },
     }
@@ -172,9 +270,11 @@ describe('Recipes', () => {
         id: 1,
         steps: [
           {
+            id: 1,
             text: 'test',
           },
           {
+            id: 2,
             text: 'target',
           },
         ],
@@ -186,7 +286,8 @@ describe('Recipes', () => {
         id: 1,
         steps: [
           {
-            text: 'test',
+            id: 2,
+            text: 'target',
           },
         ],
       },

@@ -12,15 +12,15 @@ class ListItem extends React.Component {
       unsavedChanges: false,
     }
 
-    document.addEventListener('mousedown', (e) => this.handleGeneralClick(e))
+    document.addEventListener('mousedown', this.handleGeneralClick)
   }
 
   componentWillUnmount () {
-    document.removeEventListener('mousedown', (e) => this.handleGeneralClick(e))
+    document.removeEventListener('mousedown', this.handleGeneralClick)
   }
 
   // ensures that the list item closes when the user clicks outside of the item
-  handleGeneralClick (e) {
+  handleGeneralClick = e => {
     e.stopPropagation()
     const el = this.refs.listitem
     if (el == null) return
@@ -33,18 +33,18 @@ class ListItem extends React.Component {
     }
   }
 
-  handleInputChange (e) {
+  handleInputChange = e => {
     this.setState({ [e.target.name]: e.target.value })
   }
 
-  enableEditing () {
+  enableEditing = () => {
     this.setState({
       editing: true,
       unsavedChanges: false,
     })
   }
 
-  discardChanges () {
+  discardChanges = () => {
     this.setState((prevState, props) => ({
       editing: false,
       text: props.text,
@@ -52,8 +52,8 @@ class ListItem extends React.Component {
     }))
   }
 
-  handleFocus (event) {
-    event.target.select()
+  handleFocus = e => {
+    e.target.select()
   }
 
   add () {
@@ -61,7 +61,7 @@ class ListItem extends React.Component {
     // TODO: update store
   }
 
-  cancel (e) {
+  cancel = e => {
     e.stopPropagation()
     this.setState((prevState, props) => ({
       editing: false,
@@ -69,7 +69,7 @@ class ListItem extends React.Component {
     }))
   }
 
-  update (e) {
+  update = e => {
     e.stopPropagation()
     this.setState({
       editing: false,
@@ -77,15 +77,14 @@ class ListItem extends React.Component {
     })
     // if the text is empty, we should just delete the item instead of updating
     if (this.state.text === '') {
-      this.props.delete(this.props.index)
+      this.delete()
     } else {
-      this.props.update(this.props.index, this.state.text)
+      this.props.update(this.props.id, this.state.text)
     }
   }
 
-  delete (index) {
-    this.props.delete(index)
-  }
+  delete = () =>
+    this.props.delete(this.props.id)
 
   render () {
     const inner = this.state.editing
@@ -101,8 +100,8 @@ class ListItem extends React.Component {
             <div className="control">
               <textarea
                 autoFocus
-                onFocus={ (e) => this.handleFocus(e) }
-                onChange={ (e) => this.handleInputChange(e) }
+                onFocus={ this.handleFocus }
+                onChange={ this.handleInputChange }
                 onKeyPress={ (e) => {
                   if (this.state.text === '') return
                   if (e.shiftKey && e.key === 'Enter') {
@@ -120,7 +119,7 @@ class ListItem extends React.Component {
             <div className="field is-grouped">
               <p className="control">
                 <input
-                  onClick={ e => this.update(e) }
+                  onClick={ this.update }
                   className="button"
                   type="button"
                   name="save"
@@ -129,7 +128,7 @@ class ListItem extends React.Component {
               </p>
               <p className="control">
                 <input
-                  onClick={ e => this.cancel(e) }
+                  onClick={ this.cancel }
                   className="button"
                   type="button"
                   name="cancel edit"
@@ -140,7 +139,7 @@ class ListItem extends React.Component {
             <div className="field is-grouped">
               <p className="control">
                 <input
-                  onClick={ () => this.delete(this.props.index) }
+                  onClick={ this.delete }
                   className="button"
                   type="button"
                   name="delete"
@@ -158,7 +157,7 @@ class ListItem extends React.Component {
       <li ref="listitem">
         <section
           className="cursor--pointer"
-          onClick={() => this.enableEditing()}>
+          onClick={this.enableEditing}>
         { inner }
         </section>
         {
@@ -166,11 +165,11 @@ class ListItem extends React.Component {
           <section className="unsaved-changes">
             <span className="is-italic">Unsaved Changes</span>
             <section>
-              <a onClick={() => this.enableEditing() }
+              <a onClick={ this.enableEditing }
                 className="button is-link">
                 View Edits
               </a>
-              <a onClick={() => this.discardChanges() }
+              <a onClick={ this.discardChanges }
                 className="button is-link">
                 Discard
               </a>
@@ -184,7 +183,7 @@ class ListItem extends React.Component {
 
 ListItem.PropTypes = {
   text: PropTypes.string,
-  index: PropTypes.number,
+  id: PropTypes.number,
   delete: PropTypes.func,
   update: PropTypes.func,
 }

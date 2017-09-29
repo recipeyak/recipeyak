@@ -5,7 +5,7 @@ const NoMatch = () => (
   <div>
     <nav className="grid container">
       <h1 className="col-xs-2">
-        <Link to="/" className="nav-item">Caena</Link>
+        <Link to="/" className="nav-item">Recipe Yak</Link>
       </h1>
     </nav>
 

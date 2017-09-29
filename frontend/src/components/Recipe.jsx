@@ -19,47 +19,102 @@ class Recipe extends React.Component {
     }
   }
 
-  handleInputChange (e) {
+  componentWillMount = () => {
+    this.props.fetchRecipe(this.props.match.params.id)
+  }
+
+  handleInputChange = e => {
     this.setState({ [e.target.name]: e.target.value })
   }
 
-  handleFocus (event) {
+  handleFocus = event => {
     event.target.select()
   }
 
-  cancelAddIngredient () {
+  cancelAddIngredient = () => {
     this.setState({ ingredient: '', addingIngredient: false })
   }
 
-  cancelAddStep () {
+  cancelAddStep = () => {
     this.setState({ step: '', addingStep: false })
   }
 
-  addingStep () {
+  addingStep = () => {
     this.setState({ addingStep: true })
   }
 
-  addingIngredient () {
+  addingIngredient = () => {
     this.setState({ addingIngredient: true })
   }
 
-  addIngredient (id, ingredient) {
+  addIngredient = (id, ingredient) => {
     this.props.addIngredient(id, ingredient)
     this.setState({ ingredient: '' })
     this.refs.addIngredientInput.focus()
   }
 
-  addStep (id, step) {
+  addStep = (id, step) => {
     this.props.addStep(id, step)
     this.setState({ step: '' })
     this.refs.addStepInput.focus()
+  }
+
+  handleAddStep = e => {
+    e.preventDefault()
+    if (this.state.step === '') return
+    this.addStep(this.props.id, this.state.step)
+  }
+
+  handleAddStepKeyPress = e => {
+    if (this.state.step === '') return
+    if (e.shiftKey && e.key === 'Enter') {
+      e.preventDefault()
+      this.addStep(this.props.id, this.state.step)
+    }
+  }
+
+  handleAddIngredient = e => {
+    e.preventDefault()
+    if (this.state.ingredient === '') return
+    this.addIngredient(this.props.id, this.state.ingredient)
+  }
+
+  deleteIngredient = ingredientID => {
+    this.props.deleteIngredient(this.props.id, ingredientID)
+  }
+
+  deleteStep = stepID => {
+    this.props.deleteStep(this.props.id, stepID)
+  }
+
+  updateIngredient = (ingredientID, text) => {
+    this.props.updateIngredient(this.props.id, ingredientID, text)
+  }
+
+  updateStep = (stepID, text) => {
+    this.props.updateStep(this.props.id, stepID, text)
+  }
+
+  updateName = name => {
+    this.props.updateName(this.props.id, name)
+  }
+
+  updateAuthor = author => {
+    this.props.updateAuthor(this.props.id, author)
+  }
+
+  updateSource = source => {
+    this.props.updateSource(this.props.id, source)
+  }
+
+  updateTime = time => {
+    this.props.updateTime(this.props.id, time)
   }
 
   render () {
     const { state } = this
 
     const {
-      id,
       ingredients,
       steps,
       tags,
@@ -67,14 +122,6 @@ class Recipe extends React.Component {
       author,
       source,
       time,
-      updateStep,
-      deleteStep,
-      updateIngredient,
-      deleteIngredient,
-      updateAuthor,
-      updateSource,
-      updateName,
-      updateTime,
     } = this.props
 
     return (
@@ -82,7 +129,7 @@ class Recipe extends React.Component {
         <div className="field">
           <EnhancedTextInput
             className="title is-1"
-            onChange={ name => updateName(id, name) }
+            onChange={ this.updateName }
             text={ name }
             name="name"
           />
@@ -90,9 +137,9 @@ class Recipe extends React.Component {
 
         <section className="tags">
           {
-            tags && tags.map(tag =>
-              <span className="tag is-dark is-medium" key={ tag }>
-                { tag }
+            tags.map(tag =>
+              <span className="tag is-dark is-medium" key={ tag.id }>
+                { tag.text }
               </span>
             )
           }
@@ -101,21 +148,21 @@ class Recipe extends React.Component {
         <div className="input-container">
 
           <EnhancedTextInput
-            onChange={ author => updateAuthor(id, author) }
+            onChange={ this.updateAuthor }
             text={ author }
             className="title is-4"
             placeholder="author"
             name="author"/>
 
           <EnhancedTextInput
-            onChange={ source => updateSource(id, source) }
+            onChange={ this.updateSource }
             text={ source }
             className="title is-4"
             placeholder="source"
             name="source"/>
 
           <EnhancedTextInput
-            onChange={ time => updateTime(id, time) }
+            onChange={ this.updateTime }
             text={ time }
             className="title is-4"
             placeholder="1 hour"
@@ -132,30 +179,26 @@ class Recipe extends React.Component {
                   {
                     ingredients.map((x, i) =>
                       <ListItem
-                        key={x + i}
+                        key={x.id}
+                        id={x.id}
                         index={i}
-                        text={x}
-                        update={(index, content) => updateIngredient(index, content)}
-                        delete={(i) => deleteIngredient(id, i)}
+                        text={x.text}
+                        update={ this.updateIngredient }
+                        delete={ this.deleteIngredient }
                       />
                     )
                   }
                 </ul>
                 { state.addingIngredient
-                ? <form onSubmit={ (e) => {
-                  e.preventDefault()
-                  if (state.ingredient === '') return
-                  this.addIngredient(id, state.ingredient)
-                }
-                }>
+                ? <form onSubmit={ this.handleAddIngredient }>
                 <div className="field">
                   <div className="control">
                     <input
                       ref='addIngredientInput'
-                      onChange={ (e) => this.handleInputChange(e) }
+                      onChange={ this.handleInputChange }
                       value={ state.ingredient }
                       autoFocus
-                      onFocus={ (e) => this.handleFocus(e) }
+                      onFocus={ this.handleFocus }
                       className="input input-ingredient"
                       type="text"
                       placeholder="Add your ingredient here"
@@ -173,7 +216,7 @@ class Recipe extends React.Component {
                   </p>
                   <p className="control">
                     <input
-                      onClick={ () => this.cancelAddIngredient() }
+                      onClick={ this.cancelAddIngredient }
                       className="button"
                       type="button"
                       name="cancel add ingredient"
@@ -183,7 +226,7 @@ class Recipe extends React.Component {
                 </form>
                 : <p className="flex-center">
                     <button
-                      onClick={ () => this.addingIngredient() }
+                      onClick={ this.addingIngredient }
                       className="button is-link">
                       Add another
                     </button>
@@ -198,39 +241,29 @@ class Recipe extends React.Component {
                 <ul>
                   {
                     steps.map((step, i) =>
-                      <div key={step + i}>
+                      <div key={step.id}>
                         <label className="label">Step { i + 1}</label>
                         <ListItem
-                          index={i}
-                          text={step}
-                          update={(index, content) => updateStep(index, content)}
-                          delete={(index) => deleteStep(id, index)}
+                          id={ step.id }
+                          text={ step.text }
+                          update={ this.updateStep }
+                          delete={ this.deleteStep }
                         />
                       </div>
                     )
                   }
                 </ul>
                 { state.addingStep
-                    ? <form onSubmit={ (e) => {
-                      e.preventDefault()
-                      if (state.step === '') return
-                      this.addStep(id, state.step)
-                    }}>
+                    ? <form onSubmit={ this.handleAddStep }>
                       <div className="field">
                         <label className="label">Step { steps.length + 1 }</label>
                         <div className="control">
                           <textarea
                             ref='addStepInput'
-                            onChange={ (e) => this.handleInputChange(e) }
-                            onKeyPress={ (e) => {
-                              if (state.step === '') return
-                              if (e.shiftKey && e.key === 'Enter') {
-                                e.preventDefault()
-                                this.addStep(id, state.step)
-                              }
-                            }}
+                            onChange={ this.handleInputChange }
+                            onKeyPress={ this.handleAddStepKeyPress }
                             autoFocus
-                            onFocus={ (e) => this.handleFocus(e) }
+                            onFocus={ this.handleFocus }
                             value={ state.step }
                             className="textarea"
                             placeholder="Add your step here"
@@ -248,7 +281,7 @@ class Recipe extends React.Component {
                         </p>
                         <p className="control">
                           <input
-                            onClick={ () => this.cancelAddStep() }
+                            onClick={ this.cancelAddStep }
                             className="button"
                             type="button"
                             name="cancel step"
@@ -258,7 +291,7 @@ class Recipe extends React.Component {
                       </form>
                     : <p className="flex-center">
                         <button
-                          onClick={ () => this.addingStep() }
+                          onClick={ this.addingStep }
                           className="button is-link">
                           Add another
                         </button>
@@ -287,6 +320,15 @@ Recipe.PropTypes = {
   updateName: PropTypes.func.isRequired,
   updateIngredient: PropTypes.func.isRequired,
   deleteIngredient: PropTypes.func.isRequired,
+  fetchRecipe: PropTypes.func.isRequired,
+  match: PropTypes.object.isRequired,
+}
+
+Recipe.defaultProps = {
+  ingredients: [],
+  steps: [],
+  tags: [],
+  recipe: {},
 }
 
 export default Recipe

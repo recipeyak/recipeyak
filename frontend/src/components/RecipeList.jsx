@@ -19,16 +19,16 @@ class RecipeList extends React.Component {
     if (this.props.loading) return <Base><p>Loading...</p></Base>
 
     const recipes =
-      Object.entries(this.props.recipes)
-      .map(([ recipeID, recipe ]) =>
-        <div className="grid-item" key={ recipeID }>
+      Object.values(this.props.recipes)
+      .map(recipe =>
+        <div className="grid-item" key={ recipe.id }>
           <Recipe
             {...recipe}
-            url={ '/recipe/' + recipeID }
-            inCart={ this.props.cart[recipeID] > 0 ? this.props.cart[recipeID] : 0 }
-            key={ recipeID }
-            removeFromCart={ () => this.props.removeFromCart(recipeID)}
-            addToCart={ () => this.props.addToCart(recipeID)}
+            url={ '/recipes/' + recipe.id }
+            inCart={ this.props.cart[recipe.id] > 0 ? this.props.cart[recipe.id] : 0 }
+            key={ recipe.id }
+            removeFromCart={ () => this.props.removeFromCart(recipe.id)}
+            addToCart={ () => this.props.addToCart(recipe.id)}
           />
         </div>)
 

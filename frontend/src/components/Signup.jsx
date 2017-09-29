@@ -42,7 +42,7 @@ class Signup extends React.Component {
         <nav className="nav">
           <div className="nav-left">
             <div className="nav-item">
-              <Link to="/" className="title">Caena</Link>
+              <Link to="/" className="title">Recipe Yak</Link>
             </div>
           </div>
         </nav>

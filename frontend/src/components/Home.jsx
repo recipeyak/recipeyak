@@ -35,7 +35,7 @@ const Home = ({ loggedIn = false }) => {
 
           <div className="nav-left">
             <div className="nav-item">
-              <Link to="/" className="title">Caena</Link>
+              <Link to="/" className="title">Recipe Yak</Link>
             </div>
           </div>
 
@@ -106,7 +106,7 @@ const Home = ({ loggedIn = false }) => {
       </div>
 
       <footer className="has-text-centered">
-        Caena ※ 2017
+        Recipe Yak ※ 2017
       </footer>
 
       </div>
