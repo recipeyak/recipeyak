@@ -19,23 +19,31 @@ describe('<Cart/>', () => {
         ingredients: ['ingredientOne', 'ingredientTwo'],
       },
     }
+
     const cart = {
       123: 1,
     }
+
+    const fetchCart = () => true
+
     const element = mount(
       <Provider store={ store }>
         <MemoryRouter>
-          <Cart cart={ cart } recipes={ recipes }/>
+          <Cart fetchCart={ fetchCart } cart={ cart } recipes={ recipes }/>
         </MemoryRouter>
       </Provider>
     )
+
     expect(element.find('Cart').props().cart).toEqual(cart)
   })
+
   it('handles having no data', () => {
+    const fetchCart = () => true
+
     mount(
       <Provider store={ store }>
         <MemoryRouter>
-          <Cart/>
+          <Cart fetchCart={ fetchCart }/>
         </MemoryRouter>
       </Provider>)
   })

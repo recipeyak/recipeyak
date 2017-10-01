@@ -28,6 +28,7 @@ import {
   SET_ERROR_ADD_RECIPE,
   SET_ERROR_RECIPES,
   UPDATE_STEP,
+  SET_CART,
 } from './actionTypes.js'
 
 import { push } from 'react-router-redux'
@@ -45,6 +46,30 @@ export const logout = () => {
   return {
     type: LOG_OUT,
   }
+}
+
+export const setCart = recipes => {
+  return {
+    type: SET_CART,
+    recipes,
+  }
+}
+
+const getCart = (token, id) =>
+  axios.get(`/api/v1/cart/`, {
+    headers: {
+      'Authorization': 'Token ' + token,
+    },
+  })
+
+export const fetchCart = id => (dispatch, getState) => {
+  getCart(getState().user.token, id)
+    .then(res => {
+      dispatch(setCart(res.data))
+    })
+    .catch(err => {
+      console.log('error fetching cart', err)
+    })
 }
 
 export const addToCart = id => {

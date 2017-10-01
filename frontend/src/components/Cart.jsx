@@ -9,61 +9,74 @@ import IngredientsList from './IngredientsList.jsx'
 
 import './cart.scss'
 
-const Cart = ({ addToCart, removeFromCart, cart = {}, recipes }) => {
-  const cartHasItems = Object.keys(cart).reduce((acc, key) => cart[key] > 0 ? true : acc, false)
-  const recipeItems = (Object.keys(cart).length > 0 && cartHasItems)
-    ? Object.keys(cart)
-      .map(recipeID => {
-        // check how many times the recipe is in the cart
-        const recipe = recipes[recipeID]
-        recipe.inCart = cart[recipeID]
-        return recipe
-      })
-      .map(recipe => (
-        cart[recipe.id] > 0
-        ? <Recipe
-          {...recipe}
-          key={ recipe.name + recipe.id }
-          removeFromCart={ () => removeFromCart(recipe.id)}
-          addToCart={ () => addToCart(recipe.id)}
-        />
-        : ''
-      ))
-    : <p className="no-recipes">No recipes in cart.</p>
+class Cart extends React.Component {
+  componentWillMount () {
+    this.props.fetchCart()
+  }
 
-  const cartRecipes = Object.keys(cart).map(recipeID => recipes[recipeID])
+  render () {
+    const { cart, recipes, removeFromCart, addToCart } = this.props
 
-  return (
-    <Base>
-      <div className="container">
-        <div className="columns">
-          <div className="column">
-            <h2 className="title">Recipes</h2>
-            { recipeItems }
-          </div>
-          <div className="column">
-            <h2 className="title">
-              <Link to="/ingredients">Shopping List</Link>
-            </h2>
-            {
-              cartHasItems
-                ? <div className="box">
-                    <IngredientsList recipes={ cartRecipes } />
-                  </div>
-                : <p className="no-recipes">No ingredients to list.</p>
-            }
+    const cartHasItems = Object.keys(cart).reduce((acc, key) => cart[key] > 0 ? true : acc, false)
+    const recipeItems = (Object.keys(cart).length > 0 && cartHasItems)
+      ? Object.keys(cart)
+        .map(recipeID => {
+          // check how many times the recipe is in the cart
+          const recipe = recipes[recipeID]
+          recipe.inCart = cart[recipeID]
+          return recipe
+        })
+        .map(recipe => (
+          cart[recipe.id] > 0
+          ? <Recipe
+            {...recipe}
+            key={ recipe.name + recipe.id }
+            removeFromCart={ () => removeFromCart(recipe.id)}
+            addToCart={ () => addToCart(recipe.id)}
+          />
+          : ''
+        ))
+      : <p className="no-recipes">No recipes in cart.</p>
+
+    const cartRecipes = Object.keys(cart).map(recipeID => recipes[recipeID])
+
+    return (
+      <Base>
+        <div className="container">
+          <div className="columns">
+            <div className="column">
+              <h2 className="title">Recipes</h2>
+              { recipeItems }
+            </div>
+            <div className="column">
+              <h2 className="title">
+                <Link to="/ingredients">Shopping List</Link>
+              </h2>
+              {
+                cartHasItems
+                  ? <div className="box">
+                      <IngredientsList recipes={ cartRecipes } />
+                    </div>
+                  : <p className="no-recipes">No ingredients to list.</p>
+              }
+            </div>
           </div>
         </div>
-      </div>
-    </Base>
-  )
+      </Base>
+    )
+  }
 }
 
 Cart.PropTypes = {
+  fetchCart: PropTypes.func.isRequired,
   addToCart: PropTypes.func.isRequired,
   removeFromCart: PropTypes.func.isRequired,
   cart: PropTypes.object.isRequired,
   recipes: PropTypes.objectOf(recipeType).isRequired,
+}
+
+Cart.defaultProps = {
+  cart: {},
 }
 
 export default Cart
