@@ -4,6 +4,7 @@ from typing import List
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.core.validators import MinValueValidator
 
 
 class MyUserManager(BaseUserManager):
@@ -151,7 +152,7 @@ class CartItem(CommonInfo):
     """Model for recipe and cart count"""
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    count = models.IntegerField()
+    count = models.IntegerField(validators=[MinValueValidator(0)])
 
     def __str__(self):
         return f'{self.count} - {self.recipe}'
