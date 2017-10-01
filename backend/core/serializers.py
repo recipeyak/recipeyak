@@ -31,7 +31,7 @@ class CartItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CartItem
-        fields = ('id', 'count',)
+        fields = ('recipe', 'count',)
 
 
 class StepSerializer(serializers.ModelSerializer):

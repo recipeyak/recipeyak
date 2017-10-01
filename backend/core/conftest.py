@@ -2,7 +2,7 @@ import pytest
 
 from rest_framework.test import APIClient
 
-from .models import MyUser, Recipe, Ingredient, Step, Tag, CartItem
+from .models import MyUser, Recipe, Ingredient, Step, Tag
 
 
 @pytest.fixture
@@ -52,8 +52,3 @@ def recipe(user):
         recipe=recipe)
 
     return recipe
-
-
-@pytest.fixture
-def cart_item(recipe, user):
-    return CartItem.objects.create(user=user, recipe=recipe, count=1)

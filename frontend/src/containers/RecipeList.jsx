@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 
-import { addToCart, removeFromCart, fetchRecipeList } from '../store/actions.js'
+import { addingToCart, removeFromCart, fetchRecipeList } from '../store/actions.js'
 import RecipeList from '../components/RecipeList.jsx'
 
 const mapStateToProps = state => {
@@ -15,7 +15,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     addToCart: id => {
-      dispatch(addToCart(id))
+      dispatch(addingToCart(id))
     },
     removeFromCart: id => {
       dispatch(removeFromCart(id))

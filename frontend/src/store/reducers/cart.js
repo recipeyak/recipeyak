@@ -2,6 +2,7 @@ import {
   ADD_TO_CART,
   REMOVE_FROM_CART,
   SET_CART,
+  SET_CART_ITEM,
 } from '../actionTypes.js'
 
 const cart = (state = {}, action) => {
@@ -17,7 +18,9 @@ const cart = (state = {}, action) => {
       }
       return { ...state, [action.id]: state[action.id] - 1 }
     case SET_CART:
-      return action.recipes.reduce((a, b) => ({ ...a, [b.id]: b.count }), {})
+      return action.recipes.reduce((a, b) => ({ ...a, [b.recipe]: b.count }), {})
+    case SET_CART_ITEM:
+      return { ...state, [action.id]: action.count }
     default:
       return state
   }

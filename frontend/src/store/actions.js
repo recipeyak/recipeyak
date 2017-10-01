@@ -29,6 +29,7 @@ import {
   SET_ERROR_RECIPES,
   UPDATE_STEP,
   SET_CART,
+  SET_CART_ITEM,
 } from './actionTypes.js'
 
 import { push } from 'react-router-redux'
@@ -77,6 +78,33 @@ export const addToCart = id => {
     type: ADD_TO_CART,
     id,
   }
+}
+
+export const setCartItem = (id, count) => {
+  return {
+    type: SET_CART_ITEM,
+    id,
+    count,
+  }
+}
+
+const patchCart = (token, id, count) =>
+  axios.patch(`/api/v1/cart/${id}/`, { count }, {
+    headers: {
+      'Authorization': 'Token ' + token,
+    },
+  })
+
+export const addingToCart = id => (dispatch, getState) => {
+  // TODO: this count shoulld be based off the current getState() count
+  const count = getState().cart.id || 1
+  patchCart(getState().user.token, id, count)
+    .then(res => {
+      dispatch(setCartItem(res.data.id))
+    })
+    .catch(err => {
+      console.log('error adding cart', err)
+    })
 }
 
 export const removeFromCart = id => {

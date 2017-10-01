@@ -2,7 +2,6 @@ import hashlib
 from typing import List
 
 from django.db import models
-from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.validators import MinValueValidator
 
@@ -120,6 +119,12 @@ class Recipe(CommonInfo):
     def __str__(self):
         return f'{self.name} by {self.author}'
 
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        super(Recipe, self).save(*args, **kwargs)
+        if is_new:
+            CartItem.objects.create(recipe=self)
+
 
 class Ingredient(CommonInfo):
     """Recipe ingredient"""
@@ -150,9 +155,8 @@ class Tag(CommonInfo):
 
 class CartItem(CommonInfo):
     """Model for recipe and cart count"""
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    count = models.IntegerField(validators=[MinValueValidator(0)])
+    recipe = models.OneToOneField(Recipe, on_delete=models.CASCADE, primary_key=True)
+    count = models.IntegerField(validators=[MinValueValidator(0)], default=0)
 
     def __str__(self):
         return f'{self.count} - {self.recipe}'

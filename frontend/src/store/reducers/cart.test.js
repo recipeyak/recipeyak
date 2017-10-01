@@ -4,6 +4,7 @@ import {
   setCart,
   addToCart,
   removeFromCart,
+  setCartItem,
 } from '../actions.js'
 
 describe('Cart', () => {
@@ -68,23 +69,22 @@ describe('Cart', () => {
       123: 0,
     }
     expect(
-      cart(beforeState, {
-        type: 'REMOVE_FROM_CART',
-        id: 123,
-      })
+      cart(beforeState, removeFromCart(123))
     ).toEqual(afterState)
   })
 
   it('sets recipes in cart', () => {
     const beforeState = {}
 
+    // this should match up to what the server is providing because we
+    // normalize the server data in the reducer
     const cartItems = [
       {
-        id: 1,
+        recipe: 1,
         count: 2,
       },
       {
-        id: 2,
+        recipe: 2,
         count: 1,
       },
     ]
@@ -96,6 +96,26 @@ describe('Cart', () => {
 
     expect(
       cart(beforeState, setCart(cartItems)),
+    ).toEqual(afterState)
+  })
+
+  it('sets an individual cart item', () => {
+    const id = 1
+
+    const beforeState = {
+      [id]: 1,
+      2: 1,
+    }
+
+    const count = 8
+
+    const afterState = {
+      [id]: count,
+      2: 1,
+    }
+
+    expect(
+      cart(beforeState, setCartItem(id, count)),
     ).toEqual(afterState)
   })
 })
