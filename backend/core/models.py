@@ -70,7 +70,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
     @property
     def cart(self):
-        return Cart.objects.get(user=self)
+        return CartItem.objects.filter(user=self)
 
     @property
     def avatar_url(self):
@@ -79,12 +79,6 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         # Avatars with ratings of G only `r=g`
         # https://secure.gravatar.com/site/implement/images/
         return f'//www.gravatar.com/avatar/{md5_email}?d=identicon&r=g'
-
-    def save(self, *args, **kwargs):
-        is_new = self.pk is None
-        super(MyUser, self).save(*args, **kwargs)
-        if is_new:
-            Cart.objects.create(user=self)
 
     def __str__(self):
         return self.email
@@ -153,24 +147,11 @@ class Tag(CommonInfo):
         return self.text
 
 
-class Cart(CommonInfo):
-    """Aggregation of recipe cart items"""
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-
-    @property
-    def items(self):
-        """Return cart items ordered by name"""
-        return CartItem.objects.filter(cart=self).order_by('recipe__name')
-
-    def __str__(self):
-        return f"{self.user}'s cart"
-
-
 class CartItem(CommonInfo):
     """Model for recipe and cart count"""
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     count = models.IntegerField()
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.count} - {self.recipe}'

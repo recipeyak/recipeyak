@@ -4,10 +4,16 @@ from django.views.generic import TemplateView
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers
 
-from .views import RecipeViewSet, StepViewSet, TagViewSet, IngredientViewSet
+from .views import (
+    RecipeViewSet,
+    StepViewSet,
+    TagViewSet,
+    IngredientViewSet,
+    CartViewSet)
 
 router = DefaultRouter()
 router.register(r'recipes', RecipeViewSet, base_name='recipes')
+router.register(r'cart', CartViewSet, base_name='cart')
 
 recipes_router = routers.NestedSimpleRouter(router, r'recipes', lookup='recipe')
 recipes_router.register(r'steps', StepViewSet, base_name='recipe-step')

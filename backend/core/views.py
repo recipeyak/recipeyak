@@ -2,8 +2,13 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from .models import Recipe, Step, Tag, Ingredient
-from .serializers import RecipeSerializer, StepSerializer, TagSerializer, IngredientSerializer
+from .models import Recipe, Step, Tag, Ingredient, CartItem
+from .serializers import (
+    RecipeSerializer,
+    StepSerializer,
+    TagSerializer,
+    IngredientSerializer,
+    CartItemSerializer)
 from .permissions import IsOwnerOrAdmin
 
 
@@ -60,6 +65,22 @@ class TagViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             recipe = Recipe.objects.get(pk=recipe_pk)
             serializer.save(recipe=recipe)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CartViewSet(viewsets.ModelViewSet):
+
+    queryset = CartItem.objects.all()
+    serializer_class = CartItemSerializer
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            recipe = Recipe.objects.filter(user=self.request.user).get(id=self.request.data.get('recipe'))
+            serializer.save(user=request.user, recipe=recipe)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
