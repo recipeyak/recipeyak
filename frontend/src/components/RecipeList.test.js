@@ -12,7 +12,7 @@ describe('<RecipeList/>', () => {
       <Provider store={ store }>
         <MemoryRouter>
           <RecipeList
-            fetchRecipeList={() => true }
+            fetchData={() => true }
           />
         </MemoryRouter>
       </Provider>)
@@ -32,7 +32,7 @@ describe('<RecipeList/>', () => {
         <MemoryRouter>
           <RecipeList
             recipes={recipes}
-            fetchRecipeList={() => true }
+            fetchData={() => true }
           />
         </MemoryRouter>
       </Provider>)
@@ -52,7 +52,7 @@ describe('<RecipeList/>', () => {
         <MemoryRouter>
           <RecipeList
             recipes={recipes}
-            fetchRecipeList={() => true }
+            fetchData={() => true }
           />
         </MemoryRouter>
       </Provider>)
