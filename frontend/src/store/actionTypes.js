@@ -14,6 +14,8 @@ export const SET_CART = 'SET_CART'
 export const SET_CART_ITEM = 'SET_CART_ITEM'
 export const ADD_TO_CART = 'ADD_TO_CART'
 export const REMOVE_FROM_CART = 'REMOVE_FROM_CART'
+export const SET_LOADING_CART = 'SET_LOADING_CART'
+export const SET_ERROR_CART = 'SET_ERROR_CART'
 
 export const ADD_RECIPE = 'ADD_RECIPE'
 export const REMOVE_RECIPE = 'REMOVE_RECIPE'

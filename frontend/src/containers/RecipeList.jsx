@@ -1,13 +1,19 @@
 import { connect } from 'react-redux'
 
-import { addingToCart, removeFromCart, fetchRecipeList } from '../store/actions.js'
+import {
+  addingToCart,
+  removeFromCart,
+  fetchRecipeList,
+  fetchCart,
+} from '../store/actions.js'
+
 import RecipeList from '../components/RecipeList.jsx'
 
 const mapStateToProps = state => {
   return {
     cart: state.cart,
     recipes: state.recipes,
-    loading: state.loading.recipes,
+    loading: state.loading.recipes || state.loading.cart,
     error: state.error.recipes,
   }
 }
@@ -20,8 +26,9 @@ const mapDispatchToProps = dispatch => {
     removeFromCart: id => {
       dispatch(removeFromCart(id))
     },
-    fetchRecipeList: () => {
+    fetchData: () => {
       dispatch(fetchRecipeList())
+      dispatch(fetchCart())
     },
   }
 }

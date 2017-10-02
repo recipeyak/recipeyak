@@ -10,7 +10,7 @@ import './recipe-list.scss'
 
 class RecipeList extends React.Component {
   componentWillMount () {
-    this.props.fetchRecipeList()
+    this.props.fetchData()
   }
 
   render () {
@@ -47,7 +47,7 @@ class RecipeList extends React.Component {
 RecipeList.PropTypes = {
   removeFromCart: PropTypes.func.isRequired,
   addToCart: PropTypes.func.isRequired,
-  fetchRecipeList: PropTypes.func.isRequired,
+  fetchData: PropTypes.func.isRequired,
   cart: PropTypes.object,
   recipes: PropTypes.object,
   loading: PropTypes.bool,

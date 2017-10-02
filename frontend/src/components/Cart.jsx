@@ -11,11 +11,12 @@ import './cart.scss'
 
 class Cart extends React.Component {
   componentWillMount () {
-    this.props.fetchCart()
+    this.props.fetchData()
   }
 
   render () {
-    const { cart, recipes, removeFromCart, addToCart } = this.props
+    const { cart, recipes, removeFromCart, addToCart, loading } = this.props
+    if (loading) return <Base><p>Loading...</p></Base>
 
     const cartHasItems = Object.keys(cart).reduce((acc, key) => cart[key] > 0 ? true : acc, false)
     const recipeItems = (Object.keys(cart).length > 0 && cartHasItems)
@@ -31,6 +32,7 @@ class Cart extends React.Component {
           ? <Recipe
             {...recipe}
             key={ recipe.name + recipe.id }
+            url={ `/recipes/${recipe.id}/` }
             removeFromCart={ () => removeFromCart(recipe.id)}
             addToCart={ () => addToCart(recipe.id)}
           />
@@ -68,7 +70,7 @@ class Cart extends React.Component {
 }
 
 Cart.PropTypes = {
-  fetchCart: PropTypes.func.isRequired,
+  fetchData: PropTypes.func.isRequired,
   addToCart: PropTypes.func.isRequired,
   removeFromCart: PropTypes.func.isRequired,
   cart: PropTypes.object.isRequired,

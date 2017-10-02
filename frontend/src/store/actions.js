@@ -30,6 +30,8 @@ import {
   UPDATE_STEP,
   SET_CART,
   SET_CART_ITEM,
+  SET_ERROR_CART,
+  SET_LOADING_CART,
 } from './actionTypes.js'
 
 import { push } from 'react-router-redux'
@@ -49,6 +51,20 @@ export const logout = () => {
   }
 }
 
+export const setLoadingCart = val => {
+  return {
+    type: SET_LOADING_CART,
+    val,
+  }
+}
+
+export const setErrorCart = val => {
+  return {
+    type: SET_ERROR_CART,
+    val,
+  }
+}
+
 export const setCart = recipes => {
   return {
     type: SET_CART,
@@ -64,11 +80,16 @@ const getCart = (token, id) =>
   })
 
 export const fetchCart = id => (dispatch, getState) => {
+  setLoadingCart(true)
+  setErrorCart(false)
   getCart(getState().user.token, id)
     .then(res => {
       dispatch(setCart(res.data))
+      setLoadingCart(false)
     })
     .catch(err => {
+      setErrorCart(true)
+      setLoadingCart(false)
       console.log('error fetching cart', err)
     })
 }

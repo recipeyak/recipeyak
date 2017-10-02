@@ -24,12 +24,12 @@ describe('<Cart/>', () => {
       123: 1,
     }
 
-    const fetchCart = () => true
+    const fetchData = () => true
 
     const element = mount(
       <Provider store={ store }>
         <MemoryRouter>
-          <Cart fetchCart={ fetchCart } cart={ cart } recipes={ recipes }/>
+          <Cart fetchData={ fetchData } cart={ cart } recipes={ recipes }/>
         </MemoryRouter>
       </Provider>
     )
@@ -38,12 +38,12 @@ describe('<Cart/>', () => {
   })
 
   it('handles having no data', () => {
-    const fetchCart = () => true
+    const fetchData = () => true
 
     mount(
       <Provider store={ store }>
         <MemoryRouter>
-          <Cart fetchCart={ fetchCart }/>
+          <Cart fetchData={ fetchData }/>
         </MemoryRouter>
       </Provider>)
   })

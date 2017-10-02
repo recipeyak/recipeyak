@@ -5,6 +5,7 @@ import {
   setErrorReset,
   setErrorAddRecipe,
   setErrorRecipes,
+  setErrorCart,
 } from '../actions.js'
 
 describe('error', () => {
@@ -77,6 +78,24 @@ describe('error', () => {
 
     expect(
       error(errorState, setErrorAddRecipe(false))
+      ).toEqual(notErrorState)
+  })
+
+  it('sets cart error', () => {
+    const notErrorState = {
+      cart: false,
+    }
+
+    const errorState = {
+      cart: true,
+    }
+
+    expect(
+      error(notErrorState, setErrorCart(true))
+      ).toEqual(errorState)
+
+    expect(
+      error(errorState, setErrorCart(false))
       ).toEqual(notErrorState)
   })
 
