@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 
 import {
-  addToCart,
+  addingToCart,
   removeFromCart,
   fetchCart,
   fetchRecipeList,
@@ -20,7 +20,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     addToCart: id => {
-      dispatch(addToCart(id))
+      dispatch(addingToCart(id))
     },
     removeFromCart: id => {
       dispatch(removeFromCart(id))

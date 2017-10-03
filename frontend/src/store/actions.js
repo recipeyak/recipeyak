@@ -117,11 +117,13 @@ const patchCart = (token, id, count) =>
   })
 
 export const addingToCart = id => (dispatch, getState) => {
-  // TODO: this count shoulld be based off the current getState() count
-  const count = getState().cart.id || 1
+  // we increment the cart value by 1, since we know the default / min cart
+  // value is ensured to be 0 via the backend
+  const count = getState().cart[id] + 1
   patchCart(getState().user.token, id, count)
     .then(res => {
-      dispatch(setCartItem(res.data.id))
+      const { recipe, count } = res.data
+      dispatch(setCartItem(recipe, count))
     })
     .catch(err => {
       console.log('error adding cart', err)

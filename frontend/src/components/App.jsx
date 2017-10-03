@@ -55,7 +55,7 @@ const Base = () => (
       <Route component={ NoMatch }/>
     </Switch>
   </ConnectedRouter>
-    <Notification></Notification>
+  <Notification/>
 </div>
 )
 export default Base

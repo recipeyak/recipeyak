@@ -16,23 +16,27 @@ class Cart extends React.Component {
 
   render () {
     const { cart, recipes, removeFromCart, addToCart, loading } = this.props
+
     if (loading) return <Base><p>Loading...</p></Base>
 
+    const urlFromID = id => `/recipes/${id}/`
+
+    // TODO: move this stuff into the container's state mapping
     const cartHasItems = Object.keys(cart).reduce((acc, key) => cart[key] > 0 ? true : acc, false)
     const recipeItems = (Object.keys(cart).length > 0 && cartHasItems)
       ? Object.keys(cart)
         .map(recipeID => {
           // check how many times the recipe is in the cart
           const recipe = recipes[recipeID]
-          recipe.inCart = cart[recipeID]
-          return recipe
+          const countInCart = cart[recipeID]
+          return { ...recipe, inCart: countInCart }
         })
         .map(recipe => (
           cart[recipe.id] > 0
           ? <Recipe
             {...recipe}
             key={ recipe.name + recipe.id }
-            url={ `/recipes/${recipe.id}/` }
+            url={ urlFromID(recipe.id) }
             removeFromCart={ () => removeFromCart(recipe.id)}
             addToCart={ () => addToCart(recipe.id)}
           />
