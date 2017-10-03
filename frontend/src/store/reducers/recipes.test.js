@@ -13,6 +13,7 @@ import {
   updateRecipeSource,
   updateIngredient,
   updateStep,
+  setRecipeAddingToCart,
 } from '../actions.js'
 
 describe('Recipes', () => {
@@ -361,6 +362,26 @@ describe('Recipes', () => {
 
     expect(
       recipes(beforeState, updateRecipeTime(1, newTime))
+    ).toEqual(afterState)
+  })
+
+  it('set recipe to be in the adding to cart state', () => {
+    const beforeState = {
+      1: {
+        id: 1,
+        addingToCart: false,
+      },
+    }
+
+    const afterState = {
+      1: {
+        id: 1,
+        addingToCart: true,
+      },
+    }
+
+    expect(
+      recipes(beforeState, setRecipeAddingToCart(1, true))
     ).toEqual(afterState)
   })
 })

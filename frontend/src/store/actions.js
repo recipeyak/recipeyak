@@ -32,6 +32,7 @@ import {
   SET_CART_ITEM,
   SET_ERROR_CART,
   SET_LOADING_CART,
+  SET_RECIPE_ADDING_TO_CART,
 } from './actionTypes.js'
 
 import { push } from 'react-router-redux'
@@ -120,13 +121,16 @@ export const addingToCart = id => (dispatch, getState) => {
   // we increment the cart value by 1, since we know the default / min cart
   // value is ensured to be 0 via the backend
   const count = getState().cart[id] + 1
+  dispatch(setRecipeAddingToCart(id, true))
   patchCart(getState().user.token, id, count)
     .then(res => {
       const { recipe, count } = res.data
       dispatch(setCartItem(recipe, count))
+      dispatch(setRecipeAddingToCart(id, false))
     })
     .catch(err => {
       console.log('error adding cart', err)
+      dispatch(setRecipeAddingToCart(id, false))
     })
 }
 
@@ -278,6 +282,14 @@ export const addingRecipeIngredient = (recipeID, ingredient) => (dispatch, getSt
     .catch(err => {
       console.log('error adding recipe ingredient', err)
     })
+}
+
+export const setRecipeAddingToCart = (id, loading) => {
+  return {
+    type: SET_RECIPE_ADDING_TO_CART,
+    id,
+    loading,
+  }
 }
 
 export const updateRecipeName = (id, name) => {

@@ -12,6 +12,7 @@ const RecipeItem = ({
     inCart,
     removeFromCart,
     addToCart,
+    addingToCart = false,
   }) => {
   const spanTags = tags.length > 0
     ? tags.map(tag => <span key={ tag } className="tag is-medium">{ tag }</span>)
@@ -24,7 +25,7 @@ const RecipeItem = ({
         disabled={ !inCart }>Remove One</button>
       <button
         onClick={ () => addToCart(id) }
-        className="button is-primary control"
+        className={ `button is-primary control ${addingToCart ? 'is-loading' : ''}` }
         >Add Another</button>
       <span className="tag is-light is-medium cart-count-tag">{ inCart }</span>
     </div>
@@ -61,6 +62,7 @@ RecipeItem.PropTypes = {
   inCart: PropTypes.number.isRequired,
   removeFromCart: PropTypes.func.isRequired,
   addToCart: PropTypes.func.isRequired,
+  addingToCart: PropTypes.bool,
 }
 
 export default RecipeItem

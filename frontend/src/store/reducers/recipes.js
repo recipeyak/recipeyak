@@ -12,6 +12,7 @@ import {
   UPDATE_RECIPE_TIME,
   SET_RECIPES,
   UPDATE_STEP,
+  SET_RECIPE_ADDING_TO_CART,
 } from '../actionTypes.js'
 
 export const recipes = (state = {}, action) => {
@@ -86,6 +87,8 @@ export const recipes = (state = {}, action) => {
       // convert the array of objects to an object with the recipe.id as the
       // key, and the recipe as the value
       return action.recipes.reduce((a, b) => ({ ...a, [b.id]: b }), {})
+    case SET_RECIPE_ADDING_TO_CART:
+      return { ...state, [action.id]: { ...state[action.id], addingToCart: action.loading } }
     default:
       return state
   }
