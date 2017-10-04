@@ -11,7 +11,9 @@ class EnhancedTextInput extends React.Component {
       editing: false,
       unsavedChanges: false,
     }
+  }
 
+  componentWillMount () {
     document.addEventListener('mousedown', this.handleGeneralClick)
   }
 
@@ -26,16 +28,12 @@ class EnhancedTextInput extends React.Component {
   }
 
   handleGeneralClick = e => {
-    e.stopPropagation()
-    const el = this.refs.input
-    if (el == null) return
-    const clickOnListItem = el.contains(e.srcElement)
-    if (!clickOnListItem) {
-      this.setState((prevState, props) => ({
-        editing: false,
-        unsavedChanges: (prevState.editing && prevState.text !== props.text) || prevState.unsavedChanges,
-      }))
-    }
+    const clickedInComponent = this.element && this.element.contains(e.target)
+    if (clickedInComponent) return
+    this.setState((prevState, props) => ({
+      editing: false,
+      unsavedChanges: (prevState.editing && prevState.text !== props.text) || prevState.unsavedChanges,
+    }))
   }
 
   handleFocus = e => {
@@ -50,7 +48,9 @@ class EnhancedTextInput extends React.Component {
     this.setState({ text: e.target.value })
   }
 
-  discardChanges = () => {
+  discardChanges = e => {
+    // Need to stop propagation otherwise we will open the text input
+    e.stopPropagation()
     this.setState((_, props) => ({
       text: props.text,
       unsavedChanges: false,
@@ -62,7 +62,7 @@ class EnhancedTextInput extends React.Component {
     e.preventDefault()
     if (this.state.text === '') return
     this.props.onChange(this.state.text)
-    this.setState({ editing: false })
+    this.setState({ editing: false, unsavedChanges: false })
   }
 
   render () {
@@ -119,12 +119,13 @@ class EnhancedTextInput extends React.Component {
         </section>
 
     return (
-      <section ref="input" className="flex-grow">
+      <section
+        ref={element => { this.element = element }}
+        onClick={ this.enableEditing }
+        className="flex-grow">
         { !this.state.editing
             ? <section>
-                <h2
-                  onClick={ this.enableEditing }
-                  className={ this.props.className }>
+                <h2 className={ this.props.className }>
                   { this.state.text }
                 </h2>
                 { unsavedChanges }
