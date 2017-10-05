@@ -13,6 +13,7 @@ import {
   SET_RECIPES,
   UPDATE_STEP,
   SET_RECIPE_ADDING_TO_CART,
+  SET_RECIPE_REMOVING_FROM_CART,
 } from '../actionTypes.js'
 
 export const recipes = (state = {}, action) => {
@@ -89,6 +90,8 @@ export const recipes = (state = {}, action) => {
       return action.recipes.reduce((a, b) => ({ ...a, [b.id]: b }), {})
     case SET_RECIPE_ADDING_TO_CART:
       return { ...state, [action.id]: { ...state[action.id], addingToCart: action.loading } }
+    case SET_RECIPE_REMOVING_FROM_CART:
+      return { ...state, [action.id]: { ...state[action.id], removingFromCart: action.loading } }
     default:
       return state
   }

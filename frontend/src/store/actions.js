@@ -1,8 +1,6 @@
 import {
   LOG_IN,
   LOG_OUT,
-  ADD_TO_CART,
-  REMOVE_FROM_CART,
   ADD_RECIPE,
   REMOVE_RECIPE,
   ADD_STEP_TO_RECIPE,
@@ -33,6 +31,7 @@ import {
   SET_ERROR_CART,
   SET_LOADING_CART,
   SET_RECIPE_ADDING_TO_CART,
+  SET_RECIPE_REMOVING_FROM_CART,
 } from './actionTypes.js'
 
 import { push } from 'react-router-redux'
@@ -95,13 +94,6 @@ export const fetchCart = id => (dispatch, getState) => {
     })
 }
 
-export const addToCart = id => {
-  return {
-    type: ADD_TO_CART,
-    id,
-  }
-}
-
 export const setCartItem = (id, count) => {
   return {
     type: SET_CART_ITEM,
@@ -129,16 +121,33 @@ export const addingToCart = id => (dispatch, getState) => {
       dispatch(setRecipeAddingToCart(id, false))
     })
     .catch(err => {
-      console.log('error adding cart', err)
+      console.log('error adding recipe to cart', err)
       dispatch(setRecipeAddingToCart(id, false))
     })
 }
 
-export const removeFromCart = id => {
+export const setRecipeRemovingFromCart = (id, loading) => {
   return {
-    type: REMOVE_FROM_CART,
+    type: SET_RECIPE_REMOVING_FROM_CART,
     id,
+    loading,
   }
+}
+
+export const removingFromCart = id => (dispatch, getState) => {
+  const currentCount = getState().cart[id]
+  const count = currentCount > 0 ? currentCount - 1 : 0
+  dispatch(setRecipeRemovingFromCart(id, true))
+  patchCart(getState().user.token, id, count)
+    .then(res => {
+      const { recipe, count } = res.data
+      dispatch(setCartItem(recipe, count))
+      dispatch(setRecipeRemovingFromCart(id, false))
+    })
+    .catch(err => {
+      console.log('error removing recipe from cart', err)
+      dispatch(setRecipeRemovingFromCart(id, false))
+    })
 }
 
 const sendPostNewRecipe = (token, recipe) =>
