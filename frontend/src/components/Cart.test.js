@@ -6,6 +6,8 @@ import { mount } from 'enzyme'
 import { emptyStore as store } from '../store/store.js'
 import Cart from './Cart.jsx'
 
+import { cartOccurances } from '../containers/Cart.jsx'
+
 describe('<Cart/>', () => {
   it("doesn't explode on creation", () => {
     const recipes = {
@@ -46,5 +48,45 @@ describe('<Cart/>', () => {
           <Cart fetchData={ fetchData }/>
         </MemoryRouter>
       </Provider>)
+  })
+
+  it('maps recipes to ingredient objects', () => {
+    const recipes = {
+      1: {
+        id: 1,
+        name: 'test',
+        ingredients: [
+          {
+            id: 1,
+            text: 'testing',
+          },
+          {
+            id: 1,
+            text: 'testing',
+          },
+          {
+            id: 2,
+            text: 'asdf',
+          },
+        ],
+      },
+    }
+
+    const cart = {
+      1: 2,
+    }
+
+    const expected = [
+      {
+        count: 4,
+        text: 'testing',
+      },
+      {
+        count: 2,
+        text: 'asdf',
+      },
+    ]
+
+    expect(cartOccurances(recipes, cart)).toEqual(expected)
   })
 })

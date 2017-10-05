@@ -5,8 +5,6 @@ import PropTypes from 'prop-types'
 import { recipe as recipeType } from './propTypes.js'
 import Base from './Base.jsx'
 import Recipe from './RecipeItem.jsx'
-import IngredientsList from './IngredientsList.jsx'
-
 import './cart.scss'
 
 class Cart extends React.Component {
@@ -15,36 +13,27 @@ class Cart extends React.Component {
   }
 
   render () {
-    const { cart, recipes, removeFromCart, addToCart, loading } = this.props
+    const { cart, recipes, removeFromCart, addToCart, loading, ingredients } = this.props
 
     if (loading) return <Base><p>Loading...</p></Base>
 
     const urlFromID = id => `/recipes/${id}/`
 
-    // TODO: move this stuff into the container's state mapping
-    const cartHasItems = Object.keys(cart).reduce((acc, key) => cart[key] > 0 ? true : acc, false)
-    const recipeItems = (Object.keys(cart).length > 0 && cartHasItems)
-      ? Object.keys(cart)
-        .map(recipeID => {
-          // check how many times the recipe is in the cart
-          const recipe = recipes[recipeID]
-          const countInCart = cart[recipeID]
-          return { ...recipe, inCart: countInCart }
-        })
+    const cartHasItems = Object.values(cart).find(x => x > 0) != null
+    const recipeItems = cartHasItems
+      ? Object.values(recipes)
+        .filter(recipe => cart[recipe.id] > 0)
         .map(recipe => (
-          cart[recipe.id] > 0
-          ? <Recipe
+          <Recipe
             {...recipe}
-            key={ recipe.name + recipe.id }
+            inCart={ cart[recipe.id] > 0 ? cart[recipe.id] : 0 }
+            key={ recipe.id }
             url={ urlFromID(recipe.id) }
             removeFromCart={ () => removeFromCart(recipe.id)}
             addToCart={ () => addToCart(recipe.id)}
           />
-          : ''
         ))
       : <p className="no-recipes">No recipes in cart.</p>
-
-    const cartRecipes = Object.keys(cart).map(recipeID => recipes[recipeID])
 
     return (
       <Base>
@@ -59,9 +48,15 @@ class Cart extends React.Component {
                 <Link to="/ingredients">Shopping List</Link>
               </h2>
               {
-                cartHasItems
+                ingredients.length > 0
                   ? <div className="box">
-                      <IngredientsList recipes={ cartRecipes } />
+                    {
+                      ingredients.map(x =>
+                        <li key={ x.text }>
+                          <strong>{ x.count }</strong>{ x.text }
+                        </li>
+                      )
+                    }
                     </div>
                   : <p className="no-recipes">No ingredients to list.</p>
               }
@@ -79,10 +74,12 @@ Cart.PropTypes = {
   removeFromCart: PropTypes.func.isRequired,
   cart: PropTypes.object.isRequired,
   recipes: PropTypes.objectOf(recipeType).isRequired,
+  ingredients: PropTypes.array.isRequired,
 }
 
 Cart.defaultProps = {
   cart: {},
+  ingredients: [],
 }
 
 export default Cart
