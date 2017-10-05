@@ -11,6 +11,7 @@ const RecipeItem = ({
     id,
     inCart,
     removeFromCart,
+    removingFromCart = false,
     addToCart,
     addingToCart = false,
   }) => {
@@ -21,7 +22,7 @@ const RecipeItem = ({
     <div className="field is-grouped">
       <button
         onClick={ () => removeFromCart(id) }
-        className="button control"
+        className={ `button control ${removingFromCart ? 'is-loading' : ''}` }
         disabled={ !inCart }>Remove One</button>
       <button
         onClick={ () => addToCart(id) }

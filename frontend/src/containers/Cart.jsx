@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 
 import {
   addingToCart,
-  removeFromCart,
+  removingFromCart,
   fetchCart,
   fetchRecipeList,
 } from '../store/actions.js'
@@ -23,7 +23,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(addingToCart(id))
     },
     removeFromCart: id => {
-      dispatch(removeFromCart(id))
+      dispatch(removingFromCart(id))
     },
     fetchData: () => {
       dispatch(fetchRecipeList())
