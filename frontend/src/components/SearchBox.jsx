@@ -6,8 +6,7 @@ import SearchResult from './SearchResult.jsx'
 import './SearchBox.scss'
 
 const SearchRecipes = (recipes, query) =>
-  Object.keys(recipes)
-    .map(recipeID => recipes[recipeID])
+  Object.values(recipes)
     .filter(recipe =>
       recipe.author.toUpperCase().includes(query.toUpperCase()) ||
       recipe.name.toUpperCase().includes(query.toUpperCase())
@@ -45,8 +44,8 @@ const SearchBox = ({
     <div className="search-container">
       <p className="search-box-container control field nav-item">
         <input
-          onFocus={ () => handleOnFocus() }
-          onChange={ (e) => handleQueryChange(e) }
+          onFocus={ handleOnFocus }
+          onChange={ handleQueryChange }
           className="input"
           type="search"
           placeholder="Search..."

@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 
-import { addToCart, removeFromCart } from '../store/actions.js'
+import { addingToCart, removingFromCart } from '../store/actions.js'
 import SearchBox from '../components/SearchBox.jsx'
 
 const mapStateToProps = state => {
@@ -13,10 +13,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     addToCart: id => {
-      dispatch(addToCart(id))
+      dispatch(addingToCart(id))
     },
     removeFromCart: id => {
-      dispatch(removeFromCart(id))
+      dispatch(removingFromCart(id))
     },
   }
 }

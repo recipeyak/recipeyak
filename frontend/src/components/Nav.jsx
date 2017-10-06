@@ -14,29 +14,31 @@ class Navbar extends React.Component {
       showSearchResults: false,
       showDropdown: false,
     }
-
-    document.addEventListener('mousedown', (e) => this.handleSearchBoxClick(e))
   }
 
-  handleSearchBoxClick (e) {
+  componentWillMount = () => {
+    document.addEventListener('mousedown', this.handleGeneralClick)
+  }
+
+  handleGeneralClick = e => {
     const clickOnSearch = this.element && this.element.contains(e.target)
     if (clickOnSearch) return
     this.setState({ showSearchResults: false })
   }
 
-  componentWillUnmount () {
-    document.removeEventListener('mousedown', (e) => this.handleSearchBoxClick(e))
+  componentWillUnmount = () => {
+    document.removeEventListener('mousedown', this.handleGeneralClick)
   }
 
-  toggleNav () {
-    this.setState((prevState, props) => ({ showNav: !prevState.showNav }))
+  toggleNav = () => {
+    this.setState(prevState => ({ showNav: !prevState.showNav }))
   }
 
-  toggleDropdown () {
-    this.setState((prevState, props) => ({ showDropdown: !prevState.showDropdown }))
+  toggleDropdown = () => {
+    this.setState(prevState => ({ showDropdown: !prevState.showDropdown }))
   }
 
-  handleQueryChange (e) {
+  handleQueryChange = e => {
     const value = e.target.value
     this.setState({ query: value })
   }
@@ -59,12 +61,12 @@ class Navbar extends React.Component {
         <SearchBox
           showSearchResults={ this.state.showSearchResults }
           handleOnFocus={ () => this.setState({ showSearchResults: true }) }
-          handleQueryChange={ (e) => this.handleQueryChange(e) }
+          handleQueryChange={ this.handleQueryChange }
           query={ this.state.query }
         />
       </div>
 
-      <span onClick={ () => this.toggleNav() } className={ 'nav-toggle' + (this.state.showNav ? ' is-active' : '') }>
+      <span onClick={ this.toggleNav } className={ 'nav-toggle' + (this.state.showNav ? ' is-active' : '') }>
         <span></span>
         <span></span>
         <span></span>
@@ -80,7 +82,7 @@ class Navbar extends React.Component {
         </div>
         <NavLink activeClassName="is-active" to="/recipes" className="nav-item">Recipes</NavLink>
         <NavLink activeClassName="is-active" to="/cart" className="nav-item">Cart</NavLink>
-        <div onClick={() => this.toggleDropdown() } className="nav-item user-profile">
+        <div onClick={ this.toggleDropdown } className="nav-item user-profile">
           <img alt="user profile" className="user-profile-image" src="https://www.gravatar.com/avatar/ea7be1e5200ad6934add15a721b5b1b0?d=identicon"/>
           <svg aria-hidden="true" height="11" version="1.1" viewBox="0 0 12 16" width="8">
             <path d="M0 5l6 6 6-6z"></path>
