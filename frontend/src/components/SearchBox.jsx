@@ -34,6 +34,7 @@ const SearchBox = ({
       <SearchResult
         key={ recipe.id }
         { ...recipe }
+        url={ `/recipes/${recipe.id}/` }
         removeFromCart={ removeFromCart }
         addToCart={ addToCart }
         cart={ cart }

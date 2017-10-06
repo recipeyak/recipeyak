@@ -19,14 +19,9 @@ class Navbar extends React.Component {
   }
 
   handleSearchBoxClick (e) {
-    const el = this.refs.search
-    // this is usually null when the search box is not rendered (active)
-    if (el == null) return
-
-    const clickOnSearch = el.contains(e.srcElement)
-    if (!clickOnSearch) {
-      this.setState({ showSearchResults: false })
-    }
+    const clickOnSearch = this.element && this.element.contains(e.target)
+    if (clickOnSearch) return
+    this.setState({ showSearchResults: false })
   }
 
   componentWillUnmount () {
@@ -58,7 +53,9 @@ class Navbar extends React.Component {
           <Link to="/" className="title">Recipe Yak</Link>
         </div>
       </div>
-      <div ref="search" className="nav-center align-center">
+      <div
+        ref={e => { this.element = e }}
+        className="nav-center align-center">
         <SearchBox
           showSearchResults={ this.state.showSearchResults }
           handleOnFocus={ () => this.setState({ showSearchResults: true }) }
