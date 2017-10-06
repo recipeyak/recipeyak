@@ -1,8 +1,6 @@
 import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
-import SearchBox from '../containers/SearchBox.jsx'
-
 import './nav.scss'
 
 class Navbar extends React.Component {
@@ -11,23 +9,8 @@ class Navbar extends React.Component {
     this.state = {
       query: '',
       showNav: false,
-      showSearchResults: false,
       showDropdown: false,
     }
-  }
-
-  componentWillMount = () => {
-    document.addEventListener('mousedown', this.handleGeneralClick)
-  }
-
-  handleGeneralClick = e => {
-    const clickOnSearch = this.element && this.element.contains(e.target)
-    if (clickOnSearch) return
-    this.setState({ showSearchResults: false })
-  }
-
-  componentWillUnmount = () => {
-    document.removeEventListener('mousedown', this.handleGeneralClick)
   }
 
   toggleNav = () => {
@@ -36,11 +19,6 @@ class Navbar extends React.Component {
 
   toggleDropdown = () => {
     this.setState(prevState => ({ showDropdown: !prevState.showDropdown }))
-  }
-
-  handleQueryChange = e => {
-    const value = e.target.value
-    this.setState({ query: value })
   }
 
   logout = () => {
@@ -54,16 +32,6 @@ class Navbar extends React.Component {
         <div className="nav-item">
           <Link to="/" className="title">Recipe Yak</Link>
         </div>
-      </div>
-      <div
-        ref={e => { this.element = e }}
-        className="nav-center align-center">
-        <SearchBox
-          showSearchResults={ this.state.showSearchResults }
-          handleOnFocus={ () => this.setState({ showSearchResults: true }) }
-          handleQueryChange={ this.handleQueryChange }
-          query={ this.state.query }
-        />
       </div>
 
       <span onClick={ this.toggleNav } className={ 'nav-toggle' + (this.state.showNav ? ' is-active' : '') }>
