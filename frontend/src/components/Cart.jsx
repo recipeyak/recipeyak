@@ -1,5 +1,4 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 import { recipe as recipeType } from './propTypes.js'
@@ -44,9 +43,7 @@ class Cart extends React.Component {
               { recipeItems }
             </div>
             <div className="column">
-              <h2 className="title">
-                <Link to="/ingredients">Shopping List</Link>
-              </h2>
+              <h2 className="title">Shopping List</h2>
               {
                 ingredients.length > 0
                   ? <div className="box">
