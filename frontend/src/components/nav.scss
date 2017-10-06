@@ -10,39 +10,6 @@
   flex-grow: 2;
 }
 
-.search-container {
-  position: relative;
-  flex-grow: 2;
-}
-
-p.field.search-box-container {
-  margin-bottom: 0;
-  // box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
-}
-
-.search-results {
-  position: absolute;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  width: 100%;
-  background-color: white;
-  box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;
-}
-
-.search-result {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.25rem;
-  margin: 0.25rem;
-}
-
-.search-results > li {
-
-}
-
 // bulma override
 div.overflow-initial {
   overflow: initial;
