@@ -21,6 +21,9 @@ class PasswordChange extends React.Component {
 
   render () {
     const { loading } = this.props
+
+    const { password, newPassword, newPasswordAgain } = this.state
+    const disabled = password === '' || newPassword === '' || newPasswordAgain === ''
     return (
       <section className="box">
 
@@ -48,7 +51,7 @@ class PasswordChange extends React.Component {
         </div>
 
         <p className="control">
-          <button onClick={ this.update } className={ `button is-primary ${loading ? 'is-loading' : ''}` }>
+          <button disabled={ disabled } onClick={ this.update } className={ `button is-primary ${loading ? 'is-loading' : ''}` }>
             Update
           </button>
         </p>
