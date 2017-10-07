@@ -1,7 +1,7 @@
 import React from 'react'
 
 import RecipeImporter from './RecipeImporter.jsx'
-import PasswordChange from './PasswordChange.jsx'
+import PasswordChange from '../containers/PasswordChange.jsx'
 import UserManagement from './UserManagement.jsx'
 import ReceiptUploader from './ReceiptUploader.jsx'
 

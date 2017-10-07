@@ -33,6 +33,8 @@ import {
   SET_RECIPE_ADDING_TO_CART,
   SET_RECIPE_REMOVING_FROM_CART,
   SET_AVATAR_URL,
+  SET_ERROR_PASSWORD_UPDATE,
+  SET_LOADING_PASSWORD_UPDATE
 } from './actionTypes.js'
 
 import { push } from 'react-router-redux'
@@ -93,6 +95,45 @@ export const fetchUser = () => (dispatch, getState) => {
     })
     .catch(err => {
       console.log('error fetching user', err)
+    })
+}
+
+export const setLoadingPasswordUpdate = val => {
+  return {
+    type: SET_LOADING_PASSWORD_UPDATE,
+    val
+  }
+}
+
+export const setErrorPasswordUpdate = val => {
+  return {
+    type: SET_ERROR_PASSWORD_UPDATE,
+    val
+  }
+}
+
+const postPasswordChange = (token, password1, password2, oldPassword) =>
+  axios.post('/api/v1/rest-auth/password/change/', {
+    new_password1: password1,
+    new_password2: password2,
+    old_password: oldPassword
+  }, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  })
+
+export const updatingPassword = (token, password1, password2, oldPassword) => (dispatch, getState) => {
+  dispatch(setLoadingPasswordUpdate(true))
+  dispatch(setErrorPasswordUpdate(false))
+  postPasswordChange(getState().user.token, password1, password2, oldPassword)
+    .then(res => {
+      dispatch(setLoadingPasswordUpdate(false))
+    })
+    .catch(err => {
+      dispatch(setLoadingPasswordUpdate(false))
+      dispatch(setErrorPasswordUpdate(true))
+      console.log('error updating password', err)
     })
 }
 

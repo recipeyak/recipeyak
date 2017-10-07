@@ -6,15 +6,21 @@ class PasswordChange extends React.Component {
     this.state = {
       password: '',
       newPassword: '',
-      newPasswordAgain: '',
+      newPasswordAgain: ''
     }
   }
 
-  handleInputChange (e) {
+  handleInputChange = e => {
     this.setState({ [e.target.name]: e.target.value })
   }
 
+  update = () => {
+    console.log('update')
+    this.props.update(this.state.password, this.state.newPassword, this.state.newPasswordAgain)
+  }
+
   render () {
+    const { loading } = this.props
     return (
       <section className="box">
 
@@ -23,26 +29,26 @@ class PasswordChange extends React.Component {
         <div className="field">
           <label className="label">Password</label>
           <div className="control">
-            <input onChange={ (e) => this.handleInputChange(e) } className="input" type="password" name="password" required/>
+            <input onChange={ this.handleInputChange } className="input" type="password" name="password" required/>
           </div>
         </div>
 
         <div className="field">
           <label className="label">New Password</label>
           <div className="control">
-            <input onChange={ (e) => this.handleInputChange(e) } className="input" type="password" name="newPassword" required/>
+            <input onChange={ this.handleInputChange } className="input" type="password" name="newPassword" required/>
           </div>
         </div>
 
         <div className="field">
           <label className="label">New Password Again</label>
           <div className="control">
-            <input onChange={ (e) => this.handleInputChange(e) } className="input" type="password" name="newPasswordAgain" required/>
+            <input onChange={ this.handleInputChange } className="input" type="password" name="newPasswordAgain" required/>
           </div>
         </div>
 
         <p className="control">
-          <button className="button is-primary">
+          <button onClick={ this.update } className={ `button is-primary ${loading ? 'is-loading' : ''}` }>
             Update
           </button>
         </p>
