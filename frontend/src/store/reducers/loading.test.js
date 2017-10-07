@@ -5,17 +5,17 @@ import {
   setLoadingReset,
   setLoadingRecipes,
   setLoadingAddRecipe,
-  setLoadingCart,
+  setLoadingCart
 } from '../actions.js'
 
 describe('loading', () => {
   it('sets loading login', () => {
     const notLoadingState = {
-      login: false,
+      login: false
     }
 
     const loadingState = {
-      login: true,
+      login: true
     }
 
     expect(
@@ -29,11 +29,11 @@ describe('loading', () => {
 
   it('sets loading signup', () => {
     const notLoadingState = {
-      signup: false,
+      signup: false
     }
 
     const loadingState = {
-      signup: true,
+      signup: true
     }
 
     expect(
@@ -47,11 +47,11 @@ describe('loading', () => {
 
   it('sets loading reset', () => {
     const notLoadingState = {
-      reset: false,
+      reset: false
     }
 
     const loadingState = {
-      reset: true,
+      reset: true
     }
 
     expect(
@@ -65,11 +65,11 @@ describe('loading', () => {
 
   it('sets loading recipes', () => {
     const notLoadingState = {
-      recipes: false,
+      recipes: false
     }
 
     const loadingState = {
-      recipes: true,
+      recipes: true
     }
 
     expect(
@@ -83,11 +83,11 @@ describe('loading', () => {
 
   it('sets loading addRecipe', () => {
     const notLoadingState = {
-      addRecipe: false,
+      addRecipe: false
     }
 
     const loadingState = {
-      addRecipe: true,
+      addRecipe: true
     }
 
     expect(
@@ -101,11 +101,11 @@ describe('loading', () => {
 
   it('sets loading cart', () => {
     const notLoadingState = {
-      cart: false,
+      cart: false
     }
 
     const loadingState = {
-      cart: true,
+      cart: true
     }
 
     expect(

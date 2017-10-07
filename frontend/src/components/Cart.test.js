@@ -18,12 +18,12 @@ describe('<Cart/>', () => {
         author: 'Recipe author',
         source: '',
         url: '',
-        ingredients: ['ingredientOne', 'ingredientTwo'],
-      },
+        ingredients: ['ingredientOne', 'ingredientTwo']
+      }
     }
 
     const cart = {
-      123: 1,
+      123: 1
     }
 
     const fetchData = () => true
@@ -58,33 +58,33 @@ describe('<Cart/>', () => {
         ingredients: [
           {
             id: 1,
-            text: 'testing',
+            text: 'testing'
           },
           {
             id: 1,
-            text: 'testing',
+            text: 'testing'
           },
           {
             id: 2,
-            text: 'asdf',
-          },
-        ],
-      },
+            text: 'asdf'
+          }
+        ]
+      }
     }
 
     const cart = {
-      1: 2,
+      1: 2
     }
 
     const expected = [
       {
         count: 4,
-        text: 'testing',
+        text: 'testing'
       },
       {
         count: 2,
-        text: 'asdf',
-      },
+        text: 'asdf'
+      }
     ]
 
     expect(cartOccurances(recipes, cart)).toEqual(expected)

@@ -14,7 +14,7 @@ describe('RecipeItem', () => {
       tags: ['OneTag', 'TwoTag'],
       inCart: false,
       removeFromCart: () => console.log('Remove from cart'),
-      addToCart: () => console.log('Add to cart'),
+      addToCart: () => console.log('Add to cart')
     }
     mount(<MemoryRouter><RecipeItem {...recipe} /></MemoryRouter>)
   })
@@ -27,7 +27,7 @@ describe('RecipeItem', () => {
       source: 'http://example.com/recipeTitle',
       inCart: false,
       removeFromCart: () => console.log('Remove from cart'),
-      addToCart: () => console.log('Add to cart'),
+      addToCart: () => console.log('Add to cart')
     }
     mount(<MemoryRouter><RecipeItem {...recipe} /></MemoryRouter>)
   })

@@ -4,7 +4,7 @@ import {
   SET_ERROR_RESET,
   SET_ERROR_ADD_RECIPE,
   SET_ERROR_RECIPES,
-  SET_ERROR_CART,
+  SET_ERROR_CART
 } from '../actionTypes.js'
 
 const error = (state = {
@@ -13,7 +13,7 @@ const error = (state = {
   reset: {},
   addRecipe: false,
   recipes: false,
-  cart: false,
+  cart: false
 }, action) => {
   switch (action.type) {
     case SET_ERROR_LOGIN:

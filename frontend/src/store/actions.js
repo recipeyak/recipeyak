@@ -44,13 +44,13 @@ import axios from 'axios'
 export const login = token => {
   return {
     type: LOG_IN,
-    token,
+    token
   }
 }
 
 export const logout = () => {
   return {
-    type: LOG_OUT,
+    type: LOG_OUT
   }
 }
 
@@ -58,8 +58,8 @@ const postLogout = token =>
   // empty body since post expects the second argument to be the body
   axios.post('/api/v1/rest-auth/logout/', {}, {
     headers: {
-      'Authorization': 'Token ' + token,
-    },
+      'Authorization': 'Token ' + token
+    }
   })
 
 export const loggingOut = () => (dispatch, getState) => {
@@ -76,7 +76,7 @@ export const loggingOut = () => (dispatch, getState) => {
 export const setAvatarURL = url => {
   return {
     type: SET_AVATAR_URL,
-    url,
+    url
   }
 }
 
@@ -84,8 +84,8 @@ const getUser = token =>
   // empty body since post expects the second argument to be the body
   axios.get('/api/v1/rest-auth/user/', {
     headers: {
-      'Authorization': 'Token ' + token,
-    },
+      'Authorization': 'Token ' + token
+    }
   })
 
 export const fetchUser = () => (dispatch, getState) => {
@@ -140,29 +140,29 @@ export const updatingPassword = (token, password1, password2, oldPassword) => (d
 export const setLoadingCart = val => {
   return {
     type: SET_LOADING_CART,
-    val,
+    val
   }
 }
 
 export const setErrorCart = val => {
   return {
     type: SET_ERROR_CART,
-    val,
+    val
   }
 }
 
 export const setCart = recipes => {
   return {
     type: SET_CART,
-    recipes,
+    recipes
   }
 }
 
 const getCart = (token, id) =>
   axios.get(`/api/v1/cart/`, {
     headers: {
-      'Authorization': 'Token ' + token,
-    },
+      'Authorization': 'Token ' + token
+    }
   })
 
 export const fetchCart = id => (dispatch, getState) => {
@@ -184,15 +184,15 @@ export const setCartItem = (id, count) => {
   return {
     type: SET_CART_ITEM,
     id,
-    count,
+    count
   }
 }
 
 const patchCart = (token, id, count) =>
   axios.patch(`/api/v1/cart/${id}/`, { count }, {
     headers: {
-      'Authorization': 'Token ' + token,
-    },
+      'Authorization': 'Token ' + token
+    }
   })
 
 export const addingToCart = id => (dispatch, getState) => {
@@ -216,7 +216,7 @@ export const setRecipeRemovingFromCart = (id, loading) => {
   return {
     type: SET_RECIPE_REMOVING_FROM_CART,
     id,
-    loading,
+    loading
   }
 }
 
@@ -239,28 +239,28 @@ export const removingFromCart = id => (dispatch, getState) => {
 const sendPostNewRecipe = (token, recipe) =>
   axios.post('/api/v1/recipes/', recipe, {
     headers: {
-      'Authorization': 'Token ' + token,
-    },
+      'Authorization': 'Token ' + token
+    }
   })
 
 export const addRecipe = recipe => {
   return {
     type: ADD_RECIPE,
-    recipe,
+    recipe
   }
 }
 
 export const setLoadingAddRecipe = val => {
   return {
     type: SET_LOADING_ADD_RECIPE,
-    val,
+    val
   }
 }
 
 export const setErrorAddRecipe = val => {
   return {
     type: SET_ERROR_ADD_RECIPE,
-    val,
+    val
   }
 }
 
@@ -281,7 +281,7 @@ export const postNewRecipe = recipe => (dispatch, getState) => {
       showNotificationWithTimeout(dispatch, {
         message: 'problem creating new recipe',
         level: 'danger',
-        sticky: true,
+        sticky: true
       })
     })
 }
@@ -289,8 +289,8 @@ export const postNewRecipe = recipe => (dispatch, getState) => {
 const getRecipe = (token, id) =>
   axios.get(`/api/v1/recipes/${id}/`, {
     headers: {
-      'Authorization': 'Token ' + token,
-    },
+      'Authorization': 'Token ' + token
+    }
   })
 
 export const fetchRecipe = id => (dispatch, getState) => {
@@ -306,28 +306,28 @@ export const fetchRecipe = id => (dispatch, getState) => {
 const getRecipeList = token =>
   axios.get('/api/v1/recipes/', {
     headers: {
-      'Authorization': 'Token ' + token,
-    },
+      'Authorization': 'Token ' + token
+    }
   })
 
 export const setRecipes = recipes => {
   return {
     type: SET_RECIPES,
-    recipes,
+    recipes
   }
 }
 
 export const setErrorRecipes = val => {
   return {
     type: SET_ERROR_RECIPES,
-    val,
+    val
   }
 }
 
 export const setLoadingRecipes = val => {
   return {
     type: SET_LOADING_RECIPES,
-    val,
+    val
   }
 }
 
@@ -350,7 +350,7 @@ export const addStepToRecipe = (id, step) => {
   return {
     type: ADD_STEP_TO_RECIPE,
     id,
-    step,
+    step
   }
 }
 
@@ -358,15 +358,15 @@ export const addIngredientToRecipe = (id, ingredient) => {
   return {
     type: ADD_INGREDIENT_TO_RECIPE,
     id,
-    ingredient,
+    ingredient
   }
 }
 
 const postRecipeIngredient = (token, recipeID, Ingredient) =>
   axios.post(`/api/v1/recipes/${recipeID}/ingredients/`, { text: Ingredient }, {
     headers: {
-      'Authorization': 'Token ' + token,
-    },
+      'Authorization': 'Token ' + token
+    }
   })
 
 export const addingRecipeIngredient = (recipeID, ingredient) => (dispatch, getState) => {
@@ -383,7 +383,7 @@ export const setRecipeAddingToCart = (id, loading) => {
   return {
     type: SET_RECIPE_ADDING_TO_CART,
     id,
-    loading,
+    loading
   }
 }
 
@@ -391,15 +391,15 @@ export const updateRecipeName = (id, name) => {
   return {
     type: UPDATE_RECIPE_NAME,
     id,
-    name,
+    name
   }
 }
 
 const patchRecipeName = (token, id, name) =>
   axios.patch(`/api/v1/recipes/${id}/`, { name }, {
     headers: {
-      'Authorization': 'Token ' + token,
-    },
+      'Authorization': 'Token ' + token
+    }
   })
 
 export const sendUpdatedRecipeName = (id, name) => (dispatch, getState) => {
@@ -416,15 +416,15 @@ export const updateRecipeSource = (id, source) => {
   return {
     type: UPDATE_RECIPE_SOURCE,
     id,
-    source,
+    source
   }
 }
 
 const patchRecipeSource = (token, id, source) =>
   axios.patch(`/api/v1/recipes/${id}/`, { source }, {
     headers: {
-      'Authorization': 'Token ' + token,
-    },
+      'Authorization': 'Token ' + token
+    }
   })
 
 export const setRecipeSource = (id, source) => (dispatch, getState) => {
@@ -441,15 +441,15 @@ export const updateRecipeAuthor = (id, author) => {
   return {
     type: UPDATE_RECIPE_AUTHOR,
     id,
-    author,
+    author
   }
 }
 
 const patchRecipeAuthor = (token, id, author) =>
   axios.patch(`/api/v1/recipes/${id}/`, { author }, {
     headers: {
-      'Authorization': 'Token ' + token,
-    },
+      'Authorization': 'Token ' + token
+    }
   })
 
 export const setRecipeAuthor = (id, author) => (dispatch, getState) => {
@@ -466,15 +466,15 @@ export const updateRecipeTime = (id, time) => {
   return {
     type: UPDATE_RECIPE_TIME,
     id,
-    time,
+    time
   }
 }
 
 const patchRecipeTime = (token, id, time) =>
   axios.patch(`/api/v1/recipes/${id}/`, { time }, {
     headers: {
-      'Authorization': 'Token ' + token,
-    },
+      'Authorization': 'Token ' + token
+    }
   })
 
 export const setRecipeTime = (id, time) => (dispatch, getState) => {
@@ -492,22 +492,22 @@ export const updateIngredient = (recipeID, ingredientID, text) => {
     type: UPDATE_INGREDIENT,
     recipeID,
     ingredientID,
-    text,
+    text
   }
 }
 
 const sendUpdateIngredient = (token, recipeID, ingredientID, text) =>
   axios.patch(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, { text }, {
     headers: {
-      'Authorization': 'Token ' + token,
-    },
+      'Authorization': 'Token ' + token
+    }
   })
 
 const postRecipeStep = (token, recipeID, step) =>
   axios.post(`/api/v1/recipes/${recipeID}/steps/`, { text: step }, {
     headers: {
-      'Authorization': 'Token ' + token,
-    },
+      'Authorization': 'Token ' + token
+    }
   })
 
 export const addingRecipeStep = (recipeID, step) => (dispatch, getState) => {
@@ -535,15 +535,15 @@ export const deleteIngredient = (recipeID, ingredientID) => {
   return {
     type: DELETE_INGREDIENT,
     recipeID,
-    ingredientID,
+    ingredientID
   }
 }
 
 const sendDeleteIngredient = (token, recipeID, ingredientID) =>
   axios.delete(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, {
     headers: {
-      'Authorization': 'Token ' + token,
-    },
+      'Authorization': 'Token ' + token
+    }
   })
 
 export const deletingIngredient = (recipeID, ingredientID) => (dispatch, getState) => {
@@ -559,7 +559,7 @@ export const deletingIngredient = (recipeID, ingredientID) => (dispatch, getStat
 export const removeRecipe = id => {
   return {
     type: REMOVE_RECIPE,
-    id,
+    id
   }
 }
 
@@ -568,15 +568,15 @@ export const updateStep = (recipeID, stepID, text) => {
     type: UPDATE_STEP,
     recipeID,
     stepID,
-    text,
+    text
   }
 }
 
 const sendUpdateStep = (token, recipeID, stepID, text) =>
   axios.patch(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, { text }, {
     headers: {
-      'Authorization': 'Token ' + token,
-    },
+      'Authorization': 'Token ' + token
+    }
   })
 
 export const updatingStep = (recipeID, stepID, text) => (dispatch, getState) => {
@@ -594,15 +594,15 @@ export const deleteStep = (recipeID, stepID) => {
   return {
     type: DELETE_STEP,
     recipeID,
-    stepID,
+    stepID
   }
 }
 
 const sendDeleteStep = (token, recipeID, stepID) =>
   axios.delete(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, {
     headers: {
-      'Authorization': 'Token ' + token,
-    },
+      'Authorization': 'Token ' + token
+    }
   })
 
 export const deletingStep = (recipeID, stepID) => (dispatch, getState) => {
@@ -618,14 +618,14 @@ export const deletingStep = (recipeID, stepID) => (dispatch, getState) => {
 export const setErrorLogin = val => {
   return {
     type: SET_ERROR_LOGIN,
-    val,
+    val
   }
 }
 
 export const setLoadingLogin = val => {
   return {
     type: SET_LOADING_LOGIN,
-    val,
+    val
   }
 }
 
@@ -652,13 +652,13 @@ export const logUserIn = (email, password) => {
           dispatch(setErrorLogin({
             email: data['email'],
             password1: data['password1'],
-            nonFieldErrors: data['non_field_errors'],
+            nonFieldErrors: data['non_field_errors']
           }))
         }
         showNotificationWithTimeout(dispatch, {
           message: 'problem authenticating',
           level: 'danger',
-          sticky: true,
+          sticky: true
         })
         console.warn('error with login', err)
       })
@@ -668,14 +668,14 @@ export const logUserIn = (email, password) => {
 export const setLoadingSignup = val => {
   return {
     type: SET_LOADING_SIGNUP,
-    val,
+    val
   }
 }
 
 export const setErrorSignup = val => {
   return {
     type: SET_ERROR_SIGNUP,
-    val,
+    val
   }
 }
 
@@ -703,13 +703,13 @@ export const signup = (email, password1, password2) => {
             email: data['email'],
             password1: data['password1'],
             password2: data['password2'],
-            nonFieldErrors: data['non_field_errors'],
+            nonFieldErrors: data['non_field_errors']
           }))
         }
         showNotificationWithTimeout(dispatch, {
           message: 'problem registering account',
           level: 'danger',
-          sticky: true,
+          sticky: true
         })
         dispatch(setLoadingSignup(false))
         console.warn('error with registration', err)
@@ -720,14 +720,14 @@ export const signup = (email, password1, password2) => {
 export const setLoadingReset = val => {
   return {
     type: SET_LOADING_RESET,
-    val,
+    val
   }
 }
 
 export const setErrorReset = val => {
   return {
     type: SET_ERROR_RESET,
-    val,
+    val
   }
 }
 
@@ -754,13 +754,13 @@ export const reset = email => dispatch => {
         console.log(data)
         dispatch(setErrorReset({
           email: data['email'],
-          nonFieldErrors: data['non_field_errors'],
+          nonFieldErrors: data['non_field_errors']
         }))
       }
       showNotificationWithTimeout(dispatch, {
         message: 'problem resetting password',
         level: 'danger',
-        sticky: true,
+        sticky: true
       })
     })
 }
@@ -770,7 +770,7 @@ export const setNotification = ({ message, closeable, level }) => {
     type: SET_NOTIFICATION,
     message,
     closeable,
-    level,
+    level
   }
 }
 
@@ -789,6 +789,6 @@ export function showNotificationWithTimeout (dispatch, { message, level, closeab
 
 export const clearNotification = () => {
   return {
-    type: CLEAR_NOTIFICATION,
+    type: CLEAR_NOTIFICATION
   }
 }

@@ -5,7 +5,7 @@ import throttle from 'lodash/throttle'
 import createHistory from 'history/createBrowserHistory'
 import {
   routerReducer,
-  routerMiddleware,
+  routerMiddleware
 } from 'react-router-redux'
 
 import cart from './reducers/cart.js'
@@ -41,15 +41,15 @@ export const store = createStore(
   recipeApp,
   defaultData,
   composeEnhancers(
-    applyMiddleware(thunk, router),
+    applyMiddleware(thunk, router)
   )
 )
 
 store.subscribe(throttle(() => {
   saveState({
     user: {
-      token: store.getState().user.token,
-    },
+      token: store.getState().user.token
+    }
   })
 }, 1000))
 

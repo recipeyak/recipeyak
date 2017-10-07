@@ -14,7 +14,7 @@ import {
   updateIngredient,
   updateStep,
   setRecipeAddingToCart,
-  setRecipeRemovingFromCart,
+  setRecipeRemovingFromCart
 } from '../actions.js'
 
 describe('Recipes', () => {
@@ -22,8 +22,8 @@ describe('Recipes', () => {
     const beforeState = {
       1: {
         id: 1,
-        title: 'a meh recipe',
-      },
+        title: 'a meh recipe'
+      }
     }
     const recipe = {
       id: 123,
@@ -33,16 +33,16 @@ describe('Recipes', () => {
       source: '',
       ingredients: [
         {
-          text: 'ingredientOne',
+          text: 'ingredientOne'
         },
         {
-          text: 'ingredientTwo',
-        },
-      ],
+          text: 'ingredientTwo'
+        }
+      ]
     }
     const afterState = {
       ...beforeState,
-      [recipe.id]: recipe,
+      [recipe.id]: recipe
     }
     expect(
       recipes(beforeState, addRecipe(recipe))
@@ -52,10 +52,10 @@ describe('Recipes', () => {
   it('Remove recipe from recipe list', () => {
     const beforeState = {
       123: {},
-      1: {},
+      1: {}
     }
     const afterState = {
-      1: {},
+      1: {}
     }
     expect(
       recipes(beforeState, removeRecipe(123))
@@ -72,21 +72,21 @@ describe('Recipes', () => {
     const beforeState = {
       1: {
         title: 'good recipe',
-        steps: [],
-      },
+        steps: []
+      }
     }
 
     const newStep = {
-      text: 'a new step',
+      text: 'a new step'
     }
 
     const afterState = {
       1: {
         title: 'good recipe',
         steps: [
-          newStep,
-        ],
-      },
+          newStep
+        ]
+      }
     }
 
     expect(
@@ -100,27 +100,27 @@ describe('Recipes', () => {
         ingredients: [],
         steps: [
           {
-            text: 'test',
-          },
-        ],
-      },
+            text: 'test'
+          }
+        ]
+      }
     }
 
     const newIngredient = {
-      text: 'a new step',
+      text: 'a new step'
     }
 
     const afterState = {
       1: {
         ingredients: [
-          newIngredient,
+          newIngredient
         ],
         steps: [
           {
-            text: 'test',
-          },
-        ],
-      },
+            text: 'test'
+          }
+        ]
+      }
     }
 
     expect(
@@ -134,16 +134,16 @@ describe('Recipes', () => {
         ingredients: [
           {
             id: 1,
-            text: 'a new step',
-          },
+            text: 'a new step'
+          }
         ],
         steps: [
           {
             id: 1,
-            text: 'test',
-          },
-        ],
-      },
+            text: 'test'
+          }
+        ]
+      }
     }
 
     const text = 'new text'
@@ -153,16 +153,16 @@ describe('Recipes', () => {
         ingredients: [
           {
             id: 1,
-            text: 'a new step',
-          },
+            text: 'a new step'
+          }
         ],
         steps: [
           {
             id: 1,
-            text: text,
-          },
-        ],
-      },
+            text: text
+          }
+        ]
+      }
     }
 
     expect(
@@ -170,22 +170,21 @@ describe('Recipes', () => {
     ).toEqual(afterState)
   })
 
-
   it('it updates an ingredient', () => {
     const beforeState = {
       1: {
         ingredients: [
           {
             id: 1,
-            text: 'a new step',
-          },
+            text: 'a new step'
+          }
         ],
         steps: [
           {
-            text: 'test',
-          },
-        ],
-      },
+            text: 'test'
+          }
+        ]
+      }
     }
 
     const text = 'new text'
@@ -195,15 +194,15 @@ describe('Recipes', () => {
         ingredients: [
           {
             id: 1,
-            text,
-          },
+            text
+          }
         ],
         steps: [
           {
-            text: 'test',
-          },
-        ],
-      },
+            text: 'test'
+          }
+        ]
+      }
     }
 
     expect(
@@ -215,8 +214,8 @@ describe('Recipes', () => {
     const beforeState = {
       1: {
         id: 1,
-        name: 'Before title',
-      },
+        name: 'Before title'
+      }
     }
 
     const newName = 'After title'
@@ -224,8 +223,8 @@ describe('Recipes', () => {
     const afterState = {
       1: {
         id: 1,
-        name: newName,
-      },
+        name: newName
+      }
     }
 
     expect(
@@ -240,14 +239,14 @@ describe('Recipes', () => {
         ingredients: [
           {
             id: 1,
-            text: 'test',
+            text: 'test'
           },
           {
             id: 2,
-            text: 'target',
-          },
-        ],
-      },
+            text: 'target'
+          }
+        ]
+      }
     }
 
     const afterState = {
@@ -256,10 +255,10 @@ describe('Recipes', () => {
         ingredients: [
           {
             id: 2,
-            text: 'target',
-          },
-        ],
-      },
+            text: 'target'
+          }
+        ]
+      }
     }
     expect(
       recipes(beforeState, deleteIngredient(1, 1))
@@ -273,14 +272,14 @@ describe('Recipes', () => {
         steps: [
           {
             id: 1,
-            text: 'test',
+            text: 'test'
           },
           {
             id: 2,
-            text: 'target',
-          },
-        ],
-      },
+            text: 'target'
+          }
+        ]
+      }
     }
 
     const afterState = {
@@ -289,10 +288,10 @@ describe('Recipes', () => {
         steps: [
           {
             id: 2,
-            text: 'target',
-          },
-        ],
-      },
+            text: 'target'
+          }
+        ]
+      }
     }
 
     expect(
@@ -304,8 +303,8 @@ describe('Recipes', () => {
     const beforeState = {
       1: {
         id: 1,
-        source: 'example.com',
-      },
+        source: 'example.com'
+      }
     }
 
     const newSource = 'abettersource.com'
@@ -313,8 +312,8 @@ describe('Recipes', () => {
     const afterState = {
       1: {
         id: 1,
-        source: newSource,
-      },
+        source: newSource
+      }
     }
 
     expect(
@@ -326,8 +325,8 @@ describe('Recipes', () => {
     const beforeState = {
       1: {
         id: 1,
-        author: 'donny',
-      },
+        author: 'donny'
+      }
     }
 
     const newAuthor = 'aldo raine'
@@ -335,8 +334,8 @@ describe('Recipes', () => {
     const afterState = {
       1: {
         id: 1,
-        author: newAuthor,
-      },
+        author: newAuthor
+      }
     }
 
     expect(
@@ -348,8 +347,8 @@ describe('Recipes', () => {
     const beforeState = {
       1: {
         id: 1,
-        time: '1 hour',
-      },
+        time: '1 hour'
+      }
     }
 
     const newTime = '5.12 years'
@@ -357,8 +356,8 @@ describe('Recipes', () => {
     const afterState = {
       1: {
         id: 1,
-        time: newTime,
-      },
+        time: newTime
+      }
     }
 
     expect(
@@ -370,15 +369,15 @@ describe('Recipes', () => {
     const beforeState = {
       1: {
         id: 1,
-        addingToCart: false,
-      },
+        addingToCart: false
+      }
     }
 
     const afterState = {
       1: {
         id: 1,
-        addingToCart: true,
-      },
+        addingToCart: true
+      }
     }
 
     expect(
@@ -390,15 +389,15 @@ describe('Recipes', () => {
     const beforeState = {
       1: {
         id: 1,
-        removingFromCart: false,
-      },
+        removingFromCart: false
+      }
     }
 
     const afterState = {
       1: {
         id: 1,
-        removingFromCart: true,
-      },
+        removingFromCart: true
+      }
     }
 
     expect(

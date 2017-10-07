@@ -1,14 +1,14 @@
 import {
   LOG_IN,
   LOG_OUT,
-  SET_AVATAR_URL,
+  SET_AVATAR_URL
 } from '../actionTypes.js'
 
 export const user = (
   state = {
     loggedIn: false,
     token: null,
-    avatarURL: '',
+    avatarURL: ''
   },
   action) => {
   switch (action.type) {

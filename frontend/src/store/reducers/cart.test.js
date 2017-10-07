@@ -2,7 +2,7 @@ import cart from './cart.js'
 
 import {
   setCart,
-  setCartItem,
+  setCartItem
 } from '../actions.js'
 
 describe('Cart', () => {
@@ -14,21 +14,21 @@ describe('Cart', () => {
     const cartItems = [
       {
         recipe: 1,
-        count: 2,
+        count: 2
       },
       {
         recipe: 2,
-        count: 1,
-      },
+        count: 1
+      }
     ]
 
     const afterState = {
       1: 2,
-      2: 1,
+      2: 1
     }
 
     expect(
-      cart(beforeState, setCart(cartItems)),
+      cart(beforeState, setCart(cartItems))
     ).toEqual(afterState)
   })
 
@@ -37,18 +37,18 @@ describe('Cart', () => {
 
     const beforeState = {
       [id]: 1,
-      2: 1,
+      2: 1
     }
 
     const count = 8
 
     const afterState = {
       [id]: count,
-      2: 1,
+      2: 1
     }
 
     expect(
-      cart(beforeState, setCartItem(id, count)),
+      cart(beforeState, setCartItem(id, count))
     ).toEqual(afterState)
   })
 })

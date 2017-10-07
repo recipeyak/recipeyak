@@ -43,7 +43,7 @@ module.exports = {
     // We ship a few polyfills by default:
     require.resolve('./polyfills'),
     // Finally, this is your app's code:
-    paths.appIndexJs,
+    paths.appIndexJs
     // We include the app code last so that if there is a runtime error during
     // initialization, it doesn't blow up the WebpackDevServer client, and
     // changing JS code would still trigger a refresh.
@@ -58,7 +58,7 @@ module.exports = {
     // containing code from all our entry points, and the Webpack runtime.
     filename: 'static/js/bundle.js',
     // This is the URL that app is served from. We use "/" in development.
-    publicPath: publicPath,
+    publicPath: publicPath
   },
   resolve: {
     modules: ['node_modules', paths.appNodeModules],
@@ -70,8 +70,8 @@ module.exports = {
     alias: {
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
-      'react-native': 'react-native-web',
-    },
+      'react-native': 'react-native-web'
+    }
   },
 
   module: {
@@ -82,7 +82,7 @@ module.exports = {
         test: /\.(js|jsx)$/,
         enforce: 'pre',
         loader: 'eslint-loader',
-        include: paths.appSrc,
+        include: paths.appSrc
       },
       // ** ADDING/UPDATING LOADERS **
       // The "url" loader handles all assets unless explicitly excluded.
@@ -105,13 +105,13 @@ module.exports = {
           /\.css$/,
           /\.scss$/,
           /\.json$/,
-          /\.svg$/,
+          /\.svg$/
         ],
         loader: 'url-loader',
         query: {
           limit: 10000,
-          name: 'static/media/[name].[hash:8].[ext]',
-        },
+          name: 'static/media/[name].[hash:8].[ext]'
+        }
       },
       // Process JS with Babel.
       {
@@ -125,10 +125,10 @@ module.exports = {
             // directory for faster rebuilds.
             cacheDirectory: true,
             plugins: [
-              'react-hot-loader/babel',
-            ],
-          },
-        },
+              'react-hot-loader/babel'
+            ]
+          }
+        }
       },
       // "postcss" loader applies autoprefixer to our CSS.
       // "css" loader resolves paths in CSS and adds assets as dependencies.
@@ -142,8 +142,8 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
-              importLoaders: 1,
-            },
+              importLoaders: 1
+            }
           },
           {
             loader: 'postcss-loader',
@@ -155,15 +155,15 @@ module.exports = {
                     '>1%',
                     'last 4 versions',
                     'Firefox ESR',
-                    'not ie < 9', // React doesn't support IE8 anyway
+                    'not ie < 9' // React doesn't support IE8 anyway
                   ],
                   // don't include unused previosu versons of the flexbox spec
-                  flexbox: 'no-2009',
-                }),
-              ],
-            },
-          },
-        ],
+                  flexbox: 'no-2009'
+                })
+              ]
+            }
+          }
+        ]
       },
       {
         test: /\.scss$/,
@@ -172,24 +172,24 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
-              importLoaders: 1,
-            },
+              importLoaders: 1
+            }
           },
-          'sass-loader',
-        ],
+          'sass-loader'
+        ]
       },
       {
         test: /\.svg$/,
         use: {
           loader: 'file-loader',
           query: {
-            name: 'static/media/[name].[hash:8].[ext]',
-          },
-        },
-      },
+            name: 'static/media/[name].[hash:8].[ext]'
+          }
+        }
+      }
       // ** STOP ** Are you adding a new loader?
       // Remember to add the new extension(s) to the "url" loader exclusion list.
-    ],
+    ]
   },
   plugins: [
     // Makes some environment variables available in index.html.
@@ -200,7 +200,7 @@ module.exports = {
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
       inject: true,
-      template: paths.appHtml,
+      template: paths.appHtml
     }),
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'development') { ... }. See `./env.js`.
@@ -215,13 +215,13 @@ module.exports = {
     // to restart the development server for Webpack to discover it. This plugin
     // makes the discovery automatic so you don't have to restart.
     // See https://github.com/facebookincubator/create-react-app/issues/186
-    new WatchMissingNodeModulesPlugin(paths.appNodeModules),
+    new WatchMissingNodeModulesPlugin(paths.appNodeModules)
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
   node: {
     fs: 'empty',
     net: 'empty',
-    tls: 'empty',
-  },
+    tls: 'empty'
+  }
 }

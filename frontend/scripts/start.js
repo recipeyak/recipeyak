@@ -167,7 +167,7 @@ function addMiddleware (devServer) {
     // If this heuristic doesn’t work well for you, don’t use `proxy`.
     htmlAcceptHeaders: proxy
     ? ['text/html']
-    : ['text/html', '*/*'],
+    : ['text/html', '*/*']
   }))
   if (proxy) {
     if (typeof proxy !== 'string') {
@@ -202,7 +202,7 @@ function addMiddleware (devServer) {
       secure: false,
       changeOrigin: true,
       ws: true,
-      xfwd: true,
+      xfwd: true
     })
     devServer.use(mayProxy, hpm)
 
@@ -254,11 +254,11 @@ function runDevServer (host, port, protocol) {
     // Reportedly, this avoids CPU overload on some systems.
     // https://github.com/facebookincubator/create-react-app/issues/293
     watchOptions: {
-      ignored: /node_modules/,
+      ignored: /node_modules/
     },
     // Enable HTTPS if the HTTPS environment variable is set to 'true'
     https: protocol === 'https',
-    host: host,
+    host: host
   })
 
   // Our custom middleware proxies requests to /index.html or a remote API.

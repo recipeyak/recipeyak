@@ -13,7 +13,7 @@ import {
   SET_RECIPES,
   UPDATE_STEP,
   SET_RECIPE_ADDING_TO_CART,
-  SET_RECIPE_REMOVING_FROM_CART,
+  SET_RECIPE_REMOVING_FROM_CART
 } from '../actionTypes.js'
 
 export const recipes = (state = {}, action) => {
@@ -26,15 +26,15 @@ export const recipes = (state = {}, action) => {
       return { ...state,
         [action.id]: {
           ...state[action.id],
-          steps: [...state[action.id].steps, action.step],
-        },
+          steps: [...state[action.id].steps, action.step]
+        }
       }
     case ADD_INGREDIENT_TO_RECIPE:
       return { ...state,
         [action.id]: {
           ...state[action.id],
-          ingredients: [...state[action.id].ingredients, action.ingredient],
-        },
+          ingredients: [...state[action.id].ingredients, action.ingredient]
+        }
       }
     case UPDATE_RECIPE_NAME:
       return { ...state, [action.id]: { ...state[action.id], name: action.name } }
@@ -48,8 +48,8 @@ export const recipes = (state = {}, action) => {
       return { ...state,
         [action.recipeID]: {
           ...state[action.recipeID],
-          ingredients: state[action.recipeID].ingredients.filter(x => x.id !== action.ingredientID),
-        },
+          ingredients: state[action.recipeID].ingredients.filter(x => x.id !== action.ingredientID)
+        }
       }
     case UPDATE_INGREDIENT:
       return { ...state,
@@ -61,15 +61,15 @@ export const recipes = (state = {}, action) => {
             } else {
               return ingre
             }
-          }),
-        },
+          })
+        }
       }
     case DELETE_STEP:
       return { ...state,
         [action.recipeID]: {
           ...state[action.recipeID],
-          steps: state[action.recipeID].steps.filter(x => x.id !== action.stepID),
-        },
+          steps: state[action.recipeID].steps.filter(x => x.id !== action.stepID)
+        }
       }
     case UPDATE_STEP:
       return { ...state,
@@ -81,8 +81,8 @@ export const recipes = (state = {}, action) => {
             } else {
               return s
             }
-          }),
-        },
+          })
+        }
       }
     case SET_RECIPES:
       // convert the array of objects to an object with the recipe.id as the

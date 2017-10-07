@@ -2,24 +2,24 @@ import notification from './notification.js'
 
 import {
   setNotification,
-  clearNotification,
+  clearNotification
 } from '../actions.js'
 
 describe('Notification', () => {
   it('Sets notification settings', () => {
     const beforeState = {
-      message: '',
+      message: ''
     }
 
     const action = {
       message: 'testing',
-      closeable: true,
+      closeable: true
     }
 
     const afterState = {
       message: 'testing',
       closeable: true,
-      show: true,
+      show: true
     }
 
     expect(
@@ -30,13 +30,13 @@ describe('Notification', () => {
     const beforeState = {
       message: 'testing',
       closeable: true,
-      show: true,
+      show: true
     }
 
     const afterState = {
       message: '',
       closeable: false,
-      show: false,
+      show: false
     }
 
     expect(

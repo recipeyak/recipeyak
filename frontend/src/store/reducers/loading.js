@@ -4,7 +4,7 @@ import {
   SET_LOADING_RESET,
   SET_LOADING_RECIPES,
   SET_LOADING_ADD_RECIPE,
-  SET_LOADING_CART,
+  SET_LOADING_CART
 } from '../actionTypes.js'
 
 const loading = (state = {
@@ -13,7 +13,7 @@ const loading = (state = {
   reset: false,
   recipes: false,
   addRecipe: false,
-  cart: false,
+  cart: false
 }, action) => {
   switch (action.type) {
     case SET_LOADING_LOGIN:

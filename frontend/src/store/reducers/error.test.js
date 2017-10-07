@@ -5,17 +5,17 @@ import {
   setErrorReset,
   setErrorAddRecipe,
   setErrorRecipes,
-  setErrorCart,
+  setErrorCart
 } from '../actions.js'
 
 describe('error', () => {
   it('sets login error', () => {
     const notErrorState = {
-      login: false,
+      login: false
     }
 
     const errorState = {
-      login: true,
+      login: true
     }
 
     expect(
@@ -29,11 +29,11 @@ describe('error', () => {
 
   it('sets recipes error', () => {
     const notErrorState = {
-      recipes: false,
+      recipes: false
     }
 
     const errorState = {
-      recipes: true,
+      recipes: true
     }
 
     expect(
@@ -47,11 +47,11 @@ describe('error', () => {
 
   it('sets signup error', () => {
     const notErrorState = {
-      signup: false,
+      signup: false
     }
 
     const errorState = {
-      signup: true,
+      signup: true
     }
 
     expect(
@@ -65,11 +65,11 @@ describe('error', () => {
 
   it('sets addRecipe error', () => {
     const notErrorState = {
-      addRecipe: false,
+      addRecipe: false
     }
 
     const errorState = {
-      addRecipe: true,
+      addRecipe: true
     }
 
     expect(
@@ -83,11 +83,11 @@ describe('error', () => {
 
   it('sets cart error', () => {
     const notErrorState = {
-      cart: false,
+      cart: false
     }
 
     const errorState = {
-      cart: true,
+      cart: true
     }
 
     expect(
@@ -101,11 +101,11 @@ describe('error', () => {
 
   it('sets reset error', () => {
     const notErrorState = {
-      reset: false,
+      reset: false
     }
 
     const errorState = {
-      reset: true,
+      reset: true
     }
 
     expect(

@@ -1,6 +1,6 @@
 import {
   SET_CART,
-  SET_CART_ITEM,
+  SET_CART_ITEM
 } from '../actionTypes.js'
 
 const cart = (state = {}, action) => {

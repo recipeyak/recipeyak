@@ -3,20 +3,20 @@ import user from './user.js'
 import {
   logout,
   login,
-  setAvatarURL,
+  setAvatarURL
 } from '../actions.js'
 
 describe('User', () => {
   it('Logs in user adding token', () => {
     const beforeState = {
-      loggedIn: false,
+      loggedIn: false
     }
 
     const token = 'afakekey'
 
     const afterState = {
       loggedIn: true,
-      token,
+      token
     }
 
     expect(
@@ -28,12 +28,12 @@ describe('User', () => {
     const token = 'afakekey'
     const beforeState = {
       loggedIn: true,
-      token,
+      token
     }
 
     const afterState = {
       loggedIn: false,
-      token: null,
+      token: null
     }
 
     expect(
@@ -43,13 +43,13 @@ describe('User', () => {
 
   it('Logs out user', () => {
     const beforeState = {
-      avatarURL: '',
+      avatarURL: ''
     }
 
     const avatarURL = 'http//'
 
     const afterState = {
-      avatarURL,
+      avatarURL
     }
 
     expect(

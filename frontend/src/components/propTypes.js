@@ -7,7 +7,7 @@ export const recipe = (props, propName, componentName) => {
     updated: '',
     source: '',
     tags: [''],
-    ingredients: [''],
+    ingredients: ['']
   }
   Object.keys(recipe).forEach(key => {
     const val = recipe[key]

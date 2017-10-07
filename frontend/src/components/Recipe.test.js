@@ -19,10 +19,10 @@ describe('<Recipe/>', () => {
       // a bodge to mock out `this.props.match.params.id`
       match: {
         params: {
-          id: 1,
-        },
+          id: 1
+        }
       },
-      fetchRecipe: () => true,
+      fetchRecipe: () => true
     }
     mount(
       <Provider store={ store }>

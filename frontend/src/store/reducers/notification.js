@@ -1,6 +1,6 @@
 import {
   SET_NOTIFICATION,
-  CLEAR_NOTIFICATION,
+  CLEAR_NOTIFICATION
 } from '../actionTypes.js'
 
 const notification = (
@@ -8,13 +8,13 @@ const notification = (
     message: '',
     level: 'info',
     closeable: false,
-    show: false,
+    show: false
   },
   {
     type,
     message,
     level,
-    closeable,
+    closeable
   }) => {
   switch (type) {
     case SET_NOTIFICATION:
