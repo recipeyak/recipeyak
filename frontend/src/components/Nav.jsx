@@ -26,7 +26,6 @@ class Navbar extends React.Component {
     const clickedInComponent = this.element && this.element.contains(e.target)
     if (clickedInComponent) return
     this.setState({ showDropdown: false })
-
   }
 
   toggleNav = () => {

@@ -5,6 +5,7 @@ import { MemoryRouter } from 'react-router-dom'
 
 import { emptyStore as store } from '../store/store.js'
 import RecipeList from './RecipeList.jsx'
+import { matchesQuery } from './RecipeList.jsx'
 
 describe('<RecipeList/>', () => {
   it('renders without crashing', () => {
@@ -17,6 +18,7 @@ describe('<RecipeList/>', () => {
         </MemoryRouter>
       </Provider>)
   })
+
   it('accepts props', () => {
     const recipes = [{
       id: 123,
@@ -25,7 +27,7 @@ describe('<RecipeList/>', () => {
       author: 'Recipe author',
       source: '',
       url: '',
-      ingredients: ['ingredientOne', 'ingredientTwo'],
+      ingredients: ['ingredientOne', 'ingredientTwo']
     }]
     const element = mount(
       <Provider store={ store }>
@@ -38,6 +40,7 @@ describe('<RecipeList/>', () => {
       </Provider>)
     expect(element.find('RecipeList').props().recipes).toEqual(recipes)
   })
+
   it('handles recipes object without tags', () => {
     const recipes = [{
       id: 123,
@@ -45,7 +48,7 @@ describe('<RecipeList/>', () => {
       author: 'Recipe author',
       source: '',
       url: '',
-      ingredients: [''],
+      ingredients: ['']
     }]
     mount(
       <Provider store={ store }>
@@ -56,5 +59,38 @@ describe('<RecipeList/>', () => {
           />
         </MemoryRouter>
       </Provider>)
+  })
+
+  it('ensure search works', () => {
+    const recipe = {
+      id: 12,
+      name: 'West Canadian Creme Brulee',
+      author: 'T. Philip',
+      source: 'Unknown',
+      time: '1 Hour',
+      ingredients: [
+        {
+          id: 84,
+          text: 'Half and Half'
+        },
+        {
+          id: 85,
+          text: 'Vanilla'
+        }
+      ],
+      steps: [
+        {
+          id: 34,
+          text: 'Mix everything together'
+        }
+      ],
+      tags: []
+    }
+
+    const query = 'vanilla'
+
+    const results = matchesQuery(recipe, query)
+
+    expect(results).toEqual(true)
   })
 })

@@ -7,9 +7,28 @@ import 'bulma/css/bulma.css'
 
 import './recipe-list.scss'
 
+export const matchesQuery = (recipe, query) => {
+  const { name, author, ingredients } = recipe
+  query = query.toUpperCase()
+  return (name != null && name.toUpperCase().includes(query)) ||
+    (author != null && author.toUpperCase().includes(query)) ||
+    (ingredients != null && ingredients.find(x => x.text.toUpperCase().includes(query)) != null)
+}
+
 class RecipeList extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      query: ''
+    }
+  }
+
   componentWillMount () {
     this.props.fetchData()
+  }
+
+  handleInputChange = e => {
+    this.setState({ [e.target.name]: e.target.value })
   }
 
   render () {
@@ -19,6 +38,7 @@ class RecipeList extends React.Component {
 
     const recipes =
       Object.values(this.props.recipes)
+      .filter(recipe => matchesQuery(recipe, this.state.query))
       .map(recipe =>
         <div className="grid-item" key={ recipe.id }>
           <Recipe
@@ -31,11 +51,17 @@ class RecipeList extends React.Component {
           />
         </div>)
 
-    const recipeList = recipes.length !== 0
-      ? <div className="grid-container">{ recipes }</div>
-      : <div className="no-recipes">No Recipes☹️</div>
-
-    return recipeList
+    return (
+      <div>
+        <input onChange={ this.handleInputChange } type='search' className='input' name='query'/>
+        { recipes.length !== 0
+            ? <div className="grid-container">
+                { recipes }
+              </div>
+            : <div className="no-recipes">No Recipes☹️</div>
+        }
+      </div>
+    )
   }
 }
 
@@ -46,12 +72,12 @@ RecipeList.PropTypes = {
   cart: PropTypes.object,
   recipes: PropTypes.object,
   loading: PropTypes.bool,
-  error: PropTypes.bool,
+  error: PropTypes.bool
 }
 
 RecipeList.defaultProps = {
   cart: {},
-  recipes: {},
+  recipes: {}
 }
 
 export default RecipeList
