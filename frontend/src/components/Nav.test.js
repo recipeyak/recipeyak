@@ -11,7 +11,7 @@ describe('<Nav/>', () => {
     mount(
       <Provider store={ store }>
         <MemoryRouter>
-          <Nav/>
+          <Nav fetchData={ () => true } />
         </MemoryRouter>
       </Provider>)
   })

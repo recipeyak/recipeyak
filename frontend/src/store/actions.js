@@ -32,6 +32,7 @@ import {
   SET_LOADING_CART,
   SET_RECIPE_ADDING_TO_CART,
   SET_RECIPE_REMOVING_FROM_CART,
+  SET_AVATAR_URL,
 } from './actionTypes.js'
 
 import { push } from 'react-router-redux'
@@ -67,6 +68,31 @@ export const loggingOut = () => (dispatch, getState) => {
     })
     .catch(err => {
       console.log('error adding recipe to cart', err)
+    })
+}
+
+export const setAvatarURL = url => {
+  return {
+    type: SET_AVATAR_URL,
+    url,
+  }
+}
+
+const getUser = token =>
+  // empty body since post expects the second argument to be the body
+  axios.get('/api/v1/rest-auth/user/', {
+    headers: {
+      'Authorization': 'Token ' + token,
+    },
+  })
+
+export const fetchUser = () => (dispatch, getState) => {
+  getUser(getState().user.token)
+    .then(res => {
+      dispatch(setAvatarURL(res.data.avatar_url))
+    })
+    .catch(err => {
+      console.log('error fetching user', err)
     })
 }
 
