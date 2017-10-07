@@ -21,6 +21,7 @@ import PasswordReset from '../containers/PasswordReset.jsx'
 import Settings from './Settings.jsx'
 import AddRecipe from '../containers/AddRecipe.jsx'
 import Notification from '../containers/Notification.jsx'
+import HomePage from '../components/Base.jsx'
 
 import './main.scss'
 
@@ -39,18 +40,22 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
 
 const Base = () => (
 <div>
-  <ConnectedRouter history={history}>
+  <ConnectedRouter history={ history }>
     <Switch>
-      <Route exact path="/" component={ Home }/>
       <Route exact path="/login" component={ Login }/>
-      <PrivateRoute exact path="/recipes/add" component={ AddRecipe }/>
-      <Route exact path="/password-reset" component={ PasswordReset }/>
       <Route exact path="/signup" component={ Signup }/>
-      <PrivateRoute exact path="/recipes/" component={ RecipeList }/>
-      <PrivateRoute exact path="/cart" component={ Cart }/>
-      <PrivateRoute exact path="/recipes/:id" component={ Recipe }/>
-      <PrivateRoute exact path="/settings" component={ Settings }/>
-      <Route component={ NoMatch }/>
+      <Route exact path="/" component={ Home }/>
+      <Route exact path="/password-reset" component={ PasswordReset }/>
+      <HomePage>
+        <Switch>
+          <PrivateRoute exact path="/recipes/add" component={ AddRecipe }/>
+          <PrivateRoute exact path="/recipes/" component={ RecipeList }/>
+          <PrivateRoute exact path="/cart" component={ Cart }/>
+          <PrivateRoute exact path="/recipes/:id" component={ Recipe }/>
+          <PrivateRoute exact path="/settings" component={ Settings }/>
+          <Route component={ NoMatch }/>
+        </Switch>
+      </HomePage>
     </Switch>
   </ConnectedRouter>
   <Notification/>

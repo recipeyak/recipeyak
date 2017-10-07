@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Base from './Base.jsx'
 import ListItem from './ListItem.jsx'
 
 import './AddRecipe.scss'
@@ -77,7 +76,7 @@ class AddRecipe extends React.Component {
     const { ingredients, steps, ingredient, step } = this.state
 
     return (
-      <Base>
+      <div>
         <h1 className="title is-2">Add Recipe</h1>
           <div className="field">
             <div className="control">
@@ -248,7 +247,7 @@ class AddRecipe extends React.Component {
               </p>
             }
           </div>
-    </Base>
+      </div>
     )
   }
 }

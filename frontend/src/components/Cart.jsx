@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import { recipe as recipeType } from './propTypes.js'
-import Base from './Base.jsx'
 import Recipe from './RecipeItem.jsx'
 import './cart.scss'
 
@@ -14,7 +13,7 @@ class Cart extends React.Component {
   render () {
     const { cart, recipes, removeFromCart, addToCart, loading, ingredients } = this.props
 
-    if (loading) return <Base><p>Loading...</p></Base>
+    if (loading) return <p>Loading...</p>
 
     const urlFromID = id => `/recipes/${id}/`
 
@@ -35,7 +34,6 @@ class Cart extends React.Component {
       : <p className="no-recipes">No recipes in cart.</p>
 
     return (
-      <Base>
         <div className="container">
           <div className="columns">
             <div className="column">
@@ -60,7 +58,6 @@ class Cart extends React.Component {
             </div>
           </div>
         </div>
-      </Base>
     )
   }
 }

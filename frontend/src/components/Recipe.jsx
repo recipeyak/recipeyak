@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import Base from './Base.jsx'
 import ListItem from './ListItem.jsx'
 import EnhancedTextInput from './EnhancedTextInput.jsx'
 
@@ -125,7 +124,7 @@ class Recipe extends React.Component {
     } = this.props
 
     return (
-      <Base>
+      <div>
         <div className="field">
           <EnhancedTextInput
             className="title is-1"
@@ -301,7 +300,7 @@ class Recipe extends React.Component {
             </div>
           </div>
         </div>
-      </Base>
+      </div>
     )
   }
 }

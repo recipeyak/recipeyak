@@ -1,6 +1,5 @@
 import React from 'react'
 
-import Base from './Base.jsx'
 import RecipeImporter from './RecipeImporter.jsx'
 import PasswordChange from './PasswordChange.jsx'
 import UserManagement from './UserManagement.jsx'
@@ -9,7 +8,7 @@ import ReceiptUploader from './ReceiptUploader.jsx'
 import './Settings.scss'
 
 const Settings = () => (
-  <Base>
+  <div>
     <h1 className="title is-2">Settings</h1>
     <section className="columns">
       <section className="column">
@@ -33,7 +32,7 @@ const Settings = () => (
       </section>
 
     </section>
-  </Base>
+  </div>
 )
 
 export default Settings

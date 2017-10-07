@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import Base from './Base.jsx'
 import Recipe from './RecipeItem.jsx'
 
 import 'bulma/css/bulma.css'
@@ -14,9 +13,9 @@ class RecipeList extends React.Component {
   }
 
   render () {
-    if (this.props.error) return <Base><p>Error fetching data</p></Base>
+    if (this.props.error) return <p>Error fetching data</p>
 
-    if (this.props.loading) return <Base><p>Loading...</p></Base>
+    if (this.props.loading) return <p>Loading...</p>
 
     const recipes =
       Object.values(this.props.recipes)
@@ -36,11 +35,7 @@ class RecipeList extends React.Component {
       ? <div className="grid-container">{ recipes }</div>
       : <div className="no-recipes">No Recipes☹️</div>
 
-    return (
-      <Base>
-        { recipeList }
-      </Base>
-    )
+    return recipeList
   }
 }
 
