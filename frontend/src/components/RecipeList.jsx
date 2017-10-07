@@ -58,7 +58,10 @@ class RecipeList extends React.Component {
             ? <div className="grid-container">
                 { recipes }
               </div>
-            : <div className="no-recipes">No Recipes☹️</div>
+            : <div className="no-recipes">
+                <p>☹️ No Recipes found matching</p>
+                <p><strong>{ this.state.query }</strong></p>
+              </div>
         }
       </div>
     )
