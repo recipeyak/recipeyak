@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 import './nav.scss'
 
@@ -63,8 +63,8 @@ class Navbar extends React.Component {
             </p>
           </div>
         </div>
-        <NavLink activeClassName="is-active" to="/recipes" className="nav-item">Recipes</NavLink>
-        <NavLink activeClassName="is-active" to="/cart" className="nav-item">Cart</NavLink>
+        <Link to="/recipes" className="nav-item">Recipes</Link>
+        <Link to="/cart" className="nav-item">Cart</Link>
         <div
           ref={element => { this.element = element }}
           onClick={ this.toggleDropdown }
