@@ -9,7 +9,7 @@ class ListItem extends React.Component {
     this.state = {
       text: props.text || '',
       editing: false,
-      unsavedChanges: false,
+      unsavedChanges: false
     }
 
     document.addEventListener('mousedown', this.handleGeneralClick)
@@ -28,7 +28,7 @@ class ListItem extends React.Component {
     if (!clickOnListItem) {
       this.setState((prevState, props) => ({
         editing: false,
-        unsavedChanges: (prevState.editing && prevState.text !== props.text) || prevState.unsavedChanges,
+        unsavedChanges: (prevState.editing && prevState.text !== props.text) || prevState.unsavedChanges
       }))
     }
   }
@@ -40,7 +40,7 @@ class ListItem extends React.Component {
   enableEditing = () => {
     this.setState({
       editing: true,
-      unsavedChanges: false,
+      unsavedChanges: false
     })
   }
 
@@ -48,7 +48,7 @@ class ListItem extends React.Component {
     this.setState((prevState, props) => ({
       editing: false,
       text: props.text,
-      unsavedChanges: false,
+      unsavedChanges: false
     }))
   }
 
@@ -65,7 +65,7 @@ class ListItem extends React.Component {
     e.stopPropagation()
     this.setState((prevState, props) => ({
       editing: false,
-      text: props.text,
+      text: props.text
     }))
   }
 
@@ -73,7 +73,7 @@ class ListItem extends React.Component {
     e.stopPropagation()
     this.setState({
       editing: false,
-      unsavedChanges: false,
+      unsavedChanges: false
     })
     // if the text is empty, we should just delete the item instead of updating
     if (this.state.text === '') {
@@ -185,7 +185,7 @@ ListItem.PropTypes = {
   text: PropTypes.string,
   id: PropTypes.number,
   delete: PropTypes.func,
-  update: PropTypes.func,
+  update: PropTypes.func
 }
 
 export default ListItem

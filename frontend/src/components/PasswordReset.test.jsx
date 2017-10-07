@@ -9,7 +9,7 @@ describe('<PasswordReset/>', () => {
     const props = {
       error: {},
       loading: false,
-      reset: () => console.log('test'),
+      reset: () => console.log('test')
     }
     mount(<MemoryRouter><PasswordReset {...props}/></MemoryRouter>)
   })

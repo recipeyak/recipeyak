@@ -2,14 +2,14 @@ import { connect } from 'react-redux'
 
 import {
   loggingOut,
-  fetchUser,
+  fetchUser
 } from '../store/actions.js'
 
 import Nav from '../components/Nav.jsx'
 
 const mapStateToProps = state => {
   return {
-    avatarURL: state.user.avatarURL,
+    avatarURL: state.user.avatarURL
   }
 }
 
@@ -20,13 +20,13 @@ const mapDispatchToProps = dispatch => {
     },
     fetchData: () => {
       dispatch(fetchUser())
-    },
+    }
   }
 }
 
 const ConnectedNav = connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(Nav)
 
 export default ConnectedNav

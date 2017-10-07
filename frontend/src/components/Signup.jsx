@@ -8,7 +8,7 @@ class Signup extends React.Component {
     this.state = {
       email: '',
       password1: '',
-      password2: '',
+      password2: ''
     }
   }
 
@@ -131,7 +131,7 @@ class Signup extends React.Component {
 
 Signup.PropTypes = {
   loading: PropTypes.bool.isRequired,
-  signup: PropTypes.func.isRequired,
+  signup: PropTypes.func.isRequired
 }
 
 export default Signup

@@ -15,7 +15,7 @@ class AddRecipe extends React.Component {
       ingredients: [],
       steps: [],
       ingredient: '',
-      step: '',
+      step: ''
     }
   }
 
@@ -33,7 +33,7 @@ class AddRecipe extends React.Component {
     this.setState((prevState) => (
       {
         ingredients: prevState.ingredients.concat({ text: prevState.ingredient.trim() }),
-        ingredient: '',
+        ingredient: ''
       }
     ))
   }
@@ -46,14 +46,14 @@ class AddRecipe extends React.Component {
     this.setState((prevState) => (
       {
         steps: prevState.steps.concat({ text: prevState.step.trim() }),
-        step: '',
+        step: ''
       }
     ))
   }
 
   delete (items, index) {
     this.setState(prevState => ({
-      [items]: prevState[items].filter((_, i) => i !== index),
+      [items]: prevState[items].filter((_, i) => i !== index)
     }))
   }
 
@@ -64,7 +64,7 @@ class AddRecipe extends React.Component {
           return content
         }
         return x
-      }),
+      })
     }))
   }
 
@@ -254,7 +254,7 @@ class AddRecipe extends React.Component {
 
 AddRecipe.PropTypes = {
   addRecipe: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired,
+  loading: PropTypes.bool.isRequired
 }
 
 export default AddRecipe

@@ -68,12 +68,12 @@ Cart.PropTypes = {
   removeFromCart: PropTypes.func.isRequired,
   cart: PropTypes.object.isRequired,
   recipes: PropTypes.objectOf(recipeType).isRequired,
-  ingredients: PropTypes.array.isRequired,
+  ingredients: PropTypes.array.isRequired
 }
 
 Cart.defaultProps = {
   cart: {},
-  ingredients: [],
+  ingredients: []
 }
 
 export default Cart

@@ -11,7 +11,7 @@ import {
   setRecipeTime,
   fetchRecipe,
   updatingIngredient,
-  updatingStep,
+  updatingStep
 } from '../store/actions.js'
 
 import Recipe from '../components/Recipe.jsx'
@@ -56,13 +56,13 @@ const mapDispatchToProps = dispatch => {
     },
     updateTime: (id, time) => {
       dispatch(setRecipeTime(id, time))
-    },
+    }
   }
 }
 
 const ConnectedIngredients = connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(Recipe)
 
 export default ConnectedIngredients

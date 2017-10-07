@@ -13,7 +13,7 @@ const RecipeItem = ({
     removeFromCart,
     removingFromCart = false,
     addToCart,
-    addingToCart = false,
+    addingToCart = false
   }) => {
   const spanTags = tags.length > 0
     ? tags.map(tag => <span key={ tag } className="tag is-medium">{ tag }</span>)
@@ -63,7 +63,7 @@ RecipeItem.PropTypes = {
   inCart: PropTypes.number.isRequired,
   removeFromCart: PropTypes.func.isRequired,
   addToCart: PropTypes.func.isRequired,
-  addingToCart: PropTypes.bool,
+  addingToCart: PropTypes.bool
 }
 
 export default RecipeItem

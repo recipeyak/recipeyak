@@ -5,20 +5,20 @@ import Login from '../components/Login.jsx'
 
 const mapDispatchToProps = dispatch => {
   return {
-    login: (email, password) => dispatch(logUserIn(email, password)),
+    login: (email, password) => dispatch(logUserIn(email, password))
   }
 }
 
 const mapStateToProps = state => {
   return {
     loading: state.loading.login,
-    error: state.error.login,
+    error: state.error.login
   }
 }
 
 const ConnectedLogin = connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(Login)
 
 export default ConnectedLogin

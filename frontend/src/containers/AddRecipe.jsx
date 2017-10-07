@@ -6,7 +6,7 @@ import AddRecipe from '../components/AddRecipe.jsx'
 const mapStateToProps = state => {
   return {
     loading: state.loading.addRecipe,
-    error: state.error.addRecipe,
+    error: state.error.addRecipe
   }
 }
 
@@ -14,13 +14,13 @@ const mapDispatchToProps = dispatch => {
   return {
     addRecipe: recipe => {
       dispatch(postNewRecipe(recipe))
-    },
+    }
   }
 }
 
 const ConnectedAddRecipe = connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(AddRecipe)
 
 export default ConnectedAddRecipe

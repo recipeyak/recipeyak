@@ -8,7 +8,7 @@ const notification = ({
   level = 'info',
   show = true,
   closeable = false,
-  close,
+  close
   }) => {
   return (
     show && <div className={'note note-bottom info ' + level}>
@@ -22,7 +22,7 @@ notification.PropTypes = {
   show: PropTypes.bool,
   closeable: PropTypes.bool,
   close: PropTypes.func,
-  level: PropTypes.oneOf(['success', 'info', 'warning', 'danger']),
+  level: PropTypes.oneOf(['success', 'info', 'warning', 'danger'])
 }
 
 export default notification

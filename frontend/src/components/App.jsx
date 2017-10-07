@@ -2,10 +2,10 @@ import React from 'react'
 import {
   Route,
   Switch,
-  Redirect,
+  Redirect
 } from 'react-router-dom'
 import {
-  ConnectedRouter,
+  ConnectedRouter
 } from 'react-router-redux'
 
 import { history, store } from '../store/store.js'
@@ -33,7 +33,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
       ? <Component {...props}/>
       : <Redirect to={{
         pathname: '/login',
-        state: { from: props.location },
+        state: { from: props.location }
       }}/>
   }}/>
 )

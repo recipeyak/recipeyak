@@ -4,7 +4,7 @@ import {
   addingToCart,
   removingFromCart,
   fetchCart,
-  fetchRecipeList,
+  fetchRecipeList
 } from '../store/actions.js'
 
 import Cart from '../components/Cart.jsx'
@@ -32,7 +32,7 @@ const mapStateToProps = state => {
     cart: state.cart,
     recipes: state.recipes,
     loading: state.loading.recipes || state.loading.cart,
-    ingredients: cartOccurances(state.recipes, state.cart),
+    ingredients: cartOccurances(state.recipes, state.cart)
   }
 }
 
@@ -47,13 +47,13 @@ const mapDispatchToProps = dispatch => {
     fetchData: () => {
       dispatch(fetchRecipeList())
       dispatch(fetchCart())
-    },
+    }
   }
 }
 
 const ConnectedCart = connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(Cart)
 
 export default ConnectedCart

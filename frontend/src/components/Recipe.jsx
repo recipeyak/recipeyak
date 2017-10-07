@@ -14,7 +14,7 @@ class Recipe extends React.Component {
       addingStep: false,
       addingIngredient: false,
       ingredient: '',
-      step: '',
+      step: ''
     }
   }
 
@@ -120,7 +120,7 @@ class Recipe extends React.Component {
       name,
       author,
       source,
-      time,
+      time
     } = this.props
 
     return (
@@ -320,14 +320,14 @@ Recipe.PropTypes = {
   updateIngredient: PropTypes.func.isRequired,
   deleteIngredient: PropTypes.func.isRequired,
   fetchRecipe: PropTypes.func.isRequired,
-  match: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired
 }
 
 Recipe.defaultProps = {
   ingredients: [],
   steps: [],
   tags: [],
-  recipe: {},
+  recipe: {}
 }
 
 export default Recipe

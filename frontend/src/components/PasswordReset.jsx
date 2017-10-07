@@ -6,7 +6,7 @@ class PasswordReset extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      email: '',
+      email: ''
     }
   }
 
@@ -87,7 +87,7 @@ class PasswordReset extends React.Component {
 PasswordReset.PropTypes = {
   reset: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
-  error: PropTypes.bool.isRequired,
+  error: PropTypes.bool.isRequired
 }
 
 export default PasswordReset

@@ -9,7 +9,7 @@ class EnhancedTextInput extends React.Component {
     this.state = {
       text: props.text,
       editing: false,
-      unsavedChanges: false,
+      unsavedChanges: false
     }
   }
 
@@ -32,7 +32,7 @@ class EnhancedTextInput extends React.Component {
     if (clickedInComponent) return
     this.setState((prevState, props) => ({
       editing: false,
-      unsavedChanges: (prevState.editing && prevState.text !== props.text) || prevState.unsavedChanges,
+      unsavedChanges: (prevState.editing && prevState.text !== props.text) || prevState.unsavedChanges
     }))
   }
 
@@ -54,7 +54,7 @@ class EnhancedTextInput extends React.Component {
     this.setState((_, props) => ({
       text: props.text,
       unsavedChanges: false,
-      editing: false,
+      editing: false
     }))
   }
 
@@ -142,12 +142,12 @@ EnhancedTextInput.PropTypes = {
   name: PropTypes.string.isRequired,
   placeholder: PropTypes.string,
   className: PropTypes.string,
-  onChange: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired
 }
 
 EnhancedTextInput.defaultProps = {
   placeholder: 'input text',
-  className: '',
+  className: ''
 }
 
 export default EnhancedTextInput

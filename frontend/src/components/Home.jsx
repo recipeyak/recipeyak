@@ -115,7 +115,7 @@ const Home = ({ loggedIn = false }) => {
 }
 
 Home.PropTypes = {
-  loggedIn: PropTypes.bool,
+  loggedIn: PropTypes.bool
 }
 
 export default Home

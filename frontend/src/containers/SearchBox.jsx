@@ -6,7 +6,7 @@ import SearchBox from '../components/SearchBox.jsx'
 const mapStateToProps = state => {
   return {
     cart: state.cart,
-    recipes: state.recipes,
+    recipes: state.recipes
   }
 }
 
@@ -17,13 +17,13 @@ const mapDispatchToProps = dispatch => {
     },
     removeFromCart: id => {
       dispatch(removingFromCart(id))
-    },
+    }
   }
 }
 
 const ConnectedSearchBox = connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(SearchBox)
 
 export default ConnectedSearchBox

@@ -7,7 +7,7 @@ class Login extends React.Component {
     super(props)
     this.state = {
       email: '',
-      password: '',
+      password: ''
     }
   }
 
@@ -115,7 +115,7 @@ class Login extends React.Component {
 
 Login.PropTypes = {
   loading: PropTypes.bool.isRequired,
-  login: PropTypes.func.isRequired,
+  login: PropTypes.func.isRequired
 }
 
 export default Login

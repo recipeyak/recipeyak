@@ -9,7 +9,7 @@ class Navbar extends React.Component {
     this.state = {
       query: '',
       showNav: false,
-      showDropdown: false,
+      showDropdown: false
     }
   }
 

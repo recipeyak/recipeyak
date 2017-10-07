@@ -6,7 +6,7 @@ class RecipeImporter extends React.Component {
   constructor () {
     super()
     this.state = {
-      isLink: true,
+      isLink: true
     }
   }
 

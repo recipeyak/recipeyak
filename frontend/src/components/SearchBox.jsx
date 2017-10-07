@@ -20,7 +20,7 @@ const SearchBox = ({
   removeFromCart,
   addToCart,
   handleQueryChange,
-  query,
+  query
 }) => {
   const results = SearchRecipes(recipes, query)
 
@@ -72,7 +72,7 @@ SearchBox.PropTypes = {
   handleOnFocus: PropTypes.func,
   handleOnBlur: PropTypes.func,
   results: PropTypes.array,
-  query: PropTypes.string,
+  query: PropTypes.string
 }
 
 export default SearchBox
