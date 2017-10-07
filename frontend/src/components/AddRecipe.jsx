@@ -81,6 +81,7 @@ class AddRecipe extends React.Component {
           <div className="field">
             <div className="control">
               <input
+                autoFocus
                 onChange={ (e) => this.handleInputChange(e) }
                 className="input input-title" type="text" placeholder="title" name="name"/>
             </div>

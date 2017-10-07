@@ -53,7 +53,7 @@ class RecipeList extends React.Component {
 
     return (
       <div>
-        <input onChange={ this.handleInputChange } type='search' className='input' name='query'/>
+        <input autoFocus onChange={ this.handleInputChange } type='search' className='input' name='query'/>
         { recipes.length !== 0
             ? <div className="grid-container">
                 { recipes }
