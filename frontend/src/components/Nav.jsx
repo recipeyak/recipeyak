@@ -15,6 +15,18 @@ class Navbar extends React.Component {
 
   componentWillMount () {
     this.props.fetchData()
+    document.addEventListener('mousedown', this.handleGeneralClick)
+  }
+
+  componentWillUnmount = () => {
+    document.removeEventListener('mousedown', this.handleGeneralClick)
+  }
+
+  handleGeneralClick = e => {
+    const clickedInComponent = this.element && this.element.contains(e.target)
+    if (clickedInComponent) return
+    this.setState({ showDropdown: false })
+
   }
 
   toggleNav = () => {
@@ -54,7 +66,10 @@ class Navbar extends React.Component {
         </div>
         <NavLink activeClassName="is-active" to="/recipes" className="nav-item">Recipes</NavLink>
         <NavLink activeClassName="is-active" to="/cart" className="nav-item">Cart</NavLink>
-        <div onClick={ this.toggleDropdown } className="nav-item user-profile">
+        <div
+          ref={element => { this.element = element }}
+          onClick={ this.toggleDropdown }
+          className="nav-item user-profile">
           <img alt="user profile" className="user-profile-image" src={ this.props.avatarURL }/>
 
           <div className={ 'dropdown ' + (this.state.showDropdown ? 'active' : '')}>
