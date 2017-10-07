@@ -1,14 +1,12 @@
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
 
-import { logout } from '../store/actions.js'
+import { loggingOut } from '../store/actions.js'
 import Nav from '../components/Nav.jsx'
 
 const mapDispatchToProps = dispatch => {
   return {
     logout: () => {
-      dispatch(logout())
-      dispatch(push('/login'))
+      dispatch(loggingOut())
     },
   }
 }

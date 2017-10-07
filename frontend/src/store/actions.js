@@ -51,6 +51,25 @@ export const logout = () => {
   }
 }
 
+const postLogout = token =>
+  // empty body since post expects the second argument to be the body
+  axios.post('/api/v1/rest-auth/logout/', {}, {
+    headers: {
+      'Authorization': 'Token ' + token,
+    },
+  })
+
+export const loggingOut = () => (dispatch, getState) => {
+  postLogout(getState().user.token)
+    .then(res => {
+      dispatch(logout())
+      dispatch(push('/login'))
+    })
+    .catch(err => {
+      console.log('error adding recipe to cart', err)
+    })
+}
+
 export const setLoadingCart = val => {
   return {
     type: SET_LOADING_CART,
