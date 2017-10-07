@@ -1,4 +1,4 @@
-import cart from './cart.js'
+import settings from './settings.js'
 
 import {
   setLoadingPasswordUpdate,
@@ -14,7 +14,7 @@ describe('Settings', () => {
     }
 
     expect(
-      cart(beforeState, setLoadingPasswordUpdate(beforeState, true))
+      settings(beforeState, setLoadingPasswordUpdate(true))
     ).toEqual(afterState)
 
     const anotherAfterState = {
@@ -22,7 +22,7 @@ describe('Settings', () => {
     }
 
     expect(
-      cart(beforeState, setLoadingPasswordUpdate(beforeState, false))
+      settings(beforeState, setLoadingPasswordUpdate(false))
     ).toEqual(anotherAfterState)
   })
 
@@ -34,7 +34,7 @@ describe('Settings', () => {
     }
 
     expect(
-      cart(beforeState, setErrorPasswordUpdate(beforeState, true))
+      settings(beforeState, setErrorPasswordUpdate(true))
     ).toEqual(afterState)
 
     const anotherAfterState = {
@@ -42,7 +42,7 @@ describe('Settings', () => {
     }
 
     expect(
-      cart(beforeState, setErrorPasswordUpdate(beforeState, false))
+      settings(beforeState, setErrorPasswordUpdate(false))
     ).toEqual(anotherAfterState)
   })
 })
