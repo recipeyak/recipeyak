@@ -7,6 +7,10 @@ section.section {
   background-color: transparent;
 }
 
+nav.nav {
+  height: initial;
+}
+
 // override bulma
 section.section {
   padding: 1.5rem;
@@ -28,6 +32,7 @@ section.section {
   width: 40px;
 }
 
+.justify-space-between,
 .flex-space-between {
   display: flex;
   justify-content: space-between;
@@ -42,6 +47,14 @@ section.section {
   display: flex;
 }
 
+.p-rel {
+  position: relative;
+}
+
 .direction-column {
   flex-direction: column;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
 }

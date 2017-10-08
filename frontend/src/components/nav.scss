@@ -11,36 +11,28 @@
 }
 
 // bulma override
-div.overflow-initial {
-  overflow: initial;
-}
-
-// bulma override
 div.nav-item img {
   max-height: none;
 }
 
 nav.nav {
   margin-top: 10px;
-  position: relative;
 }
 
 // bulma override
 .user-profile {
   cursor: pointer;
   user-select: none;
+  padding-left: 0;
+  padding-right: 0;
 
-  &-loading,
   &-image {
+    background-color: lightgray;
     height: 45px;
     width: 45px;
     margin: 5px;
     border-radius: 100%;
     max-height: none;
-  }
-
-  &-loading {
-    background-color: #d4d4d4;
   }
 }
 

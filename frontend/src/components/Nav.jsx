@@ -8,7 +8,6 @@ class Navbar extends React.Component {
     super(props)
     this.state = {
       query: '',
-      showNav: false,
       showDropdown: false
     }
   }
@@ -28,10 +27,6 @@ class Navbar extends React.Component {
     this.setState({ showDropdown: false })
   }
 
-  toggleNav = () => {
-    this.setState(prevState => ({ showNav: !prevState.showNav }))
-  }
-
   toggleDropdown = () => {
     this.setState(prevState => ({ showDropdown: !prevState.showDropdown }))
   }
@@ -42,20 +37,12 @@ class Navbar extends React.Component {
 
   render () {
     return (
-      <nav className="nav">
-      <div className="nav-left">
+      <nav className="nav justify-space-between flex-wrap">
         <div className="nav-item">
           <Link to="/" className="title">Recipe Yak</Link>
         </div>
-      </div>
 
-      <span onClick={ this.toggleNav } className={ 'nav-toggle' + (this.state.showNav ? ' is-active' : '') }>
-        <span></span>
-        <span></span>
-        <span></span>
-      </span>
-
-      <div className={ 'overflow-initial nav-right nav-menu' + (this.state.showNav ? ' is-active' : '') }>
+        <div className="d-flex p-relative">
         <div className="nav-item">
           <div className="field is-grouped">
             <p className="control">
@@ -70,10 +57,7 @@ class Navbar extends React.Component {
           onClick={ this.toggleDropdown }
           className="nav-item user-profile">
 
-          { !this.props.loading
-            ? <img alt="user profile" className="user-profile-image" src={ this.props.avatarURL }/>
-            : <span className="user-profile-loading"/>
-          }
+          <img alt='' className="user-profile-image" src={ this.props.avatarURL }/>
 
           <div className={ 'dropdown ' + (this.state.showDropdown ? 'active' : '')}>
             <ul>
@@ -90,7 +74,7 @@ class Navbar extends React.Component {
                 <a onClick={ this.logout } className="dropdown-item dropdown-item__dark ">Logout</a>
               </li>
             </ul>
-          </div>
+        </div>
         </div>
 
       </div>
