@@ -132,12 +132,15 @@ const postPasswordChange = (token, password1, password2, oldPassword) =>
     }
   })
 
-export const updatingPassword = (token, password1, password2, oldPassword) => (dispatch, getState) => {
+export const updatingPassword = (password1, password2, oldPassword) => (dispatch, getState) => {
   dispatch(setLoadingPasswordUpdate(true))
   dispatch(setErrorPasswordUpdate(false))
   postPasswordChange(getState().user.token, password1, password2, oldPassword)
     .then(res => {
       dispatch(setLoadingPasswordUpdate(false))
+      // redirect to some random place afterwards
+      // TODO: have a pop up notification saying there is a successful password change
+      dispatch(push('/recipes'))
     })
     .catch(err => {
       dispatch(setLoadingPasswordUpdate(false))

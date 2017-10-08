@@ -85,6 +85,10 @@ REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'core.serializers.UserSerializer'
 }
 
+# http://django-rest-auth.readthedocs.io/en/latest/api_endpoints.html#basic
+# Require the old password be provided to change a your password
+OLD_PASSWORD_FIELD_ENABLED = True
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

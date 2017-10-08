@@ -14,8 +14,8 @@ class PasswordChange extends React.Component {
     this.setState({ [e.target.name]: e.target.value })
   }
 
-  update = () => {
-    console.log('update')
+  handleSubmit = e => {
+    e.preventDefault()
     this.props.update(this.state.password, this.state.newPassword, this.state.newPasswordAgain)
   }
 
@@ -25,37 +25,56 @@ class PasswordChange extends React.Component {
     const { password, newPassword, newPasswordAgain } = this.state
     const disabled = password === '' || newPassword === '' || newPasswordAgain === ''
     return (
-      <section>
+      <form onSubmit={ this.handleSubmit }>
 
         <h2 className="title is-3">Password Change</h2>
 
         <div className="field">
           <label className="label">Password</label>
           <div className="control">
-            <input onChange={ this.handleInputChange } className="input" type="password" name="password" required/>
+            <input
+              autoFocus
+              onChange={ this.handleInputChange }
+              className="input"
+              type="password"
+              name="password"
+              required/>
           </div>
         </div>
 
         <div className="field">
           <label className="label">New Password</label>
           <div className="control">
-            <input onChange={ this.handleInputChange } className="input" type="password" name="newPassword" required/>
+            <input
+              onChange={ this.handleInputChange }
+              className="input"
+              type="password"
+              name="newPassword"
+              required/>
           </div>
         </div>
 
         <div className="field">
           <label className="label">New Password Again</label>
           <div className="control">
-            <input onChange={ this.handleInputChange } className="input" type="password" name="newPasswordAgain" required/>
+            <input
+              onChange={ this.handleInputChange }
+              className="input"
+              type="password"
+              name="newPasswordAgain"
+              required/>
           </div>
         </div>
 
         <p className="control">
-          <button disabled={ disabled } onClick={ this.update } className={ `button is-primary ${loading ? 'is-loading' : ''}` }>
+          <button
+            disabled={ disabled }
+            type='submit'
+            className={ `button is-primary ${loading ? 'is-loading' : ''}` }>
             Update
           </button>
         </p>
-      </section>
+      </form>
     )
   }
 }

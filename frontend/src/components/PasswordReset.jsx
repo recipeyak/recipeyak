@@ -56,6 +56,7 @@ class PasswordReset extends React.Component {
                     <label className="label">Email</label>
                     <p className="control">
                       <input
+                        autoFocus
                         onChange={ this.handleInputChange }
                         className={'input' + (email ? ' is-danger' : '')}
                         type="email"
