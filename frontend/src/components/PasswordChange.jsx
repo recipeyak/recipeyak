@@ -25,7 +25,7 @@ class PasswordChange extends React.Component {
     const { password, newPassword, newPasswordAgain } = this.state
     const disabled = password === '' || newPassword === '' || newPasswordAgain === ''
     return (
-      <section className="box">
+      <section>
 
         <h2 className="title is-3">Password Change</h2>
 

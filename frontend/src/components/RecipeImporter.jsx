@@ -56,10 +56,10 @@ class RecipeImporter extends React.Component {
     )
 
     return (
-      <section className="box">
+      <section>
         <h2 className="title is-3">Recipe Importer</h2>
 
-        <div className="tabs is-boxed">
+        <div className="tabs">
           <ul>
             <li onClick={ () => this.setState({ isLink: true }) }
                 className={ isLink ? 'is-active' : '' }>

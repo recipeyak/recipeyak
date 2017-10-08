@@ -22,11 +22,11 @@ div.nav-item img {
 
 nav.nav {
   margin-top: 10px;
+  position: relative;
 }
 
 // bulma override
 .user-profile {
-  position: relative;
   cursor: pointer;
   user-select: none;
 
@@ -44,7 +44,7 @@ nav.nav {
   position: absolute;
   border-radius: 3px;
   top: 100%;
-  left: 0;
+  right: 0;
   z-index: 100;
   cursor: default;
   margin-top: 5px;
@@ -53,6 +53,21 @@ nav.nav {
 
   &.active {
     display: block;
+  }
+
+  .dropdown-item {
+    align-items: center;
+    display: flex;
+    flex-grow: 0;
+    flex-shrink: 0;
+    font-size: 1rem;
+    justify-content: start;
+    line-height: 1.5;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .dropdown-item__dark {
+    background-color: #ece9e9;
   }
 }
 

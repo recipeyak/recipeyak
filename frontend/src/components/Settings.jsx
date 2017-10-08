@@ -1,33 +1,68 @@
 import React from 'react'
-
-import RecipeImporter from './RecipeImporter.jsx'
-import PasswordChange from '../containers/PasswordChange.jsx'
-import UserManagement from './UserManagement.jsx'
-import ReceiptUploader from './ReceiptUploader.jsx'
+import { Link } from 'react-router-dom'
 
 import './Settings.scss'
 
-const Settings = () => (
+const Settings = ({ avatarURL, email }) => (
   <div>
     <h1 className="title is-2">Settings</h1>
     <section className="columns">
-      <section className="column">
-
-        <PasswordChange />
-
-      </section>
 
       <section className="column">
 
-        <UserManagement/>
+        <h2 className="title is-3">User</h2>
 
-      </section>
+        <div className="d-flex direction-column">
+          <label className="label">Avatar</label>
+          <div>
+            <img alt="user profile" src={ avatarURL }/>
+          </div>
+          <a href="https://secure.gravatar.com">Update via Gravatar</a>
+        </div>
 
-      <section className="column">
+        <div className="field">
+          <label className="label">Email</label>
+          <div className="control">
+            <p>{ email }</p>
+          </div>
+        </div>
 
-        <RecipeImporter />
+        <div className="field">
+          <label className="label">Password</label>
+          <div className="control">
+            <Link to="/password">Change Password</Link>
+          </div>
+        </div>
 
-        <ReceiptUploader />
+        <div className="field">
+          <label className="label">Color Scheme</label>
+          <div className="control">
+            <div className="select">
+              <select>
+                <option>Light</option>
+                <option>Sepia</option>
+                <option>Dark</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div className="field">
+          <label className="label">Export</label>
+
+          <div className="control flex-align-center">
+            <a className="button is-link">Export Recipes</a>
+
+            <div className="select is-small">
+              <select>
+                <option>as TOML</option>
+                <option>as JSON</option>
+                <option>as YAML</option>
+              </select>
+            </div>
+
+          </div>
+        </div>
 
       </section>
 

@@ -1,8 +1,7 @@
 import React from 'react'
 
 const ReceiptUploader = () => (
-
-  <section className="box">
+  <section>
     <h2 className="title is-3">Receipt Uploader</h2>
 
     <section>

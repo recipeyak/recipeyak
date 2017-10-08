@@ -74,10 +74,16 @@ class Navbar extends React.Component {
           <div className={ 'dropdown ' + (this.state.showDropdown ? 'active' : '')}>
             <ul>
               <li>
-                <Link to="/settings" className="nav-item">Settings</Link>
+                <Link to="/settings" className="dropdown-item">Settings</Link>
               </li>
               <li>
-                <a onClick={ this.logout } className="nav-item">Logout</a>
+                <Link to="/import" className="dropdown-item">Importer</Link>
+              </li>
+              <li>
+                <Link to="/reciepts" className="dropdown-item">Reciept Uploader</Link>
+              </li>
+              <li>
+                <a onClick={ this.logout } className="dropdown-item dropdown-item__dark ">Logout</a>
               </li>
             </ul>
           </div>

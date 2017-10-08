@@ -3,7 +3,8 @@ import user from './user.js'
 import {
   logout,
   login,
-  setAvatarURL
+  setAvatarURL,
+  setUserEmail
 } from '../actions.js'
 
 describe('User', () => {
@@ -41,7 +42,7 @@ describe('User', () => {
     ).toEqual(afterState)
   })
 
-  it('Logs out user', () => {
+  it("sets user's avatarURL", () => {
     const beforeState = {
       avatarURL: ''
     }
@@ -54,6 +55,22 @@ describe('User', () => {
 
     expect(
       user(beforeState, setAvatarURL(avatarURL))
+    ).toEqual(afterState)
+  })
+
+  it("sets user's email", () => {
+    const beforeState = {
+      email: ''
+    }
+
+    const email = 'j@example.com'
+
+    const afterState = {
+      email
+    }
+
+    expect(
+      user(beforeState, setUserEmail(email))
     ).toEqual(afterState)
   })
 })

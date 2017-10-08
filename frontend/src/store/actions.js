@@ -34,7 +34,8 @@ import {
   SET_RECIPE_REMOVING_FROM_CART,
   SET_AVATAR_URL,
   SET_ERROR_PASSWORD_UPDATE,
-  SET_LOADING_PASSWORD_UPDATE
+  SET_LOADING_PASSWORD_UPDATE,
+  SET_USER_EMAIL
 } from './actionTypes.js'
 
 import { push } from 'react-router-redux'
@@ -80,6 +81,13 @@ export const setAvatarURL = url => {
   }
 }
 
+export const setUserEmail = email => {
+  return {
+    type: SET_USER_EMAIL,
+    email
+  }
+}
+
 const getUser = token =>
   // empty body since post expects the second argument to be the body
   axios.get('/api/v1/rest-auth/user/', {
@@ -92,6 +100,7 @@ export const fetchUser = () => (dispatch, getState) => {
   getUser(getState().user.token)
     .then(res => {
       dispatch(setAvatarURL(res.data.avatar_url))
+      dispatch(setUserEmail(res.data.email))
     })
     .catch(err => {
       console.log('error fetching user', err)
