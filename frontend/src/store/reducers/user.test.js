@@ -4,7 +4,9 @@ import {
   logout,
   login,
   setAvatarURL,
-  setUserEmail
+  setUserEmail,
+  setLoadingUser,
+  setErrorUser
 } from '../actions.js'
 
 describe('User', () => {
@@ -71,6 +73,34 @@ describe('User', () => {
 
     expect(
       user(beforeState, setUserEmail(email))
+    ).toEqual(afterState)
+  })
+
+  it('sets loading state of user', () => {
+    const beforeState = {
+      loading: false
+    }
+
+    const afterState = {
+      loading: true
+    }
+
+    expect(
+      user(beforeState, setLoadingUser(true))
+    ).toEqual(afterState)
+  })
+
+  it('sets error state of user', () => {
+    const beforeState = {
+      error: false
+    }
+
+    const afterState = {
+      error: true
+    }
+
+    expect(
+      user(beforeState, setErrorUser(true))
     ).toEqual(afterState)
   })
 })

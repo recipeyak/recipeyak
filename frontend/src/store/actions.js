@@ -35,7 +35,9 @@ import {
   SET_AVATAR_URL,
   SET_ERROR_PASSWORD_UPDATE,
   SET_LOADING_PASSWORD_UPDATE,
-  SET_USER_EMAIL
+  SET_USER_EMAIL,
+  SET_ERROR_USER,
+  SET_LOADING_USER
 } from './actionTypes.js'
 
 import { push } from 'react-router-redux'
@@ -74,6 +76,20 @@ export const loggingOut = () => (dispatch, getState) => {
     })
 }
 
+export const setLoadingUser = val => {
+  return {
+    type: SET_LOADING_USER,
+    val
+  }
+}
+
+export const setErrorUser = val => {
+  return {
+    type: SET_ERROR_USER,
+    val
+  }
+}
+
 export const setAvatarURL = url => {
   return {
     type: SET_AVATAR_URL,
@@ -97,12 +113,17 @@ const getUser = token =>
   })
 
 export const fetchUser = () => (dispatch, getState) => {
+  dispatch(setLoadingUser(true))
+  dispatch(setErrorUser(false))
   getUser(getState().user.token)
     .then(res => {
       dispatch(setAvatarURL(res.data.avatar_url))
       dispatch(setUserEmail(res.data.email))
+      dispatch(setLoadingUser(false))
     })
     .catch(err => {
+      dispatch(setLoadingUser(false))
+      dispatch(setErrorUser(true))
       console.log('error fetching user', err)
     })
 }

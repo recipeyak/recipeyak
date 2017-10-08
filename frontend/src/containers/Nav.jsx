@@ -9,7 +9,8 @@ import Nav from '../components/Nav.jsx'
 
 const mapStateToProps = state => {
   return {
-    avatarURL: state.user.avatarURL
+    avatarURL: state.user.avatarURL,
+    loading: state.user.loading
   }
 }
 

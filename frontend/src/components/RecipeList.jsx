@@ -59,7 +59,7 @@ class RecipeList extends React.Component {
                 { recipes }
               </div>
             : <div className="no-recipes">
-                <p>☹️ No Recipes found matching</p>
+                <p>no recipes found matching</p>
                 <p><strong>{ this.state.query }</strong></p>
               </div>
         }

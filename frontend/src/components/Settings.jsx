@@ -10,8 +10,6 @@ const Settings = ({ avatarURL, email }) => (
 
       <section className="column">
 
-        <h2 className="title is-3">User</h2>
-
         <div className="d-flex direction-column">
           <label className="label">Avatar</label>
           <div>
