@@ -1,7 +1,8 @@
 import { connect } from 'react-redux'
 
 import {
-  fetchUser
+  fetchUser,
+  updatingEmail
 } from '../store/actions.js'
 
 import Settings from '../components/Settings.jsx'
@@ -17,6 +18,9 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchData: () => {
       dispatch(fetchUser())
+    },
+    updateEmail: email => {
+      dispatch(updatingEmail(email))
     }
   }
 }

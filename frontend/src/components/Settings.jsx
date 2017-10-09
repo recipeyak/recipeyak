@@ -1,9 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import EnhancedTextInput from './EnhancedTextInput.jsx'
 
 import './Settings.scss'
 
-const Settings = ({ avatarURL, email }) => (
+const Settings = ({ avatarURL, email, updateEmail }) => (
   <div>
     <h1 className="title is-2">Settings</h1>
     <section className="columns">
@@ -21,7 +22,10 @@ const Settings = ({ avatarURL, email }) => (
         <div className="field">
           <label className="label">Email</label>
           <div className="control">
-            <p>{ email }</p>
+            <EnhancedTextInput
+              text={ email }
+              onChange={ updateEmail }
+              name="email" />
           </div>
         </div>
 

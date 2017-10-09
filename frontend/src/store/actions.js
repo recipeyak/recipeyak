@@ -104,6 +104,23 @@ export const setUserEmail = email => {
   }
 }
 
+const patchEmail = (token, email) =>
+  axios.patch('/api/v1/rest-auth/user/', { email }, {
+    headers: {
+      'Authorization': 'Token ' + token
+    }
+  })
+
+export const updatingEmail = email => (dispatch, getState) => {
+  patchEmail(getState().user.token)
+    .then(res => {
+      dispatch(setUserEmail(res.data.email))
+    })
+    .catch(err => {
+      console.log('error updating email', err)
+    })
+}
+
 const getUser = token =>
   // empty body since post expects the second argument to be the body
   axios.get('/api/v1/rest-auth/user/', {
