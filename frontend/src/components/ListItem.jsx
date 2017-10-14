@@ -11,7 +11,9 @@ class ListItem extends React.Component {
       editing: false,
       unsavedChanges: false
     }
+  }
 
+  componentWillMount () {
     document.addEventListener('mousedown', this.handleGeneralClick)
   }
 
@@ -21,16 +23,12 @@ class ListItem extends React.Component {
 
   // ensures that the list item closes when the user clicks outside of the item
   handleGeneralClick = e => {
-    e.stopPropagation()
-    const el = this.refs.listitem
-    if (el == null) return
-    const clickOnListItem = el.contains(e.srcElement)
-    if (!clickOnListItem) {
-      this.setState((prevState, props) => ({
-        editing: false,
-        unsavedChanges: (prevState.editing && prevState.text !== props.text) || prevState.unsavedChanges
-      }))
-    }
+    const clickedInComponent = this.element && this.element.contains(e.target)
+    if (clickedInComponent) return
+    this.setState((prevState, props) => ({
+      editing: false,
+      unsavedChanges: (prevState.editing && prevState.text !== props.text) || prevState.unsavedChanges
+    }))
   }
 
   handleInputChange = e => {
@@ -154,7 +152,7 @@ class ListItem extends React.Component {
         </p>
 
     return (
-      <li ref="listitem">
+      <li ref={element => { this.element = element }}>
         <section
           className="cursor--pointer"
           onClick={this.enableEditing}>
