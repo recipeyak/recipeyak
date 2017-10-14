@@ -118,6 +118,8 @@ class EnhancedTextInput extends React.Component {
           </section>
         </section>
 
+    const { showEditButton } = this.props
+
     return (
       <section
         ref={element => { this.element = element }}
@@ -125,9 +127,20 @@ class EnhancedTextInput extends React.Component {
         className="flex-grow">
         { !this.state.editing
             ? <section>
-                <h2 className={ this.props.className }>
-                  { this.state.text }
-                </h2>
+                <div className="d-flex align-center">
+                  <h2 className={ this.props.className }>
+                    { this.state.text }
+                  </h2>
+                  { showEditButton
+                    ? <input
+                        className="button is-link"
+                        type="button"
+                        name="edit"
+                        value="edit"
+                      />
+                    : null
+                  }
+                </div>
                 { unsavedChanges }
               </section>
             : TextInput
@@ -147,7 +160,8 @@ EnhancedTextInput.PropTypes = {
 
 EnhancedTextInput.defaultProps = {
   placeholder: 'input text',
-  className: ''
+  className: '',
+  showEditButton: false
 }
 
 export default EnhancedTextInput

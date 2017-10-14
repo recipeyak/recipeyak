@@ -112,9 +112,10 @@ const patchEmail = (token, email) =>
   })
 
 export const updatingEmail = email => (dispatch, getState) => {
-  patchEmail(getState().user.token)
+  patchEmail(getState().user.token, email)
     .then(res => {
       dispatch(setUserEmail(res.data.email))
+      dispatch(setAvatarURL(res.data.avatar_url))
     })
     .catch(err => {
       console.log('error updating email', err)
