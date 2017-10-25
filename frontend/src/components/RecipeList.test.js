@@ -63,31 +63,11 @@ describe('<RecipeList/>', () => {
 
   it('ensure search works', () => {
     const recipe = {
-      id: 12,
       name: 'West Canadian Creme Brulee',
       author: 'T. Philip',
-      source: 'Unknown',
-      time: '1 Hour',
-      ingredients: [
-        {
-          id: 84,
-          text: 'Half and Half'
-        },
-        {
-          id: 85,
-          text: 'Vanilla'
-        }
-      ],
-      steps: [
-        {
-          id: 34,
-          text: 'Mix everything together'
-        }
-      ],
-      tags: []
     }
 
-    const query = 'vanilla'
+    const query = 'creme'
 
     const results = matchesQuery(recipe, query)
 

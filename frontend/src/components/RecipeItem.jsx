@@ -39,7 +39,7 @@ const RecipeItem = ({
           <Link to={ url }>{ name }</Link>
         </p>
         <p className="subtitle">
-          <a href={ source }>{ author }</a>
+          { author }
         </p>
         <div className="content">
           { spanTags }

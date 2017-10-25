@@ -127,12 +127,30 @@ class Recipe(CommonInfo):
 
 
 class Ingredient(CommonInfo):
-    """Recipe ingredient"""
-    text = models.CharField(max_length=255)
+    """
+    Recipe ingredient
+
+    ex:
+        1 medium tomato, diced
+
+    quantity = 1
+    unit = medium
+    name = tomato
+    description = diced
+
+    """
+    quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
+    # TODO: may want to make the unit & description optional
+    unit = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, blank=True)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.text
+        return f'{self.quantity} {self.unit} {self.name} {self.description}'
+
+    def __repr__(self):
+        return f'<quantity={self.quantity} unit={self.unit} name={self.name} description={self.description} recipe={self.recipe}>'
 
 
 class Step(CommonInfo):
@@ -156,7 +174,7 @@ class Tag(CommonInfo):
 class CartItem(CommonInfo):
     """Model for recipe and cart count"""
     recipe = models.OneToOneField(Recipe, on_delete=models.CASCADE, primary_key=True)
-    count = models.IntegerField(validators=[MinValueValidator(0)], default=0)
+    count = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f'{self.count} - {self.recipe}'

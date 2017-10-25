@@ -8,11 +8,10 @@ import 'bulma/css/bulma.css'
 import './recipe-list.scss'
 
 export const matchesQuery = (recipe, query) => {
-  const { name, author, ingredients } = recipe
+  const { name, author } = recipe
   query = query.toUpperCase()
   return (name != null && name.toUpperCase().includes(query)) ||
-    (author != null && author.toUpperCase().includes(query)) ||
-    (ingredients != null && ingredients.find(x => x.text.toUpperCase().includes(query)) != null)
+    (author != null && author.toUpperCase().includes(query))
 }
 
 class RecipeList extends React.Component {

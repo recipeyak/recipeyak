@@ -20,9 +20,24 @@ def test_recipe_creation(client, user):
         'source': 'www.exmple.com',
         'time': '1 hour',
         'ingredients': [
-            {'text': '1 tablespoon black pepper'},
-            {'text': '1 pound salt'},
-            {'text': '1 pound fish'},
+            {
+                'quantity': '1',
+                'unit': 'tablespoon',
+                'name': 'black pepper',
+                'description': '',
+            },
+            {
+                'quantity': '1',
+                'unit': 'pound',
+                'name': 'salt',
+                'description': '',
+            },
+            {
+                'quantity': '1',
+                'unit': 'pound',
+                'name': 'fish',
+                'description': '',
+            },
         ],
         'steps': [
             {'text': 'place fish in salt'},
@@ -159,7 +174,10 @@ def test_adding_ingredient_to_recipe(client, user, recipe):
     client.force_authenticate(user)
 
     ingredient = {
-        'text': 'A new ingredient',
+        'quantity': '1',
+        'unit': 'tablespoon',
+        'name': 'black pepper',
+        'description': '',
     }
 
     res = client.post(f'{BASE_URL}/recipes/{recipe.id}/ingredients/', ingredient)
@@ -168,7 +186,7 @@ def test_adding_ingredient_to_recipe(client, user, recipe):
     res = client.get(f'{BASE_URL}/recipes/{recipe.id}/')
     assert res.status_code == status.HTTP_200_OK
 
-    assert ingredient.get('text') in (ingredient.get('text') for ingredient in res.json().get('ingredients')), \
+    assert ingredient.get('name') in (ingredient.get('name') for ingredient in res.json().get('ingredients')), \
         'ingredient was not in the ingredients of the recipe'
 
 
@@ -181,7 +199,7 @@ def test_updating_ingredient_of_recipe(client, user, recipe):
     ingredient_id = recipe.ingredients[0].id
 
     ingredient = {
-        'text': 'An updated ingredient',
+        'name': 'black pepper',
     }
 
     res = client.patch(f'{BASE_URL}/recipes/{recipe.id}/ingredients/{ingredient_id}/', ingredient)
@@ -190,7 +208,7 @@ def test_updating_ingredient_of_recipe(client, user, recipe):
     res = client.get(f'{BASE_URL}/recipes/{recipe.id}/ingredients/{ingredient_id}/')
     assert res.status_code == status.HTTP_200_OK
 
-    assert res.json().get('text') == ingredient.get('text'), "ingredient didn't update"
+    assert res.json().get('name') == ingredient.get('name'), "ingredient didn't update"
 
 
 def test_deleting_ingredient_from_recipe(client, user, recipe):

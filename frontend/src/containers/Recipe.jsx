@@ -27,12 +27,10 @@ const mapDispatchToProps = dispatch => {
     fetchRecipe: id => {
       dispatch(fetchRecipe(id))
     },
-    addIngredient: (recipeID, ingredient) => {
-      dispatch(addingRecipeIngredient(recipeID, ingredient))
-    },
-    addStep: (id, step) => {
-      dispatch(addingRecipeStep(id, step))
-    },
+    addIngredient: (recipeID, ingredient) =>
+      dispatch(addingRecipeIngredient(recipeID, ingredient)),
+    addStep: (id, step) =>
+      dispatch(addingRecipeStep(id, step)),
     updateName: (id, name) => {
       dispatch(sendUpdatedRecipeName(id, name))
     },

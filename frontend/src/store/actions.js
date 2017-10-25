@@ -4,6 +4,7 @@ import {
   ADD_RECIPE,
   REMOVE_RECIPE,
   ADD_STEP_TO_RECIPE,
+  SET_LOADING_ADD_STEP_TO_RECIPE,
   ADD_INGREDIENT_TO_RECIPE,
   UPDATE_RECIPE_NAME,
   DELETE_INGREDIENT,
@@ -397,6 +398,14 @@ export const fetchRecipeList = () => (dispatch, getState) => {
     })
 }
 
+export const setLoadingAddStepToRecipe = (id, val) => {
+  return {
+    type: SET_LOADING_ADD_STEP_TO_RECIPE,
+    id,
+    val
+  }
+}
+
 export const addStepToRecipe = (id, step) => {
   return {
     type: ADD_STEP_TO_RECIPE,
@@ -413,14 +422,15 @@ export const addIngredientToRecipe = (id, ingredient) => {
   }
 }
 
-const postRecipeIngredient = (token, recipeID, Ingredient) =>
-  axios.post(`/api/v1/recipes/${recipeID}/ingredients/`, { text: Ingredient }, {
+const postRecipeIngredient = (token, recipeID, ingredient) =>
+  axios.post(`/api/v1/recipes/${recipeID}/ingredients/`, ingredient, {
     headers: {
       'Authorization': 'Token ' + token
     }
   })
 
-export const addingRecipeIngredient = (recipeID, ingredient) => (dispatch, getState) => {
+// TODO: actually pass the correct stuff
+export const addingRecipeIngredient = (recipeID, ingredient) => (dispatch, getState) =>
   postRecipeIngredient(getState().user.token, recipeID, ingredient)
     .then(res => {
       dispatch(addIngredientToRecipe(recipeID, res.data))
@@ -428,7 +438,6 @@ export const addingRecipeIngredient = (recipeID, ingredient) => (dispatch, getSt
     .catch(err => {
       console.log('error adding recipe ingredient', err)
     })
-}
 
 export const setRecipeAddingToCart = (id, loading) => {
   return {
@@ -562,12 +571,15 @@ const postRecipeStep = (token, recipeID, step) =>
   })
 
 export const addingRecipeStep = (recipeID, step) => (dispatch, getState) => {
-  postRecipeStep(getState().user.token, recipeID, step)
+  dispatch(setLoadingAddStepToRecipe(recipeID, true))
+  return postRecipeStep(getState().user.token, recipeID, step)
     .then(res => {
       dispatch(addStepToRecipe(recipeID, res.data))
+      dispatch(setLoadingAddStepToRecipe(recipeID, false))
     })
     .catch(err => {
       console.log('error adding recipe step', err)
+      dispatch(setLoadingAddStepToRecipe(recipeID, false))
     })
 }
 

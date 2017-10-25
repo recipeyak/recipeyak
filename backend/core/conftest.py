@@ -41,7 +41,12 @@ def recipe(user):
     recipe = Recipe.objects.create(
         name=name, author=author, source=source, time=time, user=user)
 
-    Ingredient.objects.create(text='1 Egg', recipe=recipe)
+    Ingredient.objects.create(
+        quantity='1',
+        unit='large',
+        name='egg',
+        description='scrambled',
+        recipe=recipe)
 
     Step.objects.create(
         text='Place egg in boiling water and cook for ten minutes',
