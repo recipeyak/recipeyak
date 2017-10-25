@@ -65,12 +65,6 @@ class Navbar extends React.Component {
                 <Link to="/settings" className="dropdown-item">Settings</Link>
               </li>
               <li>
-                <Link to="/import" className="dropdown-item">Importer</Link>
-              </li>
-              <li>
-                <Link to="/reciepts" className="dropdown-item">Reciept Uploader</Link>
-              </li>
-              <li>
                 <a onClick={ this.logout } className="dropdown-item dropdown-item__dark ">Logout</a>
               </li>
             </ul>

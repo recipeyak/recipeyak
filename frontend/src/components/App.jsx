@@ -22,8 +22,6 @@ import Settings from '../containers/Settings.jsx'
 import AddRecipe from '../containers/AddRecipe.jsx'
 import Notification from '../containers/Notification.jsx'
 import HomePage from '../components/Base.jsx'
-import RecipeImporter from '../components/RecipeImporter.jsx'
-import ReceiptUploader from './ReceiptUploader.jsx'
 import PasswordChange from '../containers/PasswordChange.jsx'
 
 import './main.scss'
@@ -56,8 +54,6 @@ const Base = () => (
           <PrivateRoute exact path="/cart" component={ Cart }/>
           <PrivateRoute exact path="/recipes/:id" component={ Recipe }/>
           <PrivateRoute exact path="/settings" component={ Settings }/>
-          <PrivateRoute exact path="/import" component={ RecipeImporter }/>
-          <PrivateRoute exact path="/reciepts" component={ ReceiptUploader }/>
           <PrivateRoute exact path="/password" component={ PasswordChange }/>
           <Route component={ NoMatch }/>
         </Switch>
