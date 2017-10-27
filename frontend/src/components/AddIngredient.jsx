@@ -1,4 +1,5 @@
 import React from 'react'
+import AddIngredientForm from './AddIngredientForm'
 
 class AddIngredient extends React.Component {
   constructor (props) {
@@ -77,74 +78,17 @@ class AddIngredient extends React.Component {
 
     return (
       state.addingIngredient
-      ? <form onSubmit={ this.handleAddIngredient }>
-        <div className="field">
-          <div className="control">
-            <div className="d-flex">
-
-              <input
-                onChange={ this.handleInputChange }
-                autoFocus
-                onFocus={ this.handleFocus }
-                value={ this.state.quantity }
-                className="my-input input-quantity"
-                type="number"
-                placeholder="3"
-                name="quantity"/>
-
-              <div className="select">
-                <select
-                  onChange={ this.handleInputChange }
-                  name='unit'
-                  value={this.state.unit}>
-                  <option disabled value="-1">unit</option>
-                  {
-                    units.map(x =>
-                      <option key={ x } value={ x }>{ x }</option>
-                    )
-                  }
-                </select>
-              </div>
-
-              <input
-                onChange={ this.handleInputChange }
-                onFocus={ this.handleFocus }
-                value={ this.state.name }
-                className="my-input input-ingredient"
-                type="text"
-                placeholder="tomato"
-                name="name"/>
-            </div>
-
-            <input
-              onChange={ this.handleInputChange }
-              onFocus={ this.handleFocus }
-              value={ this.state.description }
-              className="my-input input-ingredient"
-              type="text"
-              placeholder="diced at 3cm in width"
-              name="description"/>
-          </div>
-
-        </div>
-        <div className="field is-grouped">
-          <p className="control">
-            <input
-              className="button is-primary"
-              type="submit"
-              name="add ingredient"
-              value="Add"/>
-          </p>
-          <p className="control">
-            <input
-              onClick={ this.cancelAddIngredient }
-              className="button"
-              type="button"
-              name="cancel add ingredient"
-              value="✕"/>
-          </p>
-        </div>
-      </form>
+      ? <AddIngredientForm
+          handleAddIngredient={this.handleAddIngredient}
+          cancelAddIngredient={this.cancelAddIngredient}
+          handleInputChange={this.handleInputChange}
+          handleFocus={this.handleFocus}
+          units={units}
+          quantity={this.state.quantity}
+          unit={this.state.unit}
+          name={this.state.name}
+          description={this.state.description}
+        />
       : <p className="flex-center">
         <button
           onClick={ this.addingIngredient }
