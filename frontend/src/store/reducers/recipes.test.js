@@ -177,7 +177,10 @@ describe('Recipes', () => {
         ingredients: [
           {
             id: 1,
-            text: 'a new step'
+            quantity: 2,
+            unit: 'count',
+            name: 'Tomato',
+            description: 'sliced'
           }
         ],
         steps: [
@@ -188,15 +191,18 @@ describe('Recipes', () => {
       }
     }
 
-    const text = 'new text'
+    const newIngredient = {
+      id: 1,
+      quantity: 4,
+      unit: 'count',
+      name: 'Tomato',
+      description: 'diced'
+    }
 
     const afterState = {
       1: {
         ingredients: [
-          {
-            id: 1,
-            text
-          }
+          newIngredient
         ],
         steps: [
           {
@@ -207,7 +213,7 @@ describe('Recipes', () => {
     }
 
     expect(
-      recipes(beforeState, updateIngredient(1, 1, text))
+      recipes(beforeState, updateIngredient(1, 1, newIngredient))
     ).toEqual(afterState)
   })
 
