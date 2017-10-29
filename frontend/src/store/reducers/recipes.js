@@ -65,7 +65,7 @@ export const recipes = (state = {}, action) => {
           ...state[action.recipeID],
           ingredients: state[action.recipeID].ingredients.map(ingre => {
             if (ingre.id === action.ingredientID) {
-              return { ...ingre, text: action.text }
+              return { ...ingre, ...action.content }
             } else {
               return ingre
             }

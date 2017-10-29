@@ -1,5 +1,6 @@
 import React from 'react'
 import AddIngredientForm from './AddIngredientForm'
+import { units } from './constants'
 
 class AddIngredient extends React.Component {
   constructor (props) {
@@ -46,31 +47,6 @@ class AddIngredient extends React.Component {
 
   render () {
     const { state } = this
-
-    const units = [
-      'large',
-      'small',
-      'medium',
-      'tsp',
-      'tbsp',
-      'cup',
-      'lb',
-      'kg',
-      'mg',
-      'gram',
-      'liter',
-      'ml',
-      'gal.',
-      'oz',
-      'fl oz',
-      'pint',
-      'quart',
-      'pinch',
-      'inch',
-      'cm',
-      'm',
-      'mm'
-    ]
 
     return (
       state.addingIngredient

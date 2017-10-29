@@ -3,7 +3,10 @@ import React from 'react'
 import ListItem from './ListItem.jsx'
 import EnhancedTextInput from './EnhancedTextInput.jsx'
 import AddIngredient from './AddIngredient.jsx'
+import Ingredient from './Ingredient'
 import AddStep from './AddStep.jsx'
+
+import { units } from './constants'
 
 import './AddRecipe.scss'
 import './Recipe.scss'
@@ -13,7 +16,7 @@ class Recipe extends React.Component {
     this.props.fetchRecipe(this.props.match.params.id)
   }
 
-  deleteIngredient = ingredientID => {
+  removeIngredient = ingredientID => {
     this.props.deleteIngredient(this.props.id, ingredientID)
   }
 
@@ -21,8 +24,8 @@ class Recipe extends React.Component {
     this.props.deleteStep(this.props.id, stepID)
   }
 
-  updateIngredient = (ingredientID, text) => {
-    this.props.updateIngredient(this.props.id, ingredientID, text)
+  updateIngredient = (ingredientID, content) => {
+    this.props.updateIngredient(this.props.id, ingredientID, content)
   }
 
   updateStep = (stepID, text) => {
@@ -110,10 +113,18 @@ class Recipe extends React.Component {
               <div className="box">
                 <ul>
                   {
-                    ingredients.map(x =>
-                      <section key={x.id}>
-                        { x.quantity } { x.unit } { x.name } { x.description }
-                      </section>
+                    ingredients.map(ingredient =>
+                      <Ingredient
+                        key={ ingredient.id }
+                        id={ ingredient.id }
+                        update={ this.updateIngredient }
+                        remove={ this.removeIngredient }
+                        quantity={ ingredient.quantity }
+                        unit={ ingredient.unit }
+                        units={ units }
+                        name={ ingredient.name }
+                        description={ ingredient.description }
+                      />
                     )
                   }
                 </ul>

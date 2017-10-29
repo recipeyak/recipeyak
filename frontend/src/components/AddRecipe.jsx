@@ -3,173 +3,11 @@ import PropTypes from 'prop-types'
 import ListItem from './ListItem.jsx'
 
 import AddIngredientForm from './AddIngredientForm'
+import Ingredient from './Ingredient'
+
+import { units } from './constants'
 
 import './AddRecipe.scss'
-
-const EditIngredientForm = ({
-  handleInputChange,
-  update,
-  cancelAddIngredient,
-  remove,
-  units,
-  quantity,
-  unit,
-  name,
-  description
-}) =>
-  <form onSubmit={ update }>
-    <div className="field">
-      <div className="control">
-        <div className="d-flex">
-
-          <input
-            onChange={ handleInputChange }
-            autoFocus
-            onFocus={ e => e.target.select() }
-            value={ quantity }
-            className="my-input input-quantity"
-            type="number"
-            placeholder="3"
-            name="quantity"/>
-
-          <div className="select">
-            <select
-              onChange={ handleInputChange }
-              name='unit'
-              value={unit}>
-              <option disabled value="-1">unit</option>
-              {
-                units.map(x =>
-                  <option key={ x } value={ x }>{ x }</option>
-                )
-              }
-            </select>
-          </div>
-
-          <input
-            onChange={ handleInputChange }
-            onFocus={ e => e.target.select() }
-            value={ name }
-            className="my-input input-ingredient"
-            type="text"
-            placeholder="tomato"
-            name="name"/>
-        </div>
-
-        <input
-          onChange={ handleInputChange }
-          onFocus={ e => e.target.select() }
-          value={ description }
-          className="my-input input-ingredient"
-          type="text"
-          placeholder="diced at 3cm in width"
-          name="description"/>
-      </div>
-
-    </div>
-    <div className="field is-grouped">
-      <p className="control">
-        <input
-          className="button is-primary"
-          type="submit"
-          name="update ingredient"
-          value="Update"/>
-      </p>
-      <p className="control">
-        <input
-          onClick={ cancelAddIngredient }
-          className="button"
-          type="button"
-          name="cancel add ingredient"
-          value="✕"/>
-      </p>
-
-      <p className="control">
-        <input
-          onClick={ remove }
-          className="button"
-          type="button"
-          name="remove"
-          value="remove"/>
-      </p>
-    </div>
-  </form>
-
-class Ingredient extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      editing: false,
-      quantity: props.quantity,
-      unit: props.unit,
-      name: props.name,
-      description: props.description
-    }
-  }
-
-  handleInputChange = e => {
-    this.setState({ [e.target.name]: e.target.value })
-  }
-
-  render () {
-    const {
-      update,
-      index,
-      units,
-      remove
-    } = this.props
-
-    const {
-      quantity,
-      unit,
-      name,
-      description
-    } = this.state
-
-    const editing =
-      <EditIngredientForm
-        update={
-          e => {
-            e.preventDefault()
-            update(index, {
-              units,
-              quantity,
-              unit,
-              name,
-              description
-            })
-            this.setState({ editing: false })
-          }
-        }
-        cancelAddIngredient={ () => this.setState({ editing: false }) }
-        handleInputChange={ this.handleInputChange }
-        remove={ () => remove(index) }
-        units={ units }
-        quantity={ quantity }
-        unit={ unit }
-        name={ name }
-        description={ description }
-      />
-
-    const display =
-      <div onClick={ () => this.setState({ editing: true }) }>
-        <span>
-          { unit }
-        </span>
-        <span>
-          { quantity }
-        </span>
-        <span>
-          { name }
-        </span>
-        <span>
-          { description }
-        </span>
-      </div>
-
-    return this.state.editing ? editing : display
-  }
-}
 
 class AddRecipe extends React.Component {
   constructor (props) {
@@ -260,9 +98,6 @@ class AddRecipe extends React.Component {
   render () {
     const { ingredients, steps, ingredient, step } = this.state
 
-    // TODO: I think these will need to be fetched from the server
-    const units = ['count']
-
     const {
       unit = -1,
       quantity = '',
@@ -313,6 +148,7 @@ class AddRecipe extends React.Component {
                       <Ingredient
                         key={ ingredient.name + i }
                         index={ i }
+                        id={ i }
                         update={ this.updateIngredient }
                         remove={ this.removeIngredient }
                         quantity={ ingredient.quantity }

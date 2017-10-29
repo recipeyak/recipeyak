@@ -547,17 +547,17 @@ export const setRecipeTime = (id, time) => (dispatch, getState) => {
     })
 }
 
-export const updateIngredient = (recipeID, ingredientID, text) => {
+export const updateIngredient = (recipeID, ingredientID, content) => {
   return {
     type: UPDATE_INGREDIENT,
     recipeID,
     ingredientID,
-    text
+    content
   }
 }
 
-const sendUpdateIngredient = (token, recipeID, ingredientID, text) =>
-  axios.patch(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, { text }, {
+const sendUpdateIngredient = (token, recipeID, ingredientID, content) =>
+  axios.patch(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, content, {
     headers: {
       'Authorization': 'Token ' + token
     }
@@ -583,11 +583,10 @@ export const addingRecipeStep = (recipeID, step) => (dispatch, getState) => {
     })
 }
 
-export const updatingIngredient = (recipeID, ingredientID, text) => (dispatch, getState) => {
-  sendUpdateIngredient(getState().user.token, recipeID, ingredientID, text)
+export const updatingIngredient = (recipeID, ingredientID, content) => (dispatch, getState) => {
+  sendUpdateIngredient(getState().user.token, recipeID, ingredientID, content)
     .then(res => {
-      const text = res.data.text
-      dispatch(updateIngredient(recipeID, ingredientID, text))
+      dispatch(updateIngredient(recipeID, ingredientID, res.data))
     })
     .catch(err => {
       console.log('error updating recipe ingredient', err)

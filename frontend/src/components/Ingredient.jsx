@@ -1,7 +1,20 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
-import './Ingredient.scss'
+import { units } from './constants'
+
+const emptyField = ({
+  quantity,
+  unit,
+  name,
+  description
+}) => quantity === '' || unit === '' || name === '' || description === ''
+
+const allEmptyFields = ({
+  quantity,
+  unit,
+  name,
+  description
+}) => quantity === '' && unit === '' && name === '' && description === ''
 
 class Ingredient extends React.Component {
   constructor (props) {
@@ -17,7 +30,6 @@ class Ingredient extends React.Component {
     }
   }
 
-
   componentWillReceiveProps = nextProps => {
     this.setState({
       quantity: nextProps.quantity,
@@ -26,7 +38,6 @@ class Ingredient extends React.Component {
       description: nextProps.description
     })
   }
-
 
   componentWillMount () {
     document.addEventListener('mousedown', this.handleGeneralClick)
@@ -40,10 +51,17 @@ class Ingredient extends React.Component {
   handleGeneralClick = e => {
     const clickedInComponent = this.element && this.element.contains(e.target)
     if (clickedInComponent) return
-    this.setState((prevState, props) => ({
-      editing: false,
-      unsavedChanges: (prevState.editing && prevState.text !== props.text) || prevState.unsavedChanges
-    }))
+    this.setState((prevState, props) => {
+      const contentChanged =
+        prevState.quantity !== props.quantity ||
+        prevState.unit !== props.unit ||
+        prevState.name !== props.name ||
+        prevState.description !== props.description
+      return {
+        editing: false,
+        unsavedChanges: (prevState.editing && contentChanged) || prevState.unsavedChanges
+      }
+    })
   }
 
   handleInputChange = e => {
@@ -58,11 +76,23 @@ class Ingredient extends React.Component {
   }
 
   discardChanges = () => {
-    this.setState((prevState, props) => ({
-      editing: false,
-      text: props.text,
-      unsavedChanges: false
-    }))
+    this.setState((prevState, props) => {
+      const {
+        quantity,
+        unit,
+        name,
+        description
+      } = props
+
+      return {
+        editing: false,
+        unsavedChanges: false,
+        quantity,
+        unit,
+        name,
+        description
+      }
+    })
   }
 
   handleFocus = e => {
@@ -71,72 +101,144 @@ class Ingredient extends React.Component {
 
   cancel = e => {
     e.stopPropagation()
-    this.setState((prevState, props) => ({
-      editing: false,
-      text: props.text
-    }))
+
+    this.setState((_, props) => {
+      const {
+        quantity,
+        unit,
+        name,
+        description
+      } = props
+
+      return {
+        editing: false,
+        quantity,
+        unit,
+        name,
+        description
+      }
+    })
   }
 
   update = e => {
+    e.preventDefault()
+    if (emptyField(this.state)) return
+
     e.stopPropagation()
+
+    if (allEmptyFields(this.state)) return this.remove()
+
+    const {
+      quantity,
+      unit,
+      name,
+      description
+    } = this.state
+
     this.setState({
       editing: false,
       unsavedChanges: false
-    })
-    // if the text is empty, we should just delete the item instead of updating
-    if (this.state.text === '') {
-      this.delete()
-    } else {
-      this.props.update(this.props.id, this.state.text)
-    }
+    },
+      this.props.update(this.props.id,
+        {
+          quantity,
+          unit,
+          name,
+          description
+        }
+      )
+    )
   }
 
-  delete = () =>
-    this.props.delete(this.props.id)
+  remove = () =>
+    this.props.remove(this.props.id)
 
   render () {
-    const inner = this.state.editing
-      ? <form onSubmit={
-          (e) => {
-            e.preventDefault()
-            if (this.state.text === '') return
-            this.add()
-          }
-        }>
+    const {
+      handleInputChange,
+      enableEditing,
+      cancel,
+      remove,
+      discardChanges
+    } = this
+
+    const {
+      name,
+      quantity,
+      unit,
+      description,
+      editing,
+      unsavedChanges
+    } = this.state
+
+    // TODO: fetch from backend
+
+    const inner = editing
+      ? <form onSubmit={ this.update }>
 
           <div className="field">
             <div className="control">
-              <textarea
-                autoFocus
-                onFocus={ this.handleFocus }
-                onChange={ this.handleInputChange }
-                onKeyPress={ (e) => {
-                  if (this.state.text === '') return
-                  if (e.shiftKey && e.key === 'Enter') {
-                    e.preventDefault()
-                    this.add()
-                  }
-                }}
-                defaultValue={ this.state.text }
-                className="textarea"
-                placeholder="Add you text here"
-                name="text"/>
+
+              <div className="d-flex">
+
+                <input
+                  onChange={ handleInputChange }
+                  autoFocus
+                  onFocus={ e => e.target.select() }
+                  value={ quantity }
+                  className="my-input input-quantity"
+                  type="number"
+                  placeholder="3"
+                  name="quantity"/>
+
+                <div className="select">
+                  <select
+                    onChange={ handleInputChange }
+                    name='unit'
+                    value={unit}>
+                    <option disabled value="-1">unit</option>
+                    {
+                      units.map(x =>
+                        <option key={ x } value={ x }>{ x }</option>
+                      )
+                    }
+                  </select>
+                </div>
+
+                <input
+                  onChange={ handleInputChange }
+                  onFocus={ e => e.target.select() }
+                  value={ name }
+                  className="my-input input-ingredient"
+                  type="text"
+                  placeholder="tomato"
+                  name="name"/>
+              </div>
+
+              <input
+                onChange={ handleInputChange }
+                onFocus={ e => e.target.select() }
+                value={ description }
+                className="my-input input-ingredient"
+                type="text"
+                placeholder="diced at 3cm in width"
+                name="description"/>
+
             </div>
           </div>
           <section className="listitem-button-container">
             <div className="field is-grouped">
               <p className="control">
                 <input
-                  onClick={ this.update }
                   className="button"
-                  type="button"
-                  name="save"
-                  value="Save"
+                  type="submit"
+                  name="update"
+                  value="Update"
                 />
               </p>
               <p className="control">
                 <input
-                  onClick={ this.cancel }
+                  onClick={ cancel }
                   className="button"
                   type="button"
                   name="cancel edit"
@@ -147,37 +249,37 @@ class Ingredient extends React.Component {
             <div className="field is-grouped">
               <p className="control">
                 <input
-                  onClick={ this.delete }
+                  onClick={ remove }
                   className="button"
                   type="button"
-                  name="delete"
-                  value="delete"
+                  name="remove"
+                  value="remove"
                 />
               </p>
             </div>
           </section>
         </form>
       : <p className="listitem-text">
-          { this.state.text }
+          { quantity } { unit } { name } { description }
         </p>
 
     return (
       <li ref={element => { this.element = element }}>
         <section
           className="cursor--pointer"
-          onClick={this.enableEditing}>
+          onClick={ enableEditing }>
         { inner }
         </section>
         {
-          this.state.unsavedChanges &&
+          unsavedChanges &&
           <section className="unsaved-changes">
             <span className="is-italic">Unsaved Changes</span>
             <section>
-              <a onClick={ this.enableEditing }
+              <a onClick={ enableEditing }
                 className="button is-link">
                 View Edits
               </a>
-              <a onClick={ this.discardChanges }
+              <a onClick={ discardChanges }
                 className="button is-link">
                 Discard
               </a>
@@ -187,13 +289,6 @@ class Ingredient extends React.Component {
       </li>
     )
   }
-}
-
-Ingredient.PropTypes = {
-  text: PropTypes.string,
-  id: PropTypes.number,
-  delete: PropTypes.func,
-  update: PropTypes.func
 }
 
 export default Ingredient

@@ -37,8 +37,8 @@ const mapDispatchToProps = dispatch => {
     updateStep: (recipeID, stepID, text) => {
       dispatch(updatingStep(recipeID, stepID, text))
     },
-    updateIngredient: (recipeID, ingredientID, text) => {
-      dispatch(updatingIngredient(recipeID, ingredientID, text))
+    updateIngredient: (recipeID, ingredientID, content) => {
+      dispatch(updatingIngredient(recipeID, ingredientID, content))
     },
     deleteIngredient: (recipeID, ingredientID) => {
       dispatch(deletingIngredient(recipeID, ingredientID))
