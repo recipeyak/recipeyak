@@ -20,10 +20,6 @@ class AddIngredient extends React.Component {
     this.setState({ [e.target.name]: e.target.value })
   }
 
-  handleFocus = event => {
-    event.target.select()
-  }
-
   handleAddIngredient = e => {
     e.preventDefault()
     this.addIngredient(this.props.id, this.state.ingredient)
@@ -82,7 +78,6 @@ class AddIngredient extends React.Component {
           handleAddIngredient={this.handleAddIngredient}
           cancelAddIngredient={this.cancelAddIngredient}
           handleInputChange={this.handleInputChange}
-          handleFocus={this.handleFocus}
           units={units}
           quantity={this.state.quantity}
           unit={this.state.unit}

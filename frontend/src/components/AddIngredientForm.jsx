@@ -4,7 +4,6 @@ const AddIngredientForm = ({
   handleAddIngredient,
   cancelAddIngredient,
   handleInputChange,
-  handleFocus,
   units,
   quantity,
   unit,
@@ -19,7 +18,7 @@ const AddIngredientForm = ({
           <input
             onChange={ handleInputChange }
             autoFocus
-            onFocus={ handleFocus }
+            onFocus={ e => e.target.select() }
             value={ quantity }
             className="my-input input-quantity"
             type="number"
@@ -42,7 +41,7 @@ const AddIngredientForm = ({
 
           <input
             onChange={ handleInputChange }
-            onFocus={ handleFocus }
+            onFocus={ e => e.target.select() }
             value={ name }
             className="my-input input-ingredient"
             type="text"
@@ -52,7 +51,7 @@ const AddIngredientForm = ({
 
         <input
           onChange={ handleInputChange }
-          onFocus={ handleFocus }
+          onFocus={ e => e.target.select() }
           value={ description }
           className="my-input input-ingredient"
           type="text"
@@ -78,6 +77,6 @@ const AddIngredientForm = ({
           value="✕"/>
       </p>
     </div>
-    </form>
+  </form>
 
 export default AddIngredientForm
