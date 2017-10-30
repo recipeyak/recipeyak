@@ -7,7 +7,7 @@ const notification = ({
   message,
   level = 'info',
   show = true,
-  closeable = false,
+  closeable = true,
   close
   }) => {
   return (

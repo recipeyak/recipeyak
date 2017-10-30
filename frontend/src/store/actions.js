@@ -330,11 +330,11 @@ export const postNewRecipe = recipe => (dispatch, getState) => {
       dispatch(setLoadingAddRecipe(false))
       dispatch(setErrorAddRecipe(true))
 
-      showNotificationWithTimeout(dispatch, {
+      dispatch(showNotificationWithTimeout({
         message: 'problem creating new recipe',
         level: 'danger',
         sticky: true
-      })
+      }))
     })
 }
 
@@ -717,11 +717,11 @@ export const logUserIn = (email, password) => {
             nonFieldErrors: data['non_field_errors']
           }))
         }
-        showNotificationWithTimeout(dispatch, {
+        dispatch(showNotificationWithTimeout({
           message: 'problem authenticating',
           level: 'danger',
           sticky: true
-        })
+        }))
         console.warn('error with login', err)
       })
   }
@@ -768,11 +768,11 @@ export const signup = (email, password1, password2) => {
             nonFieldErrors: data['non_field_errors']
           }))
         }
-        showNotificationWithTimeout(dispatch, {
+        dispatch(showNotificationWithTimeout({
           message: 'problem registering account',
           level: 'danger',
           sticky: true
-        })
+        }))
         dispatch(setLoadingSignup(false))
         console.warn('error with registration', err)
       })
@@ -804,11 +804,15 @@ export const reset = email => dispatch => {
     .then(res => {
       dispatch(setLoadingReset(false))
       const message = res && res.data && res.data.detail
-      showNotificationWithTimeout(dispatch, { message, level: 'success' })
+      dispatch(showNotificationWithTimeout({ message, level: 'success' }))
     })
     .catch(err => {
       dispatch(setLoadingReset(false))
-      showNotificationWithTimeout(dispatch, { message: 'uh oh! problem resetting password', level: 'danger', closeable: true, sticky: true })
+      dispatch(showNotificationWithTimeout({
+        message: 'uh oh! problem resetting password',
+        level: 'danger',
+        sticky: true
+      }))
       console.warn('error with password reset', err)
       const badRequest = err.response.status === 400
       if (err.response && badRequest) {
@@ -819,11 +823,11 @@ export const reset = email => dispatch => {
           nonFieldErrors: data['non_field_errors']
         }))
       }
-      showNotificationWithTimeout(dispatch, {
+      dispatch(showNotificationWithTimeout({
         message: 'problem resetting password',
         level: 'danger',
         sticky: true
-      })
+      }))
     })
 }
 
@@ -838,7 +842,13 @@ export const setNotification = ({ message, closeable, level }) => {
 
 // https://stackoverflow.com/a/38574266/3555105
 let notificationTimeout = null
-export function showNotificationWithTimeout (dispatch, { message, level, closeable, delay = 2000, sticky }) {
+const showNotificationWithTimeout = ({
+  message,
+  level,
+  closeable = true,
+  delay = 2000,
+  sticky
+}) => dispatch => {
   clearTimeout(notificationTimeout)
   dispatch(setNotification({ message, level, closeable }))
 
