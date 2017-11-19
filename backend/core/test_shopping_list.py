@@ -62,11 +62,11 @@ def test_fetching_shoppinglist(client, user, recipe):
     shoppinglist_url = f'{BASE_URL}/shoppinglist/'
     res = client.get(shoppinglist_url)
     assert res.status_code == status.HTTP_200_OK
-    assert res.data == []
+    assert res.json() == []
 
     recipe.cartitem.count = 2
     recipe.cartitem.save()
 
     res = client.get(shoppinglist_url)
     assert res.status_code == status.HTTP_200_OK
-    assert res.data != []
+    assert res.json() != []
