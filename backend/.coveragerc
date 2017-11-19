@@ -1,2 +1,2 @@
 [report]
-omit = venv/*, core/migrations/*
+omit = */.local/*, */migrations/*, .venv/*

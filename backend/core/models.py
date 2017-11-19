@@ -3,7 +3,6 @@ from typing import List
 
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from django.core.validators import MinValueValidator
 
 
 class MyUserManager(BaseUserManager):
@@ -70,7 +69,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
     @property
     def cart(self):
-        return CartItem.objects.filter(user=self)
+        return CartItem.objects.filter(recipe__user=self)
 
     @property
     def avatar_url(self):
@@ -133,24 +132,24 @@ class Ingredient(CommonInfo):
     ex:
         1 medium tomato, diced
 
-    quantity = 1
-    unit = medium
+    quantity = 1 medium
     name = tomato
     description = diced
 
     """
-    quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
-    # TODO: may want to make the unit & description optional
-    unit = models.CharField(max_length=255)
+    quantity = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255, blank=True)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
 
+    def __add__(self, other):
+        print('sdlkfj;sdfj')
+
     def __str__(self):
-        return f'{self.quantity} {self.unit} {self.name} {self.description}'
+        return f'{self.quantity} {self.name} {self.description}'
 
     def __repr__(self):
-        return f'<quantity={self.quantity} unit={self.unit} name={self.name} description={self.description} recipe={self.recipe}>'
+        return f'<quantity={self.quantity} {self.name} description={self.description} recipe={self.recipe}>'
 
 
 class Step(CommonInfo):

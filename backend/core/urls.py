@@ -9,7 +9,8 @@ from .views import (
     StepViewSet,
     TagViewSet,
     IngredientViewSet,
-    CartViewSet)
+    CartViewSet,
+    ShoppingListView)
 
 router = DefaultRouter()
 router.register(r'recipes', RecipeViewSet, base_name='recipes')
@@ -30,4 +31,5 @@ urlpatterns = [
 
     url(r'', include(router.urls)),
     url(r'', include(recipes_router.urls)),
+    url(r'shoppinglist', ShoppingListView.as_view()),
 ]

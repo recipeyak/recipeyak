@@ -42,10 +42,14 @@ def recipe(user):
         name=name, author=author, source=source, time=time, user=user)
 
     Ingredient.objects.create(
-        quantity='1',
-        unit='large',
+        quantity='1 lbs',
         name='egg',
         description='scrambled',
+        recipe=recipe)
+
+    Ingredient.objects.create(
+        quantity='2 tbs',
+        name='soy sauce',
         recipe=recipe)
 
     Step.objects.create(

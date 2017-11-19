@@ -1,4 +1,4 @@
-from rest_framework import viewsets, status, mixins
+from rest_framework import viewsets, status, mixins, views
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
@@ -10,6 +10,7 @@ from .serializers import (
     IngredientSerializer,
     CartItemSerializer)
 from .permissions import IsOwnerOrAdmin
+from .utils import combine_ingredients
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -49,6 +50,14 @@ class StepViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ShoppingListView(views.APIView):
+    def get(self, request) -> Response:
+        ingredients = Ingredient.objects.filter(
+            recipe__user=request.user).filter(recipe__cartitem__count__gt=0)
+
+        return Response(combine_ingredients(list(ingredients)), status=status.HTTP_200_OK)
 
 
 class TagViewSet(viewsets.ModelViewSet):

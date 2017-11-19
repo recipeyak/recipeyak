@@ -21,7 +21,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ingredient
-        fields = ('id', 'quantity', 'unit', 'name', 'description')
+        fields = ('id', 'quantity', 'name', 'description')
 
 
 class CartItemSerializer(serializers.ModelSerializer):

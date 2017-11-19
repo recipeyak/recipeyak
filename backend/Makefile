@@ -5,7 +5,7 @@ dev:
 	pipenv run python manage.py runserver
 
 install:
-	pipenv install
+	pipenv install --dev --three
 
 # no coverage or mypy as they are slow
 test-dev:
