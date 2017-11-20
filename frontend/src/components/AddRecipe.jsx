@@ -5,8 +5,6 @@ import ListItem from './ListItem.jsx'
 import AddIngredientForm from './AddIngredientForm'
 import Ingredient from './Ingredient'
 
-import { units } from './constants'
-
 import './AddRecipe.scss'
 
 class AddRecipe extends React.Component {
@@ -99,7 +97,6 @@ class AddRecipe extends React.Component {
     const { ingredients, steps, ingredient, step } = this.state
 
     const {
-      unit = -1,
       quantity = '',
       name = '',
       description = ''
@@ -152,8 +149,6 @@ class AddRecipe extends React.Component {
                         update={ this.updateIngredient }
                         remove={ this.removeIngredient }
                         quantity={ ingredient.quantity }
-                        unit={ ingredient.unit }
-                        units={ units }
                         name={ ingredient.name }
                         description={ ingredient.description }
                       />
@@ -166,9 +161,7 @@ class AddRecipe extends React.Component {
                   cancelAddIngredient={ this.cancelAddIngredient }
                   handleInputChange={ this.handleIngredientChange }
                   handleFocus={ this.handleFocus }
-                  units={ units }
                   quantity={ quantity }
-                  unit={ unit }
                   name={ name }
                   description={ description }
                 />

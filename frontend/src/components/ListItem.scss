@@ -5,6 +5,14 @@
 
 .listitem-text {
   white-space: pre-wrap;
+  .on-hover {
+    display: none;
+  }
+  &:hover {
+    .on-hover {
+      display: block;
+    }
+  }
 }
 
 .cursor--pointer {

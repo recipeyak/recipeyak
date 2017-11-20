@@ -1,6 +1,5 @@
 import React from 'react'
 import AddIngredientForm from './AddIngredientForm'
-import { units } from './constants'
 
 class AddIngredient extends React.Component {
   constructor (props) {
@@ -9,7 +8,6 @@ class AddIngredient extends React.Component {
     this.emptyState = {
       addingIngredient: false,
       quantity: '',
-      unit: '',
       name: '',
       description: ''
     }
@@ -35,13 +33,13 @@ class AddIngredient extends React.Component {
   }
 
   clearInputs = () => {
-    this.setState({ quantity: '', unit: '', name: '', description: '' })
+    this.setState({ quantity: '', name: '', description: '' })
   }
 
   addIngredient = async (id, ingredient) => {
     // TODO: pass this prop in from Recipe or via store
-    const { quantity, unit, name, description } = this.state
-    await this.props.addIngredient(id, { quantity, unit, name, description })
+    const { quantity, name, description } = this.state
+    await this.props.addIngredient(id, { quantity, name, description })
     this.clearInputs()
   }
 
@@ -54,9 +52,7 @@ class AddIngredient extends React.Component {
           handleAddIngredient={this.handleAddIngredient}
           cancelAddIngredient={this.cancelAddIngredient}
           handleInputChange={this.handleInputChange}
-          units={units}
           quantity={this.state.quantity}
-          unit={this.state.unit}
           name={this.state.name}
           description={this.state.description}
         />

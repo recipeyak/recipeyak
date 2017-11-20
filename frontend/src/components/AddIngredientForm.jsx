@@ -4,9 +4,7 @@ const AddIngredientForm = ({
   handleAddIngredient,
   cancelAddIngredient,
   handleInputChange,
-  units,
   quantity,
-  unit,
   name,
   description
 }) =>
@@ -21,23 +19,9 @@ const AddIngredientForm = ({
             onFocus={ e => e.target.select() }
             value={ quantity }
             className="my-input input-quantity"
-            type="number"
-            placeholder="3"
+            type="text"
+            placeholder="3 lbs"
             name="quantity"/>
-
-          <div className="select">
-            <select
-              onChange={ handleInputChange }
-              name='unit'
-              value={unit}>
-              <option disabled value="-1">unit</option>
-              {
-                units.map(x =>
-                  <option key={ x } value={ x }>{ x }</option>
-                )
-              }
-            </select>
-          </div>
 
           <input
             onChange={ handleInputChange }

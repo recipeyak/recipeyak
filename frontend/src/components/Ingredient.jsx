@@ -1,27 +1,22 @@
 import React from 'react'
 
-import { units } from './constants'
-
 const emptyField = ({
   quantity,
-  unit,
   name,
   description
-}) => quantity === '' || unit === '' || name === '' || description === ''
+}) => quantity === '' || name === '' || description === ''
 
 const allEmptyFields = ({
   quantity,
-  unit,
   name,
   description
-}) => quantity === '' && unit === '' && name === '' && description === ''
+}) => quantity === '' && name === '' && description === ''
 
 class Ingredient extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       quantity: props.quantity || '',
-      unit: props.unit || '',
       name: props.name || '',
       description: props.description || '',
 
@@ -33,7 +28,6 @@ class Ingredient extends React.Component {
   componentWillReceiveProps = nextProps => {
     this.setState({
       quantity: nextProps.quantity,
-      unit: nextProps.unit,
       name: nextProps.name,
       description: nextProps.description
     })
@@ -54,7 +48,6 @@ class Ingredient extends React.Component {
     this.setState((prevState, props) => {
       const contentChanged =
         prevState.quantity !== props.quantity ||
-        prevState.unit !== props.unit ||
         prevState.name !== props.name ||
         prevState.description !== props.description
       return {
@@ -79,7 +72,6 @@ class Ingredient extends React.Component {
     this.setState((prevState, props) => {
       const {
         quantity,
-        unit,
         name,
         description
       } = props
@@ -88,7 +80,6 @@ class Ingredient extends React.Component {
         editing: false,
         unsavedChanges: false,
         quantity,
-        unit,
         name,
         description
       }
@@ -105,7 +96,6 @@ class Ingredient extends React.Component {
     this.setState((_, props) => {
       const {
         quantity,
-        unit,
         name,
         description
       } = props
@@ -113,7 +103,6 @@ class Ingredient extends React.Component {
       return {
         editing: false,
         quantity,
-        unit,
         name,
         description
       }
@@ -130,7 +119,6 @@ class Ingredient extends React.Component {
 
     const {
       quantity,
-      unit,
       name,
       description
     } = this.state
@@ -142,7 +130,6 @@ class Ingredient extends React.Component {
       this.props.update(this.props.id,
         {
           quantity,
-          unit,
           name,
           description
         }
@@ -165,7 +152,6 @@ class Ingredient extends React.Component {
     const {
       name,
       quantity,
-      unit,
       description,
       editing,
       unsavedChanges
@@ -187,23 +173,9 @@ class Ingredient extends React.Component {
                   onFocus={ e => e.target.select() }
                   value={ quantity }
                   className="my-input input-quantity"
-                  type="number"
-                  placeholder="3"
+                  type="text"
+                  placeholder="3 lbs"
                   name="quantity"/>
-
-                <div className="select">
-                  <select
-                    onChange={ handleInputChange }
-                    name='unit'
-                    value={unit}>
-                    <option disabled value="-1">unit</option>
-                    {
-                      units.map(x =>
-                        <option key={ x } value={ x }>{ x }</option>
-                      )
-                    }
-                  </select>
-                </div>
 
                 <input
                   onChange={ handleInputChange }
@@ -259,8 +231,9 @@ class Ingredient extends React.Component {
             </div>
           </section>
         </form>
-      : <p className="listitem-text">
-          { quantity } { unit } { name } { description }
+      : <p className="listitem-text justify-space-between">
+          <span>{ quantity } { name } { description }</span>
+          <a className="on-hover">edit</a>
         </p>
 
     return (
