@@ -6,9 +6,9 @@ import {
 const shoppinglist = (state = {}, action) => {
   switch (action.type) {
     case SET_SHOPPING_LIST:
-      return {...state, shoppinglist: action.val}
+      return { ...state, shoppinglist: action.val }
     case SET_LOADING_SHOPPING_LIST:
-      return {...state, loading: action.val}
+      return { ...state, loading: action.val }
     default:
       return state
   }

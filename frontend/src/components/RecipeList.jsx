@@ -14,6 +14,16 @@ export const matchesQuery = (recipe, query) => {
     (author != null && author.toUpperCase().includes(query))
 }
 
+const Results = ({ recipes, query }) => {
+  if (recipes.length === 0 && query === '') {
+    return <p>No recipes</p>
+  } else if (recipes.length === 0 && query !== '') {
+    return <p>No recipes found matching { query }</p>
+  }
+  // TODO: we should be able to just return the list in a newer version of react
+  return <div>{ recipes }</div>
+}
+
 class RecipeList extends React.Component {
   constructor (props) {
     super(props)
@@ -53,15 +63,7 @@ class RecipeList extends React.Component {
     return (
       <div>
         <input autoFocus onChange={ this.handleInputChange } type='search' className='input' name='query'/>
-        { recipes.length !== 0
-            ? <div className="grid-container">
-                { recipes }
-              </div>
-            : <div className="no-recipes">
-                <p>no recipes found matching</p>
-                <p><strong>{ this.state.query }</strong></p>
-              </div>
-        }
+        <Results recipes={ recipes } query={ this.state.query } />
       </div>
     )
   }
