@@ -38,7 +38,9 @@ import {
   SET_LOADING_PASSWORD_UPDATE,
   SET_USER_EMAIL,
   SET_ERROR_USER,
-  SET_LOADING_USER
+  SET_LOADING_USER,
+  SET_SHOPPING_LIST,
+  SET_LOADING_SHOPPING_LIST
 } from './actionTypes.js'
 
 import { push } from 'react-router-redux'
@@ -252,11 +254,12 @@ export const addingToCart = id => (dispatch, getState) => {
   // value is ensured to be 0 via the backend
   const count = getState().cart[id] + 1
   dispatch(setRecipeAddingToCart(id, true))
-  patchCart(getState().user.token, id, count)
+  return patchCart(getState().user.token, id, count)
     .then(res => {
       const { recipe, count } = res.data
       dispatch(setCartItem(recipe, count))
       dispatch(setRecipeAddingToCart(id, false))
+      console.log('done: adding to cart')
     })
     .catch(err => {
       console.log('error adding recipe to cart', err)
@@ -276,7 +279,7 @@ export const removingFromCart = id => (dispatch, getState) => {
   const currentCount = getState().cart[id]
   const count = currentCount > 0 ? currentCount - 1 : 0
   dispatch(setRecipeRemovingFromCart(id, true))
-  patchCart(getState().user.token, id, count)
+  return patchCart(getState().user.token, id, count)
     .then(res => {
       const { recipe, count } = res.data
       dispatch(setCartItem(recipe, count))
@@ -285,6 +288,46 @@ export const removingFromCart = id => (dispatch, getState) => {
     .catch(err => {
       console.log('error removing recipe from cart', err)
       dispatch(setRecipeRemovingFromCart(id, false))
+    })
+}
+
+export const setLoadingShoppingList = val => {
+  return {
+    type: SET_LOADING_SHOPPING_LIST,
+    val
+  }
+}
+
+export const setShoppingList = val => {
+  return {
+    type: SET_SHOPPING_LIST,
+    val
+  }
+}
+
+const getShoppingList = token =>
+  axios.get('/api/v1/shoppinglist/', {
+    headers: {
+      'Authorization': 'Token ' + token
+    }
+  })
+
+export const fetchShoppingList = () => (dispatch, getState) => {
+  dispatch(setLoadingShoppingList(true))
+  return getShoppingList(getState().user.token)
+    .then(res => {
+      console.log(res.data)
+      dispatch(setShoppingList(res.data))
+      dispatch(setLoadingShoppingList(false))
+    })
+    .catch(err => {
+      console.error("couldn't fetch shopping list: ", err)
+      dispatch(showNotificationWithTimeout({
+        message: 'problem fetching shopping list',
+        level: 'danger',
+        sticky: true
+      }))
+      dispatch(setLoadingShoppingList(false))
     })
 }
 

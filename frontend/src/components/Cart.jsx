@@ -1,7 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
-import { recipe as recipeType } from './propTypes.js'
 import Recipe from './RecipeItem.jsx'
 import './cart.scss'
 
@@ -11,7 +9,15 @@ class Cart extends React.Component {
   }
 
   render () {
-    const { cart, recipes, removeFromCart, addToCart, loading, ingredients } = this.props
+    const {
+      cart,
+      recipes,
+      removeFromCart,
+      addToCart,
+      loading,
+      shoppinglist,
+      loadingShoppingList
+    } = this.props
 
     if (loading) return <p>Loading...</p>
 
@@ -43,17 +49,15 @@ class Cart extends React.Component {
             <div className="column">
               <h2 className="title">Shopping List</h2>
               {
-                ingredients.length > 0
-                  ? <div className="box">
+                shoppinglist.length > 0
+                  ? <div className={loadingShoppingList ? 'box has-text-grey-light' : 'box'} >
                     {
-                      ingredients.map(x =>
-                        <li key={ x.text }>
-                          <strong>{ x.count }</strong>{ x.text }
-                        </li>
+                      shoppinglist.map(x =>
+                        <p key={x.name}>{x.unit} {x.name} </p>
                       )
                     }
                     </div>
-                  : <p className="no-recipes">No ingredients to list.</p>
+                  : <p className="no-recipes">No shopping list to list.</p>
               }
             </div>
           </div>
@@ -62,18 +66,9 @@ class Cart extends React.Component {
   }
 }
 
-Cart.PropTypes = {
-  fetchData: PropTypes.func.isRequired,
-  addToCart: PropTypes.func.isRequired,
-  removeFromCart: PropTypes.func.isRequired,
-  cart: PropTypes.object.isRequired,
-  recipes: PropTypes.objectOf(recipeType).isRequired,
-  ingredients: PropTypes.array.isRequired
-}
-
 Cart.defaultProps = {
   cart: {},
-  ingredients: []
+  shoppinglist: []
 }
 
 export default Cart

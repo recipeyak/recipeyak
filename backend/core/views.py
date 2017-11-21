@@ -1,6 +1,7 @@
 from rest_framework import viewsets, status, mixins, views
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from typing import List
 
 from .models import Recipe, Step, Tag, Ingredient, CartItem
 from .serializers import (
@@ -54,8 +55,12 @@ class StepViewSet(viewsets.ModelViewSet):
 
 class ShoppingListView(views.APIView):
     def get(self, request) -> Response:
-        ingredients = Ingredient.objects.filter(
-            recipe__user=request.user).filter(recipe__cartitem__count__gt=0)
+        cart_items = CartItem.objects.filter(count__gt=0)
+
+        ingredients: List[CartItem] = []
+        for cart_item in cart_items:
+            for _ in range(0, cart_item.count):
+                ingredients += cart_item.recipe.ingredients
 
         return Response(combine_ingredients(list(ingredients)), status=status.HTTP_200_OK)
 

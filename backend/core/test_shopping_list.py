@@ -70,3 +70,14 @@ def test_fetching_shoppinglist(client, user, recipe):
     res = client.get(shoppinglist_url)
     assert res.status_code == status.HTTP_200_OK
     assert res.json() != []
+
+    expected = [{
+        'unit': '2 pound',
+        'name': 'egg'
+        }, {
+        'unit': '4 tablespoon',
+        'name': 'soy sauce'
+        }
+    ]
+
+    assert res.json() == expected

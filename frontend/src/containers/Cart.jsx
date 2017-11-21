@@ -4,49 +4,36 @@ import {
   addingToCart,
   removingFromCart,
   fetchCart,
-  fetchRecipeList
+  fetchRecipeList,
+  fetchShoppingList
 } from '../store/actions.js'
 
 import Cart from '../components/Cart.jsx'
-
-export const cartOccurances = (recipes, cart) =>
-  Object.entries(
-    Object.values(recipes)
-    .map(recipe => {
-      const count = cart[recipe.id]
-      return Array(count).fill(recipe.ingredients).reduce((a, b) => a.concat(b), [])
-    })
-    .reduce((a, b) => a.concat(b), [])
-    .map(x => x.text)
-    .reduce((a, b) => {
-      if (a[b] !== undefined) {
-        return { ...a, [b]: a[b] + 1 }
-      } else {
-        return { ...a, [b]: 1 }
-      }
-    }, {})
-  ).map(([text, count]) => ({ count, text }))
 
 const mapStateToProps = state => {
   return {
     cart: state.cart,
     recipes: state.recipes,
     loading: state.loading.recipes || state.loading.cart,
-    ingredients: cartOccurances(state.recipes, state.cart)
+    shoppinglist: state.shoppinglist.shoppinglist,
+    loadingShoppingList: state.shoppinglist.loading
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    addToCart: id => {
-      dispatch(addingToCart(id))
+    addToCart: async id => {
+      await dispatch(addingToCart(id))
+      await dispatch(fetchShoppingList())
     },
-    removeFromCart: id => {
-      dispatch(removingFromCart(id))
+    removeFromCart: async id => {
+      await dispatch(removingFromCart(id))
+      await dispatch(fetchShoppingList())
     },
     fetchData: () => {
       dispatch(fetchRecipeList())
       dispatch(fetchCart())
+      dispatch(fetchShoppingList())
     }
   }
 }
