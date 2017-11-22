@@ -21,7 +21,7 @@ const Results = ({ recipes, query }) => {
     return <p>No recipes found matching { query }</p>
   }
   // TODO: we should be able to just return the list in a newer version of react
-  return <div>{ recipes }</div>
+  return <div className="grid-container">{ recipes }</div>
 }
 
 class RecipeList extends React.Component {

@@ -316,7 +316,6 @@ export const fetchShoppingList = () => (dispatch, getState) => {
   dispatch(setLoadingShoppingList(true))
   return getShoppingList(getState().user.token)
     .then(res => {
-      console.log(res.data)
       dispatch(setShoppingList(res.data))
       dispatch(setLoadingShoppingList(false))
     })

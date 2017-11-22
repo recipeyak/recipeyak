@@ -1,6 +1,5 @@
 from rest_framework import viewsets, status, mixins, views
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
 from typing import List
 
 from .models import Recipe, Step, Tag, Ingredient, CartItem
@@ -10,25 +9,19 @@ from .serializers import (
     TagSerializer,
     IngredientSerializer,
     CartItemSerializer)
-from .permissions import IsOwnerOrAdmin
 from .utils import combine_ingredients
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
 
     serializer_class = RecipeSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrAdmin]
 
     def get_queryset(self):
         """
         enables us to return a 404 if the person doesn't have access to the
         item instead of throwing a 403 as default
         """
-        user = self.request.user
-        if user.is_admin:
-            return Recipe.objects.all()
-        else:
-            return Recipe.objects.filter(user=user)
+        return Recipe.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -38,7 +31,6 @@ class StepViewSet(viewsets.ModelViewSet):
 
     queryset = Step.objects.all()
     serializer_class = StepSerializer
-    permission_classes = [IsAuthenticated]
 
     def create(self, request, recipe_pk=None):
         """
@@ -54,8 +46,9 @@ class StepViewSet(viewsets.ModelViewSet):
 
 
 class ShoppingListView(views.APIView):
+
     def get(self, request) -> Response:
-        cart_items = CartItem.objects.filter(count__gt=0)
+        cart_items = CartItem.objects.filter(recipe__user=request.user).filter(count__gt=0)
 
         ingredients: List[CartItem] = []
         for cart_item in cart_items:
@@ -69,7 +62,6 @@ class TagViewSet(viewsets.ModelViewSet):
 
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [IsAuthenticated]
 
     def create(self, request, recipe_pk=None):
         """
@@ -89,16 +81,16 @@ class CartViewSet(mixins.RetrieveModelMixin,
                   mixins.ListModelMixin,
                   viewsets.GenericViewSet):
 
-    queryset = CartItem.objects.all()
     serializer_class = CartItemSerializer
-    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return CartItem.objects.filter(recipe__user=self.request.user)
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
 
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    permission_classes = [IsAuthenticated]
 
     def create(self, request, recipe_pk=None):
         """
