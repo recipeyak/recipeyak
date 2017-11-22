@@ -27,7 +27,7 @@ nav.nav {
   padding-right: 0;
 
   &-image {
-    background-color: lightgray;
+    background-color: rgb(240, 240, 240);
     height: 45px;
     width: 45px;
     margin: 5px;
@@ -44,7 +44,6 @@ nav.nav {
   right: 0;
   z-index: 100;
   cursor: default;
-  margin-top: 5px;
   background-color: white;
   box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
 

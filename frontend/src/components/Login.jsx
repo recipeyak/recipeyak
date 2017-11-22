@@ -48,7 +48,7 @@ class Login extends React.Component {
         <section className="section">
           <div className="container">
             <div className="columns">
-              <div className="column is-one-third is-offset-one-third box">
+              <div className="column is-half-tablet is-offset-one-quarter-tablet is-one-third-desktop is-offset-one-third-desktop box">
                 <div className="tabs is-boxed">
                   <ul>
                     <li className="is-active">

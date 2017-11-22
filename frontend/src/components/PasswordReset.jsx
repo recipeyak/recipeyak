@@ -14,9 +14,10 @@ class PasswordReset extends React.Component {
     this.setState({ [e.target.name]: e.target.value })
   }
 
-  handleReset = (e) => {
+  handleReset = async e => {
     e.preventDefault()
-    this.props.reset(this.state.email)
+    await this.props.reset(this.state.email)
+    this.setState({ email: '' })
   }
 
   render () {
@@ -37,18 +38,14 @@ class PasswordReset extends React.Component {
               <Link to="/" className="title">Recipe Yak</Link>
             </div>
           </div>
-          <div className="nav-right">
-            <Link to="/login" className="nav-item">Login</Link>
-            <Link to="/signup" className="nav-item">Signup</Link>
-          </div>
         </nav>
 
         <section className="section">
           <div className="container">
             <div className="columns">
-              <div className="column is-one-third is-offset-one-third">
+              <div className="column is-half-tablet is-offset-one-quarter-tablet is-one-third-desktop is-offset-one-third-desktop box">
                 <form onSubmit={ this.handleReset }>
-                  <h1 className="title is-4">Password Reset</h1>
+                  <h1 className="title is-5">Password Reset</h1>
 
                   { nonFieldErrors && errorHandler(nonFieldErrors) }
 
@@ -61,12 +58,13 @@ class PasswordReset extends React.Component {
                         className={'input' + (email ? ' is-danger' : '')}
                         type="email"
                         name="email"
+                        value={ this.state.email }
                         placeholder="rick.sanchez@me.com"/>
                     </p>
                     { email && errorHandler(email) }
                   </div>
 
-                  <div className="field is-grouped">
+                  <div className="field flex-space-between">
                     <p className="control">
                       <button
                         className={ (this.props.loading ? 'is-loading ' : '') + 'button is-primary' }
@@ -74,6 +72,8 @@ class PasswordReset extends React.Component {
                         Send Reset Email
                       </button>
                     </p>
+
+                    <Link to="/login" className="button is-link">To Login</Link>
                   </div>
                 </form>
               </div>

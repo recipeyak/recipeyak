@@ -133,6 +133,9 @@ const getUser = token =>
     }
   })
 
+const invalidToken = res =>
+  res.data.detail === 'Invalid token.' && res.status === 401
+
 export const fetchUser = () => (dispatch, getState) => {
   dispatch(setLoadingUser(true))
   dispatch(setErrorUser(false))
@@ -143,9 +146,12 @@ export const fetchUser = () => (dispatch, getState) => {
       dispatch(setLoadingUser(false))
     })
     .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+        dispatch(push('/login'))
+      }
       dispatch(setLoadingUser(false))
       dispatch(setErrorUser(true))
-      console.log('error fetching user', err)
     })
 }
 
@@ -842,7 +848,7 @@ export const reset = email => dispatch => {
   dispatch(setLoadingReset(true))
   dispatch(setErrorReset({}))
   dispatch(clearNotification())
-  sendReset(email)
+  return sendReset(email)
     .then(res => {
       dispatch(setLoadingReset(false))
       const message = res && res.data && res.data.detail
