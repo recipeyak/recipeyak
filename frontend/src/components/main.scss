@@ -1,5 +1,6 @@
 html {
-  background-image: url('../../public/background-texture.png');
+  height: 100%;
+  background-color: navajowhite;
 }
 
 nav.nav,
@@ -53,10 +54,13 @@ section.section {
 
 @for $i from 0 through 4 {
   .pl-#{$i} {
-    padding-left: #{$i/4}rem;
+    padding-left: #{$i/4}rem !important;
+  }
+  .pt-#{$i} {
+    padding-top: #{$i/4}rem !important;
   }
   .pr-#{$i} {
-    padding-right: #{$i/4}rem;
+    padding-right: #{$i/4}rem !important;
   }
 }
 
@@ -66,4 +70,8 @@ section.section {
 
 .flex-wrap {
   flex-wrap: wrap;
+}
+
+.fs-italic {
+  font-style: italic;
 }

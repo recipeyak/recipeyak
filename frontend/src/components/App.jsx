@@ -45,8 +45,8 @@ const Base = () => (
     <Switch>
       <Route exact path="/login" component={ Login }/>
       <Route exact path="/signup" component={ Signup }/>
-      <Route exact path="/" component={ Home }/>
       <Route exact path="/password-reset" component={ PasswordReset }/>
+      <Route exact path="/" component={ Home }/>
       <HomePage>
         <Switch>
           <PrivateRoute exact path="/recipes/add" component={ AddRecipe }/>

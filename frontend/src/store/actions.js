@@ -148,7 +148,6 @@ export const fetchUser = () => (dispatch, getState) => {
     .catch(err => {
       if (invalidToken(err.response)) {
         dispatch(logout())
-        dispatch(push('/login'))
       }
       dispatch(setLoadingUser(false))
       dispatch(setErrorUser(true))
@@ -226,16 +225,16 @@ const getCart = (token, id) =>
   })
 
 export const fetchCart = id => (dispatch, getState) => {
-  setLoadingCart(true)
-  setErrorCart(false)
+  dispatch(setLoadingCart(true))
+  dispatch(setErrorCart(false))
   getCart(getState().user.token, id)
     .then(res => {
       dispatch(setCart(res.data))
-      setLoadingCart(false)
+      dispatch(setLoadingCart(false))
     })
     .catch(err => {
-      setErrorCart(true)
-      setLoadingCart(false)
+      dispatch(setErrorCart(true))
+      dispatch(setLoadingCart(false))
       console.log('error fetching cart', err)
     })
 }
@@ -793,38 +792,31 @@ function sendSignupInfo (email, password1, password2) {
   return axios.post('/api/v1/rest-auth/registration/', { email, password1, password2 })
 }
 
-export const signup = (email, password1, password2) => {
-  return function (dispatch) {
-    dispatch(setLoadingSignup(true))
-    // clear previous signup errors
-    dispatch(setErrorSignup({}))
-    dispatch(clearNotification())
-    sendSignupInfo(email, password1, password2)
-      .then(res => {
-        dispatch(login(res.data.key))
-        dispatch(setLoadingSignup(false))
-        dispatch(push('/recipes'))
-      })
-      .catch(err => {
-        const badRequest = err.response.status === 400
-        if (err.response && badRequest) {
-          const data = err.response.data
-          dispatch(setErrorSignup({
-            email: data['email'],
-            password1: data['password1'],
-            password2: data['password2'],
-            nonFieldErrors: data['non_field_errors']
-          }))
-        }
-        dispatch(showNotificationWithTimeout({
-          message: 'problem registering account',
-          level: 'danger',
-          sticky: true
+export const signup = (email, password1, password2) => dispatch => {
+  dispatch(setLoadingSignup(true))
+  // clear previous signup errors
+  dispatch(setErrorSignup({}))
+  dispatch(clearNotification())
+  return sendSignupInfo(email, password1, password2)
+    .then(res => {
+      dispatch(login(res.data.key))
+      dispatch(setLoadingSignup(false))
+      dispatch(push('/recipes'))
+    })
+    .catch(err => {
+      const badRequest = err.response.status === 400
+      if (err.response && badRequest) {
+        const data = err.response.data
+        dispatch(setErrorSignup({
+          email: data['email'],
+          password1: data['password1'],
+          password2: data['password2'],
+          nonFieldErrors: data['non_field_errors']
         }))
-        dispatch(setLoadingSignup(false))
-        console.warn('error with registration', err)
-      })
-  }
+      }
+      dispatch(setLoadingSignup(false))
+      console.warn('error with registration', err)
+    })
 }
 
 export const setLoadingReset = val => {

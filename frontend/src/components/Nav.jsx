@@ -36,43 +36,46 @@ class Navbar extends React.Component {
   }
 
   render () {
-    return (
-      <nav className="nav justify-space-between flex-wrap">
-        <div className="nav-item pl-0 pr-0">
-          <Link to="/" className="title">Recipe Yak</Link>
-        </div>
+    const { avatarURL, loggedIn = true } = this.props
+    const { showDropdown } = this.state
+    const { toggleDropdown, logout } = this
 
-        <div className="d-flex p-relative">
-        <div className="nav-item">
-          <div className="field is-grouped">
-            <p className="control">
-              <Link to="/recipes/add" className="button is-primary">Add Recipe</Link>
-            </p>
-          </div>
-        </div>
-        <Link to="/recipes" className="nav-item">Recipes</Link>
-        <Link to="/cart" className="nav-item">Cart</Link>
+    const buttons = loggedIn ? (
+      <div className="d-flex p-relative">
+        <Link to="/recipes/add" className="better-nav-item">Add Recipe</Link>
+        <Link to="/recipes" className="better-nav-item">Recipes</Link>
+        <Link to="/cart" className="better-nav-item">Cart</Link>
         <div
           ref={element => { this.element = element }}
-          onClick={ this.toggleDropdown }
-          className="nav-item user-profile">
+          onClick={ toggleDropdown }
+          className="better-nav-item user-profile d-flex align-center">
 
-          <img alt='' className="user-profile-image" src={ this.props.avatarURL }/>
+          <img alt='' className="user-profile-image" src={ avatarURL }/>
 
-          <div className={ 'dropdown ' + (this.state.showDropdown ? 'active' : '')}>
+          <div className={ 'dropdown ' + (showDropdown ? 'active' : '')}>
             <ul>
               <li>
                 <Link to="/settings" className="dropdown-item">Settings</Link>
               </li>
               <li>
-                <a onClick={ this.logout } className="dropdown-item dropdown-item__dark ">Logout</a>
+                <a onClick={ logout } className="dropdown-item dropdown-item__dark">Logout</a>
               </li>
             </ul>
+          </div>
         </div>
-        </div>
-
       </div>
-    </nav>
+    ) : (
+      <div className="d-flex">
+        <Link to="/login" className="better-nav-item">Login</Link>
+        <Link to="/signup" className="better-nav-item">Signup</Link>
+      </div>
+    )
+
+    return (
+      <nav className="nav justify-space-between flex-wrap">
+        <Link to="/" className="better-nav-item pl-0 pr-0 fs-2rem fw-normal">Recipe Yak</Link>
+        { buttons }
+      </nav>
     )
   }
 }

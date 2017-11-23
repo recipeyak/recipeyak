@@ -40,28 +40,26 @@ class Cart extends React.Component {
       : <p className="no-recipes">No recipes in cart.</p>
 
     return (
-        <div className="container">
-          <div className="columns">
-            <div className="column">
-              <h2 className="title">Recipes</h2>
-              { recipeItems }
-            </div>
-            <div className="column">
-              <h2 className="title">Shopping List</h2>
-              {
-                shoppinglist.length > 0
-                  ? <div className={loadingShoppingList ? 'box has-text-grey-light' : 'box'} >
-                    {
-                      shoppinglist.map(x =>
-                        <p key={x.name}>{x.unit} {x.name} </p>
-                      )
-                    }
-                    </div>
-                  : <p className="no-recipes">No shopping list to list.</p>
-              }
-            </div>
-          </div>
+      <div className="columns">
+        <div className="column">
+          <h2 className="title">Recipes</h2>
+          { recipeItems }
         </div>
+        <div className="column">
+          <h2 className="title">Shopping List</h2>
+          {
+            shoppinglist.length > 0
+              ? <div className={loadingShoppingList ? 'box has-text-grey-light' : 'box'} >
+                {
+                  shoppinglist.map(x =>
+                    <p key={x.name}>{x.unit} {x.name} </p>
+                  )
+                }
+              </div>
+              : <p className="no-recipes">No shopping list to list.</p>
+          }
+        </div>
+      </div>
     )
   }
 }

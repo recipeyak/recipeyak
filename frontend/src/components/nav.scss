@@ -67,3 +67,26 @@ nav.nav {
   }
 }
 
+
+a.better-nav-item {
+  align-items: center;
+  display: flex;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 1rem;
+  justify-content: center;
+  line-height: 1.5;
+  padding: 0.5rem 0.75rem;
+  font-weight: bold;
+  font-family: Charter, georgia, serif;
+  color: #4a4a4a;
+  transition: all 0.1s;
+
+  &:hover {
+    color: lighten(#4a4a4a, 10%);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}

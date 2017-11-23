@@ -56,6 +56,11 @@ store.subscribe(throttle(() => {
 }, 1000))
 
 // We need an empty store for the unit tests
-export const emptyStore = createStore(recipeApp)
-
+export const emptyStore = createStore(
+  recipeApp,
+  {},
+  composeEnhancers(
+    applyMiddleware(thunk, router)
+  )
+)
 export default store

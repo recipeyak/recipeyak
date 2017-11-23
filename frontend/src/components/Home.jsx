@@ -1,121 +1,47 @@
 import React from 'react'
-import { PropTypes } from 'prop-types'
-import { Link } from 'react-router-dom'
+
+import Nav from '../containers/Nav'
+
+import Signup from '../containers/HomeSignup'
 
 import './home.scss'
 
-const Home = ({ loggedIn = false }) => {
-  const buttons = loggedIn
-        ? (
-          <div className="field is-grouped">
-            <p className="control">
-              <Link to="/recipes" className="button is-link">Recipes</Link>
-            </p>
-            <p className="control">
-              <Link to="/logout" className="button">Logout</Link>
-            </p>
-          </div>
-        )
-       : (
-          <div className="field is-grouped">
-            <p className="control">
-              <Link to="/login" className="button">Login</Link>
-            </p>
-            <p className="control">
-              <Link to="/signup" className="button">Signup</Link>
-            </p>
-          </div>
-       )
+const SimpleHome = ({ loggedIn = false }) => {
   return (
-    <div className="main-container">
+    <div className="container pl-4 pr-4">
 
-      <div className="hero">
+      <Nav loggedIn={ loggedIn }/>
 
-        <nav className="container nav">
+      <div className="home-grid font-family-serif ">
+        <h1 className="home-hero-text">A place to store, share, and create recipes</h1>
 
-          <div className="nav-left">
-            <div className="nav-item">
-              <Link to="/" className="title">Recipe Yak</Link>
-            </div>
-          </div>
+        { !loggedIn
+            ? <Signup />
+            : (
+              <div>
+                {/* TODO: either put some metrics like: last week you did... or display favorite recipes */}
+                <p>You have created 10 recipes in the last week</p>
+              </div>
+            )
+        }
 
-          <span>
-            <span></span>
-            <span></span>
-            <span></span>
-          </span>
-
-          <div className="nav-right">
-
-            <div className="nav-item">
-              { buttons }
-            </div>
-
-          </div>
-
-        </nav>
-
-        <section className="container hero-container">
-          <h2 className="title is-2 has-text-centered">A place to store, share, and create recipes</h2>
-          <img className="hero-image" alt="interface in action" src="/list.png"></img>
-        </section>
-
-      </div>
-
-    <div className="bottom">
-      <div className="container">
-        <section className="columns">
-
-          <div className="column is-one-third content feature">
-            <h3 className="title is-3">Quick Imports</h3>
-            <ul>
-              <li>
-                Store your recipes for safe keeping
-              </li>
-              <li>
-                Import from popular sevices like NYTimes Cooking, All Recipes, and more.
-              </li>
-            </ul>
-          </div>
-
-          <div className="column is-one-third content feature">
-            <h3 className="title is-3">Infinite Versioning</h3>
-            <ul>
-              <li>
-                Tweak your recipes with infinite version history.
-              </li>
-              <li>
-                Review any of your changes in an instant.
-              </li>
-            </ul>
-          </div>
-
-          <div className="column is-one-third content feature">
-            <h3 className="title is-3">Automate shopping</h3>
-            <ul>
-              <li>
-                Auto-generate shopping lists for your meals.
-              </li>
-              <li>
-                Share your shopping list with others and shop together!
-              </li>
-            </ul>
-          </div>
-
-        </section>
-      </div>
-
-      <footer className="has-text-centered">
-        Recipe Yak ※ 2017
-      </footer>
+        <footer className="has-text-centered grid-entire-row fw-bold pt-4">
+          Recipe Yak ※ 2017
+        </footer>
 
       </div>
     </div>
   )
 }
 
-Home.PropTypes = {
-  loggedIn: PropTypes.bool
+class Home extends React.Component {
+  componentWillMount = () => {
+    this.props.fetchData()
+  }
+
+  render () {
+    return <SimpleHome {...this.props} />
+  }
 }
 
 export default Home

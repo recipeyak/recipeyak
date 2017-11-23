@@ -1,41 +1,65 @@
-.hero-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+@media (min-width: 730px) {
+  .home-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(350px, 1fr));
+    grid-gap: 15px;
+  }
 }
 
-.hero-image {
-  max-width: 900px;
-  // to make it responsive
-  width: 100%;
+@media (max-width: 730px) {
+  .home-hero-text {
+    text-align: center;
+    line-height: 6rem;
+  }
 }
 
-div.hero {
-  background-color: inherit;
+.home-hero-text {
+  font-size: 4rem;
 }
 
-.column.feature {
-  padding-left: 2rem;
-  padding-right: 2rem;
+@media (min-width: 920px) {
+  .home-hero-text {
+    font-size: 5rem;
+    text-align: left;
+  }
 }
 
-.bottom {
-  padding-top: 1rem;
-  background-color: #dbdbdb;
+@media (min-width: 1300px) {
+  .home-hero-text {
+    font-size: 7rem;
+    text-align: left;
+  }
 }
 
-#root {
-  height: 100%;
+
+
+@for $i from 1 through 10 {
+  .fs-#{$i}rem {
+    font-size: #{$i}rem !important;
+  }
 }
 
-.main-container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  background-color: darkorange;
+.grid-entire-row {
+  display: grid;
+  grid-column: 1 / -1;
 }
 
-footer {
-  padding: 1rem;
+.home-signup {
+
+}
+
+.align-self-center {
+  align-self: center;
+}
+
+.fw-bold {
+  font-weight: bold;
+}
+
+.fw-normal {
+  font-weight: normal !important;
+}
+
+.font-family-serif {
+  font-family: Charter, georgia, serif;
 }
