@@ -7,6 +7,10 @@ class HomeSignup extends React.Component {
     password2: ''
   }
 
+  componentWillMount = () => {
+    this.props.clearErrors()
+  }
+
   handleInputChange = e => {
     this.setState({ [e.target.name]: e.target.value })
   }

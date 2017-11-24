@@ -10,7 +10,7 @@ const SimpleHome = ({ loggedIn = false }) => {
   return (
     <div className="container pl-4 pr-4">
 
-      <Nav loggedIn={ loggedIn }/>
+      <Nav />
 
       <div className="home-grid font-family-serif ">
         <h1 className="home-hero-text">A place to store, share, and create recipes</h1>

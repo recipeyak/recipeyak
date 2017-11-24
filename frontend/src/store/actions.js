@@ -742,36 +742,28 @@ function sendLoginInfo (email, password) {
   return axios.post('/api/v1/rest-auth/login/', { email, password })
 }
 
-export const logUserIn = (email, password) => {
-  return function (dispatch) {
-    dispatch(setLoadingLogin(true))
-    dispatch(setErrorLogin({}))
-    dispatch(clearNotification())
-    sendLoginInfo(email, password)
-      .then(res => {
-        dispatch(login(res.data.key))
-        dispatch(setLoadingLogin(false))
-        dispatch(push('/recipes'))
-      })
-      .catch(err => {
-        dispatch(setLoadingLogin(false))
-        const badRequest = err.response.status === 400
-        if (err.response && badRequest) {
-          const data = err.response.data
-          dispatch(setErrorLogin({
-            email: data['email'],
-            password1: data['password1'],
-            nonFieldErrors: data['non_field_errors']
-          }))
-        }
-        dispatch(showNotificationWithTimeout({
-          message: 'problem authenticating',
-          level: 'danger',
-          sticky: true
+export const logUserIn = (email, password) => dispatch => {
+  dispatch(setLoadingLogin(true))
+  dispatch(setErrorLogin({}))
+  dispatch(clearNotification())
+  return sendLoginInfo(email, password)
+    .then(res => {
+      dispatch(login(res.data.key))
+      dispatch(setLoadingLogin(false))
+      dispatch(push('/recipes'))
+    })
+    .catch(err => {
+      dispatch(setLoadingLogin(false))
+      const badRequest = err.response.status === 400
+      if (err.response && badRequest) {
+        const data = err.response.data
+        dispatch(setErrorLogin({
+          email: data['email'],
+          password1: data['password1'],
+          nonFieldErrors: data['non_field_errors']
         }))
-        console.warn('error with login', err)
-      })
-  }
+      }
+    })
 }
 
 export const setLoadingSignup = val => {

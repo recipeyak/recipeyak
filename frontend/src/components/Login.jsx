@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
+import Nav from '../containers/Nav'
 
 class Login extends React.Component {
   constructor (props) {
@@ -9,6 +10,10 @@ class Login extends React.Component {
       email: '',
       password: ''
     }
+  }
+
+  componentWillMount = () => {
+    this.props.clearErrors()
   }
 
   handleInputChange (e) {
@@ -24,10 +29,6 @@ class Login extends React.Component {
     const { loading } = this.props
     const { password1, nonFieldErrors, email } = this.props.error
 
-    const validLogin =
-      this.state.email !== '' &&
-      this.state.password !== ''
-
     const errorHandler = err =>
       <p className="help is-danger">
         <ul>
@@ -36,14 +37,8 @@ class Login extends React.Component {
       </p>
 
     return (
-      <div className="container">
-        <nav className="nav">
-          <div className="nav-left">
-            <div className="nav-item">
-              <Link to="/" className="title">Recipe Yak</Link>
-            </div>
-          </div>
-        </nav>
+      <div className="container pl-4 pr-4">
+        <Nav loggedIn={ false }/>
 
         <section className="section">
           <div className="container">
@@ -59,8 +54,6 @@ class Login extends React.Component {
                     </li>
                   </ul>
                 </div>
-
-                { nonFieldErrors && errorHandler(nonFieldErrors) }
 
                 <form onSubmit={ e => this.handleLogin(e) }>
                   <div className="field">
@@ -89,13 +82,13 @@ class Login extends React.Component {
                         placeholder="Super secret password."/>
                     </p>
                     { password1 && errorHandler(password1) }
+                    { nonFieldErrors && errorHandler(nonFieldErrors) }
                   </div>
 
                   <div className="field flex-space-between">
                     <p className="control">
                       <button
                         type="submit"
-                        disabled={ !validLogin }
                         className={ 'button is-primary ' + (loading ? 'is-loading' : '')}>
                         Submit
                       </button>

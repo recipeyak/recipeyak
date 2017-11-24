@@ -1,11 +1,15 @@
 import { connect } from 'react-redux'
 
-import { logUserIn } from '../store/actions.js'
+import {
+  logUserIn,
+  setErrorLogin
+} from '../store/actions.js'
 import Login from '../components/Login.jsx'
 
 const mapDispatchToProps = dispatch => {
   return {
-    login: (email, password) => dispatch(logUserIn(email, password))
+    login: (email, password) => dispatch(logUserIn(email, password)),
+    clearErrors: () => dispatch(setErrorLogin({}))
   }
 }
 

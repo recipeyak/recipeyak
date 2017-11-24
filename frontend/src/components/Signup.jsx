@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
+import Nav from '../containers/Nav'
 
 class Signup extends React.Component {
   constructor (props) {
@@ -10,6 +11,10 @@ class Signup extends React.Component {
       password1: '',
       password2: ''
     }
+  }
+
+  componentWillMount = () => {
+    this.props.clearErrors()
   }
 
   handleInputChange (e) {
@@ -25,11 +30,6 @@ class Signup extends React.Component {
     const { loading } = this.props
     const { password1, password2, nonFieldErrors, email } = this.props.error
 
-    const validSignup =
-      this.state.email !== '' &&
-      this.state.password1 !== '' &&
-      this.state.password2 !== ''
-
     const errorHandler = err =>
       <p className="help is-danger">
         <ul>
@@ -38,14 +38,8 @@ class Signup extends React.Component {
       </p>
 
     return (
-      <div className="container">
-        <nav className="nav">
-          <div className="nav-left">
-            <div className="nav-item">
-              <Link to="/" className="title">Recipe Yak</Link>
-            </div>
-          </div>
-        </nav>
+      <div className="container pl-4 pr-4">
+        <Nav loggedIn={ false }/>
 
         <section className="section">
           <div className="container">
@@ -111,7 +105,6 @@ class Signup extends React.Component {
                     <p className="control">
                       <button
                         type="submit"
-                        disabled={ !validSignup }
                         className={ 'button is-primary ' + (loading ? 'is-loading' : '')}>
                         Submit
                       </button>
