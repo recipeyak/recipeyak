@@ -4,65 +4,28 @@ import { Link } from 'react-router-dom'
 import './nav.scss'
 
 class Navbar extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      query: '',
-      showDropdown: false
-    }
+  state = {
+    query: '',
+    showDropdown: false
   }
 
-  componentWillMount () {
+  componentWillMount = () => {
     this.props.fetchData()
-    document.addEventListener('mousedown', this.handleGeneralClick)
-  }
-
-  componentWillUnmount = () => {
-    document.removeEventListener('mousedown', this.handleGeneralClick)
-  }
-
-  handleGeneralClick = e => {
-    const clickedInComponent = this.element && this.element.contains(e.target)
-    if (clickedInComponent) return
-    this.setState({ showDropdown: false })
-  }
-
-  toggleDropdown = () => {
-    this.setState(prevState => ({ showDropdown: !prevState.showDropdown }))
-  }
-
-  logout = () => {
-    this.props.logout()
   }
 
   render () {
-    const { avatarURL, loggedIn = true } = this.props
-    const { showDropdown } = this.state
-    const { toggleDropdown, logout } = this
+    const { avatarURL, loggedIn = true, navigateTo } = this.props
 
     const buttons = loggedIn ? (
-      <div className="d-flex p-relative">
+      <div className="d-flex align-center">
         <Link to="/recipes/add" className="better-nav-item">Add Recipe</Link>
         <Link to="/recipes" className="better-nav-item">Recipes</Link>
         <Link to="/cart" className="better-nav-item">Cart</Link>
-        <div
-          ref={element => { this.element = element }}
-          onClick={ toggleDropdown }
-          className="better-nav-item user-profile d-flex align-center">
-
-          <img alt='' className="user-profile-image" src={ avatarURL }/>
-
-          <div className={ 'dropdown ' + (showDropdown ? 'active' : '')}>
-            <ul>
-              <li>
-                <Link to="/settings" className="dropdown-item">Settings</Link>
-              </li>
-              <li>
-                <a onClick={ logout } className="dropdown-item dropdown-item__dark">Logout</a>
-              </li>
-            </ul>
-          </div>
-        </div>
+        <img
+          onClick={ () => navigateTo('/settings') }
+          alt=''
+          className="user-profile-image better-nav-item p-0"
+          src={ avatarURL }/>
       </div>
     ) : (
       <div className="d-flex">

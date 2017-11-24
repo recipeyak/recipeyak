@@ -4,7 +4,7 @@ import EnhancedTextInput from './EnhancedTextInput.jsx'
 
 import './Settings.scss'
 
-const Settings = ({ avatarURL, email, updateEmail }) =>
+const Settings = ({ avatarURL, email, updateEmail, logout }) =>
   <div>
     <h1 className="title is-2">Settings</h1>
     <section className="columns">
@@ -66,6 +66,8 @@ const Settings = ({ avatarURL, email, updateEmail }) =>
 
           </div>
         </div>
+
+        <a onClick={ logout }>Log out</a>
 
       </section>
 

@@ -1,7 +1,8 @@
 import { connect } from 'react-redux'
 
+import { push } from 'react-router-redux'
+
 import {
-  loggingOut,
   fetchUser
 } from '../store/actions.js'
 
@@ -17,11 +18,11 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    logout: () => {
-      dispatch(loggingOut())
-    },
     fetchData: () => {
       dispatch(fetchUser())
+    },
+    navigateTo: location => {
+      dispatch(push(location))
     }
   }
 }

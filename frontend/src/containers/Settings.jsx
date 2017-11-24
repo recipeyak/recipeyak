@@ -2,7 +2,8 @@ import { connect } from 'react-redux'
 
 import {
   fetchUser,
-  updatingEmail
+  updatingEmail,
+  loggingOut
 } from '../store/actions.js'
 
 import Settings from '../components/Settings.jsx'
@@ -16,6 +17,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    logout: () => {
+      dispatch(loggingOut())
+    },
     fetchData: () => {
       dispatch(fetchUser())
     },
