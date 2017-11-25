@@ -63,6 +63,7 @@
     "history": "^4.7.2",
     "lodash": "^4.17.4",
     "postcss-flexbugs-fixes": "^3.2.0",
+    "raven-js": "^3.20.1",
     "react": "^16.1.1",
     "react-dom": "^16.1.1",
     "react-redux": "^5.0.5",
@@ -78,7 +79,7 @@
     "test": "node scripts/test.js --env=jsdom",
     "test-cov": "node scripts/test.js --env=jsdom --coverage"
   },
-  "proxy": "http://localhost:8000",
+  "proxy": "http://django:8000",
   "jest": {
     "setupTestFrameworkScriptFile": "./node_modules/jest-enzyme/lib/index.js",
     "collectCoverageFrom": [

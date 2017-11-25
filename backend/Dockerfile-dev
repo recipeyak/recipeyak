@@ -1,0 +1,25 @@
+FROM python:3.6
+ENV PYTHONUNBUFFERD 1
+
+RUN apt-get update
+RUN apt-get install netcat -y
+
+# https://github.com/kennethreitz/pipenv/blob/28cfe633c6dd81943cf84deac9f4d1daead68890/Dockerfile
+# -- Install Pipenv:
+RUN set -ex && pip install pipenv --upgrade
+
+# -- Install Application into container:
+RUN set -ex && mkdir /app
+
+WORKDIR /app
+
+# -- Adding Pipfiles
+COPY Pipfile Pipfile
+COPY Pipfile.lock Pipfile.lock
+
+# -- Install dependencies:
+RUN set -ex && pipenv install --deploy --system
+
+WORKDIR /app
+
+VOLUME ["/app"]

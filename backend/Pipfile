@@ -18,6 +18,9 @@ django-rest-auth = "*"
 django-allauth = "*"
 drf-nested-routers = "*"
 pint = "*"
+gunicorn = "*"
+"psycopg2" = "*"
+raven = "*"
 
 
 [dev-packages]

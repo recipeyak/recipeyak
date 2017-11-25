@@ -1,0 +1,42 @@
+version: '3'
+services:
+  nginx:
+    build: ./nginx/
+    ports:
+      - "80:80"
+    volumes:
+      - react-static-files:/var/app/dist
+      - django-static-files:/var/app/django/static
+    depends_on:
+      - django
+      - react
+  django:
+    restart: always
+    build:
+      context: ./backend
+      dockerfile: Dockerfile-prod
+    env_file:
+      - .env
+    command: bash bootstrap-prod.sh
+    volumes:
+      - django-static-files:/var/app/django/static
+    depends_on:
+     - db
+  db:
+    image: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+  react:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile-prod
+    command: npm run build
+    volumes:
+      - react-static-files:/var/app/build
+volumes:
+  pgdata:
+    driver: local
+  django-static-files:
+    driver: local
+  react-static-files:
+    driver: local
