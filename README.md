@@ -30,7 +30,7 @@ docker-compose -y docker-compose-dev.yml exec backend make test
 ## Deploy
 
 ```
-docker-compose -y docker-compose-dev.yml up --build
+docker-compose -y docker-compose-dev.yml up --build -d
 ```
 
 [0]: https://docs.docker.com/engine/reference/builder/#dockerignore-file
