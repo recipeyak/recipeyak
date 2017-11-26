@@ -34,13 +34,6 @@ else:
 
 ALLOWED_HOSTS: List[str] = ['.recipeyak.com']
 
-
-if PRODUCTION:
-    import raven  # noqa: F401
-    RAVEN_CONFIG = {
-        'dsn': os.environ['SENTRY_DSN'],
-    }
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -65,8 +58,14 @@ INSTALLED_APPS = [
     'allauth.account',
     'rest_auth.registration',
 
-    'raven.contrib.django.raven_compat',
 ]
+
+if PRODUCTION:
+    import raven  # noqa: F401
+    RAVEN_CONFIG = {
+        'dsn': os.environ['SENTRY_DSN'],
+    }
+    INSTALLED_APPS.append('raven.contrib.django.raven_compat')
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (

@@ -8,3 +8,4 @@ venv/
 .env
 dist/
 .asset-cache
+frontend/jest_0
