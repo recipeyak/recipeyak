@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 
 import Recipe from './RecipeItem.jsx'
 
+import skeletonCard from './SkeletonRecipeItem'
+
 import 'bulma/css/bulma.css'
 
 import './recipe-list.scss'
@@ -44,29 +46,32 @@ class RecipeList extends React.Component {
   }
 
   render () {
-    if (this.props.error) return <p>Error fetching data</p>
+    const skeletonCards = Array(4).fill(skeletonCard)
 
-    if (this.props.loading) return <p>Loading...</p>
+    if (this.props.error) return <p>Error fetching data</p>
 
     const recipes =
       Object.values(this.props.recipes)
       .filter(recipe => matchesQuery(recipe, this.state.query))
       .map(recipe =>
-        <div className="grid-item" key={ recipe.id }>
           <Recipe
             {...recipe}
+            className='mb-0'
             url={ '/recipes/' + recipe.id }
             inCart={ this.props.cart[recipe.id] > 0 ? this.props.cart[recipe.id] : 0 }
             key={ recipe.id }
             removeFromCart={ () => this.props.removeFromCart(recipe.id)}
             addToCart={ () => this.props.addToCart(recipe.id)}
           />
-        </div>)
+        )
 
     return (
       <div className="grid-container">
         <input autoFocus onChange={ this.handleInputChange } type='search' className='input grid-entire-row' name='query'/>
-        <Results recipes={ recipes } query={ this.state.query } />
+        { this.props.loading
+            ? skeletonCards
+            : <Results recipes={ recipes } query={ this.state.query } />
+        }
       </div>
     )
   }

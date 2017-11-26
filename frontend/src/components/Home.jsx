@@ -1,19 +1,13 @@
 import React from 'react'
 
-import Nav from '../containers/Nav'
-
 import Signup from '../containers/HomeSignup'
 
 import './home.scss'
 
 const SimpleHome = ({ loggedIn = false }) => {
   return (
-    <div className="container pl-4 pr-4">
-
-      <Nav />
-
-      <div className="home-grid font-family-serif ">
-        <h1 className="home-hero-text">A place to store, share, and create recipes</h1>
+      <div className="home-grid">
+        <h1 className="home-hero-text font-family-serif">A place to store, share, and create recipes</h1>
 
         { !loggedIn
             ? <Signup />
@@ -25,11 +19,9 @@ const SimpleHome = ({ loggedIn = false }) => {
             )
         }
 
-        <footer className="has-text-centered grid-entire-row fw-bold pt-4">
-          Recipe Yak ※ 2017
+        <footer className="has-text-centered grid-entire-row fw-bold pt-4 fs-4 font-family-serif">
+          Est. 2017
         </footer>
-
-      </div>
     </div>
   )
 }

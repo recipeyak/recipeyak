@@ -28,6 +28,6 @@ describe('<Home/>', () => {
         </MemoryRouter>
       </Provider>
     )
-    expect(home.find('footer').text()).toEqual('Recipe Yak ※ 2017')
+    expect(home.find('footer').text()).toEqual('Est. 2017')
   })
 })

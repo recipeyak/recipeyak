@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import Nav from '../containers/Nav'
 
 class PasswordReset extends React.Component {
   constructor (props) {
@@ -32,9 +31,6 @@ class PasswordReset extends React.Component {
       </p>
 
     return (
-      <div className="container pl-4 pr-4">
-        <Nav/>
-
         <section className="section">
           <div className="container">
             <div className="columns">
@@ -75,7 +71,6 @@ class PasswordReset extends React.Component {
             </div>
           </div>
         </section>
-      </div>
     )
   }
 }

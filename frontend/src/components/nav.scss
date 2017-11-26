@@ -45,14 +45,16 @@ nav.nav {
   justify-content: center;
   line-height: 1.5;
   padding: 0.5rem 0.75rem;
-  font-weight: bold;
-  font-family: Charter, georgia, serif;
+  font-weight: 500;
   color: #4a4a4a;
   transition: all 0.1s;
   cursor: pointer;
+  text-decoration: none;
+  transition: all 0.1s;
 
   &:hover {
     color: lighten(#4a4a4a, 10%);
+    text-decoration: underline;
   }
 
   &:active {

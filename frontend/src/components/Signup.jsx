@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-import Nav from '../containers/Nav'
 
 class Signup extends React.Component {
   constructor (props) {
@@ -38,9 +37,6 @@ class Signup extends React.Component {
       </p>
 
     return (
-      <div className="container pl-4 pr-4">
-        <Nav loggedIn={ false }/>
-
         <section className="section">
           <div className="container">
             <div className="columns">
@@ -118,7 +114,7 @@ class Signup extends React.Component {
             </div>
           </div>
         </section>
-      </div>)
+    )
   }
 }
 

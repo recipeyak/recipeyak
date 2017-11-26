@@ -1,7 +1,7 @@
 @media (min-width: 730px) {
   .home-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(350px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     grid-gap: 15px;
   }
 }
@@ -9,7 +9,7 @@
 @media (max-width: 730px) {
   .home-hero-text {
     text-align: center;
-    line-height: 6rem;
+    line-height: 5rem;
   }
 }
 

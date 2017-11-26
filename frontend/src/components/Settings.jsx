@@ -5,65 +5,50 @@ import EnhancedTextInput from './EnhancedTextInput.jsx'
 import './Settings.scss'
 
 const Settings = ({ avatarURL, email, updateEmail, logout }) =>
-  <div>
-    <h1 className="title is-2">Settings</h1>
     <section className="columns">
 
       <section className="column">
 
-        <div className="d-flex direction-column">
-          <label className="label">Avatar</label>
-          <div>
-            <img alt="user profile" src={ avatarURL }/>
-          </div>
-          <a href="https://secure.gravatar.com">Update via Gravatar</a>
-        </div>
-
-        <div className="field">
-          <label className="label">Email</label>
-          <div className="control">
-            <EnhancedTextInput
-              showEditButton
-              text={ email }
-              onChange={ updateEmail }
-              name="email" />
-          </div>
-        </div>
-
-        <div className="field">
-          <label className="label">Password</label>
-          <div className="control">
-            <Link to="/password">Change Password</Link>
-          </div>
-        </div>
-
-        <div className="field">
-          <label className="label">Color Scheme</label>
-          <div className="control">
-            <div className="select">
-              <select>
-                <option>Light</option>
-                <option>Sepia</option>
-                <option>Dark</option>
-              </select>
+        <div className="d-flex">
+          <a href="https://secure.gravatar.com" className="mr-3">
+            <img alt="user profile" src={ avatarURL + '&s=128'}/>
+          </a>
+          <section className="d-flex direction-column justify-content-center">
+            <div className="d-flex align-center">
+              <label className="better-label">Email</label>
+              <EnhancedTextInput
+                showEditButton
+                text={ email }
+                onChange={ updateEmail }
+                name="email" />
             </div>
+            <div className="d-flex">
+              <label className="better-label">Password</label>
+              <Link to="/password">Change Password</Link>
+            </div>
+          </section>
+        </div>
+
+        <div className="d-flex align-center">
+          <label className="better-label">Color Scheme</label>
+          <div className="select">
+            <select>
+              <option>Light</option>
+              <option>Sepia</option>
+              <option>Dark</option>
+            </select>
           </div>
         </div>
 
-        <div className="field">
-          <label className="label">Export</label>
+        <div className="control flex-align-center mt-4">
+          <a className="mr-4">Export Recipes</a>
 
-          <div className="control flex-align-center">
-            <a className="button is-link">Export Recipes</a>
-
-            <div className="select is-small">
-              <select>
-                <option>as TOML</option>
-                <option>as JSON</option>
-                <option>as YAML</option>
-              </select>
-            </div>
-
+          <div className="select is-small">
+            <select>
+              <option>as TOML</option>
+              <option>as JSON</option>
+              <option>as YAML</option>
+            </select>
           </div>
         </div>
 
@@ -72,6 +57,5 @@ const Settings = ({ avatarURL, email, updateEmail, logout }) =>
       </section>
 
     </section>
-  </div>
 
 export default Settings

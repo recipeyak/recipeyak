@@ -30,7 +30,7 @@ class HomeSignup extends React.Component {
     const { error } = this.props
     return (
       <div className="align-self-center">
-        <h2 className="fw-bold fs-2rem">Sign Up</h2>
+        <h2 className="fs-2rem">Sign Up</h2>
 
         { this.state.error ? <p>Erorr</p> : '' }
         <form onSubmit={ handleSubmit }>

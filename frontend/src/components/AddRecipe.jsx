@@ -104,13 +104,12 @@ class AddRecipe extends React.Component {
 
     return (
       <div>
-        <h1 className="title is-2">Add Recipe</h1>
         <div className="field">
           <div className="control">
             <input
               autoFocus
               onChange={ this.handleInputChange }
-              className="input input-title" type="text" placeholder="title" name="name"/>
+              className="input input-title" type="text" placeholder="new recipe title" name="name"/>
           </div>
         </div>
         <div className="input-container">

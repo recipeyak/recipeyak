@@ -1,6 +1,7 @@
 import React from 'react'
 
 import Recipe from './RecipeItem.jsx'
+import skeletonCard from './SkeletonRecipeItem'
 import './cart.scss'
 
 class Cart extends React.Component {
@@ -19,7 +20,26 @@ class Cart extends React.Component {
       loadingShoppingList
     } = this.props
 
-    if (loading) return <p>Loading...</p>
+    if (loading) {
+      return (
+        <div className="cart-container">
+          <div className="d-grid grid-gap-4">
+            { skeletonCard }
+          </div>
+          <div>
+            {
+                <div className='box has-text-grey-light'>
+                  <div className='skeleton-cart-ingredient'></div>
+                  <div className='skeleton-cart-ingredient'></div>
+                  <div className='skeleton-cart-ingredient'></div>
+                  <div className='skeleton-cart-ingredient'></div>
+                </div>
+            }
+          </div>
+        </div>
+
+      )
+    }
 
     const urlFromID = id => `/recipes/${id}/`
 
@@ -40,13 +60,11 @@ class Cart extends React.Component {
       : <p className="no-recipes">No recipes in cart.</p>
 
     return (
-      <div className="columns">
-        <div className="column">
-          <h2 className="title">Recipes</h2>
+      <div className="cart-container">
+        <div className="d-grid grid-gap-4">
           { recipeItems }
         </div>
-        <div className="column">
-          <h2 className="title">Shopping List</h2>
+        <div>
           {
             shoppinglist.length > 0
               ? <div className={loadingShoppingList ? 'box has-text-grey-light' : 'box'} >

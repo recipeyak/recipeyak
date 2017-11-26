@@ -40,15 +40,14 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
 )
 
 const Base = () => (
-<div>
-  <ConnectedRouter history={ history }>
-    <Switch>
-      <Route exact path="/login" component={ Login }/>
-      <Route exact path="/signup" component={ Signup }/>
-      <Route exact path="/password-reset" component={ PasswordReset }/>
-      <Route exact path="/" component={ Home }/>
+  <div>
+    <ConnectedRouter history={ history }>
       <HomePage>
         <Switch>
+          <Route exact path="/login" component={ Login }/>
+          <Route exact path="/signup" component={ Signup }/>
+          <Route exact path="/password-reset" component={ PasswordReset }/>
+          <Route exact path="/" component={ Home }/>
           <PrivateRoute exact path="/recipes/add" component={ AddRecipe }/>
           <PrivateRoute exact path="/recipes/" component={ RecipeList }/>
           <PrivateRoute exact path="/cart" component={ Cart }/>
@@ -58,9 +57,8 @@ const Base = () => (
           <Route component={ NoMatch }/>
         </Switch>
       </HomePage>
-    </Switch>
-  </ConnectedRouter>
-  <Notification/>
-</div>
+    </ConnectedRouter>
+    <Notification/>
+  </div>
 )
 export default Base
