@@ -34,6 +34,9 @@ else:
 
 ALLOWED_HOSTS: List[str] = ['.recipeyak.com']
 
+if DEBUG:
+    ALLOWED_HOSTS = ['*']
+
 # Application definition
 
 INSTALLED_APPS = [
