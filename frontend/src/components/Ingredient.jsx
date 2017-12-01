@@ -160,7 +160,8 @@ class Ingredient extends React.Component {
     } = this.state
 
     const {
-      updating
+      updating,
+      removing
     } = this.props
 
     // TODO: fetch from backend
@@ -225,13 +226,14 @@ class Ingredient extends React.Component {
             </div>
             <div className="field is-grouped">
               <p className="control">
-                <input
+                <button
                   onClick={ remove }
                   className="button"
+                  className={ 'button ' + (removing ? 'is-loading' : '')}
                   type="button"
-                  name="remove"
-                  value="remove"
-                />
+                  name="remove">
+                  Remove
+                </button>
               </p>
             </div>
           </section>

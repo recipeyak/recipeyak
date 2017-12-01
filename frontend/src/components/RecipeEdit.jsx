@@ -108,6 +108,7 @@ const RecipeEdit = ({
                     update={ updateIngredient }
                     updating={ ingredient.updating }
                     remove={ removeIngredient }
+                    removing={ ingredient.removing }
                     quantity={ ingredient.quantity }
                     name={ ingredient.name }
                     description={ ingredient.description }

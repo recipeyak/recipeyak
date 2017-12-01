@@ -45,7 +45,8 @@ import {
   SET_DELETING_RECIPE,
   SET_RECIPE,
   SET_ADDING_INGREDIENT_TO_RECIPE,
-  SET_UPDATING_INGREDIENT
+  SET_UPDATING_INGREDIENT,
+  SET_REMOVING_INGREDIENT
 } from './actionTypes.js'
 
 import { push } from 'react-router-redux'
@@ -677,6 +678,13 @@ export const addingRecipeStep = (recipeID, step) => (dispatch, getState) => {
     })
 }
 
+export const setRemovingIngredient = (recipeID, ingredientID, val) => ({
+  type: SET_REMOVING_INGREDIENT,
+  recipeID,
+  ingredientID,
+  val
+})
+
 export const setUpdatingIngredient = (recipeID, ingredientID, val) => ({
   type: SET_UPDATING_INGREDIENT,
   recipeID,
@@ -712,14 +720,18 @@ const sendDeleteIngredient = (token, recipeID, ingredientID) =>
     }
   })
 
-export const deletingIngredient = (recipeID, ingredientID) => (dispatch, getState) =>
-  sendDeleteIngredient(getState().user.token, recipeID, ingredientID)
+export const deletingIngredient = (recipeID, ingredientID) => (dispatch, getState) => {
+  dispatch(setRemovingIngredient(recipeID, ingredientID, true))
+  return sendDeleteIngredient(getState().user.token, recipeID, ingredientID)
     .then(() => {
+      dispatch(setRemovingIngredient(recipeID, ingredientID, false))
       dispatch(deleteIngredient(recipeID, ingredientID))
     })
     .catch(err => {
+      dispatch(setRemovingIngredient(recipeID, ingredientID, false))
       console.log('error deleting recipe ingredient', err)
     })
+}
 
 export const updateStep = (recipeID, stepID, text) => {
   return {
