@@ -18,6 +18,7 @@ def test_recipe_creation(client, user):
         'name': 'Recipe name',
         'author': 'Recipe author',
         'source': 'www.exmple.com',
+        'servings': '4-6 servings',
         'time': '1 hour',
         'ingredients': [
             {
@@ -56,7 +57,7 @@ def test_recipe_creation(client, user):
     res = client.get(f'{BASE_URL}/recipes/{recipe_id}/')
     assert res.status_code == status.HTTP_200_OK
 
-    for key in ['name', 'author', 'source']:
+    for key in ['name', 'author', 'source', 'time', 'servings']:
         assert data.get(key) == res.json().get(key)
 
     # compare the nested items and ingore the ids as they don't exist them in the

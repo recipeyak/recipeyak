@@ -2,7 +2,7 @@ import recipes from './recipes.js'
 
 import {
   addRecipe,
-  removeRecipe,
+  deleteRecipe,
   addStepToRecipe,
   addIngredientToRecipe,
   updateRecipeTime,
@@ -15,7 +15,9 @@ import {
   updateStep,
   setRecipeAddingToCart,
   setRecipeRemovingFromCart,
-  setLoadingAddStepToRecipe
+  setLoadingAddStepToRecipe,
+  setLoadingRecipe,
+  setDeletingRecipe
 } from '../actions.js'
 
 describe('Recipes', () => {
@@ -59,14 +61,58 @@ describe('Recipes', () => {
       1: {}
     }
     expect(
-      recipes(beforeState, removeRecipe(123))
+      recipes(beforeState, deleteRecipe(123))
     ).toEqual(afterState)
   })
 
   it('Remove non-existent recipe from recipe list', () => {
     expect(
-      recipes({}, removeRecipe(123))
+      recipes({}, deleteRecipe(123))
     ).toEqual({})
+  })
+
+  it('fetching recipe results in it loading', () => {
+    const beforeState = {
+      1: {
+        title: 'good recipe',
+        steps: [],
+        loading: false
+      }
+    }
+
+    const afterState = {
+      1: {
+        title: 'good recipe',
+        steps: [],
+        loading: true
+      }
+    }
+
+    expect(
+      recipes(beforeState, setLoadingRecipe(1, true))
+    ).toEqual(afterState)
+  })
+
+  it('sets deleting of the recipe', () => {
+    const beforeState = {
+      1: {
+        title: 'good recipe',
+        steps: [],
+        deleting: false
+      }
+    }
+
+    const afterState = {
+      1: {
+        title: 'good recipe',
+        steps: [],
+        deleting: true
+      }
+    }
+
+    expect(
+      recipes(beforeState, setDeletingRecipe(1, true))
+    ).toEqual(afterState)
   })
 
   it('adds a step to the recipe', () => {

@@ -10,8 +10,7 @@ const AddIngredientForm = ({
 }) =>
   <form onSubmit={ handleAddIngredient }>
     <div className="field">
-      <div className="control">
-        <div className="d-flex">
+        <div className="add-ingredient-grid">
 
           <input
             onChange={ handleInputChange }
@@ -31,17 +30,16 @@ const AddIngredientForm = ({
             type="text"
             placeholder="tomato"
             name="name"/>
-        </div>
 
-        <input
-          onChange={ handleInputChange }
-          onFocus={ e => e.target.select() }
-          value={ description }
-          className="my-input input-ingredient"
-          type="text"
-          placeholder="diced at 3cm in width"
-          name="description"/>
-      </div>
+          <input
+            onChange={ handleInputChange }
+            onFocus={ e => e.target.select() }
+            value={ description }
+            className="my-input input-ingredient grid-entire-row"
+            type="text"
+            placeholder="diced at 3cm in width"
+            name="description"/>
+        </div>
 
     </div>
     <div className="field is-grouped">

@@ -2,7 +2,6 @@ import {
   LOG_IN,
   LOG_OUT,
   ADD_RECIPE,
-  REMOVE_RECIPE,
   ADD_STEP_TO_RECIPE,
   SET_LOADING_ADD_STEP_TO_RECIPE,
   ADD_INGREDIENT_TO_RECIPE,
@@ -40,7 +39,11 @@ import {
   SET_ERROR_USER,
   SET_LOADING_USER,
   SET_SHOPPING_LIST,
-  SET_LOADING_SHOPPING_LIST
+  SET_LOADING_SHOPPING_LIST,
+  DELETE_RECIPE,
+  SET_LOADING_RECIPE,
+  SET_DELETING_RECIPE,
+  SET_RECIPE
 } from './actionTypes.js'
 
 import { push } from 'react-router-redux'
@@ -385,6 +388,12 @@ export const postNewRecipe = recipe => (dispatch, getState) => {
     })
 }
 
+export const setLoadingRecipe = (id, val) => ({
+  type: SET_LOADING_RECIPE,
+  id,
+  val
+})
+
 const getRecipe = (token, id) =>
   axios.get(`/api/v1/recipes/${id}/`, {
     headers: {
@@ -393,11 +402,14 @@ const getRecipe = (token, id) =>
   })
 
 export const fetchRecipe = id => (dispatch, getState) => {
+  dispatch(setLoadingRecipe(id, true))
   getRecipe(getState().user.token, id)
     .then(res => {
       dispatch(addRecipe(res.data))
+      dispatch(setLoadingRecipe(id, false))
     })
     .catch(err => {
+      dispatch(setLoadingRecipe(id, false))
       console.log('error fetching recipe', err)
     })
 }
@@ -594,6 +606,29 @@ export const setRecipeTime = (id, time) => (dispatch, getState) => {
     })
 }
 
+export const setRecipe = (id, data) => ({
+  type: SET_RECIPE,
+  data
+})
+
+const patchRecipe = (token, id, data) =>
+  axios.patch(`/api/v1/recipes/${id}/`, data, {
+    headers: {
+      'Authorization': 'Token ' + token
+    }
+  })
+
+export const updateRecipe = (id, data) => (dispatch, getState) => {
+  patchRecipe(getState().user.token, id, data)
+    .then(res => {
+      dispatch(setRecipe(res.data.id, res.data))
+      dispatch(push(`/recipes/${res.data.id}/`))
+    })
+    .catch(err => {
+      console.log('error updating recipe ', err)
+    })
+}
+
 export const updateIngredient = (recipeID, ingredientID, content) => {
   return {
     type: UPDATE_INGREDIENT,
@@ -663,13 +698,6 @@ export const deletingIngredient = (recipeID, ingredientID) => (dispatch, getStat
     .catch(err => {
       console.log('error deleting recipe ingredient', err)
     })
-}
-
-export const removeRecipe = id => {
-  return {
-    type: REMOVE_RECIPE,
-    id
-  }
 }
 
 export const updateStep = (recipeID, stepID, text) => {
@@ -808,6 +836,37 @@ export const signup = (email, password1, password2) => dispatch => {
       }
       dispatch(setLoadingSignup(false))
       console.warn('error with registration', err)
+    })
+}
+
+export const setDeletingRecipe = (id, val) => ({
+  type: SET_DELETING_RECIPE,
+  id,
+  val
+})
+
+export const deleteRecipe = id => ({
+  type: DELETE_RECIPE,
+  id
+})
+
+const sendDeleteRecipe = (token, id) =>
+  axios.delete(`/api/v1/recipes/${id}/`, {
+    headers: {
+      'Authorization': 'Token ' + token
+    }
+  })
+
+export const deletingRecipe = id => (dispatch, getState) => {
+  dispatch(setDeletingRecipe(id, true))
+  return sendDeleteRecipe(getState().user.token, id)
+    .then(res => {
+      dispatch(deleteRecipe(id))
+      dispatch(setDeletingRecipe(id, false))
+    })
+    .catch(err => {
+      dispatch(setDeletingRecipe(id, false))
+      console.warn('error deleting recipe', err)
     })
 }
 

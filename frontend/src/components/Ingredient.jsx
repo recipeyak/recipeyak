@@ -163,41 +163,40 @@ class Ingredient extends React.Component {
       ? <form onSubmit={ this.update }>
 
           <div className="field">
-            <div className="control">
 
-              <div className="d-flex">
+            <div className="add-ingredient-grid">
 
-                <input
-                  onChange={ handleInputChange }
-                  autoFocus
-                  onFocus={ e => e.target.select() }
-                  value={ quantity }
-                  className="my-input input-quantity"
-                  type="text"
-                  placeholder="3 lbs"
-                  name="quantity"/>
+              <input
+                onChange={ handleInputChange }
+                autoFocus
+                onFocus={ e => e.target.select() }
+                value={ quantity }
+                className="my-input input-quantity"
+                type="text"
+                placeholder="3 lbs"
+                name="quantity"/>
 
-                <input
-                  onChange={ handleInputChange }
-                  onFocus={ e => e.target.select() }
-                  value={ name }
-                  className="my-input input-ingredient"
-                  type="text"
-                  placeholder="tomato"
-                  name="name"/>
-              </div>
+              <input
+                onChange={ handleInputChange }
+                onFocus={ e => e.target.select() }
+                value={ name }
+                className="my-input input-ingredient"
+                type="text"
+                placeholder="tomato"
+                name="name"/>
 
               <input
                 onChange={ handleInputChange }
                 onFocus={ e => e.target.select() }
                 value={ description }
-                className="my-input input-ingredient"
+                className="my-input input-ingredient grid-entire-row"
                 type="text"
                 placeholder="diced at 3cm in width"
                 name="description"/>
 
             </div>
           </div>
+
           <section className="listitem-button-container">
             <div className="field is-grouped">
               <p className="control">
@@ -232,8 +231,7 @@ class Ingredient extends React.Component {
           </section>
         </form>
       : <p className="listitem-text justify-space-between">
-          <span>{ quantity } { name } { description }</span>
-          <a className="on-hover">edit</a>
+          { quantity } { name } { description }
         </p>
 
     return (

@@ -5,8 +5,6 @@ import ListItem from './ListItem.jsx'
 import AddIngredientForm from './AddIngredientForm'
 import Ingredient from './Ingredient'
 
-import './AddRecipe.scss'
-
 class AddRecipe extends React.Component {
   constructor (props) {
     super(props)
@@ -103,39 +101,50 @@ class AddRecipe extends React.Component {
     } = ingredient
 
     return (
-      <div>
-        <div className="field">
-          <div className="control">
+      <div className="d-grid grid-template-columns-repeat-12-fr grid-gap-1rem">
+        <input
+          autoFocus
+          onChange={ this.handleInputChange }
+          className="input fs-2rem grid-entire-row"
+          type="text" placeholder="new recipe title" name="name"/>
+
+        <div className="d-grid grid-entire-row meta-data-grid">
+          <label className="d-flex align-center">By
             <input
-              autoFocus
               onChange={ this.handleInputChange }
-              className="input input-title" type="text" placeholder="new recipe title" name="name"/>
-          </div>
-        </div>
-        <div className="input-container">
-          <input
-            onChange={ this.handleInputChange }
-            className="input input-author"
-            type="text"
-            placeholder="Author"
-            name="author"/>
-          <input
-            onChange={ this.handleInputChange }
-            className="input input-source"
-            type="text"
-            placeholder="http://example.com/dumpling-soup"
-            name="source"/>
-          <input
-            onChange={ this.handleInputChange }
-            className="input input-time"
-            type="text"
-            placeholder="1 hour"
-            name="time"/>
+              className="input ml-2"
+              type="text"
+              placeholder="Author"
+              name="author"/>
+          </label>
+          <label className="d-flex align-center">from
+            <input
+              onChange={ this.handleInputChange }
+              className="input ml-2"
+              type="text"
+              placeholder="http://example.com/dumpling-soup"
+              name="source"/>
+          </label>
+          <label className="d-flex align-center">creating
+            <input
+              onChange={ this.handleInputChange }
+              className="input ml-2"
+              type="text"
+              placeholder="4 to 6 servings"
+              name="servings"/>
+          </label>
+          <label className="d-flex align-center">in
+            <input
+              onChange={ this.handleInputChange }
+              className="input ml-2"
+              type="text"
+              placeholder="1 hour"
+              name="time"/>
+          </label>
         </div>
 
-        <div className="container">
-          <div className="columns">
-            <div className="column is-one-third">
+            <section className="ingredients-preparation-grid">
+            <div className="">
               <h2 className="title">Ingredients</h2>
               <div className="box">
                 <ul>
@@ -167,72 +176,72 @@ class AddRecipe extends React.Component {
               </div>
             </div>
 
-            <div className="column">
-              <h2 className="title is-3">Preparation</h2>
-              <div className="box">
-                <ul>
-                  {
-                    steps.map((step, i) =>
-                      <div key={step.text + i}>
-                        <label className="label">Step { i + 1}</label>
-                        <ListItem
-                          index={i}
-                          text={step.text}
-                          update={(index, content) => this.update('steps', index, content)}
-                          remove={(index) => this.remove('steps', index)}
-                        />
-                      </div>
-                    )
-                  }
-                </ul>
-                <form onSubmit={ e => {
-                  e.preventDefault()
-                  if (step === '') return
-                  this.addStep()
-                }}>
-                <div className="field">
-                  <label className="label">Step { steps.length + 1 }</label>
-                  <div className="control">
-                    <textarea
-                      onChange={ this.handleInputChange }
-                      onKeyPress={ e => {
-                        if (step === '') return
-                        if (e.shiftKey && e.key === 'Enter') {
-                          e.preventDefault()
-                          this.addStep()
-                        }
-                      }}
-                      value={ step }
-                      className="textarea"
-                      placeholder="Add your step here"
-                      name="step"/>
+              <div className="">
+                <h2 className="title is-3">Preparation</h2>
+                <div className="box">
+                  <ul>
+                    {
+                      steps.map((step, i) =>
+                        <div key={step.text + i}>
+                          <label className="label">Step { i + 1}</label>
+                          <ListItem
+                            index={i}
+                            text={step.text}
+                            update={(index, content) => this.update('steps', index, content)}
+                            remove={(index) => this.remove('steps', index)}
+                          />
+                        </div>
+                      )
+                    }
+                  </ul>
+                  <form onSubmit={ e => {
+                    e.preventDefault()
+                    if (step === '') return
+                    this.addStep()
+                  }}>
+                  <div className="field">
+                    <label className="label">Step { steps.length + 1 }</label>
+                    <div className="control">
+                      <textarea
+                        onChange={ this.handleInputChange }
+                        onKeyPress={ e => {
+                          if (step === '') return
+                          if (e.shiftKey && e.key === 'Enter') {
+                            e.preventDefault()
+                            this.addStep()
+                          }
+                        }}
+                        value={ step }
+                        className="textarea"
+                        placeholder="Add your step here"
+                        name="step"/>
+                    </div>
                   </div>
-                </div>
-                <div className="field is-grouped">
-                  <p className="control">
-                    <input
-                      onClick={ this.addStep }
-                      disabled={ step === '' }
-                      className="button is-primary"
-                      type="submit"
-                      name="save step"
-                      value="Add"/>
-                  </p>
-                  <p className="control">
-                    <input
-                      onClick={ this.cancelAddStep }
-                      disabled={ step === '' }
-                      className={ step === '' ? 'is-hidden button' : 'button' }
-                      type="button"
-                      name="cancel step"
-                      value="✕"/>
-                  </p>
-                </div>
-              </form>
+                  <div className="field is-grouped">
+                    <p className="control">
+                      <input
+                        onClick={ this.addStep }
+                        disabled={ step === '' }
+                        className="button is-primary"
+                        type="submit"
+                        name="save step"
+                        value="Add"/>
+                    </p>
+                    <p className="control">
+                      <input
+                        onClick={ this.cancelAddStep }
+                        disabled={ step === '' }
+                        className={ step === '' ? 'is-hidden button' : 'button' }
+                        type="button"
+                        name="cancel step"
+                        value="✕"/>
+                    </p>
+                  </div>
+                </form>
+              </div>
             </div>
-          </div>
-        </div>
-        <p className="flex-center">
+          </section>
+        <p className="flex-center grid-entire-row">
           <button
             className={ 'button is-large is-primary ' + (this.props.loading ? 'is-loading' : '')}
             type="submit"
@@ -249,7 +258,6 @@ class AddRecipe extends React.Component {
             </p>
         }
       </div>
-    </div>
     )
   }
 }

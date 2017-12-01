@@ -1,178 +1,119 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
-import ListItem from './ListItem.jsx'
-import EnhancedTextInput from './EnhancedTextInput.jsx'
-import AddIngredient from './AddIngredient.jsx'
-import Ingredient from './Ingredient'
-import AddStep from './AddStep.jsx'
-
-import { units } from './constants'
-
-import './AddRecipe.scss'
 import './Recipe.scss'
+
+const MetaData = ({
+  author = '',
+  source = '',
+  servings = '',
+  time = ''
+}) => {
+  const _author = author !== '' ? `By ${author} ` : ''
+  const _source = source !== '' ? `from ${source} ` : ''
+  const _servings = servings !== '' ? `creating ${servings} ` : ''
+  const _time = time !== '' ? `in ${time} ` : ''
+
+  return <p>{ _author + _source + _servings + _time }</p>
+}
+
+const RecipeViewing = ({
+  id,
+  name,
+  author,
+  source,
+  servings,
+  time,
+  ingredients = [],
+  steps = [],
+  inCart = 0,
+  addToCart,
+  removeFromCart,
+  addingToCart = false,
+  removingFromCart = false,
+  loading = false
+}) => {
+  if (loading) {
+    return <p>Loading...</p>
+  }
+  return (
+    <div className="d-grid grid-template-columns-repeat-12-fr grid-gap-1rem">
+
+      <div className="grid-entire-row d-flex align-center justify-space-between flex-wrap">
+        <h1 className="title fs-3rem mb-0">{ name }</h1>
+        <div>
+          <input
+            onClick={ () => removeFromCart(id) }
+            className={ `button ${removingFromCart ? 'is-loading' : ''}` }
+            disabled={ inCart <= 0 }
+            type="button"
+            value="-"/>
+          <span className="tag is-light is-medium cart-count-tag">{ inCart }</span>
+          <input
+            onClick={ () => addToCart(id) }
+            className={ `button is-primary ${addingToCart ? 'is-loading' : ''}` }
+            type="button"
+            value="+"/>
+          <Link to={ `/recipes/${id}/edit` } className="button is-link">Edit</Link>
+        </div>
+      </div>
+
+      <div className="grid-entire-row">
+        <MetaData
+          name={name}
+          author={author}
+          source={source}
+          servings={servings}
+          time={time}/>
+      </div>
+
+      <section className="ingredients-preparation-grid">
+        <div>
+          <h2 className="title">Ingredients</h2>
+          <div className="box">
+            <ul>
+              {
+                ingredients.map(({ id, quantity, name, description }) =>
+                  <p key={ id } className="listitem-text justify-space-between">
+                    { quantity } { name } { description }
+                  </p>
+                )
+              }
+            </ul>
+          </div>
+        </div>
+
+        <div >
+          <h2 className="title is-3">Preparation</h2>
+          <div className="box">
+            <ul>
+              {
+                steps.map(({ id, text }, i) =>
+                  <div key={id}>
+                    <label className="label">Step { i + 1}</label>
+                    <p className="listitem-text">text</p>
+                  </div>
+
+                )
+              }
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+  )
+}
 
 class Recipe extends React.Component {
   componentWillMount = () => {
     this.props.fetchRecipe(this.props.match.params.id)
   }
 
-  removeIngredient = ingredientID => {
-    this.props.deleteIngredient(this.props.id, ingredientID)
-  }
-
-  deleteStep = stepID => {
-    this.props.deleteStep(this.props.id, stepID)
-  }
-
-  updateIngredient = (ingredientID, content) => {
-    this.props.updateIngredient(this.props.id, ingredientID, content)
-  }
-
-  updateStep = (stepID, text) => {
-    this.props.updateStep(this.props.id, stepID, text)
-  }
-
-  updateName = name => {
-    this.props.updateName(this.props.id, name)
-  }
-
-  updateAuthor = author => {
-    this.props.updateAuthor(this.props.id, author)
-  }
-
-  updateSource = source => {
-    this.props.updateSource(this.props.id, source)
-  }
-
-  updateTime = time => {
-    this.props.updateTime(this.props.id, time)
-  }
-
   render () {
-    const {
-      ingredients,
-      steps,
-      tags,
-      name,
-      author,
-      source,
-      time,
-      addingStepToRecipe
-    } = this.props
-
-    return (
-      <div>
-        <div className="field">
-          <EnhancedTextInput
-            className="title is-1"
-            onChange={ this.updateName }
-            text={ name }
-            name="name"
-          />
-        </div>
-
-        <section className="tags">
-          {
-            tags.map(tag =>
-              <span className="tag is-dark is-medium" key={ tag.id }>
-                { tag.text }
-              </span>
-            )
-          }
-        </section>
-
-        <div className="input-container">
-
-          <EnhancedTextInput
-            onChange={ this.updateAuthor }
-            text={ author }
-            className="title is-4"
-            placeholder="author"
-            name="author"/>
-
-          <EnhancedTextInput
-            onChange={ this.updateSource }
-            text={ source }
-            className="title is-4"
-            placeholder="source"
-            name="source"/>
-
-          <EnhancedTextInput
-            onChange={ this.updateTime }
-            text={ time }
-            className="title is-4"
-            placeholder="1 hour"
-            name="time"/>
-
-        </div>
-
-        <div className="container">
-          <div className="columns">
-            <div className="column is-one-third">
-              <h2 className="title">Ingredients</h2>
-              <div className="box">
-                <ul>
-                  {
-                    ingredients.map(ingredient =>
-                      <Ingredient
-                        key={ ingredient.id }
-                        id={ ingredient.id }
-                        update={ this.updateIngredient }
-                        remove={ this.removeIngredient }
-                        quantity={ ingredient.quantity }
-                        unit={ ingredient.unit }
-                        units={ units }
-                        name={ ingredient.name }
-                        description={ ingredient.description }
-                      />
-                    )
-                  }
-                </ul>
-                <AddIngredient
-                  id={ this.props.id }
-                  addIngredient={ this.props.addIngredient }
-                />
-              </div>
-            </div>
-
-            <div className="column">
-              <h2 className="title is-3">Preparation</h2>
-              <div className="box">
-                <ul>
-                  {
-                    steps.map((step, i) =>
-                      <div key={step.id}>
-                        <label className="label">Step { i + 1}</label>
-                        <ListItem
-                          id={ step.id }
-                          text={ step.text }
-                          update={ this.updateStep }
-                          delete={ this.deleteStep }
-                        />
-                      </div>
-                    )
-                  }
-                </ul>
-                <AddStep
-                  id={ this.props.id }
-                  index={ steps.length + 1 }
-                  addStep={ this.props.addStep }
-                  loading={ addingStepToRecipe }
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
+    return <RecipeViewing
+      { ...this.props }
+    />
   }
-}
-
-Recipe.defaultProps = {
-  ingredients: [],
-  steps: [],
-  tags: [],
-  recipe: {}
 }
 
 export default Recipe

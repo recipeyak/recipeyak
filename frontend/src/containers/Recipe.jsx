@@ -1,17 +1,11 @@
 import { connect } from 'react-redux'
 
 import {
-  addingRecipeIngredient,
-  addingRecipeStep,
-  sendUpdatedRecipeName,
-  deletingIngredient,
-  deletingStep,
-  setRecipeSource,
-  setRecipeAuthor,
-  setRecipeTime,
   fetchRecipe,
-  updatingIngredient,
-  updatingStep
+  fetchCart,
+  addingToCart,
+  removingFromCart,
+  deletingRecipe
 } from '../store/actions.js'
 
 import Recipe from '../components/Recipe.jsx'
@@ -19,42 +13,22 @@ import Recipe from '../components/Recipe.jsx'
 const mapStateToProps = (state, props) => {
   const id = props.match.params.id
   const recipe = state.recipes[id] ? state.recipes[id] : {}
-  return recipe
+  return {
+    ...recipe,
+    inCart: state.cart[recipe.id] > 0 ? state.cart[recipe.id] : 0,
+    loading: state.loading.cart || recipe.loading
+  }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
     fetchRecipe: id => {
       dispatch(fetchRecipe(id))
+      dispatch(fetchCart(id))
     },
-    addIngredient: (recipeID, ingredient) =>
-      dispatch(addingRecipeIngredient(recipeID, ingredient)),
-    addStep: (id, step) =>
-      dispatch(addingRecipeStep(id, step)),
-    updateName: (id, name) => {
-      dispatch(sendUpdatedRecipeName(id, name))
-    },
-    updateStep: (recipeID, stepID, text) => {
-      dispatch(updatingStep(recipeID, stepID, text))
-    },
-    updateIngredient: (recipeID, ingredientID, content) => {
-      dispatch(updatingIngredient(recipeID, ingredientID, content))
-    },
-    deleteIngredient: (recipeID, ingredientID) => {
-      dispatch(deletingIngredient(recipeID, ingredientID))
-    },
-    deleteStep: (id, index) => {
-      dispatch(deletingStep(id, index))
-    },
-    updateSource: (id, source) => {
-      dispatch(setRecipeSource(id, source))
-    },
-    updateAuthor: (id, author) => {
-      dispatch(setRecipeAuthor(id, author))
-    },
-    updateTime: (id, time) => {
-      dispatch(setRecipeTime(id, time))
-    }
+    addToCart: id => dispatch(addingToCart(id)),
+    removeFromCart: id => dispatch(removingFromCart(id)),
+    deleteRecipe: id => dispatch(deletingRecipe(id))
   }
 }
 

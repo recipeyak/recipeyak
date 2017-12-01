@@ -94,9 +94,10 @@ class CommonInfo(models.Model):
 
 class Recipe(CommonInfo):
     name = models.CharField(max_length=255)
-    author = models.CharField(max_length=255)
-    source = models.CharField(max_length=255)
-    time = models.CharField(max_length=255)
+    author = models.CharField(max_length=255, blank=True, null=True)
+    source = models.CharField(max_length=255, blank=True, null=True)
+    time = models.CharField(max_length=255, blank=True, null=True)
+    servings = models.CharField(max_length=255, blank=True, null=True)
 
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
