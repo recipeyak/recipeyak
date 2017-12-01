@@ -36,18 +36,16 @@ const mapDispatchToProps = dispatch => {
     updateName: (id, name) => {
       dispatch(sendUpdatedRecipeName(id, name))
     },
-    updateStep: (recipeID, stepID, text) => {
-      dispatch(updatingStep(recipeID, stepID, text))
-    },
+    updateStep: (recipeID, stepID, text) =>
+      dispatch(updatingStep(recipeID, stepID, text)),
     updateIngredient: (recipeID, ingredientID, content) => {
       dispatch(updatingIngredient(recipeID, ingredientID, content))
     },
     deleteIngredient: (recipeID, ingredientID) => {
       dispatch(deletingIngredient(recipeID, ingredientID))
     },
-    deleteStep: (id, index) => {
-      dispatch(deletingStep(id, index))
-    },
+    deleteStep: (id, index) =>
+      dispatch(deletingStep(id, index)),
     updateSource: (id, source) => {
       dispatch(setRecipeSource(id, source))
     },

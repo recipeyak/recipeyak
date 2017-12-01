@@ -67,18 +67,18 @@ class ListItem extends React.Component {
     }))
   }
 
-  update = e => {
+  update = async e => {
     e.stopPropagation()
+    // if the text is empty, we should just delete the item instead of updating
+    if (this.state.text === '') {
+      await this.delete()
+    } else {
+      await this.props.update(this.props.id, this.state.text)
+    }
     this.setState({
       editing: false,
       unsavedChanges: false
     })
-    // if the text is empty, we should just delete the item instead of updating
-    if (this.state.text === '') {
-      this.delete()
-    } else {
-      this.props.update(this.props.id, this.state.text)
-    }
   }
 
   delete = () =>

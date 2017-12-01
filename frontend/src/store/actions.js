@@ -727,7 +727,7 @@ const sendUpdateStep = (token, recipeID, stepID, text) =>
     }
   })
 
-export const updatingStep = (recipeID, stepID, text) => (dispatch, getState) => {
+export const updatingStep = (recipeID, stepID, text) => (dispatch, getState) =>
   sendUpdateStep(getState().user.token, recipeID, stepID, text)
     .then(res => {
       const text = res.data.text
@@ -736,7 +736,6 @@ export const updatingStep = (recipeID, stepID, text) => (dispatch, getState) => 
     .catch(err => {
       console.log('error updating recipe step', err)
     })
-}
 
 export const deleteStep = (recipeID, stepID) => {
   return {
@@ -753,7 +752,7 @@ const sendDeleteStep = (token, recipeID, stepID) =>
     }
   })
 
-export const deletingStep = (recipeID, stepID) => (dispatch, getState) => {
+export const deletingStep = (recipeID, stepID) => (dispatch, getState) =>
   sendDeleteStep(getState().user.token, recipeID, stepID)
     .then(() => {
       dispatch(deleteStep(recipeID, stepID))
@@ -761,7 +760,6 @@ export const deletingStep = (recipeID, stepID) => (dispatch, getState) => {
     .catch(err => {
       console.log('error deleting recipe step', err)
     })
-}
 
 export const setErrorLogin = val => {
   return {
