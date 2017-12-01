@@ -178,9 +178,8 @@ class RecipeEditFetching extends React.Component {
   deleteStep = stepID =>
     this.props.deleteStep(this.props.id, stepID)
 
-  updateIngredient = (ingredientID, content) => {
+  updateIngredient = (ingredientID, content) =>
     this.props.updateIngredient(this.props.id, ingredientID, content)
-  }
 
   updateStep = (stepID, text) =>
     this.props.updateStep(this.props.id, stepID, text)

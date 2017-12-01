@@ -676,7 +676,7 @@ export const addingRecipeStep = (recipeID, step) => (dispatch, getState) => {
     })
 }
 
-export const updatingIngredient = (recipeID, ingredientID, content) => (dispatch, getState) => {
+export const updatingIngredient = (recipeID, ingredientID, content) => (dispatch, getState) =>
   sendUpdateIngredient(getState().user.token, recipeID, ingredientID, content)
     .then(res => {
       dispatch(updateIngredient(recipeID, ingredientID, res.data))
@@ -684,7 +684,6 @@ export const updatingIngredient = (recipeID, ingredientID, content) => (dispatch
     .catch(err => {
       console.log('error updating recipe ingredient', err)
     })
-}
 
 export const deleteIngredient = (recipeID, ingredientID) => {
   return {
@@ -701,7 +700,7 @@ const sendDeleteIngredient = (token, recipeID, ingredientID) =>
     }
   })
 
-export const deletingIngredient = (recipeID, ingredientID) => (dispatch, getState) => {
+export const deletingIngredient = (recipeID, ingredientID) => (dispatch, getState) =>
   sendDeleteIngredient(getState().user.token, recipeID, ingredientID)
     .then(() => {
       dispatch(deleteIngredient(recipeID, ingredientID))
@@ -709,7 +708,6 @@ export const deletingIngredient = (recipeID, ingredientID) => (dispatch, getStat
     .catch(err => {
       console.log('error deleting recipe ingredient', err)
     })
-}
 
 export const updateStep = (recipeID, stepID, text) => {
   return {

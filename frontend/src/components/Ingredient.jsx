@@ -109,13 +109,15 @@ class Ingredient extends React.Component {
     })
   }
 
-  update = e => {
+  update = async e => {
     e.preventDefault()
     if (emptyField(this.state)) return
 
     e.stopPropagation()
 
-    if (allEmptyFields(this.state)) return this.remove()
+    if (allEmptyFields(this.state)) {
+      return this.remove()
+    }
 
     const {
       quantity,
@@ -123,18 +125,18 @@ class Ingredient extends React.Component {
       description
     } = this.state
 
+    await this.props.update(this.props.id,
+      {
+        quantity,
+        name,
+        description
+      }
+    )
+
     this.setState({
       editing: false,
       unsavedChanges: false
-    },
-      this.props.update(this.props.id,
-        {
-          quantity,
-          name,
-          description
-        }
-      )
-    )
+    })
   }
 
   remove = () =>
