@@ -14,7 +14,7 @@ const MetaData = ({
   const _servings = servings !== '' ? `creating ${servings} ` : ''
   const _time = time !== '' ? `in ${time} ` : ''
 
-  return <p>{ _author + _source + _servings + _time }</p>
+  return <p className="">{ _author + _source + _servings + _time }</p>
 }
 
 const RecipeViewing = ({
@@ -41,20 +41,22 @@ const RecipeViewing = ({
 
       <div className="grid-entire-row d-flex align-center justify-space-between flex-wrap">
         <h1 className="title fs-3rem mb-0">{ name }</h1>
-        <div>
-          <input
-            onClick={ () => removeFromCart(id) }
-            className={ `button ${removingFromCart ? 'is-loading' : ''}` }
-            disabled={ inCart <= 0 }
-            type="button"
-            value="-"/>
-          <span className="tag is-light is-medium cart-count-tag">{ inCart }</span>
-          <input
-            onClick={ () => addToCart(id) }
-            className={ `button is-primary ${addingToCart ? 'is-loading' : ''}` }
-            type="button"
-            value="+"/>
-          <Link to={ `/recipes/${id}/edit` } className="button is-link">Edit</Link>
+        <div className="d-flex">
+          <div>
+            <input
+              onClick={ () => removeFromCart(id) }
+              className={ `button ${removingFromCart ? 'is-loading' : ''}` }
+              disabled={ inCart <= 0 }
+              type="button"
+              value="-"/>
+            <span className="tag is-light is-medium cart-count-tag">{ inCart }</span>
+            <input
+              onClick={ () => addToCart(id) }
+              className={ `button is-primary ${addingToCart ? 'is-loading' : ''}` }
+              type="button"
+              value="+"/>
+          </div>
+          <Link to={ `/recipes/${id}/edit` } className="button is-link ml-2">Edit</Link>
         </div>
       </div>
 

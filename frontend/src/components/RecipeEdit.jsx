@@ -28,7 +28,8 @@ const RecipeEdit = ({
   deleteRecipe,
   deleting,
   loading,
-  save
+  save,
+  addingIngredient
 }) => {
   if (loading) {
     return <p>Loading...</p>
@@ -45,10 +46,10 @@ const RecipeEdit = ({
           placeholder="new recipe title"
           defaultValue={ name }
           name="name"/>
-        <div className="d-flex">
+        <div className="d-flex ml-4">
           <input
             onClick={ save }
-            className="button is-link"
+            className="button is-primary mr-1"
             type="button"
             value="Save"/>
           <Link to={ `/recipes/${id}` } className="button is-link">Cancel</Link>
@@ -115,6 +116,7 @@ const RecipeEdit = ({
             </ul>
             <AddIngredient
               id={ id }
+              loading={ addingIngredient }
               addIngredient={ addIngredient }
             />
           </div>

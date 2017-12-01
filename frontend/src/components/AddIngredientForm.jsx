@@ -6,59 +6,69 @@ const AddIngredientForm = ({
   handleInputChange,
   quantity,
   name,
-  description
+  description,
+  clearInputs,
+  loading
 }) =>
-  <form onSubmit={ handleAddIngredient }>
-    <div className="field">
-        <div className="add-ingredient-grid">
+  <form onSubmit={ async e => {
+    e.preventDefault()
+    await handleAddIngredient()
+    clearInputs()
+    document.querySelector('#firstinput').focus()
+  }
+  }>
+  <div className="field">
+    <div className="add-ingredient-grid">
 
-          <input
-            onChange={ handleInputChange }
-            autoFocus
-            onFocus={ e => e.target.select() }
-            value={ quantity }
-            className="my-input input-quantity"
-            type="text"
-            placeholder="3 lbs"
-            name="quantity"/>
+      <input
+        id="firstinput"
+        onChange={ handleInputChange }
+        autoFocus
+        onFocus={ e => e.target.select() }
+        value={ quantity }
+        className="my-input input-quantity"
+        type="text"
+        placeholder="3 lbs"
+        name="quantity"/>
 
-          <input
-            onChange={ handleInputChange }
-            onFocus={ e => e.target.select() }
-            value={ name }
-            className="my-input input-ingredient"
-            type="text"
-            placeholder="tomato"
-            name="name"/>
+      <input
+        onChange={ handleInputChange }
+        onFocus={ e => e.target.select() }
+        value={ name }
+        className="my-input input-ingredient"
+        type="text"
+        placeholder="tomato"
+        name="name"/>
 
-          <input
-            onChange={ handleInputChange }
-            onFocus={ e => e.target.select() }
-            value={ description }
-            className="my-input input-ingredient grid-entire-row"
-            type="text"
-            placeholder="diced at 3cm in width"
-            name="description"/>
-        </div>
-
+      <input
+        onChange={ handleInputChange }
+        onFocus={ e => e.target.select() }
+        value={ description }
+        className="my-input input-ingredient grid-entire-row"
+        type="text"
+        placeholder="diced at 3cm in width"
+        name="description"/>
     </div>
-    <div className="field is-grouped">
-      <p className="control">
-        <input
-          className="button is-primary"
-          type="submit"
-          name="add ingredient"
-          value="Add"/>
-      </p>
-      <p className="control">
-        <input
-          onClick={ cancelAddIngredient }
-          className="button"
-          type="button"
-          name="cancel add ingredient"
-          value="✕"/>
-      </p>
-    </div>
-  </form>
+
+  </div>
+  <div className="field is-grouped">
+    <p className="control">
+      <button
+        className={ 'button is-primary ' + (loading ? 'is-loading' : '')}
+        type="submit"
+        name="add ingredient">
+        Add
+        </button>
+    </p>
+    <p className="control">
+      <input
+        onClick={ cancelAddIngredient }
+        className="button"
+        type="button"
+        name="cancel add ingredient"
+        value="✕"/>
+    </p>
+  </div>
+</form>
 
 export default AddIngredientForm

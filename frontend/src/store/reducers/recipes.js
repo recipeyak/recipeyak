@@ -16,7 +16,8 @@ import {
   SET_RECIPE_REMOVING_FROM_CART,
   SET_LOADING_ADD_STEP_TO_RECIPE,
   SET_LOADING_RECIPE,
-  SET_DELETING_RECIPE
+  SET_DELETING_RECIPE,
+  SET_ADDING_INGREDIENT_TO_RECIPE
 } from '../actionTypes.js'
 
 export const recipes = (state = {}, action) => {
@@ -106,6 +107,8 @@ export const recipes = (state = {}, action) => {
       return { ...state, [action.id]: { ...state[action.id], deleting: action.val } }
     case SET_LOADING_RECIPE:
       return { ...state, [action.id]: { ...state[action.id], loading: action.val } }
+    case SET_ADDING_INGREDIENT_TO_RECIPE:
+      return { ...state, [action.id]: { ...state[action.id], addingIngredient: action.val } }
     default:
       return state
   }

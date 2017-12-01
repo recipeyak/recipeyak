@@ -17,7 +17,8 @@ import {
   setRecipeRemovingFromCart,
   setLoadingAddStepToRecipe,
   setLoadingRecipe,
-  setDeletingRecipe
+  setDeletingRecipe,
+  setAddingIngredientToRecipe
 } from '../actions.js'
 
 describe('Recipes', () => {
@@ -474,6 +475,25 @@ describe('Recipes', () => {
 
     expect(
       recipes(beforeState, setLoadingAddStepToRecipe(1, true))
+    ).toEqual(afterState)
+  })
+
+
+  it('sets the recipe to be adding an ingredient', () => {
+    const beforeState = {
+      1: {
+        addingIngredient: false,
+      }
+    }
+
+    const afterState = {
+      1: {
+        addingIngredient: true,
+      }
+    }
+
+    expect(
+      recipes(beforeState, setAddingIngredientToRecipe(1, true))
     ).toEqual(afterState)
   })
 })

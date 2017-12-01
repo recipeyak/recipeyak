@@ -19,11 +19,6 @@ class AddIngredient extends React.Component {
     this.setState({ [e.target.name]: e.target.value })
   }
 
-  handleAddIngredient = e => {
-    e.preventDefault()
-    this.addIngredient(this.props.id, this.state.ingredient)
-  }
-
   addingIngredient = () => {
     this.setState({ addingIngredient: true })
   }
@@ -36,20 +31,19 @@ class AddIngredient extends React.Component {
     this.setState({ quantity: '', name: '', description: '' })
   }
 
-  addIngredient = async (id, ingredient) => {
-    // TODO: pass this prop in from Recipe or via store
-    const { quantity, name, description } = this.state
-    await this.props.addIngredient(id, { quantity, name, description })
-    this.clearInputs()
-  }
-
   render () {
-    const { state } = this
+    const { state, clearInputs } = this
+    const { id, addIngredient, loading } = this.props
+    const { quantity, name, description } = this.state
 
     return (
       state.addingIngredient
       ? <AddIngredientForm
-          handleAddIngredient={this.handleAddIngredient}
+          handleAddIngredient={
+            () => addIngredient(id, { quantity, name, description })
+          }
+          loading={loading}
+          clearInputs={clearInputs}
           cancelAddIngredient={this.cancelAddIngredient}
           handleInputChange={this.handleInputChange}
           quantity={this.state.quantity}

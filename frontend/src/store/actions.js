@@ -43,7 +43,8 @@ import {
   DELETE_RECIPE,
   SET_LOADING_RECIPE,
   SET_DELETING_RECIPE,
-  SET_RECIPE
+  SET_RECIPE,
+  SET_ADDING_INGREDIENT_TO_RECIPE
 } from './actionTypes.js'
 
 import { push } from 'react-router-redux'
@@ -473,6 +474,12 @@ export const addStepToRecipe = (id, step) => {
   }
 }
 
+export const setAddingIngredientToRecipe = (id, val) => ({
+  type: SET_ADDING_INGREDIENT_TO_RECIPE,
+  id,
+  val
+})
+
 export const addIngredientToRecipe = (id, ingredient) => {
   return {
     type: ADD_INGREDIENT_TO_RECIPE,
@@ -489,14 +496,18 @@ const postRecipeIngredient = (token, recipeID, ingredient) =>
   })
 
 // TODO: actually pass the correct stuff
-export const addingRecipeIngredient = (recipeID, ingredient) => (dispatch, getState) =>
-  postRecipeIngredient(getState().user.token, recipeID, ingredient)
+export const addingRecipeIngredient = (recipeID, ingredient) => (dispatch, getState) => {
+  dispatch(setAddingIngredientToRecipe(recipeID, true))
+  return postRecipeIngredient(getState().user.token, recipeID, ingredient)
     .then(res => {
       dispatch(addIngredientToRecipe(recipeID, res.data))
+      dispatch(setAddingIngredientToRecipe(recipeID, false))
     })
     .catch(err => {
       console.log('error adding recipe ingredient', err)
+      dispatch(setAddingIngredientToRecipe(recipeID, false))
     })
+}
 
 export const setRecipeAddingToCart = (id, loading) => {
   return {
