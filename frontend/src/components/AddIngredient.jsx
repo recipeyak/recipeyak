@@ -40,10 +40,12 @@ class AddIngredient extends React.Component {
       state.addingIngredient
       ? <AddIngredientForm
           handleAddIngredient={
-            () => addIngredient(id, { quantity, name, description })
+            async () => {
+              await addIngredient(id, { quantity, name, description })
+              clearInputs()
+            }
           }
           loading={loading}
-          clearInputs={clearInputs}
           cancelAddIngredient={this.cancelAddIngredient}
           handleInputChange={this.handleInputChange}
           quantity={this.state.quantity}
