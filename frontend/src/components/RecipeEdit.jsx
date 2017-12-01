@@ -106,6 +106,7 @@ const RecipeEdit = ({
                     key={ ingredient.id }
                     id={ ingredient.id }
                     update={ updateIngredient }
+                    updating={ ingredient.updating }
                     remove={ removeIngredient }
                     quantity={ ingredient.quantity }
                     name={ ingredient.name }

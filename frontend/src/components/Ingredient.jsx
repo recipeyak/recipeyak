@@ -159,6 +159,10 @@ class Ingredient extends React.Component {
       unsavedChanges
     } = this.state
 
+    const {
+      updating
+    } = this.props
+
     // TODO: fetch from backend
 
     const inner = editing
@@ -202,12 +206,12 @@ class Ingredient extends React.Component {
           <section className="listitem-button-container">
             <div className="field is-grouped">
               <p className="control">
-                <input
-                  className="button"
+                <button
+                  className={ 'button ' + (updating ? 'is-loading' : '')}
                   type="submit"
-                  name="update"
-                  value="Update"
-                />
+                  name="update">
+                  Update
+                </button>
               </p>
               <p className="control">
                 <input

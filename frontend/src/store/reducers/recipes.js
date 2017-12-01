@@ -17,7 +17,8 @@ import {
   SET_LOADING_ADD_STEP_TO_RECIPE,
   SET_LOADING_RECIPE,
   SET_DELETING_RECIPE,
-  SET_ADDING_INGREDIENT_TO_RECIPE
+  SET_ADDING_INGREDIENT_TO_RECIPE,
+  SET_UPDATING_INGREDIENT
 } from '../actionTypes.js'
 
 export const recipes = (state = {}, action) => {
@@ -109,6 +110,22 @@ export const recipes = (state = {}, action) => {
       return { ...state, [action.id]: { ...state[action.id], loading: action.val } }
     case SET_ADDING_INGREDIENT_TO_RECIPE:
       return { ...state, [action.id]: { ...state[action.id], addingIngredient: action.val } }
+    case SET_UPDATING_INGREDIENT:
+      return {
+        ...state,
+        [action.recipeID]: {
+          ...state[action.recipeID],
+          ingredients: state[action.recipeID].ingredients.map(x => {
+            if (x.id === action.ingredientID) {
+              return {
+                ...x,
+                updating: action.val
+              }
+            }
+            return x
+          })
+        }
+      }
     default:
       return state
   }

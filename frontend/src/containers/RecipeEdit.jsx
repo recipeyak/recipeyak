@@ -20,7 +20,9 @@ import RecipeEdit from '../components/RecipeEdit.jsx'
 
 const mapStateToProps = (state, props) => {
   const id = props.match.params.id
-  const recipe = state.recipes[id] ? state.recipes[id] : {loading: true}
+  const recipe = state.recipes[id]
+    ? state.recipes[id]
+    : { loading: true }
   return recipe
 }
 

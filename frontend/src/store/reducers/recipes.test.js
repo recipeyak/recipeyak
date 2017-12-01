@@ -18,7 +18,8 @@ import {
   setLoadingAddStepToRecipe,
   setLoadingRecipe,
   setDeletingRecipe,
-  setAddingIngredientToRecipe
+  setAddingIngredientToRecipe,
+  setUpdatingIngredient
 } from '../actions.js'
 
 describe('Recipes', () => {
@@ -494,6 +495,37 @@ describe('Recipes', () => {
 
     expect(
       recipes(beforeState, setAddingIngredientToRecipe(1, true))
+    ).toEqual(afterState)
+  })
+
+
+  it('sets the recipe to be updating a specific ingredient', () => {
+    const beforeState = {
+      1: {
+        ingredients: [
+          {
+            id: 1,
+            text: 'a new step',
+            updating: false
+          }
+        ]
+      }
+    }
+
+    const afterState = {
+      1: {
+        ingredients: [
+          {
+            id: 1,
+            text: 'a new step',
+            updating: true
+          }
+        ]
+      }
+    }
+
+    expect(
+      recipes(beforeState, setUpdatingIngredient(1, 1, true))
     ).toEqual(afterState)
   })
 })
