@@ -5,6 +5,9 @@ import ListItem from './ListItem.jsx'
 import AddIngredientForm from './AddIngredientForm'
 import Ingredient from './Ingredient'
 
+const unfinishedIngredient = ({ quantity = '', name = '' }) =>
+  quantity === '' || name === ''
+
 class AddRecipe extends React.Component {
   constructor (props) {
     super(props)
@@ -13,6 +16,7 @@ class AddRecipe extends React.Component {
       author: '',
       source: '',
       time: '',
+      servings: '',
       ingredients: [],
       ingredient: {},
       steps: [],
@@ -30,9 +34,9 @@ class AddRecipe extends React.Component {
     this.props.addRecipe(this.state)
   }
 
-  addIngredient = e => {
-    e.preventDefault()
-    this.setState((prevState) => (
+  addIngredient = () => {
+    if (unfinishedIngredient(this.state.ingredient)) return
+    this.setState(prevState => (
       {
         ingredients: prevState.ingredients.concat(prevState.ingredient),
         ingredient: {}

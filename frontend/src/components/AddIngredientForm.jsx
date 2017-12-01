@@ -13,7 +13,6 @@ const AddIngredientForm = ({
   <form onSubmit={ async e => {
     e.preventDefault()
     await handleAddIngredient()
-    clearInputs()
     document.querySelector('#firstinput').focus()
   }
   }>

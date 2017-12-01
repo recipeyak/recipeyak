@@ -870,6 +870,7 @@ export const deletingRecipe = id => (dispatch, getState) => {
     .then(res => {
       dispatch(deleteRecipe(id))
       dispatch(setDeletingRecipe(id, false))
+      dispatch(push('/recipes'))
     })
     .catch(err => {
       dispatch(setDeletingRecipe(id, false))

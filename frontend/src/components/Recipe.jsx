@@ -9,10 +9,20 @@ const MetaData = ({
   servings = '',
   time = ''
 }) => {
-  const _author = author !== '' ? `By ${author} ` : ''
-  const _source = source !== '' ? `from ${source} ` : ''
-  const _servings = servings !== '' ? `creating ${servings} ` : ''
-  const _time = time !== '' ? `in ${time} ` : ''
+  const isValid = x => x !== '' && x != null
+
+  const _author = isValid(author)
+    ? `By ${author} `
+    : ''
+  const _source = isValid(source)
+    ? `from ${source} `
+    : ''
+  const _servings = isValid(servings)
+    ? `creating ${servings} `
+    : ''
+  const _time = isValid(time)
+    ? `in ${time} `
+    : ''
 
   return <p className="">{ _author + _source + _servings + _time }</p>
 }
