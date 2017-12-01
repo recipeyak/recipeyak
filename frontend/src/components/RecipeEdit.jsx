@@ -136,7 +136,9 @@ const RecipeEdit = ({
                       id={ step.id }
                       text={ step.text }
                       update={ updateStep }
+                      updating={ step.updating }
                       delete={ deleteStep }
+                      removing={ step.removing }
                     />
                   </div>
                 )

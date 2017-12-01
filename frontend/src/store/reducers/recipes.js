@@ -19,7 +19,9 @@ import {
   SET_DELETING_RECIPE,
   SET_ADDING_INGREDIENT_TO_RECIPE,
   SET_UPDATING_INGREDIENT,
-  SET_REMOVING_INGREDIENT
+  SET_REMOVING_INGREDIENT,
+  SET_UPDATING_STEP,
+  SET_REMOVING_STEP
 } from '../actionTypes.js'
 
 export const recipes = (state = {}, action) => {
@@ -134,6 +136,38 @@ export const recipes = (state = {}, action) => {
           ...state[action.recipeID],
           ingredients: state[action.recipeID].ingredients.map(x => {
             if (x.id === action.ingredientID) {
+              return {
+                ...x,
+                removing: action.val
+              }
+            }
+            return x
+          })
+        }
+      }
+    case SET_UPDATING_STEP:
+      return {
+        ...state,
+        [action.recipeID]: {
+          ...state[action.recipeID],
+          steps: state[action.recipeID].steps.map(x => {
+            if (x.id === action.stepID) {
+              return {
+                ...x,
+                updating: action.val
+              }
+            }
+            return x
+          })
+        }
+      }
+    case SET_REMOVING_STEP:
+      return {
+        ...state,
+        [action.recipeID]: {
+          ...state[action.recipeID],
+          steps: state[action.recipeID].steps.map(x => {
+            if (x.id === action.stepID) {
               return {
                 ...x,
                 removing: action.val

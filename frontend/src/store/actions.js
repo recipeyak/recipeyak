@@ -46,7 +46,9 @@ import {
   SET_RECIPE,
   SET_ADDING_INGREDIENT_TO_RECIPE,
   SET_UPDATING_INGREDIENT,
-  SET_REMOVING_INGREDIENT
+  SET_REMOVING_INGREDIENT,
+  SET_UPDATING_STEP,
+  SET_REMOVING_STEP
 } from './actionTypes.js'
 
 import { push } from 'react-router-redux'
@@ -742,6 +744,20 @@ export const updateStep = (recipeID, stepID, text) => {
   }
 }
 
+export const setRemovingStep = (recipeID, stepID, val) => ({
+  type: SET_REMOVING_STEP,
+  recipeID,
+  stepID,
+  val
+})
+
+export const setUpdatingStep = (recipeID, stepID, val) => ({
+  type: SET_UPDATING_STEP,
+  recipeID,
+  stepID,
+  val
+})
+
 const sendUpdateStep = (token, recipeID, stepID, text) =>
   axios.patch(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, { text }, {
     headers: {
@@ -749,15 +765,19 @@ const sendUpdateStep = (token, recipeID, stepID, text) =>
     }
   })
 
-export const updatingStep = (recipeID, stepID, text) => (dispatch, getState) =>
-  sendUpdateStep(getState().user.token, recipeID, stepID, text)
+export const updatingStep = (recipeID, stepID, text) => (dispatch, getState) => {
+  dispatch(setUpdatingStep(recipeID, stepID, true))
+  return sendUpdateStep(getState().user.token, recipeID, stepID, text)
     .then(res => {
       const text = res.data.text
       dispatch(updateStep(recipeID, stepID, text))
+      dispatch(setUpdatingStep(recipeID, stepID, false))
     })
     .catch(err => {
       console.log('error updating recipe step', err)
+      dispatch(setUpdatingStep(recipeID, stepID, false))
     })
+}
 
 export const deleteStep = (recipeID, stepID) => {
   return {
@@ -774,14 +794,18 @@ const sendDeleteStep = (token, recipeID, stepID) =>
     }
   })
 
-export const deletingStep = (recipeID, stepID) => (dispatch, getState) =>
-  sendDeleteStep(getState().user.token, recipeID, stepID)
+export const deletingStep = (recipeID, stepID) => (dispatch, getState) => {
+  dispatch(setRemovingStep(recipeID, stepID, true))
+  return sendDeleteStep(getState().user.token, recipeID, stepID)
     .then(() => {
       dispatch(deleteStep(recipeID, stepID))
+      dispatch(setRemovingStep(recipeID, stepID, false))
     })
     .catch(err => {
       console.log('error deleting recipe step', err)
+      dispatch(setRemovingStep(recipeID, stepID, false))
     })
+}
 
 export const setErrorLogin = val => {
   return {

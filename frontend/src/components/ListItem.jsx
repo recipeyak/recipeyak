@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
 import './ListItem.scss'
 
@@ -85,9 +84,14 @@ class ListItem extends React.Component {
     this.props.delete(this.props.id)
 
   render () {
+    const {
+      updating,
+      removing
+    } = this.props
+
     const inner = this.state.editing
       ? <form onSubmit={
-          (e) => {
+          e => {
             e.preventDefault()
             if (this.state.text === '') return
             this.add()
@@ -116,13 +120,13 @@ class ListItem extends React.Component {
           <section className="listitem-button-container">
             <div className="field is-grouped">
               <p className="control">
-                <input
+                <button
                   onClick={ this.update }
-                  className="button"
+                  className={ 'button ' + (updating ? 'is-loading' : '')}
                   type="button"
-                  name="save"
-                  value="Save"
-                />
+                  name="save">
+                  Save
+                </button>
               </p>
               <p className="control">
                 <input
@@ -136,13 +140,13 @@ class ListItem extends React.Component {
             </div>
             <div className="field is-grouped">
               <p className="control">
-                <input
+                <button
                   onClick={ this.delete }
-                  className="button"
+                  className={ 'button ' + (removing ? 'is-loading' : '')}
                   type="button"
-                  name="delete"
-                  value="delete"
-                />
+                  name="delete">
+                  delete
+                </button>
               </p>
             </div>
           </section>
@@ -177,13 +181,6 @@ class ListItem extends React.Component {
       </li>
     )
   }
-}
-
-ListItem.PropTypes = {
-  text: PropTypes.string,
-  id: PropTypes.number,
-  delete: PropTypes.func,
-  update: PropTypes.func
 }
 
 export default ListItem

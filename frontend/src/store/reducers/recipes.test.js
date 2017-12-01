@@ -20,7 +20,9 @@ import {
   setDeletingRecipe,
   setAddingIngredientToRecipe,
   setUpdatingIngredient,
-  setRemovingIngredient
+  setRemovingIngredient,
+  setUpdatingStep,
+  setRemovingStep
 } from '../actions.js'
 
 describe('Recipes', () => {
@@ -558,6 +560,68 @@ describe('Recipes', () => {
 
     expect(
       recipes(beforeState, setRemovingIngredient(1, 1, true))
+    ).toEqual(afterState)
+  })
+
+
+  it('sets the recipe to be updating a specific step', () => {
+    const beforeState = {
+      1: {
+        steps: [
+          {
+            id: 1,
+            text: 'a new step',
+            updating: false
+          }
+        ]
+      }
+    }
+
+    const afterState = {
+      1: {
+        steps: [
+          {
+            id: 1,
+            text: 'a new step',
+            updating: true
+          }
+        ]
+      }
+    }
+
+    expect(
+      recipes(beforeState, setUpdatingStep(1, 1, true))
+    ).toEqual(afterState)
+  })
+
+
+  it('sets the recipe to be removing a specific step', () => {
+    const beforeState = {
+      1: {
+        steps: [
+          {
+            id: 1,
+            text: 'a new step',
+            removing: false
+          }
+        ]
+      }
+    }
+
+    const afterState = {
+      1: {
+        steps: [
+          {
+            id: 1,
+            text: 'a new step',
+            removing: true
+          }
+        ]
+      }
+    }
+
+    expect(
+      recipes(beforeState, setRemovingStep(1, 1, true))
     ).toEqual(afterState)
   })
 })

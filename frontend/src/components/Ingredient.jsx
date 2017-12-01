@@ -228,7 +228,6 @@ class Ingredient extends React.Component {
               <p className="control">
                 <button
                   onClick={ remove }
-                  className="button"
                   className={ 'button ' + (removing ? 'is-loading' : '')}
                   type="button"
                   name="remove">
