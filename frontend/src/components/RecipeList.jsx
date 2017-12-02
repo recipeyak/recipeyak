@@ -2,8 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import Recipe from './RecipeItem.jsx'
-
-import skeletonCard from './SkeletonRecipeItem'
+import Loader from './Loader.jsx'
 
 import 'bulma/css/bulma.css'
 
@@ -46,8 +45,6 @@ class RecipeList extends React.Component {
   }
 
   render () {
-    const skeletonCards = Array(4).fill(skeletonCard)
-
     if (this.props.error) return <p>Error fetching data</p>
 
     const recipes =
@@ -69,7 +66,7 @@ class RecipeList extends React.Component {
       <div className="grid-container">
         <input autoFocus onChange={ this.handleInputChange } type='search' className='input grid-entire-row' name='query'/>
         { this.props.loading
-            ? skeletonCards
+            ? <Loader/>
             : <Results recipes={ recipes } query={ this.state.query } />
         }
       </div>

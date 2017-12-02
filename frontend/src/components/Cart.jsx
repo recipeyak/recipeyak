@@ -1,7 +1,7 @@
 import React from 'react'
 
 import Recipe from './RecipeItem.jsx'
-import skeletonCard from './SkeletonRecipeItem'
+import Loader from './Loader.jsx'
 import './cart.scss'
 
 class Cart extends React.Component {
@@ -23,21 +23,8 @@ class Cart extends React.Component {
     if (loading) {
       return (
         <div className="cart-container">
-          <div className="d-grid grid-gap-4">
-            { skeletonCard }
-          </div>
-          <div>
-            {
-                <div className='box has-text-grey-light'>
-                  <div className='skeleton-cart-ingredient'></div>
-                  <div className='skeleton-cart-ingredient'></div>
-                  <div className='skeleton-cart-ingredient'></div>
-                  <div className='skeleton-cart-ingredient'></div>
-                </div>
-            }
-          </div>
+          <Loader/>
         </div>
-
       )
     }
 

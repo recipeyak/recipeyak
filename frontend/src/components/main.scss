@@ -1,6 +1,7 @@
+$desertsand: hsl(36, 78%, 91%);
 html {
   height: 100%;
-  background-color: hsl(36, 78%, 91%);
+  background-color: $desertsand;
 }
 
 nav.nav,
@@ -179,3 +180,47 @@ a {
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 0.5rem;
 }
+// https://github.com/ConnorAtherton/loaders.css/blob/0325ac583bd60f5f763eab1afdc9d9ab46fe7562/src/animations/ball-grid-pulse.scss
+@keyframes ball-grid-pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0.5);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.ball-grid-pulse {
+  display: grid;
+  padding: 2px;
+  width: 57px;
+
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  grid-gap: 2px;
+
+  @for $i from 1 through 9 {
+    > div:nth-child(#{$i}) {
+      animation-delay: ((random(100) / 100) - 0.2) + s;
+      animation-duration: ((random(100) / 100) + 0.6) + s;
+    }
+  }
+
+  > div {
+    background-color: transparentize(darken($desertsand, 7%), .1);
+    width: 15px;
+    height: 15px;
+    border-radius: 100%;
+    animation-fill-mode: both;
+    animation-name: ball-grid-pulse;
+    animation-iteration-count: infinite;
+  }
+}
+
