@@ -27,7 +27,7 @@ const notification = ({
   return null
 }
 
-notification.PropTypes = {
+notification.propTypes = {
   message: PropTypes.string.isRequired,
   show: PropTypes.bool,
   closeable: PropTypes.bool,

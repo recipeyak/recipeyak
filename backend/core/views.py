@@ -1,6 +1,11 @@
+import datetime
+from typing import List
+
 from rest_framework import viewsets, status, mixins, views
 from rest_framework.response import Response
-from typing import List
+from rest_framework.views import APIView
+from django.db.models import Sum, Count
+from django.db.models.functions import TruncMonth
 
 from .models import Recipe, Step, Tag, Ingredient, CartItem
 from .serializers import (
@@ -21,7 +26,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
         enables us to return a 404 if the person doesn't have access to the
         item instead of throwing a 403 as default
         """
-        return Recipe.objects.filter(user=self.request.user)
+        rec = Recipe.objects.filter(user=self.request.user)
+        # count recipe views
+        r = rec.first()
+        if r is not None:
+            r.count_view()
+            r.save()
+        return rec
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -103,3 +114,33 @@ class IngredientViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserStats(APIView):
+
+    def get(self, request, format=None):
+        total_recipe_views = Recipe.objects.filter(user=self.request.user).aggregate(
+            total=Sum('views')
+            ).get('total')
+
+        last_week = datetime.datetime.today() - datetime.timedelta(days=7)
+        new_recipes_last_week = Recipe.objects.filter(user=self.request.user).filter(created__gt=last_week).count()
+
+        most_viewed_recipe = Recipe.objects.filter(user=self.request.user).order_by('-views').values().first()
+
+        recipes_added_by_month = Recipe.objects.annotate(month=TruncMonth('created')).values('month').annotate(c=Count('id')).order_by()
+
+        recipes_pie_not_pie = Recipe.objects.filter(name__search='pie').count()
+        total_recipes = Recipe.objects.count()
+
+        date_joined = request.user.created.strftime('%b, %Y')
+
+        return Response({
+            'hello': 'world',
+            'total_views': total_recipe_views,
+            'new_recipes_last_week': new_recipes_last_week,
+            'most_viewed_recipe': most_viewed_recipe,
+            'date_joined': date_joined,
+            'recipes_pie_not_pie': (recipes_pie_not_pie, total_recipes),
+            'recipes_added_by_month': recipes_added_by_month,
+        })

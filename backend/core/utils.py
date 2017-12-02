@@ -1,6 +1,6 @@
 from typing import List, Dict
 
-from pint import UnitRegistry
+from pint import UnitRegistry, UndefinedUnitError
 from pint.quantity import _Quantity as Quantity
 
 ureg = UnitRegistry()
@@ -15,10 +15,15 @@ def combine_ingredients(ingredients: List) -> List:
     }
 
     for ingredient in ingredients:
-        quantity = ureg.parse_expression(ingredient.quantity)
+        try:
+            quantity = ureg.parse_expression(ingredient.quantity)
+        except UndefinedUnitError:
+            quantity = ingredient.quantity
         name = ingredient.name
-
-        base_unit = quantity.to_base_units().units
+        try:
+            base_unit = quantity.to_base_units().units
+        except AttributeError:
+            base_unit = quantity
 
         if combined.get(name, None) is not None:
 

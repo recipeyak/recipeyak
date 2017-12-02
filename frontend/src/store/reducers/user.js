@@ -4,7 +4,9 @@ import {
   SET_AVATAR_URL,
   SET_USER_EMAIL,
   SET_ERROR_USER,
-  SET_LOADING_USER
+  SET_LOADING_USER,
+  SET_USER_STATS,
+  SET_LOADING_USER_STATS
 } from '../actionTypes.js'
 
 export const user = (
@@ -13,7 +15,9 @@ export const user = (
     token: null,
     avatarURL: '',
     loading: false,
-    error: false
+    error: false,
+    stats: {},
+    stats_loading: false
   },
   action) => {
   switch (action.type) {
@@ -29,6 +33,10 @@ export const user = (
       return { ...state, loading: action.val }
     case SET_ERROR_USER:
       return { ...state, error: action.val }
+    case SET_USER_STATS:
+      return { ...state, stats: action.val }
+    case SET_LOADING_USER_STATS:
+      return { ...state, stats_loading: action.val }
     default:
       return state
   }

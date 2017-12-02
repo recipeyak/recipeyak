@@ -40,6 +40,8 @@ import {
   SET_LOADING_USER,
   SET_SHOPPING_LIST,
   SET_LOADING_SHOPPING_LIST,
+  SET_LOADING_USER_STATS,
+  SET_USER_STATS,
   DELETE_RECIPE,
   SET_LOADING_RECIPE,
   SET_DELETING_RECIPE,
@@ -97,6 +99,20 @@ export const setLoadingUser = val => {
 export const setErrorUser = val => {
   return {
     type: SET_ERROR_USER,
+    val
+  }
+}
+
+export const setLoadingUserStats = val => {
+  return {
+    type: SET_LOADING_USER_STATS,
+    val
+  }
+}
+
+export const setUserStats = val => {
+  return {
+    type: SET_USER_STATS,
     val
   }
 }
@@ -159,6 +175,26 @@ export const fetchUser = () => (dispatch, getState) => {
       }
       dispatch(setLoadingUser(false))
       dispatch(setErrorUser(true))
+    })
+}
+
+const getUserStats = token =>
+  axios.get('api/v1/user_stats/', {
+    headers: {
+      'Authorization': 'Token ' + token
+    }
+  })
+
+export const fetchUserStats = () => (dispatch, getState) => {
+  dispatch(setLoadingUserStats(true))
+  getUserStats(getState().user.token)
+    .then(res => {
+      dispatch(setUserStats(res.data))
+      dispatch(setLoadingUserStats(false))
+    })
+    .catch(err => {
+      console.error('Failed to fetch user stats:', err)
+      dispatch(setLoadingUserStats(false))
     })
 }
 

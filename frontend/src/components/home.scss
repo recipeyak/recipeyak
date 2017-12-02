@@ -1,15 +1,23 @@
-@media (min-width: 730px) {
+@media (min-width: 841px) {
   .home-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-gap: 15px;
   }
+  .chart-container {
+    position: relative;
+    width: 40vw;
+  }
 }
 
-@media (max-width: 730px) {
+@media (max-width: 841px) {
   .home-hero-text {
     text-align: center;
     line-height: 5rem;
+  }
+  .chart-container {
+    position: relative;
+    width: 90vw;
   }
 }
 
@@ -39,6 +47,12 @@
   }
 }
 
+@for $i from 1 through 10 {
+  .mt-#{$i}rem {
+    margin-top: #{$i}rem !important;
+  }
+}
+
 .grid-entire-row {
   grid-column: 1 / -1;
 }
@@ -61,4 +75,8 @@
 
 .font-family-serif {
   font-family: Charter, georgia, serif;
+}
+
+.fact {
+  margin-bottom: 0.3em;
 }

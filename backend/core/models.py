@@ -98,6 +98,7 @@ class Recipe(CommonInfo):
     source = models.CharField(max_length=255, blank=True, null=True)
     time = models.CharField(max_length=255, blank=True, null=True)
     servings = models.CharField(max_length=255, blank=True, null=True)
+    views = models.IntegerField(default=0, editable=False)
 
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
@@ -115,6 +116,9 @@ class Recipe(CommonInfo):
     def tags(self):
         """Return recipe tags ordered by creation date"""
         return Tag.objects.filter(recipe=self).order_by('created')
+
+    def count_view(self):
+        self.views += 1
 
     def __str__(self):
         return f'{self.name} by {self.author}'
