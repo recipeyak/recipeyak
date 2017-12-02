@@ -1,18 +1,19 @@
+.note-container {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
 .note {
   margin: 1rem;
   border-radius: 5px;
   z-index: 101;
 
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
   padding: 0.5rem;
   padding-left: 1rem;
   padding-right: 1rem;
 
-  line-height: 1.5rem;
   animation: fadein .5s;
   cursor: default;
 

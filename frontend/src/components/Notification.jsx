@@ -12,14 +12,16 @@ const notification = ({
 }) => {
   if (show) {
     return (
-      <div className={'note d-flex justify-space-between align-center ' + level }>
-        <p className="mb-0 fs-5">
-          { message }
-        </p>
-        { closeable && close &&
-            <a className="close" onClick={close}>✕</a>
-        }
-      </div>
+      <section className="note-container container">
+        <div className={'note d-flex justify-space-between align-center ' + level }>
+          <p className="mb-0 fs-5">
+            { message }
+          </p>
+          { closeable && close &&
+              <a className="close" onClick={close}>✕</a>
+          }
+        </div>
+      </section>
     )
   }
   return null
