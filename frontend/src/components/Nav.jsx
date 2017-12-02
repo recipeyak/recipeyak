@@ -35,7 +35,7 @@ class Navbar extends React.Component {
     )
 
     return (
-      <nav className="nav justify-space-between flex-wrap">
+      <nav className="nav flex-wrap pt-2 pb-2">
         <Link to="/" className="better-nav-item pl-0 pr-0 fs-2rem fw-normal font-family-serif">Recipe Yak</Link>
         { buttons }
       </nav>

@@ -1,22 +1,9 @@
-.nav > .nav-center {
-  flex-grow: 1;
+.nav {
+  justify-content: center;
 
-  & > .nav-item {
-    width: 100%;
+  @media (min-width: 500px) {
+    justify-content: space-between;
   }
-}
-.nav > .nav-right,
-.nav > .nav-left {
-  flex-grow: 2;
-}
-
-// bulma override
-div.nav-item img {
-  max-height: none;
-}
-
-nav.nav {
-  margin-top: 10px;
 }
 
 // bulma override
