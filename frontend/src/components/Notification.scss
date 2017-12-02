@@ -1,89 +1,77 @@
 .note {
-  position: fixed;
+  margin: 1rem;
+  border-radius: 5px;
   z-index: 101;
-  text-align: center;
+
+  position: fixed;
   left: 0;
   right: 0;
-  padding: 15px 80px;
-  user-select: none;
+  bottom: 0;
+
+  padding: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+
   line-height: 1.5rem;
   animation: fadein .5s;
   cursor: default;
+
+  border-width: 1px;
+  border-style: solid;
+
   .close {
-    position: absolute;
-    top: 15px;
-    right: 25px;
     height: 30px;
     width: 30px;
-    border-radius: 15px;
+    border-radius: 100%;
+
+    user-select: none;
     font-size: 1.2rem;
-    font-weight: bold;
-    line-height: 30px;
-    color: rgba(255, 255, 255, .8);
+    color: white;
     background-color: rgba(0, 0, 0, 0.6);
     opacity: .2;
     transition: opacity .1s ease-in-out;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     &:hover {
-      opacity: .25;
+      opacity: .3;
     }
+
     &:active {
       opacity: .45;
     }
+
   }
-  .content {
-    color: white;
-    font-size: 1.75rem;
-  }
+
 }
-@media only screen and (max-width : 600px) {
-  .note {
-    padding: 12px 25px;
-    .close {
-      height: 20px;
-      font-size: 0.8rem;
-      line-height: 20px;
-      right: 5px;
-      top: 5px;
-      width: 20px;
-    }
-    .content {
-      font-size: 1.3rem;
-    }
-  }
-}
-@media only screen and (max-width : 400px) {
-  .note {
-    padding: 5px 25px 5px 10px;
-    .close {
-      font-size: 0.8rem;
-      height: 20px;
-      line-height: 20px;
-      right: 5px;
-      top: 5px;
-      width: 20px;
-    }
-    .content {
-      font-size: 1.3rem;
-    }
-  }
-}
-.note-top {
-  top: 0;
-}
-.note-bottom {
-  bottom: 0;
-}
+
+$success: rgb(99,203,137);
 .success {
-  background: #468966;
+  border-color: $success;
+  background-color: $success;
+  color: white;
 }
+
+$info: #1695A3;
 .info {
-  background: #1695A3;
+  border-color: $info;
+  background-color: $info;
+  color: white;
 }
+
+$warning: #EB7F00;
 .warning {
-  background: #EB7F00;
+  border-color: $warning;
+  background-color: $warning;
 }
+
+$danger: #B64926;
 .danger {
-  background: #B64926;
+  border-color: $danger;
+  background-color: $danger;
+  color: white;
 }
 
 @keyframes fadein {

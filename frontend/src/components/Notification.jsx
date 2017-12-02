@@ -9,12 +9,20 @@ const notification = ({
   show = true,
   closeable = true,
   close
-  }) => {
-  return (
-    show && <div className={'note note-bottom info ' + level}>
-      <span className="content">{ message }</span>
-      { closeable && close && <a className="close" onClick={close}>✕</a> }
-    </div>)
+}) => {
+  if (show) {
+    return (
+      <div className={'note d-flex justify-space-between align-center ' + level }>
+        <p className="mb-0 fs-5">
+          { message }
+        </p>
+        { closeable && close &&
+            <a className="close" onClick={close}>✕</a>
+        }
+      </div>
+    )
+  }
+  return null
 }
 
 notification.PropTypes = {
