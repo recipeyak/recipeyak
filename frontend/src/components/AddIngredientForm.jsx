@@ -16,40 +16,44 @@ const AddIngredientForm = ({
     document.querySelector('#firstinput').focus()
   }
   }>
-  <div className="field">
-    <div className="add-ingredient-grid">
+  <div className="add-ingredient-grid mb-2">
 
+    <div>
       <input
         id="firstinput"
         onChange={ handleInputChange }
         autoFocus
         onFocus={ e => e.target.select() }
         value={ quantity }
-        className="my-input input-quantity"
+        className="my-input"
         type="text"
         placeholder="3 lbs"
         name="quantity"/>
+    </div>
 
+    <div>
       <input
         onChange={ handleInputChange }
         onFocus={ e => e.target.select() }
         value={ name }
-        className="my-input input-ingredient"
+        className="my-input"
         type="text"
         placeholder="tomato"
         name="name"/>
+    </div>
 
+    <div className="grid-entire-row">
       <input
         onChange={ handleInputChange }
         onFocus={ e => e.target.select() }
         value={ description }
-        className="my-input input-ingredient grid-entire-row"
+        className="my-input"
         type="text"
         placeholder="diced at 3cm in width"
         name="description"/>
     </div>
-
   </div>
+
   <div className="field is-grouped">
     <p className="control">
       <button

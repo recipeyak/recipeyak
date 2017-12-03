@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import ListItem from './ListItem.jsx'
 
 import AddIngredientForm from './AddIngredientForm'
@@ -106,17 +105,19 @@ class AddRecipe extends React.Component {
 
     return (
       <div className="d-grid grid-template-columns-repeat-12-fr grid-gap-1rem">
-        <input
-          autoFocus
-          onChange={ this.handleInputChange }
-          className="input fs-2rem grid-entire-row"
-          type="text" placeholder="new recipe title" name="name"/>
+        <div className="grid-entire-row">
+          <input
+            autoFocus
+            onChange={ this.handleInputChange }
+            className="my-input fs-2rem"
+            type="text" placeholder="new recipe title" name="name"/>
+        </div>
 
         <div className="d-grid grid-entire-row meta-data-grid">
           <label className="d-flex align-center">By
             <input
               onChange={ this.handleInputChange }
-              className="input ml-2"
+              className="my-input ml-2"
               type="text"
               placeholder="Author"
               name="author"/>
@@ -124,7 +125,7 @@ class AddRecipe extends React.Component {
           <label className="d-flex align-center">from
             <input
               onChange={ this.handleInputChange }
-              className="input ml-2"
+              className="my-input ml-2"
               type="text"
               placeholder="http://example.com/dumpling-soup"
               name="source"/>
@@ -132,7 +133,7 @@ class AddRecipe extends React.Component {
           <label className="d-flex align-center">creating
             <input
               onChange={ this.handleInputChange }
-              className="input ml-2"
+              className="my-input ml-2"
               type="text"
               placeholder="4 to 6 servings"
               name="servings"/>
@@ -140,15 +141,15 @@ class AddRecipe extends React.Component {
           <label className="d-flex align-center">in
             <input
               onChange={ this.handleInputChange }
-              className="input ml-2"
+              className="my-input ml-2"
               type="text"
               placeholder="1 hour"
               name="time"/>
           </label>
         </div>
 
-            <section className="ingredients-preparation-grid">
-            <div className="">
+          <section className="ingredients-preparation-grid">
+            <div>
               <h2 className="title">Ingredients</h2>
               <div className="box">
                 <ul>
@@ -180,7 +181,7 @@ class AddRecipe extends React.Component {
               </div>
             </div>
 
-              <div className="">
+              <div>
                 <h2 className="title is-3">Preparation</h2>
                 <div className="box">
                   <ul>
@@ -264,11 +265,6 @@ class AddRecipe extends React.Component {
       </div>
     )
   }
-}
-
-AddRecipe.PropTypes = {
-  addRecipe: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired
 }
 
 export default AddRecipe
