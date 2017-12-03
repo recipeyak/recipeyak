@@ -868,6 +868,7 @@ export const logUserIn = (email, password) => dispatch => {
   return sendLoginInfo(email, password)
     .then(res => {
       dispatch(login(res.data.key))
+      dispatch(fetchUser())
       dispatch(setLoadingLogin(false))
       dispatch(push('/recipes'))
     })
