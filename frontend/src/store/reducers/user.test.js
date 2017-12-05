@@ -35,10 +35,7 @@ describe('User', () => {
       token
     }
 
-    const afterState = {
-      loggedIn: false,
-      token: null
-    }
+    const afterState = user(undefined, { type: 'NOT_REAL' })
 
     expect(
       user(beforeState, logout())

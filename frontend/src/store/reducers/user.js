@@ -10,22 +10,25 @@ import {
   SET_UPDATING_USER_EMAIL
 } from '../actionTypes.js'
 
+const initialState = {
+  loggedIn: false,
+  token: null,
+  avatarURL: '',
+  loading: false,
+  error: false,
+  stats: {},
+  stats_loading: false
+}
+
 export const user = (
-  state = {
-    loggedIn: false,
-    token: null,
-    avatarURL: '',
-    loading: false,
-    error: false,
-    stats: {},
-    stats_loading: false
-  },
-  action) => {
+  state = initialState,
+  action
+) => {
   switch (action.type) {
     case LOG_IN:
       return { ...state, loggedIn: true, token: action.token }
     case LOG_OUT:
-      return { ...state, loggedIn: false, token: null }
+      return initialState
     case SET_AVATAR_URL:
       return { ...state, avatarURL: action.url }
     case SET_USER_EMAIL:

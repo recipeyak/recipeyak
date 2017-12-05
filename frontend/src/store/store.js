@@ -19,7 +19,9 @@ import shoppinglist from './reducers/shoppinglist.js'
 
 import { loadState, saveState } from './localStorage'
 
-export const recipeApp = combineReducers({
+import { LOG_OUT } from './actionTypes'
+
+const recipeApp = combineReducers({
   user,
   recipes,
   cart,
@@ -31,6 +33,14 @@ export const recipeApp = combineReducers({
   shoppinglist
 })
 
+// reset redux to default state on logout
+export const rootReducer = (state, action) => {
+  if (action.type === LOG_OUT) {
+    state = undefined
+  }
+  return recipeApp(state, action)
+}
+
 const defaultData = loadState()
 
 export const history = createHistory()
@@ -40,7 +50,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 // A "hydrated" store is nice for UI development
 export const store = createStore(
-  recipeApp,
+  rootReducer,
   defaultData,
   composeEnhancers(
     applyMiddleware(thunk, router)
@@ -57,7 +67,7 @@ store.subscribe(throttle(() => {
 
 // We need an empty store for the unit tests
 export const emptyStore = createStore(
-  recipeApp,
+  rootReducer,
   {},
   composeEnhancers(
     applyMiddleware(thunk, router)
