@@ -25,7 +25,7 @@ class PasswordChange extends React.Component {
     const { password, newPassword, newPasswordAgain } = this.state
     const disabled = password === '' || newPassword === '' || newPasswordAgain === ''
     return (
-      <form onSubmit={ this.handleSubmit }>
+      <form onSubmit={ this.handleSubmit } className="max-width-400px margin-0-auto">
 
         <h2 className="title is-3">Password Change</h2>
 

@@ -50,7 +50,8 @@ import {
   SET_UPDATING_INGREDIENT,
   SET_REMOVING_INGREDIENT,
   SET_UPDATING_STEP,
-  SET_REMOVING_STEP
+  SET_REMOVING_STEP,
+  SET_UPDATING_USER_EMAIL
 } from './actionTypes.js'
 
 import { push } from 'react-router-redux'
@@ -131,6 +132,11 @@ export const setUserEmail = email => {
   }
 }
 
+export const setUpdatingUserEmail = val => ({
+  type: SET_UPDATING_USER_EMAIL,
+  val
+})
+
 const patchEmail = (token, email) =>
   axios.patch('/api/v1/rest-auth/user/', { email }, {
     headers: {
@@ -138,14 +144,34 @@ const patchEmail = (token, email) =>
     }
   })
 
+const emailExists = err =>
+  err.response.data.email != null &&
+    err.response.data.email[0].includes('email already exists')
+
+const second = 1000
+
 export const updatingEmail = email => (dispatch, getState) => {
-  patchEmail(getState().user.token, email)
+  dispatch(setUpdatingUserEmail(true))
+  return patchEmail(getState().user.token, email)
     .then(res => {
       dispatch(setUserEmail(res.data.email))
       dispatch(setAvatarURL(res.data.avatar_url))
+      dispatch(setUpdatingUserEmail(false))
+      dispatch(showNotificationWithTimeout({
+        message: 'updated email',
+        level: 'success',
+        delay: 3 * second
+      }))
     })
     .catch(err => {
-      console.log('error updating email', err)
+      dispatch(setUpdatingUserEmail(false))
+      const messageExtra = emailExists(err)
+        ? '- email already in use'
+        : ''
+      dispatch(setNotification({
+        message: `problem updating email ${messageExtra}`,
+        level: 'danger'
+      }))
     })
 }
 
@@ -193,7 +219,7 @@ export const fetchUserStats = () => (dispatch, getState) => {
       dispatch(setLoadingUserStats(false))
     })
     .catch(err => {
-      console.error('Failed to fetch user stats:', err)
+      console.log('Failed to fetch user stats:', err)
       dispatch(setLoadingUserStats(false))
     })
 }

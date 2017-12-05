@@ -6,7 +6,8 @@ import {
   SET_ERROR_USER,
   SET_LOADING_USER,
   SET_USER_STATS,
-  SET_LOADING_USER_STATS
+  SET_LOADING_USER_STATS,
+  SET_UPDATING_USER_EMAIL
 } from '../actionTypes.js'
 
 export const user = (
@@ -37,6 +38,8 @@ export const user = (
       return { ...state, stats: action.val }
     case SET_LOADING_USER_STATS:
       return { ...state, stats_loading: action.val }
+    case SET_UPDATING_USER_EMAIL:
+      return { ...state, updatingEmail: action.val }
     default:
       return state
   }

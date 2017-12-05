@@ -6,7 +6,8 @@ import {
   setAvatarURL,
   setUserEmail,
   setLoadingUser,
-  setErrorUser
+  setErrorUser,
+  setUpdatingUserEmail
 } from '../actions.js'
 
 describe('User', () => {
@@ -101,6 +102,20 @@ describe('User', () => {
 
     expect(
       user(beforeState, setErrorUser(true))
+    ).toEqual(afterState)
+  })
+
+  it('sets updating user email correctly', () => {
+    const beforeState = {
+      updatingEmail: false
+    }
+
+    const afterState = {
+      updatingEmail: true
+    }
+
+    expect(
+      user(beforeState, setUpdatingUserEmail(true))
     ).toEqual(afterState)
   })
 })

@@ -3,7 +3,14 @@ import { Link } from 'react-router-dom'
 
 import './Settings.scss'
 
-const Settings = ({ avatarURL, email, handleInputChange, updateEmail, logout }) =>
+const Settings = ({
+  avatarURL,
+  email,
+  handleInputChange,
+  updateEmail,
+  logout,
+  updatingEmail
+}) =>
   <section className="columns">
 
     <section className="column">
@@ -22,7 +29,7 @@ const Settings = ({ avatarURL, email, handleInputChange, updateEmail, logout }) 
               className='input'
               name='email' />
             <button
-              className='button ml-2'
+              className={ 'button ml-2' + (updatingEmail ? ' is-loading' : '') }
               name='email'
               onClick={ updateEmail }
               value='save email'>
@@ -85,7 +92,8 @@ class SettingsWithState extends React.Component {
     const {
       updateEmail,
       avatarURL,
-      logout
+      logout,
+      updatingEmail
     } = this.props
 
     return (
@@ -94,6 +102,7 @@ class SettingsWithState extends React.Component {
         handleInputChange={ handleInputChange }
         updateEmail={ () => updateEmail(email) }
         avatarURL={ avatarURL }
+        updatingEmail={ updatingEmail }
         logout={ logout }
       />
     )

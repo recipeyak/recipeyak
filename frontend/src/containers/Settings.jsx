@@ -11,7 +11,8 @@ import Settings from '../components/Settings.jsx'
 const mapStateToProps = state => {
   return {
     avatarURL: state.user.avatarURL,
-    email: state.user.email
+    email: state.user.email,
+    updatingEmail: state.user.updatingEmail
   }
 }
 
