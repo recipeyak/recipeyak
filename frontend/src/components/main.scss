@@ -1,7 +1,10 @@
 $desertsand: hsl(36, 78%, 91%);
+$tomatosoup: rgb(229, 89, 64);
+
 html {
   height: 100%;
   background-color: $desertsand;
+  border-top: 4px solid $tomatosoup;
 }
 
 nav.nav,
@@ -19,7 +22,7 @@ section.section {
 }
 
 a {
-  color: rgb(229, 89, 64) !important;
+  color: $tomatosoup !important;
 }
 
 .flex-center {
