@@ -1,6 +1,5 @@
 import {
   LOG_IN,
-  LOG_OUT,
   SET_AVATAR_URL,
   SET_USER_EMAIL,
   SET_ERROR_USER,
@@ -27,8 +26,6 @@ export const user = (
   switch (action.type) {
     case LOG_IN:
       return { ...state, loggedIn: true, token: action.token }
-    case LOG_OUT:
-      return initialState
     case SET_AVATAR_URL:
       return { ...state, avatarURL: action.url }
     case SET_USER_EMAIL:

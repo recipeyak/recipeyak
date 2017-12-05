@@ -28,20 +28,6 @@ describe('User', () => {
     ).toEqual(afterState)
   })
 
-  it('Logs out user', () => {
-    const token = 'afakekey'
-    const beforeState = {
-      loggedIn: true,
-      token
-    }
-
-    const afterState = user(undefined, { type: 'NOT_REAL' })
-
-    expect(
-      user(beforeState, logout())
-    ).toEqual(afterState)
-  })
-
   it("sets user's avatarURL", () => {
     const beforeState = {
       avatarURL: ''
