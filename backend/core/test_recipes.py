@@ -69,6 +69,26 @@ def test_recipe_creation(client, user):
             assert item.get('text') == new_item.get('text')
 
 
+def test_creating_recipe_with_empty_ingredients_and_steps(client, user):
+    """
+    ensure that when creating a recipe without ingredients or steps, that the api will through an error
+    """
+
+    client.force_authenticate(user)
+
+    data = {
+        'name': '',
+        'ingredients': [],
+        'steps': [],
+    }
+
+    res = client.post(f'{BASE_URL}/recipes/', data)
+    assert res.status_code == status.HTTP_400_BAD_REQUEST
+    assert res.data.get('name') is not None
+    assert res.data.get('ingredients') is not None
+    assert res.data.get('steps') is not None
+
+
 def test_recipe_deletion(client, user, recipe):
     """
     ensure that the user can delete a recipe

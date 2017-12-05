@@ -435,22 +435,26 @@ export const setErrorAddRecipe = val => {
 
 export const postNewRecipe = recipe => (dispatch, getState) => {
   dispatch(setLoadingAddRecipe(true))
-  dispatch(setErrorAddRecipe(false))
-  sendPostNewRecipe(getState().user.token, recipe)
+  dispatch(setErrorAddRecipe({}))
+  return sendPostNewRecipe(getState().user.token, recipe)
     .then(res => {
       dispatch(addRecipe(res.data))
       dispatch(setLoadingAddRecipe(false))
       dispatch(push('/recipes'))
     })
     .catch(err => {
-      console.warn(err)
+      const errors = {
+        errorWithName: err.response.data.name != null,
+        errorWithIngredients: err.response.data.ingredients != null,
+        errorWithSteps: err.response.data.steps != null
+      }
       dispatch(setLoadingAddRecipe(false))
-      dispatch(setErrorAddRecipe(true))
+      dispatch(setErrorAddRecipe(errors))
 
       dispatch(showNotificationWithTimeout({
         message: 'problem creating new recipe',
         level: 'danger',
-        sticky: true
+        delay: 5 * second
       }))
     })
 }

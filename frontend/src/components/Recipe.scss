@@ -11,6 +11,8 @@
   margin-bottom: 0.75rem;
 }
 
+$danger: #ff3860;
+
 .my-input {
   align-items: center;
   border: 1px solid transparent;
@@ -35,4 +37,12 @@
   color: #363636;
   box-shadow: inset 0 1px 2px rgba(10, 10, 10, 0.1);
   width: 100%;
+
+  &.is-danger {
+    border-color: $danger;
+  }
+}
+
+.c-danger {
+  color: $danger;
 }

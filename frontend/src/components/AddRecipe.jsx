@@ -23,6 +23,14 @@ class AddRecipe extends React.Component {
     }
   }
 
+  static defaultProps = {
+    error: {
+      errorWithName: false,
+      errorWithIngredients: false,
+      errorWithSteps: false
+    }
+  }
+
   handleInputChange = e => {
     this.setState({ [e.target.name]: e.target.value })
   }
@@ -95,7 +103,20 @@ class AddRecipe extends React.Component {
   }
 
   render () {
-    const { ingredients, steps, ingredient, step } = this.state
+    const {
+      ingredients,
+      steps,
+      ingredient,
+      step
+    } = this.state
+
+    const { error } = this.props
+
+    const {
+      errorWithName,
+      errorWithIngredients,
+      errorWithSteps
+    } = error
 
     const {
       quantity = '',
@@ -109,8 +130,12 @@ class AddRecipe extends React.Component {
           <input
             autoFocus
             onChange={ this.handleInputChange }
-            className="my-input fs-2rem"
+            className={ 'my-input fs-2rem' + (errorWithName ? ' is-danger' : '') }
             type="text" placeholder="new recipe title" name="name"/>
+          { errorWithName
+              ? <p class="fs-4 c-danger">A recipe needs a name</p>
+              : null
+          }
         </div>
 
         <div className="d-grid grid-entire-row meta-data-grid">
@@ -177,6 +202,7 @@ class AddRecipe extends React.Component {
                   quantity={ quantity }
                   name={ name }
                   description={ description }
+                  error={ errorWithIngredients }
                 />
               </div>
             </div>
@@ -217,9 +243,13 @@ class AddRecipe extends React.Component {
                           }
                         }}
                         value={ step }
-                        className="textarea"
+                        className={ 'textarea' + (errorWithSteps ? ' is-danger' : '') }
                         placeholder="Add your step here"
                         name="step"/>
+                      { errorWithSteps
+                          ? <p class="fs-4 c-danger">A step is required</p>
+                          : null
+                      }
                     </div>
                   </div>
                   <div className="field is-grouped">
@@ -256,12 +286,6 @@ class AddRecipe extends React.Component {
             Create Recipe
           </button>
         </p>
-        {
-          !!this.props.error &&
-            <p>
-              Error creating recipe
-            </p>
-        }
       </div>
     )
   }

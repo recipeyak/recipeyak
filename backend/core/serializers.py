@@ -67,6 +67,16 @@ class RecipeSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = ('id', 'name', 'author', 'source', 'time', 'ingredients', 'steps', 'tags', 'servings', 'views')
 
+    def validate_steps(self, value):
+        if value == []:
+            raise serializers.ValidationError('steps are required')
+        return value
+
+    def validate_ingredients(self, value):
+        if value == []:
+            raise serializers.ValidationError('ingredients are required')
+        return value
+
     def create(self, validated_data) -> Recipe:
         """
         Since this a nested serializer, we need to write a custom create method.

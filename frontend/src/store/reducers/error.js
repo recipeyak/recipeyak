@@ -11,7 +11,11 @@ const error = (state = {
   login: {},
   signup: {},
   reset: {},
-  addRecipe: false,
+  addRecipe: {
+    errorWithName: false,
+    errorWithIngredients: false,
+    errorWithSteps: false
+  },
   recipes: false,
   cart: false
 }, action) => {

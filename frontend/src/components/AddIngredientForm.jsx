@@ -8,7 +8,8 @@ const AddIngredientForm = ({
   name,
   description,
   clearInputs,
-  loading
+  loading,
+  error
 }) =>
   <form onSubmit={ async e => {
     e.preventDefault()
@@ -25,7 +26,7 @@ const AddIngredientForm = ({
         autoFocus
         onFocus={ e => e.target.select() }
         value={ quantity }
-        className="my-input"
+        className={ 'my-input' + (error ? ' is-danger' : '') }
         type="text"
         placeholder="3 lbs"
         name="quantity"/>
@@ -36,7 +37,7 @@ const AddIngredientForm = ({
         onChange={ handleInputChange }
         onFocus={ e => e.target.select() }
         value={ name }
-        className="my-input"
+        className={ 'my-input' + (error ? ' is-danger' : '') }
         type="text"
         placeholder="tomato"
         name="name"/>
@@ -47,17 +48,21 @@ const AddIngredientForm = ({
         onChange={ handleInputChange }
         onFocus={ e => e.target.select() }
         value={ description }
-        className="my-input"
+        className={ 'my-input' + (error ? ' is-danger' : '') }
         type="text"
         placeholder="diced at 3cm in width"
         name="description"/>
+      { error
+          ? <p class="fs-4 c-danger">A recipe needs at least one ingredient</p>
+          : null
+      }
     </div>
   </div>
 
   <div className="field is-grouped">
     <p className="control">
       <button
-        className={ 'button is-primary ' + (loading ? 'is-loading' : '')}
+        className={ 'button is-primary' + (loading ? ' is-loading' : '')}
         type="submit"
         name="add ingredient">
         Add
