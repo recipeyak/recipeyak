@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
 import './Notification.scss'
 
@@ -25,14 +24,6 @@ const notification = ({
     )
   }
   return null
-}
-
-notification.propTypes = {
-  message: PropTypes.string.isRequired,
-  show: PropTypes.bool,
-  closeable: PropTypes.bool,
-  close: PropTypes.func,
-  level: PropTypes.oneOf(['success', 'info', 'warning', 'danger'])
 }
 
 export default notification

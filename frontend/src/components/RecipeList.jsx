@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
 import Recipe from './RecipeItem.jsx'
 import Loader from './Loader.jsx'
@@ -72,16 +71,6 @@ class RecipeList extends React.Component {
       </div>
     )
   }
-}
-
-RecipeList.PropTypes = {
-  removeFromCart: PropTypes.func.isRequired,
-  addToCart: PropTypes.func.isRequired,
-  fetchData: PropTypes.func.isRequired,
-  cart: PropTypes.object,
-  recipes: PropTypes.object,
-  loading: PropTypes.bool,
-  error: PropTypes.bool
 }
 
 RecipeList.defaultProps = {

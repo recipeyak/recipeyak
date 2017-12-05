@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
 class Signup extends React.Component {
@@ -116,11 +115,6 @@ class Signup extends React.Component {
         </section>
     )
   }
-}
-
-Signup.PropTypes = {
-  loading: PropTypes.bool.isRequired,
-  signup: PropTypes.func.isRequired
 }
 
 export default Signup

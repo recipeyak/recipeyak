@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
 const RecipeItem = ({
@@ -51,19 +50,6 @@ const RecipeItem = ({
       </footer>
     </div>
   )
-}
-
-RecipeItem.PropTypes = {
-  id: PropTypes.number.isRequired,
-  title: PropTypes.string.isRequired,
-  author: PropTypes.string.isRequired,
-  url: PropTypes.string.isRequired,
-  source: PropTypes.string.isRequired,
-  tags: PropTypes.arrayOf(PropTypes.string),
-  inCart: PropTypes.number.isRequired,
-  removeFromCart: PropTypes.func.isRequired,
-  addToCart: PropTypes.func.isRequired,
-  addingToCart: PropTypes.bool
 }
 
 export default RecipeItem

@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
 import './EnhancedTextInput.scss'
 
@@ -148,14 +147,6 @@ class EnhancedTextInput extends React.Component {
       </section>
     )
   }
-}
-
-EnhancedTextInput.PropTypes = {
-  text: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  placeholder: PropTypes.string,
-  className: PropTypes.string,
-  onChange: PropTypes.func.isRequired
 }
 
 EnhancedTextInput.defaultProps = {

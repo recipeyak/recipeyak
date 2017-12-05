@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
 class Login extends React.Component {
@@ -100,11 +99,6 @@ class Login extends React.Component {
         </section>
     )
   }
-}
-
-Login.PropTypes = {
-  loading: PropTypes.bool.isRequired,
-  login: PropTypes.func.isRequired
 }
 
 export default Login

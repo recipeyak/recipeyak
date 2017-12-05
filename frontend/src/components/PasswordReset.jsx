@@ -1,6 +1,5 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import PropTypes from 'prop-types'
 
 class PasswordReset extends React.Component {
   constructor (props) {
@@ -73,12 +72,6 @@ class PasswordReset extends React.Component {
         </section>
     )
   }
-}
-
-PasswordReset.PropTypes = {
-  reset: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired,
-  error: PropTypes.bool.isRequired
 }
 
 export default PasswordReset
