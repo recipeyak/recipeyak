@@ -61,3 +61,37 @@ def recipe(user):
         recipe=recipe)
 
     return recipe
+
+
+@pytest.fixture
+def recipe_pie(user):
+    """
+    incomplete pie recipe
+    """
+    name = 'Brandied Pumpkin Pie'
+    author = 'Melissa Clark'
+    source = 'https://cooking.nytimes.com/recipes/1015413-brandied-pumpkin-pie'
+    time = '4 hours'
+
+    recipe = Recipe.objects.create(
+        name=name, author=author, source=source, time=time, user=user)
+
+    Ingredient.objects.create(
+        quantity='150 grams',
+        name='all-purpose flour',
+        recipe=recipe)
+
+    Ingredient.objects.create(
+        quantity='0.25 teaspoon',
+        name='fine sea salt',
+        recipe=recipe)
+
+    Step.objects.create(
+        text='Make the crust: In a food processor, pulse together the flour and salt.',
+        recipe=recipe)
+
+    Tag.objects.create(
+        text='oven',
+        recipe=recipe)
+
+    return recipe

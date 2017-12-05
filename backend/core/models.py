@@ -98,7 +98,9 @@ class Recipe(CommonInfo):
     source = models.CharField(max_length=255, blank=True, null=True)
     time = models.CharField(max_length=255, blank=True, null=True)
     servings = models.CharField(max_length=255, blank=True, null=True)
-    views = models.IntegerField(default=0, editable=False)
+
+    edits = models.IntegerField(default=0, editable=False)
+    cart_additions = models.IntegerField(default=0, editable=False)
 
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
@@ -117,9 +119,6 @@ class Recipe(CommonInfo):
         """Return recipe tags ordered by creation date"""
         return Tag.objects.filter(recipe=self).order_by('created')
 
-    def count_view(self):
-        self.views += 1
-
     def __str__(self):
         return f'{self.name} by {self.author}'
 
@@ -128,6 +127,8 @@ class Recipe(CommonInfo):
         super(Recipe, self).save(*args, **kwargs)
         if is_new:
             CartItem.objects.create(recipe=self)
+        else:
+            self.edits += 1
 
 
 class Ingredient(CommonInfo):
@@ -182,3 +183,10 @@ class CartItem(CommonInfo):
 
     def __str__(self):
         return f'{self.count} - {self.recipe}'
+
+    def save(self, *args, **kwargs):
+        old_cart = CartItem.objects.filter(recipe=self.recipe).first()
+        if old_cart is not None and old_cart.count < self.count:
+            self.recipe.cart_additions += 1
+            self.recipe.save()
+        super(CartItem, self).save(*args, **kwargs)
