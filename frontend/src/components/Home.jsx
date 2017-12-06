@@ -7,21 +7,23 @@ import LineChart from './LineChartMonthRecipes'
 import './home.scss'
 
 const RecipesAddedThisWeek = ({ count = 0 }) =>
-  count &&
+  count > 0 &&
   <p className="fs-2rem fact">
     <b>{ count } recipe{ count === 1 ? ' ' : 's '}</b>
     {count === 1 ? 'has' : 'have'} been added in the <b>last week</b>.
   </p>
 
 const LifetimeRecipeEdits = ({ edits = 0, dateJoined = '' }) =>
-  edits && dateJoined &&
-  <p className="fs-2rem fact">Since <b>{ dateJoined }</b>, your recipes have been edited a total of <b>{ edits } times</b>.
+  edits > 0 && dateJoined !== '' &&
+  <p className="fs-2rem fact">
+    Since <b>{ dateJoined }</b>, your recipes have been edited a total of <b>{ edits } times</b>.
   </p>
 
 const MostAddedRecipe = ({ name = '', cartAdds = 0 }) =>
-  name && cartAdds &&
+  name !== '' && cartAdds > 0 &&
   <p className="fs-2rem fact">
-    <b>By cart additions</b>, your <b>favorite recipe</b> is { name }. You've added it to your cart {cartAdds} time{cartAdds !== 1 && 's'}.
+    <b>By cart additions</b>, your <b>favorite recipe</b> is { name }.
+    You've added it to your cart {cartAdds} time{cartAdds !== 1 && 's'}.
   </p>
 
 const UserStatistics = ({ stats }) => {
