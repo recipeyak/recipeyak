@@ -29,8 +29,12 @@ const RecipeEdit = ({
   deleting,
   loading,
   save,
-  addingIngredient
+  addingIngredient,
+  error404
 }) => {
+  if (error404) {
+    return <p>404</p>
+  }
   if (loading) {
     return <p>Loading...</p>
   }

@@ -21,7 +21,8 @@ import {
   SET_UPDATING_INGREDIENT,
   SET_REMOVING_INGREDIENT,
   SET_UPDATING_STEP,
-  SET_REMOVING_STEP
+  SET_REMOVING_STEP,
+  SET_RECIPE_404
 } from '../actionTypes.js'
 
 export const recipes = (state = {}, action) => {
@@ -42,6 +43,13 @@ export const recipes = (state = {}, action) => {
         [action.id]: {
           ...state[action.id],
           addingStepToRecipe: action.val
+        }
+      }
+    case SET_RECIPE_404:
+      return { ...state,
+        [action.id]: {
+          ...state[action.id],
+          error404: action.val
         }
       }
     case ADD_INGREDIENT_TO_RECIPE:

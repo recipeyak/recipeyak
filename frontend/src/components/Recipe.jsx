@@ -41,8 +41,12 @@ const RecipeViewing = ({
   removeFromCart,
   addingToCart = false,
   removingFromCart = false,
-  loading = false
+  loading = false,
+  error404 = false
 }) => {
+  if (error404) {
+    return <p>404</p>
+  }
   if (loading) {
     return <p>Loading...</p>
   }

@@ -22,7 +22,8 @@ import {
   setUpdatingIngredient,
   setRemovingIngredient,
   setUpdatingStep,
-  setRemovingStep
+  setRemovingStep,
+  setRecipe404
 } from '../actions.js'
 
 describe('Recipes', () => {
@@ -622,6 +623,25 @@ describe('Recipes', () => {
 
     expect(
       recipes(beforeState, setRemovingStep(1, 1, true))
+    ).toEqual(afterState)
+  })
+
+
+  it('sets the recipe to 404', () => {
+    const beforeState = {
+      1: {
+        error404: false
+      }
+    }
+
+    const afterState = {
+      1: {
+        error404: true
+      }
+    }
+
+    expect(
+      recipes(beforeState, setRecipe404(1, true))
     ).toEqual(afterState)
   })
 })

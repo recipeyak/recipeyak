@@ -51,7 +51,8 @@ import {
   SET_REMOVING_INGREDIENT,
   SET_UPDATING_STEP,
   SET_REMOVING_STEP,
-  SET_UPDATING_USER_EMAIL
+  SET_UPDATING_USER_EMAIL,
+  SET_RECIPE_404
 } from './actionTypes.js'
 
 import { push } from 'react-router-redux'
@@ -218,8 +219,8 @@ export const fetchUserStats = () => (dispatch, getState) => {
       dispatch(setUserStats(res.data))
       dispatch(setLoadingUserStats(false))
     })
-    .catch(err => {
-      console.log('Failed to fetch user stats:', err)
+    .catch(() => {
+      // TODO: handle error
       dispatch(setLoadingUserStats(false))
     })
 }
@@ -459,6 +460,12 @@ export const postNewRecipe = recipe => (dispatch, getState) => {
     })
 }
 
+export const setRecipe404 = (id, val) => ({
+  type: SET_RECIPE_404,
+  id,
+  val
+})
+
 export const setLoadingRecipe = (id, val) => ({
   type: SET_LOADING_RECIPE,
   id,
@@ -473,13 +480,17 @@ const getRecipe = (token, id) =>
   })
 
 export const fetchRecipe = id => (dispatch, getState) => {
+  dispatch(setRecipe404(id, false))
   dispatch(setLoadingRecipe(id, true))
-  getRecipe(getState().user.token, id)
+  return getRecipe(getState().user.token, id)
     .then(res => {
       dispatch(addRecipe(res.data))
       dispatch(setLoadingRecipe(id, false))
     })
     .catch(err => {
+      if (err.response.status === 404) {
+        dispatch(setRecipe404(id, true))
+      }
       dispatch(setLoadingRecipe(id, false))
       console.log('error fetching recipe', err)
     })
