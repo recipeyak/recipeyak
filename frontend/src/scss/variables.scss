@@ -1,0 +1,9 @@
+$desertsand: hsl(36, 78%, 91%);
+$tomatosoup: rgb(229, 89, 64);
+
+$danger: #ff3860;
+
+$border-color: #dbdbdb;
+
+$darkdesertsand: darken($desertsand, 30%);
+$desertsand-shadow: transparentize($darkdesertsand, 0.2);

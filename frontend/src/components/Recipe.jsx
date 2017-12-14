@@ -1,8 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import './Recipe.scss'
-
 const MetaData = ({
   author = '',
   source = '',

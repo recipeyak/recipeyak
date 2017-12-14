@@ -1,7 +1,5 @@
 import React from 'react'
 
-import './ListItem.scss'
-
 class ListItem extends React.Component {
   constructor (props) {
     super(props)

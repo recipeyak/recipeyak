@@ -1,8 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import './nav.scss'
-
 class Navbar extends React.Component {
   state = {
     query: '',

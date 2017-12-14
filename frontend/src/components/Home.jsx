@@ -4,8 +4,6 @@ import Signup from '../containers/HomeSignup'
 
 import LineChart from './LineChartMonthRecipes'
 
-import './home.scss'
-
 const RecipesAddedThisWeek = ({ count = 0 }) =>
   count > 0 &&
   <p className="fs-2rem fact">

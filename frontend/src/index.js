@@ -8,8 +8,6 @@ import App from './components/App.jsx'
 
 import store from './store/store.js'
 
-import './grid.scss'
-
 if (process.env.NODE_ENV === 'production') {
   Raven.config('https://3b11e5eed068478390e1e8f01e2190a9@sentry.io/250295').install()
 }

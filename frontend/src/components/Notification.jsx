@@ -1,7 +1,5 @@
 import React from 'react'
 
-import './Notification.scss'
-
 const notification = ({
   message,
   level = 'info',

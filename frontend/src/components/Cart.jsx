@@ -2,7 +2,6 @@ import React from 'react'
 
 import Recipe from './RecipeItem.jsx'
 import Loader from './Loader.jsx'
-import './cart.scss'
 
 class Cart extends React.Component {
   componentWillMount () {

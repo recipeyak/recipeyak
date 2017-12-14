@@ -25,7 +25,8 @@ import Notification from '../containers/Notification.jsx'
 import HomePage from '../components/Base.jsx'
 import PasswordChange from '../containers/PasswordChange.jsx'
 
-import './main.scss'
+import 'bulma/css/bulma.css'
+import '../scss/main.scss'
 
 const isAuthenticated = () => store.getState().user.token != null
 

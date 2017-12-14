@@ -3,12 +3,6 @@ import React from 'react'
 import Recipe from './RecipeItem.jsx'
 import Loader from './Loader.jsx'
 
-import '../reset.scss'
-
-import 'bulma/css/bulma.css'
-
-import './recipe-list.scss'
-
 export const matchesQuery = (recipe, query) => {
   const { name, author } = recipe
   query = query.toUpperCase()
