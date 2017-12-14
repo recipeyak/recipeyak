@@ -25,8 +25,8 @@
   transition: all 0.2s;
 
   &:focus {
-    border-color: $darkdesertsand;
-    box-shadow: 0 0 5px 0px $desertsand-shadow;
+    border-color: $primary-color;
+    box-shadow: 0 0 5px 0px $primary-color-shadow;
   }
 
   &.is-danger {

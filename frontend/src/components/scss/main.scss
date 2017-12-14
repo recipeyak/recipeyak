@@ -13,8 +13,7 @@
 
 html {
   height: 100%;
-  background-color: $desertsand;
-  border-top: 4px solid $tomatosoup;
+  border-top: 3px solid $link-color;
 }
 
 nav.nav,
@@ -32,7 +31,11 @@ section.section {
 }
 
 a {
-  color: $tomatosoup !important;
+  color: $link-color !important;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .tags > .tag {
