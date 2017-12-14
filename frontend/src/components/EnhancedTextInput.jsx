@@ -1,7 +1,5 @@
 import React from 'react'
 
-import './EnhancedTextInput.scss'
-
 class EnhancedTextInput extends React.Component {
   constructor (props) {
     super(props)
@@ -10,6 +8,12 @@ class EnhancedTextInput extends React.Component {
       editing: false,
       unsavedChanges: false
     }
+  }
+
+  static defaultProps = {
+    placeholder: 'input text',
+    className: '',
+    showEditButton: false
   }
 
   componentWillMount () {
@@ -123,7 +127,7 @@ class EnhancedTextInput extends React.Component {
       <section
         ref={element => { this.element = element }}
         onClick={ this.enableEditing }
-        className="flex-grow">
+        className="d-flex flex-grow">
         { !this.state.editing
             ? <section>
                 <div className="d-flex align-center">
@@ -147,12 +151,6 @@ class EnhancedTextInput extends React.Component {
       </section>
     )
   }
-}
-
-EnhancedTextInput.defaultProps = {
-  placeholder: 'input text',
-  className: '',
-  showEditButton: false
 }
 
 export default EnhancedTextInput

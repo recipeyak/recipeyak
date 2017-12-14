@@ -1,3 +1,5 @@
+@import './variables.scss';
+
 .note-container {
   position: fixed;
   left: 0;
@@ -48,27 +50,23 @@
 
 }
 
-$success: rgb(99,203,137);
 .success {
   border-color: $success;
   background-color: $success;
   color: white;
 }
 
-$info: #1695A3;
 .info {
   border-color: $info;
   background-color: $info;
   color: white;
 }
 
-$warning: #EB7F00;
 .warning {
   border-color: $warning;
   background-color: $warning;
 }
 
-$danger: #B64926;
 .danger {
   border-color: $danger;
   background-color: $danger;
