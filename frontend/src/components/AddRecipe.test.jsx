@@ -15,7 +15,7 @@ describe('<AddRecipe/>', () => {
     mount(
       <Provider store={ store }>
         <MemoryRouter>
-          <AddRecipe/>
+          <AddRecipe clearErrors={ _ => _ }/>
         </MemoryRouter>
       </Provider>)
   })
