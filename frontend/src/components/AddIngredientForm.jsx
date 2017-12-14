@@ -61,19 +61,24 @@ const AddIngredientForm = ({
   <div className="field is-grouped">
     <p className="control">
       <button
-        className={ 'button is-primary' + (loading ? ' is-loading' : '')}
+        disabled={ quantity === '' && name === '' }
+        className={ 'my-button is-primary' + (loading ? ' is-loading' : '')}
         type="submit"
         name="add ingredient">
         Add
         </button>
     </p>
     <p className="control">
-      <input
-        onClick={ cancelAddIngredient }
-        className="button"
-        type="button"
-        name="cancel add ingredient"
-        value="✕"/>
+      { quantity !== '' || name !== ''
+        ? <input
+            disabled={ quantity === '' && name === '' }
+            onClick={ cancelAddIngredient }
+            className="button"
+            type="button"
+            name="cancel add ingredient"
+            value="✕"/>
+        : null
+      }
     </p>
   </div>
 </form>

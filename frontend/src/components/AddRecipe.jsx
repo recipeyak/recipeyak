@@ -247,7 +247,7 @@ class AddRecipe extends React.Component {
                           }
                         }}
                         value={ step }
-                        className={ 'textarea' + (errorWithSteps ? ' is-danger' : '') }
+                        className={ 'my-textarea' + (errorWithSteps ? ' is-danger' : '') }
                         placeholder="Add your step here"
                         name="step"/>
                       { errorWithSteps
@@ -261,20 +261,23 @@ class AddRecipe extends React.Component {
                       <input
                         onClick={ this.addStep }
                         disabled={ step === '' }
-                        className="button is-primary"
+                        className="my-button is-primary"
                         type="submit"
                         name="save step"
                         value="Add"/>
                     </p>
-                    <p className="control">
-                      <input
-                        onClick={ this.cancelAddStep }
-                        disabled={ step === '' }
-                        className={ step === '' ? 'is-hidden button' : 'button' }
-                        type="button"
-                        name="cancel step"
-                        value="✕"/>
-                    </p>
+                    { step !== ''
+                        ? <p className="control">
+                            <input
+                              onClick={ this.cancelAddStep }
+                              disabled={ step === '' }
+                              className='my-button'
+                              type="button"
+                              name="cancel step"
+                              value="✕"/>
+                          </p>
+                        : null
+                    }
                   </div>
                 </form>
               </div>
@@ -282,7 +285,7 @@ class AddRecipe extends React.Component {
           </section>
         <p className="flex-center grid-entire-row">
           <button
-            className={ 'button is-large is-primary ' + (this.props.loading ? 'is-loading' : '')}
+            className={ 'my-button is-large is-primary ' + (this.props.loading ? 'is-loading' : '')}
             type="submit"
             onClick={ this.handleSubmit }
             onKeyPress={ this.handleSubmit }

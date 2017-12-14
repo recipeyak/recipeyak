@@ -68,7 +68,7 @@ class AddStep extends React.Component {
           <p className="control">
             <button
               disabled={ state.step === '' }
-              className={ `button is-primary ${loading ? 'is-loading' : ''}` }
+              className={ `my-button is-primary ${loading ? 'is-loading' : ''}` }
               type="submit"
               name="save step">
               Add
@@ -77,7 +77,7 @@ class AddStep extends React.Component {
           <p className="control">
             <input
               onClick={ this.cancelAddStep }
-              className="button"
+              className="my-button"
               type="button"
               name="cancel step"
               value="✕"/>

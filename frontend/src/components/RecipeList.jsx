@@ -3,6 +3,8 @@ import React from 'react'
 import Recipe from './RecipeItem.jsx'
 import Loader from './Loader.jsx'
 
+import '../reset.scss'
+
 import 'bulma/css/bulma.css'
 
 import './recipe-list.scss'
@@ -63,7 +65,13 @@ class RecipeList extends React.Component {
 
     return (
       <div className="grid-container">
-        <input autoFocus onChange={ this.handleInputChange } type='search' className='input grid-entire-row' name='query'/>
+        <input
+          autoFocus
+          onChange={ this.handleInputChange }
+          type='search'
+          placeholder='search'
+          className='my-input grid-entire-row'
+          name='query'/>
         { this.props.loading
             ? <Loader/>
             : <Results recipes={ recipes } query={ this.state.query } />

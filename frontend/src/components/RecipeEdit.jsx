@@ -45,7 +45,7 @@ const RecipeEdit = ({
         <input
           autoFocus
           onChange={ handleInputChange }
-          className="input fs-2rem"
+          className="my-input fs-2rem"
           type="text"
           placeholder="new recipe title"
           defaultValue={ name }
@@ -64,7 +64,7 @@ const RecipeEdit = ({
         <label className="d-flex align-center">By
           <input
             onChange={ handleInputChange }
-            className="input ml-2"
+            className="my-input ml-2"
             type="text"
             placeholder="Author"
             defaultValue={ author }
@@ -73,7 +73,7 @@ const RecipeEdit = ({
         <label className="d-flex align-center">from
           <input
             onChange={ handleInputChange }
-            className="input ml-2"
+            className="my-input ml-2"
             type="text"
             placeholder="http://example.com/dumpling-soup"
             defaultValue={ source }
@@ -82,7 +82,7 @@ const RecipeEdit = ({
         <label className="d-flex align-center">creating
           <input
             onChange={ handleInputChange }
-            className="input ml-2"
+            className="my-input ml-2"
             type="text"
             placeholder="4 to 6 servings"
             defaultValue={ servings }
@@ -91,7 +91,7 @@ const RecipeEdit = ({
         <label className="d-flex align-center">in
           <input
             onChange={ handleInputChange }
-            className="input ml-2"
+            className="my-input ml-2"
             type="text"
             placeholder="1 hour"
             defaultValue={ time }

@@ -112,7 +112,7 @@ class ListItem extends React.Component {
                   }
                 }}
                 defaultValue={ this.state.text }
-                className="textarea"
+                className="my-textarea"
                 placeholder="Add you text here"
                 name="text"/>
             </div>
