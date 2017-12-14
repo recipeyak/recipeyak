@@ -11,9 +11,7 @@ const Settings = ({
   logout,
   updatingEmail
 }) =>
-  <section className="columns">
-
-    <section className="column">
+    <section className="d-flex direction-column">
 
       <div className="d-flex">
         <a href="https://secure.gravatar.com" className="mr-3">
@@ -54,23 +52,11 @@ const Settings = ({
         </div>
       </div>
 
-      <div className="control flex-align-center mt-4">
-        <a className="mr-4">Export Recipes</a>
-
-        <div className="select is-small">
-          <select>
-            <option>as TOML</option>
-            <option>as JSON</option>
-            <option>as YAML</option>
-          </select>
-        </div>
-      </div>
+      <a>Export Recipes</a>
 
       <a onClick={ logout }>Log out</a>
 
     </section>
-
-  </section>
 
 class SettingsWithState extends React.Component {
   state = {
