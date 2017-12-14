@@ -1,11 +1,3 @@
-.ingredients-list {
-  white-space: pre-wrap;
-}
-
-.card {
-  margin-bottom: 10px;
-}
-
 .has-text-grey-light {
   color: hsl(0, 0%, 71%);
 }
@@ -19,12 +11,4 @@
   .cart-container {
     grid-template-columns: repeat(2, 1fr);
   }
-}
-
-.d-grid {
-  display: grid;
-}
-
-.grid-gap-4 {
-  grid-gap: 1rem;
 }

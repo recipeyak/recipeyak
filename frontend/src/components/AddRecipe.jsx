@@ -283,7 +283,7 @@ class AddRecipe extends React.Component {
               </div>
             </div>
           </section>
-        <p className="flex-center grid-entire-row">
+        <p className="d-flex justify-center grid-entire-row">
           <button
             className={ 'my-button is-large is-primary ' + (this.props.loading ? 'is-loading' : '')}
             type="submit"

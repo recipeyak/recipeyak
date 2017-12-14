@@ -31,6 +31,11 @@ class RecipeList extends React.Component {
     }
   }
 
+  static defaultProps = {
+    cart: {},
+    recipes: {}
+  }
+
   componentWillMount () {
     this.props.fetchData()
   }
@@ -73,11 +78,6 @@ class RecipeList extends React.Component {
       </div>
     )
   }
-}
-
-RecipeList.defaultProps = {
-  cart: {},
-  recipes: {}
 }
 
 export default RecipeList

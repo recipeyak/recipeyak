@@ -2,13 +2,14 @@
 @import './buttons.scss';
 @import './inputs.scss';
 @import './loader.scss';
+@import './helpers.scss';
 
 @import './nav.scss';
 @import './ListItem.scss';
 @import './Notification.scss';
 @import './Settings.scss';
 @import './home.scss';
-@import './recipe-list.scss';
+@import './cart.scss';
 
 html {
   height: 100%;
@@ -34,15 +35,6 @@ a {
   color: $tomatosoup !important;
 }
 
-.c-danger {
-  color: $danger;
-}
-
-.flex-center {
-  display: flex;
-  justify-content: center;
-}
-
 .tags > .tag {
   margin-right: 0.35rem;
 }
@@ -51,133 +43,14 @@ a {
   margin-bottom: 0.75rem;
 }
 
-.flex-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-// make new lines actual appear
-.pre {
-  white-space: pre;
-}
-
 // fix width of tags so buttons aren't pushed around when numbers decrease/increase
 .cart-count-tag {
   width: 40px;
 }
 
-.justify-space-between,
-.flex-space-between {
-  display: flex;
-  justify-content: space-between;
-}
-
-.align-center {
-  display: flex;
-  align-items: center;
-}
-
-.d-flex {
-  display: flex;
-}
-
-.p-rel {
-  position: relative;
-}
-
-@for $i from 0 through 4 {
-  .pl-#{$i} {
-    padding-left: #{$i/4}rem !important;
-  }
-  .pt-#{$i} {
-    padding-top: #{$i/4}rem !important;
-  }
-  .pr-#{$i} {
-    padding-right: #{$i/4}rem !important;
-  }
-  .pb-#{$i} {
-    padding-bottom: #{$i/4}rem !important;
-  }
-}
-
-@for $i from 0 through 4 {
-  .ml-#{$i} {
-    margin-left: #{$i/4}rem !important;
-  }
-  .mt-#{$i} {
-    margin-top: #{$i/4}rem !important;
-  }
-  .mr-#{$i} {
-    margin-right: #{$i/4}rem !important;
-  }
-  .mb-#{$i} {
-    margin-bottom: #{$i/4}rem !important;
-  }
-}
-
-
-@for $i from 0 through 8 {
-  .fs-#{$i} {
-    font-size: #{$i/4}rem !important;
-  }
-}
-
-.p-0 {
-  padding: 0 !important;
-}
-
-.direction-column {
-  flex-direction: column;
-}
-
-.flex-wrap {
-  flex-wrap: wrap;
-}
-
-.fs-italic {
-  font-style: italic;
-}
-
-.justify-content-center {
-  justify-content: center;
-}
-
 .better-label {
   font-weight: bold;
   margin-right: .75rem;
-}
-
-.justify-self-center {
-  justify-self: center;
-}
-
-.skeleton-cart-ingredient {
-  height: 3px;
-  width: 250px;
-  background-color: lightgray;
-  margin-bottom: 1rem;
-  &:nth-of-type(2) {
-    width: 150px;
-  }
-  &:nth-of-type(3) {
-    width: 170px;
-  }
-  &:nth-of-type(4) {
-    width: 70px;
-  }
-}
-
-.d-grid {
-  display: grid;
-}
-
-.grid-template-columns-repeat-12-fr {
-  grid-template-columns: repeat(12, 1fr);
-}
-
-.grid-gap-1rem {
-  grid-gap: 1rem;
 }
 
 .ingredients-preparation-grid {
@@ -202,10 +75,15 @@ a {
   grid-gap: 0.5rem;
 }
 
-.max-width-400px {
-  max-width: 400px;
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-gap: 1rem;
 }
 
-.margin-0-auto {
-  margin: 0 auto;
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-bottom: 0;
 }

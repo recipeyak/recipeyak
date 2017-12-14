@@ -8,6 +8,11 @@ class Cart extends React.Component {
     this.props.fetchData()
   }
 
+  static defaultProps = {
+    cart: {},
+    shoppinglist: []
+  }
+
   render () {
     const {
       cart,
@@ -43,7 +48,11 @@ class Cart extends React.Component {
             addToCart={ () => addToCart(recipe.id)}
           />
         ))
-      : <p className="no-recipes">No recipes in cart.</p>
+      : []
+
+    if (shoppinglist.length <= 0 || recipeItems <= 0) {
+      return <p className="font-family-serif fs-8 text-center">No recipes in cart.</p>
+    }
 
     return (
       <div className="cart-container">
@@ -51,26 +60,17 @@ class Cart extends React.Component {
           { recipeItems }
         </div>
         <div>
-          {
-            shoppinglist.length > 0
-              ? <div className={loadingShoppingList ? 'box has-text-grey-light' : 'box'} >
-                {
-                  shoppinglist.map(x =>
-                    <p key={x.name}>{x.unit} {x.name} </p>
-                  )
-                }
-              </div>
-              : <p className="no-recipes">No shopping list to list.</p>
-          }
+          <div className={loadingShoppingList ? 'box has-text-grey-light' : 'box'} >
+            {
+              shoppinglist.map(x =>
+                <p key={x.name}>{x.unit} {x.name} </p>
+              )
+            }
+          </div>
         </div>
       </div>
     )
   }
-}
-
-Cart.defaultProps = {
-  cart: {},
-  shoppinglist: []
 }
 
 export default Cart

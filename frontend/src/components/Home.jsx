@@ -6,20 +6,20 @@ import LineChart from './LineChartMonthRecipes'
 
 const RecipesAddedThisWeek = ({ count = 0 }) =>
   count > 0 &&
-  <p className="fs-2rem fact">
+  <p className="fs-2rem mb-1">
     <b>{ count } recipe{ count === 1 ? ' ' : 's '}</b>
     {count === 1 ? 'has' : 'have'} been added in the <b>last week</b>.
   </p>
 
 const LifetimeRecipeEdits = ({ edits = 0, dateJoined = '' }) =>
   edits > 0 && dateJoined !== '' &&
-  <p className="fs-2rem fact">
+  <p className="fs-2rem mb-1">
     Since <b>{ dateJoined }</b>, your recipes have been edited a total of <b>{ edits } times</b>.
   </p>
 
 const MostAddedRecipe = ({ name = '', cartAdds = 0 }) =>
   name !== '' && cartAdds > 0 &&
-  <p className="fs-2rem fact">
+  <p className="fs-2rem mb-1">
     <b>By cart additions</b>, your <b>favorite recipe</b> is { name }.
     You've added it to your cart {cartAdds} time{cartAdds !== 1 && 's'}.
   </p>
@@ -45,7 +45,7 @@ const UserStatistics = ({ stats }) => {
     <RecipesAddedThisWeek count={stats.new_recipes_last_week}/>
     <LifetimeRecipeEdits edits={stats.total_recipe_edits} dateJoined={stats.date_joined}/>
     <MostAddedRecipe name={mostAddedRecipe} cartAdds={cartAdds}/>
-    <h3 className="fs-2rem fact">Recipes added over the <b>past year</b>:</h3>
+    <p className="fs-2rem mb-1">Recipes added over the <b>past year</b>:</p>
     <LineChart data={recipesAddedByMonth}/>
   </div>
   )
