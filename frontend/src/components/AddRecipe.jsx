@@ -31,6 +31,10 @@ class AddRecipe extends React.Component {
     }
   }
 
+  componentWillMount = () => {
+    this.props.clearErrors()
+  }
+
   handleInputChange = e => {
     this.setState({ [e.target.name]: e.target.value })
   }

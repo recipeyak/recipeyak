@@ -1,6 +1,9 @@
 import { connect } from 'react-redux'
 
-import { postNewRecipe } from '../store/actions.js'
+import {
+  postNewRecipe,
+  setErrorAddRecipe
+} from '../store/actions.js'
 import AddRecipe from '../components/AddRecipe.jsx'
 
 const mapStateToProps = state => {
@@ -14,6 +17,9 @@ const mapDispatchToProps = dispatch => {
   return {
     addRecipe: recipe => {
       dispatch(postNewRecipe(recipe))
+    },
+    clearErrors: () => {
+      dispatch(setErrorAddRecipe({}))
     }
   }
 }

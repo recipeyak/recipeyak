@@ -23,7 +23,6 @@ const AddIngredientForm = ({
       <input
         id="firstinput"
         onChange={ handleInputChange }
-        autoFocus
         onFocus={ e => e.target.select() }
         value={ quantity }
         className={ 'my-input' + (error ? ' is-danger' : '') }
