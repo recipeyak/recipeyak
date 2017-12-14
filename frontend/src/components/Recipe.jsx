@@ -57,18 +57,18 @@ const RecipeViewing = ({
           <div>
             <input
               onClick={ () => removeFromCart(id) }
-              className={ `button ${removingFromCart ? 'is-loading' : ''}` }
+              className={ `my-button ${removingFromCart ? 'is-loading' : ''}` }
               disabled={ inCart <= 0 }
               type="button"
               value="-"/>
             <span className="tag is-light is-medium cart-count-tag">{ inCart }</span>
             <input
               onClick={ () => addToCart(id) }
-              className={ `button is-primary ${addingToCart ? 'is-loading' : ''}` }
+              className={ `my-button is-primary ${addingToCart ? 'is-loading' : ''}` }
               type="button"
               value="+"/>
           </div>
-          <Link to={ `/recipes/${id}/edit` } className="button is-link ml-2">Edit</Link>
+          <Link to={ `/recipes/${id}/edit` } className="my-button is-link ml-2">Edit</Link>
         </div>
       </div>
 

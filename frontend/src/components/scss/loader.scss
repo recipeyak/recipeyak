@@ -32,7 +32,7 @@
   }
 
   > div {
-    background-color: transparentize(darken($desertsand, 7%), .1);
+    background-color: transparentize(darken($primary-color, 7%), .1);
     width: 15px;
     height: 15px;
     border-radius: 100%;

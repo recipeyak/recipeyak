@@ -53,10 +53,10 @@ const RecipeEdit = ({
         <div className="d-flex ml-4">
           <input
             onClick={ save }
-            className="button is-primary mr-1"
+            className="my-button is-primary mr-1"
             type="button"
             value="Save"/>
-          <Link to={ `/recipes/${id}` } className="button is-link">Cancel</Link>
+          <Link to={ `/recipes/${id}` } className="my-button is-link">Cancel</Link>
         </div>
       </div>
 
@@ -160,7 +160,7 @@ const RecipeEdit = ({
       <section className="grid-entire-row justify-self-center">
         <button
           onClick={ () => deleteRecipe(id) }
-          className={ 'button is-danger ' + (deleting ? 'is-loading' : '')}>
+          className={ 'my-button is-danger ' + (deleting ? 'is-loading' : '')}>
           Delete Recipe
         </button>
       </section>

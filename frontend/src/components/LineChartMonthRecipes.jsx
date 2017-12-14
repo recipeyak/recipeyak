@@ -2,19 +2,22 @@ import React from 'react'
 
 import { Line } from 'react-chartjs-2'
 
+const darkGray = 'rgba(229, 89, 64, 1)'
+const transparentdarkGray = 'rgba(229, 89, 64, 0.9)'
+
 const defaultDataConfig = {
   labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
   datasets: [{
     fill: false,
     lineTension: 0.3,
-    borderColor: 'rgb(229, 89, 64)',
+    borderColor: darkGray,
     borderCapStyle: 'round',
-    pointBorderColor: 'rgba(229, 89, 64, 0.9)',
-    pointBackgroundColor: 'rgba(229, 89, 64, 0.9)',
+    pointBorderColor: transparentdarkGray,
+    pointBackgroundColor: transparentdarkGray,
     borderWidth: 5,
     pointHoverRadius: 5,
-    pointHoverBackgroundColor: 'rgba(229, 89, 64, 0.9)',
-    pointHoverBorderColor: 'rgba(229, 89, 64, 0.9)',
+    pointHoverBackgroundColor: transparentdarkGray,
+    pointHoverBorderColor: transparentdarkGray,
     pointHoverBorderWidth: 8,
     pointRadius: 5,
     data: []
