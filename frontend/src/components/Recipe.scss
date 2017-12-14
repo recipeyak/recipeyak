@@ -111,12 +111,33 @@ $desertsand-shadow: transparentize($darkdesertsand, 0.2);
     box-shadow: 0 0 5px 0px $desertsand-shadow;
   }
 
-  &:hover {
+  &:hover:not([disabled]) {
     border-color: $darkdesertsand;
   }
 
   &.is-large {
     font-size: 1.5rem;
+  }
+
+  &.is-loading {
+    // hide text when loading
+    color: transparent !important;
+  }
+
+  &.is-loading:after {
+    animation: spinAround 500ms infinite linear;
+    border: 2px solid $border-color;
+    border-radius: 290486px;
+    border-right-color: transparent;
+    border-top-color: transparent;
+    content: "";
+    display: block;
+    height: 1em;
+    position: relative;
+    width: 1em;
+    position: absolute;
+    left: calc(50% - (1em / 2));
+    top: calc(50% - (1em / 2));
   }
 
   &.is-primary {
@@ -136,6 +157,12 @@ $desertsand-shadow: transparentize($darkdesertsand, 0.2);
 
     &:focus {
       box-shadow: 0 0 5px $desertsand-shadow;
+    }
+
+    &.is-loading:after {
+      border-color: white;
+      border-right-color: transparent;
+      border-top-color: transparent;
     }
   }
 

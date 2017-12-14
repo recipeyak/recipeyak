@@ -21,11 +21,11 @@ const RecipeItem = ({
     <div className="field is-grouped">
       <button
         onClick={ () => removeFromCart(id) }
-        className={ `button control ${removingFromCart ? 'is-loading' : ''}` }
+        className={ `my-button control ${removingFromCart ? 'is-loading' : ''}` }
         disabled={ !inCart }>Remove One</button>
       <button
         onClick={ () => addToCart(id) }
-        className={ `button is-primary control ${addingToCart ? 'is-loading' : ''}` }
+        className={ `my-button is-primary control ${addingToCart ? 'is-loading' : ''}` }
         >Add Another</button>
       <span className="tag is-light is-medium cart-count-tag">{ inCart }</span>
     </div>

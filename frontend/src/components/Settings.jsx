@@ -27,7 +27,7 @@ const Settings = ({
               className='my-input'
               name='email' />
             <button
-              className={ 'button ml-2' + (updatingEmail ? ' is-loading' : '') }
+              className={ 'my-button ml-2' + (updatingEmail ? ' is-loading' : '') }
               name='email'
               onClick={ updateEmail }
               value='save email'>
