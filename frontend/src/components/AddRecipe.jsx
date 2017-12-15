@@ -1,6 +1,7 @@
 import React from 'react'
-import ListItem from './ListItem.jsx'
+import { Helmet } from 'react-helmet'
 
+import ListItem from './ListItem'
 import AddIngredientForm from './AddIngredientForm'
 import AddStepForm from './AddStepForm'
 import Ingredient from './Ingredient'
@@ -137,6 +138,7 @@ class AddRecipe extends React.Component {
 
     return (
       <div className="d-grid grid-template-columns-repeat-12-fr grid-gap-1rem">
+        <Helmet title='Add Recipe'/>
         <div className="grid-entire-row">
           <input
             autoFocus

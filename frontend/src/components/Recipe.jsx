@@ -1,4 +1,5 @@
 import React from 'react'
+import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
 const MetaData = ({
@@ -50,6 +51,7 @@ const RecipeViewing = ({
   }
   return (
     <div className="d-grid grid-template-columns-repeat-12-fr grid-gap-1rem">
+      <Helmet title={ name }/>
 
       <div className="grid-entire-row d-flex align-center justify-space-between flex-wrap">
         <h1 className="title fs-3rem mb-0">{ name }</h1>

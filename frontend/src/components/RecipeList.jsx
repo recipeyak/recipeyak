@@ -1,4 +1,5 @@
 import React from 'react'
+import { Helmet } from 'react-helmet'
 
 import Recipe from './RecipeItem.jsx'
 import Loader from './Loader.jsx'
@@ -64,6 +65,7 @@ class RecipeList extends React.Component {
 
     return (
       <div className="grid-container">
+        <Helmet title='Recipes'/>
         <input
           autoFocus
           onChange={ this.handleInputChange }

@@ -1,4 +1,5 @@
 import React from 'react'
+import { Helmet } from 'react-helmet'
 
 import Recipe from './RecipeItem.jsx'
 import Loader from './Loader.jsx'
@@ -56,6 +57,7 @@ class Cart extends React.Component {
 
     return (
       <div className="cart-container">
+        <Helmet title='Cart' />
         <div className="d-grid grid-gap-4">
           { recipeItems }
         </div>

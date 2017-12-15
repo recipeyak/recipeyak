@@ -1,4 +1,5 @@
 import React from 'react'
+import { Helmet } from 'react-helmet'
 
 class PasswordChange extends React.Component {
   constructor () {
@@ -26,6 +27,7 @@ class PasswordChange extends React.Component {
     const disabled = password === '' || newPassword === '' || newPasswordAgain === ''
     return (
       <form onSubmit={ this.handleSubmit } className="max-width-400px margin-0-auto">
+        <Helmet title='Password Change'/>
 
         <h2 className="title is-3">Password Change</h2>
 

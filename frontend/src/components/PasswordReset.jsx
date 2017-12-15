@@ -1,4 +1,5 @@
 import React from 'react'
+import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
 class PasswordReset extends React.Component {
@@ -32,6 +33,7 @@ class PasswordReset extends React.Component {
 
     return (
         <section className="section">
+          <Helmet title='Password Reset'/>
           <div className="container">
             <div className="columns">
               <div className="column is-half-tablet is-offset-one-quarter-tablet is-one-third-desktop is-offset-one-third-desktop box">

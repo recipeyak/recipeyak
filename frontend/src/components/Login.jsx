@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet'
 
 class Login extends React.Component {
   constructor (props) {
@@ -37,6 +38,7 @@ class Login extends React.Component {
 
     return (
         <section className="section">
+          <Helmet title='Login'/>
           <div className="container">
             <div className="columns">
               <div className="column is-half-tablet is-offset-one-quarter-tablet is-one-third-desktop is-offset-one-third-desktop box">

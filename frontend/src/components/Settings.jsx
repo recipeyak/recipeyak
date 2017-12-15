@@ -1,4 +1,5 @@
 import React from 'react'
+import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
 const Settings = ({
@@ -10,6 +11,7 @@ const Settings = ({
   updatingEmail
 }) =>
     <section className="d-flex direction-column">
+      <Helmet title='Settings'/>
 
       <div className="d-flex">
         <a href="https://secure.gravatar.com" className="mr-3">
