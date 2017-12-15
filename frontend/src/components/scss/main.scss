@@ -13,7 +13,7 @@
 
 html {
   height: 100%;
-  border-top: 3px solid $link-color;
+  border-top: 3px solid $accent;
 }
 
 nav.nav,
@@ -32,8 +32,10 @@ section.section {
 
 a {
   color: $link-color !important;
+  transition: all .2s !important;
 
   &:hover {
+    color: lighten($link-color, 5%) !important;
     text-decoration: underline;
   }
 }

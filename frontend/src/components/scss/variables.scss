@@ -8,8 +8,15 @@ $danger: #ff3860;
 $info: #1695A3;
 $warning: #EB7F00;
 
-$primary-color: darken($desertsand, 20%);
+$blue: #316fea;
+$orange: rgb(255, 182, 79);
+
+$text-color: #4a4a4a;
+
+$primary-color: $orange;
 $primary-color-dark: darken($primary-color, 10%);
 $primary-color-shadow: transparentize($primary-color, 0.2);
 
-$link-color: $tomatosoup;
+$link-color: $text-color;
+
+$accent: $orange;
