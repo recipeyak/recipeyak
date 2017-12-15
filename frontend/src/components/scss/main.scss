@@ -25,16 +25,21 @@ nav.nav {
 }
 
 // override bulma
+.tabs li.is-active a {
+  color: inherit;
+}
+
+// override bulma
 section.section {
   padding: 1.5rem;
 }
 
 a {
-  color: $link-color !important;
+  color: $link-color;
   transition: all .2s !important;
 
   &:hover {
-    color: lighten($link-color, 5%) !important;
+    color: lighten($link-color, 5%);
     text-decoration: underline;
   }
 }
