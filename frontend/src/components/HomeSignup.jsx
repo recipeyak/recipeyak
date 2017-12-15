@@ -39,7 +39,7 @@ class HomeSignup extends React.Component {
             <p className="control">
               <input
                 onChange={ handleInputChange }
-                className='input'
+                className='my-input'
                 autoFocus
                 name="email"
                 type="email"
@@ -54,7 +54,7 @@ class HomeSignup extends React.Component {
             <p className="control">
               <input
                 onChange={ handleInputChange }
-                className='input'
+                className='my-input'
                 type="password"
                 name="password1"
                 id="password1"
@@ -69,7 +69,7 @@ class HomeSignup extends React.Component {
             <p className="control">
               <input
                 onChange={ handleInputChange }
-                className='input'
+                className='my-input'
                 type="password"
                 name="password2"
                 id="password2"
@@ -85,7 +85,7 @@ class HomeSignup extends React.Component {
             <p className="control">
               <button
                 type="submit"
-                className={ 'button is-primary ' + (loading ? 'is-loading' : '') }>
+                className={ 'my-button is-primary ' + (loading ? 'is-loading' : '') }>
                 Create Account
               </button>
             </p>

@@ -29,6 +29,7 @@ class Signup extends React.Component {
     const { password1, password2, nonFieldErrors, email } = this.props.error
 
     const errorHandler = err =>
+      !!err &&
       <p className="help is-danger">
         <ul>
           {err.map(e => (<li>{e}</li>))}
@@ -51,7 +52,7 @@ class Signup extends React.Component {
                   </ul>
                 </div>
 
-                { nonFieldErrors && errorHandler(nonFieldErrors) }
+                { errorHandler(nonFieldErrors) }
 
                 <form onSubmit={ e => this.handleSignup(e) }>
                   <div className="field">
@@ -59,13 +60,13 @@ class Signup extends React.Component {
                     <p className="control">
                       <input
                         onChange={ e => this.handleInputChange(e) }
-                        className={'input' + (email ? ' is-danger' : '')}
+                        className={'my-input' + (email ? ' is-danger' : '')}
                         autoFocus
                         name="email"
                         type="email"
                         placeholder="rick.sanchez@me.com"/>
                     </p>
-                  { email && errorHandler(email) }
+                  { errorHandler(email) }
                   </div>
 
                   <div className="field">
@@ -73,13 +74,13 @@ class Signup extends React.Component {
                     <p className="control">
                       <input
                         onChange={ e => this.handleInputChange(e) }
-                        className={'input' + (password1 ? ' is-danger' : '')}
+                        className={'my-input' + (password1 ? ' is-danger' : '')}
                         type="password"
                         name="password1"
                         id="password1"
                         placeholder="Super secret password."/>
                     </p>
-                  { password1 && errorHandler(password1) }
+                  { errorHandler(password1) }
                   </div>
 
                   <div className="field">
@@ -87,20 +88,20 @@ class Signup extends React.Component {
                     <p className="control">
                       <input
                         onChange={ e => this.handleInputChange(e) }
-                        className={'input' + (password2 ? ' is-danger' : '')}
+                        className={'my-input' + (password2 ? ' is-danger' : '')}
                         type="password"
                         name="password2"
                         id="password2"
                         placeholder="Enter your password again."/>
                     </p>
-                  { password2 && errorHandler(password2) }
+                  { errorHandler(password2) }
                   </div>
 
-                  <div className="field flex-space-between">
+                  <div className="field d-flex flex-space-between">
                     <p className="control">
                       <button
                         type="submit"
-                        className={ 'button is-primary ' + (loading ? 'is-loading' : '')}>
+                        className={ 'my-button is-primary ' + (loading ? 'is-loading' : '')}>
                         Submit
                       </button>
 

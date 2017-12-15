@@ -23,6 +23,7 @@ class PasswordReset extends React.Component {
     const { nonFieldErrors, email } = this.props.error
 
     const errorHandler = err =>
+      !!err &&
       <p className="help is-danger">
         <ul>
           {err.map(e => (<li>{e}</li>))}
@@ -37,7 +38,7 @@ class PasswordReset extends React.Component {
                 <form onSubmit={ this.handleReset }>
                   <h1 className="title is-5">Password Reset</h1>
 
-                  { nonFieldErrors && errorHandler(nonFieldErrors) }
+                  { errorHandler(nonFieldErrors) }
 
                   <div className="field">
                     <label className="label">Email</label>
@@ -45,25 +46,25 @@ class PasswordReset extends React.Component {
                       <input
                         autoFocus
                         onChange={ this.handleInputChange }
-                        className={'input' + (email ? ' is-danger' : '')}
+                        className={'my-input' + (email ? ' is-danger' : '')}
                         type="email"
                         name="email"
                         value={ this.state.email }
                         placeholder="rick.sanchez@me.com"/>
                     </p>
-                    { email && errorHandler(email) }
+                    { errorHandler(email) }
                   </div>
 
-                  <div className="field flex-space-between">
+                  <div className="field d-flex flex-space-between">
                     <p className="control">
                       <button
-                        className={ (this.props.loading ? 'is-loading ' : '') + 'button is-primary' }
+                        className={ (this.props.loading ? 'is-loading ' : '') + 'my-button is-primary' }
                         type="submit">
                         Send Reset Email
                       </button>
                     </p>
 
-                    <Link to="/login" className="button is-link">To Login</Link>
+                    <Link to="/login" className="my-button is-link">To Login</Link>
                   </div>
                 </form>
               </div>

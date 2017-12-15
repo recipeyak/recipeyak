@@ -28,6 +28,7 @@ class Login extends React.Component {
     const { password1, nonFieldErrors, email } = this.props.error
 
     const errorHandler = err =>
+      !!err &&
       <p className="help is-danger">
         <ul>
           {err.map(e => (<li>{e}</li>))}
@@ -56,13 +57,13 @@ class Login extends React.Component {
                     <p className="control">
                       <input
                         onChange={ e => this.handleInputChange(e) }
-                        className={'input' + (email ? ' is-danger' : '')}
+                        className={'my-input' + (email ? ' is-danger' : '')}
                         autoFocus
                         name="email"
                         type="email"
                         placeholder="rick.sanchez@me.com"/>
                     </p>
-                    { email && errorHandler(email) }
+                    { errorHandler(email) }
                   </div>
 
                   <div className="field">
@@ -70,21 +71,21 @@ class Login extends React.Component {
                     <p className="control">
                       <input
                         onChange={ e => this.handleInputChange(e) }
-                        className={'input' + (password1 ? ' is-danger' : '')}
+                        className={'my-input' + (password1 ? ' is-danger' : '')}
                         type="password"
                         name="password"
                         id="password"
                         placeholder="Super secret password."/>
                     </p>
-                    { password1 && errorHandler(password1) }
-                    { nonFieldErrors && errorHandler(nonFieldErrors) }
+                    { errorHandler(password1) }
+                    { errorHandler(nonFieldErrors) }
                   </div>
 
-                  <div className="field flex-space-between">
+                  <div className="field d-flex flex-space-between">
                     <p className="control">
                       <button
                         type="submit"
-                        className={ 'button is-primary ' + (loading ? 'is-loading' : '')}>
+                        className={ 'my-button is-primary ' + (loading ? 'is-loading' : '')}>
                         Submit
                       </button>
 
