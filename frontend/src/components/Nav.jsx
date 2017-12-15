@@ -1,5 +1,9 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import {
+  Link
+} from 'react-router-dom'
+
+import NavLink from '../containers/NavLink.jsx'
 
 class Navbar extends React.Component {
   state = {
@@ -16,9 +20,24 @@ class Navbar extends React.Component {
 
     const buttons = loggedIn ? (
       <div className="d-flex align-center">
-        <Link to="/recipes/add" className="better-nav-item">Add Recipe</Link>
-        <Link to="/recipes" className="better-nav-item">Recipes</Link>
-        <Link to="/cart" className="better-nav-item">Cart</Link>
+        <NavLink
+          to="/recipes/add"
+          activeClassName="active"
+          className="better-nav-item">
+          Add Recipe
+        </NavLink>
+        <NavLink
+          to="/recipes"
+          activeClassName="active"
+          className="better-nav-item">
+          Recipes
+        </NavLink>
+        <NavLink
+          to="/cart"
+          activeClassName="active"
+          className="better-nav-item">
+          Cart
+        </NavLink>
         <img
           onClick={ () => navigateTo('/settings') }
           alt=''
