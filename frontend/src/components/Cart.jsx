@@ -51,7 +51,7 @@ class Cart extends React.Component {
       : []
 
     if (shoppinglist.length <= 0 || recipeItems <= 0) {
-      return <p className="font-family-serif fs-8 text-center">No recipes in cart.</p>
+      return <p className="fs-8 text-center">No recipes in cart.</p>
     }
 
     return (

@@ -16,8 +16,8 @@ const Results = ({ recipes, query, onChange }) => {
       No recipes
     </p>
   } else if (recipes.length === 0 && query !== '') {
-    return <p className="grid-entire-row justify-center">
-      No recipes found matching { query }
+    return <p className="grid-entire-row justify-center fs-8">
+      No recipes found matching <strong>{ query }</strong>
     </p>
   }
   return recipes

@@ -2,8 +2,8 @@ import React from 'react'
 
 import { Line } from 'react-chartjs-2'
 
-const darkGray = 'rgba(229, 89, 64, 1)'
-const transparentdarkGray = 'rgba(229, 89, 64, 0.9)'
+const darkGray = 'rgb(74, 74, 74)'
+const transparentdarkGray = 'rgba(74, 74, 74, .9)'
 
 const defaultDataConfig = {
   labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],

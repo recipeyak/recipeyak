@@ -90,7 +90,7 @@ class Login extends React.Component {
                       </button>
 
                     </p>
-                    <Link to="/password-reset" className="button is-link">Forgot Password?</Link>
+                    <Link to="/password-reset" className="my-button is-link">Forgot Password?</Link>
                   </div>
 
                   </form>
