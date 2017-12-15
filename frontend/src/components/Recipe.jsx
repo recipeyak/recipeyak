@@ -54,14 +54,14 @@ const RecipeViewing = ({
       <div className="grid-entire-row d-flex align-center justify-space-between flex-wrap">
         <h1 className="title fs-3rem mb-0">{ name }</h1>
         <div className="d-flex">
-          <div>
+          <div className="d-flex">
             <input
               onClick={ () => removeFromCart(id) }
               className={ `my-button ${removingFromCart ? 'is-loading' : ''}` }
               disabled={ inCart <= 0 }
               type="button"
               value="-"/>
-            <span className="tag is-light is-medium cart-count-tag">{ inCart }</span>
+            <span className="bg-whitesmoke height-100 min-width-2rem d-flex align-center justify-content-center">{ inCart }</span>
             <input
               onClick={ () => addToCart(id) }
               className={ `my-button is-primary ${addingToCart ? 'is-loading' : ''}` }

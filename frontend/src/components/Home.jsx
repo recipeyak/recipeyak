@@ -41,7 +41,7 @@ const UserStatistics = ({ stats }) => {
 
   return (
   stats &&
-  <div className="font-family-serif mt-1rem">
+  <div className="font-family-title mt-1rem">
     <RecipesAddedThisWeek count={stats.new_recipes_last_week}/>
     <LifetimeRecipeEdits edits={stats.total_recipe_edits} dateJoined={stats.date_joined}/>
     <MostAddedRecipe name={mostAddedRecipe} cartAdds={cartAdds}/>
@@ -66,13 +66,13 @@ const SimpleHome = ({
   }) => {
   return (
       <div className="home-grid">
-        <h1 className="home-hero-text font-family-serif">A place to store, share, and create recipes</h1>
+        <h1 className="home-hero-text font-family-title">A place to store, share, and create recipes</h1>
 
         { !loggedIn
             ? <Signup />
             : <UserStatistics stats={userStats}/>
         }
-        <footer className="has-text-centered grid-entire-row fw-bold pt-4 fs-4 font-family-serif">
+        <footer className="has-text-centered grid-entire-row fw-bold pt-4 fs-4 font-family-title">
           Est. 2017
         </footer>
     </div>

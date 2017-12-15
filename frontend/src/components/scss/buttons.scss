@@ -90,6 +90,12 @@
     top: calc(50% - (1em / 2));
   }
 
+  &.is-danger {
+    background-color: $danger;
+    border-color: transparent !important;
+    color: #fff;
+  }
+
   &.is-primary {
     background-color: $primary-color;
     border-color: transparent;

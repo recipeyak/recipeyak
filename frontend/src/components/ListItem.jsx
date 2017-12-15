@@ -120,7 +120,7 @@ class ListItem extends React.Component {
               <p className="control">
                 <button
                   onClick={ this.update }
-                  className={ 'button ' + (updating ? 'is-loading' : '')}
+                  className={ 'my-button ' + (updating ? 'is-loading' : '')}
                   type="button"
                   name="save">
                   Save
@@ -129,7 +129,7 @@ class ListItem extends React.Component {
               <p className="control">
                 <input
                   onClick={ this.cancel }
-                  className="button"
+                  className="my-button"
                   type="button"
                   name="cancel edit"
                   value="✕"
@@ -140,7 +140,7 @@ class ListItem extends React.Component {
               <p className="control">
                 <button
                   onClick={ this.delete }
-                  className={ 'button ' + (removing ? 'is-loading' : '')}
+                  className={ 'my-button ' + (removing ? 'is-loading' : '')}
                   type="button"
                   name="delete">
                   delete
@@ -156,21 +156,21 @@ class ListItem extends React.Component {
     return (
       <li ref={element => { this.element = element }}>
         <section
-          className="cursor--pointer"
+          className="cursor-pointer"
           onClick={this.enableEditing}>
         { inner }
         </section>
         {
           this.state.unsavedChanges &&
-          <section className="unsaved-changes">
+          <section className="d-flex justify-space-between align-center">
             <span className="is-italic">Unsaved Changes</span>
             <section>
               <a onClick={ this.enableEditing }
-                className="button is-link">
+                className="my-button is-link">
                 View Edits
               </a>
               <a onClick={ this.discardChanges }
-                className="button is-link">
+                className="my-button is-link">
                 Discard
               </a>
             </section>

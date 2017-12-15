@@ -44,8 +44,7 @@ const defaultOptions = {
   scales: {
     xAxes: [{
       ticks: {
-        fontSize: 20,
-        fontFamily: 'Charter'
+        fontSize: 20
       },
       gridLines: {
         display: true,
@@ -55,7 +54,6 @@ const defaultOptions = {
     yAxes: [{
       ticks: {
         fontSize: 20,
-        fontFamily: 'Charter',
         beginAtZero: true,
         /* Only show integer values for ticks */
         callback: (value, index, values) => Math.round(value) === value ? value : ''

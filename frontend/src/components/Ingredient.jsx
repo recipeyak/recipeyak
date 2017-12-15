@@ -217,7 +217,7 @@ class Ingredient extends React.Component {
               <p className="control">
                 <input
                   onClick={ cancel }
-                  className="button"
+                  className="my-button"
                   type="button"
                   name="cancel edit"
                   value="✕"
@@ -244,21 +244,21 @@ class Ingredient extends React.Component {
     return (
       <li ref={element => { this.element = element }}>
         <section
-          className="cursor--pointer"
+          className="cursor-pointer"
           onClick={ enableEditing }>
         { inner }
         </section>
         {
           unsavedChanges &&
-          <section className="unsaved-changes">
+          <section className="d-flex justify-space-between align-center">
             <span className="is-italic">Unsaved Changes</span>
             <section>
               <a onClick={ enableEditing }
-                className="button is-link">
+                className="my-button is-link">
                 View Edits
               </a>
               <a onClick={ discardChanges }
-                className="button is-link">
+                className="my-button is-link">
                 Discard
               </a>
             </section>

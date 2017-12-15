@@ -6,7 +6,6 @@ class AddIngredient extends React.Component {
     super(props)
 
     this.emptyState = {
-      addingIngredient: false,
       quantity: '',
       name: '',
       description: ''
@@ -32,33 +31,25 @@ class AddIngredient extends React.Component {
   }
 
   render () {
-    const { state, clearInputs } = this
+    const { clearInputs, cancelAddIngredient, handleInputChange } = this
     const { id, addIngredient, loading } = this.props
     const { quantity, name, description } = this.state
 
     return (
-      state.addingIngredient
-      ? <AddIngredientForm
-          handleAddIngredient={
-            async () => {
-              await addIngredient(id, { quantity, name, description })
-              clearInputs()
-            }
+      <AddIngredientForm
+        handleAddIngredient={
+          async () => {
+            await addIngredient(id, { quantity, name, description })
+            clearInputs()
           }
-          loading={loading}
-          cancelAddIngredient={this.cancelAddIngredient}
-          handleInputChange={this.handleInputChange}
-          quantity={this.state.quantity}
-          name={this.state.name}
-          description={this.state.description}
-        />
-      : <p className="flex-center">
-        <button
-          onClick={ this.addingIngredient }
-          className="button is-link">
-          Add another
-        </button>
-      </p>
+        }
+        loading={ loading }
+        cancelAddIngredient={ cancelAddIngredient }
+        handleInputChange={ handleInputChange }
+        quantity={ quantity }
+        name={ name }
+        description={ description }
+      />
     )
   }
 }

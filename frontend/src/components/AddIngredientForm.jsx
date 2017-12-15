@@ -17,7 +17,7 @@ const AddIngredientForm = ({
     document.querySelector('#firstinput').focus()
   }
   }>
-  <div className="add-ingredient-grid mb-2">
+  <div className="add-ingredient-grid mb-2 mt-2">
 
     <div>
       <input
@@ -49,7 +49,7 @@ const AddIngredientForm = ({
         value={ description }
         className={ 'my-input' + (error ? ' is-danger' : '') }
         type="text"
-        placeholder="diced at 3cm in width"
+        placeholder="diced at 3cm"
         name="description"/>
       { error
           ? <p class="fs-4 c-danger">A recipe needs at least one ingredient</p>
@@ -73,7 +73,7 @@ const AddIngredientForm = ({
         ? <input
             disabled={ quantity === '' && name === '' }
             onClick={ cancelAddIngredient }
-            className="button"
+            className="my-button"
             type="button"
             name="cancel add ingredient"
             value="✕"/>

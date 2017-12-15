@@ -7,7 +7,6 @@
 @import './nav.scss';
 @import './ListItem.scss';
 @import './Notification.scss';
-@import './Settings.scss';
 @import './home.scss';
 @import './cart.scss';
 
@@ -38,19 +37,6 @@ a {
     color: lighten($link-color, 5%) !important;
     text-decoration: underline;
   }
-}
-
-.tags > .tag {
-  margin-right: 0.35rem;
-}
-
-.tags {
-  margin-bottom: 0.75rem;
-}
-
-// fix width of tags so buttons aren't pushed around when numbers decrease/increase
-.cart-count-tag {
-  width: 40px;
 }
 
 .better-label {

@@ -1,3 +1,5 @@
+@import './variables.scss';
+
 .d-flex {
   display: flex;
 }
@@ -132,8 +134,14 @@
   align-self: center;
 }
 
+.bold,
 .fw-bold {
   font-weight: bold;
+}
+
+.is-italic,
+.italic {
+  font-style: italic;
 }
 
 .fw-normal {
@@ -141,7 +149,11 @@
 }
 
 .font-family-serif {
-  font-family: Charter, georgia, serif;
+  font-family: $font-family-serif;
+}
+
+.font-family-title {
+  font-family: $font-family-title;
 }
 
 .flex-grow {
@@ -150,4 +162,25 @@
 
 .width-100 {
   width: 100%;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+  // need to override all of the default cursors that come with the default
+  // user stylesheet
+  & > * {
+    cursor: pointer;
+  }
+}
+
+.bg-whitesmoke {
+  background-color: whitesmoke;
+}
+
+.height-100 {
+  height: 100%
+}
+
+.min-width-2rem {
+  min-width: 2rem;
 }

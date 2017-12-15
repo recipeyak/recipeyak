@@ -14,22 +14,3 @@
     }
   }
 }
-
-.cursor--pointer {
-  cursor: pointer;
-  // need to override all of the default cursors that come with the default
-  // user stylesheet
-  & > * {
-    cursor: pointer;
-  }
-}
-
-.unsaved-changes {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.is-italic {
-  font-style: italic;
-}

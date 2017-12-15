@@ -2,6 +2,7 @@ import React from 'react'
 import ListItem from './ListItem.jsx'
 
 import AddIngredientForm from './AddIngredientForm'
+import AddStepForm from './AddStepForm'
 import Ingredient from './Ingredient'
 
 const unfinishedIngredient = ({ quantity = '', name = '' }) =>
@@ -113,6 +114,12 @@ class AddRecipe extends React.Component {
       ingredient,
       step
     } = this.state
+
+    const {
+      addStep,
+      handleInputChange,
+      cancelAddStep
+    } = this
 
     const { error } = this.props
 
@@ -229,57 +236,14 @@ class AddRecipe extends React.Component {
                       )
                     }
                   </ul>
-                  <form onSubmit={ e => {
-                    e.preventDefault()
-                    if (step === '') return
-                    this.addStep()
-                  }}>
-                  <div className="field">
-                    <label className="label">Step { steps.length + 1 }</label>
-                    <div className="control">
-                      <textarea
-                        onChange={ this.handleInputChange }
-                        onKeyPress={ e => {
-                          if (step === '') return
-                          if (e.shiftKey && e.key === 'Enter') {
-                            e.preventDefault()
-                            this.addStep()
-                          }
-                        }}
-                        value={ step }
-                        className={ 'my-textarea' + (errorWithSteps ? ' is-danger' : '') }
-                        placeholder="Add your step here"
-                        name="step"/>
-                      { errorWithSteps
-                          ? <p class="fs-4 c-danger">A step is required</p>
-                          : null
-                      }
-                    </div>
-                  </div>
-                  <div className="field is-grouped">
-                    <p className="control">
-                      <input
-                        onClick={ this.addStep }
-                        disabled={ step === '' }
-                        className="my-button is-primary"
-                        type="submit"
-                        name="save step"
-                        value="Add"/>
-                    </p>
-                    { step !== ''
-                        ? <p className="control">
-                            <input
-                              onClick={ this.cancelAddStep }
-                              disabled={ step === '' }
-                              className='my-button'
-                              type="button"
-                              name="cancel step"
-                              value="✕"/>
-                          </p>
-                        : null
-                    }
-                  </div>
-                </form>
+                  <AddStepForm
+                    handleInputChange={ handleInputChange }
+                    addStep={ addStep }
+                    cancelAddStep={ cancelAddStep }
+                    stepNumber={ steps.length + 1 }
+                    text={ step }
+                    error={ errorWithSteps }
+                  />
               </div>
             </div>
           </section>
