@@ -35,7 +35,7 @@ class PasswordChange extends React.Component {
             <input
               autoFocus
               onChange={ this.handleInputChange }
-              className="input"
+              className="my-input"
               type="password"
               name="password"
               required/>
@@ -47,7 +47,7 @@ class PasswordChange extends React.Component {
           <div className="control">
             <input
               onChange={ this.handleInputChange }
-              className="input"
+              className="my-input"
               type="password"
               name="newPassword"
               required/>
@@ -59,7 +59,7 @@ class PasswordChange extends React.Component {
           <div className="control">
             <input
               onChange={ this.handleInputChange }
-              className="input"
+              className="my-input"
               type="password"
               name="newPasswordAgain"
               required/>
@@ -70,7 +70,7 @@ class PasswordChange extends React.Component {
           <button
             disabled={ disabled }
             type='submit'
-            className={ `button is-primary ${loading ? 'is-loading' : ''}` }>
+            className={ `my-button is-primary ${loading ? 'is-loading' : ''}` }>
             Update
           </button>
         </p>
