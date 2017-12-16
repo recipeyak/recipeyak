@@ -1,4 +1,5 @@
 import React from 'react'
+import Textarea from 'react-textarea-autosize'
 
 class ListItem extends React.Component {
   constructor (props) {
@@ -98,7 +99,7 @@ class ListItem extends React.Component {
 
           <div className="field">
             <div className="control">
-              <textarea
+              <Textarea
                 autoFocus
                 onFocus={ this.handleFocus }
                 onChange={ this.handleInputChange }

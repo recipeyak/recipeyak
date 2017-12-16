@@ -1,4 +1,5 @@
 import React from 'react'
+import Textarea from 'react-textarea-autosize'
 
 const AddStepForm = ({
   handleInputChange,
@@ -17,7 +18,7 @@ const AddStepForm = ({
     <div className="field">
       <label className="label">Step { stepNumber }</label>
       <div className="control">
-        <textarea
+        <Textarea
           onChange={ handleInputChange }
           onKeyPress={ e => {
             if (text === '') return
