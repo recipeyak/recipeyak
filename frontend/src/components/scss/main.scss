@@ -36,7 +36,7 @@ section.section {
 
 a {
   color: $link-color;
-  transition: all .2s !important;
+  transition: color .2s;
 
   &:hover {
     color: lighten($link-color, 5%);

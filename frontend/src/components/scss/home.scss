@@ -1,3 +1,5 @@
+@import './variables.scss';
+
 @media (min-width: 841px) {
   .home-grid {
     display: grid;
@@ -5,8 +7,6 @@
     grid-gap: 15px;
   }
   .chart-container {
-    position: relative;
-    width: 40vw;
   }
 }
 
@@ -34,7 +34,37 @@
 
 @media (min-width: 1300px) {
   .home-hero-text {
-    font-size: 7rem;
+    font-size: 5.5rem;
     text-align: left;
+  }
+}
+
+.big-link {
+  background-color: transparentize($primary-color, 0.5);
+  border-radius: 5px;
+  padding: 0 10px;
+}
+
+.recent-recipes-grid {
+  display: grid;
+  grid-gap: 1rem;
+}
+
+.home-page-grid {
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 1rem;
+  @media (min-width: 630px) {
+    display: grid;
+  }
+}
+
+.stat {
+  font-size: 3rem;
+  @media (max-width: 991px) {
+    font-size: 2rem;
+  }
+
+  @media (max-width: 660px) {
+    font-size: 1.5rem;
   }
 }

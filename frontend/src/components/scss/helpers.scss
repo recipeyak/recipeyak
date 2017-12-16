@@ -4,12 +4,25 @@
   display: flex;
 }
 
+.d-none {
+  display: none;
+}
+
 .d-grid {
   display: grid;
 }
 
+.p-relative,
 .p-rel {
   position: relative;
+}
+
+.p-absolute {
+  position: absolute;
+}
+
+.r-0 {
+  right: 0;
 }
 
 @for $i from 0 through 4 {
@@ -183,4 +196,8 @@
 
 .min-width-2rem {
   min-width: 2rem;
+}
+
+.box-shadow-normal {
+  box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
 }

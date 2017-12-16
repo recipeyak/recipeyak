@@ -25,11 +25,8 @@ const Results = ({ recipes, query, onChange }) => {
 }
 
 class RecipeList extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      query: ''
-    }
+  state = {
+    query: ''
   }
 
   static defaultProps = {
@@ -37,7 +34,7 @@ class RecipeList extends React.Component {
     recipes: {}
   }
 
-  componentWillMount () {
+  componentWillMount = () => {
     this.props.fetchData()
   }
 
@@ -46,20 +43,37 @@ class RecipeList extends React.Component {
   }
 
   render () {
-    if (this.props.error) return <p>Error fetching data</p>
+    const {
+      error,
+      recipes,
+      cart,
+      removeFromCart,
+      addToCart,
+      loading
+    } = this.props
 
-    const recipes =
-      Object.values(this.props.recipes)
+    const {
+      handleInputChange
+    } = this
+
+    const {
+      query
+    } = this.state
+
+    if (error) return <p>Error fetching data</p>
+
+    const results =
+      Object.values(recipes)
       .filter(recipe => matchesQuery(recipe, this.state.query))
       .map(recipe =>
           <Recipe
             {...recipe}
             className='mb-0'
             url={ '/recipes/' + recipe.id }
-            inCart={ this.props.cart[recipe.id] > 0 ? this.props.cart[recipe.id] : 0 }
+            inCart={ cart[recipe.id] > 0 ? cart[recipe.id] : 0 }
             key={ recipe.id }
-            removeFromCart={ () => this.props.removeFromCart(recipe.id)}
-            addToCart={ () => this.props.addToCart(recipe.id)}
+            removeFromCart={ () => removeFromCart(recipe.id)}
+            addToCart={ () => addToCart(recipe.id)}
           />
         )
 
@@ -68,14 +82,14 @@ class RecipeList extends React.Component {
         <Helmet title='Recipes'/>
         <input
           autoFocus
-          onChange={ this.handleInputChange }
+          onChange={ handleInputChange }
           type='search'
           placeholder='search'
           className='my-input grid-entire-row'
           name='query'/>
-        { this.props.loading
+        { loading
             ? <Loader/>
-            : <Results recipes={ recipes } query={ this.state.query } />
+            : <Results recipes={ results } query={ query } />
         }
       </div>
     )

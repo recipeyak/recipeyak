@@ -35,6 +35,8 @@
   white-space: nowrap;
   outline: none;
   transition: all 0.2s;
+  text-decoration: none;
+  font-family: $font-family;
 
   &:active {
     transform: translateY(1px);
@@ -49,6 +51,8 @@
 
   &:hover:not([disabled]) {
     border-color: $primary-color-dark;
+    text-decoration: none;
+
   }
 
   &.is-large {
