@@ -13,13 +13,30 @@ class Navbar extends React.Component {
 
   componentWillMount = () => {
     this.props.fetchData()
+    document.addEventListener('click', this.handleGeneralClick)
+  }
+
+  componentWillUnmount = () => {
+    document.removeEventListener('click', this.handleGeneralClick)
+  }
+
+  handleGeneralClick = e => {
+    const clickedInComponent = this.element && this.element.contains(e.target)
+    const clickedOnLink = e.target.nodeName === 'A'
+    if (clickedInComponent && !clickedOnLink) return
+    this.setState({ showDropdown: false })
   }
 
   render () {
-    const { avatarURL, loggedIn = true, navigateTo } = this.props
+    const {
+      avatarURL,
+      loggedIn = true,
+      logout,
+      email
+    } = this.props
 
     const buttons = loggedIn ? (
-      <div className="d-flex align-center">
+      <div className="d-flex align-center p-relative">
         <NavLink
           to="/recipes/add"
           activeClassName="active"
@@ -38,11 +55,28 @@ class Navbar extends React.Component {
           className="better-nav-item">
           Cart
         </NavLink>
-        <img
-          onClick={ () => navigateTo('/settings') }
-          alt=''
-          className="user-profile-image better-nav-item p-0"
-          src={ avatarURL }/>
+        <section ref={element => { this.element = element }}>
+          <img
+            onClick={ () => this.setState(prev => ({ showDropdown: !prev.showDropdown })) }
+            alt=''
+            className="user-profile-image better-nav-item p-0"
+            src={ avatarURL }/>
+          <div className={
+            'box p-absolute direction-column align-items-start right-0 mt-1' + (this.state.showDropdown ? ' d-flex' : ' d-none')
+          }>
+            <p className="bold">{ email }</p>
+            <div className="d-flex align-center p-1-0">
+              <label className="d-flex align-items-center cursor-pointer">
+            {/* TODO: handle change */}
+                <input type='checkbox' className="mr-2"/>
+                Dark Mode
+              </label>
+            </div>
+            <Link to="/settings" className="p-1-0">Settings</Link>
+            {/* TODO: add loading */}
+            <button onClick={ logout } className="my-button w-100">Logout</button>
+          </div>
+        </section>
       </div>
     ) : (
       <div className="d-flex">

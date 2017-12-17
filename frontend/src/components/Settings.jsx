@@ -42,14 +42,10 @@ const Settings = ({
       </div>
 
       <div className="d-flex align-center">
-        <label className="better-label">Color Scheme</label>
-        <div className="select">
-          <select>
-            <option>Light</option>
-            <option>Sepia</option>
-            <option>Dark</option>
-          </select>
-        </div>
+        <label className="better-label d-flex align-items-center">
+        <input type='checkbox' className="mr-2"/>
+          Dark Mode
+        </label>
       </div>
 
       <a>Export Recipes</a>
