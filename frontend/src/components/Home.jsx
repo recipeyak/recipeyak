@@ -1,4 +1,6 @@
 import React from 'react'
+import { Helmet } from 'react-helmet'
+
 import Recipe from './RecipeItem'
 import Loader from './Loader'
 
@@ -74,18 +76,22 @@ const RecentRecipes = ({
 }
 
 const UserStatistics = ({ loading, stats }) => {
+  if (loading) {
+    return <section className="justify-self-center align-self-center">
+      <Loader/>
+    </section>
+  }
+
+  if (stats.most_added_recipe == null) {
+    return null
+  }
+
   const {
     id,
     name,
     author,
     cart_additions: cartAdds
   } = stats.most_added_recipe
-
-  if (loading) {
-    return <section className="justify-self-center align-self-center">
-      <Loader/>
-    </section>
-  }
 
   return (
     <section>
@@ -129,6 +135,7 @@ const SimpleHome = ({
   if (loggedIn) {
     return (
       <div className="font-family-title mt-1rem home-page-grid">
+        <Helmet title='Home'/>
         <UserStatistics
           stats={ userStats }
           loading={ loadingUserStats }
@@ -146,10 +153,11 @@ const SimpleHome = ({
   }
   return (
     <section className="home-grid">
+      <Helmet title='Get Started'/>
       <section className="grid-entire-row">
         <h1 className="home-hero-text font-family-title">A place to store, share, and create recipes</h1>
       </section>
-      <section className="grid-entire-row mb-4 justify-self-center">
+      <section className="grid-entire-row mb-4 d-flex justify-content-center">
         <Link to='/signup' className='my-button is-primary is-large'>
           Create Account
         </Link>

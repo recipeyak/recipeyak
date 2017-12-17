@@ -6,8 +6,6 @@
     grid-template-columns: repeat(2, 1fr);
     grid-gap: 15px;
   }
-  .chart-container {
-  }
 }
 
 @media (max-width: 841px) {
@@ -22,18 +20,18 @@
 }
 
 .home-hero-text {
-  font-size: 4rem;
-}
+  font-size: 3.5rem;
 
-@media (min-width: 920px) {
-  .home-hero-text {
+  @media (min-width: 630px) {
+    font-size: 4rem;
+  }
+
+  @media (min-width: 920px) {
     font-size: 5rem;
     text-align: left;
   }
-}
 
-@media (min-width: 1300px) {
-  .home-hero-text {
+  @media (min-width: 1300px) {
     font-size: 5.5rem;
     text-align: left;
   }

@@ -13,6 +13,11 @@
 html {
   height: 100%;
   border-top: 3px solid $accent;
+  background:
+    linear-gradient(
+      to right,
+      lighten($primary-color, 5%),
+      lighten(adjust-hue($primary-color, 15deg), 15%));
 }
 
 nav.nav,
