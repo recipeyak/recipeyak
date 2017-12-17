@@ -17,6 +17,7 @@ export const SET_LOADING_RESET = 'SET_LOADING_RESET'
 export const SET_ERROR_RESET = 'SET_ERROR_RESET'
 
 export const LOG_OUT = 'LOG_OUT'
+export const SET_LOGGING_OUT = 'SET_LOGGING_OUT'
 
 export const SET_CART = 'SET_CART'
 export const SET_CART_ITEM = 'SET_CART_ITEM'

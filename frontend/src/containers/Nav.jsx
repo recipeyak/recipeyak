@@ -11,7 +11,8 @@ const mapStateToProps = state => ({
   avatarURL: state.user.avatarURL,
   email: state.user.email,
   loading: state.user.loading,
-  loggedIn: state.user.token != null
+  loggedIn: state.user.token != null,
+  loggingOut: state.user.loggingOut
 })
 
 const mapDispatchToProps = dispatch => {

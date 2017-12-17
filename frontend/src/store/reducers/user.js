@@ -6,7 +6,8 @@ import {
   SET_LOADING_USER,
   SET_USER_STATS,
   SET_LOADING_USER_STATS,
-  SET_UPDATING_USER_EMAIL
+  SET_UPDATING_USER_EMAIL,
+  SET_LOGGING_OUT
 } from '../actionTypes.js'
 
 const initialState = {
@@ -16,7 +17,8 @@ const initialState = {
   loading: false,
   error: false,
   stats: {},
-  stats_loading: false
+  stats_loading: false,
+  loggingOut: false
 }
 
 export const user = (
@@ -40,6 +42,8 @@ export const user = (
       return { ...state, stats_loading: action.val }
     case SET_UPDATING_USER_EMAIL:
       return { ...state, updatingEmail: action.val }
+    case SET_LOGGING_OUT:
+      return { ...state, loggingOut: action.val }
     default:
       return state
   }

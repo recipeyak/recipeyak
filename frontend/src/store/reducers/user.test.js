@@ -7,7 +7,8 @@ import {
   setUserEmail,
   setLoadingUser,
   setErrorUser,
-  setUpdatingUserEmail
+  setUpdatingUserEmail,
+  setLoggingOut
 } from '../actions.js'
 
 describe('User', () => {
@@ -99,6 +100,20 @@ describe('User', () => {
 
     expect(
       user(beforeState, setUpdatingUserEmail(true))
+    ).toEqual(afterState)
+  })
+
+  it('sets user to logging out', () => {
+    const beforeState = {
+      loggingOut: false
+    }
+
+    const afterState = {
+      loggingOut: true
+    }
+
+    expect(
+      user(beforeState, setLoggingOut(true))
     ).toEqual(afterState)
   })
 })

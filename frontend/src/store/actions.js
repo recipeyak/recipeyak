@@ -52,8 +52,9 @@ import {
   SET_UPDATING_STEP,
   SET_REMOVING_STEP,
   SET_UPDATING_USER_EMAIL,
-  SET_RECIPE_404
-} from './actionTypes.js'
+  SET_RECIPE_404,
+  SET_LOGGING_OUT
+} from './actionTypes'
 
 import { push } from 'react-router-redux'
 
@@ -72,6 +73,11 @@ export const logout = () => {
   }
 }
 
+export const setLoggingOut = val => ({
+  type: SET_LOGGING_OUT,
+  val
+})
+
 const postLogout = token =>
   // empty body since post expects the second argument to be the body
   axios.post('/api/v1/rest-auth/logout/', {}, {
@@ -81,13 +87,16 @@ const postLogout = token =>
   })
 
 export const loggingOut = () => (dispatch, getState) => {
-  postLogout(getState().user.token)
+  dispatch(setLoggingOut(true))
+  return postLogout(getState().user.token)
     .then(res => {
       dispatch(logout())
       dispatch(push('/login'))
+      dispatch(setLoggingOut(false))
     })
     .catch(err => {
-      console.log('error adding recipe to cart', err)
+      dispatch(setLoggingOut(false))
+      throw err
     })
 }
 

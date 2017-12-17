@@ -32,7 +32,8 @@ class Navbar extends React.Component {
       avatarURL,
       loggedIn = true,
       logout,
-      email
+      email,
+      loggingOut
     } = this.props
 
     const buttons = loggedIn ? (
@@ -73,8 +74,11 @@ class Navbar extends React.Component {
               </label>
             </div>
             <Link to="/settings" className="p-1-0">Settings</Link>
-            {/* TODO: add loading */}
-            <button onClick={ logout } className="my-button w-100">Logout</button>
+            <button
+              onClick={ logout }
+              className={ 'my-button w-100' + (loggingOut ? ' is-loading' : '')}>
+              Logout
+            </button>
           </div>
         </section>
       </div>
