@@ -3,7 +3,8 @@ import {
   Link
 } from 'react-router-dom'
 
-import NavLink from '../containers/NavLink.jsx'
+import NavLink from '../containers/NavLink'
+import Logo from './Logo'
 
 class Navbar extends React.Component {
   state = {
@@ -91,7 +92,10 @@ class Navbar extends React.Component {
 
     return (
       <nav className="nav flex-wrap pt-2 pb-2">
-        <Link to="/" className="better-nav-item pl-0 pr-0 fs-2rem fw-normal font-family-title">Recipe Yak</Link>
+        <Link to="/" className="better-nav-item pl-0 pr-0 fs-2rem fw-normal font-family-title">
+          <Logo/>
+          <span>Recipe Yak</span>
+        </Link>
         { buttons }
       </nav>
     )

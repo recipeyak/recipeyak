@@ -35,6 +35,7 @@
   white-space: nowrap;
   outline: none;
   transition: all 0.2s;
+  transition-property: translateY, border-color, box-shadow;
   text-decoration: none;
   font-family: $font-family;
 
@@ -53,6 +54,15 @@
     border-color: $primary-color-dark;
     text-decoration: none;
 
+  }
+
+  &.is-small {
+    border-radius: 2px;
+    font-size: 0.75rem;
+  }
+
+  &.is-medium {
+    font-size: 1.25rem;
   }
 
   &.is-large {
