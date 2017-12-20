@@ -26,6 +26,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
         enables us to return a 404 if the person doesn't have access to the
         item instead of throwing a 403 as default
         """
+
+        # filtering for homepage
+        if self.request.query_params.get('recent') is not None:
+            return Recipe.objects.filter(user=self.request.user).order_by('modified')[:3]
+
         return Recipe.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):

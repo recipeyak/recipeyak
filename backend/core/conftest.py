@@ -1,5 +1,7 @@
 import pytest
+import pytz
 
+from datetime import datetime, timedelta
 from rest_framework.test import APIClient
 
 from .models import MyUser, Recipe, Ingredient, Step, Tag
@@ -28,6 +30,24 @@ def user2():
 @pytest.fixture
 def client():
     return APIClient()
+
+
+@pytest.fixture
+def recipes(user):
+    """
+    list of empty recipes with different modified times
+    """
+
+    name = 'Recipe name'
+    author = 'Recipe author'
+    modified = datetime(2017, 12, 19, 22, 15, 0, 10, tzinfo=pytz.UTC)
+
+    return [Recipe.objects.create(
+                name=name,
+                author=author,
+                user=user,
+                modified=modified - timedelta(days=n))
+            for n in range(5)]
 
 
 @pytest.fixture

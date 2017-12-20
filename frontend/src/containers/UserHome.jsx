@@ -6,7 +6,7 @@ import {
   fetchUser,
   fetchUserStats,
   fetchCart,
-  fetchRecipeList,
+  fetchRecentRecipes,
   addingToCart,
   removingFromCart
 } from '../store/actions'
@@ -16,13 +16,14 @@ const mapStateToProps = state => ({
   loadingUserStats: state.user.stats_loading,
   loadingRecipes: state.loading.recipes || state.loading.cart,
   cart: state.cart,
-  recipes: state.recipes,
+  recipes: Object.values(state.recipes)
+           .sort((x, y) => new Date(y.modified) > new Date(x.modified)),
   errorRecipes: state.error.recipes
 })
 
 const mapDispatchToProps = dispatch => ({
   fetchData: () => {
-    dispatch(fetchRecipeList())
+    dispatch(fetchRecentRecipes())
     dispatch(fetchCart())
     dispatch(fetchUser())
     dispatch(fetchUserStats())

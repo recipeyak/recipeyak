@@ -313,3 +313,21 @@ def test_deleting_tag_from_recipe(client, user, recipe):
 
     assert tag_id not in (tag.get('id') for tag in res.json().get('tags')), \
         'tag was still in the recipe after being deleted'
+
+
+def test_filtering_recipes_by_recent(client, user, recipes):
+    """
+    make sure we can filter recipes by last modified and limit them by a
+    certain amount for /homepage recent recipes
+    """
+
+    client.force_authenticate(user)
+
+    res = client.get(f'{BASE_URL}/recipes/?recent')
+    assert res.status_code == status.HTTP_200_OK
+
+    expected_first_recipe = sorted(recipes, key=lambda x: x.modified)[0].id
+    actual_first_recipe = res.json()[0].get('id')
+
+    assert expected_first_recipe == actual_first_recipe, \
+        "recipes weren't sorted by the backend"

@@ -512,6 +512,13 @@ const getRecipeList = token =>
     }
   })
 
+const getRecentRecipes = token =>
+  axios.get('/api/v1/recipes/?recent', {
+    headers: {
+      'Authorization': 'Token ' + token
+    }
+  })
+
 export const setRecipes = recipes => {
   return {
     type: SET_RECIPES,
@@ -531,6 +538,20 @@ export const setLoadingRecipes = val => {
     type: SET_LOADING_RECIPES,
     val
   }
+}
+
+export const fetchRecentRecipes = () => (dispatch, getState) => {
+  dispatch(setLoadingRecipes(true))
+  dispatch(setErrorRecipes(false))
+  getRecentRecipes(getState().user.token)
+    .then(res => {
+      dispatch(setRecipes(res.data))
+      dispatch(setLoadingRecipes(false))
+    })
+    .catch(() => {
+      dispatch(setErrorRecipes(true))
+      dispatch(setLoadingRecipes(false))
+    })
 }
 
 export const fetchRecipeList = () => (dispatch, getState) => {

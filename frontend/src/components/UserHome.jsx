@@ -49,7 +49,7 @@ const RecentRecipes = ({
       <section className="recent-recipes-grid">
         { loading
             ? <Loader/>
-            : Object.values(recipes).map(recipe =>
+            : recipes.map(recipe =>
                 <Recipe
                   {...recipe}
                   className='mb-0'
