@@ -12,7 +12,9 @@ import RecipeList from '../components/RecipeList.jsx'
 const mapStateToProps = state => {
   return {
     cart: state.cart,
-    recipes: state.recipes,
+    recipes: Object.values(state.recipes)
+             .sort((x, y) =>
+               x.name.toUpperCase().localeCompare(y.name.toUpperCase())),
     loading: state.loading.recipes || state.loading.cart,
     error: state.error.recipes
   }

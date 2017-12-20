@@ -11,7 +11,7 @@ import Cart from './Cart.jsx'
 
 describe('<Cart/>', () => {
   it("doesn't explode on creation", () => {
-    const recipes = {
+    const recipes = [
       123: {
         id: 123,
         title: 'Recipe title',
@@ -21,7 +21,7 @@ describe('<Cart/>', () => {
         url: '',
         ingredients: ['ingredientOne', 'ingredientTwo']
       }
-    }
+    ]
 
     const cart = {
       123: 1

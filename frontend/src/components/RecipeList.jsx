@@ -31,7 +31,7 @@ class RecipeList extends React.Component {
 
   static defaultProps = {
     cart: {},
-    recipes: {}
+    recipes: []
   }
 
   componentWillMount = () => {
@@ -63,7 +63,7 @@ class RecipeList extends React.Component {
     if (error) return <p>Error fetching data</p>
 
     const results =
-      Object.values(recipes)
+      recipes
       .filter(recipe => matchesQuery(recipe, this.state.query))
       .map(recipe =>
           <Recipe

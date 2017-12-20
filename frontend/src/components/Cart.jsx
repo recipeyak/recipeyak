@@ -5,13 +5,14 @@ import Recipe from './RecipeItem.jsx'
 import Loader from './Loader.jsx'
 
 class Cart extends React.Component {
-  componentWillMount () {
+  componentWillMount = () => {
     this.props.fetchData()
   }
 
   static defaultProps = {
     cart: {},
-    shoppinglist: []
+    shoppinglist: [],
+    recipes: []
   }
 
   render () {
@@ -37,7 +38,7 @@ class Cart extends React.Component {
 
     const cartHasItems = Object.values(cart).find(x => x > 0) != null
     const recipeItems = cartHasItems
-      ? Object.values(recipes)
+      ? recipes
         .filter(recipe => cart[recipe.id] > 0)
         .map(recipe => (
           <Recipe
