@@ -200,6 +200,12 @@
   width: 100%;
 }
 
+@for $i from 0 through 8 {
+  .w-#{$i} {
+    width: #{$i/4}rem;
+  }
+}
+
 .cursor-pointer {
   cursor: pointer;
   // need to override all of the default cursors that come with the default
