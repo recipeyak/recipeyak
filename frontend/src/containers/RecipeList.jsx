@@ -1,5 +1,7 @@
 import { connect } from 'react-redux'
 
+import { byNameAlphabetical } from '../sorters'
+
 import {
   addingToCart,
   removingFromCart,
@@ -13,8 +15,7 @@ const mapStateToProps = state => {
   return {
     cart: state.cart,
     recipes: Object.values(state.recipes)
-             .sort((x, y) =>
-               x.name.toUpperCase().localeCompare(y.name.toUpperCase())),
+             .sort(byNameAlphabetical),
     loading: state.loading.recipes || state.loading.cart,
     error: state.error.recipes
   }
