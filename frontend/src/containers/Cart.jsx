@@ -18,7 +18,8 @@ const mapStateToProps = state => {
     recipes: Object.values(state.recipes)
              .sort(byNameAlphabetical),
     loading: state.loading.recipes || state.loading.cart,
-    shoppinglist: state.shoppinglist.shoppinglist,
+    shoppinglist: state.shoppinglist.shoppinglist
+                  .sort(byNameAlphabetical),
     loadingShoppingList: state.shoppinglist.loading
   }
 }

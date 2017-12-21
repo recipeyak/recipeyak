@@ -3,7 +3,10 @@ import {
   SET_LOADING_SHOPPING_LIST
 } from '../actionTypes.js'
 
-const shoppinglist = (state = {}, action) => {
+const shoppinglist = (
+  state = {
+    shoppinglist: []
+  }, action) => {
   switch (action.type) {
     case SET_SHOPPING_LIST:
       return { ...state, shoppinglist: action.val }
