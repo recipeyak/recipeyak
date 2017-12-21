@@ -12,11 +12,11 @@ class ListItem extends React.Component {
   }
 
   componentWillMount () {
-    document.addEventListener('mousedown', this.handleGeneralClick)
+    document.addEventListener('mouseup', this.handleGeneralClick)
   }
 
   componentWillUnmount () {
-    document.removeEventListener('mousedown', this.handleGeneralClick)
+    document.removeEventListener('mouseup', this.handleGeneralClick)
   }
 
   // ensures that the list item closes when the user clicks outside of the item
