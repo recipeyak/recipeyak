@@ -12,19 +12,19 @@ const MetaData = ({
   const isValid = x => x !== '' && x != null
 
   const _author = isValid(author)
-    ? `By ${author} `
-    : ''
+    ? <span>By <b>{author}</b> </span>
+    : null
   const _source = isValid(source)
-    ? `from ${source} `
-    : ''
+    ? <span>from <b>{source}</b> </span>
+    : null
   const _servings = isValid(servings)
-    ? `creating ${servings} `
-    : ''
+    ? <span>creating <b>{servings}</b> </span>
+    : null
   const _time = isValid(time)
-    ? `in ${time} `
-    : ''
+    ? <span>in <b>{time}</b> </span>
+    : null
 
-  return <p className="">{ _author + _source + _servings + _time }</p>
+  return <p>{ _author }{ _source }{ _servings }{ _time }</p>
 }
 
 const RecipeViewing = ({
@@ -86,7 +86,7 @@ const RecipeViewing = ({
 
       <section className="ingredients-preparation-grid">
         <div>
-          <h2 className="title">Ingredients</h2>
+          <h2 className="title is-3 mb-4">Ingredients</h2>
           <div className="box">
             <ul>
               {
@@ -101,14 +101,14 @@ const RecipeViewing = ({
         </div>
 
         <div >
-          <h2 className="title is-3">Preparation</h2>
+          <h2 className="title is-3 mb-4">Preparation</h2>
           <div className="box">
             <ul>
               {
                 steps.map(({ id, text }, i) =>
                   <div key={id}>
-                    <label className="label">Step { i + 1}</label>
-                    <p className="listitem-text">{ text }</p>
+                    <label className="better-label">Step { i + 1}</label>
+                    <p className="listitem-text mb-2">{ text }</p>
                   </div>
 
                 )
