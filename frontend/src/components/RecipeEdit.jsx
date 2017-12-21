@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet'
 
 import Ingredient from './Ingredient'
 import AddIngredient from './AddIngredient'
@@ -17,8 +17,6 @@ const RecipeEdit = ({
   time,
   addingStepToRecipe,
   handleInputChange,
-  state,
-  props,
   updateStep,
   deleteStep,
   updateIngredient,
@@ -28,9 +26,11 @@ const RecipeEdit = ({
   deleteRecipe,
   deleting,
   loading,
-  save,
+  update,
   addingIngredient,
-  error404
+  error404,
+  cancelEdit,
+  updating
 }) => {
   if (error404) {
     return <p>404</p>
@@ -41,6 +41,7 @@ const RecipeEdit = ({
 
   return (
     <div className="d-grid grid-template-columns-repeat-12-fr grid-gap-1rem">
+      <Helmet title={ name + ' | Edit'}/>
       <div className="grid-entire-row d-flex align-center justify-space-between">
         <input
           autoFocus
@@ -50,14 +51,6 @@ const RecipeEdit = ({
           placeholder="new recipe title"
           defaultValue={ name }
           name="name"/>
-        <div className="d-flex ml-4">
-          <input
-            onClick={ save }
-            className="my-button is-primary mr-1"
-            type="button"
-            value="Save"/>
-          <Link to={ `/recipes/${id}` } className="my-button is-link">Cancel</Link>
-        </div>
       </div>
 
       <div className="d-grid grid-entire-row meta-data-grid">
@@ -157,11 +150,35 @@ const RecipeEdit = ({
           </div>
         </div>
       </section>
-      <section className="grid-entire-row justify-self-center">
+
+      <section className="grid-entire-row justify-self-center grid-row-4">
+
+        <div className="d-flex">
+          <button
+            onClick={ update }
+            className={ 'my-button is-primary mr-1' + (updating ? ' is-loading' : '') }>
+            Update
+          </button>
+          <button
+            onClick={ cancelEdit }
+            className="my-button is-link">
+            Cancel
+          </button>
+        </div>
+      </section>
+
+      <section className="grid-entire-row justify-self-right grid-row-4">
         <button
-          onClick={ () => deleteRecipe(id) }
+          onClick={
+            () => {
+              const message = `Delete ${name} by ${author}?`
+              if (window.confirm(message)) {
+                deleteRecipe(id)
+              }
+            }
+          }
           className={ 'my-button is-danger ' + (deleting ? 'is-loading' : '')}>
-          Delete Recipe
+          Delete
         </button>
       </section>
     </div>
@@ -171,17 +188,11 @@ const RecipeEdit = ({
 class RecipeEditFetching extends React.Component {
   state = { }
 
-  handleInputChange = e => {
+  handleInputChange = e =>
     this.setState({ [e.target.name]: e.target.value })
-  }
 
-  componentWillMount = () => {
-    this.props.fetchRecipe(this.props.match.params.id)
-  }
-
-  removeIngredient = ingredientID => {
+  removeIngredient = ingredientID =>
     this.props.deleteIngredient(this.props.id, ingredientID)
-  }
 
   deleteStep = stepID =>
     this.props.deleteStep(this.props.id, stepID)
@@ -192,24 +203,9 @@ class RecipeEditFetching extends React.Component {
   updateStep = (stepID, text) =>
     this.props.updateStep(this.props.id, stepID, text)
 
-  updateName = name => {
-    this.props.updateName(this.props.id, name)
-  }
-
-  updateAuthor = author => {
-    this.props.updateAuthor(this.props.id, author)
-  }
-
-  updateSource = source => {
-    this.props.updateSource(this.props.id, source)
-  }
-
-  updateTime = time => {
-    this.props.updateTime(this.props.id, time)
-  }
-
-  save = () => {
-    this.props.updateRecipe(this.props.id, this.state)
+  update = async () => {
+    await this.props.updateRecipe(this.props.id, this.state)
+    this.props.cancelEdit()
   }
 
   render () {

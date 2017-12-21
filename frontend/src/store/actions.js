@@ -53,7 +53,8 @@ import {
   SET_REMOVING_STEP,
   SET_UPDATING_USER_EMAIL,
   SET_RECIPE_404,
-  SET_LOGGING_OUT
+  SET_LOGGING_OUT,
+  SET_RECIPE_UPDATING
 } from './actionTypes'
 
 import { push } from 'react-router-redux'
@@ -730,7 +731,14 @@ export const setRecipeTime = (id, time) => (dispatch, getState) => {
 
 export const setRecipe = (id, data) => ({
   type: SET_RECIPE,
+  id,
   data
+})
+
+export const setRecipeUpdating = (id, val) => ({
+  type: SET_RECIPE_UPDATING,
+  id,
+  val
 })
 
 const patchRecipe = (token, id, data) =>
@@ -741,12 +749,14 @@ const patchRecipe = (token, id, data) =>
   })
 
 export const updateRecipe = (id, data) => (dispatch, getState) => {
-  patchRecipe(getState().user.token, id, data)
+  dispatch(setRecipeUpdating(id, true))
+  return patchRecipe(getState().user.token, id, data)
     .then(res => {
       dispatch(setRecipe(res.data.id, res.data))
-      dispatch(push(`/recipes/${res.data.id}/`))
+      dispatch(setRecipeUpdating(id, false))
     })
     .catch(err => {
+      dispatch(setRecipeUpdating(id, false))
       console.log('error updating recipe ', err)
     })
 }

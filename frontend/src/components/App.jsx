@@ -17,7 +17,6 @@ import RecipeList from '../containers/RecipeList.jsx'
 import NoMatch from './NoMatch.jsx'
 import Cart from '../containers/Cart.jsx'
 import Recipe from '../containers/Recipe.jsx'
-import RecipeEdit from '../containers/RecipeEdit.jsx'
 import PasswordReset from '../containers/PasswordReset.jsx'
 import Settings from '../containers/Settings.jsx'
 import AddRecipe from '../containers/AddRecipe.jsx'
@@ -54,7 +53,6 @@ const Base = () => (
           <PrivateRoute exact path="/recipes/" component={ RecipeList }/>
           <PrivateRoute exact path="/cart" component={ Cart }/>
           <PrivateRoute exact path="/recipes/:id(\d+)(.*)" component={ Recipe }/>
-          <PrivateRoute exact path="/recipes/:id/edit" component={ RecipeEdit }/>
           <PrivateRoute exact path="/settings" component={ Settings }/>
           <PrivateRoute exact path="/password" component={ PasswordChange }/>
           <Route component={ NoMatch }/>

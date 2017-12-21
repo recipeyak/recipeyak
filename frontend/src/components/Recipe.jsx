@@ -1,6 +1,7 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import { Link } from 'react-router-dom'
+
+import RecipeEdit from '../containers/RecipeEdit'
 
 const MetaData = ({
   author = '',
@@ -41,7 +42,8 @@ const RecipeViewing = ({
   addingToCart = false,
   removingFromCart = false,
   loading = false,
-  error404 = false
+  error404 = false,
+  edit
 }) => {
   if (error404) {
     return <p>404</p>
@@ -70,7 +72,6 @@ const RecipeViewing = ({
               type="button"
               value="+"/>
           </div>
-          <Link to={ `/recipes/${id}/edit` } className="my-button is-link ml-2">Edit</Link>
         </div>
       </div>
 
@@ -116,19 +117,42 @@ const RecipeViewing = ({
           </div>
         </div>
       </section>
+
+      <section className="d-flex justify-content-center grid-entire-row">
+        <button
+          onClick={ edit }
+          className="my-button is-link">
+          Edit
+        </button>
+      </section>
     </div>
   )
 }
 
 class Recipe extends React.Component {
+  state = {
+    editing: false
+  }
+
   componentWillMount = () => {
     this.props.fetchRecipe(this.props.match.params.id)
   }
 
   render () {
-    return <RecipeViewing
-      { ...this.props }
-    />
+    if (this.state.editing) {
+      return (
+        <RecipeEdit
+          { ...this.props }
+          cancelEdit={ () => this.setState({ editing: false }) }
+        />
+      )
+    }
+    return (
+      <RecipeViewing
+        { ...this.props }
+        edit={ () => this.setState({ editing: true }) }
+      />
+    )
   }
 }
 

@@ -22,8 +22,10 @@ import {
   SET_REMOVING_INGREDIENT,
   SET_UPDATING_STEP,
   SET_REMOVING_STEP,
-  SET_RECIPE_404
-} from '../actionTypes.js'
+  SET_RECIPE_404,
+  SET_RECIPE_UPDATING,
+  SET_RECIPE
+} from '../actionTypes'
 
 export const recipes = (state = {}, action) => {
   switch (action.type) {
@@ -184,6 +186,17 @@ export const recipes = (state = {}, action) => {
             return x
           })
         }
+      }
+    case SET_RECIPE_UPDATING:
+      return { ...state,
+        [action.id]: {
+          ...state[action.id],
+          updating: action.val
+        }
+      }
+    case SET_RECIPE:
+      return { ...state,
+        [action.id]: action.data
       }
     default:
       return state

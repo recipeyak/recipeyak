@@ -23,8 +23,10 @@ import {
   setRemovingIngredient,
   setUpdatingStep,
   setRemovingStep,
-  setRecipe404
-} from '../actions.js'
+  setRecipe404,
+  setRecipeUpdating,
+  setRecipe
+} from '../actions'
 
 describe('Recipes', () => {
   it('Adds recipe to recipe list', () => {
@@ -644,4 +646,45 @@ describe('Recipes', () => {
       recipes(beforeState, setRecipe404(1, true))
     ).toEqual(afterState)
   })
+
+
+  it('sets the recipe to updating', () => {
+    const beforeState = {
+      1: {
+        updating: false
+      }
+    }
+
+    const afterState = {
+      1: {
+        updating: true
+      }
+    }
+
+    expect(
+      recipes(beforeState, setRecipeUpdating(1, true))
+    ).toEqual(afterState)
+  })
+
+  it('overwrites the recipe correctly', () => {
+
+    const beforeState = {
+      1: {
+        name: 'Initial recipe name'
+      }
+    }
+
+    const newRecipe = {
+      name: 'new recipe name',
+    }
+
+    const afterState = {
+      1: newRecipe
+    }
+
+    expect(
+      recipes(beforeState, setRecipe(1, newRecipe))
+    ).toEqual(afterState)
+  })
+
 })

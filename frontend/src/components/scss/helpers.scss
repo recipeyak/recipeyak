@@ -88,6 +88,10 @@
   justify-self: center;
 }
 
+.justify-self-right {
+  justify-self: right;
+}
+
 .justify-space-between,
 .flex-space-between {
   justify-content: space-between;
@@ -155,6 +159,10 @@
 
 .grid-entire-row {
   grid-column: 1 / -1;
+}
+
+.grid-row-4 {
+  grid-row: 4;
 }
 
 .align-self-center {
