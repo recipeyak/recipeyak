@@ -107,7 +107,7 @@ const RecipeViewing = ({
                 steps.map(({ id, text }, i) =>
                   <div key={id}>
                     <label className="label">Step { i + 1}</label>
-                    <p className="listitem-text">text</p>
+                    <p className="listitem-text">{ text }</p>
                   </div>
 
                 )
