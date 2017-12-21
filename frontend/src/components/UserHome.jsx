@@ -53,7 +53,6 @@ const RecentRecipes = ({
                 <Recipe
                   {...recipe}
                   className='mb-0'
-                  url={ '/recipes/' + recipe.id }
                   inCart={ cart[recipe.id] > 0 ? cart[recipe.id] : 0 }
                   key={ recipe.id }
                   removeFromCart={ () => removeFromCart(recipe.id)}

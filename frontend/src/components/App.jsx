@@ -53,7 +53,7 @@ const Base = () => (
           <PrivateRoute exact path="/recipes/add" component={ AddRecipe }/>
           <PrivateRoute exact path="/recipes/" component={ RecipeList }/>
           <PrivateRoute exact path="/cart" component={ Cart }/>
-          <PrivateRoute exact path="/recipes/:id" component={ Recipe }/>
+          <PrivateRoute exact path="/recipes/:id(\d+)(.*)" component={ Recipe }/>
           <PrivateRoute exact path="/recipes/:id/edit" component={ RecipeEdit }/>
           <PrivateRoute exact path="/settings" component={ Settings }/>
           <PrivateRoute exact path="/password" component={ PasswordChange }/>

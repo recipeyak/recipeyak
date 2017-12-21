@@ -31,6 +31,10 @@ const RecipeItem = ({
     </div>
   )
 
+  if (url == null) {
+    url = `/recipes/${id}-${name.replace(/ /g, '-')}`
+  }
+
   return (
     <div className="card ">
       <div className="card-content">

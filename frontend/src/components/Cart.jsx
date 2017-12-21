@@ -34,8 +34,6 @@ class Cart extends React.Component {
       )
     }
 
-    const urlFromID = id => `/recipes/${id}/`
-
     const cartHasItems = Object.values(cart).find(x => x > 0) != null
     const recipeItems = cartHasItems
       ? recipes
@@ -45,7 +43,6 @@ class Cart extends React.Component {
             {...recipe}
             inCart={ cart[recipe.id] > 0 ? cart[recipe.id] : 0 }
             key={ recipe.id }
-            url={ urlFromID(recipe.id) }
             removeFromCart={ () => removeFromCart(recipe.id)}
             addToCart={ () => addToCart(recipe.id)}
           />

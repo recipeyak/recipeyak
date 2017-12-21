@@ -25,7 +25,7 @@ describe('<RecipeList/>', () => {
   it('accepts props', () => {
     const recipes = [{
       id: 123,
-      title: 'Recipe title',
+      name: 'Recipe Name',
       tags: ['tagOne', 'tagTwo'],
       author: 'Recipe author',
       source: '',
@@ -47,7 +47,7 @@ describe('<RecipeList/>', () => {
   it('handles recipes object without tags', () => {
     const recipes = [{
       id: 123,
-      title: 'Recipe title',
+      name: 'Recipe Name',
       author: 'Recipe author',
       source: '',
       url: '',
