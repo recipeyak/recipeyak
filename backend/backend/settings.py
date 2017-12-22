@@ -196,9 +196,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = '/var/app/django/static'
 
+# https://docs.djangoproject.com/en/dev/topics/logging/#module-django.utils.log
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': True,
+    'disable_existing_loggers': False,
     'root': {
         'level': 'WARNING',
         'handlers': ['sentry'],
