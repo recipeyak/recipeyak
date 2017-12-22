@@ -951,7 +951,7 @@ export const logUserIn = (email, password) => dispatch => {
       dispatch(login(res.data.key))
       dispatch(fetchUser())
       dispatch(setLoadingLogin(false))
-      dispatch(push('/recipes'))
+      dispatch(push('/'))
     })
     .catch(err => {
       dispatch(setLoadingLogin(false))
