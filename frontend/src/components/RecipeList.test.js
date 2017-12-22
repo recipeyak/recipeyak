@@ -63,8 +63,11 @@ describe('<RecipeList/>', () => {
         </MemoryRouter>
       </Provider>)
   })
+})
 
-  it('ensure search works', () => {
+describe('searching', () => {
+
+  it('works with basic matching', () => {
     const recipe = {
       name: 'West Canadian Creme Brulee',
       author: 'T. Philip',
@@ -76,4 +79,19 @@ describe('<RecipeList/>', () => {
 
     expect(results).toEqual(true)
   })
+
+
+  it('works with spaces matching', () => {
+    const recipe = {
+      name: 'West Canadian Creme Brulee',
+      author: 'T. Philip',
+    }
+
+    const query = 'westcanad'
+
+    const results = matchesQuery(recipe, query)
+
+    expect(results).toEqual(true)
+  })
+
 })

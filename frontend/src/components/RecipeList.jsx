@@ -5,10 +5,16 @@ import Recipe from './RecipeItem.jsx'
 import Loader from './Loader.jsx'
 
 export const matchesQuery = (recipe, query) => {
-  const { name, author } = recipe
-  query = query.toUpperCase()
-  return (name != null && name.toUpperCase().includes(query)) ||
-    (author != null && author.toUpperCase().includes(query))
+  let { name = '', author = '' } = recipe
+
+  const normalize = x => x.replace(/\W/g, '').toUpperCase()
+
+  name = normalize(name)
+  author = normalize(author)
+  query = normalize(query)
+
+  return name.includes(query) ||
+    author.includes(query)
 }
 
 const Results = ({ recipes, query, onChange }) => {
@@ -64,7 +70,7 @@ class RecipeList extends React.Component {
 
     const results =
       recipes
-      .filter(recipe => matchesQuery(recipe, this.state.query))
+      .filter(recipe => matchesQuery(recipe, query))
       .map(recipe =>
           <Recipe
             {...recipe}
