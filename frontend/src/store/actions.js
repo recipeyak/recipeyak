@@ -54,7 +54,9 @@ import {
   SET_UPDATING_USER_EMAIL,
   SET_RECIPE_404,
   SET_LOGGING_OUT,
-  SET_RECIPE_UPDATING
+  SET_RECIPE_UPDATING,
+  SET_CLEARING_CART,
+  SET_CART_EMPTY
 } from './actionTypes'
 
 import { push } from 'react-router-redux'
@@ -317,6 +319,44 @@ export const fetchCart = id => (dispatch, getState) => {
       dispatch(setErrorCart(true))
       dispatch(setLoadingCart(false))
       console.log('error fetching cart', err)
+    })
+}
+
+export const setClearingCart = val => ({
+  type: SET_CLEARING_CART,
+  val
+})
+
+export const setCartEmpty = () => ({
+  type: SET_CART_EMPTY
+})
+
+export const setShoppingListEmpty = () =>
+  setShoppingList([])
+
+const postClearCart = token =>
+  axios.post('/api/v1/clear_cart/', {}, {
+    headers: {
+      'Authorization': 'Token ' + token
+    }
+  })
+
+export const clearCart = () => (dispatch, getState) => {
+  dispatch(setClearingCart(true))
+  postClearCart(getState().user.token)
+    .then(res => {
+      dispatch(setCartEmpty())
+      dispatch(setShoppingListEmpty())
+      dispatch(setClearingCart(false))
+    })
+    .catch(err => {
+      dispatch(setClearingCart(false))
+      dispatch(showNotificationWithTimeout({
+        message: 'error clearing cart',
+        level: 'danger',
+        delay: 3 * second
+      }))
+      throw err
     })
 }
 

@@ -81,3 +81,80 @@ def test_fetching_shoppinglist(client, user, recipe):
     ]
 
     assert res.json() == expected
+
+
+def test_combining_ingredients_with_out_units(user):
+    """
+    ensure that we can combine things like 1 garlic clove
+    """
+
+    name = 'Recipe name'
+    author = 'Recipe author'
+
+    recipe = Recipe.objects.create(
+        name=name, author=author, user=user)
+
+    recipe2 = Recipe.objects.create(
+        name='Another recipe', author=author, user=user)
+
+    Ingredient.objects.create(
+        quantity='1',
+        name='garlic clove',
+        recipe=recipe)
+
+    Ingredient.objects.create(
+        quantity='8',
+        name='garlic clove',
+        recipe=recipe2)
+
+    ingredients = list(Ingredient.objects.all())
+
+    actual = sorted(combine_ingredients(ingredients), key=lambda x: x.get('name'))
+
+    expected = sorted(
+        [
+            {
+                'name': 'garlic clove',
+                'unit': '9',
+            }
+        ], key=lambda x: x.get('name'))
+
+    assert actual == expected
+
+
+def test_combining_ingredients_with_dashes_in_name(user):
+    """
+    ensure that we can combine names with dashes
+    """
+
+    name = 'Recipe name'
+    author = 'Recipe author'
+
+    recipe = Recipe.objects.create(
+        name=name, author=author, user=user)
+
+    recipe2 = Recipe.objects.create(
+        name='Another recipe', author=author, user=user)
+
+    Ingredient.objects.create(
+        quantity='1 tablespoon',
+        name='extra-virgin olive oil',
+        recipe=recipe)
+
+    Ingredient.objects.create(
+        quantity='8 tablespoons',
+        name='extra virgin olive oil',
+        recipe=recipe2)
+
+    ingredients = list(Ingredient.objects.all())
+
+    actual = combine_ingredients(ingredients)
+
+    expected = [
+            {
+                'name': 'extra virgin olive oil',
+                'unit': '9 tablespoon',
+                }
+            ]
+
+    assert actual == expected

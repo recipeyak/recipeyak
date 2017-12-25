@@ -1,13 +1,17 @@
 import { connect } from 'react-redux'
 
-import { byNameAlphabetical } from '../sorters'
+import {
+  byNameAlphabetical,
+  ingredientByNameAlphabetical
+} from '../sorters'
 
 import {
   addingToCart,
   removingFromCart,
   fetchCart,
   fetchRecipeList,
-  fetchShoppingList
+  fetchShoppingList,
+  clearCart
 } from '../store/actions.js'
 
 import Cart from '../components/Cart.jsx'
@@ -20,8 +24,9 @@ const mapStateToProps = state => {
              .sort(byNameAlphabetical),
     loading: state.loading.recipes || state.loading.cart,
     shoppinglist: state.shoppinglist.shoppinglist
-                  .sort(byNameAlphabetical),
-    loadingShoppingList: state.shoppinglist.loading
+                  .sort(ingredientByNameAlphabetical),
+    loadingShoppingList: state.shoppinglist.loading,
+    clearingCart: state.cart.clearing
   }
 }
 
@@ -39,7 +44,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(fetchRecipeList())
       dispatch(fetchCart())
       dispatch(fetchShoppingList())
-    }
+    },
+    clearCart: () => dispatch(clearCart())
   }
 }
 

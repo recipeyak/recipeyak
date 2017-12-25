@@ -97,6 +97,15 @@ class CartViewSet(mixins.RetrieveModelMixin,
         return CartItem.objects.filter(recipe__user=self.request.user)
 
 
+class ClearCart(APIView):
+
+    def post(self, request, format=None):
+        CartItem.objects \
+                .filter(recipe__user=self.request.user) \
+                .update(count=0)
+        return Response(status=status.HTTP_200_OK)
+
+
 class IngredientViewSet(viewsets.ModelViewSet):
 
     queryset = Ingredient.objects.all()

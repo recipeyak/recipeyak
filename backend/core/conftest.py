@@ -115,3 +115,8 @@ def recipe_pie(user):
         recipe=recipe)
 
     return recipe
+
+
+@pytest.fixture
+def recipe2(user):
+    return recipe_pie(user)

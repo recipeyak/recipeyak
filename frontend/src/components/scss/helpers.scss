@@ -122,6 +122,10 @@
   grid-template-columns: repeat(12, 1fr);
 }
 
+.grid-auto-rows-min-content {
+  grid-auto-rows: min-content;
+}
+
 .grid-gap-4,
 .grid-gap-1rem {
   grid-gap: 1rem;

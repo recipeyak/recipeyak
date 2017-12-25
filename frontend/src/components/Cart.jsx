@@ -23,7 +23,9 @@ class Cart extends React.Component {
       addToCart,
       loading,
       shoppinglist,
-      loadingShoppingList
+      loadingShoppingList,
+      clearCart,
+      clearingCart
     } = this.props
 
     if (loading) {
@@ -35,7 +37,8 @@ class Cart extends React.Component {
       )
     }
 
-    if (shoppinglist.length <= 0 || recipes.length <= 0) {
+    const emptyCart = shoppinglist.length <= 0 || recipes.length <= 0
+    if (emptyCart) {
       return (
         <div>
           <Helmet title='Cart' />
@@ -47,7 +50,7 @@ class Cart extends React.Component {
     return (
       <div className="cart-container">
         <Helmet title='Cart' />
-        <div className="d-grid grid-gap-4">
+        <div className="d-grid grid-gap-4 grid-auto-rows-min-content">
           {
             recipes.map(recipe =>
               <Recipe
@@ -59,6 +62,9 @@ class Cart extends React.Component {
               />
             )
           }
+          <button
+            onClick={ clearCart }
+            className={ `my-button control ${clearingCart ? 'is-loading' : ''}` }>Clear Cart</button>
         </div>
         <div>
           <div className={loadingShoppingList ? 'box has-text-grey-light' : 'box'} >

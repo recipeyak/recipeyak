@@ -23,6 +23,8 @@ export const SET_CART = 'SET_CART'
 export const SET_CART_ITEM = 'SET_CART_ITEM'
 export const SET_LOADING_CART = 'SET_LOADING_CART'
 export const SET_ERROR_CART = 'SET_ERROR_CART'
+export const SET_CLEARING_CART = 'SET_CLEARING_CART'
+export const SET_CART_EMPTY = 'SET_CART_EMPTY'
 
 export const ADD_RECIPE = 'ADD_RECIPE'
 export const ADD_STEP_TO_RECIPE = 'ADD_STEP_TO_RECIPE'

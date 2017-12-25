@@ -12,6 +12,7 @@ from .views import (
     CartViewSet,
     ShoppingListView,
     UserStats,
+    ClearCart
 )
 
 router = DefaultRouter()
@@ -33,6 +34,7 @@ urlpatterns = [
 
     url(r'', include(router.urls)),
     url(r'', include(recipes_router.urls)),
+    url(r'clear_cart', ClearCart.as_view()),
     url(r'shoppinglist', ShoppingListView.as_view()),
     url(r'user_stats', UserStats.as_view()),
 ]

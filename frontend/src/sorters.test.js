@@ -1,4 +1,7 @@
-import { byNameAlphabetical } from './sorters'
+import {
+  byNameAlphabetical,
+  ingredientByNameAlphabetical
+} from './sorters'
 
 describe('byNameAlphabetical', () => {
   it('sorter keeps already sorted list sorted', () => {
@@ -262,6 +265,70 @@ describe('byNameAlphabetical', () => {
       ingredients.sort(byNameAlphabetical)
     ).toEqual(expected)
 
+  })
+
+  it('should ignore words medium, large, small', () => {
+    const before = [
+      {
+        "unit": "1",
+        "name": "large tomato"
+      },
+      {
+        "unit": "1",
+        "name": "medium tomato"
+      },
+      {
+        "unit": "1",
+        "name": "mushroom"
+      }
+    ]
+
+    const expected = [
+      {
+        "unit": "1",
+        "name": "mushroom"
+      },
+      {
+        "unit": "1",
+        "name": "large tomato"
+      },
+      {
+        "unit": "1",
+        "name": "medium tomato"
+      }
+    ]
+
+    expect(
+      before.sort(ingredientByNameAlphabetical)
+    ).toEqual(expected)
+  })
+
+  it('should ignore ground', () => {
+    const before = [
+      {
+        "unit": "1 teaspoon",
+        "name": "garam masala"
+      },
+      {
+        "unit": "1 teaspoon",
+        "name": "ground cumin"
+      }
+    ]
+
+    const expected = [
+      {
+        "unit": "1 teaspoon",
+        "name": "ground cumin"
+      },
+      {
+        "unit": "1 teaspoon",
+        "name": "garam masala"
+      }
+    ]
+
+    expect(
+      before.sort(ingredientByNameAlphabetical)
+    ).toEqual(expected)
   })
 
 })

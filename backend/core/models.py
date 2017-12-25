@@ -148,9 +148,6 @@ class Ingredient(CommonInfo):
     description = models.CharField(max_length=255, blank=True)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
 
-    def __add__(self, other):
-        print('sdlkfj;sdfj')
-
     def __str__(self):
         return f'{self.quantity} {self.name} {self.description}'
 

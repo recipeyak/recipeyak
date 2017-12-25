@@ -2,7 +2,9 @@ import cart from './cart.js'
 
 import {
   setCart,
-  setCartItem
+  setCartItem,
+  setClearingCart,
+  setCartEmpty
 } from '../actions.js'
 
 describe('Cart', () => {
@@ -49,6 +51,35 @@ describe('Cart', () => {
 
     expect(
       cart(beforeState, setCartItem(id, count))
+    ).toEqual(afterState)
+  })
+
+  it('sets the cart to clearing', () => {
+
+    const beforeState = {
+      clearing: false
+    }
+
+    const afterState = {
+      clearing: true
+    }
+
+    expect(
+      cart(beforeState, setClearingCart(true))
+    ).toEqual(afterState)
+  })
+
+  it('clears the cart', () => {
+
+    const beforeState = {
+      2: 1
+    }
+
+    const afterState = {
+    }
+
+    expect(
+      cart(beforeState, setCartEmpty())
     ).toEqual(afterState)
   })
 })

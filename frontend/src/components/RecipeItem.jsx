@@ -1,6 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
+const toURL = (x = '') => x.replace(/\s/g, '-')
+
 const RecipeItem = ({
     tags = {},
     url,
@@ -32,7 +34,7 @@ const RecipeItem = ({
   )
 
   if (url == null) {
-    url = `/recipes/${id}-${name.replace(/ /g, '-')}`
+    url = `/recipes/${id}-${toURL(name)}`
   }
 
   return (

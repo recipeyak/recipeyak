@@ -4,7 +4,7 @@ const emptyField = ({
   quantity,
   name,
   description
-}) => quantity === '' || name === '' || description === ''
+}) => quantity === '' || name === ''
 
 const allEmptyFields = ({
   quantity,
@@ -148,7 +148,8 @@ class Ingredient extends React.Component {
       enableEditing,
       cancel,
       remove,
-      discardChanges
+      discardChanges,
+      update
     } = this
 
     const {
@@ -164,10 +165,8 @@ class Ingredient extends React.Component {
       removing
     } = this.props
 
-    // TODO: fetch from backend
-
     const inner = editing
-      ? <form onSubmit={ this.update }>
+      ? <form onSubmit={ update }>
 
           <div className="field">
 
@@ -208,7 +207,7 @@ class Ingredient extends React.Component {
             <div className="field is-grouped">
               <p className="control">
                 <button
-                  className={ 'button ' + (updating ? 'is-loading' : '')}
+                  className={ 'my-button ' + (updating ? 'is-loading' : '')}
                   type="submit"
                   name="update">
                   Update
@@ -228,7 +227,7 @@ class Ingredient extends React.Component {
               <p className="control">
                 <button
                   onClick={ remove }
-                  className={ 'button ' + (removing ? 'is-loading' : '')}
+                  className={ 'my-button ' + (removing ? 'is-loading' : '')}
                   type="button"
                   name="remove">
                   Remove

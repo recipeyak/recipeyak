@@ -2,7 +2,8 @@ import shoppinglist from './shoppinglist.js'
 
 import {
   setShoppingList,
-  setLoadingShoppingList
+  setLoadingShoppingList,
+  setShoppingListEmpty
 } from '../actions.js'
 
 
@@ -47,6 +48,20 @@ describe('Shopping List', () => {
 
     expect(
       shoppinglist(beforeState, setLoadingShoppingList(true))
+    ).toEqual(afterState)
+  })
+
+  it('emptys the shopping list', () => {
+    const beforeState = {
+      shoppinglist: shopList
+    }
+
+    const afterState = {
+      shoppinglist: []
+    }
+
+    expect(
+      shoppinglist(beforeState, setShoppingListEmpty())
     ).toEqual(afterState)
   })
 })

@@ -16,16 +16,16 @@ def combine_ingredients(ingredients: List) -> List:
         except UndefinedUnitError:
             quantity = ingredient.quantity
 
-        name = ingredient.name
+        name = ingredient.name.replace('-', ' ')
 
         try:
             base_unit = quantity.to_base_units().units
         except AttributeError:
-            base_unit = quantity
+            base_unit = ''
 
-        in_combined = combined.get(name, None) is not None
+        in_combined = combined.get(name) is not None
         if in_combined:
-            if combined.get(name).get(base_unit, None) is not None:
+            if combined.get(name).get(base_unit) is not None:
                 combined[name][base_unit] += quantity
             else:
                 combined[name][base_unit] = quantity
@@ -36,10 +36,10 @@ def combine_ingredients(ingredients: List) -> List:
 
     simple_ingredients = []
     for name, v in combined.items():
-        unit, = v.values()
-        simple_ingredients.append({
-            'unit': str(unit),
-            'name': name
-        })
+        for unit in v.values():
+            simple_ingredients.append({
+                'unit': str(unit),
+                'name': name
+            })
 
     return simple_ingredients

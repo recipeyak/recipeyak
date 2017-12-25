@@ -4,10 +4,11 @@ import { Helmet } from 'react-helmet'
 import Recipe from './RecipeItem.jsx'
 import Loader from './Loader.jsx'
 
-export const matchesQuery = (recipe, query) => {
-  let { name = '', author = '' } = recipe
-
-  const normalize = x => x.replace(/\W/g, '').toUpperCase()
+export const matchesQuery = ({
+    name = '',
+    author = ''
+  }, query) => {
+  const normalize = (x = '') => x.replace(/\W/g, '').toUpperCase()
 
   name = normalize(name)
   author = normalize(author)
