@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
 import Loader from './Loader'
-import Recipe from './RecipeItem'
+import Recipe, { recipeURL } from './RecipeItem'
 
 const RecipesAddedThisWeek = ({ count = 0 }) =>
   count > 0 &&
@@ -27,9 +27,9 @@ const MostAddedRecipe = ({
   name !== '' && cartAdds > 0 &&
   <p className="stat mb-1">
     <b>By cart additions</b>, your <b>favorite recipe</b> is
-    <a className="big-link" href={'/recipes/' + id}>
+    <Link className="big-link" to={recipeURL(id, name)}>
       {name} by {author}
-    </a>.
+    </Link>.
     You've added it to your cart {cartAdds} time{cartAdds !== 1 && 's'}.
   </p>
 

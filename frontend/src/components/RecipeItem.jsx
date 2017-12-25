@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 
 const toURL = (x = '') => x.replace(/\s/g, '-')
 
+export const recipeURL = (id, name) => `/recipes/${id}-${toURL(name)}`
+
 const RecipeItem = ({
     tags = {},
     url,
@@ -34,7 +36,7 @@ const RecipeItem = ({
   )
 
   if (url == null) {
-    url = `/recipes/${id}-${toURL(name)}`
+    url = recipeURL(id, name)
   }
 
   return (
