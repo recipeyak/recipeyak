@@ -3,6 +3,10 @@ import pytest
 from django.conf import settings
 from rest_framework import status
 
+from .models import (
+    Recipe
+)
+
 pytestmark = pytest.mark.django_db
 
 BASE_URL = f'/{settings.API_BASE_URL}'
@@ -331,3 +335,29 @@ def test_filtering_recipes_by_recent(client, user, recipes):
 
     assert expected_first_recipe == actual_first_recipe, \
         "recipes weren't sorted by the backend"
+
+
+def test_recording_edits_for_recipes(client, user, recipe):
+    """
+    ensure edits being recorded for recipes
+    """
+    client.force_authenticate(user)
+
+    assert recipe.edits == 0
+
+    recipe.name = 'A different name'
+    recipe.save()
+
+    assert recipe.edits == 1
+
+
+def test_updating_edit_recipe_via_api(client, user, recipe):
+    """
+    ensure edits occur when updating the recipe via the api
+    """
+    client.force_authenticate(user)
+
+    res = client.patch(f'{BASE_URL}/recipes/{recipe.id}/', {'name': 'A new name'})
+    assert res.status_code == status.HTTP_200_OK
+
+    assert Recipe.objects.get(pk=recipe.id).edits == 1

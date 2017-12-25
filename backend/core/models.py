@@ -124,11 +124,15 @@ class Recipe(CommonInfo):
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
+        if not is_new:
+            # we only want to increment the edits if we aren't setting the
+            # edits field specifically
+            edits_unchanged = Recipe.objects.get(pk=self.id).edits == self.edits
+            if edits_unchanged:
+                self.edits += 1
         super(Recipe, self).save(*args, **kwargs)
         if is_new:
             CartItem.objects.create(recipe=self)
-        else:
-            self.edits += 1
 
 
 class Ingredient(CommonInfo):
