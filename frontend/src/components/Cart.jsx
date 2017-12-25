@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet'
 
 import Recipe from './RecipeItem.jsx'
 import Loader from './Loader.jsx'
+import DeadFish from './DeadFish.jsx'
 
 class Cart extends React.Component {
   componentWillMount = () => {
@@ -40,9 +41,10 @@ class Cart extends React.Component {
     const emptyCart = shoppinglist.length <= 0 || recipes.length <= 0
     if (emptyCart) {
       return (
-        <div>
+        <div className="d-flex flex-direction-column align-items-center">
           <Helmet title='Cart' />
-          <p className="fs-8 text-center">No recipes in cart.</p>
+          <DeadFish/>
+          <p className="fs-7 text-center fw-500 font-family-title light-text-color">No recipes in cart</p>
         </div>
       )
     }

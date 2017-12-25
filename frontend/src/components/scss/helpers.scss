@@ -75,6 +75,7 @@
   }
 }
 
+.flex-direction-column,
 .direction-column {
   flex-direction: column;
 }
@@ -178,6 +179,10 @@
   font-weight: bold;
 }
 
+.fw-500 {
+  font-weight: 500;
+}
+
 .is-italic,
 .italic {
   font-style: italic;
@@ -237,4 +242,12 @@
 
 .fill-text-color {
   fill: $text-color;
+}
+
+.light-text-color {
+  color: lighten($text-color, 20%);
+  // needed for the dead fish
+  & > * {
+    stroke: lighten($text-color, 20%);
+  }
 }
