@@ -93,6 +93,7 @@
   justify-self: right;
 }
 
+.space-between,
 .justify-space-between,
 .flex-space-between {
   justify-content: space-between;
@@ -266,4 +267,20 @@
   & > * {
     stroke: lighten($text-color, 20%);
   }
+}
+
+.text-decoration-underline {
+  text-decoration: underline;
+}
+
+.bg-primary {
+  background-color: $primary-color;
+}
+
+.color-white {
+  color: white;
+}
+
+.bg-50-50-primary {
+  background: linear-gradient(to bottom, white 50%, $primary-color 50%);
 }

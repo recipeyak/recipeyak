@@ -21,7 +21,7 @@ import PasswordReset from '../containers/PasswordReset.jsx'
 import Settings from '../containers/Settings.jsx'
 import AddRecipe from '../containers/AddRecipe.jsx'
 import Notification from '../containers/Notification.jsx'
-import HomePage from '../components/Base.jsx'
+import { Container, ContainerBase } from '../components/Base.jsx'
 import PasswordChange from '../containers/PasswordChange.jsx'
 
 import 'bulma/css/bulma.css'
@@ -43,21 +43,27 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
 const Base = () => (
   <div>
     <ConnectedRouter history={ history }>
-      <HomePage>
+      <ContainerBase>
         <Switch>
-          <Route exact path="/login" component={ Login }/>
-          <Route exact path="/signup" component={ Signup }/>
-          <Route exact path="/password-reset" component={ PasswordReset }/>
+          { /* since the landing page doesn't use a signal container, we have
+            to move it outside of the <Container/>  */ }
           <Route exact path="/" component={ Home }/>
-          <PrivateRoute exact path="/recipes/add" component={ AddRecipe }/>
-          <PrivateRoute exact path="/recipes/" component={ RecipeList }/>
-          <PrivateRoute exact path="/cart" component={ Cart }/>
-          <PrivateRoute exact path="/recipes/:id(\d+)(.*)" component={ Recipe }/>
-          <PrivateRoute exact path="/settings" component={ Settings }/>
-          <PrivateRoute exact path="/password" component={ PasswordChange }/>
-          <Route component={ NoMatch }/>
+          <Container>
+            <Switch>
+              <Route exact path="/login" component={ Login }/>
+              <Route exact path="/signup" component={ Signup }/>
+              <Route exact path="/password-reset" component={ PasswordReset }/>
+              <PrivateRoute exact path="/recipes/add" component={ AddRecipe }/>
+              <PrivateRoute exact path="/recipes/" component={ RecipeList }/>
+              <PrivateRoute exact path="/cart" component={ Cart }/>
+              <PrivateRoute exact path="/recipes/:id(\d+)(.*)" component={ Recipe }/>
+              <PrivateRoute exact path="/settings" component={ Settings }/>
+              <PrivateRoute exact path="/password" component={ PasswordChange }/>
+              <Route component={ NoMatch }/>
+            </Switch>
+          </Container>
         </Switch>
-      </HomePage>
+      </ContainerBase>
     </ConnectedRouter>
     <Notification/>
   </div>

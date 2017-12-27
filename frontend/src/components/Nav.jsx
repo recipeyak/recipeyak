@@ -34,7 +34,8 @@ class Navbar extends React.Component {
       loggedIn = true,
       logout,
       email,
-      loggingOut
+      loggingOut,
+      className = ''
     } = this.props
 
     const buttons = loggedIn ? (
@@ -91,7 +92,7 @@ class Navbar extends React.Component {
     )
 
     return (
-      <nav className="nav flex-wrap pt-2 pb-2">
+      <nav className={ `nav flex-wrap pt-2 pb-2 ${className}` }>
         <Link to="/" className="better-nav-item pl-0 pr-0 fs-2rem fw-normal font-family-title">
           <Logo/>
           <span>Recipe Yak</span>

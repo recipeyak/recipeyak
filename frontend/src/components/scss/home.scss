@@ -1,12 +1,5 @@
 @import './variables.scss';
 
-@media (min-width: 841px) {
-  .home-grid {
-    display: grid;
-    grid-gap: 1rem;
-  }
-}
-
 @media (max-width: 841px) {
   .home-hero-text {
     text-align: center;
@@ -18,8 +11,17 @@
   }
 }
 
+.home-subtitle {
+  font-size: 3rem;
+
+  @media (min-width: 920px) {
+    font-size: 4.5rem;
+    text-align: left;
+  }
+}
+
 .home-hero-text {
-  font-size: 3.5rem;
+  font-size: 3rem;
 
   @media (min-width: 630px) {
     font-size: 4rem;

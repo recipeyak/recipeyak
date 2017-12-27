@@ -127,20 +127,23 @@ const UserHome = ({
   removeFromCart,
   errorRecipes
 }) =>
-  <div className="font-family-title home-page-grid">
+  <div className="container pr-4 pl-4">
     <Helmet title='Home'/>
-    <UserStatistics
-      stats={ userStats }
-      loading={ loadingUserStats }
-    />
-    <RecentRecipes
-      loading={ loadingRecipes }
-      error={ errorRecipes }
-      recipes={ recipes }
-      cart={ cart }
-      removeFromCart={ removeFromCart }
-      addToCart={ addToCart }
-    />
+
+    <section className="home-page-grid font-family-title">
+      <UserStatistics
+        stats={ userStats }
+        loading={ loadingUserStats }
+      />
+      <RecentRecipes
+        loading={ loadingRecipes }
+        error={ errorRecipes }
+        recipes={ recipes }
+        cart={ cart }
+        removeFromCart={ removeFromCart }
+        addToCart={ addToCart }
+      />
+    </section>
   </div>
 
 class UserHomeFetch extends React.Component {
