@@ -3,8 +3,7 @@
 @media (min-width: 841px) {
   .home-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 15px;
+    grid-gap: 1rem;
   }
 }
 
