@@ -12,7 +12,8 @@ const mapStateToProps = state => {
   return {
     avatarURL: state.user.avatarURL,
     email: state.user.email,
-    updatingEmail: state.user.updatingEmail
+    updatingEmail: state.user.updatingEmail,
+    loading: state.user.loading
   }
 }
 
@@ -24,9 +25,7 @@ const mapDispatchToProps = dispatch => {
     fetchData: () => {
       dispatch(fetchUser())
     },
-    updateEmail: email => {
-      dispatch(updatingEmail(email))
-    }
+    updateEmail: email => dispatch(updatingEmail(email))
   }
 }
 
