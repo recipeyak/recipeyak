@@ -1,5 +1,6 @@
 import datetime
 from typing import List
+import pytz
 
 from rest_framework import viewsets, status, mixins, views
 from rest_framework.response import Response
@@ -133,7 +134,7 @@ class UserStats(APIView):
             total=Sum('edits')
             ).get('total')
 
-        last_week = datetime.datetime.today() - datetime.timedelta(days=7)
+        last_week = datetime.datetime.now(tz=pytz.UTC) - datetime.timedelta(days=7)
         new_recipes_last_week = user_recipes.filter(created__gt=last_week).count()
 
         most_added_recipe = user_recipes.order_by('-cart_additions').values().first()
