@@ -82,7 +82,7 @@ class Cart extends React.Component {
           <div className={loadingShoppingList ? 'box has-text-grey-light' : 'box'} >
             {
               shoppinglist.map(x =>
-                <p key={x.name}>{x.unit} {x.name} </p>
+                <p key={x.unit + x.name}>{x.unit} {x.name} </p>
               )
             }
           </div>

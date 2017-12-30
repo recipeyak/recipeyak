@@ -146,7 +146,7 @@ class AddRecipe extends React.Component {
             className={ 'my-input fs-2rem' + (errorWithName ? ' is-danger' : '') }
             type="text" placeholder="new recipe title" name="name"/>
           { errorWithName
-              ? <p class="fs-4 c-danger">A recipe needs a name</p>
+              ? <p className="fs-4 c-danger">A recipe needs a name</p>
               : null
           }
         </div>
