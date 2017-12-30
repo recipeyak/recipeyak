@@ -200,8 +200,51 @@ def test_combining_recipes_with_improper_quantities(client, user):
         assert res.status_code == status.HTTP_200_OK
         assert res.json() != []
 
-        assert res.json()[0].get('unit') == quantity
+        assert res.json()[0].get('unit') == str(count) + ' + some'
         assert res.json()[0].get('name') == name
 
-        assert res.json()[1].get('unit') == str(count)
-        assert res.json()[1].get('name') == name
+
+def test_combining_ingredients_with_approximations(user):
+    """
+    ensure that we can combine 'some pepper', '2 teaspoons pepper', 'sprinkle pepper'
+    """
+
+    name = 'Recipe name'
+    author = 'Recipe author'
+
+    recipe = Recipe.objects.create(
+        name=name, author=author, user=user)
+
+    recipe2 = Recipe.objects.create(
+        name='Another recipe', author=author, user=user)
+
+    Ingredient.objects.create(
+        quantity='1 tablespoon',
+        name='black pepper',
+        recipe=recipe)
+    Ingredient.objects.create(
+        quantity='2 tablespoon',
+        name='black pepper',
+        recipe=recipe)
+    Ingredient.objects.create(
+        quantity='sprinkle',
+        name='black pepper',
+        recipe=recipe)
+
+    Ingredient.objects.create(
+        quantity='some',
+        name='black pepper',
+        recipe=recipe2)
+
+    ingredients = list(Ingredient.objects.all())
+
+    actual = combine_ingredients(ingredients)
+
+    expected = [
+            {
+                'name': 'black pepper',
+                'unit': '3 tablespoon + some',
+                }
+            ]
+
+    assert actual == expected

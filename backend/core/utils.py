@@ -11,6 +11,23 @@ def not_real_quantity(quantity) -> bool:
     return isinstance(quantity, str) and quantity.lower() in basic_quantities
 
 
+def simplify_units(units):
+    """
+    tablespoon, sprinkle, some, pinch => tablespoon, sprinkle
+    """
+    combineable_ingredients = ['sprinkle', 'some', 'pinch']
+    simplified = []
+    some = False
+    for u in units:
+        if u in combineable_ingredients:
+            some = True
+        else:
+            simplified.append(str(u))
+    if some:
+        simplified.append('some')
+    return simplified
+
+
 def combine_ingredients(ingredients: List) -> List:
 
     combined: Dict[str, Dict[str, Quantity]] = {}
@@ -19,6 +36,11 @@ def combine_ingredients(ingredients: List) -> List:
 
         try:
             quantity = ureg.parse_expression(ingredient.quantity)
+            try:
+                if str(quantity.units) in ['picoinch']:
+                    quantity = 'pinch'
+            except AttributeError:
+                pass
         except UndefinedUnitError:
             quantity = ingredient.quantity
 
@@ -45,9 +67,14 @@ def combine_ingredients(ingredients: List) -> List:
 
     simple_ingredients = []
     for name, v in combined.items():
-        for unit in v.values():
-            simple_ingredients.append({
-                'unit': str(unit),
+        combined_units = ''
+        for unit in simplify_units(v.values()):
+            if combined_units == '':
+                combined_units += str(unit)
+            else:
+                combined_units += ' + ' + str(unit)
+        simple_ingredients.append({
+                'unit': combined_units,
                 'name': name
             })
 
