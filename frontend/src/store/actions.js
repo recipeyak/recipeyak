@@ -63,6 +63,9 @@ import { push } from 'react-router-redux'
 
 import axios from 'axios'
 
+const invalidToken = res =>
+  res.data.detail === 'Invalid token.' && res.status === 401
+
 export const login = token => {
   return {
     type: LOG_IN,
@@ -98,6 +101,9 @@ export const loggingOut = () => (dispatch, getState) => {
       dispatch(setLoggingOut(false))
     })
     .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       dispatch(setLoggingOut(false))
       throw err
     })
@@ -177,6 +183,9 @@ export const updatingEmail = email => (dispatch, getState) => {
       }))
     })
     .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       dispatch(setUpdatingUserEmail(false))
       const messageExtra = emailExists(err)
         ? '- email already in use'
@@ -195,9 +204,6 @@ const getUser = token =>
       'Authorization': 'Token ' + token
     }
   })
-
-const invalidToken = res =>
-  res.data.detail === 'Invalid token.' && res.status === 401
 
 export const fetchUser = () => (dispatch, getState) => {
   dispatch(setLoadingUser(true))
@@ -231,7 +237,10 @@ export const fetchUserStats = () => (dispatch, getState) => {
       dispatch(setUserStats(res.data))
       dispatch(setLoadingUserStats(false))
     })
-    .catch(() => {
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       // TODO: handle error
       dispatch(setLoadingUserStats(false))
     })
@@ -273,6 +282,9 @@ export const updatingPassword = (password1, password2, oldPassword) => (dispatch
       dispatch(push('/recipes'))
     })
     .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       dispatch(setLoadingPasswordUpdate(false))
       dispatch(setErrorPasswordUpdate(true))
       console.log('error updating password', err)
@@ -316,6 +328,9 @@ export const fetchCart = id => (dispatch, getState) => {
       dispatch(setLoadingCart(false))
     })
     .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       dispatch(setErrorCart(true))
       dispatch(setLoadingCart(false))
       console.log('error fetching cart', err)
@@ -350,6 +365,9 @@ export const clearCart = () => (dispatch, getState) => {
       dispatch(setClearingCart(false))
     })
     .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       dispatch(setClearingCart(false))
       dispatch(showNotificationWithTimeout({
         message: 'error clearing cart',
@@ -388,6 +406,9 @@ export const addingToCart = id => (dispatch, getState) => {
       console.log('done: adding to cart')
     })
     .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       console.log('error adding recipe to cart', err)
       dispatch(setRecipeAddingToCart(id, false))
     })
@@ -412,6 +433,9 @@ export const removingFromCart = id => (dispatch, getState) => {
       dispatch(setRecipeRemovingFromCart(id, false))
     })
     .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       console.log('error removing recipe from cart', err)
       dispatch(setRecipeRemovingFromCart(id, false))
     })
@@ -446,6 +470,9 @@ export const fetchShoppingList = () => (dispatch, getState) => {
       dispatch(setLoadingShoppingList(false))
     })
     .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       console.error("couldn't fetch shopping list: ", err)
       dispatch(showNotificationWithTimeout({
         message: 'problem fetching shopping list',
@@ -494,6 +521,9 @@ export const postNewRecipe = recipe => (dispatch, getState) => {
       dispatch(push('/recipes'))
     })
     .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       const errors = {
         errorWithName: err.response.data.name != null,
         errorWithIngredients: err.response.data.ingredients != null,
@@ -538,6 +568,9 @@ export const fetchRecipe = id => (dispatch, getState) => {
       dispatch(setLoadingRecipe(id, false))
     })
     .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       if (err.response.status === 404) {
         dispatch(setRecipe404(id, true))
       }
@@ -589,7 +622,10 @@ export const fetchRecentRecipes = () => (dispatch, getState) => {
       dispatch(setRecipes(res.data))
       dispatch(setLoadingRecipes(false))
     })
-    .catch(() => {
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       dispatch(setErrorRecipes(true))
       dispatch(setLoadingRecipes(false))
     })
@@ -604,6 +640,9 @@ export const fetchRecipeList = () => (dispatch, getState) => {
       dispatch(setLoadingRecipes(false))
     })
     .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       console.warn('error fetching recipe list', err)
       dispatch(setErrorRecipes(true))
       dispatch(setLoadingRecipes(false))
@@ -656,6 +695,9 @@ export const addingRecipeIngredient = (recipeID, ingredient) => (dispatch, getSt
       dispatch(setAddingIngredientToRecipe(recipeID, false))
     })
     .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       console.log('error adding recipe ingredient', err)
       dispatch(setAddingIngredientToRecipe(recipeID, false))
     })
@@ -690,6 +732,9 @@ export const sendUpdatedRecipeName = (id, name) => (dispatch, getState) => {
       dispatch(updateRecipeName(res.data.id, res.data.name))
     })
     .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       console.log('error updating recipe name', err)
     })
 }
@@ -715,6 +760,9 @@ export const setRecipeSource = (id, source) => (dispatch, getState) => {
       dispatch(updateRecipeSource(res.data.id, res.data.source))
     })
     .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       console.log('error updating recipe source', err)
     })
 }
@@ -765,6 +813,9 @@ export const setRecipeTime = (id, time) => (dispatch, getState) => {
       dispatch(updateRecipeTime(res.data.id, res.data.time))
     })
     .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       console.log('error updating recipe time', err)
     })
 }
@@ -796,6 +847,9 @@ export const updateRecipe = (id, data) => (dispatch, getState) => {
       dispatch(setRecipeUpdating(id, false))
     })
     .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       dispatch(setRecipeUpdating(id, false))
       console.log('error updating recipe ', err)
     })
@@ -832,6 +886,9 @@ export const addingRecipeStep = (recipeID, step) => (dispatch, getState) => {
       dispatch(setLoadingAddStepToRecipe(recipeID, false))
     })
     .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       console.log('error adding recipe step', err)
       dispatch(setLoadingAddStepToRecipe(recipeID, false))
     })
@@ -859,6 +916,9 @@ export const updatingIngredient = (recipeID, ingredientID, content) => (dispatch
       dispatch(setUpdatingIngredient(recipeID, ingredientID, false))
     })
     .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       dispatch(setUpdatingIngredient(recipeID, ingredientID, false))
       console.log('error updating recipe ingredient', err)
     })
@@ -887,6 +947,9 @@ export const deletingIngredient = (recipeID, ingredientID) => (dispatch, getStat
       dispatch(deleteIngredient(recipeID, ingredientID))
     })
     .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       dispatch(setRemovingIngredient(recipeID, ingredientID, false))
       console.log('error deleting recipe ingredient', err)
     })
@@ -931,6 +994,9 @@ export const updatingStep = (recipeID, stepID, text) => (dispatch, getState) => 
       dispatch(setUpdatingStep(recipeID, stepID, false))
     })
     .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       console.log('error updating recipe step', err)
       dispatch(setUpdatingStep(recipeID, stepID, false))
     })
@@ -959,6 +1025,9 @@ export const deletingStep = (recipeID, stepID) => (dispatch, getState) => {
       dispatch(setRemovingStep(recipeID, stepID, false))
     })
     .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       console.log('error deleting recipe step', err)
       dispatch(setRemovingStep(recipeID, stepID, false))
     })
@@ -994,6 +1063,9 @@ export const logUserIn = (email, password) => dispatch => {
       dispatch(push('/'))
     })
     .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       dispatch(setLoadingLogin(false))
       const badRequest = err.response.status === 400
       if (err.response && badRequest) {
@@ -1079,6 +1151,9 @@ export const deletingRecipe = id => (dispatch, getState) => {
       dispatch(push('/recipes'))
     })
     .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       dispatch(setDeletingRecipe(id, false))
       console.warn('error deleting recipe', err)
     })
