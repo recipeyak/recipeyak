@@ -158,3 +158,50 @@ def test_combining_ingredients_with_dashes_in_name(user):
             ]
 
     assert actual == expected
+
+
+def test_combining_recipes_with_improper_quantities(client, user):
+    """
+    make sure we can combine recipes with units like 'some' and 'sprinkle'
+    """
+
+    # 1. create our recipes
+    recipe = Recipe.objects.create(
+        name='Salmon and Tomatoes in Foil', author='Mark Bittman', user=user)
+
+    name = 'basil leaves'
+    count = 16
+    Ingredient.objects.create(
+        quantity=count,
+        name=name,
+        recipe=recipe)
+
+    recipe2 = Recipe.objects.create(
+        name='Pizza With Sweet and Hot Peppers', author='David Tanis', user=user)
+
+    recipe.cartitem.count = 1
+    recipe.cartitem.save()
+
+    recipe2.cartitem.count = 1
+    recipe2.cartitem.save()
+
+    # 2. set ingredients of second recipe to 'basic' quantities and assert
+    for quantity in ['some', 'sprinkle']:
+
+        Ingredient.objects.filter(recipe=recipe2).delete()
+
+        Ingredient.objects.create(
+            quantity=quantity,
+            name=name,
+            recipe=recipe2)
+
+        client.force_authenticate(user)
+        res = client.get(f'{BASE_URL}/shoppinglist/')
+        assert res.status_code == status.HTTP_200_OK
+        assert res.json() != []
+
+        assert res.json()[0].get('unit') == quantity
+        assert res.json()[0].get('name') == name
+
+        assert res.json()[1].get('unit') == str(count)
+        assert res.json()[1].get('name') == name
