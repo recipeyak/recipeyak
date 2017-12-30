@@ -1,6 +1,7 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 
+import Loader from './Loader.jsx'
 import RecipeEdit from '../containers/RecipeEdit'
 
 const MetaData = ({
@@ -49,7 +50,9 @@ const RecipeViewing = ({
     return <p>404</p>
   }
   if (loading) {
-    return <p>Loading...</p>
+    return <section className="d-flex justify-content-center">
+      <Loader/>
+    </section>
   }
   return (
     <div className="d-grid grid-gap-1rem">

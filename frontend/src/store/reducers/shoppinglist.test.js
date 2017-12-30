@@ -3,7 +3,8 @@ import shoppinglist from './shoppinglist.js'
 import {
   setShoppingList,
   setLoadingShoppingList,
-  setShoppingListEmpty
+  setShoppingListEmpty,
+  setShoppingListError
 } from '../actions.js'
 
 
@@ -51,7 +52,7 @@ describe('Shopping List', () => {
     ).toEqual(afterState)
   })
 
-  it('emptys the shopping list', () => {
+  it('empties the shopping list', () => {
     const beforeState = {
       shoppinglist: shopList
     }
@@ -62,6 +63,21 @@ describe('Shopping List', () => {
 
     expect(
       shoppinglist(beforeState, setShoppingListEmpty())
+    ).toEqual(afterState)
+  })
+
+
+  it('sets the error correctly', () => {
+    const beforeState = {
+      error: false
+    }
+
+    const afterState = {
+      error: true
+    }
+
+    expect(
+      shoppinglist(beforeState, setShoppingListError(true))
     ).toEqual(afterState)
   })
 })

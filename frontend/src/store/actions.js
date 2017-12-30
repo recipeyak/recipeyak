@@ -56,7 +56,8 @@ import {
   SET_LOGGING_OUT,
   SET_RECIPE_UPDATING,
   SET_CLEARING_CART,
-  SET_CART_EMPTY
+  SET_CART_EMPTY,
+  SET_SHOPPING_LIST_ERROR
 } from './actionTypes'
 
 import { push } from 'react-router-redux'
@@ -455,6 +456,11 @@ export const setShoppingList = val => {
   }
 }
 
+export const setShoppingListError = val => ({
+  type: SET_SHOPPING_LIST_ERROR,
+  val
+})
+
 const getShoppingList = token =>
   axios.get('/api/v1/shoppinglist/', {
     headers: {
@@ -464,6 +470,7 @@ const getShoppingList = token =>
 
 export const fetchShoppingList = () => (dispatch, getState) => {
   dispatch(setLoadingShoppingList(true))
+  dispatch(setShoppingListError(false))
   return getShoppingList(getState().user.token)
     .then(res => {
       dispatch(setShoppingList(res.data))
@@ -473,12 +480,7 @@ export const fetchShoppingList = () => (dispatch, getState) => {
       if (invalidToken(err.response)) {
         dispatch(logout())
       }
-      console.error("couldn't fetch shopping list: ", err)
-      dispatch(showNotificationWithTimeout({
-        message: 'problem fetching shopping list',
-        level: 'danger',
-        sticky: true
-      }))
+      dispatch(setShoppingListError(true))
       dispatch(setLoadingShoppingList(false))
     })
 }

@@ -26,8 +26,18 @@ class Cart extends React.Component {
       shoppinglist,
       loadingShoppingList,
       clearCart,
-      clearingCart
+      clearingCart,
+      error
     } = this.props
+
+    if (error) {
+      return (
+        <div className="cart-container">
+          <Helmet title='Cart' />
+          <p>Error fetching data</p>
+        </div>
+      )
+    }
 
     if (loading) {
       return (

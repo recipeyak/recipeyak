@@ -26,7 +26,8 @@ const mapStateToProps = state => {
     shoppinglist: state.shoppinglist.shoppinglist
                   .sort(ingredientByNameAlphabetical),
     loadingShoppingList: state.shoppinglist.loading,
-    clearingCart: state.cart.clearing
+    clearingCart: state.cart.clearing,
+    error: state.shoppinglist.error
   }
 }
 
