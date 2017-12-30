@@ -137,9 +137,9 @@ class AddRecipe extends React.Component {
     } = ingredient
 
     return (
-      <div className="d-grid grid-template-columns-repeat-12-fr grid-gap-1rem">
+      <div className="d-grid grid-gap-1rem">
         <Helmet title='Add Recipe'/>
-        <div className="grid-entire-row">
+        <div>
           <input
             autoFocus
             onChange={ this.handleInputChange }
@@ -151,7 +151,7 @@ class AddRecipe extends React.Component {
           }
         </div>
 
-        <div className="d-grid grid-entire-row meta-data-grid">
+        <div className="d-grid  meta-data-grid">
           <label className="d-flex align-center">By
             <input
               onChange={ this.handleInputChange }
@@ -249,7 +249,7 @@ class AddRecipe extends React.Component {
               </div>
             </div>
           </section>
-        <p className="d-flex justify-center grid-entire-row">
+        <p className="d-flex justify-center">
           <button
             className={ 'my-button is-large is-primary ' + (this.props.loading ? 'is-loading' : '')}
             type="submit"

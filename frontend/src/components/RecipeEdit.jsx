@@ -40,9 +40,9 @@ const RecipeEdit = ({
   }
 
   return (
-    <div className="d-grid grid-template-columns-repeat-12-fr grid-gap-1rem">
+    <div className="d-grid grid-entire-row grid-gap-1rem">
       <Helmet title={ name + ' | Edit'}/>
-      <div className="grid-entire-row d-flex align-center justify-space-between">
+      <div className="d-flex align-center justify-space-between">
         <input
           autoFocus
           onChange={ handleInputChange }

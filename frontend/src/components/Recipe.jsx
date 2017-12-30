@@ -52,10 +52,10 @@ const RecipeViewing = ({
     return <p>Loading...</p>
   }
   return (
-    <div className="d-grid grid-template-columns-repeat-12-fr grid-gap-1rem">
+    <div className="d-grid grid-gap-1rem">
       <Helmet title={ name }/>
 
-      <div className="grid-entire-row d-flex align-center justify-space-between flex-wrap">
+      <div className="grid-entire-row d-flex align-center justify-space-between">
         <h1 className="title fs-3rem mb-0">{ name }</h1>
         <div className="d-flex">
           <div className="d-flex">
