@@ -43,4 +43,10 @@ eval $(docker-machine env <machine-name>)
 ```
 Now you can use the above compose command to deploy on the remote machine
 
+Here is a command to quickly redeploy:
+```
+docker-compose -f docker-compose-prod.yml down && \
+docker-compose -f docker-compose-prod.yml up -d --build &
+```
+
 [0]: https://docs.docker.com/engine/reference/builder/#dockerignore-file
