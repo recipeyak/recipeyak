@@ -1,7 +1,5 @@
 import { connect } from 'react-redux'
 
-import { push } from 'react-router-redux'
-
 import { NavLink } from '../components/NavLink.jsx'
 
 const mapStateToProps = state => {
@@ -12,17 +10,8 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    navigateTo: location => {
-      dispatch(push(location))
-    }
-  }
-}
-
 const ConnectedNavLink = connect(
-  mapStateToProps,
-  mapDispatchToProps
+  mapStateToProps
 )(NavLink)
 
 export default ConnectedNavLink
