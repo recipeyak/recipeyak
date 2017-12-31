@@ -56,3 +56,21 @@ def test_user_stats(client, user, recipe, recipe_pie):
     assert data.get('recipes_pie_not_pie') == [1, 2]
 
     assert data.get('recipes_added_by_month')[0].get('c') == 2
+
+
+def test_total_recipes_added_last_month_by_all_users(client, user, recipe):
+    client.force_authenticate(user)
+    res = client.get(f'{BASE_URL}/user_stats/')
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json().get('total_recipes_added_last_month_by_all_users') == 1
+
+
+def test_cart_additions_in_last_month(client, user, recipe):
+    cart_additions = 7
+    recipe.cart_additions = cart_additions
+    recipe.save()
+
+    client.force_authenticate(user)
+    res = client.get(f'{BASE_URL}/user_stats/')
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json().get('cart_additions_in_last_month') == cart_additions

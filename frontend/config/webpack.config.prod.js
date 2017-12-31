@@ -106,7 +106,8 @@ module.exports = {
           /\.css$/,
           /\.scss$/,
           /\.json$/,
-          /\.svg$/
+          /\.svg$/,
+          /\.jpg$/
         ],
         loader: 'url-loader',
         query: {
@@ -195,7 +196,7 @@ module.exports = {
       },
       // "file" loader for svg
       {
-        test: /\.svg$/,
+        test: /\.(svg|png|jpg)$/,
         use: {
           loader: 'file-loader',
           query: {

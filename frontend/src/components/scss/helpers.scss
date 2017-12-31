@@ -175,6 +175,14 @@
   }
 }
 
+@for $i from 1 through 10 {
+  .border-radius-#{$i},
+  .br-#{$i} {
+    border-radius: #{$i}px !important;
+  }
+}
+
+
 .grid-entire-row {
   grid-column: 1 / -1;
 }
@@ -265,6 +273,7 @@
   }
 }
 
+.text-underline,
 .text-decoration-underline {
   text-decoration: underline;
 }
@@ -279,4 +288,8 @@
 
 .bg-50-50-primary {
   background: linear-gradient(to bottom, white 50%, $primary-color 50%);
+}
+
+.filter-saturate-140 {
+  filter: saturate(140%);
 }

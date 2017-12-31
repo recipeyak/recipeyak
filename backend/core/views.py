@@ -130,18 +130,40 @@ class UserStats(APIView):
     def get(self, request, format=None):
         user_recipes = Recipe.objects.filter(user=request.user)
 
-        total_recipe_edits = user_recipes.aggregate(
-            total=Sum('edits')
-            ).get('total')
+        total_recipe_edits = user_recipes \
+            .aggregate(total=Sum('edits')) \
+            .get('total')
 
         last_week = datetime.datetime.now(tz=pytz.UTC) - datetime.timedelta(days=7)
-        new_recipes_last_week = user_recipes.filter(created__gt=last_week).count()
+        new_recipes_last_week = user_recipes \
+            .filter(created__gt=last_week).count()
 
-        most_added_recipe = user_recipes.order_by('-cart_additions').values().first()
+        most_added_recipe = user_recipes \
+            .order_by('-cart_additions') \
+            .values() \
+            .first()
 
-        recipes_added_by_month = user_recipes.annotate(month=TruncMonth('created')).values('month').annotate(c=Count('id')).order_by()
+        cart_additions_in_last_month = Recipe.objects \
+            .aggregate(total=Sum('cart_additions')) \
+            .get('total')
 
-        recipes_pie_not_pie = Recipe.objects.filter(name__search='pie').count()
+        total_recipes_added_last_month_by_all_users = Recipe.objects \
+            .annotate(month=TruncMonth('created')) \
+            .values('month') \
+            .annotate(c=Count('id')) \
+            .order_by() \
+            .count()
+
+        recipes_added_by_month = user_recipes \
+            .annotate(month=TruncMonth('created')) \
+            .values('month') \
+            .annotate(c=Count('id')) \
+            .order_by()
+
+        recipes_pie_not_pie = Recipe.objects \
+            .filter(name__search='pie') \
+            .count()
+
         total_recipes = Recipe.objects.count()
 
         date_joined = request.user.created.strftime('%b, %Y')
@@ -153,4 +175,6 @@ class UserStats(APIView):
             'date_joined': date_joined,
             'recipes_pie_not_pie': (recipes_pie_not_pie, total_recipes),
             'recipes_added_by_month': recipes_added_by_month,
+            'total_recipes_added_last_month_by_all_users': total_recipes_added_last_month_by_all_users,
+            'cart_additions_in_last_month': cart_additions_in_last_month
         })

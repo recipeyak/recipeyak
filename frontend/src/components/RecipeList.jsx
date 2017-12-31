@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 
 import Recipe from './RecipeItem.jsx'
@@ -20,11 +21,19 @@ export const matchesQuery = ({
 
 const Results = ({ recipes, query, onChange }) => {
   if (recipes.length === 0 && query === '') {
-    return <p className="grid-entire-row justify-center">
-      No recipes
-    </p>
+    return (
+      <section className="d-flex grid-entire-row justify-center">
+        <p className="fs-8 font-family-title mr-2">
+          No recipes here.
+        </p>
+
+        <Link to='/recipes/add' className='my-button is-medium is-primary'>
+          Add a Recipe
+        </Link>
+      </section>
+    )
   } else if (recipes.length === 0 && query !== '') {
-    return <p className="grid-entire-row justify-center fs-8">
+    return <p className="grid-entire-row justify-center fs-8 font-family-title">
       No recipes found matching <strong>{ query }</strong>
     </p>
   }

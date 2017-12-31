@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom'
 import Loader from './Loader'
 import Recipe, { recipeURL } from './RecipeItem'
 
+import img from './yak.jpg'
+
 const RecipesAddedThisWeek = ({ count = 0 }) =>
   count > 0 &&
   <p className="stat mb-1">
@@ -43,6 +45,19 @@ const RecentRecipes = ({
 }) => {
   if (error) return <p>error fetching recipes</p>
 
+  const noRecipes = recipes.length < 1
+  if (noRecipes && !loading) {
+    return <section>
+      <section className="d-grid grid-gap-4 justify-content-center">
+        <p className="stat-small">No recipes here — just this yak.</p>
+        <img alt='yak in a field' src={ img } className="box-shadow-normal br-3 filter-saturate-140"/>
+          <Link to='/recipes/add' className='my-button is-medium is-primary'>
+            Add a Recipe
+          </Link>
+      </section>
+    </section>
+  }
+
   return (
     <section>
       <p className="stat mb-1 text-center">Recently Active Recipes</p>
@@ -78,8 +93,23 @@ const UserStatistics = ({ loading, stats }) => {
     </section>
   }
 
-  if (stats.most_added_recipe == null) {
-    return null
+  const emptyStats = stats.most_added_recipe == null
+  if (emptyStats) {
+    return <div>
+      <p className="stat">
+        <b>Welcome!</b>
+      </p>
+      <p className="stat">
+        So far <b>135</b> recipes have been added in the <b>last month</b>.
+      </p>
+      <p className="stat">
+        <b>278</b> cart additions have been made in the last <b>2 weeks</b>.
+      </p>
+      <p className="stat">
+        <Link className="big-link" to="/recipes/add">Add some recipes</Link>
+        and check back later for more stats.
+      </p>
+    </div>
   }
 
   const {

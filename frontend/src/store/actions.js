@@ -1107,8 +1107,9 @@ export const signup = (email, password1, password2) => dispatch => {
   return sendSignupInfo(email, password1, password2)
     .then(res => {
       dispatch(login(res.data.key))
+      dispatch(fetchUser())
       dispatch(setLoadingSignup(false))
-      dispatch(push('/recipes'))
+      dispatch(push('/recipes/add'))
     })
     .catch(err => {
       const badRequest = err.response.status === 400
