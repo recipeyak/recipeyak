@@ -8,7 +8,7 @@ services:
     environment:
       - DEBUG=1
       - DATABASE_URL=postgres://postgres@db:5432/postgres
-    command: bash bootstrap-dev.sh
+    command: sh bootstrap-dev.sh
     ports:
       - "8000:8000"
     volumes:
@@ -16,7 +16,7 @@ services:
     depends_on:
       - db
   db:
-    image: postgres
+    image: postgres:10.1-alpine
     ports:
       - "5432:5432"
     volumes:

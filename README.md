@@ -4,7 +4,7 @@
 ## Dev
 
 ```
-docker-compose -y docker-compose-dev.yml up
+docker-compose -f docker-compose-dev.yml up
 ```
 
 **NOTE:** delete `__pycache__/`, `*.pyc`, and `node_modules/` when using the dev
@@ -13,24 +13,34 @@ setup as .dockerignore files are only used with `ADD` and `COPY`
 ## Test
 
 ```
-docker-compose -y docker-compose-dev.yml up
+docker-compose -f docker-compose-dev.yml up
 # frontend
 # w/ watch mode
-docker-compose -y docker-compose-dev.yml exec react npm run test src/
+docker-compose -f docker-compose-dev.yml exec react npm run test src/
 # w/ coverage (no watch mode)
-docker-compose -y docker-compose-dev.yml exec react npm run test-cov src/
+docker-compose -f docker-compose-dev.yml exec react npm run test-cov src/
 
 # backend
 # quick dev test
-docker-compose -y docker-compose-dev.yml exec backend make test-dev
+docker-compose -f docker-compose-dev.yml exec backend make test-dev
 # slow full test with mypy, pytest_cov, et al.
-docker-compose -y docker-compose-dev.yml exec backend make test
+docker-compose -f docker-compose-dev.yml exec backend make test
 ```
 
 ## Deploy
+NOTE: Copy `.env-example` to `.env` and add in the proper configuration variables
+```
+docker-compose -f docker-compose-prod.yml up --build -d
+```
 
+You can create a remote docker machine on AWS using:
 ```
-docker-compose -y docker-compose-dev.yml up --build -d
+docker-machine create --driver amazonec2 <machine-name>
 ```
+You can switch your context to the remote machine using:
+```
+eval $(docker-machine env <machine-name>)
+```
+Now you can use the above compose command to deploy on the remote machine
 
 [0]: https://docs.docker.com/engine/reference/builder/#dockerignore-file

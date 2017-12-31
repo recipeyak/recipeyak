@@ -1,8 +1,7 @@
-FROM python:3.6
+FROM python:3.6-alpine
 ENV PYTHONUNBUFFERD 1
 
-RUN apt-get update
-RUN apt-get install netcat -y
+RUN apk add --no-cache build-base postgresql-dev
 
 # https://github.com/kennethreitz/pipenv/blob/28cfe633c6dd81943cf84deac9f4d1daead68890/Dockerfile
 # -- Install Pipenv:
