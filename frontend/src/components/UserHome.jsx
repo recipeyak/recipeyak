@@ -45,7 +45,7 @@ const RecentRecipes = ({
 
   return (
     <section>
-      <p className="stat mb-1">Recently active recipes:</p>
+      <p className="stat mb-1 text-center">Recently Active Recipes</p>
       <section className="recent-recipes-grid">
         { loading
             ? <Loader/>
@@ -73,7 +73,7 @@ const RecentRecipes = ({
 
 const UserStatistics = ({ loading, stats }) => {
   if (loading) {
-    return <section className="justify-self-center align-self-center">
+    return <section className="justify-self-center d-grid align-self-center">
       <Loader/>
     </section>
   }
