@@ -57,7 +57,9 @@ import {
   SET_RECIPE_UPDATING,
   SET_CLEARING_CART,
   SET_CART_EMPTY,
-  SET_SHOPPING_LIST_ERROR
+  SET_SHOPPING_LIST_ERROR,
+  SET_LOADING_RESET_CONFIRMATION,
+  SET_ERROR_RESET_CONFIRMATION
 } from './actionTypes'
 
 import { push } from 'react-router-redux'
@@ -1220,6 +1222,64 @@ export const reset = email => dispatch => {
         level: 'danger',
         sticky: true
       }))
+    })
+}
+
+export const setLoadingResetConfirmation = val => {
+  return {
+    type: SET_LOADING_RESET_CONFIRMATION,
+    val
+  }
+}
+
+export const setErrorResetConfirmation = val => {
+  return {
+    type: SET_ERROR_RESET_CONFIRMATION,
+    val
+  }
+}
+
+const sendResetConfirmation = (uid, token, newPassword1, newPassword2) =>
+  axios.post('/api/v1/rest-auth/password/reset/confirm/', {
+    'uid': uid,
+    'token': token,
+    'new_password1': newPassword1,
+    'new_password2': newPassword2
+  })
+
+export const resetConfirmation = (uid, token, newPassword1, newPassword2) => dispatch => {
+  dispatch(setLoadingResetConfirmation(true))
+  dispatch(setErrorResetConfirmation({}))
+  dispatch(clearNotification())
+  return sendResetConfirmation(uid, token, newPassword1, newPassword2)
+    .then(res => {
+      dispatch(setLoadingResetConfirmation(false))
+      const message = res && res.data && res.data.detail
+      dispatch(showNotificationWithTimeout({ message, level: 'success' }))
+      dispatch(push('/login'))
+    })
+    .catch(err => {
+      dispatch(setLoadingResetConfirmation(false))
+      dispatch(showNotificationWithTimeout({
+        message: 'uh oh! problem resetting password',
+        level: 'danger',
+        sticky: true
+      }))
+      console.warn('error with password reset', err)
+      const badRequest = err.response.status === 400
+      if (err.response && badRequest) {
+        const data = err.response.data
+
+        const tokenData = data['token'] && data['token'].map(x => 'token: ' + x)
+        const uidData = data['uid'] && data['uid'].map(x => 'uid: ' + x)
+        const nonFieldErrors = [].concat(data['non_field_errors']).concat(tokenData).concat(uidData)
+
+        dispatch(setErrorReset({
+          newPassword1: data['new_password1'],
+          newPassword2: data['new_password2'],
+          nonFieldErrors
+        }))
+      }
     })
 }
 
