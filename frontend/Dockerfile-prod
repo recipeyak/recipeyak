@@ -10,3 +10,4 @@ RUN npm install
 
 WORKDIR /var/app
 COPY . /var/app
+RUN npm run build
