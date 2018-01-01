@@ -3,6 +3,7 @@ import {
   setLoadingLogin,
   setLoadingSignup,
   setLoadingReset,
+  setLoadingResetConfirmation,
   setLoadingRecipes,
   setLoadingAddRecipe,
   setLoadingCart
@@ -114,6 +115,24 @@ describe('loading', () => {
 
     expect(
       loading(loadingState, setLoadingCart(false))
+      ).toEqual(notLoadingState)
+  })
+
+  it('sets loading reset confirmation', () => {
+    const notLoadingState = {
+      resetConfirmation: false
+    }
+
+    const loadingState = {
+      resetConfirmation: true
+    }
+
+    expect(
+      loading(notLoadingState, setLoadingResetConfirmation(true))
+      ).toEqual(loadingState)
+
+    expect(
+      loading(loadingState, setLoadingResetConfirmation(false))
       ).toEqual(notLoadingState)
   })
 })

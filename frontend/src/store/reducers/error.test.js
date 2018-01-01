@@ -3,6 +3,7 @@ import {
   setErrorLogin,
   setErrorSignup,
   setErrorReset,
+  setErrorResetConfirmation,
   setErrorAddRecipe,
   setErrorRecipes,
   setErrorCart
@@ -114,6 +115,24 @@ describe('error', () => {
 
     expect(
       error(errorState, setErrorReset(false))
+      ).toEqual(notErrorState)
+  })
+
+  it('sets resetConfirmation error', () => {
+    const notErrorState = {
+      resetConfirmation: false
+    }
+
+    const errorState = {
+      resetConfirmation: true
+    }
+
+    expect(
+      error(notErrorState, setErrorResetConfirmation(true))
+      ).toEqual(errorState)
+
+    expect(
+      error(errorState, setErrorResetConfirmation(false))
       ).toEqual(notErrorState)
   })
 })

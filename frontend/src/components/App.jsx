@@ -23,6 +23,7 @@ import AddRecipe from '../containers/AddRecipe.jsx'
 import Notification from '../containers/Notification.jsx'
 import { Container, ContainerBase } from '../components/Base.jsx'
 import PasswordChange from '../containers/PasswordChange.jsx'
+import PasswordResetConfirmation from '../containers/PasswordResetConfirmation.jsx'
 
 import 'bulma/css/bulma.css'
 import './scss/main.scss'
@@ -53,6 +54,7 @@ const Base = () => (
               <Route exact path="/login" component={ Login }/>
               <Route exact path="/signup" component={ Signup }/>
               <Route exact path="/password-reset" component={ PasswordReset }/>
+              <Route exact path="/password-reset/confirm/:uid([0-9A-Za-z_\-]+).:token([0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})" component={ PasswordResetConfirmation }/>
               <PrivateRoute exact path="/recipes/add" component={ AddRecipe }/>
               <PrivateRoute exact path="/recipes/" component={ RecipeList }/>
               <PrivateRoute exact path="/cart" component={ Cart }/>

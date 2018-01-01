@@ -2,6 +2,7 @@ import {
   SET_ERROR_LOGIN,
   SET_ERROR_SIGNUP,
   SET_ERROR_RESET,
+  SET_ERROR_RESET_CONFIRMATION,
   SET_ERROR_ADD_RECIPE,
   SET_ERROR_RECIPES,
   SET_ERROR_CART
@@ -11,6 +12,7 @@ const error = (state = {
   login: {},
   signup: {},
   reset: {},
+  resetConfirmation: {},
   addRecipe: {
     errorWithName: false,
     errorWithIngredients: false,
@@ -28,6 +30,8 @@ const error = (state = {
       return { ...state, recipes: action.val }
     case SET_ERROR_RESET:
       return { ...state, reset: action.val }
+    case SET_ERROR_RESET_CONFIRMATION:
+      return { ...state, resetConfirmation: action.val }
     case SET_ERROR_ADD_RECIPE:
       return { ...state, addRecipe: action.val }
     case SET_ERROR_CART:
