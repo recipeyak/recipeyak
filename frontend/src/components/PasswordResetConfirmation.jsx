@@ -3,12 +3,9 @@ import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
 class PasswordResetConfirmation extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      newPassword1: '',
-      newPassword2: ''
-    }
+  state = {
+    newPassword1: '',
+    newPassword2: ''
   }
 
   handleInputChange = e => {
