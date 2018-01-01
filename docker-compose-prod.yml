@@ -30,7 +30,6 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile-prod
-    command: npm run build
     volumes:
       - react-static-files:/var/app/build
 volumes:

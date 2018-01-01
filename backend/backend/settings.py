@@ -12,8 +12,11 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 from typing import List
+import logging
 
 import dj_database_url
+
+logger = logging.getLogger(__name__)
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -22,12 +25,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEBUG = os.getenv('DEBUG') == '1'
 CI = os.getenv('CI', False)
 PRODUCTION = not DEBUG and not CI
+DOCKERBUILD = os.getenv('DOCKERBUILD', False)
+
+logger.info('CI:', CI, 'DEBUG:', DEBUG, 'PRODUCTION:', PRODUCTION, 'DOCKERBUILD', DOCKERBUILD)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-if DEBUG:
+if DEBUG or DOCKERBUILD:
     SECRET_KEY = '+p(5+wb+(l2$@iv!1*3=5xnrw2gvi+l$kuo9s7=u6*)ri4v6as'
 else:
     SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
@@ -64,7 +70,7 @@ INSTALLED_APPS = [
 
 ]
 
-if PRODUCTION:
+if PRODUCTION and not DOCKERBUILD:
     import raven  # noqa: F401
     RAVEN_CONFIG = {
         'dsn': os.environ['SENTRY_DSN'],
@@ -139,7 +145,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backend.wsgi.application'
 
 
-if DEBUG:
+if DEBUG or DOCKERBUILD:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 else:
     EMAIL_USE_TLS = True
