@@ -14,9 +14,11 @@ export const NavLink = ({
     ? activeClassName
     : ''
   return (
+    // keep react from warning about dispatch being passed down
     <Link
       to={ to }
       { ...props }
+      dispatch={ '' }
       className={ className + ' ' + activeClass }
     />
   )
