@@ -3,18 +3,15 @@ import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
 class PasswordReset extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      email: ''
-    }
+  state = {
+    email: ''
   }
 
   handleInputChange = e => {
     this.setState({ [e.target.name]: e.target.value })
   }
 
-  handleReset = async e => {
+  async handleReset (e) {
     e.preventDefault()
     await this.props.reset(this.state.email)
     this.setState({ email: '' })
@@ -37,7 +34,7 @@ class PasswordReset extends React.Component {
           <div className="container">
             <div className="columns">
               <div className="column is-half-tablet is-offset-one-quarter-tablet is-one-third-desktop is-offset-one-third-desktop box">
-                <form onSubmit={ this.handleReset }>
+                <form onSubmit={ e => this.handleReset(e) }>
                   <h1 className="title is-5">Password Reset</h1>
 
                   { errorHandler(nonFieldErrors) }
