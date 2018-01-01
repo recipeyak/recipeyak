@@ -20,3 +20,4 @@ COPY Pipfile.lock Pipfile.lock
 RUN set -ex && pipenv install --deploy --system
 
 COPY . /app
+RUN DOCKERBUILD=1 python manage.py collectstatic --noinput
