@@ -1269,14 +1269,10 @@ export const resetConfirmation = (uid, token, newPassword1, newPassword2) => dis
       const badRequest = err.response.status === 400
       if (err.response && badRequest) {
         const data = err.response.data
-        console.log('response data', data)
 
-        let nonFieldErrors = []
         const tokenData = data['token'] && data['token'].map(x => 'token: ' + x)
         const uidData = data['uid'] && data['uid'].map(x => 'uid: ' + x)
-        nonFieldErrors = nonFieldErrors.concat(data['non_field_errors'])
-        nonFieldErrors = nonFieldErrors.concat(tokenData)
-        nonFieldErrors = nonFieldErrors.concat(uidData)
+        const nonFieldErrors = [].concat(data['non_field_errors']).concat(tokenData).concat(uidData)
 
         dispatch(setErrorReset({
           newPassword1: data['new_password1'],

@@ -6,8 +6,6 @@ class PasswordResetConfirmation extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      uid: props.uid,
-      token: props.token,
       newPassword1: '',
       newPassword2: ''
     }
@@ -21,8 +19,8 @@ class PasswordResetConfirmation extends React.Component {
     e.preventDefault()
     console.log(this.state)
     await this.props.reset(
-      this.state.uid,
-      this.state.token,
+      this.prop.uid,
+      this.prop.token,
       this.state.newPassword1,
       this.state.newPassword2)
     this.setState({
