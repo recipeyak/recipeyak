@@ -248,3 +248,30 @@ def test_combining_ingredients_with_approximations(user):
             ]
 
     assert actual == expected
+
+
+def test_adding_to_cart_multiple_times_some_ingredient(user, client):
+    """
+    with an ingredient of quantity sprinkle that we add to the cart multiple
+    times shouldn't become sprinklesprinklesprinkle
+    """
+
+    name = 'Recipe name'
+    author = 'Recipe author'
+    for quantity in ['sprinkle', 'some']:
+
+        recipe = Recipe.objects.create(
+            name=name, author=author, user=user)
+
+        Ingredient.objects.create(
+            quantity=quantity,
+            name='black pepper',
+            recipe=recipe)
+
+        recipe.cartitem.count = 3
+        recipe.cartitem.save()
+
+        client.force_authenticate(user)
+        res = client.get(f'{BASE_URL}/shoppinglist/')
+        assert res.status_code == status.HTTP_200_OK
+        assert res.json()[0].get('unit') == 'some'

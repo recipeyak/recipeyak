@@ -52,12 +52,13 @@ def combine_ingredients(ingredients: List) -> List:
             base_unit = ''
 
         if not_real_quantity(quantity):
-            base_unit = quantity
+            base_unit = 'some'
 
         in_combined = combined.get(name) is not None
         if in_combined:
             if combined.get(name).get(base_unit) is not None:
-                combined[name][base_unit] += quantity
+                if base_unit != 'some':
+                    combined[name][base_unit] += quantity
             else:
                 combined[name][base_unit] = quantity
 
