@@ -14,7 +14,6 @@ class PasswordResetConfirmation extends React.Component {
 
   handleReset = async e => {
     e.preventDefault()
-    console.log(this.state)
     await this.props.reset(
       this.prop.uid,
       this.prop.token,
