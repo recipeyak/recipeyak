@@ -1,25 +1,22 @@
 import { connect } from 'react-redux'
 
 import {
-  updatingPassword
-} from '../store/actions.js'
+  updatingPassword,
+  setErrorPasswordUpdate
+} from '../store/actions'
 
-import PasswordChange from '../components/PasswordChange.jsx'
+import PasswordChange from '../components/PasswordChange'
 
-const mapDispatchToProps = dispatch => {
-  return {
-    update: (password1, password2, oldPassword) => {
-      dispatch(updatingPassword(password1, password2, oldPassword))
-    }
-  }
-}
+const mapDispatchToProps = dispatch => ({
+  update: (oldPassword, password1, password2) =>
+    dispatch(updatingPassword(password1, password2, oldPassword)),
+  clearErrors: () => dispatch(setErrorPasswordUpdate({}))
+})
 
-const mapStateToProps = state => {
-  return {
-    loading: state.settings.loadingPasswordUpdate,
-    error: state.settings.errorPasswordUpdate
-  }
-}
+const mapStateToProps = state => ({
+  loading: state.passwordChange.loadingPasswordUpdate,
+  error: state.passwordChange.errorPasswordUpdate
+})
 
 const ConnectedPasswordChange = connect(
   mapStateToProps,

@@ -9,3 +9,4 @@ venv/
 dist/
 .asset-cache
 frontend/jest_0
+backup

@@ -1,12 +1,12 @@
 import {
   SET_LOADING_PASSWORD_UPDATE,
   SET_ERROR_PASSWORD_UPDATE
-} from '../actionTypes.js'
+} from '../actionTypes'
 
-export const settings = (
+export const passwordChange = (
   state = {
     loadingPasswordUpdate: false,
-    errorPasswordUpdate: false
+    errorPasswordUpdate: {}
   },
   action) => {
   switch (action.type) {
@@ -19,4 +19,4 @@ export const settings = (
   }
 }
 
-export default settings
+export default passwordChange

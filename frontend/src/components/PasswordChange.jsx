@@ -2,13 +2,14 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 
 class PasswordChange extends React.Component {
-  constructor () {
-    super()
-    this.state = {
-      password: '',
-      newPassword: '',
-      newPasswordAgain: ''
-    }
+  state = {
+    oldPassword: '',
+    newPassword: '',
+    newPasswordAgain: ''
+  }
+
+  componentWillMount = () => {
+    this.props.clearErrors()
   }
 
   handleInputChange = e => {
@@ -17,14 +18,34 @@ class PasswordChange extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault()
-    this.props.update(this.state.password, this.state.newPassword, this.state.newPasswordAgain)
+    this.props.update(
+      this.state.oldPassword,
+      this.state.newPassword,
+      this.state.newPasswordAgain
+    )
   }
 
   render () {
-    const { loading } = this.props
+    const {
+      loading,
+      error
+    } = this.props
 
-    const { password, newPassword, newPasswordAgain } = this.state
+    const {
+      password,
+      newPassword,
+      newPasswordAgain
+    } = this.state
+
     const disabled = password === '' || newPassword === '' || newPasswordAgain === ''
+
+    const handleError = err =>
+      err != null
+        ? <p className="help is-danger">
+            { err }
+          </p>
+        : null
+
     return (
       <form onSubmit={ this.handleSubmit } className="max-width-400px margin-0-auto">
         <Helmet title='Password Change'/>
@@ -32,15 +53,16 @@ class PasswordChange extends React.Component {
         <h2 className="title is-3">Password Change</h2>
 
         <div className="field">
-          <label className="label">Password</label>
+          <label className="label">Current Password</label>
           <div className="control">
             <input
               autoFocus
               onChange={ this.handleInputChange }
-              className="my-input"
+              className={ `my-input ${error.oldPassword != null ? 'is-danger' : ''}` }
               type="password"
-              name="password"
+              name="oldPassword"
               required/>
+            { handleError(error.oldPassword) }
           </div>
         </div>
 
@@ -53,6 +75,7 @@ class PasswordChange extends React.Component {
               type="password"
               name="newPassword"
               required/>
+            { handleError(error.newPassword) }
           </div>
         </div>
 
@@ -65,6 +88,7 @@ class PasswordChange extends React.Component {
               type="password"
               name="newPasswordAgain"
               required/>
+            { handleError(error.newPasswordAgain) }
           </div>
         </div>
 
@@ -72,7 +96,7 @@ class PasswordChange extends React.Component {
           <button
             disabled={ disabled }
             type='submit'
-            className={ `my-button is-primary ${loading ? 'is-loading' : ''}` }>
+            className={ `my-button w-100 is-primary ${loading ? 'is-loading' : ''}` }>
             Update
           </button>
         </p>
