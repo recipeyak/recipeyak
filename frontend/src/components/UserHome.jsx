@@ -157,7 +157,7 @@ const UserHome = ({
   removeFromCart,
   errorRecipes
 }) =>
-  <div className="container pr-4 pl-4">
+  <div className="container pr-4 pl-4 pb-4">
     <Helmet title='Home'/>
 
     <section className="home-page-grid font-family-title">

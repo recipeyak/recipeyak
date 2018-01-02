@@ -95,59 +95,55 @@ const RecipeEdit = ({
       <section className="ingredients-preparation-grid">
         <div>
           <h2 className="title">Ingredients</h2>
-          <div className="box">
-            <ul>
-              {
-                ingredients.map(ingredient =>
-                  <Ingredient
-                    key={ ingredient.id }
-                    id={ ingredient.id }
-                    update={ updateIngredient }
-                    updating={ ingredient.updating }
-                    remove={ removeIngredient }
-                    removing={ ingredient.removing }
-                    quantity={ ingredient.quantity }
-                    name={ ingredient.name }
-                    description={ ingredient.description }
-                  />
-                )
-              }
-            </ul>
-            <AddIngredient
-              id={ id }
-              loading={ addingIngredient }
-              addIngredient={ addIngredient }
-            />
-          </div>
+          <ul>
+            {
+              ingredients.map(ingredient =>
+                <Ingredient
+                  key={ ingredient.id }
+                  id={ ingredient.id }
+                  update={ updateIngredient }
+                  updating={ ingredient.updating }
+                  remove={ removeIngredient }
+                  removing={ ingredient.removing }
+                  quantity={ ingredient.quantity }
+                  name={ ingredient.name }
+                  description={ ingredient.description }
+                />
+              )
+            }
+          </ul>
+          <AddIngredient
+            id={ id }
+            loading={ addingIngredient }
+            addIngredient={ addIngredient }
+          />
         </div>
 
         <div >
           <h2 className="title is-3">Preparation</h2>
-          <div className="box">
-            <ul>
-              {
-                steps.map((step, i) =>
-                  <div key={step.id}>
-                    <label className="label">Step { i + 1}</label>
-                    <ListItem
-                      id={ step.id }
-                      text={ step.text }
-                      update={ updateStep }
-                      updating={ step.updating }
-                      delete={ deleteStep }
-                      removing={ step.removing }
-                    />
-                  </div>
-                )
-              }
-            </ul>
-            <AddStep
-              id={ id }
-              index={ steps.length + 1 }
-              addStep={ addStep }
-              loading={ addingStepToRecipe }
-            />
-          </div>
+          <ul>
+            {
+              steps.map((step, i) =>
+                <div key={step.id}>
+                  <label className="label">Step { i + 1}</label>
+                  <ListItem
+                    id={ step.id }
+                    text={ step.text }
+                    update={ updateStep }
+                    updating={ step.updating }
+                    delete={ deleteStep }
+                    removing={ step.removing }
+                  />
+                </div>
+              )
+            }
+          </ul>
+          <AddStep
+            id={ id }
+            index={ steps.length + 1 }
+            addStep={ addStep }
+            loading={ addingStepToRecipe }
+          />
         </div>
       </section>
 
