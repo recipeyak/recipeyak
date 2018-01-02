@@ -15,6 +15,17 @@ html {
   border-top: 3px solid $accent;
 }
 
+.dark-mode {
+  background-color: white;
+  filter: invert(90%);
+  background-color: rgb(25, 25, 25);
+
+  // inverted images look weird
+  img {
+    filter: invert(90%);
+  }
+}
+
 nav.nav,
 section.section {
   background-color: transparent;
