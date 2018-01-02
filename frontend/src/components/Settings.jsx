@@ -82,10 +82,6 @@ const Settings = ({
       <label className="better-label">Password</label>
       <Link to="/password">Change Password</Link>
     </div>
-    <label className="better-label d-flex align-items-center">
-      <input type='checkbox' className="mr-2"/>
-      Dark Mode
-    </label>
 
     <a>Export Recipes</a>
 

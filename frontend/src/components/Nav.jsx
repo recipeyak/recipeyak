@@ -3,6 +3,8 @@ import {
   Link
 } from 'react-router-dom'
 
+import { setDarkModeClass } from '../sideEffects'
+
 import NavLink from '../containers/NavLink'
 import Logo from './Logo'
 
@@ -15,6 +17,10 @@ class Navbar extends React.Component {
   componentWillMount = () => {
     this.props.fetchData()
     document.addEventListener('click', this.handleGeneralClick)
+  }
+
+  componentDidMount = () => {
+    setDarkModeClass(this.props.darkMode)
   }
 
   componentWillUnmount = () => {
@@ -35,7 +41,9 @@ class Navbar extends React.Component {
       logout,
       email,
       loggingOut,
-      className = ''
+      className = '',
+      toggleDarkMode,
+      darkMode
     } = this.props
 
     const buttons = loggedIn ? (
@@ -71,7 +79,10 @@ class Navbar extends React.Component {
             <div className="d-flex align-center p-1-0">
               <label className="d-flex align-items-center cursor-pointer">
             {/* TODO: handle change */}
-                <input type='checkbox' className="mr-2"/>
+              <input
+                onClick={ toggleDarkMode }
+                checked={ darkMode }
+                type='checkbox' className="mr-2"/>
                 Dark Mode
               </label>
             </div>

@@ -8,7 +8,8 @@ import {
   setLoadingUser,
   setErrorUser,
   setUpdatingUserEmail,
-  setLoggingOut
+  setLoggingOut,
+  toggleDarkMode
 } from '../actions.js'
 
 describe('User', () => {
@@ -114,6 +115,21 @@ describe('User', () => {
 
     expect(
       user(beforeState, setLoggingOut(true))
+    ).toEqual(afterState)
+  })
+
+
+  it('toggles darkmode', () => {
+    const beforeState = {
+      darkMode: false
+    }
+
+    const afterState = {
+      darkMode: true
+    }
+
+    expect(
+      user(beforeState, toggleDarkMode())
     ).toEqual(afterState)
   })
 })
