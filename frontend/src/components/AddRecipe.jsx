@@ -189,64 +189,60 @@ class AddRecipe extends React.Component {
           <section className="ingredients-preparation-grid">
             <div>
               <h2 className="title">Ingredients</h2>
-              <div className="box">
-                <ul>
-                  {
-                    ingredients.map((ingredient, i) =>
-                      <Ingredient
-                        key={ ingredient.name + i }
-                        index={ i }
-                        id={ i }
-                        update={ this.updateIngredient }
-                        remove={ this.removeIngredient }
-                        quantity={ ingredient.quantity }
-                        name={ ingredient.name }
-                        description={ ingredient.description }
-                      />
-                    )
-                  }
-                </ul>
+              <ul>
+                {
+                  ingredients.map((ingredient, i) =>
+                    <Ingredient
+                      key={ ingredient.name + i }
+                      index={ i }
+                      id={ i }
+                      update={ this.updateIngredient }
+                      remove={ this.removeIngredient }
+                      quantity={ ingredient.quantity }
+                      name={ ingredient.name }
+                      description={ ingredient.description }
+                    />
+                  )
+                }
+              </ul>
 
-                <AddIngredientForm
-                  handleAddIngredient={ this.addIngredient }
-                  cancelAddIngredient={ this.cancelAddIngredient }
-                  handleInputChange={ this.handleIngredientChange }
-                  handleFocus={ this.handleFocus }
-                  quantity={ quantity }
-                  name={ name }
-                  description={ description }
-                  error={ errorWithIngredients }
-                />
-              </div>
+              <AddIngredientForm
+                handleAddIngredient={ this.addIngredient }
+                cancelAddIngredient={ this.cancelAddIngredient }
+                handleInputChange={ this.handleIngredientChange }
+                handleFocus={ this.handleFocus }
+                quantity={ quantity }
+                name={ name }
+                description={ description }
+                error={ errorWithIngredients }
+              />
             </div>
 
               <div>
                 <h2 className="title is-3">Preparation</h2>
-                <div className="box">
-                  <ul>
-                    {
-                      steps.map((step, i) =>
-                        <div key={step.text + i}>
-                          <label className="label">Step { i + 1}</label>
-                          <ListItem
-                            index={i}
-                            text={step.text}
-                            update={(index, content) => this.update('steps', index, content)}
-                            remove={(index) => this.remove('steps', index)}
-                          />
-                        </div>
-                      )
-                    }
-                  </ul>
-                  <AddStepForm
-                    handleInputChange={ handleInputChange }
-                    addStep={ addStep }
-                    cancelAddStep={ cancelAddStep }
-                    stepNumber={ steps.length + 1 }
-                    text={ step }
-                    error={ errorWithSteps }
-                  />
-              </div>
+                <ul>
+                  {
+                    steps.map((step, i) =>
+                      <div key={step.text + i}>
+                        <label className="label">Step { i + 1}</label>
+                        <ListItem
+                          index={i}
+                          text={step.text}
+                          update={(index, content) => this.update('steps', index, content)}
+                          remove={(index) => this.remove('steps', index)}
+                        />
+                      </div>
+                    )
+                  }
+                </ul>
+                <AddStepForm
+                  handleInputChange={ handleInputChange }
+                  addStep={ addStep }
+                  cancelAddStep={ cancelAddStep }
+                  stepNumber={ steps.length + 1 }
+                  text={ step }
+                  error={ errorWithSteps }
+                />
             </div>
           </section>
         <p className="d-flex justify-center">

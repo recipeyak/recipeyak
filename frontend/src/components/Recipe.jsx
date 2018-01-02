@@ -90,34 +90,30 @@ const RecipeViewing = ({
       <section className="ingredients-preparation-grid">
         <div>
           <h2 className="title is-3 mb-4">Ingredients</h2>
-          <div className="box">
-            <ul>
-              {
-                ingredients.map(({ id, quantity, name, description }) =>
-                  <p key={ id } className="listitem-text justify-space-between">
-                    { quantity } { name } { description }
-                  </p>
-                )
-              }
-            </ul>
-          </div>
+          <ul>
+            {
+              ingredients.map(({ id, quantity, name, description }) =>
+                <p key={ id } className="listitem-text justify-space-between">
+                  { quantity } { name } { description }
+                </p>
+              )
+            }
+          </ul>
         </div>
 
         <div >
           <h2 className="title is-3 mb-4">Preparation</h2>
-          <div className="box">
-            <ul>
-              {
-                steps.map(({ id, text }, i) =>
-                  <div key={id}>
-                    <label className="better-label">Step { i + 1}</label>
-                    <p className="listitem-text mb-2">{ text }</p>
-                  </div>
+          <ul>
+            {
+              steps.map(({ id, text }, i) =>
+              <div key={id}>
+                <label className="better-label">Step { i + 1}</label>
+                <p className="listitem-text mb-2">{ text }</p>
+              </div>
 
-                )
-              }
-            </ul>
-          </div>
+              )
+            }
+          </ul>
         </div>
       </section>
 
