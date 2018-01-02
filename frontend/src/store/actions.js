@@ -59,7 +59,8 @@ import {
   SET_CART_EMPTY,
   SET_SHOPPING_LIST_ERROR,
   SET_LOADING_RESET_CONFIRMATION,
-  SET_ERROR_RESET_CONFIRMATION
+  SET_ERROR_RESET_CONFIRMATION,
+  TOGGLE_DARK_MODE
 } from './actionTypes'
 
 import { push } from 'react-router-redux'
@@ -832,6 +833,10 @@ export const setRecipeTime = (id, time) => (dispatch, getState) => {
       console.log('error updating recipe time', err)
     })
 }
+
+export const toggleDarkMode = () => ({
+  type: TOGGLE_DARK_MODE
+})
 
 export const setRecipe = (id, data) => ({
   type: SET_RECIPE,

@@ -7,8 +7,11 @@ import {
   SET_USER_STATS,
   SET_LOADING_USER_STATS,
   SET_UPDATING_USER_EMAIL,
-  SET_LOGGING_OUT
+  SET_LOGGING_OUT,
+  TOGGLE_DARK_MODE
 } from '../actionTypes.js'
+
+import { setDarkModeClass } from '../../sideEffects'
 
 const initialState = {
   loggedIn: false,
@@ -18,7 +21,8 @@ const initialState = {
   error: false,
   stats: {},
   stats_loading: false,
-  loggingOut: false
+  loggingOut: false,
+  darkMode: false
 }
 
 export const user = (
@@ -44,6 +48,10 @@ export const user = (
       return { ...state, updatingEmail: action.val }
     case SET_LOGGING_OUT:
       return { ...state, loggingOut: action.val }
+    case TOGGLE_DARK_MODE:
+      const newDarkMode = !state.darkMode
+      setDarkModeClass(newDarkMode)
+      return { ...state, darkMode: newDarkMode }
     default:
       return state
   }

@@ -2,7 +2,8 @@ import { connect } from 'react-redux'
 
 import {
   fetchUser,
-  loggingOut
+  loggingOut,
+  toggleDarkMode
 } from '../store/actions'
 
 import Nav from '../components/Nav'
@@ -12,7 +13,8 @@ const mapStateToProps = state => ({
   email: state.user.email,
   loading: state.user.loading,
   loggedIn: state.user.token != null,
-  loggingOut: state.user.loggingOut
+  loggingOut: state.user.loggingOut,
+  darkMode: state.user.darkMode
 })
 
 const mapDispatchToProps = dispatch => {
@@ -22,7 +24,9 @@ const mapDispatchToProps = dispatch => {
     },
     logout: () => {
       dispatch(loggingOut())
-    }
+    },
+    toggleDarkMode: () =>
+      dispatch(toggleDarkMode())
   }
 }
 
