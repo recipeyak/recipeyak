@@ -30,8 +30,9 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile-prod
+    command: sh bootstrap.sh
     volumes:
-      - react-static-files:/var/app/build
+      - react-static-files:/var/app/dist
 volumes:
   pgdata:
     driver: local
