@@ -19,7 +19,7 @@ services:
       - .env
     command: sh bootstrap-prod.sh
     volumes:
-      - django-static-files:/var/app/django/static
+      - django-static-files:/var/app/static-files
     depends_on:
      - db
   db:

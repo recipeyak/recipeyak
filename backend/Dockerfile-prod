@@ -13,9 +13,9 @@ RUN apk add --no-cache --virtual .build-deps build-base postgresql-dev && \
 RUN set -ex && pip install pipenv --upgrade
 
 # -- Install Application into container:
-RUN set -ex && mkdir /app
+RUN set -ex && mkdir -p /var/app
 
-WORKDIR /app
+WORKDIR /var/app
 
 # -- Adding Pipfiles
 COPY Pipfile Pipfile
@@ -24,5 +24,5 @@ COPY Pipfile.lock Pipfile.lock
 # -- Install dependencies:
 RUN set -ex && pipenv install --deploy --system
 
-COPY . /app
+COPY . /var/app
 RUN DOCKERBUILD=1 python manage.py collectstatic --noinput
