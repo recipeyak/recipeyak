@@ -16,8 +16,8 @@ const AddStepForm = ({
     addStep()
   }}>
     <div className="field">
-      <label className="label">Step { stepNumber }</label>
-      <div className="control">
+      <label className="better-label">Step { stepNumber }</label>
+      <div className="control mt-2">
         <Textarea
           onChange={ handleInputChange }
           onKeyPress={ e => {

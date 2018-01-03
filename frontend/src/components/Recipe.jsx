@@ -55,7 +55,7 @@ const RecipeViewing = ({
     </section>
   }
   return (
-    <div className="d-grid grid-gap-1rem">
+    <div className="d-grid grid-gap-2">
       <Helmet title={ name }/>
 
       <div className="grid-entire-row d-flex align-center justify-space-between">
@@ -89,7 +89,7 @@ const RecipeViewing = ({
 
       <section className="ingredients-preparation-grid">
         <div>
-          <h2 className="title is-3 mb-4">Ingredients</h2>
+          <h2 className="title is-3 mb-1 font-family-title bold">Ingredients</h2>
           <ul>
             {
               ingredients.map(({ id, quantity, name, description }) =>
@@ -101,8 +101,8 @@ const RecipeViewing = ({
           </ul>
         </div>
 
-        <div >
-          <h2 className="title is-3 mb-4">Preparation</h2>
+        <div>
+          <h2 className="title is-3 mb-1 font-family-title bold">Preparation</h2>
           <ul>
             {
               steps.map(({ id, text }, i) =>
@@ -117,7 +117,7 @@ const RecipeViewing = ({
         </div>
       </section>
 
-      <section className="d-flex justify-content-center grid-entire-row">
+      <section className="d-flex justify-content-end grid-entire-row">
         <button
           onClick={ edit }
           className="my-button is-link">

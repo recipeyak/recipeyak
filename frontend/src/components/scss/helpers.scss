@@ -93,6 +93,10 @@
   justify-self: right;
 }
 
+.justify-self-end  {
+  justify-self: end;
+}
+
 .space-between,
 .justify-space-between,
 .flex-space-between {
@@ -120,6 +124,10 @@
   justify-content: center;
 }
 
+.justify-content-end {
+  justify-content: flex-end;
+}
+
 .grid-template-column-2-1fr {
   grid-template-columns: repeat(2, 1fr);
 }
@@ -128,13 +136,16 @@
   grid-auto-rows: min-content;
 }
 
-.grid-gap-4,
-.grid-gap-1rem {
-  grid-gap: 1rem;
-}
+@for $i from 0 through 4 {
 
-.grid-gap-2rem {
-  grid-gap: 2rem;
+  .grid-gap-#{$i} {
+    grid-gap: #{$i/4}rem;
+  }
+
+  .grid-gap-#{$i}rem {
+    grid-gap: #{$i}rem;
+  }
+
 }
 
 .grid-column-2 {
