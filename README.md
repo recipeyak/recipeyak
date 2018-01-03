@@ -27,26 +27,22 @@ docker-compose -f docker-compose-dev.yml exec backend make test-dev
 docker-compose -f docker-compose-dev.yml exec backend make test
 ```
 
-## Deploy
-NOTE: Copy `.env-example` to `.env` and add in the proper configuration variables
-```
-docker-compose -f docker-compose-prod.yml up --build -d
-```
-
+## Creating environment
 You can create a remote docker machine on AWS using:
 ```
 docker-machine create --driver amazonec2 <machine-name>
 ```
+
+## Deploying containers
 You can switch your context to the remote machine using:
 ```
 eval $(docker-machine env <machine-name>)
 ```
-Now you can use the above compose command to deploy on the remote machine
-
-Here is a command to quickly redeploy:
+NOTE: Copy `.env-example` to `.env` and add in the proper configuration variables
 ```
+docker-compose -f docker-compose-prod.yml build && \
 docker-compose -f docker-compose-prod.yml down && \
-docker-compose -f docker-compose-prod.yml up -d --build &
+docker-compose -f docker-compose-prod.yml up -d
 ```
 
 [0]: https://docs.docker.com/engine/reference/builder/#dockerignore-file
