@@ -1,5 +1,5 @@
 # copy static files to mounted volume (app/static => app/static-files)
-cd static && cp -a . ../static-files && cd ..
+cp -a static/* static-files
 # wait for database
 while ! nc -w 1 -z db 5432
     do sleep 0.1
