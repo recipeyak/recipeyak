@@ -44,7 +44,6 @@ const RecipeEdit = ({
       <Helmet title={ name + ' | Edit'}/>
       <div className="d-flex align-center justify-space-between">
         <input
-          autoFocus
           onChange={ handleInputChange }
           className="my-input fs-2rem"
           type="text"
@@ -94,7 +93,7 @@ const RecipeEdit = ({
 
       <section className="ingredients-preparation-grid">
         <div>
-          <h2 className="title">Ingredients</h2>
+          <h2 className="title is-3 mb-1 font-family-title bold">Ingredients</h2>
           <ul>
             {
               ingredients.map(ingredient =>
@@ -119,13 +118,13 @@ const RecipeEdit = ({
           />
         </div>
 
-        <div >
-          <h2 className="title is-3">Preparation</h2>
+        <div>
+          <h2 className="title is-3 mb-1 font-family-title bold">Preparation</h2>
           <ul>
             {
               steps.map((step, i) =>
                 <div key={step.id}>
-                  <label className="label">Step { i + 1}</label>
+                  <label className="better-label">Step { i + 1}</label>
                   <ListItem
                     id={ step.id }
                     text={ step.text }
@@ -147,7 +146,7 @@ const RecipeEdit = ({
         </div>
       </section>
 
-      <section className="grid-entire-row justify-self-center grid-row-4">
+      <section className="grid-entire-row justify-self-end grid-row-4">
 
         <div className="d-flex">
           <button
@@ -163,7 +162,7 @@ const RecipeEdit = ({
         </div>
       </section>
 
-      <section className="grid-entire-row justify-self-right grid-row-4">
+      <section className="grid-entire-row grid-row-4">
         <button
           onClick={
             () => {

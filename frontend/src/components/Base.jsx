@@ -9,12 +9,12 @@ export const ContainerBase = ({ children }) =>
       defaultTitle='Recipe Yak'
       titleTemplate='%s | Recipe Yak'
     />
-    <Navbar className="container pl-4 pr-4" />
+    <Navbar className="container pl-3 pr-3" />
     { children }
   </div>
 
 export const Container = ({ children }) =>
-  <div className="pb-4 pt-0 container pl-4 pr-4">
+  <div className="pb-3 pt-0 container pl-3 pr-3">
     { children }
   </div>
 
