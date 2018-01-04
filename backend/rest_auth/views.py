@@ -15,6 +15,8 @@ from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
+from knox.models import AuthToken
+
 from .app_settings import (
     TokenSerializer, UserDetailsSerializer, LoginSerializer,
     PasswordResetSerializer, PasswordResetConfirmSerializer,
@@ -54,15 +56,13 @@ class LoginView(GenericAPIView):
 
         user = serializer.validated_data.get('user')
 
-        token = create_token(TokenModel, user, serializer)
+        token = AuthToken.objects.create(user)
 
         login(request, user)
 
-        serializer = TokenSerializer(instance=token, context={'request': request})
-
         # TODO: return user
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({ 'key': token }, status=status.HTTP_200_OK)
 
 
 class LogoutView(APIView):
