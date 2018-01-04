@@ -70,12 +70,11 @@ import axios from 'axios'
 const invalidToken = res =>
   res.data.detail === 'Invalid token.' && res.status === 401
 
-export const login = token => {
-  return {
-    type: LOG_IN,
-    token
-  }
-}
+export const login = (token, user) => ({
+  type: LOG_IN,
+  token,
+  user
+})
 
 export const logout = () => {
   return {
@@ -1075,8 +1074,7 @@ export const logUserIn = (email, password) => dispatch => {
   dispatch(clearNotification())
   return sendLoginInfo(email, password)
     .then(res => {
-      dispatch(login(res.data.key))
-      dispatch(fetchUser())
+      dispatch(login(res.data.key, res.data.user))
       dispatch(setLoadingLogin(false))
       dispatch(push('/'))
     })
@@ -1122,8 +1120,7 @@ export const signup = (email, password1, password2) => dispatch => {
   dispatch(clearNotification())
   return sendSignupInfo(email, password1, password2)
     .then(res => {
-      dispatch(login(res.data.key))
-      dispatch(fetchUser())
+      dispatch(login(res.data.key, res.data.user))
       dispatch(setLoadingSignup(false))
       dispatch(push('/recipes/add'))
     })

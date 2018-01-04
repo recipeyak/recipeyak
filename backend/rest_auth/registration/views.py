@@ -26,6 +26,8 @@ from rest_auth.utils import jwt_encode
 from rest_auth.views import LoginView
 from .app_settings import RegisterSerializer, register_permission_classes
 
+from core.serializers import UserSerializer
+
 sensitive_post_parameters_m = method_decorator(
     sensitive_post_parameters('password1', 'password2')
 )
@@ -56,7 +58,10 @@ class RegisterView(CreateAPIView):
                 allauth_settings.EmailVerificationMethod.MANDATORY:
             data = {"detail": _("Verification e-mail sent.")}
         else:
-            data = {'key': token}
+            data = {
+                'key': token,
+                'user': UserSerializer(user).data
+            }
 
         headers = self.get_success_headers(serializer.data)
 

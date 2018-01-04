@@ -3,6 +3,7 @@ import pytest
 from django.conf import settings
 from rest_framework import status
 from .models import MyUser
+from .serializers import UserSerializer
 
 pytestmark = pytest.mark.django_db
 
@@ -30,6 +31,10 @@ def test_signup(client):
     res = client.post(f'{BASE_URL}/rest-auth/registration/', data)
     assert res.status_code == status.HTTP_201_CREATED
 
+    user = MyUser.objects.first()
+    assert res.json().get('user') == UserSerializer(user).data, \
+        "response didn't return user data"
+
     key = res.json().get('key')
     res = client.get(url, HTTP_AUTHORIZATION='Token ' + key)
     assert res.status_code == status.HTTP_200_OK
@@ -52,6 +57,9 @@ def test_login(client):
 
     res = client.post(f'{BASE_URL}/rest-auth/login/', data)
     assert res.status_code == status.HTTP_200_OK
+
+    assert res.json().get('user') == UserSerializer(user).data, \
+        "response didn't return user data"
 
     key = res.json().get('key')
     res = client.get(f'{BASE_URL}/rest-auth/user/', HTTP_AUTHORIZATION='Token ' + key)

@@ -2,9 +2,7 @@ from django.contrib.auth import (
     login,
     logout
 )
-from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ObjectDoesNotExist
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.debug import sensitive_post_parameters
@@ -18,11 +16,13 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from knox.models import AuthToken
 
 from .app_settings import (
-    TokenSerializer, UserDetailsSerializer, LoginSerializer,
+    UserDetailsSerializer, LoginSerializer,
     PasswordResetSerializer, PasswordResetConfirmSerializer,
-    PasswordChangeSerializer, create_token
+    PasswordChangeSerializer
 )
 from .models import TokenModel
+
+from core.serializers import UserSerializer
 
 sensitive_post_parameters_m = method_decorator(
     sensitive_post_parameters(
@@ -60,9 +60,10 @@ class LoginView(GenericAPIView):
 
         login(request, user)
 
-        # TODO: return user
-
-        return Response({ 'key': token }, status=status.HTTP_200_OK)
+        return Response({
+            'key': token,
+            'user': UserSerializer(user).data
+        }, status=status.HTTP_200_OK)
 
 
 class LogoutView(APIView):

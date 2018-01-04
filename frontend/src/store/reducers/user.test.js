@@ -19,14 +19,23 @@ describe('User', () => {
     }
 
     const token = 'afakekey'
+    const avatar_url = '//www.user.com'
+    const email = 'test@gmail.com'
+
+    const user_data = {
+      avatar_url,
+      email
+    }
 
     const afterState = {
       loggedIn: true,
-      token
+      token,
+      avatarURL: avatar_url,
+      email
     }
 
     expect(
-      user(beforeState, login(token))
+      user(beforeState, login(token, user_data))
     ).toEqual(afterState)
   })
 

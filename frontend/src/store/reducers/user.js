@@ -31,7 +31,13 @@ export const user = (
 ) => {
   switch (action.type) {
     case LOG_IN:
-      return { ...state, loggedIn: true, token: action.token }
+      return {
+        ...state,
+        avatarURL: action.user.avatar_url,
+        email: action.user.email,
+        loggedIn: true,
+        token: action.token
+      }
     case SET_AVATAR_URL:
       return { ...state, avatarURL: action.url }
     case SET_USER_EMAIL:
