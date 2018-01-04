@@ -12,14 +12,15 @@ python_version = "3.6"
 [packages]
 
 djangorestframework = "*"
-Django = "*"
+django = "*"
 dj-database-url = "*"
 django-allauth = "*"
 drf-nested-routers = "*"
-Pint = "*"
+pint = "*"
 gunicorn = "*"
 "psycopg2" = "*"
 raven = "*"
+django-rest-knox = "*"
 
 
 [dev-packages]
