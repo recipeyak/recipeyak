@@ -61,12 +61,12 @@ INSTALLED_APPS = [
     # authentication / registration via django-rest-auth
     # http://django-rest-auth.readthedocs.io/en/latest/installation.html
     'rest_framework.authtoken',
-    'rest_auth',
+    'rest_auth.apps.RestAuthConfig',
     'django.contrib.sites',
     'django.contrib.postgres',
     'allauth',
     'allauth.account',
-    'rest_auth.registration',
+    'rest_auth.registration.apps.RestAuthRegistrationConfig',
 
 ]
 
