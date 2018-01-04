@@ -60,7 +60,7 @@ INSTALLED_APPS = [
 
     # authentication / registration via django-rest-auth
     # http://django-rest-auth.readthedocs.io/en/latest/installation.html
-    'rest_framework.authtoken',
+    'knox',
     'rest_auth.apps.RestAuthConfig',
     'django.contrib.sites',
     'django.contrib.postgres',
@@ -82,7 +82,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
+        'knox.auth.TokenAuthentication',
     ),
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }

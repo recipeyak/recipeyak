@@ -29,7 +29,6 @@ def test_signup(client):
 
     res = client.post(f'{BASE_URL}/rest-auth/registration/', data)
     assert res.status_code == status.HTTP_201_CREATED
-    import ipdb; ipdb.set_trace()
 
     key = res.json().get('key')
     res = client.get(url, HTTP_AUTHORIZATION='Token ' + key)
