@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.debug import sensitive_post_parameters
@@ -16,17 +15,13 @@ from allauth.account import app_settings as allauth_settings
 
 from knox.models import AuthToken
 
-from rest_auth.app_settings import (TokenSerializer,
-                                    JWTSerializer,
-                                    create_token)
 from rest_auth.models import TokenModel
 from rest_auth.registration.serializers import (SocialLoginSerializer,
                                                 VerifyEmailSerializer)
-from rest_auth.utils import jwt_encode
 from rest_auth.views import LoginView
 from .app_settings import RegisterSerializer, register_permission_classes
 
-from core.serializers import UserSerializer
+from rest_auth.app_settings import UserDetailsSerializer
 
 sensitive_post_parameters_m = method_decorator(
     sensitive_post_parameters('password1', 'password2')
@@ -60,7 +55,7 @@ class RegisterView(CreateAPIView):
         else:
             data = {
                 'key': token,
-                'user': UserSerializer(user).data
+                'user': UserDetailsSerializer(user).data
             }
 
         headers = self.get_success_headers(serializer.data)

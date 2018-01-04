@@ -20,9 +20,6 @@ from .app_settings import (
     PasswordResetSerializer, PasswordResetConfirmSerializer,
     PasswordChangeSerializer
 )
-from .models import TokenModel
-
-from core.serializers import UserSerializer
 
 sensitive_post_parameters_m = method_decorator(
     sensitive_post_parameters(
@@ -62,7 +59,7 @@ class LoginView(GenericAPIView):
 
         return Response({
             'key': token,
-            'user': UserSerializer(user).data
+            'user': UserDetailsSerializer(user).data
         }, status=status.HTTP_200_OK)
 
 
