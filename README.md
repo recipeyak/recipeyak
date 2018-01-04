@@ -1,4 +1,4 @@
-# Recipe Yak [![CircleCI](https://circleci.com/gh/chdsbd/recipeyak.svg?style=svg&circle-token=6a3a7cfa1b08a293ddfe600500830b75347f0957)](https://circleci.com/gh/chdsbd/recipeyak)
+# Recipe Yak [![CircleCI](https://circleci.com/gh/recipeyak/recipeyak.svg?style=svg)](https://circleci.com/gh/recipeyak/recipeyak)
 > Application to automate the selection of meals and creation of shopping lists.
 
 ## Dev
