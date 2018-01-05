@@ -10,4 +10,5 @@ RUN npm install
 
 # Volume for mounting our local files
 WORKDIR /var/app
+ENV NODE_PATH=/var/node_modules
 VOLUME ["/var/app"]
