@@ -9,9 +9,6 @@ from django.utils.encoding import force_text
 from rest_framework import serializers, exceptions
 from rest_framework.exceptions import ValidationError
 
-from .models import TokenModel
-from .utils import import_callable
-
 # Get the UserModel
 UserModel = get_user_model()
 
@@ -110,16 +107,6 @@ class LoginSerializer(serializers.Serializer):
         return attrs
 
 
-class TokenSerializer(serializers.ModelSerializer):
-    """
-    Serializer for Token model.
-    """
-
-    class Meta:
-        model = TokenModel
-        fields = ('key',)
-
-
 class UserDetailsSerializer(serializers.ModelSerializer):
     """
     User model w/o password
@@ -128,26 +115,6 @@ class UserDetailsSerializer(serializers.ModelSerializer):
         model = UserModel
         fields = ('pk', 'username', 'email', 'first_name', 'last_name')
         read_only_fields = ('email', )
-
-
-class JWTSerializer(serializers.Serializer):
-    """
-    Serializer for JWT authentication.
-    """
-    token = serializers.CharField()
-    user = serializers.SerializerMethodField()
-
-    def get_user(self, obj):
-        """
-        Required to allow using custom USER_DETAILS_SERIALIZER in
-        JWTSerializer. Defining it here to avoid circular imports
-        """
-        rest_auth_serializers = getattr(settings, 'REST_AUTH_SERIALIZERS', {})
-        JWTUserDetailsSerializer = import_callable(
-            rest_auth_serializers.get('USER_DETAILS_SERIALIZER', UserDetailsSerializer)
-        )
-        user_data = JWTUserDetailsSerializer(obj['user'], context=self.context).data
-        return user_data
 
 
 class PasswordResetSerializer(serializers.Serializer):

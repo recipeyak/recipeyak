@@ -15,7 +15,6 @@ from allauth.account import app_settings as allauth_settings
 
 from knox.models import AuthToken
 
-from rest_auth.models import TokenModel
 from rest_auth.registration.serializers import (SocialLoginSerializer,
                                                 VerifyEmailSerializer)
 from rest_auth.views import LoginView
@@ -31,7 +30,6 @@ sensitive_post_parameters_m = method_decorator(
 class RegisterView(CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = register_permission_classes()
-    token_model = TokenModel
 
     @sensitive_post_parameters_m
     def dispatch(self, *args, **kwargs):
