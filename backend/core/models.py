@@ -100,7 +100,6 @@ class Recipe(CommonInfo):
     servings = models.CharField(max_length=255, blank=True, null=True)
 
     edits = models.IntegerField(default=0, editable=False)
-    cart_additions = models.IntegerField(default=0, editable=False)
 
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
@@ -118,6 +117,10 @@ class Recipe(CommonInfo):
     def tags(self):
         """Return recipe tags ordered by creation date"""
         return Tag.objects.filter(recipe=self).order_by('created')
+
+    @property
+    def total_cart_additions(self):
+        return self.cartitem.total_cart_additions
 
     def __str__(self):
         return f'{self.name} by {self.author}'
@@ -181,13 +184,14 @@ class CartItem(CommonInfo):
     """Model for recipe and cart count"""
     recipe = models.OneToOneField(Recipe, on_delete=models.CASCADE, primary_key=True)
     count = models.PositiveIntegerField(default=0)
+    total_cart_additions = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return f'{self.count} - {self.recipe}'
+        return f'CartItem:: count: {self.count} total: {self.total_cart_additions} - {self.recipe}'
 
     def save(self, *args, **kwargs):
         old_cart = CartItem.objects.filter(recipe=self.recipe).first()
         if old_cart is not None and old_cart.count < self.count:
-            self.recipe.cart_additions += 1
-            self.recipe.save()
+            count_increase = self.count - old_cart.count
+            self.total_cart_additions += count_increase
         super(CartItem, self).save(*args, **kwargs)

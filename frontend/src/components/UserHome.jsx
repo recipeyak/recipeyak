@@ -32,7 +32,7 @@ const MostAddedRecipe = ({
     <Link className="big-link" to={recipeURL(id, name)}>
       {name} by {author}
     </Link>.
-    You've added it to your cart {cartAdds} time{cartAdds !== 1 && 's'}.
+    You've added it to your cart <b>{cartAdds}</b> time{cartAdds !== 1 && 's'}.
   </p>
 
 const RecentRecipes = ({
@@ -100,10 +100,10 @@ const UserStatistics = ({ loading, stats }) => {
         <b>Welcome!</b>
       </p>
       <p className="stat">
-        So far <b>135</b> recipes have been added in the <b>last month</b>.
+        So far <b>{ stats.total_recipes_added_last_month_by_all_users }</b> recipes have been added in the <b>last month</b>.
       </p>
       <p className="stat">
-        <b>278</b> cart additions have been made in the last <b>2 weeks</b>.
+        <b>{ stats.total_cart_additions }</b> cart additions have been made by <b>all users</b>.
       </p>
       <p className="stat">
         <Link className="big-link" to="/recipes/add">Add some recipes</Link>
@@ -116,7 +116,7 @@ const UserStatistics = ({ loading, stats }) => {
     id,
     name,
     author,
-    cart_additions: cartAdds
+    total_cart_additions: cartAdds
   } = stats.most_added_recipe
 
   return (
