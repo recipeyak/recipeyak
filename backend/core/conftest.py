@@ -1,7 +1,5 @@
 import pytest
-import pytz
 
-from datetime import datetime, timedelta
 from rest_framework.test import APIClient
 
 from .models import MyUser, Recipe, Ingredient, Step, Tag
