@@ -84,13 +84,13 @@
   },
   "proxy": "http://django:8000",
   "jest": {
-    "setupTestFrameworkScriptFile": "../node_modules/jest-enzyme/lib/index.js",
+    "setupTestFrameworkScriptFile": "jest-enzyme",
     "collectCoverageFrom": [
       "src/**/*.{js,jsx}"
     ],
     "setupFiles": [
       "<rootDir>/config/polyfills.js",
-      "../node_modules/raf/polyfill"
+      "raf/polyfill"
     ],
     "testPathIgnorePatterns": [
       "<rootDir>[/\\\\](build|docs|node_modules|scripts)[/\\\\]"
@@ -98,7 +98,7 @@
     "testEnvironment": "node",
     "testURL": "http://localhost",
     "transform": {
-      "^.+\\.(js|jsx)$": "<rootDir>/../node_modules/babel-jest",
+      "^.+\\.(js|jsx)$": "babel-jest",
       "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
       "^(?!.*\\.(js|jsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
     },
