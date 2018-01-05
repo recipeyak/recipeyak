@@ -66,8 +66,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'author', 'source', 'time', 'ingredients',
-                  'steps', 'tags', 'servings', 'edits', 'cart_additions',
-                  'modified')
+                  'steps', 'tags', 'servings', 'edits', 'modified')
 
     def validate_steps(self, value):
         if value == []:
@@ -94,3 +93,10 @@ class RecipeSerializer(serializers.ModelSerializer):
         for tag in tags:
             Tag.objects.create(recipe=recipe, **tag)
         return recipe
+
+
+class MostAddedRecipeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'author', 'total_cart_additions')

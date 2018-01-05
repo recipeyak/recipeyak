@@ -1,8 +1,11 @@
-import datetime
+from datetime import datetime, timedelta
 import pytest
+import pytz
 
 from django.conf import settings
 from rest_framework import status
+
+from .models import Recipe
 
 pytestmark = pytest.mark.django_db
 
@@ -15,9 +18,10 @@ def test_user_stats(client, user, recipe, recipe_pie):
     """
     client.force_authenticate(user)
 
-    month = datetime.datetime.today().month
+    month = datetime.today().month
 
-    recipe.cart_additions = 5
+    recipe.cartitem.total_cart_additions = 5
+    recipe.cartitem.save()
     recipe.edits = 5
     recipe_pie.edits = 10
 
@@ -45,7 +49,7 @@ def test_user_stats(client, user, recipe, recipe_pie):
 
     assert res.status_code == status.HTTP_200_OK
 
-    assert datetime.datetime.strptime(data.get('date_joined'), '%b, %Y').month == month
+    assert datetime.strptime(data.get('date_joined'), '%b, %Y').month == month
 
     assert data.get('most_added_recipe').get('id') == recipe.id
 
@@ -58,19 +62,55 @@ def test_user_stats(client, user, recipe, recipe_pie):
     assert data.get('recipes_added_by_month')[0].get('c') == 2
 
 
-def test_total_recipes_added_last_month_by_all_users(client, user, recipe):
+def test_most_added_recipe_stat(client, user, recipe):
+    """
+    ensure we have the field necessary for a userhome stat
+    """
+    recipe.cartitem.total_cart_additions = 5
+    recipe.cartitem.save()
+
     client.force_authenticate(user)
+    res = client.get(f'{BASE_URL}/user_stats/')
+    assert res.status_code == status.HTTP_200_OK
+    data = res.json().get('most_added_recipe')
+    for field in ['id', 'name', 'total_cart_additions']:
+        assert data.get(field) is not None
+
+
+def test_total_recipes_added_last_month_by_all_users(client, user, user2):
+    client.force_authenticate(user)
+
+    name = 'Recipe name'
+    author = 'Recipe author'
+
+    count = 5
+    for n in range(count):
+        Recipe.objects.create(
+            name=name,
+            author=author,
+            user=user2)
+
+    Recipe.objects.update(
+        created=datetime.now(tz=pytz.UTC) - timedelta(days=60))
+
+    # we know that the datetime.now() that will be used for the following
+    # recipe will be within the last month
+    Recipe.objects.create(
+        name=name,
+        author=author,
+        user=user2)
+
     res = client.get(f'{BASE_URL}/user_stats/')
     assert res.status_code == status.HTTP_200_OK
     assert res.json().get('total_recipes_added_last_month_by_all_users') == 1
 
 
-def test_cart_additions_in_last_month(client, user, recipe):
+def test_total_cart_additions(client, user, recipe):
     cart_additions = 7
-    recipe.cart_additions = cart_additions
-    recipe.save()
+    recipe.cartitem.total_cart_additions = cart_additions
+    recipe.cartitem.save()
 
     client.force_authenticate(user)
     res = client.get(f'{BASE_URL}/user_stats/')
     assert res.status_code == status.HTTP_200_OK
-    assert res.json().get('cart_additions_in_last_month') == cart_additions
+    assert res.json().get('total_cart_additions') == cart_additions

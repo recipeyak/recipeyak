@@ -330,7 +330,8 @@ def test_filtering_recipes_by_recent(client, user, recipes):
     res = client.get(f'{BASE_URL}/recipes/?recent')
     assert res.status_code == status.HTTP_200_OK
 
-    expected_first_recipe = sorted(recipes, key=lambda x: x.modified)[0].id
+    recipes_reversed = recipes[::-1]
+    expected_first_recipe = recipes_reversed[0].id
     actual_first_recipe = res.json()[0].get('id')
 
     assert expected_first_recipe == actual_first_recipe, \
