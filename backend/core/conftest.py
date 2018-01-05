@@ -36,7 +36,7 @@ def client():
 def recipes(user):
     """
     list of empty recipes with different modified times
-    note: each item with have a different creation time inherently
+    note: each item will have a different creation time inherently
     """
 
     name = 'Recipe name'
