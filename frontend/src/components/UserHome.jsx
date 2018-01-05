@@ -93,7 +93,8 @@ const UserStatistics = ({ loading, stats }) => {
     </section>
   }
 
-  const emptyStats = stats.most_added_recipe == null
+  // NOTE: this breaksbsometimes
+  const emptyStats = stats.most_added_recipe.id == null
   if (emptyStats) {
     return <div>
       <p className="stat">

@@ -52,13 +52,18 @@
 .home-page-grid {
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 1rem;
-  @media (min-width: 630px) {
+  @media (min-width: 730px) {
     display: grid;
   }
 }
 
 .stat {
   font-size: 2.25rem;
+
+  @media (min-width: 1300px) {
+    font-size: 2.75rem;
+  }
+
   @media (max-width: 991px) {
     font-size: 2rem;
   }
