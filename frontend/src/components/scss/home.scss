@@ -1,15 +1,5 @@
 @import './variables.scss';
 
-@media (max-width: 841px) {
-  .home-hero-text {
-    text-align: center;
-    line-height: 5rem;
-  }
-  .chart-container {
-    position: relative;
-    width: 90vw;
-  }
-}
 
 .home-subtitle {
   font-size: 3rem;
@@ -25,6 +15,11 @@
 
   @media (min-width: 630px) {
     font-size: 4rem;
+  }
+
+  @media (max-width: 841px) {
+    text-align: center;
+    line-height: 5rem;
   }
 
   @media (min-width: 920px) {
@@ -52,30 +47,36 @@
 .home-page-grid {
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 1rem;
-  @media (min-width: 630px) {
+  @media (min-width: 730px) {
     display: grid;
   }
 }
 
 .stat {
-  font-size: 2.25rem;
-  @media (max-width: 991px) {
+  font-size: 1.5rem;
+
+  @media (min-width: 660px) {
     font-size: 2rem;
   }
 
-  @media (max-width: 660px) {
-    font-size: 1.5rem;
+  @media (min-width: 991px) {
+    font-size: 2.25rem;
   }
+
+  @media (min-width: 1300px) {
+    font-size: 2.75rem;
+  }
+
 }
 
-
 .stat-small {
-  font-size: 2rem;
-  @media (max-width: 991px) {
+  font-size: 1.5rem;
+
+  @media (min-width: 660px) {
     font-size: 1.75rem;
   }
 
-  @media (max-width: 660px) {
-    font-size: 1.5rem;
+  @media (min-width: 991px) {
+    font-size: 2rem;
   }
 }
