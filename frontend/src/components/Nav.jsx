@@ -96,7 +96,7 @@ class Navbar extends React.Component {
         </section>
       </div>
     ) : (
-      <div className="d-flex">
+      <div className="d-flex hide-sm">
         <Link to="/login" className="better-nav-item">Login</Link>
         <Link to="/signup" className="better-nav-item">Signup</Link>
       </div>
