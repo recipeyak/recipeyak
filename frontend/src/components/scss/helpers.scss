@@ -304,3 +304,10 @@
 .filter-saturate-140 {
   filter: saturate(140%);
 }
+
+.hide-sm {
+  display: none;
+  @media (min-width: 630px) {
+    display: inherit;
+  }
+}
