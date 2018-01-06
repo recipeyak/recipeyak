@@ -1,5 +1,6 @@
-__pycache__/
 *.pyc
-venv/
-.mypy_cache/
-.cache/
+venv
+.mypy_cache
+.cache
+__pycache__
+*/__pycache__
