@@ -10,7 +10,10 @@ export const matchesQuery = ({
   author = '',
   ingredients = []
 }, query) => {
-  const normalize = (x = '') => x.replace(/\W/g, '').toLowerCase()
+  // https://stackoverflow.com/a/37511463/3720597
+  const removeAccents = x => x.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+
+  const normalize = (x = '') => removeAccents(x).replace(/\W/g, '').toLowerCase()
 
   // basic search with ability to prepend a tag to query and only search for
   // things relevent to that tag
