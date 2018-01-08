@@ -11,3 +11,9 @@ RUN npm install
 WORKDIR /var/app
 COPY . /var/app
 RUN npm run build
+
+FROM alpine
+RUN mkdir -p /var/app/build
+COPY --from=0 /var/app/build /var/app/build
+COPY --from=0 /var/app/bootstrap.sh /var/app/
+WORKDIR /var/app
