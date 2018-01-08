@@ -94,4 +94,62 @@ describe('searching', () => {
     expect(results).toEqual(true)
   })
 
+
+  it('ignores accents', () => {
+    const recipe = {
+      name: 'Crème Brulée'
+    }
+
+    const query = 'crem'
+
+    const results = matchesQuery(recipe, query)
+
+    expect(results).toEqual(true)
+  })
+
+
+  it('respects tag name', () => {
+    const recipe = {
+      name: 'Beef Bourguignon'
+    }
+
+    const query = 'name:beef'
+
+    const results = matchesQuery(recipe, query)
+
+    expect(results).toEqual(true)
+  })
+
+
+  it('respects tag ingredient', () => {
+    const recipe = {
+      name: 'Beef Bourguignon',
+      author: 'J. Doe',
+      ingredients: [
+        {
+          name: 'salt'
+        }
+      ]
+    }
+
+    const query = 'ingredient:salt'
+
+    const results = matchesQuery(recipe, query)
+
+    expect(results).toEqual(true)
+  })
+
+
+  it('respects tag author', () => {
+    const recipe = {
+      name: 'Beef Bourguignon',
+      author: 'J. Doe'
+    }
+
+    const query = 'author:doe'
+
+    const results = matchesQuery(recipe, query)
+
+    expect(results).toEqual(true)
+  })
 })
