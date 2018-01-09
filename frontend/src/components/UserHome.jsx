@@ -94,7 +94,7 @@ const UserStatistics = ({ loading, stats }) => {
   }
 
   // NOTE: this breaksbsometimes
-  const emptyStats = stats.most_added_recipe.id == null
+  const emptyStats = stats.most_added_recipe == null
   if (emptyStats) {
     return <div>
       <p className="stat">
@@ -143,10 +143,7 @@ const UserHome = ({
   loadingRecipes,
   loadingUserStats,
   userStats = {
-    most_added_recipe: {
-      name: '',
-      author: ''
-    },
+    most_added_recipe: null,
     new_recipes_last_week: '',
     total_recipe_edits: null,
     date_joined: null,
