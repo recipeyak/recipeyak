@@ -45,4 +45,18 @@ docker-compose -f docker-compose-prod.yml down && \
 docker-compose -f docker-compose-prod.yml up -d
 ```
 
+## Maintenance mode
+Enabling maintenance mode returns a 503 status code with a webpage explaining the site is down for maintenance.
+
+### Enable maintenance mode
+```bash
+# /recipe-manager
+./maintenance_mode.sh on
+```
+
+### Disable maintenance mode
+```bash
+# /recipe-manager
+./maintenance_mode.sh off
+```
 [0]: https://docs.docker.com/engine/reference/builder/#dockerignore-file
