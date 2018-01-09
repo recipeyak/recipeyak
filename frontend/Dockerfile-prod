@@ -1,4 +1,4 @@
-FROM node:8-alpine
+FROM node:8-alpine as builder
 
 RUN mkdir -p /var/app
 
@@ -11,3 +11,9 @@ RUN npm install
 WORKDIR /var/app
 COPY . /var/app
 RUN npm run build
+
+FROM alpine
+RUN mkdir -p /var/app/build
+COPY --from=builder /var/app/build /var/app/build
+COPY --from=builder /var/app/bootstrap.sh /var/app/
+WORKDIR /var/app
