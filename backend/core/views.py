@@ -170,6 +170,7 @@ class UserStats(APIView):
         date_joined = request.user.created.strftime('%b, %Y')
 
         return Response({
+            'total_user_recipes': user_recipes.count(),
             'total_recipe_edits': total_recipe_edits,
             'new_recipes_last_week': new_recipes_last_week,
             'most_added_recipe': MostAddedRecipeSerializer(most_added_recipe).data,

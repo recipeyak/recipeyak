@@ -7,6 +7,14 @@ import Recipe, { recipeURL } from './RecipeItem'
 
 import img from './yak.jpg'
 
+const TotalRecipesAdded = ({ count }) =>
+  count < 1 &&
+  <p className="stat mb-1">
+    <b>{ count } recipe{ count === 1 ? ' ' : 's '}</b>
+    {count === 1 ? 'has' : 'have'} been added.
+    Try adding one via the <Link className="big-link" to="/recipes/add">Add Recipe</Link> page.
+  </p>
+
 const RecipesAddedThisWeek = ({ count = 0 }) =>
   count > 0 &&
   <p className="stat mb-1">
@@ -14,11 +22,24 @@ const RecipesAddedThisWeek = ({ count = 0 }) =>
     {count === 1 ? 'has' : 'have'} been added in the <b>last week</b>.
   </p>
 
-const LifetimeRecipeEdits = ({ edits = 0, dateJoined = '' }) =>
-  edits > 0 && dateJoined !== '' &&
-  <p className="stat mb-1">
-    Since <b>{ dateJoined }</b>, your recipes have been edited a total of <b>{ edits } times</b>.
-  </p>
+const toInt = x => x > 0 ? x : 0
+
+const LifetimeRecipeEdits = ({
+  edits = 0,
+  dateJoined = ''
+}) =>
+  dateJoined !== '' &&
+    <p className="stat mb-1">
+      Since <b>{ dateJoined }</b>, you have edited your recipes a total of <b>{ toInt(edits) } times</b>.
+      { edits < 1 ? <span>Try the <u>Edit</u> button.</span> : null }
+    </p>
+
+const recipeTitle = ({ name, author }) => {
+  if (author == null || author === '') {
+    return name
+  }
+  return `${name} by ${author}`
+}
 
 const MostAddedRecipe = ({
   name = '',
@@ -26,14 +47,17 @@ const MostAddedRecipe = ({
   author,
   cartAdds = 0
 }) =>
-  name !== '' && cartAdds > 0 &&
-  <p className="stat mb-1">
-    <b>By cart additions</b>, your <b>favorite recipe</b> is
-    <Link className="big-link" to={recipeURL(id, name)}>
-      {name} by {author}
-    </Link>.
-    You've added it to your cart <b>{cartAdds}</b> time{cartAdds !== 1 && 's'}.
-  </p>
+  name !== '' && cartAdds > 0
+    ? <p className="stat mb-1">
+        <b>By cart additions</b>, your <b>favorite recipe</b> is
+        <Link className="big-link" to={recipeURL(id, name)}>
+          { recipeTitle({ name, author }) }
+        </Link>.
+        You've added it to your cart <b>{cartAdds}</b> time{cartAdds !== 1 && 's'}.
+      </p>
+    : <p className="stat mb-1">
+        You haven't added a recipe to your cart yet. <Link className="big-link" to="/recipes/">Give it a shot!</Link>
+      </p>
 
 const RecentRecipes = ({
   recipes,
@@ -122,6 +146,9 @@ const UserStatistics = ({ loading, stats }) => {
 
   return (
     <section>
+      <TotalRecipesAdded
+        count={stats.total_user_recipes}
+      />
       <RecipesAddedThisWeek
         count={stats.new_recipes_last_week}
       />

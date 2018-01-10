@@ -61,6 +61,8 @@ def test_user_stats(client, user, recipe, recipe_pie):
 
     assert data.get('recipes_added_by_month')[0].get('c') == 2
 
+    assert data.get('total_user_recipes') == 2
+
 
 def test_most_added_recipe_stat(client, user, recipe):
     """
