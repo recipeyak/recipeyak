@@ -1,7 +1,7 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 
-import Recipe from './RecipeItem.jsx'
+import Recipe from '../containers/RecipeItem.jsx'
 import Loader from './Loader.jsx'
 import DeadFish from './DeadFish.jsx'
 

@@ -3,11 +3,8 @@ import { connect } from 'react-redux'
 import { byNameAlphabetical } from '../sorters'
 
 import {
-  addingToCart,
-  removingFromCart,
   fetchRecipeList,
-  fetchCart,
-  updatingCart
+  fetchCart
 } from '../store/actions.js'
 
 import RecipeList from '../components/RecipeList.jsx'
@@ -24,13 +21,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    addToCart: id => {
-      dispatch(addingToCart(id))
-    },
-    removeFromCart: id => {
-      dispatch(removingFromCart(id))
-    },
-    updateCart: (id, count) => dispatch(updatingCart(id, count)),
     fetchData: () => {
       dispatch(fetchRecipeList())
       dispatch(fetchCart())
