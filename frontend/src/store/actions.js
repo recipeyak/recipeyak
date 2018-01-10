@@ -415,16 +415,26 @@ export const addingToCart = id => (dispatch, getState) => {
       const { recipe, count } = res.data
       dispatch(setCartItem(recipe, count))
       dispatch(setRecipeAddingToCart(id, false))
-      console.log('done: adding to cart')
     })
     .catch(err => {
       if (invalidToken(err.response)) {
         dispatch(logout())
       }
-      console.log('error adding recipe to cart', err)
       dispatch(setRecipeAddingToCart(id, false))
     })
 }
+
+export const updatingCart = (id, count) => (dispatch, getState) =>
+  patchCart(getState().user.token, id, count)
+    .then(res => {
+      const { recipe, count } = res.data
+      dispatch(setCartItem(recipe, count))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+    })
 
 export const setRecipeRemovingFromCart = (id, loading) => {
   return {

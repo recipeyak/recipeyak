@@ -101,7 +101,8 @@ class RecipeList extends React.Component {
       cart,
       removeFromCart,
       addToCart,
-      loading
+      loading,
+      updateCart
     } = this.props
 
     const {
@@ -123,8 +124,9 @@ class RecipeList extends React.Component {
             className='mb-0'
             inCart={ cart[recipe.id] > 0 ? cart[recipe.id] : 0 }
             key={ recipe.id }
-            removeFromCart={ () => removeFromCart(recipe.id)}
-            addToCart={ () => addToCart(recipe.id)}
+            removeFromCart={ removeFromCart }
+            addToCart={ addToCart }
+            updateCart={ updateCart }
           />
         )
 

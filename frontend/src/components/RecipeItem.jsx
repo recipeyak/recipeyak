@@ -16,7 +16,10 @@ const RecipeItem = ({
     removeFromCart,
     removingFromCart = false,
     addToCart,
-    addingToCart = false
+    addingToCart = false,
+    handleInputChange,
+    count,
+    updateCart
   }) => {
   const spanTags = tags.length > 0
     ? tags.map(tag => <span key={ tag } className="tag is-medium">{ tag }</span>)
@@ -31,7 +34,22 @@ const RecipeItem = ({
         onClick={ () => addToCart(id) }
         className={ `my-button is-primary control ${addingToCart ? 'is-loading' : ''}` }
         >Add Another</button>
-      <span className="tag is-light is-medium cart-count-tag">{ inCart }</span>
+        <div className="max-width-10">
+        <input
+          onChange={ handleInputChange }
+          onBlur={
+            () => {
+              const changed = count.toString() !== inCart.toString()
+              if (changed) {
+                updateCart(id, count)
+              }
+            }
+          }
+          disabled={ addingToCart || removingFromCart }
+          value={ count }
+          name="count"
+          className="bg-whitesmoke text-center is-light my-input is-slim"/>
+      </div>
     </div>
   )
 
@@ -60,4 +78,28 @@ const RecipeItem = ({
   )
 }
 
-export default RecipeItem
+class RecipeItemContainer extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      count: this.props.inCart
+    }
+  }
+
+  componentWillReceiveProps = nextProps => {
+    this.setState({ count: nextProps.inCart })
+  }
+
+  handleInputChange = e =>
+    this.setState({ [e.target.name]: e.target.value })
+
+  render () {
+    return <RecipeItem
+      {...this.props}
+      handleInputChange={ this.handleInputChange }
+      count={ this.state.count }
+    />
+  }
+}
+
+export default RecipeItemContainer

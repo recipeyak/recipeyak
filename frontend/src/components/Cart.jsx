@@ -27,7 +27,8 @@ class Cart extends React.Component {
       loadingShoppingList,
       clearCart,
       clearingCart,
-      error
+      error,
+      updateCart
     } = this.props
 
     if (error) {
@@ -69,8 +70,9 @@ class Cart extends React.Component {
                 {...recipe}
                 inCart={ cart[recipe.id] > 0 ? cart[recipe.id] : 0 }
                 key={ recipe.id }
-                removeFromCart={ () => removeFromCart(recipe.id)}
-                addToCart={ () => addToCart(recipe.id)}
+                removeFromCart={ removeFromCart }
+                addToCart={ addToCart }
+                updateCart={ updateCart }
               />
             )
           }

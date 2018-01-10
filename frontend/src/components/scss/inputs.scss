@@ -35,6 +35,13 @@
   &.is-danger {
     border-color: $danger;
   }
+
+  &.is-slim {
+    padding-bottom: calc(0.175em - 1px);
+    padding-left: calc(0.225em - 1px);
+    padding-right: calc(0.325em - 1px);
+    padding-top: calc(0.175em - 1px);
+  }
 }
 
 .my-textarea {

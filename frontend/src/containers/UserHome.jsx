@@ -8,7 +8,8 @@ import {
   fetchCart,
   fetchRecentRecipes,
   addingToCart,
-  removingFromCart
+  removingFromCart,
+  updatingCart
 } from '../store/actions'
 
 const mapStateToProps = state => ({
@@ -29,7 +30,8 @@ const mapDispatchToProps = dispatch => ({
     dispatch(fetchUserStats())
   },
   addToCart: id => dispatch(addingToCart(id)),
-  removeFromCart: id => dispatch(removingFromCart(id))
+  removeFromCart: id => dispatch(removingFromCart(id)),
+  updateCart: (id, count) => dispatch(updatingCart(id, count))
 })
 
 const ConnectedUserHome = connect(
