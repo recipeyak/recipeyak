@@ -11,7 +11,8 @@ import {
   fetchCart,
   fetchRecipeList,
   fetchShoppingList,
-  clearCart
+  clearCart,
+  updatingCart
 } from '../store/actions.js'
 
 import Cart from '../components/Cart.jsx'
@@ -39,6 +40,10 @@ const mapDispatchToProps = dispatch => {
     },
     removeFromCart: async id => {
       await dispatch(removingFromCart(id))
+      await dispatch(fetchShoppingList())
+    },
+    updateCart: async (id, count) => {
+      await dispatch(updatingCart(id, count))
       await dispatch(fetchShoppingList())
     },
     fetchData: () => {

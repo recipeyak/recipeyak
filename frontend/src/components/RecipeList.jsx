@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 
-import Recipe from './RecipeItem.jsx'
+import Recipe from '../containers/RecipeItem.jsx'
 import Loader from './Loader.jsx'
 
 export const matchesQuery = ({
@@ -99,8 +99,6 @@ class RecipeList extends React.Component {
       error,
       recipes,
       cart,
-      removeFromCart,
-      addToCart,
       loading
     } = this.props
 
@@ -123,8 +121,6 @@ class RecipeList extends React.Component {
             className='mb-0'
             inCart={ cart[recipe.id] > 0 ? cart[recipe.id] : 0 }
             key={ recipe.id }
-            removeFromCart={ () => removeFromCart(recipe.id)}
-            addToCart={ () => addToCart(recipe.id)}
           />
         )
 

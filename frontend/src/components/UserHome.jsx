@@ -3,7 +3,8 @@ import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
 import Loader from './Loader'
-import Recipe, { recipeURL } from './RecipeItem'
+import { recipeURL } from './RecipeItem'
+import Recipe from '../containers/RecipeItem'
 
 import img from './yak.jpg'
 
@@ -63,9 +64,7 @@ const RecentRecipes = ({
   recipes,
   cart,
   loading,
-  error,
-  removeFromCart,
-  addToCart
+  error
 }) => {
   if (error) return <p>error fetching recipes</p>
 
@@ -94,8 +93,6 @@ const RecentRecipes = ({
                   className='mb-0'
                   inCart={ cart[recipe.id] > 0 ? cart[recipe.id] : 0 }
                   key={ recipe.id }
-                  removeFromCart={ () => removeFromCart(recipe.id)}
-                  addToCart={ () => addToCart(recipe.id)}
                 />
               )
         }
@@ -180,7 +177,8 @@ const UserHome = ({
   cart,
   addToCart,
   removeFromCart,
-  errorRecipes
+  errorRecipes,
+  updateCart
 }) =>
   <div className="container pr-2 pl-2 pb-2">
     <Helmet title='Home'/>
@@ -197,6 +195,7 @@ const UserHome = ({
         cart={ cart }
         removeFromCart={ removeFromCart }
         addToCart={ addToCart }
+        updateCart={ updateCart }
       />
     </section>
   </div>

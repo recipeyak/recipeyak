@@ -160,6 +160,12 @@
   max-width: 400px;
 }
 
+@for $i from 0 through 16 {
+  .max-width-#{$i} {
+    max-width: #{$i/4}rem;
+  }
+}
+
 .margin-0-auto {
   margin: 0 auto;
 }
@@ -191,6 +197,10 @@
   .br-#{$i} {
     border-radius: #{$i}px !important;
   }
+}
+
+.br-20rem {
+  border-radius: 20rem;
 }
 
 
