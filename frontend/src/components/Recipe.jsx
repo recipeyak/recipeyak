@@ -26,7 +26,7 @@ const MetaData = ({
     ? <span>in <b>{time}</b> </span>
     : null
 
-  return <p>{ _author }{ _source }{ _servings }{ _time }</p>
+  return <p className="break-word">{ _author }{ _source }{ _servings }{ _time }</p>
 }
 
 const RecipeViewing = ({
