@@ -5,6 +5,8 @@ import Ingredient from './Ingredient'
 import AddIngredient from './AddIngredient'
 import AddStep from './AddStep'
 import ListItem from './ListItem'
+import NoMatch from './NoMatch'
+import Loader from './Loader'
 
 const RecipeEdit = ({
   id,
@@ -33,10 +35,12 @@ const RecipeEdit = ({
   updating
 }) => {
   if (error404) {
-    return <p>404</p>
+    return <NoMatch/>
   }
   if (loading) {
-    return <p>Loading...</p>
+    return <section className="d-flex justify-content-center">
+      <Loader/>
+    </section>
   }
 
   return (

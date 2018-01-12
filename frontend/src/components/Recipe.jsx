@@ -1,8 +1,9 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 
-import Loader from './Loader.jsx'
+import Loader from './Loader'
 import RecipeEdit from '../containers/RecipeEdit'
+import NoMatch from './NoMatch'
 
 const MetaData = ({
   author = '',
@@ -50,7 +51,7 @@ const RecipeViewing = ({
   handleInputChange
 }) => {
   if (error404) {
-    return <p>404</p>
+    return <NoMatch/>
   }
   if (loading) {
     return <section className="d-flex justify-content-center">
