@@ -5,7 +5,8 @@ import {
   fetchCart,
   addingToCart,
   removingFromCart,
-  deletingRecipe
+  deletingRecipe,
+  updatingCart
 } from '../store/actions.js'
 
 import Recipe from '../components/Recipe.jsx'
@@ -28,7 +29,8 @@ const mapDispatchToProps = dispatch => {
     },
     addToCart: id => dispatch(addingToCart(id)),
     removeFromCart: id => dispatch(removingFromCart(id)),
-    deleteRecipe: id => dispatch(deletingRecipe(id))
+    deleteRecipe: id => dispatch(deletingRecipe(id)),
+    updateCart: (id, count) => dispatch(updatingCart(id, count))
   }
 }
 
