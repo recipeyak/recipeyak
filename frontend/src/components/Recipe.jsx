@@ -40,11 +40,14 @@ const RecipeViewing = ({
   inCart = 0,
   addToCart,
   removeFromCart,
+  updateCart,
   addingToCart = false,
   removingFromCart = false,
   loading = false,
   error404 = false,
-  edit
+  edit,
+  count,
+  handleInputChange
 }) => {
   if (error404) {
     return <p>404</p>
@@ -58,23 +61,34 @@ const RecipeViewing = ({
     <div className="d-grid grid-gap-2">
       <Helmet title={ name }/>
 
-      <div className="grid-entire-row d-flex align-center justify-space-between">
+      <div className="grid-entire-row d-flex align-center justify-space-between flex-wrap">
         <h1 className="title fs-3rem mb-0">{ name }</h1>
         <div className="d-flex">
-          <div className="d-flex">
-            <input
-              onClick={ () => removeFromCart(id) }
-              className={ `my-button ${removingFromCart ? 'is-loading' : ''}` }
-              disabled={ inCart <= 0 }
-              type="button"
-              value="-"/>
-            <span className="bg-whitesmoke height-100 min-width-2rem d-flex align-center justify-content-center">{ inCart }</span>
-            <input
-              onClick={ () => addToCart(id) }
-              className={ `my-button is-primary ${addingToCart ? 'is-loading' : ''}` }
-              type="button"
-              value="+"/>
-          </div>
+          <input
+            onClick={ () => removeFromCart(id) }
+            className={ `my-button ${removingFromCart ? 'is-loading' : ''}` }
+            disabled={ inCart <= 0 }
+            type="button"
+            value="-"/>
+          <input
+            onChange={ handleInputChange }
+            onBlur={
+              () => {
+                const changed = count.toString() !== inCart.toString()
+                if (changed) {
+                  updateCart(id, count)
+                }
+              }
+            }
+            disabled={ addingToCart || removingFromCart }
+            value={ count }
+            name="count"
+            className="bg-whitesmoke text-center is-light my-input is-slim max-width-10 mr-1 ml-1"/>
+          <input
+            onClick={ () => addToCart(id) }
+            className={ `my-button is-primary ${addingToCart ? 'is-loading' : ''}` }
+            type="button"
+            value="+"/>
         </div>
       </div>
 
@@ -129,9 +143,20 @@ const RecipeViewing = ({
 }
 
 class Recipe extends React.Component {
-  state = {
-    editing: false
+  constructor (props) {
+    super(props)
+    this.state = {
+      editing: false,
+      count: this.props.inCart
+    }
   }
+
+  componentWillReceiveProps = nextProps => {
+    this.setState({ count: nextProps.inCart })
+  }
+
+  handleInputChange = e =>
+    this.setState({ [e.target.name]: e.target.value })
 
   componentWillMount = () => {
     this.props.fetchRecipe(this.props.match.params.id)
@@ -149,6 +174,8 @@ class Recipe extends React.Component {
     return (
       <RecipeViewing
         { ...this.props }
+        { ...this.state }
+        handleInputChange={ this.handleInputChange }
         edit={ () => this.setState({ editing: true }) }
       />
     )
