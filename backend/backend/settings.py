@@ -105,6 +105,11 @@ REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'core.serializers.UserSerializer'
 }
 
+# https://github.com/James1345/django-rest-knox/blob/ee71e0f352439e1733b7baeeca6ba1c90cf1495d/docs/settings.md
+REST_KNOX = {
+  'TOKEN_TTL': None
+}
+
 # http://django-rest-auth.readthedocs.io/en/latest/api_endpoints.html#basic
 # Require the old password be provided to change a your password
 OLD_PASSWORD_FIELD_ENABLED = True
