@@ -16,7 +16,6 @@ describe('RecipeItem', () => {
       url: '/someurl',
       source: 'http://example.com/recipeTitle',
       tags: ['OneTag', 'TwoTag'],
-      inCart: false,
       removeFromCart: () => console.log('Remove from cart'),
       addToCart: () => console.log('Add to cart')
     }
@@ -29,7 +28,6 @@ describe('RecipeItem', () => {
       author: 'Recipe author',
       url: '/someurl',
       source: 'http://example.com/recipeTitle',
-      inCart: false,
       removeFromCart: () => console.log('Remove from cart'),
       addToCart: () => console.log('Add to cart')
     }

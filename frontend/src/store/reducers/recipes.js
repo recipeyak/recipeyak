@@ -24,7 +24,9 @@ import {
   SET_REMOVING_STEP,
   SET_RECIPE_404,
   SET_RECIPE_UPDATING,
-  SET_RECIPE
+  SET_RECIPE,
+  SET_RECIPE_CART_AMOUNT,
+  CLEAR_RECIPE_CART_AMOUNTS
 } from '../actionTypes'
 
 export const recipes = (state = {}, action) => {
@@ -198,6 +200,23 @@ export const recipes = (state = {}, action) => {
       return { ...state,
         [action.id]: action.data
       }
+    case SET_RECIPE_CART_AMOUNT:
+      return {
+        ...state,
+        [action.id]: {
+          ...state[action.id],
+          cart_count: action.count
+        }
+      }
+    case CLEAR_RECIPE_CART_AMOUNTS:
+      return Object.values(state)
+        .reduce((result, recipe) => {
+          result[recipe.id] = {
+            ...recipe,
+            cart_count: 0
+          }
+          return result
+        }, {})
     default:
       return state
   }

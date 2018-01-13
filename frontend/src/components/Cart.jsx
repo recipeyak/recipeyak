@@ -11,14 +11,12 @@ class Cart extends React.Component {
   }
 
   static defaultProps = {
-    cart: {},
     shoppinglist: [],
     recipes: []
   }
 
   render () {
     const {
-      cart,
       recipes,
       removeFromCart,
       addToCart,
@@ -50,7 +48,7 @@ class Cart extends React.Component {
     }
 
     const emptyCart = shoppinglist.length <= 0 || recipes.length <= 0
-    if (emptyCart) {
+    if (emptyCart && !loadingShoppingList) {
       return (
         <div className="d-flex flex-direction-column align-items-center">
           <Helmet title='Cart' />
@@ -68,7 +66,6 @@ class Cart extends React.Component {
             recipes.map(recipe =>
               <Recipe
                 {...recipe}
-                inCart={ cart[recipe.id] > 0 ? cart[recipe.id] : 0 }
                 key={ recipe.id }
                 removeFromCart={ removeFromCart }
                 addToCart={ addToCart }

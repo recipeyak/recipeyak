@@ -122,6 +122,10 @@ class Recipe(CommonInfo):
     def total_cart_additions(self):
         return self.cartitem.total_cart_additions
 
+    @property
+    def cart_count(self):
+        return self.cartitem.count
+
     def __str__(self):
         return f'{self.name} by {self.author}'
 

@@ -29,6 +29,7 @@ const MetaData = ({
   return <p className="break-word">{ _author }{ _source }{ _servings }{ _time }</p>
 }
 
+/* eslint-disable camelcase */
 const RecipeViewing = ({
   id,
   name,
@@ -38,7 +39,7 @@ const RecipeViewing = ({
   time,
   ingredients = [],
   steps = [],
-  inCart = 0,
+  cart_count = 0,
   addToCart,
   removeFromCart,
   updateCart,
@@ -68,14 +69,14 @@ const RecipeViewing = ({
           <input
             onClick={ () => removeFromCart(id) }
             className={ `my-button ${removingFromCart ? 'is-loading' : ''}` }
-            disabled={ inCart <= 0 }
+            disabled={ cart_count <= 0 }
             type="button"
             value="-"/>
           <input
             onChange={ handleInputChange }
             onBlur={
               () => {
-                const changed = count.toString() !== inCart.toString()
+                const changed = count.toString() !== cart_count.toString()
                 if (changed) {
                   updateCart(id, count)
                 }
@@ -142,18 +143,19 @@ const RecipeViewing = ({
     </div>
   )
 }
+/* eslint-enable camelcase */
 
 class Recipe extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       editing: false,
-      count: this.props.inCart
+      count: this.props.cart_count
     }
   }
 
   componentWillReceiveProps = nextProps => {
-    this.setState({ count: nextProps.inCart })
+    this.setState({ count: nextProps.cart_count })
   }
 
   handleInputChange = e =>

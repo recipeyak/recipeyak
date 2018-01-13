@@ -2,7 +2,6 @@ import { connect } from 'react-redux'
 
 import {
   fetchRecipe,
-  fetchCart,
   addingToCart,
   removingFromCart,
   deletingRecipe,
@@ -16,17 +15,13 @@ const mapStateToProps = (state, props) => {
   const recipe = state.recipes[id] ? state.recipes[id] : {}
   return {
     ...recipe,
-    inCart: state.cart[recipe.id] > 0 ? state.cart[recipe.id] : 0,
     loading: state.loading.cart || recipe.loading
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchRecipe: id => {
-      dispatch(fetchRecipe(id))
-      dispatch(fetchCart(id))
-    },
+    fetchRecipe: id => dispatch(fetchRecipe(id)),
     addToCart: id => dispatch(addingToCart(id)),
     removeFromCart: id => dispatch(removingFromCart(id)),
     deleteRecipe: id => dispatch(deletingRecipe(id)),

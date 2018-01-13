@@ -5,7 +5,6 @@ import UserHome from '../components/UserHome'
 import {
   fetchUser,
   fetchUserStats,
-  fetchCart,
   fetchRecentRecipes
 } from '../store/actions'
 
@@ -22,7 +21,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   fetchData: () => {
     dispatch(fetchRecentRecipes())
-    dispatch(fetchCart())
     dispatch(fetchUser())
     dispatch(fetchUserStats())
   }
