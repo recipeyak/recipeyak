@@ -30,11 +30,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
         item instead of throwing a 403 as default
         """
 
+        user_recipes = Recipe.objects \
+            .filter(user=self.request.user) \
+            .select_related('cartitem')
+
         # filtering for homepage
         if self.request.query_params.get('recent') is not None:
-            return Recipe.objects.filter(user=self.request.user).order_by('-modified')[:3]
+            return user_recipes.order_by('-modified')[:3]
 
-        return Recipe.objects.filter(user=self.request.user)
+        return user_recipes
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
