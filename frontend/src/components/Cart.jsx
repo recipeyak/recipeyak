@@ -86,21 +86,20 @@ class Cart extends React.Component {
             className={ `my-button control ${clearingCart ? 'is-loading' : ''}` }>Clear Cart</button>
         </div>
         <div>
-          <div id="shoppinglist" className={`box ${loadingShoppingList ? 'has-text-grey-light' : ''}`} >
+          <div className={`box p-rel ${loadingShoppingList ? 'has-text-grey-light' : ''}`} >
+            <button
+              onClick={ () => selectElementText(document.querySelector('#shoppinglist')) }
+              className="my-button is-small r-5 p-abs">
+              Select
+            </button>
+            <section id="shoppinglist">
             {
               shoppinglist.map((x, i) =>
-                <p className="d-flex justify-space-between" key={x.unit + x.name}>{x.unit} {x.name}
-                  { i === 0
-                    ? <button
-                        onClick={ () => selectElementText(document.querySelector('#shoppinglist')) }
-                        className="my-button is-small ml-2">
-                        Select
-                      </button>
-                    : null
-                  }
-                </p>
+                // padding serves to prevent the button from appearing in front of text
+                <p className={ i === 0 ? 'mr-15' : '' } key={x.unit + x.name}>{x.unit} {x.name}</p>
               )
             }
+          </section>
           </div>
         </div>
       </div>
