@@ -3,15 +3,13 @@ import { connect } from 'react-redux'
 import { byNameAlphabetical } from '../sorters'
 
 import {
-  fetchRecipeList,
-  fetchCart
+  fetchRecipeList
 } from '../store/actions.js'
 
 import RecipeList from '../components/RecipeList.jsx'
 
 const mapStateToProps = state => {
   return {
-    cart: state.cart,
     recipes: Object.values(state.recipes)
              .sort(byNameAlphabetical),
     loading: state.loading.recipes || state.loading.cart,
@@ -21,10 +19,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchData: () => {
-      dispatch(fetchRecipeList())
-      dispatch(fetchCart())
-    }
+    fetchData: () => dispatch(fetchRecipeList())
   }
 }
 

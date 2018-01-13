@@ -12,7 +12,7 @@ const RecipeItem = ({
     name,
     author,
     id,
-    inCart,
+    cart_count,
     removeFromCart,
     removingFromCart = false,
     addToCart,
@@ -26,10 +26,13 @@ const RecipeItem = ({
     : null
   const buttons = (
     <div className="field is-grouped">
+
+      {/* eslint-disable camelcase */}
       <button
         onClick={ () => removeFromCart(id) }
         className={ `my-button control ${removingFromCart ? 'is-loading' : ''}` }
-        disabled={ !inCart }>Remove One</button>
+        disabled={ !cart_count }>Remove One</button>
+      {/* eslint-enable camelcase */}
       <button
         onClick={ () => addToCart(id) }
         className={ `my-button is-primary control ${addingToCart ? 'is-loading' : ''}` }
@@ -39,7 +42,7 @@ const RecipeItem = ({
           onChange={ handleInputChange }
           onBlur={
             () => {
-              const changed = count.toString() !== inCart.toString()
+              const changed = count.toString() !== cart_count.toString()
               if (changed) {
                 updateCart(id, count)
               }
@@ -82,12 +85,12 @@ class RecipeItemContainer extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      count: this.props.inCart
+      count: this.props.cart_count
     }
   }
 
   componentWillReceiveProps = nextProps => {
-    this.setState({ count: nextProps.inCart })
+    this.setState({ count: nextProps.cart_count })
   }
 
   handleInputChange = e =>

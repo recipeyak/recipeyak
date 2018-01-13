@@ -26,8 +26,6 @@ import {
   SET_ERROR_ADD_RECIPE,
   SET_ERROR_RECIPES,
   UPDATE_STEP,
-  SET_CART,
-  SET_CART_ITEM,
   SET_ERROR_CART,
   SET_LOADING_CART,
   SET_RECIPE_ADDING_TO_CART,
@@ -56,11 +54,12 @@ import {
   SET_LOGGING_OUT,
   SET_RECIPE_UPDATING,
   SET_CLEARING_CART,
-  SET_CART_EMPTY,
   SET_SHOPPING_LIST_ERROR,
   SET_LOADING_RESET_CONFIRMATION,
   SET_ERROR_RESET_CONFIRMATION,
-  TOGGLE_DARK_MODE
+  TOGGLE_DARK_MODE,
+  SET_RECIPE_CART_AMOUNT,
+  CLEAR_RECIPE_CART_AMOUNTS
 } from './actionTypes'
 
 import { push } from 'react-router-redux'
@@ -68,7 +67,7 @@ import { push } from 'react-router-redux'
 import axios from 'axios'
 
 const invalidToken = res =>
-  res.data.detail === 'Invalid token.' && res.status === 401
+  res != null && res.data.detail === 'Invalid token.' && res.status === 401
 
 export const login = (token, user) => ({
   type: LOG_IN,
@@ -317,45 +316,9 @@ export const setErrorCart = val => {
   }
 }
 
-export const setCart = recipes => {
-  return {
-    type: SET_CART,
-    recipes
-  }
-}
-
-const getCart = (token, id) =>
-  axios.get(`/api/v1/cart/`, {
-    headers: {
-      'Authorization': 'Token ' + token
-    }
-  })
-
-export const fetchCart = id => (dispatch, getState) => {
-  dispatch(setLoadingCart(true))
-  dispatch(setErrorCart(false))
-  getCart(getState().user.token, id)
-    .then(res => {
-      dispatch(setCart(res.data))
-      dispatch(setLoadingCart(false))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      dispatch(setErrorCart(true))
-      dispatch(setLoadingCart(false))
-      console.log('error fetching cart', err)
-    })
-}
-
 export const setClearingCart = val => ({
   type: SET_CLEARING_CART,
   val
-})
-
-export const setCartEmpty = () => ({
-  type: SET_CART_EMPTY
 })
 
 export const setShoppingListEmpty = () =>
@@ -368,11 +331,15 @@ const postClearCart = token =>
     }
   })
 
+export const clearRecipeCartAmounts = () => ({
+  type: CLEAR_RECIPE_CART_AMOUNTS
+})
+
 export const clearCart = () => (dispatch, getState) => {
   dispatch(setClearingCart(true))
   postClearCart(getState().user.token)
     .then(res => {
-      dispatch(setCartEmpty())
+      dispatch(clearRecipeCartAmounts())
       dispatch(setShoppingListEmpty())
       dispatch(setClearingCart(false))
     })
@@ -390,13 +357,11 @@ export const clearCart = () => (dispatch, getState) => {
     })
 }
 
-export const setCartItem = (id, count) => {
-  return {
-    type: SET_CART_ITEM,
-    id,
-    count
-  }
-}
+export const setRecipeCartAmount = (id, count) => ({
+  type: SET_RECIPE_CART_AMOUNT,
+  id,
+  count
+})
 
 const patchCart = (token, id, count) =>
   axios.patch(`/api/v1/cart/${id}/`, { count }, {
@@ -408,12 +373,12 @@ const patchCart = (token, id, count) =>
 export const addingToCart = id => (dispatch, getState) => {
   // we increment the cart value by 1, since we know the default / min cart
   // value is ensured to be 0 via the backend
-  const count = getState().cart[id] + 1
+  const count = getState().recipes[id].cart_count + 1
   dispatch(setRecipeAddingToCart(id, true))
   return patchCart(getState().user.token, id, count)
     .then(res => {
       const { recipe, count } = res.data
-      dispatch(setCartItem(recipe, count))
+      dispatch(setRecipeCartAmount(recipe, count))
       dispatch(setRecipeAddingToCart(id, false))
     })
     .catch(err => {
@@ -428,7 +393,7 @@ export const updatingCart = (id, count) => (dispatch, getState) =>
   patchCart(getState().user.token, id, count)
     .then(res => {
       const { recipe, count } = res.data
-      dispatch(setCartItem(recipe, count))
+      dispatch(setRecipeCartAmount(recipe, count))
     })
     .catch(err => {
       if (invalidToken(err.response)) {
@@ -445,13 +410,13 @@ export const setRecipeRemovingFromCart = (id, loading) => {
 }
 
 export const removingFromCart = id => (dispatch, getState) => {
-  const currentCount = getState().cart[id]
+  const currentCount = getState().recipes[id].cart_count
   const count = currentCount > 0 ? currentCount - 1 : 0
   dispatch(setRecipeRemovingFromCart(id, true))
   return patchCart(getState().user.token, id, count)
     .then(res => {
       const { recipe, count } = res.data
-      dispatch(setCartItem(recipe, count))
+      dispatch(setRecipeCartAmount(recipe, count))
       dispatch(setRecipeRemovingFromCart(id, false))
     })
     .catch(err => {

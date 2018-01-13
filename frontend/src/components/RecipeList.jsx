@@ -82,7 +82,6 @@ class RecipeList extends React.Component {
   }
 
   static defaultProps = {
-    cart: {},
     recipes: []
   }
 
@@ -98,7 +97,6 @@ class RecipeList extends React.Component {
     const {
       error,
       recipes,
-      cart,
       loading
     } = this.props
 
@@ -119,7 +117,6 @@ class RecipeList extends React.Component {
           <Recipe
             {...recipe}
             className='mb-0'
-            inCart={ cart[recipe.id] > 0 ? cart[recipe.id] : 0 }
             key={ recipe.id }
           />
         )

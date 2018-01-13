@@ -25,7 +25,9 @@ import {
   setRemovingStep,
   setRecipe404,
   setRecipeUpdating,
-  setRecipe
+  setRecipe,
+  setRecipeCartAmount,
+  clearRecipeCartAmounts
 } from '../actions'
 
 describe('Recipes', () => {
@@ -687,4 +689,57 @@ describe('Recipes', () => {
     ).toEqual(afterState)
   })
 
+  it('updates recipe cart amount', () => {
+
+    const beforeState = {
+      1: {
+        name: 'Initial recipe name',
+        cart_count: 0
+      }
+    }
+
+    const afterState = {
+      1: {
+        name: 'Initial recipe name',
+        cart_count: 2
+      }
+    }
+
+    expect(
+      recipes(beforeState, setRecipeCartAmount(1, 2))
+    ).toEqual(afterState)
+  })
+
+  it('clear cart amounts', () => {
+
+    const beforeState = {
+      1: {
+        id: 1,
+        name: 'Initial recipe name 1',
+        cart_count: 2
+      },
+      2: {
+        id: 2,
+        name: 'Initial recipe name 2',
+        cart_count: 3
+      },
+    }
+
+    const afterState = {
+      1: {
+        id: 1,
+        name: 'Initial recipe name 1',
+        cart_count: 0
+      },
+      2: {
+        id: 2,
+        name: 'Initial recipe name 2',
+        cart_count: 0
+      },
+    }
+
+    expect(
+      recipes(beforeState, clearRecipeCartAmounts())
+    ).toEqual(afterState)
+  })
 })
