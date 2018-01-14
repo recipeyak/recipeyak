@@ -8,7 +8,6 @@ from rest_framework.permissions import AllowAny
 from rest_framework.generics import CreateAPIView
 from rest_framework import status
 
-from allauth.account.adapter import get_adapter
 from allauth.account.views import ConfirmEmailView
 from allauth.account.utils import complete_signup
 from allauth.account import app_settings as allauth_settings

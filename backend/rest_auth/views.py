@@ -23,6 +23,7 @@ from .app_settings import (
 
 from .registration.serializers import SocialLoginSerializer
 
+from allauth.account.adapter import get_adapter
 from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 
