@@ -118,14 +118,31 @@ a {
 }
 
 @media print {
+  .card,
   .my-button,
   .my-input,
   nav {
     display: none !important;
   }
+
   html {
     border-top: none;
     font-size: 12px;
+  }
+
+  @page {
+    margin-bottom: 1rem;
+  }
+
+  .box {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    font-size: 10px;
+  }
+
+  .cart-container {
+    display: block;
   }
 
   .ingredients-preparation-grid {
