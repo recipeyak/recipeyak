@@ -1070,6 +1070,26 @@ export const logUserIn = (email, password) => dispatch => {
     })
 }
 
+const sendSocialLogin = (service, token) =>
+  axios.post(`/api/v1/rest-auth/${service}/`, {
+    'code': token,
+  })
+
+export const socialLogin = (service, token) => dispatch => {
+  return sendSocialLogin(service, token)
+    .then(res => {
+      dispatch(login(res.data.key, res.data.user))
+      dispatch(push('/'))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      } else {
+        throw new Error(err)
+      }
+    })
+}
+
 export const setLoadingSignup = val => {
   return {
     type: SET_LOADING_SIGNUP,

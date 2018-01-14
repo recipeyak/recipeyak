@@ -1,8 +1,8 @@
 from django.conf.urls import url
 
-from rest_auth.views import (
+from .views import (
     LoginView, LogoutView, UserDetailsView, PasswordChangeView,
-    PasswordResetView, PasswordResetConfirmView
+    PasswordResetView, PasswordResetConfirmView, GithubLogin
 )
 
 urlpatterns = [
@@ -17,4 +17,6 @@ urlpatterns = [
     url(r'^user/$', UserDetailsView.as_view(), name='rest_user_details'),
     url(r'^password/change/$', PasswordChangeView.as_view(),
         name='rest_password_change'),
+
+    url(r'^github/$', GithubLogin.as_view(), name='github_login'),
 ]
