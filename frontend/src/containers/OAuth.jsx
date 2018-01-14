@@ -14,9 +14,7 @@ const mapStateToProps = (state, props) => {
   const service = props.match.params.service
   const parsed = queryString.parse(props.location.search)
   const token = parsed.token || parsed.code
-  if (token == null) {
-    throw new Error('problem with token')
-  }
+
   return {
     service,
     token

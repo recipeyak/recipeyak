@@ -62,7 +62,7 @@ import {
   CLEAR_RECIPE_CART_AMOUNTS
 } from './actionTypes'
 
-import { push } from 'react-router-redux'
+import { push, replace, goBack } from 'react-router-redux'
 
 import axios from 'axios'
 
@@ -1079,12 +1079,18 @@ export const socialLogin = (service, token) => dispatch => {
   return sendSocialLogin(service, token)
     .then(res => {
       dispatch(login(res.data.key, res.data.user))
-      dispatch(push('/'))
+      dispatch(replace('/'))
     })
     .catch(err => {
       if (invalidToken(err.response)) {
         dispatch(logout())
       } else {
+        dispatch(replace('/login'))
+        dispatch(showNotificationWithTimeout({
+          message: 'uh oh! problem logging in with provider.',
+          level: 'danger',
+          delay: 5000
+        }))
         throw new Error(err)
       }
     })
@@ -1291,7 +1297,7 @@ export const setNotification = ({ message, closeable, level }) => {
 
 // https://stackoverflow.com/a/38574266/3555105
 let notificationTimeout = null
-const showNotificationWithTimeout = ({
+export const showNotificationWithTimeout = ({
   message,
   level,
   closeable = true,
