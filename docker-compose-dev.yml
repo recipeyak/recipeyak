@@ -9,6 +9,8 @@ services:
       - DEBUG=1
       - DATABASE_URL=postgres://postgres@db:5432/postgres
     command: sh bootstrap-dev.sh
+    env_file:
+      - .env-dev
     ports:
       - "8000:8000"
     volumes:

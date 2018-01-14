@@ -111,6 +111,7 @@ REST_AUTH_SERIALIZERS = {
 }
 
 # https://django-allauth.readthedocs.io/en/latest/providers.html#django-configuration
+# Add at least a key for each provider you add to INSTALLED_APPS here
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [
