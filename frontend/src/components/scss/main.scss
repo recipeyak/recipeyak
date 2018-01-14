@@ -116,3 +116,20 @@ a {
   justify-content: space-between;
   margin-bottom: 0;
 }
+
+@media print {
+  .my-button,
+  .my-input,
+  nav {
+    display: none !important;
+  }
+  html {
+    border-top: none;
+    font-size: 12px;
+  }
+
+  .ingredients-preparation-grid {
+    grid-gap: 0;
+    grid-template-columns: minmax(350px, 3fr) 5fr;
+  }
+}
