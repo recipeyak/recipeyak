@@ -125,6 +125,7 @@ SOCIALACCOUNT_PROVIDERS = {
         'SCOPE': [
             'user:email',
         ],
+        'URL': 'http://localhost:3000/accounts/github' if DEBUG else os.environ['OAUTH_GITHUB_URL'],
     },
 }
 

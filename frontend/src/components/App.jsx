@@ -53,7 +53,7 @@ const Base = () => (
           <Container>
             <Switch>
               <Route exact path="/login" component={ Login }/>
-              <Route path="/accounts/:service" component={ OAuth }/>
+              <Route exact path="/accounts/:service" component={ OAuth }/>
               <Route exact path="/signup" component={ Signup }/>
               <Route exact path="/password-reset" component={ PasswordReset }/>
               <Route exact path="/password-reset/confirm/:uid([0-9A-Za-z_\-]+).:token([0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})" component={ PasswordResetConfirmation }/>
