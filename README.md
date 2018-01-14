@@ -7,6 +7,11 @@
 docker-compose -f docker-compose-dev.yml up
 ```
 
+### Testing OAuth
+1. create an `.env-dev` file based on `.env-dev-example`
+2. Configure the identity provider to enable the correct redirect url.
+3. Update `settings.js` to reflect identity provider settings
+
 **NOTE:** delete `__pycache__/`, `*.pyc`, and `node_modules/` when using the dev
 setup as .dockerignore files are only used with `ADD` and `COPY`
 
@@ -27,34 +32,39 @@ docker-compose -f docker-compose-dev.yml exec backend make test-dev
 docker-compose -f docker-compose-dev.yml exec backend make test
 ```
 
-## Creating environment
+## Production
+### Creating environment
 You can create a remote docker machine on AWS using:
 ```
 docker-machine create --driver amazonec2 <machine-name>
 ```
 
-## Deploying containers
-You can switch your context to the remote machine using:
+### Deploying containers
+
+1. Switch your context to the remote machine using:
 ```
 eval $(docker-machine env <machine-name>)
 ```
-NOTE: Copy `.env-example` to `.env` and add in the proper configuration variables
+
+2. Copy `.env-example` to `.env` and add in the proper configuration variables
+3. Configure OAuth
+    - Configure the identity provider to enable the correct redirect url
+    - Update `.env` and `settings.js` to match identity provider settings
+4. Start containers
 ```
-docker-compose -f docker-compose-prod.yml build && \
-docker-compose -f docker-compose-prod.yml down && \
-docker-compose -f docker-compose-prod.yml up -d
+docker-compose -f docker-compose-prod.yml up --build -d
 ```
 
-## Maintenance mode
+### Maintenance mode
 Enabling maintenance mode returns a 503 status code with a webpage explaining the site is down for maintenance.
 
-### Enable maintenance mode
+#### Enable maintenance mode
 ```bash
 # /recipe-manager
 ./maintenance_mode.sh on
 ```
 
-### Disable maintenance mode
+#### Disable maintenance mode
 ```bash
 # /recipe-manager
 ./maintenance_mode.sh off
