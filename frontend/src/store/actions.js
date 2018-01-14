@@ -62,7 +62,7 @@ import {
   CLEAR_RECIPE_CART_AMOUNTS
 } from './actionTypes'
 
-import { push, replace, goBack } from 'react-router-redux'
+import { push, replace } from 'react-router-redux'
 
 import axios from 'axios'
 
@@ -1072,7 +1072,7 @@ export const logUserIn = (email, password) => dispatch => {
 
 const sendSocialLogin = (service, token) =>
   axios.post(`/api/v1/rest-auth/${service}/`, {
-    'code': token,
+    'code': token
   })
 
 export const socialLogin = (service, token) => dispatch => {

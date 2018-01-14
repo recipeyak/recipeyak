@@ -2,7 +2,7 @@ import React from 'react'
 
 import Loader from './Loader'
 
-const OAuth = ({service, token, login}) => {
+const OAuth = ({ service, token, login }) => {
   login(service, token)
 
   return (
@@ -10,6 +10,7 @@ const OAuth = ({service, token, login}) => {
       <p className="mb-4 fs-8">Signing in...</p>
       <Loader/>
     </div>
-  )}
+  )
+}
 
 export default OAuth
