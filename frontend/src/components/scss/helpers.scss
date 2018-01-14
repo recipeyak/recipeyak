@@ -17,6 +17,7 @@
   position: relative;
 }
 
+.p-abs,
 .p-absolute {
   position: absolute;
 }
@@ -24,6 +25,12 @@
 .right-0,
 .r-0 {
   right: 0;
+}
+
+@for $i from 0 through 8 {
+  .r-#{$i} {
+    right: #{$i/4}rem !important;
+  }
 }
 
 @for $i from 0 through 4 {
@@ -53,7 +60,7 @@
   padding: 0 !important;
 }
 
-@for $i from 0 through 4 {
+@for $i from 0 through 16 {
   .ml-#{$i} {
     margin-left: #{$i/4}rem !important;
   }

@@ -5,6 +5,14 @@ import Recipe from '../containers/RecipeItem.jsx'
 import Loader from './Loader.jsx'
 import DeadFish from './DeadFish.jsx'
 
+const selectElementText = el => {
+  const sel = window.getSelection()
+  const range = document.createRange()
+  range.selectNodeContents(el)
+  sel.removeAllRanges()
+  sel.addRange(range)
+}
+
 class Cart extends React.Component {
   componentWillMount = () => {
     this.props.fetchData()
@@ -78,12 +86,20 @@ class Cart extends React.Component {
             className={ `my-button control ${clearingCart ? 'is-loading' : ''}` }>Clear Cart</button>
         </div>
         <div>
-          <div className={loadingShoppingList ? 'box has-text-grey-light' : 'box'} >
+          <div className={`box p-rel ${loadingShoppingList ? 'has-text-grey-light' : ''}`} >
+            <button
+              onClick={ () => selectElementText(document.querySelector('#shoppinglist')) }
+              className="my-button is-small r-5 p-abs">
+              Select
+            </button>
+            <section id="shoppinglist">
             {
-              shoppinglist.map(x =>
-                <p key={x.unit + x.name}>{x.unit} {x.name} </p>
+              shoppinglist.map((x, i) =>
+                // padding serves to prevent the button from appearing in front of text
+                <p className={ i === 0 ? 'mr-15' : '' } key={x.unit + x.name}>{x.unit} {x.name}</p>
               )
             }
+          </section>
           </div>
         </div>
       </div>
