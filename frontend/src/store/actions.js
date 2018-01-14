@@ -1075,7 +1075,7 @@ const sendSocialLogin = (service, token) =>
     'code': token
   })
 
-export const socialLogin = (service, token) => dispatch => {
+export const socialLogin = (service, token) => (dispatch, getState) => {
   return sendSocialLogin(service, token)
     .then(res => {
       dispatch(login(res.data.key, res.data.user))
@@ -1084,6 +1084,13 @@ export const socialLogin = (service, token) => dispatch => {
     .catch(err => {
       if (invalidToken(err.response)) {
         dispatch(logout())
+      } else if (getState().user.token) {
+        dispatch(replace('/'))
+        dispatch(showNotificationWithTimeout({
+          message: "uh oh! you're already logged in.",
+          level: 'danger',
+          delay: 5000
+        }))
       } else {
         dispatch(replace('/login'))
         dispatch(showNotificationWithTimeout({

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import (
     login,
     logout
@@ -216,4 +217,4 @@ class SocialLoginView(LoginView):
 class GithubLogin(SocialLoginView):
     adapter_class = GitHubOAuth2Adapter
     client_class = OAuth2Client
-    callback_url = 'http://localhost:3000/accounts/github/login/callback/'
+    callback_url = settings.SOCIALACCOUNT_PROVIDERS['github']['URL']
