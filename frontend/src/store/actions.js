@@ -13,6 +13,7 @@ import {
   UPDATE_RECIPE_TIME,
   SET_LOADING_LOGIN,
   SET_ERROR_LOGIN,
+  SET_ERROR_SOCIAL_LOGIN,
   SET_LOADING_SIGNUP,
   SET_ERROR_SIGNUP,
   SET_LOADING_RESET,
@@ -74,9 +75,53 @@ import {
   CLEAR_ADD_RECIPE_FORM
 } from './actionTypes'
 
-import { push } from 'react-router-redux'
+import { push, replace } from 'react-router-redux'
 
 import axios from 'axios'
+
+axios.interceptors.response.use(function (response) {
+  return response
+}, function (error) {
+  // 503 means we are in maintenance mode. Reload to show maintenance page.
+  if (error.response && error.response.status === 503) {
+    location.reload()
+  }
+  return Promise.reject(error)
+})
+
+export const setNotification = ({ message, closeable, level }) => {
+  return {
+    type: SET_NOTIFICATION,
+    message,
+    closeable,
+    level
+  }
+}
+
+export const clearNotification = () => {
+  return {
+    type: CLEAR_NOTIFICATION
+  }
+}
+
+// https://stackoverflow.com/a/38574266/3555105
+let notificationTimeout = null
+const showNotificationWithTimeout = ({
+  message,
+  level,
+  closeable = true,
+  delay = 2000,
+  sticky
+}) => dispatch => {
+  clearTimeout(notificationTimeout)
+  dispatch(setNotification({ message, level, closeable }))
+
+  if (!sticky) {
+    notificationTimeout = setTimeout(() => {
+      dispatch(clearNotification())
+    }, delay)
+  }
+}
 
 const invalidToken = res =>
   res != null && res.data.detail === 'Invalid token.' && res.status === 401
@@ -333,6 +378,13 @@ export const setClearingCart = val => ({
   val
 })
 
+export const setShoppingList = val => {
+  return {
+    type: SET_SHOPPING_LIST,
+    val
+  }
+}
+
 export const setShoppingListEmpty = () =>
   setShoppingList([])
 
@@ -381,6 +433,14 @@ const patchCart = (token, id, count) =>
       'Authorization': 'Token ' + token
     }
   })
+
+export const setRecipeAddingToCart = (id, loading) => {
+  return {
+    type: SET_RECIPE_ADDING_TO_CART,
+    id,
+    loading
+  }
+}
 
 export const addingToCart = id => (dispatch, getState) => {
   // we increment the cart value by 1, since we know the default / min cart
@@ -443,13 +503,6 @@ export const removingFromCart = id => (dispatch, getState) => {
 export const setLoadingShoppingList = val => {
   return {
     type: SET_LOADING_SHOPPING_LIST,
-    val
-  }
-}
-
-export const setShoppingList = val => {
-  return {
-    type: SET_SHOPPING_LIST,
     val
   }
 }
@@ -702,14 +755,6 @@ export const addingRecipeIngredient = (recipeID, ingredient) => (dispatch, getSt
       console.log('error adding recipe ingredient', err)
       dispatch(setAddingIngredientToRecipe(recipeID, false))
     })
-}
-
-export const setRecipeAddingToCart = (id, loading) => {
-  return {
-    type: SET_RECIPE_ADDING_TO_CART,
-    id,
-    loading
-  }
 }
 
 export const updateRecipeName = (id, name) => {
@@ -1083,6 +1128,41 @@ export const logUserIn = (email, password) => dispatch => {
     })
 }
 
+export const setErrorSocialLogin = val => {
+  return {
+    type: SET_ERROR_SOCIAL_LOGIN,
+    val
+  }
+}
+
+const sendSocialLogin = (service, token) =>
+  axios.post(`/api/v1/rest-auth/${service}/`, {
+    'code': token
+  })
+
+export const socialLogin = (service, token) => (dispatch, getState) => {
+  return sendSocialLogin(service, token)
+    .then(res => {
+      dispatch(login(res.data.key, res.data.user))
+      dispatch(replace('/'))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      const badRequest = err.response.status === 400
+      if (err.response && badRequest) {
+        const data = err.response.data
+        dispatch(setErrorSocialLogin({
+          emailSocial: data['email'],
+          nonFieldErrorsSocial: data['non_field_errors']
+        }))
+      }
+      dispatch(replace('/login'))
+      throw err
+    })
+}
+
 export const setLoadingSignup = val => {
   return {
     type: SET_LOADING_SIGNUP,
@@ -1333,37 +1413,3 @@ export const updateAddRecipeFormStep = (index, step) => ({
 export const clearAddRecipeForm = () => ({
   type: CLEAR_ADD_RECIPE_FORM
 })
-
-export const setNotification = ({ message, closeable, level }) => {
-  return {
-    type: SET_NOTIFICATION,
-    message,
-    closeable,
-    level
-  }
-}
-
-// https://stackoverflow.com/a/38574266/3555105
-let notificationTimeout = null
-const showNotificationWithTimeout = ({
-  message,
-  level,
-  closeable = true,
-  delay = 2000,
-  sticky
-}) => dispatch => {
-  clearTimeout(notificationTimeout)
-  dispatch(setNotification({ message, level, closeable }))
-
-  if (!sticky) {
-    notificationTimeout = setTimeout(() => {
-      dispatch(clearNotification())
-    }, delay)
-  }
-}
-
-export const clearNotification = () => {
-  return {
-    type: CLEAR_NOTIFICATION
-  }
-}

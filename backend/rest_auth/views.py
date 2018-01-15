@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import (
     login,
     logout
@@ -21,6 +22,13 @@ from .app_settings import (
     PasswordChangeSerializer
 )
 
+from .registration.serializers import SocialLoginSerializer
+
+from allauth.account.adapter import get_adapter
+from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
+from allauth.socialaccount.providers.gitlab.views import GitLabOAuth2Adapter
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+
 sensitive_post_parameters_m = method_decorator(
     sensitive_post_parameters(
         'password', 'old_password', 'new_password1', 'new_password2'
@@ -39,13 +47,14 @@ class LoginView(GenericAPIView):
     Return the REST Framework Token Object's key.
     """
     permission_classes = (AllowAny,)
+    serializer_class = LoginSerializer
 
     @sensitive_post_parameters_m
     def dispatch(self, *args, **kwargs):
         return super(LoginView, self).dispatch(*args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        serializer = LoginSerializer(
+        serializer = self.get_serializer(
             data=request.data,
             context={'request': request})
 
@@ -174,3 +183,45 @@ class PasswordChangeView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({"detail": _("New password has been saved.")})
+
+
+class SocialLoginView(LoginView):
+    """
+    class used for social authentications
+    example usage for facebook with access_token
+    -------------
+    from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+
+    class FacebookLogin(SocialLoginView):
+        adapter_class = FacebookOAuth2Adapter
+    -------------
+
+    example usage for facebook with code
+
+    -------------
+    from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+    from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+
+    class FacebookLogin(SocialLoginView):
+        adapter_class = FacebookOAuth2Adapter
+         client_class = OAuth2Client
+         callback_url = 'localhost:8000'
+    -------------
+    """
+
+    serializer_class = SocialLoginSerializer
+
+    def process_login(self):
+        get_adapter(self.request).login(self.request, self.user)
+
+
+class GithubLogin(SocialLoginView):
+    adapter_class = GitHubOAuth2Adapter
+    client_class = OAuth2Client
+    callback_url = settings.SOCIALACCOUNT_PROVIDERS['github']['URL']
+
+
+class GitlabLogin(SocialLoginView):
+    adapter_class = GitLabOAuth2Adapter
+    client_class = OAuth2Client
+    callback_url = settings.SOCIALACCOUNT_PROVIDERS['gitlab']['URL']

@@ -26,4 +26,5 @@ urlpatterns = [
     url(r'^password-reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)\.(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         TemplateView.as_view(template_name="password_reset_confirm.html"),
         name='password_reset_confirm'),
+    url(r'^signup/$', TemplateView.as_view(template_name='socialccount_signup.html'), name='socialaccount_signup'),
 ]

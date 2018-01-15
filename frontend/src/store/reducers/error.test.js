@@ -1,6 +1,7 @@
 import error from './error.js'
 import {
   setErrorLogin,
+  setErrorSocialLogin,
   setErrorSignup,
   setErrorReset,
   setErrorResetConfirmation,
@@ -25,6 +26,24 @@ describe('error', () => {
 
     expect(
       error(errorState, setErrorLogin(false))
+      ).toEqual(notErrorState)
+  })
+
+  it('sets social login error', () => {
+    const notErrorState = {
+      socialLogin: false
+    }
+
+    const errorState = {
+      socialLogin: true
+    }
+
+    expect(
+      error(notErrorState, setErrorSocialLogin(true))
+      ).toEqual(errorState)
+
+    expect(
+      error(errorState, setErrorSocialLogin(false))
       ).toEqual(notErrorState)
   })
 

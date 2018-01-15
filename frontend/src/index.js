@@ -4,12 +4,14 @@ import { render } from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
 import { Provider } from 'react-redux'
 
+import { SENTRY_DSN } from './settings'
+
 import App from './components/App.jsx'
 
 import store from './store/store.js'
 
 if (process.env.NODE_ENV === 'production') {
-  Raven.config('https://3b11e5eed068478390e1e8f01e2190a9@sentry.io/250295').install()
+  Raven.config(SENTRY_DSN).install()
 }
 
 const rootElement = document.getElementById('root')
