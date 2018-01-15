@@ -5,12 +5,9 @@ import { Helmet } from 'react-helmet'
 import SocialButtons from './SocialButtons'
 
 class Login extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      email: '',
-      password: ''
-    }
+  state = {
+    email: '',
+    password: ''
   }
 
   componentWillMount = () => {
@@ -29,14 +26,15 @@ class Login extends React.Component {
   render () {
     const { loading } = this.props
     const { password1, nonFieldErrors, email } = this.props.error
+    const { emailSocial, nonFieldErrorsSocial } = this.props.errorSocial
 
     const errorHandler = err =>
       !!err &&
-      <p className="help is-danger">
+      <div className="help is-danger">
         <ul>
-          {err.map(e => (<li>{e}</li>))}
+          {err.map(e => (<li key={e}>{e}</li>))}
         </ul>
-      </p>
+      </div>
 
     return (
         <section className="section">
@@ -98,7 +96,7 @@ class Login extends React.Component {
                   </div>
 
                   </form>
-                  <SocialButtons/>
+                  <SocialButtons nonFieldErrors={nonFieldErrorsSocial} emailError={emailSocial} />
               </div>
             </div>
           </div>

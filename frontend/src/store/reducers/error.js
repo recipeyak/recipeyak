@@ -1,5 +1,6 @@
 import {
   SET_ERROR_LOGIN,
+  SET_ERROR_SOCIAL_LOGIN,
   SET_ERROR_SIGNUP,
   SET_ERROR_RESET,
   SET_ERROR_RESET_CONFIRMATION,
@@ -10,6 +11,7 @@ import {
 
 const error = (state = {
   login: {},
+  socialLogin: {},
   signup: {},
   reset: {},
   resetConfirmation: {},
@@ -24,6 +26,8 @@ const error = (state = {
   switch (action.type) {
     case SET_ERROR_LOGIN:
       return { ...state, login: action.val }
+    case SET_ERROR_SOCIAL_LOGIN:
+      return { ...state, socialLogin: action.val }
     case SET_ERROR_SIGNUP:
       return { ...state, signup: action.val }
     case SET_ERROR_RECIPES:
