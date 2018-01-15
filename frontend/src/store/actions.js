@@ -62,7 +62,7 @@ import {
   CLEAR_RECIPE_CART_AMOUNTS
 } from './actionTypes'
 
-import { push } from 'react-router-redux'
+import { push, replace } from 'react-router-redux'
 
 import axios from 'axios'
 
@@ -1066,6 +1066,39 @@ export const logUserIn = (email, password) => dispatch => {
           password1: data['password1'],
           nonFieldErrors: data['non_field_errors']
         }))
+      }
+    })
+}
+
+const sendSocialLogin = (service, token) =>
+  axios.post(`/api/v1/rest-auth/${service}/`, {
+    'code': token
+  })
+
+export const socialLogin = (service, token) => (dispatch, getState) => {
+  return sendSocialLogin(service, token)
+    .then(res => {
+      dispatch(login(res.data.key, res.data.user))
+      dispatch(replace('/'))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      } else if (getState().user.token) {
+        dispatch(replace('/'))
+        dispatch(showNotificationWithTimeout({
+          message: "uh oh! you're already logged in.",
+          level: 'danger',
+          delay: 5000
+        }))
+      } else {
+        dispatch(replace('/login'))
+        dispatch(showNotificationWithTimeout({
+          message: 'uh oh! problem logging in with provider.',
+          level: 'danger',
+          delay: 5000
+        }))
+        throw err
       }
     })
 }

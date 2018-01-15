@@ -2,6 +2,8 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 
+import SocialButtons from './SocialButtons'
+
 class Login extends React.Component {
   constructor (props) {
     super(props)
@@ -96,6 +98,7 @@ class Login extends React.Component {
                   </div>
 
                   </form>
+                  <SocialButtons/>
               </div>
             </div>
           </div>

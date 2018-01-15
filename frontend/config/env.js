@@ -1,12 +1,30 @@
-// Grab NODE_ENV and REACT_APP_* environment variables and prepare them to be
+// Grab white-listed environment variables and prepare them to be
 // injected into the application via DefinePlugin in Webpack configuration.
 
-const REACT_APP = /^REACT_APP_/i
+const WHITELIST = [
+  'NODE_ENV',
+  'OAUTH_BITBUCKET_CLIENT_ID',
+  'OAUTH_BITBUCKET_REDIRECT_URI',
+
+  'OAUTH_FACEBOOK_CLIENT_ID',
+  'OAUTH_FACEBOOK_REDIRECT_URI',
+
+  'OAUTH_GITHUB_CLIENT_ID',
+  'OAUTH_GITHUB_REDIRECT_URI',
+
+  'OAUTH_GITLAB_CLIENT_ID',
+  'OAUTH_GITLAB_REDIRECT_URI',
+
+  'OAUTH_GOOGLE_CLIENT_ID',
+  'OAUTH_GOOGLE_REDIRECT_URI',
+
+  'FRONTEND_SENTRY_DSN',
+]
 
 function getClientEnvironment (publicUrl) {
   const raw = Object
     .keys(process.env)
-    .filter(key => REACT_APP.test(key))
+    .filter(key => WHITELIST.includes(key))
     .reduce((env, key) => {
       env[key] = process.env[key]
       return env
