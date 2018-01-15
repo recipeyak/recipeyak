@@ -220,6 +220,7 @@ class GithubLogin(SocialLoginView):
     client_class = OAuth2Client
     callback_url = settings.SOCIALACCOUNT_PROVIDERS['github']['URL']
 
+
 class GitlabLogin(SocialLoginView):
     adapter_class = GitLabOAuth2Adapter
     client_class = OAuth2Client

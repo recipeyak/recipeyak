@@ -24,7 +24,7 @@ const WHITELIST = [
 function getClientEnvironment (publicUrl) {
   const raw = Object
     .keys(process.env)
-    .filter(key => WHITELIST.includes(key.toUpperCase()))
+    .filter(key => WHITELIST.includes(key))
     .reduce((env, key) => {
       env[key] = process.env[key]
       return env
