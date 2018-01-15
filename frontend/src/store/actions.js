@@ -1098,7 +1098,7 @@ export const socialLogin = (service, token) => (dispatch, getState) => {
           level: 'danger',
           delay: 5000
         }))
-        throw new Error(err)
+        throw err
       }
     })
 }
@@ -1304,7 +1304,7 @@ export const setNotification = ({ message, closeable, level }) => {
 
 // https://stackoverflow.com/a/38574266/3555105
 let notificationTimeout = null
-export const showNotificationWithTimeout = ({
+const showNotificationWithTimeout = ({
   message,
   level,
   closeable = true,

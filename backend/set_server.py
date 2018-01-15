@@ -11,7 +11,7 @@ my_site.save()
 
 oauth_providers = list(settings.SOCIALACCOUNT_PROVIDERS.keys())
 for provider in oauth_providers:
-    obj, created = SocialApp.objects.get_or_create(
+    obj, _ = SocialApp.objects.get_or_create(
         provider=provider,
     )
     obj.name = provider

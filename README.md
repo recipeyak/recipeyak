@@ -10,8 +10,10 @@ docker-compose -f docker-compose-dev.yml up
 
 ### Using `pdb` with
 ```
-docker-compose -f docker-compose-dev-django.yml up -d && \
-docker-compose -f docker-compose-dev-django.yml exec django sh bootstrap.sh
+docker-compose -f docker-compose-dev.yml up -d && \
+docker-compose -f docker-compose-dev.yml kill django && \
+docker-compose -f docker-compose-dev.yml run -d --entrypoint "tail -f /dev/null" django && \
+docker-compose -f docker-compose-dev.yml exec django sh boostrap-dev.sh && \
 ```
 
 ### Testing OAuth
