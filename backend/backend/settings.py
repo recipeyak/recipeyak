@@ -113,27 +113,28 @@ REST_AUTH_SERIALIZERS = {
 
 # https://django-allauth.readthedocs.io/en/latest/providers.html#django-configuration
 # Add at least a key for each provider you add to INSTALLED_APPS here
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        }
-    },
-    'github': {
-        'SCOPE': [
-            'user:email',
-        ],
-        'URL': os.getenv('OAUTH_GITHUB_REDIRECT_URI', 'http://localhost:3000/accounts/github') if DEBUG else os.environ['OAUTH_GITHUB_REDIRECT_URI'],
-    },
-    'gitlab': {
-        'SCOPE': ['read_user'],
-        'URL': os.getenv('OAUTH_GITLAB_REDIRECT_URI', 'http://localhost:3000/accounts/gitlab') if DEBUG else os.environ['OAUTH_GITLAB_REDIRECT_URI'],
-    },
-}
+if not DOCKERBUILD:
+    SOCIALACCOUNT_PROVIDERS = {
+        'google': {
+            'SCOPE': [
+                'profile',
+                'email',
+            ],
+            'AUTH_PARAMS': {
+                'access_type': 'online',
+            }
+        },
+        'github': {
+            'SCOPE': [
+                'user:email',
+            ],
+            'URL': os.getenv('OAUTH_GITHUB_REDIRECT_URI', 'http://localhost:3000/accounts/github') if DEBUG else os.environ['OAUTH_GITHUB_REDIRECT_URI'],
+        },
+        'gitlab': {
+            'SCOPE': ['read_user'],
+            'URL': os.getenv('OAUTH_GITLAB_REDIRECT_URI', 'http://localhost:3000/accounts/gitlab') if DEBUG else os.environ['OAUTH_GITLAB_REDIRECT_URI'],
+        },
+    }
 
 # https://github.com/James1345/django-rest-knox/blob/ee71e0f352439e1733b7baeeca6ba1c90cf1495d/docs/settings.md
 REST_KNOX = {
