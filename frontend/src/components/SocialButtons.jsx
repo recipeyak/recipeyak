@@ -46,7 +46,15 @@ const Facebook = () => FACEBOOK_OAUTH_URL &&
 
 const enableSocialButtons = GITHUB_OAUTH_URL || GITLAB_OAUTH_URL || BITBUCKET_OAUTH_URL || GOOGLE_OAUTH_URL || FACEBOOK_OAUTH_URL
 
-const SocialButtons = () => enableSocialButtons &&
+const errorHandler = err =>
+  !!err &&
+  <div className="help is-danger">
+    <ul>
+      {err.map(e => (<li key={e}>{e}</li>))}
+    </ul>
+  </div>
+
+const SocialButtons = ({ nonFieldErrors, emailError }) => enableSocialButtons &&
   <div>
     <div className="d-flex align-items-center mb-2 mt-1">
       <span className="or-bar"></span> or <span className="or-bar"></span>
@@ -58,6 +66,8 @@ const SocialButtons = () => enableSocialButtons &&
       <Google/>
       <Facebook/>
     </div>
+    { errorHandler(nonFieldErrors) }
+    { errorHandler(emailError) }
   </div>
 
 export default SocialButtons
