@@ -26,6 +26,7 @@ from .registration.serializers import SocialLoginSerializer
 
 from allauth.account.adapter import get_adapter
 from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
+from allauth.socialaccount.providers.gitlab.views import GitLabOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 
 sensitive_post_parameters_m = method_decorator(
@@ -218,3 +219,8 @@ class GithubLogin(SocialLoginView):
     adapter_class = GitHubOAuth2Adapter
     client_class = OAuth2Client
     callback_url = settings.SOCIALACCOUNT_PROVIDERS['github']['URL']
+
+class GitlabLogin(SocialLoginView):
+    adapter_class = GitLabOAuth2Adapter
+    client_class = OAuth2Client
+    callback_url = settings.SOCIALACCOUNT_PROVIDERS['gitlab']['URL']

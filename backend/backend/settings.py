@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.github',
     'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.gitlab',
 
     'rest_auth.registration.apps.RestAuthRegistrationConfig',
 
@@ -126,7 +127,11 @@ SOCIALACCOUNT_PROVIDERS = {
         'SCOPE': [
             'user:email',
         ],
-        'URL': 'http://localhost:3000/accounts/github' if DEBUG else os.environ['OAUTH_GITHUB_URL'],
+        'URL': os.getenv('OAUTH_GITHUB_REDIRECT_URI', 'http://localhost:3000/accounts/github') if DEBUG else os.environ['OAUTH_GITHUB_REDIRECT_URI'],
+    },
+    'gitlab': {
+        'SCOPE': ['read_user'],
+        'URL': os.getenv('OAUTH_GITLAB_REDIRECT_URI', 'http://localhost:3000/accounts/gitlab') if DEBUG else os.environ['OAUTH_GITLAB_REDIRECT_URI'],
     },
 }
 

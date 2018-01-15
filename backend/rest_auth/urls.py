@@ -2,7 +2,9 @@ from django.conf.urls import url
 
 from .views import (
     LoginView, LogoutView, UserDetailsView, PasswordChangeView,
-    PasswordResetView, PasswordResetConfirmView, GithubLogin
+    PasswordResetView, PasswordResetConfirmView,
+    GithubLogin,
+    GitlabLogin,
 )
 
 urlpatterns = [
@@ -19,4 +21,5 @@ urlpatterns = [
         name='rest_password_change'),
 
     url(r'^github/$', GithubLogin.as_view(), name='github_login'),
+    url(r'^gitlab/$', GitlabLogin.as_view(), name='gitlab_login'),
 ]
