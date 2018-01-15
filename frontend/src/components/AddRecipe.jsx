@@ -25,6 +25,11 @@ class AddRecipe extends React.Component {
       errorWithIngredients: false,
       errorWithSteps: false
     },
+    name: '',
+    author: '',
+    source: '',
+    time: '',
+    servings: '',
     ingredients: [],
     steps: []
   }
@@ -93,15 +98,10 @@ class AddRecipe extends React.Component {
     } = this
 
     const {
-      error,
-      loading
-    } = this.props
-
-    const {
       errorWithName,
       errorWithIngredients,
       errorWithSteps
-    } = error
+    } = this.props.error
 
     const {
       quantity = '',
@@ -224,13 +224,13 @@ class AddRecipe extends React.Component {
           </section>
         <p className="d-flex justify-space-between align-items-center">
           <button
-            className={ 'my-button ' + (loading ? 'is-loading' : '')}
+            className='my-button'
             onClick={ this.props.clearForm }
             name="create recipe">
             Clear
           </button>
           <button
-            className={ 'my-button is-large is-primary ' + (loading ? 'is-loading' : '')}
+            className={ 'my-button is-large is-primary ' + (this.props.loading ? 'is-loading' : '')}
             type="submit"
             onClick={ handleSubmit }
             name="create recipe">
