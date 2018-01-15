@@ -70,7 +70,6 @@ axios.interceptors.response.use(function (response) {
   return response
 }, function (error) {
   // 503 means we are in maintenance mode. Reload to show maintenance page.
-  console.log(error.response && error.response.status)
   if (error.response && error.response.status === 503) {
     location.reload()
   }
