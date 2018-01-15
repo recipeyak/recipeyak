@@ -52,7 +52,7 @@ const AddIngredientForm = ({
         placeholder="diced at 3cm"
         name="description"/>
       { error
-          ? <p class="fs-4 c-danger">A recipe needs at least one ingredient</p>
+          ? <p className="fs-4 c-danger">A recipe needs at least one ingredient</p>
           : null
       }
     </div>

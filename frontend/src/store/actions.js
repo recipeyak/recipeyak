@@ -59,7 +59,19 @@ import {
   SET_ERROR_RESET_CONFIRMATION,
   TOGGLE_DARK_MODE,
   SET_RECIPE_CART_AMOUNT,
-  CLEAR_RECIPE_CART_AMOUNTS
+  CLEAR_RECIPE_CART_AMOUNTS,
+  SET_ADD_RECIPE_FORM_NAME,
+  SET_ADD_RECIPE_FORM_AUTHOR,
+  SET_ADD_RECIPE_FORM_SOURCE,
+  SET_ADD_RECIPE_FORM_TIME,
+  SET_ADD_RECIPE_FORM_SERVINGS,
+  ADD_ADD_RECIPE_FORM_INGREDIENT,
+  REMOVE_ADD_RECIPE_FORM_INGREDIENT,
+  UPDATE_ADD_RECIPE_FORM_INGREDIENT,
+  ADD_ADD_RECIPE_FORM_STEP,
+  REMOVE_ADD_RECIPE_FORM_STEP,
+  UPDATE_ADD_RECIPE_FORM_STEP,
+  CLEAR_ADD_RECIPE_FORM
 } from './actionTypes'
 
 import { push } from 'react-router-redux'
@@ -505,6 +517,7 @@ export const postNewRecipe = recipe => (dispatch, getState) => {
   return sendPostNewRecipe(getState().user.token, recipe)
     .then(res => {
       dispatch(addRecipe(res.data))
+      dispatch(clearAddRecipeForm())
       dispatch(setLoadingAddRecipe(false))
       dispatch(push('/recipes'))
     })
@@ -1259,6 +1272,67 @@ export const resetConfirmation = (uid, token, newPassword1, newPassword2) => dis
       }
     })
 }
+
+export const setAddRecipeFormName = val => ({
+  type: SET_ADD_RECIPE_FORM_NAME,
+  val
+})
+
+export const setAddRecipeFormAuthor = val => ({
+  type: SET_ADD_RECIPE_FORM_AUTHOR,
+  val
+})
+
+export const setAddRecipeFormSource = val => ({
+  type: SET_ADD_RECIPE_FORM_SOURCE,
+  val
+})
+
+export const setAddRecipeFormTime = val => ({
+  type: SET_ADD_RECIPE_FORM_TIME,
+  val
+})
+
+export const setAddRecipeFormServings = val => ({
+  type: SET_ADD_RECIPE_FORM_SERVINGS,
+  val
+})
+
+export const addAddRecipeFormIngredient = ingredient => ({
+  type: ADD_ADD_RECIPE_FORM_INGREDIENT,
+  ingredient
+})
+
+export const removeAddRecipeFormIngredient = index => ({
+  type: REMOVE_ADD_RECIPE_FORM_INGREDIENT,
+  index
+})
+
+export const addAddRecipeFormStep = step => ({
+  type: ADD_ADD_RECIPE_FORM_STEP,
+  step
+})
+
+export const removeAddRecipeFormStep = index => ({
+  type: REMOVE_ADD_RECIPE_FORM_STEP,
+  index
+})
+
+export const updateAddRecipeFormIngredient = (index, ingredient) => ({
+  type: UPDATE_ADD_RECIPE_FORM_INGREDIENT,
+  index,
+  ingredient
+})
+
+export const updateAddRecipeFormStep = (index, step) => ({
+  type: UPDATE_ADD_RECIPE_FORM_STEP,
+  index,
+  step
+})
+
+export const clearAddRecipeForm = () => ({
+  type: CLEAR_ADD_RECIPE_FORM
+})
 
 export const setNotification = ({ message, closeable, level }) => {
   return {

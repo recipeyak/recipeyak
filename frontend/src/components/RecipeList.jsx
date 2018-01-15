@@ -128,6 +128,7 @@ class RecipeList extends React.Component {
           autoFocus
           onChange={ handleInputChange }
           type='search'
+          autoCorrect='off'
           placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:'"
           className='my-input grid-entire-row'
           name='query'/>

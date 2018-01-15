@@ -16,6 +16,7 @@ import error from './reducers/error.js'
 import notification from './reducers/notification.js'
 import passwordChange from './reducers/passwordChange.js'
 import shoppinglist from './reducers/shoppinglist.js'
+import addrecipe from './reducers/addrecipe'
 
 import { loadState, saveState } from './localStorage'
 
@@ -30,7 +31,8 @@ const recipeApp = combineReducers({
   routerReducer,
   notification,
   passwordChange,
-  shoppinglist
+  shoppinglist,
+  addrecipe
 })
 
 // reset redux to default state on logout
@@ -62,7 +64,8 @@ store.subscribe(throttle(() => {
     user: {
       token: store.getState().user.token,
       darkMode: store.getState().user.darkMode
-    }
+    },
+    addrecipe: store.getState().addrecipe
   })
 }, 1000))
 
