@@ -128,7 +128,18 @@ a {
 
   html {
     border-top: none;
-    font-size: 12px;
+    font-size: $printing-font-size;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  label,
+  p {
+    color: black !important;
   }
 
   @page {
@@ -147,7 +158,7 @@ a {
   }
 
   .ingredients-preparation-grid {
-    grid-gap: 0;
+    grid-gap: 0.5rem;
     grid-template-columns: minmax(350px, 3fr) 5fr;
   }
 }
