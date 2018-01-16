@@ -118,12 +118,18 @@ class SocialLoginSerializer(serializers.Serializer):
             # link up the accounts due to security constraints
             if allauth_settings.UNIQUE_EMAIL:
                 # Do we have an account already with this email address?
-                account_exists = get_user_model().objects.filter(
+                User = get_user_model()
+                user_account = User.objects.filter(
                     email=login.user.email,
-                ).exists()
-                if account_exists:
+                ).first()
+                if user_account is not None:
+                    social_account = user_account.socialaccount_set.first()
+                    if social_account:
+                        msg = f"A { social_account.provider.capitalize()} account is already associated with { user_account.email }. Login with that account instead and connect your {login.account.provider.capitalize() } account to enable your new login method."
+                    else:
+                        msg = f"An email/password account is already associated with { user_account.email }. Login with that account and connect your { login.account.provider.capitalize() } account to enable your new login method."
                     raise serializers.ValidationError(
-                        _("User is already registered with this e-mail address.")
+                        _(msg)
                     )
 
             login.lookup()
@@ -152,8 +158,19 @@ class RegisterSerializer(serializers.Serializer):
         email = get_adapter().clean_email(email)
         if allauth_settings.UNIQUE_EMAIL:
             if email and email_address_exists(email):
-                raise serializers.ValidationError(
-                    _("A user is already registered with this e-mail address."))
+                # import ipdb; ipdb.set_trace()
+                # Do we have an account already with this email address?
+                user_account = get_user_model().objects.filter(
+                    email=email,
+                ).first()
+                # see if we already have a social account
+                social_account = user_account.socialaccount_set.first()
+                if social_account:
+                    # users need to login with existing social accounts and create a password
+                    msg = f"A {social_account.provider.capitalize()} account is already associated with { email }. Login with that account instead and add a password to enable email/password login."
+                else:
+                    msg = f'An email/password account is already associated with { user_account.email }.'
+                raise serializers.ValidationError(_(msg))
         return email
 
     def validate_password1(self, password):

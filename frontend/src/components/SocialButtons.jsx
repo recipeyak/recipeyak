@@ -54,11 +54,11 @@ const errorHandler = err =>
     </ul>
   </div>
 
-const SocialButtons = ({ nonFieldErrors, emailError }) => enableSocialButtons &&
+const SocialButtons = ({ nonFieldErrors, emailError, signup = true }) => enableSocialButtons &&
   <div>
-    <div className="d-flex align-items-center mb-2 mt-1">
+    { signup && <div className="d-flex align-items-center mb-2 mt-1">
       <span className="or-bar"></span> or <span className="or-bar"></span>
-    </div>
+    </div> }
     <div className="social-buttons">
       <Github/>
       <Gitlab/>
