@@ -10,19 +10,13 @@ const unfinishedIngredient = ({ quantity = '', name = '' }) =>
   quantity === '' || name === ''
 
 class AddRecipe extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = {
+  state = {
+    ingredient: {
+      quantity: '',
       name: '',
-      author: '',
-      source: '',
-      time: '',
-      servings: '',
-      ingredients: [],
-      ingredient: {},
-      steps: [],
-      step: ''
-    }
+      description: ''
+    },
+    step: ''
   }
 
   static defaultProps = {
@@ -30,31 +24,40 @@ class AddRecipe extends React.Component {
       errorWithName: false,
       errorWithIngredients: false,
       errorWithSteps: false
-    }
+    },
+    name: '',
+    author: '',
+    source: '',
+    time: '',
+    servings: '',
+    ingredients: [],
+    steps: []
   }
 
-  componentWillMount = () => {
+  componentWillMount = () =>
     this.props.clearErrors()
-  }
 
-  handleInputChange = e => {
+  handleInputChange = e =>
     this.setState({ [e.target.name]: e.target.value })
-  }
 
   handleSubmit = event => {
     event.preventDefault()
-    // TODO: Check that form is filled out before entry
-    this.props.addRecipe(this.state)
+    const recipe = {
+      name: this.props.name,
+      author: this.props.author,
+      source: this.props.source,
+      time: this.props.time,
+      servings: this.props.servings,
+      ingredients: this.props.ingredients,
+      steps: this.props.steps
+    }
+    this.props.addRecipe(recipe)
   }
 
   addIngredient = () => {
     if (unfinishedIngredient(this.state.ingredient)) return
-    this.setState(prevState => (
-      {
-        ingredients: prevState.ingredients.concat(prevState.ingredient),
-        ingredient: {}
-      }
-    ))
+    this.props.addIngredient(this.state.ingredient)
+    this.setState({ ingredient: {} })
   }
 
   handleIngredientChange = e => {
@@ -67,51 +70,19 @@ class AddRecipe extends React.Component {
     }))
   }
 
-  cancelAddIngredient = () => {
+  cancelAddIngredient = () =>
     this.setState({ ingredient: {} })
-  }
 
-  addStep = event => {
-    this.setState((prevState) => (
-      {
-        steps: prevState.steps.concat({ text: prevState.step.trim() }),
-        step: ''
-      }
-    ))
-  }
-
-  remove = (items, index) => {
-    this.setState(prevState => ({
-      [items]: prevState[items].filter((_, i) => i !== index)
-    }))
-  }
-
-  update (items, index, content) {
-    this.setState(prevState => ({
-      [items]: prevState[items].map((x, i) => {
-        if (i === index) {
-          return content
-        }
-        return x
-      })
-    }))
-  }
-
-  updateIngredient = (index, content) =>
-    this.update('ingredients', index, content)
-
-  removeIngredient = index => {
-    this.remove('ingredients', index)
-  }
-
-  cancelAddStep = () => {
+  addStep = () => {
+    this.props.addStep({ text: this.state.step })
     this.setState({ step: '' })
   }
 
+  cancelAddStep = () =>
+    this.setState({ step: '' })
+
   render () {
     const {
-      ingredients,
-      steps,
       ingredient,
       step
     } = this.state
@@ -119,16 +90,18 @@ class AddRecipe extends React.Component {
     const {
       addStep,
       handleInputChange,
-      cancelAddStep
+      cancelAddStep,
+      handleSubmit,
+      addIngredient,
+      cancelAddIngredient,
+      handleIngredientChange
     } = this
-
-    const { error } = this.props
 
     const {
       errorWithName,
       errorWithIngredients,
       errorWithSteps
-    } = error
+    } = this.props.error
 
     const {
       quantity = '',
@@ -142,7 +115,8 @@ class AddRecipe extends React.Component {
         <div>
           <input
             autoFocus
-            onChange={ this.handleInputChange }
+            onChange={ this.props.setName }
+            value={ this.props.name }
             className={ 'my-input fs-2rem' + (errorWithName ? ' is-danger' : '') }
             type="text" placeholder="new recipe title" name="name"/>
           { errorWithName
@@ -154,7 +128,8 @@ class AddRecipe extends React.Component {
         <div className="d-grid  meta-data-grid">
           <label className="d-flex align-center">By
             <input
-              onChange={ this.handleInputChange }
+              onChange={ this.props.setAuthor }
+              value={ this.props.author }
               className="my-input ml-2"
               type="text"
               placeholder="Author"
@@ -162,7 +137,8 @@ class AddRecipe extends React.Component {
           </label>
           <label className="d-flex align-center">from
             <input
-              onChange={ this.handleInputChange }
+              onChange={ this.props.setSource }
+              value={ this.props.source }
               className="my-input ml-2"
               type="text"
               placeholder="http://example.com/dumpling-soup"
@@ -170,7 +146,8 @@ class AddRecipe extends React.Component {
           </label>
           <label className="d-flex align-center">creating
             <input
-              onChange={ this.handleInputChange }
+              onChange={ this.props.setServings }
+              value={ this.props.servings }
               className="my-input ml-2"
               type="text"
               placeholder="4 to 6 servings"
@@ -178,7 +155,8 @@ class AddRecipe extends React.Component {
           </label>
           <label className="d-flex align-center">in
             <input
-              onChange={ this.handleInputChange }
+              onChange={ this.props.setTime }
+              value={ this.props.time }
               className="my-input ml-2"
               type="text"
               placeholder="1 hour"
@@ -191,13 +169,13 @@ class AddRecipe extends React.Component {
               <h2 className="title">Ingredients</h2>
               <ul>
                 {
-                  ingredients.map((ingredient, i) =>
+                  this.props.ingredients.map((ingredient, i) =>
                     <Ingredient
                       key={ ingredient.name + i }
                       index={ i }
                       id={ i }
-                      update={ this.updateIngredient }
-                      remove={ this.removeIngredient }
+                      update={ this.props.updateIngredient }
+                      remove={ this.props.removeIngredient }
                       quantity={ ingredient.quantity }
                       name={ ingredient.name }
                       description={ ingredient.description }
@@ -207,10 +185,9 @@ class AddRecipe extends React.Component {
               </ul>
 
               <AddIngredientForm
-                handleAddIngredient={ this.addIngredient }
-                cancelAddIngredient={ this.cancelAddIngredient }
-                handleInputChange={ this.handleIngredientChange }
-                handleFocus={ this.handleFocus }
+                handleAddIngredient={ addIngredient }
+                cancelAddIngredient={ cancelAddIngredient }
+                handleInputChange={ handleIngredientChange }
                 quantity={ quantity }
                 name={ name }
                 description={ description }
@@ -222,14 +199,14 @@ class AddRecipe extends React.Component {
                 <h2 className="title is-3">Preparation</h2>
                 <ul>
                   {
-                    steps.map((step, i) =>
+                    this.props.steps.map((step, i) =>
                       <div key={step.text + i}>
                         <label className="label">Step { i + 1}</label>
                         <ListItem
-                          index={i}
+                          id={i}
                           text={step.text}
-                          update={(index, content) => this.update('steps', index, content)}
-                          remove={(index) => this.remove('steps', index)}
+                          update={ this.props.updateStep }
+                          delete={ this.props.removeStep }
                         />
                       </div>
                     )
@@ -239,18 +216,23 @@ class AddRecipe extends React.Component {
                   handleInputChange={ handleInputChange }
                   addStep={ addStep }
                   cancelAddStep={ cancelAddStep }
-                  stepNumber={ steps.length + 1 }
+                  stepNumber={ this.props.steps.length + 1 }
                   text={ step }
                   error={ errorWithSteps }
                 />
             </div>
           </section>
-        <p className="d-flex justify-center">
+        <p className="d-flex justify-space-between align-items-center">
+          <button
+            className='my-button'
+            onClick={ this.props.clearForm }
+            name="create recipe">
+            Clear
+          </button>
           <button
             className={ 'my-button is-large is-primary ' + (this.props.loading ? 'is-loading' : '')}
             type="submit"
-            onClick={ this.handleSubmit }
-            onKeyPress={ this.handleSubmit }
+            onClick={ handleSubmit }
             name="create recipe">
             Create Recipe
           </button>

@@ -2,27 +2,58 @@ import { connect } from 'react-redux'
 
 import {
   postNewRecipe,
-  setErrorAddRecipe
-} from '../store/actions.js'
-import AddRecipe from '../components/AddRecipe.jsx'
+  setErrorAddRecipe,
 
-const mapStateToProps = state => {
-  return {
-    loading: state.loading.addRecipe,
-    error: state.error.addRecipe
-  }
-}
+  setAddRecipeFormName,
+  setAddRecipeFormAuthor,
+  setAddRecipeFormSource,
+  setAddRecipeFormTime,
+  setAddRecipeFormServings,
 
-const mapDispatchToProps = dispatch => {
-  return {
-    addRecipe: recipe => {
-      dispatch(postNewRecipe(recipe))
-    },
-    clearErrors: () => {
-      dispatch(setErrorAddRecipe({}))
-    }
-  }
-}
+  addAddRecipeFormIngredient,
+  removeAddRecipeFormIngredient,
+  updateAddRecipeFormIngredient,
+
+  addAddRecipeFormStep,
+  removeAddRecipeFormStep,
+  updateAddRecipeFormStep,
+
+  clearAddRecipeForm
+} from '../store/actions'
+
+import AddRecipe from '../components/AddRecipe'
+
+const mapStateToProps = state => ({
+  name: state.addrecipe.name,
+  author: state.addrecipe.author,
+  source: state.addrecipe.source,
+  time: state.addrecipe.time,
+  servings: state.addrecipe.servings,
+  ingredients: state.addrecipe.ingredients,
+  steps: state.addrecipe.steps,
+  loading: state.loading.addRecipe,
+  error: state.error.addRecipe
+})
+
+const mapDispatchToProps = dispatch => ({
+  setName: e => dispatch(setAddRecipeFormName(e.target.value)),
+  setAuthor: e => dispatch(setAddRecipeFormAuthor(e.target.value)),
+  setSource: e => dispatch(setAddRecipeFormSource(e.target.value)),
+  setTime: e => dispatch(setAddRecipeFormTime(e.target.value)),
+  setServings: e => dispatch(setAddRecipeFormServings(e.target.value)),
+
+  addIngredient: x => dispatch(addAddRecipeFormIngredient(x)),
+  removeIngredient: i => dispatch(removeAddRecipeFormIngredient(i)),
+  updateIngredient: (i, ingredient) => dispatch(updateAddRecipeFormIngredient(i, ingredient)),
+
+  addStep: x => dispatch(addAddRecipeFormStep(x)),
+  removeStep: i => dispatch(removeAddRecipeFormStep(i)),
+  updateStep: (i, step) => dispatch(updateAddRecipeFormStep(i, step)),
+
+  addRecipe: recipe => dispatch(postNewRecipe(recipe)),
+  clearErrors: () => dispatch(setErrorAddRecipe({})),
+  clearForm: () => dispatch(clearAddRecipeForm())
+})
 
 const ConnectedAddRecipe = connect(
   mapStateToProps,
