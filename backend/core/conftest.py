@@ -48,6 +48,12 @@ def recipes(user):
 
 
 @pytest.fixture
+def empty_recipe(user):
+    name = 'empty recipe'
+    return Recipe.objects.create(name=name, user=user)
+
+
+@pytest.fixture
 def recipe(user):
 
     name = 'Recipe name'

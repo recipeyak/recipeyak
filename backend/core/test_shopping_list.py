@@ -275,3 +275,115 @@ def test_adding_to_cart_multiple_times_some_ingredient(user, client):
         res = client.get(f'{BASE_URL}/shoppinglist/')
         assert res.status_code == status.HTTP_200_OK
         assert res.json()[0].get('unit') == 'some'
+
+
+def test_combining_ingredient_with_range_quantity(user, client, empty_recipe):
+    """
+    '4-5 medium button mushrooms' in the cart twice should produce
+    '10 medium button mushrooms'
+    """
+    name = 'medium button mushrooms'
+    Ingredient.objects.create(
+        quantity='4-5',
+        name=name,
+        recipe=empty_recipe)
+
+    empty_recipe.cartitem.count = 2
+    empty_recipe.cartitem.save()
+
+    client.force_authenticate(user)
+    res = client.get(f'{BASE_URL}/shoppinglist/')
+    assert res.status_code == status.HTTP_200_OK
+
+    combined_ingredient = res.json()[0]
+    assert combined_ingredient.get('name') == name
+    assert combined_ingredient.get('unit') == 10
+
+
+def test_combining_ingredients_plural_and_singular_tomatoes(user, client, empty_recipe):
+    """
+    1 large tomato + 2 large tomatoes --> 3 large tomatoes or possibly 3 large tomato
+    """
+    Ingredient.objects.create(
+        quantity='1',
+        name='large tomato',
+        recipe=empty_recipe)
+
+    Ingredient.objects.create(
+        quantity='2',
+        name='large tomatoes',
+        recipe=empty_recipe)
+
+    empty_recipe.cartitem.count = 1
+    empty_recipe.cartitem.save()
+
+    client.force_authenticate(user)
+    res = client.get(f'{BASE_URL}/shoppinglist/')
+    assert res.status_code == status.HTTP_200_OK
+
+    assert len(res.json()) == 1
+
+    combined_ingredient = res.json()[0]
+    assert combined_ingredient.get('unit') == '3'
+    assert combined_ingredient.get('name') == 'large tomatoes'
+
+
+def test_combining_ingredients_plural_and_singular_lemon(user, client, empty_recipe):
+    """
+    1.5 lemon + 2 lemons --> 3.5 lemons
+    """
+    Ingredient.objects.create(
+        quantity='1/2',
+        name='lemon',
+        recipe=empty_recipe)
+
+    Ingredient.objects.create(
+        quantity='1',
+        name='lemon',
+        recipe=empty_recipe)
+
+    Ingredient.objects.create(
+        quantity='2',
+        name='lemons',
+        recipe=empty_recipe)
+
+    empty_recipe.cartitem.count = 1
+    empty_recipe.cartitem.save()
+
+    client.force_authenticate(user)
+    res = client.get(f'{BASE_URL}/shoppinglist/')
+    assert res.status_code == status.HTTP_200_OK
+
+    assert len(res.json()) == 1
+
+    combined_ingredient = res.json()[0]
+    assert combined_ingredient.get('unit') == '3.5'
+    assert combined_ingredient.get('name') == 'lemons'
+
+
+def test_combining_plural_and_singular_leaves(user, client, empty_recipe):
+    """
+    1 bay leaf, 4 bay leaves --> 5 bay leaves
+    """
+    Ingredient.objects.create(
+        quantity='1',
+        name='bay leaf',
+        recipe=empty_recipe)
+
+    Ingredient.objects.create(
+        quantity='4',
+        name='bay leaves',
+        recipe=empty_recipe)
+
+    empty_recipe.cartitem.count = 1
+    empty_recipe.cartitem.save()
+
+    client.force_authenticate(user)
+    res = client.get(f'{BASE_URL}/shoppinglist/')
+    assert res.status_code == status.HTTP_200_OK
+
+    assert len(res.json()) == 1
+
+    combined_ingredient = res.json()[0]
+    assert combined_ingredient.get('unit') == '5'
+    assert combined_ingredient.get('name') == 'bay leaves'
