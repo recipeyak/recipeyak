@@ -28,6 +28,16 @@ def simplify_units(units):
     return simplified
 
 
+def max_quantity(quantity: str) -> str:
+    """
+    take the '4-5' medium button mushrooms and find the max
+    """
+    options = quantity.split('-')
+    if len(options) == 1:
+        return quantity
+    return options[-1]
+
+
 def combine_ingredients(ingredients: List) -> List:
 
     combined: Dict[str, Dict[str, Quantity]] = {}
@@ -35,7 +45,7 @@ def combine_ingredients(ingredients: List) -> List:
     for ingredient in ingredients:
 
         try:
-            quantity = ureg.parse_expression(ingredient.quantity)
+            quantity = ureg.parse_expression(max_quantity(ingredient.quantity))
             try:
                 if str(quantity.units) in ['picoinch']:
                     quantity = 'pinch'

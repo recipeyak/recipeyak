@@ -297,7 +297,7 @@ def test_combining_ingredient_with_range_quantity(user, client, empty_recipe):
 
     combined_ingredient = res.json()[0]
     assert combined_ingredient.get('name') == name
-    assert combined_ingredient.get('unit') == 10
+    assert combined_ingredient.get('unit') == '10'
 
 
 def test_combining_ingredients_plural_and_singular_tomatoes(user, client, empty_recipe):
