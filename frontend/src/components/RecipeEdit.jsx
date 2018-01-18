@@ -170,7 +170,9 @@ const RecipeEdit = ({
         <button
           onClick={
             () => {
-              const message = `Delete ${name} by ${author}?`
+              const message = author !== ''
+                ? `Delete ${name} by ${author}?`
+                : `Delete ${name}`
               if (window.confirm(message)) {
                 deleteRecipe(id)
               }
