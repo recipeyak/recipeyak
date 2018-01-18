@@ -78,9 +78,8 @@ class Navbar extends React.Component {
             <p className="bold">{ email }</p>
             <div className="d-flex align-center p-1-0">
               <label className="d-flex align-items-center cursor-pointer">
-            {/* TODO: handle change */}
               <input
-                onClick={ toggleDarkMode }
+                onChange={ toggleDarkMode }
                 checked={ darkMode }
                 type='checkbox' className="mr-2"/>
                 Dark Mode

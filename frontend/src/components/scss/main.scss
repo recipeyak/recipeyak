@@ -13,13 +13,19 @@
 
 html {
   height: 100%;
-  border-top: 3px solid $accent;
   font-size: $base-font-size;
 }
 
+body {
+  border-top: 3px solid $accent;
+}
+
 .dark-mode {
-  filter: invert(90%);
   background-color: rgb(25, 25, 25);
+
+  body {
+    filter: invert(90%);
+  }
 
   // inverted images look weird
   img {
