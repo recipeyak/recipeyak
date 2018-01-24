@@ -104,7 +104,7 @@ def test_combining_ingredients_with_out_units(user):
 
     Ingredient.objects.create(
         quantity='8',
-        name='garlic clove',
+        name='garlic cloves',
         recipe=recipe2)
 
     ingredients = list(Ingredient.objects.all())
@@ -114,7 +114,7 @@ def test_combining_ingredients_with_out_units(user):
     expected = sorted(
         [
             {
-                'name': 'garlic clove',
+                'name': 'garlic cloves',
                 'unit': '9',
             }
         ], key=lambda x: x.get('name'))
