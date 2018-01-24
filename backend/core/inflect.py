@@ -211,7 +211,10 @@ plural_rules = [
 ]
 
 # For performance, compile the regular expressions once:
-plural_rules = [[(re.compile(r[0]), r[1], r[2], r[3]) for r in grp] for grp in plural_rules]
+plural_rules_compiled = [
+    [(re.compile(suffix), inflection, category, classic)
+        for suffix, inflection, category, classic in rule_set]  # type: ignore
+    for rule_set in plural_rules]
 
 # Suffix categories.
 plural_categories = {
@@ -358,12 +361,12 @@ def pluralize(word, pos=NOUN, custom={}, classical=True):
         else:
             return word.replace(w[-1], pluralize(w[-1], pos, custom, classical))
     # Only a very few number of adjectives inflect.
-    n = range(len(plural_rules))
+    n = range(len(plural_rules_compiled))
     if pos.startswith(ADJECTIVE):
         n = [0, 1]
     # Apply pluralization rules.
     for i in n:
-        for suffix, inflection, category, classic in plural_rules[i]:
+        for suffix, inflection, category, classic in plural_rules_compiled[i]:
             # A general rule, or a classic rule in classical mode.
             if category is None:
                 if not classic or (classic and classical):
@@ -427,30 +430,30 @@ singular_rules = [
 ]
 
 # For performance, compile the regular expressions only once:
-singular_rules = [(re.compile(r[0]), r[1]) for r in singular_rules]
+singular_rules_compiled = [(re.compile(regex), text) for regex, text in singular_rules]
 
-singular_uninflected = set(
-    ("bison", "debris", "headquarters", "pincers", "trout", "bream",
-     "diabetes", "herpes", "pliers", "tuna", "breeches", "djinn", "high-jinks",
-     "proceedings", "whiting", "britches", "eland", "homework", "rabies",
-     "wildebeest", "carp", "elk", "innings", "salmon", "chassis", "flounder",
-     "jackanapes", "scissors", "christmas", "gallows", "mackerel", "series",
-     "clippers", "georgia", "measles", "shears", "cod", "graffiti", "mews",
-     "species", "contretemps", "mumps", "swine", "corps", "news", "swiss", ))
-singular_uncountable = set(
-    ("advice", "equipment", "happiness", "luggage", "news", "software",
-     "bread", "fruit", "information", "mathematics", "progress",
-     "understanding", "butter", "furniture", "ketchup", "mayonnaise",
-     "research", "water", "cheese", "garbage", "knowledge", "meat", "rice",
-     "electricity", "gravel", "love", "mustard", "sand", ))
-singular_ie = set(
-    ("alergie", "cutie", "hoagie", "newbie", "softie", "veggie", "auntie",
-     "doggie", "hottie", "nightie", "sortie", "weenie", "beanie", "eyrie",
-     "indie", "oldie", "stoolie", "yuppie", "birdie", "freebie", "junkie",
-     "^pie", "sweetie", "zombie", "bogie", "goonie", "laddie", "pixie",
-     "techie", "bombie", "groupie", "laramie", "quickie", "^tie", "collie",
-     "hankie", "lingerie", "reverie", "toughie", "cookie", "hippie", "meanie",
-     "rookie", "valkyrie", ))
+singular_uninflected = {
+    "bison", "debris", "headquarters", "pincers", "trout", "bream",
+    "diabetes", "herpes", "pliers", "tuna", "breeches", "djinn", "high-jinks",
+    "proceedings", "whiting", "britches", "eland", "homework", "rabies",
+    "wildebeest", "carp", "elk", "innings", "salmon", "chassis", "flounder",
+    "jackanapes", "scissors", "christmas", "gallows", "mackerel", "series",
+    "clippers", "georgia", "measles", "shears", "cod", "graffiti", "mews",
+    "species", "contretemps", "mumps", "swine", "corps", "news", "swiss", }
+singular_uncountable = {
+    "advice", "equipment", "happiness", "luggage", "news", "software",
+    "bread", "fruit", "information", "mathematics", "progress",
+    "understanding", "butter", "furniture", "ketchup", "mayonnaise",
+    "research", "water", "cheese", "garbage", "knowledge", "meat", "rice",
+    "electricity", "gravel", "love", "mustard", "sand", }
+singular_ie = {
+    "alergie", "cutie", "hoagie", "newbie", "softie", "veggie", "auntie",
+    "doggie", "hottie", "nightie", "sortie", "weenie", "beanie", "eyrie",
+    "indie", "oldie", "stoolie", "yuppie", "birdie", "freebie", "junkie",
+    "^pie", "sweetie", "zombie", "bogie", "goonie", "laddie", "pixie",
+    "techie", "bombie", "groupie", "laramie", "quickie", "^tie", "collie",
+    "hankie", "lingerie", "reverie", "toughie", "cookie", "hippie", "meanie",
+    "rookie", "valkyrie", }
 singular_irregular = {
     "atlantes": "atlas",
     "atlases": "atlas",
@@ -501,28 +504,30 @@ def singularize(word: str, pos=NOUN, custom={}) -> str:
     """
     if word in custom:
         return custom[word]
+
     # Recurse compound words (e.g. mothers-in-law).
     if "-" in word:
         w = word.split("-")
         if len(w) > 1 and w[1] in plural_prepositions:
             return singularize(w[0], pos, custom) + "-" + "-".join(w[1:])
+
+    word_normalized = word.lower()
     # dogs' => dog's
     if word.endswith("'"):
         return singularize(word[:-1]) + "'s"
-    w = word.lower()
     for x in singular_uninflected:
-        if x.endswith(w):
+        if x.endswith(word_normalized):
             return word
     for x in singular_uncountable:
-        if x.endswith(w):
+        if x.endswith(word_normalized):
             return word
     for x in singular_ie:
-        if w.endswith(x + "s"):
-            return w
-    for x in singular_irregular:
-        if w.endswith(x):
+        if word_normalized.endswith(x + "s"):
+            return word_normalized
+    for x in singular_irregular.keys():
+        if word_normalized.endswith(x):
             return re.sub('(?i)' + x + '$', singular_irregular[x], word)
-    for suffix, inflection in singular_rules:
+    for suffix, inflection in singular_rules_compiled:
         m = suffix.search(word)
         g = m and m.groups() or []
         if m:
