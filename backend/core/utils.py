@@ -3,6 +3,8 @@ from typing import List, Dict
 from pint import UnitRegistry, UndefinedUnitError
 from pint.quantity import _Quantity as Quantity
 
+from .inflect import singularize
+
 ureg = UnitRegistry()
 
 
@@ -64,12 +66,25 @@ def combine_ingredients(ingredients: List) -> List:
         if not_real_quantity(quantity):
             base_unit = 'some'
 
-        in_combined = combined.get(name) is not None
-        if in_combined:
-            if combined.get(name).get(base_unit) is not None:
+        singular_name = singularize(name)
+
+        if combined.get(name):
+            # add to existing quantity if there is a quantity with the same
+            # base unit
+            # import ipdb; ipdb.set_trace()
+            if combined.get(name).get(base_unit):
                 if base_unit != 'some':
                     combined[name][base_unit] += quantity
             else:
+                combined[name][base_unit] = quantity
+        elif combined.get(singular_name):
+            data = combined.pop(singular_name, {})
+            combined[name] = data
+
+            try:
+                if base_unit != 'some':
+                    combined[name][base_unit] += quantity
+            except (AttributeError, KeyError):
                 combined[name][base_unit] = quantity
 
         else:

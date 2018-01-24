@@ -1,8 +1,12 @@
 import pytest
 
+from logging import getLogger
+
 from rest_framework.test import APIClient
 
 from .models import MyUser, Recipe, Ingredient, Step, Tag
+
+getLogger('flake8').propagate = False
 
 
 @pytest.fixture
