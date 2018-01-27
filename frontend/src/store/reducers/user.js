@@ -13,6 +13,8 @@ import {
   SET_SOCIAL_ACCOUNT_CONNECTION,
 } from '../actionTypes.js'
 
+import { socialAccounts } from './socialAccounts'
+
 import { setDarkModeClass } from '../../sideEffects'
 
 const initialState = {
@@ -61,17 +63,10 @@ export const user = (
     case SET_LOGGING_OUT:
       return { ...state, loggingOut: action.val }
     case SET_SOCIAL_ACCOUNT_CONNECTIONS:
-      const socialAccountConnections = state.socialAccountConnections || initialState.socialAccountConnections
-      action.val.forEach(x => {
-        socialAccountConnections[x.provider] = x.id
-      })
-      return { ...state, socialAccountConnections }
     case SET_SOCIAL_ACCOUNT_CONNECTION:
-      return { ...state,
-        socialAccountConnections: {
-          ...state.socialAccountConnections,
-          [action.provider]: action.val
-        }
+      return {
+        ...state,
+        socialAccountConnections: socialAccounts(state.socialAccountConnections, action)
       }
     case TOGGLE_DARK_MODE:
       const newDarkMode = !state.darkMode

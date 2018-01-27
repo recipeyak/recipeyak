@@ -147,12 +147,8 @@ describe('User', () => {
   it('sets social connections', () => {
     const beforeState = {
       socialAccountConnections: {
-        github: {
-          uid: null
-        },
-        gitlab: {
-          uid: null
-        },
+        github: null,
+        gitlab: null,
       }
     }
 
@@ -168,9 +164,7 @@ describe('User', () => {
 
     const afterState = {
       socialAccountConnections: {
-        github: {
-          uid: null
-        },
+        github: null,
         gitlab: 2,
       }
     }

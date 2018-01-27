@@ -36,9 +36,9 @@ const Settings = ({
         Github
       </div>
       <div className="d-flex align-center">
-        { socialAccountConnections != null && socialAccountConnections.github
+        { socialAccountConnections != null && socialAccountConnections.github != null
           ? <div className="d-flex align-center flex-wrap">
-              <span className="has-text-success">Connected</span>
+              <span className="has-text-success bold">Connected</span>
               <button onClick={ () => disconnectAccount('github', socialAccountConnections.github) } className="my-button is-danger ml-2">Disconnect</button>
             </div>
           : <a href={ GITHUB_OAUTH_URL + '/connect' } style={{'width': '120px'}} className="my-button ml-2">Connect</a>
@@ -53,10 +53,10 @@ const Settings = ({
         Gitlab
       </div>
       <div className="d-flex align-center">
-        { socialAccountConnections != null && socialAccountConnections.gitlab
+        { socialAccountConnections != null && socialAccountConnections.gitlab != null
           ? <div className="d-flex align-center flex-wrap">
-              <span className="has-text-success">Connected</span>
-              <button onClick={ () => disconnectAccount('github', socialAccountConnections.gitlab) } className="my-button is-danger ml-2">Disconnect</button>
+              <span className="has-text-success bold">Connected</span>
+              <button onClick={ () => disconnectAccount('gitlab', socialAccountConnections.gitlab) } className="my-button is-danger ml-2">Disconnect</button>
             </div>
           : <a href={ GITLAB_OAUTH_URL + '/connect' } style={{'width': '120px'}} className="my-button ml-2">Connect</a>
         }
