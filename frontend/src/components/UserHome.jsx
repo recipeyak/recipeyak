@@ -8,12 +8,12 @@ import Recipe from '../containers/RecipeItem'
 
 import img from './yak.jpg'
 
-const TotalRecipesAdded = ({ count }) =>
-  count < 1 &&
+const TotalRecipeCount = ({ count }) =>
   <p className="stat mb-1">
-    <b>{ count } recipe{ count === 1 ? ' ' : 's '}</b>
-    {count === 1 ? 'has' : 'have'} been added.
-    Try adding one via the <Link className="big-link" to="/recipes/add">Add Recipe</Link> page.
+    You have <b>{ count } recipe{ count === 1 ? '' : 's'}</b>.
+    { count < 1 &&
+      <span>Try adding one via the <Link className="big-link" to="/recipes/add">Add Recipe</Link> page.</span>
+    }
   </p>
 
 const RecipesAddedThisWeek = ({ count = 0 }) =>
@@ -142,7 +142,7 @@ const UserStatistics = ({ loading, stats }) => {
 
   return (
     <section>
-      <TotalRecipesAdded
+      <TotalRecipeCount
         count={stats.total_user_recipes}
       />
       <RecipesAddedThisWeek
