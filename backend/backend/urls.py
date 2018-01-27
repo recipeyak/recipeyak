@@ -27,4 +27,5 @@ urlpatterns = [
         TemplateView.as_view(template_name="password_reset_confirm.html"),
         name='password_reset_confirm'),
     url(r'^signup/$', TemplateView.as_view(template_name='socialccount_signup.html'), name='socialaccount_signup'),
+    url(r'^settings/$', TemplateView.as_view(template_name='socialaccount_connections.html'), name='socialaccount_connections'),
 ]

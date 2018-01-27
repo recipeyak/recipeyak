@@ -4,6 +4,16 @@ import { Link } from 'react-router-dom'
 
 import Loader from './Loader'
 
+import {
+  GithubImg,
+  GitlabImg,
+} from './SocialButtons'
+
+import {
+  GITHUB_OAUTH_URL,
+  GITLAB_OAUTH_URL,
+} from '../settings'
+
 const Settings = ({
   avatarURL,
   email,
@@ -11,18 +21,59 @@ const Settings = ({
   updateEmail,
   updatingEmail,
   editing,
+  socialAccountConnections,
   edit,
   cancelEdit,
+  disconnectAccount,
   propsEmail
 }) => {
   const unchanged = propsEmail === email
+
+  const Github = () =>
+    <div className="d-flex justify-space-between mb-2">
+      <div className="d-flex align-items-center">
+        <GithubImg/>
+        Github
+      </div>
+      <div className="d-flex align-center">
+        { socialAccountConnections != null && socialAccountConnections.github
+          ? <div className="d-flex align-center flex-wrap">
+              <span className="has-text-success">Connected</span>
+              <button onClick={ () => disconnectAccount('github', socialAccountConnections.github) } className="my-button is-danger ml-2">Disconnect</button>
+            </div>
+          : <a href={ GITHUB_OAUTH_URL + '/connect' } style={{'width': '120px'}} className="my-button ml-2">Connect</a>
+        }
+      </div>
+    </div>
+
+  const Gitlab = () =>
+    <div className="d-flex justify-space-between mb-2">
+      <div className="d-flex align-items-center">
+        <GitlabImg/>
+        Gitlab
+      </div>
+      <div className="d-flex align-center">
+        { socialAccountConnections != null && socialAccountConnections.gitlab
+          ? <div className="d-flex align-center flex-wrap">
+              <span className="has-text-success">Connected</span>
+              <button onClick={ () => disconnectAccount('github', socialAccountConnections.gitlab) } className="my-button is-danger ml-2">Disconnect</button>
+            </div>
+          : <a href={ GITLAB_OAUTH_URL + '/connect' } style={{'width': '120px'}} className="my-button ml-2">Connect</a>
+        }
+      </div>
+    </div>
+
   return <section className="d-grid justify-content-center">
     <Helmet title='Settings'/>
 
+    <h1 className="fs-8">User settings</h1>
+
+    <div className="d-flex">
     <a href="https://secure.gravatar.com" className="justify-self-center mr-3">
-      <img alt="user profile" src={ avatarURL + '&s=128'}/>
+      <img className="br-100p" alt="user profile" src={ avatarURL + '&s=128'}/>
     </a>
 
+    <div className="align-self-center d-flex flex-direction-column">
     <form
       className="d-flex align-center"
       onSubmit={
@@ -82,8 +133,13 @@ const Settings = ({
       <label className="better-label">Password</label>
       <Link to="/password">Change Password</Link>
     </div>
+  </div>
+</div>
 
-    <a>Export Recipes</a>
+  <h1 className="fs-8">Social Accounts</h1>
+
+  <Github/>
+  <Gitlab/>
 
   </section>
 }
@@ -114,6 +170,8 @@ class SettingsWithState extends React.Component {
       updateEmail,
       avatarURL,
       updatingEmail,
+      socialAccountConnections,
+      disconnectAccount,
       loading
     } = this.props
 
@@ -131,6 +189,8 @@ class SettingsWithState extends React.Component {
         edit={ () => this.setState({ editing: true }) }
         cancelEdit={ () => this.setState({ editing: false }) }
         handleInputChange={ handleInputChange }
+        socialAccountConnections={ socialAccountConnections }
+        disconnectAccount={ disconnectAccount }
         updateEmail={
           async () => {
             await updateEmail(email)

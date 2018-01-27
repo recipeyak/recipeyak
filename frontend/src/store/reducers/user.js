@@ -4,11 +4,13 @@ import {
   SET_USER_EMAIL,
   SET_ERROR_USER,
   SET_LOADING_USER,
+  SET_SOCIAL_ACCOUNT_CONNECTIONS,
   SET_USER_STATS,
   SET_LOADING_USER_STATS,
   SET_UPDATING_USER_EMAIL,
   SET_LOGGING_OUT,
-  TOGGLE_DARK_MODE
+  TOGGLE_DARK_MODE,
+  SET_SOCIAL_ACCOUNT_CONNECTION,
 } from '../actionTypes.js'
 
 import { setDarkModeClass } from '../../sideEffects'
@@ -22,7 +24,11 @@ const initialState = {
   stats: {},
   stats_loading: false,
   loggingOut: false,
-  darkMode: false
+  darkMode: false,
+  socialAccountConnections: {
+    github: null,
+    gitlab: null,
+  }
 }
 
 export const user = (
@@ -54,6 +60,19 @@ export const user = (
       return { ...state, updatingEmail: action.val }
     case SET_LOGGING_OUT:
       return { ...state, loggingOut: action.val }
+    case SET_SOCIAL_ACCOUNT_CONNECTIONS:
+      const socialAccountConnections = state.socialAccountConnections || initialState.socialAccountConnections
+      action.val.forEach(x => {
+        socialAccountConnections[x.provider] = x.id
+      })
+      return { ...state, socialAccountConnections }
+    case SET_SOCIAL_ACCOUNT_CONNECTION:
+      return { ...state,
+        socialAccountConnections: {
+          ...state.socialAccountConnections,
+          [action.provider]: action.val
+        }
+      }
     case TOGGLE_DARK_MODE:
       const newDarkMode = !state.darkMode
       setDarkModeClass(newDarkMode)

@@ -332,3 +332,9 @@
 .break-word {
   word-break: break-word;
 }
+
+@for $i from 0 through 10 {
+  .br-#{$i}p {
+    border-radius: #{$i}0%;
+  }
+}

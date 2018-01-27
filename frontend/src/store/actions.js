@@ -56,6 +56,7 @@ import {
   SET_RECIPE_UPDATING,
   SET_CLEARING_CART,
   SET_SHOPPING_LIST_ERROR,
+  SET_SOCIAL_ACCOUNT_CONNECTIONS,
   SET_LOADING_RESET_CONFIRMATION,
   SET_ERROR_RESET_CONFIRMATION,
   TOGGLE_DARK_MODE,
@@ -72,7 +73,8 @@ import {
   ADD_ADD_RECIPE_FORM_STEP,
   REMOVE_ADD_RECIPE_FORM_STEP,
   UPDATE_ADD_RECIPE_FORM_STEP,
-  CLEAR_ADD_RECIPE_FORM
+  CLEAR_ADD_RECIPE_FORM,
+  SET_SOCIAL_ACCOUNT_CONNECTION,
 } from './actionTypes'
 
 import { push, replace } from 'react-router-redux'
@@ -279,6 +281,54 @@ export const fetchUser = () => (dispatch, getState) => {
       }
       dispatch(setLoadingUser(false))
       dispatch(setErrorUser(true))
+    })
+}
+
+const getSocialConnections = token =>
+  axios.get('/api/v1/rest-auth/socialaccounts/', {
+    headers: {
+      'Authorization': 'Token ' + token
+    }
+  })
+
+export const setSocialConnections = val => {
+  return {
+    type: SET_SOCIAL_ACCOUNT_CONNECTIONS,
+    val
+  }
+}
+
+export const setSocialConnection = (provider, val) => ({
+  type: SET_SOCIAL_ACCOUNT_CONNECTION,
+  provider,
+  val,
+})
+
+export const fetchSocialConnections = () => (dispatch, getState) => {
+  getSocialConnections(getState().user.token)
+    .then(res => {
+      dispatch(setSocialConnections(res.data))
+    })
+}
+
+const removeSocialAccount = (token, id) =>
+  axios.post(`/api/v1/rest-auth/socialaccounts/${id}/disconnect/`, {id}, {
+    headers: {
+      'Authorization': 'Token ' + token
+    }
+  })
+
+export const disconnectSocialAccount = (provider, id) => (dispatch, getState) => {
+  removeSocialAccount(getState().user.token, id)
+    .then(res => {
+      dispatch(setSocialConnections(
+        [
+          {
+            provider: provider,
+            id: null
+          }
+        ]
+      ))
     })
 }
 
@@ -1159,6 +1209,26 @@ export const socialLogin = (service, token) => (dispatch, getState) => {
         }))
       }
       dispatch(replace('/login'))
+      throw err
+    })
+}
+
+const sendSocialConnect = (service, code, token) =>
+  axios.post(`/api/v1/rest-auth/${service}/connect/`, {
+    'code': code
+  }, {
+    headers: {
+      'Authorization': 'Token ' + token
+    }
+  })
+
+export const socialConnect = (service, code, token) => (dispatch, getState) => {
+  return sendSocialConnect(service, code, getState().user.token)
+    .then(res => {
+      dispatch(replace('/settings'))
+    })
+    .catch(err => {
+      dispatch(replace('/settings'))
       throw err
     })
 }

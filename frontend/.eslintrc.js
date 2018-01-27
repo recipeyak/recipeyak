@@ -27,6 +27,7 @@ module.exports = {
     // allow async-await
     'generator-star-spacing': 0,
     'block-spacing': ['warn', 'always'],
+    'comma-spacing': ["warn", { "before": false, "after": true }],
     'brace-style': ['warn', '1tbs', { 'allowSingleLine': true }],
     'comma-dangle': ['warn', 'only-multiline'],
     // allow debugger during development
