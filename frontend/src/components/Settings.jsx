@@ -20,6 +20,7 @@ const Settings = ({
   handleInputChange,
   updateEmail,
   updatingEmail,
+  hasPassword,
   editing,
   socialAccountConnections,
   edit,
@@ -131,7 +132,11 @@ const Settings = ({
 
     <div className="d-flex">
       <label className="better-label">Password</label>
-      <Link to="/password">Change Password</Link>
+      { hasPassword
+        ? <Link to="/password">Change Password</Link>
+        : <Link to="/password/set">Set Password</Link>
+      }
+
     </div>
   </div>
 </div>
@@ -191,6 +196,7 @@ class SettingsWithState extends React.Component {
         handleInputChange={ handleInputChange }
         socialAccountConnections={ socialAccountConnections }
         disconnectAccount={ disconnectAccount }
+        hasPassword={ this.props.hasPassword }
         updateEmail={
           async () => {
             await updateEmail(email)

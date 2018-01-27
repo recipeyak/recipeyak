@@ -15,6 +15,7 @@ const mapStateToProps = state => {
     avatarURL: state.user.avatarURL,
     email: state.user.email,
     updatingEmail: state.user.updatingEmail,
+    hasPassword: state.user.has_usable_password,
     socialAccountConnections: state.user.socialAccountConnections,
     loading: state.user.loading
   }

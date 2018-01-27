@@ -11,7 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyUser
         editable = False
-        fields = ('id', 'email', 'avatar_url')
+        fields = ('id', 'email', 'avatar_url', 'has_usable_password')
 
 
 class IngredientSerializer(serializers.ModelSerializer):

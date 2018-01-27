@@ -1,13 +1,14 @@
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.debug import sensitive_post_parameters
+from django.core.exceptions import ValidationError
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound, PermissionDenied
 
 from allauth.account.views import ConfirmEmailView
 from allauth.account.utils import complete_signup
@@ -109,7 +110,10 @@ class SocialAccountDisconnectView(GenericAPIView):
         if not account:
             raise NotFound
 
-        get_social_adapter(self.request).validate_disconnect(account, accounts)
+        try:
+            get_social_adapter(self.request).validate_disconnect(account, accounts)
+        except ValidationError as e:
+            raise PermissionDenied(detail=e.args[0])
 
         account.delete()
         signals.social_account_removed.send(
