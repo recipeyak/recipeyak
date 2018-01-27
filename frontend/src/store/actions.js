@@ -319,7 +319,7 @@ const removeSocialAccount = (token, id) =>
   })
 
 export const disconnectSocialAccount = (provider, id) => (dispatch, getState) => {
-  removeSocialAccount(getState().user.token, id)
+  return removeSocialAccount(getState().user.token, id)
     .then(res => {
       dispatch(setSocialConnections(
         [
