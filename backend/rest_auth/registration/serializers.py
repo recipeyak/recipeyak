@@ -222,6 +222,7 @@ class SocialAccountSerializer(serializers.ModelSerializer):
             'date_joined',
             )
 
+
 class SocialConnectMixin(object):
     def get_social_login(self, *args, **kwargs):
         """
