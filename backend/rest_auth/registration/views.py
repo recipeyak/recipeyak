@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
+from rest_framework.exceptions import NotFound
 
 from allauth.account.views import ConfirmEmailView
 from allauth.account.utils import complete_signup
