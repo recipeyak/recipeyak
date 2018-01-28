@@ -5,7 +5,11 @@ from .views import (
     PasswordResetView, PasswordResetConfirmView,
     GithubLogin,
     GitlabLogin,
+    GithubConnect,
+    GitlabConnect,
 )
+
+from .registration.views import SocialAccountListView, SocialAccountDisconnectView
 
 urlpatterns = [
     # URLs that do not require a session or valid token
@@ -21,5 +25,18 @@ urlpatterns = [
         name='rest_password_change'),
 
     url(r'^github/$', GithubLogin.as_view(), name='github_login'),
+    url(r'^github/connect/$', GithubConnect.as_view(), name='github_connect'),
     url(r'^gitlab/$', GitlabLogin.as_view(), name='gitlab_login'),
+    url(r'^gitlab/connect/$', GitlabConnect.as_view(), name='gitlab_connect'),
+
+    url(
+        r'^socialaccounts/$',
+        SocialAccountListView.as_view(),
+        name='social_account_list'
+    ),
+    url(
+        r'^socialaccounts/(?P<pk>\d+)/disconnect/$',
+        SocialAccountDisconnectView.as_view(),
+        name='social_account_disconnect'
+    )
 ]

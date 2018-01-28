@@ -13,7 +13,7 @@ docker-compose -f docker-compose-dev.yml up
 docker-compose -f docker-compose-dev.yml up -d && \
 docker-compose -f docker-compose-dev.yml kill django && \
 docker-compose -f docker-compose-dev.yml run -d --entrypoint "tail -f /dev/null" django && \
-docker-compose -f docker-compose-dev.yml exec django sh boostrap-dev.sh && \
+docker-compose -f docker-compose-dev.yml exec django sh boostrap-dev.sh
 ```
 
 ### Testing OAuth

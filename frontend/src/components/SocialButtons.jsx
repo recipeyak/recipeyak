@@ -14,31 +14,42 @@ import googleIcon from './google-logo.svg'
 import bitbucketIcon from './bitbucket-logo.svg'
 import facebookIcon from './facebook-logo.svg'
 
-const Github = () => GITHUB_OAUTH_URL &&
-  <a href={ GITHUB_OAUTH_URL } className="my-button">
+export const GithubImg = () =>
+  <img className="mr-2" src={ githubIcon } alt="github icon"/>
+export const GitlabImg = () =>
+  <img className="mr-2" src={ gitlabIcon } alt="gitlab icon"/>
+export const GoogleImg = () =>
+  <img className="mr-2" src={ googleIcon } alt="google icon"/>
+export const BitbucketImg = () =>
+  <img className="mr-2" src={ bitbucketIcon } alt="bitbucket icon"/>
+export const FacebookImg = () =>
+  <img className="mr-2" src={ facebookIcon } alt="facebook icon"/>
+
+export const Github = ({ disable = false }) => GITHUB_OAUTH_URL &&
+  <a href={ !disable && GITHUB_OAUTH_URL } className="my-button">
     <img className="mr-2" src={ githubIcon } alt="github icon"/>
     Github
   </a>
 
-const Gitlab = () => GITLAB_OAUTH_URL &&
+export const Gitlab = () => GITLAB_OAUTH_URL &&
   <a href={ GITLAB_OAUTH_URL } className="my-button">
     <img className="mr-2" src={ gitlabIcon } alt="gitlab icon"/>
     Gitlab
   </a>
 
-const Bitbucket = () => BITBUCKET_OAUTH_URL &&
+export const Bitbucket = () => BITBUCKET_OAUTH_URL &&
   <a href={ BITBUCKET_OAUTH_URL } className="my-button">
     <img className="mr-2" src={ bitbucketIcon } alt="bitbucket icon"/>
     Bitbucket
   </a>
 
-const Google = () => GOOGLE_OAUTH_URL &&
+export const Google = () => GOOGLE_OAUTH_URL &&
   <a href={ GOOGLE_OAUTH_URL } className="my-button">
     <img className="mr-2" src={ googleIcon } alt="google icon"/>
     Google
   </a>
 
-const Facebook = () => FACEBOOK_OAUTH_URL &&
+export const Facebook = () => FACEBOOK_OAUTH_URL &&
   <a href={ FACEBOOK_OAUTH_URL } className="my-button">
     <img className="mr-2" src={ facebookIcon } alt="facebook icon"/>
     Facebook
@@ -54,11 +65,11 @@ const errorHandler = err =>
     </ul>
   </div>
 
-const SocialButtons = ({ nonFieldErrors, emailError }) => enableSocialButtons &&
+const SocialButtons = ({ nonFieldErrors, emailError, signup = true }) => enableSocialButtons &&
   <div>
-    <div className="d-flex align-items-center mb-2 mt-1">
+    { signup && <div className="d-flex align-items-center mb-2 mt-1">
       <span className="or-bar"></span> or <span className="or-bar"></span>
-    </div>
+    </div> }
     <div className="social-buttons">
       <Github/>
       <Gitlab/>

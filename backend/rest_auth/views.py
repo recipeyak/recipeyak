@@ -22,12 +22,20 @@ from .app_settings import (
     PasswordChangeSerializer
 )
 
-from .registration.serializers import SocialLoginSerializer
+from .registration.serializers import (SocialLoginSerializer,
+                                       SocialConnectSerializer,
+                                       SocialAccountSerializer)
 
 from allauth.account.adapter import get_adapter
 from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
 from allauth.socialaccount.providers.gitlab.views import GitLabOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+
+from allauth.socialaccount import signals
+from allauth.socialaccount.models import SocialAccount
+from allauth.socialaccount.adapter import get_adapter as get_social_adapter
+from rest_framework.decorators import detail_route
+from rest_framework.viewsets import GenericViewSet
 
 sensitive_post_parameters_m = method_decorator(
     sensitive_post_parameters(
@@ -225,3 +233,67 @@ class GitlabLogin(SocialLoginView):
     adapter_class = GitLabOAuth2Adapter
     client_class = OAuth2Client
     callback_url = settings.SOCIALACCOUNT_PROVIDERS['gitlab']['URL']
+
+
+class SocialConnectView(SocialLoginView):
+    """
+    class used for social account linking
+    example usage for facebook with access_token
+    -------------
+    from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+    class FacebookConnect(SocialConnectView):
+        adapter_class = FacebookOAuth2Adapter
+    -------------
+    """
+
+    serializer_class = SocialConnectSerializer
+    permission_classes = (IsAuthenticated,)
+
+
+class SocialAccountViewSet(GenericViewSet):
+    """
+    allauth SocialAccount REST API read and disconnect views for logged in users
+    Refer to the django-allauth package implementation of the models and
+    account handling logic for more details, this viewset emulates the allauth web UI.
+    """
+
+    serializer_class = SocialAccountSerializer
+    permission_classes = (IsAuthenticated,)
+    queryset = SocialAccount.objects.none()
+
+    def get_queryset(self):
+        return SocialAccount.objects.filter(user=self.request.user)
+
+    def list(self, request):
+        """
+        list SocialAccounts for the currently logged in user
+        """
+        return Response(self.get_serializer(self.get_queryset(), many=True).data)
+
+    @detail_route(methods=['POST'])
+    def disconnect(self, request, pk):
+        """
+        disconnect SocialAccount from remote service for the currently logged in user
+        """
+        accounts = self.get_queryset()
+        account = accounts.get(pk=pk)
+        get_social_adapter(self.request).validate_disconnect(account, accounts)
+        account.delete()
+        signals.social_account_removed.send(
+            sender=SocialAccount,
+            request=self.request,
+            socialaccount=account
+        )
+        return Response(self.get_serializer(account).data)
+
+
+class GithubConnect(SocialConnectView):
+    adapter_class = GitHubOAuth2Adapter
+    client_class = OAuth2Client
+    callback_url = settings.SOCIALACCOUNT_PROVIDERS['github']['URL']
+
+
+class GitlabConnect(SocialConnectView):
+    adapter_class = GitLabOAuth2Adapter
+    client_class = OAuth2Client
+    callback_url = settings.SOCIALACCOUNT_PROVIDERS['gitlab']['URL'] + '/connect'

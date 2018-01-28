@@ -23,8 +23,10 @@ import AddRecipe from '../containers/AddRecipe.jsx'
 import Notification from '../containers/Notification.jsx'
 import { Container, ContainerBase } from '../components/Base.jsx'
 import PasswordChange from '../containers/PasswordChange.jsx'
+import PasswordSet from '../containers/PasswordSet.jsx'
 import PasswordResetConfirmation from '../containers/PasswordResetConfirmation.jsx'
 import OAuth from '../containers/OAuth.jsx'
+import OAuthConnect from '../containers/OAuthConnect.jsx'
 
 import 'bulma/css/bulma.css'
 import './scss/main.scss'
@@ -54,6 +56,7 @@ const Base = () => (
             <Switch>
               <Route exact path="/login" component={ Login }/>
               <Route exact path="/accounts/:service" component={ OAuth }/>
+              <Route exact path="/accounts/:service/connect" component={ OAuthConnect }/>
               <Route exact path="/signup" component={ Signup }/>
               <Route exact path="/password-reset" component={ PasswordReset }/>
               <Route exact path="/password-reset/confirm/:uid([0-9A-Za-z_\-]+).:token([0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})" component={ PasswordResetConfirmation }/>
@@ -63,6 +66,7 @@ const Base = () => (
               <PrivateRoute exact path="/recipes/:id(\d+)(.*)" component={ Recipe }/>
               <PrivateRoute exact path="/settings" component={ Settings }/>
               <PrivateRoute exact path="/password" component={ PasswordChange }/>
+              <PrivateRoute exact path="/password/set" component={ PasswordSet }/>
               <Route component={ NoMatch }/>
             </Switch>
           </Container>
