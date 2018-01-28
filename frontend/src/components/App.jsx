@@ -23,6 +23,7 @@ import AddRecipe from '../containers/AddRecipe.jsx'
 import Notification from '../containers/Notification.jsx'
 import { Container, ContainerBase } from '../components/Base.jsx'
 import PasswordChange from '../containers/PasswordChange.jsx'
+import PasswordSet from '../containers/PasswordSet.jsx'
 import PasswordResetConfirmation from '../containers/PasswordResetConfirmation.jsx'
 import OAuth from '../containers/OAuth.jsx'
 import OAuthConnect from '../containers/OAuthConnect.jsx'
@@ -65,6 +66,7 @@ const Base = () => (
               <PrivateRoute exact path="/recipes/:id(\d+)(.*)" component={ Recipe }/>
               <PrivateRoute exact path="/settings" component={ Settings }/>
               <PrivateRoute exact path="/password" component={ PasswordChange }/>
+              <PrivateRoute exact path="/password/set" component={ PasswordSet }/>
               <Route component={ NoMatch }/>
             </Switch>
           </Container>

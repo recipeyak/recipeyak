@@ -28,6 +28,7 @@ class PasswordChange extends React.Component {
   render () {
     const {
       loading,
+      setPassword = false,
       error
     } = this.props
 
@@ -46,13 +47,18 @@ class PasswordChange extends React.Component {
           </p>
         : null
 
+    const pageTitle = !setPassword
+      ? 'Password Change'
+      : 'Password Set'
+
     return (
       <form onSubmit={ this.handleSubmit } className="max-width-400px margin-0-auto">
-        <Helmet title='Password Change'/>
 
-        <h2 className="title is-3">Password Change</h2>
+        <Helmet title={ pageTitle }/>
 
-        <div className="field">
+        <h2 className="title is-3">{ pageTitle }</h2>
+
+        { !setPassword && <div className="field">
           <label className="label">Current Password</label>
           <div className="control">
             <input
@@ -65,6 +71,7 @@ class PasswordChange extends React.Component {
             { handleError(error.oldPassword) }
           </div>
         </div>
+        }
 
         <div className="field">
           <label className="label">New Password</label>

@@ -131,7 +131,7 @@ const Settings = ({
             </button>
           </div>
           : <a
-            className={ 'ml-2' + (updatingEmail ? ' is-loading' : '') }
+            className={ 'ml-2 has-text-primary' + (updatingEmail ? ' is-loading' : '') }
             name='email'
             onClick={ edit }
             value='edit'>
@@ -143,8 +143,8 @@ const Settings = ({
     <div className="d-flex justify-space-between">
       <label className="better-label">Password</label>
       { hasPassword
-        ? <Link to="/password">Change Password</Link>
-        : <Link to="/password/set">Set Password</Link>
+        ? <Link to="/password" className="has-text-primary">Change Password</Link>
+        : <Link to="/password/set" className="has-text-primary">Set Password</Link>
       }
 
     </div>

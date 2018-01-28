@@ -10,6 +10,7 @@ import {
   setErrorUser,
   setUpdatingUserEmail,
   setLoggingOut,
+  setPasswordUsable,
   toggleDarkMode,
   setSocialConnection,
 } from '../actions.js'
@@ -26,19 +27,41 @@ describe('User', () => {
 
     const user_data = {
       avatar_url,
-      email
+      email,
+      has_usable_password: true
     }
 
     const afterState = {
       loggedIn: true,
       token,
       avatarURL: avatar_url,
+      hasUsablePassword: true,
       email
     }
 
     expect(
       user(beforeState, login(token, user_data))
     ).toEqual(afterState)
+  })
+
+  it('Updates user passwordStatus', () => {
+    const beforeState = {
+      loggedIn: true,
+      token: '123456',
+      avatarURL: 'example.com/image',
+      hasUsablePassword: false,
+    }
+
+    const afterState = {
+      loggedIn: true,
+      token: '123456',
+      avatarURL: 'example.com/image',
+      hasUsablePassword: true,
+    }
+
+    expect(
+      user(beforeState, setPasswordUsable(true))
+      ).toEqual(afterState)
   })
 
   it("sets user's avatarURL", () => {

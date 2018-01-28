@@ -8,6 +8,7 @@ import {
   SET_USER_STATS,
   SET_LOADING_USER_STATS,
   SET_UPDATING_USER_EMAIL,
+  SET_PASSWORD_USABLE,
   SET_LOGGING_OUT,
   TOGGLE_DARK_MODE,
   SET_SOCIAL_ACCOUNT_CONNECTION,
@@ -27,6 +28,7 @@ const initialState = {
   stats_loading: false,
   loggingOut: false,
   darkMode: false,
+  hasUsablePassword: false,
   socialAccountConnections: {
     github: null,
     gitlab: null,
@@ -44,6 +46,7 @@ export const user = (
         avatarURL: action.user.avatar_url,
         email: action.user.email,
         loggedIn: true,
+        hasUsablePassword: action.user.has_usable_password,
         token: action.token
       }
     case SET_AVATAR_URL:
@@ -62,6 +65,8 @@ export const user = (
       return { ...state, updatingEmail: action.val }
     case SET_LOGGING_OUT:
       return { ...state, loggingOut: action.val }
+    case SET_PASSWORD_USABLE:
+      return { ...state, hasUsablePassword: action.val }
     case SET_SOCIAL_ACCOUNT_CONNECTIONS:
     case SET_SOCIAL_ACCOUNT_CONNECTION:
       return {

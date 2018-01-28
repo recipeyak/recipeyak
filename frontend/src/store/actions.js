@@ -75,6 +75,7 @@ import {
   UPDATE_ADD_RECIPE_FORM_STEP,
   CLEAR_ADD_RECIPE_FORM,
   SET_SOCIAL_ACCOUNT_CONNECTION,
+  SET_PASSWORD_USABLE,
 } from './actionTypes'
 
 import { push, replace } from 'react-router-redux'
@@ -212,6 +213,13 @@ export const setUserEmail = email => {
   }
 }
 
+export const setPasswordUsable = val => {
+  return {
+    type: SET_PASSWORD_USABLE,
+    val
+  }
+}
+
 export const setUpdatingUserEmail = val => ({
   type: SET_UPDATING_USER_EMAIL,
   val
@@ -273,6 +281,7 @@ export const fetchUser = () => (dispatch, getState) => {
     .then(res => {
       dispatch(setAvatarURL(res.data.avatar_url))
       dispatch(setUserEmail(res.data.email))
+      dispatch(setPasswordUsable(res.data.has_usable_password))
       dispatch(setLoadingUser(false))
     })
     .catch(err => {
