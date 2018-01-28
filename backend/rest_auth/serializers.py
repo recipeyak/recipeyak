@@ -213,7 +213,6 @@ class PasswordChangeSerializer(serializers.Serializer):
         if not self.old_password_field_enabled or not self.user.has_usable_password():
             self.fields.pop('old_password')
 
-
     def validate_old_password(self, value):
         invalid_password_conditions = (
             self.old_password_field_enabled,
