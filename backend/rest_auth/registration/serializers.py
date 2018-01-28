@@ -161,7 +161,6 @@ class RegisterSerializer(serializers.Serializer):
         email = get_adapter().clean_email(email)
         if allauth_settings.UNIQUE_EMAIL:
             if email and email_address_exists(email):
-                # import ipdb; ipdb.set_trace()
                 # Do we have an account already with this email address?
                 user_account = get_user_model().objects.filter(
                     email=email,
