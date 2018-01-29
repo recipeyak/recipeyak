@@ -1,6 +1,7 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 
+import Footer from './Footer'
 import Navbar from '../containers/Nav.jsx'
 
 export const ContainerBase = ({ children }) =>
@@ -11,6 +12,7 @@ export const ContainerBase = ({ children }) =>
     />
     <Navbar className="container pl-3 pr-3" />
     { children }
+    <Footer/>
   </div>
 
 export const Container = ({ children }) =>
