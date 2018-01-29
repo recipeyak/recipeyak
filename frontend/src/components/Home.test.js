@@ -28,6 +28,6 @@ describe('<Home/>', () => {
         </MemoryRouter>
       </Provider>
     )
-    expect(home.find('footer').text()).toContain('Est. 2017')
+    expect(home.find('a').first().text()).toContain('Create Account')
   })
 })
