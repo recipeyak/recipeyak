@@ -13,7 +13,7 @@ import {
   CLEAR_ADD_RECIPE_FORM
 } from '../actionTypes'
 
-const initialState = {
+export const initialState = {
   name: '',
   author: '',
   source: '',
