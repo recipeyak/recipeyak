@@ -243,13 +243,14 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'root': {
-        'level': 'WARNING',
-        'handlers': ['sentry'],
+        'level': 'INFO',
+        'handlers': ['sentry', 'console'],
     },
     'formatters': {
         'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s '
-                      '%(process)d %(thread)d %(message)s'
+            'format': 'level=%(levelname)s msg="%(message)s" module=%(module)s '
+                      'pathname="%(pathname)s" lineno=%(lineno)s funcname=%(funcName)s '
+                      'process=%(process)d thread=%(thread)d '
         },
     },
     'handlers': {
@@ -263,22 +264,5 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
         }
-    },
-    'loggers': {
-        'django.db.backends': {
-            'level': 'ERROR',
-            'handlers': ['console'],
-            'propagate': False,
-        },
-        'raven': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-            'propagate': False,
-        },
-        'sentry.errors': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-            'propagate': False,
-        },
     },
 }

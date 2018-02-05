@@ -11,6 +11,7 @@ services:
       driver: "awslogs"
       options:
         awslogs-group: "RecipeYak"
+        tag: "{{.Name}}"
     depends_on:
       - django
       - react
@@ -28,6 +29,7 @@ services:
       driver: "awslogs"
       options:
         awslogs-group: "RecipeYak"
+        tag: "{{.Name}}"
     depends_on:
      - db
   db:
@@ -36,6 +38,7 @@ services:
       driver: "awslogs"
       options:
         awslogs-group: "RecipeYak"
+        tag: "{{.Name}}"
     volumes:
       - pgdata:/var/lib/postgresql/data/
   react:
@@ -63,6 +66,7 @@ services:
       driver: awslogs
       options:
         awslogs-group: "RecipeYak"
+        tag: "{{.Name}}"
 volumes:
   pgdata:
     driver: local
