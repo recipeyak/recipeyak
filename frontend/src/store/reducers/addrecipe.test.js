@@ -1,4 +1,4 @@
-import addrecipe from './addrecipe'
+import addrecipe, { initialState } from './addrecipe'
 
 import {
   setAddRecipeFormName,
@@ -271,7 +271,7 @@ describe('addrecipe', () => {
       name: 'tesitng'
     }
 
-    const afterState = {}
+    const afterState = initialState
 
     expect(
       addrecipe(beforeState, clearAddRecipeForm())
