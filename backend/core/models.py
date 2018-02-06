@@ -1,8 +1,11 @@
 import hashlib
 from typing import List
+import logging
 
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+
+logger = logging.getLogger(__name__)
 
 
 class MyUserManager(BaseUserManager):
@@ -15,6 +18,7 @@ class MyUserManager(BaseUserManager):
         user = self.model(email=self.normalize_email(email))
         user.set_password(password)
         user.save(using=self._db)
+        logger.info(f'Created new user: {user}')
         return user
 
     def create_superuser(self, email, password):
@@ -198,4 +202,5 @@ class CartItem(CommonInfo):
         if old_cart is not None and old_cart.count < self.count:
             count_increase = self.count - old_cart.count
             self.total_cart_additions += count_increase
+            logger.info('Recipe added to cart')
         super(CartItem, self).save(*args, **kwargs)
