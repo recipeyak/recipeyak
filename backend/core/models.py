@@ -137,7 +137,7 @@ class Recipe(CommonInfo):
             edits_unchanged = Recipe.objects.get(pk=self.id).edits == self.edits
             if edits_unchanged:
                 self.edits += 1
-        super(Recipe, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
         if is_new:
             CartItem.objects.create(recipe=self)
 
@@ -198,4 +198,4 @@ class CartItem(CommonInfo):
         if old_cart is not None and old_cart.count < self.count:
             count_increase = self.count - old_cart.count
             self.total_cart_additions += count_increase
-        super(CartItem, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
