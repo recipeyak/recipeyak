@@ -8,6 +8,10 @@ from rest_framework.views import APIView
 from django.db.models import Sum, Count
 from django.db.models.functions import TruncMonth
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 from .models import Recipe, Step, Tag, Ingredient, CartItem
 from .serializers import (
     RecipeSerializer,
@@ -41,6 +45,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return user_recipes
 
     def perform_create(self, serializer):
+        logger.info(f'Recipe created by {self.request.user}')
         serializer.save(user=self.request.user)
 
 
@@ -57,6 +62,7 @@ class StepViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             recipe = Recipe.objects.get(pk=recipe_pk)
             serializer.save(recipe=recipe)
+            logger.info(f'Step created by {self.request.user}')
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -88,6 +94,7 @@ class TagViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             recipe = Recipe.objects.get(pk=recipe_pk)
             serializer.save(recipe=recipe)
+            logger.info(f'Tag created by {self.request.user}')
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -110,6 +117,7 @@ class ClearCart(APIView):
         CartItem.objects \
                 .filter(recipe__user=self.request.user) \
                 .update(count=0)
+        logger.info(f"Cart cleared by {self.request.user}")
         return Response(status=status.HTTP_200_OK)
 
 
@@ -126,6 +134,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             recipe = Recipe.objects.get(pk=recipe_pk)
             serializer.save(recipe=recipe)
+            logger.info(f'Ingredient created by {self.request.user}')
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -172,6 +181,8 @@ class UserStats(APIView):
         total_recipes = Recipe.objects.count()
 
         date_joined = request.user.created.strftime('%b, %Y')
+
+        logger.info(f'UserStats fetched by {request.user}')
 
         return Response({
             'total_user_recipes': user_recipes.count(),

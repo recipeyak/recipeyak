@@ -1,3 +1,4 @@
+import logging
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.debug import sensitive_post_parameters
@@ -28,6 +29,8 @@ from rest_auth.app_settings import UserDetailsSerializer
 sensitive_post_parameters_m = method_decorator(
     sensitive_post_parameters('password1', 'password2')
 )
+
+logger = logging.getLogger(__name__)
 
 
 class RegisterView(CreateAPIView):
@@ -60,6 +63,7 @@ class RegisterView(CreateAPIView):
             }
 
         headers = self.get_success_headers(serializer.data)
+        logger.info(f"User registration: {user}")
 
         return Response(data,
                         status=status.HTTP_201_CREATED,
@@ -79,6 +83,7 @@ class VerifyEmailView(APIView, ConfirmEmailView):
         self.kwargs['key'] = serializer.validated_data['key']
         confirmation = self.get_object()
         confirmation.confirm(self.request)
+        logger.info(f"Email verified: {confirmation.email_address.email}")
         return Response({'detail': _('ok')}, status=status.HTTP_200_OK)
 
 
@@ -115,11 +120,11 @@ class SocialAccountDisconnectView(GenericAPIView):
         except ValidationError as e:
             raise PermissionDenied(detail=e.args[0])
 
+        logger.info(f"Social account disconnected: {account}")
         account.delete()
         signals.social_account_removed.send(
             sender=SocialAccount,
             request=self.request,
             socialaccount=account
         )
-
         return Response(self.get_serializer(account).data)

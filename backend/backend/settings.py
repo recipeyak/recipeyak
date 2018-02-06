@@ -252,6 +252,12 @@ LOGGING = {
                       'pathname="%(pathname)s" lineno=%(lineno)s funcname=%(funcName)s '
                       'process=%(process)d thread=%(thread)d '
         },
+        'json': {
+            '()': 'pythonjsonlogger.jsonlogger.JsonFormatter',
+            'format': '%(levelname)s "%(message)s" %(module)s '
+                      '"%(pathname)s" %(lineno)s %(funcName)s '
+                      '%(process)d %(thread)d ',
+        }
     },
     'handlers': {
         'sentry': {
@@ -262,7 +268,7 @@ LOGGING = {
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
+            'formatter': 'json'
         }
     },
 }
