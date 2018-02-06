@@ -4,17 +4,13 @@ ENV PYTHONUNBUFFERD 1
 RUN apt-get update
 RUN apt-get install netcat -y
 
-# https://github.com/kennethreitz/pipenv/blob/28cfe633c6dd81943cf84deac9f4d1daead68890/Dockerfile
 # -- Install Pipenv:
-RUN set -ex && pip install -I pipenv==9.0.3
+RUN set -ex && pip install git+git://github.com/pypa/pipenv.git@8378a1b104f2d817790a05da370bef0a1b00f452
 
 # -- Install Application into container:
 RUN set -ex && mkdir /app
 
 WORKDIR /app
-
-# https://github.com/pypa/pipenv/issues/1002
-RUN ln -sf /usr/local/bin/python /bin/python
 
 # -- Adding Pipfiles
 COPY Pipfile Pipfile

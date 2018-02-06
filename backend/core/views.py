@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import logging
 from typing import List
 import pytz
 
@@ -7,10 +8,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.db.models import Sum, Count
 from django.db.models.functions import TruncMonth
-
-import logging
-
-logger = logging.getLogger(__name__)
 
 from .models import Recipe, Step, Tag, Ingredient, CartItem
 from .serializers import (
@@ -22,6 +19,8 @@ from .serializers import (
     MostAddedRecipeSerializer
 )
 from .utils import combine_ingredients
+
+logger = logging.getLogger(__name__)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
