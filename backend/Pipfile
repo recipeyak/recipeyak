@@ -21,6 +21,7 @@ gunicorn = "*"
 "psycopg2" = "*"
 raven = "*"
 django-rest-knox = "*"
+python-json-logger = "*"
 
 
 [dev-packages]
