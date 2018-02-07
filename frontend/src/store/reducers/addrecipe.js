@@ -13,16 +13,17 @@ import {
   CLEAR_ADD_RECIPE_FORM
 } from '../actionTypes'
 
-const cart = (
-  state = {
-    name: '',
-    author: '',
-    source: '',
-    time: '',
-    servings: '',
-    ingredients: [],
-    steps: []
-  }, action) => {
+export const initialState = {
+  name: '',
+  author: '',
+  source: '',
+  time: '',
+  servings: '',
+  ingredients: [],
+  steps: []
+}
+
+const cart = (state = initialState, action) => {
   switch (action.type) {
     case SET_ADD_RECIPE_FORM_NAME:
       return { ...state, name: action.val }
@@ -81,7 +82,7 @@ const cart = (
         })
       }
     case CLEAR_ADD_RECIPE_FORM:
-      return {}
+      return initialState
     default:
       return state
   }
