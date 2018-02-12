@@ -25,7 +25,7 @@ describe('User', () => {
     const email = 'test@gmail.com'
 
     const userData = {
-      avatarURL,
+      avatar_url: avatarURL,
       email,
       has_usable_password: true
     }
