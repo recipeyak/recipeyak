@@ -58,9 +58,35 @@ jobs:
           name: run tests
           working_directory: frontend
           command: npm run test-cov
+
+  lint_javascript:
+    docker:
+      - image: circleci/node:7.10.0
+        environment:
+          DEBUG: 1
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - frontend-v1-dependencies-{{ checksum "frontend/package.json" }}
+            - frontend-v1-dependencies-
+      - run:
+          name: install dependencies
+          working_directory: frontend
+          command: |
+            npm install
+      - save_cache:
+          paths:
+            - ./frontend/node_modules
+          key: frontend-v1-dependencies-{{ checksum "frontend/package.json" }}
+      - run:
+          name: run linter
+          working_directory: frontend
+          command: npm run lint
 workflows:
   version: 2
   test:
     jobs:
       - test_python
       - test_javascript
+      - lint_javascript
