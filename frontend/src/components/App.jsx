@@ -28,7 +28,6 @@ import PasswordResetConfirmation from '../containers/PasswordResetConfirmation.j
 import OAuth from '../containers/OAuth.jsx'
 import OAuthConnect from '../containers/OAuthConnect.jsx'
 
-import 'bulma/css/bulma.css'
 import './scss/main.scss'
 
 const isAuthenticated = () => store.getState().user.token != null

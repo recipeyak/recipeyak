@@ -105,7 +105,7 @@ module.exports = {
           // https://github.com/facebookincubator/create-react-app/issues/1713
           /\.(js|jsx)(\?.*)?$/,
           /\.css$/,
-          /\.scss$/,
+          /\.(scss|sass)$/,
           /\.json$/,
           /\.svg$/,
           /\.jpg$/
@@ -178,7 +178,7 @@ module.exports = {
         // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
       },
       {
-        test: /\.scss$/,
+        test: /\.(scss|sass)$/,
         loader: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
