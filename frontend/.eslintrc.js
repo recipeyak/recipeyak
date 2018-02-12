@@ -27,9 +27,34 @@ module.exports = {
     // allow async-await
     'generator-star-spacing': 0,
     'block-spacing': ['warn', 'always'],
-    'comma-spacing': ["warn", { "before": false, "after": true }],
+    'comma-spacing': ['warn', { 'before': false, 'after': true }],
     'brace-style': ['warn', '1tbs', { 'allowSingleLine': true }],
     'comma-dangle': ['warn', 'only-multiline'],
+    'semi': ['warn', 'never'],
+    'padded-blocks': ['warn', 'never'],
+    'import/first': ['warn', 'always'],
+    'indent': ['warn', 2],
+    'quotes': ['warn', 'single', { 'avoidEscape': true }],
+    'one-var': ['warn', 'never'],
+    'operator-linebreak': ['warn','after', { 'overrides': { '?': 'before', ':': 'before' } }],
+    'space-infix-ops': ['warn', {'int32Hint': false}],
+    'standard/object-curly-even-spacing': ['warn',  'either'],
+    'no-constant-condition': ['warn', { 'checkLoops': false }],
+    'space-before-function-paren': ['warn', {
+        'anonymous': 'always',
+        'named': 'always',
+        'asyncArrow': 'always'
+    }],
+    'no-unused-vars': ['warn', {
+      vars: 'all',
+      args: 'all',
+      ignoreRestSiblings: false,
+      argsIgnorePattern: '^_',
+    }],
+    // we don't trigger on properties since the python backend returns json
+    // with snake case
+    'camelcase': ['warn', { properties: 'never' }],
+    'key-spacing': ['warn', { 'afterColon': true }],
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
     'object-curly-spacing': ['warn', 'always'],
