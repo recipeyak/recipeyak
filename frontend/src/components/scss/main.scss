@@ -1,4 +1,9 @@
 @import './variables.scss';
+
+$primary: $primary-color;
+
+@import '~bulma/bulma.sass';
+
 @import './buttons.scss';
 @import './inputs.scss';
 @import './loader.scss';

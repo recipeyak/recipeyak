@@ -103,7 +103,7 @@ module.exports = {
           // https://github.com/facebookincubator/create-react-app/issues/1713
           /\.(js|jsx)(\?.*)?$/,
           /\.css$/,
-          /\.scss$/,
+          /\.(scss|sass)$/,
           /\.json$/,
           /\.svg$/,
           /\.jpg$/
@@ -167,7 +167,7 @@ module.exports = {
         ]
       },
       {
-        test: /\.scss$/,
+        test: /\.(scss|sass)$/,
         use: [
           'style-loader',
           {
