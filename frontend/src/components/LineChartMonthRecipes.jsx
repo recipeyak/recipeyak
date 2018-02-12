@@ -56,7 +56,7 @@ const defaultOptions = {
         fontSize: 20,
         beginAtZero: true,
         /* Only show integer values for ticks */
-        callback: (value, index, values) => Math.round(value) === value ? value : ''
+        callback: value => Math.round(value) === value ? value : ''
       },
       gridLines: {
         display: false
@@ -75,7 +75,7 @@ const defaultOptions = {
     position: 'average',
     mode: 'index',
     callbacks: {
-      label: (tooltipItem, data) =>
+      label: tooltipItem =>
         tooltipItem.yLabel !== 1
           ? tooltipItem.yLabel + ' recipes'
           : tooltipItem.yLabel + ' recipe'

@@ -40,45 +40,45 @@ export const user = (
   action
 ) => {
   switch (action.type) {
-    case LOG_IN:
-      return {
-        ...state,
-        avatarURL: action.user.avatar_url,
-        email: action.user.email,
-        loggedIn: true,
-        hasUsablePassword: action.user.has_usable_password,
-        token: action.token
-      }
-    case SET_AVATAR_URL:
-      return { ...state, avatarURL: action.url }
-    case SET_USER_EMAIL:
-      return { ...state, email: action.email }
-    case SET_LOADING_USER:
-      return { ...state, loading: action.val }
-    case SET_ERROR_USER:
-      return { ...state, error: action.val }
-    case SET_USER_STATS:
-      return { ...state, stats: action.val }
-    case SET_LOADING_USER_STATS:
-      return { ...state, stats_loading: action.val }
-    case SET_UPDATING_USER_EMAIL:
-      return { ...state, updatingEmail: action.val }
-    case SET_LOGGING_OUT:
-      return { ...state, loggingOut: action.val }
-    case SET_PASSWORD_USABLE:
-      return { ...state, hasUsablePassword: action.val }
-    case SET_SOCIAL_ACCOUNT_CONNECTIONS:
-    case SET_SOCIAL_ACCOUNT_CONNECTION:
-      return {
-        ...state,
-        socialAccountConnections: socialAccounts(state.socialAccountConnections, action)
-      }
-    case TOGGLE_DARK_MODE:
-      const newDarkMode = !state.darkMode
-      setDarkModeClass(newDarkMode)
-      return { ...state, darkMode: newDarkMode }
-    default:
-      return state
+  case LOG_IN:
+    return {
+      ...state,
+      avatarURL: action.user.avatar_url,
+      email: action.user.email,
+      loggedIn: true,
+      hasUsablePassword: action.user.has_usable_password,
+      token: action.token
+    }
+  case SET_AVATAR_URL:
+    return { ...state, avatarURL: action.url }
+  case SET_USER_EMAIL:
+    return { ...state, email: action.email }
+  case SET_LOADING_USER:
+    return { ...state, loading: action.val }
+  case SET_ERROR_USER:
+    return { ...state, error: action.val }
+  case SET_USER_STATS:
+    return { ...state, stats: action.val }
+  case SET_LOADING_USER_STATS:
+    return { ...state, stats_loading: action.val }
+  case SET_UPDATING_USER_EMAIL:
+    return { ...state, updatingEmail: action.val }
+  case SET_LOGGING_OUT:
+    return { ...state, loggingOut: action.val }
+  case SET_PASSWORD_USABLE:
+    return { ...state, hasUsablePassword: action.val }
+  case SET_SOCIAL_ACCOUNT_CONNECTIONS:
+  case SET_SOCIAL_ACCOUNT_CONNECTION:
+    return {
+      ...state,
+      socialAccountConnections: socialAccounts(state.socialAccountConnections, action)
+    }
+  case TOGGLE_DARK_MODE:
+    const newDarkMode = !state.darkMode
+    setDarkModeClass(newDarkMode)
+    return { ...state, darkMode: newDarkMode }
+  default:
+    return state
   }
 }
 

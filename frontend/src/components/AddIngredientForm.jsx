@@ -7,7 +7,6 @@ const AddIngredientForm = ({
   quantity,
   name,
   description,
-  clearInputs,
   loading,
   error
 }) =>

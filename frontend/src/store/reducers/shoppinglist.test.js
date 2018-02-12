@@ -7,16 +7,15 @@ import {
   setShoppingListError
 } from '../actions.js'
 
-
 describe('Shopping List', () => {
   const shopList = [
     {
-        'name': 'tomato',
-        'unit': '4.204622621848776 pound',
+      'name': 'tomato',
+      'unit': '4.204622621848776 pound',
     },
     {
-        'name': 'soy sauce',
-        'unit': '2 tablespoon',
+      'name': 'soy sauce',
+      'unit': '2 tablespoon',
     }
   ]
   it('sets list', () => {
@@ -65,7 +64,6 @@ describe('Shopping List', () => {
       shoppinglist(beforeState, setShoppingListEmpty())
     ).toEqual(afterState)
   })
-
 
   it('sets the error correctly', () => {
     const beforeState = {

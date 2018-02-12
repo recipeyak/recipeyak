@@ -55,7 +55,7 @@ export const matchesQuery = ({
     author.includes(query)
 }
 
-const Results = ({ recipes, query, onChange }) => {
+const Results = ({ recipes, query }) => {
   if (recipes.length === 0 && query === '') {
     return (
       <section className="d-flex grid-entire-row justify-center">

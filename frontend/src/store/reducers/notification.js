@@ -17,12 +17,12 @@ const notification = (
     closeable
   }) => {
   switch (type) {
-    case SET_NOTIFICATION:
-      return { ...state, message, level, closeable, show: true }
-    case CLEAR_NOTIFICATION:
-      return { ...state, message: '', show: false, closeable: false }
-    default:
-      return state
+  case SET_NOTIFICATION:
+    return { ...state, message, level, closeable, show: true }
+  case CLEAR_NOTIFICATION:
+    return { ...state, message: '', show: false, closeable: false }
+  default:
+    return state
   }
 }
 

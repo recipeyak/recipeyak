@@ -468,8 +468,7 @@ describe('Recipes', () => {
     ).toEqual(afterState)
   })
 
-
-  it("sets the loading state for adding a step to a recipe", () => {
+  it('sets the loading state for adding a step to a recipe', () => {
     const beforeState = {
       1: {
         addingStepToRecipe: false,
@@ -486,7 +485,6 @@ describe('Recipes', () => {
       recipes(beforeState, setLoadingAddStepToRecipe(1, true))
     ).toEqual(afterState)
   })
-
 
   it('sets the recipe to be adding an ingredient', () => {
     const beforeState = {
@@ -505,7 +503,6 @@ describe('Recipes', () => {
       recipes(beforeState, setAddingIngredientToRecipe(1, true))
     ).toEqual(afterState)
   })
-
 
   it('sets the recipe to be updating a specific ingredient', () => {
     const beforeState = {
@@ -537,7 +534,6 @@ describe('Recipes', () => {
     ).toEqual(afterState)
   })
 
-
   it('sets the recipe to be removing a specific ingredient', () => {
     const beforeState = {
       1: {
@@ -567,7 +563,6 @@ describe('Recipes', () => {
       recipes(beforeState, setRemovingIngredient(1, 1, true))
     ).toEqual(afterState)
   })
-
 
   it('sets the recipe to be updating a specific step', () => {
     const beforeState = {
@@ -599,7 +594,6 @@ describe('Recipes', () => {
     ).toEqual(afterState)
   })
 
-
   it('sets the recipe to be removing a specific step', () => {
     const beforeState = {
       1: {
@@ -630,7 +624,6 @@ describe('Recipes', () => {
     ).toEqual(afterState)
   })
 
-
   it('sets the recipe to 404', () => {
     const beforeState = {
       1: {
@@ -648,7 +641,6 @@ describe('Recipes', () => {
       recipes(beforeState, setRecipe404(1, true))
     ).toEqual(afterState)
   })
-
 
   it('sets the recipe to updating', () => {
     const beforeState = {
@@ -669,7 +661,6 @@ describe('Recipes', () => {
   })
 
   it('overwrites the recipe correctly', () => {
-
     const beforeState = {
       1: {
         name: 'Initial recipe name'
@@ -690,7 +681,6 @@ describe('Recipes', () => {
   })
 
   it('updates recipe cart amount', () => {
-
     const beforeState = {
       1: {
         name: 'Initial recipe name',
@@ -711,7 +701,6 @@ describe('Recipes', () => {
   })
 
   it('clear cart amounts', () => {
-
     const beforeState = {
       1: {
         id: 1,

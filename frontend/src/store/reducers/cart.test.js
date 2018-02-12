@@ -5,9 +5,7 @@ import {
 } from '../actions'
 
 describe('Cart', () => {
-
   it('sets the cart to clearing', () => {
-
     const beforeState = {
       clearing: false
     }
@@ -20,5 +18,4 @@ describe('Cart', () => {
       cart(beforeState, setClearingCart(true))
     ).toEqual(afterState)
   })
-
 })

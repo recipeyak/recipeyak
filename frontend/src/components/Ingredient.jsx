@@ -3,7 +3,6 @@ import React from 'react'
 const emptyField = ({
   quantity,
   name,
-  description
 }) => quantity === '' || name === ''
 
 const allEmptyFields = ({
@@ -69,7 +68,7 @@ class Ingredient extends React.Component {
   }
 
   discardChanges = () => {
-    this.setState((prevState, props) => {
+    this.setState((_, props) => {
       const {
         quantity,
         name,

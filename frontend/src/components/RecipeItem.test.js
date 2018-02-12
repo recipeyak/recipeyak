@@ -1,11 +1,12 @@
 import React from 'react'
 
 import { mount, configure } from 'enzyme'
-import Adapter from 'enzyme-adapter-react-16';
-configure({ adapter: new Adapter() });
+import Adapter from 'enzyme-adapter-react-16'
 
 import { MemoryRouter } from 'react-router'
 import RecipeItem from './RecipeItem.jsx'
+
+configure({ adapter: new Adapter() })
 
 describe('RecipeItem', () => {
   it('renders without crashing', () => {
