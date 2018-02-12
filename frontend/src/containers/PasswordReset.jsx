@@ -5,7 +5,7 @@ import PasswordReset from '../components/PasswordReset.jsx'
 
 const mapDispatchToProps = dispatch => {
   return {
-    reset: (email, password) => dispatch(reset(email))
+    reset: email => dispatch(reset(email))
   }
 }
 

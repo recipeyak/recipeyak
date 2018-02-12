@@ -41,7 +41,7 @@ class ListItem extends React.Component {
   }
 
   discardChanges = () => {
-    this.setState((prevState, props) => ({
+    this.setState((_, props) => ({
       editing: false,
       text: props.text,
       unsavedChanges: false
@@ -59,7 +59,7 @@ class ListItem extends React.Component {
 
   cancel = e => {
     e.stopPropagation()
-    this.setState((prevState, props) => ({
+    this.setState((_, props) => ({
       editing: false,
       text: props.text
     }))

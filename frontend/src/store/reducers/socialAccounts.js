@@ -13,18 +13,18 @@ export const socialAccounts = (
   action
 ) => {
   switch (action.type) {
-    case SET_SOCIAL_ACCOUNT_CONNECTIONS:
-      return {
-        ...state,
-        ...action.val.reduce((a, { provider, id }) => ({ ...a, [provider]: id }), {})
-      }
-    case SET_SOCIAL_ACCOUNT_CONNECTION:
-      return {
-        ...state,
-        [action.provider]: action.val
-      }
-    default:
-      return state
+  case SET_SOCIAL_ACCOUNT_CONNECTIONS:
+    return {
+      ...state,
+      ...action.val.reduce((a, { provider, id }) => ({ ...a, [provider]: id }), {})
+    }
+  case SET_SOCIAL_ACCOUNT_CONNECTION:
+    return {
+      ...state,
+      [action.provider]: action.val
+    }
+  default:
+    return state
   }
 }
 

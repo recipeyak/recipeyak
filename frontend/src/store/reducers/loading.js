@@ -18,22 +18,22 @@ const loading = (state = {
   cart: false
 }, action) => {
   switch (action.type) {
-    case SET_LOADING_LOGIN:
-      return { ...state, login: action.val }
-    case SET_LOADING_SIGNUP:
-      return { ...state, signup: action.val }
-    case SET_LOADING_RESET:
-      return { ...state, reset: action.val }
-    case SET_LOADING_RESET_CONFIRMATION:
-      return { ...state, resetConfirmation: action.val }
-    case SET_LOADING_CART:
-      return { ...state, cart: action.val }
-    case SET_LOADING_RECIPES:
-      return { ...state, recipes: action.val }
-    case SET_LOADING_ADD_RECIPE:
-      return { ...state, addRecipe: action.val }
-    default:
-      return state
+  case SET_LOADING_LOGIN:
+    return { ...state, login: action.val }
+  case SET_LOADING_SIGNUP:
+    return { ...state, signup: action.val }
+  case SET_LOADING_RESET:
+    return { ...state, reset: action.val }
+  case SET_LOADING_RESET_CONFIRMATION:
+    return { ...state, resetConfirmation: action.val }
+  case SET_LOADING_CART:
+    return { ...state, cart: action.val }
+  case SET_LOADING_RECIPES:
+    return { ...state, recipes: action.val }
+  case SET_LOADING_ADD_RECIPE:
+    return { ...state, addRecipe: action.val }
+  default:
+    return state
   }
 }
 

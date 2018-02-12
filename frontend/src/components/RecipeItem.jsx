@@ -8,7 +8,6 @@ export const recipeURL = (id, name) => `/recipes/${id}-${toURL(name)}`
 const RecipeItem = ({
     tags = {},
     url,
-    source,
     name,
     author,
     id,

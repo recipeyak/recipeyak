@@ -1,14 +1,14 @@
 import React from 'react'
 import { mount, configure } from 'enzyme'
-import Adapter from 'enzyme-adapter-react-16';
-configure({ adapter: new Adapter() });
+import Adapter from 'enzyme-adapter-react-16'
 
 import { Provider } from 'react-redux'
 import { MemoryRouter } from 'react-router-dom'
 
 import { emptyStore as store } from '../store/store.js'
-import RecipeList from './RecipeList.jsx'
-import { matchesQuery } from './RecipeList.jsx'
+import RecipeList, { matchesQuery } from './RecipeList.jsx'
+
+configure({ adapter: new Adapter() })
 
 describe('<RecipeList/>', () => {
   it('renders without crashing', () => {
@@ -66,7 +66,6 @@ describe('<RecipeList/>', () => {
 })
 
 describe('searching', () => {
-
   it('works with basic matching', () => {
     const recipe = {
       name: 'West Canadian Creme Brulee',
@@ -79,7 +78,6 @@ describe('searching', () => {
 
     expect(results).toEqual(true)
   })
-
 
   it('works with spaces matching', () => {
     const recipe = {
@@ -94,7 +92,6 @@ describe('searching', () => {
     expect(results).toEqual(true)
   })
 
-
   it('ignores accents', () => {
     const recipe = {
       name: 'Crème Brulée'
@@ -107,7 +104,6 @@ describe('searching', () => {
     expect(results).toEqual(true)
   })
 
-
   it('respects tag name', () => {
     const recipe = {
       name: 'Beef Bourguignon'
@@ -119,7 +115,6 @@ describe('searching', () => {
 
     expect(results).toEqual(true)
   })
-
 
   it('respects tag ingredient', () => {
     const recipe = {
@@ -138,7 +133,6 @@ describe('searching', () => {
 
     expect(results).toEqual(true)
   })
-
 
   it('respects tag author', () => {
     const recipe = {

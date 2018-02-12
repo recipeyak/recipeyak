@@ -1,7 +1,6 @@
 import user from './user.js'
 
 import {
-  logout,
   login,
   setAvatarURL,
   setUserEmail,
@@ -22,11 +21,11 @@ describe('User', () => {
     }
 
     const token = 'afakekey'
-    const avatar_url = '//www.user.com'
+    const avatarURL = '//www.user.com'
     const email = 'test@gmail.com'
 
-    const user_data = {
-      avatar_url,
+    const userData = {
+      avatarURL,
       email,
       has_usable_password: true
     }
@@ -34,13 +33,13 @@ describe('User', () => {
     const afterState = {
       loggedIn: true,
       token,
-      avatarURL: avatar_url,
+      avatarURL,
       hasUsablePassword: true,
       email
     }
 
     expect(
-      user(beforeState, login(token, user_data))
+      user(beforeState, login(token, userData))
     ).toEqual(afterState)
   })
 
@@ -152,7 +151,6 @@ describe('User', () => {
     ).toEqual(afterState)
   })
 
-
   it('toggles darkmode', () => {
     const beforeState = {
       darkMode: false
@@ -177,11 +175,11 @@ describe('User', () => {
 
     const data = [
       {
-        "id":2,
-        "provider":"gitlab",
-        "uid":"123456",
-        "last_login":"2018-01-26T17:02:24.513169Z",
-        "date_joined":"2018-01-26T17:02:24.513228Z"
+        'id': 2,
+        'provider': 'gitlab',
+        'uid': '123456',
+        'last_login': '2018-01-26T17:02:24.513169Z',
+        'date_joined': '2018-01-26T17:02:24.513228Z'
       }
     ]
 
@@ -198,11 +196,11 @@ describe('User', () => {
 
     const data2 = [
       {
-        "id":4,
-        "provider":"github",
-        "uid":"56789",
-        "last_login":"2018-01-26T17:02:24.513169Z",
-        "date_joined":"2018-01-26T17:02:24.513228Z"
+        'id': 4,
+        'provider': 'github',
+        'uid': '56789',
+        'last_login': '2018-01-26T17:02:24.513169Z',
+        'date_joined': '2018-01-26T17:02:24.513228Z'
       }
     ]
 
@@ -219,7 +217,6 @@ describe('User', () => {
   })
 
   it('handles multiple responses', () => {
-
     const beforeState = {
       socialAccountConnections: {
         github: null,
@@ -236,18 +233,18 @@ describe('User', () => {
 
     const data = [
       {
-        "id":4,
-        "provider":"github",
-        "uid":"56789",
-        "last_login":"2018-01-26T17:02:24.513169Z",
-        "date_joined":"2018-01-26T17:02:24.513228Z"
+        'id': 4,
+        'provider': 'github',
+        'uid': '56789',
+        'last_login': '2018-01-26T17:02:24.513169Z',
+        'date_joined': '2018-01-26T17:02:24.513228Z'
       },
       {
-        "id":6,
-        "provider":"gitlab",
-        "uid":"123456",
-        "last_login":"2018-01-26T17:02:24.513169Z",
-        "date_joined":"2018-01-26T17:02:24.513228Z"
+        'id': 6,
+        'provider': 'gitlab',
+        'uid': '123456',
+        'last_login': '2018-01-26T17:02:24.513169Z',
+        'date_joined': '2018-01-26T17:02:24.513228Z'
       }
     ]
 
@@ -257,7 +254,6 @@ describe('User', () => {
   })
 
   it('sets social connection', () => {
-
     const beforeState = {
       socialAccountConnections: {
         github: 4,

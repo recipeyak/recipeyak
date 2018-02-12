@@ -157,7 +157,7 @@ const postLogout = token =>
 export const loggingOut = () => (dispatch, getState) => {
   dispatch(setLoggingOut(true))
   return postLogout(getState().user.token)
-    .then(res => {
+    .then(() => {
       dispatch(logout())
       dispatch(push('/login'))
       dispatch(setLoggingOut(false))
@@ -321,7 +321,7 @@ export const fetchSocialConnections = () => (dispatch, getState) => {
 }
 
 const removeSocialAccount = (token, id) =>
-  axios.post(`/api/v1/rest-auth/socialaccounts/${id}/disconnect/`, {id}, {
+  axios.post(`/api/v1/rest-auth/socialaccounts/${id}/disconnect/`, { id }, {
     headers: {
       'Authorization': 'Token ' + token
     }
@@ -329,7 +329,7 @@ const removeSocialAccount = (token, id) =>
 
 export const disconnectSocialAccount = (provider, id) => (dispatch, getState) => {
   return removeSocialAccount(getState().user.token, id)
-    .then(res => {
+    .then(() => {
       dispatch(setSocialConnections(
         [
           {
@@ -393,7 +393,7 @@ export const updatingPassword = (password1, password2, oldPassword) => (dispatch
   dispatch(setLoadingPasswordUpdate(true))
   dispatch(setErrorPasswordUpdate({}))
   postPasswordChange(getState().user.token, password1, password2, oldPassword)
-    .then(res => {
+    .then(() => {
       dispatch(setLoadingPasswordUpdate(false))
       dispatch(push('/'))
       dispatch(showNotificationWithTimeout({
@@ -461,7 +461,7 @@ export const clearRecipeCartAmounts = () => ({
 export const clearCart = () => (dispatch, getState) => {
   dispatch(setClearingCart(true))
   postClearCart(getState().user.token)
-    .then(res => {
+    .then(() => {
       dispatch(clearRecipeCartAmounts())
       dispatch(setShoppingListEmpty())
       dispatch(setClearingCart(false))
@@ -1199,7 +1199,7 @@ const sendSocialLogin = (service, token) =>
     'code': token
   })
 
-export const socialLogin = (service, token) => (dispatch, getState) => {
+export const socialLogin = (service, token) => dispatch => {
   return sendSocialLogin(service, token)
     .then(res => {
       dispatch(login(res.data.key, res.data.user))
@@ -1231,9 +1231,9 @@ const sendSocialConnect = (service, code, token) =>
     }
   })
 
-export const socialConnect = (service, code, token) => (dispatch, getState) => {
+export const socialConnect = (service, code) => (dispatch, getState) => {
   return sendSocialConnect(service, code, getState().user.token)
-    .then(res => {
+    .then(() => {
       dispatch(replace('/settings'))
     })
     .catch(err => {
@@ -1308,7 +1308,7 @@ const sendDeleteRecipe = (token, id) =>
 export const deletingRecipe = id => (dispatch, getState) => {
   dispatch(setDeletingRecipe(id, true))
   return sendDeleteRecipe(getState().user.token, id)
-    .then(res => {
+    .then(() => {
       dispatch(deleteRecipe(id))
       dispatch(setDeletingRecipe(id, false))
       dispatch(push('/recipes'))

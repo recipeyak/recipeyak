@@ -39,6 +39,5 @@ describe('passwordChange', () => {
     expect(
       passwordChange(beforeState, setErrorPasswordUpdate(error))
     ).toEqual(afterState)
-
   })
 })

@@ -10,12 +10,12 @@ export const passwordChange = (
   },
   action) => {
   switch (action.type) {
-    case SET_LOADING_PASSWORD_UPDATE:
-      return { ...state, loadingPasswordUpdate: action.val }
-    case SET_ERROR_PASSWORD_UPDATE:
-      return { ...state, errorPasswordUpdate: action.val }
-    default:
-      return state
+  case SET_LOADING_PASSWORD_UPDATE:
+    return { ...state, loadingPasswordUpdate: action.val }
+  case SET_ERROR_PASSWORD_UPDATE:
+    return { ...state, errorPasswordUpdate: action.val }
+  default:
+    return state
   }
 }
 

@@ -62,7 +62,6 @@ const MostAddedRecipe = ({
 
 const RecentRecipes = ({
   recipes,
-  cart,
   loading,
   error
 }) => {

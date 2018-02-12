@@ -47,7 +47,7 @@ const Settings = ({
               <span className="has-text-success bold">Connected</span>
               <button onClick={ () => disconnectAccount('github', socialAccountConnections.github) } className={ loadingGithub ? 'is-loading my-button is-danger ml-2' : 'my-button is-danger ml-2' }>Disconnect</button>
             </div>
-          : <a href={ GITHUB_OAUTH_URL + '/connect' } style={{'width': '120px'}} className="my-button ml-2">Connect</a>
+          : <a href={ GITHUB_OAUTH_URL + '/connect' } style={{ 'width': '120px' }} className="my-button ml-2">Connect</a>
         }
       </div>
     </div>
@@ -67,7 +67,7 @@ const Settings = ({
               <span className="has-text-success bold">Connected</span>
               <button onClick={ () => disconnectAccount('gitlab', socialAccountConnections.gitlab) } className={ loadingGitlab ? 'is-loading my-button is-danger ml-2' : 'my-button is-danger ml-2' }>Disconnect</button>
             </div>
-          : <a href={ GITLAB_OAUTH_URL + '/connect' } style={{'width': '120px'}} className="my-button ml-2">Connect</a>
+          : <a href={ GITLAB_OAUTH_URL + '/connect' } style={{ 'width': '120px' }} className="my-button ml-2">Connect</a>
         }
       </div>
     </div>

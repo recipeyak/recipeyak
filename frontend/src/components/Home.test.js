@@ -2,13 +2,14 @@ import React from 'react'
 import { MemoryRouter } from 'react-router'
 
 import { mount, configure } from 'enzyme'
-import Adapter from 'enzyme-adapter-react-16';
-configure({ adapter: new Adapter() });
+import Adapter from 'enzyme-adapter-react-16'
 
 import { Provider } from 'react-redux'
 import { emptyStore as store } from '../store/store.js'
 
 import Home from './Home.jsx'
+
+configure({ adapter: new Adapter() })
 
 describe('<Home/>', () => {
   it('renders without crashing', () => {

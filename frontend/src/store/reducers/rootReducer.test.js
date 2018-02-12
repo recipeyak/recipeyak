@@ -1,5 +1,3 @@
-import user from './user'
-
 import {
   rootReducer,
   emptyStore
@@ -10,7 +8,6 @@ import {
 } from '../actions'
 
 describe('logout', () => {
-
   it('Logs out user and clears entire store', () => {
     const beforeState = {
       loggedIn: true,
@@ -21,5 +18,4 @@ describe('logout', () => {
       rootReducer(beforeState, logout())
     ).toEqual(emptyStore.getState())
   })
-
 })

@@ -16,9 +16,7 @@ import {
 } from '../actions'
 
 describe('addrecipe', () => {
-
   it('sets addrecipe form name', () => {
-
     const beforeState = {
       name: ''
     }
@@ -176,7 +174,6 @@ describe('addrecipe', () => {
     ).toEqual(afterState)
   })
 
-
   it('add add recipe form step', () => {
     const beforeState = {
       steps: []
@@ -255,8 +252,6 @@ describe('addrecipe', () => {
     ).toEqual(afterState)
   })
 
-
-
   it('clears add recipe form', () => {
     const step = {
       quantity: '1 lbs',
@@ -277,6 +272,4 @@ describe('addrecipe', () => {
       addrecipe(beforeState, clearAddRecipeForm())
     ).toEqual(afterState)
   })
-
-
 })

@@ -3,12 +3,13 @@ import { MemoryRouter, Route } from 'react-router'
 import { Provider } from 'react-redux'
 
 import { mount, configure } from 'enzyme'
-import Adapter from 'enzyme-adapter-react-16';
-configure({ adapter: new Adapter() });
+import Adapter from 'enzyme-adapter-react-16'
 
 import Login from './Login.jsx'
 
 import { emptyStore as store } from '../store/store.js'
+
+configure({ adapter: new Adapter() })
 
 describe('<Login/>', () => {
   it('renders login', () => {
