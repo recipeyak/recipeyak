@@ -35,7 +35,7 @@ jobs:
           path: ~/backend/reports
   test_javascript:
     docker:
-      - image: circleci/node:7.10.0
+      - image: circleci/node:8
         environment:
           DEBUG: 1
 
@@ -61,7 +61,7 @@ jobs:
 
   lint_javascript:
     docker:
-      - image: circleci/node:7.10.0
+      - image: circleci/node:8
         environment:
           DEBUG: 1
     steps:
@@ -83,6 +83,30 @@ jobs:
           name: run linter
           working_directory: frontend
           command: npm run lint
+  build_javascript:
+    docker:
+      - image: circleci/node:8
+        environment:
+          DEBUG: 1
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - frontend-v1-dependencies-{{ checksum "frontend/package.json" }}
+            - frontend-v1-dependencies-
+      - run:
+          name: install dependencies
+          working_directory: frontend
+          command: |
+            npm install
+      - save_cache:
+          paths:
+            - ./frontend/node_modules
+          key: frontend-v1-dependencies-{{ checksum "frontend/package.json" }}
+      - run:
+          name: run build
+          working_directory: frontend
+          command: npm run build
 workflows:
   version: 2
   test:
@@ -90,3 +114,4 @@ workflows:
       - test_python
       - test_javascript
       - lint_javascript
+      - build_javascript
