@@ -35,7 +35,7 @@ jobs:
           path: ~/backend/reports
   test_javascript:
     docker:
-      - image: circleci/node:8
+      - image: circleci/node:6.12.3
         environment:
           DEBUG: 1
 
@@ -61,7 +61,7 @@ jobs:
 
   lint_javascript:
     docker:
-      - image: circleci/node:8
+      - image: circleci/node:6.12.3
         environment:
           DEBUG: 1
     steps:
@@ -85,7 +85,7 @@ jobs:
           command: npm run lint
   build_javascript:
     docker:
-      - image: circleci/node:8
+      - image: circleci/node:6.12.3
         environment:
           DEBUG: 1
     steps:
