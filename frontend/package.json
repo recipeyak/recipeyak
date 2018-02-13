@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "@types/jest": "^22.1.2",
     "autoprefixer": "6.7.2",
     "babel-core": "6.22.1",
     "babel-eslint": "7.1.1",
@@ -51,6 +52,9 @@
     "react-test-renderer": "^16.2.0",
     "sass-loader": "^6.0.5",
     "style-loader": "0.13.1",
+    "ts-jest": "^22.0.4",
+    "ts-loader": "^3.5.0",
+    "typescript": "^2.7.1",
     "url-loader": "0.5.7",
     "webpack": "^3.5.6",
     "webpack-dev-server": "1.16.2",
@@ -102,11 +106,20 @@
     "testURL": "http://localhost",
     "transform": {
       "^.+\\.(js|jsx)$": "babel-jest",
+      "^.+\\.(ts|tsx)$": "ts-jest",
       "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
       "^(?!.*\\.(js|jsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
     },
     "transformIgnorePatterns": [
-      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$"
+      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
     ],
     "moduleNameMapper": {
       "^react-native$": "react-native-web"

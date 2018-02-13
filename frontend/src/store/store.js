@@ -8,7 +8,7 @@ import {
   routerMiddleware
 } from 'react-router-redux'
 
-import cart from './reducers/cart.js'
+import cart from './reducers/cart.ts'
 import recipes from './reducers/recipes.js'
 import user from './reducers/user.js'
 import loading from './reducers/loading.js'
