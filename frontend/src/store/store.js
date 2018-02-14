@@ -38,7 +38,10 @@ const recipeApp = combineReducers({
 // reset redux to default state on logout
 export const rootReducer = (state, action) => {
   if (action.type === LOG_OUT) {
-    state = undefined
+    return {
+      ...recipeApp(undefined, action),
+      routerReducer: state.routerReducer
+    }
   }
   return recipeApp(state, action)
 }
