@@ -108,6 +108,7 @@ module.exports = {
           /\.(scss|sass)$/,
           /\.json$/,
           /\.svg$/,
+          /\.png$/,
           /\.jpg$/
         ],
         loader: 'url-loader',
