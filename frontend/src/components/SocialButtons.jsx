@@ -8,11 +8,11 @@ import {
   FACEBOOK_OAUTH_URL,
 } from '../settings'
 
-import githubIcon from './github-logo.svg'
-import gitlabIcon from './gitlab-logo.svg'
-import googleIcon from './google-logo.svg'
-import bitbucketIcon from './bitbucket-logo.svg'
-import facebookIcon from './facebook-logo.svg'
+import githubIcon from './images/github-logo.svg'
+import gitlabIcon from './images/gitlab-logo.svg'
+import googleIcon from './images/google-logo.svg'
+import bitbucketIcon from './images/bitbucket-logo.svg'
+import facebookIcon from './images/facebook-logo.svg'
 
 export const GithubImg = () =>
   <img className="mr-2" src={ githubIcon } alt="github icon"/>

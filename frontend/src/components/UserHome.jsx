@@ -6,7 +6,7 @@ import Loader from './Loader'
 import { recipeURL } from './RecipeItem'
 import Recipe from '../containers/RecipeItem'
 
-import img from './yak.jpg'
+import img from './images/yak.jpg'
 
 const TotalRecipeCount = ({ count }) =>
   <p className="stat mb-1">

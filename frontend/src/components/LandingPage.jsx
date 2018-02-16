@@ -2,12 +2,12 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
-import addRecipeImg from './add-recipe.png'
-import cartDoublingImg from './cart-doubling.png'
-import cartImg from './cart.png'
-import homepageImg from './homepage.png'
-import listImg from './list.png'
-import searchImg from './search.png'
+import addRecipeImg from './images/add-recipe.png'
+import cartDoublingImg from './images/cart-doubling.png'
+import cartImg from './images/cart.png'
+import homepageImg from './images/homepage.png'
+import listImg from './images/list.png'
+import searchImg from './images/search.png'
 
 const isOdd = i => i % 2 !== 0
 
