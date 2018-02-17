@@ -1,4 +1,35 @@
 @import './variables.scss';
+@import '~bulma/sass/elements/button.sass';
+
+.github-button {
+  @extend .button;
+  background-color: $github;
+  color: white;
+  &:hover, &:focus, &:active {
+    background-color: darken($github, 5);
+    color: darken(white, 10);
+    text-decoration: none;
+    border-color: $github;
+  }
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+.gitlab-button {
+  @extend .button;
+  background-color: $gitlab;
+  color: white;
+  &:hover, &:focus, &:active {
+    background-color: darken($gitlab, 5);
+    color: darken(white, 10);
+    text-decoration: none;
+    border-color: $gitlab;
+  }
+  &:active {
+    transform: translateY(1px);
+  }
+}
 
 .my-box {
   display: block;

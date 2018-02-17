@@ -11,7 +11,9 @@ import {
 import { FormErrorHandler } from './Forms'
 
 import githubIcon from './images/github-logo.svg'
+import githubIconWhite from './images/github-logo-white.svg'
 import gitlabIcon from './images/gitlab-logo.svg'
+import gitlabIconWhite from './images/gitlab-logo-white.svg'
 import googleIcon from './images/google-logo.svg'
 import bitbucketIcon from './images/bitbucket-logo.svg'
 import facebookIcon from './images/facebook-logo.svg'
@@ -28,15 +30,15 @@ export const FacebookImg = () =>
   <img className="mr-2" src={ facebookIcon } alt="facebook icon"/>
 
 export const Github = ({ disable = false }) => GITHUB_OAUTH_URL &&
-  <a href={ !disable && GITHUB_OAUTH_URL } className="my-button">
-    <img className="mr-2" src={ githubIcon } alt="github icon"/>
-    Github
+  <a href={ !disable && GITHUB_OAUTH_URL } className="column github-button is-12-tablet is-6-desktop">
+    <img className="mr-2" src={ githubIconWhite } alt="github icon"/>
+    <span>Login with Github</span>
   </a>
 
 export const Gitlab = () => GITLAB_OAUTH_URL &&
-  <a href={ GITLAB_OAUTH_URL } className="my-button">
-    <img className="mr-2" src={ gitlabIcon } alt="gitlab icon"/>
-    Gitlab
+  <a href={ GITLAB_OAUTH_URL } className="column gitlab-button is-12-tablet is-6-desktop">
+    <img className="mr-2" src={ gitlabIconWhite } alt="gitlab icon"/>
+    <span class="">Login with Gitlab</span>
   </a>
 
 export const Bitbucket = () => BITBUCKET_OAUTH_URL &&
@@ -64,7 +66,7 @@ const SocialButtons = ({ nonFieldErrors, emailError, signup = true }) => enableS
     { signup && <div className="d-flex align-items-center mb-2 mt-1">
       <span className="or-bar"></span> or <span className="or-bar"></span>
     </div> }
-    <div className="social-buttons">
+    <div className="">
       <Github/>
       <Gitlab/>
       <Bitbucket/>
