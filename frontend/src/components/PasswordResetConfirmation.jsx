@@ -2,7 +2,7 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
-import FormErrorHandler from './Forms'
+import { FormErrorHandler } from './Forms'
 
 class PasswordResetConfirmation extends React.Component {
   state = {

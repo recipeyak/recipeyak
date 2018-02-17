@@ -8,7 +8,7 @@ import {
   FACEBOOK_OAUTH_URL,
 } from '../settings'
 
-import FormErrorHandler from './Forms'
+import { FormErrorHandler } from './Forms'
 
 import githubIcon from './images/github-logo.svg'
 import gitlabIcon from './images/gitlab-logo.svg'

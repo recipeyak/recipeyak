@@ -2,7 +2,7 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
-import FormErrorHandler from './Forms'
+import { FormErrorHandler } from './Forms'
 
 class PasswordReset extends React.Component {
   state = {
@@ -57,7 +57,7 @@ class PasswordReset extends React.Component {
                       </button>
                     </p>
 
-                    <Link to="/login" className="my-button is-link">To Login</Link>
+                    <Link to="/login" className="my-button is-link">Login →</Link>
                   </div>
                 </form>
               </div>

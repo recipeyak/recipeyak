@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
 import SocialButtons from './SocialButtons'
-import FormErrorHandler from './Forms'
+import { FormErrorHandler } from './Forms'
 
 class Signup extends React.Component {
   state = {
