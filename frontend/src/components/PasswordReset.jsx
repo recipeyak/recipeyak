@@ -2,6 +2,8 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
+import { FormErrorHandler } from './Forms'
+
 class PasswordReset extends React.Component {
   state = {
     email: ''
@@ -20,14 +22,6 @@ class PasswordReset extends React.Component {
   render () {
     const { nonFieldErrors, email } = this.props.error
 
-    const errorHandler = err =>
-      !!err &&
-      <p className="help is-danger">
-        <ul>
-          {err.map(e => (<li>{e}</li>))}
-        </ul>
-      </p>
-
     return (
         <section className="section">
           <Helmet title='Password Reset'/>
@@ -37,7 +31,7 @@ class PasswordReset extends React.Component {
                 <form onSubmit={ e => this.handleReset(e) }>
                   <h1 className="title is-5">Password Reset</h1>
 
-                  { errorHandler(nonFieldErrors) }
+                  <FormErrorHandler error={nonFieldErrors}/>
 
                   <div className="field">
                     <label className="label">Email</label>
@@ -51,7 +45,7 @@ class PasswordReset extends React.Component {
                         value={ this.state.email }
                         placeholder="rick.sanchez@me.com"/>
                     </p>
-                    { errorHandler(email) }
+                    <FormErrorHandler error={email}/>
                   </div>
 
                   <div className="field d-flex flex-space-between">
@@ -63,7 +57,7 @@ class PasswordReset extends React.Component {
                       </button>
                     </p>
 
-                    <Link to="/login" className="my-button is-link">To Login</Link>
+                    <Link to="/login" className="my-button is-link">Login →</Link>
                   </div>
                 </form>
               </div>
