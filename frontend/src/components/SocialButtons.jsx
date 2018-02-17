@@ -8,6 +8,8 @@ import {
   FACEBOOK_OAUTH_URL,
 } from '../settings'
 
+import FormErrorHandler from './Forms'
+
 import githubIcon from './images/github-logo.svg'
 import gitlabIcon from './images/gitlab-logo.svg'
 import googleIcon from './images/google-logo.svg'
@@ -57,14 +59,6 @@ export const Facebook = () => FACEBOOK_OAUTH_URL &&
 
 const enableSocialButtons = GITHUB_OAUTH_URL || GITLAB_OAUTH_URL || BITBUCKET_OAUTH_URL || GOOGLE_OAUTH_URL || FACEBOOK_OAUTH_URL
 
-const errorHandler = err =>
-  !!err &&
-  <div className="help is-danger">
-    <ul>
-      {err.map(e => (<li key={e}>{e}</li>))}
-    </ul>
-  </div>
-
 const SocialButtons = ({ nonFieldErrors, emailError, signup = true }) => enableSocialButtons &&
   <div>
     { signup && <div className="d-flex align-items-center mb-2 mt-1">
@@ -77,8 +71,8 @@ const SocialButtons = ({ nonFieldErrors, emailError, signup = true }) => enableS
       <Google/>
       <Facebook/>
     </div>
-    { errorHandler(nonFieldErrors) }
-    { errorHandler(emailError) }
+    <FormErrorHandler errors={nonFieldErrors}/>
+    <FormErrorHandler error={emailError}/>
   </div>
 
 export default SocialButtons

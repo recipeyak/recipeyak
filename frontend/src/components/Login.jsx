@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 
 import SocialButtons from './SocialButtons'
+import FormErrorHandler from './Forms'
 
 class Login extends React.Component {
   state = {
@@ -27,14 +28,6 @@ class Login extends React.Component {
     const { loading } = this.props
     const { password1, nonFieldErrors, email } = this.props.error
     const { emailSocial, nonFieldErrorsSocial } = this.props.errorSocial
-
-    const errorHandler = err =>
-      !!err &&
-      <div className="help is-danger">
-        <ul>
-          {err.map(e => (<li key={e}>{e}</li>))}
-        </ul>
-      </div>
 
     return (
         <section className="section">
@@ -65,7 +58,7 @@ class Login extends React.Component {
                         type="email"
                         placeholder="rick.sanchez@me.com"/>
                     </p>
-                    { errorHandler(email) }
+                    <FormErrorHandler error={email}/>
                   </div>
 
                   <div className="field">
@@ -79,8 +72,8 @@ class Login extends React.Component {
                         id="password"
                         placeholder="Super secret password."/>
                     </p>
-                    { errorHandler(password1) }
-                    { errorHandler(nonFieldErrors) }
+                    <FormErrorHandler error={password1}/>
+                    <FormErrorHandler error={nonFieldErrors}/>
                   </div>
 
                   <div className="field d-flex flex-space-between">

@@ -3,15 +3,13 @@ import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
 import SocialButtons from './SocialButtons'
+import FormErrorHandler from './Forms'
 
 class Signup extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      email: '',
-      password1: '',
-      password2: ''
-    }
+  state = {
+    email: '',
+    password1: '',
+    password2: ''
   }
 
   componentWillMount = () => {
@@ -31,14 +29,6 @@ class Signup extends React.Component {
     const { loading } = this.props
     const { password1, password2, nonFieldErrors, email } = this.props.error
 
-    const errorHandler = err =>
-      !!err &&
-      <p className="help is-danger">
-        <ul>
-          {err.map(e => (<li>{e}</li>))}
-        </ul>
-      </p>
-
     return (
         <section className="section">
           <Helmet title='Sign Up'/>
@@ -56,7 +46,7 @@ class Signup extends React.Component {
                   </ul>
                 </div>
 
-                { errorHandler(nonFieldErrors) }
+                <FormErrorHandler error={nonFieldErrors}/>
 
                 <form onSubmit={ e => this.handleSignup(e) }>
                   <div className="field">
@@ -70,7 +60,7 @@ class Signup extends React.Component {
                         type="email"
                         placeholder="rick.sanchez@me.com"/>
                     </p>
-                  { errorHandler(email) }
+                    <FormErrorHandler error={email}/>
                   </div>
 
                   <div className="field">
@@ -84,7 +74,7 @@ class Signup extends React.Component {
                         id="password1"
                         placeholder="Super secret password."/>
                     </p>
-                  { errorHandler(password1) }
+                    <FormErrorHandler error={password1}/>
                   </div>
 
                   <div className="field">
@@ -98,7 +88,7 @@ class Signup extends React.Component {
                         id="password2"
                         placeholder="Enter your password again."/>
                     </p>
-                  { errorHandler(password2) }
+                    <FormErrorHandler error={password2}/>
                   </div>
 
                   <div className="field d-flex flex-space-between">

@@ -59,6 +59,7 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
     'object-curly-spacing': ['warn', 'always'],
     'no-multiple-empty-lines': ['warn', { 'max': 1, 'maxEOF': 0 }],
+    'no-multi-spaces': ['warn'],
     'prefer-const': ['error', {
         'destructuring': 'any',
         'ignoreReadBeforeAssign': false
