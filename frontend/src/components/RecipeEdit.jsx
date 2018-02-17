@@ -7,6 +7,7 @@ import AddStep from './AddStep'
 import ListItem from './ListItem'
 import NoMatch from './NoMatch'
 import Loader from './Loader'
+import { ButtonPrimary, ButtonLink } from './Buttons'
 
 const RecipeEdit = ({
   id,
@@ -153,16 +154,16 @@ const RecipeEdit = ({
       <section className="grid-entire-row justify-self-end grid-row-4">
 
         <div className="d-flex">
-          <button
+          <ButtonPrimary
+            className='mr-1'
             onClick={ update }
-            className={ 'my-button is-primary mr-1' + (updating ? ' is-loading' : '') }>
+            loading={ updating }>
             Update
-          </button>
-          <button
-            onClick={ cancelEdit }
-            className="my-button is-link">
+          </ButtonPrimary>
+          <ButtonLink
+            onClick={ cancelEdit }>
             Cancel
-          </button>
+          </ButtonLink>
         </div>
       </section>
 

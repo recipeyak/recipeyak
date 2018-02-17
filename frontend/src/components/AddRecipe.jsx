@@ -5,6 +5,7 @@ import ListItem from './ListItem'
 import AddIngredientForm from './AddIngredientForm'
 import AddStepForm from './AddStepForm'
 import Ingredient from './Ingredient'
+import { ButtonPrimary } from './Buttons'
 
 const unfinishedIngredient = ({ quantity = '', name = '' }) =>
   quantity === '' || name === ''
@@ -25,6 +26,7 @@ class AddRecipe extends React.Component {
       errorWithIngredients: false,
       errorWithSteps: false
     },
+    loading: false,
     name: '',
     author: '',
     source: '',
@@ -222,21 +224,22 @@ class AddRecipe extends React.Component {
                 />
             </div>
           </section>
-        <p className="d-flex justify-space-between align-items-center">
+        <div className="d-flex justify-space-between align-items-center">
           <button
             className='my-button'
             onClick={ this.props.clearForm }
             name="create recipe">
             Clear
           </button>
-          <button
-            className={ 'my-button is-large is-primary ' + (this.props.loading ? 'is-loading' : '')}
+          <ButtonPrimary
+            className="is-large"
             type="submit"
             onClick={ handleSubmit }
-            name="create recipe">
+            name="create recipe"
+            loading={ this.props.loading }>
             Create Recipe
-          </button>
-        </p>
+          </ButtonPrimary>
+        </div>
       </div>
     )
   }
