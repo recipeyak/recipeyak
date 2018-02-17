@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
 import { FormErrorHandler } from './Forms'
+import { ButtonPrimary } from './Buttons'
 
 class PasswordResetConfirmation extends React.Component {
   state = {
@@ -70,11 +71,11 @@ class PasswordResetConfirmation extends React.Component {
 
                   <div className="field d-flex flex-space-between">
                     <p className="control">
-                      <button
-                        className={ (this.props.loading ? 'is-loading ' : '') + 'my-button is-primary' }
+                      <ButtonPrimary
+                        loading={ this.props.loading }
                         type="submit">
                         Change Password
-                      </button>
+                      </ButtonPrimary>
                     </p>
 
                     <Link to="/login" className="my-button is-link">To Login</Link>

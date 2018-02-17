@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet'
 
 import SocialButtons from './SocialButtons'
 import { FormErrorHandler } from './Forms'
+import { ButtonPrimary } from './Buttons'
 
 class Login extends React.Component {
   state = {
@@ -78,12 +79,11 @@ class Login extends React.Component {
 
                   <div className="field d-flex flex-space-between">
                     <p className="control">
-                      <button
+                      <ButtonPrimary
                         type="submit"
-                        className={ 'my-button is-primary ' + (loading ? 'is-loading' : '')}>
+                        loading={ loading }>
                         Submit
-                      </button>
-
+                      </ButtonPrimary>
                     </p>
                     <Link to="/password-reset" className="my-button is-link">Forgot Password?</Link>
                   </div>

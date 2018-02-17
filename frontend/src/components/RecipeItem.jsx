@@ -1,16 +1,18 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
+import { ButtonPrimary } from './Buttons'
+
 const toURL = (x = '') => x.replace(/\s/g, '-')
 
 export const recipeURL = (id, name) => `/recipes/${id}-${toURL(name)}`
 
 const RecipeItem = ({
     tags = {},
-    url,
     name,
     author,
     id,
+    url = recipeURL(id, name),
     cart_count,
     removeFromCart,
     removingFromCart = false,
@@ -32,10 +34,12 @@ const RecipeItem = ({
         className={ `my-button control ${removingFromCart ? 'is-loading' : ''}` }
         disabled={ !cart_count }>Remove One</button>
       {/* eslint-enable camelcase */}
-      <button
-        onClick={ () => addToCart(id) }
-        className={ `my-button is-primary control ${addingToCart ? 'is-loading' : ''}` }
-        >Add Another</button>
+        <ButtonPrimary
+          className='control'
+          onClick={ () => addToCart(id) }
+          loading={ addingToCart }>
+          Add Another
+        </ButtonPrimary>
         <div className="max-width-10">
         <input
           onChange={ handleInputChange }
@@ -54,10 +58,6 @@ const RecipeItem = ({
       </div>
     </div>
   )
-
-  if (url == null) {
-    url = recipeURL(id, name)
-  }
 
   return (
     <div className="card ">

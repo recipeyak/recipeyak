@@ -1,6 +1,8 @@
 import React from 'react'
 import Textarea from 'react-textarea-autosize'
 
+import { ButtonPrimary } from './Buttons'
+
 const AddStepForm = ({
   handleInputChange,
   addStep,
@@ -39,13 +41,13 @@ const AddStepForm = ({
     </div>
     <div className="field is-grouped">
       <p className="control">
-        <button
+        <ButtonPrimary
           disabled={ text === '' }
-          className={ 'my-button is-primary' + (loading ? ' is-loading' : '') }
           type="submit"
-          name="save step">
+          name="save step"
+          loading={ loading }>
           Add
-        </button>
+        </ButtonPrimary>
       </p>
       { text !== ''
           ? <p className="control">
