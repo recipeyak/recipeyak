@@ -343,7 +343,6 @@ export const fetchUserStats = () => (dispatch, getState) => {
     if (invalidToken(err.response)) {
       dispatch(logout())
     }
-    // TODO: handle error
     dispatch(setLoadingUserStats(false))
     throw err
   })
@@ -467,32 +466,16 @@ export const addingToCart = id => (dispatch, getState) => {
   // value is ensured to be 0 via the backend
   const count = getState().recipes[id].cart_count + 1
   dispatch(setRecipeAddingToCart(id, true))
-
-  return axios.patch(`/api/v1/cart/${id}/`, {
-    count
-  }, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
-  .then(res => {
-    const {
-      recipe,
-      count
-    } = res.data
-    dispatch(setRecipeCartAmount(recipe, count))
+  return updatingCart(id, count)(dispatch, getState)
+  .then(() => {
     dispatch(setRecipeAddingToCart(id, false))
   })
   .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
     dispatch(setRecipeAddingToCart(id, false))
     throw err
   })
 }
 
-// TODO: make above use this
 export const updatingCart = (id, count) => (dispatch, getState) =>
   axios.patch(`/api/v1/cart/${id}/`, {
     count
@@ -521,30 +504,15 @@ export const setRecipeRemovingFromCart = (id, loading) => ({
   loading
 })
 
-// TODO: use above stuff
 export const removingFromCart = id => (dispatch, getState) => {
   const currentCount = getState().recipes[id].cart_count
   const count = currentCount > 0 ? currentCount - 1 : 0
   dispatch(setRecipeRemovingFromCart(id, true))
-  return axios.patch(`/api/v1/cart/${id}/`, {
-    count
-  }, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
-  .then(res => {
-    const {
-      recipe,
-      count
-    } = res.data
-    dispatch(setRecipeCartAmount(recipe, count))
+  return updatingCart(id, count)(dispatch, getState)
+  .then(() => {
     dispatch(setRecipeRemovingFromCart(id, false))
   })
   .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
     dispatch(setRecipeRemovingFromCart(id, false))
     throw err
   })
