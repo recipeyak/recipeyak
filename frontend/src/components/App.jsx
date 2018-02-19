@@ -43,6 +43,17 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
   }}/>
 )
 
+const PublicOnlyRoute = ({ component: Component, ...rest }) => (
+  <Route {...rest} render={props => {
+    return !isAuthenticated()
+      ? <Component {...props}/>
+      : <Redirect to={{
+        pathname: '/',
+        state: { from: props.location }
+      }}/>
+  }}/>
+)
+
 const Base = () => (
   <div>
     <ConnectedRouter history={ history }>
@@ -53,7 +64,7 @@ const Base = () => (
           <Route exact path="/" component={ Home }/>
           <Container>
             <Switch>
-              <Route exact path="/login" component={ Login }/>
+              <PublicOnlyRoute exact path="/login" component={ Login }/>
               <Route exact path="/accounts/:service" component={ OAuth }/>
               <Route exact path="/accounts/:service/connect" component={ OAuthConnect }/>
               <Route exact path="/signup" component={ Signup }/>
