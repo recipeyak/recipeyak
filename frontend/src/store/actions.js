@@ -78,21 +78,28 @@ import {
   SET_PASSWORD_USABLE,
 } from './actionTypes'
 
-import { push, replace } from 'react-router-redux'
+import {
+  push,
+  replace
+} from 'react-router-redux'
 
 import axios from 'axios'
 
 axios.interceptors.response.use(
   response => response,
   error => {
-  // 503 means we are in maintenance mode. Reload to show maintenance page.
+    // 503 means we are in maintenance mode. Reload to show maintenance page.
     if (error.response && error.response.status === 503) {
       location.reload()
     }
     return Promise.reject(error)
   })
 
-export const setNotification = ({ message, closeable, level }) => ({
+export const setNotification = ({
+  message,
+  closeable,
+  level
+}) => ({
   type: SET_NOTIFICATION,
   message,
   closeable,
@@ -113,7 +120,11 @@ const showNotificationWithTimeout = ({
   sticky
 }) => dispatch => {
   clearTimeout(notificationTimeout)
-  dispatch(setNotification({ message, level, closeable }))
+  dispatch(setNotification({
+    message,
+    level,
+    closeable
+  }))
 
   if (!sticky) {
     notificationTimeout = setTimeout(() => {
@@ -140,17 +151,13 @@ export const setLoggingOut = val => ({
   val
 })
 
-const postLogout = token =>
-  // empty body since post expects the second argument to be the body
-  axios.post('/api/v1/rest-auth/logout/', {}, {
-    headers: {
-      'Authorization': 'Token ' + token
-    }
-  })
-
 export const loggingOut = () => (dispatch, getState) => {
   dispatch(setLoggingOut(true))
-  return postLogout(getState().user.token)
+  return axios.post('/api/v1/rest-auth/logout/', {}, {
+    headers: {
+      Authorization: 'Token ' + getState().user.token
+    }
+  })
     .then(() => {
       dispatch(logout())
       dispatch(push('/login'))
@@ -205,22 +212,21 @@ export const setUpdatingUserEmail = val => ({
   val
 })
 
-const patchEmail = (token, email) =>
-  axios.patch('/api/v1/rest-auth/user/', { email }, {
-    headers: {
-      'Authorization': 'Token ' + token
-    }
-  })
-
 const emailExists = err =>
   err.response.data.email != null &&
-    err.response.data.email[0].includes('email already exists')
+  err.response.data.email[0].includes('email already exists')
 
 const second = 1000
 
 export const updatingEmail = email => (dispatch, getState) => {
   dispatch(setUpdatingUserEmail(true))
-  return patchEmail(getState().user.token, email)
+  return axios.patch('/api/v1/rest-auth/user/', {
+    email
+  }, {
+    headers: {
+      Authorization: 'Token ' + getState().user.token
+    }
+  })
     .then(res => {
       dispatch(setUserEmail(res.data.email))
       dispatch(setAvatarURL(res.data.avatar_url))
@@ -236,9 +242,7 @@ export const updatingEmail = email => (dispatch, getState) => {
         dispatch(logout())
       }
       dispatch(setUpdatingUserEmail(false))
-      const messageExtra = emailExists(err)
-        ? '- email already in use'
-        : ''
+      const messageExtra = emailExists(err) ? '- email already in use' : ''
       dispatch(setNotification({
         message: `problem updating email ${messageExtra}`,
         level: 'danger'
@@ -246,18 +250,14 @@ export const updatingEmail = email => (dispatch, getState) => {
     })
 }
 
-const getUser = token =>
-  // empty body since post expects the second argument to be the body
-  axios.get('/api/v1/rest-auth/user/', {
-    headers: {
-      'Authorization': 'Token ' + token
-    }
-  })
-
 export const fetchUser = () => (dispatch, getState) => {
   dispatch(setLoadingUser(true))
   dispatch(setErrorUser(false))
-  getUser(getState().user.token)
+  return axios.get('/api/v1/rest-auth/user/', {
+    headers: {
+      Authorization: 'Token ' + getState().user.token
+    }
+  })
     .then(res => {
       dispatch(setAvatarURL(res.data.avatar_url))
       dispatch(setUserEmail(res.data.email))
@@ -273,13 +273,6 @@ export const fetchUser = () => (dispatch, getState) => {
     })
 }
 
-const getSocialConnections = token =>
-  axios.get('/api/v1/rest-auth/socialaccounts/', {
-    headers: {
-      'Authorization': 'Token ' + token
-    }
-  })
-
 export const setSocialConnections = val => ({
   type: SET_SOCIAL_ACCOUNT_CONNECTIONS,
   val
@@ -292,43 +285,41 @@ export const setSocialConnection = (provider, val) => ({
 })
 
 export const fetchSocialConnections = () => (dispatch, getState) => {
-  getSocialConnections(getState().user.token)
+  return axios.get('/api/v1/rest-auth/socialaccounts/', {
+    headers: {
+      Authorization: 'Token ' + getState().user.token
+    }
+  })
     .then(res => {
       dispatch(setSocialConnections(res.data))
     })
 }
 
-const removeSocialAccount = (token, id) =>
-  axios.post(`/api/v1/rest-auth/socialaccounts/${id}/disconnect/`, { id }, {
+export const disconnectSocialAccount = (provider, id) => (dispatch, getState) => {
+  return axios.post(`/api/v1/rest-auth/socialaccounts/${id}/disconnect/`, {
+    id
+  }, {
     headers: {
-      'Authorization': 'Token ' + token
+      Authorization: 'Token ' + getState().user.token
     }
   })
-
-export const disconnectSocialAccount = (provider, id) => (dispatch, getState) => {
-  return removeSocialAccount(getState().user.token, id)
     .then(() => {
       dispatch(setSocialConnections(
-        [
-          {
-            provider: provider,
-            id: null
-          }
-        ]
+        [{
+          provider: provider,
+          id: null
+        }]
       ))
     })
 }
 
-const getUserStats = token =>
-  axios.get('api/v1/user_stats/', {
-    headers: {
-      'Authorization': 'Token ' + token
-    }
-  })
-
 export const fetchUserStats = () => (dispatch, getState) => {
   dispatch(setLoadingUserStats(true))
-  getUserStats(getState().user.token)
+  return axios.get('api/v1/user_stats/', {
+    headers: {
+      Authorization: 'Token ' + getState().user.token
+    }
+  })
     .then(res => {
       dispatch(setUserStats(res.data))
       dispatch(setLoadingUserStats(false))
@@ -352,21 +343,18 @@ export const setErrorPasswordUpdate = val => ({
   val
 })
 
-const postPasswordChange = (token, password1, password2, oldPassword) =>
-  axios.post('/api/v1/rest-auth/password/change/', {
+export const updatingPassword = (password1, password2, oldPassword) => (dispatch, getState) => {
+  dispatch(setLoadingPasswordUpdate(true))
+  dispatch(setErrorPasswordUpdate({}))
+  return axios.post('/api/v1/rest-auth/password/change/', {
     new_password1: password1,
     new_password2: password2,
     old_password: oldPassword
   }, {
     headers: {
-      Authorization: `Token ${token}`
+      Authorization: 'Token ' + getState().user.token
     }
   })
-
-export const updatingPassword = (password1, password2, oldPassword) => (dispatch, getState) => {
-  dispatch(setLoadingPasswordUpdate(true))
-  dispatch(setErrorPasswordUpdate({}))
-  postPasswordChange(getState().user.token, password1, password2, oldPassword)
     .then(() => {
       dispatch(setLoadingPasswordUpdate(false))
       dispatch(push('/'))
@@ -415,20 +403,17 @@ export const setShoppingList = val => ({
 export const setShoppingListEmpty = () =>
   setShoppingList([])
 
-const postClearCart = token =>
-  axios.post('/api/v1/clear_cart/', {}, {
-    headers: {
-      'Authorization': 'Token ' + token
-    }
-  })
-
 export const clearRecipeCartAmounts = () => ({
   type: CLEAR_RECIPE_CART_AMOUNTS
 })
 
 export const clearCart = () => (dispatch, getState) => {
   dispatch(setClearingCart(true))
-  postClearCart(getState().user.token)
+  return axios.post('/api/v1/clear_cart/', {}, {
+    headers: {
+      Authorization: 'Token ' + getState().user.token
+    }
+  })
     .then(() => {
       dispatch(clearRecipeCartAmounts())
       dispatch(setShoppingListEmpty())
@@ -454,13 +439,6 @@ export const setRecipeCartAmount = (id, count) => ({
   count
 })
 
-const patchCart = (token, id, count) =>
-  axios.patch(`/api/v1/cart/${id}/`, { count }, {
-    headers: {
-      'Authorization': 'Token ' + token
-    }
-  })
-
 export const setRecipeAddingToCart = (id, loading) => ({
   type: SET_RECIPE_ADDING_TO_CART,
   id,
@@ -472,9 +450,19 @@ export const addingToCart = id => (dispatch, getState) => {
   // value is ensured to be 0 via the backend
   const count = getState().recipes[id].cart_count + 1
   dispatch(setRecipeAddingToCart(id, true))
-  return patchCart(getState().user.token, id, count)
+
+  return axios.patch(`/api/v1/cart/${id}/`, {
+    count
+  }, {
+    headers: {
+      Authorization: 'Token ' + getState().user.token
+    }
+  })
     .then(res => {
-      const { recipe, count } = res.data
+      const {
+        recipe,
+        count
+      } = res.data
       dispatch(setRecipeCartAmount(recipe, count))
       dispatch(setRecipeAddingToCart(id, false))
     })
@@ -486,17 +474,27 @@ export const addingToCart = id => (dispatch, getState) => {
     })
 }
 
+// TODO: make above use this
 export const updatingCart = (id, count) => (dispatch, getState) =>
-  patchCart(getState().user.token, id, count)
-    .then(res => {
-      const { recipe, count } = res.data
-      dispatch(setRecipeCartAmount(recipe, count))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-    })
+  axios.patch(`/api/v1/cart/${id}/`, {
+    count
+  }, {
+    headers: {
+      Authorization: 'Token ' + getState().user.token
+    }
+  })
+  .then(res => {
+    const {
+      recipe,
+      count
+    } = res.data
+    dispatch(setRecipeCartAmount(recipe, count))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+  })
 
 export const setRecipeRemovingFromCart = (id, loading) => ({
   type: SET_RECIPE_REMOVING_FROM_CART,
@@ -504,13 +502,23 @@ export const setRecipeRemovingFromCart = (id, loading) => ({
   loading
 })
 
+// TODO: use above stuff
 export const removingFromCart = id => (dispatch, getState) => {
   const currentCount = getState().recipes[id].cart_count
   const count = currentCount > 0 ? currentCount - 1 : 0
   dispatch(setRecipeRemovingFromCart(id, true))
-  return patchCart(getState().user.token, id, count)
+  return axios.patch(`/api/v1/cart/${id}/`, {
+    count
+  }, {
+    headers: {
+      Authorization: 'Token ' + getState().user.token
+    }
+  })
     .then(res => {
-      const { recipe, count } = res.data
+      const {
+        recipe,
+        count
+      } = res.data
       dispatch(setRecipeCartAmount(recipe, count))
       dispatch(setRecipeRemovingFromCart(id, false))
     })
@@ -533,17 +541,14 @@ export const setShoppingListError = val => ({
   val
 })
 
-const getShoppingList = token =>
-  axios.get('/api/v1/shoppinglist/', {
-    headers: {
-      'Authorization': 'Token ' + token
-    }
-  })
-
 export const fetchShoppingList = () => (dispatch, getState) => {
   dispatch(setLoadingShoppingList(true))
   dispatch(setShoppingListError(false))
-  return getShoppingList(getState().user.token)
+  return axios.get('/api/v1/shoppinglist/', {
+    headers: {
+      Authorization: 'Token ' + getState().user.token
+    }
+  })
     .then(res => {
       dispatch(setShoppingList(res.data))
       dispatch(setLoadingShoppingList(false))
@@ -556,13 +561,6 @@ export const fetchShoppingList = () => (dispatch, getState) => {
       dispatch(setLoadingShoppingList(false))
     })
 }
-
-const sendPostNewRecipe = (token, recipe) =>
-  axios.post('/api/v1/recipes/', recipe, {
-    headers: {
-      'Authorization': 'Token ' + token
-    }
-  })
 
 export const addRecipe = recipe => ({
   type: ADD_RECIPE,
@@ -582,7 +580,12 @@ export const setErrorAddRecipe = val => ({
 export const postNewRecipe = recipe => (dispatch, getState) => {
   dispatch(setLoadingAddRecipe(true))
   dispatch(setErrorAddRecipe({}))
-  return sendPostNewRecipe(getState().user.token, recipe)
+
+  return axios.post('/api/v1/recipes/', recipe, {
+    headers: {
+      Authorization: 'Token ' + getState().user.token
+    }
+  })
     .then(res => {
       dispatch(addRecipe(res.data))
       dispatch(clearAddRecipeForm())
@@ -621,17 +624,14 @@ export const setLoadingRecipe = (id, val) => ({
   val
 })
 
-const getRecipe = (token, id) =>
-  axios.get(`/api/v1/recipes/${id}/`, {
-    headers: {
-      'Authorization': 'Token ' + token
-    }
-  })
-
 export const fetchRecipe = id => (dispatch, getState) => {
   dispatch(setRecipe404(id, false))
   dispatch(setLoadingRecipe(id, true))
-  return getRecipe(getState().user.token, id)
+  return axios.get(`/api/v1/recipes/${id}/`, {
+    headers: {
+      Authorization: 'Token ' + getState().user.token
+    }
+  })
     .then(res => {
       dispatch(addRecipe(res.data))
       dispatch(setLoadingRecipe(id, false))
@@ -647,20 +647,6 @@ export const fetchRecipe = id => (dispatch, getState) => {
       console.log('error fetching recipe', err)
     })
 }
-
-const getRecipeList = token =>
-  axios.get('/api/v1/recipes/', {
-    headers: {
-      'Authorization': 'Token ' + token
-    }
-  })
-
-const getRecentRecipes = token =>
-  axios.get('/api/v1/recipes/?recent', {
-    headers: {
-      'Authorization': 'Token ' + token
-    }
-  })
 
 export const setRecipes = recipes => ({
   type: SET_RECIPES,
@@ -680,7 +666,11 @@ export const setLoadingRecipes = val => ({
 export const fetchRecentRecipes = () => (dispatch, getState) => {
   dispatch(setLoadingRecipes(true))
   dispatch(setErrorRecipes(false))
-  getRecentRecipes(getState().user.token)
+  return axios.get('/api/v1/recipes/?recent', {
+    headers: {
+      Authorization: 'Token ' + getState().user.token
+    }
+  })
     .then(res => {
       dispatch(setRecipes(res.data))
       dispatch(setLoadingRecipes(false))
@@ -697,7 +687,12 @@ export const fetchRecentRecipes = () => (dispatch, getState) => {
 export const fetchRecipeList = () => (dispatch, getState) => {
   dispatch(setLoadingRecipes(true))
   dispatch(setErrorRecipes(false))
-  getRecipeList(getState().user.token)
+
+  return axios.get('/api/v1/recipes/', {
+    headers: {
+      Authorization: 'Token ' + getState().user.token
+    }
+  })
     .then(res => {
       dispatch(setRecipes(res.data))
       dispatch(setLoadingRecipes(false))
@@ -736,21 +731,17 @@ export const addIngredientToRecipe = (id, ingredient) => ({
   ingredient
 })
 
-const postRecipeIngredient = (token, recipeID, ingredient) =>
-  axios.post(`/api/v1/recipes/${recipeID}/ingredients/`, ingredient, {
-    headers: {
-      'Authorization': 'Token ' + token
-    }
-  })
-
 // TODO: actually pass the correct stuff
 export const addingRecipeIngredient = (recipeID, ingredient) => (dispatch, getState) => {
   dispatch(setAddingIngredientToRecipe(recipeID, true))
-  return postRecipeIngredient(getState().user.token, recipeID, ingredient)
-    .then(res => {
-      dispatch(addIngredientToRecipe(recipeID, res.data))
-      dispatch(setAddingIngredientToRecipe(recipeID, false))
-    })
+  return axios.post(`/api/v1/recipes/${recipeID}/ingredients/`, ingredient, {
+    headers: {
+      Authorization: 'Token ' + getState().user.token
+    }
+  }).then(res => {
+    dispatch(addIngredientToRecipe(recipeID, res.data))
+    dispatch(setAddingIngredientToRecipe(recipeID, false))
+  })
     .catch(err => {
       if (invalidToken(err.response)) {
         dispatch(logout())
@@ -766,18 +757,16 @@ export const updateRecipeName = (id, name) => ({
   name
 })
 
-const patchRecipeName = (token, id, name) =>
-  axios.patch(`/api/v1/recipes/${id}/`, { name }, {
-    headers: {
-      'Authorization': 'Token ' + token
-    }
-  })
-
 export const sendUpdatedRecipeName = (id, name) => (dispatch, getState) => {
-  patchRecipeName(getState().user.token, id, name)
-    .then(res => {
-      dispatch(updateRecipeName(res.data.id, res.data.name))
-    })
+  return axios.patch(`/api/v1/recipes/${id}/`, {
+    name
+  }, {
+    headers: {
+      Authorization: 'Token ' + getState().user.token
+    }
+  }).then(res => {
+    dispatch(updateRecipeName(res.data.id, res.data.name))
+  })
     .catch(err => {
       if (invalidToken(err.response)) {
         dispatch(logout())
@@ -792,15 +781,14 @@ export const updateRecipeSource = (id, source) => ({
   source
 })
 
-const patchRecipeSource = (token, id, source) =>
-  axios.patch(`/api/v1/recipes/${id}/`, { source }, {
+export const setRecipeSource = (id, source) => (dispatch, getState) => {
+  return axios.patch(`/api/v1/recipes/${id}/`, {
+    source
+  }, {
     headers: {
-      'Authorization': 'Token ' + token
+      Authorization: 'Token ' + getState().user.token
     }
   })
-
-export const setRecipeSource = (id, source) => (dispatch, getState) => {
-  patchRecipeSource(getState().user.token, id, source)
     .then(res => {
       dispatch(updateRecipeSource(res.data.id, res.data.source))
     })
@@ -818,15 +806,14 @@ export const updateRecipeAuthor = (id, author) => ({
   author
 })
 
-const patchRecipeAuthor = (token, id, author) =>
-  axios.patch(`/api/v1/recipes/${id}/`, { author }, {
+export const setRecipeAuthor = (id, author) => (dispatch, getState) => {
+  return axios.patch(`/api/v1/recipes/${id}/`, {
+    author
+  }, {
     headers: {
-      'Authorization': 'Token ' + token
+      Authorization: 'Token ' + getState().user.token
     }
   })
-
-export const setRecipeAuthor = (id, author) => (dispatch, getState) => {
-  patchRecipeAuthor(getState().user.token, id, author)
     .then(res => {
       dispatch(updateRecipeAuthor(res.data.id, res.data.author))
     })
@@ -841,15 +828,14 @@ export const updateRecipeTime = (id, time) => ({
   time
 })
 
-const patchRecipeTime = (token, id, time) =>
-  axios.patch(`/api/v1/recipes/${id}/`, { time }, {
+export const setRecipeTime = (id, time) => (dispatch, getState) => {
+  return axios.patch(`/api/v1/recipes/${id}/`, {
+    time
+  }, {
     headers: {
-      'Authorization': 'Token ' + token
+      Authorization: 'Token ' + getState().user.token
     }
   })
-
-export const setRecipeTime = (id, time) => (dispatch, getState) => {
-  patchRecipeTime(getState().user.token, id, time)
     .then(res => {
       dispatch(updateRecipeTime(res.data.id, res.data.time))
     })
@@ -877,16 +863,13 @@ export const setRecipeUpdating = (id, val) => ({
   val
 })
 
-const patchRecipe = (token, id, data) =>
-  axios.patch(`/api/v1/recipes/${id}/`, data, {
-    headers: {
-      'Authorization': 'Token ' + token
-    }
-  })
-
 export const updateRecipe = (id, data) => (dispatch, getState) => {
   dispatch(setRecipeUpdating(id, true))
-  return patchRecipe(getState().user.token, id, data)
+  return axios.patch(`/api/v1/recipes/${id}/`, data, {
+    headers: {
+      Authorization: 'Token ' + getState().user.token
+    }
+  })
     .then(res => {
       dispatch(setRecipe(res.data.id, res.data))
       dispatch(setRecipeUpdating(id, false))
@@ -907,23 +890,15 @@ export const updateIngredient = (recipeID, ingredientID, content) => ({
   content
 })
 
-const sendUpdateIngredient = (token, recipeID, ingredientID, content) =>
-  axios.patch(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, content, {
-    headers: {
-      'Authorization': 'Token ' + token
-    }
-  })
-
-const postRecipeStep = (token, recipeID, step) =>
-  axios.post(`/api/v1/recipes/${recipeID}/steps/`, { text: step }, {
-    headers: {
-      'Authorization': 'Token ' + token
-    }
-  })
-
 export const addingRecipeStep = (recipeID, step) => (dispatch, getState) => {
   dispatch(setLoadingAddStepToRecipe(recipeID, true))
-  return postRecipeStep(getState().user.token, recipeID, step)
+  return axios.post(`/api/v1/recipes/${recipeID}/steps/`, {
+    text: step
+  }, {
+    headers: {
+      Authorization: 'Token ' + getState().user.token
+    }
+  })
     .then(res => {
       dispatch(addStepToRecipe(recipeID, res.data))
       dispatch(setLoadingAddStepToRecipe(recipeID, false))
@@ -953,7 +928,11 @@ export const setUpdatingIngredient = (recipeID, ingredientID, val) => ({
 
 export const updatingIngredient = (recipeID, ingredientID, content) => (dispatch, getState) => {
   dispatch(setUpdatingIngredient(recipeID, ingredientID, true))
-  return sendUpdateIngredient(getState().user.token, recipeID, ingredientID, content)
+  return axios.patch(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, content, {
+    headers: {
+      Authorization: 'Token ' + getState().user.token
+    }
+  })
     .then(res => {
       dispatch(updateIngredient(recipeID, ingredientID, res.data))
       dispatch(setUpdatingIngredient(recipeID, ingredientID, false))
@@ -973,16 +952,13 @@ export const deleteIngredient = (recipeID, ingredientID) => ({
   ingredientID
 })
 
-const sendDeleteIngredient = (token, recipeID, ingredientID) =>
-  axios.delete(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, {
-    headers: {
-      'Authorization': 'Token ' + token
-    }
-  })
-
 export const deletingIngredient = (recipeID, ingredientID) => (dispatch, getState) => {
   dispatch(setRemovingIngredient(recipeID, ingredientID, true))
-  return sendDeleteIngredient(getState().user.token, recipeID, ingredientID)
+  return axios.delete(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, {
+    headers: {
+      Authorization: 'Token ' + getState().user.token
+    }
+  })
     .then(() => {
       dispatch(setRemovingIngredient(recipeID, ingredientID, false))
       dispatch(deleteIngredient(recipeID, ingredientID))
@@ -1017,16 +993,15 @@ export const setUpdatingStep = (recipeID, stepID, val) => ({
   val
 })
 
-const sendUpdateStep = (token, recipeID, stepID, text) =>
-  axios.patch(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, { text }, {
-    headers: {
-      'Authorization': 'Token ' + token
-    }
-  })
-
 export const updatingStep = (recipeID, stepID, text) => (dispatch, getState) => {
   dispatch(setUpdatingStep(recipeID, stepID, true))
-  return sendUpdateStep(getState().user.token, recipeID, stepID, text)
+  return axios.patch(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, {
+    text
+  }, {
+    headers: {
+      Authorization: 'Token ' + getState().user.token
+    }
+  })
     .then(res => {
       const text = res.data.text
       dispatch(updateStep(recipeID, stepID, text))
@@ -1047,16 +1022,13 @@ export const deleteStep = (recipeID, stepID) => ({
   stepID
 })
 
-const sendDeleteStep = (token, recipeID, stepID) =>
-  axios.delete(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, {
-    headers: {
-      'Authorization': 'Token ' + token
-    }
-  })
-
 export const deletingStep = (recipeID, stepID) => (dispatch, getState) => {
   dispatch(setRemovingStep(recipeID, stepID, true))
-  return sendDeleteStep(getState().user.token, recipeID, stepID)
+  return axios.delete(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, {
+    headers: {
+      Authorization: 'Token ' + getState().user.token
+    }
+  })
     .then(() => {
       dispatch(deleteStep(recipeID, stepID))
       dispatch(setRemovingStep(recipeID, stepID, false))
@@ -1080,15 +1052,14 @@ export const setLoadingLogin = val => ({
   val
 })
 
-function sendLoginInfo (email, password) {
-  return axios.post('/api/v1/rest-auth/login/', { email, password })
-}
-
 export const logUserIn = (email, password) => dispatch => {
   dispatch(setLoadingLogin(true))
   dispatch(setErrorLogin({}))
   dispatch(clearNotification())
-  return sendLoginInfo(email, password)
+  return axios.post('/api/v1/rest-auth/login/', {
+    email,
+    password
+  })
     .then(res => {
       dispatch(login(res.data.key, res.data.user))
       dispatch(setLoadingLogin(false))
@@ -1116,13 +1087,10 @@ export const setErrorSocialLogin = val => ({
   val
 })
 
-const sendSocialLogin = (service, token) =>
-  axios.post(`/api/v1/rest-auth/${service}/`, {
-    'code': token
-  })
-
 export const socialLogin = (service, token) => dispatch => {
-  return sendSocialLogin(service, token)
+  return axios.post(`/api/v1/rest-auth/${service}/`, {
+    code: token
+  })
     .then(res => {
       dispatch(login(res.data.key, res.data.user))
       dispatch(replace('/'))
@@ -1144,17 +1112,14 @@ export const socialLogin = (service, token) => dispatch => {
     })
 }
 
-const sendSocialConnect = (service, code, token) =>
-  axios.post(`/api/v1/rest-auth/${service}/connect/`, {
-    'code': code
+export const socialConnect = (service, code) => (dispatch, getState) => {
+  return axios.post(`/api/v1/rest-auth/${service}/connect/`, {
+    code
   }, {
     headers: {
-      'Authorization': 'Token ' + token
+      Authorization: 'Token ' + getState().user.token
     }
   })
-
-export const socialConnect = (service, code) => (dispatch, getState) => {
-  return sendSocialConnect(service, code, getState().user.token)
     .then(() => {
       dispatch(replace('/settings'))
     })
@@ -1174,16 +1139,16 @@ export const setErrorSignup = val => ({
   val
 })
 
-function sendSignupInfo (email, password1, password2) {
-  return axios.post('/api/v1/rest-auth/registration/', { email, password1, password2 })
-}
-
 export const signup = (email, password1, password2) => dispatch => {
   dispatch(setLoadingSignup(true))
-  // clear previous signup errors
+    // clear previous signup errors
   dispatch(setErrorSignup({}))
   dispatch(clearNotification())
-  return sendSignupInfo(email, password1, password2)
+  return axios.post('/api/v1/rest-auth/registration/', {
+    email,
+    password1,
+    password2
+  })
     .then(res => {
       dispatch(login(res.data.key, res.data.user))
       dispatch(setLoadingSignup(false))
@@ -1216,16 +1181,13 @@ export const deleteRecipe = id => ({
   id
 })
 
-const sendDeleteRecipe = (token, id) =>
-  axios.delete(`/api/v1/recipes/${id}/`, {
-    headers: {
-      'Authorization': 'Token ' + token
-    }
-  })
-
 export const deletingRecipe = id => (dispatch, getState) => {
   dispatch(setDeletingRecipe(id, true))
-  return sendDeleteRecipe(getState().user.token, id)
+  return axios.delete(`/api/v1/recipes/${id}/`, {
+    headers: {
+      Authorization: 'Token ' + getState().user.token
+    }
+  })
     .then(() => {
       dispatch(deleteRecipe(id))
       dispatch(setDeletingRecipe(id, false))
@@ -1250,18 +1212,20 @@ export const setErrorReset = val => ({
   val
 })
 
-const sendReset = email =>
-  axios.post('/api/v1/rest-auth/password/reset/', { email })
-
 export const reset = email => dispatch => {
   dispatch(setLoadingReset(true))
   dispatch(setErrorReset({}))
   dispatch(clearNotification())
-  return sendReset(email)
+  return axios.post('/api/v1/rest-auth/password/reset/', {
+    email
+  })
     .then(res => {
       dispatch(setLoadingReset(false))
       const message = res && res.data && res.data.detail
-      dispatch(showNotificationWithTimeout({ message, level: 'success' }))
+      dispatch(showNotificationWithTimeout({
+        message,
+        level: 'success'
+      }))
     })
     .catch(err => {
       dispatch(setLoadingReset(false))
@@ -1298,23 +1262,23 @@ export const setErrorResetConfirmation = val => ({
   val
 })
 
-const sendResetConfirmation = (uid, token, newPassword1, newPassword2) =>
-  axios.post('/api/v1/rest-auth/password/reset/confirm/', {
-    'uid': uid,
-    'token': token,
-    'new_password1': newPassword1,
-    'new_password2': newPassword2
-  })
-
 export const resetConfirmation = (uid, token, newPassword1, newPassword2) => dispatch => {
   dispatch(setLoadingResetConfirmation(true))
   dispatch(setErrorResetConfirmation({}))
   dispatch(clearNotification())
-  return sendResetConfirmation(uid, token, newPassword1, newPassword2)
+  return axios.post('/api/v1/rest-auth/password/reset/confirm/', {
+    uid,
+    token,
+    new_password1: newPassword1,
+    new_password2: newPassword2
+  })
     .then(res => {
       dispatch(setLoadingResetConfirmation(false))
       const message = res && res.data && res.data.detail
-      dispatch(showNotificationWithTimeout({ message, level: 'success' }))
+      dispatch(showNotificationWithTimeout({
+        message,
+        level: 'success'
+      }))
       dispatch(push('/login'))
     })
     .catch(err => {
