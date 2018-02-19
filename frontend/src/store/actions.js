@@ -160,18 +160,18 @@ export const loggingOut = () => (dispatch, getState) => {
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(() => {
+  .then(() => {
+    dispatch(logout())
+    dispatch(push('/login'))
+    dispatch(setLoggingOut(false))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
       dispatch(logout())
-      dispatch(push('/login'))
-      dispatch(setLoggingOut(false))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      dispatch(setLoggingOut(false))
-      throw err
-    })
+    }
+    dispatch(setLoggingOut(false))
+    throw err
+  })
 }
 
 export const setLoadingUser = val => ({
@@ -229,27 +229,27 @@ export const updatingEmail = email => (dispatch, getState) => {
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(res => {
-      dispatch(setUserEmail(res.data.email))
-      dispatch(setAvatarURL(res.data.avatar_url))
-      dispatch(setUpdatingUserEmail(false))
-      dispatch(showNotificationWithTimeout({
-        message: 'updated email',
-        level: 'success',
-        delay: 3 * second
-      }))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      dispatch(setUpdatingUserEmail(false))
-      const messageExtra = emailExists(err) ? '- email already in use' : ''
-      dispatch(setNotification({
-        message: `problem updating email ${messageExtra}`,
-        level: 'danger'
-      }))
-    })
+  .then(res => {
+    dispatch(setUserEmail(res.data.email))
+    dispatch(setAvatarURL(res.data.avatar_url))
+    dispatch(setUpdatingUserEmail(false))
+    dispatch(showNotificationWithTimeout({
+      message: 'updated email',
+      level: 'success',
+      delay: 3 * second
+    }))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    dispatch(setUpdatingUserEmail(false))
+    const messageExtra = emailExists(err) ? '- email already in use' : ''
+    dispatch(setNotification({
+      message: `problem updating email ${messageExtra}`,
+      level: 'danger'
+    }))
+  })
 }
 
 export const fetchUser = () => (dispatch, getState) => {
@@ -260,20 +260,20 @@ export const fetchUser = () => (dispatch, getState) => {
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(res => {
-      dispatch(setAvatarURL(res.data.avatar_url))
-      dispatch(setUserEmail(res.data.email))
-      dispatch(setPasswordUsable(res.data.has_usable_password))
-      dispatch(setLoadingUser(false))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      dispatch(setLoadingUser(false))
-      dispatch(setErrorUser(true))
-      throw err
-    })
+  .then(res => {
+    dispatch(setAvatarURL(res.data.avatar_url))
+    dispatch(setUserEmail(res.data.email))
+    dispatch(setPasswordUsable(res.data.has_usable_password))
+    dispatch(setLoadingUser(false))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    dispatch(setLoadingUser(false))
+    dispatch(setErrorUser(true))
+    throw err
+  })
 }
 
 export const setSocialConnections = val => ({
@@ -293,9 +293,9 @@ export const fetchSocialConnections = () => (dispatch, getState) => {
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(res => {
-      dispatch(setSocialConnections(res.data))
-    })
+  .then(res => {
+    dispatch(setSocialConnections(res.data))
+  })
   .catch(err => {
     if (invalidToken(err.response)) {
       dispatch(logout())
@@ -312,14 +312,14 @@ export const disconnectSocialAccount = (provider, id) => (dispatch, getState) =>
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(() => {
-      dispatch(setSocialConnections(
-        [{
-          provider: provider,
-          id: null
-        }]
-      ))
-    })
+  .then(() => {
+    dispatch(setSocialConnections(
+      [{
+        provider: provider,
+        id: null
+      }]
+    ))
+  })
   .catch(err => {
     if (invalidToken(err.response)) {
       dispatch(logout())
@@ -335,18 +335,18 @@ export const fetchUserStats = () => (dispatch, getState) => {
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(res => {
-      dispatch(setUserStats(res.data))
-      dispatch(setLoadingUserStats(false))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      // TODO: handle error
-      dispatch(setLoadingUserStats(false))
-      throw err
-    })
+  .then(res => {
+    dispatch(setUserStats(res.data))
+    dispatch(setLoadingUserStats(false))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    // TODO: handle error
+    dispatch(setLoadingUserStats(false))
+    throw err
+  })
 }
 
 export const setLoadingPasswordUpdate = val => ({
@@ -371,30 +371,30 @@ export const updatingPassword = (password1, password2, oldPassword) => (dispatch
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(() => {
-      dispatch(setLoadingPasswordUpdate(false))
-      dispatch(push('/'))
-      dispatch(showNotificationWithTimeout({
-        message: 'Successfully updated password',
-        level: 'success'
+  .then(() => {
+    dispatch(setLoadingPasswordUpdate(false))
+    dispatch(push('/'))
+    dispatch(showNotificationWithTimeout({
+      message: 'Successfully updated password',
+      level: 'success'
+    }))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    dispatch(setLoadingPasswordUpdate(false))
+    const badRequest = err.response.status === 400
+    if (err.response && badRequest) {
+      const data = err.response.data
+      dispatch(setErrorPasswordUpdate({
+        newPasswordAgain: data['new_password2'],
+        newPassword: data['new_password1'],
+        oldPassword: data['old_password']
       }))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      dispatch(setLoadingPasswordUpdate(false))
-      const badRequest = err.response.status === 400
-      if (err.response && badRequest) {
-        const data = err.response.data
-        dispatch(setErrorPasswordUpdate({
-          newPasswordAgain: data['new_password2'],
-          newPassword: data['new_password1'],
-          oldPassword: data['old_password']
-        }))
-      }
-      throw err
-    })
+    }
+    throw err
+  })
 }
 
 export const setLoadingCart = val => ({
@@ -431,23 +431,23 @@ export const clearCart = () => (dispatch, getState) => {
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(() => {
-      dispatch(clearRecipeCartAmounts())
-      dispatch(setShoppingListEmpty())
-      dispatch(setClearingCart(false))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      dispatch(setClearingCart(false))
-      dispatch(showNotificationWithTimeout({
-        message: 'error clearing cart',
-        level: 'danger',
-        delay: 3 * second
-      }))
-      throw err
-    })
+  .then(() => {
+    dispatch(clearRecipeCartAmounts())
+    dispatch(setShoppingListEmpty())
+    dispatch(setClearingCart(false))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    dispatch(setClearingCart(false))
+    dispatch(showNotificationWithTimeout({
+      message: 'error clearing cart',
+      level: 'danger',
+      delay: 3 * second
+    }))
+    throw err
+  })
 }
 
 export const setRecipeCartAmount = (id, count) => ({
@@ -475,21 +475,21 @@ export const addingToCart = id => (dispatch, getState) => {
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(res => {
-      const {
-        recipe,
-        count
-      } = res.data
-      dispatch(setRecipeCartAmount(recipe, count))
-      dispatch(setRecipeAddingToCart(id, false))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      dispatch(setRecipeAddingToCart(id, false))
-      throw err
-    })
+  .then(res => {
+    const {
+      recipe,
+      count
+    } = res.data
+    dispatch(setRecipeCartAmount(recipe, count))
+    dispatch(setRecipeAddingToCart(id, false))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    dispatch(setRecipeAddingToCart(id, false))
+    throw err
+  })
 }
 
 // TODO: make above use this
@@ -533,21 +533,21 @@ export const removingFromCart = id => (dispatch, getState) => {
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(res => {
-      const {
-        recipe,
-        count
-      } = res.data
-      dispatch(setRecipeCartAmount(recipe, count))
-      dispatch(setRecipeRemovingFromCart(id, false))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      dispatch(setRecipeRemovingFromCart(id, false))
-      throw err
-    })
+  .then(res => {
+    const {
+      recipe,
+      count
+    } = res.data
+    dispatch(setRecipeCartAmount(recipe, count))
+    dispatch(setRecipeRemovingFromCart(id, false))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    dispatch(setRecipeRemovingFromCart(id, false))
+    throw err
+  })
 }
 
 export const setLoadingShoppingList = val => ({
@@ -568,17 +568,17 @@ export const fetchShoppingList = () => (dispatch, getState) => {
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(res => {
-      dispatch(setShoppingList(res.data))
-      dispatch(setLoadingShoppingList(false))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      dispatch(setShoppingListError(true))
-      dispatch(setLoadingShoppingList(false))
-    })
+  .then(res => {
+    dispatch(setShoppingList(res.data))
+    dispatch(setLoadingShoppingList(false))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    dispatch(setShoppingListError(true))
+    dispatch(setLoadingShoppingList(false))
+  })
 }
 
 export const addRecipe = recipe => ({
@@ -605,30 +605,30 @@ export const postNewRecipe = recipe => (dispatch, getState) => {
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(res => {
-      dispatch(addRecipe(res.data))
-      dispatch(clearAddRecipeForm())
-      dispatch(setLoadingAddRecipe(false))
-      dispatch(push('/recipes'))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      const errors = {
-        errorWithName: err.response.data.name != null,
-        errorWithIngredients: err.response.data.ingredients != null,
-        errorWithSteps: err.response.data.steps != null
-      }
-      dispatch(setLoadingAddRecipe(false))
-      dispatch(setErrorAddRecipe(errors))
+  .then(res => {
+    dispatch(addRecipe(res.data))
+    dispatch(clearAddRecipeForm())
+    dispatch(setLoadingAddRecipe(false))
+    dispatch(push('/recipes'))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    const errors = {
+      errorWithName: err.response.data.name != null,
+      errorWithIngredients: err.response.data.ingredients != null,
+      errorWithSteps: err.response.data.steps != null
+    }
+    dispatch(setLoadingAddRecipe(false))
+    dispatch(setErrorAddRecipe(errors))
 
-      dispatch(showNotificationWithTimeout({
-        message: 'problem creating new recipe',
-        level: 'danger',
-        delay: 5 * second
-      }))
-    })
+    dispatch(showNotificationWithTimeout({
+      message: 'problem creating new recipe',
+      level: 'danger',
+      delay: 5 * second
+    }))
+  })
 }
 
 export const setRecipe404 = (id, val) => ({
@@ -651,20 +651,20 @@ export const fetchRecipe = id => (dispatch, getState) => {
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(res => {
-      dispatch(addRecipe(res.data))
-      dispatch(setLoadingRecipe(id, false))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      if (err.response.status === 404) {
-        dispatch(setRecipe404(id, true))
-      }
-      dispatch(setLoadingRecipe(id, false))
-      throw err
-    })
+  .then(res => {
+    dispatch(addRecipe(res.data))
+    dispatch(setLoadingRecipe(id, false))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    if (err.response.status === 404) {
+      dispatch(setRecipe404(id, true))
+    }
+    dispatch(setLoadingRecipe(id, false))
+    throw err
+  })
 }
 
 export const setRecipes = recipes => ({
@@ -690,18 +690,18 @@ export const fetchRecentRecipes = () => (dispatch, getState) => {
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(res => {
-      dispatch(setRecipes(res.data))
-      dispatch(setLoadingRecipes(false))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      dispatch(setErrorRecipes(true))
-      dispatch(setLoadingRecipes(false))
-      throw err
-    })
+  .then(res => {
+    dispatch(setRecipes(res.data))
+    dispatch(setLoadingRecipes(false))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    dispatch(setErrorRecipes(true))
+    dispatch(setLoadingRecipes(false))
+    throw err
+  })
 }
 
 export const fetchRecipeList = () => (dispatch, getState) => {
@@ -713,17 +713,17 @@ export const fetchRecipeList = () => (dispatch, getState) => {
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(res => {
-      dispatch(setRecipes(res.data))
-      dispatch(setLoadingRecipes(false))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      dispatch(setErrorRecipes(true))
-      dispatch(setLoadingRecipes(false))
-    })
+  .then(res => {
+    dispatch(setRecipes(res.data))
+    dispatch(setLoadingRecipes(false))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    dispatch(setErrorRecipes(true))
+    dispatch(setLoadingRecipes(false))
+  })
 }
 
 export const setLoadingAddStepToRecipe = (id, val) => ({
@@ -750,24 +750,24 @@ export const addIngredientToRecipe = (id, ingredient) => ({
   ingredient
 })
 
-// TODO: actually pass the correct stuff
 export const addingRecipeIngredient = (recipeID, ingredient) => (dispatch, getState) => {
   dispatch(setAddingIngredientToRecipe(recipeID, true))
   return axios.post(`/api/v1/recipes/${recipeID}/ingredients/`, ingredient, {
     headers: {
       Authorization: 'Token ' + getState().user.token
     }
-  }).then(res => {
+  })
+  .then(res => {
     dispatch(addIngredientToRecipe(recipeID, res.data))
     dispatch(setAddingIngredientToRecipe(recipeID, false))
   })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      dispatch(setAddingIngredientToRecipe(recipeID, false))
-      throw err
-    })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    dispatch(setAddingIngredientToRecipe(recipeID, false))
+    throw err
+  })
 }
 
 export const updateRecipeName = (id, name) => ({
@@ -783,15 +783,16 @@ export const sendUpdatedRecipeName = (id, name) => (dispatch, getState) => {
     headers: {
       Authorization: 'Token ' + getState().user.token
     }
-  }).then(res => {
+  })
+  .then(res => {
     dispatch(updateRecipeName(res.data.id, res.data.name))
   })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      throw err
-    })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    throw err
+  })
 }
 
 export const updateRecipeSource = (id, source) => ({
@@ -808,15 +809,15 @@ export const setRecipeSource = (id, source) => (dispatch, getState) => {
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(res => {
-      dispatch(updateRecipeSource(res.data.id, res.data.source))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      throw err
-    })
+  .then(res => {
+    dispatch(updateRecipeSource(res.data.id, res.data.source))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    throw err
+  })
 }
 
 export const updateRecipeAuthor = (id, author) => ({
@@ -833,9 +834,9 @@ export const setRecipeAuthor = (id, author) => (dispatch, getState) => {
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(res => {
-      dispatch(updateRecipeAuthor(res.data.id, res.data.author))
-    })
+  .then(res => {
+    dispatch(updateRecipeAuthor(res.data.id, res.data.author))
+  })
   .catch(err => {
     if (invalidToken(err.response)) {
       dispatch(logout())
@@ -858,15 +859,15 @@ export const setRecipeTime = (id, time) => (dispatch, getState) => {
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(res => {
-      dispatch(updateRecipeTime(res.data.id, res.data.time))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      throw err
-    })
+  .then(res => {
+    dispatch(updateRecipeTime(res.data.id, res.data.time))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    throw err
+  })
 }
 
 export const toggleDarkMode = () => ({
@@ -892,17 +893,17 @@ export const updateRecipe = (id, data) => (dispatch, getState) => {
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(res => {
-      dispatch(setRecipe(res.data.id, res.data))
-      dispatch(setRecipeUpdating(id, false))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      dispatch(setRecipeUpdating(id, false))
-      throw err
-    })
+  .then(res => {
+    dispatch(setRecipe(res.data.id, res.data))
+    dispatch(setRecipeUpdating(id, false))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    dispatch(setRecipeUpdating(id, false))
+    throw err
+  })
 }
 
 export const updateIngredient = (recipeID, ingredientID, content) => ({
@@ -921,17 +922,17 @@ export const addingRecipeStep = (recipeID, step) => (dispatch, getState) => {
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(res => {
-      dispatch(addStepToRecipe(recipeID, res.data))
-      dispatch(setLoadingAddStepToRecipe(recipeID, false))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      dispatch(setLoadingAddStepToRecipe(recipeID, false))
-      throw err
-    })
+  .then(res => {
+    dispatch(addStepToRecipe(recipeID, res.data))
+    dispatch(setLoadingAddStepToRecipe(recipeID, false))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    dispatch(setLoadingAddStepToRecipe(recipeID, false))
+    throw err
+  })
 }
 
 export const setRemovingIngredient = (recipeID, ingredientID, val) => ({
@@ -955,17 +956,17 @@ export const updatingIngredient = (recipeID, ingredientID, content) => (dispatch
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(res => {
-      dispatch(updateIngredient(recipeID, ingredientID, res.data))
-      dispatch(setUpdatingIngredient(recipeID, ingredientID, false))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      dispatch(setUpdatingIngredient(recipeID, ingredientID, false))
-      throw err
-    })
+  .then(res => {
+    dispatch(updateIngredient(recipeID, ingredientID, res.data))
+    dispatch(setUpdatingIngredient(recipeID, ingredientID, false))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    dispatch(setUpdatingIngredient(recipeID, ingredientID, false))
+    throw err
+  })
 }
 
 export const deleteIngredient = (recipeID, ingredientID) => ({
@@ -981,17 +982,17 @@ export const deletingIngredient = (recipeID, ingredientID) => (dispatch, getStat
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(() => {
-      dispatch(setRemovingIngredient(recipeID, ingredientID, false))
-      dispatch(deleteIngredient(recipeID, ingredientID))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      dispatch(setRemovingIngredient(recipeID, ingredientID, false))
-      throw err
-    })
+  .then(() => {
+    dispatch(setRemovingIngredient(recipeID, ingredientID, false))
+    dispatch(deleteIngredient(recipeID, ingredientID))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    dispatch(setRemovingIngredient(recipeID, ingredientID, false))
+    throw err
+  })
 }
 
 export const updateStep = (recipeID, stepID, text) => ({
@@ -1024,18 +1025,18 @@ export const updatingStep = (recipeID, stepID, text) => (dispatch, getState) => 
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(res => {
-      const text = res.data.text
-      dispatch(updateStep(recipeID, stepID, text))
-      dispatch(setUpdatingStep(recipeID, stepID, false))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      dispatch(setUpdatingStep(recipeID, stepID, false))
-      throw err
-    })
+  .then(res => {
+    const text = res.data.text
+    dispatch(updateStep(recipeID, stepID, text))
+    dispatch(setUpdatingStep(recipeID, stepID, false))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    dispatch(setUpdatingStep(recipeID, stepID, false))
+    throw err
+  })
 }
 
 export const deleteStep = (recipeID, stepID) => ({
@@ -1051,17 +1052,17 @@ export const deletingStep = (recipeID, stepID) => (dispatch, getState) => {
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(() => {
-      dispatch(deleteStep(recipeID, stepID))
-      dispatch(setRemovingStep(recipeID, stepID, false))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      dispatch(setRemovingStep(recipeID, stepID, false))
-      throw err
-    })
+  .then(() => {
+    dispatch(deleteStep(recipeID, stepID))
+    dispatch(setRemovingStep(recipeID, stepID, false))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    dispatch(setRemovingStep(recipeID, stepID, false))
+    throw err
+  })
 }
 
 export const setErrorLogin = val => ({
@@ -1082,26 +1083,26 @@ export const logUserIn = (email, password) => dispatch => {
     email,
     password
   })
-    .then(res => {
-      dispatch(login(res.data.key, res.data.user))
-      dispatch(setLoadingLogin(false))
-      dispatch(push('/'))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      dispatch(setLoadingLogin(false))
-      const badRequest = err.response.status === 400
-      if (err.response && badRequest) {
-        const data = err.response.data
-        dispatch(setErrorLogin({
-          email: data['email'],
-          password1: data['password1'],
-          nonFieldErrors: data['non_field_errors']
-        }))
-      }
-    })
+  .then(res => {
+    dispatch(login(res.data.key, res.data.user))
+    dispatch(setLoadingLogin(false))
+    dispatch(push('/'))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    dispatch(setLoadingLogin(false))
+    const badRequest = err.response.status === 400
+    if (err.response && badRequest) {
+      const data = err.response.data
+      dispatch(setErrorLogin({
+        email: data['email'],
+        password1: data['password1'],
+        nonFieldErrors: data['non_field_errors']
+      }))
+    }
+  })
 }
 
 export const setErrorSocialLogin = val => ({
@@ -1113,25 +1114,25 @@ export const socialLogin = (service, token) => dispatch => {
   return axios.post(`/api/v1/rest-auth/${service}/`, {
     code: token
   })
-    .then(res => {
-      dispatch(login(res.data.key, res.data.user))
-      dispatch(replace('/'))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      const badRequest = err.response.status === 400
-      if (err.response && badRequest) {
-        const data = err.response.data
-        dispatch(setErrorSocialLogin({
-          emailSocial: data['email'],
-          nonFieldErrorsSocial: data['non_field_errors']
-        }))
-      }
-      dispatch(replace('/login'))
-      throw err
-    })
+  .then(res => {
+    dispatch(login(res.data.key, res.data.user))
+    dispatch(replace('/'))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    const badRequest = err.response.status === 400
+    if (err.response && badRequest) {
+      const data = err.response.data
+      dispatch(setErrorSocialLogin({
+        emailSocial: data['email'],
+        nonFieldErrorsSocial: data['non_field_errors']
+      }))
+    }
+    dispatch(replace('/login'))
+    throw err
+  })
 }
 
 export const socialConnect = (service, code) => (dispatch, getState) => {
@@ -1142,16 +1143,16 @@ export const socialConnect = (service, code) => (dispatch, getState) => {
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(() => {
-      dispatch(replace('/settings'))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      dispatch(replace('/settings'))
-      throw err
-    })
+  .then(() => {
+    dispatch(replace('/settings'))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    dispatch(replace('/settings'))
+    throw err
+  })
 }
 
 export const setLoadingSignup = val => ({
@@ -1174,23 +1175,23 @@ export const signup = (email, password1, password2) => dispatch => {
     password1,
     password2
   })
-    .then(res => {
-      dispatch(login(res.data.key, res.data.user))
-      dispatch(setLoadingSignup(false))
-      dispatch(push('/recipes/add'))
-    })
-    .catch(err => {
-      if (badRequest(err)) {
-        const data = err.response.data
-        dispatch(setErrorSignup({
-          email: data['email'],
-          password1: data['password1'],
-          password2: data['password2'],
-          nonFieldErrors: data['non_field_errors']
-        }))
-      }
-      dispatch(setLoadingSignup(false))
-    })
+  .then(res => {
+    dispatch(login(res.data.key, res.data.user))
+    dispatch(setLoadingSignup(false))
+    dispatch(push('/recipes/add'))
+  })
+  .catch(err => {
+    if (badRequest(err)) {
+      const data = err.response.data
+      dispatch(setErrorSignup({
+        email: data['email'],
+        password1: data['password1'],
+        password2: data['password2'],
+        nonFieldErrors: data['non_field_errors']
+      }))
+    }
+    dispatch(setLoadingSignup(false))
+  })
 }
 
 export const setDeletingRecipe = (id, val) => ({
@@ -1211,18 +1212,18 @@ export const deletingRecipe = id => (dispatch, getState) => {
       Authorization: 'Token ' + getState().user.token
     }
   })
-    .then(() => {
-      dispatch(deleteRecipe(id))
-      dispatch(setDeletingRecipe(id, false))
-      dispatch(push('/recipes'))
-    })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      dispatch(setDeletingRecipe(id, false))
-      throw err
-    })
+  .then(() => {
+    dispatch(deleteRecipe(id))
+    dispatch(setDeletingRecipe(id, false))
+    dispatch(push('/recipes'))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    dispatch(setDeletingRecipe(id, false))
+    throw err
+  })
 }
 
 export const setLoadingReset = val => ({
@@ -1242,34 +1243,34 @@ export const reset = email => dispatch => {
   return axios.post('/api/v1/rest-auth/password/reset/', {
     email
   })
-    .then(res => {
-      dispatch(setLoadingReset(false))
-      const message = res && res.data && res.data.detail
-      dispatch(showNotificationWithTimeout({
-        message,
-        level: 'success'
+  .then(res => {
+    dispatch(setLoadingReset(false))
+    const message = res && res.data && res.data.detail
+    dispatch(showNotificationWithTimeout({
+      message,
+      level: 'success'
+    }))
+  })
+  .catch(err => {
+    dispatch(setLoadingReset(false))
+    dispatch(showNotificationWithTimeout({
+      message: 'uh oh! problem resetting password',
+      level: 'danger',
+      sticky: true
+    }))
+    if (badRequest(err)) {
+      const data = err.response.data
+      dispatch(setErrorReset({
+        email: data['email'],
+        nonFieldErrors: data['non_field_errors']
       }))
-    })
-    .catch(err => {
-      dispatch(setLoadingReset(false))
-      dispatch(showNotificationWithTimeout({
-        message: 'uh oh! problem resetting password',
-        level: 'danger',
-        sticky: true
-      }))
-      if (badRequest(err)) {
-        const data = err.response.data
-        dispatch(setErrorReset({
-          email: data['email'],
-          nonFieldErrors: data['non_field_errors']
-        }))
-      }
-      dispatch(showNotificationWithTimeout({
-        message: 'problem resetting password',
-        level: 'danger',
-        sticky: true
-      }))
-    })
+    }
+    dispatch(showNotificationWithTimeout({
+      message: 'problem resetting password',
+      level: 'danger',
+      sticky: true
+    }))
+  })
 }
 
 export const setLoadingResetConfirmation = val => ({
@@ -1292,36 +1293,36 @@ export const resetConfirmation = (uid, token, newPassword1, newPassword2) => dis
     new_password1: newPassword1,
     new_password2: newPassword2
   })
-    .then(res => {
-      dispatch(setLoadingResetConfirmation(false))
-      const message = res && res.data && res.data.detail
-      dispatch(showNotificationWithTimeout({
-        message,
-        level: 'success'
-      }))
-      dispatch(push('/login'))
-    })
-    .catch(err => {
-      dispatch(setLoadingResetConfirmation(false))
-      dispatch(showNotificationWithTimeout({
-        message: 'uh oh! problem resetting password',
-        level: 'danger',
-        sticky: true
-      }))
-      if (badRequest(err)) {
-        const data = err.response.data
+  .then(res => {
+    dispatch(setLoadingResetConfirmation(false))
+    const message = res && res.data && res.data.detail
+    dispatch(showNotificationWithTimeout({
+      message,
+      level: 'success'
+    }))
+    dispatch(push('/login'))
+  })
+  .catch(err => {
+    dispatch(setLoadingResetConfirmation(false))
+    dispatch(showNotificationWithTimeout({
+      message: 'uh oh! problem resetting password',
+      level: 'danger',
+      sticky: true
+    }))
+    if (badRequest(err)) {
+      const data = err.response.data
 
-        const tokenData = data['token'] && data['token'].map(x => 'token: ' + x)
-        const uidData = data['uid'] && data['uid'].map(x => 'uid: ' + x)
-        const nonFieldErrors = [].concat(data['non_field_errors']).concat(tokenData).concat(uidData)
+      const tokenData = data['token'] && data['token'].map(x => 'token: ' + x)
+      const uidData = data['uid'] && data['uid'].map(x => 'uid: ' + x)
+      const nonFieldErrors = [].concat(data['non_field_errors']).concat(tokenData).concat(uidData)
 
-        dispatch(setErrorReset({
-          newPassword1: data['new_password1'],
-          newPassword2: data['new_password2'],
-          nonFieldErrors
-        }))
-      }
-    })
+      dispatch(setErrorReset({
+        newPassword1: data['new_password1'],
+        newPassword2: data['new_password2'],
+        nonFieldErrors
+      }))
+    }
+  })
 }
 
 export const setAddRecipeFormName = val => ({
