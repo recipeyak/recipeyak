@@ -94,9 +94,8 @@ class RecipeItemContainer extends React.Component {
     this.setState({ count: nextProps.cart_count })
   }
 
-  handleInputChange = e => {
+  handleInputChange = e =>
     this.setState({ [e.target.name]: inputAbs(e.target.value) })
-  }
 
   render () {
     return <RecipeItem
