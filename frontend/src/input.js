@@ -1,7 +1,6 @@
-export const inputAbs = val => {
-  const clanedVal = val.replace(/[^\d]/g, '')
-  const absVal = Math.abs(clanedVal)
-  return Number.isNaN(absVal)
-    ? clanedVal
-    : absVal
+export const inputAbs = v => {
+  const c = v.replace(/[^\d]/g, '')
+  return c.length === 0
+    ? 0
+    : parseInt(c, 10)
 }
