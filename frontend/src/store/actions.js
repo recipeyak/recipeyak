@@ -82,30 +82,26 @@ import { push, replace } from 'react-router-redux'
 
 import axios from 'axios'
 
-axios.interceptors.response.use(function (response) {
-  return response
-}, function (error) {
+axios.interceptors.response.use(
+  response => response,
+  error => {
   // 503 means we are in maintenance mode. Reload to show maintenance page.
-  if (error.response && error.response.status === 503) {
-    location.reload()
-  }
-  return Promise.reject(error)
+    if (error.response && error.response.status === 503) {
+      location.reload()
+    }
+    return Promise.reject(error)
+  })
+
+export const setNotification = ({ message, closeable, level }) => ({
+  type: SET_NOTIFICATION,
+  message,
+  closeable,
+  level
 })
 
-export const setNotification = ({ message, closeable, level }) => {
-  return {
-    type: SET_NOTIFICATION,
-    message,
-    closeable,
-    level
-  }
-}
-
-export const clearNotification = () => {
-  return {
-    type: CLEAR_NOTIFICATION
-  }
-}
+export const clearNotification = () => ({
+  type: CLEAR_NOTIFICATION
+})
 
 // https://stackoverflow.com/a/38574266/3555105
 let notificationTimeout = null
@@ -135,11 +131,9 @@ export const login = (token, user) => ({
   user
 })
 
-export const logout = () => {
-  return {
-    type: LOG_OUT
-  }
-}
+export const logout = () => ({
+  type: LOG_OUT
+})
 
 export const setLoggingOut = val => ({
   type: SET_LOGGING_OUT,
@@ -171,54 +165,40 @@ export const loggingOut = () => (dispatch, getState) => {
     })
 }
 
-export const setLoadingUser = val => {
-  return {
-    type: SET_LOADING_USER,
-    val
-  }
-}
+export const setLoadingUser = val => ({
+  type: SET_LOADING_USER,
+  val
+})
 
-export const setErrorUser = val => {
-  return {
-    type: SET_ERROR_USER,
-    val
-  }
-}
+export const setErrorUser = val => ({
+  type: SET_ERROR_USER,
+  val
+})
 
-export const setLoadingUserStats = val => {
-  return {
-    type: SET_LOADING_USER_STATS,
-    val
-  }
-}
+export const setLoadingUserStats = val => ({
+  type: SET_LOADING_USER_STATS,
+  val
+})
 
-export const setUserStats = val => {
-  return {
-    type: SET_USER_STATS,
-    val
-  }
-}
+export const setUserStats = val => ({
+  type: SET_USER_STATS,
+  val
+})
 
-export const setAvatarURL = url => {
-  return {
-    type: SET_AVATAR_URL,
-    url
-  }
-}
+export const setAvatarURL = url => ({
+  type: SET_AVATAR_URL,
+  url
+})
 
-export const setUserEmail = email => {
-  return {
-    type: SET_USER_EMAIL,
-    email
-  }
-}
+export const setUserEmail = email => ({
+  type: SET_USER_EMAIL,
+  email
+})
 
-export const setPasswordUsable = val => {
-  return {
-    type: SET_PASSWORD_USABLE,
-    val
-  }
-}
+export const setPasswordUsable = val => ({
+  type: SET_PASSWORD_USABLE,
+  val
+})
 
 export const setUpdatingUserEmail = val => ({
   type: SET_UPDATING_USER_EMAIL,
@@ -300,12 +280,10 @@ const getSocialConnections = token =>
     }
   })
 
-export const setSocialConnections = val => {
-  return {
-    type: SET_SOCIAL_ACCOUNT_CONNECTIONS,
-    val
-  }
-}
+export const setSocialConnections = val => ({
+  type: SET_SOCIAL_ACCOUNT_CONNECTIONS,
+  val
+})
 
 export const setSocialConnection = (provider, val) => ({
   type: SET_SOCIAL_ACCOUNT_CONNECTION,
@@ -364,19 +342,15 @@ export const fetchUserStats = () => (dispatch, getState) => {
     })
 }
 
-export const setLoadingPasswordUpdate = val => {
-  return {
-    type: SET_LOADING_PASSWORD_UPDATE,
-    val
-  }
-}
+export const setLoadingPasswordUpdate = val => ({
+  type: SET_LOADING_PASSWORD_UPDATE,
+  val
+})
 
-export const setErrorPasswordUpdate = val => {
-  return {
-    type: SET_ERROR_PASSWORD_UPDATE,
-    val
-  }
-}
+export const setErrorPasswordUpdate = val => ({
+  type: SET_ERROR_PASSWORD_UPDATE,
+  val
+})
 
 const postPasswordChange = (token, password1, password2, oldPassword) =>
   axios.post('/api/v1/rest-auth/password/change/', {
@@ -418,31 +392,25 @@ export const updatingPassword = (password1, password2, oldPassword) => (dispatch
     })
 }
 
-export const setLoadingCart = val => {
-  return {
-    type: SET_LOADING_CART,
-    val
-  }
-}
+export const setLoadingCart = val => ({
+  type: SET_LOADING_CART,
+  val
+})
 
-export const setErrorCart = val => {
-  return {
-    type: SET_ERROR_CART,
-    val
-  }
-}
+export const setErrorCart = val => ({
+  type: SET_ERROR_CART,
+  val
+})
 
 export const setClearingCart = val => ({
   type: SET_CLEARING_CART,
   val
 })
 
-export const setShoppingList = val => {
-  return {
-    type: SET_SHOPPING_LIST,
-    val
-  }
-}
+export const setShoppingList = val => ({
+  type: SET_SHOPPING_LIST,
+  val
+})
 
 export const setShoppingListEmpty = () =>
   setShoppingList([])
@@ -493,13 +461,11 @@ const patchCart = (token, id, count) =>
     }
   })
 
-export const setRecipeAddingToCart = (id, loading) => {
-  return {
-    type: SET_RECIPE_ADDING_TO_CART,
-    id,
-    loading
-  }
-}
+export const setRecipeAddingToCart = (id, loading) => ({
+  type: SET_RECIPE_ADDING_TO_CART,
+  id,
+  loading
+})
 
 export const addingToCart = id => (dispatch, getState) => {
   // we increment the cart value by 1, since we know the default / min cart
@@ -532,13 +498,11 @@ export const updatingCart = (id, count) => (dispatch, getState) =>
       }
     })
 
-export const setRecipeRemovingFromCart = (id, loading) => {
-  return {
-    type: SET_RECIPE_REMOVING_FROM_CART,
-    id,
-    loading
-  }
-}
+export const setRecipeRemovingFromCart = (id, loading) => ({
+  type: SET_RECIPE_REMOVING_FROM_CART,
+  id,
+  loading
+})
 
 export const removingFromCart = id => (dispatch, getState) => {
   const currentCount = getState().recipes[id].cart_count
@@ -559,12 +523,10 @@ export const removingFromCart = id => (dispatch, getState) => {
     })
 }
 
-export const setLoadingShoppingList = val => {
-  return {
-    type: SET_LOADING_SHOPPING_LIST,
-    val
-  }
-}
+export const setLoadingShoppingList = val => ({
+  type: SET_LOADING_SHOPPING_LIST,
+  val
+})
 
 export const setShoppingListError = val => ({
   type: SET_SHOPPING_LIST_ERROR,
@@ -602,26 +564,20 @@ const sendPostNewRecipe = (token, recipe) =>
     }
   })
 
-export const addRecipe = recipe => {
-  return {
-    type: ADD_RECIPE,
-    recipe
-  }
-}
+export const addRecipe = recipe => ({
+  type: ADD_RECIPE,
+  recipe
+})
 
-export const setLoadingAddRecipe = val => {
-  return {
-    type: SET_LOADING_ADD_RECIPE,
-    val
-  }
-}
+export const setLoadingAddRecipe = val => ({
+  type: SET_LOADING_ADD_RECIPE,
+  val
+})
 
-export const setErrorAddRecipe = val => {
-  return {
-    type: SET_ERROR_ADD_RECIPE,
-    val
-  }
-}
+export const setErrorAddRecipe = val => ({
+  type: SET_ERROR_ADD_RECIPE,
+  val
+})
 
 export const postNewRecipe = recipe => (dispatch, getState) => {
   dispatch(setLoadingAddRecipe(true))
@@ -706,26 +662,20 @@ const getRecentRecipes = token =>
     }
   })
 
-export const setRecipes = recipes => {
-  return {
-    type: SET_RECIPES,
-    recipes
-  }
-}
+export const setRecipes = recipes => ({
+  type: SET_RECIPES,
+  recipes
+})
 
-export const setErrorRecipes = val => {
-  return {
-    type: SET_ERROR_RECIPES,
-    val
-  }
-}
+export const setErrorRecipes = val => ({
+  type: SET_ERROR_RECIPES,
+  val
+})
 
-export const setLoadingRecipes = val => {
-  return {
-    type: SET_LOADING_RECIPES,
-    val
-  }
-}
+export const setLoadingRecipes = val => ({
+  type: SET_LOADING_RECIPES,
+  val
+})
 
 export const fetchRecentRecipes = () => (dispatch, getState) => {
   dispatch(setLoadingRecipes(true))
@@ -762,21 +712,17 @@ export const fetchRecipeList = () => (dispatch, getState) => {
     })
 }
 
-export const setLoadingAddStepToRecipe = (id, val) => {
-  return {
-    type: SET_LOADING_ADD_STEP_TO_RECIPE,
-    id,
-    val
-  }
-}
+export const setLoadingAddStepToRecipe = (id, val) => ({
+  type: SET_LOADING_ADD_STEP_TO_RECIPE,
+  id,
+  val
+})
 
-export const addStepToRecipe = (id, step) => {
-  return {
-    type: ADD_STEP_TO_RECIPE,
-    id,
-    step
-  }
-}
+export const addStepToRecipe = (id, step) => ({
+  type: ADD_STEP_TO_RECIPE,
+  id,
+  step
+})
 
 export const setAddingIngredientToRecipe = (id, val) => ({
   type: SET_ADDING_INGREDIENT_TO_RECIPE,
@@ -784,13 +730,11 @@ export const setAddingIngredientToRecipe = (id, val) => ({
   val
 })
 
-export const addIngredientToRecipe = (id, ingredient) => {
-  return {
-    type: ADD_INGREDIENT_TO_RECIPE,
-    id,
-    ingredient
-  }
-}
+export const addIngredientToRecipe = (id, ingredient) => ({
+  type: ADD_INGREDIENT_TO_RECIPE,
+  id,
+  ingredient
+})
 
 const postRecipeIngredient = (token, recipeID, ingredient) =>
   axios.post(`/api/v1/recipes/${recipeID}/ingredients/`, ingredient, {
@@ -816,13 +760,11 @@ export const addingRecipeIngredient = (recipeID, ingredient) => (dispatch, getSt
     })
 }
 
-export const updateRecipeName = (id, name) => {
-  return {
-    type: UPDATE_RECIPE_NAME,
-    id,
-    name
-  }
-}
+export const updateRecipeName = (id, name) => ({
+  type: UPDATE_RECIPE_NAME,
+  id,
+  name
+})
 
 const patchRecipeName = (token, id, name) =>
   axios.patch(`/api/v1/recipes/${id}/`, { name }, {
@@ -844,13 +786,11 @@ export const sendUpdatedRecipeName = (id, name) => (dispatch, getState) => {
     })
 }
 
-export const updateRecipeSource = (id, source) => {
-  return {
-    type: UPDATE_RECIPE_SOURCE,
-    id,
-    source
-  }
-}
+export const updateRecipeSource = (id, source) => ({
+  type: UPDATE_RECIPE_SOURCE,
+  id,
+  source
+})
 
 const patchRecipeSource = (token, id, source) =>
   axios.patch(`/api/v1/recipes/${id}/`, { source }, {
@@ -872,13 +812,11 @@ export const setRecipeSource = (id, source) => (dispatch, getState) => {
     })
 }
 
-export const updateRecipeAuthor = (id, author) => {
-  return {
-    type: UPDATE_RECIPE_AUTHOR,
-    id,
-    author
-  }
-}
+export const updateRecipeAuthor = (id, author) => ({
+  type: UPDATE_RECIPE_AUTHOR,
+  id,
+  author
+})
 
 const patchRecipeAuthor = (token, id, author) =>
   axios.patch(`/api/v1/recipes/${id}/`, { author }, {
@@ -897,13 +835,11 @@ export const setRecipeAuthor = (id, author) => (dispatch, getState) => {
     })
 }
 
-export const updateRecipeTime = (id, time) => {
-  return {
-    type: UPDATE_RECIPE_TIME,
-    id,
-    time
-  }
-}
+export const updateRecipeTime = (id, time) => ({
+  type: UPDATE_RECIPE_TIME,
+  id,
+  time
+})
 
 const patchRecipeTime = (token, id, time) =>
   axios.patch(`/api/v1/recipes/${id}/`, { time }, {
@@ -964,14 +900,12 @@ export const updateRecipe = (id, data) => (dispatch, getState) => {
     })
 }
 
-export const updateIngredient = (recipeID, ingredientID, content) => {
-  return {
-    type: UPDATE_INGREDIENT,
-    recipeID,
-    ingredientID,
-    content
-  }
-}
+export const updateIngredient = (recipeID, ingredientID, content) => ({
+  type: UPDATE_INGREDIENT,
+  recipeID,
+  ingredientID,
+  content
+})
 
 const sendUpdateIngredient = (token, recipeID, ingredientID, content) =>
   axios.patch(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, content, {
@@ -1033,13 +967,11 @@ export const updatingIngredient = (recipeID, ingredientID, content) => (dispatch
     })
 }
 
-export const deleteIngredient = (recipeID, ingredientID) => {
-  return {
-    type: DELETE_INGREDIENT,
-    recipeID,
-    ingredientID
-  }
-}
+export const deleteIngredient = (recipeID, ingredientID) => ({
+  type: DELETE_INGREDIENT,
+  recipeID,
+  ingredientID
+})
 
 const sendDeleteIngredient = (token, recipeID, ingredientID) =>
   axios.delete(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, {
@@ -1064,14 +996,12 @@ export const deletingIngredient = (recipeID, ingredientID) => (dispatch, getStat
     })
 }
 
-export const updateStep = (recipeID, stepID, text) => {
-  return {
-    type: UPDATE_STEP,
-    recipeID,
-    stepID,
-    text
-  }
-}
+export const updateStep = (recipeID, stepID, text) => ({
+  type: UPDATE_STEP,
+  recipeID,
+  stepID,
+  text
+})
 
 export const setRemovingStep = (recipeID, stepID, val) => ({
   type: SET_REMOVING_STEP,
@@ -1111,13 +1041,11 @@ export const updatingStep = (recipeID, stepID, text) => (dispatch, getState) => 
     })
 }
 
-export const deleteStep = (recipeID, stepID) => {
-  return {
-    type: DELETE_STEP,
-    recipeID,
-    stepID
-  }
-}
+export const deleteStep = (recipeID, stepID) => ({
+  type: DELETE_STEP,
+  recipeID,
+  stepID
+})
 
 const sendDeleteStep = (token, recipeID, stepID) =>
   axios.delete(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, {
@@ -1142,19 +1070,15 @@ export const deletingStep = (recipeID, stepID) => (dispatch, getState) => {
     })
 }
 
-export const setErrorLogin = val => {
-  return {
-    type: SET_ERROR_LOGIN,
-    val
-  }
-}
+export const setErrorLogin = val => ({
+  type: SET_ERROR_LOGIN,
+  val
+})
 
-export const setLoadingLogin = val => {
-  return {
-    type: SET_LOADING_LOGIN,
-    val
-  }
-}
+export const setLoadingLogin = val => ({
+  type: SET_LOADING_LOGIN,
+  val
+})
 
 function sendLoginInfo (email, password) {
   return axios.post('/api/v1/rest-auth/login/', { email, password })
@@ -1187,12 +1111,10 @@ export const logUserIn = (email, password) => dispatch => {
     })
 }
 
-export const setErrorSocialLogin = val => {
-  return {
-    type: SET_ERROR_SOCIAL_LOGIN,
-    val
-  }
-}
+export const setErrorSocialLogin = val => ({
+  type: SET_ERROR_SOCIAL_LOGIN,
+  val
+})
 
 const sendSocialLogin = (service, token) =>
   axios.post(`/api/v1/rest-auth/${service}/`, {
@@ -1242,19 +1164,15 @@ export const socialConnect = (service, code) => (dispatch, getState) => {
     })
 }
 
-export const setLoadingSignup = val => {
-  return {
-    type: SET_LOADING_SIGNUP,
-    val
-  }
-}
+export const setLoadingSignup = val => ({
+  type: SET_LOADING_SIGNUP,
+  val
+})
 
-export const setErrorSignup = val => {
-  return {
-    type: SET_ERROR_SIGNUP,
-    val
-  }
-}
+export const setErrorSignup = val => ({
+  type: SET_ERROR_SIGNUP,
+  val
+})
 
 function sendSignupInfo (email, password1, password2) {
   return axios.post('/api/v1/rest-auth/registration/', { email, password1, password2 })
@@ -1322,19 +1240,15 @@ export const deletingRecipe = id => (dispatch, getState) => {
     })
 }
 
-export const setLoadingReset = val => {
-  return {
-    type: SET_LOADING_RESET,
-    val
-  }
-}
+export const setLoadingReset = val => ({
+  type: SET_LOADING_RESET,
+  val
+})
 
-export const setErrorReset = val => {
-  return {
-    type: SET_ERROR_RESET,
-    val
-  }
-}
+export const setErrorReset = val => ({
+  type: SET_ERROR_RESET,
+  val
+})
 
 const sendReset = email =>
   axios.post('/api/v1/rest-auth/password/reset/', { email })
@@ -1374,19 +1288,15 @@ export const reset = email => dispatch => {
     })
 }
 
-export const setLoadingResetConfirmation = val => {
-  return {
-    type: SET_LOADING_RESET_CONFIRMATION,
-    val
-  }
-}
+export const setLoadingResetConfirmation = val => ({
+  type: SET_LOADING_RESET_CONFIRMATION,
+  val
+})
 
-export const setErrorResetConfirmation = val => {
-  return {
-    type: SET_ERROR_RESET_CONFIRMATION,
-    val
-  }
-}
+export const setErrorResetConfirmation = val => ({
+  type: SET_ERROR_RESET_CONFIRMATION,
+  val
+})
 
 const sendResetConfirmation = (uid, token, newPassword1, newPassword2) =>
   axios.post('/api/v1/rest-auth/password/reset/confirm/', {
