@@ -95,6 +95,11 @@ axios.interceptors.response.use(
     return Promise.reject(error)
   })
 
+const invalidToken = res =>
+  res != null && res.data.detail === 'Invalid token.' && res.status === 401
+
+const badRequest = err => err.response && err.response.status === 400
+
 export const setNotification = ({
   message,
   closeable,
@@ -132,9 +137,6 @@ const showNotificationWithTimeout = ({
     }, delay)
   }
 }
-
-const invalidToken = res =>
-  res != null && res.data.detail === 'Invalid token.' && res.status === 401
 
 export const login = (token, user) => ({
   type: LOG_IN,
@@ -270,6 +272,7 @@ export const fetchUser = () => (dispatch, getState) => {
       }
       dispatch(setLoadingUser(false))
       dispatch(setErrorUser(true))
+      throw err
     })
 }
 
@@ -293,6 +296,12 @@ export const fetchSocialConnections = () => (dispatch, getState) => {
     .then(res => {
       dispatch(setSocialConnections(res.data))
     })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    throw err
+  })
 }
 
 export const disconnectSocialAccount = (provider, id) => (dispatch, getState) => {
@@ -311,6 +320,12 @@ export const disconnectSocialAccount = (provider, id) => (dispatch, getState) =>
         }]
       ))
     })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    throw err
+  })
 }
 
 export const fetchUserStats = () => (dispatch, getState) => {
@@ -330,6 +345,7 @@ export const fetchUserStats = () => (dispatch, getState) => {
       }
       // TODO: handle error
       dispatch(setLoadingUserStats(false))
+      throw err
     })
 }
 
@@ -377,6 +393,7 @@ export const updatingPassword = (password1, password2, oldPassword) => (dispatch
           oldPassword: data['old_password']
         }))
       }
+      throw err
     })
 }
 
@@ -471,6 +488,7 @@ export const addingToCart = id => (dispatch, getState) => {
         dispatch(logout())
       }
       dispatch(setRecipeAddingToCart(id, false))
+      throw err
     })
 }
 
@@ -494,6 +512,7 @@ export const updatingCart = (id, count) => (dispatch, getState) =>
     if (invalidToken(err.response)) {
       dispatch(logout())
     }
+    throw err
   })
 
 export const setRecipeRemovingFromCart = (id, loading) => ({
@@ -526,8 +545,8 @@ export const removingFromCart = id => (dispatch, getState) => {
       if (invalidToken(err.response)) {
         dispatch(logout())
       }
-      console.log('error removing recipe from cart', err)
       dispatch(setRecipeRemovingFromCart(id, false))
+      throw err
     })
 }
 
@@ -644,7 +663,7 @@ export const fetchRecipe = id => (dispatch, getState) => {
         dispatch(setRecipe404(id, true))
       }
       dispatch(setLoadingRecipe(id, false))
-      console.log('error fetching recipe', err)
+      throw err
     })
 }
 
@@ -681,6 +700,7 @@ export const fetchRecentRecipes = () => (dispatch, getState) => {
       }
       dispatch(setErrorRecipes(true))
       dispatch(setLoadingRecipes(false))
+      throw err
     })
 }
 
@@ -701,7 +721,6 @@ export const fetchRecipeList = () => (dispatch, getState) => {
       if (invalidToken(err.response)) {
         dispatch(logout())
       }
-      console.warn('error fetching recipe list', err)
       dispatch(setErrorRecipes(true))
       dispatch(setLoadingRecipes(false))
     })
@@ -746,8 +765,8 @@ export const addingRecipeIngredient = (recipeID, ingredient) => (dispatch, getSt
       if (invalidToken(err.response)) {
         dispatch(logout())
       }
-      console.log('error adding recipe ingredient', err)
       dispatch(setAddingIngredientToRecipe(recipeID, false))
+      throw err
     })
 }
 
@@ -771,7 +790,7 @@ export const sendUpdatedRecipeName = (id, name) => (dispatch, getState) => {
       if (invalidToken(err.response)) {
         dispatch(logout())
       }
-      console.log('error updating recipe name', err)
+      throw err
     })
 }
 
@@ -796,7 +815,7 @@ export const setRecipeSource = (id, source) => (dispatch, getState) => {
       if (invalidToken(err.response)) {
         dispatch(logout())
       }
-      console.log('error updating recipe source', err)
+      throw err
     })
 }
 
@@ -817,9 +836,12 @@ export const setRecipeAuthor = (id, author) => (dispatch, getState) => {
     .then(res => {
       dispatch(updateRecipeAuthor(res.data.id, res.data.author))
     })
-    .catch(err => {
-      console.log('error updating recipe author', err)
-    })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    throw err
+  })
 }
 
 export const updateRecipeTime = (id, time) => ({
@@ -843,7 +865,7 @@ export const setRecipeTime = (id, time) => (dispatch, getState) => {
       if (invalidToken(err.response)) {
         dispatch(logout())
       }
-      console.log('error updating recipe time', err)
+      throw err
     })
 }
 
@@ -879,7 +901,7 @@ export const updateRecipe = (id, data) => (dispatch, getState) => {
         dispatch(logout())
       }
       dispatch(setRecipeUpdating(id, false))
-      console.log('error updating recipe ', err)
+      throw err
     })
 }
 
@@ -907,8 +929,8 @@ export const addingRecipeStep = (recipeID, step) => (dispatch, getState) => {
       if (invalidToken(err.response)) {
         dispatch(logout())
       }
-      console.log('error adding recipe step', err)
       dispatch(setLoadingAddStepToRecipe(recipeID, false))
+      throw err
     })
 }
 
@@ -942,7 +964,7 @@ export const updatingIngredient = (recipeID, ingredientID, content) => (dispatch
         dispatch(logout())
       }
       dispatch(setUpdatingIngredient(recipeID, ingredientID, false))
-      console.log('error updating recipe ingredient', err)
+      throw err
     })
 }
 
@@ -968,7 +990,7 @@ export const deletingIngredient = (recipeID, ingredientID) => (dispatch, getStat
         dispatch(logout())
       }
       dispatch(setRemovingIngredient(recipeID, ingredientID, false))
-      console.log('error deleting recipe ingredient', err)
+      throw err
     })
 }
 
@@ -1011,8 +1033,8 @@ export const updatingStep = (recipeID, stepID, text) => (dispatch, getState) => 
       if (invalidToken(err.response)) {
         dispatch(logout())
       }
-      console.log('error updating recipe step', err)
       dispatch(setUpdatingStep(recipeID, stepID, false))
+      throw err
     })
 }
 
@@ -1037,8 +1059,8 @@ export const deletingStep = (recipeID, stepID) => (dispatch, getState) => {
       if (invalidToken(err.response)) {
         dispatch(logout())
       }
-      console.log('error deleting recipe step', err)
       dispatch(setRemovingStep(recipeID, stepID, false))
+      throw err
     })
 }
 
@@ -1124,6 +1146,9 @@ export const socialConnect = (service, code) => (dispatch, getState) => {
       dispatch(replace('/settings'))
     })
     .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
       dispatch(replace('/settings'))
       throw err
     })
@@ -1155,8 +1180,7 @@ export const signup = (email, password1, password2) => dispatch => {
       dispatch(push('/recipes/add'))
     })
     .catch(err => {
-      const badRequest = err.response.status === 400
-      if (err.response && badRequest) {
+      if (badRequest(err)) {
         const data = err.response.data
         dispatch(setErrorSignup({
           email: data['email'],
@@ -1166,7 +1190,6 @@ export const signup = (email, password1, password2) => dispatch => {
         }))
       }
       dispatch(setLoadingSignup(false))
-      console.warn('error with registration', err)
     })
 }
 
@@ -1198,7 +1221,7 @@ export const deletingRecipe = id => (dispatch, getState) => {
         dispatch(logout())
       }
       dispatch(setDeletingRecipe(id, false))
-      console.warn('error deleting recipe', err)
+      throw err
     })
 }
 
@@ -1234,11 +1257,8 @@ export const reset = email => dispatch => {
         level: 'danger',
         sticky: true
       }))
-      console.warn('error with password reset', err)
-      const badRequest = err.response.status === 400
-      if (err.response && badRequest) {
+      if (badRequest(err)) {
         const data = err.response.data
-        console.log(data)
         dispatch(setErrorReset({
           email: data['email'],
           nonFieldErrors: data['non_field_errors']
@@ -1288,9 +1308,7 @@ export const resetConfirmation = (uid, token, newPassword1, newPassword2) => dis
         level: 'danger',
         sticky: true
       }))
-      console.warn('error with password reset', err)
-      const badRequest = err.response.status === 400
-      if (err.response && badRequest) {
+      if (badRequest(err)) {
         const data = err.response.data
 
         const tokenData = data['token'] && data['token'].map(x => 'token: ' + x)
