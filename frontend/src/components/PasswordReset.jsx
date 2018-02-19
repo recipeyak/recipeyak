@@ -23,6 +23,10 @@ class PasswordReset extends React.Component {
   render () {
     const { nonFieldErrors, email } = this.props.error
 
+    const redirect = this.props.loggedIn
+      ? { name: 'Home', route: '/' }
+      : { name: 'Login', route: '/login' }
+
     return (
         <section className="section">
           <Helmet title='Password Reset'/>
@@ -58,7 +62,7 @@ class PasswordReset extends React.Component {
                       </ButtonPrimary>
                     </p>
 
-                    <Link to="/login" className="my-button is-link">Login →</Link>
+                    <Link to={ redirect.route } className="my-button is-link">{ redirect.name } →</Link>
                   </div>
                 </form>
               </div>
