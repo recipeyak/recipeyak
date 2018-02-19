@@ -6,6 +6,8 @@ import RecipeEdit from '../containers/RecipeEdit'
 import NoMatch from './NoMatch'
 import { ButtonPrimary } from './Buttons'
 
+import { inputAbs } from '../input'
+
 const MetaData = ({
   author = '',
   source = '',
@@ -162,7 +164,7 @@ class Recipe extends React.Component {
   }
 
   handleInputChange = e =>
-    this.setState({ [e.target.name]: e.target.value })
+    this.setState({ [e.target.name]: inputAbs(e.target.value) })
 
   componentWillMount = () => {
     this.props.fetchRecipe(this.props.match.params.id)

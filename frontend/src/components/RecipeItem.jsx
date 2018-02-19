@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 
 import { ButtonPrimary } from './Buttons'
 
+import { inputAbs } from '../input'
+
 const toURL = (x = '') => x.replace(/\s/g, '-')
 
 export const recipeURL = (id, name) => `/recipes/${id}-${toURL(name)}`
@@ -92,8 +94,9 @@ class RecipeItemContainer extends React.Component {
     this.setState({ count: nextProps.cart_count })
   }
 
-  handleInputChange = e =>
-    this.setState({ [e.target.name]: e.target.value })
+  handleInputChange = e => {
+    this.setState({ [e.target.name]: inputAbs(e.target.value) })
+  }
 
   render () {
     return <RecipeItem
