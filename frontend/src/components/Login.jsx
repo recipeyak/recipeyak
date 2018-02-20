@@ -6,6 +6,8 @@ import SocialButtons from './SocialButtons'
 import { FormErrorHandler } from './Forms'
 import { ButtonPrimary } from './Buttons'
 
+import AuthContainer from './AuthContainer'
+
 class Login extends React.Component {
   state = {
     email: '',
@@ -31,69 +33,65 @@ class Login extends React.Component {
     const { emailSocial, nonFieldErrorsSocial } = this.props.errorSocial
 
     return (
-        <section className="section">
+      <AuthContainer>
+        <div className="box p-3">
           <Helmet title='Login'/>
-          <div className="container">
-            <div className="columns">
-              <div className="column is-half-tablet is-offset-one-quarter-tablet is-one-third-desktop is-offset-one-third-desktop box">
-                <div className="tabs is-boxed">
-                  <ul>
-                    <li className="is-active">
-                      <Link to="/login"><span>Login</span></Link>
-                    </li>
-                    <li>
-                      <Link to="/signup"><span>Sign Up</span></Link>
-                    </li>
-                  </ul>
-                </div>
-
-                <form onSubmit={ e => this.handleLogin(e) }>
-                  <div className="field">
-                    <label className="label">Email</label>
-                    <p className="control">
-                      <input
-                        onChange={ e => this.handleInputChange(e) }
-                        className={'my-input' + (email ? ' is-danger' : '')}
-                        autoFocus
-                        name="email"
-                        type="email"
-                        placeholder="rick.sanchez@me.com"/>
-                    </p>
-                    <FormErrorHandler error={email}/>
-                  </div>
-
-                  <div className="field">
-                    <label htmlFor="password" className="label">Password</label>
-                    <p className="control">
-                      <input
-                        onChange={ e => this.handleInputChange(e) }
-                        className={'my-input' + (password1 ? ' is-danger' : '')}
-                        type="password"
-                        name="password"
-                        id="password"
-                        placeholder="Super secret password."/>
-                    </p>
-                    <FormErrorHandler error={password1}/>
-                    <FormErrorHandler error={nonFieldErrors}/>
-                  </div>
-
-                  <div className="field d-flex flex-space-between">
-                    <p className="control">
-                      <ButtonPrimary
-                        type="submit"
-                        loading={ loading }>
-                        Submit
-                      </ButtonPrimary>
-                    </p>
-                    <Link to="/password-reset" className="my-button is-link">Forgot Password?</Link>
-                  </div>
-
-                  </form>
-                  <SocialButtons nonFieldErrors={nonFieldErrorsSocial} emailError={emailSocial} />
-              </div>
-            </div>
+          <div className="tabs is-boxed">
+            <ul>
+              <li className="is-active">
+                <Link to="/login"><span>Login</span></Link>
+              </li>
+              <li>
+                <Link to="/signup"><span>Sign Up</span></Link>
+              </li>
+            </ul>
           </div>
-        </section>
+
+          <form onSubmit={ e => this.handleLogin(e) }>
+            <div className="field">
+              <label className="label">Email</label>
+              <p className="control">
+                <input
+                  onChange={ e => this.handleInputChange(e) }
+                  className={'my-input' + (email ? ' is-danger' : '')}
+                  autoFocus
+                  name="email"
+                  type="email"
+                  placeholder="rick.sanchez@me.com"/>
+              </p>
+              <FormErrorHandler error={email}/>
+            </div>
+
+            <div className="field">
+              <label htmlFor="password" className="label">Password</label>
+              <p className="control">
+                <input
+                  onChange={ e => this.handleInputChange(e) }
+                  className={'my-input' + (password1 ? ' is-danger' : '')}
+                  type="password"
+                  name="password"
+                  id="password"
+                  placeholder="Super secret password."/>
+              </p>
+              <FormErrorHandler error={password1}/>
+              <FormErrorHandler error={nonFieldErrors}/>
+            </div>
+
+            <div className="field d-flex flex-space-between">
+              <p className="control">
+                <ButtonPrimary
+                  type="submit"
+                  loading={ loading }>
+                  Submit
+                </ButtonPrimary>
+              </p>
+              <Link to="/password-reset" className="my-button is-link">Forgot Password?</Link>
+            </div>
+
+            </form>
+            <SocialButtons nonFieldErrors={nonFieldErrorsSocial} emailError={emailSocial} />
+        </div>
+      </AuthContainer>
     )
   }
 }

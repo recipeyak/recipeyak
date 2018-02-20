@@ -51,6 +51,7 @@ module.exports = {
       ignoreRestSiblings: false,
       argsIgnorePattern: '^_',
     }],
+    'template-curly-spacing': ['warn', 'never'],
     // we don't trigger on properties since the python backend returns json
     // with snake case
     'camelcase': ['warn', { properties: 'never' }],
