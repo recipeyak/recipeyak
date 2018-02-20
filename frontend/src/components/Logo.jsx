@@ -1,7 +1,7 @@
 import React from 'react'
 
-export const Logo = () =>
-  <svg className="mr-2 fill-text-color w-8" viewBox="0 0 598 579" version="1.1" xmlns="http://www.w3.org/2000/svg" >
+export const Logo = ({ light = false }) =>
+  <svg className={`mr-2 ${light ? 'fill-white' : 'fill-text-color'} w-8`} viewBox="0 0 598 579" version="1.1" xmlns="http://www.w3.org/2000/svg" >
     <g id="recipeyak" stroke="none" strokeWidth="1" fillRule="evenodd">
       <g id="Artboard" transform="translate(-294.000000, -238.000000)" >
         <g id="Artboard-2-Copy-8" transform="translate(281.000000, 227.000000)">
