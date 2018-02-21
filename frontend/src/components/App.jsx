@@ -7,6 +7,7 @@ import {
 import {
   ConnectedRouter
 } from 'react-router-redux'
+import { Helmet } from 'react-helmet'
 
 import { history, store } from '../store/store.js'
 
@@ -56,6 +57,10 @@ const PublicOnlyRoute = ({ component: Component, ...rest }) => (
 
 const Base = () => (
   <div>
+    <Helmet
+      defaultTitle='Recipe Yak'
+      titleTemplate='%s | Recipe Yak'
+    />
     <ConnectedRouter history={ history }>
       <Switch>
         <PublicOnlyRoute exact path="/login" component={ Login }/>
