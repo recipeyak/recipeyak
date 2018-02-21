@@ -32,7 +32,7 @@ class PasswordReset extends React.Component {
       <AuthContainer>
         <Helmet title='Password Reset'/>
         <form className="box p-3" onSubmit={ e => this.handleReset(e) }>
-          <h1 className="title is-5">Password Reset</h1>
+          <h1 className="title is-5 mb-2 fw-500">Password Reset</h1>
 
           <FormErrorHandler error={nonFieldErrors}/>
 
@@ -46,12 +46,13 @@ class PasswordReset extends React.Component {
                 type="email"
                 name="email"
                 value={ this.state.email }
+                required
                 placeholder="rick.sanchez@me.com"/>
             </p>
             <FormErrorHandler error={email}/>
           </div>
 
-          <div className="field d-flex flex-space-between">
+          <div className="field d-flex flex-space-between align-items-center">
             <p className="control">
               <ButtonPrimary
                 loading={ this.props.loading }
@@ -60,7 +61,7 @@ class PasswordReset extends React.Component {
               </ButtonPrimary>
             </p>
 
-            <Link to={ redirect.route } className="my-button is-link">{ redirect.name } →</Link>
+            <Link to={ redirect.route }>{ redirect.name } →</Link>
           </div>
         </form>
       </AuthContainer>
