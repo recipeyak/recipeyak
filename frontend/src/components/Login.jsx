@@ -36,7 +36,7 @@ class Login extends React.Component {
       <AuthContainer>
         <div className="box p-3">
           <Helmet title='Login'/>
-          <div className="tabs is-boxed">
+          <div className="tabs is-boxed mb-2">
             <ul>
               <li className="is-active">
                 <Link to="/login"><span>Login</span></Link>
@@ -77,7 +77,7 @@ class Login extends React.Component {
               <FormErrorHandler error={nonFieldErrors}/>
             </div>
 
-            <div className="field d-flex flex-space-between">
+            <div className="field d-flex flex-space-between align-items-center">
               <p className="control">
                 <ButtonPrimary
                   type="submit"
@@ -85,7 +85,7 @@ class Login extends React.Component {
                   Submit
                 </ButtonPrimary>
               </p>
-              <Link to="/password-reset" className="my-button is-link">Forgot Password?</Link>
+              <Link to="/password-reset">Forgot Password?</Link>
             </div>
 
             </form>
