@@ -3,8 +3,8 @@ import {
 } from '../actionTypes'
 
 interface CartAction {
-  type: string;
-  val: boolean;
+  type: typeof SET_CLEARING_CART
+  val: boolean
 }
 
 const cart = (state = {

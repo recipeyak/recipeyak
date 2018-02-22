@@ -12,3 +12,4 @@ frontend/jest_0
 backup
 __pycache__
 .env-dev
+backend/.pytest_cache
