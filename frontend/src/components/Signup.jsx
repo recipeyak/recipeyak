@@ -38,10 +38,10 @@ class Signup extends React.Component {
           <div className="tabs is-boxed mb-2">
             <ul>
               <li>
-                <Link to="/login"><span>Login</span></Link>
+                <Link to="/login">Login</Link>
               </li>
               <li className="is-active">
-                <Link to="/signup"><span>Sign Up</span></Link>
+                <Link to="/signup">Sign Up</Link>
               </li>
             </ul>
           </div>
@@ -51,7 +51,6 @@ class Signup extends React.Component {
           <form onSubmit={ e => this.handleSignup(e) }>
             <div className="field">
               <label className="label">Email</label>
-              <p className="control">
                 <input
                   onChange={ e => this.handleInputChange(e) }
                   className={'my-input' + (email ? ' is-danger' : '')}
@@ -59,13 +58,11 @@ class Signup extends React.Component {
                   name="email"
                   type="email"
                   placeholder="rick.sanchez@me.com"/>
-              </p>
               <FormErrorHandler error={email}/>
             </div>
 
             <div className="field">
               <label htmlFor="password1" className="label">Password</label>
-              <p className="control">
                 <input
                   onChange={ e => this.handleInputChange(e) }
                   className={'my-input' + (password1 ? ' is-danger' : '')}
@@ -73,13 +70,11 @@ class Signup extends React.Component {
                   name="password1"
                   id="password1"
                   placeholder="Super secret password."/>
-              </p>
               <FormErrorHandler error={password1}/>
             </div>
 
             <div className="field">
               <label htmlFor="password2" className="label">Password Again</label>
-              <p className="control">
                 <input
                   onChange={ e => this.handleInputChange(e) }
                   className={'my-input' + (password2 ? ' is-danger' : '')}
@@ -87,19 +82,16 @@ class Signup extends React.Component {
                   name="password2"
                   id="password2"
                   placeholder="Enter your password again."/>
-              </p>
               <FormErrorHandler error={password2}/>
             </div>
 
             <div className="field d-flex flex-space-between align-items-center">
-              <p className="control">
                 <ButtonPrimary
                   type="submit"
                   loading={ loading }>
                   Submit
                 </ButtonPrimary>
 
-              </p>
               <Link to="/password-reset">Forgot Password?</Link>
             </div>
 

@@ -38,7 +38,6 @@ class PasswordReset extends React.Component {
 
           <div className="field">
             <label className="label">Email</label>
-            <p className="control">
               <input
                 autoFocus
                 onChange={ this.handleInputChange }
@@ -48,18 +47,15 @@ class PasswordReset extends React.Component {
                 value={ this.state.email }
                 required
                 placeholder="rick.sanchez@me.com"/>
-            </p>
             <FormErrorHandler error={email}/>
           </div>
 
           <div className="field d-flex flex-space-between align-items-center">
-            <p className="control">
               <ButtonPrimary
                 loading={ this.props.loading }
                 type="submit">
                 Send Reset Email
               </ButtonPrimary>
-            </p>
 
             <Link to={ redirect.route }>{ redirect.name } →</Link>
           </div>

@@ -39,10 +39,10 @@ class Login extends React.Component {
           <div className="tabs is-boxed mb-2">
             <ul>
               <li className="is-active">
-                <Link to="/login"><span>Login</span></Link>
+                <Link to="/login">Login</Link>
               </li>
               <li>
-                <Link to="/signup"><span>Sign Up</span></Link>
+                <Link to="/signup">Sign Up</Link>
               </li>
             </ul>
           </div>
@@ -50,7 +50,6 @@ class Login extends React.Component {
           <form onSubmit={ e => this.handleLogin(e) }>
             <div className="field">
               <label className="label">Email</label>
-              <p className="control">
                 <input
                   onChange={ e => this.handleInputChange(e) }
                   className={'my-input' + (email ? ' is-danger' : '')}
@@ -58,13 +57,11 @@ class Login extends React.Component {
                   name="email"
                   type="email"
                   placeholder="rick.sanchez@me.com"/>
-              </p>
               <FormErrorHandler error={email}/>
             </div>
 
             <div className="field">
               <label htmlFor="password" className="label">Password</label>
-              <p className="control">
                 <input
                   onChange={ e => this.handleInputChange(e) }
                   className={'my-input' + (password1 ? ' is-danger' : '')}
@@ -72,19 +69,16 @@ class Login extends React.Component {
                   name="password"
                   id="password"
                   placeholder="Super secret password."/>
-              </p>
               <FormErrorHandler error={password1}/>
               <FormErrorHandler error={nonFieldErrors}/>
             </div>
 
             <div className="field d-flex flex-space-between align-items-center">
-              <p className="control">
                 <ButtonPrimary
                   type="submit"
                   loading={ loading }>
                   Submit
                 </ButtonPrimary>
-              </p>
               <Link to="/password-reset">Forgot Password?</Link>
             </div>
 
