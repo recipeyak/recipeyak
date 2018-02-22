@@ -2,6 +2,9 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
+import { FormErrorHandler } from './Forms'
+import { ButtonPrimary } from './Buttons'
+
 class PasswordResetConfirmation extends React.Component {
   state = {
     newPassword1: '',
@@ -28,14 +31,6 @@ class PasswordResetConfirmation extends React.Component {
   render () {
     const { nonFieldErrors, newPassword1, newPassword2 } = this.props.error
 
-    const errorHandler = err =>
-      !!err &&
-      <div className="help is-danger">
-        <ul>
-          {err.map(e => (<li key={e}>{e}</li>))}
-        </ul>
-      </div>
-
     return (
         <section className="section">
           <Helmet title='Password Reset'/>
@@ -45,7 +40,7 @@ class PasswordResetConfirmation extends React.Component {
                 <form onSubmit={ this.handleReset }>
                   <h1 className="title is-5">Password Reset Confirmation</h1>
 
-                  { errorHandler(nonFieldErrors) }
+                  <FormErrorHandler error={nonFieldErrors}/>
 
                   <div className="field">
                     <label className="label">Password</label>
@@ -58,7 +53,7 @@ class PasswordResetConfirmation extends React.Component {
                         name="newPassword1"
                         value={ this.state.newPassword1 }/>
                     </p>
-                    { errorHandler(newPassword1) }
+                    <FormErrorHandler error={newPassword1}/>
                   </div>
 
                   <div className="field">
@@ -71,16 +66,16 @@ class PasswordResetConfirmation extends React.Component {
                         name="newPassword2"
                         value={ this.state.newPassword2 }/>
                     </p>
-                    { errorHandler(newPassword2) }
+                    <FormErrorHandler error={newPassword2}/>
                   </div>
 
                   <div className="field d-flex flex-space-between">
                     <p className="control">
-                      <button
-                        className={ (this.props.loading ? 'is-loading ' : '') + 'my-button is-primary' }
+                      <ButtonPrimary
+                        loading={ this.props.loading }
                         type="submit">
                         Change Password
-                      </button>
+                      </ButtonPrimary>
                     </p>
 
                     <Link to="/login" className="my-button is-link">To Login</Link>

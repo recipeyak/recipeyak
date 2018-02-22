@@ -7,6 +7,7 @@ import {
 import {
   ConnectedRouter
 } from 'react-router-redux'
+import { Helmet } from 'react-helmet'
 
 import { history, store } from '../store/store.js'
 
@@ -43,34 +44,49 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
   }}/>
 )
 
+const PublicOnlyRoute = ({ component: Component, ...rest }) => (
+  <Route {...rest} render={props => {
+    return !isAuthenticated()
+      ? <Component {...props}/>
+      : <Redirect to={{
+        pathname: '/',
+        state: { from: props.location }
+      }}/>
+  }}/>
+)
+
 const Base = () => (
   <div>
+    <Helmet
+      defaultTitle='Recipe Yak'
+      titleTemplate='%s | Recipe Yak'
+    />
     <ConnectedRouter history={ history }>
-      <ContainerBase>
-        <Switch>
-          { /* since the landing page doesn't use a signal container, we have
-            to move it outside of the <Container/>  */ }
-          <Route exact path="/" component={ Home }/>
-          <Container>
-            <Switch>
-              <Route exact path="/login" component={ Login }/>
-              <Route exact path="/accounts/:service" component={ OAuth }/>
-              <Route exact path="/accounts/:service/connect" component={ OAuthConnect }/>
-              <Route exact path="/signup" component={ Signup }/>
-              <Route exact path="/password-reset" component={ PasswordReset }/>
-              <Route exact path="/password-reset/confirm/:uid([0-9A-Za-z_\-]+).:token([0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})" component={ PasswordResetConfirmation }/>
-              <PrivateRoute exact path="/recipes/add" component={ AddRecipe }/>
-              <PrivateRoute exact path="/recipes/" component={ RecipeList }/>
-              <PrivateRoute exact path="/cart" component={ Cart }/>
-              <PrivateRoute exact path="/recipes/:id(\d+)(.*)" component={ Recipe }/>
-              <PrivateRoute exact path="/settings" component={ Settings }/>
-              <PrivateRoute exact path="/password" component={ PasswordChange }/>
-              <PrivateRoute exact path="/password/set" component={ PasswordSet }/>
-              <Route component={ NoMatch }/>
-            </Switch>
-          </Container>
-        </Switch>
-      </ContainerBase>
+      <Switch>
+        <PublicOnlyRoute exact path="/login" component={ Login }/>
+        <PublicOnlyRoute exact path="/signup" component={ Signup }/>
+        <Route exact path="/password-reset" component={ PasswordReset }/>
+        <ContainerBase>
+          <Switch>
+            <Route exact path="/" component={ Home }/>
+            <Container>
+              <Switch>
+                <Route exact path="/accounts/:service" component={ OAuth }/>
+                <Route exact path="/accounts/:service/connect" component={ OAuthConnect }/>
+                <Route exact path="/password-reset/confirm/:uid([0-9A-Za-z_\-]+).:token([0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})" component={ PasswordResetConfirmation }/>
+                <PrivateRoute exact path="/recipes/add" component={ AddRecipe }/>
+                <PrivateRoute exact path="/recipes/" component={ RecipeList }/>
+                <PrivateRoute exact path="/cart" component={ Cart }/>
+                <PrivateRoute exact path="/recipes/:id(\d+)(.*)" component={ Recipe }/>
+                <PrivateRoute exact path="/settings" component={ Settings }/>
+                <PrivateRoute exact path="/password" component={ PasswordChange }/>
+                <PrivateRoute exact path="/password/set" component={ PasswordSet }/>
+                <Route component={ NoMatch }/>
+              </Switch>
+            </Container>
+          </Switch>
+        </ContainerBase>
+      </Switch>
     </ConnectedRouter>
     <Notification/>
   </div>

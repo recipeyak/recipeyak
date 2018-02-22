@@ -5,7 +5,7 @@
 1. Create an `.env-dev` file. It can be empty.
 2. Startup dev environment
 ```
-docker-compose -f docker-compose-dev.yml up
+docker-compose -f docker-compose-dev.yml up -d
 ```
 
 ### Using `pdb` with
@@ -29,14 +29,14 @@ setup as .dockerignore files are only used with `ADD` and `COPY`
 docker-compose -f docker-compose-dev.yml up
 # frontend
 # w/ watch mode
-docker-compose -f docker-compose-dev.yml exec react npm run test src/
+docker-compose -f docker-compose-dev.yml exec react npm run test
 # w/ coverage (no watch mode)
-docker-compose -f docker-compose-dev.yml exec react npm run test-cov src/
+docker-compose -f docker-compose-dev.yml exec react npm run test-cov
 
 # backend
 # quick dev test
 docker-compose -f docker-compose-dev.yml exec backend make test-dev
-# slow full test with mypy, pytest_cov, et al.
+# slow, full test with mypy, pytest_cov, et al.
 docker-compose -f docker-compose-dev.yml exec backend make test
 ```
 
@@ -44,14 +44,15 @@ docker-compose -f docker-compose-dev.yml exec backend make test
 ### Creating environment
 You can create a remote docker machine on AWS using:
 ```
-docker-machine create --driver amazonec2 <machine-name>
+MACHINE_NAME='grunniens'
+docker-machine create --driver amazonec2 $MACHINE_NAME
 ```
 
 ### Deploying containers
 
 1. Switch your context to the remote machine using:
 ```
-eval $(docker-machine env <machine-name>)
+eval $(docker-machine env $MACHINE_NAME)
 ```
 
 2. Copy `.env-example` to `.env` and add in the proper configuration variables

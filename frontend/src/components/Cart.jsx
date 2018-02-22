@@ -86,7 +86,7 @@ class Cart extends React.Component {
             className={ `my-button control ${clearingCart ? 'is-loading' : ''}` }>Clear Cart</button>
         </div>
         <div>
-          <div className={`box p-rel ${loadingShoppingList ? 'has-text-grey-light' : ''}`} >
+          <div className={`box p-rel min-height-75px ${loadingShoppingList ? 'has-text-grey-light' : ''}`} >
             <button
               onClick={ () => selectElementText(document.querySelector('#shoppinglist')) }
               className="my-button is-small r-5 p-abs">

@@ -2,6 +2,10 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
+import { FormErrorHandler } from './Forms'
+import { ButtonPrimary } from './Buttons'
+import AuthContainer from './AuthContainer'
+
 class PasswordReset extends React.Component {
   state = {
     email: ''
@@ -20,56 +24,43 @@ class PasswordReset extends React.Component {
   render () {
     const { nonFieldErrors, email } = this.props.error
 
-    const errorHandler = err =>
-      !!err &&
-      <p className="help is-danger">
-        <ul>
-          {err.map(e => (<li>{e}</li>))}
-        </ul>
-      </p>
+    const redirect = this.props.loggedIn
+      ? { name: 'Home', route: '/' }
+      : { name: 'Login', route: '/login' }
 
     return (
-        <section className="section">
-          <Helmet title='Password Reset'/>
-          <div className="container">
-            <div className="columns">
-              <div className="column is-half-tablet is-offset-one-quarter-tablet is-one-third-desktop is-offset-one-third-desktop box">
-                <form onSubmit={ e => this.handleReset(e) }>
-                  <h1 className="title is-5">Password Reset</h1>
+      <AuthContainer>
+        <Helmet title='Password Reset'/>
+        <form className="box p-3" onSubmit={ e => this.handleReset(e) }>
+          <h1 className="title is-5 mb-2 fw-500">Password Reset</h1>
 
-                  { errorHandler(nonFieldErrors) }
+          <FormErrorHandler error={nonFieldErrors}/>
 
-                  <div className="field">
-                    <label className="label">Email</label>
-                    <p className="control">
-                      <input
-                        autoFocus
-                        onChange={ this.handleInputChange }
-                        className={'my-input' + (email ? ' is-danger' : '')}
-                        type="email"
-                        name="email"
-                        value={ this.state.email }
-                        placeholder="rick.sanchez@me.com"/>
-                    </p>
-                    { errorHandler(email) }
-                  </div>
-
-                  <div className="field d-flex flex-space-between">
-                    <p className="control">
-                      <button
-                        className={ (this.props.loading ? 'is-loading ' : '') + 'my-button is-primary' }
-                        type="submit">
-                        Send Reset Email
-                      </button>
-                    </p>
-
-                    <Link to="/login" className="my-button is-link">To Login</Link>
-                  </div>
-                </form>
-              </div>
-            </div>
+          <div className="field">
+            <label className="label">Email</label>
+              <input
+                autoFocus
+                onChange={ this.handleInputChange }
+                className={'my-input' + (email ? ' is-danger' : '')}
+                type="email"
+                name="email"
+                value={ this.state.email }
+                required
+                placeholder="rick.sanchez@me.com"/>
+            <FormErrorHandler error={email}/>
           </div>
-        </section>
+
+          <div className="field d-flex flex-space-between align-items-center">
+              <ButtonPrimary
+                loading={ this.props.loading }
+                type="submit">
+                Send Reset Email
+              </ButtonPrimary>
+
+            <Link to={ redirect.route }>{ redirect.name } →</Link>
+          </div>
+        </form>
+      </AuthContainer>
     )
   }
 }

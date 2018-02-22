@@ -2,6 +2,13 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
+import addRecipeImg from './images/add-recipe.png'
+import cartDoublingImg from './images/cart-doubling.png'
+import cartImg from './images/cart.png'
+import homepageImg from './images/homepage.png'
+import listImg from './images/list.png'
+import searchImg from './images/search.png'
+
 const isOdd = i => i % 2 !== 0
 
 const LandingPage = () =>
@@ -16,7 +23,7 @@ const LandingPage = () =>
     </section>
     <section className="pt-4 bg-50-50-primary pr-4 pl-4">
       <section className="container">
-        <img className="box-shadow-normal" src="/homepage.png" alt=""/>
+        <img className="box-shadow-normal" src={ homepageImg } alt=""/>
       </section>
     </section>
 
@@ -28,19 +35,19 @@ const LandingPage = () =>
           [
             {
               text: 'Sift through through your entire recipe collection in milliseconds with the enhanced search box.',
-              imgURL: '/search.png'
+              imgURL: searchImg
             },
             {
               text: 'Keep all your recipes in one place with unlimited recipe storage',
-              imgURL: '/list.png'
+              imgURL: listImg
             },
             {
               text: 'Automatically generate a condensed shopping list by adding recipes to your cart.',
-              imgURL: '/cart.png'
+              imgURL: cartImg
             },
             {
               text: 'Easily double recipes and have the resulting ingredients appear in your shopping list',
-              imgURL: '/cart-doubling.png'
+              imgURL: cartDoublingImg
             }
           ].map(({ text, imgURL }, i) =>
             <li className="feature-grid" key={ text }>
@@ -63,15 +70,15 @@ const LandingPage = () =>
           [
             {
               text: <span>After logging in, add your recipes to the store via the <Link className="text-decoration-underline" to="/recipes/add">Add Recipe</Link> form.</span>,
-              imgURL: '/add-recipe.png'
+              imgURL: addRecipeImg
             },
             {
               text: <span>Search through your <Link to="/recipes" className="text-decoration-underline">recipe list</Link> and add recipes to your cart.</span>,
-              imgURL: '/search.png'
+              imgURL: searchImg
             },
             {
               text: <span>Double any necessary recipes and print the automatically generated shopping list.</span>,
-              imgURL: '/cart-doubling.png'
+              imgURL: cartDoublingImg
             }
           ].map(({ text, imgURL }, i) =>
             <li className="feature-grid" key={ imgURL }>

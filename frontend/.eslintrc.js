@@ -51,6 +51,7 @@ module.exports = {
       ignoreRestSiblings: false,
       argsIgnorePattern: '^_',
     }],
+    'template-curly-spacing': ['warn', 'never'],
     // we don't trigger on properties since the python backend returns json
     // with snake case
     'camelcase': ['warn', { properties: 'never' }],
@@ -59,6 +60,7 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
     'object-curly-spacing': ['warn', 'always'],
     'no-multiple-empty-lines': ['warn', { 'max': 1, 'maxEOF': 0 }],
+    'no-multi-spaces': ['warn'],
     'prefer-const': ['error', {
         'destructuring': 'any',
         'ignoreReadBeforeAssign': false

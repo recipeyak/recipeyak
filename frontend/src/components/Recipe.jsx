@@ -4,6 +4,9 @@ import { Helmet } from 'react-helmet'
 import Loader from './Loader'
 import RecipeEdit from '../containers/RecipeEdit'
 import NoMatch from './NoMatch'
+import { ButtonPrimary } from './Buttons'
+
+import { inputAbs } from '../input'
 
 const MetaData = ({
   author = '',
@@ -86,11 +89,13 @@ const RecipeViewing = ({
             value={ count }
             name="count"
             className="bg-whitesmoke text-center is-light my-input is-slim max-width-10 mr-1 ml-1"/>
-          <input
+          <ButtonPrimary
             onClick={ () => addToCart(id) }
-            className={ `my-button is-primary ${addingToCart ? 'is-loading' : ''}` }
+            loading={ addingToCart }
             type="button"
-            value="+"/>
+            value="+">
+            +
+          </ButtonPrimary>
         </div>
       </div>
 
@@ -159,7 +164,7 @@ class Recipe extends React.Component {
   }
 
   handleInputChange = e =>
-    this.setState({ [e.target.name]: e.target.value })
+    this.setState({ [e.target.name]: inputAbs(e.target.value) })
 
   componentWillMount = () => {
     this.props.fetchRecipe(this.props.match.params.id)

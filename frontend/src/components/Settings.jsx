@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
 import Loader from './Loader'
+import { ButtonPrimary, ButtonPlain } from './Buttons'
 
 import {
   GithubImg,
@@ -114,21 +115,23 @@ const Settings = ({
       }
       { editing
           ? <div className="d-flex">
-            <button
-              className={ 'my-button ml-2 is-primary' + (updatingEmail ? ' is-loading' : '') }
+            <ButtonPrimary
+              className='ml-2'
+              name="email"
+              type="submit"
+              loading={ updatingEmail }
               disabled={ unchanged }
-              name='email'
-              type='submit'
               value='save email'>
               Save
-            </button>
-            <button
-              className={ 'my-button ml-2' + (updatingEmail ? ' is-loading' : '') }
+            </ButtonPrimary>
+            <ButtonPlain
+              className='ml-2'
+              loading={ updatingEmail }
               name='email'
               onClick={ cancelEdit }
               value='save email'>
               Cancel
-            </button>
+            </ButtonPlain>
           </div>
           : <a
             className={ 'ml-2 has-text-primary' + (updatingEmail ? ' is-loading' : '') }

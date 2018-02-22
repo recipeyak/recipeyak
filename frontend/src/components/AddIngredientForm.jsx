@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { ButtonPrimary } from './Buttons'
+
 const AddIngredientForm = ({
   handleAddIngredient,
   cancelAddIngredient,
@@ -59,13 +61,13 @@ const AddIngredientForm = ({
 
   <div className="field is-grouped">
     <p className="control">
-      <button
+      <ButtonPrimary
         disabled={ quantity === '' && name === '' }
-        className={ 'my-button is-primary' + (loading ? ' is-loading' : '')}
         type="submit"
-        name="add ingredient">
+        name="add ingredient"
+        loading={ loading }>
         Add
-        </button>
+      </ButtonPrimary>
     </p>
     <p className="control">
       { quantity !== '' || name !== ''

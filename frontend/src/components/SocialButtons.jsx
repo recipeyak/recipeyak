@@ -8,11 +8,15 @@ import {
   FACEBOOK_OAUTH_URL,
 } from '../settings'
 
-import githubIcon from './github-logo.svg'
-import gitlabIcon from './gitlab-logo.svg'
-import googleIcon from './google-logo.svg'
-import bitbucketIcon from './bitbucket-logo.svg'
-import facebookIcon from './facebook-logo.svg'
+import { FormErrorHandler } from './Forms'
+
+import githubIcon from './images/github-logo.svg'
+import githubIconWhite from './images/github-logo-white.svg'
+import gitlabIcon from './images/gitlab-logo.svg'
+import gitlabIconWhite from './images/gitlab-logo-white.svg'
+import googleIcon from './images/google-logo.svg'
+import bitbucketIcon from './images/bitbucket-logo.svg'
+import facebookIcon from './images/facebook-logo.svg'
 
 export const GithubImg = () =>
   <img className="mr-2" src={ githubIcon } alt="github icon"/>
@@ -26,15 +30,13 @@ export const FacebookImg = () =>
   <img className="mr-2" src={ facebookIcon } alt="facebook icon"/>
 
 export const Github = ({ disable = false }) => GITHUB_OAUTH_URL &&
-  <a href={ !disable && GITHUB_OAUTH_URL } className="my-button">
-    <img className="mr-2" src={ githubIcon } alt="github icon"/>
-    Github
+  <a href={ !disable && GITHUB_OAUTH_URL } className="github-button">
+    <img className="mr-2" src={ githubIconWhite } alt="github icon"/>
   </a>
 
 export const Gitlab = () => GITLAB_OAUTH_URL &&
-  <a href={ GITLAB_OAUTH_URL } className="my-button">
-    <img className="mr-2" src={ gitlabIcon } alt="gitlab icon"/>
-    Gitlab
+  <a href={ GITLAB_OAUTH_URL } className="gitlab-button">
+    <img className="mr-2" src={ gitlabIconWhite } alt="gitlab icon"/>
   </a>
 
 export const Bitbucket = () => BITBUCKET_OAUTH_URL &&
@@ -57,28 +59,20 @@ export const Facebook = () => FACEBOOK_OAUTH_URL &&
 
 const enableSocialButtons = GITHUB_OAUTH_URL || GITLAB_OAUTH_URL || BITBUCKET_OAUTH_URL || GOOGLE_OAUTH_URL || FACEBOOK_OAUTH_URL
 
-const errorHandler = err =>
-  !!err &&
-  <div className="help is-danger">
-    <ul>
-      {err.map(e => (<li key={e}>{e}</li>))}
-    </ul>
-  </div>
-
 const SocialButtons = ({ nonFieldErrors, emailError, signup = true }) => enableSocialButtons &&
   <div>
     { signup && <div className="d-flex align-items-center mb-2 mt-1">
       <span className="or-bar"></span> or <span className="or-bar"></span>
     </div> }
-    <div className="social-buttons">
+    <div className="d-grid grid-template-column-2-1fr grid-gap-3">
       <Github/>
       <Gitlab/>
       <Bitbucket/>
       <Google/>
       <Facebook/>
     </div>
-    { errorHandler(nonFieldErrors) }
-    { errorHandler(emailError) }
+    <FormErrorHandler errors={nonFieldErrors}/>
+    <FormErrorHandler error={emailError}/>
   </div>
 
 export default SocialButtons

@@ -1,15 +1,10 @@
 import React from 'react'
-import { Helmet } from 'react-helmet'
 
 import Footer from './Footer'
 import Navbar from '../containers/Nav.jsx'
 
 export const ContainerBase = ({ children }) =>
   <div>
-    <Helmet
-      defaultTitle='Recipe Yak'
-      titleTemplate='%s | Recipe Yak'
-    />
     <Navbar className="container pl-3 pr-3" />
     { children }
     <Footer/>

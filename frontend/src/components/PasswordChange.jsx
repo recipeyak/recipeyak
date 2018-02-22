@@ -1,6 +1,9 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 
+import { FormErrorHandler } from './Forms'
+import { ButtonPrimary } from './Buttons'
+
 class PasswordChange extends React.Component {
   state = {
     oldPassword: '',
@@ -40,13 +43,6 @@ class PasswordChange extends React.Component {
 
     const disabled = password === '' || newPassword === '' || newPasswordAgain === ''
 
-    const handleError = err =>
-      err != null
-        ? <p className="help is-danger">
-            { err }
-          </p>
-        : null
-
     const pageTitle = !setPassword
       ? 'Password Change'
       : 'Password Set'
@@ -68,7 +64,7 @@ class PasswordChange extends React.Component {
               type="password"
               name="oldPassword"
               required/>
-            { handleError(error.oldPassword) }
+            <FormErrorHandler error={ error.oldPassword }/>
           </div>
         </div>
         }
@@ -82,7 +78,7 @@ class PasswordChange extends React.Component {
               type="password"
               name="newPassword"
               required/>
-            { handleError(error.newPassword) }
+            <FormErrorHandler error={ error.newPassword }/>
           </div>
         </div>
 
@@ -95,17 +91,18 @@ class PasswordChange extends React.Component {
               type="password"
               name="newPasswordAgain"
               required/>
-            { handleError(error.newPasswordAgain) }
+            <FormErrorHandler error={ error.newPasswordAgain }/>
           </div>
         </div>
 
         <p className="control">
-          <button
+          <ButtonPrimary
             disabled={ disabled }
-            type='submit'
-            className={ `my-button w-100 is-primary ${loading ? 'is-loading' : ''}` }>
+            type="submit"
+            className='w-100'
+            loading={ loading }>
             Update
-          </button>
+          </ButtonPrimary>
         </p>
       </form>
     )

@@ -48,11 +48,6 @@ nav.nav {
 }
 
 // override bulma
-.tabs li.is-active a {
-  color: inherit;
-}
-
-// override bulma
 section.section {
   padding: 1.5rem;
 }
@@ -64,6 +59,23 @@ a {
   &:hover {
     color: lighten($link-color, 5%);
     text-decoration: underline;
+  }
+}
+
+.tabs {
+  @extend .tabs;
+
+  .is-active > a {
+    color: inherit !important;
+
+    &:hover {
+      color: darken($text-color, 20%) !important;
+      transition: color 0.2s;
+    }
+  }
+
+  a {
+    text-decoration: none;
   }
 }
 
