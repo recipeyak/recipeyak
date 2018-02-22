@@ -1,7 +1,7 @@
 import {
   SET_NOTIFICATION,
   CLEAR_NOTIFICATION
-} from '../actionTypes.js'
+} from '../actionTypes'
 
 const notification = (
   state = {

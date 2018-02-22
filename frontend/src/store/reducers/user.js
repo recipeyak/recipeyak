@@ -12,7 +12,7 @@ import {
   SET_LOGGING_OUT,
   TOGGLE_DARK_MODE,
   SET_SOCIAL_ACCOUNT_CONNECTION,
-} from '../actionTypes.js'
+} from '../actionTypes'
 
 import { socialAccounts } from './socialAccounts'
 
