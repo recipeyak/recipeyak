@@ -93,7 +93,7 @@
   "jest": {
     "setupTestFrameworkScriptFile": "jest-enzyme",
     "collectCoverageFrom": [
-      "src/**/*.{js,jsx,js,tsx}"
+      "src/**/*.{js,jsx,ts,tsx}"
     ],
     "setupFiles": [
       "<rootDir>/config/polyfills.js",
