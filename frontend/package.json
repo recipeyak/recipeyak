@@ -85,7 +85,7 @@
     "lint": "node scripts/lint.js",
     "lint-fix": "node scripts/lint.js --fix",
     "test": "node scripts/test.js --env=jsdom",
-    "test-cov": "node scripts/test.js --env=jsdom --coverage"
+    "test-cov": "node scripts/test.js --env=jsdom --coverage --runInBand"
   },
   "proxy": "http://django:8000",
   "jest": {
