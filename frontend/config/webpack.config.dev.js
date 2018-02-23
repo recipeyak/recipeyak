@@ -17,10 +17,48 @@ const publicUrl = ''
 // Get environment variables to inject into our app.
 const env = getClientEnvironment(publicUrl)
 
-// This is the development configuration.
-// It is focused on developer experience and fast rebuilds.
-// The production configuration is different and lives in a separate file.
+const babelLoader = {
+  loader: 'babel-loader',
+  query: {
+    // This is a feature of `babel-loader` for webpack (not Babel itself).
+    // It enables caching results in ./node_modules/.cache/babel-loader/
+    // directory for faster rebuilds.
+    cacheDirectory: true,
+    plugins: [
+      'react-hot-loader/babel'
+    ]
+  }
+}
+
+const cssLoader = {
+  loader: 'css-loader',
+  options: {
+    importLoaders: 1
+  }
+}
+
+const postCSSLoader = {
+  loader: 'postcss-loader',
+  options: {
+    plugins: () => [
+      require('postcss-flexbugs-fixes'),
+      autoprefixer({
+        browsers: [
+          '>1%',
+          'last 4 versions',
+          'Firefox ESR',
+          'not ie < 9' // React doesn't support IE8 anyway
+        ],
+        // don't include unused previosu versons of the flexbox spec
+        flexbox: 'no-2009'
+      })
+    ]
+  }
+}
+
 module.exports = {
+  babelLoader: babelLoader,
+  postCSSLoader: postCSSLoader,
   // You may want 'eval' instead if you prefer to see the compiled output in DevTools.
   // See the discussion in https://github.com/facebookincubator/create-react-app/issues/343.
   devtool: 'cheap-module-source-map',
@@ -67,11 +105,6 @@ module.exports = {
     // some tools, although we do not recommend using it, see:
     // https://github.com/facebookincubator/create-react-app/issues/290
     extensions: ['.js', '.json', '.jsx', '.ts', '.tsx'],
-    alias: {
-      // Support React Native Web
-      // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
-      'react-native': 'react-native-web'
-    }
   },
 
   module: {
@@ -114,23 +147,15 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         include: paths.appSrc,
-        use: {
-          loader: 'babel-loader',
-          query: {
-            // This is a feature of `babel-loader` for webpack (not Babel itself).
-            // It enables caching results in ./node_modules/.cache/babel-loader/
-            // directory for faster rebuilds.
-            cacheDirectory: true,
-            plugins: [
-              'react-hot-loader/babel'
-            ]
-          }
-        }
+        use: babelLoader,
       },
       {
         test: /\.(ts|tsx)$/,
         include: paths.appSrc,
-        loaders: ['babel-loader', 'ts-loader'],
+        use: [
+          babelLoader,
+          'ts-loader'
+        ]
       },
       // "postcss" loader applies autoprefixer to our CSS.
       // "css" loader resolves paths in CSS and adds assets as dependencies.
@@ -141,42 +166,15 @@ module.exports = {
         test: /\.css$/,
         use: [
           'style-loader',
-          {
-            loader: 'css-loader',
-            options: {
-              importLoaders: 1
-            }
-          },
-          {
-            loader: 'postcss-loader',
-            options: {
-              plugins: () => [
-                require('postcss-flexbugs-fixes'),
-                autoprefixer({
-                  browsers: [
-                    '>1%',
-                    'last 4 versions',
-                    'Firefox ESR',
-                    'not ie < 9' // React doesn't support IE8 anyway
-                  ],
-                  // don't include unused previosu versons of the flexbox spec
-                  flexbox: 'no-2009'
-                })
-              ]
-            }
-          }
+          cssLoader,
+          postCSSLoader,
         ]
       },
       {
         test: /\.(scss|sass)$/,
         use: [
           'style-loader',
-          {
-            loader: 'css-loader',
-            options: {
-              importLoaders: 1
-            }
-          },
+          cssLoader,
           'sass-loader'
         ]
       },

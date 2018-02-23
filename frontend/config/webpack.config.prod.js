@@ -6,6 +6,7 @@ const ManifestPlugin = require('webpack-manifest-plugin')
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin')
 const paths = require('./paths')
 const getClientEnvironment = require('./env')
+const dev = require('./webpack.config.dev')
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -38,9 +39,14 @@ const extractTextPluginOptions = shouldUseRelativeAssetPaths
   ? { publicPath: Array(cssFilename.split('/').length).join('../') }
   : {}
 
-// This is the production configuration.
-// It compiles slowly and is focused on producing a fast and minimal bundle.
-// The development configuration is different and lives in a separate file.
+const cssLoader = {
+  loader: 'css-loader',
+  options: {
+    importLoaders: 1,
+    minimize: 1
+  }
+}
+
 module.exports = {
   // Don't attempt to continue if there are any errors.
   bail: true,
@@ -71,11 +77,6 @@ module.exports = {
     // some tools, although we do not recommend using it, see:
     // https://github.com/facebookincubator/create-react-app/issues/290
     extensions: ['.js', '.json', '.jsx', '.ts', '.tsx'],
-    alias: {
-      // Support React Native Web
-      // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
-      'react-native': 'react-native-web'
-    }
   },
 
   module: {
@@ -116,20 +117,15 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         include: paths.appSrc,
-        use: {
-          loader: 'babel-loader',
-          query: {
-            // This is a feature of `babel-loader` for webpack (not Babel itself).
-            // It enables caching results in ./node_modules/.cache/babel-loader/
-            // directory for faster rebuilds.
-            cacheDirectory: true
-          }
-        }
+        use: dev.babelLoader
       },
       {
         test: /\.(ts|tsx)$/,
         include: paths.appSrc,
-        loaders: ['babel-loader', 'ts-loader'],
+        use: [
+          dev.babelLoader,
+          'ts-loader'
+        ],
       },
       // The notation here is somewhat confusing.
       // "postcss" loader applies autoprefixer to our CSS.
@@ -148,30 +144,8 @@ module.exports = {
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
-            {
-              loader: 'css-loader',
-              options: {
-                importLoaders: 1,
-                minimize: 1
-              }
-            },
-            {
-              loader: 'postcss-loader',
-              options: {
-                plugins: loader => [
-                  autoprefixer({
-                    browsers: [
-                      '>1%',
-                      'last 4 versions',
-                      'Firefox ESR',
-                      'not ie < 9' // React doesn't support IE8 anyway
-                    ],
-                    // don't include unused previosu versons of the flexbox spec
-                    flexbox: 'no-2009'
-                  })
-                ]
-              }
-            }
+            cssLoader,
+            dev.postCSSLoader,
           ]
         },
         extractTextPluginOptions
@@ -183,13 +157,7 @@ module.exports = {
         loader: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
-            {
-              loader: 'css-loader',
-              options: {
-                importLoaders: 1,
-                minimize: 1
-              }
-            },
+            cssLoader,
             'sass-loader'
           ]
         },
