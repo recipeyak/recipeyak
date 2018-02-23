@@ -130,9 +130,7 @@ module.exports = {
       {
         test: /\.(ts|tsx)$/,
         include: paths.appSrc,
-        use: {
-          loader: 'ts-loader',
-        }
+        loaders: ['babel-loader', 'ts-loader'],
       },
       // "postcss" loader applies autoprefixer to our CSS.
       // "css" loader resolves paths in CSS and adds assets as dependencies.

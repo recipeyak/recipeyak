@@ -129,9 +129,7 @@ module.exports = {
       {
         test: /\.(ts|tsx)$/,
         include: paths.appSrc,
-        use: {
-          loader: 'ts-loader',
-        }
+        loaders: ['babel-loader', 'ts-loader'],
       },
       // The notation here is somewhat confusing.
       // "postcss" loader applies autoprefixer to our CSS.
