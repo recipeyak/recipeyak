@@ -1,6 +1,6 @@
 const autoprefixer = require('autoprefixer')
 const webpack = require('webpack')
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin')
@@ -84,6 +84,11 @@ module.exports = {
         enforce: 'pre',
         loader: 'eslint-loader',
         include: paths.appSrc
+      },
+      {
+        test: /\.(ts|tsx)$/,
+        enforce: 'pre',
+        loader: 'tslint-loader',
       },
       // ** ADDING/UPDATING LOADERS **
       // The "url" loader handles all assets unless explicitly excluded.
