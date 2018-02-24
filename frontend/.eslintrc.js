@@ -26,6 +26,7 @@ module.exports = {
     'arrow-parens': 0,
     // allow async-await
     'generator-star-spacing': 0,
+    'no-tabs': 'warn',
     'block-spacing': ['warn', 'always'],
     'comma-spacing': ['warn', { 'before': false, 'after': true }],
     'brace-style': ['warn', '1tbs', { 'allowSingleLine': true }],
