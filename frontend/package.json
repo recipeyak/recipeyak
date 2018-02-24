@@ -88,8 +88,10 @@
   "scripts": {
     "dev": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "lint": "node scripts/lint.js",
-    "lint-fix": "node scripts/lint.js --fix",
+    "lint": "npm run jslint && npm run tslint",
+    "lint": "npm run jslint-fix && npm run tslint-fix",
+    "jslint": "node scripts/lint.js",
+    "jslint-fix": "node scripts/lint.js --fix",
     "tslint": "tslint 'src/**/*.{ts,tsx}' --format 'codeFrame'",
     "tslint-fix": "tslint 'src/**/*.{ts,tsx}' --format 'codeFrame' --fix",
     "test": "node scripts/test.js --env=jsdom",
