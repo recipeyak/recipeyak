@@ -7,7 +7,6 @@ const ManifestPlugin = require('webpack-manifest-plugin')
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin')
 const paths = require('./paths')
 const getClientEnvironment = require('./env')
-const dev = require('./webpack.config.dev.js')
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -39,6 +38,10 @@ const extractTextPluginOptions = shouldUseRelativeAssetPaths
   // Making sure that the publicPath goes back to to build folder.
   ? { publicPath: Array(cssFilename.split('/').length).join('../') }
   : {}
+
+
+// we use this in both dev and prod configs
+const faviconPath = './src/components/images/recipeyak-logo.png'
 
 // This is the production configuration.
 // It compiles slowly and is focused on producing a fast and minimal bundle.
@@ -243,7 +246,7 @@ module.exports = {
     // Otherwise React will be compiled in the very slow development mode.
     new webpack.DefinePlugin(env.stringified),
     // generate and insert favicons based off of favicon url
-    new FaviconsWebpackPlugin(dev.faviconPath),
+    new FaviconsWebpackPlugin(faviconPath),
     // This helps ensure the builds are consistent if source hasn't changed:
     new webpack.optimize.OccurrenceOrderPlugin(),
     // Minify the code.
