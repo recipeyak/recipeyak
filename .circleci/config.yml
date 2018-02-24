@@ -82,7 +82,9 @@ jobs:
       - run:
           name: run linter
           working_directory: frontend
-          command: npm run lint
+          command: |
+            npm run lint
+            npm run tslint
   build_javascript:
     docker:
       - image: circleci/node:8.9.4

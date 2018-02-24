@@ -90,6 +90,10 @@ module.exports = {
         test: /\.(ts|tsx)$/,
         enforce: 'pre',
         loader: 'tslint-loader',
+        options: {
+          emitErrors: true,
+          formatter: 'codeFrame',
+        }
       },
       // ** ADDING/UPDATING LOADERS **
       // The "url" loader handles all assets unless explicitly excluded.
