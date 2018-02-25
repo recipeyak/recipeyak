@@ -5,7 +5,7 @@ import {
   setLoadingShoppingList,
   setShoppingListEmpty,
   setShoppingListError
-} from '../actions.js'
+} from '../actions'
 
 describe('Shopping List', () => {
   const shopList = [

@@ -7,7 +7,7 @@ import {
   SET_ERROR_ADD_RECIPE,
   SET_ERROR_RECIPES,
   SET_ERROR_CART
-} from '../actionTypes.js'
+} from '../actionTypes'
 
 const error = (state = {
   login: {},

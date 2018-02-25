@@ -6,7 +6,7 @@ import {
   SET_LOADING_RECIPES,
   SET_LOADING_ADD_RECIPE,
   SET_LOADING_CART
-} from '../actionTypes.js'
+} from '../actionTypes'
 
 const loading = (state = {
   login: false,

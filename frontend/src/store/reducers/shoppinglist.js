@@ -2,7 +2,7 @@ import {
   SET_SHOPPING_LIST,
   SET_LOADING_SHOPPING_LIST,
   SET_SHOPPING_LIST_ERROR
-} from '../actionTypes.js'
+} from '../actionTypes'
 
 const shoppinglist = (
   state = {

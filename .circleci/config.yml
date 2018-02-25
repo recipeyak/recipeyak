@@ -33,7 +33,7 @@ jobs:
             make ci
       - store_test_results:
           path: ~/backend/reports
-  test_javascript:
+  test_frontend:
     docker:
       - image: circleci/node:8.9.4
         environment:
@@ -59,7 +59,7 @@ jobs:
           working_directory: frontend
           command: npm run test-cov
 
-  lint_javascript:
+  lint_frontend:
     docker:
       - image: circleci/node:8.9.4
         environment:
@@ -82,8 +82,9 @@ jobs:
       - run:
           name: run linter
           working_directory: frontend
-          command: npm run lint
-  build_javascript:
+          command: |
+            npm run lint
+  build_frontend:
     docker:
       - image: circleci/node:8.9.4
         environment:
@@ -112,6 +113,6 @@ workflows:
   test:
     jobs:
       - test_python
-      - test_javascript
-      - lint_javascript
-      - build_javascript
+      - test_frontend
+      - lint_frontend
+      - build_frontend
