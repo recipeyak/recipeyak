@@ -16,6 +16,12 @@ docker-compose -f docker-compose-dev.yml run -d --entrypoint "tail -f /dev/null"
 docker-compose -f docker-compose-dev.yml exec django sh boostrap-dev.sh
 ```
 
+### Updating dependencies
+#### Python
+After changing the Pipfile, you must do the following rebuild the django container and bring up docker compose so the new Pipfile can be copied from the container (`docker-compose -f docker-compose-dev.yml up --build django`).
+
+__Note:__ If you update the version of `psycopg2`, you must update the `backend/Dockerfile-dev` to match. We install this package in this way to reduce the container size.
+
 ### Testing OAuth
 1. create an `.env-dev` file based on `.env-example` with proper redirect uri's for local development.
 2. Configure the identity provider to enable the correct redirect url.
@@ -50,17 +56,11 @@ docker-machine create --driver amazonec2 $MACHINE_NAME
 
 ### Deploying containers
 
-1. Switch your context to the remote machine using:
-```
-eval $(docker-machine env $MACHINE_NAME)
-```
-
-2. Copy `.env-example` to `.env` and add in the proper configuration variables
-3. Configure OAuth with identity providers (leaving variables undefined will disable a provider)
-4. Start containers
-```
-docker-compose -f docker-compose-prod.yml up --build -d
-```
+1. Copy `.env-example` to `.env` and add in the proper configuration variables
+2. Configure OAuth with identity providers (leaving variables undefined will disable a provider)
+3. Build containers `./build.sh`
+4. Upload containers to registry `./upload.sh`
+5. Deploy containers `./deploy.sh`
 
 ### Maintenance mode
 Enabling maintenance mode returns a 503 status code with a webpage explaining the site is down for maintenance.

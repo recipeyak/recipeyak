@@ -1,4 +1,4 @@
-FROM python:3.6
+FROM python:3.6.4
 ENV PYTHONUNBUFFERD 1
 
 RUN apt-get update
@@ -9,8 +9,6 @@ RUN set -ex && pip install git+git://github.com/pypa/pipenv.git@8378a1b104f2d817
 
 # -- Install Application into container:
 RUN set -ex && mkdir /app
-
-WORKDIR /app
 
 # -- Adding Pipfiles
 COPY Pipfile Pipfile

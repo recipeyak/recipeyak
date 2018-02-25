@@ -1,5 +1,7 @@
 set -eux
 
+cp -f /Pipfile.lock /app/Pipfile.lock
+
 # wait for databases
 while ! nc -w 1 -z db 5432
     do sleep 0.1

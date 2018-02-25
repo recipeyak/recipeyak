@@ -1,4 +1,4 @@
-FROM node:8.9.4-alpine as builder
+FROM node:8.9.4 as builder
 
 RUN mkdir -p /var/app
 
@@ -25,7 +25,7 @@ ARG FRONTEND_SENTRY_DSN
 
 RUN npm run build
 
-FROM alpine
+FROM alpine:3.7
 RUN mkdir -p /var/app/build
 COPY --from=builder /var/app/build /var/app/build
 COPY --from=builder /var/app/bootstrap.sh /var/app/

@@ -1,48 +1,13 @@
+# this file enables building all our images with one command
+# docker-compose -f docker-compose-prod.yml build
 version: '3'
 services:
   nginx:
     build: ./nginx/
-    ports:
-      - "80:80"
-    volumes:
-      - react-static-files:/var/app/dist
-      - django-static-files:/var/app/django/static
-    logging:
-      driver: "awslogs"
-      options:
-        awslogs-group: "RecipeYak"
-        tag: "{{.Name}}"
-    depends_on:
-      - django
-      - react
   django:
-    restart: always
     build:
       context: ./backend
       dockerfile: Dockerfile-prod
-    env_file:
-      - .env
-    command: sh bootstrap-prod.sh
-    volumes:
-      - django-static-files:/var/app/static-files
-    logging:
-      driver: "awslogs"
-      options:
-        awslogs-group: "RecipeYak"
-        tag: "{{.Name}}"
-    depends_on:
-     - db
-  db:
-    image: postgres:10.1-alpine
-    ports:
-      - "5432:5432"
-    logging:
-      driver: "awslogs"
-      options:
-        awslogs-group: "RecipeYak"
-        tag: "{{.Name}}"
-    volumes:
-      - pgdata:/var/lib/postgresql/data/
   react:
     build:
       context: ./frontend
@@ -59,20 +24,3 @@ services:
         - OAUTH_GOOGLE_CLIENT_ID=${OAUTH_GOOGLE_CLIENT_ID}
         - OAUTH_GOOGLE_REDIRECT_URI=${OAUTH_GOOGLE_REDIRECT_URI}
         - FRONTEND_SENTRY_DSN=${FRONTEND_SENTRY_DSN}
-    command: sh bootstrap.sh
-    env_file:
-      - .env
-    volumes:
-      - react-static-files:/var/app/dist
-    logging:
-      driver: awslogs
-      options:
-        awslogs-group: "RecipeYak"
-        tag: "{{.Name}}"
-volumes:
-  pgdata:
-    driver: local
-  django-static-files:
-    driver: local
-  react-static-files:
-    driver: local
