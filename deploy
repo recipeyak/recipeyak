@@ -1,4 +1,5 @@
 #!/bin/sh
+set -eux
 
 # set context to recipeyak — this will break on machines not configured
 # for access via docker-machine (i.e. every machine but wombat)

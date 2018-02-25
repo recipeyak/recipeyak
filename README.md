@@ -18,7 +18,7 @@ docker-compose -f docker-compose-dev.yml exec django sh boostrap-dev.sh
 
 ### Updating dependencies
 #### Python
-After changing the Pipfile, you must do the following rebuild the django container and bring up docker compose so the new Pipfile can be copied from the container (`docker-compose -f docker-compose-dev.yml up --build django`).
+After changing the dependencies in the Pipfile, you must rebuild the django container and bring up docker compose so the new Pipfile can be copied from the container to your system (`docker-compose -f docker-compose-dev.yml up --build django`).
 
 __Note:__ If you update the version of `psycopg2`, you must update the `backend/Dockerfile-dev` to match. We install this package in this way to reduce the container size.
 
@@ -58,24 +58,15 @@ docker-machine create --driver amazonec2 $MACHINE_NAME
 
 1. Copy `.env-example` to `.env` and add in the proper configuration variables
 2. Configure OAuth with identity providers (leaving variables undefined will disable a provider)
-3. Build containers `./build.sh`
-4. Upload containers to registry `./upload.sh`
-5. Deploy containers `./deploy.sh`
+3. Build containers `./build`
+4. Upload containers to registry `./upload`
+5. Deploy containers `./deploy`
 
 ### Maintenance mode
 Enabling maintenance mode returns a 503 status code with a webpage explaining the site is down for maintenance.
 
-#### Enable maintenance mode
-```bash
-# /recipe-manager
-./maintenance_mode.sh on
-```
-
-#### Disable maintenance mode
-```bash
-# /recipe-manager
-./maintenance_mode.sh off
-```
+- Enable `./maintenance_mode on`
+- Disable `./maintenance_mode off`
 
 ## Configuration
 Environment variables are used for configuration. Unless otherwise stated, a value is required.

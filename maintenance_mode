@@ -1,4 +1,6 @@
 #!/bin/sh
+set -eux
+
 case $1 in
     on|ON)
         printf "Enabling maintenance mode\n"

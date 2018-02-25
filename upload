@@ -1,4 +1,5 @@
 #!/bin/sh
+set -eux
 
 docker tag recipemanager_nginx:latest cdignam/recipemanager_nginx:latest
 docker tag recipemanager_django:latest cdignam/recipemanager_django:latest
