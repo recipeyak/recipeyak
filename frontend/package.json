@@ -9,6 +9,7 @@
     "babel-jest": "18.0.0",
     "babel-loader": "^7.1.2",
     "babel-plugin-transform-do-expressions": "^6.22.0",
+    "babel-preset-flow": "^6.23.0",
     "babel-preset-react-app": "^2.2.0",
     "babel-runtime": "^6.20.0",
     "case-sensitive-paths-webpack-plugin": "1.1.4",
@@ -36,6 +37,7 @@
     "extract-text-webpack-plugin": "^3.0.0",
     "favicons-webpack-plugin": "0.0.7",
     "file-loader": "^1.1.6",
+    "flow-bin": "^0.66.0",
     "fs-extra": "0.30.0",
     "html-webpack-plugin": "2.24.0",
     "http-proxy-middleware": "0.17.3",
@@ -82,7 +84,8 @@
     "lint": "node scripts/lint.js",
     "lint-fix": "node scripts/lint.js --fix",
     "test": "node scripts/test.js --env=jsdom",
-    "test-cov": "node scripts/test.js --env=jsdom --coverage"
+    "test-cov": "node scripts/test.js --env=jsdom --coverage && npm run flow",
+    "flow": "flow"
   },
   "proxy": "http://django:8000",
   "jest": {
@@ -113,7 +116,8 @@
   },
   "babel": {
     "presets": [
-      "react-app"
+      "react-app",
+      "flow"
     ],
     "plugins": [
       "transform-do-expressions"
