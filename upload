@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 set -eux
 
 docker tag recipemanager_nginx:latest cdignam/recipemanager_nginx:latest

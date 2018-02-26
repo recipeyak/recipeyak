@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 set -eux
 
 # set context to recipeyak — this will break on machines not configured
