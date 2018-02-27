@@ -1,0 +1,66 @@
+version: '3'
+services:
+  nginx:
+    image: recipeyak/nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - react-static-files:/var/app/dist
+      - django-static-files:/var/app/django/static
+    logging:
+      driver: "awslogs"
+      options:
+        awslogs-group: "RecipeYak"
+        awslogs-region: "us-east-1"
+        tag: "{{.Name}}"
+    depends_on:
+      - django
+      - react
+  django:
+    restart: always
+    image: recipeyak/django:latest
+    env_file:
+      - .env
+    command: sh bootstrap-prod.sh
+    volumes:
+      - django-static-files:/var/app/static-files
+    logging:
+      driver: "awslogs"
+      options:
+        awslogs-group: "RecipeYak"
+        awslogs-region: "us-east-1"
+        tag: "{{.Name}}"
+    depends_on:
+     - db
+  db:
+    image: postgres:10.1-alpine
+    ports:
+      - "5432:5432"
+    logging:
+      driver: "awslogs"
+      options:
+        awslogs-group: "RecipeYak"
+        awslogs-region: "us-east-1"
+        tag: "{{.Name}}"
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+  react:
+    image: recipeyak/react:latest
+    command: sh bootstrap.sh
+    env_file:
+      - .env
+    volumes:
+      - react-static-files:/var/app/dist
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: "RecipeYak"
+        awslogs-region: "us-east-1"
+        tag: "{{.Name}}"
+volumes:
+  pgdata:
+    driver: local
+  django-static-files:
+    driver: local
+  react-static-files:
+    driver: local

@@ -16,14 +16,18 @@ docker-compose -f docker-compose-dev.yml run -d --entrypoint "tail -f /dev/null"
 docker-compose -f docker-compose-dev.yml exec django sh boostrap-dev.sh
 ```
 
-### Testing OAuth
-1. create an `.env-dev` file based on `.env-example` with proper redirect uri's for local development.
-2. Configure the identity provider to enable the correct redirect url.
+### Updating dependencies
+For Python, we use `pipenv`, so if you want to update/install a dependency, like [django-rest-knox][drknox], run `docker-compose -f docker-compose-dev.yml django pipenv install --system django-rest-knox==3.1.3`.
 
-**NOTE:** delete `__pycache__/`, `*.pyc`, and `node_modules/` when using the dev
-setup as .dockerignore files are only used with `ADD` and `COPY`
+For Javascript, we use `npm`, so if you want to update/install a dependency, like React, run `docker-compose -f docker-compose-dev.yml react npm install --save react@16.2.0`.
 
-## Test
+__Note:__ If you update the version of `psycopg2`, you must update the `backend/Dockerfile-dev` to match. We install this package using `apk` to reduce the container size.
+
+### Testing with OAuth
+1. Create an `.env-dev` file based on `.env-example` with proper client IDs.
+2. Configure the identity provider to enable redirecting to `http://localhost:3000/accounts/$providerName`.
+
+## Testing Frontend and Backend
 
 ```
 docker-compose -f docker-compose-dev.yml up
@@ -49,33 +53,21 @@ docker-machine create --driver amazonec2 $MACHINE_NAME
 ```
 
 ### Deploying containers
+> __Caution:__ This is specific to <https://recipeyak.com>'s deployment and will require manual modification to make it work for anything else.
 
-1. Switch your context to the remote machine using:
-```
-eval $(docker-machine env $MACHINE_NAME)
-```
-
-2. Copy `.env-example` to `.env` and add in the proper configuration variables
-3. Configure OAuth with identity providers (leaving variables undefined will disable a provider)
-4. Start containers
-```
-docker-compose -f docker-compose-prod.yml up --build -d
-```
+1. Copy `.env-example` to `.env` and add in the proper configuration variables
+2. Configure OAuth with identity providers (leaving CLIENT_ID variables undefined will disable a provider)
+3. Build containers `./build`
+4. Upload containers to registry `./upload`
+5. Deploy containers `./deploy`
 
 ### Maintenance mode
+> __Caveat:__ This is specific to <https://recipeyak.com>'s deployment and will require manual modification to make it work for anything else.
+
 Enabling maintenance mode returns a 503 status code with a webpage explaining the site is down for maintenance.
 
-#### Enable maintenance mode
-```bash
-# /recipe-manager
-./maintenance_mode.sh on
-```
-
-#### Disable maintenance mode
-```bash
-# /recipe-manager
-./maintenance_mode.sh off
-```
+- Enable `./maintenance_mode on`
+- Disable `./maintenance_mode off`
 
 ## Configuration
 Environment variables are used for configuration. Unless otherwise stated, a value is required.
@@ -90,15 +82,13 @@ Environment variables are used for configuration. Unless otherwise stated, a val
     + ex: `server@example.com`
 - `EMAIL_HOST_PASSWORD` — SMTP password for authenticating
     + ex: `SomeUnguessablePassword`
-- [`OAUTH_xxxxx_REDIRECT_URI`][github-redirect-uri] — OAuth redirect uri
-    + ex: `http://example.com/accounts/github/`
--   [`OAUTH_xxxxx_CLIENT_ID`][github-oauth] — Client ID from OAuth provider
+-   [`OAUTH_xxxxx_CLIENT_ID`][github-oauth] — Client ID from OAuth provider for use on server and client.
     +   ex: `094809fsdf098123040`
-- [`OAUTH_xxxxx_SECRET`][github-oauth] — Client secret from OAuth provider
+- [`OAUTH_xxxxx_SECRET`][github-oauth] — Client secret from OAuth provider for use on server.
     + ex: `09482409fa234fsdf098d12d23d43d040`
-- [`SENTRY_DSN`][sentry-dsn] — Sentry secret configuration
+- [`SENTRY_DSN`][sentry-dsn] — Sentry secret configuration for backend.
     + ex: `https://<key>:<secret>@sentry.io/<project>`
-- [`FRONTEND_SENTRY_DSN`][sentry-dsn] — Sentry configuration for public facing code
+- [`FRONTEND_SENTRY_DSN`][sentry-dsn] — Sentry configuration for frontend.
     + ex: `https://<key>@sentry.io/<project>`
 
 [0]: https://docs.docker.com/engine/reference/builder/#dockerignore-file
@@ -106,3 +96,4 @@ Environment variables are used for configuration. Unless otherwise stated, a val
 [sentry-dsn]: https://docs.sentry.io/quickstart/#about-the-dsn
 [github-redirect-uri]: https://developer.github.com/apps/building-oauth-apps/authorization-options-for-oauth-apps/#redirect-urls
 [github-oauth]: https://developer.github.com/apps/building-oauth-apps/authorization-options-for-oauth-apps/#web-application-flow
+[drknox]: https://github.com/James1345/django-rest-knox

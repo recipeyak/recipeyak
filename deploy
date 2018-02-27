@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+set -e
+
+# set context to recipeyak — this will break on machines not configured
+# for access via docker-machine (i.e. every machine but wombat)
+eval $(docker-machine env recipeyak)
+
+# set tag to argument if provided
+tag="latest"
+if [ -n "$1" ]; then
+    tag=$1
+fi
+
+echo "Deploying tag: $tag"
+
+# pull new files
+docker pull recipeyak/nginx:${tag}
+docker pull recipeyak/django:${tag}
+docker pull recipeyak/react:${tag}
+
+# replace ':latest' with chosen tag
+sed -e "s/\:latest/\:${tag}/" docker-compose-deploy.yml > docker-compose-shipit.yml
+
+# update containers
+docker-compose -f docker-compose-shipit.yml up --build -d
