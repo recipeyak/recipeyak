@@ -1,10 +1,9 @@
 #!/usr/bin/env sh
-set -eux
+set -eu
 
-docker tag recipemanager_nginx:latest cdignam/recipemanager_nginx:latest
-docker tag recipemanager_django:latest cdignam/recipemanager_django:latest
-docker tag recipemanager_react:latest cdignam/recipemanager_react:latest
+# https://github.com/moby/moby/issues/7336#issuecomment-194310594
+function dockerpush_alltags() {
+    for i in `docker images | grep ^recipeyak/ | grep -v '<none>' | awk 'BEGIN{OFS=":"}{print $1,$2}'`; do docker push $i && echo $i; done
+}
 
-docker push cdignam/recipemanager_nginx:latest
-docker push cdignam/recipemanager_django:latest
-docker push cdignam/recipemanager_react:latest
+dockerpush_alltags

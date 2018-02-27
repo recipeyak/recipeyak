@@ -1,7 +1,7 @@
 version: '3'
 services:
   nginx:
-    image: cdignam/recipemanager_nginx:latest
+    image: recipeyak/nginx:latest
     ports:
       - "80:80"
     volumes:
@@ -18,7 +18,7 @@ services:
       - react
   django:
     restart: always
-    image: cdignam/recipemanager_django:latest
+    image: recipeyak/django:latest
     env_file:
       - .env
     command: sh bootstrap-prod.sh
@@ -45,7 +45,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data/
   react:
-    image: cdignam/recipemanager_react:latest
+    image: recipeyak/react:latest
     command: sh bootstrap.sh
     env_file:
       - .env

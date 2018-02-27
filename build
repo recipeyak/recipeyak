@@ -1,15 +1,27 @@
 #!/usr/bin/env sh
 set -eux
 
-# build our images
-docker-compose -f docker-compose-prod.yml build
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# tag them for upload to docker hub
-docker tag recipemanager_nginx:latest cdignam/recipemanager_nginx:latest
-docker tag recipemanager_django:latest cdignam/recipemanager_django:latest
-docker tag recipemanager_react:latest cdignam/recipemanager_react:latest
+# Pull in environmental variables
+source .env
 
-# upload to docker hub
-docker push cdignam/recipemanager_nginx:latest
-docker push cdignam/recipemanager_django:latest
-docker push cdignam/recipemanager_react:latest
+git_rev=$(git rev-parse HEAD)
+
+docker build -f $DIR'/frontend/Dockerfile-prod' $DIR'/frontend' \
+    --tag recipeyak/react:latest \
+    --tag recipeyak/react:${git_rev} \
+    --build-arg OAUTH_BITBUCKET_CLIENT_ID=${OAUTH_BITBUCKET_CLIENT_ID-""} \
+    --build-arg OAUTH_FACEBOOK_CLIENT_ID=${OAUTH_FACEBOOK_CLIENT_ID-""} \
+    --build-arg OAUTH_GITHUB_CLIENT_ID=${OAUTH_GITHUB_CLIENT_ID-""} \
+    --build-arg OAUTH_GITLAB_CLIENT_ID=${OAUTH_GITLAB_CLIENT_ID-""} \
+    --build-arg OAUTH_GOOGLE_CLIENT_ID=${OAUTH_GOOGLE_CLIENT_ID-""} \
+    --build-arg FRONTEND_SENTRY_DSN=${FRONTEND_SENTRY_DSN}
+
+docker build -f $DIR'/nginx/Dockerfile' $DIR'/nginx' \
+    --tag recipeyak/nginx:latest \
+    --tag recipeyak/nginx:${git_rev}
+
+docker build -f $DIR'/backend/Dockerfile-prod' $DIR'/backend' \
+    --tag recipeyak/django:latest \
+    --tag recipeyak/django:${git_rev}
