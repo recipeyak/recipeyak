@@ -2,8 +2,7 @@
 set -eu
 
 # https://github.com/moby/moby/issues/7336#issuecomment-194310594
-function dockerpush_alltags() {
-    for i in `docker images | grep ^recipeyak/ | grep -v '<none>' | awk 'BEGIN{OFS=":"}{print $1,$2}'`; do docker push $i && echo $i; done
-}
-
-dockerpush_alltags
+for i in $(docker images | grep ^recipeyak/ | grep -v '<none>' | awk 'BEGIN{OFS=":"}{print $1,$2}')
+do
+    docker push $i && echo $i
+done
