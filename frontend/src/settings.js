@@ -28,5 +28,3 @@ export const GITHUB_OAUTH_URL = OAUTH_GITHUB_CLIENT_ID &&
 
 export const GITLAB_OAUTH_URL = OAUTH_GITLAB_CLIENT_ID &&
   `https://gitlab.com/oauth/authorize?client_id=${OAUTH_GITLAB_CLIENT_ID}&response_type=code&scope=read_user&redirect_uri=${OAUTH_GITLAB_REDIRECT_URI}`
-
-
