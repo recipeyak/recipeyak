@@ -8,6 +8,7 @@ import {
   ConnectedRouter
 } from 'react-router-redux'
 import { Helmet } from 'react-helmet'
+import { hot } from 'react-hot-loader'
 
 import { history, store } from '../store/store.js'
 
@@ -91,4 +92,4 @@ const Base = () => (
     <Notification/>
   </div>
 )
-export default Base
+export default hot(module)(Base)
