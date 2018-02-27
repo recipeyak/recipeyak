@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 set -eux
 
+eval $(docker-machine env recipeyak)
+
 case $1 in
     on|ON)
         printf "Enabling maintenance mode\n"

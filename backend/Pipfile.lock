@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "9b3a2bda9c8165768f0a60049531c8f5c63849065324e479cb0d263a87a0cbe1"
+            "sha256": "f1814ac214db3365f7c581fa723a231cdf15658a95d5db4a4d39e6652d3fe852"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -139,11 +139,11 @@
         },
         "django-rest-knox": {
             "hashes": [
-                "sha256:06f129067cb0415baf726026cd7bc76708276bdec44174e981fed78df55274a4",
-                "sha256:fa10884c4e22aad8d6699409d63595cc166e82146b0d3d1911e256effbbbfb4c",
-                "sha256:768dc177c5431ac56eb9dffa3dcf7aae7879ad1db8d5f44910bd7b047e486bbe"
+                "sha256:8be6722bad71f455b7685a6792be46715b91e900cb7fec7256f22927ffd04941",
+                "sha256:562b218d5218db7c173a40353fac033843016654a8f3166f7744917a48c363fa",
+                "sha256:9548cf3c030f77b70f7f006daf0de378bee25b723a09396ea8e9db6b9ee21c44"
             ],
-            "version": "==3.1.2"
+            "version": "==3.1.3"
         },
         "djangorestframework": {
             "hashes": [
