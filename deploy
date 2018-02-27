@@ -14,9 +14,9 @@ fi
 echo "Deploying tag: $tag"
 
 # pull new files
-docker pull cdignam/recipemanager_nginx:${tag}
-docker pull cdignam/recipemanager_django:${tag}
-docker pull cdignam/recipemanager_react:${tag}
+docker pull recipeyak/nginx:${tag}
+docker pull recipeyak/django:${tag}
+docker pull recipeyak/react:${tag}
 
 # replace ':latest' with chosen tag
 sed -e "s/\:latest/\:${tag}/" docker-compose-deploy.yml > docker-compose-shipit.yml
