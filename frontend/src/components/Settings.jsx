@@ -13,7 +13,16 @@ import {
 import {
   GITHUB_OAUTH_URL,
   GITLAB_OAUTH_URL,
+  GIT_SHA,
 } from '../settings'
+
+const GIT_SHA_SHORT = typeof GIT_SHA === 'string' ? GIT_SHA.slice(0, 7) : ''
+
+const GitSHA = () => {
+  return GIT_SHA && GIT_SHA === 'development'
+    ? <div className="d-flex flex-wrap justify-space-between">RecipeYak Version<a href='https://github.com/recipeyak/recipeyak'>git_sha</a></div>
+    : <div className="d-flex flex-wrap justify-space-between">RecipeYak Version<a href={ `https://github.com/recipeyak/recipeyak/tree/${GIT_SHA}` }>{ GIT_SHA_SHORT }</a></div>
+}
 
 const Settings = ({
   avatarURL,
@@ -154,10 +163,13 @@ const Settings = ({
   </div>
 </div>
 
-  <h1 className="fs-8">Social Accounts</h1>
+  <h1 className="fs-6">Social Accounts</h1>
 
   <Github/>
   <Gitlab/>
+
+  <h1 className="fs-6">System Information</h1>
+  <GitSHA/>
 
   </section>
 }

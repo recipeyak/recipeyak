@@ -1,6 +1,11 @@
 #!/usr/bin/env sh
 set -eu
 
+if [ $DOCKER_MACHINE_NAME ]; then
+    logger -s 'You should not be connected to a remote docker host.'
+    exit 1
+fi
+
 # https://github.com/moby/moby/issues/7336#issuecomment-194310594
 for i in $(docker images | grep ^recipeyak/ | grep -v '<none>' | awk 'BEGIN{OFS=":"}{print $1,$2}')
 do

@@ -1,6 +1,11 @@
 #!/usr/bin/env sh
 set -e
 
+if [ $DOCKER_MACHINE_NAME ]; then
+    logger -s 'You should not be connected to a remote docker host.'
+    exit 1
+fi
+
 # set context to recipeyak — this will break on machines not configured
 # for access via docker-machine (i.e. every machine but wombat)
 eval $(docker-machine env recipeyak)

@@ -1,6 +1,11 @@
 #!/usr/bin/env sh
 set -eu
 
+if [ $DOCKER_MACHINE_NAME ]; then
+    logger -s 'You should not be connected to a remote docker host.'
+    exit 1
+fi
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Pull in environmental variables
@@ -18,6 +23,7 @@ docker build -f $DIR'/frontend/Dockerfile-prod' $DIR'/frontend' \
     --build-arg OAUTH_GITHUB_CLIENT_ID=${OAUTH_GITHUB_CLIENT_ID-""} \
     --build-arg OAUTH_GITLAB_CLIENT_ID=${OAUTH_GITLAB_CLIENT_ID-""} \
     --build-arg OAUTH_GOOGLE_CLIENT_ID=${OAUTH_GOOGLE_CLIENT_ID-""} \
+    --build-arg GIT_SHA=${git_rev} \
     --build-arg FRONTEND_SENTRY_DSN=${FRONTEND_SENTRY_DSN}
 
 docker build -f $DIR'/nginx/Dockerfile' $DIR'/nginx' \
