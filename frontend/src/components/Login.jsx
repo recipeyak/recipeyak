@@ -52,6 +52,7 @@ class Login extends React.Component {
               <label className="label">Email</label>
                 <input
                   onChange={ e => this.handleInputChange(e) }
+                  value={ this.state.email }
                   className={'my-input' + (email ? ' is-danger' : '')}
                   autoFocus
                   name="email"
@@ -64,6 +65,7 @@ class Login extends React.Component {
               <label htmlFor="password" className="label">Password</label>
                 <input
                   onChange={ e => this.handleInputChange(e) }
+                  value={ this.state.query }
                   className={'my-input' + (password1 ? ' is-danger' : '')}
                   type="password"
                   name="password"
