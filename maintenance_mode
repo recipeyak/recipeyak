@@ -1,16 +1,35 @@
 #!/usr/bin/env sh
-set -eux
+set -e
 
-eval $(docker-machine env recipeyak)
+if [ $DOCKER_MACHINE_NAME ]; then
+    echo "Disconnecting from existing docker host"
+    unset_machine=$(docker-machine env -u)
+    eval $unset_machine
+fi
 
-case $1 in
+if [ -z "$1" ]; then
+    echo 'You must specify a docker machine name: ./maintenance_mode <machine-name> [on|off]' >&2
+    exit 1
+fi
+
+if [ -z "$2" ]; then
+    echo 'You must specify a action (on|off): ./maintenance_mode <machine-name> [on|off]' >&2
+    exit 1
+fi
+
+# catch any errors before running eval
+machine_vars=$(docker-machine env $1)
+eval $machine_vars
+
+
+case $2 in
     on|ON)
-        printf "Enabling maintenance mode\n"
-        docker-compose -f docker-compose-prod.yml exec nginx touch maintenance_on
-        printf "Maintenance mode: ON\n";;
+        echo "Enabling maintenance mode"
+        docker-compose -f docker-compose-shipit.yml exec nginx touch maintenance_on
+        echo "Maintenance mode: ON";;
     off|OFF)
-        printf "Disabling maintenance mode\n"
-        docker-compose -f docker-compose-prod.yml exec nginx rm -f maintenance_on
-        printf "Maintenance mode: OFF\n";;
-    *) printf "Invalid option. Use arguments 'on' or 'off'.\n";;
+        echo "Disabling maintenance mode"
+        docker-compose -f docker-compose-shipit.yml exec nginx rm -f maintenance_on
+        echo "Maintenance mode: OFF";;
+    *) echo "Invalid option. Use arguments 'on' or 'off'.";;
 esac

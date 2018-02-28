@@ -1,9 +1,9 @@
 #!/usr/bin/env sh
-set -eu
+set -e
 
 if [ $DOCKER_MACHINE_NAME ]; then
-    logger -s 'You should not be connected to a remote docker host.'
-    exit 1
+    echo "Disconnecting from existing docker host"
+    eval $(docker-machine env -u)
 fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"

@@ -2,21 +2,29 @@
 set -e
 
 if [ $DOCKER_MACHINE_NAME ]; then
-    logger -s 'You should not be connected to a remote docker host.'
+    echo "Disconnecting from existing docker host"
+    unset_machine=$(docker-machine env -u)
+    eval $unset_machine
+fi
+
+if [ -z "$1" ]; then
+    echo 'You must specify a docker machine name: ./deploy <machine-name> [tag]' >&2
     exit 1
 fi
 
-# set context to recipeyak — this will break on machines not configured
-# for access via docker-machine (i.e. every machine but wombat)
-eval $(docker-machine env recipeyak)
+# catch any errors before running eval
+machine_vars=$(docker-machine env $1)
+eval $machine_vars
 
 # set tag to argument if provided
-tag="latest"
-if [ -n "$1" ]; then
-    tag=$1
+if [ "$2" ]; then
+    tag=$2
+else
+    echo "No tag provided. Using 'latest'."
+    tag='latest'
 fi
 
-echo "Deploying tag: $tag"
+echo "Deploying to tag ($tag) to docker machine ($1)"
 
 # pull new files
 docker pull recipeyak/nginx:${tag}

@@ -8,10 +8,9 @@ services:
       - react-static-files:/var/app/dist
       - django-static-files:/var/app/django/static
     logging:
-      driver: "awslogs"
+      driver: syslog
       options:
-        awslogs-group: "RecipeYak"
-        awslogs-region: "us-east-1"
+        syslog-address: "udp://logs.papertrailapp.com:50183"
         tag: "{{.Name}}"
     depends_on:
       - django
@@ -25,10 +24,9 @@ services:
     volumes:
       - django-static-files:/var/app/static-files
     logging:
-      driver: "awslogs"
+      driver: syslog
       options:
-        awslogs-group: "RecipeYak"
-        awslogs-region: "us-east-1"
+        syslog-address: "udp://logs.papertrailapp.com:50183"
         tag: "{{.Name}}"
     depends_on:
      - db
@@ -37,10 +35,9 @@ services:
     ports:
       - "5432:5432"
     logging:
-      driver: "awslogs"
+      driver: syslog
       options:
-        awslogs-group: "RecipeYak"
-        awslogs-region: "us-east-1"
+        syslog-address: "udp://logs.papertrailapp.com:50183"
         tag: "{{.Name}}"
     volumes:
       - pgdata:/var/lib/postgresql/data/
@@ -52,10 +49,9 @@ services:
     volumes:
       - react-static-files:/var/app/dist
     logging:
-      driver: awslogs
+      driver: syslog
       options:
-        awslogs-group: "RecipeYak"
-        awslogs-region: "us-east-1"
+        syslog-address: "udp://logs.papertrailapp.com:50183"
         tag: "{{.Name}}"
 volumes:
   pgdata:

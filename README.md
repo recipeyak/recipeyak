@@ -53,21 +53,19 @@ docker-machine create --driver amazonec2 $MACHINE_NAME
 ```
 
 ### Deploying containers
-> __Caution:__ This is specific to <https://recipeyak.com>'s deployment and will require manual modification to make it work for anything else.
 
 1. Copy `.env-example` to `.env` and add in the proper configuration variables
 2. Configure OAuth with identity providers (leaving CLIENT_ID variables undefined will disable a provider)
 3. Build containers `./build`
 4. Upload containers to registry `./upload`
-5. Deploy containers `./deploy`
+5. Deploy containers `./deploy $MACHINE_NAME`
 
 ### Maintenance mode
-> __Caveat:__ This is specific to <https://recipeyak.com>'s deployment and will require manual modification to make it work for anything else.
 
 Enabling maintenance mode returns a 503 status code with a webpage explaining the site is down for maintenance.
 
-- Enable `./maintenance_mode on`
-- Disable `./maintenance_mode off`
+- Enable `./maintenance_mode $MACHINE_NAME on`
+- Disable `./maintenance_mode $MACHINE_NAME off`
 
 ## Configuration
 Environment variables are used for configuration. Unless otherwise stated, a value is required.
