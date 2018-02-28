@@ -26,3 +26,5 @@ RUN set -ex && pipenv install --dev --deploy --system
 
 COPY . /var/app
 RUN DOCKERBUILD=1 python manage.py collectstatic --noinput
+ARG GIT_SHA
+RUN sh -c 'sed -i s/\<%=GIT_SHA=%\>/"$GIT_SHA"/ backend/settings.py && grep GIT_SHA backend/settings.py'

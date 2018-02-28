@@ -43,6 +43,8 @@ ALLOWED_HOSTS: List[str] = ['.recipeyak.com']
 if DEBUG:
     ALLOWED_HOSTS = ['*']
 
+GIT_SHA = '<%=GIT_SHA=%>'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -154,6 +156,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'backend.middleware.NoCacheMiddleware',
+    'backend.middleware.SystemInfoMiddleware',
 ]
 
 AUTH_USER_MODEL = 'core.MyUser'
