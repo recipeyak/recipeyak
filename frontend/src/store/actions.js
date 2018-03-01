@@ -84,8 +84,13 @@ import {
 } from 'react-router-redux'
 
 import axios from 'axios'
+import raven from 'raven-js'
 
-axios.interceptors.response.use(
+const http = axios.create({
+  timeout: 15000,
+})
+
+http.interceptors.response.use(
   response => response,
   error => {
     // 503 means we are in maintenance mode. Reload to show maintenance page.
@@ -93,6 +98,15 @@ axios.interceptors.response.use(
       location.reload()
     }
     return Promise.reject(error)
+  })
+
+http.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.code === 'ECONNABORTED') {
+      raven.captureException(error)
+    }
+  return Promise.reject(error);
   })
 
 const invalidToken = res =>
@@ -155,7 +169,7 @@ export const setLoggingOut = val => ({
 
 export const loggingOut = () => (dispatch, getState) => {
   dispatch(setLoggingOut(true))
-  return axios.post('/api/v1/rest-auth/logout/', {}, {
+  return http.post('/api/v1/rest-auth/logout/', {}, {
     headers: {
       Authorization: 'Token ' + getState().user.token
     }
@@ -222,7 +236,7 @@ const second = 1000
 
 export const updatingEmail = email => (dispatch, getState) => {
   dispatch(setUpdatingUserEmail(true))
-  return axios.patch('/api/v1/rest-auth/user/', {
+  return http.patch('/api/v1/rest-auth/user/', {
     email
   }, {
     headers: {
@@ -255,7 +269,7 @@ export const updatingEmail = email => (dispatch, getState) => {
 export const fetchUser = () => (dispatch, getState) => {
   dispatch(setLoadingUser(true))
   dispatch(setErrorUser(false))
-  return axios.get('/api/v1/rest-auth/user/', {
+  return http.get('/api/v1/rest-auth/user/', {
     headers: {
       Authorization: 'Token ' + getState().user.token
     }
@@ -288,7 +302,7 @@ export const setSocialConnection = (provider, val) => ({
 })
 
 export const fetchSocialConnections = () => (dispatch, getState) => {
-  return axios.get('/api/v1/rest-auth/socialaccounts/', {
+  return http.get('/api/v1/rest-auth/socialaccounts/', {
     headers: {
       Authorization: 'Token ' + getState().user.token
     }
@@ -305,7 +319,7 @@ export const fetchSocialConnections = () => (dispatch, getState) => {
 }
 
 export const disconnectSocialAccount = (provider, id) => (dispatch, getState) => {
-  return axios.post(`/api/v1/rest-auth/socialaccounts/${id}/disconnect/`, {
+  return http.post(`/api/v1/rest-auth/socialaccounts/${id}/disconnect/`, {
     id
   }, {
     headers: {
@@ -330,7 +344,7 @@ export const disconnectSocialAccount = (provider, id) => (dispatch, getState) =>
 
 export const fetchUserStats = () => (dispatch, getState) => {
   dispatch(setLoadingUserStats(true))
-  return axios.get('api/v1/user_stats/', {
+  return http.get('api/v1/user_stats/', {
     headers: {
       Authorization: 'Token ' + getState().user.token
     }
@@ -361,7 +375,7 @@ export const setErrorPasswordUpdate = val => ({
 export const updatingPassword = (password1, password2, oldPassword) => (dispatch, getState) => {
   dispatch(setLoadingPasswordUpdate(true))
   dispatch(setErrorPasswordUpdate({}))
-  return axios.post('/api/v1/rest-auth/password/change/', {
+  return http.post('/api/v1/rest-auth/password/change/', {
     new_password1: password1,
     new_password2: password2,
     old_password: oldPassword
@@ -425,7 +439,7 @@ export const clearRecipeCartAmounts = () => ({
 
 export const clearCart = () => (dispatch, getState) => {
   dispatch(setClearingCart(true))
-  return axios.post('/api/v1/clear_cart/', {}, {
+  return http.post('/api/v1/clear_cart/', {}, {
     headers: {
       Authorization: 'Token ' + getState().user.token
     }
@@ -477,7 +491,7 @@ export const addingToCart = id => (dispatch, getState) => {
 }
 
 export const updatingCart = (id, count) => (dispatch, getState) =>
-  axios.patch(`/api/v1/cart/${id}/`, {
+  http.patch(`/api/v1/cart/${id}/`, {
     count
   }, {
     headers: {
@@ -531,7 +545,7 @@ export const setShoppingListError = val => ({
 export const fetchShoppingList = () => (dispatch, getState) => {
   dispatch(setLoadingShoppingList(true))
   dispatch(setShoppingListError(false))
-  return axios.get('/api/v1/shoppinglist/', {
+  return http.get('/api/v1/shoppinglist/', {
     headers: {
       Authorization: 'Token ' + getState().user.token
     }
@@ -568,7 +582,7 @@ export const postNewRecipe = recipe => (dispatch, getState) => {
   dispatch(setLoadingAddRecipe(true))
   dispatch(setErrorAddRecipe({}))
 
-  return axios.post('/api/v1/recipes/', recipe, {
+  return http.post('/api/v1/recipes/', recipe, {
     headers: {
       Authorization: 'Token ' + getState().user.token
     }
@@ -614,7 +628,7 @@ export const setLoadingRecipe = (id, val) => ({
 export const fetchRecipe = id => (dispatch, getState) => {
   dispatch(setRecipe404(id, false))
   dispatch(setLoadingRecipe(id, true))
-  return axios.get(`/api/v1/recipes/${id}/`, {
+  return http.get(`/api/v1/recipes/${id}/`, {
     headers: {
       Authorization: 'Token ' + getState().user.token
     }
@@ -653,7 +667,7 @@ export const setLoadingRecipes = val => ({
 export const fetchRecentRecipes = () => (dispatch, getState) => {
   dispatch(setLoadingRecipes(true))
   dispatch(setErrorRecipes(false))
-  return axios.get('/api/v1/recipes/?recent', {
+  return http.get('/api/v1/recipes/?recent', {
     headers: {
       Authorization: 'Token ' + getState().user.token
     }
@@ -676,7 +690,7 @@ export const fetchRecipeList = () => (dispatch, getState) => {
   dispatch(setLoadingRecipes(true))
   dispatch(setErrorRecipes(false))
 
-  return axios.get('/api/v1/recipes/', {
+  return http.get('/api/v1/recipes/', {
     headers: {
       Authorization: 'Token ' + getState().user.token
     }
@@ -720,7 +734,7 @@ export const addIngredientToRecipe = (id, ingredient) => ({
 
 export const addingRecipeIngredient = (recipeID, ingredient) => (dispatch, getState) => {
   dispatch(setAddingIngredientToRecipe(recipeID, true))
-  return axios.post(`/api/v1/recipes/${recipeID}/ingredients/`, ingredient, {
+  return http.post(`/api/v1/recipes/${recipeID}/ingredients/`, ingredient, {
     headers: {
       Authorization: 'Token ' + getState().user.token
     }
@@ -745,7 +759,7 @@ export const updateRecipeName = (id, name) => ({
 })
 
 export const sendUpdatedRecipeName = (id, name) => (dispatch, getState) => {
-  return axios.patch(`/api/v1/recipes/${id}/`, {
+  return http.patch(`/api/v1/recipes/${id}/`, {
     name
   }, {
     headers: {
@@ -770,7 +784,7 @@ export const updateRecipeSource = (id, source) => ({
 })
 
 export const setRecipeSource = (id, source) => (dispatch, getState) => {
-  return axios.patch(`/api/v1/recipes/${id}/`, {
+  return http.patch(`/api/v1/recipes/${id}/`, {
     source
   }, {
     headers: {
@@ -795,7 +809,7 @@ export const updateRecipeAuthor = (id, author) => ({
 })
 
 export const setRecipeAuthor = (id, author) => (dispatch, getState) => {
-  return axios.patch(`/api/v1/recipes/${id}/`, {
+  return http.patch(`/api/v1/recipes/${id}/`, {
     author
   }, {
     headers: {
@@ -820,7 +834,7 @@ export const updateRecipeTime = (id, time) => ({
 })
 
 export const setRecipeTime = (id, time) => (dispatch, getState) => {
-  return axios.patch(`/api/v1/recipes/${id}/`, {
+  return http.patch(`/api/v1/recipes/${id}/`, {
     time
   }, {
     headers: {
@@ -856,7 +870,7 @@ export const setRecipeUpdating = (id, val) => ({
 
 export const updateRecipe = (id, data) => (dispatch, getState) => {
   dispatch(setRecipeUpdating(id, true))
-  return axios.patch(`/api/v1/recipes/${id}/`, data, {
+  return http.patch(`/api/v1/recipes/${id}/`, data, {
     headers: {
       Authorization: 'Token ' + getState().user.token
     }
@@ -883,7 +897,7 @@ export const updateIngredient = (recipeID, ingredientID, content) => ({
 
 export const addingRecipeStep = (recipeID, step) => (dispatch, getState) => {
   dispatch(setLoadingAddStepToRecipe(recipeID, true))
-  return axios.post(`/api/v1/recipes/${recipeID}/steps/`, {
+  return http.post(`/api/v1/recipes/${recipeID}/steps/`, {
     text: step
   }, {
     headers: {
@@ -919,7 +933,7 @@ export const setUpdatingIngredient = (recipeID, ingredientID, val) => ({
 
 export const updatingIngredient = (recipeID, ingredientID, content) => (dispatch, getState) => {
   dispatch(setUpdatingIngredient(recipeID, ingredientID, true))
-  return axios.patch(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, content, {
+  return http.patch(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, content, {
     headers: {
       Authorization: 'Token ' + getState().user.token
     }
@@ -945,7 +959,7 @@ export const deleteIngredient = (recipeID, ingredientID) => ({
 
 export const deletingIngredient = (recipeID, ingredientID) => (dispatch, getState) => {
   dispatch(setRemovingIngredient(recipeID, ingredientID, true))
-  return axios.delete(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, {
+  return http.delete(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, {
     headers: {
       Authorization: 'Token ' + getState().user.token
     }
@@ -986,7 +1000,7 @@ export const setUpdatingStep = (recipeID, stepID, val) => ({
 
 export const updatingStep = (recipeID, stepID, text) => (dispatch, getState) => {
   dispatch(setUpdatingStep(recipeID, stepID, true))
-  return axios.patch(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, {
+  return http.patch(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, {
     text
   }, {
     headers: {
@@ -1015,7 +1029,7 @@ export const deleteStep = (recipeID, stepID) => ({
 
 export const deletingStep = (recipeID, stepID) => (dispatch, getState) => {
   dispatch(setRemovingStep(recipeID, stepID, true))
-  return axios.delete(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, {
+  return http.delete(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, {
     headers: {
       Authorization: 'Token ' + getState().user.token
     }
@@ -1047,7 +1061,7 @@ export const logUserIn = (email, password) => dispatch => {
   dispatch(setLoadingLogin(true))
   dispatch(setErrorLogin({}))
   dispatch(clearNotification())
-  return axios.post('/api/v1/rest-auth/login/', {
+  return http.post('/api/v1/rest-auth/login/', {
     email,
     password
   })
@@ -1079,7 +1093,7 @@ export const setErrorSocialLogin = val => ({
 })
 
 export const socialLogin = (service, token) => dispatch => {
-  return axios.post(`/api/v1/rest-auth/${service}/`, {
+  return http.post(`/api/v1/rest-auth/${service}/`, {
     code: token
   })
   .then(res => {
@@ -1104,7 +1118,7 @@ export const socialLogin = (service, token) => dispatch => {
 }
 
 export const socialConnect = (service, code) => (dispatch, getState) => {
-  return axios.post(`/api/v1/rest-auth/${service}/connect/`, {
+  return http.post(`/api/v1/rest-auth/${service}/connect/`, {
     code
   }, {
     headers: {
@@ -1138,7 +1152,7 @@ export const signup = (email, password1, password2) => dispatch => {
     // clear previous signup errors
   dispatch(setErrorSignup({}))
   dispatch(clearNotification())
-  return axios.post('/api/v1/rest-auth/registration/', {
+  return http.post('/api/v1/rest-auth/registration/', {
     email,
     password1,
     password2
@@ -1175,7 +1189,7 @@ export const deleteRecipe = id => ({
 
 export const deletingRecipe = id => (dispatch, getState) => {
   dispatch(setDeletingRecipe(id, true))
-  return axios.delete(`/api/v1/recipes/${id}/`, {
+  return http.delete(`/api/v1/recipes/${id}/`, {
     headers: {
       Authorization: 'Token ' + getState().user.token
     }
@@ -1208,7 +1222,7 @@ export const reset = email => dispatch => {
   dispatch(setLoadingReset(true))
   dispatch(setErrorReset({}))
   dispatch(clearNotification())
-  return axios.post('/api/v1/rest-auth/password/reset/', {
+  return http.post('/api/v1/rest-auth/password/reset/', {
     email
   })
   .then(res => {
@@ -1255,7 +1269,7 @@ export const resetConfirmation = (uid, token, newPassword1, newPassword2) => dis
   dispatch(setLoadingResetConfirmation(true))
   dispatch(setErrorResetConfirmation({}))
   dispatch(clearNotification())
-  return axios.post('/api/v1/rest-auth/password/reset/confirm/', {
+  return http.post('/api/v1/rest-auth/password/reset/confirm/', {
     uid,
     token,
     new_password1: newPassword1,
