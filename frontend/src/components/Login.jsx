@@ -8,6 +8,9 @@ import { ButtonPrimary } from './Buttons'
 
 import AuthContainer from './AuthContainer'
 
+const redirectURL = ({ pathname = '', search = '', hash = '' }) =>
+  `${pathname}${search}${hash}`
+
 class Login extends React.Component {
   state = {
     email: '',
@@ -24,7 +27,10 @@ class Login extends React.Component {
 
   handleLogin (e) {
     e.preventDefault()
-    this.props.login(this.state.email, this.state.password)
+    const from = this.props.location.state != null
+      ? this.props.location.state.from
+      : {}
+    this.props.login(this.state.email, this.state.password, redirectURL(from))
   }
 
   render () {
