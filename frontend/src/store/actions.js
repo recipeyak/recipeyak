@@ -106,7 +106,7 @@ http.interceptors.response.use(
     if (error.code === 'ECONNABORTED') {
       raven.captureException(error)
     }
-  return Promise.reject(error);
+    return Promise.reject(error)
   })
 
 const invalidToken = res =>
