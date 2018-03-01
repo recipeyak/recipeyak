@@ -43,6 +43,12 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     created = models.DateField(auto_now_add=True)
     last_updated = models.DateField(auto_now=True)
 
+    membership = models.ForeignKey('Membership',
+                                   on_delete=models.CASCADE,
+                                   null=True,
+                                   blank=True,
+                                   related_name='membership')
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS: List[str] = []
 
@@ -204,3 +210,31 @@ class CartItem(CommonInfo):
             self.total_cart_additions += count_increase
             logger.info('Recipe added to cart')
         super().save(*args, **kwargs)
+
+
+class Team(CommonInfo):
+    name = models.CharField(max_length=255)
+
+
+class Membership(CommonInfo):
+    ADMIN = 'admin'
+    MEMBER = 'member'
+    VIEWER = 'viewer'
+
+    MEMBERSHIP_CHOICES = (
+        (ADMIN, ADMIN),
+        (MEMBER , MEMBER),
+        (VIEWER , VIEWER),
+    )
+
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+
+    level = models.CharField(
+        max_length=6,
+        choices=MEMBERSHIP_CHOICES,
+    )
+
+
+class Invite(CommonInfo):
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    membership = models.OneToOneField(Membership, on_delete=models.CASCADE)

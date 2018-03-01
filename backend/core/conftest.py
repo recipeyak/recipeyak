@@ -2,9 +2,18 @@ import pytest
 
 from logging import getLogger
 
+from django.urls import reverse
 from rest_framework.test import APIClient
 
-from .models import MyUser, Recipe, Ingredient, Step, Tag
+from .models import (
+    MyUser,
+    Recipe,
+    Ingredient,
+    Step,
+    Tag,
+    Team,
+    Membership,
+)
 
 getLogger('flake8').propagate = False
 
@@ -127,3 +136,18 @@ def recipe_pie(user):
 @pytest.fixture
 def recipe2(user):
     return recipe_pie(user)
+
+
+@pytest.fixture
+def team(user):
+    team = Team.objects.create(name='Recipe Yak Team')
+    m = Membership.objects.create(level=Membership.ADMIN, team=team)
+    m.membership.add(user)
+    return team
+
+
+@pytest.fixture
+def membership(team, user):
+    m = Membership.objects.create(team=team)
+    m.membership.add(user)
+    return m

@@ -1,7 +1,16 @@
 from rest_framework import serializers
 
-from .models import MyUser, Recipe, Ingredient, Step, Tag, CartItem
-
+from .models import (
+    MyUser,
+    Recipe,
+    Ingredient,
+    Step,
+    Tag,
+    CartItem,
+    Team,
+    Membership,
+    Invite,
+)
 
 class UserSerializer(serializers.ModelSerializer):
     """
@@ -101,3 +110,23 @@ class MostAddedRecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'author', 'total_cart_additions')
+
+
+class TeamSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Team
+        fields = ('id', 'name', )
+
+
+class MembershipSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Membership
+        fields = ('id', 'user', )
+
+
+class InviteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Invite
+        fields = ('id', 'user',)

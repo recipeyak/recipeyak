@@ -3,20 +3,33 @@ import logging
 from typing import List
 import pytz
 
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, mixins, views
+from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.db.models import Sum, Count
+from django.db.models import Sum, Count, Q
 from django.db.models.functions import TruncMonth
 
-from .models import Recipe, Step, Tag, Ingredient, CartItem
+from .models import (
+    Recipe,
+    Step,
+    Tag,
+    Ingredient,
+    CartItem,
+    Team,
+    Membership,
+)
 from .serializers import (
     RecipeSerializer,
     StepSerializer,
     TagSerializer,
     IngredientSerializer,
     CartItemSerializer,
-    MostAddedRecipeSerializer
+    MostAddedRecipeSerializer,
+    TeamSerializer,
+    MembershipSerializer,
+    InviteSerializer,
 )
 from .utils import combine_ingredients
 
@@ -194,3 +207,52 @@ class UserStats(APIView):
             'total_recipes_added_last_month_by_all_users': total_recipes_added_last_month_by_all_users,
             'total_cart_additions': total_cart_additions
         })
+
+
+
+class TeamViewSet(viewsets.ModelViewSet):
+    serializer_class = TeamSerializer
+
+    def get_queryset(self):
+        return Team.objects.filter(membership__membership__id=self.request.user.id)
+
+    def create(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            team = serializer.save()
+            m = Membership.objects.create(level=Membership.ADMIN, team=team)
+            m.membership.add(request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class MembershipViewSet(
+        viewsets.GenericViewSet,
+        mixins.DestroyModelMixin,
+        mixins.UpdateModelMixin,
+        mixins.RetrieveModelMixin,
+        mixins.ListModelMixin):
+
+    serializer_class = MembershipSerializer
+    queryset = Membership.objects.all()
+
+
+class InviteViewSet(viewsets.ModelViewSet):
+    serializer_class = InviteSerializer
+
+    def create(self, request, team_pk=None):
+        level = request.data.get('level')
+        if (level, level) not in Membership.MEMBERSHIP_CHOICES:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            queryset = Team.objects.filter(membership__membership__id=self.request.user.id)
+            team = get_object_or_404(queryset, pk=team_pk)
+            m = Membership.objects.create(team=team, level=level)
+            serializer.save(membership=m)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
