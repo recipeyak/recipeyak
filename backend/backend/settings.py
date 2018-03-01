@@ -82,6 +82,7 @@ if PRODUCTION and not DOCKERBUILD:
     import raven  # noqa: F401
     RAVEN_CONFIG = {
         'dsn': os.environ['SENTRY_DSN'],
+        'release': GIT_SHA,
     }
     INSTALLED_APPS.append('raven.contrib.django.raven_compat')
 
@@ -156,7 +157,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'backend.middleware.NoCacheMiddleware',
-    'backend.middleware.SystemInfoMiddleware',
 ]
 
 AUTH_USER_MODEL = 'core.MyUser'

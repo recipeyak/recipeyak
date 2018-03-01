@@ -16,13 +16,11 @@ fi
 machine_vars=$(docker-machine env $1)
 eval $machine_vars
 
-# set tag to argument if provided
-if [ "$2" ]; then
-    tag=$2
-else
-    echo "No tag provided. Using 'latest'."
-    tag='latest'
+if [ -z "$2" ]; then
+    echo 'You must specify a docker image tag: ./deploy <machine-name> [tag]' >&2
+    exit 1
 fi
+tag=$2
 
 echo "Deploying to tag ($tag) to docker machine ($1)"
 

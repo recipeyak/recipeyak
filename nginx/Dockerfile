@@ -7,5 +7,3 @@ WORKDIR /var/www
 COPY maintenance.html .
 COPY 404.html .
 COPY 50x.html .
-ARG GIT_SHA
-RUN sh -c 'sed -i s/\<%=GIT_SHA=%\>/"$GIT_SHA"/ /etc/nginx/conf.d/nginx.conf && grep Proxy /etc/nginx/conf.d/nginx.conf'
