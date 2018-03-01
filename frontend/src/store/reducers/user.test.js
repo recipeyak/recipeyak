@@ -23,10 +23,12 @@ describe('User', () => {
     const token = 'afakekey'
     const avatarURL = '//www.user.com'
     const email = 'test@gmail.com'
+    const id = 15
 
     const userData = {
       avatar_url: avatarURL,
       email,
+      id,
       has_usable_password: true
     }
 
@@ -34,6 +36,7 @@ describe('User', () => {
       loggedIn: true,
       token,
       avatarURL,
+      id,
       hasUsablePassword: true,
       email
     }
