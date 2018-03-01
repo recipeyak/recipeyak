@@ -1055,7 +1055,7 @@ export const setLoadingLogin = val => ({
   val
 })
 
-export const logUserIn = (email, password) => dispatch => {
+export const logUserIn = (email, password, url = '') => dispatch => {
   dispatch(setLoadingLogin(true))
   dispatch(setErrorLogin({}))
   dispatch(clearNotification())
@@ -1066,7 +1066,7 @@ export const logUserIn = (email, password) => dispatch => {
   .then(res => {
     dispatch(login(res.data.key, res.data.user))
     dispatch(setLoadingLogin(false))
-    dispatch(push('/'))
+    dispatch(push(url))
   })
   .catch(err => {
     if (invalidToken(err.response)) {

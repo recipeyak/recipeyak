@@ -8,7 +8,7 @@ import Login from '../components/Login.jsx'
 
 const mapDispatchToProps = dispatch => {
   return {
-    login: (email, password) => dispatch(logUserIn(email, password)),
+    login: (email, password, url) => dispatch(logUserIn(email, password, url)),
     clearErrors: () => dispatch(setErrorLogin({}))
   }
 }
