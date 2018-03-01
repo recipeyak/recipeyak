@@ -1,6 +1,10 @@
 /* eslint no-unused-vars: 0 */
 
+/* See env.js for adding environment variables */
+
 const DEBUG = process.env.NODE_ENV === 'development'
+
+export const GIT_SHA = DEBUG ? 'development' : process.env.GIT_SHA
 
 export const SENTRY_DSN = process.env.FRONTEND_SENTRY_DSN
 

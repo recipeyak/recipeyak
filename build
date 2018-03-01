@@ -1,5 +1,10 @@
 #!/usr/bin/env sh
-set -eu
+set -e
+
+if [ $DOCKER_MACHINE_NAME ]; then
+    echo "Disconnecting from existing docker host"
+    eval $(docker-machine env -u)
+fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -7,25 +12,26 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source .env
 
 git_rev=$(git rev-parse HEAD)
-git_rev_short=$(git rev-parse --short HEAD)
 
+if [ -z "$1" ] || [ "$1" = 'frontend' ] || [ "$1" = 'react' ]; then
 docker build -f $DIR'/frontend/Dockerfile-prod' $DIR'/frontend' \
-    --tag recipeyak/react:latest \
     --tag recipeyak/react:${git_rev} \
-    --tag recipeyak/react:${git_rev_short} \
     --build-arg OAUTH_BITBUCKET_CLIENT_ID=${OAUTH_BITBUCKET_CLIENT_ID-""} \
     --build-arg OAUTH_FACEBOOK_CLIENT_ID=${OAUTH_FACEBOOK_CLIENT_ID-""} \
     --build-arg OAUTH_GITHUB_CLIENT_ID=${OAUTH_GITHUB_CLIENT_ID-""} \
     --build-arg OAUTH_GITLAB_CLIENT_ID=${OAUTH_GITLAB_CLIENT_ID-""} \
     --build-arg OAUTH_GOOGLE_CLIENT_ID=${OAUTH_GOOGLE_CLIENT_ID-""} \
+    --build-arg GIT_SHA=${git_rev} \
     --build-arg FRONTEND_SENTRY_DSN=${FRONTEND_SENTRY_DSN}
+fi
 
+if [ -z "$1" ] || [ "$1" = 'nginx' ]; then
 docker build -f $DIR'/nginx/Dockerfile' $DIR'/nginx' \
-    --tag recipeyak/nginx:latest \
-    --tag recipeyak/nginx:${git_rev} \
-    --tag recipeyak/nginx:${git_rev_short}
+    --tag recipeyak/nginx:${git_rev}
+fi
 
+if [ -z "$1" ] || [ "$1" = 'backend' ] || [ "$1" = 'django' ]; then
 docker build -f $DIR'/backend/Dockerfile-prod' $DIR'/backend' \
-    --tag recipeyak/django:latest \
     --tag recipeyak/django:${git_rev} \
-    --tag recipeyak/django:${git_rev_short}
+    --build-arg GIT_SHA=${git_rev}
+fi

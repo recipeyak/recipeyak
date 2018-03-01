@@ -1,5 +1,10 @@
 #!/usr/bin/env sh
-set -eu
+set -e
+
+if [ $DOCKER_MACHINE_NAME ]; then
+    echo "Disconnecting from existing docker host"
+    eval $(docker-machine env -u)
+fi
 
 # https://github.com/moby/moby/issues/7336#issuecomment-194310594
 for i in $(docker images | grep ^recipeyak/ | grep -v '<none>' | awk 'BEGIN{OFS=":"}{print $1,$2}')

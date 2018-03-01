@@ -154,7 +154,7 @@ const Settings = ({
   </div>
 </div>
 
-  <h1 className="fs-8">Social Accounts</h1>
+  <h1 className="fs-6">Social Accounts</h1>
 
   <Github/>
   <Gitlab/>
