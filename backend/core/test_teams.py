@@ -95,6 +95,25 @@ def test_removing_member_from_team(client, team, membership, user, user2):
     assert client.get(url).status_code == status.HTTP_404_NOT_FOUND, \
         'user should not be able to access team'
 
+def test_fetching_team_recipes(client, team_with_recipes, user, user2):
+    url = reverse('team-recipes-list', kwargs={'team_pk': team_with_recipes.id})
+
+    client.force_authenticate(user2)
+    res = client.get(url)
+    assert res.status_code == status.HTTP_404_NOT_FOUND
+
+    client.force_authenticate(user)
+    res = client.get(url)
+    assert res.status_code == status.HTTP_200_OK
+
+
+def test_adding_recipe_to_team(client, team, user):
+    assert False
+
+
+def test_removing_recipe_from_team(client, team, user):
+    assert False
+
 
 def test_member_permissions(client, team, user, user2):
     assert False

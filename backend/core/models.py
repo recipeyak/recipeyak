@@ -111,7 +111,9 @@ class Recipe(CommonInfo):
 
     edits = models.IntegerField(default=0, editable=False)
 
-    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE, blank=True, null=True)
+
+    team = models.ForeignKey('Team', on_delete=models.CASCADE, blank=True, null=True)
 
     @property
     def ingredients(self):

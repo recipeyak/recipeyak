@@ -15,6 +15,7 @@ from .views import (
     TeamViewSet,
     MembershipViewSet,
     InviteViewSet,
+    TeamRecipesViewSet,
 )
 
 router = DefaultRouter()
@@ -30,6 +31,7 @@ recipes_router.register(r'ingredients', IngredientViewSet, base_name='recipe-ing
 teams_router = routers.NestedSimpleRouter(router, r't', lookup='team')
 teams_router.register(r'members', MembershipViewSet, base_name='team-member')
 teams_router.register(r'invites', InviteViewSet, base_name='team-invites')
+teams_router.register(r'recipes', TeamRecipesViewSet, base_name='team-recipes')
 
 urlpatterns = [
     # django-rest-auth related urls

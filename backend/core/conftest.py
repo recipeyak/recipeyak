@@ -147,6 +147,11 @@ def team(user):
 
 
 @pytest.fixture
+def team_with_recipes(team):
+    return team
+
+
+@pytest.fixture
 def membership(team, user):
     m = Membership.objects.create(team=team)
     m.membership.add(user)

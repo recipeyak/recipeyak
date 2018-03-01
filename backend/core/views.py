@@ -256,3 +256,14 @@ class InviteViewSet(viewsets.ModelViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class TeamRecipesViewSet(viewsets.GenericViewSet):
+
+    def list(self, request, team_pk=None):
+        # must be a member of team to view recipes
+        team = get_object_or_404(Team.objects.all(), pk=team_pk)
+        get_object_or_404(team.membership_set.all(), membership=user)
+
+        queryset = Recipe.objects.filter(team=team)
+        serializer = RecipeSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
