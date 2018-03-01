@@ -43,6 +43,7 @@ ALLOWED_HOSTS: List[str] = ['.recipeyak.com']
 if DEBUG:
     ALLOWED_HOSTS = ['*']
 
+# Replaced with Git SHA during docker build. We use this to track releases via Sentry
 GIT_SHA = '<%=GIT_SHA=%>'
 
 # Application definition
