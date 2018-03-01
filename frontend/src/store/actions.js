@@ -94,16 +94,14 @@ http.interceptors.response.use(
   response => response,
   error => {
     // 503 means we are in maintenance mode. Reload to show maintenance page.
-    if (error.response && error.response.status === 503) {
+    const maintance_mode = error.response && error.response.status === 503
+    // Report all 500 errors
+    const serverError = !maintance_mode && error.response && error.response.status >= 500
+    // Report request timeouts
+    const requestTimeout = error.code === 'ECONNABORTED'
+    if (maintance_mode) {
       location.reload()
-    }
-    return Promise.reject(error)
-  })
-
-http.interceptors.response.use(
-  response => response,
-  error => {
-    if (error.code === 'ECONNABORTED') {
+    } else if (serverError || requestTimeout) {
       raven.captureException(error)
     }
     return Promise.reject(error)
