@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.conf import settings
 from rest_framework import status
 
-from .models import Team, Membership
+from .models import Team, Membership, Recipe
 
 pytestmark = pytest.mark.django_db
 
@@ -80,6 +80,14 @@ def test_inviting_member_to_team(client, team, user, user2):
     assert res.status_code == status.HTTP_400_BAD_REQUEST
 
 
+def test_accepting_team_invite(client, team, user):
+    assert False
+
+
+def test_declining_team_invite(client, team, user):
+    assert False
+
+
 def test_removing_member_from_team(client, team, membership, user, user2):
     client.force_authenticate(user)
     url = reverse('team-member-detail',
@@ -148,8 +156,26 @@ def test_adding_recipe_to_team(client, team, user, user2):
     assert res.status_code == status.HTTP_403_FORBIDDEN
 
 
-def test_removing_recipe_from_team(client, team, user):
-    assert False
+def test_removing_recipe_from_team(client, team_with_recipes, user):
+    client.force_authenticate(user)
+    url = reverse('team-recipes-list', kwargs={'team_pk': team_with_recipes.id})
+    res = client.get(url)
+    assert res.status_code == status.HTTP_200_OK
+    recipe_id = res.json()[0].get('id')
+
+    url = reverse('team-recipes-detail',
+            kwargs={
+                'team_pk': team_with_recipes.id,
+                'pk': recipe_id
+            })
+
+    res = client.get(url)
+    assert res.status_code == status.HTTP_200_OK
+
+    res = client.delete(url)
+    assert res.status_code == status.HTTP_204_NO_CONTENT
+
+    assert not Recipe.objects.filter(id=recipe_id).exists()
 
 
 def test_moving_recipe_to_team(client, team, user):

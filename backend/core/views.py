@@ -260,7 +260,10 @@ class InviteViewSet(viewsets.ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class TeamRecipesViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
+class TeamRecipesViewSet(
+        viewsets.GenericViewSet,
+        mixins.RetrieveModelMixin,
+        mixins.DestroyModelMixin):
 
     serializer_class = RecipeSerializer
     permission_classes = (IsAuthenticated, IsTeamMember,)
