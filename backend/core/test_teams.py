@@ -66,7 +66,7 @@ def test_adding_member_to_team(client, team, user, user2):
         client.force_authenticate(u)
         url = reverse('team-member-list', kwargs={'team_pk': team.id})
         res = client.post(url, {})
-        assert res.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+        assert res.status_code in (status.HTTP_405_METHOD_NOT_ALLOWED, status.HTTP_403_FORBIDDEN)
 
 
 def test_inviting_member_to_team(client, team, user, user2):
@@ -89,18 +89,41 @@ def test_declining_team_invite(client, team, user):
 
 
 def test_removing_member_from_team(client, team, membership, user, user2):
-    client.force_authenticate(user)
+    team_url = reverse('teams-detail', kwargs={'pk': team.id})
+    client.force_authenticate(user2)
+    assert client.get(team_url).status_code == status.HTTP_404_NOT_FOUND, \
+        'user should not be able to access team'
+
+    m = Membership.objects.create(level=Membership.MEMBER, team=team)
+    m.membership.add(user2)
+
+    assert client.get(team_url).status_code == status.HTTP_200_OK, \
+        'user should be able to access team'
+
     url = reverse('team-member-detail',
             kwargs={
                 'team_pk': team.id,
                 'pk': membership.id
             })
+
+    assert client.delete(url).status_code == status.HTTP_403_FORBIDDEN, \
+        "non admin user should not be able to revoke admin user's membership"
+
+
+    url = reverse('team-member-detail',
+            kwargs={
+                'team_pk': team.id,
+                'pk': m.id
+            })
+
+    client.force_authenticate(user)
     res = client.delete(url)
     assert res.status_code == status.HTTP_204_NO_CONTENT
-    assert not Membership.objects.filter(id=membership.id).exists(), \
-        "user's team membership is deleted"
-    url = reverse('teams-detail', kwargs={'pk': team.id})
-    assert client.get(url).status_code == status.HTTP_404_NOT_FOUND, \
+    assert not Membership.objects.filter(id=m.id).exists(), \
+        "admin should be able to remove team membership of member"
+
+    client.force_authenticate(user2)
+    assert client.get(team_url).status_code == status.HTTP_404_NOT_FOUND, \
         'user should not be able to access team'
 
 def test_fetching_team_recipes(client, team_with_recipes, user, user2):

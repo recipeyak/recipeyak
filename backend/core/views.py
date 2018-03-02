@@ -12,7 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.db.models import Sum, Count, Q
 from django.db.models.functions import TruncMonth
 
-from .permissions import IsTeamMember
+from .permissions import IsTeamMember, IsTeamAdmin
 
 from .models import (
     Recipe,
@@ -239,6 +239,8 @@ class MembershipViewSet(
 
     serializer_class = MembershipSerializer
     queryset = Membership.objects.all()
+
+    permission_classes = (IsAuthenticated, IsTeamAdmin,)
 
 
 class InviteViewSet(viewsets.ModelViewSet):
