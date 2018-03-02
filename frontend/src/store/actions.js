@@ -76,6 +76,7 @@ import {
   CLEAR_ADD_RECIPE_FORM,
   SET_SOCIAL_ACCOUNT_CONNECTION,
   SET_PASSWORD_USABLE,
+  SET_FROM_URL,
 } from './actionTypes'
 
 import {
@@ -223,6 +224,11 @@ export const setPasswordUsable = val => ({
 
 export const setUpdatingUserEmail = val => ({
   type: SET_UPDATING_USER_EMAIL,
+  val
+})
+
+export const setFromUrl = val => ({
+  type: SET_FROM_URL,
   val
 })
 
@@ -1055,7 +1061,7 @@ export const setLoadingLogin = val => ({
   val
 })
 
-export const logUserIn = (email, password, url = '') => dispatch => {
+export const logUserIn = (email, password, redirectUrl = '') => dispatch => {
   dispatch(setLoadingLogin(true))
   dispatch(setErrorLogin({}))
   dispatch(clearNotification())
@@ -1066,7 +1072,7 @@ export const logUserIn = (email, password, url = '') => dispatch => {
   .then(res => {
     dispatch(login(res.data.key, res.data.user))
     dispatch(setLoadingLogin(false))
-    dispatch(push(url))
+    dispatch(push(redirectUrl))
   })
   .catch(err => {
     if (invalidToken(err.response)) {
@@ -1090,13 +1096,13 @@ export const setErrorSocialLogin = val => ({
   val
 })
 
-export const socialLogin = (service, token) => dispatch => {
+export const socialLogin = (service, token, redirectUrl = '') => dispatch => {
   return http.post(`/api/v1/rest-auth/${service}/`, {
     code: token
   })
   .then(res => {
     dispatch(login(res.data.key, res.data.user))
-    dispatch(replace('/'))
+    dispatch(replace(redirectUrl))
   })
   .catch(err => {
     if (invalidToken(err.response)) {
