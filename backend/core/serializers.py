@@ -76,7 +76,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = ('id', 'name', 'author', 'source', 'time', 'ingredients',
                   'steps', 'tags', 'servings', 'edits', 'modified',
-                  'cart_count')
+                  'cart_count', 'team')
 
     def validate_steps(self, value):
         if value == []:

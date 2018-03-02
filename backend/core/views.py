@@ -8,8 +8,11 @@ from rest_framework import viewsets, status, mixins, views
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from django.db.models import Sum, Count, Q
 from django.db.models.functions import TruncMonth
+
+from .permissions import IsTeamMember
 
 from .models import (
     Recipe,
@@ -257,13 +260,28 @@ class InviteViewSet(viewsets.ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class TeamRecipesViewSet(viewsets.GenericViewSet):
+class TeamRecipesViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
+
+    serializer_class = RecipeSerializer
+    permission_classes = (IsAuthenticated, IsTeamMember,)
+
+    def get_queryset(self):
+        pk = self.kwargs['team_pk']
+        team = Team.objects.get(pk=pk)
+        return Recipe.objects.filter(team=team)
 
     def list(self, request, team_pk=None):
-        # must be a member of team to view recipes
         team = get_object_or_404(Team.objects.all(), pk=team_pk)
-        get_object_or_404(team.membership_set.all(), membership=user)
 
         queryset = Recipe.objects.filter(team=team)
         serializer = RecipeSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request, team_pk=None):
+        team = get_object_or_404(Team.objects.all(), pk=team_pk)
+
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        serializer.save(team=team)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

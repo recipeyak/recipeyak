@@ -113,7 +113,7 @@ class Recipe(CommonInfo):
 
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE, blank=True, null=True)
 
-    team = models.ForeignKey('Team', on_delete=models.CASCADE, blank=True, null=True)
+    team = models.ForeignKey('Team', on_delete=models.CASCADE, blank=True, null=True, related_name='recipes')
 
     @property
     def ingredients(self):

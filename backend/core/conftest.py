@@ -147,7 +147,9 @@ def team(user):
 
 
 @pytest.fixture
-def team_with_recipes(team):
+def team_with_recipes(team, recipe, recipe_pie):
+    team.recipes.add(recipe)
+    team.recipes.add(recipe_pie)
     return team
 
 
