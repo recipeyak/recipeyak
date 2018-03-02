@@ -19,6 +19,10 @@ class Login extends React.Component {
 
   componentWillMount = () => {
     this.props.clearErrors()
+    const fromUrl = this.props.location.state != null
+    ? this.props.location.state.from
+    : {}
+    this.props.setFromUrl(redirectURL(fromUrl))
   }
 
   handleInputChange (e) {
@@ -27,10 +31,7 @@ class Login extends React.Component {
 
   handleLogin (e) {
     e.preventDefault()
-    const from = this.props.location.state != null
-      ? this.props.location.state.from
-      : {}
-    this.props.login(this.state.email, this.state.password, redirectURL(from))
+    this.props.login(this.state.email, this.state.password, this.props.fromUrl)
   }
 
   render () {

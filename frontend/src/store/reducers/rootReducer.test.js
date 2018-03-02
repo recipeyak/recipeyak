@@ -12,6 +12,9 @@ describe('logout', () => {
     const beforeState = {
       loggedIn: true,
       token: 'testing',
+      auth: {
+        fromUrl: ''
+      },
       routerReducer: {
         location: 'test',
       }
