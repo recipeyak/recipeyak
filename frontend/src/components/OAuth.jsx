@@ -2,7 +2,7 @@ import React from 'react'
 
 import Loader from './Loader'
 
-const OAuth = ({ service, token, login, redirectUrl }) => {
+const OAuth = ({ service, token, login, redirectUrl = '' }) => {
   login(service, token, redirectUrl)
 
   return (

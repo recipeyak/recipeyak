@@ -71,7 +71,7 @@ const SocialButtons = ({ nonFieldErrors, emailError, signup = true }) => enableS
       <Google/>
       <Facebook/>
     </div>
-    <FormErrorHandler errors={nonFieldErrors}/>
+    <FormErrorHandler error={nonFieldErrors}/>
     <FormErrorHandler error={emailError}/>
   </div>
 
