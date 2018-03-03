@@ -1,5 +1,8 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
+import {
+  Link
+} from 'react-router-dom'
 
 import Recipe from '../containers/RecipeItem'
 
@@ -9,8 +12,10 @@ import {
   ButtonDanger
 } from './Buttons'
 
+const inviteURL = id => `/t/${id}/invite`
+
 const MemberRow = ({ id, avatarURL, name, email, status, role }) =>
-  <tr>
+  <tr key={ id }>
     <td key={id} className="d-flex align-items-center pr-4">
       <div className="w-50px mr-2 d-flex align-items-center">
         <img src={ avatarURL } className="br-10-percent" alt='avatar'/>
@@ -37,7 +42,7 @@ const MemberRow = ({ id, avatarURL, name, email, status, role }) =>
       </section>
     </td>
     <td className="vertical-align-middle pr-4">
-      <div class="select is-small">
+      <div className="select is-small">
         <select value={ role }>
           <option value="ADMIN">Admin</option>
           <option value="MEMBER">Member</option>
@@ -55,6 +60,7 @@ const MemberRow = ({ id, avatarURL, name, email, status, role }) =>
 class Team extends React.Component {
   render () {
     const name = 'Recipe Yak Team'
+    const id = 1
     const members = [
       {
         id: 1,
@@ -114,16 +120,16 @@ class Team extends React.Component {
         <h1 className="fs-9 text-center fw-500 p-4">{ name }</h1>
         <section className="d-flex justify-space-between align-items-center">
           <h2 className="fs-6">Members</h2>
-          <ButtonPrimary>
+          <Link className="button is-primary" to={ inviteURL(id) }>
             Invite
-          </ButtonPrimary>
+          </Link>
         </section>
         { members.length > 0
           ? <div className="table-responsive">
               <table className="table-spacing">
                 <tbody>
                 {
-                  members.map(x => <MemberRow {...x}/>)
+                  members.map(x => <MemberRow key={x.id} {...x}/>)
                 }
                 </tbody>
               </table>
