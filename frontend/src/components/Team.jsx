@@ -9,6 +9,49 @@ import {
   ButtonDanger
 } from './Buttons'
 
+const MemberRow = ({ id, avatarURL, name, email, status, role }) =>
+  <tr>
+    <td key={id} className="d-flex align-items-center pr-4">
+      <div className="w-50px mr-2 d-flex align-items-center">
+        <img src={ avatarURL } className="br-10-percent" alt='avatar'/>
+      </div>
+      <div className="d-flex direction-column">
+        <span className="bold">
+          { name !== ''
+              ? name
+              : email
+          }
+        </span>
+        <span>{ email }</span>
+      </div>
+    </td>
+    <td className="vertical-align-middle pr-4">
+      <section className="bold d-flex align-items-start direction-column">
+        <span>{ status.toLowerCase() }</span>
+        { status === 'INVITED'
+            ? <ButtonPlain className="is-small">
+              Resend Invite
+            </ButtonPlain>
+            : null
+        }
+      </section>
+    </td>
+    <td className="vertical-align-middle pr-4">
+      <div class="select is-small">
+        <select value={ role }>
+          <option value="ADMIN">Admin</option>
+          <option value="MEMBER">Member</option>
+          <option value="VIEWER">Viewer</option>
+        </select>
+      </div>
+    </td>
+    <td className="vertical-align-middle text-right">
+      <ButtonDanger className="is-small">
+        remove
+      </ButtonDanger>
+    </td>
+  </tr>
+
 class Team extends React.Component {
   render () {
     const name = 'Recipe Yak Team'
@@ -75,74 +118,43 @@ class Team extends React.Component {
             Invite
           </ButtonPrimary>
         </section>
-        <div className="table-responsive">
-        <table className="table-spacing">
-          <tbody>
-          {
-            members.map(x => <tr>
-              <td key={x.id} className="d-flex align-items-center pr-4">
-                <div className="w-50px mr-2">
-                  <img src={ x.avatarURL } className="br-10-percent" alt='avatar'/>
-                </div>
-                <div className="d-flex direction-column">
-                  <span className="bold">
-                  { x.name !== ''
-                      ? x.name
-                      : x.email
-                  }
-                  </span>
-                  <span>{ x.email }</span>
-                </div>
-              </td>
-              <td className="vertical-align-middle pr-4">
-                <section className="bold d-flex align-items-start direction-column">
-                <span>{ x.status.toLowerCase() }</span>
-                { x.status === 'INVITED'
-                    ? <ButtonPlain className="is-small">
-                        Resend Invite
-                      </ButtonPlain>
-                    : null
+        { members.length > 0
+          ? <div className="table-responsive">
+              <table className="table-spacing">
+                <tbody>
+                {
+                  members.map(x => <MemberRow {...x}/>)
                 }
-                </section>
-              </td>
-              <td className="vertical-align-middle pr-4">
-              <div class="select is-small">
-                <select value={ x.role }>
-                  <option value="ADMIN">Admin</option>
-                  <option value="MEMBER">Member</option>
-                  <option value="VIEWER">Viewer</option>
-                </select>
-              </div>
-              </td>
-              <td className="vertical-align-middle text-right">
-                <ButtonDanger className="is-small">
-                  remove
-                </ButtonDanger>
-              </td>
-            </tr>
-            )
-          }
-          </tbody>
-        </table>
-        </div>
+                </tbody>
+              </table>
+            </div>
+          : <section>
+              <h1 className="text-center fs-6 bold text-muted">No Team Members</h1>
+              <p className="text-center">Add one via the Invite button</p>
+            </section>
+        }
         <section className="d-flex justify-space-between align-items-center">
           <h2 className="fs-6 mb-2">Recipes</h2>
           <ButtonPrimary>
             Create Recipe
           </ButtonPrimary>
         </section>
-        <section className="recipe-grid">
           { recipes.length === 0
-              ? <p>No recipes yet</p>
-              : recipes.map(recipe =>
-                  <Recipe
-                    {...recipe}
-                    className='mb-0'
-                    key={ recipe.id }
-                  />
-                )
+              ? <section>
+                  <h1 className="text-center fs-6 bold text-muted">No Team Recipes</h1>
+                  <p className="text-center">Use the Create Recipe button to add one.</p>
+                </section>
+              : <section className="recipe-grid">
+                { recipes.map(recipe =>
+                    <Recipe
+                      {...recipe}
+                      className='mb-0'
+                      key={ recipe.id }
+                    />
+                  )
+                }
+              </section>
           }
-        </section>
       </div>
     )
   }
