@@ -52,6 +52,16 @@ section.section {
   padding: 1.5rem;
 }
 
+
+// bulma override since small buttons are hard to read with the font weight
+.is-small {
+  font-weight: 600;
+  select {
+    font-weight: 600;
+  }
+}
+
+
 a {
   color: $link-color;
   transition: color .2s;
@@ -106,6 +116,7 @@ a {
   grid-gap: 0.5rem;
 }
 
+.recipe-grid,
 .grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));

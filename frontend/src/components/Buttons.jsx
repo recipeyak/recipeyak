@@ -18,6 +18,15 @@ export const ButtonPrimary = ({
     { ...props }
   />
 
+export const ButtonDanger = ({
+  className = '',
+  ...props
+}) =>
+  <ButtonPlain
+    className={ className + ' is-danger' }
+    { ...props }
+  />
+
 export const ButtonPlain = ({
   loading = false,
   type = 'button',
