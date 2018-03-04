@@ -9,7 +9,7 @@ from rest_framework.decorators import detail_route
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
 from django.db.models import Sum, Count, Q
 from django.db.models.functions import TruncMonth
 
@@ -270,15 +270,17 @@ class MembershipViewSet(
     """
 
     serializer_class = MembershipSerializer
-    queryset = Membership.objects.all()
 
-    # def get_permissions(self):
-        # if self.action in ('retrieve', 'list', 'create'):
-        #     permission_classes = (IsAuthenticated,)
-        # else:
-        #     permission_classes = (IsAuthenticated, IsTeamAdmin,)
-        # return [permission() for permission in permission_classes]
-    permission_classes = (IsAuthenticated,)
+    def get_queryset(self):
+        team = get_object_or_404(Team.objects.all(), pk=self.kwargs['team_pk'])
+        return team.membership_set.all()
+
+    def get_permissions(self):
+        if self.request.method in SAFE_METHODS:
+            permission_classes = (IsAuthenticated, IsTeamMember,)
+        else:
+            permission_classes = (IsAuthenticated, IsTeamAdmin,)
+        return [permission() for permission in permission_classes]
 
 
 class TeamInviteViewSet(viewsets.GenericViewSet,

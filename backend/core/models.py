@@ -220,6 +220,17 @@ class Team(CommonInfo):
     def force_join_admin(self, user):
         return self.force_join(user, level=Membership.ADMIN)
 
+    def invite_user(self, user, level=None):
+        """
+        Invite user to team
+
+        Adds member to team with is_active=False. Creates associated Invite.
+        """
+        if level is None:
+            level = Membership.CONTRIBUTOR
+        m = Membership.objects.create(team=self, level=level, user=user, is_active=False)
+        return Invite.objects.create(membership=m)
+
     def set_public(self):
         self.is_public = True
         self.save()

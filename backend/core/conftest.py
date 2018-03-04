@@ -165,8 +165,3 @@ def team_with_recipes(team, recipe, recipe_pie):
     team.recipes.add(recipe)
     team.recipes.add(recipe_pie)
     return team
-
-
-@pytest.fixture
-def membership(team, user):
-    return Membership.objects.create(team=team, user=user)

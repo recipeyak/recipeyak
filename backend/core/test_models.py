@@ -42,3 +42,7 @@ def test_team_is_member(client, team, user, user2):
     team.force_join(user2)
     assert team.is_member(user2), \
         'User2 should be a member'
+
+
+def test_team_invite_user(client, team, user):
+    assert False

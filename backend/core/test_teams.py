@@ -217,75 +217,116 @@ def test_create_team_member(client, team, user, user2):
         res = client.post(url, {})
         assert res.status_code in (status.HTTP_405_METHOD_NOT_ALLOWED, status.HTTP_403_FORBIDDEN)
 
-# FIXME: Everything below this needs to be worked on
 
 def test_list_team_members(client, team, user, user2, user3):
     """
     Only team members should be able to retrieve team membership information.
     A member must be an admin to destroy or update a member
     """
-    url = reverse('team-invites-list', kwargs={'team_pk': team.id})
+    url = reverse('team-member-list', kwargs={'team_pk': team.id})
+
+    # non-members cannot view members
+    assert not team.is_member(user2)
+    client.force_authenticate(user2)
+    assert client.get(url).status_code == status.HTTP_403_FORBIDDEN
+
+    # admins can view members
     client.force_authenticate(user)
+    assert team.is_admin(user)
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK, \
         'Team admins can view members'
+    assert len(res.json()) == 1
 
     # invite user2 to team
-    res = client.post(url, { 'user': user2.id, 'level': Membership.ADMIN })
-    assert res.status_code == status.HTTP_201_CREATED
-    invite_pk = res.json()['id']
-
+    team.invite_user(user2)
+    # inactive members cannot view members
     client.force_authenticate(user2)
     res = client.get(url)
     assert res.status_code == status.HTTP_403_FORBIDDEN, \
         'Only active users can view members'
 
-    team.force_join(user3, level=Membership.VIEWER)
+    # team viewer can see members
+    team.force_join(user3, level=Membership.READ_ONLY)
     client.force_authenticate(user3)
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK, \
         'Viewer members can retrieve team members'
-    assert False
+    assert len(res.json()) == 3, \
+        'We have three members (user, user2 [inactive], user3).'
 
 
-def test_removing_member_from_team(client, team, membership, user, user2):
-    team_url = reverse('teams-detail', kwargs={'pk': team.id})
+def test_destory_team_member(client, team, user, user2, user3, empty_team):
+    user_membership = user.membership_set.get(team=team)
+    url = reverse('team-member-detail',
+            kwargs={
+                'team_pk': team.id,
+                'pk': user_membership.id
+            })
+    # non-members cannot delete team memberships
+    assert not team.is_member(user2)
     client.force_authenticate(user2)
-    assert client.get(team_url).status_code == status.HTTP_404_NOT_FOUND, \
-        'user should not be able to access team'
-
-    m = Membership.objects.create(level=Membership.CONTRIBUTOR, team=team, user=user2)
-
-    assert client.get(team_url).status_code == status.HTTP_200_OK, \
-        'user should be able to access team'
-
-    url = reverse('team-member-detail',
-            kwargs={
-                'team_pk': team.id,
-                'pk': membership.id
-            })
-
     assert client.delete(url).status_code == status.HTTP_403_FORBIDDEN, \
-        "non admin user should not be able to revoke admin user's membership"
+        'non-member should not be able to delete member'
 
+    # non-admins cannot delete team members
+    team.force_join(user3)
+    assert not team.is_admin(user3)
+    assert team.is_member(user3)
+    client.force_authenticate(user3)
+    assert client.delete(url).status_code == status.HTTP_403_FORBIDDEN, \
+        "non-admin member should not be able to revoke admin user's membership"
 
+    user3_membership = user3.membership_set.get(team=team)
     url = reverse('team-member-detail',
             kwargs={
                 'team_pk': team.id,
-                'pk': m.id
+                'pk': user3_membership.id
             })
-
+    # admins can remove memberships of members
     client.force_authenticate(user)
     res = client.delete(url)
     assert res.status_code == status.HTTP_204_NO_CONTENT
-    assert not Membership.objects.filter(id=m.id).exists(), \
+    assert not Membership.objects.filter(id=user3_membership.id).exists(), \
         "admin should be able to remove team membership of member"
 
-    client.force_authenticate(user2)
-    assert client.get(team_url).status_code == status.HTTP_404_NOT_FOUND, \
-        'user should not be able to access team'
+    client.force_authenticate(user3)
+    assert client.get(url).status_code == status.HTTP_403_FORBIDDEN, \
+        'removed user should not be able to access team'
+
+    # admins can remove other admins
+    team.force_join_admin(user3)
+    assert team.is_admin(user3)
+    url = reverse('team-member-detail',
+            kwargs={
+                'team_pk': team.id,
+                'pk': user.membership_set.get(team=team).id
+            })
+    client.force_authenticate(user3)
+    res = client.delete(url)
+    assert res.status_code == status.HTTP_204_NO_CONTENT, \
+        'Team admins can remove other admins'
+
+    # admins cannot remove members of other teams
+    empty_team.force_join(user)
+    assert empty_team.is_member(user)
+    assert team.is_admin(user3)
+    client.force_authenticate(user3)
+    url = reverse('team-member-detail',
+            kwargs={
+                'team_pk': empty_team.id,
+                'pk': user.membership_set.get(team=empty_team).id
+            })
+    assert client.delete(url).status_code == status.HTTP_403_FORBIDDEN, \
+        'Admin users cannot remove member of another team'
+
+# FIXME: Everything below this needs to be worked on
+
+def test_retrieve_team_member():
     assert False
 
+def test_update_team_member():
+    assert False
 
 def test_list_team_invites(client, team, user, user2, user3):
     """
