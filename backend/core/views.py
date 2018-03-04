@@ -5,14 +5,21 @@ import pytz
 
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, mixins, views
+from rest_framework.decorators import detail_route
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
 from django.db.models import Sum, Count, Q
 from django.db.models.functions import TruncMonth
 
-from .permissions import IsTeamMember, IsTeamAdmin
+from .permissions import (
+    IsTeamMember,
+    IsTeamAdmin,
+    CanRetrieveListMember,
+    CanDestroyMember,
+    CanUpdateMember,
+)
 
 from .models import (
     Recipe,
@@ -22,6 +29,7 @@ from .models import (
     CartItem,
     Team,
     Membership,
+    Invite,
 )
 from .serializers import (
     RecipeSerializer,
@@ -33,6 +41,7 @@ from .serializers import (
     TeamSerializer,
     MembershipSerializer,
     InviteSerializer,
+    CreateInviteSerializer,
 )
 from .utils import combine_ingredients
 
@@ -214,52 +223,133 @@ class UserStats(APIView):
 
 
 class TeamViewSet(viewsets.ModelViewSet):
+    """
+    Team viewset for /t/<team>
+
+    Retrieve - Anyone if public, otherwise only members
+    List - Anyone if public, otherwise only members
+    Destroy - Only TeamAdmins can destroy
+    Update - Only TeamAdmins can update
+    """
     serializer_class = TeamSerializer
 
     def get_queryset(self):
-        return Team.objects.filter(membership__membership__id=self.request.user.id)
+        return Team.objects.filter(membership__user__id=self.request.user.id) | Team.objects.filter(is_public=True)
+
+    def get_permissions(self):
+        if self.action in ('retrieve', 'list', 'create'):
+            permission_classes = (IsAuthenticated,)
+        else:
+            permission_classes = (IsAuthenticated, IsTeamAdmin,)
+        return [permission() for permission in permission_classes]
 
     def create(self, request):
         serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            team = serializer.save()
-            m = Membership.objects.create(level=Membership.ADMIN, team=team)
-            m.membership.add(request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        team = serializer.save()
+        team.force_join_admin(request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+# FIXME: Everything below this needs to be worked on
 
 
 class MembershipViewSet(
         viewsets.GenericViewSet,
-        mixins.DestroyModelMixin,
-        mixins.UpdateModelMixin,
         mixins.RetrieveModelMixin,
-        mixins.ListModelMixin):
+        mixins.ListModelMixin,
+        mixins.DestroyModelMixin,
+        mixins.UpdateModelMixin):
+    """
+    Member viewset for /t/<team>/members
+
+    Retrieve - Only TeamMembers can list all members
+    List - Only TeamMembers can list all members
+    Destroy - Only TeamAdmins can destroy members
+    Update - Only TeamAdmins can update members
+    """
 
     serializer_class = MembershipSerializer
-    queryset = Membership.objects.all()
 
-    permission_classes = (IsAuthenticated, IsTeamAdmin,)
+    def get_queryset(self):
+        team = get_object_or_404(Team.objects.all(), pk=self.kwargs['team_pk'])
+        return team.membership_set.all()
+
+    def get_permissions(self):
+        if self.request.method in SAFE_METHODS:
+            permission_classes = (IsAuthenticated, IsTeamMember,)
+        else:
+            permission_classes = (IsAuthenticated, IsTeamAdmin,)
+        return [permission() for permission in permission_classes]
 
 
-class InviteViewSet(viewsets.ModelViewSet):
+class TeamInviteViewSet(viewsets.GenericViewSet,
+                        mixins.RetrieveModelMixin,
+                        mixins.ListModelMixin,
+                        mixins.CreateModelMixin,
+                        mixins.DestroyModelMixin):
+    """
+    Invite viewset for /t/<team-name>/invites
+
+    Retrieve - return specific invite for the team
+    List - return all invites for the team
+    Create - create new invite
+    Destroy - remove existing invite
+    """
     serializer_class = InviteSerializer
+    permission_classes = (IsAuthenticated, IsTeamMember,)
+
+    def get_queryset(self):
+        team_pk = self.kwargs['team_pk']
+        return Invite.objects.filter(membership__team__id=team_pk)
+
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return CreateInviteSerializer
+        return InviteSerializer
 
     def create(self, request, team_pk=None):
+        user_id = request.data.get('user')
         level = request.data.get('level')
         if (level, level) not in Membership.MEMBERSHIP_CHOICES:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            queryset = Team.objects.filter(membership__membership__id=self.request.user.id)
-            team = get_object_or_404(queryset, pk=team_pk)
-            m = Membership.objects.create(team=team, level=level)
-            serializer.save(membership=m)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        queryset = Team.objects.filter(membership__user=self.request.user).distinct('pk')
+        team = get_object_or_404(queryset, pk=team_pk)
+        m = Membership.objects.create(team=team, level=level, user_id=user_id)
+        serializer.save(membership=m)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class UserInvitesViewSet(viewsets.GenericViewSet,
+                  mixins.RetrieveModelMixin,
+                  mixins.ListModelMixin,
+                  mixins.CreateModelMixin,
+                  mixins.DestroyModelMixin):
+    """
+    Personal route that lists all of a users invites via `/invites`
+
+    Retrieve - return specific invite for user
+    List - return all invites user
+
+    Detail routes
+    `invites/<id>/accept` - post to accept invite
+    `invites/<id>/decline` - post to decline invite
+    """
+    serializer_class = InviteSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return Invite.objects.filter(membership__user=self.request.user)
+
+    @detail_route(methods=['post'], url_name='accept')
+    def accept(self, request, pk=None):
+        invite = self.get_object()
+        invite.accept()
+        return Response({'detail': 'accepted invite'}, status=status.HTTP_200_OK)
 
 
 class TeamRecipesViewSet(

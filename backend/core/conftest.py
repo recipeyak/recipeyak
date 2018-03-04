@@ -39,6 +39,16 @@ def user2():
 
 
 @pytest.fixture
+def user3():
+    email = 'john.doe@example.org'
+    password = 'testing123'
+    user = MyUser.objects.create(email=email)
+    user.set_password(password)
+    user.save()
+    return user
+
+
+@pytest.fixture
 def client():
     return APIClient()
 
@@ -141,9 +151,13 @@ def recipe2(user):
 @pytest.fixture
 def team(user):
     team = Team.objects.create(name='Recipe Yak Team')
-    m = Membership.objects.create(level=Membership.ADMIN, team=team)
-    m.membership.add(user)
+    team.force_join_admin(user=user)
     return team
+
+
+@pytest.fixture
+def empty_team():
+    return Team.objects.create(name='The Hateful Eight')
 
 
 @pytest.fixture
@@ -151,10 +165,3 @@ def team_with_recipes(team, recipe, recipe_pie):
     team.recipes.add(recipe)
     team.recipes.add(recipe_pie)
     return team
-
-
-@pytest.fixture
-def membership(team, user):
-    m = Membership.objects.create(team=team)
-    m.membership.add(user)
-    return m
