@@ -43,12 +43,6 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     created = models.DateField(auto_now_add=True)
     last_updated = models.DateField(auto_now=True)
 
-    membership = models.ForeignKey('Membership',
-                                   on_delete=models.CASCADE,
-                                   null=True,
-                                   blank=True,
-                                   related_name='membership')
-
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS: List[str] = []
 
@@ -216,27 +210,68 @@ class CartItem(CommonInfo):
 
 class Team(CommonInfo):
     name = models.CharField(max_length=255)
+    is_public = models.BooleanField(default=False)
 
+    def force_join(self, user, level=None):
+        if level is None:
+            level = Membership.CONTRIBUTOR
+        return Membership.objects.create(level=level, team=self, user=user, is_active=True)
+
+    def force_join_admin(self, user):
+        return self.force_join(user, level=Membership.ADMIN)
+
+    def set_public(self):
+        self.is_public = True
+        self.save()
+
+    def set_private(self):
+        self.is_public = False
+        self.save()
+
+    def is_member(self, user):
+        return self.membership_set.filter(user=user, is_active=True).exists()
+
+    def is_admin(self, user):
+        return self.membership_set.filter(user=user, is_active=True, level=Membership.ADMIN).exists()
 
 class Membership(CommonInfo):
     ADMIN = 'admin'
-    MEMBER = 'member'
-    VIEWER = 'viewer'
+    CONTRIBUTOR = 'contributor'
+    READ_ONLY = 'read'
 
     MEMBERSHIP_CHOICES = (
         (ADMIN, ADMIN),
-        (MEMBER , MEMBER),
-        (VIEWER , VIEWER),
+        (CONTRIBUTOR , CONTRIBUTOR),
+        (READ_ONLY , READ_ONLY),
+    )
+
+    level = models.CharField(
+        max_length=11,
+        choices=MEMBERSHIP_CHOICES,
+        default=CONTRIBUTOR,
     )
 
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
-    level = models.CharField(
-        max_length=6,
-        choices=MEMBERSHIP_CHOICES,
-    )
+    class Meta:
+        unique_together = (('user', 'team'),)
+
+    # A user is activated once they accept their invite
+    is_active = models.BooleanField(default=False)
+
+    def set_active(self):
+        self.is_active = True
+        self.save()
 
 
 class Invite(CommonInfo):
-    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     membership = models.OneToOneField(Membership, on_delete=models.CASCADE)
+
+    @property
+    def user(self):
+        return self.membership.user
+
+    def accept(self):
+        self.membership.set_active()
+        self.delete()

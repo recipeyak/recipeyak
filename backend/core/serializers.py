@@ -15,12 +15,23 @@ from .models import (
 class UserSerializer(serializers.ModelSerializer):
     """
     serializer custom user model
+
+    This should only be used for requesting the users information
     """
 
     class Meta:
         model = MyUser
         editable = False
         fields = ('id', 'email', 'avatar_url', 'has_usable_password')
+
+
+class PublicUserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MyUser
+        editable = False
+        fields = ('id', 'email', 'avatar_url')
+
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -127,6 +138,18 @@ class MembershipSerializer(serializers.ModelSerializer):
 
 
 class InviteSerializer(serializers.ModelSerializer):
+    user = PublicUserSerializer()
+    class Meta:
+        model = Invite
+        editable = False
+        fields = ('id', 'user',)
+
+class CreateInviteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Invite
         fields = ('id', 'user',)
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['user'] = PublicUserSerializer(instance=instance.user).data
+        return data
