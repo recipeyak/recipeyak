@@ -21,6 +21,7 @@ from .permissions import (
     CanDestroyMember,
     CanUpdateMember,
     IsTeamMemberIfPrivate,
+    DeleteIfMemberOrAdmin,
 )
 
 from .models import (
@@ -361,7 +362,7 @@ class TeamRecipesViewSet(
         mixins.DestroyModelMixin):
 
     serializer_class = RecipeSerializer
-    permission_classes = (IsAuthenticated, IsTeamMemberIfPrivate)
+    permission_classes = (IsAuthenticated, IsTeamMemberIfPrivate, DeleteIfMemberOrAdmin)
 
     def get_queryset(self):
         pk = self.kwargs['team_pk']

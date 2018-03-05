@@ -650,7 +650,19 @@ def test_destroy_team_recipe(client, team, user):
     Team member that is not a READ_ONLY user should be able to 'destroy'
     recipe owned by team.
     """
-    assert False
+    client.force_authenticate(user)
+
+    for choice, s in [(Membership.ADMIN, status.HTTP_204_NO_CONTENT),
+                      (Membership.CONTRIBUTOR, status.HTTP_204_NO_CONTENT),
+                      (Membership.READ_ONLY, status.HTTP_403_FORBIDDEN)]:
+        recipe = Recipe.objects.create(name='Example Recipe Name', team=team)
+        url = reverse('team-recipes-detail',
+                kwargs={
+                    'team_pk': team.id,
+                    'pk': recipe.id
+                })
+        team.force_join(user, level=choice)
+        assert client.delete(url).status_code == s
 
 
 def test_list_team_recipe(client, team, recipe, user, user2):

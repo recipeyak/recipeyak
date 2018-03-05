@@ -1,6 +1,7 @@
 from rest_framework import permissions
 
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 
 from .models import Team, Membership
@@ -70,6 +71,17 @@ class CanDestroyMember(IsTeamAdmin):
         if view.action in ('destroy',):
             return super().has_permission(request, view)
         return True
+
+
+class DeleteIfMemberOrAdmin(IsTeamMember):
+    def has_permission(self, request, view) -> bool:
+        if view.action != 'destroy':
+            return True
+        team_pk = view.kwargs['team_pk']
+        team = Team.objects.get(id=team_pk)
+        return team.membership_set \
+                .filter(Q(level=Membership.ADMIN) | Q(level=Membership.CONTRIBUTOR)) \
+                .filter(user=request.user).exists()
 
 
 # FIXME: modify permissions classes so they follow the form `Can<Action><ClassName>`
