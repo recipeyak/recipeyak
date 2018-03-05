@@ -323,3 +323,7 @@ class Invite(CommonInfo):
     def accept(self):
         self.membership.set_active()
         self.delete()
+
+    def decline(self):
+        self.membership.delete()
+        self.delete()

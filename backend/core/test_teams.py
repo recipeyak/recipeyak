@@ -604,12 +604,16 @@ def test_accept_team_invite(client, team, user, user2, user3):
 
     assert False
 
-def test_decline_team_invite(client, team, user):
+
+def test_decline_team_invite(client, team, user, user2):
     """
     User should be able to decline their invite by
-    POSTing to detail-decline. For now this should just
-    deleting an invite.
+    POSTing to detail-decline.
+    For now this should just delete an invite.
     """
+    assert team.is_member(user)
+    assert not team.is_member(user2)
+
     # invite user2 to team
     client.force_authenticate(user)
     url = reverse('team-invites-list', kwargs={'team_pk': team.id})
@@ -628,8 +632,6 @@ def test_decline_team_invite(client, team, user):
     res = client.get(url)
     assert res.status_code == status.HTTP_403_FORBIDDEN, \
         'Non member cannot view team'
-
-    assert False
 
 
 def test_create_team_recipe(client, team, user):

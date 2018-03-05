@@ -355,6 +355,12 @@ class UserInvitesViewSet(viewsets.GenericViewSet,
         invite.accept()
         return Response({'detail': 'accepted invite'}, status=status.HTTP_200_OK)
 
+    @detail_route(methods=['post'])
+    def decline(self, request, pk=None):
+        invite = self.get_object()
+        invite.decline()
+        return Response({'detail': 'declined invite'}, status=status.HTTP_200_OK)
+
 
 class TeamRecipesViewSet(
         viewsets.GenericViewSet,
