@@ -510,11 +510,20 @@ def test_destroy_team_invite(client, team, user, user2, user3):
     assert False
 
 
-def test_create_user_invite(client, team, user):
+def test_create_user_invite(client, team, user, user2):
     """
     Create method not allowed. Invite must be created via team endpoint.
     """
-    assert False
+
+    assert team.is_member(user)
+    assert not team.is_member(user2)
+
+    url = reverse('user-invites-list')
+
+    for u in [user, user2]:
+        client.force_authenticate(u)
+        res = client.post(url, { 'user': u.id, 'level': Membership.ADMIN })
+        assert res.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
 
 def test_update_user_invite(client, team, user, user2):
