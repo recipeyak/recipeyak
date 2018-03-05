@@ -56,11 +56,11 @@ class IsTeamAdminOrMembershipOwner(permissions.BasePermission):
     """
     Request is Admin the team or the membership object owner
     """
-    def has_object_permission(self, request, view, membership_obj) -> bool:
-        if not isinstance(membership_obj, Membership):
+    def has_object_permission(self, request, view, membership: Membership) -> bool:
+        if not isinstance(membership, Membership):
             raise TypeError('This permission only works for membership objects')
-        object_owner = membership_obj.user == request.user
-        team_admin = membership_obj.team.is_admin(request.user)
+        object_owner = membership.user == request.user
+        team_admin = membership.team.is_admin(request.user)
         return object_owner or team_admin
 
 
