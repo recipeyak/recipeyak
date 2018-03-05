@@ -2,7 +2,7 @@ import hashlib
 from typing import List
 import logging
 
-from django.db import models
+from django.db import models, transaction
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
 logger = logging.getLogger(__name__)
@@ -65,6 +65,14 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         """Does the user have permissions to view the app `app_label`?"""
         # TODO: Add permissions
         return True
+
+
+    def has_invite(self, team) -> bool:
+        """
+        Return if user has invite to team.
+        """
+        return self.membership_set.filter(team=team).exclude(invite=None).exists()
+
 
     # required for admin
     @property
@@ -224,10 +232,19 @@ class Team(CommonInfo):
     name = models.CharField(max_length=255)
     is_public = models.BooleanField(default=False)
 
+    @transaction.atomic
     def force_join(self, user, level=None):
         if level is None:
             level = Membership.CONTRIBUTOR
-        return Membership.objects.create(level=level, team=self, user=user, is_active=True)
+        m, created = Membership.objects.get_or_create(team=self, user=user, defaults={'level': level, 'is_active': True})
+        if not created:
+            m.level = level
+            m.is_active = True
+            m.save()
+        # remove existing invite
+        if user.has_invite(self):
+            user.membership_set.exclude(invite=None).get(team=self).invite.delete()
+        return m
 
     def force_join_admin(self, user):
         return self.force_join(user, level=Membership.ADMIN)
@@ -242,6 +259,14 @@ class Team(CommonInfo):
             level = Membership.CONTRIBUTOR
         m = Membership.objects.create(team=self, level=level, user=user, is_active=False)
         return Invite.objects.create(membership=m)
+
+    def kick_user(self, user):
+        """
+        Remove user from team. If they have an invite, remove it as well.
+        """
+        membership = user.membership_set.get(team=self)
+        # delete membership. By deleting, associated invites will be deleted.
+        membership.delete()
 
     def set_public(self):
         self.is_public = True

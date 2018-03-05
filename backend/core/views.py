@@ -330,7 +330,6 @@ class TeamInviteViewSet(viewsets.GenericViewSet,
 class UserInvitesViewSet(viewsets.GenericViewSet,
                   mixins.RetrieveModelMixin,
                   mixins.ListModelMixin,
-                  mixins.CreateModelMixin,
                   mixins.DestroyModelMixin):
     """
     Personal route that lists all of a users invites via `/invites`

@@ -412,20 +412,25 @@ def test_update_team_member(client, team, user, user2, user3, empty_team):
 
 # FIXME: Everything below this needs to be worked on
 
-def test_create_team_invite(client, team, user, user2):
+def test_create_team_invite(client, team, user, user2, user3):
     """
     TeamAdmins can create team invites
     """
-    client.force_authenticate(user)
-    team.force_join(user, level=Membership.CONTRIBUTOR)
     url = reverse('team-invites-list', kwargs={'team_pk': team.id})
+    # team admins can create invites
+    client.force_authenticate(user)
+    assert team.is_admin(user)
     res = client.post(url, { 'user': user2.id, 'level': Membership.ADMIN })
     assert res.status_code == status.HTTP_201_CREATED
 
     # don't create another invite for user if they already have one pending
-    url = reverse('team-invites-list', kwargs={'team_pk': team.id})
     res = client.post(url, { 'user': user2.id })
     assert res.status_code == status.HTTP_400_BAD_REQUEST
+
+    # non-admins cannot create invite
+    team.force_join(user2)
+    assert team.is_member(user2) and not team.is_admin(user2)
+
 
     assert False
 
