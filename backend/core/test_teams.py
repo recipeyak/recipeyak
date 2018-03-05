@@ -505,9 +505,22 @@ def test_list_team_invites(client, team, user, user2, user3):
 
 def test_destroy_team_invite(client, team, user, user2, user3):
     """
-    TeamAdmins and invite owner can destroy team invites
+    TeamAdmins owner can destroy team invites
+    The recipient of the invite cannot destroy it, they can only decline it
     """
-    assert False
+
+    assert team.is_member(user)
+    assert not team.is_member(user2)
+    assert not team.is_member(user3)
+
+    invite = team.invite_user(user2)
+
+    url = reverse('team-invites-detail', kwargs={'team_pk': team.id, 'pk': invite.pk})
+    for u, s in [(user, status.HTTP_204_NO_CONTENT),
+                 (user2, status.HTTP_403_FORBIDDEN),
+                 (user3, status.HTTP_403_FORBIDDEN)]:
+        client.force_authenticate(u)
+        assert client.delete(url).status_code == s
 
 
 def test_create_user_invite(client, team, user, user2):
