@@ -410,7 +410,6 @@ def test_update_team_member(client, team, user, user2, user3, empty_team):
     url = reverse('team-member-detail', kwargs={'team_pk': empty_team.id, 'pk': user2_membership.id})
     assert client.patch(url, data).status_code == status.HTTP_403_FORBIDDEN
 
-# FIXME: Everything below this needs to be worked on
 
 def test_create_team_invite(client, team, user, user2, user3):
     """
@@ -422,6 +421,7 @@ def test_create_team_invite(client, team, user, user2, user3):
     assert team.is_admin(user)
     res = client.post(url, { 'user': user2.id, 'level': Membership.ADMIN })
     assert res.status_code == status.HTTP_201_CREATED
+    assert user2.has_invite(team) and not team.is_member(user2)
 
     # don't create another invite for user if they already have one pending
     res = client.post(url, { 'user': user2.id })
@@ -430,9 +430,9 @@ def test_create_team_invite(client, team, user, user2, user3):
     # non-admins cannot create invite
     team.force_join(user2)
     assert team.is_member(user2) and not team.is_admin(user2)
-
-
-    assert False
+    client.force_authenticate(user2)
+    res = client.post(url, { 'user': user3.id })
+    assert res.status_code == status.HTTP_400_BAD_REQUEST
 
 
 def test_retrieve_team_invite(client, team, user, user2, user3):
@@ -452,13 +452,23 @@ def test_retrieve_team_invite(client, team, user, user2, user3):
     assert res.status_code == status.HTTP_200_OK
     assert res.json()['user']['id'] == user2.id
 
-    # non-team members should not be allowed to retrieve invite
+    # normal members can see invites
+    team.force_join(user3)
+    assert team.is_member(user3) and not team.is_admin(user3)
     client.force_authenticate(user3)
+    assert user2.has_invite(team)
+    res = client.get(url)
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json()['user']['id'] == user2.id
+
+    # non-team members should not be allowed to retrieve invite
+    team.kick_user(user3)
+    client.force_authenticate(user3)
+    assert not team.is_member(user3)
     res = client.get(url)
     assert res.status_code == status.HTTP_403_FORBIDDEN
 
-    assert False
-
+# FIXME: Everything below this needs to be worked on
 
 def test_list_team_invites(client, team, user, user2, user3):
     """
@@ -482,13 +492,6 @@ def test_list_team_invites(client, team, user, user2, user3):
     res = client.get(url)
     assert res.status_code == status.HTTP_403_FORBIDDEN
 
-    assert False
-
-
-def test_update_team_invite(client, team, user, user2, user3):
-    """
-    TeamAdmins can modify invite
-    """
     assert False
 
 

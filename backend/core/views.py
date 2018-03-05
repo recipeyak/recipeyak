@@ -322,7 +322,7 @@ class TeamInviteViewSet(viewsets.GenericViewSet,
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        queryset = Team.objects.filter(membership__user=self.request.user).distinct('pk')
+        queryset = Team.objects.filter(pk=team_pk, membership__user=self.request.user)
         team = get_object_or_404(queryset, pk=team_pk)
         m = Membership.objects.create(team=team, level=level, user_id=user_id)
         serializer.save(membership=m)
