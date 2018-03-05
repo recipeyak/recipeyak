@@ -517,33 +517,121 @@ def test_create_user_invite(client, team, user):
     assert False
 
 
-def test_update_user_invite(client, team, user):
+def test_update_user_invite(client, team, user, user2):
     """
     Update/Partial Update not allowed.
     """
-    assert False
+
+    assert team.is_member(user)
+    assert not team.is_member(user2)
+
+    invite = team.invite_user(user2)
+
+    user_invite_url = reverse('user-invites-detail', kwargs={'pk': invite.pk})
+    team_invite_url = reverse('team-invites-detail', kwargs={'team_pk': team.id, 'pk': invite.pk})
+
+    for url, users in [
+            (user_invite_url, [
+                (user, status.HTTP_405_METHOD_NOT_ALLOWED),
+                (user2, status.HTTP_405_METHOD_NOT_ALLOWED)
+            ]),
+            (team_invite_url, [
+                (user, status.HTTP_405_METHOD_NOT_ALLOWED),
+                (user2, status.HTTP_403_FORBIDDEN)
+            ])
+            ]:
+        for u, s in users:
+            client.force_authenticate(u)
+            assert client.patch(url, {'membership': 2}).status_code == s
 
 
-def test_destroy_user_invite(client, team, user):
+def test_destroy_user_invite(client, team, user, user2):
     """
     User should not be allowed to destroy invite.
     Use detail-decline instead.
     """
-    assert False
+
+    assert team.is_member(user)
+    assert not team.is_member(user2)
+
+    invite = team.invite_user(user2)
+
+    user_invite_url = reverse('user-invites-detail', kwargs={'pk': invite.id})
+    team_invite_url = reverse('team-invites-detail', kwargs={'team_pk': team.id, 'pk': invite.id})
+
+    for url, users in [
+            (user_invite_url, [
+                (user, status.HTTP_405_METHOD_NOT_ALLOWED),
+                (user2, status.HTTP_405_METHOD_NOT_ALLOWED)
+            ]),
+            (team_invite_url, [
+                (user, status.HTTP_204_NO_CONTENT),
+                (user2, status.HTTP_403_FORBIDDEN)
+            ])
+            ]:
+        for u, s in users:
+            client.force_authenticate(u)
+            assert client.delete(url).status_code == s
 
 
-def test_list_user_invites(client, team, user):
+def test_list_user_invites(client, team, user, user2):
     """
     User should be allowed to list their invites
     """
-    assert False
+
+    assert team.is_member(user)
+    assert not team.is_member(user2)
+
+    invite = team.invite_user(user2)
+
+    url = reverse('team-invites-list', kwargs={'team_pk': team.id})
+    for u, s in [(user, status.HTTP_200_OK),
+                 (user2, status.HTTP_403_FORBIDDEN)]:
+        client.force_authenticate(u)
+        assert client.get(url).status_code == s
+
+    url = reverse('user-invites-list')
+
+    client.force_authenticate(user)
+    res = client.get(url)
+    assert res.status_code == status.HTTP_200_OK
+    assert len(res.json()) == 0, \
+        "user should not get invite for user2"
+
+    client.force_authenticate(user2)
+    res = client.get(url)
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json()[0].get('id') == invite.id, \
+        "user 2 should get their own invite"
 
 
-def test_retrieve_user_invite(client, team, user):
+def test_retrieve_user_invite(client, team, user, user2):
     """
     User should be allowed to retrieve a specific invite
     """
-    assert False
+
+    assert team.is_member(user)
+    assert not team.is_member(user2)
+
+    client.force_authenticate(user)
+    url = reverse('team-invites-list', kwargs={'team_pk': team.id})
+    res = client.post(url, { 'user': user2.id, 'level': Membership.ADMIN })
+    assert res.status_code == status.HTTP_201_CREATED
+
+    pk = res.json().get('id')
+
+    url = reverse('team-invites-detail', kwargs={'team_pk': team.id, 'pk': pk})
+    for u, s in [(user, status.HTTP_200_OK),
+                 (user2, status.HTTP_403_FORBIDDEN)]:
+        client.force_authenticate(u)
+        assert client.get(url).status_code == s
+
+
+    url = reverse('user-invites-detail', kwargs={'pk': pk})
+    for u, s in [(user, status.HTTP_404_NOT_FOUND),
+                 (user2, status.HTTP_200_OK)]:
+        client.force_authenticate(u)
+        assert client.get(url).status_code == s
 
 
 def test_user_invites(client, team, user, user2, user3):

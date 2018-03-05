@@ -228,6 +228,22 @@ class CartItem(CommonInfo):
         super().save(*args, **kwargs)
 
 
+class Invite(CommonInfo):
+    membership = models.OneToOneField('Membership', on_delete=models.CASCADE)
+
+    @property
+    def user(self):
+        return self.membership.user
+
+    def accept(self):
+        self.membership.set_active()
+        self.delete()
+
+    def decline(self):
+        self.membership.delete()
+        self.delete()
+
+
 class Team(CommonInfo):
     name = models.CharField(max_length=255)
     is_public = models.BooleanField(default=False)
@@ -249,7 +265,7 @@ class Team(CommonInfo):
     def force_join_admin(self, user):
         return self.force_join(user, level=Membership.ADMIN)
 
-    def invite_user(self, user, level=None):
+    def invite_user(self, user, level=None) -> Invite:
         """
         Invite user to team
 
@@ -312,18 +328,3 @@ class Membership(CommonInfo):
         self.is_active = True
         self.save()
 
-
-class Invite(CommonInfo):
-    membership = models.OneToOneField(Membership, on_delete=models.CASCADE)
-
-    @property
-    def user(self):
-        return self.membership.user
-
-    def accept(self):
-        self.membership.set_active()
-        self.delete()
-
-    def decline(self):
-        self.membership.delete()
-        self.delete()
