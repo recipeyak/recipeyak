@@ -634,7 +634,30 @@ def test_create_team_recipe(client, team, user):
     Team member that is not a READ_ONLY user should be able to 'create'
     recipe owned by team.
     """
-    assert False
+
+    client.force_authenticate(user)
+
+    for choice, s in [(Membership.ADMIN, status.HTTP_201_CREATED),
+                      (Membership.CONTRIBUTOR, status.HTTP_201_CREATED),
+                      (Membership.READ_ONLY, status.HTTP_403_FORBIDDEN)]:
+        url = reverse('team-recipes-list', kwargs={ 'team_pk': team.id })
+        team.force_join(user, level=choice)
+        recipe =  {
+            'name': 'Cool new name',
+            'ingredients': [
+                {
+                    'quantity': '1',
+                    'unit': 'pound',
+                    'name': 'fish',
+                    'description': '',
+                },
+            ],
+            'steps': [
+                {'text': 'place fish in salt'}
+            ]
+        }
+        res = client.post(url, recipe)
+        assert res.status_code == s
 
 
 def test_update_team_recipe(client, team, user):
