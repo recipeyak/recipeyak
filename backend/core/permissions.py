@@ -73,9 +73,9 @@ class CanDestroyMember(IsTeamAdmin):
         return True
 
 
-class DeleteIfMemberOrAdmin(IsTeamMember):
+class NonSafeIfMemberOrAdmin(IsTeamMember):
     def has_permission(self, request, view) -> bool:
-        if view.action != 'destroy':
+        if view.action in permissions.SAFE_METHODS:
             return True
         team_pk = view.kwargs['team_pk']
         team = Team.objects.get(id=team_pk)
