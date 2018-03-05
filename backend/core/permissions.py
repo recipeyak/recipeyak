@@ -13,6 +13,13 @@ class IsTeamMember(permissions.BasePermission):
         return team.is_member(request.user)
 
 
+class IsTeamMemberIfPrivate(permissions.BasePermission):
+    def has_permission(self, request, view) -> bool:
+        team_pk = view.kwargs['team_pk']
+        team = Team.objects.get(id=team_pk)
+        return team.is_member(request.user) or (team.is_public and request.user)
+
+
 class CanRetrieveListMember(permissions.BasePermission):
     """
     If the team is public or the user is a member, they can view it.
