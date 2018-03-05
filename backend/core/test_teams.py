@@ -653,12 +653,40 @@ def test_destroy_team_recipe(client, team, user):
     assert False
 
 
-def test_list_team_recipe(client, team, user):
+def test_list_team_recipe(client, team, recipe, user, user2):
     """
     Team member should be able to list team recipes.
     For public teams, recipes should be viewable to authenticated users.
     """
-    assert False
+    # NOTE: this is copied from the test below
+
+    team.recipes.add(recipe)
+
+    url = reverse('team-recipes-list',
+            kwargs={
+                'team_pk': team.id,
+            })
+
+    assert not team.is_member(user2)
+    assert not team.is_public
+
+    for u, s in [
+            (None, status.HTTP_401_UNAUTHORIZED),
+            (user, status.HTTP_200_OK),
+            (user2, status.HTTP_403_FORBIDDEN)]:
+        client.force_authenticate(u)
+        assert client.get(url).status_code == s
+
+    team.is_public = True
+    team.save()
+    assert team.is_public
+
+    for u, s in [
+            (None, status.HTTP_401_UNAUTHORIZED),
+            (user, status.HTTP_200_OK),
+            (user2, status.HTTP_200_OK)]:
+        client.force_authenticate(u)
+        assert client.get(url).status_code == s
 
 
 def test_retrieve_team_recipe(client, team, recipe, user, user2):
