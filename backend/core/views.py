@@ -316,7 +316,7 @@ class TeamInviteViewSet(viewsets.GenericViewSet,
     def create(self, request, team_pk=None):
         user_id = request.data.get('user')
         level = request.data.get('level')
-        if (level, level) not in Membership.MEMBERSHIP_CHOICES:
+        if (level, level) not in Membership.MEMBERSHIP_CHOICES or not user_id or not level:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         serializer = self.get_serializer(data=request.data)
@@ -354,6 +354,12 @@ class UserInvitesViewSet(viewsets.GenericViewSet,
         invite = self.get_object()
         invite.accept()
         return Response({'detail': 'accepted invite'}, status=status.HTTP_200_OK)
+
+    @detail_route(methods=['post'])
+    def decline(self, request, pk=None):
+        invite = self.get_object()
+        invite.decline()
+        return Response({'detail': 'declined invite'}, status=status.HTTP_200_OK)
 
 
 class TeamRecipesViewSet(
