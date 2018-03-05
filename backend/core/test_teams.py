@@ -542,6 +542,15 @@ def test_user_invites(client, team, user, user2, user3):
     # invite user2 to team
     client.force_authenticate(user)
     url = reverse('team-invites-list', kwargs={'team_pk': team.id})
+
+    for data in [
+            { 'level': Membership.ADMIN },
+            { 'user': user2.id },
+            { 'user': user.id },
+            {}]:
+        client.post(url, data).status_code == status.HTTP_400_BAD_REQUEST
+
+
     res = client.post(url, { 'user': user2.id, 'level': Membership.ADMIN })
     assert res.status_code == status.HTTP_201_CREATED
     invite_pk = res.json()['id']
@@ -577,13 +586,14 @@ def test_user_invites(client, team, user, user2, user3):
     res = client.get(url)
     assert res.status_code == status.HTTP_403_FORBIDDEN
 
-    assert False
 
 def test_accept_team_invite(client, team, user, user2, user3):
     """
     User should be able to activate their membership by
     POSTing to detail-accept
     """
+    assert team.is_member(user)
+    assert not team.is_member(user2)
     # invite user2 to team
     client.force_authenticate(user)
     url = reverse('team-invites-list', kwargs={'team_pk': team.id})
@@ -601,8 +611,6 @@ def test_accept_team_invite(client, team, user, user2, user3):
     url = reverse('team-member-list', kwargs={'team_pk': team.id})
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK
-
-    assert False
 
 
 def test_decline_team_invite(client, team, user, user2):

@@ -316,7 +316,7 @@ class TeamInviteViewSet(viewsets.GenericViewSet,
     def create(self, request, team_pk=None):
         user_id = request.data.get('user')
         level = request.data.get('level')
-        if (level, level) not in Membership.MEMBERSHIP_CHOICES:
+        if (level, level) not in Membership.MEMBERSHIP_CHOICES or not user_id or not level:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         serializer = self.get_serializer(data=request.data)
