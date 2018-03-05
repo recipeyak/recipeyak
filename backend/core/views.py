@@ -16,6 +16,7 @@ from django.db.models.functions import TruncMonth
 from .permissions import (
     IsTeamMember,
     IsTeamAdmin,
+    IsTeamAdminOrMembershipOwner,
     CanRetrieveListMember,
     CanDestroyMember,
     CanUpdateMember,
@@ -265,7 +266,7 @@ class MembershipViewSet(
 
     Retrieve - Only TeamMembers can list all members
     List - Only TeamMembers can list all members
-    Destroy - Only TeamAdmins can destroy members
+    Destroy - TeamAdmins and specific member can destroy members
     Update - Only TeamAdmins can update members
     """
 
@@ -278,6 +279,8 @@ class MembershipViewSet(
     def get_permissions(self):
         if self.request.method in SAFE_METHODS:
             permission_classes = (IsAuthenticated, IsTeamMember,)
+        elif self.request.method == 'DELETE':
+            permission_classes = (IsAuthenticated, IsTeamAdminOrMembershipOwner,)
         else:
             permission_classes = (IsAuthenticated, IsTeamAdmin,)
         return [permission() for permission in permission_classes]

@@ -221,7 +221,6 @@ def test_create_team_member(client, team, user, user2):
 def test_list_team_members(client, team, user, user2, user3):
     """
     Only team members should be able to retrieve team membership information.
-    A member must be an admin to destroy or update a member
     """
     url = reverse('team-member-list', kwargs={'team_pk': team.id})
 
@@ -320,13 +319,98 @@ def test_destory_team_member(client, team, user, user2, user3, empty_team):
     assert client.delete(url).status_code == status.HTTP_403_FORBIDDEN, \
         'Admin users cannot remove member of another team'
 
+    # members can remove their own membership
+    empty_team.force_join(user2)
+    assert empty_team.is_member(user2) and not empty_team.is_admin(user2)
+    client.force_authenticate(user2)
+    url = reverse('team-member-detail',
+            kwargs={
+                'team_pk': empty_team.id,
+                'pk': user2.membership_set.get(team=empty_team).id
+            })
+    assert client.delete(url).status_code == status.HTTP_204_NO_CONTENT
+
+
+def test_retrieve_team_member(client, team, user, user2, user3):
+    """
+    Only team members should be able to retrieve team membership information.
+    A member must be an admin to destroy or update a member
+
+    NOTE: This is basically all copied and pasted from test_list_team_members
+    """
+    user1_membership = user.membership_set.get(team=team)
+    url = reverse('team-member-detail', kwargs={'team_pk': team.id, 'pk': user1_membership.id})
+
+    # non-members cannot view member
+    assert not team.is_member(user2)
+    client.force_authenticate(user2)
+    assert client.get(url).status_code == status.HTTP_403_FORBIDDEN
+
+    # admins can view member
+    client.force_authenticate(user)
+    assert team.is_admin(user)
+    res = client.get(url)
+    assert res.status_code == status.HTTP_200_OK, \
+        'Team admins can view members'
+    assert res.json().get('user') == user.id
+
+    # invite user2 to team
+    team.invite_user(user2)
+    # inactive members cannot view member
+    client.force_authenticate(user2)
+    res = client.get(url)
+    assert res.status_code == status.HTTP_403_FORBIDDEN, \
+        'Only active users can view members'
+
+    # team viewer can see members
+    team.force_join(user3, level=Membership.READ_ONLY)
+    client.force_authenticate(user3)
+    res = client.get(url)
+    assert res.status_code == status.HTTP_200_OK, \
+        'Viewer members can retrieve team members'
+    assert res.json().get('user') == user.id
+
+
+def test_update_team_member(client, team, user, user2, user3, empty_team):
+    """
+    Only admins should be able to update the membership of team members
+    """
+    user1_membership = user.membership_set.get(team=team)
+    url = reverse('team-member-detail', kwargs={'team_pk': team.id, 'pk': user1_membership.id})
+    data = {
+        'level': 'contributor'
+    }
+
+    # non-members cannot edit member
+    assert not team.is_member(user2)
+    client.force_authenticate(user2)
+    assert client.patch(url, data).status_code == status.HTTP_403_FORBIDDEN
+
+    # members cannot edit member
+    team.force_join(user2)
+    assert team.is_member(user2) and not team.is_admin(user2)
+    assert client.patch(url, data).status_code == status.HTTP_403_FORBIDDEN
+
+    # members cannot edit their membership
+    assert team.is_member(user2) and not team.is_admin(user2)
+    user2_membership = user2.membership_set.get(team=team)
+    url = reverse('team-member-detail', kwargs={'team_pk': team.id, 'pk': user2_membership.id})
+    assert client.patch(url, data).status_code == status.HTTP_403_FORBIDDEN
+
+    # admins can edit memberships
+    client.force_authenticate(user)
+    assert team.is_admin(user)
+    assert team.is_member(user2)
+    assert client.patch(url, data).status_code == status.HTTP_200_OK
+
+    # admins cannot edit memberships on other teams
+    empty_team.force_join(user2)
+    assert not empty_team.is_member(user) and team.is_admin(user)
+    assert empty_team.is_member(user2)
+    url = reverse('team-member-detail', kwargs={'team_pk': empty_team.id, 'pk': user2_membership.id})
+    assert client.patch(url, data).status_code == status.HTTP_403_FORBIDDEN
+
 # FIXME: Everything below this needs to be worked on
-
-def test_retrieve_team_member():
-    assert False
-
-def test_update_team_member():
-    assert False
 
 def test_list_team_invites(client, team, user, user2, user3):
     """
