@@ -164,16 +164,6 @@ class AddRecipe extends React.Component {
               placeholder="1 hour"
               name="time"/>
           </label>
-          <label className="d-flex align-center">for
-            <div className="select ml-2">
-            <select >
-              <option value="">You</option>
-              <option value="">Team: Recipe Yak</option>
-              <option value="">Team: Red Team</option>
-              <option value="">Team: Blue Team</option>
-            </select>
-          </div>
-          </label>
         </div>
 
           <section className="ingredients-preparation-grid">
@@ -241,14 +231,29 @@ class AddRecipe extends React.Component {
             name="create recipe">
             Clear
           </button>
+
+          <div className="d-flex justify-space-between">
+
+          <label className="d-flex align-center">for
+            <div className="select ml-2 is-small">
+            <select >
+              <option value="">Personal</option>
+              <option value="">Team: Recipe Yak</option>
+              <option value="">Team: Red Team</option>
+              <option value="">Team: Blue Team</option>
+            </select>
+          </div>
+          </label>
+
           <ButtonPrimary
-            className="is-large"
+            className="ml-2"
             type="submit"
             onClick={ handleSubmit }
             name="create recipe"
             loading={ this.props.loading }>
             Create Recipe
           </ButtonPrimary>
+        </div>
         </div>
       </div>
     )

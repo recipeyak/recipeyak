@@ -1,17 +1,20 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
+import {
+  Link
+} from 'react-router-dom'
 
-import Recipe from '../containers/RecipeItem'
 
 import {
-  ButtonPlain,
   ButtonPrimary,
-  ButtonDanger
 } from './Buttons'
+
+const teamURL = id => `/t/${id}/`
 
 class TeamInvite extends React.Component {
   render () {
     const name = 'Recipe Yak Team'
+    const id = 1
 
     const roles = [
       {
@@ -34,13 +37,14 @@ class TeamInvite extends React.Component {
       },
     ]
 
-
     return (
       <div>
         <Helmet title="Team Invite"/>
-        <h1 className="fs-9 text-center fw-500 p-4">{ name }</h1>
+        <Link to={ teamURL(id) }>
+          <h1 className="fs-9 text-center fw-500 p-4">{ name }</h1>
+        </Link>
         <section className="d-flex justify-space-between align-items-center mb-2">
-          <h2 className="fs-6">Invite Team Members</h2>
+        <h2 className="fs-6">Invite Team Members</h2>
         </section>
 
         <form action="" className="">
@@ -63,10 +67,9 @@ class TeamInvite extends React.Component {
             <b>Note:</b> Users without an account will be sent an email asking to create one.
           </p>
           <ButtonPrimary type="submit" className="justify-self-left">
-            Invite
+            Send Invite
           </ButtonPrimary>
         </form>
-
 
       </div>
     )
