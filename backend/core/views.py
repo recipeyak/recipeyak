@@ -314,19 +314,17 @@ class TeamInviteViewSet(viewsets.GenericViewSet,
         return InviteSerializer
 
     def create(self, request, team_pk=None):
-        user_id = request.data.get('user')
-        level = request.data.get('level')
-        if (level, level) not in Membership.MEMBERSHIP_CHOICES or not user_id or not level:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
+        """
+        for creating, we want: level, user_id
+        for response, we want: id, user data, team
+        We want id, user object, and team data response
+        need to use to_representation or form_represenation
+        """
+        team = Team.objects.get(pk=team_pk)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-
-        queryset = Team.objects.filter(pk=team_pk, membership__user=self.request.user)
-        team = get_object_or_404(queryset, pk=team_pk)
-        m = Membership.objects.create(team=team, level=level, user_id=user_id)
-        serializer.save(membership=m)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        invite = serializer.save(team=team)
+        return Response(InviteSerializer(invite).data, status=status.HTTP_201_CREATED)
 
 
 class UserInvitesViewSet(viewsets.GenericViewSet,

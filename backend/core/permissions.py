@@ -10,14 +10,14 @@ from .models import Team, Membership
 class IsTeamMember(permissions.BasePermission):
     def has_permission(self, request, view) -> bool:
         team_pk = view.kwargs['team_pk']
-        team = Team.objects.get(id=team_pk)
+        team = get_object_or_404(Team, pk=team_pk)
         return team.is_member(request.user)
 
 
 class IsTeamMemberIfPrivate(permissions.BasePermission):
     def has_permission(self, request, view) -> bool:
         team_pk = view.kwargs['team_pk']
-        team = Team.objects.get(id=team_pk)
+        team = get_object_or_404(Team, pk=team_pk)
         return team.is_member(request.user) or (team.is_public and request.user)
 
 
@@ -31,7 +31,7 @@ class CanRetrieveListMember(permissions.BasePermission):
             raise AssertionError
         if view.action in ('list', 'retrieve'):
             team_pk = view.kwargs['team_pk']
-            team = Team.objects.get(id=team_pk)
+            team = get_object_or_404(Team, pk=team_pk)
 
             is_member = team.membership_set.filter(user=request.user, is_active=True).exists()
 
@@ -46,7 +46,7 @@ class IsTeamAdmin(permissions.BasePermission):
             team_pk = view.kwargs['pk']
         else:
             team_pk = view.kwargs['team_pk']
-        team = Team.objects.get(id=team_pk)
+        team = get_object_or_404(Team, pk=team_pk)
         return team.membership_set \
                 .filter(level=Membership.ADMIN) \
                 .filter(user=request.user).exists()
@@ -78,7 +78,7 @@ class NonSafeIfMemberOrAdmin(IsTeamMember):
         if view.action in permissions.SAFE_METHODS:
             return True
         team_pk = view.kwargs['team_pk']
-        team = Team.objects.get(id=team_pk)
+        team = get_object_or_404(Team, pk=team_pk)
         return team.membership_set \
                 .filter(Q(level=Membership.ADMIN) | Q(level=Membership.CONTRIBUTOR)) \
                 .filter(user=request.user).exists()

@@ -411,7 +411,7 @@ def test_update_team_member(client, team, user, user2, user3, empty_team):
     assert client.patch(url, data).status_code == status.HTTP_403_FORBIDDEN
 
 
-def test_create_team_invite(client, team, user, user2, user3):
+def test_create_team_invite(client, team, user, user2, user3, empty_team):
     """
     TeamAdmins can create team invites
     """
@@ -422,6 +422,7 @@ def test_create_team_invite(client, team, user, user2, user3):
     res = client.post(url, { 'user': user2.id, 'level': Membership.ADMIN })
     assert res.status_code == status.HTTP_201_CREATED
     assert user2.has_invite(team) and not team.is_member(user2)
+    assert res.json()['user']['id'] == user2.id
 
     # invalid levels are not valid
     res = client.post(url, { 'user': 0, 'level': 'invalid user level' })
@@ -441,6 +442,18 @@ def test_create_team_invite(client, team, user, user2, user3):
     client.force_authenticate(user2)
     res = client.post(url, { 'user': user3.id })
     assert res.status_code == status.HTTP_400_BAD_REQUEST
+
+    # non-members cannot create invite
+    assert not empty_team.is_member(user3)
+    client.force_authenticate(user3)
+    url = reverse('team-invites-list', kwargs={'team_pk': empty_team.id})
+    res = client.post(url, { 'user': user2.id })
+    assert res.status_code == status.HTTP_403_FORBIDDEN
+
+    # 404 on non-existent team
+    url = reverse('team-invites-list', kwargs={'team_pk': 0})
+    res = client.post(url, { 'user': user2.id })
+    assert res.status_code == status.HTTP_404_NOT_FOUND
 
 
 def test_retrieve_team_invite(client, team, user, user2, user3):

@@ -144,12 +144,15 @@ class InviteSerializer(serializers.ModelSerializer):
         editable = False
         fields = ('id', 'user',)
 
-class CreateInviteSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Invite
-        fields = ('id', 'user',)
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data['user'] = PublicUserSerializer(instance=instance.user).data
-        return data
+class CreateInviteSerializer(serializers.Serializer):
+    level = serializers.ChoiceField(choices=Membership.MEMBERSHIP_CHOICES, write_only=True)
+    user = serializers.IntegerField(max_value=None, min_value=0)
+
+    def validate_user(self, value):
+        if not MyUser.objects.filter(pk=value).exists():
+            raise serializers.ValidationError('User does not exist')
+        return MyUser.objects.get(pk=value)
+
+    def create(self, validated_data) -> Invite:
+        return Invite.objects.create_invite(**validated_data)

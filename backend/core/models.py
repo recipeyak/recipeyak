@@ -228,8 +228,17 @@ class CartItem(CommonInfo):
         super().save(*args, **kwargs)
 
 
+class InviteManager(models.Manager):
+    def create_invite(self, user, team, level):
+        m = Membership.objects.create(user=user, team=team, level=level, is_active=False)
+        invite = self.model.objects.create(membership=m)
+        return invite
+
+
 class Invite(CommonInfo):
     membership = models.OneToOneField('Membership', on_delete=models.CASCADE)
+
+    objects = InviteManager()
 
     @property
     def user(self):
