@@ -46,3 +46,17 @@ def test_team_is_member(client, team, user, user2):
 
 def test_team_invite_user(client, team, user):
     assert False
+
+
+def test_recipe_move_to(client, team, user):
+    """
+    Move recipe to team from user or another team
+    """
+    assert False
+
+
+def test_recipe_copy_to(client, team, user):
+    """
+    Copy recipe to team from user or another team
+    """
+    assert False

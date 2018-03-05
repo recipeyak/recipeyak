@@ -412,11 +412,52 @@ def test_update_team_member(client, team, user, user2, user3, empty_team):
 
 # FIXME: Everything below this needs to be worked on
 
+def test_create_team_invite(client, team, user, user2):
+    """
+    TeamAdmins can create team invites
+    """
+    client.force_authenticate(user)
+    team.force_join(user, level=Membership.CONTRIBUTOR)
+    url = reverse('team-invites-list', kwargs={'team_pk': team.id})
+    res = client.post(url, { 'user': user2.id, 'level': Membership.ADMIN })
+    assert res.status_code == status.HTTP_201_CREATED
+
+    # don't create another invite for user if they already have one pending
+    url = reverse('team-invites-list', kwargs={'team_pk': team.id})
+    res = client.post(url, { 'user': user2.id })
+    assert res.status_code == status.HTTP_400_BAD_REQUEST
+
+    assert False
+
+
+def test_retrieve_team_invite(client, team, user, user2, user3):
+    """
+    Team members can retrieve team invites
+    """
+    # invite user2 to team
+    client.force_authenticate(user)
+    url = reverse('team-invites-list', kwargs={'team_pk': team.id})
+    res = client.post(url, { 'user': user2.id, 'level': Membership.ADMIN })
+    assert res.status_code == status.HTTP_201_CREATED
+    invite_pk = res.json()['id']
+
+    # retrieve invite via user1
+    url = reverse('team-invites-detail', kwargs={'team_pk': team.id, 'pk': invite_pk})
+    res = client.get(url)
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json()['user']['id'] == user2.id
+
+    # non-team members should not be allowed to retrieve invite
+    client.force_authenticate(user3)
+    res = client.get(url)
+    assert res.status_code == status.HTTP_403_FORBIDDEN
+
+    assert False
+
+
 def test_list_team_invites(client, team, user, user2, user3):
     """
-    List invites made for team.
-
-    User should be authenticated and a member.
+    Team members can list team invites
     """
     # invite user2 to team
     client.force_authenticate(user)
@@ -439,44 +480,53 @@ def test_list_team_invites(client, team, user, user2, user3):
     assert False
 
 
-def test_inviting_member_to_team(client, team, user, user2):
-    # invite user to team
-    client.force_authenticate(user)
-    team.force_join(user, level=Membership.CONTRIBUTOR)
-    url = reverse('team-invites-list', kwargs={'team_pk': team.id})
-    res = client.post(url, { 'user': user2.id, 'level': Membership.ADMIN })
-    assert res.status_code == status.HTTP_201_CREATED
-
-    # don't create another invite for user if they already have one pending
-    url = reverse('team-invites-list', kwargs={'team_pk': team.id})
-    res = client.post(url, { 'user': user2.id })
-    assert res.status_code == status.HTTP_400_BAD_REQUEST
-
+def test_update_team_invite(client, team, user, user2, user3):
+    """
+    TeamAdmins can modify invite
+    """
     assert False
 
 
-def test_retrieve_team_invites(client, team, user, user2, user3):
+def test_destroy_team_invite(client, team, user, user2, user3):
     """
-    Retrieve invite for team
+    TeamAdmins and invite owner can destroy team invites
     """
-    # invite user2 to team
-    client.force_authenticate(user)
-    url = reverse('team-invites-list', kwargs={'team_pk': team.id})
-    res = client.post(url, { 'user': user2.id, 'level': Membership.ADMIN })
-    assert res.status_code == status.HTTP_201_CREATED
-    invite_pk = res.json()['id']
+    assert False
 
-    # retrieve invite via user1
-    url = reverse('team-invites-detail', kwargs={'team_pk': team.id, 'pk': invite_pk})
-    res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK
-    assert res.json()['user']['id'] == user2.id
 
-    # non-team members should not be allowed to retrieve invite
-    client.force_authenticate(user3)
-    res = client.get(url)
-    assert res.status_code == status.HTTP_403_FORBIDDEN
+def test_create_user_invite(client, team, user):
+    """
+    Create method not allowed. Invite must be created via team endpoint.
+    """
+    assert False
 
+
+def test_update_user_invite(client, team, user):
+    """
+    Update/Partial Update not allowed.
+    """
+    assert False
+
+
+def test_destroy_user_invite(client, team, user):
+    """
+    User should not be allowed to destroy invite.
+    Use detail-decline instead.
+    """
+    assert False
+
+
+def test_list_user_invites(client, team, user):
+    """
+    User should be allowed to list their invites
+    """
+    assert False
+
+
+def test_retrieve_user_invite(client, team, user):
+    """
+    User should be allowed to retrieve a specific invite
+    """
     assert False
 
 
@@ -519,7 +569,13 @@ def test_user_invites(client, team, user, user2, user3):
     res = client.get(url)
     assert res.status_code == status.HTTP_403_FORBIDDEN
 
-def test_accepting_team_invite(client, team, user, user2, user3):
+    assert False
+
+def test_accept_team_invite(client, team, user, user2, user3):
+    """
+    User should be able to activate their membership by
+    POSTing to detail-accept
+    """
     # invite user2 to team
     client.force_authenticate(user)
     url = reverse('team-invites-list', kwargs={'team_pk': team.id})
@@ -538,25 +594,74 @@ def test_accepting_team_invite(client, team, user, user2, user3):
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK
 
-# def test_declining_team_invite(client, team, user):
-#     # invite user2 to team
-#     client.force_authenticate(user)
-#     url = reverse('team-invites-list', kwargs={'team_pk': team.id})
-#     res = client.post(url, { 'user': user2.id, 'level': Membership.ADMIN })
-#     assert res.status_code == status.HTTP_201_CREATED
-#     invite_pk = res.json()['id']
+    assert False
 
-#     # decline invite
-#     client.force_authenticate(user2)
-#     url = reverse('user-invites-decline', kwargs={'pk': invite_pk})
-#     res = client.post(url)
-#     assert res.status_code == status.HTTP_200_OK
+def test_decline_team_invite(client, team, user):
+    """
+    User should be able to decline their invite by
+    POSTing to detail-decline. For now this should just
+    deleting an invite.
+    """
+    # invite user2 to team
+    client.force_authenticate(user)
+    url = reverse('team-invites-list', kwargs={'team_pk': team.id})
+    res = client.post(url, { 'user': user2.id, 'level': Membership.ADMIN })
+    assert res.status_code == status.HTTP_201_CREATED
+    invite_pk = res.json()['id']
 
-#     # check user cannot view team
-#     url = reverse('team-member-list', kwargs={'team_pk': team.id})
-#     res = client.get(url)
-#     assert res.status_code == status.HTTP_403_FORBIDDEN, \
-#         'Non member cannot view team'
+    # decline invite
+    client.force_authenticate(user2)
+    url = reverse('user-invites-decline', kwargs={'pk': invite_pk})
+    res = client.post(url)
+    assert res.status_code == status.HTTP_200_OK
+
+    # check user cannot view team
+    url = reverse('team-member-list', kwargs={'team_pk': team.id})
+    res = client.get(url)
+    assert res.status_code == status.HTTP_403_FORBIDDEN, \
+        'Non member cannot view team'
+
+    assert False
+
+
+def test_create_team_recipe(client, team, user):
+    """
+    Team member that is not a READ_ONLY user should be able to 'create'
+    recipe owned by team.
+    """
+    assert False
+
+
+def test_update_team_recipe(client, team, user):
+    """
+    Team member that is not a READ_ONLY user should be able to 'update'
+    recipe owned by team.
+    """
+    assert False
+
+
+def test_destroy_team_recipe(client, team, user):
+    """
+    Team member that is not a READ_ONLY user should be able to 'destroy'
+    recipe owned by team.
+    """
+    assert False
+
+
+def test_list_team_recipe(client, team, user):
+    """
+    Team member should be able to list team recipes.
+    For public teams, recipes should be viewable to authenticated users.
+    """
+    assert False
+
+
+def test_retrieve_team_recipe(client, team, user):
+    """
+    Team member should be able to retrieve team recipe.
+    For public teams, recipe should be viewable to authenticated users.
+    """
+    assert False
 
 
 def test_fetching_team_recipes(client, team_with_recipes, user, user2):
@@ -632,39 +737,3 @@ def test_removing_recipe_from_team(client, team_with_recipes, user):
     assert res.status_code == status.HTTP_204_NO_CONTENT
 
     assert not Recipe.objects.filter(id=recipe_id).exists()
-
-
-def test_moving_recipe_to_team(client, team, user):
-    assert False
-
-
-def test_copy_recipe_to_team(client, team, user):
-    assert False
-
-
-def test_member_permissions(client, team, user, user2):
-    assert False
-
-
-def test_adding_admins_to_team(client, team, user, user2):
-    assert False
-
-
-def test_removing_admins_from_team(client, team, user, user2):
-    assert False
-
-
-def test_admin_permissions(client, team, user, user2):
-    assert False
-
-
-def test_adding_viewers_to_team(client, team, user, user2):
-    assert False
-
-
-def test_removing_viewers_from_team(client, team, user, user2):
-    assert False
-
-
-def test_viewer_permissions(client, team, user, user2):
-    assert False

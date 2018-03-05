@@ -109,6 +109,18 @@ class Recipe(CommonInfo):
 
     team = models.ForeignKey('Team', on_delete=models.CASCADE, blank=True, null=True, related_name='recipes')
 
+    def move_to(account):
+        """
+        Move recipe from current owner to another team or user
+        """
+        raise NotImplementedError
+
+    def copy_to(account):
+        """
+        Copy recipe to another team or user
+        """
+        raise NotImplementedError
+
     @property
     def ingredients(self):
         """Return recipe ingredients ordered by creation date"""
