@@ -61,8 +61,22 @@ def test_team_is_member(client, team, user, user2):
         'User2 should be a member'
 
 
-def test_team_invite_user(client, team, user):
-    assert False
+def test_team_invite_user(client, empty_team, user):
+    assert not user.membership_set.filter(team=empty_team).exists()
+    empty_team.invite_user(user)
+    assert user.membership_set.filter(team=empty_team, is_active=False).exists()
+
+
+def test_user_has_invite(client, empty_team, user):
+    """
+    Returns whether a user has pending invited to team
+    """
+    assert not empty_team.is_member(user)
+    assert not user.has_invite(empty_team)
+    empty_team.invite_user(user)
+    assert user.has_invite(empty_team)
+    empty_team.force_join(user)
+    assert not user.has_invite(empty_team)
 
 
 def test_recipe_move_to(client, team, user):
@@ -75,12 +89,5 @@ def test_recipe_move_to(client, team, user):
 def test_recipe_copy_to(client, team, user):
     """
     Copy recipe to team from user or another team
-    """
-    assert False
-
-
-def test_user_has_invite(client, team, user, user2):
-    """
-    Returns whether a user has pending invited to team
     """
     assert False
