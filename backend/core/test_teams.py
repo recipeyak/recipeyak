@@ -423,6 +423,14 @@ def test_create_team_invite(client, team, user, user2, user3):
     assert res.status_code == status.HTTP_201_CREATED
     assert user2.has_invite(team) and not team.is_member(user2)
 
+    # invalid levels are not valid
+    res = client.post(url, { 'user': 0, 'level': 'invalid user level' })
+    assert res.status_code == status.HTTP_400_BAD_REQUEST
+
+    # invalid users are not valid
+    res = client.post(url, { 'user': 0, 'level': Membership.ADMIN })
+    assert res.status_code == status.HTTP_400_BAD_REQUEST
+
     # don't create another invite for user if they already have one pending
     res = client.post(url, { 'user': user2.id })
     assert res.status_code == status.HTTP_400_BAD_REQUEST
