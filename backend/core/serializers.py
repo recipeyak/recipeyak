@@ -147,6 +147,11 @@ class InviteSerializer(serializers.ModelSerializer):
 
 class CreateInviteSerializer(serializers.Serializer):
     level = serializers.ChoiceField(choices=Membership.MEMBERSHIP_CHOICES, write_only=True)
+    # FIXME:
+    # We should try using: user = PubliceUserSerializer(source='membership.user')
+    # http://www.django-rest-framework.org/api-guide/fields/#source
+    #
+    # We should also try making this serializer work for both to and back
     user = serializers.IntegerField(max_value=None, min_value=0)
 
     def validate_user(self, value):
