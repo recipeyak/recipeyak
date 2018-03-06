@@ -489,31 +489,28 @@ def test_retrieve_team_invite(client, team, user, user2, user3):
     res = client.get(url)
     assert res.status_code == status.HTTP_403_FORBIDDEN
 
-# FIXME: Everything below this needs to be worked on
 
 def test_list_team_invites(client, team, user, user2, user3):
     """
     Team members can list team invites
     """
-    # invite user2 to team
-    client.force_authenticate(user)
     url = reverse('team-invites-list', kwargs={'team_pk': team.id})
-    res = client.post(url, { 'user': user2.id, 'level': Membership.ADMIN })
-    assert res.status_code == status.HTTP_201_CREATED
-    assert res.json()['user']['id'] == user2.id
 
-    # list team invites
+    # members can list team invites
+    team.force_join(user2)
+    team.invite_user(user3)
+    client.force_authenticate(user2)
+    assert team.is_member(user2) and not team.is_admin(user2)
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK
     invite = res.json()[0]
-    assert invite['user']['id'] == user2.id
+    assert invite['user']['id'] == user3.id
 
     # non-team members should not be allowed to list invites
     client.force_authenticate(user3)
+    assert not team.is_member(user3)
     res = client.get(url)
     assert res.status_code == status.HTTP_403_FORBIDDEN
-
-    assert False
 
 
 def test_destroy_team_invite(client, team, user, user2, user3):

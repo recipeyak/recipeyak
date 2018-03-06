@@ -17,9 +17,6 @@ from .permissions import (
     IsTeamMember,
     IsTeamAdmin,
     IsTeamAdminOrMembershipOwner,
-    CanRetrieveListMember,
-    CanDestroyMember,
-    CanUpdateMember,
     IsTeamMemberIfPrivate,
     NonSafeIfMemberOrAdmin,
 )
