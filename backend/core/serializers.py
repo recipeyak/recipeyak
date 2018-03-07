@@ -148,11 +148,10 @@ class InviteSerializer(serializers.ModelSerializer):
 
 class CreateInviteSerializer(serializers.Serializer):
     level = serializers.ChoiceField(choices=Membership.MEMBERSHIP_CHOICES, write_only=True)
-    # FIXME:
-    # We should also try making this serializer work for both to and back
 
     emails = serializers.ListField(
-       child=serializers.EmailField()
+       child=serializers.EmailField(write_only=True),
+       write_only=True
     )
 
     def create(self, validated_data) -> List[Invite]:
