@@ -1,3 +1,4 @@
+from typing import List
 from rest_framework import serializers
 
 from .models import (
@@ -148,16 +149,13 @@ class InviteSerializer(serializers.ModelSerializer):
 class CreateInviteSerializer(serializers.Serializer):
     level = serializers.ChoiceField(choices=Membership.MEMBERSHIP_CHOICES, write_only=True)
     # FIXME:
-    # We should try using: user = PubliceUserSerializer(source='membership.user')
-    # http://www.django-rest-framework.org/api-guide/fields/#source
-    #
     # We should also try making this serializer work for both to and back
-    user = serializers.IntegerField(max_value=None, min_value=0)
 
-    def validate_user(self, value):
-        if not MyUser.objects.filter(pk=value).exists():
-            raise serializers.ValidationError('User does not exist')
-        return MyUser.objects.get(pk=value)
+    emails = serializers.ListField(
+       child=serializers.EmailField()
+    )
 
-    def create(self, validated_data) -> Invite:
-        return Invite.objects.create_invite(**validated_data)
+    def create(self, validated_data) -> List[Invite]:
+        emails = validated_data.pop('emails')
+        return [Invite.objects.create_invite(email=email, **validated_data)
+                for email in emails]

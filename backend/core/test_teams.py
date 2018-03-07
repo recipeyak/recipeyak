@@ -419,40 +419,45 @@ def test_create_team_invite(client, team, user, user2, user3, empty_team):
     # team admins can create invites
     client.force_authenticate(user)
     assert team.is_admin(user)
-    res = client.post(url, { 'user': user2.id, 'level': Membership.ADMIN })
+    res = client.post(url, { 'emails': [user2.email], 'level': Membership.ADMIN })
     assert res.status_code == status.HTTP_201_CREATED
     assert user2.has_invite(team) and not team.is_member(user2)
-    assert res.json()['user']['id'] == user2.id
+    assert res.json()[0]['user']['id'] == user2.id
 
-    # invalid levels are not valid
-    res = client.post(url, { 'user': 0, 'level': 'invalid user level' })
-    assert res.status_code == status.HTTP_400_BAD_REQUEST
+    for data, description in [
+            (
+                { 'emails': [''], 'level': 'invalid user level', },
+                'invalid levels are not valid',
+            ),
+            (
+                { 'emails': [user2.id], 'level': Membership.ADMIN },
+                'invalid users are not valid'
+            ),
+            (
+                { 'emails': [user2.email] },
+                "don't create another invite for user if they already have one pending"
+            )]:
 
-    # invalid users are not valid
-    res = client.post(url, { 'user': 0, 'level': Membership.ADMIN })
-    assert res.status_code == status.HTTP_400_BAD_REQUEST
-
-    # don't create another invite for user if they already have one pending
-    res = client.post(url, { 'user': user2.id })
-    assert res.status_code == status.HTTP_400_BAD_REQUEST
+        res = client.post(url, data)
+        assert res.status_code == status.HTTP_400_BAD_REQUEST, description
 
     # non-admins cannot create invite
     team.force_join(user2)
     assert team.is_member(user2) and not team.is_admin(user2)
     client.force_authenticate(user2)
-    res = client.post(url, { 'user': user3.id })
+    res = client.post(url, { 'emails': [user3.email] })
     assert res.status_code == status.HTTP_400_BAD_REQUEST
 
     # non-members cannot create invite
     assert not empty_team.is_member(user3)
     client.force_authenticate(user3)
     url = reverse('team-invites-list', kwargs={'team_pk': empty_team.id})
-    res = client.post(url, { 'user': user2.id })
+    res = client.post(url, { 'emails': [user2.email] })
     assert res.status_code == status.HTTP_403_FORBIDDEN
 
     # 404 on non-existent team
     url = reverse('team-invites-list', kwargs={'team_pk': 0})
-    res = client.post(url, { 'user': user2.id })
+    res = client.post(url, { 'emails': [user2.email] })
     assert res.status_code == status.HTTP_404_NOT_FOUND
 
 
@@ -463,9 +468,9 @@ def test_retrieve_team_invite(client, team, user, user2, user3):
     # invite user2 to team
     client.force_authenticate(user)
     url = reverse('team-invites-list', kwargs={'team_pk': team.id})
-    res = client.post(url, { 'user': user2.id, 'level': Membership.ADMIN })
+    res = client.post(url, { 'emails': [user2.email], 'level': Membership.ADMIN })
     assert res.status_code == status.HTTP_201_CREATED
-    invite_pk = res.json()['id']
+    invite_pk = res.json()[0]['id']
 
     # retrieve invite via user1
     url = reverse('team-invites-detail', kwargs={'team_pk': team.id, 'pk': invite_pk})
@@ -545,7 +550,7 @@ def test_create_user_invite(client, team, user, user2):
 
     for u in [user, user2]:
         client.force_authenticate(u)
-        res = client.post(url, { 'user': u.id, 'level': Membership.ADMIN })
+        res = client.post(url, { 'emails': [u.email], 'level': Membership.ADMIN })
         assert res.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
 
@@ -647,10 +652,10 @@ def test_retrieve_user_invite(client, team, user, user2):
 
     client.force_authenticate(user)
     url = reverse('team-invites-list', kwargs={'team_pk': team.id})
-    res = client.post(url, { 'user': user2.id, 'level': Membership.ADMIN })
+    res = client.post(url, { 'emails': [user2.email], 'level': Membership.ADMIN })
     assert res.status_code == status.HTTP_201_CREATED
 
-    pk = res.json().get('id')
+    pk = res.json()[0].get('id')
 
     url = reverse('team-invites-detail', kwargs={'team_pk': team.id, 'pk': pk})
     for u, s in [(user, status.HTTP_200_OK),
@@ -673,15 +678,15 @@ def test_user_invites(client, team, user, user2, user3):
 
     for data in [
             { 'level': Membership.ADMIN },
-            { 'user': user2.id },
-            { 'user': user.id },
+            { 'emails': [user2.email] },
+            { 'emails': [user.email] },
             {}]:
         client.post(url, data).status_code == status.HTTP_400_BAD_REQUEST
 
 
-    res = client.post(url, { 'user': user2.id, 'level': Membership.ADMIN })
+    res = client.post(url, { 'emails': [user2.email], 'level': Membership.ADMIN })
     assert res.status_code == status.HTTP_201_CREATED
-    invite_pk = res.json()['id']
+    invite_pk = res.json()[0]['id']
     assert user2.membership_set.filter(team=team).exists(), \
         'user should be a member of the team'
     assert not user2.membership_set.get(team=team).is_active, \
@@ -692,7 +697,7 @@ def test_user_invites(client, team, user, user2, user3):
     # invite user3 to team
     client.force_authenticate(user)
     url = reverse('team-invites-list', kwargs={'team_pk': team.id})
-    res = client.post(url, { 'user': user3.id, 'level': Membership.ADMIN })
+    res = client.post(url, { 'emails': [user3.email], 'level': Membership.ADMIN })
     assert res.status_code == status.HTTP_201_CREATED
 
     # retrieve all invites for user2
@@ -725,9 +730,9 @@ def test_accept_team_invite(client, team, user, user2, user3):
     # invite user2 to team
     client.force_authenticate(user)
     url = reverse('team-invites-list', kwargs={'team_pk': team.id})
-    res = client.post(url, { 'user': user2.id, 'level': Membership.ADMIN })
+    res = client.post(url, { 'emails': [user2.email], 'level': Membership.ADMIN })
     assert res.status_code == status.HTTP_201_CREATED
-    invite_pk = res.json()['id']
+    invite_pk = res.json()[0]['id']
 
     # accept invite
     client.force_authenticate(user2)
@@ -753,9 +758,9 @@ def test_decline_team_invite(client, team, user, user2):
     # invite user2 to team
     client.force_authenticate(user)
     url = reverse('team-invites-list', kwargs={'team_pk': team.id})
-    res = client.post(url, { 'user': user2.id, 'level': Membership.ADMIN })
+    res = client.post(url, { 'emails': [user2.email], 'level': Membership.ADMIN })
     assert res.status_code == status.HTTP_201_CREATED
-    invite_pk = res.json()['id']
+    invite_pk = res.json()[0]['id']
 
     # decline invite
     client.force_authenticate(user2)

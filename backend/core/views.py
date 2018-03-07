@@ -321,7 +321,7 @@ class TeamInviteViewSet(viewsets.GenericViewSet,
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         invite = serializer.save(team=team)
-        return Response(InviteSerializer(invite).data, status=status.HTTP_201_CREATED)
+        return Response(InviteSerializer(invite, many=True).data, status=status.HTTP_201_CREATED)
 
 
 class UserInvitesViewSet(viewsets.GenericViewSet,

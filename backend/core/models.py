@@ -229,7 +229,10 @@ class CartItem(CommonInfo):
 
 
 class InviteManager(models.Manager):
-    def create_invite(self, user, team, level):
+    def create_invite(self, email, team, level):
+        user = MyUser.objects.filter(email=email).first()
+        if not user:
+            user = MyUser.objects.create_user(email=email)
         m = Membership.objects.create(user=user, team=team, level=level, is_active=False)
         invite = self.model.objects.create(membership=m)
         return invite

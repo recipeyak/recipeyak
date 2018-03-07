@@ -21,31 +21,19 @@ getLogger('flake8').propagate = False
 @pytest.fixture
 def user():
     email = 'john@doe.org'
-    password = 'testing123'
-    user = MyUser.objects.create(email=email)
-    user.set_password(password)
-    user.save()
-    return user
+    return MyUser.objects.create_user(email=email)
 
 
 @pytest.fixture
 def user2():
     email = 'james@smith.org'
-    password = 'testing123'
-    user = MyUser.objects.create(email=email)
-    user.set_password(password)
-    user.save()
-    return user
+    return MyUser.objects.create_user(email=email)
 
 
 @pytest.fixture
 def user3():
     email = 'john.doe@example.org'
-    password = 'testing123'
-    user = MyUser.objects.create(email=email)
-    user.set_password(password)
-    user.save()
-    return user
+    return MyUser.objects.create_user(email=email)
 
 
 @pytest.fixture
