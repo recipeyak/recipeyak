@@ -14,7 +14,7 @@ def copy_user_to_generic_forwards(apps, schema_editor):
     ContentType = apps.get_model('contenttypes', 'ContentType')
 
     # NB need to user get_or_create: https://stackoverflow.com/a/31543063/3555105
-    user_content_type = ContentType.objects.using(db_alias).get_or_create(app_label='core', model='myuser')
+    user_content_type, _ = ContentType.objects.using(db_alias).get_or_create(app_label='core', model='myuser')
 
     for recipe in Recipe.objects.using(db_alias).all():
         recipe.content_type = user_content_type
