@@ -3,6 +3,7 @@
 from django.db import migrations, models
 import django.db.models.deletion
 
+
 def copy_user_to_generic_forwards(apps, schema_editor):
     """
     Set all recipes content type to MyUser ContentType and object_id to the users field value
@@ -19,6 +20,7 @@ def copy_user_to_generic_forwards(apps, schema_editor):
         recipe.content_type = user_content_type
         recipe.object_id = recipe.user.id
         recipe.save()
+
 
 class Migration(migrations.Migration):
 

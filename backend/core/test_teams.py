@@ -1,7 +1,6 @@
 import pytest
 
 from django.urls import reverse
-from django.conf import settings
 from rest_framework import status
 
 from .models import Team, Membership, Recipe, Invite
@@ -117,7 +116,6 @@ def test_deleting_team(client, team, user, user2, empty_team, user3):
 
     assert client.get(url).status_code == status.HTTP_404_NOT_FOUND, \
         'team should be deleted'
-
 
 
 def test_list_team(client, team, user, user2, user3):
@@ -258,10 +256,10 @@ def test_list_team_members(client, team, user, user2, user3):
 def test_destory_team_member(client, team, user, user2, user3, empty_team):
     user_membership = user.membership_set.get(team=team)
     url = reverse('team-member-detail',
-            kwargs={
-                'team_pk': team.id,
-                'pk': user_membership.id
-            })
+                  kwargs={
+                      'team_pk': team.id,
+                      'pk': user_membership.id
+                  })
     # non-members cannot delete team memberships
     assert not team.is_member(user2)
     client.force_authenticate(user2)
@@ -278,10 +276,10 @@ def test_destory_team_member(client, team, user, user2, user3, empty_team):
 
     user3_membership = user3.membership_set.get(team=team)
     url = reverse('team-member-detail',
-            kwargs={
-                'team_pk': team.id,
-                'pk': user3_membership.id
-            })
+                  kwargs={
+                      'team_pk': team.id,
+                      'pk': user3_membership.id
+                  })
     # admins can remove memberships of members
     client.force_authenticate(user)
     res = client.delete(url)
@@ -297,10 +295,10 @@ def test_destory_team_member(client, team, user, user2, user3, empty_team):
     team.force_join_admin(user3)
     assert team.is_admin(user3)
     url = reverse('team-member-detail',
-            kwargs={
-                'team_pk': team.id,
-                'pk': user.membership_set.get(team=team).id
-            })
+                  kwargs={
+                      'team_pk': team.id,
+                      'pk': user.membership_set.get(team=team).id
+                  })
     client.force_authenticate(user3)
     res = client.delete(url)
     assert res.status_code == status.HTTP_204_NO_CONTENT, \
@@ -312,10 +310,10 @@ def test_destory_team_member(client, team, user, user2, user3, empty_team):
     assert team.is_admin(user3)
     client.force_authenticate(user3)
     url = reverse('team-member-detail',
-            kwargs={
-                'team_pk': empty_team.id,
-                'pk': user.membership_set.get(team=empty_team).id
-            })
+                  kwargs={
+                      'team_pk': empty_team.id,
+                      'pk': user.membership_set.get(team=empty_team).id
+                  })
     assert client.delete(url).status_code == status.HTTP_403_FORBIDDEN, \
         'Admin users cannot remove member of another team'
 
@@ -324,10 +322,10 @@ def test_destory_team_member(client, team, user, user2, user3, empty_team):
     assert empty_team.is_member(user2) and not empty_team.is_admin(user2)
     client.force_authenticate(user2)
     url = reverse('team-member-detail',
-            kwargs={
-                'team_pk': empty_team.id,
-                'pk': user2.membership_set.get(team=empty_team).id
-            })
+                  kwargs={
+                      'team_pk': empty_team.id,
+                      'pk': user2.membership_set.get(team=empty_team).id
+                  })
     assert client.delete(url).status_code == status.HTTP_204_NO_CONTENT
 
 
@@ -419,22 +417,22 @@ def test_create_team_invite(client, team, user, user2, user3, empty_team):
     # team admins can create invites
     client.force_authenticate(user)
     assert team.is_admin(user)
-    res = client.post(url, { 'emails': [user2.email], 'level': Membership.ADMIN })
+    res = client.post(url, {'emails': [user2.email], 'level': Membership.ADMIN})
     assert res.status_code == status.HTTP_201_CREATED
     assert user2.has_invite(team) and not team.is_member(user2)
     assert res.json()[0]['user']['id'] == user2.id
 
     for data, description in [
             (
-                { 'emails': [''], 'level': 'invalid user level', },
+                {'emails': [''], 'level': 'invalid user level'},
                 'invalid levels are not valid',
             ),
             (
-                { 'emails': [user2.id], 'level': Membership.ADMIN },
+                {'emails': [user2.id], 'level': Membership.ADMIN},
                 'invalid users are not valid'
             ),
             (
-                { 'emails': [user2.email] },
+                {'emails': [user2.email]},
                 "don't create another invite for user if they already have one pending"
             )]:
 
@@ -445,19 +443,19 @@ def test_create_team_invite(client, team, user, user2, user3, empty_team):
     team.force_join(user2)
     assert team.is_member(user2) and not team.is_admin(user2)
     client.force_authenticate(user2)
-    res = client.post(url, { 'emails': [user3.email] })
+    res = client.post(url, {'emails': [user3.email]})
     assert res.status_code == status.HTTP_400_BAD_REQUEST
 
     # non-members cannot create invite
     assert not empty_team.is_member(user3)
     client.force_authenticate(user3)
     url = reverse('team-invites-list', kwargs={'team_pk': empty_team.id})
-    res = client.post(url, { 'emails': [user2.email] })
+    res = client.post(url, {'emails': [user2.email]})
     assert res.status_code == status.HTTP_403_FORBIDDEN
 
     # 404 on non-existent team
     url = reverse('team-invites-list', kwargs={'team_pk': 0})
-    res = client.post(url, { 'emails': [user2.email] })
+    res = client.post(url, {'emails': [user2.email]})
     assert res.status_code == status.HTTP_404_NOT_FOUND
 
 
@@ -468,7 +466,7 @@ def test_retrieve_team_invite(client, team, user, user2, user3):
     # invite user2 to team
     client.force_authenticate(user)
     url = reverse('team-invites-list', kwargs={'team_pk': team.id})
-    res = client.post(url, { 'emails': [user2.email], 'level': Membership.ADMIN })
+    res = client.post(url, {'emails': [user2.email], 'level': Membership.ADMIN})
     assert res.status_code == status.HTTP_201_CREATED
     invite_pk = res.json()[0]['id']
 
@@ -550,7 +548,7 @@ def test_create_user_invite(client, team, user, user2):
 
     for u in [user, user2]:
         client.force_authenticate(u)
-        res = client.post(url, { 'emails': [u.email], 'level': Membership.ADMIN })
+        res = client.post(url, {'emails': [u.email], 'level': Membership.ADMIN})
         assert res.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
 
@@ -652,7 +650,7 @@ def test_retrieve_user_invite(client, team, user, user2):
 
     client.force_authenticate(user)
     url = reverse('team-invites-list', kwargs={'team_pk': team.id})
-    res = client.post(url, { 'emails': [user2.email], 'level': Membership.ADMIN })
+    res = client.post(url, {'emails': [user2.email], 'level': Membership.ADMIN})
     assert res.status_code == status.HTTP_201_CREATED
 
     pk = res.json()[0].get('id')
@@ -662,7 +660,6 @@ def test_retrieve_user_invite(client, team, user, user2):
                  (user2, status.HTTP_403_FORBIDDEN)]:
         client.force_authenticate(u)
         assert client.get(url).status_code == s
-
 
     url = reverse('user-invites-detail', kwargs={'pk': pk})
     for u, s in [(user, status.HTTP_404_NOT_FOUND),
@@ -677,14 +674,13 @@ def test_user_invites(client, team, user, user2, user3):
     url = reverse('team-invites-list', kwargs={'team_pk': team.id})
 
     for data in [
-            { 'level': Membership.ADMIN },
-            { 'emails': [user2.email] },
-            { 'emails': [user.email] },
+            {'level': Membership.ADMIN},
+            {'emails': [user2.email]},
+            {'emails': [user.email]},
             {}]:
         client.post(url, data).status_code == status.HTTP_400_BAD_REQUEST
 
-
-    res = client.post(url, { 'emails': [user2.email], 'level': Membership.ADMIN })
+    res = client.post(url, {'emails': [user2.email], 'level': Membership.ADMIN})
     assert res.status_code == status.HTTP_201_CREATED
     invite_pk = res.json()[0]['id']
     assert user2.membership_set.filter(team=team).exists(), \
@@ -697,7 +693,7 @@ def test_user_invites(client, team, user, user2, user3):
     # invite user3 to team
     client.force_authenticate(user)
     url = reverse('team-invites-list', kwargs={'team_pk': team.id})
-    res = client.post(url, { 'emails': [user3.email], 'level': Membership.ADMIN })
+    res = client.post(url, {'emails': [user3.email], 'level': Membership.ADMIN})
     assert res.status_code == status.HTTP_201_CREATED
 
     # retrieve all invites for user2
@@ -730,7 +726,7 @@ def test_accept_team_invite(client, team, user, user2, user3):
     # invite user2 to team
     client.force_authenticate(user)
     url = reverse('team-invites-list', kwargs={'team_pk': team.id})
-    res = client.post(url, { 'emails': [user2.email], 'level': Membership.ADMIN })
+    res = client.post(url, {'emails': [user2.email], 'level': Membership.ADMIN})
     assert res.status_code == status.HTTP_201_CREATED
     invite_pk = res.json()[0]['id']
 
@@ -758,7 +754,7 @@ def test_decline_team_invite(client, team, user, user2):
     # invite user2 to team
     client.force_authenticate(user)
     url = reverse('team-invites-list', kwargs={'team_pk': team.id})
-    res = client.post(url, { 'emails': [user2.email], 'level': Membership.ADMIN })
+    res = client.post(url, {'emails': [user2.email], 'level': Membership.ADMIN})
     assert res.status_code == status.HTTP_201_CREATED
     invite_pk = res.json()[0]['id']
 
@@ -786,9 +782,9 @@ def test_create_team_recipe(client, team, user):
     for choice, s in [(Membership.ADMIN, status.HTTP_201_CREATED),
                       (Membership.CONTRIBUTOR, status.HTTP_201_CREATED),
                       (Membership.READ_ONLY, status.HTTP_403_FORBIDDEN)]:
-        url = reverse('team-recipes-list', kwargs={ 'team_pk': team.id })
+        url = reverse('team-recipes-list', kwargs={'team_pk': team.id})
         team.force_join(user, level=choice)
-        recipe =  {
+        recipe = {
             'name': 'Cool new name',
             'ingredients': [
                 {
@@ -819,12 +815,12 @@ def test_update_team_recipe(client, team, user):
                       (Membership.READ_ONLY, status.HTTP_403_FORBIDDEN)]:
         recipe = Recipe.objects.create(name='Example Recipe Name', owner=team)
         url = reverse('team-recipes-detail',
-                kwargs={
-                    'team_pk': team.id,
-                    'pk': recipe.id
-                })
+                      kwargs={
+                          'team_pk': team.id,
+                          'pk': recipe.id
+                      })
         team.force_join(user, level=choice)
-        assert client.patch(url, { 'name': 'Cool new name' }).status_code == s
+        assert client.patch(url, {'name': 'Cool new name'}).status_code == s
 
 
 def test_destroy_team_recipe(client, team, user):
@@ -839,10 +835,10 @@ def test_destroy_team_recipe(client, team, user):
                       (Membership.READ_ONLY, status.HTTP_403_FORBIDDEN)]:
         recipe = Recipe.objects.create(name='Example Recipe Name', owner=team)
         url = reverse('team-recipes-detail',
-                kwargs={
-                    'team_pk': team.id,
-                    'pk': recipe.id
-                })
+                      kwargs={
+                          'team_pk': team.id,
+                          'pk': recipe.id
+                      })
         team.force_join(user, level=choice)
         assert client.delete(url).status_code == s
 
@@ -857,9 +853,9 @@ def test_list_team_recipe(client, team, recipe, user, user2):
     team.recipes.add(recipe)
 
     url = reverse('team-recipes-list',
-            kwargs={
-                'team_pk': team.id,
-            })
+                  kwargs={
+                      'team_pk': team.id,
+                  })
 
     assert not team.is_member(user2)
     assert not team.is_public
@@ -892,10 +888,10 @@ def test_retrieve_team_recipe(client, team, recipe, user, user2):
     team.recipes.add(recipe)
 
     url = reverse('team-recipes-detail',
-            kwargs={
-                'team_pk': team.id,
-                'pk': recipe.id
-            })
+                  kwargs={
+                      'team_pk': team.id,
+                      'pk': recipe.id
+                  })
 
     assert not team.is_member(user2)
     assert not team.is_public
@@ -958,10 +954,10 @@ def test_adding_recipe_to_team(client, team, user, user2):
     recipe_id = res.json().get('id')
 
     url = reverse('team-recipes-detail',
-            kwargs={
-                'team_pk': team.id,
-                'pk': recipe_id
-            })
+                  kwargs={
+                      'team_pk': team.id,
+                      'pk': recipe_id
+                  })
 
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK
@@ -980,10 +976,10 @@ def test_removing_recipe_from_team(client, team_with_recipes, user):
     recipe_id = res.json()[0].get('id')
 
     url = reverse('team-recipes-detail',
-            kwargs={
-                'team_pk': team_with_recipes.id,
-                'pk': recipe_id
-            })
+                  kwargs={
+                      'team_pk': team_with_recipes.id,
+                      'pk': recipe_id
+                  })
 
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK

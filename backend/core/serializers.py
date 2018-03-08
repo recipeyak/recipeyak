@@ -13,6 +13,7 @@ from .models import (
     Invite,
 )
 
+
 class UserSerializer(serializers.ModelSerializer):
     """
     serializer custom user model
@@ -32,7 +33,6 @@ class PublicUserSerializer(serializers.ModelSerializer):
         model = MyUser
         editable = False
         fields = ('id', 'email', 'avatar_url')
-
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -148,6 +148,7 @@ class MembershipSerializer(serializers.ModelSerializer):
 
 class InviteSerializer(serializers.ModelSerializer):
     user = PublicUserSerializer()
+
     class Meta:
         model = Invite
         editable = False

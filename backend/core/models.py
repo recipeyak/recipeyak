@@ -70,13 +70,11 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         # TODO: Add permissions
         return True
 
-
     def has_invite(self, team) -> bool:
         """
         Return if user has invite to team.
         """
         return self.membership_set.filter(team=team).exclude(invite=None).exists()
-
 
     # required for admin
     @property
@@ -339,6 +337,7 @@ class Team(CommonInfo):
     def is_admin(self, user):
         return self.membership_set.filter(user=user, is_active=True, level=Membership.ADMIN).exists()
 
+
 class Membership(CommonInfo):
     ADMIN = 'admin'
     CONTRIBUTOR = 'contributor'
@@ -346,8 +345,8 @@ class Membership(CommonInfo):
 
     MEMBERSHIP_CHOICES = (
         (ADMIN, ADMIN),
-        (CONTRIBUTOR , CONTRIBUTOR),
-        (READ_ONLY , READ_ONLY),
+        (CONTRIBUTOR, CONTRIBUTOR),
+        (READ_ONLY, READ_ONLY),
     )
 
     level = models.CharField(
@@ -368,4 +367,3 @@ class Membership(CommonInfo):
     def set_active(self):
         self.is_active = True
         self.save()
-

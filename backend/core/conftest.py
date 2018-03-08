@@ -2,7 +2,6 @@ import pytest
 
 from logging import getLogger
 
-from django.urls import reverse
 from rest_framework.test import APIClient
 
 from .models import (
@@ -12,7 +11,6 @@ from .models import (
     Step,
     Tag,
     Team,
-    Membership,
 )
 
 getLogger('flake8').propagate = False

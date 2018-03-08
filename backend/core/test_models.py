@@ -1,9 +1,5 @@
 import pytest
 
-from django.urls import reverse
-
-from .models import Team, Membership, Recipe, Invite
-
 pytestmark = pytest.mark.django_db
 
 
@@ -28,6 +24,7 @@ def test_team_force_join(client, team, user, user2, user3, empty_team):
     assert empty_team.is_member(user3)
     assert not user3.has_invite(empty_team), \
         'Invite should be removed'
+
 
 def test_team_kick_user(client, team, user, user2):
     """
@@ -119,5 +116,3 @@ def test_recipe_copy_to(client, team, user, recipe):
 
     for r_ingredient, t_ingredient in zip(r_ingredients, t_ingredients):
         assert r_ingredient.pk != t_ingredient.pk
-
-

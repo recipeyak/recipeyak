@@ -6,7 +6,6 @@ import pytz
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, mixins, views
 from rest_framework.decorators import detail_route
-from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
@@ -28,7 +27,6 @@ from .models import (
     Ingredient,
     CartItem,
     Team,
-    Membership,
     Invite,
 )
 from .serializers import (
@@ -230,7 +228,6 @@ class UserStats(APIView):
         })
 
 
-
 class TeamViewSet(viewsets.ModelViewSet):
     """
     Team viewset for /t/<team>
@@ -331,8 +328,8 @@ class TeamInviteViewSet(viewsets.GenericViewSet,
 
 
 class UserInvitesViewSet(viewsets.GenericViewSet,
-                  mixins.RetrieveModelMixin,
-                  mixins.ListModelMixin):
+                         mixins.RetrieveModelMixin,
+                         mixins.ListModelMixin):
     """
     Personal route that lists all of a users invites via `/invites`
 

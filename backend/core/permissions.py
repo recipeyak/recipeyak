@@ -29,8 +29,8 @@ class IsTeamAdmin(permissions.BasePermission):
             team_pk = view.kwargs['team_pk']
         team = get_object_or_404(Team, pk=team_pk)
         return team.membership_set \
-                .filter(level=Membership.ADMIN) \
-                .filter(user=request.user).exists()
+            .filter(level=Membership.ADMIN) \
+            .filter(user=request.user).exists()
 
 
 class IsTeamAdminOrMembershipOwner(permissions.BasePermission):
@@ -52,5 +52,5 @@ class NonSafeIfMemberOrAdmin(IsTeamMember):
         team_pk = view.kwargs['team_pk']
         team = get_object_or_404(Team, pk=team_pk)
         return team.membership_set \
-                .filter(Q(level=Membership.ADMIN) | Q(level=Membership.CONTRIBUTOR)) \
-                .filter(user=request.user).exists()
+            .filter(Q(level=Membership.ADMIN) | Q(level=Membership.CONTRIBUTOR)) \
+            .filter(user=request.user).exists()
