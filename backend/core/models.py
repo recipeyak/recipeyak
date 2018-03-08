@@ -4,6 +4,8 @@ import logging
 
 from django.db import models, transaction
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +44,8 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
     created = models.DateField(auto_now_add=True)
     last_updated = models.DateField(auto_now=True)
+
+    recipes = GenericRelation('Recipe', related_query_name='owner_user')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS: List[str] = []
@@ -113,21 +117,45 @@ class Recipe(CommonInfo):
 
     edits = models.IntegerField(default=0, editable=False)
 
-    user = models.ForeignKey(MyUser, on_delete=models.CASCADE, blank=True, null=True)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    owner = GenericForeignKey('content_type', 'object_id')
 
-    team = models.ForeignKey('Team', on_delete=models.CASCADE, blank=True, null=True, related_name='recipes')
-
-    def move_to(account):
+    def move_to(self, account):
         """
         Move recipe from current owner to another team or user
-        """
-        raise NotImplementedError
 
-    def copy_to(account):
+        All we need to do is change the owner for this one.
+            - CartItem is OneToOne and will be fine.
+            - Steps and Ingredients will be fine since we aren't changing pk's
+        """
+        with transaction.atomic():
+            self.owner = account
+            self.save()
+            return self
+
+    def copy_to(self, account):
         """
         Copy recipe to another team or user
         """
-        raise NotImplementedError
+        with transaction.atomic():
+            # clone top level recipe object
+            recipe_copy = Recipe.objects.get(pk=self.pk)
+            recipe_copy.pk = None
+            recipe_copy.owner = account
+            recipe_copy.save()
+            # clone step objects
+            for step in self.step_set.all():
+                step.pk = None
+                step.save()
+                recipe_copy.step_set.add(step)
+            # clone ingredient objects
+            for ingredient in self.ingredient_set.all():
+                ingredient.pk = None
+                ingredient.save()
+                recipe_copy.ingredient_set.add(ingredient)
+            recipe_copy.save()
+            return recipe_copy
 
     @property
     def ingredients(self):
@@ -259,20 +287,21 @@ class Invite(CommonInfo):
 class Team(CommonInfo):
     name = models.CharField(max_length=255)
     is_public = models.BooleanField(default=False)
+    recipes = GenericRelation('Recipe', related_query_name='owner_team')
 
-    @transaction.atomic
     def force_join(self, user, level=None):
-        if level is None:
-            level = Membership.CONTRIBUTOR
-        m, created = Membership.objects.get_or_create(team=self, user=user, defaults={'level': level, 'is_active': True})
-        if not created:
-            m.level = level
-            m.is_active = True
-            m.save()
-        # remove existing invite
-        if user.has_invite(self):
-            user.membership_set.exclude(invite=None).get(team=self).invite.delete()
-        return m
+        with transaction.atomic():
+            if level is None:
+                level = Membership.CONTRIBUTOR
+            m, created = Membership.objects.get_or_create(team=self, user=user, defaults={'level': level, 'is_active': True})
+            if not created:
+                m.level = level
+                m.is_active = True
+                m.save()
+            # remove existing invite
+            if user.has_invite(self):
+                user.membership_set.exclude(invite=None).get(team=self).invite.delete()
+            return m
 
     def force_join_admin(self, user):
         return self.force_join(user, level=Membership.ADMIN)

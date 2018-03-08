@@ -54,19 +54,24 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """
-        enables us to return a 404 if the person doesn't have access to the
-        item instead of throwing a 403 as default
+        Return recipes user owns or has access to via a team
+
+        We restrict access via this queryset filtering.
         """
 
-        user_recipes = Recipe.objects \
-            .filter(user=self.request.user) \
+        # restrict teams to those where the user is active
+        user_active_team_ids = self.request.user.membership_set.filter(is_active=True).values_list('team')
+
+        # get all recipes user has access to
+        recipes = Recipe.objects \
+            .filter(Q(owner_user=self.request.user) | Q(owner_team__in=user_active_team_ids)) \
             .select_related('cartitem')
 
         # filtering for homepage
         if self.request.query_params.get('recent') is not None:
-            return user_recipes.order_by('-modified')[:3]
+            return recipes.order_by('-modified')[:3]
 
-        return user_recipes
+        return recipes
 
     def perform_create(self, serializer):
         logger.info(f'Recipe created by {self.request.user}')
@@ -95,7 +100,8 @@ class StepViewSet(viewsets.ModelViewSet):
 class ShoppingListView(views.APIView):
 
     def get(self, request) -> Response:
-        cart_items = CartItem.objects.filter(recipe__user=request.user).filter(count__gt=0)
+        # FIXME: Add teams support
+        cart_items = CartItem.objects.filter(recipe__owner_user=request.user).filter(count__gt=0)
 
         ingredients: List[CartItem] = []
         for cart_item in cart_items:
@@ -131,15 +137,18 @@ class CartViewSet(mixins.RetrieveModelMixin,
 
     serializer_class = CartItemSerializer
 
+    # FIXME: Add teams support
+
     def get_queryset(self):
-        return CartItem.objects.filter(recipe__user=self.request.user)
+        return CartItem.objects.filter(recipe__owner_user=self.request.user)
 
 
 class ClearCart(APIView):
 
     def post(self, request, format=None):
+        # FIXME: Add teams support
         CartItem.objects \
-                .filter(recipe__user=self.request.user) \
+                .filter(recipe__owner_user=self.request.user) \
                 .update(count=0)
         logger.info(f"Cart cleared by {self.request.user}")
         return Response(status=status.HTTP_200_OK)
@@ -167,7 +176,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
 class UserStats(APIView):
 
     def get(self, request, format=None) -> Response:
-        user_recipes = Recipe.objects.filter(user=request.user)
+        user_recipes = Recipe.objects.filter(owner_user=request.user)
 
         total_recipe_edits = user_recipes \
             .aggregate(total=Sum('edits')) \
@@ -249,9 +258,6 @@ class TeamViewSet(viewsets.ModelViewSet):
         team = serializer.save()
         team.force_join_admin(request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-# FIXME: Everything below this needs to be worked on
 
 
 class MembershipViewSet(
@@ -368,15 +374,11 @@ class TeamRecipesViewSet(
                           NonSafeIfMemberOrAdmin)
 
     def get_queryset(self):
-        pk = self.kwargs['team_pk']
-        team = Team.objects.get(pk=pk)
-        return Recipe.objects.filter(team=team)
+        team = get_object_or_404(Team, pk=self.kwargs['team_pk'])
+        return Recipe.objects.filter(owner_team=team)
 
     def list(self, request, team_pk=None):
-        team = get_object_or_404(Team.objects.all(), pk=team_pk)
-
-        queryset = Recipe.objects.filter(team=team)
-        serializer = RecipeSerializer(queryset, many=True)
+        serializer = RecipeSerializer(self.get_queryset(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request, team_pk=None):

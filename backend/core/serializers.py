@@ -88,7 +88,8 @@ class RecipeSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = ('id', 'name', 'author', 'source', 'time', 'ingredients',
                   'steps', 'tags', 'servings', 'edits', 'modified',
-                  'cart_count', 'team')
+                  'cart_count', 'owner_team', 'owner_user')
+        read_only_fields = ('owner_team', 'owner_user')
 
     def validate_steps(self, value):
         if value == []:
@@ -107,6 +108,13 @@ class RecipeSerializer(serializers.ModelSerializer):
         ingredients = validated_data.pop('ingredients')
         steps = validated_data.pop('steps')
         tags = validated_data.pop('tags')
+
+        try:
+            owner = validated_data.pop('user')
+        except KeyError:
+            owner = validated_data.pop('team')
+
+        validated_data['owner'] = owner
         recipe = Recipe.objects.create(**validated_data)
         for ingredient in ingredients:
             Ingredient.objects.create(recipe=recipe, **ingredient)

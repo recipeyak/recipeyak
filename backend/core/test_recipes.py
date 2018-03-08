@@ -1,6 +1,7 @@
 import pytest
 
 from django.conf import settings
+from django.urls import reverse
 from rest_framework import status
 
 from .models import (
@@ -336,6 +337,26 @@ def test_filtering_recipes_by_recent(client, user, recipes):
 
     assert expected_first_recipe == actual_first_recipe, \
         "recipes weren't sorted by the backend"
+
+
+def test_display_all_accessable_recipes(client, user, recipes, team_with_recipes_no_members):
+    """
+    User should be able to list all teams they have access to:
+        - User-owned recipes
+        - Team-owned recipes
+    Ensure user can only view team recipes if they have joined.
+    """
+
+    client.force_authenticate(user)
+    team_with_recipes_no_members.invite_user(user)
+    res = client.get(reverse('recipes-list'))
+    assert res.status_code == status.HTTP_200_OK
+    assert len(res.json()) == len(user.recipes.all())
+
+    team_with_recipes_no_members.force_join(user)
+    res = client.get(reverse('recipes-list'))
+    assert res.status_code == status.HTTP_200_OK
+    assert len(res.json()) == len(user.recipes.all()) + len(team_with_recipes_no_members.recipes.all())
 
 
 def test_recording_edits_for_recipes(client, user, recipe):

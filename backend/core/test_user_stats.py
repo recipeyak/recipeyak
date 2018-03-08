@@ -90,7 +90,7 @@ def test_total_recipes_added_last_month_by_all_users(client, user, user2):
         Recipe.objects.create(
             name=name,
             author=author,
-            user=user2)
+            owner=user2)
 
     Recipe.objects.update(
         created=datetime.now(tz=pytz.UTC) - timedelta(days=60))
@@ -100,7 +100,7 @@ def test_total_recipes_added_last_month_by_all_users(client, user, user2):
     Recipe.objects.create(
         name=name,
         author=author,
-        user=user2)
+        owner=user2)
 
     res = client.get(f'{BASE_URL}/user_stats/')
     assert res.status_code == status.HTTP_200_OK

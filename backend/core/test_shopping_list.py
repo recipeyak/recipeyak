@@ -19,7 +19,7 @@ def test_combining_ingredients(user):
     time = '1 hour'
 
     recipe = Recipe.objects.create(
-        name=name, author=author, source=source, time=time, user=user)
+        name=name, author=author, source=source, time=time, owner=user)
 
     Ingredient.objects.create(
         quantity='2 lbs',
@@ -92,10 +92,10 @@ def test_combining_ingredients_with_out_units(user):
     author = 'Recipe author'
 
     recipe = Recipe.objects.create(
-        name=name, author=author, user=user)
+        name=name, author=author, owner=user)
 
     recipe2 = Recipe.objects.create(
-        name='Another recipe', author=author, user=user)
+        name='Another recipe', author=author, owner=user)
 
     Ingredient.objects.create(
         quantity='1',
@@ -131,10 +131,10 @@ def test_combining_ingredients_with_dashes_in_name(user):
     author = 'Recipe author'
 
     recipe = Recipe.objects.create(
-        name=name, author=author, user=user)
+        name=name, author=author, owner=user)
 
     recipe2 = Recipe.objects.create(
-        name='Another recipe', author=author, user=user)
+        name='Another recipe', author=author, owner=user)
 
     Ingredient.objects.create(
         quantity='1 tablespoon',
@@ -167,7 +167,7 @@ def test_combining_recipes_with_improper_quantities(client, user):
 
     # 1. create our recipes
     recipe = Recipe.objects.create(
-        name='Salmon and Tomatoes in Foil', author='Mark Bittman', user=user)
+        name='Salmon and Tomatoes in Foil', author='Mark Bittman', owner=user)
 
     name = 'basil leaves'
     count = 16
@@ -177,7 +177,7 @@ def test_combining_recipes_with_improper_quantities(client, user):
         recipe=recipe)
 
     recipe2 = Recipe.objects.create(
-        name='Pizza With Sweet and Hot Peppers', author='David Tanis', user=user)
+        name='Pizza With Sweet and Hot Peppers', author='David Tanis', owner=user)
 
     recipe.cartitem.count = 1
     recipe.cartitem.save()
@@ -213,10 +213,10 @@ def test_combining_ingredients_with_approximations(user):
     author = 'Recipe author'
 
     recipe = Recipe.objects.create(
-        name=name, author=author, user=user)
+        name=name, author=author, owner=user)
 
     recipe2 = Recipe.objects.create(
-        name='Another recipe', author=author, user=user)
+        name='Another recipe', author=author, owner=user)
 
     Ingredient.objects.create(
         quantity='1 tablespoon',
@@ -261,7 +261,7 @@ def test_adding_to_cart_multiple_times_some_ingredient(user, client):
     for quantity in ['sprinkle', 'some']:
 
         recipe = Recipe.objects.create(
-            name=name, author=author, user=user)
+            name=name, author=author, owner=user)
 
         Ingredient.objects.create(
             quantity=quantity,

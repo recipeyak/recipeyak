@@ -817,7 +817,7 @@ def test_update_team_recipe(client, team, user):
     for choice, s in [(Membership.ADMIN, status.HTTP_200_OK),
                       (Membership.CONTRIBUTOR, status.HTTP_200_OK),
                       (Membership.READ_ONLY, status.HTTP_403_FORBIDDEN)]:
-        recipe = Recipe.objects.create(name='Example Recipe Name', team=team)
+        recipe = Recipe.objects.create(name='Example Recipe Name', owner=team)
         url = reverse('team-recipes-detail',
                 kwargs={
                     'team_pk': team.id,
@@ -837,7 +837,7 @@ def test_destroy_team_recipe(client, team, user):
     for choice, s in [(Membership.ADMIN, status.HTTP_204_NO_CONTENT),
                       (Membership.CONTRIBUTOR, status.HTTP_204_NO_CONTENT),
                       (Membership.READ_ONLY, status.HTTP_403_FORBIDDEN)]:
-        recipe = Recipe.objects.create(name='Example Recipe Name', team=team)
+        recipe = Recipe.objects.create(name='Example Recipe Name', owner=team)
         url = reverse('team-recipes-detail',
                 kwargs={
                     'team_pk': team.id,

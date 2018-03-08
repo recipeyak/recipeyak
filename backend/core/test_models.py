@@ -79,15 +79,45 @@ def test_user_has_invite(client, empty_team, user):
     assert not user.has_invite(empty_team)
 
 
-def test_recipe_move_to(client, team, user):
+def test_recipe_move_to(client, team, user, recipe):
     """
-    Move recipe to team from user or another team
+    Move recipe to team from user or another team by changing owner.
     """
-    assert False
+
+    assert recipe.owner == user
+    step_count = len(recipe.steps.all())
+    ingredient_count = len(recipe.ingredients.all())
+
+    recipe = recipe.move_to(team)
+
+    assert recipe.owner == team
+    assert len(recipe.steps.all()) == step_count
+    assert len(recipe.ingredients.all()) == ingredient_count
 
 
-def test_recipe_copy_to(client, team, user):
+def test_recipe_copy_to(client, team, user, recipe):
     """
     Copy recipe to team from user or another team
     """
-    assert False
+    assert recipe.owner == user
+
+    team_recipe = recipe.copy_to(team)
+
+    assert recipe != team_recipe
+    assert team_recipe.owner == team and recipe.owner == user
+
+    r_steps = list(recipe.steps.all())
+    t_steps = list(team_recipe.steps.all())
+    assert len(r_steps) == len(t_steps)
+
+    for r_step, t_step in zip(r_steps, t_steps):
+        assert r_step.pk != t_step.pk
+
+    r_ingredients = list(recipe.ingredients.all())
+    t_ingredients = list(team_recipe.ingredients.all())
+    assert len(r_ingredients) == len(t_ingredients)
+
+    for r_ingredient, t_ingredient in zip(r_ingredients, t_ingredients):
+        assert r_ingredient.pk != t_ingredient.pk
+
+
