@@ -82,10 +82,6 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         return self.is_admin
 
     @property
-    def cart(self):
-        return CartItem.objects.filter(recipe__user=self)
-
-    @property
     def avatar_url(self):
         md5_email = hashlib.md5(self.email.encode('utf-8')).hexdigest()
         # indenticons by default `d=identicon`
@@ -155,6 +151,11 @@ class Recipe(CommonInfo):
             recipe_copy.save()
             return recipe_copy
 
+    def set_cart_quantity(self, user: MyUser, count: float) -> None:
+        cartitem, _ = self.cartitem_set.get_or_create(user=user, recipe=self)
+        cartitem.count = count
+        cartitem.save()
+
     @property
     def ingredients(self):
         """Return recipe ingredients ordered by creation date"""
@@ -170,14 +171,6 @@ class Recipe(CommonInfo):
         """Return recipe tags ordered by creation date"""
         return Tag.objects.filter(recipe=self).order_by('created')
 
-    @property
-    def total_cart_additions(self):
-        return self.cartitem.total_cart_additions
-
-    @property
-    def cart_count(self):
-        return self.cartitem.count
-
     def __str__(self):
         return f'{self.name} by {self.author}'
 
@@ -190,8 +183,6 @@ class Recipe(CommonInfo):
             if edits_unchanged:
                 self.edits += 1
         super().save(*args, **kwargs)
-        if is_new:
-            CartItem.objects.create(recipe=self)
 
 
 class Ingredient(CommonInfo):
@@ -238,15 +229,19 @@ class Tag(CommonInfo):
 
 class CartItem(CommonInfo):
     """Model for recipe and cart count"""
-    recipe = models.OneToOneField(Recipe, on_delete=models.CASCADE, primary_key=True)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     count = models.PositiveIntegerField(default=0)
     total_cart_additions = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        unique_together = (('user', 'recipe'),)
 
     def __str__(self):
         return f'CartItem:: count: {self.count} total: {self.total_cart_additions} - {self.recipe}'
 
     def save(self, *args, **kwargs):
-        old_cart = CartItem.objects.filter(recipe=self.recipe).first()
+        old_cart = CartItem.objects.filter(recipe=self.recipe, user=self.user).first()
         if old_cart is not None and old_cart.count < self.count:
             count_increase = self.count - old_cart.count
             self.total_cart_additions += count_increase

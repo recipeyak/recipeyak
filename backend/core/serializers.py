@@ -83,6 +83,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     steps = StepSerializer(many=True)
     ingredients = IngredientSerializer(many=True)
     tags = TagSerializer(many=True, default=[])
+    cart_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipe
@@ -124,12 +125,22 @@ class RecipeSerializer(serializers.ModelSerializer):
             Tag.objects.create(recipe=recipe, **tag)
         return recipe
 
+    def get_cart_count(self, recipe: Recipe) -> float:
+        user = self.context['request'].user
+        return getattr(recipe.cartitem_set.filter(user=user).first(), 'count', 0)
+
 
 class MostAddedRecipeSerializer(serializers.ModelSerializer):
+
+    total_cart_additions = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'author', 'total_cart_additions')
+
+    def get_total_cart_additions(self, recipe):
+        user = self.context['request'].user
+        return getattr(recipe.cartitem_set.filter(user=user).first(), 'total_cart_additions', 0)
 
 
 class TeamSerializer(serializers.ModelSerializer):

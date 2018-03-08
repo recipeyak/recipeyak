@@ -1,6 +1,7 @@
 import pytest
 
 from django.conf import settings
+from django.urls import reverse
 from rest_framework import status
 
 from .utils import combine_ingredients
@@ -64,10 +65,40 @@ def test_fetching_shoppinglist(client, user, recipe):
     assert res.status_code == status.HTTP_200_OK
     assert res.json() == []
 
-    recipe.cartitem.count = 2
-    recipe.cartitem.save()
+    recipe.set_cart_quantity(user, count=2)
 
     res = client.get(shoppinglist_url)
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json() != []
+
+    expected = [{
+        'unit': '2 pound',
+        'name': 'egg'
+        }, {
+        'unit': '4 tablespoon',
+        'name': 'soy sauce'
+        }
+    ]
+
+    assert res.json() == expected
+
+
+def test_fetching_shoppinglist_with_team_recipe(client, team, user, recipe):
+
+    client.force_authenticate(user)
+
+    assert team.is_member(user)
+
+    recipe = recipe.move_to(team)
+
+    url = reverse('shopping-list')
+    res = client.get(url)
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json() == []
+
+    recipe.set_cart_quantity(user, count=2)
+
+    res = client.get(url)
     assert res.status_code == status.HTTP_200_OK
     assert res.json() != []
 
@@ -179,11 +210,9 @@ def test_combining_recipes_with_improper_quantities(client, user):
     recipe2 = Recipe.objects.create(
         name='Pizza With Sweet and Hot Peppers', author='David Tanis', owner=user)
 
-    recipe.cartitem.count = 1
-    recipe.cartitem.save()
+    recipe.set_cart_quantity(user, count=1)
 
-    recipe2.cartitem.count = 1
-    recipe2.cartitem.save()
+    recipe2.set_cart_quantity(user, count=1)
 
     # 2. set ingredients of second recipe to 'basic' quantities and assert
     for quantity in ['some', 'sprinkle']:
@@ -268,8 +297,7 @@ def test_adding_to_cart_multiple_times_some_ingredient(user, client):
             name='black pepper',
             recipe=recipe)
 
-        recipe.cartitem.count = 3
-        recipe.cartitem.save()
+        recipe.set_cart_quantity(user, count=3)
 
         client.force_authenticate(user)
         res = client.get(f'{BASE_URL}/shoppinglist/')
@@ -288,8 +316,7 @@ def test_combining_ingredient_with_range_quantity(user, client, empty_recipe):
         name=name,
         recipe=empty_recipe)
 
-    empty_recipe.cartitem.count = 2
-    empty_recipe.cartitem.save()
+    empty_recipe.set_cart_quantity(user, count=2)
 
     client.force_authenticate(user)
     res = client.get(f'{BASE_URL}/shoppinglist/')
@@ -314,8 +341,7 @@ def test_combining_ingredients_plural_and_singular_tomatoes(user, client, empty_
         name='large tomatoes',
         recipe=empty_recipe)
 
-    empty_recipe.cartitem.count = 1
-    empty_recipe.cartitem.save()
+    empty_recipe.set_cart_quantity(user, count=1)
 
     client.force_authenticate(user)
     res = client.get(f'{BASE_URL}/shoppinglist/')
@@ -347,8 +373,7 @@ def test_combining_ingredients_plural_and_singular_lemon(user, client, empty_rec
         name='lemons',
         recipe=empty_recipe)
 
-    empty_recipe.cartitem.count = 1
-    empty_recipe.cartitem.save()
+    empty_recipe.set_cart_quantity(user, count=1)
 
     client.force_authenticate(user)
     res = client.get(f'{BASE_URL}/shoppinglist/')
@@ -375,8 +400,7 @@ def test_combining_plural_and_singular_leaves(user, client, empty_recipe):
         name='bay leaves',
         recipe=empty_recipe)
 
-    empty_recipe.cartitem.count = 1
-    empty_recipe.cartitem.save()
+    empty_recipe.set_cart_quantity(user, count=1)
 
     client.force_authenticate(user)
     res = client.get(f'{BASE_URL}/shoppinglist/')

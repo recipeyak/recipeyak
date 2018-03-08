@@ -160,8 +160,11 @@ a {
     display: none !important;
   }
 
+  body {
+    border-top: none !important;
+  }
+
   html {
-    border-top: none;
     font-size: $printing-font-size;
   }
 

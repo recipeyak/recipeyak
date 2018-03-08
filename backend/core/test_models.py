@@ -1,4 +1,5 @@
 import pytest
+from .models import CartItem
 
 pytestmark = pytest.mark.django_db
 
@@ -116,3 +117,10 @@ def test_recipe_copy_to(client, team, user, recipe):
 
     for r_ingredient, t_ingredient in zip(r_ingredients, t_ingredients):
         assert r_ingredient.pk != t_ingredient.pk
+
+
+def test_recipe_set_cart_quantity(recipe, user):
+    assert not CartItem.objects.filter(user=user, recipe=recipe).exists()
+    count = 5
+    recipe.set_cart_quantity(user, count)
+    assert CartItem.objects.get(user=user, recipe=recipe).count == count

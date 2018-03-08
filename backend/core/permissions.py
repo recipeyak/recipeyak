@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
 
-from .models import Team, Membership
+from .models import Team, Membership, Recipe, MyUser
 
 
 class IsTeamMember(permissions.BasePermission):
@@ -54,3 +54,9 @@ class NonSafeIfMemberOrAdmin(IsTeamMember):
         return team.membership_set \
             .filter(Q(level=Membership.ADMIN) | Q(level=Membership.CONTRIBUTOR)) \
             .filter(user=request.user).exists()
+
+
+class HasRecipeAccess(permissions.BasePermission):
+    def has_object_permission(self, request, view, recipe: Recipe) -> bool:
+        return recipe.owner == request.user if isinstance(recipe.owner, MyUser) \
+               else recipe.owner.is_member(request.user)

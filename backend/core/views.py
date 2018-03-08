@@ -18,6 +18,7 @@ from .permissions import (
     IsTeamAdminOrMembershipOwner,
     IsTeamMemberIfPrivate,
     NonSafeIfMemberOrAdmin,
+    HasRecipeAccess,
 )
 
 from .models import (
@@ -46,9 +47,16 @@ from .utils import combine_ingredients
 logger = logging.getLogger(__name__)
 
 
+def user_active_team_ids(request):
+    return request.user.membership_set.filter(is_active=True).values_list('team')
+
+
 class RecipeViewSet(viewsets.ModelViewSet):
 
     serializer_class = RecipeSerializer
+
+    def get_serializer_context(self):
+        return {'request': self.request}
 
     def get_queryset(self):
         """
@@ -57,13 +65,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
         We restrict access via this queryset filtering.
         """
 
-        # restrict teams to those where the user is active
-        user_active_team_ids = self.request.user.membership_set.filter(is_active=True).values_list('team')
-
         # get all recipes user has access to
+        # import ipdb; ipdb.set_trace()
         recipes = Recipe.objects \
-            .filter(Q(owner_user=self.request.user) | Q(owner_team__in=user_active_team_ids)) \
-            .select_related('cartitem')
+            .filter(Q(owner_user=self.request.user) |
+                    Q(owner_team__in=user_active_team_ids(self.request))) \
+            .prefetch_related('cartitem_set')
 
         # filtering for homepage
         if self.request.query_params.get('recent') is not None:
@@ -71,9 +78,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         return recipes
 
-    def perform_create(self, serializer):
+    def create(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        serializer.save(user=request.user)
+
         logger.info(f'Recipe created by {self.request.user}')
-        serializer.save(user=self.request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class StepViewSet(viewsets.ModelViewSet):
@@ -98,8 +110,10 @@ class StepViewSet(viewsets.ModelViewSet):
 class ShoppingListView(views.APIView):
 
     def get(self, request) -> Response:
-        # FIXME: Add teams support
-        cart_items = CartItem.objects.filter(recipe__owner_user=request.user).filter(count__gt=0)
+        cart_items = (CartItem.objects
+                      .filter(Q(recipe__owner_user=request.user) |
+                              Q(recipe__owner_team__in=user_active_team_ids(self.request)))
+                      .filter(count__gt=0))
 
         ingredients: List[CartItem] = []
         for cart_item in cart_items:
@@ -128,25 +142,27 @@ class TagViewSet(viewsets.ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CartViewSet(mixins.RetrieveModelMixin,
-                  mixins.UpdateModelMixin,
-                  mixins.ListModelMixin,
-                  viewsets.GenericViewSet):
+class CartViewSet(APIView):
 
-    serializer_class = CartItemSerializer
+    permission_classes = (IsAuthenticated, HasRecipeAccess,)
 
-    # FIXME: Add teams support
+    def patch(self, request, pk, format=None) -> Response:
+        recipe = get_object_or_404(Recipe, pk=pk)
+        self.check_object_permissions(request, recipe)
 
-    def get_queryset(self):
-        return CartItem.objects.filter(recipe__owner_user=self.request.user)
+        cartitem, _ = CartItem.objects.get_or_create(user=self.request.user, recipe=recipe)
+
+        serializer = CartItemSerializer(cartitem, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ClearCart(APIView):
 
     def post(self, request, format=None):
-        # FIXME: Add teams support
         CartItem.objects \
-                .filter(recipe__owner_user=self.request.user) \
+                .filter(user=self.request.user) \
                 .update(count=0)
         logger.info(f"Cart cleared by {self.request.user}")
         return Response(status=status.HTTP_200_OK)
@@ -185,9 +201,11 @@ class UserStats(APIView):
         new_recipes_last_week = user_recipes \
             .filter(created__gt=last_week).count()
 
-        most_added_recipe = user_recipes \
-            .order_by('-cartitem__total_cart_additions') \
-            .first()
+        most_added_recipe = getattr((CartItem.objects
+                                    .filter(user=request.user)
+                                    .filter(recipe__owner_user=request.user)
+                                    .order_by('-total_cart_additions')
+                                    .first()), 'recipe', None)
 
         total_cart_additions = CartItem.objects \
             .aggregate(total=Sum('total_cart_additions')) \
@@ -219,7 +237,9 @@ class UserStats(APIView):
             'total_user_recipes': user_recipes.count(),
             'total_recipe_edits': total_recipe_edits,
             'new_recipes_last_week': new_recipes_last_week,
-            'most_added_recipe': MostAddedRecipeSerializer(most_added_recipe).data,
+            'most_added_recipe': MostAddedRecipeSerializer(
+                                    most_added_recipe,
+                                    context={'request': request}).data,
             'date_joined': date_joined,
             'recipes_pie_not_pie': (recipes_pie_not_pie, total_recipes),
             'recipes_added_by_month': recipes_added_by_month,
@@ -370,18 +390,21 @@ class TeamRecipesViewSet(
                           IsTeamMemberIfPrivate,
                           NonSafeIfMemberOrAdmin)
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
     def get_queryset(self):
         team = get_object_or_404(Team, pk=self.kwargs['team_pk'])
         return Recipe.objects.filter(owner_team=team)
 
     def list(self, request, team_pk=None):
-        serializer = RecipeSerializer(self.get_queryset(), many=True)
+        serializer = self.get_serializer(self.get_queryset(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request, team_pk=None):
         team = get_object_or_404(Team.objects.all(), pk=team_pk)
 
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         serializer.save(team=team)
