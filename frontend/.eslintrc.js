@@ -66,5 +66,6 @@ module.exports = {
         'destructuring': 'any',
         'ignoreReadBeforeAssign': false
     }],
+    'space-in-parens': ['warn', 'never'],
   }
 }

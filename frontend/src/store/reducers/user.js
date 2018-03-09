@@ -18,7 +18,10 @@ import { socialAccounts } from './socialAccounts'
 
 import { setDarkModeClass } from '../../sideEffects'
 
+import raven from 'raven-js'
+
 const initialState = {
+  id: null,
   loggedIn: false,
   token: null,
   avatarURL: '',
@@ -41,10 +44,19 @@ export const user = (
 ) => {
   switch (action.type) {
   case LOG_IN:
+    raven.setUserContext({
+      ...{
+        email: state.email,
+        id: state.id,
+      },
+      email: action.user.email,
+      id: action.user.id,
+    })
     return {
       ...state,
       avatarURL: action.user.avatar_url,
       email: action.user.email,
+      id: action.user.id,
       loggedIn: true,
       hasUsablePassword: action.user.has_usable_password,
       token: action.token
@@ -64,6 +76,7 @@ export const user = (
   case SET_UPDATING_USER_EMAIL:
     return { ...state, updatingEmail: action.val }
   case SET_LOGGING_OUT:
+    raven.setUserContext()
     return { ...state, loggingOut: action.val }
   case SET_PASSWORD_USABLE:
     return { ...state, hasUsablePassword: action.val }

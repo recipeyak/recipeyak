@@ -6,18 +6,20 @@ import OAuth from '../components/OAuth.jsx'
 
 const mapDispatchToProps = dispatch => {
   return {
-    login: (service, token) => dispatch(login(service, token))
+    login: (...args) => dispatch(login(...args))
   }
 }
 
-const mapStateToProps = (_, props) => {
+const mapStateToProps = (state, props) => {
   const service = props.match.params.service
   const parsed = queryString.parse(props.location.search)
   const token = parsed.token || parsed.code
+  const redirectUrl = state.auth.fromUrl
 
   return {
     service,
-    token
+    token,
+    redirectUrl,
   }
 }
 

@@ -2,14 +2,16 @@ import { connect } from 'react-redux'
 
 import {
   logUserIn,
-  setErrorLogin
+  setErrorLogin,
+  setFromUrl,
 } from '../store/actions.js'
 import Login from '../components/Login.jsx'
 
 const mapDispatchToProps = dispatch => {
   return {
-    login: (email, password) => dispatch(logUserIn(email, password)),
-    clearErrors: () => dispatch(setErrorLogin({}))
+    login: (email, password, url) => dispatch(logUserIn(email, password, url)),
+    clearErrors: () => dispatch(setErrorLogin({})),
+    setFromUrl: url => dispatch(setFromUrl(url)),
   }
 }
 
@@ -18,6 +20,7 @@ const mapStateToProps = state => {
     loading: state.loading.login,
     error: state.error.login,
     errorSocial: state.error.socialLogin,
+    fromUrl: state.auth.fromUrl,
   }
 }
 

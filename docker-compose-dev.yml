@@ -14,7 +14,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./backend:/app
+      - ./backend:/app:rw,cached
     depends_on:
       - db
   db:
@@ -33,7 +33,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./frontend:/var/app
+      - ./frontend:/var/app:rw,cached
     depends_on:
       - django
 volumes:
