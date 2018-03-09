@@ -87,26 +87,42 @@ import {
 import axios from 'axios'
 import raven from 'raven-js'
 
-const http = axios.create({
-  timeout: 15000,
-})
+import { store } from './store'
+
+const config = { timeout: 15000 }
+
+const http = axios.create(config)
+const anon = axios.create(config)
+
+const handleResponseError = error => {
+  // 503 means we are in maintenance mode. Reload to show maintenance page.
+  const maintenanceMode = error.response && error.response.status === 503
+  // Report all 500 errors
+  const serverError = !maintenanceMode && error.response && error.response.status >= 500
+  // Report request timeouts
+  const requestTimeout = error.code === 'ECONNABORTED'
+  if (maintenanceMode) {
+    location.reload()
+  } else if (serverError || requestTimeout) {
+    raven.captureException(error)
+  }
+  return Promise.reject(error)
+}
 
 http.interceptors.response.use(
   response => response,
-  error => {
-    // 503 means we are in maintenance mode. Reload to show maintenance page.
-    const maintenanceMode = error.response && error.response.status === 503
-    // Report all 500 errors
-    const serverError = !maintenanceMode && error.response && error.response.status >= 500
-    // Report request timeouts
-    const requestTimeout = error.code === 'ECONNABORTED'
-    if (maintenanceMode) {
-      location.reload()
-    } else if (serverError || requestTimeout) {
-      raven.captureException(error)
-    }
-    return Promise.reject(error)
-  })
+  error => handleResponseError(error))
+
+anon.interceptors.response.use(
+  response => response,
+  error => handleResponseError(error))
+
+http.interceptors.request.use(
+  config => {
+    config.headers['Authorization'] = 'Token ' + store.getState().user.token
+    return config
+  }, error => Promise.reject(error)
+)
 
 const invalidToken = res =>
   res != null && res.data.detail === 'Invalid token.' && res.status === 401
@@ -166,13 +182,9 @@ export const setLoggingOut = val => ({
   val
 })
 
-export const loggingOut = () => (dispatch, getState) => {
+export const loggingOut = () => dispatch => {
   dispatch(setLoggingOut(true))
-  return http.post('/api/v1/rest-auth/logout/', {}, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.post('/api/v1/rest-auth/logout/', {})
   .then(() => {
     dispatch(logout())
     dispatch(push('/login'))
@@ -238,14 +250,10 @@ const emailExists = err =>
 
 const second = 1000
 
-export const updatingEmail = email => (dispatch, getState) => {
+export const updatingEmail = email => dispatch => {
   dispatch(setUpdatingUserEmail(true))
   return http.patch('/api/v1/rest-auth/user/', {
     email
-  }, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
   })
   .then(res => {
     dispatch(setUserEmail(res.data.email))
@@ -270,14 +278,10 @@ export const updatingEmail = email => (dispatch, getState) => {
   })
 }
 
-export const fetchUser = () => (dispatch, getState) => {
+export const fetchUser = () => dispatch => {
   dispatch(setLoadingUser(true))
   dispatch(setErrorUser(false))
-  return http.get('/api/v1/rest-auth/user/', {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.get('/api/v1/rest-auth/user/')
   .then(res => {
     dispatch(setAvatarURL(res.data.avatar_url))
     dispatch(setUserEmail(res.data.email))
@@ -305,12 +309,8 @@ export const setSocialConnection = (provider, val) => ({
   val,
 })
 
-export const fetchSocialConnections = () => (dispatch, getState) => {
-  return http.get('/api/v1/rest-auth/socialaccounts/', {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+export const fetchSocialConnections = () => dispatch => {
+  return http.get('/api/v1/rest-auth/socialaccounts/')
   .then(res => {
     dispatch(setSocialConnections(res.data))
   })
@@ -322,13 +322,9 @@ export const fetchSocialConnections = () => (dispatch, getState) => {
   })
 }
 
-export const disconnectSocialAccount = (provider, id) => (dispatch, getState) => {
+export const disconnectSocialAccount = (provider, id) => dispatch => {
   return http.post(`/api/v1/rest-auth/socialaccounts/${id}/disconnect/`, {
     id
-  }, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
   })
   .then(() => {
     dispatch(setSocialConnections(
@@ -346,13 +342,9 @@ export const disconnectSocialAccount = (provider, id) => (dispatch, getState) =>
   })
 }
 
-export const fetchUserStats = () => (dispatch, getState) => {
+export const fetchUserStats = () => dispatch => {
   dispatch(setLoadingUserStats(true))
-  return http.get('api/v1/user_stats/', {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.get('api/v1/user_stats/')
   .then(res => {
     dispatch(setUserStats(res.data))
     dispatch(setLoadingUserStats(false))
@@ -376,17 +368,13 @@ export const setErrorPasswordUpdate = val => ({
   val
 })
 
-export const updatingPassword = (password1, password2, oldPassword) => (dispatch, getState) => {
+export const updatingPassword = (password1, password2, oldPassword) => dispatch => {
   dispatch(setLoadingPasswordUpdate(true))
   dispatch(setErrorPasswordUpdate({}))
   return http.post('/api/v1/rest-auth/password/change/', {
     new_password1: password1,
     new_password2: password2,
     old_password: oldPassword
-  }, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
   })
   .then(() => {
     dispatch(setLoadingPasswordUpdate(false))
@@ -441,13 +429,9 @@ export const clearRecipeCartAmounts = () => ({
   type: CLEAR_RECIPE_CART_AMOUNTS
 })
 
-export const clearCart = () => (dispatch, getState) => {
+export const clearCart = () => dispatch => {
   dispatch(setClearingCart(true))
-  return http.post('/api/v1/clear_cart/', {}, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.post('/api/v1/clear_cart/', {})
   .then(() => {
     dispatch(clearRecipeCartAmounts())
     dispatch(setShoppingListEmpty())
@@ -494,13 +478,9 @@ export const addingToCart = id => (dispatch, getState) => {
   })
 }
 
-export const updatingCart = (id, count) => (dispatch, getState) =>
+export const updatingCart = (id, count) => dispatch =>
   http.patch(`/api/v1/cart/${id}/`, {
     count
-  }, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
   })
   .then(res => {
     const {
@@ -546,14 +526,10 @@ export const setShoppingListError = val => ({
   val
 })
 
-export const fetchShoppingList = () => (dispatch, getState) => {
+export const fetchShoppingList = () => dispatch => {
   dispatch(setLoadingShoppingList(true))
   dispatch(setShoppingListError(false))
-  return http.get('/api/v1/shoppinglist/', {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.get('/api/v1/shoppinglist/')
   .then(res => {
     dispatch(setShoppingList(res.data))
     dispatch(setLoadingShoppingList(false))
@@ -582,15 +558,11 @@ export const setErrorAddRecipe = val => ({
   val
 })
 
-export const postNewRecipe = recipe => (dispatch, getState) => {
+export const postNewRecipe = recipe => dispatch => {
   dispatch(setLoadingAddRecipe(true))
   dispatch(setErrorAddRecipe({}))
 
-  return http.post('/api/v1/recipes/', recipe, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.post('/api/v1/recipes/', recipe)
   .then(res => {
     dispatch(addRecipe(res.data))
     dispatch(clearAddRecipeForm())
@@ -629,14 +601,10 @@ export const setLoadingRecipe = (id, val) => ({
   val
 })
 
-export const fetchRecipe = id => (dispatch, getState) => {
+export const fetchRecipe = id => dispatch => {
   dispatch(setRecipe404(id, false))
   dispatch(setLoadingRecipe(id, true))
-  return http.get(`/api/v1/recipes/${id}/`, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.get(`/api/v1/recipes/${id}/`)
   .then(res => {
     dispatch(addRecipe(res.data))
     dispatch(setLoadingRecipe(id, false))
@@ -668,14 +636,10 @@ export const setLoadingRecipes = val => ({
   val
 })
 
-export const fetchRecentRecipes = () => (dispatch, getState) => {
+export const fetchRecentRecipes = () => dispatch => {
   dispatch(setLoadingRecipes(true))
   dispatch(setErrorRecipes(false))
-  return http.get('/api/v1/recipes/?recent', {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.get('/api/v1/recipes/?recent')
   .then(res => {
     dispatch(setRecipes(res.data))
     dispatch(setLoadingRecipes(false))
@@ -690,15 +654,11 @@ export const fetchRecentRecipes = () => (dispatch, getState) => {
   })
 }
 
-export const fetchRecipeList = () => (dispatch, getState) => {
+export const fetchRecipeList = () => dispatch => {
   dispatch(setLoadingRecipes(true))
   dispatch(setErrorRecipes(false))
 
-  return http.get('/api/v1/recipes/', {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.get('/api/v1/recipes/')
   .then(res => {
     dispatch(setRecipes(res.data))
     dispatch(setLoadingRecipes(false))
@@ -736,13 +696,9 @@ export const addIngredientToRecipe = (id, ingredient) => ({
   ingredient
 })
 
-export const addingRecipeIngredient = (recipeID, ingredient) => (dispatch, getState) => {
+export const addingRecipeIngredient = (recipeID, ingredient) => dispatch => {
   dispatch(setAddingIngredientToRecipe(recipeID, true))
-  return http.post(`/api/v1/recipes/${recipeID}/ingredients/`, ingredient, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.post(`/api/v1/recipes/${recipeID}/ingredients/`, ingredient)
   .then(res => {
     dispatch(addIngredientToRecipe(recipeID, res.data))
     dispatch(setAddingIngredientToRecipe(recipeID, false))
@@ -762,13 +718,9 @@ export const updateRecipeName = (id, name) => ({
   name
 })
 
-export const sendUpdatedRecipeName = (id, name) => (dispatch, getState) => {
+export const sendUpdatedRecipeName = (id, name) => dispatch => {
   return http.patch(`/api/v1/recipes/${id}/`, {
     name
-  }, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
   })
   .then(res => {
     dispatch(updateRecipeName(res.data.id, res.data.name))
@@ -787,13 +739,9 @@ export const updateRecipeSource = (id, source) => ({
   source
 })
 
-export const setRecipeSource = (id, source) => (dispatch, getState) => {
+export const setRecipeSource = (id, source) => dispatch => {
   return http.patch(`/api/v1/recipes/${id}/`, {
     source
-  }, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
   })
   .then(res => {
     dispatch(updateRecipeSource(res.data.id, res.data.source))
@@ -812,13 +760,9 @@ export const updateRecipeAuthor = (id, author) => ({
   author
 })
 
-export const setRecipeAuthor = (id, author) => (dispatch, getState) => {
+export const setRecipeAuthor = (id, author) => dispatch => {
   return http.patch(`/api/v1/recipes/${id}/`, {
     author
-  }, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
   })
   .then(res => {
     dispatch(updateRecipeAuthor(res.data.id, res.data.author))
@@ -837,13 +781,9 @@ export const updateRecipeTime = (id, time) => ({
   time
 })
 
-export const setRecipeTime = (id, time) => (dispatch, getState) => {
+export const setRecipeTime = (id, time) => dispatch => {
   return http.patch(`/api/v1/recipes/${id}/`, {
     time
-  }, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
   })
   .then(res => {
     dispatch(updateRecipeTime(res.data.id, res.data.time))
@@ -872,13 +812,9 @@ export const setRecipeUpdating = (id, val) => ({
   val
 })
 
-export const updateRecipe = (id, data) => (dispatch, getState) => {
+export const updateRecipe = (id, data) => dispatch => {
   dispatch(setRecipeUpdating(id, true))
-  return http.patch(`/api/v1/recipes/${id}/`, data, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.patch(`/api/v1/recipes/${id}/`, data)
   .then(res => {
     dispatch(setRecipe(res.data.id, res.data))
     dispatch(setRecipeUpdating(id, false))
@@ -899,14 +835,10 @@ export const updateIngredient = (recipeID, ingredientID, content) => ({
   content
 })
 
-export const addingRecipeStep = (recipeID, step) => (dispatch, getState) => {
+export const addingRecipeStep = (recipeID, step) => dispatch => {
   dispatch(setLoadingAddStepToRecipe(recipeID, true))
   return http.post(`/api/v1/recipes/${recipeID}/steps/`, {
     text: step
-  }, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
   })
   .then(res => {
     dispatch(addStepToRecipe(recipeID, res.data))
@@ -935,13 +867,9 @@ export const setUpdatingIngredient = (recipeID, ingredientID, val) => ({
   val
 })
 
-export const updatingIngredient = (recipeID, ingredientID, content) => (dispatch, getState) => {
+export const updatingIngredient = (recipeID, ingredientID, content) => dispatch => {
   dispatch(setUpdatingIngredient(recipeID, ingredientID, true))
-  return http.patch(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, content, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.patch(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, content)
   .then(res => {
     dispatch(updateIngredient(recipeID, ingredientID, res.data))
     dispatch(setUpdatingIngredient(recipeID, ingredientID, false))
@@ -961,13 +889,9 @@ export const deleteIngredient = (recipeID, ingredientID) => ({
   ingredientID
 })
 
-export const deletingIngredient = (recipeID, ingredientID) => (dispatch, getState) => {
+export const deletingIngredient = (recipeID, ingredientID) => dispatch => {
   dispatch(setRemovingIngredient(recipeID, ingredientID, true))
-  return http.delete(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.delete(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`)
   .then(() => {
     dispatch(setRemovingIngredient(recipeID, ingredientID, false))
     dispatch(deleteIngredient(recipeID, ingredientID))
@@ -1002,14 +926,10 @@ export const setUpdatingStep = (recipeID, stepID, val) => ({
   val
 })
 
-export const updatingStep = (recipeID, stepID, text) => (dispatch, getState) => {
+export const updatingStep = (recipeID, stepID, text) => dispatch => {
   dispatch(setUpdatingStep(recipeID, stepID, true))
   return http.patch(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, {
     text
-  }, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
   })
   .then(res => {
     const text = res.data.text
@@ -1031,13 +951,9 @@ export const deleteStep = (recipeID, stepID) => ({
   stepID
 })
 
-export const deletingStep = (recipeID, stepID) => (dispatch, getState) => {
+export const deletingStep = (recipeID, stepID) => dispatch => {
   dispatch(setRemovingStep(recipeID, stepID, true))
-  return http.delete(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.delete(`/api/v1/recipes/${recipeID}/steps/${stepID}/`)
   .then(() => {
     dispatch(deleteStep(recipeID, stepID))
     dispatch(setRemovingStep(recipeID, stepID, false))
@@ -1065,7 +981,7 @@ export const logUserIn = (email, password, redirectUrl = '') => dispatch => {
   dispatch(setLoadingLogin(true))
   dispatch(setErrorLogin({}))
   dispatch(clearNotification())
-  return http.post('/api/v1/rest-auth/login/', {
+  return anon.post('/api/v1/rest-auth/login/', {
     email,
     password
   })
@@ -1097,7 +1013,7 @@ export const setErrorSocialLogin = val => ({
 })
 
 export const socialLogin = (service, token, redirectUrl = '') => dispatch => {
-  return http.post(`/api/v1/rest-auth/${service}/`, {
+  return anon.post(`/api/v1/rest-auth/${service}/`, {
     code: token
   })
   .then(res => {
@@ -1121,13 +1037,9 @@ export const socialLogin = (service, token, redirectUrl = '') => dispatch => {
   })
 }
 
-export const socialConnect = (service, code) => (dispatch, getState) => {
+export const socialConnect = (service, code) => dispatch => {
   return http.post(`/api/v1/rest-auth/${service}/connect/`, {
     code
-  }, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
   })
   .then(() => {
     dispatch(replace('/settings'))
@@ -1156,7 +1068,7 @@ export const signup = (email, password1, password2) => dispatch => {
     // clear previous signup errors
   dispatch(setErrorSignup({}))
   dispatch(clearNotification())
-  return http.post('/api/v1/rest-auth/registration/', {
+  return anon.post('/api/v1/rest-auth/registration/', {
     email,
     password1,
     password2
@@ -1191,13 +1103,9 @@ export const deleteRecipe = id => ({
   id
 })
 
-export const deletingRecipe = id => (dispatch, getState) => {
+export const deletingRecipe = id => dispatch => {
   dispatch(setDeletingRecipe(id, true))
-  return http.delete(`/api/v1/recipes/${id}/`, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.delete(`/api/v1/recipes/${id}/`)
   .then(() => {
     dispatch(deleteRecipe(id))
     dispatch(setDeletingRecipe(id, false))
@@ -1226,7 +1134,7 @@ export const reset = email => dispatch => {
   dispatch(setLoadingReset(true))
   dispatch(setErrorReset({}))
   dispatch(clearNotification())
-  return http.post('/api/v1/rest-auth/password/reset/', {
+  return anon.post('/api/v1/rest-auth/password/reset/', {
     email
   })
   .then(res => {
@@ -1273,7 +1181,7 @@ export const resetConfirmation = (uid, token, newPassword1, newPassword2) => dis
   dispatch(setLoadingResetConfirmation(true))
   dispatch(setErrorResetConfirmation({}))
   dispatch(clearNotification())
-  return http.post('/api/v1/rest-auth/password/reset/confirm/', {
+  return anon.post('/api/v1/rest-auth/password/reset/confirm/', {
     uid,
     token,
     new_password1: newPassword1,
