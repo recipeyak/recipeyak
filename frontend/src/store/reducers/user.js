@@ -12,6 +12,7 @@ import {
   SET_LOGGING_OUT,
   TOGGLE_DARK_MODE,
   SET_SOCIAL_ACCOUNT_CONNECTION,
+  SET_USER_ID,
 } from '../actionTypes'
 
 import { socialAccounts } from './socialAccounts'
@@ -90,6 +91,8 @@ export const user = (
     const newDarkMode = !state.darkMode
     setDarkModeClass(newDarkMode)
     return { ...state, darkMode: newDarkMode }
+    case SET_USER_ID:
+      return { ...state, id: action.id }
   default:
     return state
   }

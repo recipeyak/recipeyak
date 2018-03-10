@@ -15,7 +15,7 @@ describe('<Team/>', () => {
     mount(
       <Provider store={ store }>
         <MemoryRouter>
-          <Team />
+          <Team fetchData={_ => _} />
         </MemoryRouter>
       </Provider>
     )

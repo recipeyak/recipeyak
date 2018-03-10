@@ -398,7 +398,9 @@ class TeamRecipesViewSet(
         return Recipe.objects.filter(owner_team=team)
 
     def list(self, request, team_pk=None):
-        serializer = self.get_serializer(self.get_queryset(), many=True)
+        serializer = self.get_serializer(self.get_queryset(),
+                                         many=True,
+                                         fields=('id', 'name', 'cart_count', 'author', 'tags',))
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request, team_pk=None):

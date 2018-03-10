@@ -12,6 +12,7 @@ import {
   setPasswordUsable,
   toggleDarkMode,
   setSocialConnection,
+  setUserID,
 } from '../actions.js'
 
 describe('User', () => {
@@ -279,5 +280,21 @@ describe('User', () => {
         null,
       )))
     .toEqual(expected)
+  })
+
+
+  it("sets user's id", () => {
+    const beforeState = {
+    }
+
+    const id = 2
+
+    const afterState = {
+      id
+    }
+
+    expect(
+      user(beforeState, setUserID(id)))
+    .toEqual(afterState)
   })
 })

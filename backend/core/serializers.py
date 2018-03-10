@@ -92,6 +92,19 @@ class RecipeSerializer(serializers.ModelSerializer):
                   'cart_count', 'owner_team', 'owner_user')
         read_only_fields = ('owner_team', 'owner_user')
 
+    def __init__(self, *args, **kwargs):
+        # Don't pass the 'fields' arg up to the superclass
+        fields = kwargs.pop('fields', None)
+
+        super().__init__(*args, **kwargs)
+
+        if fields is not None:
+            # Drop any fields that are not specified in the `fields` argument.
+            allowed = set(fields)
+            existing = set(self.fields)
+            for field_name in existing - allowed:
+                self.fields.pop(field_name)
+
     def validate_steps(self, value):
         if value == []:
             raise serializers.ValidationError('steps are required')
@@ -151,10 +164,12 @@ class TeamSerializer(serializers.ModelSerializer):
 
 
 class MembershipSerializer(serializers.ModelSerializer):
+    user = PublicUserSerializer()
 
     class Meta:
         model = Membership
-        fields = ('id', 'user', )
+        editable = False
+        fields = ('id', 'user', 'level',)
 
 
 class InviteSerializer(serializers.ModelSerializer):

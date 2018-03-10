@@ -18,6 +18,7 @@ import passwordChange from './reducers/passwordChange.js'
 import shoppinglist from './reducers/shoppinglist.js'
 import addrecipe from './reducers/addrecipe'
 import auth from './reducers/auth'
+import teams from './reducers/teams'
 
 import { loadState, saveState } from './localStorage'
 
@@ -35,6 +36,7 @@ const recipeApp = combineReducers({
   shoppinglist,
   addrecipe,
   auth,
+  teams,
 })
 
 // reset redux to default state on logout
