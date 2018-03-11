@@ -14,6 +14,7 @@ import {
   setUserTeamLevel,
   setDeletingMembership,
   deleteMembership,
+  setSendingTeamInvites,
 } from '../actions'
 
 describe('Teams', () => {
@@ -346,8 +347,19 @@ describe('Teams', () => {
     const beforeState = {
       1: {
         id: 1,
-        user: {
-          id: 2,
+        members: {
+          1: {
+            level: 'admin',
+            user: {
+              id: 1
+            }
+          },
+          2: {
+            level: 'admin',
+            user: {
+              id: 2,
+            }
+          },
         }
       }
     }
@@ -355,19 +367,68 @@ describe('Teams', () => {
     const afterState = {
       1: {
         id: 1,
-        deleting: true,
-        user: {
-          id: 2,
+        members: {
+          1: {
+            level: 'admin',
+            user: {
+              id: 1
+            }
+          },
+          2: {
+            deleting: true,
+            level: 'admin',
+            user: {
+              id: 2,
+            }
+          },
         }
       }
     }
-
     expect(
-      teams(beforeState, setDeletingMembership(1, true))
+      teams(beforeState, setDeletingMembership(1, 2, true))
     ).toEqual(afterState)
   })
 
   it('deletes team membership', () => {
+    const beforeState = {
+      1: {
+        id: 1,
+        members: {
+          1: {
+            level: 'admin',
+            user: {
+              id: 1
+            }
+          },
+          2: {
+            level: 'admin',
+            user: {
+              id: 2,
+            }
+          },
+        }
+      }
+    }
+
+    const afterState = {
+      1: {
+        id: 1,
+        members: {
+          1: {
+            level: 'admin',
+            user: {
+              id: 1
+            }
+          },
+        }
+      }
+    }
+    expect(
+      teams(beforeState, deleteMembership(1, 2, true))
+    ).toEqual(afterState)
+  })
+
+  it('Sets the sending team invites in team', () => {
     const beforeState = {
       1: {
         id: 1,
@@ -384,6 +445,13 @@ describe('Teams', () => {
     }
 
     const afterState = {
+      1: {
+        id: 1,
+        sendingTeamInvites: true,
+        user: {
+          id: 2,
+        }
+      },
       2: {
         id: 2,
         user: {
@@ -393,7 +461,7 @@ describe('Teams', () => {
     }
 
     expect(
-      teams(beforeState, deleteMembership(1, true))
+      teams(beforeState, setSendingTeamInvites(1, true))
     ).toEqual(afterState)
   })
 })

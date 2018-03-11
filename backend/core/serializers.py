@@ -189,6 +189,11 @@ class CreateInviteSerializer(serializers.Serializer):
        write_only=True
     )
 
+    def validate_emails(self, emails):
+        team = self.initial_data['team']
+        return [email for email in emails
+                if not team.invite_exists(email)]
+
     def create(self, validated_data) -> List[Invite]:
         emails = validated_data.pop('emails')
         return [Invite.objects.create_invite(email=email, **validated_data)

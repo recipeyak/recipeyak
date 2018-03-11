@@ -332,6 +332,9 @@ class Team(CommonInfo):
     def is_admin(self, user):
         return self.membership_set.filter(user=user, is_active=True, level=Membership.ADMIN).exists()
 
+    def invite_exists(self, email: str) -> bool:
+        return Membership.objects.filter(team=self, user__email=email).exists()
+
 
 class Membership(CommonInfo):
     ADMIN = 'admin'

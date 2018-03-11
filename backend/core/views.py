@@ -296,7 +296,7 @@ class MembershipViewSet(
 
     def get_queryset(self):
         team = get_object_or_404(Team.objects.all(), pk=self.kwargs['team_pk'])
-        return team.membership_set.all()
+        return team.membership_set.filter(is_active=True)
 
     def get_permissions(self):
         if self.request.method in SAFE_METHODS:
@@ -341,7 +341,7 @@ class TeamInviteViewSet(viewsets.GenericViewSet,
         need to use to_representation or form_represenation
         """
         team = Team.objects.get(pk=team_pk)
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(data={**request.data, 'team': team})
         serializer.is_valid(raise_exception=True)
         invite = serializer.save(team=team)
         return Response(InviteSerializer(invite, many=True).data, status=status.HTTP_201_CREATED)

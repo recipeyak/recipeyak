@@ -91,6 +91,7 @@ import {
   SET_DELETING_MEMBERSHIP,
   DELETE_MEMBERSHIP,
   SET_USER_ID,
+  SET_SENDING_TEAM_INVITES,
 } from './actionTypes'
 
 import {
@@ -1367,7 +1368,6 @@ export const fetchTeam = id => dispatch => {
       dispatch(logout())
     }
     if (is404(err)) {
-      console.log('telksjsldfj')
       dispatch(setTeam404(id))
     }
     dispatch(setLoadingTeam(id, false))
@@ -1453,14 +1453,17 @@ export const settingUserTeamLevel = (teamID, membershipID, level) => dispatch =>
   })
 }
 
-export const deleteMembership = (id) => ({
+export const deleteMembership = (teamID, membershipID) => ({
   type: DELETE_MEMBERSHIP,
-  id
+  teamID,
+  membershipID
 })
 
-export const setDeletingMembership = (id, val) => ({
+
+export const setDeletingMembership = (teamID, membershipID, val) => ({
   type: SET_DELETING_MEMBERSHIP,
-  id,
+  teamID,
+  membershipID,
   val,
 })
 
@@ -1473,6 +1476,30 @@ export const deletingMembership = (teamID, id) => dispatch => {
   })
   .catch(err => {
     dispatch(setDeletingMembership(id, false))
+    throw err
+  })
+}
+
+export const setSendingTeamInvites = (teamID, val) => ({
+  type: SET_SENDING_TEAM_INVITES,
+  teamID,
+  val,
+})
+
+export const sendingTeamInvites = (teamID, emails, level) => dispatch => {
+  dispatch(setSendingTeamInvites(teamID, true))
+  return http.post(`/api/v1/t/${teamID}/invites/`, { emails, level })
+  .then(res => {
+    dispatch(showNotificationWithTimeout({
+      message: 'invites sent!',
+      level: 'success',
+      delay: 3 * second
+    }))
+    dispatch(setSendingTeamInvites(teamID, false))
+  })
+  .catch(err => {
+    // TODO: handle errors
+    dispatch(setSendingTeamInvites(teamID, false))
     throw err
   })
 }

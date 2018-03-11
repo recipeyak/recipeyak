@@ -13,6 +13,7 @@ import {
   SET_UPDATING_MEMBERSHIP,
   SET_UPDATING_USER_TEAM_LEVEL,
   SET_USER_TEAM_LEVEL,
+  SET_SENDING_TEAM_INVITES,
 } from '../actionTypes'
 
 export const teams = (state = {}, action) => {
@@ -106,12 +107,18 @@ export const teams = (state = {}, action) => {
       }
     }
   case SET_DELETING_MEMBERSHIP:
-      // TODO: fix this, deleting should go with the membership, not the team
     return {
       ...state,
-      [action.id]: {
-        ...state[action.id],
-        deleting: action.val,
+      [action.teamID]: {
+        ...state[action.teamID],
+          // TODO: refactor membership into it's own reducer
+        members: {
+          ...state[action.teamID].members,
+          [action.membershipID]: {
+            ...state[action.teamID].members[action.membershipID],
+            deleting: action.val,
+          }
+        }
       }
     }
   case SET_USER_TEAM_LEVEL:
@@ -129,9 +136,26 @@ export const teams = (state = {}, action) => {
         }
       }
     }
+  case SET_SENDING_TEAM_INVITES:
+    return {
+      ...state,
+      [action.teamID]: {
+        ...state[action.teamID],
+        sendingTeamInvites: action.val
+      }
+    }
   case DELETE_MEMBERSHIP:
-      // TODO: make this work
-    return { ...state, [action.id]: undefined }
+    return {
+      ...state,
+      [action.teamID]: {
+        ...state[action.teamID],
+          // TODO: refactor membership into it's own reducer
+        members: {
+          ...state[action.teamID].members,
+          [action.membershipID]: undefined
+        }
+      }
+    }
   default:
     return state
   }
