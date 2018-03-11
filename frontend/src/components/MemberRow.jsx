@@ -12,19 +12,23 @@ import {
   deletingMembership,
 } from '../store/actions'
 
-const mapStateToProps = (state, props) => ({
-  isUser: state.user.id === props.userID
+const mapStateToProps = (state, { userID, teamID }) => ({
+  isUser: state.user.id === userID,
+  userIsTeamAdmin:
+    Object.values(state.teams[teamID].members)
+    .filter(x => x.level === 'admin')
+    .some(({ user }) => user.id === state.user.id)
 })
 
 const mapDispatchToProps = dispatch => ({
   handleUserLevelChange: (teamID, membershipID, level) =>
     dispatch(settingUserTeamLevel(teamID, membershipID, level)),
   deleteMembership: (teamID, membershipID) => dispatch(deletingMembership(teamID, membershipID)),
-
 })
 
 const MemberRow = ({
   teamID,
+  userIsTeamAdmin,
   membershipID,
   avatarURL,
   name = '',
@@ -60,15 +64,20 @@ const MemberRow = ({
         }
       </section>
     </td>
-    <td className="vertical-align-middle pr-4">
-      <div className="select is-small">
-        <select value={ level } onChange={ e => handleUserLevelChange(teamID, membershipID, e.target.value) }>
-          <option value="admin">Admin</option>
-          <option value="contributor">Contributor</option>
-          <option value="read">Read</option>
-        </select>
-      </div>
-    </td>
+    { userIsTeamAdmin
+      ? <td className="vertical-align-middle pr-4">
+          <div className="select is-small">
+            <select
+              value={ level }
+              onChange={ e => handleUserLevelChange(teamID, membershipID, e.target.value) }>
+              <option value="admin">Admin</option>
+              <option value="contributor">Contributor</option>
+              <option value="read">Read</option>
+            </select>
+          </div>
+        </td>
+      : null
+    }
     <td className="vertical-align-middle text-right">
       <ButtonDanger onClick={ () => deleteMembership(teamID, membershipID) } className="is-small">
         { isUser
