@@ -12,7 +12,6 @@ configure({ adapter: new Adapter() })
 
 describe('<TeamInvite/>', () => {
   it('renders without crashing', () => {
-
     // fake react router props
     const match = {
       params: {

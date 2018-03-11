@@ -1459,7 +1459,6 @@ export const deleteMembership = (teamID, membershipID) => ({
   membershipID
 })
 
-
 export const setDeletingMembership = (teamID, membershipID, val) => ({
   type: SET_DELETING_MEMBERSHIP,
   teamID,
@@ -1489,7 +1488,7 @@ export const setSendingTeamInvites = (teamID, val) => ({
 export const sendingTeamInvites = (teamID, emails, level) => dispatch => {
   dispatch(setSendingTeamInvites(teamID, true))
   return http.post(`/api/v1/t/${teamID}/invites/`, { emails, level })
-  .then(res => {
+  .then(() => {
     dispatch(showNotificationWithTimeout({
       message: 'invites sent!',
       level: 'success',

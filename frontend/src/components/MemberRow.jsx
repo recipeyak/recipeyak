@@ -31,7 +31,6 @@ const MemberRow = ({
   userIsTeamAdmin,
   membershipID,
   avatarURL,
-  name = '',
   email,
   level,
   handleUserLevelChange,
@@ -45,47 +44,44 @@ const MemberRow = ({
         <img src={ avatarURL } className="br-10-percent" alt='avatar'/>
       </div>
       <div className="d-flex direction-column">
-        <span className="bold">
-          { name !== ''
-              ? name
-              : email
-          }
-        </span>
-        <span>{ email }</span>
+        <b>{ email }</b>
       </div>
     </td>
     <td className="vertical-align-middle pr-4">
-      <section className="d-flex align-items-start direction-column">
-        <p><b>{ level }</b><span className="fw-500">{ !isActive ? ' (inactive)' : '' }</span></p>
         { !isActive
-            ? <ButtonPlain className="is-small">
-              Resend Invite
-            </ButtonPlain>
+            ? <section className="d-flex align-items-start direction-column">
+                <p className="bold">invite sent</p>
+                <ButtonPlain className="is-small">
+                  Resend Invite
+                </ButtonPlain>
+              </section>
             : null
         }
-      </section>
     </td>
-    { userIsTeamAdmin
-      ? <td className="vertical-align-middle pr-4">
-          <div className="select is-small">
-            <select
-              value={ level }
-              onChange={ e => handleUserLevelChange(teamID, membershipID, e.target.value) }>
-              <option value="admin">Admin</option>
-              <option value="contributor">Contributor</option>
-              <option value="read">Read</option>
-            </select>
-          </div>
-        </td>
-      : null
-    }
+    <td className="vertical-align-middle pr-4">
+      { userIsTeamAdmin
+         ? <div className="select is-small">
+              <select
+                value={ level }
+                onChange={ e => handleUserLevelChange(teamID, membershipID, e.target.value) }>
+                <option value="admin">Admin</option>
+                <option value="contributor">Contributor</option>
+                <option value="read">Read</option>
+              </select>
+            </div>
+          : <p><b>{ level }</b></p>
+      }
+    </td>
     <td className="vertical-align-middle text-right">
-      <ButtonDanger onClick={ () => deleteMembership(teamID, membershipID) } className="is-small">
-        { isUser
-          ? 'leave'
-          : 'remove'
-        }
-      </ButtonDanger>
+      { isUser || userIsTeamAdmin
+        ? <ButtonDanger onClick={ () => deleteMembership(teamID, membershipID) } className="is-small">
+            { isUser
+              ? 'leave'
+              : 'remove'
+            }
+          </ButtonDanger>
+        : null
+      }
     </td>
   </tr>
 
