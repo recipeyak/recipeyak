@@ -42,6 +42,7 @@ const TeamMembers = ({ id, members, loading }) =>
                         avatarURL={x.user.avatar_url}
                         email={x.user.email}
                         name={x.user.name}
+                        isActive={x.is_active}
                         />)
                   }
                   </tbody>

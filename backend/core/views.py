@@ -296,7 +296,7 @@ class MembershipViewSet(
 
     def get_queryset(self):
         team = get_object_or_404(Team.objects.all(), pk=self.kwargs['team_pk'])
-        return team.membership_set.filter(is_active=True)
+        return team.membership_set.all()
 
     def get_permissions(self):
         if self.request.method in SAFE_METHODS:

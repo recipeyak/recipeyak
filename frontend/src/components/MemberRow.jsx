@@ -37,6 +37,7 @@ const MemberRow = ({
   handleUserLevelChange,
   deleteMembership,
   isUser,
+  isActive,
 }) =>
   <tr key={ membershipID }>
     <td className="d-flex align-items-center pr-4">
@@ -54,9 +55,9 @@ const MemberRow = ({
       </div>
     </td>
     <td className="vertical-align-middle pr-4">
-      <section className="bold d-flex align-items-start direction-column">
-        <span>{ level }</span>
-        { level === 'INVITED'
+      <section className="d-flex align-items-start direction-column">
+        <p><b>{ level }</b><span className="fw-500">{ !isActive ? ' (inactive)' : '' }</span></p>
+        { !isActive
             ? <ButtonPlain className="is-small">
               Resend Invite
             </ButtonPlain>

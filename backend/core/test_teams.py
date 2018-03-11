@@ -249,8 +249,8 @@ def test_list_team_members(client, team, user, user2, user3):
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK, \
         'Viewer members can retrieve team members'
-    assert len(res.json()) == 1, \
-        'We have three members (user, user3).'
+    assert len(res.json()) == 3, \
+        'We have three members (user, user2 [inactive], user3).'
 
 
 def test_destory_team_member(client, team, user, user2, user3, empty_team):

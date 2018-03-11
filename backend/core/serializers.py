@@ -169,7 +169,7 @@ class MembershipSerializer(serializers.ModelSerializer):
     class Meta:
         model = Membership
         editable = False
-        fields = ('id', 'user', 'level',)
+        fields = ('id', 'user', 'level', 'is_active',)
 
 
 class InviteSerializer(serializers.ModelSerializer):
