@@ -282,7 +282,6 @@ describe('User', () => {
     .toEqual(expected)
   })
 
-
   it("sets user's id", () => {
     const beforeState = {
     }

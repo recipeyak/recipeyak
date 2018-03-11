@@ -90,48 +90,48 @@ export const teams = (state = {}, action) => {
       }
     }
   case SET_UPDATING_MEMBERSHIP:
-      return {
-        ...state,
-        [action.id]: {
-          ...state[action.id],
-          updating: action.val,
-        }
+    return {
+      ...state,
+      [action.id]: {
+        ...state[action.id],
+        updating: action.val,
       }
+    }
   case SET_UPDATING_USER_TEAM_LEVEL:
-      return {
-        ...state,
-        [action.id]: {
-          ...state[action.id],
-          updating: action.updating,
-        }
+    return {
+      ...state,
+      [action.id]: {
+        ...state[action.id],
+        updating: action.updating,
       }
+    }
   case SET_DELETING_MEMBERSHIP:
       // TODO: fix this, deleting should go with the membership, not the team
-      return {
-        ...state,
-        [action.id]: {
-          ...state[action.id],
-          deleting: action.val,
-        }
+    return {
+      ...state,
+      [action.id]: {
+        ...state[action.id],
+        deleting: action.val,
       }
+    }
   case SET_USER_TEAM_LEVEL:
-      return {
-        ...state,
-        [action.teamID]: {
-          ...state[action.teamID],
+    return {
+      ...state,
+      [action.teamID]: {
+        ...state[action.teamID],
           // TODO: refactor membership into it's own reducer
-          members: {
-            ...state[action.teamID].members,
-            [action.membershipID]: {
-              ...state[action.teamID].members[action.membershipID],
-              level: action.level,
-            }
+        members: {
+          ...state[action.teamID].members,
+          [action.membershipID]: {
+            ...state[action.teamID].members[action.membershipID],
+            level: action.level,
           }
         }
       }
+    }
   case DELETE_MEMBERSHIP:
       // TODO: make this work
-      return { ...state, [action.id]: undefined }
+    return { ...state, [action.id]: undefined }
   default:
     return state
   }

@@ -271,7 +271,6 @@ describe('Teams', () => {
     ).toEqual(afterState)
   })
 
-
   it('Sets updating membership data', () => {
     const beforeState = {
       1: {
@@ -296,7 +295,6 @@ describe('Teams', () => {
       teams(beforeState, setUpdatingUserTeamLevel(1, true))
     ).toEqual(afterState)
   })
-
 
   it('Sets user team membership level', () => {
     const beforeState = {
@@ -343,7 +341,6 @@ describe('Teams', () => {
       teams(beforeState, setUserTeamLevel(1, 2, 'admin'))
     ).toEqual(afterState)
   })
-
 
   it('Sets team membership to deleting', () => {
     const beforeState = {

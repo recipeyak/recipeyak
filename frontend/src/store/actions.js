@@ -1467,7 +1467,7 @@ export const setDeletingMembership = (id, val) => ({
 export const deletingMembership = (teamID, id) => dispatch => {
   dispatch(setDeletingMembership(id, true))
   return http.delete(`/api/v1/t/${teamID}/members/${id}/`)
-  .then(res => {
+  .then(() => {
     dispatch(deleteMembership(id))
     dispatch(setDeletingMembership(id, false))
   })

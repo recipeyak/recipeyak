@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 
 import {
   ButtonPlain,
-  ButtonPrimary,
   ButtonDanger
 } from './Buttons'
 
@@ -13,11 +12,9 @@ import {
   deletingMembership,
 } from '../store/actions'
 
-
 const mapStateToProps = (state, props) => ({
   isUser: state.user.id === props.userID
 })
-
 
 const mapDispatchToProps = dispatch => ({
   handleUserLevelChange: (teamID, membershipID, level) =>
@@ -29,7 +26,6 @@ const mapDispatchToProps = dispatch => ({
 const MemberRow = ({
   teamID,
   membershipID,
-  userID,
   avatarURL,
   name = '',
   email,
@@ -82,7 +78,6 @@ const MemberRow = ({
       </ButtonDanger>
     </td>
   </tr>
-
 
 const ConnectedMemberRow = connect(
   mapStateToProps,

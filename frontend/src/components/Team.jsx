@@ -36,7 +36,6 @@ const TeamMembers = ({ id, members, loading }) =>
                       <MemberRow
                         key={x.id}
                         teamID={id}
-                        userID={x.user.id}
                         membershipID={x.id}
                         level={x.level}
                         avatarURL={x.user.avatar_url}

@@ -91,8 +91,8 @@ export const user = (
     const newDarkMode = !state.darkMode
     setDarkModeClass(newDarkMode)
     return { ...state, darkMode: newDarkMode }
-    case SET_USER_ID:
-      return { ...state, id: action.id }
+  case SET_USER_ID:
+    return { ...state, id: action.id }
   default:
     return state
   }
