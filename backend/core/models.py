@@ -264,6 +264,9 @@ class Invite(CommonInfo):
 
     objects = InviteManager()
 
+    def __str__(self):
+        return f'<Invite • Membership: {self.membership}>'
+
     @property
     def user(self):
         return self.membership.user
@@ -281,6 +284,9 @@ class Team(CommonInfo):
     name = models.CharField(max_length=255)
     is_public = models.BooleanField(default=False)
     recipes = GenericRelation('Recipe', related_query_name='owner_team')
+
+    def __str__(self):
+        return f'<Team • name: {self.name}, is_public: {self.is_public}>'
 
     def force_join(self, user, level=None):
         with transaction.atomic():
@@ -335,6 +341,9 @@ class Team(CommonInfo):
     def is_admin(self, user):
         return self.membership_set.filter(user=user, is_active=True, level=Membership.ADMIN).exists()
 
+    def invite_exists(self, email: str) -> bool:
+        return Membership.objects.filter(team=self, user__email=email).exists()
+
 
 class Membership(CommonInfo):
     ADMIN = 'admin'
@@ -365,3 +374,6 @@ class Membership(CommonInfo):
     def set_active(self):
         self.is_active = True
         self.save()
+
+    def __str__(self):
+        return f'<Membership • user_email: {self.user.email}, team: {self.team.id} level: {self.level}>'

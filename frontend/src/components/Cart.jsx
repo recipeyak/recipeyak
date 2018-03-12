@@ -20,7 +20,8 @@ class Cart extends React.Component {
 
   static defaultProps = {
     shoppinglist: [],
-    recipes: []
+    recipes: [],
+    loading: true,
   }
 
   render () {

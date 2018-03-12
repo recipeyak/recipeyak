@@ -106,6 +106,19 @@ class RecipeSerializer(serializers.ModelSerializer):
                   'cart_count', 'owner')
         read_only_fields = ('owner',)
 
+    def __init__(self, *args, **kwargs):
+        # Don't pass the 'fields' arg up to the superclass
+        fields = kwargs.pop('fields', None)
+
+        super().__init__(*args, **kwargs)
+
+        if fields is not None:
+            # Drop any fields that are not specified in the `fields` argument.
+            allowed = set(fields)
+            existing = set(self.fields)
+            for field_name in existing - allowed:
+                self.fields.pop(field_name)
+
     def validate_steps(self, value):
         if value == []:
             raise serializers.ValidationError('steps are required')
@@ -165,10 +178,12 @@ class TeamSerializer(serializers.ModelSerializer):
 
 
 class MembershipSerializer(serializers.ModelSerializer):
+    user = PublicUserSerializer()
 
     class Meta:
         model = Membership
-        fields = ('id', 'user', )
+        editable = False
+        fields = ('id', 'user', 'level', 'is_active',)
 
 
 class InviteSerializer(serializers.ModelSerializer):
@@ -187,6 +202,11 @@ class CreateInviteSerializer(serializers.Serializer):
        child=serializers.EmailField(write_only=True),
        write_only=True
     )
+
+    def validate_emails(self, emails):
+        team = self.initial_data['team']
+        return [email for email in emails
+                if not team.invite_exists(email)]
 
     def create(self, validated_data) -> List[Invite]:
         emails = validated_data.pop('emails')

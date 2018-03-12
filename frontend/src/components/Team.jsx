@@ -5,162 +5,119 @@ import {
 } from 'react-router-dom'
 
 import Recipe from '../containers/RecipeItem'
+import MemberRow from './MemberRow'
+
+import NoMatch from './NoMatch'
+
+import Loader from './Loader'
 
 import {
-  ButtonPlain,
   ButtonPrimary,
-  ButtonDanger
 } from './Buttons'
 
-const inviteURL = id => `/t/${id}/invite`
+const inviteURL = teamID => `/t/${teamID}/invite`
 
-const MemberRow = ({ id, avatarURL, name, email, status, role }) =>
-  <tr key={ id }>
-    <td key={id} className="d-flex align-items-center pr-4">
-      <div className="w-50px mr-2 d-flex align-items-center">
-        <img src={ avatarURL } className="br-10-percent" alt='avatar'/>
-      </div>
-      <div className="d-flex direction-column">
-        <span className="bold">
-          { name !== ''
-              ? name
-              : email
-          }
-        </span>
-        <span>{ email }</span>
-      </div>
-    </td>
-    <td className="vertical-align-middle pr-4">
-      <section className="bold d-flex align-items-start direction-column">
-        <span>{ status.toLowerCase() }</span>
-        { status === 'INVITED'
-            ? <ButtonPlain className="is-small">
-              Resend Invite
-            </ButtonPlain>
-            : null
-        }
-      </section>
-    </td>
-    <td className="vertical-align-middle pr-4">
-      <div className="select is-small">
-        <select value={ role }>
-          <option value="ADMIN">Admin</option>
-          <option value="MEMBER">Member</option>
-          <option value="VIEWER">Viewer</option>
-        </select>
-      </div>
-    </td>
-    <td className="vertical-align-middle text-right">
-      <ButtonDanger className="is-small">
-        remove
-      </ButtonDanger>
-    </td>
-  </tr>
+const TeamMembers = ({ id, members, loading }) =>
+  <div>
+    <section className="d-flex justify-space-between align-items-center">
+      <h2 className="fs-6">Members</h2>
+      <Link className="button is-primary" to={ inviteURL(id) }>
+        Invite
+      </Link>
+    </section>
+    { loading
+        ? <Loader/>
+        : Object.values(members).length > 0
+            ? <div className="table-responsive">
+                <table className="table-spacing">
+                  <tbody>
+                  {
+                    Object.values(members).map(x =>
+                      <MemberRow
+                        key={x.id}
+                        teamID={id}
+                        userID={x.user.id}
+                        membershipID={x.id}
+                        level={x.level}
+                        avatarURL={x.user.avatar_url}
+                        email={x.user.email}
+                        isActive={x.is_active}
+                        />)
+                  }
+                  </tbody>
+                </table>
+              </div>
+            : <section>
+                <h1 className="text-center fs-6 bold text-muted">No Team Members</h1>
+                <p className="text-center">Add one via the Invite button</p>
+              </section>
+    }
+  </div>
+
+const TeamRecipes = ({ loading, recipes }) =>
+  <div>
+    <section className="d-flex justify-space-between align-items-center">
+      <h2 className="fs-6 mb-2">Recipes</h2>
+      <ButtonPrimary>
+        Create Recipe
+      </ButtonPrimary>
+    </section>
+    { loading
+      ? <Loader/>
+      : recipes.length === 0
+          ? <section>
+              <h1 className="text-center fs-6 bold text-muted">No Team Recipes</h1>
+              <p className="text-center">Use the Create Recipe button to add one.</p>
+            </section>
+          : <section className="recipe-grid">
+            { recipes.map(recipe =>
+                <Recipe
+                  {...recipe}
+                  className='mb-0'
+                  key={ recipe.id }
+                />
+              )
+            }
+          </section>
+    }
+  </div>
 
 class Team extends React.Component {
-  render () {
-    const name = 'Recipe Yak Team'
-    const id = 1
-    const members = [
-      {
-        id: 1,
-        name: 'Joe Shmoe',
-        email: 'j.shm123@example.com',
-        avatarURL: '//www.gravatar.com/avatar/860841962137d13d97b2c544138d4274?d=identicon&r=g',
-        status: 'INVITED',
-        role: 'ADMIN'
-      },
-      {
-        id: 2,
-        name: '',
-        email: 'd.jones@example.com',
-        avatarURL: '//www.gravatar.com/avatar/860841962137d13d97b2c544138d4274?d=identicon&r=g',
-        status: 'INVITED',
-        role: 'MEMBER'
-      },
-      {
-        id: 3,
-        name: 'Jane Doe',
-        email: 'doe2@example.com',
-        avatarURL: '//www.gravatar.com/avatar/860841962137d13d97b2c544138d4274?d=identicon&r=g',
-        status: 'ACTIVE',
-        role: 'VIEWER'
-      },
-    ]
+  componentWillMount () {
+    this.props.fetchData(this.props.id)
+  }
 
-    const recipes = [
-      {
-        id: 1,
-        name: 'asdfasdfjasldf',
-        author: '',
-        source: '',
-        time: '',
-        ingredients: [{
-          id: 1,
-          quantity: '3lbs',
-          name: 'tomato',
-          description: ''
-        }],
-        steps: [{
-          id: 1,
-          text: 'lskdfsdjfklsdfa;sjdf;kasljdf'
-        }],
-        tags: [],
-        servings: '',
-        edits: 0,
-        modified: '2018-03-03T02:17:57.079392Z',
-        cart_count: 0,
-        team: null
-      }
-    ]
+  static defaultProps = {
+    members: {},
+    invites: {},
+    recipes: [],
+    loadingTeam: true,
+    loadingMembers: true,
+    loadingRecipes: true,
+  }
+
+  render () {
+    if (this.props.error404) {
+      return <NoMatch/>
+    }
 
     return (
       <div>
         <Helmet title="Team"/>
-        <h1 className="fs-9 text-center fw-500 p-4">{ name }</h1>
-        <section className="d-flex justify-space-between align-items-center">
-          <h2 className="fs-6">Members</h2>
-          <Link className="button is-primary" to={ inviteURL(id) }>
-            Invite
-          </Link>
-        </section>
-        { members.length > 0
-          ? <div className="table-responsive">
-              <table className="table-spacing">
-                <tbody>
-                {
-                  members.map(x => <MemberRow key={x.id} {...x}/>)
-                }
-                </tbody>
-              </table>
-            </div>
-          : <section>
-              <h1 className="text-center fs-6 bold text-muted">No Team Members</h1>
-              <p className="text-center">Add one via the Invite button</p>
-            </section>
+        { this.props.loadingTeam
+            ? <Loader/>
+            : <h1 className="fs-9 text-center fw-500 p-4">{ this.props.name }</h1>
         }
-        <section className="d-flex justify-space-between align-items-center">
-          <h2 className="fs-6 mb-2">Recipes</h2>
-          <ButtonPrimary>
-            Create Recipe
-          </ButtonPrimary>
-        </section>
-          { recipes.length === 0
-              ? <section>
-                  <h1 className="text-center fs-6 bold text-muted">No Team Recipes</h1>
-                  <p className="text-center">Use the Create Recipe button to add one.</p>
-                </section>
-              : <section className="recipe-grid">
-                { recipes.map(recipe =>
-                    <Recipe
-                      {...recipe}
-                      className='mb-0'
-                      key={ recipe.id }
-                    />
-                  )
-                }
-              </section>
-          }
+        <TeamMembers
+          id={ this.props.id }
+          loading={ this.props.loadingMembers }
+          members={ this.props.members }
+        />
+
+        <TeamRecipes
+          loading={ this.props.loadingRecipes }
+          recipes={ this.props.recipes } />
+
       </div>
     )
   }

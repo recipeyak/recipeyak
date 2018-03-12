@@ -402,7 +402,7 @@ class TeamInviteViewSet(viewsets.GenericViewSet,
         need to use to_representation or form_represenation
         """
         team = Team.objects.get(pk=team_pk)
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(data={**request.data, 'team': team})
         serializer.is_valid(raise_exception=True)
         invite = serializer.save(team=team)
         return Response(InviteSerializer(invite, many=True).data, status=status.HTTP_201_CREATED)
@@ -459,7 +459,9 @@ class TeamRecipesViewSet(
         return Recipe.objects.filter(owner_team=team)
 
     def list(self, request, team_pk=None):
-        serializer = self.get_serializer(self.get_queryset(), many=True)
+        serializer = self.get_serializer(self.get_queryset(),
+                                         many=True,
+                                         fields=('id', 'name', 'cart_count', 'author', 'tags',))
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request, team_pk=None):

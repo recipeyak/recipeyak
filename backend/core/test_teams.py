@@ -350,7 +350,7 @@ def test_retrieve_team_member(client, team, user, user2, user3):
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK, \
         'Team admins can view members'
-    assert res.json().get('user') == user.id
+    assert res.json()['user']['id'] == user.id
 
     # invite user2 to team
     team.invite_user(user2)
@@ -366,7 +366,7 @@ def test_retrieve_team_member(client, team, user, user2, user3):
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK, \
         'Viewer members can retrieve team members'
-    assert res.json().get('user') == user.id
+    assert res.json()['user']['id'] == user.id
 
 
 def test_update_team_member(client, team, user, user2, user3, empty_team):
@@ -422,22 +422,25 @@ def test_create_team_invite(client, team, user, user2, user3, empty_team):
     assert user2.has_invite(team) and not team.is_member(user2)
     assert res.json()[0]['user']['id'] == user2.id
 
-    for data, description in [
+    for data, description, s in [
             (
                 {'emails': [''], 'level': 'invalid user level'},
                 'invalid levels are not valid',
+                status.HTTP_400_BAD_REQUEST,
             ),
             (
                 {'emails': [user2.id], 'level': Membership.ADMIN},
-                'invalid users are not valid'
+                'invalid users are not valid',
+                status.HTTP_400_BAD_REQUEST,
             ),
             (
-                {'emails': [user2.email]},
-                "don't create another invite for user if they already have one pending"
+                {'emails': [user2.email], 'level': Membership.CONTRIBUTOR },
+                "just filter out emails for invites that already exist",
+                status.HTTP_201_CREATED,
             )]:
 
         res = client.post(url, data)
-        assert res.status_code == status.HTTP_400_BAD_REQUEST, description
+        assert res.status_code == s, description
 
     # non-admins cannot create invite
     team.force_join(user2)
@@ -458,6 +461,17 @@ def test_create_team_invite(client, team, user, user2, user3, empty_team):
     res = client.post(url, {'emails': [user2.email]})
     assert res.status_code == status.HTTP_404_NOT_FOUND
 
+def test_invitees_not_appearing_in_members(client, team, user, user2, user3):
+    assert team.is_member(user)
+    assert not team.is_member(user2)
+    assert not team.is_member(user3)
+    team.invite_user(user2)
+
+    url = reverse('team-invites-list', kwargs={'team_pk': team.pk})
+    client.force_authenticate(user)
+    res = client.get(url)
+    assert res.status_code == status.HTTP_200_OK
+    assert len(res.json()) == 1
 
 def test_retrieve_team_invite(client, team, user, user2, user3):
     """

@@ -67,5 +67,6 @@ module.exports = {
         'ignoreReadBeforeAssign': false
     }],
     'space-in-parens': ['warn', 'never'],
+    'no-useless-return': 'warn'
   }
 }

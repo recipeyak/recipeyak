@@ -12,10 +12,16 @@ configure({ adapter: new Adapter() })
 
 describe('<TeamInvite/>', () => {
   it('renders without crashing', () => {
+    // fake react router props
+    const match = {
+      params: {
+        id: 1
+      }
+    }
     mount(
       <Provider store={ store }>
         <MemoryRouter>
-          <TeamInvite />
+          <TeamInvite match={ match }/>
         </MemoryRouter>
       </Provider>
     )

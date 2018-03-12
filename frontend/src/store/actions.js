@@ -77,6 +77,21 @@ import {
   SET_SOCIAL_ACCOUNT_CONNECTION,
   SET_PASSWORD_USABLE,
   SET_FROM_URL,
+  ADD_TEAM,
+  SET_LOADING_TEAM,
+  SET_LOADING_TEAM_MEMBERS,
+  SET_LOADING_TEAM_INVITES,
+  SET_LOADING_TEAM_RECIPES,
+  SET_TEAM_404,
+  SET_TEAM_MEMBERS,
+  SET_TEAM_INVITES,
+  SET_TEAM_RECIPES,
+  SET_UPDATING_USER_TEAM_LEVEL,
+  SET_USER_TEAM_LEVEL,
+  SET_DELETING_MEMBERSHIP,
+  DELETE_MEMBERSHIP,
+  SET_USER_ID,
+  SET_SENDING_TEAM_INVITES,
 } from './actionTypes'
 
 import {
@@ -128,6 +143,8 @@ const invalidToken = res =>
   res != null && res.data.detail === 'Invalid token.' && res.status === 401
 
 const badRequest = err => err.response && err.response.status === 400
+
+const is404 = err => err.response.status === 404
 
 export const setNotification = ({
   message,
@@ -278,11 +295,17 @@ export const updatingEmail = email => dispatch => {
   })
 }
 
+export const setUserID = (id) => ({
+  type: SET_USER_ID,
+  id,
+})
+
 export const fetchUser = () => dispatch => {
   dispatch(setLoadingUser(true))
   dispatch(setErrorUser(false))
   return http.get('/api/v1/rest-auth/user/')
   .then(res => {
+    dispatch(setUserID(res.data.id))
     dispatch(setAvatarURL(res.data.avatar_url))
     dispatch(setUserEmail(res.data.email))
     dispatch(setPasswordUsable(res.data.has_usable_password))
@@ -1279,3 +1302,203 @@ export const updateAddRecipeFormStep = (index, step) => ({
 export const clearAddRecipeForm = () => ({
   type: CLEAR_ADD_RECIPE_FORM
 })
+
+export const addTeam = team => ({
+  type: ADD_TEAM,
+  team
+})
+
+export const setLoadingTeam = (id, loadingTeam) => ({
+  type: SET_LOADING_TEAM,
+  id,
+  loadingTeam,
+})
+
+export const setLoadingTeamMembers = (id, loadingMembers) => ({
+  type: SET_LOADING_TEAM_MEMBERS,
+  id,
+  loadingMembers,
+})
+
+export const setLoadingTeamInvites = (id, loadingInvites) => ({
+  type: SET_LOADING_TEAM_INVITES,
+  id,
+  loadingInvites,
+})
+
+export const setTeam404 = (id, val = true) => ({
+  type: SET_TEAM_404,
+  id,
+  val,
+})
+
+export const setTeamMembers = (id, members) => ({
+  type: SET_TEAM_MEMBERS,
+  id,
+  members,
+})
+
+export const setTeamInvites = (id, invites) => ({
+  type: SET_TEAM_INVITES,
+  id,
+  invites,
+})
+
+export const setTeamRecipes = (id, recipes) => ({
+  type: SET_TEAM_RECIPES,
+  id,
+  recipes,
+})
+
+export const setLoadingTeamRecipes = (id, loadingRecipes) => ({
+  type: SET_LOADING_TEAM_RECIPES,
+  id,
+  loadingRecipes,
+})
+
+export const fetchTeam = id => dispatch => {
+  dispatch(setLoadingTeam(id, true))
+  return http.get(`/api/v1/t/${id}/`)
+  .then(res => {
+    dispatch(addTeam(res.data))
+    dispatch(setLoadingTeam(id, false))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    if (is404(err)) {
+      dispatch(setTeam404(id))
+    }
+    dispatch(setLoadingTeam(id, false))
+    throw err
+  })
+}
+
+export const fetchTeamMembers = id => dispatch => {
+  dispatch(setLoadingTeamMembers(id, true))
+  return http.get(`/api/v1/t/${id}/members/`)
+  .then(res => {
+    dispatch(setTeamMembers(id, res.data))
+    dispatch(setLoadingTeamMembers(id, false))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    dispatch(setLoadingTeamMembers(id, false))
+    throw err
+  })
+}
+
+export const fetchTeamInvites = id => dispatch => {
+  dispatch(setLoadingTeamInvites(id, true))
+  return http.get(`/api/v1/t/${id}/invites/`)
+  .then(res => {
+    dispatch(setTeamInvites(id, res.data))
+    dispatch(setLoadingTeamInvites(id, false))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    dispatch(setLoadingTeamInvites(id, false))
+    throw err
+  })
+}
+
+export const fetchTeamRecipes = id => dispatch => {
+  dispatch(setLoadingTeamRecipes(id, true))
+  return http.get(`/api/v1/t/${id}/recipes/`)
+  .then(res => {
+    dispatch(setRecipes(res.data))
+    dispatch(setTeamRecipes(id, res.data))
+    dispatch(setLoadingTeamRecipes(id, false))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    dispatch(setLoadingTeamRecipes(id, false))
+    throw err
+  })
+}
+
+export const setUpdatingUserTeamLevel = (id, updating) => ({
+  type: SET_UPDATING_USER_TEAM_LEVEL,
+  id,
+  updating,
+})
+
+export const setUserTeamLevel = (teamID, membershipID, level) => ({
+  type: SET_USER_TEAM_LEVEL,
+  teamID,
+  membershipID,
+  level,
+})
+
+export const settingUserTeamLevel = (teamID, membershipID, level) => dispatch => {
+  dispatch(setUpdatingUserTeamLevel(teamID, true))
+  return http.patch(`/api/v1/t/${teamID}/members/${membershipID}/`, { level })
+  .then(res => {
+    dispatch(setUserTeamLevel(teamID, membershipID, res.data.level))
+    dispatch(setUpdatingUserTeamLevel(teamID, false))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    dispatch(setUpdatingUserTeamLevel(teamID, false))
+    throw err
+  })
+}
+
+export const deleteMembership = (teamID, membershipID) => ({
+  type: DELETE_MEMBERSHIP,
+  teamID,
+  membershipID
+})
+
+export const setDeletingMembership = (teamID, membershipID, val) => ({
+  type: SET_DELETING_MEMBERSHIP,
+  teamID,
+  membershipID,
+  val,
+})
+
+export const deletingMembership = (teamID, id) => dispatch => {
+  dispatch(setDeletingMembership(id, true))
+  return http.delete(`/api/v1/t/${teamID}/members/${id}/`)
+  .then(() => {
+    dispatch(deleteMembership(id))
+    dispatch(setDeletingMembership(id, false))
+  })
+  .catch(err => {
+    dispatch(setDeletingMembership(id, false))
+    throw err
+  })
+}
+
+export const setSendingTeamInvites = (teamID, val) => ({
+  type: SET_SENDING_TEAM_INVITES,
+  teamID,
+  val,
+})
+
+export const sendingTeamInvites = (teamID, emails, level) => dispatch => {
+  dispatch(setSendingTeamInvites(teamID, true))
+  return http.post(`/api/v1/t/${teamID}/invites/`, { emails, level })
+  .then(() => {
+    dispatch(showNotificationWithTimeout({
+      message: 'invites sent!',
+      level: 'success',
+      delay: 3 * second
+    }))
+    dispatch(setSendingTeamInvites(teamID, false))
+  })
+  .catch(err => {
+    // TODO: handle errors
+    dispatch(setSendingTeamInvites(teamID, false))
+    throw err
+  })
+}
