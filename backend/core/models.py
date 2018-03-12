@@ -329,6 +329,9 @@ class Team(CommonInfo):
     def is_member(self, user):
         return self.membership_set.filter(user=user, is_active=True).exists()
 
+    def is_contributor(self, user):
+        return self.membership_set.filter(user=user, is_active=True, level=Membership.CONTRIBUTOR).exists()
+
     def is_admin(self, user):
         return self.membership_set.filter(user=user, is_active=True, level=Membership.ADMIN).exists()
 

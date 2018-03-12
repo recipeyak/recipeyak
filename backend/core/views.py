@@ -6,11 +6,13 @@ import pytz
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, mixins, views
 from rest_framework.decorators import detail_route
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
 from django.db.models import Sum, Count, Q
 from django.db.models.functions import TruncMonth
+
 
 from .permissions import (
     IsTeamMember,
@@ -29,6 +31,7 @@ from .models import (
     CartItem,
     Team,
     Invite,
+    MyUser,
 )
 from .serializers import (
     RecipeSerializer,
@@ -41,6 +44,7 @@ from .serializers import (
     MembershipSerializer,
     InviteSerializer,
     CreateInviteSerializer,
+    RecipeMoveCopySerializer,
 )
 from .utils import combine_ingredients
 
@@ -66,7 +70,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         """
 
         # get all recipes user has access to
-        # import ipdb; ipdb.set_trace()
         recipes = Recipe.objects \
             .filter(Q(owner_user=self.request.user) |
                     Q(owner_team__in=user_active_team_ids(self.request))) \
@@ -86,6 +89,64 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         logger.info(f'Recipe created by {self.request.user}')
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @detail_route(
+        methods=['post'],
+        url_name='move',
+        serializer_class=RecipeMoveCopySerializer,
+        permission_classes=[HasRecipeAccess, ])
+    def move(self, request, pk=None):
+        """
+        Move recipe from user to another team.
+        User should have write access to team to move recipe
+
+        /recipes/<recipe_id>/move
+            {'id':<team_id>, type:'team'}
+        """
+        recipe = self.get_object()
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        if serializer.validated_data['type'] == 'team':
+            team = Team.objects.get(id=serializer.validated_data['id'])
+            if not (team.is_contributor(request.user) or team.is_admin(request.user)):
+                raise PermissionDenied(detail='user must have write permissions')
+            recipe.move_to(team)
+        elif serializer.validated_data['type'] == 'user':
+            user = MyUser.objects.get(id=serializer.validated_data['id'])
+            if user != request.user:
+                raise PermissionDenied(detail='user must be the same as requester')
+            recipe.move_to(user)
+
+        return Response(RecipeSerializer(recipe, context={'request': request}).data, status=status.HTTP_200_OK)
+
+    @detail_route(
+        methods=['post'],
+        url_name='copy',
+        serializer_class=RecipeMoveCopySerializer,
+        permission_classes=[HasRecipeAccess, ])
+    def copy(self, request, pk=None):
+        """
+        Copy recipe from user to team.
+        Any team member should be able to copy a recipe from the team.
+        User should have write access to team to copy recipe
+        """
+        recipe = self.get_object()
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        if serializer.validated_data['type'] == 'team':
+            team = Team.objects.get(id=serializer.validated_data['id'])
+            if not (team.is_contributor(request.user) or team.is_admin(request.user)):
+                raise PermissionDenied(detail='user must have write permissions')
+            new_recipe = recipe.copy_to(team)
+        elif serializer.validated_data['type'] == 'user':
+            user = MyUser.objects.get(id=serializer.validated_data['id'])
+            if user != request.user:
+                raise PermissionDenied(detail='user must be the same as requester')
+            new_recipe = recipe.copy_to(user)
+
+        return Response(RecipeSerializer(new_recipe, context={'request': request}).data, status=status.HTTP_200_OK)
 
 
 class StepViewSet(viewsets.ModelViewSet):
@@ -409,3 +470,50 @@ class TeamRecipesViewSet(
 
         serializer.save(team=team)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @detail_route(methods=['post'], url_name='move', permission_classes=[IsTeamAdmin], serializer_class=RecipeMoveCopySerializer,)
+    def move(self, request, team_pk=None, pk=None):
+        """
+        Move recipe from team to another team/user.
+        Only TeamAdmins should be able to move a recipe from the team, even if
+        a normal member created it
+        """
+        recipe = self.get_object()
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        if serializer.validated_data['type'] == 'team':
+            team = Team.objects.get(id=serializer.validated_data['id'])
+            if not (team.is_contributor(request.user) or team.is_admin(request.user)):
+                raise PermissionDenied(detail='user must have write permissions')
+            recipe.move_to(team)
+        elif serializer.validated_data['type'] == 'user':
+            user = MyUser.objects.get(id=serializer.validated_data['id'])
+            if user != request.user:
+                raise PermissionDenied(detail='user must be the same as requester')
+            recipe.move_to(user)
+
+        return Response(RecipeSerializer(recipe, context={'request': request}).data, status=status.HTTP_200_OK)
+
+    @detail_route(methods=['post'], url_name='copy', permission_classes=[IsTeamMemberIfPrivate], serializer_class=RecipeMoveCopySerializer,)
+    def copy(self, request, team_pk=None, pk=None):
+        """
+        Copy recipe from team to another team/user.
+        Any team member should be able to copy a recipe from the team.
+        If the team is public, any user should be able to copy.
+        """
+        recipe = self.get_object()
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        if serializer.validated_data['type'] == 'team':
+            team = Team.objects.get(id=serializer.validated_data['id'])
+            if not (team.is_contributor(request.user) or team.is_admin(request.user)):
+                raise PermissionDenied(detail='user must have write permissions')
+            new_recipe = recipe.copy_to(team)
+        elif serializer.validated_data['type'] == 'user':
+            user = MyUser.objects.get(id=serializer.validated_data['id'])
+            if user != request.user:
+                raise PermissionDenied(detail='user must be the same as requester')
+            new_recipe = recipe.copy_to(user)
+        return Response(RecipeSerializer(new_recipe, context={'request': request}).data, status=status.HTTP_200_OK)

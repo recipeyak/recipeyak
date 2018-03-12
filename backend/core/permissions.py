@@ -57,6 +57,9 @@ class NonSafeIfMemberOrAdmin(IsTeamMember):
 
 
 class HasRecipeAccess(permissions.BasePermission):
+    """
+    User is recipe owner or is a member of team with Recipe
+    """
     def has_object_permission(self, request, view, recipe: Recipe) -> bool:
         return recipe.owner == request.user if isinstance(recipe.owner, MyUser) \
                else recipe.owner.is_member(request.user)

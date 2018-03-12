@@ -26,6 +26,12 @@ def user():
 
 
 @pytest.fixture
+def user_with_recipes(recipes):
+    first_recipe, *_ = recipes
+    return first_recipe.owner
+
+
+@pytest.fixture
 def user2():
     email = 'james@smith.org'
     return MyUser.objects.create_user(email=email)

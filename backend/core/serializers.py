@@ -75,6 +75,19 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ('id', 'text',)
 
 
+class OwnerRelatedField(serializers.RelatedField):
+    """
+    A custom field to use for the `owner` generic relationship.
+    """
+
+    def to_representation(self, value):
+        if isinstance(value, Team):
+            return {'id': value.id, 'type': 'team'}
+        elif isinstance(value, MyUser):
+            return {'id': value.id, 'type': 'user'}
+        raise Exception('Unexpected type of owner object')
+
+
 class RecipeSerializer(serializers.ModelSerializer):
     """
     serializer recipe
@@ -84,13 +97,14 @@ class RecipeSerializer(serializers.ModelSerializer):
     ingredients = IngredientSerializer(many=True)
     tags = TagSerializer(many=True, default=[])
     cart_count = serializers.SerializerMethodField()
+    owner = OwnerRelatedField(read_only=True)
 
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'author', 'source', 'time', 'ingredients',
                   'steps', 'tags', 'servings', 'edits', 'modified',
-                  'cart_count', 'owner_team', 'owner_user')
-        read_only_fields = ('owner_team', 'owner_user')
+                  'cart_count', 'owner')
+        read_only_fields = ('owner',)
 
     def validate_steps(self, value):
         if value == []:
@@ -178,3 +192,15 @@ class CreateInviteSerializer(serializers.Serializer):
         emails = validated_data.pop('emails')
         return [Invite.objects.create_invite(email=email, **validated_data)
                 for email in emails]
+
+
+class RecipeMoveCopySerializer(serializers.Serializer):
+    id = serializers.IntegerField(max_value=None, min_value=0, write_only=True)
+    type = serializers.ChoiceField(choices=['user', 'team'], write_only=True)
+
+    def validate(self, data):
+        if data['type'] == 'team' and not Team.objects.filter(id=data['id']).exists():
+            raise serializers.ValidationError("team must exist")
+        elif data['type'] == 'user' and not MyUser.objects.filter(id=data['id']).exists():
+            raise serializers.ValidationError("user must exist")
+        return data
