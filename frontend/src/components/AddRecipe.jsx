@@ -35,6 +35,7 @@ class AddRecipe extends React.Component {
     ingredients: [],
     steps: [],
     loadingTeams: true,
+    teams: [],
   }
 
   componentWillMount = () => {

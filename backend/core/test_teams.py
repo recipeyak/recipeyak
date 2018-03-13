@@ -434,7 +434,7 @@ def test_create_team_invite(client, team, user, user2, user3, empty_team):
                 status.HTTP_400_BAD_REQUEST,
             ),
             (
-                {'emails': [user2.email], 'level': Membership.CONTRIBUTOR },
+                {'emails': [user2.email], 'level': Membership.CONTRIBUTOR},
                 "just filter out emails for invites that already exist",
                 status.HTTP_201_CREATED,
             )]:
