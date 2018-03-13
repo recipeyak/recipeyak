@@ -5,7 +5,8 @@ from django.conf import settings
 from rest_framework import status
 
 from .models import (
-    Recipe
+    Recipe,
+    Membership,
 )
 
 pytestmark = pytest.mark.django_db
@@ -396,3 +397,61 @@ def test_recipes_returns_cart_data(client, user, recipe):
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK
     assert res.json().get('cart_count') == count
+
+
+def test_copy_recipe(client, user_with_recipes, empty_team, user3):
+    """
+    Users can copy recipe to team if they have write access.
+    """
+    recipe = user_with_recipes.recipes.first()
+    url = reverse('recipes-copy', kwargs={'pk': recipe.id})
+
+    # user must own recipe to copy it
+    client.force_authenticate(user3)
+    assert recipe.owner != user3
+    assert client.post(url, {'id': empty_team.id, 'type': 'team'}).status_code == status.HTTP_404_NOT_FOUND
+
+    # team viewer cannot add recipe to team
+    client.force_authenticate(user_with_recipes)
+    empty_team.force_join(user_with_recipes, level=Membership.READ_ONLY)
+    assert recipe.owner == user_with_recipes
+    assert client.post(url, {'id': empty_team.id, 'type': 'team'}).status_code == status.HTTP_403_FORBIDDEN
+
+    # contributors and admins can add recipe to team
+    empty_team.force_join(user_with_recipes, level=Membership.CONTRIBUTOR)
+    res = client.post(url, {'id': empty_team.id, 'type': 'team'})
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json()['id'] != recipe.id
+    assert res.json()['owner'] == {
+        'id': empty_team.id,
+        'type': 'team',
+    }
+
+
+def test_move_recipe(client, user_with_recipes, empty_team, user3):
+    """
+    Users can move recipe to team if they have write access.
+    """
+    recipe = user_with_recipes.recipes.first()
+    url = reverse('recipes-move', kwargs={'pk': recipe.id})
+
+    # user must own recipe to copy it
+    client.force_authenticate(user3)
+    assert recipe.owner != user3
+    assert client.post(url, {'id': empty_team.id, 'type': 'team'}).status_code == status.HTTP_404_NOT_FOUND
+
+    # team viewer cannot add recipe to team
+    client.force_authenticate(user_with_recipes)
+    empty_team.force_join(user_with_recipes, level=Membership.READ_ONLY)
+    res = client.post(url, {'id': empty_team.id, 'type': 'team'})
+    assert res.status_code == status.HTTP_403_FORBIDDEN
+
+    # members can add recipe to team
+    empty_team.force_join(user_with_recipes, level=Membership.CONTRIBUTOR)
+    res = client.post(url, {'id': empty_team.id, 'type': 'team'})
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json()['id'] == recipe.id
+    assert res.json()['owner'] == {
+        'id': empty_team.id,
+        'type': 'team',
+    }

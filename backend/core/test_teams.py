@@ -1002,3 +1002,84 @@ def test_removing_recipe_from_team(client, team_with_recipes, user):
     assert res.status_code == status.HTTP_204_NO_CONTENT
 
     assert not Recipe.objects.filter(id=recipe_id).exists()
+
+
+def test_copy_team_recipe(client, team_with_recipes, user3, empty_team):
+    """
+    team members can copy recipes from team.
+    if the team is public, any user should be able to copy the recipe.
+    user should have write permissions on group they are copying to.
+    """
+    team = team_with_recipes
+    recipe = team.recipes.first()
+    url = reverse('team-recipes-copy', kwargs={'team_pk': team.id, 'pk': recipe.id})
+
+    # non-member cannot copy recipe from team
+    client.force_authenticate(user3)
+    assert not team.is_member(user3) and not team.is_public
+    assert client.post(url, {'id': team.id, 'type': 'team'}).status_code in (status.HTTP_404_NOT_FOUND, status.HTTP_403_FORBIDDEN)
+
+    # if team is public, recipe can be copied
+    team.set_public()
+    empty_team.force_join(user3)
+    res = client.post(url, {'id': empty_team.id, 'type': 'team'})
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json()['id'] != recipe.id
+    assert res.json()['owner'] == {
+        'id': empty_team.id,
+        'type': 'team',
+    }
+
+    # team members can copy recipes
+    team.set_private()
+    team.force_join(user3, level=Membership.READ_ONLY)
+    res = client.post(url, {'id': user3.id, 'type': 'user'})
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json()['id'] != recipe.id
+    assert res.json()['owner'] == {
+        'id': user3.id,
+        'type': 'user',
+    }
+
+
+def test_move_team_recipe(client, team_with_recipes, user3, empty_team):
+    """
+    team admins can move recipes from team.
+    user should have write permissions on group they are moving to.
+    """
+    team = team_with_recipes
+    recipe = team.recipes.first()
+    url = reverse('team-recipes-move', kwargs={'team_pk': team.id, 'pk': recipe.id})
+
+    # non-member cannot move recipe from team
+    client.force_authenticate(user3)
+    assert not team.is_member(user3) and not team.is_public
+    assert client.post(url, {'id': team.id, 'type': 'team'}).status_code in (status.HTTP_404_NOT_FOUND, status.HTTP_403_FORBIDDEN)
+
+    # members cannot move recipes
+    team.force_join(user3, level=Membership.READ_ONLY)
+    assert client.post(url, {'id': user3.id, 'type': 'user'}).status_code == status.HTTP_403_FORBIDDEN
+
+    # admins can move recipes to their own account
+    team.force_join_admin(user3)
+    data = {
+        'id': user3.id,
+        'type': 'user',
+    }
+    res = client.post(url, data)
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json()['id'] == recipe.id
+    assert res.json()['owner'] == data
+
+    # admins can move recipes to another team
+    recipe.move_to(team)
+    team.force_join_admin(user3)
+    empty_team.force_join(user3)
+    data = {
+        'id': empty_team.id,
+        'type': 'team',
+    }
+    res = client.post(url, data)
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json()['id'] == recipe.id
+    assert res.json()['owner'] == data
