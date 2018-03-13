@@ -18,7 +18,9 @@ import {
   removeAddRecipeFormStep,
   updateAddRecipeFormStep,
 
-  clearAddRecipeForm
+  clearAddRecipeForm,
+
+  fetchTeams,
 } from '../store/actions'
 
 import AddRecipe from '../components/AddRecipe'
@@ -32,7 +34,9 @@ const mapStateToProps = state => ({
   ingredients: state.addrecipe.ingredients,
   steps: state.addrecipe.steps,
   loading: state.loading.addRecipe,
-  error: state.error.addRecipe
+  error: state.error.addRecipe,
+  teams: Object.values(state.teams),
+  loadingTeams: state.teams.loading,
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -52,7 +56,9 @@ const mapDispatchToProps = dispatch => ({
 
   addRecipe: recipe => dispatch(postNewRecipe(recipe)),
   clearErrors: () => dispatch(setErrorAddRecipe({})),
-  clearForm: () => dispatch(clearAddRecipeForm())
+  clearForm: () => dispatch(clearAddRecipeForm()),
+
+  fetchData: () => dispatch(fetchTeams()),
 })
 
 const ConnectedAddRecipe = connect(

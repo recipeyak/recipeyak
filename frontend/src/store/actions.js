@@ -92,6 +92,8 @@ import {
   DELETE_MEMBERSHIP,
   SET_USER_ID,
   SET_SENDING_TEAM_INVITES,
+  SET_TEAMS,
+  SET_LOADING_TEAMS,
 } from './actionTypes'
 
 import {
@@ -1499,6 +1501,29 @@ export const sendingTeamInvites = (teamID, emails, level) => dispatch => {
   .catch(err => {
     // TODO: handle errors
     dispatch(setSendingTeamInvites(teamID, false))
+    throw err
+  })
+}
+
+export const setLoadingTeams = val => ({
+  type: SET_LOADING_TEAMS,
+  val,
+})
+
+export const setTeams = teams => ({
+  type: SET_TEAMS,
+  teams,
+})
+
+export const fetchTeams = () => dispatch => {
+  dispatch(setLoadingTeams(true))
+  return http.get('/api/v1/t/')
+  .then(res => {
+    dispatch(setTeams(res.data))
+    dispatch(setLoadingTeams(false))
+  })
+  .catch(err => {
+    dispatch(setLoadingTeams(false))
     throw err
   })
 }
