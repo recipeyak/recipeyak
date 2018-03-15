@@ -17,7 +17,7 @@ class AddRecipe extends React.Component {
       name: '',
       description: ''
     },
-    step: ''
+    step: '',
   }
 
   static defaultProps = {
@@ -36,6 +36,7 @@ class AddRecipe extends React.Component {
     steps: [],
     loadingTeams: true,
     teams: [],
+    team: 'personal',
   }
 
   componentWillMount = () => {
@@ -55,7 +56,10 @@ class AddRecipe extends React.Component {
       time: this.props.time,
       servings: this.props.servings,
       ingredients: this.props.ingredients,
-      steps: this.props.steps
+      steps: this.props.steps,
+      team: this.props.team !== 'personal'
+              ? this.props.team
+              : undefined
     }
     this.props.addRecipe(recipe)
   }
@@ -240,10 +244,15 @@ class AddRecipe extends React.Component {
 
           <label className="d-flex align-center">for
             <div className="select ml-2 is-small">
-            <select disabled={this.props.loadingTeams}>
+            <select disabled={this.props.loadingTeams}
+                    value={ this.props.team }
+                    onChange={ this.props.setTeam }>
               <option value="personal">Personal</option>
               { this.props.teams.map(({ id, name }) =>
-                <option key={id} value={id}>Team: { name }</option>)
+                  <option key={id} value={id}>
+                    Team: { name }
+                  </option>
+                )
               }
             </select>
           </div>

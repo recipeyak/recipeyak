@@ -98,12 +98,14 @@ class RecipeSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, default=[])
     cart_count = serializers.SerializerMethodField()
     owner = OwnerRelatedField(read_only=True)
+    # specify default None so we can use this as an optional field
+    team = serializers.IntegerField(write_only=True, default=None)
 
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'author', 'source', 'time', 'ingredients',
                   'steps', 'tags', 'servings', 'edits', 'modified',
-                  'cart_count', 'owner')
+                  'cart_count', 'owner', 'team')
         read_only_fields = ('owner',)
 
     def __init__(self, *args, **kwargs):
@@ -129,6 +131,14 @@ class RecipeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('ingredients are required')
         return value
 
+    def validate_team(self, value):
+        if value is None:
+            return None
+        team = Team.objects.filter(id=value).first()
+        if team is None:
+            raise serializers.ValidationError('invalid team id provided')
+        return team
+
     def create(self, validated_data) -> Recipe:
         """
         Since this a nested serializer, we need to write a custom create method.
@@ -137,12 +147,12 @@ class RecipeSerializer(serializers.ModelSerializer):
         steps = validated_data.pop('steps')
         tags = validated_data.pop('tags')
 
-        try:
-            owner = validated_data.pop('user')
-        except KeyError:
-            owner = validated_data.pop('team')
+        # essentially an optional field
+        team = validated_data.pop('team')
 
-        validated_data['owner'] = owner
+        validated_data['owner'] = (team if team is not None
+                                        else self.context['request'].user)
+
         recipe = Recipe.objects.create(**validated_data)
         for ingredient in ingredients:
             Ingredient.objects.create(recipe=recipe, **ingredient)

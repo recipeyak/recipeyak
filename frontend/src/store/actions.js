@@ -67,6 +67,7 @@ import {
   SET_ADD_RECIPE_FORM_SOURCE,
   SET_ADD_RECIPE_FORM_TIME,
   SET_ADD_RECIPE_FORM_SERVINGS,
+  SET_ADD_RECIPE_FORM_TEAM,
   ADD_ADD_RECIPE_FORM_INGREDIENT,
   REMOVE_ADD_RECIPE_FORM_INGREDIENT,
   UPDATE_ADD_RECIPE_FORM_INGREDIENT,
@@ -1267,6 +1268,11 @@ export const setAddRecipeFormTime = val => ({
 export const setAddRecipeFormServings = val => ({
   type: SET_ADD_RECIPE_FORM_SERVINGS,
   val
+})
+
+export const setAddRecipeFormTeam = val => ({
+  type: SET_ADD_RECIPE_FORM_TEAM,
+  val,
 })
 
 export const addAddRecipeFormIngredient = ingredient => ({

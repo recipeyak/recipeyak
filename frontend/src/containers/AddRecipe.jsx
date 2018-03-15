@@ -9,6 +9,7 @@ import {
   setAddRecipeFormSource,
   setAddRecipeFormTime,
   setAddRecipeFormServings,
+  setAddRecipeFormTeam,
 
   addAddRecipeFormIngredient,
   removeAddRecipeFormIngredient,
@@ -32,6 +33,7 @@ const mapStateToProps = state => ({
   author: state.addrecipe.author,
   source: state.addrecipe.source,
   time: state.addrecipe.time,
+  team: state.addrecipe.team,
   servings: state.addrecipe.servings,
   ingredients: state.addrecipe.ingredients,
   steps: state.addrecipe.steps,
@@ -48,6 +50,7 @@ const mapDispatchToProps = dispatch => ({
   setSource: e => dispatch(setAddRecipeFormSource(e.target.value)),
   setTime: e => dispatch(setAddRecipeFormTime(e.target.value)),
   setServings: e => dispatch(setAddRecipeFormServings(e.target.value)),
+  setTeam: e => dispatch(setAddRecipeFormTeam(e.target.value)),
 
   addIngredient: x => dispatch(addAddRecipeFormIngredient(x)),
   removeIngredient: i => dispatch(removeAddRecipeFormIngredient(i)),

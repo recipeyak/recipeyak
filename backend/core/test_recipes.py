@@ -7,6 +7,7 @@ from rest_framework import status
 from .models import (
     Recipe,
     Membership,
+    Team,
 )
 
 pytestmark = pytest.mark.django_db
@@ -93,6 +94,46 @@ def test_creating_recipe_with_empty_ingredients_and_steps(client, user):
     assert res.data.get('name') is not None
     assert res.data.get('ingredients') is not None
     assert res.data.get('steps') is not None
+
+
+def test_recipe_creation_for_a_team(client, team, user):
+    """
+    ensure that the user can create recipe for a team
+    """
+
+    assert team.is_member(user)
+
+    client.force_authenticate(user)
+
+    data = {
+        'name': 'Recipe name',
+        'ingredients': [
+            {
+                'quantity': '1',
+                'unit': 'tablespoon',
+                'name': 'black pepper',
+                'description': '',
+            },
+        ],
+        'steps': [
+            {'text': 'place fish in salt'},
+        ],
+        'team': team.id
+    }
+
+    url = reverse('recipes-list')
+
+    res = client.post(url, data)
+    assert res.status_code == status.HTTP_201_CREATED
+
+    recipe_id = res.json().get('id')
+
+    assert isinstance(Recipe.objects.get(id=recipe_id).owner, Team)
+
+    url = reverse('recipes-detail', kwargs={'pk': recipe_id})
+    assert client.get(url).status_code == status.HTTP_200_OK
+
+    assert Team.objects.get(id=team.id).recipes.first().id == recipe_id
 
 
 def test_recipe_deletion(client, user, recipe):
