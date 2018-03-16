@@ -15,6 +15,8 @@ import {
   setDeletingMembership,
   deleteMembership,
   setSendingTeamInvites,
+  setTeams,
+  setLoadingTeams,
 } from '../actions'
 
 describe('Teams', () => {
@@ -36,6 +38,42 @@ describe('Teams', () => {
 
     expect(
       teams(beforeState, addTeam(recipe))
+    ).toEqual(afterState)
+  })
+
+  it('Adds all teams given', () => {
+    const beforeState = {
+      1: {
+        id: 1,
+        name: 'add all teams'
+      },
+    }
+
+    const data = [{
+      id: 2,
+      name: 'another name',
+    }, {
+      id: 3,
+      name: 'yet another name',
+    }]
+
+    const afterState = {
+      1: {
+        id: 1,
+        name: 'add all teams'
+      },
+      2: {
+        id: 2,
+        name: 'another name'
+      },
+      3: {
+        id: 3,
+        name: 'yet another name',
+      }
+    }
+
+    expect(
+      teams(beforeState, setTeams(data))
     ).toEqual(afterState)
   })
 
@@ -462,6 +500,43 @@ describe('Teams', () => {
 
     expect(
       teams(beforeState, setSendingTeamInvites(1, true))
+    ).toEqual(afterState)
+  })
+
+  it('Sets teams to loading', () => {
+    const beforeState = {
+      1: {
+        id: 1,
+        user: {
+          id: 2,
+        }
+      },
+      2: {
+        id: 2,
+        user: {
+          id: 3
+        }
+      }
+    }
+
+    const afterState = {
+      loading: true,
+      1: {
+        id: 1,
+        user: {
+          id: 2,
+        }
+      },
+      2: {
+        id: 2,
+        user: {
+          id: 3
+        }
+      }
+    }
+
+    expect(
+      teams(beforeState, setLoadingTeams(true))
     ).toEqual(afterState)
   })
 })

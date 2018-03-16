@@ -34,7 +34,7 @@ const AddStepForm = ({
           placeholder="Add your step here"
           name="step"/>
         { error
-            ? <p class="fs-4 c-danger">A step is required</p>
+            ? <p className="fs-4 c-danger">A step is required</p>
             : null
         }
       </div>

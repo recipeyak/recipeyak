@@ -14,6 +14,8 @@ import {
   SET_UPDATING_USER_TEAM_LEVEL,
   SET_USER_TEAM_LEVEL,
   SET_SENDING_TEAM_INVITES,
+  SET_TEAMS,
+  SET_LOADING_TEAMS,
 } from '../actionTypes'
 
 export const teams = (state = {}, action) => {
@@ -155,6 +157,19 @@ export const teams = (state = {}, action) => {
           [action.membershipID]: undefined
         }
       }
+    }
+  case SET_TEAMS:
+    return {
+      ...state,
+      ...action.teams.reduce((a, b) => ({
+        ...a,
+        [b.id]: b
+      }), {})
+    }
+  case SET_LOADING_TEAMS:
+    return {
+      ...state,
+      loading: action.val,
     }
   default:
     return state

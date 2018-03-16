@@ -9,6 +9,7 @@ import {
   setAddRecipeFormSource,
   setAddRecipeFormTime,
   setAddRecipeFormServings,
+  setAddRecipeFormTeam,
 
   addAddRecipeFormIngredient,
   removeAddRecipeFormIngredient,
@@ -18,21 +19,29 @@ import {
   removeAddRecipeFormStep,
   updateAddRecipeFormStep,
 
-  clearAddRecipeForm
+  clearAddRecipeForm,
+
+  fetchTeams,
 } from '../store/actions'
 
 import AddRecipe from '../components/AddRecipe'
+
+const notBool = x => typeof x !== 'boolean'
 
 const mapStateToProps = state => ({
   name: state.addrecipe.name,
   author: state.addrecipe.author,
   source: state.addrecipe.source,
   time: state.addrecipe.time,
+  team: state.addrecipe.team,
   servings: state.addrecipe.servings,
   ingredients: state.addrecipe.ingredients,
   steps: state.addrecipe.steps,
   loading: state.loading.addRecipe,
-  error: state.error.addRecipe
+  error: state.error.addRecipe,
+  // we remove the loading
+  teams: Object.values(state.teams).filter(notBool),
+  loadingTeams: state.teams.loading,
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -41,6 +50,7 @@ const mapDispatchToProps = dispatch => ({
   setSource: e => dispatch(setAddRecipeFormSource(e.target.value)),
   setTime: e => dispatch(setAddRecipeFormTime(e.target.value)),
   setServings: e => dispatch(setAddRecipeFormServings(e.target.value)),
+  setTeam: e => dispatch(setAddRecipeFormTeam(e.target.value)),
 
   addIngredient: x => dispatch(addAddRecipeFormIngredient(x)),
   removeIngredient: i => dispatch(removeAddRecipeFormIngredient(i)),
@@ -52,7 +62,9 @@ const mapDispatchToProps = dispatch => ({
 
   addRecipe: recipe => dispatch(postNewRecipe(recipe)),
   clearErrors: () => dispatch(setErrorAddRecipe({})),
-  clearForm: () => dispatch(clearAddRecipeForm())
+  clearForm: () => dispatch(clearAddRecipeForm()),
+
+  fetchData: () => dispatch(fetchTeams()),
 })
 
 const ConnectedAddRecipe = connect(

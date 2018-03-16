@@ -67,6 +67,7 @@ import {
   SET_ADD_RECIPE_FORM_SOURCE,
   SET_ADD_RECIPE_FORM_TIME,
   SET_ADD_RECIPE_FORM_SERVINGS,
+  SET_ADD_RECIPE_FORM_TEAM,
   ADD_ADD_RECIPE_FORM_INGREDIENT,
   REMOVE_ADD_RECIPE_FORM_INGREDIENT,
   UPDATE_ADD_RECIPE_FORM_INGREDIENT,
@@ -92,6 +93,8 @@ import {
   DELETE_MEMBERSHIP,
   SET_USER_ID,
   SET_SENDING_TEAM_INVITES,
+  SET_TEAMS,
+  SET_LOADING_TEAMS,
 } from './actionTypes'
 
 import {
@@ -1267,6 +1270,11 @@ export const setAddRecipeFormServings = val => ({
   val
 })
 
+export const setAddRecipeFormTeam = val => ({
+  type: SET_ADD_RECIPE_FORM_TEAM,
+  val,
+})
+
 export const addAddRecipeFormIngredient = ingredient => ({
   type: ADD_ADD_RECIPE_FORM_INGREDIENT,
   ingredient
@@ -1499,6 +1507,29 @@ export const sendingTeamInvites = (teamID, emails, level) => dispatch => {
   .catch(err => {
     // TODO: handle errors
     dispatch(setSendingTeamInvites(teamID, false))
+    throw err
+  })
+}
+
+export const setLoadingTeams = val => ({
+  type: SET_LOADING_TEAMS,
+  val,
+})
+
+export const setTeams = teams => ({
+  type: SET_TEAMS,
+  teams,
+})
+
+export const fetchTeams = () => dispatch => {
+  dispatch(setLoadingTeams(true))
+  return http.get('/api/v1/t/')
+  .then(res => {
+    dispatch(setTeams(res.data))
+    dispatch(setLoadingTeams(false))
+  })
+  .catch(err => {
+    dispatch(setLoadingTeams(false))
     throw err
   })
 }
