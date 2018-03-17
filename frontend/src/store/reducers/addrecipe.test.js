@@ -286,7 +286,7 @@ describe('addrecipe', () => {
     }
 
     expect(
-      addrecipe(beforeState, setAddRecipeFormTeam())
+      addrecipe(beforeState, setAddRecipeFormTeam(team))
     ).toEqual(afterState)
   })
 })
