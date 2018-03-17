@@ -11,7 +11,8 @@ import Logo from './Logo'
 class Navbar extends React.Component {
   state = {
     query: '',
-    showDropdown: false
+    showUserDropdown: false,
+    showNotificationsDropdown: false,
   }
 
   componentWillMount = () => {
@@ -28,10 +29,18 @@ class Navbar extends React.Component {
   }
 
   handleGeneralClick = e => {
-    const clickedInComponent = this.element && this.element.contains(e.target)
+    const clickedInNotificationsDropdown = this.notificationsDropdown && this.notificationsDropdown.contains(e.target)
+    const clickedInUserDropdown = this.userDropdown && this.userDropdown.contains(e.target)
     const clickedOnLink = e.target.nodeName === 'A'
-    if (clickedInComponent && !clickedOnLink) return
-    this.setState({ showDropdown: false })
+    if (clickedInNotificationsDropdown) {
+      this.setState({ showUserDropdown: false })
+    } else if (clickedInUserDropdown) {
+      // Needed to make clicking inputs work
+      if (!clickedOnLink) { return }
+      this.setState({ showNotificationsDropdown: false })
+    } else {
+      this.setState({ showUserDropdown: false, showNotificationsDropdown: false })
+    }
   }
 
   render () {
@@ -54,6 +63,19 @@ class Navbar extends React.Component {
           className="better-nav-item">
           Add Recipe
         </NavLink>
+
+        <section ref={notificationsDropdown => { this.notificationsDropdown = notificationsDropdown }}>
+          <a
+            onClick={ () => this.setState(prev => ({ showNotificationsDropdown: !prev.showNotificationsDropdown })) }
+            className="better-nav-item">Notifications</a>
+          <div className={
+            'box p-absolute direction-column align-items-start mt-1 pr-2 pl-2 pt-3 pb-3' + (this.state.showNotificationsDropdown ? ' d-flex' : ' d-none')
+          }>
+            <p className="text-muted fs-3 align-self-center">No new notifications.</p>
+            <Link to="/notifications" className="mt-1 ">See All Notifications</Link>
+          </div>
+        </section>
+
         <NavLink
           to="/recipes"
           activeClassName="active"
@@ -66,14 +88,14 @@ class Navbar extends React.Component {
           className="better-nav-item">
           Cart
         </NavLink>
-        <section ref={element => { this.element = element }}>
+        <section ref={userDropdown => { this.userDropdown = userDropdown }}>
           <img
-            onClick={ () => this.setState(prev => ({ showDropdown: !prev.showDropdown })) }
+            onClick={ () => this.setState(prev => ({ showUserDropdown: !prev.showUserDropdown })) }
             alt=''
             className="user-profile-image better-nav-item p-0"
             src={ avatarURL }/>
           <div className={
-            'box p-absolute direction-column align-items-start right-0 mt-1' + (this.state.showDropdown ? ' d-flex' : ' d-none')
+            'box p-absolute direction-column align-items-start right-0 mt-1' + (this.state.showUserDropdown ? ' d-flex' : ' d-none')
           }>
             <p className="bold">{ email }</p>
             <div className="d-flex align-center p-1-0">
