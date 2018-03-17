@@ -13,6 +13,7 @@ class Navbar extends React.Component {
     query: '',
     showUserDropdown: false,
     showNotificationsDropdown: false,
+    showTeamsDropdown: false,
   }
 
   componentWillMount = () => {
@@ -30,17 +31,27 @@ class Navbar extends React.Component {
 
   handleGeneralClick = e => {
     const clickedInNotificationsDropdown = this.notificationsDropdown && this.notificationsDropdown.contains(e.target)
+    const clickedInTeamsDropdown = this.teamsDropdown && this.teamsDropdown.contains(e.target)
     const clickedInUserDropdown = this.userDropdown && this.userDropdown.contains(e.target)
     const clickedOnLink = e.target.nodeName === 'A'
+
+    const data = {
+      showUserDropdown: false,
+      showNotificationsDropdown: false,
+      showTeamsDropdown: false,
+    }
     if (clickedInNotificationsDropdown) {
-      this.setState({ showUserDropdown: false })
-    } else if (clickedInUserDropdown) {
+      delete data.showNotificationsDropdown
+    }
+    if (clickedInTeamsDropdown) {
+      delete data.showTeamsDropdown
+    }
+    if (clickedInUserDropdown) {
       // Needed to make clicking inputs work
       if (!clickedOnLink) { return }
-      this.setState({ showNotificationsDropdown: false })
-    } else {
-      this.setState({ showUserDropdown: false, showNotificationsDropdown: false })
+      delete data.showUserDropdown
     }
+    this.setState(data)
   }
 
   render () {
@@ -73,6 +84,18 @@ class Navbar extends React.Component {
           }>
             <p className="text-muted fs-3 align-self-center">No new notifications.</p>
             <Link to="/notifications" className="mt-1 ">See All Notifications</Link>
+          </div>
+        </section>
+
+        <section ref={teamsDropdown => { this.teamsDropdown = teamsDropdown }}>
+          <a
+            onClick={ () => this.setState(prev => ({ showTeamsDropdown: !prev.showTeamsDropdown })) }
+            className="better-nav-item">Teams</a>
+          <div className={
+            'box p-absolute direction-column align-items-start mt-1 pr-2 pl-2 pt-3 pb-3' + (this.state.showTeamsDropdown ? ' d-flex' : ' d-none')
+          }>
+            <p className="text-muted fs-3 align-self-center">No teams.</p>
+            <Link to="/t/create" className="mt-1 ">Create a Team</Link>
           </div>
         </section>
 
