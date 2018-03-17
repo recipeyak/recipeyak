@@ -82,7 +82,7 @@ class OwnerRelatedField(serializers.RelatedField):
 
     def to_representation(self, value):
         if isinstance(value, Team):
-            return {'id': value.id, 'type': 'team'}
+            return {'id': value.id, 'type': 'team', 'name': value.name}
         elif isinstance(value, MyUser):
             return {'id': value.id, 'type': 'user'}
         raise Exception('Unexpected type of owner object')
