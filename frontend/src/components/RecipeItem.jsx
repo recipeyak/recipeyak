@@ -8,7 +8,7 @@ import { inputAbs } from '../input'
 const toURL = (x = '') => x.replace(/\s/g, '-')
 
 export const recipeURL = (id, name) => `/recipes/${id}-${toURL(name)}`
-const teamUrl = id => `/t/${id}`
+export const teamURL = id => `/t/${id}`
 
 const RecipeItem = ({
     tags = {},
@@ -33,7 +33,7 @@ const RecipeItem = ({
   const spanTags = tags.length > 0
     ? tags.map(tag => <span key={ tag } className="tag is-medium">{ tag }</span>)
     : null
-  const ownershipDetail = owner.type === 'team' && owner.name && owner.id ? <div className=" text-muted fw-500">via <Link to={teamUrl(owner.id)} className="text-muted bold">{ owner.name }</Link></div> : ''
+  const ownershipDetail = owner.type === 'team' && owner.name && owner.id ? <div className=" text-muted fw-500">via <Link to={teamURL(owner.id)} className="text-muted bold">{ owner.name }</Link></div> : ''
   const buttons = (
     <div className="field is-grouped">
 

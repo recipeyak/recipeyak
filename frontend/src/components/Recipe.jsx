@@ -1,5 +1,6 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
+import { Link } from 'react-router-dom'
 
 import Loader from './Loader'
 import RecipeEdit from '../containers/RecipeEdit'
@@ -7,12 +8,23 @@ import NoMatch from './NoMatch'
 import { ButtonPrimary } from './Buttons'
 
 import { inputAbs } from '../input'
+import { teamURL } from './RecipeItem'
+
+const Owner = ({ type, url, name }) => {
+  if (type === 'user') return null
+  return (
+    <span className="fw-500">
+      <b>owner</b> <Link to={url}>{ name }</Link>
+    </span>
+  )
+}
 
 const MetaData = ({
   author = '',
   source = '',
   servings = '',
-  time = ''
+  time = '',
+  owner,
 }) => {
   const isValid = x => x !== '' && x != null
 
@@ -29,7 +41,10 @@ const MetaData = ({
     ? <span>in <b>{time}</b> </span>
     : null
 
-  return <p className="break-word">{ _author }{ _source }{ _servings }{ _time }</p>
+  return <p className="break-word">
+    <span>{ _author }{ _source }{ _servings }{ _time }</span>
+    <Owner type={owner.type} url={teamURL(owner.id)} name={owner.name}/>
+  </p>
 }
 
 /* eslint-disable camelcase */
@@ -48,11 +63,16 @@ const RecipeViewing = ({
   updateCart,
   addingToCart = false,
   removingFromCart = false,
-  loading = false,
+  loading = true,
   error404 = false,
   edit,
   count,
-  handleInputChange
+  handleInputChange,
+  owner = {
+    type: 'user',
+    id: 0,
+    name: '',
+  },
 }) => {
   if (error404) {
     return <NoMatch/>
@@ -101,6 +121,7 @@ const RecipeViewing = ({
 
       <div className="grid-entire-row">
         <MetaData
+          owner={owner}
           name={name}
           author={author}
           source={source}
@@ -155,7 +176,8 @@ class Recipe extends React.Component {
     super(props)
     this.state = {
       editing: false,
-      count: this.props.cart_count
+      count: this.props.cart_count,
+      loading: true,
     }
   }
 
@@ -166,11 +188,14 @@ class Recipe extends React.Component {
   handleInputChange = e =>
     this.setState({ [e.target.name]: inputAbs(e.target.value) })
 
-  componentWillMount = () => {
-    this.props.fetchRecipe(this.props.match.params.id)
+  componentWillMount = async () => {
+    await this.props.fetchRecipe(this.props.match.params.id)
+    this.setState({ loading: false })
   }
 
   render () {
+    if (this.state.loading) return <p>Loading...</p>
+
     if (this.state.editing) {
       return (
         <RecipeEdit
