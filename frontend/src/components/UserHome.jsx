@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
 import Loader from './Loader'
-import { recipeURL } from './RecipeItem'
+import { recipeURL } from '../urls'
 import Recipe from '../containers/RecipeItem'
 
 import img from './images/yak.jpg'

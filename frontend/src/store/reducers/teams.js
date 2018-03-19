@@ -16,6 +16,8 @@ import {
   SET_SENDING_TEAM_INVITES,
   SET_TEAMS,
   SET_LOADING_TEAMS,
+  SET_TEAM,
+  SET_CREATING_TEAM,
 } from '../actionTypes'
 
 export const teams = (state = {}, action) => {
@@ -171,6 +173,16 @@ export const teams = (state = {}, action) => {
       ...state,
       loading: action.val,
     }
+  case SET_TEAM:
+    return {
+      ...state,
+      [action.id]: action.team
+    }
+  case SET_CREATING_TEAM:
+      return {
+        ...state,
+        creating: action.val
+      }
   default:
     return state
   }

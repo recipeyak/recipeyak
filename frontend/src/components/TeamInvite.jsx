@@ -13,6 +13,10 @@ import NoMatch from './NoMatch'
 import Loader from './Loader'
 
 import {
+  teamURL
+} from '../urls'
+
+import {
   fetchTeam,
   sendingTeamInvites,
 } from '../store/actions'
@@ -34,9 +38,7 @@ const mapDispatchToProps = dispatch => ({
   sendInvites: (teamID, emails, level) => dispatch(sendingTeamInvites(teamID, emails, level))
 })
 
-const teamURL = id => `/t/${id}/`
-
-const roles = [
+export const roles = [
   {
     name: 'Admin',
     value: 'admin',

@@ -5,10 +5,10 @@ import { ButtonPrimary } from './Buttons'
 
 import { inputAbs } from '../input'
 
-const toURL = (x = '') => x.replace(/\s/g, '-')
-
-export const recipeURL = (id, name) => `/recipes/${id}-${toURL(name)}`
-export const teamURL = id => `/t/${id}`
+import {
+  recipeURL,
+  teamURL,
+} from '../urls'
 
 const RecipeItem = ({
     tags = {},

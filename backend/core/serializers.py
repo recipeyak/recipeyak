@@ -182,9 +182,25 @@ class MostAddedRecipeSerializer(serializers.ModelSerializer):
 
 class TeamSerializer(serializers.ModelSerializer):
 
+    emails = serializers.ListField(
+       child=serializers.EmailField(write_only=True),
+       write_only=True
+    )
+
+    level = serializers.ChoiceField(choices=Membership.MEMBERSHIP_CHOICES, write_only=True)
+
     class Meta:
         model = Team
-        fields = ('id', 'name', )
+        fields = ('id', 'name', 'emails', 'level')
+
+
+    def create(self, validated_data) -> Team:
+        emails = validated_data.pop('emails')
+        level = validated_data.pop('level')
+        team = Team.objects.create(**validated_data)
+        for email in emails:
+            Invite.objects.create_invite(email=email, team=team, level=level)
+        return team
 
 
 class MembershipSerializer(serializers.ModelSerializer):

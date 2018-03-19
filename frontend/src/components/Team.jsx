@@ -15,7 +15,9 @@ import {
   ButtonPrimary,
 } from './Buttons'
 
-const inviteURL = teamID => `/t/${teamID}/invite`
+import {
+  inviteURL
+} from '../urls'
 
 const TeamMembers = ({ id, members, loading }) =>
   <div>

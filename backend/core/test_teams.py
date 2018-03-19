@@ -71,7 +71,11 @@ def test_updating_team_name(client, team, user, user2, user3):
     client.force_authenticate(user3)
     assert not team.is_admin(user3)
     # create team with user3 as admin
-    res = client.post(reverse('teams-list'), {'name': 'Cooks 101'})
+    res = client.post(reverse('teams-list'), {
+        'name': 'Cooks 101',
+        'emails': [user2.email, user3.email],
+        'level': Membership.CONTRIBUTOR
+    })
     assert res.status_code == status.HTTP_201_CREATED
     new_team = Team.objects.get(pk=res.json()['id'])
     assert new_team.is_admin(user3), \
@@ -1028,6 +1032,7 @@ def test_copy_team_recipe(client, team_with_recipes, user3, empty_team):
     assert res.json()['owner'] == {
         'id': empty_team.id,
         'type': 'team',
+        'name': empty_team.name,
     }
 
     # team members can copy recipes
@@ -1078,8 +1083,34 @@ def test_move_team_recipe(client, team_with_recipes, user3, empty_team):
     data = {
         'id': empty_team.id,
         'type': 'team',
+        'name': empty_team.name,
     }
     res = client.post(url, data)
     assert res.status_code == status.HTTP_200_OK
     assert res.json()['id'] == recipe.id
     assert res.json()['owner'] == data
+
+
+def test_creating_team(client, user, user2, user3):
+    """
+    ensure we can create a team with a name, and emails that we want to invite
+    """
+
+    client.force_authenticate(user)
+    url = reverse('teams-list')
+    res = client.post(url, {
+        'name': 'Team Name',
+        'emails': [user2.email, user3.email],
+        'level': Membership.CONTRIBUTOR
+        })
+    assert res.status_code == status.HTTP_201_CREATED
+    team_id = res.json()['id']
+    team = Team.objects.get(id=team_id)
+
+    assert team.is_admin(user)
+    assert team.invite_exists(user2)
+    assert team.invite_exists(user3)
+
+    assert team.is_member(user)
+    assert not team.is_member(user2)
+    assert not team.is_member(user3)

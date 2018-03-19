@@ -450,7 +450,11 @@ def test_copy_recipe(client, user_with_recipes, empty_team, user3):
     # user must own recipe to copy it
     client.force_authenticate(user3)
     assert recipe.owner != user3
-    assert client.post(url, {'id': empty_team.id, 'type': 'team'}).status_code == status.HTTP_404_NOT_FOUND
+    assert client.post(url, {
+        'id': empty_team.id,
+        'type': 'team',
+        'name': empty_team.name,
+        }).status_code == status.HTTP_404_NOT_FOUND
 
     # team viewer cannot add recipe to team
     client.force_authenticate(user_with_recipes)
@@ -466,6 +470,7 @@ def test_copy_recipe(client, user_with_recipes, empty_team, user3):
     assert res.json()['owner'] == {
         'id': empty_team.id,
         'type': 'team',
+        'name': empty_team.name,
     }
 
 
@@ -495,4 +500,5 @@ def test_move_recipe(client, user_with_recipes, empty_team, user3):
     assert res.json()['owner'] == {
         'id': empty_team.id,
         'type': 'team',
+        'name': empty_team.name,
     }

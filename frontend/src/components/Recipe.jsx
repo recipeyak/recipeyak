@@ -8,7 +8,7 @@ import NoMatch from './NoMatch'
 import { ButtonPrimary } from './Buttons'
 
 import { inputAbs } from '../input'
-import { teamURL } from './RecipeItem'
+import { teamURL } from '../urls'
 
 const Owner = ({ type, url, name }) => {
   if (type === 'user') return null

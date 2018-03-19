@@ -95,6 +95,8 @@ import {
   SET_SENDING_TEAM_INVITES,
   SET_TEAMS,
   SET_LOADING_TEAMS,
+  SET_TEAM,
+  SET_CREATING_TEAM,
 } from './actionTypes'
 
 import {
@@ -1530,6 +1532,31 @@ export const fetchTeams = () => dispatch => {
   })
   .catch(err => {
     dispatch(setLoadingTeams(false))
+    throw err
+  })
+}
+
+export const setTeam = (id, team) => ({
+  type: SET_TEAM,
+  id,
+  team,
+})
+
+export const setCreatingTeam = val => ({
+  type: SET_CREATING_TEAM,
+  val,
+})
+
+export const creatingTeam = (name, emails, level) => dispatch => {
+  dispatch(setCreatingTeam(true))
+  return http.post('/api/v1/t/', { name, emails, level })
+  .then(res => {
+    dispatch(setTeam(res.data.id, res.data))
+    dispatch(setCreatingTeam(false))
+    dispatch(push(`/t/${res.data.id}`))
+  })
+  .catch(err => {
+    dispatch(setCreatingTeam(false))
     throw err
   })
 }

@@ -1,5 +1,5 @@
 import hashlib
-from typing import List
+from typing import List, Union
 import logging
 
 from django.db import models, transaction
@@ -341,7 +341,7 @@ class Team(CommonInfo):
     def is_admin(self, user):
         return self.membership_set.filter(user=user, is_active=True, level=Membership.ADMIN).exists()
 
-    def invite_exists(self, email: str) -> bool:
+    def invite_exists(self, email: Union[MyUser, str]) -> bool:
         return Membership.objects.filter(team=self, user__email=email).exists()
 
 

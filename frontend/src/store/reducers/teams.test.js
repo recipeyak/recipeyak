@@ -17,6 +17,8 @@ import {
   setSendingTeamInvites,
   setTeams,
   setLoadingTeams,
+  setCreatingTeam,
+  setTeam,
 } from '../actions'
 
 describe('Teams', () => {
@@ -537,6 +539,88 @@ describe('Teams', () => {
 
     expect(
       teams(beforeState, setLoadingTeams(true))
+    ).toEqual(afterState)
+  })
+
+  it('Sets team to have a creating attribute', () => {
+    const beforeState = {
+      1: {
+        id: 1,
+        user: {
+          id: 2,
+        }
+      },
+    }
+
+    const afterState = {
+      creating: true,
+      1: {
+        id: 1,
+        user: {
+          id: 2,
+        }
+      },
+    }
+
+    expect(
+      teams(beforeState, setCreatingTeam(true))
+    ).toEqual(afterState)
+  })
+
+  it('Sets team to have a creating attribute', () => {
+    const beforeState = {
+      1: {
+        id: 1,
+        user: {
+          id: 2,
+        }
+      },
+    }
+
+    const afterState = {
+      creating: true,
+      1: {
+        id: 1,
+        user: {
+          id: 2,
+        }
+      },
+    }
+
+    expect(
+      teams(beforeState, setCreatingTeam(true))
+    ).toEqual(afterState)
+  })
+
+  it('Sets team', () => {
+    const beforeState = {
+      1: {
+        id: 1,
+        user: {
+          id: 2,
+        }
+      },
+    }
+
+    const team = {
+      id: 2,
+      user: {
+        id: 3
+      }
+    }
+
+    const afterState = {
+      1: {
+        id: 1,
+        user: {
+          id: 2,
+        }
+      },
+      [team.id]: team
+    }
+
+    expect(
+      teams(beforeState, setTeam(team.id, team))
     ).toEqual(afterState)
   })
 })
