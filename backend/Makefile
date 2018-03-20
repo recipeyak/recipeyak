@@ -15,5 +15,6 @@ test:
 	DEBUG=1 ptw --beforerun 'mypy  --config-file mypy.ini .' -- --cov-config .coveragerc --cov --cov-report term:skip-covered --flake8 -s
 
 ci:
-	pipenv run mypy --config-file mypy.ini .
-	pipenv run pytest --cov-config .coveragerc --cov --flake8 --junit-xml ~/backend/reports/output.xml
+	pipenv run flake8 --config tox.ini
+	pipenv run mypy --config-file tox.ini .
+	pipenv run pytest --cov-config .coveragerc --cov --junit-xml ~/backend/reports/output.xml
