@@ -219,7 +219,7 @@ class SocialAccountSerializer(serializers.ModelSerializer):
             'uid',
             'last_login',
             'date_joined',
-            )
+        )
 
 
 class SocialConnectSerializer(SocialLoginSerializer):

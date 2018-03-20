@@ -100,8 +100,8 @@ def combine_ingredients(ingredients: List) -> List:
             else:
                 combined_units += ' + ' + str(unit)
         simple_ingredients.append({
-                'unit': combined_units,
-                'name': name
-            })
+            'unit': combined_units,
+            'name': name
+        })
 
     return simple_ingredients

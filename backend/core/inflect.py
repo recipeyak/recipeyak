@@ -146,11 +146,11 @@ plural_rules = [
     (
         (r"ex$", "ices", "ex-ices", False),
         (r"ex$", "ices", "ex-ices*", True),  # * = classical mode
-        (r"um$", "a",    "um-a", False),
-        (r"um$", "a",    "um-a*", True),
-        (r"on$", "a",    "on-a", False),
-        (r"a$", "ae",    "a-ae", False),
-        (r"a$", "ae",    "a-ae*", True)
+        (r"um$", "a", "um-a", False),
+        (r"um$", "a", "um-a*", True),
+        (r"on$", "a", "on-a", False),
+        (r"a$", "ae", "a-ae", False),
+        (r"a$", "ae", "a-ae*", True)
     ),
     # 8) Classical variants of modern inflections
     #    (e.g., stigmata, soprani).
@@ -159,14 +159,14 @@ plural_rules = [
         (r"eau$", "eaux", None, True),
         (r"ieu$", "ieu", None, True),
         (r"([iay])nx$", "\\1nges", None, True),
-        (r"en$", "ina",  "en-ina*", True),
-        (r"a$", "ata",   "a-ata*", True),
+        (r"en$", "ina", "en-ina*", True),
+        (r"a$", "ata", "a-ata*", True),
         (r"is$", "ides", "is-ides*", True),
-        (r"us$", "i",    "us-i*", True),
-        (r"us$", "us ",   "us-us*", True),
-        (r"o$", "i",     "o-i*", True),
-        (r"$", "i",      "-i*", True),
-        (r"$", "im",     "-im*", True)
+        (r"us$", "i", "us-i*", True),
+        (r"us$", "us ", "us-us*", True),
+        (r"o$", "i", "o-i*", True),
+        (r"$", "i", "-i*", True),
+        (r"$", "im", "-im*", True)
     ),
     # 9) -ch, -sh and -ss take -es in the plural
     #    (e.g., churches, classes).
@@ -194,7 +194,7 @@ plural_rules = [
     #     -o is preceded by a vowel takes -os
     #     (e.g., lassos, potatoes, bamboos).
     (
-        (r"o$", "os",        "o-os", False),
+        (r"o$", "os", "o-os", False),
         (r"([aeiou])o$", "\\1os", None, False),
         (r"o$", "oes", None, False)
     ),

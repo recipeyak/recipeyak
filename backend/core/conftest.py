@@ -45,10 +45,10 @@ def recipes(user):
     author = 'Recipe author'
 
     return [Recipe.objects.create(
-                name=name,
-                author=author,
-                user=user)
-            for n in range(5)]
+        name=name,
+        author=author,
+        user=user)
+        for n in range(5)]
 
 
 @pytest.fixture
