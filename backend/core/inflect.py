@@ -15,7 +15,7 @@
 # 95% for Verbs.find_lemma() (for regular verbs)
 # 96% for Verbs.find_lexeme() (for regular verbs)
 # https://github.com/clips/pattern/blob/ec95f97b2e34c2232e7c43ef1e34e3f0dea6654b/pattern/text/en/inflect.py
-
+from typing import Dict
 
 import re
 
@@ -363,7 +363,7 @@ def pluralize(word, pos=NOUN, custom={}, classical=True):
     # Only a very few number of adjectives inflect.
     n = range(len(plural_rules_compiled))
     if pos.startswith(ADJECTIVE):
-        n = [0, 1]
+        n = range(2)
     # Apply pluralization rules.
     for i in n:
         for suffix, inflection, category, classic in plural_rules_compiled[i]:
@@ -499,7 +499,7 @@ singular_irregular = {
 }
 
 
-def singularize(word: str, pos=NOUN, custom={}) -> str:
+def singularize(word: str, pos=NOUN, custom: Dict[str, str] = {}) -> str:
     """ Returns the singular of a given word.
     """
     if word in custom:

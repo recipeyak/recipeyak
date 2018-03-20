@@ -86,7 +86,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         ingredients = validated_data.pop('ingredients')
         steps = validated_data.pop('steps')
         tags = validated_data.pop('tags')
-        recipe = Recipe.objects.create(**validated_data)
+        recipe: Recipe = Recipe.objects.create(**validated_data)
         for ingredient in ingredients:
             Ingredient.objects.create(recipe=recipe, **ingredient)
         for step in steps:

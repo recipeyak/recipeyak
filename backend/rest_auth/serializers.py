@@ -1,3 +1,5 @@
+from typing import Dict
+
 from django.contrib.auth import get_user_model, authenticate
 from django.conf import settings
 from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
@@ -97,7 +99,7 @@ class LoginSerializer(serializers.Serializer):
 
         # If required, is the email verified?
         if 'rest_auth.registration' in settings.INSTALLED_APPS:
-            from allauth.account import app_settings
+            from allauth.account import app_settings  # type: ignore # duplicate import
             if app_settings.EMAIL_VERIFICATION == app_settings.EmailVerificationMethod.MANDATORY:
                 email_address = user.emailaddress_set.get(email=user.email)
                 if not email_address.verified:
@@ -165,7 +167,7 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
         pass
 
     def validate(self, attrs):
-        self._errors = {}
+        self._errors: Dict[str, str] = {}
 
         # Decode the uidb64 to uid to get User object
         try:
