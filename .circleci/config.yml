@@ -21,11 +21,13 @@ jobs:
           name: install dependencies
           working_directory: backend
           command: |
-            sudo pip3 install pipenv
+            mkdir -p .pipcache
+            sudo pip3 --cache-dir .pipcache install git+git://github.com/pypa/pipenv.git@8378a1b104f2d817790a05da370bef0a1b00f452
             make install
       - save_cache:
           paths:
             - ./backend/.venv
+            - ./backend/.pipcache
             - ./backend/.mypy_cache
           key: backend-cache-{{ .Branch }}-{{ checksum "backend/Pipfile.lock" }}
       - run:
