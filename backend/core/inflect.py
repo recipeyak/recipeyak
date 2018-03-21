@@ -15,7 +15,7 @@
 # 95% for Verbs.find_lemma() (for regular verbs)
 # 96% for Verbs.find_lexeme() (for regular verbs)
 # https://github.com/clips/pattern/blob/ec95f97b2e34c2232e7c43ef1e34e3f0dea6654b/pattern/text/en/inflect.py
-
+from typing import Dict
 
 import re
 
@@ -146,11 +146,11 @@ plural_rules = [
     (
         (r"ex$", "ices", "ex-ices", False),
         (r"ex$", "ices", "ex-ices*", True),  # * = classical mode
-        (r"um$", "a",    "um-a", False),
-        (r"um$", "a",    "um-a*", True),
-        (r"on$", "a",    "on-a", False),
-        (r"a$", "ae",    "a-ae", False),
-        (r"a$", "ae",    "a-ae*", True)
+        (r"um$", "a", "um-a", False),
+        (r"um$", "a", "um-a*", True),
+        (r"on$", "a", "on-a", False),
+        (r"a$", "ae", "a-ae", False),
+        (r"a$", "ae", "a-ae*", True)
     ),
     # 8) Classical variants of modern inflections
     #    (e.g., stigmata, soprani).
@@ -159,14 +159,14 @@ plural_rules = [
         (r"eau$", "eaux", None, True),
         (r"ieu$", "ieu", None, True),
         (r"([iay])nx$", "\\1nges", None, True),
-        (r"en$", "ina",  "en-ina*", True),
-        (r"a$", "ata",   "a-ata*", True),
+        (r"en$", "ina", "en-ina*", True),
+        (r"a$", "ata", "a-ata*", True),
         (r"is$", "ides", "is-ides*", True),
-        (r"us$", "i",    "us-i*", True),
-        (r"us$", "us ",   "us-us*", True),
-        (r"o$", "i",     "o-i*", True),
-        (r"$", "i",      "-i*", True),
-        (r"$", "im",     "-im*", True)
+        (r"us$", "i", "us-i*", True),
+        (r"us$", "us ", "us-us*", True),
+        (r"o$", "i", "o-i*", True),
+        (r"$", "i", "-i*", True),
+        (r"$", "im", "-im*", True)
     ),
     # 9) -ch, -sh and -ss take -es in the plural
     #    (e.g., churches, classes).
@@ -194,7 +194,7 @@ plural_rules = [
     #     -o is preceded by a vowel takes -os
     #     (e.g., lassos, potatoes, bamboos).
     (
-        (r"o$", "os",        "o-os", False),
+        (r"o$", "os", "o-os", False),
         (r"([aeiou])o$", "\\1os", None, False),
         (r"o$", "oes", None, False)
     ),
@@ -363,7 +363,7 @@ def pluralize(word, pos=NOUN, custom={}, classical=True):
     # Only a very few number of adjectives inflect.
     n = range(len(plural_rules_compiled))
     if pos.startswith(ADJECTIVE):
-        n = [0, 1]
+        n = range(2)
     # Apply pluralization rules.
     for i in n:
         for suffix, inflection, category, classic in plural_rules_compiled[i]:
@@ -499,7 +499,7 @@ singular_irregular = {
 }
 
 
-def singularize(word: str, pos=NOUN, custom={}) -> str:
+def singularize(word: str, pos=NOUN, custom: Dict[str, str] = {}) -> str:
     """ Returns the singular of a given word.
     """
     if word in custom:

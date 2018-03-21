@@ -74,7 +74,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         """
         Return if user has invite to team.
         """
-        return self.membership_set.filter(team=team).exclude(invite=None).exists()
+        return self.membership_set.filter(team=team).exclude(invite=None).exists()  # type: ignore
 
     # required for admin
     @property
@@ -314,7 +314,7 @@ class Team(CommonInfo):
         if level is None:
             level = Membership.CONTRIBUTOR
         m = Membership.objects.create(team=self, level=level, user=user, is_active=False)
-        return Invite.objects.create(membership=m)
+        return Invite.objects.create(membership=m)  # type: ignore
 
     def kick_user(self, user):
         """
@@ -332,17 +332,17 @@ class Team(CommonInfo):
         self.is_public = False
         self.save()
 
-    def is_member(self, user):
-        return self.membership_set.filter(user=user, is_active=True).exists()
+    def is_member(self, user) -> bool:
+        return self.membership_set.filter(user=user, is_active=True).exists()  # type: ignore
 
-    def is_contributor(self, user):
-        return self.membership_set.filter(user=user, is_active=True, level=Membership.CONTRIBUTOR).exists()
+    def is_contributor(self, user) -> bool:
+        return self.membership_set.filter(user=user, is_active=True, level=Membership.CONTRIBUTOR).exists()  # type: ignore
 
-    def is_admin(self, user):
-        return self.membership_set.filter(user=user, is_active=True, level=Membership.ADMIN).exists()
+    def is_admin(self, user) -> bool:
+        return self.membership_set.filter(user=user, is_active=True, level=Membership.ADMIN).exists()  # type: ignore
 
     def invite_exists(self, email: Union[MyUser, str]) -> bool:
-        return Membership.objects.filter(team=self, user__email=email).exists()
+        return Membership.objects.filter(team=self, user__email=email).exists()  # type: ignore
 
 
 class Membership(CommonInfo):

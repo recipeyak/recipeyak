@@ -5,14 +5,18 @@ dev:
 	pipenv run python manage.py runserver
 
 install:
-	pipenv install --dev --three
+	pipenv install --dev
 
 # no coverage or mypy as they are slow
 test-dev:
-	DEBUG=1 ptw -- --flake8 -s
+	DEBUG=1 ptw --beforerun 'flake8' -- -s
 
 test:
-	DEBUG=1 ptw -- --cov-config .coveragerc --cov --cov-report term:skip-covered --flake8 --mypy -s
+	# the standalone versions of flake8 and mypy are much faster than
+	# the pytest plugins
+	DEBUG=1 ptw --beforerun 'mypy  --config-file tox.ini . && flake8' -- --cov-config .coveragerc --cov --cov-report term:skip-covered -s
 
 ci:
-	pipenv run pytest --cov-config .coveragerc --cov --flake8 --mypy --junit-xml ~/backend/reports/output.xml
+	pipenv run flake8
+	pipenv run mypy --config-file tox.ini .
+	pipenv run pytest --cov-config .coveragerc --cov --junit-xml ~/backend/reports/output.xml

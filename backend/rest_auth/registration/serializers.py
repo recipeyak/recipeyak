@@ -219,10 +219,10 @@ class SocialAccountSerializer(serializers.ModelSerializer):
             'uid',
             'last_login',
             'date_joined',
-            )
+        )
 
 
-class SocialConnectMixin(object):
+class SocialConnectSerializer(SocialLoginSerializer):
     def get_social_login(self, *args, **kwargs):
         """
         set the social login process state to connect rather than login
@@ -231,10 +231,6 @@ class SocialConnectMixin(object):
         allauth.socialaccount.helpers module complete_social_login function.
         """
 
-        social_login = super(SocialConnectMixin, self).get_social_login(*args, **kwargs)
+        social_login = super().get_social_login(*args, **kwargs)
         social_login.state['process'] = AuthProcess.CONNECT
         return social_login
-
-
-class SocialConnectSerializer(SocialConnectMixin, SocialLoginSerializer):
-    pass

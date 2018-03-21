@@ -142,7 +142,7 @@ if not DOCKERBUILD:
 
 # https://github.com/James1345/django-rest-knox/blob/ee71e0f352439e1733b7baeeca6ba1c90cf1495d/docs/settings.md
 REST_KNOX = {
-  'TOKEN_TTL': None
+    'TOKEN_TTL': None
 }
 
 # http://django-rest-auth.readthedocs.io/en/latest/api_endpoints.html#basic

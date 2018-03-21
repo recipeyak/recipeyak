@@ -5,7 +5,7 @@ RUN apt-get update
 RUN apt-get install netcat -y
 
 # -- Install Pipenv:
-RUN set -ex && pip install git+git://github.com/pypa/pipenv.git@8378a1b104f2d817790a05da370bef0a1b00f452
+RUN set -ex && pip install "pipenv~=11.8"
 
 # -- Install Application into container:
 RUN set -ex && mkdir /app

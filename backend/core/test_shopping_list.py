@@ -74,11 +74,10 @@ def test_fetching_shoppinglist(client, user, recipe):
     expected = [{
         'unit': '2 pound',
         'name': 'egg'
-        }, {
+    }, {
         'unit': '4 tablespoon',
         'name': 'soy sauce'
-        }
-    ]
+    }]
 
     assert res.json() == expected
 
@@ -105,11 +104,10 @@ def test_fetching_shoppinglist_with_team_recipe(client, team, user, recipe):
     expected = [{
         'unit': '2 pound',
         'name': 'egg'
-        }, {
+    }, {
         'unit': '4 tablespoon',
         'name': 'soy sauce'
-        }
-    ]
+    }]
 
     assert res.json() == expected
 
@@ -181,12 +179,10 @@ def test_combining_ingredients_with_dashes_in_name(user):
 
     actual = combine_ingredients(ingredients)
 
-    expected = [
-            {
-                'name': 'extra virgin olive oil',
-                'unit': '9 tablespoon',
-                }
-            ]
+    expected = [{
+        'name': 'extra virgin olive oil',
+        'unit': '9 tablespoon',
+    }]
 
     assert actual == expected
 
@@ -269,12 +265,10 @@ def test_combining_ingredients_with_approximations(user):
 
     actual = combine_ingredients(ingredients)
 
-    expected = [
-            {
-                'name': 'black pepper',
-                'unit': '3 tablespoon + some',
-                }
-            ]
+    expected = [{
+        'name': 'black pepper',
+        'unit': '3 tablespoon + some',
+    }]
 
     assert actual == expected
 

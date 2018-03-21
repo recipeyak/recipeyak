@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import logging
-from typing import List
+from typing import List, Tuple, Any
 import pytz
 
 from django.shortcuts import get_object_or_404
@@ -299,8 +299,9 @@ class UserStats(APIView):
             'total_recipe_edits': total_recipe_edits,
             'new_recipes_last_week': new_recipes_last_week,
             'most_added_recipe': MostAddedRecipeSerializer(
-                                    most_added_recipe,
-                                    context={'request': request}).data,
+                most_added_recipe,
+                context={'request': request}
+            ).data,
             'date_joined': date_joined,
             'recipes_pie_not_pie': (recipes_pie_not_pie, total_recipes),
             'recipes_added_by_month': recipes_added_by_month,
@@ -324,6 +325,7 @@ class TeamViewSet(viewsets.ModelViewSet):
         return Team.objects.filter(membership__user__id=self.request.user.id) | Team.objects.filter(is_public=True)
 
     def get_permissions(self):
+        permission_classes: Tuple[Any, ...]
         if self.action in ('retrieve', 'list', 'create'):
             permission_classes = (IsAuthenticated,)
         else:

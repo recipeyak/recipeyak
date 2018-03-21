@@ -465,6 +465,7 @@ def test_create_team_invite(client, team, user, user2, user3, empty_team):
     res = client.post(url, {'emails': [user2.email]})
     assert res.status_code == status.HTTP_404_NOT_FOUND
 
+
 def test_invitees_not_appearing_in_members(client, team, user, user2, user3):
     assert team.is_member(user)
     assert not team.is_member(user2)
@@ -476,6 +477,7 @@ def test_invitees_not_appearing_in_members(client, team, user, user2, user3):
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK
     assert len(res.json()) == 1
+
 
 def test_retrieve_team_invite(client, team, user, user2, user3):
     """
@@ -591,8 +593,7 @@ def test_update_user_invite(client, team, user, user2):
             (team_invite_url, [
                 (user, status.HTTP_405_METHOD_NOT_ALLOWED),
                 (user2, status.HTTP_403_FORBIDDEN)
-            ])
-            ]:
+            ])]:
         for u, s in users:
             client.force_authenticate(u)
             assert client.patch(url, {'membership': 2}).status_code == s
@@ -620,8 +621,7 @@ def test_destroy_user_invite(client, team, user, user2):
             (team_invite_url, [
                 (user, status.HTTP_204_NO_CONTENT),
                 (user2, status.HTTP_403_FORBIDDEN)
-            ])
-            ]:
+            ])]:
         for u, s in users:
             client.force_authenticate(u)
             assert client.delete(url).status_code == s
@@ -1091,7 +1091,7 @@ def test_move_team_recipe(client, team_with_recipes, user3, empty_team):
     assert res.json()['owner'] == data
 
 
-def test_creating_team(client, user, user2, user3):
+def test_creating_team_with_name_and_emails(client, user, user2, user3):
     """
     ensure we can create a team with a name, and emails that we want to invite
     """
@@ -1102,7 +1102,7 @@ def test_creating_team(client, user, user2, user3):
         'name': 'Team Name',
         'emails': [user2.email, user3.email],
         'level': Membership.CONTRIBUTOR
-        })
+    })
     assert res.status_code == status.HTTP_201_CREATED
     team_id = res.json()['id']
     team = Team.objects.get(id=team_id)

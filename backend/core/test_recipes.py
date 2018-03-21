@@ -1,3 +1,4 @@
+from typing import Dict, List, Any
 import pytest
 
 from django.urls import reverse
@@ -21,7 +22,7 @@ def test_recipe_creation(client, user):
     """
     client.force_authenticate(user)
 
-    data = {
+    data: Dict[str, Any] = {
         'name': 'Recipe name',
         'author': 'Recipe author',
         'source': 'www.exmple.com',
@@ -69,9 +70,9 @@ def test_recipe_creation(client, user):
 
     # compare the nested items and ingore the ids as they don't exist them in the
     # initial data
-    for key in ['ingredients', 'steps', 'tags']:
-        items = data.get(key)
-        new_items = res.json().get(key)
+    for key in ['steps', 'tags']:
+        items: List[Dict[str, str]] = data.get(key)
+        new_items: List[Dict[str, str]] = res.json().get(key)
         for item, new_item in zip(items, new_items):
             assert item.get('text') == new_item.get('text')
 
@@ -454,7 +455,7 @@ def test_copy_recipe(client, user_with_recipes, empty_team, user3):
         'id': empty_team.id,
         'type': 'team',
         'name': empty_team.name,
-        }).status_code == status.HTTP_404_NOT_FOUND
+    }).status_code == status.HTTP_404_NOT_FOUND
 
     # team viewer cannot add recipe to team
     client.force_authenticate(user_with_recipes)
