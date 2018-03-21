@@ -14,9 +14,7 @@ jobs:
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
-            - backend-cache-{{ .Branch }}-{{ checksum "backend/Pipfile.lock" }}
-            - backend-cache-{{ .Branch }}
-            - backend-cache
+            - backend-v1-{{ checksum "backend/Pipfile.lock" }}
       - run:
           name: install dependencies
           working_directory: backend
@@ -29,7 +27,7 @@ jobs:
             - ./backend/.venv
             - ./backend/.pipcache
             - ./backend/.mypy_cache
-          key: backend-cache-{{ .Branch }}-{{ checksum "backend/Pipfile.lock" }}
+          key: backend-v1-{{ checksum "backend/Pipfile.lock" }}
       - run:
           name: run tests
           working_directory: backend
