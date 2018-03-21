@@ -12,6 +12,8 @@ test-dev:
 	DEBUG=1 ptw --beforerun 'flake8' -- -s
 
 test:
+	# the standalone versions of flake8 and mypy are much faster than
+	# the pytest plugins
 	DEBUG=1 ptw --beforerun 'mypy  --config-file tox.ini . && flake8' -- --cov-config .coveragerc --cov --cov-report term:skip-covered -s
 
 ci:
