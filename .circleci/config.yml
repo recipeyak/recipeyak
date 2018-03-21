@@ -22,7 +22,7 @@ jobs:
           working_directory: backend
           command: |
             mkdir -p .pipcache
-            sudo pip3 --cache-dir .pipcache install git+git://github.com/pypa/pipenv.git@8378a1b104f2d817790a05da370bef0a1b00f452
+            sudo pip3 --cache-dir .pipcache install "pipenv~=11.8"
             make install
       - save_cache:
           paths:
