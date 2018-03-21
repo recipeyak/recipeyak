@@ -14,20 +14,22 @@ jobs:
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
-            - backend-v1-{{ checksum "backend/Pipfile.lock" }}
+            - backend-v2-{{ .Branch }}-{{ checksum "backend/Pipfile.lock" }}
+            - backend-v2-{{ .Branch }}-
+            - backend-v2-
       - run:
           name: install dependencies
           working_directory: backend
           command: |
             mkdir -p .pipcache
-            sudo pip3 --cache-dir .pipcache install "pipenv~=11.8"
+            sudo -H pip3 --cache-dir .pipcache install "pipenv~=11.8"
             make install
       - save_cache:
           paths:
             - ./backend/.venv
             - ./backend/.pipcache
             - ./backend/.mypy_cache
-          key: backend-v1-{{ checksum "backend/Pipfile.lock" }}
+          key: - backend-v2-{{ .Branch }}-{{ checksum "backend/Pipfile.lock" }}
       - run:
           name: run tests
           working_directory: backend
