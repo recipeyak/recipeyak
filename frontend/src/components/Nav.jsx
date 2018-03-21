@@ -8,12 +8,38 @@ import { setDarkModeClass } from '../sideEffects'
 import NavLink from '../containers/NavLink'
 import Logo from './Logo'
 
+import { teamURL } from '../urls'
+
+const Teams = ({ teams, loading }) => {
+  if (loading) {
+    return <p>Loading...</p>
+  }
+
+  if (teams.length === 0) {
+    return <p className="text-muted fs-3 align-self-center">No teams.</p>
+  }
+
+  return (
+    <div>
+        { teams.map(({ id, name }) =>
+            <p key={id}>
+              <Link to={teamURL(id)}>{ name }</Link>
+            </p>)
+        }
+    </div>
+  )
+}
+
 class Navbar extends React.Component {
   state = {
     query: '',
     showUserDropdown: false,
     showNotificationsDropdown: false,
     showTeamsDropdown: false,
+  }
+
+  static defaultProps = {
+    teams: []
   }
 
   componentWillMount = () => {
@@ -94,7 +120,10 @@ class Navbar extends React.Component {
           <div className={
             'box p-absolute direction-column align-items-start mt-1 pr-2 pl-2 pt-3 pb-3' + (this.state.showTeamsDropdown ? ' d-flex' : ' d-none')
           }>
-            <p className="text-muted fs-3 align-self-center">No teams.</p>
+
+            <Teams loading={ this.props.loadingTeams }
+                   teams={ this.props.teams }/>
+
             <Link to="/t/create" className="mt-1 ">Create a Team</Link>
           </div>
         </section>

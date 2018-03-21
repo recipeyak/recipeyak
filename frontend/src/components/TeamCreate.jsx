@@ -11,7 +11,7 @@ import {
   creatingTeam
 } from '../store/actions'
 
-const mapStateToProps = (state, props) => ({
+const mapStateToProps = (state) => ({
   loading: state.teams.creating
 })
 
@@ -85,7 +85,6 @@ class TeamCreate extends React.Component {
             </p>
           </div>
 
-
           <ButtonPrimary
             type="submit"
             loading={ this.props.loading }
@@ -97,8 +96,6 @@ class TeamCreate extends React.Component {
     )
   }
 }
-
-
 
 const ConnectedTeamCreate = connect(
   mapStateToProps,

@@ -16,7 +16,9 @@ def test_creating_team(client, user, user2):
     """
     team_name = 'Recipe Yak Team'
     data = {
-        'name': team_name
+        'name': team_name,
+        'emails': [],
+        'level': Membership.CONTRIBUTOR,
     }
     url = reverse('teams-list')
 

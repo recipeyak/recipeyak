@@ -43,6 +43,32 @@ describe('Teams', () => {
     ).toEqual(afterState)
   })
 
+  it('Updates team object', () => {
+    const beforeState = {
+      1: {
+        id: 1,
+        name: 'team name',
+        loading: false,
+      }
+    }
+    const recipe = {
+      id: 1,
+      name: 'other team name',
+    }
+
+    const afterState = {
+      1: {
+        id: 1,
+        name: 'other team name',
+        loading: false,
+      },
+    }
+
+    expect(
+      teams(beforeState, addTeam(recipe))
+    ).toEqual(afterState)
+  })
+
   it('Adds all teams given', () => {
     const beforeState = {
       1: {

@@ -89,6 +89,13 @@ class Team extends React.Component {
     this.props.fetchData(this.props.id)
   }
 
+  componentWillReceiveProps (nextProps) {
+    const newID = nextProps.id !== this.props.id
+    if (newID) {
+      this.props.fetchData(nextProps.id)
+    }
+  }
+
   static defaultProps = {
     members: {},
     invites: {},

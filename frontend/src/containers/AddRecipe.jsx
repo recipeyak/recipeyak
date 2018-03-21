@@ -26,7 +26,9 @@ import {
 
 import AddRecipe from '../components/AddRecipe'
 
-const notBool = x => typeof x !== 'boolean'
+import {
+  teamsFrom
+} from '../store/mapState'
 
 const mapStateToProps = state => ({
   name: state.addrecipe.name,
@@ -40,7 +42,7 @@ const mapStateToProps = state => ({
   loading: state.loading.addRecipe,
   error: state.error.addRecipe,
   // we remove the loading
-  teams: Object.values(state.teams).filter(notBool),
+  teams: teamsFrom(state),
   loadingTeams: state.teams.loading,
 })
 

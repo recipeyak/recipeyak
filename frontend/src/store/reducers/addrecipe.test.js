@@ -275,7 +275,6 @@ describe('addrecipe', () => {
   })
 
   it("sets add recipe form's team field", () => {
-
     const beforeState = {
     }
 

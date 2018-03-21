@@ -23,7 +23,13 @@ import {
 export const teams = (state = {}, action) => {
   switch (action.type) {
   case ADD_TEAM:
-    return { ...state, [action.team.id]: action.team }
+    return {
+      ...state,
+      [action.team.id]: {
+        ...state[action.team.id],
+        ...action.team
+      }
+    }
   case SET_LOADING_TEAM:
     return {
       ...state,
@@ -179,10 +185,10 @@ export const teams = (state = {}, action) => {
       [action.id]: action.team
     }
   case SET_CREATING_TEAM:
-      return {
-        ...state,
-        creating: action.val
-      }
+    return {
+      ...state,
+      creating: action.val
+    }
   default:
     return state
   }

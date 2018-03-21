@@ -3,10 +3,15 @@ import { connect } from 'react-redux'
 import {
   fetchUser,
   loggingOut,
-  toggleDarkMode
+  toggleDarkMode,
+  fetchTeams,
 } from '../store/actions'
 
 import Nav from '../components/Nav'
+
+import {
+  teamsFrom
+} from '../store/mapState'
 
 const mapStateToProps = state => ({
   avatarURL: state.user.avatarURL,
@@ -14,12 +19,15 @@ const mapStateToProps = state => ({
   loading: state.user.loading,
   loggedIn: state.user.token != null,
   loggingOut: state.user.loggingOut,
-  darkMode: state.user.darkMode
+  darkMode: state.user.darkMode,
+  teams: teamsFrom(state),
+  loadingTeams: state.teams.loading,
 })
 
 const mapDispatchToProps = dispatch => {
   return {
     fetchData: () => {
+      dispatch(fetchTeams())
       dispatch(fetchUser())
     },
     logout: () => {
