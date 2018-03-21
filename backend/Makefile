@@ -5,9 +5,7 @@ dev:
 	pipenv run python manage.py runserver
 
 install:
-	# https://github.com/pypa/pipenv/issues/349#issuecomment-300801732
-	# create virtual env if one doesn't exist
-	pipenv --venv || pipenv install --dev --three
+	pipenv install --dev
 
 # no coverage or mypy as they are slow
 test-dev:
