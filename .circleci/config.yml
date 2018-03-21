@@ -29,7 +29,7 @@ jobs:
             - ./backend/.venv
             - ./backend/.pipcache
             - ./backend/.mypy_cache
-          key: - backend-v2-{{ .Branch }}-{{ checksum "backend/Pipfile.lock" }}
+          key: backend-v2-{{ .Branch }}-{{ checksum "backend/Pipfile.lock" }}
       - run:
           name: run tests
           working_directory: backend
