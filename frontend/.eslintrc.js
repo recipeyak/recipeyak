@@ -66,6 +66,7 @@ module.exports = {
         'destructuring': 'any',
         'ignoreReadBeforeAssign': false
     }],
+    'arrow-spacing': ['warn', { "before": true, "after": true }],
     'space-in-parens': ['warn', 'never'],
     'no-useless-return': 'warn'
   }

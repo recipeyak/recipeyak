@@ -171,7 +171,10 @@ export const teams = (state = {}, action) => {
       ...state,
       ...action.teams.reduce((a, b) => ({
         ...a,
-        [b.id]: b
+        [b.id]: {
+          ...state[b.id],
+          ...b,
+        }
       }), {})
     }
   case SET_LOADING_TEAMS:

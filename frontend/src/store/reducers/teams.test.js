@@ -75,6 +75,11 @@ describe('Teams', () => {
         id: 1,
         name: 'add all teams'
       },
+      4: {
+        id: 4,
+        name: 'blah',
+        loadingTeam: false,
+      },
     }
 
     const data = [{
@@ -83,6 +88,9 @@ describe('Teams', () => {
     }, {
       id: 3,
       name: 'yet another name',
+    }, {
+      id: 4,
+      name: 'blah',
     }]
 
     const afterState = {
@@ -97,7 +105,12 @@ describe('Teams', () => {
       3: {
         id: 3,
         name: 'yet another name',
-      }
+      },
+      4: {
+        id: 4,
+        name: 'blah',
+        loadingTeam: false,
+      },
     }
 
     expect(

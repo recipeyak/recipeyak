@@ -6,7 +6,7 @@ import {
 export const NavLink = ({
   to,
   pathname,
-  className,
+  className = '',
   activeClassName = 'active',
   ...props
 }) => {

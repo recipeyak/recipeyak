@@ -7,6 +7,7 @@ import { setDarkModeClass } from '../sideEffects'
 
 import NavLink from '../containers/NavLink'
 import Logo from './Logo'
+import Dropdown from './Dropdown'
 
 import { teamURL } from '../urls'
 
@@ -20,64 +21,89 @@ const Teams = ({ teams, loading }) => {
   }
 
   return (
-    <div>
+    <div className="text-left">
         { teams.map(({ id, name }) =>
             <p key={id}>
-              <Link to={teamURL(id)}>{ name }</Link>
+              <NavLink to={teamURL(id)} activeClassName="fw-500">{ name }</NavLink>
             </p>)
         }
     </div>
   )
 }
 
-class Navbar extends React.Component {
+class UserDropdown extends React.Component {
   state = {
-    query: '',
-    showUserDropdown: false,
-    showNotificationsDropdown: false,
-    showTeamsDropdown: false,
+    show: false,
   }
+
+  componentWillMount () {
+    document.addEventListener('click', this.handleGeneralClick)
+  }
+
+  componentDidMount () {
+    setDarkModeClass(this.props.darkMode)
+  }
+
+  componentWillUnmount () {
+    document.removeEventListener('click', this.handleGeneralClick)
+  }
+
+  handleGeneralClick = e => {
+    const clickedDropdown = this.dropdown && this.dropdown.contains(e.target)
+    if (clickedDropdown) return
+    this.setState({ show: false })
+  }
+
+  render () {
+    const {
+      avatarURL,
+      email,
+      toggleDarkMode,
+      darkMode,
+      logout,
+      loggingOut
+    } = this.props
+    return (
+      <section ref={dropdown => { this.dropdown = dropdown }}>
+        <img
+          onClick={ () => this.setState(prev => ({ show: !prev.show })) }
+          alt=''
+          className="user-profile-image better-nav-item p-0"
+          src={ avatarURL }/>
+
+          <div className={
+            'box p-absolute direction-column align-items-start right-0 mt-1' + (this.state.show ? ' d-flex' : ' d-none')
+          }>
+            <p className="bold">{ email }</p>
+            <div className="d-flex align-center p-1-0">
+              <label className="d-flex align-items-center cursor-pointer">
+              <input
+                onChange={ toggleDarkMode }
+                checked={ darkMode }
+                type='checkbox' className="mr-2"/>
+                Dark Mode
+              </label>
+            </div>
+            <Link to="/settings" className="p-1-0">Settings</Link>
+            <button
+              onClick={ logout }
+              className={ 'my-button w-100' + (loggingOut ? ' is-loading' : '')}>
+              Logout
+            </button>
+          </div>
+      </section>
+    )
+  }
+}
+
+class Navbar extends React.Component {
 
   static defaultProps = {
     teams: []
   }
 
-  componentWillMount = () => {
+  componentWillMount () {
     this.props.fetchData()
-    document.addEventListener('click', this.handleGeneralClick)
-  }
-
-  componentDidMount = () => {
-    setDarkModeClass(this.props.darkMode)
-  }
-
-  componentWillUnmount = () => {
-    document.removeEventListener('click', this.handleGeneralClick)
-  }
-
-  handleGeneralClick = e => {
-    const clickedInNotificationsDropdown = this.notificationsDropdown && this.notificationsDropdown.contains(e.target)
-    const clickedInTeamsDropdown = this.teamsDropdown && this.teamsDropdown.contains(e.target)
-    const clickedInUserDropdown = this.userDropdown && this.userDropdown.contains(e.target)
-    const clickedOnLink = e.target.nodeName === 'A'
-
-    const data = {
-      showUserDropdown: false,
-      showNotificationsDropdown: false,
-      showTeamsDropdown: false,
-    }
-    if (clickedInNotificationsDropdown) {
-      delete data.showNotificationsDropdown
-    }
-    if (clickedInTeamsDropdown) {
-      delete data.showTeamsDropdown
-    }
-    if (clickedInUserDropdown) {
-      // Needed to make clicking inputs work
-      if (!clickedOnLink) { return }
-      delete data.showUserDropdown
-    }
-    this.setState(data)
   }
 
   render () {
@@ -101,32 +127,16 @@ class Navbar extends React.Component {
           Add Recipe
         </NavLink>
 
-        <section ref={notificationsDropdown => { this.notificationsDropdown = notificationsDropdown }}>
-          <a
-            onClick={ () => this.setState(prev => ({ showNotificationsDropdown: !prev.showNotificationsDropdown })) }
-            className="better-nav-item">Notifications</a>
-          <div className={
-            'box p-absolute direction-column align-items-start mt-1 pr-2 pl-2 pt-3 pb-3' + (this.state.showNotificationsDropdown ? ' d-flex' : ' d-none')
-          }>
+        <Dropdown name="Notifications">
             <p className="text-muted fs-3 align-self-center">No new notifications.</p>
             <Link to="/notifications" className="mt-1 ">See All Notifications</Link>
-          </div>
-        </section>
+        </Dropdown>
 
-        <section ref={teamsDropdown => { this.teamsDropdown = teamsDropdown }}>
-          <a
-            onClick={ () => this.setState(prev => ({ showTeamsDropdown: !prev.showTeamsDropdown })) }
-            className="better-nav-item">Teams</a>
-          <div className={
-            'box p-absolute direction-column align-items-start mt-1 pr-2 pl-2 pt-3 pb-3' + (this.state.showTeamsDropdown ? ' d-flex' : ' d-none')
-          }>
-
+        <Dropdown name="Teams">
             <Teams loading={ this.props.loadingTeams }
                    teams={ this.props.teams }/>
-
             <Link to="/t/create" className="mt-1 ">Create a Team</Link>
-          </div>
-        </section>
+        </Dropdown>
 
         <NavLink
           to="/recipes"
@@ -140,33 +150,16 @@ class Navbar extends React.Component {
           className="better-nav-item">
           Cart
         </NavLink>
-        <section ref={userDropdown => { this.userDropdown = userDropdown }}>
-          <img
-            onClick={ () => this.setState(prev => ({ showUserDropdown: !prev.showUserDropdown })) }
-            alt=''
-            className="user-profile-image better-nav-item p-0"
-            src={ avatarURL }/>
-          <div className={
-            'box p-absolute direction-column align-items-start right-0 mt-1' + (this.state.showUserDropdown ? ' d-flex' : ' d-none')
-          }>
-            <p className="bold">{ email }</p>
-            <div className="d-flex align-center p-1-0">
-              <label className="d-flex align-items-center cursor-pointer">
-              <input
-                onChange={ toggleDarkMode }
-                checked={ darkMode }
-                type='checkbox' className="mr-2"/>
-                Dark Mode
-              </label>
-            </div>
-            <Link to="/settings" className="p-1-0">Settings</Link>
-            <button
-              onClick={ logout }
-              className={ 'my-button w-100' + (loggingOut ? ' is-loading' : '')}>
-              Logout
-            </button>
-          </div>
-        </section>
+
+        <UserDropdown
+          avatarURL={avatarURL}
+          email={email}
+          toggleDarkMode={toggleDarkMode}
+          darkMode={darkMode}
+          logout={logout}
+          loggingOut={loggingOut}
+        />
+
       </div>
     ) : (
       <div className="d-flex hide-sm">
