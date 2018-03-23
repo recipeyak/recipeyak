@@ -12,8 +12,9 @@ import {
   deletingMembership,
 } from '../store/actions'
 
-const mapStateToProps = (state, { userID, teamID }) => ({
+const mapStateToProps = (state, { userID, teamID, membershipID }) => ({
   isUser: state.user.id === userID,
+  deleting: state.teams[teamID].members[membershipID].deleting,
   userIsTeamAdmin:
     Object.values(state.teams[teamID].members)
     .filter(x => x.level === 'admin')
@@ -37,6 +38,7 @@ const MemberRow = ({
   deleteMembership,
   isUser,
   isActive,
+  deleting,
 }) =>
   <tr key={ membershipID }>
     <td className="d-flex align-items-center pr-4">
@@ -74,7 +76,9 @@ const MemberRow = ({
     </td>
     <td className="vertical-align-middle text-right">
       { isUser || userIsTeamAdmin
-        ? <ButtonDanger onClick={ () => deleteMembership(teamID, membershipID) } className="is-small">
+        ? <ButtonDanger onClick={ () => deleteMembership(teamID, membershipID) }
+                        loading={ deleting }
+                        className="is-small">
             { isUser
               ? 'leave'
               : 'remove'

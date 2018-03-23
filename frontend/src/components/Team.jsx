@@ -60,9 +60,9 @@ const TeamRecipes = ({ loading, recipes }) =>
   <div>
     <section className="d-flex justify-space-between align-items-center">
       <h2 className="fs-6 mb-2">Recipes</h2>
-      <ButtonPrimary>
+      <Link to="/recipes/add" className="button is-primary">
         Create Recipe
-      </ButtonPrimary>
+      </Link>
     </section>
     { loading
       ? <Loader/>
