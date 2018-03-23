@@ -12,10 +12,6 @@ import NoMatch from './NoMatch'
 import Loader from './Loader'
 
 import {
-  ButtonPrimary,
-} from './Buttons'
-
-import {
   inviteURL
 } from '../urls'
 
