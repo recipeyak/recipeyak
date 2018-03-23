@@ -31,9 +31,10 @@ def test_team_kick_user(client, team, user, user2):
     """
     Remove member from team. If they have an invite to team, cancel it.
     """
-    assert user.membership_set.get(team=team)
+    assert team.is_member(user)
+    team.force_join(user2)
     team.kick_user(user)
-    assert not user.membership_set.filter(team=team).exists()
+    assert not team.is_member(user)
 
 
 def test_team_set_public_private(client, team, user, user2):

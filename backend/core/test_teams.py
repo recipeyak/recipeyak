@@ -1146,3 +1146,19 @@ def test_demoting_self_in_team_from_admin(client, team, user):
     assert res.status_code == status.HTTP_400_BAD_REQUEST
 
     assert team.is_member(user)
+
+
+def test_deleting_last_membership_of_team(client, team, user):
+    assert team.is_member(user)
+    assert team.membership_set.count() == 1
+    user_membership = user.membership_set.get(team=team)
+
+    url = reverse('team-member-detail',
+                  kwargs={
+                      'team_pk': team.id,
+                      'pk': user_membership.id
+                  })
+
+    client.force_authenticate(user)
+    res = client.delete(url)
+    assert res.status_code == status.HTTP_400_BAD_REQUEST

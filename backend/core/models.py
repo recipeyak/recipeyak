@@ -390,5 +390,11 @@ class Membership(CommonInfo):
                 raise ValueError('cannot demote self as last admin')
         super().save(*args, **kwargs)
 
+    def delete(self):
+        last_member = self.team.membership_set.count() == 1
+        if last_member:
+            raise ValueError('cannot delete last member of team')
+        super().delete()
+
     def __str__(self):
         return f'<Membership • user_email: {self.user.email}, team: {self.team.id} level: {self.level}>'

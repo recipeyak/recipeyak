@@ -370,6 +370,14 @@ class MembershipViewSet(
             permission_classes = (IsAuthenticated, IsTeamAdmin,)
         return [permission() for permission in permission_classes]
 
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        try:
+            instance.delete()
+        except ValueError as e:
+            return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class TeamInviteViewSet(viewsets.GenericViewSet,
                         mixins.RetrieveModelMixin,
