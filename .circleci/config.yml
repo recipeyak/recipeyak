@@ -36,6 +36,10 @@ jobs:
           command: |
             mkdir -p ~/backend/reports
             make ci
+      - run:
+          name: upload coverage
+          working_directory: backend
+          command: make upload-coverage
       - store_test_results:
           path: ~/backend/reports
   test_frontend:
