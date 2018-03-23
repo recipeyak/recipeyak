@@ -21,6 +21,3 @@ ci:
 	# https://github.com/python/mypy/issues/4233
 	pipenv run mypy --config-file tox.ini --junit-xml ~/backend/reports/mypy.xml .
 	pipenv run pytest --cov-config .coveragerc --cov --junit-xml ~/backend/reports/pytest.xml
-
-upload-coverage:
-	pipenv run codecov
