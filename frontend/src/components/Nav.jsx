@@ -119,7 +119,7 @@ class Navbar extends React.Component {
     } = this.props
 
     const buttons = loggedIn ? (
-      <div className="d-flex align-center p-relative overflow-x-auto">
+      <div className="d-flex align-center p-relative justify-content-center flex-wrap">
         <NavLink
           to="/recipes/add"
           activeClassName="active"
