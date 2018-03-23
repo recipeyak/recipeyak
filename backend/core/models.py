@@ -332,6 +332,9 @@ class Team(CommonInfo):
         self.is_public = False
         self.save()
 
+    def admins(self):
+        return self.membership_set.filter(is_active=True, level=Membership.ADMIN)
+
     def is_member(self, user) -> bool:
         return self.membership_set.filter(user=user, is_active=True).exists()  # type: ignore
 
@@ -374,6 +377,18 @@ class Membership(CommonInfo):
     def set_active(self):
         self.is_active = True
         self.save()
+
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        if not is_new:
+            # NOTE: although we check inside the serializer to prevent demoting the
+            # last admin, this forms a last line of defence
+            current = Membership.objects.get(pk=self.pk)
+            one_admin_left = len(self.team.admins()) == 1
+            demoting_admin = current.level == self.ADMIN and self.level != self.ADMIN
+            if one_admin_left and demoting_admin:
+                raise ValueError('cannot demote self as last admin')
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f'<Membership • user_email: {self.user.email}, team: {self.team.id} level: {self.level}>'

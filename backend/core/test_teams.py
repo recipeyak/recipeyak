@@ -448,9 +448,12 @@ def test_create_team_invite(client, team, user, user2, user3, empty_team):
         res = client.post(url, data)
         assert res.status_code == s, description
 
+
+def test_creating_invites_by_non_members(client, team, user2, user3, empty_team):
     # non-admins cannot create invite
-    team.force_join(user2)
+    team.force_join(user2, Membership.CONTRIBUTOR)
     assert team.is_member(user2) and not team.is_admin(user2)
+    url = reverse('team-invites-list', kwargs={'team_pk': team.id})
     client.force_authenticate(user2)
     res = client.post(url, {'emails': [user3.email]})
     assert res.status_code == status.HTTP_400_BAD_REQUEST
@@ -791,11 +794,12 @@ def test_decline_team_invite(client, team, user, user2):
         'Non member cannot view team'
 
 
-def test_create_team_recipe(client, team, user):
+def test_create_team_recipe(client, team, user, user2):
     """
     Team member that is not a READ_ONLY user should be able to 'create'
     recipe owned by team.
     """
+    team.force_join_admin(user2)
 
     client.force_authenticate(user)
 
@@ -822,11 +826,12 @@ def test_create_team_recipe(client, team, user):
         assert res.status_code == s
 
 
-def test_update_team_recipe(client, team, user):
+def test_update_team_recipe(client, team, user, user2):
     """
     Team member that is not a READ_ONLY user should be able to 'update'
     recipe owned by team.
     """
+    team.force_join_admin(user2)
 
     client.force_authenticate(user)
 
@@ -843,11 +848,13 @@ def test_update_team_recipe(client, team, user):
         assert client.patch(url, {'name': 'Cool new name'}).status_code == s
 
 
-def test_destroy_team_recipe(client, team, user):
+def test_destroy_team_recipe(client, team, user, user2):
     """
     Team member that is not a READ_ONLY user should be able to 'destroy'
     recipe owned by team.
     """
+    team.force_join_admin(user2)
+
     client.force_authenticate(user)
 
     for choice, s in [(Membership.ADMIN, status.HTTP_204_NO_CONTENT),
@@ -1116,3 +1123,26 @@ def test_creating_team_with_name_and_emails(client, user, user2, user3):
     assert team.is_member(user)
     assert not team.is_member(user2)
     assert not team.is_member(user3)
+
+
+def test_demoting_self_in_team_from_admin(client, team, user):
+    """
+    prevent a user from demoting themselves if they are the last team member
+    """
+
+    assert team.is_member(user)
+    assert team.membership_set.count() == 1
+
+    user_membership = user.membership_set.get(team=team)
+
+    url = reverse('team-member-detail',
+                  kwargs={
+                      'team_pk': team.id,
+                      'pk': user_membership.id
+                  })
+
+    client.force_authenticate(user)
+    res = client.patch(url, {'level': Membership.CONTRIBUTOR})
+    assert res.status_code == status.HTTP_400_BAD_REQUEST
+
+    assert team.is_member(user)

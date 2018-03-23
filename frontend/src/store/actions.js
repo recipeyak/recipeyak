@@ -1447,6 +1447,9 @@ export const setUserTeamLevel = (teamID, membershipID, level) => ({
   level,
 })
 
+const attemptedDeleteLastAdmin = res =>
+  res.status === 400 && res.data.level && res.data.level[0].includes('cannot demote')
+
 export const settingUserTeamLevel = (teamID, membershipID, level) => dispatch => {
   dispatch(setUpdatingUserTeamLevel(teamID, true))
   return http.patch(`/api/v1/t/${teamID}/members/${membershipID}/`, { level })
@@ -1457,6 +1460,14 @@ export const settingUserTeamLevel = (teamID, membershipID, level) => dispatch =>
   .catch(err => {
     if (invalidToken(err.response)) {
       dispatch(logout())
+    }
+    if (attemptedDeleteLastAdmin(err.response)) {
+      const message = err.response.data.level[0]
+      dispatch(showNotificationWithTimeout({
+        message,
+        level: 'danger',
+        delay: 3 * second
+      }))
     }
     dispatch(setUpdatingUserTeamLevel(teamID, false))
     throw err
