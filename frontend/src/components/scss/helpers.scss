@@ -314,6 +314,14 @@
   width: 50px;
 }
 
+.max-height-20vh {
+  max-height: 20vh;
+}
+
+.max-height-25vh {
+  max-height: 25vh;
+}
+
 .box-shadow-normal {
   box-shadow: 0 2px 15px rgba(10, 10, 10, 0.17), 0 0 0 1px rgba(10, 10, 10, 0.1);
 }
@@ -397,6 +405,10 @@
 
 .overflow-x-auto {
   overflow-x: auto;
+}
+
+.overflow-y-scroll {
+  overflow-y: scroll;
 }
 
 .w-50px {

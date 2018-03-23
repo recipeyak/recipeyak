@@ -5,18 +5,109 @@ import { Link } from 'react-router-dom'
 import Loader from './Loader'
 import RecipeEdit from '../containers/RecipeEdit'
 import NoMatch from './NoMatch'
-import { ButtonPrimary } from './Buttons'
+import { ButtonPrimary, ButtonLink } from './Buttons'
 
 import { inputAbs } from '../input'
 import { teamURL } from '../urls'
 
-const Owner = ({ type, url, name }) => {
-  if (type === 'user') return null
-  return (
-    <span className="fw-500">
-      <b>owner</b> <Link to={url}>{ name }</Link>
-    </span>
-  )
+// TODO: Create a generalized component with the click event listeners
+// we seems to use this functionality a lot
+class Owner extends React.Component {
+  state = {
+    show: false,
+    values: [],
+  }
+  componentWillMount () {
+    document.addEventListener('click', this.handleGeneralClick)
+  }
+
+  componentWillUnmount () {
+    document.removeEventListener('click', this.handleGeneralClick)
+  }
+
+  handleGeneralClick = e => {
+    const clickedDropdown = this.dropdown && this.dropdown.contains(e.target)
+    if (clickedDropdown) return
+    // clear values when closing dropdown
+    this.setState({ show: false, values: [] })
+  }
+
+  handleChange = e => {
+    // convert HTMLCollection to list of option values
+    const selectedOptions = [...e.target.selectedOptions].map(e => e.value)
+    this.setState({ values: selectedOptions })
+  }
+
+  toggle () {
+    this.setState(prev => {
+      if (prev.show) {
+        // clear values when closing dropdown
+        return { show: !prev.show, values: [] }
+      }
+      return { show: !prev.show }
+    })
+  }
+
+  copy () {
+    const data = this.state.values // eslint-disable-line
+    if (!Array.isArray(data)) { throw new TypeError('need array of owner ids to move to') }
+    // TODO: Fire copy event for recipe
+  }
+
+  move () {
+    const data = this.state.values[0] // eslint-disable-line
+    if (data == null) { throw new TypeError('need team id to move to') }
+    // TODO: Fire move event
+  }
+
+  disableMove () {
+    return this.state.values.length !== 1
+  }
+
+  disableCopy () {
+    return this.state.values.length === 0
+  }
+
+  render () {
+    const { type, url, name } = this.props
+    if (type === 'user') return null
+    return (
+      <span className="fw-500" ref={dropdown => { this.dropdown = dropdown }}>
+        <b>owner</b> <Link to={url}>{ name }</Link>
+        <div className={(this.state.show ? 'dropdown is-active' : 'dropdown')}>
+          <div className='dropdown-trigger'>
+            <ButtonLink className='is-small ml-1' onClick={ () => this.toggle() }>Move/Copy</ButtonLink>
+          </div>
+          <div className='dropdown-menu'>
+            <div className='dropdown-content'>
+              <div className="ml-1 mr-1"><input type='text' className='input is-small' placeholder='filter teams...'/></div>
+              <hr className='dropdown-divider mt-1 mb-1'/>
+              <div className='max-height-25vh overflow-y-scroll select is-multiple w-100'>
+                <select multiple={true} size="8" className="my-select" value={this.state.values} onChange={this.handleChange}>
+                  { ['Bolivia', 'Brazil', 'Chile', 'Colombia', 'Ecuador', 'Guyana', 'Paraguay', 'Peru', 'Suriname', 'Uruguay', 'Venezuela'].map((v, index) => (
+                    <option className="fs-3 fw-500" key={v} value={index}>{v}</option>))}
+                </select>
+              </div>
+              <hr className='dropdown-divider'/>
+              <div className='d-flex justify-space-between ml-2 mr-2'>
+                <button className='button is-small is-link' onClick={ () => this.toggle() }>cancel</button>
+                <div className="d-flex justify-space-between">
+                  <button
+                    className='button is-small is-secondary mr-1'
+                    onClick={ () => this.move() }
+                    disabled={this.disableMove()}>move</button>
+                  <button
+                    className='button is-small is-primary'
+                    onClick={ () => this.copy()}
+                    disabled={this.disableCopy()}>copy</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </span>
+    )
+  }
 }
 
 const MetaData = ({
@@ -41,10 +132,10 @@ const MetaData = ({
     ? <span>in <b>{time}</b> </span>
     : null
 
-  return <p className="break-word">
+  return <div className="break-word">
     <span>{ _author }{ _source }{ _servings }{ _time }</span>
     <Owner type={owner.type} url={teamURL(owner.id)} name={owner.name}/>
-  </p>
+  </div>
 }
 
 /* eslint-disable camelcase */
