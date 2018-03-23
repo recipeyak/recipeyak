@@ -1,2 +1,5 @@
+[run]
+source=recipeyak_django
+
 [report]
 omit = */.local/*, */migrations/*, .venv/*
