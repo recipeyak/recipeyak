@@ -118,7 +118,7 @@ describe('Teams', () => {
         name: 'blah',
         loadingTeam: false,
       },
-      allIds: [1,4,2,3],
+      allIds: [1, 4, 2, 3],
     }
 
     expect(
