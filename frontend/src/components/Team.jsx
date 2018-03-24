@@ -15,6 +15,12 @@ import {
   inviteURL
 } from '../urls'
 
+const CenteredLoader = () =>
+  <div className="d-flex justify-content-center">
+    <Loader/>
+  </div>
+
+
 const TeamMembers = ({ id, members, loading }) =>
   <div>
     <section className="d-flex justify-space-between align-items-center">
@@ -24,7 +30,7 @@ const TeamMembers = ({ id, members, loading }) =>
       </Link>
     </section>
     { loading
-        ? <Loader/>
+        ? <CenteredLoader/>
         : Object.values(members).length > 0
             ? <div className="table-responsive">
                 <table className="table-spacing">
@@ -61,7 +67,7 @@ const TeamRecipes = ({ loading, recipes }) =>
       </Link>
     </section>
     { loading
-      ? <Loader/>
+      ? <CenteredLoader/>
       : recipes.length === 0
           ? <section>
               <h1 className="text-center fs-6 bold text-muted">No Team Recipes</h1>
@@ -110,7 +116,7 @@ class Team extends React.Component {
       <div>
         <Helmet title="Team"/>
         { this.props.loadingTeam
-            ? <Loader/>
+            ? <CenteredLoader/>
             : <h1 className="fs-9 text-center fw-500 p-4">{ this.props.name }</h1>
         }
         <TeamMembers

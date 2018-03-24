@@ -12,7 +12,7 @@ import Team from '../components/Team'
 const notUndefined = x => x != null
 
 const mapStateToProps = (state, props) => {
-  const id = props.match.params.id
+  const id = parseInt(props.match.params.id, 10)
   const team = state.teams[id]
     ? state.teams[id]
     : {}
@@ -21,6 +21,7 @@ const mapStateToProps = (state, props) => {
 
   return {
     ...team,
+    id,
     recipes: recipes.map(id => state.recipes[id]).filter(notUndefined)
   }
 }
