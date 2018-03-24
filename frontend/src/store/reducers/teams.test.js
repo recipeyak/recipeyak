@@ -4,10 +4,8 @@ import {
   addTeam,
   setLoadingTeam,
   setLoadingTeamMembers,
-  setLoadingTeamInvites,
   setTeam404,
   setTeamMembers,
-  setTeamInvites,
   setLoadingTeamRecipes,
   setTeamRecipes,
   setUpdatingUserTeamLevel,
@@ -169,27 +167,6 @@ describe('Teams', () => {
     ).toEqual(afterState)
   })
 
-  it('Sets loading team invites', () => {
-    const beforeState = {
-      1: {
-        id: 1,
-        name: 'team name'
-      }
-    }
-
-    const afterState = {
-      1: {
-        id: 1,
-        name: 'team name',
-        loadingInvites: true,
-      }
-    }
-
-    expect(
-      teams(beforeState, setLoadingTeamInvites(1, true))
-    ).toEqual(afterState)
-  })
-
   it('Sets loading team recipes', () => {
     const beforeState = {
       1: {
@@ -277,46 +254,6 @@ describe('Teams', () => {
 
     expect(
       teams(beforeState, setTeamMembers(1, members))
-    ).toEqual(afterState)
-  })
-
-  it('Sets team invites', () => {
-    const beforeState = {
-      1: {
-        id: 1,
-        name: 'team name'
-      },
-      2: {
-        id: 2,
-        name: 'another team name'
-      },
-    }
-
-    const invites = [{
-      id: 1,
-      user: {
-        id: 2,
-        email: 'blah@blah.com',
-        avatar_url: 'http://lksjdflsjdf'
-      }
-    }]
-
-    const afterState = {
-      1: {
-        id: 1,
-        name: 'team name',
-        invites: {
-          1: invites[0]
-        }
-      },
-      2: {
-        id: 2,
-        name: 'another team name'
-      },
-    }
-
-    expect(
-      teams(beforeState, setTeamInvites(1, invites))
     ).toEqual(afterState)
   })
 

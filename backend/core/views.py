@@ -380,8 +380,6 @@ class MembershipViewSet(
 
 
 class TeamInviteViewSet(viewsets.GenericViewSet,
-                        mixins.RetrieveModelMixin,
-                        mixins.ListModelMixin,
                         mixins.CreateModelMixin,
                         mixins.DestroyModelMixin):
     """

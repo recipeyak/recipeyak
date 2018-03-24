@@ -471,76 +471,6 @@ def test_creating_invites_by_non_members(client, team, user2, user3, empty_team)
     assert res.status_code == status.HTTP_404_NOT_FOUND
 
 
-def test_invitees_not_appearing_in_members(client, team, user, user2, user3):
-    assert team.is_member(user)
-    assert not team.is_member(user2)
-    assert not team.is_member(user3)
-    team.invite_user(user2, creator=user)
-
-    url = reverse('team-invites-list', kwargs={'team_pk': team.pk})
-    client.force_authenticate(user)
-    res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK
-    assert len(res.json()) == 1
-
-
-def test_retrieve_team_invite(client, team, user, user2, user3):
-    """
-    Team members can retrieve team invites
-    """
-    # invite user2 to team
-    client.force_authenticate(user)
-    url = reverse('team-invites-list', kwargs={'team_pk': team.id})
-    res = client.post(url, {'emails': [user2.email], 'level': Membership.ADMIN})
-    assert res.status_code == status.HTTP_201_CREATED
-    invite_pk = res.json()[0]['id']
-
-    # retrieve invite via user1
-    url = reverse('team-invites-detail', kwargs={'team_pk': team.id, 'pk': invite_pk})
-    res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK
-    assert res.json()['user']['id'] == user2.id
-
-    # normal members can see invites
-    team.force_join(user3)
-    assert team.is_member(user3) and not team.is_admin(user3)
-    client.force_authenticate(user3)
-    assert user2.has_invite(team)
-    res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK
-    assert res.json()['user']['id'] == user2.id
-
-    # non-team members should not be allowed to retrieve invite
-    team.kick_user(user3)
-    client.force_authenticate(user3)
-    assert not team.is_member(user3)
-    res = client.get(url)
-    assert res.status_code == status.HTTP_403_FORBIDDEN
-
-
-def test_list_team_invites(client, team, user, user2, user3):
-    """
-    Team members can list team invites
-    """
-    url = reverse('team-invites-list', kwargs={'team_pk': team.id})
-
-    # members can list team invites
-    team.force_join(user2)
-    team.invite_user(user3, creator=user)
-    client.force_authenticate(user2)
-    assert team.is_member(user2) and not team.is_admin(user2)
-    res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK
-    invite = res.json()[0]
-    assert invite['user']['id'] == user3.id
-
-    # non-team members should not be allowed to list invites
-    client.force_authenticate(user3)
-    assert not team.is_member(user3)
-    res = client.get(url)
-    assert res.status_code == status.HTTP_403_FORBIDDEN
-
-
 def test_destroy_team_invite(client, team, user, user2, user3):
     """
     TeamAdmins owner can destroy team invites
@@ -642,12 +572,6 @@ def test_list_user_invites(client, team, user, user2):
 
     invite = team.invite_user(user2, creator=user2)
 
-    url = reverse('team-invites-list', kwargs={'team_pk': team.id})
-    for u, s in [(user, status.HTTP_200_OK),
-                 (user2, status.HTTP_403_FORBIDDEN)]:
-        client.force_authenticate(u)
-        assert client.get(url).status_code == s
-
     url = reverse('user-invites-list')
 
     client.force_authenticate(user)
@@ -677,12 +601,6 @@ def test_retrieve_user_invite(client, team, user, user2):
     assert res.status_code == status.HTTP_201_CREATED
 
     pk = res.json()[0].get('id')
-
-    url = reverse('team-invites-detail', kwargs={'team_pk': team.id, 'pk': pk})
-    for u, s in [(user, status.HTTP_200_OK),
-                 (user2, status.HTTP_403_FORBIDDEN)]:
-        client.force_authenticate(u)
-        assert client.get(url).status_code == s
 
     url = reverse('user-invites-detail', kwargs={'pk': pk})
     for u, s in [(user, status.HTTP_404_NOT_FOUND),

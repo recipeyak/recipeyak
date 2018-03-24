@@ -1340,12 +1340,6 @@ export const setLoadingTeamMembers = (id, loadingMembers) => ({
   loadingMembers,
 })
 
-export const setLoadingTeamInvites = (id, loadingInvites) => ({
-  type: SET_LOADING_TEAM_INVITES,
-  id,
-  loadingInvites,
-})
-
 export const setTeam404 = (id, val = true) => ({
   type: SET_TEAM_404,
   id,
@@ -1356,12 +1350,6 @@ export const setTeamMembers = (id, members) => ({
   type: SET_TEAM_MEMBERS,
   id,
   members,
-})
-
-export const setTeamInvites = (id, invites) => ({
-  type: SET_TEAM_INVITES,
-  id,
-  invites,
 })
 
 export const setTeamRecipes = (id, recipes) => ({
@@ -1407,22 +1395,6 @@ export const fetchTeamMembers = id => dispatch => {
       dispatch(logout())
     }
     dispatch(setLoadingTeamMembers(id, false))
-    throw err
-  })
-}
-
-export const fetchTeamInvites = id => dispatch => {
-  dispatch(setLoadingTeamInvites(id, true))
-  return http.get(`/api/v1/t/${id}/invites/`)
-  .then(res => {
-    dispatch(setTeamInvites(id, res.data))
-    dispatch(setLoadingTeamInvites(id, false))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    dispatch(setLoadingTeamInvites(id, false))
     throw err
   })
 }

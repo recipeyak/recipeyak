@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import {
   fetchTeam,
   fetchTeamMembers,
-  fetchTeamInvites,
   fetchTeamRecipes,
 } from '../store/actions'
 
