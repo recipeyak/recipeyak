@@ -20,7 +20,6 @@ const CenteredLoader = () =>
     <Loader/>
   </div>
 
-
 const TeamMembers = ({ id, members, loading }) =>
   <div>
     <section className="d-flex justify-space-between align-items-center">
