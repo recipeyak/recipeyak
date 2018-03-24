@@ -174,10 +174,7 @@ export const teams = (
       [action.teamID]: {
         ...state[action.teamID],
           // TODO: refactor membership into it's own reducer
-        members: {
-          ...state[action.teamID].members,
-          [action.membershipID]: undefined
-        }
+        members: omit(state[action.teamID].members, action.membershipID),
       }
     }
   case SET_TEAMS:

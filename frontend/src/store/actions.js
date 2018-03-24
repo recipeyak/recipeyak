@@ -1502,19 +1502,21 @@ export const deleteTeam = (id) => ({
   id,
 })
 
-export const deletingMembership = (teamID, id) => (dispatch, getState) => {
+export const deletingMembership = (teamID, id, leaving = false) => (dispatch, getState) => {
   dispatch(setDeletingMembership(teamID, id, true))
   return http.delete(`/api/v1/t/${teamID}/members/${id}/`)
   .then(() => {
     const message = 'left team ' + getState().teams[teamID].name
-    dispatch(push('/'))
     dispatch(deleteMembership(teamID, id))
-    dispatch(deleteTeam(teamID))
-    dispatch(showNotificationWithTimeout({
-      message,
-      level: 'success',
-      delay: 3 * second
-    }))
+    if (leaving) {
+      dispatch(push('/'))
+      dispatch(showNotificationWithTimeout({
+        message,
+        level: 'success',
+        delay: 3 * second
+      }))
+      dispatch(deleteTeam(teamID))
+    }
   })
   .catch(err => {
     const message = err.response.data

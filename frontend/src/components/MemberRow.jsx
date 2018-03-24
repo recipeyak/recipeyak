@@ -24,7 +24,7 @@ const mapStateToProps = (state, { userID, teamID, membershipID }) => ({
 const mapDispatchToProps = dispatch => ({
   handleUserLevelChange: (teamID, membershipID, level) =>
     dispatch(settingUserTeamLevel(teamID, membershipID, level)),
-  deleteMembership: (teamID, membershipID) => dispatch(deletingMembership(teamID, membershipID)),
+  deleteMembership: (teamID, membershipID, leaving) => dispatch(deletingMembership(teamID, membershipID, leaving)),
 })
 
 const MemberRow = ({
@@ -76,7 +76,7 @@ const MemberRow = ({
     </td>
     <td className="vertical-align-middle text-right">
       { isUser || userIsTeamAdmin
-        ? <ButtonDanger onClick={ () => deleteMembership(teamID, membershipID) }
+        ? <ButtonDanger onClick={ () => deleteMembership(teamID, membershipID, isUser) }
                         loading={ deleting }
                         className="is-small">
             { isUser

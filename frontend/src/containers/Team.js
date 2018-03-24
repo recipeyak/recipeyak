@@ -31,7 +31,6 @@ const mapDispatchToProps = dispatch => {
     fetchData: (id) => Promise.all([
       dispatch(fetchTeam(id)),
       dispatch(fetchTeamMembers(id)),
-      dispatch(fetchTeamInvites(id)),
       dispatch(fetchTeamRecipes(id)),
     ])
   }
