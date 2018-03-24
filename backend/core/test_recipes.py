@@ -391,7 +391,7 @@ def test_display_all_accessable_recipes(client, user, recipes, team_with_recipes
     """
 
     client.force_authenticate(user)
-    team_with_recipes_no_members.invite_user(user)
+    team_with_recipes_no_members.invite_user(user, creator=user)
     res = client.get(reverse('recipes-list'))
     assert res.status_code == status.HTTP_200_OK
     assert len(res.json()) == len(user.recipes.all())

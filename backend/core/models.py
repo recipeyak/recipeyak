@@ -250,17 +250,34 @@ class CartItem(CommonInfo):
 
 
 class InviteManager(models.Manager):
-    def create_invite(self, email, team, level):
+    def create_invite(self, email, team, level, creator):
         user = MyUser.objects.filter(email=email).first()
         if not user:
             user = MyUser.objects.create_user(email=email)
         m = Membership.objects.create(user=user, team=team, level=level, is_active=False)
-        invite = self.model.objects.create(membership=m)
+        invite = self.model.objects.create(membership=m, creator=creator)
         return invite
 
 
 class Invite(CommonInfo):
     membership = models.OneToOneField('Membership', on_delete=models.CASCADE)
+    creator = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+
+    OPEN = 'open'
+    DECLINED = 'declined'
+    ACCEPTED = 'accepted'
+
+    INVITE_STATUS = (
+        (OPEN, OPEN),
+        (DECLINED, DECLINED),
+        (ACCEPTED, ACCEPTED),
+    )
+
+    status = models.CharField(
+        max_length=11,
+        choices=INVITE_STATUS,
+        default=OPEN,
+    )
 
     objects = InviteManager()
 
@@ -271,13 +288,22 @@ class Invite(CommonInfo):
     def user(self):
         return self.membership.user
 
+    @property
+    def active(self):
+        return self.membership.is_active
+
+    @property
+    def team(self):
+        return self.membership.team
+
     def accept(self):
         self.membership.set_active()
-        self.delete()
+        self.status = self.ACCEPTED
+        self.save()
 
     def decline(self):
-        self.membership.delete()
-        self.delete()
+        self.status = self.DECLINED
+        self.save()
 
 
 class Team(CommonInfo):
@@ -305,7 +331,7 @@ class Team(CommonInfo):
     def force_join_admin(self, user):
         return self.force_join(user, level=Membership.ADMIN)
 
-    def invite_user(self, user, level=None) -> Invite:
+    def invite_user(self, user, creator, level=None) -> Invite:
         """
         Invite user to team
 
@@ -313,8 +339,10 @@ class Team(CommonInfo):
         """
         if level is None:
             level = Membership.CONTRIBUTOR
-        m = Membership.objects.create(team=self, level=level, user=user, is_active=False)
-        return Invite.objects.create(membership=m)  # type: ignore
+        return Invite.objects.create_invite(email=user.email,
+                                            team=self,
+                                            level=level,
+                                            creator=creator)
 
     def kick_user(self, user):
         """

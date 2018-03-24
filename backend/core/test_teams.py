@@ -242,7 +242,7 @@ def test_list_team_members(client, team, user, user2, user3):
     assert len(res.json()) == 1
 
     # invite user2 to team
-    team.invite_user(user2)
+    team.invite_user(user2, creator=user)
     # inactive members cannot view members
     client.force_authenticate(user2)
     res = client.get(url)
@@ -359,7 +359,7 @@ def test_retrieve_team_member(client, team, user, user2, user3):
     assert res.json()['user']['id'] == user.id
 
     # invite user2 to team
-    team.invite_user(user2)
+    team.invite_user(user2, creator=user)
     # inactive members cannot view member
     client.force_authenticate(user2)
     res = client.get(url)
@@ -475,7 +475,7 @@ def test_invitees_not_appearing_in_members(client, team, user, user2, user3):
     assert team.is_member(user)
     assert not team.is_member(user2)
     assert not team.is_member(user3)
-    team.invite_user(user2)
+    team.invite_user(user2, creator=user)
 
     url = reverse('team-invites-list', kwargs={'team_pk': team.pk})
     client.force_authenticate(user)
@@ -526,7 +526,7 @@ def test_list_team_invites(client, team, user, user2, user3):
 
     # members can list team invites
     team.force_join(user2)
-    team.invite_user(user3)
+    team.invite_user(user3, creator=user)
     client.force_authenticate(user2)
     assert team.is_member(user2) and not team.is_admin(user2)
     res = client.get(url)
@@ -551,7 +551,7 @@ def test_destroy_team_invite(client, team, user, user2, user3):
     assert not team.is_member(user2)
     assert not team.is_member(user3)
 
-    invite = team.invite_user(user2)
+    invite = team.invite_user(user2, creator=user)
 
     url = reverse('team-invites-detail', kwargs={'team_pk': team.id, 'pk': invite.pk})
     for u, s in [(user, status.HTTP_204_NO_CONTENT),
@@ -585,7 +585,7 @@ def test_update_user_invite(client, team, user, user2):
     assert team.is_member(user)
     assert not team.is_member(user2)
 
-    invite = team.invite_user(user2)
+    invite = team.invite_user(user2, creator=user)
 
     user_invite_url = reverse('user-invites-detail', kwargs={'pk': invite.pk})
     team_invite_url = reverse('team-invites-detail', kwargs={'team_pk': team.id, 'pk': invite.pk})
@@ -613,7 +613,7 @@ def test_destroy_user_invite(client, team, user, user2):
     assert team.is_member(user)
     assert not team.is_member(user2)
 
-    invite = team.invite_user(user2)
+    invite = team.invite_user(user2, creator=user)
 
     user_invite_url = reverse('user-invites-detail', kwargs={'pk': invite.id})
     team_invite_url = reverse('team-invites-detail', kwargs={'team_pk': team.id, 'pk': invite.id})
@@ -640,7 +640,7 @@ def test_list_user_invites(client, team, user, user2):
     assert team.is_member(user)
     assert not team.is_member(user2)
 
-    invite = team.invite_user(user2)
+    invite = team.invite_user(user2, creator=user2)
 
     url = reverse('team-invites-list', kwargs={'team_pk': team.id})
     for u, s in [(user, status.HTTP_200_OK),
@@ -752,12 +752,14 @@ def test_accept_team_invite(client, team, user, user2, user3):
     res = client.post(url, {'emails': [user2.email], 'level': Membership.ADMIN})
     assert res.status_code == status.HTTP_201_CREATED
     invite_pk = res.json()[0]['id']
+    assert Invite.objects.get(pk=invite_pk).status == Invite.OPEN
 
     # accept invite
     client.force_authenticate(user2)
     url = reverse('user-invites-accept', kwargs={'pk': invite_pk})
     res = client.post(url)
     assert res.status_code == status.HTTP_200_OK
+    assert Invite.objects.get(pk=invite_pk).status == Invite.ACCEPTED
 
     # check user can view team
     url = reverse('team-member-list', kwargs={'team_pk': team.id})
@@ -780,12 +782,14 @@ def test_decline_team_invite(client, team, user, user2):
     res = client.post(url, {'emails': [user2.email], 'level': Membership.ADMIN})
     assert res.status_code == status.HTTP_201_CREATED
     invite_pk = res.json()[0]['id']
+    assert Invite.objects.get(pk=invite_pk).status == Invite.OPEN
 
     # decline invite
     client.force_authenticate(user2)
     url = reverse('user-invites-decline', kwargs={'pk': invite_pk})
     res = client.post(url)
     assert res.status_code == status.HTTP_200_OK
+    assert Invite.objects.get(pk=invite_pk).status == Invite.DECLINED
 
     # check user cannot view team
     url = reverse('team-member-list', kwargs={'team_pk': team.id})

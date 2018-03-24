@@ -99,6 +99,13 @@ import {
   SET_CREATING_TEAM,
   SET_MOVING_TEAM,
   SET_COPYING_TEAM,
+  SET_INVITES,
+  SET_LOADING_INVITES,
+  SET_ERROR_FETCHING_INVITES,
+  SET_DECLINING_INVITE,
+  SET_ACCEPTING_INVITE,
+  SET_DECLINED_INVITE,
+  SET_ACCEPTED_INVITE,
 } from './actionTypes'
 
 import {
@@ -1497,6 +1504,12 @@ export const deletingMembership = (teamID, id) => dispatch => {
     dispatch(setDeletingMembership(teamID, id, false))
   })
   .catch(err => {
+    const message = err.response.data
+    dispatch(showNotificationWithTimeout({
+      message,
+      level: 'danger',
+      delay: 3 * second
+    }))
     dispatch(setDeletingMembership(teamID, id, false))
     throw err
   })
@@ -1606,6 +1619,84 @@ export const copyRecipeTo = (recipeId, ownerId, type) => dispatch => {
   })
   .catch(err => {
     dispatch(setCopyingTeam(false))
+    throw err
+  })
+}
+
+export const setLoadingInvites = (val) => ({
+  type: SET_LOADING_INVITES,
+  val,
+})
+
+export const setInvites = (invites) => ({
+  type: SET_INVITES,
+  invites,
+})
+
+export const setErrorFetchingInvites = (val) => ({
+  type: SET_ERROR_FETCHING_INVITES,
+  val,
+})
+
+export const fetchInvites = () => dispatch => {
+  dispatch(setLoadingInvites(true))
+  dispatch(setErrorFetchingInvites(false))
+  return http.get('/api/v1/invites/')
+  .then(res => {
+    dispatch(setInvites(res.data))
+    dispatch(setLoadingInvites(false))
+  })
+  .catch(err => {
+    dispatch(setLoadingInvites(false))
+    dispatch(setErrorFetchingInvites(true))
+    throw err
+  })
+}
+
+export const setAcceptingInvite = (id, val) => ({
+  type: SET_ACCEPTING_INVITE,
+  id,
+  val,
+})
+
+export const setAcceptedInvite = (id) => ({
+  type: SET_ACCEPTED_INVITE,
+  id,
+})
+
+export const acceptingInvite = (id) => dispatch => {
+  dispatch(setAcceptingInvite(true))
+  return http.post(`/api/v1/invites/${id}/accept/`, {})
+  .then(res => {
+    dispatch(setAcceptingInvite(false))
+    dispatch(setAcceptedInvite(id))
+  })
+  .catch(err => {
+    dispatch(setAcceptingInvite(false))
+    throw err
+  })
+}
+
+export const setDecliningInvite = (id, val) => ({
+   type: SET_DECLINING_INVITE,
+  id,
+  val,
+})
+
+export const setDeclinedInvite = (id) => ({
+  type: SET_DECLINED_INVITE,
+  id,
+})
+
+export const decliningInvite = (id) => dispatch => {
+  dispatch(setDecliningInvite(true))
+  return http.post(`/api/v1/invites/${id}/decline/`, {})
+  .then(res => {
+    dispatch(setDecliningInvite(false))
+    dispatch(setDeclinedInvite(id))
+  })
+  .catch(err => {
+    dispatch(setDecliningInvite(false))
     throw err
   })
 }

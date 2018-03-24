@@ -8,6 +8,7 @@ import { setDarkModeClass } from '../sideEffects'
 import NavLink from '../containers/NavLink'
 import Logo from './Logo'
 import Dropdown from './Dropdown'
+import NotificationsDropdown from './NotificationsDropdown'
 
 import { teamURL } from '../urls'
 
@@ -127,10 +128,8 @@ class Navbar extends React.Component {
           Add Recipe
         </NavLink>
 
-        <Dropdown name="Notifications">
-            <p className="text-muted fs-3 align-self-center">No new notifications.</p>
-            <Link to="/notifications" className="mt-1 ">See All Notifications</Link>
-        </Dropdown>
+        <NotificationsDropdown/>
+
 
         <Dropdown name="Teams">
             <Teams loading={ this.props.loadingTeams }

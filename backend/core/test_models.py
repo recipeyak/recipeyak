@@ -18,7 +18,7 @@ def test_team_force_join(client, team, user, user2, user3, empty_team):
         'User should be a team admin'
 
     # if user is already invited, cancel invite and add them to team
-    empty_team.invite_user(user3)
+    empty_team.invite_user(user3, creator=user)
     assert user3.has_invite(empty_team)
     assert not empty_team.is_member(user3)
     empty_team.force_join(user3)
@@ -62,7 +62,7 @@ def test_team_is_member(client, team, user, user2):
 
 def test_team_invite_user(client, empty_team, user):
     assert not user.membership_set.filter(team=empty_team).exists()
-    empty_team.invite_user(user)
+    empty_team.invite_user(user, creator=user)
     assert user.membership_set.filter(team=empty_team, is_active=False).exists()
 
 
@@ -72,7 +72,7 @@ def test_user_has_invite(client, empty_team, user):
     """
     assert not empty_team.is_member(user)
     assert not user.has_invite(empty_team)
-    empty_team.invite_user(user)
+    empty_team.invite_user(user, creator=user)
     assert user.has_invite(empty_team)
     empty_team.force_join(user)
     assert not user.has_invite(empty_team)

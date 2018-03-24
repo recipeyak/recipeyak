@@ -333,7 +333,7 @@ class TeamViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
     def create(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         team = serializer.save()
         team.force_join_admin(request.user)
@@ -414,7 +414,7 @@ class TeamInviteViewSet(viewsets.GenericViewSet,
         team = Team.objects.get(pk=team_pk)
         serializer = self.get_serializer(data={**request.data, 'team': team})
         serializer.is_valid(raise_exception=True)
-        invite = serializer.save(team=team)
+        invite = serializer.save(team=team, creator=self.request.user)
         return Response(InviteSerializer(invite, many=True).data, status=status.HTTP_201_CREATED)
 
 
