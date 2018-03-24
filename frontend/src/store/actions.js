@@ -170,7 +170,7 @@ export const clearNotification = () => ({
 
 // https://stackoverflow.com/a/38574266/3555105
 let notificationTimeout = null
-const showNotificationWithTimeout = ({
+export const showNotificationWithTimeout = ({
   message,
   level,
   closeable = true,
@@ -1584,3 +1584,28 @@ export const setCopyingTeam = val => ({
   val,
 })
 
+export const moveRecipeTo = (recipeId, ownerId, type) => dispatch => {
+  dispatch(setMovingTeam(true))
+  return http.post(`/api/v1/recipes/${recipeId}/move/`, { id: ownerId, type })
+  .then(res => {
+    dispatch(addRecipe(res.data))
+    dispatch(setMovingTeam(false))
+  })
+  .catch(err => {
+    dispatch(setMovingTeam(false))
+    throw err
+  })
+}
+
+export const copyRecipeTo = (recipeId, ownerId, type) => dispatch => {
+  dispatch(setCopyingTeam(true))
+  return http.post(`/api/v1/recipes/${recipeId}/copy/`, { id: ownerId, type })
+  .then(res => {
+    dispatch(addRecipe(res.data))
+    dispatch(setCopyingTeam(false))
+  })
+  .catch(err => {
+    dispatch(setCopyingTeam(false))
+    throw err
+  })
+}

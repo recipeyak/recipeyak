@@ -1,6 +1,7 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
 
 import Loader from './Loader'
 import RecipeEdit from '../containers/RecipeEdit'
@@ -9,6 +10,14 @@ import { ButtonPrimary, ButtonLink } from './Buttons'
 
 import { inputAbs } from '../input'
 import { teamURL } from '../urls'
+
+import {
+  fetchTeams,
+  moveRecipeTo,
+  copyRecipeTo,
+  showNotificationWithTimeout,
+} from '../store/actions'
+
 
 // TODO: Create a generalized component with the click event listeners
 // we seems to use this functionality a lot
@@ -19,6 +28,7 @@ class Owner extends React.Component {
   }
   componentWillMount () {
     document.addEventListener('click', this.handleGeneralClick)
+    this.props.fetchData()
   }
 
   componentWillUnmount () {
@@ -34,7 +44,9 @@ class Owner extends React.Component {
 
   handleChange = e => {
     // convert HTMLCollection to list of option values
-    const selectedOptions = [...e.target.selectedOptions].map(e => e.value)
+    const selectedOptions = [...e.target.selectedOptions]
+      .map(e => e.value)
+      .map(x => parseInt(x))
     this.setState({ values: selectedOptions })
   }
 
@@ -49,15 +61,19 @@ class Owner extends React.Component {
   }
 
   copy () {
-    const data = this.state.values // eslint-disable-line
-    if (!Array.isArray(data)) { throw new TypeError('need array of owner ids to move to') }
-    // TODO: Fire copy event for recipe
+    const data = this.state.values[0]
+    if (data == null) { throw new TypeError('need team id to move to') }
+    this.props.copyRecipeTo(this.props.recipeId, data, 'team')
+      .then(() => this.setState({ show: false, values: [] }))
+      .catch(err => this.props.showNotificationWithTimeout({ message: `Problem copying recipe: ${err}`, level: 'danger', sticky: true }))
   }
 
   move () {
-    const data = this.state.values[0] // eslint-disable-line
+    const data = this.state.values[0]
     if (data == null) { throw new TypeError('need team id to move to') }
-    // TODO: Fire move event
+    this.props.moveRecipeTo(this.props.recipeId, data, 'team')
+      .then(() => this.setState({ show: false, values: [] }))
+      .catch(err => this.props.showNotificationWithTimeout({ message: `Problem moving recipe: ${err}`, level: 'danger', sticky: true }))
   }
 
   disableMove () {
@@ -65,27 +81,27 @@ class Owner extends React.Component {
   }
 
   disableCopy () {
-    return this.state.values.length === 0
+    return this.state.values.length !== 1
   }
 
   render () {
-    const { type, url, name } = this.props
-    if (type === 'user') return null
+    const { type, url, name, teams } = this.props
+    const { moving, copying } = teams
     return (
       <span className="fw-500" ref={dropdown => { this.dropdown = dropdown }}>
-        <b>owner</b> <Link to={url}>{ name }</Link>
+        <b>via</b> { type === 'user' ? 'you' : <Link to={url}>{ name }</Link> }
         <div className={(this.state.show ? 'dropdown is-active' : 'dropdown')}>
           <div className='dropdown-trigger'>
             <ButtonLink className='is-small ml-1' onClick={ () => this.toggle() }>Move/Copy</ButtonLink>
           </div>
           <div className='dropdown-menu'>
             <div className='dropdown-content'>
-              <div className="ml-1 mr-1"><input type='text' className='input is-small' placeholder='filter teams...'/></div>
+              <div className='text-center'>Teams</div>
               <hr className='dropdown-divider mt-1 mb-1'/>
               <div className='max-height-25vh overflow-y-scroll select is-multiple w-100'>
-                <select multiple={true} size="8" className="my-select" value={this.state.values} onChange={this.handleChange}>
-                  { ['Bolivia', 'Brazil', 'Chile', 'Colombia', 'Ecuador', 'Guyana', 'Paraguay', 'Peru', 'Suriname', 'Uruguay', 'Venezuela'].map((v, index) => (
-                    <option className="fs-3 fw-500" key={v} value={index}>{v}</option>))}
+                <select multiple={true} className="my-select" value={this.state.values} onChange={this.handleChange}>
+                  { teams.allIds.map(id => (
+                    <option className="fs-3 fw-500" key={id} value={id}>{teams[id].name}</option>))}
                 </select>
               </div>
               <hr className='dropdown-divider'/>
@@ -93,11 +109,11 @@ class Owner extends React.Component {
                 <button className='button is-small is-link' onClick={ () => this.toggle() }>cancel</button>
                 <div className="d-flex justify-space-between">
                   <button
-                    className='button is-small is-secondary mr-1'
+                    className={'button is-small is-secondary mr-1' + ( moving ? ' is-loading' : '')}
                     onClick={ () => this.move() }
                     disabled={this.disableMove()}>move</button>
                   <button
-                    className='button is-small is-primary'
+                    className={'button is-small is-primary' + ( moving ? ' is-loading' : '')}
                     onClick={ () => this.copy()}
                     disabled={this.disableCopy()}>copy</button>
                 </div>
@@ -110,12 +126,30 @@ class Owner extends React.Component {
   }
 }
 
+const mapStateToProps = state => ({
+  teams: state.teams,
+})
+
+const mapDispatchToProps = dispatch => ({
+  fetchData: () => dispatch(fetchTeams()),
+  showNotificationWithTimeout: options => dispatch(showNotificationWithTimeout(options)),
+  moveRecipeTo: (recipeId, ownerId, type) => dispatch(moveRecipeTo(recipeId, ownerId, type)),
+  copyRecipeTo: (recipeId, ownerId, type) => dispatch(copyRecipeTo(recipeId, ownerId, type)),
+})
+
+const ConnectedOwner = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Owner)
+
+
 const MetaData = ({
   author = '',
   source = '',
   servings = '',
   time = '',
   owner,
+  recipeId,
 }) => {
   const isValid = x => x !== '' && x != null
 
@@ -134,7 +168,7 @@ const MetaData = ({
 
   return <div className="break-word">
     <span>{ _author }{ _source }{ _servings }{ _time }</span>
-    <Owner type={owner.type} url={teamURL(owner.id)} name={owner.name}/>
+    <ConnectedOwner type={owner.type} url={teamURL(owner.id)} name={owner.name} recipeId={recipeId}/>
   </div>
 }
 
@@ -217,6 +251,7 @@ const RecipeViewing = ({
           author={author}
           source={source}
           servings={servings}
+          recipeId={id}
           time={time}/>
       </div>
 
