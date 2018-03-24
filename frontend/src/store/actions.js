@@ -97,6 +97,8 @@ import {
   SET_LOADING_TEAMS,
   SET_TEAM,
   SET_CREATING_TEAM,
+  SET_MOVING_TEAM,
+  SET_COPYING_TEAM,
 } from './actionTypes'
 
 import {
@@ -1571,3 +1573,14 @@ export const creatingTeam = (name, emails, level) => dispatch => {
     throw err
   })
 }
+
+export const setMovingTeam = val => ({
+  type: SET_MOVING_TEAM,
+  val,
+})
+
+export const setCopyingTeam = val => ({
+  type: SET_COPYING_TEAM,
+  val,
+})
+

@@ -1,3 +1,5 @@
+import { uniq } from 'lodash'
+
 import {
   ADD_TEAM,
   SET_LOADING_TEAM,
@@ -18,9 +20,15 @@ import {
   SET_LOADING_TEAMS,
   SET_TEAM,
   SET_CREATING_TEAM,
+  SET_MOVING_TEAM,
+  SET_COPYING_TEAM,
 } from '../actionTypes'
 
-export const teams = (state = {}, action) => {
+
+export const teams = (
+  state = {
+    allIds: [],
+  }, action) => {
   switch (action.type) {
   case ADD_TEAM:
     return {
@@ -28,7 +36,8 @@ export const teams = (state = {}, action) => {
       [action.team.id]: {
         ...state[action.team.id],
         ...action.team
-      }
+      },
+      allIds: uniq([...state.allIds, action.team.id]),
     }
   case SET_LOADING_TEAM:
     return {
@@ -175,7 +184,8 @@ export const teams = (state = {}, action) => {
           ...state[b.id],
           ...b,
         }
-      }), {})
+      }), {}),
+      allIds: uniq([...state.allIds, ...action.teams.map(x => x.id)])
     }
   case SET_LOADING_TEAMS:
     return {
@@ -185,12 +195,23 @@ export const teams = (state = {}, action) => {
   case SET_TEAM:
     return {
       ...state,
-      [action.id]: action.team
+      [action.id]: action.team,
+      allIds: uniq([...state.allIds, action.id])
     }
   case SET_CREATING_TEAM:
     return {
       ...state,
       creating: action.val
+    }
+  case SET_MOVING_TEAM:
+    return {
+      ...state,
+      moving: action.val,
+    }
+  case SET_COPYING_TEAM:
+    return {
+      ...state,
+      copying: action.val,
     }
   default:
     return state

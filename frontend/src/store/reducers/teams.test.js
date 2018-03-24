@@ -1,4 +1,4 @@
-import teams from './teams'
+import { teams } from './teams'
 
 import {
   addTeam,
@@ -19,6 +19,8 @@ import {
   setLoadingTeams,
   setCreatingTeam,
   setTeam,
+  setMovingTeam,
+  setCopyingTeam,
 } from '../actions'
 
 describe('Teams', () => {
@@ -27,7 +29,8 @@ describe('Teams', () => {
       1: {
         id: 1,
         name: 'team name'
-      }
+      },
+      allIds: [1],
     }
     const recipe = {
       id: 123,
@@ -35,7 +38,8 @@ describe('Teams', () => {
     }
     const afterState = {
       ...beforeState,
-      [recipe.id]: recipe
+      [recipe.id]: recipe,
+      allIds: [1, recipe.id],
     }
 
     expect(
@@ -49,7 +53,8 @@ describe('Teams', () => {
         id: 1,
         name: 'team name',
         loading: false,
-      }
+      },
+      allIds: [1],
     }
     const recipe = {
       id: 1,
@@ -62,6 +67,7 @@ describe('Teams', () => {
         name: 'other team name',
         loading: false,
       },
+      allIds: [1],
     }
 
     expect(
@@ -80,6 +86,7 @@ describe('Teams', () => {
         name: 'blah',
         loadingTeam: false,
       },
+      allIds: [1, 4],
     }
 
     const data = [{
@@ -111,6 +118,7 @@ describe('Teams', () => {
         name: 'blah',
         loadingTeam: false,
       },
+      allIds: [1,4,2,3],
     }
 
     expect(
@@ -639,6 +647,7 @@ describe('Teams', () => {
           id: 2,
         }
       },
+      allIds: [1]
     }
 
     const team = {
@@ -655,11 +664,34 @@ describe('Teams', () => {
           id: 2,
         }
       },
-      [team.id]: team
+      [team.id]: team,
+      allIds: [1, team.id],
     }
 
     expect(
       teams(beforeState, setTeam(team.id, team))
+    ).toEqual(afterState)
+  })
+
+  it('sets moving team status', () => {
+    const beforeState = {
+    }
+    const afterState = {
+      moving: true,
+    }
+    expect(
+      teams(beforeState, setMovingTeam(true))
+    ).toEqual(afterState)
+  })
+
+  it('sets copying team status', () => {
+    const beforeState = {
+    }
+    const afterState = {
+      copying: true,
+    }
+    expect(
+      teams(beforeState, setCopyingTeam(true))
     ).toEqual(afterState)
   })
 })
