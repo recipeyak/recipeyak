@@ -24,7 +24,6 @@ import {
   SET_COPYING_TEAM,
 } from '../actionTypes'
 
-
 export const teams = (
   state = {
     allIds: [],

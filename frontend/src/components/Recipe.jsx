@@ -18,7 +18,6 @@ import {
   showNotificationWithTimeout,
 } from '../store/actions'
 
-
 // TODO: Create a generalized component with the click event listeners
 // we seems to use this functionality a lot
 class Owner extends React.Component {
@@ -87,8 +86,8 @@ class Owner extends React.Component {
     const { type, url, name, teams, userId } = this.props
     const { moving, copying } = teams
     const teamUserKeys = [
-      ...teams.allIds.map(id => ({id: id + '-team', name: teams[id].name})),
-      {id: userId + '-user', name: 'personal'}
+      ...teams.allIds.map(id => ({ id: id + '-team', name: teams[id].name })),
+      { id: userId + '-user', name: 'personal' }
     ]
 
     return (
@@ -104,7 +103,7 @@ class Owner extends React.Component {
               <hr className='dropdown-divider mt-1 mb-1'/>
               <div className='max-height-25vh overflow-y-scroll select is-multiple w-100'>
                 <select multiple={true} className="my-select" value={this.state.values} onChange={this.handleChange}>
-                  { teamUserKeys.map(({id, name}) => (
+                  { teamUserKeys.map(({ id, name }) => (
                     <option className="fs-3 fw-500" key={id} value={id}>{name}</option>))}
                 </select>
               </div>
@@ -113,11 +112,11 @@ class Owner extends React.Component {
                 <button className='button is-small is-link' onClick={ () => this.toggle() }>cancel</button>
                 <div className="d-flex justify-space-between">
                   <button
-                    className={'button is-small is-secondary mr-1' + ( moving ? ' is-loading' : '')}
+                    className={'button is-small is-secondary mr-1' + (moving ? ' is-loading' : '')}
                     onClick={ () => this.move() }
                     disabled={this.disableMove()}>move</button>
                   <button
-                    className={'button is-small is-primary' + ( moving ? ' is-loading' : '')}
+                    className={'button is-small is-primary' + (copying ? ' is-loading' : '')}
                     onClick={ () => this.copy()}
                     disabled={this.disableCopy()}>copy</button>
                 </div>
@@ -146,7 +145,6 @@ const ConnectedOwner = connect(
   mapStateToProps,
   mapDispatchToProps
 )(Owner)
-
 
 const MetaData = ({
   author = '',
