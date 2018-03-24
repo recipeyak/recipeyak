@@ -46,7 +46,6 @@ class Owner extends React.Component {
     // convert HTMLCollection to list of option values
     const selectedOptions = [...e.target.selectedOptions]
       .map(e => e.value)
-      .map(x => parseInt(x))
     this.setState({ values: selectedOptions })
   }
 
@@ -61,17 +60,17 @@ class Owner extends React.Component {
   }
 
   copy () {
-    const data = this.state.values[0]
-    if (data == null) { throw new TypeError('need team id to move to') }
-    this.props.copyRecipeTo(this.props.recipeId, data, 'team')
+    const [id, type] = this.state.values[0].split('-')
+    if (id == null || type == null) { throw new TypeError('need id/type to move to') }
+    this.props.copyRecipeTo(this.props.recipeId, id, type)
       .then(() => this.setState({ show: false, values: [] }))
       .catch(err => this.props.showNotificationWithTimeout({ message: `Problem copying recipe: ${err}`, level: 'danger', sticky: true }))
   }
 
   move () {
-    const data = this.state.values[0]
-    if (data == null) { throw new TypeError('need team id to move to') }
-    this.props.moveRecipeTo(this.props.recipeId, data, 'team')
+    const [id, type] = this.state.values[0].split('-')
+    if (id == null || type == null) { throw new TypeError('need id/type to copy to') }
+    this.props.moveRecipeTo(this.props.recipeId, id, type)
       .then(() => this.setState({ show: false, values: [] }))
       .catch(err => this.props.showNotificationWithTimeout({ message: `Problem moving recipe: ${err}`, level: 'danger', sticky: true }))
   }
@@ -85,8 +84,13 @@ class Owner extends React.Component {
   }
 
   render () {
-    const { type, url, name, teams } = this.props
+    const { type, url, name, teams, userId } = this.props
     const { moving, copying } = teams
+    const teamUserKeys = [
+      ...teams.allIds.map(id => ({id: id + '-team', name: teams[id].name})),
+      {id: userId + '-user', name: 'personal'}
+    ]
+
     return (
       <span className="fw-500" ref={dropdown => { this.dropdown = dropdown }}>
         <b>via</b> { type === 'user' ? 'you' : <Link to={url}>{ name }</Link> }
@@ -100,8 +104,8 @@ class Owner extends React.Component {
               <hr className='dropdown-divider mt-1 mb-1'/>
               <div className='max-height-25vh overflow-y-scroll select is-multiple w-100'>
                 <select multiple={true} className="my-select" value={this.state.values} onChange={this.handleChange}>
-                  { teams.allIds.map(id => (
-                    <option className="fs-3 fw-500" key={id} value={id}>{teams[id].name}</option>))}
+                  { teamUserKeys.map(({id, name}) => (
+                    <option className="fs-3 fw-500" key={id} value={id}>{name}</option>))}
                 </select>
               </div>
               <hr className='dropdown-divider'/>
@@ -128,6 +132,7 @@ class Owner extends React.Component {
 
 const mapStateToProps = state => ({
   teams: state.teams,
+  userId: state.user.id,
 })
 
 const mapDispatchToProps = dispatch => ({
