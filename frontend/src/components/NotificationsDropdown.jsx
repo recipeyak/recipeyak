@@ -9,8 +9,6 @@ import { connect } from 'react-redux'
 
 import {
   fetchInvites,
-  setAcceptingInvite,
-  setDecliningInvite,
   acceptingInvite,
   decliningInvite,
 } from '../store/actions'
@@ -57,13 +55,14 @@ const Invites = ({ loading, invites, decline, accept, accepting, declining }) =>
             <p className="mb-1 text-left break-word">Invited to <TeamName/> by <b>{creator.email}</b></p>
             <InviteButtons/>
           </div>
-        )})
+        )
+      })
       }
     </div>
   )
 }
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state) => {
   return {
     loading: state.invites.loading,
     invites: Object.values(state.invites).filter(x => x != null && !!x.id),

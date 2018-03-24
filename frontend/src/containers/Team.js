@@ -21,7 +21,6 @@ const mapStateToProps = (state, props) => {
 
   return {
     ...team,
-    id,
     recipes: recipes.map(id => state.recipes[id]).filter(notUndefined)
   }
 }

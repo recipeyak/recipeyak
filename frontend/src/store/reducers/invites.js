@@ -12,41 +12,47 @@ const invites = (state = {
 }, action) => {
   switch (action.type) {
   case SET_INVITES:
-      return {
-        ...state,
-        ...action.invites.reduce((a, b) => ({
-          ...a,
-          [b.id]: b
-        }), {})
-      }
+    return {
+      ...state,
+      ...action.invites.reduce((a, b) => ({
+        ...a,
+        [b.id]: b
+      }), {})
+    }
   case SET_LOADING_INVITES:
-      return { ...state, loading: action.val }
+    return { ...state, loading: action.val }
   case SET_ACCEPTING_INVITE:
-      return {
-        ...state,
-        [action.id]: {
-          ...state[action.id],
-          accepting: action.val
-        }
+    return {
+      ...state,
+      [action.id]: {
+        ...state[action.id],
+        accepting: action.val
       }
-  case SET_ACCEPTED_INVITE:
-      return {
-        ...state,
-        [action.id]: {
-          ...state[action.id],
-          status: 'accepted'
-        }
-      }
-  case SET_DECLINED_INVITE:
-      return {
-        ...state,
-        [action.id]: {
-          ...state[action.id],
-          status: 'declined'
-        }
-      }
+    }
   case SET_DECLINING_INVITE:
-      return { ...state, declining: action.val }
+    return {
+      ...state,
+      [action.id]: {
+        ...state[action.id],
+        declining: action.val,
+      }
+    }
+  case SET_ACCEPTED_INVITE:
+    return {
+      ...state,
+      [action.id]: {
+        ...state[action.id],
+        status: 'accepted'
+      }
+    }
+  case SET_DECLINED_INVITE:
+    return {
+      ...state,
+      [action.id]: {
+        ...state[action.id],
+        status: 'declined'
+      }
+    }
   default:
     return state
   }

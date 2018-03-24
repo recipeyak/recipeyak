@@ -21,6 +21,7 @@ import {
   setTeam,
   setMovingTeam,
   setCopyingTeam,
+  deleteTeam,
 } from '../actions'
 
 describe('Teams', () => {
@@ -670,6 +671,50 @@ describe('Teams', () => {
 
     expect(
       teams(beforeState, setTeam(team.id, team))
+    ).toEqual(afterState)
+  })
+
+  it('deletes team', () => {
+    const beforeState = {
+      1: {
+        id: 1,
+        user: {
+          id: 2,
+        }
+      },
+      2: {
+        id: 2,
+        user: {
+          id: 3
+        }
+      },
+      3: {
+        id: 3,
+        user: {
+          id: 3
+        }
+      },
+      allIds: [1, 3, 2]
+    }
+
+    const afterState = {
+      1: {
+        id: 1,
+        user: {
+          id: 2,
+        }
+      },
+      3: {
+        id: 3,
+        user: {
+          id: 3
+        }
+      },
+      allIds: [1, 3],
+    }
+
+    expect(
+      teams(beforeState, deleteTeam(2))
     ).toEqual(afterState)
   })
 

@@ -106,6 +106,7 @@ import {
   SET_ACCEPTING_INVITE,
   SET_DECLINED_INVITE,
   SET_ACCEPTED_INVITE,
+  DELETE_TEAM,
 } from './actionTypes'
 
 import {
@@ -1496,12 +1497,24 @@ export const setDeletingMembership = (teamID, membershipID, val) => ({
   val,
 })
 
-export const deletingMembership = (teamID, id) => dispatch => {
+export const deleteTeam = (id) => ({
+  type: DELETE_TEAM,
+  id,
+})
+
+export const deletingMembership = (teamID, id) => (dispatch, getState) => {
   dispatch(setDeletingMembership(teamID, id, true))
   return http.delete(`/api/v1/t/${teamID}/members/${id}/`)
   .then(() => {
-    dispatch(deleteMembership(id))
-    dispatch(setDeletingMembership(teamID, id, false))
+    const message = 'left team ' + getState().teams[teamID].name
+    dispatch(push('/'))
+    dispatch(deleteMembership(teamID, id))
+    dispatch(deleteTeam(teamID))
+    dispatch(showNotificationWithTimeout({
+      message,
+      level: 'success',
+      delay: 3 * second
+    }))
   })
   .catch(err => {
     const message = err.response.data
@@ -1667,7 +1680,7 @@ export const setAcceptedInvite = (id) => ({
 export const acceptingInvite = (id) => dispatch => {
   dispatch(setAcceptingInvite(true))
   return http.post(`/api/v1/invites/${id}/accept/`, {})
-  .then(res => {
+  .then(() => {
     dispatch(setAcceptingInvite(false))
     dispatch(setAcceptedInvite(id))
   })
@@ -1678,7 +1691,7 @@ export const acceptingInvite = (id) => dispatch => {
 }
 
 export const setDecliningInvite = (id, val) => ({
-   type: SET_DECLINING_INVITE,
+  type: SET_DECLINING_INVITE,
   id,
   val,
 })
@@ -1691,7 +1704,7 @@ export const setDeclinedInvite = (id) => ({
 export const decliningInvite = (id) => dispatch => {
   dispatch(setDecliningInvite(true))
   return http.post(`/api/v1/invites/${id}/decline/`, {})
-  .then(res => {
+  .then(() => {
     dispatch(setDecliningInvite(false))
     dispatch(setDeclinedInvite(id))
   })

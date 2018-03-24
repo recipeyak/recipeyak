@@ -130,7 +130,6 @@ class Navbar extends React.Component {
 
         <NotificationsDropdown/>
 
-
         <Dropdown name="Teams">
             <Teams loading={ this.props.loadingTeams }
                    teams={ this.props.teams }/>

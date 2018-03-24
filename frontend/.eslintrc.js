@@ -68,6 +68,7 @@ module.exports = {
     }],
     'arrow-spacing': ['warn', { "before": true, "after": true }],
     'space-in-parens': ['warn', 'never'],
-    'no-useless-return': 'warn'
+    'no-useless-return': 'warn',
+    'no-unreachable': 'warn',
   }
 }

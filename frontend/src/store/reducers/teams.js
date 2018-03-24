@@ -1,4 +1,4 @@
-import { uniq } from 'lodash'
+import { uniq, omit } from 'lodash'
 
 import {
   ADD_TEAM,
@@ -22,6 +22,7 @@ import {
   SET_CREATING_TEAM,
   SET_MOVING_TEAM,
   SET_COPYING_TEAM,
+  DELETE_TEAM,
 } from '../actionTypes'
 
 export const teams = (
@@ -37,6 +38,11 @@ export const teams = (
         ...action.team
       },
       allIds: uniq([...state.allIds, action.team.id]),
+    }
+  case DELETE_TEAM:
+    return {
+      ...omit(state, action.id),
+      allIds: state.allIds.filter(id => id !== action.id)
     }
   case SET_LOADING_TEAM:
     return {

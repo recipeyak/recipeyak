@@ -67,7 +67,7 @@ describe('Invites', () => {
     ).toEqual(afterState)
   })
 
-  it('sets the reducer to updating', () => {
+  it('sets invite to accepting', () => {
     const beforeState = {
       1: {
         id: 1,
@@ -87,6 +87,29 @@ describe('Invites', () => {
 
     expect(
       invites(beforeState, setAcceptingInvite(1, true))
+    ).toEqual(afterState)
+  })
+
+  it('sets invite to declining', () => {
+    const beforeState = {
+      1: {
+        id: 1,
+        name: 'blah',
+        teamID: 1,
+      }
+    }
+
+    const afterState = {
+      1: {
+        id: 1,
+        name: 'blah',
+        teamID: 1,
+        declining: true
+      }
+    }
+
+    expect(
+      invites(beforeState, setDecliningInvite(1, true))
     ).toEqual(afterState)
   })
 
