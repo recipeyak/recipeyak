@@ -86,6 +86,7 @@ const Base = () => (
                 <PrivateRoute exact path="/password/set" component={ PasswordSet }/>
                 <Route exact path="/t/create" component={ TeamCreate }/>
                 <Route exact path="/t/:id(\d+)(.*)/invite" component={ TeamInvite }/>
+                <Route exact path="/t/:id(\d+)(.*)/settings" component={ Team }/>
                 <Route exact path="/t/:id(\d+)(.*)" component={ Team }/>
                 <Route component={ NoMatch }/>
               </Switch>

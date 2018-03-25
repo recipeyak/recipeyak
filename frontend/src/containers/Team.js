@@ -16,11 +16,14 @@ const mapStateToProps = (state, props) => {
     ? state.teams[id]
     : {}
 
+  const isSettings = props.match.url.endsWith('settings')
+
   const recipes = team.recipes || []
 
   return {
     ...team,
     id,
+    isSettings,
     recipes: recipes.map(id => state.recipes[id]).filter(notUndefined)
   }
 }

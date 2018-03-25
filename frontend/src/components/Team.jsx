@@ -12,7 +12,13 @@ import NoMatch from './NoMatch'
 import Loader from './Loader'
 
 import {
-  inviteURL
+  ButtonPrimary
+} from './Buttons'
+
+import {
+  inviteURL,
+  teamURL,
+  teamSettingsURL,
 } from '../urls'
 
 const CenteredLoader = () =>
@@ -85,6 +91,61 @@ const TeamRecipes = ({ loading, recipes }) =>
     }
   </div>
 
+class TeamSettings extends React.Component {
+  state = {
+    name: 'loading...'
+  }
+
+  componentWillMount () {
+    this.setState({ name: this.props.name })
+  }
+
+  componentWillReceiveProps (nextProps) {
+    this.setState({ name: nextProps.name })
+  }
+
+  handleInputChange = e => {
+    this.setState({ [e.target.name]: e.target.value })
+  }
+
+  handleSubmit = e => {
+    e.preventDefault()
+    console.log('test')
+  }
+
+  render () {
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <div className="field">
+          <label className="label">Team Name</label>
+            <input
+              disabled={this.props.loading}
+              onChange={this.handleInputChange}
+              className="my-input"
+              type="text"
+              placeholder="The Grand Budapest Staff"
+              value={this.state.name}
+              name="name"/>
+        </div>
+        <ButtonPrimary type="submit">
+          Save
+        </ButtonPrimary>
+      </form>
+    )
+  }
+}
+
+const TeamName = ({ loading, name }) => {
+  if (loading) {
+    return <CenteredLoader/>
+  }
+  return (
+    <div>
+      <h1 className="fs-9 text-center fw-500 p-3">{ name }</h1>
+    </div>
+  )
+}
+
 class Team extends React.Component {
   componentWillMount () {
     this.props.fetchData(this.props.id)
@@ -104,6 +165,7 @@ class Team extends React.Component {
     loadingTeam: true,
     loadingMembers: true,
     loadingRecipes: true,
+    isSettings: false,
   }
 
   render () {
@@ -114,19 +176,41 @@ class Team extends React.Component {
     return (
       <div>
         <Helmet title="Team"/>
-        { this.props.loadingTeam
-            ? <CenteredLoader/>
-            : <h1 className="fs-9 text-center fw-500 p-4">{ this.props.name }</h1>
-        }
-        <TeamMembers
-          id={ this.props.id }
-          loading={ this.props.loadingMembers }
-          members={ this.props.members }
-        />
+        <TeamName
+          loading={this.props.loadingTeam}
+          name={this.props.name}/>
+        <div className="tabs is-boxed">
+          <ul>
+            <li className={ !this.props.isSettings ? 'is-active' : ''}>
+              <Link to={teamURL(this.props.id)}>
+                <span>Team</span>
+              </Link>
+            </li>
+            <li className={ this.props.isSettings ? 'is-active' : '' }>
+              <Link to={teamSettingsURL(this.props.id)}>
+                <span>Settings</span>
+              </Link>
+            </li>
+          </ul>
+        </div>
+        { this.props.isSettings
+            ? <TeamSettings
+                name={ this.props.name }
+                loading={this.props.loadingTeam}/>
+            : (
+              <div>
+                <TeamMembers
+                  id={ this.props.id }
+                  loading={ this.props.loadingMembers }
+                  members={ this.props.members }
+                />
 
-        <TeamRecipes
-          loading={ this.props.loadingRecipes }
-          recipes={ this.props.recipes } />
+                <TeamRecipes
+                  loading={ this.props.loadingRecipes }
+                  recipes={ this.props.recipes } />
+              </div>
+            )
+        }
 
       </div>
     )
