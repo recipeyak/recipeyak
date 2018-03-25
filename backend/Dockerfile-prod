@@ -1,16 +1,8 @@
-FROM python:3.6.4-alpine
+FROM python:3.6.4
 ENV PYTHONUNBUFFERD 1
 
-# we need libpq at runtime
-# the following can probably be simplified
-RUN apk add --no-cache --virtual .build-deps build-base postgresql-dev && \
-    apk add --no-cache gcc git make libpq libffi-dev openssl-dev  \
-      libffi openssl ca-certificates linux-headers musl-dev && \
-    pip install psycopg2==2.7.3.2 cffi cryptography && \
-    apk del .build-deps
-
 # -- Install Pipenv:
-RUN set -ex && pip install git+git://github.com/pypa/pipenv.git@8378a1b104f2d817790a05da370bef0a1b00f452
+RUN set -ex && pip install "pipenv~=11.8"
 
 # -- Install Application into container:
 RUN set -ex && mkdir -p /var/app

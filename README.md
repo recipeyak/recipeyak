@@ -21,8 +21,6 @@ For Python, we use `pipenv`, so if you want to update/install a dependency, like
 
 For Javascript, we use `npm`, so if you want to update/install a dependency, like React, run `docker-compose -f docker-compose-dev.yml react npm install --save react@16.2.0`.
 
-__Note:__ If you update the version of `psycopg2`, you must update the `backend/Dockerfile-dev` to match. We install this package using `apk` to reduce the container size.
-
 ### Testing with OAuth
 1. Create an `.env-dev` file based on `.env-example` with proper client IDs.
 2. Configure the identity provider to enable redirecting to `http://localhost:3000/accounts/$providerName`.
