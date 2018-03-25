@@ -105,6 +105,7 @@ import {
   SET_DECLINED_INVITE,
   SET_ACCEPTED_INVITE,
   DELETE_TEAM,
+  UPDATE_TEAM,
 } from './actionTypes'
 
 import {
@@ -1587,6 +1588,12 @@ export const setTeam = (id, team) => ({
   team,
 })
 
+export const updateTeamById = (id, teamKeys) => ({
+  type: UPDATE_TEAM,
+  id,
+  teamKeys,
+})
+
 export const setCreatingTeam = val => ({
   type: SET_CREATING_TEAM,
   val,
@@ -1615,6 +1622,30 @@ export const setCopyingTeam = val => ({
   type: SET_COPYING_TEAM,
   val,
 })
+
+export const updatingTeam = (teamId, teamKVs) => dispatch => {
+  return http.patch(`/api/v1/t/${teamId}/`, teamKVs)
+  .then(res => {
+    dispatch(showNotificationWithTimeout({
+      message: 'Team updated',
+      level: 'success',
+      delay: 3 * second
+    }))
+    dispatch(updateTeamById(res.data.id, res.data))
+  })
+  .catch(err => {
+    let message = 'Problem updating team.'
+    if (err.response && err.response.status === 403) {
+      message = 'You are not unauthorized to perform that action'
+    }
+    dispatch(showNotificationWithTimeout({
+      message,
+      level: 'danger',
+      delay: 3 * second
+    }))
+    throw err
+  })
+}
 
 export const moveRecipeTo = (recipeId, ownerId, type) => dispatch => {
   dispatch(setMovingTeam(true))

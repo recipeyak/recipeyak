@@ -96,6 +96,7 @@ class TeamSettings extends React.Component {
   state = {
     name: 'loading...',
     loadingDeleteTeam: false,
+    loadingSaveChanges: false,
   }
 
   static defaultProps = {
@@ -117,7 +118,9 @@ class TeamSettings extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault()
-    console.log('test')
+    this.setState({ loadingSaveChanges: true })
+    this.props.updatingTeam(this.props.id, { name: this.state.name })
+    .finally(() => this.setState({ loadingSaveChanges: false }))
   }
 
   deleteTeam = () => {
@@ -143,7 +146,7 @@ class TeamSettings extends React.Component {
               name="name"/>
         </div>
         <div className="d-flex justify-space-between align-items-center">
-          <ButtonPrimary type="submit">
+          <ButtonPrimary type="submit" loading={this.state.loadingSaveChanges}>
             Save Changes
           </ButtonPrimary>
           <ButtonLink onClick={() => this.deleteTeam()} loading={this.state.loadingDeleteTeam}>
@@ -217,8 +220,9 @@ class Team extends React.Component {
             ? <TeamSettings
                 id={ this.props.id }
                 name={ this.props.name }
-                deleteTeam={this.props.deleteTeam}
-                loading={this.props.loadingTeam}/>
+                updatingTeam={ this.props.updatingTeam }
+                deleteTeam={ this.props.deleteTeam }
+                loading={ this.props.loadingTeam }/>
             : (
               <div>
                 <TeamMembers

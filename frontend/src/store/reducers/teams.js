@@ -23,6 +23,7 @@ import {
   SET_MOVING_TEAM,
   SET_COPYING_TEAM,
   DELETE_TEAM,
+  UPDATE_TEAM,
 } from '../actionTypes'
 
 export const teams = (
@@ -214,6 +215,11 @@ export const teams = (
     return {
       ...state,
       copying: action.val,
+    }
+  case UPDATE_TEAM:
+    return {
+      ...state,
+      [action.id]: {...state[action.id], ...action.teamKeys}
     }
   default:
     return state

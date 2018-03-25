@@ -20,6 +20,7 @@ import {
   setMovingTeam,
   setCopyingTeam,
   deleteTeam,
+  updateTeamById,
 } from '../actions'
 
 describe('Teams', () => {
@@ -674,6 +675,47 @@ describe('Teams', () => {
     }
     expect(
       teams(beforeState, setCopyingTeam(true))
+    ).toEqual(afterState)
+  })
+
+  it('sets moving team status', () => {
+    const beforeState = {
+    }
+    const afterState = {
+      moving: true,
+    }
+    expect(
+      teams(beforeState, setMovingTeam(true))
+    ).toEqual(afterState)
+  })
+
+  it('updates team partially', () => {
+    const beforeState = {
+      1: {
+        id: 1,
+        name: 'Acme Inc.',
+        user: {
+          id: 2,
+          name: 'john'
+        },
+        loading: false,
+      },
+      allIds: [1],
+    }
+    const afterState = {
+      1: {
+        id: 1,
+        name: 'InnoTech',
+        user: {
+          id: 2,
+          name: 'john'
+        },
+        loading: false,
+      },
+      allIds: [1],
+    }
+    expect(
+      teams(beforeState, updateTeamById(1, { name: 'InnoTech' }))
     ).toEqual(afterState)
   })
 })
