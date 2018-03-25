@@ -1,8 +1,6 @@
 FROM python:3.6.4
 ENV PYTHONUNBUFFERD 1
 
-# we need libpq at runtime
-# the following can probably be simplified
 # -- Install Pipenv:
 RUN set -ex && pip install "pipenv~=11.8"
 
