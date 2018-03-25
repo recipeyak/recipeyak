@@ -1,4 +1,5 @@
 @import './variables.scss';
+@import '~bulma/sass/utilities/initial-variables.sass';
 
 .d-flex {
   display: flex;
@@ -103,6 +104,11 @@
   justify-self: end;
 }
 
+.justify-self-left  {
+  justify-self: left;
+}
+
+.justify-between,
 .space-between,
 .justify-space-between,
 .flex-space-between {
@@ -116,6 +122,14 @@
 .align-items-center,
 .align-center {
   align-items: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
 }
 
 .text-center {
@@ -205,6 +219,14 @@
   }
 }
 
+.br-10-percent {
+  border-radius: 10%;
+}
+
+.br-100 {
+  border-radius: 100%;
+}
+
 .br-20rem {
   border-radius: 20rem;
 }
@@ -288,6 +310,18 @@
   min-width: 2rem;
 }
 
+.width-50px {
+  width: 50px;
+}
+
+.max-height-20vh {
+  max-height: 20vh;
+}
+
+.max-height-25vh {
+  max-height: 25vh;
+}
+
 .box-shadow-normal {
   box-shadow: 0 2px 15px rgba(10, 10, 10, 0.17), 0 0 0 1px rgba(10, 10, 10, 0.1);
 }
@@ -352,4 +386,35 @@
 
 .min-height-75px {
   min-height: 75px;
+}
+
+.vertical-align-middle {
+  vertical-align: middle;
+}
+
+.table-spacing {
+  border-spacing: 0 1rem;
+  border-collapse: separate;
+}
+
+.table-responsive {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.overflow-x-auto {
+  overflow-x: auto;
+}
+
+.overflow-y-scroll {
+  overflow-y: scroll;
+}
+
+.w-50px {
+  width: 50px;
+}
+
+.text-muted {
+  color: $grey;
 }

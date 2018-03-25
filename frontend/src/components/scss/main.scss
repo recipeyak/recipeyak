@@ -15,6 +15,7 @@ $primary: $primary-color;
 @import './home.scss';
 @import './cart.scss';
 @import './signup-login.scss';
+@import './Recipe.scss';
 
 html {
   height: 100%;
@@ -51,6 +52,16 @@ nav.nav {
 section.section {
   padding: 1.5rem;
 }
+
+
+// bulma override since small buttons are hard to read with the font weight
+.is-small {
+  font-weight: 600;
+  select {
+    font-weight: 600;
+  }
+}
+
 
 a {
   color: $link-color;
@@ -106,6 +117,7 @@ a {
   grid-gap: 0.5rem;
 }
 
+.recipe-grid,
 .grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -149,8 +161,11 @@ a {
     display: none !important;
   }
 
+  body {
+    border-top: none !important;
+  }
+
   html {
-    border-top: none;
     font-size: $printing-font-size;
   }
 

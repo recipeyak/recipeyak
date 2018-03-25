@@ -4,29 +4,43 @@ from logging import getLogger
 
 from rest_framework.test import APIClient
 
-from .models import MyUser, Recipe, Ingredient, Step, Tag
+from .models import (
+    MyUser,
+    Recipe,
+    Ingredient,
+    Step,
+    Tag,
+    Team,
+)
 
 getLogger('flake8').propagate = False
 
 
 @pytest.fixture
 def user():
+    """
+    Connected to `team`. Has 5 recipes. Member of `team`.
+    """
     email = 'john@doe.org'
-    password = 'testing123'
-    user = MyUser.objects.create(email=email)
-    user.set_password(password)
-    user.save()
-    return user
+    return MyUser.objects.create_user(email=email)
+
+
+@pytest.fixture
+def user_with_recipes(recipes):
+    first_recipe, *_ = recipes
+    return first_recipe.owner
 
 
 @pytest.fixture
 def user2():
     email = 'james@smith.org'
-    password = 'testing123'
-    user = MyUser.objects.create(email=email)
-    user.set_password(password)
-    user.save()
-    return user
+    return MyUser.objects.create_user(email=email)
+
+
+@pytest.fixture
+def user3():
+    email = 'john.doe@example.org'
+    return MyUser.objects.create_user(email=email)
 
 
 @pytest.fixture
@@ -37,7 +51,7 @@ def client():
 @pytest.fixture
 def recipes(user):
     """
-    list of empty recipes with different modified times
+    list of empty recipes with different modified times owned by `user`
     note: each item will have a different creation time inherently
     """
 
@@ -47,18 +61,24 @@ def recipes(user):
     return [Recipe.objects.create(
         name=name,
         author=author,
-        user=user)
+        owner=user)
         for n in range(5)]
 
 
 @pytest.fixture
 def empty_recipe(user):
+    """
+    Empty recipe owned by `user`
+    """
     name = 'empty recipe'
-    return Recipe.objects.create(name=name, user=user)
+    return Recipe.objects.create(name=name, owner=user)
 
 
 @pytest.fixture
 def recipe(user):
+    """
+    Recipe with metadata, Ingredient, Step, and Tag owned by `user`
+    """
 
     name = 'Recipe name'
     author = 'Recipe author'
@@ -66,7 +86,7 @@ def recipe(user):
     time = '1 hour'
 
     recipe = Recipe.objects.create(
-        name=name, author=author, source=source, time=time, user=user)
+        name=name, author=author, source=source, time=time, owner=user)
 
     Ingredient.objects.create(
         quantity='1 lbs',
@@ -93,7 +113,8 @@ def recipe(user):
 @pytest.fixture
 def recipe_pie(user):
     """
-    incomplete pie recipe
+    Recipe with metadata, Ingredient, Step, and Tag owned by `user`.
+    Contains the word "pie" in name and source.
     """
     name = 'Brandied Pumpkin Pie'
     author = 'Melissa Clark'
@@ -101,7 +122,7 @@ def recipe_pie(user):
     time = '4 hours'
 
     recipe = Recipe.objects.create(
-        name=name, author=author, source=source, time=time, user=user)
+        name=name, author=author, source=source, time=time, owner=user)
 
     Ingredient.objects.create(
         quantity='150 grams',
@@ -126,4 +147,34 @@ def recipe_pie(user):
 
 @pytest.fixture
 def recipe2(user):
+    """
+    Pie recipe owned by `user`
+    """
     return recipe_pie(user)
+
+
+@pytest.fixture
+def team(user):
+    team = Team.objects.create(name='Recipe Yak Team')
+    team.force_join_admin(user=user)
+    return team
+
+
+@pytest.fixture
+def empty_team():
+    return Team.objects.create(name='The Hateful Eight')
+
+
+@pytest.fixture
+def team_with_recipes(team, recipe, recipe_pie):
+    team.recipes.add(recipe)
+    team.recipes.add(recipe_pie)
+    return team
+
+
+@pytest.fixture
+def team_with_recipes_no_members(recipe, recipe_pie):
+    t = Team.objects.create(name='A Team with No Name')
+    t.recipes.add(recipe)
+    t.recipes.add(recipe_pie)
+    return t

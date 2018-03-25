@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 import pytest
 import pytz
 
+from django.urls import reverse
 from django.conf import settings
 from rest_framework import status
 
@@ -20,12 +21,10 @@ def test_user_stats(client, user, recipe, recipe_pie):
 
     month = datetime.today().month
 
-    recipe.cartitem.total_cart_additions = 5
-    recipe.cartitem.save()
+    recipe.set_cart_quantity(user, 5)
     recipe.edits = 5
-    recipe_pie.edits = 10
-
     recipe.save()
+    recipe_pie.edits = 10
     recipe_pie.save()
 
     # expected = {
@@ -68,11 +67,11 @@ def test_most_added_recipe_stat(client, user, recipe):
     """
     ensure we have the field necessary for a userhome stat
     """
-    recipe.cartitem.total_cart_additions = 5
-    recipe.cartitem.save()
+    recipe.set_cart_quantity(user, 5)
 
     client.force_authenticate(user)
-    res = client.get(f'{BASE_URL}/user_stats/')
+    url = reverse('user-stats')
+    res = client.get(url)
     assert res.status_code == status.HTTP_200_OK
     data = res.json().get('most_added_recipe')
     for field in ['id', 'name', 'total_cart_additions']:
@@ -90,7 +89,7 @@ def test_total_recipes_added_last_month_by_all_users(client, user, user2):
         Recipe.objects.create(
             name=name,
             author=author,
-            user=user2)
+            owner=user2)
 
     Recipe.objects.update(
         created=datetime.now(tz=pytz.UTC) - timedelta(days=60))
@@ -100,7 +99,7 @@ def test_total_recipes_added_last_month_by_all_users(client, user, user2):
     Recipe.objects.create(
         name=name,
         author=author,
-        user=user2)
+        owner=user2)
 
     res = client.get(f'{BASE_URL}/user_stats/')
     assert res.status_code == status.HTTP_200_OK
@@ -109,8 +108,7 @@ def test_total_recipes_added_last_month_by_all_users(client, user, user2):
 
 def test_total_cart_additions(client, user, recipe):
     cart_additions = 7
-    recipe.cartitem.total_cart_additions = cart_additions
-    recipe.cartitem.save()
+    recipe.set_cart_quantity(user, cart_additions)
 
     client.force_authenticate(user)
     res = client.get(f'{BASE_URL}/user_stats/')

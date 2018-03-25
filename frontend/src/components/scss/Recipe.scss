@@ -1,0 +1,25 @@
+/* Formats select box for move/copy dropdown */
+.dropdown-item {
+  overflow-x: hidden;
+  white-space: wrap;
+  text-overflow: ellipsis;
+}
+
+.select{
+  .my-select {
+  width: 100%;
+  outline: unset;
+  border: unset;
+  border-radius: unset;
+  user-select: none;
+}
+}
+
+$option-color: #106CD6;
+
+option {
+  &:hover {
+    background-color: lighten($option-color, 20%);
+    color: white;
+  }
+}

@@ -1,11 +1,14 @@
 from typing import Dict, List, Any
 import pytest
 
+from django.urls import reverse
 from django.conf import settings
 from rest_framework import status
 
 from .models import (
-    Recipe
+    Recipe,
+    Membership,
+    Team,
 )
 
 pytestmark = pytest.mark.django_db
@@ -92,6 +95,46 @@ def test_creating_recipe_with_empty_ingredients_and_steps(client, user):
     assert res.data.get('name') is not None
     assert res.data.get('ingredients') is not None
     assert res.data.get('steps') is not None
+
+
+def test_recipe_creation_for_a_team(client, team, user):
+    """
+    ensure that the user can create recipe for a team
+    """
+
+    assert team.is_member(user)
+
+    client.force_authenticate(user)
+
+    data = {
+        'name': 'Recipe name',
+        'ingredients': [
+            {
+                'quantity': '1',
+                'unit': 'tablespoon',
+                'name': 'black pepper',
+                'description': '',
+            },
+        ],
+        'steps': [
+            {'text': 'place fish in salt'},
+        ],
+        'team': team.id
+    }
+
+    url = reverse('recipes-list')
+
+    res = client.post(url, data)
+    assert res.status_code == status.HTTP_201_CREATED
+
+    recipe_id = res.json().get('id')
+
+    assert isinstance(Recipe.objects.get(id=recipe_id).owner, Team)
+
+    url = reverse('recipes-detail', kwargs={'pk': recipe_id})
+    assert client.get(url).status_code == status.HTTP_200_OK
+
+    assert Team.objects.get(id=team.id).recipes.first().id == recipe_id
 
 
 def test_recipe_deletion(client, user, recipe):
@@ -339,6 +382,26 @@ def test_filtering_recipes_by_recent(client, user, recipes):
         "recipes weren't sorted by the backend"
 
 
+def test_display_all_accessable_recipes(client, user, recipes, team_with_recipes_no_members):
+    """
+    User should be able to list all teams they have access to:
+        - User-owned recipes
+        - Team-owned recipes
+    Ensure user can only view team recipes if they have joined.
+    """
+
+    client.force_authenticate(user)
+    team_with_recipes_no_members.invite_user(user, creator=user)
+    res = client.get(reverse('recipes-list'))
+    assert res.status_code == status.HTTP_200_OK
+    assert len(res.json()) == len(user.recipes.all())
+
+    team_with_recipes_no_members.force_join(user)
+    res = client.get(reverse('recipes-list'))
+    assert res.status_code == status.HTTP_200_OK
+    assert len(res.json()) == len(user.recipes.all()) + len(team_with_recipes_no_members.recipes.all())
+
+
 def test_recording_edits_for_recipes(client, user, recipe):
     """
     ensure edits being recorded for recipes
@@ -363,3 +426,80 @@ def test_updating_edit_recipe_via_api(client, user, recipe):
     assert res.status_code == status.HTTP_200_OK
 
     assert Recipe.objects.get(pk=recipe.id).edits == 1
+
+
+def test_recipes_returns_cart_data(client, user, recipe):
+    client.force_authenticate(user)
+
+    url = reverse('cart', kwargs={'pk': recipe.pk})
+    count = 5
+    assert client.patch(url, {'count': count}).status_code == status.HTTP_200_OK
+
+    url = reverse('recipes-detail', kwargs={'pk': recipe.pk})
+    res = client.get(url)
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json().get('cart_count') == count
+
+
+def test_copy_recipe(client, user_with_recipes, empty_team, user3):
+    """
+    Users can copy recipe to team if they have write access.
+    """
+    recipe = user_with_recipes.recipes.first()
+    url = reverse('recipes-copy', kwargs={'pk': recipe.id})
+
+    # user must own recipe to copy it
+    client.force_authenticate(user3)
+    assert recipe.owner != user3
+    assert client.post(url, {
+        'id': empty_team.id,
+        'type': 'team',
+        'name': empty_team.name,
+    }).status_code == status.HTTP_404_NOT_FOUND
+
+    # team viewer cannot add recipe to team
+    client.force_authenticate(user_with_recipes)
+    empty_team.force_join(user_with_recipes, level=Membership.READ_ONLY)
+    assert recipe.owner == user_with_recipes
+    assert client.post(url, {'id': empty_team.id, 'type': 'team'}).status_code == status.HTTP_403_FORBIDDEN
+
+    # contributors and admins can add recipe to team
+    empty_team.force_join(user_with_recipes, level=Membership.CONTRIBUTOR)
+    res = client.post(url, {'id': empty_team.id, 'type': 'team'})
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json()['id'] != recipe.id
+    assert res.json()['owner'] == {
+        'id': empty_team.id,
+        'type': 'team',
+        'name': empty_team.name,
+    }
+
+
+def test_move_recipe(client, user_with_recipes, empty_team, user3):
+    """
+    Users can move recipe to team if they have write access.
+    """
+    recipe = user_with_recipes.recipes.first()
+    url = reverse('recipes-move', kwargs={'pk': recipe.id})
+
+    # user must own recipe to copy it
+    client.force_authenticate(user3)
+    assert recipe.owner != user3
+    assert client.post(url, {'id': empty_team.id, 'type': 'team'}).status_code == status.HTTP_404_NOT_FOUND
+
+    # team viewer cannot add recipe to team
+    client.force_authenticate(user_with_recipes)
+    empty_team.force_join(user_with_recipes, level=Membership.READ_ONLY)
+    res = client.post(url, {'id': empty_team.id, 'type': 'team'})
+    assert res.status_code == status.HTTP_403_FORBIDDEN
+
+    # members can add recipe to team
+    empty_team.force_join(user_with_recipes, level=Membership.CONTRIBUTOR)
+    res = client.post(url, {'id': empty_team.id, 'type': 'team'})
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json()['id'] == recipe.id
+    assert res.json()['owner'] == {
+        'id': empty_team.id,
+        'type': 'team',
+        'name': empty_team.name,
+    }

@@ -67,6 +67,7 @@ import {
   SET_ADD_RECIPE_FORM_SOURCE,
   SET_ADD_RECIPE_FORM_TIME,
   SET_ADD_RECIPE_FORM_SERVINGS,
+  SET_ADD_RECIPE_FORM_TEAM,
   ADD_ADD_RECIPE_FORM_INGREDIENT,
   REMOVE_ADD_RECIPE_FORM_INGREDIENT,
   UPDATE_ADD_RECIPE_FORM_INGREDIENT,
@@ -77,6 +78,34 @@ import {
   SET_SOCIAL_ACCOUNT_CONNECTION,
   SET_PASSWORD_USABLE,
   SET_FROM_URL,
+  ADD_TEAM,
+  SET_LOADING_TEAM,
+  SET_LOADING_TEAM_MEMBERS,
+  SET_LOADING_TEAM_RECIPES,
+  SET_TEAM_404,
+  SET_TEAM_MEMBERS,
+  SET_TEAM_RECIPES,
+  SET_UPDATING_USER_TEAM_LEVEL,
+  SET_USER_TEAM_LEVEL,
+  SET_DELETING_MEMBERSHIP,
+  DELETE_MEMBERSHIP,
+  SET_USER_ID,
+  SET_SENDING_TEAM_INVITES,
+  SET_TEAMS,
+  SET_LOADING_TEAMS,
+  SET_TEAM,
+  SET_CREATING_TEAM,
+  SET_MOVING_TEAM,
+  SET_COPYING_TEAM,
+  SET_INVITES,
+  SET_LOADING_INVITES,
+  SET_ERROR_FETCHING_INVITES,
+  SET_DECLINING_INVITE,
+  SET_ACCEPTING_INVITE,
+  SET_DECLINED_INVITE,
+  SET_ACCEPTED_INVITE,
+  DELETE_TEAM,
+  UPDATE_TEAM,
 } from './actionTypes'
 
 import {
@@ -87,31 +116,49 @@ import {
 import axios from 'axios'
 import raven from 'raven-js'
 
-const http = axios.create({
-  timeout: 15000,
-})
+import { store } from './store'
+
+const config = { timeout: 15000 }
+
+const http = axios.create(config)
+const anon = axios.create(config)
+
+const handleResponseError = error => {
+  // 503 means we are in maintenance mode. Reload to show maintenance page.
+  const maintenanceMode = error.response && error.response.status === 503
+  // Report all 500 errors
+  const serverError = !maintenanceMode && error.response && error.response.status >= 500
+  // Report request timeouts
+  const requestTimeout = error.code === 'ECONNABORTED'
+  if (maintenanceMode) {
+    location.reload()
+  } else if (serverError || requestTimeout) {
+    raven.captureException(error)
+  }
+  return Promise.reject(error)
+}
 
 http.interceptors.response.use(
   response => response,
-  error => {
-    // 503 means we are in maintenance mode. Reload to show maintenance page.
-    const maintenanceMode = error.response && error.response.status === 503
-    // Report all 500 errors
-    const serverError = !maintenanceMode && error.response && error.response.status >= 500
-    // Report request timeouts
-    const requestTimeout = error.code === 'ECONNABORTED'
-    if (maintenanceMode) {
-      location.reload()
-    } else if (serverError || requestTimeout) {
-      raven.captureException(error)
-    }
-    return Promise.reject(error)
-  })
+  error => handleResponseError(error))
+
+anon.interceptors.response.use(
+  response => response,
+  error => handleResponseError(error))
+
+http.interceptors.request.use(
+  config => {
+    config.headers['Authorization'] = 'Token ' + store.getState().user.token
+    return config
+  }, error => Promise.reject(error)
+)
 
 const invalidToken = res =>
   res != null && res.data.detail === 'Invalid token.' && res.status === 401
 
 const badRequest = err => err.response && err.response.status === 400
+
+const is404 = err => err.response.status === 404
 
 export const setNotification = ({
   message,
@@ -130,7 +177,7 @@ export const clearNotification = () => ({
 
 // https://stackoverflow.com/a/38574266/3555105
 let notificationTimeout = null
-const showNotificationWithTimeout = ({
+export const showNotificationWithTimeout = ({
   message,
   level,
   closeable = true,
@@ -166,13 +213,9 @@ export const setLoggingOut = val => ({
   val
 })
 
-export const loggingOut = () => (dispatch, getState) => {
+export const loggingOut = () => dispatch => {
   dispatch(setLoggingOut(true))
-  return http.post('/api/v1/rest-auth/logout/', {}, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.post('/api/v1/rest-auth/logout/', {})
   .then(() => {
     dispatch(logout())
     dispatch(push('/login'))
@@ -238,14 +281,10 @@ const emailExists = err =>
 
 const second = 1000
 
-export const updatingEmail = email => (dispatch, getState) => {
+export const updatingEmail = email => dispatch => {
   dispatch(setUpdatingUserEmail(true))
   return http.patch('/api/v1/rest-auth/user/', {
     email
-  }, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
   })
   .then(res => {
     dispatch(setUserEmail(res.data.email))
@@ -270,15 +309,17 @@ export const updatingEmail = email => (dispatch, getState) => {
   })
 }
 
-export const fetchUser = () => (dispatch, getState) => {
+export const setUserID = (id) => ({
+  type: SET_USER_ID,
+  id,
+})
+
+export const fetchUser = () => dispatch => {
   dispatch(setLoadingUser(true))
   dispatch(setErrorUser(false))
-  return http.get('/api/v1/rest-auth/user/', {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.get('/api/v1/rest-auth/user/')
   .then(res => {
+    dispatch(setUserID(res.data.id))
     dispatch(setAvatarURL(res.data.avatar_url))
     dispatch(setUserEmail(res.data.email))
     dispatch(setPasswordUsable(res.data.has_usable_password))
@@ -305,12 +346,8 @@ export const setSocialConnection = (provider, val) => ({
   val,
 })
 
-export const fetchSocialConnections = () => (dispatch, getState) => {
-  return http.get('/api/v1/rest-auth/socialaccounts/', {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+export const fetchSocialConnections = () => dispatch => {
+  return http.get('/api/v1/rest-auth/socialaccounts/')
   .then(res => {
     dispatch(setSocialConnections(res.data))
   })
@@ -322,13 +359,9 @@ export const fetchSocialConnections = () => (dispatch, getState) => {
   })
 }
 
-export const disconnectSocialAccount = (provider, id) => (dispatch, getState) => {
+export const disconnectSocialAccount = (provider, id) => dispatch => {
   return http.post(`/api/v1/rest-auth/socialaccounts/${id}/disconnect/`, {
     id
-  }, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
   })
   .then(() => {
     dispatch(setSocialConnections(
@@ -346,13 +379,9 @@ export const disconnectSocialAccount = (provider, id) => (dispatch, getState) =>
   })
 }
 
-export const fetchUserStats = () => (dispatch, getState) => {
+export const fetchUserStats = () => dispatch => {
   dispatch(setLoadingUserStats(true))
-  return http.get('api/v1/user_stats/', {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.get('api/v1/user_stats/')
   .then(res => {
     dispatch(setUserStats(res.data))
     dispatch(setLoadingUserStats(false))
@@ -376,17 +405,13 @@ export const setErrorPasswordUpdate = val => ({
   val
 })
 
-export const updatingPassword = (password1, password2, oldPassword) => (dispatch, getState) => {
+export const updatingPassword = (password1, password2, oldPassword) => dispatch => {
   dispatch(setLoadingPasswordUpdate(true))
   dispatch(setErrorPasswordUpdate({}))
   return http.post('/api/v1/rest-auth/password/change/', {
     new_password1: password1,
     new_password2: password2,
     old_password: oldPassword
-  }, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
   })
   .then(() => {
     dispatch(setLoadingPasswordUpdate(false))
@@ -441,13 +466,9 @@ export const clearRecipeCartAmounts = () => ({
   type: CLEAR_RECIPE_CART_AMOUNTS
 })
 
-export const clearCart = () => (dispatch, getState) => {
+export const clearCart = () => dispatch => {
   dispatch(setClearingCart(true))
-  return http.post('/api/v1/clear_cart/', {}, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.post('/api/v1/clear_cart/', {})
   .then(() => {
     dispatch(clearRecipeCartAmounts())
     dispatch(setShoppingListEmpty())
@@ -494,13 +515,9 @@ export const addingToCart = id => (dispatch, getState) => {
   })
 }
 
-export const updatingCart = (id, count) => (dispatch, getState) =>
+export const updatingCart = (id, count) => dispatch =>
   http.patch(`/api/v1/cart/${id}/`, {
     count
-  }, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
   })
   .then(res => {
     const {
@@ -546,14 +563,10 @@ export const setShoppingListError = val => ({
   val
 })
 
-export const fetchShoppingList = () => (dispatch, getState) => {
+export const fetchShoppingList = () => dispatch => {
   dispatch(setLoadingShoppingList(true))
   dispatch(setShoppingListError(false))
-  return http.get('/api/v1/shoppinglist/', {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.get('/api/v1/shoppinglist/')
   .then(res => {
     dispatch(setShoppingList(res.data))
     dispatch(setLoadingShoppingList(false))
@@ -582,15 +595,11 @@ export const setErrorAddRecipe = val => ({
   val
 })
 
-export const postNewRecipe = recipe => (dispatch, getState) => {
+export const postNewRecipe = recipe => dispatch => {
   dispatch(setLoadingAddRecipe(true))
   dispatch(setErrorAddRecipe({}))
 
-  return http.post('/api/v1/recipes/', recipe, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.post('/api/v1/recipes/', recipe)
   .then(res => {
     dispatch(addRecipe(res.data))
     dispatch(clearAddRecipeForm())
@@ -629,14 +638,10 @@ export const setLoadingRecipe = (id, val) => ({
   val
 })
 
-export const fetchRecipe = id => (dispatch, getState) => {
+export const fetchRecipe = id => dispatch => {
   dispatch(setRecipe404(id, false))
   dispatch(setLoadingRecipe(id, true))
-  return http.get(`/api/v1/recipes/${id}/`, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.get(`/api/v1/recipes/${id}/`)
   .then(res => {
     dispatch(addRecipe(res.data))
     dispatch(setLoadingRecipe(id, false))
@@ -668,14 +673,10 @@ export const setLoadingRecipes = val => ({
   val
 })
 
-export const fetchRecentRecipes = () => (dispatch, getState) => {
+export const fetchRecentRecipes = () => dispatch => {
   dispatch(setLoadingRecipes(true))
   dispatch(setErrorRecipes(false))
-  return http.get('/api/v1/recipes/?recent', {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.get('/api/v1/recipes/?recent')
   .then(res => {
     dispatch(setRecipes(res.data))
     dispatch(setLoadingRecipes(false))
@@ -690,15 +691,11 @@ export const fetchRecentRecipes = () => (dispatch, getState) => {
   })
 }
 
-export const fetchRecipeList = () => (dispatch, getState) => {
+export const fetchRecipeList = () => dispatch => {
   dispatch(setLoadingRecipes(true))
   dispatch(setErrorRecipes(false))
 
-  return http.get('/api/v1/recipes/', {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.get('/api/v1/recipes/')
   .then(res => {
     dispatch(setRecipes(res.data))
     dispatch(setLoadingRecipes(false))
@@ -736,13 +733,9 @@ export const addIngredientToRecipe = (id, ingredient) => ({
   ingredient
 })
 
-export const addingRecipeIngredient = (recipeID, ingredient) => (dispatch, getState) => {
+export const addingRecipeIngredient = (recipeID, ingredient) => dispatch => {
   dispatch(setAddingIngredientToRecipe(recipeID, true))
-  return http.post(`/api/v1/recipes/${recipeID}/ingredients/`, ingredient, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.post(`/api/v1/recipes/${recipeID}/ingredients/`, ingredient)
   .then(res => {
     dispatch(addIngredientToRecipe(recipeID, res.data))
     dispatch(setAddingIngredientToRecipe(recipeID, false))
@@ -762,13 +755,9 @@ export const updateRecipeName = (id, name) => ({
   name
 })
 
-export const sendUpdatedRecipeName = (id, name) => (dispatch, getState) => {
+export const sendUpdatedRecipeName = (id, name) => dispatch => {
   return http.patch(`/api/v1/recipes/${id}/`, {
     name
-  }, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
   })
   .then(res => {
     dispatch(updateRecipeName(res.data.id, res.data.name))
@@ -787,13 +776,9 @@ export const updateRecipeSource = (id, source) => ({
   source
 })
 
-export const setRecipeSource = (id, source) => (dispatch, getState) => {
+export const setRecipeSource = (id, source) => dispatch => {
   return http.patch(`/api/v1/recipes/${id}/`, {
     source
-  }, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
   })
   .then(res => {
     dispatch(updateRecipeSource(res.data.id, res.data.source))
@@ -812,13 +797,9 @@ export const updateRecipeAuthor = (id, author) => ({
   author
 })
 
-export const setRecipeAuthor = (id, author) => (dispatch, getState) => {
+export const setRecipeAuthor = (id, author) => dispatch => {
   return http.patch(`/api/v1/recipes/${id}/`, {
     author
-  }, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
   })
   .then(res => {
     dispatch(updateRecipeAuthor(res.data.id, res.data.author))
@@ -837,13 +818,9 @@ export const updateRecipeTime = (id, time) => ({
   time
 })
 
-export const setRecipeTime = (id, time) => (dispatch, getState) => {
+export const setRecipeTime = (id, time) => dispatch => {
   return http.patch(`/api/v1/recipes/${id}/`, {
     time
-  }, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
   })
   .then(res => {
     dispatch(updateRecipeTime(res.data.id, res.data.time))
@@ -872,13 +849,9 @@ export const setRecipeUpdating = (id, val) => ({
   val
 })
 
-export const updateRecipe = (id, data) => (dispatch, getState) => {
+export const updateRecipe = (id, data) => dispatch => {
   dispatch(setRecipeUpdating(id, true))
-  return http.patch(`/api/v1/recipes/${id}/`, data, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.patch(`/api/v1/recipes/${id}/`, data)
   .then(res => {
     dispatch(setRecipe(res.data.id, res.data))
     dispatch(setRecipeUpdating(id, false))
@@ -899,14 +872,10 @@ export const updateIngredient = (recipeID, ingredientID, content) => ({
   content
 })
 
-export const addingRecipeStep = (recipeID, step) => (dispatch, getState) => {
+export const addingRecipeStep = (recipeID, step) => dispatch => {
   dispatch(setLoadingAddStepToRecipe(recipeID, true))
   return http.post(`/api/v1/recipes/${recipeID}/steps/`, {
     text: step
-  }, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
   })
   .then(res => {
     dispatch(addStepToRecipe(recipeID, res.data))
@@ -935,13 +904,9 @@ export const setUpdatingIngredient = (recipeID, ingredientID, val) => ({
   val
 })
 
-export const updatingIngredient = (recipeID, ingredientID, content) => (dispatch, getState) => {
+export const updatingIngredient = (recipeID, ingredientID, content) => dispatch => {
   dispatch(setUpdatingIngredient(recipeID, ingredientID, true))
-  return http.patch(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, content, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.patch(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, content)
   .then(res => {
     dispatch(updateIngredient(recipeID, ingredientID, res.data))
     dispatch(setUpdatingIngredient(recipeID, ingredientID, false))
@@ -961,13 +926,9 @@ export const deleteIngredient = (recipeID, ingredientID) => ({
   ingredientID
 })
 
-export const deletingIngredient = (recipeID, ingredientID) => (dispatch, getState) => {
+export const deletingIngredient = (recipeID, ingredientID) => dispatch => {
   dispatch(setRemovingIngredient(recipeID, ingredientID, true))
-  return http.delete(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.delete(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`)
   .then(() => {
     dispatch(setRemovingIngredient(recipeID, ingredientID, false))
     dispatch(deleteIngredient(recipeID, ingredientID))
@@ -1002,14 +963,10 @@ export const setUpdatingStep = (recipeID, stepID, val) => ({
   val
 })
 
-export const updatingStep = (recipeID, stepID, text) => (dispatch, getState) => {
+export const updatingStep = (recipeID, stepID, text) => dispatch => {
   dispatch(setUpdatingStep(recipeID, stepID, true))
   return http.patch(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, {
     text
-  }, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
   })
   .then(res => {
     const text = res.data.text
@@ -1031,13 +988,9 @@ export const deleteStep = (recipeID, stepID) => ({
   stepID
 })
 
-export const deletingStep = (recipeID, stepID) => (dispatch, getState) => {
+export const deletingStep = (recipeID, stepID) => dispatch => {
   dispatch(setRemovingStep(recipeID, stepID, true))
-  return http.delete(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.delete(`/api/v1/recipes/${recipeID}/steps/${stepID}/`)
   .then(() => {
     dispatch(deleteStep(recipeID, stepID))
     dispatch(setRemovingStep(recipeID, stepID, false))
@@ -1065,7 +1018,7 @@ export const logUserIn = (email, password, redirectUrl = '') => dispatch => {
   dispatch(setLoadingLogin(true))
   dispatch(setErrorLogin({}))
   dispatch(clearNotification())
-  return http.post('/api/v1/rest-auth/login/', {
+  return anon.post('/api/v1/rest-auth/login/', {
     email,
     password
   })
@@ -1097,7 +1050,7 @@ export const setErrorSocialLogin = val => ({
 })
 
 export const socialLogin = (service, token, redirectUrl = '') => dispatch => {
-  return http.post(`/api/v1/rest-auth/${service}/`, {
+  return anon.post(`/api/v1/rest-auth/${service}/`, {
     code: token
   })
   .then(res => {
@@ -1121,13 +1074,9 @@ export const socialLogin = (service, token, redirectUrl = '') => dispatch => {
   })
 }
 
-export const socialConnect = (service, code) => (dispatch, getState) => {
+export const socialConnect = (service, code) => dispatch => {
   return http.post(`/api/v1/rest-auth/${service}/connect/`, {
     code
-  }, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
   })
   .then(() => {
     dispatch(replace('/settings'))
@@ -1156,7 +1105,7 @@ export const signup = (email, password1, password2) => dispatch => {
     // clear previous signup errors
   dispatch(setErrorSignup({}))
   dispatch(clearNotification())
-  return http.post('/api/v1/rest-auth/registration/', {
+  return anon.post('/api/v1/rest-auth/registration/', {
     email,
     password1,
     password2
@@ -1191,13 +1140,9 @@ export const deleteRecipe = id => ({
   id
 })
 
-export const deletingRecipe = id => (dispatch, getState) => {
+export const deletingRecipe = id => dispatch => {
   dispatch(setDeletingRecipe(id, true))
-  return http.delete(`/api/v1/recipes/${id}/`, {
-    headers: {
-      Authorization: 'Token ' + getState().user.token
-    }
-  })
+  return http.delete(`/api/v1/recipes/${id}/`)
   .then(() => {
     dispatch(deleteRecipe(id))
     dispatch(setDeletingRecipe(id, false))
@@ -1226,7 +1171,7 @@ export const reset = email => dispatch => {
   dispatch(setLoadingReset(true))
   dispatch(setErrorReset({}))
   dispatch(clearNotification())
-  return http.post('/api/v1/rest-auth/password/reset/', {
+  return anon.post('/api/v1/rest-auth/password/reset/', {
     email
   })
   .then(res => {
@@ -1273,7 +1218,7 @@ export const resetConfirmation = (uid, token, newPassword1, newPassword2) => dis
   dispatch(setLoadingResetConfirmation(true))
   dispatch(setErrorResetConfirmation({}))
   dispatch(clearNotification())
-  return http.post('/api/v1/rest-auth/password/reset/confirm/', {
+  return anon.post('/api/v1/rest-auth/password/reset/confirm/', {
     uid,
     token,
     new_password1: newPassword1,
@@ -1336,6 +1281,11 @@ export const setAddRecipeFormServings = val => ({
   val
 })
 
+export const setAddRecipeFormTeam = val => ({
+  type: SET_ADD_RECIPE_FORM_TEAM,
+  val,
+})
+
 export const addAddRecipeFormIngredient = ingredient => ({
   type: ADD_ADD_RECIPE_FORM_INGREDIENT,
   ingredient
@@ -1371,3 +1321,432 @@ export const updateAddRecipeFormStep = (index, step) => ({
 export const clearAddRecipeForm = () => ({
   type: CLEAR_ADD_RECIPE_FORM
 })
+
+export const addTeam = team => ({
+  type: ADD_TEAM,
+  team
+})
+
+export const setLoadingTeam = (id, loadingTeam) => ({
+  type: SET_LOADING_TEAM,
+  id,
+  loadingTeam,
+})
+
+export const setLoadingTeamMembers = (id, loadingMembers) => ({
+  type: SET_LOADING_TEAM_MEMBERS,
+  id,
+  loadingMembers,
+})
+
+export const setTeam404 = (id, val = true) => ({
+  type: SET_TEAM_404,
+  id,
+  val,
+})
+
+export const setTeamMembers = (id, members) => ({
+  type: SET_TEAM_MEMBERS,
+  id,
+  members,
+})
+
+export const setTeamRecipes = (id, recipes) => ({
+  type: SET_TEAM_RECIPES,
+  id,
+  recipes,
+})
+
+export const setLoadingTeamRecipes = (id, loadingRecipes) => ({
+  type: SET_LOADING_TEAM_RECIPES,
+  id,
+  loadingRecipes,
+})
+
+export const fetchTeam = id => dispatch => {
+  dispatch(setLoadingTeam(id, true))
+  return http.get(`/api/v1/t/${id}/`)
+  .then(res => {
+    dispatch(addTeam(res.data))
+    dispatch(setLoadingTeam(id, false))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    if (is404(err)) {
+      dispatch(setTeam404(id))
+    }
+    dispatch(setLoadingTeam(id, false))
+    throw err
+  })
+}
+
+export const fetchTeamMembers = id => dispatch => {
+  dispatch(setLoadingTeamMembers(id, true))
+  return http.get(`/api/v1/t/${id}/members/`)
+  .then(res => {
+    dispatch(setTeamMembers(id, res.data))
+    dispatch(setLoadingTeamMembers(id, false))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    dispatch(setLoadingTeamMembers(id, false))
+    throw err
+  })
+}
+
+export const fetchTeamRecipes = id => dispatch => {
+  dispatch(setLoadingTeamRecipes(id, true))
+  return http.get(`/api/v1/t/${id}/recipes/`)
+  .then(res => {
+    dispatch(setRecipes(res.data))
+    dispatch(setTeamRecipes(id, res.data))
+    dispatch(setLoadingTeamRecipes(id, false))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    dispatch(setLoadingTeamRecipes(id, false))
+    throw err
+  })
+}
+
+export const setUpdatingUserTeamLevel = (id, updating) => ({
+  type: SET_UPDATING_USER_TEAM_LEVEL,
+  id,
+  updating,
+})
+
+export const setUserTeamLevel = (teamID, membershipID, level) => ({
+  type: SET_USER_TEAM_LEVEL,
+  teamID,
+  membershipID,
+  level,
+})
+
+const attemptedDeleteLastAdmin = res =>
+  res.status === 400 && res.data.level && res.data.level[0].includes('cannot demote')
+
+export const settingUserTeamLevel = (teamID, membershipID, level) => dispatch => {
+  dispatch(setUpdatingUserTeamLevel(teamID, true))
+  return http.patch(`/api/v1/t/${teamID}/members/${membershipID}/`, { level })
+  .then(res => {
+    dispatch(setUserTeamLevel(teamID, membershipID, res.data.level))
+    dispatch(setUpdatingUserTeamLevel(teamID, false))
+  })
+  .catch(err => {
+    if (invalidToken(err.response)) {
+      dispatch(logout())
+    }
+    if (attemptedDeleteLastAdmin(err.response)) {
+      const message = err.response.data.level[0]
+      dispatch(showNotificationWithTimeout({
+        message,
+        level: 'danger',
+        delay: 3 * second
+      }))
+    }
+    dispatch(setUpdatingUserTeamLevel(teamID, false))
+    throw err
+  })
+}
+
+export const deleteMembership = (teamID, membershipID) => ({
+  type: DELETE_MEMBERSHIP,
+  teamID,
+  membershipID
+})
+
+export const setDeletingMembership = (teamID, membershipID, val) => ({
+  type: SET_DELETING_MEMBERSHIP,
+  teamID,
+  membershipID,
+  val,
+})
+
+export const deleteTeam = (id) => ({
+  type: DELETE_TEAM,
+  id,
+})
+
+export const deletingMembership = (teamID, id, leaving = false) => (dispatch, getState) => {
+  dispatch(setDeletingMembership(teamID, id, true))
+  return http.delete(`/api/v1/t/${teamID}/members/${id}/`)
+  .then(() => {
+    const message = 'left team ' + getState().teams[teamID].name
+    dispatch(deleteMembership(teamID, id))
+    if (leaving) {
+      dispatch(push('/'))
+      dispatch(showNotificationWithTimeout({
+        message,
+        level: 'success',
+        delay: 3 * second
+      }))
+      dispatch(deleteTeam(teamID))
+    }
+  })
+  .catch(err => {
+    const message = err.response.data
+    dispatch(showNotificationWithTimeout({
+      message,
+      level: 'danger',
+      delay: 3 * second
+    }))
+    dispatch(setDeletingMembership(teamID, id, false))
+    throw err
+  })
+}
+
+export const deletingTeam = teamID => (dispatch, getState) => {
+  return http.delete(`/api/v1/t/${teamID}`)
+  .then(() => {
+    dispatch(push('/'))
+    const teamName = getState().teams[teamID].name
+    dispatch(showNotificationWithTimeout({
+      message: `Team deleted (${teamName})`,
+      level: 'success',
+      delay: 3 * second
+    }))
+    dispatch(deleteTeam(teamID))
+  })
+  .catch(err => {
+    let message = 'Uh Oh! Something went wrong.'
+    if (err.response && err.response.status === 403) {
+      message = (err.response.data && err.response.data.detail)
+      ? err.response.data.detail
+      : 'You are not authorized to delete this team'
+    } else if (err.response && err.response.status === 404) {
+      message = (err.response.data && err.response.data.detail)
+      ? err.response.data.detail
+      : "The team you are attempting to delete doesn't exist"
+    } else {
+      raven.captureException(err)
+    }
+    dispatch(showNotificationWithTimeout({
+      message,
+      level: 'danger',
+      delay: 3 * second
+    }))
+    throw err
+  })
+}
+
+export const setSendingTeamInvites = (teamID, val) => ({
+  type: SET_SENDING_TEAM_INVITES,
+  teamID,
+  val,
+})
+
+export const sendingTeamInvites = (teamID, emails, level) => dispatch => {
+  dispatch(setSendingTeamInvites(teamID, true))
+  return http.post(`/api/v1/t/${teamID}/invites/`, { emails, level })
+  .then(() => {
+    dispatch(showNotificationWithTimeout({
+      message: 'invites sent!',
+      level: 'success',
+      delay: 3 * second
+    }))
+    dispatch(setSendingTeamInvites(teamID, false))
+  })
+  .catch(err => {
+    // TODO: handle errors
+    dispatch(setSendingTeamInvites(teamID, false))
+    throw err
+  })
+}
+
+export const setLoadingTeams = val => ({
+  type: SET_LOADING_TEAMS,
+  val,
+})
+
+export const setTeams = teams => ({
+  type: SET_TEAMS,
+  teams,
+})
+
+export const fetchTeams = () => dispatch => {
+  dispatch(setLoadingTeams(true))
+  return http.get('/api/v1/t/')
+  .then(res => {
+    dispatch(setTeams(res.data))
+    dispatch(setLoadingTeams(false))
+  })
+  .catch(err => {
+    dispatch(setLoadingTeams(false))
+    throw err
+  })
+}
+
+export const setTeam = (id, team) => ({
+  type: SET_TEAM,
+  id,
+  team,
+})
+
+export const updateTeamById = (id, teamKeys) => ({
+  type: UPDATE_TEAM,
+  id,
+  teamKeys,
+})
+
+export const setCreatingTeam = val => ({
+  type: SET_CREATING_TEAM,
+  val,
+})
+
+export const creatingTeam = (name, emails, level) => dispatch => {
+  dispatch(setCreatingTeam(true))
+  return http.post('/api/v1/t/', { name, emails, level })
+  .then(res => {
+    dispatch(setTeam(res.data.id, res.data))
+    dispatch(setCreatingTeam(false))
+    dispatch(push(`/t/${res.data.id}`))
+  })
+  .catch(err => {
+    dispatch(setCreatingTeam(false))
+    throw err
+  })
+}
+
+export const setMovingTeam = val => ({
+  type: SET_MOVING_TEAM,
+  val,
+})
+
+export const setCopyingTeam = val => ({
+  type: SET_COPYING_TEAM,
+  val,
+})
+
+export const updatingTeam = (teamId, teamKVs) => dispatch => {
+  return http.patch(`/api/v1/t/${teamId}/`, teamKVs)
+  .then(res => {
+    dispatch(showNotificationWithTimeout({
+      message: 'Team updated',
+      level: 'success',
+      delay: 3 * second
+    }))
+    dispatch(updateTeamById(res.data.id, res.data))
+  })
+  .catch(err => {
+    let message = 'Problem updating team.'
+    if (err.response && err.response.status === 403) {
+      message = 'You are not unauthorized to perform that action'
+    }
+    dispatch(showNotificationWithTimeout({
+      message,
+      level: 'danger',
+      delay: 3 * second
+    }))
+    throw err
+  })
+}
+
+export const moveRecipeTo = (recipeId, ownerId, type) => dispatch => {
+  dispatch(setMovingTeam(true))
+  return http.post(`/api/v1/recipes/${recipeId}/move/`, { id: ownerId, type })
+  .then(res => {
+    dispatch(addRecipe(res.data))
+    dispatch(setMovingTeam(false))
+  })
+  .catch(err => {
+    dispatch(setMovingTeam(false))
+    throw err
+  })
+}
+
+export const copyRecipeTo = (recipeId, ownerId, type) => dispatch => {
+  dispatch(setCopyingTeam(true))
+  return http.post(`/api/v1/recipes/${recipeId}/copy/`, { id: ownerId, type })
+  .then(res => {
+    dispatch(addRecipe(res.data))
+    dispatch(setCopyingTeam(false))
+  })
+  .catch(err => {
+    dispatch(setCopyingTeam(false))
+    throw err
+  })
+}
+
+export const setLoadingInvites = (val) => ({
+  type: SET_LOADING_INVITES,
+  val,
+})
+
+export const setInvites = (invites) => ({
+  type: SET_INVITES,
+  invites,
+})
+
+export const setErrorFetchingInvites = (val) => ({
+  type: SET_ERROR_FETCHING_INVITES,
+  val,
+})
+
+export const fetchInvites = () => dispatch => {
+  dispatch(setLoadingInvites(true))
+  dispatch(setErrorFetchingInvites(false))
+  return http.get('/api/v1/invites/')
+  .then(res => {
+    dispatch(setInvites(res.data))
+    dispatch(setLoadingInvites(false))
+  })
+  .catch(err => {
+    dispatch(setLoadingInvites(false))
+    dispatch(setErrorFetchingInvites(true))
+    throw err
+  })
+}
+
+export const setAcceptingInvite = (id, val) => ({
+  type: SET_ACCEPTING_INVITE,
+  id,
+  val,
+})
+
+export const setAcceptedInvite = (id) => ({
+  type: SET_ACCEPTED_INVITE,
+  id,
+})
+
+export const acceptingInvite = (id) => dispatch => {
+  dispatch(setAcceptingInvite(true))
+  return http.post(`/api/v1/invites/${id}/accept/`, {})
+  .then(() => {
+    dispatch(setAcceptingInvite(false))
+    dispatch(setAcceptedInvite(id))
+  })
+  .catch(err => {
+    dispatch(setAcceptingInvite(false))
+    throw err
+  })
+}
+
+export const setDecliningInvite = (id, val) => ({
+  type: SET_DECLINING_INVITE,
+  id,
+  val,
+})
+
+export const setDeclinedInvite = (id) => ({
+  type: SET_DECLINED_INVITE,
+  id,
+})
+
+export const decliningInvite = (id) => dispatch => {
+  dispatch(setDecliningInvite(true))
+  return http.post(`/api/v1/invites/${id}/decline/`, {})
+  .then(() => {
+    dispatch(setDecliningInvite(false))
+    dispatch(setDeclinedInvite(id))
+  })
+  .catch(err => {
+    dispatch(setDecliningInvite(false))
+    throw err
+  })
+}

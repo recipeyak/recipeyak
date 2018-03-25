@@ -7,73 +7,73 @@ import { setDarkModeClass } from '../sideEffects'
 
 import NavLink from '../containers/NavLink'
 import Logo from './Logo'
+import Dropdown from './Dropdown'
+import NotificationsDropdown from './NotificationsDropdown'
 
-class Navbar extends React.Component {
-  state = {
-    query: '',
-    showDropdown: false
+import { teamURL } from '../urls'
+
+const Teams = ({ teams, loading }) => {
+  if (loading) {
+    return <p>Loading...</p>
   }
 
-  componentWillMount = () => {
-    this.props.fetchData()
+  if (teams.length === 0) {
+    return <p className="text-muted fs-3 align-self-center">No teams.</p>
+  }
+
+  return (
+    <div className="text-left">
+        { teams.map(({ id, name }) =>
+            <p key={id}>
+              <NavLink to={teamURL(id)} activeClassName="fw-500">{ name }</NavLink>
+            </p>)
+        }
+    </div>
+  )
+}
+
+class UserDropdown extends React.Component {
+  state = {
+    show: false,
+  }
+
+  componentWillMount () {
     document.addEventListener('click', this.handleGeneralClick)
   }
 
-  componentDidMount = () => {
+  componentDidMount () {
     setDarkModeClass(this.props.darkMode)
   }
 
-  componentWillUnmount = () => {
+  componentWillUnmount () {
     document.removeEventListener('click', this.handleGeneralClick)
   }
 
   handleGeneralClick = e => {
-    const clickedInComponent = this.element && this.element.contains(e.target)
-    const clickedOnLink = e.target.nodeName === 'A'
-    if (clickedInComponent && !clickedOnLink) return
-    this.setState({ showDropdown: false })
+    const clickedDropdown = this.dropdown && this.dropdown.contains(e.target)
+    if (clickedDropdown) return
+    this.setState({ show: false })
   }
 
   render () {
     const {
       avatarURL,
-      loggedIn = true,
-      logout,
       email,
-      loggingOut,
-      className = '',
       toggleDarkMode,
-      darkMode
+      darkMode,
+      logout,
+      loggingOut
     } = this.props
+    return (
+      <section ref={dropdown => { this.dropdown = dropdown }}>
+        <img
+          onClick={ () => this.setState(prev => ({ show: !prev.show })) }
+          alt=''
+          className="user-profile-image better-nav-item p-0"
+          src={ avatarURL }/>
 
-    const buttons = loggedIn ? (
-      <div className="d-flex align-center p-relative">
-        <NavLink
-          to="/recipes/add"
-          activeClassName="active"
-          className="better-nav-item">
-          Add Recipe
-        </NavLink>
-        <NavLink
-          to="/recipes"
-          activeClassName="active"
-          className="better-nav-item">
-          Recipes
-        </NavLink>
-        <NavLink
-          to="/cart"
-          activeClassName="active"
-          className="better-nav-item">
-          Cart
-        </NavLink>
-        <section ref={element => { this.element = element }}>
-          <img
-            onClick={ () => this.setState(prev => ({ showDropdown: !prev.showDropdown })) }
-            alt=''
-            className="user-profile-image better-nav-item p-0"
-            src={ avatarURL }/>
           <div className={
-            'box p-absolute direction-column align-items-start right-0 mt-1' + (this.state.showDropdown ? ' d-flex' : ' d-none')
+            'box p-absolute direction-column align-items-start right-0 mt-1' + (this.state.show ? ' d-flex' : ' d-none')
           }>
             <p className="bold">{ email }</p>
             <div className="d-flex align-center p-1-0">
@@ -92,7 +92,72 @@ class Navbar extends React.Component {
               Logout
             </button>
           </div>
-        </section>
+      </section>
+    )
+  }
+}
+
+class Navbar extends React.Component {
+
+  static defaultProps = {
+    teams: []
+  }
+
+  componentWillMount () {
+    this.props.fetchData()
+  }
+
+  render () {
+    const {
+      avatarURL,
+      loggedIn = true,
+      logout,
+      email,
+      loggingOut,
+      className = '',
+      toggleDarkMode,
+      darkMode
+    } = this.props
+
+    const buttons = loggedIn ? (
+      <div className="d-flex align-center p-relative justify-content-center flex-wrap">
+        <NavLink
+          to="/recipes/add"
+          activeClassName="active"
+          className="better-nav-item">
+          Add Recipe
+        </NavLink>
+
+        <NotificationsDropdown/>
+
+        <Dropdown name="Teams">
+            <Teams loading={ this.props.loadingTeams }
+                   teams={ this.props.teams }/>
+            <Link to="/t/create" className="mt-1 ">Create a Team</Link>
+        </Dropdown>
+
+        <NavLink
+          to="/recipes"
+          activeClassName="active"
+          className="better-nav-item">
+          Recipes
+        </NavLink>
+        <NavLink
+          to="/cart"
+          activeClassName="active"
+          className="better-nav-item">
+          Cart
+        </NavLink>
+
+        <UserDropdown
+          avatarURL={avatarURL}
+          email={email}
+          toggleDarkMode={toggleDarkMode}
+          darkMode={darkMode}
+          logout={logout}
+          loggingOut={loggingOut}
+        />
+
       </div>
     ) : (
       <div className="d-flex hide-sm">

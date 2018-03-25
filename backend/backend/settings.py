@@ -243,36 +243,37 @@ STATIC_URL = '/static/'
 STATIC_ROOT = '/var/app/static'
 
 # https://docs.djangoproject.com/en/dev/topics/logging/#module-django.utils.log
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'root': {
-        'level': 'INFO',
-        'handlers': ['sentry', 'console'],
-    },
-    'formatters': {
-        'verbose': {
-            'format': 'level=%(levelname)s msg="%(message)s" module=%(module)s '
-                      'pathname="%(pathname)s" lineno=%(lineno)s funcname=%(funcName)s '
-                      'process=%(process)d thread=%(thread)d '
+if PRODUCTION:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'root': {
+            'level': 'INFO',
+            'handlers': ['sentry', 'console'],
         },
-        'json': {
-            '()': 'pythonjsonlogger.jsonlogger.JsonFormatter',
-            'format': '%(levelname)s "%(message)s" %(module)s '
-                      '"%(pathname)s" %(lineno)s %(funcName)s '
-                      '%(process)d %(thread)d ',
-        }
-    },
-    'handlers': {
-        'sentry': {
-            'level': 'WARNING',
-            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
-            'tags': {'custom-tag': 'x'},
+        'formatters': {
+            'verbose': {
+                'format': 'level=%(levelname)s msg="%(message)s" module=%(module)s '
+                          'pathname="%(pathname)s" lineno=%(lineno)s funcname=%(funcName)s '
+                          'process=%(process)d thread=%(thread)d '
+            },
+            'json': {
+                '()': 'pythonjsonlogger.jsonlogger.JsonFormatter',
+                'format': '%(levelname)s "%(message)s" %(module)s '
+                          '"%(pathname)s" %(lineno)s %(funcName)s '
+                          '%(process)d %(thread)d ',
+            }
         },
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'json'
-        }
-    },
-}
+        'handlers': {
+            'sentry': {
+                'level': 'WARNING',
+                'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+                'tags': {'custom-tag': 'x'},
+            },
+            'console': {
+                'level': 'DEBUG',
+                'class': 'logging.StreamHandler',
+                'formatter': 'json'
+            }
+        },
+    }

@@ -20,6 +20,9 @@ import Cart from '../containers/Cart.jsx'
 import Recipe from '../containers/Recipe.jsx'
 import PasswordReset from '../containers/PasswordReset.jsx'
 import Settings from '../containers/Settings.jsx'
+import Team from '../containers/Team'
+import TeamInvite from './TeamInvite'
+import TeamCreate from './TeamCreate'
 import AddRecipe from '../containers/AddRecipe.jsx'
 import Notification from '../containers/Notification.jsx'
 import { Container, ContainerBase } from '../components/Base.jsx'
@@ -81,6 +84,10 @@ const Base = () => (
                 <PrivateRoute exact path="/settings" component={ Settings }/>
                 <PrivateRoute exact path="/password" component={ PasswordChange }/>
                 <PrivateRoute exact path="/password/set" component={ PasswordSet }/>
+                <Route exact path="/t/create" component={ TeamCreate }/>
+                <Route exact path="/t/:id(\d+)(.*)/invite" component={ TeamInvite }/>
+                <Route exact path="/t/:id(\d+)(.*)/settings" component={ Team }/>
+                <Route exact path="/t/:id(\d+)(.*)" component={ Team }/>
                 <Route component={ NoMatch }/>
               </Switch>
             </Container>

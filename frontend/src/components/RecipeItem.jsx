@@ -5,9 +5,10 @@ import { ButtonPrimary } from './Buttons'
 
 import { inputAbs } from '../input'
 
-const toURL = (x = '') => x.replace(/\s/g, '-')
-
-export const recipeURL = (id, name) => `/recipes/${id}-${toURL(name)}`
+import {
+  recipeURL,
+  teamURL,
+} from '../urls'
 
 const RecipeItem = ({
     tags = {},
@@ -22,11 +23,17 @@ const RecipeItem = ({
     addingToCart = false,
     handleInputChange,
     count,
+    owner = {
+      type: 'user',
+      id: 0,
+      name: '',
+    },
     updateCart
   }) => {
   const spanTags = tags.length > 0
     ? tags.map(tag => <span key={ tag } className="tag is-medium">{ tag }</span>)
     : null
+  const ownershipDetail = owner.type === 'team' && owner.name && owner.id ? <div className=" text-muted fw-500">via <Link to={teamURL(owner.id)} className="text-muted bold">{ owner.name }</Link></div> : ''
   const buttons = (
     <div className="field is-grouped">
 
@@ -72,6 +79,7 @@ const RecipeItem = ({
         </p>
         <div className="content">
           { spanTags }
+          { ownershipDetail }
         </div>
 
       </div>

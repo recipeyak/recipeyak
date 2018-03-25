@@ -6,6 +6,7 @@ import {
   setAddRecipeFormSource,
   setAddRecipeFormTime,
   setAddRecipeFormServings,
+  setAddRecipeFormTeam,
   addAddRecipeFormIngredient,
   removeAddRecipeFormIngredient,
   updateAddRecipeFormIngredient,
@@ -270,6 +271,21 @@ describe('addrecipe', () => {
 
     expect(
       addrecipe(beforeState, clearAddRecipeForm())
+    ).toEqual(afterState)
+  })
+
+  it("sets add recipe form's team field", () => {
+    const beforeState = {
+    }
+
+    const team = 'cool team name'
+
+    const afterState = {
+      team
+    }
+
+    expect(
+      addrecipe(beforeState, setAddRecipeFormTeam(team))
     ).toEqual(afterState)
   })
 })

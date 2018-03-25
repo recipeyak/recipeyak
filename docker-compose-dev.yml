@@ -7,7 +7,6 @@ services:
       dockerfile: Dockerfile-dev
     environment:
       - DEBUG=1
-      - DATABASE_URL=postgres://postgres@db:5432/postgres
     command: sh bootstrap-dev.sh
     env_file:
       - .env-dev

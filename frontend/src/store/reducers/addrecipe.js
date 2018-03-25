@@ -4,6 +4,7 @@ import {
   SET_ADD_RECIPE_FORM_SOURCE,
   SET_ADD_RECIPE_FORM_TIME,
   SET_ADD_RECIPE_FORM_SERVINGS,
+  SET_ADD_RECIPE_FORM_TEAM,
   ADD_ADD_RECIPE_FORM_INGREDIENT,
   REMOVE_ADD_RECIPE_FORM_INGREDIENT,
   UPDATE_ADD_RECIPE_FORM_INGREDIENT,
@@ -35,6 +36,8 @@ const cart = (state = initialState, action) => {
     return { ...state, time: action.val }
   case SET_ADD_RECIPE_FORM_SERVINGS:
     return { ...state, servings: action.val }
+  case SET_ADD_RECIPE_FORM_TEAM:
+    return { ...state, team: action.val }
   case ADD_ADD_RECIPE_FORM_INGREDIENT:
     return {
       ...state,
