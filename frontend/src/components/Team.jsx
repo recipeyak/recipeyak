@@ -96,6 +96,10 @@ class TeamSettings extends React.Component {
     name: 'loading...'
   }
 
+  static defaultProps = {
+    name: 'loading',
+  }
+
   componentWillMount () {
     this.setState({ name: this.props.name })
   }
