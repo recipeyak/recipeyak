@@ -12,7 +12,8 @@ import NoMatch from './NoMatch'
 import Loader from './Loader'
 
 import {
-  ButtonPrimary
+  ButtonPrimary,
+  ButtonLink,
 } from './Buttons'
 
 import {
@@ -93,11 +94,13 @@ const TeamRecipes = ({ loading, recipes }) =>
 
 class TeamSettings extends React.Component {
   state = {
-    name: 'loading...'
+    name: 'loading...',
+    loadingDeleteTeam: false,
   }
 
   static defaultProps = {
     name: 'loading',
+    id: 0,
   }
 
   componentWillMount () {
@@ -117,6 +120,14 @@ class TeamSettings extends React.Component {
     console.log('test')
   }
 
+  deleteTeam = () => {
+    if (confirm(`Are you sure you want to delete this team "${this.props.name}"?`)) {
+      this.setState({ loadingDeleteTeam: true })
+      this.props.deleteTeam(this.props.id)
+      .finally(() => this.setState({ loadingDeleteTeam: false }))
+    }
+  }
+
   render () {
     return (
       <form onSubmit={this.handleSubmit}>
@@ -131,9 +142,14 @@ class TeamSettings extends React.Component {
               value={this.state.name}
               name="name"/>
         </div>
-        <ButtonPrimary type="submit">
-          Save
-        </ButtonPrimary>
+        <div className="d-flex justify-space-between align-items-center">
+          <ButtonPrimary type="submit">
+            Save Changes
+          </ButtonPrimary>
+          <ButtonLink onClick={() => this.deleteTeam()} loading={this.state.loadingDeleteTeam}>
+            Delete Team
+          </ButtonLink>
+        </div>
       </form>
     )
   }
@@ -199,7 +215,9 @@ class Team extends React.Component {
         </div>
         { this.props.isSettings
             ? <TeamSettings
+                id={ this.props.id }
                 name={ this.props.name }
+                deleteTeam={this.props.deleteTeam}
                 loading={this.props.loadingTeam}/>
             : (
               <div>

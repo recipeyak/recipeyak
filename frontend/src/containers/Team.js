@@ -4,6 +4,7 @@ import {
   fetchTeam,
   fetchTeamMembers,
   fetchTeamRecipes,
+  deletingTeam,
 } from '../store/actions'
 
 import Team from '../components/Team'
@@ -34,7 +35,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(fetchTeam(id)),
       dispatch(fetchTeamMembers(id)),
       dispatch(fetchTeamRecipes(id)),
-    ])
+    ]),
+    deleteTeam: id => dispatch(deletingTeam(id)),
   }
 }
 

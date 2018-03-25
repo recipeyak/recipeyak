@@ -1500,6 +1500,40 @@ export const deletingMembership = (teamID, id, leaving = false) => (dispatch, ge
   })
 }
 
+export const deletingTeam = teamID => (dispatch, getState) => {
+  return http.delete(`/api/v1/t/${teamID}`)
+  .then(() => {
+    dispatch(push('/'))
+    const teamName = getState().teams[teamID].name
+    dispatch(showNotificationWithTimeout({
+      message: `Team deleted (${teamName})`,
+      level: 'success',
+      delay: 3 * second
+    }))
+    dispatch(deleteTeam(teamID))
+  })
+  .catch(err => {
+    let message = 'Uh Oh! Something went wrong.'
+    if (err.response && err.response.status === 403) {
+      message = (err.response.data && err.response.data.detail)
+      ? err.response.data.detail
+      : 'You are not authorized to delete this team'
+    } else if (err.response && err.response.status === 404) {
+      message = (err.response.data && err.response.data.detail)
+      ? err.response.data.detail
+      : "The team you are attempting to delete doesn't exist"
+    } else {
+      raven.captureException(err)
+    }
+    dispatch(showNotificationWithTimeout({
+      message,
+      level: 'danger',
+      delay: 3 * second
+    }))
+    throw err
+  })
+}
+
 export const setSendingTeamInvites = (teamID, val) => ({
   type: SET_SENDING_TEAM_INVITES,
   teamID,
