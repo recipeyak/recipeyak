@@ -219,7 +219,7 @@ export const teams = (
   case UPDATE_TEAM:
     return {
       ...state,
-      [action.id]: {...state[action.id], ...action.teamKeys}
+      [action.id]: { ...state[action.id], ...action.teamKeys }
     }
   default:
     return state
