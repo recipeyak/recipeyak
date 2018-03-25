@@ -3,9 +3,7 @@ set -eux
 cp -f /Pipfile.lock /app/Pipfile.lock
 
 # wait for databases
-while ! nc -w 1 -z db 5432
-    do sleep 0.1
-done
+bash wait-for-it.sh db:5432 -- echo 'Database available'
 
 # apply migrations
 python manage.py migrate
