@@ -4,6 +4,7 @@ from django.conf import settings
 from rest_framework import status
 from .models import MyUser
 from .serializers import UserSerializer
+from allauth.socialaccount.models import EmailAddress
 
 pytestmark = pytest.mark.django_db
 
@@ -38,6 +39,9 @@ def test_signup(client):
     key = res.json().get('key')
     res = client.get(url, HTTP_AUTHORIZATION='Token ' + key)
     assert res.status_code == status.HTTP_200_OK
+
+    assert EmailAddress.objects.filter(email=email).exists(), \
+        "signup should create email object"
 
 
 def test_login(client):
@@ -138,3 +142,65 @@ def test_login_in_two_places_and_logout_from_one(client):
     # 4. ensure second login key still works
     res = client.get(f'{BASE_URL}/rest-auth/user/', HTTP_AUTHORIZATION='Token ' + second_login_key)
     assert res.status_code == status.HTTP_200_OK
+
+
+def test_signup_case_insensitive(client):
+    """
+    Emails should be treated as case insensitive. A user should not be able to
+    signup with the same email and different case.
+    """
+    url = f'{BASE_URL}/rest-auth/user/'
+    res = client.get(url)
+    assert res.status_code == status.HTTP_401_UNAUTHORIZED
+
+    email = 'testing@gmail.com'
+
+    password = 'password123'
+
+    data = {
+        'email': email,
+        'password1': password,
+        'password2': password,
+    }
+
+    res = client.post(f'{BASE_URL}/rest-auth/registration/', data)
+    assert res.status_code == status.HTTP_201_CREATED
+
+    user = MyUser.objects.first()
+    assert res.json().get('user') == UserSerializer(user).data, \
+        "response didn't return user data"
+
+    key = res.json().get('key')
+    res = client.get(url, HTTP_AUTHORIZATION='Token ' + key)
+    assert res.status_code == status.HTTP_200_OK
+
+    client.force_authenticate(user=None)
+    email2 = 'TESTing@gmail.com'
+    assert email2.lower() == email
+    res = client.post(f'{BASE_URL}/rest-auth/registration/', data)
+    assert res.status_code in (status.HTTP_401_UNAUTHORIZED, status.HTTP_400_BAD_REQUEST)
+
+
+def test_signup_user_has_email(client, user):
+    """
+    With social providers, a user can signup with an email account and connect
+    a social account that has a different email. We want to prevent an email signup with that same email address.
+    """
+    assert EmailAddress.objects.filter(email=user.email).exists()
+    email2 = 'john@example.com'
+
+    new_email_object = EmailAddress.objects.create(email=email2, user=user)
+    user.emailaddress_set.add(new_email_object)
+    user.save()
+
+    assert EmailAddress.objects.filter(email=email2).exists()
+
+    password = 'password123'
+    data = {
+        'email': email2,
+        'password1': password,
+        'password2': password,
+    }
+
+    res = client.post(f'{BASE_URL}/rest-auth/registration/', data)
+    assert res.status_code == status.HTTP_400_BAD_REQUEST
