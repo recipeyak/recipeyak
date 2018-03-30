@@ -10,7 +10,7 @@ try:
     from allauth.account.adapter import get_adapter
     from allauth.account.utils import setup_user_email
     # Social Login
-    from allauth.socialaccount.models import SocialAccount
+    from allauth.socialaccount.models import SocialAccount, EmailAddress
     from allauth.socialaccount.providers.base import AuthProcess
 except ImportError:
     raise ImportError("allauth needs to be added to INSTALLED_APPS.")
@@ -164,7 +164,8 @@ class RegisterSerializer(serializers.Serializer):
                 # Do we have an account already with this email address?
                 user_account = get_user_model().objects.filter(
                     email=email,
-                ).first()
+                ).first() or EmailAddress.objects.get(email=email).user
+
                 # see if we already have a social account
                 social_account = user_account.socialaccount_set.first()
                 if social_account:

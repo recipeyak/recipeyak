@@ -6,6 +6,9 @@ from django.db import models, transaction
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.postgres.fields import CIEmailField
+
+from allauth.socialaccount.models import EmailAddress
 
 logger = logging.getLogger(__name__)
 
@@ -17,11 +20,13 @@ class MyUserManager(BaseUserManager):
         """
         if not email:
             raise ValueError('User must have an email address')
-        user = self.model(email=self.normalize_email(email))
-        user.set_password(password)
-        user.save(using=self._db)
-        logger.info(f'Created new user: {user}')
-        return user
+        with transaction.atomic():
+            user = self.model(email=self.normalize_email(email))
+            user.set_password(password)
+            user.save(using=self._db)
+            EmailAddress.objects.create(user=user, email=email)
+            logger.info(f'Created new user: {user}')
+            return user
 
     def create_superuser(self, email, password):
         """
@@ -36,7 +41,7 @@ class MyUserManager(BaseUserManager):
 
 class MyUser(AbstractBaseUser, PermissionsMixin):
     """Custom user model that only requires an email and password"""
-    email = models.EmailField(unique=True)
+    email = CIEmailField(unique=True)
 
     # required for admin
     is_active = models.BooleanField(default=True)
