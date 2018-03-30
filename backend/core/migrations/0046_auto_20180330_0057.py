@@ -3,6 +3,7 @@
 import django.contrib.postgres.fields.citext
 from django.db import migrations
 
+
 class Migration(migrations.Migration):
 
     dependencies = [
