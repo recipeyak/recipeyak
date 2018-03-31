@@ -5,9 +5,9 @@ import { Provider } from 'react-redux'
 import { mount, configure } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 
-import Signup from './Signup.jsx'
+import Signup from './Signup'
 
-import { emptyStore as store } from '../store/store.js'
+import { emptyStore as store } from '../store/store'
 
 configure({ adapter: new Adapter() })
 

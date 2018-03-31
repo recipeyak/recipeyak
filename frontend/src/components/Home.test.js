@@ -5,9 +5,9 @@ import { mount, configure } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 
 import { Provider } from 'react-redux'
-import { emptyStore as store } from '../store/store.js'
+import { emptyStore as store } from '../store/store'
 
-import Home from './Home.jsx'
+import Home from './Home'
 
 configure({ adapter: new Adapter() })
 

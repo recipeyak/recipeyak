@@ -6,8 +6,8 @@ import Adapter from 'enzyme-adapter-react-16'
 import { Provider } from 'react-redux'
 import { MemoryRouter } from 'react-router'
 
-import { emptyStore as store } from '../store/store.js'
-import AddRecipe from './AddRecipe.jsx'
+import { emptyStore as store } from '../store/store'
+import AddRecipe from './AddRecipe'
 
 configure({ adapter: new Adapter() })
 

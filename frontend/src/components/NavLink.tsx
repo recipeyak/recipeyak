@@ -8,7 +8,6 @@ export const NavLink = ({
   pathname,
   className = '',
   activeClassName = 'active',
-  ...props
 }: {
   to: string,
   pathname: string,
@@ -21,7 +20,6 @@ export const NavLink = ({
   return (
     <Link
       to={ to }
-      { ...props }
       className={ className + ' ' + activeClass }
     />
   )

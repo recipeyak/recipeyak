@@ -11,7 +11,6 @@ import {
   setLoggingOut,
   setPasswordUsable,
   toggleDarkMode,
-  setSocialConnection,
   setUserID,
 } from '../actions'
 
@@ -255,31 +254,6 @@ describe('User', () => {
     expect(
       user(beforeState, setSocialConnections(data)))
     .toEqual(afterState)
-  })
-
-  it('sets social connection', () => {
-    const beforeState = {
-      socialAccountConnections: {
-        github: 4,
-        gitlab: 7,
-      }
-    }
-
-    const expected = {
-      socialAccountConnections: {
-        github: 4,
-        gitlab: null,
-      }
-    }
-
-    const provider = 'gitlab'
-
-    expect(
-      user(beforeState, setSocialConnection(
-        provider,
-        null,
-      )))
-    .toEqual(expected)
   })
 
   it("sets user's id", () => {

@@ -1,4 +1,4 @@
-import passwordChange from './passwordChange.js'
+import passwordChange from './passwordChange'
 
 import {
   setLoadingPasswordUpdate,

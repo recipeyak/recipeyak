@@ -1,4 +1,4 @@
-import notification from './notification.js'
+import notification from './notification'
 
 import {
   setNotification,

@@ -1,4 +1,4 @@
-import shoppinglist from './shoppinglist.js'
+import shoppinglist from './shoppinglist'
 
 import {
   setShoppingList,

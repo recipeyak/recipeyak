@@ -1,10 +1,9 @@
-import error from './error.js'
+import error from './error'
 import {
   setErrorLogin,
   setErrorSocialLogin,
   setErrorSignup,
   setErrorReset,
-  setErrorResetConfirmation,
   setErrorAddRecipe,
   setErrorRecipes,
 } from '../actions'
@@ -115,24 +114,6 @@ describe('error', () => {
 
     expect(
       error(errorState, setErrorReset(false))
-      ).toEqual(notErrorState)
-  })
-
-  it('sets resetConfirmation error', () => {
-    const notErrorState = {
-      resetConfirmation: false
-    }
-
-    const errorState = {
-      resetConfirmation: true
-    }
-
-    expect(
-      error(notErrorState, setErrorResetConfirmation(true))
-      ).toEqual(errorState)
-
-    expect(
-      error(errorState, setErrorResetConfirmation(false))
       ).toEqual(notErrorState)
   })
 })
