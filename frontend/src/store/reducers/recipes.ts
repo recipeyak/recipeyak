@@ -29,7 +29,228 @@ import {
   CLEAR_RECIPE_CART_AMOUNTS
 } from '../actionTypes'
 
-export const recipes = (state = {}, action) => {
+export interface Ingredient {
+  id: number
+  name: string
+}
+
+export interface Step {
+  id: number
+}
+
+export interface Recipe {
+  id: number
+  name: string
+  steps: Step[]
+  ingredients: Ingredient[]
+  cart_count: number
+}
+
+export interface RecipesState {
+  [key:number]: Recipe
+}
+
+interface AddRecipe {
+  type: typeof ADD_RECIPE
+  recipe: Recipe
+}
+
+interface DeleteRecipe {
+  type: typeof DELETE_RECIPE
+  id: number
+}
+
+interface AddStepToRecipe {
+  type: typeof ADD_STEP_TO_RECIPE
+  id: number
+  step: Step
+}
+
+interface SetRecipe404 {
+  type: typeof SET_RECIPE_404
+  id: number
+  val: boolean
+}
+
+interface SetLoadingAddStepToRecipe {
+  type: typeof SET_LOADING_ADD_STEP_TO_RECIPE
+  id: number
+  val: boolean
+}
+
+interface SetRecipes {
+  type: typeof SET_RECIPES
+  recipes: Array<Recipe>
+}
+
+interface ClearRecipeCartAmounts {
+  type: typeof CLEAR_RECIPE_CART_AMOUNTS
+}
+
+interface SetRecipeCartAmount {
+  type: typeof SET_RECIPE_CART_AMOUNT
+  id: number
+  count: number
+}
+
+interface SetRecipe {
+  type: typeof SET_RECIPE
+  id: number
+  data: Recipe
+}
+
+interface SetRecipeUpdating {
+  type: typeof SET_RECIPE_UPDATING
+  id: number
+  val: boolean
+}
+
+interface SetRemovingStep {
+  type: typeof SET_REMOVING_STEP
+  val: boolean
+  recipeID: number
+  stepID: number
+}
+
+interface SetUpdatingStep {
+  type: typeof SET_UPDATING_STEP
+  val: boolean
+  stepID: number
+  recipeID: number
+}
+
+interface SetRemovingIngredient {
+  type: typeof SET_REMOVING_INGREDIENT
+  recipeID: number
+  val: boolean
+  ingredientID: number
+}
+
+interface SetUpdatingIngredient {
+  type: typeof SET_UPDATING_INGREDIENT
+  val: boolean
+  recipeID: number
+  ingredientID: number
+}
+
+interface SetAddingIngredientToRecipe {
+  type: typeof SET_ADDING_INGREDIENT_TO_RECIPE
+  id: number
+  val: boolean
+}
+
+interface SetLoadingRecipe {
+  type: typeof SET_LOADING_RECIPE
+  id: number
+  val: number
+}
+
+interface SetRecipeAddingToCart {
+  type: typeof SET_RECIPE_ADDING_TO_CART
+  id: number
+  val: boolean
+  loading: boolean
+}
+
+interface SetDeletingRecipe {
+  type: typeof SET_DELETING_RECIPE
+  id: number
+  val: boolean
+}
+
+interface SetRecipeRemovingFromCart {
+  type: typeof SET_RECIPE_REMOVING_FROM_CART
+  id: number
+  loading: boolean
+}
+
+interface UpdateStep {
+  type: typeof UPDATE_STEP
+  text: string
+  stepID: number
+  recipeID: number
+}
+
+interface UpdateIngredient {
+  type: typeof UPDATE_INGREDIENT
+  text: string
+  ingredientID: number
+  recipeID: number
+  content: Ingredient
+}
+
+interface DeleteStep {
+  type: typeof DELETE_STEP
+  stepID: number
+  recipeID: number
+}
+
+interface DeleteIngredient {
+  type: typeof DELETE_INGREDIENT
+  recipeID: number
+  ingredientID: number
+}
+
+interface UpdateRecipeAuthor {
+  type: typeof UPDATE_RECIPE_AUTHOR
+  id: number
+  author: string
+}
+
+interface UpdateRecipeTime {
+  type: typeof UPDATE_RECIPE_TIME
+  id: number
+  time: string
+}
+
+interface UpdateRecipeSource {
+  type: typeof UPDATE_RECIPE_SOURCE
+  id: number
+  source: string
+}
+
+interface UpdateRecipeName {
+  type: typeof UPDATE_RECIPE_NAME
+  id: number
+  name: string
+}
+
+interface AddIngredientToRecipe {
+  type: typeof ADD_INGREDIENT_TO_RECIPE
+  id: number
+  ingredient: Ingredient
+}
+
+type RecipeActions = AddRecipe
+  | DeleteRecipe
+  | AddStepToRecipe
+  | SetRecipe404
+  | SetLoadingAddStepToRecipe
+  | SetRecipes
+  | ClearRecipeCartAmounts
+  | SetRecipeCartAmount
+  | SetRecipe
+  | SetRecipeUpdating
+  | SetRemovingStep
+  | SetUpdatingStep
+  | SetRemovingIngredient
+  | SetUpdatingIngredient
+  | SetAddingIngredientToRecipe
+  | SetLoadingRecipe
+  | SetRecipeAddingToCart
+  | SetDeletingRecipe
+  | SetRecipeRemovingFromCart
+  | UpdateStep
+  | UpdateIngredient
+  | DeleteStep
+  | DeleteIngredient
+  | UpdateRecipeAuthor
+  | UpdateRecipeTime
+  | UpdateRecipeSource
+  | UpdateRecipeName
+  | AddIngredientToRecipe
+
+export const recipes = (state: RecipesState = {}, action: RecipeActions) => {
   switch (action.type) {
   case ADD_RECIPE:
     return { ...state, [action.recipe.id]: action.recipe }

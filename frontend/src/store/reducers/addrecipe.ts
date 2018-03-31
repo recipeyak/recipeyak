@@ -14,17 +14,107 @@ import {
   CLEAR_ADD_RECIPE_FORM
 } from '../actionTypes'
 
+import {
+  Ingredient,
+  Step,
+} from './recipes'
+
+interface SetAddRecipeFormName {
+  type: typeof SET_ADD_RECIPE_FORM_NAME
+  val: string
+}
+
+interface SetAddRecipeFormAuthor {
+  type: typeof SET_ADD_RECIPE_FORM_AUTHOR
+  val: string
+}
+
+interface SetAddRecipeFormSource {
+  type: typeof SET_ADD_RECIPE_FORM_SOURCE
+  val: string
+}
+
+interface SetAddRecipeFormTime {
+  type: typeof SET_ADD_RECIPE_FORM_TIME
+  val: string
+}
+
+interface SetAddRecipeFormServings {
+  type: typeof SET_ADD_RECIPE_FORM_SERVINGS
+  val: string
+}
+
+interface SetAddRecipeFormTeam {
+  type: typeof SET_ADD_RECIPE_FORM_TEAM
+  val: string
+}
+
+interface AddAddRecipeFormIngredient {
+  type: typeof ADD_ADD_RECIPE_FORM_INGREDIENT
+  ingredient: Ingredient
+}
+
+interface RemoveAddRecipeFormIngredient {
+  type: typeof REMOVE_ADD_RECIPE_FORM_INGREDIENT
+  index: number
+}
+
+interface UpdateAddRecipeFormIngredient {
+  type: typeof UPDATE_ADD_RECIPE_FORM_INGREDIENT
+  index: number
+  ingredient: Ingredient
+}
+
+interface AddAddRecipeFormStep {
+  type: typeof ADD_ADD_RECIPE_FORM_STEP
+  step: Step
+}
+
+interface RemoveAddRecipeFormStep {
+  type: typeof REMOVE_ADD_RECIPE_FORM_STEP
+  index: number
+}
+
+interface UpdateAddRecipeFormStep {
+  type: typeof UPDATE_ADD_RECIPE_FORM_STEP
+  index: number
+  step: Step
+}
+
+interface ClearAddRecipeForm {
+  type: typeof CLEAR_ADD_RECIPE_FORM
+}
+
+type AddRecipeActions = SetAddRecipeFormName
+  | SetAddRecipeFormAuthor
+  | SetAddRecipeFormSource
+  | SetAddRecipeFormTime
+  | SetAddRecipeFormServings
+  | SetAddRecipeFormTeam
+  | AddAddRecipeFormIngredient
+  | RemoveAddRecipeFormIngredient
+  | UpdateAddRecipeFormIngredient
+  | AddAddRecipeFormStep
+  | RemoveAddRecipeFormStep
+  | UpdateAddRecipeFormStep
+  | ClearAddRecipeForm
+
 export const initialState = {
   name: '',
   author: '',
   source: '',
   time: '',
   servings: '',
-  ingredients: [],
-  steps: []
+  ingredients: [] as Ingredient[],
+  steps: [] as Step[]
 }
 
-const cart = (state = initialState, action) => {
+export type AddRecipeState = typeof initialState
+
+const cart = (
+  state = initialState,
+  action: AddRecipeActions
+) => {
   switch (action.type) {
   case SET_ADD_RECIPE_FORM_NAME:
     return { ...state, name: action.val }

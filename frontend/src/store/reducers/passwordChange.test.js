@@ -3,7 +3,7 @@ import passwordChange from './passwordChange.js'
 import {
   setLoadingPasswordUpdate,
   setErrorPasswordUpdate
-} from '../actions.js'
+} from '../actions'
 
 describe('passwordChange', () => {
   it('sets the loading state of the updating password', () => {

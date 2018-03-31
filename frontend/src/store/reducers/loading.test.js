@@ -7,7 +7,7 @@ import {
   setLoadingRecipes,
   setLoadingAddRecipe,
   setLoadingCart
-} from '../actions.js'
+} from '../actions'
 
 describe('loading', () => {
   it('sets loading login', () => {

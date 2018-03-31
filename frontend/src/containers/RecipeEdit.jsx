@@ -14,9 +14,9 @@ import {
   updatingStep,
   deletingRecipe,
   updateRecipe
-} from '../store/actions.js'
+} from '../store/actions'
 
-import RecipeEdit from '../components/RecipeEdit.jsx'
+import RecipeEdit from '../components/RecipeEdit'
 
 const mapStateToProps = (state, props) => {
   const id = props.match.params.id

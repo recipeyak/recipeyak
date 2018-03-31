@@ -1,8 +1,9 @@
 import { connect } from 'react-redux'
 
-import { NavLink } from '../components/NavLink.jsx'
+import { NavLink } from '../components/NavLink'
+import { StateTree } from '../store/store'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: StateTree) => {
   return {
     pathname: state.routerReducer.location != null
       ? state.routerReducer.location.pathname

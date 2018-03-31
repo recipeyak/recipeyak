@@ -1,4 +1,4 @@
-import { connect } from 'react-redux'
+import { connect, Dispatch } from 'react-redux'
 
 import {
   fetchUser,
@@ -13,7 +13,9 @@ import {
   teamsFrom
 } from '../store/mapState'
 
-const mapStateToProps = state => ({
+import { StateTree } from '../store/store'
+
+const mapStateToProps = (state: StateTree) => ({
   avatarURL: state.user.avatarURL,
   email: state.user.email,
   loading: state.user.loading,
@@ -24,7 +26,7 @@ const mapStateToProps = state => ({
   loadingTeams: state.teams.loading,
 })
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: Dispatch<StateTree>) => {
   return {
     fetchData: () => {
       dispatch(fetchTeams())
@@ -38,7 +40,7 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-const ConnectedNav = connect(
+const ConnectedNav = connect<{},{},{}>(
   mapStateToProps,
   mapDispatchToProps
 )(Nav)

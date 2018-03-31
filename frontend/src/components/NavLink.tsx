@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import {
   Link
 } from 'react-router-dom'
@@ -9,16 +9,19 @@ export const NavLink = ({
   className = '',
   activeClassName = 'active',
   ...props
+}: {
+  to: string,
+  pathname: string,
+  className?: string,
+  activeClassName?: string
 }) => {
   const activeClass = pathname === to
     ? activeClassName
     : ''
   return (
-    // keep react from warning about dispatch being passed down
     <Link
       to={ to }
       { ...props }
-      dispatch={ '' }
       className={ className + ' ' + activeClass }
     />
   )

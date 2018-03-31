@@ -1,29 +1,46 @@
-import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
+import { createStore, combineReducers, applyMiddleware, compose, ReducersMapObject} from 'redux'
 import thunk from 'redux-thunk'
-import throttle from 'lodash/throttle'
+import { throttle } from 'lodash'
 
 import createHistory from 'history/createBrowserHistory'
 import {
   routerReducer,
-  routerMiddleware
+  routerMiddleware,
+  RouterState,
 } from 'react-router-redux'
 
-import cart from './reducers/cart.ts'
-import recipes from './reducers/recipes.js'
-import user from './reducers/user.js'
-import loading from './reducers/loading.js'
-import error from './reducers/error.js'
-import notification from './reducers/notification.js'
-import passwordChange from './reducers/passwordChange.js'
-import shoppinglist from './reducers/shoppinglist.js'
-import addrecipe from './reducers/addrecipe'
-import auth from './reducers/auth'
-import teams from './reducers/teams'
-import invites from './reducers/invites'
+import cart, { CartState } from './reducers/cart'
+import recipes, { RecipesState } from './reducers/recipes'
+import user, { UserState } from './reducers/user'
+import loading, { LoadingState } from './reducers/loading'
+import error, { ErrorState } from './reducers/error'
+import notification, { NotificationState } from './reducers/notification'
+import passwordChange, { PasswordChangeState } from './reducers/passwordChange'
+import shoppinglist, { ShoppingListState } from './reducers/shoppinglist'
+import addrecipe, { AddRecipeState } from './reducers/addrecipe'
+import auth, { AuthState } from './reducers/auth'
+import teams, { TeamState } from './reducers/teams'
+import invites, { InvitesState } from './reducers/invites'
 
 import { loadState, saveState } from './localStorage'
 
 import { LOG_OUT } from './actionTypes'
+
+export interface StateTree {
+  cart: CartState
+  recipes: RecipesState
+  user: UserState
+  loading: LoadingState
+  error: ErrorState
+  notification: NotificationState
+  passwordChange: PasswordChangeState
+  shoppinglist: ShoppingListState
+  addRecipe: AddRecipeState
+  auth: AuthState
+  teams: TeamState
+  invites: InvitesState
+  routerReducer: RouterState
+}
 
 const recipeApp = combineReducers({
   user,
@@ -39,10 +56,11 @@ const recipeApp = combineReducers({
   addrecipe,
   auth,
   teams,
-})
+} as ReducersMapObject)
 
 // reset redux to default state on logout
-export const rootReducer = (state, action) => {
+// TODO: add sum type of actions
+export const rootReducer = (state: StateTree, action: any) => {
   if (action.type === LOG_OUT) {
     return {
       ...recipeApp(undefined, action),
@@ -61,7 +79,7 @@ const defaultData = loadState()
 export const history = createHistory()
 const router = routerMiddleware(history)
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 // A "hydrated" store is nice for UI development
 export const store = createStore(

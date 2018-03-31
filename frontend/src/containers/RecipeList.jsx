@@ -4,9 +4,9 @@ import { byNameAlphabetical } from '../sorters'
 
 import {
   fetchRecipeList
-} from '../store/actions.js'
+} from '../store/actions'
 
-import RecipeList from '../components/RecipeList.jsx'
+import RecipeList from '../components/RecipeList'
 
 const mapStateToProps = state => {
   return {

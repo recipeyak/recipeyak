@@ -4,8 +4,8 @@ import {
   logUserIn,
   setErrorLogin,
   setFromUrl,
-} from '../store/actions.js'
-import Login from '../components/Login.jsx'
+} from '../store/actions'
+import Login from '../components/Login'
 
 const mapDispatchToProps = dispatch => {
   return {

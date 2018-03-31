@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 
-import { resetConfirmation as reset } from '../store/actions.js'
-import PasswordResetConfirmation from '../components/PasswordResetConfirmation.jsx'
+import { resetConfirmation as reset } from '../store/actions'
+import PasswordResetConfirmation from '../components/PasswordResetConfirmation'
 
 const mapDispatchToProps = dispatch => {
   return {

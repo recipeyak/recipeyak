@@ -27,7 +27,6 @@ import {
   SET_ERROR_ADD_RECIPE,
   SET_ERROR_RECIPES,
   UPDATE_STEP,
-  SET_ERROR_CART,
   SET_LOADING_CART,
   SET_RECIPE_ADDING_TO_CART,
   SET_RECIPE_REMOVING_FROM_CART,
@@ -58,7 +57,6 @@ import {
   SET_SHOPPING_LIST_ERROR,
   SET_SOCIAL_ACCOUNT_CONNECTIONS,
   SET_LOADING_RESET_CONFIRMATION,
-  SET_ERROR_RESET_CONFIRMATION,
   TOGGLE_DARK_MODE,
   SET_RECIPE_CART_AMOUNT,
   CLEAR_RECIPE_CART_AMOUNTS,
@@ -75,7 +73,6 @@ import {
   REMOVE_ADD_RECIPE_FORM_STEP,
   UPDATE_ADD_RECIPE_FORM_STEP,
   CLEAR_ADD_RECIPE_FORM,
-  SET_SOCIAL_ACCOUNT_CONNECTION,
   SET_PASSWORD_USABLE,
   SET_FROM_URL,
   ADD_TEAM,
@@ -109,21 +106,79 @@ import {
 } from './actionTypes'
 
 import {
+  Invite,
+  SetInvites,
+  SetDecliningInvite,
+  SetAcceptingInvite,
+  SetLoadingInvites,
+  SetAcceptedInvite,
+  SetDeclinedInvite,
+} from './reducers/invites'
+
+import {
+  ErrorPasswordUpdate
+} from './reducers/passwordChange'
+
+import {
+  SetMovingTeam,
+  SetCopyingTeam,
+  SetLoadingTeams,
+  DeleteTeam,
+  SetDeletingMembership,
+  DeleteMembership,
+  TeamLevel,
+  Team,
+  TeamOptional,
+  Member,
+} from './reducers/teams'
+
+import {
+  Ingredient,
+  Step,
+  Recipe,
+} from './reducers/recipes'
+
+import {
+  ErrorLogin,
+  ErrorSignup,
+  ErrorReset,
+  ErrorAddRecipe,
+  ErrorSocialLogin,
+} from './reducers/error'
+
+import {
+  ShoppingListItem,
+  SetShoppingList,
+} from './reducers/shoppinglist'
+
+import {
+  User,
+  UserStats,
+} from './reducers/user'
+
+import {
+  Provider,
+  SetSocialAccountConnections,
+} from './reducers/socialAccounts'
+
+import {
   push,
   replace
 } from 'react-router-redux'
 
-import axios from 'axios'
+import { Dispatch } from 'redux';
+
+import axios, { AxiosResponse, AxiosError } from 'axios'
 import raven from 'raven-js'
 
-import { store } from './store'
+import { store, StateTree } from './store'
 
 const config = { timeout: 15000 }
 
 const http = axios.create(config)
 const anon = axios.create(config)
 
-const handleResponseError = error => {
+const handleResponseError = (error: AxiosError) => {
   // 503 means we are in maintenance mode. Reload to show maintenance page.
   const maintenanceMode = error.response && error.response.status === 503
   // Report all 500 errors
@@ -153,18 +208,34 @@ http.interceptors.request.use(
   }, error => Promise.reject(error)
 )
 
-const invalidToken = res =>
+const invalidToken = (res: AxiosResponse) =>
   res != null && res.data.detail === 'Invalid token.' && res.status === 401
 
-const badRequest = err => err.response && err.response.status === 400
+const badRequest = (err: AxiosError) => err.response && err.response.status === 400
 
-const is404 = err => err.response.status === 404
+const is404 = (err: AxiosError) => err.response.status === 404
+
+interface GetState {
+  (): StateTree
+}
+
+type NotificationLevel = 'info'
+  | 'danger'
+  | 'success'
+
+interface Notification {
+  message: string
+  closeable?: boolean
+  level: NotificationLevel
+  delay?: number
+  sticky?: boolean
+}
 
 export const setNotification = ({
   message,
-  closeable,
+  closeable = true,
   level
-}) => ({
+}: Notification) => ({
   type: SET_NOTIFICATION,
   message,
   closeable,
@@ -175,15 +246,16 @@ export const clearNotification = () => ({
   type: CLEAR_NOTIFICATION
 })
 
+type Timer = NodeJS.Timer
 // https://stackoverflow.com/a/38574266/3555105
-let notificationTimeout = null
+let notificationTimeout: Timer = null
 export const showNotificationWithTimeout = ({
   message,
   level,
   closeable = true,
   delay = 2000,
-  sticky
-}) => dispatch => {
+  sticky = false
+}: Notification) => (dispatch: Dispatch<StateTree>) => {
   clearTimeout(notificationTimeout)
   dispatch(setNotification({
     message,
@@ -198,7 +270,7 @@ export const showNotificationWithTimeout = ({
   }
 }
 
-export const login = (token, user) => ({
+export const login = (token: string, user: User) => ({
   type: LOG_IN,
   token,
   user
@@ -208,12 +280,12 @@ export const logout = () => ({
   type: LOG_OUT
 })
 
-export const setLoggingOut = val => ({
+export const setLoggingOut = (val: boolean) => ({
   type: SET_LOGGING_OUT,
   val
 })
 
-export const loggingOut = () => dispatch => {
+export const loggingOut = () => (dispatch: Dispatch<StateTree>) => {
   dispatch(setLoggingOut(true))
   return http.post('/api/v1/rest-auth/logout/', {})
   .then(() => {
@@ -230,58 +302,58 @@ export const loggingOut = () => dispatch => {
   })
 }
 
-export const setLoadingUser = val => ({
+export const setLoadingUser = (val: boolean) => ({
   type: SET_LOADING_USER,
   val
 })
 
-export const setErrorUser = val => ({
+export const setErrorUser = (val: boolean) => ({
   type: SET_ERROR_USER,
   val
 })
 
-export const setLoadingUserStats = val => ({
+export const setLoadingUserStats = (val: boolean) => ({
   type: SET_LOADING_USER_STATS,
   val
 })
 
-export const setUserStats = val => ({
+export const setUserStats = (val: UserStats) => ({
   type: SET_USER_STATS,
   val
 })
 
-export const setAvatarURL = url => ({
+export const setAvatarURL = (url: string) => ({
   type: SET_AVATAR_URL,
   url
 })
 
-export const setUserEmail = email => ({
+export const setUserEmail = (email: string) => ({
   type: SET_USER_EMAIL,
   email
 })
 
-export const setPasswordUsable = val => ({
+export const setPasswordUsable = (val: boolean) => ({
   type: SET_PASSWORD_USABLE,
   val
 })
 
-export const setUpdatingUserEmail = val => ({
+export const setUpdatingUserEmail = (val: boolean) => ({
   type: SET_UPDATING_USER_EMAIL,
   val
 })
 
-export const setFromUrl = val => ({
+export const setFromUrl = (val: string) => ({
   type: SET_FROM_URL,
   val
 })
 
-const emailExists = err =>
+const emailExists = (err: AxiosError) =>
   err.response.data.email != null &&
   err.response.data.email[0].includes('email already exists')
 
 const second = 1000
 
-export const updatingEmail = email => dispatch => {
+export const updatingEmail = (email: string) => (dispatch: Dispatch<StateTree>) => {
   dispatch(setUpdatingUserEmail(true))
   return http.patch('/api/v1/rest-auth/user/', {
     email
@@ -309,12 +381,12 @@ export const updatingEmail = email => dispatch => {
   })
 }
 
-export const setUserID = (id) => ({
+export const setUserID = (id: number) => ({
   type: SET_USER_ID,
   id,
 })
 
-export const fetchUser = () => dispatch => {
+export const fetchUser = () => (dispatch: Dispatch<StateTree>) => {
   dispatch(setLoadingUser(true))
   dispatch(setErrorUser(false))
   return http.get('/api/v1/rest-auth/user/')
@@ -335,18 +407,12 @@ export const fetchUser = () => dispatch => {
   })
 }
 
-export const setSocialConnections = val => ({
+export const setSocialConnections = (val: Provider[]): SetSocialAccountConnections => ({
   type: SET_SOCIAL_ACCOUNT_CONNECTIONS,
   val
 })
 
-export const setSocialConnection = (provider, val) => ({
-  type: SET_SOCIAL_ACCOUNT_CONNECTION,
-  provider,
-  val,
-})
-
-export const fetchSocialConnections = () => dispatch => {
+export const fetchSocialConnections = () => (dispatch: Dispatch<StateTree>) => {
   return http.get('/api/v1/rest-auth/socialaccounts/')
   .then(res => {
     dispatch(setSocialConnections(res.data))
@@ -359,7 +425,7 @@ export const fetchSocialConnections = () => dispatch => {
   })
 }
 
-export const disconnectSocialAccount = (provider, id) => dispatch => {
+export const disconnectSocialAccount = (provider: string, id: number) => (dispatch: Dispatch<StateTree>) => {
   return http.post(`/api/v1/rest-auth/socialaccounts/${id}/disconnect/`, {
     id
   })
@@ -379,7 +445,7 @@ export const disconnectSocialAccount = (provider, id) => dispatch => {
   })
 }
 
-export const fetchUserStats = () => dispatch => {
+export const fetchUserStats = () => (dispatch: Dispatch<StateTree>) => {
   dispatch(setLoadingUserStats(true))
   return http.get('api/v1/user_stats/')
   .then(res => {
@@ -395,17 +461,17 @@ export const fetchUserStats = () => dispatch => {
   })
 }
 
-export const setLoadingPasswordUpdate = val => ({
+export const setLoadingPasswordUpdate = (val: boolean) => ({
   type: SET_LOADING_PASSWORD_UPDATE,
   val
 })
 
-export const setErrorPasswordUpdate = val => ({
+export const setErrorPasswordUpdate = (val: ErrorPasswordUpdate | {}) => ({
   type: SET_ERROR_PASSWORD_UPDATE,
   val
 })
 
-export const updatingPassword = (password1, password2, oldPassword) => dispatch => {
+export const updatingPassword = (password1: string, password2: string, oldPassword: string) => (dispatch: Dispatch<StateTree>) => {
   dispatch(setLoadingPasswordUpdate(true))
   dispatch(setErrorPasswordUpdate({}))
   return http.post('/api/v1/rest-auth/password/change/', {
@@ -439,22 +505,17 @@ export const updatingPassword = (password1, password2, oldPassword) => dispatch 
   })
 }
 
-export const setLoadingCart = val => ({
+export const setLoadingCart = (val: boolean) => ({
   type: SET_LOADING_CART,
   val
 })
 
-export const setErrorCart = val => ({
-  type: SET_ERROR_CART,
-  val
-})
-
-export const setClearingCart = val => ({
+export const setClearingCart = (val: boolean) => ({
   type: SET_CLEARING_CART,
   val
 })
 
-export const setShoppingList = val => ({
+export const setShoppingList = (val: ShoppingListItem[]): SetShoppingList => ({
   type: SET_SHOPPING_LIST,
   val
 })
@@ -466,7 +527,7 @@ export const clearRecipeCartAmounts = () => ({
   type: CLEAR_RECIPE_CART_AMOUNTS
 })
 
-export const clearCart = () => dispatch => {
+export const clearCart = () => (dispatch: Dispatch<StateTree>) => {
   dispatch(setClearingCart(true))
   return http.post('/api/v1/clear_cart/', {})
   .then(() => {
@@ -488,24 +549,24 @@ export const clearCart = () => dispatch => {
   })
 }
 
-export const setRecipeCartAmount = (id, count) => ({
+export const setRecipeCartAmount = (id: number, count: number) => ({
   type: SET_RECIPE_CART_AMOUNT,
   id,
   count
 })
 
-export const setRecipeAddingToCart = (id, loading) => ({
+export const setRecipeAddingToCart = (id: number, loading: boolean) => ({
   type: SET_RECIPE_ADDING_TO_CART,
   id,
   loading
 })
 
-export const addingToCart = id => (dispatch, getState) => {
+export const addingToCart = (id: number) => (dispatch: Dispatch<StateTree>, getState: GetState) => {
   // we increment the cart value by 1, since we know the default / min cart
   // value is ensured to be 0 via the backend
   const count = getState().recipes[id].cart_count + 1
   dispatch(setRecipeAddingToCart(id, true))
-  return updatingCart(id, count)(dispatch, getState)
+  return updatingCart(id, count)(dispatch)
   .then(() => {
     dispatch(setRecipeAddingToCart(id, false))
   })
@@ -515,7 +576,7 @@ export const addingToCart = id => (dispatch, getState) => {
   })
 }
 
-export const updatingCart = (id, count) => dispatch =>
+export const updatingCart = (id: number, count: number) => (dispatch: Dispatch<StateTree>) =>
   http.patch(`/api/v1/cart/${id}/`, {
     count
   })
@@ -533,17 +594,17 @@ export const updatingCart = (id, count) => dispatch =>
     throw err
   })
 
-export const setRecipeRemovingFromCart = (id, loading) => ({
+export const setRecipeRemovingFromCart = (id: number, loading: boolean) => ({
   type: SET_RECIPE_REMOVING_FROM_CART,
   id,
   loading
 })
 
-export const removingFromCart = id => (dispatch, getState) => {
+export const removingFromCart = (id: number) => (dispatch: Dispatch<StateTree>, getState: GetState) => {
   const currentCount = getState().recipes[id].cart_count
   const count = currentCount > 0 ? currentCount - 1 : 0
   dispatch(setRecipeRemovingFromCart(id, true))
-  return updatingCart(id, count)(dispatch, getState)
+  return updatingCart(id, count)(dispatch)
   .then(() => {
     dispatch(setRecipeRemovingFromCart(id, false))
   })
@@ -553,17 +614,17 @@ export const removingFromCart = id => (dispatch, getState) => {
   })
 }
 
-export const setLoadingShoppingList = val => ({
+export const setLoadingShoppingList = (val: boolean) => ({
   type: SET_LOADING_SHOPPING_LIST,
   val
 })
 
-export const setShoppingListError = val => ({
+export const setShoppingListError = (val: boolean) => ({
   type: SET_SHOPPING_LIST_ERROR,
   val
 })
 
-export const fetchShoppingList = () => dispatch => {
+export const fetchShoppingList = () => (dispatch: Dispatch<StateTree>) => {
   dispatch(setLoadingShoppingList(true))
   dispatch(setShoppingListError(false))
   return http.get('/api/v1/shoppinglist/')
@@ -580,22 +641,22 @@ export const fetchShoppingList = () => dispatch => {
   })
 }
 
-export const addRecipe = recipe => ({
+export const addRecipe = (recipe: Recipe) => ({
   type: ADD_RECIPE,
   recipe
 })
 
-export const setLoadingAddRecipe = val => ({
+export const setLoadingAddRecipe = (val: boolean) => ({
   type: SET_LOADING_ADD_RECIPE,
   val
 })
 
-export const setErrorAddRecipe = val => ({
+export const setErrorAddRecipe = (val: ErrorAddRecipe | {}) => ({
   type: SET_ERROR_ADD_RECIPE,
   val
 })
 
-export const postNewRecipe = recipe => dispatch => {
+export const postNewRecipe = (recipe: Recipe) => (dispatch: Dispatch<StateTree>) => {
   dispatch(setLoadingAddRecipe(true))
   dispatch(setErrorAddRecipe({}))
 
@@ -626,19 +687,19 @@ export const postNewRecipe = recipe => dispatch => {
   })
 }
 
-export const setRecipe404 = (id, val) => ({
+export const setRecipe404 = (id: number, val: boolean) => ({
   type: SET_RECIPE_404,
   id,
   val
 })
 
-export const setLoadingRecipe = (id, val) => ({
+export const setLoadingRecipe = (id: number, val: boolean) => ({
   type: SET_LOADING_RECIPE,
   id,
   val
 })
 
-export const fetchRecipe = id => dispatch => {
+export const fetchRecipe = (id: number) => (dispatch: Dispatch<StateTree>) => {
   dispatch(setRecipe404(id, false))
   dispatch(setLoadingRecipe(id, true))
   return http.get(`/api/v1/recipes/${id}/`)
@@ -658,22 +719,22 @@ export const fetchRecipe = id => dispatch => {
   })
 }
 
-export const setRecipes = recipes => ({
+export const setRecipes = (recipes: Recipe[]) => ({
   type: SET_RECIPES,
   recipes
 })
 
-export const setErrorRecipes = val => ({
+export const setErrorRecipes = (val: boolean) => ({
   type: SET_ERROR_RECIPES,
   val
 })
 
-export const setLoadingRecipes = val => ({
+export const setLoadingRecipes = (val: boolean) => ({
   type: SET_LOADING_RECIPES,
   val
 })
 
-export const fetchRecentRecipes = () => dispatch => {
+export const fetchRecentRecipes = () => (dispatch: Dispatch<StateTree>) => {
   dispatch(setLoadingRecipes(true))
   dispatch(setErrorRecipes(false))
   return http.get('/api/v1/recipes/?recent')
@@ -691,7 +752,7 @@ export const fetchRecentRecipes = () => dispatch => {
   })
 }
 
-export const fetchRecipeList = () => dispatch => {
+export const fetchRecipeList = () => (dispatch: Dispatch<StateTree>) => {
   dispatch(setLoadingRecipes(true))
   dispatch(setErrorRecipes(false))
 
@@ -709,31 +770,31 @@ export const fetchRecipeList = () => dispatch => {
   })
 }
 
-export const setLoadingAddStepToRecipe = (id, val) => ({
+export const setLoadingAddStepToRecipe = (id: number, val: boolean) => ({
   type: SET_LOADING_ADD_STEP_TO_RECIPE,
   id,
   val
 })
 
-export const addStepToRecipe = (id, step) => ({
+export const addStepToRecipe = (id: number, step: Step) => ({
   type: ADD_STEP_TO_RECIPE,
   id,
   step
 })
 
-export const setAddingIngredientToRecipe = (id, val) => ({
+export const setAddingIngredientToRecipe = (id: number, val: boolean) => ({
   type: SET_ADDING_INGREDIENT_TO_RECIPE,
   id,
   val
 })
 
-export const addIngredientToRecipe = (id, ingredient) => ({
+export const addIngredientToRecipe = (id: number, ingredient: Ingredient) => ({
   type: ADD_INGREDIENT_TO_RECIPE,
   id,
   ingredient
 })
 
-export const addingRecipeIngredient = (recipeID, ingredient) => dispatch => {
+export const addingRecipeIngredient = (recipeID: number, ingredient: Ingredient) => (dispatch: Dispatch<StateTree>) => {
   dispatch(setAddingIngredientToRecipe(recipeID, true))
   return http.post(`/api/v1/recipes/${recipeID}/ingredients/`, ingredient)
   .then(res => {
@@ -749,13 +810,13 @@ export const addingRecipeIngredient = (recipeID, ingredient) => dispatch => {
   })
 }
 
-export const updateRecipeName = (id, name) => ({
+export const updateRecipeName = (id: number, name: string) => ({
   type: UPDATE_RECIPE_NAME,
   id,
   name
 })
 
-export const sendUpdatedRecipeName = (id, name) => dispatch => {
+export const sendUpdatedRecipeName = (id: number, name: string) => (dispatch: Dispatch<StateTree>) => {
   return http.patch(`/api/v1/recipes/${id}/`, {
     name
   })
@@ -770,13 +831,13 @@ export const sendUpdatedRecipeName = (id, name) => dispatch => {
   })
 }
 
-export const updateRecipeSource = (id, source) => ({
+export const updateRecipeSource = (id: number, source: string) => ({
   type: UPDATE_RECIPE_SOURCE,
   id,
   source
 })
 
-export const setRecipeSource = (id, source) => dispatch => {
+export const setRecipeSource = (id: number, source: string) => (dispatch: Dispatch<StateTree>) => {
   return http.patch(`/api/v1/recipes/${id}/`, {
     source
   })
@@ -791,13 +852,13 @@ export const setRecipeSource = (id, source) => dispatch => {
   })
 }
 
-export const updateRecipeAuthor = (id, author) => ({
+export const updateRecipeAuthor = (id: number, author: string) => ({
   type: UPDATE_RECIPE_AUTHOR,
   id,
   author
 })
 
-export const setRecipeAuthor = (id, author) => dispatch => {
+export const setRecipeAuthor = (id: number, author: string) => (dispatch: Dispatch<StateTree>) => {
   return http.patch(`/api/v1/recipes/${id}/`, {
     author
   })
@@ -812,13 +873,13 @@ export const setRecipeAuthor = (id, author) => dispatch => {
   })
 }
 
-export const updateRecipeTime = (id, time) => ({
+export const updateRecipeTime = (id: number, time: string) => ({
   type: UPDATE_RECIPE_TIME,
   id,
   time
 })
 
-export const setRecipeTime = (id, time) => dispatch => {
+export const setRecipeTime = (id: number, time: string) => (dispatch: Dispatch<StateTree>) => {
   return http.patch(`/api/v1/recipes/${id}/`, {
     time
   })
@@ -837,19 +898,19 @@ export const toggleDarkMode = () => ({
   type: TOGGLE_DARK_MODE
 })
 
-export const setRecipe = (id, data) => ({
+export const setRecipe = (id: number, data: Recipe) => ({
   type: SET_RECIPE,
   id,
   data
 })
 
-export const setRecipeUpdating = (id, val) => ({
+export const setRecipeUpdating = (id: number, val: boolean) => ({
   type: SET_RECIPE_UPDATING,
   id,
   val
 })
 
-export const updateRecipe = (id, data) => dispatch => {
+export const updateRecipe = (id: number, data: Recipe) => (dispatch: Dispatch<StateTree>) => {
   dispatch(setRecipeUpdating(id, true))
   return http.patch(`/api/v1/recipes/${id}/`, data)
   .then(res => {
@@ -865,14 +926,14 @@ export const updateRecipe = (id, data) => dispatch => {
   })
 }
 
-export const updateIngredient = (recipeID, ingredientID, content) => ({
+export const updateIngredient = (recipeID: number, ingredientID: number, content: Ingredient) => ({
   type: UPDATE_INGREDIENT,
   recipeID,
   ingredientID,
   content
 })
 
-export const addingRecipeStep = (recipeID, step) => dispatch => {
+export const addingRecipeStep = (recipeID: number, step: string) => (dispatch: Dispatch<StateTree>) => {
   dispatch(setLoadingAddStepToRecipe(recipeID, true))
   return http.post(`/api/v1/recipes/${recipeID}/steps/`, {
     text: step
@@ -890,21 +951,21 @@ export const addingRecipeStep = (recipeID, step) => dispatch => {
   })
 }
 
-export const setRemovingIngredient = (recipeID, ingredientID, val) => ({
+export const setRemovingIngredient = (recipeID: number, ingredientID: number, val: boolean) => ({
   type: SET_REMOVING_INGREDIENT,
   recipeID,
   ingredientID,
   val
 })
 
-export const setUpdatingIngredient = (recipeID, ingredientID, val) => ({
+export const setUpdatingIngredient = (recipeID: number, ingredientID: number, val: boolean) => ({
   type: SET_UPDATING_INGREDIENT,
   recipeID,
   ingredientID,
   val
 })
 
-export const updatingIngredient = (recipeID, ingredientID, content) => dispatch => {
+export const updatingIngredient = (recipeID: number, ingredientID: number, content: Ingredient) => (dispatch: Dispatch<StateTree>) => {
   dispatch(setUpdatingIngredient(recipeID, ingredientID, true))
   return http.patch(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, content)
   .then(res => {
@@ -920,13 +981,13 @@ export const updatingIngredient = (recipeID, ingredientID, content) => dispatch 
   })
 }
 
-export const deleteIngredient = (recipeID, ingredientID) => ({
+export const deleteIngredient = (recipeID: number, ingredientID: number) => ({
   type: DELETE_INGREDIENT,
   recipeID,
   ingredientID
 })
 
-export const deletingIngredient = (recipeID, ingredientID) => dispatch => {
+export const deletingIngredient = (recipeID: number, ingredientID: number) => (dispatch: Dispatch<StateTree>) => {
   dispatch(setRemovingIngredient(recipeID, ingredientID, true))
   return http.delete(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`)
   .then(() => {
@@ -942,28 +1003,28 @@ export const deletingIngredient = (recipeID, ingredientID) => dispatch => {
   })
 }
 
-export const updateStep = (recipeID, stepID, text) => ({
+export const updateStep = (recipeID: number, stepID: number, text: string) => ({
   type: UPDATE_STEP,
   recipeID,
   stepID,
   text
 })
 
-export const setRemovingStep = (recipeID, stepID, val) => ({
+export const setRemovingStep = (recipeID: number, stepID: number, val: boolean) => ({
   type: SET_REMOVING_STEP,
   recipeID,
   stepID,
   val
 })
 
-export const setUpdatingStep = (recipeID, stepID, val) => ({
+export const setUpdatingStep = (recipeID: number, stepID: number, val: boolean) => ({
   type: SET_UPDATING_STEP,
   recipeID,
   stepID,
   val
 })
 
-export const updatingStep = (recipeID, stepID, text) => dispatch => {
+export const updatingStep = (recipeID: number, stepID: number, text: string) => (dispatch: Dispatch<StateTree>) => {
   dispatch(setUpdatingStep(recipeID, stepID, true))
   return http.patch(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, {
     text
@@ -982,13 +1043,13 @@ export const updatingStep = (recipeID, stepID, text) => dispatch => {
   })
 }
 
-export const deleteStep = (recipeID, stepID) => ({
+export const deleteStep = (recipeID: number, stepID: number) => ({
   type: DELETE_STEP,
   recipeID,
   stepID
 })
 
-export const deletingStep = (recipeID, stepID) => dispatch => {
+export const deletingStep = (recipeID: number, stepID: number) => (dispatch: Dispatch<StateTree>) => {
   dispatch(setRemovingStep(recipeID, stepID, true))
   return http.delete(`/api/v1/recipes/${recipeID}/steps/${stepID}/`)
   .then(() => {
@@ -1004,17 +1065,17 @@ export const deletingStep = (recipeID, stepID) => dispatch => {
   })
 }
 
-export const setErrorLogin = val => ({
+export const setErrorLogin = (val: ErrorLogin | {}) => ({
   type: SET_ERROR_LOGIN,
   val
 })
 
-export const setLoadingLogin = val => ({
+export const setLoadingLogin = (val: boolean) => ({
   type: SET_LOADING_LOGIN,
   val
 })
 
-export const logUserIn = (email, password, redirectUrl = '') => dispatch => {
+export const logUserIn = (email: string, password: string, redirectUrl = '') => (dispatch: Dispatch<StateTree>) => {
   dispatch(setLoadingLogin(true))
   dispatch(setErrorLogin({}))
   dispatch(clearNotification())
@@ -1044,12 +1105,12 @@ export const logUserIn = (email, password, redirectUrl = '') => dispatch => {
   })
 }
 
-export const setErrorSocialLogin = val => ({
+export const setErrorSocialLogin = (val: ErrorSocialLogin) => ({
   type: SET_ERROR_SOCIAL_LOGIN,
   val
 })
 
-export const socialLogin = (service, token, redirectUrl = '') => dispatch => {
+export const socialLogin = (service: string, token: string, redirectUrl = '') => (dispatch: Dispatch<StateTree>) => {
   return anon.post(`/api/v1/rest-auth/${service}/`, {
     code: token
   })
@@ -1074,7 +1135,7 @@ export const socialLogin = (service, token, redirectUrl = '') => dispatch => {
   })
 }
 
-export const socialConnect = (service, code) => dispatch => {
+export const socialConnect = (service: string, code: string) => (dispatch: Dispatch<StateTree>) => {
   return http.post(`/api/v1/rest-auth/${service}/connect/`, {
     code
   })
@@ -1090,17 +1151,17 @@ export const socialConnect = (service, code) => dispatch => {
   })
 }
 
-export const setLoadingSignup = val => ({
+export const setLoadingSignup = (val: boolean) => ({
   type: SET_LOADING_SIGNUP,
   val
 })
 
-export const setErrorSignup = val => ({
+export const setErrorSignup = (val: ErrorSignup | {}) => ({
   type: SET_ERROR_SIGNUP,
   val
 })
 
-export const signup = (email, password1, password2) => dispatch => {
+export const signup = (email: string, password1: string, password2: string) => (dispatch: Dispatch<StateTree>) => {
   dispatch(setLoadingSignup(true))
     // clear previous signup errors
   dispatch(setErrorSignup({}))
@@ -1129,18 +1190,18 @@ export const signup = (email, password1, password2) => dispatch => {
   })
 }
 
-export const setDeletingRecipe = (id, val) => ({
+export const setDeletingRecipe = (id: number, val: boolean) => ({
   type: SET_DELETING_RECIPE,
   id,
   val
 })
 
-export const deleteRecipe = id => ({
+export const deleteRecipe = (id: number) => ({
   type: DELETE_RECIPE,
   id
 })
 
-export const deletingRecipe = id => dispatch => {
+export const deletingRecipe = (id: number) => (dispatch: Dispatch<StateTree>) => {
   dispatch(setDeletingRecipe(id, true))
   return http.delete(`/api/v1/recipes/${id}/`)
   .then(() => {
@@ -1157,17 +1218,17 @@ export const deletingRecipe = id => dispatch => {
   })
 }
 
-export const setLoadingReset = val => ({
+export const setLoadingReset = (val: boolean) => ({
   type: SET_LOADING_RESET,
   val
 })
 
-export const setErrorReset = val => ({
+export const setErrorReset = (val: ErrorReset | {}) => ({
   type: SET_ERROR_RESET,
   val
 })
 
-export const reset = email => dispatch => {
+export const reset = (email: string) => (dispatch: Dispatch<StateTree>) => {
   dispatch(setLoadingReset(true))
   dispatch(setErrorReset({}))
   dispatch(clearNotification())
@@ -1204,19 +1265,13 @@ export const reset = email => dispatch => {
   })
 }
 
-export const setLoadingResetConfirmation = val => ({
+export const setLoadingResetConfirmation = (val: boolean) => ({
   type: SET_LOADING_RESET_CONFIRMATION,
   val
 })
 
-export const setErrorResetConfirmation = val => ({
-  type: SET_ERROR_RESET_CONFIRMATION,
-  val
-})
-
-export const resetConfirmation = (uid, token, newPassword1, newPassword2) => dispatch => {
+export const resetConfirmation = (uid: string, token: string, newPassword1: string, newPassword2: string) => (dispatch: Dispatch<StateTree>) => {
   dispatch(setLoadingResetConfirmation(true))
-  dispatch(setErrorResetConfirmation({}))
   dispatch(clearNotification())
   return anon.post('/api/v1/rest-auth/password/reset/confirm/', {
     uid,
@@ -1243,8 +1298,8 @@ export const resetConfirmation = (uid, token, newPassword1, newPassword2) => dis
     if (badRequest(err)) {
       const data = err.response.data
 
-      const tokenData = data['token'] && data['token'].map(x => 'token: ' + x)
-      const uidData = data['uid'] && data['uid'].map(x => 'uid: ' + x)
+      const tokenData = data['token'] && data['token'].map((x: string) => 'token: ' + x)
+      const uidData = data['uid'] && data['uid'].map((x: string) => 'uid: ' + x)
       const nonFieldErrors = [].concat(data['non_field_errors']).concat(tokenData).concat(uidData)
 
       dispatch(setErrorReset({
@@ -1256,63 +1311,63 @@ export const resetConfirmation = (uid, token, newPassword1, newPassword2) => dis
   })
 }
 
-export const setAddRecipeFormName = val => ({
+export const setAddRecipeFormName = (val: string) => ({
   type: SET_ADD_RECIPE_FORM_NAME,
   val
 })
 
-export const setAddRecipeFormAuthor = val => ({
+export const setAddRecipeFormAuthor = (val: string) => ({
   type: SET_ADD_RECIPE_FORM_AUTHOR,
   val
 })
 
-export const setAddRecipeFormSource = val => ({
+export const setAddRecipeFormSource = (val: string) => ({
   type: SET_ADD_RECIPE_FORM_SOURCE,
   val
 })
 
-export const setAddRecipeFormTime = val => ({
+export const setAddRecipeFormTime = (val: string) => ({
   type: SET_ADD_RECIPE_FORM_TIME,
   val
 })
 
-export const setAddRecipeFormServings = val => ({
+export const setAddRecipeFormServings = (val: string) => ({
   type: SET_ADD_RECIPE_FORM_SERVINGS,
   val
 })
 
-export const setAddRecipeFormTeam = val => ({
+export const setAddRecipeFormTeam = (val: string) => ({
   type: SET_ADD_RECIPE_FORM_TEAM,
   val,
 })
 
-export const addAddRecipeFormIngredient = ingredient => ({
+export const addAddRecipeFormIngredient = (ingredient: Ingredient) => ({
   type: ADD_ADD_RECIPE_FORM_INGREDIENT,
   ingredient
 })
 
-export const removeAddRecipeFormIngredient = index => ({
+export const removeAddRecipeFormIngredient = (index: number) => ({
   type: REMOVE_ADD_RECIPE_FORM_INGREDIENT,
   index
 })
 
-export const addAddRecipeFormStep = step => ({
+export const addAddRecipeFormStep = (step: { text: string }) => ({
   type: ADD_ADD_RECIPE_FORM_STEP,
   step
 })
 
-export const removeAddRecipeFormStep = index => ({
+export const removeAddRecipeFormStep = (index: number) => ({
   type: REMOVE_ADD_RECIPE_FORM_STEP,
   index
 })
 
-export const updateAddRecipeFormIngredient = (index, ingredient) => ({
+export const updateAddRecipeFormIngredient = (index: number, ingredient: Ingredient) => ({
   type: UPDATE_ADD_RECIPE_FORM_INGREDIENT,
   index,
   ingredient
 })
 
-export const updateAddRecipeFormStep = (index, step) => ({
+export const updateAddRecipeFormStep = (index: number, step: Step) => ({
   type: UPDATE_ADD_RECIPE_FORM_STEP,
   index,
   step
@@ -1322,48 +1377,48 @@ export const clearAddRecipeForm = () => ({
   type: CLEAR_ADD_RECIPE_FORM
 })
 
-export const addTeam = team => ({
+export const addTeam = (team: Team) => ({
   type: ADD_TEAM,
   team
 })
 
-export const setLoadingTeam = (id, loadingTeam) => ({
+export const setLoadingTeam = (id: number, loadingTeam: boolean) => ({
   type: SET_LOADING_TEAM,
   id,
   loadingTeam,
 })
 
-export const setLoadingTeamMembers = (id, loadingMembers) => ({
+export const setLoadingTeamMembers = (id: number, loadingMembers: boolean) => ({
   type: SET_LOADING_TEAM_MEMBERS,
   id,
   loadingMembers,
 })
 
-export const setTeam404 = (id, val = true) => ({
+export const setTeam404 = (id: number, val = true) => ({
   type: SET_TEAM_404,
   id,
   val,
 })
 
-export const setTeamMembers = (id, members) => ({
+export const setTeamMembers = (id: number, members: Member[]) => ({
   type: SET_TEAM_MEMBERS,
   id,
   members,
 })
 
-export const setTeamRecipes = (id, recipes) => ({
+export const setTeamRecipes = (id: number, recipes: Recipe[]) => ({
   type: SET_TEAM_RECIPES,
   id,
   recipes,
 })
 
-export const setLoadingTeamRecipes = (id, loadingRecipes) => ({
+export const setLoadingTeamRecipes = (id: number, loadingRecipes: boolean) => ({
   type: SET_LOADING_TEAM_RECIPES,
   id,
   loadingRecipes,
 })
 
-export const fetchTeam = id => dispatch => {
+export const fetchTeam = (id: number) => (dispatch: Dispatch<StateTree>) => {
   dispatch(setLoadingTeam(id, true))
   return http.get(`/api/v1/t/${id}/`)
   .then(res => {
@@ -1382,7 +1437,7 @@ export const fetchTeam = id => dispatch => {
   })
 }
 
-export const fetchTeamMembers = id => dispatch => {
+export const fetchTeamMembers = (id: number) => (dispatch: Dispatch<StateTree>) => {
   dispatch(setLoadingTeamMembers(id, true))
   return http.get(`/api/v1/t/${id}/members/`)
   .then(res => {
@@ -1398,7 +1453,7 @@ export const fetchTeamMembers = id => dispatch => {
   })
 }
 
-export const fetchTeamRecipes = id => dispatch => {
+export const fetchTeamRecipes = (id: number) => (dispatch: Dispatch<StateTree>) => {
   dispatch(setLoadingTeamRecipes(id, true))
   return http.get(`/api/v1/t/${id}/recipes/`)
   .then(res => {
@@ -1415,23 +1470,24 @@ export const fetchTeamRecipes = id => dispatch => {
   })
 }
 
-export const setUpdatingUserTeamLevel = (id, updating) => ({
+export const setUpdatingUserTeamLevel = (id: number, updating: boolean) => ({
   type: SET_UPDATING_USER_TEAM_LEVEL,
   id,
   updating,
 })
 
-export const setUserTeamLevel = (teamID, membershipID, level) => ({
+// TOOD:  this is a specify level
+export const setUserTeamLevel = (teamID: number, membershipID: number, level: TeamLevel) => ({
   type: SET_USER_TEAM_LEVEL,
   teamID,
   membershipID,
   level,
 })
 
-const attemptedDeleteLastAdmin = res =>
+const attemptedDeleteLastAdmin = (res: AxiosResponse) =>
   res.status === 400 && res.data.level && res.data.level[0].includes('cannot demote')
 
-export const settingUserTeamLevel = (teamID, membershipID, level) => dispatch => {
+export const settingUserTeamLevel = (teamID: number, membershipID: number, level: TeamLevel) => (dispatch: Dispatch<StateTree>) => {
   dispatch(setUpdatingUserTeamLevel(teamID, true))
   return http.patch(`/api/v1/t/${teamID}/members/${membershipID}/`, { level })
   .then(res => {
@@ -1455,25 +1511,25 @@ export const settingUserTeamLevel = (teamID, membershipID, level) => dispatch =>
   })
 }
 
-export const deleteMembership = (teamID, membershipID) => ({
+export const deleteMembership = (teamID: number, membershipID: number): DeleteMembership => ({
   type: DELETE_MEMBERSHIP,
   teamID,
   membershipID
 })
 
-export const setDeletingMembership = (teamID, membershipID, val) => ({
+export const setDeletingMembership = (teamID: number, membershipID: number, val: boolean): SetDeletingMembership  => ({
   type: SET_DELETING_MEMBERSHIP,
   teamID,
   membershipID,
   val,
 })
 
-export const deleteTeam = (id) => ({
+export const deleteTeam = (id: number): DeleteTeam => ({
   type: DELETE_TEAM,
   id,
 })
 
-export const deletingMembership = (teamID, id, leaving = false) => (dispatch, getState) => {
+export const deletingMembership = (teamID: number, id: number, leaving = false) => (dispatch: Dispatch<StateTree>, getState: GetState) => {
   dispatch(setDeletingMembership(teamID, id, true))
   return http.delete(`/api/v1/t/${teamID}/members/${id}/`)
   .then(() => {
@@ -1501,7 +1557,7 @@ export const deletingMembership = (teamID, id, leaving = false) => (dispatch, ge
   })
 }
 
-export const deletingTeam = teamID => (dispatch, getState) => {
+export const deletingTeam = (teamID: number) => (dispatch: Dispatch<StateTree>, getState: GetState) => {
   return http.delete(`/api/v1/t/${teamID}`)
   .then(() => {
     dispatch(push('/'))
@@ -1535,13 +1591,13 @@ export const deletingTeam = teamID => (dispatch, getState) => {
   })
 }
 
-export const setSendingTeamInvites = (teamID, val) => ({
+export const setSendingTeamInvites = (teamID: number, val: boolean) => ({
   type: SET_SENDING_TEAM_INVITES,
   teamID,
   val,
 })
 
-export const sendingTeamInvites = (teamID, emails, level) => dispatch => {
+export const sendingTeamInvites = (teamID: number, emails: string[], level: string) => (dispatch: Dispatch<StateTree>) => {
   dispatch(setSendingTeamInvites(teamID, true))
   return http.post(`/api/v1/t/${teamID}/invites/`, { emails, level })
   .then(() => {
@@ -1559,17 +1615,17 @@ export const sendingTeamInvites = (teamID, emails, level) => dispatch => {
   })
 }
 
-export const setLoadingTeams = val => ({
+export const setLoadingTeams = (val: boolean): SetLoadingTeams => ({
   type: SET_LOADING_TEAMS,
   val,
 })
 
-export const setTeams = teams => ({
+export const setTeams = (teams: Team[]) => ({
   type: SET_TEAMS,
   teams,
 })
 
-export const fetchTeams = () => dispatch => {
+export const fetchTeams = () => (dispatch: Dispatch<StateTree>) => {
   dispatch(setLoadingTeams(true))
   return http.get('/api/v1/t/')
   .then(res => {
@@ -1582,24 +1638,24 @@ export const fetchTeams = () => dispatch => {
   })
 }
 
-export const setTeam = (id, team) => ({
+export const setTeam = (id: number, team: Team) => ({
   type: SET_TEAM,
   id,
   team,
 })
 
-export const updateTeamById = (id, teamKeys) => ({
+export const updateTeamById = (id: number, teamKeys: number[]) => ({
   type: UPDATE_TEAM,
   id,
   teamKeys,
 })
 
-export const setCreatingTeam = val => ({
+export const setCreatingTeam = (val: boolean) => ({
   type: SET_CREATING_TEAM,
   val,
 })
 
-export const creatingTeam = (name, emails, level) => dispatch => {
+export const creatingTeam = (name: string, emails: string[], level: string) => (dispatch: Dispatch<StateTree>) => {
   dispatch(setCreatingTeam(true))
   return http.post('/api/v1/t/', { name, emails, level })
   .then(res => {
@@ -1613,18 +1669,18 @@ export const creatingTeam = (name, emails, level) => dispatch => {
   })
 }
 
-export const setMovingTeam = val => ({
+export const setMovingTeam = (val: boolean): SetMovingTeam => ({
   type: SET_MOVING_TEAM,
   val,
 })
 
-export const setCopyingTeam = val => ({
+export const setCopyingTeam = (val: boolean): SetCopyingTeam => ({
   type: SET_COPYING_TEAM,
   val,
 })
 
-export const updatingTeam = (teamId, teamKVs) => dispatch => {
-  return http.patch(`/api/v1/t/${teamId}/`, teamKVs)
+export const updatingTeam = (teamId: number, team: TeamOptional) => (dispatch: Dispatch<StateTree>) => {
+  return http.patch(`/api/v1/t/${teamId}/`, team)
   .then(res => {
     dispatch(showNotificationWithTimeout({
       message: 'Team updated',
@@ -1647,7 +1703,7 @@ export const updatingTeam = (teamId, teamKVs) => dispatch => {
   })
 }
 
-export const moveRecipeTo = (recipeId, ownerId, type) => dispatch => {
+export const moveRecipeTo = (recipeId: number, ownerId: number, type: string) => (dispatch: Dispatch<StateTree>) => {
   dispatch(setMovingTeam(true))
   return http.post(`/api/v1/recipes/${recipeId}/move/`, { id: ownerId, type })
   .then(res => {
@@ -1660,7 +1716,7 @@ export const moveRecipeTo = (recipeId, ownerId, type) => dispatch => {
   })
 }
 
-export const copyRecipeTo = (recipeId, ownerId, type) => dispatch => {
+export const copyRecipeTo = (recipeId: number, ownerId: number, type: string) => (dispatch: Dispatch<StateTree>) => {
   dispatch(setCopyingTeam(true))
   return http.post(`/api/v1/recipes/${recipeId}/copy/`, { id: ownerId, type })
   .then(res => {
@@ -1673,22 +1729,23 @@ export const copyRecipeTo = (recipeId, ownerId, type) => dispatch => {
   })
 }
 
-export const setLoadingInvites = (val) => ({
+export const setLoadingInvites = (val: boolean): SetLoadingInvites => ({
   type: SET_LOADING_INVITES,
   val,
 })
 
-export const setInvites = (invites) => ({
+export const setInvites = (invites: Invite[]): SetInvites => ({
   type: SET_INVITES,
   invites,
 })
 
-export const setErrorFetchingInvites = (val) => ({
+// TODO: add to reducer
+export const setErrorFetchingInvites = (val: boolean) => ({
   type: SET_ERROR_FETCHING_INVITES,
   val,
 })
 
-export const fetchInvites = () => dispatch => {
+export const fetchInvites = () => (dispatch: Dispatch<StateTree>) => {
   dispatch(setLoadingInvites(true))
   dispatch(setErrorFetchingInvites(false))
   return http.get('/api/v1/invites/')
@@ -1703,50 +1760,50 @@ export const fetchInvites = () => dispatch => {
   })
 }
 
-export const setAcceptingInvite = (id, val) => ({
+export const setAcceptingInvite = (id: number, val: boolean): SetAcceptingInvite => ({
   type: SET_ACCEPTING_INVITE,
   id,
   val,
 })
 
-export const setAcceptedInvite = (id) => ({
+export const setAcceptedInvite = (id: number): SetAcceptedInvite => ({
   type: SET_ACCEPTED_INVITE,
   id,
 })
 
-export const acceptingInvite = (id) => dispatch => {
-  dispatch(setAcceptingInvite(true))
+export const acceptingInvite = (id: number) => (dispatch: Dispatch<StateTree>) => {
+  dispatch(setAcceptingInvite(id, true))
   return http.post(`/api/v1/invites/${id}/accept/`, {})
   .then(() => {
-    dispatch(setAcceptingInvite(false))
+    dispatch(setAcceptingInvite(id, false))
     dispatch(setAcceptedInvite(id))
   })
   .catch(err => {
-    dispatch(setAcceptingInvite(false))
+    dispatch(setAcceptingInvite(id, false))
     throw err
   })
 }
 
-export const setDecliningInvite = (id, val) => ({
+export const setDecliningInvite = (id: number, val: boolean): SetDecliningInvite => ({
   type: SET_DECLINING_INVITE,
   id,
   val,
 })
 
-export const setDeclinedInvite = (id) => ({
+export const setDeclinedInvite = (id: number): SetDeclinedInvite => ({
   type: SET_DECLINED_INVITE,
   id,
 })
 
-export const decliningInvite = (id) => dispatch => {
-  dispatch(setDecliningInvite(true))
+export const decliningInvite = (id: number) => (dispatch: Dispatch<StateTree>) => {
+  dispatch(setDecliningInvite(id, true))
   return http.post(`/api/v1/invites/${id}/decline/`, {})
   .then(() => {
-    dispatch(setDecliningInvite(false))
+    dispatch(setDecliningInvite(id, false))
     dispatch(setDeclinedInvite(id))
   })
   .catch(err => {
-    dispatch(setDecliningInvite(false))
+    dispatch(setDecliningInvite(id, false))
     throw err
   })
 }

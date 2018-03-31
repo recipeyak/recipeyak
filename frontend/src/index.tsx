@@ -1,5 +1,5 @@
 import Raven from 'raven-js'
-import React from 'react'
+import * as React from 'react'
 import { render } from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
 import { Provider } from 'react-redux'
@@ -8,7 +8,7 @@ import { SENTRY_DSN, GIT_SHA } from './settings'
 
 import App from './components/App.jsx'
 
-import store from './store/store.js'
+import store from './store/store'
 
 if (process.env.NODE_ENV === 'production') {
   Raven.config(SENTRY_DSN, {
@@ -17,9 +17,6 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const rootElement = document.getElementById('root')
-if (rootElement == null) {
-  throw new Error('could not find root element')
-}
 
 render(
   <AppContainer>

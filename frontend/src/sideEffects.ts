@@ -1,4 +1,4 @@
-export const setDarkModeClass = isDarkMode => {
+export const setDarkModeClass = (isDarkMode: boolean) => {
   if (isDarkMode) {
     document.querySelector('html').classList.add('dark-mode')
   } else {

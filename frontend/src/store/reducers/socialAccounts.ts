@@ -1,27 +1,31 @@
 import {
   SET_SOCIAL_ACCOUNT_CONNECTIONS,
-  SET_SOCIAL_ACCOUNT_CONNECTION,
 } from '../actionTypes'
 
+export interface Provider {
+  id: number
+  provider: string
+}
+
+export interface SetSocialAccountConnections {
+  type: typeof SET_SOCIAL_ACCOUNT_CONNECTIONS
+  val: Provider[]
+}
+
+type SocialAccountsActions = SetSocialAccountConnections
+
 const initialState = {
-  github: null,
-  gitlab: null,
 }
 
 export const socialAccounts = (
   state = initialState,
-  action
+  action: SocialAccountsActions
 ) => {
   switch (action.type) {
   case SET_SOCIAL_ACCOUNT_CONNECTIONS:
     return {
       ...state,
       ...action.val.reduce((a, { provider, id }) => ({ ...a, [provider]: id }), {})
-    }
-  case SET_SOCIAL_ACCOUNT_CONNECTION:
-    return {
-      ...state,
-      [action.provider]: action.val
     }
   default:
     return state

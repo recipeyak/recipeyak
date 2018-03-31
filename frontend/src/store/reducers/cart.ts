@@ -7,9 +7,13 @@ interface CartAction {
   val: boolean
 }
 
-const cart = (state = {
+const initialState = {
   clearing: false
-}, action: CartAction) => {
+}
+
+export type CartState = typeof initialState
+
+const cart = (state = initialState, action: CartAction) => {
   switch (action.type) {
   case SET_CLEARING_CART:
     return { ...state, clearing: action.val }

@@ -6,9 +6,9 @@ import {
   updatingEmail,
   disconnectSocialAccount,
   loggingOut
-} from '../store/actions.js'
+} from '../store/actions'
 
-import Settings from '../components/Settings.jsx'
+import Settings from '../components/Settings'
 
 const mapStateToProps = state => {
   return {

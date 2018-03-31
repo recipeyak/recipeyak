@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import {
   Link
 } from 'react-router-dom'
@@ -12,7 +12,17 @@ import NotificationsDropdown from './NotificationsDropdown'
 
 import { teamURL } from '../urls'
 
-const Teams = ({ teams, loading }) => {
+interface Team {
+  id: number
+  name: string
+}
+
+interface TeamsProps {
+  teams: Team[]
+  loading: boolean
+}
+
+const Teams = ({ teams, loading }: TeamsProps) => {
   if (loading) {
     return <p>Loading...</p>
   }
@@ -32,10 +42,29 @@ const Teams = ({ teams, loading }) => {
   )
 }
 
-class UserDropdown extends React.Component {
+interface UserDropdownProps {
+  avatarURL: string
+  email: string
+  toggleDarkMode(): void
+  darkMode: boolean
+  logout(): void
+  loggingOut: boolean
+}
+
+interface UserDropdownState {
+  show: boolean
+}
+
+interface ClickEvent extends Event {
+  target: HTMLElement
+}
+
+class UserDropdown extends React.Component<UserDropdownProps,UserDropdownState> {
   state = {
     show: false,
   }
+
+  dropdown: HTMLElement
 
   componentWillMount () {
     document.addEventListener('click', this.handleGeneralClick)
@@ -49,7 +78,7 @@ class UserDropdown extends React.Component {
     document.removeEventListener('click', this.handleGeneralClick)
   }
 
-  handleGeneralClick = e => {
+  handleGeneralClick = (e: ClickEvent) => {
     const clickedDropdown = this.dropdown && this.dropdown.contains(e.target)
     if (clickedDropdown) return
     this.setState({ show: false })
@@ -97,10 +126,24 @@ class UserDropdown extends React.Component {
   }
 }
 
-class Navbar extends React.Component {
+interface NavBarProps {
+  avatarURL: string
+  loggedIn: boolean
+  logout(): void
+  teams: Team[]
+  loadingTeams: boolean
+  toggleDarkMode(): void
+  darkMode: boolean
+  className: string
+  loggingOut: boolean
+  email: string
+  fetchData(): void
+}
+
+class Navbar extends React.Component<NavBarProps,{}> {
 
   static defaultProps = {
-    teams: []
+    teams: [] as Array<Team>
   }
 
   componentWillMount () {

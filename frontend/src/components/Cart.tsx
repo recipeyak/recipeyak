@@ -1,11 +1,11 @@
-import React from 'react'
+import * as React from 'react'
 import { Helmet } from 'react-helmet'
 
 import Recipe from '../containers/RecipeItem.jsx'
 import Loader from './Loader.jsx'
 import DeadFish from './DeadFish.jsx'
 
-const selectElementText = el => {
+const selectElementText = (el: HTMLElement) => {
   const sel = window.getSelection()
   const range = document.createRange()
   range.selectNodeContents(el)
@@ -13,14 +13,47 @@ const selectElementText = el => {
   sel.addRange(range)
 }
 
-class Cart extends React.Component {
-  componentWillMount = () => {
+
+interface ShoppingListItem {
+  name: string
+  unit: string
+}
+
+interface Ingredient {
+  id: number
+  text: string
+}
+
+interface Recipe {
+  id: number
+  title: string
+  author: string
+  source: string
+  ingredients: Array<Ingredient>
+}
+
+interface CartProps {
+  fetchData(): void
+  loading: boolean
+  recipes: Array<Recipe>
+  shoppinglist: Array<ShoppingListItem>
+  error: boolean
+  updateCart(id: number, count: number): void
+  removeFromCart(id: number): void
+  addToCart(id: number): void
+  loadingShoppingList: boolean
+  clearCart: Function
+  clearingCart: boolean
+}
+
+class Cart extends React.Component<CartProps,{}> {
+  componentWillMount() {
     this.props.fetchData()
   }
 
   static defaultProps = {
-    shoppinglist: [],
-    recipes: [],
+    shoppinglist: [] as Array<ShoppingListItem>,
+    recipes: [] as Array<Recipe>,
     loading: true,
   }
 
@@ -83,7 +116,7 @@ class Cart extends React.Component {
             )
           }
           <button
-            onClick={ clearCart }
+            onClick={ () => clearCart() }
             className={ `my-button control ${clearingCart ? 'is-loading' : ''}` }>Clear Cart</button>
         </div>
         <div>

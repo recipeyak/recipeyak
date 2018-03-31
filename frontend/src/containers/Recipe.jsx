@@ -6,9 +6,9 @@ import {
   removingFromCart,
   deletingRecipe,
   updatingCart
-} from '../store/actions.js'
+} from '../store/actions'
 
-import Recipe from '../components/Recipe.jsx'
+import Recipe from '../components/Recipe'
 
 const mapStateToProps = (state, props) => {
   const id = props.match.params.id

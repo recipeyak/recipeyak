@@ -1,4 +1,4 @@
-import { connect } from 'react-redux'
+import { connect, Dispatch } from 'react-redux'
 
 import {
   byNameAlphabetical,
@@ -12,14 +12,19 @@ import {
   fetchShoppingList,
   clearCart,
   updatingCart
-} from '../store/actions.js'
+} from '../store/actions'
 
-import Cart from '../components/Cart.jsx'
+import Cart from '../components/Cart'
 
-const mapStateToProps = state => {
+import { Recipe } from '../store/reducers/recipes'
+
+import { StateTree } from '../store/store'
+
+const mapStateToProps = (state: StateTree) => {
   return {
+    // TODO: we shouldn't be getting recipes this way, just map across ids
     recipes: Object.values(state.recipes)
-             .filter(x => x.cart_count > 0)
+             .filter((x: Recipe) => x.cart_count > 0)
              .sort(byNameAlphabetical),
     loading: state.loading.recipes || state.loading.cart,
     shoppinglist: state.shoppinglist.shoppinglist
@@ -30,17 +35,17 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: Dispatch<StateTree>) => {
   return {
-    addToCart: async id => {
+    addToCart: async (id: number) => {
       await dispatch(addingToCart(id))
       await dispatch(fetchShoppingList())
     },
-    removeFromCart: async id => {
+    removeFromCart: async (id: number) => {
       await dispatch(removingFromCart(id))
       await dispatch(fetchShoppingList())
     },
-    updateCart: async (id, count) => {
+    updateCart: async (id: number, count: number) => {
       await dispatch(updatingCart(id, count))
       await dispatch(fetchShoppingList())
     },
@@ -52,7 +57,7 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-const ConnectedCart = connect(
+const ConnectedCart = connect<{},{},{}>(
   mapStateToProps,
   mapDispatchToProps
 )(Cart)

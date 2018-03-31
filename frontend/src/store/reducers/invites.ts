@@ -7,9 +7,60 @@ import {
   SET_DECLINED_INVITE,
 } from '../actionTypes'
 
-const invites = (state = {
-  loading: false,
-}, action) => {
+export interface Invite {
+  id: number
+}
+
+export interface InvitesState {
+  [key:number]: Invite
+  loading: boolean
+}
+
+export interface SetInvites {
+  type: typeof SET_INVITES
+  invites: Invite[]
+}
+
+export interface SetLoadingInvites {
+  type: typeof SET_LOADING_INVITES
+  val: boolean
+}
+
+export interface SetAcceptingInvite {
+  type: typeof SET_ACCEPTING_INVITE
+  id: number
+  val: boolean
+}
+
+export interface SetDecliningInvite {
+  type: typeof SET_DECLINING_INVITE
+  id: number
+  val: boolean
+}
+
+export interface SetAcceptedInvite {
+  type: typeof SET_ACCEPTED_INVITE
+  id: number
+}
+
+export interface SetDeclinedInvite {
+  type: typeof SET_DECLINED_INVITE
+  id: number
+}
+
+type InvitesActions = SetInvites
+  | SetLoadingInvites
+  | SetAcceptingInvite
+  | SetDecliningInvite
+  | SetAcceptedInvite
+  | SetDeclinedInvite
+
+const invites = (
+  state: InvitesState = {
+    loading: false,
+  },
+  action: InvitesActions
+) => {
   switch (action.type) {
   case SET_INVITES:
     return {

@@ -1,4 +1,4 @@
-import user from './user.js'
+import user from './user'
 
 import {
   login,
@@ -13,7 +13,7 @@ import {
   toggleDarkMode,
   setSocialConnection,
   setUserID,
-} from '../actions.js'
+} from '../actions'
 
 describe('User', () => {
   it('Logs in user adding token', () => {

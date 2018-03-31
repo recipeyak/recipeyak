@@ -1,7 +1,7 @@
 import React from 'react'
 
 import Footer from './Footer'
-import Navbar from '../containers/Nav.jsx'
+import Navbar from '../containers/Nav'
 
 export const ContainerBase = ({ children }) =>
   <div>

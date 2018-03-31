@@ -8,7 +8,50 @@ import {
   SET_LOADING_CART
 } from '../actionTypes'
 
-const loading = (state = {
+interface SetLoadingLogin {
+  type: typeof SET_LOADING_LOGIN
+  val: boolean
+}
+
+interface SetLoadingSignup {
+  type: typeof SET_LOADING_SIGNUP
+  val: boolean
+}
+
+interface SetLoadingReset {
+  type: typeof SET_LOADING_RESET
+  val: boolean
+}
+
+interface SetLoadingResetConfirmation {
+  type: typeof SET_LOADING_RESET_CONFIRMATION
+  val: boolean
+}
+
+interface SetLoadingCart {
+  type: typeof SET_LOADING_CART
+  val: boolean
+}
+
+interface SetLoadingRecipes {
+  type: typeof SET_LOADING_RECIPES
+  val: boolean
+}
+
+interface SetLoadingAddRecipe {
+  type: typeof SET_LOADING_ADD_RECIPE
+  val: boolean
+}
+
+type LoadingActions = SetLoadingLogin
+  | SetLoadingSignup
+  | SetLoadingReset
+  | SetLoadingResetConfirmation
+  | SetLoadingCart
+  | SetLoadingRecipes
+  | SetLoadingAddRecipe
+
+const initialState = {
   login: false,
   signup: false,
   reset: false,
@@ -16,7 +59,11 @@ const loading = (state = {
   recipes: false,
   addRecipe: false,
   cart: false
-}, action) => {
+}
+
+export type LoadingState = typeof initialState
+
+const loading = (state = initialState, action: LoadingActions) => {
   switch (action.type) {
   case SET_LOADING_LOGIN:
     return { ...state, login: action.val }
