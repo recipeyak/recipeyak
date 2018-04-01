@@ -17,3 +17,11 @@ export const ingredientByNameAlphabetical = (x: NameObj, y: NameObj) => {
 
   return normalize(x.name).localeCompare(normalize(y.name))
 }
+
+interface Modified {
+  modified: string
+}
+export const byModifiedTime = (x: Modified, y: Modified) =>
+  new Date(y.modified) > new Date(x.modified)
+    ? 1
+    : -1

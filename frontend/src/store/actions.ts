@@ -1597,7 +1597,9 @@ export const setSendingTeamInvites = (teamID: number, val: boolean) => ({
   val,
 })
 
-export const sendingTeamInvites = (teamID: number, emails: string[], level: string) => (dispatch: Dispatch<StateTree>) => {
+export type TeamInviteLevels = 'admin' | 'contributor' | 'viewer'
+
+export const sendingTeamInvites = (teamID: number, emails: string[], level: TeamInviteLevels) => (dispatch: Dispatch<StateTree>) => {
   dispatch(setSendingTeamInvites(teamID, true))
   return http.post(`/api/v1/t/${teamID}/invites/`, { emails, level })
   .then(() => {

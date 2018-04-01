@@ -118,6 +118,7 @@ const initialState = {
   loggingOut: false,
   darkMode: false,
   hasUsablePassword: false,
+  updatingEmail: false,
   socialAccountConnections: {
     github: null as Provider,
     gitlab: null as Provider,

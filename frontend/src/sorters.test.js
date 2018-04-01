@@ -1,6 +1,7 @@
 import {
   byNameAlphabetical,
-  ingredientByNameAlphabetical
+  ingredientByNameAlphabetical,
+  byModifiedTime,
 } from './sorters'
 
 describe('byNameAlphabetical', () => {
@@ -326,6 +327,34 @@ describe('byNameAlphabetical', () => {
 
     expect(
       before.sort(ingredientByNameAlphabetical)
+    ).toEqual(expected)
+  })
+
+  it('sorts by modified time', () => {
+    const before = [
+      {
+        name: 'pie',
+        modified: '2018-03-24T19:59:36.042376Z'
+      },
+      {
+        name: 'bread',
+        modified: '2018-03-20T19:59:36.042376Z'
+      }
+    ]
+
+    const expected = [
+      {
+        name: 'pie',
+        modified: '2018-03-24T19:59:36.042376Z'
+      },
+      {
+        name: 'bread',
+        modified: '2018-03-20T19:59:36.042376Z'
+      }
+    ]
+
+    expect(
+      before.sort(byModifiedTime)
     ).toEqual(expected)
   })
 })

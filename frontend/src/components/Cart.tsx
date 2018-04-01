@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { Helmet } from 'react-helmet'
 
-import Recipe from '../containers/RecipeItem.jsx'
-import Loader from './Loader.jsx'
-import DeadFish from './DeadFish.jsx'
+import Recipe from '../containers/RecipeItem'
+import Loader from './Loader'
+import DeadFish from './DeadFish'
 
 const selectElementText = (el: HTMLElement) => {
   const sel = window.getSelection()

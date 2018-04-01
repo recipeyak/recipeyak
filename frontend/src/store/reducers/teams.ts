@@ -25,8 +25,15 @@ import {
 
 import { Recipe } from './recipes'
 
+import {
+  User
+} from './user'
+
 export interface Member {
   id: number
+  user: User
+  level: 'admin' | 'contributor' | 'viewer'
+  is_active: boolean
 }
 
 export interface Team {
@@ -35,6 +42,7 @@ export interface Team {
   members: {
     [key:number]: Member
   }
+  recipes: number[]
 }
 
 export interface TeamOptional {
@@ -184,11 +192,13 @@ export interface TeamState  {
   [key:number]: Team
   allIds: number[]
   loading: boolean
+  creating: boolean
 }
 
 const initialState: TeamState = {
   allIds: [] as number[],
-  loading: false
+  loading: false,
+  creating: false,
 }
 
 export const teams = (

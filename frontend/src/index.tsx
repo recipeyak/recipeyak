@@ -6,7 +6,7 @@ import { Provider } from 'react-redux'
 
 import { SENTRY_DSN, GIT_SHA } from './settings'
 
-import App from './components/App.jsx'
+import App from './components/App'
 
 import store from './store/store'
 

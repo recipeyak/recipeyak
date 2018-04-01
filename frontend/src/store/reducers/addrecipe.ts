@@ -15,6 +15,10 @@ import {
 } from '../actionTypes'
 
 import {
+  Team
+} from './teams'
+
+import {
   Ingredient,
   Step,
 } from './recipes'
@@ -106,7 +110,8 @@ export const initialState = {
   time: '',
   servings: '',
   ingredients: [] as Ingredient[],
-  steps: [] as Step[]
+  steps: [] as Step[],
+  team: null as Team,
 }
 
 export type AddRecipeState = typeof initialState

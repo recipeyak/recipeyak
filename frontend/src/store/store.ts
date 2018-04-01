@@ -35,7 +35,7 @@ export interface StateTree {
   notification: NotificationState
   passwordChange: PasswordChangeState
   shoppinglist: ShoppingListState
-  addRecipe: AddRecipeState
+  addrecipe: AddRecipeState
   auth: AuthState
   teams: TeamState
   invites: InvitesState

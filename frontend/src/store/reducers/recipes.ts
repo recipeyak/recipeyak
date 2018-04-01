@@ -44,6 +44,7 @@ export interface Recipe {
   steps: Step[]
   ingredients: Ingredient[]
   cart_count: number
+  loading: boolean
 }
 
 export interface RecipesState {
