@@ -1,4 +1,4 @@
-import * from React from 'react'
+import * as React from 'react'
 import { MemoryRouter, Route } from 'react-router'
 import { Provider } from 'react-redux'
 
