@@ -134,14 +134,16 @@ export const user = (
 ) => {
   switch (action.type) {
   case LOG_IN:
-    raven.setUserContext({
-      ...{
-        email: state.email,
-        id: String(state.id),
-      },
-      email: action.user.email,
-      id: String(action.user.id),
-    })
+    if (raven) {
+      raven.setUserContext({
+        ...{
+          email: state.email,
+          id: string(state.id),
+        },
+        email: action.user.email,
+        id: string(action.user.id),
+      })
+    }
     return {
       ...state,
       avatarURL: action.user.avatar_url,
@@ -166,7 +168,9 @@ export const user = (
   case SET_UPDATING_USER_EMAIL:
     return { ...state, updatingEmail: action.val }
   case SET_LOGGING_OUT:
-    raven.setUserContext()
+    if (raven) {
+      raven.setUserContext()
+    }
     return { ...state, loggingOut: action.val }
   case SET_PASSWORD_USABLE:
     return { ...state, hasUsablePassword: action.val }

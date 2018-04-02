@@ -149,14 +149,13 @@ interface UserStatistics {
   loading: boolean
   stats: Stats
 }
-const UserStatistics = ({ loading, stats }: UserStatistics) => {
+const UserStatistics = ({ loading = true, stats }: UserStatistics) => {
   if (loading) {
     return <section className="justify-self-center d-grid align-self-center">
       <Loader/>
     </section>
   }
 
-  // NOTE: this breaksbsometimes
   const emptyStats = stats.most_added_recipe == null
   if (emptyStats) {
     return <div>
