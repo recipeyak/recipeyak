@@ -175,14 +175,16 @@ interface ISettingsProps {
     [key:number]: Provider
   }
   loading: boolean
+  email: string
+  fetchData(): void
 }
 
 interface ISettingsState {
   email: string
   loadingGithub: boolean
-  errorGithub: boolean
+  errorGithub: string
   loadingGitlab: boolean
-  errorGitlab: boolean
+  errorGitlab: string
   errorGeneral: string
   editing: boolean
 }
@@ -198,15 +200,15 @@ class SettingsWithState extends React.Component<ISettingsProps, ISettingsState> 
     editing: false
   }
 
-  componentWillReceiveProps = nextProps => {
+  componentWillReceiveProps = (nextProps: ISettingsProps) => {
     this.setState({ email: nextProps.email })
   }
 
-  componentWillMount = () => {
+  componentWillMount () {
     this.props.fetchData()
   }
 
-  handleInputChange = e => {
+  handleInputChange = (e: any) => {
     this.setState({ [e.target.name]: e.target.value })
   }
 

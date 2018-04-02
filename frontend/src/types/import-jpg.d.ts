@@ -1,4 +1,4 @@
 declare module '*.jpg' {
-  const content: any
+  const content: string
   export default content
 }
