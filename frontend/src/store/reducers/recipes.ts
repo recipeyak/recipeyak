@@ -38,13 +38,21 @@ export interface Step {
   id: number
 }
 
+interface ITag {
+  id: number
+}
+
 export interface Recipe {
   id: number
   name: string
+  author: string
   steps: Step[]
   ingredients: Ingredient[]
   cart_count: number
   loading: boolean
+  tags: {
+    [key:number]: ITag
+  }
 }
 
 export interface RecipesState {

@@ -138,10 +138,10 @@ export const user = (
       raven.setUserContext({
         ...{
           email: state.email,
-          id: string(state.id),
+          id: state.id,
         },
         email: action.user.email,
-        id: string(action.user.id),
+        id: action.user.id,
       })
     }
     return {

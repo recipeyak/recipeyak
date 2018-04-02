@@ -5,13 +5,15 @@ import { Helmet } from 'react-helmet'
 import Recipe from '../containers/RecipeItem'
 import Loader from './Loader'
 
+import { Recipe as IRecipe } from '../store/reducers/recipes'
+
 export const matchesQuery = ({
   name = '',
   author = '',
   ingredients = []
-}, query) => {
+}: IRecipe, query: string) => {
   // https://stackoverflow.com/a/37511463/3720597
-  const removeAccents = x => x.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  const removeAccents = (x: string) => x.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 
   const normalize = (x = '') => removeAccents(x).replace(/\W/g, '').toLowerCase()
 
@@ -22,9 +24,9 @@ export const matchesQuery = ({
   author = normalize(author)
 
   // get the actual query value from search_space:query_here
-  const normalizeQuery = x => {
+  const normalizeQuery = (x: string) => {
     const z = x.split(':')
-    return z.length > 0
+    return Array.isArray(z)
       ? normalize(z[1])
       : normalize(z)
   }
@@ -55,7 +57,11 @@ export const matchesQuery = ({
     author.includes(query)
 }
 
-const Results = ({ recipes, query }) => {
+interface IResults {
+  recipes: IRecipe[]
+  query: string
+}
+const Results = ({ recipes, query }: IResults) => {
   if (recipes.length === 0 && query === '') {
     return (
       <section className="d-flex grid-entire-row justify-center">
@@ -76,47 +82,43 @@ const Results = ({ recipes, query }) => {
   return recipes
 }
 
-class RecipeList extends React.Component<{}, {}> {
+interface IRecipeListState {
+  query: string
+}
+
+interface IRecipeListProps {
+  recipes: IRecipe[]
+  error: boolean
+  fetchData(): void
+  loading: boolean
+}
+
+class RecipeList extends React.Component<IRecipeListProps,IRecipeListState> {
   state = {
     query: ''
   }
 
   static defaultProps = {
-    recipes: []
+    recipes: [] as IRecipe[]
   }
 
-  componentWillMount = () => {
+  componentWillMount () {
     this.props.fetchData()
   }
 
-  handleInputChange = e => {
+  handleInputChange = (e: any) => {
     this.setState({ [e.target.name]: e.target.value })
   }
 
   render () {
-    const {
-      error,
-      recipes,
-      loading
-    } = this.props
-
-    const {
-      handleInputChange
-    } = this
-
-    const {
-      query
-    } = this.state
-
-    if (error) return <p>Error fetching data</p>
+    if (this.props.error) return <p>Error fetching data</p>
 
     const results =
-      recipes
-      .filter(recipe => matchesQuery(recipe, query))
+      this.props.recipes
+      .filter(recipe => matchesQuery(recipe, this.state.query))
       .map(recipe =>
           <Recipe
             {...recipe}
-            className='mb-0'
             key={ recipe.id }
           />
         )
@@ -126,16 +128,16 @@ class RecipeList extends React.Component<{}, {}> {
         <Helmet title='Recipes'/>
         <input
           autoFocus
-          onChange={ handleInputChange }
+          onChange={ this.handleInputChange }
           value={ this.state.query }
           type='search'
           autoCorrect='off'
           placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:'"
           className='my-input grid-entire-row'
           name='query'/>
-        { loading
+        { this.props.loading
             ? <Loader/>
-            : <Results recipes={ results } query={ query } />
+            : <Results recipes={ results } query={ this.state.query } />
         }
       </div>
     )

@@ -236,8 +236,7 @@ class SettingsWithState extends React.Component<ISettingsProps, ISettingsState> 
         <Gitlab/>
 
       </section>
-      )
-    }
+    )
   }
 }
 
