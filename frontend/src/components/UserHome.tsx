@@ -6,7 +6,7 @@ import Loader from './Loader'
 import { recipeURL } from '../urls'
 import Recipe from '../containers/RecipeItem'
 
-import img from './images/yak.jpg'
+const img = require('./images/yak.jpg')
 
 import { Recipe as IRecipe } from '../store/reducers/recipes'
 

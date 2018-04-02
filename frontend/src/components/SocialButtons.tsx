@@ -7,10 +7,10 @@ import {
 
 import { FormErrorHandler } from './Forms'
 
-import githubIcon from './images/github-logo.svg'
-import githubIconWhite from './images/github-logo-white.svg'
-import gitlabIcon from './images/gitlab-logo.svg'
-import gitlabIconWhite from './images/gitlab-logo-white.svg'
+const githubIcon = require('./images/github-logo.svg')
+const githubIconWhite = require('./images/github-logo-white.svg')
+const gitlabIcon = require('./images/gitlab-logo.svg')
+const gitlabIconWhite = require('./images/gitlab-logo-white.svg')
 
 export const GithubImg = () =>
   <img className="mr-2" src={ githubIcon } alt="github icon"/>
