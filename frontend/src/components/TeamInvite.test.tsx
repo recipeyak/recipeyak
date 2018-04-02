@@ -8,6 +8,8 @@ import { emptyStore as store } from '../store/store'
 
 import TeamInvite from './TeamInvite'
 
+import { TeamInviteLevels } from '../store/actions'
+
 configure({ adapter: new Adapter() })
 
 describe('<TeamInvite/>', () => {
@@ -18,10 +20,24 @@ describe('<TeamInvite/>', () => {
         id: 1
       }
     }
+
+    const props = {
+      name: '',
+      id: 0,
+      loadingTeam: false,
+      error404: false,
+      sendingTeamInvites: false,
+      sendInvites: (id: number, emails: string[], level: TeamInviteLevels) => {
+        console.log(id, emails, level)
+      },
+      fetchData: (id: number) => {
+        console.log(id)
+      }
+    }
     mount(
       <Provider store={ store }>
         <MemoryRouter>
-          <TeamInvite match={ match }/>
+          <TeamInvite match={ match } {...props}/>
         </MemoryRouter>
       </Provider>
     )

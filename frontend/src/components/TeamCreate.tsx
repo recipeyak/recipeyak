@@ -43,7 +43,7 @@ class TeamCreate extends React.Component<TeamCreateProps, TeamCreateState> {
   }
 
   handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    this.setState({ [e.target.name]: e.target.value as TeamInviteLevels } as TeamCreateState)
+    this.setState({ [e.target.name as any]: e.target.value as TeamInviteLevels })
   }
 
   handleSubmit = async (e: FormEvent<HTMLFormElement>) => {

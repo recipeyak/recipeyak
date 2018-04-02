@@ -108,7 +108,6 @@ const TeamRecipes = ({ loading, recipes }: ITeamRecipes) =>
             { recipes.map(recipe =>
                 <Recipe
                   {...recipe}
-                  className='mb-0'
                   key={ recipe.id }
                 />
               )

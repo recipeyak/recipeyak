@@ -11,6 +11,10 @@ import {
 } from './SocialButtons'
 
 import {
+  Provider
+} from '../store/reducers/socialAccounts.ts'
+
+import {
   GITHUB_OAUTH_URL,
   GITLAB_OAUTH_URL,
 } from '../settings'
@@ -162,7 +166,28 @@ const Settings = ({
   </section>
 }
 
-class SettingsWithState extends React.Component<{},{}> {
+interface ISettingsProps {
+  disconnectAccount(provider: string, id: number): void
+  updateEmail: boolean
+  avatarURL: boolean
+  updatingEmail: boolean
+  socialAccountConnections: {
+    [key:number]: Provider
+  }
+  loading: boolean
+}
+
+interface ISettingsState {
+  email: string
+  loadingGithub: boolean
+  errorGithub: boolean
+  loadingGitlab: boolean
+  errorGitlab: boolean
+  errorGeneral: string
+  editing: boolean
+}
+
+class SettingsWithState extends React.Component<ISettingsProps, ISettingsState> {
   state = {
     email: this.props.email,
     loadingGithub: false,

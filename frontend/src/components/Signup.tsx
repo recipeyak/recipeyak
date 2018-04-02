@@ -7,22 +7,39 @@ import { FormErrorHandler } from './Forms'
 import { ButtonPrimary } from './Buttons'
 import AuthContainer from './AuthContainer'
 
-class Signup extends React.Component {
+import {
+  ErrorSignup
+} from '../store/reducers/error'
+
+interface ISignupState {
+  email: string
+  password1: string
+  password2: string
+}
+
+interface ISettingsProps {
+  loading: boolean
+  error: ErrorSignup
+  signup(email: string, password1: string, password2: string): void
+  clearErrors(): void
+}
+
+class Signup extends React.Component<ISettingsProps,ISignupState> {
   state = {
     email: '',
     password1: '',
     password2: ''
   }
 
-  componentWillMount = () => {
+  componentWillMount () {
     this.props.clearErrors()
   }
 
-  handleInputChange (e) {
+  handleInputChange (e: any) {
     this.setState({ [e.target.name]: e.target.value })
   }
 
-  handleSignup (e) {
+  handleSignup (e: any) {
     e.preventDefault()
     this.props.signup(this.state.email, this.state.password1, this.state.password2)
   }

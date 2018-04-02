@@ -25,7 +25,7 @@ import {
   TeamInviteLevels,
 } from '../store/actions'
 
-interface TeamInviteProps {
+interface ITeamInviteProps {
   match: {
     params: {
       id: number
@@ -33,7 +33,7 @@ interface TeamInviteProps {
   }
 }
 
-const mapStateToProps = (state: StateTree, props: TeamInviteProps) => {
+const mapStateToProps = (state: StateTree, props: ITeamInviteProps) => {
   const id = props.match.params.id
   const team = state.teams[id]
     ? state.teams[id]
@@ -99,7 +99,8 @@ class TeamInvite extends React.Component<TeamInviteProps,TeamInviteState> {
     this.props.fetchData(this.props.id)
   }
 
-  handleInputChange = (e: ChangeEvent<HTMLInputElement>) => this.setState({ [e.target.name]: e.target.value })
+  handleInputChange = (e: ChangeEvent<HTMLInputElement>) =>
+    this.setState({ [e.target.name as any]: e.target.value })
 
   render () {
     const { name, id, loadingTeam } = this.props
@@ -174,7 +175,7 @@ class TeamInvite extends React.Component<TeamInviteProps,TeamInviteState> {
   }
 }
 
-const ConnectedTeamInvite = connect<{},{},{}>(
+const ConnectedTeamInvite = connect<{},{},ITeamInviteProps>(
   mapStateToProps,
   mapDispatchToProps
 )(TeamInvite)
