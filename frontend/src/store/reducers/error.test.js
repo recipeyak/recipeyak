@@ -1,14 +1,12 @@
-import error from './error.js'
+import error from './error'
 import {
   setErrorLogin,
   setErrorSocialLogin,
   setErrorSignup,
   setErrorReset,
-  setErrorResetConfirmation,
   setErrorAddRecipe,
   setErrorRecipes,
-  setErrorCart
-} from '../actions.js'
+} from '../actions'
 
 describe('error', () => {
   it('sets login error', () => {
@@ -101,24 +99,6 @@ describe('error', () => {
       ).toEqual(notErrorState)
   })
 
-  it('sets cart error', () => {
-    const notErrorState = {
-      cart: false
-    }
-
-    const errorState = {
-      cart: true
-    }
-
-    expect(
-      error(notErrorState, setErrorCart(true))
-      ).toEqual(errorState)
-
-    expect(
-      error(errorState, setErrorCart(false))
-      ).toEqual(notErrorState)
-  })
-
   it('sets reset error', () => {
     const notErrorState = {
       reset: false
@@ -134,24 +114,6 @@ describe('error', () => {
 
     expect(
       error(errorState, setErrorReset(false))
-      ).toEqual(notErrorState)
-  })
-
-  it('sets resetConfirmation error', () => {
-    const notErrorState = {
-      resetConfirmation: false
-    }
-
-    const errorState = {
-      resetConfirmation: true
-    }
-
-    expect(
-      error(notErrorState, setErrorResetConfirmation(true))
-      ).toEqual(errorState)
-
-    expect(
-      error(errorState, setErrorResetConfirmation(false))
       ).toEqual(notErrorState)
   })
 })

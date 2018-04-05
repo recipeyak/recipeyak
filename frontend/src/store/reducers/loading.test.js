@@ -1,4 +1,4 @@
-import loading from './loading.js'
+import loading from './loading'
 import {
   setLoadingLogin,
   setLoadingSignup,
@@ -7,7 +7,7 @@ import {
   setLoadingRecipes,
   setLoadingAddRecipe,
   setLoadingCart
-} from '../actions.js'
+} from '../actions'
 
 describe('loading', () => {
   it('sets loading login', () => {

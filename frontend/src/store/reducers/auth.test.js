@@ -2,7 +2,7 @@ import auth from './auth'
 
 import {
   setFromUrl
-} from '../actions.js'
+} from '../actions'
 
 describe('auth', () => {
   it('sets redirect url', () => {
