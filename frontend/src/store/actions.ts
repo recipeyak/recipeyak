@@ -209,11 +209,19 @@ http.interceptors.request.use(
 )
 
 const invalidToken = (res: AxiosResponse) =>
-  res != null && res.data.detail === 'Invalid token.' && res.status === 401
+  res != null &&
+  res.data.detail === 'Invalid token.' &&
+  res.status === 401
 
-const badRequest = (err: AxiosError) => err.response && err.response.status === 400
+const badRequest = (err: AxiosError) =>
+  err != null &&
+  err.response != null &&
+  err.response.status === 400
 
-const is404 = (err: AxiosError) => err.response.status === 404
+const is404 = (err: AxiosError) =>
+  err != null &&
+  err.response != null &&
+  err.response.status === 404
 
 interface GetState {
   (): StateTree
@@ -248,7 +256,7 @@ export const clearNotification = () => ({
 
 type Timer = NodeJS.Timer
 // https://stackoverflow.com/a/38574266/3555105
-let notificationTimeout: Timer = null
+let notificationTimeout: Timer
 export const showNotificationWithTimeout = ({
   message,
   level,
@@ -348,6 +356,9 @@ export const setFromUrl = (val: string) => ({
 })
 
 const emailExists = (err: AxiosError) =>
+  err != null &&
+  err.response != null &&
+  err.response.data != null &&
   err.response.data.email != null &&
   err.response.data.email[0].includes('email already exists')
 

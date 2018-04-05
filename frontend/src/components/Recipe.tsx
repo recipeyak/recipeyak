@@ -63,7 +63,7 @@ class Owner extends React.Component {
     if (id == null || type == null) { throw new TypeError('need id/type to move to') }
     this.props.copyRecipeTo(this.props.recipeId, id, type)
       .then(() => this.setState({ show: false, values: [] }))
-      .catch(err => this.props.showNotificationWithTimeout({ message: `Problem copying recipe: ${err}`, level: 'danger', sticky: true }))
+      .catch((err: any) => this.props.showNotificationWithTimeout({ message: `Problem copying recipe: ${err}`, level: 'danger', sticky: true }))
   }
 
   move () {
@@ -71,7 +71,7 @@ class Owner extends React.Component {
     if (id == null || type == null) { throw new TypeError('need id/type to copy to') }
     this.props.moveRecipeTo(this.props.recipeId, id, type)
       .then(() => this.setState({ show: false, values: [] }))
-      .catch(err => this.props.showNotificationWithTimeout({ message: `Problem moving recipe: ${err}`, level: 'danger', sticky: true }))
+      .catch((err: any) => this.props.showNotificationWithTimeout({ message: `Problem moving recipe: ${err}`, level: 'danger', sticky: true }))
   }
 
   disableMove () {

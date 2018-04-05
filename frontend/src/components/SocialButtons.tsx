@@ -17,15 +17,17 @@ export const GithubImg = () =>
 export const GitlabImg = () =>
   <img className="mr-2" src={ gitlabIcon } alt="gitlab icon"/>
 
-export const Github = ({ disable = false }) => GITHUB_OAUTH_URL &&
+export const Github = ({ disable = false }) => GITHUB_OAUTH_URL ?
   <a href={ !disable && GITHUB_OAUTH_URL } className="github-button">
     <img className="mr-2" src={ githubIconWhite } alt="github icon"/>
   </a>
+  : null
 
-export const Gitlab = () => GITLAB_OAUTH_URL &&
+export const Gitlab = () => GITLAB_OAUTH_URL ?
   <a href={ GITLAB_OAUTH_URL } className="gitlab-button">
     <img className="mr-2" src={ gitlabIconWhite } alt="gitlab icon"/>
   </a>
+  : null
 
 const enableSocialButtons = GITHUB_OAUTH_URL || GITLAB_OAUTH_URL
 
@@ -35,17 +37,18 @@ interface ISocialButtons {
   signup?: boolean
 }
 const SocialButtons = ({ nonFieldErrors, emailError, signup = true }: ISocialButtons) =>
-  enableSocialButtons &&
-  <div>
-    { signup && <div className="d-flex align-items-center mb-2 mt-1">
-      <span className="or-bar"></span> or <span className="or-bar"></span>
-    </div> }
-    <div className="d-grid grid-template-column-2-1fr grid-gap-3">
-      <Github/>
-      <Gitlab/>
-    </div>
-    <FormErrorHandler error={nonFieldErrors}/>
-    <FormErrorHandler error={emailError}/>
-  </div>
+  enableSocialButtons
+    ? <div>
+        { signup && <div className="d-flex align-items-center mb-2 mt-1">
+          <span className="or-bar"></span> or <span className="or-bar"></span>
+        </div> }
+        <div className="d-grid grid-template-column-2-1fr grid-gap-3">
+          <Github/>
+          <Gitlab/>
+        </div>
+        <FormErrorHandler error={nonFieldErrors}/>
+        <FormErrorHandler error={emailError}/>
+      </div>
+    : null
 
 export default SocialButtons

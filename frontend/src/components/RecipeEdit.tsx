@@ -9,29 +9,31 @@ import NoMatch from './NoMatch'
 import Loader from './Loader'
 import { ButtonPrimary, ButtonLink } from './Buttons'
 
+interface IRecipeEditFetchingProps {
+  id: number
+  ingredients: Ingredient[]
+  steps: Step[]
+  name: string
+  author: string
+  source: string
+  servings: string
+  time: string
+  addingStepToRecipe: boolean
+  handleInputChange(a string): void
+  removeIngredient(a string): void
+  addIngredient(a string): void
+  addStep(a string): void
+  deleteRecipe(a string): void
+  deleting: boolean
+  loading: boolean
+  update(a string): void
+  addingIngredient: boolean
+  error404: boolean
+  cancelEdit(a number): void
+  updating: boolean
+}
 
-class RecipeEditFetching extends React.Component {
-  state = { }
-
-  handleInputChange = e =>
-    this.setState({ [e.target.name]: e.target.value })
-
-  removeIngredient = ingredientID =>
-    this.props.deleteIngredient(this.props.id, ingredientID)
-
-  deleteStep = stepID =>
-    this.props.deleteStep(this.props.id, stepID)
-
-  updateIngredient = (ingredientID, content) =>
-    this.props.updateIngredient(this.props.id, ingredientID, content)
-
-  updateStep = (stepID, text) =>
-    this.props.updateStep(this.props.id, stepID, text)
-
-  update = async () => {
-    await this.props.updateRecipe(this.props.id, this.state)
-    this.props.cancelEdit()
-  }
+class RecipeEditFetching extends React.Component<IRecipeEditFetchingProps,{}> {
 
   render () {
     const {

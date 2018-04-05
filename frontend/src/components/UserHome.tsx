@@ -46,11 +46,12 @@ const TotalRecipeCount = ({ count = 0 }) =>
   </p>
 
 const RecipesAddedThisWeek = ({ count = 0 }) =>
-  count > 0 &&
-  <p className="stat mb-1">
-    <b>{ count } recipe{ count === 1 ? ' ' : 's '}</b>
-    {count === 1 ? 'has' : 'have'} been added in the <b>last week</b>.
-  </p>
+  count > 0
+    ? <p className="stat mb-1">
+        <b>{ count } recipe{ count === 1 ? ' ' : 's '}</b>
+        {count === 1 ? 'has' : 'have'} been added in the <b>last week</b>.
+      </p>
+    : null
 
 const toInt = (x: number) => x > 0 ? x : 0
 
@@ -58,11 +59,12 @@ const LifetimeRecipeEdits = ({
   edits = 0,
   dateJoined = ''
 }) =>
-  dateJoined !== '' &&
-    <p className="stat mb-1">
-      Since <b>{ dateJoined }</b>, you have edited your recipes a total of <b>{ toInt(edits) } times</b>.
-      { edits < 1 ? <span>Try the <u>Edit</u> button.</span> : null }
-    </p>
+  dateJoined !== ''
+    ? <p className="stat mb-1">
+        Since <b>{ dateJoined }</b>, you have edited your recipes a total of <b>{ toInt(edits) } times</b>.
+        { edits < 1 ? <span>Try the <u>Edit</u> button.</span> : null }
+      </p>
+    : null
 
 const recipeTitle = ({ name = '', author = '' }) => {
   if (author == null || author === '') {

@@ -63,7 +63,7 @@ const recipeApp = combineReducers({
 export const rootReducer = (state: StateTree, action: any) => {
   if (action.type === LOG_OUT) {
     return {
-      ...recipeApp(undefined, action),
+      ...recipeApp(undefined as any, action),
       // We need to save this auth state (fromUrl) through logout
       // so we can redirect users to where they were attempting to
       // visit before being asked for authentication

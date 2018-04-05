@@ -105,10 +105,31 @@ type UserActions = LogIn
   | ToggleDarkMode
   | SetUserId
 
+
+export interface UserState {
+  id: number,
+  loggedIn: boolean
+  token: string
+  email: string
+  avatarURL: string
+  loading: boolean
+  error: boolean
+  stats: {}
+  stats_loading: boolean
+  loggingOut: boolean
+  darkMode: boolean
+  hasUsablePassword: boolean
+  updatingEmail: boolean
+  socialAccountConnections: {
+    github: Provider
+    gitlab: Provider
+  }
+}
+
 const initialState = {
-  id: null as number,
+  id: -1,
   loggedIn: false,
-  token: null as string,
+  token: '',
   email: '',
   avatarURL: '',
   loading: false,
@@ -120,13 +141,9 @@ const initialState = {
   hasUsablePassword: false,
   updatingEmail: false,
   socialAccountConnections: {
-    github: null as Provider,
-    gitlab: null as Provider,
   }
 
 }
-
-export type UserState = typeof initialState
 
 export const user = (
   state = initialState,
