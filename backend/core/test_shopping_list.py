@@ -127,26 +127,23 @@ def test_combining_ingredients_with_out_units(user):
         name='Another recipe', author=author, owner=user)
 
     Ingredient.objects.create(
-        quantity='1',
-        name='garlic clove',
-        recipe=recipe)
-
-    Ingredient.objects.create(
         quantity='8',
         name='garlic cloves',
         recipe=recipe2)
+
+    Ingredient.objects.create(
+        quantity='1',
+        name='garlic clove',
+        recipe=recipe)
 
     ingredients = list(Ingredient.objects.all())
 
     actual = sorted(combine_ingredients(ingredients), key=lambda x: x.get('name'))
 
-    expected = sorted(
-        [
-            {
-                'name': 'garlic cloves',
-                'unit': '9',
-            }
-        ], key=lambda x: x.get('name'))
+    expected = [{
+        'name': 'garlic cloves',
+        'unit': '9',
+    }]
 
     assert actual == expected
 

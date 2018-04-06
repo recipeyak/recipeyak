@@ -3,7 +3,7 @@ from typing import List, Dict
 from pint import UnitRegistry, UndefinedUnitError
 from pint.quantity import _Quantity as Quantity
 
-from .inflect import singularize
+from .inflect import singularize, pluralize
 
 ureg = UnitRegistry()
 
@@ -15,13 +15,13 @@ def not_real_quantity(quantity) -> bool:
 
 def simplify_units(units):
     """
-    tablespoon, sprinkle, some, pinch => tablespoon, sprinkle
+    tablespoon, sprinkle, some, pinch => tablespoon, some
     """
     combineable_ingredients = ['sprinkle', 'some', 'pinch']
     simplified = []
     some = False
     for u in units:
-        if u in combineable_ingredients:
+        if isinstance(u, str) and any(i in u for i in combineable_ingredients):
             some = True
         else:
             simplified.append(str(u))
@@ -34,10 +34,43 @@ def max_quantity(quantity: str) -> str:
     """
     take the '4-5' medium button mushrooms and find the max
     """
-    options = quantity.split('-')
-    if len(options) == 1:
+    return quantity.split('-')[-1]
+
+
+def ingredient_quantity(ingredient):
+    try:
+        quantity = ureg.parse_expression(max_quantity(ingredient.quantity))
+        try:
+            if str(quantity.units) in ['picoinch']:
+                quantity = 'pinch'
+        except AttributeError:
+            pass
         return quantity
-    return options[-1]
+    except UndefinedUnitError:
+        return ingredient.quantity
+
+
+def quantity_baseunit(quantity):
+    if not_real_quantity(quantity):
+        return 'some'
+    try:
+        return quantity.to_base_units().units
+    except AttributeError:
+        return ''
+
+
+def normalize_name(ingredient):
+    return ingredient.name.replace('-', ' ')
+
+
+def should_pluralize(s) -> bool:
+    for u in s:
+        try:
+            if u > 1:
+                return True
+        except (ValueError, TypeError):
+            pass
+    return False
 
 
 def combine_ingredients(ingredients: List) -> List:
@@ -46,62 +79,29 @@ def combine_ingredients(ingredients: List) -> List:
 
     for ingredient in ingredients:
 
-        try:
-            quantity = ureg.parse_expression(max_quantity(ingredient.quantity))
-            try:
-                if str(quantity.units) in ['picoinch']:
-                    quantity = 'pinch'
-            except AttributeError:
-                pass
-        except UndefinedUnitError:
-            quantity = ingredient.quantity
+        quantity = ingredient_quantity(ingredient)
+        base_unit = quantity_baseunit(quantity)
 
-        name = ingredient.name.replace('-', ' ')
-
-        try:
-            base_unit = quantity.to_base_units().units
-        except AttributeError:
-            base_unit = ''
-
-        if not_real_quantity(quantity):
-            base_unit = 'some'
-
+        name = normalize_name(ingredient)
         singular_name = singularize(name)
 
-        if combined.get(name):
-            # add to existing quantity if there is a quantity with the same
-            # base unit
-            # import ipdb; ipdb.set_trace()
-            if combined.get(name).get(base_unit):
-                if base_unit != 'some':
-                    combined[name][base_unit] += quantity
+        if combined.get(singular_name):
+            if combined[singular_name].get(base_unit):
+                combined[singular_name][base_unit] += quantity
             else:
-                combined[name][base_unit] = quantity
-        elif combined.get(singular_name):
-            data = combined.pop(singular_name, {})
-            combined[name] = data
-
-            try:
-                if base_unit != 'some':
-                    combined[name][base_unit] += quantity
-            except (AttributeError, KeyError):
-                combined[name][base_unit] = quantity
-
+                combined[singular_name][base_unit] = quantity
         else:
-            combined[name] = {}
-            combined[name][base_unit] = quantity
+            combined[singular_name] = {
+                base_unit: quantity
+            }
 
     simple_ingredients = []
     for name, v in combined.items():
-        combined_units = ''
-        for unit in simplify_units(v.values()):
-            if combined_units == '':
-                combined_units += str(unit)
-            else:
-                combined_units += ' + ' + str(unit)
+        combined_units = " + ".join(simplify_units(v.values()))
+        plural = should_pluralize(v.values())
         simple_ingredients.append({
             'unit': combined_units,
-            'name': name
+            'name': name if not plural else pluralize(name)
         })
 
     return simple_ingredients
