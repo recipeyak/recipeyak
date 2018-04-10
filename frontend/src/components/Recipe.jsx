@@ -306,7 +306,6 @@ class Recipe extends React.Component {
     this.state = {
       editing: false,
       count: this.props.cart_count,
-      loading: true,
     }
   }
 
@@ -317,14 +316,11 @@ class Recipe extends React.Component {
   handleInputChange = e =>
     this.setState({ [e.target.name]: inputAbs(e.target.value) })
 
-  componentWillMount = async () => {
-    await this.props.fetchRecipe(this.props.match.params.id)
-    this.setState({ loading: false })
+  componentWillMount = () => {
+    this.props.fetchRecipe(this.props.match.params.id)
   }
 
   render () {
-    if (this.state.loading) return <p>Loading...</p>
-
     if (this.state.editing) {
       return (
         <RecipeEdit
