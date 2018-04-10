@@ -51,8 +51,8 @@ from .utils import combine_ingredients
 logger = logging.getLogger(__name__)
 
 
-def user_active_team_ids(request):
-    return request.user.membership_set.filter(is_active=True).values_list('team')
+def user_active_team_ids(user):
+    return user.membership_set.filter(is_active=True).values_list('team')
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -72,7 +72,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         # get all recipes user has access to
         recipes = Recipe.objects \
             .filter(Q(owner_user=self.request.user) |
-                    Q(owner_team__in=user_active_team_ids(self.request))) \
+                    Q(owner_team__in=user_active_team_ids(self.request.user))) \
             .prefetch_related('cartitem_set')
 
         # filtering for homepage
@@ -171,10 +171,7 @@ class StepViewSet(viewsets.ModelViewSet):
 class ShoppingListView(views.APIView):
 
     def get(self, request) -> Response:
-        cart_items = (CartItem.objects
-                      .filter(Q(recipe__owner_user=request.user) |
-                              Q(recipe__owner_team__in=user_active_team_ids(self.request)))
-                      .filter(count__gt=0))
+        cart_items = request.user.cart_items.filter(count__gt=0)
 
         ingredients: List[CartItem] = []
         for cart_item in cart_items:
@@ -480,3 +477,14 @@ class TeamRecipesViewSet(
 
         serializer.save(team=team)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class ReportBadMerge(APIView):
+
+    def post(self, request, format=None):
+        user = request.user
+        cart_items = user.cart_items.filter(count__gt=0)
+
+        logger.warn(f'bad combine for user: {user} with cartitems: {cart_items}')
+
+        return Response(status=status.HTTP_201_CREATED)

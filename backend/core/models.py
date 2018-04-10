@@ -94,6 +94,10 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         # https://secure.gravatar.com/site/implement/images/
         return f'//www.gravatar.com/avatar/{md5_email}?d=identicon&r=g'
 
+    @property
+    def cart_items(self):
+        return CartItem.objects.filter(user=self)
+
     def __str__(self):
         return self.email
 
