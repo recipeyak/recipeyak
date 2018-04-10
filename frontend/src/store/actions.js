@@ -1745,3 +1745,21 @@ export const decliningInvite = (id) => dispatch => {
     throw err
   })
 }
+
+export const reportBadMerge = () => dispatch => {
+  return http.post('/api/v1/report-bad-merge', {})
+  .then(() => {
+    dispatch(showNotificationWithTimeout({
+      message: 'reported bad merge',
+      level: 'success',
+      delay: 3 * second
+    }))
+  })
+  .catch(() => {
+    dispatch(showNotificationWithTimeout({
+      message: 'error reporting bad merge',
+      level: 'danger',
+      delay: 3 * second
+    }))
+  })
+}

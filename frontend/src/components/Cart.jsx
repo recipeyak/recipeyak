@@ -35,7 +35,8 @@ class Cart extends React.Component {
       clearCart,
       clearingCart,
       error,
-      updateCart
+      updateCart,
+      reportBadMerge,
     } = this.props
 
     if (error) {
@@ -87,7 +88,7 @@ class Cart extends React.Component {
             className={ `my-button control ${clearingCart ? 'is-loading' : ''}` }>Clear Cart</button>
         </div>
         <div>
-          <div className={`box p-rel min-height-75px ${loadingShoppingList ? 'has-text-grey-light' : ''}`} >
+          <div className={`box p-rel min-height-75px mb-0 ${loadingShoppingList ? 'has-text-grey-light' : ''}`} >
             <button
               onClick={ () => selectElementText(document.querySelector('#shoppinglist')) }
               className="my-button is-small r-5 p-abs">
@@ -101,6 +102,11 @@ class Cart extends React.Component {
               )
             }
           </section>
+          </div>
+          <div className="d-flex justify-content-end">
+            <a onClick={ reportBadMerge } className="text-muted italic fs-3">
+              report bad merge
+            </a>
           </div>
         </div>
       </div>

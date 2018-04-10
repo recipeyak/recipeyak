@@ -11,7 +11,8 @@ import {
   fetchRecipeList,
   fetchShoppingList,
   clearCart,
-  updatingCart
+  updatingCart,
+  reportBadMerge,
 } from '../store/actions.js'
 
 import Cart from '../components/Cart.jsx'
@@ -48,7 +49,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(fetchRecipeList())
       dispatch(fetchShoppingList())
     },
-    clearCart: () => dispatch(clearCart())
+    clearCart: () => dispatch(clearCart()),
+    reportBadMerge: () => dispatch(reportBadMerge())
   }
 }
 

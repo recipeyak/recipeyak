@@ -405,3 +405,13 @@ def test_combining_plural_and_singular_leaves(user, client, empty_recipe):
     combined_ingredient = res.json()[0]
     assert combined_ingredient.get('unit') == '5'
     assert combined_ingredient.get('name') == 'bay leaves'
+
+
+def test_report_bad_merge(user, client, recipe):
+    recipe.set_cart_quantity(user, count=1)
+
+    url = reverse('report-bad-merge')
+    assert client.post(url).status_code == status.HTTP_401_UNAUTHORIZED
+
+    client.force_authenticate(user)
+    assert client.post(url).status_code == status.HTTP_201_CREATED

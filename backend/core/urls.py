@@ -18,6 +18,7 @@ from .views import (
     TeamInviteViewSet,
     TeamRecipesViewSet,
     UserInvitesViewSet,
+    ReportBadMerge,
 )
 
 router = DefaultRouter()
@@ -47,4 +48,5 @@ urlpatterns = [
     url(r'clear_cart', ClearCart.as_view(), name='clear-cart'),
     url(r'shoppinglist', ShoppingListView.as_view(), name='shopping-list'),
     url(r'user_stats', UserStats.as_view(), name='user-stats'),
+    url(r'report-bad-merge', ReportBadMerge.as_view(), name='report-bad-merge'),
 ]
