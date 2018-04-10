@@ -7,12 +7,11 @@ module.exports = {
         jsx: true
     }
   },
-  // https://github.com/feross/standard/blob/master/RULES.md#javascript-standard-style
-  // required to lint *.vue files
   plugins: [
     'html',
     'react',
   ],
+  // https://github.com/standard/eslint-config-standard/blob/c4902d20cab15971932f591d0d8cf7915ade307f/eslintrc.json
   extends: [
       'react-app',
       'standard',
@@ -70,5 +69,6 @@ module.exports = {
     'space-in-parens': ['warn', 'never'],
     'no-useless-return': 'warn',
     'no-unreachable': 'warn',
+    'space-before-blocks': ['warn', 'always'],
   }
 }

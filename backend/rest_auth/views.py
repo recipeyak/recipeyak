@@ -12,6 +12,7 @@ from django.views.decorators.debug import sensitive_post_parameters
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import GenericAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
@@ -102,7 +103,6 @@ class LogoutView(APIView):
         return Response({"detail": _("Successfully logged out.")},
                         status=status.HTTP_200_OK)
 
-
 class UserDetailsView(RetrieveUpdateAPIView):
     """
     Reads and updates UserModel fields
@@ -127,6 +127,12 @@ class UserDetailsView(RetrieveUpdateAPIView):
         https://github.com/Tivix/django-rest-auth/issues/275
         """
         return get_user_model().objects.none()
+
+    def delete(self, request, *args, **kwargs):
+        if request.user.has_team():
+            raise PermissionDenied(detail='you must leave all your teams to delete your account')
+        request.user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class PasswordResetView(GenericAPIView):
