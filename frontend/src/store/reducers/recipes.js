@@ -26,7 +26,8 @@ import {
   SET_RECIPE_UPDATING,
   SET_RECIPE,
   SET_RECIPE_CART_AMOUNT,
-  CLEAR_RECIPE_CART_AMOUNTS
+  CLEAR_RECIPE_CART_AMOUNTS,
+  UPDATE_RECIPE_OWNER,
 } from '../actionTypes'
 
 export const recipes = (state = {}, action) => {
@@ -217,6 +218,14 @@ export const recipes = (state = {}, action) => {
           }
           return result
         }, {})
+  case UPDATE_RECIPE_OWNER:
+    return {
+      ...state,
+      [action.id]: {
+        ...state[action.id],
+        owner: action.owner
+      }
+    }
   default:
     return state
   }

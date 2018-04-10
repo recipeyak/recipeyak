@@ -95,7 +95,6 @@ import {
   SET_LOADING_TEAMS,
   SET_TEAM,
   SET_CREATING_TEAM,
-  SET_MOVING_TEAM,
   SET_COPYING_TEAM,
   SET_INVITES,
   SET_LOADING_INVITES,
@@ -106,6 +105,7 @@ import {
   SET_ACCEPTED_INVITE,
   DELETE_TEAM,
   UPDATE_TEAM,
+  UPDATE_RECIPE_OWNER,
 } from './actionTypes'
 
 import {
@@ -1613,11 +1613,6 @@ export const creatingTeam = (name, emails, level) => dispatch => {
   })
 }
 
-export const setMovingTeam = val => ({
-  type: SET_MOVING_TEAM,
-  val,
-})
-
 export const setCopyingTeam = val => ({
   type: SET_COPYING_TEAM,
   val,
@@ -1647,16 +1642,16 @@ export const updatingTeam = (teamId, teamKVs) => dispatch => {
   })
 }
 
+export const updateRecipeOwner = (id, owner) => ({
+  type: UPDATE_RECIPE_OWNER,
+  id,
+  owner,
+})
+
 export const moveRecipeTo = (recipeId, ownerId, type) => dispatch => {
-  dispatch(setMovingTeam(true))
   return http.post(`/api/v1/recipes/${recipeId}/move/`, { id: ownerId, type })
   .then(res => {
-    dispatch(addRecipe(res.data))
-    dispatch(setMovingTeam(false))
-  })
-  .catch(err => {
-    dispatch(setMovingTeam(false))
-    throw err
+    dispatch(updateRecipeOwner(res.data.id, res.data.owner))
   })
 }
 
