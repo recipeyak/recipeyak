@@ -7,6 +7,8 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import CIEmailField
+from django.db.models.query import QuerySet
+from django.utils import timezone
 
 from allauth.socialaccount.models import EmailAddress
 
@@ -111,7 +113,46 @@ class CommonInfo(models.Model):
         abstract = True
 
 
-class Recipe(CommonInfo):
+class SoftDeletionQuerySet(QuerySet):
+    def delete(self):
+        return super().update(deleted_at=timezone.now())
+
+    def hard_delete(self):
+        return super().delete()
+
+
+class SoftDeletionManager(models.Manager):
+    def __init__(self, *args, **kwargs):
+        self.show_deleted = kwargs.pop('show_deleted', False)
+        super().__init__(*args, **kwargs)
+
+    def get_queryset(self):
+        if self.show_deleted:
+            return SoftDeletionQuerySet(self.model)
+        return SoftDeletionQuerySet(self.model).filter(deleted_at=None)
+
+    def hard_delete(self):
+        return self.get_queryset().hard_delete()
+
+
+class SoftDeletionModel(models.Model):
+    deleted_at = models.DateTimeField(blank=True, null=True)
+
+    objects = SoftDeletionManager()
+    all_objects = SoftDeletionManager(show_deleted=True)
+
+    class Meta:
+        abstract = True
+
+    def delete(self):
+        self.deleted_at = timezone.now()
+        self.save()
+
+    def hard_delete(self):
+        super().delete()
+
+
+class Recipe(CommonInfo, SoftDeletionModel):
     name = models.CharField(max_length=255)
     author = models.CharField(max_length=255, blank=True, null=True)
     source = models.CharField(max_length=255, blank=True, null=True)
