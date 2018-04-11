@@ -1,5 +1,5 @@
 import pytest
-from .models import CartItem
+from .models import CartItem, Recipe
 
 pytestmark = pytest.mark.django_db
 
@@ -125,3 +125,11 @@ def test_recipe_set_cart_quantity(recipe, user):
     count = 5
     recipe.set_cart_quantity(user, count)
     assert CartItem.objects.get(user=user, recipe=recipe).count == count
+
+
+def test_recipe_soft_delete(recipe, recipe2):
+    recipe.delete()
+    assert recipe.deleted_at is not None
+
+    assert len(Recipe.objects.all()) == 1
+    assert len(Recipe.all_objects.all()) == 2

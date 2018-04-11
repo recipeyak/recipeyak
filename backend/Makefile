@@ -17,7 +17,13 @@ test:
 	DEBUG=1 ptw --beforerun 'mypy  --config-file tox.ini . && flake8' -- --cov-config .coveragerc --cov --cov-report term:skip-covered -s
 
 ci:
-	pipenv run flake8 --format junit-xml --output-file ~/backend/reports/flake8.xml
+	pipenv run flake8
 	# https://github.com/python/mypy/issues/4233
 	pipenv run mypy --config-file tox.ini --junit-xml ~/backend/reports/mypy.xml .
 	pipenv run pytest --cov-config .coveragerc --cov --junit-xml ~/backend/reports/pytest.xml
+
+ci-stdout:
+	pipenv run flake8
+	# https://github.com/python/mypy/issues/4233
+	pipenv run mypy --config-file tox.ini .
+	pipenv run pytest --cov-config .coveragerc --cov
