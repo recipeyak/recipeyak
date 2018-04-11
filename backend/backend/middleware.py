@@ -44,6 +44,7 @@ class ServerTimingMiddleware:
 
         response['Server-Timing'] = (
             f'db;desc="Database";dur={database_time},'
+            f'non-db;desc="View Time";dur={elapsed_time - database_time},'
             f'total;desc="Total Response Time";dur={elapsed_time},'
         )
         return response
