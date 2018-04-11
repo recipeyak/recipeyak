@@ -1746,6 +1746,29 @@ export const decliningInvite = (id) => dispatch => {
   })
 }
 
+export const deleteUserAccount = () => dispatch => {
+  return http.delete('/api/v1/rest-auth/user/')
+  .then(() => {
+    dispatch(logout())
+    dispatch(push('/login'))
+    dispatch(showNotificationWithTimeout({ message: 'Account deleted' }))
+  })
+  .catch(error => {
+    if (error.response.status === 403 && error.response.data.detail) {
+      dispatch(showNotificationWithTimeout({
+        message: error.response.data.detail,
+        level: 'danger',
+      }))
+    } else {
+      dispatch(showNotificationWithTimeout({
+        message: 'failed to delete account',
+        level: 'danger',
+      }))
+      throw error
+    }
+  })
+}
+
 export const reportBadMerge = () => dispatch => {
   return http.post('/api/v1/report-bad-merge', {})
   .then(() => {

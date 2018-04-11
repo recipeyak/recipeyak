@@ -83,6 +83,9 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         """
         return self.membership_set.filter(team=team).exclude(invite=None).exists()  # type: ignore
 
+    def has_team(self):
+        return self.membership_set.filter(invite=None).count() > 0
+
     # required for admin
     @property
     def is_staff(self):

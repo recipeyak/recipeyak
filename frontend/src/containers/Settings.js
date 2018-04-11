@@ -5,7 +5,8 @@ import {
   fetchSocialConnections,
   updatingEmail,
   disconnectSocialAccount,
-  loggingOut
+  loggingOut,
+  deleteUserAccount,
 } from '../store/actions.js'
 
 import Settings from '../components/Settings.jsx'
@@ -31,7 +32,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(fetchSocialConnections())
     },
     disconnectAccount: (provider, id) => dispatch(disconnectSocialAccount(provider, id)),
-    updateEmail: email => dispatch(updatingEmail(email))
+    deleteUserAccount: () => dispatch(deleteUserAccount()),
+    updateEmail: email => dispatch(updatingEmail(email)),
   }
 }
 
