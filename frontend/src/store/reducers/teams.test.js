@@ -17,7 +17,6 @@ import {
   setLoadingTeams,
   setCreatingTeam,
   setTeam,
-  setMovingTeam,
   setCopyingTeam,
   deleteTeam,
   updateTeamById,
@@ -656,17 +655,6 @@ describe('Teams', () => {
     ).toEqual(afterState)
   })
 
-  it('sets moving team status', () => {
-    const beforeState = {
-    }
-    const afterState = {
-      moving: true,
-    }
-    expect(
-      teams(beforeState, setMovingTeam(true))
-    ).toEqual(afterState)
-  })
-
   it('sets copying team status', () => {
     const beforeState = {
     }
@@ -675,17 +663,6 @@ describe('Teams', () => {
     }
     expect(
       teams(beforeState, setCopyingTeam(true))
-    ).toEqual(afterState)
-  })
-
-  it('sets moving team status', () => {
-    const beforeState = {
-    }
-    const afterState = {
-      moving: true,
-    }
-    expect(
-      teams(beforeState, setMovingTeam(true))
     ).toEqual(afterState)
   })
 

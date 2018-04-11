@@ -158,6 +158,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'backend.middleware.NoCacheMiddleware',
+    'backend.middleware.ServerTimingMiddleware',
 ]
 
 AUTH_USER_MODEL = 'core.MyUser'

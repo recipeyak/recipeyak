@@ -27,6 +27,15 @@ export const ButtonDanger = ({
     { ...props }
   />
 
+export const ButtonSecondary = ({
+  className = '',
+  ...props
+}) =>
+  <ButtonPlain
+    className={ className + ' is-secondary' }
+    { ...props }
+  />
+
 export const ButtonPlain = ({
   loading = false,
   type = 'button',

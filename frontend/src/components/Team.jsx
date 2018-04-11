@@ -66,8 +66,8 @@ const TeamMembers = ({ id, members, loading }) =>
 
 const TeamRecipes = ({ loading, recipes }) =>
   <div>
-    <section className="d-flex justify-space-between align-items-center">
-      <h2 className="fs-6 mb-2">Recipes</h2>
+    <section className="d-flex justify-space-between align-items-center mb-1">
+      <h2 className="fs-6">Recipes</h2>
       <Link to="/recipes/add" className="button is-primary">
         Create Recipe
       </Link>
