@@ -31,8 +31,3 @@ def test_user_delete(client, user, team):
     assert res.status_code == status.HTTP_204_NO_CONTENT
 
     assert not get_user_model().objects.filter(id=user.id).exists()
-
-
-
-
-

@@ -103,6 +103,7 @@ class LogoutView(APIView):
         return Response({"detail": _("Successfully logged out.")},
                         status=status.HTTP_200_OK)
 
+
 class UserDetailsView(RetrieveUpdateAPIView):
     """
     Reads and updates UserModel fields
