@@ -1,6 +1,4 @@
 import pytest
-from django.urls import reverse
-from rest_framework import status
 from .models import CartItem, Recipe
 
 pytestmark = pytest.mark.django_db
@@ -135,5 +133,3 @@ def test_recipe_soft_delete(recipe, recipe2):
 
     assert len(Recipe.objects.all()) == 1
     assert len(Recipe.all_objects.all()) == 2
-
-
