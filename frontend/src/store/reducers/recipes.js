@@ -199,7 +199,10 @@ export const recipes = (state = {}, action) => {
     }
   case SET_RECIPE:
     return { ...state,
-      [action.id]: action.data
+      [action.id]: {
+        ...state[action.id],
+        ...action.data
+      }
     }
   case SET_RECIPE_CART_AMOUNT:
     return {

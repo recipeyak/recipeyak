@@ -664,7 +664,8 @@ describe('Recipes', () => {
   it('overwrites the recipe correctly', () => {
     const beforeState = {
       1: {
-        name: 'Initial recipe name'
+        name: 'Initial recipe name',
+        updating: true
       }
     }
 
@@ -673,7 +674,10 @@ describe('Recipes', () => {
     }
 
     const afterState = {
-      1: newRecipe
+      1: {
+        name: 'new recipe name',
+        updating: true,
+      }
     }
 
     expect(
