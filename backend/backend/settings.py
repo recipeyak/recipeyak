@@ -157,9 +157,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'backend.middleware.NoCacheMiddleware',
-    'backend.middleware.ServerTimingMiddleware',
+    'django.middleware.http.ConditionalGetMiddleware',
 ]
+
+if DEBUG:
+    MIDDLEWARE.append('backend.middleware.ServerTimingMiddleware')
 
 AUTH_USER_MODEL = 'core.MyUser'
 
