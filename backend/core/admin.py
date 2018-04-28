@@ -15,6 +15,7 @@ from core.models import (
     Team,
     Invite,
     Membership,
+    ScheduledRecipe,
 )
 
 
@@ -139,3 +140,4 @@ admin.site.register(CartItem)
 admin.site.register(Team)
 admin.site.register(Invite)
 admin.site.register(Membership)
+admin.site.register(ScheduledRecipe)

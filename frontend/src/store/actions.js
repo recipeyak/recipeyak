@@ -106,7 +106,22 @@ import {
   DELETE_TEAM,
   UPDATE_TEAM,
   UPDATE_RECIPE_OWNER,
+  SET_CALENDAR_RECIPES,
+  SET_CALENDAR_RECIPE,
+  DELETE_CALENDAR_RECIPE,
+  SET_CALENDAR_ERROR,
+  SET_CALENDAR_LOADING,
+  SET_SCHEDULING_RECIPE,
+  SET_SELECTING_START,
+  SET_SELECTING_END,
 } from './actionTypes'
+
+import startOfMonth from 'date-fns/start_of_month'
+import subWeeks from 'date-fns/sub_weeks'
+import endOfMonth from 'date-fns/end_of_month'
+import addWeeks from 'date-fns/add_weeks'
+
+import { pyFormat } from '../date'
 
 import {
   push,
@@ -563,10 +578,17 @@ export const setShoppingListError = val => ({
   val
 })
 
-export const fetchShoppingList = () => dispatch => {
+export const fetchShoppingList = () => (dispatch, getState) => {
+  const start = getState().shoppinglist.startDay
+  const end = getState().shoppinglist.endDay
   dispatch(setLoadingShoppingList(true))
   dispatch(setShoppingListError(false))
-  return http.get('/api/v1/shoppinglist/')
+  return http.get('/api/v1/shoppinglist/', {
+    params: {
+      start: pyFormat(start),
+      end: pyFormat(end),
+    }
+  })
   .then(res => {
     dispatch(setShoppingList(res.data))
     dispatch(setLoadingShoppingList(false))
@@ -579,6 +601,16 @@ export const fetchShoppingList = () => dispatch => {
     dispatch(setLoadingShoppingList(false))
   })
 }
+
+export const setSelectingStart = (date) => ({
+  type: SET_SELECTING_START,
+  date,
+})
+
+export const setSelectingEnd = (date) => ({
+  type: SET_SELECTING_END,
+  date,
+})
 
 export const addRecipe = recipe => ({
   type: ADD_RECIPE,
@@ -1552,10 +1584,13 @@ export const sendingTeamInvites = (teamID, emails, level) => dispatch => {
     }))
     dispatch(setSendingTeamInvites(teamID, false))
   })
-  .catch(err => {
-    // TODO: handle errors
+  .catch(() => {
+    dispatch(showNotificationWithTimeout({
+      message: 'error sending team invite',
+      level: 'danger',
+      delay: 3 * second
+    }))
     dispatch(setSendingTeamInvites(teamID, false))
-    throw err
   })
 }
 
@@ -1784,5 +1819,90 @@ export const reportBadMerge = () => dispatch => {
       level: 'danger',
       delay: 3 * second
     }))
+  })
+}
+
+export const setCalendarLoading = (loading) => ({
+  type: SET_CALENDAR_LOADING,
+  loading,
+})
+
+export const setCalendarError = (error) => ({
+  type: SET_CALENDAR_ERROR,
+  error,
+})
+
+export const setCalendarRecipe = (recipe) => ({
+  type: SET_CALENDAR_RECIPE,
+  recipe,
+})
+
+export const fetchCalendar = (month = new Date()) => dispatch => {
+  dispatch(setCalendarLoading(true))
+  dispatch(setCalendarError(false))
+  // we fetch current month plus and minus 1 week
+  return http.get('/api/v1/calendar/', {
+    params: {
+      start: pyFormat(subWeeks(startOfMonth(month), 1)),
+      end: pyFormat(addWeeks(endOfMonth(month), 1)),
+    }
+  })
+  .then((res) => {
+    dispatch(setCalendarRecipes(res.data))
+    dispatch(setCalendarLoading(false))
+  })
+  .catch(() => {
+    dispatch(setCalendarLoading(false))
+    dispatch(setCalendarError(true))
+  })
+}
+
+export const setSchedulingRecipe = (recipeID, scheduling) => ({
+  type: SET_SCHEDULING_RECIPE,
+  recipeID,
+  scheduling,
+})
+
+export const setCalendarRecipes = (recipes) => ({
+  type: SET_CALENDAR_RECIPES,
+  recipes,
+})
+
+export const addingScheduledRecipe = (recipeID, on, count) => dispatch => {
+  dispatch(setSchedulingRecipe(recipeID, true))
+  return http.post('/api/v1/calendar/', {
+    recipe: recipeID,
+    on: pyFormat(on),
+    count
+  })
+  .then((res) => {
+    dispatch(setCalendarRecipe(res.data))
+    dispatch(setSchedulingRecipe(recipeID, false))
+  })
+  .catch(() => {
+    dispatch(showNotificationWithTimeout({
+      message: 'error scheduling recipe',
+      level: 'danger',
+      delay: 3 * second
+    }))
+    dispatch(setSchedulingRecipe(recipeID, false))
+  })
+}
+
+export const deleteCalendarRecipe = (id) => ({
+  type: DELETE_CALENDAR_RECIPE,
+  id,
+})
+
+export const updatingScheduledRecipe = (id, data) => dispatch => {
+  if (data.count === '0') {
+    return http.delete(`/api/v1/calendar/${id}/`)
+    .then(() => {
+      dispatch(deleteCalendarRecipe(id))
+    })
+  }
+  return http.patch(`/api/v1/calendar/${id}/`, data)
+  .then((res) => {
+    dispatch(setCalendarRecipe(res.data))
   })
 }

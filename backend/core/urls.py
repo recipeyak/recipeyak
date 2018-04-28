@@ -19,12 +19,14 @@ from .views import (
     TeamRecipesViewSet,
     UserInvitesViewSet,
     ReportBadMerge,
+    CalendarViewSet,
 )
 
 router = DefaultRouter()
 router.register(r'recipes', RecipeViewSet, base_name='recipes')
 router.register(r't', TeamViewSet, base_name='teams')
 router.register(r'invites', UserInvitesViewSet, base_name='user-invites')
+router.register(r'calendar', CalendarViewSet, base_name='calendar')
 
 recipes_router = routers.NestedSimpleRouter(router, r'recipes', lookup='recipe')
 recipes_router.register(r'steps', StepViewSet, base_name='recipe-step')

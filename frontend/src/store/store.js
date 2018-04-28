@@ -20,6 +20,7 @@ import addrecipe from './reducers/addrecipe'
 import auth from './reducers/auth'
 import teams from './reducers/teams'
 import invites from './reducers/invites'
+import calendar from './reducers/calendar'
 
 import { loadState, saveState } from './localStorage'
 
@@ -39,6 +40,7 @@ const recipeApp = combineReducers({
   addrecipe,
   auth,
   teams,
+  calendar,
 })
 
 // reset redux to default state on logout

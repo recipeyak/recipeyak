@@ -1,0 +1,60 @@
+@import './variables.scss';
+
+.has-text-grey-light {
+  color: hsl(0, 0%, 71%);
+}
+
+.new-container {
+  display: grid;
+  grid-gap: 0.2rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+@media (min-width: 700px) {
+  .new-container {
+    grid-template-columns: repeat(3, auto);
+  }
+}
+
+.calendar-grid {
+  grid-template-columns: repeat(7, minmax(100px, 1fr));
+  grid-auto-rows: minmax(100px, 1fr);
+}
+
+.day {
+  background-color: whitesmoke;
+  transition: all 0.2s;
+}
+
+.current-day {
+  border-bottom: 2px solid $primary-color;
+}
+
+.selected-day {
+  background-color: $primary-color-shadow;
+  color: white;
+  a:hover,
+  a {
+    color: white;
+  }
+}
+
+.closer {
+  color: white;
+  transition: color 0.2s;
+  &:hover {
+    color: lighten($text-color, 30%);
+  }
+}
+
+
+// hide native chrome pickers
+
+input::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+input[type="date"]::-webkit-input-placeholder {
+    visibility: hidden !important;
+}

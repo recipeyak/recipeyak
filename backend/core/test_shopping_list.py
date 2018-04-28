@@ -3,6 +3,7 @@ import pytest
 from django.conf import settings
 from django.urls import reverse
 from rest_framework import status
+from datetime import date, timedelta
 
 from .utils import combine_ingredients
 from .models import Recipe, Ingredient
@@ -59,15 +60,21 @@ def test_combining_ingredients(user):
 def test_fetching_shoppinglist(client, user, recipe):
 
     client.force_authenticate(user)
+    start = date(1976, 7, 6)
+    end = start + timedelta(days=1)
+    params = {
+        'start': start,
+        'end': end,
+    }
 
-    shoppinglist_url = f'{BASE_URL}/shoppinglist/'
-    res = client.get(shoppinglist_url)
+    shoppinglist_url = reverse('shopping-list')
+    res = client.get(shoppinglist_url, params)
     assert res.status_code == status.HTTP_200_OK
     assert res.json() == []
 
-    recipe.set_cart_quantity(user, count=2)
+    recipe.schedule(user=user, on=start, count=2)
 
-    res = client.get(shoppinglist_url)
+    res = client.get(shoppinglist_url, params)
     assert res.status_code == status.HTTP_200_OK
     assert res.json() != []
 
@@ -90,14 +97,21 @@ def test_fetching_shoppinglist_with_team_recipe(client, team, user, recipe):
 
     recipe = recipe.move_to(team)
 
+    start = date(1976, 7, 6)
+    end = start + timedelta(days=1)
+    params = {
+        'start': start,
+        'end': end,
+    }
+
     url = reverse('shopping-list')
-    res = client.get(url)
+    res = client.get(url, params)
     assert res.status_code == status.HTTP_200_OK
     assert res.json() == []
 
-    recipe.set_cart_quantity(user, count=2)
+    recipe.schedule(user=user, on=start, count=2)
 
-    res = client.get(url)
+    res = client.get(url, params)
     assert res.status_code == status.HTTP_200_OK
     assert res.json() != []
 
@@ -203,9 +217,11 @@ def test_combining_recipes_with_improper_quantities(client, user):
     recipe2 = Recipe.objects.create(
         name='Pizza With Sweet and Hot Peppers', author='David Tanis', owner=user)
 
-    recipe.set_cart_quantity(user, count=1)
+    start = date(1976, 7, 6)
 
-    recipe2.set_cart_quantity(user, count=1)
+    recipe.schedule(user=user, on=start, count=1)
+
+    recipe2.schedule(user=user, on=start, count=1)
 
     # 2. set ingredients of second recipe to 'basic' quantities and assert
     for quantity in ['some', 'sprinkle']:
@@ -218,7 +234,13 @@ def test_combining_recipes_with_improper_quantities(client, user):
             recipe=recipe2)
 
         client.force_authenticate(user)
-        res = client.get(f'{BASE_URL}/shoppinglist/')
+        end = start + timedelta(days=1)
+        params = {
+            'start': start,
+            'end': end,
+        }
+        url = reverse('shopping-list')
+        res = client.get(url, params)
         assert res.status_code == status.HTTP_200_OK
         assert res.json() != []
 
@@ -270,6 +292,17 @@ def test_combining_ingredients_with_approximations(user):
     assert actual == expected
 
 
+def test_fetching_shoppinglist_with_invalid_dates(user, client):
+    params = {
+        'start': None,
+        'end': 'invalid date',
+    }
+    url = reverse('shopping-list')
+    client.force_authenticate(user)
+    res = client.get(url, params)
+    assert res.status_code == status.HTTP_400_BAD_REQUEST
+
+
 def test_adding_to_cart_multiple_times_some_ingredient(user, client):
     """
     with an ingredient of quantity sprinkle that we add to the cart multiple
@@ -288,10 +321,17 @@ def test_adding_to_cart_multiple_times_some_ingredient(user, client):
             name='black pepper',
             recipe=recipe)
 
-        recipe.set_cart_quantity(user, count=3)
+        start = date(1976, 7, 6)
+        recipe.schedule(user=user, on=start, count=3)
 
+        end = start + timedelta(days=1)
+        params = {
+            'start': start,
+            'end': end,
+        }
+        url = reverse('shopping-list')
         client.force_authenticate(user)
-        res = client.get(f'{BASE_URL}/shoppinglist/')
+        res = client.get(url, params)
         assert res.status_code == status.HTTP_200_OK
         assert res.json()[0].get('unit') == 'some'
 
@@ -307,10 +347,17 @@ def test_combining_ingredient_with_range_quantity(user, client, empty_recipe):
         name=name,
         recipe=empty_recipe)
 
-    empty_recipe.set_cart_quantity(user, count=2)
+    start = date(1976, 7, 6)
+    empty_recipe.schedule(user=user, on=start, count=2)
 
+    end = start + timedelta(days=1)
+    params = {
+        'start': start,
+        'end': end,
+    }
+    url = reverse('shopping-list')
     client.force_authenticate(user)
-    res = client.get(f'{BASE_URL}/shoppinglist/')
+    res = client.get(url, params)
     assert res.status_code == status.HTTP_200_OK
 
     combined_ingredient = res.json()[0]
@@ -332,10 +379,17 @@ def test_combining_ingredients_plural_and_singular_tomatoes(user, client, empty_
         name='large tomatoes',
         recipe=empty_recipe)
 
-    empty_recipe.set_cart_quantity(user, count=1)
+    start = date(1976, 7, 6)
+    empty_recipe.schedule(user=user, on=start, count=1)
 
+    end = start + timedelta(days=1)
+    params = {
+        'start': start,
+        'end': end,
+    }
     client.force_authenticate(user)
-    res = client.get(f'{BASE_URL}/shoppinglist/')
+    url = reverse('shopping-list')
+    res = client.get(url, params)
     assert res.status_code == status.HTTP_200_OK
 
     assert len(res.json()) == 1
@@ -364,10 +418,17 @@ def test_combining_ingredients_plural_and_singular_lemon(user, client, empty_rec
         name='lemons',
         recipe=empty_recipe)
 
-    empty_recipe.set_cart_quantity(user, count=1)
+    start = date(1976, 7, 6)
+    empty_recipe.schedule(user=user, on=start, count=1)
 
+    end = start + timedelta(days=1)
+    params = {
+        'start': start,
+        'end': end,
+    }
     client.force_authenticate(user)
-    res = client.get(f'{BASE_URL}/shoppinglist/')
+    url = reverse('shopping-list')
+    res = client.get(url, params)
     assert res.status_code == status.HTTP_200_OK
 
     assert len(res.json()) == 1
@@ -391,10 +452,17 @@ def test_combining_plural_and_singular_leaves(user, client, empty_recipe):
         name='bay leaves',
         recipe=empty_recipe)
 
-    empty_recipe.set_cart_quantity(user, count=1)
+    start = date(1976, 7, 6)
+    empty_recipe.schedule(user=user, on=start, count=1)
 
+    end = start + timedelta(days=1)
+    params = {
+        'start': start,
+        'end': end,
+    }
     client.force_authenticate(user)
-    res = client.get(f'{BASE_URL}/shoppinglist/')
+    url = reverse('shopping-list')
+    res = client.get(url, params)
     assert res.status_code == status.HTTP_200_OK
 
     assert len(res.json()) == 1

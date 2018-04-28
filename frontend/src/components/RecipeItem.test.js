@@ -1,10 +1,9 @@
 import React from 'react'
-
 import { mount, configure } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 
-import { MemoryRouter } from 'react-router'
 import RecipeItem from './RecipeItem.jsx'
+import { DndTestContext } from '../testUtils'
 
 configure({ adapter: new Adapter() })
 
@@ -20,7 +19,11 @@ describe('RecipeItem', () => {
       removeFromCart: () => console.log('Remove from cart'),
       addToCart: () => console.log('Add to cart')
     }
-    mount(<MemoryRouter><RecipeItem {...recipe} /></MemoryRouter>)
+    mount(
+      <DndTestContext>
+        <RecipeItem {...recipe} />
+      </DndTestContext>
+    )
   })
   it('renders without tags', () => {
     const recipe = {
@@ -32,6 +35,10 @@ describe('RecipeItem', () => {
       removeFromCart: () => console.log('Remove from cart'),
       addToCart: () => console.log('Add to cart')
     }
-    mount(<MemoryRouter><RecipeItem {...recipe} /></MemoryRouter>)
+    mount(
+      <DndTestContext>
+        <RecipeItem {...recipe} />
+      </DndTestContext>
+    )
   })
 })

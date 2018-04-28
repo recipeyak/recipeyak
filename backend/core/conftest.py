@@ -4,6 +4,8 @@ from logging import getLogger
 
 from rest_framework.test import APIClient
 
+from datetime import date
+
 from .models import (
     MyUser,
     Recipe,
@@ -11,6 +13,7 @@ from .models import (
     Step,
     Tag,
     Team,
+    ScheduledRecipe,
 )
 
 getLogger('flake8').propagate = False
@@ -178,3 +181,12 @@ def team_with_recipes_no_members(recipe, recipe_pie):
     t.recipes.add(recipe)
     t.recipes.add(recipe_pie)
     return t
+
+
+@pytest.fixture
+def scheduled_recipe(recipe, user):
+    return ScheduledRecipe.objects.create(
+        recipe=recipe,
+        user=user,
+        on=date(1976, 7, 6),
+        count=1)

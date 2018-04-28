@@ -29,6 +29,7 @@ import {
   setRecipeCartAmount,
   clearRecipeCartAmounts,
   updateRecipeOwner,
+  setSchedulingRecipe,
 } from '../actions'
 
 describe('Recipes', () => {
@@ -778,6 +779,39 @@ describe('Recipes', () => {
 
     expect(
       recipes(beforeState, updateRecipeOwner(id, owner))
+    ).toEqual(afterState)
+  })
+
+  it('sets recipe owner for recipe move', () => {
+    const beforeState = {
+      1: {
+        id: 1,
+        name: 'Initial recipe name 1',
+        cart_count: 2,
+      },
+      2: {
+        id: 2,
+        name: 'Initial recipe name 2',
+        cart_count: 3
+      },
+    }
+
+    const afterState = {
+      1: {
+        id: 1,
+        name: 'Initial recipe name 1',
+        cart_count: 2,
+        scheduling: true,
+      },
+      2: {
+        id: 2,
+        name: 'Initial recipe name 2',
+        cart_count: 3,
+      },
+    }
+
+    expect(
+      recipes(beforeState, setSchedulingRecipe(1, true))
     ).toEqual(afterState)
   })
 })
