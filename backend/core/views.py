@@ -172,8 +172,18 @@ class StepViewSet(viewsets.ModelViewSet):
         create the step and attach it to the correct recipe
         """
         serializer = self.serializer_class(data=request.data)
+        # TODO: Use get_object_or_404 when Soft Delete is removed
+        recipe = Recipe.objects.get(pk=recipe_pk)
+
+        # set a position if not provided
+        last_step = recipe.steps.last()
+        if serializer.initial_data.get('position') is None:
+            if last_step is not None:
+                serializer.initial_data['position'] = last_step.position + 10.0
+            else:
+                serializer.initial_data['position'] = 10.0
+
         if serializer.is_valid():
-            recipe = Recipe.objects.get(pk=recipe_pk)
             serializer.save(recipe=recipe)
             logger.info(f'Step created by {self.request.user}')
             return Response(serializer.data, status=status.HTTP_201_CREATED)
