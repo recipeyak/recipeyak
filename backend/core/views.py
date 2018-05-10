@@ -83,6 +83,19 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def create(self, request):
         serializer = self.get_serializer(data=request.data)
+
+        # If the client doesn't set the position on one of the objects we need
+        # to renumber them all.
+        steps = serializer.initial_data['steps']
+        missing_position = False
+        for step in steps:
+            if step.get('position') is None:
+                missing_position = True
+        if missing_position:
+            for i, step in enumerate(steps):
+                step['position'] = i + 10.0
+        serializer.initial_data['steps'] = steps
+
         serializer.is_valid(raise_exception=True)
 
         serializer.save()
