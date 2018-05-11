@@ -105,12 +105,17 @@ def test_recipe_copy_to(client, team, user, recipe):
     assert recipe != team_recipe
     assert team_recipe.owner == team and recipe.owner == user
 
-    r_steps = list(recipe.steps.all())
-    t_steps = list(team_recipe.steps.all())
+    r_steps = recipe.steps.values()
+    t_steps = team_recipe.steps.values()
     assert len(r_steps) == len(t_steps)
 
     for r_step, t_step in zip(r_steps, t_steps):
-        assert r_step.pk != t_step.pk
+        assert r_step['id'] != t_step['id']
+        # ignore keys that will change
+        for key in ['id', 'created', 'modified', 'recipe_id']:
+            r_step.pop(key)
+            t_step.pop(key)
+        assert r_step == t_step
 
     r_ingredients = list(recipe.ingredients.all())
     t_ingredients = list(team_recipe.ingredients.all())

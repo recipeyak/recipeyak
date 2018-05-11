@@ -55,6 +55,15 @@ def user_active_team_ids(user):
     return user.membership_set.filter(is_active=True).values_list('team')
 
 
+def add_positions(recipe_steps):
+    """Add `position` to step data if missing."""
+    missing_position = any(s.get('position') is None for s in recipe_steps)
+    if missing_position:
+        for i, step in enumerate(recipe_steps):
+            step['position'] = i + 10.0
+    return recipe_steps
+
+
 class RecipeViewSet(viewsets.ModelViewSet):
 
     serializer_class = RecipeSerializer
@@ -83,6 +92,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def create(self, request):
         serializer = self.get_serializer(data=request.data)
+
+        # If the client doesn't set the position on one of the objects we need
+        # to renumber them all.
+        serializer.initial_data['steps'] = add_positions(serializer.initial_data['steps'])
+
         serializer.is_valid(raise_exception=True)
 
         serializer.save()
@@ -159,8 +173,18 @@ class StepViewSet(viewsets.ModelViewSet):
         create the step and attach it to the correct recipe
         """
         serializer = self.serializer_class(data=request.data)
+        # TODO: Use get_object_or_404 when Soft Delete is removed
+        recipe = Recipe.objects.get(pk=recipe_pk)
+
+        # set a position if not provided
+        last_step = recipe.steps.last()
+        if serializer.initial_data.get('position') is None:
+            if last_step is not None:
+                serializer.initial_data['position'] = last_step.position + 10.0
+            else:
+                serializer.initial_data['position'] = 10.0
+
         if serializer.is_valid():
-            recipe = Recipe.objects.get(pk=recipe_pk)
             serializer.save(recipe=recipe)
             logger.info(f'Step created by {self.request.user}')
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -473,6 +497,7 @@ class TeamRecipesViewSet(
         team = get_object_or_404(Team.objects.all(), pk=team_pk)
 
         serializer = self.get_serializer(data=request.data)
+        serializer.initial_data['steps'] = add_positions(serializer.initial_data['steps'])
         serializer.is_valid(raise_exception=True)
 
         serializer.save(team=team)
