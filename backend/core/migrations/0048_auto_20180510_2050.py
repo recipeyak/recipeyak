@@ -5,16 +5,11 @@ from django.db import migrations, models
 
 def set_position(apps, schema_editor):
     """Fill in position for existing records"""
-    Recipe = apps.get_model("core", "Recipe")
     Step = apps.get_model("core", "Step")
     db_alias = schema_editor.connection.alias
-    recipes = Recipe.objects.using(db_alias).all()
-    for r in recipes:
-        steps = Step.objects.filter(recipe=r)
-        for i, s in enumerate(steps):
-            # Add an offset
-            s.position = i + 10.0
-            s.save()
+    for step in Step.objects.using(db_alias).all():
+        step.position = step.id
+        step.save()
 
 
 class Migration(migrations.Migration):
