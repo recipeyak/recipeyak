@@ -158,6 +158,7 @@ class Recipe(CommonInfo):
             # clone step objects
             for step in self.step_set.all():
                 step.pk = None
+                step.recipe_id = recipe_copy.pk
                 step.save()
                 recipe_copy.step_set.add(step)
             # clone ingredient objects
@@ -184,7 +185,7 @@ class Recipe(CommonInfo):
     @property
     def steps(self):
         """Return recipe steps ordered by creation date"""
-        return Step.objects.filter(recipe=self).order_by('created')
+        return Step.objects.filter(recipe=self).order_by('position', 'created')
 
     @property
     def tags(self):
@@ -233,6 +234,11 @@ class Step(CommonInfo):
     """Recipe step"""
     text = models.TextField()
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    position = models.FloatField()
+
+    class Meta:
+        unique_together = (('recipe', 'position'),)
+        ordering = ['-position', ]
 
     def __str__(self):
         return self.text
