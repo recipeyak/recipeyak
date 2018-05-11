@@ -7,8 +7,6 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import CIEmailField
-from django.db.models.query import QuerySet
-from django.utils import timezone
 
 from allauth.socialaccount.models import EmailAddress
 

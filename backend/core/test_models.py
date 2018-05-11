@@ -1,5 +1,5 @@
 import pytest
-from .models import CartItem, Recipe
+from .models import CartItem
 
 pytestmark = pytest.mark.django_db
 
