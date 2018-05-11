@@ -101,6 +101,7 @@ def recipe(user):
 
     Step.objects.create(
         text='Place egg in boiling water and cook for ten minutes',
+        position=10.0,
         recipe=recipe)
 
     Tag.objects.create(
@@ -136,6 +137,7 @@ def recipe_pie(user):
 
     Step.objects.create(
         text='Make the crust: In a food processor, pulse together the flour and salt.',
+        position=10.0,
         recipe=recipe)
 
     Tag.objects.create(

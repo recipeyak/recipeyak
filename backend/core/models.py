@@ -194,6 +194,7 @@ class Recipe(CommonInfo, SoftDeletionModel):
             # clone step objects
             for step in self.step_set.all():
                 step.pk = None
+                step.recipe_id = recipe_copy.pk
                 step.save()
                 recipe_copy.step_set.add(step)
             # clone ingredient objects

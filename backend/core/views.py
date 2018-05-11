@@ -55,6 +55,18 @@ def user_active_team_ids(user):
     return user.membership_set.filter(is_active=True).values_list('team')
 
 
+def add_positions(recipe_steps):
+    """Add `position` to step data if missing."""
+    missing_position = False
+    for step in recipe_steps:
+        if step.get('position') is None:
+            missing_position = True
+    if missing_position:
+        for i, step in enumerate(recipe_steps):
+            step['position'] = i + 10.0
+    return recipe_steps
+
+
 class RecipeViewSet(viewsets.ModelViewSet):
 
     serializer_class = RecipeSerializer
@@ -86,15 +98,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         # If the client doesn't set the position on one of the objects we need
         # to renumber them all.
-        steps = serializer.initial_data['steps']
-        missing_position = False
-        for step in steps:
-            if step.get('position') is None:
-                missing_position = True
-        if missing_position:
-            for i, step in enumerate(steps):
-                step['position'] = i + 10.0
-        serializer.initial_data['steps'] = steps
+        serializer.initial_data['steps'] = add_positions(serializer.initial_data['steps'])
 
         serializer.is_valid(raise_exception=True)
 
@@ -496,6 +500,7 @@ class TeamRecipesViewSet(
         team = get_object_or_404(Team.objects.all(), pk=team_pk)
 
         serializer = self.get_serializer(data=request.data)
+        serializer.initial_data['steps'] = add_positions(serializer.initial_data['steps'])
         serializer.is_valid(raise_exception=True)
 
         serializer.save(team=team)
