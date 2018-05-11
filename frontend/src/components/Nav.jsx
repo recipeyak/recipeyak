@@ -137,16 +137,16 @@ class Navbar extends React.Component {
         </Dropdown>
 
         <NavLink
-          to="/recipes"
+          to="/recipes/"
           activeClassName="active"
           className="better-nav-item">
           Recipes
         </NavLink>
         <NavLink
-          to="/cart"
+          to="/shopping/"
           activeClassName="active"
           className="better-nav-item">
-          Cart
+          Shopping
         </NavLink>
 
         <UserDropdown

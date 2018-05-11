@@ -7,6 +7,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import CIEmailField
+from django.core.validators import MinValueValidator
 
 from allauth.socialaccount.models import EmailAddress
 
@@ -101,6 +102,10 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     def cart_items(self):
         return CartItem.objects.filter(user=self)
 
+    @property
+    def scheduled_recipes(self):
+        return ScheduledRecipe.objects.filter(user=self)
+
     def __str__(self):
         return self.email
 
@@ -168,6 +173,9 @@ class Recipe(CommonInfo):
         cartitem, _ = self.cartitem_set.get_or_create(user=user, recipe=self)
         cartitem.count = count
         cartitem.save()
+
+    def schedule(self, on, user, count):
+        return ScheduledRecipe.objects.create_scheduled(recipe=self, on=on, count=count, user=user)
 
     @property
     def ingredients(self):
@@ -243,6 +251,36 @@ class Tag(CommonInfo):
 
     def __str__(self):
         return self.text
+
+
+class ScheduledRecipeManager(models.Manager):
+    def create_scheduled(self, recipe: Recipe, on, count: int, user: MyUser) -> 'ScheduledRecipe':
+        """
+        add to existing scheduled recipe count for dupes
+        """
+        with transaction.atomic():
+            existing = ScheduledRecipe.objects.filter(recipe=recipe, on=on, user=user).first()
+            if existing:
+                existing.count += count
+                existing.save()
+                return existing
+            else:
+                return ScheduledRecipe.objects.create(recipe=recipe, on=on, count=count, user=user)
+
+
+class ScheduledRecipe(CommonInfo):
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    on = models.DateField()
+    count = models.PositiveIntegerField(validators=[MinValueValidator(1)])
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+
+    objects = ScheduledRecipeManager()
+
+    class Meta:
+        unique_together = (('recipe', 'on', 'user'),)
+
+    def __str__(self):
+        return f'ScheduledRecipe:: {self.count} of {self.recipe.name} on {self.on} for {self.user}'
 
 
 class CartItem(CommonInfo):

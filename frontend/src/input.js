@@ -4,3 +4,10 @@ export const inputAbs = v => {
     ? 0
     : parseInt(c, 10)
 }
+
+export function atLeast1 (v) {
+  const abs = inputAbs(v)
+  return abs < 1
+    ? 1
+    : abs
+}

@@ -27,6 +27,7 @@
   transition: 0.2s;
   transition-property: border-color, box-shadow;
 
+  &.is-focused,
   &:focus {
     border-color: $primary-color;
     box-shadow: 0 0 5px 0px $primary-color-shadow;

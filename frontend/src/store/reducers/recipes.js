@@ -28,6 +28,7 @@ import {
   SET_RECIPE_CART_AMOUNT,
   CLEAR_RECIPE_CART_AMOUNTS,
   UPDATE_RECIPE_OWNER,
+  SET_SCHEDULING_RECIPE,
 } from '../actionTypes'
 
 export const recipes = (state = {}, action) => {
@@ -227,6 +228,14 @@ export const recipes = (state = {}, action) => {
       [action.id]: {
         ...state[action.id],
         owner: action.owner
+      }
+    }
+  case SET_SCHEDULING_RECIPE:
+    return {
+      ...state,
+      [action.recipeID]: {
+        ...state[action.recipeID],
+        scheduling: action.scheduling,
       }
     }
   default:

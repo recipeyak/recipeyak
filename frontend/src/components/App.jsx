@@ -8,15 +8,15 @@ import {
   ConnectedRouter
 } from 'react-router-redux'
 import { Helmet } from 'react-helmet'
+import HTML5Backend from 'react-dnd-html5-backend'
+import { DragDropContext } from 'react-dnd'
 
 import { history, store } from '../store/store.js'
 
 import Home from '../containers/Home.jsx'
 import Login from '../containers/Login.jsx'
 import Signup from '../containers/Signup.jsx'
-import RecipeList from '../containers/RecipeList.jsx'
 import NoMatch from './NoMatch.jsx'
-import Cart from '../containers/Cart.jsx'
 import Recipe from '../containers/Recipe.jsx'
 import PasswordReset from '../containers/PasswordReset.jsx'
 import Settings from '../containers/Settings'
@@ -31,6 +31,7 @@ import PasswordSet from '../containers/PasswordSet.jsx'
 import PasswordResetConfirmation from '../containers/PasswordResetConfirmation.jsx'
 import OAuth from '../containers/OAuth.jsx'
 import OAuthConnect from '../containers/OAuthConnect.jsx'
+import Schedule from './Schedule'
 
 import './scss/main.scss'
 
@@ -58,44 +59,48 @@ const PublicOnlyRoute = ({ component: Component, ...rest }) => (
   }}/>
 )
 
-const Base = () => (
-  <div>
-    <Helmet
-      defaultTitle='Recipe Yak'
-      titleTemplate='%s | Recipe Yak'
-    />
-    <ConnectedRouter history={ history }>
-      <Switch>
-        <PublicOnlyRoute exact path="/login" component={ Login }/>
-        <PublicOnlyRoute exact path="/signup" component={ Signup }/>
-        <Route exact path="/password-reset" component={ PasswordReset }/>
-        <ContainerBase>
+@DragDropContext(HTML5Backend)
+export default class Base extends React.Component {
+  render () {
+    return (
+      <div>
+        <Helmet
+          defaultTitle='Recipe Yak'
+          titleTemplate='%s | Recipe Yak'
+        />
+        <ConnectedRouter history={ history }>
           <Switch>
-            <Route exact path="/" component={ Home }/>
-            <Container>
+            <PublicOnlyRoute exact path="/login" component={ Login }/>
+            <PublicOnlyRoute exact path="/signup" component={ Signup }/>
+            <Route exact path="/password-reset" component={ PasswordReset }/>
+            <ContainerBase>
               <Switch>
-                <Route exact path="/accounts/:service" component={ OAuth }/>
-                <Route exact path="/accounts/:service/connect" component={ OAuthConnect }/>
-                <Route exact path="/password-reset/confirm/:uid([0-9A-Za-z_\-]+).:token([0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})" component={ PasswordResetConfirmation }/>
-                <PrivateRoute exact path="/recipes/add" component={ AddRecipe }/>
-                <PrivateRoute exact path="/recipes/" component={ RecipeList }/>
-                <PrivateRoute exact path="/cart" component={ Cart }/>
-                <PrivateRoute exact path="/recipes/:id(\d+)(.*)" component={ Recipe }/>
-                <PrivateRoute exact path="/settings" component={ Settings }/>
-                <PrivateRoute exact path="/password" component={ PasswordChange }/>
-                <PrivateRoute exact path="/password/set" component={ PasswordSet }/>
-                <Route exact path="/t/create" component={ TeamCreate }/>
-                <Route exact path="/t/:id(\d+)(.*)/invite" component={ TeamInvite }/>
-                <Route exact path="/t/:id(\d+)(.*)/settings" component={ Team }/>
-                <Route exact path="/t/:id(\d+)(.*)" component={ Team }/>
-                <Route component={ NoMatch }/>
+                <Route exact path="/" component={ Home }/>
+                <PrivateRoute exact path="/:type(shopping|recipes)" component={ Schedule }/>
+                <Container>
+                  <Switch>
+                    <Route exact path="/accounts/:service" component={ OAuth }/>
+                    <Route exact path="/accounts/:service/connect" component={ OAuthConnect }/>
+                    <Route exact path="/password-reset/confirm/:uid([0-9A-Za-z_\-]+).:token([0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})" component={ PasswordResetConfirmation }/>
+                    <PrivateRoute exact path="/recipes/add" component={ AddRecipe }/>
+                    <PrivateRoute exact path="/recipes/:id(\d+)(.*)" component={ Recipe }/>
+                    <PrivateRoute exact path="/settings" component={ Settings }/>
+                    <PrivateRoute exact path="/password" component={ PasswordChange }/>
+                    <PrivateRoute exact path="/password/set" component={ PasswordSet }/>
+                    <Route exact path="/t/create" component={ TeamCreate }/>
+                    <Route exact path="/t/:id(\d+)(.*)/invite" component={ TeamInvite }/>
+                    <Route exact path="/t/:id(\d+)(.*)/settings" component={ Team }/>
+                    <Route exact path="/t/:id(\d+)(.*)" component={ Team }/>
+                    <Route component={ NoMatch }/>
+                  </Switch>
+                </Container>
               </Switch>
-            </Container>
+            </ContainerBase>
           </Switch>
-        </ContainerBase>
-      </Switch>
-    </ConnectedRouter>
-    <Notification/>
-  </div>
-)
-export default Base
+        </ConnectedRouter>
+        <Notification/>
+      </div>
+
+    )
+  }
+}

@@ -1,117 +1,200 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { DragSource } from 'react-dnd'
+import addMonths from 'date-fns/add_months'
+import subMonths from 'date-fns/sub_months'
+import format from 'date-fns/format'
 
-import { ButtonPrimary } from './Buttons'
+import { ButtonPrimary, ButtonPlain } from './Buttons'
 
-import { inputAbs } from '../input'
+import { atLeast1 } from '../input'
+
+import { classNames } from '../classnames'
+
+import Month from './DateRangePicker/Month'
+
+import {
+  addingScheduledRecipe,
+} from '../store/actions'
 
 import {
   recipeURL,
   teamURL,
 } from '../urls'
 
-const RecipeItem = ({
-    tags = {},
-    name,
-    author,
-    id,
-    url = recipeURL(id, name),
-    cart_count,
-    removeFromCart,
-    removingFromCart = false,
-    addToCart,
-    addingToCart = false,
-    handleInputChange,
-    count,
-    owner = {
-      type: 'user',
-      id: 0,
-      name: '',
-    },
-    updateCart
-  }) => {
-  const spanTags = tags.length > 0
-    ? tags.map(tag => <span key={ tag } className="tag is-medium">{ tag }</span>)
-    : null
-  const ownershipDetail = owner.type === 'team' && owner.name && owner.id ? <div className=" text-muted fw-500">via <Link to={teamURL(owner.id)} className="text-muted bold">{ owner.name }</Link></div> : ''
-  const buttons = (
-    <div className="field is-grouped">
+import * as DragDrop from '../dragDrop'
 
-      {/* eslint-disable camelcase */}
-      <button
-        onClick={ () => removeFromCart(id) }
-        className={ `my-button control ${removingFromCart ? 'is-loading' : ''}` }
-        disabled={ !cart_count }>Remove One</button>
-      {/* eslint-enable camelcase */}
-        <ButtonPrimary
-          className='control'
-          onClick={ () => addToCart(id) }
-          loading={ addingToCart }>
-          Add Another
-        </ButtonPrimary>
-        <div className="max-width-10">
-        <input
-          onChange={ handleInputChange }
-          onBlur={
-            () => {
-              const changed = count.toString() !== cart_count.toString()
-              if (changed) {
-                updateCart(id, count)
-              }
-            }
-          }
-          disabled={ addingToCart || removingFromCart }
-          value={ count }
-          name="count"
-          className="bg-whitesmoke text-center is-light my-input is-slim"/>
+class DatePicker extends React.Component {
+  static defaultProps = {
+    showLeft: true,
+    showRight: true,
+    date: new Date(),
+    selectedDate: new Date(),
+    prevMonth: x => x,
+    nextMonth: x => x,
+  }
+  render () {
+    return (
+      <div className="">
+        <Month
+          showLeft={this.props.showLeft}
+          showRight={this.props.showRight}
+          date={this.props.date}
+          startDay={this.props.selectedDate}
+          endDay={this.props.selectedDate}
+          handleClick={this.props.handleClick}
+          prevMonth={this.props.prevMonth}
+          nextMonth={this.props.nextMonth}
+        />
       </div>
-    </div>
-  )
-
-  return (
-    <div className="card ">
-      <div className="card-content">
-        <p className="title">
-          <Link to={ url }>{ name }</Link>
-        </p>
-        <p className="subtitle">
-          { author }
-        </p>
-        <div className="content">
-          { spanTags }
-          { ownershipDetail }
-        </div>
-
-      </div>
-      <footer className="card-footer">
-        <div className="card-footer-item">{ buttons }</div>
-      </footer>
-    </div>
-  )
+    )
+  }
 }
 
-class RecipeItemContainer extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      count: this.props.cart_count
+function mapDispatchToProps (dispatch) {
+  return {
+    create: (recipeID, on, count) => dispatch(addingScheduledRecipe(recipeID, on, count)),
+  }
+}
+
+const recipeSource = {
+  beginDrag (props) {
+    return {
+      recipeID: props.id
     }
   }
+}
 
-  componentWillReceiveProps = nextProps => {
-    this.setState({ count: nextProps.cart_count })
-  }
-
-  handleInputChange = e =>
-    this.setState({ [e.target.name]: inputAbs(e.target.value) })
-
-  render () {
-    return <RecipeItem
-      {...this.props}
-      handleInputChange={ this.handleInputChange }
-      count={ this.state.count }
-    />
+function collect (connect, monitor) {
+  return {
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging()
   }
 }
 
-export default RecipeItemContainer
+@DragSource(DragDrop.RECIPE, recipeSource, collect)
+@connect(
+  null,
+  mapDispatchToProps,
+)
+export default class RecipeItem extends React.Component {
+  state = {
+    show: false,
+    month: new Date(),
+    date: new Date(),
+    count: 1,
+  }
+
+  handleDateChange = val => {
+    this.setState({ date: val })
+  }
+
+  handleCountChange = e => {
+    const count = atLeast1(e.target.value)
+    this.setState({ count })
+  }
+
+  handleSubmit = e => {
+    e.preventDefault()
+    this.props.create(this.props.id, this.state.date, this.state.count)
+    .then(() => {
+      this.setState({ show: false })
+    })
+  }
+
+  render () {
+    const {
+      tags = {},
+      name,
+      author,
+      id,
+      url = recipeURL(id, name),
+      addingToCart = false,
+      owner = {
+        type: 'user',
+        id: 0,
+        name: '',
+      },
+      connectDragSource,
+      isDragging,
+    } = this.props
+
+    const spanTags = tags.length > 0
+      ? tags.map(tag => <span key={ tag } className="tag is-medium">{ tag }</span>)
+      : null
+    const ownershipDetail = owner.type === 'team' && owner.name && owner.id
+      ? <div className=" text-muted fw-500">
+          via <Link to={teamURL(owner.id)} className="text-muted bold">{ owner.name }</Link>
+        </div>
+      : null
+
+    return connectDragSource(
+      <div className="card cursor-move" style={{
+        opacity: isDragging ? 0.5 : 1,
+        // transform: isDragging ? 'rotate(-5deg)' : '',
+      }}>
+        <div className="card-content">
+          <div className="title fs-6 d-flex justify-space-between p-rel">
+            <Link to={ url }>{ name }</Link>
+            <ButtonPlain
+              onClick={() => this.setState(prev => ({ show: !prev.show }))}
+              className="is-small p-relative"
+              loading={ addingToCart }>
+              •••
+            </ButtonPlain>
+            { this.state.show
+              ? (<div className={
+                    classNames(
+                      'box-shadow-normal',
+                        'p-absolute',
+                        'r-0',
+                        't-100',
+                        'cursor-default',
+                        'z-index-100',
+                        'bg-whitesmoke',
+                        'p-2',
+                      'fs-4',
+                    )
+              }>
+                  <DatePicker
+                    date={this.state.month}
+                    nextMonth={() => this.setState(({ month }) => ({ month: addMonths(month, 1) }))}
+                    prevMonth={() => this.setState(({ month }) => ({ month: subMonths(month, 1) }))}
+                    selectedDate={this.state.date}
+                    handleClick={this.handleDateChange}
+
+                  />
+                  <form className="d-grid grid-gap-1" onSubmit={this.handleSubmit}>
+                    <div className="d-flex">
+                      <input
+                        className="my-input is-small w-2rem mr-2 fs-3 text-center"
+                        onChange={this.handleCountChange}
+                        value={this.state.count}/>
+                      <span className="align-self-center">
+                        on { format(this.state.date, 'MMM D, YYYY') }
+                      </span>
+                    </div>
+                    <ButtonPrimary className="is-small" type="submit" loading={this.props.scheduling}>
+                      Schedule
+                    </ButtonPrimary>
+                  </form>
+                </div>)
+
+                : null
+            }
+
+          </div>
+          <p className="subtitle fs-4 mb-0">
+            { author }
+          </p>
+          <div className="content">
+            { spanTags }
+            { ownershipDetail }
+          </div>
+
+        </div>
+      </div>
+    )
+  }
+}

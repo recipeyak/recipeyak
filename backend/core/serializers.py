@@ -11,6 +11,7 @@ from .models import (
     Team,
     Membership,
     Invite,
+    ScheduledRecipe,
 )
 
 
@@ -276,3 +277,22 @@ class RecipeMoveCopySerializer(serializers.Serializer):
         elif data['type'] == 'user' and not MyUser.objects.filter(id=data['id']).exists():
             raise serializers.ValidationError("user must exist")
         return data
+
+
+class ScheduledRecipeSerializer(serializers.ModelSerializer):
+    recipe = RecipeSerializer(fields=('id', 'name',))
+
+    class Meta:
+        model = ScheduledRecipe
+        fields = ('id', 'recipe', 'on', 'count',)
+
+
+class ScheduledRecipeSerializerCreate(serializers.ModelSerializer):
+
+    class Meta:
+        model = ScheduledRecipe
+        fields = ('id', 'recipe', 'on', 'count',)
+
+    def create(self, validated_data):
+        recipe = validated_data.pop('recipe')
+        return recipe.schedule(**validated_data)

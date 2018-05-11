@@ -23,6 +23,10 @@
   position: absolute;
 }
 
+.t-100 {
+  top: 100%;
+}
+
 .right-0,
 .r-0 {
   right: 0;
@@ -124,6 +128,10 @@
   align-items: center;
 }
 
+.align-items-end {
+  align-items: flex-end;
+}
+
 .text-left {
   text-align: left;
 }
@@ -166,6 +174,11 @@
     grid-gap: #{$i}rem;
   }
 
+}
+
+
+.grid-column-1 {
+  grid-column: 1;
 }
 
 .grid-column-2 {
@@ -270,6 +283,7 @@
   font-family: $font-family-title;
 }
 
+.flex-grow-1,
 .flex-grow {
   flex-grow: 1;
 }
@@ -289,6 +303,10 @@
   }
 }
 
+.cursor-move {
+  cursor: move;
+}
+
 .cursor-pointer {
   cursor: pointer;
   // need to override all of the default cursors that come with the default
@@ -298,8 +316,17 @@
   }
 }
 
+.cursor-default,
+.pointer-default {
+  cursor: default;
+}
+
 .bg-whitesmoke {
   background-color: whitesmoke;
+}
+
+.bg-white {
+  background-color: white;
 }
 
 .height-100 {
@@ -353,6 +380,10 @@
 
 .bg-primary {
   background-color: $primary-color !important;
+}
+
+.bg-primary-shadow {
+  background-color: $primary-color-shadow !important;
 }
 
 .color-white {
@@ -411,10 +442,37 @@
   overflow-y: scroll;
 }
 
+@for $i from 1 through 4 {
+  .w-#{$i}rem {
+    width: #{$i}rem;
+  }
+}
+
 .w-50px {
   width: 50px;
 }
 
 .text-muted {
   color: $grey;
+}
+
+.z-index-100 {
+  z-index: 100;
+}
+
+.min-width-0 {
+  min-width: 0;
+  width: unset;
+}
+
+.width-120px {
+  width: 125px;
+}
+
+.w-400px {
+  width: 400px;
+}
+
+.grid-auto-rows-unset {
+  grid-auto-rows: unset !important;
 }

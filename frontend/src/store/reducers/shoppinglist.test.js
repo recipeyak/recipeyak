@@ -4,7 +4,9 @@ import {
   setShoppingList,
   setLoadingShoppingList,
   setShoppingListEmpty,
-  setShoppingListError
+  setShoppingListError,
+  setSelectingStart,
+  setSelectingEnd,
 } from '../actions'
 
 describe('Shopping List', () => {
@@ -76,6 +78,36 @@ describe('Shopping List', () => {
 
     expect(
       shoppinglist(beforeState, setShoppingListError(true))
+    ).toEqual(afterState)
+  })
+
+  it('set selecting start day', () => {
+    const beforeState = {
+    }
+
+    const startDay = new Date(1776, 1, 1)
+
+    const afterState = {
+      startDay,
+    }
+
+    expect(
+      shoppinglist(beforeState, setSelectingStart(startDay))
+    ).toEqual(afterState)
+  })
+
+  it('set selecting end day', () => {
+    const beforeState = {
+    }
+
+    const endDay = new Date(1776, 1, 1)
+
+    const afterState = {
+      endDay,
+    }
+
+    expect(
+      shoppinglist(beforeState, setSelectingEnd(endDay))
     ).toEqual(afterState)
   })
 })

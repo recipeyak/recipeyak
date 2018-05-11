@@ -5,7 +5,7 @@ import Navbar from '../containers/Nav.jsx'
 
 export const ContainerBase = ({ children }) =>
   <div>
-    <Navbar className="container pl-3 pr-3" />
+    <Navbar className="pl-3 pr-3" />
     { children }
     <Footer/>
   </div>

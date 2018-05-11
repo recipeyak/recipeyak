@@ -13,3 +13,7 @@ export const FormErrorHandler = ({ error }) =>
         }
       </ul>
     </div>
+
+export const TextInput = ({ className = '', ...props }) => {
+  return <input type='text' className={ 'my-input ' + className} { ...props }/>
+}
