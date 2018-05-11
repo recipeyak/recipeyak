@@ -218,7 +218,7 @@ class Recipe(CommonInfo, SoftDeletionModel):
     @property
     def steps(self):
         """Return recipe steps ordered by creation date"""
-        return Step.objects.filter(recipe=self).order_by('created')
+        return Step.objects.filter(recipe=self).order_by('position', 'created')
 
     @property
     def tags(self):

@@ -168,26 +168,6 @@ def test_recipe_updating(client, user, recipe):
     assert res.json().get('name') == data.get('name')
 
 
-def test_adding_step_to_recipe(client, user, recipe):
-    """
-    ensure a user can add a step to a recipe
-    """
-    client.force_authenticate(user)
-
-    step = {
-        'text': 'A new step',
-    }
-
-    res = client.post(f'{BASE_URL}/recipes/{recipe.id}/steps/', step)
-    assert res.status_code == status.HTTP_201_CREATED
-
-    res = client.get(f'{BASE_URL}/recipes/{recipe.id}/')
-    assert res.status_code == status.HTTP_200_OK
-
-    assert step.get('text') in (step.get('text') for step in res.json().get('steps')), \
-        'step was not in the steps of the recipe'
-
-
 def test_updating_step_of_recipe(client, user, recipe):
     """
     ensure a user can update an step of a recipe
