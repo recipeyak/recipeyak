@@ -57,10 +57,7 @@ def user_active_team_ids(user):
 
 def add_positions(recipe_steps):
     """Add `position` to step data if missing."""
-    missing_position = False
-    for step in recipe_steps:
-        if step.get('position') is None:
-            missing_position = True
+    missing_position = any([s for s in recipe_steps if s.get('position') is None])
     if missing_position:
         for i, step in enumerate(recipe_steps):
             step['position'] = i + 10.0

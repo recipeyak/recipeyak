@@ -267,7 +267,7 @@ class Step(CommonInfo):
     """Recipe step"""
     text = models.TextField()
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    position = models.FloatField(blank=False, null=False)
+    position = models.FloatField()
 
     class Meta:
         unique_together = (('recipe', 'position'),)
