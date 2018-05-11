@@ -293,6 +293,6 @@ class ScheduledRecipeSerializerCreate(serializers.ModelSerializer):
         model = ScheduledRecipe
         fields = ('id', 'recipe', 'on', 'count',)
 
-    def create(self, validated_data) -> ScheduledRecipe:
+    def create(self, validated_data):
         recipe = validated_data.pop('recipe')
         return recipe.schedule(**validated_data)

@@ -182,7 +182,7 @@ class ShoppingListView(views.APIView):
             scheduled_recipes = (request.user.scheduled_recipes
                                  .filter(on__gte=start)
                                  .filter(on__lte=end))
-        except ValidationError:
+        except (ValueError, ValidationError):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         ingredients: List[CartItem] = []
@@ -525,7 +525,7 @@ class CalendarViewSet(viewsets.ModelViewSet):
             queryset = (self.get_queryset()
                             .filter(on__gte=start)
                             .filter(on__lte=end))
-        except ValidationError:
+        except (ValueError, ValidationError):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         serializer = self.get_serializer(queryset,
                                          many=True,)
