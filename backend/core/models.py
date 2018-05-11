@@ -213,17 +213,17 @@ class Recipe(CommonInfo, SoftDeletionModel):
     @property
     def ingredients(self):
         """Return recipe ingredients ordered by creation date"""
-        return Ingredient.objects.filter(recipe=self).order_by('created')
+        return Ingredient.objects.filter(recipe=self)
 
     @property
     def steps(self):
         """Return recipe steps ordered by creation date"""
-        return Step.objects.filter(recipe=self).order_by('created')
+        return Step.objects.filter(recipe=self)
 
     @property
     def tags(self):
         """Return recipe tags ordered by creation date"""
-        return Tag.objects.filter(recipe=self).order_by('created')
+        return Tag.objects.filter(recipe=self)
 
     def __str__(self):
         return f'{self.name} by {self.author}'
