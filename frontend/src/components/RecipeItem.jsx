@@ -103,6 +103,6 @@ export default class RecipeItem extends React.Component {
 
     return disableDrag
       ? component
-      : connectDragSource(component)
+      : connectDragSource(component, { dropEffect: 'copy' })
   }
 }

@@ -1,0 +1,73 @@
+import React from 'react'
+import {
+  Link
+} from 'react-router-dom'
+
+import { setDarkModeClass } from '../sideEffects'
+
+export default class UserDropdown extends React.Component {
+  state = {
+    show: false,
+  }
+
+  componentDidMount () {
+    setDarkModeClass(this.props.darkMode)
+  }
+
+  handleGeneralClick = () => {
+    if (this.state.show) {
+      document.removeEventListener('click', this.handleGeneralClick)
+    }
+    this.setState({ show: false })
+  }
+
+  toggle = () => {
+    if (this.state.show) {
+      document.removeEventListener('click', this.handleGeneralClick)
+    } else {
+      document.addEventListener('click', this.handleGeneralClick)
+    }
+    this.setState(prev => ({ show: !prev.show }))
+  }
+
+  render () {
+    const {
+      avatarURL,
+      email,
+      toggleDarkMode,
+      darkMode,
+      logout,
+      loggingOut
+    } = this.props
+    return (
+      <section>
+        <img
+          onClick={this.toggle}
+          alt=''
+          className="user-profile-image better-nav-item p-0"
+          src={ avatarURL }/>
+
+          <div className={
+            'box p-absolute direction-column align-items-start right-0 mt-1' + (this.state.show ? ' d-flex' : ' d-none')
+          }>
+            <p className="bold">{ email }</p>
+            <div className="d-flex align-center p-1-0">
+              <label className="d-flex align-items-center cursor-pointer">
+              <input
+                onChange={ toggleDarkMode }
+                checked={ darkMode }
+                type='checkbox' className="mr-2"/>
+                Dark Mode
+              </label>
+            </div>
+            <Link to="/settings" className="p-1-0">Settings</Link>
+            <button
+              onClick={ logout }
+              className={ 'my-button w-100' + (loggingOut ? ' is-loading' : '')}>
+              Logout
+            </button>
+          </div>
+      </section>
+    )
+  }
+}

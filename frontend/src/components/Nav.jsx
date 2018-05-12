@@ -3,12 +3,11 @@ import {
   Link
 } from 'react-router-dom'
 
-import { setDarkModeClass } from '../sideEffects'
-
 import NavLink from '../containers/NavLink'
 import Logo from './Logo'
 import Dropdown from './Dropdown'
 import NotificationsDropdown from './NotificationsDropdown'
+import UserDropdown from './UserDropdown'
 
 import { teamURL } from '../urls'
 
@@ -30,71 +29,6 @@ const Teams = ({ teams, loading }) => {
         }
     </div>
   )
-}
-
-class UserDropdown extends React.Component {
-  state = {
-    show: false,
-  }
-
-  componentWillMount () {
-    document.addEventListener('click', this.handleGeneralClick)
-  }
-
-  componentDidMount () {
-    setDarkModeClass(this.props.darkMode)
-  }
-
-  componentWillUnmount () {
-    document.removeEventListener('click', this.handleGeneralClick)
-  }
-
-  handleGeneralClick = e => {
-    const clickedDropdown = this.dropdown && this.dropdown.contains(e.target)
-    if (clickedDropdown) return
-    this.setState({ show: false })
-  }
-
-  render () {
-    const {
-      avatarURL,
-      email,
-      toggleDarkMode,
-      darkMode,
-      logout,
-      loggingOut
-    } = this.props
-    return (
-      <section ref={dropdown => { this.dropdown = dropdown }}>
-        <img
-          onClick={ () => this.setState(prev => ({ show: !prev.show })) }
-          alt=''
-          className="user-profile-image better-nav-item p-0"
-          src={ avatarURL }/>
-
-          <div className={
-            'box p-absolute direction-column align-items-start right-0 mt-1' + (this.state.show ? ' d-flex' : ' d-none')
-          }>
-            <p className="bold">{ email }</p>
-            <div className="d-flex align-center p-1-0">
-              <label className="d-flex align-items-center cursor-pointer">
-              <input
-                onChange={ toggleDarkMode }
-                checked={ darkMode }
-                type='checkbox' className="mr-2"/>
-                Dark Mode
-              </label>
-            </div>
-            <Link to="/settings" className="p-1-0">Settings</Link>
-            <button
-              onClick={ logout }
-              className={ 'my-button w-100' + (loggingOut ? ' is-loading' : '')}>
-              Logout
-            </button>
-          </div>
-      </section>
-    )
-  }
 }
 
 class Navbar extends React.Component {
