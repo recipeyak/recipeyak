@@ -2,7 +2,6 @@ import React from 'react'
 import NoMatch from './NoMatch'
 import Loader from './Loader'
 import { Helmet } from 'react-helmet'
-import { ButtonPrimary } from './Buttons'
 import MetaData from './MetaData'
 
 /* eslint-disable camelcase */
@@ -15,17 +14,9 @@ const RecipeViewing = ({
   time,
   ingredients = [],
   steps = [],
-  cart_count = 0,
-  addToCart,
-  removeFromCart,
-  updateCart,
-  addingToCart = false,
-  removingFromCart = false,
   loading = true,
   error404 = false,
   edit,
-  count,
-  handleInputChange,
   owner = {
     type: 'user',
     id: 0,
@@ -46,35 +37,6 @@ const RecipeViewing = ({
 
       <div className="grid-entire-row d-flex align-center justify-space-between flex-wrap">
         <h1 className="title fs-3rem mb-0">{ name }</h1>
-        <div className="d-flex">
-          <input
-            onClick={ () => removeFromCart(id) }
-            className={ `my-button ${removingFromCart ? 'is-loading' : ''}` }
-            disabled={ cart_count <= 0 }
-            type="button"
-            value="-"/>
-          <input
-            onChange={ handleInputChange }
-            onBlur={
-              () => {
-                const changed = count.toString() !== cart_count.toString()
-                if (changed) {
-                  updateCart(id, count)
-                }
-              }
-            }
-            disabled={ addingToCart || removingFromCart }
-            value={ count }
-            name="count"
-            className="bg-whitesmoke text-center is-light my-input is-slim max-width-10 mr-1 ml-1"/>
-          <ButtonPrimary
-            onClick={ () => addToCart(id) }
-            loading={ addingToCart }
-            type="button"
-            value="+">
-            +
-          </ButtonPrimary>
-        </div>
       </div>
 
       <div className="grid-entire-row">

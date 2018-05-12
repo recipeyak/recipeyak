@@ -24,7 +24,7 @@ export const initialState = {
   steps: []
 }
 
-const cart = (state = initialState, action) => {
+const addrecipe = (state = initialState, action) => {
   switch (action.type) {
   case SET_ADD_RECIPE_FORM_NAME:
     return { ...state, name: action.val }
@@ -91,4 +91,4 @@ const cart = (state = initialState, action) => {
   }
 }
 
-export default cart
+export default addrecipe

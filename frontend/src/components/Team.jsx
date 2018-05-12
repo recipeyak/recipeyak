@@ -4,7 +4,7 @@ import {
   Link
 } from 'react-router-dom'
 
-import Recipe from '../containers/RecipeItem'
+import Recipe from './RecipeItem'
 import MemberRow from './MemberRow'
 
 import NoMatch from './NoMatch'

@@ -1,5 +1,4 @@
 from django.conf.urls import url, include
-from django.urls import path
 
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers
@@ -9,10 +8,8 @@ from .views import (
     StepViewSet,
     TagViewSet,
     IngredientViewSet,
-    CartViewSet,
     ShoppingListView,
     UserStats,
-    ClearCart,
     TeamViewSet,
     MembershipViewSet,
     TeamInviteViewSet,
@@ -46,8 +43,6 @@ urlpatterns = [
     url(r'', include(router.urls)),
     url(r'', include(recipes_router.urls)),
     url(r'', include(teams_router.urls)),
-    path(r'cart/<int:pk>/', CartViewSet.as_view(), name='cart'),
-    url(r'clear_cart', ClearCart.as_view(), name='clear-cart'),
     url(r'shoppinglist', ShoppingListView.as_view(), name='shopping-list'),
     url(r'user_stats', UserStats.as_view(), name='user-stats'),
     url(r'report-bad-merge', ReportBadMerge.as_view(), name='report-bad-merge'),

@@ -7,7 +7,6 @@ from .models import (
     Ingredient,
     Step,
     Tag,
-    CartItem,
     Team,
     Membership,
     Invite,
@@ -44,16 +43,6 @@ class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
         fields = ('id', 'quantity', 'name', 'description')
-
-
-class CartItemSerializer(serializers.ModelSerializer):
-    """
-    serializer CartItem items
-    """
-
-    class Meta:
-        model = CartItem
-        fields = ('recipe', 'count',)
 
 
 class StepSerializer(serializers.ModelSerializer):
@@ -97,7 +86,6 @@ class RecipeSerializer(serializers.ModelSerializer):
     steps = StepSerializer(many=True)
     ingredients = IngredientSerializer(many=True)
     tags = TagSerializer(many=True, default=[])
-    cart_count = serializers.SerializerMethodField()
     owner = OwnerRelatedField(read_only=True)
     # specify default None so we can use this as an optional field
     team = serializers.IntegerField(write_only=True, default=None)
@@ -106,7 +94,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = ('id', 'name', 'author', 'source', 'time', 'ingredients',
                   'steps', 'tags', 'servings', 'edits', 'modified',
-                  'cart_count', 'owner', 'team')
+                  'owner', 'team')
         read_only_fields = ('owner',)
 
     def __init__(self, *args, **kwargs):
@@ -162,23 +150,6 @@ class RecipeSerializer(serializers.ModelSerializer):
         for tag in tags:
             Tag.objects.create(recipe=recipe, **tag)
         return recipe
-
-    def get_cart_count(self, recipe: Recipe) -> float:
-        user = self.context['request'].user
-        return getattr(recipe.cartitem_set.filter(user=user).first(), 'count', 0)  # type: ignore
-
-
-class MostAddedRecipeSerializer(serializers.ModelSerializer):
-
-    total_cart_additions = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Recipe
-        fields = ('id', 'name', 'author', 'total_cart_additions')
-
-    def get_total_cart_additions(self, recipe):
-        user = self.context['request'].user
-        return getattr(recipe.cartitem_set.filter(user=user).first(), 'total_cart_additions', 0)
 
 
 class TeamSerializer(serializers.ModelSerializer):

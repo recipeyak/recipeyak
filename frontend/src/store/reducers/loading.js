@@ -5,7 +5,6 @@ import {
   SET_LOADING_RESET_CONFIRMATION,
   SET_LOADING_RECIPES,
   SET_LOADING_ADD_RECIPE,
-  SET_LOADING_CART
 } from '../actionTypes'
 
 const loading = (state = {
@@ -15,7 +14,6 @@ const loading = (state = {
   resetConfirmation: false,
   recipes: false,
   addRecipe: false,
-  cart: false
 }, action) => {
   switch (action.type) {
   case SET_LOADING_LOGIN:
@@ -26,8 +24,6 @@ const loading = (state = {
     return { ...state, reset: action.val }
   case SET_LOADING_RESET_CONFIRMATION:
     return { ...state, resetConfirmation: action.val }
-  case SET_LOADING_CART:
-    return { ...state, cart: action.val }
   case SET_LOADING_RECIPES:
     return { ...state, recipes: action.val }
   case SET_LOADING_ADD_RECIPE:

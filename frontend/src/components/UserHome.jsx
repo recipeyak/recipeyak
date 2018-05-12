@@ -3,8 +3,7 @@ import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
 import Loader from './Loader'
-import { recipeURL } from '../urls'
-import Recipe from '../containers/RecipeItem'
+import Recipe from './RecipeItem'
 
 import img from './images/yak.jpg'
 
@@ -34,31 +33,6 @@ const LifetimeRecipeEdits = ({
       Since <b>{ dateJoined }</b>, you have edited your recipes a total of <b>{ toInt(edits) } times</b>.
       { edits < 1 ? <span>Try the <u>Edit</u> button.</span> : null }
     </p>
-
-const recipeTitle = ({ name, author }) => {
-  if (author == null || author === '') {
-    return name
-  }
-  return `${name} by ${author}`
-}
-
-const MostAddedRecipe = ({
-  name = '',
-  id,
-  author,
-  cartAdds = 0
-}) =>
-  name !== '' && cartAdds > 0
-    ? <p className="stat mb-1">
-        <b>By cart additions</b>, your <b>favorite recipe</b> is
-        <Link className="big-link" to={recipeURL(id, name)}>
-          { recipeTitle({ name, author }) }
-        </Link>.
-        You've added it to your cart <b>{cartAdds}</b> time{cartAdds !== 1 && 's'}.
-      </p>
-    : <p className="stat mb-1">
-        You haven't added a recipe to your cart yet. <Link className="big-link" to="/recipes/">Give it a shot!</Link>
-      </p>
 
 const RecentRecipes = ({
   recipes,
@@ -123,21 +97,11 @@ const UserStatistics = ({ loading, stats }) => {
         So far <b>{ stats.total_recipes_added_last_month_by_all_users }</b> recipes have been added in the <b>last month</b>.
       </p>
       <p className="stat">
-        <b>{ stats.total_cart_additions }</b> cart additions have been made by <b>all users</b>.
-      </p>
-      <p className="stat">
         <Link className="big-link" to="/recipes/add">Add some recipes</Link>
         and check back later for more stats.
       </p>
     </div>
   }
-
-  const {
-    id,
-    name,
-    author,
-    total_cart_additions: cartAdds
-  } = stats.most_added_recipe
 
   return (
     <section>
@@ -150,12 +114,6 @@ const UserStatistics = ({ loading, stats }) => {
       <LifetimeRecipeEdits
         edits={stats.total_recipe_edits}
         dateJoined={stats.date_joined}
-      />
-      <MostAddedRecipe
-        id={id}
-        name={name}
-        author={author}
-        cartAdds={cartAdds}
       />
     </section>
   )
@@ -171,12 +129,8 @@ const UserHome = ({
     date_joined: null,
     recipes_added_by_month: []
   },
-  recipes,
-  cart,
-  addToCart,
-  removeFromCart,
   errorRecipes,
-  updateCart
+  recipes,
 }) =>
   <div className="container pr-2 pl-2 pb-2">
     <Helmet title='Home'/>
@@ -190,10 +144,6 @@ const UserHome = ({
         loading={ loadingRecipes }
         error={ errorRecipes }
         recipes={ recipes }
-        cart={ cart }
-        removeFromCart={ removeFromCart }
-        addToCart={ addToCart }
-        updateCart={ updateCart }
       />
     </section>
   </div>

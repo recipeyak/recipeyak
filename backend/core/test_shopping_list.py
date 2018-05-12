@@ -303,7 +303,7 @@ def test_fetching_shoppinglist_with_invalid_dates(user, client):
     assert res.status_code == status.HTTP_400_BAD_REQUEST
 
 
-def test_adding_to_cart_multiple_times_some_ingredient(user, client):
+def test_scheduling_multiple_times_some_ingredient(user, client):
     """
     with an ingredient of quantity sprinkle that we add to the cart multiple
     times shouldn't become sprinklesprinklesprinkle
@@ -473,8 +473,6 @@ def test_combining_plural_and_singular_leaves(user, client, empty_recipe):
 
 
 def test_report_bad_merge(user, client, recipe):
-    recipe.set_cart_quantity(user, count=1)
-
     url = reverse('report-bad-merge')
     assert client.post(url).status_code == status.HTTP_401_UNAUTHORIZED
 

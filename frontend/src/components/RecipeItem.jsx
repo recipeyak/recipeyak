@@ -110,7 +110,6 @@ export default class RecipeItem extends React.Component {
       author,
       id,
       url = recipeURL(id, name),
-      addingToCart = false,
       owner = {
         type: 'user',
         id: 0,
@@ -139,8 +138,7 @@ export default class RecipeItem extends React.Component {
             <Link to={ url }>{ name }</Link>
             <ButtonPlain
               onClick={() => this.setState(prev => ({ show: !prev.show }))}
-              className="is-small p-relative"
-              loading={ addingToCart }>
+              className="is-small p-relative">
               •••
             </ButtonPlain>
             { this.state.show

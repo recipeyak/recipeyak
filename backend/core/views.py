@@ -29,7 +29,6 @@ from .models import (
     Step,
     Tag,
     Ingredient,
-    CartItem,
     Team,
     Invite,
     MyUser,
@@ -40,8 +39,6 @@ from .serializers import (
     StepSerializer,
     TagSerializer,
     IngredientSerializer,
-    CartItemSerializer,
-    MostAddedRecipeSerializer,
     TeamSerializer,
     MembershipSerializer,
     InviteSerializer,
@@ -85,8 +82,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         # get all recipes user has access to
         recipes = Recipe.objects \
             .filter(Q(owner_user=self.request.user) |
-                    Q(owner_team__in=user_active_team_ids(self.request.user))) \
-            .prefetch_related('cartitem_set')
+                    Q(owner_team__in=user_active_team_ids(self.request.user)))
 
         # filtering for homepage
         if self.request.query_params.get('recent') is not None:
@@ -209,7 +205,7 @@ class ShoppingListView(views.APIView):
         except (ValueError, ValidationError):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        ingredients: List[CartItem] = []
+        ingredients: List[Ingredient] = []
         for scheduled_recipe in scheduled_recipes:
             for _ in range(scheduled_recipe.count):
                 ingredients += scheduled_recipe.recipe.ingredients
@@ -234,32 +230,6 @@ class TagViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class CartViewSet(APIView):
-
-    permission_classes = (IsAuthenticated, HasRecipeAccess,)
-
-    def patch(self, request, pk, format=None) -> Response:
-        recipe = get_object_or_404(Recipe, pk=pk)
-        self.check_object_permissions(request, recipe)
-
-        cartitem, _ = CartItem.objects.get_or_create(user=self.request.user, recipe=recipe)
-
-        serializer = CartItemSerializer(cartitem, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class ClearCart(APIView):
-
-    def post(self, request, format=None):
-        CartItem.objects \
-                .filter(user=self.request.user) \
-                .update(count=0)
-        logger.info(f"Cart cleared by {self.request.user}")
-        return Response(status=status.HTTP_200_OK)
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
@@ -295,16 +265,6 @@ class UserStats(APIView):
         new_recipes_last_week = user_recipes \
             .filter(created__gt=last_week).count()
 
-        most_added_recipe = getattr((CartItem.objects
-                                    .filter(user=request.user)
-                                    .filter(recipe__owner_user=request.user)
-                                    .order_by('-total_cart_additions')
-                                    .first()), 'recipe', None)
-
-        total_cart_additions = CartItem.objects \
-            .aggregate(total=Sum('total_cart_additions')) \
-            .get('total')
-
         last_month = datetime.now(tz=pytz.UTC) - timedelta(days=30)
 
         total_recipes_added_last_month_by_all_users = Recipe.objects \
@@ -331,15 +291,10 @@ class UserStats(APIView):
             'total_user_recipes': user_recipes.count(),
             'total_recipe_edits': total_recipe_edits,
             'new_recipes_last_week': new_recipes_last_week,
-            'most_added_recipe': MostAddedRecipeSerializer(
-                most_added_recipe,
-                context={'request': request}
-            ).data,
             'date_joined': date_joined,
             'recipes_pie_not_pie': (recipes_pie_not_pie, total_recipes),
             'recipes_added_by_month': recipes_added_by_month,
             'total_recipes_added_last_month_by_all_users': total_recipes_added_last_month_by_all_users,
-            'total_cart_additions': total_cart_additions
         })
 
 
@@ -502,7 +457,7 @@ class TeamRecipesViewSet(
     def list(self, request, team_pk=None):
         serializer = self.get_serializer(self.get_queryset(),
                                          many=True,
-                                         fields=('id', 'name', 'cart_count', 'author', 'tags',))
+                                         fields=('id', 'name', 'author', 'tags',))
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request, team_pk=None):
@@ -520,10 +475,7 @@ class ReportBadMerge(APIView):
 
     def post(self, request, format=None):
         user = request.user
-        cart_items = user.cart_items.filter(count__gt=0)
-
-        logger.warn(f'bad combine for user: {user} with cartitems: {cart_items}')
-
+        logger.warn(f'bad combine for user: {user} with recipes: {user.scheduled_recipes}')
         return Response(status=status.HTTP_201_CREATED)
 
 

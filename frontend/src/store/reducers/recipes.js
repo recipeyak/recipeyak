@@ -12,8 +12,6 @@ import {
   UPDATE_RECIPE_TIME,
   SET_RECIPES,
   UPDATE_STEP,
-  SET_RECIPE_ADDING_TO_CART,
-  SET_RECIPE_REMOVING_FROM_CART,
   SET_LOADING_ADD_STEP_TO_RECIPE,
   SET_LOADING_RECIPE,
   SET_DELETING_RECIPE,
@@ -25,8 +23,6 @@ import {
   SET_RECIPE_404,
   SET_RECIPE_UPDATING,
   SET_RECIPE,
-  SET_RECIPE_CART_AMOUNT,
-  CLEAR_RECIPE_CART_AMOUNTS,
   UPDATE_RECIPE_OWNER,
   SET_SCHEDULING_RECIPE,
 } from '../actionTypes'
@@ -117,10 +113,6 @@ export const recipes = (state = {}, action) => {
       // convert the array of objects to an object with the recipe.id as the
       // key, and the recipe as the value
     return action.recipes.reduce((a, b) => ({ ...a, [b.id]: b }), {})
-  case SET_RECIPE_ADDING_TO_CART:
-    return { ...state, [action.id]: { ...state[action.id], addingToCart: action.loading } }
-  case SET_RECIPE_REMOVING_FROM_CART:
-    return { ...state, [action.id]: { ...state[action.id], removingFromCart: action.loading } }
   case SET_DELETING_RECIPE:
     return { ...state, [action.id]: { ...state[action.id], deleting: action.val } }
   case SET_LOADING_RECIPE:
@@ -205,23 +197,6 @@ export const recipes = (state = {}, action) => {
         ...action.data
       }
     }
-  case SET_RECIPE_CART_AMOUNT:
-    return {
-      ...state,
-      [action.id]: {
-        ...state[action.id],
-        cart_count: action.count
-      }
-    }
-  case CLEAR_RECIPE_CART_AMOUNTS:
-    return Object.values(state)
-        .reduce((result, recipe) => {
-          result[recipe.id] = {
-            ...recipe,
-            cart_count: 0
-          }
-          return result
-        }, {})
   case UPDATE_RECIPE_OWNER:
     return {
       ...state,

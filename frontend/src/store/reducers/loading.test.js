@@ -6,7 +6,6 @@ import {
   setLoadingResetConfirmation,
   setLoadingRecipes,
   setLoadingAddRecipe,
-  setLoadingCart
 } from '../actions.js'
 
 describe('loading', () => {
@@ -97,24 +96,6 @@ describe('loading', () => {
 
     expect(
       loading(loadingState, setLoadingAddRecipe(false))
-      ).toEqual(notLoadingState)
-  })
-
-  it('sets loading cart', () => {
-    const notLoadingState = {
-      cart: false
-    }
-
-    const loadingState = {
-      cart: true
-    }
-
-    expect(
-      loading(notLoadingState, setLoadingCart(true))
-      ).toEqual(loadingState)
-
-    expect(
-      loading(loadingState, setLoadingCart(false))
       ).toEqual(notLoadingState)
   })
 

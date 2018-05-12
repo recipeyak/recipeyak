@@ -11,7 +11,6 @@ from core.models import (
     Ingredient,
     Step,
     Tag,
-    CartItem,
     Team,
     Invite,
     Membership,
@@ -136,7 +135,6 @@ admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Ingredient)
 admin.site.register(Step)
 admin.site.register(Tag)
-admin.site.register(CartItem)
 admin.site.register(Team)
 admin.site.register(Invite)
 admin.site.register(Membership)

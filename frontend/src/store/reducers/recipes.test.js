@@ -13,8 +13,6 @@ import {
   updateRecipeSource,
   updateIngredient,
   updateStep,
-  setRecipeAddingToCart,
-  setRecipeRemovingFromCart,
   setLoadingAddStepToRecipe,
   setLoadingRecipe,
   setDeletingRecipe,
@@ -26,8 +24,6 @@ import {
   setRecipe404,
   setRecipeUpdating,
   setRecipe,
-  setRecipeCartAmount,
-  clearRecipeCartAmounts,
   updateRecipeOwner,
   setSchedulingRecipe,
 } from '../actions'
@@ -430,46 +426,6 @@ describe('Recipes', () => {
     ).toEqual(afterState)
   })
 
-  it('set recipe to be in the adding to cart state', () => {
-    const beforeState = {
-      1: {
-        id: 1,
-        addingToCart: false
-      }
-    }
-
-    const afterState = {
-      1: {
-        id: 1,
-        addingToCart: true
-      }
-    }
-
-    expect(
-      recipes(beforeState, setRecipeAddingToCart(1, true))
-    ).toEqual(afterState)
-  })
-
-  it('set recipe to be in the removing from cart state', () => {
-    const beforeState = {
-      1: {
-        id: 1,
-        removingFromCart: false
-      }
-    }
-
-    const afterState = {
-      1: {
-        id: 1,
-        removingFromCart: true
-      }
-    }
-
-    expect(
-      recipes(beforeState, setRecipeRemovingFromCart(1, true))
-    ).toEqual(afterState)
-  })
-
   it('sets the loading state for adding a step to a recipe', () => {
     const beforeState = {
       1: {
@@ -686,69 +642,15 @@ describe('Recipes', () => {
     ).toEqual(afterState)
   })
 
-  it('updates recipe cart amount', () => {
-    const beforeState = {
-      1: {
-        name: 'Initial recipe name',
-        cart_count: 0
-      }
-    }
-
-    const afterState = {
-      1: {
-        name: 'Initial recipe name',
-        cart_count: 2
-      }
-    }
-
-    expect(
-      recipes(beforeState, setRecipeCartAmount(1, 2))
-    ).toEqual(afterState)
-  })
-
-  it('clear cart amounts', () => {
-    const beforeState = {
-      1: {
-        id: 1,
-        name: 'Initial recipe name 1',
-        cart_count: 2
-      },
-      2: {
-        id: 2,
-        name: 'Initial recipe name 2',
-        cart_count: 3
-      },
-    }
-
-    const afterState = {
-      1: {
-        id: 1,
-        name: 'Initial recipe name 1',
-        cart_count: 0
-      },
-      2: {
-        id: 2,
-        name: 'Initial recipe name 2',
-        cart_count: 0
-      },
-    }
-
-    expect(
-      recipes(beforeState, clearRecipeCartAmounts())
-    ).toEqual(afterState)
-  })
-
   it('sets recipe owner for recipe move', () => {
     const beforeState = {
       1: {
         id: 1,
         name: 'Initial recipe name 1',
-        cart_count: 2,
       },
       2: {
         id: 2,
         name: 'Initial recipe name 2',
-        cart_count: 3
       },
     }
 
@@ -756,7 +658,6 @@ describe('Recipes', () => {
       1: {
         id: 1,
         name: 'Initial recipe name 1',
-        cart_count: 2,
         owner: {
           id: 14,
           type: 'team',
@@ -766,7 +667,6 @@ describe('Recipes', () => {
       2: {
         id: 2,
         name: 'Initial recipe name 2',
-        cart_count: 3
       },
     }
 
@@ -787,12 +687,10 @@ describe('Recipes', () => {
       1: {
         id: 1,
         name: 'Initial recipe name 1',
-        cart_count: 2,
       },
       2: {
         id: 2,
         name: 'Initial recipe name 2',
-        cart_count: 3
       },
     }
 
@@ -800,13 +698,11 @@ describe('Recipes', () => {
       1: {
         id: 1,
         name: 'Initial recipe name 1',
-        cart_count: 2,
         scheduling: true,
       },
       2: {
         id: 2,
         name: 'Initial recipe name 2',
-        cart_count: 3,
       },
     }
 
