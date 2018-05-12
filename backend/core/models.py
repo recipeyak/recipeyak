@@ -158,7 +158,7 @@ class Recipe(CommonInfo):
                 step.recipe_id = recipe_copy.pk
                 step.save()
             # clone ingredient objects
-            for ingredient in self.ingredients.all():
+            for ingredient in self.ingredients:
                 ingredient.pk = None
                 # alternative to recipe_copy.ingredients_set.add(ingredient)
                 ingredient.recipe_id = recipe_copy.pk
