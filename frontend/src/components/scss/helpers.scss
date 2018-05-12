@@ -303,6 +303,20 @@
   }
 }
 
+@each $i in (120px, 400px, 50px) {
+  .w-#{$i},
+  .width-#{$i} {
+    width: $i;
+  }
+}
+
+
+@for $i from 1 through 4 {
+  .w-#{$i}rem {
+    width: #{$i}rem;
+  }
+}
+
 .cursor-move {
   cursor: move;
 }
@@ -335,10 +349,6 @@
 
 .min-width-2rem {
   min-width: 2rem;
-}
-
-.width-50px {
-  width: 50px;
 }
 
 .max-height-20vh {
@@ -442,16 +452,6 @@
   overflow-y: scroll;
 }
 
-@for $i from 1 through 4 {
-  .w-#{$i}rem {
-    width: #{$i}rem;
-  }
-}
-
-.w-50px {
-  width: 50px;
-}
-
 .text-muted {
   color: $grey;
 }
@@ -463,14 +463,6 @@
 .min-width-0 {
   min-width: 0;
   width: unset;
-}
-
-.width-120px {
-  width: 125px;
-}
-
-.w-400px {
-  width: 400px;
 }
 
 .grid-auto-rows-unset {
