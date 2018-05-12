@@ -6,16 +6,8 @@ import RecipeViewing from './RecipeViewing'
 import { inputAbs } from '../input'
 
 class Recipe extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      editing: false,
-      count: this.props.cart_count,
-    }
-  }
-
-  componentWillReceiveProps = nextProps => {
-    this.setState({ count: nextProps.cart_count })
+  state = {
+    editing: false,
   }
 
   handleInputChange = e =>
@@ -37,7 +29,6 @@ class Recipe extends React.Component {
     return (
       <RecipeViewing
         { ...this.props }
-        { ...this.state }
         handleInputChange={ this.handleInputChange }
         edit={ () => this.setState({ editing: true }) }
       />

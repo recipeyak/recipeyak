@@ -99,10 +99,6 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         return f'//www.gravatar.com/avatar/{md5_email}?d=identicon&r=g'
 
     @property
-    def cart_items(self):
-        return CartItem.objects.filter(user=self)
-
-    @property
     def scheduled_recipes(self):
         return ScheduledRecipe.objects.filter(user=self)
 
@@ -137,7 +133,6 @@ class Recipe(CommonInfo):
         Move recipe from current owner to another team or user
 
         All we need to do is change the owner for this one.
-            - CartItem is OneToOne and will be fine.
             - Steps and Ingredients will be fine since we aren't changing pk's
         """
         with transaction.atomic():
@@ -168,11 +163,6 @@ class Recipe(CommonInfo):
                 recipe_copy.ingredient_set.add(ingredient)
             recipe_copy.save()
             return recipe_copy
-
-    def set_cart_quantity(self, user: MyUser, count: float) -> None:
-        cartitem, _ = self.cartitem_set.get_or_create(user=user, recipe=self)
-        cartitem.count = count
-        cartitem.save()
 
     def schedule(self, on, user, count):
         return ScheduledRecipe.objects.create_scheduled(recipe=self, on=on, count=count, user=user)
@@ -281,28 +271,6 @@ class ScheduledRecipe(CommonInfo):
 
     def __str__(self):
         return f'ScheduledRecipe:: {self.count} of {self.recipe.name} on {self.on} for {self.user}'
-
-
-class CartItem(CommonInfo):
-    """Model for recipe and cart count"""
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
-    count = models.PositiveIntegerField(default=0)
-    total_cart_additions = models.PositiveIntegerField(default=0)
-
-    class Meta:
-        unique_together = (('user', 'recipe'),)
-
-    def __str__(self):
-        return f'CartItem:: count: {self.count} total: {self.total_cart_additions} - {self.recipe}'
-
-    def save(self, *args, **kwargs):
-        old_cart = CartItem.objects.filter(recipe=self.recipe, user=self.user).first()
-        if old_cart is not None and old_cart.count < self.count:
-            count_increase = self.count - old_cart.count
-            self.total_cart_additions += count_increase
-            logger.info('Recipe added to cart')
-        super().save(*args, **kwargs)
 
 
 class InviteManager(models.Manager):

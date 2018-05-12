@@ -16,8 +16,6 @@ describe('RecipeItem', () => {
       url: '/someurl',
       source: 'http://example.com/recipeTitle',
       tags: ['OneTag', 'TwoTag'],
-      removeFromCart: () => console.log('Remove from cart'),
-      addToCart: () => console.log('Add to cart')
     }
     mount(
       <DndTestContext>
@@ -32,8 +30,6 @@ describe('RecipeItem', () => {
       author: 'Recipe author',
       url: '/someurl',
       source: 'http://example.com/recipeTitle',
-      removeFromCart: () => console.log('Remove from cart'),
-      addToCart: () => console.log('Add to cart')
     }
     mount(
       <DndTestContext>

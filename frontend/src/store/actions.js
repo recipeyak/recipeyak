@@ -27,10 +27,6 @@ import {
   SET_ERROR_ADD_RECIPE,
   SET_ERROR_RECIPES,
   UPDATE_STEP,
-  SET_ERROR_CART,
-  SET_LOADING_CART,
-  SET_RECIPE_ADDING_TO_CART,
-  SET_RECIPE_REMOVING_FROM_CART,
   SET_AVATAR_URL,
   SET_ERROR_PASSWORD_UPDATE,
   SET_LOADING_PASSWORD_UPDATE,
@@ -54,14 +50,11 @@ import {
   SET_RECIPE_404,
   SET_LOGGING_OUT,
   SET_RECIPE_UPDATING,
-  SET_CLEARING_CART,
   SET_SHOPPING_LIST_ERROR,
   SET_SOCIAL_ACCOUNT_CONNECTIONS,
   SET_LOADING_RESET_CONFIRMATION,
   SET_ERROR_RESET_CONFIRMATION,
   TOGGLE_DARK_MODE,
-  SET_RECIPE_CART_AMOUNT,
-  CLEAR_RECIPE_CART_AMOUNTS,
   SET_ADD_RECIPE_FORM_NAME,
   SET_ADD_RECIPE_FORM_AUTHOR,
   SET_ADD_RECIPE_FORM_SOURCE,
@@ -454,21 +447,6 @@ export const updatingPassword = (password1, password2, oldPassword) => dispatch 
   })
 }
 
-export const setLoadingCart = val => ({
-  type: SET_LOADING_CART,
-  val
-})
-
-export const setErrorCart = val => ({
-  type: SET_ERROR_CART,
-  val
-})
-
-export const setClearingCart = val => ({
-  type: SET_CLEARING_CART,
-  val
-})
-
 export const setShoppingList = val => ({
   type: SET_SHOPPING_LIST,
   val
@@ -476,97 +454,6 @@ export const setShoppingList = val => ({
 
 export const setShoppingListEmpty = () =>
   setShoppingList([])
-
-export const clearRecipeCartAmounts = () => ({
-  type: CLEAR_RECIPE_CART_AMOUNTS
-})
-
-export const clearCart = () => dispatch => {
-  dispatch(setClearingCart(true))
-  return http.post('/api/v1/clear_cart/', {})
-  .then(() => {
-    dispatch(clearRecipeCartAmounts())
-    dispatch(setShoppingListEmpty())
-    dispatch(setClearingCart(false))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    dispatch(setClearingCart(false))
-    dispatch(showNotificationWithTimeout({
-      message: 'error clearing cart',
-      level: 'danger',
-      delay: 3 * second
-    }))
-    throw err
-  })
-}
-
-export const setRecipeCartAmount = (id, count) => ({
-  type: SET_RECIPE_CART_AMOUNT,
-  id,
-  count
-})
-
-export const setRecipeAddingToCart = (id, loading) => ({
-  type: SET_RECIPE_ADDING_TO_CART,
-  id,
-  loading
-})
-
-export const addingToCart = id => (dispatch, getState) => {
-  // we increment the cart value by 1, since we know the default / min cart
-  // value is ensured to be 0 via the backend
-  const count = getState().recipes[id].cart_count + 1
-  dispatch(setRecipeAddingToCart(id, true))
-  return updatingCart(id, count)(dispatch, getState)
-  .then(() => {
-    dispatch(setRecipeAddingToCart(id, false))
-  })
-  .catch(err => {
-    dispatch(setRecipeAddingToCart(id, false))
-    throw err
-  })
-}
-
-export const updatingCart = (id, count) => dispatch =>
-  http.patch(`/api/v1/cart/${id}/`, {
-    count
-  })
-  .then(res => {
-    const {
-      recipe,
-      count
-    } = res.data
-    dispatch(setRecipeCartAmount(recipe, count))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    throw err
-  })
-
-export const setRecipeRemovingFromCart = (id, loading) => ({
-  type: SET_RECIPE_REMOVING_FROM_CART,
-  id,
-  loading
-})
-
-export const removingFromCart = id => (dispatch, getState) => {
-  const currentCount = getState().recipes[id].cart_count
-  const count = currentCount > 0 ? currentCount - 1 : 0
-  dispatch(setRecipeRemovingFromCart(id, true))
-  return updatingCart(id, count)(dispatch, getState)
-  .then(() => {
-    dispatch(setRecipeRemovingFromCart(id, false))
-  })
-  .catch(err => {
-    dispatch(setRecipeRemovingFromCart(id, false))
-    throw err
-  })
-}
 
 export const setLoadingShoppingList = val => ({
   type: SET_LOADING_SHOPPING_LIST,

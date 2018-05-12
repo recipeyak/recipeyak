@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import Recipe from '../containers/RecipeItem'
+import Recipe from './RecipeItem'
 import Loader from './Loader'
 import { TextInput } from './Forms'
 import { matchesQuery } from '../search'
-import { Results } from './RecipeList'
+import Results from './Results'
 
 import {
   byNameAlphabetical,

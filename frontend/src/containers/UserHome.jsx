@@ -11,8 +11,7 @@ import {
 const mapStateToProps = state => ({
   userStats: state.user.stats,
   loadingUserStats: state.user.stats_loading,
-  loadingRecipes: state.loading.recipes || state.loading.cart,
-  cart: state.cart,
+  loadingRecipes: state.loading.recipes,
   recipes: Object.values(state.recipes)
            .sort((x, y) => new Date(y.modified) > new Date(x.modified)),
   errorRecipes: state.error.recipes

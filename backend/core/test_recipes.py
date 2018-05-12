@@ -408,19 +408,6 @@ def test_updating_edit_recipe_via_api(client, user, recipe):
     assert Recipe.objects.get(pk=recipe.id).edits == 1
 
 
-def test_recipes_returns_cart_data(client, user, recipe):
-    client.force_authenticate(user)
-
-    url = reverse('cart', kwargs={'pk': recipe.pk})
-    count = 5
-    assert client.patch(url, {'count': count}).status_code == status.HTTP_200_OK
-
-    url = reverse('recipes-detail', kwargs={'pk': recipe.pk})
-    res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK
-    assert res.json().get('cart_count') == count
-
-
 def test_copy_recipe(client, user_with_recipes, empty_team, user3):
     """
     Users can copy recipe to team if they have write access.

@@ -93,7 +93,7 @@ export default class CalendarDay extends React.Component {
           'p-1',
           {
             'current-day': isToday(date),
-            'selected-day': this.props.isSelected,
+            'selected-day': this.props.isSelected || (isOver && canDrop),
           }
         )}>
         <Title date={date}/>
