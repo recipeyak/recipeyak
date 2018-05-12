@@ -63,6 +63,7 @@ const RecentRecipes = ({
             : recipes.map(recipe =>
                 <Recipe
                   {...recipe}
+                  noDrag
                   className='mb-0'
                   key={ recipe.id }
                 />
