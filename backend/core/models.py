@@ -151,16 +151,18 @@ class Recipe(CommonInfo):
             recipe_copy.owner = account
             recipe_copy.save()
             # clone step objects
-            for step in self.step_set.all():
+            for step in self.steps:
                 step.pk = None
+                # alternative to recipe_copy.steps_set.add(step)
+                # this is required due to the db constraint on recipe, position
                 step.recipe_id = recipe_copy.pk
                 step.save()
-                recipe_copy.step_set.add(step)
             # clone ingredient objects
-            for ingredient in self.ingredient_set.all():
+            for ingredient in self.ingredients.all():
                 ingredient.pk = None
+                # alternative to recipe_copy.ingredients_set.add(ingredient)
+                ingredient.recipe_id = recipe_copy.pk
                 ingredient.save()
-                recipe_copy.ingredient_set.add(ingredient)
             recipe_copy.save()
             return recipe_copy
 

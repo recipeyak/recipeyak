@@ -81,16 +81,15 @@ def test_recipe_move_to(client, team, user, recipe):
     """
     Move recipe to team from user or another team by changing owner.
     """
-
     assert recipe.owner == user
-    step_count = len(recipe.steps.all())
-    ingredient_count = len(recipe.ingredients.all())
 
+    a = (recipe.steps.values(), recipe.steps.values())
     recipe = recipe.move_to(team)
+    b = (recipe.steps.values(), recipe.steps.values())
 
+    for x, y in zip(a, b):
+        assert list(x) == list(y)
     assert recipe.owner == team
-    assert len(recipe.steps.all()) == step_count
-    assert len(recipe.ingredients.all()) == ingredient_count
 
 
 def test_recipe_copy_to(client, team, user, recipe):
@@ -104,21 +103,14 @@ def test_recipe_copy_to(client, team, user, recipe):
     assert recipe != team_recipe
     assert team_recipe.owner == team and recipe.owner == user
 
-    r_steps = recipe.steps.values()
-    t_steps = team_recipe.steps.values()
-    assert len(r_steps) == len(t_steps)
-
-    for r_step, t_step in zip(r_steps, t_steps):
-        assert r_step['id'] != t_step['id']
-        # ignore keys that will change
-        for key in ['id', 'created', 'modified', 'recipe_id']:
-            r_step.pop(key)
-            t_step.pop(key)
-        assert r_step == t_step
-
-    r_ingredients = list(recipe.ingredients.all())
-    t_ingredients = list(team_recipe.ingredients.all())
-    assert len(r_ingredients) == len(t_ingredients)
-
-    for r_ingredient, t_ingredient in zip(r_ingredients, t_ingredients):
-        assert r_ingredient.pk != t_ingredient.pk
+    for a, b in [(recipe.steps.values(), team_recipe.steps.values()),
+                 (recipe.ingredients.values(), team_recipe.ingredients.values())]:
+        assert len(a) == len(b)
+        for x, y in zip(a, b):
+            assert x['id'] != y['id']
+            assert x['recipe_id'] != y['recipe_id']
+            # ignore keys that will change
+            for key in ['id', 'created', 'modified', 'recipe_id']:
+                x.pop(key)
+                y.pop(key)
+            assert x == y
