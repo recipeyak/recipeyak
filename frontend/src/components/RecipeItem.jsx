@@ -64,7 +64,7 @@ export default class RecipeItem extends React.Component {
         </div>
       : null
 
-    return connectDragSource(
+    const component = (
       <div
         className={
           classNames('card', { 'cursor-move': this.props.noDrag == null })
@@ -98,5 +98,11 @@ export default class RecipeItem extends React.Component {
         </div>
       </div>
     )
+
+    const disableDrag = this.state.show
+
+    return disableDrag
+      ? component
+      : connectDragSource(component)
   }
 }
