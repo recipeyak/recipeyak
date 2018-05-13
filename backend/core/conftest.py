@@ -95,11 +95,13 @@ def recipe(user):
         quantity='1 lbs',
         name='egg',
         description='scrambled',
+        position=10.0,
         recipe=recipe)
 
     Ingredient.objects.create(
         quantity='2 tbs',
         name='soy sauce',
+        position=11.0,
         recipe=recipe)
 
     Step.objects.create(
@@ -131,11 +133,13 @@ def recipe_pie(user):
     Ingredient.objects.create(
         quantity='150 grams',
         name='all-purpose flour',
+        position=10.0,
         recipe=recipe)
 
     Ingredient.objects.create(
         quantity='0.25 teaspoon',
         name='fine sea salt',
+        position=11.0,
         recipe=recipe)
 
     Step.objects.create(
