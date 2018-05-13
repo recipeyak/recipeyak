@@ -1,6 +1,7 @@
 import hashlib
 from typing import List, Union
 import logging
+import itertools
 
 from django.db import models, transaction
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
@@ -150,19 +151,13 @@ class Recipe(CommonInfo):
             recipe_copy.pk = None
             recipe_copy.owner = account
             recipe_copy.save()
-            # clone step objects
-            for step in self.steps:
-                step.pk = None
+
+            for recipe_component in itertools.chain(self.steps, self.ingredients):
+                recipe_component.pk = None
                 # alternative to recipe_copy.steps_set.add(step)
                 # this is required due to the db constraint on recipe, position
-                step.recipe_id = recipe_copy.pk
-                step.save()
-            # clone ingredient objects
-            for ingredient in self.ingredients:
-                ingredient.pk = None
-                # alternative to recipe_copy.ingredients_set.add(ingredient)
-                ingredient.recipe_id = recipe_copy.pk
-                ingredient.save()
+                recipe_component.recipe_id = recipe_copy.pk
+                recipe_component.save()
             recipe_copy.save()
             return recipe_copy
 
