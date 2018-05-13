@@ -3,40 +3,55 @@ import NoMatch from './NoMatch'
 import Loader from './Loader'
 import { Helmet } from 'react-helmet'
 import MetaData from './MetaData'
+import { ButtonPrimary } from './Buttons'
+import DatePickerForm from './DatePickerForm'
 
 /* eslint-disable camelcase */
-const RecipeViewing = ({
-  id,
-  name,
-  author,
-  source,
-  servings,
-  time,
-  ingredients = [],
-  steps = [],
-  loading = true,
-  error404 = false,
-  edit,
-  owner = {
-    type: 'user',
-    id: 0,
-    name: '',
-  },
-}) => {
-  if (error404) {
-    return <NoMatch/>
+export default class RecipeViewing extends React.Component {
+  state = {
+    show: false,
   }
-  if (loading) {
-    return <section className="d-flex justify-content-center">
+  render () {
+    const {
+    id,
+    name,
+    author,
+    source,
+    servings,
+    time,
+    ingredients = [],
+    steps = [],
+    loading = true,
+    error404 = false,
+    edit,
+    owner = {
+      type: 'user',
+      id: 0,
+      name: '',
+    },
+  } = this.props
+    if (error404) {
+      return <NoMatch/>
+    }
+    if (loading) {
+      return <section className="d-flex justify-content-center">
       <Loader/>
     </section>
-  }
-  return (
+    }
+    return (
     <div className="d-grid grid-gap-2">
       <Helmet title={ name }/>
 
-      <div className="grid-entire-row d-flex align-center justify-space-between flex-wrap">
+      <div className="grid-entire-row d-flex align-center justify-space-between flex-wrap p-rel">
         <h1 className="title fs-3rem mb-0">{ name }</h1>
+        <ButtonPrimary onClick={() => this.setState(prev => ({ show: !prev.show }))} className="is-small">
+          •••
+        </ButtonPrimary>
+        <DatePickerForm
+          recipeID={id}
+          show={this.state.show}
+          close={() => this.setState({ show: false })}
+        />
       </div>
 
       <div className="grid-entire-row">
@@ -88,8 +103,7 @@ const RecipeViewing = ({
         </button>
       </section>
     </div>
-  )
+    )
+  }
 }
 /* eslint-enable camelcase */
-
-export default RecipeViewing
