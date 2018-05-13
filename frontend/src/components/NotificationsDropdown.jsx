@@ -30,7 +30,7 @@ const Invites = ({ loading, invites, decline, accept, accepting, declining }) =>
     <div>
       { invites.map(({ id, active, team, creator, status }) => {
         const TeamName = () => active
-          ? <Link to={teamURL(team.id)}>{team.name}</Link>
+          ? <Link to={teamURL(team.id, team.name)}>{team.name}</Link>
           : <b>{team.name}</b>
 
         const InviteButtons = () => {

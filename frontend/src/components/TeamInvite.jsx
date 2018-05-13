@@ -87,7 +87,7 @@ class TeamInvite extends React.Component {
     return (
       <div>
         <Helmet title="Team Invite"/>
-        <Link to={ teamURL(id) }>
+        <Link to={ teamURL(id, name) }>
           <h1 className="fs-9 text-center fw-500 p-4">{ name }</h1>
         </Link>
         <section className="d-flex justify-space-between align-items-center mb-2">

@@ -28,7 +28,7 @@ const MetaData = ({
 
   return <div className="break-word">
     <span>{ _author }{ _source }{ _servings }{ _time }</span>
-    <Owner type={owner.type} url={teamURL(owner.id)} name={owner.name} recipeId={recipeId}/>
+    <Owner type={owner.type} url={teamURL(owner.id, owner.name)} name={owner.name} recipeId={recipeId}/>
   </div>
 }
 

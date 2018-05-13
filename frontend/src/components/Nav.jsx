@@ -24,7 +24,7 @@ const Teams = ({ teams, loading }) => {
     <div className="text-left">
         { teams.map(({ id, name }) =>
             <p key={id}>
-              <NavLink to={teamURL(id)} activeClassName="fw-500">{ name }</NavLink>
+              <NavLink to={teamURL(id, name)} activeClassName="fw-500">{ name }</NavLink>
             </p>)
         }
     </div>

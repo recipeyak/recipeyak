@@ -60,7 +60,7 @@ export default class RecipeItem extends React.Component {
       : null
     const ownershipDetail = owner.type === 'team' && owner.name && owner.id
       ? <div className=" text-muted fw-500">
-          via <Link to={teamURL(owner.id)} className="text-muted bold">{ owner.name }</Link>
+          via <Link to={teamURL(owner.id, owner.name)} className="text-muted bold">{ owner.name }</Link>
         </div>
       : null
 
