@@ -55,6 +55,7 @@ class Recipes extends React.Component {
       .map(recipe =>
         <Recipe
           {...recipe}
+          drag
           className='mb-0'
           key={ recipe.id }
         />
