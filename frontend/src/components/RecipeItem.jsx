@@ -22,7 +22,7 @@ const recipeSource = {
     }
   },
   canDrag (props) {
-    return props.noDrag == null
+    return props.drag
   }
 }
 
@@ -37,6 +37,10 @@ function collect (connect, monitor) {
 export default class RecipeItem extends React.Component {
   state = {
     show: false,
+  }
+
+  static defaultProps = {
+    drag: false,
   }
 
   render () {
@@ -64,10 +68,12 @@ export default class RecipeItem extends React.Component {
         </div>
       : null
 
+    const drag = !this.state.show && this.props.drag
+
     const component = (
       <div
         className={
-          classNames('card', { 'cursor-move': this.props.noDrag == null })
+          classNames('card', { 'cursor-move': drag })
         }
         style={{
           opacity: isDragging ? 0.5 : 1,
@@ -99,9 +105,7 @@ export default class RecipeItem extends React.Component {
       </div>
     )
 
-    const disableDrag = this.state.show
-
-    return disableDrag
+    return !drag
       ? component
       : connectDragSource(component, { dropEffect: 'copy' })
   }
