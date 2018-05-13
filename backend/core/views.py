@@ -96,6 +96,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         # If the client doesn't set the position on one of the objects we need
         # to renumber them all.
         serializer.initial_data['steps'] = add_positions(serializer.initial_data['steps'])
+        serializer.initial_data['ingredients'] = add_positions(serializer.initial_data['ingredients'])
 
         serializer.is_valid(raise_exception=True)
 
@@ -242,6 +243,16 @@ class IngredientViewSet(viewsets.ModelViewSet):
         create the ingredient and attach it to the correct recipe
         """
         serializer = self.serializer_class(data=request.data)
+        recipe = get_object_or_404(Recipe, pk=recipe_pk)
+
+        # set a position if not provided
+        last_ingredient = recipe.ingredients.last()
+        if serializer.initial_data.get('position') is None:
+            if last_ingredient is not None:
+                serializer.initial_data['position'] = last_ingredient.position + 10.0
+            else:
+                serializer.initial_data['position'] = 10.0
+
         if serializer.is_valid():
             recipe = Recipe.objects.get(pk=recipe_pk)
             serializer.save(recipe=recipe)
@@ -465,6 +476,8 @@ class TeamRecipesViewSet(
 
         serializer = self.get_serializer(data=request.data)
         serializer.initial_data['steps'] = add_positions(serializer.initial_data['steps'])
+        serializer.initial_data['ingredients'] = add_positions(serializer.initial_data['ingredients'])
+
         serializer.is_valid(raise_exception=True)
 
         serializer.save(team=team)

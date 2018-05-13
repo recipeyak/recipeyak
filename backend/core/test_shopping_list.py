@@ -14,6 +14,12 @@ BASE_URL = f'/{settings.API_BASE_URL}'
 
 
 def test_combining_ingredients(user):
+    """
+    Caveat: order of ingredients affects ending unit
+
+    x lbs + y kg => z kg
+    x kg + y lbs => z lbs
+    """
 
     name = 'Recipe name'
     author = 'Recipe author'
@@ -24,18 +30,21 @@ def test_combining_ingredients(user):
         name=name, author=author, source=source, time=time, owner=user)
 
     Ingredient.objects.create(
-        quantity='2 lbs',
+        quantity='1 kg',
         name='tomato',
+        position=10.0,
         recipe=recipe)
 
     Ingredient.objects.create(
         quantity='2 tbs',
         name='soy sauce',
+        position=11.0,
         recipe=recipe)
 
     Ingredient.objects.create(
-        quantity='1 kg',
+        quantity='2 lbs',
         name='tomato',
+        position=12.0,
         recipe=recipe)
 
     ingredients = list(Ingredient.objects.all())
@@ -143,11 +152,13 @@ def test_combining_ingredients_with_out_units(user):
     Ingredient.objects.create(
         quantity='8',
         name='garlic cloves',
+        position=10.0,
         recipe=recipe2)
 
     Ingredient.objects.create(
         quantity='1',
         name='garlic clove',
+        position=11.0,
         recipe=recipe)
 
     ingredients = list(Ingredient.objects.all())
@@ -179,11 +190,13 @@ def test_combining_ingredients_with_dashes_in_name(user):
     Ingredient.objects.create(
         quantity='1 tablespoon',
         name='extra-virgin olive oil',
+        position=10.0,
         recipe=recipe)
 
     Ingredient.objects.create(
         quantity='8 tablespoons',
         name='extra virgin olive oil',
+        position=11.0,
         recipe=recipe2)
 
     ingredients = list(Ingredient.objects.all())
@@ -212,6 +225,7 @@ def test_combining_recipes_with_improper_quantities(client, user):
     Ingredient.objects.create(
         quantity=count,
         name=name,
+        position=10.0,
         recipe=recipe)
 
     recipe2 = Recipe.objects.create(
@@ -224,13 +238,14 @@ def test_combining_recipes_with_improper_quantities(client, user):
     recipe2.schedule(user=user, on=start, count=1)
 
     # 2. set ingredients of second recipe to 'basic' quantities and assert
-    for quantity in ['some', 'sprinkle']:
+    for i, quantity in enumerate(['some', 'sprinkle']):
 
         Ingredient.objects.filter(recipe=recipe2).delete()
 
         Ingredient.objects.create(
             quantity=quantity,
             name=name,
+            position=(10.0 + i),
             recipe=recipe2)
 
         client.force_authenticate(user)
@@ -265,19 +280,23 @@ def test_combining_ingredients_with_approximations(user):
     Ingredient.objects.create(
         quantity='1 tablespoon',
         name='black pepper',
+        position=10.0,
         recipe=recipe)
     Ingredient.objects.create(
         quantity='2 tablespoon',
         name='black pepper',
+        position=11.0,
         recipe=recipe)
     Ingredient.objects.create(
         quantity='sprinkle',
         name='black pepper',
+        position=12.0,
         recipe=recipe)
 
     Ingredient.objects.create(
         quantity='some',
         name='black pepper',
+        position=13.0,
         recipe=recipe2)
 
     ingredients = list(Ingredient.objects.all())
@@ -319,6 +338,7 @@ def test_scheduling_multiple_times_some_ingredient(user, client):
         Ingredient.objects.create(
             quantity=quantity,
             name='black pepper',
+            position=10.0,
             recipe=recipe)
 
         start = date(1976, 7, 6)
@@ -345,6 +365,7 @@ def test_combining_ingredient_with_range_quantity(user, client, empty_recipe):
     Ingredient.objects.create(
         quantity='4-5',
         name=name,
+        position=10.0,
         recipe=empty_recipe)
 
     start = date(1976, 7, 6)
@@ -372,11 +393,13 @@ def test_combining_ingredients_plural_and_singular_tomatoes(user, client, empty_
     Ingredient.objects.create(
         quantity='1',
         name='large tomato',
+        position=10.0,
         recipe=empty_recipe)
 
     Ingredient.objects.create(
         quantity='2',
         name='large tomatoes',
+        position=11.0,
         recipe=empty_recipe)
 
     start = date(1976, 7, 6)
@@ -406,16 +429,19 @@ def test_combining_ingredients_plural_and_singular_lemon(user, client, empty_rec
     Ingredient.objects.create(
         quantity='1/2',
         name='lemon',
+        position=10.0,
         recipe=empty_recipe)
 
     Ingredient.objects.create(
         quantity='1',
         name='lemon',
+        position=11.0,
         recipe=empty_recipe)
 
     Ingredient.objects.create(
         quantity='2',
         name='lemons',
+        position=12.0,
         recipe=empty_recipe)
 
     start = date(1976, 7, 6)
@@ -445,11 +471,13 @@ def test_combining_plural_and_singular_leaves(user, client, empty_recipe):
     Ingredient.objects.create(
         quantity='1',
         name='bay leaf',
+        position=10.0,
         recipe=empty_recipe)
 
     Ingredient.objects.create(
         quantity='4',
         name='bay leaves',
+        position=11.0,
         recipe=empty_recipe)
 
     start = date(1976, 7, 6)

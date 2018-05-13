@@ -214,6 +214,11 @@ class Ingredient(CommonInfo):
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255, blank=True)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    position = models.FloatField()
+
+    class Meta:
+        unique_together = (('recipe', 'position'),)
+        ordering = ['-position', ]
 
     def __str__(self):
         return f'{self.quantity} {self.name} {self.description}'
