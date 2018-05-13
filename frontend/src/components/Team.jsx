@@ -27,11 +27,11 @@ const CenteredLoader = () =>
     <Loader/>
   </div>
 
-const TeamMembers = ({ id, members, loading }) =>
+const TeamMembers = ({ id, name, members, loading }) =>
   <div>
     <section className="d-flex justify-space-between align-items-center">
       <h2 className="fs-6">Members</h2>
-      <Link className="button is-primary" to={ inviteURL(id) }>
+      <Link className="button is-primary" to={ inviteURL(id, name) }>
         Invite
       </Link>
     </section>
@@ -210,7 +210,7 @@ class Team extends React.Component {
               </Link>
             </li>
             <li className={ this.props.isSettings ? 'is-active' : '' }>
-              <Link to={teamSettingsURL(this.props.id)}>
+              <Link to={teamSettingsURL(this.props.id, this.props.name)}>
                 <span>Settings</span>
               </Link>
             </li>
@@ -227,6 +227,7 @@ class Team extends React.Component {
               <div>
                 <TeamMembers
                   id={ this.props.id }
+                  name={ this.props.name }
                   loading={ this.props.loadingMembers }
                   members={ this.props.members }
                 />
