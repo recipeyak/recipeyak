@@ -1,11 +1,33 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
 import { FormErrorHandler } from './Forms'
 import { ButtonPrimary } from './Buttons'
 
-class PasswordResetConfirmation extends React.Component {
+import { resetConfirmation as reset } from '../store/actions'
+
+const mapStateToProps = (state, props) => {
+  const uid = props.match.params.uid
+  const token = props.match.params.token
+  return {
+    uid,
+    token,
+    loading: state.loading.resetConfirmation,
+    error: state.error.resetConfirmation
+  }
+}
+
+const mapDispatchToProps = dispatch => ({
+  reset: (uid, token, newPassword1, newPassword2) => dispatch(reset(uid, token, newPassword1, newPassword2))
+})
+
+@connect(
+  mapStateToProps,
+  mapDispatchToProps
+)
+export default class PasswordResetConfirmation extends React.Component {
   state = {
     newPassword1: '',
     newPassword2: ''
@@ -18,8 +40,8 @@ class PasswordResetConfirmation extends React.Component {
   handleReset = async e => {
     e.preventDefault()
     await this.props.reset(
-      this.prop.uid,
-      this.prop.token,
+      this.props.uid,
+      this.props.token,
       this.state.newPassword1,
       this.state.newPassword2)
     this.setState({
@@ -88,5 +110,3 @@ class PasswordResetConfirmation extends React.Component {
     )
   }
 }
-
-export default PasswordResetConfirmation
