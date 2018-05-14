@@ -6,7 +6,6 @@ from .models import (
     Recipe,
     Ingredient,
     Step,
-    Tag,
     Team,
     Membership,
     Invite,
@@ -55,16 +54,6 @@ class StepSerializer(serializers.ModelSerializer):
         fields = ('id', 'text', 'position')
 
 
-class TagSerializer(serializers.ModelSerializer):
-    """
-    serializer the Tag of a recipe
-    """
-
-    class Meta:
-        model = Tag
-        fields = ('id', 'text',)
-
-
 class OwnerRelatedField(serializers.RelatedField):
     """
     A custom field to use for the `owner` generic relationship.
@@ -85,7 +74,6 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     steps = StepSerializer(many=True)
     ingredients = IngredientSerializer(many=True)
-    tags = TagSerializer(many=True, default=[])
     owner = OwnerRelatedField(read_only=True)
     # specify default None so we can use this as an optional field
     team = serializers.IntegerField(write_only=True, default=None)
@@ -93,7 +81,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'author', 'source', 'time', 'ingredients',
-                  'steps', 'tags', 'servings', 'edits', 'modified',
+                  'steps', 'servings', 'edits', 'modified',
                   'owner', 'team')
         read_only_fields = ('owner',)
 
@@ -134,7 +122,6 @@ class RecipeSerializer(serializers.ModelSerializer):
         """
         ingredients = validated_data.pop('ingredients')
         steps = validated_data.pop('steps')
-        tags = validated_data.pop('tags')
 
         # essentially an optional field
         team = validated_data.pop('team')
@@ -147,8 +134,6 @@ class RecipeSerializer(serializers.ModelSerializer):
             Ingredient.objects.create(recipe=recipe, **ingredient)
         for step in steps:
             Step.objects.create(recipe=recipe, **step)
-        for tag in tags:
-            Tag.objects.create(recipe=recipe, **tag)
         return recipe
 
 

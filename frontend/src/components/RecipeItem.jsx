@@ -45,7 +45,6 @@ export default class RecipeItem extends React.Component {
 
   render () {
     const {
-      tags = {},
       name,
       author,
       id,
@@ -59,9 +58,6 @@ export default class RecipeItem extends React.Component {
       isDragging,
     } = this.props
 
-    const spanTags = tags.length > 0
-      ? tags.map(tag => <span key={ tag } className="tag is-medium">{ tag }</span>)
-      : null
     const ownershipDetail = owner.type === 'team' && owner.name && owner.id
       ? <div className=" text-muted fw-500">
           via <Link to={teamURL(owner.id, owner.name)} className="text-muted bold">{ owner.name }</Link>
@@ -97,7 +93,6 @@ export default class RecipeItem extends React.Component {
             { author }
           </p>
           <div className="content">
-            { spanTags }
             { ownershipDetail }
           </div>
 

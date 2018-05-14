@@ -174,11 +174,6 @@ class Recipe(CommonInfo):
         """Return recipe steps ordered by creation date"""
         return Step.objects.filter(recipe=self).order_by('position', 'created')
 
-    @property
-    def tags(self):
-        """Return recipe tags ordered by creation date"""
-        return Tag.objects.filter(recipe=self).order_by('created')
-
     def __str__(self):
         return f'{self.name} by {self.author}'
 
@@ -231,15 +226,6 @@ class Step(CommonInfo):
     class Meta:
         unique_together = (('recipe', 'position'),)
         ordering = ['-position', ]
-
-    def __str__(self):
-        return self.text
-
-
-class Tag(CommonInfo):
-    """Recipe tag"""
-    text = models.CharField(max_length=255)
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.text

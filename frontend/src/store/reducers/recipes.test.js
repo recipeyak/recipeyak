@@ -39,7 +39,6 @@ describe('Recipes', () => {
     const recipe = {
       id: 123,
       title: 'Recipe title',
-      tags: ['tagOne', 'tagTwo'],
       author: 'Recipe author',
       source: '',
       ingredients: [

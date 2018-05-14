@@ -27,7 +27,6 @@ from .permissions import (
 from .models import (
     Recipe,
     Step,
-    Tag,
     Ingredient,
     Team,
     Invite,
@@ -37,7 +36,6 @@ from .models import (
 from .serializers import (
     RecipeSerializer,
     StepSerializer,
-    TagSerializer,
     IngredientSerializer,
     TeamSerializer,
     MembershipSerializer,
@@ -212,25 +210,6 @@ class ShoppingListView(views.APIView):
                 ingredients += scheduled_recipe.recipe.ingredients
 
         return Response(combine_ingredients(list(ingredients)), status=status.HTTP_200_OK)
-
-
-class TagViewSet(viewsets.ModelViewSet):
-
-    queryset = Tag.objects.all()
-    serializer_class = TagSerializer
-
-    def create(self, request, recipe_pk=None):
-        """
-        create the tag and attach it to the correct recipe
-        """
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            recipe = Recipe.objects.get(pk=recipe_pk)
-            serializer.save(recipe=recipe)
-            logger.info(f'Tag created by {self.request.user}')
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class IngredientViewSet(viewsets.ModelViewSet):

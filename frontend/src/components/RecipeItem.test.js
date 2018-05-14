@@ -15,21 +15,6 @@ describe('RecipeItem', () => {
       author: 'Recipe author',
       url: '/someurl',
       source: 'http://example.com/recipeTitle',
-      tags: ['OneTag', 'TwoTag'],
-    }
-    mount(
-      <DndTestContext>
-        <RecipeItem {...recipe} />
-      </DndTestContext>
-    )
-  })
-  it('renders without tags', () => {
-    const recipe = {
-      id: 123,
-      title: 'Some recipe title',
-      author: 'Recipe author',
-      url: '/someurl',
-      source: 'http://example.com/recipeTitle',
     }
     mount(
       <DndTestContext>
