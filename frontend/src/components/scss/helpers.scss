@@ -307,6 +307,7 @@
   .w-#{$i},
   .width-#{$i} {
     width: $i;
+    min-width: $i;
   }
 }
 
