@@ -4,12 +4,12 @@ import {
   Link
 } from 'react-router-dom'
 
-import Recipe from './RecipeItem'
 import MemberRow from './MemberRow'
 
 import NoMatch from './NoMatch'
 
 import Loader from './Loader'
+import TeamRecipes from './TeamRecipes'
 
 import {
   ButtonPrimary,
@@ -56,34 +56,6 @@ const TeamMembers = ({ id, name, members, loading }) =>
                 <h1 className="text-center fs-6 bold text-muted">No Team Members</h1>
                 <p className="text-center">Add one via the Invite button</p>
               </section>
-    }
-  </div>
-
-const TeamRecipes = ({ loading, recipes }) =>
-  <div>
-    <section className="d-flex justify-space-between align-items-center mb-1">
-      <h2 className="fs-6">Recipes</h2>
-      <Link to="/recipes/add" className="button is-primary">
-        Create Recipe
-      </Link>
-    </section>
-    { loading
-      ? <Loader/>
-      : recipes.length === 0
-          ? <section>
-              <h1 className="text-center fs-6 bold text-muted">No Team Recipes</h1>
-              <p className="text-center">Use the Create Recipe button to add one.</p>
-            </section>
-          : <section className="recipe-grid">
-            { recipes.map(recipe =>
-                <Recipe
-                  {...recipe}
-                  className='mb-0'
-                  key={ recipe.id }
-                />
-              )
-            }
-          </section>
     }
   </div>
 
