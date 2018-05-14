@@ -22,11 +22,6 @@ import {
   teamSettingsURL,
 } from '../urls'
 
-const CenteredLoader = () =>
-  <div className="d-flex justify-content-center">
-    <Loader/>
-  </div>
-
 const TeamMembers = ({ id, name, members, loading }) =>
   <div>
     <section className="d-flex justify-space-between align-items-center">
@@ -36,7 +31,7 @@ const TeamMembers = ({ id, name, members, loading }) =>
       </Link>
     </section>
     { loading
-        ? <CenteredLoader/>
+        ? <Loader/>
         : Object.values(members).length > 0
             ? <div className="table-responsive">
                 <table className="table-spacing">
@@ -73,7 +68,7 @@ const TeamRecipes = ({ loading, recipes }) =>
       </Link>
     </section>
     { loading
-      ? <CenteredLoader/>
+      ? <Loader/>
       : recipes.length === 0
           ? <section>
               <h1 className="text-center fs-6 bold text-muted">No Team Recipes</h1>
@@ -160,7 +155,7 @@ class TeamSettings extends React.Component {
 
 const TeamName = ({ loading, name }) => {
   if (loading) {
-    return <CenteredLoader/>
+    return <Loader/>
   }
   return (
     <div>
@@ -205,7 +200,7 @@ class Team extends React.Component {
         <div className="tabs is-boxed">
           <ul>
             <li className={ !this.props.isSettings ? 'is-active' : ''}>
-              <Link to={teamURL(this.props.id)}>
+              <Link to={teamURL(this.props.id, this.props.name)}>
                 <span>Team</span>
               </Link>
             </li>
