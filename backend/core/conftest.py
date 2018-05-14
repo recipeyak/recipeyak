@@ -11,7 +11,6 @@ from .models import (
     Recipe,
     Ingredient,
     Step,
-    Tag,
     Team,
     ScheduledRecipe,
 )
@@ -80,7 +79,7 @@ def empty_recipe(user):
 @pytest.fixture
 def recipe(user):
     """
-    Recipe with metadata, Ingredient, Step, and Tag owned by `user`
+    Recipe with metadata, Ingredient, Step owned by `user`
     """
 
     name = 'Recipe name'
@@ -109,17 +108,13 @@ def recipe(user):
         position=10.0,
         recipe=recipe)
 
-    Tag.objects.create(
-        text='stove',
-        recipe=recipe)
-
     return recipe
 
 
 @pytest.fixture
 def recipe_pie(user):
     """
-    Recipe with metadata, Ingredient, Step, and Tag owned by `user`.
+    Recipe with metadata, Ingredient, Step owned by `user`.
     Contains the word "pie" in name and source.
     """
     name = 'Brandied Pumpkin Pie'
@@ -145,10 +140,6 @@ def recipe_pie(user):
     Step.objects.create(
         text='Make the crust: In a food processor, pulse together the flour and salt.',
         position=10.0,
-        recipe=recipe)
-
-    Tag.objects.create(
-        text='oven',
         recipe=recipe)
 
     return recipe

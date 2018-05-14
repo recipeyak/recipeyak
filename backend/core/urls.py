@@ -6,7 +6,6 @@ from rest_framework_nested import routers
 from .views import (
     RecipeViewSet,
     StepViewSet,
-    TagViewSet,
     IngredientViewSet,
     ShoppingListView,
     UserStats,
@@ -27,7 +26,6 @@ router.register(r'calendar', CalendarViewSet, base_name='calendar')
 
 recipes_router = routers.NestedSimpleRouter(router, r'recipes', lookup='recipe')
 recipes_router.register(r'steps', StepViewSet, base_name='recipe-step')
-recipes_router.register(r'tags', TagViewSet, base_name='recipe-tag')
 recipes_router.register(r'ingredients', IngredientViewSet, base_name='recipe-ingredient')
 
 teams_router = routers.NestedSimpleRouter(router, r't', lookup='team')

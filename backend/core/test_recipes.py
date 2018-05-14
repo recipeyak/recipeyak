@@ -53,9 +53,6 @@ def test_recipe_creation(client, user):
             {'text': 'cover with pepper'},
             {'text': 'let rest for 1 year'},
         ],
-        'tags': [
-            {'text': 'oven'},
-        ]
     }
 
     res = client.post(f'{BASE_URL}/recipes/', data)
@@ -68,13 +65,12 @@ def test_recipe_creation(client, user):
     for key in ['name', 'author', 'source', 'time', 'servings']:
         assert data.get(key) == res.json().get(key)
 
-    # compare the nested items and ingore the ids as they don't exist them in the
+    # compare the nested items and ignore the ids as they don't exist them in the
     # initial data
-    for key in ['steps', 'tags']:
-        items: List[Dict[str, str]] = data.get(key)
-        new_items: List[Dict[str, str]] = res.json().get(key)
-        for item, new_item in zip(items, new_items):
-            assert item.get('text') == new_item.get('text')
+    items: List[Dict[str, str]] = data.get('steps')
+    new_items: List[Dict[str, str]] = res.json().get('steps')
+    for item, new_item in zip(items, new_items):
+        assert item.get('text') == new_item.get('text')
 
 
 def test_creating_recipe_with_empty_ingredients_and_steps(client, user):
@@ -279,68 +275,6 @@ def test_deleting_ingredient_from_recipe(client, user, recipe):
 
     assert ingredient_id not in (ingredient.get('id') for ingredient in res.json().get('ingredients')), \
         'ingredient was still in the recipe after being deleted'
-
-
-def test_adding_tag_to_recipe(client, user, recipe):
-    """
-    ensure a user can add a tag to a recipe
-    """
-    client.force_authenticate(user)
-
-    tag = {
-        'text': 'A new tag',
-    }
-
-    res = client.post(f'{BASE_URL}/recipes/{recipe.id}/tags/', tag)
-    assert res.status_code == status.HTTP_201_CREATED
-
-    res = client.get(f'{BASE_URL}/recipes/{recipe.id}/')
-    assert res.status_code == status.HTTP_200_OK
-
-    assert tag.get('text') in (tag.get('text') for tag in res.json().get('tags')), \
-        'tag was not in the tags of the recipe'
-
-
-def test_updating_tag_of_recipe(client, user, recipe):
-    """
-    ensure a user can update an tag of a recipe
-    """
-    client.force_authenticate(user)
-
-    tag_id = recipe.tags[0].id
-
-    tag = {
-        'text': 'An updated tag',
-    }
-
-    res = client.patch(f'{BASE_URL}/recipes/{recipe.id}/tags/{tag_id}/', tag)
-    assert res.status_code == status.HTTP_200_OK
-
-    res = client.get(f'{BASE_URL}/recipes/{recipe.id}/tags/{tag_id}/')
-    assert res.status_code == status.HTTP_200_OK
-
-    assert res.json().get('text') == tag.get('text'), "tag didn't update"
-
-
-def test_deleting_tag_from_recipe(client, user, recipe):
-    """
-    ensure a user can remove a tag from a recipe
-    """
-    client.force_authenticate(user)
-
-    tag_id = recipe.tags[0].id
-
-    res = client.delete(f'{BASE_URL}/recipes/{recipe.id}/tags/{tag_id}/')
-    assert res.status_code == status.HTTP_204_NO_CONTENT
-
-    res = client.get(f'{BASE_URL}/recipes/{recipe.id}/tags/{tag_id}/')
-    assert res.status_code == status.HTTP_404_NOT_FOUND
-
-    res = client.get(f'{BASE_URL}/recipes/{recipe.id}/')
-    assert res.status_code == status.HTTP_200_OK
-
-    assert tag_id not in (tag.get('id') for tag in res.json().get('tags')), \
-        'tag was still in the recipe after being deleted'
 
 
 def test_filtering_recipes_by_recent(client, user, recipes):

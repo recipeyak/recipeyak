@@ -10,7 +10,6 @@ from core.models import (
     Recipe,
     Ingredient,
     Step,
-    Tag,
     Team,
     Invite,
     Membership,
@@ -119,22 +118,16 @@ class StepsInLine(admin.TabularInline):
     extra = 1
 
 
-class TagsInLine(admin.TabularInline):
-    model = Tag
-
-
 class RecipeAdmin(admin.ModelAdmin):
     inlines = [
         IngredientsInLine,
         StepsInLine,
-        TagsInLine,
     ]
 
 
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Ingredient)
 admin.site.register(Step)
-admin.site.register(Tag)
 admin.site.register(Team)
 admin.site.register(Invite)
 admin.site.register(Membership)
