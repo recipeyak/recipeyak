@@ -10,6 +10,8 @@ import endOfDay from 'date-fns/end_of_day'
 import isFirstDayOfMonth from 'date-fns/is_first_day_of_month'
 import isSameDay from 'date-fns/is_same_day'
 
+import { pyFormat } from '../date'
+
 import {
   classNames,
 } from '../classnames'
@@ -20,6 +22,8 @@ import {
   addingScheduledRecipe,
   updatingScheduledRecipe,
   fetchShoppingList,
+  moveScheduledRecipe,
+  deletingScheduledRecipe,
 } from '../store/actions'
 
 import * as DragDrop from '../dragDrop'
@@ -40,8 +44,13 @@ const dayTarget = {
     const {
       recipeID,
       count = 1,
+      id,
     } = monitor.getItem()
-    props.create(recipeID, props.date, count)
+    if (id != null) {
+      props.move(id, props.date)
+    } else {
+      props.create(recipeID, props.date, count)
+    }
   }
 }
 
@@ -69,6 +78,8 @@ function mapDispatchToProps (dispatch) {
     create: (recipeID, on, count) => dispatch(addingScheduledRecipe(recipeID, on, count)),
     updateCount: (id, count) => dispatch(updatingScheduledRecipe(id, { count })),
     refetchShoppingList: () => dispatch(fetchShoppingList()),
+    move: (id, date) => dispatch(moveScheduledRecipe(id, pyFormat(date))),
+    remove: (id) => dispatch(deletingScheduledRecipe(id)),
   }
 }
 
@@ -87,6 +98,7 @@ export default class CalendarDay extends React.Component {
       item,
       updateCount,
       refetchShoppingList,
+      remove,
     } = this.props
     return connectDropTarget(
       <div
@@ -105,9 +117,11 @@ export default class CalendarDay extends React.Component {
         { item != null
             ? Object.values(item).map(x =>
               <CalendarItem key={x.id}
+                            id={x.id}
                             date={date}
                             recipeName={x.recipe.name}
                             recipeID={x.recipe.id}
+                            remove={() => remove(x.id)}
                             updateCount={(count) => updateCount(x.id, count)}
                             refetchShoppingList={() => refetchShoppingList()}
                             count={x.count}

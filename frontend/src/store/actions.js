@@ -1,3 +1,5 @@
+import isSameDay from 'date-fns/is_same_day'
+
 import {
   LOG_IN,
   LOG_OUT,
@@ -107,7 +109,11 @@ import {
   SET_SCHEDULING_RECIPE,
   SET_SELECTING_START,
   SET_SELECTING_END,
+  MOVE_CALENDAR_RECIPE,
+  REPLACE_CALENDAR_RECIPE,
 } from './actionTypes'
+
+import { uuid4 } from '../uuid'
 
 import startOfMonth from 'date-fns/start_of_month'
 import subWeeks from 'date-fns/sub_weeks'
@@ -1755,18 +1761,32 @@ export const setCalendarRecipes = (recipes) => ({
   recipes,
 })
 
-export const addingScheduledRecipe = (recipeID, on, count) => dispatch => {
+export const replaceCalendarRecipe = (id, recipe) => ({
+  type: REPLACE_CALENDAR_RECIPE,
+  id,
+  recipe,
+})
+
+export const addingScheduledRecipe = (recipeID, on, count) => (dispatch, getState) => {
+  const recipe = getState().recipes[recipeID]
   dispatch(setSchedulingRecipe(recipeID, true))
-  return http.post('/api/v1/calendar/', {
+  const id = uuid4()
+  const data = {
     recipe: recipeID,
     on: pyFormat(on),
-    count
-  })
+    count,
+  }
+  // 1. preemptively add recipe
+  // 2. if succeeded, then we replace the preemptively added one
+  //    if failed, then we remove the preemptively added one, and display an error
+  dispatch(setCalendarRecipe({ ...data, id, recipe }))
+  return http.post('/api/v1/calendar/', data)
   .then((res) => {
-    dispatch(setCalendarRecipe(res.data))
+    dispatch(replaceCalendarRecipe(id, res.data))
     dispatch(setSchedulingRecipe(recipeID, false))
   })
   .catch(() => {
+    dispatch(deleteCalendarRecipe(id))
     dispatch(showNotificationWithTimeout({
       message: 'error scheduling recipe',
       level: 'danger',
@@ -1781,15 +1801,53 @@ export const deleteCalendarRecipe = (id) => ({
   id,
 })
 
-export const updatingScheduledRecipe = (id, data) => dispatch => {
-  if (parseInt(data.count, 10) === 0) {
-    return http.delete(`/api/v1/calendar/${id}/`)
-    .then(() => {
-      dispatch(deleteCalendarRecipe(id))
+export const moveCalendarRecipe = (id, to) => ({
+  type: MOVE_CALENDAR_RECIPE,
+  id,
+  on: to,
+})
+
+export const deletingScheduledRecipe = id => (dispatch, getState) => {
+  const recipe = getState().calendar[id]
+  dispatch(deleteCalendarRecipe(id))
+  return http.delete(`/api/v1/calendar/${id}/`)
+  .catch(() => {
+    dispatch(setCalendarRecipe(recipe))
+  })
+}
+
+export const moveScheduledRecipe = (id, to) => (dispatch, getState) => {
+  const from = getState().calendar[id]
+  const merging =
+    getState().calendar.allIds
+    .filter(x => x !== id)
+    .map(x => getState().calendar[x])
+    .filter(x => isSameDay(x.on, to))
+    .find(x => x.recipe.id === from.recipe.id)
+  dispatch(moveCalendarRecipe(id, pyFormat(to)))
+  if (merging) {
+    // TODO: this should be an endpoint so we can have this be in a transaction
+    return Promise.all([
+      http.delete(`/api/v1/calendar/${id}/`),
+      http.patch(`/api/v1/calendar/${merging.id}/`, { count: merging.count + from.count })
+    ])
+    .catch(() => {
+      dispatch(moveCalendarRecipe(id, pyFormat(from.on)))
     })
   }
+  return http.patch(`/api/v1/calendar/${id}/`, { on: pyFormat(to) })
+  .catch(() => {
+    // on error we want to move it back to the old position
+    dispatch(moveCalendarRecipe(id, pyFormat(from.on)))
+  })
+}
+
+export const updatingScheduledRecipe = (id, data) => dispatch => {
+  if (parseInt(data.count, 10) === 0) {
+    return dispatch(deletingScheduledRecipe(id))
+  }
   return http.patch(`/api/v1/calendar/${id}/`, data)
-  .then((res) => {
+  .then(res => {
     dispatch(setCalendarRecipe(res.data))
   })
 }
