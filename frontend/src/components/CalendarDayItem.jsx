@@ -6,17 +6,18 @@ import { recipeURL } from '../urls'
 
 import * as DragDrop from '../dragDrop'
 
-const recipeSource = {
+const source = {
   beginDrag (props) {
     return {
       recipeID: props.recipeID,
       count: props.count,
-      date: props.date,
+      id: props.id,
     }
   },
-  endDrag (props, monitor, component) {
-    if (monitor.didDrop()) {
-      props.updateCount(0)
+  endDrag (props, monitor) {
+    // when dragged onto something that isn't a target, we remove it
+    if (!monitor.didDrop()) {
+      props.remove()
     }
   }
 }
@@ -28,8 +29,8 @@ function collect (connect, monitor) {
   }
 }
 
-@DragSource(DragDrop.RECIPE, recipeSource, collect)
-class CalendarItem extends React.Component {
+@DragSource(DragDrop.RECIPE, source, collect)
+export default class CalendarItem extends React.Component {
   state = {
     count: this.props.count
   }
@@ -56,7 +57,7 @@ class CalendarItem extends React.Component {
     return connectDragSource(
       <div className="d-flex align-items-center cursor-pointer justify-space-between mb-1"
         style={{
-            visibility: isDragging ? 'hidden' : 'visible',
+          visibility: isDragging ? 'hidden' : 'visible',
         }}>
         <Link
           to={recipeURL(this.props.recipeID, this.props.recipeName)}
@@ -75,5 +76,3 @@ class CalendarItem extends React.Component {
       </div>)
   }
 }
-
-export default CalendarItem

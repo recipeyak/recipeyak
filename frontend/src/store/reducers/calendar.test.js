@@ -6,6 +6,8 @@ import {
   deleteCalendarRecipe,
   setCalendarError,
   setCalendarLoading,
+  moveCalendarRecipe,
+  replaceCalendarRecipe,
 } from '../actions'
 
 describe('Calendar', () => {
@@ -118,6 +120,282 @@ describe('Calendar', () => {
 
     expect(
       calendar(beforeState, setCalendarError(true))
+    ).toEqual(afterState)
+  })
+
+  it('moves calendar recipe to new date', () => {
+    const id = 1
+
+    const beforeState = {
+      [id]: {
+        id,
+        count: 3,
+        on: '2018-05-11',
+        recipe: {
+          id: 9,
+        },
+      },
+      allIds: [id],
+    }
+
+    const newOn = '2018-05-20'
+
+    const afterState = {
+      [id]: {
+        id,
+        count: 3,
+        on: newOn,
+        recipe: {
+          id: 9,
+        },
+      },
+      allIds: [id],
+    }
+
+    expect(
+      calendar(beforeState, moveCalendarRecipe(id, newOn))
+    ).toEqual(afterState)
+  })
+
+  it('moves calendar recipe to new date and does not combine with existing recipe', () => {
+    const id = 1
+    const newOn = '2018-05-20'
+
+    const beforeState = {
+      [id]: {
+        id,
+        count: 3,
+        on: '2018-05-11',
+        recipe: {
+          id: 9,
+        },
+      },
+      2: {
+        id: 2,
+        count: 3,
+        on: newOn,
+        recipe: {
+          id: 7,
+        },
+      },
+      3: {
+        id: 3,
+        count: 1,
+        on: '2018-06-07',
+        recipe: {
+          id: 9,
+        },
+      },
+      allIds: [id, 2, 3],
+    }
+
+    const afterState = {
+      [id]: {
+        id,
+        count: 3,
+        on: newOn,
+        recipe: {
+          id: 9,
+        },
+      },
+      2: {
+        id: 2,
+        count: 3,
+        on: newOn,
+        recipe: {
+          id: 7,
+        },
+      },
+      3: {
+        id: 3,
+        count: 1,
+        on: '2018-06-07',
+        recipe: {
+          id: 9,
+        },
+      },
+      allIds: [id, 2, 3],
+    }
+
+    expect(
+      calendar(beforeState, moveCalendarRecipe(id, newOn))
+    ).toEqual(afterState)
+  })
+
+  it('moves calendar recipe to new date & combines with existing recipe', () => {
+    const id = 1
+    const newOn = '2018-05-20'
+
+    const beforeState = {
+      [id]: {
+        id,
+        count: 3,
+        on: '2018-05-11',
+        recipe: {
+          id: 9,
+        },
+      },
+      2: {
+        id: 2,
+        count: 3,
+        on: newOn,
+        recipe: {
+          id: 9,
+        },
+      },
+      3: {
+        id: 3,
+        count: 1,
+        on: '2018-06-07',
+        recipe: {
+          id: 9,
+        },
+      },
+      allIds: [id, 2, 3],
+    }
+
+    const afterState = {
+      2: {
+        id: 2,
+        count: 6,
+        on: newOn,
+        recipe: {
+          id: 9,
+        },
+      },
+      3: {
+        id: 3,
+        count: 1,
+        on: '2018-06-07',
+        recipe: {
+          id: 9,
+        },
+      },
+      allIds: [2, 3],
+    }
+
+    expect(
+      calendar(beforeState, moveCalendarRecipe(id, newOn))
+    ).toEqual(afterState)
+  })
+
+  it('replaces existing recipe', () => {
+    const id = 1000
+    const newOn = '2018-05-20'
+
+    const beforeState = {
+      [id]: {
+        id,
+        count: 3,
+        on: '2018-05-11',
+        recipe: {
+          id: 9,
+        },
+      },
+      2: {
+        id: 2,
+        count: 3,
+        on: newOn,
+        recipe: {
+          id: 9,
+        },
+      },
+      3: {
+        id: 3,
+        count: 1,
+        on: '2018-06-07',
+        recipe: {
+          id: 9,
+        },
+      },
+      allIds: [id, 2, 3],
+    }
+
+    const recipe = {
+      id: 9,
+      count: 1,
+      on: '2018-07-21',
+      recipe: { id: 19 },
+    }
+
+    const afterState = {
+      [recipe.id]: recipe,
+      2: {
+        id: 2,
+        count: 3,
+        on: newOn,
+        recipe: {
+          id: 9,
+        },
+      },
+      3: {
+        id: 3,
+        count: 1,
+        on: '2018-06-07',
+        recipe: {
+          id: 9,
+        },
+      },
+      allIds: [2, 3, recipe.id],
+    }
+
+    expect(
+      calendar(beforeState, replaceCalendarRecipe(id, recipe))
+    ).toEqual(afterState)
+  })
+
+  it('combines with existing recipe', () => {
+    const on = '2018-07-21'
+
+    const beforeState = {
+      2: {
+        id: 2,
+        count: 3,
+        on,
+        recipe: {
+          id: 9,
+        },
+      },
+      3: {
+        id: 3,
+        count: 1,
+        on: '2018-06-07',
+        recipe: {
+          id: 9,
+        },
+      },
+      allIds: [2, 3],
+    }
+
+    const recipe = {
+      id: 9,
+      count: 1,
+      on,
+      recipe: { id: 9 },
+    }
+
+    const afterState = {
+      [recipe.id]: {
+        id: recipe.id,
+        count: 3 + recipe.count,
+        on,
+        recipe: {
+          id: 9,
+        },
+      },
+      3: {
+        id: 3,
+        count: 1,
+        on: '2018-06-07',
+        recipe: {
+          id: 9,
+        },
+      },
+      allIds: [3, 9],
+    }
+
+    expect(
+      calendar(beforeState, setCalendarRecipe(recipe))
     ).toEqual(afterState)
   })
 })
