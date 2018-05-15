@@ -8,6 +8,7 @@ import isWithinRange from 'date-fns/is_within_range'
 import startOfDay from 'date-fns/start_of_day'
 import endOfDay from 'date-fns/end_of_day'
 import isFirstDayOfMonth from 'date-fns/is_first_day_of_month'
+import isSameDay from 'date-fns/is_same_day'
 
 import {
   classNames,
@@ -31,12 +32,16 @@ const Title = ({ date }) => {
 }
 
 const dayTarget = {
-  canDrop ({ date }) {
-    return isFuture(date) || isToday(date)
+  canDrop ({ date }, monitor) {
+    const item = monitor.getItem()
+    return (isFuture(date) || isToday(date)) && !isSameDay(date, item.date)
   },
   drop (props, monitor) {
-    const { recipeID } = monitor.getItem()
-    props.create(recipeID, props.date, 1)
+    const {
+      recipeID,
+      count = 1,
+    } = monitor.getItem()
+    props.create(recipeID, props.date, count)
   }
 }
 
@@ -100,6 +105,7 @@ export default class CalendarDay extends React.Component {
         { item != null
             ? Object.values(item).map(x =>
               <CalendarItem key={x.id}
+                            date={date}
                             recipeName={x.recipe.name}
                             recipeID={x.recipe.id}
                             updateCount={(count) => updateCount(x.id, count)}

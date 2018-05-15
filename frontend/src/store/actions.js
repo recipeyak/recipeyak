@@ -1782,7 +1782,7 @@ export const deleteCalendarRecipe = (id) => ({
 })
 
 export const updatingScheduledRecipe = (id, data) => dispatch => {
-  if (data.count === '0') {
+  if (parseInt(data.count, 10) === 0) {
     return http.delete(`/api/v1/calendar/${id}/`)
     .then(() => {
       dispatch(deleteCalendarRecipe(id))
