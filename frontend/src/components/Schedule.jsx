@@ -38,7 +38,7 @@ class Schedule extends React.Component {
     return (
       <div className="d-flex pl-2 pr-2">
         <Helmet title='Schedule' />
-        <div className="d-grid grid-gap-4 grid-auto-rows-min-content w-400px" style={{
+        <div className="d-grid grid-gap-4 grid-auto-rows-min-content w-350px" style={{
           display: this.state.closed ? 'none' : 'grid',
         }}>
 

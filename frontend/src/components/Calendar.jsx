@@ -2,11 +2,11 @@ import React from 'react'
 import { connect } from 'react-redux'
 import startOfMonth from 'date-fns/start_of_month'
 import endOfMonth from 'date-fns/end_of_month'
-import addWeeks from 'date-fns/add_weeks'
 import eachDay from 'date-fns/each_day'
 import addMonths from 'date-fns/add_months'
 import subMonths from 'date-fns/sub_months'
 import subDays from 'date-fns/sub_days'
+import addDays from 'date-fns/add_days'
 import format from 'date-fns/format'
 
 import {
@@ -16,6 +16,7 @@ import {
 import {
   pyFormat,
   daysFromSunday,
+  daysUntilSaturday,
 } from '../date'
 
 import { ButtonPrimary, ButtonPlain } from './Buttons'
@@ -137,7 +138,7 @@ class Calendar extends React.Component {
             {
               eachDay(
                 subDays(startOfMonth(this.state.month), daysFromSunday(this.state.month)),
-                addWeeks(endOfMonth(this.state.month), 1)
+                addDays(endOfMonth(this.state.month), daysUntilSaturday(endOfMonth(this.state.month))),
               ).map((date) =>
                 <CalendarDay
                   item={this.props.days[pyFormat(date)]}
