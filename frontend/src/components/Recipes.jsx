@@ -35,7 +35,7 @@ const mapDispatchToProps = dispatch => {
   mapStateToProps,
   mapDispatchToProps
 )
-class Recipes extends React.Component {
+export default class Recipes extends React.Component {
   state = {
     query: ''
   }
@@ -75,5 +75,3 @@ class Recipes extends React.Component {
     )
   }
 }
-
-export default Recipes

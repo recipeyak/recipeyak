@@ -26,6 +26,7 @@
   outline: none;
   transition: 0.2s;
   transition-property: border-color, box-shadow;
+  z-index: 1;
 
   &.is-focused,
   &:focus {

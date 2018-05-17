@@ -181,7 +181,7 @@ class ShoppingList extends React.Component {
             </button>
             { this.props.error
                 ? <p>error fetching shoppinglist</p>
-                : <section id="shoppinglist">
+                : <section id="shoppinglist" style={{ fontSize: '0.9rem' }}>
                     {
                       this.props.shoppinglist.map((x, i) =>
                         // padding serves to prevent the button from appearing in front of text

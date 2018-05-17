@@ -303,7 +303,7 @@
   }
 }
 
-@each $i in (120px, 400px, 50px) {
+@each $i in (120px, 350px, 400px, 50px) {
   .w-#{$i},
   .width-#{$i} {
     width: $i;

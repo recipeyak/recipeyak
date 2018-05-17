@@ -1,5 +1,6 @@
 import format from 'date-fns/format'
 import startOfMonth from 'date-fns/start_of_month'
+import endOfMonth from 'date-fns/end_of_month'
 import lastDayOfMonth from 'date-fns/last_day_of_month'
 import eachDay from 'date-fns/each_day'
 
@@ -13,4 +14,10 @@ export function daysOfMonth (date) {
 
 export function daysFromSunday (date) {
   return startOfMonth(date).getDay()
+}
+
+export function daysUntilSaturday (date) {
+  // use 6 since days are base 0
+  const saturday = 6
+  return saturday - endOfMonth(date).getDay()
 }
