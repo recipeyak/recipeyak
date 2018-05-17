@@ -6,6 +6,7 @@ import Loader from './Loader'
 import { TextInput } from './Forms'
 import { matchesQuery } from '../search'
 import Results from './Results'
+import Scroll from './Scroll'
 
 import {
   byNameAlphabetical,
@@ -61,14 +62,18 @@ export default class Recipes extends React.Component {
         />
       )
     return (
-      <div className="d-grid grid-gap-4">
+      <div>
         <TextInput
           onChange={e => this.setState({ query: e.target.value })}
           placeholder='search for recipes'/>
 
         { this.props.loading
-            ? <Loader/>
-            : <Results recipes={ results } query={ this.state.query } />
+            ? <Loader className="pt-4"/>
+            : <Scroll height='70vh' padding="1px">
+                <div className="d-grid grid-gap-4 pt-4">
+                  <Results recipes={ results } query={ this.state.query } />
+                </div>
+              </Scroll>
         }
 
       </div>
