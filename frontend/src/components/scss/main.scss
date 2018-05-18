@@ -153,6 +153,11 @@ a {
   margin-bottom: 0;
 }
 
+.card-content {
+  @extend .card-content;
+  padding: 1rem;
+}
+
 @media print {
   .card,
   .my-button,
