@@ -59,8 +59,8 @@ def quantity_baseunit(quantity):
         return ''
 
 
-def normalize_name(ingredient):
-    return ingredient.name.replace('-', ' ')
+def normalize_name(name: str) -> str:
+    return name.replace('-', ' ')
 
 
 def should_pluralize(s) -> bool:
@@ -82,26 +82,35 @@ def combine_ingredients(ingredients: List) -> List:
         quantity = ingredient_quantity(ingredient)
         base_unit = quantity_baseunit(quantity)
 
-        name = normalize_name(ingredient)
+        raw_name = ingredient.name
+        name = normalize_name(raw_name)
         singular_name = singularize(name)
+        is_plural = name != singular_name
 
         if combined.get(singular_name):
-            if combined[singular_name].get(base_unit):
-                combined[singular_name][base_unit] += quantity
+            if combined[singular_name]['units'].get(base_unit):
+                combined[singular_name]['units'][base_unit] += quantity
             else:
-                combined[singular_name][base_unit] = quantity
+                combined[singular_name]['units'][base_unit] = quantity
         else:
             combined[singular_name] = {
-                base_unit: quantity
+                'units': {
+                    base_unit: quantity,
+                },
             }
+        if is_plural:
+            combined[singular_name]['plural'] = raw_name
 
     simple_ingredients = []
     for name, v in combined.items():
-        combined_units = " + ".join(simplify_units(v.values()))
-        plural = should_pluralize(v.values())
+        units = v['units'].values()
+        combined_units = " + ".join(simplify_units(units))
+        plural = v.get('plural')
+        if should_pluralize(units):
+            plural = pluralize(name)
         simple_ingredients.append({
             'unit': combined_units,
-            'name': name if not plural else pluralize(name)
+            'name': name if not plural else plural
         })
 
     return simple_ingredients

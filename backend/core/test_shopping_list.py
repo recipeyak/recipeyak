@@ -506,3 +506,42 @@ def test_report_bad_merge(user, client, recipe):
 
     client.force_authenticate(user)
     assert client.post(url).status_code == status.HTTP_201_CREATED
+
+
+def test_combining_feta(user, client, empty_recipe):
+    """
+    ensure the singularize function doesn't result in feta becoming fetum along
+    with some other troublesome examples
+    """
+
+    position = 11.0
+
+    ingredients = [('some', 'feta'),
+                   ('1.25 cups', 'all-purpose flour'),
+                   ('some', 'katamata olives'),
+                   ('some', 'red pepper flakes'),
+                   ('2 tablespoon', 'molasses')]
+
+    for quantity, name in ingredients:
+        Ingredient.objects.create(
+            quantity=quantity,
+            name=name,
+            position=position,
+            recipe=empty_recipe)
+        position += 10
+
+    start = date(1976, 7, 6)
+    empty_recipe.schedule(user=user, on=start, count=1)
+
+    end = start + timedelta(days=1)
+    params = {
+        'start': start,
+        'end': end,
+    }
+    client.force_authenticate(user)
+    url = reverse('shopping-list')
+    res = client.get(url, params)
+    assert res.status_code == status.HTTP_200_OK
+
+    for processed, (_, name) in zip(res.json(), ingredients):
+        assert processed.get('name') == name
