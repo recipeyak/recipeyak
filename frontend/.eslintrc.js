@@ -70,5 +70,9 @@ module.exports = {
     'no-useless-return': 'warn',
     'no-unreachable': 'warn',
     'space-before-blocks': ['warn', 'always'],
+    "spaced-comment": ["warn", "always", {
+      "line": { "markers": ["*package", "!", "/", ",", "="] },
+      "block": { "balanced": true, "markers": ["*package", "!", ",", ":", "::", "flow-include"], "exceptions": ["*"] }
+    }],
   }
 }
