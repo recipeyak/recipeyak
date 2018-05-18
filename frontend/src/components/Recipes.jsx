@@ -69,7 +69,7 @@ export default class Recipes extends React.Component {
 
         { this.props.loading
             ? <Loader className="pt-4"/>
-            : <Scroll height='70vh' padding="1px">
+            : <Scroll height='700px' padding="1px">
                 <div className="d-grid grid-gap-4 pt-4">
                   <Results recipes={ results } query={ this.state.query } />
                 </div>
