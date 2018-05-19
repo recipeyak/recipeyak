@@ -35,10 +35,6 @@ import { connect } from 'react-redux'
 import Card from './Step'
 import { updatingStep } from '../store/actions'
 
-const style = {
-  width: 400,
-}
-
 @connect()
 export default class StepContainer extends Component {
   constructor (props) {
@@ -93,7 +89,7 @@ export default class StepContainer extends Component {
     const { cards } = this.state
 
     return (
-      <div style={style}>
+      <div>
         {cards.map((card, i) => (
           <Card
             key={card.id}
