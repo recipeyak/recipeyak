@@ -43,19 +43,17 @@ const style = {
 export default class StepContainer extends Component {
   constructor (props) {
     super(props)
-    this.moveCard = this.moveCard.bind(this)
-    this.completeMove = this.completeMove.bind(this)
 
     this.state = {
       cards: this.props.steps
     }
   }
 
-  moveCard (dragIndex, hoverIndex) {
+  moveCard = (dragIndex, hoverIndex) => {
     const { cards } = this.state
     const dragCard = cards[dragIndex]
 
-    this.setState((prevState, _props) => {
+    this.setState(prevState => {
       const cards = prevState.cards
       cards.splice(dragIndex, 1)
       cards.splice(hoverIndex, 0, dragCard)
@@ -65,7 +63,7 @@ export default class StepContainer extends Component {
     })
   }
 
-  completeMove (stepID, arrIndex) {
+  completeMove = (stepID, arrIndex) => {
     const nextCard = this.state.cards[arrIndex + 1]
     const prevCard = this.state.cards[arrIndex - 1]
     let newPos = null

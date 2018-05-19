@@ -177,10 +177,12 @@ def test_updating_step_of_recipe(client, user, recipe):
         'position': step.position + 10.0
     }
 
-    res = client.patch(f'{BASE_URL}/recipes/{recipe.id}/steps/{step.id}/', step_data)
+    url = reverse('recipe-step-detail', args=[recipe.id, step.id])
+
+    res = client.patch(url, step_data)
     assert res.status_code == status.HTTP_200_OK
 
-    res = client.get(f'{BASE_URL}/recipes/{recipe.id}/steps/{step.id}/')
+    res = client.get(url)
     assert res.status_code == status.HTTP_200_OK
 
     assert res.json().get('id') is not None

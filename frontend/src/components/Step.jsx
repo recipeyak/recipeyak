@@ -49,7 +49,7 @@ const cardSource = {
       position: props.position,
     }
   },
-  endDrag (props, _monitor, _component) {
+  endDrag (props) {
     props.completeMove(props.id, props.index)
   }
 }
