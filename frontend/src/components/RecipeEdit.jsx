@@ -202,8 +202,8 @@ class RecipeEditFetching extends React.Component {
   updateIngredient = (ingredientID, content) =>
     this.props.updateIngredient(this.props.id, ingredientID, content)
 
-  updateStep = (stepID, text) =>
-    this.props.updateStep(this.props.id, stepID, text)
+  updateStep = (...args) =>
+    this.props.updateStep(this.props.id, ...args)
 
   update = async () => {
     await this.props.updateRecipe(this.props.id, this.state)
