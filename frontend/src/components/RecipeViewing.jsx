@@ -6,7 +6,7 @@ import MetaData from './MetaData'
 import { ButtonPrimary } from './Buttons'
 import DatePickerForm from './DatePickerForm'
 
-import Container from './Container'
+import StepContainer from './StepContainer'
 
 /* eslint-disable camelcase */
 export default class RecipeViewing extends React.Component {
@@ -83,7 +83,7 @@ export default class RecipeViewing extends React.Component {
 
         <div>
           <h2 className="title is-3 mb-1 font-family-title bold">Preparation</h2>
-          <Container steps={steps} recipeID={id}/>
+          <StepContainer steps={steps} recipeID={id}/>
         </div>
       </section>
 

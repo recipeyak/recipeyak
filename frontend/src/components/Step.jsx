@@ -42,21 +42,20 @@ const style = {
 }
 
 const cardSource = {
-  beginDrag(props) {
+  beginDrag (props) {
     return {
       id: props.id,
       index: props.index,
       position: props.position,
     }
   },
-  endDrag (props, monitor, component) {
-    const item = monitor.getItem()
+  endDrag (props, _monitor, _component) {
     props.completeMove(props.id, props.index)
   }
 }
 
 const cardTarget = {
-  hover(props, monitor, component) {
+  hover (props, monitor, component) {
     const dragIndex = monitor.getItem().index
     const hoverIndex = props.index
 
@@ -120,7 +119,7 @@ export default class Card extends Component {
     moveCard: PropTypes.func.isRequired,
   }
 
-  render() {
+  render () {
     const {
       text,
       isDragging,

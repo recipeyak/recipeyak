@@ -889,7 +889,7 @@ export const setUpdatingStep = (recipeID, stepID, val) => ({
   val
 })
 
-export const updatingStep = (recipeID, stepID, {text, position}) => dispatch => {
+export const updatingStep = (recipeID, stepID, { text, position }) => dispatch => {
   dispatch(setUpdatingStep(recipeID, stepID, true))
   const data = {
     text,

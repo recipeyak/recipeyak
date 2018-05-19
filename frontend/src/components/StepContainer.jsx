@@ -34,7 +34,7 @@ import { connect } from 'react-redux'
 import { DragDropContext } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
 
-import Card from './Card'
+import Card from './Step'
 import { updatingStep } from '../store/actions'
 
 const style = {
@@ -44,7 +44,7 @@ const style = {
 @connect()
 @DragDropContext(HTML5Backend)
 export default class Container extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.moveCard = this.moveCard.bind(this)
     this.completeMove = this.completeMove.bind(this)
@@ -54,7 +54,7 @@ export default class Container extends Component {
     }
   }
 
-  moveCard(dragIndex, hoverIndex) {
+  moveCard (dragIndex, hoverIndex) {
     const { cards } = this.state
     const dragCard = cards[dragIndex]
 
@@ -68,7 +68,7 @@ export default class Container extends Component {
     })
   }
 
-  completeMove(stepID, arrIndex) {
+  completeMove (stepID, arrIndex) {
     const nextCard = this.state.cards[arrIndex + 1]
     const prevCard = this.state.cards[arrIndex - 1]
     let newPos = null
@@ -76,22 +76,26 @@ export default class Container extends Component {
     if (nextCard == null && prevCard == null) {
       // there is only one card in the list, so we don't make any change
       return
-    }
-    else if (nextCard == null && prevCard != null) {
+    } else if (nextCard == null && prevCard != null) {
       newPos = prevCard.position + 10.0
-    }
-    else if (nextCard != null && prevCard == null) {
+    } else if (nextCard != null && prevCard == null) {
       newPos = nextCard.position / 2
     } else if (nextCard != null && prevCard != null) {
-      newPos = (nextCard.position - prevCard.position)/2 + prevCard.position
+      newPos = (nextCard.position - prevCard.position) / 2 + prevCard.position
     }
-    if (newPos == null) { throw new Error('Invalid position')}
+    if (newPos == null) { throw new Error('Invalid position') }
 
-    this.state.cards[arrIndex].position = newPos
-    this.props.dispatch(updatingStep(this.props.recipeID, stepID, {position: newPos}))
+    this.setState(prevState => {
+      const cards = [...prevState.cards]
+      cards[arrIndex].position = newPos
+      return {
+        cards
+      }
+    })
+    this.props.dispatch(updatingStep(this.props.recipeID, stepID, { position: newPos }))
   }
 
-  render() {
+  render () {
     const { cards } = this.state
 
     return (
@@ -104,7 +108,6 @@ export default class Container extends Component {
             text={card.text}
             moveCard={this.moveCard}
             position={card.position}
-            moveCard={this.moveCard}
             completeMove={this.completeMove}
           />
         ))}
