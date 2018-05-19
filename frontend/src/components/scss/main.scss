@@ -159,6 +159,7 @@ a {
 }
 
 @media print {
+  .no-print,
   .card,
   .my-button,
   .my-input,
@@ -174,6 +175,7 @@ a {
     font-size: $printing-font-size;
   }
 
+  a,
   h1,
   h2,
   h3,

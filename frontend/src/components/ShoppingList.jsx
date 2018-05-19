@@ -127,7 +127,7 @@ class ShoppingList extends React.Component {
     return (
       <div className="d-grid grid-gap-2">
         <div className="p-rel">
-          <div ref={i => { this.inputs = i }}className="d-flex align-items-center">
+          <div ref={i => { this.inputs = i }}className="d-flex align-items-center no-print">
             <input
               onFocus={
                 () =>
@@ -191,7 +191,7 @@ class ShoppingList extends React.Component {
                   </section>
             }
           </div>
-          <div className="d-flex justify-content-end">
+          <div className="d-flex justify-content-end no-print">
             <a onClick={ this.props.reportBadMerge } className="text-muted italic fs-3">
               report bad merge
             </a>
