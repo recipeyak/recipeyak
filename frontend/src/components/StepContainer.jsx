@@ -88,8 +88,7 @@ export default class Container extends Component {
       return {
         cards
       }
-    })
-    this.props.dispatch(updatingStep(this.props.recipeID, stepID, { position: newPos }))
+    }, () => this.props.dispatch(updatingStep(this.props.recipeID, stepID, { position: newPos })))
   }
 
   render () {
