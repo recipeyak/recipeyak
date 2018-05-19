@@ -40,7 +40,7 @@ const style = {
 }
 
 @connect()
-export default class Container extends Component {
+export default class StepContainer extends Component {
   constructor (props) {
     super(props)
     this.moveCard = this.moveCard.bind(this)
