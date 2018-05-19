@@ -42,7 +42,7 @@ class Schedule extends React.Component {
           display: this.state.closed ? 'none' : 'grid',
         }}>
 
-          <div className="tabs is-boxed mb-0">
+          <div className="tabs is-boxed mb-0 no-print">
             <ul>
               <li className={ !isRecipes ? 'is-active' : ''}>
                 <Link to="/shopping">Shopping</Link>
@@ -58,7 +58,7 @@ class Schedule extends React.Component {
               : <ShoppingList />
           }
         </div>
-        <a className="select-none closer text-decoration-none"
+        <a className="select-none closer text-decoration-none no-print"
           onClick={this.toggleClose}>
           { arrow }
         </a>
