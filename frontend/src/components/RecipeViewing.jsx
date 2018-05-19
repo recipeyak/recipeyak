@@ -6,6 +6,8 @@ import MetaData from './MetaData'
 import { ButtonPrimary } from './Buttons'
 import DatePickerForm from './DatePickerForm'
 
+import Container from './Container'
+
 /* eslint-disable camelcase */
 export default class RecipeViewing extends React.Component {
   state = {
@@ -81,17 +83,7 @@ export default class RecipeViewing extends React.Component {
 
         <div>
           <h2 className="title is-3 mb-1 font-family-title bold">Preparation</h2>
-          <ul>
-            {
-              steps.map(({ id, text }, i) =>
-              <div key={id}>
-                <label className="better-label">Step { i + 1}</label>
-                <p className="listitem-text mb-2">{ text }</p>
-              </div>
-
-              )
-            }
-          </ul>
+          <Container steps={steps}/>
         </div>
       </section>
 
