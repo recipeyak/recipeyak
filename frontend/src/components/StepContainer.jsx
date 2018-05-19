@@ -31,8 +31,6 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { DragDropContext } from 'react-dnd'
-import HTML5Backend from 'react-dnd-html5-backend'
 
 import Card from './Step'
 import { updatingStep } from '../store/actions'
@@ -42,7 +40,6 @@ const style = {
 }
 
 @connect()
-@DragDropContext(HTML5Backend)
 export default class Container extends Component {
   constructor (props) {
     super(props)
