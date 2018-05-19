@@ -170,23 +170,23 @@ def test_updating_step_of_recipe(client, user, recipe):
     """
     client.force_authenticate(user)
 
-    step_id = recipe.steps[0].id
+    step = recipe.steps[0]
 
-    assert isinstance(step_id, int)
-
-    step = {
+    step_data = {
         'text': 'An updated step',
+        'position': step.position + 10.0
     }
 
-    res = client.patch(f'{BASE_URL}/recipes/{recipe.id}/steps/{step_id}/', step)
+    res = client.patch(f'{BASE_URL}/recipes/{recipe.id}/steps/{step.id}/', step_data)
     assert res.status_code == status.HTTP_200_OK
 
-    res = client.get(f'{BASE_URL}/recipes/{recipe.id}/steps/{step_id}/')
+    res = client.get(f'{BASE_URL}/recipes/{recipe.id}/steps/{step.id}/')
     assert res.status_code == status.HTTP_200_OK
 
     assert res.json().get('id') is not None
 
-    assert res.json().get('text') == step.get('text'), "step didn't update"
+    for key in step_data.keys():
+        assert res.json().get(key) == step_data.get(key)
 
 
 def test_deleting_step_from_recipe(client, user, recipe):
