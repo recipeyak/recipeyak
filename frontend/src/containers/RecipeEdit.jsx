@@ -38,8 +38,8 @@ const mapDispatchToProps = dispatch => {
     updateName: (id, name) => {
       dispatch(sendUpdatedRecipeName(id, name))
     },
-    updateStep: (recipeID, stepID, text) =>
-      dispatch(updatingStep(recipeID, stepID, text)),
+    updateStep: (...args) =>
+      dispatch(updatingStep(...args)),
     updateIngredient: (recipeID, ingredientID, content) =>
       dispatch(updatingIngredient(recipeID, ingredientID, content)),
     deleteIngredient: (recipeID, ingredientID) =>

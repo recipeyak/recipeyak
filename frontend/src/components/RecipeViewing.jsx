@@ -83,7 +83,7 @@ export default class RecipeViewing extends React.Component {
 
         <div>
           <h2 className="title is-3 mb-1 font-family-title bold">Preparation</h2>
-          <Container steps={steps}/>
+          <Container steps={steps} recipeID={id}/>
         </div>
       </section>
 

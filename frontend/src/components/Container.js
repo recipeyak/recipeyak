@@ -33,7 +33,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { DragDropContext } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
+
 import Card from './Card'
+import { updatingStep } from '../store/actions'
 
 const style = {
   width: 400,
@@ -85,7 +87,8 @@ export default class Container extends Component {
     }
     if (newPos == null) { throw new Error('Invalid position')}
 
-    // TODO: Dispatch action via this.props.dispatch() to touch backend
+    this.state.cards[arrIndex].position = newPos
+    this.props.dispatch(updatingStep(this.props.recipeID, stepID, {position: newPos}))
   }
 
   render() {

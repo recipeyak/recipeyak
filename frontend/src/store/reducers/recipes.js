@@ -102,7 +102,7 @@ export const recipes = (state = {}, action) => {
         ...state[action.recipeID],
         steps: state[action.recipeID].steps.map(s => {
           if (s.id === action.stepID) {
-            return { ...s, text: action.text }
+            return { ...s, text: action.text, position: action.position }
           } else {
             return s
           }

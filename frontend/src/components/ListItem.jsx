@@ -71,7 +71,7 @@ class ListItem extends React.Component {
     if (this.state.text === '') {
       await this.delete()
     } else {
-      await this.props.update(this.props.id, this.state.text)
+      await this.props.update(this.props.id, { text: this.state.text })
     }
     this.setState({
       editing: false,

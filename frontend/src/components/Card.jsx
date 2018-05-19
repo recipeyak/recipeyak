@@ -48,6 +48,10 @@ const cardSource = {
       index: props.index,
       position: props.position,
     }
+  },
+  endDrag (props, monitor, component) {
+    const item = monitor.getItem()
+    props.completeMove(props.id, props.index)
   }
 }
 
@@ -96,11 +100,6 @@ const cardTarget = {
     // to avoid expensive index searches.
     monitor.getItem().index = hoverIndex
   },
-  drop(props, monitor, component) {
-    const item = monitor.getItem()
-    props.completeMove(props.id, props.index)
-    return { moved: true }
-  }
 }
 
 @DropTarget(ItemTypes.CARD, cardTarget, connect => ({

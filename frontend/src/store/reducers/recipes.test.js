@@ -194,13 +194,15 @@ describe('Recipes', () => {
         steps: [
           {
             id: 1,
-            text: 'test'
+            text: 'test',
+            position: 2.54,
           }
         ]
       }
     }
 
     const text = 'new text'
+    const position = 10.0
 
     const afterState = {
       1: {
@@ -213,14 +215,15 @@ describe('Recipes', () => {
         steps: [
           {
             id: 1,
-            text: text
+            text: text,
+            position: position,
           }
         ]
       }
     }
 
     expect(
-      recipes(beforeState, updateStep(1, 1, text))
+      recipes(beforeState, updateStep(1, 1, text, position))
     ).toEqual(afterState)
   })
 

@@ -867,11 +867,12 @@ export const deletingIngredient = (recipeID, ingredientID) => dispatch => {
   })
 }
 
-export const updateStep = (recipeID, stepID, text) => ({
+export const updateStep = (recipeID, stepID, text, position) => ({
   type: UPDATE_STEP,
   recipeID,
   stepID,
-  text
+  text,
+  position,
 })
 
 export const setRemovingStep = (recipeID, stepID, val) => ({
@@ -888,14 +889,23 @@ export const setUpdatingStep = (recipeID, stepID, val) => ({
   val
 })
 
-export const updatingStep = (recipeID, stepID, text) => dispatch => {
+export const updatingStep = (recipeID, stepID, {text, position}) => dispatch => {
   dispatch(setUpdatingStep(recipeID, stepID, true))
-  return http.patch(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, {
-    text
-  })
+  const data = {
+    text,
+    position,
+  }
+  // Remove null/empty keys for PATCH
+  for (const key of Object.keys(data)) {
+    if (data[key] == null) {
+      delete data[key]
+    }
+  }
+  return http.patch(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, data)
   .then(res => {
     const text = res.data.text
-    dispatch(updateStep(recipeID, stepID, text))
+    const position = res.data.position
+    dispatch(updateStep(recipeID, stepID, text, position))
     dispatch(setUpdatingStep(recipeID, stepID, false))
   })
   .catch(err => {
