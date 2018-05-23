@@ -57,6 +57,7 @@ class Calendar extends React.Component {
   static defaultProps = {
     loading: true,
     error: false,
+    className: '',
   }
 
   componentDidMount () {
@@ -88,7 +89,7 @@ class Calendar extends React.Component {
 
     if (this.props.loading) {
       return (
-        <div className="d-flex w-100 justify-content-center align-items-center">
+        <div className={`d-flex w-100 justify-content-center align-items-center ${this.props.className}`}>
           <div>
             <Loader/>
           </div>
@@ -97,7 +98,7 @@ class Calendar extends React.Component {
     }
 
     return (
-      <div className="flex-grow-1">
+      <div className={ `flex-grow-1 ${this.props.className}` }>
           <div className="d-flex justify-space-between align-items-end">
             <div title={ this.state.month.toString() }>
               <p>{ monthYearFromDate(this.state.month) }</p>
