@@ -38,7 +38,7 @@ class Schedule extends React.Component {
     return (
       <div className="d-flex pl-2 pr-2">
         <Helmet title='Schedule' />
-        <div className="d-grid grid-gap-4 grid-auto-rows-min-content w-350px" style={{
+        <div className="d-grid grid-gap-4 grid-auto-rows-min-content w-350px-if-not-sm" style={{
           display: this.state.closed ? 'none' : 'grid',
         }}>
 
@@ -58,11 +58,11 @@ class Schedule extends React.Component {
               : <ShoppingList />
           }
         </div>
-        <a className="select-none closer text-decoration-none no-print"
+        <a className="select-none closer text-decoration-none no-print hide-sm"
           onClick={this.toggleClose}>
           { arrow }
         </a>
-        <Calendar/>
+        <Calendar className="hide-sm"/>
       </div>
     )
   }
