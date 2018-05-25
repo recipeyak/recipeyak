@@ -128,7 +128,7 @@ jobs:
           name: build container
           working_directory: backend
           command: |
-            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
             docker build -f Dockerfile-prod --tag recipeyak/django:$CIRCLE_SHA1 --build-arg GIT_SHA=$CIRCLE_SHA1 .
             docker push recipeyak/django:$CIRCLE_SHA1
 workflows:
