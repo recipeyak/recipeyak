@@ -114,6 +114,23 @@ jobs:
           name: run build
           working_directory: frontend
           command: npm run build
+  # https://circleci.com/docs/2.0/building-docker-images/
+  build_api_container:
+    requires:
+      - test_python
+    docker:
+      - image: docker:18.05.0-ce
+    steps:
+      - checkout
+      - setup_remote_docker
+      # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
+      - run:
+          name: build container
+          working_directory: backend
+          command: |
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker build -f Dockerfile-prod --tag recipeyak/django:$CIRCLE_SHA1 --build-arg GIT_SHA=$CIRCLE_SHA1 .
+            docker push recipeyak/django:$CIRCLE_SHA1
 workflows:
   version: 2
   test:
@@ -122,3 +139,5 @@ workflows:
       - test_frontend
       - lint_frontend
       - build_frontend
+      - build_api_container:
+          context: docker
