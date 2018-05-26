@@ -158,6 +158,20 @@ jobs:
               --build-arg GIT_SHA=$CIRCLE_SHA1 \
               --build-arg FRONTEND_SENTRY_DSN=$FRONTEND_SENTRY_DSN .
             docker push recipeyak/react:$CIRCLE_SHA1
+  build_proxy_container:
+    docker:
+      - image: docker:18.05.0-ce
+    steps:
+      - checkout
+      - setup_remote_docker
+      # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
+      - run:
+          name: build container
+          working_directory: nginx
+          command: |
+            docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
+            docker build -f Dockerfile nginx --tag recipeyak/nginx:$CIRCLE_SHA1 .
+            docker push recipeyak/react:$CIRCLE_SHA1
 workflows:
   version: 2
   test:
@@ -167,4 +181,8 @@ workflows:
       - lint_frontend
       - build_frontend
       - build_api_container:
+          context: DockerHub
+      - build_ui_container:
+          context: DockerHub
+      - build_proxy_container:
           context: DockerHub
