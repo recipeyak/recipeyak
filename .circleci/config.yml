@@ -170,7 +170,7 @@ jobs:
           working_directory: nginx
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            docker build -f Dockerfile nginx --tag recipeyak/nginx:$CIRCLE_SHA1 .
+            docker build -f Dockerfile --tag recipeyak/nginx:$CIRCLE_SHA1 .
             docker push recipeyak/react:$CIRCLE_SHA1
 workflows:
   version: 2
