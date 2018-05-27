@@ -7,6 +7,7 @@ import { ButtonPrimary } from './Buttons'
 import DatePickerForm from './DatePickerForm'
 
 import StepContainer from './StepContainer'
+import IngredientView from './IngredientView'
 
 /* eslint-disable camelcase */
 export default class RecipeViewing extends React.Component {
@@ -72,10 +73,14 @@ export default class RecipeViewing extends React.Component {
           <h2 className="title is-3 mb-1 font-family-title bold">Ingredients</h2>
           <ul>
             {
-              ingredients.map(({ id, quantity, name, description }) =>
-                <p key={ id } className="listitem-text justify-space-between">
-                  { quantity } { name } { description }
-                </p>
+              ingredients.map(({ id, quantity, name, description, optional }) =>
+                <IngredientView
+                  key={id}
+                  quantity={quantity}
+                  name={name}
+                  description={description}
+                  optional={optional}
+                />
               )
             }
           </ul>

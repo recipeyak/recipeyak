@@ -9,8 +9,9 @@ const AddIngredientForm = ({
   quantity,
   name,
   description,
+  optional,
   loading,
-  error
+  error,
 }) =>
   <form onSubmit={ async e => {
     e.preventDefault()
@@ -58,6 +59,16 @@ const AddIngredientForm = ({
       }
     </div>
   </div>
+
+  <label className="d-flex align-items-center cursor-pointer mb-2">
+  <input
+    onChange={ handleInputChange }
+    checked={ optional }
+    name="optional"
+    type='checkbox'
+    className="mr-2"/>
+    Optional
+  </label>
 
   <div className="field is-grouped">
     <p className="control">

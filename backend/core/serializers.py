@@ -41,7 +41,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ingredient
-        fields = ('id', 'quantity', 'name', 'description', 'position')
+        fields = ('id', 'quantity', 'name', 'description', 'position', 'optional')
 
 
 class StepSerializer(serializers.ModelSerializer):

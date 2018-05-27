@@ -110,6 +110,7 @@ const RecipeEdit = ({
                   remove={ removeIngredient }
                   removing={ ingredient.removing }
                   quantity={ ingredient.quantity }
+                  optional={ ingredient.optional }
                   name={ ingredient.name }
                   description={ ingredient.description }
                 />
