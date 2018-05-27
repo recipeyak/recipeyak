@@ -24,7 +24,7 @@ import Loader from './Loader'
 import CalendarDay from './CalendarDay'
 
 function monthYearFromDate (date) {
-  return format(date, 'MMM | D')
+  return format(date, 'MMM | YYYY')
 }
 
 const mapStateToProps = state => ({
