@@ -205,6 +205,7 @@ class Ingredient(CommonInfo):
     description = models.CharField(max_length=255, blank=True)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     position = models.FloatField()
+    optional = models.BooleanField(default=False)
 
     class Meta:
         unique_together = (('recipe', 'position'),)
@@ -214,7 +215,8 @@ class Ingredient(CommonInfo):
         return f'{self.quantity} {self.name} {self.description}'
 
     def __repr__(self):
-        return f'<quantity={self.quantity} {self.name} description={self.description} recipe={self.recipe}>'
+        optional = '[optional]' if self.optional else ''
+        return f'<quantity={self.quantity} {self.name} description={self.description} recipe={self.recipe} {optional}>'
 
 
 class Step(CommonInfo):

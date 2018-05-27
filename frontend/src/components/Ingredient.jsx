@@ -1,5 +1,7 @@
 import React from 'react'
 
+import IngredientView from './IngredientView'
+
 const emptyField = ({
   quantity,
   name,
@@ -15,20 +17,29 @@ class Ingredient extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      quantity: props.quantity || '',
-      name: props.name || '',
-      description: props.description || '',
+      quantity: props.quantity,
+      name: props.name,
+      description: props.description,
+      optional: props.optional,
 
       editing: false,
       unsavedChanges: false
     }
   }
 
+  static defaultProps = {
+    quantity: '',
+    name: '',
+    description: '',
+    optional: false,
+  }
+
   componentWillReceiveProps = nextProps => {
     this.setState({
       quantity: nextProps.quantity,
       name: nextProps.name,
-      description: nextProps.description
+      description: nextProps.description,
+      optional: nextProps.optional,
     })
   }
 
@@ -58,6 +69,10 @@ class Ingredient extends React.Component {
 
   handleInputChange = e => {
     this.setState({ [e.target.name]: e.target.value })
+  }
+
+  toggleOptional = () => {
+    this.setState(prev => ({ optional: !prev.optional }))
   }
 
   enableEditing = () => {
@@ -121,14 +136,16 @@ class Ingredient extends React.Component {
     const {
       quantity,
       name,
-      description
+      description,
+      optional,
     } = this.state
 
     await this.props.update(this.props.id,
       {
         quantity,
         name,
-        description
+        description,
+        optional,
       }
     )
 
@@ -155,6 +172,7 @@ class Ingredient extends React.Component {
       name,
       quantity,
       description,
+      optional,
       editing,
       unsavedChanges
     } = this.state
@@ -202,6 +220,16 @@ class Ingredient extends React.Component {
             </div>
           </div>
 
+          <label className="d-flex align-items-center cursor-pointer mb-2">
+          <input
+            onChange={ this.toggleOptional }
+            checked={ optional }
+            name="optional"
+            type='checkbox'
+            className="mr-2"/>
+            Optional
+          </label>
+
           <section className="listitem-button-container">
             <div className="field is-grouped">
               <p className="control">
@@ -235,9 +263,12 @@ class Ingredient extends React.Component {
             </div>
           </section>
         </form>
-      : <p className="listitem-text justify-space-between">
-          { quantity } { name } { description }
-        </p>
+      : <IngredientView
+          quantity={quantity}
+          name={name}
+          description={description}
+          optional={this.state.optional}
+        />
 
     return (
       <li ref={element => { this.element = element }}>

@@ -15,7 +15,8 @@ class AddRecipe extends React.Component {
     ingredient: {
       quantity: '',
       name: '',
-      description: ''
+      description: '',
+      optional: false,
     },
     step: '',
   }
@@ -72,6 +73,15 @@ class AddRecipe extends React.Component {
 
   handleIngredientChange = e => {
     e.persist()
+    if (e.target.type === 'checkbox') {
+      this.setState(prev => ({
+        ingredient: {
+          ...prev.ingredient,
+          [e.target.name]: !prev.ingredient[e.target.name]
+        }
+      }))
+      return
+    }
     this.setState(prevState => ({
       ingredient: {
         ...prevState.ingredient,
@@ -94,7 +104,7 @@ class AddRecipe extends React.Component {
   render () {
     const {
       ingredient,
-      step
+      step,
     } = this.state
 
     const {
@@ -116,7 +126,8 @@ class AddRecipe extends React.Component {
     const {
       quantity = '',
       name = '',
-      description = ''
+      description = '',
+      optional = false,
     } = ingredient
 
     return (
@@ -179,16 +190,17 @@ class AddRecipe extends React.Component {
               <h2 className="title">Ingredients</h2>
               <ul>
                 {
-                  this.props.ingredients.map((ingredient, i) =>
+                  this.props.ingredients.map((x, i) =>
                     <Ingredient
-                      key={ ingredient.name + i }
+                      key={ x.name + i }
                       index={ i }
                       id={ i }
                       update={ this.props.updateIngredient }
                       remove={ this.props.removeIngredient }
-                      quantity={ ingredient.quantity }
-                      name={ ingredient.name }
-                      description={ ingredient.description }
+                      quantity={ x.quantity }
+                      optional={ x.optional }
+                      name={ x.name }
+                      description={ x.description }
                     />
                   )
                 }
@@ -201,6 +213,7 @@ class AddRecipe extends React.Component {
                 quantity={ quantity }
                 name={ name }
                 description={ description }
+                optional={ optional }
                 error={ errorWithIngredients }
               />
             </div>
