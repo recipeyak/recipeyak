@@ -56,10 +56,18 @@ export default class HelpMenuModal extends React.Component {
               </section>
               <section className="d-flex">
                 <div className="mr-4">
-                  { keybinds.map(({ description }) => <div className="mb-1">{ description }</div>) }
+                  { keybinds.map(({ description }) =>
+                    <div className="mb-1" key={description}>
+                      { description }
+                    </div>)
+                  }
                 </div>
                 <div>
-                  { keybinds.map(({ key }) => <div className="mb-1"><key>{ key }</key></div>) }
+                  { keybinds.map(({ key }) =>
+                    <div className="mb-1" key={key}>
+                      <kbd>{ key }</kbd>
+                    </div>)
+                  }
                 </div>
               </section>
             </div>
