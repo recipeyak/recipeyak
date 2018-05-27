@@ -32,15 +32,28 @@ function collect (connect, monitor) {
 @DragSource(DragDrop.RECIPE, source, collect)
 export default class CalendarItem extends React.Component {
   state = {
-    count: this.props.count
+    count: this.props.count,
+    hover: false,
   }
 
   componentWillMount () {
     this.setState({ count: this.props.count })
+    document.addEventListener('keypress', this.handleKeyPress)
   }
 
   componentWillReceiveProps (nextProps) {
     this.setState({ count: nextProps.count })
+  }
+
+  componentWillUnmount () {
+    document.removeEventListener('keypress', this.handleKeyPress)
+  }
+
+  handleKeyPress = e => {
+    if (!this.state.hover) return
+    if (e.key === '#') {
+      this.props.remove()
+    }
   }
 
   handleChange = e => {
@@ -56,6 +69,8 @@ export default class CalendarItem extends React.Component {
     const { connectDragSource, isDragging } = this.props
     return connectDragSource(
       <div className="d-flex align-items-center cursor-pointer justify-space-between mb-1"
+        onMouseEnter={() => this.setState({ hover: true })}
+        onMouseLeave={() => this.setState({ hover: false })}
         style={{
           visibility: isDragging ? 'hidden' : 'visible',
         }}>

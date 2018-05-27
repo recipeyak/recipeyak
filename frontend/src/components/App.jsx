@@ -32,6 +32,7 @@ import PasswordResetConfirmation from './PasswordResetConfirmation'
 import OAuth from '../containers/OAuth.jsx'
 import OAuthConnect from '../containers/OAuthConnect.jsx'
 import Schedule from './Schedule'
+import HelpMenuModal from './HelpMenuModal'
 
 import './scss/main.scss'
 
@@ -99,6 +100,7 @@ export default class Base extends React.Component {
           </Switch>
         </ConnectedRouter>
         <Notification/>
+        <HelpMenuModal/>
       </div>
 
     )
