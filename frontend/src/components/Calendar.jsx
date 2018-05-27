@@ -148,7 +148,7 @@ class Calendar extends React.Component {
               )
             }
           </div>
-          <p className="mt-1">press <key>?</key> for help</p>
+          <p className="mt-1">press <kbd>?</kbd> for help</p>
         </div>
     )
   }
