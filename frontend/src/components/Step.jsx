@@ -38,7 +38,6 @@ import * as ItemTypes from '../dragDrop'
 const style = {
   padding: '0.15rem',
   backgroundColor: 'white',
-  cursor: 'move',
 }
 
 const cardSource = {
@@ -106,6 +105,7 @@ const cardTarget = {
 }))
 @DragSource(ItemTypes.CARD, cardSource, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
+  connectDragPreview: connect.dragPreview(),
   isDragging: monitor.isDragging(),
 }))
 export default class Card extends Component {
@@ -125,16 +125,16 @@ export default class Card extends Component {
       isDragging,
       connectDragSource,
       connectDropTarget,
+      connectDragPreview,
       index,
     } = this.props
     const opacity = isDragging ? 0 : 1
 
-    return connectDragSource(
-      connectDropTarget(
+    return connectDragPreview(connectDropTarget(
         <div style={{ ...style, opacity }}>
-          <label className="better-label">Step {index + 1}</label>
+          {connectDragSource(<label className="better-label" style={{ cursor: 'move' }}>Step {index + 1}</label>)}
           <p className="listitem-text mb-2">{text}</p>
-        </div>),
-    )
+        </div>,
+    ))
   }
 }
