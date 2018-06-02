@@ -66,6 +66,7 @@ export default class DatePickerForm extends React.Component {
         <div className={
             classNames(
               'box-shadow-normal',
+              'min-width-max-content',
               'p-absolute',
               'r-0',
               't-100',

@@ -473,6 +473,10 @@
   width: unset;
 }
 
+.min-width-max-content {
+  min-width: max-content;
+}
+
 .grid-auto-rows-unset {
   grid-auto-rows: unset !important;
 }
