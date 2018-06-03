@@ -48,7 +48,7 @@ export default class RecipeViewing extends React.Component {
       <div className="grid-entire-row d-flex align-center justify-space-between flex-wrap p-rel">
         <h1 className="title fs-3rem mb-0">{ name }</h1>
         <ButtonPrimary onClick={() => this.setState(prev => ({ show: !prev.show }))} className="is-small">
-          •••
+          schedule
         </ButtonPrimary>
         <DatePickerForm
           recipeID={id}

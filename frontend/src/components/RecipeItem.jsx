@@ -80,7 +80,7 @@ export default class RecipeItem extends React.Component {
             <ButtonPlain
               onClick={() => this.setState(prev => ({ show: !prev.show }))}
               className="is-small p-relative">
-              •••
+              schedule
             </ButtonPlain>
             <DatePickerForm
               recipeID={id}
