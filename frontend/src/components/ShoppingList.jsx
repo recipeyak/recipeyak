@@ -175,9 +175,12 @@ class ShoppingList extends React.Component {
         <div>
           <div className={`box p-rel min-height-75px mb-0 ${this.props.loading ? 'has-text-grey-light' : ''}`} >
             <button
-              onClick={ () => selectElementText(document.querySelector('#shoppinglist')) }
+              onClick={ () => {
+                selectElementText(document.querySelector('#shoppinglist'))
+                document.execCommand('copy')
+              } }
               className="my-button is-small r-5 p-abs">
-              Select
+              Copy
             </button>
             { this.props.error
                 ? <p>error fetching shoppinglist</p>
