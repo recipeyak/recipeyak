@@ -129,7 +129,9 @@ jobs:
           working_directory: backend
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            docker build -f Dockerfile-prod --tag recipeyak/django:$CIRCLE_SHA1 --build-arg GIT_SHA=$CIRCLE_SHA1 .
+            docker build -f Dockerfile-prod \
+              --tag recipeyak/django:$CIRCLE_SHA1 \
+              --build-arg GIT_SHA=$CIRCLE_SHA1 .
             docker push recipeyak/django:$CIRCLE_SHA1
   # https://circleci.com/docs/2.0/building-docker-images/
   build_ui_container:
@@ -170,7 +172,8 @@ jobs:
           working_directory: nginx
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            docker build -f Dockerfile --tag recipeyak/nginx:$CIRCLE_SHA1 .
+            docker build -f Dockerfile \
+              --tag recipeyak/nginx:$CIRCLE_SHA1 .
             docker push recipeyak/nginx:$CIRCLE_SHA1
 workflows:
   version: 2
