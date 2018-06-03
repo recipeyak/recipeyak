@@ -182,7 +182,16 @@ workflows:
       - build_frontend
       - build_api_container:
           context: DockerHub
+          filters:
+            branches:
+              only: master
       - build_ui_container:
           context: DockerHub
+          filters:
+            branches:
+              only: master
       - build_proxy_container:
           context: DockerHub
+          filters:
+            branches:
+              only: master
