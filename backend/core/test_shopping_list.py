@@ -1,6 +1,6 @@
 import pytest
+from typing import Dict, List, Union
 
-from django.conf import settings
 from django.urls import reverse
 from rest_framework import status
 from datetime import date, timedelta
@@ -10,7 +10,14 @@ from .models import Recipe, Ingredient
 
 pytestmark = pytest.mark.django_db
 
-BASE_URL = f'/{settings.API_BASE_URL}'
+
+def omit(d: Union[Dict, List], keys=[]) -> Union[List[Dict], Dict]:
+    if isinstance(d, list):
+        return [
+            {k: v for k, v in i.items() if k not in keys}
+            for i in d
+        ]
+    return {k: v for k, v in d.items() if k not in keys}
 
 
 def test_combining_ingredients(user):
@@ -63,7 +70,7 @@ def test_combining_ingredients(user):
             }
         ], key=lambda x: x.get('name'))
 
-    assert actual == expected
+    assert omit(actual, 'origin') == omit(expected, 'origin')
 
 
 def test_fetching_shoppinglist(client, user, recipe):
@@ -95,7 +102,7 @@ def test_fetching_shoppinglist(client, user, recipe):
         'name': 'soy sauce'
     }]
 
-    assert res.json() == expected
+    assert omit(res.json(), 'origin') == omit(expected, 'origin')
 
 
 def test_fetching_shoppinglist_with_team_recipe(client, team, user, recipe):
@@ -132,7 +139,7 @@ def test_fetching_shoppinglist_with_team_recipe(client, team, user, recipe):
         'name': 'soy sauce'
     }]
 
-    assert res.json() == expected
+    assert omit(res.json(), 'origin') == omit(expected, 'origin')
 
 
 def test_combining_ingredients_with_out_units(user):
@@ -168,6 +175,10 @@ def test_combining_ingredients_with_out_units(user):
     expected = [{
         'name': 'garlic cloves',
         'unit': '9',
+        'origin': [
+            {'quantity': '1', 'recipe': recipe.id},
+            {'quantity': '8', 'recipe': recipe2.id},
+        ]
     }]
 
     assert actual == expected
@@ -206,6 +217,10 @@ def test_combining_ingredients_with_dashes_in_name(user):
     expected = [{
         'name': 'extra virgin olive oil',
         'unit': '9 tablespoon',
+        'origin': [
+            {'quantity': '8 tablespoon', 'recipe': recipe2.id},
+            {'quantity': '1 tablespoon', 'recipe': recipe.id},
+        ]
     }]
 
     assert actual == expected
@@ -306,6 +321,12 @@ def test_combining_ingredients_with_approximations(user):
     expected = [{
         'name': 'black pepper',
         'unit': '3 tablespoon + some',
+        'origin': [
+            {'quantity': 'some', 'recipe': recipe2.id},
+            {'quantity': 'sprinkle', 'recipe': recipe.id},
+            {'quantity': '2 tablespoon', 'recipe': recipe.id},
+            {'quantity': '1 tablespoon', 'recipe': recipe.id},
+        ]
     }]
 
     assert actual == expected
