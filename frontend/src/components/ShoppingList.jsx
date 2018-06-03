@@ -15,6 +15,7 @@ import {
   setSelectingStart,
   setSelectingEnd,
   reportBadMerge,
+  showNotificationWithTimeout,
 } from '../store/actions'
 
 import {
@@ -30,6 +31,11 @@ const selectElementText = el => {
   sel.removeAllRanges()
   sel.addRange(range)
 }
+
+const removeSelection = () => {
+  window.getSelection().removeAllRanges()
+}
+
 function formatMonth (date) {
   if (date == null) {
     return ''
@@ -52,7 +58,8 @@ const mapDispatchToProps = (dispatch) => ({
   fetchData: (start, end) => dispatch(fetchShoppingList(start, end)),
   setStartDay: (date) => dispatch(setSelectingStart(date)),
   setEndDay: (date) => dispatch(setSelectingEnd(date)),
-  reportBadMerge: () => dispatch(reportBadMerge())
+  reportBadMerge: () => dispatch(reportBadMerge()),
+  sendToast: (message) => dispatch(showNotificationWithTimeout({ message, level: 'info' })),
 })
 
 @connect(
@@ -178,6 +185,8 @@ class ShoppingList extends React.Component {
               onClick={ () => {
                 selectElementText(document.querySelector('#shoppinglist'))
                 document.execCommand('copy')
+                removeSelection()
+                this.props.sendToast('Shopping list copied to clipboard!')
               } }
               className="my-button is-small r-5 p-abs">
               Copy
