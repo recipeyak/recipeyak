@@ -97,7 +97,13 @@ def combine_ingredients(ingredients: List) -> List:
                 'units': {
                     base_unit: quantity,
                 },
+                'origin': [],
             }
+
+        combined[singular_name]['origin'].append({
+            'recipe': ingredient.recipe.id,
+            'quantity': str(quantity),
+        })
         if is_plural:
             combined[singular_name]['plural'] = raw_name
 
@@ -110,7 +116,8 @@ def combine_ingredients(ingredients: List) -> List:
             plural = pluralize(name)
         simple_ingredients.append({
             'unit': combined_units,
-            'name': name if not plural else plural
+            'name': name if not plural else plural,
+            'origin': v['origin']
         })
 
     return simple_ingredients

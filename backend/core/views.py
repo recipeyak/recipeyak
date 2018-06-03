@@ -209,7 +209,7 @@ class ShoppingListView(views.APIView):
             for _ in range(scheduled_recipe.count):
                 ingredients += scheduled_recipe.recipe.ingredients
 
-        return Response(combine_ingredients(list(ingredients)), status=status.HTTP_200_OK)
+        return Response(combine_ingredients(ingredients), status=status.HTTP_200_OK)
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
