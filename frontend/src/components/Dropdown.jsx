@@ -12,7 +12,7 @@ const Chevron = () => (
   </svg>
 )
 
-class Dropdown extends React.Component {
+export default class Dropdown extends React.Component {
   state = {
     show: false,
   }
@@ -35,7 +35,7 @@ class Dropdown extends React.Component {
 
   render () {
     return (
-      <section>
+      <section className="p-rel">
         <a onClick={this.toggle}
           className="better-nav-item">
           <span>{ this.props.name }</span>
@@ -51,5 +51,3 @@ class Dropdown extends React.Component {
     )
   }
 }
-
-export default Dropdown

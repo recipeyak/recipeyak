@@ -77,16 +77,18 @@ export default class RecipeItem extends React.Component {
         <div className="card-content">
           <div className="title fs-6 d-flex justify-space-between p-rel">
             <Link to={ url }>{ name }</Link>
-            <ButtonPlain
-              onClick={() => this.setState(prev => ({ show: !prev.show }))}
-              className="is-small p-relative">
-              schedule
-            </ButtonPlain>
-            <DatePickerForm
-              recipeID={id}
-              show={this.state.show}
-              close={() => this.setState({ show: false })}
-            />
+            <div className="p-rel">
+              <ButtonPlain
+                onClick={() => this.setState(prev => ({ show: !prev.show }))}
+                className="is-small p-relative">
+                schedule
+              </ButtonPlain>
+              <DatePickerForm
+                recipeID={id}
+                show={this.state.show}
+                close={() => this.setState({ show: false })}
+              />
+            </div>
 
           </div>
           <p className="subtitle fs-4 mb-0">
