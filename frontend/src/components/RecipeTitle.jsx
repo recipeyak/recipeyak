@@ -24,6 +24,7 @@ export default class RecipeTitle extends React.Component {
     update: PropTypes.func.isRequired,
     updating: PropTypes.bool.isRequired,
     remove: PropTypes.func.isRequired,
+    deleting: PropTypes.bool.isRequired,
   }
 
   toggleEdit = () => this.setState(prev => ({ edit: !prev.edit }))
@@ -46,9 +47,11 @@ export default class RecipeTitle extends React.Component {
     }))
   }
 
+
   handleDelete = () => {
-    this.props.remove(this.props.id)
-    console.log('delete', this.props.recipe)
+    if (confirm(`Are you sure you want to delete this recipe "${this.props.name}"?`)) {
+      this.props.remove(this.props.id)
+    }
   }
 
   render () {
@@ -66,6 +69,7 @@ export default class RecipeTitle extends React.Component {
       },
       update,
       updating,
+      deleting,
     } = this.props
     return (
       <div>
@@ -158,6 +162,7 @@ export default class RecipeTitle extends React.Component {
         <Button
           className="is-small"
           type="submit"
+          loading={deleting}
           onClick={this.handleDelete}
           name="delete recipe" >
           Delete

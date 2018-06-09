@@ -11,7 +11,7 @@ const AddStepForm = ({
   text,
   loading = false,
   error = false,
-  autoFocus = true,
+  autoFocus = false,
 }) =>
   <form onSubmit={ e => {
     e.preventDefault()
