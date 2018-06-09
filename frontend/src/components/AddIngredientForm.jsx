@@ -12,6 +12,7 @@ const AddIngredientForm = ({
   optional,
   loading,
   error,
+  autoFocus=false,
 }) =>
   <form onSubmit={ async e => {
     e.preventDefault()
@@ -26,7 +27,7 @@ const AddIngredientForm = ({
         id="firstinput"
         onChange={ handleInputChange }
         onFocus={ e => e.target.select() }
-        autoFocus
+        autoFocus={autoFocus}
         value={ quantity }
         className={ 'my-input' + (error ? ' is-danger' : '') }
         type="text"

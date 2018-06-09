@@ -10,7 +10,7 @@ import { ButtonPrimary } from './Buttons'
 const unfinishedIngredient = ({ quantity = '', name = '' }) =>
   quantity === '' || name === ''
 
-class AddRecipe extends React.Component {
+export default class AddRecipe extends React.Component {
   state = {
     ingredient: {
       quantity: '',
@@ -187,7 +187,7 @@ class AddRecipe extends React.Component {
 
           <section className="ingredients-preparation-grid">
             <div>
-              <h2 className="title">Ingredients</h2>
+              <h2 className="title is-3 mb-1 font-family-title bold">Ingredients</h2>
               <ul>
                 {
                   this.props.ingredients.map((x, i) =>
@@ -219,12 +219,12 @@ class AddRecipe extends React.Component {
             </div>
 
               <div>
-                <h2 className="title is-3">Preparation</h2>
+                <h2 className="title is-3 mb-1 font-family-title bold">Preparation</h2>
                 <ul>
                   {
                     this.props.steps.map((step, i) =>
                       <div key={step.text + i}>
-                        <label className="label">Step { i + 1}</label>
+                        <label className="better-label">Step { i + 1}</label>
                         <ListItem
                           id={i}
                           text={step.text}
@@ -285,5 +285,3 @@ class AddRecipe extends React.Component {
     )
   }
 }
-
-export default AddRecipe

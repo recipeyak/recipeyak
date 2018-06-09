@@ -3,12 +3,13 @@ import PropTypes from 'prop-types'
 
 import AddStepForm from './AddStepForm'
 
-class AddStep extends React.Component {
+export default class AddStep extends React.Component {
   static propTypes = {
     addStep: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
     id: PropTypes.number.isRequired,
+    autoFocus: PropTypes.bool,
   }
 
   state = {
@@ -38,7 +39,8 @@ class AddStep extends React.Component {
 
     const {
       index,
-      loading
+      loading,
+      autoFocus,
     } = this.props
 
     const {
@@ -53,9 +55,8 @@ class AddStep extends React.Component {
         stepNumber={ index }
         text={ step }
         loading={ loading }
+        autoFocus={ autoFocus }
       />
     )
   }
 }
-
-export default AddStep

@@ -75,12 +75,12 @@ export default class RecipeItem extends React.Component {
           opacity: isDragging ? 0.5 : 1,
         }}>
         <div className="card-content">
-          <div className="title fs-6 d-flex justify-space-between p-rel">
+          <div className="title fs-6 d-flex justify-space-between">
             <Link to={ url }>{ name }</Link>
-            <div className="p-rel">
+            <div className="p-rel ml-2">
               <ButtonPlain
                 onClick={() => this.setState(prev => ({ show: !prev.show }))}
-                className="is-small p-relative">
+                className="is-small">
                 schedule
               </ButtonPlain>
               <DatePickerForm

@@ -65,6 +65,7 @@ export default class RecipeViewing extends React.Component {
     owner: PropTypes.object.isRequired,
     update: PropTypes.func.isRequired,
     remove: PropTypes.func.isRequired,
+    deleting: PropTypes.bool.isRequired,
   }
 
   state = {
@@ -140,6 +141,7 @@ export default class RecipeViewing extends React.Component {
           { this.state.addIngredient
               ? <AddIngredient
                   id={ id }
+                  autoFocus
                   index={ ingredients.length + 1 }
                   addIngredient={this.props.addIngredient}
                   onCancel={() => this.setState({ addIngredient: false })}
@@ -155,6 +157,7 @@ export default class RecipeViewing extends React.Component {
               ? <AddStep
                   id={ id }
                   index={ steps.length + 1 }
+                  autoFocus
                   addStep={this.props.addStep}
                   onCancel={() => this.setState({ addStep: false })}
                   loading={this.props.addingStepToRecipe}

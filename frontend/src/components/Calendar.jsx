@@ -52,6 +52,7 @@ const mapDispatchToProps = dispatch => ({
 class Calendar extends React.Component {
   state = {
     month: new Date(),
+    initialLoad: false,
   }
 
   static defaultProps = {
@@ -61,7 +62,7 @@ class Calendar extends React.Component {
   }
 
   componentDidMount () {
-    this.props.fetchData(this.state.month)
+    this.props.fetchData(this.state.month).then(() => this.setState({ initialLoad: true }))
   }
 
   refetchData = () => {
@@ -87,7 +88,7 @@ class Calendar extends React.Component {
       )
     }
 
-    if (this.props.loading) {
+    if (this.props.loading && !this.state.initialLoad) {
       return (
         <div className={`d-flex w-100 justify-content-center align-items-center ${this.props.className}`}>
           <div>
