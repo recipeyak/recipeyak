@@ -9,6 +9,7 @@ export default class AddIngredient extends React.Component {
     addIngredient: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
     autoFocus: PropTypes.bool,
+    onCancel: PropTypes.func.isRequired,
   }
 
   static defaultProps = {

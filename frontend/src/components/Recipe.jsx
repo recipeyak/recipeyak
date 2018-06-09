@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { Helmet } from 'react-helmet'
+
 import NoMatch from './NoMatch'
 import Loader from './Loader'
-import { Helmet } from 'react-helmet'
 import AddStep from './AddStep'
 import AddIngredient from './AddIngredient'
-
 import StepContainer from './StepContainer'
 import Ingredient from './Ingredient'
 import RecipeTitle from './RecipeTitle'
@@ -112,7 +112,19 @@ export default class Recipe extends React.Component {
     <div className="d-grid grid-gap-2">
       <Helmet title={ name }/>
 
-      <RecipeTitle {...this.props}/>
+      <RecipeTitle
+        id={this.props.id}
+        name={this.props.name}
+        author={this.props.author}
+        source={this.props.source}
+        servings={this.props.servings}
+        time={this.props.time}
+        owner={this.props.owner}
+        update={this.props.update}
+        updating={this.props.updating}
+        remove={this.props.remove}
+        deleting={this.props.deleting}
+      />
       <section className="ingredients-preparation-grid">
         <div>
           <h2 className="title is-3 mb-1 font-family-title bold">Ingredients</h2>
