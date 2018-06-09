@@ -26,6 +26,7 @@ const AddIngredientForm = ({
         id="firstinput"
         onChange={ handleInputChange }
         onFocus={ e => e.target.select() }
+        autoFocus
         value={ quantity }
         className={ 'my-input' + (error ? ' is-danger' : '') }
         type="text"
@@ -74,6 +75,7 @@ const AddIngredientForm = ({
     <p className="control">
       <ButtonPrimary
         disabled={ quantity === '' && name === '' }
+        className="is-small"
         type="submit"
         name="add ingredient"
         loading={ loading }>
@@ -81,16 +83,12 @@ const AddIngredientForm = ({
       </ButtonPrimary>
     </p>
     <p className="control">
-      { quantity !== '' || name !== ''
-        ? <input
-            disabled={ quantity === '' && name === '' }
-            onClick={ cancelAddIngredient }
-            className="my-button"
-            type="button"
-            name="cancel add ingredient"
-            value="✕"/>
-        : null
-      }
+      <input
+        onClick={ cancelAddIngredient }
+        className="my-button is-small"
+        type="button"
+        name="cancel add ingredient"
+        value="cancel"/>
     </p>
   </div>
 </form>

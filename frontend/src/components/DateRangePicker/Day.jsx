@@ -11,6 +11,7 @@ class Day extends React.Component {
           'h-100',
           'text-center',
           'align-self-center',
+          'white-space-nowrap',
           'justify-self-center',
           'p-1',
           'cal-day',

@@ -1,11 +1,30 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 
 import IngredientView from './IngredientView'
+
+import {
+  addingRecipeIngredient,
+  addingRecipeStep,
+  sendUpdatedRecipeName,
+  deletingIngredient,
+  deletingStep,
+  setRecipeSource,
+  setRecipeAuthor,
+  setRecipeTime,
+  fetchRecipe,
+  updatingIngredient,
+  updatingStep,
+  deletingRecipe,
+  updateRecipe
+} from '../store/actions'
 
 const emptyField = ({
   quantity,
   name,
-}) => quantity === '' || name === ''
+  description,
+}) => quantity === '' || name === '' || description === ''
 
 const allEmptyFields = ({
   quantity,
@@ -13,7 +32,17 @@ const allEmptyFields = ({
   description
 }) => quantity === '' && name === '' && description === ''
 
-class Ingredient extends React.Component {
+
+const mapDispatchToProps = dispatch => ({
+  update: (recipeID, ingredientID, content) => dispatch(updatingIngredient(recipeID, ingredientID, content)),
+  remove: (recipeID, ingredientID) => dispatch(deletingIngredient(recipeID, ingredientID)),
+})
+
+@connect(
+  null,
+  mapDispatchToProps
+)
+export default class Ingredient extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -27,20 +56,24 @@ class Ingredient extends React.Component {
     }
   }
 
+  static propTypes = {
+    quantity: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    update: PropTypes.func.isRequired,
+    id: PropTypes.number.isRequired,
+    recipeID: PropTypes.number.isRequired,
+    remove: PropTypes.func.isRequired,
+    updating: PropTypes.bool.isRequired,
+    optional: PropTypes.bool.isRequired,
+    removing: PropTypes.bool.isRequired,
+  }
+
   static defaultProps = {
     quantity: '',
     name: '',
     description: '',
     optional: false,
-  }
-
-  componentWillReceiveProps = nextProps => {
-    this.setState({
-      quantity: nextProps.quantity,
-      name: nextProps.name,
-      description: nextProps.description,
-      optional: nextProps.optional,
-    })
   }
 
   componentWillMount () {
@@ -140,7 +173,9 @@ class Ingredient extends React.Component {
       optional,
     } = this.state
 
-    await this.props.update(this.props.id,
+    await this.props.update(
+      this.props.recipeID,
+      this.props.id,
       {
         quantity,
         name,
@@ -156,7 +191,7 @@ class Ingredient extends React.Component {
   }
 
   remove = () =>
-    this.props.remove(this.props.id)
+    this.props.remove(this.props.recipeID, this.props.id)
 
   render () {
     const {
@@ -234,7 +269,7 @@ class Ingredient extends React.Component {
             <div className="field is-grouped">
               <p className="control">
                 <button
-                  className={ 'my-button ' + (updating ? 'is-loading' : '')}
+                  className={ 'my-button is-small ' + (updating ? 'is-loading' : '')}
                   type="submit"
                   name="update">
                   Update
@@ -243,10 +278,10 @@ class Ingredient extends React.Component {
               <p className="control">
                 <input
                   onClick={ cancel }
-                  className="my-button"
+                  className="my-button is-small"
                   type="button"
                   name="cancel edit"
-                  value="✕"
+                  value="Cancel"
                 />
               </p>
             </div>
@@ -254,7 +289,7 @@ class Ingredient extends React.Component {
               <p className="control">
                 <button
                   onClick={ remove }
-                  className={ 'my-button ' + (removing ? 'is-loading' : '')}
+                  className={ 'my-button is-small ' + (removing ? 'is-loading' : '')}
                   type="button"
                   name="remove">
                   Remove
@@ -280,14 +315,14 @@ class Ingredient extends React.Component {
         {
           unsavedChanges &&
           <section className="d-flex justify-space-between align-center">
-            <span className="is-italic">Unsaved Changes</span>
+            <span className="is-italic fs-4">Unsaved Changes</span>
             <section>
               <a onClick={ enableEditing }
-                className="my-button is-link">
+                className="my-button is-small is-link">
                 View Edits
               </a>
               <a onClick={ discardChanges }
-                className="my-button is-link">
+                className="my-button is-small is-link">
                 Discard
               </a>
             </section>
@@ -297,5 +332,3 @@ class Ingredient extends React.Component {
     )
   }
 }
-
-export default Ingredient

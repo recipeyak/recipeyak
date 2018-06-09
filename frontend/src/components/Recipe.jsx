@@ -1,39 +1,42 @@
 import React from 'react'
 
-import RecipeEdit from '../containers/RecipeEdit'
+import { connect } from 'react-redux'
+
+import {
+  fetchRecipe,
+  deletingRecipe,
+} from '../store/actions'
+
+
 import RecipeViewing from './RecipeViewing'
 
 import { inputAbs } from '../input'
 
-class Recipe extends React.Component {
-  state = {
-    editing: false,
-  }
+const mapStateToProps = (state, props) => {
+  const id = props.match.params.id
+  return state.recipes[id] ? state.recipes[id] : {}
+}
 
-  handleInputChange = e =>
-    this.setState({ [e.target.name]: inputAbs(e.target.value) })
+const mapDispatchToProps = dispatch => ({
+  fetchRecipe: id => dispatch(fetchRecipe(id)),
+  deleteRecipe: id => dispatch(deletingRecipe(id)),
+})
 
-  componentWillMount = () => {
+@connect(
+  mapStateToProps,
+  mapDispatchToProps
+)
+export default class Recipe extends React.Component {
+
+  componentWillMount () {
     this.props.fetchRecipe(this.props.match.params.id)
   }
 
   render () {
-    if (this.state.editing) {
-      return (
-        <RecipeEdit
-          { ...this.props }
-          cancelEdit={ () => this.setState({ editing: false }) }
-        />
-      )
-    }
     return (
       <RecipeViewing
         { ...this.props }
-        handleInputChange={ this.handleInputChange }
-        edit={ () => this.setState({ editing: true }) }
       />
     )
   }
 }
-
-export default Recipe

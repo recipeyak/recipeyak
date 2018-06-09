@@ -49,3 +49,6 @@ export const ButtonPlain = ({
     { ...props }>
     { children }
   </button>
+
+
+export const Button = ButtonPlain

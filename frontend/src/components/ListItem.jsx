@@ -1,7 +1,8 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Textarea from 'react-textarea-autosize'
 
-class ListItem extends React.Component {
+export default class ListItem extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -9,6 +10,14 @@ class ListItem extends React.Component {
       editing: false,
       unsavedChanges: false
     }
+  }
+
+  static propTypes = {
+    id: PropTypes.number.isRequired,
+    recipeID: PropTypes.number.isRequired,
+    delete: PropTypes.func.isRequired,
+    removing: PropTypes.bool.isRequired,
+    update: PropTypes.func.isRequired,
   }
 
   componentWillMount () {
@@ -23,9 +32,9 @@ class ListItem extends React.Component {
   handleGeneralClick = e => {
     const clickedInComponent = this.element && this.element.contains(e.target)
     if (clickedInComponent) return
-    this.setState((prevState, props) => ({
+    this.setState((prevState, { text }) => ({
       editing: false,
-      unsavedChanges: (prevState.editing && prevState.text !== props.text) || prevState.unsavedChanges
+      unsavedChanges: (prevState.editing && prevState.text !== text) || prevState.unsavedChanges
     }))
   }
 
@@ -41,9 +50,9 @@ class ListItem extends React.Component {
   }
 
   discardChanges = () => {
-    this.setState((_, props) => ({
+    this.setState((_, { text }) => ({
       editing: false,
-      text: props.text,
+      text,
       unsavedChanges: false
     }))
   }
@@ -52,16 +61,11 @@ class ListItem extends React.Component {
     e.target.select()
   }
 
-  add () {
-    console.log(this.state)
-    // TODO: update store
-  }
-
   cancel = e => {
     e.stopPropagation()
-    this.setState((_, props) => ({
+    this.setState((_, { text }) => ({
       editing: false,
-      text: props.text
+      text,
     }))
   }
 
@@ -71,7 +75,7 @@ class ListItem extends React.Component {
     if (this.state.text === '') {
       await this.delete()
     } else {
-      await this.props.update(this.props.id, { text: this.state.text })
+      await this.props.update(this.props.recipeID, this.props.id, { text: this.state.text })
     }
     this.setState({
       editing: false,
@@ -107,7 +111,7 @@ class ListItem extends React.Component {
                   if (this.state.text === '') return
                   if (e.shiftKey && e.key === 'Enter') {
                     e.preventDefault()
-                    this.add()
+                    this.update(e)
                   }
                 }}
                 defaultValue={ this.state.text }
@@ -121,7 +125,7 @@ class ListItem extends React.Component {
               <p className="control">
                 <button
                   onClick={ this.update }
-                  className={ 'my-button ' + (updating ? 'is-loading' : '')}
+                  className={ 'my-button is-small ' + (updating ? 'is-loading' : '')}
                   type="button"
                   name="save">
                   Save
@@ -130,10 +134,10 @@ class ListItem extends React.Component {
               <p className="control">
                 <input
                   onClick={ this.cancel }
-                  className="my-button"
+                  className="my-button is-small"
                   type="button"
                   name="cancel edit"
-                  value="✕"
+                  value="Cancel"
                 />
               </p>
             </div>
@@ -141,10 +145,10 @@ class ListItem extends React.Component {
               <p className="control">
                 <button
                   onClick={ this.delete }
-                  className={ 'my-button ' + (removing ? 'is-loading' : '')}
+                  className={ 'my-button is-small ' + (removing ? 'is-loading' : '')}
                   type="button"
                   name="delete">
-                  delete
+                  Delete
                 </button>
               </p>
             </div>
@@ -155,7 +159,7 @@ class ListItem extends React.Component {
         </p>
 
     return (
-      <li ref={element => { this.element = element }}>
+      <div ref={element => { this.element = element }}>
         <section
           className="cursor-pointer"
           onClick={this.enableEditing}>
@@ -167,19 +171,17 @@ class ListItem extends React.Component {
             <span className="is-italic">Unsaved Changes</span>
             <section>
               <a onClick={ this.enableEditing }
-                className="my-button is-link">
+                className="my-button is-small is-link">
                 View Edits
               </a>
               <a onClick={ this.discardChanges }
-                className="my-button is-link">
+                className="my-button is-small is-link">
                 Discard
               </a>
             </section>
           </section>
         }
-      </li>
+      </div>
     )
   }
 }
-
-export default ListItem

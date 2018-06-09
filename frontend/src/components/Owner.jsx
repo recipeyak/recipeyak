@@ -29,7 +29,13 @@ const mapDispatchToProps = dispatch => ({
 
 // TODO: Create a generalized component with the click event listeners
 // we seems to use this functionality a lot
-class Owner extends React.Component {
+
+
+@connect(
+  mapStateToProps,
+  mapDispatchToProps
+)
+export default class Owner extends React.Component {
   state = {
     show: false,
     values: [],
@@ -58,7 +64,7 @@ class Owner extends React.Component {
     this.setState({ values: selectedOptions })
   }
 
-  toggle () {
+  toggle = () => {
     this.setState(prev => {
       if (prev.show) {
         // clear values when closing dropdown
@@ -113,15 +119,10 @@ class Owner extends React.Component {
     ]
 
     return (
-      <span className="fw-500" ref={dropdown => { this.dropdown = dropdown }}>
-        <b>via</b> { type === 'user' ? 'you' : <Link to={url}>{ name }</Link> }
-        <div className={(this.state.show ? 'dropdown is-active' : 'dropdown')}>
-          <div className='dropdown-trigger'>
-            <ButtonLink className='is-small ml-1' onClick={ () => this.toggle() }>
-              Move/Copy
-            </ButtonLink>
-          </div>
-          <div className='dropdown-menu'>
+      <span className="fw-500 p-rel" ref={dropdown => { this.dropdown = dropdown }}>
+        <b className="cursor-pointer" onClick={this.toggle}>via</b> { type === 'user' ? 'you' : <Link to={url}>{ name }</Link> }
+        <div className={'' + (this.state.show ? ' d-block' : ' d-none')}>
+          <div className='p-abs'>
             <div className='dropdown-content'>
               <div className='text-center'>Teams</div>
               <hr className='dropdown-divider mt-1 mb-1'/>
@@ -137,7 +138,7 @@ class Owner extends React.Component {
               </div>
               <hr className='dropdown-divider'/>
               <div className='d-flex justify-space-between ml-2 mr-2'>
-                <ButtonLink className='is-small' onClick={ () => this.toggle() }>
+                <ButtonLink className='is-small' onClick={ this.toggle }>
                   cancel
                 </ButtonLink>
                 <div className="d-flex justify-space-between">
@@ -162,10 +163,3 @@ class Owner extends React.Component {
     )
   }
 }
-
-const ConnectedOwner = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Owner)
-
-export default ConnectedOwner

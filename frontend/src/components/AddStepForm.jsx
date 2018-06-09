@@ -10,7 +10,8 @@ const AddStepForm = ({
   stepNumber,
   text,
   loading = false,
-  error = false
+  error = false,
+  autoFocus = true,
 }) =>
   <form onSubmit={ e => {
     e.preventDefault()
@@ -22,6 +23,7 @@ const AddStepForm = ({
       <div className="control mt-2">
         <Textarea
           onChange={ handleInputChange }
+          autoFocus={ autoFocus }
           onKeyPress={ e => {
             if (text === '') return
             if (e.shiftKey && e.key === 'Enter') {
@@ -42,6 +44,7 @@ const AddStepForm = ({
     <div className="field is-grouped">
       <p className="control">
         <ButtonPrimary
+          className="is-small"
           disabled={ text === '' }
           type="submit"
           name="save step"
@@ -49,17 +52,14 @@ const AddStepForm = ({
           Add
         </ButtonPrimary>
       </p>
-      { text !== ''
-          ? <p className="control">
-            <input
-              onClick={ cancelAddStep }
-              className='my-button'
-              type="button"
-              name="cancel step"
-              value="✕"/>
-          </p>
-          : null
-      }
+      <p className="control">
+         <input
+           onClick={ cancelAddStep }
+           className='my-button is-small'
+           type="button"
+           name="cancel step"
+           value="Cancel"/>
+       </p>
     </div>
   </form>
 

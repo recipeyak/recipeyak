@@ -1,8 +1,16 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import AddStepForm from './AddStepForm'
 
 class AddStep extends React.Component {
+  static propTypes = {
+    addStep: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired,
+    id: PropTypes.number.isRequired,
+  }
+
   state = {
     step: ''
   }
@@ -12,6 +20,7 @@ class AddStep extends React.Component {
   }
 
   clearStep = () => {
+    this.props.onCancel()
     this.setState({ step: '' })
   }
 

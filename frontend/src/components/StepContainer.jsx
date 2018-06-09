@@ -45,6 +45,10 @@ export default class StepContainer extends Component {
     }
   }
 
+  componentWillReceiveProps (nextProps) {
+    this.setState({ cards: nextProps.steps })
+  }
+
   moveCard = (dragIndex, hoverIndex) => {
     const { cards } = this.state
     const dragCard = cards[dragIndex]
@@ -95,9 +99,12 @@ export default class StepContainer extends Component {
             key={card.id}
             index={i}
             id={card.id}
+            recipeID={this.props.recipeID}
             text={card.text}
             moveCard={this.moveCard}
             position={card.position}
+            updating={card.updating}
+            removing={card.removing}
             completeMove={this.completeMove}
           />
         ))}

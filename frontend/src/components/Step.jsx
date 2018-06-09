@@ -31,12 +31,30 @@
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import { findDOMNode } from 'react-dom'
 import { DragSource, DropTarget } from 'react-dnd'
 import * as ItemTypes from '../dragDrop'
+import ListItem from './ListItem'
+
+import {
+  addingRecipeIngredient,
+  addingRecipeStep,
+  sendUpdatedRecipeName,
+  deletingIngredient,
+  deletingStep,
+  setRecipeSource,
+  setRecipeAuthor,
+  setRecipeTime,
+  fetchRecipe,
+  updatingIngredient,
+  updatingStep,
+  deletingRecipe,
+  updateRecipe
+} from '../store/actions.js'
+
 
 const style = {
-  padding: '0.15rem',
   backgroundColor: 'white',
 }
 
@@ -114,9 +132,12 @@ export default class Card extends Component {
     connectDropTarget: PropTypes.func.isRequired,
     index: PropTypes.number.isRequired,
     isDragging: PropTypes.bool.isRequired,
-    id: PropTypes.any.isRequired,
+    id: PropTypes.number.isRequired,
+    recipeID: PropTypes.number.isRequired,
     text: PropTypes.string.isRequired,
     moveCard: PropTypes.func.isRequired,
+    updating: PropTypes.bool.isRequired,
+    removing: PropTypes.bool.isRequired,
   }
 
   render () {
@@ -127,14 +148,51 @@ export default class Card extends Component {
       connectDropTarget,
       connectDragPreview,
       index,
+      updating,
+      removing,
     } = this.props
     const opacity = isDragging ? 0 : 1
 
     return connectDragPreview(connectDropTarget(
         <div style={{ ...style, opacity }}>
-          {connectDragSource(<label className="better-label" style={{ cursor: 'move' }}>Step {index + 1}</label>)}
-          <p className="listitem-text mb-2">{text}</p>
+          {connectDragSource(
+            <label className="better-label" style={{ cursor: 'move' }}>
+              Step {index + 1}
+            </label>)}
+            <StepBody
+              id={this.props.id}
+              recipeID={this.props.recipeID}
+              updating={this.props.updating}
+              removing={this.props.removing}
+              text={text}/>
         </div>,
     ))
+  }
+}
+
+const mapDispatchToProps = dispatch => ({
+  update: (...args) =>
+    dispatch(updatingStep(...args)),
+  delete: (recipeID, stepID) =>
+    dispatch(deletingStep(recipeID, stepID)),
+})
+
+@connect(
+  null,
+  mapDispatchToProps,
+)
+class StepBody extends React.Component {
+  render () {
+    return (
+      <ListItem
+        id={this.props.id}
+        recipeID={this.props.recipeID}
+        text={this.props.text}
+        update={this.props.update}
+        updating={this.props.updating}
+        removing={this.props.removing}
+        delete={() => this.props.delete(this.props.recipeID, this.props.id)}
+      />
+    );
   }
 }
