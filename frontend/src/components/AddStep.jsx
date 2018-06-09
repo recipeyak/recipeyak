@@ -12,6 +12,10 @@ export default class AddStep extends React.Component {
     autoFocus: PropTypes.bool,
   }
 
+  static defaultProps = {
+    loading: false,
+  }
+
   state = {
     step: ''
   }

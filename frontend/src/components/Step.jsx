@@ -128,6 +128,11 @@ export default class Card extends Component {
     removing: PropTypes.bool.isRequired,
   }
 
+  static defaultProps = {
+    updating: false,
+    removing: false,
+  }
+
   render () {
     const {
       text,
