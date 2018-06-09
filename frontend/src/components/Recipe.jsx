@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import NoMatch from './NoMatch'
 import Loader from './Loader'
 import { Helmet } from 'react-helmet'
-import { Button, ButtonPrimary } from './Buttons'
 import AddStep from './AddStep'
 import AddIngredient from './AddIngredient'
 
@@ -15,15 +14,7 @@ import RecipeTitle from './RecipeTitle'
 import {
   addingRecipeIngredient,
   addingRecipeStep,
-  sendUpdatedRecipeName,
-  deletingIngredient,
-  deletingStep,
-  setRecipeSource,
-  setRecipeAuthor,
-  setRecipeTime,
   fetchRecipe,
-  updatingIngredient,
-  updatingStep,
   deletingRecipe,
   updateRecipe
 } from '../store/actions'
@@ -95,15 +86,10 @@ export default class RecipeViewing extends React.Component {
     const {
       id,
       name,
-      author,
-      source,
-      servings,
-      time,
       ingredients,
       steps,
       loading,
       error404,
-      owner,
     } = this.props
     if (error404) {
       return <NoMatch/>
@@ -146,7 +132,7 @@ export default class RecipeViewing extends React.Component {
                   addIngredient={this.props.addIngredient}
                   onCancel={() => this.setState({ addIngredient: false })}
                 />
-              : <a className="text-muted" onClick={() => this.setState({ addIngredient: true })}>add ingredient</a>
+              : <a className="text-muted" onClick={() => this.setState({ addIngredient: true })}>add</a>
           }
         </div>
 
@@ -162,7 +148,7 @@ export default class RecipeViewing extends React.Component {
                   onCancel={() => this.setState({ addStep: false })}
                   loading={this.props.addingStepToRecipe}
                 />
-              : <a className="text-muted" onClick={() => this.setState({ addStep: true })}>add step</a>
+              : <a className="text-muted" onClick={() => this.setState({ addStep: true })}>add</a>
           }
         </div>
       </section>

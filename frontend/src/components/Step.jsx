@@ -38,21 +38,9 @@ import * as ItemTypes from '../dragDrop'
 import ListItem from './ListItem'
 
 import {
-  addingRecipeIngredient,
-  addingRecipeStep,
-  sendUpdatedRecipeName,
-  deletingIngredient,
   deletingStep,
-  setRecipeSource,
-  setRecipeAuthor,
-  setRecipeTime,
-  fetchRecipe,
-  updatingIngredient,
   updatingStep,
-  deletingRecipe,
-  updateRecipe
 } from '../store/actions.js'
-
 
 const style = {
   backgroundColor: 'white',
@@ -148,8 +136,6 @@ export default class Card extends Component {
       connectDropTarget,
       connectDragPreview,
       index,
-      updating,
-      removing,
     } = this.props
     const opacity = isDragging ? 0 : 1
 
@@ -193,6 +179,6 @@ class StepBody extends React.Component {
         removing={this.props.removing}
         delete={() => this.props.delete(this.props.recipeID, this.props.id)}
       />
-    );
+    )
   }
 }

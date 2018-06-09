@@ -5,19 +5,8 @@ import { connect } from 'react-redux'
 import IngredientView from './IngredientView'
 
 import {
-  addingRecipeIngredient,
-  addingRecipeStep,
-  sendUpdatedRecipeName,
   deletingIngredient,
-  deletingStep,
-  setRecipeSource,
-  setRecipeAuthor,
-  setRecipeTime,
-  fetchRecipe,
   updatingIngredient,
-  updatingStep,
-  deletingRecipe,
-  updateRecipe
 } from '../store/actions'
 
 const emptyField = ({
@@ -31,7 +20,6 @@ const allEmptyFields = ({
   name,
   description
 }) => quantity === '' && name === '' && description === ''
-
 
 const mapDispatchToProps = dispatch => ({
   update: (recipeID, ingredientID, content) => dispatch(updatingIngredient(recipeID, ingredientID, content)),
