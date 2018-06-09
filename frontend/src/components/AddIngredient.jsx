@@ -8,6 +8,7 @@ export default class AddIngredient extends React.Component {
     id: PropTypes.number.isRequired,
     addIngredient: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
+    autoFocus: PropTypes.bool,
   }
 
   emptyState = {
@@ -38,7 +39,7 @@ export default class AddIngredient extends React.Component {
 
   render () {
     const { clearInputs, cancelAddIngredient, handleInputChange } = this
-    const { id, addIngredient, loading } = this.props
+    const { id, addIngredient, loading, autoFocus } = this.props
     const { quantity, name, description, optional } = this.state
 
     return (
@@ -56,6 +57,7 @@ export default class AddIngredient extends React.Component {
         name={ name }
         description={ description }
         optional={optional}
+        autoFocus={autoFocus}
       />
     )
   }

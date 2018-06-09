@@ -32,10 +32,9 @@ export default class RecipeTitle extends React.Component {
   handleSave = () => {
     const data = this.state.recipe
     this.props.update(this.props.id, data).then(() => {
-      this.setState({edit: false})
+      this.setState({ edit: false })
     })
   }
-
 
   handleInputChange = e => {
     e.persist()
@@ -46,7 +45,6 @@ export default class RecipeTitle extends React.Component {
       }
     }))
   }
-
 
   handleDelete = () => {
     if (confirm(`Are you sure you want to delete this recipe "${this.props.name}"?`)) {
@@ -67,7 +65,6 @@ export default class RecipeTitle extends React.Component {
         id: 0,
         name: '',
       },
-      update,
       updating,
       deleting,
     } = this.props
@@ -75,8 +72,7 @@ export default class RecipeTitle extends React.Component {
       <div>
         <div className="grid-entire-row d-flex justify-space-between p-rel">
           { !this.state.edit
-              ?
-                  <div className="d-flex align-items-center">
+              ? <div className="d-flex align-items-center">
                     <h1 className="title fs-3rem mb-0 cursor-pointer" onClick={this.toggleEdit}>{ name }</h1>
                   </div>
             : <input
@@ -102,8 +98,8 @@ export default class RecipeTitle extends React.Component {
           </div>
         </div>
 
-        { !this.state.edit ?
-      <div className="grid-entire-row">
+        { !this.state.edit
+      ? <div className="grid-entire-row">
         <MetaData
           onClick={this.toggleEdit}
           owner={owner}
@@ -115,9 +111,7 @@ export default class RecipeTitle extends React.Component {
           time={time}/>
       </div>
 
-
-            :
-      <div className="d-grid grid-entire-row align-items-center meta-data-grid">
+            : <div className="d-grid grid-entire-row align-items-center meta-data-grid">
       <div className="d-grid grid-entire-row align-items-center meta-data-grid">
         <label className="d-flex align-center">By
           <input

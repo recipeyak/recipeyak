@@ -30,7 +30,6 @@ const mapDispatchToProps = dispatch => ({
 // TODO: Create a generalized component with the click event listeners
 // we seems to use this functionality a lot
 
-
 @connect(
   mapStateToProps,
   mapDispatchToProps

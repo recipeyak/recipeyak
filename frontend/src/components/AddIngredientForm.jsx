@@ -12,7 +12,7 @@ const AddIngredientForm = ({
   optional,
   loading,
   error,
-  autoFocus=false,
+  autoFocus = false,
 }) =>
   <form onSubmit={ async e => {
     e.preventDefault()
