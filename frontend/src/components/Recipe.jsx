@@ -41,7 +41,7 @@ const mapDispatchToProps = dispatch => ({
   mapStateToProps,
   mapDispatchToProps
 )
-export default class RecipeViewing extends React.Component {
+export default class Recipe extends React.Component {
   static propTypes = {
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
@@ -59,13 +59,16 @@ export default class RecipeViewing extends React.Component {
     deleting: PropTypes.bool.isRequired,
   }
 
-  state = {
-    show: false,
-    addStep: false,
-    addIngredient: false,
-  }
-
+  // necessary as these are undefined between page load and data fetch
   static defaultProps = {
+    id: 0,
+    name: '',
+    author: '',
+    source: '',
+    servings: '',
+    time: '',
+    deleting: false,
+    removing: false,
     ingredients: [],
     steps: [],
     loading: true,
@@ -76,6 +79,12 @@ export default class RecipeViewing extends React.Component {
       name: '',
     },
     updating: false,
+  }
+
+  state = {
+    show: false,
+    addStep: false,
+    addIngredient: false,
   }
 
   componentWillMount () {

@@ -58,10 +58,14 @@ export default class Ingredient extends React.Component {
   }
 
   static defaultProps = {
+    // need default recipeID for when we use this in the Add Recipe page
+    recipeID: -1,
     quantity: '',
     name: '',
     description: '',
     optional: false,
+    updating: false,
+    removing: false,
   }
 
   componentWillMount () {

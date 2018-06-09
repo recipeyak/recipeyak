@@ -20,6 +20,11 @@ export default class ListItem extends React.Component {
     update: PropTypes.func.isRequired,
   }
 
+  static defaultProps = {
+    recipeID: -1,
+    removing: false,
+  }
+
   componentWillMount () {
     document.addEventListener('mouseup', this.handleGeneralClick)
   }

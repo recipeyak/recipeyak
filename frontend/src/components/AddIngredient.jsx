@@ -11,6 +11,10 @@ export default class AddIngredient extends React.Component {
     autoFocus: PropTypes.bool,
   }
 
+  static defaultProps = {
+    loading: false,
+  }
+
   emptyState = {
     quantity: '',
     name: '',
