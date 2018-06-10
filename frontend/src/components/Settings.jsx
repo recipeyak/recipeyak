@@ -180,7 +180,7 @@ export default class SettingsWithState extends React.Component {
 
       <div className="d-flex">
       <a href="https://secure.gravatar.com" className="justify-self-center mr-3">
-        <img className="br-100p" alt="user profile" src={ avatarURL + '&s=128'}/>
+        <img width="128px" height="128px" alt="user profile" src={ avatarURL + '&s=128'}/>
       </a>
 
       <div className="align-self-center d-flex flex-direction-column">

@@ -18,16 +18,14 @@ import googleIcon from './images/google-logo.svg'
 import bitbucketIcon from './images/bitbucket-logo.svg'
 import facebookIcon from './images/facebook-logo.svg'
 
-export const GithubImg = () =>
-  <img className="mr-2" src={ githubIcon } alt="github icon"/>
-export const GitlabImg = () =>
-  <img className="mr-2" src={ gitlabIcon } alt="gitlab icon"/>
-export const GoogleImg = () =>
-  <img className="mr-2" src={ googleIcon } alt="google icon"/>
-export const BitbucketImg = () =>
-  <img className="mr-2" src={ bitbucketIcon } alt="bitbucket icon"/>
-export const FacebookImg = () =>
-  <img className="mr-2" src={ facebookIcon } alt="facebook icon"/>
+const Img = ({ src, alt }) =>
+  <img className="mr-2" width="25px" height="25px" src={ src } alt={ alt }/>
+
+export const GithubImg = () => <Img src={githubIcon } alt="github icon"/>
+export const GitlabImg = () => <Img src={ gitlabIcon } alt="gitlab icon"/>
+export const GoogleImg = () => <Img src={ googleIcon } alt="google icon"/>
+export const BitbucketImg = () => <Img src={ bitbucketIcon } alt="bitbucket icon"/>
+export const FacebookImg = () => <Img src={ facebookIcon } alt="facebook icon"/>
 
 export const Github = ({ disable = false }) => GITHUB_OAUTH_URL &&
   <a href={ !disable && GITHUB_OAUTH_URL } className="github-button">
