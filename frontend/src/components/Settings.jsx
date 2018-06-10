@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
@@ -15,7 +16,28 @@ import {
   GITLAB_OAUTH_URL,
 } from '../settings'
 
-class SettingsWithState extends React.Component {
+export default class SettingsWithState extends React.Component {
+  static propTypes = {
+    fetchData: PropTypes.func.isRequired,
+    disconnectAccount: PropTypes.func.isRequired,
+    deleteUserAccount: PropTypes.func.isRequired,
+    email: PropTypes.string.isRequired,
+    updateEmail: PropTypes.func.isRequired,
+    avatarURL: PropTypes.string.isRequired,
+    updatingEmail: PropTypes.bool.isRequired,
+    socialAccountConnections: PropTypes.object.isRequired,
+    loading: PropTypes.bool.isRequired,
+    hasPassword: PropTypes.bool.isRequired,
+  }
+
+  static defaultProps = {
+    email: '',
+    avatarURL: '',
+    updatingEmail: false,
+    socialAccountConnections: {},
+    hasPassword: false,
+  }
+
   state = {
     email: this.props.email,
     loadingGithub: false,
@@ -99,8 +121,8 @@ class SettingsWithState extends React.Component {
 
     const Github = () =>
     <div className="mb-2">
-      <div className="d-flex justify-space-between">
-        <div className="d-flex align-items-center">
+      <div className="d-flex">
+        <div className="d-flex align-items-center w-200px">
           <GithubImg/>
           Github
         </div>
@@ -119,8 +141,8 @@ class SettingsWithState extends React.Component {
 
     const Gitlab = () =>
     <div className="mb-2">
-      <div className="d-flex justify-space-between">
-        <div className="d-flex align-items-center">
+      <div className="d-flex">
+        <div className="d-flex align-items-center w-200px">
           <GitlabImg/>
           Gitlab
         </div>
@@ -137,7 +159,7 @@ class SettingsWithState extends React.Component {
       { errorGitlab && <p className="help is-danger"><b>Error: </b>{ errorGitlab }</p> }
     </div>
 
-    return <section className="d-grid justify-content-center">
+    return <section className="">
       <Helmet title='Settings'/>
 
       <h1 className="fs-8">User settings</h1>
@@ -227,5 +249,3 @@ class SettingsWithState extends React.Component {
   </section>
   }
 }
-
-export default SettingsWithState
