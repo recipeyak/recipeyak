@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
 import Loader from './Loader'
-import { ButtonPrimary, ButtonPlain } from './Buttons'
+import { ButtonPrimary, Button, ButtonDanger } from './Buttons'
 
 import {
   GithubImg,
@@ -15,6 +15,40 @@ import {
   GITHUB_OAUTH_URL,
   GITLAB_OAUTH_URL,
 } from '../settings'
+
+
+const OAuthButton = ({
+  name,
+  Logo,
+  error,
+  connected,
+  OAUTH_URL,
+  disconnect,
+  disconnecting
+}) =>
+  <div className="mb-2">
+    <div className="d-flex">
+      <div className="d-flex align-items-center w-200px">
+        <Logo/>
+        { name }
+      </div>
+      <div className="d-flex align-center">
+        { connected
+          ? <div className="d-flex align-center flex-wrap">
+              <span className="has-text-success bold">Connected</span>
+              <ButtonDanger
+                onClick={disconnect}
+                loading={disconnecting}
+                className='ml-2'>
+                Disconnect
+              </ButtonDanger>
+            </div>
+          : <a href={ OAUTH_URL + '/connect' } className="my-button">Connect</a>
+        }
+      </div>
+    </div>
+    { error && <p className="help is-danger"><b>Error: </b>{ error }</p> }
+  </div>
 
 export default class SettingsWithState extends React.Component {
   static propTypes = {
@@ -120,46 +154,26 @@ export default class SettingsWithState extends React.Component {
     }
 
     const Github = () =>
-    <div className="mb-2">
-      <div className="d-flex">
-        <div className="d-flex align-items-center w-200px">
-          <GithubImg/>
-          Github
-        </div>
-        <div className="d-flex align-center">
-          { socialAccountConnections != null && socialAccountConnections.github != null
-            ? <div className="d-flex align-center flex-wrap">
-                <span className="has-text-success bold">Connected</span>
-                <button onClick={ () => disconnectAccount('github', socialAccountConnections.github) } className={ loadingGithub ? 'is-loading my-button is-danger ml-2' : 'my-button is-danger ml-2' }>Disconnect</button>
-              </div>
-            : <a href={ GITHUB_OAUTH_URL + '/connect' } style={{ 'width': '120px' }} className="my-button ml-2">Connect</a>
-          }
-        </div>
-      </div>
-      { errorGithub && <p className="help is-danger"><b>Error: </b>{ errorGithub }</p> }
-    </div>
+      <OAuthButton
+        name="Github"
+        Logo={ GithubImg }
+        error={errorGithub}
+        connected={socialAccountConnections.github != null}
+        OAUTH_URL={GITHUB_OAUTH_URL}
+        disconnect={() => disconnectAccount('github', socialAccountConnections.github) }
+        disconnecting={loadingGithub}/>
 
     const Gitlab = () =>
-    <div className="mb-2">
-      <div className="d-flex">
-        <div className="d-flex align-items-center w-200px">
-          <GitlabImg/>
-          Gitlab
-        </div>
-        <div className="d-flex align-center">
-          { socialAccountConnections != null && socialAccountConnections.gitlab != null
-            ? <div className="d-flex align-center flex-wrap">
-                <span className="has-text-success bold">Connected</span>
-                <button onClick={ () => disconnectAccount('gitlab', socialAccountConnections.gitlab) } className={ loadingGitlab ? 'is-loading my-button is-danger ml-2' : 'my-button is-danger ml-2' }>Disconnect</button>
-              </div>
-            : <a href={ GITLAB_OAUTH_URL + '/connect' } style={{ 'width': '120px' }} className="my-button ml-2">Connect</a>
-          }
-        </div>
-      </div>
-      { errorGitlab && <p className="help is-danger"><b>Error: </b>{ errorGitlab }</p> }
-    </div>
+      <OAuthButton
+        name="Gitlab"
+        Logo={ GitlabImg }
+        error={errorGitlab}
+        connected={socialAccountConnections.gitlab != null}
+        OAUTH_URL={GITLAB_OAUTH_URL}
+        disconnect={() => disconnectAccount('gitlab', socialAccountConnections.gitlab) }
+        disconnecting={loadingGitlab}/>
 
-    return <section className="">
+    return <section>
       <Helmet title='Settings'/>
 
       <h1 className="fs-8">User settings</h1>
@@ -208,14 +222,14 @@ export default class SettingsWithState extends React.Component {
                 value='save email'>
                 Save
               </ButtonPrimary>
-              <ButtonPlain
+              <Button
                 className='ml-2'
                 loading={ updatingEmail }
                 name='email'
                 onClick={ this.cancelEdit }
                 value='save email'>
                 Cancel
-              </ButtonPlain>
+              </Button>
             </div>
             : <a
               className={ 'ml-2 has-text-primary' + (updatingEmail ? ' is-loading' : '') }
