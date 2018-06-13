@@ -6,6 +6,16 @@ from django.db.models import Q
 
 from .models import Team, Membership, Recipe, MyUser
 
+class DisallowAny:
+    """
+    want to disallow access by default, then explicitly open endpoints
+    """
+    def has_permission(self, request, view):
+        return False
+
+    def has_object_permission(self, request, view, obj):
+        return False
+
 
 class IsTeamMember(permissions.BasePermission):
     def has_permission(self, request, view) -> bool:

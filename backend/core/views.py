@@ -66,7 +66,7 @@ def add_positions(recipe_steps):
 class RecipeViewSet(viewsets.ModelViewSet):
 
     serializer_class = RecipeSerializer
-
+    permission_classes = (IsAuthenticated,)
     def get_serializer_context(self):
         return {'request': self.request}
 
@@ -166,6 +166,7 @@ class StepViewSet(viewsets.ModelViewSet):
 
     queryset = Step.objects.all()
     serializer_class = StepSerializer
+    permission_classes = (IsAuthenticated,)
 
     def create(self, request, recipe_pk=None):
         """
@@ -193,6 +194,8 @@ class StepViewSet(viewsets.ModelViewSet):
 
 class ShoppingListView(views.APIView):
 
+    permission_classes = (IsAuthenticated,)
+
     def get(self, request) -> Response:
         start = request.query_params.get('start')
         end = request.query_params.get('end')
@@ -216,6 +219,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
+    permission_classes = (IsAuthenticated,)
 
     def create(self, request, recipe_pk=None):
         """
@@ -242,6 +246,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
 
 class UserStats(APIView):
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request, format=None) -> Response:
         user_recipes = Recipe.objects.filter(owner_user=request.user)
@@ -464,6 +469,7 @@ class TeamRecipesViewSet(
 
 
 class ReportBadMerge(APIView):
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request, format=None):
         user = request.user
@@ -473,6 +479,7 @@ class ReportBadMerge(APIView):
 
 class CalendarViewSet(viewsets.ModelViewSet):
     serializer_class = ScheduledRecipeSerializer
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         return (ScheduledRecipe.objects
