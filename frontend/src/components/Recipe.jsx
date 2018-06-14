@@ -21,7 +21,6 @@ import {
   updatingIngredient,
 } from '../store/actions'
 
-
 const mapStateToProps = (state, props) => {
   const id = props.match.params.id
   const recipe = state.recipes[id]

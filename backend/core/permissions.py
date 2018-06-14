@@ -6,6 +6,7 @@ from django.db.models import Q
 
 from .models import Team, Membership, Recipe, MyUser
 
+
 class DisallowAny:
     """
     want to disallow access by default, then explicitly open endpoints
