@@ -67,6 +67,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     serializer_class = RecipeSerializer
     permission_classes = (IsAuthenticated,)
+
     def get_serializer_context(self):
         return {'request': self.request}
 

@@ -16,7 +16,6 @@ import {
   GITLAB_OAUTH_URL,
 } from '../settings'
 
-
 const OAuthButton = ({
   name,
   Logo,
