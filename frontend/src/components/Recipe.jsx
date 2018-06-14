@@ -16,8 +16,11 @@ import {
   addingRecipeStep,
   fetchRecipe,
   deletingRecipe,
-  updateRecipe
+  updateRecipe,
+  deletingIngredient,
+  updatingIngredient,
 } from '../store/actions'
+
 
 const mapStateToProps = (state, props) => {
   const id = props.match.params.id
@@ -35,6 +38,8 @@ const mapDispatchToProps = dispatch => ({
     dispatch(addingRecipeStep(id, step)),
   update: (id, data) => dispatch(updateRecipe(id, data)),
   remove: id => dispatch(deletingRecipe(id)),
+  updateIngredient: (recipeID, ingredientID, content) => dispatch(updatingIngredient(recipeID, ingredientID, content)),
+  removeIngredient: (recipeID, ingredientID) => dispatch(deletingIngredient(recipeID, ingredientID)),
 })
 
 @connect(
@@ -137,6 +142,8 @@ export default class Recipe extends React.Component {
                   id={id}
                   quantity={quantity}
                   name={name}
+                  update={ (ingredient) => this.props.updateIngredient(this.props.id, id, ingredient) }
+                  remove={ () => this.props.removeIngredient(this.props.id, id) }
                   updating={updating}
                   removing={removing}
                   description={description}

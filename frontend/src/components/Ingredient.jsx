@@ -4,16 +4,10 @@ import { connect } from 'react-redux'
 
 import IngredientView from './IngredientView'
 
-import {
-  deletingIngredient,
-  updatingIngredient,
-} from '../store/actions'
-
 const emptyField = ({
   quantity,
   name,
-  description,
-}) => quantity === '' || name === '' || description === ''
+}) => quantity === '' || name === ''
 
 const allEmptyFields = ({
   quantity,
@@ -21,15 +15,6 @@ const allEmptyFields = ({
   description
 }) => quantity === '' && name === '' && description === ''
 
-const mapDispatchToProps = dispatch => ({
-  update: (recipeID, ingredientID, content) => dispatch(updatingIngredient(recipeID, ingredientID, content)),
-  remove: (recipeID, ingredientID) => dispatch(deletingIngredient(recipeID, ingredientID)),
-})
-
-@connect(
-  null,
-  mapDispatchToProps
-)
 export default class Ingredient extends React.Component {
   constructor (props) {
     super(props)
@@ -165,16 +150,12 @@ export default class Ingredient extends React.Component {
       optional,
     } = this.state
 
-    await this.props.update(
-      this.props.recipeID,
-      this.props.id,
-      {
-        quantity,
-        name,
-        description,
-        optional,
-      }
-    )
+    await this.props.update({
+      quantity,
+      name,
+      description,
+      optional,
+    })
 
     this.setState({
       editing: false,

@@ -195,8 +195,8 @@ export default class AddRecipe extends React.Component {
                       key={ x.name + i }
                       index={ i }
                       id={ i }
-                      update={ this.props.updateIngredient }
-                      remove={ this.props.removeIngredient }
+                      update={ (ingredient) => this.props.updateIngredient(i, ingredient) }
+                      remove={ () => this.props.removeIngredient(i) }
                       quantity={ x.quantity }
                       optional={ x.optional }
                       name={ x.name }
