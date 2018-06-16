@@ -137,6 +137,7 @@ import { store } from './store'
 const config = { timeout: 15000 }
 
 const http = axios.create(config)
+const anon = axios.create(config)
 
 const handleResponseError = error => {
   // 503 means we are in maintenance mode. Reload to show maintenance page.
@@ -163,6 +164,10 @@ http.interceptors.response.use(
   },
   error => handleResponseError(error))
 
+anon.interceptors.response.use(
+  response => response,
+  error => handleResponseError(error))
+
 http.interceptors.request.use(
   config => {
     const csrfToken = Cookie.get('csrftoken')
@@ -171,7 +176,15 @@ http.interceptors.request.use(
   }, error => Promise.reject(error)
 )
 
-export { http }
+anon.interceptors.request.use(
+  config => {
+    const csrfToken = Cookie.get('csrftoken')
+    config.headers['X-CSRFTOKEN'] = csrfToken
+    return config
+  }, error => Promise.reject(error)
+)
+
+export { http, anon }
 
 // We check if detail matches our string because Django will not return 401 when
 // the session expires
@@ -966,7 +979,7 @@ export const logUserIn = (email, password, redirectUrl = '') => dispatch => {
   dispatch(setLoadingLogin(true))
   dispatch(setErrorLogin({}))
   dispatch(clearNotification())
-  return http.post('/api/v1/rest-auth/login/', {
+  return anon.post('/api/v1/rest-auth/login/', {
     email,
     password
   })
@@ -998,7 +1011,7 @@ export const setErrorSocialLogin = val => ({
 })
 
 export const socialLogin = (service, token, redirectUrl = '') => dispatch => {
-  return http.post(`/api/v1/rest-auth/${service}/`, {
+  return anon.post(`/api/v1/rest-auth/${service}/`, {
     code: token
   })
   .then(res => {
@@ -1053,7 +1066,7 @@ export const signup = (email, password1, password2) => dispatch => {
     // clear previous signup errors
   dispatch(setErrorSignup({}))
   dispatch(clearNotification())
-  return http.post('/api/v1/rest-auth/registration/', {
+  return anon.post('/api/v1/rest-auth/registration/', {
     email,
     password1,
     password2
@@ -1119,7 +1132,7 @@ export const reset = email => dispatch => {
   dispatch(setLoadingReset(true))
   dispatch(setErrorReset({}))
   dispatch(clearNotification())
-  return http.post('/api/v1/rest-auth/password/reset/', {
+  return anon.post('/api/v1/rest-auth/password/reset/', {
     email
   })
   .then(res => {
@@ -1166,7 +1179,7 @@ export const resetConfirmation = (uid, token, newPassword1, newPassword2) => dis
   dispatch(setLoadingResetConfirmation(true))
   dispatch(setErrorResetConfirmation({}))
   dispatch(clearNotification())
-  return http.post('/api/v1/rest-auth/password/reset/confirm/', {
+  return anon.post('/api/v1/rest-auth/password/reset/confirm/', {
     uid,
     token,
     new_password1: newPassword1,
