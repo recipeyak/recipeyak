@@ -5,7 +5,7 @@ import Home from '../components/Home'
 import { fetchUser } from '../store/actions'
 
 const mapStateToProps = state => ({
-  loggedIn: state.user.token != null
+  loggedIn: state.user.loggedIn
 })
 
 const mapDispatchToProps = dispatch => ({

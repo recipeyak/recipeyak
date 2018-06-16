@@ -13,6 +13,7 @@ import {
   TOGGLE_DARK_MODE,
   SET_SOCIAL_ACCOUNT_CONNECTION,
   SET_USER_ID,
+  SET_USER_LOGGED_IN,
 } from '../actionTypes'
 
 import { socialAccounts } from './socialAccounts'
@@ -24,7 +25,6 @@ import raven from 'raven-js'
 const initialState = {
   id: null,
   loggedIn: false,
-  token: null,
   avatarURL: '',
   loading: false,
   error: false,
@@ -59,8 +59,7 @@ export const user = (
       email: action.user.email,
       id: action.user.id,
       loggedIn: true,
-      hasUsablePassword: action.user.has_usable_password,
-      token: action.token
+      hasUsablePassword: action.user.has_usable_password
     }
   case SET_AVATAR_URL:
     return { ...state, avatarURL: action.url }
@@ -87,6 +86,8 @@ export const user = (
       ...state,
       socialAccountConnections: socialAccounts(state.socialAccountConnections, action)
     }
+  case SET_USER_LOGGED_IN:
+    return { ...state, loggedIn: action.val }
   case TOGGLE_DARK_MODE:
     const newDarkMode = !state.darkMode
     setDarkModeClass(newDarkMode)

@@ -75,7 +75,6 @@ export const store = createStore(
 store.subscribe(throttle(() => {
   saveState({
     user: {
-      token: store.getState().user.token,
       darkMode: store.getState().user.darkMode
     },
     addrecipe: store.getState().addrecipe,
