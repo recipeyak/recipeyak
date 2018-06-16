@@ -36,7 +36,7 @@ import HelpMenuModal from './HelpMenuModal'
 
 import './scss/main.scss'
 
-const isAuthenticated = () => store.getState().user.token != null
+const isAuthenticated = () => store.getState().user.loggedIn
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route {...rest} render={props => {

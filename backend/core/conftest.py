@@ -51,6 +51,11 @@ def client():
 
 
 @pytest.fixture
+def client_b():
+    return APIClient()
+
+
+@pytest.fixture
 def recipes(user):
     """
     list of empty recipes with different modified times owned by `user`

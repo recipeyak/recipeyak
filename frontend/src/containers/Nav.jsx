@@ -17,7 +17,7 @@ const mapStateToProps = state => ({
   avatarURL: state.user.avatarURL,
   email: state.user.email,
   loading: state.user.loading,
-  loggedIn: state.user.token != null,
+  loggedIn: state.user.loggedIn,
   loggingOut: state.user.loggingOut,
   darkMode: state.user.darkMode,
   teams: teamsFrom(state),

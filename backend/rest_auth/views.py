@@ -16,8 +16,6 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import GenericAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
-from knox.models import AuthToken
-
 from .app_settings import (
     UserDetailsSerializer, LoginSerializer,
     PasswordResetSerializer, PasswordResetConfirmSerializer,
@@ -50,13 +48,10 @@ logger = logging.getLogger(__name__)
 
 class LoginView(GenericAPIView):
     """
-    Check the credentials and return the REST Token
-    if the credentials are valid and authenticated.
-    Calls Django Auth login method to register User ID
-    in Django session framework
+    Check the credentials and login if credentials are valid and authenticated.
+    Calls Django Auth login method to register User ID in Django session framework.
 
     Accept the following POST parameters: username, password
-    Return the REST Framework Token Object's key.
     """
     permission_classes = (AllowAny,)
     serializer_class = LoginSerializer
@@ -74,29 +69,23 @@ class LoginView(GenericAPIView):
 
         user = serializer.validated_data.get('user')
 
-        token = AuthToken.objects.create(user)
-
         login(request, user)
         logger.info(f'Login by {user}')
 
         return Response({
-            'key': token,
             'user': UserDetailsSerializer(user).data
         }, status=status.HTTP_200_OK)
 
 
 class LogoutView(APIView):
     """
-    Calls Django logout method and delete the Token object
-    assigned to the current User object.
+    Calls Django logout method and logs out current User object.
 
     Accepts/Returns nothing.
     """
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
-        request._auth.delete()
-
         logger.info(f'Logout by {request.user}')
         logout(request)
 

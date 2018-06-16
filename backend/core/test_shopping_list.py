@@ -523,7 +523,7 @@ def test_combining_plural_and_singular_leaves(user, client, empty_recipe):
 
 def test_report_bad_merge(user, client, recipe):
     url = reverse('report-bad-merge')
-    assert client.post(url).status_code == status.HTTP_401_UNAUTHORIZED
+    assert client.post(url).status_code == status.HTTP_403_FORBIDDEN
 
     client.force_authenticate(user)
     assert client.post(url).status_code == status.HTTP_201_CREATED

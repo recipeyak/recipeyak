@@ -18,8 +18,6 @@ from allauth.socialaccount.models import SocialAccount
 from allauth.socialaccount import signals
 from allauth.socialaccount.adapter import get_adapter as get_social_adapter
 
-from knox.models import AuthToken
-
 from .serializers import VerifyEmailSerializer, SocialAccountSerializer, SocialConnectSerializer
 
 from .app_settings import RegisterSerializer, register_permission_classes
@@ -47,8 +45,6 @@ class RegisterView(CreateAPIView):
 
         user = serializer.save(self.request)
 
-        token = AuthToken.objects.create(user)
-
         complete_signup(self.request._request, user,
                         allauth_settings.EMAIL_VERIFICATION,
                         None)
@@ -58,7 +54,6 @@ class RegisterView(CreateAPIView):
             data = {"detail": _("Verification e-mail sent.")}
         else:
             data = {
-                'key': token,
                 'user': UserDetailsSerializer(user).data
             }
 

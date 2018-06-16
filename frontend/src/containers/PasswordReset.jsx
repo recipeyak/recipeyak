@@ -10,7 +10,7 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => ({
   loading: state.loading.reset,
   error: state.error.reset,
-  loggedIn: state.user.token != null
+  loggedIn: state.user.loggedIn
 })
 
 const ConnectedPasswordReset = connect(

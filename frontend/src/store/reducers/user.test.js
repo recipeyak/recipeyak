@@ -13,6 +13,7 @@ import {
   toggleDarkMode,
   setSocialConnection,
   setUserID,
+  setUserLoggedIn,
 } from '../actions.js'
 
 describe('User', () => {
@@ -21,7 +22,6 @@ describe('User', () => {
       loggedIn: false
     }
 
-    const token = 'afakekey'
     const avatarURL = '//www.user.com'
     const email = 'test@gmail.com'
     const id = 15
@@ -35,7 +35,6 @@ describe('User', () => {
 
     const afterState = {
       loggedIn: true,
-      token,
       avatarURL,
       id,
       hasUsablePassword: true,
@@ -43,7 +42,7 @@ describe('User', () => {
     }
 
     expect(
-      user(beforeState, login(token, userData))
+      user(beforeState, login(userData))
     ).toEqual(afterState)
   })
 
@@ -295,5 +294,15 @@ describe('User', () => {
     expect(
       user(beforeState, setUserID(id)))
     .toEqual(afterState)
+  })
+  it('should set user logged in', () => {
+    const beforeState = {
+      loggedIn: true,
+    }
+    const afterState = {
+      loggedIn: false,
+    }
+    expect(
+      user(beforeState, setUserLoggedIn(false))).toEqual(afterState)
   })
 })

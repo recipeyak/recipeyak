@@ -111,9 +111,11 @@ import {
   SET_SELECTING_END,
   MOVE_CALENDAR_RECIPE,
   REPLACE_CALENDAR_RECIPE,
+  SET_USER_LOGGED_IN,
 } from './actionTypes'
 
 import { uuid4 } from '../uuid'
+import Cookie from 'js-cookie'
 
 import startOfMonth from 'date-fns/start_of_month'
 import subWeeks from 'date-fns/sub_weeks'
@@ -144,16 +146,22 @@ const handleResponseError = error => {
   const serverError = !maintenanceMode && error.response && error.response.status >= 500
   // Report request timeouts
   const requestTimeout = error.code === 'ECONNABORTED'
+  const unAuthenticated = invalidToken(error.response)
   if (maintenanceMode) {
     location.reload()
   } else if (serverError || requestTimeout) {
     raven.captureException(error)
+  } else if (unAuthenticated) {
+    store.dispatch(setUserLoggedIn(false))
   }
   return Promise.reject(error)
 }
 
 http.interceptors.response.use(
-  response => response,
+  response => {
+    store.dispatch(setUserLoggedIn(true))
+    return response
+  },
   error => handleResponseError(error))
 
 anon.interceptors.response.use(
@@ -162,13 +170,26 @@ anon.interceptors.response.use(
 
 http.interceptors.request.use(
   config => {
-    config.headers['Authorization'] = 'Token ' + store.getState().user.token
+    const csrfToken = Cookie.get('csrftoken')
+    config.headers['X-CSRFTOKEN'] = csrfToken
     return config
   }, error => Promise.reject(error)
 )
 
-const invalidToken = res =>
-  res != null && res.data.detail === 'Invalid token.' && res.status === 401
+anon.interceptors.request.use(
+  config => {
+    const csrfToken = Cookie.get('csrftoken')
+    config.headers['X-CSRFTOKEN'] = csrfToken
+    return config
+  }, error => Promise.reject(error)
+)
+
+export { http, anon }
+
+// We check if detail matches our string because Django will not return 401 when
+// the session expires
+export const invalidToken = res =>
+  res != null && res.data.detail === 'Authentication credentials were not provided.'
 
 const badRequest = err => err.response && err.response.status === 400
 
@@ -212,9 +233,8 @@ export const showNotificationWithTimeout = ({
   }
 }
 
-export const login = (token, user) => ({
+export const login = (user) => ({
   type: LOG_IN,
-  token,
   user
 })
 
@@ -328,6 +348,11 @@ export const setUserID = (id) => ({
   id,
 })
 
+export const setUserLoggedIn = (val) => ({
+  type: SET_USER_LOGGED_IN,
+  val,
+})
+
 export const fetchUser = () => dispatch => {
   dispatch(setLoadingUser(true))
   dispatch(setErrorUser(false))
@@ -338,6 +363,7 @@ export const fetchUser = () => dispatch => {
     dispatch(setUserEmail(res.data.email))
     dispatch(setPasswordUsable(res.data.has_usable_password))
     dispatch(setLoadingUser(false))
+    dispatch(setUserLoggedIn(true))
   })
   .catch(err => {
     if (invalidToken(err.response)) {
@@ -958,7 +984,7 @@ export const logUserIn = (email, password, redirectUrl = '') => dispatch => {
     password
   })
   .then(res => {
-    dispatch(login(res.data.key, res.data.user))
+    dispatch(login(res.data.user))
     dispatch(setLoadingLogin(false))
     dispatch(push(redirectUrl))
   })
@@ -989,7 +1015,7 @@ export const socialLogin = (service, token, redirectUrl = '') => dispatch => {
     code: token
   })
   .then(res => {
-    dispatch(login(res.data.key, res.data.user))
+    dispatch(login(res.data.user))
     dispatch(replace(redirectUrl))
   })
   .catch(err => {
@@ -1046,7 +1072,7 @@ export const signup = (email, password1, password2) => dispatch => {
     password2
   })
   .then(res => {
-    dispatch(login(res.data.key, res.data.user))
+    dispatch(login(res.data.user))
     dispatch(setLoadingSignup(false))
     dispatch(push('/recipes/add'))
   })
