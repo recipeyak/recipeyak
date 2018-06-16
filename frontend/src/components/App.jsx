@@ -74,13 +74,13 @@ export default class Base extends React.Component {
             <PublicOnlyRoute exact path="/login" component={ Login }/>
             <PublicOnlyRoute exact path="/signup" component={ Signup }/>
             <Route exact path="/password-reset" component={ PasswordReset }/>
+            <Route exact path="/accounts/:service" component={ OAuth }/>
             <ContainerBase>
               <Switch>
                 <Route exact path="/" component={ Home }/>
                 <PrivateRoute exact path="/:type(shopping|recipes)" component={ Schedule }/>
                 <Container>
                   <Switch>
-                    <Route exact path="/accounts/:service" component={ OAuth }/>
                     <Route exact path="/accounts/:service/connect" component={ OAuthConnect }/>
                     <Route exact path="/password-reset/confirm/:uid([0-9A-Za-z_\-]+).:token([0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})" component={ PasswordResetConfirmation }/>
                     <PrivateRoute exact path="/recipes/add" component={ AddRecipe }/>
