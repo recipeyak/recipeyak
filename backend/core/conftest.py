@@ -49,9 +49,11 @@ def user3():
 def client():
     return APIClient()
 
+
 @pytest.fixture
 def client_b():
     return APIClient()
+
 
 @pytest.fixture
 def recipes(user):
