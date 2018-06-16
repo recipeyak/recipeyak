@@ -27,7 +27,7 @@ def test_accessing_recipes(client, user, recipe, user2):
     client.force_authenticate(None)
 
     res = client.get(f'{BASE_URL}/recipes/{recipe.id}/')
-    assert res.status_code == status.HTTP_401_UNAUTHORIZED
+    assert res.status_code == status.HTTP_403_FORBIDDEN
 
 
 def test_accessing_step_of_other_user(client, recipe, user2):

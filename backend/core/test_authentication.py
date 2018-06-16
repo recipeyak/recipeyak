@@ -1,6 +1,7 @@
 import pytest
 
 from django.conf import settings
+from django.urls import reverse
 from rest_framework import status
 from .models import MyUser
 from .serializers import UserSerializer
@@ -15,9 +16,11 @@ def test_signup(client):
     """
     ensure a user can signup
     """
-    url = f'{BASE_URL}/rest-auth/user/'
+    url = reverse('rest_user_details')
     res = client.get(url)
-    assert res.status_code == status.HTTP_401_UNAUTHORIZED
+    assert res.status_code == status.HTTP_403_FORBIDDEN
+    assert res.json().get('detail') == 'Authentication credentials were not provided.', \
+        "Required detail for client side logout on session expiration missing"
 
     email = 'testing@gmail.com'
 
@@ -29,15 +32,14 @@ def test_signup(client):
         'password2': password,
     }
 
-    res = client.post(f'{BASE_URL}/rest-auth/registration/', data)
+    res = client.post(reverse('rest_register'), data)
     assert res.status_code == status.HTTP_201_CREATED
 
     user = MyUser.objects.first()
     assert res.json().get('user') == UserSerializer(user).data, \
         "response didn't return user data"
 
-    key = res.json().get('key')
-    res = client.get(url, HTTP_AUTHORIZATION='Token ' + key)
+    res = client.get(url)
     assert res.status_code == status.HTTP_200_OK
 
     assert EmailAddress.objects.filter(email=email).exists(), \
@@ -59,14 +61,13 @@ def test_login(client):
         'password': password,
     }
 
-    res = client.post(f'{BASE_URL}/rest-auth/login/', data)
+    res = client.post(reverse('rest_login'), data)
     assert res.status_code == status.HTTP_200_OK
 
     assert res.json().get('user') == UserSerializer(user).data, \
         "response didn't return user data"
 
-    key = res.json().get('key')
-    res = client.get(f'{BASE_URL}/rest-auth/user/', HTTP_AUTHORIZATION='Token ' + key)
+    res = client.get(reverse('rest_user_details'))
     assert res.status_code == status.HTTP_200_OK
 
 
@@ -85,23 +86,25 @@ def test_logout(client):
         'password': password,
     }
 
-    res = client.post(f'{BASE_URL}/rest-auth/login/', data)
+    res = client.post(reverse('rest_login'), data)
     assert res.status_code == status.HTTP_200_OK
 
-    key = res.json().get('key')
-    res = client.post(f'{BASE_URL}/rest-auth/logout/', HTTP_AUTHORIZATION='Token ' + key)
+    res = client.post(reverse('rest_logout'))
     assert res.status_code == status.HTTP_200_OK
 
-    res = client.get(f'{BASE_URL}/rest-auth/user/', HTTP_AUTHORIZATION='Token ' + key)
-    assert res.status_code == status.HTTP_401_UNAUTHORIZED, \
+    res = client.get(reverse('rest_user_details'))
+    assert res.status_code == status.HTTP_403_FORBIDDEN, \
         'logged out user was able to access login required info'
 
+    assert res.json().get('detail') == 'Authentication credentials were not provided.', \
+        'error response message not provided'
 
-def test_login_in_two_places_and_logout_from_one(client):
+
+def test_login_in_two_places_and_logout_from_one(client, client_b):
     """
     ensure when logged into one place, logging out doesn't result in logging out of both places.
 
-    This test ensure that the added functionality from django-rest-knox works
+    This test ensure that the session auth works
     """
     email = 'john@doe.org'
     password = 'testing123'
@@ -115,32 +118,27 @@ def test_login_in_two_places_and_logout_from_one(client):
     }
 
     # 1. log in once
-    res = client.post(f'{BASE_URL}/rest-auth/login/', data)
+    res = client.post(reverse('rest_login'), data)
     assert res.status_code == status.HTTP_200_OK
-
-    first_login_key = res.json().get('key')
 
     assert res.json().get('user') == UserSerializer(user).data
 
     # 2. log in a second time
-    res = client.post(f'{BASE_URL}/rest-auth/login/', data)
+    res = client_b.post(reverse('rest_login'), data)
     assert res.status_code == status.HTTP_200_OK
-    second_login_key = res.json().get('key')
-
-    assert second_login_key != first_login_key
 
     assert res.json().get('user') == UserSerializer(user).data
 
     # 3. logout first login session
-    res = client.post(f'{BASE_URL}/rest-auth/logout/', HTTP_AUTHORIZATION='Token ' + first_login_key)
+    res = client.post(reverse('rest_logout'))
     assert res.status_code == status.HTTP_200_OK
 
     # 4. ensure first login key doesn't work
-    res = client.get(f'{BASE_URL}/rest-auth/user/', HTTP_AUTHORIZATION='Token ' + first_login_key)
-    assert res.status_code == status.HTTP_401_UNAUTHORIZED
+    res = client.get(reverse('rest_user_details'))
+    assert res.status_code == status.HTTP_403_FORBIDDEN
 
     # 4. ensure second login key still works
-    res = client.get(f'{BASE_URL}/rest-auth/user/', HTTP_AUTHORIZATION='Token ' + second_login_key)
+    res = client_b.get(reverse('rest_user_details'))
     assert res.status_code == status.HTTP_200_OK
 
 
@@ -149,9 +147,9 @@ def test_signup_case_insensitive(client):
     Emails should be treated as case insensitive. A user should not be able to
     signup with the same email and different case.
     """
-    url = f'{BASE_URL}/rest-auth/user/'
+    url = reverse('rest_user_details')
     res = client.get(url)
-    assert res.status_code == status.HTTP_401_UNAUTHORIZED
+    assert res.status_code == status.HTTP_403_FORBIDDEN
 
     email = 'testing@gmail.com'
 
@@ -163,21 +161,20 @@ def test_signup_case_insensitive(client):
         'password2': password,
     }
 
-    res = client.post(f'{BASE_URL}/rest-auth/registration/', data)
+    res = client.post(reverse('rest_register'), data)
     assert res.status_code == status.HTTP_201_CREATED
 
     user = MyUser.objects.first()
     assert res.json().get('user') == UserSerializer(user).data, \
         "response didn't return user data"
 
-    key = res.json().get('key')
-    res = client.get(url, HTTP_AUTHORIZATION='Token ' + key)
+    res = client.get(url)
     assert res.status_code == status.HTTP_200_OK
 
     client.force_authenticate(user=None)
     email2 = 'TESTing@gmail.com'
     assert email2.lower() == email
-    res = client.post(f'{BASE_URL}/rest-auth/registration/', data)
+    res = client.post(reverse('rest_register'), data)
     assert res.status_code in (status.HTTP_401_UNAUTHORIZED, status.HTTP_400_BAD_REQUEST)
 
 
@@ -202,5 +199,5 @@ def test_signup_user_has_email(client, user):
         'password2': password,
     }
 
-    res = client.post(f'{BASE_URL}/rest-auth/registration/', data)
+    res = client.post(reverse('rest_register'), data)
     assert res.status_code == status.HTTP_400_BAD_REQUEST

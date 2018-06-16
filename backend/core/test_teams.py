@@ -23,7 +23,7 @@ def test_creating_team(client, user, user2):
     url = reverse('teams-list')
 
     res = client.post(url, data)
-    assert res.status_code == status.HTTP_401_UNAUTHORIZED, \
+    assert res.status_code == status.HTTP_403_FORBIDDEN, \
         'Unauthenticated users should not be able to create a team'
 
     client.force_authenticate(user)
@@ -171,7 +171,7 @@ def test_list_team(client, team, user, user2, user3):
         'Team should be public'
     client.logout()
     res = client.get(url)
-    assert res.status_code == status.HTTP_401_UNAUTHORIZED, \
+    assert res.status_code == status.HTTP_403_FORBIDDEN, \
         'unauthenticated users should not be able to list teams'
 
 
@@ -810,7 +810,7 @@ def test_list_team_recipe(client, team, recipe, user, user2):
     assert not team.is_public
 
     for u, s in [
-            (None, status.HTTP_401_UNAUTHORIZED),
+            (None, status.HTTP_403_FORBIDDEN),
             (user, status.HTTP_200_OK),
             (user2, status.HTTP_403_FORBIDDEN)]:
         client.force_authenticate(u)
@@ -821,7 +821,7 @@ def test_list_team_recipe(client, team, recipe, user, user2):
     assert team.is_public
 
     for u, s in [
-            (None, status.HTTP_401_UNAUTHORIZED),
+            (None, status.HTTP_403_FORBIDDEN),
             (user, status.HTTP_200_OK),
             (user2, status.HTTP_200_OK)]:
         client.force_authenticate(u)
@@ -846,7 +846,7 @@ def test_retrieve_team_recipe(client, team, recipe, user, user2):
     assert not team.is_public
 
     for u, s in [
-            (None, status.HTTP_401_UNAUTHORIZED),
+            (None, status.HTTP_403_FORBIDDEN),
             (user, status.HTTP_200_OK),
             (user2, status.HTTP_403_FORBIDDEN)]:
         client.force_authenticate(u)
@@ -857,7 +857,7 @@ def test_retrieve_team_recipe(client, team, recipe, user, user2):
     assert team.is_public
 
     for u, s in [
-            (None, status.HTTP_401_UNAUTHORIZED),
+            (None, status.HTTP_403_FORBIDDEN),
             (user, status.HTTP_200_OK),
             (user2, status.HTTP_200_OK)]:
         client.force_authenticate(u)

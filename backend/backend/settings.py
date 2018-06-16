@@ -63,7 +63,6 @@ INSTALLED_APPS = [
 
     # authentication / registration via django-rest-auth
     # http://django-rest-auth.readthedocs.io/en/latest/installation.html
-    'knox',
     'rest_auth.apps.RestAuthConfig',
     'django.contrib.sites',
     'django.contrib.postgres',
@@ -92,7 +91,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'knox.auth.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
@@ -140,10 +139,7 @@ if not DOCKERBUILD:
         },
     }
 
-# https://github.com/James1345/django-rest-knox/blob/ee71e0f352439e1733b7baeeca6ba1c90cf1495d/docs/settings.md
-REST_KNOX = {
-    'TOKEN_TTL': None
-}
+SESSION_COOKIE_AGE = 365 * 24 * 60 * 60  # sessions expire in one year
 
 # http://django-rest-auth.readthedocs.io/en/latest/api_endpoints.html#basic
 # Require the old password be provided to change a your password
