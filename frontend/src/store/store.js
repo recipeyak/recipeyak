@@ -75,6 +75,10 @@ export const store = createStore(
 store.subscribe(throttle(() => {
   saveState({
     user: {
+      // We assume this is true and if the session expires we have axios interceptors
+      // to set this to false. In that _rare_ case, there will be a slight flash, but
+      // this is acceptable for us for the added performance
+      loggedIn: store.getState().user.loggedIn,
       darkMode: store.getState().user.darkMode
     },
     addrecipe: store.getState().addrecipe,
