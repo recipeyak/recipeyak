@@ -1,5 +1,5 @@
 import pytest
-from typing import List
+from typing import Iterable, Dict
 
 import yaml
 from django.urls import reverse
@@ -8,7 +8,7 @@ from django.test import Client
 pytestmark = pytest.mark.django_db
 
 
-def fields_in(data: dict, fields: List[str]) -> bool:
+def fields_in(data: Dict, fields: Iterable) -> bool:
     if not isinstance(data, dict):
         return False
     for key, value in data.items():
@@ -30,28 +30,28 @@ def test_fields_in():
     }
     assert fields_in(d, fields=('id',))
 
-    d = {
+    d1 = {
         'blah': 1,
     }
-    assert not fields_in(d, fields=('id',))
+    assert not fields_in(d1, fields=('id',))
 
-    d = {
+    d2 = {
         'blah': 1,
         'hmm': [{
             'id': 1,
         }]
     }
-    assert fields_in(d, fields=('id',))
+    assert fields_in(d2, fields=('id',))
 
-    d = {
+    d3 = {
         'blah': 1,
         'hmm': [{
             'blah': 1,
         }]
     }
-    assert not fields_in(d, fields=('id',))
+    assert not fields_in(d3, fields=('id',))
 
-    d = {
+    d4 = {
         'blah': 1,
         'hmm': [{
             'blah': 1,
@@ -60,7 +60,7 @@ def test_fields_in():
             'id': 1,
         }
     }
-    assert fields_in(d, fields=('id',))
+    assert fields_in(d4, fields=('id',))
 
 
 def test_bulk_export_json(user, user2, recipe, recipe2):
