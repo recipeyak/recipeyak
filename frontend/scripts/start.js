@@ -158,6 +158,14 @@ function addMiddleware (devServer) {
     // Paths with dots should still use the history fallback.
     // See https://github.com/facebookincubator/create-react-app/issues/387.
     disableDotRule: true,
+    rewrites: [
+      {
+        from: /.*\.(json|yaml|yml)\/?$/,
+        to: function (ctx) {
+          return proxy + ctx.parsedUrl.pathname
+        }
+      },
+    ],
     // For single page apps, we generally want to fallback to /index.html.
     // However we also want to respect `proxy` for API calls.
     // So if `proxy` is specified, we need to decide which fallback to use.

@@ -3,6 +3,9 @@ import logging
 from typing import List, Tuple, Any
 import pytz
 
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, mixins, views
 from rest_framework.decorators import detail_route
@@ -13,6 +16,8 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
 from django.db.models import Sum, Count, Q
 from django.db.models.functions import TruncMonth
+
+from .response import YamlResponse
 
 
 from .permissions import (
@@ -34,6 +39,7 @@ from .models import (
     ScheduledRecipe,
 )
 from .serializers import (
+    RecipeExportSerializer,
     RecipeSerializer,
     StepSerializer,
     IngredientSerializer,
@@ -63,6 +69,12 @@ def add_positions(recipe_steps):
     return recipe_steps
 
 
+def user_and_team_recipes(user):
+    return (Recipe.objects
+            .filter(Q(owner_user=user) |
+                    Q(owner_team__in=user_active_team_ids(user))))
+
+
 class RecipeViewSet(viewsets.ModelViewSet):
 
     serializer_class = RecipeSerializer
@@ -79,9 +91,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         """
 
         # get all recipes user has access to
-        recipes = Recipe.objects \
-            .filter(Q(owner_user=self.request.user) |
-                    Q(owner_team__in=user_active_team_ids(self.request.user)))
+        recipes = user_and_team_recipes(self.request.user)
 
         # filtering for homepage
         if self.request.query_params.get('recent') is not None:
@@ -507,3 +517,28 @@ class CalendarViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset,
                                          many=True,)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@require_http_methods(["GET"])
+@login_required(login_url='/login/')
+def export_recipes(request, filetype, id=None):
+
+    queryset = user_and_team_recipes(request.user)
+
+    many = id is None
+
+    if not many:
+        queryset = get_object_or_404(queryset, pk=int(id))
+
+    recipes = RecipeExportSerializer(
+        queryset,
+        many=many).data
+
+    if filetype in ('yaml', 'yml'):
+        return YamlResponse(recipes)
+
+    if filetype == 'json':
+        # we need safe=False so we can serializer both lists and dicts
+        return JsonResponse(recipes, json_dumps_params={'indent': 2}, safe=False)
+
+    raise Http404('unknown export filetype')
