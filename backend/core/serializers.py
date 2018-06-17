@@ -43,6 +43,19 @@ class IngredientSerializer(serializers.ModelSerializer):
         model = Ingredient
         fields = ('id', 'quantity', 'name', 'description', 'position', 'optional')
 
+    def __init__(self, *args, **kwargs):
+        # Don't pass the 'fields' arg up to the superclass
+        fields = kwargs.pop('fields', None)
+
+        super().__init__(*args, **kwargs)
+
+        if fields is not None:
+            # Drop any fields that are not specified in the `fields` argument.
+            allowed = set(fields)
+            existing = set(self.fields)
+            for field_name in existing - allowed:
+                self.fields.pop(field_name)
+
 
 class StepSerializer(serializers.ModelSerializer):
     """
@@ -53,6 +66,19 @@ class StepSerializer(serializers.ModelSerializer):
         model = Step
         fields = ('id', 'text', 'position')
 
+    def __init__(self, *args, **kwargs):
+        # Don't pass the 'fields' arg up to the superclass
+        fields = kwargs.pop('fields', None)
+
+        super().__init__(*args, **kwargs)
+
+        if fields is not None:
+            # Drop any fields that are not specified in the `fields` argument.
+            allowed = set(fields)
+            existing = set(self.fields)
+            for field_name in existing - allowed:
+                self.fields.pop(field_name)
+
 
 class OwnerRelatedField(serializers.RelatedField):
     """
@@ -61,10 +87,19 @@ class OwnerRelatedField(serializers.RelatedField):
 
     def to_representation(self, value):
         if isinstance(value, Team):
+            if self.export:
+                return {'team': value.name}
             return {'id': value.id, 'type': 'team', 'name': value.name}
         elif isinstance(value, MyUser):
+            if self.export:
+                return {'user': value.email}
             return {'id': value.id, 'type': 'user'}
         raise Exception('Unexpected type of owner object')
+
+    def __init__(self, *args, **kwargs):
+        export = kwargs.pop('export', None)
+        super().__init__(*args, **kwargs)
+        self.export = export
 
 
 class RecipeSerializer(serializers.ModelSerializer):
@@ -135,6 +170,23 @@ class RecipeSerializer(serializers.ModelSerializer):
         for step in steps:
             Step.objects.create(recipe=recipe, **step)
         return recipe
+
+
+class RecipeExportSerializer(serializers.ModelSerializer):
+
+    steps = serializers.ListField(
+        child=serializers.CharField(),
+    )
+
+    ingredients = IngredientSerializer(
+        many=True,
+        read_only=True,
+        fields=('quantity', 'name', 'description', 'optional'))
+    owner = OwnerRelatedField(read_only=True, export=True)
+
+    class Meta:
+        model = Recipe
+        fields = ('name', 'author', 'time', 'source', 'servings', 'ingredients', 'steps', 'owner')
 
 
 class TeamSerializer(serializers.ModelSerializer):

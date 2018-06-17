@@ -16,6 +16,7 @@ from .views import (
     UserInvitesViewSet,
     ReportBadMerge,
     CalendarViewSet,
+    export_recipes,
 )
 
 router = DefaultRouter()
@@ -35,13 +36,15 @@ teams_router.register(r'recipes', TeamRecipesViewSet, base_name='team-recipes')
 
 urlpatterns = [
     # django-rest-auth related urls
-    url(r'^rest-auth/', include('rest_auth.urls')),
-    url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
+    url(r'^api/v1/rest-auth/', include('rest_auth.urls')),
+    url(r'^api/v1/rest-auth/registration/', include('rest_auth.registration.urls')),
 
-    url(r'', include(router.urls)),
-    url(r'', include(recipes_router.urls)),
-    url(r'', include(teams_router.urls)),
-    url(r'shoppinglist', ShoppingListView.as_view(), name='shopping-list'),
-    url(r'user_stats', UserStats.as_view(), name='user-stats'),
-    url(r'report-bad-merge', ReportBadMerge.as_view(), name='report-bad-merge'),
+    url(r'api/v1/', include(router.urls)),
+    url(r'api/v1/', include(recipes_router.urls)),
+    url(r'api/v1/', include(teams_router.urls)),
+    url(r'^api/v1/shoppinglist', ShoppingListView.as_view(), name='shopping-list'),
+    url(r'^api/v1/user_stats', UserStats.as_view(), name='user-stats'),
+    url(r'^api/v1/report-bad-merge', ReportBadMerge.as_view(), name='report-bad-merge'),
+    url(r'^recipes.(?P<filetype>json|yaml|yml)$', export_recipes, name='export-recipes'),
+    url(r'^recipes/(?P<id>[0-9]).*\.(?P<filetype>json|yaml|yml)$', export_recipes, name='export-recipe'),
 ]
