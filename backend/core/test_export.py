@@ -101,7 +101,6 @@ def test_bulk_export_yaml(user, user2, recipe, recipe2):
         c.force_login(user)
         res = c.get(url)
         assert res.status_code == 200
-        # import ipdb; ipdb.set_trace()
         assert '!!python/' not in res.content.decode('utf-8'), "we don't want python objects to be serialized"
         recipes = list(yaml.load_all(res.content))
         assert len(recipes) == 2, 'user should have two recipes'

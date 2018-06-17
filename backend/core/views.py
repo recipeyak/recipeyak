@@ -528,11 +528,12 @@ def export_recipes(request, filetype, id=None):
     many = id is None
 
     if not many:
-        queryset = get_object_or_404(queryset, pk=id)
+        queryset = get_object_or_404(queryset, pk=int(id))
 
     recipes = RecipeExportSerializer(
         queryset,
         many=many).data
+
     if filetype in ('yaml', 'yml'):
         return YamlResponse(recipes)
 

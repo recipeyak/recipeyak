@@ -46,5 +46,5 @@ urlpatterns = [
     url(r'^api/v1/user_stats', UserStats.as_view(), name='user-stats'),
     url(r'^api/v1/report-bad-merge', ReportBadMerge.as_view(), name='report-bad-merge'),
     url(r'^recipes.(?P<filetype>json|yaml|yml)$', export_recipes, name='export-recipes'),
-    url(r'^recipes/(?P<id>[0-9]).*\.(?P<filetype>json|yaml|yml)$', export_recipes, name='export-recipe'),
+    url(r'^recipes/(?P<id>[0-9]+).*\.(?P<filetype>json|yaml|yml)$', export_recipes, name='export-recipe'),
 ]
