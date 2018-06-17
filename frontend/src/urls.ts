@@ -1,4 +1,6 @@
-const toURL = (x = '') => x.replace(/\s/g, '-')
+// we replace spaces since they are pretty common, but leave the reset to
+// `encodeURIComponent`
+export const toURL = (x = '') => encodeURIComponent(x.replace(/\s/g, '-'))
 
 export const recipeURL = (id: number, name: string) => `/recipes/${id}-${toURL(name)}`
 export const teamURL = (id: number, name: string) => `/t/${id}-${toURL(name)}`
