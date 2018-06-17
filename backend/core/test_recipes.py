@@ -418,3 +418,12 @@ def test_recipe_soft_delete(client, recipe, user):
 
     res = client.get(reverse('recipes-detail', kwargs={'pk': recipe.id}))
     assert res.status_code == status.HTTP_404_NOT_FOUND
+
+
+def test_search_recipes(client, user_with_recipes):
+    """This is a really poor test of the search endpoint"""
+    url = reverse('recipes-list')
+    client.force_authenticate(user_with_recipes)
+    res = client.get(url + r'?q=blah%20something')
+    assert res.status_code == status.HTTP_200_OK
+    assert len(res.json()) == 10
