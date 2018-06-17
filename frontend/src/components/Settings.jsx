@@ -259,6 +259,10 @@ export default class SettingsWithState extends React.Component {
   <h1 className="fs-6">Danger Zone</h1>
   <a onClick={ this.deleteAccountPrompt } className="has-text-danger">permanently delete my account</a>
 
+  <h1 className="fs-6">Export</h1>
+  <p><a href="/recipes.yaml">recipes.yaml</a></p>
+  <p><a href="/recipes.json">recipes.json</a></p>
+
   </section>
   }
 }
