@@ -65,11 +65,11 @@ def recipes(user):
     name = 'Recipe name'
     author = 'Recipe author'
 
-    return [Recipe.objects.create(
+    return Recipe.objects.bulk_create([Recipe(
         name=name,
         author=author,
         owner=user)
-        for n in range(5)]
+        for n in range(15)])
 
 
 @pytest.fixture

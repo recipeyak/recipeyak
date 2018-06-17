@@ -304,3 +304,14 @@ class ScheduledRecipeSerializerCreate(serializers.ModelSerializer):
     def create(self, validated_data):
         recipe = validated_data.pop('recipe')
         return recipe.schedule(**validated_data)
+
+
+class SearchRecipeSerializer(serializers.ModelSerializer):
+    steps = StepSerializer(many=True, fields=('id', 'text',))
+    ingredients = IngredientSerializer(many=True, fields=('id', 'name', 'description',))
+
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'author', 'ingredients',
+                  'steps', 'team', 'rank')
+        read_only_fields = fields
