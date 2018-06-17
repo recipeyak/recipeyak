@@ -9,7 +9,7 @@ def represent_ordereddict(dumper, data):
         node_key = dumper.represent_data(item_key)
         node_value = dumper.represent_data(item_value)
         value.append((node_key, node_value))
-    return yaml.nodes.MappingNode(u'tag:yaml.org,2002:map', value)
+    return yaml.nodes.MappingNode('tag:yaml.org,2002:map', value)
 
 
 yaml.add_representer(OrderedDict, represent_ordereddict)
