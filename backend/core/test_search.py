@@ -1,6 +1,6 @@
 import pytest
 
-from core.models import Recipe, MyUser
+from core.models import Recipe
 from core.search import search_recipe_queryset
 
 pytestmark = pytest.mark.django_db

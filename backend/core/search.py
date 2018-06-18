@@ -1,5 +1,4 @@
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
-from core.models import Recipe
 
 
 def search_recipe_queryset(recipe_queryset, query):

@@ -51,7 +51,6 @@ from .serializers import (
     RecipeMoveCopySerializer,
     ScheduledRecipeSerializer,
     ScheduledRecipeSerializerCreate,
-    SearchRecipeSerializer,
 )
 from .utils import combine_ingredients
 
