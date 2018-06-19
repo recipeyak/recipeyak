@@ -524,28 +524,3 @@ class CalendarViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset,
                                          many=True,)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-@require_http_methods(["GET"])
-@login_required(login_url='/login/')
-def export_recipes(request, filetype, id=None):
-
-    queryset = user_and_team_recipes(request.user)
-
-    many = id is None
-
-    if not many:
-        queryset = get_object_or_404(queryset, pk=int(id))
-
-    recipes = RecipeExportSerializer(
-        queryset,
-        many=many).data
-
-    if filetype in ('yaml', 'yml'):
-        return YamlResponse(recipes)
-
-    if filetype == 'json':
-        # we need safe=False so we can serializer both lists and dicts
-        return JsonResponse(recipes, json_dumps_params={'indent': 2}, safe=False)
-
-    raise Http404('unknown export filetype')
