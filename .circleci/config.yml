@@ -1,5 +1,7 @@
 version: 2
+
 jobs:
+
   test_python:
     docker:
       - image: circleci/python:3.6.4
@@ -9,7 +11,6 @@ jobs:
           PIPENV_VENV_IN_PROJECT: 1
       # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
       - image: circleci/postgres:9.5-alpine-ram
-
     steps:
       - checkout
       # https://circleci.com/docs/2.0/caching/
@@ -35,16 +36,58 @@ jobs:
           name: run tests
           working_directory: backend
           command: |
-            mkdir -p ~/backend/reports
+            mkdir -p backend/reports
             make ci
+            pipenv run pytest --cov-config .coveragerc --cov --junit-xml backend/reports/pytest.xml
       - store_test_results:
-          path: ~/backend/reports
+          path: backend/reports
+
+  lint_python:
+    docker:
+      - image: circleci/python:3.6.4
+        environment:
+          DEBUG: 1
+          DATABASE_URL: postgres://postgres@127.0.0.1:5432/postgres
+          PIPENV_VENV_IN_PROJECT: 1
+      # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
+      - image: circleci/postgres:9.5-alpine-ram
+    steps:
+      - checkout
+      # https://circleci.com/docs/2.0/caching/
+      - restore_cache:
+          keys:
+            - backend-v2-{{ .Branch }}-{{ checksum "backend/Pipfile.lock" }}
+            - backend-v2-{{ .Branch }}-
+            - backend-v2-
+      - run:
+          name: install dependencies
+          working_directory: backend
+          command: |
+            mkdir -p .pipcache
+            sudo -H pip3 --cache-dir .pipcache install "pipenv~=11.8"
+            make install
+      - save_cache:
+          paths:
+            - ./backend/.venv
+            - ./backend/.pipcache
+            - ./backend/.mypy_cache
+          key: backend-v2-{{ .Branch }}-{{ checksum "backend/Pipfile.lock" }}
+      - run:
+          name: run tests
+          working_directory: backend
+          command: |
+            mkdir -p backend/reports
+            pipenv run mypy --config-file tox.ini --junit-xml backend/reports/mypy.xml .
+            pipenv run pytest --cov-config .coveragerc --cov --junit-xml backend/reports/pytest.xml
+      - store_test_results:
+      - store_test_results:
+          path: backend/reports
+
   test_frontend:
     docker:
       - image: circleci/node:8.9.4
         environment:
           DEBUG: 1
-
     steps:
       - checkout
       - restore_cache:
@@ -90,34 +133,13 @@ jobs:
           working_directory: frontend
           command: |
             npm run lint
-  build_frontend:
-    docker:
-      - image: circleci/node:8.9.4
-        environment:
-          DEBUG: 1
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - frontend-v1-dependencies-{{ checksum "frontend/package.json" }}
-            - frontend-v1-dependencies-
-      - run:
-          name: install dependencies
-          working_directory: frontend
-          command: |
-            npm install
-      - save_cache:
-          paths:
-            - ./frontend/node_modules
-          key: frontend-v1-dependencies-{{ checksum "frontend/package.json" }}
-      - run:
-          name: run build
-          working_directory: frontend
-          command: npm run build
+            npm run build
+
   # https://circleci.com/docs/2.0/building-docker-images/
   build_api_container:
     requires:
       - test_python
+      - lint_python
     docker:
       - image: docker:18.05.0-ce
     steps:
@@ -133,10 +155,10 @@ jobs:
               --tag recipeyak/django:$CIRCLE_SHA1 \
               --build-arg GIT_SHA=$CIRCLE_SHA1 .
             docker push recipeyak/django:$CIRCLE_SHA1
+
   # https://circleci.com/docs/2.0/building-docker-images/
   build_ui_container:
     requires:
-      - build_frontend
       - test_frontend
       - lint_frontend
     docker:
@@ -160,6 +182,7 @@ jobs:
               --build-arg GIT_SHA=$CIRCLE_SHA1 \
               --build-arg FRONTEND_SENTRY_DSN=$FRONTEND_SENTRY_DSN .
             docker push recipeyak/react:$CIRCLE_SHA1
+
   build_proxy_container:
     docker:
       - image: docker:18.05.0-ce
@@ -175,6 +198,7 @@ jobs:
             docker build -f Dockerfile \
               --tag recipeyak/nginx:$CIRCLE_SHA1 .
             docker push recipeyak/nginx:$CIRCLE_SHA1
+
 workflows:
   version: 2
   test:
@@ -182,7 +206,6 @@ workflows:
       - test_python
       - test_frontend
       - lint_frontend
-      - build_frontend
       - build_api_container:
           context: DockerHub
           filters:
