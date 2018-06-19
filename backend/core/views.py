@@ -21,7 +21,7 @@ from core.search import search_recipe_queryset
 from .response import YamlResponse
 
 
-from .permissions import (
+from .auth.permissions import (
     IsTeamMember,
     IsTeamAdmin,
     IsTeamAdminOrMembershipOwner,
@@ -39,6 +39,7 @@ from .models import (
     MyUser,
     ScheduledRecipe,
 )
+
 from .serializers import (
     RecipeExportSerializer,
     RecipeSerializer,
@@ -52,6 +53,7 @@ from .serializers import (
     ScheduledRecipeSerializer,
     ScheduledRecipeSerializerCreate,
 )
+
 from .utils import combine_ingredients
 
 logger = logging.getLogger(__name__)

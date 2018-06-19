@@ -11,7 +11,6 @@ from django.utils.encoding import force_text
 from rest_framework import serializers, exceptions
 from rest_framework.exceptions import ValidationError
 
-# Get the UserModel
 UserModel = get_user_model()
 
 
@@ -97,26 +96,14 @@ class LoginSerializer(serializers.Serializer):
             msg = _('Unable to log in with provided credentials.')
             raise exceptions.ValidationError(msg)
 
-        # If required, is the email verified?
-        if 'rest_auth.registration' in settings.INSTALLED_APPS:
-            from allauth.account import app_settings  # type: ignore # duplicate import
-            if app_settings.EMAIL_VERIFICATION == app_settings.EmailVerificationMethod.MANDATORY:
-                email_address = user.emailaddress_set.get(email=user.email)
-                if not email_address.verified:
-                    raise serializers.ValidationError(_('E-mail is not verified.'))
+        from allauth.account import app_settings  # type: ignore # duplicate import
+        if app_settings.EMAIL_VERIFICATION == app_settings.EmailVerificationMethod.MANDATORY:
+            email_address = user.emailaddress_set.get(email=user.email)
+            if not email_address.verified:
+                raise serializers.ValidationError(_('E-mail is not verified.'))
 
         attrs['user'] = user
         return attrs
-
-
-class UserDetailsSerializer(serializers.ModelSerializer):
-    """
-    User model w/o password
-    """
-    class Meta:
-        model = UserModel
-        fields = ('pk', 'username', 'email', 'first_name', 'last_name')
-        read_only_fields = ('email', )
 
 
 class PasswordResetSerializer(serializers.Serializer):
@@ -206,7 +193,7 @@ class PasswordChangeSerializer(serializers.Serializer):
         self.logout_on_password_change = getattr(
             settings, 'LOGOUT_ON_PASSWORD_CHANGE', False
         )
-        super(PasswordChangeSerializer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.request = self.context.get('request')
         self.user = getattr(self.request, 'user', None)

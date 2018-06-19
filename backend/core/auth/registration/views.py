@@ -18,26 +18,25 @@ from allauth.socialaccount.models import SocialAccount
 from allauth.socialaccount import signals
 from allauth.socialaccount.adapter import get_adapter as get_social_adapter
 
-from .serializers import VerifyEmailSerializer, SocialAccountSerializer, SocialConnectSerializer
-
-from .app_settings import RegisterSerializer, register_permission_classes
-
-from rest_auth.app_settings import UserDetailsSerializer
-
-sensitive_post_parameters_m = method_decorator(
-    sensitive_post_parameters('password1', 'password2')
+from .serializers import (
+    VerifyEmailSerializer,
+    SocialAccountSerializer,
+    SocialConnectSerializer,
+    RegisterSerializer,
 )
+
+from core.serializers import UserSerializer as UserDetailsSerializer
 
 logger = logging.getLogger(__name__)
 
 
 class RegisterView(CreateAPIView):
     serializer_class = RegisterSerializer
-    permission_classes = register_permission_classes()
+    permission_classes = (AllowAny,)
 
-    @sensitive_post_parameters_m
+    @sensitive_post_parameters('password1', 'password2')
     def dispatch(self, *args, **kwargs):
-        return super(RegisterView, self).dispatch(*args, **kwargs)
+        return super().dispatch(*args, **kwargs)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

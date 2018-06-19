@@ -36,8 +36,8 @@ teams_router.register(r'recipes', TeamRecipesViewSet, base_name='team-recipes')
 
 urlpatterns = [
     # django-rest-auth related urls
-    url(r'^api/v1/rest-auth/', include('rest_auth.urls')),
-    url(r'^api/v1/rest-auth/registration/', include('rest_auth.registration.urls')),
+    url(r'^api/v1/rest-auth/', include('core.auth.urls')),
+    url(r'^api/v1/rest-auth/registration/', include('core.auth.registration.urls')),
 
     url(r'api/v1/', include(router.urls)),
     url(r'api/v1/', include(recipes_router.urls)),

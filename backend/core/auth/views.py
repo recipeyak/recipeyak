@@ -16,11 +16,14 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import GenericAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
-from .app_settings import (
-    UserDetailsSerializer, LoginSerializer,
+from .serializers import (
+    LoginSerializer,
     PasswordResetSerializer, PasswordResetConfirmSerializer,
     PasswordChangeSerializer
 )
+
+from core.serializers import UserSerializer as UserDetailsSerializer
+
 
 from .registration.serializers import (SocialLoginSerializer,
                                        SocialConnectSerializer,
@@ -37,12 +40,6 @@ from allauth.socialaccount.adapter import get_adapter as get_social_adapter
 from rest_framework.decorators import detail_route
 from rest_framework.viewsets import GenericViewSet
 
-sensitive_post_parameters_m = method_decorator(
-    sensitive_post_parameters(
-        'password', 'old_password', 'new_password1', 'new_password2'
-    )
-)
-
 logger = logging.getLogger(__name__)
 
 
@@ -56,9 +53,9 @@ class LoginView(GenericAPIView):
     permission_classes = (AllowAny,)
     serializer_class = LoginSerializer
 
-    @sensitive_post_parameters_m
+    @sensitive_post_parameters('password', 'old_password', 'new_password1', 'new_password2')
     def dispatch(self, *args, **kwargs):
-        return super(LoginView, self).dispatch(*args, **kwargs)
+        return super().dispatch(*args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(
@@ -110,14 +107,6 @@ class UserDetailsView(RetrieveUpdateAPIView):
     def get_object(self):
         return self.request.user
 
-    def get_queryset(self):
-        """
-        Adding this method since it is sometimes called when using
-        django-rest-swagger
-        https://github.com/Tivix/django-rest-auth/issues/275
-        """
-        return get_user_model().objects.none()
-
     def delete(self, request, *args, **kwargs):
         if request.user.has_team():
             raise PermissionDenied(detail='you must leave all your teams to delete your account')
@@ -161,9 +150,9 @@ class PasswordResetConfirmView(GenericAPIView):
     serializer_class = PasswordResetConfirmSerializer
     permission_classes = (AllowAny,)
 
-    @sensitive_post_parameters_m
+    @sensitive_post_parameters('password', 'old_password', 'new_password1', 'new_password2')
     def dispatch(self, *args, **kwargs):
-        return super(PasswordResetConfirmView, self).dispatch(*args, **kwargs)
+        return super().dispatch(*args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -185,9 +174,9 @@ class PasswordChangeView(GenericAPIView):
     serializer_class = PasswordChangeSerializer
     permission_classes = (IsAuthenticated,)
 
-    @sensitive_post_parameters_m
+    @sensitive_post_parameters('password', 'old_password', 'new_password1', 'new_password2')
     def dispatch(self, *args, **kwargs):
-        return super(PasswordChangeView, self).dispatch(*args, **kwargs)
+        return super().dispatch(*args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
