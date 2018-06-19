@@ -43,7 +43,7 @@ export default class Dropdown extends React.Component {
   }
 
   render () {
-    const className = this.props.relative ? "p-rel" : ""
+    const className = this.props.relative ? 'p-rel' : ''
     return (
       <section className={className}>
         <a onClick={this.toggle}
