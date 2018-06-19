@@ -79,7 +79,6 @@ jobs:
             pipenv run mypy --config-file tox.ini --junit-xml backend/reports/mypy.xml .
             pipenv run pytest --cov-config .coveragerc --cov --junit-xml backend/reports/pytest.xml
       - store_test_results:
-      - store_test_results:
           path: backend/reports
 
   test_frontend:
