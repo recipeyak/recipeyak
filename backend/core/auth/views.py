@@ -4,7 +4,6 @@ from django.contrib.auth import (
     login,
     logout
 )
-from django.contrib.auth import get_user_model
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.debug import sensitive_post_parameters
@@ -152,7 +151,6 @@ class PasswordResetConfirmView(GenericAPIView):
     serializer_class = PasswordResetConfirmSerializer
     permission_classes = (AllowAny,)
 
-
     @method_decorator(
         sensitive_post_parameters('password', 'old_password', 'new_password1', 'new_password2')
     )
@@ -178,7 +176,6 @@ class PasswordChangeView(GenericAPIView):
     """
     serializer_class = PasswordChangeSerializer
     permission_classes = (IsAuthenticated,)
-
 
     @method_decorator(
         sensitive_post_parameters('password', 'old_password', 'new_password1', 'new_password2')

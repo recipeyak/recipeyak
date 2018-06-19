@@ -4,18 +4,21 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers
 
 from .views import (
-    RecipeViewSet,
-    StepViewSet,
-    IngredientViewSet,
     ShoppingListView,
     UserStats,
     TeamViewSet,
     MembershipViewSet,
     TeamInviteViewSet,
-    TeamRecipesViewSet,
     UserInvitesViewSet,
     ReportBadMerge,
     CalendarViewSet,
+)
+
+from core.recipes.views import (
+    RecipeViewSet,
+    TeamRecipesViewSet,
+    StepViewSet,
+    IngredientViewSet,
 )
 
 router = DefaultRouter()

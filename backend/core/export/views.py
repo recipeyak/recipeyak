@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 
 from core.response import YamlResponse
 
-from core.views import user_and_team_recipes
+from core.models import user_and_team_recipes
 
 from core.serializers import RecipeExportSerializer
 

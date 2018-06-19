@@ -34,7 +34,6 @@ class RegisterView(CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = (AllowAny,)
 
-
     @method_decorator(
         sensitive_post_parameters('password1', 'password2')
     )

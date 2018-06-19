@@ -3,8 +3,8 @@ import pytest
 from django.conf import settings
 from django.urls import reverse
 from rest_framework import status
-from .models import MyUser
-from .serializers import UserSerializer
+from core.models import MyUser
+from core.serializers import UserSerializer
 from allauth.socialaccount.models import EmailAddress
 
 pytestmark = pytest.mark.django_db

@@ -3,14 +3,9 @@ from typing import List, Dict
 from pint import UnitRegistry, UndefinedUnitError
 from pint.quantity import _Quantity as Quantity
 
-from .inflect import singularize, pluralize
+from core.recipes.inflect import singularize, pluralize
 
 ureg = UnitRegistry()
-
-
-def not_real_quantity(quantity) -> bool:
-    basic_quantities = ['some', 'sprinkle']
-    return isinstance(quantity, str) and quantity.lower() in basic_quantities
 
 
 def simplify_units(units):
@@ -28,6 +23,11 @@ def simplify_units(units):
     if some:
         simplified.append('some')
     return simplified
+
+
+def not_real_quantity(quantity) -> bool:
+    basic_quantities = ['some', 'sprinkle']
+    return isinstance(quantity, str) and quantity.lower() in basic_quantities
 
 
 def max_quantity(quantity: str) -> str:
