@@ -1,37 +1,23 @@
 from datetime import datetime, timedelta
 import logging
-from typing import List, Tuple, Any
+from typing import List
 import pytz
 
-from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, status, mixins, views
-from rest_framework.decorators import detail_route
+from rest_framework import viewsets, status, views
 from django.core.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
+from rest_framework.permissions import IsAuthenticated
 from django.db.models import Sum, Count
 from django.db.models.functions import TruncMonth
-
-from .auth.permissions import (
-    IsTeamMember,
-    IsTeamAdmin,
-    IsTeamAdminOrMembershipOwner,
-)
 
 from .models import (
     Recipe,
     Ingredient,
-    Team,
-    Invite,
     ScheduledRecipe,
 )
 
 from .serializers import (
-    TeamSerializer,
-    MembershipSerializer,
-    InviteSerializer,
-    CreateInviteSerializer,
     ScheduledRecipeSerializer,
     ScheduledRecipeSerializerCreate,
 )
@@ -110,6 +96,7 @@ class UserStats(APIView):
             'recipes_added_by_month': recipes_added_by_month,
             'total_recipes_added_last_month_by_all_users': total_recipes_added_last_month_by_all_users,
         })
+
 
 class ReportBadMerge(APIView):
     permission_classes = (IsAuthenticated,)
