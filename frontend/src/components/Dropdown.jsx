@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const Chevron = () => (
   <svg
@@ -13,6 +14,14 @@ const Chevron = () => (
 )
 
 export default class Dropdown extends React.Component {
+  static propTypes = {
+    relative: PropTypes.bool,
+  }
+
+  static defaultProps = {
+    relative: true,
+  }
+
   state = {
     show: false,
   }
@@ -34,8 +43,9 @@ export default class Dropdown extends React.Component {
   }
 
   render () {
+    const className = this.props.relative ? "p-rel" : ""
     return (
-      <section className="p-rel">
+      <section className={className}>
         <a onClick={this.toggle}
           className="better-nav-item">
           <span>{ this.props.name }</span>
