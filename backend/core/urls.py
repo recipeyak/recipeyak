@@ -6,12 +6,15 @@ from rest_framework_nested import routers
 from .views import (
     ShoppingListView,
     UserStats,
+    ReportBadMerge,
+    CalendarViewSet,
+)
+
+from core.teams.views import (
     TeamViewSet,
     MembershipViewSet,
     TeamInviteViewSet,
     UserInvitesViewSet,
-    ReportBadMerge,
-    CalendarViewSet,
 )
 
 from core.recipes.views import (
