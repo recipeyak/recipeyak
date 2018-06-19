@@ -37,7 +37,6 @@ jobs:
           working_directory: backend
           command: |
             mkdir -p backend/reports
-            make ci
             pipenv run pytest --cov-config .coveragerc --cov --junit-xml backend/reports/pytest.xml
       - store_test_results:
           path: backend/reports
