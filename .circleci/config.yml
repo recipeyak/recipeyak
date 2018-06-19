@@ -204,6 +204,7 @@ workflows:
   test:
     jobs:
       - test_python
+      - lint_python
       - test_frontend
       - lint_frontend
       - build_api_container:
