@@ -83,7 +83,7 @@ class NotificationsDropdown extends React.Component {
 
   render () {
     return (
-      <Dropdown name="Notifications">
+      <Dropdown name="Notifications" relative={false}>
         <Invites
           invites={this.props.invites}
           loading={this.props.loading}

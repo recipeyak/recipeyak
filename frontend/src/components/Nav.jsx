@@ -64,7 +64,7 @@ class Navbar extends React.Component {
 
         <NotificationsDropdown/>
 
-        <Dropdown name="Teams">
+        <Dropdown name="Teams" relative={false}>
             <Teams loading={ this.props.loadingTeams }
                    teams={ this.props.teams }/>
             <Link to="/t/create" className="mt-1 ">Create a Team</Link>
