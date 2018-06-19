@@ -53,7 +53,9 @@ class LoginView(GenericAPIView):
     permission_classes = (AllowAny,)
     serializer_class = LoginSerializer
 
-    @sensitive_post_parameters('password', 'old_password', 'new_password1', 'new_password2')
+    @method_decorator(
+        sensitive_post_parameters('password', 'old_password', 'new_password1', 'new_password2')
+    )
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
@@ -150,7 +152,10 @@ class PasswordResetConfirmView(GenericAPIView):
     serializer_class = PasswordResetConfirmSerializer
     permission_classes = (AllowAny,)
 
-    @sensitive_post_parameters('password', 'old_password', 'new_password1', 'new_password2')
+
+    @method_decorator(
+        sensitive_post_parameters('password', 'old_password', 'new_password1', 'new_password2')
+    )
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
@@ -174,7 +179,10 @@ class PasswordChangeView(GenericAPIView):
     serializer_class = PasswordChangeSerializer
     permission_classes = (IsAuthenticated,)
 
-    @sensitive_post_parameters('password', 'old_password', 'new_password1', 'new_password2')
+
+    @method_decorator(
+        sensitive_post_parameters('password', 'old_password', 'new_password1', 'new_password2')
+    )
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 

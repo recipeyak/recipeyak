@@ -34,7 +34,10 @@ class RegisterView(CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = (AllowAny,)
 
-    @sensitive_post_parameters('password1', 'password2')
+
+    @method_decorator(
+        sensitive_post_parameters('password1', 'password2')
+    )
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
