@@ -5,7 +5,7 @@ import pytz
 from django.urls import reverse
 from rest_framework import status
 
-from .models import Recipe
+from core.models import Recipe
 
 pytestmark = pytest.mark.django_db
 

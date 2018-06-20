@@ -5,10 +5,11 @@ from rest_framework_nested import routers
 
 from .views import (
     ShoppingListView,
-    UserStats,
     ReportBadMerge,
     CalendarViewSet,
 )
+
+from core.stats.views import UserStats
 
 from core.teams.views import (
     TeamViewSet,
