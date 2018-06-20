@@ -7,7 +7,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from core.search import search_recipe_queryset
+from .search import search_recipe_queryset
 
 
 from core.auth.permissions import (

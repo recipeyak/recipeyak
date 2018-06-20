@@ -21,7 +21,7 @@ from .serializers import (
     PasswordChangeSerializer
 )
 
-from core.serializers import UserSerializer as UserDetailsSerializer
+from core.users.serializers import UserSerializer as UserDetailsSerializer
 
 
 from .registration.serializers import (SocialLoginSerializer,

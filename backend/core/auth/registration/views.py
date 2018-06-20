@@ -25,7 +25,7 @@ from .serializers import (
     RegisterSerializer,
 )
 
-from core.serializers import UserSerializer as UserDetailsSerializer
+from core.users.serializers import UserSerializer as UserDetailsSerializer
 
 logger = logging.getLogger(__name__)
 
