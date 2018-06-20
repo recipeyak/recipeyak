@@ -61,9 +61,6 @@ INSTALLED_APPS = [
     'rest_framework',
 
 
-    # authentication / registration via django-rest-auth
-    # http://django-rest-auth.readthedocs.io/en/latest/installation.html
-    'rest_auth.apps.RestAuthConfig',
     'django.contrib.sites',
     'django.contrib.postgres',
 
@@ -74,7 +71,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.gitlab',
 
-    'rest_auth.registration.apps.RestAuthRegistrationConfig',
 
 ]
 
@@ -88,7 +84,7 @@ if PRODUCTION and not DOCKERBUILD:
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
-        'core.permissions.DisallowAny',
+        'core.auth.permissions.DisallowAny',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
@@ -96,8 +92,7 @@ REST_FRAMEWORK = {
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
 
-# required for django-rest-auth
-# http://django-rest-auth.readthedocs.io/en/latest/installation.html#registration-optional
+# https://stackoverflow.com/questions/25468676/django-sites-model-what-is-and-why-is-site-id-1#25468782
 SITE_ID = 1
 
 # Required for using email and on username. http://django-allauth.readthedocs.io/en/latest/advanced.html
@@ -107,12 +102,6 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'  # (="username" | "email" | "username_em
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_VERIFICATION = None
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-
-# django-rest-auth: http://django-rest-auth.readthedocs.io/en/latest/configuration.html#configuration
-# override the default serializer since it uses username which we don't have
-REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'core.serializers.UserSerializer'
-}
 
 # https://django-allauth.readthedocs.io/en/latest/providers.html#django-configuration
 # Add at least a key for each provider you add to INSTALLED_APPS here

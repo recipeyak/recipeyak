@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.conf import settings
 from rest_framework import status
 
-from .models import (
+from core.models import (
     Recipe,
     Membership,
     Team,

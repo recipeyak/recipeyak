@@ -3,20 +3,26 @@ from django.conf.urls import url, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers
 
-from .views import (
-    RecipeViewSet,
-    StepViewSet,
-    IngredientViewSet,
+from core.schedule.views import (
     ShoppingListView,
-    UserStats,
+    ReportBadMerge,
+    CalendarViewSet,
+)
+
+from core.stats.views import UserStats
+
+from core.teams.views import (
     TeamViewSet,
     MembershipViewSet,
     TeamInviteViewSet,
-    TeamRecipesViewSet,
     UserInvitesViewSet,
-    ReportBadMerge,
-    CalendarViewSet,
-    export_recipes,
+)
+
+from core.recipes.views import (
+    RecipeViewSet,
+    TeamRecipesViewSet,
+    StepViewSet,
+    IngredientViewSet,
 )
 
 router = DefaultRouter()
@@ -35,9 +41,10 @@ teams_router.register(r'invites', TeamInviteViewSet, base_name='team-invites')
 teams_router.register(r'recipes', TeamRecipesViewSet, base_name='team-recipes')
 
 urlpatterns = [
-    # django-rest-auth related urls
-    url(r'^api/v1/rest-auth/', include('rest_auth.urls')),
-    url(r'^api/v1/rest-auth/registration/', include('rest_auth.registration.urls')),
+    url(r'^api/v1/rest-auth/', include('core.auth.urls')),
+    url(r'^api/v1/rest-auth/registration/', include('core.auth.registration.urls')),
+
+    url(r'', include('core.export.urls')),
 
     url(r'api/v1/', include(router.urls)),
     url(r'api/v1/', include(recipes_router.urls)),
@@ -45,6 +52,4 @@ urlpatterns = [
     url(r'^api/v1/shoppinglist', ShoppingListView.as_view(), name='shopping-list'),
     url(r'^api/v1/user_stats', UserStats.as_view(), name='user-stats'),
     url(r'^api/v1/report-bad-merge', ReportBadMerge.as_view(), name='report-bad-merge'),
-    url(r'^recipes.(?P<filetype>json|yaml|yml)$', export_recipes, name='export-recipes'),
-    url(r'^recipes/(?P<id>[0-9]+).*\.(?P<filetype>json|yaml|yml)$', export_recipes, name='export-recipe'),
 ]

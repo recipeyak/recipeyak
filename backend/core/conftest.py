@@ -6,7 +6,7 @@ from rest_framework.test import APIClient
 
 from datetime import date
 
-from .models import (
+from core.models import (
     MyUser,
     Recipe,
     Ingredient,

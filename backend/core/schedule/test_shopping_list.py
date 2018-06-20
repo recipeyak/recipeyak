@@ -5,8 +5,8 @@ from django.urls import reverse
 from rest_framework import status
 from datetime import date, timedelta
 
-from .utils import combine_ingredients
-from .models import Recipe, Ingredient
+from .utils import combine_ingredients, simplify_units
+from core.models import Recipe, Ingredient
 
 pytestmark = pytest.mark.django_db
 
@@ -566,3 +566,10 @@ def test_combining_feta(user, client, empty_recipe):
 
     for processed, (_, name) in zip(res.json(), ingredients):
         assert processed.get('name') == name
+
+
+def test_simplify_units():
+    values = ['tablespoon', 'some', 'sprinkle', 'pinch']
+    expected = ['tablespoon', 'some']
+    actual = simplify_units(values)
+    assert expected == actual

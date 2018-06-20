@@ -3,6 +3,7 @@ from typing import List, Union
 import logging
 import itertools
 
+from django.db.models import Q
 from django.db import models, transaction
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
@@ -440,3 +441,13 @@ class Membership(CommonInfo):
 
     def __str__(self):
         return f'<Membership • user_email: {self.user.email}, team: {self.team.id} level: {self.level}>'
+
+
+def user_active_team_ids(user):
+    return user.membership_set.filter(is_active=True).values_list('team')
+
+
+def user_and_team_recipes(user):
+    return (Recipe.objects
+            .filter(Q(owner_user=user) |
+                    Q(owner_team__in=user_active_team_ids(user))))

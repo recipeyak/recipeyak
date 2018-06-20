@@ -1,7 +1,7 @@
 import pytest
 
 from core.models import Recipe
-from core.search import search_recipe_queryset
+from .search import search_recipe_queryset
 
 pytestmark = pytest.mark.django_db
 

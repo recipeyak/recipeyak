@@ -3,7 +3,7 @@ import pytest
 from django.conf import settings
 from rest_framework import status
 
-from .models import Step
+from core.models import Step
 
 pytestmark = pytest.mark.django_db
 
