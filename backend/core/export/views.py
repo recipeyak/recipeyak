@@ -7,7 +7,7 @@ from core.response import YamlResponse
 
 from core.models import user_and_team_recipes
 
-from core.serializers import RecipeExportSerializer
+from .serializers import RecipeExportSerializer
 
 
 @require_http_methods(["GET"])

@@ -24,7 +24,7 @@ from core.models import (
     MyUser,
 )
 
-from core.serializers import (
+from .serializers import (
     RecipeSerializer,
     StepSerializer,
     IngredientSerializer,
