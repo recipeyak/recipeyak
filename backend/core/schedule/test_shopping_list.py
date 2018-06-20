@@ -5,7 +5,7 @@ from django.urls import reverse
 from rest_framework import status
 from datetime import date, timedelta
 
-from core.utils import combine_ingredients, simplify_units
+from .utils import combine_ingredients, simplify_units
 from core.models import Recipe, Ingredient
 
 pytestmark = pytest.mark.django_db

@@ -3,7 +3,7 @@ from typing import List, Dict
 from pint import UnitRegistry, UndefinedUnitError
 from pint.quantity import _Quantity as Quantity
 
-from core.recipes.inflect import singularize, pluralize
+from .inflect import singularize, pluralize
 
 ureg = UnitRegistry()
 

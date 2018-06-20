@@ -1,8 +1,6 @@
 import pytest
 
-from .models import MyUser
-
-from .utils import simplify_units
+from core.models import MyUser
 
 pytestmark = pytest.mark.django_db
 
@@ -25,10 +23,3 @@ def test_avatar_url(user):
     User's avatar url should not change
     """
     assert user.avatar_url == "//www.gravatar.com/avatar/bc6a715808d9aae0ddeefb1e47e482a6?d=identicon&r=g"
-
-
-def test_simplify_units():
-    values = ['tablespoon', 'some', 'sprinkle', 'pinch']
-    expected = ['tablespoon', 'some']
-    actual = simplify_units(values)
-    assert expected == actual

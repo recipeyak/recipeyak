@@ -4,7 +4,7 @@ from django.urls import reverse
 from rest_framework import status
 from datetime import date
 
-from .models import (
+from core.models import (
     ScheduledRecipe,
     Recipe,
 )
