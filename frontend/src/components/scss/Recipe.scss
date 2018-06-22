@@ -1,3 +1,4 @@
+@import './variables.scss';
 /* Formats select box for move/copy dropdown */
 .dropdown-item {
   overflow-x: hidden;
@@ -21,5 +22,16 @@ option {
   &:hover {
     background-color: lighten($option-color, 20%);
     color: white;
+  }
+}
+
+.recipe-scroll {
+  // we only enable scrolling when not at the small width (aka mobile), since
+  // scroll boxes on mobile are much worse than normal scroll behavior
+  @media (min-width: $small) {
+    max-height: 720px;
+    overflow: auto;
+    // edges of the recipe boxes get cut without extra padding
+    padding: 1px;
   }
 }

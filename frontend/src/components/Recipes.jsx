@@ -6,7 +6,6 @@ import Loader from './Loader'
 import { TextInput } from './Forms'
 import { matchesQuery } from '../search'
 import Results from './Results'
-import Scroll from './Scroll'
 
 import {
   byNameAlphabetical,
@@ -69,11 +68,11 @@ export default class Recipes extends React.Component {
 
         { this.props.loading
             ? <Loader className="pt-4"/>
-            : <Scroll height='700px' padding="1px">
+            : <div className="recipe-scroll">
                 <div className="d-grid grid-gap-4 pt-4">
                   <Results recipes={ results } query={ this.state.query } />
                 </div>
-              </Scroll>
+              </div>
         }
 
       </div>
