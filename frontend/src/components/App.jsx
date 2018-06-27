@@ -78,7 +78,8 @@ export default class Base extends React.Component {
             <ContainerBase>
               <Switch>
                 <Route exact path="/" component={ Home }/>
-                <PrivateRoute exact path="/:type(shopping|recipes)" component={ Schedule }/>
+                <PrivateRoute exact path="/schedule/:type(shopping|recipes)?" component={ Schedule }/>
+                <PrivateRoute exact path="/t/:id(\d+)(.*)/schedule/:type(shopping|recipes)?" component={ Schedule }/>
                 <Container>
                   <Switch>
                     <Route exact path="/accounts/:service/connect" component={ OAuthConnect }/>

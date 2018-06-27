@@ -17,7 +17,7 @@ class ScheduledRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ScheduledRecipe
-        fields = ('id', 'recipe', 'on', 'count',)
+        fields = ('id', 'recipe', 'on', 'count','team','user')
 
 
 class ScheduledRecipeSerializerCreate(serializers.ModelSerializer):

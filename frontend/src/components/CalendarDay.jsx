@@ -47,9 +47,9 @@ const dayTarget = {
       id,
     } = monitor.getItem()
     if (id != null) {
-      props.move(id, props.date)
+      props.move(id, props.teamID, props.date)
     } else {
-      props.create(recipeID, props.date, count)
+      props.create(recipeID, props.teamID, props.date, count)
     }
   }
 }
@@ -75,11 +75,11 @@ function mapStateToProps (state, props) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    create: (recipeID, on, count) => dispatch(addingScheduledRecipe(recipeID, on, count)),
-    updateCount: (id, count) => dispatch(updatingScheduledRecipe(id, { count })),
-    refetchShoppingList: () => dispatch(fetchShoppingList()),
-    move: (id, date) => dispatch(moveScheduledRecipe(id, pyFormat(date))),
-    remove: (id) => dispatch(deletingScheduledRecipe(id)),
+    create: (recipeID, teamID, on, count) => dispatch(addingScheduledRecipe(recipeID, teamID, on, count)),
+    updateCount: (id, teamID, count) => dispatch(updatingScheduledRecipe(id, teamID, { count })),
+    refetchShoppingList: (teamID) => dispatch(fetchShoppingList(teamID)),
+    move: (id, teamID, date) => dispatch(moveScheduledRecipe(id, teamID, pyFormat(date))),
+    remove: (recipeID, teamID) => dispatch(deletingScheduledRecipe(recipeID, teamID)),
   }
 }
 
@@ -99,6 +99,7 @@ export default class CalendarDay extends React.Component {
       updateCount,
       refetchShoppingList,
       remove,
+      teamID,
     } = this.props
     return connectDropTarget(
       <div
@@ -121,9 +122,9 @@ export default class CalendarDay extends React.Component {
                             date={date}
                             recipeName={x.recipe.name}
                             recipeID={x.recipe.id}
-                            remove={() => remove(x.id)}
-                            updateCount={(count) => updateCount(x.id, count)}
-                            refetchShoppingList={() => refetchShoppingList()}
+                            remove={() => remove(x.id, teamID)}
+                            updateCount={(count) => updateCount(x.id, teamID, count)}
+                            refetchShoppingList={() => refetchShoppingList(teamID)}
                             count={x.count}
               />)
             : null

@@ -497,12 +497,15 @@ export const setShoppingListError = val => ({
   val
 })
 
-export const fetchShoppingList = () => (dispatch, getState) => {
+export const fetchShoppingList = (teamID) => (dispatch, getState) => {
   const start = getState().shoppinglist.startDay
   const end = getState().shoppinglist.endDay
   dispatch(setLoadingShoppingList(true))
   dispatch(setShoppingListError(false))
-  return http.get('/api/v1/shoppinglist/', {
+  const url = teamID === 'personal'
+    ? '/api/v1/shoppinglist/'
+    : `/api/v1/t/${teamID}/shoppinglist/`
+  return http.get(url, {
     params: {
       start: pyFormat(start),
       end: pyFormat(end),
@@ -642,11 +645,15 @@ export const fetchRecentRecipes = () => dispatch => {
   })
 }
 
-export const fetchRecipeList = () => dispatch => {
+export const fetchRecipeList = (teamID) => dispatch => {
   dispatch(setLoadingRecipes(true))
   dispatch(setErrorRecipes(false))
 
-  return http.get('/api/v1/recipes/')
+  const url = teamID === 'personal'
+    ? '/api/v1/recipes/'
+    : `/api/v1/t/${teamID}/recipes/`
+
+  return http.get(url)
   .then(res => {
     dispatch(setRecipes(res.data))
     dispatch(setLoadingRecipes(false))
@@ -1376,6 +1383,28 @@ export const fetchTeamRecipes = id => dispatch => {
   })
 }
 
+
+export const fetchTeamCalendar = (id, month = new Date()) => dispatch => {
+  dispatch(setCalendarLoading(true))
+  dispatch(setCalendarError(false))
+  // we fetch current month plus and minus 1 week
+  return http.get(`/api/v1/t/${id}/calendar/`, {
+    params: {
+      start: pyFormat(subWeeks(startOfMonth(month), 1)),
+      end: pyFormat(addWeeks(endOfMonth(month), 1)),
+    }
+  })
+  .then((res) => {
+    dispatch(setCalendarRecipes(res.data))
+    dispatch(setCalendarLoading(false))
+  })
+  .catch(() => {
+    dispatch(setCalendarLoading(false))
+    dispatch(setCalendarError(true))
+  })
+}
+
+
 export const setUpdatingUserTeamLevel = (id, updating) => ({
   type: SET_UPDATING_USER_TEAM_LEVEL,
   id,
@@ -1766,7 +1795,7 @@ export const setCalendarRecipe = (recipe) => ({
   recipe,
 })
 
-export const fetchCalendar = (month = new Date()) => dispatch => {
+export const fetchCalendar = (month = new Date(), teamID) => dispatch => {
   dispatch(setCalendarLoading(true))
   dispatch(setCalendarError(false))
   // we fetch current month plus and minus 1 week
@@ -1803,7 +1832,7 @@ export const replaceCalendarRecipe = (id, recipe) => ({
   recipe,
 })
 
-export const addingScheduledRecipe = (recipeID, on, count) => (dispatch, getState) => {
+export const addingScheduledRecipe = (recipeID, teamID, on, count) => (dispatch, getState) => {
   const recipe = getState().recipes[recipeID]
   dispatch(setSchedulingRecipe(recipeID, true))
   const id = uuid4()
@@ -1815,8 +1844,13 @@ export const addingScheduledRecipe = (recipeID, on, count) => (dispatch, getStat
   // 1. preemptively add recipe
   // 2. if succeeded, then we replace the preemptively added one
   //    if failed, then we remove the preemptively added one, and display an error
+
+  const url = teamID === 'personal'
+    ? '/api/v1/calendar/'
+    : `/api/v1/t/${teamID}/calendar/`
+
   dispatch(setCalendarRecipe({ ...data, id, recipe }))
-  return http.post('/api/v1/calendar/', data)
+  return http.post(url, data)
   .then((res) => {
     dispatch(replaceCalendarRecipe(id, res.data))
     dispatch(setSchedulingRecipe(recipeID, false))
@@ -1843,46 +1877,73 @@ export const moveCalendarRecipe = (id, to) => ({
   on: to,
 })
 
-export const deletingScheduledRecipe = id => (dispatch, getState) => {
+export const deletingScheduledRecipe = (id, teamID) => (dispatch, getState) => {
   const recipe = getState().calendar[id]
   dispatch(deleteCalendarRecipe(id))
-  return http.delete(`/api/v1/calendar/${id}/`)
+
+  const url = teamID === 'personal'
+    ? `/api/v1/calendar/${id}/`
+    : `/api/v1/t/${teamID}/calendar/${id}/`
+
+  return http.delete(url)
   .catch(() => {
     dispatch(setCalendarRecipe(recipe))
   })
 }
 
-export const moveScheduledRecipe = (id, to) => (dispatch, getState) => {
+export const moveScheduledRecipe = (id, teamID, to) => (dispatch, getState) => {
   const from = getState().calendar[id]
-  const merging =
+  const existing =
     getState().calendar.allIds
     .filter(x => x !== id)
     .map(x => getState().calendar[x])
     .filter(x => isSameDay(x.on, to))
-    .find(x => x.recipe.id === from.recipe.id)
-  dispatch(moveCalendarRecipe(id, pyFormat(to)))
-  if (merging) {
-    // TODO: this should be an endpoint so we can have this be in a transaction
-    return Promise.all([
-      http.delete(`/api/v1/calendar/${id}/`),
-      http.patch(`/api/v1/calendar/${merging.id}/`, { count: merging.count + from.count })
-    ])
-    .catch(() => {
-      dispatch(moveCalendarRecipe(id, pyFormat(from.on)))
+    .filter(x => {
+      if (teamID === 'personal') {
+        return x.user != null
+      }
+      return x.team === teamID
     })
+    .find(x => x.recipe.id === from.recipe.id)
+
+  const sourceURL = teamID === 'personal'
+    ? `/api/v1/calendar/${id}/`
+    : `/api/v1/t/${teamID}/calendar/${id}/`
+
+  dispatch(moveCalendarRecipe(id, pyFormat(to)))
+
+  if (existing) {
+    const sinkURL = teamID === 'personal'
+      ? `/api/v1/calendar/${existing.id}/`
+      : `/api/v1/t/${teamID}/calendar/${existing.id}/`
+    // TODO: this should be an endpoint so we can have this be in a transaction
+    return (
+      http.delete(sourceURL)
+      .then(() =>
+        http.patch(sinkURL, { count: existing.count + from.count })
+      )
+      .catch(() => {
+        dispatch(moveCalendarRecipe(id, pyFormat(from.on)))
+      })
+    )
   }
-  return http.patch(`/api/v1/calendar/${id}/`, { on: pyFormat(to) })
+
+  return http.patch(sourceURL, { on: pyFormat(to) })
   .catch(() => {
     // on error we want to move it back to the old position
     dispatch(moveCalendarRecipe(id, pyFormat(from.on)))
   })
 }
 
-export const updatingScheduledRecipe = (id, data) => dispatch => {
+export const updatingScheduledRecipe = (id, teamID, data) => dispatch => {
   if (parseInt(data.count, 10) === 0) {
-    return dispatch(deletingScheduledRecipe(id))
+    return dispatch(deletingScheduledRecipe(id, teamID))
   }
-  return http.patch(`/api/v1/calendar/${id}/`, data)
+
+  const url = teamID === 'personal'
+    ? `/api/v1/calendar/${id}/`
+    : `/api/v1/t/${teamID}/calendar/${id}/`
+  return http.patch(url, data)
   .then(res => {
     dispatch(setCalendarRecipe(res.data))
   })

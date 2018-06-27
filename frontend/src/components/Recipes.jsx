@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import Recipe from './RecipeItem'
@@ -25,8 +26,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchData: () => {
-      dispatch(fetchRecipeList())
+    fetchData: (teamID) => {
+      dispatch(fetchRecipeList(teamID))
     },
   }
 }
@@ -36,6 +37,13 @@ const mapDispatchToProps = dispatch => {
   mapDispatchToProps
 )
 export default class Recipes extends React.Component {
+  static propTypes = {
+    fetchData: PropTypes.func.isRequired,
+    recipes: PropTypes.arrayOf(PropTypes.object).isRequired,
+    loading: PropTypes.bool.isRequired,
+    teamID: PropTypes.string.isRequired,
+  }
+
   state = {
     query: ''
   }
@@ -45,10 +53,15 @@ export default class Recipes extends React.Component {
   }
 
   componentWillMount () {
-    this.props.fetchData()
+    this.props.fetchData(this.props.teamID)
+  }
+
+  handleQueryChange = (e) => {
+    this.setState({ query: e.target.value })
   }
 
   render () {
+    // TODO(sbdchd): filter by teamID
     const results =
       this.props.recipes
       .filter(recipe => matchesQuery(recipe, this.state.query))
@@ -63,7 +76,7 @@ export default class Recipes extends React.Component {
     return (
       <div>
         <TextInput
-          onChange={e => this.setState({ query: e.target.value })}
+          onChange={this.handleQueryChange}
           placeholder='search for recipes'/>
 
         { this.props.loading

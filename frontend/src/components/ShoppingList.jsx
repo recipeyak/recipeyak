@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import format from 'date-fns/format'
@@ -55,7 +56,7 @@ function mapStateToProps (state) {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchData: (start, end) => dispatch(fetchShoppingList(start, end)),
+  fetchData: (teamID, start, end) => dispatch(fetchShoppingList(teamID, start, end)),
   setStartDay: (date) => dispatch(setSelectingStart(date)),
   setEndDay: (date) => dispatch(setSelectingEnd(date)),
   reportBadMerge: () => dispatch(reportBadMerge()),
@@ -67,6 +68,20 @@ const mapDispatchToProps = (dispatch) => ({
   mapDispatchToProps,
 )
 class ShoppingList extends React.Component {
+  static propTypes = {
+    refetchData: PropTypes.func.isRequired,
+    teamID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    startDay: PropTypes.object.isRequired,
+    endDay: PropTypes.object.isRequired,
+    loading: PropTypes.bool.isRequired,
+    error: PropTypes.bool.isRequired,
+    shoppinglist: PropTypes.array.isRequired,
+    setStartDay: PropTypes.func.isRequired,
+    setEndDay: PropTypes.func.isRequired,
+    reportBadMerge: PropTypes.func.isRequired,
+    sendToast: PropTypes.func.isRequired,
+  }
+
   state = {
     month: new Date(),
 
@@ -77,7 +92,7 @@ class ShoppingList extends React.Component {
   }
 
   componentDidMount () {
-    this.props.fetchData(this.props.startDay, this.props.endDay)
+    this.refetchData()
   }
 
   componentWillMount () {
@@ -90,7 +105,7 @@ class ShoppingList extends React.Component {
 
   refetchData = () => {
     // TODO: refetch data on calendar count for scheduled recipes changes
-    this.props.fetchData(this.props.startDay, this.props.endDay)
+    this.props.fetchData(this.props.teamID, this.props.startDay, this.props.endDay)
   }
 
   handleGeneralClick = e => {
