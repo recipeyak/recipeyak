@@ -42,6 +42,8 @@ export default class Recipes extends React.Component {
     recipes: PropTypes.arrayOf(PropTypes.object).isRequired,
     loading: PropTypes.bool.isRequired,
     teamID: PropTypes.string.isRequired,
+    scroll: PropTypes.bool,
+    drag: PropTypes.bool,
   }
 
   state = {
@@ -49,7 +51,10 @@ export default class Recipes extends React.Component {
   }
 
   static defaultProps = {
-    recipes: []
+    recipes: [],
+    teamID: 'personal',
+    scroll: false,
+    drag: false,
   }
 
   componentWillMount () {
@@ -61,28 +66,31 @@ export default class Recipes extends React.Component {
   }
 
   render () {
-    // TODO(sbdchd): filter by teamID
     const results =
       this.props.recipes
       .filter(recipe => matchesQuery(recipe, this.state.query))
       .map(recipe =>
         <Recipe
           {...recipe}
-          drag
+          drag={this.props.drag}
           className='mb-0'
           key={ recipe.id }
         />
       )
+
+    const scrollClass = this.props.scroll
+      ? 'recipe-scroll'
+      : ''
     return (
       <div>
         <TextInput
           onChange={this.handleQueryChange}
-          placeholder='search for recipes'/>
+          placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:"/>
 
         { this.props.loading
             ? <Loader className="pt-4"/>
-            : <div className="recipe-scroll">
-                <div className="d-grid grid-gap-4 pt-4">
+            : <div className={scrollClass}>
+                <div className="recipe-grid pt-4">
                   <Results recipes={ results } query={ this.state.query } />
                 </div>
               </div>

@@ -74,7 +74,7 @@ export default class Schedule extends React.Component {
           </div>
 
           { isRecipes
-              ? <Recipes teamID={teamID}/>
+              ? <Recipes teamID={teamID} scroll drag/>
               : <ShoppingList teamID={teamID}/>
           }
         </div>
