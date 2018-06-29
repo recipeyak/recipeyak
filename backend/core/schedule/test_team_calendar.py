@@ -61,5 +61,5 @@ def test_fetching_team_calendar(client, user, team, recipe):
 
     res = client.get(url, {'start': date(1976, 1, 1), 'end': date(1977, 1, 1)})
     assert res.status_code == status.HTTP_200_OK
-    assert recipe.id in [x['id'] for x in res.json()]
+    assert recipe.id in {x['recipe']['id'] for x in res.json()}
 
