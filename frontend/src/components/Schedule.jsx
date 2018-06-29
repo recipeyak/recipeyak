@@ -24,7 +24,6 @@ export default class Schedule extends React.Component {
   }
 
   render () {
-
     if (this.props.error) {
       return (
         <div className="new-container">
@@ -42,7 +41,6 @@ export default class Schedule extends React.Component {
       display: this.state.closed ? 'none' : 'grid',
     }
 
-
     const isTeam = this.props.match.params.id != null
 
     const teamID = isTeam
@@ -50,11 +48,11 @@ export default class Schedule extends React.Component {
       : 'personal'
 
     const recipesURL = teamID === 'personal'
-      ? "/schedule/recipes"
+      ? '/schedule/recipes'
       : `/t/${teamID}/schedule/recipes`
 
     const shoppingURL = teamID === 'personal'
-      ? "/schedule/shopping"
+      ? '/schedule/shopping'
       : `/t/${teamID}/schedule/shopping`
 
     return (

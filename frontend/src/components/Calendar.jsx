@@ -13,7 +13,6 @@ import PropTypes from 'prop-types'
 import {
   fetchCalendar,
   fetchTeams,
-  fetchTeamCalendar,
   fetchShoppingList,
   fetchRecipeList,
 } from '../store/actions'
@@ -30,7 +29,6 @@ import {
 
 import {
   push,
-  replace
 } from 'react-router-redux'
 
 import { ButtonPrimary, ButtonPlain } from './Buttons'
@@ -79,12 +77,7 @@ const mapStateToProps = (state, props) => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  fetchData: (month, teamID = 'personal') => {
-    if (teamID === 'personal') {
-      return dispatch(fetchCalendar(month))
-    }
-    return dispatch(fetchTeamCalendar(teamID, month))
-  },
+  fetchData: (month, teamID = 'personal') => dispatch(fetchCalendar(teamID, month)),
   fetchTeams: () => dispatch(fetchTeams()),
   navTo: (url) => dispatch(push(url)),
   refetchShoppingListAndRecipes: (teamID, start, end) => {

@@ -1383,28 +1383,6 @@ export const fetchTeamRecipes = id => dispatch => {
   })
 }
 
-
-export const fetchTeamCalendar = (id, month = new Date()) => dispatch => {
-  dispatch(setCalendarLoading(true))
-  dispatch(setCalendarError(false))
-  // we fetch current month plus and minus 1 week
-  return http.get(`/api/v1/t/${id}/calendar/`, {
-    params: {
-      start: pyFormat(subWeeks(startOfMonth(month), 1)),
-      end: pyFormat(addWeeks(endOfMonth(month), 1)),
-    }
-  })
-  .then((res) => {
-    dispatch(setCalendarRecipes(res.data))
-    dispatch(setCalendarLoading(false))
-  })
-  .catch(() => {
-    dispatch(setCalendarLoading(false))
-    dispatch(setCalendarError(true))
-  })
-}
-
-
 export const setUpdatingUserTeamLevel = (id, updating) => ({
   type: SET_UPDATING_USER_TEAM_LEVEL,
   id,
@@ -1795,11 +1773,14 @@ export const setCalendarRecipe = (recipe) => ({
   recipe,
 })
 
-export const fetchCalendar = (month = new Date(), teamID) => dispatch => {
+export const fetchCalendar = (teamID, month = new Date()) => dispatch => {
   dispatch(setCalendarLoading(true))
   dispatch(setCalendarError(false))
+  const url = teamID === 'personal'
+    ? '/api/v1/calendar/'
+    : `/api/v1/t/${teamID}/calendar/`
   // we fetch current month plus and minus 1 week
-  return http.get('/api/v1/calendar/', {
+  return http.get(url, {
     params: {
       start: pyFormat(subWeeks(startOfMonth(month), 1)),
       end: pyFormat(addWeeks(endOfMonth(month), 1)),
