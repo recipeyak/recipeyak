@@ -1,11 +1,6 @@
 from rest_framework import serializers
 
 from core.models import (
-    MyUser,
-    Recipe,
-    Ingredient,
-    Step,
-    Team,
     ScheduledRecipe,
 )
 
@@ -17,7 +12,7 @@ class ScheduledRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ScheduledRecipe
-        fields = ('id', 'recipe', 'on', 'count','team','user')
+        fields = ('id', 'recipe', 'on', 'count', 'team', 'user')
 
 
 class ScheduledRecipeSerializerCreate(serializers.ModelSerializer):

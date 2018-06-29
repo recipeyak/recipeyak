@@ -6,7 +6,6 @@ from datetime import date
 
 from core.models import (
     ScheduledRecipe,
-    Recipe,
 )
 
 pytestmark = pytest.mark.django_db
@@ -23,12 +22,12 @@ def test_adding_to_team_calendar(client, user, team, recipe):
     client.force_authenticate(user)
     res = client.post(url, data)
     assert res.status_code == status.HTTP_201_CREATED
-    scheduled =  ScheduledRecipe.objects.get(id=res.json().get('id'))
+    scheduled = ScheduledRecipe.objects.get(id=res.json().get('id'))
     assert scheduled.team.pk == team.pk
 
 
 def test_removing_from_team_calendar(client, user, team, recipe):
-    scheduled = recipe.schedule(on=date(1976,1,2), team=team)
+    scheduled = recipe.schedule(on=date(1976, 1, 2), team=team)
     url = reverse('team-calendar-detail', kwargs={'team_pk': team.pk, 'pk': scheduled.id})
     client.force_authenticate(user)
     res = client.delete(url)
@@ -37,7 +36,7 @@ def test_removing_from_team_calendar(client, user, team, recipe):
 
 
 def test_updating_team_schedule_recipe(client, user, team, recipe):
-    scheduled = recipe.schedule(on=date(1976,1,2), team=team)
+    scheduled = recipe.schedule(on=date(1976, 1, 2), team=team)
     assert scheduled.count == 1
     url = reverse('team-calendar-detail', kwargs={'team_pk': team.pk, 'pk': scheduled.id})
     data = {
@@ -57,9 +56,8 @@ def test_fetching_team_calendar(client, user, team, recipe):
     assert res.status_code == status.HTTP_400_BAD_REQUEST, \
         "not providing start and end should result in a bad request"
 
-    recipe.schedule(on=date(1976,1,2), team=team)
+    recipe.schedule(on=date(1976, 1, 2), team=team)
 
     res = client.get(url, {'start': date(1976, 1, 1), 'end': date(1977, 1, 1)})
     assert res.status_code == status.HTTP_200_OK
     assert recipe.id in {x['recipe']['id'] for x in res.json()}
-

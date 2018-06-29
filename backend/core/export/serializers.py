@@ -6,13 +6,9 @@ from core.recipes.serializers import (
 )
 
 from core.models import (
-    MyUser,
     Recipe,
-    Ingredient,
-    Step,
-    Team,
-    ScheduledRecipe,
 )
+
 
 class RecipeExportSerializer(serializers.ModelSerializer):
 
@@ -29,5 +25,3 @@ class RecipeExportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = ('name', 'author', 'time', 'source', 'servings', 'ingredients', 'steps', 'owner')
-
-

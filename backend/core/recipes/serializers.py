@@ -6,7 +6,6 @@ from core.models import (
     Ingredient,
     Step,
     Team,
-    ScheduledRecipe,
 )
 
 

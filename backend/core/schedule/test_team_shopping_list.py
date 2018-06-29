@@ -1,13 +1,8 @@
 import pytest
-from typing import Dict, List, Union
 from rest_framework import status
-
 from django.urls import reverse
-from rest_framework import status
 from datetime import date, timedelta
 
-from .utils import combine_ingredients, simplify_units
-from core.models import Recipe, Ingredient
 
 pytestmark = pytest.mark.django_db
 
