@@ -136,13 +136,15 @@ export default class Calendar extends React.Component {
   prevMonth = () => {
     this.setState(({ month }) => ({
       month: subMonths(month, 1)
-    }), this.refetchData)
+    }))
+    this.props.fetchData(this.state.month, this.props.teamID)
   }
 
   nextMonth = () => {
     this.setState(({ month }) => ({
       month: addMonths(month, 1)
-    }), this.refetchData)
+    }))
+    this.props.fetchData(this.state.month, this.props.teamID)
   }
 
   currentMonth = () => {
