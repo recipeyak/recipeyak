@@ -72,10 +72,11 @@ jobs:
             - ./backend/.mypy_cache
           key: backend-v2-{{ .Branch }}-{{ checksum "backend/Pipfile.lock" }}
       - run:
-          name: run tests
+          name: run lints
           working_directory: backend
           command: |
             mkdir -p backend/reports
+            pipenv run flake8
             pipenv run mypy --config-file tox.ini --junit-xml backend/reports/mypy.xml .
             pipenv run pytest --cov-config .coveragerc --cov --junit-xml backend/reports/pytest.xml
       - store_test_results:

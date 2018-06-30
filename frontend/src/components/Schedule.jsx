@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
@@ -6,7 +7,12 @@ import Calendar from './Calendar'
 import Recipes from './Recipes'
 import ShoppingList from './ShoppingList'
 
-class Schedule extends React.Component {
+export default class Schedule extends React.Component {
+
+  static propTypes = {
+    error: PropTypes.bool.isRequired,
+    match: PropTypes.object.isRequired,
+  }
 
   state = {
     query: '',
@@ -18,11 +24,7 @@ class Schedule extends React.Component {
   }
 
   render () {
-    const {
-      error,
-    } = this.props
-
-    if (error) {
+    if (this.props.error) {
       return (
         <div className="new-container">
           <Helmet title='Schedule' />
@@ -35,37 +37,51 @@ class Schedule extends React.Component {
 
     const arrow = this.state.closed ? '→' : '←'
 
+    const sideBarStyle = {
+      display: this.state.closed ? 'none' : 'grid',
+    }
+
+    const isTeam = this.props.match.params.id != null
+
+    const teamID = isTeam
+      ? parseInt(this.props.match.params.id, 10)
+      : 'personal'
+
+    const recipesURL = teamID === 'personal'
+      ? '/schedule/recipes'
+      : `/t/${teamID}/schedule/recipes`
+
+    const shoppingURL = teamID === 'personal'
+      ? '/schedule/shopping'
+      : `/t/${teamID}/schedule/shopping`
+
     return (
       <div className="d-flex pl-2 pr-2">
         <Helmet title='Schedule' />
-        <div className="d-grid grid-gap-4 grid-auto-rows-min-content w-350px-if-not-sm" style={{
-          display: this.state.closed ? 'none' : 'grid',
-        }}>
+        <div className="d-grid grid-gap-4 grid-auto-rows-min-content w-350px-if-not-sm" style={sideBarStyle}>
 
           <div className="tabs is-boxed mb-0 no-print">
             <ul>
               <li className={ !isRecipes ? 'is-active' : ''}>
-                <Link to="/shopping">Shopping</Link>
+                <Link to={shoppingURL}>Shopping</Link>
               </li>
               <li className={ isRecipes ? 'is-active' : ''}>
-                <Link to="/recipes">Recipes</Link>
+                <Link to={recipesURL}>Recipes</Link>
               </li>
             </ul>
           </div>
 
           { isRecipes
-              ? <Recipes />
-              : <ShoppingList />
+              ? <Recipes teamID={teamID} scroll drag/>
+              : <ShoppingList teamID={teamID}/>
           }
         </div>
         <a className="select-none closer text-decoration-none no-print hide-sm"
           onClick={this.toggleClose}>
           { arrow }
         </a>
-        <Calendar className="hide-sm"/>
+        <Calendar className="hide-sm" match={this.props.match}/>
       </div>
     )
   }
 }
-
-export default Schedule

@@ -162,8 +162,13 @@ class Recipe(CommonInfo):
             recipe_copy.save()
             return recipe_copy
 
-    def schedule(self, on, user, count):
-        return ScheduledRecipe.objects.create_scheduled(recipe=self, on=on, count=count, user=user)
+    def schedule(self, on, user=None, team=None, count=1):
+        return ScheduledRecipe.objects.create_scheduled(
+            recipe=self,
+            on=on,
+            count=count,
+            user=user,
+            team=team)
 
     @property
     def ingredients(self):
@@ -235,33 +240,40 @@ class Step(CommonInfo):
 
 
 class ScheduledRecipeManager(models.Manager):
-    def create_scheduled(self, recipe: Recipe, on, count: int, user: MyUser) -> 'ScheduledRecipe':
+    def create_scheduled(self, recipe: Recipe, on, team, count: int, user: MyUser) -> 'ScheduledRecipe':
         """
         add to existing scheduled recipe count for dupes
         """
         with transaction.atomic():
-            existing = ScheduledRecipe.objects.filter(recipe=recipe, on=on, user=user).first()
+            # TODO(sbdchd): revist this and consider if it does what we want
+            existing = ScheduledRecipe.objects.filter(recipe=recipe, on=on, team=team, user=user).first()
             if existing:
                 existing.count += count
                 existing.save()
                 return existing
             else:
-                return ScheduledRecipe.objects.create(recipe=recipe, on=on, count=count, user=user)
+                return ScheduledRecipe.objects.create(recipe=recipe, on=on, count=count, team=team, user=user)
 
 
 class ScheduledRecipe(CommonInfo):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     on = models.DateField()
     count = models.PositiveIntegerField(validators=[MinValueValidator(1)])
-    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    # TODO(sbdchd): add restriction so that only one of these is set
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE, blank=True, null=True)
+    team = models.ForeignKey('Team', on_delete=models.CASCADE, blank=True, null=True)
 
     objects = ScheduledRecipeManager()
 
     class Meta:
-        unique_together = (('recipe', 'on', 'user'),)
+        unique_together = (
+            ('recipe', 'on', 'user'),
+            ('recipe', 'on', 'team'),
+        )
 
     def __str__(self):
-        return f'ScheduledRecipe:: {self.count} of {self.recipe.name} on {self.on} for {self.user}'
+        owner = self.user if not self.team else self.team
+        return f'ScheduledRecipe:: {self.count} of {self.recipe.name} on {self.on} for {owner}'
 
 
 class InviteManager(models.Manager):
@@ -389,6 +401,10 @@ class Team(CommonInfo):
 
     def invite_exists(self, email: Union[MyUser, str]) -> bool:
         return Membership.objects.filter(team=self, user__email=email).exists()  # type: ignore
+
+    @property
+    def scheduled_recipes(self):
+        return ScheduledRecipe.objects.filter(team=self)
 
 
 class Membership(CommonInfo):

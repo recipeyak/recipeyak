@@ -5,8 +5,10 @@ from rest_framework_nested import routers
 
 from core.schedule.views import (
     ShoppingListView,
+    TeamShoppingListViewSet,
     ReportBadMerge,
     CalendarViewSet,
+    TeamCalendarViewSet,
 )
 
 from core.stats.views import UserStats
@@ -39,6 +41,8 @@ teams_router = routers.NestedSimpleRouter(router, r't', lookup='team')
 teams_router.register(r'members', MembershipViewSet, base_name='team-member')
 teams_router.register(r'invites', TeamInviteViewSet, base_name='team-invites')
 teams_router.register(r'recipes', TeamRecipesViewSet, base_name='team-recipes')
+teams_router.register(r'shoppinglist', TeamShoppingListViewSet, base_name='team-shoppinglist')
+teams_router.register(r'calendar', TeamCalendarViewSet, base_name='team-calendar')
 
 urlpatterns = [
     url(r'^api/v1/rest-auth/', include('core.auth.urls')),

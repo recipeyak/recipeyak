@@ -59,7 +59,7 @@ class Navbar extends React.Component {
           to="/recipes/add"
           activeClassName="active"
           className="better-nav-item">
-          Add Recipe
+          Add
         </NavLink>
 
         <NotificationsDropdown/>
@@ -71,16 +71,16 @@ class Navbar extends React.Component {
         </Dropdown>
 
         <NavLink
-          to="/recipes/"
+          to="/recipes"
           activeClassName="active"
           className="better-nav-item">
-          Recipes
+          Browse
         </NavLink>
         <NavLink
-          to="/shopping/"
+          to="/schedule/shopping"
           activeClassName="active"
           className="better-nav-item">
-          Shopping
+          Schedule
         </NavLink>
 
         <UserDropdown

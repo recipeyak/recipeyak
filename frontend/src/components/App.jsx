@@ -33,6 +33,7 @@ import OAuth from '../containers/OAuth.jsx'
 import OAuthConnect from '../containers/OAuthConnect.jsx'
 import Schedule from './Schedule'
 import HelpMenuModal from './HelpMenuModal'
+import Recipes from './Recipes'
 
 import './scss/main.scss'
 
@@ -78,12 +79,14 @@ export default class Base extends React.Component {
             <ContainerBase>
               <Switch>
                 <Route exact path="/" component={ Home }/>
-                <PrivateRoute exact path="/:type(shopping|recipes)" component={ Schedule }/>
+                <PrivateRoute exact path="/schedule/:type(shopping|recipes)?" component={ Schedule }/>
+                <PrivateRoute exact path="/t/:id(\d+)(.*)/schedule/:type(shopping|recipes)?" component={ Schedule }/>
                 <Container>
                   <Switch>
                     <Route exact path="/accounts/:service/connect" component={ OAuthConnect }/>
                     <Route exact path="/password-reset/confirm/:uid([0-9A-Za-z_\-]+).:token([0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})" component={ PasswordResetConfirmation }/>
                     <PrivateRoute exact path="/recipes/add" component={ AddRecipe }/>
+                    <PrivateRoute exact path="/recipes/" component={ Recipes }/>
                     <PrivateRoute exact path="/recipes/:id(\d+)(.*)" component={ Recipe }/>
                     <PrivateRoute exact path="/settings" component={ Settings }/>
                     <PrivateRoute exact path="/password" component={ PasswordChange }/>

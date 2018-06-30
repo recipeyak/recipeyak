@@ -46,12 +46,12 @@ function moveCalendarRecipe (state, action) {
   // - update the date of the recipe
   const moving = state[action.id]
 
-  // getMerging(state,
   const existing =
     state.allIds
     .filter(x => x !== action.id)
     .map(x => state[x])
     .filter(x => isSameDay(x.on, action.on))
+    .filter(x => x.team === moving.team && x.user === moving.user)
     .find(x => x.recipe.id === moving.recipe.id)
 
   if (existing) {

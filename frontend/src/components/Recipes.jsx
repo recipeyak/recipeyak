@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import Recipe from './RecipeItem'
@@ -25,8 +26,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchData: () => {
-      dispatch(fetchRecipeList())
+    fetchData: (teamID) => {
+      dispatch(fetchRecipeList(teamID))
     },
   }
 }
@@ -36,16 +37,32 @@ const mapDispatchToProps = dispatch => {
   mapDispatchToProps
 )
 export default class Recipes extends React.Component {
+  static propTypes = {
+    fetchData: PropTypes.func.isRequired,
+    recipes: PropTypes.arrayOf(PropTypes.object).isRequired,
+    loading: PropTypes.bool.isRequired,
+    teamID: PropTypes.string.isRequired,
+    scroll: PropTypes.bool,
+    drag: PropTypes.bool,
+  }
+
   state = {
     query: ''
   }
 
   static defaultProps = {
-    recipes: []
+    recipes: [],
+    teamID: 'personal',
+    scroll: false,
+    drag: false,
   }
 
   componentWillMount () {
-    this.props.fetchData()
+    this.props.fetchData(this.props.teamID)
+  }
+
+  handleQueryChange = (e) => {
+    this.setState({ query: e.target.value })
   }
 
   render () {
@@ -55,21 +72,25 @@ export default class Recipes extends React.Component {
       .map(recipe =>
         <Recipe
           {...recipe}
-          drag
+          drag={this.props.drag}
           className='mb-0'
           key={ recipe.id }
         />
       )
+
+    const scrollClass = this.props.scroll
+      ? 'recipe-scroll'
+      : ''
     return (
       <div>
         <TextInput
-          onChange={e => this.setState({ query: e.target.value })}
-          placeholder='search for recipes'/>
+          onChange={this.handleQueryChange}
+          placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:"/>
 
         { this.props.loading
             ? <Loader className="pt-4"/>
-            : <div className="recipe-scroll">
-                <div className="d-grid grid-gap-4 pt-4">
+            : <div className={scrollClass}>
+                <div className="recipe-grid pt-4">
                   <Results recipes={ results } query={ this.state.query } />
                 </div>
               </div>
