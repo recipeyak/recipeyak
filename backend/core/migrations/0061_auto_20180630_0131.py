@@ -9,9 +9,6 @@ class Migration(migrations.Migration):
         ('core', '0060_auto_20180624_1825'),
     ]
 
-    operations = [
-    ]
-
     migrations.RunSQL(
         """
         ALTER TABLE core_scheduledrecipe ADD CONSTRAINT owner_required CHECK (
