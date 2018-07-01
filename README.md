@@ -1,6 +1,16 @@
 # Recipe Yak [![CircleCI](https://circleci.com/gh/recipeyak/recipeyak.svg?style=svg)](https://circleci.com/gh/recipeyak/recipeyak)
 > Application to automate the selection of meals and creation of shopping lists.
 
+## Why?
+
+To have a centralized location where multiple people can organize a meal plan.
+
+## Prior Art
+
+- <https://www.paprikaapp.com>
+- <http://thinkle.github.io/gourmet/>
+- <http://krecipes.sourceforge.net>
+
 ## Dev
 1. Create an `.env-dev` file. It can be empty.
 2. Startup dev environment
