@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import { DragSource } from 'react-dnd'
 
@@ -38,6 +39,16 @@ export default class CalendarItem extends React.Component {
     hover: false,
   }
 
+  static propTypes = {
+    id: PropTypes.number.isRequired,
+    recipeID: PropTypes.number.isRequired,
+    recipeName: PropTypes.string.isRequired,
+    count: PropTypes.number.isRequired,
+    remove: PropTypes.func.isRequired,
+    updateCount: PropTypes.func.isRequired,
+    refetchShoppingList: PropTypes.func.isRequired,
+  }
+
   componentWillMount () {
     this.setState({ count: this.props.count })
     document.addEventListener('keypress', this.handleKeyPress)
@@ -56,15 +67,25 @@ export default class CalendarItem extends React.Component {
     if (e.key === '#') {
       this.props.remove()
     }
+    if (e.key === 'A') {
+      this.updateCount(this.state.count + 1)
+    }
+    if (e.key === 'X') {
+      this.updateCount(this.state.count - 1)
+    }
   }
 
-  handleChange = e => {
-    const count = e.target.value
+  updateCount = (count) => {
     const oldCount = this.state.count
     this.setState({ count })
     this.props.updateCount(count)
       .then(() => this.props.refetchShoppingList())
       .catch(() => this.setState({ count: oldCount }))
+  }
+
+  handleChange = e => {
+    const count = e.target.value
+    this.updateCount(count)
   }
 
   render () {
@@ -88,6 +109,7 @@ export default class CalendarItem extends React.Component {
             ? <div className="d-flex">
                 <input
                   className="fs-3 my-input text-right w-2rem"
+                  name="calendar-item-count"
                   onChange={ this.handleChange }
                   value={ this.state.count } />
               </div>
