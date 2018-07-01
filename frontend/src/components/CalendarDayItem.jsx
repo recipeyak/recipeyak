@@ -6,6 +6,8 @@ import { recipeURL } from '../urls'
 
 import * as DragDrop from '../dragDrop'
 
+const COUNT_THRESHOLD = 1
+
 const source = {
   beginDrag (props) {
     return {
@@ -82,12 +84,15 @@ export default class CalendarItem extends React.Component {
           }}>
           { this.props.recipeName }
         </Link>
-        <div className="d-flex">
-          <input
-            className="fs-3 my-input text-right w-2rem"
-            onChange={ this.handleChange }
-            value={ this.state.count } />
-        </div>
+        { this.state.count > COUNT_THRESHOLD
+            ? <div className="d-flex">
+                <input
+                  className="fs-3 my-input text-right w-2rem"
+                  onChange={ this.handleChange }
+                  value={ this.state.count } />
+              </div>
+            : null
+        }
       </div>)
   }
 }
