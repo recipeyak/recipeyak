@@ -1917,7 +1917,7 @@ export const moveScheduledRecipe = (id, teamID, to) => (dispatch, getState) => {
 }
 
 export const updatingScheduledRecipe = (id, teamID, data) => dispatch => {
-  if (parseInt(data.count, 10) === 0) {
+  if (parseInt(data.count, 10) <= 0) {
     return dispatch(deletingScheduledRecipe(id, teamID))
   }
 
