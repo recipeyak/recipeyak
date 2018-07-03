@@ -1,7 +1,8 @@
 import hashlib
-from typing import List, Union
+from typing import List, Union, Optional
 import logging
 import itertools
+from datetime import datetime
 
 from django.db.models import Q
 from django.db import models, transaction
@@ -179,6 +180,14 @@ class Recipe(CommonInfo):
     def steps(self):
         """Return recipe steps ordered by creation date"""
         return Step.objects.filter(recipe=self).order_by('position', 'created')
+
+    @property
+    def last_scheduled(self) -> Optional[datetime]:
+        """Return the most recent date this recipe was scheduled for"""
+        scheduled_recipe = ScheduledRecipe.objects.filter(recipe=self).order_by('on').first()
+        if scheduled_recipe is not None:
+            return scheduled_recipe.on
+        return None
 
     def __str__(self):
         return f'{self.name} by {self.author}'
