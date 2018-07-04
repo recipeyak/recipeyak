@@ -61,6 +61,7 @@ export default class Recipe extends React.Component {
     update: PropTypes.func.isRequired,
     remove: PropTypes.func.isRequired,
     deleting: PropTypes.bool.isRequired,
+    last_scheduled: PropTypes.string,
   }
 
   // necessary as these are undefined between page load and data fetch
@@ -124,6 +125,7 @@ export default class Recipe extends React.Component {
         servings={this.props.servings}
         time={this.props.time}
         owner={this.props.owner}
+        lastScheduled={this.props.last_scheduled}
         update={this.props.update}
         updating={this.props.updating}
         remove={this.props.remove}

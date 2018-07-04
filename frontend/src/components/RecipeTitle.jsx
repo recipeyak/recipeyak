@@ -67,7 +67,9 @@ export default class RecipeTitle extends React.Component {
       },
       updating,
       deleting,
+      lastScheduled,
     } = this.props
+    const toolTip = lastScheduled ? 'last scheduled: ' + lastScheduled : 'never scheduled'
     return (
       <div>
         <div className="grid-entire-row d-flex justify-space-between p-rel">
@@ -85,7 +87,7 @@ export default class RecipeTitle extends React.Component {
                   name="name"/>
                 }
                 <div>
-          <div className="p-rel ml-4">
+          <div className="p-rel ml-4" title={toolTip}>
             <ButtonPrimary onClick={() => this.setState(prev => ({ show: !prev.show }))} className="is-small">
               schedule
             </ButtonPrimary>

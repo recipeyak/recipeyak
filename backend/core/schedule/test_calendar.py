@@ -25,6 +25,20 @@ def test_creating_scheduled_recipe(client, recipe, user):
     assert ScheduledRecipe.objects.filter(id=res.json().get('id')).exists()
 
 
+def test_recipe_returns_last_scheduled_date(client, scheduled_recipe, recipe2):
+    recipe = scheduled_recipe.recipe
+    user = scheduled_recipe.user
+    client.force_authenticate(user)
+    res = client.get(reverse('recipes-detail', args=[recipe.id]))
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json()['last_scheduled'] == str(scheduled_recipe.on)
+
+    res = client.get(reverse('recipes-detail', args=[recipe2.id]))
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json()['last_scheduled'] is None, \
+        'We return None if the recipe has not been scheduled'
+
+
 def test_updating_scheduled_recipe(client, user, scheduled_recipe):
     url = reverse('calendar-detail', kwargs={'pk': scheduled_recipe.id})
     assert scheduled_recipe.count == 1

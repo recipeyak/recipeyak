@@ -92,8 +92,8 @@ class RecipeSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = ('id', 'name', 'author', 'source', 'time', 'ingredients',
                   'steps', 'servings', 'edits', 'modified',
-                  'owner', 'team')
-        read_only_fields = ('owner',)
+                  'owner', 'team', 'last_scheduled')
+        read_only_fields = ('owner', 'last_scheduled')
 
     def __init__(self, *args, **kwargs):
         # Don't pass the 'fields' arg up to the superclass
