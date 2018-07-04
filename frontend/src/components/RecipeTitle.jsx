@@ -25,6 +25,7 @@ export default class RecipeTitle extends React.Component {
     updating: PropTypes.bool.isRequired,
     remove: PropTypes.func.isRequired,
     deleting: PropTypes.bool.isRequired,
+    lastScheduled: PropTypes.string,
   }
 
   toggleEdit = () => this.setState(prev => ({ edit: !prev.edit }))
@@ -67,6 +68,7 @@ export default class RecipeTitle extends React.Component {
       },
       updating,
       deleting,
+      lastScheduled,
     } = this.props
     return (
       <div>
@@ -108,6 +110,7 @@ export default class RecipeTitle extends React.Component {
           source={source}
           servings={servings}
           recipeId={id}
+          lastScheduled={lastScheduled}
           time={time}/>
       </div>
 
