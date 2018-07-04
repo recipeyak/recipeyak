@@ -10,7 +10,6 @@ const MetaData = ({
   time = '',
   owner,
   recipeId,
-  lastScheduled,
   onClick
 }) => {
   const isValid = x => x !== '' && x != null
@@ -27,15 +26,9 @@ const MetaData = ({
   const _time = isValid(time)
     ? <span>in <b className="cursor-pointer" >{time}</b> </span>
     : null
-  const _lastScheduled = isValid(lastScheduled)
-    ? <span>last scheduled at <b>{ (new Date(lastScheduled)).toLocaleDateString() }</b> </span>
-    : null
 
-  return <div className="break-word d-flex flex-column flex-direction-column flex-wrap">
-    <div className="d-flex flex-wrap justify-between">
-      <div onClick={onClick}>{ _author }{ _source }{ _servings }{ _time }</div>
-      {_lastScheduled}
-    </div>
+  return <div className="break-word">
+    <span onClick={onClick}>{ _author }{ _source }{ _servings }{ _time }</span>
     <Owner type={owner.type} url={teamURL(owner.id, owner.name)} name={owner.name} recipeId={recipeId}/>
   </div>
 }
