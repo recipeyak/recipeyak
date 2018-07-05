@@ -46,7 +46,6 @@ export default class HelpMenuModal extends React.Component {
     ]
     return (
       <Modal show={this.state.show} onClose={() => this.close()}>
-        <div className="box">
           <section className="d-flex space-between">
             <h1 className="fs-4 bold">Keybinds</h1>
             <button className="delete" aria-label="close" onClick={this.close}></button>
@@ -67,7 +66,6 @@ export default class HelpMenuModal extends React.Component {
               }
             </div>
           </section>
-        </div>
       </Modal>
     )
   }

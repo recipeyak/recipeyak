@@ -35,7 +35,9 @@ export default class Modal extends React.Component {
       <div className={classNames('modal', { 'is-active': show })}>
         <div className="modal-background" onClick={this.close}></div>
         <div className="modal-content">
+          <div className="box">
           { children }
+          </div>
         </div>
         <button className="modal-close is-large" aria-label="close" onClick={this.close}></button>
       </div>
