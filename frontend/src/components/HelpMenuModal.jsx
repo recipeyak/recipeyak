@@ -42,6 +42,10 @@ export default class HelpMenuModal extends React.Component {
       {
         key: 'X',
         description: 'decrement scheduled recipe amount'
+      },
+      {
+        key: 'f',
+        description: 'open search box'
       }
     ]
     return (
