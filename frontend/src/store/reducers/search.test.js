@@ -1,25 +1,25 @@
-import search from "./search"
+import search from './search'
 import {
   setSearchResults,
   clearSearchResults,
   incrLoadingSearch
-} from "../actions.js"
+} from '../actions.js'
 
-describe("search", () => {
-  test("action#setSearchResults", () => {
+describe('search', () => {
+  test('action#setSearchResults', () => {
     const beforeState = {
       results: []
     }
 
     const afterState = {
-      results: ["test_result", 123]
+      results: ['test_result', 123]
     }
 
-    expect(search(beforeState, setSearchResults(["test_result", 123]))).toEqual(
+    expect(search(beforeState, setSearchResults(['test_result', 123]))).toEqual(
       afterState
     )
   })
-  test("action#clearSearchResults", () => {
+  test('action#clearSearchResults', () => {
     const beforeState = {
       results: [123]
     }
@@ -30,7 +30,7 @@ describe("search", () => {
 
     expect(search(beforeState, clearSearchResults())).toEqual(afterState)
   })
-  test("action#incrLoadingSearch", () => {
+  test('action#incrLoadingSearch', () => {
     const beforeState = {
       loading: 2
     }

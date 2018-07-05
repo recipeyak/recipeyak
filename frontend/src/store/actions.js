@@ -680,7 +680,7 @@ export const clearSearchResults = () => ({
 })
 
 export const incrLoadingSearch = (val) => {
-  if (val == null) { throw Error('Invalid argument')}
+  if (val == null) { throw Error('Invalid argument') }
   return {
     type: INCR_LOADING_SEARCH,
     val: val,

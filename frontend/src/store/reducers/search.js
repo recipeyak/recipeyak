@@ -14,7 +14,7 @@ const search = (state = initialState, action) => {
   case SET_SEARCH_RESULTS:
     return { ...state, results: action.results }
   case CLEAR_SEARCH_RESULTS:
-    return { ...state, results: []}
+    return { ...state, results: [] }
   case INCR_LOADING_SEARCH:
     const nextVal = state.loading + action.val
     if (nextVal < 0) { throw Error('Invalid loading status') }

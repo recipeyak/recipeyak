@@ -8,7 +8,7 @@ export default class Modal extends React.Component {
   static propTypes = {
     onClose: PropTypes.func,
     show: PropTypes.bool.isRequired,
-    children: PropTypes.element.isRequired,
+    children: PropTypes.arrayOf(PropTypes.node.isRequired),
   }
 
   static defaultProps = {

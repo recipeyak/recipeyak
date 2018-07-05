@@ -13,7 +13,7 @@ class SearchModal extends React.Component {
 
   constructor (props) {
     super(props)
-    this.inputRef = React.createRef();
+    this.inputRef = React.createRef()
     this.search = throttle(this.props.search, SEARCH_THROTTLE_MS)
   }
 
@@ -23,7 +23,7 @@ class SearchModal extends React.Component {
   }
 
   handleInputChange = (event) => {
-    this.setState({query: event.target.value})
+    this.setState({ query: event.target.value })
   }
 
   handleSearch = (event) => {
@@ -36,7 +36,7 @@ class SearchModal extends React.Component {
     if (document.activeElement.tagName !== 'BODY') return
     const pressF = event.key === 'f' && !event.ctrlKey && !event.meta
     if (pressF) {
-      this.setState({show: true})
+      this.setState({ show: true })
       this.inputRef.current.focus()
     }
   }
@@ -61,8 +61,8 @@ class SearchModal extends React.Component {
     if (searchResults.length > 0) {
       content = searchResults.map(x => <Recipe key={x.id} {...x}/>)
     }
-    return <Modal show={this.state.show} className="search--position-top" onClose={() => this.setState({show: false})}>
-      <div className={classNames("control", {'is-loading': loading})}>
+    return <Modal show={this.state.show} className="search--position-top" onClose={() => this.setState({ show: false })}>
+      <div className={classNames('control', { 'is-loading': loading })}>
         <input
           value={this.state.query}
           onChange={this.handleInputChange}
