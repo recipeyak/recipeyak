@@ -2,7 +2,8 @@ import search from './search'
 import {
   setSearchResults,
   clearSearchResults,
-  incrLoadingSearch
+  incrLoadingSearch,
+  decrLoadingSearch,
 } from '../actions.js'
 
 describe('search', () => {
@@ -35,10 +36,23 @@ describe('search', () => {
       loading: 2
     }
 
-    expect(search(beforeState, incrLoadingSearch(2))).toEqual({ loading: 4 })
-    expect(search(beforeState, incrLoadingSearch(-1))).toEqual({ loading: 1 })
-    expect(() => search(beforeState, incrLoadingSearch(-5))).toThrow()
+    const afterState = {
+      loading: 3
+    }
 
-    expect(() => search(beforeState, incrLoadingSearch())).toThrow()
+    expect(search(beforeState, incrLoadingSearch())).toEqual(afterState)
+  })
+  test('action#decrLoadingSearch', () => {
+    const beforeState = {
+      loading: 2
+    }
+
+    const afterState = {
+      loading: 1
+    }
+
+    expect(search(beforeState, decrLoadingSearch())).toEqual(afterState)
+
+    expect(() => search({ loading: 0 }, decrLoadingSearch())).toThrow()
   })
 })

@@ -33,7 +33,7 @@ function collect (connect, monitor) {
   }
 }
 
-class RecipeItem extends React.Component {
+export class RecipeItem extends React.Component {
   state = {
     show: false,
   }
@@ -108,5 +108,3 @@ class RecipeItem extends React.Component {
 }
 
 export default DragSource(DragDrop.RECIPE, recipeSource, collect)(RecipeItem)
-
-export { RecipeItem }

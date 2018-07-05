@@ -115,6 +115,7 @@ import {
   SET_SEARCH_RESULTS,
   CLEAR_SEARCH_RESULTS,
   INCR_LOADING_SEARCH,
+  DECR_LOADING_SEARCH
 } from './actionTypes'
 
 import { uuid4 } from '../uuid'
@@ -679,13 +680,15 @@ export const clearSearchResults = () => ({
   type: CLEAR_SEARCH_RESULTS,
 })
 
-export const incrLoadingSearch = (val) => {
-  if (val == null) { throw Error('Invalid argument') }
+export const incrLoadingSearch = () => {
   return {
-    type: INCR_LOADING_SEARCH,
-    val: val,
+    type: INCR_LOADING_SEARCH
   }
 }
+
+export const decrLoadingSearch = () => ({
+  type: DECR_LOADING_SEARCH
+})
 
 // container for our promise cancel tokens
 const searchStore = {
@@ -699,7 +702,7 @@ export const searchRecipes = (query) => dispatch => {
     return dispatch(clearSearchResults())
   }
   // count our request
-  dispatch(incrLoadingSearch(1))
+  dispatch(incrLoadingSearch())
   // cancel any existing request
   if (searchStore.lastRequest != null) {
     searchStore.lastRequest.cancel()
@@ -712,11 +715,11 @@ export const searchRecipes = (query) => dispatch => {
     cancelToken: cancelSource.token
   })
   .then(res => {
-    dispatch(incrLoadingSearch(-1))
+    dispatch(decrLoadingSearch())
     dispatch(setSearchResults(res.data))
   })
   .catch(err => {
-    dispatch(incrLoadingSearch(-1))
+    dispatch(decrLoadingSearch())
     // Ignore axios cancels
     if (String(err) === 'Cancel') {
       return err

@@ -37,9 +37,7 @@ class SearchModal extends React.Component {
     const pressF = event.key === 'f' && !event.ctrlKey && !event.meta
     if (pressF) {
       this.setState({ show: true })
-      if (this.inputRef.current) {
-        this.inputRef.current.focus()
-      }
+      this.inputRef.current.focus()
     }
   }
 
@@ -59,10 +57,9 @@ class SearchModal extends React.Component {
 
   render () {
     const { searchResults, loading } = this.props
-    let content = <p className="text-muted">Search all recipes (ingredients, steps, and metadata).</p>
-    if (searchResults.length > 0) {
-      content = searchResults.map(x => <Recipe key={x.id} {...x}/>)
-    }
+    const content = searchResults.length > 0
+      ? searchResults.map(x => <Recipe key={x.id} {...x}/>)
+      : <p className="text-muted">Search all recipes (ingredients, steps, and metadata).</p>
     return <Modal show={this.state.show} className="search--position-top" onClose={() => this.setState({ show: false })}>
       <div className={classNames('control', { 'is-loading': loading })}>
         <input

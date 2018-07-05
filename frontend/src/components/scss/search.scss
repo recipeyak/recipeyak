@@ -1,9 +1,11 @@
 .search--results {
   overflow-y: auto;
+  // 125.5px accounts for the spacing around the modal
   max-height: calc(60vh - 125.5px);
   padding: 1px;
 }
 
 .search--position-top {
+  // This is taken from the Bulma modal css. max-height => height
   height: calc(100vh - 160px);
 }

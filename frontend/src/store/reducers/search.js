@@ -2,6 +2,7 @@ import {
   SET_SEARCH_RESULTS,
   CLEAR_SEARCH_RESULTS,
   INCR_LOADING_SEARCH,
+  DECR_LOADING_SEARCH,
 } from '../actionTypes'
 
 export const initialState = {
@@ -16,8 +17,10 @@ const search = (state = initialState, action) => {
   case CLEAR_SEARCH_RESULTS:
     return { ...state, results: [] }
   case INCR_LOADING_SEARCH:
-    const nextVal = state.loading + action.val
-    if (nextVal < 0) { throw Error('Invalid loading status') }
+    return { ...state, loading: state.loading + 1 }
+  case DECR_LOADING_SEARCH:
+    const nextVal = state.loading - 1
+    if (nextVal < 0) { throw Error('Invalid loading state') }
     return { ...state, loading: nextVal }
   default:
     return state
