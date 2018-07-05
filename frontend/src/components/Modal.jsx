@@ -34,7 +34,7 @@ export default class Modal extends React.Component {
     return (
       <div className={classNames('modal', { 'is-active': show })}>
         <div className="modal-background" onClick={this.close}></div>
-        <div className="modal-content">
+        <div className={`modal-content overflow-y-auto ${this.props.className}`}>
           <div className="box">
           { children }
           </div>

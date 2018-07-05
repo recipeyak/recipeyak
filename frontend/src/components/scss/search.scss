@@ -1,0 +1,9 @@
+.search--results {
+  overflow-y: auto;
+  max-height: calc(60vh - 125.5px);
+  padding: 1px;
+}
+
+.search--position-top {
+  height: calc(100vh - 160px);
+}
