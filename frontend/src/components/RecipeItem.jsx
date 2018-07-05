@@ -33,8 +33,8 @@ function collect (connect, monitor) {
   }
 }
 
-@DragSource(DragDrop.RECIPE, recipeSource, collect)
-export default class RecipeItem extends React.Component {
+
+class RecipeItem extends React.Component {
   state = {
     show: false,
   }
@@ -107,3 +107,8 @@ export default class RecipeItem extends React.Component {
       : connectDragSource(component, { dropEffect: 'copy' })
   }
 }
+
+
+export default DragSource(DragDrop.RECIPE, recipeSource, collect)(RecipeItem)
+
+export { RecipeItem }
