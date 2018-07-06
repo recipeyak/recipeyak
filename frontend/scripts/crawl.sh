@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -eux
 
-cd build
+yarn global add serve
 
-python3 -m http.server 8008 &
+serve build -l 8008 &
 
 # wait for port
 INC=0
@@ -14,8 +14,6 @@ while ! nc -z localhost 8008; do
     exit 1
   fi
 done
-
-cd -
 
 ./scripts/crawl.js http://localhost:8008 /tmp/content.html
 
