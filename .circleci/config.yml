@@ -97,7 +97,7 @@ jobs:
           name: install dependencies
           working_directory: frontend
           command: |
-            npm install
+            yarn install
       - save_cache:
           paths:
             - ./frontend/node_modules
@@ -105,7 +105,7 @@ jobs:
       - run:
           name: run tests
           working_directory: frontend
-          command: npm run test-cov
+          command: yarn test-cov
 
   frontend_lint:
     docker:
@@ -122,7 +122,7 @@ jobs:
           name: install dependencies
           working_directory: frontend
           command: |
-            npm install
+            yarn install
       - save_cache:
           paths:
             - ./frontend/node_modules
@@ -131,8 +131,8 @@ jobs:
           name: run linter
           working_directory: frontend
           command: |
-            npm run lint
-            npm run build
+            yarn lint
+            yarn build
 
   # https://circleci.com/docs/2.0/building-docker-images/
   build_api_container:

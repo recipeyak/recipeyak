@@ -6,7 +6,8 @@ RUN mkdir -p /var/app
 # http://stackoverflow.com/a/33106611/3555105
 COPY package.json /var/
 WORKDIR /var/
-RUN npm install
+RUN npm install -g yarn
+RUN yarn install
 
 WORKDIR /var/app
 COPY . /var/app
@@ -19,7 +20,7 @@ ARG OAUTH_GOOGLE_CLIENT_ID
 ARG FRONTEND_SENTRY_DSN
 ARG GIT_SHA
 
-RUN npm run build
+RUN yarn build
 
 FROM alpine:3.7
 RUN mkdir -p /var/app/build
