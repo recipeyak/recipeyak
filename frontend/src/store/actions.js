@@ -112,6 +112,10 @@ import {
   MOVE_CALENDAR_RECIPE,
   REPLACE_CALENDAR_RECIPE,
   SET_USER_LOGGED_IN,
+  SET_SEARCH_RESULTS,
+  CLEAR_SEARCH_RESULTS,
+  INCR_LOADING_SEARCH,
+  DECR_LOADING_SEARCH
 } from './actionTypes'
 
 import { uuid4 } from '../uuid'
@@ -664,6 +668,64 @@ export const fetchRecipeList = (teamID) => dispatch => {
     }
     dispatch(setErrorRecipes(true))
     dispatch(setLoadingRecipes(false))
+  })
+}
+
+export const setSearchResults = (results) => ({
+  type: SET_SEARCH_RESULTS,
+  results,
+})
+
+export const clearSearchResults = () => ({
+  type: CLEAR_SEARCH_RESULTS,
+})
+
+export const incrLoadingSearch = () => {
+  return {
+    type: INCR_LOADING_SEARCH
+  }
+}
+
+export const decrLoadingSearch = () => ({
+  type: DECR_LOADING_SEARCH
+})
+
+// container for our promise cancel tokens
+const searchStore = {
+  lastRequest: null,
+}
+
+export const searchRecipes = (query) => dispatch => {
+  // It's visually pleasing to have all the results disappear when
+  // the search query is cleared.
+  if (query === '') {
+    return dispatch(clearSearchResults())
+  }
+  // count our request
+  dispatch(incrLoadingSearch())
+  // cancel any existing request
+  if (searchStore.lastRequest != null) {
+    searchStore.lastRequest.cancel()
+  }
+  // create and store cancel token
+  const cancelSource = axios.CancelToken.source()
+  searchStore.lastRequest = cancelSource
+  // make request with cancel token
+  return http.get(`/api/v1/recipes?q=${encodeURI(query)}`, {
+    cancelToken: cancelSource.token
+  })
+  .then(res => {
+    dispatch(decrLoadingSearch())
+    dispatch(setSearchResults(res.data))
+  })
+  .catch(err => {
+    dispatch(decrLoadingSearch())
+    // Ignore axios cancels
+    if (String(err) === 'Cancel') {
+      return err
+    }
+    raven.captureException(err)
+    return err
   })
 }
 

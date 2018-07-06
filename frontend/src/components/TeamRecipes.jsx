@@ -7,7 +7,7 @@ import Loader from './Loader'
 import { TextInput } from './Forms'
 import { matchesQuery } from '../search'
 
-import Recipe from './RecipeItem'
+import { RecipeItem as Recipe } from './RecipeItem'
 
 export default class TeamRecipes extends React.Component {
 
