@@ -6,7 +6,8 @@ RUN mkdir -p /var/app
 # http://stackoverflow.com/a/33106611/3555105
 COPY package.json /var/
 WORKDIR /var/
-RUN npm install
+RUN npm install -g yarn
+RUN yarn install
 
 # Volume for mounting our local files
 WORKDIR /var/app
