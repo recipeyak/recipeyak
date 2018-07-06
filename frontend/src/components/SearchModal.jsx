@@ -36,8 +36,7 @@ class SearchModal extends React.Component {
     if (document.activeElement.tagName !== 'BODY') return
     const pressF = event.key === 'f' && !event.ctrlKey && !event.meta
     if (pressF) {
-      this.setState({ show: true })
-      this.inputRef.current.focus()
+      this.setState({ show: true }, () => this.inputRef.current.focus())
     }
   }
 
