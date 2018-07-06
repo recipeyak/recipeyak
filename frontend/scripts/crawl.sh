@@ -3,11 +3,16 @@ set -eux
 
 cd build
 
-python -m http.server 8008 &
+python3 -m http.server 8008 &
 
 # wait for port
+INC=0
 while ! nc -z localhost 8008; do
   sleep 0.1
+  INC=$(($INC + 1))
+  if [[ $INC -ge 20 ]]; then
+    exit 1
+  fi
 done
 
 cd -
