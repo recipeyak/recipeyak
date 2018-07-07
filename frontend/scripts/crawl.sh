@@ -4,7 +4,7 @@ set -eux
 yarn global add serve
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-  sudo apt-get install -yq
+  sudo apt-get install -yq \
     gconf-service \
     libasound2 \
     libatk1.0-0 \
