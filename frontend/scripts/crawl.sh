@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -eux
 
-yarn global add serve
+if ! hash serve 2>/dev/null; then
+  yarn global add serve
+fi
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
   sudo apt-get install -yq \
