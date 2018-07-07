@@ -6,7 +6,7 @@ from .search import search_recipe_queryset
 pytestmark = pytest.mark.django_db
 
 
-def test_search_queryset(client, recipes, user):
+def test_search_queryset(client, recipe_pie, recipes, user):
     # create recipe with multiple components that can be queried
     # (if we don't get distinct recipes, this recipe will appear twice)
     recipe = Recipe.objects.create(name="blah", owner=user)
@@ -24,3 +24,7 @@ def test_search_queryset(client, recipes, user):
             count += 1
     assert count == 1, \
         "our example recipe shouldn't be duplicated in results"
+
+    assert results.first().id == recipe.id
+
+    assert search_recipe_queryset(Recipe.objects.all(), "Pie").first().id == recipe_pie.id
