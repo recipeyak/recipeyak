@@ -17,6 +17,6 @@ def search_recipe_queryset(recipe_queryset, query):
     )
     return (
         recipe_queryset.annotate(rank=SearchRank(vector, SearchQuery(query)))
-        .distinct()
-        .order_by("-rank")
+        .order_by("id", "-rank")
+        .distinct("id")
     )
