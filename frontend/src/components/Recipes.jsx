@@ -52,7 +52,6 @@ export default class Recipes extends React.Component {
 
   static defaultProps = {
     recipes: [],
-    teamID: 'personal',
     scroll: false,
     drag: false,
   }
@@ -72,6 +71,7 @@ export default class Recipes extends React.Component {
       .map(recipe =>
         <Recipe
           {...recipe}
+          teamID={this.props.teamID}
           drag={this.props.drag}
           className='mb-0'
           key={ recipe.id }
