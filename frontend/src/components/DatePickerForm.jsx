@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import addMonths from 'date-fns/add_months'
 import subMonths from 'date-fns/sub_months'
@@ -18,7 +19,7 @@ import {
 
 function mapDispatchToProps (dispatch) {
   return {
-    create: (recipeID, on, count) => dispatch(addingScheduledRecipe(recipeID, on, count)),
+    create: (recipeID, teamID, on, count) => dispatch(addingScheduledRecipe(recipeID, teamID, on, count)),
   }
 }
 
@@ -27,6 +28,14 @@ function mapDispatchToProps (dispatch) {
   mapDispatchToProps,
 )
 export default class DatePickerForm extends React.Component {
+  static propTypes = {
+    recipeID: PropTypes.number.isRequired,
+    teamID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    show: PropTypes.bool.isRequired,
+    create: PropTypes.func.isRequired,
+    scheduling: PropTypes.bool.isRequired,
+  }
+
   state = {
     count: 1,
     date: new Date(),
@@ -45,7 +54,7 @@ export default class DatePickerForm extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault()
-    this.props.create(this.props.recipeID, this.state.date, this.state.count)
+    this.props.create(this.props.recipeID, this.props.teamID, this.state.date, this.state.count)
     .then(() => this.props.close())
   }
 

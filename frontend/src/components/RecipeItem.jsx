@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import { DragSource } from 'react-dnd'
 
@@ -34,6 +35,17 @@ function collect (connect, monitor) {
 }
 
 export class RecipeItem extends React.Component {
+  static propTypes = {
+    name: PropTypes.string.isRequired,
+    author: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+    url: PropTypes.string,
+    owner: PropTypes.object,
+    connectDragSource: PropTypes.func.isRequired,
+    isDragging: PropTypes.bool.isRequired,
+    teamID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  }
+
   state = {
     show: false,
   }
@@ -55,6 +67,7 @@ export class RecipeItem extends React.Component {
       },
       connectDragSource,
       isDragging,
+      teamID,
     } = this.props
 
     const ownershipDetail = owner.type === 'team' && owner.name && owner.id
@@ -84,6 +97,7 @@ export class RecipeItem extends React.Component {
               </ButtonPlain>
               <DatePickerForm
                 recipeID={id}
+                teamID={teamID}
                 show={this.state.show}
                 close={() => this.setState({ show: false })}
               />
