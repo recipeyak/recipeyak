@@ -5,6 +5,8 @@ if ! hash serve 2>/dev/null; then
   yarn global add serve
 fi
 
+# install chrome dependencies
+# Mac OS doesn't have this issue, but the CI container does.
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
   sudo apt-get install -yq \
     gconf-service \
