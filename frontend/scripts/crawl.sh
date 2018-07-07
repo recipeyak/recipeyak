@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 set -eux
 
-if ! hash serve 2>/dev/null; then
-  yarn global add serve
-fi
-
 PORT=8008
 
 serve build -l "$PORT" &
