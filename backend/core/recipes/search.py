@@ -17,6 +17,9 @@ def search_recipe_queryset(recipe_queryset, query):
     )
     return (
         recipe_queryset.annotate(rank=SearchRank(vector, SearchQuery(query)))
-        .distinct()
-        .order_by("-rank")
+        # to use distinct on id, we need to order by id first
+        # (this is an SQL requirement, not a Django issue)
+        # We order by rank to actually sort the results
+        .order_by("id", "-rank")
+        .distinct("id")
     )
