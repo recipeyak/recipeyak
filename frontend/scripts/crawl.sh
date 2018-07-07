@@ -61,7 +61,7 @@ done
 
 ./scripts/crawl.js http://localhost:8008 /tmp/content.html
 
-# kill the background python webserver
+# kill the background webserver
 kill %%
 
 mv -f /tmp/content.html build/index.html
