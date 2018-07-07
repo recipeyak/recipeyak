@@ -17,9 +17,11 @@ while ! nc -z localhost "$PORT"; do
   fi
 done
 
-./scripts/crawl.js http://localhost:"$PORT" /tmp/content.html
+TMP_FILE=$(mktemp)
+
+./scripts/crawl.js http://localhost:"$PORT" "$TMP_FILE"
 
 # kill the background webserver
 kill %%
 
-mv -f /tmp/content.html build/index.html
+mv -f "$TMP_FILE" build/index.html
