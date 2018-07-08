@@ -1,12 +1,12 @@
-FROM node:8.9.4
+FROM recipeyak/node-puppeteer:latest
 
 RUN mkdir -p /var/app
 
 # Install package.json /var/ so we can mount at /app and not have issues with dependences
 # http://stackoverflow.com/a/33106611/3555105
 COPY package.json /var/
+COPY yarn.lock /var/
 WORKDIR /var/
-RUN npm install -g yarn
 RUN yarn install
 
 # Volume for mounting our local files
