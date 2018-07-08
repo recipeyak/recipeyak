@@ -60,7 +60,7 @@ def quantity_baseunit(quantity):
 
 
 def normalize_name(name: str) -> str:
-    return name.replace('-', ' ')
+    return name.replace('-', ' ').lower()
 
 
 def should_pluralize(s) -> bool:

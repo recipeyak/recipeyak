@@ -573,3 +573,45 @@ def test_simplify_units():
     expected = ['tablespoon', 'some']
     actual = simplify_units(values)
     assert expected == actual
+
+
+def test_combining_varied_case(user):
+    """
+    ensure ingredients get their case normalized
+    """
+
+    name = 'Recipe name'
+    author = 'Recipe author'
+
+    recipe = Recipe.objects.create(
+        name=name, author=author, owner=user)
+
+    recipe2 = Recipe.objects.create(
+        name='Another recipe', author=author, owner=user)
+
+    Ingredient.objects.create(
+        quantity='8',
+        name='Garlic Cloves',
+        position=10.0,
+        recipe=recipe2)
+
+    Ingredient.objects.create(
+        quantity='1',
+        name='garlic clove',
+        position=11.0,
+        recipe=recipe)
+
+    ingredients = list(Ingredient.objects.all())
+
+    actual = sorted(combine_ingredients(ingredients), key=lambda x: x.get('name'))
+
+    expected = [{
+        'name': 'garlic cloves',
+        'unit': '9',
+        'origin': [
+            {'quantity': '1', 'recipe': recipe.id},
+            {'quantity': '8', 'recipe': recipe2.id},
+        ]
+    }]
+
+    assert actual == expected
