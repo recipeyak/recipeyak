@@ -25,6 +25,6 @@ def test_search_queryset(client, recipe_pie, recipes, user):
     assert count == 1, \
         "our example recipe shouldn't be duplicated in results"
 
-    assert results.first().id == recipe.id
+    assert results[0].id == recipe.id
 
-    assert search_recipe_queryset(Recipe.objects.all(), "Pie").first().id == recipe_pie.id
+    assert search_recipe_queryset(Recipe.objects.all(), "Pie")[0].id == recipe_pie.id

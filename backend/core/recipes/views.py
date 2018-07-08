@@ -61,7 +61,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         query = self.request.query_params.get('q')
         if query is not None:
-            return search_recipe_queryset(recipes, query)[:SEARCH_LIMIT]
+            return search_recipe_queryset(recipes, query, limit=SEARCH_LIMIT)
 
         return recipes
 
