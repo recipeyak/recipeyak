@@ -54,6 +54,7 @@ export default class Recipes extends React.Component {
     recipes: [],
     scroll: false,
     drag: false,
+    teamID: 'personal',
   }
 
   componentWillMount () {
