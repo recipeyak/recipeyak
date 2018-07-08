@@ -1,6 +1,6 @@
 import Raven from 'raven-js'
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { render } from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
 import { Provider } from 'react-redux'
 
@@ -20,8 +20,6 @@ const rootElement = document.getElementById('root')
 if (rootElement == null) {
   throw new Error('could not find root element')
 }
-
-const render = rootElement.hasChildNodes() ? ReactDOM.hydrate : ReactDOM.render
 
 render(
   <AppContainer>
