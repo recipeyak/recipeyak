@@ -7,7 +7,7 @@ if [ $DOCKER_MACHINE_NAME ]; then
 fi
 
 count=$(git status -s | wc -l)
-if [ $count -gt 0 ]; then
+if [ $count -gt 0 ] && [[ "$@" != *"--ignore-staged"* ]]; then
     echo 'Please stash your changes before building'
     exit 1
 fi

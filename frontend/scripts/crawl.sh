@@ -25,3 +25,4 @@ TMP_FILE=$(mktemp)
 kill %%
 
 mv -f "$TMP_FILE" build/index.html
+chmod +r build/index.html
