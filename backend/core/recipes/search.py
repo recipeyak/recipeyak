@@ -25,8 +25,5 @@ def search_recipe_queryset(recipe_queryset, query, limit=10):
     )
     recipes = Recipe.objects.filter(id__in=search_ids)
 
-    # preserve the ordering from the search query
-    ordered = []
-    for recipe_id in list(dict.fromkeys(search_ids)):
-        ordered.append(recipes.get(id=recipe_id))
-    return ordered
+    # preserve the ordering from the search query and removes duplicates
+    return [recipes.get(id=recipe_id) for recipe_id in dict.fromkeys(search_ids).keys()]
