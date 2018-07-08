@@ -27,7 +27,10 @@ async function main() {
   const URL = args[0]
   const filename = args.length === 2 ? args[1] : null
 
-  const browser = await puppeteer.launch()
+
+  // we run as root since, 'Running as root without --no-sandbox is not supported.
+  // See https://crbug.com/638180.'
+  const browser = await puppeteer.launch({ args: ['--no-sandbox'] })
   const page = await browser.newPage()
   await page.goto(URL)
   const content = await page.content()
