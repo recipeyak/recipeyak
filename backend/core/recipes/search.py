@@ -17,15 +17,16 @@ def search_recipe_queryset(recipe_queryset, query, limit=10):
         + SearchVector("step__text", weight="B")
         + SearchVector("ingredient__name", "ingredient__description", weight="C")
     )
-    x = (
-        recipe_queryset.annotate(rank=SearchRank(vector, SearchQuery(query)), max_rank=Max('rank'))
-        .order_by("-max_rank").values_list('id', flat=True)[:limit]
-        # TODO: Aggregrate by max rank
+    search_ids = (
+        recipe_queryset
+        .annotate(rank=SearchRank(vector, SearchQuery(query)), max_rank=Max('rank'))
+        .order_by("-max_rank")
+        .values_list('id', flat=True)[:limit]
     )
-    print(list(x), list(dict.fromkeys(x)))
-    recipes = Recipe.objects.filter(id__in=x)
+    recipes = Recipe.objects.filter(id__in=search_ids)
 
+    # preserve the ordering from the search query
     ordered = []
-    for recipe_id in list(dict.fromkeys(x)):
+    for recipe_id in list(dict.fromkeys(search_ids)):
         ordered.append(recipes.get(id=recipe_id))
     return ordered
