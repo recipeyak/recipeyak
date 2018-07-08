@@ -84,7 +84,7 @@ jobs:
 
   frontend_test:
     docker:
-      - image: circleci/node:8.9.4
+      - image: recipeyak/node-puppeteer:latest
         environment:
           DEBUG: 1
     steps:
@@ -109,7 +109,7 @@ jobs:
 
   frontend_lint:
     docker:
-      - image: circleci/node:8.9.4
+      - image: recipeyak/node-puppeteer:latest
         environment:
           DEBUG: 1
     steps:
