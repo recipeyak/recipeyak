@@ -67,6 +67,7 @@ export default class Base extends React.Component {
     return (
       <div>
         <Helmet
+          defer={false}
           defaultTitle='Recipe Yak'
           titleTemplate='%s | Recipe Yak'
         />

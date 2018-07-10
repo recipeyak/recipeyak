@@ -13,7 +13,6 @@ const isOdd = i => i % 2 !== 0
 
 const LandingPage = () =>
   <section>
-    <Helmet title='Get Started'/>
     <section className="container d-grid grid-gap-1rem pb-4 pr-4 pl-4">
       <h1 className="home-hero-text font-family-title">A place to store, share, and create recipes</h1>
 
