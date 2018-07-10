@@ -1,5 +1,4 @@
 import React from 'react'
-import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
 import addRecipeImg from './images/add-recipe.png'
@@ -13,7 +12,6 @@ const isOdd = i => i % 2 !== 0
 
 const LandingPage = () =>
   <section>
-    <Helmet title='Get Started'/>
     <section className="container d-grid grid-gap-1rem pb-4 pr-4 pl-4">
       <h1 className="home-hero-text font-family-title">A place to store, share, and create recipes</h1>
 

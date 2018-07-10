@@ -7,7 +7,7 @@ import {
 import {
   ConnectedRouter
 } from 'react-router-redux'
-import { Helmet } from 'react-helmet'
+import { Helmet } from './Helmet'
 import HTML5Backend from 'react-dnd-html5-backend'
 import { DragDropContext } from 'react-dnd'
 
