@@ -1,5 +1,5 @@
 import React from 'react'
-import { Helmet } from 'react-helmet'
+import { Helmet } from './Helmet'
 import { Link } from 'react-router-dom'
 
 import addRecipeImg from './images/add-recipe.png'
