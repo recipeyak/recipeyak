@@ -1,7 +1,7 @@
 import React from 'react'
 
-export const Logo = ({ light = false }) =>
-  <svg className={`mr-1 ${light ? 'fill-white' : 'fill-text-color'} `} width="50px" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" >
+export const Logo = ({ light = false, width = '50px' }) =>
+  <svg className={`mr-1 ${light ? 'fill-white' : 'fill-text-color'} `} width={width} viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" >
     <path d="M436.6,87.8c-0.9,0.1-1.9,2.7-3.7,7.9c-2.8,8.1-4.3,14.3-5.2,18.3c-1.4,5.6-3,12.1-5.2,18.8c-2.7,7.9-4.2,12.5-7.7,18.2
       c-4,6.3-8.2,10.6-10.6,13c-2.7,2.7-8,7.5-15.8,12.3c-4.9,3-12.4,6.9-22.3,10c-8.9,2.7-16.9,4.6-24.2,5.9c-2.8,0.5-7.5,1.3-16.4,2.3
       c-5.3,0.6-19.8,2.1-43.9,2.9c-6.7,0.2-15.4,0.4-25.6,0.5c-10.2,0-18.9-0.3-25.6-0.5c-24-0.8-38.5-2.3-43.9-2.9

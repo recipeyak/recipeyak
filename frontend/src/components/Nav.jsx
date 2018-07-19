@@ -103,9 +103,9 @@ class Navbar extends React.Component {
     )
 
     return (
-      <nav className={ `nav flex-wrap pt-2 pb-2 ${className}` }>
+      <nav className={ `nav flex-wrap ${className}` }>
         <Link to="/" className="better-nav-item pl-0 pr-0 fs-2rem fw-normal font-family-title">
-          <Logo/>
+          <Logo width="45px"/>
           <span>Recipe Yak</span>
         </Link>
         { buttons }
