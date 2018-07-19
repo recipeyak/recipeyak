@@ -14,6 +14,7 @@ import {
   SET_SOCIAL_ACCOUNT_CONNECTION,
   SET_USER_ID,
   SET_USER_LOGGED_IN,
+  SET_SCHEDULE_URL,
 } from '../actionTypes'
 
 import { socialAccounts } from './socialAccounts'
@@ -36,7 +37,8 @@ const initialState = {
   socialAccountConnections: {
     github: null,
     gitlab: null,
-  }
+  },
+  scheduleURL: '/schedule/'
 }
 
 export const user = (
@@ -94,6 +96,8 @@ export const user = (
     return { ...state, darkMode: newDarkMode }
   case SET_USER_ID:
     return { ...state, id: action.id }
+  case SET_SCHEDULE_URL:
+    return { ...state, scheduleURL: action.scheduleURL }
   default:
     return state
   }

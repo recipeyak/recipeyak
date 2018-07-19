@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Helmet } from './Helmet'
 import { Link } from 'react-router-dom'
@@ -7,6 +8,18 @@ import Calendar from './Calendar'
 import Recipes from './Recipes'
 import ShoppingList from './ShoppingList'
 
+import {
+  setScheduleURL
+} from '../store/actions'
+
+const mapDispatchToProps = dispatch => ({
+  setURL: (url) => dispatch(setScheduleURL(url))
+})
+
+@connect(
+  null,
+  mapDispatchToProps
+)
 export default class Schedule extends React.Component {
 
   static propTypes = {
@@ -63,10 +76,10 @@ export default class Schedule extends React.Component {
           <div className="tabs is-boxed mb-0 no-print">
             <ul>
               <li className={ !isRecipes ? 'is-active' : ''}>
-                <Link to={shoppingURL}>Shopping</Link>
+                <Link to={shoppingURL} onClick={() => this.props.setURL(shoppingURL)}>Shopping</Link>
               </li>
               <li className={ isRecipes ? 'is-active' : ''}>
-                <Link to={recipesURL}>Recipes</Link>
+                <Link to={recipesURL} onClick={() => this.props.setURL(recipesURL)}>Recipes</Link>
               </li>
             </ul>
           </div>
