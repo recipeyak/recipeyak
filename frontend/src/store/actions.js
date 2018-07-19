@@ -115,7 +115,8 @@ import {
   SET_SEARCH_RESULTS,
   CLEAR_SEARCH_RESULTS,
   INCR_LOADING_SEARCH,
-  DECR_LOADING_SEARCH
+  DECR_LOADING_SEARCH,
+  SET_SCHEDULE_URL,
 } from './actionTypes'
 
 import { uuid4 } from '../uuid'
@@ -1991,3 +1992,8 @@ export const updatingScheduledRecipe = (id, teamID, data) => dispatch => {
     dispatch(setCalendarRecipe(res.data))
   })
 }
+
+export const setScheduleURL = (url) => ({
+  type: SET_SCHEDULE_URL,
+  scheduleURL: url
+})

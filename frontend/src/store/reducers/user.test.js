@@ -14,6 +14,7 @@ import {
   setSocialConnection,
   setUserID,
   setUserLoggedIn,
+  setScheduleURL,
 } from '../actions.js'
 
 describe('User', () => {
@@ -304,5 +305,10 @@ describe('User', () => {
     }
     expect(
       user(beforeState, setUserLoggedIn(false))).toEqual(afterState)
+  })
+
+  it('should set schedule url', () => {
+    const url = '/schedule/something-not-the-default-value'
+    expect(user(undefined, setScheduleURL(url)).scheduleURL).toEqual(url)
   })
 })

@@ -15,6 +15,7 @@ import {
   fetchTeams,
   fetchShoppingList,
   fetchRecipeList,
+  setScheduleURL,
 } from '../store/actions'
 
 import {
@@ -79,7 +80,10 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = dispatch => ({
   fetchData: (month, teamID = 'personal') => dispatch(fetchCalendar(teamID, month)),
   fetchTeams: () => dispatch(fetchTeams()),
-  navTo: (url) => dispatch(push(url)),
+  navTo: (url) => {
+    dispatch(push(url))
+    dispatch(setScheduleURL(url))
+  },
   refetchShoppingListAndRecipes: (teamID, start, end) => {
     return Promise.all([
       dispatch(fetchRecipeList(teamID)),

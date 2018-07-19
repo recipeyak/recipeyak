@@ -81,7 +81,8 @@ store.subscribe(throttle(() => {
       // to set this to false. In that _rare_ case, there will be a slight flash, but
       // this is acceptable for us for the added performance
       loggedIn: store.getState().user.loggedIn,
-      darkMode: store.getState().user.darkMode
+      darkMode: store.getState().user.darkMode,
+      scheduleURL: store.getState().user.scheduleURL,
     },
     addrecipe: store.getState().addrecipe,
     auth: store.getState().auth,

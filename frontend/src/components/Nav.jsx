@@ -34,7 +34,8 @@ const Teams = ({ teams, loading }) => {
 class Navbar extends React.Component {
 
   static defaultProps = {
-    teams: []
+    teams: [],
+    scheduleURL: '',
   }
 
   componentWillMount () {
@@ -50,7 +51,8 @@ class Navbar extends React.Component {
       loggingOut,
       className = '',
       toggleDarkMode,
-      darkMode
+      darkMode,
+      scheduleURL,
     } = this.props
 
     const buttons = loggedIn ? (
@@ -77,7 +79,7 @@ class Navbar extends React.Component {
           Browse
         </NavLink>
         <NavLink
-          to="/schedule/shopping"
+          to={scheduleURL}
           activeClassName="active"
           className="better-nav-item">
           Schedule

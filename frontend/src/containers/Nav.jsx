@@ -22,6 +22,7 @@ const mapStateToProps = state => ({
   darkMode: state.user.darkMode,
   teams: teamsFrom(state),
   loadingTeams: state.teams.loading,
+  scheduleURL: state.user.scheduleURL,
 })
 
 const mapDispatchToProps = dispatch => {
