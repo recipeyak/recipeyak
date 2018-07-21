@@ -10,7 +10,8 @@ import {
 import Nav from '../components/Nav'
 
 import {
-  teamsFrom
+  teamsFrom,
+  scheduleURLFrom,
 } from '../store/mapState'
 
 const mapStateToProps = state => ({
@@ -22,7 +23,7 @@ const mapStateToProps = state => ({
   darkMode: state.user.darkMode,
   teams: teamsFrom(state),
   loadingTeams: state.teams.loading,
-  scheduleURL: state.user.scheduleURL,
+  scheduleURL: scheduleURLFrom(state),
 })
 
 const mapDispatchToProps = dispatch => {
