@@ -4,8 +4,8 @@ ENV PYTHONUNBUFFERD 1
 RUN apt-get update
 RUN apt-get install netcat -y
 
-# -- Install Pipenv:
-RUN set -ex && pip install "pipenv~=11.8"
+# -- Install Poetry
+RUN set -ex && curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
 
 # -- Install Application into container:
 RUN set -ex && mkdir /app
@@ -15,7 +15,7 @@ COPY Pipfile Pipfile
 COPY Pipfile.lock Pipfile.lock
 
 # -- Install dependencies:
-RUN set -ex && pipenv install --dev --system
+RUN set -ex && poetry install
 
 WORKDIR /app
 

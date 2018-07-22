@@ -8,7 +8,6 @@ jobs:
         environment:
           DEBUG: 1
           DATABASE_URL: postgres://postgres@127.0.0.1:5432/postgres
-          PIPENV_VENV_IN_PROJECT: 1
       # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
       - image: circleci/postgres:9.5-alpine-ram
     steps:
@@ -23,8 +22,7 @@ jobs:
           name: install dependencies
           working_directory: backend
           command: |
-            mkdir -p .pipcache
-            sudo -H pip3 --cache-dir .pipcache install "pipenv~=11.8"
+            curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
             make install
       - save_cache:
           paths:
@@ -37,7 +35,7 @@ jobs:
           working_directory: backend
           command: |
             mkdir -p backend/reports
-            pipenv run pytest --cov-config .coveragerc --cov --junit-xml backend/reports/pytest.xml
+            poetry run pytest --cov-config .coveragerc --cov --junit-xml backend/reports/pytest.xml
       - store_test_results:
           path: backend/reports
 
@@ -47,7 +45,6 @@ jobs:
         environment:
           DEBUG: 1
           DATABASE_URL: postgres://postgres@127.0.0.1:5432/postgres
-          PIPENV_VENV_IN_PROJECT: 1
       # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
       - image: circleci/postgres:9.5-alpine-ram
     steps:
@@ -62,8 +59,7 @@ jobs:
           name: install dependencies
           working_directory: backend
           command: |
-            mkdir -p .pipcache
-            sudo -H pip3 --cache-dir .pipcache install "pipenv~=11.8"
+            curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
             make install
       - save_cache:
           paths:
@@ -76,9 +72,9 @@ jobs:
           working_directory: backend
           command: |
             mkdir -p backend/reports
-            pipenv run flake8
-            pipenv run mypy --config-file tox.ini --junit-xml backend/reports/mypy.xml .
-            pipenv run pytest --cov-config .coveragerc --cov --junit-xml backend/reports/pytest.xml
+            poetry run flake8
+            poetry run mypy --config-file tox.ini --junit-xml backend/reports/mypy.xml .
+            poetry run pytest --cov-config .coveragerc --cov --junit-xml backend/reports/pytest.xml
       - store_test_results:
           path: backend/reports
 
