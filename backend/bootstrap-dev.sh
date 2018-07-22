@@ -5,6 +5,8 @@ set -a
 source .env-dev
 set +a
 
+export DEBUG=1
+
 # apply migrations
 python manage.py migrate
 
