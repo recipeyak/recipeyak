@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 set -eux
 
 # export variables from .env-dev
