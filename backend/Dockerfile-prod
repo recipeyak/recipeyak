@@ -9,9 +9,9 @@ RUN set -ex && mkdir -p /var/app
 
 WORKDIR /var/app
 
-# -- Adding Pipfiles
-COPY Pipfile Pipfile
-COPY Pipfile.lock Pipfile.lock
+# -- Adding dependency files
+COPY pyproject.toml pyproject.toml
+COPY pyproject.lock pyproject.lock
 
 # -- Install dependencies:
 RUN set -ex && poetry install

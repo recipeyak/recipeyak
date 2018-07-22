@@ -7,7 +7,7 @@ cp -af static/* static-files
 bash wait-for-it.sh db:5432 -- echo 'Database available'
 
 # apply migrations
-python manage.py migrate
+manage.py migrate
 
 # configure server models
 ./manage.py shell < set_server.py

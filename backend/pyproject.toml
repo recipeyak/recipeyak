@@ -16,6 +16,7 @@ gunicorn = "19.7.1"
 psycopg2 = "2.7.3.2"
 raven = "6.5.0"
 python-json-logger = "0.1.8"
+pyyaml = "^3.13"
 
 [tool.poetry.dev-dependencies]
 pytest = "3.4.0"
