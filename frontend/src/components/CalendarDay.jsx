@@ -2,15 +2,13 @@ import React from 'react'
 import { connect } from 'react-redux'
 import format from 'date-fns/format'
 import isToday from 'date-fns/is_today'
-import isFuture from 'date-fns/is_future'
 import { DropTarget } from 'react-dnd'
 import isWithinRange from 'date-fns/is_within_range'
 import startOfDay from 'date-fns/start_of_day'
 import endOfDay from 'date-fns/end_of_day'
 import isFirstDayOfMonth from 'date-fns/is_first_day_of_month'
-import isSameDay from 'date-fns/is_same_day'
 
-import { pyFormat } from '../date'
+import { pyFormat, beforeCurrentDay } from '../date'
 
 import {
   classNames,
@@ -36,9 +34,8 @@ const Title = ({ date }) => {
 }
 
 const dayTarget = {
-  canDrop ({ date }, monitor) {
-    const item = monitor.getItem()
-    return (isFuture(date) || isToday(date)) && !isSameDay(date, item.date)
+  canDrop ({ date }) {
+    return !beforeCurrentDay(date)
   },
   drop (props, monitor) {
     const {

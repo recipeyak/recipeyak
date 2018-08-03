@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import { DragSource } from 'react-dnd'
 
+import { beforeCurrentDay } from '../date'
+
 import { recipeURL } from '../urls'
 
 import * as DragDrop from '../dragDrop'
@@ -16,6 +18,9 @@ const source = {
       count: props.count,
       id: props.id,
     }
+  },
+  canDrag ({ date }) {
+    return !beforeCurrentDay(date)
   },
   endDrag (props, monitor) {
     // when dragged onto something that isn't a target, we remove it
@@ -47,6 +52,7 @@ export default class CalendarItem extends React.Component {
     remove: PropTypes.func.isRequired,
     updateCount: PropTypes.func.isRequired,
     refetchShoppingList: PropTypes.func.isRequired,
+    date: PropTypes.object.isRequired,
   }
 
   componentWillMount () {
@@ -64,6 +70,9 @@ export default class CalendarItem extends React.Component {
 
   handleKeyPress = e => {
     if (!this.state.hover) return
+
+    if (beforeCurrentDay(this.props.date)) return
+
     if (e.key === '#') {
       this.props.remove()
     }
@@ -77,6 +86,7 @@ export default class CalendarItem extends React.Component {
 
   updateCount = (count) => {
     const oldCount = this.state.count
+    if (beforeCurrentDay(this.props.date)) return
     this.setState({ count })
     this.props.updateCount(count)
       .then(() => this.props.refetchShoppingList())
