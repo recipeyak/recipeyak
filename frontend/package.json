@@ -100,6 +100,7 @@
     "jslint-fix": "node scripts/lint.js --fix",
     "tslint": "tslint 'src/**/*.{ts,tsx}' --format 'codeFrame'",
     "tslint-fix": "tslint 'src/**/*.{ts,tsx}' --format 'codeFrame' --fix",
+    "typecheck": "tsc --noEmit",
     "test": "node scripts/test.js --env=jsdom",
     "test-cov": "node scripts/test.js --env=jsdom --coverage --runInBand"
   },

@@ -13,6 +13,7 @@
     "noUnusedParameters": true,
     "removeComments": false,
     "preserveConstEnums": true,
+    "experimentalDecorators": true,
     "skipLibCheck": true
   },
   "include": [
