@@ -85,21 +85,6 @@ module.exports = {
 
   module: {
     rules: [
-      {
-        test: /\.(js|jsx)$/,
-        enforce: 'pre',
-        loader: 'eslint-loader',
-        include: paths.appSrc
-      },
-      {
-        test: /\.(ts|tsx)$/,
-        enforce: 'pre',
-        loader: 'tslint-loader',
-        options: {
-          emitErrors: true,
-          formatter: 'codeFrame',
-        }
-      },
       // ** ADDING/UPDATING LOADERS **
       // The "url" loader handles all assets unless explicitly excluded.
       // The `exclude` list *must* be updated with every change to loader extensions.

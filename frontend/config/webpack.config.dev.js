@@ -1,6 +1,5 @@
 const autoprefixer = require('autoprefixer')
 const webpack = require('webpack')
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
@@ -83,20 +82,6 @@ module.exports = {
     // First, run the linter.
     // It's important to do this before Babel processes the JS.
     rules: [
-      {
-        test: /\.(js|jsx)$/,
-        enforce: 'pre',
-        loader: 'eslint-loader',
-        include: paths.appSrc
-      },
-      {
-        test: /\.(ts|tsx)$/,
-        enforce: 'pre',
-        loader: 'tslint-loader',
-        options: {
-          formatter: 'codeFrame',
-        }
-      },
       // ** ADDING/UPDATING LOADERS **
       // The "url" loader handles all assets unless explicitly excluded.
       // The `exclude` list *must* be updated with every change to loader extensions.
@@ -226,14 +211,11 @@ module.exports = {
     ]
   },
   plugins: [
-    new ForkTsCheckerWebpackPlugin(),
     // Makes some environment variables available in index.html.
     // The public URL is available as %PUBLIC_URL% in index.html, e.g.:
     // <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
     // In development, this will be an empty string.
     new InterpolateHtmlPlugin(env.raw),
-    // generate and insert favicons based off of favicon
-    new FaviconsWebpackPlugin(faviconPath),
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
       inject: true,

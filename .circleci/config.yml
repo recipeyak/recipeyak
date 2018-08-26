@@ -132,6 +132,7 @@ jobs:
           working_directory: frontend
           command: |
             yarn lint
+            yarn typecheck
             yarn build
 
   # https://circleci.com/docs/2.0/building-docker-images/
