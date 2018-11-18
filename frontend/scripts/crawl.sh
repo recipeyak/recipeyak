@@ -24,5 +24,5 @@ TMP_FILE=$(mktemp)
 # kill the background webserver
 kill %%
 
-mv -f "$TMP_FILE" build/index.html
-chmod +r build/index.html
+mv -f "$TMP_FILE" build/landing.html
+chmod +r build/landing.html
