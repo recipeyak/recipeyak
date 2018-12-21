@@ -157,6 +157,18 @@ pyflakes = ">=1.5.0,<1.7.0"
 
 [[package]]
 category = "dev"
+description = "A flake8 extension that checks for assignment and return in Python"
+name = "flake8-assign-and-return"
+optional = false
+platform = "*"
+python-versions = "*"
+version = "0.0.3"
+
+[package.dependencies]
+flake8 = "*"
+
+[[package]]
+category = "dev"
 description = "JUnit XML Formatter for flake8"
 name = "flake8-formatter-junit-xml"
 optional = false
@@ -627,7 +639,7 @@ version = "0.1.7"
 python = ">=3.3"
 
 [metadata]
-content-hash = "c364d2e9dcf6154c22d2551a370af7dd0976ca595b07e542d4ecfd1dd29df669"
+content-hash = "7c9594de0ee20963cb2fff09749b3c5b713fb0230c9bce4d3b8a727afcbd90fc"
 platform = "*"
 python-versions = "3.6"
 
@@ -646,6 +658,7 @@ django-allauth = ["7b31526cccd1c46f9f09acf0703068e8a9669337d29eb065f7e8143c2d897
 djangorestframework = ["1f6baf40ed456ed2af6bd1a4ff8bbc3503cebea16509993aea2b7085bc097766", "9f9e94e8d22b100ed3a43cee8c47a7ff7b185e778a1f2da9ec5c73fc4e081b87"]
 drf-nested-routers = ["3346bcfb151d221d499b3b7932cc6e5cee005ea50f1343a2f5cd2f85e7b1d77f", "818fcc37b6cafff52f4afae012b8de85970a1b931f1e47c2f07a24fd141eb476"]
 flake8 = ["7253265f7abd8b313e3892944044a365e3f4ac3fcdcfb4298f55ee9ddf188ba0", "c7841163e2b576d435799169b78703ad6ac1bbb0f199994fc05f700b2a90ea37"]
+flake8-assign-and-return = ["1efe9c134c367e50eb1a3ef521da16352e07594c4ebef93c685cc5e2054d5afa", "c41747116dff5ab9d9f570d67b1c55935917cb44637fa2b516d35bedfad87dd2"]
 flake8-formatter-junit-xml = ["b49c6b528d9518e855548ac76041cc333b56b5bcb24ae84af44668d37f2aec16", "e537adea0638bd4dbe7debce37844d9082a3d6aeb29304505b12caf97ff6f80b"]
 gunicorn = ["75af03c99389535f218cc596c7de74df4763803f7b63eb09d77e92b3956b36c6", "eee1169f0ca667be05db3351a0960765620dad53f53434262ff8901b68a1b622"]
 idna = ["c357b3f628cf53ae2c4c05627ecc484553142ca23264e593d327bcde5e9c3407", "ea8b7f6188e6fa117537c3df7da9fc686d485087abf6ac197f9c46432f7e4a3c"]
