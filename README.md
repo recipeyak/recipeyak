@@ -17,6 +17,10 @@ To have a centralized location where multiple people can organize a meal plan.
 docker-compose-dev.yml -d` or via the homebrew cask mac app.
 
 ```shell
+# create a .env with `DEBUG=1`
+cp .env-example .env
+echo "DEBUG=1" >> .env
+
 # frontend
 cd frontend
 yarn dev
@@ -32,10 +36,10 @@ cd backend
 
 ### Testing with OAuth
 
-1. Create an `.env-dev` file based on `.env-example` with proper client IDs.
-2. Configure the identity provider to enable redirecting to `http://localhost:3000/accounts/$providerName`.
+After dev setup, configure the identity provider to enable redirecting to
+`http://localhost:3000/accounts/$providerName`.
 
-## Production
+## Prod
 ### Creating environment
 You can create a remote docker machine on AWS using:
 ```shell
@@ -80,7 +84,6 @@ Environment variables are used for configuration. Unless otherwise stated, a val
 - [`FRONTEND_SENTRY_DSN`][sentry-dsn] — Sentry configuration for frontend.
     + ex: `https://<key>@sentry.io/<project>`
 
-[0]: https://docs.docker.com/engine/reference/builder/#dockerignore-file
 [django-secret]: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-SECRET_KEY
 [sentry-dsn]: https://docs.sentry.io/quickstart/#about-the-dsn
 [github-redirect-uri]: https://developer.github.com/apps/building-oauth-apps/authorization-options-for-oauth-apps/#redirect-urls
