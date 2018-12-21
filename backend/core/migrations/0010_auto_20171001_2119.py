@@ -8,14 +8,14 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0009_auto_20171001_0602'),
-    ]
+    dependencies = [("core", "0009_auto_20171001_0602")]
 
     operations = [
         migrations.AlterField(
-            model_name='cartitem',
-            name='recipe',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='core.Recipe'),
-        ),
+            model_name="cartitem",
+            name="recipe",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE, to="core.Recipe"
+            ),
+        )
     ]

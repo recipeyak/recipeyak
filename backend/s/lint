@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -ex
+set -e
 
 cd $(dirname $(dirname "$0"))
 
@@ -21,6 +21,10 @@ poetry run mypy --config-file tox.ini $MYPY_ARGS . &
 
 echo 'start flake8'
 poetry run flake8 &
+
+echo 'start black'
+# black --quiet is too quiet, so we grep for 'would format' in stderr
+(poetry run black --check . 2> >( grep 'would reformat')) &
 
 if [[ "$@" == *'--db'* ]]; then
     echo 'check for missing migrations'

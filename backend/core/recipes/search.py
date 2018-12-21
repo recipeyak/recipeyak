@@ -18,10 +18,11 @@ def search_recipe_queryset(recipe_queryset, query, limit=10):
         + SearchVector("ingredient__name", "ingredient__description", weight="C")
     )
     search_ids = (
-        recipe_queryset
-        .annotate(rank=SearchRank(vector, SearchQuery(query)), max_rank=Max('rank'))
+        recipe_queryset.annotate(
+            rank=SearchRank(vector, SearchQuery(query)), max_rank=Max("rank")
+        )
         .order_by("-max_rank")
-        .values_list('id', flat=True)[:limit]
+        .values_list("id", flat=True)[:limit]
     )
     recipes = Recipe.objects.filter(id__in=search_ids)
 

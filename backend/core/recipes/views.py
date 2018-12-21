@@ -16,13 +16,7 @@ from core.auth.permissions import (
     HasRecipeAccess,
 )
 
-from core.models import (
-    Recipe,
-    Step,
-    Ingredient,
-    Team,
-    MyUser,
-)
+from core.models import Recipe, Step, Ingredient, Team, MyUser
 
 from .serializers import (
     RecipeSerializer,
@@ -43,7 +37,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
     def get_serializer_context(self):
-        return {'request': self.request}
+        return {"request": self.request}
 
     def get_queryset(self):
         """
@@ -56,10 +50,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipes = user_and_team_recipes(self.request.user)
 
         # filtering for homepage
-        if self.request.query_params.get('recent') is not None:
-            return recipes.order_by('-modified')[:3]
+        if self.request.query_params.get("recent") is not None:
+            return recipes.order_by("-modified")[:3]
 
-        query = self.request.query_params.get('q')
+        query = self.request.query_params.get("q")
         if query is not None:
             return search_recipe_queryset(recipes, query, limit=SEARCH_LIMIT)
 
@@ -70,21 +64,26 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         # If the client doesn't set the position on one of the objects we need
         # to renumber them all.
-        serializer.initial_data['steps'] = add_positions(serializer.initial_data['steps'])
-        serializer.initial_data['ingredients'] = add_positions(serializer.initial_data['ingredients'])
+        serializer.initial_data["steps"] = add_positions(
+            serializer.initial_data["steps"]
+        )
+        serializer.initial_data["ingredients"] = add_positions(
+            serializer.initial_data["ingredients"]
+        )
 
         serializer.is_valid(raise_exception=True)
 
         serializer.save()
 
-        logger.info(f'Recipe created by {self.request.user}')
+        logger.info(f"Recipe created by {self.request.user}")
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @detail_route(
-        methods=['post'],
-        url_name='move',
+        methods=["post"],
+        url_name="move",
         serializer_class=RecipeMoveCopySerializer,
-        permission_classes=[HasRecipeAccess, ])
+        permission_classes=[HasRecipeAccess],
+    )
     def move(self, request, pk=None):
         """
         Move recipe from user to another team.
@@ -97,24 +96,28 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        if serializer.validated_data['type'] == 'team':
-            team = Team.objects.get(id=serializer.validated_data['id'])
+        if serializer.validated_data["type"] == "team":
+            team = Team.objects.get(id=serializer.validated_data["id"])
             if not (team.is_contributor(request.user) or team.is_admin(request.user)):
-                raise PermissionDenied(detail='user must have write permissions')
+                raise PermissionDenied(detail="user must have write permissions")
             recipe.move_to(team)
-        elif serializer.validated_data['type'] == 'user':
-            user = MyUser.objects.get(id=serializer.validated_data['id'])
+        elif serializer.validated_data["type"] == "user":
+            user = MyUser.objects.get(id=serializer.validated_data["id"])
             if user != request.user:
-                raise PermissionDenied(detail='user must be the same as requester')
+                raise PermissionDenied(detail="user must be the same as requester")
             recipe.move_to(user)
 
-        return Response(RecipeSerializer(recipe, context={'request': request}).data, status=status.HTTP_200_OK)
+        return Response(
+            RecipeSerializer(recipe, context={"request": request}).data,
+            status=status.HTTP_200_OK,
+        )
 
     @detail_route(
-        methods=['post'],
-        url_name='copy',
+        methods=["post"],
+        url_name="copy",
         serializer_class=RecipeMoveCopySerializer,
-        permission_classes=[HasRecipeAccess, ])
+        permission_classes=[HasRecipeAccess],
+    )
     def copy(self, request, pk=None):
         """
         Copy recipe from user to team.
@@ -125,50 +128,60 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        if serializer.validated_data['type'] == 'team':
-            team = Team.objects.get(id=serializer.validated_data['id'])
+        if serializer.validated_data["type"] == "team":
+            team = Team.objects.get(id=serializer.validated_data["id"])
             if not (team.is_contributor(request.user) or team.is_admin(request.user)):
-                raise PermissionDenied(detail='user must have write permissions')
+                raise PermissionDenied(detail="user must have write permissions")
             new_recipe = recipe.copy_to(team)
-        elif serializer.validated_data['type'] == 'user':
-            user = MyUser.objects.get(id=serializer.validated_data['id'])
+        elif serializer.validated_data["type"] == "user":
+            user = MyUser.objects.get(id=serializer.validated_data["id"])
             if user != request.user:
-                raise PermissionDenied(detail='user must be the same as requester')
+                raise PermissionDenied(detail="user must be the same as requester")
             new_recipe = recipe.copy_to(user)
 
-        return Response(RecipeSerializer(new_recipe, context={'request': request}).data, status=status.HTTP_200_OK)
+        return Response(
+            RecipeSerializer(new_recipe, context={"request": request}).data,
+            status=status.HTTP_200_OK,
+        )
 
 
 class TeamRecipesViewSet(
-        viewsets.GenericViewSet,
-        mixins.RetrieveModelMixin,
-        mixins.DestroyModelMixin,
-        mixins.UpdateModelMixin):
+    viewsets.GenericViewSet,
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.UpdateModelMixin,
+):
 
     serializer_class = RecipeSerializer
-    permission_classes = (IsAuthenticated,
-                          IsTeamMemberIfPrivate,
-                          NonSafeIfMemberOrAdmin)
+    permission_classes = (
+        IsAuthenticated,
+        IsTeamMemberIfPrivate,
+        NonSafeIfMemberOrAdmin,
+    )
 
     def get_serializer_context(self):
-        return {'request': self.request}
+        return {"request": self.request}
 
     def get_queryset(self):
-        team = get_object_or_404(Team, pk=self.kwargs['team_pk'])
+        team = get_object_or_404(Team, pk=self.kwargs["team_pk"])
         return Recipe.objects.filter(owner_team=team)
 
     def list(self, request, team_pk=None):
-        serializer = self.get_serializer(self.get_queryset(),
-                                         many=True,
-                                         fields=('id', 'name', 'author', 'tags',))
+        serializer = self.get_serializer(
+            self.get_queryset(), many=True, fields=("id", "name", "author", "tags")
+        )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request, team_pk=None):
         team = get_object_or_404(Team.objects.all(), pk=team_pk)
 
         serializer = self.get_serializer(data=request.data)
-        serializer.initial_data['steps'] = add_positions(serializer.initial_data['steps'])
-        serializer.initial_data['ingredients'] = add_positions(serializer.initial_data['ingredients'])
+        serializer.initial_data["steps"] = add_positions(
+            serializer.initial_data["steps"]
+        )
+        serializer.initial_data["ingredients"] = add_positions(
+            serializer.initial_data["ingredients"]
+        )
 
         serializer.is_valid(raise_exception=True)
 
@@ -191,15 +204,15 @@ class StepViewSet(viewsets.ModelViewSet):
 
         # set a position if not provided
         last_step = recipe.steps.last()
-        if serializer.initial_data.get('position') is None:
+        if serializer.initial_data.get("position") is None:
             if last_step is not None:
-                serializer.initial_data['position'] = last_step.position + 10.0
+                serializer.initial_data["position"] = last_step.position + 10.0
             else:
-                serializer.initial_data['position'] = 10.0
+                serializer.initial_data["position"] = 10.0
 
         if serializer.is_valid():
             serializer.save(recipe=recipe)
-            logger.info(f'Step created by {self.request.user}')
+            logger.info(f"Step created by {self.request.user}")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -220,16 +233,16 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
         # set a position if not provided
         last_ingredient = recipe.ingredients.last()
-        if serializer.initial_data.get('position') is None:
+        if serializer.initial_data.get("position") is None:
             if last_ingredient is not None:
-                serializer.initial_data['position'] = last_ingredient.position + 10.0
+                serializer.initial_data["position"] = last_ingredient.position + 10.0
             else:
-                serializer.initial_data['position'] = 10.0
+                serializer.initial_data["position"] = 10.0
 
         if serializer.is_valid():
             recipe = Recipe.objects.get(pk=recipe_pk)
             serializer.save(recipe=recipe)
-            logger.info(f'Ingredient created by {self.request.user}')
+            logger.info(f"Ingredient created by {self.request.user}")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

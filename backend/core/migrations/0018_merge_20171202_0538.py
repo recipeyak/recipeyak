@@ -7,9 +7,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0016_recipe_views'),
-        ('core', '0017_recipe_servings'),
-    ]
+    dependencies = [("core", "0016_recipe_views"), ("core", "0017_recipe_servings")]
 
     operations = []  # type: ignore

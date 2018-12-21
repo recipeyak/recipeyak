@@ -7,28 +7,21 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0013_ingredient_name'),
-    ]
+    dependencies = [("core", "0013_ingredient_name")]
 
     operations = [
         migrations.RenameField(
-            model_name='cartitem',
-            old_name='count',
-            new_name='amount',
+            model_name="cartitem", old_name="count", new_name="amount"
         ),
-        migrations.RemoveField(
-            model_name='ingredient',
-            name='unit',
-        ),
+        migrations.RemoveField(model_name="ingredient", name="unit"),
         migrations.AlterField(
-            model_name='ingredient',
-            name='description',
+            model_name="ingredient",
+            name="description",
             field=models.CharField(blank=True, max_length=255),
         ),
         migrations.AlterField(
-            model_name='ingredient',
-            name='quantity',
+            model_name="ingredient",
+            name="quantity",
             field=models.CharField(max_length=255),
         ),
     ]

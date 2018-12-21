@@ -6,14 +6,17 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0026_auto_20180301_0442'),
-    ]
+    dependencies = [("core", "0026_auto_20180301_0442")]
 
     operations = [
         migrations.AddField(
-            model_name='myuser',
-            name='membership',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='core.Membership'),
-        ),
+            model_name="myuser",
+            name="membership",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="core.Membership",
+            ),
+        )
     ]

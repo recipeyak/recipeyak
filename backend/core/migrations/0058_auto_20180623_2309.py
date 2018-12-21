@@ -7,14 +7,17 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0057_scheduledrecipe_team'),
-    ]
+    dependencies = [("core", "0057_scheduledrecipe_team")]
 
     operations = [
         migrations.AlterField(
-            model_name='scheduledrecipe',
-            name='user',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
-        ),
+            model_name="scheduledrecipe",
+            name="user",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
+            ),
+        )
     ]

@@ -6,21 +6,21 @@ MSEC_CONVERT_FACTOR = 1000
 
 
 class NoCacheMiddleware:
-
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
         response = self.get_response(request)
-        response['Cache-Control'] = 'no-store, no-cache, must-revalidate'
-        response['Pragma'] = 'no-cache'
-        response['Expires'] = '0'
+        response["Cache-Control"] = "no-store, no-cache, must-revalidate"
+        response["Pragma"] = "no-cache"
+        response["Expires"] = "0"
         return response
 
 
 def total_query_time():
-    return sum(float(query['time'])
-               for query in connection.queries) * MSEC_CONVERT_FACTOR
+    return (
+        sum(float(query["time"]) for query in connection.queries) * MSEC_CONVERT_FACTOR
+    )
 
 
 class ServerTimingMiddleware:
@@ -42,7 +42,7 @@ class ServerTimingMiddleware:
         end = time.perf_counter()
         elapsed_time = (end - start) * MSEC_CONVERT_FACTOR
 
-        response['Server-Timing'] = (
+        response["Server-Timing"] = (
             f'db;desc="Database";dur={database_time},'
             f'non-db;desc="View Time";dur={elapsed_time - database_time},'
             f'total;desc="Total Response Time";dur={elapsed_time},'

@@ -13,14 +13,14 @@ def test_user_delete(client, user, team):
     """
 
     client.force_authenticate(user)
-    url = reverse('rest_user_details')
+    url = reverse("rest_user_details")
     assert team.is_member(user)
     assert user.has_team()
 
     # user must leave team before deleting account
     res = client.delete(url)
     assert res.status_code == status.HTTP_403_FORBIDDEN
-    assert res.json()['detail'] is not None
+    assert res.json()["detail"] is not None
 
     # leave team
     team.delete()

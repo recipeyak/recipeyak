@@ -5,14 +5,10 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0029_invite'),
-    ]
+    dependencies = [("core", "0029_invite")]
 
     operations = [
         migrations.RenameField(
-            model_name='membership',
-            old_name='group',
-            new_name='level',
-        ),
+            model_name="membership", old_name="group", new_name="level"
+        )
     ]

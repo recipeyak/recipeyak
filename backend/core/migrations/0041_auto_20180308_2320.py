@@ -5,13 +5,10 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0040_cartitem'),
-    ]
+    dependencies = [("core", "0040_cartitem")]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='cartitem',
-            unique_together={('user', 'recipe')},
-        ),
+            name="cartitem", unique_together={("user", "recipe")}
+        )
     ]

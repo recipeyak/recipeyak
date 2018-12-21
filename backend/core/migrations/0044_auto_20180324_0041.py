@@ -7,14 +7,14 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0043_auto_20180324_0020'),
-    ]
+    dependencies = [("core", "0043_auto_20180324_0020")]
 
     operations = [
         migrations.AlterField(
-            model_name='invite',
-            name='creator',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
-        ),
+            model_name="invite",
+            name="creator",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+            ),
+        )
     ]

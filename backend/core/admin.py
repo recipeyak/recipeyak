@@ -20,12 +20,15 @@ from core.models import (
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
+
+    password1 = forms.CharField(label="Password", widget=forms.PasswordInput)
+    password2 = forms.CharField(
+        label="Password confirmation", widget=forms.PasswordInput
+    )
 
     class Meta:
         model = MyUser
-        fields = ('email',)
+        fields = ("email",)
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -49,16 +52,20 @@ class UserChangeForm(forms.ModelForm):
     the user, but replaces the password field with admin's
     password hash display field.
     """
+
     # https://stackoverflow.com/a/15630360/3555105
     password = ReadOnlyPasswordHashField(
         label="Password",
-        help_text=("Raw passwords are not stored, so there is no way to see "
-                   "this user's password, but you can change the password "
-                   "using <a href=\'../password/\'>this form</a>."))
+        help_text=(
+            "Raw passwords are not stored, so there is no way to see "
+            "this user's password, but you can change the password "
+            "using <a href='../password/'>this form</a>."
+        ),
+    )
 
     class Meta:
         model = MyUser
-        fields = ('email', 'password', 'is_active', 'is_admin')
+        fields = ("email", "password", "is_active", "is_admin")
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -75,30 +82,39 @@ class UserAdmin(BaseUserAdmin):
     # https://stackoverflow.com/a/40715745/3555105
     def image_tag(self, obj):
         return format_html(f'<img src="{obj.avatar_url}" />')
-    image_tag.short_description = 'User Avatar'  # type: ignore
+
+    image_tag.short_description = "User Avatar"  # type: ignore
 
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('email', 'is_admin')
-    list_filter = ('is_superuser', 'is_admin', 'is_active', 'groups')
-    readonly_fields = ('last_updated', 'created', 'image_tag')
+    list_display = ("email", "is_admin")
+    list_filter = ("is_superuser", "is_admin", "is_active", "groups")
+    readonly_fields = ("last_updated", "created", "image_tag")
     fieldsets = (
-        (None, {'fields': ('email', 'password', 'image_tag')}),
-        ('Permissions', {'fields': ('is_admin', 'is_active', 'is_superuser',
-                                    'groups', 'user_permissions')}),
-        ('Important dates', {'fields': ('last_login', 'last_updated', 'created')})
+        (None, {"fields": ("email", "password", "image_tag")}),
+        (
+            "Permissions",
+            {
+                "fields": (
+                    "is_admin",
+                    "is_active",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                )
+            },
+        ),
+        ("Important dates", {"fields": ("last_login", "last_updated", "created")}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2')}),
+        (None, {"classes": ("wide",), "fields": ("email", "password1", "password2")}),
     )
-    search_fields = ('email',)
-    ordering = ('email',)
-    filter_horizontal = ('groups', 'user_permissions',)
+    search_fields = ("email",)
+    ordering = ("email",)
+    filter_horizontal = ("groups", "user_permissions")
 
 
 # Now register the new UserAdmin...
@@ -119,10 +135,7 @@ class StepsInLine(admin.TabularInline):
 
 
 class RecipeAdmin(admin.ModelAdmin):
-    inlines = [
-        IngredientsInLine,
-        StepsInLine,
-    ]
+    inlines = [IngredientsInLine, StepsInLine]
 
 
 admin.site.register(Recipe, RecipeAdmin)

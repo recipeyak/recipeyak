@@ -6,9 +6,6 @@ from typing import List
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0049_auto_20180505_0104'),
-    ]
+    dependencies = [("core", "0049_auto_20180505_0104")]
 
-    operations: List[object] = [
-    ]
+    operations: List[object] = []

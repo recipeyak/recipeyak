@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0032_auto_20180302_0221'),
-    ]
+    dependencies = [("core", "0032_auto_20180302_0221")]
 
     operations = [
         migrations.AddField(
-            model_name='membership',
-            name='is_active',
+            model_name="membership",
+            name="is_active",
             field=models.BooleanField(default=False),
-        ),
+        )
     ]

@@ -5,16 +5,9 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0038_auto_20180307_0530'),
-    ]
+    dependencies = [("core", "0038_auto_20180307_0530")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='cartitem',
-            name='recipe',
-        ),
-        migrations.DeleteModel(
-            name='CartItem',
-        ),
+        migrations.RemoveField(model_name="cartitem", name="recipe"),
+        migrations.DeleteModel(name="CartItem"),
     ]

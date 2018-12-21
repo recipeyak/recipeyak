@@ -1,12 +1,6 @@
 from rest_framework import serializers
 
-from core.models import (
-    MyUser,
-    Recipe,
-    Ingredient,
-    Step,
-    Team,
-)
+from core.models import MyUser, Recipe, Ingredient, Step, Team
 
 
 class OwnerRelatedField(serializers.RelatedField):
@@ -17,16 +11,16 @@ class OwnerRelatedField(serializers.RelatedField):
     def to_representation(self, value):
         if isinstance(value, Team):
             if self.export:
-                return {'team': value.name}
-            return {'id': value.id, 'type': 'team', 'name': value.name}
+                return {"team": value.name}
+            return {"id": value.id, "type": "team", "name": value.name}
         elif isinstance(value, MyUser):
             if self.export:
-                return {'user': value.email}
-            return {'id': value.id, 'type': 'user'}
-        raise Exception('Unexpected type of owner object')
+                return {"user": value.email}
+            return {"id": value.id, "type": "user"}
+        raise Exception("Unexpected type of owner object")
 
     def __init__(self, *args, **kwargs):
-        export = kwargs.pop('export', None)
+        export = kwargs.pop("export", None)
         super().__init__(*args, **kwargs)
         self.export = export
 
@@ -38,11 +32,11 @@ class IngredientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ingredient
-        fields = ('id', 'quantity', 'name', 'description', 'position', 'optional')
+        fields = ("id", "quantity", "name", "description", "position", "optional")
 
     def __init__(self, *args, **kwargs):
         # Don't pass the 'fields' arg up to the superclass
-        fields = kwargs.pop('fields', None)
+        fields = kwargs.pop("fields", None)
 
         super().__init__(*args, **kwargs)
 
@@ -61,11 +55,11 @@ class StepSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Step
-        fields = ('id', 'text', 'position')
+        fields = ("id", "text", "position")
 
     def __init__(self, *args, **kwargs):
         # Don't pass the 'fields' arg up to the superclass
-        fields = kwargs.pop('fields', None)
+        fields = kwargs.pop("fields", None)
 
         super().__init__(*args, **kwargs)
 
@@ -90,14 +84,26 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('id', 'name', 'author', 'source', 'time', 'ingredients',
-                  'steps', 'servings', 'edits', 'modified',
-                  'owner', 'team', 'last_scheduled')
-        read_only_fields = ('owner', 'last_scheduled')
+        fields = (
+            "id",
+            "name",
+            "author",
+            "source",
+            "time",
+            "ingredients",
+            "steps",
+            "servings",
+            "edits",
+            "modified",
+            "owner",
+            "team",
+            "last_scheduled",
+        )
+        read_only_fields = ("owner", "last_scheduled")
 
     def __init__(self, *args, **kwargs):
         # Don't pass the 'fields' arg up to the superclass
-        fields = kwargs.pop('fields', None)
+        fields = kwargs.pop("fields", None)
 
         super().__init__(*args, **kwargs)
 
@@ -110,12 +116,12 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def validate_steps(self, value):
         if value == []:
-            raise serializers.ValidationError('steps are required')
+            raise serializers.ValidationError("steps are required")
         return value
 
     def validate_ingredients(self, value):
         if value == []:
-            raise serializers.ValidationError('ingredients are required')
+            raise serializers.ValidationError("ingredients are required")
         return value
 
     def validate_team(self, value):
@@ -123,21 +129,22 @@ class RecipeSerializer(serializers.ModelSerializer):
             return None
         team = Team.objects.filter(id=value).first()
         if team is None:
-            raise serializers.ValidationError('invalid team id provided')
+            raise serializers.ValidationError("invalid team id provided")
         return team
 
     def create(self, validated_data) -> Recipe:
         """
         Since this a nested serializer, we need to write a custom create method.
         """
-        ingredients = validated_data.pop('ingredients')
-        steps = validated_data.pop('steps')
+        ingredients = validated_data.pop("ingredients")
+        steps = validated_data.pop("steps")
 
         # essentially an optional field
-        team = validated_data.pop('team')
+        team = validated_data.pop("team")
 
-        validated_data['owner'] = team if team is not None \
-            else self.context['request'].user
+        validated_data["owner"] = (
+            team if team is not None else self.context["request"].user
+        )
 
         recipe: Recipe = Recipe.objects.create(**validated_data)
         for ingredient in ingredients:
@@ -149,11 +156,13 @@ class RecipeSerializer(serializers.ModelSerializer):
 
 class RecipeMoveCopySerializer(serializers.Serializer):
     id = serializers.IntegerField(max_value=None, min_value=0, write_only=True)
-    type = serializers.ChoiceField(choices=['user', 'team'], write_only=True)
+    type = serializers.ChoiceField(choices=["user", "team"], write_only=True)
 
     def validate(self, data):
-        if data['type'] == 'team' and not Team.objects.filter(id=data['id']).exists():
+        if data["type"] == "team" and not Team.objects.filter(id=data["id"]).exists():
             raise serializers.ValidationError("team must exist")
-        elif data['type'] == 'user' and not MyUser.objects.filter(id=data['id']).exists():
+        elif (
+            data["type"] == "user" and not MyUser.objects.filter(id=data["id"]).exists()
+        ):
             raise serializers.ValidationError("user must exist")
         return data

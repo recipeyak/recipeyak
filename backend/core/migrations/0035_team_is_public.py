@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0034_auto_20180303_0818'),
-    ]
+    dependencies = [("core", "0034_auto_20180303_0818")]
 
     operations = [
         migrations.AddField(
-            model_name='team',
-            name='is_public',
+            model_name="team",
+            name="is_public",
             field=models.BooleanField(default=False),
-        ),
+        )
     ]

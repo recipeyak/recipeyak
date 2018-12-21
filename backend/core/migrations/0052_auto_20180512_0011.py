@@ -5,24 +5,11 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0051_merge_20180511_1955'),
-    ]
+    dependencies = [("core", "0051_merge_20180511_1955")]
 
     operations = [
-        migrations.AlterUniqueTogether(
-            name='cartitem',
-            unique_together=set(),
-        ),
-        migrations.RemoveField(
-            model_name='cartitem',
-            name='recipe',
-        ),
-        migrations.RemoveField(
-            model_name='cartitem',
-            name='user',
-        ),
-        migrations.DeleteModel(
-            name='CartItem',
-        ),
+        migrations.AlterUniqueTogether(name="cartitem", unique_together=set()),
+        migrations.RemoveField(model_name="cartitem", name="recipe"),
+        migrations.RemoveField(model_name="cartitem", name="user"),
+        migrations.DeleteModel(name="CartItem"),
     ]

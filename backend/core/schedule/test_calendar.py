@@ -4,47 +4,39 @@ from django.urls import reverse
 from rest_framework import status
 from datetime import date
 
-from core.models import (
-    ScheduledRecipe,
-    Recipe,
-)
+from core.models import ScheduledRecipe, Recipe
 
 pytestmark = pytest.mark.django_db
 
 
 def test_creating_scheduled_recipe(client, recipe, user):
-    url = reverse('calendar-list')
-    data = {
-        'recipe': recipe.id,
-        'on': date(1976, 7, 6),
-        'count': 1,
-    }
+    url = reverse("calendar-list")
+    data = {"recipe": recipe.id, "on": date(1976, 7, 6), "count": 1}
     client.force_authenticate(user)
     res = client.post(url, data)
     assert res.status_code == status.HTTP_201_CREATED
-    assert ScheduledRecipe.objects.filter(id=res.json().get('id')).exists()
+    assert ScheduledRecipe.objects.filter(id=res.json().get("id")).exists()
 
 
 def test_recipe_returns_last_scheduled_date(client, scheduled_recipe, recipe2):
     recipe = scheduled_recipe.recipe
     user = scheduled_recipe.user
     client.force_authenticate(user)
-    res = client.get(reverse('recipes-detail', args=[recipe.id]))
+    res = client.get(reverse("recipes-detail", args=[recipe.id]))
     assert res.status_code == status.HTTP_200_OK
-    assert res.json()['last_scheduled'] == str(scheduled_recipe.on)
+    assert res.json()["last_scheduled"] == str(scheduled_recipe.on)
 
-    res = client.get(reverse('recipes-detail', args=[recipe2.id]))
+    res = client.get(reverse("recipes-detail", args=[recipe2.id]))
     assert res.status_code == status.HTTP_200_OK
-    assert res.json()['last_scheduled'] is None, \
-        'We return None if the recipe has not been scheduled'
+    assert (
+        res.json()["last_scheduled"] is None
+    ), "We return None if the recipe has not been scheduled"
 
 
 def test_updating_scheduled_recipe(client, user, scheduled_recipe):
-    url = reverse('calendar-detail', kwargs={'pk': scheduled_recipe.id})
+    url = reverse("calendar-detail", kwargs={"pk": scheduled_recipe.id})
     assert scheduled_recipe.count == 1
-    data = {
-        'count': 2
-    }
+    data = {"count": 2}
     client.force_authenticate(user)
     res = client.patch(url, data)
     assert res.status_code == status.HTTP_200_OK
@@ -52,7 +44,7 @@ def test_updating_scheduled_recipe(client, user, scheduled_recipe):
 
 
 def test_deleting_scheduled_recipe(client, user, scheduled_recipe):
-    url = reverse('calendar-detail', kwargs={'pk': scheduled_recipe.id})
+    url = reverse("calendar-detail", kwargs={"pk": scheduled_recipe.id})
     client.force_authenticate(user)
     res = client.delete(url)
     assert res.status_code == status.HTTP_204_NO_CONTENT
@@ -60,15 +52,16 @@ def test_deleting_scheduled_recipe(client, user, scheduled_recipe):
 
 
 def test_fetching_scheduled_recipes(client, user, scheduled_recipe):
-    url = reverse('calendar-list')
+    url = reverse("calendar-list")
     client.force_authenticate(user)
     res = client.get(url)
-    assert res.status_code == status.HTTP_400_BAD_REQUEST, \
-        "not providing start and end should result in a bad request"
+    assert (
+        res.status_code == status.HTTP_400_BAD_REQUEST
+    ), "not providing start and end should result in a bad request"
 
-    res = client.get(url, {'start': date(1976, 1, 1), 'end': date(1977, 1, 1)})
+    res = client.get(url, {"start": date(1976, 1, 1), "end": date(1977, 1, 1)})
     assert res.status_code == status.HTTP_200_OK
-    assert scheduled_recipe.id in [x['id'] for x in res.json()]
+    assert scheduled_recipe.id in [x["id"] for x in res.json()]
 
 
 def test_deleting_recipe_deletes_scheduled_recipes(recipe, scheduled_recipe, user):
@@ -95,16 +88,12 @@ def test_scheduling_the_same_recipe_twice_on_a_day(recipe, user):
 
 def test_dupe_scheduling_with_http(client, recipe, user):
     client.force_authenticate(user)
-    url = reverse('calendar-list')
-    data = {
-        'recipe': recipe.id,
-        'on': date(1976, 7, 6),
-        'count': 1,
-    }
+    url = reverse("calendar-list")
+    data = {"recipe": recipe.id, "on": date(1976, 7, 6), "count": 1}
     client.force_authenticate(user)
     assert client.post(url, data).status_code == status.HTTP_201_CREATED
     res = client.post(url, data)
     assert res.status_code == status.HTTP_201_CREATED
 
-    assert res.json().get('count') == 2
-    assert ScheduledRecipe.objects.get(id=res.json().get('id')).count == 2
+    assert res.json().get("count") == 2
+    assert ScheduledRecipe.objects.get(id=res.json().get("id")).count == 2

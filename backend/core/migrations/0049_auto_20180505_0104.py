@@ -6,19 +6,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0048_auto_20180502_1554'),
-    ]
+    dependencies = [("core", "0048_auto_20180502_1554")]
 
     operations = [
         migrations.AlterField(
-            model_name='scheduledrecipe',
-            name='count',
-            field=models.PositiveIntegerField(validators=[django.core.validators.MinValueValidator(1)]),
+            model_name="scheduledrecipe",
+            name="count",
+            field=models.PositiveIntegerField(
+                validators=[django.core.validators.MinValueValidator(1)]
+            ),
         ),
         migrations.AlterField(
-            model_name='scheduledrecipe',
-            name='on',
-            field=models.DateField(),
+            model_name="scheduledrecipe", name="on", field=models.DateField()
         ),
     ]
