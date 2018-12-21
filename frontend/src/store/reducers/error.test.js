@@ -1,4 +1,4 @@
-import error from './error.js'
+import error from "./error.js"
 import {
   setErrorLogin,
   setErrorSocialLogin,
@@ -6,11 +6,11 @@ import {
   setErrorReset,
   setErrorResetConfirmation,
   setErrorAddRecipe,
-  setErrorRecipes,
-} from '../actions.js'
+  setErrorRecipes
+} from "../actions.js"
 
-describe('error', () => {
-  it('sets login error', () => {
+describe("error", () => {
+  it("sets login error", () => {
     const notErrorState = {
       login: false
     }
@@ -19,16 +19,12 @@ describe('error', () => {
       login: true
     }
 
-    expect(
-      error(notErrorState, setErrorLogin(true))
-      ).toEqual(errorState)
+    expect(error(notErrorState, setErrorLogin(true))).toEqual(errorState)
 
-    expect(
-      error(errorState, setErrorLogin(false))
-      ).toEqual(notErrorState)
+    expect(error(errorState, setErrorLogin(false))).toEqual(notErrorState)
   })
 
-  it('sets social login error', () => {
+  it("sets social login error", () => {
     const notErrorState = {
       socialLogin: false
     }
@@ -37,16 +33,12 @@ describe('error', () => {
       socialLogin: true
     }
 
-    expect(
-      error(notErrorState, setErrorSocialLogin(true))
-      ).toEqual(errorState)
+    expect(error(notErrorState, setErrorSocialLogin(true))).toEqual(errorState)
 
-    expect(
-      error(errorState, setErrorSocialLogin(false))
-      ).toEqual(notErrorState)
+    expect(error(errorState, setErrorSocialLogin(false))).toEqual(notErrorState)
   })
 
-  it('sets recipes error', () => {
+  it("sets recipes error", () => {
     const notErrorState = {
       recipes: false
     }
@@ -55,16 +47,12 @@ describe('error', () => {
       recipes: true
     }
 
-    expect(
-      error(notErrorState, setErrorRecipes(true))
-      ).toEqual(errorState)
+    expect(error(notErrorState, setErrorRecipes(true))).toEqual(errorState)
 
-    expect(
-      error(errorState, setErrorRecipes(false))
-      ).toEqual(notErrorState)
+    expect(error(errorState, setErrorRecipes(false))).toEqual(notErrorState)
   })
 
-  it('sets signup error', () => {
+  it("sets signup error", () => {
     const notErrorState = {
       signup: false
     }
@@ -73,16 +61,12 @@ describe('error', () => {
       signup: true
     }
 
-    expect(
-      error(notErrorState, setErrorSignup(true))
-      ).toEqual(errorState)
+    expect(error(notErrorState, setErrorSignup(true))).toEqual(errorState)
 
-    expect(
-      error(errorState, setErrorSignup(false))
-      ).toEqual(notErrorState)
+    expect(error(errorState, setErrorSignup(false))).toEqual(notErrorState)
   })
 
-  it('sets addRecipe error', () => {
+  it("sets addRecipe error", () => {
     const notErrorState = {
       addRecipe: false
     }
@@ -91,16 +75,12 @@ describe('error', () => {
       addRecipe: true
     }
 
-    expect(
-      error(notErrorState, setErrorAddRecipe(true))
-      ).toEqual(errorState)
+    expect(error(notErrorState, setErrorAddRecipe(true))).toEqual(errorState)
 
-    expect(
-      error(errorState, setErrorAddRecipe(false))
-      ).toEqual(notErrorState)
+    expect(error(errorState, setErrorAddRecipe(false))).toEqual(notErrorState)
   })
 
-  it('sets reset error', () => {
+  it("sets reset error", () => {
     const notErrorState = {
       reset: false
     }
@@ -109,16 +89,12 @@ describe('error', () => {
       reset: true
     }
 
-    expect(
-      error(notErrorState, setErrorReset(true))
-      ).toEqual(errorState)
+    expect(error(notErrorState, setErrorReset(true))).toEqual(errorState)
 
-    expect(
-      error(errorState, setErrorReset(false))
-      ).toEqual(notErrorState)
+    expect(error(errorState, setErrorReset(false))).toEqual(notErrorState)
   })
 
-  it('sets resetConfirmation error', () => {
+  it("sets resetConfirmation error", () => {
     const notErrorState = {
       resetConfirmation: false
     }
@@ -127,12 +103,12 @@ describe('error', () => {
       resetConfirmation: true
     }
 
-    expect(
-      error(notErrorState, setErrorResetConfirmation(true))
-      ).toEqual(errorState)
+    expect(error(notErrorState, setErrorResetConfirmation(true))).toEqual(
+      errorState
+    )
 
-    expect(
-      error(errorState, setErrorResetConfirmation(false))
-      ).toEqual(notErrorState)
+    expect(error(errorState, setErrorResetConfirmation(false))).toEqual(
+      notErrorState
+    )
   })
 })

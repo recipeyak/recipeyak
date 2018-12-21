@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-const fs = require('fs')
-const puppeteer = require('puppeteer')
+const fs = require("fs")
+const puppeteer = require("puppeteer")
 
 const HELP = `usage: ./crawl.js url [file]`
 
-function writeFile (filename, content) {
+function writeFile(filename, content) {
   return new Promise((resolve, reject) => {
-    fs.writeFile(filename, content, (err) => {
+    fs.writeFile(filename, content, err => {
       if (err) {
         reject(err)
       }
@@ -27,10 +27,9 @@ async function main() {
   const URL = args[0]
   const filename = args.length === 2 ? args[1] : null
 
-
   // we run as root since, 'Running as root without --no-sandbox is not supported.
   // See https://crbug.com/638180.'
-  const browser = await puppeteer.launch({ args: ['--no-sandbox'] })
+  const browser = await puppeteer.launch({ args: ["--no-sandbox"] })
   const page = await browser.newPage()
   await page.goto(URL)
   const content = await page.content()
@@ -38,7 +37,7 @@ async function main() {
   if (filename) {
     try {
       await writeFile(filename, content)
-    } catch(e) {
+    } catch (e) {
       console.error(e)
       await browser.close()
       process.exit(1)

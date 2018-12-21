@@ -1,15 +1,15 @@
-import loading from './loading.js'
+import loading from "./loading.js"
 import {
   setLoadingLogin,
   setLoadingSignup,
   setLoadingReset,
   setLoadingResetConfirmation,
   setLoadingRecipes,
-  setLoadingAddRecipe,
-} from '../actions.js'
+  setLoadingAddRecipe
+} from "../actions.js"
 
-describe('loading', () => {
-  it('sets loading login', () => {
+describe("loading", () => {
+  it("sets loading login", () => {
     const notLoadingState = {
       login: false
     }
@@ -18,16 +18,16 @@ describe('loading', () => {
       login: true
     }
 
-    expect(
-      loading(notLoadingState, setLoadingLogin(true))
-      ).toEqual(loadingState)
+    expect(loading(notLoadingState, setLoadingLogin(true))).toEqual(
+      loadingState
+    )
 
-    expect(
-      loading(loadingState, setLoadingLogin(false))
-      ).toEqual(notLoadingState)
+    expect(loading(loadingState, setLoadingLogin(false))).toEqual(
+      notLoadingState
+    )
   })
 
-  it('sets loading signup', () => {
+  it("sets loading signup", () => {
     const notLoadingState = {
       signup: false
     }
@@ -36,16 +36,16 @@ describe('loading', () => {
       signup: true
     }
 
-    expect(
-      loading(notLoadingState, setLoadingSignup(true))
-      ).toEqual(loadingState)
+    expect(loading(notLoadingState, setLoadingSignup(true))).toEqual(
+      loadingState
+    )
 
-    expect(
-      loading(loadingState, setLoadingSignup(false))
-      ).toEqual(notLoadingState)
+    expect(loading(loadingState, setLoadingSignup(false))).toEqual(
+      notLoadingState
+    )
   })
 
-  it('sets loading reset', () => {
+  it("sets loading reset", () => {
     const notLoadingState = {
       reset: false
     }
@@ -54,16 +54,16 @@ describe('loading', () => {
       reset: true
     }
 
-    expect(
-      loading(notLoadingState, setLoadingReset(true))
-      ).toEqual(loadingState)
+    expect(loading(notLoadingState, setLoadingReset(true))).toEqual(
+      loadingState
+    )
 
-    expect(
-      loading(loadingState, setLoadingReset(false))
-      ).toEqual(notLoadingState)
+    expect(loading(loadingState, setLoadingReset(false))).toEqual(
+      notLoadingState
+    )
   })
 
-  it('sets loading recipes', () => {
+  it("sets loading recipes", () => {
     const notLoadingState = {
       recipes: false
     }
@@ -72,16 +72,16 @@ describe('loading', () => {
       recipes: true
     }
 
-    expect(
-      loading(notLoadingState, setLoadingRecipes(true))
-      ).toEqual(loadingState)
+    expect(loading(notLoadingState, setLoadingRecipes(true))).toEqual(
+      loadingState
+    )
 
-    expect(
-      loading(loadingState, setLoadingRecipes(false))
-      ).toEqual(notLoadingState)
+    expect(loading(loadingState, setLoadingRecipes(false))).toEqual(
+      notLoadingState
+    )
   })
 
-  it('sets loading addRecipe', () => {
+  it("sets loading addRecipe", () => {
     const notLoadingState = {
       addRecipe: false
     }
@@ -90,16 +90,16 @@ describe('loading', () => {
       addRecipe: true
     }
 
-    expect(
-      loading(notLoadingState, setLoadingAddRecipe(true))
-      ).toEqual(loadingState)
+    expect(loading(notLoadingState, setLoadingAddRecipe(true))).toEqual(
+      loadingState
+    )
 
-    expect(
-      loading(loadingState, setLoadingAddRecipe(false))
-      ).toEqual(notLoadingState)
+    expect(loading(loadingState, setLoadingAddRecipe(false))).toEqual(
+      notLoadingState
+    )
   })
 
-  it('sets loading reset confirmation', () => {
+  it("sets loading reset confirmation", () => {
     const notLoadingState = {
       resetConfirmation: false
     }
@@ -108,12 +108,12 @@ describe('loading', () => {
       resetConfirmation: true
     }
 
-    expect(
-      loading(notLoadingState, setLoadingResetConfirmation(true))
-      ).toEqual(loadingState)
+    expect(loading(notLoadingState, setLoadingResetConfirmation(true))).toEqual(
+      loadingState
+    )
 
-    expect(
-      loading(loadingState, setLoadingResetConfirmation(false))
-      ).toEqual(notLoadingState)
+    expect(loading(loadingState, setLoadingResetConfirmation(false))).toEqual(
+      notLoadingState
+    )
   })
 })

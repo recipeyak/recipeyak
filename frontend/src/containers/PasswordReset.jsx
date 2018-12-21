@@ -1,7 +1,7 @@
-import { connect } from 'react-redux'
+import { connect } from "react-redux"
 
-import { reset } from '../store/actions'
-import PasswordReset from '../components/PasswordReset'
+import { reset } from "../store/actions"
+import PasswordReset from "../components/PasswordReset"
 
 const mapDispatchToProps = dispatch => ({
   reset: email => dispatch(reset(email))

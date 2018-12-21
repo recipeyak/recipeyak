@@ -1,4 +1,4 @@
-import { connect } from 'react-redux'
+import { connect } from "react-redux"
 
 import {
   fetchUser,
@@ -6,10 +6,10 @@ import {
   updatingEmail,
   disconnectSocialAccount,
   loggingOut,
-  deleteUserAccount,
-} from '../store/actions.js'
+  deleteUserAccount
+} from "../store/actions.js"
 
-import Settings from '../components/Settings.jsx'
+import Settings from "../components/Settings.jsx"
 
 const mapStateToProps = state => {
   return {
@@ -31,9 +31,10 @@ const mapDispatchToProps = dispatch => {
       dispatch(fetchUser())
       dispatch(fetchSocialConnections())
     },
-    disconnectAccount: (provider, id) => dispatch(disconnectSocialAccount(provider, id)),
+    disconnectAccount: (provider, id) =>
+      dispatch(disconnectSocialAccount(provider, id)),
     deleteUserAccount: () => dispatch(deleteUserAccount()),
-    updateEmail: email => dispatch(updatingEmail(email)),
+    updateEmail: email => dispatch(updatingEmail(email))
   }
 }
 

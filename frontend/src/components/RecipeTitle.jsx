@@ -1,16 +1,14 @@
-import React from 'react'
-import { Button, ButtonPrimary } from './Buttons'
-import MetaData from './MetaData'
-import DatePickerForm from './DatePickerForm'
-import PropTypes from 'prop-types'
+import React from "react"
+import { Button, ButtonPrimary } from "./Buttons"
+import MetaData from "./MetaData"
+import DatePickerForm from "./DatePickerForm"
+import PropTypes from "prop-types"
 
 export default class RecipeTitle extends React.Component {
   state = {
     show: false,
     edit: false,
-    recipe: {
-
-    }
+    recipe: {}
   }
 
   static propTypes = {
@@ -24,7 +22,7 @@ export default class RecipeTitle extends React.Component {
     update: PropTypes.func.isRequired,
     updating: PropTypes.bool.isRequired,
     remove: PropTypes.func.isRequired,
-    deleting: PropTypes.bool.isRequired,
+    deleting: PropTypes.bool.isRequired
   }
 
   toggleEdit = () => this.setState(prev => ({ edit: !prev.edit }))
@@ -47,12 +45,16 @@ export default class RecipeTitle extends React.Component {
   }
 
   handleDelete = () => {
-    if (confirm(`Are you sure you want to delete this recipe "${this.props.name}"?`)) {
+    if (
+      confirm(
+        `Are you sure you want to delete this recipe "${this.props.name}"?`
+      )
+    ) {
       this.props.remove(this.props.id)
     }
   }
 
-  render () {
+  render() {
     const {
       id,
       name,
@@ -61,127 +63,145 @@ export default class RecipeTitle extends React.Component {
       servings,
       time,
       owner = {
-        type: 'user',
+        type: "user",
         id: 0,
-        name: '',
+        name: ""
       },
       updating,
       deleting,
-      lastScheduled,
+      lastScheduled
     } = this.props
-    const toolTip = lastScheduled ? 'last scheduled: ' + lastScheduled : 'never scheduled'
+    const toolTip = lastScheduled
+      ? "last scheduled: " + lastScheduled
+      : "never scheduled"
     return (
       <div>
         <div className="grid-entire-row d-flex justify-space-between p-rel">
-          { !this.state.edit
-              ? <div className="d-flex align-items-center">
-                    <h1 className="title fs-3rem mb-0 cursor-pointer" onClick={this.toggleEdit}>{ name }</h1>
-                  </div>
-            : <input
-                  className="my-input fs-2rem mb-4"
-                  type="text"
-                  autoFocus
-                  placeholder="new recipe title"
-                  onChange={ this.handleInputChange }
-                  defaultValue={ name }
-                  name="name"/>
-                }
-                <div>
-          <div className="p-rel ml-4" title={toolTip}>
-            <ButtonPrimary onClick={() => this.setState(prev => ({ show: !prev.show }))} className="is-small">
-              schedule
-            </ButtonPrimary>
-            <DatePickerForm
-              recipeID={id}
-              show={this.state.show}
-              close={() => this.setState({ show: false })}
+          {!this.state.edit ? (
+            <div className="d-flex align-items-center">
+              <h1
+                className="title fs-3rem mb-0 cursor-pointer"
+                onClick={this.toggleEdit}>
+                {name}
+              </h1>
+            </div>
+          ) : (
+            <input
+              className="my-input fs-2rem mb-4"
+              type="text"
+              autoFocus
+              placeholder="new recipe title"
+              onChange={this.handleInputChange}
+              defaultValue={name}
+              name="name"
             />
-          </div>
+          )}
+          <div>
+            <div className="p-rel ml-4" title={toolTip}>
+              <ButtonPrimary
+                onClick={() => this.setState(prev => ({ show: !prev.show }))}
+                className="is-small">
+                schedule
+              </ButtonPrimary>
+              <DatePickerForm
+                recipeID={id}
+                show={this.state.show}
+                close={() => this.setState({ show: false })}
+              />
+            </div>
           </div>
         </div>
 
-        { !this.state.edit
-      ? <div className="grid-entire-row">
-        <MetaData
-          onClick={this.toggleEdit}
-          owner={owner}
-          name={name}
-          author={author}
-          source={source}
-          servings={servings}
-          recipeId={id}
-          time={time}/>
-      </div>
-
-            : <div className="d-grid grid-entire-row align-items-center meta-data-grid">
-      <div className="d-grid grid-entire-row align-items-center meta-data-grid">
-        <label className="d-flex align-center">By
-          <input
-            className="my-input ml-2"
-            type="text"
-            placeholder="Author"
-            defaultValue={ author }
-            onChange={ this.handleInputChange }
-            name="author"/>
-        </label>
-        <label className="d-flex align-center">from
-          <input
-            className="my-input ml-2"
-            type="text"
-            placeholder="http://example.com/dumpling-soup"
-            defaultValue={ source }
-            onChange={ this.handleInputChange }
-            name="source"/>
-        </label>
-        <label className="d-flex align-center">creating
-          <input
-            className="my-input ml-2"
-            type="text"
-            placeholder="4 to 6 servings"
-            defaultValue={ servings }
-            onChange={ this.handleInputChange }
-            name="servings"/>
-        </label>
-        <label className="d-flex align-center">in
-          <input
-            className="my-input ml-2"
-            type="text"
-            placeholder="1 hour"
-            defaultValue={ time }
-            onChange={ this.handleInputChange }
-            name="time"/>
-        </label>
-
-      </div>
-      <div className="d-flex grid-entire-row align-items-center justify-space-between">
-
-        <Button
-          className="is-small"
-          type="submit"
-          loading={deleting}
-          onClick={this.handleDelete}
-          name="delete recipe" >
-          Delete
-        </Button>
-        <div>
-        <Button
-          className="is-small ml-2"
-          type="submit"
-          loading={updating}
-          onClick={this.handleSave}
-          name="save recipe" >
-          Save
-        </Button>
-        <input
-          className='my-button is-small ml-2'
-          type="button"
-          name="cancel recipe update"
-          onClick={this.toggleEdit}
-          value="Cancel"/>
-      </div>
-      </div>
-      </div>
-        }
+        {!this.state.edit ? (
+          <div className="grid-entire-row">
+            <MetaData
+              onClick={this.toggleEdit}
+              owner={owner}
+              name={name}
+              author={author}
+              source={source}
+              servings={servings}
+              recipeId={id}
+              time={time}
+            />
+          </div>
+        ) : (
+          <div className="d-grid grid-entire-row align-items-center meta-data-grid">
+            <div className="d-grid grid-entire-row align-items-center meta-data-grid">
+              <label className="d-flex align-center">
+                By
+                <input
+                  className="my-input ml-2"
+                  type="text"
+                  placeholder="Author"
+                  defaultValue={author}
+                  onChange={this.handleInputChange}
+                  name="author"
+                />
+              </label>
+              <label className="d-flex align-center">
+                from
+                <input
+                  className="my-input ml-2"
+                  type="text"
+                  placeholder="http://example.com/dumpling-soup"
+                  defaultValue={source}
+                  onChange={this.handleInputChange}
+                  name="source"
+                />
+              </label>
+              <label className="d-flex align-center">
+                creating
+                <input
+                  className="my-input ml-2"
+                  type="text"
+                  placeholder="4 to 6 servings"
+                  defaultValue={servings}
+                  onChange={this.handleInputChange}
+                  name="servings"
+                />
+              </label>
+              <label className="d-flex align-center">
+                in
+                <input
+                  className="my-input ml-2"
+                  type="text"
+                  placeholder="1 hour"
+                  defaultValue={time}
+                  onChange={this.handleInputChange}
+                  name="time"
+                />
+              </label>
+            </div>
+            <div className="d-flex grid-entire-row align-items-center justify-space-between">
+              <Button
+                className="is-small"
+                type="submit"
+                loading={deleting}
+                onClick={this.handleDelete}
+                name="delete recipe">
+                Delete
+              </Button>
+              <div>
+                <Button
+                  className="is-small ml-2"
+                  type="submit"
+                  loading={updating}
+                  onClick={this.handleSave}
+                  name="save recipe">
+                  Save
+                </Button>
+                <input
+                  className="my-button is-small ml-2"
+                  type="button"
+                  name="cancel recipe update"
+                  onClick={this.toggleEdit}
+                  value="Cancel"
+                />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     )
   }

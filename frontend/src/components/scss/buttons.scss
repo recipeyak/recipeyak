@@ -1,11 +1,13 @@
-@import './variables.scss';
-@import '~bulma/sass/elements/button.sass';
+@import "./variables.scss";
+@import "~bulma/sass/elements/button.sass";
 
 .github-button {
   @extend .button;
   background-color: $github;
   color: white;
-  &:hover, &:focus, &:active {
+  &:hover,
+  &:focus,
+  &:active {
     background-color: darken($github, 5);
     color: darken(white, 10);
     text-decoration: none;
@@ -20,7 +22,9 @@
   @extend .button;
   background-color: $gitlab;
   color: white;
-  &:hover, &:focus, &:active {
+  &:hover,
+  &:focus,
+  &:active {
     background-color: darken($gitlab, 5);
     color: darken(white, 10);
     text-decoration: none;
@@ -84,7 +88,6 @@
   &:hover:not([disabled]) {
     border-color: $primary-color-dark;
     text-decoration: none;
-
   }
 
   &.is-small {
@@ -171,6 +174,4 @@
     opacity: 0.5;
     cursor: not-allowed;
   }
-
-
 }

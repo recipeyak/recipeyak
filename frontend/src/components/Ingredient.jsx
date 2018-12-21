@@ -1,21 +1,15 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from "react"
+import PropTypes from "prop-types"
 
-import IngredientView from './IngredientView'
+import IngredientView from "./IngredientView"
 
-const emptyField = ({
-  quantity,
-  name,
-}) => quantity === '' || name === ''
+const emptyField = ({ quantity, name }) => quantity === "" || name === ""
 
-const allEmptyFields = ({
-  quantity,
-  name,
-  description
-}) => quantity === '' && name === '' && description === ''
+const allEmptyFields = ({ quantity, name, description }) =>
+  quantity === "" && name === "" && description === ""
 
 export default class Ingredient extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       quantity: props.quantity,
@@ -38,26 +32,26 @@ export default class Ingredient extends React.Component {
     remove: PropTypes.func.isRequired,
     updating: PropTypes.bool.isRequired,
     optional: PropTypes.bool.isRequired,
-    removing: PropTypes.bool.isRequired,
+    removing: PropTypes.bool.isRequired
   }
 
   static defaultProps = {
     // need default recipeID for when we use this in the Add Recipe page
     recipeID: -1,
-    quantity: '',
-    name: '',
-    description: '',
+    quantity: "",
+    name: "",
+    description: "",
     optional: false,
     updating: false,
-    removing: false,
+    removing: false
   }
 
-  componentWillMount () {
-    document.addEventListener('mouseup', this.handleGeneralClick)
+  componentWillMount() {
+    document.addEventListener("mouseup", this.handleGeneralClick)
   }
 
-  componentWillUnmount () {
-    document.removeEventListener('mouseup', this.handleGeneralClick)
+  componentWillUnmount() {
+    document.removeEventListener("mouseup", this.handleGeneralClick)
   }
 
   // ensures that the list item closes when the user clicks outside of the item
@@ -71,7 +65,8 @@ export default class Ingredient extends React.Component {
         prevState.description !== props.description
       return {
         editing: false,
-        unsavedChanges: (prevState.editing && contentChanged) || prevState.unsavedChanges
+        unsavedChanges:
+          (prevState.editing && contentChanged) || prevState.unsavedChanges
       }
     })
   }
@@ -93,11 +88,7 @@ export default class Ingredient extends React.Component {
 
   discardChanges = () => {
     this.setState((_, props) => {
-      const {
-        quantity,
-        name,
-        description
-      } = props
+      const { quantity, name, description } = props
 
       return {
         editing: false,
@@ -117,11 +108,7 @@ export default class Ingredient extends React.Component {
     e.stopPropagation()
 
     this.setState((_, props) => {
-      const {
-        quantity,
-        name,
-        description
-      } = props
+      const { quantity, name, description } = props
 
       return {
         editing: false,
@@ -142,18 +129,13 @@ export default class Ingredient extends React.Component {
       return this.remove()
     }
 
-    const {
-      quantity,
-      name,
-      description,
-      optional,
-    } = this.state
+    const { quantity, name, description, optional } = this.state
 
     await this.props.update({
       quantity,
       name,
       description,
-      optional,
+      optional
     })
 
     this.setState({
@@ -162,10 +144,9 @@ export default class Ingredient extends React.Component {
     })
   }
 
-  remove = () =>
-    this.props.remove(this.props.recipeID, this.props.id)
+  remove = () => this.props.remove(this.props.recipeID, this.props.id)
 
-  render () {
+  render() {
     const {
       handleInputChange,
       enableEditing,
@@ -184,122 +165,125 @@ export default class Ingredient extends React.Component {
       unsavedChanges
     } = this.state
 
-    const {
-      updating,
-      removing
-    } = this.props
+    const { updating, removing } = this.props
 
-    const inner = editing
-      ? <form onSubmit={ update }>
+    const inner = editing ? (
+      <form onSubmit={update}>
+        <div className="field">
+          <div className="add-ingredient-grid">
+            <input
+              onChange={handleInputChange}
+              autoFocus
+              onFocus={e => e.target.select()}
+              value={quantity}
+              className="my-input input-quantity"
+              type="text"
+              placeholder="3 lbs"
+              name="quantity"
+            />
 
-          <div className="field">
+            <input
+              onChange={handleInputChange}
+              onFocus={e => e.target.select()}
+              value={name}
+              className="my-input input-ingredient"
+              type="text"
+              placeholder="tomato"
+              name="name"
+            />
 
-            <div className="add-ingredient-grid">
-
-              <input
-                onChange={ handleInputChange }
-                autoFocus
-                onFocus={ e => e.target.select() }
-                value={ quantity }
-                className="my-input input-quantity"
-                type="text"
-                placeholder="3 lbs"
-                name="quantity"/>
-
-              <input
-                onChange={ handleInputChange }
-                onFocus={ e => e.target.select() }
-                value={ name }
-                className="my-input input-ingredient"
-                type="text"
-                placeholder="tomato"
-                name="name"/>
-
-              <input
-                onChange={ handleInputChange }
-                onFocus={ e => e.target.select() }
-                value={ description }
-                className="my-input input-ingredient grid-entire-row"
-                type="text"
-                placeholder="diced at 3cm in width"
-                name="description"/>
-
-            </div>
+            <input
+              onChange={handleInputChange}
+              onFocus={e => e.target.select()}
+              value={description}
+              className="my-input input-ingredient grid-entire-row"
+              type="text"
+              placeholder="diced at 3cm in width"
+              name="description"
+            />
           </div>
+        </div>
 
-          <label className="d-flex align-items-center cursor-pointer mb-2">
+        <label className="d-flex align-items-center cursor-pointer mb-2">
           <input
-            onChange={ this.toggleOptional }
-            checked={ optional }
+            onChange={this.toggleOptional}
+            checked={optional}
             name="optional"
-            type='checkbox'
-            className="mr-2"/>
-            Optional
-          </label>
+            type="checkbox"
+            className="mr-2"
+          />
+          Optional
+        </label>
 
-          <section className="listitem-button-container">
-            <div className="field is-grouped">
-              <p className="control">
-                <button
-                  className={ 'my-button is-small ' + (updating ? 'is-loading' : '')}
-                  type="submit"
-                  name="update">
-                  Update
-                </button>
-              </p>
-              <p className="control">
-                <input
-                  onClick={ cancel }
-                  className="my-button is-small"
-                  type="button"
-                  name="cancel edit"
-                  value="Cancel"
-                />
-              </p>
-            </div>
-            <div className="field is-grouped">
-              <p className="control">
-                <button
-                  onClick={ remove }
-                  className={ 'my-button is-small ' + (removing ? 'is-loading' : '')}
-                  type="button"
-                  name="remove">
-                  Remove
-                </button>
-              </p>
-            </div>
-          </section>
-        </form>
-      : <IngredientView
-          quantity={quantity}
-          name={name}
-          description={description}
-          optional={this.state.optional}
-        />
+        <section className="listitem-button-container">
+          <div className="field is-grouped">
+            <p className="control">
+              <button
+                className={
+                  "my-button is-small " + (updating ? "is-loading" : "")
+                }
+                type="submit"
+                name="update">
+                Update
+              </button>
+            </p>
+            <p className="control">
+              <input
+                onClick={cancel}
+                className="my-button is-small"
+                type="button"
+                name="cancel edit"
+                value="Cancel"
+              />
+            </p>
+          </div>
+          <div className="field is-grouped">
+            <p className="control">
+              <button
+                onClick={remove}
+                className={
+                  "my-button is-small " + (removing ? "is-loading" : "")
+                }
+                type="button"
+                name="remove">
+                Remove
+              </button>
+            </p>
+          </div>
+        </section>
+      </form>
+    ) : (
+      <IngredientView
+        quantity={quantity}
+        name={name}
+        description={description}
+        optional={this.state.optional}
+      />
+    )
 
     return (
-      <li ref={element => { this.element = element }}>
-        <section
-          className="cursor-pointer"
-          onClick={ enableEditing }>
-        { inner }
+      <li
+        ref={element => {
+          this.element = element
+        }}>
+        <section className="cursor-pointer" onClick={enableEditing}>
+          {inner}
         </section>
-        {
-          unsavedChanges &&
+        {unsavedChanges && (
           <section className="d-flex justify-space-between align-center">
             <span className="is-italic fs-4">Unsaved Changes</span>
             <section>
-              <a onClick={ enableEditing }
-                className="my-button is-small is-link">
+              <a onClick={enableEditing} className="my-button is-small is-link">
                 View Edits
               </a>
-              <a onClick={ discardChanges }
+              <a
+                onClick={discardChanges}
                 className="my-button is-small is-link">
                 Discard
               </a>
             </section>
           </section>
-        }
+        )}
       </li>
     )
   }

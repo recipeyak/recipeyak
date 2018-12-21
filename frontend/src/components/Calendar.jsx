@@ -1,53 +1,42 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import startOfMonth from 'date-fns/start_of_month'
-import endOfMonth from 'date-fns/end_of_month'
-import eachDay from 'date-fns/each_day'
-import addMonths from 'date-fns/add_months'
-import subMonths from 'date-fns/sub_months'
-import subDays from 'date-fns/sub_days'
-import addDays from 'date-fns/add_days'
-import format from 'date-fns/format'
-import PropTypes from 'prop-types'
+import React from "react"
+import { connect } from "react-redux"
+import startOfMonth from "date-fns/start_of_month"
+import endOfMonth from "date-fns/end_of_month"
+import eachDay from "date-fns/each_day"
+import addMonths from "date-fns/add_months"
+import subMonths from "date-fns/sub_months"
+import subDays from "date-fns/sub_days"
+import addDays from "date-fns/add_days"
+import format from "date-fns/format"
+import PropTypes from "prop-types"
 
 import {
   fetchCalendar,
   fetchTeams,
   fetchShoppingList,
   fetchRecipeList,
-  setScheduleURL,
-} from '../store/actions'
+  setScheduleURL
+} from "../store/actions"
 
-import {
-  pyFormat,
-  daysFromSunday,
-  daysUntilSaturday,
-} from '../date'
+import { pyFormat, daysFromSunday, daysUntilSaturday } from "../date"
 
-import {
-  teamsFrom
-} from '../store/mapState'
+import { teamsFrom } from "../store/mapState"
 
-import {
-  push,
-} from 'react-router-redux'
+import { push } from "react-router-redux"
 
-import { ButtonPrimary, ButtonPlain } from './Buttons'
-import Loader from './Loader'
-import CalendarDay from './CalendarDay'
+import { ButtonPrimary, ButtonPlain } from "./Buttons"
+import Loader from "./Loader"
+import CalendarDay from "./CalendarDay"
 
-function monthYearFromDate (date) {
-  return format(date, 'MMM | YYYY')
+function monthYearFromDate(date) {
+  return format(date, "MMM | YYYY")
 }
 
 const mapStateToProps = (state, props) => {
   const isTeam = props.match.params.id != null
-  const teamID = isTeam
-    ? parseInt(props.match.params.id, 10)
-    : 'personal'
+  const teamID = isTeam ? parseInt(props.match.params.id, 10) : "personal"
 
-  const days =
-    state.calendar.allIds
+  const days = state.calendar.allIds
     .map(id => state.calendar[id])
     .filter(x => {
       if (!isTeam) {
@@ -56,13 +45,16 @@ const mapStateToProps = (state, props) => {
       }
       return x.team === teamID
     })
-    .reduce((a, b) => ({
-      ...a,
-      [b.on]: {
-        ...a[b.on],
-        [b.id]: b
-      }
-    }), {})
+    .reduce(
+      (a, b) => ({
+        ...a,
+        [b.on]: {
+          ...a[b.on],
+          [b.id]: b
+        }
+      }),
+      {}
+    )
 
   return {
     days,
@@ -73,34 +65,35 @@ const mapStateToProps = (state, props) => {
     teamID,
     isTeam,
     start: state.shoppinglist.startDay,
-    end: state.shoppinglist.endDay,
+    end: state.shoppinglist.endDay
   }
 }
 
 const mapDispatchToProps = dispatch => ({
-  fetchData: (month, teamID = 'personal') => dispatch(fetchCalendar(teamID, month)),
+  fetchData: (month, teamID = "personal") =>
+    dispatch(fetchCalendar(teamID, month)),
   fetchTeams: () => dispatch(fetchTeams()),
-  navTo: (url) => {
+  navTo: url => {
     dispatch(push(url))
     dispatch(setScheduleURL(url))
   },
   refetchShoppingListAndRecipes: (teamID, start, end) => {
     return Promise.all([
       dispatch(fetchRecipeList(teamID)),
-      dispatch(fetchShoppingList(teamID, start, end)),
+      dispatch(fetchShoppingList(teamID, start, end))
     ])
   }
 })
 
 @connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )
 export default class Calendar extends React.Component {
   state = {
     month: new Date(),
     initialLoad: false,
-    owner: 'personal',
+    owner: "personal"
   }
 
   static propTypes = {
@@ -113,28 +106,34 @@ export default class Calendar extends React.Component {
     navTo: PropTypes.func.isRequired,
     teams: PropTypes.arrayOf(PropTypes.object).isRequired,
     isTeam: PropTypes.bool.isRequired,
-    teamID: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
-    refetchShoppingListAndRecipes: PropTypes.func.isRequired,
+    teamID: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+      .isRequired,
+    refetchShoppingListAndRecipes: PropTypes.func.isRequired
   }
 
   static defaultProps = {
     loading: true,
     error: false,
-    className: '',
+    className: "",
     loadingTeams: true,
     teams: [],
-    teamID: 'personal',
+    teamID: "personal"
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.fetchTeams()
-    this.props.fetchData(this.state.month, this.props.teamID)
+    this.props
+      .fetchData(this.state.month, this.props.teamID)
       .then(() => this.setState({ initialLoad: true }))
   }
 
   refetchData = (teamID = this.props.teamID) => {
     this.props.fetchData(this.state.month, teamID)
-    this.props.refetchShoppingListAndRecipes(teamID, this.props.startDay, this.props.endDay)
+    this.props.refetchShoppingListAndRecipes(
+      teamID,
+      this.props.startDay,
+      this.props.endDay
+    )
   }
 
   prevMonth = () => {
@@ -155,17 +154,13 @@ export default class Calendar extends React.Component {
     this.setState({ month: new Date() })
   }
 
-  handleOwnerChange = (e) => {
+  handleOwnerChange = e => {
     const teamID = e.target.value
-    const url = teamID === 'personal'
-      ? '/schedule/'
-      : `/t/${teamID}/schedule/`
+    const url = teamID === "personal" ? "/schedule/" : `/t/${teamID}/schedule/`
 
-    const isRecipes = this.props.match.params['type'] === 'recipes'
+    const isRecipes = this.props.match.params["type"] === "recipes"
 
-    const ending = isRecipes
-      ? 'recipes'
-      : 'shopping'
+    const ending = isRecipes ? "recipes" : "shopping"
 
     const urlWithEnding = url + ending
 
@@ -174,87 +169,95 @@ export default class Calendar extends React.Component {
     this.refetchData(teamID)
   }
 
-  render () {
+  render() {
     if (this.props.error) {
-      return (
-          <p>Error fetching data</p>
-      )
+      return <p>Error fetching data</p>
     }
 
     if (this.props.loading && !this.state.initialLoad) {
       return (
-        <div className={`d-flex w-100 justify-content-center align-items-center ${this.props.className}`}>
+        <div
+          className={`d-flex w-100 justify-content-center align-items-center ${
+            this.props.className
+          }`}>
           <div>
-            <Loader/>
+            <Loader />
           </div>
         </div>
       )
     }
 
     return (
-      <div className={ `flex-grow-1 ${this.props.className}` }>
-          <div className="d-flex justify-space-between align-items-end">
-            <div className="d-flex align-items-center">
-              <p title={ this.state.month.toString() }>{ monthYearFromDate(this.state.month) }</p>
-              <div className="select is-small ml-2">
-                <select
-                  onChange={this.handleOwnerChange}
-                  value={this.props.teamID}
-                  disabled={this.props.loadingTeams}>
-                  <option value='personal'>Personal</option>
-                  { this.props.teams.map(t =>
-                    <option key={t.id} value={t.id}>{t.name}</option>)
-                  }
-                </select>
-              </div>
+      <div className={`flex-grow-1 ${this.props.className}`}>
+        <div className="d-flex justify-space-between align-items-end">
+          <div className="d-flex align-items-center">
+            <p title={this.state.month.toString()}>
+              {monthYearFromDate(this.state.month)}
+            </p>
+            <div className="select is-small ml-2">
+              <select
+                onChange={this.handleOwnerChange}
+                value={this.props.teamID}
+                disabled={this.props.loadingTeams}>
+                <option value="personal">Personal</option>
+                {this.props.teams.map(t => (
+                  <option key={t.id} value={t.id}>
+                    {t.name}
+                  </option>
+                ))}
+              </select>
             </div>
-
-            <div>
-              <ButtonPlain
-                className="is-small"
-                onClick={this.prevMonth}>
-                {'←'}
-              </ButtonPlain>
-              <ButtonPrimary
-                className="ml-1 mr-1 is-small"
-                onClick={this.currentMonth}>
-                Today
-              </ButtonPrimary>
-              <ButtonPlain
-                className="is-small"
-                onClick={this.nextMonth}>
-                {'→'}
-              </ButtonPlain>
-            </div>
-
           </div>
-          <div className={'d-grid grid-gap-1 calendar-grid grid-auto-rows-unset mb-0'} >
-            <b>Su</b>
-            <b>Mo</b>
-            <b>Tu</b>
-            <b>We</b>
-            <b>Th</b>
-            <b>Fr</b>
-            <b>Sa</b>
-          </div>
-          <div className={'d-grid grid-gap-1 calendar-grid mb-0'} >
 
-            {
-              eachDay(
-                subDays(startOfMonth(this.state.month), daysFromSunday(this.state.month)),
-                addDays(endOfMonth(this.state.month), daysUntilSaturday(endOfMonth(this.state.month))),
-              ).map((date) =>
-                <CalendarDay
-                  item={this.props.days[pyFormat(date)]}
-                  date={date}
-                  key={date}
-                  teamID={this.props.teamID}
-                />
-              )
-            }
+          <div>
+            <ButtonPlain className="is-small" onClick={this.prevMonth}>
+              {"←"}
+            </ButtonPlain>
+            <ButtonPrimary
+              className="ml-1 mr-1 is-small"
+              onClick={this.currentMonth}>
+              Today
+            </ButtonPrimary>
+            <ButtonPlain className="is-small" onClick={this.nextMonth}>
+              {"→"}
+            </ButtonPlain>
           </div>
-          <p className="mt-1">press <kbd>?</kbd> for help</p>
         </div>
+        <div
+          className={
+            "d-grid grid-gap-1 calendar-grid grid-auto-rows-unset mb-0"
+          }>
+          <b>Su</b>
+          <b>Mo</b>
+          <b>Tu</b>
+          <b>We</b>
+          <b>Th</b>
+          <b>Fr</b>
+          <b>Sa</b>
+        </div>
+        <div className={"d-grid grid-gap-1 calendar-grid mb-0"}>
+          {eachDay(
+            subDays(
+              startOfMonth(this.state.month),
+              daysFromSunday(this.state.month)
+            ),
+            addDays(
+              endOfMonth(this.state.month),
+              daysUntilSaturday(endOfMonth(this.state.month))
+            )
+          ).map(date => (
+            <CalendarDay
+              item={this.props.days[pyFormat(date)]}
+              date={date}
+              key={date}
+              teamID={this.props.teamID}
+            />
+          ))}
+        </div>
+        <p className="mt-1">
+          press <kbd>?</kbd> for help
+        </p>
+      </div>
     )
   }
 }

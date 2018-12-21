@@ -1,4 +1,4 @@
-import isSameDay from 'date-fns/is_same_day'
+import isSameDay from "date-fns/is_same_day"
 
 import {
   LOG_IN,
@@ -116,28 +116,25 @@ import {
   CLEAR_SEARCH_RESULTS,
   INCR_LOADING_SEARCH,
   DECR_LOADING_SEARCH,
-  SET_SCHEDULE_URL,
-} from './actionTypes'
+  SET_SCHEDULE_URL
+} from "./actionTypes"
 
-import { uuid4 } from '../uuid'
-import Cookie from 'js-cookie'
+import { uuid4 } from "../uuid"
+import Cookie from "js-cookie"
 
-import startOfMonth from 'date-fns/start_of_month'
-import subWeeks from 'date-fns/sub_weeks'
-import endOfMonth from 'date-fns/end_of_month'
-import addWeeks from 'date-fns/add_weeks'
+import startOfMonth from "date-fns/start_of_month"
+import subWeeks from "date-fns/sub_weeks"
+import endOfMonth from "date-fns/end_of_month"
+import addWeeks from "date-fns/add_weeks"
 
-import { pyFormat } from '../date'
+import { pyFormat } from "../date"
 
-import {
-  push,
-  replace
-} from 'react-router-redux'
+import { push, replace } from "react-router-redux"
 
-import axios from 'axios'
-import raven from 'raven-js'
+import axios from "axios"
+import raven from "raven-js"
 
-import { store } from './store'
+import { store } from "./store"
 
 const config = { timeout: 15000 }
 
@@ -148,9 +145,10 @@ const handleResponseError = error => {
   // 503 means we are in maintenance mode. Reload to show maintenance page.
   const maintenanceMode = error.response && error.response.status === 503
   // Report all 500 errors
-  const serverError = !maintenanceMode && error.response && error.response.status >= 500
+  const serverError =
+    !maintenanceMode && error.response && error.response.status >= 500
   // Report request timeouts
-  const requestTimeout = error.code === 'ECONNABORTED'
+  const requestTimeout = error.code === "ECONNABORTED"
   const unAuthenticated = invalidToken(error.response)
   if (maintenanceMode) {
     location.reload()
@@ -167,26 +165,30 @@ http.interceptors.response.use(
     store.dispatch(setUserLoggedIn(true))
     return response
   },
-  error => handleResponseError(error))
+  error => handleResponseError(error)
+)
 
 anon.interceptors.response.use(
   response => response,
-  error => handleResponseError(error))
+  error => handleResponseError(error)
+)
 
 http.interceptors.request.use(
   config => {
-    const csrfToken = Cookie.get('csrftoken')
-    config.headers['X-CSRFTOKEN'] = csrfToken
+    const csrfToken = Cookie.get("csrftoken")
+    config.headers["X-CSRFTOKEN"] = csrfToken
     return config
-  }, error => Promise.reject(error)
+  },
+  error => Promise.reject(error)
 )
 
 anon.interceptors.request.use(
   config => {
-    const csrfToken = Cookie.get('csrftoken')
-    config.headers['X-CSRFTOKEN'] = csrfToken
+    const csrfToken = Cookie.get("csrftoken")
+    config.headers["X-CSRFTOKEN"] = csrfToken
     return config
-  }, error => Promise.reject(error)
+  },
+  error => Promise.reject(error)
 )
 
 export { http, anon }
@@ -194,17 +196,14 @@ export { http, anon }
 // We check if detail matches our string because Django will not return 401 when
 // the session expires
 export const invalidToken = res =>
-  res != null && res.data.detail === 'Authentication credentials were not provided.'
+  res != null &&
+  res.data.detail === "Authentication credentials were not provided."
 
 const badRequest = err => err.response && err.response.status === 400
 
 const is404 = err => err.response.status === 404
 
-export const setNotification = ({
-  message,
-  closeable,
-  level
-}) => ({
+export const setNotification = ({ message, closeable, level }) => ({
   type: SET_NOTIFICATION,
   message,
   closeable,
@@ -225,11 +224,13 @@ export const showNotificationWithTimeout = ({
   sticky
 }) => dispatch => {
   clearTimeout(notificationTimeout)
-  dispatch(setNotification({
-    message,
-    level,
-    closeable
-  }))
+  dispatch(
+    setNotification({
+      message,
+      level,
+      closeable
+    })
+  )
 
   if (!sticky) {
     notificationTimeout = setTimeout(() => {
@@ -238,7 +239,7 @@ export const showNotificationWithTimeout = ({
   }
 }
 
-export const login = (user) => ({
+export const login = user => ({
   type: LOG_IN,
   user
 })
@@ -254,19 +255,20 @@ export const setLoggingOut = val => ({
 
 export const loggingOut = () => dispatch => {
   dispatch(setLoggingOut(true))
-  return http.post('/api/v1/rest-auth/logout/', {})
-  .then(() => {
-    dispatch(logout())
-    dispatch(push('/login'))
-    dispatch(setLoggingOut(false))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
+  return http
+    .post("/api/v1/rest-auth/logout/", {})
+    .then(() => {
       dispatch(logout())
-    }
-    dispatch(setLoggingOut(false))
-    throw err
-  })
+      dispatch(push("/login"))
+      dispatch(setLoggingOut(false))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      dispatch(setLoggingOut(false))
+      throw err
+    })
 }
 
 export const setLoadingUser = val => ({
@@ -316,68 +318,74 @@ export const setFromUrl = val => ({
 
 const emailExists = err =>
   err.response.data.email != null &&
-  err.response.data.email[0].includes('email already exists')
+  err.response.data.email[0].includes("email already exists")
 
 const second = 1000
 
 export const updatingEmail = email => dispatch => {
   dispatch(setUpdatingUserEmail(true))
-  return http.patch('/api/v1/rest-auth/user/', {
-    email
-  })
-  .then(res => {
-    dispatch(setUserEmail(res.data.email))
-    dispatch(setAvatarURL(res.data.avatar_url))
-    dispatch(setUpdatingUserEmail(false))
-    dispatch(showNotificationWithTimeout({
-      message: 'updated email',
-      level: 'success',
-      delay: 3 * second
-    }))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    dispatch(setUpdatingUserEmail(false))
-    const messageExtra = emailExists(err) ? '- email already in use' : ''
-    dispatch(setNotification({
-      message: `problem updating email ${messageExtra}`,
-      level: 'danger'
-    }))
-  })
+  return http
+    .patch("/api/v1/rest-auth/user/", {
+      email
+    })
+    .then(res => {
+      dispatch(setUserEmail(res.data.email))
+      dispatch(setAvatarURL(res.data.avatar_url))
+      dispatch(setUpdatingUserEmail(false))
+      dispatch(
+        showNotificationWithTimeout({
+          message: "updated email",
+          level: "success",
+          delay: 3 * second
+        })
+      )
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      dispatch(setUpdatingUserEmail(false))
+      const messageExtra = emailExists(err) ? "- email already in use" : ""
+      dispatch(
+        setNotification({
+          message: `problem updating email ${messageExtra}`,
+          level: "danger"
+        })
+      )
+    })
 }
 
-export const setUserID = (id) => ({
+export const setUserID = id => ({
   type: SET_USER_ID,
-  id,
+  id
 })
 
-export const setUserLoggedIn = (val) => ({
+export const setUserLoggedIn = val => ({
   type: SET_USER_LOGGED_IN,
-  val,
+  val
 })
 
 export const fetchUser = () => dispatch => {
   dispatch(setLoadingUser(true))
   dispatch(setErrorUser(false))
-  return http.get('/api/v1/rest-auth/user/')
-  .then(res => {
-    dispatch(setUserID(res.data.id))
-    dispatch(setAvatarURL(res.data.avatar_url))
-    dispatch(setUserEmail(res.data.email))
-    dispatch(setPasswordUsable(res.data.has_usable_password))
-    dispatch(setLoadingUser(false))
-    dispatch(setUserLoggedIn(true))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    dispatch(setLoadingUser(false))
-    dispatch(setErrorUser(true))
-    throw err
-  })
+  return http
+    .get("/api/v1/rest-auth/user/")
+    .then(res => {
+      dispatch(setUserID(res.data.id))
+      dispatch(setAvatarURL(res.data.avatar_url))
+      dispatch(setUserEmail(res.data.email))
+      dispatch(setPasswordUsable(res.data.has_usable_password))
+      dispatch(setLoadingUser(false))
+      dispatch(setUserLoggedIn(true))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      dispatch(setLoadingUser(false))
+      dispatch(setErrorUser(true))
+      throw err
+    })
 }
 
 export const setSocialConnections = val => ({
@@ -388,56 +396,61 @@ export const setSocialConnections = val => ({
 export const setSocialConnection = (provider, val) => ({
   type: SET_SOCIAL_ACCOUNT_CONNECTION,
   provider,
-  val,
+  val
 })
 
 export const fetchSocialConnections = () => dispatch => {
-  return http.get('/api/v1/rest-auth/socialaccounts/')
-  .then(res => {
-    dispatch(setSocialConnections(res.data))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    throw err
-  })
+  return http
+    .get("/api/v1/rest-auth/socialaccounts/")
+    .then(res => {
+      dispatch(setSocialConnections(res.data))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      throw err
+    })
 }
 
 export const disconnectSocialAccount = (provider, id) => dispatch => {
-  return http.post(`/api/v1/rest-auth/socialaccounts/${id}/disconnect/`, {
-    id
-  })
-  .then(() => {
-    dispatch(setSocialConnections(
-      [{
-        provider: provider,
-        id: null
-      }]
-    ))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    throw err
-  })
+  return http
+    .post(`/api/v1/rest-auth/socialaccounts/${id}/disconnect/`, {
+      id
+    })
+    .then(() => {
+      dispatch(
+        setSocialConnections([
+          {
+            provider: provider,
+            id: null
+          }
+        ])
+      )
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      throw err
+    })
 }
 
 export const fetchUserStats = () => dispatch => {
   dispatch(setLoadingUserStats(true))
-  return http.get('api/v1/user_stats/')
-  .then(res => {
-    dispatch(setUserStats(res.data))
-    dispatch(setLoadingUserStats(false))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    dispatch(setLoadingUserStats(false))
-    throw err
-  })
+  return http
+    .get("api/v1/user_stats/")
+    .then(res => {
+      dispatch(setUserStats(res.data))
+      dispatch(setLoadingUserStats(false))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      dispatch(setLoadingUserStats(false))
+      throw err
+    })
 }
 
 export const setLoadingPasswordUpdate = val => ({
@@ -450,38 +463,47 @@ export const setErrorPasswordUpdate = val => ({
   val
 })
 
-export const updatingPassword = (password1, password2, oldPassword) => dispatch => {
+export const updatingPassword = (
+  password1,
+  password2,
+  oldPassword
+) => dispatch => {
   dispatch(setLoadingPasswordUpdate(true))
   dispatch(setErrorPasswordUpdate({}))
-  return http.post('/api/v1/rest-auth/password/change/', {
-    new_password1: password1,
-    new_password2: password2,
-    old_password: oldPassword
-  })
-  .then(() => {
-    dispatch(setLoadingPasswordUpdate(false))
-    dispatch(push('/'))
-    dispatch(showNotificationWithTimeout({
-      message: 'Successfully updated password',
-      level: 'success'
-    }))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    dispatch(setLoadingPasswordUpdate(false))
-    const badRequest = err.response.status === 400
-    if (err.response && badRequest) {
-      const data = err.response.data
-      dispatch(setErrorPasswordUpdate({
-        newPasswordAgain: data['new_password2'],
-        newPassword: data['new_password1'],
-        oldPassword: data['old_password']
-      }))
-    }
-    throw err
-  })
+  return http
+    .post("/api/v1/rest-auth/password/change/", {
+      new_password1: password1,
+      new_password2: password2,
+      old_password: oldPassword
+    })
+    .then(() => {
+      dispatch(setLoadingPasswordUpdate(false))
+      dispatch(push("/"))
+      dispatch(
+        showNotificationWithTimeout({
+          message: "Successfully updated password",
+          level: "success"
+        })
+      )
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      dispatch(setLoadingPasswordUpdate(false))
+      const badRequest = err.response.status === 400
+      if (err.response && badRequest) {
+        const data = err.response.data
+        dispatch(
+          setErrorPasswordUpdate({
+            newPasswordAgain: data["new_password2"],
+            newPassword: data["new_password1"],
+            oldPassword: data["old_password"]
+          })
+        )
+      }
+      throw err
+    })
 }
 
 export const setShoppingList = val => ({
@@ -489,8 +511,7 @@ export const setShoppingList = val => ({
   val
 })
 
-export const setShoppingListEmpty = () =>
-  setShoppingList([])
+export const setShoppingListEmpty = () => setShoppingList([])
 
 export const setLoadingShoppingList = val => ({
   type: SET_LOADING_SHOPPING_LIST,
@@ -502,41 +523,43 @@ export const setShoppingListError = val => ({
   val
 })
 
-export const fetchShoppingList = (teamID) => (dispatch, getState) => {
+export const fetchShoppingList = teamID => (dispatch, getState) => {
   const start = getState().shoppinglist.startDay
   const end = getState().shoppinglist.endDay
   dispatch(setLoadingShoppingList(true))
   dispatch(setShoppingListError(false))
-  const url = teamID === 'personal'
-    ? '/api/v1/shoppinglist/'
-    : `/api/v1/t/${teamID}/shoppinglist/`
-  return http.get(url, {
-    params: {
-      start: pyFormat(start),
-      end: pyFormat(end),
-    }
-  })
-  .then(res => {
-    dispatch(setShoppingList(res.data))
-    dispatch(setLoadingShoppingList(false))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    dispatch(setShoppingListError(true))
-    dispatch(setLoadingShoppingList(false))
-  })
+  const url =
+    teamID === "personal"
+      ? "/api/v1/shoppinglist/"
+      : `/api/v1/t/${teamID}/shoppinglist/`
+  return http
+    .get(url, {
+      params: {
+        start: pyFormat(start),
+        end: pyFormat(end)
+      }
+    })
+    .then(res => {
+      dispatch(setShoppingList(res.data))
+      dispatch(setLoadingShoppingList(false))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      dispatch(setShoppingListError(true))
+      dispatch(setLoadingShoppingList(false))
+    })
 }
 
-export const setSelectingStart = (date) => ({
+export const setSelectingStart = date => ({
   type: SET_SELECTING_START,
-  date,
+  date
 })
 
-export const setSelectingEnd = (date) => ({
+export const setSelectingEnd = date => ({
   type: SET_SELECTING_END,
-  date,
+  date
 })
 
 export const addRecipe = recipe => ({
@@ -558,31 +581,34 @@ export const postNewRecipe = recipe => dispatch => {
   dispatch(setLoadingAddRecipe(true))
   dispatch(setErrorAddRecipe({}))
 
-  return http.post('/api/v1/recipes/', recipe)
-  .then(res => {
-    dispatch(addRecipe(res.data))
-    dispatch(clearAddRecipeForm())
-    dispatch(setLoadingAddRecipe(false))
-    dispatch(push('/recipes'))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    const errors = {
-      errorWithName: err.response.data.name != null,
-      errorWithIngredients: err.response.data.ingredients != null,
-      errorWithSteps: err.response.data.steps != null
-    }
-    dispatch(setLoadingAddRecipe(false))
-    dispatch(setErrorAddRecipe(errors))
+  return http
+    .post("/api/v1/recipes/", recipe)
+    .then(res => {
+      dispatch(addRecipe(res.data))
+      dispatch(clearAddRecipeForm())
+      dispatch(setLoadingAddRecipe(false))
+      dispatch(push("/recipes"))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      const errors = {
+        errorWithName: err.response.data.name != null,
+        errorWithIngredients: err.response.data.ingredients != null,
+        errorWithSteps: err.response.data.steps != null
+      }
+      dispatch(setLoadingAddRecipe(false))
+      dispatch(setErrorAddRecipe(errors))
 
-    dispatch(showNotificationWithTimeout({
-      message: 'problem creating new recipe',
-      level: 'danger',
-      delay: 5 * second
-    }))
-  })
+      dispatch(
+        showNotificationWithTimeout({
+          message: "problem creating new recipe",
+          level: "danger",
+          delay: 5 * second
+        })
+      )
+    })
 }
 
 export const setRecipe404 = (id, val) => ({
@@ -600,21 +626,22 @@ export const setLoadingRecipe = (id, val) => ({
 export const fetchRecipe = id => dispatch => {
   dispatch(setRecipe404(id, false))
   dispatch(setLoadingRecipe(id, true))
-  return http.get(`/api/v1/recipes/${id}/`)
-  .then(res => {
-    dispatch(addRecipe(res.data))
-    dispatch(setLoadingRecipe(id, false))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    if (err.response.status === 404) {
-      dispatch(setRecipe404(id, true))
-    }
-    dispatch(setLoadingRecipe(id, false))
-    throw err
-  })
+  return http
+    .get(`/api/v1/recipes/${id}/`)
+    .then(res => {
+      dispatch(addRecipe(res.data))
+      dispatch(setLoadingRecipe(id, false))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      if (err.response.status === 404) {
+        dispatch(setRecipe404(id, true))
+      }
+      dispatch(setLoadingRecipe(id, false))
+      throw err
+    })
 }
 
 export const setRecipes = recipes => ({
@@ -635,50 +662,51 @@ export const setLoadingRecipes = val => ({
 export const fetchRecentRecipes = () => dispatch => {
   dispatch(setLoadingRecipes(true))
   dispatch(setErrorRecipes(false))
-  return http.get('/api/v1/recipes/?recent')
-  .then(res => {
-    dispatch(setRecipes(res.data))
-    dispatch(setLoadingRecipes(false))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    dispatch(setErrorRecipes(true))
-    dispatch(setLoadingRecipes(false))
-    throw err
-  })
+  return http
+    .get("/api/v1/recipes/?recent")
+    .then(res => {
+      dispatch(setRecipes(res.data))
+      dispatch(setLoadingRecipes(false))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      dispatch(setErrorRecipes(true))
+      dispatch(setLoadingRecipes(false))
+      throw err
+    })
 }
 
-export const fetchRecipeList = (teamID) => dispatch => {
+export const fetchRecipeList = teamID => dispatch => {
   dispatch(setLoadingRecipes(true))
   dispatch(setErrorRecipes(false))
 
-  const url = teamID === 'personal'
-    ? '/api/v1/recipes/'
-    : `/api/v1/t/${teamID}/recipes/`
+  const url =
+    teamID === "personal" ? "/api/v1/recipes/" : `/api/v1/t/${teamID}/recipes/`
 
-  return http.get(url)
-  .then(res => {
-    dispatch(setRecipes(res.data))
-    dispatch(setLoadingRecipes(false))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    dispatch(setErrorRecipes(true))
-    dispatch(setLoadingRecipes(false))
-  })
+  return http
+    .get(url)
+    .then(res => {
+      dispatch(setRecipes(res.data))
+      dispatch(setLoadingRecipes(false))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      dispatch(setErrorRecipes(true))
+      dispatch(setLoadingRecipes(false))
+    })
 }
 
-export const setSearchResults = (results) => ({
+export const setSearchResults = results => ({
   type: SET_SEARCH_RESULTS,
-  results,
+  results
 })
 
 export const clearSearchResults = () => ({
-  type: CLEAR_SEARCH_RESULTS,
+  type: CLEAR_SEARCH_RESULTS
 })
 
 export const incrLoadingSearch = () => {
@@ -693,13 +721,13 @@ export const decrLoadingSearch = () => ({
 
 // container for our promise cancel tokens
 const searchStore = {
-  lastRequest: null,
+  lastRequest: null
 }
 
-export const searchRecipes = (query) => dispatch => {
+export const searchRecipes = query => dispatch => {
   // It's visually pleasing to have all the results disappear when
   // the search query is cleared.
-  if (query === '') {
+  if (query === "") {
     return dispatch(clearSearchResults())
   }
   // count our request
@@ -712,22 +740,23 @@ export const searchRecipes = (query) => dispatch => {
   const cancelSource = axios.CancelToken.source()
   searchStore.lastRequest = cancelSource
   // make request with cancel token
-  return http.get(`/api/v1/recipes?q=${encodeURI(query)}`, {
-    cancelToken: cancelSource.token
-  })
-  .then(res => {
-    dispatch(decrLoadingSearch())
-    dispatch(setSearchResults(res.data))
-  })
-  .catch(err => {
-    dispatch(decrLoadingSearch())
-    // Ignore axios cancels
-    if (String(err) === 'Cancel') {
+  return http
+    .get(`/api/v1/recipes?q=${encodeURI(query)}`, {
+      cancelToken: cancelSource.token
+    })
+    .then(res => {
+      dispatch(decrLoadingSearch())
+      dispatch(setSearchResults(res.data))
+    })
+    .catch(err => {
+      dispatch(decrLoadingSearch())
+      // Ignore axios cancels
+      if (String(err) === "Cancel") {
+        return err
+      }
+      raven.captureException(err)
       return err
-    }
-    raven.captureException(err)
-    return err
-  })
+    })
 }
 
 export const setLoadingAddStepToRecipe = (id, val) => ({
@@ -756,18 +785,19 @@ export const addIngredientToRecipe = (id, ingredient) => ({
 
 export const addingRecipeIngredient = (recipeID, ingredient) => dispatch => {
   dispatch(setAddingIngredientToRecipe(recipeID, true))
-  return http.post(`/api/v1/recipes/${recipeID}/ingredients/`, ingredient)
-  .then(res => {
-    dispatch(addIngredientToRecipe(recipeID, res.data))
-    dispatch(setAddingIngredientToRecipe(recipeID, false))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    dispatch(setAddingIngredientToRecipe(recipeID, false))
-    throw err
-  })
+  return http
+    .post(`/api/v1/recipes/${recipeID}/ingredients/`, ingredient)
+    .then(res => {
+      dispatch(addIngredientToRecipe(recipeID, res.data))
+      dispatch(setAddingIngredientToRecipe(recipeID, false))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      dispatch(setAddingIngredientToRecipe(recipeID, false))
+      throw err
+    })
 }
 
 export const updateRecipeName = (id, name) => ({
@@ -777,18 +807,19 @@ export const updateRecipeName = (id, name) => ({
 })
 
 export const sendUpdatedRecipeName = (id, name) => dispatch => {
-  return http.patch(`/api/v1/recipes/${id}/`, {
-    name
-  })
-  .then(res => {
-    dispatch(updateRecipeName(res.data.id, res.data.name))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    throw err
-  })
+  return http
+    .patch(`/api/v1/recipes/${id}/`, {
+      name
+    })
+    .then(res => {
+      dispatch(updateRecipeName(res.data.id, res.data.name))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      throw err
+    })
 }
 
 export const updateRecipeSource = (id, source) => ({
@@ -798,18 +829,19 @@ export const updateRecipeSource = (id, source) => ({
 })
 
 export const setRecipeSource = (id, source) => dispatch => {
-  return http.patch(`/api/v1/recipes/${id}/`, {
-    source
-  })
-  .then(res => {
-    dispatch(updateRecipeSource(res.data.id, res.data.source))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    throw err
-  })
+  return http
+    .patch(`/api/v1/recipes/${id}/`, {
+      source
+    })
+    .then(res => {
+      dispatch(updateRecipeSource(res.data.id, res.data.source))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      throw err
+    })
 }
 
 export const updateRecipeAuthor = (id, author) => ({
@@ -819,18 +851,19 @@ export const updateRecipeAuthor = (id, author) => ({
 })
 
 export const setRecipeAuthor = (id, author) => dispatch => {
-  return http.patch(`/api/v1/recipes/${id}/`, {
-    author
-  })
-  .then(res => {
-    dispatch(updateRecipeAuthor(res.data.id, res.data.author))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    throw err
-  })
+  return http
+    .patch(`/api/v1/recipes/${id}/`, {
+      author
+    })
+    .then(res => {
+      dispatch(updateRecipeAuthor(res.data.id, res.data.author))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      throw err
+    })
 }
 
 export const updateRecipeTime = (id, time) => ({
@@ -840,18 +873,19 @@ export const updateRecipeTime = (id, time) => ({
 })
 
 export const setRecipeTime = (id, time) => dispatch => {
-  return http.patch(`/api/v1/recipes/${id}/`, {
-    time
-  })
-  .then(res => {
-    dispatch(updateRecipeTime(res.data.id, res.data.time))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    throw err
-  })
+  return http
+    .patch(`/api/v1/recipes/${id}/`, {
+      time
+    })
+    .then(res => {
+      dispatch(updateRecipeTime(res.data.id, res.data.time))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      throw err
+    })
 }
 
 export const toggleDarkMode = () => ({
@@ -872,18 +906,19 @@ export const setRecipeUpdating = (id, val) => ({
 
 export const updateRecipe = (id, data) => dispatch => {
   dispatch(setRecipeUpdating(id, true))
-  return http.patch(`/api/v1/recipes/${id}/`, data)
-  .then(res => {
-    dispatch(setRecipe(res.data.id, res.data))
-    dispatch(setRecipeUpdating(id, false))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    dispatch(setRecipeUpdating(id, false))
-    throw err
-  })
+  return http
+    .patch(`/api/v1/recipes/${id}/`, data)
+    .then(res => {
+      dispatch(setRecipe(res.data.id, res.data))
+      dispatch(setRecipeUpdating(id, false))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      dispatch(setRecipeUpdating(id, false))
+      throw err
+    })
 }
 
 export const updateIngredient = (recipeID, ingredientID, content) => ({
@@ -895,20 +930,21 @@ export const updateIngredient = (recipeID, ingredientID, content) => ({
 
 export const addingRecipeStep = (recipeID, step) => dispatch => {
   dispatch(setLoadingAddStepToRecipe(recipeID, true))
-  return http.post(`/api/v1/recipes/${recipeID}/steps/`, {
-    text: step
-  })
-  .then(res => {
-    dispatch(addStepToRecipe(recipeID, res.data))
-    dispatch(setLoadingAddStepToRecipe(recipeID, false))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    dispatch(setLoadingAddStepToRecipe(recipeID, false))
-    throw err
-  })
+  return http
+    .post(`/api/v1/recipes/${recipeID}/steps/`, {
+      text: step
+    })
+    .then(res => {
+      dispatch(addStepToRecipe(recipeID, res.data))
+      dispatch(setLoadingAddStepToRecipe(recipeID, false))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      dispatch(setLoadingAddStepToRecipe(recipeID, false))
+      throw err
+    })
 }
 
 export const setRemovingIngredient = (recipeID, ingredientID, val) => ({
@@ -925,20 +961,25 @@ export const setUpdatingIngredient = (recipeID, ingredientID, val) => ({
   val
 })
 
-export const updatingIngredient = (recipeID, ingredientID, content) => dispatch => {
+export const updatingIngredient = (
+  recipeID,
+  ingredientID,
+  content
+) => dispatch => {
   dispatch(setUpdatingIngredient(recipeID, ingredientID, true))
-  return http.patch(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, content)
-  .then(res => {
-    dispatch(updateIngredient(recipeID, ingredientID, res.data))
-    dispatch(setUpdatingIngredient(recipeID, ingredientID, false))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    dispatch(setUpdatingIngredient(recipeID, ingredientID, false))
-    throw err
-  })
+  return http
+    .patch(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, content)
+    .then(res => {
+      dispatch(updateIngredient(recipeID, ingredientID, res.data))
+      dispatch(setUpdatingIngredient(recipeID, ingredientID, false))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      dispatch(setUpdatingIngredient(recipeID, ingredientID, false))
+      throw err
+    })
 }
 
 export const deleteIngredient = (recipeID, ingredientID) => ({
@@ -949,18 +990,19 @@ export const deleteIngredient = (recipeID, ingredientID) => ({
 
 export const deletingIngredient = (recipeID, ingredientID) => dispatch => {
   dispatch(setRemovingIngredient(recipeID, ingredientID, true))
-  return http.delete(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`)
-  .then(() => {
-    dispatch(setRemovingIngredient(recipeID, ingredientID, false))
-    dispatch(deleteIngredient(recipeID, ingredientID))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    dispatch(setRemovingIngredient(recipeID, ingredientID, false))
-    throw err
-  })
+  return http
+    .delete(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`)
+    .then(() => {
+      dispatch(setRemovingIngredient(recipeID, ingredientID, false))
+      dispatch(deleteIngredient(recipeID, ingredientID))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      dispatch(setRemovingIngredient(recipeID, ingredientID, false))
+      throw err
+    })
 }
 
 export const updateStep = (recipeID, stepID, text, position) => ({
@@ -968,7 +1010,7 @@ export const updateStep = (recipeID, stepID, text, position) => ({
   recipeID,
   stepID,
   text,
-  position,
+  position
 })
 
 export const setRemovingStep = (recipeID, stepID, val) => ({
@@ -985,11 +1027,15 @@ export const setUpdatingStep = (recipeID, stepID, val) => ({
   val
 })
 
-export const updatingStep = (recipeID, stepID, { text, position }) => dispatch => {
+export const updatingStep = (
+  recipeID,
+  stepID,
+  { text, position }
+) => dispatch => {
   dispatch(setUpdatingStep(recipeID, stepID, true))
   const data = {
     text,
-    position,
+    position
   }
   // Remove null/empty keys for PATCH
   for (const key of Object.keys(data)) {
@@ -997,20 +1043,21 @@ export const updatingStep = (recipeID, stepID, { text, position }) => dispatch =
       delete data[key]
     }
   }
-  return http.patch(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, data)
-  .then(res => {
-    const text = res.data.text
-    const position = res.data.position
-    dispatch(updateStep(recipeID, stepID, text, position))
-    dispatch(setUpdatingStep(recipeID, stepID, false))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    dispatch(setUpdatingStep(recipeID, stepID, false))
-    throw err
-  })
+  return http
+    .patch(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, data)
+    .then(res => {
+      const text = res.data.text
+      const position = res.data.position
+      dispatch(updateStep(recipeID, stepID, text, position))
+      dispatch(setUpdatingStep(recipeID, stepID, false))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      dispatch(setUpdatingStep(recipeID, stepID, false))
+      throw err
+    })
 }
 
 export const deleteStep = (recipeID, stepID) => ({
@@ -1021,18 +1068,19 @@ export const deleteStep = (recipeID, stepID) => ({
 
 export const deletingStep = (recipeID, stepID) => dispatch => {
   dispatch(setRemovingStep(recipeID, stepID, true))
-  return http.delete(`/api/v1/recipes/${recipeID}/steps/${stepID}/`)
-  .then(() => {
-    dispatch(deleteStep(recipeID, stepID))
-    dispatch(setRemovingStep(recipeID, stepID, false))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    dispatch(setRemovingStep(recipeID, stepID, false))
-    throw err
-  })
+  return http
+    .delete(`/api/v1/recipes/${recipeID}/steps/${stepID}/`)
+    .then(() => {
+      dispatch(deleteStep(recipeID, stepID))
+      dispatch(setRemovingStep(recipeID, stepID, false))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      dispatch(setRemovingStep(recipeID, stepID, false))
+      throw err
+    })
 }
 
 export const setErrorLogin = val => ({
@@ -1045,34 +1093,37 @@ export const setLoadingLogin = val => ({
   val
 })
 
-export const logUserIn = (email, password, redirectUrl = '') => dispatch => {
+export const logUserIn = (email, password, redirectUrl = "") => dispatch => {
   dispatch(setLoadingLogin(true))
   dispatch(setErrorLogin({}))
   dispatch(clearNotification())
-  return anon.post('/api/v1/rest-auth/login/', {
-    email,
-    password
-  })
-  .then(res => {
-    dispatch(login(res.data.user))
-    dispatch(setLoadingLogin(false))
-    dispatch(push(redirectUrl))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    dispatch(setLoadingLogin(false))
-    const badRequest = err.response.status === 400
-    if (err.response && badRequest) {
-      const data = err.response.data
-      dispatch(setErrorLogin({
-        email: data['email'],
-        password1: data['password1'],
-        nonFieldErrors: data['non_field_errors']
-      }))
-    }
-  })
+  return anon
+    .post("/api/v1/rest-auth/login/", {
+      email,
+      password
+    })
+    .then(res => {
+      dispatch(login(res.data.user))
+      dispatch(setLoadingLogin(false))
+      dispatch(push(redirectUrl))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      dispatch(setLoadingLogin(false))
+      const badRequest = err.response.status === 400
+      if (err.response && badRequest) {
+        const data = err.response.data
+        dispatch(
+          setErrorLogin({
+            email: data["email"],
+            password1: data["password1"],
+            nonFieldErrors: data["non_field_errors"]
+          })
+        )
+      }
+    })
 }
 
 export const setErrorSocialLogin = val => ({
@@ -1080,45 +1131,49 @@ export const setErrorSocialLogin = val => ({
   val
 })
 
-export const socialLogin = (service, token, redirectUrl = '') => dispatch => {
-  return anon.post(`/api/v1/rest-auth/${service}/`, {
-    code: token
-  })
-  .then(res => {
-    dispatch(login(res.data.user))
-    dispatch(replace(redirectUrl))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    const badRequest = err.response.status === 400
-    if (err.response && badRequest) {
-      const data = err.response.data
-      dispatch(setErrorSocialLogin({
-        emailSocial: data['email'],
-        nonFieldErrorsSocial: data['non_field_errors']
-      }))
-    }
-    dispatch(replace('/login'))
-    throw err
-  })
+export const socialLogin = (service, token, redirectUrl = "") => dispatch => {
+  return anon
+    .post(`/api/v1/rest-auth/${service}/`, {
+      code: token
+    })
+    .then(res => {
+      dispatch(login(res.data.user))
+      dispatch(replace(redirectUrl))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      const badRequest = err.response.status === 400
+      if (err.response && badRequest) {
+        const data = err.response.data
+        dispatch(
+          setErrorSocialLogin({
+            emailSocial: data["email"],
+            nonFieldErrorsSocial: data["non_field_errors"]
+          })
+        )
+      }
+      dispatch(replace("/login"))
+      throw err
+    })
 }
 
 export const socialConnect = (service, code) => dispatch => {
-  return http.post(`/api/v1/rest-auth/${service}/connect/`, {
-    code
-  })
-  .then(() => {
-    dispatch(replace('/settings'))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    dispatch(replace('/settings'))
-    throw err
-  })
+  return http
+    .post(`/api/v1/rest-auth/${service}/connect/`, {
+      code
+    })
+    .then(() => {
+      dispatch(replace("/settings"))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      dispatch(replace("/settings"))
+      throw err
+    })
 }
 
 export const setLoadingSignup = val => ({
@@ -1133,31 +1188,34 @@ export const setErrorSignup = val => ({
 
 export const signup = (email, password1, password2) => dispatch => {
   dispatch(setLoadingSignup(true))
-    // clear previous signup errors
+  // clear previous signup errors
   dispatch(setErrorSignup({}))
   dispatch(clearNotification())
-  return anon.post('/api/v1/rest-auth/registration/', {
-    email,
-    password1,
-    password2
-  })
-  .then(res => {
-    dispatch(login(res.data.user))
-    dispatch(setLoadingSignup(false))
-    dispatch(push('/recipes/add'))
-  })
-  .catch(err => {
-    if (badRequest(err)) {
-      const data = err.response.data
-      dispatch(setErrorSignup({
-        email: data['email'],
-        password1: data['password1'],
-        password2: data['password2'],
-        nonFieldErrors: data['non_field_errors']
-      }))
-    }
-    dispatch(setLoadingSignup(false))
-  })
+  return anon
+    .post("/api/v1/rest-auth/registration/", {
+      email,
+      password1,
+      password2
+    })
+    .then(res => {
+      dispatch(login(res.data.user))
+      dispatch(setLoadingSignup(false))
+      dispatch(push("/recipes/add"))
+    })
+    .catch(err => {
+      if (badRequest(err)) {
+        const data = err.response.data
+        dispatch(
+          setErrorSignup({
+            email: data["email"],
+            password1: data["password1"],
+            password2: data["password2"],
+            nonFieldErrors: data["non_field_errors"]
+          })
+        )
+      }
+      dispatch(setLoadingSignup(false))
+    })
 }
 
 export const setDeletingRecipe = (id, val) => ({
@@ -1173,19 +1231,20 @@ export const deleteRecipe = id => ({
 
 export const deletingRecipe = id => dispatch => {
   dispatch(setDeletingRecipe(id, true))
-  return http.delete(`/api/v1/recipes/${id}/`)
-  .then(() => {
-    dispatch(deleteRecipe(id))
-    dispatch(setDeletingRecipe(id, false))
-    dispatch(push('/recipes'))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    dispatch(setDeletingRecipe(id, false))
-    throw err
-  })
+  return http
+    .delete(`/api/v1/recipes/${id}/`)
+    .then(() => {
+      dispatch(deleteRecipe(id))
+      dispatch(setDeletingRecipe(id, false))
+      dispatch(push("/recipes"))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      dispatch(setDeletingRecipe(id, false))
+      throw err
+    })
 }
 
 export const setLoadingReset = val => ({
@@ -1202,37 +1261,46 @@ export const reset = email => dispatch => {
   dispatch(setLoadingReset(true))
   dispatch(setErrorReset({}))
   dispatch(clearNotification())
-  return anon.post('/api/v1/rest-auth/password/reset/', {
-    email
-  })
-  .then(res => {
-    dispatch(setLoadingReset(false))
-    const message = res && res.data && res.data.detail
-    dispatch(showNotificationWithTimeout({
-      message,
-      level: 'success'
-    }))
-  })
-  .catch(err => {
-    dispatch(setLoadingReset(false))
-    dispatch(showNotificationWithTimeout({
-      message: 'uh oh! problem resetting password',
-      level: 'danger',
-      sticky: true
-    }))
-    if (badRequest(err)) {
-      const data = err.response.data
-      dispatch(setErrorReset({
-        email: data['email'],
-        nonFieldErrors: data['non_field_errors']
-      }))
-    }
-    dispatch(showNotificationWithTimeout({
-      message: 'problem resetting password',
-      level: 'danger',
-      sticky: true
-    }))
-  })
+  return anon
+    .post("/api/v1/rest-auth/password/reset/", {
+      email
+    })
+    .then(res => {
+      dispatch(setLoadingReset(false))
+      const message = res && res.data && res.data.detail
+      dispatch(
+        showNotificationWithTimeout({
+          message,
+          level: "success"
+        })
+      )
+    })
+    .catch(err => {
+      dispatch(setLoadingReset(false))
+      dispatch(
+        showNotificationWithTimeout({
+          message: "uh oh! problem resetting password",
+          level: "danger",
+          sticky: true
+        })
+      )
+      if (badRequest(err)) {
+        const data = err.response.data
+        dispatch(
+          setErrorReset({
+            email: data["email"],
+            nonFieldErrors: data["non_field_errors"]
+          })
+        )
+      }
+      dispatch(
+        showNotificationWithTimeout({
+          message: "problem resetting password",
+          level: "danger",
+          sticky: true
+        })
+      )
+    })
 }
 
 export const setLoadingResetConfirmation = val => ({
@@ -1245,46 +1313,61 @@ export const setErrorResetConfirmation = val => ({
   val
 })
 
-export const resetConfirmation = (uid, token, newPassword1, newPassword2) => dispatch => {
+export const resetConfirmation = (
+  uid,
+  token,
+  newPassword1,
+  newPassword2
+) => dispatch => {
   dispatch(setLoadingResetConfirmation(true))
   dispatch(setErrorResetConfirmation({}))
   dispatch(clearNotification())
-  return anon.post('/api/v1/rest-auth/password/reset/confirm/', {
-    uid,
-    token,
-    new_password1: newPassword1,
-    new_password2: newPassword2
-  })
-  .then(res => {
-    dispatch(setLoadingResetConfirmation(false))
-    const message = res && res.data && res.data.detail
-    dispatch(showNotificationWithTimeout({
-      message,
-      level: 'success'
-    }))
-    dispatch(push('/login'))
-  })
-  .catch(err => {
-    dispatch(setLoadingResetConfirmation(false))
-    dispatch(showNotificationWithTimeout({
-      message: 'uh oh! problem resetting password',
-      level: 'danger',
-      sticky: true
-    }))
-    if (badRequest(err)) {
-      const data = err.response.data
+  return anon
+    .post("/api/v1/rest-auth/password/reset/confirm/", {
+      uid,
+      token,
+      new_password1: newPassword1,
+      new_password2: newPassword2
+    })
+    .then(res => {
+      dispatch(setLoadingResetConfirmation(false))
+      const message = res && res.data && res.data.detail
+      dispatch(
+        showNotificationWithTimeout({
+          message,
+          level: "success"
+        })
+      )
+      dispatch(push("/login"))
+    })
+    .catch(err => {
+      dispatch(setLoadingResetConfirmation(false))
+      dispatch(
+        showNotificationWithTimeout({
+          message: "uh oh! problem resetting password",
+          level: "danger",
+          sticky: true
+        })
+      )
+      if (badRequest(err)) {
+        const data = err.response.data
 
-      const tokenData = data['token'] && data['token'].map(x => 'token: ' + x)
-      const uidData = data['uid'] && data['uid'].map(x => 'uid: ' + x)
-      const nonFieldErrors = [].concat(data['non_field_errors']).concat(tokenData).concat(uidData)
+        const tokenData = data["token"] && data["token"].map(x => "token: " + x)
+        const uidData = data["uid"] && data["uid"].map(x => "uid: " + x)
+        const nonFieldErrors = []
+          .concat(data["non_field_errors"])
+          .concat(tokenData)
+          .concat(uidData)
 
-      dispatch(setErrorReset({
-        newPassword1: data['new_password1'],
-        newPassword2: data['new_password2'],
-        nonFieldErrors
-      }))
-    }
-  })
+        dispatch(
+          setErrorReset({
+            newPassword1: data["new_password1"],
+            newPassword2: data["new_password2"],
+            nonFieldErrors
+          })
+        )
+      }
+    })
 }
 
 export const setAddRecipeFormName = val => ({
@@ -1314,7 +1397,7 @@ export const setAddRecipeFormServings = val => ({
 
 export const setAddRecipeFormTeam = val => ({
   type: SET_ADD_RECIPE_FORM_TEAM,
-  val,
+  val
 })
 
 export const addAddRecipeFormIngredient = ingredient => ({
@@ -1361,129 +1444,141 @@ export const addTeam = team => ({
 export const setLoadingTeam = (id, loadingTeam) => ({
   type: SET_LOADING_TEAM,
   id,
-  loadingTeam,
+  loadingTeam
 })
 
 export const setLoadingTeamMembers = (id, loadingMembers) => ({
   type: SET_LOADING_TEAM_MEMBERS,
   id,
-  loadingMembers,
+  loadingMembers
 })
 
 export const setTeam404 = (id, val = true) => ({
   type: SET_TEAM_404,
   id,
-  val,
+  val
 })
 
 export const setTeamMembers = (id, members) => ({
   type: SET_TEAM_MEMBERS,
   id,
-  members,
+  members
 })
 
 export const setTeamRecipes = (id, recipes) => ({
   type: SET_TEAM_RECIPES,
   id,
-  recipes,
+  recipes
 })
 
 export const setLoadingTeamRecipes = (id, loadingRecipes) => ({
   type: SET_LOADING_TEAM_RECIPES,
   id,
-  loadingRecipes,
+  loadingRecipes
 })
 
 export const fetchTeam = id => dispatch => {
   dispatch(setLoadingTeam(id, true))
-  return http.get(`/api/v1/t/${id}/`)
-  .then(res => {
-    dispatch(addTeam(res.data))
-    dispatch(setLoadingTeam(id, false))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    if (is404(err)) {
-      dispatch(setTeam404(id))
-    }
-    dispatch(setLoadingTeam(id, false))
-    throw err
-  })
+  return http
+    .get(`/api/v1/t/${id}/`)
+    .then(res => {
+      dispatch(addTeam(res.data))
+      dispatch(setLoadingTeam(id, false))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      if (is404(err)) {
+        dispatch(setTeam404(id))
+      }
+      dispatch(setLoadingTeam(id, false))
+      throw err
+    })
 }
 
 export const fetchTeamMembers = id => dispatch => {
   dispatch(setLoadingTeamMembers(id, true))
-  return http.get(`/api/v1/t/${id}/members/`)
-  .then(res => {
-    dispatch(setTeamMembers(id, res.data))
-    dispatch(setLoadingTeamMembers(id, false))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    dispatch(setLoadingTeamMembers(id, false))
-    throw err
-  })
+  return http
+    .get(`/api/v1/t/${id}/members/`)
+    .then(res => {
+      dispatch(setTeamMembers(id, res.data))
+      dispatch(setLoadingTeamMembers(id, false))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      dispatch(setLoadingTeamMembers(id, false))
+      throw err
+    })
 }
 
 export const fetchTeamRecipes = id => dispatch => {
   dispatch(setLoadingTeamRecipes(id, true))
-  return http.get(`/api/v1/t/${id}/recipes/`)
-  .then(res => {
-    dispatch(setRecipes(res.data))
-    dispatch(setTeamRecipes(id, res.data))
-    dispatch(setLoadingTeamRecipes(id, false))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    dispatch(setLoadingTeamRecipes(id, false))
-    throw err
-  })
+  return http
+    .get(`/api/v1/t/${id}/recipes/`)
+    .then(res => {
+      dispatch(setRecipes(res.data))
+      dispatch(setTeamRecipes(id, res.data))
+      dispatch(setLoadingTeamRecipes(id, false))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      dispatch(setLoadingTeamRecipes(id, false))
+      throw err
+    })
 }
 
 export const setUpdatingUserTeamLevel = (id, updating) => ({
   type: SET_UPDATING_USER_TEAM_LEVEL,
   id,
-  updating,
+  updating
 })
 
 export const setUserTeamLevel = (teamID, membershipID, level) => ({
   type: SET_USER_TEAM_LEVEL,
   teamID,
   membershipID,
-  level,
+  level
 })
 
 const attemptedDeleteLastAdmin = res =>
-  res.status === 400 && res.data.level && res.data.level[0].includes('cannot demote')
+  res.status === 400 &&
+  res.data.level &&
+  res.data.level[0].includes("cannot demote")
 
-export const settingUserTeamLevel = (teamID, membershipID, level) => dispatch => {
+export const settingUserTeamLevel = (
+  teamID,
+  membershipID,
+  level
+) => dispatch => {
   dispatch(setUpdatingUserTeamLevel(teamID, true))
-  return http.patch(`/api/v1/t/${teamID}/members/${membershipID}/`, { level })
-  .then(res => {
-    dispatch(setUserTeamLevel(teamID, membershipID, res.data.level))
-    dispatch(setUpdatingUserTeamLevel(teamID, false))
-  })
-  .catch(err => {
-    if (invalidToken(err.response)) {
-      dispatch(logout())
-    }
-    if (attemptedDeleteLastAdmin(err.response)) {
-      const message = err.response.data.level[0]
-      dispatch(showNotificationWithTimeout({
-        message,
-        level: 'danger',
-        delay: 3 * second
-      }))
-    }
-    dispatch(setUpdatingUserTeamLevel(teamID, false))
-    throw err
-  })
+  return http
+    .patch(`/api/v1/t/${teamID}/members/${membershipID}/`, { level })
+    .then(res => {
+      dispatch(setUserTeamLevel(teamID, membershipID, res.data.level))
+      dispatch(setUpdatingUserTeamLevel(teamID, false))
+    })
+    .catch(err => {
+      if (invalidToken(err.response)) {
+        dispatch(logout())
+      }
+      if (attemptedDeleteLastAdmin(err.response)) {
+        const message = err.response.data.level[0]
+        dispatch(
+          showNotificationWithTimeout({
+            message,
+            level: "danger",
+            delay: 3 * second
+          })
+        )
+      }
+      dispatch(setUpdatingUserTeamLevel(teamID, false))
+      throw err
+    })
 }
 
 export const deleteMembership = (teamID, membershipID) => ({
@@ -1496,484 +1591,532 @@ export const setDeletingMembership = (teamID, membershipID, val) => ({
   type: SET_DELETING_MEMBERSHIP,
   teamID,
   membershipID,
-  val,
+  val
 })
 
-export const deleteTeam = (id) => ({
+export const deleteTeam = id => ({
   type: DELETE_TEAM,
-  id,
+  id
 })
 
-export const deletingMembership = (teamID, id, leaving = false) => (dispatch, getState) => {
+export const deletingMembership = (teamID, id, leaving = false) => (
+  dispatch,
+  getState
+) => {
   dispatch(setDeletingMembership(teamID, id, true))
-  return http.delete(`/api/v1/t/${teamID}/members/${id}/`)
-  .then(() => {
-    const message = 'left team ' + getState().teams[teamID].name
-    dispatch(deleteMembership(teamID, id))
-    if (leaving) {
-      dispatch(push('/'))
-      dispatch(showNotificationWithTimeout({
-        message,
-        level: 'success',
-        delay: 3 * second
-      }))
-      dispatch(deleteTeam(teamID))
-    }
-  })
-  .catch(err => {
-    const message = err.response.data
-    dispatch(showNotificationWithTimeout({
-      message,
-      level: 'danger',
-      delay: 3 * second
-    }))
-    dispatch(setDeletingMembership(teamID, id, false))
-    throw err
-  })
+  return http
+    .delete(`/api/v1/t/${teamID}/members/${id}/`)
+    .then(() => {
+      const message = "left team " + getState().teams[teamID].name
+      dispatch(deleteMembership(teamID, id))
+      if (leaving) {
+        dispatch(push("/"))
+        dispatch(
+          showNotificationWithTimeout({
+            message,
+            level: "success",
+            delay: 3 * second
+          })
+        )
+        dispatch(deleteTeam(teamID))
+      }
+    })
+    .catch(err => {
+      const message = err.response.data
+      dispatch(
+        showNotificationWithTimeout({
+          message,
+          level: "danger",
+          delay: 3 * second
+        })
+      )
+      dispatch(setDeletingMembership(teamID, id, false))
+      throw err
+    })
 }
 
 export const deletingTeam = teamID => (dispatch, getState) => {
-  return http.delete(`/api/v1/t/${teamID}`)
-  .then(() => {
-    dispatch(push('/'))
-    const teamName = getState().teams[teamID].name
-    dispatch(showNotificationWithTimeout({
-      message: `Team deleted (${teamName})`,
-      level: 'success',
-      delay: 3 * second
-    }))
-    dispatch(deleteTeam(teamID))
-  })
-  .catch(err => {
-    let message = 'Uh Oh! Something went wrong.'
-    if (err.response && err.response.status === 403) {
-      message = (err.response.data && err.response.data.detail)
-      ? err.response.data.detail
-      : 'You are not authorized to delete this team'
-    } else if (err.response && err.response.status === 404) {
-      message = (err.response.data && err.response.data.detail)
-      ? err.response.data.detail
-      : "The team you are attempting to delete doesn't exist"
-    } else {
-      raven.captureException(err)
-    }
-    dispatch(showNotificationWithTimeout({
-      message,
-      level: 'danger',
-      delay: 3 * second
-    }))
-    throw err
-  })
+  return http
+    .delete(`/api/v1/t/${teamID}`)
+    .then(() => {
+      dispatch(push("/"))
+      const teamName = getState().teams[teamID].name
+      dispatch(
+        showNotificationWithTimeout({
+          message: `Team deleted (${teamName})`,
+          level: "success",
+          delay: 3 * second
+        })
+      )
+      dispatch(deleteTeam(teamID))
+    })
+    .catch(err => {
+      let message = "Uh Oh! Something went wrong."
+      if (err.response && err.response.status === 403) {
+        message =
+          err.response.data && err.response.data.detail
+            ? err.response.data.detail
+            : "You are not authorized to delete this team"
+      } else if (err.response && err.response.status === 404) {
+        message =
+          err.response.data && err.response.data.detail
+            ? err.response.data.detail
+            : "The team you are attempting to delete doesn't exist"
+      } else {
+        raven.captureException(err)
+      }
+      dispatch(
+        showNotificationWithTimeout({
+          message,
+          level: "danger",
+          delay: 3 * second
+        })
+      )
+      throw err
+    })
 }
 
 export const setSendingTeamInvites = (teamID, val) => ({
   type: SET_SENDING_TEAM_INVITES,
   teamID,
-  val,
+  val
 })
 
 export const sendingTeamInvites = (teamID, emails, level) => dispatch => {
   dispatch(setSendingTeamInvites(teamID, true))
-  return http.post(`/api/v1/t/${teamID}/invites/`, { emails, level })
-  .then(() => {
-    dispatch(showNotificationWithTimeout({
-      message: 'invites sent!',
-      level: 'success',
-      delay: 3 * second
-    }))
-    dispatch(setSendingTeamInvites(teamID, false))
-  })
-  .catch(() => {
-    dispatch(showNotificationWithTimeout({
-      message: 'error sending team invite',
-      level: 'danger',
-      delay: 3 * second
-    }))
-    dispatch(setSendingTeamInvites(teamID, false))
-  })
+  return http
+    .post(`/api/v1/t/${teamID}/invites/`, { emails, level })
+    .then(() => {
+      dispatch(
+        showNotificationWithTimeout({
+          message: "invites sent!",
+          level: "success",
+          delay: 3 * second
+        })
+      )
+      dispatch(setSendingTeamInvites(teamID, false))
+    })
+    .catch(() => {
+      dispatch(
+        showNotificationWithTimeout({
+          message: "error sending team invite",
+          level: "danger",
+          delay: 3 * second
+        })
+      )
+      dispatch(setSendingTeamInvites(teamID, false))
+    })
 }
 
 export const setLoadingTeams = val => ({
   type: SET_LOADING_TEAMS,
-  val,
+  val
 })
 
 export const setTeams = teams => ({
   type: SET_TEAMS,
-  teams,
+  teams
 })
 
 export const fetchTeams = () => dispatch => {
   dispatch(setLoadingTeams(true))
-  return http.get('/api/v1/t/')
-  .then(res => {
-    dispatch(setTeams(res.data))
-    dispatch(setLoadingTeams(false))
-  })
-  .catch(err => {
-    dispatch(setLoadingTeams(false))
-    throw err
-  })
+  return http
+    .get("/api/v1/t/")
+    .then(res => {
+      dispatch(setTeams(res.data))
+      dispatch(setLoadingTeams(false))
+    })
+    .catch(err => {
+      dispatch(setLoadingTeams(false))
+      throw err
+    })
 }
 
 export const setTeam = (id, team) => ({
   type: SET_TEAM,
   id,
-  team,
+  team
 })
 
 export const updateTeamById = (id, teamKeys) => ({
   type: UPDATE_TEAM,
   id,
-  teamKeys,
+  teamKeys
 })
 
 export const setCreatingTeam = val => ({
   type: SET_CREATING_TEAM,
-  val,
+  val
 })
 
 export const creatingTeam = (name, emails, level) => dispatch => {
   dispatch(setCreatingTeam(true))
-  return http.post('/api/v1/t/', { name, emails, level })
-  .then(res => {
-    dispatch(setTeam(res.data.id, res.data))
-    dispatch(setCreatingTeam(false))
-    dispatch(push(`/t/${res.data.id}`))
-  })
-  .catch(err => {
-    dispatch(setCreatingTeam(false))
-    throw err
-  })
+  return http
+    .post("/api/v1/t/", { name, emails, level })
+    .then(res => {
+      dispatch(setTeam(res.data.id, res.data))
+      dispatch(setCreatingTeam(false))
+      dispatch(push(`/t/${res.data.id}`))
+    })
+    .catch(err => {
+      dispatch(setCreatingTeam(false))
+      throw err
+    })
 }
 
 export const setCopyingTeam = val => ({
   type: SET_COPYING_TEAM,
-  val,
+  val
 })
 
 export const updatingTeam = (teamId, teamKVs) => dispatch => {
-  return http.patch(`/api/v1/t/${teamId}/`, teamKVs)
-  .then(res => {
-    dispatch(showNotificationWithTimeout({
-      message: 'Team updated',
-      level: 'success',
-      delay: 3 * second
-    }))
-    dispatch(updateTeamById(res.data.id, res.data))
-  })
-  .catch(err => {
-    let message = 'Problem updating team.'
-    if (err.response && err.response.status === 403) {
-      message = 'You are not unauthorized to perform that action'
-    }
-    dispatch(showNotificationWithTimeout({
-      message,
-      level: 'danger',
-      delay: 3 * second
-    }))
-    throw err
-  })
+  return http
+    .patch(`/api/v1/t/${teamId}/`, teamKVs)
+    .then(res => {
+      dispatch(
+        showNotificationWithTimeout({
+          message: "Team updated",
+          level: "success",
+          delay: 3 * second
+        })
+      )
+      dispatch(updateTeamById(res.data.id, res.data))
+    })
+    .catch(err => {
+      let message = "Problem updating team."
+      if (err.response && err.response.status === 403) {
+        message = "You are not unauthorized to perform that action"
+      }
+      dispatch(
+        showNotificationWithTimeout({
+          message,
+          level: "danger",
+          delay: 3 * second
+        })
+      )
+      throw err
+    })
 }
 
 export const updateRecipeOwner = (id, owner) => ({
   type: UPDATE_RECIPE_OWNER,
   id,
-  owner,
+  owner
 })
 
 export const moveRecipeTo = (recipeId, ownerId, type) => dispatch => {
-  return http.post(`/api/v1/recipes/${recipeId}/move/`, { id: ownerId, type })
-  .then(res => {
-    dispatch(updateRecipeOwner(res.data.id, res.data.owner))
-  })
+  return http
+    .post(`/api/v1/recipes/${recipeId}/move/`, { id: ownerId, type })
+    .then(res => {
+      dispatch(updateRecipeOwner(res.data.id, res.data.owner))
+    })
 }
 
 export const copyRecipeTo = (recipeId, ownerId, type) => dispatch => {
   dispatch(setCopyingTeam(true))
-  return http.post(`/api/v1/recipes/${recipeId}/copy/`, { id: ownerId, type })
-  .then(res => {
-    dispatch(addRecipe(res.data))
-    dispatch(setCopyingTeam(false))
-  })
-  .catch(err => {
-    dispatch(setCopyingTeam(false))
-    throw err
-  })
+  return http
+    .post(`/api/v1/recipes/${recipeId}/copy/`, { id: ownerId, type })
+    .then(res => {
+      dispatch(addRecipe(res.data))
+      dispatch(setCopyingTeam(false))
+    })
+    .catch(err => {
+      dispatch(setCopyingTeam(false))
+      throw err
+    })
 }
 
-export const setLoadingInvites = (val) => ({
+export const setLoadingInvites = val => ({
   type: SET_LOADING_INVITES,
-  val,
+  val
 })
 
-export const setInvites = (invites) => ({
+export const setInvites = invites => ({
   type: SET_INVITES,
-  invites,
+  invites
 })
 
-export const setErrorFetchingInvites = (val) => ({
+export const setErrorFetchingInvites = val => ({
   type: SET_ERROR_FETCHING_INVITES,
-  val,
+  val
 })
 
 export const fetchInvites = () => dispatch => {
   dispatch(setLoadingInvites(true))
   dispatch(setErrorFetchingInvites(false))
-  return http.get('/api/v1/invites/')
-  .then(res => {
-    dispatch(setInvites(res.data))
-    dispatch(setLoadingInvites(false))
-  })
-  .catch(err => {
-    dispatch(setLoadingInvites(false))
-    dispatch(setErrorFetchingInvites(true))
-    throw err
-  })
+  return http
+    .get("/api/v1/invites/")
+    .then(res => {
+      dispatch(setInvites(res.data))
+      dispatch(setLoadingInvites(false))
+    })
+    .catch(err => {
+      dispatch(setLoadingInvites(false))
+      dispatch(setErrorFetchingInvites(true))
+      throw err
+    })
 }
 
 export const setAcceptingInvite = (id, val) => ({
   type: SET_ACCEPTING_INVITE,
   id,
-  val,
+  val
 })
 
-export const setAcceptedInvite = (id) => ({
+export const setAcceptedInvite = id => ({
   type: SET_ACCEPTED_INVITE,
-  id,
+  id
 })
 
-export const acceptingInvite = (id) => dispatch => {
+export const acceptingInvite = id => dispatch => {
   dispatch(setAcceptingInvite(true))
-  return http.post(`/api/v1/invites/${id}/accept/`, {})
-  .then(() => {
-    dispatch(setAcceptingInvite(false))
-    dispatch(setAcceptedInvite(id))
-  })
-  .catch(err => {
-    dispatch(setAcceptingInvite(false))
-    throw err
-  })
+  return http
+    .post(`/api/v1/invites/${id}/accept/`, {})
+    .then(() => {
+      dispatch(setAcceptingInvite(false))
+      dispatch(setAcceptedInvite(id))
+    })
+    .catch(err => {
+      dispatch(setAcceptingInvite(false))
+      throw err
+    })
 }
 
 export const setDecliningInvite = (id, val) => ({
   type: SET_DECLINING_INVITE,
   id,
-  val,
+  val
 })
 
-export const setDeclinedInvite = (id) => ({
+export const setDeclinedInvite = id => ({
   type: SET_DECLINED_INVITE,
-  id,
+  id
 })
 
-export const decliningInvite = (id) => dispatch => {
+export const decliningInvite = id => dispatch => {
   dispatch(setDecliningInvite(true))
-  return http.post(`/api/v1/invites/${id}/decline/`, {})
-  .then(() => {
-    dispatch(setDecliningInvite(false))
-    dispatch(setDeclinedInvite(id))
-  })
-  .catch(err => {
-    dispatch(setDecliningInvite(false))
-    throw err
-  })
+  return http
+    .post(`/api/v1/invites/${id}/decline/`, {})
+    .then(() => {
+      dispatch(setDecliningInvite(false))
+      dispatch(setDeclinedInvite(id))
+    })
+    .catch(err => {
+      dispatch(setDecliningInvite(false))
+      throw err
+    })
 }
 
 export const deleteUserAccount = () => dispatch => {
-  return http.delete('/api/v1/rest-auth/user/')
-  .then(() => {
-    dispatch(logout())
-    dispatch(push('/login'))
-    dispatch(showNotificationWithTimeout({ message: 'Account deleted' }))
-  })
-  .catch(error => {
-    if (error.response.status === 403 && error.response.data.detail) {
-      dispatch(showNotificationWithTimeout({
-        message: error.response.data.detail,
-        level: 'danger',
-      }))
-    } else {
-      dispatch(showNotificationWithTimeout({
-        message: 'failed to delete account',
-        level: 'danger',
-      }))
-      throw error
-    }
-  })
+  return http
+    .delete("/api/v1/rest-auth/user/")
+    .then(() => {
+      dispatch(logout())
+      dispatch(push("/login"))
+      dispatch(showNotificationWithTimeout({ message: "Account deleted" }))
+    })
+    .catch(error => {
+      if (error.response.status === 403 && error.response.data.detail) {
+        dispatch(
+          showNotificationWithTimeout({
+            message: error.response.data.detail,
+            level: "danger"
+          })
+        )
+      } else {
+        dispatch(
+          showNotificationWithTimeout({
+            message: "failed to delete account",
+            level: "danger"
+          })
+        )
+        throw error
+      }
+    })
 }
 
 export const reportBadMerge = () => dispatch => {
-  return http.post('/api/v1/report-bad-merge', {})
-  .then(() => {
-    dispatch(showNotificationWithTimeout({
-      message: 'reported bad merge',
-      level: 'success',
-      delay: 3 * second
-    }))
-  })
-  .catch(() => {
-    dispatch(showNotificationWithTimeout({
-      message: 'error reporting bad merge',
-      level: 'danger',
-      delay: 3 * second
-    }))
-  })
+  return http
+    .post("/api/v1/report-bad-merge", {})
+    .then(() => {
+      dispatch(
+        showNotificationWithTimeout({
+          message: "reported bad merge",
+          level: "success",
+          delay: 3 * second
+        })
+      )
+    })
+    .catch(() => {
+      dispatch(
+        showNotificationWithTimeout({
+          message: "error reporting bad merge",
+          level: "danger",
+          delay: 3 * second
+        })
+      )
+    })
 }
 
-export const setCalendarLoading = (loading) => ({
+export const setCalendarLoading = loading => ({
   type: SET_CALENDAR_LOADING,
-  loading,
+  loading
 })
 
-export const setCalendarError = (error) => ({
+export const setCalendarError = error => ({
   type: SET_CALENDAR_ERROR,
-  error,
+  error
 })
 
-export const setCalendarRecipe = (recipe) => ({
+export const setCalendarRecipe = recipe => ({
   type: SET_CALENDAR_RECIPE,
-  recipe,
+  recipe
 })
 
 export const fetchCalendar = (teamID, month = new Date()) => dispatch => {
   dispatch(setCalendarLoading(true))
   dispatch(setCalendarError(false))
-  const url = teamID === 'personal'
-    ? '/api/v1/calendar/'
-    : `/api/v1/t/${teamID}/calendar/`
+  const url =
+    teamID === "personal"
+      ? "/api/v1/calendar/"
+      : `/api/v1/t/${teamID}/calendar/`
   // we fetch current month plus and minus 1 week
-  return http.get(url, {
-    params: {
-      start: pyFormat(subWeeks(startOfMonth(month), 1)),
-      end: pyFormat(addWeeks(endOfMonth(month), 1)),
-    }
-  })
-  .then((res) => {
-    dispatch(setCalendarRecipes(res.data))
-    dispatch(setCalendarLoading(false))
-  })
-  .catch(() => {
-    dispatch(setCalendarLoading(false))
-    dispatch(setCalendarError(true))
-  })
+  return http
+    .get(url, {
+      params: {
+        start: pyFormat(subWeeks(startOfMonth(month), 1)),
+        end: pyFormat(addWeeks(endOfMonth(month), 1))
+      }
+    })
+    .then(res => {
+      dispatch(setCalendarRecipes(res.data))
+      dispatch(setCalendarLoading(false))
+    })
+    .catch(() => {
+      dispatch(setCalendarLoading(false))
+      dispatch(setCalendarError(true))
+    })
 }
 
 export const setSchedulingRecipe = (recipeID, scheduling) => ({
   type: SET_SCHEDULING_RECIPE,
   recipeID,
-  scheduling,
+  scheduling
 })
 
-export const setCalendarRecipes = (recipes) => ({
+export const setCalendarRecipes = recipes => ({
   type: SET_CALENDAR_RECIPES,
-  recipes,
+  recipes
 })
 
 export const replaceCalendarRecipe = (id, recipe) => ({
   type: REPLACE_CALENDAR_RECIPE,
   id,
-  recipe,
+  recipe
 })
 
-export const addingScheduledRecipe = (recipeID, teamID, on, count) => (dispatch, getState) => {
+export const addingScheduledRecipe = (recipeID, teamID, on, count) => (
+  dispatch,
+  getState
+) => {
   const recipe = getState().recipes[recipeID]
   dispatch(setSchedulingRecipe(recipeID, true))
   const id = uuid4()
   const data = {
     recipe: recipeID,
     on: pyFormat(on),
-    count,
+    count
   }
   // 1. preemptively add recipe
   // 2. if succeeded, then we replace the preemptively added one
   //    if failed, then we remove the preemptively added one, and display an error
 
-  const url = teamID === 'personal'
-    ? '/api/v1/calendar/'
-    : `/api/v1/t/${teamID}/calendar/`
+  const url =
+    teamID === "personal"
+      ? "/api/v1/calendar/"
+      : `/api/v1/t/${teamID}/calendar/`
 
   dispatch(setCalendarRecipe({ ...data, id, recipe }))
-  return http.post(url, data)
-  .then((res) => {
-    dispatch(replaceCalendarRecipe(id, res.data))
-    dispatch(setSchedulingRecipe(recipeID, false))
-  })
-  .catch(() => {
-    dispatch(deleteCalendarRecipe(id))
-    dispatch(showNotificationWithTimeout({
-      message: 'error scheduling recipe',
-      level: 'danger',
-      delay: 3 * second
-    }))
-    dispatch(setSchedulingRecipe(recipeID, false))
-  })
+  return http
+    .post(url, data)
+    .then(res => {
+      dispatch(replaceCalendarRecipe(id, res.data))
+      dispatch(setSchedulingRecipe(recipeID, false))
+    })
+    .catch(() => {
+      dispatch(deleteCalendarRecipe(id))
+      dispatch(
+        showNotificationWithTimeout({
+          message: "error scheduling recipe",
+          level: "danger",
+          delay: 3 * second
+        })
+      )
+      dispatch(setSchedulingRecipe(recipeID, false))
+    })
 }
 
-export const deleteCalendarRecipe = (id) => ({
+export const deleteCalendarRecipe = id => ({
   type: DELETE_CALENDAR_RECIPE,
-  id,
+  id
 })
 
 export const moveCalendarRecipe = (id, to) => ({
   type: MOVE_CALENDAR_RECIPE,
   id,
-  on: to,
+  on: to
 })
 
 export const deletingScheduledRecipe = (id, teamID) => (dispatch, getState) => {
   const recipe = getState().calendar[id]
   dispatch(deleteCalendarRecipe(id))
 
-  const url = teamID === 'personal'
-    ? `/api/v1/calendar/${id}/`
-    : `/api/v1/t/${teamID}/calendar/${id}/`
+  const url =
+    teamID === "personal"
+      ? `/api/v1/calendar/${id}/`
+      : `/api/v1/t/${teamID}/calendar/${id}/`
 
-  return http.delete(url)
-  .catch(() => {
+  return http.delete(url).catch(() => {
     dispatch(setCalendarRecipe(recipe))
   })
 }
 
 export const moveScheduledRecipe = (id, teamID, to) => (dispatch, getState) => {
   const from = getState().calendar[id]
-  const existing =
-    getState().calendar.allIds
-    .filter(x => x !== id)
+  const existing = getState()
+    .calendar.allIds.filter(x => x !== id)
     .map(x => getState().calendar[x])
     .filter(x => isSameDay(x.on, to))
     .filter(x => {
-      if (teamID === 'personal') {
+      if (teamID === "personal") {
         return x.user != null
       }
       return x.team === teamID
     })
     .find(x => x.recipe.id === from.recipe.id)
 
-  const sourceURL = teamID === 'personal'
-    ? `/api/v1/calendar/${id}/`
-    : `/api/v1/t/${teamID}/calendar/${id}/`
+  const sourceURL =
+    teamID === "personal"
+      ? `/api/v1/calendar/${id}/`
+      : `/api/v1/t/${teamID}/calendar/${id}/`
 
   dispatch(moveCalendarRecipe(id, pyFormat(to)))
 
   if (existing) {
-    const sinkURL = teamID === 'personal'
-      ? `/api/v1/calendar/${existing.id}/`
-      : `/api/v1/t/${teamID}/calendar/${existing.id}/`
+    const sinkURL =
+      teamID === "personal"
+        ? `/api/v1/calendar/${existing.id}/`
+        : `/api/v1/t/${teamID}/calendar/${existing.id}/`
     // TODO: this should be an endpoint so we can have this be in a transaction
-    return (
-      http.delete(sourceURL)
-      .then(() =>
-        http.patch(sinkURL, { count: existing.count + from.count })
-      )
+    return http
+      .delete(sourceURL)
+      .then(() => http.patch(sinkURL, { count: existing.count + from.count }))
       .catch(() => {
         dispatch(moveCalendarRecipe(id, pyFormat(from.on)))
       })
-    )
   }
 
-  return http.patch(sourceURL, { on: pyFormat(to) })
-  .catch(() => {
+  return http.patch(sourceURL, { on: pyFormat(to) }).catch(() => {
     // on error we want to move it back to the old position
     dispatch(moveCalendarRecipe(id, pyFormat(from.on)))
   })
@@ -1984,16 +2127,16 @@ export const updatingScheduledRecipe = (id, teamID, data) => dispatch => {
     return dispatch(deletingScheduledRecipe(id, teamID))
   }
 
-  const url = teamID === 'personal'
-    ? `/api/v1/calendar/${id}/`
-    : `/api/v1/t/${teamID}/calendar/${id}/`
-  return http.patch(url, data)
-  .then(res => {
+  const url =
+    teamID === "personal"
+      ? `/api/v1/calendar/${id}/`
+      : `/api/v1/t/${teamID}/calendar/${id}/`
+  return http.patch(url, data).then(res => {
     dispatch(setCalendarRecipe(res.data))
   })
 }
 
-export const setScheduleURL = (url) => ({
+export const setScheduleURL = url => ({
   type: SET_SCHEDULE_URL,
   scheduleURL: url
 })
