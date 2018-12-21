@@ -23,12 +23,14 @@ echo "DEBUG=1" >> .env
 
 # frontend
 cd frontend
+yarn install
 yarn dev
 yarn test
 yarn lint
 
 # backend
 cd backend
+poetry install
 ./s/run
 ./s/test # or ./s/test --watch
 ./s/lint
