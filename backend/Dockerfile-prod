@@ -1,23 +1,23 @@
 FROM python:3.6.4
 ENV PYTHONUNBUFFERD 1
 
-# -- Install Pipenv:
-RUN set -ex && pip install "pipenv~=11.8"
+# Install Poetry
+RUN set -ex && python3 -m pip install --user poetry===0.11.5
 
-# -- Install Application into container:
+# Install Application into container
 RUN set -ex && mkdir -p /var/app
 
 WORKDIR /var/app
 
-# -- Adding Pipfiles
-COPY Pipfile Pipfile
-COPY Pipfile.lock Pipfile.lock
+# Adding dependency files
+COPY pyproject.toml pyproject.toml
+COPY pyproject.lock pyproject.lock
 
-# -- Install dependencies:
-RUN set -ex && pipenv install --dev --deploy --system
+# Install our dev dependencies
+RUN poetry install
 
 COPY . /var/app
-RUN DOCKERBUILD=1 python manage.py collectstatic --noinput
+RUN DOCKERBUILD=1 poetry run ./manage.py collectstatic --noinput
 
 # Inject GIT SHA into settings file to track releases via Sentry
 ARG GIT_SHA

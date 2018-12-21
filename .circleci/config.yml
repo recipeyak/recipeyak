@@ -16,28 +16,27 @@ jobs:
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
-            - backend-v2-{{ .Branch }}-{{ checksum "backend/Pipfile.lock" }}
+            - backend-v2-{{ .Branch }}-{{ checksum "backend/pyproject.lock" }}
             - backend-v2-{{ .Branch }}-
             - backend-v2-
       - run:
           name: install dependencies
           working_directory: backend
           command: |
-            mkdir -p .pipcache
-            sudo -H pip3 --cache-dir .pipcache install "pipenv~=11.8"
-            make install
+            echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
+            # Use our new PATH so we can call poetry from bash
+            source $BASH_ENV
+            python3 -m pip install --user poetry===0.11.5
+            poetry install
       - save_cache:
           paths:
-            - ./backend/.venv
-            - ./backend/.pipcache
             - ./backend/.mypy_cache
-          key: backend-v2-{{ .Branch }}-{{ checksum "backend/Pipfile.lock" }}
+            - /home/circleci/.cache/pypoetry/
+          key: backend-v2-{{ .Branch }}-{{ checksum "backend/pyproject.lock" }}
       - run:
           name: run tests
           working_directory: backend
-          command: |
-            mkdir -p backend/reports
-            pipenv run pytest --cov-config .coveragerc --cov --junit-xml backend/reports/pytest.xml
+          command: ./s/test
       - store_test_results:
           path: backend/reports
 
@@ -55,30 +54,27 @@ jobs:
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
-            - backend-v2-{{ .Branch }}-{{ checksum "backend/Pipfile.lock" }}
+            - backend-v2-{{ .Branch }}-{{ checksum "backend/pyproject.lock" }}
             - backend-v2-{{ .Branch }}-
             - backend-v2-
       - run:
           name: install dependencies
           working_directory: backend
           command: |
-            mkdir -p .pipcache
-            sudo -H pip3 --cache-dir .pipcache install "pipenv~=11.8"
-            make install
+            echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
+            # Use our new PATH so we can call poetry from bash
+            source $BASH_ENV
+            python3 -m pip install --user poetry===0.11.5
+            poetry install
       - save_cache:
           paths:
-            - ./backend/.venv
-            - ./backend/.pipcache
             - ./backend/.mypy_cache
-          key: backend-v2-{{ .Branch }}-{{ checksum "backend/Pipfile.lock" }}
+            - /home/circleci/.cache/pypoetry/
+          key: backend-v2-{{ .Branch }}-{{ checksum "backend/pyproject.lock" }}
       - run:
           name: run lints
           working_directory: backend
-          command: |
-            mkdir -p backend/reports
-            pipenv run flake8
-            pipenv run mypy --config-file tox.ini --junit-xml backend/reports/mypy.xml .
-            pipenv run pytest --cov-config .coveragerc --cov --junit-xml backend/reports/pytest.xml
+          command: ./s/lint
       - store_test_results:
           path: backend/reports
 

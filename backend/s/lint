@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+set -ex
+
+if [[ -f ../.env ]]; then
+    # export all variables from env file
+    set -a
+    source ../.env
+    set +a
+fi
+
+MYPY_ARGS=''
+if [[ $CI ]]; then
+  mkdir -p backend/reports
+  MYPY_ARGS='--junit-xml backend/reports/mypy.xml'
+fi
+
+echo 'start mypy'
+poetry run mypy --config-file tox.ini $MYPY_ARGS . &
+
+echo 'start flake8'
+poetry run flake8 &
+
+if [[ "$@" == *'--db'* ]]; then
+    echo 'check for missing migrations'
+    ./s/check_missing_migrations &
+else
+    echo '--db not passed. Skipping migration check that requires Postgres and Mongo'
+fi
+
+
+echo 'wait for background jobs to execute'
+FAIL=0
+for job in $(jobs -p)
+do
+    wait $job || FAIL=1
+    echo 'job finished'
+done
+
+if [[ $FAIL -gt 0 ]]; then
+    echo '🚨  Failure'
+else
+    echo '✅  Success'
+fi
+
+exit $FAIL

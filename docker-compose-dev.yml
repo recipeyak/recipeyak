@@ -1,40 +1,11 @@
 version: '3'
 services:
-  django:
-    restart: always
-    build:
-      context: ./backend
-      dockerfile: Dockerfile-dev
-    environment:
-      - DEBUG=1
-    command: sh bootstrap-dev.sh
-    env_file:
-      - .env-dev
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./backend:/app:rw,cached
-    depends_on:
-      - db
   db:
     image: postgres:10.1-alpine
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data/
-  react:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile-dev
-    command: npm run dev
-    env_file:
-      - .env-dev
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./frontend:/var/app:rw,cached
-    depends_on:
-      - django
 volumes:
   pgdata:
     driver: local

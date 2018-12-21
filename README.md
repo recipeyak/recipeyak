@@ -12,50 +12,33 @@ To have a centralized location where multiple people can organize a meal plan.
 - <http://krecipes.sourceforge.net>
 
 ## Dev
-1. Create an `.env-dev` file. It can be empty.
-2. Startup dev environment
-```
-docker-compose -f docker-compose-dev.yml up -d
-```
 
-### Using `pdb` with
-```
-docker-compose -f docker-compose-dev.yml up -d && \
-docker-compose -f docker-compose-dev.yml kill django && \
-docker-compose -f docker-compose-dev.yml run -d --entrypoint "tail -f /dev/null" django && \
-docker-compose -f docker-compose-dev.yml exec django sh boostrap-dev.sh
-```
+**Note:** postgres is required. Either run it via `docker-compose -f
+docker-compose-dev.yml -d` or via the homebrew cask mac app.
 
-### Updating dependencies
-For Python, we use `pipenv`, so if you want to update/install a dependency, like [django-rest-knox][drknox], run `docker-compose -f docker-compose-dev.yml django pipenv install --system django-rest-knox==3.1.3`.
-
-For Javascript, we use `npm`, so if you want to update/install a dependency, like React, run `docker-compose -f docker-compose-dev.yml react npm install --save react@16.2.0`.
-
-### Testing with OAuth
-1. Create an `.env-dev` file based on `.env-example` with proper client IDs.
-2. Configure the identity provider to enable redirecting to `http://localhost:3000/accounts/$providerName`.
-
-## Testing Frontend and Backend
-
-```
-docker-compose -f docker-compose-dev.yml up
+```shell
 # frontend
-# w/ watch mode
-docker-compose -f docker-compose-dev.yml exec react npm run test
-# w/ coverage (no watch mode)
-docker-compose -f docker-compose-dev.yml exec react npm run test-cov
+cd frontend
+yarn dev
+yarn test
+yarn lint
 
 # backend
-# quick dev test
-docker-compose -f docker-compose-dev.yml exec backend make test-dev
-# slow, full test with mypy, pytest_cov, et al.
-docker-compose -f docker-compose-dev.yml exec backend make test
+cd backend
+./s/run
+./s/test # or ./s/test --watch
+./s/lint
 ```
+
+### Testing with OAuth
+
+1. Create an `.env-dev` file based on `.env-example` with proper client IDs.
+2. Configure the identity provider to enable redirecting to `http://localhost:3000/accounts/$providerName`.
 
 ## Production
 ### Creating environment
 You can create a remote docker machine on AWS using:
-```
+```shell
 MACHINE_NAME='grunniens'
 docker-machine create --driver amazonec2 $MACHINE_NAME
 ```
