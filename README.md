@@ -27,6 +27,7 @@ yarn install
 ./s/run
 ./s/test
 ./s/lint
+./s/fmt
 
 # backend
 cd backend
@@ -34,6 +35,7 @@ poetry install
 ./s/run
 ./s/test # or ./s/test --watch
 ./s/lint
+./s/fmt
 ```
 
 ### Testing with OAuth
