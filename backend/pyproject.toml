@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "recipeyak"
+version = "0.1.0"
+description = ""
+authors = ["Steve Dignam <steve@dignam.xyz>"]
+
+[tool.poetry.dependencies]
+python = "3.6"
+djangorestframework = "3.7.7"
+django = "2.0.2"
+dj-database-url = "0.4.2"
+django-allauth = "0.35.0"
+drf-nested-routers = "0.90.0"
+pint = "0.8.1"
+gunicorn = "19.7.1"
+psycopg2 = "2.7.3.2"
+raven = "6.5.0"
+python-json-logger = "0.1.8"
+pyyaml = "^3.13"
+
+[tool.poetry.dev-dependencies]
+pytest = "3.4.0"
+pytest-watch = "4.1.0"
+pytest-cov = "2.5.1"
+pytest-django = "3.1.2"
+ipdb = "^0.11.0"
+mypy = "0.570"
+flake8 = "3.5.0"
+flake8-formatter-junit-xml = "0.0.5"

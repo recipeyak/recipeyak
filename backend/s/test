@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -ex
+
+cd $(dirname $(dirname "$0"))
+
+if [[ -f ../.env ]]; then
+    # export all variables from env file
+    set -a
+    source ../.env
+    set +a
+fi
+
+ARGS="$@"
+if [[ $ARGS == *'--coverage'* ]]; then
+    mkdir -p backend/reports
+    ARGS=' --cov-config .coveragerc --cov --junit-xml backend/reports/pytest.xml '"${ARGS/'--coverage'/''}"
+fi
+
+if [[ "$ARGS" == *'--watch'* ]]; then
+    ARGS="${ARGS/'--watch'/''}"
+    poetry run ptw -- $ARGS
+else
+    poetry run pytest $ARGS
+fi
+

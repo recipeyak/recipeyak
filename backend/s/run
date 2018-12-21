@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -ex
+
+cd $(dirname $(dirname "$0"))
+
+if [[ -f ../.env ]]; then
+    # export all variables from env file
+    set -a
+    source ../.env
+    set +a
+fi
+
+poetry run ./manage.py check --fail-level WARNING
+poetry run ./manage.py migrate
+poetry run ./manage.py shell < ./set_server.py
+poetry run ./manage.py runserver
