@@ -440,7 +440,7 @@ class Membership(CommonInfo):
         max_length=11, choices=MEMBERSHIP_CHOICES, default=CONTRIBUTOR
     )
 
-    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    team: Team = models.ForeignKey(Team, on_delete=models.CASCADE)
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
     class Meta:

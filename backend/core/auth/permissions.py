@@ -24,8 +24,8 @@ class DisallowAny:
 class IsTeamMember(permissions.BasePermission):
     def has_permission(self, request, view) -> bool:
         team_pk = view.kwargs["team_pk"]
-        team = get_object_or_404(Team, pk=team_pk)
-        return team.is_member(request.user)  # type: ignore
+        team: Team = get_object_or_404(Team, pk=team_pk)
+        return team.is_member(request.user)
 
 
 class IsTeamMemberIfPrivate(permissions.BasePermission):
@@ -62,7 +62,7 @@ class IsTeamAdminOrMembershipOwner(permissions.BasePermission):
             raise TypeError("This permission only works for membership objects")
         object_owner = membership.user == request.user
         team_admin = membership.team.is_admin(request.user)
-        return object_owner or team_admin  # type: ignore
+        return object_owner or team_admin
 
 
 class NonSafeIfMemberOrAdmin(IsTeamMember):
