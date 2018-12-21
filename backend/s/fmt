@@ -10,7 +10,4 @@ if [[ -f ../.env ]]; then
     set +a
 fi
 
-poetry run ./manage.py check --fail-level WARNING
-poetry run ./manage.py migrate
-poetry run ./manage.py shell < ./set_server.py
-poetry run ./manage.py runserver
+poetry run black .
