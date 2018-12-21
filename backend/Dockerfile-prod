@@ -2,7 +2,7 @@ FROM python:3.6.4
 ENV PYTHONUNBUFFERD 1
 
 # Install Poetry
-RUN set -ex && python3 -m pip install --user poetry===0.11.5
+RUN set -ex && python3 -m pip install poetry===0.11.5
 
 # Install Application into container
 RUN set -ex && mkdir -p /var/app
