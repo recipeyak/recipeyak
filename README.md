@@ -34,6 +34,7 @@ backend/s/run
 backend/s/test # or backend/s/test --watch
 backend/s/lint
 backend/s/fmt
+backend/s/manage
 ```
 
 ### Testing with OAuth
