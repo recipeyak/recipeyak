@@ -1,37 +1,34 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
-import { DragSource } from 'react-dnd'
+import React from "react";
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
+import { DragSource } from "react-dnd";
 
-import DatePickerForm from './DatePickerForm'
+import DatePickerForm from "./DatePickerForm";
 
-import { ButtonPlain } from './Buttons'
+import { ButtonPlain } from "./Buttons";
 
-import { classNames } from '../classnames'
+import { classNames } from "../classnames";
 
-import {
-  recipeURL,
-  teamURL,
-} from '../urls'
+import { recipeURL, teamURL } from "../urls";
 
-import * as DragDrop from '../dragDrop'
+import * as DragDrop from "../dragDrop";
 
 const recipeSource = {
-  beginDrag (props) {
+  beginDrag(props) {
     return {
       recipeID: props.id
-    }
+    };
   },
-  canDrag (props) {
-    return props.drag
+  canDrag(props) {
+    return props.drag;
   }
-}
+};
 
-function collect (connect, monitor) {
+function collect(connect, monitor) {
   return {
     connectDragSource: connect.dragSource(),
     isDragging: monitor.isDragging()
-  }
+  };
 }
 
 export class RecipeItem extends React.Component {
@@ -43,56 +40,60 @@ export class RecipeItem extends React.Component {
     owner: PropTypes.object,
     connectDragSource: PropTypes.func.isRequired,
     isDragging: PropTypes.bool.isRequired,
-    teamID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  }
+    teamID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
+  };
 
   state = {
-    show: false,
-  }
+    show: false
+  };
 
   static defaultProps = {
-    drag: false,
-  }
+    drag: false
+  };
 
-  render () {
+  render() {
     const {
       name,
       author,
       id,
       url = recipeURL(id, name),
       owner = {
-        type: 'user',
+        type: "user",
         id: 0,
-        name: '',
+        name: ""
       },
       connectDragSource,
       isDragging,
-      teamID,
-    } = this.props
+      teamID
+    } = this.props;
 
-    const ownershipDetail = owner.type === 'team' && owner.name && owner.id
-      ? <div className=" text-muted fw-500">
-          via <Link to={teamURL(owner.id, owner.name)} className="text-muted bold">{ owner.name }</Link>
+    const ownershipDetail =
+      owner.type === "team" && owner.name && owner.id ? (
+        <div className=" text-muted fw-500">
+          via{" "}
+          <Link to={teamURL(owner.id, owner.name)} className="text-muted bold">
+            {owner.name}
+          </Link>
         </div>
-      : null
+      ) : null;
 
-    const drag = !this.state.show && this.props.drag
+    const drag = !this.state.show && this.props.drag;
 
     const component = (
       <div
-        className={
-          classNames('card', { 'cursor-move': drag })
-        }
+        className={classNames("card", { "cursor-move": drag })}
         style={{
-          opacity: isDragging ? 0.5 : 1,
-        }}>
+          opacity: isDragging ? 0.5 : 1
+        }}
+      >
         <div className="card-content">
           <div className="title fs-6 d-flex justify-space-between">
-            <Link to={ url }>{ name }</Link>
+            <Link to={url}>{name}</Link>
             <div className="p-rel ml-2">
               <ButtonPlain
                 onClick={() => this.setState(prev => ({ show: !prev.show }))}
-                className="is-small">
+                className="is-small"
+              >
                 schedule
               </ButtonPlain>
               <DatePickerForm
@@ -102,23 +103,17 @@ export class RecipeItem extends React.Component {
                 close={() => this.setState({ show: false })}
               />
             </div>
-
           </div>
-          <p className="subtitle fs-4 mb-0">
-            { author }
-          </p>
-          <div className="content">
-            { ownershipDetail }
-          </div>
-
+          <p className="subtitle fs-4 mb-0">{author}</p>
+          <div className="content">{ownershipDetail}</div>
         </div>
       </div>
-    )
+    );
 
     return !drag
       ? component
-      : connectDragSource(component, { dropEffect: 'copy' })
+      : connectDragSource(component, { dropEffect: "copy" });
   }
 }
 
-export default DragSource(DragDrop.RECIPE, recipeSource, collect)(RecipeItem)
+export default DragSource(DragDrop.RECIPE, recipeSource, collect)(RecipeItem);

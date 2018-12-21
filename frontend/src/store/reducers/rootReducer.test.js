@@ -1,32 +1,25 @@
-import {
-  rootReducer,
-  emptyStore
-} from '../store'
+import { rootReducer, emptyStore } from "../store";
 
-import {
-  logout
-} from '../actions'
+import { logout } from "../actions";
 
-describe('logout', () => {
-  it('Logs out user and clears entire store', () => {
+describe("logout", () => {
+  it("Logs out user and clears entire store", () => {
     const beforeState = {
       loggedIn: true,
-      token: 'testing',
+      token: "testing",
       auth: {
-        fromUrl: ''
+        fromUrl: ""
       },
       routerReducer: {
-        location: 'test',
+        location: "test"
       }
-    }
+    };
 
     const afterState = {
       ...emptyStore.getState(),
       routerReducer: beforeState.routerReducer
-    }
+    };
 
-    expect(
-      rootReducer(beforeState, logout())
-    ).toEqual(afterState)
-  })
-})
+    expect(rootReducer(beforeState, logout())).toEqual(afterState);
+  });
+});

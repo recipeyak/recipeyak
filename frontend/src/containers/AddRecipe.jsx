@@ -1,34 +1,27 @@
-import { connect } from 'react-redux'
+import { connect } from "react-redux";
 
 import {
   postNewRecipe,
   setErrorAddRecipe,
-
   setAddRecipeFormName,
   setAddRecipeFormAuthor,
   setAddRecipeFormSource,
   setAddRecipeFormTime,
   setAddRecipeFormServings,
   setAddRecipeFormTeam,
-
   addAddRecipeFormIngredient,
   removeAddRecipeFormIngredient,
   updateAddRecipeFormIngredient,
-
   addAddRecipeFormStep,
   removeAddRecipeFormStep,
   updateAddRecipeFormStep,
-
   clearAddRecipeForm,
+  fetchTeams
+} from "../store/actions";
 
-  fetchTeams,
-} from '../store/actions'
+import AddRecipe from "../components/AddRecipe";
 
-import AddRecipe from '../components/AddRecipe'
-
-import {
-  teamsFrom
-} from '../store/mapState'
+import { teamsFrom } from "../store/mapState";
 
 const mapStateToProps = state => ({
   name: state.addrecipe.name,
@@ -43,8 +36,8 @@ const mapStateToProps = state => ({
   error: state.error.addRecipe,
   // we remove the loading
   teams: teamsFrom(state),
-  loadingTeams: state.teams.loading,
-})
+  loadingTeams: state.teams.loading
+});
 
 const mapDispatchToProps = dispatch => ({
   setName: e => dispatch(setAddRecipeFormName(e.target.value)),
@@ -56,7 +49,8 @@ const mapDispatchToProps = dispatch => ({
 
   addIngredient: x => dispatch(addAddRecipeFormIngredient(x)),
   removeIngredient: i => dispatch(removeAddRecipeFormIngredient(i)),
-  updateIngredient: (i, ingredient) => dispatch(updateAddRecipeFormIngredient(i, ingredient)),
+  updateIngredient: (i, ingredient) =>
+    dispatch(updateAddRecipeFormIngredient(i, ingredient)),
 
   addStep: x => dispatch(addAddRecipeFormStep(x)),
   removeStep: i => dispatch(removeAddRecipeFormStep(i)),
@@ -66,12 +60,12 @@ const mapDispatchToProps = dispatch => ({
   clearErrors: () => dispatch(setErrorAddRecipe({})),
   clearForm: () => dispatch(clearAddRecipeForm()),
 
-  fetchData: () => dispatch(fetchTeams()),
-})
+  fetchData: () => dispatch(fetchTeams())
+});
 
 const ConnectedAddRecipe = connect(
   mapStateToProps,
   mapDispatchToProps
-)(AddRecipe)
+)(AddRecipe);
 
-export default ConnectedAddRecipe
+export default ConnectedAddRecipe;

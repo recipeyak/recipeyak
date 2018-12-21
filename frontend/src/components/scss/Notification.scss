@@ -1,4 +1,4 @@
-@import './variables.scss';
+@import "./variables.scss";
 
 .note-container {
   position: fixed;
@@ -16,7 +16,7 @@
   padding-left: 1rem;
   padding-right: 1rem;
 
-  animation: fadein .5s;
+  animation: fadein 0.5s;
   cursor: default;
 
   border-width: 1px;
@@ -31,23 +31,21 @@
     font-size: 1.2rem;
     color: white;
     background-color: rgba(0, 0, 0, 0.6);
-    opacity: .2;
-    transition: opacity .1s ease-in-out;
+    opacity: 0.2;
+    transition: opacity 0.1s ease-in-out;
 
     display: flex;
     justify-content: center;
     align-items: center;
 
     &:hover {
-      opacity: .3;
+      opacity: 0.3;
     }
 
     &:active {
-      opacity: .45;
+      opacity: 0.45;
     }
-
   }
-
 }
 
 .success {
@@ -74,6 +72,10 @@
 }
 
 @keyframes fadein {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

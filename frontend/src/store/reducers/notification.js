@@ -1,29 +1,22 @@
-import {
-  SET_NOTIFICATION,
-  CLEAR_NOTIFICATION
-} from '../actionTypes'
+import { SET_NOTIFICATION, CLEAR_NOTIFICATION } from "../actionTypes";
 
 const notification = (
   state = {
-    message: '',
-    level: 'info',
+    message: "",
+    level: "info",
     closeable: false,
     show: false
   },
-  {
-    type,
-    message,
-    level,
-    closeable
-  }) => {
+  { type, message, level, closeable }
+) => {
   switch (type) {
-  case SET_NOTIFICATION:
-    return { ...state, message, level, closeable, show: true }
-  case CLEAR_NOTIFICATION:
-    return { ...state, message: '', show: false, closeable: false }
-  default:
-    return state
+    case SET_NOTIFICATION:
+      return { ...state, message, level, closeable, show: true };
+    case CLEAR_NOTIFICATION:
+      return { ...state, message: "", show: false, closeable: false };
+    default:
+      return state;
   }
-}
+};
 
-export default notification
+export default notification;

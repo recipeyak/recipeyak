@@ -1,32 +1,28 @@
-import { connect } from 'react-redux'
+import { connect } from "react-redux";
 
-import {
-  logUserIn,
-  setErrorLogin,
-  setFromUrl,
-} from '../store/actions.js'
-import Login from '../components/Login.jsx'
+import { logUserIn, setErrorLogin, setFromUrl } from "../store/actions.js";
+import Login from "../components/Login.jsx";
 
 const mapDispatchToProps = dispatch => {
   return {
     login: (email, password, url) => dispatch(logUserIn(email, password, url)),
     clearErrors: () => dispatch(setErrorLogin({})),
-    setFromUrl: url => dispatch(setFromUrl(url)),
-  }
-}
+    setFromUrl: url => dispatch(setFromUrl(url))
+  };
+};
 
 const mapStateToProps = state => {
   return {
     loading: state.loading.login,
     error: state.error.login,
     errorSocial: state.error.socialLogin,
-    fromUrl: state.auth.fromUrl,
-  }
-}
+    fromUrl: state.auth.fromUrl
+  };
+};
 
 const ConnectedLogin = connect(
   mapStateToProps,
   mapDispatchToProps
-)(Login)
+)(Login);
 
-export default ConnectedLogin
+export default ConnectedLogin;

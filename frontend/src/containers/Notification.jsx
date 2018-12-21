@@ -1,13 +1,13 @@
-import { connect } from 'react-redux'
+import { connect } from "react-redux";
 
-import { clearNotification } from '../store/actions.js'
-import Notification from '../components/Notification.jsx'
+import { clearNotification } from "../store/actions.js";
+import Notification from "../components/Notification.jsx";
 
 const mapDispatchToProps = dispatch => {
   return {
     close: () => dispatch(clearNotification())
-  }
-}
+  };
+};
 
 const mapStateToProps = state => {
   return {
@@ -15,12 +15,12 @@ const mapStateToProps = state => {
     closeable: state.notification.closeable,
     show: state.notification.show,
     level: state.notification.level
-  }
-}
+  };
+};
 
 const ConnectedNotification = connect(
   mapStateToProps,
   mapDispatchToProps
-)(Notification)
+)(Notification);
 
-export default ConnectedNotification
+export default ConnectedNotification;

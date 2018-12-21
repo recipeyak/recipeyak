@@ -1,46 +1,41 @@
-import notification from './notification.js'
+import notification from "./notification.js";
 
-import {
-  setNotification,
-  clearNotification
-} from '../actions.js'
+import { setNotification, clearNotification } from "../actions.js";
 
-describe('Notification', () => {
-  it('Sets notification settings', () => {
+describe("Notification", () => {
+  it("Sets notification settings", () => {
     const beforeState = {
-      message: ''
-    }
+      message: ""
+    };
 
     const action = {
-      message: 'testing',
+      message: "testing",
       closeable: true
-    }
+    };
 
     const afterState = {
-      message: 'testing',
+      message: "testing",
       closeable: true,
       show: true
-    }
+    };
 
-    expect(
-      notification(beforeState, setNotification(action))
-    ).toEqual(afterState)
-  })
-  it('clears notification', () => {
+    expect(notification(beforeState, setNotification(action))).toEqual(
+      afterState
+    );
+  });
+  it("clears notification", () => {
     const beforeState = {
-      message: 'testing',
+      message: "testing",
       closeable: true,
       show: true
-    }
+    };
 
     const afterState = {
-      message: '',
+      message: "",
       closeable: false,
       show: false
-    }
+    };
 
-    expect(
-      notification(beforeState, clearNotification())
-    ).toEqual(afterState)
-  })
-})
+    expect(notification(beforeState, clearNotification())).toEqual(afterState);
+  });
+});

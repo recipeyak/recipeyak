@@ -29,57 +29,54 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { findDOMNode } from 'react-dom'
-import { DragSource, DropTarget } from 'react-dnd'
-import * as ItemTypes from '../dragDrop'
-import ListItem from './ListItem'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { findDOMNode } from "react-dom";
+import { DragSource, DropTarget } from "react-dnd";
+import * as ItemTypes from "../dragDrop";
+import ListItem from "./ListItem";
 
-import {
-  deletingStep,
-  updatingStep,
-} from '../store/actions.js'
+import { deletingStep, updatingStep } from "../store/actions.js";
 
 const style = {
-  backgroundColor: 'white',
-}
+  backgroundColor: "white"
+};
 
 const cardSource = {
-  beginDrag (props) {
+  beginDrag(props) {
     return {
       id: props.id,
       index: props.index,
-      position: props.position,
-    }
+      position: props.position
+    };
   },
-  endDrag (props) {
-    props.completeMove(props.id, props.index)
+  endDrag(props) {
+    props.completeMove(props.id, props.index);
   }
-}
+};
 
 const cardTarget = {
-  hover (props, monitor, component) {
-    const dragIndex = monitor.getItem().index
-    const hoverIndex = props.index
+  hover(props, monitor, component) {
+    const dragIndex = monitor.getItem().index;
+    const hoverIndex = props.index;
 
     // Don't replace items with themselves
     if (dragIndex === hoverIndex) {
-      return
+      return;
     }
 
     // Determine rectangle on screen
-    const hoverBoundingRect = findDOMNode(component).getBoundingClientRect()
+    const hoverBoundingRect = findDOMNode(component).getBoundingClientRect();
 
     // Get vertical middle
-    const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
+    const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
 
     // Determine mouse position
-    const clientOffset = monitor.getClientOffset()
+    const clientOffset = monitor.getClientOffset();
 
     // Get pixels to the top
-    const hoverClientY = clientOffset.y - hoverBoundingRect.top
+    const hoverClientY = clientOffset.y - hoverBoundingRect.top;
 
     // Only perform the move when the mouse has crossed half of the items height
     // When dragging downwards, only move when the cursor is below 50%
@@ -87,32 +84,32 @@ const cardTarget = {
 
     // Dragging downwards
     if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-      return
+      return;
     }
 
     // Dragging upwards
     if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-      return
+      return;
     }
 
     // Time to actually perform the action
-    props.moveCard(dragIndex, hoverIndex)
+    props.moveCard(dragIndex, hoverIndex);
 
     // Note: we're mutating the monitor item here!
     // Generally it's better to avoid mutations,
     // but it's good here for the sake of performance
     // to avoid expensive index searches.
-    monitor.getItem().index = hoverIndex
-  },
-}
+    monitor.getItem().index = hoverIndex;
+  }
+};
 
 @DropTarget(ItemTypes.CARD, cardTarget, connect => ({
-  connectDropTarget: connect.dropTarget(),
+  connectDropTarget: connect.dropTarget()
 }))
 @DragSource(ItemTypes.CARD, cardSource, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
   connectDragPreview: connect.dragPreview(),
-  isDragging: monitor.isDragging(),
+  isDragging: monitor.isDragging()
 }))
 export default class Card extends Component {
   static propTypes = {
@@ -125,55 +122,57 @@ export default class Card extends Component {
     text: PropTypes.string.isRequired,
     moveCard: PropTypes.func.isRequired,
     updating: PropTypes.bool.isRequired,
-    removing: PropTypes.bool.isRequired,
-  }
+    removing: PropTypes.bool.isRequired
+  };
 
   static defaultProps = {
     updating: false,
-    removing: false,
-  }
+    removing: false
+  };
 
-  render () {
+  render() {
     const {
       text,
       isDragging,
       connectDragSource,
       connectDropTarget,
       connectDragPreview,
-      index,
-    } = this.props
-    const opacity = isDragging ? 0 : 1
+      index
+    } = this.props;
+    const opacity = isDragging ? 0 : 1;
 
-    return connectDragPreview(connectDropTarget(
+    return connectDragPreview(
+      connectDropTarget(
         <div style={{ ...style, opacity }}>
           {connectDragSource(
-            <label className="better-label" style={{ cursor: 'move' }}>
+            <label className="better-label" style={{ cursor: "move" }}>
               Step {index + 1}
-            </label>)}
-            <StepBody
-              id={this.props.id}
-              recipeID={this.props.recipeID}
-              updating={this.props.updating}
-              removing={this.props.removing}
-              text={text}/>
-        </div>,
-    ))
+            </label>
+          )}
+          <StepBody
+            id={this.props.id}
+            recipeID={this.props.recipeID}
+            updating={this.props.updating}
+            removing={this.props.removing}
+            text={text}
+          />
+        </div>
+      )
+    );
   }
 }
 
 const mapDispatchToProps = dispatch => ({
-  update: (...args) =>
-    dispatch(updatingStep(...args)),
-  delete: (recipeID, stepID) =>
-    dispatch(deletingStep(recipeID, stepID)),
-})
+  update: (...args) => dispatch(updatingStep(...args)),
+  delete: (recipeID, stepID) => dispatch(deletingStep(recipeID, stepID))
+});
 
 @connect(
   null,
-  mapDispatchToProps,
+  mapDispatchToProps
 )
 class StepBody extends React.Component {
-  render () {
+  render() {
     return (
       <ListItem
         id={this.props.id}
@@ -184,6 +183,6 @@ class StepBody extends React.Component {
         removing={this.props.removing}
         delete={() => this.props.delete(this.props.recipeID, this.props.id)}
       />
-    )
+    );
   }
 }

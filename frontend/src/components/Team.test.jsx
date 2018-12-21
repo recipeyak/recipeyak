@@ -1,23 +1,23 @@
-import React from 'react'
-import { MemoryRouter } from 'react-router'
-import { Provider } from 'react-redux'
-import { mount, configure } from 'enzyme'
-import Adapter from 'enzyme-adapter-react-16'
+import React from "react";
+import { MemoryRouter } from "react-router";
+import { Provider } from "react-redux";
+import { mount, configure } from "enzyme";
+import Adapter from "enzyme-adapter-react-16";
 
-import { emptyStore as store } from '../store/store'
+import { emptyStore as store } from "../store/store";
 
-import Team from './Team'
+import Team from "./Team";
 
-configure({ adapter: new Adapter() })
+configure({ adapter: new Adapter() });
 
-describe('<Team/>', () => {
-  it('renders without crashing', () => {
+describe("<Team/>", () => {
+  it("renders without crashing", () => {
     mount(
-      <Provider store={ store }>
+      <Provider store={store}>
         <MemoryRouter>
           <Team fetchData={_ => _} />
         </MemoryRouter>
       </Provider>
-    )
-  })
-})
+    );
+  });
+});

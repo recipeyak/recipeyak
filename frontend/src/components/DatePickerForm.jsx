@@ -1,117 +1,128 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import addMonths from 'date-fns/add_months'
-import subMonths from 'date-fns/sub_months'
-import format from 'date-fns/format'
-import isPast from 'date-fns/is_past'
-import endOfDay from 'date-fns/end_of_day'
+import React from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import addMonths from "date-fns/add_months";
+import subMonths from "date-fns/sub_months";
+import format from "date-fns/format";
+import isPast from "date-fns/is_past";
+import endOfDay from "date-fns/end_of_day";
 
-import Month from './DateRangePicker/Month'
+import Month from "./DateRangePicker/Month";
 
-import { classNames } from '../classnames'
-import { atLeast1 } from '../input'
-import { ButtonPrimary } from './Buttons'
+import { classNames } from "../classnames";
+import { atLeast1 } from "../input";
+import { ButtonPrimary } from "./Buttons";
 
-import {
-  addingScheduledRecipe,
-} from '../store/actions'
+import { addingScheduledRecipe } from "../store/actions";
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
-    create: (recipeID, teamID, on, count) => dispatch(addingScheduledRecipe(recipeID, teamID, on, count)),
-  }
+    create: (recipeID, teamID, on, count) =>
+      dispatch(addingScheduledRecipe(recipeID, teamID, on, count))
+  };
 }
 
 @connect(
   null,
-  mapDispatchToProps,
+  mapDispatchToProps
 )
 export default class DatePickerForm extends React.Component {
   static propTypes = {
     recipeID: PropTypes.number.isRequired,
-    teamID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    teamID: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+      .isRequired,
     show: PropTypes.bool.isRequired,
     create: PropTypes.func.isRequired,
-    scheduling: PropTypes.bool.isRequired,
-  }
+    scheduling: PropTypes.bool.isRequired
+  };
 
   state = {
     count: 1,
     date: new Date(),
-    month: new Date(),
-  }
+    month: new Date()
+  };
 
   handleDateChange = val => {
-    if (isPast(endOfDay(val))) return
-    this.setState({ date: val })
-  }
+    if (isPast(endOfDay(val))) return;
+    this.setState({ date: val });
+  };
 
   handleCountChange = e => {
-    const count = atLeast1(e.target.value)
-    this.setState({ count })
-  }
+    const count = atLeast1(e.target.value);
+    this.setState({ count });
+  };
 
   handleSubmit = e => {
-    e.preventDefault()
-    this.props.create(this.props.recipeID, this.props.teamID, this.state.date, this.state.count)
-    .then(() => this.props.close())
-  }
+    e.preventDefault();
+    this.props
+      .create(
+        this.props.recipeID,
+        this.props.teamID,
+        this.state.date,
+        this.state.count
+      )
+      .then(() => this.props.close());
+  };
 
   nextMonth = () => {
-    this.setState(({ month }) => ({ month: addMonths(month, 1) }))
-  }
+    this.setState(({ month }) => ({ month: addMonths(month, 1) }));
+  };
 
   prevMonth = () => {
-    this.setState(({ month }) => ({ month: subMonths(month, 1) }))
-  }
+    this.setState(({ month }) => ({ month: subMonths(month, 1) }));
+  };
 
-  render () {
+  render() {
     if (!this.props.show) {
-      return null
+      return null;
     }
 
     return (
-        <div className={
-            classNames(
-              'box-shadow-normal',
-              'min-width-max-content',
-              'p-absolute',
-              'r-0',
-              't-100',
-              'cursor-default',
-              'z-index-100',
-              'bg-whitesmoke',
-              'p-2',
-              'fs-4',
-            )
-          }>
-          <Month
-            showLeft
-            showRight
-            date={this.state.month}
-            startDay={this.state.date}
-            endDay={this.state.date}
-            handleClick={this.handleDateChange}
-            prevMonth={this.prevMonth}
-            nextMonth={this.nextMonth}
-          />
+      <div
+        className={classNames(
+          "box-shadow-normal",
+          "min-width-max-content",
+          "p-absolute",
+          "r-0",
+          "t-100",
+          "cursor-default",
+          "z-index-100",
+          "bg-whitesmoke",
+          "p-2",
+          "fs-4"
+        )}
+      >
+        <Month
+          showLeft
+          showRight
+          date={this.state.month}
+          startDay={this.state.date}
+          endDay={this.state.date}
+          handleClick={this.handleDateChange}
+          prevMonth={this.prevMonth}
+          nextMonth={this.nextMonth}
+        />
 
         <form className="d-grid grid-gap-1" onSubmit={this.handleSubmit}>
           <div className="d-flex">
             <input
               className="my-input is-small w-2rem mr-2 fs-3 text-center"
               onChange={this.handleCountChange}
-              value={this.state.count}/>
+              value={this.state.count}
+            />
             <span className="align-self-center">
-              on { format(this.state.date, 'MMM D, YYYY') }
+              on {format(this.state.date, "MMM D, YYYY")}
             </span>
           </div>
-          <ButtonPrimary className="is-small" type="submit" loading={this.props.scheduling}>
+          <ButtonPrimary
+            className="is-small"
+            type="submit"
+            loading={this.props.scheduling}
+          >
             Schedule
           </ButtonPrimary>
         </form>
       </div>
-    )
+    );
   }
 }

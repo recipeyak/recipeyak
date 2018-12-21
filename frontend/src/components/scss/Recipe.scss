@@ -1,4 +1,4 @@
-@import './variables.scss';
+@import "./variables.scss";
 /* Formats select box for move/copy dropdown */
 .dropdown-item {
   overflow-x: hidden;
@@ -6,17 +6,17 @@
   text-overflow: ellipsis;
 }
 
-.select{
+.select {
   .my-select {
-  width: 100%;
-  outline: unset;
-  border: unset;
-  border-radius: unset;
-  user-select: none;
-}
+    width: 100%;
+    outline: unset;
+    border: unset;
+    border-radius: unset;
+    user-select: none;
+  }
 }
 
-$option-color: #106CD6;
+$option-color: #106cd6;
 
 option {
   &:hover {

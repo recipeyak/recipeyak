@@ -1,53 +1,35 @@
-import React from 'react'
+import React from "react";
 
-export const ButtonLink = ({
-  className = '',
-  ...props
-}) =>
-  <ButtonPlain
-    className={ className + ' is-link' }
-    { ...props }
-  />
+export const ButtonLink = ({ className = "", ...props }) => (
+  <ButtonPlain className={className + " is-link"} {...props} />
+);
 
-export const ButtonPrimary = ({
-  className = '',
-  ...props
-}) =>
-  <ButtonPlain
-    className={ className + ' is-primary' }
-    { ...props }
-  />
+export const ButtonPrimary = ({ className = "", ...props }) => (
+  <ButtonPlain className={className + " is-primary"} {...props} />
+);
 
-export const ButtonDanger = ({
-  className = '',
-  ...props
-}) =>
-  <ButtonPlain
-    className={ className + ' is-danger' }
-    { ...props }
-  />
+export const ButtonDanger = ({ className = "", ...props }) => (
+  <ButtonPlain className={className + " is-danger"} {...props} />
+);
 
-export const ButtonSecondary = ({
-  className = '',
-  ...props
-}) =>
-  <ButtonPlain
-    className={ className + ' is-secondary' }
-    { ...props }
-  />
+export const ButtonSecondary = ({ className = "", ...props }) => (
+  <ButtonPlain className={className + " is-secondary"} {...props} />
+);
 
 export const ButtonPlain = ({
   loading = false,
-  type = 'button',
-  className = '',
+  type = "button",
+  className = "",
   children,
   ...props
-}) =>
+}) => (
   <button
-    type={ type }
-    className={ `my-button ${className} ${loading ? 'is-loading' : ''}`}
-    { ...props }>
-    { children }
+    type={type}
+    className={`my-button ${className} ${loading ? "is-loading" : ""}`}
+    {...props}
+  >
+    {children}
   </button>
+);
 
-export const Button = ButtonPlain
+export const Button = ButtonPlain;

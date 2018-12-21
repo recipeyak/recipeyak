@@ -1,13 +1,12 @@
 {
-    "extends": "tslint:recommended",
-    "defaultSeverity": "warning",
-    "rules": {
-      "semicolon": [true, "never"],
-      "quotemark": [true, "single", "avoid-escape"],
-      "trailing-comma": [false],
-      "interface-name": [false],
-      "align": [false]
-    },
-    "jsRules": {
-    }
+  "extends": "tslint:recommended",
+  "defaultSeverity": "warning",
+  "rules": {
+    "semicolon": [true, "never"],
+    "quotemark": [true, "single", "avoid-escape"],
+    "trailing-comma": [false],
+    "interface-name": [false],
+    "align": [false]
+  },
+  "jsRules": {}
 }

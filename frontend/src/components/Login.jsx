@@ -1,48 +1,47 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { Helmet } from './Helmet'
+import React from "react";
+import { Link } from "react-router-dom";
+import { Helmet } from "./Helmet";
 
-import SocialButtons from './SocialButtons'
-import { FormErrorHandler } from './Forms'
-import { ButtonPrimary } from './Buttons'
+import SocialButtons from "./SocialButtons";
+import { FormErrorHandler } from "./Forms";
+import { ButtonPrimary } from "./Buttons";
 
-import AuthContainer from './AuthContainer'
+import AuthContainer from "./AuthContainer";
 
-const redirectURL = ({ pathname = '', search = '', hash = '' }) =>
-  `${pathname}${search}${hash}`
+const redirectURL = ({ pathname = "", search = "", hash = "" }) =>
+  `${pathname}${search}${hash}`;
 
 class Login extends React.Component {
   state = {
-    email: '',
-    password: ''
-  }
+    email: "",
+    password: ""
+  };
 
   componentWillMount = () => {
-    this.props.clearErrors()
-    const fromUrl = this.props.location.state != null
-    ? this.props.location.state.from
-    : {}
-    this.props.setFromUrl(redirectURL(fromUrl))
+    this.props.clearErrors();
+    const fromUrl =
+      this.props.location.state != null ? this.props.location.state.from : {};
+    this.props.setFromUrl(redirectURL(fromUrl));
+  };
+
+  handleInputChange(e) {
+    this.setState({ [e.target.name]: e.target.value });
   }
 
-  handleInputChange (e) {
-    this.setState({ [e.target.name]: e.target.value })
+  handleLogin(e) {
+    e.preventDefault();
+    this.props.login(this.state.email, this.state.password, this.props.fromUrl);
   }
 
-  handleLogin (e) {
-    e.preventDefault()
-    this.props.login(this.state.email, this.state.password, this.props.fromUrl)
-  }
-
-  render () {
-    const { loading } = this.props
-    const { password1, nonFieldErrors, email } = this.props.error
-    const { emailSocial, nonFieldErrorsSocial } = this.props.errorSocial
+  render() {
+    const { loading } = this.props;
+    const { password1, nonFieldErrors, email } = this.props.error;
+    const { emailSocial, nonFieldErrorsSocial } = this.props.errorSocial;
 
     return (
       <AuthContainer>
         <div className="box p-3">
-          <Helmet title='Login'/>
+          <Helmet title="Login" />
           <div className="tabs is-boxed mb-2">
             <ul>
               <li className="is-active">
@@ -54,49 +53,53 @@ class Login extends React.Component {
             </ul>
           </div>
 
-          <form onSubmit={ e => this.handleLogin(e) }>
+          <form onSubmit={e => this.handleLogin(e)}>
             <div className="field">
               <label className="label">Email</label>
-                <input
-                  onChange={ e => this.handleInputChange(e) }
-                  value={ this.state.email }
-                  className={'my-input' + (email ? ' is-danger' : '')}
-                  autoFocus
-                  name="email"
-                  type="email"
-                  placeholder="rick.sanchez@me.com"/>
-              <FormErrorHandler error={email}/>
+              <input
+                onChange={e => this.handleInputChange(e)}
+                value={this.state.email}
+                className={"my-input" + (email ? " is-danger" : "")}
+                autoFocus
+                name="email"
+                type="email"
+                placeholder="rick.sanchez@me.com"
+              />
+              <FormErrorHandler error={email} />
             </div>
 
             <div className="field">
-              <label htmlFor="password" className="label">Password</label>
-                <input
-                  onChange={ e => this.handleInputChange(e) }
-                  value={ this.state.query }
-                  className={'my-input' + (password1 ? ' is-danger' : '')}
-                  type="password"
-                  name="password"
-                  id="password"
-                  placeholder="Super secret password."/>
-              <FormErrorHandler error={password1}/>
-              <FormErrorHandler error={nonFieldErrors}/>
+              <label htmlFor="password" className="label">
+                Password
+              </label>
+              <input
+                onChange={e => this.handleInputChange(e)}
+                value={this.state.query}
+                className={"my-input" + (password1 ? " is-danger" : "")}
+                type="password"
+                name="password"
+                id="password"
+                placeholder="Super secret password."
+              />
+              <FormErrorHandler error={password1} />
+              <FormErrorHandler error={nonFieldErrors} />
             </div>
 
             <div className="field d-flex flex-space-between align-items-center">
-                <ButtonPrimary
-                  type="submit"
-                  loading={ loading }>
-                  Submit
-                </ButtonPrimary>
+              <ButtonPrimary type="submit" loading={loading}>
+                Submit
+              </ButtonPrimary>
               <Link to="/password-reset">Forgot Password?</Link>
             </div>
-
-            </form>
-            <SocialButtons nonFieldErrors={nonFieldErrorsSocial} emailError={emailSocial} />
+          </form>
+          <SocialButtons
+            nonFieldErrors={nonFieldErrorsSocial}
+            emailError={emailSocial}
+          />
         </div>
       </AuthContainer>
-    )
+    );
   }
 }
 
-export default Login
+export default Login;

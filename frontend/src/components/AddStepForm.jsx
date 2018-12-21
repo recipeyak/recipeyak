@@ -1,7 +1,7 @@
-import React from 'react'
-import Textarea from 'react-textarea-autosize'
+import React from "react";
+import Textarea from "react-textarea-autosize";
 
-import { ButtonPrimary } from './Buttons'
+import { ButtonPrimary } from "./Buttons";
 
 const AddStepForm = ({
   handleInputChange,
@@ -11,56 +11,59 @@ const AddStepForm = ({
   text,
   loading = false,
   error = false,
-  autoFocus = false,
-}) =>
-  <form onSubmit={ e => {
-    e.preventDefault()
-    if (text === '') return
-    addStep()
-  }}>
+  autoFocus = false
+}) => (
+  <form
+    onSubmit={e => {
+      e.preventDefault();
+      if (text === "") return;
+      addStep();
+    }}
+  >
     <div className="field">
-      <label className="better-label">Step { stepNumber }</label>
+      <label className="better-label">Step {stepNumber}</label>
       <div className="control mt-2">
         <Textarea
-          onChange={ handleInputChange }
-          autoFocus={ autoFocus }
-          onKeyPress={ e => {
-            if (text === '') return
-            if (e.shiftKey && e.key === 'Enter') {
-              e.preventDefault()
-              addStep()
+          onChange={handleInputChange}
+          autoFocus={autoFocus}
+          onKeyPress={e => {
+            if (text === "") return;
+            if (e.shiftKey && e.key === "Enter") {
+              e.preventDefault();
+              addStep();
             }
           }}
-          value={ text }
-          className={ 'my-textarea' + (error ? ' is-danger' : '') }
+          value={text}
+          className={"my-textarea" + (error ? " is-danger" : "")}
           placeholder="Add your step here"
-          name="step"/>
-        { error
-            ? <p className="fs-4 c-danger">A step is required</p>
-            : null
-        }
+          name="step"
+        />
+        {error ? <p className="fs-4 c-danger">A step is required</p> : null}
       </div>
     </div>
     <div className="field is-grouped">
       <p className="control">
         <ButtonPrimary
           className="is-small"
-          disabled={ text === '' }
+          disabled={text === ""}
           type="submit"
           name="save step"
-          loading={ loading }>
+          loading={loading}
+        >
           Add
         </ButtonPrimary>
       </p>
       <p className="control">
-         <input
-           onClick={ cancelAddStep }
-           className='my-button is-small'
-           type="button"
-           name="cancel step"
-           value="Cancel"/>
-       </p>
+        <input
+          onClick={cancelAddStep}
+          className="my-button is-small"
+          type="button"
+          name="cancel step"
+          value="Cancel"
+        />
+      </p>
     </div>
   </form>
+);
 
-export default AddStepForm
+export default AddStepForm;

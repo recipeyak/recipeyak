@@ -12,4 +12,9 @@ fi
 
 glob="**/*.{js,jsx,scss,css,ts,tsx,json}"
 
-$(yarn bin)/prettier "$@" "$glob"
+ARGS="$@"
+if [[ $ARGS == *'--list-different'* ]]; then
+  $(yarn bin)/prettier "$@" "$glob"
+else
+  $(yarn bin)/prettier --write "$@" "$glob"
+fi
