@@ -154,8 +154,7 @@ class RegisterSerializer(serializers.Serializer):
     password2 = serializers.CharField(write_only=True)
 
     def validate_username(self, username):
-        username = get_adapter().clean_username(username)
-        return username
+        return get_adapter().clean_username(username)
 
     def validate_email(self, email):
         email = get_adapter().clean_email(email)
