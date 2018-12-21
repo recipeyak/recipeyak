@@ -1,30 +1,30 @@
-import React from "react";
+import React from "react"
 
-import Modal from "./Modal";
+import Modal from "./Modal"
 
 export default class HelpMenuModal extends React.Component {
   state = {
     show: false
-  };
+  }
 
   componentWillMount() {
-    document.addEventListener("keypress", this.handleKeyPress);
+    document.addEventListener("keypress", this.handleKeyPress)
   }
 
   componentWillUnmount() {
-    document.removeEventListener("keypress", this.handleKeyPress);
+    document.removeEventListener("keypress", this.handleKeyPress)
   }
 
   handleKeyPress = e => {
-    if (document.activeElement.tagName !== "BODY") return;
+    if (document.activeElement.tagName !== "BODY") return
     if (e.key === "?") {
-      this.setState(prev => ({ show: !prev.show }));
+      this.setState(prev => ({ show: !prev.show }))
     }
-  };
+  }
 
   close = () => {
-    this.setState({ show: false });
-  };
+    this.setState({ show: false })
+  }
   render() {
     const keybinds = [
       {
@@ -47,7 +47,7 @@ export default class HelpMenuModal extends React.Component {
         key: "f",
         description: "open search box"
       }
-    ];
+    ]
     return (
       <Modal show={this.state.show} onClose={() => this.close()}>
         <section className="d-flex space-between">
@@ -71,6 +71,6 @@ export default class HelpMenuModal extends React.Component {
           </div>
         </section>
       </Modal>
-    );
+    )
   }
 }

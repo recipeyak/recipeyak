@@ -1,15 +1,15 @@
-import React from "react";
-import { MemoryRouter, Route } from "react-router";
-import { Provider } from "react-redux";
+import React from "react"
+import { MemoryRouter, Route } from "react-router"
+import { Provider } from "react-redux"
 
-import { mount, configure } from "enzyme";
-import Adapter from "enzyme-adapter-react-16";
+import { mount, configure } from "enzyme"
+import Adapter from "enzyme-adapter-react-16"
 
-import Signup from "./Signup.jsx";
+import Signup from "./Signup.jsx"
 
-import { emptyStore as store } from "../store/store.js";
+import { emptyStore as store } from "../store/store.js"
 
-configure({ adapter: new Adapter() });
+configure({ adapter: new Adapter() })
 
 describe("<Signup/>", () => {
   it("renders signup", () => {
@@ -19,9 +19,9 @@ describe("<Signup/>", () => {
           <Route path="/signup" component={Signup} />
         </MemoryRouter>
       </Provider>
-    );
-    expect(element.text()).toContain("Email");
-    expect(element.text()).toContain("Password");
-    expect(element.text()).toContain("Password Again");
-  });
-});
+    )
+    expect(element.text()).toContain("Email")
+    expect(element.text()).toContain("Password")
+    expect(element.text()).toContain("Password Again")
+  })
+})

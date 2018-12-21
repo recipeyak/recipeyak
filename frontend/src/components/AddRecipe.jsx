@@ -1,14 +1,14 @@
-import React from "react";
-import { Helmet } from "./Helmet";
+import React from "react"
+import { Helmet } from "./Helmet"
 
-import ListItem from "./ListItem";
-import AddIngredientForm from "./AddIngredientForm";
-import AddStepForm from "./AddStepForm";
-import Ingredient from "./Ingredient";
-import { ButtonPrimary } from "./Buttons";
+import ListItem from "./ListItem"
+import AddIngredientForm from "./AddIngredientForm"
+import AddStepForm from "./AddStepForm"
+import Ingredient from "./Ingredient"
+import { ButtonPrimary } from "./Buttons"
 
 const unfinishedIngredient = ({ quantity = "", name = "" }) =>
-  quantity === "" || name === "";
+  quantity === "" || name === ""
 
 export default class AddRecipe extends React.Component {
   state = {
@@ -19,7 +19,7 @@ export default class AddRecipe extends React.Component {
       optional: false
     },
     step: ""
-  };
+  }
 
   static defaultProps = {
     error: {
@@ -38,17 +38,17 @@ export default class AddRecipe extends React.Component {
     loadingTeams: true,
     teams: [],
     team: "personal"
-  };
+  }
 
   componentWillMount = () => {
-    this.props.clearErrors();
-    this.props.fetchData();
-  };
+    this.props.clearErrors()
+    this.props.fetchData()
+  }
 
-  handleInputChange = e => this.setState({ [e.target.name]: e.target.value });
+  handleInputChange = e => this.setState({ [e.target.name]: e.target.value })
 
   handleSubmit = event => {
-    event.preventDefault();
+    event.preventDefault()
     const recipe = {
       name: this.props.name,
       author: this.props.author,
@@ -58,46 +58,46 @@ export default class AddRecipe extends React.Component {
       ingredients: this.props.ingredients,
       steps: this.props.steps,
       team: this.props.team !== "personal" ? this.props.team : undefined
-    };
-    this.props.addRecipe(recipe);
-  };
+    }
+    this.props.addRecipe(recipe)
+  }
 
   addIngredient = () => {
-    if (unfinishedIngredient(this.state.ingredient)) return;
-    this.props.addIngredient(this.state.ingredient);
-    this.setState({ ingredient: {} });
-  };
+    if (unfinishedIngredient(this.state.ingredient)) return
+    this.props.addIngredient(this.state.ingredient)
+    this.setState({ ingredient: {} })
+  }
 
   handleIngredientChange = e => {
-    e.persist();
+    e.persist()
     if (e.target.type === "checkbox") {
       this.setState(prev => ({
         ingredient: {
           ...prev.ingredient,
           [e.target.name]: !prev.ingredient[e.target.name]
         }
-      }));
-      return;
+      }))
+      return
     }
     this.setState(prevState => ({
       ingredient: {
         ...prevState.ingredient,
         [e.target.name]: e.target.value
       }
-    }));
-  };
+    }))
+  }
 
-  cancelAddIngredient = () => this.setState({ ingredient: {} });
+  cancelAddIngredient = () => this.setState({ ingredient: {} })
 
   addStep = () => {
-    this.props.addStep({ text: this.state.step });
-    this.setState({ step: "" });
-  };
+    this.props.addStep({ text: this.state.step })
+    this.setState({ step: "" })
+  }
 
-  cancelAddStep = () => this.setState({ step: "" });
+  cancelAddStep = () => this.setState({ step: "" })
 
   render() {
-    const { ingredient, step } = this.state;
+    const { ingredient, step } = this.state
 
     const {
       addStep,
@@ -107,20 +107,20 @@ export default class AddRecipe extends React.Component {
       addIngredient,
       cancelAddIngredient,
       handleIngredientChange
-    } = this;
+    } = this
 
     const {
       errorWithName,
       errorWithIngredients,
       errorWithSteps
-    } = this.props.error;
+    } = this.props.error
 
     const {
       quantity = "",
       name = "",
       description = "",
       optional = false
-    } = ingredient;
+    } = ingredient
 
     return (
       <div className="d-grid grid-gap-1rem">
@@ -253,8 +253,7 @@ export default class AddRecipe extends React.Component {
           <button
             className="my-button"
             onClick={this.props.clearForm}
-            name="create recipe"
-          >
+            name="create recipe">
             Clear
           </button>
 
@@ -265,8 +264,7 @@ export default class AddRecipe extends React.Component {
                 <select
                   disabled={this.props.loadingTeams}
                   value={this.props.team}
-                  onChange={this.props.setTeam}
-                >
+                  onChange={this.props.setTeam}>
                   <option value="personal">Personal</option>
                   {this.props.teams.map(({ id, name }) => (
                     <option key={id} value={id}>
@@ -282,13 +280,12 @@ export default class AddRecipe extends React.Component {
               type="submit"
               onClick={handleSubmit}
               name="create recipe"
-              loading={this.props.loading}
-            >
+              loading={this.props.loading}>
               Create Recipe
             </ButtonPrimary>
           </div>
         </div>
       </div>
-    );
+    )
   }
 }

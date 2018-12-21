@@ -1,14 +1,14 @@
-import React from "react";
-import isWithinRange from "date-fns/is_within_range";
-import format from "date-fns/format";
-import isPast from "date-fns/is_past";
-import isSameDay from "date-fns/is_same_day";
-import startOfDay from "date-fns/start_of_day";
-import endOfDay from "date-fns/end_of_day";
+import React from "react"
+import isWithinRange from "date-fns/is_within_range"
+import format from "date-fns/format"
+import isPast from "date-fns/is_past"
+import isSameDay from "date-fns/is_same_day"
+import startOfDay from "date-fns/start_of_day"
+import endOfDay from "date-fns/end_of_day"
 
-import { ButtonPlain } from "../Buttons";
-import Day from "./Day";
-import { daysOfMonth, daysFromSunday } from "../../date";
+import { ButtonPlain } from "../Buttons"
+import Day from "./Day"
+import { daysOfMonth, daysFromSunday } from "../../date"
 
 class MonthWeekTitles extends React.Component {
   render() {
@@ -20,7 +20,7 @@ class MonthWeekTitles extends React.Component {
           </div>
         ))}
       </div>
-    );
+    )
   }
 }
 
@@ -28,7 +28,7 @@ class Month extends React.Component {
   static defaultProps = {
     showRight: false,
     showLeft: false
-  };
+  }
   render() {
     return (
       <section>
@@ -36,8 +36,7 @@ class Month extends React.Component {
           {this.props.showLeft ? (
             <ButtonPlain
               onClick={this.props.prevMonth}
-              className="is-small grid-row-1 grid-column-1 justify-self-left"
-            >
+              className="is-small grid-row-1 grid-column-1 justify-self-left">
               {"←"}
             </ButtonPlain>
           ) : null}
@@ -47,8 +46,7 @@ class Month extends React.Component {
           {this.props.showRight ? (
             <ButtonPlain
               onClick={this.props.nextMonth}
-              className="is-small grid-row-1 grid-column-1 justify-self-end"
-            >
+              className="is-small grid-row-1 grid-column-1 justify-self-end">
               {"→"}
             </ButtonPlain>
           ) : null}
@@ -81,8 +79,8 @@ class Month extends React.Component {
           ))}
         </div>
       </section>
-    );
+    )
   }
 }
 
-export default Month;
+export default Month

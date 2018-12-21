@@ -1,4 +1,4 @@
-import invites from "./invites";
+import invites from "./invites"
 
 import {
   setInvites,
@@ -7,7 +7,7 @@ import {
   setDecliningInvite,
   setDeclinedInvite,
   setAcceptedInvite
-} from "../actions";
+} from "../actions"
 
 describe("Invites", () => {
   it("sets invites", () => {
@@ -17,7 +17,7 @@ describe("Invites", () => {
         name: "blah",
         teamID: 1
       }
-    };
+    }
 
     const afterState = {
       loading: true,
@@ -26,14 +26,14 @@ describe("Invites", () => {
         name: "blah",
         teamID: 1
       }
-    };
+    }
 
-    expect(invites(beforeState, setLoadingInvites(true))).toEqual(afterState);
-  });
+    expect(invites(beforeState, setLoadingInvites(true))).toEqual(afterState)
+  })
   it("sets invites", () => {
     const beforeState = {
       loading: true
-    };
+    }
 
     const newInvites = [
       {
@@ -46,7 +46,7 @@ describe("Invites", () => {
         name: "cool",
         teamID: 2
       }
-    ];
+    ]
 
     const afterState = {
       loading: true,
@@ -60,10 +60,10 @@ describe("Invites", () => {
         name: "cool",
         teamID: 2
       }
-    };
+    }
 
-    expect(invites(beforeState, setInvites(newInvites))).toEqual(afterState);
-  });
+    expect(invites(beforeState, setInvites(newInvites))).toEqual(afterState)
+  })
 
   it("sets invite to accepting", () => {
     const beforeState = {
@@ -72,7 +72,7 @@ describe("Invites", () => {
         name: "blah",
         teamID: 1
       }
-    };
+    }
 
     const afterState = {
       1: {
@@ -81,12 +81,12 @@ describe("Invites", () => {
         teamID: 1,
         accepting: true
       }
-    };
+    }
 
     expect(invites(beforeState, setAcceptingInvite(1, true))).toEqual(
       afterState
-    );
-  });
+    )
+  })
 
   it("sets invite to declining", () => {
     const beforeState = {
@@ -95,7 +95,7 @@ describe("Invites", () => {
         name: "blah",
         teamID: 1
       }
-    };
+    }
 
     const afterState = {
       1: {
@@ -104,12 +104,12 @@ describe("Invites", () => {
         teamID: 1,
         declining: true
       }
-    };
+    }
 
     expect(invites(beforeState, setDecliningInvite(1, true))).toEqual(
       afterState
-    );
-  });
+    )
+  })
 
   it("decline invite", () => {
     const beforeState = {
@@ -118,7 +118,7 @@ describe("Invites", () => {
         name: "blah",
         teamID: 1
       }
-    };
+    }
 
     const afterState = {
       1: {
@@ -127,10 +127,10 @@ describe("Invites", () => {
         teamID: 1,
         status: "declined"
       }
-    };
+    }
 
-    expect(invites(beforeState, setDeclinedInvite(1))).toEqual(afterState);
-  });
+    expect(invites(beforeState, setDeclinedInvite(1))).toEqual(afterState)
+  })
 
   it("accept invite", () => {
     const beforeState = {
@@ -139,7 +139,7 @@ describe("Invites", () => {
         name: "blah",
         teamID: 1
       }
-    };
+    }
 
     const afterState = {
       1: {
@@ -148,8 +148,8 @@ describe("Invites", () => {
         teamID: 1,
         status: "accepted"
       }
-    };
+    }
 
-    expect(invites(beforeState, setAcceptedInvite(1))).toEqual(afterState);
-  });
-});
+    expect(invites(beforeState, setAcceptedInvite(1))).toEqual(afterState)
+  })
+})

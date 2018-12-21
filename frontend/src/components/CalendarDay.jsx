@@ -1,18 +1,18 @@
-import React from "react";
-import { connect } from "react-redux";
-import format from "date-fns/format";
-import isToday from "date-fns/is_today";
-import { DropTarget } from "react-dnd";
-import isWithinRange from "date-fns/is_within_range";
-import startOfDay from "date-fns/start_of_day";
-import endOfDay from "date-fns/end_of_day";
-import isFirstDayOfMonth from "date-fns/is_first_day_of_month";
+import React from "react"
+import { connect } from "react-redux"
+import format from "date-fns/format"
+import isToday from "date-fns/is_today"
+import { DropTarget } from "react-dnd"
+import isWithinRange from "date-fns/is_within_range"
+import startOfDay from "date-fns/start_of_day"
+import endOfDay from "date-fns/end_of_day"
+import isFirstDayOfMonth from "date-fns/is_first_day_of_month"
 
-import { pyFormat, beforeCurrentDay } from "../date";
+import { pyFormat, beforeCurrentDay } from "../date"
 
-import { classNames } from "../classnames";
+import { classNames } from "../classnames"
 
-import CalendarItem from "./CalendarDayItem";
+import CalendarItem from "./CalendarDayItem"
 
 import {
   addingScheduledRecipe,
@@ -20,41 +20,41 @@ import {
   fetchShoppingList,
   moveScheduledRecipe,
   deletingScheduledRecipe
-} from "../store/actions";
+} from "../store/actions"
 
-import * as DragDrop from "../dragDrop";
+import * as DragDrop from "../dragDrop"
 
 const Title = ({ date }) => {
   if (isFirstDayOfMonth(date)) {
-    return <p>{format(date, "MMM D")}</p>;
+    return <p>{format(date, "MMM D")}</p>
   }
-  return <p>{format(date, "D")}</p>;
-};
+  return <p>{format(date, "D")}</p>
+}
 
 const dayTarget = {
   canDrop({ date }) {
-    return !beforeCurrentDay(date);
+    return !beforeCurrentDay(date)
   },
   drop(props, monitor) {
-    const { recipeID, count = 1, id } = monitor.getItem();
+    const { recipeID, count = 1, id } = monitor.getItem()
     if (id != null) {
-      props.move(id, props.teamID, props.date);
+      props.move(id, props.teamID, props.date)
     } else {
-      props.create(recipeID, props.teamID, props.date, count);
+      props.create(recipeID, props.teamID, props.date, count)
     }
   }
-};
+}
 
 function collect(connect, monitor) {
   return {
     connectDropTarget: connect.dropTarget(),
     isOver: monitor.isOver(),
     canDrop: monitor.canDrop()
-  };
+  }
 }
 
 function mapStateToProps(state, props) {
-  const isShopping = state.routerReducer.location.pathname.includes("shopping");
+  const isShopping = state.routerReducer.location.pathname.includes("shopping")
   return {
     isSelected:
       isWithinRange(
@@ -62,7 +62,7 @@ function mapStateToProps(state, props) {
         startOfDay(state.shoppinglist.startDay),
         endOfDay(state.shoppinglist.endDay)
       ) && isShopping
-  };
+  }
 }
 
 function mapDispatchToProps(dispatch) {
@@ -76,7 +76,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(moveScheduledRecipe(id, teamID, pyFormat(date))),
     remove: (recipeID, teamID) =>
       dispatch(deletingScheduledRecipe(recipeID, teamID))
-  };
+  }
 }
 
 @connect(
@@ -96,7 +96,7 @@ export default class CalendarDay extends React.Component {
       refetchShoppingList,
       remove,
       teamID
-    } = this.props;
+    } = this.props
     return connectDropTarget(
       <div
         style={{
@@ -105,8 +105,7 @@ export default class CalendarDay extends React.Component {
         className={classNames("day", "p-1", {
           "current-day": isToday(date),
           "selected-day": this.props.isSelected || (isOver && canDrop)
-        })}
-      >
+        })}>
         <Title date={date} />
         {item != null
           ? Object.values(item).map(x => (
@@ -124,6 +123,6 @@ export default class CalendarDay extends React.Component {
             ))
           : null}
       </div>
-    );
+    )
   }
 }

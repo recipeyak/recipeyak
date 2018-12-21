@@ -1,21 +1,21 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from "react"
+import { Link } from "react-router-dom"
 
-import NavLink from "../containers/NavLink";
-import Logo from "./Logo";
-import Dropdown from "./Dropdown";
-import NotificationsDropdown from "./NotificationsDropdown";
-import UserDropdown from "./UserDropdown";
+import NavLink from "../containers/NavLink"
+import Logo from "./Logo"
+import Dropdown from "./Dropdown"
+import NotificationsDropdown from "./NotificationsDropdown"
+import UserDropdown from "./UserDropdown"
 
-import { teamURL } from "../urls";
+import { teamURL } from "../urls"
 
 const Teams = ({ teams, loading }) => {
   if (loading) {
-    return <p>Loading...</p>;
+    return <p>Loading...</p>
   }
 
   if (teams.length === 0) {
-    return <p className="text-muted fs-3 align-self-center">No teams.</p>;
+    return <p className="text-muted fs-3 align-self-center">No teams.</p>
   }
 
   return (
@@ -28,17 +28,17 @@ const Teams = ({ teams, loading }) => {
         </p>
       ))}
     </div>
-  );
-};
+  )
+}
 
 class Navbar extends React.Component {
   static defaultProps = {
     teams: [],
     scheduleURL: ""
-  };
+  }
 
   componentWillMount() {
-    this.props.fetchData();
+    this.props.fetchData()
   }
 
   render() {
@@ -52,15 +52,14 @@ class Navbar extends React.Component {
       toggleDarkMode,
       darkMode,
       scheduleURL
-    } = this.props;
+    } = this.props
 
     const buttons = loggedIn ? (
       <div className="d-flex align-center p-relative justify-content-center flex-wrap">
         <NavLink
           to="/recipes/add"
           activeClassName="active"
-          className="better-nav-item"
-        >
+          className="better-nav-item">
           Add
         </NavLink>
 
@@ -76,15 +75,13 @@ class Navbar extends React.Component {
         <NavLink
           to="/recipes"
           activeClassName="active"
-          className="better-nav-item"
-        >
+          className="better-nav-item">
           Browse
         </NavLink>
         <NavLink
           to={scheduleURL}
           activeClassName="active"
-          className="better-nav-item"
-        >
+          className="better-nav-item">
           Schedule
         </NavLink>
 
@@ -106,21 +103,20 @@ class Navbar extends React.Component {
           Signup
         </NavLink>
       </div>
-    );
+    )
 
     return (
       <nav className={`nav flex-wrap ${className}`}>
         <Link
           to="/"
-          className="better-nav-item pl-0 pr-0 fs-2rem fw-normal font-family-title"
-        >
+          className="better-nav-item pl-0 pr-0 fs-2rem fw-normal font-family-title">
           <Logo width="45px" />
           <span>Recipe Yak</span>
         </Link>
         {buttons}
       </nav>
-    );
+    )
   }
 }
 
-export default Navbar;
+export default Navbar

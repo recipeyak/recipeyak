@@ -1,14 +1,14 @@
-import React from "react";
-import { MemoryRouter } from "react-router";
-import { Provider } from "react-redux";
-import { mount, configure } from "enzyme";
-import Adapter from "enzyme-adapter-react-16";
+import React from "react"
+import { MemoryRouter } from "react-router"
+import { Provider } from "react-redux"
+import { mount, configure } from "enzyme"
+import Adapter from "enzyme-adapter-react-16"
 
-import { emptyStore as store } from "../store/store.js";
+import { emptyStore as store } from "../store/store.js"
 
-import OAuth from "./OAuth.jsx";
+import OAuth from "./OAuth.jsx"
 
-configure({ adapter: new Adapter() });
+configure({ adapter: new Adapter() })
 
 describe("<OAuth/>", () => {
   it("renders without crashing", () => {
@@ -17,13 +17,13 @@ describe("<OAuth/>", () => {
       token: "12345",
       login: (service, token) =>
         expect(service === props.service && token === props.token)
-    };
+    }
     mount(
       <Provider store={store}>
         <MemoryRouter>
           <OAuth {...props} />
         </MemoryRouter>
       </Provider>
-    );
-  });
-});
+    )
+  })
+})

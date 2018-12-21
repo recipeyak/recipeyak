@@ -1,13 +1,12 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from "react"
+import PropTypes from "prop-types"
 
 const Chevron = () => (
   <svg
     style={{ width: "1.5em" }}
     className="fill-text-color"
     viewBox="0 0 20 20"
-    xmlns="http://www.w3.org/2000/svg"
-  >
+    xmlns="http://www.w3.org/2000/svg">
     <g>
       <path
         fill="inherit"
@@ -15,39 +14,39 @@ const Chevron = () => (
       />
     </g>
   </svg>
-);
+)
 
 export default class Dropdown extends React.Component {
   static propTypes = {
     relative: PropTypes.bool
-  };
+  }
 
   static defaultProps = {
     relative: true
-  };
+  }
 
   state = {
     show: false
-  };
+  }
 
   handleGeneralClick = () => {
     if (this.state.show) {
-      document.removeEventListener("click", this.handleGeneralClick);
+      document.removeEventListener("click", this.handleGeneralClick)
     }
-    this.setState({ show: false });
-  };
+    this.setState({ show: false })
+  }
 
   toggle = () => {
     if (this.state.show) {
-      document.removeEventListener("click", this.handleGeneralClick);
+      document.removeEventListener("click", this.handleGeneralClick)
     } else {
-      document.addEventListener("click", this.handleGeneralClick);
+      document.addEventListener("click", this.handleGeneralClick)
     }
-    this.setState(prev => ({ show: !prev.show }));
-  };
+    this.setState(prev => ({ show: !prev.show }))
+  }
 
   render() {
-    const className = this.props.relative ? "p-rel" : "";
+    const className = this.props.relative ? "p-rel" : ""
     return (
       <section className={className}>
         <a onClick={this.toggle} className="better-nav-item">
@@ -58,11 +57,10 @@ export default class Dropdown extends React.Component {
           className={
             "box p-absolute direction-column align-items-start mt-1 pr-2 pl-2 pt-3 pb-3" +
             (this.state.show ? " d-flex" : " d-none")
-          }
-        >
+          }>
           {this.props.children}
         </div>
       </section>
-    );
+    )
   }
 }

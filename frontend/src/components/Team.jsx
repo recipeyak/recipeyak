@@ -1,17 +1,17 @@
-import React from "react";
-import { Helmet } from "./Helmet";
-import { Link } from "react-router-dom";
+import React from "react"
+import { Helmet } from "./Helmet"
+import { Link } from "react-router-dom"
 
-import MemberRow from "./MemberRow";
+import MemberRow from "./MemberRow"
 
-import NoMatch from "./NoMatch";
+import NoMatch from "./NoMatch"
 
-import Loader from "./Loader";
-import TeamRecipes from "./TeamRecipes";
+import Loader from "./Loader"
+import TeamRecipes from "./TeamRecipes"
 
-import { ButtonPrimary, ButtonLink } from "./Buttons";
+import { ButtonPrimary, ButtonLink } from "./Buttons"
 
-import { inviteURL, teamURL, teamSettingsURL } from "../urls";
+import { inviteURL, teamURL, teamSettingsURL } from "../urls"
 
 const TeamMembers = ({ id, name, members, loading }) => (
   <div>
@@ -49,50 +49,50 @@ const TeamMembers = ({ id, name, members, loading }) => (
       </section>
     )}
   </div>
-);
+)
 
 class TeamSettings extends React.Component {
   state = {
     name: "loading...",
     loadingDeleteTeam: false,
     loadingSaveChanges: false
-  };
+  }
 
   static defaultProps = {
     name: "loading",
     id: 0
-  };
+  }
 
   componentWillMount() {
-    this.setState({ name: this.props.name });
+    this.setState({ name: this.props.name })
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ name: nextProps.name });
+    this.setState({ name: nextProps.name })
   }
 
   handleInputChange = e => {
-    this.setState({ [e.target.name]: e.target.value });
-  };
+    this.setState({ [e.target.name]: e.target.value })
+  }
 
   handleSubmit = e => {
-    e.preventDefault();
-    this.setState({ loadingSaveChanges: true });
+    e.preventDefault()
+    this.setState({ loadingSaveChanges: true })
     this.props
       .updatingTeam(this.props.id, { name: this.state.name })
-      .finally(() => this.setState({ loadingSaveChanges: false }));
-  };
+      .finally(() => this.setState({ loadingSaveChanges: false }))
+  }
 
   deleteTeam = () => {
     if (
       confirm(`Are you sure you want to delete this team "${this.props.name}"?`)
     ) {
-      this.setState({ loadingDeleteTeam: true });
+      this.setState({ loadingDeleteTeam: true })
       this.props
         .deleteTeam(this.props.id)
-        .finally(() => this.setState({ loadingDeleteTeam: false }));
+        .finally(() => this.setState({ loadingDeleteTeam: false }))
     }
-  };
+  }
 
   render() {
     return (
@@ -115,36 +115,35 @@ class TeamSettings extends React.Component {
           </ButtonPrimary>
           <ButtonLink
             onClick={() => this.deleteTeam()}
-            loading={this.state.loadingDeleteTeam}
-          >
+            loading={this.state.loadingDeleteTeam}>
             Delete Team
           </ButtonLink>
         </div>
       </form>
-    );
+    )
   }
 }
 
 const TeamName = ({ loading, name }) => {
   if (loading) {
-    return <Loader />;
+    return <Loader />
   }
   return (
     <div>
       <h1 className="fs-9 text-center fw-500 p-3">{name}</h1>
     </div>
-  );
-};
+  )
+}
 
 class Team extends React.Component {
   componentWillMount() {
-    this.props.fetchData(this.props.id);
+    this.props.fetchData(this.props.id)
   }
 
   componentWillReceiveProps(nextProps) {
-    const newID = nextProps.id !== this.props.id;
+    const newID = nextProps.id !== this.props.id
     if (newID) {
-      this.props.fetchData(nextProps.id);
+      this.props.fetchData(nextProps.id)
     }
   }
 
@@ -156,11 +155,11 @@ class Team extends React.Component {
     loadingMembers: true,
     loadingRecipes: true,
     isSettings: false
-  };
+  }
 
   render() {
     if (this.props.error404) {
-      return <NoMatch />;
+      return <NoMatch />
     }
 
     return (
@@ -205,8 +204,8 @@ class Team extends React.Component {
           </div>
         )}
       </div>
-    );
+    )
   }
 }
 
-export default Team;
+export default Team

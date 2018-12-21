@@ -1,8 +1,8 @@
-import React from "react";
+import React from "react"
 
-import Footer from "./Footer";
-import Navbar from "../containers/Nav.jsx";
-import SearchModal from "./SearchModal";
+import Footer from "./Footer"
+import Navbar from "../containers/Nav.jsx"
+import SearchModal from "./SearchModal"
 
 export const ContainerBase = ({ children }) => (
   <div>
@@ -11,10 +11,10 @@ export const ContainerBase = ({ children }) => (
     <SearchModal />
     <Footer />
   </div>
-);
+)
 
 export const Container = ({ children }) => (
   <div className="pb-3 pt-0 container pl-3 pr-3">{children}</div>
-);
+)
 
-export default Container;
+export default Container

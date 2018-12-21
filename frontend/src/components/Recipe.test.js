@@ -1,15 +1,15 @@
-import React from "react";
-import { MemoryRouter } from "react-router";
-import { Provider } from "react-redux";
+import React from "react"
+import { MemoryRouter } from "react-router"
+import { Provider } from "react-redux"
 
-import { mount, configure } from "enzyme";
-import Adapter from "enzyme-adapter-react-16";
+import { mount, configure } from "enzyme"
+import Adapter from "enzyme-adapter-react-16"
 
-import { emptyStore as store } from "../store/store.js";
+import { emptyStore as store } from "../store/store.js"
 
-import Recipe from "./Recipe.jsx";
+import Recipe from "./Recipe.jsx"
 
-configure({ adapter: new Adapter() });
+configure({ adapter: new Adapter() })
 
 describe("<Recipe/>", () => {
   it("renders without failure", () => {
@@ -27,13 +27,13 @@ describe("<Recipe/>", () => {
         }
       },
       fetchRecipe: () => true
-    };
+    }
     mount(
       <Provider store={store}>
         <MemoryRouter>
           <Recipe {...props} />
         </MemoryRouter>
       </Provider>
-    );
-  });
-});
+    )
+  })
+})

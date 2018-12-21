@@ -1,32 +1,32 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from "react"
+import { Link } from "react-router-dom"
 
-import { setDarkModeClass } from "../sideEffects";
+import { setDarkModeClass } from "../sideEffects"
 
 export default class UserDropdown extends React.Component {
   state = {
     show: false
-  };
+  }
 
   componentDidMount() {
-    setDarkModeClass(this.props.darkMode);
+    setDarkModeClass(this.props.darkMode)
   }
 
   handleGeneralClick = () => {
     if (this.state.show) {
-      document.removeEventListener("click", this.handleGeneralClick);
+      document.removeEventListener("click", this.handleGeneralClick)
     }
-    this.setState({ show: false });
-  };
+    this.setState({ show: false })
+  }
 
   toggle = () => {
     if (this.state.show) {
-      document.removeEventListener("click", this.handleGeneralClick);
+      document.removeEventListener("click", this.handleGeneralClick)
     } else {
-      document.addEventListener("click", this.handleGeneralClick);
+      document.addEventListener("click", this.handleGeneralClick)
     }
-    this.setState(prev => ({ show: !prev.show }));
-  };
+    this.setState(prev => ({ show: !prev.show }))
+  }
 
   render() {
     const {
@@ -36,7 +36,7 @@ export default class UserDropdown extends React.Component {
       darkMode,
       logout,
       loggingOut
-    } = this.props;
+    } = this.props
     return (
       <section>
         <img
@@ -50,8 +50,7 @@ export default class UserDropdown extends React.Component {
           className={
             "box p-absolute direction-column align-items-start right-0 mt-1" +
             (this.state.show ? " d-flex" : " d-none")
-          }
-        >
+          }>
           <p className="bold">{email}</p>
           <div className="d-flex align-center p-1-0">
             <label className="d-flex align-items-center cursor-pointer">
@@ -69,12 +68,11 @@ export default class UserDropdown extends React.Component {
           </Link>
           <button
             onClick={logout}
-            className={"my-button w-100" + (loggingOut ? " is-loading" : "")}
-          >
+            className={"my-button w-100" + (loggingOut ? " is-loading" : "")}>
             Logout
           </button>
         </div>
       </section>
-    );
+    )
   }
 }

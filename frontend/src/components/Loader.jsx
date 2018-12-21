@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 export default ({ className }) => (
   <div className={"d-flex justify-content-center " + className}>
@@ -14,4 +14,4 @@ export default ({ className }) => (
       <div />
     </div>
   </div>
-);
+)

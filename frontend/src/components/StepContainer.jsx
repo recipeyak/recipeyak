@@ -29,76 +29,76 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { Component } from "react"
+import { connect } from "react-redux"
 
-import Card from "./Step";
-import { updatingStep } from "../store/actions";
+import Card from "./Step"
+import { updatingStep } from "../store/actions"
 
 @connect()
 export default class StepContainer extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       cards: this.props.steps
-    };
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ cards: nextProps.steps });
+    this.setState({ cards: nextProps.steps })
   }
 
   moveCard = (dragIndex, hoverIndex) => {
-    const { cards } = this.state;
-    const dragCard = cards[dragIndex];
+    const { cards } = this.state
+    const dragCard = cards[dragIndex]
 
     this.setState(prevState => {
-      const cards = prevState.cards;
-      cards.splice(dragIndex, 1);
-      cards.splice(hoverIndex, 0, dragCard);
+      const cards = prevState.cards
+      cards.splice(dragIndex, 1)
+      cards.splice(hoverIndex, 0, dragCard)
       return {
         cards
-      };
-    });
-  };
+      }
+    })
+  }
 
   completeMove = (stepID, arrIndex) => {
-    const nextCard = this.state.cards[arrIndex + 1];
-    const prevCard = this.state.cards[arrIndex - 1];
-    let newPos = null;
+    const nextCard = this.state.cards[arrIndex + 1]
+    const prevCard = this.state.cards[arrIndex - 1]
+    let newPos = null
 
     if (nextCard == null && prevCard == null) {
       // there is only one card in the list, so we don't make any change
-      return;
+      return
     } else if (nextCard == null && prevCard != null) {
-      newPos = prevCard.position + 10.0;
+      newPos = prevCard.position + 10.0
     } else if (nextCard != null && prevCard == null) {
-      newPos = nextCard.position / 2;
+      newPos = nextCard.position / 2
     } else if (nextCard != null && prevCard != null) {
-      newPos = (nextCard.position - prevCard.position) / 2 + prevCard.position;
+      newPos = (nextCard.position - prevCard.position) / 2 + prevCard.position
     }
     if (newPos == null) {
-      throw new Error("Invalid position");
+      throw new Error("Invalid position")
     }
 
     this.setState(
       prevState => {
-        const cards = [...prevState.cards];
-        cards[arrIndex].position = newPos;
+        const cards = [...prevState.cards]
+        cards[arrIndex].position = newPos
         return {
           cards
-        };
+        }
       },
       () =>
         this.props.dispatch(
           updatingStep(this.props.recipeID, stepID, { position: newPos })
         )
-    );
-  };
+    )
+  }
 
   render() {
-    const { cards } = this.state;
+    const { cards } = this.state
 
     return (
       <div>
@@ -117,6 +117,6 @@ export default class StepContainer extends Component {
           />
         ))}
       </div>
-    );
+    )
   }
 }

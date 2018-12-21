@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 const DeadFish = () => (
   <svg
@@ -7,15 +7,13 @@ const DeadFish = () => (
     height="119px"
     viewBox="0 0 274 119"
     version="1.1"
-    xmlns="http://www.w3.org/2000/svg"
-  >
+    xmlns="http://www.w3.org/2000/svg">
     <g
       id="skeleton-fish"
       stroke="none"
       strokeWidth="1"
       fill="none"
-      fillRule="evenodd"
-    >
+      fillRule="evenodd">
       <g id="dead-fish-v2" transform="translate(-173.000000, -94.000000)">
         <g id="Group" transform="translate(148.000000, 79.000000)">
           <ellipse
@@ -86,6 +84,6 @@ const DeadFish = () => (
       </g>
     </g>
   </svg>
-);
+)
 
-export default DeadFish;
+export default DeadFish

@@ -1,15 +1,15 @@
-import React from "react";
-import { Button, ButtonPrimary } from "./Buttons";
-import MetaData from "./MetaData";
-import DatePickerForm from "./DatePickerForm";
-import PropTypes from "prop-types";
+import React from "react"
+import { Button, ButtonPrimary } from "./Buttons"
+import MetaData from "./MetaData"
+import DatePickerForm from "./DatePickerForm"
+import PropTypes from "prop-types"
 
 export default class RecipeTitle extends React.Component {
   state = {
     show: false,
     edit: false,
     recipe: {}
-  };
+  }
 
   static propTypes = {
     id: PropTypes.number.isRequired,
@@ -23,26 +23,26 @@ export default class RecipeTitle extends React.Component {
     updating: PropTypes.bool.isRequired,
     remove: PropTypes.func.isRequired,
     deleting: PropTypes.bool.isRequired
-  };
+  }
 
-  toggleEdit = () => this.setState(prev => ({ edit: !prev.edit }));
+  toggleEdit = () => this.setState(prev => ({ edit: !prev.edit }))
 
   handleSave = () => {
-    const data = this.state.recipe;
+    const data = this.state.recipe
     this.props.update(this.props.id, data).then(() => {
-      this.setState({ edit: false });
-    });
-  };
+      this.setState({ edit: false })
+    })
+  }
 
   handleInputChange = e => {
-    e.persist();
+    e.persist()
     this.setState(prevState => ({
       recipe: {
         ...prevState.recipe,
         [e.target.name]: e.target.value
       }
-    }));
-  };
+    }))
+  }
 
   handleDelete = () => {
     if (
@@ -50,9 +50,9 @@ export default class RecipeTitle extends React.Component {
         `Are you sure you want to delete this recipe "${this.props.name}"?`
       )
     ) {
-      this.props.remove(this.props.id);
+      this.props.remove(this.props.id)
     }
-  };
+  }
 
   render() {
     const {
@@ -70,10 +70,10 @@ export default class RecipeTitle extends React.Component {
       updating,
       deleting,
       lastScheduled
-    } = this.props;
+    } = this.props
     const toolTip = lastScheduled
       ? "last scheduled: " + lastScheduled
-      : "never scheduled";
+      : "never scheduled"
     return (
       <div>
         <div className="grid-entire-row d-flex justify-space-between p-rel">
@@ -81,8 +81,7 @@ export default class RecipeTitle extends React.Component {
             <div className="d-flex align-items-center">
               <h1
                 className="title fs-3rem mb-0 cursor-pointer"
-                onClick={this.toggleEdit}
-              >
+                onClick={this.toggleEdit}>
                 {name}
               </h1>
             </div>
@@ -101,8 +100,7 @@ export default class RecipeTitle extends React.Component {
             <div className="p-rel ml-4" title={toolTip}>
               <ButtonPrimary
                 onClick={() => this.setState(prev => ({ show: !prev.show }))}
-                className="is-small"
-              >
+                className="is-small">
                 schedule
               </ButtonPrimary>
               <DatePickerForm
@@ -181,8 +179,7 @@ export default class RecipeTitle extends React.Component {
                 type="submit"
                 loading={deleting}
                 onClick={this.handleDelete}
-                name="delete recipe"
-              >
+                name="delete recipe">
                 Delete
               </Button>
               <div>
@@ -191,8 +188,7 @@ export default class RecipeTitle extends React.Component {
                   type="submit"
                   loading={updating}
                   onClick={this.handleSave}
-                  name="save recipe"
-                >
+                  name="save recipe">
                   Save
                 </Button>
                 <input
@@ -207,6 +203,6 @@ export default class RecipeTitle extends React.Component {
           </div>
         )}
       </div>
-    );
+    )
   }
 }

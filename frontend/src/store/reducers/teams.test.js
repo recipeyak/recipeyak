@@ -1,4 +1,4 @@
-import { teams } from "./teams";
+import { teams } from "./teams"
 
 import {
   addTeam,
@@ -20,7 +20,7 @@ import {
   setCopyingTeam,
   deleteTeam,
   updateTeamById
-} from "../actions";
+} from "../actions"
 
 describe("Teams", () => {
   it("Adds team to team object", () => {
@@ -30,19 +30,19 @@ describe("Teams", () => {
         name: "team name"
       },
       allIds: [1]
-    };
+    }
     const recipe = {
       id: 123,
       name: "other team name"
-    };
+    }
     const afterState = {
       ...beforeState,
       [recipe.id]: recipe,
       allIds: [1, recipe.id]
-    };
+    }
 
-    expect(teams(beforeState, addTeam(recipe))).toEqual(afterState);
-  });
+    expect(teams(beforeState, addTeam(recipe))).toEqual(afterState)
+  })
 
   it("Updates team object", () => {
     const beforeState = {
@@ -52,11 +52,11 @@ describe("Teams", () => {
         loading: false
       },
       allIds: [1]
-    };
+    }
     const recipe = {
       id: 1,
       name: "other team name"
-    };
+    }
 
     const afterState = {
       1: {
@@ -65,10 +65,10 @@ describe("Teams", () => {
         loading: false
       },
       allIds: [1]
-    };
+    }
 
-    expect(teams(beforeState, addTeam(recipe))).toEqual(afterState);
-  });
+    expect(teams(beforeState, addTeam(recipe))).toEqual(afterState)
+  })
 
   it("Adds all teams given", () => {
     const beforeState = {
@@ -82,7 +82,7 @@ describe("Teams", () => {
         loadingTeam: false
       },
       allIds: [1, 4]
-    };
+    }
 
     const data = [
       {
@@ -97,7 +97,7 @@ describe("Teams", () => {
         id: 4,
         name: "blah"
       }
-    ];
+    ]
 
     const afterState = {
       1: {
@@ -118,10 +118,10 @@ describe("Teams", () => {
         loadingTeam: false
       },
       allIds: [1, 4, 2, 3]
-    };
+    }
 
-    expect(teams(beforeState, setTeams(data))).toEqual(afterState);
-  });
+    expect(teams(beforeState, setTeams(data))).toEqual(afterState)
+  })
 
   it("Sets loading team data", () => {
     const beforeState = {
@@ -129,7 +129,7 @@ describe("Teams", () => {
         id: 1,
         name: "team name"
       }
-    };
+    }
 
     const afterState = {
       1: {
@@ -137,10 +137,10 @@ describe("Teams", () => {
         name: "team name",
         loadingTeam: true
       }
-    };
+    }
 
-    expect(teams(beforeState, setLoadingTeam(1, true))).toEqual(afterState);
-  });
+    expect(teams(beforeState, setLoadingTeam(1, true))).toEqual(afterState)
+  })
 
   it("Sets loading team members", () => {
     const beforeState = {
@@ -148,7 +148,7 @@ describe("Teams", () => {
         id: 1,
         name: "team name"
       }
-    };
+    }
 
     const afterState = {
       1: {
@@ -156,12 +156,12 @@ describe("Teams", () => {
         name: "team name",
         loadingMembers: true
       }
-    };
+    }
 
     expect(teams(beforeState, setLoadingTeamMembers(1, true))).toEqual(
       afterState
-    );
-  });
+    )
+  })
 
   it("Sets loading team recipes", () => {
     const beforeState = {
@@ -169,7 +169,7 @@ describe("Teams", () => {
         id: 1,
         name: "team name"
       }
-    };
+    }
 
     const afterState = {
       1: {
@@ -177,12 +177,12 @@ describe("Teams", () => {
         name: "team name",
         loadingRecipes: true
       }
-    };
+    }
 
     expect(teams(beforeState, setLoadingTeamRecipes(1, true))).toEqual(
       afterState
-    );
-  });
+    )
+  })
 
   it("Sets team to 404", () => {
     const beforeState = {
@@ -194,7 +194,7 @@ describe("Teams", () => {
         id: 2,
         name: "another team name"
       }
-    };
+    }
 
     const afterState = {
       1: {
@@ -206,10 +206,10 @@ describe("Teams", () => {
         id: 2,
         name: "another team name"
       }
-    };
+    }
 
-    expect(teams(beforeState, setTeam404(1, true))).toEqual(afterState);
-  });
+    expect(teams(beforeState, setTeam404(1, true))).toEqual(afterState)
+  })
 
   it("Sets team members", () => {
     const beforeState = {
@@ -221,7 +221,7 @@ describe("Teams", () => {
         id: 2,
         name: "another team name"
       }
-    };
+    }
 
     const members = [
       {
@@ -232,7 +232,7 @@ describe("Teams", () => {
           avatar_url: "http://lksjdflsjdf"
         }
       }
-    ];
+    ]
 
     const afterState = {
       1: {
@@ -246,10 +246,10 @@ describe("Teams", () => {
         id: 2,
         name: "another team name"
       }
-    };
+    }
 
-    expect(teams(beforeState, setTeamMembers(1, members))).toEqual(afterState);
-  });
+    expect(teams(beforeState, setTeamMembers(1, members))).toEqual(afterState)
+  })
 
   it("Sets team recipes", () => {
     const beforeState = {
@@ -261,7 +261,7 @@ describe("Teams", () => {
         id: 2,
         name: "another team name"
       }
-    };
+    }
 
     const recipes = [
       {
@@ -272,7 +272,7 @@ describe("Teams", () => {
           avatar_url: "http://lksjdflsjdf"
         }
       }
-    ];
+    ]
 
     const afterState = {
       1: {
@@ -284,10 +284,10 @@ describe("Teams", () => {
         id: 2,
         name: "another team name"
       }
-    };
+    }
 
-    expect(teams(beforeState, setTeamRecipes(1, recipes))).toEqual(afterState);
-  });
+    expect(teams(beforeState, setTeamRecipes(1, recipes))).toEqual(afterState)
+  })
 
   it("Sets updating membership data", () => {
     const beforeState = {
@@ -297,7 +297,7 @@ describe("Teams", () => {
           id: 2
         }
       }
-    };
+    }
 
     const afterState = {
       1: {
@@ -307,12 +307,12 @@ describe("Teams", () => {
           id: 2
         }
       }
-    };
+    }
 
     expect(teams(beforeState, setUpdatingUserTeamLevel(1, true))).toEqual(
       afterState
-    );
-  });
+    )
+  })
 
   it("Sets user team membership level", () => {
     const beforeState = {
@@ -333,7 +333,7 @@ describe("Teams", () => {
           }
         }
       }
-    };
+    }
 
     const afterState = {
       1: {
@@ -353,12 +353,12 @@ describe("Teams", () => {
           }
         }
       }
-    };
+    }
 
     expect(teams(beforeState, setUserTeamLevel(1, 2, "admin"))).toEqual(
       afterState
-    );
-  });
+    )
+  })
 
   it("Sets team membership to deleting", () => {
     const beforeState = {
@@ -379,7 +379,7 @@ describe("Teams", () => {
           }
         }
       }
-    };
+    }
 
     const afterState = {
       1: {
@@ -400,11 +400,11 @@ describe("Teams", () => {
           }
         }
       }
-    };
+    }
     expect(teams(beforeState, setDeletingMembership(1, 2, true))).toEqual(
       afterState
-    );
-  });
+    )
+  })
 
   it("deletes team membership", () => {
     const beforeState = {
@@ -425,7 +425,7 @@ describe("Teams", () => {
           }
         }
       }
-    };
+    }
 
     const afterState = {
       1: {
@@ -439,11 +439,9 @@ describe("Teams", () => {
           }
         }
       }
-    };
-    expect(teams(beforeState, deleteMembership(1, 2, true))).toEqual(
-      afterState
-    );
-  });
+    }
+    expect(teams(beforeState, deleteMembership(1, 2, true))).toEqual(afterState)
+  })
 
   it("Sets the sending team invites in team", () => {
     const beforeState = {
@@ -459,7 +457,7 @@ describe("Teams", () => {
           id: 3
         }
       }
-    };
+    }
 
     const afterState = {
       1: {
@@ -475,12 +473,12 @@ describe("Teams", () => {
           id: 3
         }
       }
-    };
+    }
 
     expect(teams(beforeState, setSendingTeamInvites(1, true))).toEqual(
       afterState
-    );
-  });
+    )
+  })
 
   it("Sets teams to loading", () => {
     const beforeState = {
@@ -496,7 +494,7 @@ describe("Teams", () => {
           id: 3
         }
       }
-    };
+    }
 
     const afterState = {
       loading: true,
@@ -512,33 +510,10 @@ describe("Teams", () => {
           id: 3
         }
       }
-    };
+    }
 
-    expect(teams(beforeState, setLoadingTeams(true))).toEqual(afterState);
-  });
-
-  it("Sets team to have a creating attribute", () => {
-    const beforeState = {
-      1: {
-        id: 1,
-        user: {
-          id: 2
-        }
-      }
-    };
-
-    const afterState = {
-      creating: true,
-      1: {
-        id: 1,
-        user: {
-          id: 2
-        }
-      }
-    };
-
-    expect(teams(beforeState, setCreatingTeam(true))).toEqual(afterState);
-  });
+    expect(teams(beforeState, setLoadingTeams(true))).toEqual(afterState)
+  })
 
   it("Sets team to have a creating attribute", () => {
     const beforeState = {
@@ -548,7 +523,7 @@ describe("Teams", () => {
           id: 2
         }
       }
-    };
+    }
 
     const afterState = {
       creating: true,
@@ -558,10 +533,33 @@ describe("Teams", () => {
           id: 2
         }
       }
-    };
+    }
 
-    expect(teams(beforeState, setCreatingTeam(true))).toEqual(afterState);
-  });
+    expect(teams(beforeState, setCreatingTeam(true))).toEqual(afterState)
+  })
+
+  it("Sets team to have a creating attribute", () => {
+    const beforeState = {
+      1: {
+        id: 1,
+        user: {
+          id: 2
+        }
+      }
+    }
+
+    const afterState = {
+      creating: true,
+      1: {
+        id: 1,
+        user: {
+          id: 2
+        }
+      }
+    }
+
+    expect(teams(beforeState, setCreatingTeam(true))).toEqual(afterState)
+  })
 
   it("Sets team", () => {
     const beforeState = {
@@ -572,14 +570,14 @@ describe("Teams", () => {
         }
       },
       allIds: [1]
-    };
+    }
 
     const team = {
       id: 2,
       user: {
         id: 3
       }
-    };
+    }
 
     const afterState = {
       1: {
@@ -590,10 +588,10 @@ describe("Teams", () => {
       },
       [team.id]: team,
       allIds: [1, team.id]
-    };
+    }
 
-    expect(teams(beforeState, setTeam(team.id, team))).toEqual(afterState);
-  });
+    expect(teams(beforeState, setTeam(team.id, team))).toEqual(afterState)
+  })
 
   it("deletes team", () => {
     const beforeState = {
@@ -616,7 +614,7 @@ describe("Teams", () => {
         }
       },
       allIds: [1, 3, 2]
-    };
+    }
 
     const afterState = {
       1: {
@@ -632,18 +630,18 @@ describe("Teams", () => {
         }
       },
       allIds: [1, 3]
-    };
+    }
 
-    expect(teams(beforeState, deleteTeam(2))).toEqual(afterState);
-  });
+    expect(teams(beforeState, deleteTeam(2))).toEqual(afterState)
+  })
 
   it("sets copying team status", () => {
-    const beforeState = {};
+    const beforeState = {}
     const afterState = {
       copying: true
-    };
-    expect(teams(beforeState, setCopyingTeam(true))).toEqual(afterState);
-  });
+    }
+    expect(teams(beforeState, setCopyingTeam(true))).toEqual(afterState)
+  })
 
   it("updates team partially", () => {
     const beforeState = {
@@ -657,7 +655,7 @@ describe("Teams", () => {
         loading: false
       },
       allIds: [1]
-    };
+    }
     const afterState = {
       1: {
         id: 1,
@@ -669,9 +667,9 @@ describe("Teams", () => {
         loading: false
       },
       allIds: [1]
-    };
+    }
     expect(teams(beforeState, updateTeamById(1, { name: "InnoTech" }))).toEqual(
       afterState
-    );
-  });
-});
+    )
+  })
+})

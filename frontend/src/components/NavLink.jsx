@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from "react"
+import { Link } from "react-router-dom"
 
 export const NavLink = ({
   to,
@@ -8,7 +8,7 @@ export const NavLink = ({
   activeClassName = "active",
   ...props
 }) => {
-  const activeClass = pathname === to ? activeClassName : "";
+  const activeClass = pathname === to ? activeClassName : ""
   return (
     // keep react from warning about dispatch being passed down
     <Link
@@ -17,7 +17,7 @@ export const NavLink = ({
       dispatch={""}
       className={className + " " + activeClass}
     />
-  );
-};
+  )
+}
 
-export default NavLink;
+export default NavLink

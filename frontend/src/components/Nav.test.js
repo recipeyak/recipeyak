@@ -1,14 +1,14 @@
-import React from "react";
-import { MemoryRouter } from "react-router";
-import { Provider } from "react-redux";
+import React from "react"
+import { MemoryRouter } from "react-router"
+import { Provider } from "react-redux"
 
-import { mount, configure } from "enzyme";
-import Adapter from "enzyme-adapter-react-16";
+import { mount, configure } from "enzyme"
+import Adapter from "enzyme-adapter-react-16"
 
-import { emptyStore as store } from "../store/store.js";
-import Nav from "./Nav.jsx";
+import { emptyStore as store } from "../store/store.js"
+import Nav from "./Nav.jsx"
 
-configure({ adapter: new Adapter() });
+configure({ adapter: new Adapter() })
 
 describe("<Nav/>", () => {
   it("renders without failure", () => {
@@ -18,6 +18,6 @@ describe("<Nav/>", () => {
           <Nav fetchData={() => true} />
         </MemoryRouter>
       </Provider>
-    );
-  });
-});
+    )
+  })
+})

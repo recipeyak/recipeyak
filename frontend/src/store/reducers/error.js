@@ -6,7 +6,7 @@ import {
   SET_ERROR_RESET_CONFIRMATION,
   SET_ERROR_ADD_RECIPE,
   SET_ERROR_RECIPES
-} from "../actionTypes";
+} from "../actionTypes"
 
 const error = (
   state = {
@@ -26,22 +26,22 @@ const error = (
 ) => {
   switch (action.type) {
     case SET_ERROR_LOGIN:
-      return { ...state, login: action.val };
+      return { ...state, login: action.val }
     case SET_ERROR_SOCIAL_LOGIN:
-      return { ...state, socialLogin: action.val };
+      return { ...state, socialLogin: action.val }
     case SET_ERROR_SIGNUP:
-      return { ...state, signup: action.val };
+      return { ...state, signup: action.val }
     case SET_ERROR_RECIPES:
-      return { ...state, recipes: action.val };
+      return { ...state, recipes: action.val }
     case SET_ERROR_RESET:
-      return { ...state, reset: action.val };
+      return { ...state, reset: action.val }
     case SET_ERROR_RESET_CONFIRMATION:
-      return { ...state, resetConfirmation: action.val };
+      return { ...state, resetConfirmation: action.val }
     case SET_ERROR_ADD_RECIPE:
-      return { ...state, addRecipe: action.val };
+      return { ...state, addRecipe: action.val }
     default:
-      return state;
+      return state
   }
-};
+}
 
-export default error;
+export default error

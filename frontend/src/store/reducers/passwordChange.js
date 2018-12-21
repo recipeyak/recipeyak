@@ -1,7 +1,7 @@
 import {
   SET_LOADING_PASSWORD_UPDATE,
   SET_ERROR_PASSWORD_UPDATE
-} from "../actionTypes";
+} from "../actionTypes"
 
 export const passwordChange = (
   state = {
@@ -12,12 +12,12 @@ export const passwordChange = (
 ) => {
   switch (action.type) {
     case SET_LOADING_PASSWORD_UPDATE:
-      return { ...state, loadingPasswordUpdate: action.val };
+      return { ...state, loadingPasswordUpdate: action.val }
     case SET_ERROR_PASSWORD_UPDATE:
-      return { ...state, errorPasswordUpdate: action.val };
+      return { ...state, errorPasswordUpdate: action.val }
     default:
-      return state;
+      return state
   }
-};
+}
 
-export default passwordChange;
+export default passwordChange

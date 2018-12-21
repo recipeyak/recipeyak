@@ -1,25 +1,25 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import addMonths from "date-fns/add_months";
-import subMonths from "date-fns/sub_months";
-import format from "date-fns/format";
-import isPast from "date-fns/is_past";
-import endOfDay from "date-fns/end_of_day";
+import React from "react"
+import PropTypes from "prop-types"
+import { connect } from "react-redux"
+import addMonths from "date-fns/add_months"
+import subMonths from "date-fns/sub_months"
+import format from "date-fns/format"
+import isPast from "date-fns/is_past"
+import endOfDay from "date-fns/end_of_day"
 
-import Month from "./DateRangePicker/Month";
+import Month from "./DateRangePicker/Month"
 
-import { classNames } from "../classnames";
-import { atLeast1 } from "../input";
-import { ButtonPrimary } from "./Buttons";
+import { classNames } from "../classnames"
+import { atLeast1 } from "../input"
+import { ButtonPrimary } from "./Buttons"
 
-import { addingScheduledRecipe } from "../store/actions";
+import { addingScheduledRecipe } from "../store/actions"
 
 function mapDispatchToProps(dispatch) {
   return {
     create: (recipeID, teamID, on, count) =>
       dispatch(addingScheduledRecipe(recipeID, teamID, on, count))
-  };
+  }
 }
 
 @connect(
@@ -34,26 +34,26 @@ export default class DatePickerForm extends React.Component {
     show: PropTypes.bool.isRequired,
     create: PropTypes.func.isRequired,
     scheduling: PropTypes.bool.isRequired
-  };
+  }
 
   state = {
     count: 1,
     date: new Date(),
     month: new Date()
-  };
+  }
 
   handleDateChange = val => {
-    if (isPast(endOfDay(val))) return;
-    this.setState({ date: val });
-  };
+    if (isPast(endOfDay(val))) return
+    this.setState({ date: val })
+  }
 
   handleCountChange = e => {
-    const count = atLeast1(e.target.value);
-    this.setState({ count });
-  };
+    const count = atLeast1(e.target.value)
+    this.setState({ count })
+  }
 
   handleSubmit = e => {
-    e.preventDefault();
+    e.preventDefault()
     this.props
       .create(
         this.props.recipeID,
@@ -61,20 +61,20 @@ export default class DatePickerForm extends React.Component {
         this.state.date,
         this.state.count
       )
-      .then(() => this.props.close());
-  };
+      .then(() => this.props.close())
+  }
 
   nextMonth = () => {
-    this.setState(({ month }) => ({ month: addMonths(month, 1) }));
-  };
+    this.setState(({ month }) => ({ month: addMonths(month, 1) }))
+  }
 
   prevMonth = () => {
-    this.setState(({ month }) => ({ month: subMonths(month, 1) }));
-  };
+    this.setState(({ month }) => ({ month: subMonths(month, 1) }))
+  }
 
   render() {
     if (!this.props.show) {
-      return null;
+      return null
     }
 
     return (
@@ -90,8 +90,7 @@ export default class DatePickerForm extends React.Component {
           "bg-whitesmoke",
           "p-2",
           "fs-4"
-        )}
-      >
+        )}>
         <Month
           showLeft
           showRight
@@ -117,12 +116,11 @@ export default class DatePickerForm extends React.Component {
           <ButtonPrimary
             className="is-small"
             type="submit"
-            loading={this.props.scheduling}
-          >
+            loading={this.props.scheduling}>
             Schedule
           </ButtonPrimary>
         </form>
       </div>
-    );
+    )
   }
 }

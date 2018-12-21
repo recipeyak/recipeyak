@@ -1,15 +1,15 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import React from "react"
+import PropTypes from "prop-types"
+import { connect } from "react-redux"
 
-import format from "date-fns/format";
-import addMonths from "date-fns/add_months";
-import subMonths from "date-fns/sub_months";
-import isBefore from "date-fns/is_before";
-import isAfter from "date-fns/is_after";
-import isValid from "date-fns/is_valid";
+import format from "date-fns/format"
+import addMonths from "date-fns/add_months"
+import subMonths from "date-fns/sub_months"
+import isBefore from "date-fns/is_before"
+import isAfter from "date-fns/is_after"
+import isValid from "date-fns/is_valid"
 
-import { classNames } from "../classnames";
+import { classNames } from "../classnames"
 
 import {
   fetchShoppingList,
@@ -17,29 +17,29 @@ import {
   setSelectingEnd,
   reportBadMerge,
   showNotificationWithTimeout
-} from "../store/actions";
+} from "../store/actions"
 
-import { ingredientByNameAlphabetical } from "../sorters";
+import { ingredientByNameAlphabetical } from "../sorters"
 
-import DateRangePicker from "./DateRangePicker/DateRangePicker";
+import DateRangePicker from "./DateRangePicker/DateRangePicker"
 
 const selectElementText = el => {
-  const sel = window.getSelection();
-  const range = document.createRange();
-  range.selectNodeContents(el);
-  sel.removeAllRanges();
-  sel.addRange(range);
-};
+  const sel = window.getSelection()
+  const range = document.createRange()
+  range.selectNodeContents(el)
+  sel.removeAllRanges()
+  sel.addRange(range)
+}
 
 const removeSelection = () => {
-  window.getSelection().removeAllRanges();
-};
+  window.getSelection().removeAllRanges()
+}
 
 function formatMonth(date) {
   if (date == null) {
-    return "";
+    return ""
   }
-  return format(date, "YYYY-MM-DD");
+  return format(date, "YYYY-MM-DD")
 }
 
 function mapStateToProps(state) {
@@ -51,7 +51,7 @@ function mapStateToProps(state) {
     shoppinglist: state.shoppinglist.shoppinglist.sort(
       ingredientByNameAlphabetical
     )
-  };
+  }
 }
 
 const mapDispatchToProps = dispatch => ({
@@ -62,7 +62,7 @@ const mapDispatchToProps = dispatch => ({
   reportBadMerge: () => dispatch(reportBadMerge()),
   sendToast: message =>
     dispatch(showNotificationWithTimeout({ message, level: "info" }))
-});
+})
 
 @connect(
   mapStateToProps,
@@ -82,7 +82,7 @@ class ShoppingList extends React.Component {
     setEndDay: PropTypes.func.isRequired,
     reportBadMerge: PropTypes.func.isRequired,
     sendToast: PropTypes.func.isRequired
-  };
+  }
 
   state = {
     month: new Date(),
@@ -91,18 +91,18 @@ class ShoppingList extends React.Component {
     selectingEnd: false,
 
     showDatePicker: false
-  };
+  }
 
   componentDidMount() {
-    this.refetchData();
+    this.refetchData()
   }
 
   componentWillMount() {
-    document.addEventListener("click", this.handleGeneralClick);
+    document.addEventListener("click", this.handleGeneralClick)
   }
 
   componentWillUnmount() {
-    document.removeEventListener("click", this.handleGeneralClick);
+    document.removeEventListener("click", this.handleGeneralClick)
   }
 
   refetchData = () => {
@@ -111,27 +111,27 @@ class ShoppingList extends React.Component {
       this.props.teamID,
       this.props.startDay,
       this.props.endDay
-    );
-  };
+    )
+  }
 
   handleGeneralClick = e => {
-    const picker = document.querySelector("#date-range-picker");
-    const clickedPicker = picker && picker.contains(e.target);
+    const picker = document.querySelector("#date-range-picker")
+    const clickedPicker = picker && picker.contains(e.target)
 
-    const clickedInputs = this.inputs && this.inputs.contains(e.target);
-    if (clickedPicker || clickedInputs) return;
+    const clickedInputs = this.inputs && this.inputs.contains(e.target)
+    if (clickedPicker || clickedInputs) return
     this.setState({
       showDatePicker: false,
       selectingStart: false,
       selectingEnd: false
-    });
-  };
+    })
+  }
 
   setStartDay = date => {
-    if (!isValid(date)) return;
-    this.props.setStartDay(date);
+    if (!isValid(date)) return
+    this.props.setStartDay(date)
     if (isAfter(date, this.props.endDay)) {
-      this.props.setEndDay(date);
+      this.props.setEndDay(date)
     }
     this.setState(
       {
@@ -139,14 +139,14 @@ class ShoppingList extends React.Component {
         selectingEnd: true
       },
       this.refetchData
-    );
-  };
+    )
+  }
 
   setEndDay = date => {
-    if (!isValid(date)) return;
-    this.props.setEndDay(date);
+    if (!isValid(date)) return
+    this.props.setEndDay(date)
     if (isBefore(date, this.props.startDay)) {
-      this.props.setStartDay(date);
+      this.props.setStartDay(date)
     }
     this.setState(
       {
@@ -154,8 +154,8 @@ class ShoppingList extends React.Component {
         showDatePicker: false
       },
       this.refetchData
-    );
-  };
+    )
+  }
 
   render() {
     return (
@@ -163,10 +163,9 @@ class ShoppingList extends React.Component {
         <div className="p-rel">
           <div
             ref={i => {
-              this.inputs = i;
+              this.inputs = i
             }}
-            className="d-flex align-items-center no-print"
-          >
+            className="d-flex align-items-center no-print">
             <input
               onFocus={() =>
                 this.setState({
@@ -223,17 +222,15 @@ class ShoppingList extends React.Component {
           <div
             className={`box p-rel min-height-75px mb-0 ${
               this.props.loading ? "has-text-grey-light" : ""
-            }`}
-          >
+            }`}>
             <button
               onClick={() => {
-                selectElementText(document.querySelector("#shoppinglist"));
-                document.execCommand("copy");
-                removeSelection();
-                this.props.sendToast("Shopping list copied to clipboard!");
+                selectElementText(document.querySelector("#shoppinglist"))
+                document.execCommand("copy")
+                removeSelection()
+                this.props.sendToast("Shopping list copied to clipboard!")
               }}
-              className="my-button is-small r-5 p-abs"
-            >
+              className="my-button is-small r-5 p-abs">
               Copy
             </button>
             {this.props.error ? (
@@ -252,14 +249,13 @@ class ShoppingList extends React.Component {
           <div className="d-flex justify-content-end no-print">
             <a
               onClick={this.props.reportBadMerge}
-              className="text-muted italic fs-3"
-            >
+              className="text-muted italic fs-3">
               report bad merge
             </a>
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
-export default ShoppingList;
+export default ShoppingList

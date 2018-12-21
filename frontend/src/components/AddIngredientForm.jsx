@@ -1,6 +1,6 @@
-import React from "react";
+import React from "react"
 
-import { ButtonPrimary } from "./Buttons";
+import { ButtonPrimary } from "./Buttons"
 
 const AddIngredientForm = ({
   handleAddIngredient,
@@ -16,11 +16,10 @@ const AddIngredientForm = ({
 }) => (
   <form
     onSubmit={async e => {
-      e.preventDefault();
-      await handleAddIngredient();
-      document.querySelector("#firstinput").focus();
-    }}
-  >
+      e.preventDefault()
+      await handleAddIngredient()
+      document.querySelector("#firstinput").focus()
+    }}>
     <div className="add-ingredient-grid mb-2 mt-2">
       <div>
         <input
@@ -84,8 +83,7 @@ const AddIngredientForm = ({
           className="is-small"
           type="submit"
           name="add ingredient"
-          loading={loading}
-        >
+          loading={loading}>
           Add
         </ButtonPrimary>
       </p>
@@ -100,6 +98,6 @@ const AddIngredientForm = ({
       </p>
     </div>
   </form>
-);
+)
 
-export default AddIngredientForm;
+export default AddIngredientForm

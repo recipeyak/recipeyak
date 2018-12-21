@@ -1,10 +1,10 @@
-import React from "react";
+import React from "react"
 
-import { connect } from "react-redux";
+import { connect } from "react-redux"
 
-import { ButtonPlain, ButtonDanger } from "./Buttons";
+import { ButtonPlain, ButtonDanger } from "./Buttons"
 
-import { settingUserTeamLevel, deletingMembership } from "../store/actions";
+import { settingUserTeamLevel, deletingMembership } from "../store/actions"
 
 const mapStateToProps = (state, { userID, teamID, membershipID }) => ({
   isUser: state.user.id === userID,
@@ -12,14 +12,14 @@ const mapStateToProps = (state, { userID, teamID, membershipID }) => ({
   userIsTeamAdmin: Object.values(state.teams[teamID].members)
     .filter(x => x.level === "admin")
     .some(({ user }) => user.id === state.user.id)
-});
+})
 
 const mapDispatchToProps = dispatch => ({
   handleUserLevelChange: (teamID, membershipID, level) =>
     dispatch(settingUserTeamLevel(teamID, membershipID, level)),
   deleteMembership: (teamID, membershipID, leaving) =>
     dispatch(deletingMembership(teamID, membershipID, leaving))
-});
+})
 
 const MemberRow = ({
   teamID,
@@ -58,8 +58,7 @@ const MemberRow = ({
             value={level}
             onChange={e =>
               handleUserLevelChange(teamID, membershipID, e.target.value)
-            }
-          >
+            }>
             <option value="admin">Admin</option>
             <option value="contributor">Contributor</option>
             <option value="read">Read</option>
@@ -76,18 +75,17 @@ const MemberRow = ({
         <ButtonDanger
           onClick={() => deleteMembership(teamID, membershipID, isUser)}
           loading={deleting}
-          className="is-small"
-        >
+          className="is-small">
           {isUser ? "leave" : "remove"}
         </ButtonDanger>
       ) : null}
     </td>
   </tr>
-);
+)
 
 const ConnectedMemberRow = connect(
   mapStateToProps,
   mapDispatchToProps
-)(MemberRow);
+)(MemberRow)
 
-export default ConnectedMemberRow;
+export default ConnectedMemberRow

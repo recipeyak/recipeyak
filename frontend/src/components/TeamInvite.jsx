@@ -1,32 +1,32 @@
-import React from "react";
-import { Helmet } from "./Helmet";
-import { Link } from "react-router-dom";
-import { connect } from "react-redux";
+import React from "react"
+import { Helmet } from "./Helmet"
+import { Link } from "react-router-dom"
+import { connect } from "react-redux"
 
-import { ButtonPrimary } from "./Buttons";
+import { ButtonPrimary } from "./Buttons"
 
-import NoMatch from "./NoMatch";
-import Loader from "./Loader";
+import NoMatch from "./NoMatch"
+import Loader from "./Loader"
 
-import { teamURL } from "../urls";
+import { teamURL } from "../urls"
 
-import { fetchTeam, sendingTeamInvites } from "../store/actions";
+import { fetchTeam, sendingTeamInvites } from "../store/actions"
 
 const mapStateToProps = (state, props) => {
-  const id = props.match.params.id;
-  const team = state.teams[id] ? state.teams[id] : {};
+  const id = props.match.params.id
+  const team = state.teams[id] ? state.teams[id] : {}
 
   return {
     ...team,
     id
-  };
-};
+  }
+}
 
 const mapDispatchToProps = dispatch => ({
   fetchData: id => dispatch(fetchTeam(id)),
   sendInvites: (teamID, emails, level) =>
     dispatch(sendingTeamInvites(teamID, emails, level))
-});
+})
 
 export const roles = [
   {
@@ -44,34 +44,34 @@ export const roles = [
     value: "viewer",
     description: "View all team recipes and members."
   }
-];
+]
 
 class TeamInvite extends React.Component {
   state = {
     level: "contributor",
     emails: ""
-  };
+  }
 
   static defaultProps = {
     loadingTeam: true,
     sendingTeamInvites: false
-  };
-
-  componentWillMount() {
-    this.props.fetchData(this.props.id);
   }
 
-  handleInputChange = e => this.setState({ [e.target.name]: e.target.value });
+  componentWillMount() {
+    this.props.fetchData(this.props.id)
+  }
+
+  handleInputChange = e => this.setState({ [e.target.name]: e.target.value })
 
   render() {
-    const { name, id, loadingTeam } = this.props;
+    const { name, id, loadingTeam } = this.props
 
     if (this.props.error404) {
-      return <NoMatch />;
+      return <NoMatch />
     }
 
     if (loadingTeam) {
-      return <Loader />;
+      return <Loader />
     }
 
     return (
@@ -88,16 +88,15 @@ class TeamInvite extends React.Component {
           action=""
           className=""
           onSubmit={async e => {
-            e.preventDefault();
-            const emails = this.state.emails.split(",").filter(x => x !== "");
+            e.preventDefault()
+            const emails = this.state.emails.split(",").filter(x => x !== "")
             try {
-              await this.props.sendInvites(id, emails, this.state.level);
+              await this.props.sendInvites(id, emails, this.state.level)
             } catch (e) {
-              return;
+              return
             }
-            this.setState({ emails: "" });
-          }}
-        >
+            this.setState({ emails: "" })
+          }}>
           <input
             type="text"
             className="input mb-4"
@@ -129,19 +128,18 @@ class TeamInvite extends React.Component {
           <ButtonPrimary
             type="submit"
             loading={this.props.sendingTeamInvites}
-            className="justify-self-left"
-          >
+            className="justify-self-left">
             Send Invite
           </ButtonPrimary>
         </form>
       </div>
-    );
+    )
   }
 }
 
 const ConnectedTeamInvite = connect(
   mapStateToProps,
   mapDispatchToProps
-)(TeamInvite);
+)(TeamInvite)
 
-export default ConnectedTeamInvite;
+export default ConnectedTeamInvite

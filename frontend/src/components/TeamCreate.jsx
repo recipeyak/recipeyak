@@ -1,38 +1,38 @@
-import React from "react";
-import { connect } from "react-redux";
+import React from "react"
+import { connect } from "react-redux"
 
-import { roles } from "./TeamInvite";
+import { roles } from "./TeamInvite"
 
-import { ButtonPrimary } from "./Buttons";
+import { ButtonPrimary } from "./Buttons"
 
-import { creatingTeam } from "../store/actions";
+import { creatingTeam } from "../store/actions"
 
 const mapStateToProps = state => ({
   loading: state.teams.creating
-});
+})
 
 const mapDispatchToProps = dispatch => ({
   createTeam: (name, emails, level) =>
     dispatch(creatingTeam(name, emails, level))
-});
+})
 
 class TeamCreate extends React.Component {
   state = {
     level: "contributor",
     emails: "",
     name: ""
-  };
+  }
 
-  handleInputChange = e => this.setState({ [e.target.name]: e.target.value });
+  handleInputChange = e => this.setState({ [e.target.name]: e.target.value })
 
   handleSubmit = async e => {
-    e.preventDefault();
-    const emails = this.state.emails.split(",").filter(x => x !== "");
-    const { name, level } = this.state;
+    e.preventDefault()
+    const emails = this.state.emails.split(",").filter(x => x !== "")
+    const { name, level } = this.state
     try {
-      await this.props.createTeam(name, emails, level);
+      await this.props.createTeam(name, emails, level)
     } catch (e) {}
-  };
+  }
 
   render() {
     return (
@@ -87,19 +87,18 @@ class TeamCreate extends React.Component {
           <ButtonPrimary
             type="submit"
             loading={this.props.loading}
-            className="justify-self-left"
-          >
+            className="justify-self-left">
             Create Team
           </ButtonPrimary>
         </form>
       </div>
-    );
+    )
   }
 }
 
 const ConnectedTeamCreate = connect(
   mapStateToProps,
   mapDispatchToProps
-)(TeamCreate);
+)(TeamCreate)
 
-export default ConnectedTeamCreate;
+export default ConnectedTeamCreate

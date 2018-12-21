@@ -1,14 +1,14 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from "react"
+import { Link } from "react-router-dom"
 
-import addRecipeImg from "./images/add-recipe.png";
-import cartDoublingImg from "./images/cart-doubling.png";
-import cartImg from "./images/cart.png";
-import homepageImg from "./images/homepage.png";
-import listImg from "./images/list.png";
-import searchImg from "./images/search.png";
+import addRecipeImg from "./images/add-recipe.png"
+import cartDoublingImg from "./images/cart-doubling.png"
+import cartImg from "./images/cart.png"
+import homepageImg from "./images/homepage.png"
+import listImg from "./images/list.png"
+import searchImg from "./images/search.png"
 
-const isOdd = i => i % 2 !== 0;
+const isOdd = i => i % 2 !== 0
 
 const LandingPage = () => (
   <section>
@@ -19,8 +19,7 @@ const LandingPage = () => (
 
       <Link
         to="/signup"
-        className="my-button is-primary is-large justify-self-center"
-      >
+        className="my-button is-primary is-large justify-self-center">
         Create Account
       </Link>
     </section>
@@ -60,8 +59,7 @@ const LandingPage = () => (
               <p
                 className={`align-self-center ${
                   isOdd(i) ? "grid-column-2 grid-row-1" : ""
-                }`}
-              >
+                }`}>
                 {text}
               </p>
               <div className="fact-img align-self-center ">
@@ -129,13 +127,12 @@ const LandingPage = () => (
 
         <Link
           to="/signup"
-          className="my-button is-primary is-large justify-self-center mt-4 mb-2"
-        >
+          className="my-button is-primary is-large justify-self-center mt-4 mb-2">
           Create Account
         </Link>
       </section>
     </section>
   </section>
-);
+)
 
-export default LandingPage;
+export default LandingPage

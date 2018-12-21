@@ -1,11 +1,11 @@
-import React from "react";
-import { Helmet } from "./Helmet";
-import { Link } from "react-router-dom";
+import React from "react"
+import { Helmet } from "./Helmet"
+import { Link } from "react-router-dom"
 
-import Loader from "./Loader";
-import { RecipeItem as Recipe } from "./RecipeItem";
+import Loader from "./Loader"
+import { RecipeItem as Recipe } from "./RecipeItem"
 
-import img from "./images/yak.jpg";
+import img from "./images/yak.jpg"
 
 const TotalRecipeCount = ({ count }) => (
   <p className="stat mb-1">
@@ -24,7 +24,7 @@ const TotalRecipeCount = ({ count }) => (
       </span>
     )}
   </p>
-);
+)
 
 const RecipesAddedThisWeek = ({ count = 0 }) =>
   count > 0 && (
@@ -34,9 +34,9 @@ const RecipesAddedThisWeek = ({ count = 0 }) =>
       </b>
       {count === 1 ? "has" : "have"} been added in the <b>last week</b>.
     </p>
-  );
+  )
 
-const toInt = x => (x > 0 ? x : 0);
+const toInt = x => (x > 0 ? x : 0)
 
 const LifetimeRecipeEdits = ({ edits = 0, dateJoined = "" }) =>
   dateJoined !== "" && (
@@ -49,12 +49,12 @@ const LifetimeRecipeEdits = ({ edits = 0, dateJoined = "" }) =>
         </span>
       ) : null}
     </p>
-  );
+  )
 
 const RecentRecipes = ({ recipes, loading, error }) => {
-  if (error) return <p>error fetching recipes</p>;
+  if (error) return <p>error fetching recipes</p>
 
-  const noRecipes = recipes.length < 1;
+  const noRecipes = recipes.length < 1
   if (noRecipes && !loading) {
     return (
       <section>
@@ -70,7 +70,7 @@ const RecentRecipes = ({ recipes, loading, error }) => {
           </Link>
         </section>
       </section>
-    );
+    )
   }
 
   return (
@@ -91,8 +91,8 @@ const RecentRecipes = ({ recipes, loading, error }) => {
         ) : null}
       </section>
     </section>
-  );
-};
+  )
+}
 
 const UserStatistics = ({ loading, stats }) => {
   if (loading) {
@@ -100,11 +100,11 @@ const UserStatistics = ({ loading, stats }) => {
       <section className="justify-self-center d-grid align-self-center">
         <Loader />
       </section>
-    );
+    )
   }
 
   // NOTE: this breaksbsometimes
-  const emptyStats = stats.most_added_recipe == null;
+  const emptyStats = stats.most_added_recipe == null
   if (emptyStats) {
     return (
       <div>
@@ -122,7 +122,7 @@ const UserStatistics = ({ loading, stats }) => {
           and check back later for more stats.
         </p>
       </div>
-    );
+    )
   }
 
   return (
@@ -134,8 +134,8 @@ const UserStatistics = ({ loading, stats }) => {
         dateJoined={stats.date_joined}
       />
     </section>
-  );
-};
+  )
+}
 
 const UserHome = ({
   loadingRecipes,
@@ -162,15 +162,15 @@ const UserHome = ({
       />
     </section>
   </div>
-);
+)
 
 class UserHomeFetch extends React.Component {
   componentWillMount = () => {
-    this.props.fetchData();
-  };
+    this.props.fetchData()
+  }
   render() {
-    return <UserHome {...this.props} />;
+    return <UserHome {...this.props} />
   }
 }
 
-export default UserHomeFetch;
+export default UserHomeFetch

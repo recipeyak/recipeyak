@@ -1,4 +1,4 @@
-import { byNameAlphabetical, ingredientByNameAlphabetical } from "./sorters";
+import { byNameAlphabetical, ingredientByNameAlphabetical } from "./sorters"
 
 describe("byNameAlphabetical", () => {
   it("sorter keeps already sorted list sorted", () => {
@@ -111,10 +111,10 @@ describe("byNameAlphabetical", () => {
         unit: "3 tablespoon",
         name: "whole-milk yogurt"
       }
-    ];
+    ]
 
-    expect(ingredients).toEqual(ingredients.sort(byNameAlphabetical));
-  });
+    expect(ingredients).toEqual(ingredients.sort(byNameAlphabetical))
+  })
 
   it("sorts a list correctly", () => {
     const ingredients = [
@@ -226,7 +226,7 @@ describe("byNameAlphabetical", () => {
         unit: "1 teaspoon",
         name: "garam masala"
       }
-    ];
+    ]
 
     const expected = [
       {
@@ -337,10 +337,10 @@ describe("byNameAlphabetical", () => {
         unit: "3 tablespoon",
         name: "whole-milk yogurt"
       }
-    ];
+    ]
 
-    expect(ingredients.sort(byNameAlphabetical)).toEqual(expected);
-  });
+    expect(ingredients.sort(byNameAlphabetical)).toEqual(expected)
+  })
 
   it("should ignore words medium, large, small", () => {
     const before = [
@@ -356,7 +356,7 @@ describe("byNameAlphabetical", () => {
         unit: "1",
         name: "mushroom"
       }
-    ];
+    ]
 
     const expected = [
       {
@@ -371,10 +371,10 @@ describe("byNameAlphabetical", () => {
         unit: "1",
         name: "medium tomato"
       }
-    ];
+    ]
 
-    expect(before.sort(ingredientByNameAlphabetical)).toEqual(expected);
-  });
+    expect(before.sort(ingredientByNameAlphabetical)).toEqual(expected)
+  })
 
   it("should ignore ground", () => {
     const before = [
@@ -386,7 +386,7 @@ describe("byNameAlphabetical", () => {
         unit: "1 teaspoon",
         name: "ground cumin"
       }
-    ];
+    ]
 
     const expected = [
       {
@@ -397,8 +397,8 @@ describe("byNameAlphabetical", () => {
         unit: "1 teaspoon",
         name: "garam masala"
       }
-    ];
+    ]
 
-    expect(before.sort(ingredientByNameAlphabetical)).toEqual(expected);
-  });
-});
+    expect(before.sort(ingredientByNameAlphabetical)).toEqual(expected)
+  })
+})

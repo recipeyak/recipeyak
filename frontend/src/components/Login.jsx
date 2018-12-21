@@ -1,42 +1,42 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Helmet } from "./Helmet";
+import React from "react"
+import { Link } from "react-router-dom"
+import { Helmet } from "./Helmet"
 
-import SocialButtons from "./SocialButtons";
-import { FormErrorHandler } from "./Forms";
-import { ButtonPrimary } from "./Buttons";
+import SocialButtons from "./SocialButtons"
+import { FormErrorHandler } from "./Forms"
+import { ButtonPrimary } from "./Buttons"
 
-import AuthContainer from "./AuthContainer";
+import AuthContainer from "./AuthContainer"
 
 const redirectURL = ({ pathname = "", search = "", hash = "" }) =>
-  `${pathname}${search}${hash}`;
+  `${pathname}${search}${hash}`
 
 class Login extends React.Component {
   state = {
     email: "",
     password: ""
-  };
+  }
 
   componentWillMount = () => {
-    this.props.clearErrors();
+    this.props.clearErrors()
     const fromUrl =
-      this.props.location.state != null ? this.props.location.state.from : {};
-    this.props.setFromUrl(redirectURL(fromUrl));
-  };
+      this.props.location.state != null ? this.props.location.state.from : {}
+    this.props.setFromUrl(redirectURL(fromUrl))
+  }
 
   handleInputChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
+    this.setState({ [e.target.name]: e.target.value })
   }
 
   handleLogin(e) {
-    e.preventDefault();
-    this.props.login(this.state.email, this.state.password, this.props.fromUrl);
+    e.preventDefault()
+    this.props.login(this.state.email, this.state.password, this.props.fromUrl)
   }
 
   render() {
-    const { loading } = this.props;
-    const { password1, nonFieldErrors, email } = this.props.error;
-    const { emailSocial, nonFieldErrorsSocial } = this.props.errorSocial;
+    const { loading } = this.props
+    const { password1, nonFieldErrors, email } = this.props.error
+    const { emailSocial, nonFieldErrorsSocial } = this.props.errorSocial
 
     return (
       <AuthContainer>
@@ -98,8 +98,8 @@ class Login extends React.Component {
           />
         </div>
       </AuthContainer>
-    );
+    )
   }
 }
 
-export default Login;
+export default Login

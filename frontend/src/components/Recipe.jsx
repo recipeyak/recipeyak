@@ -1,15 +1,15 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { Helmet } from "./Helmet";
+import React from "react"
+import PropTypes from "prop-types"
+import { connect } from "react-redux"
+import { Helmet } from "./Helmet"
 
-import NoMatch from "./NoMatch";
-import Loader from "./Loader";
-import AddStep from "./AddStep";
-import AddIngredient from "./AddIngredient";
-import StepContainer from "./StepContainer";
-import Ingredient from "./Ingredient";
-import RecipeTitle from "./RecipeTitle";
+import NoMatch from "./NoMatch"
+import Loader from "./Loader"
+import AddStep from "./AddStep"
+import AddIngredient from "./AddIngredient"
+import StepContainer from "./StepContainer"
+import Ingredient from "./Ingredient"
+import RecipeTitle from "./RecipeTitle"
 
 import {
   addingRecipeIngredient,
@@ -19,13 +19,13 @@ import {
   updateRecipe,
   deletingIngredient,
   updatingIngredient
-} from "../store/actions";
+} from "../store/actions"
 
 const mapStateToProps = (state, props) => {
-  const id = props.match.params.id;
-  const recipe = state.recipes[id] ? state.recipes[id] : { loading: true };
-  return recipe;
-};
+  const id = props.match.params.id
+  const recipe = state.recipes[id] ? state.recipes[id] : { loading: true }
+  return recipe
+}
 
 const mapDispatchToProps = dispatch => ({
   fetchRecipe: id => dispatch(fetchRecipe(id)),
@@ -38,7 +38,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(updatingIngredient(recipeID, ingredientID, content)),
   removeIngredient: (recipeID, ingredientID) =>
     dispatch(deletingIngredient(recipeID, ingredientID))
-});
+})
 
 @connect(
   mapStateToProps,
@@ -61,7 +61,7 @@ export default class Recipe extends React.Component {
     remove: PropTypes.func.isRequired,
     deleting: PropTypes.bool.isRequired,
     last_scheduled: PropTypes.string
-  };
+  }
 
   // necessary as these are undefined between page load and data fetch
   static defaultProps = {
@@ -83,29 +83,29 @@ export default class Recipe extends React.Component {
       name: ""
     },
     updating: false
-  };
+  }
 
   state = {
     show: false,
     addStep: false,
     addIngredient: false
-  };
+  }
 
   componentWillMount() {
-    this.props.fetchRecipe(this.props.match.params.id);
+    this.props.fetchRecipe(this.props.match.params.id)
   }
 
   render() {
-    const { id, name, ingredients, steps, loading, error404 } = this.props;
+    const { id, name, ingredients, steps, loading, error404 } = this.props
     if (error404) {
-      return <NoMatch />;
+      return <NoMatch />
     }
     if (loading) {
       return (
         <section className="d-flex justify-content-center">
           <Loader />
         </section>
-      );
+      )
     }
     return (
       <div className="d-grid grid-gap-2">
@@ -172,8 +172,7 @@ export default class Recipe extends React.Component {
             ) : (
               <a
                 className="text-muted"
-                onClick={() => this.setState({ addIngredient: true })}
-              >
+                onClick={() => this.setState({ addIngredient: true })}>
                 add
               </a>
             )}
@@ -196,14 +195,13 @@ export default class Recipe extends React.Component {
             ) : (
               <a
                 className="text-muted"
-                onClick={() => this.setState({ addStep: true })}
-              >
+                onClick={() => this.setState({ addStep: true })}>
                 add
               </a>
             )}
           </div>
         </section>
       </div>
-    );
+    )
   }
 }

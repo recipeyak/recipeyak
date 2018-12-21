@@ -1,22 +1,22 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import Loader from "./Loader";
+import React from "react"
+import { Link } from "react-router-dom"
+import Loader from "./Loader"
 
-import { TextInput } from "./Forms";
-import { matchesQuery } from "../search";
+import { TextInput } from "./Forms"
+import { matchesQuery } from "../search"
 
-import { RecipeItem as Recipe } from "./RecipeItem";
+import { RecipeItem as Recipe } from "./RecipeItem"
 
 export default class TeamRecipes extends React.Component {
-  ENABLE_SEARCH_THRESHOLD = 8;
+  ENABLE_SEARCH_THRESHOLD = 8
 
   state = {
     query: ""
-  };
+  }
 
   render() {
-    const { loading, recipes } = this.props;
-    const results = recipes.filter(x => matchesQuery(x, this.state.query));
+    const { loading, recipes } = this.props
+    const results = recipes.filter(x => matchesQuery(x, this.state.query))
 
     return (
       <div>
@@ -59,6 +59,6 @@ export default class TeamRecipes extends React.Component {
           </section>
         )}
       </div>
-    );
+    )
   }
 }

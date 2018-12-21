@@ -1,7 +1,7 @@
-import React from "react";
+import React from "react"
 
-import Owner from "./Owner";
-import { teamURL } from "../urls";
+import Owner from "./Owner"
+import { teamURL } from "../urls"
 
 const MetaData = ({
   author = "",
@@ -12,28 +12,28 @@ const MetaData = ({
   recipeId,
   onClick
 }) => {
-  const isValid = x => x !== "" && x != null;
+  const isValid = x => x !== "" && x != null
 
   const _author = isValid(author) ? (
     <span>
       By <b className="cursor-pointer">{author}</b>{" "}
     </span>
-  ) : null;
+  ) : null
   const _source = isValid(source) ? (
     <span>
       from <b className="cursor-pointer">{source}</b>{" "}
     </span>
-  ) : null;
+  ) : null
   const _servings = isValid(servings) ? (
     <span>
       creating <b className="cursor-pointer">{servings}</b>{" "}
     </span>
-  ) : null;
+  ) : null
   const _time = isValid(time) ? (
     <span>
       in <b className="cursor-pointer">{time}</b>{" "}
     </span>
-  ) : null;
+  ) : null
 
   return (
     <div className="break-word">
@@ -50,7 +50,7 @@ const MetaData = ({
         recipeId={recipeId}
       />
     </div>
-  );
-};
+  )
+}
 
-export default MetaData;
+export default MetaData

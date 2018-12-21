@@ -17,15 +17,15 @@ const WHITELIST = [
   "OAUTH_GOOGLE_CLIENT_ID",
 
   "FRONTEND_SENTRY_DSN"
-];
+]
 
 function getClientEnvironment(publicUrl) {
   const raw = Object.keys(process.env)
     .filter(key => WHITELIST.includes(key))
     .reduce(
       (env, key) => {
-        env[key] = process.env[key];
-        return env;
+        env[key] = process.env[key]
+        return env
       },
       {
         // Useful for determining whether we’re running in production mode.
@@ -37,16 +37,16 @@ function getClientEnvironment(publicUrl) {
         // images into the `src` and `import` them in code to get their paths.
         PUBLIC_URL: publicUrl
       }
-    );
+    )
   // Stringify all values so we can feed into Webpack DefinePlugin
   const stringified = {
     "process.env": Object.keys(raw).reduce((env, key) => {
-      env[key] = JSON.stringify(raw[key]);
-      return env;
+      env[key] = JSON.stringify(raw[key])
+      return env
     }, {})
-  };
+  }
 
-  return { raw, stringified };
+  return { raw, stringified }
 }
 
-module.exports = getClientEnvironment;
+module.exports = getClientEnvironment

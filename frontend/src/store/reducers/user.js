@@ -15,13 +15,13 @@ import {
   SET_USER_ID,
   SET_USER_LOGGED_IN,
   SET_SCHEDULE_URL
-} from "../actionTypes";
+} from "../actionTypes"
 
-import { socialAccounts } from "./socialAccounts";
+import { socialAccounts } from "./socialAccounts"
 
-import { setDarkModeClass } from "../../sideEffects";
+import { setDarkModeClass } from "../../sideEffects"
 
-import raven from "raven-js";
+import raven from "raven-js"
 
 const initialState = {
   id: null,
@@ -39,7 +39,7 @@ const initialState = {
     gitlab: null
   },
   scheduleURL: "/schedule/"
-};
+}
 
 export const user = (state = initialState, action) => {
   switch (action.type) {
@@ -51,7 +51,7 @@ export const user = (state = initialState, action) => {
         },
         email: action.user.email,
         id: action.user.id
-      });
+      })
       return {
         ...state,
         avatarURL: action.user.avatar_url,
@@ -59,26 +59,26 @@ export const user = (state = initialState, action) => {
         id: action.user.id,
         loggedIn: true,
         hasUsablePassword: action.user.has_usable_password
-      };
+      }
     case SET_AVATAR_URL:
-      return { ...state, avatarURL: action.url };
+      return { ...state, avatarURL: action.url }
     case SET_USER_EMAIL:
-      return { ...state, email: action.email };
+      return { ...state, email: action.email }
     case SET_LOADING_USER:
-      return { ...state, loading: action.val };
+      return { ...state, loading: action.val }
     case SET_ERROR_USER:
-      return { ...state, error: action.val };
+      return { ...state, error: action.val }
     case SET_USER_STATS:
-      return { ...state, stats: action.val };
+      return { ...state, stats: action.val }
     case SET_LOADING_USER_STATS:
-      return { ...state, stats_loading: action.val };
+      return { ...state, stats_loading: action.val }
     case SET_UPDATING_USER_EMAIL:
-      return { ...state, updatingEmail: action.val };
+      return { ...state, updatingEmail: action.val }
     case SET_LOGGING_OUT:
-      raven.setUserContext();
-      return { ...state, loggingOut: action.val };
+      raven.setUserContext()
+      return { ...state, loggingOut: action.val }
     case SET_PASSWORD_USABLE:
-      return { ...state, hasUsablePassword: action.val };
+      return { ...state, hasUsablePassword: action.val }
     case SET_SOCIAL_ACCOUNT_CONNECTIONS:
     case SET_SOCIAL_ACCOUNT_CONNECTION:
       return {
@@ -87,20 +87,20 @@ export const user = (state = initialState, action) => {
           state.socialAccountConnections,
           action
         )
-      };
+      }
     case SET_USER_LOGGED_IN:
-      return { ...state, loggedIn: action.val };
+      return { ...state, loggedIn: action.val }
     case TOGGLE_DARK_MODE:
-      const newDarkMode = !state.darkMode;
-      setDarkModeClass(newDarkMode);
-      return { ...state, darkMode: newDarkMode };
+      const newDarkMode = !state.darkMode
+      setDarkModeClass(newDarkMode)
+      return { ...state, darkMode: newDarkMode }
     case SET_USER_ID:
-      return { ...state, id: action.id };
+      return { ...state, id: action.id }
     case SET_SCHEDULE_URL:
-      return { ...state, scheduleURL: action.scheduleURL };
+      return { ...state, scheduleURL: action.scheduleURL }
     default:
-      return state;
+      return state
   }
-};
+}
 
-export default user;
+export default user

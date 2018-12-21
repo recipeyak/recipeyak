@@ -1,32 +1,32 @@
-import React from "react";
-import { Helmet } from "./Helmet";
-import { Link } from "react-router-dom";
+import React from "react"
+import { Helmet } from "./Helmet"
+import { Link } from "react-router-dom"
 
-import { FormErrorHandler } from "./Forms";
-import { ButtonPrimary } from "./Buttons";
-import AuthContainer from "./AuthContainer";
+import { FormErrorHandler } from "./Forms"
+import { ButtonPrimary } from "./Buttons"
+import AuthContainer from "./AuthContainer"
 
 class PasswordReset extends React.Component {
   state = {
     email: ""
-  };
+  }
 
   handleInputChange = e => {
-    this.setState({ [e.target.name]: e.target.value });
-  };
+    this.setState({ [e.target.name]: e.target.value })
+  }
 
   async handleReset(e) {
-    e.preventDefault();
-    await this.props.reset(this.state.email);
-    this.setState({ email: "" });
+    e.preventDefault()
+    await this.props.reset(this.state.email)
+    this.setState({ email: "" })
   }
 
   render() {
-    const { nonFieldErrors, email } = this.props.error;
+    const { nonFieldErrors, email } = this.props.error
 
     const redirect = this.props.loggedIn
       ? { name: "Home", route: "/" }
-      : { name: "Login", route: "/login" };
+      : { name: "Login", route: "/login" }
 
     return (
       <AuthContainer>
@@ -60,8 +60,8 @@ class PasswordReset extends React.Component {
           </div>
         </form>
       </AuthContainer>
-    );
+    )
   }
 }
 
-export default PasswordReset;
+export default PasswordReset

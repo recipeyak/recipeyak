@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from "react"
+import { Link } from "react-router-dom"
 
 export const Results = ({ recipes, query }) => {
   if (recipes.length === 0 && query === "") {
@@ -11,15 +11,15 @@ export const Results = ({ recipes, query }) => {
           Add a Recipe
         </Link>
       </section>
-    );
+    )
   } else if (recipes.length === 0 && query !== "") {
     return (
       <p className="grid-entire-row justify-center fs-6 font-family-title break-word">
         No recipes found matching <strong>{query}</strong>
       </p>
-    );
+    )
   }
-  return recipes;
-};
+  return recipes
+}
 
-export default Results;
+export default Results

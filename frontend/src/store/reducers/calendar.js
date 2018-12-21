@@ -1,5 +1,5 @@
-import { uniq, omit } from "lodash";
-import isSameDay from "date-fns/is_same_day";
+import { uniq, omit } from "lodash"
+import isSameDay from "date-fns/is_same_day"
 
 import {
   SET_CALENDAR_RECIPES,
@@ -9,14 +9,14 @@ import {
   SET_CALENDAR_ERROR,
   MOVE_CALENDAR_RECIPE,
   REPLACE_CALENDAR_RECIPE
-} from "../actionTypes";
+} from "../actionTypes"
 
 function setCalendarRecipe(state, { recipe }) {
   const existing = state.allIds
     .filter(x => x !== recipe.id)
     .map(x => state[x])
     .filter(x => isSameDay(x.on, recipe.on))
-    .find(x => x.recipe.id === recipe.recipe.id);
+    .find(x => x.recipe.id === recipe.recipe.id)
 
   if (existing) {
     // we remove the existing and replace with the pending uuid
@@ -27,14 +27,14 @@ function setCalendarRecipe(state, { recipe }) {
         count: existing.count + recipe.count
       },
       allIds: state.allIds.filter(id => id !== existing.id).concat(recipe.id)
-    };
+    }
   }
 
   return {
     ...state,
     [recipe.id]: recipe,
     allIds: uniq(state.allIds.concat(recipe.id))
-  };
+  }
 }
 
 function moveCalendarRecipe(state, action) {
@@ -43,14 +43,14 @@ function moveCalendarRecipe(state, action) {
   // - remove the old recipe
   // else
   // - update the date of the recipe
-  const moving = state[action.id];
+  const moving = state[action.id]
 
   const existing = state.allIds
     .filter(x => x !== action.id)
     .map(x => state[x])
     .filter(x => isSameDay(x.on, action.on))
     .filter(x => x.team === moving.team && x.user === moving.user)
-    .find(x => x.recipe.id === moving.recipe.id);
+    .find(x => x.recipe.id === moving.recipe.id)
 
   if (existing) {
     return {
@@ -60,7 +60,7 @@ function moveCalendarRecipe(state, action) {
         count: existing.count + moving.count
       },
       allIds: state.allIds.filter(id => id !== action.id)
-    };
+    }
   }
 
   return {
@@ -69,14 +69,14 @@ function moveCalendarRecipe(state, action) {
       ...state[action.id],
       on: action.on
     }
-  };
+  }
 }
 
 const initialState = {
   allIds: [],
   loading: false,
   error: false
-};
+}
 
 export const calendar = (state = initialState, action) => {
   switch (action.type) {
@@ -85,26 +85,26 @@ export const calendar = (state = initialState, action) => {
         ...state,
         ...action.recipes.reduce((a, b) => ({ ...a, [b.id]: b }), {}),
         allIds: uniq(state.allIds.concat(action.recipes.map(x => x.id)))
-      };
+      }
     case SET_CALENDAR_RECIPE:
-      return setCalendarRecipe(state, action);
+      return setCalendarRecipe(state, action)
     case DELETE_CALENDAR_RECIPE:
       return {
         ...omit(state, action.id),
         allIds: state.allIds.filter(id => id !== action.id)
-      };
+      }
     case SET_CALENDAR_LOADING:
       return {
         ...state,
         loading: action.loading
-      };
+      }
     case SET_CALENDAR_ERROR:
       return {
         ...state,
         error: action.error
-      };
+      }
     case MOVE_CALENDAR_RECIPE:
-      return moveCalendarRecipe(state, action);
+      return moveCalendarRecipe(state, action)
     case REPLACE_CALENDAR_RECIPE:
       return {
         ...omit(state, action.id),
@@ -112,10 +112,10 @@ export const calendar = (state = initialState, action) => {
         allIds: uniq(
           state.allIds.filter(id => id !== action.id).concat(action.recipe.id)
         )
-      };
+      }
     default:
-      return state;
+      return state
   }
-};
+}
 
-export default calendar;
+export default calendar

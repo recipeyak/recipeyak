@@ -1,6 +1,6 @@
-import { connect } from "react-redux";
+import { connect } from "react-redux"
 
-import { NavLink } from "../components/NavLink.jsx";
+import { NavLink } from "../components/NavLink.jsx"
 
 const mapStateToProps = state => {
   return {
@@ -8,9 +8,9 @@ const mapStateToProps = state => {
       state.routerReducer.location != null
         ? state.routerReducer.location.pathname
         : ""
-  };
-};
+  }
+}
 
-const ConnectedNavLink = connect(mapStateToProps)(NavLink);
+const ConnectedNavLink = connect(mapStateToProps)(NavLink)
 
-export default ConnectedNavLink;
+export default ConnectedNavLink

@@ -1,16 +1,16 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from "react"
+import PropTypes from "prop-types"
 
-import IngredientView from "./IngredientView";
+import IngredientView from "./IngredientView"
 
-const emptyField = ({ quantity, name }) => quantity === "" || name === "";
+const emptyField = ({ quantity, name }) => quantity === "" || name === ""
 
 const allEmptyFields = ({ quantity, name, description }) =>
-  quantity === "" && name === "" && description === "";
+  quantity === "" && name === "" && description === ""
 
 export default class Ingredient extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       quantity: props.quantity,
       name: props.name,
@@ -19,7 +19,7 @@ export default class Ingredient extends React.Component {
 
       editing: false,
       unsavedChanges: false
-    };
+    }
   }
 
   static propTypes = {
@@ -33,7 +33,7 @@ export default class Ingredient extends React.Component {
     updating: PropTypes.bool.isRequired,
     optional: PropTypes.bool.isRequired,
     removing: PropTypes.bool.isRequired
-  };
+  }
 
   static defaultProps = {
     // need default recipeID for when we use this in the Add Recipe page
@@ -44,51 +44,51 @@ export default class Ingredient extends React.Component {
     optional: false,
     updating: false,
     removing: false
-  };
+  }
 
   componentWillMount() {
-    document.addEventListener("mouseup", this.handleGeneralClick);
+    document.addEventListener("mouseup", this.handleGeneralClick)
   }
 
   componentWillUnmount() {
-    document.removeEventListener("mouseup", this.handleGeneralClick);
+    document.removeEventListener("mouseup", this.handleGeneralClick)
   }
 
   // ensures that the list item closes when the user clicks outside of the item
   handleGeneralClick = e => {
-    const clickedInComponent = this.element && this.element.contains(e.target);
-    if (clickedInComponent) return;
+    const clickedInComponent = this.element && this.element.contains(e.target)
+    if (clickedInComponent) return
     this.setState((prevState, props) => {
       const contentChanged =
         prevState.quantity !== props.quantity ||
         prevState.name !== props.name ||
-        prevState.description !== props.description;
+        prevState.description !== props.description
       return {
         editing: false,
         unsavedChanges:
           (prevState.editing && contentChanged) || prevState.unsavedChanges
-      };
-    });
-  };
+      }
+    })
+  }
 
   handleInputChange = e => {
-    this.setState({ [e.target.name]: e.target.value });
-  };
+    this.setState({ [e.target.name]: e.target.value })
+  }
 
   toggleOptional = () => {
-    this.setState(prev => ({ optional: !prev.optional }));
-  };
+    this.setState(prev => ({ optional: !prev.optional }))
+  }
 
   enableEditing = () => {
     this.setState({
       editing: true,
       unsavedChanges: false
-    });
-  };
+    })
+  }
 
   discardChanges = () => {
     this.setState((_, props) => {
-      const { quantity, name, description } = props;
+      const { quantity, name, description } = props
 
       return {
         editing: false,
@@ -96,55 +96,55 @@ export default class Ingredient extends React.Component {
         quantity,
         name,
         description
-      };
-    });
-  };
+      }
+    })
+  }
 
   handleFocus = e => {
-    e.target.select();
-  };
+    e.target.select()
+  }
 
   cancel = e => {
-    e.stopPropagation();
+    e.stopPropagation()
 
     this.setState((_, props) => {
-      const { quantity, name, description } = props;
+      const { quantity, name, description } = props
 
       return {
         editing: false,
         quantity,
         name,
         description
-      };
-    });
-  };
+      }
+    })
+  }
 
   update = async e => {
-    e.preventDefault();
-    if (emptyField(this.state)) return;
+    e.preventDefault()
+    if (emptyField(this.state)) return
 
-    e.stopPropagation();
+    e.stopPropagation()
 
     if (allEmptyFields(this.state)) {
-      return this.remove();
+      return this.remove()
     }
 
-    const { quantity, name, description, optional } = this.state;
+    const { quantity, name, description, optional } = this.state
 
     await this.props.update({
       quantity,
       name,
       description,
       optional
-    });
+    })
 
     this.setState({
       editing: false,
       unsavedChanges: false
-    });
-  };
+    })
+  }
 
-  remove = () => this.props.remove(this.props.recipeID, this.props.id);
+  remove = () => this.props.remove(this.props.recipeID, this.props.id)
 
   render() {
     const {
@@ -154,7 +154,7 @@ export default class Ingredient extends React.Component {
       remove,
       discardChanges,
       update
-    } = this;
+    } = this
 
     const {
       name,
@@ -163,9 +163,9 @@ export default class Ingredient extends React.Component {
       optional,
       editing,
       unsavedChanges
-    } = this.state;
+    } = this.state
 
-    const { updating, removing } = this.props;
+    const { updating, removing } = this.props
 
     const inner = editing ? (
       <form onSubmit={update}>
@@ -223,8 +223,7 @@ export default class Ingredient extends React.Component {
                   "my-button is-small " + (updating ? "is-loading" : "")
                 }
                 type="submit"
-                name="update"
-              >
+                name="update">
                 Update
               </button>
             </p>
@@ -246,8 +245,7 @@ export default class Ingredient extends React.Component {
                   "my-button is-small " + (removing ? "is-loading" : "")
                 }
                 type="button"
-                name="remove"
-              >
+                name="remove">
                 Remove
               </button>
             </p>
@@ -261,14 +259,13 @@ export default class Ingredient extends React.Component {
         description={description}
         optional={this.state.optional}
       />
-    );
+    )
 
     return (
       <li
         ref={element => {
-          this.element = element;
-        }}
-      >
+          this.element = element
+        }}>
         <section className="cursor-pointer" onClick={enableEditing}>
           {inner}
         </section>
@@ -281,14 +278,13 @@ export default class Ingredient extends React.Component {
               </a>
               <a
                 onClick={discardChanges}
-                className="my-button is-small is-link"
-              >
+                className="my-button is-small is-link">
                 Discard
               </a>
             </section>
           </section>
         )}
       </li>
-    );
+    )
   }
 }

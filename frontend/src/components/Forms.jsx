@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 export const FormErrorHandler = ({ error }) =>
   !!error && (
@@ -9,8 +9,8 @@ export const FormErrorHandler = ({ error }) =>
         ))}
       </ul>
     </div>
-  );
+  )
 
 export const TextInput = ({ className = "", ...props }) => {
-  return <input type="text" className={"my-input " + className} {...props} />;
-};
+  return <input type="text" className={"my-input " + className} {...props} />
+}

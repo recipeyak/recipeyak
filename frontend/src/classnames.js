@@ -1,24 +1,24 @@
-import uniq from "lodash/uniq";
+import uniq from "lodash/uniq"
 
 export function classNames(...args) {
-  const classes = [];
+  const classes = []
 
   args.forEach(arg => {
-    if (!arg) return;
+    if (!arg) return
 
-    const argType = typeof arg;
+    const argType = typeof arg
     if (argType === "string" || argType === "number") {
-      classes.push(arg);
+      classes.push(arg)
     } else if (Array.isArray(arg)) {
-      classNames.push(...arg);
+      classNames.push(...arg)
     } else if (argType === "object") {
       for (const key in arg) {
         if (arg.hasOwnProperty(key) && arg[key]) {
-          classes.push(key);
+          classes.push(key)
         }
       }
     }
-  });
+  })
 
-  return uniq(classes).join(" ");
+  return uniq(classes).join(" ")
 }

@@ -1,20 +1,20 @@
-import React from "react";
+import React from "react"
 
 export const ButtonLink = ({ className = "", ...props }) => (
   <ButtonPlain className={className + " is-link"} {...props} />
-);
+)
 
 export const ButtonPrimary = ({ className = "", ...props }) => (
   <ButtonPlain className={className + " is-primary"} {...props} />
-);
+)
 
 export const ButtonDanger = ({ className = "", ...props }) => (
   <ButtonPlain className={className + " is-danger"} {...props} />
-);
+)
 
 export const ButtonSecondary = ({ className = "", ...props }) => (
   <ButtonPlain className={className + " is-secondary"} {...props} />
-);
+)
 
 export const ButtonPlain = ({
   loading = false,
@@ -26,10 +26,9 @@ export const ButtonPlain = ({
   <button
     type={type}
     className={`my-button ${className} ${loading ? "is-loading" : ""}`}
-    {...props}
-  >
+    {...props}>
     {children}
   </button>
-);
+)
 
-export const Button = ButtonPlain;
+export const Button = ButtonPlain

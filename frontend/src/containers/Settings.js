@@ -1,4 +1,4 @@
-import { connect } from "react-redux";
+import { connect } from "react-redux"
 
 import {
   fetchUser,
@@ -7,9 +7,9 @@ import {
   disconnectSocialAccount,
   loggingOut,
   deleteUserAccount
-} from "../store/actions.js";
+} from "../store/actions.js"
 
-import Settings from "../components/Settings.jsx";
+import Settings from "../components/Settings.jsx"
 
 const mapStateToProps = state => {
   return {
@@ -19,28 +19,28 @@ const mapStateToProps = state => {
     hasPassword: state.user.hasUsablePassword,
     socialAccountConnections: state.user.socialAccountConnections,
     loading: state.user.loading
-  };
-};
+  }
+}
 
 const mapDispatchToProps = dispatch => {
   return {
     logout: () => {
-      dispatch(loggingOut());
+      dispatch(loggingOut())
     },
     fetchData: () => {
-      dispatch(fetchUser());
-      dispatch(fetchSocialConnections());
+      dispatch(fetchUser())
+      dispatch(fetchSocialConnections())
     },
     disconnectAccount: (provider, id) =>
       dispatch(disconnectSocialAccount(provider, id)),
     deleteUserAccount: () => dispatch(deleteUserAccount()),
     updateEmail: email => dispatch(updatingEmail(email))
-  };
-};
+  }
+}
 
 const ConnectedSettings = connect(
   mapStateToProps,
   mapDispatchToProps
-)(Settings);
+)(Settings)
 
-export default ConnectedSettings;
+export default ConnectedSettings

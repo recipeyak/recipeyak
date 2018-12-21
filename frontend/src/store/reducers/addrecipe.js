@@ -12,7 +12,7 @@ import {
   REMOVE_ADD_RECIPE_FORM_STEP,
   UPDATE_ADD_RECIPE_FORM_STEP,
   CLEAR_ADD_RECIPE_FORM
-} from "../actionTypes";
+} from "../actionTypes"
 
 export const initialState = {
   name: "",
@@ -22,67 +22,67 @@ export const initialState = {
   servings: "",
   ingredients: [],
   steps: []
-};
+}
 
 const addrecipe = (state = initialState, action) => {
   switch (action.type) {
     case SET_ADD_RECIPE_FORM_NAME:
-      return { ...state, name: action.val };
+      return { ...state, name: action.val }
     case SET_ADD_RECIPE_FORM_AUTHOR:
-      return { ...state, author: action.val };
+      return { ...state, author: action.val }
     case SET_ADD_RECIPE_FORM_SOURCE:
-      return { ...state, source: action.val };
+      return { ...state, source: action.val }
     case SET_ADD_RECIPE_FORM_TIME:
-      return { ...state, time: action.val };
+      return { ...state, time: action.val }
     case SET_ADD_RECIPE_FORM_SERVINGS:
-      return { ...state, servings: action.val };
+      return { ...state, servings: action.val }
     case SET_ADD_RECIPE_FORM_TEAM:
-      return { ...state, team: action.val };
+      return { ...state, team: action.val }
     case ADD_ADD_RECIPE_FORM_INGREDIENT:
       return {
         ...state,
         ingredients: [...state.ingredients, action.ingredient]
-      };
+      }
     case REMOVE_ADD_RECIPE_FORM_INGREDIENT:
       return {
         ...state,
         ingredients: state.ingredients.filter((_, i) => i !== action.index)
-      };
+      }
     case UPDATE_ADD_RECIPE_FORM_INGREDIENT:
       return {
         ...state,
         ingredients: state.ingredients.map((x, i) => {
           if (i === action.index) {
-            return action.ingredient;
+            return action.ingredient
           }
-          return x;
+          return x
         })
-      };
+      }
     case ADD_ADD_RECIPE_FORM_STEP:
       return {
         ...state,
         steps: [...state.steps, action.step]
-      };
+      }
     case REMOVE_ADD_RECIPE_FORM_STEP:
       return {
         ...state,
         steps: state.steps.filter((_, i) => i !== action.index)
-      };
+      }
     case UPDATE_ADD_RECIPE_FORM_STEP:
       return {
         ...state,
         steps: state.steps.map((x, i) => {
           if (i === action.index) {
-            return action.step;
+            return action.step
           }
-          return x;
+          return x
         })
-      };
+      }
     case CLEAR_ADD_RECIPE_FORM:
-      return initialState;
+      return initialState
     default:
-      return state;
+      return state
   }
-};
+}
 
-export default addrecipe;
+export default addrecipe

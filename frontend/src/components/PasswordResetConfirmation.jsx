@@ -1,28 +1,28 @@
-import React from "react";
-import { connect } from "react-redux";
-import { Helmet } from "./Helmet";
-import { Link } from "react-router-dom";
+import React from "react"
+import { connect } from "react-redux"
+import { Helmet } from "./Helmet"
+import { Link } from "react-router-dom"
 
-import { FormErrorHandler } from "./Forms";
-import { ButtonPrimary } from "./Buttons";
+import { FormErrorHandler } from "./Forms"
+import { ButtonPrimary } from "./Buttons"
 
-import { resetConfirmation as reset } from "../store/actions";
+import { resetConfirmation as reset } from "../store/actions"
 
 const mapStateToProps = (state, props) => {
-  const uid = props.match.params.uid;
-  const token = props.match.params.token;
+  const uid = props.match.params.uid
+  const token = props.match.params.token
   return {
     uid,
     token,
     loading: state.loading.resetConfirmation,
     error: state.error.resetConfirmation
-  };
-};
+  }
+}
 
 const mapDispatchToProps = dispatch => ({
   reset: (uid, token, newPassword1, newPassword2) =>
     dispatch(reset(uid, token, newPassword1, newPassword2))
-});
+})
 
 @connect(
   mapStateToProps,
@@ -32,28 +32,28 @@ export default class PasswordResetConfirmation extends React.Component {
   state = {
     newPassword1: "",
     newPassword2: ""
-  };
+  }
 
   handleInputChange = e => {
-    this.setState({ [e.target.name]: e.target.value });
-  };
+    this.setState({ [e.target.name]: e.target.value })
+  }
 
   handleReset = async e => {
-    e.preventDefault();
+    e.preventDefault()
     await this.props.reset(
       this.props.uid,
       this.props.token,
       this.state.newPassword1,
       this.state.newPassword2
-    );
+    )
     this.setState({
       newPassword1: "",
       newPassword2: ""
-    });
-  };
+    })
+  }
 
   render() {
-    const { nonFieldErrors, newPassword1, newPassword2 } = this.props.error;
+    const { nonFieldErrors, newPassword1, newPassword2 } = this.props.error
 
     return (
       <section className="section">
@@ -115,6 +115,6 @@ export default class PasswordResetConfirmation extends React.Component {
           </div>
         </div>
       </section>
-    );
+    )
   }
 }

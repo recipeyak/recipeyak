@@ -1,25 +1,25 @@
-import React from "react";
-import addMonths from "date-fns/add_months";
-import isPast from "date-fns/is_past";
-import endOfDay from "date-fns/end_of_day";
+import React from "react"
+import addMonths from "date-fns/add_months"
+import isPast from "date-fns/is_past"
+import endOfDay from "date-fns/end_of_day"
 
-import { classNames } from "../../classnames";
-import Month from "./Month";
+import { classNames } from "../../classnames"
+import Month from "./Month"
 
-import "./date-range-picker.scss";
+import "./date-range-picker.scss"
 
 class DateRangePicker extends React.Component {
   handleClick = date => {
-    if (isPast(endOfDay(date))) return;
+    if (isPast(endOfDay(date))) return
 
     if (this.props.selectingStart) {
-      this.props.setStartDay(date);
+      this.props.setStartDay(date)
     }
 
     if (this.props.selectingEnd) {
-      this.props.setEndDay(date);
+      this.props.setEndDay(date)
     }
-  };
+  }
 
   render() {
     return (
@@ -34,8 +34,7 @@ class DateRangePicker extends React.Component {
           "z-index-100",
           "grid-2-months",
           this.props.visible ? "d-grid" : "d-none"
-        )}
-      >
+        )}>
         <Month
           showLeft={true}
           date={this.props.month}
@@ -55,8 +54,8 @@ class DateRangePicker extends React.Component {
           prevMonth={this.props.prevMonth}
         />
       </div>
-    );
+    )
   }
 }
 
-export default DateRangePicker;
+export default DateRangePicker

@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 const notification = ({
   message,
@@ -11,8 +11,7 @@ const notification = ({
     return (
       <section className="note-container container">
         <div
-          className={"note d-flex justify-space-between align-center " + level}
-        >
+          className={"note d-flex justify-space-between align-center " + level}>
           <p className="mb-0 fs-5">{message}</p>
           {closeable && close && (
             <a className="close" onClick={close}>
@@ -21,9 +20,9 @@ const notification = ({
           )}
         </div>
       </section>
-    );
+    )
   }
-  return null;
-};
+  return null
+}
 
-export default notification;
+export default notification

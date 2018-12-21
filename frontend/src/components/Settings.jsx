@@ -1,14 +1,14 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Helmet } from "./Helmet";
-import { Link } from "react-router-dom";
+import React from "react"
+import PropTypes from "prop-types"
+import { Helmet } from "./Helmet"
+import { Link } from "react-router-dom"
 
-import Loader from "./Loader";
-import { ButtonPrimary, Button, ButtonDanger } from "./Buttons";
+import Loader from "./Loader"
+import { ButtonPrimary, Button, ButtonDanger } from "./Buttons"
 
-import { GithubImg, GitlabImg } from "./SocialButtons";
+import { GithubImg, GitlabImg } from "./SocialButtons"
 
-import { GITHUB_OAUTH_URL, GITLAB_OAUTH_URL } from "../settings";
+import { GITHUB_OAUTH_URL, GITLAB_OAUTH_URL } from "../settings"
 
 const OAuthButton = ({
   name,
@@ -32,8 +32,7 @@ const OAuthButton = ({
             <ButtonDanger
               onClick={disconnect}
               loading={disconnecting}
-              className="ml-2"
-            >
+              className="ml-2">
               Disconnect
             </ButtonDanger>
           </div>
@@ -51,7 +50,7 @@ const OAuthButton = ({
       </p>
     )}
   </div>
-);
+)
 
 export default class SettingsWithState extends React.Component {
   static propTypes = {
@@ -65,7 +64,7 @@ export default class SettingsWithState extends React.Component {
     socialAccountConnections: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     hasPassword: PropTypes.bool.isRequired
-  };
+  }
 
   static defaultProps = {
     email: "",
@@ -73,7 +72,7 @@ export default class SettingsWithState extends React.Component {
     updatingEmail: false,
     socialAccountConnections: {},
     hasPassword: false
-  };
+  }
 
   state = {
     email: this.props.email,
@@ -83,31 +82,31 @@ export default class SettingsWithState extends React.Component {
     errorGitlab: false,
     errorGeneral: "",
     editing: false
-  };
+  }
 
   componentWillReceiveProps = nextProps => {
-    this.setState({ email: nextProps.email });
-  };
+    this.setState({ email: nextProps.email })
+  }
 
   componentWillMount = () => {
-    this.props.fetchData();
-  };
+    this.props.fetchData()
+  }
 
   handleInputChange = e => {
-    this.setState({ [e.target.name]: e.target.value });
-  };
+    this.setState({ [e.target.name]: e.target.value })
+  }
 
   disconnectAccount = (provider, id) => {
     if (provider === "github") {
-      this.setState({ loadingGithub: true, errorGithub: "" });
+      this.setState({ loadingGithub: true, errorGithub: "" })
     } else if (provider === "gitlab") {
-      this.setState({ loadingGitlab: true, errorGitlab: "" });
+      this.setState({ loadingGitlab: true, errorGitlab: "" })
     }
-    this.setState({ errorGeneral: "" });
+    this.setState({ errorGeneral: "" })
     this.props
       .disconnectAccount(provider, id)
       .then(() => {
-        this.setState({ loadingGithub: false, loadingGitlab: false });
+        this.setState({ loadingGithub: false, loadingGitlab: false })
       })
       .catch(error => {
         if (
@@ -117,29 +116,29 @@ export default class SettingsWithState extends React.Component {
           error.response.data.detail
         ) {
           if (provider === "github") {
-            this.setState({ errorGithub: error.response.data.detail });
+            this.setState({ errorGithub: error.response.data.detail })
           } else if (provider === "gitlab") {
-            this.setState({ errorGitlab: error.response.data.detail });
+            this.setState({ errorGitlab: error.response.data.detail })
           }
         } else {
-          this.setState({ errorGeneral: "Problem with action" });
+          this.setState({ errorGeneral: "Problem with action" })
         }
-        this.setState({ loadingGithub: false, loadingGitlab: false });
-      });
-  };
+        this.setState({ loadingGithub: false, loadingGitlab: false })
+      })
+  }
 
-  cancelEdit = () => this.setState({ editing: false });
+  cancelEdit = () => this.setState({ editing: false })
 
-  edit = () => this.setState({ editing: true });
+  edit = () => this.setState({ editing: true })
 
   deleteAccountPrompt = () => {
     const response = prompt(
       "Are you sure you want to permanently delete your account? \nPlease type, 'delete my account', to irrevocably delete your account"
-    );
+    )
     if (response.toLowerCase() === "delete my account") {
-      this.props.deleteUserAccount();
+      this.props.deleteUserAccount()
     }
-  };
+  }
 
   render() {
     const {
@@ -149,8 +148,8 @@ export default class SettingsWithState extends React.Component {
       loadingGitlab,
       errorGithub,
       errorGitlab
-    } = this.state;
-    const { handleInputChange, disconnectAccount } = this;
+    } = this.state
+    const { handleInputChange, disconnectAccount } = this
 
     const {
       updateEmail,
@@ -159,16 +158,16 @@ export default class SettingsWithState extends React.Component {
       socialAccountConnections,
       loading,
       hasPassword
-    } = this.props;
+    } = this.props
 
-    const emailUnchanged = email === this.props.email;
+    const emailUnchanged = email === this.props.email
 
     if (loading) {
       return (
         <section className="d-flex justify-content-center">
           <Loader />
         </section>
-      );
+      )
     }
 
     const Github = () => (
@@ -183,7 +182,7 @@ export default class SettingsWithState extends React.Component {
         }
         disconnecting={loadingGithub}
       />
-    );
+    )
 
     const Gitlab = () => (
       <OAuthButton
@@ -197,7 +196,7 @@ export default class SettingsWithState extends React.Component {
         }
         disconnecting={loadingGitlab}
       />
-    );
+    )
 
     return (
       <section>
@@ -208,8 +207,7 @@ export default class SettingsWithState extends React.Component {
         <div className="d-flex">
           <a
             href="https://secure.gravatar.com"
-            className="justify-self-center mr-3"
-          >
+            className="justify-self-center mr-3">
             <img
               width="128px"
               height="128px"
@@ -222,19 +220,18 @@ export default class SettingsWithState extends React.Component {
             <form
               className="d-flex align-center"
               onSubmit={e => {
-                e.preventDefault();
+                e.preventDefault()
                 if (emailUnchanged) {
-                  return;
+                  return
                 }
-                updateEmail();
-              }}
-            >
+                updateEmail()
+              }}>
               <label className="better-label">Email</label>
               {editing ? (
                 <input
                   onKeyDown={e => {
                     if (e.key === "Escape") {
-                      this.cancelEdit();
+                      this.cancelEdit()
                     }
                   }}
                   autoFocus
@@ -255,8 +252,7 @@ export default class SettingsWithState extends React.Component {
                     type="submit"
                     loading={updatingEmail}
                     disabled={emailUnchanged}
-                    value="save email"
-                  >
+                    value="save email">
                     Save
                   </ButtonPrimary>
                   <Button
@@ -264,8 +260,7 @@ export default class SettingsWithState extends React.Component {
                     loading={updatingEmail}
                     name="email"
                     onClick={this.cancelEdit}
-                    value="save email"
-                  >
+                    value="save email">
                     Cancel
                   </Button>
                 </div>
@@ -277,8 +272,7 @@ export default class SettingsWithState extends React.Component {
                   }
                   name="email"
                   onClick={this.edit}
-                  value="edit"
-                >
+                  value="edit">
                   Edit
                 </a>
               )}
@@ -317,6 +311,6 @@ export default class SettingsWithState extends React.Component {
           <a href="/recipes.json">recipes.json</a>
         </p>
       </section>
-    );
+    )
   }
 }

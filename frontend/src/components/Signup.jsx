@@ -1,39 +1,39 @@
-import React from "react";
-import { Helmet } from "./Helmet";
-import { Link } from "react-router-dom";
+import React from "react"
+import { Helmet } from "./Helmet"
+import { Link } from "react-router-dom"
 
-import SocialButtons from "./SocialButtons";
-import { FormErrorHandler } from "./Forms";
-import { ButtonPrimary } from "./Buttons";
-import AuthContainer from "./AuthContainer";
+import SocialButtons from "./SocialButtons"
+import { FormErrorHandler } from "./Forms"
+import { ButtonPrimary } from "./Buttons"
+import AuthContainer from "./AuthContainer"
 
 class Signup extends React.Component {
   state = {
     email: "",
     password1: "",
     password2: ""
-  };
+  }
 
   componentWillMount = () => {
-    this.props.clearErrors();
-  };
+    this.props.clearErrors()
+  }
 
   handleInputChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
+    this.setState({ [e.target.name]: e.target.value })
   }
 
   handleSignup(e) {
-    e.preventDefault();
+    e.preventDefault()
     this.props.signup(
       this.state.email,
       this.state.password1,
       this.state.password2
-    );
+    )
   }
 
   render() {
-    const { loading } = this.props;
-    const { password1, password2, nonFieldErrors, email } = this.props.error;
+    const { loading } = this.props
+    const { password1, password2, nonFieldErrors, email } = this.props.error
 
     return (
       <AuthContainer>
@@ -107,8 +107,8 @@ class Signup extends React.Component {
           <SocialButtons />
         </div>
       </AuthContainer>
-    );
+    )
   }
 }
 
-export default Signup;
+export default Signup

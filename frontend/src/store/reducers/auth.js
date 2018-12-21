@@ -1,4 +1,4 @@
-import { SET_FROM_URL } from "../actionTypes";
+import { SET_FROM_URL } from "../actionTypes"
 
 const auth = (
   state = {
@@ -8,10 +8,10 @@ const auth = (
 ) => {
   switch (action.type) {
     case SET_FROM_URL:
-      return { ...state, fromUrl: action.val };
+      return { ...state, fromUrl: action.val }
     default:
-      return state;
+      return state
   }
-};
+}
 
-export default auth;
+export default auth

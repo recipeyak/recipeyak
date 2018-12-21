@@ -1,20 +1,20 @@
-import React from "react";
+import React from "react"
 
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import { ButtonLink, ButtonSecondary, ButtonPrimary } from "./Buttons";
+import { connect } from "react-redux"
+import { Link } from "react-router-dom"
+import { ButtonLink, ButtonSecondary, ButtonPrimary } from "./Buttons"
 
 import {
   fetchTeams,
   moveRecipeTo,
   copyRecipeTo,
   showNotificationWithTimeout
-} from "../store/actions";
+} from "../store/actions"
 
 const mapStateToProps = state => ({
   teams: state.teams,
   userId: state.user.id
-});
+})
 
 const mapDispatchToProps = dispatch => ({
   fetchData: () => dispatch(fetchTeams()),
@@ -24,7 +24,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(moveRecipeTo(recipeId, ownerId, type)),
   copyRecipeTo: (recipeId, ownerId, type) =>
     dispatch(copyRecipeTo(recipeId, ownerId, type))
-});
+})
 
 // TODO: Create a generalized component with the click event listeners
 // we seems to use this functionality a lot
@@ -37,44 +37,44 @@ export default class Owner extends React.Component {
   state = {
     show: false,
     values: []
-  };
+  }
 
   componentWillMount() {
-    document.addEventListener("click", this.handleGeneralClick);
-    this.props.fetchData();
+    document.addEventListener("click", this.handleGeneralClick)
+    this.props.fetchData()
   }
 
   componentWillUnmount() {
-    document.removeEventListener("click", this.handleGeneralClick);
+    document.removeEventListener("click", this.handleGeneralClick)
   }
 
   handleGeneralClick = e => {
-    const clickedDropdown = this.dropdown && this.dropdown.contains(e.target);
-    if (clickedDropdown) return;
+    const clickedDropdown = this.dropdown && this.dropdown.contains(e.target)
+    if (clickedDropdown) return
     // clear values when closing dropdown
-    this.setState({ show: false, values: [] });
-  };
+    this.setState({ show: false, values: [] })
+  }
 
   handleChange = e => {
     // convert HTMLCollection to list of option values
-    const selectedOptions = [...e.target.selectedOptions].map(e => e.value);
-    this.setState({ values: selectedOptions });
-  };
+    const selectedOptions = [...e.target.selectedOptions].map(e => e.value)
+    this.setState({ values: selectedOptions })
+  }
 
   toggle = () => {
     this.setState(prev => {
       if (prev.show) {
         // clear values when closing dropdown
-        return { show: !prev.show, values: [] };
+        return { show: !prev.show, values: [] }
       }
-      return { show: !prev.show };
-    });
-  };
+      return { show: !prev.show }
+    })
+  }
 
   copy() {
-    const [id, type] = this.state.values[0].split("-");
+    const [id, type] = this.state.values[0].split("-")
     if (id == null || type == null) {
-      throw new TypeError("need id/type to move to");
+      throw new TypeError("need id/type to move to")
     }
     this.props
       .copyRecipeTo(this.props.recipeId, id, type)
@@ -84,14 +84,14 @@ export default class Owner extends React.Component {
           message: `Problem copying recipe: ${err}`,
           level: "danger",
           sticky: true
-        });
-      });
+        })
+      })
   }
 
   move() {
-    const [id, type] = this.state.values[0].split("-");
+    const [id, type] = this.state.values[0].split("-")
     if (id == null || type == null) {
-      throw new TypeError("need id/type to copy to");
+      throw new TypeError("need id/type to copy to")
     }
     this.props
       .moveRecipeTo(this.props.recipeId, id, type)
@@ -101,33 +101,32 @@ export default class Owner extends React.Component {
           message: `Problem moving recipe: ${err}`,
           level: "danger",
           sticky: true
-        });
-      });
+        })
+      })
   }
 
   disableMove() {
-    return this.state.values.length !== 1;
+    return this.state.values.length !== 1
   }
 
   disableCopy() {
-    return this.state.values.length !== 1;
+    return this.state.values.length !== 1
   }
 
   render() {
-    const { type, url, name, teams, userId } = this.props;
-    const { moving, copying } = teams;
+    const { type, url, name, teams, userId } = this.props
+    const { moving, copying } = teams
     const teamUserKeys = [
       ...teams.allIds.map(id => ({ id: id + "-team", name: teams[id].name })),
       { id: userId + "-user", name: "personal" }
-    ];
+    ]
 
     return (
       <span
         className="fw-500 p-rel"
         ref={dropdown => {
-          this.dropdown = dropdown;
-        }}
-      >
+          this.dropdown = dropdown
+        }}>
         <b className="cursor-pointer" onClick={this.toggle}>
           via
         </b>{" "}
@@ -142,8 +141,7 @@ export default class Owner extends React.Component {
                   multiple={true}
                   className="my-select"
                   value={this.state.values}
-                  onChange={this.handleChange}
-                >
+                  onChange={this.handleChange}>
                   {teamUserKeys.map(({ id, name }) => (
                     <option className="fs-3 fw-500" key={id} value={id}>
                       {name}
@@ -160,15 +158,13 @@ export default class Owner extends React.Component {
                   <ButtonSecondary
                     className={"is-small mr-1" + (moving ? " is-loading" : "")}
                     onClick={() => this.move()}
-                    disabled={this.disableMove()}
-                  >
+                    disabled={this.disableMove()}>
                     move
                   </ButtonSecondary>
                   <ButtonPrimary
                     className={"is-small" + (copying ? " is-loading" : "")}
                     onClick={() => this.copy()}
-                    disabled={this.disableCopy()}
-                  >
+                    disabled={this.disableCopy()}>
                     copy
                   </ButtonPrimary>
                 </div>
@@ -177,6 +173,6 @@ export default class Owner extends React.Component {
           </div>
         </div>
       </span>
-    );
+    )
   }
 }
