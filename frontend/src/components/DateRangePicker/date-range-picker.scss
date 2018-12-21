@@ -1,7 +1,7 @@
-@import '../scss/variables.scss';
+@import "../scss/variables.scss";
 
 .grid-week {
-  grid-template-columns: repeat(7,1fr);
+  grid-template-columns: repeat(7, 1fr);
 }
 
 .grid-2-months {
@@ -19,7 +19,6 @@
   background-color: $primary-color-shadow;
 }
 
-
 .cal-day:not(.cal-in-past) {
   transition: background-color 0.02s;
   &:hover {
@@ -27,11 +26,10 @@
   }
 }
 
-
 // hide native chrome pickers
 input[type="date"]::-webkit-clear-button,
 input[type="date"]::-webkit-inner-spin-button,
 input[type="date"]::-webkit-calendar-picker-indicator,
 input[type="date"]::-webkit-input-placeholder {
-    display: none !important;
+  display: none !important;
 }

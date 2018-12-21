@@ -1,8 +1,8 @@
-import { connect } from 'react-redux'
+import { connect } from "react-redux"
 
-import Home from '../components/Home'
+import Home from "../components/Home"
 
-import { fetchUser } from '../store/actions'
+import { fetchUser } from "../store/actions"
 
 const mapStateToProps = state => ({
   loggedIn: state.user.loggedIn

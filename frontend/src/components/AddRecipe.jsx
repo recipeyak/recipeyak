@@ -1,24 +1,24 @@
-import React from 'react'
-import { Helmet } from './Helmet'
+import React from "react"
+import { Helmet } from "./Helmet"
 
-import ListItem from './ListItem'
-import AddIngredientForm from './AddIngredientForm'
-import AddStepForm from './AddStepForm'
-import Ingredient from './Ingredient'
-import { ButtonPrimary } from './Buttons'
+import ListItem from "./ListItem"
+import AddIngredientForm from "./AddIngredientForm"
+import AddStepForm from "./AddStepForm"
+import Ingredient from "./Ingredient"
+import { ButtonPrimary } from "./Buttons"
 
-const unfinishedIngredient = ({ quantity = '', name = '' }) =>
-  quantity === '' || name === ''
+const unfinishedIngredient = ({ quantity = "", name = "" }) =>
+  quantity === "" || name === ""
 
 export default class AddRecipe extends React.Component {
   state = {
     ingredient: {
-      quantity: '',
-      name: '',
-      description: '',
-      optional: false,
+      quantity: "",
+      name: "",
+      description: "",
+      optional: false
     },
-    step: '',
+    step: ""
   }
 
   static defaultProps = {
@@ -28,16 +28,16 @@ export default class AddRecipe extends React.Component {
       errorWithSteps: false
     },
     loading: false,
-    name: '',
-    author: '',
-    source: '',
-    time: '',
-    servings: '',
+    name: "",
+    author: "",
+    source: "",
+    time: "",
+    servings: "",
     ingredients: [],
     steps: [],
     loadingTeams: true,
     teams: [],
-    team: 'personal',
+    team: "personal"
   }
 
   componentWillMount = () => {
@@ -45,8 +45,7 @@ export default class AddRecipe extends React.Component {
     this.props.fetchData()
   }
 
-  handleInputChange = e =>
-    this.setState({ [e.target.name]: e.target.value })
+  handleInputChange = e => this.setState({ [e.target.name]: e.target.value })
 
   handleSubmit = event => {
     event.preventDefault()
@@ -58,9 +57,7 @@ export default class AddRecipe extends React.Component {
       servings: this.props.servings,
       ingredients: this.props.ingredients,
       steps: this.props.steps,
-      team: this.props.team !== 'personal'
-              ? this.props.team
-              : undefined
+      team: this.props.team !== "personal" ? this.props.team : undefined
     }
     this.props.addRecipe(recipe)
   }
@@ -73,7 +70,7 @@ export default class AddRecipe extends React.Component {
 
   handleIngredientChange = e => {
     e.persist()
-    if (e.target.type === 'checkbox') {
+    if (e.target.type === "checkbox") {
       this.setState(prev => ({
         ingredient: {
           ...prev.ingredient,
@@ -90,22 +87,17 @@ export default class AddRecipe extends React.Component {
     }))
   }
 
-  cancelAddIngredient = () =>
-    this.setState({ ingredient: {} })
+  cancelAddIngredient = () => this.setState({ ingredient: {} })
 
   addStep = () => {
     this.props.addStep({ text: this.state.step })
-    this.setState({ step: '' })
+    this.setState({ step: "" })
   }
 
-  cancelAddStep = () =>
-    this.setState({ step: '' })
+  cancelAddStep = () => this.setState({ step: "" })
 
-  render () {
-    const {
-      ingredient,
-      step,
-    } = this.state
+  render() {
+    const { ingredient, step } = this.state
 
     const {
       addStep,
@@ -124,162 +116,174 @@ export default class AddRecipe extends React.Component {
     } = this.props.error
 
     const {
-      quantity = '',
-      name = '',
-      description = '',
-      optional = false,
+      quantity = "",
+      name = "",
+      description = "",
+      optional = false
     } = ingredient
 
     return (
       <div className="d-grid grid-gap-1rem">
-        <Helmet title='Add Recipe'/>
+        <Helmet title="Add Recipe" />
         <div>
           <input
             autoFocus
-            onChange={ this.props.setName }
-            value={ this.props.name }
-            className={ 'my-input fs-2rem' + (errorWithName ? ' is-danger' : '') }
-            type="text" placeholder="new recipe title" name="name"/>
-          { errorWithName
-              ? <p className="fs-4 c-danger">A recipe needs a name</p>
-              : null
-          }
+            onChange={this.props.setName}
+            value={this.props.name}
+            className={"my-input fs-2rem" + (errorWithName ? " is-danger" : "")}
+            type="text"
+            placeholder="new recipe title"
+            name="name"
+          />
+          {errorWithName ? (
+            <p className="fs-4 c-danger">A recipe needs a name</p>
+          ) : null}
         </div>
 
         <div className="d-grid  meta-data-grid">
-          <label className="d-flex align-center">By
+          <label className="d-flex align-center">
+            By
             <input
-              onChange={ this.props.setAuthor }
-              value={ this.props.author }
+              onChange={this.props.setAuthor}
+              value={this.props.author}
               className="my-input ml-2"
               type="text"
               placeholder="Author"
-              name="author"/>
+              name="author"
+            />
           </label>
-          <label className="d-flex align-center">from
+          <label className="d-flex align-center">
+            from
             <input
-              onChange={ this.props.setSource }
-              value={ this.props.source }
+              onChange={this.props.setSource}
+              value={this.props.source}
               className="my-input ml-2"
               type="text"
               placeholder="http://example.com/dumpling-soup"
-              name="source"/>
+              name="source"
+            />
           </label>
-          <label className="d-flex align-center">creating
+          <label className="d-flex align-center">
+            creating
             <input
-              onChange={ this.props.setServings }
-              value={ this.props.servings }
+              onChange={this.props.setServings}
+              value={this.props.servings}
               className="my-input ml-2"
               type="text"
               placeholder="4 to 6 servings"
-              name="servings"/>
+              name="servings"
+            />
           </label>
-          <label className="d-flex align-center">in
+          <label className="d-flex align-center">
+            in
             <input
-              onChange={ this.props.setTime }
-              value={ this.props.time }
+              onChange={this.props.setTime}
+              value={this.props.time}
               className="my-input ml-2"
               type="text"
               placeholder="1 hour"
-              name="time"/>
+              name="time"
+            />
           </label>
         </div>
 
-          <section className="ingredients-preparation-grid">
-            <div>
-              <h2 className="title is-3 mb-1 font-family-title bold">Ingredients</h2>
-              <ul>
-                {
-                  this.props.ingredients.map((x, i) =>
-                    <Ingredient
-                      key={ x.name + i }
-                      index={ i }
-                      id={ i }
-                      update={ (ingredient) => this.props.updateIngredient(i, ingredient) }
-                      remove={ () => this.props.removeIngredient(i) }
-                      quantity={ x.quantity }
-                      optional={ x.optional }
-                      name={ x.name }
-                      description={ x.description }
-                    />
-                  )
-                }
-              </ul>
-
-              <AddIngredientForm
-                handleAddIngredient={ addIngredient }
-                cancelAddIngredient={ cancelAddIngredient }
-                handleInputChange={ handleIngredientChange }
-                quantity={ quantity }
-                name={ name }
-                description={ description }
-                optional={ optional }
-                error={ errorWithIngredients }
-              />
-            </div>
-
-              <div>
-                <h2 className="title is-3 mb-1 font-family-title bold">Preparation</h2>
-                <ul>
-                  {
-                    this.props.steps.map((step, i) =>
-                      <div key={step.text + i}>
-                        <label className="better-label">Step { i + 1}</label>
-                        <ListItem
-                          id={i}
-                          text={step.text}
-                          update={ this.props.updateStep }
-                          delete={ this.props.removeStep }
-                        />
-                      </div>
-                    )
+        <section className="ingredients-preparation-grid">
+          <div>
+            <h2 className="title is-3 mb-1 font-family-title bold">
+              Ingredients
+            </h2>
+            <ul>
+              {this.props.ingredients.map((x, i) => (
+                <Ingredient
+                  key={x.name + i}
+                  index={i}
+                  id={i}
+                  update={ingredient =>
+                    this.props.updateIngredient(i, ingredient)
                   }
-                </ul>
-                <AddStepForm
-                  handleInputChange={ handleInputChange }
-                  addStep={ addStep }
-                  cancelAddStep={ cancelAddStep }
-                  stepNumber={ this.props.steps.length + 1 }
-                  text={ step }
-                  error={ errorWithSteps }
+                  remove={() => this.props.removeIngredient(i)}
+                  quantity={x.quantity}
+                  optional={x.optional}
+                  name={x.name}
+                  description={x.description}
                 />
-            </div>
-          </section>
+              ))}
+            </ul>
+
+            <AddIngredientForm
+              handleAddIngredient={addIngredient}
+              cancelAddIngredient={cancelAddIngredient}
+              handleInputChange={handleIngredientChange}
+              quantity={quantity}
+              name={name}
+              description={description}
+              optional={optional}
+              error={errorWithIngredients}
+            />
+          </div>
+
+          <div>
+            <h2 className="title is-3 mb-1 font-family-title bold">
+              Preparation
+            </h2>
+            <ul>
+              {this.props.steps.map((step, i) => (
+                <div key={step.text + i}>
+                  <label className="better-label">Step {i + 1}</label>
+                  <ListItem
+                    id={i}
+                    text={step.text}
+                    update={this.props.updateStep}
+                    delete={this.props.removeStep}
+                  />
+                </div>
+              ))}
+            </ul>
+            <AddStepForm
+              handleInputChange={handleInputChange}
+              addStep={addStep}
+              cancelAddStep={cancelAddStep}
+              stepNumber={this.props.steps.length + 1}
+              text={step}
+              error={errorWithSteps}
+            />
+          </div>
+        </section>
         <div className="d-flex justify-space-between align-items-center">
           <button
-            className='my-button'
-            onClick={ this.props.clearForm }
+            className="my-button"
+            onClick={this.props.clearForm}
             name="create recipe">
             Clear
           </button>
 
           <div className="d-flex justify-space-between">
+            <label className="d-flex align-center">
+              for
+              <div className="select ml-2 is-small">
+                <select
+                  disabled={this.props.loadingTeams}
+                  value={this.props.team}
+                  onChange={this.props.setTeam}>
+                  <option value="personal">Personal</option>
+                  {this.props.teams.map(({ id, name }) => (
+                    <option key={id} value={id}>
+                      Team: {name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </label>
 
-          <label className="d-flex align-center">for
-            <div className="select ml-2 is-small">
-            <select disabled={this.props.loadingTeams}
-                    value={ this.props.team }
-                    onChange={ this.props.setTeam }>
-              <option value="personal">Personal</option>
-              { this.props.teams.map(({ id, name }) =>
-                  <option key={id} value={id}>
-                    Team: { name }
-                  </option>
-                )
-              }
-            </select>
+            <ButtonPrimary
+              className="ml-2"
+              type="submit"
+              onClick={handleSubmit}
+              name="create recipe"
+              loading={this.props.loading}>
+              Create Recipe
+            </ButtonPrimary>
           </div>
-          </label>
-
-          <ButtonPrimary
-            className="ml-2"
-            type="submit"
-            onClick={ handleSubmit }
-            name="create recipe"
-            loading={ this.props.loading }>
-            Create Recipe
-          </ButtonPrimary>
-        </div>
         </div>
       </div>
     )

@@ -1,11 +1,8 @@
-import { connect } from 'react-redux'
+import { connect } from "react-redux"
 
-import {
-  updatingPassword,
-  setErrorPasswordUpdate
-} from '../store/actions'
+import { updatingPassword, setErrorPasswordUpdate } from "../store/actions"
 
-import PasswordChange from '../components/PasswordChange'
+import PasswordChange from "../components/PasswordChange"
 
 const mapDispatchToProps = dispatch => ({
   update: (oldPassword, password1, password2) =>

@@ -1,23 +1,24 @@
-import React from 'react'
+import React from "react"
 
-import { mount, configure } from 'enzyme'
-import Adapter from 'enzyme-adapter-react-16'
+import { mount, configure } from "enzyme"
+import Adapter from "enzyme-adapter-react-16"
 
-import { Provider } from 'react-redux'
-import { MemoryRouter } from 'react-router'
+import { Provider } from "react-redux"
+import { MemoryRouter } from "react-router"
 
-import { emptyStore as store } from '../store/store.js'
-import AddRecipe from './AddRecipe.jsx'
+import { emptyStore as store } from "../store/store.js"
+import AddRecipe from "./AddRecipe.jsx"
 
 configure({ adapter: new Adapter() })
 
-describe('<AddRecipe/>', () => {
-  it('renders without crashing', () => {
+describe("<AddRecipe/>", () => {
+  it("renders without crashing", () => {
     mount(
-      <Provider store={ store }>
+      <Provider store={store}>
         <MemoryRouter>
-          <AddRecipe clearErrors={ _ => _ } fetchData={ _ => _ } />
+          <AddRecipe clearErrors={_ => _} fetchData={_ => _} />
         </MemoryRouter>
-      </Provider>)
+      </Provider>
+    )
   })
 })

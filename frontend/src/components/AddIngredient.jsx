@@ -1,26 +1,25 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import AddIngredientForm from './AddIngredientForm'
+import React from "react"
+import PropTypes from "prop-types"
+import AddIngredientForm from "./AddIngredientForm"
 
 export default class AddIngredient extends React.Component {
-
   static propTypes = {
     id: PropTypes.number.isRequired,
     addIngredient: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
     autoFocus: PropTypes.bool,
-    onCancel: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired
   }
 
   static defaultProps = {
-    loading: false,
+    loading: false
   }
 
   emptyState = {
-    quantity: '',
-    name: '',
-    description: '',
-    optional: false,
+    quantity: "",
+    name: "",
+    description: "",
+    optional: false
   }
 
   state = this.emptyState
@@ -42,25 +41,23 @@ export default class AddIngredient extends React.Component {
     this.setState(this.emptyState)
   }
 
-  render () {
+  render() {
     const { clearInputs, cancelAddIngredient, handleInputChange } = this
     const { id, addIngredient, loading, autoFocus } = this.props
     const { quantity, name, description, optional } = this.state
 
     return (
       <AddIngredientForm
-        handleAddIngredient={
-          async () => {
-            await addIngredient(id, { quantity, name, description })
-            clearInputs()
-          }
-        }
-        loading={ loading }
-        cancelAddIngredient={ cancelAddIngredient }
-        handleInputChange={ handleInputChange }
-        quantity={ quantity }
-        name={ name }
-        description={ description }
+        handleAddIngredient={async () => {
+          await addIngredient(id, { quantity, name, description })
+          clearInputs()
+        }}
+        loading={loading}
+        cancelAddIngredient={cancelAddIngredient}
+        handleInputChange={handleInputChange}
+        quantity={quantity}
+        name={name}
+        description={description}
         optional={optional}
         autoFocus={autoFocus}
       />

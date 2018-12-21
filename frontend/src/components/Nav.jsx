@@ -1,15 +1,13 @@
-import React from 'react'
-import {
-  Link
-} from 'react-router-dom'
+import React from "react"
+import { Link } from "react-router-dom"
 
-import NavLink from '../containers/NavLink'
-import Logo from './Logo'
-import Dropdown from './Dropdown'
-import NotificationsDropdown from './NotificationsDropdown'
-import UserDropdown from './UserDropdown'
+import NavLink from "../containers/NavLink"
+import Logo from "./Logo"
+import Dropdown from "./Dropdown"
+import NotificationsDropdown from "./NotificationsDropdown"
+import UserDropdown from "./UserDropdown"
 
-import { teamURL } from '../urls'
+import { teamURL } from "../urls"
 
 const Teams = ({ teams, loading }) => {
   if (loading) {
@@ -22,37 +20,38 @@ const Teams = ({ teams, loading }) => {
 
   return (
     <div className="text-left">
-        { teams.map(({ id, name }) =>
-            <p key={id}>
-              <NavLink to={teamURL(id, name)} activeClassName="fw-500">{ name }</NavLink>
-            </p>)
-        }
+      {teams.map(({ id, name }) => (
+        <p key={id}>
+          <NavLink to={teamURL(id, name)} activeClassName="fw-500">
+            {name}
+          </NavLink>
+        </p>
+      ))}
     </div>
   )
 }
 
 class Navbar extends React.Component {
-
   static defaultProps = {
     teams: [],
-    scheduleURL: '',
+    scheduleURL: ""
   }
 
-  componentWillMount () {
+  componentWillMount() {
     this.props.fetchData()
   }
 
-  render () {
+  render() {
     const {
       avatarURL,
       loggedIn = true,
       logout,
       email,
       loggingOut,
-      className = '',
+      className = "",
       toggleDarkMode,
       darkMode,
-      scheduleURL,
+      scheduleURL
     } = this.props
 
     const buttons = loggedIn ? (
@@ -64,12 +63,13 @@ class Navbar extends React.Component {
           Add
         </NavLink>
 
-        <NotificationsDropdown/>
+        <NotificationsDropdown />
 
         <Dropdown name="Teams" relative={false}>
-            <Teams loading={ this.props.loadingTeams }
-                   teams={ this.props.teams }/>
-            <Link to="/t/create" className="mt-1 ">Create a Team</Link>
+          <Teams loading={this.props.loadingTeams} teams={this.props.teams} />
+          <Link to="/t/create" className="mt-1 ">
+            Create a Team
+          </Link>
         </Dropdown>
 
         <NavLink
@@ -93,22 +93,27 @@ class Navbar extends React.Component {
           logout={logout}
           loggingOut={loggingOut}
         />
-
       </div>
     ) : (
       <div className="d-flex hide-sm">
-        <NavLink to="/login" className="better-nav-item">Login</NavLink>
-        <NavLink to="/signup" className="better-nav-item">Signup</NavLink>
+        <NavLink to="/login" className="better-nav-item">
+          Login
+        </NavLink>
+        <NavLink to="/signup" className="better-nav-item">
+          Signup
+        </NavLink>
       </div>
     )
 
     return (
-      <nav className={ `nav flex-wrap ${className}` }>
-        <Link to="/" className="better-nav-item pl-0 pr-0 fs-2rem fw-normal font-family-title">
-          <Logo width="45px"/>
+      <nav className={`nav flex-wrap ${className}`}>
+        <Link
+          to="/"
+          className="better-nav-item pl-0 pr-0 fs-2rem fw-normal font-family-title">
+          <Logo width="45px" />
           <span>Recipe Yak</span>
         </Link>
-        { buttons }
+        {buttons}
       </nav>
     )
   }

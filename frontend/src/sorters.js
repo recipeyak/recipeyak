@@ -4,7 +4,11 @@ export const byNameAlphabetical = (x, y) =>
     : 0
 
 export const ingredientByNameAlphabetical = (x, y) => {
-  const normalize = x => x.replace(/fresh|small|medium|large|ground/ig, '').trim().toUpperCase()
+  const normalize = x =>
+    x
+      .replace(/fresh|small|medium|large|ground/gi, "")
+      .trim()
+      .toUpperCase()
 
   if (x.name == null || y.name == null) {
     return 0

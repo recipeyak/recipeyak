@@ -1,22 +1,22 @@
-@import './variables.scss';
+@import "./variables.scss";
 
 $primary: $primary-color;
 
-@import '~bulma/bulma.sass';
+@import "~bulma/bulma.sass";
 
-@import './buttons.scss';
-@import './inputs.scss';
-@import './loader.scss';
-@import './helpers.scss';
+@import "./buttons.scss";
+@import "./inputs.scss";
+@import "./loader.scss";
+@import "./helpers.scss";
 
-@import './nav.scss';
-@import './ListItem.scss';
-@import './Notification.scss';
-@import './home.scss';
-@import './signup-login.scss';
-@import './Recipe.scss';
-@import './schedule.scss';
-@import './search.scss';
+@import "./nav.scss";
+@import "./ListItem.scss";
+@import "./Notification.scss";
+@import "./home.scss";
+@import "./signup-login.scss";
+@import "./Recipe.scss";
+@import "./schedule.scss";
+@import "./search.scss";
 
 html {
   height: 100%;
@@ -41,7 +41,7 @@ body {
 }
 
 kbd {
-  padding: 0.1rem 0.2rem;;
+  padding: 0.1rem 0.2rem;
   background-color: whitesmoke;
   border-radius: 4px;
   border: 1px solid lightgray;
@@ -62,7 +62,6 @@ section.section {
   padding: 1.5rem;
 }
 
-
 // bulma override since small buttons are hard to read with the font weight
 .is-small {
   font-weight: 600;
@@ -71,10 +70,9 @@ section.section {
   }
 }
 
-
 a {
   color: $link-color;
-  transition: color .2s;
+  transition: color 0.2s;
 
   &:hover {
     color: lighten($link-color, 5%);
@@ -101,7 +99,7 @@ a {
 
 .better-label {
   font-weight: bold;
-  margin-right: .75rem;
+  margin-right: 0.75rem;
 }
 
 .ingredients-preparation-grid {
@@ -152,7 +150,6 @@ a {
       grid-row: unset;
     }
   }
-
 }
 
 .card {

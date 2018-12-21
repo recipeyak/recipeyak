@@ -1,5 +1,5 @@
-@import './variables.scss';
-@import '~bulma/sass/utilities/initial-variables.sass';
+@import "./variables.scss";
+@import "~bulma/sass/utilities/initial-variables.sass";
 
 .d-flex {
   display: flex;
@@ -79,7 +79,6 @@
   }
 }
 
-
 @for $i from 0 through 32 {
   .fs-#{$i} {
     font-size: #{$i/4}rem !important;
@@ -104,11 +103,11 @@
   justify-self: right;
 }
 
-.justify-self-end  {
+.justify-self-end {
   justify-self: end;
 }
 
-.justify-self-left  {
+.justify-self-left {
   justify-self: left;
 }
 
@@ -165,7 +164,6 @@
 }
 
 @for $i from 0 through 4 {
-
   .grid-gap-#{$i} {
     grid-gap: #{$i/4}rem;
   }
@@ -173,9 +171,7 @@
   .grid-gap-#{$i}rem {
     grid-gap: #{$i}rem;
   }
-
 }
-
 
 .grid-column-1 {
   grid-column: 1;
@@ -216,7 +212,6 @@
   color: $danger;
 }
 
-
 @for $i from 1 through 10 {
   .fs-#{$i}rem {
     font-size: #{$i}rem !important;
@@ -247,7 +242,6 @@
 .br-20rem {
   border-radius: 20rem;
 }
-
 
 .grid-entire-row {
   grid-column: 1 / -1;
@@ -315,7 +309,6 @@
   }
 }
 
-
 @for $i from 1 through 4 {
   .w-#{$i}rem {
     width: #{$i}rem;
@@ -357,7 +350,7 @@
 }
 
 .height-100 {
-  height: 100%
+  height: 100%;
 }
 
 .min-width-2rem {

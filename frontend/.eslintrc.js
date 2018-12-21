@@ -1,78 +1,47 @@
 module.exports = {
   root: true,
-  parser: 'babel-eslint',
+  parser: "babel-eslint",
   parserOptions: {
-    sourceType: 'module',
+    sourceType: "module",
     ecmaFeatures: {
-        jsx: true
+      jsx: true
     }
   },
-  plugins: [
-    'html',
-    'react',
-  ],
+  plugins: ["html", "react"],
   // https://github.com/standard/eslint-config-standard/blob/c4902d20cab15971932f591d0d8cf7915ade307f/eslintrc.json
-  extends: [
-      'react-app',
-      'standard',
-  ],
-  'env': {
-    'browser': true,
+  extends: ["react-app", "standard", "prettier"],
+  env: {
+    browser: true
   },
   // add your custom rules here
   rules: {
-    // allow paren-less arrow functions
-    'arrow-parens': 0,
     // allow async-await
-    'generator-star-spacing': 0,
-    'no-tabs': 'warn',
-    'block-spacing': ['warn', 'always'],
-    'comma-spacing': ['warn', { 'before': false, 'after': true }],
-    'brace-style': ['warn', '1tbs', { 'allowSingleLine': true }],
-    'comma-dangle': ['warn', 'only-multiline'],
-    'semi': ['warn', 'never'],
-    'padded-blocks': ['warn', 'never'],
-    'import/first': ['warn', 'always'],
-    'indent': ['warn', 2],
-    'quotes': ['warn', 'single', { 'avoidEscape': true }],
-    'one-var': ['warn', 'never'],
-    'operator-linebreak': ['warn','after', { 'overrides': { '?': 'before', ':': 'before' } }],
-    'space-infix-ops': ['warn', {'int32Hint': false}],
-    'standard/object-curly-even-spacing': ['warn',  'either'],
-    'no-constant-condition': ['warn', { 'checkLoops': false }],
-    'space-before-function-paren': ['warn', {
-        'anonymous': 'always',
-        'named': 'always',
-        'asyncArrow': 'always'
-    }],
-    'no-unused-vars': ['warn', {
-      vars: 'all',
-      args: 'all',
-      ignoreRestSiblings: false,
-      argsIgnorePattern: '^_',
-    }],
-    'template-curly-spacing': ['warn', 'never'],
+    "generator-star-spacing": 0,
+    "import/first": ["warn", "always"],
+    "one-var": ["warn", "never"],
+    "no-constant-condition": ["warn", { checkLoops: false }],
+    "no-unused-vars": [
+      "warn",
+      {
+        vars: "all",
+        args: "all",
+        ignoreRestSiblings: false,
+        argsIgnorePattern: "^_"
+      }
+    ],
     // we don't trigger on properties since the python backend returns json
     // with snake case
-    'camelcase': ['warn', { properties: 'never' }],
-    'key-spacing': ['warn', { 'afterColon': true }],
+    camelcase: ["warn", { properties: "never" }],
     // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
-    'object-curly-spacing': ['warn', 'always'],
-    'no-multiple-empty-lines': ['warn', { 'max': 1, 'maxEOF': 0 }],
-    'no-multi-spaces': ['warn'],
-    'prefer-const': ['error', {
-        'destructuring': 'any',
-        'ignoreReadBeforeAssign': false
-    }],
-    'arrow-spacing': ['warn', { "before": true, "after": true }],
-    'space-in-parens': ['warn', 'never'],
-    'no-useless-return': 'warn',
-    'no-unreachable': 'warn',
-    'space-before-blocks': ['warn', 'always'],
-    "spaced-comment": ["warn", "always", {
-      "line": { "markers": ["*package", "!", "/", ",", "="] },
-      "block": { "balanced": true, "markers": ["*package", "!", ",", ":", "::", "flow-include"], "exceptions": ["*"] }
-    }],
+    "no-debugger": process.env.NODE_ENV === "production" ? 2 : 0,
+    "prefer-const": [
+      "error",
+      {
+        destructuring: "any",
+        ignoreReadBeforeAssign: false
+      }
+    ],
+    "no-useless-return": "warn",
+    "no-unreachable": "warn"
   }
 }

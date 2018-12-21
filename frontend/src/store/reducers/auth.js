@@ -1,15 +1,16 @@
-import {
-  SET_FROM_URL
-} from '../actionTypes'
+import { SET_FROM_URL } from "../actionTypes"
 
-const auth = (state = {
-  fromUrl: '',
-}, action) => {
+const auth = (
+  state = {
+    fromUrl: ""
+  },
+  action
+) => {
   switch (action.type) {
-  case SET_FROM_URL:
-    return { ...state, fromUrl: action.val }
-  default:
-    return state
+    case SET_FROM_URL:
+      return { ...state, fromUrl: action.val }
+    default:
+      return state
   }
 }
 

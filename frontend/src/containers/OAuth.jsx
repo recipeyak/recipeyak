@@ -1,8 +1,8 @@
-import { connect } from 'react-redux'
-import queryString from 'query-string'
+import { connect } from "react-redux"
+import queryString from "query-string"
 
-import { socialLogin as login } from '../store/actions.js'
-import OAuth from '../components/OAuth.jsx'
+import { socialLogin as login } from "../store/actions.js"
+import OAuth from "../components/OAuth.jsx"
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -19,7 +19,7 @@ const mapStateToProps = (state, props) => {
   return {
     service,
     token,
-    redirectUrl,
+    redirectUrl
   }
 }
 

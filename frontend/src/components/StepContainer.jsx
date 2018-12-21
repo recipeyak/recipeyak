@@ -29,15 +29,15 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
+import React, { Component } from "react"
+import { connect } from "react-redux"
 
-import Card from './Step'
-import { updatingStep } from '../store/actions'
+import Card from "./Step"
+import { updatingStep } from "../store/actions"
 
 @connect()
 export default class StepContainer extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -45,7 +45,7 @@ export default class StepContainer extends Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     this.setState({ cards: nextProps.steps })
   }
 
@@ -78,18 +78,26 @@ export default class StepContainer extends Component {
     } else if (nextCard != null && prevCard != null) {
       newPos = (nextCard.position - prevCard.position) / 2 + prevCard.position
     }
-    if (newPos == null) { throw new Error('Invalid position') }
+    if (newPos == null) {
+      throw new Error("Invalid position")
+    }
 
-    this.setState(prevState => {
-      const cards = [...prevState.cards]
-      cards[arrIndex].position = newPos
-      return {
-        cards
-      }
-    }, () => this.props.dispatch(updatingStep(this.props.recipeID, stepID, { position: newPos })))
+    this.setState(
+      prevState => {
+        const cards = [...prevState.cards]
+        cards[arrIndex].position = newPos
+        return {
+          cards
+        }
+      },
+      () =>
+        this.props.dispatch(
+          updatingStep(this.props.recipeID, stepID, { position: newPos })
+        )
+    )
   }
 
-  render () {
+  render() {
     const { cards } = this.state
 
     return (
