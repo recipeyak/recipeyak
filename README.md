@@ -24,9 +24,9 @@ echo "DEBUG=1" >> .env
 # frontend
 cd frontend
 yarn install
-yarn dev
-yarn test
-yarn lint
+./s/run
+./s/test
+./s/lint
 
 # backend
 cd backend

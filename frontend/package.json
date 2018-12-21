@@ -91,19 +91,6 @@
     "redux": "^3.7.1",
     "redux-thunk": "^2.2.0"
   },
-  "scripts": {
-    "dev": "node scripts/start.js",
-    "build": "node scripts/build.js && bash scripts/crawl.sh",
-    "lint": "npm run jslint && npm run tslint",
-    "lint-fix": "npm run jslint-fix && npm run tslint-fix",
-    "jslint": "node scripts/lint.js",
-    "jslint-fix": "node scripts/lint.js --fix",
-    "tslint": "tslint 'src/**/*.{ts,tsx}' --format 'codeFrame'",
-    "tslint-fix": "tslint 'src/**/*.{ts,tsx}' --format 'codeFrame' --fix",
-    "typecheck": "tsc --noEmit",
-    "test": "node scripts/test.js --env=jsdom",
-    "test-cov": "node scripts/test.js --env=jsdom --coverage --runInBand"
-  },
   "proxy": "http://localhost:8000",
   "jest": {
     "setupTestFrameworkScriptFile": "jest-enzyme",

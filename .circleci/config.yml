@@ -101,7 +101,7 @@ jobs:
       - run:
           name: run tests
           working_directory: frontend
-          command: yarn test-cov
+          command: ./s/test
 
   frontend_lint:
     docker:
@@ -127,9 +127,8 @@ jobs:
           name: run linter
           working_directory: frontend
           command: |
-            yarn lint
-            yarn typecheck
-            yarn build
+            ./s/lint
+            ./s/build
 
   # https://circleci.com/docs/2.0/building-docker-images/
   build_api_container:
