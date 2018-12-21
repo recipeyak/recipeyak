@@ -20,7 +20,7 @@ ARG OAUTH_GOOGLE_CLIENT_ID
 ARG FRONTEND_SENTRY_DSN
 ARG GIT_SHA
 
-RUN yarn build
+RUN ./s/build
 
 FROM alpine:3.7
 RUN mkdir -p /var/app/build

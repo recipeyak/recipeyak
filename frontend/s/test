@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -e
+
+cd $(dirname $(dirname "$0"))
+
+if [[ -f ../.env ]]; then
+    # export all variables from env file
+    set -a
+    source ../.env
+    set +a
+fi
+
+
+if [[ $CI ]]; then
+  node scripts/test.js --env=jsdom --coverage --runInBand
+else
+  node scripts/test.js --env=jsdom
+fi
