@@ -8,14 +8,14 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0008_auto_20171001_0026'),
-    ]
+    dependencies = [("core", "0008_auto_20171001_0026")]
 
     operations = [
         migrations.AlterField(
-            model_name='cartitem',
-            name='count',
-            field=models.IntegerField(validators=[django.core.validators.MinValueValidator(0)]),
-        ),
+            model_name="cartitem",
+            name="count",
+            field=models.IntegerField(
+                validators=[django.core.validators.MinValueValidator(0)]
+            ),
+        )
     ]

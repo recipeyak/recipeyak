@@ -1,8 +1,6 @@
 from rest_framework import serializers
 
-from core.models import (
-    MyUser,
-)
+from core.models import MyUser
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -15,4 +13,4 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyUser
         editable = False
-        fields = ('id', 'email', 'avatar_url', 'has_usable_password')
+        fields = ("id", "email", "avatar_url", "has_usable_password")

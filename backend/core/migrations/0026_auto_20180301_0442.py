@@ -6,38 +6,45 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0025_auto_20180301_0310'),
-    ]
+    dependencies = [("core", "0025_auto_20180301_0310")]
 
     operations = [
         migrations.CreateModel(
-            name='Membership',
+            name="Membership",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('modified', models.DateTimeField(auto_now=True)),
-                ('group', models.CharField(choices=[('admin', 'admin'), ('member', 'member'), ('viewer', 'viewer')], max_length=6)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("modified", models.DateTimeField(auto_now=True)),
+                (
+                    "group",
+                    models.CharField(
+                        choices=[
+                            ("admin", "admin"),
+                            ("member", "member"),
+                            ("viewer", "viewer"),
+                        ],
+                        max_length=6,
+                    ),
+                ),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False},
         ),
-        migrations.RemoveField(
-            model_name='team',
-            name='admin',
-        ),
-        migrations.RemoveField(
-            model_name='team',
-            name='member',
-        ),
-        migrations.RemoveField(
-            model_name='team',
-            name='viewers',
-        ),
+        migrations.RemoveField(model_name="team", name="admin"),
+        migrations.RemoveField(model_name="team", name="member"),
+        migrations.RemoveField(model_name="team", name="viewers"),
         migrations.AddField(
-            model_name='membership',
-            name='team',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.Team'),
+            model_name="membership",
+            name="team",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="core.Team"
+            ),
         ),
     ]

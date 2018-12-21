@@ -7,14 +7,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0016_auto_20171130_0632'),
-    ]
+    dependencies = [("core", "0016_auto_20171130_0632")]
 
     operations = [
         migrations.AddField(
-            model_name='recipe',
-            name='servings',
+            model_name="recipe",
+            name="servings",
             field=models.CharField(blank=True, max_length=255, null=True),
-        ),
+        )
     ]

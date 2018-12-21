@@ -34,9 +34,7 @@ class RegisterView(CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = (AllowAny,)
 
-    @method_decorator(
-        sensitive_post_parameters('password1', 'password2')
-    )
+    @method_decorator(sensitive_post_parameters("password1", "password2"))
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
@@ -46,29 +44,27 @@ class RegisterView(CreateAPIView):
 
         user = serializer.save(self.request)
 
-        complete_signup(self.request._request, user,
-                        allauth_settings.EMAIL_VERIFICATION,
-                        None)
+        complete_signup(
+            self.request._request, user, allauth_settings.EMAIL_VERIFICATION, None
+        )
 
-        if allauth_settings.EMAIL_VERIFICATION == \
-                allauth_settings.EmailVerificationMethod.MANDATORY:
+        if (
+            allauth_settings.EMAIL_VERIFICATION
+            == allauth_settings.EmailVerificationMethod.MANDATORY
+        ):
             data = {"detail": _("Verification e-mail sent.")}
         else:
-            data = {
-                'user': UserDetailsSerializer(user).data
-            }
+            data = {"user": UserDetailsSerializer(user).data}
 
         headers = self.get_success_headers(serializer.data)
         logger.info(f"User registration: {user}")
 
-        return Response(data,
-                        status=status.HTTP_201_CREATED,
-                        headers=headers)
+        return Response(data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class VerifyEmailView(APIView, ConfirmEmailView):
     permission_classes = (AllowAny,)
-    allowed_methods = ('POST', 'OPTIONS', 'HEAD')
+    allowed_methods = ("POST", "OPTIONS", "HEAD")
 
     def get_serializer(self, *args, **kwargs):
         return VerifyEmailSerializer(*args, **kwargs)
@@ -76,17 +72,18 @@ class VerifyEmailView(APIView, ConfirmEmailView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        self.kwargs['key'] = serializer.validated_data['key']
+        self.kwargs["key"] = serializer.validated_data["key"]
         confirmation = self.get_object()
         confirmation.confirm(self.request)
         logger.info(f"Email verified: {confirmation.email_address.email}")
-        return Response({'detail': _('ok')}, status=status.HTTP_200_OK)
+        return Response({"detail": _("ok")}, status=status.HTTP_200_OK)
 
 
 class SocialAccountListView(ListAPIView):
     """
     List SocialAccounts for the currently logged in user
     """
+
     serializer_class = SocialAccountSerializer
     permission_classes = (IsAuthenticated,)
 
@@ -99,6 +96,7 @@ class SocialAccountDisconnectView(GenericAPIView):
     Disconnect SocialAccount from remote service for
     the currently logged in user
     """
+
     serializer_class = SocialConnectSerializer
     permission_classes = (IsAuthenticated,)
 
@@ -107,7 +105,7 @@ class SocialAccountDisconnectView(GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         accounts = self.get_queryset()
-        account = accounts.filter(pk=kwargs['pk']).first()
+        account = accounts.filter(pk=kwargs["pk"]).first()
         if not account:
             raise NotFound
 
@@ -119,8 +117,6 @@ class SocialAccountDisconnectView(GenericAPIView):
         logger.info(f"Social account disconnected: {account}")
         account.delete()
         signals.social_account_removed.send(
-            sender=SocialAccount,
-            request=self.request,
-            socialaccount=account
+            sender=SocialAccount, request=self.request, socialaccount=account
         )
         return Response(self.get_serializer(account).data)

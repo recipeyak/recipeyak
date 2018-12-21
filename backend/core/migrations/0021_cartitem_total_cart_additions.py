@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0020_recipe_cart_additions'),
-    ]
+    dependencies = [("core", "0020_recipe_cart_additions")]
 
     operations = [
         migrations.AddField(
-            model_name='cartitem',
-            name='total_cart_additions',
+            model_name="cartitem",
+            name="total_cart_additions",
             field=models.PositiveIntegerField(default=0),
-        ),
+        )
     ]

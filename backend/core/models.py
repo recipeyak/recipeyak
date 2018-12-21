@@ -6,7 +6,11 @@ from datetime import datetime
 
 from django.db.models import Q
 from django.db import models, transaction
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin,
+)
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import CIEmailField
@@ -23,13 +27,13 @@ class MyUserManager(BaseUserManager):
         Creates and saves a user with given email and password.
         """
         if not email:
-            raise ValueError('User must have an email address')
+            raise ValueError("User must have an email address")
         with transaction.atomic():
             user = self.model(email=self.normalize_email(email))
             user.set_password(password)
             user.save(using=self._db)
             EmailAddress.objects.create(user=user, email=email)
-            logger.info(f'Created new user: {user}')
+            logger.info(f"Created new user: {user}")
             return user
 
     def create_superuser(self, email, password):
@@ -45,6 +49,7 @@ class MyUserManager(BaseUserManager):
 
 class MyUser(AbstractBaseUser, PermissionsMixin):
     """Custom user model that only requires an email and password"""
+
     email = CIEmailField(unique=True)
 
     # required for admin
@@ -54,9 +59,9 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     created = models.DateField(auto_now_add=True)
     last_updated = models.DateField(auto_now=True)
 
-    recipes = GenericRelation('Recipe', related_query_name='owner_user')
+    recipes = GenericRelation("Recipe", related_query_name="owner_user")
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS: List[str] = []
 
     objects = MyUserManager()
@@ -83,7 +88,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         """
         Return if user has invite to team.
         """
-        return self.membership_set.filter(team=team).exclude(invite=None).exists()  # type: ignore
+        return self.membership_set.filter(team=team).exclude(invite=None).exists()
 
     def has_team(self):
         return self.membership_set.filter(invite=None).count() > 0
@@ -95,11 +100,11 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
     @property
     def avatar_url(self):
-        md5_email = hashlib.md5(self.email.encode('utf-8')).hexdigest()
+        md5_email = hashlib.md5(self.email.encode("utf-8")).hexdigest()
         # indenticons by default `d=identicon`
         # Avatars with ratings of G only `r=g`
         # https://secure.gravatar.com/site/implement/images/
-        return f'//www.gravatar.com/avatar/{md5_email}?d=identicon&r=g'
+        return f"//www.gravatar.com/avatar/{md5_email}?d=identicon&r=g"
 
     @property
     def scheduled_recipes(self):
@@ -111,6 +116,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
 class CommonInfo(models.Model):
     """Abstract model for storing common model info"""
+
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
@@ -129,7 +135,7 @@ class Recipe(CommonInfo):
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
-    owner = GenericForeignKey('content_type', 'object_id')
+    owner = GenericForeignKey("content_type", "object_id")
 
     def move_to(self, account):
         """
@@ -165,32 +171,31 @@ class Recipe(CommonInfo):
 
     def schedule(self, on, user=None, team=None, count=1):
         return ScheduledRecipe.objects.create_scheduled(
-            recipe=self,
-            on=on,
-            count=count,
-            user=user,
-            team=team)
+            recipe=self, on=on, count=count, user=user, team=team
+        )
 
     @property
     def ingredients(self):
         """Return recipe ingredients ordered by creation date"""
-        return Ingredient.objects.filter(recipe=self).order_by('created')
+        return Ingredient.objects.filter(recipe=self).order_by("created")
 
     @property
     def steps(self):
         """Return recipe steps ordered by creation date"""
-        return Step.objects.filter(recipe=self).order_by('position', 'created')
+        return Step.objects.filter(recipe=self).order_by("position", "created")
 
     @property
     def last_scheduled(self) -> Optional[datetime]:
         """Return the most recent date this recipe was scheduled for"""
-        scheduled_recipe = ScheduledRecipe.objects.filter(recipe=self).order_by('on').first()
+        scheduled_recipe = (
+            ScheduledRecipe.objects.filter(recipe=self).order_by("on").first()
+        )
         if scheduled_recipe is not None:
             return scheduled_recipe.on
         return None
 
     def __str__(self):
-        return f'{self.name} by {self.author}'
+        return f"{self.name} by {self.author}"
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
@@ -215,6 +220,7 @@ class Ingredient(CommonInfo):
     description = diced
 
     """
+
     quantity = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255, blank=True)
@@ -223,45 +229,52 @@ class Ingredient(CommonInfo):
     optional = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = (('recipe', 'position'),)
-        ordering = ['-position', ]
+        unique_together = (("recipe", "position"),)
+        ordering = ["-position"]
 
     def __str__(self):
-        return f'{self.quantity} {self.name} {self.description}'
+        return f"{self.quantity} {self.name} {self.description}"
 
     def __repr__(self):
-        optional = '[optional]' if self.optional else ''
-        return f'<quantity={self.quantity} {self.name} description={self.description} recipe={self.recipe} {optional}>'
+        optional = "[optional]" if self.optional else ""
+        return f"<quantity={self.quantity} {self.name} description={self.description} recipe={self.recipe} {optional}>"
 
 
 class Step(CommonInfo):
     """Recipe step"""
+
     text = models.TextField()
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     position = models.FloatField()
 
     class Meta:
-        unique_together = (('recipe', 'position'),)
-        ordering = ['-position', ]
+        unique_together = (("recipe", "position"),)
+        ordering = ["-position"]
 
     def __str__(self):
         return self.text
 
 
 class ScheduledRecipeManager(models.Manager):
-    def create_scheduled(self, recipe: Recipe, on, team, count: int, user: MyUser) -> 'ScheduledRecipe':
+    def create_scheduled(
+        self, recipe: Recipe, on, team, count: int, user: MyUser
+    ) -> "ScheduledRecipe":
         """
         add to existing scheduled recipe count for dupes
         """
         with transaction.atomic():
             # TODO(sbdchd): revist this and consider if it does what we want
-            existing = ScheduledRecipe.objects.filter(recipe=recipe, on=on, team=team, user=user).first()
+            existing = ScheduledRecipe.objects.filter(
+                recipe=recipe, on=on, team=team, user=user
+            ).first()
             if existing:
                 existing.count += count
                 existing.save()
                 return existing
             else:
-                return ScheduledRecipe.objects.create(recipe=recipe, on=on, count=count, team=team, user=user)
+                return ScheduledRecipe.objects.create(
+                    recipe=recipe, on=on, count=count, team=team, user=user
+                )
 
 
 class ScheduledRecipe(CommonInfo):
@@ -270,55 +283,46 @@ class ScheduledRecipe(CommonInfo):
     count = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     # TODO(sbdchd): add restriction so that only one of these is set
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE, blank=True, null=True)
-    team = models.ForeignKey('Team', on_delete=models.CASCADE, blank=True, null=True)
+    team = models.ForeignKey("Team", on_delete=models.CASCADE, blank=True, null=True)
 
     objects = ScheduledRecipeManager()
 
     class Meta:
-        unique_together = (
-            ('recipe', 'on', 'user'),
-            ('recipe', 'on', 'team'),
-        )
+        unique_together = (("recipe", "on", "user"), ("recipe", "on", "team"))
 
     def __str__(self):
         owner = self.user if not self.team else self.team
-        return f'ScheduledRecipe:: {self.count} of {self.recipe.name} on {self.on} for {owner}'
+        return f"ScheduledRecipe:: {self.count} of {self.recipe.name} on {self.on} for {owner}"
 
 
 class InviteManager(models.Manager):
-    def create_invite(self, email, team, level, creator) -> 'Invite':
+    def create_invite(self, email, team, level, creator) -> "Invite":
         user = MyUser.objects.filter(email=email).first()
         if not user:
             user = MyUser.objects.create_user(email=email)
-        m = Membership.objects.create(user=user, team=team, level=level, is_active=False)
+        m = Membership.objects.create(
+            user=user, team=team, level=level, is_active=False
+        )
         invite: Invite = self.model.objects.create(membership=m, creator=creator)
         return invite
 
 
 class Invite(CommonInfo):
-    membership = models.OneToOneField('Membership', on_delete=models.CASCADE)
+    membership = models.OneToOneField("Membership", on_delete=models.CASCADE)
     creator = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
-    OPEN = 'open'
-    DECLINED = 'declined'
-    ACCEPTED = 'accepted'
+    OPEN = "open"
+    DECLINED = "declined"
+    ACCEPTED = "accepted"
 
-    INVITE_STATUS = (
-        (OPEN, OPEN),
-        (DECLINED, DECLINED),
-        (ACCEPTED, ACCEPTED),
-    )
+    INVITE_STATUS = ((OPEN, OPEN), (DECLINED, DECLINED), (ACCEPTED, ACCEPTED))
 
-    status = models.CharField(
-        max_length=11,
-        choices=INVITE_STATUS,
-        default=OPEN,
-    )
+    status = models.CharField(max_length=11, choices=INVITE_STATUS, default=OPEN)
 
     objects = InviteManager()
 
     def __str__(self):
-        return f'<Invite • Membership: {self.membership}>'
+        return f"<Invite • Membership: {self.membership}>"
 
     @property
     def user(self):
@@ -345,16 +349,18 @@ class Invite(CommonInfo):
 class Team(CommonInfo):
     name = models.CharField(max_length=255)
     is_public = models.BooleanField(default=False)
-    recipes = GenericRelation('Recipe', related_query_name='owner_team')
+    recipes = GenericRelation("Recipe", related_query_name="owner_team")
 
     def __str__(self):
-        return f'<Team • name: {self.name}, is_public: {self.is_public}>'
+        return f"<Team • name: {self.name}, is_public: {self.is_public}>"
 
     def force_join(self, user, level=None):
         with transaction.atomic():
             if level is None:
                 level = Membership.CONTRIBUTOR
-            m, created = Membership.objects.get_or_create(team=self, user=user, defaults={'level': level, 'is_active': True})
+            m, created = Membership.objects.get_or_create(
+                team=self, user=user, defaults={"level": level, "is_active": True}
+            )
             if not created:
                 m.level = level
                 m.is_active = True
@@ -375,10 +381,9 @@ class Team(CommonInfo):
         """
         if level is None:
             level = Membership.CONTRIBUTOR
-        return Invite.objects.create_invite(email=user.email,
-                                            team=self,
-                                            level=level,
-                                            creator=creator)
+        return Invite.objects.create_invite(
+            email=user.email, team=self, level=level, creator=creator
+        )
 
     def kick_user(self, user):
         """
@@ -400,16 +405,20 @@ class Team(CommonInfo):
         return self.membership_set.filter(is_active=True, level=Membership.ADMIN)
 
     def is_member(self, user) -> bool:
-        return self.membership_set.filter(user=user, is_active=True).exists()  # type: ignore
+        return self.membership_set.filter(user=user, is_active=True).exists()
 
     def is_contributor(self, user) -> bool:
-        return self.membership_set.filter(user=user, is_active=True, level=Membership.CONTRIBUTOR).exists()  # type: ignore
+        return self.membership_set.filter(
+            user=user, is_active=True, level=Membership.CONTRIBUTOR
+        ).exists()
 
     def is_admin(self, user) -> bool:
-        return self.membership_set.filter(user=user, is_active=True, level=Membership.ADMIN).exists()  # type: ignore
+        return self.membership_set.filter(
+            user=user, is_active=True, level=Membership.ADMIN
+        ).exists()
 
     def invite_exists(self, email: Union[MyUser, str]) -> bool:
-        return Membership.objects.filter(team=self, user__email=email).exists()  # type: ignore
+        return Membership.objects.filter(team=self, user__email=email).exists()
 
     @property
     def scheduled_recipes(self):
@@ -417,9 +426,9 @@ class Team(CommonInfo):
 
 
 class Membership(CommonInfo):
-    ADMIN = 'admin'
-    CONTRIBUTOR = 'contributor'
-    READ_ONLY = 'read'
+    ADMIN = "admin"
+    CONTRIBUTOR = "contributor"
+    READ_ONLY = "read"
 
     MEMBERSHIP_CHOICES = (
         (ADMIN, ADMIN),
@@ -428,16 +437,14 @@ class Membership(CommonInfo):
     )
 
     level = models.CharField(
-        max_length=11,
-        choices=MEMBERSHIP_CHOICES,
-        default=CONTRIBUTOR,
+        max_length=11, choices=MEMBERSHIP_CHOICES, default=CONTRIBUTOR
     )
 
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = (('user', 'team'),)
+        unique_together = (("user", "team"),)
 
     # A user is activated once they accept their invite
     is_active = models.BooleanField(default=False)
@@ -455,24 +462,24 @@ class Membership(CommonInfo):
             one_admin_left = len(self.team.admins()) == 1
             demoting_admin = current.level == self.ADMIN and self.level != self.ADMIN
             if one_admin_left and demoting_admin:
-                raise ValueError('cannot demote self as last admin')
+                raise ValueError("cannot demote self as last admin")
         super().save(*args, **kwargs)
 
     def delete(self):
         last_member = self.team.membership_set.count() == 1
         if last_member:
-            raise ValueError('cannot delete last member of team')
+            raise ValueError("cannot delete last member of team")
         super().delete()
 
     def __str__(self):
-        return f'<Membership • user_email: {self.user.email}, team: {self.team.id} level: {self.level}>'
+        return f"<Membership • user_email: {self.user.email}, team: {self.team.id} level: {self.level}>"
 
 
 def user_active_team_ids(user):
-    return user.membership_set.filter(is_active=True).values_list('team')
+    return user.membership_set.filter(is_active=True).values_list("team")
 
 
 def user_and_team_recipes(user):
-    return (Recipe.objects
-            .filter(Q(owner_user=user) |
-                    Q(owner_team__in=user_active_team_ids(user))))
+    return Recipe.objects.filter(
+        Q(owner_user=user) | Q(owner_team__in=user_active_team_ids(user))
+    )

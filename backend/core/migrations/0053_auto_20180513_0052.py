@@ -14,28 +14,20 @@ def set_position(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0052_auto_20180512_0011'),
-    ]
+    dependencies = [("core", "0052_auto_20180512_0011")]
 
     operations = [
         migrations.AddField(
-            model_name='ingredient',
-            name='position',
+            model_name="ingredient",
+            name="position",
             field=models.FloatField(blank=True, null=True),
         ),
         migrations.RunPython(set_position, migrations.RunPython.noop),
         migrations.AlterField(
-            model_name='ingredient',
-            name='position',
-            field=models.FloatField(),
+            model_name="ingredient", name="position", field=models.FloatField()
         ),
         migrations.AlterUniqueTogether(
-            name='step',
-            unique_together={('recipe', 'position')},
+            name="step", unique_together={("recipe", "position")}
         ),
-        migrations.AlterModelOptions(
-            name='step',
-            options={'ordering': ['-position']},
-        ),
+        migrations.AlterModelOptions(name="step", options={"ordering": ["-position"]}),
     ]

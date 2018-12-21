@@ -5,24 +5,15 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0053_auto_20180513_0052'),
-    ]
+    dependencies = [("core", "0053_auto_20180513_0052")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='tag',
-            name='recipe',
-        ),
+        migrations.RemoveField(model_name="tag", name="recipe"),
         migrations.AlterModelOptions(
-            name='ingredient',
-            options={'ordering': ['-position']},
+            name="ingredient", options={"ordering": ["-position"]}
         ),
         migrations.AlterUniqueTogether(
-            name='ingredient',
-            unique_together={('recipe', 'position')},
+            name="ingredient", unique_together={("recipe", "position")}
         ),
-        migrations.DeleteModel(
-            name='Tag',
-        ),
+        migrations.DeleteModel(name="Tag"),
     ]

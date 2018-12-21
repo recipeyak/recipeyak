@@ -1,9 +1,6 @@
 import logging
 from django.conf import settings
-from django.contrib.auth import (
-    login,
-    logout
-)
+from django.contrib.auth import login, logout
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.debug import sensitive_post_parameters
@@ -17,16 +14,19 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from .serializers import (
     LoginSerializer,
-    PasswordResetSerializer, PasswordResetConfirmSerializer,
-    PasswordChangeSerializer
+    PasswordResetSerializer,
+    PasswordResetConfirmSerializer,
+    PasswordChangeSerializer,
 )
 
 from core.users.serializers import UserSerializer as UserDetailsSerializer
 
 
-from .registration.serializers import (SocialLoginSerializer,
-                                       SocialConnectSerializer,
-                                       SocialAccountSerializer)
+from .registration.serializers import (
+    SocialLoginSerializer,
+    SocialConnectSerializer,
+    SocialAccountSerializer,
+)
 
 from allauth.account.adapter import get_adapter
 from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
@@ -49,30 +49,33 @@ class LoginView(GenericAPIView):
 
     Accept the following POST parameters: username, password
     """
+
     permission_classes = (AllowAny,)
     serializer_class = LoginSerializer
 
     @method_decorator(
-        sensitive_post_parameters('password', 'old_password', 'new_password1', 'new_password2')
+        sensitive_post_parameters(
+            "password", "old_password", "new_password1", "new_password2"
+        )
     )
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(
-            data=request.data,
-            context={'request': request})
+            data=request.data, context={"request": request}
+        )
 
         serializer.is_valid(raise_exception=True)
 
-        user = serializer.validated_data.get('user')
+        user = serializer.validated_data.get("user")
 
         login(request, user)
-        logger.info(f'Login by {user}')
+        logger.info(f"Login by {user}")
 
-        return Response({
-            'user': UserDetailsSerializer(user).data
-        }, status=status.HTTP_200_OK)
+        return Response(
+            {"user": UserDetailsSerializer(user).data}, status=status.HTTP_200_OK
+        )
 
 
 class LogoutView(APIView):
@@ -81,14 +84,16 @@ class LogoutView(APIView):
 
     Accepts/Returns nothing.
     """
+
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
-        logger.info(f'Logout by {request.user}')
+        logger.info(f"Logout by {request.user}")
         logout(request)
 
-        return Response({"detail": _("Successfully logged out.")},
-                        status=status.HTTP_200_OK)
+        return Response(
+            {"detail": _("Successfully logged out.")}, status=status.HTTP_200_OK
+        )
 
 
 class UserDetailsView(RetrieveUpdateAPIView):
@@ -102,6 +107,7 @@ class UserDetailsView(RetrieveUpdateAPIView):
 
     Returns UserModel fields.
     """
+
     serializer_class = UserDetailsSerializer
     permission_classes = (IsAuthenticated,)
 
@@ -110,7 +116,9 @@ class UserDetailsView(RetrieveUpdateAPIView):
 
     def delete(self, request, *args, **kwargs):
         if request.user.has_team():
-            raise PermissionDenied(detail='you must leave all your teams to delete your account')
+            raise PermissionDenied(
+                detail="you must leave all your teams to delete your account"
+            )
         request.user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -122,6 +130,7 @@ class PasswordResetView(GenericAPIView):
     Accepts the following POST parameters: email
     Returns the success/fail message.
     """
+
     serializer_class = PasswordResetSerializer
     permission_classes = (AllowAny,)
 
@@ -131,11 +140,11 @@ class PasswordResetView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
 
         serializer.save()
-        logger.info(f'Password reset request by {request.user}')
+        logger.info(f"Password reset request by {request.user}")
         # Return the success message with OK HTTP status
         return Response(
             {"detail": _("Password reset e-mail has been sent.")},
-            status=status.HTTP_200_OK
+            status=status.HTTP_200_OK,
         )
 
 
@@ -148,11 +157,14 @@ class PasswordResetConfirmView(GenericAPIView):
         new_password1, new_password2
     Returns the success/fail message.
     """
+
     serializer_class = PasswordResetConfirmSerializer
     permission_classes = (AllowAny,)
 
     @method_decorator(
-        sensitive_post_parameters('password', 'old_password', 'new_password1', 'new_password2')
+        sensitive_post_parameters(
+            "password", "old_password", "new_password1", "new_password2"
+        )
     )
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
@@ -161,10 +173,8 @@ class PasswordResetConfirmView(GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        logger.info(f'Password reset completed by {request.user}')
-        return Response(
-            {"detail": _("Password has been reset with the new password.")}
-        )
+        logger.info(f"Password reset completed by {request.user}")
+        return Response({"detail": _("Password has been reset with the new password.")})
 
 
 class PasswordChangeView(GenericAPIView):
@@ -174,11 +184,14 @@ class PasswordChangeView(GenericAPIView):
     Accepts the following POST parameters: new_password1, new_password2
     Returns the success/fail message.
     """
+
     serializer_class = PasswordChangeSerializer
     permission_classes = (IsAuthenticated,)
 
     @method_decorator(
-        sensitive_post_parameters('password', 'old_password', 'new_password1', 'new_password2')
+        sensitive_post_parameters(
+            "password", "old_password", "new_password1", "new_password2"
+        )
     )
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
@@ -187,7 +200,7 @@ class PasswordChangeView(GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        logger.info(f'Password changed by {request.user}')
+        logger.info(f"Password changed by {request.user}")
         return Response({"detail": _("New password has been saved.")})
 
 
@@ -218,20 +231,20 @@ class SocialLoginView(LoginView):
     serializer_class = SocialLoginSerializer
 
     def process_login(self):
-        logger.info(f'Social login attempt by {self.user}')
+        logger.info(f"Social login attempt by {self.user}")
         get_adapter(self.request).login(self.request, self.user)
 
 
 class GithubLogin(SocialLoginView):
     adapter_class = GitHubOAuth2Adapter
     client_class = OAuth2Client
-    callback_url = settings.SOCIALACCOUNT_PROVIDERS['github']['URL']
+    callback_url = settings.SOCIALACCOUNT_PROVIDERS["github"]["URL"]
 
 
 class GitlabLogin(SocialLoginView):
     adapter_class = GitLabOAuth2Adapter
     client_class = OAuth2Client
-    callback_url = settings.SOCIALACCOUNT_PROVIDERS['gitlab']['URL']
+    callback_url = settings.SOCIALACCOUNT_PROVIDERS["gitlab"]["URL"]
 
 
 class SocialConnectView(SocialLoginView):
@@ -269,7 +282,7 @@ class SocialAccountViewSet(GenericViewSet):
         """
         return Response(self.get_serializer(self.get_queryset(), many=True).data)
 
-    @detail_route(methods=['POST'])
+    @detail_route(methods=["POST"])
     def disconnect(self, request, pk):
         """
         disconnect SocialAccount from remote service for the currently logged in user
@@ -279,21 +292,19 @@ class SocialAccountViewSet(GenericViewSet):
         get_social_adapter(self.request).validate_disconnect(account, accounts)
         account.delete()
         signals.social_account_removed.send(
-            sender=SocialAccount,
-            request=self.request,
-            socialaccount=account
+            sender=SocialAccount, request=self.request, socialaccount=account
         )
-        logger.info(f'Social Account disconnected for {request.user}')
+        logger.info(f"Social Account disconnected for {request.user}")
         return Response(self.get_serializer(account).data)
 
 
 class GithubConnect(SocialConnectView):
     adapter_class = GitHubOAuth2Adapter
     client_class = OAuth2Client
-    callback_url = settings.SOCIALACCOUNT_PROVIDERS['github']['URL']
+    callback_url = settings.SOCIALACCOUNT_PROVIDERS["github"]["URL"]
 
 
 class GitlabConnect(SocialConnectView):
     adapter_class = GitLabOAuth2Adapter
     client_class = OAuth2Client
-    callback_url = settings.SOCIALACCOUNT_PROVIDERS['gitlab']['URL'] + '/connect'
+    callback_url = settings.SOCIALACCOUNT_PROVIDERS["gitlab"]["URL"] + "/connect"

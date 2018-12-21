@@ -7,25 +7,41 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0047_recipe_deleted_at'),
-    ]
+    dependencies = [("core", "0047_recipe_deleted_at")]
 
     operations = [
         migrations.CreateModel(
-            name='ScheduledRecipe',
+            name="ScheduledRecipe",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('modified', models.DateTimeField(auto_now=True)),
-                ('on', models.DateField(auto_now_add=True)),
-                ('count', models.PositiveIntegerField()),
-                ('recipe', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.Recipe')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("modified", models.DateTimeField(auto_now=True)),
+                ("on", models.DateField(auto_now_add=True)),
+                ("count", models.PositiveIntegerField()),
+                (
+                    "recipe",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="core.Recipe"
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.AlterUniqueTogether(
-            name='scheduledrecipe',
-            unique_together={('recipe', 'on', 'user')},
+            name="scheduledrecipe", unique_together={("recipe", "on", "user")}
         ),
     ]

@@ -6,12 +6,11 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0045_invite_status'),
-    ]
+    dependencies = [("core", "0045_invite_status")]
 
     operations = [
-        migrations.RunSQL('''
+        migrations.RunSQL(
+            """
 DO $do$
 BEGIN
     IF not EXISTS (
@@ -23,10 +22,14 @@ BEGIN
                 extname = 'citext') THEN
             CREATE EXTENSION "citext";
     END IF;
-END $do$''', reverse_sql=""),
+END $do$""",
+            reverse_sql="",
+        ),
         migrations.AlterField(
-            model_name='myuser',
-            name='email',
-            field=django.contrib.postgres.fields.citext.CIEmailField(max_length=254, unique=True),
+            model_name="myuser",
+            name="email",
+            field=django.contrib.postgres.fields.citext.CIEmailField(
+                max_length=254, unique=True
+            ),
         ),
     ]

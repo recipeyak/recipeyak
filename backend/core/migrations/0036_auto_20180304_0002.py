@@ -5,18 +5,19 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0035_team_is_public'),
-    ]
+    dependencies = [("core", "0035_team_is_public")]
 
     operations = [
         migrations.AlterField(
-            model_name='membership',
-            name='level',
-            field=models.CharField(choices=[('admin', 'admin'), ('member', 'member'), ('read', 'read')], default='member', max_length=6),
+            model_name="membership",
+            name="level",
+            field=models.CharField(
+                choices=[("admin", "admin"), ("member", "member"), ("read", "read")],
+                default="member",
+                max_length=6,
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='membership',
-            unique_together={('user', 'team')},
+            name="membership", unique_together={("user", "team")}
         ),
     ]

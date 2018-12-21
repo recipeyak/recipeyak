@@ -7,14 +7,10 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0014_auto_20171116_1920'),
-    ]
+    dependencies = [("core", "0014_auto_20171116_1920")]
 
     operations = [
         migrations.RenameField(
-            model_name='cartitem',
-            old_name='amount',
-            new_name='count',
-        ),
+            model_name="cartitem", old_name="amount", new_name="count"
+        )
     ]

@@ -5,13 +5,11 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0059_auto_20180624_1823'),
-    ]
+    dependencies = [("core", "0059_auto_20180624_1823")]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='scheduledrecipe',
-            unique_together={('recipe', 'on', 'user'), ('recipe', 'on', 'team')},
-        ),
+            name="scheduledrecipe",
+            unique_together={("recipe", "on", "user"), ("recipe", "on", "team")},
+        )
     ]

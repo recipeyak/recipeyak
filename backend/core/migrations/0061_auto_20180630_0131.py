@@ -5,9 +5,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0060_auto_20180624_1825'),
-    ]
+    dependencies = [("core", "0060_auto_20180624_1825")]
 
     migrations.RunSQL(
         """
@@ -17,5 +15,5 @@ class Migration(migrations.Migration):
         """,
         """
         ALTER TABLE core_scheduledrecipe DROP CONSTRAINT owner_selected;
-        """
+        """,
     )

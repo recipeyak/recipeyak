@@ -7,28 +7,32 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0033_membership_is_active'),
-    ]
+    dependencies = [("core", "0033_membership_is_active")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='invite',
-            name='user',
-        ),
-        migrations.RemoveField(
-            model_name='myuser',
-            name='membership',
-        ),
+        migrations.RemoveField(model_name="invite", name="user"),
+        migrations.RemoveField(model_name="myuser", name="membership"),
         migrations.AddField(
-            model_name='membership',
-            name='user',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="membership",
+            name="user",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='membership',
-            name='level',
-            field=models.CharField(choices=[('admin', 'admin'), ('member', 'member'), ('viewer', 'viewer')], default='member', max_length=6),
+            model_name="membership",
+            name="level",
+            field=models.CharField(
+                choices=[
+                    ("admin", "admin"),
+                    ("member", "member"),
+                    ("viewer", "viewer"),
+                ],
+                default="member",
+                max_length=6,
+            ),
         ),
     ]

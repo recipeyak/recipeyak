@@ -9,8 +9,8 @@ def test_create_user():
     """
     Ensure that password is hashed and email is set
     """
-    email = 'john@doe.org'
-    password = 'testing123'
+    email = "john@doe.org"
+    password = "testing123"
     user = MyUser.objects.create(email=email)
     user.set_password(password)
     user.save()
@@ -22,4 +22,7 @@ def test_avatar_url(user):
     """
     User's avatar url should not change
     """
-    assert user.avatar_url == "//www.gravatar.com/avatar/bc6a715808d9aae0ddeefb1e47e482a6?d=identicon&r=g"
+    assert (
+        user.avatar_url
+        == "//www.gravatar.com/avatar/bc6a715808d9aae0ddeefb1e47e482a6?d=identicon&r=g"
+    )

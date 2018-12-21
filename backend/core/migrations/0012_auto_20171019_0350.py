@@ -8,31 +8,29 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0011_auto_20171001_2129'),
-    ]
+    dependencies = [("core", "0011_auto_20171001_2129")]
 
     operations = [
         migrations.RenameField(
-            model_name='ingredient',
-            old_name='text',
-            new_name='description',
+            model_name="ingredient", old_name="text", new_name="description"
         ),
         migrations.AddField(
-            model_name='ingredient',
-            name='quantity',
-            field=models.PositiveIntegerField(default=1, validators=[django.core.validators.MinValueValidator(1)]),
+            model_name="ingredient",
+            name="quantity",
+            field=models.PositiveIntegerField(
+                default=1, validators=[django.core.validators.MinValueValidator(1)]
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='ingredient',
-            name='unit',
+            model_name="ingredient",
+            name="unit",
             field=models.CharField(default=1, max_length=255),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='cartitem',
-            name='count',
+            model_name="cartitem",
+            name="count",
             field=models.PositiveIntegerField(default=0),
         ),
     ]

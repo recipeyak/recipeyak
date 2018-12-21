@@ -7,14 +7,8 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0018_merge_20171202_0538'),
-    ]
+    dependencies = [("core", "0018_merge_20171202_0538")]
 
     operations = [
-        migrations.RenameField(
-            model_name='recipe',
-            old_name='views',
-            new_name='edits',
-        ),
+        migrations.RenameField(model_name="recipe", old_name="views", new_name="edits")
     ]

@@ -4,17 +4,13 @@ pytestmark = pytest.mark.django_db
 
 
 def test_team_force_join(client, team, user, user2, user3, empty_team):
-    assert not team.is_member(user2), \
-        'User should not be a member'
+    assert not team.is_member(user2), "User should not be a member"
     team.force_join(user2)
-    assert team.is_member(user2), \
-        'User should be team member'
+    assert team.is_member(user2), "User should be team member"
 
-    assert not team.is_member(user3), \
-        'User should not be a member'
+    assert not team.is_member(user3), "User should not be a member"
     team.force_join_admin(user3)
-    assert team.is_admin(user3), \
-        'User should be a team admin'
+    assert team.is_admin(user3), "User should be a team admin"
 
     # if user is already invited, cancel invite and add them to team
     empty_team.invite_user(user3, creator=user)
@@ -22,8 +18,7 @@ def test_team_force_join(client, team, user, user2, user3, empty_team):
     assert not empty_team.is_member(user3)
     empty_team.force_join(user3)
     assert empty_team.is_member(user3)
-    assert not user3.has_invite(empty_team), \
-        'Invite should be removed'
+    assert not user3.has_invite(empty_team), "Invite should be removed"
 
 
 def test_team_kick_user(client, team, user, user2):
@@ -37,26 +32,20 @@ def test_team_kick_user(client, team, user, user2):
 
 
 def test_team_set_public_private(client, team, user, user2):
-    assert not team.is_public, \
-        'Team should not be public'
+    assert not team.is_public, "Team should not be public"
     team.set_public()
-    assert team.is_public, \
-        'Team should be public'
+    assert team.is_public, "Team should be public"
 
     team.set_private()
-    assert not team.is_public, \
-        'Team should be private'
+    assert not team.is_public, "Team should be private"
 
 
 def test_team_is_member(client, team, user, user2):
-    assert not team.is_member(user2), \
-        'User2 should not not be a default team member'
-    assert team.is_member(user), \
-        'User should be a default team member'
+    assert not team.is_member(user2), "User2 should not not be a default team member"
+    assert team.is_member(user), "User should be a default team member"
 
     team.force_join(user2)
-    assert team.is_member(user2), \
-        'User2 should be a member'
+    assert team.is_member(user2), "User2 should be a member"
 
 
 def test_team_invite_user(client, empty_team, user):
@@ -103,14 +92,16 @@ def test_recipe_copy_to(client, team, user, recipe):
     assert recipe != team_recipe
     assert team_recipe.owner == team and recipe.owner == user
 
-    for a, b in [(recipe.steps.values(), team_recipe.steps.values()),
-                 (recipe.ingredients.values(), team_recipe.ingredients.values())]:
+    for a, b in [
+        (recipe.steps.values(), team_recipe.steps.values()),
+        (recipe.ingredients.values(), team_recipe.ingredients.values()),
+    ]:
         assert len(a) == len(b)
         for x, y in zip(a, b):
-            assert x['id'] != y['id']
-            assert x['recipe_id'] != y['recipe_id']
+            assert x["id"] != y["id"]
+            assert x["recipe_id"] != y["recipe_id"]
             # ignore keys that will change
-            for key in ['id', 'created', 'modified', 'recipe_id']:
+            for key in ["id", "created", "modified", "recipe_id"]:
                 x.pop(key)
                 y.pop(key)
             assert x == y

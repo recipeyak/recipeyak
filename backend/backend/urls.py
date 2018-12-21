@@ -18,13 +18,23 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'', include('core.urls')),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r"^admin/", admin.site.urls),
+    url(r"", include("core.urls")),
+    url(r"^api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     # we don't actually use this view. This serves as the url for the reset email
-    url(r'^password-reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)\.(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+    url(
+        r"^password-reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)\.(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$",
         TemplateView.as_view(template_name="password_reset_confirm.html"),
-        name='password_reset_confirm'),
-    url(r'^signup/$', TemplateView.as_view(template_name='socialccount_signup.html'), name='socialaccount_signup'),
-    url(r'^settings/$', TemplateView.as_view(template_name='socialaccount_connections.html'), name='socialaccount_connections'),
+        name="password_reset_confirm",
+    ),
+    url(
+        r"^signup/$",
+        TemplateView.as_view(template_name="socialccount_signup.html"),
+        name="socialaccount_signup",
+    ),
+    url(
+        r"^settings/$",
+        TemplateView.as_view(template_name="socialaccount_connections.html"),
+        name="socialaccount_connections",
+    ),
 ]

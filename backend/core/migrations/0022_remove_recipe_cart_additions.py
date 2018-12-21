@@ -5,13 +5,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0021_cartitem_total_cart_additions'),
-    ]
+    dependencies = [("core", "0021_cartitem_total_cart_additions")]
 
-    operations = [
-        migrations.RemoveField(
-            model_name='recipe',
-            name='cart_additions',
-        ),
-    ]
+    operations = [migrations.RemoveField(model_name="recipe", name="cart_additions")]

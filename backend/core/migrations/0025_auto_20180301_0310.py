@@ -7,24 +7,37 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0024_team_name'),
-    ]
+    dependencies = [("core", "0024_team_name")]
 
     operations = [
         migrations.AlterField(
-            model_name='team',
-            name='admin',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, related_name='admins', to=settings.AUTH_USER_MODEL),
+            model_name="team",
+            name="admin",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="admins",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='team',
-            name='member',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, related_name='members', to=settings.AUTH_USER_MODEL),
+            model_name="team",
+            name="member",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="members",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='team',
-            name='viewers',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, related_name='viewers', to=settings.AUTH_USER_MODEL),
+            model_name="team",
+            name="viewers",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="viewers",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

@@ -7,9 +7,8 @@ from typing import List
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0050_remove_recipe_deleted_at'),
-        ('core', '0049_remove_recipe_deleted_at'),
+        ("core", "0050_remove_recipe_deleted_at"),
+        ("core", "0049_remove_recipe_deleted_at"),
     ]
 
-    operations: List[object] = [
-    ]
+    operations: List[object] = []
