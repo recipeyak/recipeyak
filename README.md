@@ -22,20 +22,18 @@ cp .env-example .env
 echo "DEBUG=1" >> .env
 
 # frontend
-cd frontend
-yarn install
-./s/run
-./s/test
-./s/lint
-./s/fmt
+frontend/s/install
+frontend/s/run
+frontend/s/test
+frontend/s/lint
+frontend/s/fmt
 
 # backend
-cd backend
-poetry install
-./s/run
-./s/test # or ./s/test --watch
-./s/lint
-./s/fmt
+backend/s/install
+backend/s/run
+backend/s/test # or backend/s/test --watch
+backend/s/lint
+backend/s/fmt
 ```
 
 ### Testing with OAuth
