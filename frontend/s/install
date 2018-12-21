@@ -11,4 +11,3 @@ if [[ -f ../.env ]]; then
 fi
 
 yarn install
-
