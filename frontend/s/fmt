@@ -10,10 +10,6 @@ if [[ -f ../.env ]]; then
     set +a
 fi
 
-node scripts/lint.js
+glob="**/*.{js,jsx,scss,css,ts,tsx,json}"
 
-$(yarn bin)/tslint 'src/**/*.{ts,tsx}' --format 'codeFrame'
-
-s/fmt --list-different
-
-$(yarn bin)/tsc --noEmit
+$(yarn bin)/prettier "$@" "$glob"
