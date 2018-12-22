@@ -6,7 +6,8 @@
     "ordered-imports": false,
     "array-type": false,
     "no-string-literal": false,
-    "member-access": false
+    "member-access": false,
+    "max-classes-per-file": false
   },
   "jsRules": {}
 }

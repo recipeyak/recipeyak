@@ -1,19 +1,19 @@
 import * as React from "react"
 
 export const ButtonLink = (props: IButtonProps) => (
-  <ButtonPlain className={props.className + " is-link"} {...props} />
+  <ButtonPlain {...props} className={props.className + " is-link"} />
 )
 
 export const ButtonPrimary = (props: IButtonProps) => (
-  <ButtonPlain className={props.className + " is-primary"} {...props} />
+  <ButtonPlain {...props} className={props.className + " is-primary"} />
 )
 
 export const ButtonDanger = (props: IButtonProps) => (
-  <ButtonPlain className={props.className + " is-danger"} {...props} />
+  <ButtonPlain {...props} className={props.className + " is-danger"} />
 )
 
 export const ButtonSecondary = (props: IButtonProps) => (
-  <ButtonPlain className={props.className + " is-secondary"} {...props} />
+  <ButtonPlain {...props} className={props.className + " is-secondary"} />
 )
 
 interface IButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -26,8 +26,8 @@ export const ButtonPlain = ({
   ...props
 }: IButtonProps) => (
   <button
-    className={`my-button ${className} ${loading ? "is-loading" : ""}`}
-    {...props}>
+    {...props}
+    className={`my-button ${className} ${loading ? "is-loading" : ""}`}>
     {children}
   </button>
 )

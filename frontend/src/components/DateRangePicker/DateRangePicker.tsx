@@ -1,4 +1,4 @@
-import React from "react"
+import * as React from "react"
 import addMonths from "date-fns/add_months"
 import isPast from "date-fns/is_past"
 import endOfDay from "date-fns/end_of_day"
@@ -8,9 +8,24 @@ import Month from "./Month"
 
 import "./date-range-picker.scss"
 
-class DateRangePicker extends React.Component {
-  handleClick = date => {
-    if (isPast(endOfDay(date))) return
+interface IDateRangePickerProps {
+  readonly selectingStart: boolean
+  readonly selectingEnd: boolean
+  readonly setStartDay: (date: Date) => void
+  readonly setEndDay: (date: Date) => void
+  readonly visible: boolean
+  readonly month: Date
+  readonly startDay: Date
+  readonly endDay: Date
+  readonly nextMonth: () => void
+  readonly prevMonth: () => void
+}
+
+class DateRangePicker extends React.Component<IDateRangePickerProps> {
+  handleClick = (date: Date) => {
+    if (isPast(endOfDay(date))) {
+      return
+    }
 
     if (this.props.selectingStart) {
       this.props.setStartDay(date)
@@ -36,7 +51,7 @@ class DateRangePicker extends React.Component {
           this.props.visible ? "d-grid" : "d-none"
         )}>
         <Month
-          showLeft={true}
+          showLeft
           date={this.props.month}
           startDay={this.props.startDay}
           endDay={this.props.endDay}
@@ -45,7 +60,7 @@ class DateRangePicker extends React.Component {
           prevMonth={this.props.prevMonth}
         />
         <Month
-          showRight={true}
+          showRight
           date={addMonths(this.props.month, 1)}
           startDay={this.props.startDay}
           endDay={this.props.endDay}

@@ -1,4 +1,4 @@
-import React from "react"
+import * as React from "react"
 import isWithinRange from "date-fns/is_within_range"
 import format from "date-fns/format"
 import isPast from "date-fns/is_past"
@@ -24,7 +24,18 @@ class MonthWeekTitles extends React.Component {
   }
 }
 
-class Month extends React.Component {
+interface IMonthProps {
+  readonly prevMonth: () => void
+  readonly nextMonth: () => void
+  readonly handleClick: (date: Date) => void
+  readonly date: Date
+  readonly showLeft?: boolean
+  readonly showRight?: boolean
+  readonly startDay: Date
+  readonly endDay: Date
+}
+
+class Month extends React.Component<IMonthProps> {
   static defaultProps = {
     showRight: false,
     showLeft: false
@@ -62,7 +73,7 @@ class Month extends React.Component {
 
           {daysOfMonth(this.props.date).map(date => (
             <Day
-              key={date}
+              key={date.toString()}
               handleClick={this.props.handleClick}
               date={date}
               inPast={isPast(endOfDay(date))}
