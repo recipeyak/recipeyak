@@ -1,10 +1,11 @@
-import notification from "./notification.js"
+import notification, { initialState } from "./notification"
 
 import { setNotification, clearNotification } from "../actions"
 
 describe("Notification", () => {
   it("Sets notification settings", () => {
     const beforeState = {
+      ...initialState,
       message: ""
     }
 
@@ -14,6 +15,7 @@ describe("Notification", () => {
     }
 
     const afterState = {
+      ...initialState,
       message: "testing",
       closeable: true,
       show: true
@@ -25,12 +27,14 @@ describe("Notification", () => {
   })
   it("clears notification", () => {
     const beforeState = {
+      ...initialState,
       message: "testing",
       closeable: true,
       show: true
     }
 
     const afterState = {
+      ...initialState,
       message: "",
       closeable: false,
       show: false

@@ -143,6 +143,9 @@ import raven from "raven-js"
 
 import { store } from "./store"
 import { IUser, ISocialConnection, SocialProvider } from "./reducers/user"
+import { IRecipe } from "./reducers/calendar"
+import { IInvite } from "./reducers/invites"
+import { INotificationState } from "./reducers/notification"
 
 const config = { timeout: 15000 }
 
@@ -215,13 +218,13 @@ const is404 = (err: AxiosError) => err.response && err.response.status === 404
 interface ISetNotification {
   readonly message: string
   readonly closeable?: boolean
-  readonly level: "success" | "info" | "warning" | "danger"
+  readonly level?: INotificationState["level"]
 }
 
 export const setNotification = ({
   message,
   closeable,
-  level
+  level = "info"
 }: ISetNotification) => ({
   type: SET_NOTIFICATION,
   notification: {
@@ -240,7 +243,7 @@ interface INotificationWithTimeout {
   readonly sticky?: boolean
   readonly message: string
   readonly closeable?: boolean
-  readonly level?: "success" | "info" | "warning" | "danger"
+  readonly level?: INotificationState["level"]
 }
 
 // https://stackoverflow.com/a/38574266/3555105
@@ -1965,7 +1968,7 @@ export const setLoadingInvites = (val: boolean) => ({
   val
 })
 
-export const setInvites = (invites: unknown[]) => ({
+export const setInvites = (invites: IInvite[]) => ({
   type: SET_INVITES,
   invites
 })
@@ -1991,7 +1994,7 @@ export const fetchInvites = () => (dispatch: Dispatch) => {
     })
 }
 
-export const setAcceptingInvite = (id: boolean, val?: unknown) => ({
+export const setAcceptingInvite = (id: IInvite["id"], val: boolean) => ({
   type: SET_ACCEPTING_INVITE,
   id,
   val
@@ -2003,20 +2006,20 @@ export const setAcceptedInvite = (id: number) => ({
 })
 
 export const acceptingInvite = (id: number) => (dispatch: Dispatch) => {
-  dispatch(setAcceptingInvite(true))
+  dispatch(setAcceptingInvite(id, true))
   return http
     .post(`/api/v1/invites/${id}/accept/`, {})
     .then(() => {
-      dispatch(setAcceptingInvite(false))
+      dispatch(setAcceptingInvite(id, false))
       dispatch(setAcceptedInvite(id))
     })
     .catch(err => {
-      dispatch(setAcceptingInvite(false))
+      dispatch(setAcceptingInvite(id, false))
       throw err
     })
 }
 
-export const setDecliningInvite = (id: boolean, val?: unknown) => ({
+export const setDecliningInvite = (id: IInvite["id"], val: boolean) => ({
   type: SET_DECLINING_INVITE,
   id,
   val
@@ -2028,15 +2031,15 @@ export const setDeclinedInvite = (id: number) => ({
 })
 
 export const decliningInvite = (id: number) => (dispatch: Dispatch) => {
-  dispatch(setDecliningInvite(true))
+  dispatch(setDecliningInvite(id, true))
   return http
     .post(`/api/v1/invites/${id}/decline/`, {})
     .then(() => {
-      dispatch(setDecliningInvite(false))
+      dispatch(setDecliningInvite(id, false))
       dispatch(setDeclinedInvite(id))
     })
     .catch(err => {
-      dispatch(setDecliningInvite(false))
+      dispatch(setDecliningInvite(id, false))
       throw err
     })
 }
@@ -2102,7 +2105,7 @@ export const setCalendarError = (error: unknown) => ({
   error
 })
 
-export const setCalendarRecipe = (recipe: unknown) => ({
+export const setCalendarRecipe = (recipe: IRecipe) => ({
   type: SET_CALENDAR_RECIPE,
   recipe
 })
@@ -2140,12 +2143,12 @@ export const setSchedulingRecipe = (recipeID: number, scheduling: boolean) => ({
   scheduling
 })
 
-export const setCalendarRecipes = (recipes: unknown[]) => ({
+export const setCalendarRecipes = (recipes: IRecipe[]) => ({
   type: SET_CALENDAR_RECIPES,
   recipes
 })
 
-export const replaceCalendarRecipe = (id: string, recipe: unknown) => ({
+export const replaceCalendarRecipe = (id: IRecipe["id"], recipe: IRecipe) => ({
   type: REPLACE_CALENDAR_RECIPE,
   id,
   recipe
@@ -2174,7 +2177,8 @@ export const addingScheduledRecipe = (
       ? "/api/v1/calendar/"
       : `/api/v1/t/${teamID}/calendar/`
 
-  dispatch(setCalendarRecipe({ ...data, id, recipe }))
+  // HACK(sbdchd): we need to add the user to the recipe
+  dispatch(setCalendarRecipe({ ...data, id, recipe } as IRecipe))
   return http
     .post(url, data)
     .then(res => {

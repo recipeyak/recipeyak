@@ -8,16 +8,32 @@ import {
   SET_SELECTING_START,
   SET_SELECTING_END
 } from "../actionTypes"
+import { AnyAction } from "redux"
+
+export interface IShoppingListItem {
+  readonly name: string
+  readonly unit: string
+}
+
+export interface IShoppingListState {
+  readonly shoppinglist: IShoppingListItem[]
+  readonly loading: boolean
+  readonly error: boolean
+  readonly startDay: Date
+  readonly endDay: Date
+}
+
+const initialState: IShoppingListState = {
+  shoppinglist: [],
+  loading: false,
+  error: false,
+  startDay: startOfToday(),
+  endDay: addWeeks(startOfToday(), 1)
+}
 
 const shoppinglist = (
-  state = {
-    shoppinglist: [],
-    loading: false,
-    error: false,
-    startDay: startOfToday(),
-    endDay: addWeeks(startOfToday(), 1)
-  },
-  action
+  state: IShoppingListState = initialState,
+  action: AnyAction
 ) => {
   switch (action.type) {
     case SET_SHOPPING_LIST:

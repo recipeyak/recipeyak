@@ -1,12 +1,13 @@
-import passwordChange from "./passwordChange.js"
+import passwordChange, { initialState } from "./passwordChange"
 
 import { setLoadingPasswordUpdate, setErrorPasswordUpdate } from "../actions"
 
 describe("passwordChange", () => {
   it("sets the loading state of the updating password", () => {
-    const beforeState = {}
+    const beforeState = initialState
 
     const afterState = {
+      ...initialState,
       loadingPasswordUpdate: true
     }
 
@@ -15,6 +16,7 @@ describe("passwordChange", () => {
     )
 
     const anotherAfterState = {
+      ...initialState,
       loadingPasswordUpdate: false
     }
 
@@ -24,13 +26,14 @@ describe("passwordChange", () => {
   })
 
   it("sets the error state of the updating password", () => {
-    const beforeState = {}
+    const beforeState = initialState
 
     const error = {
       new_password2: ["The two password fields didn't match."]
     }
 
     const afterState = {
+      ...initialState,
       errorPasswordUpdate: error
     }
     expect(passwordChange(beforeState, setErrorPasswordUpdate(error))).toEqual(

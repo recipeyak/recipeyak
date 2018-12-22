@@ -2,13 +2,21 @@ import {
   SET_LOADING_PASSWORD_UPDATE,
   SET_ERROR_PASSWORD_UPDATE
 } from "../actionTypes"
+import { AnyAction } from "redux"
+
+export interface IPasswordChangeState {
+  readonly loadingPasswordUpdate: boolean
+  readonly errorPasswordUpdate: unknown
+}
+
+export const initialState: IPasswordChangeState = {
+  loadingPasswordUpdate: false,
+  errorPasswordUpdate: {}
+}
 
 export const passwordChange = (
-  state = {
-    loadingPasswordUpdate: false,
-    errorPasswordUpdate: {}
-  },
-  action
+  state: IPasswordChangeState = initialState,
+  action: AnyAction
 ) => {
   switch (action.type) {
     case SET_LOADING_PASSWORD_UPDATE:

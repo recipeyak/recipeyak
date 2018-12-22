@@ -6,18 +6,27 @@ import {
   SET_LOADING_RECIPES,
   SET_LOADING_ADD_RECIPE
 } from "../actionTypes"
+import { AnyAction } from "redux"
 
-const loading = (
-  state = {
-    login: false,
-    signup: false,
-    reset: false,
-    resetConfirmation: false,
-    recipes: false,
-    addRecipe: false
-  },
-  action
-) => {
+export interface ILoadingState {
+  readonly login: boolean
+  readonly signup: boolean
+  readonly reset: boolean
+  readonly resetConfirmation: boolean
+  readonly recipes: boolean
+  readonly addRecipe: boolean
+}
+
+export const initialState: ILoadingState = {
+  login: false,
+  signup: false,
+  reset: false,
+  resetConfirmation: false,
+  recipes: false,
+  addRecipe: false
+}
+
+const loading = (state: ILoadingState = initialState, action: AnyAction) => {
   switch (action.type) {
     case SET_LOADING_LOGIN:
       return { ...state, login: action.val }

@@ -6,19 +6,38 @@ import {
   SET_ACCEPTED_INVITE,
   SET_DECLINED_INVITE
 } from "../actionTypes"
+import { AnyAction } from "redux"
 
-const invites = (
-  state = {
-    loading: false
-  },
-  action
-) => {
+interface ITeam {
+  readonly id: number
+  readonly name: string
+}
+
+export interface IInvite {
+  readonly id: number
+  readonly accepting?: boolean
+  readonly declining?: boolean
+  readonly status: "accepted" | "declined" | "open"
+  readonly active: boolean
+  readonly team: ITeam
+}
+
+export interface IInvitesState {
+  readonly loading: boolean
+  readonly [key: number]: IInvite
+}
+
+export const initialState: IInvitesState = {
+  loading: false
+}
+
+const invites = (state = initialState, action: AnyAction) => {
   switch (action.type) {
     case SET_INVITES:
       return {
         ...state,
         ...action.invites.reduce(
-          (a, b) => ({
+          (a: unknown, b: IInvite) => ({
             ...a,
             [b.id]: b
           }),

@@ -1,4 +1,4 @@
-import search from "./search"
+import search, { ISearchState } from "./search"
 import {
   setSearchResults,
   clearSearchResults,
@@ -8,12 +8,14 @@ import {
 
 describe("search", () => {
   test("action#setSearchResults", () => {
-    const beforeState = {
-      results: []
+    const beforeState: ISearchState = {
+      results: [],
+      loading: 0
     }
 
-    const afterState = {
-      results: ["test_result", 123]
+    const afterState: ISearchState = {
+      results: ["test_result", 123],
+      loading: 0
     }
 
     expect(search(beforeState, setSearchResults(["test_result", 123]))).toEqual(
@@ -22,21 +24,25 @@ describe("search", () => {
   })
   test("action#clearSearchResults", () => {
     const beforeState = {
-      results: [123]
+      results: [123],
+      loading: 0
     }
 
     const afterState = {
-      results: []
+      results: [],
+      loading: 0
     }
 
     expect(search(beforeState, clearSearchResults())).toEqual(afterState)
   })
   test("action#incrLoadingSearch", () => {
-    const beforeState = {
+    const beforeState: ISearchState = {
+      results: [],
       loading: 2
     }
 
-    const afterState = {
+    const afterState: ISearchState = {
+      results: [],
       loading: 3
     }
 
@@ -44,15 +50,19 @@ describe("search", () => {
   })
   test("action#decrLoadingSearch", () => {
     const beforeState = {
+      results: [],
       loading: 2
     }
 
     const afterState = {
+      results: [],
       loading: 1
     }
 
     expect(search(beforeState, decrLoadingSearch())).toEqual(afterState)
 
-    expect(() => search({ loading: 0 }, decrLoadingSearch())).toThrow()
+    expect(() =>
+      search({ loading: 0, results: [] }, decrLoadingSearch())
+    ).toThrow()
   })
 })

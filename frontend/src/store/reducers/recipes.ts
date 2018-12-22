@@ -26,8 +26,73 @@ import {
   UPDATE_RECIPE_OWNER,
   SET_SCHEDULING_RECIPE
 } from "../actionTypes"
+import { AnyAction } from "redux"
+import { ITeam } from "./teams"
 
-export const recipes = (state = {}, action) => {
+export interface IIngredient {
+  readonly id: number
+  readonly quantity: string
+  readonly name: string
+  readonly description: string
+  readonly position: number
+  readonly optional: boolean
+  readonly updating?: boolean
+  readonly removing?: boolean
+}
+
+export interface IStep {
+  readonly id: number
+  readonly text: string
+  readonly position: number
+  readonly updating?: boolean
+  readonly removing?: boolean
+}
+
+type IRecipeOwner =
+  | {
+      id: number
+      type: "team"
+      name: string
+    }
+  | {
+      id: number
+      type: "user"
+    }
+
+export interface IRecipe {
+  readonly id: number
+  readonly name: string
+  readonly author: string
+  readonly source: string
+  readonly time: string
+  readonly servings: string
+  readonly steps: IStep[]
+  readonly edits: unknown[]
+  readonly modified: string
+  readonly last_scheduled: string
+  readonly team: ITeam["id"]
+  readonly owner: IRecipeOwner
+  readonly ingredients: IIngredient[]
+  readonly loading?: boolean
+  readonly deleting?: boolean
+  readonly addingStepToRecipe?: boolean
+  readonly addingIngredient?: boolean
+
+  readonly scheduling?: boolean
+  readonly updating?: boolean
+  readonly error404?: boolean
+}
+
+export interface IRecipesState {
+  readonly [key: number]: IRecipe
+}
+
+export const initialState: IRecipesState = {}
+
+export const recipes = (
+  state: IRecipesState = initialState,
+  action: AnyAction
+) => {
   switch (action.type) {
     case ADD_RECIPE:
       return { ...state, [action.recipe.id]: action.recipe }
@@ -136,7 +201,10 @@ export const recipes = (state = {}, action) => {
     case SET_RECIPES:
       // convert the array of objects to an object with the recipe.id as the
       // key, and the recipe as the value
-      return action.recipes.reduce((a, b) => ({ ...a, [b.id]: b }), {})
+      return action.recipes.reduce(
+        (a: IRecipesState, b: IRecipe) => ({ ...a, [b.id]: b }),
+        {}
+      )
     case SET_DELETING_RECIPE:
       return {
         ...state,

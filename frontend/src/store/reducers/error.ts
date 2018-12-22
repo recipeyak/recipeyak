@@ -7,23 +7,39 @@ import {
   SET_ERROR_ADD_RECIPE,
   SET_ERROR_RECIPES
 } from "../actionTypes"
+import { AnyAction } from "redux"
 
-const error = (
-  state = {
-    login: {},
-    socialLogin: {},
-    signup: {},
-    reset: {},
-    resetConfirmation: {},
-    addRecipe: {
-      errorWithName: false,
-      errorWithIngredients: false,
-      errorWithSteps: false
-    },
-    recipes: false
+export interface IErrorState {
+  readonly login: unknown
+  readonly socialLogin: unknown
+  readonly signup: unknown
+  readonly reset: unknown
+  readonly resetConfirmation: unknown
+  readonly addRecipe:
+    | {
+        readonly errorWithName: boolean
+        readonly errorWithIngredients: boolean
+        readonly errorWithSteps: boolean
+      }
+    | boolean
+  readonly recipes: boolean
+}
+
+export const initialState: IErrorState = {
+  login: {},
+  socialLogin: {},
+  signup: {},
+  reset: {},
+  resetConfirmation: {},
+  addRecipe: {
+    errorWithName: false,
+    errorWithIngredients: false,
+    errorWithSteps: false
   },
-  action
-) => {
+  recipes: false
+}
+
+const error = (state: IErrorState = initialState, action: AnyAction) => {
   switch (action.type) {
     case SET_ERROR_LOGIN:
       return { ...state, login: action.val }

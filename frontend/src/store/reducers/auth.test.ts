@@ -1,4 +1,4 @@
-import auth from "./auth"
+import auth, { IAuthState } from "./auth"
 
 import { setFromUrl } from "../actions"
 
@@ -10,7 +10,7 @@ describe("auth", () => {
 
     const fromUrl = "/recipes/15?test#1234"
 
-    const afterState = {
+    const afterState: IAuthState = {
       fromUrl
     }
 
