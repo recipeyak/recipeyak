@@ -1,6 +1,6 @@
 import { connect } from "react-redux"
 
-import { clearNotification } from "../store/actions.js"
+import { clearNotification } from "../store/actions"
 import Notification from "../components/Notification.jsx"
 
 const mapDispatchToProps = dispatch => {

@@ -1,7 +1,7 @@
 import { connect } from "react-redux"
 import queryString from "query-string"
 
-import { socialLogin as login } from "../store/actions.js"
+import { socialLogin as login } from "../store/actions"
 import OAuth from "../components/OAuth.jsx"
 
 const mapDispatchToProps = dispatch => {

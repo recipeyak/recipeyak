@@ -7,7 +7,7 @@ import {
   disconnectSocialAccount,
   loggingOut,
   deleteUserAccount
-} from "../store/actions.js"
+} from "../store/actions"
 
 import Settings from "../components/Settings.jsx"
 

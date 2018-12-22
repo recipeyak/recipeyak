@@ -6,7 +6,7 @@ import createHistory from "history/createBrowserHistory"
 import { routerReducer, routerMiddleware } from "react-router-redux"
 
 import recipes from "./reducers/recipes.js"
-import user from "./reducers/user.js"
+import user from "./reducers/user"
 import loading from "./reducers/loading.js"
 import error from "./reducers/error.js"
 import notification from "./reducers/notification.js"

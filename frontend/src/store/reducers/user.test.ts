@@ -1,4 +1,4 @@
-import user, { ISocialConnection } from "./user.js"
+import user, { ISocialConnection } from "./user"
 
 import {
   login,
@@ -15,7 +15,7 @@ import {
   setUserID,
   setUserLoggedIn,
   setScheduleURL
-} from "../actions.js"
+} from "../actions"
 
 describe("User", () => {
   it("Logs in user adding token", () => {

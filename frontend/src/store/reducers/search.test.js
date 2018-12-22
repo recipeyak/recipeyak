@@ -4,7 +4,7 @@ import {
   clearSearchResults,
   incrLoadingSearch,
   decrLoadingSearch
-} from "../actions.js"
+} from "../actions"
 
 describe("search", () => {
   test("action#setSearchResults", () => {

@@ -7,7 +7,7 @@ import {
   setErrorResetConfirmation,
   setErrorAddRecipe,
   setErrorRecipes
-} from "../actions.js"
+} from "../actions"
 
 describe("error", () => {
   it("sets login error", () => {

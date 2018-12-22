@@ -6,7 +6,7 @@ import {
   setLoadingResetConfirmation,
   setLoadingRecipes,
   setLoadingAddRecipe
-} from "../actions.js"
+} from "../actions"
 
 describe("loading", () => {
   it("sets loading login", () => {

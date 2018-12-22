@@ -1,6 +1,6 @@
 import notification from "./notification.js"
 
-import { setNotification, clearNotification } from "../actions.js"
+import { setNotification, clearNotification } from "../actions"
 
 describe("Notification", () => {
   it("Sets notification settings", () => {
