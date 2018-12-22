@@ -6,7 +6,7 @@ import eachDay from "date-fns/each_day"
 import isBefore from "date-fns/is_before"
 import startOfDay from "date-fns/start_of_day"
 
-export function pyFormat(date: Date) {
+export function pyFormat(date: Date | string) {
   return format(date, "YYYY-MM-DD")
 }
 

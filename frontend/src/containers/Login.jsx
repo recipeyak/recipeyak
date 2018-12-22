@@ -1,6 +1,6 @@
 import { connect } from "react-redux"
 
-import { logUserIn, setErrorLogin, setFromUrl } from "../store/actions.js"
+import { logUserIn, setErrorLogin, setFromUrl } from "../store/actions"
 import Login from "../components/Login.jsx"
 
 const mapDispatchToProps = dispatch => {

@@ -1,6 +1,6 @@
 import auth from "./auth"
 
-import { setFromUrl } from "../actions.js"
+import { setFromUrl } from "../actions"
 
 describe("auth", () => {
   it("sets redirect url", () => {

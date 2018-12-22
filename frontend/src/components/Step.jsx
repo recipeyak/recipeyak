@@ -37,7 +37,7 @@ import { DragSource, DropTarget } from "react-dnd"
 import * as ItemTypes from "../dragDrop"
 import ListItem from "./ListItem"
 
-import { deletingStep, updatingStep } from "../store/actions.js"
+import { deletingStep, updatingStep } from "../store/actions"
 
 const style = {
   backgroundColor: "white"
