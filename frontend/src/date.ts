@@ -6,24 +6,24 @@ import eachDay from "date-fns/each_day"
 import isBefore from "date-fns/is_before"
 import startOfDay from "date-fns/start_of_day"
 
-export function pyFormat(date) {
+export function pyFormat(date: Date) {
   return format(date, "YYYY-MM-DD")
 }
 
-export function daysOfMonth(date) {
+export function daysOfMonth(date: Date) {
   return eachDay(startOfMonth(date), lastDayOfMonth(date))
 }
 
-export function daysFromSunday(date) {
+export function daysFromSunday(date: Date) {
   return startOfMonth(date).getDay()
 }
 
-export function daysUntilSaturday(date) {
+export function daysUntilSaturday(date: Date) {
   // use 6 since days are base 0
   const saturday = 6
   return saturday - endOfMonth(date).getDay()
 }
 
-export function beforeCurrentDay(date) {
+export function beforeCurrentDay(date: Date) {
   return isBefore(date, startOfDay(new Date()))
 }
