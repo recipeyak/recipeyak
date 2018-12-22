@@ -25,13 +25,44 @@ import {
   DELETE_TEAM,
   UPDATE_TEAM
 } from "../actionTypes"
+import { IUser } from "./user"
 
-export const teams = (
-  state = {
-    allIds: []
-  },
-  action
-) => {
+// TODO(sbdchd): check if these optional fields are always used (aka, required)
+interface IMember {
+  readonly id: number
+  readonly user: IUser
+  readonly level?: "admin" | "contributor" | "viewer"
+  readonly deleting?: boolean
+}
+
+export interface ITeam {
+  readonly id: number
+  readonly name: string
+  readonly loading?: boolean // TODO(sbdchd): maybe remove? Is it used?
+  readonly updating?: boolean
+  readonly loadingRecipes?: boolean
+  readonly sendingTeamInvites?: boolean
+  readonly loadingTeam?: boolean
+  readonly error404?: boolean
+  readonly recipes?: number[]
+  readonly members: {
+    readonly [key: number]: IMember
+  }
+}
+
+export interface ITeamsState {
+  readonly allIds: number[]
+  readonly loading?: boolean
+  readonly creating?: boolean
+  readonly copying?: boolean
+  readonly [key: number]: ITeam
+}
+
+const initialState: ITeamsState = {
+  allIds: []
+}
+
+export const teams = (state = initialState, action: any) => {
   switch (action.type) {
     case ADD_TEAM:
       return {
@@ -93,7 +124,7 @@ export const teams = (
         [action.id]: {
           ...state[action.id],
           members: action.members.reduce(
-            (a, b) => ({
+            (a: unknown, b: { id: number}) => ({
               ...a,
               [b.id]: b
             }),
@@ -107,7 +138,7 @@ export const teams = (
         [action.id]: {
           ...state[action.id],
           invites: action.invites.reduce(
-            (a, b) => ({
+            (a: unknown, b: { id: number }) => ({
               ...a,
               [b.id]: b
             }),
@@ -120,7 +151,7 @@ export const teams = (
         ...state,
         [action.id]: {
           ...state[action.id],
-          recipes: action.recipes.map(({ id }) => id)
+          recipes: action.recipes.map(({ id }: { id: number}) => id)
         }
       }
     case SET_UPDATING_MEMBERSHIP:
@@ -190,7 +221,7 @@ export const teams = (
       return {
         ...state,
         ...action.teams.reduce(
-          (a, b) => ({
+          (a: unknown, b: { id: number}) => ({
             ...a,
             [b.id]: {
               ...state[b.id],
@@ -199,7 +230,7 @@ export const teams = (
           }),
           {}
         ),
-        allIds: uniq([...state.allIds, ...action.teams.map(x => x.id)])
+        allIds: uniq([...state.allIds, ...action.teams.map((x: {id: number}) => x.id)])
       }
     case SET_LOADING_TEAMS:
       return {

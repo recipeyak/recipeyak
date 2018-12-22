@@ -17,7 +17,7 @@ import {
   SET_SCHEDULE_URL
 } from "../actionTypes"
 
-import { socialAccounts } from "./socialAccounts"
+import { socialAccounts, ISocialAccountsState } from "./socialAccounts"
 
 import { setDarkModeClass } from "../../sideEffects"
 
@@ -27,7 +27,7 @@ export interface IUser {
   readonly avatar_url: string
   readonly email: string
   readonly id: number
-  readonly has_usable_password: boolean
+  readonly has_usable_password?: boolean
 }
 
 export type SocialProvider = "github" | "gitlab"
@@ -39,7 +39,23 @@ export interface ISocialConnection {
   readonly date_joined?: string
 }
 
-const initialState = {
+interface IUserState {
+  readonly id: null | number
+  readonly loggedIn: boolean
+  readonly avatarURL: string
+  readonly email: string
+  readonly loading: boolean
+  readonly error: boolean
+  readonly stats: unknown
+  readonly stats_loading: boolean
+  readonly loggingOut: boolean
+  readonly darkMode: boolean
+  readonly hasUsablePassword: boolean
+  readonly socialAccountConnections: ISocialAccountsState
+  readonly scheduleURL: string
+}
+
+const initialState: IUserState = {
   id: null,
   loggedIn: false,
   avatarURL: "",
@@ -58,7 +74,7 @@ const initialState = {
   scheduleURL: "/schedule/"
 }
 
-export const user = (state = initialState, action: any) => {
+export const user = (state: IUserState = initialState, action: any) => {
   switch (action.type) {
     case LOG_IN:
       raven.setUserContext({
