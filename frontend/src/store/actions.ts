@@ -1,123 +1,6 @@
 import isSameDay from "date-fns/is_same_day"
 
-import {
-  LOG_IN,
-  LOG_OUT,
-  ADD_RECIPE,
-  ADD_STEP_TO_RECIPE,
-  SET_LOADING_ADD_STEP_TO_RECIPE,
-  ADD_INGREDIENT_TO_RECIPE,
-  UPDATE_RECIPE_NAME,
-  DELETE_INGREDIENT,
-  DELETE_STEP,
-  UPDATE_RECIPE_SOURCE,
-  UPDATE_RECIPE_AUTHOR,
-  UPDATE_RECIPE_TIME,
-  SET_LOADING_LOGIN,
-  SET_ERROR_LOGIN,
-  SET_ERROR_SOCIAL_LOGIN,
-  SET_LOADING_SIGNUP,
-  SET_ERROR_SIGNUP,
-  SET_LOADING_RESET,
-  SET_LOADING_RECIPES,
-  SET_ERROR_RESET,
-  SET_NOTIFICATION,
-  CLEAR_NOTIFICATION,
-  UPDATE_INGREDIENT,
-  SET_RECIPES,
-  SET_LOADING_ADD_RECIPE,
-  SET_ERROR_ADD_RECIPE,
-  SET_ERROR_RECIPES,
-  UPDATE_STEP,
-  SET_AVATAR_URL,
-  SET_ERROR_PASSWORD_UPDATE,
-  SET_LOADING_PASSWORD_UPDATE,
-  SET_USER_EMAIL,
-  SET_ERROR_USER,
-  SET_LOADING_USER,
-  SET_SHOPPING_LIST,
-  SET_LOADING_SHOPPING_LIST,
-  SET_LOADING_USER_STATS,
-  SET_USER_STATS,
-  DELETE_RECIPE,
-  SET_LOADING_RECIPE,
-  SET_DELETING_RECIPE,
-  SET_RECIPE,
-  SET_ADDING_INGREDIENT_TO_RECIPE,
-  SET_UPDATING_INGREDIENT,
-  SET_REMOVING_INGREDIENT,
-  SET_UPDATING_STEP,
-  SET_REMOVING_STEP,
-  SET_UPDATING_USER_EMAIL,
-  SET_RECIPE_404,
-  SET_LOGGING_OUT,
-  SET_RECIPE_UPDATING,
-  SET_SHOPPING_LIST_ERROR,
-  SET_SOCIAL_ACCOUNT_CONNECTIONS,
-  SET_LOADING_RESET_CONFIRMATION,
-  SET_ERROR_RESET_CONFIRMATION,
-  TOGGLE_DARK_MODE,
-  SET_ADD_RECIPE_FORM_NAME,
-  SET_ADD_RECIPE_FORM_AUTHOR,
-  SET_ADD_RECIPE_FORM_SOURCE,
-  SET_ADD_RECIPE_FORM_TIME,
-  SET_ADD_RECIPE_FORM_SERVINGS,
-  SET_ADD_RECIPE_FORM_TEAM,
-  ADD_ADD_RECIPE_FORM_INGREDIENT,
-  REMOVE_ADD_RECIPE_FORM_INGREDIENT,
-  UPDATE_ADD_RECIPE_FORM_INGREDIENT,
-  ADD_ADD_RECIPE_FORM_STEP,
-  REMOVE_ADD_RECIPE_FORM_STEP,
-  UPDATE_ADD_RECIPE_FORM_STEP,
-  CLEAR_ADD_RECIPE_FORM,
-  SET_SOCIAL_ACCOUNT_CONNECTION,
-  SET_PASSWORD_USABLE,
-  SET_FROM_URL,
-  ADD_TEAM,
-  SET_LOADING_TEAM,
-  SET_LOADING_TEAM_MEMBERS,
-  SET_LOADING_TEAM_RECIPES,
-  SET_TEAM_404,
-  SET_TEAM_MEMBERS,
-  SET_TEAM_RECIPES,
-  SET_UPDATING_USER_TEAM_LEVEL,
-  SET_USER_TEAM_LEVEL,
-  SET_DELETING_MEMBERSHIP,
-  DELETE_MEMBERSHIP,
-  SET_USER_ID,
-  SET_SENDING_TEAM_INVITES,
-  SET_TEAMS,
-  SET_LOADING_TEAMS,
-  SET_TEAM,
-  SET_CREATING_TEAM,
-  SET_COPYING_TEAM,
-  SET_INVITES,
-  SET_LOADING_INVITES,
-  SET_ERROR_FETCHING_INVITES,
-  SET_DECLINING_INVITE,
-  SET_ACCEPTING_INVITE,
-  SET_DECLINED_INVITE,
-  SET_ACCEPTED_INVITE,
-  DELETE_TEAM,
-  UPDATE_TEAM,
-  UPDATE_RECIPE_OWNER,
-  SET_CALENDAR_RECIPES,
-  SET_CALENDAR_RECIPE,
-  DELETE_CALENDAR_RECIPE,
-  SET_CALENDAR_ERROR,
-  SET_CALENDAR_LOADING,
-  SET_SCHEDULING_RECIPE,
-  SET_SELECTING_START,
-  SET_SELECTING_END,
-  MOVE_CALENDAR_RECIPE,
-  REPLACE_CALENDAR_RECIPE,
-  SET_USER_LOGGED_IN,
-  SET_SEARCH_RESULTS,
-  CLEAR_SEARCH_RESULTS,
-  INCR_LOADING_SEARCH,
-  DECR_LOADING_SEARCH,
-  SET_SCHEDULE_URL
-} from "./actionTypes"
+import * as t from "./actionTypes"
 
 type TeamID = number | "personal"
 
@@ -226,7 +109,7 @@ export const setNotification = ({
   closeable,
   level = "info"
 }: ISetNotification) => ({
-  type: SET_NOTIFICATION,
+  type: t.SET_NOTIFICATION,
   notification: {
     message,
     closeable,
@@ -235,7 +118,7 @@ export const setNotification = ({
 })
 
 export const clearNotification = () => ({
-  type: CLEAR_NOTIFICATION
+  type: t.CLEAR_NOTIFICATION
 })
 
 interface INotificationWithTimeout {
@@ -272,16 +155,16 @@ export const showNotificationWithTimeout = ({
 }
 
 export const login = (user: IUser) => ({
-  type: LOG_IN,
+  type: t.LOG_IN,
   user
 })
 
 export const logout = () => ({
-  type: LOG_OUT
+  type: t.LOG_OUT
 })
 
 export const setLoggingOut = (val: boolean) => ({
-  type: SET_LOGGING_OUT,
+  type: t.SET_LOGGING_OUT,
   val
 })
 
@@ -304,47 +187,47 @@ export const loggingOut = () => (dispatch: Dispatch) => {
 }
 
 export const setLoadingUser = (val: boolean) => ({
-  type: SET_LOADING_USER,
+  type: t.SET_LOADING_USER,
   val
 })
 
 export const setErrorUser = (val: boolean) => ({
-  type: SET_ERROR_USER,
+  type: t.SET_ERROR_USER,
   val
 })
 
 export const setLoadingUserStats = (val: boolean) => ({
-  type: SET_LOADING_USER_STATS,
+  type: t.SET_LOADING_USER_STATS,
   val
 })
 
 export const setUserStats = (val: unknown) => ({
-  type: SET_USER_STATS,
+  type: t.SET_USER_STATS,
   val
 })
 
 export const setAvatarURL = (url: string) => ({
-  type: SET_AVATAR_URL,
+  type: t.SET_AVATAR_URL,
   url
 })
 
 export const setUserEmail = (email: string) => ({
-  type: SET_USER_EMAIL,
+  type: t.SET_USER_EMAIL,
   email
 })
 
 export const setPasswordUsable = (val: boolean) => ({
-  type: SET_PASSWORD_USABLE,
+  type: t.SET_PASSWORD_USABLE,
   val
 })
 
 export const setUpdatingUserEmail = (val: boolean) => ({
-  type: SET_UPDATING_USER_EMAIL,
+  type: t.SET_UPDATING_USER_EMAIL,
   val
 })
 
 export const setFromUrl = (val: string) => ({
-  type: SET_FROM_URL,
+  type: t.SET_FROM_URL,
   val
 })
 
@@ -389,12 +272,12 @@ export const updatingEmail = (email: string) => (dispatch: Dispatch) => {
 }
 
 export const setUserID = (id: number) => ({
-  type: SET_USER_ID,
+  type: t.SET_USER_ID,
   id
 })
 
 export const setUserLoggedIn = (val: boolean) => ({
-  type: SET_USER_LOGGED_IN,
+  type: t.SET_USER_LOGGED_IN,
   val
 })
 
@@ -422,7 +305,7 @@ export const fetchUser = () => (dispatch: Dispatch) => {
 }
 
 export const setSocialConnections = (val: ISocialConnection[]) => ({
-  type: SET_SOCIAL_ACCOUNT_CONNECTIONS,
+  type: t.SET_SOCIAL_ACCOUNT_CONNECTIONS,
   val
 })
 
@@ -430,7 +313,7 @@ export const setSocialConnection = (
   provider: SocialProvider,
   val: unknown
 ) => ({
-  type: SET_SOCIAL_ACCOUNT_CONNECTION,
+  type: t.SET_SOCIAL_ACCOUNT_CONNECTION,
   provider,
   val
 })
@@ -493,12 +376,12 @@ export const fetchUserStats = () => (dispatch: Dispatch) => {
 }
 
 export const setLoadingPasswordUpdate = (val: boolean) => ({
-  type: SET_LOADING_PASSWORD_UPDATE,
+  type: t.SET_LOADING_PASSWORD_UPDATE,
   val
 })
 
 export const setErrorPasswordUpdate = (val: unknown) => ({
-  type: SET_ERROR_PASSWORD_UPDATE,
+  type: t.SET_ERROR_PASSWORD_UPDATE,
   val
 })
 
@@ -546,19 +429,19 @@ export const updatingPassword = (
 }
 
 export const setShoppingList = (val: unknown) => ({
-  type: SET_SHOPPING_LIST,
+  type: t.SET_SHOPPING_LIST,
   val
 })
 
 export const setShoppingListEmpty = () => setShoppingList([])
 
 export const setLoadingShoppingList = (val: boolean) => ({
-  type: SET_LOADING_SHOPPING_LIST,
+  type: t.SET_LOADING_SHOPPING_LIST,
   val
 })
 
 export const setShoppingListError = (val: unknown) => ({
-  type: SET_SHOPPING_LIST_ERROR,
+  type: t.SET_SHOPPING_LIST_ERROR,
   val
 })
 
@@ -595,27 +478,27 @@ export const fetchShoppingList = (teamID: TeamID) => (
 }
 
 export const setSelectingStart = (date: Date) => ({
-  type: SET_SELECTING_START,
+  type: t.SET_SELECTING_START,
   date
 })
 
 export const setSelectingEnd = (date: Date) => ({
-  type: SET_SELECTING_END,
+  type: t.SET_SELECTING_END,
   date
 })
 
 export const addRecipe = (recipe: unknown) => ({
-  type: ADD_RECIPE,
+  type: t.ADD_RECIPE,
   recipe
 })
 
 export const setLoadingAddRecipe = (val: boolean) => ({
-  type: SET_LOADING_ADD_RECIPE,
+  type: t.SET_LOADING_ADD_RECIPE,
   val
 })
 
 export const setErrorAddRecipe = (val: unknown) => ({
-  type: SET_ERROR_ADD_RECIPE,
+  type: t.SET_ERROR_ADD_RECIPE,
   val
 })
 
@@ -654,13 +537,13 @@ export const postNewRecipe = (recipe: unknown) => (dispatch: Dispatch) => {
 }
 
 export const setRecipe404 = (id: number, val: boolean) => ({
-  type: SET_RECIPE_404,
+  type: t.SET_RECIPE_404,
   id,
   val
 })
 
 export const setLoadingRecipe = (id: number, val: boolean) => ({
-  type: SET_LOADING_RECIPE,
+  type: t.SET_LOADING_RECIPE,
   id,
   val
 })
@@ -687,17 +570,17 @@ export const fetchRecipe = (id: number) => (dispatch: Dispatch) => {
 }
 
 export const setRecipes = (recipes: unknown[]) => ({
-  type: SET_RECIPES,
+  type: t.SET_RECIPES,
   recipes
 })
 
 export const setErrorRecipes = (val: unknown) => ({
-  type: SET_ERROR_RECIPES,
+  type: t.SET_ERROR_RECIPES,
   val
 })
 
 export const setLoadingRecipes = (val: boolean) => ({
-  type: SET_LOADING_RECIPES,
+  type: t.SET_LOADING_RECIPES,
   val
 })
 
@@ -745,22 +628,22 @@ export const fetchRecipeList = (teamID: number | "personal") => (
 }
 
 export const setSearchResults = (results: unknown[]) => ({
-  type: SET_SEARCH_RESULTS,
+  type: t.SET_SEARCH_RESULTS,
   results
 })
 
 export const clearSearchResults = () => ({
-  type: CLEAR_SEARCH_RESULTS
+  type: t.CLEAR_SEARCH_RESULTS
 })
 
 export const incrLoadingSearch = () => {
   return {
-    type: INCR_LOADING_SEARCH
+    type: t.INCR_LOADING_SEARCH
   }
 }
 
 export const decrLoadingSearch = () => ({
-  type: DECR_LOADING_SEARCH
+  type: t.DECR_LOADING_SEARCH
 })
 
 interface ISearchStore {
@@ -808,25 +691,25 @@ export const searchRecipes = (query: string) => (dispatch: Dispatch) => {
 }
 
 export const setLoadingAddStepToRecipe = (id: number, val: boolean) => ({
-  type: SET_LOADING_ADD_STEP_TO_RECIPE,
+  type: t.SET_LOADING_ADD_STEP_TO_RECIPE,
   id,
   val
 })
 
 export const addStepToRecipe = (id: number, step: unknown) => ({
-  type: ADD_STEP_TO_RECIPE,
+  type: t.ADD_STEP_TO_RECIPE,
   id,
   step
 })
 
 export const setAddingIngredientToRecipe = (id: number, val: unknown) => ({
-  type: SET_ADDING_INGREDIENT_TO_RECIPE,
+  type: t.SET_ADDING_INGREDIENT_TO_RECIPE,
   id,
   val
 })
 
 export const addIngredientToRecipe = (id: number, ingredient: unknown) => ({
-  type: ADD_INGREDIENT_TO_RECIPE,
+  type: t.ADD_INGREDIENT_TO_RECIPE,
   id,
   ingredient
 })
@@ -852,7 +735,7 @@ export const addingRecipeIngredient = (
 }
 
 export const updateRecipeName = (id: number, name: string) => ({
-  type: UPDATE_RECIPE_NAME,
+  type: t.UPDATE_RECIPE_NAME,
   id,
   name
 })
@@ -876,7 +759,7 @@ export const sendUpdatedRecipeName = (id: number, name: string) => (
 }
 
 export const updateRecipeSource = (id: number, source: string) => ({
-  type: UPDATE_RECIPE_SOURCE,
+  type: t.UPDATE_RECIPE_SOURCE,
   id,
   source
 })
@@ -900,7 +783,7 @@ export const setRecipeSource = (id: number, source: string) => (
 }
 
 export const updateRecipeAuthor = (id: number, author: unknown) => ({
-  type: UPDATE_RECIPE_AUTHOR,
+  type: t.UPDATE_RECIPE_AUTHOR,
   id,
   author
 })
@@ -924,7 +807,7 @@ export const setRecipeAuthor = (id: number, author: unknown) => (
 }
 
 export const updateRecipeTime = (id: number, time: unknown) => ({
-  type: UPDATE_RECIPE_TIME,
+  type: t.UPDATE_RECIPE_TIME,
   id,
   time
 })
@@ -948,17 +831,17 @@ export const setRecipeTime = (id: number, time: unknown) => (
 }
 
 export const toggleDarkMode = () => ({
-  type: TOGGLE_DARK_MODE
+  type: t.TOGGLE_DARK_MODE
 })
 
 export const setRecipe = (id: number, data: unknown) => ({
-  type: SET_RECIPE,
+  type: t.SET_RECIPE,
   id,
   data
 })
 
 export const setRecipeUpdating = (id: number, val: unknown) => ({
-  type: SET_RECIPE_UPDATING,
+  type: t.SET_RECIPE_UPDATING,
   id,
   val
 })
@@ -987,7 +870,7 @@ export const updateIngredient = (
   ingredientID: number,
   content: unknown
 ) => ({
-  type: UPDATE_INGREDIENT,
+  type: t.UPDATE_INGREDIENT,
   recipeID,
   ingredientID,
   content
@@ -1019,7 +902,7 @@ export const setRemovingIngredient = (
   ingredientID: number,
   val: unknown
 ) => ({
-  type: SET_REMOVING_INGREDIENT,
+  type: t.SET_REMOVING_INGREDIENT,
   recipeID,
   ingredientID,
   val
@@ -1030,7 +913,7 @@ export const setUpdatingIngredient = (
   ingredientID: number,
   val: unknown
 ) => ({
-  type: SET_UPDATING_INGREDIENT,
+  type: t.SET_UPDATING_INGREDIENT,
   recipeID,
   ingredientID,
   val
@@ -1058,7 +941,7 @@ export const updatingIngredient = (
 }
 
 export const deleteIngredient = (recipeID: number, ingredientID: number) => ({
-  type: DELETE_INGREDIENT,
+  type: t.DELETE_INGREDIENT,
   recipeID,
   ingredientID
 })
@@ -1088,7 +971,7 @@ export const updateStep = (
   text: string,
   position: number
 ) => ({
-  type: UPDATE_STEP,
+  type: t.UPDATE_STEP,
   recipeID,
   stepID,
   text,
@@ -1100,7 +983,7 @@ export const setRemovingStep = (
   stepID: number,
   val: unknown
 ) => ({
-  type: SET_REMOVING_STEP,
+  type: t.SET_REMOVING_STEP,
   recipeID,
   stepID,
   val
@@ -1111,7 +994,7 @@ export const setUpdatingStep = (
   stepID: number,
   val: unknown
 ) => ({
-  type: SET_UPDATING_STEP,
+  type: t.SET_UPDATING_STEP,
   recipeID,
   stepID,
   val
@@ -1151,7 +1034,7 @@ export const updatingStep = (
 }
 
 export const deleteStep = (recipeID: number, stepID: number) => ({
-  type: DELETE_STEP,
+  type: t.DELETE_STEP,
   recipeID,
   stepID
 })
@@ -1176,12 +1059,12 @@ export const deletingStep = (recipeID: number, stepID: number) => (
 }
 
 export const setErrorLogin = (val: unknown) => ({
-  type: SET_ERROR_LOGIN,
+  type: t.SET_ERROR_LOGIN,
   val
 })
 
 export const setLoadingLogin = (val: boolean) => ({
-  type: SET_LOADING_LOGIN,
+  type: t.SET_LOADING_LOGIN,
   val
 })
 
@@ -1223,7 +1106,7 @@ export const logUserIn = (
 }
 
 export const setErrorSocialLogin = (val: unknown) => ({
-  type: SET_ERROR_SOCIAL_LOGIN,
+  type: t.SET_ERROR_SOCIAL_LOGIN,
   val
 })
 
@@ -1279,12 +1162,12 @@ export const socialConnect = (service: SocialProvider, code: unknown) => (
 }
 
 export const setLoadingSignup = (val: boolean) => ({
-  type: SET_LOADING_SIGNUP,
+  type: t.SET_LOADING_SIGNUP,
   val
 })
 
 export const setErrorSignup = (val: unknown) => ({
-  type: SET_ERROR_SIGNUP,
+  type: t.SET_ERROR_SIGNUP,
   val
 })
 
@@ -1323,13 +1206,13 @@ export const signup = (email: string, password1: string, password2: string) => (
 }
 
 export const setDeletingRecipe = (id: number, val: boolean) => ({
-  type: SET_DELETING_RECIPE,
+  type: t.SET_DELETING_RECIPE,
   id,
   val
 })
 
 export const deleteRecipe = (id: number) => ({
-  type: DELETE_RECIPE,
+  type: t.DELETE_RECIPE,
   id
 })
 
@@ -1352,12 +1235,12 @@ export const deletingRecipe = (id: number) => (dispatch: Dispatch) => {
 }
 
 export const setLoadingReset = (val: boolean) => ({
-  type: SET_LOADING_RESET,
+  type: t.SET_LOADING_RESET,
   val
 })
 
 export const setErrorReset = (val: unknown) => ({
-  type: SET_ERROR_RESET,
+  type: t.SET_ERROR_RESET,
   val
 })
 
@@ -1408,12 +1291,12 @@ export const reset = (email: string) => (dispatch: Dispatch) => {
 }
 
 export const setLoadingResetConfirmation = (val: boolean) => ({
-  type: SET_LOADING_RESET_CONFIRMATION,
+  type: t.SET_LOADING_RESET_CONFIRMATION,
   val
 })
 
 export const setErrorResetConfirmation = (val: unknown) => ({
-  type: SET_ERROR_RESET_CONFIRMATION,
+  type: t.SET_ERROR_RESET_CONFIRMATION,
   val
 })
 
@@ -1477,52 +1360,52 @@ export const resetConfirmation = (
 }
 
 export const setAddRecipeFormName = (val: string) => ({
-  type: SET_ADD_RECIPE_FORM_NAME,
+  type: t.SET_ADD_RECIPE_FORM_NAME,
   val
 })
 
 export const setAddRecipeFormAuthor = (val: string) => ({
-  type: SET_ADD_RECIPE_FORM_AUTHOR,
+  type: t.SET_ADD_RECIPE_FORM_AUTHOR,
   val
 })
 
 export const setAddRecipeFormSource = (val: string) => ({
-  type: SET_ADD_RECIPE_FORM_SOURCE,
+  type: t.SET_ADD_RECIPE_FORM_SOURCE,
   val
 })
 
 export const setAddRecipeFormTime = (val: string) => ({
-  type: SET_ADD_RECIPE_FORM_TIME,
+  type: t.SET_ADD_RECIPE_FORM_TIME,
   val
 })
 
 export const setAddRecipeFormServings = (val: string) => ({
-  type: SET_ADD_RECIPE_FORM_SERVINGS,
+  type: t.SET_ADD_RECIPE_FORM_SERVINGS,
   val
 })
 
 export const setAddRecipeFormTeam = (val: string) => ({
-  type: SET_ADD_RECIPE_FORM_TEAM,
+  type: t.SET_ADD_RECIPE_FORM_TEAM,
   val
 })
 
 export const addAddRecipeFormIngredient = (ingredient: unknown) => ({
-  type: ADD_ADD_RECIPE_FORM_INGREDIENT,
+  type: t.ADD_ADD_RECIPE_FORM_INGREDIENT,
   ingredient
 })
 
 export const removeAddRecipeFormIngredient = (index: number) => ({
-  type: REMOVE_ADD_RECIPE_FORM_INGREDIENT,
+  type: t.REMOVE_ADD_RECIPE_FORM_INGREDIENT,
   index
 })
 
 export const addAddRecipeFormStep = (step: unknown) => ({
-  type: ADD_ADD_RECIPE_FORM_STEP,
+  type: t.ADD_ADD_RECIPE_FORM_STEP,
   step
 })
 
 export const removeAddRecipeFormStep = (index: number) => ({
-  type: REMOVE_ADD_RECIPE_FORM_STEP,
+  type: t.REMOVE_ADD_RECIPE_FORM_STEP,
   index
 })
 
@@ -1530,58 +1413,58 @@ export const updateAddRecipeFormIngredient = (
   index: number,
   ingredient: unknown
 ) => ({
-  type: UPDATE_ADD_RECIPE_FORM_INGREDIENT,
+  type: t.UPDATE_ADD_RECIPE_FORM_INGREDIENT,
   index,
   ingredient
 })
 
 export const updateAddRecipeFormStep = (index: number, step: unknown) => ({
-  type: UPDATE_ADD_RECIPE_FORM_STEP,
+  type: t.UPDATE_ADD_RECIPE_FORM_STEP,
   index,
   step
 })
 
 export const clearAddRecipeForm = () => ({
-  type: CLEAR_ADD_RECIPE_FORM
+  type: t.CLEAR_ADD_RECIPE_FORM
 })
 
 export const addTeam = (team: unknown) => ({
-  type: ADD_TEAM,
+  type: t.ADD_TEAM,
   team
 })
 
 export const setLoadingTeam = (id: number, loadingTeam: boolean) => ({
-  type: SET_LOADING_TEAM,
+  type: t.SET_LOADING_TEAM,
   id,
   loadingTeam
 })
 
 export const setLoadingTeamMembers = (id: number, loadingMembers: boolean) => ({
-  type: SET_LOADING_TEAM_MEMBERS,
+  type: t.SET_LOADING_TEAM_MEMBERS,
   id,
   loadingMembers
 })
 
 export const setTeam404 = (id: number, val = true) => ({
-  type: SET_TEAM_404,
+  type: t.SET_TEAM_404,
   id,
   val
 })
 
 export const setTeamMembers = (id: number, members: unknown[]) => ({
-  type: SET_TEAM_MEMBERS,
+  type: t.SET_TEAM_MEMBERS,
   id,
   members
 })
 
 export const setTeamRecipes = (id: number, recipes: unknown[]) => ({
-  type: SET_TEAM_RECIPES,
+  type: t.SET_TEAM_RECIPES,
   id,
   recipes
 })
 
 export const setLoadingTeamRecipes = (id: number, loadingRecipes: boolean) => ({
-  type: SET_LOADING_TEAM_RECIPES,
+  type: t.SET_LOADING_TEAM_RECIPES,
   id,
   loadingRecipes
 })
@@ -1642,7 +1525,7 @@ export const fetchTeamRecipes = (id: number) => (dispatch: Dispatch) => {
 }
 
 export const setUpdatingUserTeamLevel = (id: number, updating: boolean) => ({
-  type: SET_UPDATING_USER_TEAM_LEVEL,
+  type: t.SET_UPDATING_USER_TEAM_LEVEL,
   id,
   updating
 })
@@ -1652,7 +1535,7 @@ export const setUserTeamLevel = (
   membershipID: number,
   level: unknown
 ) => ({
-  type: SET_USER_TEAM_LEVEL,
+  type: t.SET_USER_TEAM_LEVEL,
   teamID,
   membershipID,
   level
@@ -1695,7 +1578,7 @@ export const settingUserTeamLevel = (
 }
 
 export const deleteMembership = (teamID: number, membershipID: number) => ({
-  type: DELETE_MEMBERSHIP,
+  type: t.DELETE_MEMBERSHIP,
   teamID,
   membershipID
 })
@@ -1705,14 +1588,14 @@ export const setDeletingMembership = (
   membershipID: number,
   val: unknown
 ) => ({
-  type: SET_DELETING_MEMBERSHIP,
+  type: t.SET_DELETING_MEMBERSHIP,
   teamID,
   membershipID,
   val
 })
 
 export const deleteTeam = (id: number) => ({
-  type: DELETE_TEAM,
+  type: t.DELETE_TEAM,
   id
 })
 
@@ -1798,7 +1681,7 @@ export const deletingTeam = (teamID: number) => (
 }
 
 export const setSendingTeamInvites = (teamID: number, val: unknown) => ({
-  type: SET_SENDING_TEAM_INVITES,
+  type: t.SET_SENDING_TEAM_INVITES,
   teamID,
   val
 })
@@ -1834,12 +1717,12 @@ export const sendingTeamInvites = (
 }
 
 export const setLoadingTeams = (val: boolean) => ({
-  type: SET_LOADING_TEAMS,
+  type: t.SET_LOADING_TEAMS,
   val
 })
 
 export const setTeams = (teams: unknown) => ({
-  type: SET_TEAMS,
+  type: t.SET_TEAMS,
   teams
 })
 
@@ -1858,19 +1741,19 @@ export const fetchTeams = () => (dispatch: Dispatch) => {
 }
 
 export const setTeam = (id: number, team: unknown) => ({
-  type: SET_TEAM,
+  type: t.SET_TEAM,
   id,
   team
 })
 
 export const updateTeamById = (id: number, teamKeys: unknown) => ({
-  type: UPDATE_TEAM,
+  type: t.UPDATE_TEAM,
   id,
   teamKeys
 })
 
 export const setCreatingTeam = (val: unknown) => ({
-  type: SET_CREATING_TEAM,
+  type: t.SET_CREATING_TEAM,
   val
 })
 
@@ -1892,7 +1775,7 @@ export const creatingTeam = (name: string, emails: string, level: unknown) => (
 }
 
 export const setCopyingTeam = (val: boolean) => ({
-  type: SET_COPYING_TEAM,
+  type: t.SET_COPYING_TEAM,
   val
 })
 
@@ -1928,7 +1811,7 @@ export const updatingTeam = (teamId: number, teamKVs: unknown) => (
 }
 
 export const updateRecipeOwner = (id: number, owner: unknown) => ({
-  type: UPDATE_RECIPE_OWNER,
+  type: t.UPDATE_RECIPE_OWNER,
   id,
   owner
 })
@@ -1964,17 +1847,17 @@ export const copyRecipeTo = (
 }
 
 export const setLoadingInvites = (val: boolean) => ({
-  type: SET_LOADING_INVITES,
+  type: t.SET_LOADING_INVITES,
   val
 })
 
 export const setInvites = (invites: IInvite[]) => ({
-  type: SET_INVITES,
+  type: t.SET_INVITES,
   invites
 })
 
 export const setErrorFetchingInvites = (val: unknown) => ({
-  type: SET_ERROR_FETCHING_INVITES,
+  type: t.SET_ERROR_FETCHING_INVITES,
   val
 })
 
@@ -1995,13 +1878,13 @@ export const fetchInvites = () => (dispatch: Dispatch) => {
 }
 
 export const setAcceptingInvite = (id: IInvite["id"], val: boolean) => ({
-  type: SET_ACCEPTING_INVITE,
+  type: t.SET_ACCEPTING_INVITE,
   id,
   val
 })
 
 export const setAcceptedInvite = (id: number) => ({
-  type: SET_ACCEPTED_INVITE,
+  type: t.SET_ACCEPTED_INVITE,
   id
 })
 
@@ -2020,13 +1903,13 @@ export const acceptingInvite = (id: number) => (dispatch: Dispatch) => {
 }
 
 export const setDecliningInvite = (id: IInvite["id"], val: boolean) => ({
-  type: SET_DECLINING_INVITE,
+  type: t.SET_DECLINING_INVITE,
   id,
   val
 })
 
 export const setDeclinedInvite = (id: number) => ({
-  type: SET_DECLINED_INVITE,
+  type: t.SET_DECLINED_INVITE,
   id
 })
 
@@ -2096,17 +1979,17 @@ export const reportBadMerge = () => (dispatch: Dispatch) => {
 }
 
 export const setCalendarLoading = (loading: boolean) => ({
-  type: SET_CALENDAR_LOADING,
+  type: t.SET_CALENDAR_LOADING,
   loading
 })
 
 export const setCalendarError = (error: unknown) => ({
-  type: SET_CALENDAR_ERROR,
+  type: t.SET_CALENDAR_ERROR,
   error
 })
 
 export const setCalendarRecipe = (recipe: IRecipe) => ({
-  type: SET_CALENDAR_RECIPE,
+  type: t.SET_CALENDAR_RECIPE,
   recipe
 })
 
@@ -2138,18 +2021,18 @@ export const fetchCalendar = (teamID: TeamID, month = new Date()) => (
 }
 
 export const setSchedulingRecipe = (recipeID: number, scheduling: boolean) => ({
-  type: SET_SCHEDULING_RECIPE,
+  type: t.SET_SCHEDULING_RECIPE,
   recipeID,
   scheduling
 })
 
 export const setCalendarRecipes = (recipes: IRecipe[]) => ({
-  type: SET_CALENDAR_RECIPES,
+  type: t.SET_CALENDAR_RECIPES,
   recipes
 })
 
 export const replaceCalendarRecipe = (id: IRecipe["id"], recipe: IRecipe) => ({
-  type: REPLACE_CALENDAR_RECIPE,
+  type: t.REPLACE_CALENDAR_RECIPE,
   id,
   recipe
 })
@@ -2199,12 +2082,12 @@ export const addingScheduledRecipe = (
 }
 
 export const deleteCalendarRecipe = (id: string | number) => ({
-  type: DELETE_CALENDAR_RECIPE,
+  type: t.DELETE_CALENDAR_RECIPE,
   id
 })
 
 export const moveCalendarRecipe = (id: number, to: string) => ({
-  type: MOVE_CALENDAR_RECIPE,
+  type: t.MOVE_CALENDAR_RECIPE,
   id,
   on: to
 })
@@ -2289,6 +2172,6 @@ export const updatingScheduledRecipe = (
 }
 
 export const setScheduleURL = (url: string) => ({
-  type: SET_SCHEDULE_URL,
+  type: t.SET_SCHEDULE_URL,
   scheduleURL: url
 })
