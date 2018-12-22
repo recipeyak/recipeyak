@@ -6,11 +6,17 @@ import Logo from "./Logo"
 
 class AuthContainer extends React.Component {
   componentDidMount = () => {
-    document.querySelector("html").classList.add("bg-primary")
+    const el = document.querySelector("html")
+    if (el) {
+      el.classList.add("bg-primary")
+    }
   }
 
   componentWillUnmount = () => {
-    document.querySelector("html").classList.remove("bg-primary")
+    const el = document.querySelector("html")
+    if (el) {
+      el.classList.remove("bg-primary")
+    }
   }
   render() {
     return (
