@@ -16,5 +16,5 @@ export const saveState = (state: any) => {
   try {
     const serializedState = JSON.stringify(state)
     localStorage.setItem("state", serializedState)
-  } catch (err) {}
+  } catch (err) {} // tslint:disable-line:no-empty
 }

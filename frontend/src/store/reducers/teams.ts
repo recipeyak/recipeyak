@@ -124,7 +124,7 @@ export const teams = (state = initialState, action: any) => {
         [action.id]: {
           ...state[action.id],
           members: action.members.reduce(
-            (a: unknown, b: { id: number}) => ({
+            (a: unknown, b: { id: number }) => ({
               ...a,
               [b.id]: b
             }),
@@ -151,7 +151,7 @@ export const teams = (state = initialState, action: any) => {
         ...state,
         [action.id]: {
           ...state[action.id],
-          recipes: action.recipes.map(({ id }: { id: number}) => id)
+          recipes: action.recipes.map(({ id }: { id: number }) => id)
         }
       }
     case SET_UPDATING_MEMBERSHIP:
@@ -221,7 +221,7 @@ export const teams = (state = initialState, action: any) => {
       return {
         ...state,
         ...action.teams.reduce(
-          (a: unknown, b: { id: number}) => ({
+          (a: unknown, b: { id: number }) => ({
             ...a,
             [b.id]: {
               ...state[b.id],
@@ -230,7 +230,10 @@ export const teams = (state = initialState, action: any) => {
           }),
           {}
         ),
-        allIds: uniq([...state.allIds, ...action.teams.map((x: {id: number}) => x.id)])
+        allIds: uniq([
+          ...state.allIds,
+          ...action.teams.map((x: { id: number }) => x.id)
+        ])
       }
     case SET_LOADING_TEAMS:
       return {
