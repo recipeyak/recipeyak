@@ -10,8 +10,9 @@ import {
   MOVE_CALENDAR_RECIPE,
   REPLACE_CALENDAR_RECIPE
 } from "../actionTypes"
+import { AnyAction } from "redux"
 
-function setCalendarRecipe(state, { recipe }) {
+function setCalendarRecipe(state: ICalendarState, { recipe }: AnyAction) {
   const existing = state.allIds
     .filter(x => x !== recipe.id)
     .map(x => state[x])
@@ -37,7 +38,7 @@ function setCalendarRecipe(state, { recipe }) {
   }
 }
 
-function moveCalendarRecipe(state, action) {
+function moveCalendarRecipe(state: ICalendarState, action: AnyAction) {
   // if the same recipe already exists at the date:
   // - add the two counts
   // - remove the old recipe
@@ -72,19 +73,46 @@ function moveCalendarRecipe(state, action) {
   }
 }
 
-const initialState = {
+// TODO(sbdchd): this should be imported from the recipes reducer
+export interface IRecipe {
+  readonly id: number | string
+  readonly count: number
+  readonly on: string
+  readonly team?: unknown
+  readonly user: unknown
+  readonly recipe: {
+    readonly id: number | string
+  }
+}
+
+export interface ICalendarState {
+  readonly allIds: number[]
+  readonly loading: boolean
+  readonly error: boolean
+  readonly [key: number]: IRecipe
+}
+
+export const initialState: ICalendarState = {
   allIds: [],
   loading: false,
   error: false
 }
 
-export const calendar = (state = initialState, action) => {
+export const calendar = (
+  state: ICalendarState = initialState,
+  action: AnyAction
+) => {
   switch (action.type) {
     case SET_CALENDAR_RECIPES:
       return {
         ...state,
-        ...action.recipes.reduce((a, b) => ({ ...a, [b.id]: b }), {}),
-        allIds: uniq(state.allIds.concat(action.recipes.map(x => x.id)))
+        ...action.recipes.reduce(
+          (a: unknown, b: IRecipe) => ({ ...a, [b.id]: b }),
+          {}
+        ),
+        allIds: uniq(
+          state.allIds.concat(action.recipes.map((x: IRecipe) => x.id))
+        )
       }
     case SET_CALENDAR_RECIPE:
       return setCalendarRecipe(state, action)

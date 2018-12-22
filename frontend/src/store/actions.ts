@@ -143,6 +143,7 @@ import raven from "raven-js"
 
 import { store } from "./store"
 import { IUser, ISocialConnection, SocialProvider } from "./reducers/user"
+import { IRecipe } from "./reducers/calendar"
 
 const config = { timeout: 15000 }
 
@@ -2102,7 +2103,7 @@ export const setCalendarError = (error: unknown) => ({
   error
 })
 
-export const setCalendarRecipe = (recipe: unknown) => ({
+export const setCalendarRecipe = (recipe: IRecipe) => ({
   type: SET_CALENDAR_RECIPE,
   recipe
 })
@@ -2140,12 +2141,12 @@ export const setSchedulingRecipe = (recipeID: number, scheduling: boolean) => ({
   scheduling
 })
 
-export const setCalendarRecipes = (recipes: unknown[]) => ({
+export const setCalendarRecipes = (recipes: IRecipe[]) => ({
   type: SET_CALENDAR_RECIPES,
   recipes
 })
 
-export const replaceCalendarRecipe = (id: string, recipe: unknown) => ({
+export const replaceCalendarRecipe = (id: IRecipe["id"], recipe: IRecipe) => ({
   type: REPLACE_CALENDAR_RECIPE,
   id,
   recipe
@@ -2157,7 +2158,7 @@ export const addingScheduledRecipe = (
   on: Date,
   count: number
 ) => (dispatch: Dispatch, getState: GetState) => {
-  const recipe = getState().recipes[recipeID]
+  const recipe: IRecipe = getState().recipes[recipeID]
   dispatch(setSchedulingRecipe(recipeID, true))
   const id = uuid4()
   const data = {
