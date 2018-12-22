@@ -144,6 +144,7 @@ import raven from "raven-js"
 import { store } from "./store"
 import { IUser, ISocialConnection, SocialProvider } from "./reducers/user"
 import { IRecipe } from "./reducers/calendar"
+import { IInvite } from "./reducers/invites"
 
 const config = { timeout: 15000 }
 
@@ -1966,7 +1967,7 @@ export const setLoadingInvites = (val: boolean) => ({
   val
 })
 
-export const setInvites = (invites: unknown[]) => ({
+export const setInvites = (invites: IInvite[]) => ({
   type: SET_INVITES,
   invites
 })
@@ -1992,7 +1993,7 @@ export const fetchInvites = () => (dispatch: Dispatch) => {
     })
 }
 
-export const setAcceptingInvite = (id: boolean, val?: unknown) => ({
+export const setAcceptingInvite = (id: IInvite["id"], val: boolean) => ({
   type: SET_ACCEPTING_INVITE,
   id,
   val
@@ -2004,20 +2005,20 @@ export const setAcceptedInvite = (id: number) => ({
 })
 
 export const acceptingInvite = (id: number) => (dispatch: Dispatch) => {
-  dispatch(setAcceptingInvite(true))
+  dispatch(setAcceptingInvite(id, true))
   return http
     .post(`/api/v1/invites/${id}/accept/`, {})
     .then(() => {
-      dispatch(setAcceptingInvite(false))
+      dispatch(setAcceptingInvite(id, false))
       dispatch(setAcceptedInvite(id))
     })
     .catch(err => {
-      dispatch(setAcceptingInvite(false))
+      dispatch(setAcceptingInvite(id, false))
       throw err
     })
 }
 
-export const setDecliningInvite = (id: boolean, val?: unknown) => ({
+export const setDecliningInvite = (id: IInvite["id"], val: boolean) => ({
   type: SET_DECLINING_INVITE,
   id,
   val
@@ -2029,15 +2030,15 @@ export const setDeclinedInvite = (id: number) => ({
 })
 
 export const decliningInvite = (id: number) => (dispatch: Dispatch) => {
-  dispatch(setDecliningInvite(true))
+  dispatch(setDecliningInvite(id, true))
   return http
     .post(`/api/v1/invites/${id}/decline/`, {})
     .then(() => {
-      dispatch(setDecliningInvite(false))
+      dispatch(setDecliningInvite(id, false))
       dispatch(setDeclinedInvite(id))
     })
     .catch(err => {
-      dispatch(setDecliningInvite(false))
+      dispatch(setDecliningInvite(id, false))
       throw err
     })
 }
@@ -2158,7 +2159,7 @@ export const addingScheduledRecipe = (
   on: Date,
   count: number
 ) => (dispatch: Dispatch, getState: GetState) => {
-  const recipe: IRecipe = getState().recipes[recipeID]
+  const recipe = getState().recipes[recipeID]
   dispatch(setSchedulingRecipe(recipeID, true))
   const id = uuid4()
   const data = {
@@ -2175,7 +2176,8 @@ export const addingScheduledRecipe = (
       ? "/api/v1/calendar/"
       : `/api/v1/t/${teamID}/calendar/`
 
-  dispatch(setCalendarRecipe({ ...data, id, recipe }))
+  // HACK(sbdchd): we need to add the user to the recipe
+  dispatch(setCalendarRecipe({ ...data, id, recipe } as IRecipe))
   return http
     .post(url, data)
     .then(res => {
