@@ -55,6 +55,8 @@ export const rootReducer = (state: any, action: any) => {
   return recipeApp(state, action)
 }
 
+export type RootState = any
+
 const defaultData = loadState()
 
 export const history = createHistory()

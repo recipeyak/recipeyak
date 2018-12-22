@@ -23,10 +23,27 @@ import { setDarkModeClass } from "../../sideEffects"
 
 import raven from "raven-js"
 
+export interface IUser {
+  readonly avatar_url: string
+  readonly email: string
+  readonly id: number
+  readonly has_usable_password: boolean
+}
+
+export type SocialProvider = "github" | "gitlab"
+export interface ISocialConnection {
+  readonly id: number | null
+  readonly provider: SocialProvider
+  readonly uid?: string
+  readonly last_login?: string
+  readonly date_joined?: string
+}
+
 const initialState = {
   id: null,
   loggedIn: false,
   avatarURL: "",
+  email: "",
   loading: false,
   error: false,
   stats: {},
@@ -41,7 +58,7 @@ const initialState = {
   scheduleURL: "/schedule/"
 }
 
-export const user = (state = initialState, action) => {
+export const user = (state = initialState, action: any) => {
   switch (action.type) {
     case LOG_IN:
       raven.setUserContext({
