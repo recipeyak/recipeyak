@@ -145,6 +145,7 @@ import { store } from "./store"
 import { IUser, ISocialConnection, SocialProvider } from "./reducers/user"
 import { IRecipe } from "./reducers/calendar"
 import { IInvite } from "./reducers/invites"
+import { INotificationState } from "./reducers/notification"
 
 const config = { timeout: 15000 }
 
@@ -217,13 +218,13 @@ const is404 = (err: AxiosError) => err.response && err.response.status === 404
 interface ISetNotification {
   readonly message: string
   readonly closeable?: boolean
-  readonly level: "success" | "info" | "warning" | "danger"
+  readonly level?: INotificationState["level"]
 }
 
 export const setNotification = ({
   message,
   closeable,
-  level
+  level = "info"
 }: ISetNotification) => ({
   type: SET_NOTIFICATION,
   notification: {
