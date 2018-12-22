@@ -205,9 +205,11 @@ const is404 = err => err.response.status === 404
 
 export const setNotification = ({ message, closeable, level }) => ({
   type: SET_NOTIFICATION,
-  message,
-  closeable,
-  level
+  notification: {
+    message,
+    closeable,
+    level
+  }
 })
 
 export const clearNotification = () => ({

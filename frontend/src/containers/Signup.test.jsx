@@ -7,7 +7,7 @@ import Adapter from "enzyme-adapter-react-16"
 
 import Signup from "./Signup.jsx"
 
-import { emptyStore as store } from "../store/store.js"
+import { emptyStore as store } from "../store/store"
 
 configure({ adapter: new Adapter() })
 
