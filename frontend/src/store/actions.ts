@@ -243,7 +243,7 @@ interface INotificationWithTimeout {
   readonly sticky?: boolean
   readonly message: string
   readonly closeable?: boolean
-  readonly level?: "success" | "info" | "warning" | "danger"
+  readonly level?: INotificationState["level"]
 }
 
 // https://stackoverflow.com/a/38574266/3555105
