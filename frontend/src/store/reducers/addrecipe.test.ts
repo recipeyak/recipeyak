@@ -1,4 +1,4 @@
-import addrecipe, { initialState } from "./addrecipe"
+import addrecipe, { initialState, IAddRecipeState } from "./addrecipe"
 
 import {
   setAddRecipeFormName,
@@ -19,12 +19,14 @@ import {
 describe("addrecipe", () => {
   it("sets addrecipe form name", () => {
     const beforeState = {
+      ...initialState,
       name: ""
     }
 
     const name = "example name"
 
-    const afterState = {
+    const afterState: IAddRecipeState = {
+      ...initialState,
       name
     }
 
@@ -35,12 +37,14 @@ describe("addrecipe", () => {
 
   it("set add recipe form author", () => {
     const beforeState = {
+      ...initialState,
       author: ""
     }
 
     const author = "author"
 
-    const afterState = {
+    const afterState: IAddRecipeState = {
+      ...initialState,
       author
     }
 
@@ -51,12 +55,14 @@ describe("addrecipe", () => {
 
   it("set add recipe form time", () => {
     const beforeState = {
+      ...initialState,
       time: ""
     }
 
     const time = "time"
 
-    const afterState = {
+    const afterState: IAddRecipeState = {
+      ...initialState,
       time
     }
 
@@ -67,12 +73,14 @@ describe("addrecipe", () => {
 
   it("set add recipe form source", () => {
     const beforeState = {
+      ...initialState,
       source: ""
     }
 
     const source = "source"
 
-    const afterState = {
+    const afterState: IAddRecipeState = {
+      ...initialState,
       source
     }
 
@@ -83,12 +91,14 @@ describe("addrecipe", () => {
 
   it("set add recipe form servings", () => {
     const beforeState = {
+      ...initialState,
       servings: ""
     }
 
     const servings = "servings"
 
-    const afterState = {
+    const afterState: IAddRecipeState = {
+      ...initialState,
       servings
     }
 
@@ -99,6 +109,7 @@ describe("addrecipe", () => {
 
   it("add add recipe form ingredient", () => {
     const beforeState = {
+      ...initialState,
       ingredients: []
     }
 
@@ -108,7 +119,8 @@ describe("addrecipe", () => {
       description: "sliced"
     }
 
-    const afterState = {
+    const afterState: IAddRecipeState = {
+      ...initialState,
       ingredients: [ingredient]
     }
 
@@ -125,10 +137,12 @@ describe("addrecipe", () => {
     }
 
     const beforeState = {
+      ...initialState,
       ingredients: [ingredient]
     }
 
-    const afterState = {
+    const afterState: IAddRecipeState = {
+      ...initialState,
       ingredients: []
     }
 
@@ -147,6 +161,7 @@ describe("addrecipe", () => {
     }
 
     const beforeState = {
+      ...initialState,
       ingredients: [ingredient]
     }
 
@@ -156,7 +171,8 @@ describe("addrecipe", () => {
       description: "sliced"
     }
 
-    const afterState = {
+    const afterState: IAddRecipeState = {
+      ...initialState,
       ingredients: [newIngredient]
     }
 
@@ -172,6 +188,7 @@ describe("addrecipe", () => {
 
   it("add add recipe form step", () => {
     const beforeState = {
+      ...initialState,
       steps: []
     }
 
@@ -182,6 +199,7 @@ describe("addrecipe", () => {
     }
 
     const afterState = {
+      ...initialState,
       steps: [step]
     }
 
@@ -198,10 +216,12 @@ describe("addrecipe", () => {
     }
 
     const beforeState = {
+      ...initialState,
       steps: [step]
     }
 
     const afterState = {
+      ...initialState,
       steps: []
     }
 
@@ -220,6 +240,7 @@ describe("addrecipe", () => {
     }
 
     const beforeState = {
+      ...initialState,
       steps: [step]
     }
 
@@ -230,6 +251,7 @@ describe("addrecipe", () => {
     }
 
     const afterState = {
+      ...initialState,
       steps: [newStep]
     }
 
@@ -248,6 +270,7 @@ describe("addrecipe", () => {
     }
 
     const beforeState = {
+      ...initialState,
       steps: [step],
       name: "tesitng"
     }
@@ -258,11 +281,12 @@ describe("addrecipe", () => {
   })
 
   it("sets add recipe form's team field", () => {
-    const beforeState = {}
+    const beforeState = initialState
 
     const team = "cool team name"
 
-    const afterState = {
+    const afterState: IAddRecipeState = {
+      ...initialState,
       team
     }
 

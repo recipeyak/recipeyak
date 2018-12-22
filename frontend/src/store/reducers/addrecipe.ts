@@ -13,8 +13,20 @@ import {
   UPDATE_ADD_RECIPE_FORM_STEP,
   CLEAR_ADD_RECIPE_FORM
 } from "../actionTypes"
+import { AnyAction } from "redux"
 
-export const initialState = {
+export interface IAddRecipeState {
+  readonly name: string
+  readonly author: string
+  readonly source: string
+  readonly team?: string
+  readonly time: string
+  readonly servings: string
+  readonly ingredients: unknown[]
+  readonly steps: unknown[]
+}
+
+export const initialState: IAddRecipeState = {
   name: "",
   author: "",
   source: "",
@@ -24,7 +36,10 @@ export const initialState = {
   steps: []
 }
 
-const addrecipe = (state = initialState, action) => {
+const addrecipe = (
+  state: IAddRecipeState = initialState,
+  action: AnyAction
+) => {
   switch (action.type) {
     case SET_ADD_RECIPE_FORM_NAME:
       return { ...state, name: action.val }

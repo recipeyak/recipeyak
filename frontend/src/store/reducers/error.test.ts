@@ -1,4 +1,4 @@
-import error from "./error.js"
+import error, { initialState } from "./error"
 import {
   setErrorLogin,
   setErrorSocialLogin,
@@ -12,10 +12,12 @@ import {
 describe("error", () => {
   it("sets login error", () => {
     const notErrorState = {
+      ...initialState,
       login: false
     }
 
     const errorState = {
+      ...initialState,
       login: true
     }
 
@@ -26,10 +28,12 @@ describe("error", () => {
 
   it("sets social login error", () => {
     const notErrorState = {
+      ...initialState,
       socialLogin: false
     }
 
     const errorState = {
+      ...initialState,
       socialLogin: true
     }
 
@@ -40,10 +44,12 @@ describe("error", () => {
 
   it("sets recipes error", () => {
     const notErrorState = {
+      ...initialState,
       recipes: false
     }
 
     const errorState = {
+      ...initialState,
       recipes: true
     }
 
@@ -54,10 +60,12 @@ describe("error", () => {
 
   it("sets signup error", () => {
     const notErrorState = {
+      ...initialState,
       signup: false
     }
 
     const errorState = {
+      ...initialState,
       signup: true
     }
 
@@ -68,10 +76,12 @@ describe("error", () => {
 
   it("sets addRecipe error", () => {
     const notErrorState = {
+      ...initialState,
       addRecipe: false
     }
 
     const errorState = {
+      ...initialState,
       addRecipe: true
     }
 
@@ -82,10 +92,12 @@ describe("error", () => {
 
   it("sets reset error", () => {
     const notErrorState = {
+      ...initialState,
       reset: false
     }
 
     const errorState = {
+      ...initialState,
       reset: true
     }
 
@@ -96,10 +108,12 @@ describe("error", () => {
 
   it("sets resetConfirmation error", () => {
     const notErrorState = {
+      ...initialState,
       resetConfirmation: false
     }
 
     const errorState = {
+      ...initialState,
       resetConfirmation: true
     }
 
