@@ -8,7 +8,7 @@ import { SENTRY_DSN, GIT_SHA } from "./settings"
 
 import App from "./components/App.jsx"
 
-import store from "./store/store.js"
+import store from "./store/store"
 
 if (process.env.NODE_ENV === "production") {
   Raven.config(SENTRY_DSN, {
