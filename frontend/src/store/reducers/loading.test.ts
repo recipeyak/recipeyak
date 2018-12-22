@@ -1,4 +1,4 @@
-import loading from "./loading.js"
+import loading, { initialState } from "./loading"
 import {
   setLoadingLogin,
   setLoadingSignup,
@@ -11,10 +11,12 @@ import {
 describe("loading", () => {
   it("sets loading login", () => {
     const notLoadingState = {
+      ...initialState,
       login: false
     }
 
     const loadingState = {
+      ...initialState,
       login: true
     }
 
@@ -29,10 +31,12 @@ describe("loading", () => {
 
   it("sets loading signup", () => {
     const notLoadingState = {
+      ...initialState,
       signup: false
     }
 
     const loadingState = {
+      ...initialState,
       signup: true
     }
 
@@ -47,10 +51,12 @@ describe("loading", () => {
 
   it("sets loading reset", () => {
     const notLoadingState = {
+      ...initialState,
       reset: false
     }
 
     const loadingState = {
+      ...initialState,
       reset: true
     }
 
@@ -65,10 +71,12 @@ describe("loading", () => {
 
   it("sets loading recipes", () => {
     const notLoadingState = {
+      ...initialState,
       recipes: false
     }
 
     const loadingState = {
+      ...initialState,
       recipes: true
     }
 
@@ -83,10 +91,12 @@ describe("loading", () => {
 
   it("sets loading addRecipe", () => {
     const notLoadingState = {
+      ...initialState,
       addRecipe: false
     }
 
     const loadingState = {
+      ...initialState,
       addRecipe: true
     }
 
@@ -101,10 +111,12 @@ describe("loading", () => {
 
   it("sets loading reset confirmation", () => {
     const notLoadingState = {
+      ...initialState,
       resetConfirmation: false
     }
 
     const loadingState = {
+      ...initialState,
       resetConfirmation: true
     }
 
