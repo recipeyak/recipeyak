@@ -4,7 +4,7 @@ import { Provider } from "react-redux"
 import { mount, configure } from "enzyme"
 import Adapter from "enzyme-adapter-react-16"
 
-import { emptyStore as store } from "../store/store.js"
+import { emptyStore as store } from "../store/store"
 
 import PasswordReset from "./PasswordReset.jsx"
 

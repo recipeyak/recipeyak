@@ -41,10 +41,10 @@ const recipeApp = combineReducers({
 })
 
 // reset redux to default state on logout
-export const rootReducer = (state, action) => {
+export const rootReducer = (state: any, action: any) => {
   if (action.type === LOG_OUT) {
     return {
-      ...recipeApp(undefined, action),
+      ...recipeApp(undefined as any, action),
       // We need to save this auth state (fromUrl) through logout
       // so we can redirect users to where they were attempting to
       // visit before being asked for authentication
@@ -60,7 +60,8 @@ const defaultData = loadState()
 export const history = createHistory()
 const router = routerMiddleware(history)
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+const composeEnhancers =
+  (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 // A "hydrated" store is nice for UI development
 export const store = createStore(

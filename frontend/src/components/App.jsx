@@ -5,7 +5,7 @@ import { Helmet } from "./Helmet"
 import HTML5Backend from "react-dnd-html5-backend"
 import { DragDropContext } from "react-dnd"
 
-import { history, store } from "../store/store.js"
+import { history, store } from "../store/store"
 
 import Home from "../containers/Home.jsx"
 import Login from "../containers/Login.jsx"
