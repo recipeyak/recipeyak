@@ -29,15 +29,30 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import React, { Component } from "react"
+import React from "react"
 import { connect } from "react-redux"
 
 import Card from "./Step"
 import { updatingStep } from "../store/actions"
+import { IRecipe, IStep } from "../store/reducers/recipes"
+import { AnyAction } from "redux"
 
-@connect()
-export default class StepContainer extends Component {
-  constructor(props) {
+interface IStepContainerProps {
+  readonly steps: IStep[]
+  readonly recipeID: IRecipe["id"]
+  // TODO(sbdchd): this is should be type correctly once the store has been fixed
+  readonly dispatch: (func: AnyAction) => void
+}
+
+interface IStepContainerState {
+  readonly cards: IStepContainerProps["steps"]
+}
+
+class StepContainer extends React.Component<
+  IStepContainerProps,
+  IStepContainerState
+> {
+  constructor(props: IStepContainerProps) {
     super(props)
 
     this.state = {
@@ -45,13 +60,12 @@ export default class StepContainer extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: IStepContainerProps) {
     this.setState({ cards: nextProps.steps })
   }
 
-  moveCard = (dragIndex, hoverIndex) => {
-    const { cards } = this.state
-    const dragCard = cards[dragIndex]
+  moveCard = (dragIndex: number, hoverIndex: number) => {
+    const dragCard = this.state.cards[dragIndex]
 
     this.setState(prevState => {
       const cards = prevState.cards
@@ -63,10 +77,10 @@ export default class StepContainer extends Component {
     })
   }
 
-  completeMove = (stepID, arrIndex) => {
+  completeMove = (stepID: number, arrIndex: number) => {
     const nextCard = this.state.cards[arrIndex + 1]
     const prevCard = this.state.cards[arrIndex - 1]
-    let newPos = null
+    let newPos: IStep["position"] | null = null
 
     if (nextCard == null && prevCard == null) {
       // there is only one card in the list, so we don't make any change
@@ -81,18 +95,30 @@ export default class StepContainer extends Component {
     if (newPos == null) {
       throw new Error("Invalid position")
     }
+    const newPosition: number = newPos
 
     this.setState(
       prevState => {
-        const cards = [...prevState.cards]
-        cards[arrIndex].position = newPos
         return {
-          cards
+          cards: [
+            ...prevState.cards.map((c, index) => {
+              if (index === arrIndex) {
+                return {
+                  ...c,
+                  position: newPosition
+                }
+              }
+              return c
+            })
+          ]
         }
       },
       () =>
         this.props.dispatch(
-          updatingStep(this.props.recipeID, stepID, { position: newPos })
+          // TODO(sbdchd): this is a hack until we can remove redux-thunk
+          updatingStep(this.props.recipeID, stepID, {
+            position: newPosition
+          }) as any
         )
     )
   }
@@ -120,3 +146,5 @@ export default class StepContainer extends Component {
     )
   }
 }
+
+export default connect()(StepContainer)
