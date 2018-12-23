@@ -1,13 +1,19 @@
-import React from "react"
+import * as React from "react"
 import { Helmet } from "./Helmet"
 import { Link } from "react-router-dom"
 
 import Loader from "./Loader"
 import { RecipeItem as Recipe } from "./RecipeItem"
+import { IRecipe } from "../store/reducers/recipes"
 
-import img from "./images/yak.jpg"
+// TODO(sbdchd): must be a better way
+// tslint:disable-next-line:no-var-requires
+const img = require("./images/yak.jpg")
 
-const TotalRecipeCount = ({ count }) => (
+interface ITotalRecipeCountProps {
+  readonly count: number
+}
+const TotalRecipeCount = ({ count }: ITotalRecipeCountProps) => (
   <p className="stat mb-1">
     You have{" "}
     <b>
@@ -26,8 +32,15 @@ const TotalRecipeCount = ({ count }) => (
   </p>
 )
 
-const RecipesAddedThisWeek = ({ count = 0 }) =>
-  count > 0 && (
+interface IRecipesAddedThisWeek {
+  readonly count: number
+}
+
+const RecipesAddedThisWeek = ({ count }: IRecipesAddedThisWeek) => {
+  if (count < 1) {
+    return null
+  }
+  return (
     <p className="stat mb-1">
       <b>
         {count} recipe{count === 1 ? " " : "s "}
@@ -35,11 +48,20 @@ const RecipesAddedThisWeek = ({ count = 0 }) =>
       {count === 1 ? "has" : "have"} been added in the <b>last week</b>.
     </p>
   )
+}
 
-const toInt = x => (x > 0 ? x : 0)
+const toInt = (x: number) => Math.max(0, x)
 
-const LifetimeRecipeEdits = ({ edits = 0, dateJoined = "" }) =>
-  dateJoined !== "" && (
+interface ILifeTimeRecipeEdits {
+  readonly edits: number
+  readonly dateJoined: string
+}
+
+const LifetimeRecipeEdits = ({ edits, dateJoined }: ILifeTimeRecipeEdits) => {
+  if (dateJoined === "") {
+    return null
+  }
+  return (
     <p className="stat mb-1">
       Since <b>{dateJoined}</b>, you have edited your recipes a total of{" "}
       <b>{toInt(edits)} times</b>.
@@ -50,9 +72,18 @@ const LifetimeRecipeEdits = ({ edits = 0, dateJoined = "" }) =>
       ) : null}
     </p>
   )
+}
 
-const RecentRecipes = ({ recipes, loading, error }) => {
-  if (error) return <p>error fetching recipes</p>
+interface IRecentRecipes {
+  readonly recipes: IRecipe[]
+  readonly loading: boolean
+  readonly error: boolean
+}
+
+const RecentRecipes = ({ recipes, loading, error }: IRecentRecipes) => {
+  if (error) {
+    return <p>error fetching recipes</p>
+  }
 
   const noRecipes = recipes.length < 1
   if (noRecipes && !loading) {
@@ -94,7 +125,12 @@ const RecentRecipes = ({ recipes, loading, error }) => {
   )
 }
 
-const UserStatistics = ({ loading, stats }) => {
+interface IUserStatisticsProps {
+  readonly loading: boolean
+  readonly stats: IUserStats
+}
+
+const UserStatistics = ({ loading, stats }: IUserStatisticsProps) => {
   if (loading) {
     return (
       <section className="justify-self-center d-grid align-self-center">
@@ -103,7 +139,7 @@ const UserStatistics = ({ loading, stats }) => {
     )
   }
 
-  // NOTE: this breaksbsometimes
+  // NOTE: this breaks sometimes
   const emptyStats = stats.most_added_recipe == null
   if (emptyStats) {
     return (
@@ -137,19 +173,39 @@ const UserStatistics = ({ loading, stats }) => {
   )
 }
 
+interface IUserStats {
+  readonly most_added_recipe: null
+  readonly new_recipes_last_week: number
+  readonly total_recipe_edits: number
+  readonly date_joined: string
+  readonly total_user_recipes: number
+  readonly recipes_added_by_month: unknown[]
+  readonly total_recipes_added_last_month_by_all_users: number
+}
+
+interface IUserHomeProps {
+  readonly loadingRecipes: boolean
+  readonly loadingUserStats: boolean
+  readonly userStats: IUserStats
+  readonly errorRecipes: boolean
+  readonly recipes: IRecipe[]
+}
+
 const UserHome = ({
   loadingRecipes,
   loadingUserStats,
   userStats = {
     most_added_recipe: null,
-    new_recipes_last_week: "",
-    total_recipe_edits: null,
-    date_joined: null,
-    recipes_added_by_month: []
+    new_recipes_last_week: 0,
+    total_recipe_edits: 0,
+    total_user_recipes: 0,
+    date_joined: "",
+    recipes_added_by_month: [],
+    total_recipes_added_last_month_by_all_users: 0
   },
   errorRecipes,
   recipes
-}) => (
+}: IUserHomeProps) => (
   <div className="container pr-2 pl-2 pb-2">
     <Helmet title="Home" />
 
@@ -164,7 +220,11 @@ const UserHome = ({
   </div>
 )
 
-class UserHomeFetch extends React.Component {
+interface IUserHomeFetchProps extends IUserHomeProps {
+  readonly fetchData: () => void
+}
+
+class UserHomeFetch extends React.Component<IUserHomeFetchProps> {
   componentWillMount = () => {
     this.props.fetchData()
   }
