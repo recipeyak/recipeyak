@@ -33,6 +33,7 @@ export interface IMember {
   readonly user: IUser
   readonly level?: "admin" | "contributor" | "viewer"
   readonly deleting?: boolean
+  readonly is_active?: boolean
 }
 
 export interface ITeam {

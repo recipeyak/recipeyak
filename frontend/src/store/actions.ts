@@ -1759,9 +1759,11 @@ export const setCreatingTeam = (val: unknown) => ({
   val
 })
 
-export const creatingTeam = (name: string, emails: string, level: unknown) => (
-  dispatch: Dispatch
-) => {
+export const creatingTeam = (
+  name: string,
+  emails: string[],
+  level: unknown
+) => (dispatch: Dispatch) => {
   dispatch(setCreatingTeam(true))
   return http
     .post("/api/v1/t/", { name, emails, level })

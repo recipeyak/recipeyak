@@ -5,27 +5,46 @@ import { roles } from "./TeamInvite"
 
 import { ButtonPrimary } from "./Buttons"
 
-import { creatingTeam } from "../store/actions"
+import { creatingTeam, Dispatch } from "../store/actions"
+import { IMember } from "../store/reducers/teams"
+import { RootState } from "../store/store"
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: RootState) => ({
   loading: state.teams.creating
 })
 
-const mapDispatchToProps = dispatch => ({
-  createTeam: (name, emails, level) =>
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  createTeam: (name: string, emails: string[], level: IMember["level"]) =>
     dispatch(creatingTeam(name, emails, level))
 })
 
-class TeamCreate extends React.Component {
-  state = {
+interface ITeamCreateProps {
+  readonly loading: boolean
+  readonly createTeam: (
+    name: string,
+    emails: string[],
+    level: IMember["level"]
+  ) => void
+}
+interface ITeamCreateState {
+  readonly level: IMember["level"]
+  readonly emails: string
+  readonly name: string
+}
+
+class TeamCreate extends React.Component<ITeamCreateProps, ITeamCreateState> {
+  state: ITeamCreateState = {
     level: "contributor",
     emails: "",
     name: ""
   }
 
-  handleInputChange = e => this.setState({ [e.target.name]: e.target.value })
+  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    this.setState(({
+      [e.target.name]: e.target.value
+    } as unknown) as ITeamCreateState)
 
-  handleSubmit = async e => {
+  handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const emails = this.state.emails.split(",").filter(x => x !== "")
     const { name, level } = this.state
@@ -51,7 +70,7 @@ class TeamCreate extends React.Component {
             />
           </label>
 
-          <div style={{ display: this.state.name === "" && "none" }}>
+          <div style={{ display: this.state.name === "" ? "none" : undefined }}>
             <h2 className="fs-6">Invite Team Members</h2>
 
             <input
