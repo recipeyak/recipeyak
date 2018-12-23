@@ -1,7 +1,19 @@
 import React from "react"
 
 import Owner from "./Owner"
-import { teamURL } from "../urls"
+import { IRecipe } from "../store/reducers/recipes"
+
+interface IMetaDataProps {
+  readonly author: string
+  readonly source: string
+  readonly servings: string
+  readonly time: string
+  readonly owner: IRecipe["owner"]
+  readonly recipeId: IRecipe["id"]
+  readonly onClick: () => void
+}
+
+const isValid = (x?: string) => x !== "" && x != null
 
 const MetaData = ({
   author = "",
@@ -11,9 +23,7 @@ const MetaData = ({
   owner,
   recipeId,
   onClick
-}) => {
-  const isValid = x => x !== "" && x != null
-
+}: IMetaDataProps) => {
   const _author = isValid(author) ? (
     <span>
       By <b className="cursor-pointer">{author}</b>{" "}
@@ -35,6 +45,8 @@ const MetaData = ({
     </span>
   ) : null
 
+  const ownerName = owner.type === "team" ? owner.name : "you"
+
   return (
     <div className="break-word">
       <span onClick={onClick}>
@@ -43,10 +55,10 @@ const MetaData = ({
         {_servings}
         {_time}
       </span>
+
       <Owner
-        type={owner.type}
-        url={teamURL(owner.id, owner.name)}
-        name={owner.name}
+        id={owner.id}
+        name={ownerName}
         recipeId={recipeId}
       />
     </div>

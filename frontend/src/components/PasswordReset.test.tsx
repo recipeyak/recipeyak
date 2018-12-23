@@ -6,22 +6,21 @@ import Adapter from "enzyme-adapter-react-16"
 
 import { emptyStore as store } from "../store/store"
 
-import OAuth from "./OAuth.jsx"
+import PasswordReset from "./PasswordReset"
 
 configure({ adapter: new Adapter() })
 
-describe("<OAuth/>", () => {
+describe("<PasswordReset/>", () => {
   it("renders without crashing", () => {
     const props = {
-      service: "my-provider",
-      token: "12345",
-      login: (service, token) =>
-        expect(service === props.service && token === props.token)
+      error: {},
+      loading: false,
+      reset: () => undefined
     }
     mount(
       <Provider store={store}>
         <MemoryRouter>
-          <OAuth {...props} />
+          <PasswordReset loggedIn={false} {...props} />
         </MemoryRouter>
       </Provider>
     )

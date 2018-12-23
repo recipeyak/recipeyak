@@ -4,22 +4,57 @@ import { Helmet } from "./Helmet"
 import { FormErrorHandler } from "./Forms"
 import { ButtonPrimary } from "./Buttons"
 
-class PasswordChange extends React.Component {
-  state = {
+interface IPasswordChangeError {
+  readonly oldPassword?: string[]
+  readonly newPassword?: string[]
+  readonly newPasswordAgain?: string[]
+}
+
+interface IPasswordChangeProps {
+  readonly clearErrors: () => void
+  readonly update: (
+    oldPassword: string,
+    newPassword: string,
+    newPasswordAgain: string
+  ) => void
+  readonly error: IPasswordChangeError
+  readonly setPassword?: boolean
+  readonly loading: boolean
+}
+
+interface IPasswordChangestate {
+  readonly oldPassword: string
+  readonly newPassword: string
+  readonly newPasswordAgain: string
+  readonly password: string
+}
+
+class PasswordChange extends React.Component<
+  IPasswordChangeProps,
+  IPasswordChangestate
+> {
+  state: IPasswordChangestate = {
+    password: "",
     oldPassword: "",
     newPassword: "",
     newPasswordAgain: ""
+  }
+
+  static defaultProps = {
+    setPassword: false
   }
 
   componentWillMount = () => {
     this.props.clearErrors()
   }
 
-  handleInputChange = e => {
-    this.setState({ [e.target.name]: e.target.value })
+  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState(({
+      [e.target.name]: e.target.value
+    } as unknown) as IPasswordChangestate)
   }
 
-  handleSubmit = e => {
+  handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     this.props.update(
       this.state.oldPassword,

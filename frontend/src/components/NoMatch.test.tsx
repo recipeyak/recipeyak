@@ -2,7 +2,7 @@ import React from "react"
 import { MemoryRouter } from "react-router"
 import { mount, configure } from "enzyme"
 import Adapter from "enzyme-adapter-react-16"
-import NoMatch from "./NoMatch.jsx"
+import NoMatch from "./NoMatch"
 
 configure({ adapter: new Adapter() })
 

@@ -2,7 +2,14 @@ import React from "react"
 
 import Loader from "./Loader"
 
-const OAuth = ({ service, token, login, redirectUrl = "" }) => {
+interface IOAuthProps {
+  readonly service: string
+  readonly token: string
+  readonly login: (service: string, token: string, redirectUrl: string) => void
+  readonly redirectUrl?: string
+}
+
+const OAuth = ({ service, token, login, redirectUrl = "" }: IOAuthProps) => {
   login(service, token, redirectUrl)
 
   return (

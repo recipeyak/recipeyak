@@ -123,7 +123,7 @@ export const clearNotification = () => ({
   type: t.CLEAR_NOTIFICATION
 })
 
-interface INotificationWithTimeout {
+export interface INotificationWithTimeout {
   readonly delay?: number
   readonly sticky?: boolean
   readonly message: string

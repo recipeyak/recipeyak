@@ -1,6 +1,6 @@
 import { connect } from "react-redux"
 
-import { NavLink } from "../components/NavLink.jsx"
+import { NavLink } from "../components/NavLink"
 
 const mapStateToProps = state => {
   return {

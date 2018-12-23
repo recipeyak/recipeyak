@@ -8,8 +8,14 @@ import NotificationsDropdown from "./NotificationsDropdown"
 import UserDropdown from "./UserDropdown"
 
 import { teamURL } from "../urls"
+import { ITeam } from "../store/reducers/teams"
 
-const Teams = ({ teams, loading }) => {
+interface ITeamsProps {
+  readonly teams: ITeam[]
+  readonly loading: boolean
+}
+
+const Teams = ({ teams, loading }: ITeamsProps) => {
   if (loading) {
     return <p>Loading...</p>
   }
@@ -31,10 +37,27 @@ const Teams = ({ teams, loading }) => {
   )
 }
 
-class Navbar extends React.Component {
+interface INavbarProps {
+  readonly fetchData: () => void
+  readonly avatarURL: string
+  readonly loggedIn?: boolean
+  readonly logout: () => void
+  readonly email: string
+  readonly loggingOut: boolean
+  readonly className?: string
+  readonly toggleDarkMode: () => void
+  readonly darkMode: boolean
+  readonly scheduleURL: string
+  readonly loadingTeams: boolean
+  readonly teams: ITeam[]
+}
+
+class Navbar extends React.Component<INavbarProps> {
   static defaultProps = {
     teams: [],
-    scheduleURL: ""
+    scheduleURL: "",
+    className: "",
+    loggedIn: true
   }
 
   componentWillMount() {
