@@ -13,20 +13,45 @@ import { classNames } from "../classnames"
 import { atLeast1 } from "../input"
 import { ButtonPrimary } from "./Buttons"
 
-import { addingScheduledRecipe } from "../store/actions"
+import { addingScheduledRecipe, Dispatch } from "../store/actions"
+import { IRecipe } from "../store/reducers/recipes"
+import { ITeam } from "../store/reducers/teams"
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: Dispatch) {
   return {
-    create: (recipeID, teamID, on, count) =>
-      dispatch(addingScheduledRecipe(recipeID, teamID, on, count))
+    create: (
+      recipeID: IRecipe["id"],
+      teamID: ITeam["id"],
+      on: Date,
+      count: number
+    ) => dispatch(addingScheduledRecipe(recipeID, teamID, on, count))
   }
 }
 
-@connect(
-  null,
-  mapDispatchToProps
-)
-export default class DatePickerForm extends React.Component {
+interface IDatePickerProps {
+  readonly recipeID: IRecipe["id"]
+  readonly teamID: ITeam["id"]
+  readonly show: boolean
+  readonly create: (
+    recipeID: IRecipe["id"],
+    teamID: ITeam["id"],
+    date: Date,
+    count: number
+  ) => Promise<void>
+  readonly close: () => void
+  readonly scheduling: boolean
+}
+
+interface IDatePickerState {
+  readonly count: number
+  readonly date: Date
+  readonly month: Date
+}
+
+class DatePickerForm extends React.Component<
+  IDatePickerProps,
+  IDatePickerState
+> {
   static propTypes = {
     recipeID: PropTypes.number.isRequired,
     teamID: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
@@ -42,17 +67,19 @@ export default class DatePickerForm extends React.Component {
     month: new Date()
   }
 
-  handleDateChange = val => {
-    if (isPast(endOfDay(val))) return
+  handleDateChange = (val: Date) => {
+    if (isPast(endOfDay(val))) {
+      return
+    }
     this.setState({ date: val })
   }
 
-  handleCountChange = e => {
+  handleCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const count = atLeast1(e.target.value)
     this.setState({ count })
   }
 
-  handleSubmit = e => {
+  handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     this.props
       .create(
@@ -124,3 +151,8 @@ export default class DatePickerForm extends React.Component {
     )
   }
 }
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(DatePickerForm)

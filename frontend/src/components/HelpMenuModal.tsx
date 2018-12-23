@@ -2,7 +2,14 @@ import React from "react"
 
 import Modal from "./Modal"
 
-export default class HelpMenuModal extends React.Component {
+interface IHelpMenuModalState {
+  readonly show: boolean
+}
+
+export default class HelpMenuModal extends React.Component<
+  {},
+  IHelpMenuModalState
+> {
   state = {
     show: false
   }
@@ -15,8 +22,11 @@ export default class HelpMenuModal extends React.Component {
     document.removeEventListener("keypress", this.handleKeyPress)
   }
 
-  handleKeyPress = e => {
-    if (document.activeElement.tagName !== "BODY") return
+  handleKeyPress = (e: KeyboardEvent) => {
+    const el = document.activeElement
+    if (el == null || el.tagName !== "BODY") {
+      return
+    }
     if (e.key === "?") {
       this.setState(prev => ({ show: !prev.show }))
     }

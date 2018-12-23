@@ -16,7 +16,19 @@ const Chevron = () => (
   </svg>
 )
 
-export default class Dropdown extends React.Component {
+interface IDropdownProps {
+  readonly relative: boolean
+  readonly name: string
+}
+
+interface IDropdownState {
+  readonly show: boolean
+}
+
+export default class Dropdown extends React.Component<
+  IDropdownProps,
+  IDropdownState
+> {
   static propTypes = {
     relative: PropTypes.bool
   }
