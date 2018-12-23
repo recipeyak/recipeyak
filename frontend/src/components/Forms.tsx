@@ -1,7 +1,7 @@
 import * as React from "react"
 
 interface IFormErrorHandlerProps {
-  readonly error: string[] | null
+  readonly error: string[] | null | undefined
 }
 
 export const FormErrorHandler = ({ error }: IFormErrorHandlerProps) => {

@@ -7,7 +7,27 @@ import { FormErrorHandler } from "./Forms"
 import { ButtonPrimary } from "./Buttons"
 import AuthContainer from "./AuthContainer"
 
-class Signup extends React.Component {
+interface ISignupErrors {
+  readonly password1: string[]
+  readonly password2: string[]
+  readonly nonFieldErrors: string[]
+  readonly email: string[]
+}
+
+interface ISignupProps {
+  readonly clearErrors: () => void
+  readonly signup: (email: string, password1: string, password2: string) => void
+  readonly error: ISignupErrors
+  readonly loading: boolean
+}
+
+interface ISignupState {
+  readonly email: string
+  readonly password1: string
+  readonly password2: string
+}
+
+class Signup extends React.Component<ISignupProps, ISignupState> {
   state = {
     email: "",
     password1: "",
@@ -18,11 +38,13 @@ class Signup extends React.Component {
     this.props.clearErrors()
   }
 
-  handleInputChange(e) {
-    this.setState({ [e.target.name]: e.target.value })
+  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState(({
+      [e.target.name]: e.target.value
+    } as unknown) as ISignupState)
   }
 
-  handleSignup(e) {
+  handleSignup = (e: React.FormEvent) => {
     e.preventDefault()
     this.props.signup(
       this.state.email,
@@ -52,11 +74,11 @@ class Signup extends React.Component {
 
           <FormErrorHandler error={nonFieldErrors} />
 
-          <form onSubmit={e => this.handleSignup(e)}>
+          <form onSubmit={this.handleSignup}>
             <div className="field">
               <label className="label">Email</label>
               <input
-                onChange={e => this.handleInputChange(e)}
+                onChange={this.handleInputChange}
                 className={"my-input" + (email ? " is-danger" : "")}
                 autoFocus
                 name="email"
@@ -71,7 +93,7 @@ class Signup extends React.Component {
                 Password
               </label>
               <input
-                onChange={e => this.handleInputChange(e)}
+                onChange={this.handleInputChange}
                 className={"my-input" + (password1 ? " is-danger" : "")}
                 type="password"
                 name="password1"
@@ -86,7 +108,7 @@ class Signup extends React.Component {
                 Password Again
               </label>
               <input
-                onChange={e => this.handleInputChange(e)}
+                onChange={this.handleInputChange}
                 className={"my-input" + (password2 ? " is-danger" : "")}
                 type="password"
                 name="password2"
