@@ -9,7 +9,15 @@ import UserDropdown from "./UserDropdown"
 
 import { teamURL } from "../urls"
 
-const Teams = ({ teams, loading }) => {
+interface ITeam {
+  id: number
+  name: string
+}
+interface ITeamsProps {
+  teams: ITeam[]
+  loading: boolean
+}
+const Teams = ({ teams, loading }: ITeamsProps) => {
   if (loading) {
     return <p>Loading...</p>
   }
@@ -31,12 +39,22 @@ const Teams = ({ teams, loading }) => {
   )
 }
 
-class Navbar extends React.Component {
-  static defaultProps = {
-    teams: [],
-    scheduleURL: ""
-  }
+interface INavbarProps {
+  fetchData: () => void
+  logout: () => void
+  toggleDarkMode: () => void
+  avatarURL: string
+  loggedIn?: boolean
+  email: string
+  loggingOut: boolean
+  className?: string
+  darkMode: boolean
+  scheduleURL: string
+  teams: ITeam[]
+  loadingTeams: boolean
+}
 
+class Navbar extends React.Component<INavbarProps> {
   componentWillMount() {
     this.props.fetchData()
   }

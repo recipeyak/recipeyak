@@ -4,14 +4,16 @@ import {
   fetchUser,
   loggingOut,
   toggleDarkMode,
-  fetchTeams
+  fetchTeams,
+  Dispatch
 } from "../store/actions"
 
 import Nav from "../components/Nav"
 
 import { teamsFrom, scheduleURLFrom } from "../store/mapState"
+import { RootState } from "../store/store"
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: RootState) => ({
   avatarURL: state.user.avatarURL,
   email: state.user.email,
   loading: state.user.loading,
@@ -23,7 +25,7 @@ const mapStateToProps = state => ({
   scheduleURL: scheduleURLFrom(state)
 })
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     fetchData: () => {
       dispatch(fetchTeams())
