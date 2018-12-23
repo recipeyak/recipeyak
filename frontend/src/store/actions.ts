@@ -5,7 +5,7 @@ import * as t from "./actionTypes"
 type TeamID = number | "personal"
 
 // tslint:disable-next-line:ban-types
-type Dispatch = Function
+export type Dispatch = Function
 // tslint:disable-next-line:ban-types
 type GetState = Function
 
@@ -30,6 +30,7 @@ import { IRecipe } from "./reducers/calendar"
 import { IInvite } from "./reducers/invites"
 import { INotificationState } from "./reducers/notification"
 import { IRecipeBasic } from "../components/AddRecipe"
+import { ITeam } from "./reducers/teams"
 
 const config = { timeout: 15000 }
 
@@ -1470,7 +1471,7 @@ export const setLoadingTeamRecipes = (id: number, loadingRecipes: boolean) => ({
   loadingRecipes
 })
 
-export const fetchTeam = (id: number) => (dispatch: Dispatch) => {
+export const fetchTeam = (id: ITeam["id"]) => (dispatch: Dispatch) => {
   dispatch(setLoadingTeam(id, true))
   return http
     .get(`/api/v1/t/${id}/`)

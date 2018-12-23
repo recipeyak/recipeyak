@@ -28,7 +28,7 @@ import {
 import { IUser } from "./user"
 
 // TODO(sbdchd): check if these optional fields are always used (aka, required)
-interface IMember {
+export interface IMember {
   readonly id: number
   readonly user: IUser
   readonly level?: "admin" | "contributor" | "viewer"

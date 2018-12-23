@@ -6,11 +6,24 @@ import { TextInput } from "./Forms"
 import { matchesQuery } from "../search"
 
 import { RecipeItem as Recipe } from "./RecipeItem"
+import { IRecipe } from "../store/reducers/recipes"
 
-export default class TeamRecipes extends React.Component {
+interface ITeamRecipesProps {
+  readonly loading: boolean
+  readonly recipes: IRecipe[]
+}
+
+interface ITeamRecipesState {
+  readonly query: string
+}
+
+export default class TeamRecipes extends React.Component<
+  ITeamRecipesProps,
+  ITeamRecipesState
+> {
   ENABLE_SEARCH_THRESHOLD = 8
 
-  state = {
+  state: ITeamRecipesState = {
     query: ""
   }
 

@@ -3,7 +3,22 @@ import { Link } from "react-router-dom"
 
 import { setDarkModeClass } from "../sideEffects"
 
-export default class UserDropdown extends React.Component {
+interface IUserDropdownProps {
+  readonly darkMode: boolean
+  readonly avatarURL: string
+  readonly email: string
+  readonly toggleDarkMode: () => void
+  readonly logout: () => void
+  readonly loggingOut: boolean
+}
+
+interface IUserDropdownState {
+  readonly show: boolean
+}
+export default class UserDropdown extends React.Component<
+  IUserDropdownProps,
+  IUserDropdownState
+> {
   state = {
     show: false
   }

@@ -2,6 +2,7 @@ import React from "react"
 import { Helmet } from "./Helmet"
 import { Link } from "react-router-dom"
 import { connect } from "react-redux"
+import { RouteComponentProps } from "react-router-dom"
 
 import { ButtonPrimary } from "./Buttons"
 
@@ -10,9 +11,11 @@ import Loader from "./Loader"
 
 import { teamURL } from "../urls"
 
-import { fetchTeam, sendingTeamInvites } from "../store/actions"
+import { fetchTeam, sendingTeamInvites, Dispatch } from "../store/actions"
+import { RootState } from "../store/store"
+import { IMember, ITeam } from "../store/reducers/teams"
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state: RootState, props: ITeamInviteProps) => {
   const id = props.match.params.id
   const team = state.teams[id] ? state.teams[id] : {}
 
@@ -22,10 +25,13 @@ const mapStateToProps = (state, props) => {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  fetchData: id => dispatch(fetchTeam(id)),
-  sendInvites: (teamID, emails, level) =>
-    dispatch(sendingTeamInvites(teamID, emails, level))
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  fetchData: (id: ITeam["id"]) => dispatch(fetchTeam(id)),
+  sendInvites: (
+    teamID: ITeam["id"],
+    emails: string[],
+    level: IMember["level"]
+  ) => dispatch(sendingTeamInvites(teamID, emails, level))
 })
 
 export const roles = [
@@ -46,8 +52,26 @@ export const roles = [
   }
 ]
 
-class TeamInvite extends React.Component {
-  state = {
+interface ITeamInviteProps extends RouteComponentProps<{ id: string }> {
+  readonly id: ITeam["id"]
+  readonly fetchData: (id: ITeam["id"]) => void
+  readonly sendInvites: (
+    id: ITeam["id"],
+    emails: string[],
+    level: IMember["level"]
+  ) => void
+  readonly loadingTeam: boolean
+  readonly name: string
+  readonly error404: boolean
+  readonly sendingTeamInvites: boolean
+}
+interface ITeamInviteState {
+  readonly level: IMember["level"]
+  readonly emails: string
+}
+
+class TeamInvite extends React.Component<ITeamInviteProps, ITeamInviteState> {
+  state: ITeamInviteState = {
     level: "contributor",
     emails: ""
   }
@@ -61,7 +85,10 @@ class TeamInvite extends React.Component {
     this.props.fetchData(this.props.id)
   }
 
-  handleInputChange = e => this.setState({ [e.target.name]: e.target.value })
+  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    this.setState(({
+      [e.target.name]: e.target.value
+    } as unknown) as ITeamInviteState)
 
   render() {
     const { name, id, loadingTeam } = this.props
@@ -105,19 +132,19 @@ class TeamInvite extends React.Component {
             onChange={this.handleInputChange}
             placeholder="emails seperated by commas • j@example.com,hey@example.com"
           />
-          {roles.map(({ name, value, description }, id) => (
-            <label key={id} className="d-flex align-items-center pb-4">
+          {roles.map((role, index) => (
+            <label key={index} className="d-flex align-items-center pb-4">
               <input
                 type="radio"
                 className="mr-2"
                 name="level"
-                checked={this.state.level === value}
-                value={value}
+                checked={this.state.level === role.value}
+                value={role.value}
                 onChange={this.handleInputChange}
               />
               <div>
-                <h4 className="fs-4 fw-500">{name}</h4>
-                <p className="text-muted">{description}</p>
+                <h4 className="fs-4 fw-500">{role.name}</h4>
+                <p className="text-muted">{role.description}</p>
               </div>
             </label>
           ))}
