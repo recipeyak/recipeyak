@@ -11,7 +11,39 @@ import AuthContainer from "./AuthContainer"
 const redirectURL = ({ pathname = "", search = "", hash = "" }) =>
   `${pathname}${search}${hash}`
 
-class Login extends React.Component {
+interface ILoginError {
+  readonly password1?: string[]
+  readonly nonFieldErrors?: string[]
+  readonly email?: string[]
+}
+
+interface ISocialError {
+  readonly emailSocial?: string[]
+  readonly nonFieldErrorsSocial?: string[]
+}
+
+interface ILoginProps {
+  readonly setFromUrl: (url: string) => void
+  readonly clearErrors: () => void
+  readonly login: (email: string, password: string, fromUrl: string) => void
+  readonly fromUrl: string
+  readonly loading: boolean
+  readonly error: ILoginError
+  readonly errorSocial: ISocialError
+  // TODO(sbdchd): there is probably a better type for this
+  readonly location: {
+    readonly state?: {
+      readonly from: string
+    }
+  }
+}
+
+interface ILoginState {
+  readonly email: string
+  readonly password: string
+}
+
+class Login extends React.Component<ILoginProps, ILoginState> {
   state = {
     email: "",
     password: ""
@@ -24,11 +56,11 @@ class Login extends React.Component {
     this.props.setFromUrl(redirectURL(fromUrl))
   }
 
-  handleInputChange(e) {
-    this.setState({ [e.target.name]: e.target.value })
+  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>)  => {
+    this.setState({ [e.target.name]: e.target.value } as unknown as ILoginState)
   }
 
-  handleLogin(e) {
+  handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
     this.props.login(this.state.email, this.state.password, this.props.fromUrl)
   }
@@ -57,7 +89,7 @@ class Login extends React.Component {
             <div className="field">
               <label className="label">Email</label>
               <input
-                onChange={e => this.handleInputChange(e)}
+                onChange={this.handleInputChange}
                 value={this.state.email}
                 className={"my-input" + (email ? " is-danger" : "")}
                 autoFocus
@@ -73,8 +105,8 @@ class Login extends React.Component {
                 Password
               </label>
               <input
-                onChange={e => this.handleInputChange(e)}
-                value={this.state.query}
+                onChange={this.handleInputChange}
+                value={this.state.password}
                 className={"my-input" + (password1 ? " is-danger" : "")}
                 type="password"
                 name="password"
