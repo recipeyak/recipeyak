@@ -55,7 +55,7 @@ const PrivateRoute = ({ component: Component, ...rest }: RouteProps) => {
       }}
     />
   )
-  }
+}
 
 const PublicOnlyRoute = ({ component: Component, ...rest }: RouteProps) => {
   if (Component == null) {
