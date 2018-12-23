@@ -14,6 +14,7 @@ import os
 from typing import List
 import logging
 
+from django.conf import global_settings
 import dj_database_url
 
 logger = logging.getLogger(__name__)
@@ -194,6 +195,13 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
+
+# use fast password hasher for testing
+if DEBUG:
+    PASSWORD_HASHERS = [
+        "django.contrib.auth.hashers.UnsaltedMD5PasswordHasher",
+        *global_settings.PASSWORD_HASHERS,
+    ]
 
 
 # Internationalization
