@@ -447,12 +447,12 @@ export const setShoppingListError = (val: unknown) => ({
   val
 })
 
-export const fetchShoppingList = (teamID: TeamID) => (
+export const fetchShoppingList = (teamID: TeamID, start?: Date, end?: Date) => (
   dispatch: Dispatch,
   getState: GetState
 ) => {
-  const start = getState().shoppinglist.startDay
-  const end = getState().shoppinglist.endDay
+  const startDay = start || getState().shoppinglist.startDay
+  const endDay = end || getState().shoppinglist.endDay
   dispatch(setLoadingShoppingList(true))
   dispatch(setShoppingListError(false))
   const url =
@@ -462,8 +462,8 @@ export const fetchShoppingList = (teamID: TeamID) => (
   return http
     .get(url, {
       params: {
-        start: pyFormat(start),
-        end: pyFormat(end)
+        start: pyFormat(startDay),
+        end: pyFormat(endDay)
       }
     })
     .then(res => {

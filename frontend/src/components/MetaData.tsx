@@ -56,11 +56,7 @@ const MetaData = ({
         {_time}
       </span>
 
-      <Owner
-        id={owner.id}
-        name={ownerName}
-        recipeId={recipeId}
-      />
+      <Owner id={owner.id} name={ownerName} recipeId={recipeId} />
     </div>
   )
 }
