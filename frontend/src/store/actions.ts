@@ -26,7 +26,7 @@ import raven from "raven-js"
 
 import { store } from "./store"
 import { IUser, ISocialConnection, SocialProvider } from "./reducers/user"
-import { IRecipe } from "./reducers/calendar"
+import { ICalRecipe } from "./reducers/calendar"
 import { IInvite } from "./reducers/invites"
 import { INotificationState } from "./reducers/notification"
 import { IRecipeBasic } from "../components/AddRecipe"
@@ -1992,7 +1992,7 @@ export const setCalendarError = (error: unknown) => ({
   error
 })
 
-export const setCalendarRecipe = (recipe: IRecipe) => ({
+export const setCalendarRecipe = (recipe: ICalRecipe) => ({
   type: t.SET_CALENDAR_RECIPE,
   recipe
 })
@@ -2030,12 +2030,15 @@ export const setSchedulingRecipe = (recipeID: number, scheduling: boolean) => ({
   scheduling
 })
 
-export const setCalendarRecipes = (recipes: IRecipe[]) => ({
+export const setCalendarRecipes = (recipes: ICalRecipe[]) => ({
   type: t.SET_CALENDAR_RECIPES,
   recipes
 })
 
-export const replaceCalendarRecipe = (id: IRecipe["id"], recipe: IRecipe) => ({
+export const replaceCalendarRecipe = (
+  id: ICalRecipe["id"],
+  recipe: ICalRecipe
+) => ({
   type: t.REPLACE_CALENDAR_RECIPE,
   id,
   recipe
@@ -2065,7 +2068,7 @@ export const addingScheduledRecipe = (
       : `/api/v1/t/${teamID}/calendar/`
 
   // HACK(sbdchd): we need to add the user to the recipe
-  dispatch(setCalendarRecipe({ ...data, id, recipe } as IRecipe))
+  dispatch(setCalendarRecipe({ ...data, id, recipe } as ICalRecipe))
   return http
     .post(url, data)
     .then(res => {

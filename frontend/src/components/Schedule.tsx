@@ -3,28 +3,32 @@ import { connect } from "react-redux"
 import PropTypes from "prop-types"
 import { Helmet } from "./Helmet"
 import { Link } from "react-router-dom"
+import { RouteComponentProps } from "react-router-dom"
 
 import Calendar from "./Calendar"
 import Recipes from "./Recipes"
 import ShoppingList from "./ShoppingList"
 
-import { setScheduleURL } from "../store/actions"
+import { setScheduleURL, Dispatch } from "../store/actions"
 
-const mapDispatchToProps = dispatch => ({
-  setURL: url => dispatch(setScheduleURL(url))
-})
+interface IScheduleProps
+  extends RouteComponentProps<{ id?: string; type: "shopping" | "recipes" }> {
+  readonly error: boolean
+  readonly setURL: (url: string) => void
+}
 
-@connect(
-  null,
-  mapDispatchToProps
-)
-export default class Schedule extends React.Component {
+interface IScheduleState {
+  readonly query: string
+  readonly closed: boolean
+}
+
+class Schedule extends React.Component<IScheduleProps, IScheduleState> {
   static propTypes = {
     error: PropTypes.bool.isRequired,
     match: PropTypes.object.isRequired
   }
 
-  state = {
+  state: IScheduleState = {
     query: "",
     closed: false
   }
@@ -51,11 +55,10 @@ export default class Schedule extends React.Component {
       display: this.state.closed ? "none" : "grid"
     }
 
-    const isTeam = this.props.match.params.id != null
-
-    const teamID = isTeam
-      ? parseInt(this.props.match.params.id, 10)
-      : "personal"
+    const teamID =
+      this.props.match.params.id != null
+        ? parseInt(this.props.match.params.id, 10)
+        : "personal"
 
     const recipesURL =
       teamID === "personal"
@@ -108,3 +111,12 @@ export default class Schedule extends React.Component {
     )
   }
 }
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  setURL: (url: string) => dispatch(setScheduleURL(url))
+})
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(Schedule)

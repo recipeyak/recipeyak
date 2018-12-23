@@ -1,7 +1,13 @@
 import React from "react"
 import { Link } from "react-router-dom"
+import { IRecipe } from "../store/reducers/recipes"
 
-export const Results = ({ recipes, query }) => {
+interface IResultsProps {
+  readonly recipes: IRecipe[]
+  readonly query: string
+}
+
+export function Results({ recipes, query }: IResultsProps) {
   if (recipes.length === 0 && query === "") {
     return (
       <section className="d-flex grid-entire-row justify-center">

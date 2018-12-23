@@ -4,15 +4,33 @@ import { throttle } from "lodash"
 
 import Modal from "./Modal"
 import { RecipeItem as Recipe } from "./RecipeItem"
-import { searchRecipes } from "../store/actions"
+import { searchRecipes, Dispatch } from "../store/actions"
 import { classNames } from "../classnames"
+import { RootState } from "../store/store"
+import { IRecipe } from "../store/reducers/recipes"
 
 const SEARCH_THROTTLE_MS = 100
 
-class SearchModal extends React.Component {
-  constructor(props) {
+interface ISearchModalProps {
+  readonly searchResults: IRecipe[]
+  readonly loading: boolean
+  readonly search: (query: string) => void
+}
+
+interface ISearchModalState {
+  readonly query: string
+  readonly show: boolean
+}
+
+class SearchModal extends React.Component<
+  ISearchModalProps,
+  ISearchModalState
+> {
+  inputRef = React.createRef<HTMLInputElement>()
+  search: (query: string) => void
+
+  constructor(props: ISearchModalProps) {
     super(props)
-    this.inputRef = React.createRef()
     this.search = throttle(this.props.search, SEARCH_THROTTLE_MS)
   }
 
@@ -21,21 +39,29 @@ class SearchModal extends React.Component {
     show: false
   }
 
-  handleInputChange = event => {
+  handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ query: event.target.value })
   }
 
-  handleSearch = event => {
+  handleSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       this.search(this.state.query)
     }
   }
 
-  handleKeyPress = event => {
-    if (document.activeElement.tagName !== "BODY") return
-    const pressF = event.key === "f" && !event.ctrlKey && !event.meta
+  handleKeyPress = (event: KeyboardEvent) => {
+    const el = document.activeElement
+    if (el && el.tagName !== "BODY") {
+      return
+    }
+    const pressF = event.key === "f" && !event.ctrlKey && !event.metaKey
     if (pressF) {
-      this.setState({ show: true }, () => this.inputRef.current.focus())
+      this.setState({ show: true }, () => {
+        const refEl = this.inputRef.current
+        if (refEl) {
+          refEl.focus()
+        }
+      })
     }
   }
 
@@ -47,7 +73,10 @@ class SearchModal extends React.Component {
     document.removeEventListener("keyup", this.handleKeyPress)
   }
 
-  componentDidUpdate(_prevProps, prevState) {
+  componentDidUpdate(
+    _prevProps: ISearchModalProps,
+    prevState: ISearchModalState
+  ) {
     if (prevState.query !== this.state.query) {
       this.search(this.state.query)
     }
@@ -85,14 +114,14 @@ class SearchModal extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: RootState) => ({
   searchResults: state.search.results,
   loading: state.search.loading
 })
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    search: query => {
+    search: (query: string) => {
       dispatch(searchRecipes(query))
     }
   }
