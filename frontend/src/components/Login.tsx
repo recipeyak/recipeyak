@@ -56,8 +56,10 @@ class Login extends React.Component<ILoginProps, ILoginState> {
     this.props.setFromUrl(redirectURL(fromUrl))
   }
 
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>)  => {
-    this.setState({ [e.target.name]: e.target.value } as unknown as ILoginState)
+  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState(({
+      [e.target.name]: e.target.value
+    } as unknown) as ILoginState)
   }
 
   handleLogin = (e: React.FormEvent) => {

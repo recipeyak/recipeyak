@@ -60,7 +60,6 @@ class Navbar extends React.Component<INavbarProps> {
     loggedIn: true
   }
 
-
   componentWillMount() {
     this.props.fetchData()
   }
