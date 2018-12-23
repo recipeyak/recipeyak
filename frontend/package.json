@@ -101,7 +101,8 @@
     "react-router-redux": "^5.0.0-alpha.9",
     "react-textarea-autosize": "^5.2.1",
     "redux": "^3.7.1",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "typesafe-actions": "^2.0.4"
   },
   "proxy": "http://localhost:8000",
   "jest": {
