@@ -2,6 +2,19 @@ import React from "react"
 
 import { ButtonPrimary } from "./Buttons"
 
+interface IAddIngredientFormProps {
+  readonly handleAddIngredient: () => void
+  readonly cancelAddIngredient: () => void
+  readonly handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  readonly quantity: string
+  readonly name: string
+  readonly description: string
+  readonly optional: boolean
+  readonly loading?: boolean
+  readonly error?: boolean // TODO(sbdchd): this isn't passed in
+  readonly autoFocus?: boolean
+}
+
 const AddIngredientForm = ({
   handleAddIngredient,
   cancelAddIngredient,
@@ -13,12 +26,15 @@ const AddIngredientForm = ({
   loading,
   error,
   autoFocus = false
-}) => (
+}: IAddIngredientFormProps) => (
   <form
     onSubmit={async e => {
       e.preventDefault()
       await handleAddIngredient()
-      document.querySelector("#firstinput").focus()
+      const el = document.querySelector<HTMLInputElement>("#firstinput")
+      if (el) {
+        el.focus()
+      }
     }}>
     <div className="add-ingredient-grid mb-2 mt-2">
       <div>

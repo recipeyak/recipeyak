@@ -7,6 +7,7 @@
     "array-type": false,
     "no-string-literal": false,
     "member-access": false,
+    "member-ordering": false,
     "max-classes-per-file": false
   },
   "jsRules": {}

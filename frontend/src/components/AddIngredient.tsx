@@ -2,7 +2,40 @@ import React from "react"
 import PropTypes from "prop-types"
 import AddIngredientForm from "./AddIngredientForm"
 
-export default class AddIngredient extends React.Component {
+interface IIngredient {
+  quantity: string
+  name: string
+  description: string
+}
+
+interface IAddIngredientProps {
+  readonly onCancel: () => void
+  readonly id: number
+  readonly addIngredient: (
+    id: number,
+    { quantity, name, description }: IIngredient
+  ) => void
+  readonly loading: boolean
+  readonly autoFocus: boolean
+}
+
+interface IAddIngredientState {
+  readonly quantity: string
+  readonly name: string
+  readonly description: string
+  readonly optional: boolean
+  readonly addingIngredient: boolean
+}
+
+export type AddIngredientFields = Exclude<
+  keyof IAddIngredientState,
+  "addingIngredient"
+>
+
+export default class AddIngredient extends React.Component<
+  IAddIngredientProps,
+  IAddIngredientState
+> {
   static propTypes = {
     id: PropTypes.number.isRequired,
     addIngredient: PropTypes.func.isRequired,
@@ -15,17 +48,20 @@ export default class AddIngredient extends React.Component {
     loading: false
   }
 
-  emptyState = {
+  emptyState: IAddIngredientState = {
     quantity: "",
     name: "",
     description: "",
-    optional: false
+    optional: false,
+    addingIngredient: false
   }
 
-  state = this.emptyState
+  state: IAddIngredientState = this.emptyState
 
-  handleInputChange = e => {
-    this.setState({ [e.target.name]: e.target.value })
+  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState(({
+      [e.target.name]: e.target.value
+    } as unknown) as IAddIngredientState)
   }
 
   addingIngredient = () => {

@@ -6,18 +6,82 @@ import AddIngredientForm from "./AddIngredientForm"
 import AddStepForm from "./AddStepForm"
 import Ingredient from "./Ingredient"
 import { ButtonPrimary } from "./Buttons"
+import { IRecipe, IStep, IIngredient } from "../store/reducers/recipes"
+import { ITeam } from "../store/reducers/teams"
 
 const unfinishedIngredient = ({ quantity = "", name = "" }) =>
   quantity === "" || name === ""
 
-export default class AddRecipe extends React.Component {
-  state = {
-    ingredient: {
-      quantity: "",
-      name: "",
-      description: "",
-      optional: false
-    },
+type Omit<T, K> = Pick<T, Exclude<keyof T, K>>
+
+export type IRecipeBasic = Omit<
+  IRecipe,
+  "id" | "edits" | "modified" | "last_scheduled" | "owner" | "team"
+>
+type IIngredientBasic = Omit<IIngredient, "id" | "position">
+
+interface IAddRecipeProps {
+  readonly clearErrors: () => void
+  readonly addStep: (step: { text: string }) => void
+  readonly clearForm: () => void
+  readonly setTime: () => void
+  readonly setServings: () => void
+  readonly setSource: () => void
+  readonly setAuthor: () => void
+  readonly setName: () => void
+  readonly removeStep: () => void
+  readonly updateStep: () => void
+  readonly fetchData: () => void
+  readonly addRecipe: (recipe: IRecipeBasic) => void
+  readonly removeIngredient: (index: number) => void
+  readonly updateIngredient: (
+    index: number,
+    ingredient: IIngredientBasic
+  ) => void
+  readonly addIngredient: (ingredient: IIngredientBasic) => void
+  readonly setTeam: () => void
+  readonly error: {
+    readonly errorWithName: boolean
+    readonly errorWithIngredients: boolean
+    readonly errorWithSteps: boolean
+  }
+  readonly loading: boolean
+  readonly name: string
+  readonly author: string
+  readonly source: string
+  readonly time: string
+  readonly servings: string
+  readonly ingredients: IIngredient[]
+  readonly steps: IStep[]
+  readonly loadingTeams: boolean
+  readonly teams: ITeam[]
+  readonly team: ITeam["id"] | "personal"
+}
+
+interface IAddRecipeState {
+  readonly ingredient: {
+    readonly quantity: string
+    readonly name: string
+    readonly description: string
+    readonly optional: boolean
+    readonly [key: string]: string | boolean
+  }
+  readonly step: string
+}
+
+const emptyIngredient = {
+  quantity: "",
+  name: "",
+  description: "",
+  optional: false
+}
+
+export default class AddRecipe extends React.Component<
+  IAddRecipeProps,
+  IAddRecipeState
+> {
+  state: IAddRecipeState = {
+    ingredient: emptyIngredient,
     step: ""
   }
 
@@ -45,9 +109,13 @@ export default class AddRecipe extends React.Component {
     this.props.fetchData()
   }
 
-  handleInputChange = e => this.setState({ [e.target.name]: e.target.value })
+  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState(({
+      [e.target.name]: e.target.value
+    } as unknown) as IAddRecipeState)
+  }
 
-  handleSubmit = event => {
+  handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
     const recipe = {
       name: this.props.name,
@@ -63,12 +131,14 @@ export default class AddRecipe extends React.Component {
   }
 
   addIngredient = () => {
-    if (unfinishedIngredient(this.state.ingredient)) return
+    if (unfinishedIngredient(this.state.ingredient)) {
+      return
+    }
     this.props.addIngredient(this.state.ingredient)
-    this.setState({ ingredient: {} })
+    this.setState({ ingredient: emptyIngredient })
   }
 
-  handleIngredientChange = e => {
+  handleIngredientChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.persist()
     if (e.target.type === "checkbox") {
       this.setState(prev => ({
@@ -87,7 +157,7 @@ export default class AddRecipe extends React.Component {
     }))
   }
 
-  cancelAddIngredient = () => this.setState({ ingredient: {} })
+  cancelAddIngredient = () => this.setState({ ingredient: emptyIngredient })
 
   addStep = () => {
     this.props.addStep({ text: this.state.step })
@@ -198,8 +268,8 @@ export default class AddRecipe extends React.Component {
                   key={x.name + i}
                   index={i}
                   id={i}
-                  update={ingredient =>
-                    this.props.updateIngredient(i, ingredient)
+                  update={(ingre: IIngredientBasic) =>
+                    this.props.updateIngredient(i, ingre)
                   }
                   remove={() => this.props.removeIngredient(i)}
                   quantity={x.quantity}
@@ -227,12 +297,12 @@ export default class AddRecipe extends React.Component {
               Preparation
             </h2>
             <ul>
-              {this.props.steps.map((step, i) => (
-                <div key={step.text + i}>
+              {this.props.steps.map((s, i) => (
+                <div key={s.text + i}>
                   <label className="better-label">Step {i + 1}</label>
                   <ListItem
                     id={i}
-                    text={step.text}
+                    text={s.text}
                     update={this.props.updateStep}
                     delete={this.props.removeStep}
                   />
@@ -266,9 +336,9 @@ export default class AddRecipe extends React.Component {
                   value={this.props.team}
                   onChange={this.props.setTeam}>
                   <option value="personal">Personal</option>
-                  {this.props.teams.map(({ id, name }) => (
-                    <option key={id} value={id}>
-                      Team: {name}
+                  {this.props.teams.map(t => (
+                    <option key={t.id} value={t.id}>
+                      Team: {t.name}
                     </option>
                   ))}
                 </select>

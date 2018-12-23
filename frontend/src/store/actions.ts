@@ -29,6 +29,7 @@ import { IUser, ISocialConnection, SocialProvider } from "./reducers/user"
 import { IRecipe } from "./reducers/calendar"
 import { IInvite } from "./reducers/invites"
 import { INotificationState } from "./reducers/notification"
+import { IRecipeBasic } from "../components/AddRecipe"
 
 const config = { timeout: 15000 }
 
@@ -502,7 +503,7 @@ export const setErrorAddRecipe = (val: unknown) => ({
   val
 })
 
-export const postNewRecipe = (recipe: unknown) => (dispatch: Dispatch) => {
+export const postNewRecipe = (recipe: IRecipeBasic) => (dispatch: Dispatch) => {
   dispatch(setLoadingAddRecipe(true))
   dispatch(setErrorAddRecipe({}))
 
