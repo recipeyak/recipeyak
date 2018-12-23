@@ -109,7 +109,7 @@ export default class AddRecipe extends React.Component<
     this.props.fetchData()
   }
 
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     this.setState(({
       [e.target.name]: e.target.value
     } as unknown) as IAddRecipeState)

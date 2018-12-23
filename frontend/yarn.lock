@@ -112,6 +112,13 @@
     "@types/history" "*"
     "@types/react" "*"
 
+"@types/react-textarea-autosize@^4.3.3":
+  version "4.3.3"
+  resolved "https://registry.yarnpkg.com/@types/react-textarea-autosize/-/react-textarea-autosize-4.3.3.tgz#85f542a4c582836d01b9751b3948dfad1642f0cb"
+  integrity sha512-fl0yK995xJg31Y/7EkR0rkg9hbIqX6mas7e/DZdMr0mb+CDZ6gwdYXor6XjWJqGW3MRsuKY9HbqHne9ZWQqNVg==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react@*", "@types/react@^16.0.38":
   version "16.4.6"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.4.6.tgz#5024957c6bcef4f02823accf5974faba2e54fada"
