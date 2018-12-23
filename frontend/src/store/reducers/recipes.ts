@@ -23,13 +23,13 @@ export interface IStep {
 
 type IRecipeOwner =
   | {
-      id: number
       type: "team"
+      id: number
       name: string
     }
   | {
-      id: number
       type: "user"
+      id: number
     }
 
 export interface IRecipe {

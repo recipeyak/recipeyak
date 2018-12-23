@@ -32,6 +32,7 @@ export interface ITeamsState {
   readonly loading?: boolean
   readonly creating?: boolean
   readonly copying?: boolean
+  readonly moving?: boolean
   readonly [key: number]: ITeam
 }
 

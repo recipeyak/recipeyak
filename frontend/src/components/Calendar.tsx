@@ -8,14 +8,15 @@ import subMonths from "date-fns/sub_months"
 import subDays from "date-fns/sub_days"
 import addDays from "date-fns/add_days"
 import format from "date-fns/format"
-import PropTypes from "prop-types"
+// import PropTypes from "prop-types"
 
 import {
   fetchCalendar,
   fetchTeams,
   fetchShoppingList,
   fetchRecipeList,
-  setScheduleURL
+  setScheduleURL,
+  Dispatch
 } from "../store/actions"
 
 import { pyFormat, daysFromSunday, daysUntilSaturday } from "../date"
@@ -27,18 +28,31 @@ import { push } from "react-router-redux"
 import { ButtonPrimary, ButtonPlain } from "./Buttons"
 import Loader from "./Loader"
 import CalendarDay from "./CalendarDay"
+import { RootState } from "../store/store"
+import { ITeam } from "../store/reducers/teams"
+import { ICalRecipe } from "../store/reducers/calendar"
+import { ScheduleRouteParams } from "./Schedule"
 
-function monthYearFromDate(date) {
+function monthYearFromDate(date: Date) {
   return format(date, "MMM | YYYY")
 }
 
-const mapStateToProps = (state, props) => {
-  const isTeam = props.match.params.id != null
-  const teamID = isTeam ? parseInt(props.match.params.id, 10) : "personal"
+// TODO(sbdchd): we can remove this once redux is fully typed
+interface IDays {
+  readonly [key: string]: ICalRecipe
+}
 
-  const days = state.calendar.allIds
-    .map(id => state.calendar[id])
-    .filter(x => {
+const mapStateToProps = (state: RootState, props: ICalendarProps) => {
+  const teamID: ITeam["id"] | "personal" =
+    props.match.params.id != null
+      ? parseInt(props.match.params.id, 10)
+      : "personal"
+
+  const isTeam = props.match.params.id != null
+
+  const days: IDays = state.calendar.allIds
+    .map((id: number) => state.calendar[id])
+    .filter((x: ICalRecipe) => {
       if (!isTeam) {
         // we know that if there is a userID, it will be the current user's
         return x.user != null
@@ -46,7 +60,7 @@ const mapStateToProps = (state, props) => {
       return x.team === teamID
     })
     .reduce(
-      (a, b) => ({
+      (a: IDays, b: ICalRecipe) => ({
         ...a,
         [b.on]: {
           ...a[b.on],
@@ -69,15 +83,19 @@ const mapStateToProps = (state, props) => {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  fetchData: (month, teamID = "personal") =>
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  fetchData: (month: Date, teamID: ITeam["id"] | "personal" = "personal") =>
     dispatch(fetchCalendar(teamID, month)),
   fetchTeams: () => dispatch(fetchTeams()),
-  navTo: url => {
+  navTo: (url: string) => {
     dispatch(push(url))
     dispatch(setScheduleURL(url))
   },
-  refetchShoppingListAndRecipes: (teamID, start, end) => {
+  refetchShoppingListAndRecipes: (
+    teamID: ITeam["id"] | "personal",
+    start: Date,
+    end: Date
+  ) => {
     return Promise.all([
       dispatch(fetchRecipeList(teamID)),
       dispatch(fetchShoppingList(teamID, start, end))
@@ -85,39 +103,41 @@ const mapDispatchToProps = dispatch => ({
   }
 })
 
-@connect(
-  mapStateToProps,
-  mapDispatchToProps
-)
-export default class Calendar extends React.Component {
-  state = {
+interface ICalendarProps extends ScheduleRouteParams {
+  readonly loadingTeams: boolean
+  readonly loading: boolean
+  readonly error: boolean
+  readonly className: string
+  readonly fetchTeams: () => void
+  readonly navTo: (url: string) => void
+  readonly fetchData: (
+    month: Date,
+    teamID: ITeam["id"] | "personal"
+  ) => Promise<void>
+  readonly refetchShoppingListAndRecipes: (
+    teamID: ITeam["id"] | "personal",
+    startDay: Date,
+    endDay: Date
+  ) => void
+  readonly teams: ITeam[]
+  readonly days: IDays
+  readonly isTeam: boolean
+  readonly teamID: ITeam["id"] | "personal"
+  readonly startDay: Date
+  readonly endDay: Date
+}
+
+interface ICalendarState {
+  readonly month: Date
+  readonly initialLoad: boolean
+  readonly owner: ITeam["id"] | "personal"
+}
+
+class Calendar extends React.Component<ICalendarProps, ICalendarState> {
+  state: ICalendarState = {
     month: new Date(),
     initialLoad: false,
     owner: "personal"
-  }
-
-  static propTypes = {
-    loadingTeams: PropTypes.bool.isRequired,
-    loading: PropTypes.bool.isRequired,
-    error: PropTypes.bool.isRequired,
-    className: PropTypes.string.isRequired,
-    fetchData: PropTypes.func.isRequired,
-    fetchTeams: PropTypes.func.isRequired,
-    navTo: PropTypes.func.isRequired,
-    teams: PropTypes.arrayOf(PropTypes.object).isRequired,
-    isTeam: PropTypes.bool.isRequired,
-    teamID: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
-      .isRequired,
-    refetchShoppingListAndRecipes: PropTypes.func.isRequired
-  }
-
-  static defaultProps = {
-    loading: true,
-    error: false,
-    className: "",
-    loadingTeams: true,
-    teams: [],
-    teamID: "personal"
   }
 
   componentDidMount() {
@@ -127,7 +147,7 @@ export default class Calendar extends React.Component {
       .then(() => this.setState({ initialLoad: true }))
   }
 
-  refetchData = (teamID = this.props.teamID) => {
+  refetchData = (teamID: ITeam["id"] | "personal" = this.props.teamID) => {
     this.props.fetchData(this.state.month, teamID)
     this.props.refetchShoppingListAndRecipes(
       teamID,
@@ -154,8 +174,9 @@ export default class Calendar extends React.Component {
     this.setState({ month: new Date() })
   }
 
-  handleOwnerChange = e => {
-    const teamID = e.target.value
+  handleOwnerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const teamID =
+      e.target.value === "personal" ? "personal" : parseInt(e.target.value, 10)
     const url = teamID === "personal" ? "/schedule/" : `/t/${teamID}/schedule/`
 
     const isRecipes = this.props.match.params["type"] === "recipes"
@@ -249,7 +270,7 @@ export default class Calendar extends React.Component {
             <CalendarDay
               item={this.props.days[pyFormat(date)]}
               date={date}
-              key={date}
+              key={date.toString()}
               teamID={this.props.teamID}
             />
           ))}
@@ -261,3 +282,8 @@ export default class Calendar extends React.Component {
     )
   }
 }
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Calendar)

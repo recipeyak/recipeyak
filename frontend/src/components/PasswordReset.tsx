@@ -6,16 +6,37 @@ import { FormErrorHandler } from "./Forms"
 import { ButtonPrimary } from "./Buttons"
 import AuthContainer from "./AuthContainer"
 
-class PasswordReset extends React.Component {
-  state = {
+interface IPasswordResetError {
+  readonly nonFieldErrors?: string[]
+  readonly email?: string[]
+}
+
+interface IPasswordResetProps {
+  readonly reset: (email: string) => void
+  readonly loggedIn: boolean
+  readonly loading: boolean
+  readonly error: IPasswordResetError
+}
+
+interface IPasswordResetState {
+  readonly email: string
+}
+
+class PasswordReset extends React.Component<
+  IPasswordResetProps,
+  IPasswordResetState
+> {
+  state: IPasswordResetState = {
     email: ""
   }
 
-  handleInputChange = e => {
-    this.setState({ [e.target.name]: e.target.value })
+  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState(({
+      [e.target.name]: e.target.value
+    } as unknown) as IPasswordResetState)
   }
 
-  async handleReset(e) {
+  async handleReset(e: React.FormEvent) {
     e.preventDefault()
     await this.props.reset(this.state.email)
     this.setState({ email: "" })

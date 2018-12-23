@@ -12,22 +12,21 @@ configure({ adapter: new Adapter() })
 
 describe("<Nav/>", () => {
   it("renders without failure", () => {
-    const props: GetComponentProps<Nav> = {
-      fetchData: jest.fn(),
-      logout: jest.fn(),
-      toggleDarkMode: jest.fn(),
-      avatarURL: "example.com/avatar.png",
-      email: "j.doe@example.com",
-      loggingOut: false,
-      darkMode: false,
-      scheduleURL: "/schedule",
-      teams: [],
-      loadingTeams: false
-    }
     mount(
       <Provider store={store}>
         <MemoryRouter>
-          <Nav {...props} />
+          <Nav
+            avatarURL="foo"
+            email="foo@foo.com"
+            scheduleURL=""
+            loadingTeams
+            darkMode
+            loggingOut
+            teams={[]}
+            logout={() => undefined}
+            toggleDarkMode={() => undefined}
+            fetchData={() => undefined}
+          />
         </MemoryRouter>
       </Provider>
     )

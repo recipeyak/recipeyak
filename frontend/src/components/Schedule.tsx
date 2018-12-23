@@ -11,8 +11,12 @@ import ShoppingList from "./ShoppingList"
 
 import { setScheduleURL, Dispatch } from "../store/actions"
 
-interface IScheduleProps
-  extends RouteComponentProps<{ id?: string; type: "shopping" | "recipes" }> {
+export type ScheduleRouteParams = RouteComponentProps<{
+  id?: string
+  type: "shopping" | "recipes"
+}>
+
+interface IScheduleProps extends ScheduleRouteParams {
   readonly error: boolean
   readonly setURL: (url: string) => void
 }

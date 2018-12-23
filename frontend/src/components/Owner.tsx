@@ -8,36 +8,74 @@ import {
   fetchTeams,
   moveRecipeTo,
   copyRecipeTo,
-  showNotificationWithTimeout
+  showNotificationWithTimeout,
+  Dispatch,
+  INotificationWithTimeout
 } from "../store/actions"
+import { RootState } from "../store/store"
+import { IRecipe } from "../store/reducers/recipes"
+import { ITeamsState } from "../store/reducers/teams"
+import { IUser } from "../store/reducers/user"
+import { AxiosError } from "axios"
+import { teamURL } from "../urls"
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: RootState) => ({
   teams: state.teams,
   userId: state.user.id
 })
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchData: () => dispatch(fetchTeams()),
-  showNotificationWithTimeout: options =>
+  showNotificationWithTimeout: (options: INotificationWithTimeout) =>
     dispatch(showNotificationWithTimeout(options)),
-  moveRecipeTo: (recipeId, ownerId, type) =>
-    dispatch(moveRecipeTo(recipeId, ownerId, type)),
-  copyRecipeTo: (recipeId, ownerId, type) =>
-    dispatch(copyRecipeTo(recipeId, ownerId, type))
+  moveRecipeTo: (
+    recipeId: IRecipe["id"],
+    ownerId: IRecipe["owner"]["id"],
+    type: IRecipe["owner"]["type"]
+  ) => dispatch(moveRecipeTo(recipeId, ownerId, type)),
+  copyRecipeTo: (
+    recipeId: IRecipe["id"],
+    ownerId: IRecipe["owner"]["id"],
+    type: IRecipe["owner"]["type"]
+  ) => dispatch(copyRecipeTo(recipeId, ownerId, type))
 })
+
+interface IOwnerProps {
+  readonly fetchData: () => void
+  readonly copyRecipeTo: (
+    recipeId: IRecipe["id"],
+    id: IRecipe["owner"]["id"],
+    type: IRecipe["owner"]["type"]
+  ) => Promise<void>
+  readonly moveRecipeTo: (
+    recipeId: IRecipe["id"],
+    id: IRecipe["owner"]["id"],
+    type: IRecipe["owner"]["type"]
+  ) => Promise<void>
+  readonly showNotificationWithTimeout: (
+    props: INotificationWithTimeout
+  ) => void
+  readonly recipeId: IRecipe["id"]
+  readonly id: IRecipe["owner"]["id"]
+  readonly name: string
+  readonly teams: ITeamsState
+  readonly userId: IUser["id"]
+}
+
+interface IOwnerState {
+  readonly show: boolean
+  readonly values: string[]
+}
 
 // TODO: Create a generalized component with the click event listeners
 // we seems to use this functionality a lot
-
-@connect(
-  mapStateToProps,
-  mapDispatchToProps
-)
-export default class Owner extends React.Component {
-  state = {
+class Owner extends React.Component<IOwnerProps, IOwnerState> {
+  state: IOwnerState = {
     show: false,
     values: []
   }
+
+  dropdown = React.createRef<HTMLSpanElement>()
 
   componentWillMount() {
     document.addEventListener("click", this.handleGeneralClick)
@@ -48,16 +86,28 @@ export default class Owner extends React.Component {
     document.removeEventListener("click", this.handleGeneralClick)
   }
 
-  handleGeneralClick = e => {
-    const clickedDropdown = this.dropdown && this.dropdown.contains(e.target)
-    if (clickedDropdown) return
+  handleGeneralClick = (e: MouseEvent) => {
+    const el = this.dropdown.current
+    if (el == null) {
+      return
+    }
+
+    const target = e.target
+    if (target == null) {
+      return
+    }
+
+    const clickedDropdown = el.contains(target as HTMLElement)
+
+    if (clickedDropdown) {
+      return
+    }
     // clear values when closing dropdown
     this.setState({ show: false, values: [] })
   }
 
-  handleChange = e => {
-    // convert HTMLCollection to list of option values
-    const selectedOptions = [...e.target.selectedOptions].map(e => e.value)
+  handleChange = (ev: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedOptions = [...ev.target.selectedOptions].map(opt => opt.value)
     this.setState({ values: selectedOptions })
   }
 
@@ -65,9 +115,9 @@ export default class Owner extends React.Component {
     this.setState(prev => {
       if (prev.show) {
         // clear values when closing dropdown
-        return { show: !prev.show, values: [] }
+        return { ...prev, show: !prev.show, values: [] }
       }
-      return { show: !prev.show }
+      return { ...prev, show: !prev.show }
     })
   }
 
@@ -76,10 +126,13 @@ export default class Owner extends React.Component {
     if (id == null || type == null) {
       throw new TypeError("need id/type to move to")
     }
+    if (type !== "team" && type !== "user") {
+      throw new TypeError("type can only either be a team or a user")
+    }
     this.props
-      .copyRecipeTo(this.props.recipeId, id, type)
+      .copyRecipeTo(this.props.recipeId, parseInt(id, 10), type)
       .then(() => this.setState({ show: false, values: [] }))
-      .catch(err => {
+      .catch((err: AxiosError) => {
         this.props.showNotificationWithTimeout({
           message: `Problem copying recipe: ${err}`,
           level: "danger",
@@ -93,10 +146,14 @@ export default class Owner extends React.Component {
     if (id == null || type == null) {
       throw new TypeError("need id/type to copy to")
     }
+    if (type !== "team" && type !== "user") {
+      throw new TypeError("type can only either be a team or a user")
+    }
+
     this.props
-      .moveRecipeTo(this.props.recipeId, id, type)
+      .moveRecipeTo(this.props.recipeId, parseInt(id, 10), type)
       .then(() => this.setState({ show: false, values: [] }))
-      .catch(err => {
+      .catch((err: AxiosError) => {
         this.props.showNotificationWithTimeout({
           message: `Problem moving recipe: ${err}`,
           level: "danger",
@@ -114,23 +171,21 @@ export default class Owner extends React.Component {
   }
 
   render() {
-    const { type, url, name, teams, userId } = this.props
+    const { name, teams, userId } = this.props
     const { moving, copying } = teams
     const teamUserKeys = [
       ...teams.allIds.map(id => ({ id: id + "-team", name: teams[id].name })),
       { id: userId + "-user", name: "personal" }
     ]
 
+    const url = teamURL(this.props.id, this.props.name)
+
     return (
-      <span
-        className="fw-500 p-rel"
-        ref={dropdown => {
-          this.dropdown = dropdown
-        }}>
+      <span className="fw-500 p-rel" ref={this.dropdown}>
         <b className="cursor-pointer" onClick={this.toggle}>
           via
         </b>{" "}
-        {type === "user" ? "you" : <Link to={url}>{name}</Link>}
+        <Link to={url}>{name}</Link>
         <div className={"" + (this.state.show ? " d-block" : " d-none")}>
           <div className="p-abs">
             <div className="dropdown-content">
@@ -142,9 +197,9 @@ export default class Owner extends React.Component {
                   className="my-select"
                   value={this.state.values}
                   onChange={this.handleChange}>
-                  {teamUserKeys.map(({ id, name }) => (
-                    <option className="fs-3 fw-500" key={id} value={id}>
-                      {name}
+                  {teamUserKeys.map(opt => (
+                    <option className="fs-3 fw-500" key={opt.id} value={opt.id}>
+                      {opt.name}
                     </option>
                   ))}
                 </select>
@@ -176,3 +231,8 @@ export default class Owner extends React.Component {
     )
   }
 }
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Owner)

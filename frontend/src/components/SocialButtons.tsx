@@ -102,17 +102,20 @@ const enableSocialButtons =
   FACEBOOK_OAUTH_URL
 
 interface ISocialButtonsProps {
-  readonly nonFieldErrors: string[] | null
-  readonly emailError: string[] | null
-  readonly signup: boolean
+  readonly nonFieldErrors?: string[] | null
+  readonly emailError?: string[] | null
+  readonly signup?: boolean
 }
 
 const SocialButtons = ({
   nonFieldErrors,
   emailError,
   signup = true
-}: ISocialButtonsProps) =>
-  enableSocialButtons && (
+}: ISocialButtonsProps) => {
+  if (!enableSocialButtons) {
+    return null
+  }
+  return (
     <div>
       {signup && (
         <div className="d-flex align-items-center mb-2 mt-1">
@@ -130,5 +133,6 @@ const SocialButtons = ({
       <FormErrorHandler error={emailError} />
     </div>
   )
+}
 
 export default SocialButtons
