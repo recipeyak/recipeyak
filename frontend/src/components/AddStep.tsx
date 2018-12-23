@@ -2,8 +2,25 @@ import React from "react"
 import PropTypes from "prop-types"
 
 import AddStepForm from "./AddStepForm"
+import { IStep } from "../store/reducers/recipes"
 
-export default class AddStep extends React.Component {
+interface IAddStepProps {
+  readonly addStep: (id: IStep["id"], step: string) => void
+  readonly onCancel: () => void
+  readonly loading: boolean
+  readonly autoFocus?: boolean
+  readonly id: number
+  readonly index: number
+}
+
+interface IAddStepState {
+  readonly step: string
+}
+
+export default class AddStep extends React.Component<
+  IAddStepProps,
+  IAddStepState
+> {
   static propTypes = {
     addStep: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
@@ -20,8 +37,8 @@ export default class AddStep extends React.Component {
     step: ""
   }
 
-  handleInputChange = e => {
-    this.setState({ [e.target.name]: e.target.value })
+  handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    this.setState({ step: e.target.value })
   }
 
   clearStep = () => {

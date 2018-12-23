@@ -12,8 +12,17 @@ import TeamRecipes from "./TeamRecipes"
 import { ButtonPrimary, ButtonLink } from "./Buttons"
 
 import { inviteURL, teamURL, teamSettingsURL } from "../urls"
+import { IMember, ITeam } from "../store/reducers/teams"
+import { IRecipe } from "../store/reducers/recipes"
 
-const TeamMembers = ({ id, name, members, loading }) => (
+interface ITeamMembers {
+  readonly id: ITeam["id"]
+  readonly name: ITeam["name"]
+  readonly members: IMember[]
+  readonly loading: boolean
+}
+
+const TeamMembers = ({ id, name, members, loading }: ITeamMembers) => (
   <div>
     <section className="d-flex justify-space-between align-items-center">
       <h2 className="fs-6">Members</h2>
@@ -51,8 +60,28 @@ const TeamMembers = ({ id, name, members, loading }) => (
   </div>
 )
 
-class TeamSettings extends React.Component {
-  state = {
+interface ITeamSettingsProps {
+  readonly id: ITeam["id"]
+  readonly name: ITeam["name"]
+  readonly updatingTeam: (
+    id: ITeam["id"],
+    team: { name: string }
+  ) => Promise<void>
+  readonly deleteTeam: (id: ITeam["id"]) => Promise<void>
+  readonly loading: boolean
+}
+
+interface ITeamSettingsState {
+  readonly name: string
+  readonly loadingDeleteTeam: boolean
+  readonly loadingSaveChanges: boolean
+}
+
+class TeamSettings extends React.Component<
+  ITeamSettingsProps,
+  ITeamSettingsState
+> {
+  state: ITeamSettingsState = {
     name: "loading...",
     loadingDeleteTeam: false,
     loadingSaveChanges: false
@@ -67,20 +96,20 @@ class TeamSettings extends React.Component {
     this.setState({ name: this.props.name })
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: ITeamSettingsProps) {
     this.setState({ name: nextProps.name })
   }
 
-  handleInputChange = e => {
-    this.setState({ [e.target.name]: e.target.value })
+  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ name: e.target.value })
   }
 
-  handleSubmit = e => {
+  handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     this.setState({ loadingSaveChanges: true })
     this.props
       .updatingTeam(this.props.id, { name: this.state.name })
-      .finally(() => this.setState({ loadingSaveChanges: false }))
+      .then(() => this.setState({ loadingSaveChanges: false }))
   }
 
   deleteTeam = () => {
@@ -90,7 +119,7 @@ class TeamSettings extends React.Component {
       this.setState({ loadingDeleteTeam: true })
       this.props
         .deleteTeam(this.props.id)
-        .finally(() => this.setState({ loadingDeleteTeam: false }))
+        .then(() => this.setState({ loadingDeleteTeam: false }))
     }
   }
 
@@ -124,7 +153,11 @@ class TeamSettings extends React.Component {
   }
 }
 
-const TeamName = ({ loading, name }) => {
+interface ITeamNameProps {
+  readonly loading: boolean
+  readonly name: string
+}
+const TeamName = ({ loading, name }: ITeamNameProps) => {
   if (loading) {
     return <Loader />
   }
@@ -135,12 +168,30 @@ const TeamName = ({ loading, name }) => {
   )
 }
 
-class Team extends React.Component {
+interface ITeamProps {
+  readonly id: ITeam["id"]
+  readonly fetchData: (id: ITeam["id"]) => void
+  readonly deleteTeam: (id: ITeam["id"]) => Promise<void>
+  readonly updatingTeam: (
+    id: ITeam["id"],
+    team: { name: string }
+  ) => Promise<void>
+  readonly members: IMember[]
+  readonly error404: boolean
+  readonly loadingTeam: boolean
+  readonly name: string
+  readonly isSettings: boolean
+  readonly loadingMembers: boolean
+  readonly loadingRecipes: boolean
+  readonly recipes: IRecipe[]
+}
+
+class Team extends React.Component<ITeamProps> {
   componentWillMount() {
     this.props.fetchData(this.props.id)
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: ITeamProps) {
     const newID = nextProps.id !== this.props.id
     if (newID) {
       this.props.fetchData(nextProps.id)

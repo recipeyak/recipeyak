@@ -1,8 +1,16 @@
-import React from "react"
+import * as React from "react"
 
 import { classNames } from "../../classnames"
 
-class Day extends React.Component {
+interface IDayProps {
+  readonly endDate: boolean
+  readonly highlight: boolean
+  readonly inPast: boolean
+  readonly date: Date
+  readonly handleClick: (date: Date) => void
+}
+
+class Day extends React.Component<IDayProps> {
   render() {
     return (
       <div

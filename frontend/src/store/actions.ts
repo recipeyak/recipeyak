@@ -5,7 +5,7 @@ import * as t from "./actionTypes"
 type TeamID = number | "personal"
 
 // tslint:disable-next-line:ban-types
-type Dispatch = Function
+export type Dispatch = Function
 // tslint:disable-next-line:ban-types
 type GetState = Function
 
@@ -26,9 +26,11 @@ import raven from "raven-js"
 
 import { store } from "./store"
 import { IUser, ISocialConnection, SocialProvider } from "./reducers/user"
-import { IRecipe } from "./reducers/calendar"
+import { ICalRecipe } from "./reducers/calendar"
 import { IInvite } from "./reducers/invites"
 import { INotificationState } from "./reducers/notification"
+import { IRecipeBasic } from "../components/AddRecipe"
+import { ITeam } from "./reducers/teams"
 
 const config = { timeout: 15000 }
 
@@ -502,7 +504,7 @@ export const setErrorAddRecipe = (val: unknown) => ({
   val
 })
 
-export const postNewRecipe = (recipe: unknown) => (dispatch: Dispatch) => {
+export const postNewRecipe = (recipe: IRecipeBasic) => (dispatch: Dispatch) => {
   dispatch(setLoadingAddRecipe(true))
   dispatch(setErrorAddRecipe({}))
 
@@ -1469,7 +1471,7 @@ export const setLoadingTeamRecipes = (id: number, loadingRecipes: boolean) => ({
   loadingRecipes
 })
 
-export const fetchTeam = (id: number) => (dispatch: Dispatch) => {
+export const fetchTeam = (id: ITeam["id"]) => (dispatch: Dispatch) => {
   dispatch(setLoadingTeam(id, true))
   return http
     .get(`/api/v1/t/${id}/`)
@@ -1757,9 +1759,11 @@ export const setCreatingTeam = (val: unknown) => ({
   val
 })
 
-export const creatingTeam = (name: string, emails: string, level: unknown) => (
-  dispatch: Dispatch
-) => {
+export const creatingTeam = (
+  name: string,
+  emails: string[],
+  level: unknown
+) => (dispatch: Dispatch) => {
   dispatch(setCreatingTeam(true))
   return http
     .post("/api/v1/t/", { name, emails, level })
@@ -1988,7 +1992,7 @@ export const setCalendarError = (error: unknown) => ({
   error
 })
 
-export const setCalendarRecipe = (recipe: IRecipe) => ({
+export const setCalendarRecipe = (recipe: ICalRecipe) => ({
   type: t.SET_CALENDAR_RECIPE,
   recipe
 })
@@ -2026,12 +2030,15 @@ export const setSchedulingRecipe = (recipeID: number, scheduling: boolean) => ({
   scheduling
 })
 
-export const setCalendarRecipes = (recipes: IRecipe[]) => ({
+export const setCalendarRecipes = (recipes: ICalRecipe[]) => ({
   type: t.SET_CALENDAR_RECIPES,
   recipes
 })
 
-export const replaceCalendarRecipe = (id: IRecipe["id"], recipe: IRecipe) => ({
+export const replaceCalendarRecipe = (
+  id: ICalRecipe["id"],
+  recipe: ICalRecipe
+) => ({
   type: t.REPLACE_CALENDAR_RECIPE,
   id,
   recipe
@@ -2061,7 +2068,7 @@ export const addingScheduledRecipe = (
       : `/api/v1/t/${teamID}/calendar/`
 
   // HACK(sbdchd): we need to add the user to the recipe
-  dispatch(setCalendarRecipe({ ...data, id, recipe } as IRecipe))
+  dispatch(setCalendarRecipe({ ...data, id, recipe } as ICalRecipe))
   return http
     .post(url, data)
     .then(res => {

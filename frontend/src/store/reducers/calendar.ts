@@ -74,7 +74,7 @@ function moveCalendarRecipe(state: ICalendarState, action: AnyAction) {
 }
 
 // TODO(sbdchd): this should be imported from the recipes reducer
-export interface IRecipe {
+export interface ICalRecipe {
   readonly id: number | string
   readonly count: number
   readonly on: string
@@ -89,7 +89,7 @@ export interface ICalendarState {
   readonly allIds: number[]
   readonly loading: boolean
   readonly error: boolean
-  readonly [key: number]: IRecipe
+  readonly [key: number]: ICalRecipe
 }
 
 export const initialState: ICalendarState = {
@@ -107,11 +107,11 @@ export const calendar = (
       return {
         ...state,
         ...action.recipes.reduce(
-          (a: unknown, b: IRecipe) => ({ ...a, [b.id]: b }),
+          (a: unknown, b: ICalRecipe) => ({ ...a, [b.id]: b }),
           {}
         ),
         allIds: uniq(
-          state.allIds.concat(action.recipes.map((x: IRecipe) => x.id))
+          state.allIds.concat(action.recipes.map((x: ICalRecipe) => x.id))
         )
       }
     case SET_CALENDAR_RECIPE:

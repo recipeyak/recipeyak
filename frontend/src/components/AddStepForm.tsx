@@ -3,6 +3,19 @@ import Textarea from "react-textarea-autosize"
 
 import { ButtonPrimary } from "./Buttons"
 
+interface IAddStepFormProps {
+  readonly handleInputChange: (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => void
+  readonly addStep: () => void
+  readonly cancelAddStep: () => void
+  readonly stepNumber: number
+  readonly text: string
+  readonly loading?: boolean
+  readonly error?: boolean
+  readonly autoFocus?: boolean
+}
+
 const AddStepForm = ({
   handleInputChange,
   addStep,
@@ -12,11 +25,13 @@ const AddStepForm = ({
   loading = false,
   error = false,
   autoFocus = false
-}) => (
+}: IAddStepFormProps) => (
   <form
     onSubmit={e => {
       e.preventDefault()
-      if (text === "") return
+      if (text === "") {
+        return
+      }
       addStep()
     }}>
     <div className="field">
@@ -26,7 +41,9 @@ const AddStepForm = ({
           onChange={handleInputChange}
           autoFocus={autoFocus}
           onKeyPress={e => {
-            if (text === "") return
+            if (text === "") {
+              return
+            }
             if (e.shiftKey && e.key === "Enter") {
               e.preventDefault()
               addStep()

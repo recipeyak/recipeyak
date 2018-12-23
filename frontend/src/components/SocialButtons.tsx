@@ -10,15 +10,21 @@ import {
 
 import { FormErrorHandler } from "./Forms"
 
-import githubIcon from "./images/github-logo.svg"
-import githubIconWhite from "./images/github-logo-white.svg"
-import gitlabIcon from "./images/gitlab-logo.svg"
-import gitlabIconWhite from "./images/gitlab-logo-white.svg"
-import googleIcon from "./images/google-logo.svg"
-import bitbucketIcon from "./images/bitbucket-logo.svg"
-import facebookIcon from "./images/facebook-logo.svg"
+// tslint:disable:no-var-requires
+const githubIcon = require("./images/github-logo.svg")
+const githubIconWhite = require("./images/github-logo-white.svg")
+const gitlabIcon = require("./images/gitlab-logo.svg")
+const gitlabIconWhite = require("./images/gitlab-logo-white.svg")
+const googleIcon = require("./images/google-logo.svg")
+const bitbucketIcon = require("./images/bitbucket-logo.svg")
+const facebookIcon = require("./images/facebook-logo.svg")
+// tslint:enable:no-var-requires
 
-const Img = ({ src, alt }) => (
+interface IImgProps {
+  readonly src: string
+  readonly alt: string
+}
+const Img = ({ src, alt }: IImgProps) => (
   <img className="mr-2" width="25px" height="25px" src={src} alt={alt} />
 )
 
@@ -30,43 +36,63 @@ export const BitbucketImg = () => (
 )
 export const FacebookImg = () => <Img src={facebookIcon} alt="facebook icon" />
 
-export const Github = ({ disable = false }) =>
-  GITHUB_OAUTH_URL && (
-    <a href={!disable && GITHUB_OAUTH_URL} className="github-button">
+export const Github = ({ disable = false }) => {
+  if (!GITHUB_OAUTH_URL) {
+    return null
+  }
+  return (
+    <a href={!disable ? GITHUB_OAUTH_URL : ""} className="github-button">
       <img className="mr-2" src={githubIconWhite} alt="github icon" />
     </a>
   )
+}
 
-export const Gitlab = () =>
-  GITLAB_OAUTH_URL && (
+export const Gitlab = () => {
+  if (!GITLAB_OAUTH_URL) {
+    return null
+  }
+  return (
     <a href={GITLAB_OAUTH_URL} className="gitlab-button">
       <img className="mr-2" src={gitlabIconWhite} alt="gitlab icon" />
     </a>
   )
+}
 
-export const Bitbucket = () =>
-  BITBUCKET_OAUTH_URL && (
+export const Bitbucket = () => {
+  if (!BITBUCKET_OAUTH_URL) {
+    return null
+  }
+  return (
     <a href={BITBUCKET_OAUTH_URL} className="my-button">
       <img className="mr-2" src={bitbucketIcon} alt="bitbucket icon" />
       Bitbucket
     </a>
   )
+}
 
-export const Google = () =>
-  GOOGLE_OAUTH_URL && (
+export const Google = () => {
+  if (!GOOGLE_OAUTH_URL) {
+    return null
+  }
+  return (
     <a href={GOOGLE_OAUTH_URL} className="my-button">
       <img className="mr-2" src={googleIcon} alt="google icon" />
       Google
     </a>
   )
+}
+export const Facebook = () => {
+  if (!FACEBOOK_OAUTH_URL) {
+    return null
+  }
 
-export const Facebook = () =>
-  FACEBOOK_OAUTH_URL && (
+  return (
     <a href={FACEBOOK_OAUTH_URL} className="my-button">
       <img className="mr-2" src={facebookIcon} alt="facebook icon" />
       Facebook
     </a>
   )
+}
 
 const enableSocialButtons =
   GITHUB_OAUTH_URL ||
@@ -75,7 +101,17 @@ const enableSocialButtons =
   GOOGLE_OAUTH_URL ||
   FACEBOOK_OAUTH_URL
 
-const SocialButtons = ({ nonFieldErrors, emailError, signup = true }) =>
+interface ISocialButtonsProps {
+  readonly nonFieldErrors: string[] | null
+  readonly emailError: string[] | null
+  readonly signup: boolean
+}
+
+const SocialButtons = ({
+  nonFieldErrors,
+  emailError,
+  signup = true
+}: ISocialButtonsProps) =>
   enableSocialButtons && (
     <div>
       {signup && (
