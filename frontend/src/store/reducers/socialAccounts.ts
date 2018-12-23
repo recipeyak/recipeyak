@@ -1,7 +1,4 @@
-import {
-  SET_SOCIAL_ACCOUNT_CONNECTIONS,
-  SET_SOCIAL_ACCOUNT_CONNECTION
-} from "../actionTypes"
+import * as t from "../actionTypes"
 import { ISocialConnection } from "./user"
 
 export interface ISocialAccountsState {
@@ -19,7 +16,7 @@ export const socialAccounts = (
   action: any
 ) => {
   switch (action.type) {
-    case SET_SOCIAL_ACCOUNT_CONNECTIONS:
+    case t.SET_SOCIAL_ACCOUNT_CONNECTIONS:
       return {
         ...state,
         ...action.val.reduce(
@@ -27,7 +24,7 @@ export const socialAccounts = (
           {}
         )
       }
-    case SET_SOCIAL_ACCOUNT_CONNECTION:
+    case t.SET_SOCIAL_ACCOUNT_CONNECTION:
       return {
         ...state,
         [action.provider]: action.val

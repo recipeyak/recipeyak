@@ -1,4 +1,4 @@
-import { SET_FROM_URL } from "../actionTypes"
+import * as t from "../actionTypes"
 import { AnyAction } from "redux"
 
 export interface IAuthState {
@@ -11,7 +11,7 @@ const initialState: IAuthState = {
 
 const auth = (state: IAuthState = initialState, action: AnyAction) => {
   switch (action.type) {
-    case SET_FROM_URL:
+    case t.SET_FROM_URL:
       return { ...state, fromUrl: action.val }
     default:
       return state

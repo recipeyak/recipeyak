@@ -1,6 +1,6 @@
 import { rootReducer, emptyStore } from "../store"
 
-import { logout } from "../actions"
+import * as a from "../actions"
 
 describe("logout", () => {
   it("Logs out user and clears entire store", () => {
@@ -20,6 +20,6 @@ describe("logout", () => {
       routerReducer: beforeState.routerReducer
     }
 
-    expect(rootReducer(beforeState, logout())).toEqual(afterState)
+    expect(rootReducer(beforeState, a.logout())).toEqual(afterState)
   })
 })

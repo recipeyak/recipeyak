@@ -1,6 +1,6 @@
 import passwordChange, { initialState } from "./passwordChange"
 
-import { setLoadingPasswordUpdate, setErrorPasswordUpdate } from "../actions"
+import * as a from "../actions"
 
 describe("passwordChange", () => {
   it("sets the loading state of the updating password", () => {
@@ -11,9 +11,9 @@ describe("passwordChange", () => {
       loadingPasswordUpdate: true
     }
 
-    expect(passwordChange(beforeState, setLoadingPasswordUpdate(true))).toEqual(
-      afterState
-    )
+    expect(
+      passwordChange(beforeState, a.setLoadingPasswordUpdate(true))
+    ).toEqual(afterState)
 
     const anotherAfterState = {
       ...initialState,
@@ -21,7 +21,7 @@ describe("passwordChange", () => {
     }
 
     expect(
-      passwordChange(beforeState, setLoadingPasswordUpdate(false))
+      passwordChange(beforeState, a.setLoadingPasswordUpdate(false))
     ).toEqual(anotherAfterState)
   })
 
@@ -36,8 +36,8 @@ describe("passwordChange", () => {
       ...initialState,
       errorPasswordUpdate: error
     }
-    expect(passwordChange(beforeState, setErrorPasswordUpdate(error))).toEqual(
-      afterState
-    )
+    expect(
+      passwordChange(beforeState, a.setErrorPasswordUpdate(error))
+    ).toEqual(afterState)
   })
 })

@@ -1,11 +1,4 @@
-import {
-  SET_INVITES,
-  SET_LOADING_INVITES,
-  SET_DECLINING_INVITE,
-  SET_ACCEPTING_INVITE,
-  SET_ACCEPTED_INVITE,
-  SET_DECLINED_INVITE
-} from "../actionTypes"
+import * as t from "../actionTypes"
 import { AnyAction } from "redux"
 
 interface ITeam {
@@ -33,7 +26,7 @@ export const initialState: IInvitesState = {
 
 const invites = (state = initialState, action: AnyAction) => {
   switch (action.type) {
-    case SET_INVITES:
+    case t.SET_INVITES:
       return {
         ...state,
         ...action.invites.reduce(
@@ -44,9 +37,9 @@ const invites = (state = initialState, action: AnyAction) => {
           {}
         )
       }
-    case SET_LOADING_INVITES:
+    case t.SET_LOADING_INVITES:
       return { ...state, loading: action.val }
-    case SET_ACCEPTING_INVITE:
+    case t.SET_ACCEPTING_INVITE:
       return {
         ...state,
         [action.id]: {
@@ -54,7 +47,7 @@ const invites = (state = initialState, action: AnyAction) => {
           accepting: action.val
         }
       }
-    case SET_DECLINING_INVITE:
+    case t.SET_DECLINING_INVITE:
       return {
         ...state,
         [action.id]: {
@@ -62,7 +55,7 @@ const invites = (state = initialState, action: AnyAction) => {
           declining: action.val
         }
       }
-    case SET_ACCEPTED_INVITE:
+    case t.SET_ACCEPTED_INVITE:
       return {
         ...state,
         [action.id]: {
@@ -70,7 +63,7 @@ const invites = (state = initialState, action: AnyAction) => {
           status: "accepted"
         }
       }
-    case SET_DECLINED_INVITE:
+    case t.SET_DECLINED_INVITE:
       return {
         ...state,
         [action.id]: {

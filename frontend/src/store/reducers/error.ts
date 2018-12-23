@@ -1,12 +1,4 @@
-import {
-  SET_ERROR_LOGIN,
-  SET_ERROR_SOCIAL_LOGIN,
-  SET_ERROR_SIGNUP,
-  SET_ERROR_RESET,
-  SET_ERROR_RESET_CONFIRMATION,
-  SET_ERROR_ADD_RECIPE,
-  SET_ERROR_RECIPES
-} from "../actionTypes"
+import * as t from "../actionTypes"
 import { AnyAction } from "redux"
 
 export interface IErrorState {
@@ -41,19 +33,19 @@ export const initialState: IErrorState = {
 
 const error = (state: IErrorState = initialState, action: AnyAction) => {
   switch (action.type) {
-    case SET_ERROR_LOGIN:
+    case t.SET_ERROR_LOGIN:
       return { ...state, login: action.val }
-    case SET_ERROR_SOCIAL_LOGIN:
+    case t.SET_ERROR_SOCIAL_LOGIN:
       return { ...state, socialLogin: action.val }
-    case SET_ERROR_SIGNUP:
+    case t.SET_ERROR_SIGNUP:
       return { ...state, signup: action.val }
-    case SET_ERROR_RECIPES:
+    case t.SET_ERROR_RECIPES:
       return { ...state, recipes: action.val }
-    case SET_ERROR_RESET:
+    case t.SET_ERROR_RESET:
       return { ...state, reset: action.val }
-    case SET_ERROR_RESET_CONFIRMATION:
+    case t.SET_ERROR_RESET_CONFIRMATION:
       return { ...state, resetConfirmation: action.val }
-    case SET_ERROR_ADD_RECIPE:
+    case t.SET_ERROR_ADD_RECIPE:
       return { ...state, addRecipe: action.val }
     default:
       return state

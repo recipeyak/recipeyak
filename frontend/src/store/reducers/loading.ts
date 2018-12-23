@@ -1,11 +1,4 @@
-import {
-  SET_LOADING_LOGIN,
-  SET_LOADING_SIGNUP,
-  SET_LOADING_RESET,
-  SET_LOADING_RESET_CONFIRMATION,
-  SET_LOADING_RECIPES,
-  SET_LOADING_ADD_RECIPE
-} from "../actionTypes"
+import * as t from "../actionTypes"
 import { AnyAction } from "redux"
 
 export interface ILoadingState {
@@ -28,17 +21,17 @@ export const initialState: ILoadingState = {
 
 const loading = (state: ILoadingState = initialState, action: AnyAction) => {
   switch (action.type) {
-    case SET_LOADING_LOGIN:
+    case t.SET_LOADING_LOGIN:
       return { ...state, login: action.val }
-    case SET_LOADING_SIGNUP:
+    case t.SET_LOADING_SIGNUP:
       return { ...state, signup: action.val }
-    case SET_LOADING_RESET:
+    case t.SET_LOADING_RESET:
       return { ...state, reset: action.val }
-    case SET_LOADING_RESET_CONFIRMATION:
+    case t.SET_LOADING_RESET_CONFIRMATION:
       return { ...state, resetConfirmation: action.val }
-    case SET_LOADING_RECIPES:
+    case t.SET_LOADING_RECIPES:
       return { ...state, recipes: action.val }
-    case SET_LOADING_ADD_RECIPE:
+    case t.SET_LOADING_ADD_RECIPE:
       return { ...state, addRecipe: action.val }
     default:
       return state

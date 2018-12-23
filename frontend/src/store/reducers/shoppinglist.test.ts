@@ -3,14 +3,7 @@ import shoppinglist, {
   IShoppingListItem
 } from "./shoppinglist"
 
-import {
-  setShoppingList,
-  setLoadingShoppingList,
-  setShoppingListEmpty,
-  setShoppingListError,
-  setSelectingStart,
-  setSelectingEnd
-} from "../actions"
+import * as a from "../actions"
 
 describe("Shopping List", () => {
   const shopList: IShoppingListItem[] = [
@@ -42,7 +35,7 @@ describe("Shopping List", () => {
       endDay: new Date(1776, 1, 2)
     }
 
-    expect(shoppinglist(beforeState, setShoppingList(shopList))).toEqual(
+    expect(shoppinglist(beforeState, a.setShoppingList(shopList))).toEqual(
       afterState
     )
   })
@@ -64,7 +57,7 @@ describe("Shopping List", () => {
       endDay: new Date(1776, 1, 2)
     }
 
-    expect(shoppinglist(beforeState, setLoadingShoppingList(true))).toEqual(
+    expect(shoppinglist(beforeState, a.setLoadingShoppingList(true))).toEqual(
       afterState
     )
   })
@@ -86,7 +79,7 @@ describe("Shopping List", () => {
       endDay: new Date(1776, 1, 2)
     }
 
-    expect(shoppinglist(beforeState, setShoppingListEmpty())).toEqual(
+    expect(shoppinglist(beforeState, a.setShoppingListEmpty())).toEqual(
       afterState
     )
   })
@@ -108,7 +101,7 @@ describe("Shopping List", () => {
       endDay: new Date(1776, 1, 2)
     }
 
-    expect(shoppinglist(beforeState, setShoppingListError(true))).toEqual(
+    expect(shoppinglist(beforeState, a.setShoppingListError(true))).toEqual(
       afterState
     )
   })
@@ -132,7 +125,7 @@ describe("Shopping List", () => {
       endDay: new Date(1776, 1, 2)
     }
 
-    expect(shoppinglist(beforeState, setSelectingStart(startDay))).toEqual(
+    expect(shoppinglist(beforeState, a.setSelectingStart(startDay))).toEqual(
       afterState
     )
   })
@@ -156,7 +149,7 @@ describe("Shopping List", () => {
       endDay
     }
 
-    expect(shoppinglist(beforeState, setSelectingEnd(endDay))).toEqual(
+    expect(shoppinglist(beforeState, a.setSelectingEnd(endDay))).toEqual(
       afterState
     )
   })

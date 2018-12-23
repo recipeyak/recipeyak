@@ -1,15 +1,7 @@
 import { uniq, omit } from "lodash"
 import isSameDay from "date-fns/is_same_day"
 
-import {
-  SET_CALENDAR_RECIPES,
-  SET_CALENDAR_RECIPE,
-  DELETE_CALENDAR_RECIPE,
-  SET_CALENDAR_LOADING,
-  SET_CALENDAR_ERROR,
-  MOVE_CALENDAR_RECIPE,
-  REPLACE_CALENDAR_RECIPE
-} from "../actionTypes"
+import * as t from "../actionTypes"
 import { AnyAction } from "redux"
 
 function setCalendarRecipe(state: ICalendarState, { recipe }: AnyAction) {
@@ -103,7 +95,7 @@ export const calendar = (
   action: AnyAction
 ) => {
   switch (action.type) {
-    case SET_CALENDAR_RECIPES:
+    case t.SET_CALENDAR_RECIPES:
       return {
         ...state,
         ...action.recipes.reduce(
@@ -114,26 +106,26 @@ export const calendar = (
           state.allIds.concat(action.recipes.map((x: ICalRecipe) => x.id))
         )
       }
-    case SET_CALENDAR_RECIPE:
+    case t.SET_CALENDAR_RECIPE:
       return setCalendarRecipe(state, action)
-    case DELETE_CALENDAR_RECIPE:
+    case t.DELETE_CALENDAR_RECIPE:
       return {
         ...omit(state, action.id),
         allIds: state.allIds.filter(id => id !== action.id)
       }
-    case SET_CALENDAR_LOADING:
+    case t.SET_CALENDAR_LOADING:
       return {
         ...state,
         loading: action.loading
       }
-    case SET_CALENDAR_ERROR:
+    case t.SET_CALENDAR_ERROR:
       return {
         ...state,
         error: action.error
       }
-    case MOVE_CALENDAR_RECIPE:
+    case t.MOVE_CALENDAR_RECIPE:
       return moveCalendarRecipe(state, action)
-    case REPLACE_CALENDAR_RECIPE:
+    case t.REPLACE_CALENDAR_RECIPE:
       return {
         ...omit(state, action.id),
         [action.recipe.id]: action.recipe,

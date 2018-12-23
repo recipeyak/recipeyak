@@ -1,10 +1,5 @@
 import search, { ISearchState } from "./search"
-import {
-  setSearchResults,
-  clearSearchResults,
-  incrLoadingSearch,
-  decrLoadingSearch
-} from "../actions"
+import * as a from "../actions"
 
 describe("search", () => {
   test("action#setSearchResults", () => {
@@ -18,9 +13,9 @@ describe("search", () => {
       loading: 0
     }
 
-    expect(search(beforeState, setSearchResults(["test_result", 123]))).toEqual(
-      afterState
-    )
+    expect(
+      search(beforeState, a.setSearchResults(["test_result", 123]))
+    ).toEqual(afterState)
   })
   test("action#clearSearchResults", () => {
     const beforeState = {
@@ -33,7 +28,7 @@ describe("search", () => {
       loading: 0
     }
 
-    expect(search(beforeState, clearSearchResults())).toEqual(afterState)
+    expect(search(beforeState, a.clearSearchResults())).toEqual(afterState)
   })
   test("action#incrLoadingSearch", () => {
     const beforeState: ISearchState = {
@@ -46,7 +41,7 @@ describe("search", () => {
       loading: 3
     }
 
-    expect(search(beforeState, incrLoadingSearch())).toEqual(afterState)
+    expect(search(beforeState, a.incrLoadingSearch())).toEqual(afterState)
   })
   test("action#decrLoadingSearch", () => {
     const beforeState = {
@@ -59,10 +54,10 @@ describe("search", () => {
       loading: 1
     }
 
-    expect(search(beforeState, decrLoadingSearch())).toEqual(afterState)
+    expect(search(beforeState, a.decrLoadingSearch())).toEqual(afterState)
 
     expect(() =>
-      search({ loading: 0, results: [] }, decrLoadingSearch())
+      search({ loading: 0, results: [] }, a.decrLoadingSearch())
     ).toThrow()
   })
 })
