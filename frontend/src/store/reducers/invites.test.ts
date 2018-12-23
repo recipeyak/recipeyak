@@ -1,13 +1,6 @@
 import invites, { initialState, IInvitesState, IInvite } from "./invites"
 
-import {
-  setInvites,
-  setLoadingInvites,
-  setAcceptingInvite,
-  setDecliningInvite,
-  setDeclinedInvite,
-  setAcceptedInvite
-} from "../actions"
+import * as t from "../actions"
 
 describe("Invites", () => {
   it("sets invites", () => {
@@ -38,7 +31,7 @@ describe("Invites", () => {
       }
     }
 
-    expect(invites(beforeState, setLoadingInvites(true))).toEqual(afterState)
+    expect(invites(beforeState, t.setLoadingInvites(true))).toEqual(afterState)
   })
   it("sets invites", () => {
     const beforeState: IInvitesState = {
@@ -88,7 +81,7 @@ describe("Invites", () => {
       }
     }
 
-    expect(invites(beforeState, setInvites(newInvites))).toEqual(afterState)
+    expect(invites(beforeState, t.setInvites(newInvites))).toEqual(afterState)
   })
 
   it("sets invite to accepting", () => {
@@ -137,7 +130,7 @@ describe("Invites", () => {
       }
     }
 
-    expect(invites(beforeState, setAcceptingInvite(1, true))).toEqual(
+    expect(invites(beforeState, t.setAcceptingInvite(1, true))).toEqual(
       afterState
     )
   })
@@ -170,7 +163,7 @@ describe("Invites", () => {
       }
     }
 
-    expect(invites(beforeState, setDecliningInvite(1, true))).toEqual(
+    expect(invites(beforeState, t.setDecliningInvite(1, true))).toEqual(
       afterState
     )
   })
@@ -202,7 +195,7 @@ describe("Invites", () => {
       }
     }
 
-    expect(invites(beforeState, setDeclinedInvite(1))).toEqual(afterState)
+    expect(invites(beforeState, t.setDeclinedInvite(1))).toEqual(afterState)
   })
 
   it("accept invite", () => {
@@ -232,6 +225,6 @@ describe("Invites", () => {
       }
     }
 
-    expect(invites(beforeState, setAcceptedInvite(1))).toEqual(afterState)
+    expect(invites(beforeState, t.setAcceptedInvite(1))).toEqual(afterState)
   })
 })

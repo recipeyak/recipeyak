@@ -1,12 +1,5 @@
 import loading, { initialState } from "./loading"
-import {
-  setLoadingLogin,
-  setLoadingSignup,
-  setLoadingReset,
-  setLoadingResetConfirmation,
-  setLoadingRecipes,
-  setLoadingAddRecipe
-} from "../actions"
+import * as a from "../actions"
 
 describe("loading", () => {
   it("sets loading login", () => {
@@ -20,11 +13,11 @@ describe("loading", () => {
       login: true
     }
 
-    expect(loading(notLoadingState, setLoadingLogin(true))).toEqual(
+    expect(loading(notLoadingState, a.setLoadingLogin(true))).toEqual(
       loadingState
     )
 
-    expect(loading(loadingState, setLoadingLogin(false))).toEqual(
+    expect(loading(loadingState, a.setLoadingLogin(false))).toEqual(
       notLoadingState
     )
   })
@@ -40,11 +33,11 @@ describe("loading", () => {
       signup: true
     }
 
-    expect(loading(notLoadingState, setLoadingSignup(true))).toEqual(
+    expect(loading(notLoadingState, a.setLoadingSignup(true))).toEqual(
       loadingState
     )
 
-    expect(loading(loadingState, setLoadingSignup(false))).toEqual(
+    expect(loading(loadingState, a.setLoadingSignup(false))).toEqual(
       notLoadingState
     )
   })
@@ -60,11 +53,11 @@ describe("loading", () => {
       reset: true
     }
 
-    expect(loading(notLoadingState, setLoadingReset(true))).toEqual(
+    expect(loading(notLoadingState, a.setLoadingReset(true))).toEqual(
       loadingState
     )
 
-    expect(loading(loadingState, setLoadingReset(false))).toEqual(
+    expect(loading(loadingState, a.setLoadingReset(false))).toEqual(
       notLoadingState
     )
   })
@@ -80,11 +73,11 @@ describe("loading", () => {
       recipes: true
     }
 
-    expect(loading(notLoadingState, setLoadingRecipes(true))).toEqual(
+    expect(loading(notLoadingState, a.setLoadingRecipes(true))).toEqual(
       loadingState
     )
 
-    expect(loading(loadingState, setLoadingRecipes(false))).toEqual(
+    expect(loading(loadingState, a.setLoadingRecipes(false))).toEqual(
       notLoadingState
     )
   })
@@ -100,11 +93,11 @@ describe("loading", () => {
       addRecipe: true
     }
 
-    expect(loading(notLoadingState, setLoadingAddRecipe(true))).toEqual(
+    expect(loading(notLoadingState, a.setLoadingAddRecipe(true))).toEqual(
       loadingState
     )
 
-    expect(loading(loadingState, setLoadingAddRecipe(false))).toEqual(
+    expect(loading(loadingState, a.setLoadingAddRecipe(false))).toEqual(
       notLoadingState
     )
   })
@@ -120,11 +113,11 @@ describe("loading", () => {
       resetConfirmation: true
     }
 
-    expect(loading(notLoadingState, setLoadingResetConfirmation(true))).toEqual(
-      loadingState
-    )
+    expect(
+      loading(notLoadingState, a.setLoadingResetConfirmation(true))
+    ).toEqual(loadingState)
 
-    expect(loading(loadingState, setLoadingResetConfirmation(false))).toEqual(
+    expect(loading(loadingState, a.setLoadingResetConfirmation(false))).toEqual(
       notLoadingState
     )
   })

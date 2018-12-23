@@ -1,13 +1,7 @@
 import addWeeks from "date-fns/add_weeks"
 import startOfToday from "date-fns/start_of_today"
 
-import {
-  SET_SHOPPING_LIST,
-  SET_LOADING_SHOPPING_LIST,
-  SET_SHOPPING_LIST_ERROR,
-  SET_SELECTING_START,
-  SET_SELECTING_END
-} from "../actionTypes"
+import * as t from "../actionTypes"
 import { AnyAction } from "redux"
 
 export interface IShoppingListItem {
@@ -36,15 +30,15 @@ const shoppinglist = (
   action: AnyAction
 ) => {
   switch (action.type) {
-    case SET_SHOPPING_LIST:
+    case t.SET_SHOPPING_LIST:
       return { ...state, shoppinglist: action.val }
-    case SET_LOADING_SHOPPING_LIST:
+    case t.SET_LOADING_SHOPPING_LIST:
       return { ...state, loading: action.val }
-    case SET_SHOPPING_LIST_ERROR:
+    case t.SET_SHOPPING_LIST_ERROR:
       return { ...state, error: action.val }
-    case SET_SELECTING_START:
+    case t.SET_SELECTING_START:
       return { ...state, startDay: action.date }
-    case SET_SELECTING_END:
+    case t.SET_SELECTING_END:
       return { ...state, endDay: action.date }
     default:
       return state

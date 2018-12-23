@@ -1,26 +1,6 @@
 import { teams, ITeamsState, ITeam } from "./teams"
 
-import {
-  addTeam,
-  setLoadingTeam,
-  setLoadingTeamMembers,
-  setTeam404,
-  setTeamMembers,
-  setLoadingTeamRecipes,
-  setTeamRecipes,
-  setUpdatingUserTeamLevel,
-  setUserTeamLevel,
-  setDeletingMembership,
-  deleteMembership,
-  setSendingTeamInvites,
-  setTeams,
-  setLoadingTeams,
-  setCreatingTeam,
-  setTeam,
-  setCopyingTeam,
-  deleteTeam,
-  updateTeamById
-} from "../actions"
+import * as a from "../actions"
 
 describe("Teams", () => {
   it("Adds team to team object", () => {
@@ -43,7 +23,7 @@ describe("Teams", () => {
       allIds: [1, recipe.id]
     }
 
-    expect(teams(beforeState, addTeam(recipe))).toEqual(afterState)
+    expect(teams(beforeState, a.addTeam(recipe))).toEqual(afterState)
   })
 
   it("Updates team object", () => {
@@ -71,7 +51,7 @@ describe("Teams", () => {
       allIds: [1]
     }
 
-    expect(teams(beforeState, addTeam(recipe))).toEqual(afterState)
+    expect(teams(beforeState, a.addTeam(recipe))).toEqual(afterState)
   })
 
   it("Adds all teams given", () => {
@@ -133,7 +113,7 @@ describe("Teams", () => {
       allIds: [1, 4, 2, 3]
     }
 
-    expect(teams(beforeState, setTeams(data))).toEqual(afterState)
+    expect(teams(beforeState, a.setTeams(data))).toEqual(afterState)
   })
 
   it("Sets loading team data", () => {
@@ -156,7 +136,7 @@ describe("Teams", () => {
       allIds: []
     }
 
-    expect(teams(beforeState, setLoadingTeam(1, true))).toEqual(afterState)
+    expect(teams(beforeState, a.setLoadingTeam(1, true))).toEqual(afterState)
   })
 
   it("Sets loading team members", () => {
@@ -179,7 +159,7 @@ describe("Teams", () => {
       allIds: []
     }
 
-    expect(teams(beforeState, setLoadingTeamMembers(1, true))).toEqual(
+    expect(teams(beforeState, a.setLoadingTeamMembers(1, true))).toEqual(
       afterState
     )
   })
@@ -204,7 +184,7 @@ describe("Teams", () => {
       allIds: []
     }
 
-    expect(teams(beforeState, setLoadingTeamRecipes(1, true))).toEqual(
+    expect(teams(beforeState, a.setLoadingTeamRecipes(1, true))).toEqual(
       afterState
     )
   })
@@ -239,7 +219,7 @@ describe("Teams", () => {
       allIds: []
     }
 
-    expect(teams(beforeState, setTeam404(1, true))).toEqual(afterState)
+    expect(teams(beforeState, a.setTeam404(1, true))).toEqual(afterState)
   })
 
   it("Sets team members", () => {
@@ -285,7 +265,7 @@ describe("Teams", () => {
       allIds: []
     }
 
-    expect(teams(beforeState, setTeamMembers(1, members))).toEqual(afterState)
+    expect(teams(beforeState, a.setTeamMembers(1, members))).toEqual(afterState)
   })
 
   it("Sets team recipes", () => {
@@ -329,7 +309,7 @@ describe("Teams", () => {
       allIds: []
     }
 
-    expect(teams(beforeState, setTeamRecipes(1, recipes))).toEqual(afterState)
+    expect(teams(beforeState, a.setTeamRecipes(1, recipes))).toEqual(afterState)
   })
 
   it("Sets updating membership data", () => {
@@ -352,7 +332,7 @@ describe("Teams", () => {
       allIds: []
     }
 
-    expect(teams(beforeState, setUpdatingUserTeamLevel(1, true))).toEqual(
+    expect(teams(beforeState, a.setUpdatingUserTeamLevel(1, true))).toEqual(
       afterState
     )
   })
@@ -414,7 +394,7 @@ describe("Teams", () => {
       allIds: []
     }
 
-    expect(teams(beforeState, setUserTeamLevel(1, 2, "admin"))).toEqual(
+    expect(teams(beforeState, a.setUserTeamLevel(1, 2, "admin"))).toEqual(
       afterState
     )
   })
@@ -477,7 +457,7 @@ describe("Teams", () => {
       allIds: []
     }
 
-    expect(teams(beforeState, setDeletingMembership(1, 2, true))).toEqual(
+    expect(teams(beforeState, a.setDeletingMembership(1, 2, true))).toEqual(
       afterState
     )
   })
@@ -531,7 +511,7 @@ describe("Teams", () => {
       allIds: []
     }
 
-    expect(teams(beforeState, deleteMembership(1, 2))).toEqual(afterState)
+    expect(teams(beforeState, a.deleteMembership(1, 2))).toEqual(afterState)
   })
 
   it("Sets the sending team invites in team", () => {
@@ -592,7 +572,7 @@ describe("Teams", () => {
       allIds: []
     }
 
-    expect(teams(beforeState, setSendingTeamInvites(1, true))).toEqual(
+    expect(teams(beforeState, a.setSendingTeamInvites(1, true))).toEqual(
       afterState
     )
   })
@@ -655,7 +635,7 @@ describe("Teams", () => {
       allIds: []
     }
 
-    expect(teams(beforeState, setLoadingTeams(true))).toEqual(afterState)
+    expect(teams(beforeState, a.setLoadingTeams(true))).toEqual(afterState)
   })
 
   it("Sets team to have a creating attribute", () => {
@@ -716,7 +696,7 @@ describe("Teams", () => {
       allIds: []
     }
 
-    expect(teams(beforeState, setCreatingTeam(true))).toEqual(afterState)
+    expect(teams(beforeState, a.setCreatingTeam(true))).toEqual(afterState)
   })
 
   it("Sets team", () => {
@@ -745,7 +725,7 @@ describe("Teams", () => {
       allIds: [1, team.id]
     }
 
-    expect(teams(beforeState, setTeam(team.id, team))).toEqual(afterState)
+    expect(teams(beforeState, a.setTeam(team.id, team))).toEqual(afterState)
   })
 
   it("deletes team", () => {
@@ -782,7 +762,7 @@ describe("Teams", () => {
       allIds: [1, 3]
     }
 
-    expect(teams(beforeState, deleteTeam(2))).toEqual(afterState)
+    expect(teams(beforeState, a.deleteTeam(2))).toEqual(afterState)
   })
 
   it("sets copying team status", () => {
@@ -793,7 +773,7 @@ describe("Teams", () => {
       copying: true,
       allIds: []
     }
-    expect(teams(beforeState, setCopyingTeam(true))).toEqual(afterState)
+    expect(teams(beforeState, a.setCopyingTeam(true))).toEqual(afterState)
   })
 
   it("updates team partially", () => {
@@ -815,8 +795,8 @@ describe("Teams", () => {
       },
       allIds: [1]
     }
-    expect(teams(beforeState, updateTeamById(1, { name: "InnoTech" }))).toEqual(
-      afterState
-    )
+    expect(
+      teams(beforeState, a.updateTeamById(1, { name: "InnoTech" }))
+    ).toEqual(afterState)
   })
 })
