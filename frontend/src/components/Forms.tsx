@@ -4,8 +4,11 @@ interface IFormErrorHandlerProps {
   readonly error: string[] | null
 }
 
-export const FormErrorHandler = ({ error }: IFormErrorHandlerProps) =>
-  !!error && (
+export const FormErrorHandler = ({ error }: IFormErrorHandlerProps) => {
+  if (!error) {
+    return null
+  }
+  return (
     <div className="help is-danger">
       <ul>
         {error.map(e => (
@@ -14,6 +17,7 @@ export const FormErrorHandler = ({ error }: IFormErrorHandlerProps) =>
       </ul>
     </div>
   )
+}
 
 export const TextInput = ({
   className = "",

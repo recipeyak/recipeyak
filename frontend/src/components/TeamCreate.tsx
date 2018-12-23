@@ -50,7 +50,7 @@ class TeamCreate extends React.Component<ITeamCreateProps, ITeamCreateState> {
     const { name, level } = this.state
     try {
       await this.props.createTeam(name, emails, level)
-    } catch (e) {}
+    } catch (e) {} // tslint:disable-line:no-empty
   }
 
   render() {

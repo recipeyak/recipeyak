@@ -8,6 +8,14 @@
     "no-string-literal": false,
     "member-access": false,
     "member-ordering": false,
+    "variable-name": [
+      true,
+      "check-format",
+      "allow-pascal-case",
+
+      "allow-leading-underscore",
+      "ban-keywords"
+    ],
     "max-classes-per-file": false
   },
   "jsRules": {}
