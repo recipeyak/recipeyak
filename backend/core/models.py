@@ -61,6 +61,18 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
     recipes = GenericRelation("Recipe", related_query_name="owner_user")
 
+    # UI settings we wish to sync across sessions
+    dark_mode_enabled = models.BooleanField(
+        default=False, help_text="frontend darkmode setting"
+    )
+    selected_team = models.ForeignKey(
+        "Team",
+        null=True,
+        blank=True,
+        help_text="team currently focused on UI, null if personal items selected.",
+        on_delete=models.SET_NULL,
+    )
+
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS: List[str] = []
 

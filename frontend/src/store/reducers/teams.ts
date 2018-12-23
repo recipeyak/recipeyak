@@ -1,30 +1,6 @@
 import { uniq, omit } from "lodash"
 
-import {
-  ADD_TEAM,
-  SET_LOADING_TEAM,
-  SET_LOADING_TEAM_MEMBERS,
-  SET_LOADING_TEAM_INVITES,
-  SET_TEAM_404,
-  SET_TEAM_MEMBERS,
-  SET_TEAM_INVITES,
-  SET_LOADING_TEAM_RECIPES,
-  SET_TEAM_RECIPES,
-  SET_DELETING_MEMBERSHIP,
-  DELETE_MEMBERSHIP,
-  SET_UPDATING_MEMBERSHIP,
-  SET_UPDATING_USER_TEAM_LEVEL,
-  SET_USER_TEAM_LEVEL,
-  SET_SENDING_TEAM_INVITES,
-  SET_TEAMS,
-  SET_LOADING_TEAMS,
-  SET_TEAM,
-  SET_CREATING_TEAM,
-  SET_MOVING_TEAM,
-  SET_COPYING_TEAM,
-  DELETE_TEAM,
-  UPDATE_TEAM
-} from "../actionTypes"
+import * as t from "../actionTypes"
 import { IUser } from "./user"
 
 // TODO(sbdchd): check if these optional fields are always used (aka, required)
@@ -66,7 +42,7 @@ const initialState: ITeamsState = {
 
 export const teams = (state = initialState, action: any) => {
   switch (action.type) {
-    case ADD_TEAM:
+    case t.ADD_TEAM:
       return {
         ...state,
         [action.team.id]: {
@@ -75,12 +51,12 @@ export const teams = (state = initialState, action: any) => {
         },
         allIds: uniq([...state.allIds, action.team.id])
       }
-    case DELETE_TEAM:
+    case t.DELETE_TEAM:
       return {
         ...omit(state, action.id),
         allIds: state.allIds.filter(id => id !== action.id)
       }
-    case SET_LOADING_TEAM:
+    case t.SET_LOADING_TEAM:
       return {
         ...state,
         [action.id]: {
@@ -88,7 +64,7 @@ export const teams = (state = initialState, action: any) => {
           loadingTeam: action.loadingTeam
         }
       }
-    case SET_LOADING_TEAM_MEMBERS:
+    case t.SET_LOADING_TEAM_MEMBERS:
       return {
         ...state,
         [action.id]: {
@@ -96,7 +72,7 @@ export const teams = (state = initialState, action: any) => {
           loadingMembers: action.loadingMembers
         }
       }
-    case SET_LOADING_TEAM_INVITES:
+    case t.SET_LOADING_TEAM_INVITES:
       return {
         ...state,
         [action.id]: {
@@ -104,7 +80,7 @@ export const teams = (state = initialState, action: any) => {
           loadingInvites: action.loadingInvites
         }
       }
-    case SET_LOADING_TEAM_RECIPES:
+    case t.SET_LOADING_TEAM_RECIPES:
       return {
         ...state,
         [action.id]: {
@@ -112,7 +88,7 @@ export const teams = (state = initialState, action: any) => {
           loadingRecipes: action.loadingRecipes
         }
       }
-    case SET_TEAM_404:
+    case t.SET_TEAM_404:
       return {
         ...state,
         [action.id]: {
@@ -120,7 +96,7 @@ export const teams = (state = initialState, action: any) => {
           error404: action.val
         }
       }
-    case SET_TEAM_MEMBERS:
+    case t.SET_TEAM_MEMBERS:
       return {
         ...state,
         [action.id]: {
@@ -134,7 +110,7 @@ export const teams = (state = initialState, action: any) => {
           )
         }
       }
-    case SET_TEAM_INVITES:
+    case t.SET_TEAM_INVITES:
       return {
         ...state,
         [action.id]: {
@@ -148,7 +124,7 @@ export const teams = (state = initialState, action: any) => {
           )
         }
       }
-    case SET_TEAM_RECIPES:
+    case t.SET_TEAM_RECIPES:
       return {
         ...state,
         [action.id]: {
@@ -156,7 +132,7 @@ export const teams = (state = initialState, action: any) => {
           recipes: action.recipes.map(({ id }: { id: number }) => id)
         }
       }
-    case SET_UPDATING_MEMBERSHIP:
+    case t.SET_UPDATING_MEMBERSHIP:
       return {
         ...state,
         [action.id]: {
@@ -164,7 +140,7 @@ export const teams = (state = initialState, action: any) => {
           updating: action.val
         }
       }
-    case SET_UPDATING_USER_TEAM_LEVEL:
+    case t.SET_UPDATING_USER_TEAM_LEVEL:
       return {
         ...state,
         [action.id]: {
@@ -172,7 +148,7 @@ export const teams = (state = initialState, action: any) => {
           updating: action.updating
         }
       }
-    case SET_DELETING_MEMBERSHIP:
+    case t.SET_DELETING_MEMBERSHIP:
       return {
         ...state,
         [action.teamID]: {
@@ -187,7 +163,7 @@ export const teams = (state = initialState, action: any) => {
           }
         }
       }
-    case SET_USER_TEAM_LEVEL:
+    case t.SET_USER_TEAM_LEVEL:
       return {
         ...state,
         [action.teamID]: {
@@ -202,7 +178,7 @@ export const teams = (state = initialState, action: any) => {
           }
         }
       }
-    case SET_SENDING_TEAM_INVITES:
+    case t.SET_SENDING_TEAM_INVITES:
       return {
         ...state,
         [action.teamID]: {
@@ -210,7 +186,7 @@ export const teams = (state = initialState, action: any) => {
           sendingTeamInvites: action.val
         }
       }
-    case DELETE_MEMBERSHIP:
+    case t.DELETE_MEMBERSHIP:
       return {
         ...state,
         [action.teamID]: {
@@ -219,7 +195,7 @@ export const teams = (state = initialState, action: any) => {
           members: omit(state[action.teamID].members, action.membershipID)
         }
       }
-    case SET_TEAMS:
+    case t.SET_TEAMS:
       return {
         ...state,
         ...action.teams.reduce(
@@ -237,33 +213,33 @@ export const teams = (state = initialState, action: any) => {
           ...action.teams.map((x: { id: number }) => x.id)
         ])
       }
-    case SET_LOADING_TEAMS:
+    case t.SET_LOADING_TEAMS:
       return {
         ...state,
         loading: action.val
       }
-    case SET_TEAM:
+    case t.SET_TEAM:
       return {
         ...state,
         [action.id]: action.team,
         allIds: uniq([...state.allIds, action.id])
       }
-    case SET_CREATING_TEAM:
+    case t.SET_CREATING_TEAM:
       return {
         ...state,
         creating: action.val
       }
-    case SET_MOVING_TEAM:
+    case t.SET_MOVING_TEAM:
       return {
         ...state,
         moving: action.val
       }
-    case SET_COPYING_TEAM:
+    case t.SET_COPYING_TEAM:
       return {
         ...state,
         copying: action.val
       }
-    case UPDATE_TEAM:
+    case t.UPDATE_TEAM:
       return {
         ...state,
         [action.id]: { ...state[action.id], ...action.teamKeys }

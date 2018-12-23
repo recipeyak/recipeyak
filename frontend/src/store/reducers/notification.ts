@@ -1,4 +1,4 @@
-import { SET_NOTIFICATION, CLEAR_NOTIFICATION } from "../actionTypes"
+import * as t from "../actionTypes"
 import { AnyAction } from "redux"
 
 export interface INotificationState {
@@ -17,11 +17,11 @@ export const initialState = {
 
 const notification = (state = initialState, action: AnyAction) => {
   switch (action.type) {
-    case SET_NOTIFICATION: {
+    case t.SET_NOTIFICATION: {
       const { message, level, closeable } = action.notification
       return { ...state, message, level, closeable, show: true }
     }
-    case CLEAR_NOTIFICATION: {
+    case t.CLEAR_NOTIFICATION: {
       return { ...state, message: "", show: false, closeable: false }
     }
     default:

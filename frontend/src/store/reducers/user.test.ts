@@ -1,21 +1,6 @@
 import user, { ISocialConnection } from "./user"
 
-import {
-  login,
-  setAvatarURL,
-  setUserEmail,
-  setLoadingUser,
-  setSocialConnections,
-  setErrorUser,
-  setUpdatingUserEmail,
-  setLoggingOut,
-  setPasswordUsable,
-  toggleDarkMode,
-  setSocialConnection,
-  setUserID,
-  setUserLoggedIn,
-  setScheduleURL
-} from "../actions"
+import * as a from "../actions"
 
 describe("User", () => {
   it("Logs in user adding token", () => {
@@ -42,7 +27,7 @@ describe("User", () => {
       email
     }
 
-    expect(user(beforeState as any, login(userData))).toEqual(afterState)
+    expect(user(beforeState as any, a.login(userData))).toEqual(afterState)
   })
 
   it("Updates user passwordStatus", () => {
@@ -60,7 +45,7 @@ describe("User", () => {
       hasUsablePassword: true
     }
 
-    expect(user(beforeState as any, setPasswordUsable(true))).toEqual(
+    expect(user(beforeState as any, a.setPasswordUsable(true))).toEqual(
       afterState
     )
   })
@@ -76,7 +61,7 @@ describe("User", () => {
       avatarURL
     }
 
-    expect(user(beforeState as any, setAvatarURL(avatarURL))).toEqual(
+    expect(user(beforeState as any, a.setAvatarURL(avatarURL))).toEqual(
       afterState
     )
   })
@@ -92,7 +77,7 @@ describe("User", () => {
       email
     }
 
-    expect(user(beforeState as any, setUserEmail(email))).toEqual(afterState)
+    expect(user(beforeState as any, a.setUserEmail(email))).toEqual(afterState)
   })
 
   it("sets loading state of user", () => {
@@ -104,7 +89,7 @@ describe("User", () => {
       loading: true
     }
 
-    expect(user(beforeState as any, setLoadingUser(true))).toEqual(afterState)
+    expect(user(beforeState as any, a.setLoadingUser(true))).toEqual(afterState)
   })
 
   it("sets error state of user", () => {
@@ -116,7 +101,7 @@ describe("User", () => {
       error: true
     }
 
-    expect(user(beforeState as any, setErrorUser(true))).toEqual(afterState)
+    expect(user(beforeState as any, a.setErrorUser(true))).toEqual(afterState)
   })
 
   it("sets updating user email correctly", () => {
@@ -128,7 +113,7 @@ describe("User", () => {
       updatingEmail: true
     }
 
-    expect(user(beforeState as any, setUpdatingUserEmail(true))).toEqual(
+    expect(user(beforeState as any, a.setUpdatingUserEmail(true))).toEqual(
       afterState
     )
   })
@@ -142,7 +127,7 @@ describe("User", () => {
       loggingOut: true
     }
 
-    expect(user(beforeState as any, setLoggingOut(true))).toEqual(afterState)
+    expect(user(beforeState as any, a.setLoggingOut(true))).toEqual(afterState)
   })
 
   it("toggles darkmode", () => {
@@ -154,7 +139,7 @@ describe("User", () => {
       darkMode: true
     }
 
-    expect(user(beforeState as any, toggleDarkMode())).toEqual(afterState)
+    expect(user(beforeState as any, a.toggleDarkMode())).toEqual(afterState)
   })
 
   it("sets social connections", () => {
@@ -182,7 +167,7 @@ describe("User", () => {
       }
     }
 
-    expect(user(beforeState as any, setSocialConnections(data))).toEqual(
+    expect(user(beforeState as any, a.setSocialConnections(data))).toEqual(
       afterState
     )
 
@@ -203,7 +188,7 @@ describe("User", () => {
       }
     }
 
-    expect(user(afterState as any, setSocialConnections(data2))).toEqual(
+    expect(user(afterState as any, a.setSocialConnections(data2))).toEqual(
       afterState2
     )
   })
@@ -240,7 +225,7 @@ describe("User", () => {
       }
     ]
 
-    expect(user(beforeState as any, setSocialConnections(data))).toEqual(
+    expect(user(beforeState as any, a.setSocialConnections(data))).toEqual(
       afterState
     )
   })
@@ -263,7 +248,7 @@ describe("User", () => {
     const provider = "gitlab"
 
     expect(
-      user(beforeState as any, setSocialConnection(provider, null))
+      user(beforeState as any, a.setSocialConnection(provider, null))
     ).toEqual(expected)
   })
 
@@ -276,7 +261,7 @@ describe("User", () => {
       id
     }
 
-    expect(user(beforeState as any, setUserID(id))).toEqual(afterState)
+    expect(user(beforeState as any, a.setUserID(id))).toEqual(afterState)
   })
   it("should set user logged in", () => {
     const beforeState = {
@@ -285,11 +270,13 @@ describe("User", () => {
     const afterState = {
       loggedIn: false
     }
-    expect(user(beforeState as any, setUserLoggedIn(false))).toEqual(afterState)
+    expect(user(beforeState as any, a.setUserLoggedIn(false))).toEqual(
+      afterState
+    )
   })
 
   it("should set schedule url", () => {
     const url = "/schedule/something-not-the-default-value"
-    expect(user(undefined, setScheduleURL(url)).scheduleURL).toEqual(url)
+    expect(user(undefined, a.setScheduleURL(url)).scheduleURL).toEqual(url)
   })
 })

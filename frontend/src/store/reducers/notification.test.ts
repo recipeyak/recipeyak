@@ -1,6 +1,6 @@
 import notification, { initialState } from "./notification"
 
-import { setNotification, clearNotification } from "../actions"
+import * as a from "../actions"
 
 describe("Notification", () => {
   it("Sets notification settings", () => {
@@ -21,7 +21,7 @@ describe("Notification", () => {
       show: true
     }
 
-    expect(notification(beforeState, setNotification(action))).toEqual(
+    expect(notification(beforeState, a.setNotification(action))).toEqual(
       afterState
     )
   })
@@ -40,6 +40,6 @@ describe("Notification", () => {
       show: false
     }
 
-    expect(notification(beforeState, clearNotification())).toEqual(afterState)
+    expect(notification(beforeState, a.clearNotification())).toEqual(afterState)
   })
 })

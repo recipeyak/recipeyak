@@ -4,13 +4,16 @@ from core.models import MyUser
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """
-    serializer custom user model
-
-    This should only be used for requesting the users information
-    """
+    """serializer custom user model"""
 
     class Meta:
         model = MyUser
         editable = False
-        fields = ("id", "email", "avatar_url", "has_usable_password")
+        fields = (
+            "id",
+            "email",
+            "avatar_url",
+            "has_usable_password",
+            "dark_mode_enabled",
+            "selected_team",
+        )

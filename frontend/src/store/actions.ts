@@ -243,7 +243,7 @@ const second = 1000
 export const updatingEmail = (email: string) => (dispatch: Dispatch) => {
   dispatch(setUpdatingUserEmail(true))
   return http
-    .patch("/api/v1/rest-auth/user/", {
+    .patch("/api/v1/user/", {
       email
     })
     .then(res => {
@@ -287,7 +287,7 @@ export const fetchUser = () => (dispatch: Dispatch) => {
   dispatch(setLoadingUser(true))
   dispatch(setErrorUser(false))
   return http
-    .get("/api/v1/rest-auth/user/")
+    .get("/api/v1/user/")
     .then(res => {
       dispatch(setUserID(res.data.id))
       dispatch(setAvatarURL(res.data.avatar_url))
@@ -1933,7 +1933,7 @@ export const decliningInvite = (id: number) => (dispatch: Dispatch) => {
 
 export const deleteUserAccount = () => (dispatch: Dispatch) => {
   return http
-    .delete("/api/v1/rest-auth/user/")
+    .delete("/api/v1/user/")
     .then(() => {
       dispatch(logout())
       dispatch(push("/login"))

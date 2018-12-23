@@ -1,13 +1,5 @@
 import error, { initialState } from "./error"
-import {
-  setErrorLogin,
-  setErrorSocialLogin,
-  setErrorSignup,
-  setErrorReset,
-  setErrorResetConfirmation,
-  setErrorAddRecipe,
-  setErrorRecipes
-} from "../actions"
+import * as a from "../actions"
 
 describe("error", () => {
   it("sets login error", () => {
@@ -21,9 +13,9 @@ describe("error", () => {
       login: true
     }
 
-    expect(error(notErrorState, setErrorLogin(true))).toEqual(errorState)
+    expect(error(notErrorState, a.setErrorLogin(true))).toEqual(errorState)
 
-    expect(error(errorState, setErrorLogin(false))).toEqual(notErrorState)
+    expect(error(errorState, a.setErrorLogin(false))).toEqual(notErrorState)
   })
 
   it("sets social login error", () => {
@@ -37,9 +29,13 @@ describe("error", () => {
       socialLogin: true
     }
 
-    expect(error(notErrorState, setErrorSocialLogin(true))).toEqual(errorState)
+    expect(error(notErrorState, a.setErrorSocialLogin(true))).toEqual(
+      errorState
+    )
 
-    expect(error(errorState, setErrorSocialLogin(false))).toEqual(notErrorState)
+    expect(error(errorState, a.setErrorSocialLogin(false))).toEqual(
+      notErrorState
+    )
   })
 
   it("sets recipes error", () => {
@@ -53,9 +49,9 @@ describe("error", () => {
       recipes: true
     }
 
-    expect(error(notErrorState, setErrorRecipes(true))).toEqual(errorState)
+    expect(error(notErrorState, a.setErrorRecipes(true))).toEqual(errorState)
 
-    expect(error(errorState, setErrorRecipes(false))).toEqual(notErrorState)
+    expect(error(errorState, a.setErrorRecipes(false))).toEqual(notErrorState)
   })
 
   it("sets signup error", () => {
@@ -69,9 +65,9 @@ describe("error", () => {
       signup: true
     }
 
-    expect(error(notErrorState, setErrorSignup(true))).toEqual(errorState)
+    expect(error(notErrorState, a.setErrorSignup(true))).toEqual(errorState)
 
-    expect(error(errorState, setErrorSignup(false))).toEqual(notErrorState)
+    expect(error(errorState, a.setErrorSignup(false))).toEqual(notErrorState)
   })
 
   it("sets addRecipe error", () => {
@@ -85,9 +81,9 @@ describe("error", () => {
       addRecipe: true
     }
 
-    expect(error(notErrorState, setErrorAddRecipe(true))).toEqual(errorState)
+    expect(error(notErrorState, a.setErrorAddRecipe(true))).toEqual(errorState)
 
-    expect(error(errorState, setErrorAddRecipe(false))).toEqual(notErrorState)
+    expect(error(errorState, a.setErrorAddRecipe(false))).toEqual(notErrorState)
   })
 
   it("sets reset error", () => {
@@ -101,9 +97,9 @@ describe("error", () => {
       reset: true
     }
 
-    expect(error(notErrorState, setErrorReset(true))).toEqual(errorState)
+    expect(error(notErrorState, a.setErrorReset(true))).toEqual(errorState)
 
-    expect(error(errorState, setErrorReset(false))).toEqual(notErrorState)
+    expect(error(errorState, a.setErrorReset(false))).toEqual(notErrorState)
   })
 
   it("sets resetConfirmation error", () => {
@@ -117,11 +113,11 @@ describe("error", () => {
       resetConfirmation: true
     }
 
-    expect(error(notErrorState, setErrorResetConfirmation(true))).toEqual(
+    expect(error(notErrorState, a.setErrorResetConfirmation(true))).toEqual(
       errorState
     )
 
-    expect(error(errorState, setErrorResetConfirmation(false))).toEqual(
+    expect(error(errorState, a.setErrorResetConfirmation(false))).toEqual(
       notErrorState
     )
   })

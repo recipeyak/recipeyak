@@ -1,31 +1,4 @@
-import {
-  ADD_RECIPE,
-  DELETE_RECIPE,
-  ADD_STEP_TO_RECIPE,
-  ADD_INGREDIENT_TO_RECIPE,
-  UPDATE_RECIPE_NAME,
-  DELETE_INGREDIENT,
-  UPDATE_INGREDIENT,
-  DELETE_STEP,
-  UPDATE_RECIPE_SOURCE,
-  UPDATE_RECIPE_AUTHOR,
-  UPDATE_RECIPE_TIME,
-  SET_RECIPES,
-  UPDATE_STEP,
-  SET_LOADING_ADD_STEP_TO_RECIPE,
-  SET_LOADING_RECIPE,
-  SET_DELETING_RECIPE,
-  SET_ADDING_INGREDIENT_TO_RECIPE,
-  SET_UPDATING_INGREDIENT,
-  SET_REMOVING_INGREDIENT,
-  SET_UPDATING_STEP,
-  SET_REMOVING_STEP,
-  SET_RECIPE_404,
-  SET_RECIPE_UPDATING,
-  SET_RECIPE,
-  UPDATE_RECIPE_OWNER,
-  SET_SCHEDULING_RECIPE
-} from "../actionTypes"
+import * as t from "../actionTypes"
 import { AnyAction } from "redux"
 import { ITeam } from "./teams"
 
@@ -94,11 +67,11 @@ export const recipes = (
   action: AnyAction
 ) => {
   switch (action.type) {
-    case ADD_RECIPE:
+    case t.ADD_RECIPE:
       return { ...state, [action.recipe.id]: action.recipe }
-    case DELETE_RECIPE:
+    case t.DELETE_RECIPE:
       return { ...state, [action.id]: undefined }
-    case ADD_STEP_TO_RECIPE:
+    case t.ADD_STEP_TO_RECIPE:
       return {
         ...state,
         [action.id]: {
@@ -106,7 +79,7 @@ export const recipes = (
           steps: [...state[action.id].steps, action.step]
         }
       }
-    case SET_LOADING_ADD_STEP_TO_RECIPE:
+    case t.SET_LOADING_ADD_STEP_TO_RECIPE:
       return {
         ...state,
         [action.id]: {
@@ -114,7 +87,7 @@ export const recipes = (
           addingStepToRecipe: action.val
         }
       }
-    case SET_RECIPE_404:
+    case t.SET_RECIPE_404:
       return {
         ...state,
         [action.id]: {
@@ -122,7 +95,7 @@ export const recipes = (
           error404: action.val
         }
       }
-    case ADD_INGREDIENT_TO_RECIPE:
+    case t.ADD_INGREDIENT_TO_RECIPE:
       return {
         ...state,
         [action.id]: {
@@ -130,27 +103,27 @@ export const recipes = (
           ingredients: [...state[action.id].ingredients, action.ingredient]
         }
       }
-    case UPDATE_RECIPE_NAME:
+    case t.UPDATE_RECIPE_NAME:
       return {
         ...state,
         [action.id]: { ...state[action.id], name: action.name }
       }
-    case UPDATE_RECIPE_SOURCE:
+    case t.UPDATE_RECIPE_SOURCE:
       return {
         ...state,
         [action.id]: { ...state[action.id], source: action.source }
       }
-    case UPDATE_RECIPE_TIME:
+    case t.UPDATE_RECIPE_TIME:
       return {
         ...state,
         [action.id]: { ...state[action.id], time: action.time }
       }
-    case UPDATE_RECIPE_AUTHOR:
+    case t.UPDATE_RECIPE_AUTHOR:
       return {
         ...state,
         [action.id]: { ...state[action.id], author: action.author }
       }
-    case DELETE_INGREDIENT:
+    case t.DELETE_INGREDIENT:
       return {
         ...state,
         [action.recipeID]: {
@@ -160,7 +133,7 @@ export const recipes = (
           )
         }
       }
-    case UPDATE_INGREDIENT:
+    case t.UPDATE_INGREDIENT:
       return {
         ...state,
         [action.recipeID]: {
@@ -174,7 +147,7 @@ export const recipes = (
           })
         }
       }
-    case DELETE_STEP:
+    case t.DELETE_STEP:
       return {
         ...state,
         [action.recipeID]: {
@@ -184,7 +157,7 @@ export const recipes = (
           )
         }
       }
-    case UPDATE_STEP:
+    case t.UPDATE_STEP:
       return {
         ...state,
         [action.recipeID]: {
@@ -198,29 +171,29 @@ export const recipes = (
           })
         }
       }
-    case SET_RECIPES:
+    case t.SET_RECIPES:
       // convert the array of objects to an object with the recipe.id as the
       // key, and the recipe as the value
       return action.recipes.reduce(
         (a: IRecipesState, b: IRecipe) => ({ ...a, [b.id]: b }),
         {}
       )
-    case SET_DELETING_RECIPE:
+    case t.SET_DELETING_RECIPE:
       return {
         ...state,
         [action.id]: { ...state[action.id], deleting: action.val }
       }
-    case SET_LOADING_RECIPE:
+    case t.SET_LOADING_RECIPE:
       return {
         ...state,
         [action.id]: { ...state[action.id], loading: action.val }
       }
-    case SET_ADDING_INGREDIENT_TO_RECIPE:
+    case t.SET_ADDING_INGREDIENT_TO_RECIPE:
       return {
         ...state,
         [action.id]: { ...state[action.id], addingIngredient: action.val }
       }
-    case SET_UPDATING_INGREDIENT:
+    case t.SET_UPDATING_INGREDIENT:
       return {
         ...state,
         [action.recipeID]: {
@@ -236,7 +209,7 @@ export const recipes = (
           })
         }
       }
-    case SET_REMOVING_INGREDIENT:
+    case t.SET_REMOVING_INGREDIENT:
       return {
         ...state,
         [action.recipeID]: {
@@ -252,7 +225,7 @@ export const recipes = (
           })
         }
       }
-    case SET_UPDATING_STEP:
+    case t.SET_UPDATING_STEP:
       return {
         ...state,
         [action.recipeID]: {
@@ -268,7 +241,7 @@ export const recipes = (
           })
         }
       }
-    case SET_REMOVING_STEP:
+    case t.SET_REMOVING_STEP:
       return {
         ...state,
         [action.recipeID]: {
@@ -284,7 +257,7 @@ export const recipes = (
           })
         }
       }
-    case SET_RECIPE_UPDATING:
+    case t.SET_RECIPE_UPDATING:
       return {
         ...state,
         [action.id]: {
@@ -292,7 +265,7 @@ export const recipes = (
           updating: action.val
         }
       }
-    case SET_RECIPE:
+    case t.SET_RECIPE:
       return {
         ...state,
         [action.id]: {
@@ -300,7 +273,7 @@ export const recipes = (
           ...action.data
         }
       }
-    case UPDATE_RECIPE_OWNER:
+    case t.UPDATE_RECIPE_OWNER:
       return {
         ...state,
         [action.id]: {
@@ -308,7 +281,7 @@ export const recipes = (
           owner: action.owner
         }
       }
-    case SET_SCHEDULING_RECIPE:
+    case t.SET_SCHEDULING_RECIPE:
       return {
         ...state,
         [action.recipeID]: {

@@ -1,6 +1,6 @@
 import auth, { IAuthState } from "./auth"
 
-import { setFromUrl } from "../actions"
+import * as a from "../actions"
 
 describe("auth", () => {
   it("sets redirect url", () => {
@@ -14,6 +14,6 @@ describe("auth", () => {
       fromUrl
     }
 
-    expect(auth(beforeState, setFromUrl(fromUrl))).toEqual(afterState)
+    expect(auth(beforeState, a.setFromUrl(fromUrl))).toEqual(afterState)
   })
 })
