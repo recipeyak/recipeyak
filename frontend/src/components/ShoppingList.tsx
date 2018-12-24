@@ -16,14 +16,18 @@ import {
   setSelectingStart,
   setSelectingEnd,
   reportBadMerge,
-  showNotificationWithTimeout
+  showNotificationWithTimeout,
+  Dispatch
 } from "../store/actions"
 
 import { ingredientByNameAlphabetical } from "../sorters"
 
 import DateRangePicker from "./DateRangePicker/DateRangePicker"
+import { RootState } from "../store/store"
+import { ITeam } from "../store/reducers/teams"
+import { IShoppingListItem } from "../store/reducers/shoppinglist"
 
-const selectElementText = el => {
+const selectElementText = (el: Element) => {
   const sel = window.getSelection()
   const range = document.createRange()
   range.selectNodeContents(el)
@@ -35,14 +39,14 @@ const removeSelection = () => {
   window.getSelection().removeAllRanges()
 }
 
-function formatMonth(date) {
+function formatMonth(date: Date | null) {
   if (date == null) {
     return ""
   }
   return format(date, "YYYY-MM-DD")
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     startDay: state.shoppinglist.startDay,
     endDay: state.shoppinglist.endDay,
@@ -54,21 +58,45 @@ function mapStateToProps(state) {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  fetchData: (teamID, start, end) =>
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  fetchData: (teamID: ITeam["id"] | "personal", start: Date, end: Date) =>
     dispatch(fetchShoppingList(teamID, start, end)),
-  setStartDay: date => dispatch(setSelectingStart(date)),
-  setEndDay: date => dispatch(setSelectingEnd(date)),
+  setStartDay: (date: Date) => dispatch(setSelectingStart(date)),
+  setEndDay: (date: Date) => dispatch(setSelectingEnd(date)),
   reportBadMerge: () => dispatch(reportBadMerge()),
-  sendToast: message =>
+  sendToast: (message: string) =>
     dispatch(showNotificationWithTimeout({ message, level: "info" }))
 })
 
-@connect(
-  mapStateToProps,
-  mapDispatchToProps
-)
-class ShoppingList extends React.Component {
+interface IShoppingListProps {
+  readonly fetchData: (
+    teamID: ITeam["id"] | "personal",
+    startDay: Date,
+    endDay: Date
+  ) => void
+  readonly teamID: ITeam["id"] | "personal"
+  readonly startDay: Date
+  readonly endDay: Date
+  readonly loading: boolean
+  readonly error: boolean
+  readonly shoppinglist: IShoppingListItem[]
+  readonly setStartDay: (date: Date) => void
+  readonly setEndDay: (date: Date) => void
+  readonly reportBadMerge: () => void
+  readonly sendToast: (message: string) => void
+}
+
+interface IShoppingListState {
+  readonly month: Date
+  readonly selectingStart: boolean
+  readonly selectingEnd: boolean
+  readonly showDatePicker: boolean
+}
+
+class ShoppingList extends React.Component<
+  IShoppingListProps,
+  IShoppingListState
+> {
   static propTypes = {
     refetchData: PropTypes.func.isRequired,
     teamID: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
@@ -84,7 +112,9 @@ class ShoppingList extends React.Component {
     sendToast: PropTypes.func.isRequired
   }
 
-  state = {
+  inputs = React.createRef<HTMLDivElement>()
+
+  state: IShoppingListState = {
     month: new Date(),
 
     selectingStart: false,
@@ -114,12 +144,16 @@ class ShoppingList extends React.Component {
     )
   }
 
-  handleGeneralClick = e => {
+  handleGeneralClick = (e: MouseEvent) => {
     const picker = document.querySelector("#date-range-picker")
-    const clickedPicker = picker && picker.contains(e.target)
+    const targetElement = e.target as HTMLElement | null
+    const clickedPicker = picker && picker.contains(targetElement)
 
-    const clickedInputs = this.inputs && this.inputs.contains(e.target)
-    if (clickedPicker || clickedInputs) return
+    const clickedInputs =
+      this.inputs.current && this.inputs.current.contains(targetElement)
+    if (clickedPicker || clickedInputs) {
+      return
+    }
     this.setState({
       showDatePicker: false,
       selectingStart: false,
@@ -127,8 +161,10 @@ class ShoppingList extends React.Component {
     })
   }
 
-  setStartDay = date => {
-    if (!isValid(date)) return
+  setStartDay = (date: Date) => {
+    if (!isValid(date)) {
+      return
+    }
     this.props.setStartDay(date)
     if (isAfter(date, this.props.endDay)) {
       this.props.setEndDay(date)
@@ -142,8 +178,10 @@ class ShoppingList extends React.Component {
     )
   }
 
-  setEndDay = date => {
-    if (!isValid(date)) return
+  setEndDay = (date: Date) => {
+    if (!isValid(date)) {
+      return
+    }
     this.props.setEndDay(date)
     if (isBefore(date, this.props.startDay)) {
       this.props.setStartDay(date)
@@ -161,11 +199,7 @@ class ShoppingList extends React.Component {
     return (
       <div className="d-grid grid-gap-2">
         <div className="p-rel">
-          <div
-            ref={i => {
-              this.inputs = i
-            }}
-            className="d-flex align-items-center no-print">
+          <div ref={this.inputs} className="d-flex align-items-center no-print">
             <input
               onFocus={() =>
                 this.setState({
@@ -174,7 +208,6 @@ class ShoppingList extends React.Component {
                   selectingEnd: false
                 })
               }
-              onChange={this.setStartDay}
               type="date"
               className={classNames("my-input", {
                 "is-focused": this.state.selectingStart
@@ -191,7 +224,6 @@ class ShoppingList extends React.Component {
                   selectingStart: false
                 })
               }
-              onChange={this.setEndDay}
               type="date"
               className={classNames("my-input", {
                 "is-focused": this.state.selectingEnd
@@ -225,7 +257,11 @@ class ShoppingList extends React.Component {
             }`}>
             <button
               onClick={() => {
-                selectElementText(document.querySelector("#shoppinglist"))
+                const el = document.querySelector("#shoppinglist")
+                if (el == null) {
+                  return
+                }
+                selectElementText(el)
                 document.execCommand("copy")
                 removeSelection()
                 this.props.sendToast("Shopping list copied to clipboard!")
@@ -258,4 +294,7 @@ class ShoppingList extends React.Component {
     )
   }
 }
-export default ShoppingList
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ShoppingList)
