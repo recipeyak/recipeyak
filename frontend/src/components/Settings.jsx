@@ -219,9 +219,8 @@ export default class SettingsWithState extends React.Component {
               className="d-flex align-center"
               onSubmit={e => {
                 e.preventDefault()
-                updateEmail(this.state.email)
-                .then(() => {
-                  this.setState({editing: false})
+                updateEmail(this.state.email).then(() => {
+                  this.setState({ editing: false })
                 })
               }}>
               <label className="better-label">Email</label>
