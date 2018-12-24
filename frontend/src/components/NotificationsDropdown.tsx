@@ -8,19 +8,27 @@ import { connect } from "react-redux"
 import {
   fetchInvites,
   acceptingInvite,
-  decliningInvite
+  decliningInvite,
+  Dispatch
 } from "../store/actions"
 
 import { teamURL } from "../urls"
+import { IInvite } from "../store/reducers/invites";
+import { RootState } from "../store/store";
+
+interface IInvitesProps {
+  readonly loading: boolean
+  readonly invites: IInvite[]
+  readonly accept: (id: IInvite['id']) => void
+  readonly decline: (id: IInvite['id']) => void
+}
 
 const Invites = ({
   loading,
   invites,
   decline,
   accept,
-  accepting,
-  declining
-}) => {
+}: IInvitesProps) => {
   if (loading) {
     return <p className="text-muted fs-3 align-self-center">Loading...</p>
   }
@@ -33,7 +41,7 @@ const Invites = ({
 
   return (
     <div>
-      {invites.map(({ id, active, team, creator, status }) => {
+      {invites.map(({ id, active, team, creator, status, accepting, declining }) => {
         const TeamName = () =>
           active ? (
             <Link to={teamURL(team.id, team.name)}>{team.name}</Link>
@@ -78,20 +86,31 @@ const Invites = ({
   )
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: RootState) => {
   return {
     loading: state.invites.loading,
-    invites: Object.values(state.invites).filter(x => x != null && !!x.id)
+    invites: Object.values(
+      (state.invites as {[key: string]: IInvite })
+      ).filter(x => x != null && !!x.id)
   }
 }
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchData: () => dispatch(fetchInvites()),
-  accept: id => dispatch(acceptingInvite(id)),
-  decline: id => dispatch(decliningInvite(id))
+  accept: (id: IInvite['id']) => dispatch(acceptingInvite(id)),
+  decline: (id: IInvite['id']) => dispatch(decliningInvite(id))
 })
 
-class NotificationsDropdown extends React.Component {
+interface INotificationsDropdownProps {
+  readonly fetchData: () => void
+  readonly loading: boolean
+  readonly invites: IInvite[]
+  readonly accept: (id: IInvite['id']) => void
+  readonly decline: (id: IInvite['id']) => void
+
+}
+
+class NotificationsDropdown extends React.Component<INotificationsDropdownProps> {
   componentWillMount() {
     this.props.fetchData()
   }
@@ -110,9 +129,7 @@ class NotificationsDropdown extends React.Component {
   }
 }
 
-const ConnectedNotificationsDropdown = connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(NotificationsDropdown)
-
-export default ConnectedNotificationsDropdown

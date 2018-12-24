@@ -35,7 +35,7 @@ interface IRecipesProps {
   readonly fetchData: (teamID: ITeam["id"] | "personal") => void
   readonly recipes: IRecipe[]
   readonly loading: boolean
-  readonly teamID?: ITeam["id"]
+  readonly teamID: ITeam["id"]
   readonly scroll: boolean
   readonly drag: boolean
 }
@@ -66,7 +66,6 @@ class Recipes extends React.Component<IRecipesProps, IRecipesState> {
           {...recipe}
           teamID={this.props.teamID}
           drag={this.props.drag}
-          className="mb-0"
           key={recipe.id}
         />
       ))
