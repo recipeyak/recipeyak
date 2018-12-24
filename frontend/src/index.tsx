@@ -6,11 +6,11 @@ import { Provider } from "react-redux"
 
 import { SENTRY_DSN, GIT_SHA } from "./settings"
 
-import App from "./components/App.jsx"
+import App from "./components/App"
 
 import store from "./store/store"
 
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === "production" && SENTRY_DSN) {
   Raven.config(SENTRY_DSN, {
     release: GIT_SHA || ""
   }).install()
@@ -29,6 +29,12 @@ render(
   </AppContainer>,
   rootElement
 )
+
+declare var module: {
+  hot?: {
+    accept(str: string, f: () => void): void
+  }
+}
 
 if (module.hot) {
   module.hot.accept("./components/App", () => {

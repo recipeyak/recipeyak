@@ -4,43 +4,63 @@ import { connect } from "react-redux"
 
 import { ButtonPlain, ButtonDanger } from "./Buttons"
 
-import { settingUserTeamLevel, deletingMembership, Dispatch } from "../store/actions"
-import { ITeam, IMember } from "../store/reducers/teams";
-import { RootState } from "../store/store";
-import { IUser } from "../store/reducers/user";
+import {
+  settingUserTeamLevel,
+  deletingMembership,
+  Dispatch
+} from "../store/actions"
+import { ITeam, IMember } from "../store/reducers/teams"
+import { RootState } from "../store/store"
+import { IUser } from "../store/reducers/user"
 
-const mapStateToProps = (state: RootState, { userID, teamID, membershipID }: IMemberRowProps) => {
-  const teams  = state.teams as {[key: number]: ITeam}
+const mapStateToProps = (
+  state: RootState,
+  { userID, teamID, membershipID }: IMemberRowProps
+) => {
+  const teams = state.teams as { [key: number]: ITeam }
   return {
-  isUser: state.user.id === userID,
-  deleting: teams[teamID].members[membershipID].deleting,
-  userIsTeamAdmin: Object.values(teams[teamID].members)
-    .filter(x => x.level === "admin")
-    .some(({ user }) => user.id === state.user.id)
-}
+    isUser: state.user.id === userID,
+    deleting: teams[teamID].members[membershipID].deleting,
+    userIsTeamAdmin: Object.values(teams[teamID].members)
+      .filter(x => x.level === "admin")
+      .some(({ user }) => user.id === state.user.id)
+  }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  handleUserLevelChange: (teamID: ITeam['id'], membershipID: IMember['id'], level: string) =>
-    dispatch(settingUserTeamLevel(teamID, membershipID, level)),
-  deleteMembership: (teamID: ITeam['id'], membershipID: IMember['id'], leaving: boolean) =>
-    dispatch(deletingMembership(teamID, membershipID, leaving))
+  handleUserLevelChange: (
+    teamID: ITeam["id"],
+    membershipID: IMember["id"],
+    level: string
+  ) => dispatch(settingUserTeamLevel(teamID, membershipID, level)),
+  deleteMembership: (
+    teamID: ITeam["id"],
+    membershipID: IMember["id"],
+    leaving: boolean
+  ) => dispatch(deletingMembership(teamID, membershipID, leaving))
 })
 
 interface IMemberRowProps {
-  readonly userID: IUser['id']
-  readonly teamID: ITeam['id']
+  readonly userID: IUser["id"]
+  readonly teamID: ITeam["id"]
   readonly userIsTeamAdmin: boolean
-  readonly membershipID: IMember['id']
+  readonly membershipID: IMember["id"]
   readonly avatarURL: string
   readonly email: string
-  readonly level: IMember['level']
-  readonly handleUserLevelChange:
-  (teamID: ITeam['id'], membershipID: IMember['id'], level: string) => void
-  readonly deleteMembership: (teamID: ITeam['id'], membershipID: IMember['id'], leaving: boolean) => void
+  readonly level: IMember["level"]
+  readonly handleUserLevelChange: (
+    teamID: ITeam["id"],
+    membershipID: IMember["id"],
+    level: string
+  ) => void
+  readonly deleteMembership: (
+    teamID: ITeam["id"],
+    membershipID: IMember["id"],
+    leaving: boolean
+  ) => void
   readonly isUser: boolean
-  readonly isActive: IMember['is_active']
-  readonly deleting: IMember['deleting']
+  readonly isActive: IMember["is_active"]
+  readonly deleting: IMember["deleting"]
 }
 
 const MemberRow = ({

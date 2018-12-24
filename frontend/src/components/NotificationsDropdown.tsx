@@ -13,22 +13,17 @@ import {
 } from "../store/actions"
 
 import { teamURL } from "../urls"
-import { IInvite } from "../store/reducers/invites";
-import { RootState } from "../store/store";
+import { IInvite } from "../store/reducers/invites"
+import { RootState } from "../store/store"
 
 interface IInvitesProps {
   readonly loading: boolean
   readonly invites: IInvite[]
-  readonly accept: (id: IInvite['id']) => void
-  readonly decline: (id: IInvite['id']) => void
+  readonly accept: (id: IInvite["id"]) => void
+  readonly decline: (id: IInvite["id"]) => void
 }
 
-const Invites = ({
-  loading,
-  invites,
-  decline,
-  accept,
-}: IInvitesProps) => {
+const Invites = ({ loading, invites, decline, accept }: IInvitesProps) => {
   if (loading) {
     return <p className="text-muted fs-3 align-self-center">Loading...</p>
   }
@@ -41,47 +36,49 @@ const Invites = ({
 
   return (
     <div>
-      {invites.map(({ id, active, team, creator, status, accepting, declining }) => {
-        const TeamName = () =>
-          active ? (
-            <Link to={teamURL(team.id, team.name)}>{team.name}</Link>
-          ) : (
-            <b>{team.name}</b>
-          )
+      {invites.map(
+        ({ id, active, team, creator, status, accepting, declining }) => {
+          const TeamName = () =>
+            active ? (
+              <Link to={teamURL(team.id, team.name)}>{team.name}</Link>
+            ) : (
+              <b>{team.name}</b>
+            )
 
-        const InviteButtons = () => {
-          if (status === "declined") {
-            return <p className="text-muted">declined</p>
-          }
+          const InviteButtons = () => {
+            if (status === "declined") {
+              return <p className="text-muted">declined</p>
+            }
 
-          if (status === "accepted") {
-            return <p className="text-muted">accepted</p>
+            if (status === "accepted") {
+              return <p className="text-muted">accepted</p>
+            }
+
+            return (
+              <div className="d-flex justify-space-between align-items-center">
+                <a onClick={() => decline(id)} className="text-muted">
+                  Decline
+                </a>
+                <ButtonPrimary
+                  loading={declining || accepting}
+                  onClick={() => accept(id)}
+                  className="is-small">
+                  Accept
+                </ButtonPrimary>
+              </div>
+            )
           }
 
           return (
-            <div className="d-flex justify-space-between align-items-center">
-              <a onClick={() => decline(id)} className="text-muted">
-                Decline
-              </a>
-              <ButtonPrimary
-                loading={declining || accepting}
-                onClick={() => accept(id)}
-                className="is-small">
-                Accept
-              </ButtonPrimary>
+            <div key={id} className="mb-2">
+              <p className="mb-1 text-left break-word">
+                Invited to <TeamName /> by <b>{creator.email}</b>
+              </p>
+              <InviteButtons />
             </div>
           )
         }
-
-        return (
-          <div key={id} className="mb-2">
-            <p className="mb-1 text-left break-word">
-              Invited to <TeamName /> by <b>{creator.email}</b>
-            </p>
-            <InviteButtons />
-          </div>
-        )
-      })}
+      )}
     </div>
   )
 }
@@ -89,28 +86,29 @@ const Invites = ({
 const mapStateToProps = (state: RootState) => {
   return {
     loading: state.invites.loading,
-    invites: Object.values(
-      (state.invites as {[key: string]: IInvite })
-      ).filter(x => x != null && !!x.id)
+    invites: Object.values(state.invites as { [key: string]: IInvite }).filter(
+      x => x != null && !!x.id
+    )
   }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchData: () => dispatch(fetchInvites()),
-  accept: (id: IInvite['id']) => dispatch(acceptingInvite(id)),
-  decline: (id: IInvite['id']) => dispatch(decliningInvite(id))
+  accept: (id: IInvite["id"]) => dispatch(acceptingInvite(id)),
+  decline: (id: IInvite["id"]) => dispatch(decliningInvite(id))
 })
 
 interface INotificationsDropdownProps {
   readonly fetchData: () => void
   readonly loading: boolean
   readonly invites: IInvite[]
-  readonly accept: (id: IInvite['id']) => void
-  readonly decline: (id: IInvite['id']) => void
-
+  readonly accept: (id: IInvite["id"]) => void
+  readonly decline: (id: IInvite["id"]) => void
 }
 
-class NotificationsDropdown extends React.Component<INotificationsDropdownProps> {
+class NotificationsDropdown extends React.Component<
+  INotificationsDropdownProps
+> {
   componentWillMount() {
     this.props.fetchData()
   }
