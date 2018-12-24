@@ -1,4 +1,4 @@
-import * as t from "../actionTypes"
+import t from "../actionTypes"
 import { AnyAction } from "redux"
 import { ITeam } from "./teams"
 

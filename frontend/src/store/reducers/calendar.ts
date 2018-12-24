@@ -1,7 +1,7 @@
 import { uniq, omit } from "lodash"
 import isSameDay from "date-fns/is_same_day"
 
-import * as t from "../actionTypes"
+import t from "../actionTypes"
 import { AnyAction } from "redux"
 
 function setCalendarRecipe(state: ICalendarState, { recipe }: AnyAction) {

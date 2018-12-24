@@ -1,4 +1,4 @@
-import * as t from "../actionTypes"
+import t from "../actionTypes"
 
 export interface ISocialAccountsState {
   readonly github: number | null

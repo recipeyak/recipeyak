@@ -21,7 +21,7 @@ import search from "./reducers/search"
 
 import { loadState, saveState } from "./localStorage"
 
-import * as t from "./actionTypes"
+import t from "./actionTypes"
 
 const recipeApp = combineReducers({
   user,

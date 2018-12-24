@@ -1,6 +1,6 @@
 import isSameDay from "date-fns/is_same_day"
 
-import * as t from "./actionTypes"
+import t from "./actionTypes"
 
 // TODO(chdsbd): Replace "personal" with null in all uses
 type TeamID = number | "personal"

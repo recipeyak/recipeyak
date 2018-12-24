@@ -1,7 +1,7 @@
 import addWeeks from "date-fns/add_weeks"
 import startOfToday from "date-fns/start_of_today"
 
-import * as t from "../actionTypes"
+import t from "../actionTypes"
 import { AnyAction } from "redux"
 
 export interface IShoppingListItem {

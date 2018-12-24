@@ -1,6 +1,6 @@
 import { uniq, omit } from "lodash"
 
-import * as t from "../actionTypes"
+import t from "../actionTypes"
 import { IUser } from "./user"
 
 // TODO(sbdchd): check if these optional fields are always used (aka, required)
