@@ -39,7 +39,6 @@ interface IAddRecipeProps {
     ingredient: IIngredientBasic
   ) => void
   readonly addIngredient: (ingredient: IIngredientBasic) => void
-  readonly setTeam: (e: React.ChangeEvent<HTMLSelectElement>) => void
   readonly error: {
     readonly errorWithName: boolean
     readonly errorWithIngredients: boolean
@@ -55,7 +54,8 @@ interface IAddRecipeProps {
   readonly steps: IStep[]
   readonly loadingTeams: boolean
   readonly teams: ITeam[]
-  readonly team: ITeam["id"] | "personal"
+  readonly setTeamID: (x: number | null) => void
+  readonly teamID: number | null
 }
 
 interface IAddRecipeState {
@@ -106,7 +106,7 @@ export default class AddRecipe extends React.Component<
       servings: this.props.servings,
       ingredients: this.props.ingredients,
       steps: this.props.steps,
-      team: this.props.team !== "personal" ? this.props.team : undefined
+      team: this.props.teamID || undefined
     }
     this.props.addRecipe(recipe)
   }
@@ -146,6 +146,16 @@ export default class AddRecipe extends React.Component<
   }
 
   cancelAddStep = () => this.setState({ step: "" })
+
+  handleTeamChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const id = parseInt(e.target.value, 10)
+    // When we convert "personal" to an int, we'll get NaN
+    if (isNaN(id)) {
+      this.props.setTeamID(null)
+    } else {
+      this.props.setTeamID(id)
+    }
+  }
 
   render() {
     const { ingredient, step } = this.state
@@ -314,8 +324,8 @@ export default class AddRecipe extends React.Component<
               <div className="select ml-2 is-small">
                 <select
                   disabled={this.props.loadingTeams}
-                  value={this.props.team}
-                  onChange={this.props.setTeam}>
+                  value={this.props.teamID || "personal"}
+                  onChange={this.handleTeamChange}>
                   <option value="personal">Personal</option>
                   {this.props.teams.map(t => (
                     <option key={t.id} value={t.id}>

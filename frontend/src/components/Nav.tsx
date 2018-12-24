@@ -50,12 +50,12 @@ interface INavbarProps {
   readonly scheduleURL: string
   readonly loadingTeams: boolean
   readonly teams: ITeam[]
+  readonly teamID: number | null
 }
 
 class Navbar extends React.Component<INavbarProps> {
   static defaultProps = {
     teams: [],
-    scheduleURL: "",
     className: "",
     loggedIn: true
   }

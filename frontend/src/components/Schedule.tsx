@@ -8,7 +8,7 @@ import Calendar from "./Calendar"
 import Recipes from "./Recipes"
 import ShoppingList from "./ShoppingList"
 
-import { setScheduleURL, Dispatch } from "../store/actions"
+import { Dispatch, updatingTeamID } from "../store/actions"
 
 export type ScheduleRouteParams = RouteComponentProps<{
   id?: string
@@ -16,7 +16,7 @@ export type ScheduleRouteParams = RouteComponentProps<{
 }>
 
 interface IScheduleProps extends ScheduleRouteParams {
-  readonly setURL: (url: string) => void
+  readonly updateTeamID: () => void
   readonly teamID: number | null
   readonly type: "shopping" | "recipes"
 }
@@ -34,6 +34,13 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
 
   toggleClose = () => {
     this.setState(prev => ({ closed: !prev.closed }))
+  }
+
+  componentDidUpdate(prevProps: IScheduleProps) {
+    if (prevProps.teamID !== this.props.teamID) {
+      // NOTE(chdsbd): Prevent `[Violation] 'change' handler took 319ms` warnings.
+      Promise.resolve().then(this.props.updateTeamID)
+    }
   }
 
   render() {
@@ -66,18 +73,10 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
           <div className="tabs is-boxed mb-0 no-print">
             <ul>
               <li className={!isRecipes ? "is-active" : ""}>
-                <Link
-                  to={shoppingURL}
-                  onClick={() => this.props.setURL(shoppingURL)}>
-                  Shopping
-                </Link>
+                <Link to={shoppingURL}>Shopping</Link>
               </li>
               <li className={isRecipes ? "is-active" : ""}>
-                <Link
-                  to={recipesURL}
-                  onClick={() => this.props.setURL(recipesURL)}>
-                  Recipes
-                </Link>
+                <Link to={recipesURL}>Recipes</Link>
               </li>
             </ul>
           </div>
@@ -113,11 +112,16 @@ const getTeamID = (params: ScheduleRouteParams["match"]["params"]) => {
 const mapDispatchToProps = (
   dispatch: Dispatch,
   ownProps: ScheduleRouteParams
-) => ({
-  setURL: (url: string) => dispatch(setScheduleURL(url)),
-  teamID: getTeamID(ownProps.match.params),
-  type: ownProps.match.params["type"]
-})
+) => {
+  const teamID = getTeamID(ownProps.match.params)
+  return {
+    updateTeamID: () => {
+      dispatch(updatingTeamID(teamID))
+    },
+    teamID,
+    type: ownProps.match.params["type"]
+  }
+}
 
 export default connect(
   null,

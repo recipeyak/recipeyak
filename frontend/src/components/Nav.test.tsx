@@ -18,7 +18,6 @@ describe("<Nav/>", () => {
           <Nav
             avatarURL="foo"
             email="foo@foo.com"
-            scheduleURL=""
             loadingTeams
             darkMode
             loggingOut
@@ -26,6 +25,8 @@ describe("<Nav/>", () => {
             logout={() => undefined}
             toggleDarkMode={() => undefined}
             fetchData={() => undefined}
+            teamID={0}
+            scheduleURL={"/schedule"}
           />
         </MemoryRouter>
       </Provider>

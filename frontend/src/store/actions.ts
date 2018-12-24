@@ -2,6 +2,7 @@ import isSameDay from "date-fns/is_same_day"
 
 import * as t from "./actionTypes"
 
+// TODO(chdsbd): Replace "personal" with null in all uses
 type TeamID = number | "personal"
 
 // tslint:disable-next-line:ban-types
@@ -20,18 +21,24 @@ import addWeeks from "date-fns/add_weeks"
 import { pyFormat } from "../date"
 
 import { push, replace } from "react-router-redux"
-import { createAsyncAction } from "typesafe-actions"
+import { createAsyncAction, createStandardAction } from "typesafe-actions"
 import axios, { AxiosError, AxiosResponse, CancelTokenSource } from "axios"
 import raven from "raven-js"
 
-import { store } from "./store"
-import { IUser, ISocialConnection, SocialProvider } from "./reducers/user"
+import { store, RootState } from "./store"
+import {
+  IUser,
+  ISocialConnection,
+  SocialProvider,
+  IUserState
+} from "./reducers/user"
 import { ICalRecipe } from "./reducers/calendar"
 import { IInvite } from "./reducers/invites"
 import { INotificationState } from "./reducers/notification"
 import { IRecipeBasic, IIngredientBasic } from "../components/AddRecipe"
 import { ITeam } from "./reducers/teams"
 import { IRecipe } from "./reducers/recipes"
+import * as api from "../api"
 
 const config = { timeout: 15000 }
 
@@ -218,11 +225,9 @@ export const updateEmail = createAsyncAction(
 
 export const updatingEmail = (email: string) => (dispatch: Dispatch) => {
   dispatch(updateEmail.request())
-  return http
-    .patch("/api/v1/user/", {
-      email
-    })
-    .then((res: AxiosResponse<IEmailUpdate>) => {
+  return api
+    .updateUser({ email })
+    .then(res => {
       dispatch(updateEmail.success(res.data))
       dispatch(
         showNotificationWithTimeout({
@@ -244,6 +249,25 @@ export const updatingEmail = (email: string) => (dispatch: Dispatch) => {
     })
 }
 
+const updateTeamID = createStandardAction(t.SET_TEAM_ID)<number | null>()
+
+export const updatingTeamID = (id: number | null) => (
+  dispatch: Dispatch,
+  getState: () => RootState
+) => {
+  // store old id so we can undo
+  const oldID = (getState().user as IUserState).teamID
+  dispatch(updateTeamID(id))
+  api
+    .updateUser({ selected_team: id })
+    .then(res => {
+      dispatch(fetchingUser.success(res.data))
+    })
+    .catch(() => {
+      dispatch(updateTeamID(oldID))
+    })
+}
+
 export const setUserLoggedIn = (val: boolean) => ({
   type: t.SET_USER_LOGGED_IN,
   val
@@ -257,14 +281,13 @@ export const fetchingUser = createAsyncAction(
 
 export const fetchUser = () => (dispatch: Dispatch) => {
   dispatch(fetchingUser.request())
-  return http
-    .get("/api/v1/user/")
-    .then((res: AxiosResponse<IUser>) => {
+  return api
+    .getUser()
+    .then(res => {
       dispatch(fetchingUser.success(res.data))
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(fetchingUser.failure())
-      throw err
     })
 }
 
@@ -2059,8 +2082,3 @@ export const updatingScheduledRecipe = (
     dispatch(setCalendarRecipe(res.data))
   })
 }
-
-export const setScheduleURL = (url: string) => ({
-  type: t.SET_SCHEDULE_URL,
-  scheduleURL: url
-})
