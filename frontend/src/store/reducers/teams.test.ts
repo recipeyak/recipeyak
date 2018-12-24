@@ -244,7 +244,9 @@ describe("Teams", () => {
           id: 2,
           email: "blah@blah.com",
           avatar_url: "http://lksjdflsjdf",
-          has_usable_password: false
+          has_usable_password: false,
+          dark_mode_enabled: false,
+          selected_team: null
         }
       }
     ]
@@ -289,7 +291,9 @@ describe("Teams", () => {
         user: {
           id: 2,
           email: "blah@blah.com",
-          avatar_url: "http://lksjdflsjdf"
+          avatar_url: "http://lksjdflsjdf",
+          dark_mode_enabled: false,
+          selected_team: null
         }
       }
     ]
@@ -349,7 +353,9 @@ describe("Teams", () => {
             user: {
               id: 1,
               email: "foo",
-              avatar_url: "foo.com"
+              avatar_url: "foo.com",
+              dark_mode_enabled: false,
+              selected_team: null
             }
           },
           2: {
@@ -358,7 +364,9 @@ describe("Teams", () => {
             user: {
               id: 2,
               email: "bar",
-              avatar_url: "bar.com"
+              avatar_url: "bar.com",
+              dark_mode_enabled: false,
+              selected_team: null
             }
           }
         }
@@ -377,7 +385,9 @@ describe("Teams", () => {
             user: {
               id: 1,
               email: "foo",
-              avatar_url: "foo.com"
+              avatar_url: "foo.com",
+              dark_mode_enabled: false,
+              selected_team: null
             }
           },
           2: {
@@ -386,7 +396,9 @@ describe("Teams", () => {
             user: {
               id: 2,
               email: "bar",
-              avatar_url: "bar.com"
+              avatar_url: "bar.com",
+              dark_mode_enabled: false,
+              selected_team: null
             }
           }
         }
@@ -411,7 +423,9 @@ describe("Teams", () => {
             user: {
               id: 1,
               email: "foo",
-              avatar_url: "foo.com"
+              avatar_url: "foo.com",
+              dark_mode_enabled: false,
+              selected_team: null
             }
           },
           2: {
@@ -420,7 +434,9 @@ describe("Teams", () => {
             user: {
               id: 2,
               email: "bar",
-              avatar_url: "bar.com"
+              avatar_url: "bar.com",
+              dark_mode_enabled: false,
+              selected_team: null
             }
           }
         }
@@ -439,7 +455,9 @@ describe("Teams", () => {
             user: {
               id: 1,
               email: "foo",
-              avatar_url: "foo.com"
+              avatar_url: "foo.com",
+              dark_mode_enabled: false,
+              selected_team: null
             }
           },
           2: {
@@ -449,7 +467,9 @@ describe("Teams", () => {
             user: {
               id: 2,
               email: "bar",
-              avatar_url: "bar.com"
+              avatar_url: "bar.com",
+              dark_mode_enabled: false,
+              selected_team: null
             }
           }
         }
@@ -474,7 +494,9 @@ describe("Teams", () => {
             user: {
               id: 1,
               email: "foo",
-              avatar_url: "foo.com"
+              avatar_url: "foo.com",
+              dark_mode_enabled: false,
+              selected_team: null
             }
           },
           2: {
@@ -484,7 +506,9 @@ describe("Teams", () => {
             user: {
               id: 2,
               email: "bar",
-              avatar_url: "bar.com"
+              avatar_url: "bar.com",
+              dark_mode_enabled: false,
+              selected_team: null
             }
           }
         }
@@ -503,7 +527,9 @@ describe("Teams", () => {
             user: {
               id: 1,
               email: "foo",
-              avatar_url: "foo.com"
+              avatar_url: "foo.com",
+              dark_mode_enabled: false,
+              selected_team: null
             }
           }
         }
@@ -526,7 +552,9 @@ describe("Teams", () => {
             user: {
               id: 1,
               email: "foo",
-              avatar_url: "foo.com"
+              avatar_url: "foo.com",
+              dark_mode_enabled: false,
+              selected_team: null
             }
           },
           2: {
@@ -535,7 +563,9 @@ describe("Teams", () => {
             user: {
               id: 2,
               email: "bar",
-              avatar_url: "bar.com"
+              avatar_url: "bar.com",
+              dark_mode_enabled: false,
+              selected_team: null
             }
           }
         }
@@ -555,7 +585,9 @@ describe("Teams", () => {
             user: {
               id: 1,
               email: "foo",
-              avatar_url: "foo.com"
+              avatar_url: "foo.com",
+              dark_mode_enabled: false,
+              selected_team: null
             }
           },
           2: {
@@ -564,7 +596,9 @@ describe("Teams", () => {
             user: {
               id: 2,
               email: "bar",
-              avatar_url: "bar.com"
+              avatar_url: "bar.com",
+              dark_mode_enabled: false,
+              selected_team: null
             }
           }
         }
@@ -589,7 +623,9 @@ describe("Teams", () => {
             user: {
               id: 1,
               email: "foo",
-              avatar_url: "foo.com"
+              avatar_url: "foo.com",
+              dark_mode_enabled: false,
+              selected_team: null
             }
           },
           2: {
@@ -598,7 +634,9 @@ describe("Teams", () => {
             user: {
               id: 2,
               email: "bar",
-              avatar_url: "bar.com"
+              avatar_url: "bar.com",
+              dark_mode_enabled: false,
+              selected_team: null
             }
           }
         }
@@ -618,7 +656,9 @@ describe("Teams", () => {
             user: {
               id: 1,
               email: "foo",
-              avatar_url: "foo.com"
+              avatar_url: "foo.com",
+              dark_mode_enabled: false,
+              selected_team: null
             }
           },
           2: {
@@ -627,7 +667,9 @@ describe("Teams", () => {
             user: {
               id: 2,
               email: "bar",
-              avatar_url: "bar.com"
+              avatar_url: "bar.com",
+              dark_mode_enabled: false,
+              selected_team: null
             }
           }
         }
@@ -650,7 +692,10 @@ describe("Teams", () => {
             user: {
               id: 1,
               email: "foo",
-              avatar_url: "foo.com"
+              avatar_url: "foo.com",
+
+              dark_mode_enabled: false,
+              selected_team: null
             }
           },
           2: {
@@ -659,7 +704,9 @@ describe("Teams", () => {
             user: {
               id: 2,
               email: "bar",
-              avatar_url: "bar.com"
+              avatar_url: "bar.com",
+              dark_mode_enabled: false,
+              selected_team: null
             }
           }
         }
@@ -679,7 +726,9 @@ describe("Teams", () => {
             user: {
               id: 1,
               email: "foo",
-              avatar_url: "foo.com"
+              avatar_url: "foo.com",
+              dark_mode_enabled: false,
+              selected_team: null
             }
           },
           2: {
@@ -688,7 +737,9 @@ describe("Teams", () => {
             user: {
               id: 2,
               email: "bar",
-              avatar_url: "bar.com"
+              avatar_url: "bar.com",
+              dark_mode_enabled: false,
+              selected_team: null
             }
           }
         }

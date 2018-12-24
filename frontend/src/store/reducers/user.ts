@@ -6,11 +6,14 @@ import { setDarkModeClass } from "../../sideEffects"
 
 import raven from "raven-js"
 
+/** User state from API */
 export interface IUser {
   readonly avatar_url: string
   readonly email: string
   readonly id: number
   readonly has_usable_password?: boolean
+  readonly dark_mode_enabled: boolean
+  readonly selected_team: number | null
 }
 
 export type SocialProvider = "github" | "gitlab"
@@ -22,7 +25,7 @@ export interface ISocialConnection {
   readonly date_joined?: string
 }
 
-interface IUserState {
+export interface IUserState {
   readonly id: null | number
   readonly loggedIn: boolean
   readonly avatarURL: string
@@ -36,6 +39,9 @@ interface IUserState {
   readonly hasUsablePassword: boolean
   readonly socialAccountConnections: ISocialAccountsState
   readonly scheduleURL: string
+  // ID of currently focused team. null if using personal team.
+  readonly teamID: number | null
+  readonly updatingEmail: boolean
 }
 
 const initialState: IUserState = {
@@ -54,47 +60,20 @@ const initialState: IUserState = {
     github: null,
     gitlab: null
   },
-  scheduleURL: "/schedule/"
+  scheduleURL: "/schedule/",
+  teamID: null,
+  updatingEmail: false
 }
 
 export const user = (state: IUserState = initialState, action: any) => {
   switch (action.type) {
-    case t.LOG_IN:
-      raven.setUserContext({
-        ...{
-          email: state.email,
-          id: state.id
-        },
-        email: action.user.email,
-        id: action.user.id
-      })
-      return {
-        ...state,
-        avatarURL: action.user.avatar_url,
-        email: action.user.email,
-        id: action.user.id,
-        loggedIn: true,
-        hasUsablePassword: action.user.has_usable_password
-      }
-    case t.SET_AVATAR_URL:
-      return { ...state, avatarURL: action.url }
-    case t.SET_USER_EMAIL:
-      return { ...state, email: action.email }
-    case t.SET_LOADING_USER:
-      return { ...state, loading: action.val }
-    case t.SET_ERROR_USER:
-      return { ...state, error: action.val }
     case t.SET_USER_STATS:
       return { ...state, stats: action.val }
     case t.SET_LOADING_USER_STATS:
       return { ...state, stats_loading: action.val }
-    case t.SET_UPDATING_USER_EMAIL:
-      return { ...state, updatingEmail: action.val }
     case t.SET_LOGGING_OUT:
       raven.setUserContext()
       return { ...state, loggingOut: action.val }
-    case t.SET_PASSWORD_USABLE:
-      return { ...state, hasUsablePassword: action.val }
     case t.SET_SOCIAL_ACCOUNT_CONNECTIONS:
     case t.SET_SOCIAL_ACCOUNT_CONNECTION:
       return {
@@ -110,10 +89,42 @@ export const user = (state: IUserState = initialState, action: any) => {
       const newDarkMode = !state.darkMode
       setDarkModeClass(newDarkMode)
       return { ...state, darkMode: newDarkMode }
-    case t.SET_USER_ID:
-      return { ...state, id: action.id }
     case t.SET_SCHEDULE_URL:
       return { ...state, scheduleURL: action.scheduleURL }
+    case t.UPDATE_EMAIL_START:
+      return { ...state, updatingEmail: false }
+    case t.UPDATE_EMAIL_FAILURE:
+      return { ...state, updatingEmail: false }
+    case t.FETCH_USER_START:
+      return { ...state, loading: true, error: false }
+    case t.FETCH_USER_FAILURE:
+      return { ...state, loading: false, error: true }
+    // TODO(chdsbd): Replace login usage with FETCH_USER_SUCCESS
+    case t.LOG_IN:
+    case t.UPDATE_EMAIL_SUCCESS:
+    case t.FETCH_USER_SUCCESS:
+      // TODO(chdsbd): Fix when we have union of actions for type refinement.
+      const val = action.payload as IUser
+      raven.setUserContext({
+        ...{
+          email: state.email,
+          id: state.id
+        },
+        email: val.email,
+        id: val.id
+      })
+      return {
+        ...state,
+        loading: false,
+        loggedIn: true,
+        hasUsablePassword: val.has_usable_password,
+        email: val.email,
+        avatarURL: val.avatar_url,
+        id: val.id,
+        darkMode: val.dark_mode_enabled,
+        teamID: val.selected_team,
+        updatingEmail: false
+      }
     default:
       return state
   }
