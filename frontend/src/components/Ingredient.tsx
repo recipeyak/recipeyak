@@ -26,8 +26,8 @@ interface IIngredientProps {
   readonly optional: IIngredient["optional"]
   readonly recipeID: IRecipe["id"]
   readonly id: IIngredient["id"]
-  readonly updating: boolean
-  readonly removing: boolean
+  readonly updating?: boolean
+  readonly removing?: boolean
   readonly remove: (recipeID: IRecipe["id"], id: IIngredient["id"]) => void
   readonly update: (
     {

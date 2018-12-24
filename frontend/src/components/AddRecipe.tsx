@@ -12,7 +12,7 @@ import { ITeam } from "../store/reducers/teams"
 const unfinishedIngredient = ({ quantity = "", name = "" }) =>
   quantity === "" || name === ""
 
-type Omit<T, K> = Pick<T, Exclude<keyof T, K>>
+export type Omit<T, K> = Pick<T, Exclude<keyof T, K>>
 
 export type IRecipeBasic = Omit<
   IRecipe,
@@ -266,7 +266,7 @@ export default class AddRecipe extends React.Component<
               {this.props.ingredients.map((x, i) => (
                 <Ingredient
                   key={x.name + i}
-                  index={i}
+                  recipeID={-1}
                   id={i}
                   update={(ingre: IIngredientBasic) =>
                     this.props.updateIngredient(i, ingre)

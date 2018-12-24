@@ -24,6 +24,7 @@ import { RootState } from "../store/store"
 import { RouteComponentProps } from "react-router"
 import { IRecipe, IStep, IIngredient } from "../store/reducers/recipes"
 import { IRecipeBasic } from "./RecipeTitle"
+import { Omit } from "./AddRecipe"
 
 type RouteProps = RouteComponentProps<{ id: string }>
 
@@ -79,7 +80,7 @@ interface IRecipeProps extends RouteProps {
   readonly updateIngredient: (
     recipeID: IRecipe["id"],
     ingredientID: IIngredient["id"],
-    content: IIngredient
+    content: Omit<IIngredient, "id" | "position">
   ) => void
   readonly removeIngredient: (
     recipeID: IRecipe["id"],
@@ -148,7 +149,7 @@ class Recipe extends React.Component<IRecipeProps, IRecipeState> {
                   id={ingre.id}
                   quantity={ingre.quantity}
                   name={ingre.name}
-                  update={(ingredient: IIngredient) =>
+                  update={(ingredient: Omit<IIngredient, "id" | "position">) =>
                     this.props.updateIngredient(
                       this.props.id,
                       ingre.id,
