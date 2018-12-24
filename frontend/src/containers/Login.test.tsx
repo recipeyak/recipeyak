@@ -5,23 +5,22 @@ import { Provider } from "react-redux"
 import { mount, configure } from "enzyme"
 import Adapter from "enzyme-adapter-react-16"
 
-import Signup from "./Signup.jsx"
+import Login from "./Login"
 
 import { emptyStore as store } from "../store/store"
 
 configure({ adapter: new Adapter() })
 
-describe("<Signup/>", () => {
-  it("renders signup", () => {
+describe("<Login/>", () => {
+  it("renders login", () => {
     const element = mount(
       <Provider store={store}>
-        <MemoryRouter initialEntries={["/signup"]} initialIndex={1}>
-          <Route path="/signup" component={Signup} />
+        <MemoryRouter initialEntries={["/login"]} initialIndex={1}>
+          <Route path="/login" component={Login} />
         </MemoryRouter>
       </Provider>
     )
     expect(element.text()).toContain("Email")
     expect(element.text()).toContain("Password")
-    expect(element.text()).toContain("Password Again")
   })
 })

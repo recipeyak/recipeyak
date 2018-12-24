@@ -1,5 +1,4 @@
 import React from "react"
-import PropTypes from "prop-types"
 import { Helmet } from "./Helmet"
 import { Link } from "react-router-dom"
 
@@ -94,27 +93,6 @@ export default class SettingsWithState extends React.Component<
   ISettingsWithStateProps,
   ISettingsWithStateState
 > {
-  static propTypes = {
-    fetchData: PropTypes.func.isRequired,
-    disconnectAccount: PropTypes.func.isRequired,
-    deleteUserAccount: PropTypes.func.isRequired,
-    email: PropTypes.string.isRequired,
-    updateEmail: PropTypes.func.isRequired,
-    avatarURL: PropTypes.string.isRequired,
-    updatingEmail: PropTypes.bool.isRequired,
-    socialAccountConnections: PropTypes.object.isRequired,
-    loading: PropTypes.bool.isRequired,
-    hasPassword: PropTypes.bool.isRequired
-  }
-
-  static defaultProps = {
-    email: "",
-    avatarURL: "",
-    updatingEmail: false,
-    socialAccountConnections: {},
-    hasPassword: false
-  }
-
   state: ISettingsWithStateState = {
     email: this.props.email,
     loadingGithub: false,

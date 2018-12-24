@@ -6,12 +6,15 @@ import {
   updatingEmail,
   disconnectSocialAccount,
   loggingOut,
-  deleteUserAccount
+  deleteUserAccount,
+  Dispatch
 } from "../store/actions"
 
 import Settings from "../components/Settings"
+import { RootState } from "../store/store"
+import { SocialProvider } from "../store/reducers/user"
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: RootState) => {
   return {
     avatarURL: state.user.avatarURL,
     email: state.user.email,
@@ -22,7 +25,7 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     logout: () => {
       dispatch(loggingOut())
@@ -31,16 +34,14 @@ const mapDispatchToProps = dispatch => {
       dispatch(fetchUser())
       dispatch(fetchSocialConnections())
     },
-    disconnectAccount: (provider, id) =>
+    disconnectAccount: (provider: SocialProvider, id: number) =>
       dispatch(disconnectSocialAccount(provider, id)),
     deleteUserAccount: () => dispatch(deleteUserAccount()),
-    updateEmail: email => dispatch(updatingEmail(email))
+    updateEmail: (email: string) => dispatch(updatingEmail(email))
   }
 }
 
-const ConnectedSettings = connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Settings)
-
-export default ConnectedSettings

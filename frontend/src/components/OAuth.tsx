@@ -1,11 +1,16 @@
 import React from "react"
 
 import Loader from "./Loader"
+import { SocialProvider } from "../store/reducers/user"
 
 interface IOAuthProps {
-  readonly service: string
+  readonly service: SocialProvider
   readonly token: string
-  readonly login: (service: string, token: string, redirectUrl: string) => void
+  readonly login: (
+    service: SocialProvider,
+    token: string,
+    redirectUrl: string
+  ) => void
   readonly redirectUrl?: string
 }
 

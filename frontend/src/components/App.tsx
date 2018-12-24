@@ -7,24 +7,24 @@ import { DragDropContext } from "react-dnd"
 
 import { history, store } from "../store/store"
 
-import Home from "../containers/Home.jsx"
-import Login from "../containers/Login.jsx"
-import Signup from "../containers/Signup.jsx"
+import Home from "../containers/Home"
+import Login from "../containers/Login"
+import Signup from "../containers/Signup"
 import NoMatch from "./NoMatch"
 import Recipe from "./Recipe"
-import PasswordReset from "../containers/PasswordReset.jsx"
+import PasswordReset from "../containers/PasswordReset"
 import Settings from "../containers/Settings"
 import Team from "../containers/Team"
 import TeamInvite from "./TeamInvite"
 import TeamCreate from "./TeamCreate"
-import AddRecipe from "../containers/AddRecipe.jsx"
-import Notification from "../containers/Notification.jsx"
+import AddRecipe from "../containers/AddRecipe"
+import Notification from "../containers/Notification"
 import { Container, ContainerBase } from "../components/Base"
-import PasswordChange from "../containers/PasswordChange.jsx"
-import PasswordSet from "../containers/PasswordSet.jsx"
+import PasswordChange from "../containers/PasswordChange"
+import PasswordSet from "../containers/PasswordSet"
 import PasswordResetConfirmation from "./PasswordResetConfirmation"
-import OAuth from "../containers/OAuth.jsx"
-import OAuthConnect from "../containers/OAuthConnect.jsx"
+import OAuth from "../containers/OAuth"
+import OAuthConnect from "../containers/OAuthConnect"
 import Schedule from "./Schedule"
 import HelpMenuModal from "./HelpMenuModal"
 import Recipes from "./Recipes"
@@ -91,7 +91,11 @@ export default class Base extends React.Component {
             <PublicOnlyRoute exact path="/login" component={Login} />
             <PublicOnlyRoute exact path="/signup" component={Signup} />
             <Route exact path="/password-reset" component={PasswordReset} />
-            <Route exact path="/accounts/:service" component={OAuth} />
+            <Route
+              exact
+              path="/accounts/:service(gitlab|github)"
+              component={OAuth}
+            />
             <ContainerBase>
               <Switch>
                 <Route exact path="/" component={Home} />
@@ -109,7 +113,7 @@ export default class Base extends React.Component {
                   <Switch>
                     <Route
                       exact
-                      path="/accounts/:service/connect"
+                      path="/accounts/:service(gitlab|github)/connect"
                       component={OAuthConnect}
                     />
                     <Route

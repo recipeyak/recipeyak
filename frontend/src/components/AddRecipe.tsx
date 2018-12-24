@@ -18,19 +18,19 @@ export type IRecipeBasic = Omit<
   IRecipe,
   "id" | "edits" | "modified" | "last_scheduled" | "owner" | "team"
 >
-type IIngredientBasic = Omit<IIngredient, "id" | "position">
+export type IIngredientBasic = Omit<IIngredient, "id" | "position">
 
 interface IAddRecipeProps {
   readonly clearErrors: () => void
   readonly addStep: (step: { text: string }) => void
   readonly clearForm: () => void
-  readonly setTime: () => void
-  readonly setServings: () => void
-  readonly setSource: () => void
-  readonly setAuthor: () => void
-  readonly setName: () => void
-  readonly removeStep: () => void
-  readonly updateStep: () => void
+  readonly setTime: (e: React.ChangeEvent<HTMLInputElement>) => void
+  readonly setServings: (e: React.ChangeEvent<HTMLInputElement>) => void
+  readonly setSource: (e: React.ChangeEvent<HTMLInputElement>) => void
+  readonly setAuthor: (e: React.ChangeEvent<HTMLInputElement>) => void
+  readonly setName: (e: React.ChangeEvent<HTMLInputElement>) => void
+  readonly removeStep: (index: number) => void
+  readonly updateStep: (_recipeID: number, i: number, step: unknown) => void
   readonly fetchData: () => void
   readonly addRecipe: (recipe: IRecipeBasic) => void
   readonly removeIngredient: (index: number) => void
@@ -39,7 +39,7 @@ interface IAddRecipeProps {
     ingredient: IIngredientBasic
   ) => void
   readonly addIngredient: (ingredient: IIngredientBasic) => void
-  readonly setTeam: () => void
+  readonly setTeam: (e: React.ChangeEvent<HTMLSelectElement>) => void
   readonly error: {
     readonly errorWithName: boolean
     readonly errorWithIngredients: boolean
@@ -83,25 +83,6 @@ export default class AddRecipe extends React.Component<
   state: IAddRecipeState = {
     ingredient: emptyIngredient,
     step: ""
-  }
-
-  static defaultProps = {
-    error: {
-      errorWithName: false,
-      errorWithIngredients: false,
-      errorWithSteps: false
-    },
-    loading: false,
-    name: "",
-    author: "",
-    source: "",
-    time: "",
-    servings: "",
-    ingredients: [],
-    steps: [],
-    loadingTeams: true,
-    teams: [],
-    team: "personal"
   }
 
   componentWillMount = () => {

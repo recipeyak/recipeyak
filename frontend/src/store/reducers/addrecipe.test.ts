@@ -1,6 +1,7 @@
 import addrecipe, { initialState, IAddRecipeState } from "./addrecipe"
 
 import * as a from "../actions"
+import { IIngredientBasic } from "../../components/AddRecipe"
 
 describe("addrecipe", () => {
   it("sets addrecipe form name", () => {
@@ -151,10 +152,11 @@ describe("addrecipe", () => {
       ingredients: [ingredient]
     }
 
-    const newIngredient = {
+    const newIngredient: IIngredientBasic = {
       quantity: "12 lbs",
       name: "tomato",
-      description: "sliced"
+      description: "sliced",
+      optional: false
     }
 
     const afterState: IAddRecipeState = {
@@ -179,9 +181,7 @@ describe("addrecipe", () => {
     }
 
     const step = {
-      quantity: "1 lbs",
-      name: "tomato",
-      description: "sliced"
+      text: "cook the food"
     }
 
     const afterState = {

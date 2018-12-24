@@ -198,16 +198,6 @@ class Team extends React.Component<ITeamProps> {
     }
   }
 
-  static defaultProps = {
-    members: {},
-    invites: {},
-    recipes: [],
-    loadingTeam: true,
-    loadingMembers: true,
-    loadingRecipes: true,
-    isSettings: false
-  }
-
   render() {
     if (this.props.error404) {
       return <NoMatch />
