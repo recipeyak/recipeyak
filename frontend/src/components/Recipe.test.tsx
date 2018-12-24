@@ -7,7 +7,7 @@ import Adapter from "enzyme-adapter-react-16"
 
 import { emptyStore as store } from "../store/store"
 
-import Recipe from "./Recipe.jsx"
+import Recipe from "./Recipe"
 
 configure({ adapter: new Adapter() })
 

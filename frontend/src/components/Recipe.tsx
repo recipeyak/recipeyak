@@ -1,12 +1,11 @@
 import React from "react"
-import PropTypes from "prop-types"
 import { connect } from "react-redux"
 import { Helmet } from "./Helmet"
 
 import NoMatch from "./NoMatch"
 import Loader from "./Loader"
 import AddStep from "./AddStep"
-import AddIngredient from "./AddIngredient"
+import AddIngredient, { IIngredientBasic } from "./AddIngredient"
 import StepContainer from "./StepContainer"
 import Ingredient from "./Ingredient"
 import RecipeTitle from "./RecipeTitle"
@@ -18,81 +17,91 @@ import {
   deletingRecipe,
   updateRecipe,
   deletingIngredient,
-  updatingIngredient
+  updatingIngredient,
+  Dispatch
 } from "../store/actions"
+import { RootState } from "../store/store"
+import { RouteComponentProps } from "react-router"
+import { IRecipe, IStep, IIngredient } from "../store/reducers/recipes"
 
-const mapStateToProps = (state, props) => {
+type RouteProps = RouteComponentProps<{ id: string }>
+
+const mapStateToProps = (state: RootState, props: RouteProps) => {
   const id = props.match.params.id
   const recipe = state.recipes[id] ? state.recipes[id] : { loading: true }
   return recipe
 }
 
-const mapDispatchToProps = dispatch => ({
-  fetchRecipe: id => dispatch(fetchRecipe(id)),
-  addIngredient: (recipeID, ingredient) =>
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  fetchRecipe: (id: number) => dispatch(fetchRecipe(id)),
+  addIngredient: (recipeID: IRecipe["id"], ingredient: IIngredient) =>
     dispatch(addingRecipeIngredient(recipeID, ingredient)),
-  addStep: (id, step) => dispatch(addingRecipeStep(id, step)),
-  update: (id, data) => dispatch(updateRecipe(id, data)),
-  remove: id => dispatch(deletingRecipe(id)),
-  updateIngredient: (recipeID, ingredientID, content) =>
-    dispatch(updatingIngredient(recipeID, ingredientID, content)),
-  removeIngredient: (recipeID, ingredientID) =>
-    dispatch(deletingIngredient(recipeID, ingredientID))
+  addStep: (id: IStep["id"], step: IStep) =>
+    dispatch(addingRecipeStep(id, step)),
+  update: (id: IRecipe["id"], data: IRecipe) =>
+    dispatch(updateRecipe(id, data)),
+  remove: (id: IRecipe["id"]) => dispatch(deletingRecipe(id)),
+  updateIngredient: (
+    recipeID: IRecipe["id"],
+    ingredientID: IIngredient["id"],
+    content: IIngredient
+  ) => dispatch(updatingIngredient(recipeID, ingredientID, content)),
+  removeIngredient: (
+    recipeID: IRecipe["id"],
+    ingredientID: IIngredient["id"]
+  ) => dispatch(deletingIngredient(recipeID, ingredientID))
 })
 
-@connect(
-  mapStateToProps,
-  mapDispatchToProps
-)
-export default class Recipe extends React.Component {
-  static propTypes = {
-    id: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired,
-    author: PropTypes.string.isRequired,
-    source: PropTypes.string.isRequired,
-    servings: PropTypes.string.isRequired,
-    time: PropTypes.string.isRequired,
-    ingredients: PropTypes.array.isRequired,
-    steps: PropTypes.array.isRequired,
-    loading: PropTypes.bool.isRequired,
-    error404: PropTypes.bool.isRequired,
-    owner: PropTypes.object.isRequired,
-    update: PropTypes.func.isRequired,
-    remove: PropTypes.func.isRequired,
-    deleting: PropTypes.bool.isRequired,
-    last_scheduled: PropTypes.string
-  }
+interface IRecipeProps extends RouteProps {
+  readonly id: IRecipe["id"]
+  readonly name: IRecipe["name"]
+  readonly author: IRecipe["author"]
+  readonly source: IRecipe["source"]
+  readonly servings: IRecipe["servings"]
+  readonly time: IRecipe["time"]
+  readonly ingredients: IIngredient[]
+  readonly steps: IStep[]
+  readonly loading: boolean
+  readonly error404: boolean
+  readonly owner: IRecipe["owner"]
+  readonly update: () => void
+  readonly remove: () => void
+  readonly deleting: boolean
+  readonly updating: boolean
+  readonly addingStepToRecipe: boolean
+  readonly last_scheduled: string
+  readonly fetchRecipe: (id: IRecipe["id"]) => void
+  readonly addIngredient: (
+    id: number,
+    { quantity, name, description }: IIngredientBasic
+  ) => void
+  readonly updateIngredient: (
+    recipeID: IRecipe["id"],
+    ingredientID: IIngredient["id"],
+    content: IIngredient
+  ) => void
+  readonly removeIngredient: (
+    recipeID: IRecipe["id"],
+    ingredientID: IIngredient["id"]
+  ) => void
+  readonly addStep: () => void
+}
 
-  // necessary as these are undefined between page load and data fetch
-  static defaultProps = {
-    id: 0,
-    name: "",
-    author: "",
-    source: "",
-    servings: "",
-    time: "",
-    deleting: false,
-    removing: false,
-    ingredients: [],
-    steps: [],
-    loading: true,
-    error404: false,
-    owner: {
-      type: "user",
-      id: 0,
-      name: ""
-    },
-    updating: false
-  }
+interface IRecipeState {
+  readonly show: boolean
+  readonly addStep: boolean
+  readonly addIngredient: boolean
+}
 
-  state = {
+class Recipe extends React.Component<IRecipeProps, IRecipeState> {
+  state: IRecipeState = {
     show: false,
     addStep: false,
     addIngredient: false
   }
 
   componentWillMount() {
-    this.props.fetchRecipe(this.props.match.params.id)
+    this.props.fetchRecipe(parseInt(this.props.match.params.id, 10))
   }
 
   render() {
@@ -132,31 +141,23 @@ export default class Recipe extends React.Component {
             </h2>
             <ul>
               {ingredients.map(
-                ({
-                  id,
-                  quantity,
-                  name,
-                  description,
-                  optional,
-                  updating,
-                  removing
-                }) => (
+                ingre => (
                   <Ingredient
-                    key={id}
+                    key={ingre.id}
                     recipeID={this.props.id}
-                    id={id}
-                    quantity={quantity}
-                    name={name}
-                    update={ingredient =>
-                      this.props.updateIngredient(this.props.id, id, ingredient)
+                    id={ingre.id}
+                    quantity={ingre.quantity}
+                    name={ingre.name}
+                    update={(ingredient: IIngredient) =>
+                      this.props.updateIngredient(this.props.id, ingre.id, ingredient)
                     }
                     remove={() =>
-                      this.props.removeIngredient(this.props.id, id)
+                      this.props.removeIngredient(this.props.id, ingre.id)
                     }
-                    updating={updating}
-                    removing={removing}
-                    description={description}
-                    optional={optional}
+                    updating={ingre.updating}
+                    removing={ingre.removing}
+                    description={ingre.description}
+                    optional={ingre.optional}
                   />
                 )
               )}
@@ -165,7 +166,7 @@ export default class Recipe extends React.Component {
               <AddIngredient
                 id={id}
                 autoFocus
-                index={ingredients.length + 1}
+                loading={false}
                 addIngredient={this.props.addIngredient}
                 onCancel={() => this.setState({ addIngredient: false })}
               />
@@ -205,3 +206,8 @@ export default class Recipe extends React.Component {
     )
   }
 }
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Recipe)
