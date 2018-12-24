@@ -9,7 +9,7 @@ import {
   deleteUserAccount
 } from "../store/actions"
 
-import Settings from "../components/Settings.jsx"
+import Settings from "../components/Settings"
 
 const mapStateToProps = state => {
   return {
