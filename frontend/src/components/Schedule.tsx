@@ -1,6 +1,5 @@
 import React from "react"
 import { connect } from "react-redux"
-import PropTypes from "prop-types"
 import { Helmet } from "./Helmet"
 import { Link } from "react-router-dom"
 import { RouteComponentProps } from "react-router-dom"
@@ -17,8 +16,9 @@ export type ScheduleRouteParams = RouteComponentProps<{
 }>
 
 interface IScheduleProps extends ScheduleRouteParams {
-  readonly error: boolean
   readonly setURL: (url: string) => void
+  readonly teamID: number | null
+  readonly type: "shopping" | "recipes"
 }
 
 interface IScheduleState {
@@ -27,11 +27,6 @@ interface IScheduleState {
 }
 
 class Schedule extends React.Component<IScheduleProps, IScheduleState> {
-  static propTypes = {
-    error: PropTypes.bool.isRequired,
-    match: PropTypes.object.isRequired
-  }
-
   state: IScheduleState = {
     query: "",
     closed: false
@@ -42,16 +37,7 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
   }
 
   render() {
-    if (this.props.error) {
-      return (
-        <div className="new-container">
-          <Helmet title="Schedule" />
-          <p>Error fetching data</p>
-        </div>
-      )
-    }
-
-    const isRecipes = this.props.match.params["type"] === "recipes"
+    const isRecipes = this.props.type === "recipes"
 
     const arrow = this.state.closed ? "→" : "←"
 
@@ -59,10 +45,7 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
       display: this.state.closed ? "none" : "grid"
     }
 
-    const teamID =
-      this.props.match.params.id != null
-        ? parseInt(this.props.match.params.id, 10)
-        : "personal"
+    const teamID = this.props.teamID || "personal"
 
     const recipesURL =
       teamID === "personal"
@@ -110,14 +93,30 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
           onClick={this.toggleClose}>
           {arrow}
         </a>
-        <Calendar className="hide-sm" match={this.props.match} />
+        <Calendar className="hide-sm" type={this.props.type} teamID={teamID} />
       </div>
     )
   }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  setURL: (url: string) => dispatch(setScheduleURL(url))
+const getTeamID = (params: ScheduleRouteParams["match"]["params"]) => {
+  if (params.id == null) {
+    return null
+  }
+  const teamID = parseInt(params.id, 10)
+  if (isNaN(teamID)) {
+    return null
+  }
+  return teamID
+}
+
+const mapDispatchToProps = (
+  dispatch: Dispatch,
+  ownProps: ScheduleRouteParams
+) => ({
+  setURL: (url: string) => dispatch(setScheduleURL(url)),
+  teamID: getTeamID(ownProps.match.params),
+  type: ownProps.match.params["type"]
 })
 
 export default connect(
