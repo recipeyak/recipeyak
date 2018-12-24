@@ -1,13 +1,10 @@
 import React from "react"
 
-import { mount, configure } from "enzyme"
-import Adapter from "enzyme-adapter-react-16"
+import { mount } from "enzyme"
 
 import { MemoryRouter } from "react-router"
 
 import ListItem from "./ListItem"
-
-configure({ adapter: new Adapter() })
 
 describe("<ListItem/>", () => {
   it("renders without crashing", () => {

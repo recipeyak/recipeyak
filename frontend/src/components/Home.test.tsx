@@ -1,15 +1,12 @@
 import * as React from "react"
 import { MemoryRouter } from "react-router"
 
-import { mount, configure } from "enzyme"
-import Adapter from "enzyme-adapter-react-16"
+import { mount } from "enzyme"
 
 import { Provider } from "react-redux"
 import { emptyStore as store } from "../store/store"
 
 import Home from "./Home"
-
-configure({ adapter: new Adapter() })
 
 describe("<Home/>", () => {
   it("renders without crashing", () => {
