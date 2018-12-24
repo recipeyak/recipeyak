@@ -445,7 +445,7 @@ export const fetchShoppingList = (teamID: TeamID, start?: Date, end?: Date) => (
       dispatch(setShoppingList(res.data))
       dispatch(setLoadingShoppingList(false))
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(setShoppingListError(true))
       dispatch(setLoadingShoppingList(false))
     })
@@ -583,7 +583,7 @@ export const fetchRecipeList = (teamID: number | "personal") => (
       dispatch(setRecipes(res.data))
       dispatch(setLoadingRecipes(false))
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(setErrorRecipes(true))
       dispatch(setLoadingRecipes(false))
     })
