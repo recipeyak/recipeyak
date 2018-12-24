@@ -15,12 +15,14 @@ import { RootState } from "../store/store"
 import { SocialProvider } from "../store/reducers/user"
 
 const mapStateToProps = (state: RootState) => {
+  // HACK(sbdchd): we need to type the store so we can stop socialAccountConnections from becoming undefined
+  const socialAccountConnections = state.user.socialAccountConnections || {}
   return {
     avatarURL: state.user.avatarURL,
     email: state.user.email,
     updatingEmail: state.user.updatingEmail,
     hasPassword: state.user.hasUsablePassword,
-    socialAccountConnections: state.user.socialAccountConnections,
+    socialAccountConnections,
     loading: state.user.loading
   }
 }
