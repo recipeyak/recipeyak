@@ -29,35 +29,42 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import React, { Component } from "react"
-import PropTypes from "prop-types"
+import React from "react"
 import { connect } from "react-redux"
 import { findDOMNode } from "react-dom"
-import { DragSource, DropTarget } from "react-dnd"
+import {
+  DragSource,
+  DropTarget,
+  ConnectDragSource,
+  ConnectDropTarget,
+  ConnectDragPreview,
+  DropTargetMonitor
+} from "react-dnd"
 import * as ItemTypes from "../dragDrop"
 import ListItem from "./ListItem"
 
-import { deletingStep, updatingStep } from "../store/actions"
+import { deletingStep, updatingStep, Dispatch } from "../store/actions"
+import { IStep, IRecipe } from "../store/reducers/recipes"
 
 const style = {
   backgroundColor: "white"
 }
 
 const cardSource = {
-  beginDrag(props) {
+  beginDrag(props: ICardProps) {
     return {
       id: props.id,
       index: props.index,
       position: props.position
     }
   },
-  endDrag(props) {
+  endDrag(props: ICardProps) {
     props.completeMove(props.id, props.index)
   }
 }
 
 const cardTarget = {
-  hover(props, monitor, component) {
+  hover(props: ICardProps, monitor: DropTargetMonitor, component: Card) {
     const dragIndex = monitor.getItem().index
     const hoverIndex = props.index
 
@@ -67,13 +74,20 @@ const cardTarget = {
     }
 
     // Determine rectangle on screen
-    const hoverBoundingRect = findDOMNode(component).getBoundingClientRect()
+    const el = findDOMNode(component) as HTMLDivElement | null
+    if (el == null) {
+      return
+    }
+    const hoverBoundingRect = el.getBoundingClientRect()
 
     // Get vertical middle
     const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
 
     // Determine mouse position
     const clientOffset = monitor.getClientOffset()
+    if (clientOffset == null) {
+      return
+    }
 
     // Get pixels to the top
     const hoverClientY = clientOffset.y - hoverBoundingRect.top
@@ -103,28 +117,27 @@ const cardTarget = {
   }
 }
 
-@DropTarget(ItemTypes.CARD, cardTarget, connect => ({
-  connectDropTarget: connect.dropTarget()
-}))
-@DragSource(ItemTypes.CARD, cardSource, (connect, monitor) => ({
-  connectDragSource: connect.dragSource(),
-  connectDragPreview: connect.dragPreview(),
-  isDragging: monitor.isDragging()
-}))
-export default class Card extends Component {
-  static propTypes = {
-    connectDragSource: PropTypes.func.isRequired,
-    connectDropTarget: PropTypes.func.isRequired,
-    index: PropTypes.number.isRequired,
-    isDragging: PropTypes.bool.isRequired,
-    id: PropTypes.number.isRequired,
-    recipeID: PropTypes.number.isRequired,
-    text: PropTypes.string.isRequired,
-    moveCard: PropTypes.func.isRequired,
-    updating: PropTypes.bool.isRequired,
-    removing: PropTypes.bool.isRequired
-  }
+interface ICollectedProps {
+  readonly connectDragSource: ConnectDragSource
+  readonly connectDropTarget: ConnectDropTarget
+  readonly connectDragPreview: ConnectDragPreview
 
+  readonly isDragging: boolean
+}
+
+interface ICardProps {
+  readonly index: number
+  readonly id: number
+  readonly recipeID: IRecipe["id"]
+  readonly text: string
+  readonly moveCard: (dragIndex: number, hoverIndex: number) => void
+  readonly completeMove: (dragIndex: number, hoverIndex: number) => void
+  readonly updating?: boolean
+  readonly removing?: boolean
+  readonly position?: number
+}
+
+class Card extends React.Component<ICardProps & ICollectedProps, {}> {
   static defaultProps = {
     updating: false,
     removing: false
@@ -162,27 +175,54 @@ export default class Card extends Component {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  update: (...args) => dispatch(updatingStep(...args)),
-  delete: (recipeID, stepID) => dispatch(deletingStep(recipeID, stepID))
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  update: (
+    recipeID: number,
+    stepID: number,
+    step: { text?: string; position: number }
+  ) => dispatch(updatingStep(recipeID, stepID, step)),
+  delete: (recipeID: IRecipe["id"], stepID: IStep["id"]) =>
+    dispatch(deletingStep(recipeID, stepID))
 })
 
-@connect(
+interface IStepBodyBasic {
+  readonly id: IStep["id"]
+  readonly recipeID: IRecipe["id"]
+  readonly text: IRecipe["id"]
+  readonly updating: boolean
+  readonly removing: boolean
+  readonly update: (
+    recipeID: number,
+    stepID: number,
+    step: { text?: string; position: number }
+  ) => void
+  readonly delete: (recipeID: IRecipe["id"], id: number) => void
+}
+
+function StepBodyBasic(props: IStepBodyBasic) {
+  return (
+    <ListItem
+      id={props.id}
+      recipeID={props.recipeID}
+      text={props.text}
+      update={props.update}
+      updating={props.updating}
+      removing={props.removing}
+      delete={() => props.delete(props.recipeID, props.id)}
+    />
+  )
+}
+const StepBody = connect(
   null,
   mapDispatchToProps
+)(StepBodyBasic)
+
+export default DropTarget(ItemTypes.CARD, cardTarget, cnct => ({
+  connectDropTarget: cnct.dropTarget()
+}))(
+  DragSource(ItemTypes.CARD, cardSource, (cnct, monitor) => ({
+    connectDragSource: cnct.dragSource(),
+    connectDragPreview: cnct.dragPreview(),
+    isDragging: monitor.isDragging()
+  }))(Card)
 )
-class StepBody extends React.Component {
-  render() {
-    return (
-      <ListItem
-        id={this.props.id}
-        recipeID={this.props.recipeID}
-        text={this.props.text}
-        update={this.props.update}
-        updating={this.props.updating}
-        removing={this.props.removing}
-        delete={() => this.props.delete(this.props.recipeID, this.props.id)}
-      />
-    )
-  }
-}

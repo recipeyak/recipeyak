@@ -1,14 +1,17 @@
 import React from "react"
 import { connect } from "react-redux"
 import { Helmet } from "./Helmet"
-import { Link } from "react-router-dom"
+import { Link, RouteComponentProps } from "react-router-dom"
 
 import { FormErrorHandler } from "./Forms"
 import { ButtonPrimary } from "./Buttons"
 
-import { resetConfirmation as reset } from "../store/actions"
+import { resetConfirmation as reset, Dispatch } from "../store/actions"
+import { RootState } from "../store/store"
 
-const mapStateToProps = (state, props) => {
+type RouteProps = RouteComponentProps<{ uid: string; token: string }>
+
+const mapStateToProps = (state: RootState, props: RouteProps) => {
   const uid = props.match.params.uid
   const token = props.match.params.token
   return {
@@ -19,26 +22,55 @@ const mapStateToProps = (state, props) => {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  reset: (uid, token, newPassword1, newPassword2) =>
-    dispatch(reset(uid, token, newPassword1, newPassword2))
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  reset: (
+    uid: string,
+    token: string,
+    newPassword1: string,
+    newPassword2: string
+  ) => dispatch(reset(uid, token, newPassword1, newPassword2))
 })
 
-@connect(
-  mapStateToProps,
-  mapDispatchToProps
-)
-export default class PasswordResetConfirmation extends React.Component {
+interface IPasswordResetConfirmError {
+  readonly nonFieldErrors?: string[]
+  readonly newPassword1?: string[]
+  readonly newPassword2?: string[]
+}
+
+interface IPasswordResetConfirmationProps {
+  readonly reset: (
+    uid: string,
+    token: string,
+    newPassword1: string,
+    newPassword2: string
+  ) => Promise<void>
+  readonly uid: string
+  readonly token: string
+  readonly loading: boolean
+  readonly error: IPasswordResetConfirmError
+}
+
+interface IPasswordResetConfirmationState {
+  readonly newPassword1: string
+  readonly newPassword2: string
+}
+
+class PasswordResetConfirmation extends React.Component<
+  IPasswordResetConfirmationProps,
+  IPasswordResetConfirmationState
+> {
   state = {
     newPassword1: "",
     newPassword2: ""
   }
 
-  handleInputChange = e => {
-    this.setState({ [e.target.name]: e.target.value })
+  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState(({
+      [e.target.name]: e.target.value
+    } as unknown) as IPasswordResetConfirmationState)
   }
 
-  handleReset = async e => {
+  handleReset = async (e: React.FormEvent) => {
     e.preventDefault()
     await this.props.reset(
       this.props.uid,
@@ -118,3 +150,8 @@ export default class PasswordResetConfirmation extends React.Component {
     )
   }
 }
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PasswordResetConfirmation)

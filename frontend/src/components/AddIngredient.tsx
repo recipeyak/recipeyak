@@ -2,7 +2,7 @@ import React from "react"
 import PropTypes from "prop-types"
 import AddIngredientForm from "./AddIngredientForm"
 
-interface IIngredient {
+export interface IIngredientBasic {
   quantity: string
   name: string
   description: string
@@ -13,7 +13,7 @@ interface IAddIngredientProps {
   readonly id: number
   readonly addIngredient: (
     id: number,
-    { quantity, name, description }: IIngredient
+    { quantity, name, description }: IIngredientBasic
   ) => void
   readonly loading: boolean
   readonly autoFocus: boolean

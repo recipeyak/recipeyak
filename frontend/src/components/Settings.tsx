@@ -9,6 +9,18 @@ import { ButtonPrimary, Button, ButtonDanger } from "./Buttons"
 import { GithubImg, GitlabImg } from "./SocialButtons"
 
 import { GITHUB_OAUTH_URL, GITLAB_OAUTH_URL } from "../settings"
+import { SocialProvider } from "../store/reducers/user"
+import { ISocialAccountsState } from "../store/reducers/socialAccounts"
+
+interface IOAuthButtonProps {
+  readonly name: string
+  readonly Logo: () => JSX.Element
+  readonly error: unknown
+  readonly connected: boolean
+  readonly disconnect: () => void
+  readonly disconnecting: boolean
+  readonly OAUTH_URL: string
+}
 
 const OAuthButton = ({
   name,
@@ -18,7 +30,7 @@ const OAuthButton = ({
   OAUTH_URL,
   disconnect,
   disconnecting
-}) => (
+}: IOAuthButtonProps) => (
   <div className="mb-2">
     <div className="d-flex">
       <div className="d-flex align-items-center w-200px">
@@ -52,7 +64,36 @@ const OAuthButton = ({
   </div>
 )
 
-export default class SettingsWithState extends React.Component {
+interface ISettingsWithStateProps {
+  readonly fetchData: () => void
+  readonly disconnectAccount: (
+    provider: SocialProvider,
+    id: number
+  ) => Promise<void>
+  readonly deleteUserAccount: () => void
+  readonly email: string
+  readonly updateEmail: (email: string) => Promise<void>
+  readonly avatarURL: string
+  readonly updatingEmail: boolean
+  readonly socialAccountConnections: ISocialAccountsState
+  readonly loading: boolean
+  readonly hasPassword: boolean
+}
+
+interface ISettingsWithStateState {
+  readonly email: string
+  readonly loadingGithub: boolean
+  readonly errorGithub: string
+  readonly loadingGitlab: boolean
+  readonly errorGitlab: string
+  readonly errorGeneral: string
+  readonly editing: boolean
+}
+
+export default class SettingsWithState extends React.Component<
+  ISettingsWithStateProps,
+  ISettingsWithStateState
+> {
   static propTypes = {
     fetchData: PropTypes.func.isRequired,
     disconnectAccount: PropTypes.func.isRequired,
@@ -74,17 +115,17 @@ export default class SettingsWithState extends React.Component {
     hasPassword: false
   }
 
-  state = {
+  state: ISettingsWithStateState = {
     email: this.props.email,
     loadingGithub: false,
     errorGithub: "",
     loadingGitlab: false,
-    errorGitlab: false,
+    errorGitlab: "",
     errorGeneral: "",
     editing: false
   }
 
-  componentWillReceiveProps = nextProps => {
+  componentWillReceiveProps = (nextProps: ISettingsWithStateProps) => {
     this.setState({ email: nextProps.email })
   }
 
@@ -92,11 +133,13 @@ export default class SettingsWithState extends React.Component {
     this.props.fetchData()
   }
 
-  handleInputChange = e => {
-    this.setState({ [e.target.name]: e.target.value })
+  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState(({
+      [e.target.name]: e.target.value
+    } as unknown) as ISettingsWithStateState)
   }
 
-  disconnectAccount = (provider, id) => {
+  disconnectAccount = (provider: SocialProvider, id: number) => {
     if (provider === "github") {
       this.setState({ loadingGithub: true, errorGithub: "" })
     } else if (provider === "gitlab") {
@@ -135,7 +178,7 @@ export default class SettingsWithState extends React.Component {
     const response = prompt(
       "Are you sure you want to permanently delete your account? \nPlease type, 'delete my account', to irrevocably delete your account"
     )
-    if (response.toLowerCase() === "delete my account") {
+    if (response != null && response.toLowerCase() === "delete my account") {
       this.props.deleteUserAccount()
     }
   }
@@ -175,9 +218,11 @@ export default class SettingsWithState extends React.Component {
         error={errorGithub}
         connected={socialAccountConnections.github != null}
         OAUTH_URL={GITHUB_OAUTH_URL}
-        disconnect={() =>
-          disconnectAccount("github", socialAccountConnections.github)
-        }
+        disconnect={() => {
+          if (socialAccountConnections.github != null) {
+            disconnectAccount("github", socialAccountConnections.github)
+          }
+        }}
         disconnecting={loadingGithub}
       />
     )
@@ -189,9 +234,11 @@ export default class SettingsWithState extends React.Component {
         error={errorGitlab}
         connected={socialAccountConnections.gitlab != null}
         OAUTH_URL={GITLAB_OAUTH_URL}
-        disconnect={() =>
-          disconnectAccount("gitlab", socialAccountConnections.gitlab)
-        }
+        disconnect={() => {
+          if (socialAccountConnections.gitlab != null) {
+            disconnectAccount("gitlab", socialAccountConnections.gitlab)
+          }
+        }}
         disconnecting={loadingGitlab}
       />
     )
@@ -266,9 +313,7 @@ export default class SettingsWithState extends React.Component {
                     "ml-2 has-text-primary" +
                     (updatingEmail ? " is-loading" : "")
                   }
-                  name="email"
-                  onClick={this.edit}
-                  value="edit">
+                  onClick={this.edit}>
                   Edit
                 </a>
               )}

@@ -17,6 +17,8 @@ export interface IUser {
 }
 
 export type SocialProvider = "github" | "gitlab"
+
+// API response
 export interface ISocialConnection {
   readonly id: number | null
   readonly provider: SocialProvider

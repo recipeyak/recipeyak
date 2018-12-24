@@ -1,9 +1,8 @@
 import * as t from "../actionTypes"
-import { ISocialConnection } from "./user"
 
 export interface ISocialAccountsState {
-  readonly github: ISocialConnection | null
-  readonly gitlab: ISocialConnection | null
+  readonly github: number | null
+  readonly gitlab: number | null
 }
 
 const initialState: ISocialAccountsState = {

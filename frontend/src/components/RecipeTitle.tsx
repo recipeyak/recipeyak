@@ -2,39 +2,66 @@ import React from "react"
 import { Button, ButtonPrimary } from "./Buttons"
 import MetaData from "./MetaData"
 import DatePickerForm from "./DatePickerForm"
-import PropTypes from "prop-types"
+import { IRecipe } from "../store/reducers/recipes"
 
-export default class RecipeTitle extends React.Component {
-  state = {
+interface IRecipeTitleProps {
+  readonly id: IRecipe["id"]
+  readonly name: IRecipe["name"]
+  readonly author: IRecipe["author"]
+  readonly source: IRecipe["source"]
+  readonly servings: IRecipe["servings"]
+  readonly time: IRecipe["time"]
+  readonly owner: IRecipe["owner"]
+  readonly update: (id: IRecipe["id"], recipe: IRecipeBasic) => Promise<void>
+  readonly updating: boolean
+  readonly remove: (id: IRecipe["id"]) => void
+  readonly deleting: boolean
+  readonly lastScheduled?: string
+}
+
+export interface IRecipeBasic {
+  readonly author: string
+  readonly name: string
+  readonly source: string
+  readonly servings: string
+  readonly time: string
+}
+
+interface IRecipeTitleState {
+  readonly show: boolean
+  readonly edit: boolean
+  readonly recipe: IRecipeBasic
+}
+
+export default class RecipeTitle extends React.Component<
+  IRecipeTitleProps,
+  IRecipeTitleState
+> {
+  state: IRecipeTitleState = {
     show: false,
     edit: false,
-    recipe: {}
-  }
-
-  static propTypes = {
-    id: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired,
-    author: PropTypes.string.isRequired,
-    source: PropTypes.string.isRequired,
-    servings: PropTypes.string.isRequired,
-    time: PropTypes.string.isRequired,
-    owner: PropTypes.object.isRequired,
-    update: PropTypes.func.isRequired,
-    updating: PropTypes.bool.isRequired,
-    remove: PropTypes.func.isRequired,
-    deleting: PropTypes.bool.isRequired
+    recipe: {
+      name: "",
+      author: "",
+      source: "",
+      servings: "",
+      time: ""
+    }
   }
 
   toggleEdit = () => this.setState(prev => ({ edit: !prev.edit }))
 
   handleSave = () => {
     const data = this.state.recipe
+    if (data == null) {
+      return
+    }
     this.props.update(this.props.id, data).then(() => {
       this.setState({ edit: false })
     })
   }
 
-  handleInputChange = e => {
+  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.persist()
     this.setState(prevState => ({
       recipe: {
@@ -62,11 +89,7 @@ export default class RecipeTitle extends React.Component {
       source,
       servings,
       time,
-      owner = {
-        type: "user",
-        id: 0,
-        name: ""
-      },
+      owner,
       updating,
       deleting,
       lastScheduled
@@ -117,7 +140,6 @@ export default class RecipeTitle extends React.Component {
             <MetaData
               onClick={this.toggleEdit}
               owner={owner}
-              name={name}
               author={author}
               source={source}
               servings={servings}
