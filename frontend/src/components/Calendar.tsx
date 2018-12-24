@@ -8,7 +8,6 @@ import subMonths from "date-fns/sub_months"
 import subDays from "date-fns/sub_days"
 import addDays from "date-fns/add_days"
 import format from "date-fns/format"
-// import PropTypes from "prop-types"
 
 import {
   fetchCalendar,
@@ -30,7 +29,10 @@ import Loader from "./Loader"
 import CalendarDay from "./CalendarDay"
 import { RootState } from "../store/store"
 import { ITeam } from "../store/reducers/teams"
-import { ICalRecipe } from "../store/reducers/calendar"
+import {
+  ICalRecipe,
+  ICalendarState as ICalendarReducerState
+} from "../store/reducers/calendar"
 import { ScheduleRouteParams } from "./Schedule"
 
 function monthYearFromDate(date: Date) {
@@ -43,21 +45,16 @@ interface IDays {
 }
 
 const mapStateToProps = (state: RootState, props: ICalendarProps) => {
-  const teamID: ITeam["id"] | "personal" =
-    props.match.params.id != null
-      ? parseInt(props.match.params.id, 10)
-      : "personal"
+  const isTeam = props.teamID !== "personal"
 
-  const isTeam = props.match.params.id != null
-
-  const days: IDays = state.calendar.allIds
-    .map((id: number) => state.calendar[id])
+  const days = (state.calendar as ICalendarReducerState).allIds
+    .map((id: number) => (state.calendar as ICalendarReducerState)[id])
     .filter((x: ICalRecipe) => {
       if (!isTeam) {
         // we know that if there is a userID, it will be the current user's
         return x.user != null
       }
-      return x.team === teamID
+      return x.team === props.teamID
     })
     .reduce(
       (a: IDays, b: ICalRecipe) => ({
@@ -76,7 +73,7 @@ const mapStateToProps = (state: RootState, props: ICalendarProps) => {
     error: state.calendar.error,
     loadingTeams: state.teams.loading,
     teams: teamsFrom(state),
-    teamID,
+    teamID: props.teamID,
     isTeam,
     start: state.shoppinglist.startDay,
     end: state.shoppinglist.endDay
@@ -125,6 +122,7 @@ interface ICalendarProps extends ScheduleRouteParams {
   readonly teamID: ITeam["id"] | "personal"
   readonly startDay: Date
   readonly endDay: Date
+  readonly type: "shopping" | "recipes"
 }
 
 interface ICalendarState {
@@ -179,7 +177,7 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
       e.target.value === "personal" ? "personal" : parseInt(e.target.value, 10)
     const url = teamID === "personal" ? "/schedule/" : `/t/${teamID}/schedule/`
 
-    const isRecipes = this.props.match.params["type"] === "recipes"
+    const isRecipes = this.props.type === "recipes"
 
     const ending = isRecipes ? "recipes" : "shopping"
 

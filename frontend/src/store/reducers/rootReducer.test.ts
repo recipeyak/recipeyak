@@ -20,6 +20,8 @@ describe("logout", () => {
       routerReducer: beforeState.routerReducer
     }
 
-    expect(rootReducer(beforeState, a.logout())).toEqual(afterState)
+    expect(rootReducer(beforeState, a.setUserLoggedIn(false))).toEqual(
+      afterState
+    )
   })
 })

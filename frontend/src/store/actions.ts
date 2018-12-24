@@ -20,7 +20,7 @@ import addWeeks from "date-fns/add_weeks"
 import { pyFormat } from "../date"
 
 import { push, replace } from "react-router-redux"
-
+import { createAsyncAction } from "typesafe-actions"
 import axios, { AxiosError, AxiosResponse, CancelTokenSource } from "axios"
 import raven from "raven-js"
 
@@ -156,13 +156,10 @@ export const showNotificationWithTimeout = ({
   }
 }
 
-export const login = (user: IUser) => ({
+// TODO(chdsbd): Replace usage with fetchUser#success. Update user reducer.
+export const login = (payload: IUser) => ({
   type: t.LOG_IN,
-  user
-})
-
-export const logout = () => ({
-  type: t.LOG_OUT
+  payload
 })
 
 export const setLoggingOut = (val: boolean) => ({
@@ -175,28 +172,15 @@ export const loggingOut = () => (dispatch: Dispatch) => {
   return http
     .post("/api/v1/rest-auth/logout/", {})
     .then(() => {
-      dispatch(logout())
+      dispatch(setUserLoggedIn(false))
       dispatch(push("/login"))
       dispatch(setLoggingOut(false))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       dispatch(setLoggingOut(false))
       throw err
     })
 }
-
-export const setLoadingUser = (val: boolean) => ({
-  type: t.SET_LOADING_USER,
-  val
-})
-
-export const setErrorUser = (val: boolean) => ({
-  type: t.SET_ERROR_USER,
-  val
-})
 
 export const setLoadingUserStats = (val: boolean) => ({
   type: t.SET_LOADING_USER_STATS,
@@ -205,26 +189,6 @@ export const setLoadingUserStats = (val: boolean) => ({
 
 export const setUserStats = (val: unknown) => ({
   type: t.SET_USER_STATS,
-  val
-})
-
-export const setAvatarURL = (url: string) => ({
-  type: t.SET_AVATAR_URL,
-  url
-})
-
-export const setUserEmail = (email: string) => ({
-  type: t.SET_USER_EMAIL,
-  email
-})
-
-export const setPasswordUsable = (val: boolean) => ({
-  type: t.SET_PASSWORD_USABLE,
-  val
-})
-
-export const setUpdatingUserEmail = (val: boolean) => ({
-  type: t.SET_UPDATING_USER_EMAIL,
   val
 })
 
@@ -240,16 +204,25 @@ const emailExists = (err: AxiosError) =>
 
 const second = 1000
 
+interface IEmailUpdate {
+  email: string
+  avatar_url: string
+}
+
+export const updateEmail = createAsyncAction(
+  t.UPDATE_EMAIL_START,
+  t.UPDATE_EMAIL_SUCCESS,
+  t.UPDATE_EMAIL_FAILURE
+)<void, IEmailUpdate, void>()
+
 export const updatingEmail = (email: string) => (dispatch: Dispatch) => {
-  dispatch(setUpdatingUserEmail(true))
+  dispatch(updateEmail.request())
   return http
     .patch("/api/v1/user/", {
       email
     })
-    .then(res => {
-      dispatch(setUserEmail(res.data.email))
-      dispatch(setAvatarURL(res.data.avatar_url))
-      dispatch(setUpdatingUserEmail(false))
+    .then((res: AxiosResponse<IEmailUpdate>) => {
+      dispatch(updateEmail.success(res.data))
       dispatch(
         showNotificationWithTimeout({
           message: "updated email",
@@ -259,10 +232,7 @@ export const updatingEmail = (email: string) => (dispatch: Dispatch) => {
       )
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      dispatch(setUpdatingUserEmail(false))
+      dispatch(updateEmail.failure())
       const messageExtra = emailExists(err) ? "- email already in use" : ""
       dispatch(
         setNotification({
@@ -273,35 +243,26 @@ export const updatingEmail = (email: string) => (dispatch: Dispatch) => {
     })
 }
 
-export const setUserID = (id: number) => ({
-  type: t.SET_USER_ID,
-  id
-})
-
 export const setUserLoggedIn = (val: boolean) => ({
   type: t.SET_USER_LOGGED_IN,
   val
 })
 
+export const fetchingUser = createAsyncAction(
+  t.FETCH_USER_START,
+  t.FETCH_USER_SUCCESS,
+  t.FETCH_USER_FAILURE
+)<void, IUser, void>()
+
 export const fetchUser = () => (dispatch: Dispatch) => {
-  dispatch(setLoadingUser(true))
-  dispatch(setErrorUser(false))
+  dispatch(fetchingUser.request())
   return http
     .get("/api/v1/user/")
-    .then(res => {
-      dispatch(setUserID(res.data.id))
-      dispatch(setAvatarURL(res.data.avatar_url))
-      dispatch(setUserEmail(res.data.email))
-      dispatch(setPasswordUsable(res.data.has_usable_password))
-      dispatch(setLoadingUser(false))
-      dispatch(setUserLoggedIn(true))
+    .then((res: AxiosResponse<IUser>) => {
+      dispatch(fetchingUser.success(res.data))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
-      dispatch(setLoadingUser(false))
-      dispatch(setErrorUser(true))
+      dispatch(fetchingUser.failure())
       throw err
     })
 }
@@ -327,9 +288,6 @@ export const fetchSocialConnections = () => (dispatch: Dispatch) => {
       dispatch(setSocialConnections(res.data))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       throw err
     })
 }
@@ -353,9 +311,6 @@ export const disconnectSocialAccount = (
       )
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       throw err
     })
 }
@@ -369,9 +324,6 @@ export const fetchUserStats = () => (dispatch: Dispatch) => {
       dispatch(setLoadingUserStats(false))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       dispatch(setLoadingUserStats(false))
       throw err
     })
@@ -411,9 +363,6 @@ export const updatingPassword = (
       )
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       dispatch(setLoadingPasswordUpdate(false))
       const badRequest = err.response.status === 400
       if (err.response && badRequest) {
@@ -470,10 +419,7 @@ export const fetchShoppingList = (teamID: TeamID, start?: Date, end?: Date) => (
       dispatch(setShoppingList(res.data))
       dispatch(setLoadingShoppingList(false))
     })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
+    .catch(() => {
       dispatch(setShoppingListError(true))
       dispatch(setLoadingShoppingList(false))
     })
@@ -517,9 +463,6 @@ export const postNewRecipe = (recipe: IRecipeBasic) => (dispatch: Dispatch) => {
       dispatch(push("/recipes"))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       const errors = {
         errorWithName: err.response.data.name != null,
         errorWithIngredients: err.response.data.ingredients != null,
@@ -560,9 +503,6 @@ export const fetchRecipe = (id: number) => (dispatch: Dispatch) => {
       dispatch(setLoadingRecipe(id, false))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       if (err.response.status === 404) {
         dispatch(setRecipe404(id, true))
       }
@@ -596,9 +536,6 @@ export const fetchRecentRecipes = () => (dispatch: Dispatch) => {
       dispatch(setLoadingRecipes(false))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       dispatch(setErrorRecipes(true))
       dispatch(setLoadingRecipes(false))
       throw err
@@ -620,10 +557,7 @@ export const fetchRecipeList = (teamID: number | "personal") => (
       dispatch(setRecipes(res.data))
       dispatch(setLoadingRecipes(false))
     })
-    .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
+    .catch(() => {
       dispatch(setErrorRecipes(true))
       dispatch(setLoadingRecipes(false))
     })
@@ -728,9 +662,6 @@ export const addingRecipeIngredient = (
       dispatch(setAddingIngredientToRecipe(recipeID, false))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       dispatch(setAddingIngredientToRecipe(recipeID, false))
       throw err
     })
@@ -753,9 +684,6 @@ export const sendUpdatedRecipeName = (id: number, name: string) => (
       dispatch(updateRecipeName(res.data.id, res.data.name))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       throw err
     })
 }
@@ -777,9 +705,6 @@ export const setRecipeSource = (id: number, source: string) => (
       dispatch(updateRecipeSource(res.data.id, res.data.source))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       throw err
     })
 }
@@ -801,9 +726,6 @@ export const setRecipeAuthor = (id: number, author: unknown) => (
       dispatch(updateRecipeAuthor(res.data.id, res.data.author))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       throw err
     })
 }
@@ -825,9 +747,6 @@ export const setRecipeTime = (id: number, time: unknown) => (
       dispatch(updateRecipeTime(res.data.id, res.data.time))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       throw err
     })
 }
@@ -859,9 +778,6 @@ export const updateRecipe = (id: number, data: unknown) => (
       dispatch(setRecipeUpdating(id, false))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       dispatch(setRecipeUpdating(id, false))
       throw err
     })
@@ -891,9 +807,6 @@ export const addingRecipeStep = (recipeID: number, step: unknown) => (
       dispatch(setLoadingAddStepToRecipe(recipeID, false))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       dispatch(setLoadingAddStepToRecipe(recipeID, false))
       throw err
     })
@@ -934,9 +847,6 @@ export const updatingIngredient = (
       dispatch(setUpdatingIngredient(recipeID, ingredientID, false))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       dispatch(setUpdatingIngredient(recipeID, ingredientID, false))
       throw err
     })
@@ -959,9 +869,6 @@ export const deletingIngredient = (recipeID: number, ingredientID: number) => (
       dispatch(deleteIngredient(recipeID, ingredientID))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       dispatch(setRemovingIngredient(recipeID, ingredientID, false))
       throw err
     })
@@ -1027,9 +934,6 @@ export const updatingStep = (
       dispatch(setUpdatingStep(recipeID, stepID, false))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       dispatch(setUpdatingStep(recipeID, stepID, false))
       throw err
     })
@@ -1052,9 +956,6 @@ export const deletingStep = (recipeID: number, stepID: number) => (
       dispatch(setRemovingStep(recipeID, stepID, false))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       dispatch(setRemovingStep(recipeID, stepID, false))
       throw err
     })
@@ -1089,9 +990,6 @@ export const logUserIn = (
       dispatch(push(redirectUrl))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       dispatch(setLoadingLogin(false))
       const badRequest = err.response.status === 400
       if (err.response && badRequest) {
@@ -1126,9 +1024,6 @@ export const socialLogin = (
       dispatch(replace(redirectUrl))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       const badRequest = err.response.status === 400
       if (err.response && badRequest) {
         const data = err.response.data
@@ -1155,9 +1050,6 @@ export const socialConnect = (service: SocialProvider, code: unknown) => (
       dispatch(replace("/settings"))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       dispatch(replace("/settings"))
       throw err
     })
@@ -1228,9 +1120,6 @@ export const deletingRecipe = (id: number) => (dispatch: Dispatch) => {
       dispatch(push("/recipes"))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       dispatch(setDeletingRecipe(id, false))
       throw err
     })
@@ -1480,9 +1369,6 @@ export const fetchTeam = (id: ITeam["id"]) => (dispatch: Dispatch) => {
       dispatch(setLoadingTeam(id, false))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       if (is404(err)) {
         dispatch(setTeam404(id))
       }
@@ -1500,9 +1386,6 @@ export const fetchTeamMembers = (id: number) => (dispatch: Dispatch) => {
       dispatch(setLoadingTeamMembers(id, false))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       dispatch(setLoadingTeamMembers(id, false))
       throw err
     })
@@ -1518,9 +1401,6 @@ export const fetchTeamRecipes = (id: number) => (dispatch: Dispatch) => {
       dispatch(setLoadingTeamRecipes(id, false))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       dispatch(setLoadingTeamRecipes(id, false))
       throw err
     })
@@ -1561,9 +1441,6 @@ export const settingUserTeamLevel = (
       dispatch(setUpdatingUserTeamLevel(teamID, false))
     })
     .catch(err => {
-      if (invalidToken(err.response)) {
-        dispatch(logout())
-      }
       if (attemptedDeleteLastAdmin(err.response)) {
         const message = err.response.data.level[0]
         dispatch(
@@ -1935,7 +1812,7 @@ export const deleteUserAccount = () => (dispatch: Dispatch) => {
   return http
     .delete("/api/v1/user/")
     .then(() => {
-      dispatch(logout())
+      dispatch(setUserLoggedIn(false))
       dispatch(push("/login"))
       dispatch(showNotificationWithTimeout({ message: "Account deleted" }))
     })

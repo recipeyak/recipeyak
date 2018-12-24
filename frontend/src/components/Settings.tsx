@@ -203,8 +203,6 @@ export default class SettingsWithState extends React.Component<
       hasPassword
     } = this.props
 
-    const emailUnchanged = email === this.props.email
-
     if (loading) {
       return (
         <section className="d-flex justify-content-center">
@@ -268,10 +266,9 @@ export default class SettingsWithState extends React.Component<
               className="d-flex align-center"
               onSubmit={e => {
                 e.preventDefault()
-                if (emailUnchanged) {
-                  return
-                }
-                updateEmail()
+                updateEmail(this.state.email).then(() => {
+                  this.setState({ editing: false })
+                })
               }}>
               <label className="better-label">Email</label>
               {editing ? (
@@ -298,7 +295,6 @@ export default class SettingsWithState extends React.Component<
                     name="email"
                     type="submit"
                     loading={updatingEmail}
-                    disabled={emailUnchanged}
                     value="save email">
                     Save
                   </ButtonPrimary>

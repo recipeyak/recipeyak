@@ -21,7 +21,7 @@ import search from "./reducers/search"
 
 import { loadState, saveState } from "./localStorage"
 
-import { LOG_OUT } from "./actionTypes"
+import * as t from "./actionTypes"
 
 const recipeApp = combineReducers({
   user,
@@ -42,7 +42,7 @@ const recipeApp = combineReducers({
 
 // reset redux to default state on logout
 export const rootReducer = (state: any, action: any) => {
-  if (action.type === LOG_OUT) {
+  if (action.type === t.SET_USER_LOGGED_IN && !action.val) {
     return {
       ...recipeApp(undefined as any, action),
       // We need to save this auth state (fromUrl) through logout
