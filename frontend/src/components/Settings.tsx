@@ -72,7 +72,7 @@ interface ISettingsWithStateProps {
   ) => Promise<void>
   readonly deleteUserAccount: () => void
   readonly email: string
-  readonly updateEmail: () => void
+  readonly updateEmail: (email: string) => Promise<void>
   readonly avatarURL: string
   readonly updatingEmail: boolean
   readonly socialAccountConnections: ISocialAccountsState
