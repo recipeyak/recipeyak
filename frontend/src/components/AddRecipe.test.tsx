@@ -32,7 +32,7 @@ describe("<AddRecipe/>", () => {
             removeIngredient={() => undefined}
             updateIngredient={() => undefined}
             addIngredient={() => undefined}
-            setTeam={() => undefined}
+            setTeamID={() => undefined}
             error={{
               errorWithName: false,
               errorWithIngredients: false,
@@ -48,7 +48,7 @@ describe("<AddRecipe/>", () => {
             steps={[]}
             loadingTeams={false}
             teams={[]}
-            team={"personal"}
+            teamID={0}
           />
         </MemoryRouter>
       </Provider>

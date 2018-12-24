@@ -5,7 +5,6 @@ export interface IAddRecipeState {
   readonly name: string
   readonly author: string
   readonly source: string
-  readonly team?: string
   readonly time: string
   readonly servings: string
   readonly ingredients: unknown[]
@@ -37,8 +36,6 @@ const addrecipe = (
       return { ...state, time: action.val }
     case t.SET_ADD_RECIPE_FORM_SERVINGS:
       return { ...state, servings: action.val }
-    case t.SET_ADD_RECIPE_FORM_TEAM:
-      return { ...state, team: action.val }
     case t.ADD_ADD_RECIPE_FORM_INGREDIENT:
       return {
         ...state,

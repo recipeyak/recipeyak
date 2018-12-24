@@ -10,8 +10,9 @@ import {
 
 import Nav from "../components/Nav"
 
-import { teamsFrom, scheduleURLFrom } from "../store/mapState"
+import { teamsFrom, scheduleURLFromTeamID } from "../store/mapState"
 import { RootState } from "../store/store"
+import { IUserState } from "../store/reducers/user"
 
 const mapStateToProps = (state: RootState) => ({
   avatarURL: state.user.avatarURL,
@@ -22,7 +23,8 @@ const mapStateToProps = (state: RootState) => ({
   darkMode: state.user.darkMode,
   teams: teamsFrom(state),
   loadingTeams: state.teams.loading,
-  scheduleURL: scheduleURLFrom(state)
+  scheduleURL: scheduleURLFromTeamID(state),
+  teamID: (state.user as IUserState).teamID
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => {

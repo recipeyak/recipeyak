@@ -40,7 +40,6 @@ export interface IUserState {
   readonly darkMode: boolean
   readonly hasUsablePassword: boolean
   readonly socialAccountConnections: ISocialAccountsState
-  readonly scheduleURL: string
   // ID of currently focused team. null if using personal team.
   readonly teamID: number | null
   readonly updatingEmail: boolean
@@ -62,7 +61,6 @@ const initialState: IUserState = {
     github: null,
     gitlab: null
   },
-  scheduleURL: "/schedule/",
   teamID: null,
   updatingEmail: false
 }
@@ -85,14 +83,14 @@ export const user = (state: IUserState = initialState, action: any) => {
           action
         )
       }
+    case t.SET_TEAM_ID:
+      return { ...state, teamID: action.payload }
     case t.SET_USER_LOGGED_IN:
       return { ...state, loggedIn: action.val }
     case t.TOGGLE_DARK_MODE:
       const newDarkMode = !state.darkMode
       setDarkModeClass(newDarkMode)
       return { ...state, darkMode: newDarkMode }
-    case t.SET_SCHEDULE_URL:
-      return { ...state, scheduleURL: action.scheduleURL }
     case t.UPDATE_EMAIL_START:
       return { ...state, updatingEmail: false }
     case t.UPDATE_EMAIL_FAILURE:

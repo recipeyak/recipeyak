@@ -14,7 +14,6 @@ import {
   fetchTeams,
   fetchShoppingList,
   fetchRecipeList,
-  setScheduleURL,
   Dispatch
 } from "../store/actions"
 
@@ -86,7 +85,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchTeams: () => dispatch(fetchTeams()),
   navTo: (url: string) => {
     dispatch(push(url))
-    dispatch(setScheduleURL(url))
   },
   refetchShoppingListAndRecipes: (
     teamID: ITeam["id"] | "personal",
