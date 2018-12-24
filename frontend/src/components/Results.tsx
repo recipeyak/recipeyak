@@ -1,9 +1,8 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import { IRecipe } from "../store/reducers/recipes"
 
 interface IResultsProps {
-  readonly recipes: IRecipe[]
+  readonly recipes: JSX.Element[]
   readonly query: string
 }
 
@@ -25,7 +24,7 @@ export function Results({ recipes, query }: IResultsProps) {
       </p>
     )
   }
-  return recipes
+  return <>{recipes}</>
 }
 
 export default Results

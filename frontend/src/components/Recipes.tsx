@@ -1,8 +1,7 @@
 import React from "react"
-import PropTypes from "prop-types"
 import { connect } from "react-redux"
 
-import Recipe from "./RecipeItem"
+import RecipeItem from "./RecipeItem"
 import Loader from "./Loader"
 import { TextInput } from "./Forms"
 import { matchesQuery } from "../search"
@@ -10,61 +9,59 @@ import Results from "./Results"
 
 import { byNameAlphabetical } from "../sorters"
 
-import { fetchRecipeList } from "../store/actions"
+import { fetchRecipeList, Dispatch } from "../store/actions"
+import { IRecipe } from "../store/reducers/recipes"
+import { ITeam } from "../store/reducers/teams"
+import { RootState } from "../store/store"
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: RootState) => {
   return {
-    recipes: Object.values(state.recipes).sort(byNameAlphabetical),
+    recipes: (Object.values(state.recipes) as IRecipe[]).sort(
+      byNameAlphabetical
+    ),
     loading: state.loading.recipes
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    fetchData: teamID => {
+    fetchData: (teamID: ITeam["id"] | "personal") => {
       dispatch(fetchRecipeList(teamID))
     }
   }
 }
 
-@connect(
-  mapStateToProps,
-  mapDispatchToProps
-)
-export default class Recipes extends React.Component {
-  static propTypes = {
-    fetchData: PropTypes.func.isRequired,
-    recipes: PropTypes.arrayOf(PropTypes.object).isRequired,
-    loading: PropTypes.bool.isRequired,
-    teamID: PropTypes.string.isRequired,
-    scroll: PropTypes.bool,
-    drag: PropTypes.bool
-  }
+interface IRecipesProps {
+  readonly fetchData: (teamID: ITeam["id"] | "personal") => void
+  readonly recipes: IRecipe[]
+  readonly loading: boolean
+  readonly teamID: ITeam["id"] | "personal"
+  readonly scroll: boolean
+  readonly drag: boolean
+}
 
-  state = {
+interface IRecipesState {
+  readonly query: string
+}
+
+class Recipes extends React.Component<IRecipesProps, IRecipesState> {
+  state: IRecipesState = {
     query: ""
-  }
-
-  static defaultProps = {
-    recipes: [],
-    scroll: false,
-    drag: false,
-    teamID: "personal"
   }
 
   componentWillMount() {
     this.props.fetchData(this.props.teamID)
   }
 
-  handleQueryChange = e => {
+  handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ query: e.target.value })
   }
 
   render() {
-    const results = this.props.recipes
+    const results: JSX.Element[] = this.props.recipes
       .filter(recipe => matchesQuery(recipe, this.state.query))
       .map(recipe => (
-        <Recipe
+        <RecipeItem
           {...recipe}
           teamID={this.props.teamID}
           drag={this.props.drag}
@@ -94,3 +91,8 @@ export default class Recipes extends React.Component {
     )
   }
 }
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Recipes)
