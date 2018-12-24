@@ -81,7 +81,7 @@ store.subscribe(
         // this is acceptable for us for the added performance
         loggedIn: store.getState().user.loggedIn,
         darkMode: store.getState().user.darkMode,
-        scheduleURL: store.getState().user.scheduleURL
+        teamID: store.getState().user.teamID
       },
       addrecipe: store.getState().addrecipe,
       auth: store.getState().auth

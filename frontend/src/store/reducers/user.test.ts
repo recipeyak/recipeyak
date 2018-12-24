@@ -206,9 +206,4 @@ describe("User", () => {
       afterState
     )
   })
-
-  it("should set schedule url", () => {
-    const url = "/schedule/something-not-the-default-value"
-    expect(user(undefined, a.setScheduleURL(url)).scheduleURL).toEqual(url)
-  })
 })

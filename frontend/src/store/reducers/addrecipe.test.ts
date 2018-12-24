@@ -265,19 +265,4 @@ describe("addrecipe", () => {
 
     expect(addrecipe(beforeState, a.clearAddRecipeForm())).toEqual(afterState)
   })
-
-  it("sets add recipe form's team field", () => {
-    const beforeState = initialState
-
-    const team = "cool team name"
-
-    const afterState: IAddRecipeState = {
-      ...initialState,
-      team
-    }
-
-    expect(addrecipe(beforeState, a.setAddRecipeFormTeam(team))).toEqual(
-      afterState
-    )
-  })
 })
