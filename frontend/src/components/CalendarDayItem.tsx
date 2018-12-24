@@ -69,9 +69,13 @@ class CalendarItem extends React.Component<
   }
 
   handleKeyPress = (e: KeyboardEvent) => {
-    if (!this.state.hover) return
+    if (!this.state.hover) {
+      return
+    }
 
-    if (beforeCurrentDay(this.props.date)) return
+    if (beforeCurrentDay(this.props.date)) {
+      return
+    }
 
     if (e.key === "#") {
       this.props.remove()
@@ -86,7 +90,9 @@ class CalendarItem extends React.Component<
 
   updateCount = (count: number) => {
     const oldCount = this.state.count
-    if (beforeCurrentDay(this.props.date)) return
+    if (beforeCurrentDay(this.props.date)) {
+      return
+    }
     this.setState({ count })
     this.props
       .updateCount(count)

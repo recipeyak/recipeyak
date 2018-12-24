@@ -36,20 +36,6 @@ const Title = ({ date }: { date: Date }) => {
   return <p>{format(date, "D")}</p>
 }
 
-const dayTarget = {
-  canDrop({ date }: ICalendarDayProps) {
-    return !beforeCurrentDay(date)
-  },
-  drop(props: ICalendarDayProps, monitor: DropTargetMonitor) {
-    const { recipeID, count = 1, id } = monitor.getItem()
-    if (id != null) {
-      props.move(id, props.teamID, props.date)
-    } else {
-      props.create(recipeID, props.teamID, props.date, count)
-    }
-  }
-}
-
 function mapStateToProps(state: RootState, props: ICalendarDayProps) {
   const isShopping = state.routerReducer.location.pathname.includes("shopping")
   return {
@@ -150,11 +136,27 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(
-  DropTarget(DragDrop.RECIPE, dayTarget, (connect, monitor) => {
-    return {
-      connectDropTarget: connect.dropTarget(),
-      isOver: monitor.isOver(),
-      canDrop: monitor.canDrop()
+  DropTarget(
+    DragDrop.RECIPE,
+    {
+      canDrop({ date }: ICalendarDayProps) {
+        return !beforeCurrentDay(date)
+      },
+      drop(props: ICalendarDayProps, monitor: DropTargetMonitor) {
+        const { recipeID, count = 1, id } = monitor.getItem()
+        if (id != null) {
+          props.move(id, props.teamID, props.date)
+        } else {
+          props.create(recipeID, props.teamID, props.date, count)
+        }
+      }
+    },
+    (cnct, monitor) => {
+      return {
+        connectDropTarget: cnct.dropTarget(),
+        isOver: monitor.isOver(),
+        canDrop: monitor.canDrop()
+      }
     }
-  })(CalendarDay)
+  )(CalendarDay)
 )
