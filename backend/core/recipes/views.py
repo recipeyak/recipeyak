@@ -168,7 +168,7 @@ class TeamRecipesViewSet(
 
     def list(self, request, team_pk=None):
         serializer = self.get_serializer(
-            self.get_queryset(), many=True, fields=("id", "name", "author", "tags")
+            self.get_queryset(), many=True, fields=("id", "name", "author", "tags", "owner")
         )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
