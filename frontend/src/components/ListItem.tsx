@@ -1,9 +1,32 @@
 import React from "react"
-import PropTypes from "prop-types"
 import Textarea from "react-textarea-autosize"
+import { IRecipe } from "../store/reducers/recipes"
 
-export default class ListItem extends React.Component {
-  constructor(props) {
+interface IListItemProps {
+  readonly id: number
+  readonly text?: string
+  readonly recipeID?: IRecipe["id"]
+  readonly delete: (id: IRecipe["id"]) => void
+  readonly update: (
+    recipeID: IRecipe["id"],
+    id: number,
+    data: { text: string }
+  ) => void
+  readonly removing?: boolean
+  readonly updating?: boolean
+}
+
+interface IListItemState {
+  readonly text: string
+  readonly editing: boolean
+  readonly unsavedChanges: boolean
+}
+
+export default class ListItem extends React.Component<
+  IListItemProps,
+  IListItemState
+> {
+  constructor(props: IListItemProps) {
     super(props)
     this.state = {
       text: props.text || "",
@@ -12,13 +35,7 @@ export default class ListItem extends React.Component {
     }
   }
 
-  static propTypes = {
-    id: PropTypes.number.isRequired,
-    recipeID: PropTypes.number.isRequired,
-    delete: PropTypes.func.isRequired,
-    removing: PropTypes.bool.isRequired,
-    update: PropTypes.func.isRequired
-  }
+  element = React.createRef<HTMLDivElement>()
 
   static defaultProps = {
     recipeID: -1,
@@ -34,9 +51,18 @@ export default class ListItem extends React.Component {
   }
 
   // ensures that the list item closes when the user clicks outside of the item
-  handleGeneralClick = e => {
-    const clickedInComponent = this.element && this.element.contains(e.target)
-    if (clickedInComponent) return
+  handleGeneralClick = (e: MouseEvent) => {
+    const target = e.target as HTMLElement | null
+    const el = this.element.current
+
+    if (el == null || target == null) {
+      return
+    }
+
+    const clickedInComponent = el.contains(target)
+    if (clickedInComponent) {
+      return
+    }
     this.setState((prevState, { text }) => ({
       editing: false,
       unsavedChanges:
@@ -45,8 +71,10 @@ export default class ListItem extends React.Component {
     }))
   }
 
-  handleInputChange = e => {
-    this.setState({ [e.target.name]: e.target.value })
+  handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    this.setState(({
+      [e.target.name]: e.target.value
+    } as unknown) as IListItemState)
   }
 
   enableEditing = () => {
@@ -57,34 +85,40 @@ export default class ListItem extends React.Component {
   }
 
   discardChanges = () => {
-    this.setState((_, { text }) => ({
+    this.setState((_, props) => ({
       editing: false,
-      text,
+      text: props.text || "",
       unsavedChanges: false
     }))
   }
 
-  handleFocus = e => {
+  handleFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
     e.target.select()
   }
 
-  cancel = e => {
+  cancel = (e: React.MouseEvent) => {
     e.stopPropagation()
-    this.setState((_, { text }) => ({
+    this.setState((_, props) => ({
       editing: false,
-      text
+      text: props.text || ""
     }))
   }
 
-  update = async e => {
+  update = async (e: React.KeyboardEvent | React.MouseEvent) => {
     e.stopPropagation()
     // if the text is empty, we should just delete the item instead of updating
     if (this.state.text === "") {
       await this.delete()
     } else {
-      await this.props.update(this.props.recipeID, this.props.id, {
-        text: this.state.text
-      })
+      if (this.props.recipeID) {
+        await this.props.update(this.props.recipeID, this.props.id, {
+          text: this.state.text
+        })
+      } else {
+        await this.props.update(-1, this.props.id, {
+          text: this.state.text
+        })
+      }
     }
     this.setState({
       editing: false,
@@ -98,12 +132,7 @@ export default class ListItem extends React.Component {
     const { updating, removing } = this.props
 
     const inner = this.state.editing ? (
-      <form
-        onSubmit={e => {
-          e.preventDefault()
-          if (this.state.text === "") return
-          this.add()
-        }}>
+      <form>
         <div className="field">
           <div className="control">
             <Textarea
@@ -111,7 +140,9 @@ export default class ListItem extends React.Component {
               onFocus={this.handleFocus}
               onChange={this.handleInputChange}
               onKeyPress={e => {
-                if (this.state.text === "") return
+                if (this.state.text === "") {
+                  return
+                }
                 if (e.shiftKey && e.key === "Enter") {
                   e.preventDefault()
                   this.update(e)
@@ -167,10 +198,7 @@ export default class ListItem extends React.Component {
     )
 
     return (
-      <div
-        ref={element => {
-          this.element = element
-        }}>
+      <div ref={this.element}>
         <section className="cursor-pointer" onClick={this.enableEditing}>
           {inner}
         </section>

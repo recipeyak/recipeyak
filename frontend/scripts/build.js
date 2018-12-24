@@ -22,7 +22,7 @@ const printFileSizesAfterBuild = FileSizeReporter.printFileSizesAfterBuild
 const useYarn = fs.existsSync(paths.yarnLockFile)
 
 // Warn and crash if required files are missing
-if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
+if (!checkRequiredFiles([paths.appHtml, paths.appIndexTsx])) {
   process.exit(1)
 }
 

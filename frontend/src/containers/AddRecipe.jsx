@@ -54,7 +54,8 @@ const mapDispatchToProps = dispatch => ({
 
   addStep: x => dispatch(addAddRecipeFormStep(x)),
   removeStep: i => dispatch(removeAddRecipeFormStep(i)),
-  updateStep: (i, step) => dispatch(updateAddRecipeFormStep(i, step)),
+  updateStep: (_recipeID, i, step) =>
+    dispatch(updateAddRecipeFormStep(i, step)),
 
   addRecipe: recipe => dispatch(postNewRecipe(recipe)),
   clearErrors: () => dispatch(setErrorAddRecipe({})),

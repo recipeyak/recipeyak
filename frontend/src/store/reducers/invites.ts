@@ -6,6 +6,12 @@ interface ITeam {
   readonly name: string
 }
 
+interface IUserPublic {
+  readonly id: number
+  readonly email: string
+  readonly avatar_url: string
+}
+
 export interface IInvite {
   readonly id: number
   readonly accepting?: boolean
@@ -13,6 +19,7 @@ export interface IInvite {
   readonly status: "accepted" | "declined" | "open"
   readonly active: boolean
   readonly team: ITeam
+  readonly creator: IUserPublic
 }
 
 export interface IInvitesState {

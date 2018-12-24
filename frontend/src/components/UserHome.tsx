@@ -111,9 +111,7 @@ const RecentRecipes = ({ recipes, loading, error }: IRecentRecipes) => {
         {loading ? (
           <Loader />
         ) : (
-          recipes.map(recipe => (
-            <Recipe {...recipe} className="mb-0" key={recipe.id} />
-          ))
+          recipes.map(recipe => <Recipe {...recipe} key={recipe.id} />)
         )}
         {!loading ? (
           <Link to="/recipes" className="my-button is-primary">

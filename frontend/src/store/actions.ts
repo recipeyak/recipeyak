@@ -912,7 +912,7 @@ export const setUpdatingStep = (
 export const updatingStep = (
   recipeID: number,
   stepID: number,
-  { text, position }: { text?: string; position: number }
+  { text, position }: { text?: string; position?: number }
 ) => (dispatch: Dispatch) => {
   dispatch(setUpdatingStep(recipeID, stepID, true))
   const data: { [key: string]: unknown } = {

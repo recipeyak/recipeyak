@@ -1,14 +1,16 @@
 import React from "react"
 import { Link } from "react-router-dom"
 
-import addRecipeImg from "./images/add-recipe.png"
-import cartDoublingImg from "./images/cart-doubling.png"
-import cartImg from "./images/cart.png"
-import homepageImg from "./images/homepage.png"
-import listImg from "./images/list.png"
-import searchImg from "./images/search.png"
+// tslint:disable:no-var-requires
+const addRecipeImg = require("./images/add-recipe.png")
+const cartDoublingImg = require("./images/cart-doubling.png")
+const cartImg = require("./images/cart.png")
+const homepageImg = require("./images/homepage.png")
+const listImg = require("./images/list.png")
+const searchImg = require("./images/search.png")
+// tslint:enable:no-var-requires
 
-const isOdd = i => i % 2 !== 0
+const isOdd = (i: number) => i % 2 !== 0
 
 const LandingPage = () => (
   <section>

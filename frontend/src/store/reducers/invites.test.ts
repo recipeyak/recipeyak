@@ -2,11 +2,27 @@ import invites, { initialState, IInvitesState, IInvite } from "./invites"
 
 import * as t from "../actions"
 
+const basicInvite: IInvite = {
+  id: 1,
+  active: false,
+  team: {
+    id: 1,
+    name: "foo"
+  },
+  status: "open",
+  creator: {
+    id: 1,
+    email: "foo@foo.com",
+    avatar_url: "foo.com"
+  }
+}
+
 describe("Invites", () => {
   it("sets invites", () => {
     const beforeState: IInvitesState = {
       ...initialState,
       1: {
+        ...basicInvite,
         id: 1,
         active: false,
         team: {
@@ -21,6 +37,7 @@ describe("Invites", () => {
       ...initialState,
       loading: true,
       1: {
+        ...basicInvite,
         id: 1,
         active: false,
         team: {
@@ -40,6 +57,7 @@ describe("Invites", () => {
 
     const newInvites: IInvite[] = [
       {
+        ...basicInvite,
         id: 1,
         active: false,
         team: {
@@ -49,6 +67,7 @@ describe("Invites", () => {
         status: "open"
       },
       {
+        ...basicInvite,
         id: 2,
         active: false,
         team: {
@@ -62,6 +81,7 @@ describe("Invites", () => {
     const afterState: IInvitesState = {
       loading: true,
       1: {
+        ...basicInvite,
         id: 1,
         active: false,
         team: {
@@ -71,6 +91,7 @@ describe("Invites", () => {
         status: "open"
       },
       2: {
+        ...basicInvite,
         id: 2,
         active: false,
         team: {
@@ -88,6 +109,7 @@ describe("Invites", () => {
     const beforeState: IInvitesState = {
       ...initialState,
       1: {
+        ...basicInvite,
         id: 1,
         active: false,
         team: {
@@ -97,6 +119,7 @@ describe("Invites", () => {
         status: "open"
       },
       2: {
+        ...basicInvite,
         id: 2,
         active: false,
         team: {
@@ -110,6 +133,7 @@ describe("Invites", () => {
     const afterState: IInvitesState = {
       ...initialState,
       1: {
+        ...basicInvite,
         id: 1,
         active: false,
         team: {
@@ -120,6 +144,7 @@ describe("Invites", () => {
         accepting: true
       },
       2: {
+        ...basicInvite,
         id: 2,
         active: false,
         team: {
@@ -139,6 +164,7 @@ describe("Invites", () => {
     const beforeState: IInvitesState = {
       ...initialState,
       1: {
+        ...basicInvite,
         id: 1,
         active: false,
         team: {
@@ -152,6 +178,7 @@ describe("Invites", () => {
     const afterState: IInvitesState = {
       ...initialState,
       1: {
+        ...basicInvite,
         id: 1,
         active: false,
         team: {
@@ -172,6 +199,7 @@ describe("Invites", () => {
     const beforeState: IInvitesState = {
       ...initialState,
       1: {
+        ...basicInvite,
         id: 1,
         active: false,
         team: {
@@ -185,6 +213,7 @@ describe("Invites", () => {
     const afterState: IInvitesState = {
       ...initialState,
       1: {
+        ...basicInvite,
         id: 1,
         active: false,
         team: {
@@ -202,6 +231,7 @@ describe("Invites", () => {
     const beforeState: IInvitesState = {
       ...initialState,
       1: {
+        ...basicInvite,
         id: 1,
         active: false,
         team: {
@@ -215,6 +245,7 @@ describe("Invites", () => {
     const afterState: IInvitesState = {
       ...initialState,
       1: {
+        ...basicInvite,
         id: 1,
         active: false,
         team: {

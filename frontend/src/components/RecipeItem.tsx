@@ -1,7 +1,6 @@
 import React from "react"
-import PropTypes from "prop-types"
 import { Link } from "react-router-dom"
-import { DragSource } from "react-dnd"
+import { DragSource, ConnectDragSource } from "react-dnd"
 
 import DatePickerForm from "./DatePickerForm"
 
@@ -9,46 +8,48 @@ import { ButtonPlain } from "./Buttons"
 
 import { classNames } from "../classnames"
 
-import { recipeURL, teamURL } from "../urls"
+import { teamURL, recipeURL } from "../urls"
 
 import * as DragDrop from "../dragDrop"
+import { ITeam } from "../store/reducers/teams"
+import { IRecipe } from "../store/reducers/recipes"
 
 const recipeSource = {
-  beginDrag(props) {
+  beginDrag(props: IRecipeItemProps) {
     return {
       recipeID: props.id
     }
   },
-  canDrag(props) {
-    return props.drag
+  canDrag(props: IRecipeItemProps): boolean {
+    return !!props.drag
   }
 }
 
-function collect(connect, monitor) {
-  return {
-    connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging()
-  }
+interface ICollectedProps {
+  readonly connectDragSource?: ConnectDragSource
+  readonly isDragging?: boolean
 }
 
-export class RecipeItem extends React.Component {
-  static propTypes = {
-    name: PropTypes.string.isRequired,
-    author: PropTypes.string.isRequired,
-    id: PropTypes.number.isRequired,
-    url: PropTypes.string,
-    owner: PropTypes.object,
-    connectDragSource: PropTypes.func.isRequired,
-    isDragging: PropTypes.bool.isRequired,
-    teamID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
-  }
+interface IRecipeItemProps {
+  readonly name: string
+  readonly author: string
+  readonly id: number
+  readonly url?: string
+  readonly owner: IRecipe["owner"]
+  readonly teamID?: ITeam["id"] | "personal"
+  readonly drag?: boolean
+}
 
+interface IRecipeItemState {
+  readonly show: boolean
+}
+
+export class RecipeItem extends React.Component<
+  IRecipeItemProps & ICollectedProps,
+  IRecipeItemState
+> {
   state = {
     show: false
-  }
-
-  static defaultProps = {
-    drag: false
   }
 
   render() {
@@ -56,12 +57,7 @@ export class RecipeItem extends React.Component {
       name,
       author,
       id,
-      url = recipeURL(id, name),
-      owner = {
-        type: "user",
-        id: 0,
-        name: ""
-      },
+      owner,
       connectDragSource,
       isDragging,
       teamID
@@ -79,9 +75,11 @@ export class RecipeItem extends React.Component {
 
     const drag = !this.state.show && this.props.drag
 
+    const url = this.props.url || recipeURL(id, name)
+
     const component = (
       <div
-        className={classNames("card", { "cursor-move": drag })}
+        className={classNames("card", { "cursor-move": !!drag })}
         style={{
           opacity: isDragging ? 0.5 : 1
         }}>
@@ -108,10 +106,17 @@ export class RecipeItem extends React.Component {
       </div>
     )
 
-    return !drag
-      ? component
-      : connectDragSource(component, { dropEffect: "copy" })
+    return drag && connectDragSource
+      ? connectDragSource(component, { dropEffect: "copy" })
+      : component
   }
 }
 
-export default DragSource(DragDrop.RECIPE, recipeSource, collect)(RecipeItem)
+export default DragSource(
+  DragDrop.RECIPE,
+  recipeSource,
+  (connect, monitor) => ({
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging()
+  })
+)(RecipeItem)
