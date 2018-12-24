@@ -2,14 +2,57 @@ import React from "react"
 import PropTypes from "prop-types"
 
 import IngredientView from "./IngredientView"
+import { IIngredient, IRecipe } from "../store/reducers/recipes"
+interface IEmptyField {
+  readonly quantity?: string
+  readonly name?: string
+}
 
-const emptyField = ({ quantity, name }) => quantity === "" || name === ""
+const emptyField = ({ quantity, name }: IEmptyField) =>
+  quantity === "" || name === ""
 
-const allEmptyFields = ({ quantity, name, description }) =>
+interface IAllEmptyFields {
+  readonly quantity?: string
+  readonly name?: string
+  readonly description?: string
+}
+const allEmptyFields = ({ quantity, name, description }: IAllEmptyFields) =>
   quantity === "" && name === "" && description === ""
 
-export default class Ingredient extends React.Component {
-  constructor(props) {
+interface IIngredientProps {
+  readonly quantity: IIngredient["quantity"]
+  readonly name: IIngredient["name"]
+  readonly description: IIngredient["description"]
+  readonly optional: IIngredient["optional"]
+  readonly recipeID: IRecipe["id"]
+  readonly id: IIngredient["id"]
+  readonly updating: boolean
+  readonly removing: boolean
+  readonly remove: (recipeID: IRecipe["id"], id: IIngredient["id"]) => void
+  readonly update: (
+    {
+      quantity,
+      name,
+      description,
+      optional
+    }: Pick<IIngredient, "quantity" | "name" | "description" | "optional">
+  ) => void
+}
+
+interface IIngredientState {
+  readonly quantity: IIngredient["quantity"]
+  readonly name: IIngredient["name"]
+  readonly description: IIngredient["description"]
+  readonly optional: IIngredient["optional"]
+  readonly editing: boolean
+  readonly unsavedChanges: boolean
+}
+
+export default class Ingredient extends React.Component<
+  IIngredientProps,
+  IIngredientState
+> {
+  constructor(props: IIngredientProps) {
     super(props)
     this.state = {
       quantity: props.quantity,
@@ -21,6 +64,8 @@ export default class Ingredient extends React.Component {
       unsavedChanges: false
     }
   }
+
+  element = React.createRef<HTMLLIElement>()
 
   static propTypes = {
     quantity: PropTypes.string.isRequired,
@@ -55,9 +100,16 @@ export default class Ingredient extends React.Component {
   }
 
   // ensures that the list item closes when the user clicks outside of the item
-  handleGeneralClick = e => {
-    const clickedInComponent = this.element && this.element.contains(e.target)
-    if (clickedInComponent) return
+  handleGeneralClick = (e: MouseEvent) => {
+    const el = this.element.current
+    const target = e.target as HTMLElement | null
+    if (el == null || target == null) {
+      return
+    }
+    const clickedInComponent = el.contains(target)
+    if (clickedInComponent) {
+      return
+    }
     this.setState((prevState, props) => {
       const contentChanged =
         prevState.quantity !== props.quantity ||
@@ -71,8 +123,10 @@ export default class Ingredient extends React.Component {
     })
   }
 
-  handleInputChange = e => {
-    this.setState({ [e.target.name]: e.target.value })
+  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState(({
+      [e.target.name]: e.target.value
+    } as unknown) as IIngredientState)
   }
 
   toggleOptional = () => {
@@ -100,11 +154,11 @@ export default class Ingredient extends React.Component {
     })
   }
 
-  handleFocus = e => {
+  handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     e.target.select()
   }
 
-  cancel = e => {
+  cancel = (e: React.MouseEvent) => {
     e.stopPropagation()
 
     this.setState((_, props) => {
@@ -119,9 +173,11 @@ export default class Ingredient extends React.Component {
     })
   }
 
-  update = async e => {
+  update = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (emptyField(this.state)) return
+    if (emptyField(this.state)) {
+      return
+    }
 
     e.stopPropagation()
 
@@ -262,10 +318,7 @@ export default class Ingredient extends React.Component {
     )
 
     return (
-      <li
-        ref={element => {
-          this.element = element
-        }}>
+      <li ref={this.element}>
         <section className="cursor-pointer" onClick={enableEditing}>
           {inner}
         </section>
