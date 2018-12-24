@@ -1,45 +1,45 @@
 import React from "react"
 import PropTypes from "prop-types"
 import { Link } from "react-router-dom"
-import { DragSource } from "react-dnd"
+import { DragSource, ConnectDragSource } from "react-dnd"
 
 import { beforeCurrentDay } from "../date"
 
 import { recipeURL } from "../urls"
 
 import * as DragDrop from "../dragDrop"
+import { IRecipe } from "../store/reducers/recipes"
+import { ICalRecipe } from "../store/reducers/calendar"
 
 const COUNT_THRESHOLD = 1
 
-const source = {
-  beginDrag(props) {
-    return {
-      recipeID: props.recipeID,
-      count: props.count,
-      id: props.id
-    }
-  },
-  canDrag({ date }) {
-    return !beforeCurrentDay(date)
-  },
-  endDrag(props, monitor) {
-    // when dragged onto something that isn't a target, we remove it
-    if (!monitor.didDrop()) {
-      props.remove()
-    }
-  }
+interface ICollectedProps {
+  readonly connectDragSource: ConnectDragSource
+
+  readonly isDragging: boolean
 }
 
-function collect(connect, monitor) {
-  return {
-    connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging()
-  }
+interface ICalendarItemProps {
+  readonly count: ICalRecipe["count"]
+  readonly remove: () => void
+  readonly updateCount: (count: number) => Promise<void>
+  readonly refetchShoppingList: () => void
+  readonly date: Date
+  readonly recipeID: IRecipe["id"]
+  readonly recipeName: IRecipe["name"]
+  readonly id: ICalRecipe["id"]
 }
 
-@DragSource(DragDrop.RECIPE, source, collect)
-export default class CalendarItem extends React.Component {
-  state = {
+interface ICalendarItemState {
+  readonly hover: boolean
+  readonly count: number
+}
+
+class CalendarItem extends React.Component<
+  ICalendarItemProps & ICollectedProps,
+  ICalendarItemState
+> {
+  state: ICalendarItemState = {
     count: this.props.count,
     hover: false
   }
@@ -60,7 +60,7 @@ export default class CalendarItem extends React.Component {
     document.addEventListener("keypress", this.handleKeyPress)
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: ICalendarItemProps) {
     this.setState({ count: nextProps.count })
   }
 
@@ -68,7 +68,7 @@ export default class CalendarItem extends React.Component {
     document.removeEventListener("keypress", this.handleKeyPress)
   }
 
-  handleKeyPress = e => {
+  handleKeyPress = (e: KeyboardEvent) => {
     if (!this.state.hover) return
 
     if (beforeCurrentDay(this.props.date)) return
@@ -84,7 +84,7 @@ export default class CalendarItem extends React.Component {
     }
   }
 
-  updateCount = count => {
+  updateCount = (count: number) => {
     const oldCount = this.state.count
     if (beforeCurrentDay(this.props.date)) return
     this.setState({ count })
@@ -94,8 +94,8 @@ export default class CalendarItem extends React.Component {
       .catch(() => this.setState({ count: oldCount }))
   }
 
-  handleChange = e => {
-    const count = e.target.value
+  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const count = parseInt(e.target.value, 10)
     this.updateCount(count)
   }
 
@@ -131,3 +131,31 @@ export default class CalendarItem extends React.Component {
     )
   }
 }
+
+export default DragSource(
+  DragDrop.RECIPE,
+  {
+    beginDrag(props: ICalendarItemProps) {
+      return {
+        recipeID: props.recipeID,
+        count: props.count,
+        id: props.id
+      }
+    },
+    canDrag({ date }: ICalendarItemProps) {
+      return !beforeCurrentDay(date)
+    },
+    endDrag(props, monitor) {
+      // when dragged onto something that isn't a target, we remove it
+      if (!monitor.didDrop()) {
+        props.remove()
+      }
+    }
+  },
+  (connect, monitor) => {
+    return {
+      connectDragSource: connect.dragSource(),
+      isDragging: monitor.isDragging()
+    }
+  }
+)(CalendarItem)

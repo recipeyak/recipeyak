@@ -31,6 +31,7 @@ import { IInvite } from "./reducers/invites"
 import { INotificationState } from "./reducers/notification"
 import { IRecipeBasic } from "../components/AddRecipe"
 import { ITeam } from "./reducers/teams"
+import { IRecipe } from "./reducers/recipes"
 
 const config = { timeout: 15000 }
 
@@ -1901,7 +1902,10 @@ export const fetchCalendar = (teamID: TeamID, month = new Date()) => (
     })
 }
 
-export const setSchedulingRecipe = (recipeID: number, scheduling: boolean) => ({
+export const setSchedulingRecipe = (
+  recipeID: IRecipe["id"],
+  scheduling: boolean
+) => ({
   type: t.SET_SCHEDULING_RECIPE,
   recipeID,
   scheduling
@@ -1922,10 +1926,10 @@ export const replaceCalendarRecipe = (
 })
 
 export const addingScheduledRecipe = (
-  recipeID: number,
+  recipeID: IRecipe["id"],
   teamID: TeamID,
   on: Date,
-  count: number
+  count: number | string
 ) => (dispatch: Dispatch, getState: GetState) => {
   const recipe = getState().recipes[recipeID]
   dispatch(setSchedulingRecipe(recipeID, true))
@@ -1970,16 +1974,16 @@ export const deleteCalendarRecipe = (id: string | number) => ({
   id
 })
 
-export const moveCalendarRecipe = (id: number, to: string) => ({
+export const moveCalendarRecipe = (id: ICalRecipe["id"], to: string) => ({
   type: t.MOVE_CALENDAR_RECIPE,
   id,
   on: to
 })
 
-export const deletingScheduledRecipe = (id: number, teamID: TeamID) => (
-  dispatch: Dispatch,
-  getState: GetState
-) => {
+export const deletingScheduledRecipe = (
+  id: ICalRecipe["id"],
+  teamID: TeamID
+) => (dispatch: Dispatch, getState: GetState) => {
   const recipe = getState().calendar[id]
   dispatch(deleteCalendarRecipe(id))
 
@@ -1993,10 +1997,11 @@ export const deletingScheduledRecipe = (id: number, teamID: TeamID) => (
   })
 }
 
-export const moveScheduledRecipe = (id: number, teamID: TeamID, to: Date) => (
-  dispatch: Dispatch,
-  getState: GetState
-) => {
+export const moveScheduledRecipe = (
+  id: ICalRecipe["id"],
+  teamID: TeamID,
+  to: string
+) => (dispatch: Dispatch, getState: GetState) => {
   const from = getState().calendar[id]
   const existing = getState()
     .calendar.allIds.filter((x: unknown) => x !== id)
@@ -2038,11 +2043,11 @@ export const moveScheduledRecipe = (id: number, teamID: TeamID, to: Date) => (
 }
 
 export const updatingScheduledRecipe = (
-  id: number,
-  teamID: number | "personal",
-  data: { count: string }
+  id: ICalRecipe["id"],
+  teamID: ITeam["id"] | "personal",
+  data: { count: string | number }
 ) => (dispatch: Dispatch) => {
-  if (parseInt(data.count, 10) <= 0) {
+  if (parseInt(data.count.toString(), 10) <= 0) {
     return dispatch(deletingScheduledRecipe(id, teamID))
   }
 
