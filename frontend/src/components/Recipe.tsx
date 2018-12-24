@@ -23,6 +23,7 @@ import {
 import { RootState } from "../store/store"
 import { RouteComponentProps } from "react-router"
 import { IRecipe, IStep, IIngredient } from "../store/reducers/recipes"
+import { IRecipeBasic } from "./RecipeTitle"
 
 type RouteProps = RouteComponentProps<{ id: string }>
 
@@ -64,7 +65,7 @@ interface IRecipeProps extends RouteProps {
   readonly loading: boolean
   readonly error404: boolean
   readonly owner: IRecipe["owner"]
-  readonly update: () => void
+  readonly update: (id: IRecipe["id"], recipe: IRecipeBasic) => Promise<void>
   readonly remove: () => void
   readonly deleting: boolean
   readonly updating: boolean
@@ -140,27 +141,29 @@ class Recipe extends React.Component<IRecipeProps, IRecipeState> {
               Ingredients
             </h2>
             <ul>
-              {ingredients.map(
-                ingre => (
-                  <Ingredient
-                    key={ingre.id}
-                    recipeID={this.props.id}
-                    id={ingre.id}
-                    quantity={ingre.quantity}
-                    name={ingre.name}
-                    update={(ingredient: IIngredient) =>
-                      this.props.updateIngredient(this.props.id, ingre.id, ingredient)
-                    }
-                    remove={() =>
-                      this.props.removeIngredient(this.props.id, ingre.id)
-                    }
-                    updating={ingre.updating}
-                    removing={ingre.removing}
-                    description={ingre.description}
-                    optional={ingre.optional}
-                  />
-                )
-              )}
+              {ingredients.map(ingre => (
+                <Ingredient
+                  key={ingre.id}
+                  recipeID={this.props.id}
+                  id={ingre.id}
+                  quantity={ingre.quantity}
+                  name={ingre.name}
+                  update={(ingredient: IIngredient) =>
+                    this.props.updateIngredient(
+                      this.props.id,
+                      ingre.id,
+                      ingredient
+                    )
+                  }
+                  remove={() =>
+                    this.props.removeIngredient(this.props.id, ingre.id)
+                  }
+                  updating={ingre.updating}
+                  removing={ingre.removing}
+                  description={ingre.description}
+                  optional={ingre.optional}
+                />
+              ))}
             </ul>
             {this.state.addIngredient ? (
               <AddIngredient
