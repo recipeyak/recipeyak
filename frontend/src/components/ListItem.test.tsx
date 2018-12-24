@@ -5,7 +5,7 @@ import Adapter from "enzyme-adapter-react-16"
 
 import { MemoryRouter } from "react-router"
 
-import ListItem from "./ListItem.jsx"
+import ListItem from "./ListItem"
 
 configure({ adapter: new Adapter() })
 
@@ -13,7 +13,7 @@ describe("<ListItem/>", () => {
   it("renders without crashing", () => {
     mount(
       <MemoryRouter>
-        <ListItem />
+        <ListItem id={0} delete={jest.fn()} update={jest.fn()} />
       </MemoryRouter>
     )
   })
