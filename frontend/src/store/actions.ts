@@ -35,7 +35,7 @@ import {
 import { ICalRecipe } from "./reducers/calendar"
 import { IInvite } from "./reducers/invites"
 import { INotificationState } from "./reducers/notification"
-import { IRecipeBasic } from "../components/AddRecipe"
+import { IRecipeBasic, IIngredientBasic } from "../components/AddRecipe"
 import { ITeam } from "./reducers/teams"
 import { IRecipe } from "./reducers/recipes"
 import * as api from "../api"
@@ -1314,7 +1314,7 @@ export const removeAddRecipeFormIngredient = (index: number) => ({
   index
 })
 
-export const addAddRecipeFormStep = (step: unknown) => ({
+export const addAddRecipeFormStep = (step: { text?: string }) => ({
   type: t.ADD_ADD_RECIPE_FORM_STEP,
   step
 })
@@ -1326,7 +1326,7 @@ export const removeAddRecipeFormStep = (index: number) => ({
 
 export const updateAddRecipeFormIngredient = (
   index: number,
-  ingredient: unknown
+  ingredient: IIngredientBasic
 ) => ({
   type: t.UPDATE_ADD_RECIPE_FORM_INGREDIENT,
   index,
@@ -1684,7 +1684,7 @@ export const setCopyingTeam = (val: boolean) => ({
   val
 })
 
-export const updatingTeam = (teamId: number, teamKVs: unknown) => (
+export const updatingTeam = (teamId: ITeam["id"], teamKVs: unknown) => (
   dispatch: Dispatch
 ) => {
   return http

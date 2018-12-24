@@ -12,16 +12,10 @@ configure({ adapter: new Adapter() })
 
 describe("<OAuth/>", () => {
   it("renders without crashing", () => {
-    const props = {
-      service: "my-provider",
-      token: "12345",
-      login: (service: string, token: string) =>
-        expect(service === props.service && token === props.token)
-    }
     mount(
       <Provider store={store}>
         <MemoryRouter>
-          <OAuth {...props} />
+          <OAuth service="gitlab" token="12345" login={jest.fn()} />
         </MemoryRouter>
       </Provider>
     )

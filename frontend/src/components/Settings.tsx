@@ -1,5 +1,4 @@
 import React from "react"
-import PropTypes from "prop-types"
 import { Helmet } from "./Helmet"
 import { Link } from "react-router-dom"
 
@@ -90,31 +89,45 @@ interface ISettingsWithStateState {
   readonly editing: boolean
 }
 
+interface ISocialButtonProps {
+  readonly error: string
+  readonly connected: boolean
+  readonly disconnect: () => void
+  readonly loading: boolean
+}
+
+function Gitlab(props: ISocialButtonProps) {
+  return (
+    <OAuthButton
+      name="Gitlab"
+      Logo={GitlabImg}
+      error={props.error}
+      connected={props.connected}
+      OAUTH_URL={GITLAB_OAUTH_URL}
+      disconnect={props.disconnect}
+      disconnecting={props.loading}
+    />
+  )
+}
+
+function Github(props: ISocialButtonProps) {
+  return (
+    <OAuthButton
+      name="Github"
+      Logo={GithubImg}
+      error={props.error}
+      connected={props.connected}
+      OAUTH_URL={GITHUB_OAUTH_URL}
+      disconnect={props.disconnect}
+      disconnecting={props.loading}
+    />
+  )
+}
+
 export default class SettingsWithState extends React.Component<
   ISettingsWithStateProps,
   ISettingsWithStateState
 > {
-  static propTypes = {
-    fetchData: PropTypes.func.isRequired,
-    disconnectAccount: PropTypes.func.isRequired,
-    deleteUserAccount: PropTypes.func.isRequired,
-    email: PropTypes.string.isRequired,
-    updateEmail: PropTypes.func.isRequired,
-    avatarURL: PropTypes.string.isRequired,
-    updatingEmail: PropTypes.bool.isRequired,
-    socialAccountConnections: PropTypes.object.isRequired,
-    loading: PropTypes.bool.isRequired,
-    hasPassword: PropTypes.bool.isRequired
-  }
-
-  static defaultProps = {
-    email: "",
-    avatarURL: "",
-    updatingEmail: false,
-    socialAccountConnections: {},
-    hasPassword: false
-  }
-
   state: ISettingsWithStateState = {
     email: this.props.email,
     loadingGithub: false,
@@ -211,38 +224,6 @@ export default class SettingsWithState extends React.Component<
       )
     }
 
-    const Github = () => (
-      <OAuthButton
-        name="Github"
-        Logo={GithubImg}
-        error={errorGithub}
-        connected={socialAccountConnections.github != null}
-        OAUTH_URL={GITHUB_OAUTH_URL}
-        disconnect={() => {
-          if (socialAccountConnections.github != null) {
-            disconnectAccount("github", socialAccountConnections.github)
-          }
-        }}
-        disconnecting={loadingGithub}
-      />
-    )
-
-    const Gitlab = () => (
-      <OAuthButton
-        name="Gitlab"
-        Logo={GitlabImg}
-        error={errorGitlab}
-        connected={socialAccountConnections.gitlab != null}
-        OAUTH_URL={GITLAB_OAUTH_URL}
-        disconnect={() => {
-          if (socialAccountConnections.gitlab != null) {
-            disconnectAccount("gitlab", socialAccountConnections.gitlab)
-          }
-        }}
-        disconnecting={loadingGitlab}
-      />
-    )
-
     return (
       <section>
         <Helmet title="Settings" />
@@ -336,8 +317,26 @@ export default class SettingsWithState extends React.Component<
 
         <h1 className="fs-6">Social Accounts</h1>
 
-        <Github />
-        <Gitlab />
+        <Github
+          error={errorGithub}
+          connected={socialAccountConnections.github != null}
+          disconnect={() => {
+            if (socialAccountConnections.github != null) {
+              disconnectAccount("github", socialAccountConnections.github)
+            }
+          }}
+          loading={loadingGithub}
+        />
+        <Gitlab
+          error={errorGitlab}
+          connected={socialAccountConnections.gitlab != null}
+          disconnect={() => {
+            if (socialAccountConnections.gitlab != null) {
+              disconnectAccount("gitlab", socialAccountConnections.gitlab)
+            }
+          }}
+          loading={loadingGitlab}
+        />
 
         <h1 className="fs-6">Danger Zone</h1>
         <a onClick={this.deleteAccountPrompt} className="has-text-danger">
