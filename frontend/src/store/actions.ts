@@ -20,7 +20,7 @@ import addWeeks from "date-fns/add_weeks"
 import { pyFormat } from "../date"
 
 import { push, replace } from "react-router-redux"
-
+import { createAsyncAction } from "typesafe-actions"
 import axios, { AxiosError, AxiosResponse, CancelTokenSource } from "axios"
 import raven from "raven-js"
 
@@ -156,9 +156,10 @@ export const showNotificationWithTimeout = ({
   }
 }
 
-export const login = (user: IUser) => ({
+// TODO(chdsbd): Replace usage with fetchUser#success. Update user reducer.
+export const login = (payload: IUser) => ({
   type: t.LOG_IN,
-  user
+  payload
 })
 
 export const setLoggingOut = (val: boolean) => ({
@@ -181,16 +182,6 @@ export const loggingOut = () => (dispatch: Dispatch) => {
     })
 }
 
-export const setLoadingUser = (val: boolean) => ({
-  type: t.SET_LOADING_USER,
-  val
-})
-
-export const setErrorUser = (val: boolean) => ({
-  type: t.SET_ERROR_USER,
-  val
-})
-
 export const setLoadingUserStats = (val: boolean) => ({
   type: t.SET_LOADING_USER_STATS,
   val
@@ -198,26 +189,6 @@ export const setLoadingUserStats = (val: boolean) => ({
 
 export const setUserStats = (val: unknown) => ({
   type: t.SET_USER_STATS,
-  val
-})
-
-export const setAvatarURL = (url: string) => ({
-  type: t.SET_AVATAR_URL,
-  url
-})
-
-export const setUserEmail = (email: string) => ({
-  type: t.SET_USER_EMAIL,
-  email
-})
-
-export const setPasswordUsable = (val: boolean) => ({
-  type: t.SET_PASSWORD_USABLE,
-  val
-})
-
-export const setUpdatingUserEmail = (val: boolean) => ({
-  type: t.SET_UPDATING_USER_EMAIL,
   val
 })
 
@@ -233,16 +204,25 @@ const emailExists = (err: AxiosError) =>
 
 const second = 1000
 
+interface IEmailUpdate {
+  email: string
+  avatar_url: string
+}
+
+export const updateEmail = createAsyncAction(
+  t.UPDATE_EMAIL_START,
+  t.UPDATE_EMAIL_SUCCESS,
+  t.UPDATE_EMAIL_FAILURE
+)<void, IEmailUpdate, void>()
+
 export const updatingEmail = (email: string) => (dispatch: Dispatch) => {
-  dispatch(setUpdatingUserEmail(true))
+  dispatch(updateEmail.request())
   return http
     .patch("/api/v1/user/", {
       email
     })
-    .then(res => {
-      dispatch(setUserEmail(res.data.email))
-      dispatch(setAvatarURL(res.data.avatar_url))
-      dispatch(setUpdatingUserEmail(false))
+    .then((res: AxiosResponse<IEmailUpdate>) => {
+      dispatch(updateEmail.success(res.data))
       dispatch(
         showNotificationWithTimeout({
           message: "updated email",
@@ -252,7 +232,7 @@ export const updatingEmail = (email: string) => (dispatch: Dispatch) => {
       )
     })
     .catch(err => {
-      dispatch(setUpdatingUserEmail(false))
+      dispatch(updateEmail.failure())
       const messageExtra = emailExists(err) ? "- email already in use" : ""
       dispatch(
         setNotification({
@@ -263,32 +243,26 @@ export const updatingEmail = (email: string) => (dispatch: Dispatch) => {
     })
 }
 
-export const setUserID = (id: number) => ({
-  type: t.SET_USER_ID,
-  id
-})
-
 export const setUserLoggedIn = (val: boolean) => ({
   type: t.SET_USER_LOGGED_IN,
   val
 })
 
+export const fetchingUser = createAsyncAction(
+  t.FETCH_USER_START,
+  t.FETCH_USER_SUCCESS,
+  t.FETCH_USER_FAILURE
+)<void, IUser, void>()
+
 export const fetchUser = () => (dispatch: Dispatch) => {
-  dispatch(setLoadingUser(true))
-  dispatch(setErrorUser(false))
+  dispatch(fetchingUser.request())
   return http
     .get("/api/v1/user/")
-    .then(res => {
-      dispatch(setUserID(res.data.id))
-      dispatch(setAvatarURL(res.data.avatar_url))
-      dispatch(setUserEmail(res.data.email))
-      dispatch(setPasswordUsable(res.data.has_usable_password))
-      dispatch(setLoadingUser(false))
-      dispatch(setUserLoggedIn(true))
+    .then((res: AxiosResponse<IUser>) => {
+      dispatch(fetchingUser.success(res.data))
     })
     .catch(err => {
-      dispatch(setLoadingUser(false))
-      dispatch(setErrorUser(true))
+      dispatch(fetchingUser.failure())
       throw err
     })
 }

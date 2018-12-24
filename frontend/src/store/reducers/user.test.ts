@@ -1,123 +1,66 @@
-import user, { ISocialConnection } from "./user"
+import user, { ISocialConnection, IUserState, IUser } from "./user"
 
 import * as a from "../actions"
 
-describe("User", () => {
-  it("Logs in user adding token", () => {
+describe("fetchingUser", () => {
+  it("#request: sets loading, removes failures", () => {
     const beforeState = {
-      loggedIn: false
-    }
-
-    const avatarURL = "//www.user.com"
-    const email = "test@gmail.com"
-    const id = 15
-
-    const userData = {
-      avatar_url: avatarURL,
-      email,
-      id,
-      has_usable_password: true
-    }
-
-    const afterState = {
-      loggedIn: true,
-      avatarURL,
-      id,
-      hasUsablePassword: true,
-      email
-    }
-
-    expect(user(beforeState as any, a.login(userData))).toEqual(afterState)
-  })
-
-  it("Updates user passwordStatus", () => {
-    const beforeState = {
-      loggedIn: true,
-      token: "123456",
-      avatarURL: "example.com/image",
-      hasUsablePassword: false
-    }
-
-    const afterState = {
-      loggedIn: true,
-      token: "123456",
-      avatarURL: "example.com/image",
-      hasUsablePassword: true
-    }
-
-    expect(user(beforeState as any, a.setPasswordUsable(true))).toEqual(
-      afterState
-    )
-  })
-
-  it("sets user's avatarURL", () => {
-    const beforeState = {
-      avatarURL: ""
-    }
-
-    const avatarURL = "http//"
-
-    const afterState = {
-      avatarURL
-    }
-
-    expect(user(beforeState as any, a.setAvatarURL(avatarURL))).toEqual(
-      afterState
-    )
-  })
-
-  it("sets user's email", () => {
-    const beforeState = {
-      email: ""
-    }
-
-    const email = "j@example.com"
-
-    const afterState = {
-      email
-    }
-
-    expect(user(beforeState as any, a.setUserEmail(email))).toEqual(afterState)
-  })
-
-  it("sets loading state of user", () => {
-    const beforeState = {
-      loading: false
-    }
-
-    const afterState = {
-      loading: true
-    }
-
-    expect(user(beforeState as any, a.setLoadingUser(true))).toEqual(afterState)
-  })
-
-  it("sets error state of user", () => {
-    const beforeState = {
-      error: false
-    }
-
-    const afterState = {
+      loading: false,
       error: true
-    }
-
-    expect(user(beforeState as any, a.setErrorUser(true))).toEqual(afterState)
+    } as IUserState
+    const expected = {
+      loading: true,
+      error: false
+    } as IUserState
+    expect(user(beforeState, a.fetchingUser.request())).toEqual(expected)
   })
-
-  it("sets updating user email correctly", () => {
+  it("#success: updates user, sets loading, sets loggedIn", () => {
     const beforeState = {
+      loading: true,
+      error: false,
       updatingEmail: false
-    }
+    } as IUserState
 
-    const afterState = {
-      updatingEmail: true
-    }
+    const userPayload = {
+      avatar_url: "example.com",
+      email: "j.doe@example.com",
+      id: 123,
+      has_usable_password: true,
+      dark_mode_enabled: true,
+      selected_team: 456
+    } as IUser
 
-    expect(user(beforeState as any, a.setUpdatingUserEmail(true))).toEqual(
-      afterState
+    const expected = {
+      id: userPayload.id,
+      loggedIn: true,
+      avatarURL: userPayload.avatar_url,
+      email: userPayload.email,
+      loading: false,
+      updatingEmail: false,
+      error: false,
+      darkMode: true,
+      hasUsablePassword: true,
+      teamID: userPayload.selected_team
+    }
+    expect(user(beforeState, a.fetchingUser.success(userPayload))).toEqual(
+      expected
     )
+    expect(user(beforeState, a.login(userPayload))).toEqual(expected)
   })
+  it("#failure: sets loading, sets error", () => {
+    const beforeState = {
+      loading: true,
+      error: false
+    } as IUserState
+    const expected = {
+      loading: false,
+      error: true
+    } as IUserState
+    expect(user(beforeState, a.fetchingUser.failure())).toEqual(expected)
+  })
+})
 
+describe("User", () => {
   it("sets user to logging out", () => {
     const beforeState = {
       loggingOut: false
@@ -252,17 +195,6 @@ describe("User", () => {
     ).toEqual(expected)
   })
 
-  it("sets user's id", () => {
-    const beforeState = {}
-
-    const id = 2
-
-    const afterState = {
-      id
-    }
-
-    expect(user(beforeState as any, a.setUserID(id))).toEqual(afterState)
-  })
   it("should set user logged in", () => {
     const beforeState = {
       loggedIn: true
