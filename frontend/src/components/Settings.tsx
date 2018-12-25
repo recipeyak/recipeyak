@@ -9,7 +9,7 @@ import { GithubImg, GitlabImg } from "./SocialButtons"
 
 import { GITHUB_OAUTH_URL, GITLAB_OAUTH_URL } from "../settings"
 import { SocialProvider } from "../store/reducers/user"
-import { ISocialAccountsState } from "../store/reducers/socialAccounts"
+import { ISocialAccountsState } from "../store/reducers/user"
 
 interface IOAuthButtonProps {
   readonly name: string

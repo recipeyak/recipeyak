@@ -1,7 +1,5 @@
 import isSameDay from "date-fns/is_same_day"
 
-import * as t from "./actionTypes"
-
 // TODO(chdsbd): Replace "personal" with null in all uses
 type TeamID = number | "personal"
 
@@ -21,16 +19,22 @@ import addWeeks from "date-fns/add_weeks"
 import { pyFormat } from "../date"
 
 import { push, replace } from "react-router-redux"
-import { createAsyncAction, createStandardAction } from "typesafe-actions"
 import axios, { AxiosError, AxiosResponse, CancelTokenSource } from "axios"
 import raven from "raven-js"
 
 import { store, RootState } from "./store"
 import {
-  IUser,
-  ISocialConnection,
   SocialProvider,
-  IUserState
+  IUserState,
+  updateEmail,
+  updateTeamID,
+  fetchingUser,
+  setSocialConnections,
+  setLoadingUserStats,
+  setUserStats,
+  login,
+  setUserLoggedIn,
+  setLoggingOut
 } from "./reducers/user"
 import { ICalRecipe, setCalendarLoading, setCalendarError, setCalendarRecipe, replaceCalendarRecipe, deleteCalendarRecipe, setCalendarRecipes, moveCalendarRecipe } from "./reducers/calendar"
 import { setDecliningInvite, setDeclinedInvite, setAcceptingInvite, setAcceptedInvite, setLoadingInvites, setErrorFetchingInvites, setInvites } from "./reducers/invites"
@@ -155,16 +159,7 @@ export const showNotificationWithTimeout = ({
   }
 }
 
-// TODO(chdsbd): Replace usage with fetchUser#success. Update user reducer.
-export const login = (payload: IUser) => ({
-  type: t.LOG_IN,
-  payload
-})
 
-export const setLoggingOut = (val: boolean) => ({
-  type: t.SET_LOGGING_OUT,
-  val
-})
 
 export const loggingOut = () => (dispatch: Dispatch) => {
   dispatch(setLoggingOut(true))
@@ -181,16 +176,6 @@ export const loggingOut = () => (dispatch: Dispatch) => {
     })
 }
 
-export const setLoadingUserStats = (val: boolean) => ({
-  type: t.SET_LOADING_USER_STATS,
-  val
-})
-
-export const setUserStats = (val: unknown) => ({
-  type: t.SET_USER_STATS,
-  val
-})
-
 const emailExists = (err: AxiosError) =>
   err.response &&
   err.response.data.email != null &&
@@ -198,16 +183,6 @@ const emailExists = (err: AxiosError) =>
 
 const second = 1000
 
-interface IEmailUpdate {
-  email: string
-  avatar_url: string
-}
-
-export const updateEmail = createAsyncAction(
-  t.UPDATE_EMAIL_START,
-  t.UPDATE_EMAIL_SUCCESS,
-  t.UPDATE_EMAIL_FAILURE
-)<void, IEmailUpdate, void>()
 
 export const updatingEmail = (email: string) => (dispatch: Dispatch) => {
   dispatch(updateEmail.request())
@@ -235,7 +210,6 @@ export const updatingEmail = (email: string) => (dispatch: Dispatch) => {
     })
 }
 
-const updateTeamID = createStandardAction(t.SET_TEAM_ID)<number | null>()
 
 export const updatingTeamID = (id: number | null) => (
   dispatch: Dispatch,
@@ -254,16 +228,6 @@ export const updatingTeamID = (id: number | null) => (
     })
 }
 
-export const setUserLoggedIn = (val: boolean) => ({
-  type: t.SET_USER_LOGGED_IN,
-  val
-})
-
-export const fetchingUser = createAsyncAction(
-  t.FETCH_USER_START,
-  t.FETCH_USER_SUCCESS,
-  t.FETCH_USER_FAILURE
-)<void, IUser, void>()
 
 export const fetchUser = () => (dispatch: Dispatch) => {
   dispatch(fetchingUser.request())
@@ -276,20 +240,6 @@ export const fetchUser = () => (dispatch: Dispatch) => {
       dispatch(fetchingUser.failure())
     })
 }
-
-export const setSocialConnections = (val: ISocialConnection[]) => ({
-  type: t.SET_SOCIAL_ACCOUNT_CONNECTIONS,
-  val
-})
-
-export const setSocialConnection = (
-  provider: SocialProvider,
-  val: unknown
-) => ({
-  type: t.SET_SOCIAL_ACCOUNT_CONNECTION,
-  provider,
-  val
-})
 
 export const fetchSocialConnections = () => (dispatch: Dispatch) => {
   return http
@@ -617,10 +567,6 @@ export const setRecipeTime = (id: number, time: unknown) => (
       throw err
     })
 }
-
-export const toggleDarkMode = () => ({
-  type: t.TOGGLE_DARK_MODE
-})
 
 export const updateRecipe = (id: number, data: unknown) => (
   dispatch: Dispatch

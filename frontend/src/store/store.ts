@@ -6,7 +6,7 @@ import createHistory from "history/createBrowserHistory"
 import { routerReducer, routerMiddleware } from "react-router-redux"
 
 import recipes from "./reducers/recipes"
-import user from "./reducers/user"
+import user, { SET_USER_LOGGED_IN } from "./reducers/user"
 import loading from "./reducers/loading"
 import error from "./reducers/error"
 import notification from "./reducers/notification"
@@ -20,8 +20,6 @@ import calendar from "./reducers/calendar"
 import search from "./reducers/search"
 
 import { loadState, saveState } from "./localStorage"
-
-import * as t from "./actionTypes"
 
 const recipeApp = combineReducers({
   user,
@@ -43,7 +41,7 @@ const recipeApp = combineReducers({
 
 // reset redux to default state on logout
 export const rootReducer = (state: any, action: any) => {
-  if (action.type === t.SET_USER_LOGGED_IN && !action.val) {
+  if (action.type === SET_USER_LOGGED_IN && !action.val) {
     return {
       ...recipeApp(undefined as any, action),
       // We need to save this auth state (fromUrl) through logout

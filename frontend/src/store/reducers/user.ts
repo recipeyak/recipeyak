@@ -1,10 +1,115 @@
-import * as t from "../actionTypes"
-
-import { socialAccounts, ISocialAccountsState } from "./socialAccounts"
-
 import { setDarkModeClass } from "../../sideEffects"
 
 import raven from "raven-js"
+import { createAsyncAction, createStandardAction, action, ActionType } from "typesafe-actions";
+
+
+const LOG_IN = "LOG_IN"
+
+
+const UPDATE_EMAIL_START = "UPDATE_EMAIL_START"
+const UPDATE_EMAIL_SUCCESS = "UPDATE_EMAIL_SUCCESS"
+const UPDATE_EMAIL_FAILURE = "UPDATE_EMAIL_FAILURE"
+
+const SET_TEAM_ID = "SET_TEAM_ID"
+
+const SET_SOCIAL_ACCOUNT_CONNECTIONS = "SET_SOCIAL_ACCOUNT_CONNECTIONS"
+const SET_SOCIAL_ACCOUNT_CONNECTION = "SET_SOCIAL_ACCOUNT_CONNECTION"
+
+
+const FETCH_USER_START = "FETCH_USER_START"
+const FETCH_USER_SUCCESS = "FETCH_USER_SUCCESS"
+const FETCH_USER_FAILURE = "FETCH_USER_FAILURE"
+
+const TOGGLE_DARK_MODE = "TOGGLE_DARK_MODE"
+
+
+
+const SET_LOGGING_OUT = "SET_LOGGING_OUT"
+
+
+
+const SET_LOADING_USER_STATS = "SET_LOADING_USER_STATS"
+const SET_USER_STATS = "SET_USER_STATS"
+
+export const SET_USER_LOGGED_IN = "SET_USER_LOGGED_IN"
+
+
+// TODO(chdsbd): Replace usage with fetchUser#success. Update user reducer.
+export const login = (payload: IUser) => action(
+  LOG_IN,
+  payload
+)
+
+export const setLoggingOut = (val: boolean) => action(
+  SET_LOGGING_OUT,
+  val
+)
+
+export const setLoadingUserStats = (val: boolean) => action(
+  SET_LOADING_USER_STATS,
+  val
+)
+
+export const setUserStats = (val: unknown) => action(
+  SET_USER_STATS,
+  val
+)
+
+
+export const updateTeamID = createStandardAction(SET_TEAM_ID)<number | null>()
+
+export const setSocialConnections = (val: ISocialConnection[]) => action(
+  SET_SOCIAL_ACCOUNT_CONNECTIONS,
+  val
+)
+
+export const setSocialConnection = (
+  provider: SocialProvider,
+  val: unknown
+) => action(
+  SET_SOCIAL_ACCOUNT_CONNECTION, {
+  provider,
+  val
+})
+
+
+
+export const setUserLoggedIn = (val: boolean) => action(
+  SET_USER_LOGGED_IN,
+  val
+)
+
+export const fetchingUser = createAsyncAction(
+  FETCH_USER_START,
+  FETCH_USER_SUCCESS,
+  FETCH_USER_FAILURE
+)<void, IUser, void>()
+
+export const toggleDarkMode = () => action(TOGGLE_DARK_MODE)
+
+export const updateEmail = createAsyncAction(
+  UPDATE_EMAIL_START,
+  UPDATE_EMAIL_SUCCESS,
+  UPDATE_EMAIL_FAILURE
+)<void, IUser, void>()
+
+
+
+type UserActions =
+| ReturnType<typeof login>
+| ReturnType<typeof setLoggingOut>
+| ReturnType<typeof setLoadingUserStats>
+| ReturnType<typeof setUserStats>
+| ReturnType<typeof updateTeamID>
+| ReturnType<typeof setSocialConnections>
+| ReturnType<typeof setSocialConnection>
+| ReturnType<typeof setUserLoggedIn>
+| ActionType<typeof fetchingUser>
+| ReturnType<typeof toggleDarkMode>
+| ActionType<typeof updateEmail>
+
+
 
 /** User state from API */
 export interface IUser {
@@ -25,6 +130,11 @@ export interface ISocialConnection {
   readonly uid?: string
   readonly last_login?: string
   readonly date_joined?: string
+}
+
+export interface ISocialAccountsState {
+  readonly github: number | null
+  readonly gitlab: number | null
 }
 
 export interface IUserState {
@@ -65,64 +175,72 @@ const initialState: IUserState = {
   updatingEmail: false
 }
 
-export const user = (state: IUserState = initialState, action: any) => {
+export const user = (state: IUserState = initialState, action: UserActions): IUserState => {
   switch (action.type) {
-    case t.SET_USER_STATS:
-      return { ...state, stats: action.val }
-    case t.SET_LOADING_USER_STATS:
-      return { ...state, stats_loading: action.val }
-    case t.SET_LOGGING_OUT:
+    case SET_USER_STATS:
+      return { ...state, stats: action.payload }
+    case SET_LOADING_USER_STATS:
+      return { ...state, stats_loading: action.payload }
+    case SET_LOGGING_OUT:
       raven.setUserContext()
-      return { ...state, loggingOut: action.val }
-    case t.SET_SOCIAL_ACCOUNT_CONNECTIONS:
-    case t.SET_SOCIAL_ACCOUNT_CONNECTION:
+      return { ...state, loggingOut: action.payload }
+    case SET_SOCIAL_ACCOUNT_CONNECTIONS:
       return {
         ...state,
-        socialAccountConnections: socialAccounts(
-          state.socialAccountConnections,
-          action
-        )
+        socialAccountConnections: {
+          ...state.socialAccountConnections,
+          ...action.payload.reduce(
+            (acc, { provider, id }) => ({ ...acc, [provider]: id }),
+            {}
+          )
+        }
       }
-    case t.SET_TEAM_ID:
+    case SET_SOCIAL_ACCOUNT_CONNECTION:
+      return {
+        ...state,
+        socialAccountConnections: {
+          ...state.socialAccountConnections,
+          [action.payload.provider]: action.payload.val
+        }
+      }
+    case SET_TEAM_ID:
       return { ...state, teamID: action.payload }
-    case t.SET_USER_LOGGED_IN:
-      return { ...state, loggedIn: action.val }
-    case t.TOGGLE_DARK_MODE:
+    case SET_USER_LOGGED_IN:
+      return { ...state, loggedIn: action.payload }
+    case TOGGLE_DARK_MODE:
       const newDarkMode = !state.darkMode
       setDarkModeClass(newDarkMode)
       return { ...state, darkMode: newDarkMode }
-    case t.UPDATE_EMAIL_START:
+    case UPDATE_EMAIL_START:
       return { ...state, updatingEmail: false }
-    case t.UPDATE_EMAIL_FAILURE:
+    case UPDATE_EMAIL_FAILURE:
       return { ...state, updatingEmail: false }
-    case t.FETCH_USER_START:
+    case FETCH_USER_START:
       return { ...state, loading: true, error: false }
-    case t.FETCH_USER_FAILURE:
+    case FETCH_USER_FAILURE:
       return { ...state, loading: false, error: true }
     // TODO(chdsbd): Replace login usage with FETCH_USER_SUCCESS
-    case t.LOG_IN:
-    case t.UPDATE_EMAIL_SUCCESS:
-    case t.FETCH_USER_SUCCESS:
-      // TODO(chdsbd): Fix when we have union of actions for type refinement.
-      const val = action.payload as IUser
+    case LOG_IN:
+    case UPDATE_EMAIL_SUCCESS:
+    case FETCH_USER_SUCCESS:
       raven.setUserContext({
         ...{
           email: state.email,
           id: state.id
         },
-        email: val.email,
-        id: val.id
+        email: action.payload.email,
+        id: action.payload.id
       })
       return {
         ...state,
         loading: false,
         loggedIn: true,
-        hasUsablePassword: val.has_usable_password,
-        email: val.email,
-        avatarURL: val.avatar_url,
-        id: val.id,
-        darkMode: val.dark_mode_enabled,
-        teamID: val.selected_team,
+        hasUsablePassword: !!action.payload.has_usable_password,
+        email: action.payload.email,
+        avatarURL: action.payload.avatar_url,
+        id: action.payload.id,
+        darkMode: action.payload.dark_mode_enabled,
+        teamID: action.payload.selected_team,
         updatingEmail: false
       }
     default:
