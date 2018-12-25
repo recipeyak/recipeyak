@@ -8,7 +8,6 @@ import {
   settingUserTeamLevel,
   deletingMembership,
   Dispatch,
-  GetState
 } from "../store/actions"
 import { ITeam, IMember } from "../store/reducers/teams"
 import { RootState } from "../store/store"
@@ -30,7 +29,7 @@ const mapStateToProps = (
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   handleUserLevelChange: settingUserTeamLevel(dispatch),
-  deleteMembership: deletingMembership(dispatch, getState)
+  deleteMembership: deletingMembership(dispatch)
 })
 
 interface IMemberRowProps {

@@ -29,11 +29,11 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     fetchData: () => {
-      dispatch(fetchTeams())
-      dispatch(fetchUser())
+      fetchTeams(dispatch)()
+      fetchUser(dispatch)()
     },
     logout: () => {
-      dispatch(loggingOut())
+      loggingOut(dispatch)()
     },
     toggleDarkMode: () => dispatch(toggleDarkMode())
   }

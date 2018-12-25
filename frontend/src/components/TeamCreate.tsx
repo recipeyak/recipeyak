@@ -14,8 +14,7 @@ const mapStateToProps = (state: RootState) => ({
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  createTeam: (name: string, emails: string[], level: IMember["level"]) =>
-    dispatch(creatingTeam(name, emails, level))
+  createTeam: creatingTeam(dispatch)
 })
 
 interface ITeamCreateProps {

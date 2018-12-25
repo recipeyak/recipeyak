@@ -2,8 +2,6 @@ import { uniq, omit } from "lodash"
 import isSameDay from "date-fns/is_same_day"
 
 import { action } from "typesafe-actions";
-import { Action } from "../store";
-
 
 const SET_CALENDAR_RECIPES = "SET_CALENDAR_RECIPES"
 const SET_CALENDAR_RECIPE = "SET_CALENDAR_RECIPE"

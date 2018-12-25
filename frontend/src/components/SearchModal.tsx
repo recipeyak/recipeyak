@@ -121,9 +121,7 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    search: (query: string) => {
-      dispatch(searchRecipes(query))
-    }
+    search: searchRecipes(dispatch)
   }
 }
 

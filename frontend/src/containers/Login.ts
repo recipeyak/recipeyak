@@ -11,8 +11,7 @@ import { setErrorLogin } from "../store/reducers/error";
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    login: (email: string, password: string, url: string) =>
-      dispatch(logUserIn(email, password, url)),
+    login: logUserIn(dispatch),
     clearErrors: () => dispatch(setErrorLogin({})),
     setFromUrl: (url: string) => dispatch(setFromUrl(url))
   }

@@ -176,10 +176,8 @@ class Card extends React.Component<ICardProps & ICollectedProps, {}> {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  update: (recipeID: number, stepID: number, step: { text?: string }) =>
-    dispatch(updatingStep(recipeID, stepID, step)),
-  delete: (recipeID: IRecipe["id"], stepID: IStep["id"]) =>
-    dispatch(deletingStep(recipeID, stepID))
+  update:  updatingStep(dispatch),
+  delete: deletingStep(dispatch)
 })
 
 interface IStepBodyBasic {

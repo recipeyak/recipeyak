@@ -12,34 +12,28 @@ import {
 
 import Settings from "../components/Settings"
 import { RootState } from "../store/store"
-import { SocialProvider } from "../store/reducers/user"
 
 const mapStateToProps = (state: RootState) => {
-  // HACK(sbdchd): we need to type the store so we can stop socialAccountConnections from becoming undefined
-  const socialAccountConnections = state.user.socialAccountConnections || {}
   return {
     avatarURL: state.user.avatarURL,
     email: state.user.email,
     updatingEmail: state.user.updatingEmail,
     hasPassword: state.user.hasUsablePassword,
-    socialAccountConnections,
+    socialAccountConnections: state.user.socialAccountConnections,
     loading: state.user.loading
   }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    logout: () => {
-      dispatch(loggingOut())
-    },
+    logout: loggingOut(dispatch),
     fetchData: () => {
-      dispatch(fetchUser())
-      dispatch(fetchSocialConnections())
+      fetchUser(dispatch)()
+      fetchSocialConnections(dispatch)()
     },
-    disconnectAccount: (provider: SocialProvider, id: number) =>
-      dispatch(disconnectSocialAccount(provider, id)),
-    deleteUserAccount: () => dispatch(deleteUserAccount()),
-    updateEmail: (email: string) => dispatch(updatingEmail(email))
+    disconnectAccount: disconnectSocialAccount(dispatch),
+    deleteUserAccount: deleteUserAccount(dispatch),
+    updateEmail:  updatingEmail(dispatch)
   }
 }
 

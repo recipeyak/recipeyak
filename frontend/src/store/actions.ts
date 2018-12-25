@@ -161,7 +161,7 @@ export const showNotificationWithTimeout = (dispatch: Dispatch) => ({
 
 
 
-export const loggingOut = () => (dispatch: Dispatch) => {
+export const loggingOut = (dispatch: Dispatch) => () =>  {
   dispatch(setLoggingOut(true))
   return http
     .post("/api/v1/rest-auth/logout/", {})
@@ -184,7 +184,7 @@ const emailExists = (err: AxiosError) =>
 const second = 1000
 
 
-export const updatingEmail = (email: string) => (dispatch: Dispatch) => {
+export const updatingEmail = (dispatch: Dispatch) =>(email: string) =>  {
   dispatch(updateEmail.request())
   return api
     .updateUser({ email })
@@ -213,10 +213,9 @@ export const updatingEmail = (email: string) => (dispatch: Dispatch) => {
 
 export const updatingTeamID =(
   dispatch: Dispatch,
-  getState: GetState
 ) => (id: number | null) =>  {
   // store old id so we can undo
-  const oldID = getState().user.teamID
+  const oldID = store.getState().user.teamID
   dispatch(updateTeamID(id))
   api
     .updateUser({ selected_team: id })
@@ -241,7 +240,7 @@ export const fetchUser = (dispatch: Dispatch) => () =>  {
     })
 }
 
-export const fetchSocialConnections = () => (dispatch: Dispatch) => {
+export const fetchSocialConnections =(dispatch: Dispatch) => () =>  {
   return http
     .get("/api/v1/rest-auth/socialaccounts/")
     .then(res => {
@@ -252,10 +251,10 @@ export const fetchSocialConnections = () => (dispatch: Dispatch) => {
     })
 }
 
-export const disconnectSocialAccount = (
+export const disconnectSocialAccount = (dispatch: Dispatch) =>(
   provider: SocialProvider,
   id: number
-) => (dispatch: Dispatch) => {
+) =>  {
   return http
     .post(`/api/v1/rest-auth/socialaccounts/${id}/disconnect/`, {
       id
@@ -289,11 +288,11 @@ export const fetchUserStats = (dispatch: Dispatch) => () =>  {
     })
 }
 
-export const updatingPassword = (
+export const updatingPassword = (dispatch: Dispatch) =>(
   password1: string,
   password2: string,
   oldPassword: string
-) => (dispatch: Dispatch) => {
+) =>  {
   dispatch(setLoadingPasswordUpdate(true))
   dispatch(setErrorPasswordUpdate({}))
   return http
@@ -328,12 +327,9 @@ export const updatingPassword = (
 }
 
 
-export const fetchShoppingList = (
-  dispatch: Dispatch,
-  getState: GetState
-) =>  (teamID: TeamID, start?: Date, end?: Date) => {
-  const startDay = start || getState().shoppinglist.startDay
-  const endDay = end || getState().shoppinglist.endDay
+export const fetchShoppingList = ( dispatch: Dispatch) =>  (teamID: TeamID, start?: Date, end?: Date) => {
+  const startDay = start || store.getState().shoppinglist.startDay
+  const endDay = end || store.getState().shoppinglist.endDay
   dispatch(setLoadingShoppingList(true))
   dispatch(setShoppingListError(false))
   const url =
@@ -452,7 +448,7 @@ const searchStore: ISearchStore = {
   lastRequest: null
 }
 
-export const searchRecipes = (query: string) => (dispatch: Dispatch) => {
+export const searchRecipes = (dispatch: Dispatch) => (query: string) =>  {
   // It's visually pleasing to have all the results disappear when
   // the search query is cleared.
   if (query === "") {
@@ -627,11 +623,11 @@ export const deletingIngredient = ( dispatch: Dispatch) =>(recipeID: number, ing
       throw err
     })
 }
-export const updatingStep = (
+export const updatingStep = (dispatch: Dispatch) =>(
   recipeID: number,
   stepID: number,
   { text, position }: { text?: string; position?: number }
-) => (dispatch: Dispatch) => {
+) =>  {
   dispatch(setUpdatingStep(recipeID, stepID, true))
   const data: { [key: string]: unknown } = {
     text,
@@ -657,9 +653,7 @@ export const updatingStep = (
     })
 }
 
-export const deletingStep = (recipeID: number, stepID: number) => (
-  dispatch: Dispatch
-) => {
+export const deletingStep =( dispatch: Dispatch) => (recipeID: number, stepID: number) =>  {
   dispatch(setRemovingStep(recipeID, stepID, true))
   return http
     .delete(`/api/v1/recipes/${recipeID}/steps/${stepID}/`)
@@ -673,11 +667,11 @@ export const deletingStep = (recipeID: number, stepID: number) => (
     })
 }
 
-export const logUserIn = (
+export const logUserIn = (dispatch: Dispatch) =>(
   email: string,
   password: string,
   redirectUrl: string = ""
-) => (dispatch: Dispatch) => {
+) =>  {
   dispatch(setLoadingLogin(true))
   dispatch(setErrorLogin({}))
   dispatch(clearNotification())
@@ -707,11 +701,11 @@ export const logUserIn = (
     })
 }
 
-export const socialLogin = (
+export const socialLogin = (dispatch: Dispatch) =>(
   service: SocialProvider,
   token: string,
   redirectUrl: string = ""
-) => (dispatch: Dispatch) => {
+) =>  {
   return anon
     .post(`/api/v1/rest-auth/${service}/`, {
       code: token
@@ -736,9 +730,7 @@ export const socialLogin = (
     })
 }
 
-export const socialConnect = (service: SocialProvider, code: unknown) => (
-  dispatch: Dispatch
-) => {
+export const socialConnect = ( dispatch: Dispatch) => (service: SocialProvider, code: unknown) =>  {
   return http
     .post(`/api/v1/rest-auth/${service}/connect/`, {
       code
@@ -752,9 +744,7 @@ export const socialConnect = (service: SocialProvider, code: unknown) => (
     })
 }
 
-export const signup = (email: string, password1: string, password2: string) => (
-  dispatch: Dispatch
-) => {
+export const signup = ( dispatch: Dispatch) =>(email: string, password1: string, password2: string) =>  {
   dispatch(setLoadingSignup(true))
   // clear previous signup errors
   dispatch(setErrorSignup({}))
@@ -800,7 +790,7 @@ export const deletingRecipe = (dispatch: Dispatch) => (id: number) =>  {
     })
 }
 
-export const reset = (email: string) => (dispatch: Dispatch) => {
+export const reset = (dispatch: Dispatch) =>(email: string) =>  {
   dispatch(setLoadingReset(true))
   dispatch(setErrorReset({}))
   dispatch(clearNotification())
@@ -895,7 +885,7 @@ export const resetConfirmation =(dispatch: Dispatch) => (
     })
 }
 
-export const fetchTeam = (id: ITeam["id"]) => (dispatch: Dispatch) => {
+export const fetchTeam =(dispatch: Dispatch) => (id: ITeam["id"]) =>  {
   dispatch(setLoadingTeam(id, true))
   return http
     .get(`/api/v1/t/${id}/`)
@@ -912,7 +902,7 @@ export const fetchTeam = (id: ITeam["id"]) => (dispatch: Dispatch) => {
     })
 }
 
-export const fetchTeamMembers = (id: number) => (dispatch: Dispatch) => {
+export const fetchTeamMembers =(dispatch: Dispatch) => (id: number) =>  {
   dispatch(setLoadingTeamMembers(id, true))
   return http
     .get(`/api/v1/t/${id}/members/`)
@@ -926,7 +916,7 @@ export const fetchTeamMembers = (id: number) => (dispatch: Dispatch) => {
     })
 }
 
-export const fetchTeamRecipes = (id: number) => (dispatch: Dispatch) => {
+export const fetchTeamRecipes = (dispatch: Dispatch) =>(id: number) =>  {
   dispatch(setLoadingTeamRecipes(id, true))
   return http
     .get(`/api/v1/t/${id}/recipes/`)
@@ -972,7 +962,7 @@ export const settingUserTeamLevel = (dispatch: Dispatch) => (
     })
 }
 
-export const deletingMembership = (
+export const deletingMembership = (dispatch: Dispatch) => (
   teamID: number,
   id: number,
   leaving: boolean = false
@@ -981,7 +971,7 @@ export const deletingMembership = (
   return http
     .delete(`/api/v1/t/${teamID}/members/${id}/`)
     .then(() => {
-      const message = "left team " + getState().teams[teamID].name
+      const message = "left team " + store.getState().teams[teamID].name
       dispatch(deleteMembership(teamID, id))
       if (leaving) {
         dispatch(push("/"))
@@ -1005,15 +995,14 @@ export const deletingMembership = (
     })
 }
 
-export const deletingTeam = (teamID: number) => (
+export const deletingTeam = (
   dispatch: Dispatch,
-  getState: GetState
-) => {
+) =>  (teamID: number) =>{
   return http
     .delete(`/api/v1/t/${teamID}`)
     .then(() => {
       dispatch(push("/"))
-      const teamName = getState().teams[teamID].name
+      const teamName = store.getState().teams[teamID].name
         showNotificationWithTimeout(dispatch)({
           message: `Team deleted (${teamName})`,
           level: "success",
@@ -1045,11 +1034,11 @@ export const deletingTeam = (teamID: number) => (
     })
 }
 
-export const sendingTeamInvites = (
+export const sendingTeamInvites = (dispatch: Dispatch) =>(
   teamID: number,
   emails: any[],
   level: unknown
-) => (dispatch: Dispatch) => {
+) =>  {
   dispatch(setSendingTeamInvites(teamID, true))
   return http
     .post(`/api/v1/t/${teamID}/invites/`, { emails, level })
@@ -1085,11 +1074,11 @@ export const fetchTeams = (dispatch: Dispatch) => () => {
     })
 }
 
-export const creatingTeam = (
+export const creatingTeam = (dispatch: Dispatch) =>(
   name: string,
   emails: string[],
   level: unknown
-) => (dispatch: Dispatch) => {
+) =>  {
   dispatch(setCreatingTeam(true))
   return http
     .post("/api/v1/t/", { name, emails, level })
@@ -1104,9 +1093,7 @@ export const creatingTeam = (
     })
 }
 
-export const updatingTeam = (teamId: ITeam["id"], teamKVs: unknown) => (
-  dispatch: Dispatch
-) => {
+export const updatingTeam = ( dispatch: Dispatch) => (teamId: ITeam["id"], teamKVs: unknown) =>  {
   return http
     .patch(`/api/v1/t/${teamId}/`, teamKVs)
     .then(res => {
@@ -1204,7 +1191,7 @@ export const decliningInvite =(dispatch: Dispatch) => (id: number) =>  {
     })
 }
 
-export const deleteUserAccount = () => (dispatch: Dispatch) => {
+export const deleteUserAccount =(dispatch: Dispatch) => () =>  {
   return http
     .delete("/api/v1/user/")
     .then(() => {
@@ -1228,7 +1215,7 @@ export const deleteUserAccount = () => (dispatch: Dispatch) => {
     })
 }
 
-export const reportBadMerge = () => (dispatch: Dispatch) => {
+export const reportBadMerge =(dispatch: Dispatch) => () =>  {
   return http
     .post("/api/v1/report-bad-merge", {})
     .then(() => {
@@ -1273,13 +1260,13 @@ export const fetchCalendar =(
       dispatch(setCalendarError(true))
     })
 }
-export const addingScheduledRecipe = (dispatch: Dispatch, getState: GetState) => (
+export const addingScheduledRecipe = (dispatch: Dispatch) => (
   recipeID: IRecipe["id"],
   teamID: TeamID,
   on: Date,
   count: number | string
 ) =>  {
-  const recipe = getState().recipes[recipeID]
+  const recipe = store.getState().recipes[recipeID]
   dispatch(setSchedulingRecipe(recipeID, true))
   const id = uuid4()
   const data = {
@@ -1314,11 +1301,11 @@ export const addingScheduledRecipe = (dispatch: Dispatch, getState: GetState) =>
       dispatch(setSchedulingRecipe(recipeID, false))
     })
 }
-export const deletingScheduledRecipe = (dispatch: Dispatch, getState: GetState) =>(
+export const deletingScheduledRecipe = (dispatch: Dispatch) =>(
   id: ICalRecipe["id"],
   teamID: TeamID
 ) =>  {
-  const recipe = getState().calendar[id]
+  const recipe = store.getState().calendar[id]
   dispatch(deleteCalendarRecipe(id))
 
   const url =
@@ -1331,23 +1318,23 @@ export const deletingScheduledRecipe = (dispatch: Dispatch, getState: GetState) 
   })
 }
 
-export const moveScheduledRecipe = (dispatch: Dispatch, getState: GetState) =>(
+export const moveScheduledRecipe = (dispatch: Dispatch) =>(
   id: ICalRecipe["id"],
   teamID: TeamID,
-  to: string
+  to: Date
 ) =>  {
-  const from = getState().calendar[id]
-  const existing = getState()
+  const from = store.getState().calendar[id]
+  const existing = store.getState()
     .calendar.allIds.filter((x: unknown) => x !== id)
-    .map((x: any) => getState().calendar[x])
-    .filter((x: any) => isSameDay(x.on, to))
-    .filter((x: any) => {
+    .map(x => store.getState().calendar[x])
+    .filter(x => isSameDay(x.on, to))
+    .filter(x => {
       if (teamID === "personal") {
         return x.user != null
       }
       return x.team === teamID
     })
-    .find((x: any) => x.recipe.id === from.recipe.id)
+    .find(x => x.recipe.id === from.recipe.id)
 
   const sourceURL =
     teamID === "personal"
@@ -1377,20 +1364,20 @@ export const moveScheduledRecipe = (dispatch: Dispatch, getState: GetState) =>(
 }
 
 
-export const updatingScheduledRecipe = (dispatch: Dispatch, getState: GetState) => (
+export const updatingScheduledRecipe = (dispatch: Dispatch) => (
   id: ICalRecipe["id"],
   teamID: ITeam["id"] | "personal",
-  data: { count: string | number }
+  count: ICalRecipe["count"]
 ) =>  {
-  if (parseInt(data.count.toString(), 10) <= 0) {
-    return deletingScheduledRecipe(id, teamID)(dispatch, getState)
+  if (parseInt(count.toString(), 10) <= 0) {
+    return deletingScheduledRecipe(dispatch)(id, teamID)
   }
 
   const url =
     teamID === "personal"
       ? `/api/v1/calendar/${id}/`
       : `/api/v1/t/${teamID}/calendar/${id}/`
-  return http.patch(url, data).then(res => {
+  return http.patch(url, { count }).then(res => {
     dispatch(setCalendarRecipe(res.data))
   })
 }

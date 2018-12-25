@@ -8,7 +8,6 @@ import {
 
 import AddRecipe, {
   IIngredientBasic,
-  IRecipeBasic,
   IStepBasic
 } from "../components/AddRecipe"
 

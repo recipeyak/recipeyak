@@ -57,13 +57,12 @@ function mapStateToProps(state: RootState) {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: (teamID: ITeam["id"] | "personal", start: Date, end: Date) =>
-    dispatch(fetchShoppingList(teamID, start, end)),
+  fetchData: fetchShoppingList(dispatch),
   setStartDay: (date: Date) => dispatch(setSelectingStart(date)),
   setEndDay: (date: Date) => dispatch(setSelectingEnd(date)),
-  reportBadMerge: () => dispatch(reportBadMerge()),
+  reportBadMerge: reportBadMerge(dispatch),
   sendToast: (message: string) =>
-    dispatch(showNotificationWithTimeout({ message, level: "info" }))
+    showNotificationWithTimeout(dispatch)({ message, level: "info" })
 })
 
 interface IShoppingListProps {

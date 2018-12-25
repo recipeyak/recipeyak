@@ -15,7 +15,6 @@ import {
   fetchShoppingList,
   fetchRecipeList,
   Dispatch,
-  GetState
 } from "../store/actions"
 
 import { pyFormat, daysFromSunday, daysUntilSaturday } from "../date"
@@ -93,7 +92,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   ) => {
     return Promise.all([
       fetchRecipeList(dispatch)(teamID),
-      fetchShoppingList(dispatch, getState)(teamID, start, end)
+      fetchShoppingList(dispatch)(teamID, start, end)
     ])
   }
 })
@@ -106,8 +105,8 @@ interface ICalendarProps extends ScheduleRouteParams {
   readonly fetchTeams: () => void
   readonly navTo: (url: string) => void
   readonly fetchData: (
+    teamID: ITeam["id"] | "personal",
     month: Date,
-    teamID: ITeam["id"] | "personal"
   ) => Promise<void>
   readonly refetchShoppingListAndRecipes: (
     teamID: ITeam["id"] | "personal",
@@ -139,12 +138,12 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
   componentDidMount() {
     this.props.fetchTeams()
     this.props
-      .fetchData(this.state.month, this.props.teamID)
+      .fetchData(this.props.teamID, this.state.month)
       .then(() => this.setState({ initialLoad: true }))
   }
 
   refetchData = (teamID: ITeam["id"] | "personal" = this.props.teamID) => {
-    this.props.fetchData(this.state.month, teamID)
+    this.props.fetchData(teamID, this.state.month)
     this.props.refetchShoppingListAndRecipes(
       teamID,
       this.props.startDay,
@@ -156,14 +155,14 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
     this.setState(({ month }) => ({
       month: subMonths(month, 1)
     }))
-    this.props.fetchData(this.state.month, this.props.teamID)
+    this.props.fetchData(this.props.teamID, this.state.month)
   }
 
   nextMonth = () => {
     this.setState(({ month }) => ({
       month: addMonths(month, 1)
     }))
-    this.props.fetchData(this.state.month, this.props.teamID)
+    this.props.fetchData(this.props.teamID, this.state.month)
   }
 
   currentMonth = () => {

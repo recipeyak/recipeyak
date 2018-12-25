@@ -33,15 +33,18 @@ import React from "react"
 import { connect } from "react-redux"
 
 import Card from "./Step"
-import { updatingStep } from "../store/actions"
+import { updatingStep, Dispatch } from "../store/actions"
 import { IRecipe, IStep } from "../store/reducers/recipes"
-import { AnyAction } from "redux"
 
 interface IStepContainerProps {
   readonly steps: IStep[]
   readonly recipeID: IRecipe["id"]
-  // TODO(sbdchd): this is should be type correctly once the store has been fixed
-  readonly dispatch: (func: AnyAction) => void
+  readonly dispatch: (func: Dispatch) => void
+  readonly updatingStep: (
+    recipeID: number,
+    stepID: number,
+    { text, position }: { text?: string; position?: number }
+  ) => void
 }
 
 interface IStepContainerState {
@@ -113,14 +116,11 @@ class StepContainer extends React.Component<
           ]
         }
       },
-      () =>
-        this.props.dispatch(
-          // TODO(sbdchd): this is a hack until we can remove redux-thunk
-          updatingStep(this.props.recipeID, stepID, {
+      () => {
+          this.props.updatingStep(this.props.recipeID, stepID, {
             position: newPosition
-          }) as any
-        )
-    )
+          })
+        })
   }
 
   render() {
@@ -147,4 +147,10 @@ class StepContainer extends React.Component<
   }
 }
 
-export default connect()(StepContainer)
+function mapDispatchToProps(dispatch: Dispatch) {
+  return {
+    updatingStep: updatingStep(dispatch)
+  }
+}
+
+export default connect(null, mapDispatchToProps)(StepContainer)
