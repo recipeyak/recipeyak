@@ -57,8 +57,6 @@ describe("search", () => {
 
     expect(search(beforeState, a.decrLoadingSearch())).toEqual(afterState)
 
-    expect(() =>
-      search({ loading: 0, results: [] }, a.decrLoadingSearch())
-    ).toThrow()
+    expect(search({ loading: 0, results: [] }, a.decrLoadingSearch()).loading).toEqual(0)
   })
 })
