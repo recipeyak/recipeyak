@@ -209,11 +209,6 @@ export const setUserStats = (val: unknown) => ({
   val
 })
 
-export const setFromUrl = (val: string) => ({
-  type: t.SET_FROM_URL,
-  val
-})
-
 const emailExists = (err: AxiosError) =>
   err.response &&
   err.response.data.email != null &&

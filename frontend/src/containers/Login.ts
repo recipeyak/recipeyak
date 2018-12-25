@@ -3,11 +3,11 @@ import { connect } from "react-redux"
 import {
   logUserIn,
   setErrorLogin,
-  setFromUrl,
   Dispatch
 } from "../store/actions"
 import Login from "../components/Login"
 import { RootState } from "../store/store"
+import { setFromUrl } from "../store/reducers/auth";
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {

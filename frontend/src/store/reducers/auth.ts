@@ -1,5 +1,9 @@
-import * as t from "../actionTypes"
-import { AnyAction } from "redux"
+import { action } from "typesafe-actions";
+
+const SET_FROM_URL = "SET_FROM_URL"
+
+export const setFromUrl = (val: string) => action( SET_FROM_URL, val)
+type AuthActions = ReturnType<typeof setFromUrl >
 
 export interface IAuthState {
   readonly fromUrl: string
@@ -9,10 +13,12 @@ const initialState: IAuthState = {
   fromUrl: ""
 }
 
-const auth = (state: IAuthState = initialState, action: AnyAction) => {
+
+
+const auth = (state: IAuthState = initialState, action: AuthActions): IAuthState => {
   switch (action.type) {
-    case t.SET_FROM_URL:
-      return { ...state, fromUrl: action.val }
+    case SET_FROM_URL:
+      return { ...state, fromUrl: action.payload }
     default:
       return state
   }
