@@ -1,5 +1,5 @@
 import error, { initialState } from "./error"
-import * as a from "../actions"
+import * as a from "./error"
 
 describe("error", () => {
   it("sets login error", () => {
@@ -73,17 +73,19 @@ describe("error", () => {
   it("sets addRecipe error", () => {
     const notErrorState = {
       ...initialState,
-      addRecipe: false
+      addRecipe: {}
     }
 
     const errorState = {
       ...initialState,
-      addRecipe: true
+      addRecipe: {
+        errorWithName: true
+      }
     }
 
-    expect(error(notErrorState, a.setErrorAddRecipe(true))).toEqual(errorState)
+    expect(error(notErrorState, a.setErrorAddRecipe({ errorWithName: true }))).toEqual(errorState)
 
-    expect(error(errorState, a.setErrorAddRecipe(false))).toEqual(notErrorState)
+    expect(error(errorState, a.setErrorAddRecipe({}))).toEqual(notErrorState)
   })
 
   it("sets reset error", () => {

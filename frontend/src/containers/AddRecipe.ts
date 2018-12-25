@@ -2,8 +2,6 @@ import { connect } from "react-redux"
 
 import {
   postNewRecipe,
-  setErrorAddRecipe,
-
   fetchTeams,
   Dispatch
 } from "../store/actions"
@@ -30,6 +28,7 @@ import {
   removeAddRecipeFormStep,
   updateAddRecipeFormStep,
   clearAddRecipeForm } from "../store/reducers/addrecipe";
+import { setErrorAddRecipe } from "../store/reducers/error";
 
 const mapStateToProps = (state: RootState) => ({
   name: state.addrecipe.name,

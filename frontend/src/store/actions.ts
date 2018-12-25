@@ -51,6 +51,7 @@ import { clearSearchResults, incrLoadingSearch, decrLoadingSearch, setSearchResu
 import { clearAddRecipeForm } from "./reducers/addrecipe";
 import { setShoppingList, setLoadingShoppingList, setShoppingListError } from "./reducers/shoppinglist";
 import { setLoadingPasswordUpdate, setErrorPasswordUpdate } from "./reducers/passwordChange";
+import { setErrorSocialLogin, setErrorLogin, setErrorRecipes, setErrorSignup, setErrorReset, setErrorResetConfirmation, setErrorAddRecipe } from "./reducers/error";
 
 const config = { timeout: 15000 }
 
@@ -413,11 +414,6 @@ export const addRecipe = (recipe: unknown) => ({
   recipe
 })
 
-export const setErrorAddRecipe = (val: unknown) => ({
-  type: t.SET_ERROR_ADD_RECIPE,
-  val
-})
-
 export const postNewRecipe = (recipe: IRecipeBasic) => (dispatch: Dispatch) => {
   dispatch(setLoadingAddRecipe(true))
   dispatch(setErrorAddRecipe({}))
@@ -482,11 +478,6 @@ export const fetchRecipe = (id: number) => (dispatch: Dispatch) => {
 export const setRecipes = (recipes: unknown[]) => ({
   type: t.SET_RECIPES,
   recipes
-})
-
-export const setErrorRecipes = (val: unknown) => ({
-  type: t.SET_ERROR_RECIPES,
-  val
 })
 
 export const fetchRecentRecipes = () => (dispatch: Dispatch) => {
@@ -907,11 +898,6 @@ export const deletingStep = (recipeID: number, stepID: number) => (
     })
 }
 
-export const setErrorLogin = (val: unknown) => ({
-  type: t.SET_ERROR_LOGIN,
-  val
-})
-
 export const logUserIn = (
   email: string,
   password: string,
@@ -945,11 +931,6 @@ export const logUserIn = (
       }
     })
 }
-
-export const setErrorSocialLogin = (val: unknown) => ({
-  type: t.SET_ERROR_SOCIAL_LOGIN,
-  val
-})
 
 export const socialLogin = (
   service: SocialProvider,
@@ -995,11 +976,6 @@ export const socialConnect = (service: SocialProvider, code: unknown) => (
       throw err
     })
 }
-
-export const setErrorSignup = (val: unknown) => ({
-  type: t.SET_ERROR_SIGNUP,
-  val
-})
 
 export const signup = (email: string, password1: string, password2: string) => (
   dispatch: Dispatch
@@ -1061,11 +1037,6 @@ export const deletingRecipe = (id: number) => (dispatch: Dispatch) => {
     })
 }
 
-export const setErrorReset = (val: unknown) => ({
-  type: t.SET_ERROR_RESET,
-  val
-})
-
 export const reset = (email: string) => (dispatch: Dispatch) => {
   dispatch(setLoadingReset(true))
   dispatch(setErrorReset({}))
@@ -1111,11 +1082,6 @@ export const reset = (email: string) => (dispatch: Dispatch) => {
       )
     })
 }
-
-export const setErrorResetConfirmation = (val: unknown) => ({
-  type: t.SET_ERROR_RESET_CONFIRMATION,
-  val
-})
 
 export const resetConfirmation = (
   uid: string,
