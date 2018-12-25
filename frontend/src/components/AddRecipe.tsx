@@ -95,7 +95,7 @@ export default class AddRecipe extends React.Component<
     step: ""
   }
 
-  componentWillMount = () => {
+  componentDidMount() {
     this.props.clearErrors()
     this.props.fetchData()
   }

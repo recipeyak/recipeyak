@@ -5,7 +5,6 @@ import {
   compose,
   Reducer
 } from "redux"
-import thunk from "redux-thunk"
 import throttle from "lodash/throttle"
 
 import createHistory from "history/createBrowserHistory"
@@ -119,19 +118,43 @@ export function rootReducer(state: IState | undefined, action: Action): IState {
   return recipeApp(state, action)
 }
 
-const defaultData = loadState()
-
 export const history = createHistory()
 const router = routerMiddleware(history)
 
-const composeEnhancers =
+const composeEnhancers: typeof compose =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+
+// We need an empty store for the unit tests
+export const emptyStore = createStore(
+  rootReducer,
+  {},
+  composeEnhancers(applyMiddleware(router))
+)
+
+// NOTE(sbdchd): this is hacky, we should validate the local storage state before using it
+const defaultData = (): RootState => {
+  const saved: undefined | Partial<RootState> = loadState()
+  const empty = emptyStore.getState()
+
+  if (saved == null) {
+    return empty
+  }
+
+  return {
+    ...empty,
+    ...saved,
+    user: {
+      ...empty.user,
+      ...saved.user
+    }
+  }
+}
 
 // A "hydrated" store is nice for UI development
 export const store = createStore(
   rootReducer,
-  defaultData,
-  composeEnhancers(applyMiddleware(thunk, router))
+  defaultData(),
+  composeEnhancers(applyMiddleware(router))
 )
 
 store.subscribe(
@@ -151,10 +174,4 @@ store.subscribe(
   }, 1000)
 )
 
-// We need an empty store for the unit tests
-export const emptyStore = createStore(
-  rootReducer,
-  {},
-  composeEnhancers(applyMiddleware(thunk, router))
-)
 export default store

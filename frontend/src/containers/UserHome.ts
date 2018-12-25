@@ -22,9 +22,9 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchData: () => {
-    fetchRecentRecipes(dispatch)
-    fetchUser(dispatch)
-    fetchUserStats(dispatch)
+    fetchRecentRecipes(dispatch)()
+    fetchUser(dispatch)()
+    fetchUserStats(dispatch)()
   }
 })
 

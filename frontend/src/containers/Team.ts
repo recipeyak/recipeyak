@@ -29,7 +29,7 @@ const mapStateToProps = (state: RootState, props: RouteProps) => {
 
   const recipes = team == null || team.recipes == null ? [] : team.recipes
 
-  const members = team ? team.members : []
+  const members = team == null || team.members == null ? [] : team.members
 
   const teamMembers = Object.values(members)
 

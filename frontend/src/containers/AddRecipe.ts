@@ -41,37 +41,39 @@ const mapStateToProps = (state: RootState) => ({
   loadingTeams: !!state.teams.loading
 })
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  setName: (e: React.ChangeEvent<HTMLInputElement>) =>
-    dispatch(setAddRecipeFormName(e.target.value)),
-  setAuthor: (e: React.ChangeEvent<HTMLInputElement>) =>
-    dispatch(setAddRecipeFormAuthor(e.target.value)),
-  setSource: (e: React.ChangeEvent<HTMLInputElement>) =>
-    dispatch(setAddRecipeFormSource(e.target.value)),
-  setTime: (e: React.ChangeEvent<HTMLInputElement>) =>
-    dispatch(setAddRecipeFormTime(e.target.value)),
-  setServings: (e: React.ChangeEvent<HTMLInputElement>) =>
-    dispatch(setAddRecipeFormServings(e.target.value)),
-  setTeam: (e: React.ChangeEvent<HTMLSelectElement>) =>
-    dispatch(setAddRecipeFormTeam(e.target.value)),
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return {
+    setName: (e: React.ChangeEvent<HTMLInputElement>) =>
+      dispatch(setAddRecipeFormName(e.target.value)),
+    setAuthor: (e: React.ChangeEvent<HTMLInputElement>) =>
+      dispatch(setAddRecipeFormAuthor(e.target.value)),
+    setSource: (e: React.ChangeEvent<HTMLInputElement>) =>
+      dispatch(setAddRecipeFormSource(e.target.value)),
+    setTime: (e: React.ChangeEvent<HTMLInputElement>) =>
+      dispatch(setAddRecipeFormTime(e.target.value)),
+    setServings: (e: React.ChangeEvent<HTMLInputElement>) =>
+      dispatch(setAddRecipeFormServings(e.target.value)),
+    setTeam: (e: React.ChangeEvent<HTMLSelectElement>) =>
+      dispatch(setAddRecipeFormTeam(e.target.value)),
 
-  addIngredient: (x: IIngredientBasic) =>
-    dispatch(addAddRecipeFormIngredient(x)),
-  removeIngredient: (i: number) => dispatch(removeAddRecipeFormIngredient(i)),
-  updateIngredient: (i: number, ingredient: IIngredientBasic) =>
-    dispatch(updateAddRecipeFormIngredient(i, ingredient)),
+    addIngredient: (x: IIngredientBasic) =>
+      dispatch(addAddRecipeFormIngredient(x)),
+    removeIngredient: (i: number) => dispatch(removeAddRecipeFormIngredient(i)),
+    updateIngredient: (i: number, ingredient: IIngredientBasic) =>
+      dispatch(updateAddRecipeFormIngredient(i, ingredient)),
 
-  addStep: (x: IStepBasic) => dispatch(addAddRecipeFormStep(x)),
-  removeStep: (i: number) => dispatch(removeAddRecipeFormStep(i)),
-  updateStep: (_recipeID: number, i: number, step: IStepBasic) =>
-    dispatch(updateAddRecipeFormStep(i, step)),
+    addStep: (x: IStepBasic) => dispatch(addAddRecipeFormStep(x)),
+    removeStep: (i: number) => dispatch(removeAddRecipeFormStep(i)),
+    updateStep: (_recipeID: number, i: number, step: IStepBasic) =>
+      dispatch(updateAddRecipeFormStep(i, step)),
 
-  addRecipe: postNewRecipe(dispatch),
-  clearErrors: () => dispatch(setErrorAddRecipe({})),
-  clearForm: () => dispatch(clearAddRecipeForm()),
+    addRecipe: postNewRecipe(dispatch),
+    clearErrors: () => dispatch(setErrorAddRecipe({})),
+    clearForm: () => dispatch(clearAddRecipeForm()),
 
-  fetchData: fetchTeams(dispatch)
-})
+    fetchData: fetchTeams(dispatch)
+  }
+}
 
 export default connect(
   mapStateToProps,
