@@ -47,6 +47,7 @@ import {
   setLoadingReset,
   setLoadingResetConfirmation
 } from "./reducers/loading"
+import { clearSearchResults, incrLoadingSearch, decrLoadingSearch, setSearchResults } from "./reducers/search";
 
 const config = { timeout: 15000 }
 
@@ -585,24 +586,7 @@ export const fetchRecipeList = (teamID: number | "personal") => (
     })
 }
 
-export const setSearchResults = (results: unknown[]) => ({
-  type: t.SET_SEARCH_RESULTS,
-  results
-})
 
-export const clearSearchResults = () => ({
-  type: t.CLEAR_SEARCH_RESULTS
-})
-
-export const incrLoadingSearch = () => {
-  return {
-    type: t.INCR_LOADING_SEARCH
-  }
-}
-
-export const decrLoadingSearch = () => ({
-  type: t.DECR_LOADING_SEARCH
-})
 
 interface ISearchStore {
   lastRequest: null | CancelTokenSource

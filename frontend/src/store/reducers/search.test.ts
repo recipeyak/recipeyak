@@ -1,5 +1,5 @@
 import search, { ISearchState } from "./search"
-import * as a from "../actions"
+import * as a from "./search"
 
 describe("search", () => {
   test("action#setSearchResults", () => {
