@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 import Loader from "./Loader"
 import { RecipeItem as Recipe } from "./RecipeItem"
 import { IRecipe } from "../store/reducers/recipes"
-import { IUserStats } from "../store/reducers/user";
+import { IUserStats } from "../store/reducers/user"
 
 // TODO(sbdchd): must be a better way
 // tslint:disable-next-line:no-var-requires
@@ -172,8 +172,6 @@ const UserStatistics = ({ loading, stats }: IUserStatisticsProps) => {
   )
 }
 
-
-
 interface IUserHomeProps {
   readonly loadingRecipes: boolean
   readonly loadingUserStats: boolean
@@ -189,31 +187,34 @@ const UserHome = ({
   errorRecipes,
   recipes
 }: IUserHomeProps) => {
-  const stats = userStats == null ? {
-    most_added_recipe: null,
-    new_recipes_last_week: 0,
-    total_recipe_edits: 0,
-    total_user_recipes: 0,
-    date_joined: "",
-    recipes_added_by_month: [],
-    total_recipes_added_last_month_by_all_users: 0
-  } : userStats
+  const stats =
+    userStats == null
+      ? {
+          most_added_recipe: null,
+          new_recipes_last_week: 0,
+          total_recipe_edits: 0,
+          total_user_recipes: 0,
+          date_joined: "",
+          recipes_added_by_month: [],
+          total_recipes_added_last_month_by_all_users: 0
+        }
+      : userStats
 
   return (
-  <div className="container pr-2 pl-2 pb-2">
-    <Helmet title="Home" />
+    <div className="container pr-2 pl-2 pb-2">
+      <Helmet title="Home" />
 
-    <section className="home-page-grid font-family-title">
-      <UserStatistics stats={stats} loading={loadingUserStats} />
-      <RecentRecipes
-        loading={loadingRecipes}
-        error={errorRecipes}
-        recipes={recipes}
-      />
-    </section>
-  </div>
-)
-  }
+      <section className="home-page-grid font-family-title">
+        <UserStatistics stats={stats} loading={loadingUserStats} />
+        <RecentRecipes
+          loading={loadingRecipes}
+          error={errorRecipes}
+          recipes={recipes}
+        />
+      </section>
+    </div>
+  )
+}
 
 interface IUserHomeFetchProps extends IUserHomeProps {
   readonly fetchData: () => void

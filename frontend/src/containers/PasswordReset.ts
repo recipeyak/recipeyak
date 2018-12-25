@@ -5,7 +5,7 @@ import PasswordReset from "../components/PasswordReset"
 import { RootState } from "../store/store"
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  reset:  reset(dispatch)
+  reset: reset(dispatch)
 })
 
 const mapStateToProps = (state: RootState) => ({

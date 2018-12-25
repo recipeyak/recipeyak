@@ -1,11 +1,6 @@
 import { connect } from "react-redux"
 
-import {
-  fetchUser,
-  loggingOut,
-  fetchTeams,
-  Dispatch
-} from "../store/actions"
+import { fetchUser, loggingOut, fetchTeams, Dispatch } from "../store/actions"
 
 import Nav from "../components/Nav"
 

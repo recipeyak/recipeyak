@@ -1,6 +1,5 @@
 import { action } from "typesafe-actions"
 
-
 export const SET_LOADING_LOGIN = "SET_LOADING_LOGIN"
 export const SET_LOADING_SIGNUP = "SET_LOADING_SIGNUP"
 export const SET_LOADING_RESET = "SET_LOADING_RESET"

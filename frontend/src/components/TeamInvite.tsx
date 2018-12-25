@@ -26,8 +26,8 @@ const mapStateToProps = (state: RootState, props: ITeamInviteProps) => {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData:  fetchTeam(dispatch),
-  sendInvites:  sendingTeamInvites(dispatch)
+  fetchData: fetchTeam(dispatch),
+  sendInvites: sendingTeamInvites(dispatch)
 })
 
 export const roles = [

@@ -176,7 +176,7 @@ class Card extends React.Component<ICardProps & ICollectedProps, {}> {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  update:  updatingStep(dispatch),
+  update: updatingStep(dispatch),
   delete: deletingStep(dispatch)
 })
 

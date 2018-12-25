@@ -33,7 +33,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
     disconnectAccount: disconnectSocialAccount(dispatch),
     deleteUserAccount: deleteUserAccount(dispatch),
-    updateEmail:  updatingEmail(dispatch)
+    updateEmail: updatingEmail(dispatch)
   }
 }
 

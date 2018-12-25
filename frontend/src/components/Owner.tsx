@@ -27,8 +27,8 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchData: fetchTeams(dispatch),
   showNotificationWithTimeout: showNotificationWithTimeout(dispatch),
-  moveRecipeTo:  moveRecipeTo(dispatch),
-  copyRecipeTo:  copyRecipeTo(dispatch)
+  moveRecipeTo: moveRecipeTo(dispatch),
+  copyRecipeTo: copyRecipeTo(dispatch)
 })
 
 interface IOwnerProps {

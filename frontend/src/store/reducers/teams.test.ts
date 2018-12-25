@@ -1,6 +1,6 @@
 import { teams, ITeamsState, ITeam } from "./teams"
 import * as a from "./teams"
-import { baseRecipe } from "./recipes.test";
+import { baseRecipe } from "./recipes.test"
 
 describe("Teams", () => {
   it("Adds team to team object", () => {
@@ -850,7 +850,10 @@ describe("Teams", () => {
       allIds: [1]
     }
     expect(
-      teams(beforeState, a.updateTeamById(1, { id: 1, name: "InnoTech" , members: []}))
+      teams(
+        beforeState,
+        a.updateTeamById(1, { id: 1, name: "InnoTech", members: [] })
+      )
     ).toEqual(afterState)
   })
 })

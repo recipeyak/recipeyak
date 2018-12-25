@@ -7,7 +7,7 @@ import { ButtonPlain, ButtonDanger } from "./Buttons"
 import {
   settingUserTeamLevel,
   deletingMembership,
-  Dispatch,
+  Dispatch
 } from "../store/actions"
 import { ITeam, IMember } from "../store/reducers/teams"
 import { RootState } from "../store/store"

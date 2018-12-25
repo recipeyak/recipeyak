@@ -1,18 +1,45 @@
-import { createStore, combineReducers, applyMiddleware, compose, Reducer,  } from "redux"
+import {
+  createStore,
+  combineReducers,
+  applyMiddleware,
+  compose,
+  Reducer
+} from "redux"
 import thunk from "redux-thunk"
 import throttle from "lodash/throttle"
 
 import createHistory from "history/createBrowserHistory"
-import { routerReducer, routerMiddleware, RouterState, RouterAction } from "react-router-redux"
+import {
+  routerReducer,
+  routerMiddleware,
+  RouterState,
+  RouterAction
+} from "react-router-redux"
 
 import recipes, { IRecipesState, RecipeActions } from "./reducers/recipes"
-import user, { SET_USER_LOGGED_IN, IUserState, UserActions } from "./reducers/user"
+import user, {
+  SET_USER_LOGGED_IN,
+  IUserState,
+  UserActions
+} from "./reducers/user"
 import loading, { ILoadingState, LoadingActions } from "./reducers/loading"
 import error, { IErrorState, ErrorActions } from "./reducers/error"
-import notification, { INotificationState, NotificationsActions } from "./reducers/notification"
-import passwordChange, { IPasswordChangeState, PasswordChangeActions } from "./reducers/passwordChange"
-import shoppinglist, { IShoppingListState, ShoppingListActions } from "./reducers/shoppinglist"
-import addrecipe, { IAddRecipeState, AddRecipeActions } from "./reducers/addrecipe"
+import notification, {
+  INotificationState,
+  NotificationsActions
+} from "./reducers/notification"
+import passwordChange, {
+  IPasswordChangeState,
+  PasswordChangeActions
+} from "./reducers/passwordChange"
+import shoppinglist, {
+  IShoppingListState,
+  ShoppingListActions
+} from "./reducers/shoppinglist"
+import addrecipe, {
+  IAddRecipeState,
+  AddRecipeActions
+} from "./reducers/addrecipe"
 import auth, { IAuthState, AuthActions } from "./reducers/auth"
 import teams, { ITeamsState, TeamsActions } from "./reducers/teams"
 import invites, { InviteActions, IInvitesState } from "./reducers/invites"
@@ -20,8 +47,7 @@ import calendar, { ICalendarState, CalendarActions } from "./reducers/calendar"
 import search, { ISearchState, SearchActions } from "./reducers/search"
 
 import { loadState, saveState } from "./localStorage"
-import { StateType } from "typesafe-actions";
-
+import { StateType } from "typesafe-actions"
 
 interface IState {
   readonly user: IUserState

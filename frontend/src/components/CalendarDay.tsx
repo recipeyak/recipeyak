@@ -20,7 +20,7 @@ import {
   fetchShoppingList,
   moveScheduledRecipe,
   deletingScheduledRecipe,
-  Dispatch,
+  Dispatch
 } from "../store/actions"
 
 import * as DragDrop from "../dragDrop"
@@ -28,7 +28,7 @@ import { ITeam } from "../store/reducers/teams"
 import { IRecipe } from "../store/reducers/recipes"
 import { RootState } from "../store/store"
 import { ICalendarState, ICalRecipe } from "../store/reducers/calendar"
-import { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios"
 
 const Title = ({ date }: { date: Date }) => {
   if (isFirstDayOfMonth(date)) {
@@ -36,8 +36,6 @@ const Title = ({ date }: { date: Date }) => {
   }
   return <p>{format(date, "D")}</p>
 }
-
-
 
 interface ICalendarDayProps {
   readonly date: Date
@@ -105,7 +103,10 @@ function CalendarDay({
 }
 
 function mapStateToProps(state: RootState, props: ICalendarDayProps) {
-  const isShopping = state.routerReducer.location != null ? state.routerReducer.location.pathname.includes("shopping") : false
+  const isShopping =
+    state.routerReducer.location != null
+      ? state.routerReducer.location.pathname.includes("shopping")
+      : false
   return {
     isSelected:
       isWithinRange(
@@ -118,8 +119,8 @@ function mapStateToProps(state: RootState, props: ICalendarDayProps) {
 
 function mapDispatchToProps(dispatch: Dispatch) {
   return {
-    create:  addingScheduledRecipe(dispatch),
-    updateCount:  updatingScheduledRecipe(dispatch),
+    create: addingScheduledRecipe(dispatch),
+    updateCount: updatingScheduledRecipe(dispatch),
     refetchShoppingList: fetchShoppingList(dispatch),
     move: moveScheduledRecipe(dispatch),
     remove: deletingScheduledRecipe(dispatch)

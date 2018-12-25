@@ -13,13 +13,13 @@ import { classNames } from "../classnames"
 import { atLeast1 } from "../input"
 import { ButtonPrimary } from "./Buttons"
 
-import { addingScheduledRecipe, Dispatch} from "../store/actions"
+import { addingScheduledRecipe, Dispatch } from "../store/actions"
 import { IRecipe } from "../store/reducers/recipes"
 import { ITeam } from "../store/reducers/teams"
 
 function mapDispatchToProps(dispatch: Dispatch) {
   return {
-    create:  addingScheduledRecipe(dispatch)
+    create: addingScheduledRecipe(dispatch)
   }
 }
 

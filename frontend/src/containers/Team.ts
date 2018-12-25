@@ -55,7 +55,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
         fetchTeamMembers(dispatch)(id),
         fetchTeamRecipes(dispatch)(id)
       ]),
-    deleteTeam:  deletingTeam(dispatch),
+    deleteTeam: deletingTeam(dispatch),
     updatingTeam: updatingTeam(dispatch)
   }
 }

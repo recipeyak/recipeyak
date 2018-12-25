@@ -1,5 +1,5 @@
-import { action } from "typesafe-actions";
-import { IIngredientBasic, IStepBasic } from "../../components/AddRecipe";
+import { action } from "typesafe-actions"
+import { IIngredientBasic, IStepBasic } from "../../components/AddRecipe"
 
 const SET_ADD_RECIPE_FORM_NAME = "SET_ADD_RECIPE_FORM_NAME"
 const SET_ADD_RECIPE_FORM_AUTHOR = "SET_ADD_RECIPE_FORM_AUTHOR"
@@ -8,80 +8,74 @@ const SET_ADD_RECIPE_FORM_TIME = "SET_ADD_RECIPE_FORM_TIME"
 const SET_ADD_RECIPE_FORM_SERVINGS = "SET_ADD_RECIPE_FORM_SERVINGS"
 const SET_ADD_RECIPE_FORM_TEAM = "SET_ADD_RECIPE_FORM_TEAM"
 const ADD_ADD_RECIPE_FORM_INGREDIENT = "ADD_ADD_RECIPE_FORM_INGREDIENT"
-const REMOVE_ADD_RECIPE_FORM_INGREDIENT =
-  "REMOVE_ADD_RECIPE_FORM_INGREDIENT"
+const REMOVE_ADD_RECIPE_FORM_INGREDIENT = "REMOVE_ADD_RECIPE_FORM_INGREDIENT"
 const ADD_ADD_RECIPE_FORM_STEP = "ADD_ADD_RECIPE_FORM_STEP"
 const REMOVE_ADD_RECIPE_FORM_STEP = "REMOVE_ADD_RECIPE_FORM_STEP"
-const UPDATE_ADD_RECIPE_FORM_INGREDIENT =
-  "UPDATE_ADD_RECIPE_FORM_INGREDIENT"
+const UPDATE_ADD_RECIPE_FORM_INGREDIENT = "UPDATE_ADD_RECIPE_FORM_INGREDIENT"
 const UPDATE_ADD_RECIPE_FORM_STEP = "UPDATE_ADD_RECIPE_FORM_STEP"
 const CLEAR_ADD_RECIPE_FORM = "CLEAR_ADD_RECIPE_FORM"
 
+export const setAddRecipeFormName = (val: string) =>
+  action(SET_ADD_RECIPE_FORM_NAME, val)
 
-export const setAddRecipeFormName = (val: string) => action(
-  SET_ADD_RECIPE_FORM_NAME, val)
+export const setAddRecipeFormAuthor = (val: string) =>
+  action(SET_ADD_RECIPE_FORM_AUTHOR, val)
 
-export const setAddRecipeFormAuthor = (val: string) => action(
-  SET_ADD_RECIPE_FORM_AUTHOR, val)
+export const setAddRecipeFormSource = (val: string) =>
+  action(SET_ADD_RECIPE_FORM_SOURCE, val)
 
-export const setAddRecipeFormSource = (val: string) => action(
-  SET_ADD_RECIPE_FORM_SOURCE, val)
+export const setAddRecipeFormTime = (val: string) =>
+  action(SET_ADD_RECIPE_FORM_TIME, val)
 
-export const setAddRecipeFormTime = (val: string) => action(
-  SET_ADD_RECIPE_FORM_TIME, val)
+export const setAddRecipeFormServings = (val: string) =>
+  action(SET_ADD_RECIPE_FORM_SERVINGS, val)
 
-export const setAddRecipeFormServings = (val: string) => action(
-  SET_ADD_RECIPE_FORM_SERVINGS, val)
+export const setAddRecipeFormTeam = (val: string) =>
+  action(SET_ADD_RECIPE_FORM_TEAM, val)
 
-export const setAddRecipeFormTeam = (val: string) => action(
-  SET_ADD_RECIPE_FORM_TEAM, val)
+export const addAddRecipeFormIngredient = (ingredient: IIngredientBasic) =>
+  action(ADD_ADD_RECIPE_FORM_INGREDIENT, ingredient)
 
-export const addAddRecipeFormIngredient = (ingredient: IIngredientBasic) => action(
-  ADD_ADD_RECIPE_FORM_INGREDIENT, ingredient)
+export const removeAddRecipeFormIngredient = (index: number) =>
+  action(REMOVE_ADD_RECIPE_FORM_INGREDIENT, index)
 
-export const removeAddRecipeFormIngredient = (index: number) => action(
-  REMOVE_ADD_RECIPE_FORM_INGREDIENT, index)
+export const addAddRecipeFormStep = (step: IStepBasic) =>
+  action(ADD_ADD_RECIPE_FORM_STEP, step)
 
-export const addAddRecipeFormStep = (step: IStepBasic) => action(
-  ADD_ADD_RECIPE_FORM_STEP, step)
-
-export const removeAddRecipeFormStep = (index: number) => action(
-  REMOVE_ADD_RECIPE_FORM_STEP, index )
+export const removeAddRecipeFormStep = (index: number) =>
+  action(REMOVE_ADD_RECIPE_FORM_STEP, index)
 
 export const updateAddRecipeFormIngredient = (
   index: number,
   ingredient: IIngredientBasic
-) => action(
-  UPDATE_ADD_RECIPE_FORM_INGREDIENT, {
-  index,
-  ingredient
-})
+) =>
+  action(UPDATE_ADD_RECIPE_FORM_INGREDIENT, {
+    index,
+    ingredient
+  })
 
-export const updateAddRecipeFormStep = (index: number, step: IStepBasic) => action(
-  UPDATE_ADD_RECIPE_FORM_STEP, {
-  index,
-  step
-})
+export const updateAddRecipeFormStep = (index: number, step: IStepBasic) =>
+  action(UPDATE_ADD_RECIPE_FORM_STEP, {
+    index,
+    step
+  })
 
 export const clearAddRecipeForm = () => action(CLEAR_ADD_RECIPE_FORM)
 
-
-
 export type AddRecipeActions =
-  | ReturnType<typeof setAddRecipeFormName >
-  | ReturnType<typeof setAddRecipeFormAuthor >
-  | ReturnType<typeof setAddRecipeFormSource >
-  | ReturnType<typeof setAddRecipeFormTime >
-  | ReturnType<typeof setAddRecipeFormServings >
-  | ReturnType<typeof setAddRecipeFormTeam >
-  | ReturnType<typeof addAddRecipeFormIngredient >
-  | ReturnType<typeof removeAddRecipeFormIngredient >
-  | ReturnType<typeof addAddRecipeFormStep >
-  | ReturnType<typeof removeAddRecipeFormStep >
-  | ReturnType<typeof updateAddRecipeFormIngredient >
-  | ReturnType<typeof updateAddRecipeFormStep >
-  | ReturnType<typeof clearAddRecipeForm >
-
+  | ReturnType<typeof setAddRecipeFormName>
+  | ReturnType<typeof setAddRecipeFormAuthor>
+  | ReturnType<typeof setAddRecipeFormSource>
+  | ReturnType<typeof setAddRecipeFormTime>
+  | ReturnType<typeof setAddRecipeFormServings>
+  | ReturnType<typeof setAddRecipeFormTeam>
+  | ReturnType<typeof addAddRecipeFormIngredient>
+  | ReturnType<typeof removeAddRecipeFormIngredient>
+  | ReturnType<typeof addAddRecipeFormStep>
+  | ReturnType<typeof removeAddRecipeFormStep>
+  | ReturnType<typeof updateAddRecipeFormIngredient>
+  | ReturnType<typeof updateAddRecipeFormStep>
+  | ReturnType<typeof clearAddRecipeForm>
 
 export interface IAddRecipeState {
   readonly name: string

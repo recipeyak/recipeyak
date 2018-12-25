@@ -8,23 +8,31 @@ import Ingredient from "./Ingredient"
 import { ButtonPrimary } from "./Buttons"
 import { IRecipe, IStep, IIngredient } from "../store/reducers/recipes"
 import { ITeam } from "../store/reducers/teams"
-import { IAddRecipeError } from "../store/reducers/error";
+import { IAddRecipeError } from "../store/reducers/error"
 
 const unfinishedIngredient = ({ quantity = "", name = "" }) =>
   quantity === "" || name === ""
 
 export type Omit<T, K> = Pick<T, Exclude<keyof T, K>>
 
-export interface IRecipeBasic extends Omit<
-  IRecipe,
-  "id" | "edits" | "modified" | "last_scheduled" | "owner" | "team" |"ingredients" | "steps"
-> {
+export interface IRecipeBasic
+  extends Omit<
+    IRecipe,
+    | "id"
+    | "edits"
+    | "modified"
+    | "last_scheduled"
+    | "owner"
+    | "team"
+    | "ingredients"
+    | "steps"
+  > {
   readonly ingredients: IIngredientBasic[]
   readonly steps: IStepBasic[]
 }
 export type IIngredientBasic = Omit<IIngredient, "id" | "position">
 
-export type IStepBasic =Pick<IStep, "text">
+export type IStepBasic = Pick<IStep, "text">
 
 interface IAddRecipeProps {
   readonly clearErrors: () => void

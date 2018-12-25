@@ -30,16 +30,18 @@ type RouteProps = RouteComponentProps<{ id: string }>
 
 const mapStateToProps = (state: RootState, props: RouteProps) => {
   const id = parseInt(props.match.params.id, 10)
-  return state.recipes[id] ? {
-    ...state.recipes[id],
-    loading: !!state.recipes[id].loading
-  } : { loading: true }
+  return state.recipes[id]
+    ? {
+        ...state.recipes[id],
+        loading: !!state.recipes[id].loading
+      }
+    : { loading: true }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchRecipe: fetchRecipe(dispatch),
   addIngredient: addingRecipeIngredient(dispatch),
-  addStep:  addingRecipeStep(dispatch),
+  addStep: addingRecipeStep(dispatch),
   update: updateRecipe(dispatch),
   remove: deletingRecipe(dispatch),
   updateIngredient: updatingIngredient(dispatch),
@@ -59,7 +61,7 @@ interface IRecipeProps extends RouteProps {
   readonly error404: boolean
   readonly owner: IRecipe["owner"]
   readonly update: (id: IRecipe["id"], recipe: IRecipeBasic) => Promise<void>
-  readonly remove: (id: IRecipe['id']) => void
+  readonly remove: (id: IRecipe["id"]) => void
   readonly deleting: boolean
   readonly updating: boolean
   readonly addingStepToRecipe: boolean
@@ -78,7 +80,7 @@ interface IRecipeProps extends RouteProps {
     recipeID: IRecipe["id"],
     ingredientID: IIngredient["id"]
   ) => void
-  readonly addStep: (id: IStep["id"], step: IStep['text']) => void
+  readonly addStep: (id: IStep["id"], step: IStep["text"]) => void
 }
 
 interface IRecipeState {

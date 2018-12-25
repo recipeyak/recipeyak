@@ -117,10 +117,11 @@ class StepContainer extends React.Component<
         }
       },
       () => {
-          this.props.updatingStep(this.props.recipeID, stepID, {
-            position: newPosition
-          })
+        this.props.updatingStep(this.props.recipeID, stepID, {
+          position: newPosition
         })
+      }
+    )
   }
 
   render() {
@@ -153,4 +154,7 @@ function mapDispatchToProps(dispatch: Dispatch) {
   }
 }
 
-export default connect(null, mapDispatchToProps)(StepContainer)
+export default connect(
+  null,
+  mapDispatchToProps
+)(StepContainer)

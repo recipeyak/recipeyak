@@ -14,7 +14,7 @@ import {
   fetchTeams,
   fetchShoppingList,
   fetchRecipeList,
-  Dispatch,
+  Dispatch
 } from "../store/actions"
 
 import { pyFormat, daysFromSunday, daysUntilSaturday } from "../date"
@@ -106,7 +106,7 @@ interface ICalendarProps extends ScheduleRouteParams {
   readonly navTo: (url: string) => void
   readonly fetchData: (
     teamID: ITeam["id"] | "personal",
-    month: Date,
+    month: Date
   ) => Promise<void>
   readonly refetchShoppingListAndRecipes: (
     teamID: ITeam["id"] | "personal",

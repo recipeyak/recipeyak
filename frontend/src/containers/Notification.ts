@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import { Dispatch } from "../store/actions"
 import Notification from "../components/Notification"
 import { RootState } from "../store/store"
-import { clearNotification } from "../store/reducers/notification";
+import { clearNotification } from "../store/reducers/notification"
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {

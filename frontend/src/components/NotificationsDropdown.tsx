@@ -86,9 +86,7 @@ const Invites = ({ loading, invites, decline, accept }: IInvitesProps) => {
 const mapStateToProps = (state: RootState) => {
   return {
     loading: state.invites.loading,
-    invites: Object.values(state.invites).filter(
-      x => x != null && !!x.id
-    )
+    invites: Object.values(state.invites).filter(x => x != null && !!x.id)
   }
 }
 

@@ -1,5 +1,5 @@
 import { rootReducer, emptyStore, RootState } from "../store"
-import { setUserLoggedIn } from "./user";
+import { setUserLoggedIn } from "./user"
 
 describe("logout", () => {
   it("Logs out user and clears entire store", () => {
@@ -7,7 +7,7 @@ describe("logout", () => {
       ...emptyStore.getState(),
       user: {
         ...emptyStore.getState().user,
-        loggedIn: true,
+        loggedIn: true
       },
       auth: {
         fromUrl: ""
@@ -19,7 +19,6 @@ describe("logout", () => {
           search: "",
           hash: ""
         }
-
       }
     }
 
@@ -28,8 +27,6 @@ describe("logout", () => {
       routerReducer: beforeState.routerReducer
     }
 
-    expect(rootReducer(beforeState, setUserLoggedIn(false))).toEqual(
-      afterState
-    )
+    expect(rootReducer(beforeState, setUserLoggedIn(false))).toEqual(afterState)
   })
 })

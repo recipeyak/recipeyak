@@ -1,7 +1,5 @@
 // TODO(sbdchd): this reducer shouldn't even exist
-import { action } from "typesafe-actions";
-
-
+import { action } from "typesafe-actions"
 
 const SET_ERROR_LOGIN = "SET_ERROR_LOGIN"
 
@@ -16,33 +14,24 @@ const SET_ERROR_RESET_CONFIRMATION = "SET_ERROR_RESET_CONFIRMATION"
 
 const SET_ERROR_ADD_RECIPE = "SET_ERROR_ADD_RECIPE"
 
+export const setErrorLogin = (val: ILoginError) => action(SET_ERROR_LOGIN, val)
 
+export const setErrorSocialLogin = (val: ISocialError) =>
+  action(SET_ERROR_SOCIAL_LOGIN, val)
 
-export const setErrorLogin = (val: ILoginError) => action( SET_ERROR_LOGIN, val)
-
-
-export const setErrorSocialLogin = (val: ISocialError) => action(SET_ERROR_SOCIAL_LOGIN, val)
-
-
-
-export const setErrorSignup = (val: ISignupErrors) => action( SET_ERROR_SIGNUP, val)
-
+export const setErrorSignup = (val: ISignupErrors) =>
+  action(SET_ERROR_SIGNUP, val)
 
 export const setErrorRecipes = (val: boolean) => action(SET_ERROR_RECIPES, val)
 
+export const setErrorReset = (val: IPasswordResetError) =>
+  action(SET_ERROR_RESET, val)
 
+export const setErrorResetConfirmation = (val: IPasswordResetConfirmError) =>
+  action(SET_ERROR_RESET_CONFIRMATION, val)
 
-export const setErrorReset = (val: IPasswordResetError) => action(
-  SET_ERROR_RESET,
-  val
-)
-
-
-export const setErrorResetConfirmation = (val: IPasswordResetConfirmError) => action(SET_ERROR_RESET_CONFIRMATION, val)
-
-
-
-export const setErrorAddRecipe = (val: IAddRecipeError) => action(SET_ERROR_ADD_RECIPE, val)
+export const setErrorAddRecipe = (val: IAddRecipeError) =>
+  action(SET_ERROR_ADD_RECIPE, val)
 
 export type ErrorActions =
   | ReturnType<typeof setErrorLogin>
@@ -53,13 +42,11 @@ export type ErrorActions =
   | ReturnType<typeof setErrorResetConfirmation>
   | ReturnType<typeof setErrorAddRecipe>
 
-
 export interface IAddRecipeError {
-        readonly errorWithName?: boolean
-        readonly errorWithIngredients?: boolean
-        readonly errorWithSteps?: boolean
-      }
-
+  readonly errorWithName?: boolean
+  readonly errorWithIngredients?: boolean
+  readonly errorWithSteps?: boolean
+}
 
 export interface IPasswordResetConfirmError {
   readonly nonFieldErrors?: string[]
@@ -67,14 +54,12 @@ export interface IPasswordResetConfirmError {
   readonly newPassword2?: string[]
 }
 
-
 export interface ISignupErrors {
   readonly password1?: string[]
   readonly password2?: string[]
   readonly nonFieldErrors?: string[]
   readonly email?: string[]
 }
-
 
 export interface ILoginError {
   readonly password1?: string[]
@@ -116,7 +101,10 @@ export const initialState: IErrorState = {
   recipes: false
 }
 
-const error = (state: IErrorState = initialState, action: ErrorActions): IErrorState => {
+const error = (
+  state: IErrorState = initialState,
+  action: ErrorActions
+): IErrorState => {
   switch (action.type) {
     case SET_ERROR_LOGIN:
       return { ...state, login: action.payload }

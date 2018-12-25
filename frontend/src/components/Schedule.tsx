@@ -110,12 +110,12 @@ const getTeamID = (params: ScheduleRouteParams["match"]["params"]) => {
 
 export default connect(
   null,
-  ( dispatch: Dispatch, ownProps: ScheduleRouteParams) => {
-  const teamID = getTeamID(ownProps.match.params)
-  return {
-    updateTeamID: updatingTeamID(dispatch),
-    teamID,
-    type: ownProps.match.params["type"]
+  (dispatch: Dispatch, ownProps: ScheduleRouteParams) => {
+    const teamID = getTeamID(ownProps.match.params)
+    return {
+      updateTeamID: updatingTeamID(dispatch),
+      teamID,
+      type: ownProps.match.params["type"]
+    }
   }
-}
 )(Schedule)

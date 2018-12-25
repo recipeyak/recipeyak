@@ -8,7 +8,7 @@ import { ButtonPrimary } from "./Buttons"
 
 import { resetConfirmation as reset, Dispatch } from "../store/actions"
 import { RootState } from "../store/store"
-import { IPasswordResetConfirmError } from "../store/reducers/error";
+import { IPasswordResetConfirmError } from "../store/reducers/error"
 
 type RouteProps = RouteComponentProps<{ uid: string; token: string }>
 
@@ -26,8 +26,6 @@ const mapStateToProps = (state: RootState, props: RouteProps) => {
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   reset: reset(dispatch)
 })
-
-
 
 interface IPasswordResetConfirmationProps {
   readonly reset: (

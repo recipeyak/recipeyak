@@ -1,10 +1,6 @@
 import { connect } from "react-redux"
 
-import {
-  postNewRecipe,
-  fetchTeams,
-  Dispatch,
-} from "../store/actions"
+import { postNewRecipe, fetchTeams, Dispatch } from "../store/actions"
 
 import AddRecipe, {
   IIngredientBasic,
@@ -14,8 +10,7 @@ import AddRecipe, {
 import { teamsFrom } from "../store/mapState"
 import { RootState } from "../store/store"
 import {
-
-    setAddRecipeFormName,
+  setAddRecipeFormName,
   setAddRecipeFormAuthor,
   setAddRecipeFormSource,
   setAddRecipeFormTime,
@@ -27,8 +22,9 @@ import {
   addAddRecipeFormStep,
   removeAddRecipeFormStep,
   updateAddRecipeFormStep,
-  clearAddRecipeForm } from "../store/reducers/addrecipe";
-import { setErrorAddRecipe } from "../store/reducers/error";
+  clearAddRecipeForm
+} from "../store/reducers/addrecipe"
+import { setErrorAddRecipe } from "../store/reducers/error"
 
 const mapStateToProps = (state: RootState) => ({
   name: state.addrecipe.name,
@@ -70,7 +66,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   updateStep: (_recipeID: number, i: number, step: IStepBasic) =>
     dispatch(updateAddRecipeFormStep(i, step)),
 
-  addRecipe:  postNewRecipe(dispatch),
+  addRecipe: postNewRecipe(dispatch),
   clearErrors: () => dispatch(setErrorAddRecipe({})),
   clearForm: () => dispatch(clearAddRecipeForm()),
 

@@ -1,8 +1,7 @@
 import addWeeks from "date-fns/add_weeks"
 import startOfToday from "date-fns/start_of_today"
 
-import { action } from "typesafe-actions";
-
+import { action } from "typesafe-actions"
 
 const SET_SHOPPING_LIST = "SET_SHOPPING_LIST"
 const SET_LOADING_SHOPPING_LIST = "SET_LOADING_SHOPPING_LIST"
@@ -10,45 +9,29 @@ const SET_SHOPPING_LIST_ERROR = "SET_SHOPPING_LIST_ERROR"
 const SET_SELECTING_START = "SET_SELECTING_START"
 const SET_SELECTING_END = "SET_SELECTING_END"
 
-
-export const setShoppingList = (val: IShoppingListItem[]) => action(
-  SET_SHOPPING_LIST,
-  val
-)
+export const setShoppingList = (val: IShoppingListItem[]) =>
+  action(SET_SHOPPING_LIST, val)
 
 export const setShoppingListEmpty = () => setShoppingList([])
 
-export const setLoadingShoppingList = (val: boolean) => action(
-  SET_LOADING_SHOPPING_LIST,
-  val
-)
+export const setLoadingShoppingList = (val: boolean) =>
+  action(SET_LOADING_SHOPPING_LIST, val)
 
-export const setShoppingListError = (val: boolean) => action(
-  SET_SHOPPING_LIST_ERROR,
-  val
-)
+export const setShoppingListError = (val: boolean) =>
+  action(SET_SHOPPING_LIST_ERROR, val)
 
+export const setSelectingStart = (date: Date) =>
+  action(SET_SELECTING_START, date)
 
-export const setSelectingStart = (date: Date) => action(
-  SET_SELECTING_START,
-  date
-)
-
-export const setSelectingEnd = (date: Date) => action(
-  SET_SELECTING_END,
-  date
-)
-
-
+export const setSelectingEnd = (date: Date) => action(SET_SELECTING_END, date)
 
 export type ShoppingListActions =
-| ReturnType<typeof setShoppingList >
-| ReturnType<typeof setShoppingListEmpty >
-| ReturnType<typeof setLoadingShoppingList >
-| ReturnType<typeof setShoppingListError >
-| ReturnType<typeof setSelectingStart >
-| ReturnType<typeof setSelectingEnd >
-
+  | ReturnType<typeof setShoppingList>
+  | ReturnType<typeof setShoppingListEmpty>
+  | ReturnType<typeof setLoadingShoppingList>
+  | ReturnType<typeof setShoppingListError>
+  | ReturnType<typeof setSelectingStart>
+  | ReturnType<typeof setSelectingEnd>
 
 export interface IShoppingListItem {
   readonly name: string

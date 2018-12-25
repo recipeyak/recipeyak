@@ -16,15 +16,13 @@ import { RootState } from "../store/store"
 
 const mapStateToProps = (state: RootState) => {
   return {
-    recipes: Object.values(state.recipes).sort(
-      byNameAlphabetical
-    ),
+    recipes: Object.values(state.recipes).sort(byNameAlphabetical),
     loading: state.loading.recipes
   }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    fetchData: fetchRecipeList(dispatch)
+  fetchData: fetchRecipeList(dispatch)
 })
 
 interface IRecipesProps {

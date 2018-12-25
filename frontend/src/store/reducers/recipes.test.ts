@@ -679,7 +679,7 @@ describe("Recipes", () => {
     }
 
     const id = 1
-    const owner: IRecipe['owner'] = {
+    const owner: IRecipe["owner"] = {
       id: 14,
       type: "team",
       name: "A Cool Name"

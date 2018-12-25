@@ -1,13 +1,10 @@
 import { connect } from "react-redux"
 
-import {
-  updatingPassword,
-  Dispatch
-} from "../store/actions"
+import { updatingPassword, Dispatch } from "../store/actions"
 
 import PasswordChange from "../components/PasswordChange"
 import { RootState } from "../store/store"
-import { setErrorPasswordUpdate } from "../store/reducers/passwordChange";
+import { setErrorPasswordUpdate } from "../store/reducers/passwordChange"
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   update: updatingPassword(dispatch),

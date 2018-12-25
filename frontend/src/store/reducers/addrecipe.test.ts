@@ -2,7 +2,7 @@ import addrecipe, { initialState, IAddRecipeState } from "./addrecipe"
 import * as a from "./addrecipe"
 
 import { IIngredientBasic } from "../../components/AddRecipe"
-import { baseIngredient, baseStep } from "./recipes.test";
+import { baseIngredient, baseStep } from "./recipes.test"
 
 describe("addrecipe", () => {
   it("sets addrecipe form name", () => {
