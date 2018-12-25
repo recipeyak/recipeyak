@@ -1,6 +1,5 @@
 import passwordChange, { initialState } from "./passwordChange"
-
-import * as a from "../actions"
+import * as a from "./passwordChange"
 
 describe("passwordChange", () => {
   it("sets the loading state of the updating password", () => {
@@ -29,7 +28,7 @@ describe("passwordChange", () => {
     const beforeState = initialState
 
     const error = {
-      new_password2: ["The two password fields didn't match."]
+      newPassword: ["The two password fields didn't match."]
     }
 
     const afterState = {

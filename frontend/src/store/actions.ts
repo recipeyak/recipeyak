@@ -50,6 +50,7 @@ import {
 import { clearSearchResults, incrLoadingSearch, decrLoadingSearch, setSearchResults } from "./reducers/search";
 import { clearAddRecipeForm } from "./reducers/addrecipe";
 import { setShoppingList, setLoadingShoppingList, setShoppingListError } from "./reducers/shoppinglist";
+import { setLoadingPasswordUpdate, setErrorPasswordUpdate } from "./reducers/passwordChange";
 
 const config = { timeout: 15000 }
 
@@ -358,16 +359,6 @@ export const fetchUserStats = () => (dispatch: Dispatch) => {
       throw err
     })
 }
-
-export const setLoadingPasswordUpdate = (val: boolean) => ({
-  type: t.SET_LOADING_PASSWORD_UPDATE,
-  val
-})
-
-export const setErrorPasswordUpdate = (val: unknown) => ({
-  type: t.SET_ERROR_PASSWORD_UPDATE,
-  val
-})
 
 export const updatingPassword = (
   password1: string,
