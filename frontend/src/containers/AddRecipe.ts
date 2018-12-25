@@ -3,19 +3,7 @@ import { connect } from "react-redux"
 import {
   postNewRecipe,
   setErrorAddRecipe,
-  setAddRecipeFormName,
-  setAddRecipeFormAuthor,
-  setAddRecipeFormSource,
-  setAddRecipeFormTime,
-  setAddRecipeFormServings,
-  setAddRecipeFormTeam,
-  addAddRecipeFormIngredient,
-  removeAddRecipeFormIngredient,
-  updateAddRecipeFormIngredient,
-  addAddRecipeFormStep,
-  removeAddRecipeFormStep,
-  updateAddRecipeFormStep,
-  clearAddRecipeForm,
+
   fetchTeams,
   Dispatch
 } from "../store/actions"
@@ -27,6 +15,21 @@ import AddRecipe, {
 
 import { teamsFrom } from "../store/mapState"
 import { RootState } from "../store/store"
+import {
+
+    setAddRecipeFormName,
+  setAddRecipeFormAuthor,
+  setAddRecipeFormSource,
+  setAddRecipeFormTime,
+  setAddRecipeFormServings,
+  setAddRecipeFormTeam,
+  addAddRecipeFormIngredient,
+  removeAddRecipeFormIngredient,
+  updateAddRecipeFormIngredient,
+  addAddRecipeFormStep,
+  removeAddRecipeFormStep,
+  updateAddRecipeFormStep,
+  clearAddRecipeForm } from "../store/reducers/addrecipe";
 
 const mapStateToProps = (state: RootState) => ({
   name: state.addrecipe.name,

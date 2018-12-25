@@ -35,7 +35,7 @@ import {
 import { ICalRecipe, setCalendarLoading, setCalendarError, setCalendarRecipe, replaceCalendarRecipe, deleteCalendarRecipe, setCalendarRecipes, moveCalendarRecipe } from "./reducers/calendar"
 import { IInvite } from "./reducers/invites"
 import { INotificationState } from "./reducers/notification"
-import { IRecipeBasic, IIngredientBasic } from "../components/AddRecipe"
+import { IRecipeBasic} from "../components/AddRecipe"
 import { ITeam, deleteTeam, addTeam, setLoadingTeam, setLoadingTeamMembers, setLoadingTeamRecipes, setTeamMembers, setTeam404, setTeamRecipes, setUpdatingUserTeamLevel, setUserTeamLevel, setDeletingMembership, setSendingTeamInvites, deleteMembership, setTeams, setCreatingTeam, setTeam, setLoadingTeams, updateTeamById, setCopyingTeam } from "./reducers/teams"
 import { IRecipe } from "./reducers/recipes"
 import * as api from "../api"
@@ -48,6 +48,7 @@ import {
   setLoadingResetConfirmation
 } from "./reducers/loading"
 import { clearSearchResults, incrLoadingSearch, decrLoadingSearch, setSearchResults } from "./reducers/search";
+import { clearAddRecipeForm } from "./reducers/addrecipe";
 
 const config = { timeout: 15000 }
 
@@ -1230,75 +1231,6 @@ export const resetConfirmation = (
       }
     })
 }
-
-export const setAddRecipeFormName = (val: string) => ({
-  type: t.SET_ADD_RECIPE_FORM_NAME,
-  val
-})
-
-export const setAddRecipeFormAuthor = (val: string) => ({
-  type: t.SET_ADD_RECIPE_FORM_AUTHOR,
-  val
-})
-
-export const setAddRecipeFormSource = (val: string) => ({
-  type: t.SET_ADD_RECIPE_FORM_SOURCE,
-  val
-})
-
-export const setAddRecipeFormTime = (val: string) => ({
-  type: t.SET_ADD_RECIPE_FORM_TIME,
-  val
-})
-
-export const setAddRecipeFormServings = (val: string) => ({
-  type: t.SET_ADD_RECIPE_FORM_SERVINGS,
-  val
-})
-
-export const setAddRecipeFormTeam = (val: string) => ({
-  type: t.SET_ADD_RECIPE_FORM_TEAM,
-  val
-})
-
-export const addAddRecipeFormIngredient = (ingredient: unknown) => ({
-  type: t.ADD_ADD_RECIPE_FORM_INGREDIENT,
-  ingredient
-})
-
-export const removeAddRecipeFormIngredient = (index: number) => ({
-  type: t.REMOVE_ADD_RECIPE_FORM_INGREDIENT,
-  index
-})
-
-export const addAddRecipeFormStep = (step: { text?: string }) => ({
-  type: t.ADD_ADD_RECIPE_FORM_STEP,
-  step
-})
-
-export const removeAddRecipeFormStep = (index: number) => ({
-  type: t.REMOVE_ADD_RECIPE_FORM_STEP,
-  index
-})
-
-export const updateAddRecipeFormIngredient = (
-  index: number,
-  ingredient: IIngredientBasic
-) => ({
-  type: t.UPDATE_ADD_RECIPE_FORM_INGREDIENT,
-  index,
-  ingredient
-})
-
-export const updateAddRecipeFormStep = (index: number, step: unknown) => ({
-  type: t.UPDATE_ADD_RECIPE_FORM_STEP,
-  index,
-  step
-})
-
-export const clearAddRecipeForm = () => ({
-  type: t.CLEAR_ADD_RECIPE_FORM
-})
 
 export const fetchTeam = (id: ITeam["id"]) => (dispatch: Dispatch) => {
   dispatch(setLoadingTeam(id, true))
