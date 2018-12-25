@@ -3,7 +3,7 @@ import shoppinglist, {
   IShoppingListItem
 } from "./shoppinglist"
 
-import * as a from "../actions"
+import * as a from "./shoppinglist"
 
 describe("Shopping List", () => {
   const shopList: IShoppingListItem[] = [

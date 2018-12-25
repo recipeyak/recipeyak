@@ -13,8 +13,6 @@ import { classNames } from "../classnames"
 
 import {
   fetchShoppingList,
-  setSelectingStart,
-  setSelectingEnd,
   reportBadMerge,
   showNotificationWithTimeout,
   Dispatch
@@ -25,7 +23,7 @@ import { ingredientByNameAlphabetical } from "../sorters"
 import DateRangePicker from "./DateRangePicker/DateRangePicker"
 import { RootState } from "../store/store"
 import { ITeam } from "../store/reducers/teams"
-import { IShoppingListItem } from "../store/reducers/shoppinglist"
+import { IShoppingListItem, setSelectingStart, setSelectingEnd } from "../store/reducers/shoppinglist"
 
 const selectElementText = (el: Element) => {
   const sel = window.getSelection()

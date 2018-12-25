@@ -49,6 +49,7 @@ import {
 } from "./reducers/loading"
 import { clearSearchResults, incrLoadingSearch, decrLoadingSearch, setSearchResults } from "./reducers/search";
 import { clearAddRecipeForm } from "./reducers/addrecipe";
+import { setShoppingList, setLoadingShoppingList, setShoppingListError } from "./reducers/shoppinglist";
 
 const config = { timeout: 15000 }
 
@@ -408,22 +409,6 @@ export const updatingPassword = (
     })
 }
 
-export const setShoppingList = (val: unknown) => ({
-  type: t.SET_SHOPPING_LIST,
-  val
-})
-
-export const setShoppingListEmpty = () => setShoppingList([])
-
-export const setLoadingShoppingList = (val: boolean) => ({
-  type: t.SET_LOADING_SHOPPING_LIST,
-  val
-})
-
-export const setShoppingListError = (val: unknown) => ({
-  type: t.SET_SHOPPING_LIST_ERROR,
-  val
-})
 
 export const fetchShoppingList = (teamID: TeamID, start?: Date, end?: Date) => (
   dispatch: Dispatch,
@@ -453,16 +438,6 @@ export const fetchShoppingList = (teamID: TeamID, start?: Date, end?: Date) => (
       dispatch(setLoadingShoppingList(false))
     })
 }
-
-export const setSelectingStart = (date: Date) => ({
-  type: t.SET_SELECTING_START,
-  date
-})
-
-export const setSelectingEnd = (date: Date) => ({
-  type: t.SET_SELECTING_END,
-  date
-})
 
 export const addRecipe = (recipe: unknown) => ({
   type: t.ADD_RECIPE,
