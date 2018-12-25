@@ -1,6 +1,6 @@
 import { teams, ITeamsState, ITeam } from "./teams"
-
-import * as a from "../actions"
+import * as a from "./teams"
+import { baseRecipe } from "./recipes.test";
 
 describe("Teams", () => {
   it("Adds team to team object", () => {
@@ -38,7 +38,8 @@ describe("Teams", () => {
     }
     const recipe = {
       id: 1,
-      name: "other team name"
+      name: "other team name",
+      members: []
     }
 
     const afterState: ITeamsState = {
@@ -239,6 +240,7 @@ describe("Teams", () => {
 
     const members = [
       {
+        ...baseRecipe,
         id: 1,
         user: {
           id: 2,
@@ -287,6 +289,7 @@ describe("Teams", () => {
 
     const recipes = [
       {
+        ...baseRecipe,
         id: 1,
         user: {
           id: 2,
@@ -847,7 +850,7 @@ describe("Teams", () => {
       allIds: [1]
     }
     expect(
-      teams(beforeState, a.updateTeamById(1, { name: "InnoTech" }))
+      teams(beforeState, a.updateTeamById(1, { id: 1, name: "InnoTech" , members: []}))
     ).toEqual(afterState)
   })
 })

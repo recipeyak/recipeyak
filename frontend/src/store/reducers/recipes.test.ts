@@ -2,7 +2,7 @@ import recipes, { IRecipesState, IRecipe, IIngredient, IStep } from "./recipes"
 
 import * as a from "../actions"
 
-const baseRecipe: IRecipe = {
+export const baseRecipe: IRecipe = {
   id: 1,
   name: "foo",
   author: "bar",

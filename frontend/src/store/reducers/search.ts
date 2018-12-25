@@ -1,9 +1,9 @@
 import { action } from "typesafe-actions";
 
-export const SET_SEARCH_RESULTS = "SET_SEARCH_RESULTS"
-export const CLEAR_SEARCH_RESULTS = "CLEAR_SEARCH_RESULTS"
-export const INCR_LOADING_SEARCH = "INCR_LOADING_SEARCH"
-export const DECR_LOADING_SEARCH = "DECR_LOADING_SEARCH"
+const SET_SEARCH_RESULTS = "SET_SEARCH_RESULTS"
+const CLEAR_SEARCH_RESULTS = "CLEAR_SEARCH_RESULTS"
+const INCR_LOADING_SEARCH = "INCR_LOADING_SEARCH"
+const DECR_LOADING_SEARCH = "DECR_LOADING_SEARCH"
 
 export const setSearchResults = (results: unknown[]) => action( SET_SEARCH_RESULTS, results)
 export const clearSearchResults = () => action(CLEAR_SEARCH_RESULTS)

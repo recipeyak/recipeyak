@@ -36,7 +36,7 @@ import { ICalRecipe, setCalendarLoading, setCalendarError, setCalendarRecipe, re
 import { IInvite } from "./reducers/invites"
 import { INotificationState } from "./reducers/notification"
 import { IRecipeBasic, IIngredientBasic } from "../components/AddRecipe"
-import { ITeam } from "./reducers/teams"
+import { ITeam, deleteTeam, addTeam, setLoadingTeam, setLoadingTeamMembers, setLoadingTeamRecipes, setTeamMembers, setTeam404, setTeamRecipes, setUpdatingUserTeamLevel, setUserTeamLevel, setDeletingMembership, setSendingTeamInvites, deleteMembership, setTeams, setCreatingTeam, setTeam, setLoadingTeams, updateTeamById, setCopyingTeam } from "./reducers/teams"
 import { IRecipe } from "./reducers/recipes"
 import * as api from "../api"
 import {
@@ -1305,47 +1305,6 @@ export const clearAddRecipeForm = () => ({
   type: t.CLEAR_ADD_RECIPE_FORM
 })
 
-export const addTeam = (team: unknown) => ({
-  type: t.ADD_TEAM,
-  team
-})
-
-export const setLoadingTeam = (id: number, loadingTeam: boolean) => ({
-  type: t.SET_LOADING_TEAM,
-  id,
-  loadingTeam
-})
-
-export const setLoadingTeamMembers = (id: number, loadingMembers: boolean) => ({
-  type: t.SET_LOADING_TEAM_MEMBERS,
-  id,
-  loadingMembers
-})
-
-export const setTeam404 = (id: number, val = true) => ({
-  type: t.SET_TEAM_404,
-  id,
-  val
-})
-
-export const setTeamMembers = (id: number, members: unknown[]) => ({
-  type: t.SET_TEAM_MEMBERS,
-  id,
-  members
-})
-
-export const setTeamRecipes = (id: number, recipes: unknown[]) => ({
-  type: t.SET_TEAM_RECIPES,
-  id,
-  recipes
-})
-
-export const setLoadingTeamRecipes = (id: number, loadingRecipes: boolean) => ({
-  type: t.SET_LOADING_TEAM_RECIPES,
-  id,
-  loadingRecipes
-})
-
 export const fetchTeam = (id: ITeam["id"]) => (dispatch: Dispatch) => {
   dispatch(setLoadingTeam(id, true))
   return http
@@ -1392,23 +1351,6 @@ export const fetchTeamRecipes = (id: number) => (dispatch: Dispatch) => {
     })
 }
 
-export const setUpdatingUserTeamLevel = (id: number, updating: boolean) => ({
-  type: t.SET_UPDATING_USER_TEAM_LEVEL,
-  id,
-  updating
-})
-
-export const setUserTeamLevel = (
-  teamID: number,
-  membershipID: number,
-  level: unknown
-) => ({
-  type: t.SET_USER_TEAM_LEVEL,
-  teamID,
-  membershipID,
-  level
-})
-
 const attemptedDeleteLastAdmin = (res: AxiosResponse) =>
   res.status === 400 &&
   res.data.level &&
@@ -1441,28 +1383,6 @@ export const settingUserTeamLevel = (
       throw err
     })
 }
-
-export const deleteMembership = (teamID: number, membershipID: number) => ({
-  type: t.DELETE_MEMBERSHIP,
-  teamID,
-  membershipID
-})
-
-export const setDeletingMembership = (
-  teamID: number,
-  membershipID: number,
-  val: unknown
-) => ({
-  type: t.SET_DELETING_MEMBERSHIP,
-  teamID,
-  membershipID,
-  val
-})
-
-export const deleteTeam = (id: number) => ({
-  type: t.DELETE_TEAM,
-  id
-})
 
 export const deletingMembership = (
   teamID: number,
@@ -1545,12 +1465,6 @@ export const deletingTeam = (teamID: number) => (
     })
 }
 
-export const setSendingTeamInvites = (teamID: number, val: unknown) => ({
-  type: t.SET_SENDING_TEAM_INVITES,
-  teamID,
-  val
-})
-
 export const sendingTeamInvites = (
   teamID: number,
   emails: any[],
@@ -1581,16 +1495,6 @@ export const sendingTeamInvites = (
     })
 }
 
-export const setLoadingTeams = (val: boolean) => ({
-  type: t.SET_LOADING_TEAMS,
-  val
-})
-
-export const setTeams = (teams: unknown) => ({
-  type: t.SET_TEAMS,
-  teams
-})
-
 export const fetchTeams = () => (dispatch: Dispatch) => {
   dispatch(setLoadingTeams(true))
   return http
@@ -1604,23 +1508,6 @@ export const fetchTeams = () => (dispatch: Dispatch) => {
       throw err
     })
 }
-
-export const setTeam = (id: number, team: unknown) => ({
-  type: t.SET_TEAM,
-  id,
-  team
-})
-
-export const updateTeamById = (id: number, teamKeys: unknown) => ({
-  type: t.UPDATE_TEAM,
-  id,
-  teamKeys
-})
-
-export const setCreatingTeam = (val: unknown) => ({
-  type: t.SET_CREATING_TEAM,
-  val
-})
 
 export const creatingTeam = (
   name: string,
@@ -1640,11 +1527,6 @@ export const creatingTeam = (
       throw err
     })
 }
-
-export const setCopyingTeam = (val: boolean) => ({
-  type: t.SET_COPYING_TEAM,
-  val
-})
 
 export const updatingTeam = (teamId: ITeam["id"], teamKVs: unknown) => (
   dispatch: Dispatch
