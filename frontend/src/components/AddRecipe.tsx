@@ -29,6 +29,7 @@ export interface IRecipeBasic
   > {
   readonly ingredients: IIngredientBasic[]
   readonly steps: IStepBasic[]
+  readonly team?: ITeam["id"]
 }
 export type IIngredientBasic = Omit<IIngredient, "id" | "position">
 
@@ -65,7 +66,7 @@ interface IAddRecipeProps {
   readonly loadingTeams: boolean
   readonly teams: ITeam[]
   readonly setTeamID: (x: number | null) => void
-  readonly teamID: number | null
+  readonly teamID: ITeam["id"] | null
 }
 
 interface IAddRecipeState {
@@ -108,7 +109,7 @@ export default class AddRecipe extends React.Component<
 
   handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
-    const recipe = {
+    this.props.addRecipe({
       name: this.props.name,
       author: this.props.author,
       source: this.props.source,
@@ -117,8 +118,7 @@ export default class AddRecipe extends React.Component<
       ingredients: this.props.ingredients,
       steps: this.props.steps,
       team: this.props.teamID || undefined
-    }
-    this.props.addRecipe(recipe)
+    })
   }
 
   addIngredient = () => {
@@ -158,13 +158,11 @@ export default class AddRecipe extends React.Component<
   cancelAddStep = () => this.setState({ step: "" })
 
   handleTeamChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const id = parseInt(e.target.value, 10)
-    // When we convert "personal" to an int, we'll get NaN
-    if (isNaN(id)) {
-      this.props.setTeamID(null)
-    } else {
-      this.props.setTeamID(id)
+    if (e.target.value === "personal") {
+      return this.props.setTeamID(null)
     }
+    const id = parseInt(e.target.value, 10)
+    this.props.setTeamID(id)
   }
 
   render() {

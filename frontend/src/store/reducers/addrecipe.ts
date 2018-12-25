@@ -1,5 +1,6 @@
 import { action as act } from "typesafe-actions"
 import { IIngredientBasic, IStepBasic } from "../../components/AddRecipe"
+import { ITeam } from "./teams"
 
 const SET_ADD_RECIPE_FORM_NAME = "SET_ADD_RECIPE_FORM_NAME"
 const SET_ADD_RECIPE_FORM_AUTHOR = "SET_ADD_RECIPE_FORM_AUTHOR"
@@ -30,7 +31,7 @@ export const setAddRecipeFormTime = (val: string) =>
 export const setAddRecipeFormServings = (val: string) =>
   act(SET_ADD_RECIPE_FORM_SERVINGS, val)
 
-export const setAddRecipeFormTeam = (val: string) =>
+export const setAddRecipeFormTeam = (val: ITeam["id"] | null) =>
   act(SET_ADD_RECIPE_FORM_TEAM, val)
 
 export const addAddRecipeFormIngredient = (ingredient: IIngredientBasic) =>
@@ -85,6 +86,7 @@ export interface IAddRecipeState {
   readonly servings: string
   readonly ingredients: IIngredientBasic[]
   readonly steps: IStepBasic[]
+  readonly team: ITeam["id"] | null
 }
 
 export const initialState: IAddRecipeState = {
@@ -94,7 +96,8 @@ export const initialState: IAddRecipeState = {
   time: "",
   servings: "",
   ingredients: [],
-  steps: []
+  steps: [],
+  team: null
 }
 
 const addrecipe = (
@@ -138,12 +141,11 @@ const addrecipe = (
         steps: [...state.steps, action.payload]
       }
 
-    // case SET_ADD_RECIPE_FORM_TEAM: {
-    //   return {
-    //     ...state,
-    //     team: action.payload
-    //   }
-    // }
+    case SET_ADD_RECIPE_FORM_TEAM:
+      return {
+        ...state,
+        team: action.payload
+      }
     case REMOVE_ADD_RECIPE_FORM_STEP:
       return {
         ...state,
