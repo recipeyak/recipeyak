@@ -24,12 +24,7 @@ const mapStateToProps = (state: RootState, props: RouteProps) => {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  reset: (
-    uid: string,
-    token: string,
-    newPassword1: string,
-    newPassword2: string
-  ) => dispatch(reset(uid, token, newPassword1, newPassword2))
+  reset: reset(dispatch)
 })
 
 

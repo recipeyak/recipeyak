@@ -14,7 +14,8 @@ import {
   fetchTeams,
   fetchShoppingList,
   fetchRecipeList,
-  Dispatch
+  Dispatch,
+  GetState
 } from "../store/actions"
 
 import { pyFormat, daysFromSunday, daysUntilSaturday } from "../date"
@@ -80,9 +81,8 @@ const mapStateToProps = (state: RootState, props: ICalendarProps) => {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: (month: Date, teamID: ITeam["id"] | "personal" = "personal") =>
-    dispatch(fetchCalendar(teamID, month)),
-  fetchTeams: () => dispatch(fetchTeams()),
+  fetchData: fetchCalendar(dispatch),
+  fetchTeams: fetchTeams(dispatch),
   navTo: (url: string) => {
     dispatch(push(url))
   },
@@ -92,8 +92,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     end: Date
   ) => {
     return Promise.all([
-      dispatch(fetchRecipeList(teamID)),
-      dispatch(fetchShoppingList(teamID, start, end))
+      fetchRecipeList(dispatch)(teamID),
+      fetchShoppingList(dispatch, getState)(teamID, start, end)
     ])
   }
 })

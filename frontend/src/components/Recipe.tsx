@@ -37,23 +37,13 @@ const mapStateToProps = (state: RootState, props: RouteProps) => {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchRecipe: (id: number) => dispatch(fetchRecipe(id)),
-  addIngredient: (recipeID: IRecipe["id"], ingredient: IIngredientBasic) =>
-    dispatch(addingRecipeIngredient(recipeID, ingredient)),
-  addStep: (id: IStep["id"], step: IStep['text']) =>
-    dispatch(addingRecipeStep(id, step)),
-  update: (id: IRecipe["id"], data: IRecipeBasic) =>
-    dispatch(updateRecipe(id, data)),
-  remove: (id: IRecipe["id"]) => dispatch(deletingRecipe(id)),
-  updateIngredient: (
-    recipeID: IRecipe["id"],
-    ingredientID: IIngredient["id"],
-    content: Omit<IIngredient, "id" | "position">
-  ) => dispatch(updatingIngredient(recipeID, ingredientID, content)),
-  removeIngredient: (
-    recipeID: IRecipe["id"],
-    ingredientID: IIngredient["id"]
-  ) => dispatch(deletingIngredient(recipeID, ingredientID))
+  fetchRecipe: fetchRecipe(dispatch),
+  addIngredient: addingRecipeIngredient(dispatch),
+  addStep:  addingRecipeStep(dispatch),
+  update: updateRecipe(dispatch),
+  remove: deletingRecipe(dispatch),
+  updateIngredient: updatingIngredient(dispatch),
+  removeIngredient: deletingIngredient(dispatch)
 })
 
 interface IRecipeProps extends RouteProps {

@@ -93,9 +93,9 @@ const mapStateToProps = (state: RootState) => {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: () => dispatch(fetchInvites()),
-  accept: (id: IInvite["id"]) => dispatch(acceptingInvite(id)),
-  decline: (id: IInvite["id"]) => dispatch(decliningInvite(id))
+  fetchData: fetchInvites(dispatch),
+  accept: acceptingInvite(dispatch),
+  decline: decliningInvite(dispatch)
 })
 
 interface INotificationsDropdownProps {

@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import {
   postNewRecipe,
   fetchTeams,
-  Dispatch
+  Dispatch,
 } from "../store/actions"
 
 import AddRecipe, {
@@ -71,11 +71,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   updateStep: (_recipeID: number, i: number, step: IStepBasic) =>
     dispatch(updateAddRecipeFormStep(i, step)),
 
-  addRecipe: (recipe: IRecipeBasic) => dispatch(postNewRecipe(recipe)),
+  addRecipe:  postNewRecipe(dispatch),
   clearErrors: () => dispatch(setErrorAddRecipe({})),
   clearForm: () => dispatch(clearAddRecipeForm()),
 
-  fetchData: () => dispatch(fetchTeams())
+  fetchData: fetchTeams(dispatch)
 })
 
 export default connect(

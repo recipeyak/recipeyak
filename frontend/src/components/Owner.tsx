@@ -25,19 +25,10 @@ const mapStateToProps = (state: RootState) => ({
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: () => dispatch(fetchTeams()),
-  showNotificationWithTimeout: (options: INotificationWithTimeout) =>
-    dispatch(showNotificationWithTimeout(options)),
-  moveRecipeTo: (
-    recipeId: IRecipe["id"],
-    ownerId: IRecipe["owner"]["id"],
-    type: IRecipe["owner"]["type"]
-  ) => dispatch(moveRecipeTo(recipeId, ownerId, type)),
-  copyRecipeTo: (
-    recipeId: IRecipe["id"],
-    ownerId: IRecipe["owner"]["id"],
-    type: IRecipe["owner"]["type"]
-  ) => dispatch(copyRecipeTo(recipeId, ownerId, type))
+  fetchData: fetchTeams(dispatch),
+  showNotificationWithTimeout: showNotificationWithTimeout(dispatch),
+  moveRecipeTo:  moveRecipeTo(dispatch),
+  copyRecipeTo:  copyRecipeTo(dispatch)
 })
 
 interface IOwnerProps {

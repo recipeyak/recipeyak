@@ -8,7 +8,7 @@ import startOfDay from "date-fns/start_of_day"
 import endOfDay from "date-fns/end_of_day"
 import isFirstDayOfMonth from "date-fns/is_first_day_of_month"
 
-import { pyFormat, beforeCurrentDay } from "../date"
+import { beforeCurrentDay } from "../date"
 
 import { classNames } from "../classnames"
 
@@ -20,7 +20,8 @@ import {
   fetchShoppingList,
   moveScheduledRecipe,
   deletingScheduledRecipe,
-  Dispatch
+  Dispatch,
+  GetState
 } from "../store/actions"
 
 import * as DragDrop from "../dragDrop"
@@ -50,20 +51,11 @@ function mapStateToProps(state: RootState, props: ICalendarDayProps) {
 
 function mapDispatchToProps(dispatch: Dispatch) {
   return {
-    create: (
-      recipeID: IRecipe["id"],
-      teamID: ITeam["id"],
-      on: Date,
-      count: string
-    ) => dispatch(addingScheduledRecipe(recipeID, teamID, on, count)),
-    updateCount: (id: ICalRecipe["id"], teamID: ITeam["id"], count: number) =>
-      dispatch(updatingScheduledRecipe(id, teamID, { count })),
-    refetchShoppingList: (teamID: ITeam["id"]) =>
-      dispatch(fetchShoppingList(teamID)),
-    move: (id: ICalRecipe["id"], teamID: ITeam["id"], date: Date) =>
-      dispatch(moveScheduledRecipe(id, teamID, pyFormat(date))),
-    remove: (recipeID: ICalRecipe["id"], teamID: ITeam["id"]) =>
-      dispatch(deletingScheduledRecipe(recipeID, teamID))
+    create:  addingScheduledRecipe(dispatch, getState),
+    updateCount:  updatingScheduledRecipe(dispatch, getState),
+    refetchShoppingList: fetchShoppingList(dispatch, getState),
+    move: moveScheduledRecipe(dispatch, getState),
+    remove: deletingScheduledRecipe(dispatch, getState)
   }
 }
 

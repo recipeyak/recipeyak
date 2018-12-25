@@ -7,7 +7,8 @@ import { ButtonPlain, ButtonDanger } from "./Buttons"
 import {
   settingUserTeamLevel,
   deletingMembership,
-  Dispatch
+  Dispatch,
+  GetState
 } from "../store/actions"
 import { ITeam, IMember } from "../store/reducers/teams"
 import { RootState } from "../store/store"
@@ -28,16 +29,8 @@ const mapStateToProps = (
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  handleUserLevelChange: (
-    teamID: ITeam["id"],
-    membershipID: IMember["id"],
-    level: string
-  ) => dispatch(settingUserTeamLevel(teamID, membershipID, level)),
-  deleteMembership: (
-    teamID: ITeam["id"],
-    membershipID: IMember["id"],
-    leaving: boolean
-  ) => dispatch(deletingMembership(teamID, membershipID, leaving))
+  handleUserLevelChange: settingUserTeamLevel(dispatch),
+  deleteMembership: deletingMembership(dispatch, getState)
 })
 
 interface IMemberRowProps {

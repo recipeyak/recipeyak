@@ -109,21 +109,14 @@ const getTeamID = (params: ScheduleRouteParams["match"]["params"]) => {
   return teamID
 }
 
-const mapDispatchToProps = (
-  dispatch: Dispatch,
-  ownProps: ScheduleRouteParams
-) => {
+export default connect(
+  null,
+  ( dispatch: Dispatch, ownProps: ScheduleRouteParams) => {
   const teamID = getTeamID(ownProps.match.params)
   return {
-    updateTeamID: () => {
-      dispatch(updatingTeamID(teamID))
-    },
+    updateTeamID: updatingTeamID(dispatch, getState),
     teamID,
     type: ownProps.match.params["type"]
   }
 }
-
-export default connect(
-  null,
-  mapDispatchToProps
 )(Schedule)
