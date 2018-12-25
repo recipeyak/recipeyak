@@ -38,7 +38,8 @@ const recipeApp = combineReducers({
   teams,
   calendar,
   search
-})
+  // HACK(sbdchd): should remove later
+} as any)
 
 // reset redux to default state on logout
 export const rootReducer = (state: any, action: any) => {

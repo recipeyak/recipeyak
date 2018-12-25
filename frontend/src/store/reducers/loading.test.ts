@@ -1,5 +1,5 @@
 import loading, { initialState } from "./loading"
-import * as a from "../actions"
+import * as a from "./loading"
 
 describe("loading", () => {
   it("sets loading login", () => {

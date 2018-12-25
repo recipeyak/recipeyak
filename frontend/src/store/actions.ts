@@ -39,6 +39,14 @@ import { IRecipeBasic, IIngredientBasic } from "../components/AddRecipe"
 import { ITeam } from "./reducers/teams"
 import { IRecipe } from "./reducers/recipes"
 import * as api from "../api"
+import {
+  setLoadingAddRecipe,
+  setLoadingRecipes,
+  setLoadingLogin,
+  setLoadingSignup,
+  setLoadingReset,
+  setLoadingResetConfirmation
+} from "./reducers/loading"
 
 const config = { timeout: 15000 }
 
@@ -464,11 +472,6 @@ export const addRecipe = (recipe: unknown) => ({
   recipe
 })
 
-export const setLoadingAddRecipe = (val: boolean) => ({
-  type: t.SET_LOADING_ADD_RECIPE,
-  val
-})
-
 export const setErrorAddRecipe = (val: unknown) => ({
   type: t.SET_ERROR_ADD_RECIPE,
   val
@@ -542,11 +545,6 @@ export const setRecipes = (recipes: unknown[]) => ({
 
 export const setErrorRecipes = (val: unknown) => ({
   type: t.SET_ERROR_RECIPES,
-  val
-})
-
-export const setLoadingRecipes = (val: boolean) => ({
-  type: t.SET_LOADING_RECIPES,
   val
 })
 
@@ -990,11 +988,6 @@ export const setErrorLogin = (val: unknown) => ({
   val
 })
 
-export const setLoadingLogin = (val: boolean) => ({
-  type: t.SET_LOADING_LOGIN,
-  val
-})
-
 export const logUserIn = (
   email: string,
   password: string,
@@ -1079,11 +1072,6 @@ export const socialConnect = (service: SocialProvider, code: unknown) => (
     })
 }
 
-export const setLoadingSignup = (val: boolean) => ({
-  type: t.SET_LOADING_SIGNUP,
-  val
-})
-
 export const setErrorSignup = (val: unknown) => ({
   type: t.SET_ERROR_SIGNUP,
   val
@@ -1149,11 +1137,6 @@ export const deletingRecipe = (id: number) => (dispatch: Dispatch) => {
     })
 }
 
-export const setLoadingReset = (val: boolean) => ({
-  type: t.SET_LOADING_RESET,
-  val
-})
-
 export const setErrorReset = (val: unknown) => ({
   type: t.SET_ERROR_RESET,
   val
@@ -1204,11 +1187,6 @@ export const reset = (email: string) => (dispatch: Dispatch) => {
       )
     })
 }
-
-export const setLoadingResetConfirmation = (val: boolean) => ({
-  type: t.SET_LOADING_RESET_CONFIRMATION,
-  val
-})
 
 export const setErrorResetConfirmation = (val: unknown) => ({
   type: t.SET_ERROR_RESET_CONFIRMATION,
