@@ -37,7 +37,7 @@ import { setDecliningInvite, setDeclinedInvite, setAcceptingInvite, setAcceptedI
 import { INotificationState, setNotification, clearNotification } from "./reducers/notification"
 import { IRecipeBasic} from "../components/AddRecipe"
 import { ITeam, deleteTeam, addTeam, setLoadingTeam, setLoadingTeamMembers, setLoadingTeamRecipes, setTeamMembers, setTeam404, setTeamRecipes, setUpdatingUserTeamLevel, setUserTeamLevel, setDeletingMembership, setSendingTeamInvites, deleteMembership, setTeams, setCreatingTeam, setTeam, setLoadingTeams, updateTeamById, setCopyingTeam } from "./reducers/teams"
-import { IRecipe } from "./reducers/recipes"
+import { IRecipe, setSchedulingRecipe, updateRecipeOwner, addRecipe, setRecipes, setDeletingRecipe, deleteRecipe, setRemovingStep, deleteStep, updateStep, setUpdatingStep, setRemovingIngredient, deleteIngredient, setUpdatingIngredient, setLoadingAddStepToRecipe, addStepToRecipe, setRecipeUpdating, setRecipe, updateRecipeTime, updateRecipeAuthor, updateRecipeSource, updateRecipeName, setAddingIngredientToRecipe, addIngredientToRecipe, updateIngredient, setLoadingRecipe, setRecipe404 } from "./reducers/recipes"
 import * as api from "../api"
 import {
   setLoadingAddRecipe,
@@ -409,11 +409,6 @@ export const fetchShoppingList = (teamID: TeamID, start?: Date, end?: Date) => (
     })
 }
 
-export const addRecipe = (recipe: unknown) => ({
-  type: t.ADD_RECIPE,
-  recipe
-})
-
 export const postNewRecipe = (recipe: IRecipeBasic) => (dispatch: Dispatch) => {
   dispatch(setLoadingAddRecipe(true))
   dispatch(setErrorAddRecipe({}))
@@ -445,18 +440,6 @@ export const postNewRecipe = (recipe: IRecipeBasic) => (dispatch: Dispatch) => {
     })
 }
 
-export const setRecipe404 = (id: number, val: boolean) => ({
-  type: t.SET_RECIPE_404,
-  id,
-  val
-})
-
-export const setLoadingRecipe = (id: number, val: boolean) => ({
-  type: t.SET_LOADING_RECIPE,
-  id,
-  val
-})
-
 export const fetchRecipe = (id: number) => (dispatch: Dispatch) => {
   dispatch(setRecipe404(id, false))
   dispatch(setLoadingRecipe(id, true))
@@ -474,11 +457,6 @@ export const fetchRecipe = (id: number) => (dispatch: Dispatch) => {
       throw err
     })
 }
-
-export const setRecipes = (recipes: unknown[]) => ({
-  type: t.SET_RECIPES,
-  recipes
-})
 
 export const fetchRecentRecipes = () => (dispatch: Dispatch) => {
   dispatch(setLoadingRecipes(true))
@@ -563,30 +541,6 @@ export const searchRecipes = (query: string) => (dispatch: Dispatch) => {
     })
 }
 
-export const setLoadingAddStepToRecipe = (id: number, val: boolean) => ({
-  type: t.SET_LOADING_ADD_STEP_TO_RECIPE,
-  id,
-  val
-})
-
-export const addStepToRecipe = (id: number, step: unknown) => ({
-  type: t.ADD_STEP_TO_RECIPE,
-  id,
-  step
-})
-
-export const setAddingIngredientToRecipe = (id: number, val: unknown) => ({
-  type: t.SET_ADDING_INGREDIENT_TO_RECIPE,
-  id,
-  val
-})
-
-export const addIngredientToRecipe = (id: number, ingredient: unknown) => ({
-  type: t.ADD_INGREDIENT_TO_RECIPE,
-  id,
-  ingredient
-})
-
 export const addingRecipeIngredient = (
   recipeID: number,
   ingredient: unknown
@@ -604,12 +558,6 @@ export const addingRecipeIngredient = (
     })
 }
 
-export const updateRecipeName = (id: number, name: string) => ({
-  type: t.UPDATE_RECIPE_NAME,
-  id,
-  name
-})
-
 export const sendUpdatedRecipeName = (id: number, name: string) => (
   dispatch: Dispatch
 ) => {
@@ -624,12 +572,6 @@ export const sendUpdatedRecipeName = (id: number, name: string) => (
       throw err
     })
 }
-
-export const updateRecipeSource = (id: number, source: string) => ({
-  type: t.UPDATE_RECIPE_SOURCE,
-  id,
-  source
-})
 
 export const setRecipeSource = (id: number, source: string) => (
   dispatch: Dispatch
@@ -646,12 +588,6 @@ export const setRecipeSource = (id: number, source: string) => (
     })
 }
 
-export const updateRecipeAuthor = (id: number, author: unknown) => ({
-  type: t.UPDATE_RECIPE_AUTHOR,
-  id,
-  author
-})
-
 export const setRecipeAuthor = (id: number, author: unknown) => (
   dispatch: Dispatch
 ) => {
@@ -666,12 +602,6 @@ export const setRecipeAuthor = (id: number, author: unknown) => (
       throw err
     })
 }
-
-export const updateRecipeTime = (id: number, time: unknown) => ({
-  type: t.UPDATE_RECIPE_TIME,
-  id,
-  time
-})
 
 export const setRecipeTime = (id: number, time: unknown) => (
   dispatch: Dispatch
@@ -692,18 +622,6 @@ export const toggleDarkMode = () => ({
   type: t.TOGGLE_DARK_MODE
 })
 
-export const setRecipe = (id: number, data: unknown) => ({
-  type: t.SET_RECIPE,
-  id,
-  data
-})
-
-export const setRecipeUpdating = (id: number, val: unknown) => ({
-  type: t.SET_RECIPE_UPDATING,
-  id,
-  val
-})
-
 export const updateRecipe = (id: number, data: unknown) => (
   dispatch: Dispatch
 ) => {
@@ -719,17 +637,6 @@ export const updateRecipe = (id: number, data: unknown) => (
       throw err
     })
 }
-
-export const updateIngredient = (
-  recipeID: number,
-  ingredientID: number,
-  content: unknown
-) => ({
-  type: t.UPDATE_INGREDIENT,
-  recipeID,
-  ingredientID,
-  content
-})
 
 export const addingRecipeStep = (recipeID: number, step: unknown) => (
   dispatch: Dispatch
@@ -749,28 +656,6 @@ export const addingRecipeStep = (recipeID: number, step: unknown) => (
     })
 }
 
-export const setRemovingIngredient = (
-  recipeID: number,
-  ingredientID: number,
-  val: unknown
-) => ({
-  type: t.SET_REMOVING_INGREDIENT,
-  recipeID,
-  ingredientID,
-  val
-})
-
-export const setUpdatingIngredient = (
-  recipeID: number,
-  ingredientID: number,
-  val: unknown
-) => ({
-  type: t.SET_UPDATING_INGREDIENT,
-  recipeID,
-  ingredientID,
-  val
-})
-
 export const updatingIngredient = (
   recipeID: number,
   ingredientID: number,
@@ -789,12 +674,6 @@ export const updatingIngredient = (
     })
 }
 
-export const deleteIngredient = (recipeID: number, ingredientID: number) => ({
-  type: t.DELETE_INGREDIENT,
-  recipeID,
-  ingredientID
-})
-
 export const deletingIngredient = (recipeID: number, ingredientID: number) => (
   dispatch: Dispatch
 ) => {
@@ -810,42 +689,6 @@ export const deletingIngredient = (recipeID: number, ingredientID: number) => (
       throw err
     })
 }
-
-export const updateStep = (
-  recipeID: number,
-  stepID: number,
-  text: string,
-  position: number
-) => ({
-  type: t.UPDATE_STEP,
-  recipeID,
-  stepID,
-  text,
-  position
-})
-
-export const setRemovingStep = (
-  recipeID: number,
-  stepID: number,
-  val: unknown
-) => ({
-  type: t.SET_REMOVING_STEP,
-  recipeID,
-  stepID,
-  val
-})
-
-export const setUpdatingStep = (
-  recipeID: number,
-  stepID: number,
-  val: unknown
-) => ({
-  type: t.SET_UPDATING_STEP,
-  recipeID,
-  stepID,
-  val
-})
-
 export const updatingStep = (
   recipeID: number,
   stepID: number,
@@ -875,12 +718,6 @@ export const updatingStep = (
       throw err
     })
 }
-
-export const deleteStep = (recipeID: number, stepID: number) => ({
-  type: t.DELETE_STEP,
-  recipeID,
-  stepID
-})
 
 export const deletingStep = (recipeID: number, stepID: number) => (
   dispatch: Dispatch
@@ -1010,18 +847,6 @@ export const signup = (email: string, password1: string, password2: string) => (
       dispatch(setLoadingSignup(false))
     })
 }
-
-export const setDeletingRecipe = (id: number, val: boolean) => ({
-  type: t.SET_DELETING_RECIPE,
-  id,
-  val
-})
-
-export const deleteRecipe = (id: number) => ({
-  type: t.DELETE_RECIPE,
-  id
-})
-
 export const deletingRecipe = (id: number) => (dispatch: Dispatch) => {
   dispatch(setDeletingRecipe(id, true))
   return http
@@ -1396,12 +1221,6 @@ export const updatingTeam = (teamId: ITeam["id"], teamKVs: unknown) => (
     })
 }
 
-export const updateRecipeOwner = (id: number, owner: unknown) => ({
-  type: t.UPDATE_RECIPE_OWNER,
-  id,
-  owner
-})
-
 export const moveRecipeTo = (
   recipeId: number,
   ownerId: number,
@@ -1657,16 +1476,6 @@ export const moveScheduledRecipe = (
   })
 }
 
-
-export const setSchedulingRecipe = (
-  recipeID: IRecipe["id"],
-  scheduling: boolean
-) => ({
-  type: t.SET_SCHEDULING_RECIPE,
-  recipeID,
-  scheduling
-
-})
 
 export const updatingScheduledRecipe = (
   id: ICalRecipe["id"],
