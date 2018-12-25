@@ -33,7 +33,7 @@ import {
   IUserState
 } from "./reducers/user"
 import { ICalRecipe, setCalendarLoading, setCalendarError, setCalendarRecipe, replaceCalendarRecipe, deleteCalendarRecipe, setCalendarRecipes, moveCalendarRecipe } from "./reducers/calendar"
-import { IInvite } from "./reducers/invites"
+import { setDecliningInvite, setDeclinedInvite, setAcceptingInvite, setAcceptedInvite, setLoadingInvites, setErrorFetchingInvites, setInvites } from "./reducers/invites"
 import { INotificationState, setNotification, clearNotification } from "./reducers/notification"
 import { IRecipeBasic} from "../components/AddRecipe"
 import { ITeam, deleteTeam, addTeam, setLoadingTeam, setLoadingTeamMembers, setLoadingTeamRecipes, setTeamMembers, setTeam404, setTeamRecipes, setUpdatingUserTeamLevel, setUserTeamLevel, setDeletingMembership, setSendingTeamInvites, deleteMembership, setTeams, setCreatingTeam, setTeam, setLoadingTeams, updateTeamById, setCopyingTeam } from "./reducers/teams"
@@ -1432,21 +1432,6 @@ export const copyRecipeTo = (
     })
 }
 
-export const setLoadingInvites = (val: boolean) => ({
-  type: t.SET_LOADING_INVITES,
-  val
-})
-
-export const setInvites = (invites: IInvite[]) => ({
-  type: t.SET_INVITES,
-  invites
-})
-
-export const setErrorFetchingInvites = (val: unknown) => ({
-  type: t.SET_ERROR_FETCHING_INVITES,
-  val
-})
-
 export const fetchInvites = () => (dispatch: Dispatch) => {
   dispatch(setLoadingInvites(true))
   dispatch(setErrorFetchingInvites(false))
@@ -1463,17 +1448,6 @@ export const fetchInvites = () => (dispatch: Dispatch) => {
     })
 }
 
-export const setAcceptingInvite = (id: IInvite["id"], val: boolean) => ({
-  type: t.SET_ACCEPTING_INVITE,
-  id,
-  val
-})
-
-export const setAcceptedInvite = (id: number) => ({
-  type: t.SET_ACCEPTED_INVITE,
-  id
-})
-
 export const acceptingInvite = (id: number) => (dispatch: Dispatch) => {
   dispatch(setAcceptingInvite(id, true))
   return http
@@ -1487,18 +1461,6 @@ export const acceptingInvite = (id: number) => (dispatch: Dispatch) => {
       throw err
     })
 }
-
-export const setDecliningInvite = (id: IInvite["id"], val: boolean) => ({
-  type: t.SET_DECLINING_INVITE,
-  id,
-  val
-})
-
-export const setDeclinedInvite = (id: number) => ({
-  type: t.SET_DECLINED_INVITE,
-  id
-})
-
 export const decliningInvite = (id: number) => (dispatch: Dispatch) => {
   dispatch(setDecliningInvite(id, true))
   return http

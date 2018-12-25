@@ -47,7 +47,7 @@ type LoadingActions =
 const loading = (
   state: ILoadingState = initialState,
   action: LoadingActions
-) => {
+): ILoadingState => {
   switch (action.type) {
     case SET_LOADING_LOGIN:
       return { ...state, login: action.payload }

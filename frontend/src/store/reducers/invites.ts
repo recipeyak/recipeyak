@@ -1,5 +1,64 @@
-import * as t from "../actionTypes"
-import { AnyAction } from "redux"
+import { action } from "typesafe-actions";
+
+const SET_INVITES = "SET_INVITES"
+const SET_LOADING_INVITES = "SET_LOADING_INVITES"
+const SET_ERROR_FETCHING_INVITES = "SET_ERROR_FETCHING_INVITES"
+const SET_DECLINING_INVITE = "SET_DECLINING_INVITE"
+const SET_ACCEPTING_INVITE = "SET_ACCEPTING_INVITE"
+const SET_DECLINED_INVITE = "SET_DECLINED_INVITE"
+const SET_ACCEPTED_INVITE = "SET_ACCEPTED_INVITE"
+
+
+export const setLoadingInvites = (val: boolean) => action(
+  SET_LOADING_INVITES,
+  val
+)
+
+export const setInvites = (invites: IInvite[]) => action(
+  SET_INVITES,
+  invites
+)
+
+export const setErrorFetchingInvites = (val: unknown) => action(
+  SET_ERROR_FETCHING_INVITES,
+  val
+)
+
+
+export const setAcceptingInvite = (id: IInvite["id"], val: boolean) => action(
+  SET_ACCEPTING_INVITE, {
+  id,
+ val
+})
+
+export const setAcceptedInvite = (id: number) => action(
+  SET_ACCEPTED_INVITE,
+  id
+)
+
+
+export const setDecliningInvite = (id: IInvite["id"], val: boolean) => action(
+  SET_DECLINING_INVITE, {
+  id,
+  val
+})
+
+export const setDeclinedInvite = (id: number) => action(
+  SET_DECLINED_INVITE,
+  id
+)
+
+
+
+
+type InviteActions =
+| ReturnType<typeof setLoadingInvites>
+| ReturnType<typeof setInvites>
+| ReturnType<typeof setErrorFetchingInvites>
+| ReturnType<typeof setAcceptingInvite>
+| ReturnType<typeof setAcceptedInvite>
+| ReturnType<typeof setDecliningInvite>
+| ReturnType<typeof setDeclinedInvite>
 
 interface ITeam {
   readonly id: number
@@ -31,50 +90,50 @@ export const initialState: IInvitesState = {
   loading: false
 }
 
-const invites = (state = initialState, action: AnyAction) => {
+const invites = (state: IInvitesState = initialState, action: InviteActions): IInvitesState => {
   switch (action.type) {
-    case t.SET_INVITES:
+    case SET_INVITES:
       return {
         ...state,
-        ...action.invites.reduce(
-          (a: unknown, b: IInvite) => ({
+        ...action.payload.reduce(
+          (a, b) => ({
             ...a,
             [b.id]: b
           }),
           {}
         )
       }
-    case t.SET_LOADING_INVITES:
-      return { ...state, loading: action.val }
-    case t.SET_ACCEPTING_INVITE:
+    case SET_LOADING_INVITES:
+      return { ...state, loading: action.payload }
+    case SET_ACCEPTING_INVITE:
       return {
         ...state,
-        [action.id]: {
-          ...state[action.id],
-          accepting: action.val
+        [action.payload.id]: {
+          ...state[action.payload.id],
+          accepting: action.payload.val
         }
       }
-    case t.SET_DECLINING_INVITE:
+    case SET_DECLINING_INVITE:
       return {
         ...state,
-        [action.id]: {
-          ...state[action.id],
-          declining: action.val
+        [action.payload.id]: {
+          ...state[action.payload.id],
+          declining: action.payload.val
         }
       }
-    case t.SET_ACCEPTED_INVITE:
+    case SET_ACCEPTED_INVITE:
       return {
         ...state,
-        [action.id]: {
-          ...state[action.id],
+        [action.payload]: {
+          ...state[action.payload],
           status: "accepted"
         }
       }
-    case t.SET_DECLINED_INVITE:
+    case SET_DECLINED_INVITE:
       return {
         ...state,
-        [action.id]: {
-          ...state[action.id],
+        [action.payload]: {
+          ...state[action.payload],
           status: "declined"
         }
       }
