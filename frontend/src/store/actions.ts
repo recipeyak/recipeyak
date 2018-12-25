@@ -34,7 +34,7 @@ import {
 } from "./reducers/user"
 import { ICalRecipe, setCalendarLoading, setCalendarError, setCalendarRecipe, replaceCalendarRecipe, deleteCalendarRecipe, setCalendarRecipes, moveCalendarRecipe } from "./reducers/calendar"
 import { IInvite } from "./reducers/invites"
-import { INotificationState } from "./reducers/notification"
+import { INotificationState, setNotification, clearNotification } from "./reducers/notification"
 import { IRecipeBasic} from "../components/AddRecipe"
 import { ITeam, deleteTeam, addTeam, setLoadingTeam, setLoadingTeamMembers, setLoadingTeamRecipes, setTeamMembers, setTeam404, setTeamRecipes, setUpdatingUserTeamLevel, setUserTeamLevel, setDeletingMembership, setSendingTeamInvites, deleteMembership, setTeams, setCreatingTeam, setTeam, setLoadingTeams, updateTeamById, setCopyingTeam } from "./reducers/teams"
 import { IRecipe } from "./reducers/recipes"
@@ -120,28 +120,6 @@ const isbadRequest = (err: AxiosError) =>
 
 const is404 = (err: AxiosError) => err.response && err.response.status === 404
 
-interface ISetNotification {
-  readonly message: string
-  readonly closeable?: boolean
-  readonly level?: INotificationState["level"]
-}
-
-export const setNotification = ({
-  message,
-  closeable,
-  level = "info"
-}: ISetNotification) => ({
-  type: t.SET_NOTIFICATION,
-  notification: {
-    message,
-    closeable,
-    level
-  }
-})
-
-export const clearNotification = () => ({
-  type: t.CLEAR_NOTIFICATION
-})
 
 export interface INotificationWithTimeout {
   readonly delay?: number

@@ -1,6 +1,6 @@
 import notification, { initialState } from "./notification"
 
-import * as a from "../actions"
+import * as a from "./notification"
 
 describe("Notification", () => {
   it("Sets notification settings", () => {
