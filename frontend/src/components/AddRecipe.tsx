@@ -8,21 +8,27 @@ import Ingredient from "./Ingredient"
 import { ButtonPrimary } from "./Buttons"
 import { IRecipe, IStep, IIngredient } from "../store/reducers/recipes"
 import { ITeam } from "../store/reducers/teams"
+import { IAddRecipeError } from "../store/reducers/error";
 
 const unfinishedIngredient = ({ quantity = "", name = "" }) =>
   quantity === "" || name === ""
 
 export type Omit<T, K> = Pick<T, Exclude<keyof T, K>>
 
-export type IRecipeBasic = Omit<
+export interface IRecipeBasic extends Omit<
   IRecipe,
-  "id" | "edits" | "modified" | "last_scheduled" | "owner" | "team"
->
+  "id" | "edits" | "modified" | "last_scheduled" | "owner" | "team" |"ingredients" | "steps"
+> {
+  readonly ingredients: IIngredientBasic[]
+  readonly steps: IStepBasic[]
+}
 export type IIngredientBasic = Omit<IIngredient, "id" | "position">
+
+export type IStepBasic =Pick<IStep, "text">
 
 interface IAddRecipeProps {
   readonly clearErrors: () => void
-  readonly addStep: (step: { text: string }) => void
+  readonly addStep: (step: IStepBasic) => void
   readonly clearForm: () => void
   readonly setTime: (e: React.ChangeEvent<HTMLInputElement>) => void
   readonly setServings: (e: React.ChangeEvent<HTMLInputElement>) => void
@@ -30,7 +36,7 @@ interface IAddRecipeProps {
   readonly setAuthor: (e: React.ChangeEvent<HTMLInputElement>) => void
   readonly setName: (e: React.ChangeEvent<HTMLInputElement>) => void
   readonly removeStep: (index: number) => void
-  readonly updateStep: (_recipeID: number, i: number, step: unknown) => void
+  readonly updateStep: (_recipeID: number, i: number, step: IStepBasic) => void
   readonly fetchData: () => void
   readonly addRecipe: (recipe: IRecipeBasic) => void
   readonly removeIngredient: (index: number) => void
@@ -39,19 +45,15 @@ interface IAddRecipeProps {
     ingredient: IIngredientBasic
   ) => void
   readonly addIngredient: (ingredient: IIngredientBasic) => void
-  readonly error: {
-    readonly errorWithName: boolean
-    readonly errorWithIngredients: boolean
-    readonly errorWithSteps: boolean
-  }
+  readonly error: IAddRecipeError
   readonly loading: boolean
   readonly name: string
   readonly author: string
   readonly source: string
   readonly time: string
   readonly servings: string
-  readonly ingredients: IIngredient[]
-  readonly steps: IStep[]
+  readonly ingredients: IIngredientBasic[]
+  readonly steps: IStepBasic[]
   readonly loadingTeams: boolean
   readonly teams: ITeam[]
   readonly setTeamID: (x: number | null) => void

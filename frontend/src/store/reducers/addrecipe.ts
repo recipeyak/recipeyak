@@ -1,5 +1,5 @@
 import { action } from "typesafe-actions";
-import { IIngredientBasic } from "../../components/AddRecipe";
+import { IIngredientBasic, IStepBasic } from "../../components/AddRecipe";
 
 const SET_ADD_RECIPE_FORM_NAME = "SET_ADD_RECIPE_FORM_NAME"
 const SET_ADD_RECIPE_FORM_AUTHOR = "SET_ADD_RECIPE_FORM_AUTHOR"
@@ -36,13 +36,13 @@ export const setAddRecipeFormServings = (val: string) => action(
 export const setAddRecipeFormTeam = (val: string) => action(
   SET_ADD_RECIPE_FORM_TEAM, val)
 
-export const addAddRecipeFormIngredient = (ingredient: unknown) => action(
+export const addAddRecipeFormIngredient = (ingredient: IIngredientBasic) => action(
   ADD_ADD_RECIPE_FORM_INGREDIENT, ingredient)
 
 export const removeAddRecipeFormIngredient = (index: number) => action(
   REMOVE_ADD_RECIPE_FORM_INGREDIENT, index)
 
-export const addAddRecipeFormStep = (step: { text?: string }) => action(
+export const addAddRecipeFormStep = (step: IStepBasic) => action(
   ADD_ADD_RECIPE_FORM_STEP, step)
 
 export const removeAddRecipeFormStep = (index: number) => action(
@@ -57,7 +57,7 @@ export const updateAddRecipeFormIngredient = (
   ingredient
 })
 
-export const updateAddRecipeFormStep = (index: number, step: unknown) => action(
+export const updateAddRecipeFormStep = (index: number, step: IStepBasic) => action(
   UPDATE_ADD_RECIPE_FORM_STEP, {
   index,
   step
@@ -67,7 +67,7 @@ export const clearAddRecipeForm = () => action(CLEAR_ADD_RECIPE_FORM)
 
 
 
-type AddRecipeActions =
+export type AddRecipeActions =
   | ReturnType<typeof setAddRecipeFormName >
   | ReturnType<typeof setAddRecipeFormAuthor >
   | ReturnType<typeof setAddRecipeFormSource >
@@ -89,8 +89,8 @@ export interface IAddRecipeState {
   readonly source: string
   readonly time: string
   readonly servings: string
-  readonly ingredients: unknown[]
-  readonly steps: unknown[]
+  readonly ingredients: IIngredientBasic[]
+  readonly steps: IStepBasic[]
 }
 
 export const initialState: IAddRecipeState = {
@@ -143,6 +143,13 @@ const addrecipe = (
         ...state,
         steps: [...state.steps, action.payload]
       }
+
+    // case SET_ADD_RECIPE_FORM_TEAM: {
+    //   return {
+    //     ...state,
+    //     team: action.payload
+    //   }
+    // }
     case REMOVE_ADD_RECIPE_FORM_STEP:
       return {
         ...state,

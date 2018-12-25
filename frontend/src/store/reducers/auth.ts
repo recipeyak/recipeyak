@@ -1,9 +1,11 @@
 import { action } from "typesafe-actions";
 
+
 const SET_FROM_URL = "SET_FROM_URL"
 
 export const setFromUrl = (val: string) => action( SET_FROM_URL, val)
-type AuthActions = ReturnType<typeof setFromUrl >
+
+export type AuthActions = ReturnType<typeof setFromUrl >
 
 export interface IAuthState {
   readonly fromUrl: string

@@ -1,5 +1,6 @@
 import { action } from "typesafe-actions";
 
+
 const SET_INVITES = "SET_INVITES"
 const SET_LOADING_INVITES = "SET_LOADING_INVITES"
 const SET_ERROR_FETCHING_INVITES = "SET_ERROR_FETCHING_INVITES"
@@ -51,7 +52,7 @@ export const setDeclinedInvite = (id: number) => action(
 
 
 
-type InviteActions =
+export type InviteActions =
 | ReturnType<typeof setLoadingInvites>
 | ReturnType<typeof setInvites>
 | ReturnType<typeof setErrorFetchingInvites>

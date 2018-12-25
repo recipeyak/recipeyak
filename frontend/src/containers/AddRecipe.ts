@@ -8,7 +8,8 @@ import {
 
 import AddRecipe, {
   IIngredientBasic,
-  IRecipeBasic
+  IRecipeBasic,
+  IStepBasic
 } from "../components/AddRecipe"
 
 import { teamsFrom } from "../store/mapState"
@@ -35,7 +36,6 @@ const mapStateToProps = (state: RootState) => ({
   author: state.addrecipe.author,
   source: state.addrecipe.source,
   time: state.addrecipe.time,
-  team: state.addrecipe.team,
   servings: state.addrecipe.servings,
   ingredients: state.addrecipe.ingredients,
   steps: state.addrecipe.steps,
@@ -43,7 +43,7 @@ const mapStateToProps = (state: RootState) => ({
   error: state.error.addRecipe,
   // we remove the loading
   teams: teamsFrom(state),
-  loadingTeams: state.teams.loading
+  loadingTeams: !!state.teams.loading
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -66,9 +66,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   updateIngredient: (i: number, ingredient: IIngredientBasic) =>
     dispatch(updateAddRecipeFormIngredient(i, ingredient)),
 
-  addStep: (x: { text?: string }) => dispatch(addAddRecipeFormStep(x)),
+  addStep: (x: IStepBasic) => dispatch(addAddRecipeFormStep(x)),
   removeStep: (i: number) => dispatch(removeAddRecipeFormStep(i)),
-  updateStep: (_recipeID: number, i: number, step: unknown) =>
+  updateStep: (_recipeID: number, i: number, step: IStepBasic) =>
     dispatch(updateAddRecipeFormStep(i, step)),
 
   addRecipe: (recipe: IRecipeBasic) => dispatch(postNewRecipe(recipe)),

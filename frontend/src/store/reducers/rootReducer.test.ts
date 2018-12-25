@@ -1,16 +1,25 @@
-import { rootReducer, emptyStore } from "../store"
+import { rootReducer, emptyStore, RootState } from "../store"
 import { setUserLoggedIn } from "./user";
 
 describe("logout", () => {
   it("Logs out user and clears entire store", () => {
-    const beforeState = {
-      loggedIn: true,
-      token: "testing",
+    const beforeState: RootState = {
+      ...emptyStore.getState(),
+      user: {
+        ...emptyStore.getState().user,
+        loggedIn: true,
+      },
       auth: {
         fromUrl: ""
       },
       routerReducer: {
-        location: "test"
+        location: {
+          state: "",
+          pathname: "",
+          search: "",
+          hash: ""
+        }
+
       }
     }
 

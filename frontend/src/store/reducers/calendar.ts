@@ -4,6 +4,7 @@ import isSameDay from "date-fns/is_same_day"
 import { action } from "typesafe-actions";
 
 
+
 const SET_CALENDAR_RECIPES = "SET_CALENDAR_RECIPES"
 const SET_CALENDAR_RECIPE = "SET_CALENDAR_RECIPE"
 const DELETE_CALENDAR_RECIPE = "DELETE_CALENDAR_RECIPE"
@@ -15,7 +16,7 @@ const REPLACE_CALENDAR_RECIPE = "REPLACE_CALENDAR_RECIPE"
 
 export const setCalendarLoading = (loading: boolean) => action(SET_CALENDAR_LOADING, loading)
 
-export const setCalendarError = (error: unknown) => action(SET_CALENDAR_ERROR, error)
+export const setCalendarError = (error: boolean) => action(SET_CALENDAR_ERROR, error)
 
 export const setCalendarRecipe = (recipe: ICalRecipe) => action(SET_CALENDAR_RECIPE, recipe)
 
@@ -45,7 +46,7 @@ export const replaceCalendarRecipe = (
 
 
 
-type CalendarActions =
+export type CalendarActions =
 | ReturnType<typeof setCalendarLoading>
 | ReturnType<typeof setCalendarError>
 | ReturnType<typeof setCalendarRecipe >
@@ -148,7 +149,7 @@ function toInt(x: string | number): number {
 export const calendar = (
   state: ICalendarState = initialState,
   action: CalendarActions
-) => {
+): ICalendarState => {
   switch (action.type) {
     case SET_CALENDAR_RECIPES:
       return {

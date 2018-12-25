@@ -10,7 +10,7 @@ import { IMember } from "../store/reducers/teams"
 import { RootState } from "../store/store"
 
 const mapStateToProps = (state: RootState) => ({
-  loading: state.teams.creating
+  loading: !!state.teams.creating
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -115,9 +115,7 @@ class TeamCreate extends React.Component<ITeamCreateProps, ITeamCreateState> {
   }
 }
 
-const ConnectedTeamCreate = connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(TeamCreate)
-
-export default ConnectedTeamCreate

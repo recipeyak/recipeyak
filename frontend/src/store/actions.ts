@@ -903,7 +903,7 @@ export const resetConfirmation = (
           .concat(uidData)
 
         dispatch(
-          setErrorReset({
+          setErrorResetConfirmation({
             newPassword1: data["new_password1"],
             newPassword2: data["new_password2"],
             nonFieldErrors

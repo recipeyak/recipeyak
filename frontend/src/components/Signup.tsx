@@ -6,13 +6,9 @@ import SocialButtons from "./SocialButtons"
 import { FormErrorHandler } from "./Forms"
 import { ButtonPrimary } from "./Buttons"
 import AuthContainer from "./AuthContainer"
+import { ISignupErrors } from "../store/reducers/error";
 
-interface ISignupErrors {
-  readonly password1: string[]
-  readonly password2: string[]
-  readonly nonFieldErrors: string[]
-  readonly email: string[]
-}
+
 
 interface ISignupProps {
   readonly clearErrors: () => void

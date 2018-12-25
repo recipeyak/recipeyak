@@ -11,7 +11,7 @@ import Nav from "../components/Nav"
 
 import { teamsFrom, scheduleURLFromTeamID } from "../store/mapState"
 import { RootState } from "../store/store"
-import { IUserState, toggleDarkMode } from "../store/reducers/user"
+import { toggleDarkMode } from "../store/reducers/user"
 
 const mapStateToProps = (state: RootState) => ({
   avatarURL: state.user.avatarURL,
@@ -21,9 +21,9 @@ const mapStateToProps = (state: RootState) => ({
   loggingOut: state.user.loggingOut,
   darkMode: state.user.darkMode,
   teams: teamsFrom(state),
-  loadingTeams: state.teams.loading,
+  loadingTeams: !!state.teams.loading,
   scheduleURL: scheduleURLFromTeamID(state),
-  teamID: (state.user as IUserState).teamID
+  teamID: state.user.teamID
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
@@ -39,9 +39,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 
-const ConnectedNav = connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Nav)
-
-export default ConnectedNav

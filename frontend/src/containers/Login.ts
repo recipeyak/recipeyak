@@ -27,9 +27,7 @@ const mapStateToProps = (state: RootState) => {
   }
 }
 
-const ConnectedLogin = connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Login)
-
-export default ConnectedLogin

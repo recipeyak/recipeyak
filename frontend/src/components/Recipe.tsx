@@ -29,24 +29,26 @@ import { Omit } from "./AddRecipe"
 type RouteProps = RouteComponentProps<{ id: string }>
 
 const mapStateToProps = (state: RootState, props: RouteProps) => {
-  const id = props.match.params.id
-  const recipe = state.recipes[id] ? state.recipes[id] : { loading: true }
-  return recipe
+  const id = parseInt(props.match.params.id, 10)
+  return state.recipes[id] ? {
+    ...state.recipes[id],
+    loading: !!state.recipes[id].loading
+  } : { loading: true }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchRecipe: (id: number) => dispatch(fetchRecipe(id)),
-  addIngredient: (recipeID: IRecipe["id"], ingredient: IIngredient) =>
+  addIngredient: (recipeID: IRecipe["id"], ingredient: IIngredientBasic) =>
     dispatch(addingRecipeIngredient(recipeID, ingredient)),
-  addStep: (id: IStep["id"], step: IStep) =>
+  addStep: (id: IStep["id"], step: IStep['text']) =>
     dispatch(addingRecipeStep(id, step)),
-  update: (id: IRecipe["id"], data: IRecipe) =>
+  update: (id: IRecipe["id"], data: IRecipeBasic) =>
     dispatch(updateRecipe(id, data)),
   remove: (id: IRecipe["id"]) => dispatch(deletingRecipe(id)),
   updateIngredient: (
     recipeID: IRecipe["id"],
     ingredientID: IIngredient["id"],
-    content: IIngredient
+    content: Omit<IIngredient, "id" | "position">
   ) => dispatch(updatingIngredient(recipeID, ingredientID, content)),
   removeIngredient: (
     recipeID: IRecipe["id"],
@@ -67,7 +69,7 @@ interface IRecipeProps extends RouteProps {
   readonly error404: boolean
   readonly owner: IRecipe["owner"]
   readonly update: (id: IRecipe["id"], recipe: IRecipeBasic) => Promise<void>
-  readonly remove: () => void
+  readonly remove: (id: IRecipe['id']) => void
   readonly deleting: boolean
   readonly updating: boolean
   readonly addingStepToRecipe: boolean
@@ -86,7 +88,7 @@ interface IRecipeProps extends RouteProps {
     recipeID: IRecipe["id"],
     ingredientID: IIngredient["id"]
   ) => void
-  readonly addStep: () => void
+  readonly addStep: (id: IStep["id"], step: IStep['text']) => void
 }
 
 interface IRecipeState {

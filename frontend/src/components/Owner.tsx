@@ -15,7 +15,7 @@ import {
 import { RootState } from "../store/store"
 import { IRecipe } from "../store/reducers/recipes"
 import { ITeamsState } from "../store/reducers/teams"
-import { IUser } from "../store/reducers/user"
+import { IUserState } from "../store/reducers/user"
 import { AxiosError } from "axios"
 import { teamURL } from "../urls"
 
@@ -59,7 +59,7 @@ interface IOwnerProps {
   readonly id: IRecipe["owner"]["id"]
   readonly name: string
   readonly teams: ITeamsState
-  readonly userId: IUser["id"]
+  readonly userId: IUserState["id"]
 }
 
 interface IOwnerState {

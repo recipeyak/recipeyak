@@ -70,7 +70,7 @@ const mapStateToProps = (state: RootState, props: ICalendarProps) => {
     days,
     loading: state.calendar.loading,
     error: state.calendar.error,
-    loadingTeams: state.teams.loading,
+    loadingTeams: !!state.teams.loading,
     teams: teamsFrom(state),
     teamID: props.teamID,
     isTeam,

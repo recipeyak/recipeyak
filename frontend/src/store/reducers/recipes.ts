@@ -2,6 +2,7 @@ import { omit } from "lodash"
 import { ITeam } from "./teams"
 import { action } from "typesafe-actions";
 
+
 const ADD_RECIPE = "ADD_RECIPE"
 const ADD_STEP_TO_RECIPE = "ADD_STEP_TO_RECIPE"
 const ADD_INGREDIENT_TO_RECIPE = "ADD_INGREDIENT_TO_RECIPE"
@@ -239,7 +240,7 @@ export const setSchedulingRecipe = (
 })
 
 
-type RecipeActions =
+export type RecipeActions =
 | ReturnType<typeof updateRecipeOwner>
 | ReturnType<typeof setDeletingRecipe>
 | ReturnType<typeof deleteRecipe>
@@ -333,7 +334,7 @@ export const initialState: IRecipesState = {}
 
 export const recipes = (
   state: IRecipesState = initialState,
-  action:RecipeActions
+  action: RecipeActions
 ): IRecipesState => {
   switch (action.type) {
     case ADD_RECIPE:
@@ -444,7 +445,7 @@ export const recipes = (
       // convert the array of objects to an object with the recipe.id as the
       // key, and the recipe as the value
       return action.payload.recipes.reduce(
-        (a: IRecipesState, b: IRecipe) => ({ ...a, [b.id]: b }),
+        (a, b) => ({ ...a, [b.id]: b }),
         {}
       )
     case SET_DELETING_RECIPE:

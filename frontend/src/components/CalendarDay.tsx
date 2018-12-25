@@ -37,7 +37,7 @@ const Title = ({ date }: { date: Date }) => {
 }
 
 function mapStateToProps(state: RootState, props: ICalendarDayProps) {
-  const isShopping = state.routerReducer.location.pathname.includes("shopping")
+  const isShopping = state.routerReducer.location != null ? state.routerReducer.location.pathname.includes("shopping") : false
   return {
     isSelected:
       isWithinRange(

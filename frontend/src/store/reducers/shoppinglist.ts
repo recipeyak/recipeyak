@@ -3,6 +3,7 @@ import startOfToday from "date-fns/start_of_today"
 
 import { action } from "typesafe-actions";
 
+
 const SET_SHOPPING_LIST = "SET_SHOPPING_LIST"
 const SET_LOADING_SHOPPING_LIST = "SET_LOADING_SHOPPING_LIST"
 const SET_SHOPPING_LIST_ERROR = "SET_SHOPPING_LIST_ERROR"
@@ -40,7 +41,7 @@ export const setSelectingEnd = (date: Date) => action(
 
 
 
-type ShoppingListActions =
+export type ShoppingListActions =
 | ReturnType<typeof setShoppingList >
 | ReturnType<typeof setShoppingListEmpty >
 | ReturnType<typeof setLoadingShoppingList >

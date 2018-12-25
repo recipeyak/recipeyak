@@ -116,7 +116,7 @@ class SearchModal extends React.Component<
 
 const mapStateToProps = (state: RootState) => ({
   searchResults: state.search.results,
-  loading: state.search.loading
+  loading: state.search.loading > 0
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => {

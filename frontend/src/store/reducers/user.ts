@@ -2,6 +2,8 @@ import { setDarkModeClass } from "../../sideEffects"
 
 import raven from "raven-js"
 import { createAsyncAction, createStandardAction, action, ActionType } from "typesafe-actions";
+import { IRecipe } from "./recipes";
+
 
 
 const LOG_IN = "LOG_IN"
@@ -51,7 +53,7 @@ export const setLoadingUserStats = (val: boolean) => action(
   val
 )
 
-export const setUserStats = (val: unknown) => action(
+export const setUserStats = (val: IUserStats) => action(
   SET_USER_STATS,
   val
 )
@@ -96,7 +98,7 @@ export const updateEmail = createAsyncAction(
 
 
 
-type UserActions =
+export type UserActions =
 | ReturnType<typeof login>
 | ReturnType<typeof setLoggingOut>
 | ReturnType<typeof setLoadingUserStats>
@@ -137,6 +139,16 @@ export interface ISocialAccountsState {
   readonly gitlab: number | null
 }
 
+export interface IUserStats {
+  readonly most_added_recipe: IRecipe | null
+  readonly new_recipes_last_week: number
+  readonly total_recipe_edits: number
+  readonly date_joined?: string
+  readonly total_user_recipes: number
+  readonly recipes_added_by_month: IRecipe[]
+  readonly total_recipes_added_last_month_by_all_users: number
+}
+
 export interface IUserState {
   readonly id: null | number
   readonly loggedIn: boolean
@@ -144,7 +156,7 @@ export interface IUserState {
   readonly email: string
   readonly loading: boolean
   readonly error: boolean
-  readonly stats: unknown
+  readonly stats: IUserStats | null
   readonly stats_loading: boolean
   readonly loggingOut: boolean
   readonly darkMode: boolean
@@ -162,7 +174,7 @@ const initialState: IUserState = {
   email: "",
   loading: false,
   error: false,
-  stats: {},
+  stats: null,
   stats_loading: false,
   loggingOut: false,
   darkMode: false,

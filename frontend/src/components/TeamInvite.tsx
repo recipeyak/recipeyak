@@ -16,7 +16,7 @@ import { RootState } from "../store/store"
 import { IMember, ITeam } from "../store/reducers/teams"
 
 const mapStateToProps = (state: RootState, props: ITeamInviteProps) => {
-  const id = props.match.params.id
+  const id = parseInt(props.match.params.id, 10)
   const team = state.teams[id] ? state.teams[id] : {}
 
   return {
@@ -164,9 +164,7 @@ class TeamInvite extends React.Component<ITeamInviteProps, ITeamInviteState> {
   }
 }
 
-const ConnectedTeamInvite = connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(TeamInvite)
-
-export default ConnectedTeamInvite

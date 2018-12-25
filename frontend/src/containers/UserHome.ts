@@ -9,13 +9,12 @@ import {
   Dispatch
 } from "../store/actions"
 import { RootState } from "../store/store"
-import { IRecipe } from "../store/reducers/recipes"
 
 const mapStateToProps = (state: RootState) => ({
   userStats: state.user.stats,
   loadingUserStats: state.user.stats_loading,
   loadingRecipes: state.loading.recipes,
-  recipes: (Object.values(state.recipes) as IRecipe[]).sort(
+  recipes: Object.values(state.recipes).sort(
     (x, y) => new Date(y.modified).getTime() - new Date(x.modified).getTime()
   ),
   errorRecipes: state.error.recipes

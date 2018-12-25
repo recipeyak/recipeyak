@@ -4,6 +4,7 @@ import { IUser } from "./user"
 import { action } from "typesafe-actions";
 import { IRecipe } from "./recipes";
 
+
 const ADD_TEAM = "ADD_TEAM"
 const DELETE_TEAM = "DELETE_TEAM"
 const SET_LOADING_TEAM = "SET_LOADING_TEAM"
@@ -150,7 +151,7 @@ export const updateTeamById = (id: number, teamKeys: ITeam) => action(
   teamKeys
 })
 
-type TeamsActions =
+export type TeamsActions =
  | ReturnType<typeof addTeam>
  | ReturnType<typeof deleteTeam>
  | ReturnType<typeof setLoadingTeam>

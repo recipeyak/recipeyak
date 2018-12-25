@@ -2,6 +2,7 @@ import { action } from "typesafe-actions";
 
 
 
+
 const SET_NOTIFICATION = "SET_NOTIFICATION"
 const CLEAR_NOTIFICATION = "CLEAR_NOTIFICATION"
 
@@ -27,7 +28,7 @@ export const setNotification = ({
 export const clearNotification = () => action( CLEAR_NOTIFICATION)
 
 
-type INotificationsActions =
+export type NotificationsActions =
   | ReturnType<typeof setNotification>
   | ReturnType<typeof clearNotification>
 
@@ -45,7 +46,7 @@ export const initialState: INotificationState = {
   show: false
 }
 
-const notification = (state: INotificationState = initialState, action: INotificationsActions): INotificationState => {
+const notification = (state: INotificationState = initialState, action: NotificationsActions): INotificationState => {
   switch (action.type) {
     case SET_NOTIFICATION: {
       const { message, level, closeable } = action.payload.notification
