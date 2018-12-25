@@ -1,5 +1,6 @@
 import search, { ISearchState } from "./search"
-import * as a from "../actions"
+import * as a from "./search"
+import { baseRecipe } from "./recipes.test"
 
 describe("search", () => {
   test("action#setSearchResults", () => {
@@ -9,17 +10,17 @@ describe("search", () => {
     }
 
     const afterState: ISearchState = {
-      results: ["test_result", 123],
+      results: [baseRecipe],
       loading: 0
     }
 
-    expect(
-      search(beforeState, a.setSearchResults(["test_result", 123]))
-    ).toEqual(afterState)
+    expect(search(beforeState, a.setSearchResults([baseRecipe]))).toEqual(
+      afterState
+    )
   })
   test("action#clearSearchResults", () => {
     const beforeState = {
-      results: [123],
+      results: [baseRecipe],
       loading: 0
     }
 
@@ -56,8 +57,8 @@ describe("search", () => {
 
     expect(search(beforeState, a.decrLoadingSearch())).toEqual(afterState)
 
-    expect(() =>
-      search({ loading: 0, results: [] }, a.decrLoadingSearch())
-    ).toThrow()
+    expect(
+      search({ loading: 0, results: [] }, a.decrLoadingSearch()).loading
+    ).toEqual(0)
   })
 })

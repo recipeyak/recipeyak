@@ -5,6 +5,7 @@ import { Link } from "react-router-dom"
 import Loader from "./Loader"
 import { RecipeItem as Recipe } from "./RecipeItem"
 import { IRecipe } from "../store/reducers/recipes"
+import { IUserStats } from "../store/reducers/user"
 
 // TODO(sbdchd): must be a better way
 // tslint:disable-next-line:no-var-requires
@@ -165,26 +166,16 @@ const UserStatistics = ({ loading, stats }: IUserStatisticsProps) => {
       <RecipesAddedThisWeek count={stats.new_recipes_last_week} />
       <LifetimeRecipeEdits
         edits={stats.total_recipe_edits}
-        dateJoined={stats.date_joined}
+        dateJoined={stats.date_joined || ""}
       />
     </section>
   )
 }
 
-interface IUserStats {
-  readonly most_added_recipe: null
-  readonly new_recipes_last_week: number
-  readonly total_recipe_edits: number
-  readonly date_joined: string
-  readonly total_user_recipes: number
-  readonly recipes_added_by_month: unknown[]
-  readonly total_recipes_added_last_month_by_all_users: number
-}
-
 interface IUserHomeProps {
   readonly loadingRecipes: boolean
   readonly loadingUserStats: boolean
-  readonly userStats: IUserStats
+  readonly userStats: IUserStats | null
   readonly errorRecipes: boolean
   readonly recipes: IRecipe[]
 }
@@ -192,31 +183,38 @@ interface IUserHomeProps {
 const UserHome = ({
   loadingRecipes,
   loadingUserStats,
-  userStats = {
-    most_added_recipe: null,
-    new_recipes_last_week: 0,
-    total_recipe_edits: 0,
-    total_user_recipes: 0,
-    date_joined: "",
-    recipes_added_by_month: [],
-    total_recipes_added_last_month_by_all_users: 0
-  },
+  userStats,
   errorRecipes,
   recipes
-}: IUserHomeProps) => (
-  <div className="container pr-2 pl-2 pb-2">
-    <Helmet title="Home" />
+}: IUserHomeProps) => {
+  const stats =
+    userStats == null
+      ? {
+          most_added_recipe: null,
+          new_recipes_last_week: 0,
+          total_recipe_edits: 0,
+          total_user_recipes: 0,
+          date_joined: "",
+          recipes_added_by_month: [],
+          total_recipes_added_last_month_by_all_users: 0
+        }
+      : userStats
 
-    <section className="home-page-grid font-family-title">
-      <UserStatistics stats={userStats} loading={loadingUserStats} />
-      <RecentRecipes
-        loading={loadingRecipes}
-        error={errorRecipes}
-        recipes={recipes}
-      />
-    </section>
-  </div>
-)
+  return (
+    <div className="container pr-2 pl-2 pb-2">
+      <Helmet title="Home" />
+
+      <section className="home-page-grid font-family-title">
+        <UserStatistics stats={stats} loading={loadingUserStats} />
+        <RecentRecipes
+          loading={loadingRecipes}
+          error={errorRecipes}
+          recipes={recipes}
+        />
+      </section>
+    </div>
+  )
+}
 
 interface IUserHomeFetchProps extends IUserHomeProps {
   readonly fetchData: () => void

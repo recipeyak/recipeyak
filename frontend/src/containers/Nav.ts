@@ -1,18 +1,12 @@
 import { connect } from "react-redux"
 
-import {
-  fetchUser,
-  loggingOut,
-  toggleDarkMode,
-  fetchTeams,
-  Dispatch
-} from "../store/actions"
+import { fetchUser, loggingOut, fetchTeams, Dispatch } from "../store/actions"
 
 import Nav from "../components/Nav"
 
 import { teamsFrom, scheduleURLFromTeamID } from "../store/mapState"
 import { RootState } from "../store/store"
-import { IUserState } from "../store/reducers/user"
+import { toggleDarkMode } from "../store/reducers/user"
 
 const mapStateToProps = (state: RootState) => ({
   avatarURL: state.user.avatarURL,
@@ -22,27 +16,25 @@ const mapStateToProps = (state: RootState) => ({
   loggingOut: state.user.loggingOut,
   darkMode: state.user.darkMode,
   teams: teamsFrom(state),
-  loadingTeams: state.teams.loading,
+  loadingTeams: !!state.teams.loading,
   scheduleURL: scheduleURLFromTeamID(state),
-  teamID: (state.user as IUserState).teamID
+  teamID: state.user.teamID
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     fetchData: () => {
-      dispatch(fetchTeams())
-      dispatch(fetchUser())
+      fetchTeams(dispatch)()
+      fetchUser(dispatch)()
     },
     logout: () => {
-      dispatch(loggingOut())
+      loggingOut(dispatch)()
     },
     toggleDarkMode: () => dispatch(toggleDarkMode())
   }
 }
 
-const ConnectedNav = connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Nav)
-
-export default ConnectedNav

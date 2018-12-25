@@ -16,7 +16,7 @@ export type ScheduleRouteParams = RouteComponentProps<{
 }>
 
 interface IScheduleProps extends ScheduleRouteParams {
-  readonly updateTeamID: () => void
+  readonly updateTeamID: (id: number | null) => void
   readonly teamID: number | null
   readonly type: "shopping" | "recipes"
 }
@@ -38,8 +38,7 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
 
   componentDidUpdate(prevProps: IScheduleProps) {
     if (prevProps.teamID !== this.props.teamID) {
-      // NOTE(chdsbd): Prevent `[Violation] 'change' handler took 319ms` warnings.
-      Promise.resolve().then(this.props.updateTeamID)
+      this.props.updateTeamID(this.props.teamID)
     }
   }
 
@@ -109,21 +108,14 @@ const getTeamID = (params: ScheduleRouteParams["match"]["params"]) => {
   return teamID
 }
 
-const mapDispatchToProps = (
-  dispatch: Dispatch,
-  ownProps: ScheduleRouteParams
-) => {
-  const teamID = getTeamID(ownProps.match.params)
-  return {
-    updateTeamID: () => {
-      dispatch(updatingTeamID(teamID))
-    },
-    teamID,
-    type: ownProps.match.params["type"]
-  }
-}
-
 export default connect(
   null,
-  mapDispatchToProps
+  (dispatch: Dispatch, ownProps: ScheduleRouteParams) => {
+    const teamID = getTeamID(ownProps.match.params)
+    return {
+      updateTeamID: updatingTeamID(dispatch),
+      teamID,
+      type: ownProps.match.params["type"]
+    }
+  }
 )(Schedule)

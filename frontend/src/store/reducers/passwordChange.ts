@@ -1,9 +1,27 @@
-import * as t from "../actionTypes"
-import { AnyAction } from "redux"
+import { action as act } from "typesafe-actions"
+
+const SET_LOADING_PASSWORD_UPDATE = "SET_LOADING_PASSWORD_UPDATE"
+const SET_ERROR_PASSWORD_UPDATE = "SET_ERROR_PASSWORD_UPDATE"
+
+export const setLoadingPasswordUpdate = (val: boolean) =>
+  act(SET_LOADING_PASSWORD_UPDATE, val)
+
+export const setErrorPasswordUpdate = (val: IPasswordUpdateError) =>
+  act(SET_ERROR_PASSWORD_UPDATE, val)
+
+export type PasswordChangeActions =
+  | ReturnType<typeof setLoadingPasswordUpdate>
+  | ReturnType<typeof setErrorPasswordUpdate>
+
+interface IPasswordUpdateError {
+  readonly newPasswordAgain?: string[]
+  readonly newPassword?: string[]
+  readonly oldPassword?: string[]
+}
 
 export interface IPasswordChangeState {
   readonly loadingPasswordUpdate: boolean
-  readonly errorPasswordUpdate: unknown
+  readonly errorPasswordUpdate: IPasswordUpdateError
 }
 
 export const initialState: IPasswordChangeState = {
@@ -13,13 +31,13 @@ export const initialState: IPasswordChangeState = {
 
 export const passwordChange = (
   state: IPasswordChangeState = initialState,
-  action: AnyAction
-) => {
+  action: PasswordChangeActions
+): IPasswordChangeState => {
   switch (action.type) {
-    case t.SET_LOADING_PASSWORD_UPDATE:
-      return { ...state, loadingPasswordUpdate: action.val }
-    case t.SET_ERROR_PASSWORD_UPDATE:
-      return { ...state, errorPasswordUpdate: action.val }
+    case SET_LOADING_PASSWORD_UPDATE:
+      return { ...state, loadingPasswordUpdate: action.payload }
+    case SET_ERROR_PASSWORD_UPDATE:
+      return { ...state, errorPasswordUpdate: action.payload }
     default:
       return state
   }

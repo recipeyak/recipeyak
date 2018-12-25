@@ -21,33 +21,42 @@ type RouteProps = RouteComponentProps<{ id: string }>
 
 const mapStateToProps = (state: RootState, props: RouteProps) => {
   const id = parseInt(props.match.params.id, 10)
-  const team = state.teams[id] ? state.teams[id] : {}
+  const team: ITeam | undefined = state.teams[id]
+
+  // TODO(sbdchd): clean up this mess
 
   const isSettings = props.match.url.endsWith("settings")
 
-  const recipes = (team.recipes || []) as number[]
+  const recipes = team == null || team.recipes == null ? [] : team.recipes
+
+  const members = team == null || team.members == null ? [] : team.members
+
+  const teamMembers = Object.values(members)
 
   return {
-    ...team,
     id,
+    members: teamMembers,
     isSettings,
+    error404: team ? !!team.error404 : false,
+    loadingTeam: team ? !!team.loadingTeam : false,
+    name: team ? team.name : "",
+    loadingMembers: team ? !!team.loadingMembers : false,
+    loadingRecipes: team ? !!team.loadingRecipes : false,
     recipes: recipes
       .map(recipeID => (state.recipes as IRecipesState)[recipeID])
       .filter(notUndefined)
   }
 }
-
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     fetchData: (id: ITeam["id"]) =>
       Promise.all([
-        dispatch(fetchTeam(id)),
-        dispatch(fetchTeamMembers(id)),
-        dispatch(fetchTeamRecipes(id))
+        fetchTeam(dispatch)(id),
+        fetchTeamMembers(dispatch)(id),
+        fetchTeamRecipes(dispatch)(id)
       ]),
-    deleteTeam: (id: ITeam["id"]) => dispatch(deletingTeam(id)),
-    updatingTeam: (teamId: ITeam["id"], teamKVs: unknown) =>
-      dispatch(updatingTeam(teamId, teamKVs))
+    deleteTeam: deletingTeam(dispatch),
+    updatingTeam: updatingTeam(dispatch)
   }
 }
 

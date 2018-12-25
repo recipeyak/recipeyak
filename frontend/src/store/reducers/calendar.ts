@@ -1,10 +1,59 @@
 import { uniq, omit } from "lodash"
 import isSameDay from "date-fns/is_same_day"
 
-import * as t from "../actionTypes"
-import { AnyAction } from "redux"
+import { action as act } from "typesafe-actions"
 
-function setCalendarRecipe(state: ICalendarState, { recipe }: AnyAction) {
+const SET_CALENDAR_RECIPES = "SET_CALENDAR_RECIPES"
+const SET_CALENDAR_RECIPE = "SET_CALENDAR_RECIPE"
+const DELETE_CALENDAR_RECIPE = "DELETE_CALENDAR_RECIPE"
+const SET_CALENDAR_ERROR = "SET_CALENDAR_ERROR"
+const SET_CALENDAR_LOADING = "SET_CALENDAR_LOADING"
+const MOVE_CALENDAR_RECIPE = "MOVE_CALENDAR_RECIPE"
+const REPLACE_CALENDAR_RECIPE = "REPLACE_CALENDAR_RECIPE"
+
+export const setCalendarLoading = (loading: boolean) =>
+  act(SET_CALENDAR_LOADING, loading)
+
+export const setCalendarError = (error: boolean) =>
+  act(SET_CALENDAR_ERROR, error)
+
+export const setCalendarRecipe = (recipe: ICalRecipe) =>
+  act(SET_CALENDAR_RECIPE, recipe)
+
+export const deleteCalendarRecipe = (id: string | number) =>
+  act(DELETE_CALENDAR_RECIPE, id)
+
+export const moveCalendarRecipe = (id: ICalRecipe["id"], to: string) =>
+  act(MOVE_CALENDAR_RECIPE, {
+    id,
+    on: to
+  })
+
+export const setCalendarRecipes = (recipes: ICalRecipe[]) =>
+  act(SET_CALENDAR_RECIPES, recipes)
+
+export const replaceCalendarRecipe = (
+  id: ICalRecipe["id"],
+  recipe: ICalRecipe
+) =>
+  act(REPLACE_CALENDAR_RECIPE, {
+    id,
+    recipe
+  })
+
+export type CalendarActions =
+  | ReturnType<typeof setCalendarLoading>
+  | ReturnType<typeof setCalendarError>
+  | ReturnType<typeof setCalendarRecipe>
+  | ReturnType<typeof deleteCalendarRecipe>
+  | ReturnType<typeof moveCalendarRecipe>
+  | ReturnType<typeof setCalendarRecipes>
+  | ReturnType<typeof replaceCalendarRecipe>
+
+function setCalendarRecipeState(
+  state: ICalendarState,
+  { payload: recipe }: ReturnType<typeof setCalendarRecipe>
+) {
   const existing = state.allIds
     .filter(x => x !== recipe.id)
     .map(x => state[x])
@@ -19,48 +68,53 @@ function setCalendarRecipe(state: ICalendarState, { recipe }: AnyAction) {
         ...recipe,
         count: existing.count + recipe.count
       },
-      allIds: state.allIds.filter(id => id !== existing.id).concat(recipe.id)
+      allIds: state.allIds
+        .filter(id => id !== existing.id)
+        .concat(toInt(recipe.id))
     }
   }
 
   return {
     ...state,
     [recipe.id]: recipe,
-    allIds: uniq(state.allIds.concat(recipe.id))
+    allIds: uniq(state.allIds.concat(toInt(recipe.id)))
   }
 }
 
-function moveCalendarRecipe(state: ICalendarState, action: AnyAction) {
+function moveCalendarRecipeState(
+  state: ICalendarState,
+  action: ReturnType<typeof moveCalendarRecipe>
+) {
   // if the same recipe already exists at the date:
   // - add the two counts
   // - remove the old recipe
   // else
   // - update the date of the recipe
-  const moving = state[action.id]
+  const moving = state[toInt(action.payload.id)]
 
   const existing = state.allIds
-    .filter(x => x !== action.id)
+    .filter(x => x !== action.payload.id)
     .map(x => state[x])
-    .filter(x => isSameDay(x.on, action.on))
+    .filter(x => isSameDay(x.on, action.payload.on))
     .filter(x => x.team === moving.team && x.user === moving.user)
     .find(x => x.recipe.id === moving.recipe.id)
 
   if (existing) {
     return {
-      ...omit(state, action.id),
+      ...omit(state, action.payload.id),
       [existing.id]: {
         ...existing,
         count: existing.count + moving.count
       },
-      allIds: state.allIds.filter(id => id !== action.id)
+      allIds: state.allIds.filter(id => id !== action.payload.id)
     }
   }
 
   return {
     ...state,
-    [action.id]: {
-      ...state[action.id],
-      on: action.on
+    [action.payload.id]: {
+      ...state[toInt(action.payload.id)],
+      on: action.payload.on
     }
   }
 }
@@ -90,47 +144,48 @@ export const initialState: ICalendarState = {
   error: false
 }
 
+function toInt(x: string | number): number {
+  return parseInt(String(x), 10)
+}
+
 export const calendar = (
   state: ICalendarState = initialState,
-  action: AnyAction
-) => {
+  action: CalendarActions
+): ICalendarState => {
   switch (action.type) {
-    case t.SET_CALENDAR_RECIPES:
+    case SET_CALENDAR_RECIPES:
       return {
         ...state,
-        ...action.recipes.reduce(
-          (a: unknown, b: ICalRecipe) => ({ ...a, [b.id]: b }),
-          {}
-        ),
+        ...action.payload.reduce((a, b) => ({ ...a, [b.id]: b }), {}),
+        allIds: uniq(state.allIds.concat(action.payload.map(x => toInt(x.id))))
+      }
+    case SET_CALENDAR_RECIPE:
+      return setCalendarRecipeState(state, action)
+    case DELETE_CALENDAR_RECIPE:
+      return {
+        ...omit(state, action.payload),
+        allIds: state.allIds.filter(id => id !== action.payload)
+      }
+    case SET_CALENDAR_LOADING:
+      return {
+        ...state,
+        loading: action.payload
+      }
+    case SET_CALENDAR_ERROR:
+      return {
+        ...state,
+        error: action.payload
+      }
+    case MOVE_CALENDAR_RECIPE:
+      return moveCalendarRecipeState(state, action)
+    case REPLACE_CALENDAR_RECIPE:
+      return {
+        ...omit(state, action.payload.id),
+        [action.payload.recipe.id]: action.payload.recipe,
         allIds: uniq(
-          state.allIds.concat(action.recipes.map((x: ICalRecipe) => x.id))
-        )
-      }
-    case t.SET_CALENDAR_RECIPE:
-      return setCalendarRecipe(state, action)
-    case t.DELETE_CALENDAR_RECIPE:
-      return {
-        ...omit(state, action.id),
-        allIds: state.allIds.filter(id => id !== action.id)
-      }
-    case t.SET_CALENDAR_LOADING:
-      return {
-        ...state,
-        loading: action.loading
-      }
-    case t.SET_CALENDAR_ERROR:
-      return {
-        ...state,
-        error: action.error
-      }
-    case t.MOVE_CALENDAR_RECIPE:
-      return moveCalendarRecipe(state, action)
-    case t.REPLACE_CALENDAR_RECIPE:
-      return {
-        ...omit(state, action.id),
-        [action.recipe.id]: action.recipe,
-        allIds: uniq(
-          state.allIds.filter(id => id !== action.id).concat(action.recipe.id)
+          state.allIds
+            .filter(id => id !== action.payload.id)
+            .concat(toInt(action.payload.recipe.id))
         )
       }
     default:

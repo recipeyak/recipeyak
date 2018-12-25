@@ -1,18 +1,14 @@
 import { connect } from "react-redux"
 
-import {
-  logUserIn,
-  setErrorLogin,
-  setFromUrl,
-  Dispatch
-} from "../store/actions"
+import { logUserIn, Dispatch } from "../store/actions"
 import Login from "../components/Login"
 import { RootState } from "../store/store"
+import { setFromUrl } from "../store/reducers/auth"
+import { setErrorLogin } from "../store/reducers/error"
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    login: (email: string, password: string, url: string) =>
-      dispatch(logUserIn(email, password, url)),
+    login: logUserIn(dispatch),
     clearErrors: () => dispatch(setErrorLogin({})),
     setFromUrl: (url: string) => dispatch(setFromUrl(url))
   }
@@ -27,9 +23,7 @@ const mapStateToProps = (state: RootState) => {
   }
 }
 
-const ConnectedLogin = connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Login)
-
-export default ConnectedLogin

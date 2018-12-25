@@ -8,7 +8,7 @@ import startOfDay from "date-fns/start_of_day"
 import endOfDay from "date-fns/end_of_day"
 import isFirstDayOfMonth from "date-fns/is_first_day_of_month"
 
-import { pyFormat, beforeCurrentDay } from "../date"
+import { beforeCurrentDay } from "../date"
 
 import { classNames } from "../classnames"
 
@@ -28,43 +28,13 @@ import { ITeam } from "../store/reducers/teams"
 import { IRecipe } from "../store/reducers/recipes"
 import { RootState } from "../store/store"
 import { ICalendarState, ICalRecipe } from "../store/reducers/calendar"
+import { AxiosResponse } from "axios"
 
 const Title = ({ date }: { date: Date }) => {
   if (isFirstDayOfMonth(date)) {
     return <p>{format(date, "MMM D")}</p>
   }
   return <p>{format(date, "D")}</p>
-}
-
-function mapStateToProps(state: RootState, props: ICalendarDayProps) {
-  const isShopping = state.routerReducer.location.pathname.includes("shopping")
-  return {
-    isSelected:
-      isWithinRange(
-        props.date,
-        startOfDay(state.shoppinglist.startDay),
-        endOfDay(state.shoppinglist.endDay)
-      ) && isShopping
-  }
-}
-
-function mapDispatchToProps(dispatch: Dispatch) {
-  return {
-    create: (
-      recipeID: IRecipe["id"],
-      teamID: ITeam["id"],
-      on: Date,
-      count: string
-    ) => dispatch(addingScheduledRecipe(recipeID, teamID, on, count)),
-    updateCount: (id: ICalRecipe["id"], teamID: ITeam["id"], count: number) =>
-      dispatch(updatingScheduledRecipe(id, teamID, { count })),
-    refetchShoppingList: (teamID: ITeam["id"]) =>
-      dispatch(fetchShoppingList(teamID)),
-    move: (id: ICalRecipe["id"], teamID: ITeam["id"], date: Date) =>
-      dispatch(moveScheduledRecipe(id, teamID, pyFormat(date))),
-    remove: (recipeID: ICalRecipe["id"], teamID: ITeam["id"]) =>
-      dispatch(deletingScheduledRecipe(recipeID, teamID))
-  }
 }
 
 interface ICalendarDayProps {
@@ -76,8 +46,8 @@ interface ICalendarDayProps {
   readonly updateCount: (
     id: ICalRecipe["id"],
     teamID: ITeam["id"],
-    count: number
-  ) => Promise<void>
+    count: ICalRecipe["count"]
+  ) => Promise<void | AxiosResponse<void>>
   readonly refetchShoppingList: (teamID: ITeam["id"]) => void
   readonly remove: (id: ICalRecipe["id"], teamID: ITeam["id"]) => void
   readonly move: (id: ICalRecipe["id"], teamID: ITeam["id"], date: Date) => void
@@ -130,6 +100,31 @@ function CalendarDay({
         : null}
     </div>
   )
+}
+
+function mapStateToProps(state: RootState, props: ICalendarDayProps) {
+  const isShopping =
+    state.routerReducer.location != null
+      ? state.routerReducer.location.pathname.includes("shopping")
+      : false
+  return {
+    isSelected:
+      isWithinRange(
+        props.date,
+        startOfDay(state.shoppinglist.startDay),
+        endOfDay(state.shoppinglist.endDay)
+      ) && isShopping
+  }
+}
+
+function mapDispatchToProps(dispatch: Dispatch) {
+  return {
+    create: addingScheduledRecipe(dispatch),
+    updateCount: updatingScheduledRecipe(dispatch),
+    refetchShoppingList: fetchShoppingList(dispatch),
+    move: moveScheduledRecipe(dispatch),
+    remove: deletingScheduledRecipe(dispatch)
+  }
 }
 
 export default connect(

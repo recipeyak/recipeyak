@@ -86,16 +86,14 @@ const Invites = ({ loading, invites, decline, accept }: IInvitesProps) => {
 const mapStateToProps = (state: RootState) => {
   return {
     loading: state.invites.loading,
-    invites: Object.values(state.invites as { [key: string]: IInvite }).filter(
-      x => x != null && !!x.id
-    )
+    invites: Object.values(state.invites).filter(x => x != null && !!x.id)
   }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: () => dispatch(fetchInvites()),
-  accept: (id: IInvite["id"]) => dispatch(acceptingInvite(id)),
-  decline: (id: IInvite["id"]) => dispatch(decliningInvite(id))
+  fetchData: fetchInvites(dispatch),
+  accept: acceptingInvite(dispatch),
+  decline: decliningInvite(dispatch)
 })
 
 interface INotificationsDropdownProps {

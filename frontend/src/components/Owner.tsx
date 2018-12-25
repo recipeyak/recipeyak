@@ -15,7 +15,7 @@ import {
 import { RootState } from "../store/store"
 import { IRecipe } from "../store/reducers/recipes"
 import { ITeamsState } from "../store/reducers/teams"
-import { IUser } from "../store/reducers/user"
+import { IUserState } from "../store/reducers/user"
 import { AxiosError } from "axios"
 import { teamURL } from "../urls"
 
@@ -25,19 +25,10 @@ const mapStateToProps = (state: RootState) => ({
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: () => dispatch(fetchTeams()),
-  showNotificationWithTimeout: (options: INotificationWithTimeout) =>
-    dispatch(showNotificationWithTimeout(options)),
-  moveRecipeTo: (
-    recipeId: IRecipe["id"],
-    ownerId: IRecipe["owner"]["id"],
-    type: IRecipe["owner"]["type"]
-  ) => dispatch(moveRecipeTo(recipeId, ownerId, type)),
-  copyRecipeTo: (
-    recipeId: IRecipe["id"],
-    ownerId: IRecipe["owner"]["id"],
-    type: IRecipe["owner"]["type"]
-  ) => dispatch(copyRecipeTo(recipeId, ownerId, type))
+  fetchData: fetchTeams(dispatch),
+  showNotificationWithTimeout: showNotificationWithTimeout(dispatch),
+  moveRecipeTo: moveRecipeTo(dispatch),
+  copyRecipeTo: copyRecipeTo(dispatch)
 })
 
 interface IOwnerProps {
@@ -59,7 +50,7 @@ interface IOwnerProps {
   readonly id: IRecipe["owner"]["id"]
   readonly name: string
   readonly teams: ITeamsState
-  readonly userId: IUser["id"]
+  readonly userId: IUserState["id"]
 }
 
 interface IOwnerState {

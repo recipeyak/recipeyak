@@ -70,7 +70,7 @@ const mapStateToProps = (state: RootState, props: ICalendarProps) => {
     days,
     loading: state.calendar.loading,
     error: state.calendar.error,
-    loadingTeams: state.teams.loading,
+    loadingTeams: !!state.teams.loading,
     teams: teamsFrom(state),
     teamID: props.teamID,
     isTeam,
@@ -80,9 +80,8 @@ const mapStateToProps = (state: RootState, props: ICalendarProps) => {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: (month: Date, teamID: ITeam["id"] | "personal" = "personal") =>
-    dispatch(fetchCalendar(teamID, month)),
-  fetchTeams: () => dispatch(fetchTeams()),
+  fetchData: fetchCalendar(dispatch),
+  fetchTeams: fetchTeams(dispatch),
   navTo: (url: string) => {
     dispatch(push(url))
   },
@@ -92,8 +91,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     end: Date
   ) => {
     return Promise.all([
-      dispatch(fetchRecipeList(teamID)),
-      dispatch(fetchShoppingList(teamID, start, end))
+      fetchRecipeList(dispatch)(teamID),
+      fetchShoppingList(dispatch)(teamID, start, end)
     ])
   }
 })
@@ -106,8 +105,8 @@ interface ICalendarProps extends ScheduleRouteParams {
   readonly fetchTeams: () => void
   readonly navTo: (url: string) => void
   readonly fetchData: (
-    month: Date,
-    teamID: ITeam["id"] | "personal"
+    teamID: ITeam["id"] | "personal",
+    month: Date
   ) => Promise<void>
   readonly refetchShoppingListAndRecipes: (
     teamID: ITeam["id"] | "personal",
@@ -139,12 +138,12 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
   componentDidMount() {
     this.props.fetchTeams()
     this.props
-      .fetchData(this.state.month, this.props.teamID)
+      .fetchData(this.props.teamID, this.state.month)
       .then(() => this.setState({ initialLoad: true }))
   }
 
   refetchData = (teamID: ITeam["id"] | "personal" = this.props.teamID) => {
-    this.props.fetchData(this.state.month, teamID)
+    this.props.fetchData(teamID, this.state.month)
     this.props.refetchShoppingListAndRecipes(
       teamID,
       this.props.startDay,
@@ -156,14 +155,14 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
     this.setState(({ month }) => ({
       month: subMonths(month, 1)
     }))
-    this.props.fetchData(this.state.month, this.props.teamID)
+    this.props.fetchData(this.props.teamID, this.state.month)
   }
 
   nextMonth = () => {
     this.setState(({ month }) => ({
       month: addMonths(month, 1)
     }))
-    this.props.fetchData(this.state.month, this.props.teamID)
+    this.props.fetchData(this.props.teamID, this.state.month)
   }
 
   currentMonth = () => {

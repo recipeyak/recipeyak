@@ -1,29 +1,87 @@
-import { createStore, combineReducers, applyMiddleware, compose } from "redux"
-import thunk from "redux-thunk"
+import {
+  createStore,
+  combineReducers,
+  applyMiddleware,
+  compose,
+  Reducer
+} from "redux"
 import throttle from "lodash/throttle"
 
 import createHistory from "history/createBrowserHistory"
-import { routerReducer, routerMiddleware } from "react-router-redux"
+import {
+  routerReducer,
+  routerMiddleware,
+  RouterState,
+  RouterAction
+} from "react-router-redux"
 
-import recipes from "./reducers/recipes"
-import user from "./reducers/user"
-import loading from "./reducers/loading"
-import error from "./reducers/error"
-import notification from "./reducers/notification"
-import passwordChange from "./reducers/passwordChange"
-import shoppinglist from "./reducers/shoppinglist"
-import addrecipe from "./reducers/addrecipe"
-import auth from "./reducers/auth"
-import teams from "./reducers/teams"
-import invites from "./reducers/invites"
-import calendar from "./reducers/calendar"
-import search from "./reducers/search"
+import recipes, { IRecipesState, RecipeActions } from "./reducers/recipes"
+import user, {
+  SET_USER_LOGGED_IN,
+  IUserState,
+  UserActions
+} from "./reducers/user"
+import loading, { ILoadingState, LoadingActions } from "./reducers/loading"
+import error, { IErrorState, ErrorActions } from "./reducers/error"
+import notification, {
+  INotificationState,
+  NotificationsActions
+} from "./reducers/notification"
+import passwordChange, {
+  IPasswordChangeState,
+  PasswordChangeActions
+} from "./reducers/passwordChange"
+import shoppinglist, {
+  IShoppingListState,
+  ShoppingListActions
+} from "./reducers/shoppinglist"
+import addrecipe, {
+  IAddRecipeState,
+  AddRecipeActions
+} from "./reducers/addrecipe"
+import auth, { IAuthState, AuthActions } from "./reducers/auth"
+import teams, { ITeamsState, TeamsActions } from "./reducers/teams"
+import invites, { InviteActions, IInvitesState } from "./reducers/invites"
+import calendar, { ICalendarState, CalendarActions } from "./reducers/calendar"
+import search, { ISearchState, SearchActions } from "./reducers/search"
 
 import { loadState, saveState } from "./localStorage"
+import { StateType } from "typesafe-actions"
 
-import * as t from "./actionTypes"
+interface IState {
+  readonly user: IUserState
+  readonly recipes: IRecipesState
+  readonly invites: IInvitesState
+  readonly loading: ILoadingState
+  readonly error: IErrorState
+  readonly routerReducer: RouterState
+  readonly notification: INotificationState
+  readonly passwordChange: IPasswordChangeState
+  readonly shoppinglist: IShoppingListState
+  readonly addrecipe: IAddRecipeState
+  readonly auth: IAuthState
+  readonly teams: ITeamsState
+  readonly calendar: ICalendarState
+  readonly search: ISearchState
+}
 
-const recipeApp = combineReducers({
+export type Action =
+  | UserActions
+  | RecipeActions
+  | InviteActions
+  | LoadingActions
+  | NotificationsActions
+  | ErrorActions
+  | RouterAction
+  | PasswordChangeActions
+  | ShoppingListActions
+  | AddRecipeActions
+  | AuthActions
+  | TeamsActions
+  | CalendarActions
+  | SearchActions
+
+const recipeApp: Reducer<IState, Action> = combineReducers({
   user,
   recipes,
   invites,
@@ -40,11 +98,16 @@ const recipeApp = combineReducers({
   search
 })
 
+export type RootState = StateType<typeof rootReducer>
+
 // reset redux to default state on logout
-export const rootReducer = (state: any, action: any) => {
-  if (action.type === t.SET_USER_LOGGED_IN && !action.val) {
+export function rootReducer(state: IState | undefined, action: Action): IState {
+  if (state == null) {
+    return recipeApp(undefined, action)
+  }
+  if (action.type === SET_USER_LOGGED_IN && !action.payload) {
     return {
-      ...recipeApp(undefined as any, action),
+      ...recipeApp(undefined, action),
       // We need to save this auth state (fromUrl) through logout
       // so we can redirect users to where they were attempting to
       // visit before being asked for authentication
@@ -55,21 +118,43 @@ export const rootReducer = (state: any, action: any) => {
   return recipeApp(state, action)
 }
 
-export type RootState = any
-
-const defaultData = loadState()
-
 export const history = createHistory()
 const router = routerMiddleware(history)
 
-const composeEnhancers =
+const composeEnhancers: typeof compose =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+
+// We need an empty store for the unit tests
+export const emptyStore = createStore(
+  rootReducer,
+  {},
+  composeEnhancers(applyMiddleware(router))
+)
+
+// NOTE(sbdchd): this is hacky, we should validate the local storage state before using it
+const defaultData = (): RootState => {
+  const saved: undefined | Partial<RootState> = loadState()
+  const empty = emptyStore.getState()
+
+  if (saved == null) {
+    return empty
+  }
+
+  return {
+    ...empty,
+    ...saved,
+    user: {
+      ...empty.user,
+      ...saved.user
+    }
+  }
+}
 
 // A "hydrated" store is nice for UI development
 export const store = createStore(
   rootReducer,
-  defaultData,
-  composeEnhancers(applyMiddleware(thunk, router))
+  defaultData(),
+  composeEnhancers(applyMiddleware(router))
 )
 
 store.subscribe(
@@ -89,10 +174,4 @@ store.subscribe(
   }, 1000)
 )
 
-// We need an empty store for the unit tests
-export const emptyStore = createStore(
-  rootReducer,
-  {},
-  composeEnhancers(applyMiddleware(thunk, router))
-)
 export default store

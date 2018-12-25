@@ -1,5 +1,32 @@
-import * as t from "../actionTypes"
-import { AnyAction } from "redux"
+import { action as act } from "typesafe-actions"
+
+const SET_NOTIFICATION = "SET_NOTIFICATION"
+const CLEAR_NOTIFICATION = "CLEAR_NOTIFICATION"
+
+interface ISetNotification {
+  readonly message: string
+  readonly closeable?: boolean
+  readonly level?: INotificationState["level"]
+}
+
+export const setNotification = ({
+  message,
+  closeable,
+  level = "info"
+}: ISetNotification) =>
+  act(SET_NOTIFICATION, {
+    notification: {
+      message,
+      closeable,
+      level
+    }
+  })
+
+export const clearNotification = () => act(CLEAR_NOTIFICATION)
+
+export type NotificationsActions =
+  | ReturnType<typeof setNotification>
+  | ReturnType<typeof clearNotification>
 
 export interface INotificationState {
   readonly message: string
@@ -8,20 +35,23 @@ export interface INotificationState {
   readonly show: boolean
 }
 
-export const initialState = {
+export const initialState: INotificationState = {
   message: "",
   level: "info",
   closeable: false,
   show: false
 }
 
-const notification = (state = initialState, action: AnyAction) => {
+const notification = (
+  state: INotificationState = initialState,
+  action: NotificationsActions
+): INotificationState => {
   switch (action.type) {
-    case t.SET_NOTIFICATION: {
-      const { message, level, closeable } = action.notification
+    case SET_NOTIFICATION: {
+      const { message, level, closeable } = action.payload.notification
       return { ...state, message, level, closeable, show: true }
     }
-    case t.CLEAR_NOTIFICATION: {
+    case CLEAR_NOTIFICATION: {
       return { ...state, message: "", show: false, closeable: false }
     }
     default:

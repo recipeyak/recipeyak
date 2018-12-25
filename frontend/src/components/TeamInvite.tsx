@@ -16,7 +16,7 @@ import { RootState } from "../store/store"
 import { IMember, ITeam } from "../store/reducers/teams"
 
 const mapStateToProps = (state: RootState, props: ITeamInviteProps) => {
-  const id = props.match.params.id
+  const id = parseInt(props.match.params.id, 10)
   const team = state.teams[id] ? state.teams[id] : {}
 
   return {
@@ -26,12 +26,8 @@ const mapStateToProps = (state: RootState, props: ITeamInviteProps) => {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: (id: ITeam["id"]) => dispatch(fetchTeam(id)),
-  sendInvites: (
-    teamID: ITeam["id"],
-    emails: string[],
-    level: IMember["level"]
-  ) => dispatch(sendingTeamInvites(teamID, emails, level))
+  fetchData: fetchTeam(dispatch),
+  sendInvites: sendingTeamInvites(dispatch)
 })
 
 export const roles = [
@@ -164,9 +160,7 @@ class TeamInvite extends React.Component<ITeamInviteProps, ITeamInviteState> {
   }
 }
 
-const ConnectedTeamInvite = connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(TeamInvite)
-
-export default ConnectedTeamInvite

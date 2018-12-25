@@ -1,6 +1,6 @@
 import auth, { IAuthState } from "./auth"
 
-import * as a from "../actions"
+import * as a from "./auth"
 
 describe("auth", () => {
   it("sets redirect url", () => {

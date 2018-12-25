@@ -1,11 +1,11 @@
 import { RootState } from "./store"
-import { IUserState } from "./reducers/user"
+import { ITeam } from "./reducers/teams"
 
-export const teamsFrom = (state: RootState) =>
-  state.teams.allIds.map((id: any) => state.teams[id])
+export const teamsFrom = (state: RootState): ITeam[] =>
+  state.teams.allIds.map(id => state.teams[id])
 
-export const scheduleURLFromTeamID = (state: RootState) => {
-  const id = (state.user as IUserState).teamID
+export const scheduleURLFromTeamID = (state: RootState): string => {
+  const id = state.user.teamID
   if (id == null) {
     return "/schedule/recipes"
   }

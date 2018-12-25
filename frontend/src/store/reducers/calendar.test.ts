@@ -1,6 +1,5 @@
 import { calendar, initialState, ICalendarState } from "./calendar"
-
-import * as a from "../actions"
+import * as a from "./calendar"
 
 describe("Calendar", () => {
   it("sets calendar recipes starting with empty state", () => {

@@ -1,8 +1,8 @@
 import recipes, { IRecipesState, IRecipe, IIngredient, IStep } from "./recipes"
 
-import * as a from "../actions"
+import * as a from "./recipes"
 
-const baseRecipe: IRecipe = {
+export const baseRecipe: IRecipe = {
   id: 1,
   name: "foo",
   author: "bar",
@@ -21,7 +21,7 @@ const baseRecipe: IRecipe = {
   ingredients: []
 }
 
-const baseIngredient: IIngredient = {
+export const baseIngredient: IIngredient = {
   id: 1,
   name: "foo",
   quantity: "1 cup",
@@ -30,7 +30,7 @@ const baseIngredient: IIngredient = {
   optional: false
 }
 
-const baseStep: IStep = {
+export const baseStep: IStep = {
   id: 1,
   text: "foo",
   position: 10
@@ -133,6 +133,7 @@ describe("Recipes", () => {
     }
 
     const newStep = {
+      ...baseStep,
       id: 1,
       text: "a new step",
       position: 10
@@ -630,6 +631,7 @@ describe("Recipes", () => {
     }
 
     const newRecipe = {
+      ...baseRecipe,
       name: "new recipe name"
     }
 
@@ -677,7 +679,7 @@ describe("Recipes", () => {
     }
 
     const id = 1
-    const owner = {
+    const owner: IRecipe["owner"] = {
       id: 14,
       type: "team",
       name: "A Cool Name"

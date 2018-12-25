@@ -1,6 +1,6 @@
 import user, { ISocialConnection, IUserState, IUser } from "./user"
 
-import * as a from "../actions"
+import * as a from "./user"
 
 describe("fetchingUser", () => {
   it("#request: sets loading, removes failures", () => {

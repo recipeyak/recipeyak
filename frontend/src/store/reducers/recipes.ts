@@ -1,6 +1,258 @@
-import * as t from "../actionTypes"
-import { AnyAction } from "redux"
+import { omit } from "lodash"
 import { ITeam } from "./teams"
+import { action as act } from "typesafe-actions"
+
+const ADD_RECIPE = "ADD_RECIPE"
+const ADD_STEP_TO_RECIPE = "ADD_STEP_TO_RECIPE"
+const ADD_INGREDIENT_TO_RECIPE = "ADD_INGREDIENT_TO_RECIPE"
+const SET_LOADING_ADD_STEP_TO_RECIPE = "SET_LOADING_ADD_STEP_TO_RECIPE"
+const UPDATE_RECIPE_NAME = "UPDATE_RECIPE_NAME"
+const UPDATE_RECIPE_SOURCE = "UPDATE_RECIPE_SOURCE"
+const UPDATE_RECIPE_AUTHOR = "UPDATE_RECIPE_AUTHOR"
+const UPDATE_RECIPE_TIME = "UPDATE_RECIPE_TIME"
+const DELETE_INGREDIENT = "DELETE_INGREDIENT"
+const UPDATE_INGREDIENT = "UPDATE_INGREDIENT"
+const DELETE_STEP = "DELETE_STEP"
+const UPDATE_STEP = "UPDATE_STEP"
+const DELETE_RECIPE = "DELETE_RECIPE"
+const SET_LOADING_RECIPE = "SET_LOADING_RECIPE"
+const SET_DELETING_RECIPE = "SET_DELETING_RECIPE"
+const SET_RECIPE = "SET_RECIPE"
+const SET_ADDING_INGREDIENT_TO_RECIPE = "SET_ADDING_INGREDIENT_TO_RECIPE"
+const SET_UPDATING_INGREDIENT = "SET_UPDATING_INGREDIENT"
+const SET_REMOVING_INGREDIENT = "SET_REMOVING_INGREDIENT"
+const SET_UPDATING_STEP = "SET_UPDATING_STEP"
+const SET_REMOVING_STEP = "SET_REMOVING_STEP"
+const SET_RECIPE_404 = "SET_RECIPE_404"
+const SET_RECIPE_UPDATING = "SET_RECIPE_UPDATING"
+const UPDATE_RECIPE_OWNER = "UPDATE_RECIPE_OWNER"
+const SET_RECIPES = "SET_RECIPES"
+const SET_SCHEDULING_RECIPE = "SET_SCHEDULING_RECIPE"
+
+export const updateRecipeTime = (id: IRecipe["id"], time: IRecipe["time"]) =>
+  act(UPDATE_RECIPE_TIME, {
+    id,
+    time
+  })
+
+export const updateIngredient = (
+  recipeID: IRecipe["id"],
+  ingredientID: IIngredient["id"],
+  content: IIngredient
+) =>
+  act(UPDATE_INGREDIENT, {
+    recipeID,
+    ingredientID,
+    content
+  })
+
+export const updateRecipeOwner = (id: IRecipe["id"], owner: IRecipe["owner"]) =>
+  act(UPDATE_RECIPE_OWNER, {
+    id,
+    owner
+  })
+
+export const setDeletingRecipe = (id: IRecipe["id"], val: boolean) =>
+  act(SET_DELETING_RECIPE, {
+    id,
+    val
+  })
+
+export const deleteRecipe = (id: IRecipe["id"]) =>
+  act(DELETE_RECIPE, {
+    id
+  })
+
+export const deleteStep = (recipeID: IRecipe["id"], stepID: IStep["id"]) =>
+  act(DELETE_STEP, {
+    recipeID,
+    stepID
+  })
+
+export const updateStep = (
+  recipeID: IRecipe["id"],
+  stepID: IStep["id"],
+  text: IStep["text"],
+  position: IStep["position"]
+) =>
+  act(UPDATE_STEP, {
+    recipeID,
+    stepID,
+    text,
+    position
+  })
+
+export const setRemovingStep = (
+  recipeID: IRecipe["id"],
+  stepID: IStep["id"],
+  val: boolean
+) =>
+  act(SET_REMOVING_STEP, {
+    recipeID,
+    stepID,
+    val
+  })
+
+export const setUpdatingStep = (
+  recipeID: IRecipe["id"],
+  stepID: IStep["id"],
+  val: boolean
+) =>
+  act(SET_UPDATING_STEP, {
+    recipeID,
+    stepID,
+    val
+  })
+
+export const deleteIngredient = (
+  recipeID: IRecipe["id"],
+  ingredientID: IIngredient["id"]
+) =>
+  act(DELETE_INGREDIENT, {
+    recipeID,
+    ingredientID
+  })
+
+export const setRemovingIngredient = (
+  recipeID: IIngredient["id"],
+  ingredientID: IIngredient["id"],
+  val: boolean
+) =>
+  act(SET_REMOVING_INGREDIENT, {
+    recipeID,
+    ingredientID,
+    val
+  })
+
+export const setUpdatingIngredient = (
+  recipeID: IRecipe["id"],
+  ingredientID: number,
+  val: boolean
+) =>
+  act(SET_UPDATING_INGREDIENT, {
+    recipeID,
+    ingredientID,
+    val
+  })
+
+export const setRecipe = (id: IRecipe["id"], data: IRecipe) =>
+  act(SET_RECIPE, {
+    id,
+    data
+  })
+
+export const setRecipeUpdating = (id: IRecipe["id"], val: boolean) =>
+  act(SET_RECIPE_UPDATING, {
+    id,
+    val
+  })
+
+export const updateRecipeAuthor = (
+  id: IRecipe["id"],
+  author: IRecipe["author"]
+) =>
+  act(UPDATE_RECIPE_AUTHOR, {
+    id,
+    author
+  })
+
+export const updateRecipeSource = (
+  id: IRecipe["id"],
+  source: IRecipe["source"]
+) =>
+  act(UPDATE_RECIPE_SOURCE, {
+    id,
+    source
+  })
+
+export const updateRecipeName = (id: IRecipe["id"], name: IRecipe["name"]) =>
+  act(UPDATE_RECIPE_NAME, {
+    id,
+    name
+  })
+
+export const addRecipe = (recipe: IRecipe) => act(ADD_RECIPE, recipe)
+
+export const setRecipe404 = (id: IRecipe["id"], val: boolean) =>
+  act(SET_RECIPE_404, {
+    id,
+    val
+  })
+
+export const setLoadingRecipe = (id: IRecipe["id"], val: boolean) =>
+  act(SET_LOADING_RECIPE, {
+    id,
+    val
+  })
+
+export const setRecipes = (r: IRecipe[]) =>
+  act(SET_RECIPES, {
+    recipes: r
+  })
+
+export const setLoadingAddStepToRecipe = (id: IRecipe["id"], val: boolean) =>
+  act(SET_LOADING_ADD_STEP_TO_RECIPE, {
+    id,
+    val
+  })
+
+export const addStepToRecipe = (id: IRecipe["id"], step: IStep) =>
+  act(ADD_STEP_TO_RECIPE, {
+    id,
+    step
+  })
+
+export const setAddingIngredientToRecipe = (id: IRecipe["id"], val: boolean) =>
+  act(SET_ADDING_INGREDIENT_TO_RECIPE, {
+    id,
+    val
+  })
+
+export const addIngredientToRecipe = (
+  id: IRecipe["id"],
+  ingredient: IIngredient
+) =>
+  act(ADD_INGREDIENT_TO_RECIPE, {
+    id,
+    ingredient
+  })
+
+export const setSchedulingRecipe = (
+  recipeID: IRecipe["id"],
+  scheduling: boolean
+) =>
+  act(SET_SCHEDULING_RECIPE, {
+    recipeID,
+    scheduling
+  })
+
+export type RecipeActions =
+  | ReturnType<typeof updateRecipeOwner>
+  | ReturnType<typeof setDeletingRecipe>
+  | ReturnType<typeof deleteRecipe>
+  | ReturnType<typeof deleteStep>
+  | ReturnType<typeof updateStep>
+  | ReturnType<typeof setRemovingStep>
+  | ReturnType<typeof setUpdatingStep>
+  | ReturnType<typeof deleteIngredient>
+  | ReturnType<typeof setRemovingIngredient>
+  | ReturnType<typeof setUpdatingIngredient>
+  | ReturnType<typeof setRecipe>
+  | ReturnType<typeof setRecipeUpdating>
+  | ReturnType<typeof updateRecipeAuthor>
+  | ReturnType<typeof updateRecipeSource>
+  | ReturnType<typeof updateRecipeName>
+  | ReturnType<typeof addRecipe>
+  | ReturnType<typeof setRecipe404>
+  | ReturnType<typeof setLoadingRecipe>
+  | ReturnType<typeof setRecipes>
+  | ReturnType<typeof setLoadingAddStepToRecipe>
+  | ReturnType<typeof addStepToRecipe>
+  | ReturnType<typeof setAddingIngredientToRecipe>
+  | ReturnType<typeof addIngredientToRecipe>
+  | ReturnType<typeof setSchedulingRecipe>
+  | ReturnType<typeof updateIngredient>
+  | ReturnType<typeof updateRecipeTime>
 
 export interface IIngredient {
   readonly id: number
@@ -64,229 +316,254 @@ export const initialState: IRecipesState = {}
 
 export const recipes = (
   state: IRecipesState = initialState,
-  action: AnyAction
-) => {
+  action: RecipeActions
+): IRecipesState => {
   switch (action.type) {
-    case t.ADD_RECIPE:
-      return { ...state, [action.recipe.id]: action.recipe }
-    case t.DELETE_RECIPE:
-      return { ...state, [action.id]: undefined }
-    case t.ADD_STEP_TO_RECIPE:
+    case ADD_RECIPE:
+      return { ...state, [action.payload.id]: action.payload }
+    case DELETE_RECIPE:
+      return omit(state, action.payload.id)
+    case ADD_STEP_TO_RECIPE:
       return {
         ...state,
-        [action.id]: {
-          ...state[action.id],
-          steps: [...state[action.id].steps, action.step]
+        [action.payload.id]: {
+          ...state[action.payload.id],
+          steps: state[action.payload.id].steps.concat(action.payload.step)
         }
       }
-    case t.SET_LOADING_ADD_STEP_TO_RECIPE:
+    case SET_LOADING_ADD_STEP_TO_RECIPE:
       return {
         ...state,
-        [action.id]: {
-          ...state[action.id],
-          addingStepToRecipe: action.val
+        [action.payload.id]: {
+          ...state[action.payload.id],
+          addingStepToRecipe: action.payload.val
         }
       }
-    case t.SET_RECIPE_404:
+    case SET_RECIPE_404:
       return {
         ...state,
-        [action.id]: {
-          ...state[action.id],
-          error404: action.val
+        [action.payload.id]: {
+          ...state[action.payload.id],
+          error404: action.payload.val
         }
       }
-    case t.ADD_INGREDIENT_TO_RECIPE:
+    case ADD_INGREDIENT_TO_RECIPE:
       return {
         ...state,
-        [action.id]: {
-          ...state[action.id],
-          ingredients: [...state[action.id].ingredients, action.ingredient]
+        [action.payload.id]: {
+          ...state[action.payload.id],
+          ingredients: [
+            ...state[action.payload.id].ingredients,
+            action.payload.ingredient
+          ]
         }
       }
-    case t.UPDATE_RECIPE_NAME:
+    case UPDATE_RECIPE_NAME:
       return {
         ...state,
-        [action.id]: { ...state[action.id], name: action.name }
+        [action.payload.id]: {
+          ...state[action.payload.id],
+          name: action.payload.name
+        }
       }
-    case t.UPDATE_RECIPE_SOURCE:
+    case UPDATE_RECIPE_SOURCE:
       return {
         ...state,
-        [action.id]: { ...state[action.id], source: action.source }
+        [action.payload.id]: {
+          ...state[action.payload.id],
+          source: action.payload.source
+        }
       }
-    case t.UPDATE_RECIPE_TIME:
+    case UPDATE_RECIPE_TIME:
       return {
         ...state,
-        [action.id]: { ...state[action.id], time: action.time }
+        [action.payload.id]: {
+          ...state[action.payload.id],
+          time: action.payload.time
+        }
       }
-    case t.UPDATE_RECIPE_AUTHOR:
+    case UPDATE_RECIPE_AUTHOR:
       return {
         ...state,
-        [action.id]: { ...state[action.id], author: action.author }
+        [action.payload.id]: {
+          ...state[action.payload.id],
+          author: action.payload.author
+        }
       }
-    case t.DELETE_INGREDIENT:
+    case DELETE_INGREDIENT:
       return {
         ...state,
-        [action.recipeID]: {
-          ...state[action.recipeID],
-          ingredients: state[action.recipeID].ingredients.filter(
-            x => x.id !== action.ingredientID
+        [action.payload.recipeID]: {
+          ...state[action.payload.recipeID],
+          ingredients: state[action.payload.recipeID].ingredients.filter(
+            x => x.id !== action.payload.ingredientID
           )
         }
       }
-    case t.UPDATE_INGREDIENT:
+    case UPDATE_INGREDIENT:
       return {
         ...state,
-        [action.recipeID]: {
-          ...state[action.recipeID],
-          ingredients: state[action.recipeID].ingredients.map(ingre => {
-            if (ingre.id === action.ingredientID) {
-              return { ...ingre, ...action.content }
+        [action.payload.recipeID]: {
+          ...state[action.payload.recipeID],
+          ingredients: state[action.payload.recipeID].ingredients.map(ingre => {
+            if (ingre.id === action.payload.ingredientID) {
+              return { ...ingre, ...action.payload.content }
             } else {
               return ingre
             }
           })
         }
       }
-    case t.DELETE_STEP:
+    case DELETE_STEP:
       return {
         ...state,
-        [action.recipeID]: {
-          ...state[action.recipeID],
-          steps: state[action.recipeID].steps.filter(
-            x => x.id !== action.stepID
+        [action.payload.recipeID]: {
+          ...state[action.payload.recipeID],
+          steps: state[action.payload.recipeID].steps.filter(
+            x => x.id !== action.payload.stepID
           )
         }
       }
-    case t.UPDATE_STEP:
+    case UPDATE_STEP:
       return {
         ...state,
-        [action.recipeID]: {
-          ...state[action.recipeID],
-          steps: state[action.recipeID].steps.map(s => {
-            if (s.id === action.stepID) {
-              return { ...s, text: action.text, position: action.position }
+        [action.payload.recipeID]: {
+          ...state[action.payload.recipeID],
+          steps: state[action.payload.recipeID].steps.map(s => {
+            if (s.id === action.payload.stepID) {
+              return {
+                ...s,
+                text: action.payload.text,
+                position: action.payload.position
+              }
             } else {
               return s
             }
           })
         }
       }
-    case t.SET_RECIPES:
+    case SET_RECIPES:
       // convert the array of objects to an object with the recipe.id as the
       // key, and the recipe as the value
-      return action.recipes.reduce(
-        (a: IRecipesState, b: IRecipe) => ({ ...a, [b.id]: b }),
-        {}
-      )
-    case t.SET_DELETING_RECIPE:
+      return action.payload.recipes.reduce((a, b) => ({ ...a, [b.id]: b }), {})
+    case SET_DELETING_RECIPE:
       return {
         ...state,
-        [action.id]: { ...state[action.id], deleting: action.val }
+        [action.payload.id]: {
+          ...state[action.payload.id],
+          deleting: action.payload.val
+        }
       }
-    case t.SET_LOADING_RECIPE:
+    case SET_LOADING_RECIPE:
       return {
         ...state,
-        [action.id]: { ...state[action.id], loading: action.val }
+        [action.payload.id]: {
+          ...state[action.payload.id],
+          loading: action.payload.val
+        }
       }
-    case t.SET_ADDING_INGREDIENT_TO_RECIPE:
+    case SET_ADDING_INGREDIENT_TO_RECIPE:
       return {
         ...state,
-        [action.id]: { ...state[action.id], addingIngredient: action.val }
+        [action.payload.id]: {
+          ...state[action.payload.id],
+          addingIngredient: action.payload.val
+        }
       }
-    case t.SET_UPDATING_INGREDIENT:
+    case SET_UPDATING_INGREDIENT:
       return {
         ...state,
-        [action.recipeID]: {
-          ...state[action.recipeID],
-          ingredients: state[action.recipeID].ingredients.map(x => {
-            if (x.id === action.ingredientID) {
+        [action.payload.recipeID]: {
+          ...state[action.payload.recipeID],
+          ingredients: state[action.payload.recipeID].ingredients.map(x => {
+            if (x.id === action.payload.ingredientID) {
               return {
                 ...x,
-                updating: action.val
+                updating: action.payload.val
               }
             }
             return x
           })
         }
       }
-    case t.SET_REMOVING_INGREDIENT:
+    case SET_REMOVING_INGREDIENT:
       return {
         ...state,
-        [action.recipeID]: {
-          ...state[action.recipeID],
-          ingredients: state[action.recipeID].ingredients.map(x => {
-            if (x.id === action.ingredientID) {
+        [action.payload.recipeID]: {
+          ...state[action.payload.recipeID],
+          ingredients: state[action.payload.recipeID].ingredients.map(x => {
+            if (x.id === action.payload.ingredientID) {
               return {
                 ...x,
-                removing: action.val
+                removing: action.payload.val
               }
             }
             return x
           })
         }
       }
-    case t.SET_UPDATING_STEP:
+    case SET_UPDATING_STEP:
       return {
         ...state,
-        [action.recipeID]: {
-          ...state[action.recipeID],
-          steps: state[action.recipeID].steps.map(x => {
-            if (x.id === action.stepID) {
+        [action.payload.recipeID]: {
+          ...state[action.payload.recipeID],
+          steps: state[action.payload.recipeID].steps.map(x => {
+            if (x.id === action.payload.stepID) {
               return {
                 ...x,
-                updating: action.val
+                updating: action.payload.val
               }
             }
             return x
           })
         }
       }
-    case t.SET_REMOVING_STEP:
+    case SET_REMOVING_STEP:
       return {
         ...state,
-        [action.recipeID]: {
-          ...state[action.recipeID],
-          steps: state[action.recipeID].steps.map(x => {
-            if (x.id === action.stepID) {
+        [action.payload.recipeID]: {
+          ...state[action.payload.recipeID],
+          steps: state[action.payload.recipeID].steps.map(x => {
+            if (x.id === action.payload.stepID) {
               return {
                 ...x,
-                removing: action.val
+                removing: action.payload.val
               }
             }
             return x
           })
         }
       }
-    case t.SET_RECIPE_UPDATING:
+    case SET_RECIPE_UPDATING:
       return {
         ...state,
-        [action.id]: {
-          ...state[action.id],
-          updating: action.val
+        [action.payload.id]: {
+          ...state[action.payload.id],
+          updating: action.payload.val
         }
       }
-    case t.SET_RECIPE:
+    case SET_RECIPE:
       return {
         ...state,
-        [action.id]: {
-          ...state[action.id],
-          ...action.data
+        [action.payload.id]: {
+          ...state[action.payload.id],
+          ...action.payload.data
         }
       }
-    case t.UPDATE_RECIPE_OWNER:
+    case UPDATE_RECIPE_OWNER:
       return {
         ...state,
-        [action.id]: {
-          ...state[action.id],
-          owner: action.owner
+        [action.payload.id]: {
+          ...state[action.payload.id],
+          owner: action.payload.owner
         }
       }
-    case t.SET_SCHEDULING_RECIPE:
+    case SET_SCHEDULING_RECIPE:
       return {
         ...state,
-        [action.recipeID]: {
-          ...state[action.recipeID],
-          scheduling: action.scheduling
+        [action.payload.recipeID]: {
+          ...state[action.payload.recipeID],
+          scheduling: action.payload.scheduling
         }
       }
     default:

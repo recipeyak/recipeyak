@@ -1,6 +1,5 @@
 import invites, { initialState, IInvitesState, IInvite } from "./invites"
-
-import * as t from "../actions"
+import * as t from "./invites"
 
 const basicInvite: IInvite = {
   id: 1,

@@ -9,8 +9,7 @@ import { SocialProvider } from "../store/reducers/user"
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    login: (service: SocialProvider, token: string, redirectUrl: string = "") =>
-      dispatch(login(service, token, redirectUrl))
+    login: login(dispatch)
   }
 }
 

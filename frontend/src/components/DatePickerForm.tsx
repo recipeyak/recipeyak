@@ -19,12 +19,7 @@ import { ITeam } from "../store/reducers/teams"
 
 function mapDispatchToProps(dispatch: Dispatch) {
   return {
-    create: (
-      recipeID: IRecipe["id"],
-      teamID: ITeam["id"],
-      on: Date,
-      count: number
-    ) => dispatch(addingScheduledRecipe(recipeID, teamID, on, count))
+    create: addingScheduledRecipe(dispatch)
   }
 }
 

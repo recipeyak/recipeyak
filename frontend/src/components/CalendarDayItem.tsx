@@ -10,6 +10,7 @@ import { recipeURL } from "../urls"
 import * as DragDrop from "../dragDrop"
 import { IRecipe } from "../store/reducers/recipes"
 import { ICalRecipe } from "../store/reducers/calendar"
+import { AxiosResponse } from "axios"
 
 const COUNT_THRESHOLD = 1
 
@@ -22,7 +23,9 @@ interface ICollectedProps {
 interface ICalendarItemProps {
   readonly count: ICalRecipe["count"]
   readonly remove: () => void
-  readonly updateCount: (count: number) => Promise<void>
+  readonly updateCount: (
+    count: ICalRecipe["count"]
+  ) => Promise<void | AxiosResponse<void>>
   readonly refetchShoppingList: () => void
   readonly date: Date
   readonly recipeID: IRecipe["id"]

@@ -1,14 +1,11 @@
 import isSameDay from "date-fns/is_same_day"
 
-import * as t from "./actionTypes"
-
 // TODO(chdsbd): Replace "personal" with null in all uses
 type TeamID = number | "personal"
 
-// tslint:disable-next-line:ban-types
-export type Dispatch = Function
-// tslint:disable-next-line:ban-types
-type GetState = Function
+export type Dispatch = ReduxDispatch<Action>
+
+export type GetState = () => RootState
 
 import { uuid4 } from "../uuid"
 import Cookie from "js-cookie"
@@ -21,24 +18,133 @@ import addWeeks from "date-fns/add_weeks"
 import { pyFormat } from "../date"
 
 import { push, replace } from "react-router-redux"
-import { createAsyncAction, createStandardAction } from "typesafe-actions"
 import axios, { AxiosError, AxiosResponse, CancelTokenSource } from "axios"
 import raven from "raven-js"
 
-import { store, RootState } from "./store"
+import { store, RootState, Action } from "./store"
 import {
-  IUser,
-  ISocialConnection,
   SocialProvider,
-  IUserState
+  updateEmail,
+  updateTeamID,
+  fetchingUser,
+  setSocialConnections,
+  setLoadingUserStats,
+  setUserStats,
+  login,
+  setUserLoggedIn,
+  setLoggingOut
 } from "./reducers/user"
-import { ICalRecipe } from "./reducers/calendar"
-import { IInvite } from "./reducers/invites"
-import { INotificationState } from "./reducers/notification"
-import { IRecipeBasic, IIngredientBasic } from "../components/AddRecipe"
-import { ITeam } from "./reducers/teams"
-import { IRecipe } from "./reducers/recipes"
+import {
+  ICalRecipe,
+  setCalendarLoading,
+  setCalendarError,
+  setCalendarRecipe,
+  replaceCalendarRecipe,
+  deleteCalendarRecipe,
+  setCalendarRecipes,
+  moveCalendarRecipe
+} from "./reducers/calendar"
+import {
+  setDecliningInvite,
+  setDeclinedInvite,
+  setAcceptingInvite,
+  setAcceptedInvite,
+  setLoadingInvites,
+  setErrorFetchingInvites,
+  setInvites
+} from "./reducers/invites"
+import {
+  INotificationState,
+  setNotification,
+  clearNotification
+} from "./reducers/notification"
+import { IRecipeBasic } from "../components/AddRecipe"
+import {
+  ITeam,
+  deleteTeam,
+  addTeam,
+  setLoadingTeam,
+  setLoadingTeamMembers,
+  setLoadingTeamRecipes,
+  setTeamMembers,
+  setTeam404,
+  setTeamRecipes,
+  setUpdatingUserTeamLevel,
+  setUserTeamLevel,
+  setDeletingMembership,
+  setSendingTeamInvites,
+  deleteMembership,
+  setTeams,
+  setCreatingTeam,
+  setTeam,
+  setLoadingTeams,
+  updateTeamById,
+  setCopyingTeam
+} from "./reducers/teams"
+import {
+  IRecipe,
+  setSchedulingRecipe,
+  updateRecipeOwner,
+  addRecipe,
+  setRecipes,
+  setDeletingRecipe,
+  deleteRecipe,
+  setRemovingStep,
+  deleteStep,
+  updateStep,
+  setUpdatingStep,
+  setRemovingIngredient,
+  deleteIngredient,
+  setUpdatingIngredient,
+  setLoadingAddStepToRecipe,
+  addStepToRecipe,
+  setRecipeUpdating,
+  setRecipe,
+  updateRecipeTime,
+  updateRecipeAuthor,
+  updateRecipeSource,
+  updateRecipeName,
+  setAddingIngredientToRecipe,
+  addIngredientToRecipe,
+  updateIngredient,
+  setLoadingRecipe,
+  setRecipe404
+} from "./reducers/recipes"
 import * as api from "../api"
+import {
+  setLoadingAddRecipe,
+  setLoadingRecipes,
+  setLoadingLogin,
+  setLoadingSignup,
+  setLoadingReset,
+  setLoadingResetConfirmation
+} from "./reducers/loading"
+import {
+  clearSearchResults,
+  incrLoadingSearch,
+  decrLoadingSearch,
+  setSearchResults
+} from "./reducers/search"
+import { clearAddRecipeForm } from "./reducers/addrecipe"
+import {
+  setShoppingList,
+  setLoadingShoppingList,
+  setShoppingListError
+} from "./reducers/shoppinglist"
+import {
+  setLoadingPasswordUpdate,
+  setErrorPasswordUpdate
+} from "./reducers/passwordChange"
+import {
+  setErrorSocialLogin,
+  setErrorLogin,
+  setErrorRecipes,
+  setErrorSignup,
+  setErrorReset,
+  setErrorResetConfirmation,
+  setErrorAddRecipe
+} from "./reducers/error"
+import { Dispatch as ReduxDispatch } from "redux"
 
 const config = { timeout: 15000 }
 
@@ -108,29 +214,6 @@ const isbadRequest = (err: AxiosError) =>
 
 const is404 = (err: AxiosError) => err.response && err.response.status === 404
 
-interface ISetNotification {
-  readonly message: string
-  readonly closeable?: boolean
-  readonly level?: INotificationState["level"]
-}
-
-export const setNotification = ({
-  message,
-  closeable,
-  level = "info"
-}: ISetNotification) => ({
-  type: t.SET_NOTIFICATION,
-  notification: {
-    message,
-    closeable,
-    level
-  }
-})
-
-export const clearNotification = () => ({
-  type: t.CLEAR_NOTIFICATION
-})
-
 export interface INotificationWithTimeout {
   readonly delay?: number
   readonly sticky?: boolean
@@ -141,13 +224,13 @@ export interface INotificationWithTimeout {
 
 // https://stackoverflow.com/a/38574266/3555105
 let notificationTimeout: NodeJS.Timer
-export const showNotificationWithTimeout = ({
+export const showNotificationWithTimeout = (dispatch: Dispatch) => ({
   message,
   level = "info",
   closeable = true,
   delay = 2000,
   sticky = false
-}: INotificationWithTimeout) => (dispatch: Dispatch) => {
+}: INotificationWithTimeout) => {
   clearTimeout(notificationTimeout)
   dispatch(
     setNotification({
@@ -164,18 +247,7 @@ export const showNotificationWithTimeout = ({
   }
 }
 
-// TODO(chdsbd): Replace usage with fetchUser#success. Update user reducer.
-export const login = (payload: IUser) => ({
-  type: t.LOG_IN,
-  payload
-})
-
-export const setLoggingOut = (val: boolean) => ({
-  type: t.SET_LOGGING_OUT,
-  val
-})
-
-export const loggingOut = () => (dispatch: Dispatch) => {
+export const loggingOut = (dispatch: Dispatch) => () => {
   dispatch(setLoggingOut(true))
   return http
     .post("/api/v1/rest-auth/logout/", {})
@@ -190,21 +262,6 @@ export const loggingOut = () => (dispatch: Dispatch) => {
     })
 }
 
-export const setLoadingUserStats = (val: boolean) => ({
-  type: t.SET_LOADING_USER_STATS,
-  val
-})
-
-export const setUserStats = (val: unknown) => ({
-  type: t.SET_USER_STATS,
-  val
-})
-
-export const setFromUrl = (val: string) => ({
-  type: t.SET_FROM_URL,
-  val
-})
-
 const emailExists = (err: AxiosError) =>
   err.response &&
   err.response.data.email != null &&
@@ -212,30 +269,18 @@ const emailExists = (err: AxiosError) =>
 
 const second = 1000
 
-interface IEmailUpdate {
-  email: string
-  avatar_url: string
-}
-
-export const updateEmail = createAsyncAction(
-  t.UPDATE_EMAIL_START,
-  t.UPDATE_EMAIL_SUCCESS,
-  t.UPDATE_EMAIL_FAILURE
-)<void, IEmailUpdate, void>()
-
-export const updatingEmail = (email: string) => (dispatch: Dispatch) => {
+export const updatingEmail = (dispatch: Dispatch) => (email: string) => {
   dispatch(updateEmail.request())
   return api
     .updateUser({ email })
     .then(res => {
       dispatch(updateEmail.success(res.data))
-      dispatch(
-        showNotificationWithTimeout({
-          message: "updated email",
-          level: "success",
-          delay: 3 * second
-        })
-      )
+
+      showNotificationWithTimeout(dispatch)({
+        message: "updated email",
+        level: "success",
+        delay: 3 * second
+      })
     })
     .catch(err => {
       dispatch(updateEmail.failure())
@@ -249,14 +294,9 @@ export const updatingEmail = (email: string) => (dispatch: Dispatch) => {
     })
 }
 
-const updateTeamID = createStandardAction(t.SET_TEAM_ID)<number | null>()
-
-export const updatingTeamID = (id: number | null) => (
-  dispatch: Dispatch,
-  getState: () => RootState
-) => {
+export const updatingTeamID = (dispatch: Dispatch) => (id: number | null) => {
   // store old id so we can undo
-  const oldID = (getState().user as IUserState).teamID
+  const oldID = store.getState().user.teamID
   dispatch(updateTeamID(id))
   api
     .updateUser({ selected_team: id })
@@ -268,18 +308,7 @@ export const updatingTeamID = (id: number | null) => (
     })
 }
 
-export const setUserLoggedIn = (val: boolean) => ({
-  type: t.SET_USER_LOGGED_IN,
-  val
-})
-
-export const fetchingUser = createAsyncAction(
-  t.FETCH_USER_START,
-  t.FETCH_USER_SUCCESS,
-  t.FETCH_USER_FAILURE
-)<void, IUser, void>()
-
-export const fetchUser = () => (dispatch: Dispatch) => {
+export const fetchUser = (dispatch: Dispatch) => () => {
   dispatch(fetchingUser.request())
   return api
     .getUser()
@@ -291,21 +320,7 @@ export const fetchUser = () => (dispatch: Dispatch) => {
     })
 }
 
-export const setSocialConnections = (val: ISocialConnection[]) => ({
-  type: t.SET_SOCIAL_ACCOUNT_CONNECTIONS,
-  val
-})
-
-export const setSocialConnection = (
-  provider: SocialProvider,
-  val: unknown
-) => ({
-  type: t.SET_SOCIAL_ACCOUNT_CONNECTION,
-  provider,
-  val
-})
-
-export const fetchSocialConnections = () => (dispatch: Dispatch) => {
+export const fetchSocialConnections = (dispatch: Dispatch) => () => {
   return http
     .get("/api/v1/rest-auth/socialaccounts/")
     .then(res => {
@@ -316,10 +331,10 @@ export const fetchSocialConnections = () => (dispatch: Dispatch) => {
     })
 }
 
-export const disconnectSocialAccount = (
+export const disconnectSocialAccount = (dispatch: Dispatch) => (
   provider: SocialProvider,
   id: number
-) => (dispatch: Dispatch) => {
+) => {
   return http
     .post(`/api/v1/rest-auth/socialaccounts/${id}/disconnect/`, {
       id
@@ -339,7 +354,7 @@ export const disconnectSocialAccount = (
     })
 }
 
-export const fetchUserStats = () => (dispatch: Dispatch) => {
+export const fetchUserStats = (dispatch: Dispatch) => () => {
   dispatch(setLoadingUserStats(true))
   return http
     .get("api/v1/user_stats/")
@@ -353,21 +368,11 @@ export const fetchUserStats = () => (dispatch: Dispatch) => {
     })
 }
 
-export const setLoadingPasswordUpdate = (val: boolean) => ({
-  type: t.SET_LOADING_PASSWORD_UPDATE,
-  val
-})
-
-export const setErrorPasswordUpdate = (val: unknown) => ({
-  type: t.SET_ERROR_PASSWORD_UPDATE,
-  val
-})
-
-export const updatingPassword = (
+export const updatingPassword = (dispatch: Dispatch) => (
   password1: string,
   password2: string,
   oldPassword: string
-) => (dispatch: Dispatch) => {
+) => {
   dispatch(setLoadingPasswordUpdate(true))
   dispatch(setErrorPasswordUpdate({}))
   return http
@@ -379,12 +384,10 @@ export const updatingPassword = (
     .then(() => {
       dispatch(setLoadingPasswordUpdate(false))
       dispatch(push("/"))
-      dispatch(
-        showNotificationWithTimeout({
-          message: "Successfully updated password",
-          level: "success"
-        })
-      )
+      showNotificationWithTimeout(dispatch)({
+        message: "Successfully updated password",
+        level: "success"
+      })
     })
     .catch(err => {
       dispatch(setLoadingPasswordUpdate(false))
@@ -403,29 +406,13 @@ export const updatingPassword = (
     })
 }
 
-export const setShoppingList = (val: unknown) => ({
-  type: t.SET_SHOPPING_LIST,
-  val
-})
-
-export const setShoppingListEmpty = () => setShoppingList([])
-
-export const setLoadingShoppingList = (val: boolean) => ({
-  type: t.SET_LOADING_SHOPPING_LIST,
-  val
-})
-
-export const setShoppingListError = (val: unknown) => ({
-  type: t.SET_SHOPPING_LIST_ERROR,
-  val
-})
-
-export const fetchShoppingList = (teamID: TeamID, start?: Date, end?: Date) => (
-  dispatch: Dispatch,
-  getState: GetState
+export const fetchShoppingList = (dispatch: Dispatch) => (
+  teamID: TeamID,
+  start?: Date,
+  end?: Date
 ) => {
-  const startDay = start || getState().shoppinglist.startDay
-  const endDay = end || getState().shoppinglist.endDay
+  const startDay = start || store.getState().shoppinglist.startDay
+  const endDay = end || store.getState().shoppinglist.endDay
   dispatch(setLoadingShoppingList(true))
   dispatch(setShoppingListError(false))
   const url =
@@ -449,32 +436,7 @@ export const fetchShoppingList = (teamID: TeamID, start?: Date, end?: Date) => (
     })
 }
 
-export const setSelectingStart = (date: Date) => ({
-  type: t.SET_SELECTING_START,
-  date
-})
-
-export const setSelectingEnd = (date: Date) => ({
-  type: t.SET_SELECTING_END,
-  date
-})
-
-export const addRecipe = (recipe: unknown) => ({
-  type: t.ADD_RECIPE,
-  recipe
-})
-
-export const setLoadingAddRecipe = (val: boolean) => ({
-  type: t.SET_LOADING_ADD_RECIPE,
-  val
-})
-
-export const setErrorAddRecipe = (val: unknown) => ({
-  type: t.SET_ERROR_ADD_RECIPE,
-  val
-})
-
-export const postNewRecipe = (recipe: IRecipeBasic) => (dispatch: Dispatch) => {
+export const postNewRecipe = (dispatch: Dispatch) => (recipe: IRecipeBasic) => {
   dispatch(setLoadingAddRecipe(true))
   dispatch(setErrorAddRecipe({}))
 
@@ -495,29 +457,15 @@ export const postNewRecipe = (recipe: IRecipeBasic) => (dispatch: Dispatch) => {
       dispatch(setLoadingAddRecipe(false))
       dispatch(setErrorAddRecipe(errors))
 
-      dispatch(
-        showNotificationWithTimeout({
-          message: "problem creating new recipe",
-          level: "danger",
-          delay: 5 * second
-        })
-      )
+      showNotificationWithTimeout(dispatch)({
+        message: "problem creating new recipe",
+        level: "danger",
+        delay: 5 * second
+      })
     })
 }
 
-export const setRecipe404 = (id: number, val: boolean) => ({
-  type: t.SET_RECIPE_404,
-  id,
-  val
-})
-
-export const setLoadingRecipe = (id: number, val: boolean) => ({
-  type: t.SET_LOADING_RECIPE,
-  id,
-  val
-})
-
-export const fetchRecipe = (id: number) => (dispatch: Dispatch) => {
+export const fetchRecipe = (dispatch: Dispatch) => (id: number) => {
   dispatch(setRecipe404(id, false))
   dispatch(setLoadingRecipe(id, true))
   return http
@@ -535,22 +483,7 @@ export const fetchRecipe = (id: number) => (dispatch: Dispatch) => {
     })
 }
 
-export const setRecipes = (recipes: unknown[]) => ({
-  type: t.SET_RECIPES,
-  recipes
-})
-
-export const setErrorRecipes = (val: unknown) => ({
-  type: t.SET_ERROR_RECIPES,
-  val
-})
-
-export const setLoadingRecipes = (val: boolean) => ({
-  type: t.SET_LOADING_RECIPES,
-  val
-})
-
-export const fetchRecentRecipes = () => (dispatch: Dispatch) => {
+export const fetchRecentRecipes = (dispatch: Dispatch) => () => {
   dispatch(setLoadingRecipes(true))
   dispatch(setErrorRecipes(false))
   return http
@@ -566,8 +499,8 @@ export const fetchRecentRecipes = () => (dispatch: Dispatch) => {
     })
 }
 
-export const fetchRecipeList = (teamID: number | "personal") => (
-  dispatch: Dispatch
+export const fetchRecipeList = (dispatch: Dispatch) => (
+  teamID: number | "personal"
 ) => {
   dispatch(setLoadingRecipes(true))
   dispatch(setErrorRecipes(false))
@@ -587,25 +520,6 @@ export const fetchRecipeList = (teamID: number | "personal") => (
     })
 }
 
-export const setSearchResults = (results: unknown[]) => ({
-  type: t.SET_SEARCH_RESULTS,
-  results
-})
-
-export const clearSearchResults = () => ({
-  type: t.CLEAR_SEARCH_RESULTS
-})
-
-export const incrLoadingSearch = () => {
-  return {
-    type: t.INCR_LOADING_SEARCH
-  }
-}
-
-export const decrLoadingSearch = () => ({
-  type: t.DECR_LOADING_SEARCH
-})
-
 interface ISearchStore {
   lastRequest: null | CancelTokenSource
 }
@@ -615,7 +529,7 @@ const searchStore: ISearchStore = {
   lastRequest: null
 }
 
-export const searchRecipes = (query: string) => (dispatch: Dispatch) => {
+export const searchRecipes = (dispatch: Dispatch) => (query: string) => {
   // It's visually pleasing to have all the results disappear when
   // the search query is cleared.
   if (query === "") {
@@ -650,34 +564,10 @@ export const searchRecipes = (query: string) => (dispatch: Dispatch) => {
     })
 }
 
-export const setLoadingAddStepToRecipe = (id: number, val: boolean) => ({
-  type: t.SET_LOADING_ADD_STEP_TO_RECIPE,
-  id,
-  val
-})
-
-export const addStepToRecipe = (id: number, step: unknown) => ({
-  type: t.ADD_STEP_TO_RECIPE,
-  id,
-  step
-})
-
-export const setAddingIngredientToRecipe = (id: number, val: unknown) => ({
-  type: t.SET_ADDING_INGREDIENT_TO_RECIPE,
-  id,
-  val
-})
-
-export const addIngredientToRecipe = (id: number, ingredient: unknown) => ({
-  type: t.ADD_INGREDIENT_TO_RECIPE,
-  id,
-  ingredient
-})
-
-export const addingRecipeIngredient = (
+export const addingRecipeIngredient = (dispatch: Dispatch) => (
   recipeID: number,
   ingredient: unknown
-) => (dispatch: Dispatch) => {
+) => {
   dispatch(setAddingIngredientToRecipe(recipeID, true))
   return http
     .post(`/api/v1/recipes/${recipeID}/ingredients/`, ingredient)
@@ -690,12 +580,6 @@ export const addingRecipeIngredient = (
       throw err
     })
 }
-
-export const updateRecipeName = (id: number, name: string) => ({
-  type: t.UPDATE_RECIPE_NAME,
-  id,
-  name
-})
 
 export const sendUpdatedRecipeName = (id: number, name: string) => (
   dispatch: Dispatch
@@ -712,12 +596,6 @@ export const sendUpdatedRecipeName = (id: number, name: string) => (
     })
 }
 
-export const updateRecipeSource = (id: number, source: string) => ({
-  type: t.UPDATE_RECIPE_SOURCE,
-  id,
-  source
-})
-
 export const setRecipeSource = (id: number, source: string) => (
   dispatch: Dispatch
 ) => {
@@ -732,12 +610,6 @@ export const setRecipeSource = (id: number, source: string) => (
       throw err
     })
 }
-
-export const updateRecipeAuthor = (id: number, author: unknown) => ({
-  type: t.UPDATE_RECIPE_AUTHOR,
-  id,
-  author
-})
 
 export const setRecipeAuthor = (id: number, author: unknown) => (
   dispatch: Dispatch
@@ -754,12 +626,6 @@ export const setRecipeAuthor = (id: number, author: unknown) => (
     })
 }
 
-export const updateRecipeTime = (id: number, time: unknown) => ({
-  type: t.UPDATE_RECIPE_TIME,
-  id,
-  time
-})
-
 export const setRecipeTime = (id: number, time: unknown) => (
   dispatch: Dispatch
 ) => {
@@ -775,24 +641,9 @@ export const setRecipeTime = (id: number, time: unknown) => (
     })
 }
 
-export const toggleDarkMode = () => ({
-  type: t.TOGGLE_DARK_MODE
-})
-
-export const setRecipe = (id: number, data: unknown) => ({
-  type: t.SET_RECIPE,
-  id,
-  data
-})
-
-export const setRecipeUpdating = (id: number, val: unknown) => ({
-  type: t.SET_RECIPE_UPDATING,
-  id,
-  val
-})
-
-export const updateRecipe = (id: number, data: unknown) => (
-  dispatch: Dispatch
+export const updateRecipe = (dispatch: Dispatch) => (
+  id: number,
+  data: unknown
 ) => {
   dispatch(setRecipeUpdating(id, true))
   return http
@@ -807,19 +658,9 @@ export const updateRecipe = (id: number, data: unknown) => (
     })
 }
 
-export const updateIngredient = (
+export const addingRecipeStep = (dispatch: Dispatch) => (
   recipeID: number,
-  ingredientID: number,
-  content: unknown
-) => ({
-  type: t.UPDATE_INGREDIENT,
-  recipeID,
-  ingredientID,
-  content
-})
-
-export const addingRecipeStep = (recipeID: number, step: unknown) => (
-  dispatch: Dispatch
+  step: unknown
 ) => {
   dispatch(setLoadingAddStepToRecipe(recipeID, true))
   return http
@@ -836,33 +677,11 @@ export const addingRecipeStep = (recipeID: number, step: unknown) => (
     })
 }
 
-export const setRemovingIngredient = (
-  recipeID: number,
-  ingredientID: number,
-  val: unknown
-) => ({
-  type: t.SET_REMOVING_INGREDIENT,
-  recipeID,
-  ingredientID,
-  val
-})
-
-export const setUpdatingIngredient = (
-  recipeID: number,
-  ingredientID: number,
-  val: unknown
-) => ({
-  type: t.SET_UPDATING_INGREDIENT,
-  recipeID,
-  ingredientID,
-  val
-})
-
-export const updatingIngredient = (
+export const updatingIngredient = (dispatch: Dispatch) => (
   recipeID: number,
   ingredientID: number,
   content: unknown
-) => (dispatch: Dispatch) => {
+) => {
   dispatch(setUpdatingIngredient(recipeID, ingredientID, true))
   return http
     .patch(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, content)
@@ -876,14 +695,9 @@ export const updatingIngredient = (
     })
 }
 
-export const deleteIngredient = (recipeID: number, ingredientID: number) => ({
-  type: t.DELETE_INGREDIENT,
-  recipeID,
-  ingredientID
-})
-
-export const deletingIngredient = (recipeID: number, ingredientID: number) => (
-  dispatch: Dispatch
+export const deletingIngredient = (dispatch: Dispatch) => (
+  recipeID: number,
+  ingredientID: number
 ) => {
   dispatch(setRemovingIngredient(recipeID, ingredientID, true))
   return http
@@ -897,47 +711,11 @@ export const deletingIngredient = (recipeID: number, ingredientID: number) => (
       throw err
     })
 }
-
-export const updateStep = (
-  recipeID: number,
-  stepID: number,
-  text: string,
-  position: number
-) => ({
-  type: t.UPDATE_STEP,
-  recipeID,
-  stepID,
-  text,
-  position
-})
-
-export const setRemovingStep = (
-  recipeID: number,
-  stepID: number,
-  val: unknown
-) => ({
-  type: t.SET_REMOVING_STEP,
-  recipeID,
-  stepID,
-  val
-})
-
-export const setUpdatingStep = (
-  recipeID: number,
-  stepID: number,
-  val: unknown
-) => ({
-  type: t.SET_UPDATING_STEP,
-  recipeID,
-  stepID,
-  val
-})
-
-export const updatingStep = (
+export const updatingStep = (dispatch: Dispatch) => (
   recipeID: number,
   stepID: number,
   { text, position }: { text?: string; position?: number }
-) => (dispatch: Dispatch) => {
+) => {
   dispatch(setUpdatingStep(recipeID, stepID, true))
   const data: { [key: string]: unknown } = {
     text,
@@ -963,14 +741,9 @@ export const updatingStep = (
     })
 }
 
-export const deleteStep = (recipeID: number, stepID: number) => ({
-  type: t.DELETE_STEP,
-  recipeID,
-  stepID
-})
-
-export const deletingStep = (recipeID: number, stepID: number) => (
-  dispatch: Dispatch
+export const deletingStep = (dispatch: Dispatch) => (
+  recipeID: number,
+  stepID: number
 ) => {
   dispatch(setRemovingStep(recipeID, stepID, true))
   return http
@@ -985,21 +758,11 @@ export const deletingStep = (recipeID: number, stepID: number) => (
     })
 }
 
-export const setErrorLogin = (val: unknown) => ({
-  type: t.SET_ERROR_LOGIN,
-  val
-})
-
-export const setLoadingLogin = (val: boolean) => ({
-  type: t.SET_LOADING_LOGIN,
-  val
-})
-
-export const logUserIn = (
+export const logUserIn = (dispatch: Dispatch) => (
   email: string,
   password: string,
   redirectUrl: string = ""
-) => (dispatch: Dispatch) => {
+) => {
   dispatch(setLoadingLogin(true))
   dispatch(setErrorLogin({}))
   dispatch(clearNotification())
@@ -1029,16 +792,11 @@ export const logUserIn = (
     })
 }
 
-export const setErrorSocialLogin = (val: unknown) => ({
-  type: t.SET_ERROR_SOCIAL_LOGIN,
-  val
-})
-
-export const socialLogin = (
+export const socialLogin = (dispatch: Dispatch) => (
   service: SocialProvider,
   token: string,
   redirectUrl: string = ""
-) => (dispatch: Dispatch) => {
+) => {
   return anon
     .post(`/api/v1/rest-auth/${service}/`, {
       code: token
@@ -1063,8 +821,9 @@ export const socialLogin = (
     })
 }
 
-export const socialConnect = (service: SocialProvider, code: unknown) => (
-  dispatch: Dispatch
+export const socialConnect = (dispatch: Dispatch) => (
+  service: SocialProvider,
+  code: unknown
 ) => {
   return http
     .post(`/api/v1/rest-auth/${service}/connect/`, {
@@ -1079,18 +838,10 @@ export const socialConnect = (service: SocialProvider, code: unknown) => (
     })
 }
 
-export const setLoadingSignup = (val: boolean) => ({
-  type: t.SET_LOADING_SIGNUP,
-  val
-})
-
-export const setErrorSignup = (val: unknown) => ({
-  type: t.SET_ERROR_SIGNUP,
-  val
-})
-
-export const signup = (email: string, password1: string, password2: string) => (
-  dispatch: Dispatch
+export const signup = (dispatch: Dispatch) => (
+  email: string,
+  password1: string,
+  password2: string
 ) => {
   dispatch(setLoadingSignup(true))
   // clear previous signup errors
@@ -1122,19 +873,7 @@ export const signup = (email: string, password1: string, password2: string) => (
       dispatch(setLoadingSignup(false))
     })
 }
-
-export const setDeletingRecipe = (id: number, val: boolean) => ({
-  type: t.SET_DELETING_RECIPE,
-  id,
-  val
-})
-
-export const deleteRecipe = (id: number) => ({
-  type: t.DELETE_RECIPE,
-  id
-})
-
-export const deletingRecipe = (id: number) => (dispatch: Dispatch) => {
+export const deletingRecipe = (dispatch: Dispatch) => (id: number) => {
   dispatch(setDeletingRecipe(id, true))
   return http
     .delete(`/api/v1/recipes/${id}/`)
@@ -1149,17 +888,7 @@ export const deletingRecipe = (id: number) => (dispatch: Dispatch) => {
     })
 }
 
-export const setLoadingReset = (val: boolean) => ({
-  type: t.SET_LOADING_RESET,
-  val
-})
-
-export const setErrorReset = (val: unknown) => ({
-  type: t.SET_ERROR_RESET,
-  val
-})
-
-export const reset = (email: string) => (dispatch: Dispatch) => {
+export const reset = (dispatch: Dispatch) => (email: string) => {
   dispatch(setLoadingReset(true))
   dispatch(setErrorReset({}))
   dispatch(clearNotification())
@@ -1170,22 +899,18 @@ export const reset = (email: string) => (dispatch: Dispatch) => {
     .then(res => {
       dispatch(setLoadingReset(false))
       const message = res && res.data && res.data.detail
-      dispatch(
-        showNotificationWithTimeout({
-          message,
-          level: "success"
-        })
-      )
+      showNotificationWithTimeout(dispatch)({
+        message,
+        level: "success"
+      })
     })
     .catch(err => {
       dispatch(setLoadingReset(false))
-      dispatch(
-        showNotificationWithTimeout({
-          message: "uh oh! problem resetting password",
-          level: "danger",
-          sticky: true
-        })
-      )
+      showNotificationWithTimeout(dispatch)({
+        message: "uh oh! problem resetting password",
+        level: "danger",
+        sticky: true
+      })
       if (isbadRequest(err)) {
         const data = err.response.data
         dispatch(
@@ -1195,32 +920,20 @@ export const reset = (email: string) => (dispatch: Dispatch) => {
           })
         )
       }
-      dispatch(
-        showNotificationWithTimeout({
-          message: "problem resetting password",
-          level: "danger",
-          sticky: true
-        })
-      )
+      showNotificationWithTimeout(dispatch)({
+        message: "problem resetting password",
+        level: "danger",
+        sticky: true
+      })
     })
 }
 
-export const setLoadingResetConfirmation = (val: boolean) => ({
-  type: t.SET_LOADING_RESET_CONFIRMATION,
-  val
-})
-
-export const setErrorResetConfirmation = (val: unknown) => ({
-  type: t.SET_ERROR_RESET_CONFIRMATION,
-  val
-})
-
-export const resetConfirmation = (
+export const resetConfirmation = (dispatch: Dispatch) => (
   uid: string,
   token: string,
   newPassword1: string,
   newPassword2: string
-) => (dispatch: Dispatch) => {
+) => {
   dispatch(setLoadingResetConfirmation(true))
   dispatch(setErrorResetConfirmation({}))
   dispatch(clearNotification())
@@ -1234,23 +947,19 @@ export const resetConfirmation = (
     .then(res => {
       dispatch(setLoadingResetConfirmation(false))
       const message = res && res.data && res.data.detail
-      dispatch(
-        showNotificationWithTimeout({
-          message,
-          level: "success"
-        })
-      )
+      showNotificationWithTimeout(dispatch)({
+        message,
+        level: "success"
+      })
       dispatch(push("/login"))
     })
     .catch(err => {
       dispatch(setLoadingResetConfirmation(false))
-      dispatch(
-        showNotificationWithTimeout({
-          message: "uh oh! problem resetting password",
-          level: "danger",
-          sticky: true
-        })
-      )
+      showNotificationWithTimeout(dispatch)({
+        message: "uh oh! problem resetting password",
+        level: "danger",
+        sticky: true
+      })
       if (isbadRequest(err)) {
         const data = err.response.data
 
@@ -1264,7 +973,7 @@ export const resetConfirmation = (
           .concat(uidData)
 
         dispatch(
-          setErrorReset({
+          setErrorResetConfirmation({
             newPassword1: data["new_password1"],
             newPassword2: data["new_password2"],
             nonFieldErrors
@@ -1274,117 +983,7 @@ export const resetConfirmation = (
     })
 }
 
-export const setAddRecipeFormName = (val: string) => ({
-  type: t.SET_ADD_RECIPE_FORM_NAME,
-  val
-})
-
-export const setAddRecipeFormAuthor = (val: string) => ({
-  type: t.SET_ADD_RECIPE_FORM_AUTHOR,
-  val
-})
-
-export const setAddRecipeFormSource = (val: string) => ({
-  type: t.SET_ADD_RECIPE_FORM_SOURCE,
-  val
-})
-
-export const setAddRecipeFormTime = (val: string) => ({
-  type: t.SET_ADD_RECIPE_FORM_TIME,
-  val
-})
-
-export const setAddRecipeFormServings = (val: string) => ({
-  type: t.SET_ADD_RECIPE_FORM_SERVINGS,
-  val
-})
-
-export const setAddRecipeFormTeam = (val: string) => ({
-  type: t.SET_ADD_RECIPE_FORM_TEAM,
-  val
-})
-
-export const addAddRecipeFormIngredient = (ingredient: unknown) => ({
-  type: t.ADD_ADD_RECIPE_FORM_INGREDIENT,
-  ingredient
-})
-
-export const removeAddRecipeFormIngredient = (index: number) => ({
-  type: t.REMOVE_ADD_RECIPE_FORM_INGREDIENT,
-  index
-})
-
-export const addAddRecipeFormStep = (step: { text?: string }) => ({
-  type: t.ADD_ADD_RECIPE_FORM_STEP,
-  step
-})
-
-export const removeAddRecipeFormStep = (index: number) => ({
-  type: t.REMOVE_ADD_RECIPE_FORM_STEP,
-  index
-})
-
-export const updateAddRecipeFormIngredient = (
-  index: number,
-  ingredient: IIngredientBasic
-) => ({
-  type: t.UPDATE_ADD_RECIPE_FORM_INGREDIENT,
-  index,
-  ingredient
-})
-
-export const updateAddRecipeFormStep = (index: number, step: unknown) => ({
-  type: t.UPDATE_ADD_RECIPE_FORM_STEP,
-  index,
-  step
-})
-
-export const clearAddRecipeForm = () => ({
-  type: t.CLEAR_ADD_RECIPE_FORM
-})
-
-export const addTeam = (team: unknown) => ({
-  type: t.ADD_TEAM,
-  team
-})
-
-export const setLoadingTeam = (id: number, loadingTeam: boolean) => ({
-  type: t.SET_LOADING_TEAM,
-  id,
-  loadingTeam
-})
-
-export const setLoadingTeamMembers = (id: number, loadingMembers: boolean) => ({
-  type: t.SET_LOADING_TEAM_MEMBERS,
-  id,
-  loadingMembers
-})
-
-export const setTeam404 = (id: number, val = true) => ({
-  type: t.SET_TEAM_404,
-  id,
-  val
-})
-
-export const setTeamMembers = (id: number, members: unknown[]) => ({
-  type: t.SET_TEAM_MEMBERS,
-  id,
-  members
-})
-
-export const setTeamRecipes = (id: number, recipes: unknown[]) => ({
-  type: t.SET_TEAM_RECIPES,
-  id,
-  recipes
-})
-
-export const setLoadingTeamRecipes = (id: number, loadingRecipes: boolean) => ({
-  type: t.SET_LOADING_TEAM_RECIPES,
-  id,
-  loadingRecipes
-})
-
-export const fetchTeam = (id: ITeam["id"]) => (dispatch: Dispatch) => {
+export const fetchTeam = (dispatch: Dispatch) => (id: ITeam["id"]) => {
   dispatch(setLoadingTeam(id, true))
   return http
     .get(`/api/v1/t/${id}/`)
@@ -1401,7 +1000,7 @@ export const fetchTeam = (id: ITeam["id"]) => (dispatch: Dispatch) => {
     })
 }
 
-export const fetchTeamMembers = (id: number) => (dispatch: Dispatch) => {
+export const fetchTeamMembers = (dispatch: Dispatch) => (id: number) => {
   dispatch(setLoadingTeamMembers(id, true))
   return http
     .get(`/api/v1/t/${id}/members/`)
@@ -1415,7 +1014,7 @@ export const fetchTeamMembers = (id: number) => (dispatch: Dispatch) => {
     })
 }
 
-export const fetchTeamRecipes = (id: number) => (dispatch: Dispatch) => {
+export const fetchTeamRecipes = (dispatch: Dispatch) => (id: number) => {
   dispatch(setLoadingTeamRecipes(id, true))
   return http
     .get(`/api/v1/t/${id}/recipes/`)
@@ -1430,33 +1029,16 @@ export const fetchTeamRecipes = (id: number) => (dispatch: Dispatch) => {
     })
 }
 
-export const setUpdatingUserTeamLevel = (id: number, updating: boolean) => ({
-  type: t.SET_UPDATING_USER_TEAM_LEVEL,
-  id,
-  updating
-})
-
-export const setUserTeamLevel = (
-  teamID: number,
-  membershipID: number,
-  level: unknown
-) => ({
-  type: t.SET_USER_TEAM_LEVEL,
-  teamID,
-  membershipID,
-  level
-})
-
 const attemptedDeleteLastAdmin = (res: AxiosResponse) =>
   res.status === 400 &&
   res.data.level &&
   res.data.level[0].includes("cannot demote")
 
-export const settingUserTeamLevel = (
+export const settingUserTeamLevel = (dispatch: Dispatch) => (
   teamID: number,
   membershipID: number,
   level: unknown
-) => (dispatch: Dispatch) => {
+) => {
   dispatch(setUpdatingUserTeamLevel(teamID, true))
   return http
     .patch(`/api/v1/t/${teamID}/members/${membershipID}/`, { level })
@@ -1467,94 +1049,61 @@ export const settingUserTeamLevel = (
     .catch(err => {
       if (attemptedDeleteLastAdmin(err.response)) {
         const message = err.response.data.level[0]
-        dispatch(
-          showNotificationWithTimeout({
-            message,
-            level: "danger",
-            delay: 3 * second
-          })
-        )
+        showNotificationWithTimeout(dispatch)({
+          message,
+          level: "danger",
+          delay: 3 * second
+        })
       }
       dispatch(setUpdatingUserTeamLevel(teamID, false))
       throw err
     })
 }
 
-export const deleteMembership = (teamID: number, membershipID: number) => ({
-  type: t.DELETE_MEMBERSHIP,
-  teamID,
-  membershipID
-})
-
-export const setDeletingMembership = (
-  teamID: number,
-  membershipID: number,
-  val: unknown
-) => ({
-  type: t.SET_DELETING_MEMBERSHIP,
-  teamID,
-  membershipID,
-  val
-})
-
-export const deleteTeam = (id: number) => ({
-  type: t.DELETE_TEAM,
-  id
-})
-
-export const deletingMembership = (
+export const deletingMembership = (dispatch: Dispatch) => (
   teamID: number,
   id: number,
   leaving: boolean = false
-) => (dispatch: Dispatch, getState: GetState) => {
+) => {
   dispatch(setDeletingMembership(teamID, id, true))
   return http
     .delete(`/api/v1/t/${teamID}/members/${id}/`)
     .then(() => {
-      const message = "left team " + getState().teams[teamID].name
+      const message = "left team " + store.getState().teams[teamID].name
       dispatch(deleteMembership(teamID, id))
       if (leaving) {
         dispatch(push("/"))
-        dispatch(
-          showNotificationWithTimeout({
-            message,
-            level: "success",
-            delay: 3 * second
-          })
-        )
+        showNotificationWithTimeout(dispatch)({
+          message,
+          level: "success",
+          delay: 3 * second
+        })
         dispatch(deleteTeam(teamID))
       }
     })
     .catch(err => {
       const message = err.response.data
-      dispatch(
-        showNotificationWithTimeout({
-          message,
-          level: "danger",
-          delay: 3 * second
-        })
-      )
+      showNotificationWithTimeout(dispatch)({
+        message,
+        level: "danger",
+        delay: 3 * second
+      })
       dispatch(setDeletingMembership(teamID, id, false))
       throw err
     })
 }
 
-export const deletingTeam = (teamID: number) => (
-  dispatch: Dispatch,
-  getState: GetState
-) => {
+export const deletingTeam = (dispatch: Dispatch) => (teamID: number) => {
   return http
     .delete(`/api/v1/t/${teamID}`)
     .then(() => {
       dispatch(push("/"))
-      const teamName = getState().teams[teamID].name
-      dispatch(
-        showNotificationWithTimeout({
-          message: `Team deleted (${teamName})`,
-          level: "success",
-          delay: 3 * second
-        })
-      )
+      const teamName = store.getState().teams[teamID].name
+      showNotificationWithTimeout(dispatch)({
+        message: `Team deleted (${teamName})`,
+        level: "success",
+        delay: 3 * second
+      })
       dispatch(deleteTeam(teamID))
     })
     .catch(err => {
@@ -1572,64 +1121,42 @@ export const deletingTeam = (teamID: number) => (
       } else {
         raven.captureException(err)
       }
-      dispatch(
-        showNotificationWithTimeout({
-          message,
-          level: "danger",
-          delay: 3 * second
-        })
-      )
+      showNotificationWithTimeout(dispatch)({
+        message,
+        level: "danger",
+        delay: 3 * second
+      })
       throw err
     })
 }
 
-export const setSendingTeamInvites = (teamID: number, val: unknown) => ({
-  type: t.SET_SENDING_TEAM_INVITES,
-  teamID,
-  val
-})
-
-export const sendingTeamInvites = (
+export const sendingTeamInvites = (dispatch: Dispatch) => (
   teamID: number,
   emails: any[],
   level: unknown
-) => (dispatch: Dispatch) => {
+) => {
   dispatch(setSendingTeamInvites(teamID, true))
   return http
     .post(`/api/v1/t/${teamID}/invites/`, { emails, level })
     .then(() => {
-      dispatch(
-        showNotificationWithTimeout({
-          message: "invites sent!",
-          level: "success",
-          delay: 3 * second
-        })
-      )
+      showNotificationWithTimeout(dispatch)({
+        message: "invites sent!",
+        level: "success",
+        delay: 3 * second
+      })
       dispatch(setSendingTeamInvites(teamID, false))
     })
     .catch(() => {
-      dispatch(
-        showNotificationWithTimeout({
-          message: "error sending team invite",
-          level: "danger",
-          delay: 3 * second
-        })
-      )
+      showNotificationWithTimeout(dispatch)({
+        message: "error sending team invite",
+        level: "danger",
+        delay: 3 * second
+      })
       dispatch(setSendingTeamInvites(teamID, false))
     })
 }
 
-export const setLoadingTeams = (val: boolean) => ({
-  type: t.SET_LOADING_TEAMS,
-  val
-})
-
-export const setTeams = (teams: unknown) => ({
-  type: t.SET_TEAMS,
-  teams
-})
-
-export const fetchTeams = () => (dispatch: Dispatch) => {
+export const fetchTeams = (dispatch: Dispatch) => () => {
   dispatch(setLoadingTeams(true))
   return http
     .get("/api/v1/t/")
@@ -1643,28 +1170,11 @@ export const fetchTeams = () => (dispatch: Dispatch) => {
     })
 }
 
-export const setTeam = (id: number, team: unknown) => ({
-  type: t.SET_TEAM,
-  id,
-  team
-})
-
-export const updateTeamById = (id: number, teamKeys: unknown) => ({
-  type: t.UPDATE_TEAM,
-  id,
-  teamKeys
-})
-
-export const setCreatingTeam = (val: unknown) => ({
-  type: t.SET_CREATING_TEAM,
-  val
-})
-
-export const creatingTeam = (
+export const creatingTeam = (dispatch: Dispatch) => (
   name: string,
   emails: string[],
   level: unknown
-) => (dispatch: Dispatch) => {
+) => {
   dispatch(setCreatingTeam(true))
   return http
     .post("/api/v1/t/", { name, emails, level })
@@ -1679,24 +1189,18 @@ export const creatingTeam = (
     })
 }
 
-export const setCopyingTeam = (val: boolean) => ({
-  type: t.SET_COPYING_TEAM,
-  val
-})
-
-export const updatingTeam = (teamId: ITeam["id"], teamKVs: unknown) => (
-  dispatch: Dispatch
+export const updatingTeam = (dispatch: Dispatch) => (
+  teamId: ITeam["id"],
+  teamKVs: unknown
 ) => {
   return http
     .patch(`/api/v1/t/${teamId}/`, teamKVs)
     .then(res => {
-      dispatch(
-        showNotificationWithTimeout({
-          message: "Team updated",
-          level: "success",
-          delay: 3 * second
-        })
-      )
+      showNotificationWithTimeout(dispatch)({
+        message: "Team updated",
+        level: "success",
+        delay: 3 * second
+      })
       dispatch(updateTeamById(res.data.id, res.data))
     })
     .catch(err => {
@@ -1704,28 +1208,20 @@ export const updatingTeam = (teamId: ITeam["id"], teamKVs: unknown) => (
       if (err.response && err.response.status === 403) {
         message = "You are not unauthorized to perform that action"
       }
-      dispatch(
-        showNotificationWithTimeout({
-          message,
-          level: "danger",
-          delay: 3 * second
-        })
-      )
+      showNotificationWithTimeout(dispatch)({
+        message,
+        level: "danger",
+        delay: 3 * second
+      })
       throw err
     })
 }
 
-export const updateRecipeOwner = (id: number, owner: unknown) => ({
-  type: t.UPDATE_RECIPE_OWNER,
-  id,
-  owner
-})
-
-export const moveRecipeTo = (
+export const moveRecipeTo = (dispatch: Dispatch) => (
   recipeId: number,
   ownerId: number,
   type: unknown
-) => (dispatch: Dispatch) => {
+) => {
   return http
     .post(`/api/v1/recipes/${recipeId}/move/`, { id: ownerId, type })
     .then(res => {
@@ -1733,11 +1229,11 @@ export const moveRecipeTo = (
     })
 }
 
-export const copyRecipeTo = (
+export const copyRecipeTo = (dispatch: Dispatch) => (
   recipeId: number,
   ownerId: number,
   type: unknown
-) => (dispatch: Dispatch) => {
+) => {
   dispatch(setCopyingTeam(true))
   return http
     .post(`/api/v1/recipes/${recipeId}/copy/`, { id: ownerId, type })
@@ -1751,22 +1247,7 @@ export const copyRecipeTo = (
     })
 }
 
-export const setLoadingInvites = (val: boolean) => ({
-  type: t.SET_LOADING_INVITES,
-  val
-})
-
-export const setInvites = (invites: IInvite[]) => ({
-  type: t.SET_INVITES,
-  invites
-})
-
-export const setErrorFetchingInvites = (val: unknown) => ({
-  type: t.SET_ERROR_FETCHING_INVITES,
-  val
-})
-
-export const fetchInvites = () => (dispatch: Dispatch) => {
+export const fetchInvites = (dispatch: Dispatch) => () => {
   dispatch(setLoadingInvites(true))
   dispatch(setErrorFetchingInvites(false))
   return http
@@ -1782,18 +1263,7 @@ export const fetchInvites = () => (dispatch: Dispatch) => {
     })
 }
 
-export const setAcceptingInvite = (id: IInvite["id"], val: boolean) => ({
-  type: t.SET_ACCEPTING_INVITE,
-  id,
-  val
-})
-
-export const setAcceptedInvite = (id: number) => ({
-  type: t.SET_ACCEPTED_INVITE,
-  id
-})
-
-export const acceptingInvite = (id: number) => (dispatch: Dispatch) => {
+export const acceptingInvite = (dispatch: Dispatch) => (id: number) => {
   dispatch(setAcceptingInvite(id, true))
   return http
     .post(`/api/v1/invites/${id}/accept/`, {})
@@ -1806,19 +1276,7 @@ export const acceptingInvite = (id: number) => (dispatch: Dispatch) => {
       throw err
     })
 }
-
-export const setDecliningInvite = (id: IInvite["id"], val: boolean) => ({
-  type: t.SET_DECLINING_INVITE,
-  id,
-  val
-})
-
-export const setDeclinedInvite = (id: number) => ({
-  type: t.SET_DECLINED_INVITE,
-  id
-})
-
-export const decliningInvite = (id: number) => (dispatch: Dispatch) => {
+export const decliningInvite = (dispatch: Dispatch) => (id: number) => {
   dispatch(setDecliningInvite(id, true))
   return http
     .post(`/api/v1/invites/${id}/decline/`, {})
@@ -1832,74 +1290,52 @@ export const decliningInvite = (id: number) => (dispatch: Dispatch) => {
     })
 }
 
-export const deleteUserAccount = () => (dispatch: Dispatch) => {
+export const deleteUserAccount = (dispatch: Dispatch) => () => {
   return http
     .delete("/api/v1/user/")
     .then(() => {
       dispatch(setUserLoggedIn(false))
       dispatch(push("/login"))
-      dispatch(showNotificationWithTimeout({ message: "Account deleted" }))
+      showNotificationWithTimeout(dispatch)({ message: "Account deleted" })
     })
     .catch(error => {
       if (error.response.status === 403 && error.response.data.detail) {
-        dispatch(
-          showNotificationWithTimeout({
-            message: error.response.data.detail,
-            level: "danger"
-          })
-        )
+        showNotificationWithTimeout(dispatch)({
+          message: error.response.data.detail,
+          level: "danger"
+        })
       } else {
-        dispatch(
-          showNotificationWithTimeout({
-            message: "failed to delete account",
-            level: "danger"
-          })
-        )
+        showNotificationWithTimeout(dispatch)({
+          message: "failed to delete account",
+          level: "danger"
+        })
         throw error
       }
     })
 }
 
-export const reportBadMerge = () => (dispatch: Dispatch) => {
+export const reportBadMerge = (dispatch: Dispatch) => () => {
   return http
     .post("/api/v1/report-bad-merge", {})
     .then(() => {
-      dispatch(
-        showNotificationWithTimeout({
-          message: "reported bad merge",
-          level: "success",
-          delay: 3 * second
-        })
-      )
+      showNotificationWithTimeout(dispatch)({
+        message: "reported bad merge",
+        level: "success",
+        delay: 3 * second
+      })
     })
     .catch(() => {
-      dispatch(
-        showNotificationWithTimeout({
-          message: "error reporting bad merge",
-          level: "danger",
-          delay: 3 * second
-        })
-      )
+      showNotificationWithTimeout(dispatch)({
+        message: "error reporting bad merge",
+        level: "danger",
+        delay: 3 * second
+      })
     })
 }
 
-export const setCalendarLoading = (loading: boolean) => ({
-  type: t.SET_CALENDAR_LOADING,
-  loading
-})
-
-export const setCalendarError = (error: unknown) => ({
-  type: t.SET_CALENDAR_ERROR,
-  error
-})
-
-export const setCalendarRecipe = (recipe: ICalRecipe) => ({
-  type: t.SET_CALENDAR_RECIPE,
-  recipe
-})
-
-export const fetchCalendar = (teamID: TeamID, month = new Date()) => (
-  dispatch: Dispatch
+export const fetchCalendar = (dispatch: Dispatch) => (
+  teamID: TeamID,
+  month = new Date()
 ) => {
   dispatch(setCalendarLoading(true))
   dispatch(setCalendarError(false))
@@ -1924,37 +1360,13 @@ export const fetchCalendar = (teamID: TeamID, month = new Date()) => (
       dispatch(setCalendarError(true))
     })
 }
-
-export const setSchedulingRecipe = (
-  recipeID: IRecipe["id"],
-  scheduling: boolean
-) => ({
-  type: t.SET_SCHEDULING_RECIPE,
-  recipeID,
-  scheduling
-})
-
-export const setCalendarRecipes = (recipes: ICalRecipe[]) => ({
-  type: t.SET_CALENDAR_RECIPES,
-  recipes
-})
-
-export const replaceCalendarRecipe = (
-  id: ICalRecipe["id"],
-  recipe: ICalRecipe
-) => ({
-  type: t.REPLACE_CALENDAR_RECIPE,
-  id,
-  recipe
-})
-
-export const addingScheduledRecipe = (
+export const addingScheduledRecipe = (dispatch: Dispatch) => (
   recipeID: IRecipe["id"],
   teamID: TeamID,
   on: Date,
   count: number | string
-) => (dispatch: Dispatch, getState: GetState) => {
-  const recipe = getState().recipes[recipeID]
+) => {
+  const recipe = store.getState().recipes[recipeID]
   dispatch(setSchedulingRecipe(recipeID, true))
   const id = uuid4()
   const data = {
@@ -1972,7 +1384,9 @@ export const addingScheduledRecipe = (
       : `/api/v1/t/${teamID}/calendar/`
 
   // HACK(sbdchd): we need to add the user to the recipe
-  dispatch(setCalendarRecipe({ ...data, id, recipe } as ICalRecipe))
+  dispatch(
+    setCalendarRecipe(({ ...data, id, recipe } as unknown) as ICalRecipe)
+  )
   return http
     .post(url, data)
     .then(res => {
@@ -1981,33 +1395,20 @@ export const addingScheduledRecipe = (
     })
     .catch(() => {
       dispatch(deleteCalendarRecipe(id))
-      dispatch(
-        showNotificationWithTimeout({
-          message: "error scheduling recipe",
-          level: "danger",
-          delay: 3 * second
-        })
-      )
+      showNotificationWithTimeout(dispatch)({
+        message: "error scheduling recipe",
+        level: "danger",
+        delay: 3 * second
+      })
       dispatch(setSchedulingRecipe(recipeID, false))
     })
 }
-
-export const deleteCalendarRecipe = (id: string | number) => ({
-  type: t.DELETE_CALENDAR_RECIPE,
-  id
-})
-
-export const moveCalendarRecipe = (id: ICalRecipe["id"], to: string) => ({
-  type: t.MOVE_CALENDAR_RECIPE,
-  id,
-  on: to
-})
-
-export const deletingScheduledRecipe = (
+export const deletingScheduledRecipe = (dispatch: Dispatch) => (
   id: ICalRecipe["id"],
   teamID: TeamID
-) => (dispatch: Dispatch, getState: GetState) => {
-  const recipe = getState().calendar[id]
+) => {
+  // HACK(sbdchd): we should have these in byId object / Map
+  const recipe = store.getState().calendar[parseInt(String(id), 10)]
   dispatch(deleteCalendarRecipe(id))
 
   const url =
@@ -2020,23 +1421,25 @@ export const deletingScheduledRecipe = (
   })
 }
 
-export const moveScheduledRecipe = (
+export const moveScheduledRecipe = (dispatch: Dispatch) => (
   id: ICalRecipe["id"],
   teamID: TeamID,
-  to: string
-) => (dispatch: Dispatch, getState: GetState) => {
-  const from = getState().calendar[id]
-  const existing = getState()
+  to: Date
+) => {
+  // HACK(sbdchd): we should have these in byId object / Map
+  const from = store.getState().calendar[parseInt(String(id), 10)]
+  const existing = store
+    .getState()
     .calendar.allIds.filter((x: unknown) => x !== id)
-    .map((x: any) => getState().calendar[x])
-    .filter((x: any) => isSameDay(x.on, to))
-    .filter((x: any) => {
+    .map(x => store.getState().calendar[x])
+    .filter(x => isSameDay(x.on, to))
+    .filter(x => {
       if (teamID === "personal") {
         return x.user != null
       }
       return x.team === teamID
     })
-    .find((x: any) => x.recipe.id === from.recipe.id)
+    .find(x => x.recipe.id === from.recipe.id)
 
   const sourceURL =
     teamID === "personal"
@@ -2065,20 +1468,20 @@ export const moveScheduledRecipe = (
   })
 }
 
-export const updatingScheduledRecipe = (
+export const updatingScheduledRecipe = (dispatch: Dispatch) => (
   id: ICalRecipe["id"],
   teamID: ITeam["id"] | "personal",
-  data: { count: string | number }
-) => (dispatch: Dispatch) => {
-  if (parseInt(data.count.toString(), 10) <= 0) {
-    return dispatch(deletingScheduledRecipe(id, teamID))
+  count: ICalRecipe["count"]
+) => {
+  if (parseInt(count.toString(), 10) <= 0) {
+    return deletingScheduledRecipe(dispatch)(id, teamID)
   }
 
   const url =
     teamID === "personal"
       ? `/api/v1/calendar/${id}/`
       : `/api/v1/t/${teamID}/calendar/${id}/`
-  return http.patch(url, data).then(res => {
+  return http.patch(url, { count }).then(res => {
     dispatch(setCalendarRecipe(res.data))
   })
 }
