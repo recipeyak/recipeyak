@@ -1,4 +1,4 @@
-import { action } from "typesafe-actions"
+import { action as act } from "typesafe-actions"
 import { IRecipe } from "./recipes"
 
 const SET_SEARCH_RESULTS = "SET_SEARCH_RESULTS"
@@ -7,10 +7,10 @@ const INCR_LOADING_SEARCH = "INCR_LOADING_SEARCH"
 const DECR_LOADING_SEARCH = "DECR_LOADING_SEARCH"
 
 export const setSearchResults = (results: IRecipe[]) =>
-  action(SET_SEARCH_RESULTS, results)
-export const clearSearchResults = () => action(CLEAR_SEARCH_RESULTS)
-export const incrLoadingSearch = () => action(INCR_LOADING_SEARCH)
-export const decrLoadingSearch = () => action(DECR_LOADING_SEARCH)
+  act(SET_SEARCH_RESULTS, results)
+export const clearSearchResults = () => act(CLEAR_SEARCH_RESULTS)
+export const incrLoadingSearch = () => act(INCR_LOADING_SEARCH)
+export const decrLoadingSearch = () => act(DECR_LOADING_SEARCH)
 
 export interface ISearchState {
   readonly loading: number

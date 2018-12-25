@@ -1,4 +1,4 @@
-import { action } from "typesafe-actions"
+import { action as act } from "typesafe-actions"
 
 export const SET_LOADING_LOGIN = "SET_LOADING_LOGIN"
 export const SET_LOADING_SIGNUP = "SET_LOADING_SIGNUP"
@@ -7,16 +7,14 @@ export const SET_LOADING_RESET_CONFIRMATION = "SET_LOADING_RESET_CONFIRMATION"
 export const SET_LOADING_RECIPES = "SET_LOADING_RECIPES"
 export const SET_LOADING_ADD_RECIPE = "SET_LOADING_ADD_RECIPE"
 
-export const setLoadingLogin = (val: boolean) => action(SET_LOADING_LOGIN, val)
-export const setLoadingSignup = (val: boolean) =>
-  action(SET_LOADING_SIGNUP, val)
-export const setLoadingReset = (val: boolean) => action(SET_LOADING_RESET, val)
+export const setLoadingLogin = (val: boolean) => act(SET_LOADING_LOGIN, val)
+export const setLoadingSignup = (val: boolean) => act(SET_LOADING_SIGNUP, val)
+export const setLoadingReset = (val: boolean) => act(SET_LOADING_RESET, val)
 export const setLoadingResetConfirmation = (val: boolean) =>
-  action(SET_LOADING_RESET_CONFIRMATION, val)
-export const setLoadingRecipes = (val: boolean) =>
-  action(SET_LOADING_RECIPES, val)
+  act(SET_LOADING_RESET_CONFIRMATION, val)
+export const setLoadingRecipes = (val: boolean) => act(SET_LOADING_RECIPES, val)
 export const setLoadingAddRecipe = (val: boolean) =>
-  action(SET_LOADING_ADD_RECIPE, val)
+  act(SET_LOADING_ADD_RECIPE, val)
 
 export interface ILoadingState {
   readonly login: boolean

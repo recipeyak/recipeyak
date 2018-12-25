@@ -1,5 +1,5 @@
 // TODO(sbdchd): this reducer shouldn't even exist
-import { action } from "typesafe-actions"
+import { action as act } from "typesafe-actions"
 
 const SET_ERROR_LOGIN = "SET_ERROR_LOGIN"
 
@@ -14,24 +14,23 @@ const SET_ERROR_RESET_CONFIRMATION = "SET_ERROR_RESET_CONFIRMATION"
 
 const SET_ERROR_ADD_RECIPE = "SET_ERROR_ADD_RECIPE"
 
-export const setErrorLogin = (val: ILoginError) => action(SET_ERROR_LOGIN, val)
+export const setErrorLogin = (val: ILoginError) => act(SET_ERROR_LOGIN, val)
 
 export const setErrorSocialLogin = (val: ISocialError) =>
-  action(SET_ERROR_SOCIAL_LOGIN, val)
+  act(SET_ERROR_SOCIAL_LOGIN, val)
 
-export const setErrorSignup = (val: ISignupErrors) =>
-  action(SET_ERROR_SIGNUP, val)
+export const setErrorSignup = (val: ISignupErrors) => act(SET_ERROR_SIGNUP, val)
 
-export const setErrorRecipes = (val: boolean) => action(SET_ERROR_RECIPES, val)
+export const setErrorRecipes = (val: boolean) => act(SET_ERROR_RECIPES, val)
 
 export const setErrorReset = (val: IPasswordResetError) =>
-  action(SET_ERROR_RESET, val)
+  act(SET_ERROR_RESET, val)
 
 export const setErrorResetConfirmation = (val: IPasswordResetConfirmError) =>
-  action(SET_ERROR_RESET_CONFIRMATION, val)
+  act(SET_ERROR_RESET_CONFIRMATION, val)
 
 export const setErrorAddRecipe = (val: IAddRecipeError) =>
-  action(SET_ERROR_ADD_RECIPE, val)
+  act(SET_ERROR_ADD_RECIPE, val)
 
 export type ErrorActions =
   | ReturnType<typeof setErrorLogin>

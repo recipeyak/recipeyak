@@ -1,8 +1,8 @@
-import { action } from "typesafe-actions"
+import { action as act } from "typesafe-actions"
 
 const SET_FROM_URL = "SET_FROM_URL"
 
-export const setFromUrl = (val: string) => action(SET_FROM_URL, val)
+export const setFromUrl = (val: string) => act(SET_FROM_URL, val)
 
 export type AuthActions = ReturnType<typeof setFromUrl>
 

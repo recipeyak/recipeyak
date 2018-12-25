@@ -1,4 +1,4 @@
-import { action } from "typesafe-actions"
+import { action as act } from "typesafe-actions"
 import { IIngredientBasic, IStepBasic } from "../../components/AddRecipe"
 
 const SET_ADD_RECIPE_FORM_NAME = "SET_ADD_RECIPE_FORM_NAME"
@@ -16,51 +16,51 @@ const UPDATE_ADD_RECIPE_FORM_STEP = "UPDATE_ADD_RECIPE_FORM_STEP"
 const CLEAR_ADD_RECIPE_FORM = "CLEAR_ADD_RECIPE_FORM"
 
 export const setAddRecipeFormName = (val: string) =>
-  action(SET_ADD_RECIPE_FORM_NAME, val)
+  act(SET_ADD_RECIPE_FORM_NAME, val)
 
 export const setAddRecipeFormAuthor = (val: string) =>
-  action(SET_ADD_RECIPE_FORM_AUTHOR, val)
+  act(SET_ADD_RECIPE_FORM_AUTHOR, val)
 
 export const setAddRecipeFormSource = (val: string) =>
-  action(SET_ADD_RECIPE_FORM_SOURCE, val)
+  act(SET_ADD_RECIPE_FORM_SOURCE, val)
 
 export const setAddRecipeFormTime = (val: string) =>
-  action(SET_ADD_RECIPE_FORM_TIME, val)
+  act(SET_ADD_RECIPE_FORM_TIME, val)
 
 export const setAddRecipeFormServings = (val: string) =>
-  action(SET_ADD_RECIPE_FORM_SERVINGS, val)
+  act(SET_ADD_RECIPE_FORM_SERVINGS, val)
 
 export const setAddRecipeFormTeam = (val: string) =>
-  action(SET_ADD_RECIPE_FORM_TEAM, val)
+  act(SET_ADD_RECIPE_FORM_TEAM, val)
 
 export const addAddRecipeFormIngredient = (ingredient: IIngredientBasic) =>
-  action(ADD_ADD_RECIPE_FORM_INGREDIENT, ingredient)
+  act(ADD_ADD_RECIPE_FORM_INGREDIENT, ingredient)
 
 export const removeAddRecipeFormIngredient = (index: number) =>
-  action(REMOVE_ADD_RECIPE_FORM_INGREDIENT, index)
+  act(REMOVE_ADD_RECIPE_FORM_INGREDIENT, index)
 
 export const addAddRecipeFormStep = (step: IStepBasic) =>
-  action(ADD_ADD_RECIPE_FORM_STEP, step)
+  act(ADD_ADD_RECIPE_FORM_STEP, step)
 
 export const removeAddRecipeFormStep = (index: number) =>
-  action(REMOVE_ADD_RECIPE_FORM_STEP, index)
+  act(REMOVE_ADD_RECIPE_FORM_STEP, index)
 
 export const updateAddRecipeFormIngredient = (
   index: number,
   ingredient: IIngredientBasic
 ) =>
-  action(UPDATE_ADD_RECIPE_FORM_INGREDIENT, {
+  act(UPDATE_ADD_RECIPE_FORM_INGREDIENT, {
     index,
     ingredient
   })
 
 export const updateAddRecipeFormStep = (index: number, step: IStepBasic) =>
-  action(UPDATE_ADD_RECIPE_FORM_STEP, {
+  act(UPDATE_ADD_RECIPE_FORM_STEP, {
     index,
     step
   })
 
-export const clearAddRecipeForm = () => action(CLEAR_ADD_RECIPE_FORM)
+export const clearAddRecipeForm = () => act(CLEAR_ADD_RECIPE_FORM)
 
 export type AddRecipeActions =
   | ReturnType<typeof setAddRecipeFormName>

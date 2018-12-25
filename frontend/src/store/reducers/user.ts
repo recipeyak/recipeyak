@@ -4,7 +4,7 @@ import raven from "raven-js"
 import {
   createAsyncAction,
   createStandardAction,
-  action,
+  action as act,
   ActionType
 } from "typesafe-actions"
 import { IRecipe } from "./recipes"
@@ -34,27 +34,27 @@ const SET_USER_STATS = "SET_USER_STATS"
 export const SET_USER_LOGGED_IN = "SET_USER_LOGGED_IN"
 
 // TODO(chdsbd): Replace usage with fetchUser#success. Update user reducer.
-export const login = (payload: IUser) => action(LOG_IN, payload)
+export const login = (payload: IUser) => act(LOG_IN, payload)
 
-export const setLoggingOut = (val: boolean) => action(SET_LOGGING_OUT, val)
+export const setLoggingOut = (val: boolean) => act(SET_LOGGING_OUT, val)
 
 export const setLoadingUserStats = (val: boolean) =>
-  action(SET_LOADING_USER_STATS, val)
+  act(SET_LOADING_USER_STATS, val)
 
-export const setUserStats = (val: IUserStats) => action(SET_USER_STATS, val)
+export const setUserStats = (val: IUserStats) => act(SET_USER_STATS, val)
 
 export const updateTeamID = createStandardAction(SET_TEAM_ID)<number | null>()
 
 export const setSocialConnections = (val: ISocialConnection[]) =>
-  action(SET_SOCIAL_ACCOUNT_CONNECTIONS, val)
+  act(SET_SOCIAL_ACCOUNT_CONNECTIONS, val)
 
 export const setSocialConnection = (provider: SocialProvider, val: unknown) =>
-  action(SET_SOCIAL_ACCOUNT_CONNECTION, {
+  act(SET_SOCIAL_ACCOUNT_CONNECTION, {
     provider,
     val
   })
 
-export const setUserLoggedIn = (val: boolean) => action(SET_USER_LOGGED_IN, val)
+export const setUserLoggedIn = (val: boolean) => act(SET_USER_LOGGED_IN, val)
 
 export const fetchingUser = createAsyncAction(
   FETCH_USER_START,
@@ -62,7 +62,7 @@ export const fetchingUser = createAsyncAction(
   FETCH_USER_FAILURE
 )<void, IUser, void>()
 
-export const toggleDarkMode = () => action(TOGGLE_DARK_MODE)
+export const toggleDarkMode = () => act(TOGGLE_DARK_MODE)
 
 export const updateEmail = createAsyncAction(
   UPDATE_EMAIL_START,

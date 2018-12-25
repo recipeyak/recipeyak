@@ -1,4 +1,4 @@
-import { action } from "typesafe-actions"
+import { action as act } from "typesafe-actions"
 
 const SET_INVITES = "SET_INVITES"
 const SET_LOADING_INVITES = "SET_LOADING_INVITES"
@@ -8,29 +8,28 @@ const SET_ACCEPTING_INVITE = "SET_ACCEPTING_INVITE"
 const SET_DECLINED_INVITE = "SET_DECLINED_INVITE"
 const SET_ACCEPTED_INVITE = "SET_ACCEPTED_INVITE"
 
-export const setLoadingInvites = (val: boolean) =>
-  action(SET_LOADING_INVITES, val)
+export const setLoadingInvites = (val: boolean) => act(SET_LOADING_INVITES, val)
 
-export const setInvites = (invites: IInvite[]) => action(SET_INVITES, invites)
+export const setInvites = (inv: IInvite[]) => act(SET_INVITES, inv)
 
 export const setErrorFetchingInvites = (val: unknown) =>
-  action(SET_ERROR_FETCHING_INVITES, val)
+  act(SET_ERROR_FETCHING_INVITES, val)
 
 export const setAcceptingInvite = (id: IInvite["id"], val: boolean) =>
-  action(SET_ACCEPTING_INVITE, {
+  act(SET_ACCEPTING_INVITE, {
     id,
     val
   })
 
-export const setAcceptedInvite = (id: number) => action(SET_ACCEPTED_INVITE, id)
+export const setAcceptedInvite = (id: number) => act(SET_ACCEPTED_INVITE, id)
 
 export const setDecliningInvite = (id: IInvite["id"], val: boolean) =>
-  action(SET_DECLINING_INVITE, {
+  act(SET_DECLINING_INVITE, {
     id,
     val
   })
 
-export const setDeclinedInvite = (id: number) => action(SET_DECLINED_INVITE, id)
+export const setDeclinedInvite = (id: number) => act(SET_DECLINED_INVITE, id)
 
 export type InviteActions =
   | ReturnType<typeof setLoadingInvites>

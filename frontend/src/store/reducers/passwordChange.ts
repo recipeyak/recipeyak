@@ -1,13 +1,13 @@
-import { action } from "typesafe-actions"
+import { action as act } from "typesafe-actions"
 
 const SET_LOADING_PASSWORD_UPDATE = "SET_LOADING_PASSWORD_UPDATE"
 const SET_ERROR_PASSWORD_UPDATE = "SET_ERROR_PASSWORD_UPDATE"
 
 export const setLoadingPasswordUpdate = (val: boolean) =>
-  action(SET_LOADING_PASSWORD_UPDATE, val)
+  act(SET_LOADING_PASSWORD_UPDATE, val)
 
 export const setErrorPasswordUpdate = (val: IPasswordUpdateError) =>
-  action(SET_ERROR_PASSWORD_UPDATE, val)
+  act(SET_ERROR_PASSWORD_UPDATE, val)
 
 export type PasswordChangeActions =
   | ReturnType<typeof setLoadingPasswordUpdate>

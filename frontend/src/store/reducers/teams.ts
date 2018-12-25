@@ -1,7 +1,7 @@
 import { uniq, omit } from "lodash"
 
 import { IUser } from "./user"
-import { action } from "typesafe-actions"
+import { action as act } from "typesafe-actions"
 import { IRecipe } from "./recipes"
 
 const ADD_TEAM = "ADD_TEAM"
@@ -24,44 +24,44 @@ const SET_CREATING_TEAM = "SET_CREATING_TEAM"
 const SET_COPYING_TEAM = "SET_COPYING_TEAM"
 const UPDATE_TEAM = "UPDATE_TEAM"
 
-export const addTeam = (team: ITeam) => action(ADD_TEAM, team)
-export const deleteTeam = (id: number) => action(DELETE_TEAM, id)
+export const addTeam = (team: ITeam) => act(ADD_TEAM, team)
+export const deleteTeam = (id: number) => act(DELETE_TEAM, id)
 export const setLoadingTeam = (id: number, loadingTeam: boolean) =>
-  action(SET_LOADING_TEAM, {
+  act(SET_LOADING_TEAM, {
     id,
     loadingTeam
   })
 export const setLoadingTeamMembers = (id: number, loadingMembers: boolean) =>
-  action(SET_LOADING_TEAM_MEMBERS, {
+  act(SET_LOADING_TEAM_MEMBERS, {
     id,
     loadingMembers
   })
 
 export const setLoadingTeamRecipes = (id: number, loadingRecipes: boolean) =>
-  action(SET_LOADING_TEAM_RECIPES, {
+  act(SET_LOADING_TEAM_RECIPES, {
     id,
     loadingRecipes
   })
 export const setTeam404 = (id: number, val = true) =>
-  action(SET_TEAM_404, {
+  act(SET_TEAM_404, {
     id,
     val
   })
 
 export const setTeamMembers = (id: number, members: IMember[]) =>
-  action(SET_TEAM_MEMBERS, {
+  act(SET_TEAM_MEMBERS, {
     id,
     members
   })
 
 export const setTeamRecipes = (id: number, recipes: IRecipe[]) =>
-  action(SET_TEAM_RECIPES, {
+  act(SET_TEAM_RECIPES, {
     id,
     recipes
   })
 
 export const setUpdatingUserTeamLevel = (id: number, updating: boolean) =>
-  action(SET_UPDATING_USER_TEAM_LEVEL, {
+  act(SET_UPDATING_USER_TEAM_LEVEL, {
     id,
     updating
   })
@@ -71,7 +71,7 @@ export const setDeletingMembership = (
   membershipID: number,
   val: boolean
 ) =>
-  action(SET_DELETING_MEMBERSHIP, {
+  act(SET_DELETING_MEMBERSHIP, {
     teamID,
     membershipID,
     val
@@ -82,40 +82,40 @@ export const setUserTeamLevel = (
   membershipID: number,
   level: IMember["level"]
 ) =>
-  action(SET_USER_TEAM_LEVEL, {
+  act(SET_USER_TEAM_LEVEL, {
     teamID,
     membershipID,
     level
   })
 
 export const setSendingTeamInvites = (teamID: number, val: boolean) =>
-  action(SET_SENDING_TEAM_INVITES, {
+  act(SET_SENDING_TEAM_INVITES, {
     teamID,
     val
   })
 
 export const deleteMembership = (teamID: number, membershipID: number) =>
-  action(DELETE_MEMBERSHIP, {
+  act(DELETE_MEMBERSHIP, {
     teamID,
     membershipID
   })
 
-export const setLoadingTeams = (val: boolean) => action(SET_LOADING_TEAMS, val)
+export const setLoadingTeams = (val: boolean) => act(SET_LOADING_TEAMS, val)
 
-export const setTeams = (teams: ITeam[]) => action(SET_TEAMS, teams)
+export const setTeams = (t: ITeam[]) => act(SET_TEAMS, t)
 
 export const setTeam = (id: number, team: ITeam) =>
-  action(SET_TEAM, {
+  act(SET_TEAM, {
     id,
     team
   })
 
-export const setCreatingTeam = (val: boolean) => action(SET_CREATING_TEAM, val)
+export const setCreatingTeam = (val: boolean) => act(SET_CREATING_TEAM, val)
 
-export const setCopyingTeam = (val: boolean) => action(SET_COPYING_TEAM, val)
+export const setCopyingTeam = (val: boolean) => act(SET_COPYING_TEAM, val)
 
 export const updateTeamById = (id: number, teamKeys: ITeam) =>
-  action(UPDATE_TEAM, {
+  act(UPDATE_TEAM, {
     id,
     teamKeys
   })

@@ -1,4 +1,4 @@
-import { action } from "typesafe-actions"
+import { action as act } from "typesafe-actions"
 
 const SET_NOTIFICATION = "SET_NOTIFICATION"
 const CLEAR_NOTIFICATION = "CLEAR_NOTIFICATION"
@@ -14,7 +14,7 @@ export const setNotification = ({
   closeable,
   level = "info"
 }: ISetNotification) =>
-  action(SET_NOTIFICATION, {
+  act(SET_NOTIFICATION, {
     notification: {
       message,
       closeable,
@@ -22,7 +22,7 @@ export const setNotification = ({
     }
   })
 
-export const clearNotification = () => action(CLEAR_NOTIFICATION)
+export const clearNotification = () => act(CLEAR_NOTIFICATION)
 
 export type NotificationsActions =
   | ReturnType<typeof setNotification>

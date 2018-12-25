@@ -1,7 +1,7 @@
 import { uniq, omit } from "lodash"
 import isSameDay from "date-fns/is_same_day"
 
-import { action } from "typesafe-actions"
+import { action as act } from "typesafe-actions"
 
 const SET_CALENDAR_RECIPES = "SET_CALENDAR_RECIPES"
 const SET_CALENDAR_RECIPE = "SET_CALENDAR_RECIPE"
@@ -12,31 +12,31 @@ const MOVE_CALENDAR_RECIPE = "MOVE_CALENDAR_RECIPE"
 const REPLACE_CALENDAR_RECIPE = "REPLACE_CALENDAR_RECIPE"
 
 export const setCalendarLoading = (loading: boolean) =>
-  action(SET_CALENDAR_LOADING, loading)
+  act(SET_CALENDAR_LOADING, loading)
 
 export const setCalendarError = (error: boolean) =>
-  action(SET_CALENDAR_ERROR, error)
+  act(SET_CALENDAR_ERROR, error)
 
 export const setCalendarRecipe = (recipe: ICalRecipe) =>
-  action(SET_CALENDAR_RECIPE, recipe)
+  act(SET_CALENDAR_RECIPE, recipe)
 
 export const deleteCalendarRecipe = (id: string | number) =>
-  action(DELETE_CALENDAR_RECIPE, id)
+  act(DELETE_CALENDAR_RECIPE, id)
 
 export const moveCalendarRecipe = (id: ICalRecipe["id"], to: string) =>
-  action(MOVE_CALENDAR_RECIPE, {
+  act(MOVE_CALENDAR_RECIPE, {
     id,
     on: to
   })
 
 export const setCalendarRecipes = (recipes: ICalRecipe[]) =>
-  action(SET_CALENDAR_RECIPES, recipes)
+  act(SET_CALENDAR_RECIPES, recipes)
 
 export const replaceCalendarRecipe = (
   id: ICalRecipe["id"],
   recipe: ICalRecipe
 ) =>
-  action(REPLACE_CALENDAR_RECIPE, {
+  act(REPLACE_CALENDAR_RECIPE, {
     id,
     recipe
   })
