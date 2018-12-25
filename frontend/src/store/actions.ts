@@ -24,7 +24,6 @@ import raven from "raven-js"
 import { store, RootState, Action } from "./store"
 import {
   SocialProvider,
-  IUserState,
   updateEmail,
   updateTeamID,
   fetchingUser,
@@ -1284,7 +1283,7 @@ export const addingScheduledRecipe = (dispatch: Dispatch) => (
       : `/api/v1/t/${teamID}/calendar/`
 
   // HACK(sbdchd): we need to add the user to the recipe
-  dispatch(setCalendarRecipe({ ...data, id, recipe }))
+  dispatch(setCalendarRecipe({ ...data, id, recipe } as unknown as ICalRecipe ))
   return http
     .post(url, data)
     .then(res => {
@@ -1305,7 +1304,8 @@ export const deletingScheduledRecipe = (dispatch: Dispatch) =>(
   id: ICalRecipe["id"],
   teamID: TeamID
 ) =>  {
-  const recipe = store.getState().calendar[id]
+  // HACK(sbdchd): we should have these in byId object / Map
+  const recipe = store.getState().calendar[parseInt(String(id), 10)]
   dispatch(deleteCalendarRecipe(id))
 
   const url =
@@ -1323,7 +1323,8 @@ export const moveScheduledRecipe = (dispatch: Dispatch) =>(
   teamID: TeamID,
   to: Date
 ) =>  {
-  const from = store.getState().calendar[id]
+  // HACK(sbdchd): we should have these in byId object / Map
+  const from = store.getState().calendar[parseInt(String(id), 10)]
   const existing = store.getState()
     .calendar.allIds.filter((x: unknown) => x !== id)
     .map(x => store.getState().calendar[x])

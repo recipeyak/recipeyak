@@ -21,7 +21,7 @@ export const baseRecipe: IRecipe = {
   ingredients: []
 }
 
-const baseIngredient: IIngredient = {
+export const baseIngredient: IIngredient = {
   id: 1,
   name: "foo",
   quantity: "1 cup",
@@ -30,7 +30,7 @@ const baseIngredient: IIngredient = {
   optional: false
 }
 
-const baseStep: IStep = {
+export const baseStep: IStep = {
   id: 1,
   text: "foo",
   position: 10

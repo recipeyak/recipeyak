@@ -2,6 +2,7 @@ import addrecipe, { initialState, IAddRecipeState } from "./addrecipe"
 import * as a from "./addrecipe"
 
 import { IIngredientBasic } from "../../components/AddRecipe"
+import { baseIngredient, baseStep } from "./recipes.test";
 
 describe("addrecipe", () => {
   it("sets addrecipe form name", () => {
@@ -101,6 +102,7 @@ describe("addrecipe", () => {
     }
 
     const ingredient = {
+      ...baseIngredient,
       quantity: "1 lbs",
       name: "tomato",
       description: "sliced"
@@ -118,6 +120,7 @@ describe("addrecipe", () => {
 
   it("remove add recipe form ingredient", () => {
     const ingredient = {
+      ...baseIngredient,
       quantity: "1 lbs",
       name: "tomato",
       description: "sliced"
@@ -142,6 +145,7 @@ describe("addrecipe", () => {
 
   it("update add recipe form ingredient", () => {
     const ingredient = {
+      ...baseIngredient,
       quantity: "1 lbs",
       name: "tomato",
       description: "sliced"
@@ -196,6 +200,7 @@ describe("addrecipe", () => {
 
   it("remove add recipe form step", () => {
     const step = {
+      ...baseStep,
       quantity: "1 lbs",
       name: "tomato",
       description: "sliced"
@@ -220,6 +225,7 @@ describe("addrecipe", () => {
 
   it("update add recipe form step", () => {
     const step = {
+      ...baseStep,
       quantity: "1 lbs",
       name: "tomato",
       description: "sliced"
@@ -231,6 +237,7 @@ describe("addrecipe", () => {
     }
 
     const newStep = {
+      ...baseStep,
       quantity: "12 lbs",
       name: "tomato",
       description: "sliced"
@@ -250,6 +257,7 @@ describe("addrecipe", () => {
 
   it("clears add recipe form", () => {
     const step = {
+      ...baseStep,
       quantity: "1 lbs",
       name: "tomato",
       description: "sliced"
