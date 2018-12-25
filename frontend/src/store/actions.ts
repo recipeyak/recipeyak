@@ -32,7 +32,7 @@ import {
   SocialProvider,
   IUserState
 } from "./reducers/user"
-import { ICalRecipe } from "./reducers/calendar"
+import { ICalRecipe, setCalendarLoading, setCalendarError, setCalendarRecipe, replaceCalendarRecipe, deleteCalendarRecipe, setCalendarRecipes, moveCalendarRecipe } from "./reducers/calendar"
 import { IInvite } from "./reducers/invites"
 import { INotificationState } from "./reducers/notification"
 import { IRecipeBasic, IIngredientBasic } from "../components/AddRecipe"
@@ -1861,21 +1861,6 @@ export const reportBadMerge = () => (dispatch: Dispatch) => {
     })
 }
 
-export const setCalendarLoading = (loading: boolean) => ({
-  type: t.SET_CALENDAR_LOADING,
-  loading
-})
-
-export const setCalendarError = (error: unknown) => ({
-  type: t.SET_CALENDAR_ERROR,
-  error
-})
-
-export const setCalendarRecipe = (recipe: ICalRecipe) => ({
-  type: t.SET_CALENDAR_RECIPE,
-  recipe
-})
-
 export const fetchCalendar = (teamID: TeamID, month = new Date()) => (
   dispatch: Dispatch
 ) => {
@@ -1902,30 +1887,6 @@ export const fetchCalendar = (teamID: TeamID, month = new Date()) => (
       dispatch(setCalendarError(true))
     })
 }
-
-export const setSchedulingRecipe = (
-  recipeID: IRecipe["id"],
-  scheduling: boolean
-) => ({
-  type: t.SET_SCHEDULING_RECIPE,
-  recipeID,
-  scheduling
-})
-
-export const setCalendarRecipes = (recipes: ICalRecipe[]) => ({
-  type: t.SET_CALENDAR_RECIPES,
-  recipes
-})
-
-export const replaceCalendarRecipe = (
-  id: ICalRecipe["id"],
-  recipe: ICalRecipe
-) => ({
-  type: t.REPLACE_CALENDAR_RECIPE,
-  id,
-  recipe
-})
-
 export const addingScheduledRecipe = (
   recipeID: IRecipe["id"],
   teamID: TeamID,
@@ -1969,18 +1930,6 @@ export const addingScheduledRecipe = (
       dispatch(setSchedulingRecipe(recipeID, false))
     })
 }
-
-export const deleteCalendarRecipe = (id: string | number) => ({
-  type: t.DELETE_CALENDAR_RECIPE,
-  id
-})
-
-export const moveCalendarRecipe = (id: ICalRecipe["id"], to: string) => ({
-  type: t.MOVE_CALENDAR_RECIPE,
-  id,
-  on: to
-})
-
 export const deletingScheduledRecipe = (
   id: ICalRecipe["id"],
   teamID: TeamID
@@ -2042,6 +1991,17 @@ export const moveScheduledRecipe = (
     dispatch(moveCalendarRecipe(id, pyFormat(from.on)))
   })
 }
+
+
+export const setSchedulingRecipe = (
+  recipeID: IRecipe["id"],
+  scheduling: boolean
+) => ({
+  type: t.SET_SCHEDULING_RECIPE,
+  recipeID,
+  scheduling
+
+})
 
 export const updatingScheduledRecipe = (
   id: ICalRecipe["id"],
