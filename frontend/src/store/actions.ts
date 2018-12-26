@@ -7,7 +7,7 @@ export type Dispatch = ReduxDispatch<Action>
 
 export type GetState = () => RootState
 
-import { uuid4 } from "uuid"
+import { uuid4 } from "utils/uuid"
 import Cookie from "js-cookie"
 
 import startOfMonth from "date-fns/start_of_month"
