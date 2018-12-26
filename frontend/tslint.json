@@ -1,6 +1,6 @@
 {
   "extends": ["tslint:recommended", "tslint-config-prettier"],
-  "defaultSeverity": "warning",
+  "defaultSeverity": "error",
   "rules": {
     "object-literal-sort-keys": false,
     "ordered-imports": false,
@@ -16,6 +16,27 @@
       "allow-leading-underscore",
       "ban-keywords"
     ],
+    "no-any": true,
+    "ban-ts-ignore": true,
+    "prefer-object-spread": true,
+    "no-non-null-assertion": true,
+    "ban-comma-operator": true,
+    "no-unsafe-any": true,
+    "no-unnecessary-class": true,
+    "await-promise": true,
+    "ban-types": {
+      "options": [
+        [
+          "Function",
+          "Specify args and return type. This is essentially the any type."
+        ],
+        ["Object", "Avoid using the `Object` type. Did you mean `object`?"],
+        ["Boolean", "Avoid using the `Boolean` type. Did you mean `boolean`?"],
+        ["Number", "Avoid using the `Number` type. Did you mean `number`?"],
+        ["String", "Avoid using the `String` type. Did you mean `string`?"],
+        ["Symbol", "Avoid using the `Symbol` type. Did you mean `symbol`?"]
+      ]
+    },
     "max-classes-per-file": false
   },
   "jsRules": {}
