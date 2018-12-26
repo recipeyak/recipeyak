@@ -18,29 +18,28 @@ parser = argparse.ArgumentParser(
     description="given directories, find duplicate files/folders, ignoring their extensions"
 )
 parser.add_argument("dir", nargs="*", help="directories to compare")
-args = parser.parse_args()
-
 
 def find_names(dir: str) -> Set[str]:
     """Normalize files and dirs, removing their extensions"""
     return set(f.stem for f in Path(dir).iterdir())
 
+if __name__ == '__main__':
+    args = parser.parse_args()
+    # we need python3.6 to annotate variables using the modern syntax
+    problems = set()  # type: Set[str]
+    total = set()  # type: Set[str]
+    for dirname in args.dir:
+        new = find_names(dirname)
+        # see if our new file stems are in the running total and store them with any
+        # existing problems
+        problems = problems | (total & new)
+        total = total.union(new)
 
-# we need python3.6 to annotate variables using the modern syntax
-problems = set()  # type: Set[str]
-total = set()  # type: Set[str]
-for dirname in args.dir:
-    new = find_names(dirname)
-    # see if our new file stems are in the running total and store them with any
-    # existing problems
-    problems = problems | (total & new)
-    total = total.union(new)
-
-if len(problems) > 0:
-    print(
-        "Conflicting file(s) found. Try moving your file to a different namespace:",
-        file=sys.stderr,
-    )
-    for filename in problems:
-        print(filename, file=sys.stderr)
-    sys.exit(1)
+    if len(problems) > 0:
+        print(
+            "Conflicting file(s) found. Try moving your file to a different namespace:",
+            file=sys.stderr,
+        )
+        for filename in problems:
+            print(filename, file=sys.stderr)
+        sys.exit(1)
