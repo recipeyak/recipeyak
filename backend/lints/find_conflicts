@@ -14,13 +14,17 @@ from pathlib import Path
 import sys
 from typing import Set
 
-parser = argparse.ArgumentParser(description='given directories, find duplicate files/folders, ignoring their extensions')
-parser.add_argument('dir', nargs='*', help='directories to compare')
+parser = argparse.ArgumentParser(
+    description="given directories, find duplicate files/folders, ignoring their extensions"
+)
+parser.add_argument("dir", nargs="*", help="directories to compare")
 args = parser.parse_args()
+
 
 def find_names(dir: str) -> Set[str]:
     """Normalize files and dirs, removing their extensions"""
     return set(f.stem for f in Path(dir).iterdir())
+
 
 problems = set()
 total = set()
@@ -32,7 +36,10 @@ for dirname in args.dir:
     total = total.union(new)
 
 if len(problems) > 0:
-    print('Conflicting file(s) found. Try moving your file to a different namespace:', file=sys.stderr)
+    print(
+        "Conflicting file(s) found. Try moving your file to a different namespace:",
+        file=sys.stderr,
+    )
     for filename in problems:
         print(filename, file=sys.stderr)
     sys.exit(1)

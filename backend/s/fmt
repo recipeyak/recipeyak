@@ -9,5 +9,5 @@ if [[ -f ../.env ]]; then
     source ../.env
     set +a
 fi
-
-poetry run black .
+FILES='. lints/find_conflicts'
+poetry run black $FILES
