@@ -108,6 +108,7 @@ jobs:
       - image: recipeyak/node-puppeteer:latest
         environment:
           DEBUG: 1
+      - image: circleci/python:3.6.4
     steps:
       - checkout
       - restore_cache:
