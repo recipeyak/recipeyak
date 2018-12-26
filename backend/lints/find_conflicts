@@ -26,8 +26,9 @@ def find_names(dir: str) -> Set[str]:
     return set(f.stem for f in Path(dir).iterdir())
 
 
-problems: Set[str] = set()
-total: Set[str] = set()
+# we need python3.6 to annotate variables using the modern syntax
+problems = set()  # type: Set[str]
+total = set()  # type: Set[str]
 for dirname in args.dir:
     new = find_names(dirname)
     # see if our new file stems are in the running total and store them with any
