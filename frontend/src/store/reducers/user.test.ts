@@ -97,7 +97,7 @@ describe("User", () => {
       }
     }
 
-    const data: ISocialConnection[] = [
+    const data: ReadonlyArray<ISocialConnection> = [
       {
         id: 2,
         provider: "gitlab",
@@ -118,7 +118,7 @@ describe("User", () => {
       user(beforeState as IUserState, a.setSocialConnections(data))
     ).toEqual(afterState)
 
-    const data2: ISocialConnection[] = [
+    const data2: ReadonlyArray<ISocialConnection> = [
       {
         id: 4,
         provider: "github",
@@ -155,7 +155,7 @@ describe("User", () => {
       }
     }
 
-    const data: ISocialConnection[] = [
+    const data: ReadonlyArray<ISocialConnection> = [
       {
         id: 4,
         provider: "github",

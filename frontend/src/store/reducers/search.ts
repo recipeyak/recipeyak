@@ -6,7 +6,7 @@ const CLEAR_SEARCH_RESULTS = "CLEAR_SEARCH_RESULTS"
 const INCR_LOADING_SEARCH = "INCR_LOADING_SEARCH"
 const DECR_LOADING_SEARCH = "DECR_LOADING_SEARCH"
 
-export const setSearchResults = (results: IRecipe[]) =>
+export const setSearchResults = (results: ReadonlyArray<IRecipe>) =>
   act(SET_SEARCH_RESULTS, results)
 export const clearSearchResults = () => act(CLEAR_SEARCH_RESULTS)
 export const incrLoadingSearch = () => act(INCR_LOADING_SEARCH)
@@ -14,7 +14,7 @@ export const decrLoadingSearch = () => act(DECR_LOADING_SEARCH)
 
 export interface ISearchState {
   readonly loading: number
-  readonly results: IRecipe[]
+  readonly results: ReadonlyArray<IRecipe>
 }
 
 export const initialState: ISearchState = {

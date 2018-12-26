@@ -10,7 +10,7 @@ const SET_ACCEPTED_INVITE = "SET_ACCEPTED_INVITE"
 
 export const setLoadingInvites = (val: boolean) => act(SET_LOADING_INVITES, val)
 
-export const setInvites = (inv: IInvite[]) => act(SET_INVITES, inv)
+export const setInvites = (inv: ReadonlyArray<IInvite>) => act(SET_INVITES, inv)
 
 export const setErrorFetchingInvites = (val: unknown) =>
   act(SET_ERROR_FETCHING_INVITES, val)

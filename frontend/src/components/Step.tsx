@@ -140,7 +140,7 @@ interface ICardProps {
 }
 
 class Card extends React.Component<ICardProps & ICollectedProps, {}> {
-  static defaultProps = {
+  static readonly defaultProps = {
     updating: false,
     removing: false
   }
@@ -191,7 +191,7 @@ interface IStepBodyBasic {
   readonly update: (
     recipeID: number,
     stepID: number,
-    step: { text?: string }
+    step: { readonly text?: string }
   ) => Promise<void>
   readonly delete: (recipeID: IRecipe["id"], id: number) => Promise<void>
 }

@@ -18,7 +18,7 @@ import { RootState } from "../store/store"
 
 interface IInvitesProps {
   readonly loading: boolean
-  readonly invites: IInvite[]
+  readonly invites: ReadonlyArray<IInvite>
   readonly accept: (id: IInvite["id"]) => void
   readonly decline: (id: IInvite["id"]) => void
 }
@@ -101,7 +101,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 interface INotificationsDropdownProps {
   readonly fetchData: () => void
   readonly loading: boolean
-  readonly invites: IInvite[]
+  readonly invites: ReadonlyArray<IInvite>
   readonly accept: (id: IInvite["id"]) => void
   readonly decline: (id: IInvite["id"]) => void
 }

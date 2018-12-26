@@ -64,9 +64,9 @@ export default class Ingredient extends React.Component<
     }
   }
 
-  element = React.createRef<HTMLLIElement>()
+  readonly element = React.createRef<HTMLLIElement>()
 
-  static defaultProps = {
+  static readonly defaultProps = {
     // need default recipeID for when we use this in the Add Recipe page
     recipeID: -1,
     quantity: "",
@@ -86,7 +86,7 @@ export default class Ingredient extends React.Component<
   }
 
   // ensures that the list item closes when the user clicks outside of the item
-  handleGeneralClick = (e: MouseEvent) => {
+  readonly handleGeneralClick = (e: MouseEvent) => {
     const el = this.element.current
     const target = e.target as HTMLElement | null
     if (el == null || target == null) {
@@ -109,24 +109,24 @@ export default class Ingredient extends React.Component<
     })
   }
 
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  readonly handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState(({
       [e.target.name]: e.target.value
     } as unknown) as IIngredientState)
   }
 
-  toggleOptional = () => {
+  readonly toggleOptional = () => {
     this.setState(prev => ({ optional: !prev.optional }))
   }
 
-  enableEditing = () => {
+  readonly enableEditing = () => {
     this.setState({
       editing: true,
       unsavedChanges: false
     })
   }
 
-  discardChanges = () => {
+  readonly discardChanges = () => {
     this.setState((_, props) => {
       const { quantity, name, description } = props
 
@@ -140,11 +140,11 @@ export default class Ingredient extends React.Component<
     })
   }
 
-  handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+  readonly handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     e.target.select()
   }
 
-  cancel = (e: React.MouseEvent) => {
+  readonly cancel = (e: React.MouseEvent) => {
     e.stopPropagation()
 
     this.setState((_, props) => {
@@ -159,7 +159,7 @@ export default class Ingredient extends React.Component<
     })
   }
 
-  update = async (e: React.FormEvent) => {
+  readonly update = async (e: React.FormEvent) => {
     e.preventDefault()
     if (emptyField(this.state)) {
       return
@@ -186,7 +186,7 @@ export default class Ingredient extends React.Component<
     })
   }
 
-  remove = () => this.props.remove(this.props.recipeID, this.props.id)
+  readonly remove = () => this.props.remove(this.props.recipeID, this.props.id)
 
   render() {
     const {

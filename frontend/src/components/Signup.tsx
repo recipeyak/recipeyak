@@ -22,23 +22,23 @@ interface ISignupState {
 }
 
 class Signup extends React.Component<ISignupProps, ISignupState> {
-  state = {
+  readonly state = {
     email: "",
     password1: "",
     password2: ""
   }
 
-  componentWillMount = () => {
+  readonly componentWillMount = () => {
     this.props.clearErrors()
   }
 
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  readonly handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState(({
       [e.target.name]: e.target.value
     } as unknown) as ISignupState)
   }
 
-  handleSignup = (e: React.FormEvent) => {
+  readonly handleSignup = (e: React.FormEvent) => {
     e.preventDefault()
     this.props.signup(
       this.state.email,

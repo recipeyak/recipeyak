@@ -10,7 +10,7 @@ import { IRecipe } from "../store/reducers/recipes"
 
 interface ITeamRecipesProps {
   readonly loading: boolean
-  readonly recipes: IRecipe[]
+  readonly recipes: ReadonlyArray<IRecipe>
 }
 
 interface ITeamRecipesState {
@@ -21,9 +21,9 @@ export default class TeamRecipes extends React.Component<
   ITeamRecipesProps,
   ITeamRecipesState
 > {
-  ENABLE_SEARCH_THRESHOLD = 8
+  readonly ENABLE_SEARCH_THRESHOLD = 8
 
-  state: ITeamRecipesState = {
+  readonly state: ITeamRecipesState = {
     query: ""
   }
 

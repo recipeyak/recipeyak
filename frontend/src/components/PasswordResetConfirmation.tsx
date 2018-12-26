@@ -10,7 +10,10 @@ import { resetConfirmation as reset, Dispatch } from "../store/actions"
 import { RootState } from "../store/store"
 import { IPasswordResetConfirmError } from "../store/reducers/error"
 
-type RouteProps = RouteComponentProps<{ uid: string; token: string }>
+type RouteProps = RouteComponentProps<{
+  readonly uid: string
+  readonly token: string
+}>
 
 const mapStateToProps = (state: RootState, props: RouteProps) => {
   const uid = props.match.params.uid
@@ -49,18 +52,18 @@ class PasswordResetConfirmation extends React.Component<
   IPasswordResetConfirmationProps,
   IPasswordResetConfirmationState
 > {
-  state = {
+  readonly state = {
     newPassword1: "",
     newPassword2: ""
   }
 
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  readonly handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState(({
       [e.target.name]: e.target.value
     } as unknown) as IPasswordResetConfirmationState)
   }
 
-  handleReset = async (e: React.FormEvent) => {
+  readonly handleReset = async (e: React.FormEvent) => {
     e.preventDefault()
     await this.props.reset(
       this.props.uid,

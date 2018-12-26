@@ -2,7 +2,7 @@ import React from "react"
 import { Link } from "react-router-dom"
 
 interface IResultsProps {
-  readonly recipes: JSX.Element[]
+  readonly recipes: ReadonlyArray<JSX.Element>
   readonly query: string
 }
 

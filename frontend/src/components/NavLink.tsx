@@ -7,7 +7,7 @@ export const NavLink = ({
   className = "",
   activeClassName = "active",
   ...props
-}: NavLinkProps & { pathname: string }) => {
+}: NavLinkProps & { readonly pathname: string }) => {
   const activeClass = pathname === to ? activeClassName : ""
   return <Link to={to} className={className + " " + activeClass} {...props} />
 }

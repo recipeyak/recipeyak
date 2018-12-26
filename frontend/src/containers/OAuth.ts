@@ -14,7 +14,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 }
 
 type RouteProps = RouteComponentProps<{
-  service: SocialProvider
+  readonly service: SocialProvider
 }>
 
 const mapStateToProps = (state: RootState, props: RouteProps) => {

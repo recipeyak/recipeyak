@@ -19,7 +19,7 @@ export default class UserDropdown extends React.Component<
   IUserDropdownProps,
   IUserDropdownState
 > {
-  state = {
+  readonly state = {
     show: false
   }
 
@@ -27,14 +27,14 @@ export default class UserDropdown extends React.Component<
     setDarkModeClass(this.props.darkMode)
   }
 
-  handleGeneralClick = () => {
+  readonly handleGeneralClick = () => {
     if (this.state.show) {
       document.removeEventListener("click", this.handleGeneralClick)
     }
     this.setState({ show: false })
   }
 
-  toggle = () => {
+  readonly toggle = () => {
     if (this.state.show) {
       document.removeEventListener("click", this.handleGeneralClick)
     } else {

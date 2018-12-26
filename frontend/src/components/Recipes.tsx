@@ -27,7 +27,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 interface IRecipesProps {
   readonly fetchData: (teamID: ITeam["id"] | "personal") => void
-  readonly recipes: IRecipe[]
+  readonly recipes: ReadonlyArray<IRecipe>
   readonly loading: boolean
   readonly teamID: ITeam["id"]
   readonly scroll: boolean
@@ -39,7 +39,7 @@ interface IRecipesState {
 }
 
 class Recipes extends React.Component<IRecipesProps, IRecipesState> {
-  state: IRecipesState = {
+  readonly state: IRecipesState = {
     query: ""
   }
 
@@ -48,12 +48,12 @@ class Recipes extends React.Component<IRecipesProps, IRecipesState> {
     this.props.fetchData(teamID)
   }
 
-  handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  readonly handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ query: e.target.value })
   }
 
   render() {
-    const results: JSX.Element[] = this.props.recipes
+    const results: ReadonlyArray<JSX.Element> = this.props.recipes
       .filter(recipe => matchesQuery(recipe, this.state.query))
       .map(recipe => (
         <RecipeItem

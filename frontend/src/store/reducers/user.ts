@@ -45,7 +45,7 @@ export const setUserStats = (val: IUserStats) => act(SET_USER_STATS, val)
 
 export const updateTeamID = createStandardAction(SET_TEAM_ID)<number | null>()
 
-export const setSocialConnections = (val: ISocialConnection[]) =>
+export const setSocialConnections = (val: ReadonlyArray<ISocialConnection>) =>
   act(SET_SOCIAL_ACCOUNT_CONNECTIONS, val)
 
 export const setSocialConnection = (provider: SocialProvider, val: unknown) =>
@@ -115,7 +115,7 @@ export interface IUserStats {
   readonly total_recipe_edits: number
   readonly date_joined?: string
   readonly total_user_recipes: number
-  readonly recipes_added_by_month: IRecipe[]
+  readonly recipes_added_by_month: ReadonlyArray<IRecipe>
   readonly total_recipes_added_last_month_by_all_users: number
 }
 

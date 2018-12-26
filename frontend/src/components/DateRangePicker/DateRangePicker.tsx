@@ -22,7 +22,7 @@ interface IDateRangePickerProps {
 }
 
 class DateRangePicker extends React.Component<IDateRangePickerProps> {
-  handleClick = (date: Date) => {
+  readonly handleClick = (date: Date) => {
     if (isPast(endOfDay(date))) {
       return
     }

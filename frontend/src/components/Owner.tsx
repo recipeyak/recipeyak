@@ -55,18 +55,18 @@ interface IOwnerProps {
 
 interface IOwnerState {
   readonly show: boolean
-  readonly values: string[]
+  readonly values: ReadonlyArray<string>
 }
 
 // TODO: Create a generalized component with the click event listeners
 // we seems to use this functionality a lot
 class Owner extends React.Component<IOwnerProps, IOwnerState> {
-  state: IOwnerState = {
+  readonly state: IOwnerState = {
     show: false,
     values: []
   }
 
-  dropdown = React.createRef<HTMLSpanElement>()
+  readonly dropdown = React.createRef<HTMLSpanElement>()
 
   componentWillMount() {
     document.addEventListener("click", this.handleGeneralClick)
@@ -77,7 +77,7 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
     document.removeEventListener("click", this.handleGeneralClick)
   }
 
-  handleGeneralClick = (e: MouseEvent) => {
+  readonly handleGeneralClick = (e: MouseEvent) => {
     const el = this.dropdown.current
     if (el == null) {
       return
@@ -97,12 +97,12 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
     this.setState({ show: false, values: [] })
   }
 
-  handleChange = (ev: React.ChangeEvent<HTMLSelectElement>) => {
+  readonly handleChange = (ev: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedOptions = [...ev.target.selectedOptions].map(opt => opt.value)
     this.setState({ values: selectedOptions })
   }
 
-  toggle = () => {
+  readonly toggle = () => {
     this.setState(prev => {
       if (prev.show) {
         // clear values when closing dropdown
@@ -164,7 +164,7 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
   render() {
     const { name, teams, userId } = this.props
     const { moving, copying } = teams
-    const teamUserKeys = [
+    const teamUserKeys: ReadonlyArray<any> = [
       ...teams.allIds.map(id => ({ id: id + "-team", name: teams[id].name })),
       { id: userId + "-user", name: "personal" }
     ]

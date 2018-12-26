@@ -20,24 +20,24 @@ export default class AddStep extends React.Component<
   IAddStepProps,
   IAddStepState
 > {
-  static defaultProps = {
+  static readonly defaultProps = {
     loading: false
   }
 
-  state = {
+  readonly state = {
     step: ""
   }
 
-  handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  readonly handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     this.setState({ step: e.target.value })
   }
 
-  clearStep = () => {
+  readonly clearStep = () => {
     this.props.onCancel()
     this.setState({ step: "" })
   }
 
-  addStep = async () => {
+  readonly addStep = async () => {
     await this.props.addStep(this.props.id, this.state.step)
     this.setState({ step: "" })
   }

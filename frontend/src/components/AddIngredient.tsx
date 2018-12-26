@@ -3,9 +3,9 @@ import React from "react"
 import AddIngredientForm from "./AddIngredientForm"
 
 export interface IIngredientBasic {
-  quantity: string
-  name: string
-  description: string
+  readonly quantity: string
+  readonly name: string
+  readonly description: string
 }
 
 interface IAddIngredientProps {
@@ -36,11 +36,11 @@ export default class AddIngredient extends React.Component<
   IAddIngredientProps,
   IAddIngredientState
 > {
-  static defaultProps = {
+  static readonly defaultProps = {
     loading: false
   }
 
-  emptyState: IAddIngredientState = {
+  readonly emptyState: IAddIngredientState = {
     quantity: "",
     name: "",
     description: "",
@@ -48,24 +48,24 @@ export default class AddIngredient extends React.Component<
     addingIngredient: false
   }
 
-  state: IAddIngredientState = this.emptyState
+  readonly state: IAddIngredientState = this.emptyState
 
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  readonly handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState(({
       [e.target.name]: e.target.value
     } as unknown) as IAddIngredientState)
   }
 
-  addingIngredient = () => {
+  readonly addingIngredient = () => {
     this.setState({ addingIngredient: true })
   }
 
-  cancelAddIngredient = async () => {
+  readonly cancelAddIngredient = async () => {
     this.props.onCancel()
     this.setState(this.emptyState)
   }
 
-  clearInputs = () => {
+  readonly clearInputs = () => {
     this.setState(this.emptyState)
   }
 

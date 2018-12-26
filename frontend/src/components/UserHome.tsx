@@ -76,7 +76,7 @@ const LifetimeRecipeEdits = ({ edits, dateJoined }: ILifeTimeRecipeEdits) => {
 }
 
 interface IRecentRecipes {
-  readonly recipes: IRecipe[]
+  readonly recipes: ReadonlyArray<IRecipe>
   readonly loading: boolean
   readonly error: boolean
 }
@@ -178,7 +178,7 @@ interface IUserHomeProps {
   readonly loadingUserStats: boolean
   readonly userStats: IUserStats | null
   readonly errorRecipes: boolean
-  readonly recipes: IRecipe[]
+  readonly recipes: ReadonlyArray<IRecipe>
 }
 
 const UserHome = ({
@@ -222,7 +222,7 @@ interface IUserHomeFetchProps extends IUserHomeProps {
 }
 
 class UserHomeFetch extends React.Component<IUserHomeFetchProps> {
-  componentWillMount = () => {
+  readonly componentWillMount = () => {
     this.props.fetchData()
   }
   render() {

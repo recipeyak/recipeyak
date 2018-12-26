@@ -17,7 +17,7 @@ import { ITeam } from "../store/reducers/teams"
 
 const notUndefined = (x?: null | IRecipe) => x != null
 
-type RouteProps = RouteComponentProps<{ id: string }>
+type RouteProps = RouteComponentProps<{ readonly id: string }>
 
 const mapStateToProps = (state: RootState, props: RouteProps) => {
   const id = parseInt(props.match.params.id, 10)

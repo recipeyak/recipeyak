@@ -1,7 +1,7 @@
 import { RootState } from "./store"
 import { ITeam } from "./reducers/teams"
 
-export const teamsFrom = (state: RootState): ITeam[] =>
+export const teamsFrom = (state: RootState): ReadonlyArray<ITeam> =>
   state.teams.allIds.map(id => state.teams[id])
 
 export const scheduleURLFromTeamID = (state: RootState): string => {

@@ -35,7 +35,7 @@ describe("Calendar", () => {
       allIds: [1, 2]
     }
 
-    const recipes = [
+    const recipes: ReadonlyArray<any> = [
       {
         id: 1,
         count: 3,

@@ -2,7 +2,7 @@ import { byNameAlphabetical, ingredientByNameAlphabetical } from "./sorters"
 
 describe("byNameAlphabetical", () => {
   it("sorter keeps already sorted list sorted", () => {
-    const ingredients = [
+    const ingredients: ReadonlyArray<any> = [
       {
         unit: "12",
         name: "barley rusks"
@@ -117,7 +117,7 @@ describe("byNameAlphabetical", () => {
   })
 
   it("sorts a list correctly", () => {
-    const ingredients = [
+    const ingredients: ReadonlyArray<any> = [
       {
         unit: "2",
         name: "lemons"
@@ -228,7 +228,7 @@ describe("byNameAlphabetical", () => {
       }
     ]
 
-    const expected = [
+    const expected: ReadonlyArray<any> = [
       {
         unit: "12",
         name: "barley rusks"
@@ -343,7 +343,7 @@ describe("byNameAlphabetical", () => {
   })
 
   it("should ignore words medium, large, small", () => {
-    const before = [
+    const before: ReadonlyArray<any> = [
       {
         unit: "1",
         name: "large tomato"
@@ -358,7 +358,7 @@ describe("byNameAlphabetical", () => {
       }
     ]
 
-    const expected = [
+    const expected: ReadonlyArray<any> = [
       {
         unit: "1",
         name: "mushroom"
@@ -377,7 +377,7 @@ describe("byNameAlphabetical", () => {
   })
 
   it("should ignore ground", () => {
-    const before = [
+    const before: ReadonlyArray<any> = [
       {
         unit: "1 teaspoon",
         name: "garam masala"
@@ -388,7 +388,7 @@ describe("byNameAlphabetical", () => {
       }
     ]
 
-    const expected = [
+    const expected: ReadonlyArray<any> = [
       {
         unit: "1 teaspoon",
         name: "ground cumin"

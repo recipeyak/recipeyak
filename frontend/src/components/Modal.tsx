@@ -17,13 +17,13 @@ export default class Modal extends React.Component<IModalProps> {
     document.removeEventListener("keydown", this.handleKeyDown)
   }
 
-  handleKeyDown = (e: KeyboardEvent) => {
+  readonly handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === "Escape") {
       this.props.onClose()
     }
   }
 
-  close = () => {
+  readonly close = () => {
     this.props.onClose()
   }
 

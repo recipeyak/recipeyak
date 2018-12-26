@@ -30,7 +30,7 @@ import { RootState } from "../store/store"
 import { ICalendarState, ICalRecipe } from "../store/reducers/calendar"
 import { AxiosResponse } from "axios"
 
-const Title = ({ date }: { date: Date }) => {
+const Title = ({ date }: { readonly date: Date }) => {
   if (isFirstDayOfMonth(date)) {
     return <p>{format(date, "MMM D")}</p>
   }

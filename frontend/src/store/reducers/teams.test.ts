@@ -69,7 +69,7 @@ describe("Teams", () => {
       allIds: [1, 4]
     }
 
-    const data: ITeam[] = [
+    const data: ReadonlyArray<ITeam> = [
       {
         id: 2,
         name: "another name",
@@ -236,7 +236,7 @@ describe("Teams", () => {
       allIds: []
     }
 
-    const members = [
+    const members: ReadonlyArray<any> = [
       {
         ...baseRecipe,
         id: 1,
@@ -285,7 +285,7 @@ describe("Teams", () => {
       allIds: []
     }
 
-    const recipes = [
+    const recipes: ReadonlyArray<any> = [
       {
         ...baseRecipe,
         id: 1,

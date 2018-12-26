@@ -6,7 +6,7 @@ import shoppinglist, {
 import * as a from "./shoppinglist"
 
 describe("Shopping List", () => {
-  const shopList: IShoppingListItem[] = [
+  const shopList: ReadonlyArray<IShoppingListItem> = [
     {
       name: "tomato",
       unit: "4.204622621848776 pound"

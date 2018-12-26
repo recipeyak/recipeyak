@@ -5,14 +5,14 @@ import { Link } from "react-router-dom"
 import Logo from "./Logo"
 
 class AuthContainer extends React.Component {
-  componentDidMount = () => {
+  readonly componentDidMount = () => {
     const el = document.querySelector("html")
     if (el) {
       el.classList.add("bg-primary")
     }
   }
 
-  componentWillUnmount = () => {
+  readonly componentWillUnmount = () => {
     const el = document.querySelector("html")
     if (el) {
       el.classList.remove("bg-primary")

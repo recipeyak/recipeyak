@@ -10,7 +10,7 @@ interface IListItemProps {
   readonly update: (
     recipeID: IRecipe["id"],
     id: number,
-    data: { text: string }
+    data: { readonly text: string }
   ) => void
   readonly removing?: boolean
   readonly updating?: boolean
@@ -35,9 +35,9 @@ export default class ListItem extends React.Component<
     }
   }
 
-  element = React.createRef<HTMLDivElement>()
+  readonly element = React.createRef<HTMLDivElement>()
 
-  static defaultProps = {
+  static readonly defaultProps = {
     recipeID: -1,
     removing: false
   }
@@ -51,7 +51,7 @@ export default class ListItem extends React.Component<
   }
 
   // ensures that the list item closes when the user clicks outside of the item
-  handleGeneralClick = (e: MouseEvent) => {
+  readonly handleGeneralClick = (e: MouseEvent) => {
     const target = e.target as HTMLElement | null
     const el = this.element.current
 
@@ -71,20 +71,20 @@ export default class ListItem extends React.Component<
     }))
   }
 
-  handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  readonly handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     this.setState(({
       [e.target.name]: e.target.value
     } as unknown) as IListItemState)
   }
 
-  enableEditing = () => {
+  readonly enableEditing = () => {
     this.setState({
       editing: true,
       unsavedChanges: false
     })
   }
 
-  discardChanges = () => {
+  readonly discardChanges = () => {
     this.setState((_, props) => ({
       editing: false,
       text: props.text || "",
@@ -92,11 +92,11 @@ export default class ListItem extends React.Component<
     }))
   }
 
-  handleFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+  readonly handleFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
     e.target.select()
   }
 
-  cancel = (e: React.MouseEvent) => {
+  readonly cancel = (e: React.MouseEvent) => {
     e.stopPropagation()
     this.setState((_, props) => ({
       editing: false,
@@ -104,7 +104,7 @@ export default class ListItem extends React.Component<
     }))
   }
 
-  update = async (e: React.KeyboardEvent | React.MouseEvent) => {
+  readonly update = async (e: React.KeyboardEvent | React.MouseEvent) => {
     e.stopPropagation()
     // if the text is empty, we should just delete the item instead of updating
     if (this.state.text === "") {
@@ -126,7 +126,7 @@ export default class ListItem extends React.Component<
     })
   }
 
-  delete = () => this.props.delete(this.props.id)
+  readonly delete = () => this.props.delete(this.props.id)
 
   render() {
     const { updating, removing } = this.props

@@ -102,6 +102,7 @@
     "react-router-redux": "^5.0.0-alpha.9",
     "react-textarea-autosize": "^5.2.1",
     "redux": "^4.0.1",
+    "tslint-immutable": "^5.0.1",
     "tslint-microsoft-contrib": "^6.0.0",
     "typesafe-actions": "^2.0.4"
   },

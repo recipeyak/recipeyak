@@ -10,7 +10,7 @@ export default class HelpMenuModal extends React.Component<
   {},
   IHelpMenuModalState
 > {
-  state = {
+  readonly state = {
     show: false
   }
 
@@ -22,7 +22,7 @@ export default class HelpMenuModal extends React.Component<
     document.removeEventListener("keypress", this.handleKeyPress)
   }
 
-  handleKeyPress = (e: KeyboardEvent) => {
+  readonly handleKeyPress = (e: KeyboardEvent) => {
     const el = document.activeElement
     if (el == null || el.tagName !== "BODY") {
       return
@@ -32,11 +32,11 @@ export default class HelpMenuModal extends React.Component<
     }
   }
 
-  close = () => {
+  readonly close = () => {
     this.setState({ show: false })
   }
   render() {
-    const keybinds = [
+    const keybinds: ReadonlyArray<any> = [
       {
         key: "#",
         description: "delete scheduled recipe"

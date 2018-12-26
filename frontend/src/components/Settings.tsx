@@ -129,7 +129,7 @@ export default class SettingsWithState extends React.Component<
   ISettingsWithStateProps,
   ISettingsWithStateState
 > {
-  state: ISettingsWithStateState = {
+  readonly state: ISettingsWithStateState = {
     email: this.props.email,
     loadingGithub: false,
     errorGithub: "",
@@ -139,21 +139,21 @@ export default class SettingsWithState extends React.Component<
     editing: false
   }
 
-  componentWillReceiveProps = (nextProps: ISettingsWithStateProps) => {
+  readonly componentWillReceiveProps = (nextProps: ISettingsWithStateProps) => {
     this.setState({ email: nextProps.email })
   }
 
-  componentWillMount = () => {
+  readonly componentWillMount = () => {
     this.props.fetchData()
   }
 
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  readonly handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState(({
       [e.target.name]: e.target.value
     } as unknown) as ISettingsWithStateState)
   }
 
-  disconnectAccount = (provider: SocialProvider, id: number) => {
+  readonly disconnectAccount = (provider: SocialProvider, id: number) => {
     if (provider === "github") {
       this.setState({ loadingGithub: true, errorGithub: "" })
     } else if (provider === "gitlab") {
@@ -188,11 +188,11 @@ export default class SettingsWithState extends React.Component<
       })
   }
 
-  cancelEdit = () => this.setState({ editing: false })
+  readonly cancelEdit = () => this.setState({ editing: false })
 
-  edit = () => this.setState({ editing: true })
+  readonly edit = () => this.setState({ editing: true })
 
-  deleteAccountPrompt = () => {
+  readonly deleteAccountPrompt = () => {
     const response = prompt(
       "Are you sure you want to permanently delete your account? \nPlease type, 'delete my account', to irrevocably delete your account"
     )

@@ -42,7 +42,7 @@ class CalendarItem extends React.Component<
   ICalendarItemProps & ICollectedProps,
   ICalendarItemState
 > {
-  state: ICalendarItemState = {
+  readonly state: ICalendarItemState = {
     count: this.props.count,
     hover: false
   }
@@ -60,7 +60,7 @@ class CalendarItem extends React.Component<
     document.removeEventListener("keypress", this.handleKeyPress)
   }
 
-  handleKeyPress = (e: KeyboardEvent) => {
+  readonly handleKeyPress = (e: KeyboardEvent) => {
     if (!this.state.hover) {
       return
     }
@@ -80,7 +80,7 @@ class CalendarItem extends React.Component<
     }
   }
 
-  updateCount = (count: number) => {
+  readonly updateCount = (count: number) => {
     const oldCount = this.state.count
     if (beforeCurrentDay(this.props.date)) {
       return
@@ -92,7 +92,7 @@ class CalendarItem extends React.Component<
       .catch(() => this.setState({ count: oldCount }))
   }
 
-  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  readonly handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const count = parseInt(e.target.value, 10)
     this.updateCount(count)
   }

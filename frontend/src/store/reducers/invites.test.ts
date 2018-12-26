@@ -54,7 +54,7 @@ describe("Invites", () => {
       loading: true
     }
 
-    const newInvites: IInvite[] = [
+    const newInvites: ReadonlyArray<IInvite> = [
       {
         ...basicInvite,
         id: 1,

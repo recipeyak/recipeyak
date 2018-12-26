@@ -48,32 +48,32 @@ export interface IAddRecipeError {
 }
 
 export interface IPasswordResetConfirmError {
-  readonly nonFieldErrors?: string[]
-  readonly newPassword1?: string[]
-  readonly newPassword2?: string[]
+  readonly nonFieldErrors?: ReadonlyArray<string>
+  readonly newPassword1?: ReadonlyArray<string>
+  readonly newPassword2?: ReadonlyArray<string>
 }
 
 export interface ISignupErrors {
-  readonly password1?: string[]
-  readonly password2?: string[]
-  readonly nonFieldErrors?: string[]
-  readonly email?: string[]
+  readonly password1?: ReadonlyArray<string>
+  readonly password2?: ReadonlyArray<string>
+  readonly nonFieldErrors?: ReadonlyArray<string>
+  readonly email?: ReadonlyArray<string>
 }
 
 export interface ILoginError {
-  readonly password1?: string[]
-  readonly nonFieldErrors?: string[]
-  readonly email?: string[]
+  readonly password1?: ReadonlyArray<string>
+  readonly nonFieldErrors?: ReadonlyArray<string>
+  readonly email?: ReadonlyArray<string>
 }
 
 export interface IPasswordResetError {
-  readonly nonFieldErrors?: string[]
-  readonly email?: string[]
+  readonly nonFieldErrors?: ReadonlyArray<string>
+  readonly email?: ReadonlyArray<string>
 }
 
 export interface ISocialError {
-  readonly emailSocial?: string[]
-  readonly nonFieldErrorsSocial?: string[]
+  readonly emailSocial?: ReadonlyArray<string>
+  readonly nonFieldErrorsSocial?: ReadonlyArray<string>
 }
 
 export interface IErrorState {

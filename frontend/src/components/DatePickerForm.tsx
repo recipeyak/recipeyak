@@ -47,25 +47,25 @@ class DatePickerForm extends React.Component<
   IDatePickerProps,
   IDatePickerState
 > {
-  state = {
+  readonly state = {
     count: 1,
     date: new Date(),
     month: new Date()
   }
 
-  handleDateChange = (val: Date) => {
+  readonly handleDateChange = (val: Date) => {
     if (isPast(endOfDay(val))) {
       return
     }
     this.setState({ date: val })
   }
 
-  handleCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  readonly handleCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const count = atLeast1(e.target.value)
     this.setState({ count })
   }
 
-  handleSubmit = (e: React.FormEvent) => {
+  readonly handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     this.props
       .create(
@@ -77,11 +77,11 @@ class DatePickerForm extends React.Component<
       .then(() => this.props.close())
   }
 
-  nextMonth = () => {
+  readonly nextMonth = () => {
     this.setState(({ month }) => ({ month: addMonths(month, 1) }))
   }
 
-  prevMonth = () => {
+  readonly prevMonth = () => {
     this.setState(({ month }) => ({ month: subMonths(month, 1) }))
   }
 

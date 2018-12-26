@@ -30,7 +30,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   sendInvites: sendingTeamInvites(dispatch)
 })
 
-export const roles = [
+export const roles: ReadonlyArray<any> = [
   {
     name: "Admin",
     value: "admin",
@@ -48,12 +48,13 @@ export const roles = [
   }
 ]
 
-interface ITeamInviteProps extends RouteComponentProps<{ id: string }> {
+interface ITeamInviteProps
+  extends RouteComponentProps<{ readonly id: string }> {
   readonly id: ITeam["id"]
   readonly fetchData: (id: ITeam["id"]) => Promise<void>
   readonly sendInvites: (
     id: ITeam["id"],
-    emails: string[],
+    emails: ReadonlyArray<string>,
     level: IMember["level"]
   ) => Promise<void>
   readonly loadingTeam: boolean
@@ -67,12 +68,12 @@ interface ITeamInviteState {
 }
 
 class TeamInvite extends React.Component<ITeamInviteProps, ITeamInviteState> {
-  state: ITeamInviteState = {
+  readonly state: ITeamInviteState = {
     level: "contributor",
     emails: ""
   }
 
-  static defaultProps = {
+  static readonly defaultProps = {
     loadingTeam: true,
     sendingTeamInvites: false
   }
@@ -81,7 +82,7 @@ class TeamInvite extends React.Component<ITeamInviteProps, ITeamInviteState> {
     this.props.fetchData(this.props.id)
   }
 
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+  readonly handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     this.setState(({
       [e.target.name]: e.target.value
     } as unknown) as ITeamInviteState)

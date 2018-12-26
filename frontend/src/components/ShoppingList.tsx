@@ -80,7 +80,7 @@ interface IShoppingListProps {
   readonly endDay: Date
   readonly loading: boolean
   readonly error: boolean
-  readonly shoppinglist: IShoppingListItem[]
+  readonly shoppinglist: ReadonlyArray<IShoppingListItem>
   readonly setStartDay: (date: Date) => void
   readonly setEndDay: (date: Date) => void
   readonly reportBadMerge: () => void
@@ -98,9 +98,9 @@ class ShoppingList extends React.Component<
   IShoppingListProps,
   IShoppingListState
 > {
-  inputs = React.createRef<HTMLDivElement>()
+  readonly inputs = React.createRef<HTMLDivElement>()
 
-  state: IShoppingListState = {
+  readonly state: IShoppingListState = {
     month: new Date(),
 
     selectingStart: false,
@@ -121,7 +121,7 @@ class ShoppingList extends React.Component<
     document.removeEventListener("click", this.handleGeneralClick)
   }
 
-  refetchData = () => {
+  readonly refetchData = () => {
     // TODO: refetch data on calendar count for scheduled recipes changes
     this.props.fetchData(
       this.props.teamID,
@@ -130,7 +130,7 @@ class ShoppingList extends React.Component<
     )
   }
 
-  handleGeneralClick = (e: MouseEvent) => {
+  readonly handleGeneralClick = (e: MouseEvent) => {
     const picker = document.querySelector("#date-range-picker")
     const targetElement = e.target as HTMLElement | null
     const clickedPicker = picker && picker.contains(targetElement)
@@ -147,7 +147,7 @@ class ShoppingList extends React.Component<
     })
   }
 
-  setStartDay = (date: Date) => {
+  readonly setStartDay = (date: Date) => {
     if (!isValid(date)) {
       return
     }
@@ -164,7 +164,7 @@ class ShoppingList extends React.Component<
     )
   }
 
-  setEndDay = (date: Date) => {
+  readonly setEndDay = (date: Date) => {
     if (!isValid(date)) {
       return
     }

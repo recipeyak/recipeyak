@@ -112,8 +112,8 @@ const enableSocialButtons =
   FACEBOOK_OAUTH_URL
 
 interface ISocialButtonsProps {
-  readonly nonFieldErrors?: string[] | null
-  readonly emailError?: string[] | null
+  readonly nonFieldErrors?: ReadonlyArray<string> | null
+  readonly emailError?: ReadonlyArray<string> | null
   readonly signup?: boolean
 }
 

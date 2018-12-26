@@ -48,13 +48,13 @@ export const setTeam404 = (id: number, val = true) =>
     val
   })
 
-export const setTeamMembers = (id: number, members: IMember[]) =>
+export const setTeamMembers = (id: number, members: ReadonlyArray<IMember>) =>
   act(SET_TEAM_MEMBERS, {
     id,
     members
   })
 
-export const setTeamRecipes = (id: number, recipes: IRecipe[]) =>
+export const setTeamRecipes = (id: number, recipes: ReadonlyArray<IRecipe>) =>
   act(SET_TEAM_RECIPES, {
     id,
     recipes
@@ -102,7 +102,7 @@ export const deleteMembership = (teamID: number, membershipID: number) =>
 
 export const setLoadingTeams = (val: boolean) => act(SET_LOADING_TEAMS, val)
 
-export const setTeams = (t: ITeam[]) => act(SET_TEAMS, t)
+export const setTeams = (t: ReadonlyArray<ITeam>) => act(SET_TEAMS, t)
 
 export const setTeam = (id: number, team: ITeam) =>
   act(SET_TEAM, {
@@ -159,14 +159,14 @@ export interface ITeam {
   readonly loadingTeam?: boolean
   readonly loadingMembers?: boolean
   readonly error404?: boolean
-  readonly recipes?: number[]
+  readonly recipes?: ReadonlyArray<number>
   readonly members: {
     readonly [key: number]: IMember
   }
 }
 
 export interface ITeamsState {
-  readonly allIds: number[]
+  readonly allIds: ReadonlyArray<number>
   readonly loading?: boolean
   readonly creating?: boolean
   readonly copying?: boolean
@@ -328,7 +328,7 @@ export const teams = (
         ),
         allIds: uniq([
           ...state.allIds,
-          ...action.payload.map((x: { id: number }) => x.id)
+          ...action.payload.map((x: { readonly id: number }) => x.id)
         ])
       }
     case SET_LOADING_TEAMS:

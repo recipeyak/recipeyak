@@ -28,22 +28,22 @@ export default class Dropdown extends React.Component<
   IDropdownProps,
   IDropdownState
 > {
-  static defaultProps = {
+  static readonly defaultProps = {
     relative: true
   }
 
-  state = {
+  readonly state = {
     show: false
   }
 
-  handleGeneralClick = () => {
+  readonly handleGeneralClick = () => {
     if (this.state.show) {
       document.removeEventListener("click", this.handleGeneralClick)
     }
     this.setState({ show: false })
   }
 
-  toggle = () => {
+  readonly toggle = () => {
     if (this.state.show) {
       document.removeEventListener("click", this.handleGeneralClick)
     } else {

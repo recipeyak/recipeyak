@@ -48,7 +48,7 @@ export class RecipeItem extends React.Component<
   IRecipeItemProps & ICollectedProps,
   IRecipeItemState
 > {
-  state = {
+  readonly state = {
     show: false
   }
 

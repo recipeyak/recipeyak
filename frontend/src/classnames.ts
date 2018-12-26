@@ -1,9 +1,15 @@
 import uniq from "lodash/uniq"
 
 export function classNames(
-  ...args: (string | number | string[] | { [key: string]: boolean })[]
+  ...args: ReadonlyArray<
+
+      | string
+      | number
+      | ReadonlyArray<string>
+      | { readonly [key: string]: boolean }
+  >
 ) {
-  const classes: string[] = []
+  const classes: ReadonlyArray<string> = []
 
   args.forEach(arg => {
     if (!arg) {

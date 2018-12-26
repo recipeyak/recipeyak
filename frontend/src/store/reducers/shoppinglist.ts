@@ -9,7 +9,7 @@ const SET_SHOPPING_LIST_ERROR = "SET_SHOPPING_LIST_ERROR"
 const SET_SELECTING_START = "SET_SELECTING_START"
 const SET_SELECTING_END = "SET_SELECTING_END"
 
-export const setShoppingList = (val: IShoppingListItem[]) =>
+export const setShoppingList = (val: ReadonlyArray<IShoppingListItem>) =>
   act(SET_SHOPPING_LIST, val)
 
 export const setShoppingListEmpty = () => setShoppingList([])
@@ -38,7 +38,7 @@ export interface IShoppingListItem {
 }
 
 export interface IShoppingListState {
-  readonly shoppinglist: IShoppingListItem[]
+  readonly shoppinglist: ReadonlyArray<IShoppingListItem>
   readonly loading: boolean
   readonly error: boolean
   readonly startDay: Date

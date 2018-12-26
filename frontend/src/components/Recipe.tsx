@@ -26,7 +26,7 @@ import { IRecipe, IStep, IIngredient } from "../store/reducers/recipes"
 import { IRecipeBasic } from "./RecipeTitle"
 import { Omit } from "./AddRecipe"
 
-type RouteProps = RouteComponentProps<{ id: string }>
+type RouteProps = RouteComponentProps<{ readonly id: string }>
 
 const mapStateToProps = (state: RootState, props: RouteProps) => {
   const id = parseInt(props.match.params.id, 10)
@@ -55,8 +55,8 @@ interface IRecipeProps extends RouteProps {
   readonly source: IRecipe["source"]
   readonly servings: IRecipe["servings"]
   readonly time: IRecipe["time"]
-  readonly ingredients: IIngredient[]
-  readonly steps: IStep[]
+  readonly ingredients: ReadonlyArray<IIngredient>
+  readonly steps: ReadonlyArray<IStep>
   readonly loading: boolean
   readonly error404: boolean
   readonly owner: IRecipe["owner"]
@@ -90,7 +90,7 @@ interface IRecipeState {
 }
 
 class Recipe extends React.Component<IRecipeProps, IRecipeState> {
-  state: IRecipeState = {
+  readonly state: IRecipeState = {
     show: false,
     addStep: false,
     addIngredient: false

@@ -21,7 +21,7 @@ interface ITeamCreateProps {
   readonly loading: boolean
   readonly createTeam: (
     name: string,
-    emails: string[],
+    emails: ReadonlyArray<string>,
     level: IMember["level"]
   ) => void
 }
@@ -32,18 +32,18 @@ interface ITeamCreateState {
 }
 
 class TeamCreate extends React.Component<ITeamCreateProps, ITeamCreateState> {
-  state: ITeamCreateState = {
+  readonly state: ITeamCreateState = {
     level: "contributor",
     emails: "",
     name: ""
   }
 
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+  readonly handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     this.setState(({
       [e.target.name]: e.target.value
     } as unknown) as ITeamCreateState)
 
-  handleSubmit = async (e: React.FormEvent) => {
+  readonly handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const emails = this.state.emails.split(",").filter(x => x !== "")
     const { name, level } = this.state

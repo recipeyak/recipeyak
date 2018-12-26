@@ -110,7 +110,7 @@ interface ICalendarProps extends ScheduleRouteParams {
     startDay: Date,
     endDay: Date
   ) => void
-  readonly teams: ITeam[]
+  readonly teams: ReadonlyArray<ITeam>
   readonly days: IDays
   readonly isTeam: boolean
   readonly teamID: ITeam["id"] | "personal"
@@ -126,7 +126,7 @@ interface ICalendarState {
 }
 
 class Calendar extends React.Component<ICalendarProps, ICalendarState> {
-  state: ICalendarState = {
+  readonly state: ICalendarState = {
     month: new Date(),
     initialLoad: false,
     owner: "personal"
@@ -139,7 +139,9 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
       .then(() => this.setState({ initialLoad: true }))
   }
 
-  refetchData = (teamID: ITeam["id"] | "personal" = this.props.teamID) => {
+  readonly refetchData = (
+    teamID: ITeam["id"] | "personal" = this.props.teamID
+  ) => {
     this.props.fetchData(teamID, this.state.month)
     this.props.refetchShoppingListAndRecipes(
       teamID,
@@ -148,25 +150,25 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
     )
   }
 
-  prevMonth = () => {
+  readonly prevMonth = () => {
     this.setState(({ month }) => ({
       month: subMonths(month, 1)
     }))
     this.props.fetchData(this.props.teamID, this.state.month)
   }
 
-  nextMonth = () => {
+  readonly nextMonth = () => {
     this.setState(({ month }) => ({
       month: addMonths(month, 1)
     }))
     this.props.fetchData(this.props.teamID, this.state.month)
   }
 
-  currentMonth = () => {
+  readonly currentMonth = () => {
     this.setState({ month: new Date() })
   }
 
-  handleOwnerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  readonly handleOwnerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const teamID =
       e.target.value === "personal" ? "personal" : parseInt(e.target.value, 10)
     const url = teamID === "personal" ? "/schedule/" : `/t/${teamID}/schedule/`

@@ -29,7 +29,7 @@ export const moveCalendarRecipe = (id: ICalRecipe["id"], to: string) =>
     on: to
   })
 
-export const setCalendarRecipes = (recipes: ICalRecipe[]) =>
+export const setCalendarRecipes = (recipes: ReadonlyArray<ICalRecipe>) =>
   act(SET_CALENDAR_RECIPES, recipes)
 
 export const replaceCalendarRecipe = (
@@ -136,7 +136,7 @@ export interface ICalRecipe {
 }
 
 export interface ICalendarState {
-  readonly allIds: ICalRecipe["id"][]
+  readonly allIds: ReadonlyArray<ICalRecipe["id"]>
   readonly loading: boolean
   readonly error: boolean
   readonly [key: number]: ICalRecipe

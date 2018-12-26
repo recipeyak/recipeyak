@@ -1,5 +1,9 @@
 {
-  "extends": ["tslint:recommended", "tslint-config-prettier"],
+  "extends": [
+    "tslint:recommended",
+    "tslint-config-prettier",
+    "tslint-immutable"
+  ],
   "rulesDirectory": ["node_modules/tslint-microsoft-contrib"],
   "defaultSeverity": "error",
   "rules": {
@@ -59,7 +63,10 @@
         ["Symbol", "Avoid using the `Symbol` type. Did you mean `symbol`?"]
       ]
     },
-    "max-classes-per-file": false
+    "max-classes-per-file": false,
+    "readonly-keyword": true,
+    "readonly-array": true,
+    "no-method-signature": true
   },
   "jsRules": {}
 }

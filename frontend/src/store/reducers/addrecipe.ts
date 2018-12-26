@@ -84,8 +84,8 @@ export interface IAddRecipeState {
   readonly source: string
   readonly time: string
   readonly servings: string
-  readonly ingredients: IIngredientBasic[]
-  readonly steps: IStepBasic[]
+  readonly ingredients: ReadonlyArray<IIngredientBasic>
+  readonly steps: ReadonlyArray<IStepBasic>
   readonly team: ITeam["id"] | null
 }
 

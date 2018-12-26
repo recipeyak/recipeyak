@@ -22,11 +22,11 @@ class PasswordReset extends React.Component<
   IPasswordResetProps,
   IPasswordResetState
 > {
-  state: IPasswordResetState = {
+  readonly state: IPasswordResetState = {
     email: ""
   }
 
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  readonly handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState(({
       [e.target.name]: e.target.value
     } as unknown) as IPasswordResetState)

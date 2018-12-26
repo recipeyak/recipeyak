@@ -5,9 +5,9 @@ import { FormErrorHandler } from "./Forms"
 import { ButtonPrimary } from "./Buttons"
 
 interface IPasswordChangeError {
-  readonly oldPassword?: string[]
-  readonly newPassword?: string[]
-  readonly newPasswordAgain?: string[]
+  readonly oldPassword?: ReadonlyArray<string>
+  readonly newPassword?: ReadonlyArray<string>
+  readonly newPasswordAgain?: ReadonlyArray<string>
 }
 
 interface IPasswordChangeProps {
@@ -33,28 +33,28 @@ class PasswordChange extends React.Component<
   IPasswordChangeProps,
   IPasswordChangestate
 > {
-  state: IPasswordChangestate = {
+  readonly state: IPasswordChangestate = {
     password: "",
     oldPassword: "",
     newPassword: "",
     newPasswordAgain: ""
   }
 
-  static defaultProps = {
+  static readonly defaultProps = {
     setPassword: false
   }
 
-  componentWillMount = () => {
+  readonly componentWillMount = () => {
     this.props.clearErrors()
   }
 
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  readonly handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState(({
       [e.target.name]: e.target.value
     } as unknown) as IPasswordChangestate)
   }
 
-  handleSubmit = (e: React.FormEvent) => {
+  readonly handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     this.props.update(
       this.state.oldPassword,

@@ -37,13 +37,13 @@ import { updatingStep, Dispatch } from "../store/actions"
 import { IRecipe, IStep } from "../store/reducers/recipes"
 
 interface IStepContainerProps {
-  readonly steps: IStep[]
+  readonly steps: ReadonlyArray<IStep>
   readonly recipeID: IRecipe["id"]
   readonly dispatch: (func: Dispatch) => void
   readonly updatingStep: (
     recipeID: number,
     stepID: number,
-    { text, position }: { text?: string; position?: number }
+    { text, position }: { readonly text?: string; readonly position?: number }
   ) => void
 }
 
@@ -67,7 +67,7 @@ class StepContainer extends React.Component<
     this.setState({ cards: nextProps.steps })
   }
 
-  moveCard = (dragIndex: number, hoverIndex: number) => {
+  readonly moveCard = (dragIndex: number, hoverIndex: number) => {
     const dragCard = this.state.cards[dragIndex]
 
     this.setState(prevState => {
@@ -80,7 +80,7 @@ class StepContainer extends React.Component<
     })
   }
 
-  completeMove = (stepID: number, arrIndex: number) => {
+  readonly completeMove = (stepID: number, arrIndex: number) => {
     const nextCard = this.state.cards[arrIndex + 1]
     const prevCard = this.state.cards[arrIndex - 1]
     let newPos: IStep["position"] | null = null

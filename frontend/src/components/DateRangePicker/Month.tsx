@@ -36,7 +36,7 @@ interface IMonthProps {
 }
 
 class Month extends React.Component<IMonthProps> {
-  static defaultProps = {
+  static readonly defaultProps = {
     showRight: false,
     showLeft: false
   }

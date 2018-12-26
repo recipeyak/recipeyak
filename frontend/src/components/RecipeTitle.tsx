@@ -37,7 +37,7 @@ export default class RecipeTitle extends React.Component<
   IRecipeTitleProps,
   IRecipeTitleState
 > {
-  state: IRecipeTitleState = {
+  readonly state: IRecipeTitleState = {
     show: false,
     edit: false,
     recipe: {
@@ -49,9 +49,9 @@ export default class RecipeTitle extends React.Component<
     }
   }
 
-  toggleEdit = () => this.setState(prev => ({ edit: !prev.edit }))
+  readonly toggleEdit = () => this.setState(prev => ({ edit: !prev.edit }))
 
-  handleSave = () => {
+  readonly handleSave = () => {
     const data = this.state.recipe
     if (data == null) {
       return
@@ -61,7 +61,7 @@ export default class RecipeTitle extends React.Component<
     })
   }
 
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  readonly handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.persist()
     this.setState(prevState => ({
       recipe: {
@@ -71,7 +71,7 @@ export default class RecipeTitle extends React.Component<
     }))
   }
 
-  handleDelete = () => {
+  readonly handleDelete = () => {
     if (
       confirm(
         `Are you sure you want to delete this recipe "${this.props.name}"?`

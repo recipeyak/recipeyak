@@ -17,7 +17,7 @@ const mapStateToProps = (
   state: RootState,
   { userID, teamID, membershipID }: IMemberRowProps
 ) => {
-  const teams = state.teams as { [key: number]: ITeam }
+  const teams = state.teams as { readonly [key: number]: ITeam }
   return {
     isUser: state.user.id === userID,
     deleting: teams[teamID].members[membershipID].deleting,

@@ -12,7 +12,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     login: socialConnect(dispatch)
   }
 }
-type RouteProps = RouteComponentProps<{ service: SocialProvider }>
+type RouteProps = RouteComponentProps<{ readonly service: SocialProvider }>
 
 const mapStateToProps = (_: RootState, props: RouteProps) => {
   const service = props.match.params.service

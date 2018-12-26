@@ -27,8 +27,8 @@ export interface IRecipeBasic
     | "ingredients"
     | "steps"
   > {
-  readonly ingredients: IIngredientBasic[]
-  readonly steps: IStepBasic[]
+  readonly ingredients: ReadonlyArray<IIngredientBasic>
+  readonly steps: ReadonlyArray<IStepBasic>
   readonly team?: ITeam["id"]
 }
 export type IIngredientBasic = Omit<IIngredient, "id" | "position">
@@ -61,10 +61,10 @@ interface IAddRecipeProps {
   readonly source: string
   readonly time: string
   readonly servings: string
-  readonly ingredients: IIngredientBasic[]
-  readonly steps: IStepBasic[]
+  readonly ingredients: ReadonlyArray<IIngredientBasic>
+  readonly steps: ReadonlyArray<IStepBasic>
   readonly loadingTeams: boolean
-  readonly teams: ITeam[]
+  readonly teams: ReadonlyArray<ITeam>
   readonly setTeamID: (x: number | null) => void
   readonly teamID: ITeam["id"] | null
 }
@@ -91,7 +91,7 @@ export default class AddRecipe extends React.Component<
   IAddRecipeProps,
   IAddRecipeState
 > {
-  state: IAddRecipeState = {
+  readonly state: IAddRecipeState = {
     ingredient: emptyIngredient,
     step: ""
   }
@@ -101,13 +101,13 @@ export default class AddRecipe extends React.Component<
     this.props.fetchData()
   }
 
-  handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  readonly handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     this.setState(({
       [e.target.name]: e.target.value
     } as unknown) as IAddRecipeState)
   }
 
-  handleSubmit = (event: React.FormEvent) => {
+  readonly handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
     this.props.addRecipe({
       name: this.props.name,
@@ -121,7 +121,7 @@ export default class AddRecipe extends React.Component<
     })
   }
 
-  addIngredient = () => {
+  readonly addIngredient = () => {
     if (unfinishedIngredient(this.state.ingredient)) {
       return Promise.resolve()
     }
@@ -129,7 +129,9 @@ export default class AddRecipe extends React.Component<
     this.setState({ ingredient: emptyIngredient })
   }
 
-  handleIngredientChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  readonly handleIngredientChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     e.persist()
     if (e.target.type === "checkbox") {
       this.setState(prev => ({
@@ -148,16 +150,17 @@ export default class AddRecipe extends React.Component<
     }))
   }
 
-  cancelAddIngredient = () => this.setState({ ingredient: emptyIngredient })
+  readonly cancelAddIngredient = () =>
+    this.setState({ ingredient: emptyIngredient })
 
-  addStep = () => {
+  readonly addStep = () => {
     this.props.addStep({ text: this.state.step })
     this.setState({ step: "" })
   }
 
-  cancelAddStep = () => this.setState({ step: "" })
+  readonly cancelAddStep = () => this.setState({ step: "" })
 
-  handleTeamChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  readonly handleTeamChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (e.target.value === "personal") {
       return this.props.setTeamID(null)
     }

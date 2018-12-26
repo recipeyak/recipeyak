@@ -21,7 +21,7 @@ interface ILoginProps {
   readonly loading: boolean
   readonly error: ILoginError
   readonly errorSocial: ISocialError
-  readonly location: Location<{ from: string } | undefined>
+  readonly location: Location<{ readonly from: string } | undefined>
 }
 
 interface ILoginState {
@@ -30,25 +30,25 @@ interface ILoginState {
 }
 
 class Login extends React.Component<ILoginProps, ILoginState> {
-  state = {
+  readonly state = {
     email: "",
     password: ""
   }
 
-  componentWillMount = () => {
+  readonly componentWillMount = () => {
     this.props.clearErrors()
     const fromUrl =
       this.props.location.state != null ? this.props.location.state.from : {}
     this.props.setFromUrl(redirectURL(fromUrl))
   }
 
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  readonly handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState(({
       [e.target.name]: e.target.value
     } as unknown) as ILoginState)
   }
 
-  handleLogin = (e: React.FormEvent) => {
+  readonly handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
     this.props.login(this.state.email, this.state.password, this.props.fromUrl)
   }

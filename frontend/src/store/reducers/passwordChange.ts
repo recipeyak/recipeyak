@@ -14,9 +14,9 @@ export type PasswordChangeActions =
   | ReturnType<typeof setErrorPasswordUpdate>
 
 interface IPasswordUpdateError {
-  readonly newPasswordAgain?: string[]
-  readonly newPassword?: string[]
-  readonly oldPassword?: string[]
+  readonly newPasswordAgain?: ReadonlyArray<string>
+  readonly newPassword?: ReadonlyArray<string>
+  readonly oldPassword?: ReadonlyArray<string>
 }
 
 export interface IPasswordChangeState {

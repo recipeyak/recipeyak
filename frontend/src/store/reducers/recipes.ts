@@ -185,7 +185,7 @@ export const setLoadingRecipe = (id: IRecipe["id"], val: boolean) =>
     val
   })
 
-export const setRecipes = (r: IRecipe[]) =>
+export const setRecipes = (r: ReadonlyArray<IRecipe>) =>
   act(SET_RECIPES, {
     recipes: r
   })
@@ -275,13 +275,13 @@ export interface IStep {
 
 type IRecipeOwner =
   | {
-      type: "team"
-      id: number
-      name: string
+      readonly type: "team"
+      readonly id: number
+      readonly name: string
     }
   | {
-      type: "user"
-      id: number
+      readonly type: "user"
+      readonly id: number
     }
 
 export interface IRecipe {
@@ -291,13 +291,13 @@ export interface IRecipe {
   readonly source: string
   readonly time: string
   readonly servings: string
-  readonly steps: IStep[]
-  readonly edits: unknown[]
+  readonly steps: ReadonlyArray<IStep>
+  readonly edits: ReadonlyArray<unknown>
   readonly modified: string
   readonly last_scheduled: string
   readonly team: ITeam["id"]
   readonly owner: IRecipeOwner
-  readonly ingredients: IIngredient[]
+  readonly ingredients: ReadonlyArray<IIngredient>
   readonly loading?: boolean
   readonly deleting?: boolean
   readonly addingStepToRecipe?: boolean

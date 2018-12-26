@@ -12,7 +12,7 @@ import { IRecipe } from "../store/reducers/recipes"
 const SEARCH_THROTTLE_MS = 100
 
 interface ISearchModalProps {
-  readonly searchResults: IRecipe[]
+  readonly searchResults: ReadonlyArray<IRecipe>
   readonly loading: boolean
   readonly search: (query: string) => void
 }
@@ -26,30 +26,30 @@ class SearchModal extends React.Component<
   ISearchModalProps,
   ISearchModalState
 > {
-  inputRef = React.createRef<HTMLInputElement>()
-  search: (query: string) => void
+  readonly inputRef = React.createRef<HTMLInputElement>()
+  readonly search: (query: string) => void
 
   constructor(props: ISearchModalProps) {
     super(props)
     this.search = throttle(this.props.search, SEARCH_THROTTLE_MS)
   }
 
-  state = {
+  readonly state = {
     query: "",
     show: false
   }
 
-  handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  readonly handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ query: event.target.value })
   }
 
-  handleSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  readonly handleSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       this.search(this.state.query)
     }
   }
 
-  handleKeyPress = (event: KeyboardEvent) => {
+  readonly handleKeyPress = (event: KeyboardEvent) => {
     const el = document.activeElement
     if (el && el.tagName !== "BODY") {
       return

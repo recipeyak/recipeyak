@@ -341,7 +341,7 @@ export const fetchUser = (dispatch: Dispatch) => () => {
 
 export const fetchSocialConnections = (dispatch: Dispatch) => () => {
   return http
-    .get<ISocialConnection[]>("/api/v1/rest-auth/socialaccounts/")
+    .get<ReadonlyArray<ISocialConnection>>("/api/v1/rest-auth/socialaccounts/")
     .then(res => {
       dispatch(setSocialConnections(res.data))
     })
@@ -441,7 +441,7 @@ export const fetchShoppingList = (dispatch: Dispatch) => (
       ? "/api/v1/shoppinglist/"
       : `/api/v1/t/${teamID}/shoppinglist/`
   return http
-    .get<IShoppingListItem[]>(url, {
+    .get<ReadonlyArray<IShoppingListItem>>(url, {
       params: {
         start: pyFormat(startDay),
         end: pyFormat(endDay)
@@ -512,7 +512,7 @@ export const fetchRecentRecipes = (dispatch: Dispatch) => () => {
   dispatch(setLoadingRecipes(true))
   dispatch(setErrorRecipes(false))
   return http
-    .get<IRecipe[]>("/api/v1/recipes/?recent")
+    .get<ReadonlyArray<IRecipe>>("/api/v1/recipes/?recent")
     .then(res => {
       dispatch(setRecipes(res.data))
       dispatch(setLoadingRecipes(false))
@@ -534,7 +534,7 @@ export const fetchRecipeList = (dispatch: Dispatch) => (
     teamID === "personal" ? "/api/v1/recipes/" : `/api/v1/t/${teamID}/recipes/`
 
   return http
-    .get<IRecipe[]>(url)
+    .get<ReadonlyArray<IRecipe>>(url)
     .then(res => {
       dispatch(setRecipes(res.data))
       dispatch(setLoadingRecipes(false))
@@ -546,7 +546,7 @@ export const fetchRecipeList = (dispatch: Dispatch) => (
 }
 
 interface ISearchStore {
-  lastRequest: null | CancelTokenSource
+  readonly lastRequest: null | CancelTokenSource
 }
 
 // container for our promise cancel tokens
@@ -571,7 +571,7 @@ export const searchRecipes = (dispatch: Dispatch) => (query: string) => {
   searchStore.lastRequest = cancelSource
   // make request with cancel token
   return http
-    .get<IRecipe[]>(`/api/v1/recipes?q=${encodeURI(query)}`, {
+    .get<ReadonlyArray<IRecipe>>(`/api/v1/recipes?q=${encodeURI(query)}`, {
       cancelToken: cancelSource.token
     })
     .then(res => {
@@ -741,18 +741,18 @@ export const deletingIngredient = (dispatch: Dispatch) => (
 }
 
 interface IStep {
-  id: number
-  text: string
-  position: number
+  readonly id: number
+  readonly text: string
+  readonly position: number
 }
 
 export const updatingStep = (dispatch: Dispatch) => (
   recipeID: number,
   stepID: number,
-  { text, position }: { text?: string; position?: number }
+  { text, position }: { readonly text?: string; readonly position?: number }
 ) => {
   dispatch(setUpdatingStep(recipeID, stepID, true))
-  const data: { [key: string]: unknown } = {
+  const data: { readonly [key: string]: unknown } = {
     text,
     position
   }
@@ -802,7 +802,7 @@ export const logUserIn = (dispatch: Dispatch) => (
   dispatch(setErrorLogin({}))
   dispatch(clearNotification())
   return anon
-    .post<{ user: IUser }>("/api/v1/rest-auth/login/", {
+    .post<{ readonly user: IUser }>("/api/v1/rest-auth/login/", {
       email,
       password
     })
@@ -835,7 +835,7 @@ export const socialLogin = (dispatch: Dispatch) => (
   redirectUrl: string = ""
 ) => {
   return anon
-    .post<{ user: IUser }>(`/api/v1/rest-auth/${service}/`, {
+    .post<{ readonly user: IUser }>(`/api/v1/rest-auth/${service}/`, {
       code: token
     })
     .then(res => {
@@ -887,7 +887,7 @@ export const signup = (dispatch: Dispatch) => (
   dispatch(setErrorSignup({}))
   dispatch(clearNotification())
   return anon
-    .post<{ user: IUser }>("/api/v1/rest-auth/registration/", {
+    .post<{ readonly user: IUser }>("/api/v1/rest-auth/registration/", {
       email,
       password1,
       password2
@@ -930,7 +930,7 @@ export const deletingRecipe = (dispatch: Dispatch) => (id: number) => {
 }
 
 interface IDetailResponse {
-  detail: string
+  readonly detail: string
 }
 
 export const reset = (dispatch: Dispatch) => (email: string) => {
@@ -1052,7 +1052,7 @@ export const fetchTeam = (dispatch: Dispatch) => (id: ITeam["id"]) => {
 export const fetchTeamMembers = (dispatch: Dispatch) => (id: number) => {
   dispatch(setLoadingTeamMembers(id, true))
   return http
-    .get<IMember[]>(`/api/v1/t/${id}/members/`)
+    .get<ReadonlyArray<IMember>>(`/api/v1/t/${id}/members/`)
     .then(res => {
       dispatch(setTeamMembers(id, res.data))
       dispatch(setLoadingTeamMembers(id, false))
@@ -1066,7 +1066,7 @@ export const fetchTeamMembers = (dispatch: Dispatch) => (id: number) => {
 export const fetchTeamRecipes = (dispatch: Dispatch) => (id: number) => {
   dispatch(setLoadingTeamRecipes(id, true))
   return http
-    .get<IRecipe[]>(`/api/v1/t/${id}/recipes/`)
+    .get<ReadonlyArray<IRecipe>>(`/api/v1/t/${id}/recipes/`)
     .then(res => {
       dispatch(setRecipes(res.data))
       dispatch(setTeamRecipes(id, res.data))
@@ -1188,7 +1188,7 @@ export const deletingTeam = (dispatch: Dispatch) => (teamID: number) => {
 
 export const sendingTeamInvites = (dispatch: Dispatch) => (
   teamID: number,
-  emails: string[],
+  emails: ReadonlyArray<string>,
   level: unknown
 ) => {
   dispatch(setSendingTeamInvites(teamID, true))
@@ -1215,7 +1215,7 @@ export const sendingTeamInvites = (dispatch: Dispatch) => (
 export const fetchTeams = (dispatch: Dispatch) => () => {
   dispatch(setLoadingTeams(true))
   return http
-    .get<ITeam[]>("/api/v1/t/")
+    .get<ReadonlyArray<ITeam>>("/api/v1/t/")
     .then(res => {
       dispatch(setTeams(res.data))
       dispatch(setLoadingTeams(false))
@@ -1228,7 +1228,7 @@ export const fetchTeams = (dispatch: Dispatch) => () => {
 
 export const creatingTeam = (dispatch: Dispatch) => (
   name: string,
-  emails: string[],
+  emails: ReadonlyArray<string>,
   level: unknown
 ) => {
   dispatch(setCreatingTeam(true))
@@ -1308,7 +1308,7 @@ export const fetchInvites = (dispatch: Dispatch) => () => {
   dispatch(setLoadingInvites(true))
   dispatch(setErrorFetchingInvites(false))
   return http
-    .get<IInvite[]>("/api/v1/invites/")
+    .get<ReadonlyArray<IInvite>>("/api/v1/invites/")
     .then(res => {
       dispatch(setInvites(res.data))
       dispatch(setLoadingInvites(false))
@@ -1408,7 +1408,7 @@ export const fetchCalendar = (dispatch: Dispatch) => (
       : `/api/v1/t/${teamID}/calendar/`
   // we fetch current month plus and minus 1 week
   return http
-    .get<ICalRecipe[]>(url, {
+    .get<ReadonlyArray<ICalRecipe>>(url, {
       params: {
         start: pyFormat(subWeeks(startOfMonth(month), 1)),
         end: pyFormat(addWeeks(endOfMonth(month), 1))

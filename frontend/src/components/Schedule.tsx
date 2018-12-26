@@ -11,8 +11,8 @@ import ShoppingList from "./ShoppingList"
 import { Dispatch, updatingTeamID } from "../store/actions"
 
 export type ScheduleRouteParams = RouteComponentProps<{
-  id?: string
-  type: "shopping" | "recipes"
+  readonly id?: string
+  readonly type: "shopping" | "recipes"
 }>
 
 interface IScheduleProps extends ScheduleRouteParams {
@@ -27,12 +27,12 @@ interface IScheduleState {
 }
 
 class Schedule extends React.Component<IScheduleProps, IScheduleState> {
-  state: IScheduleState = {
+  readonly state: IScheduleState = {
     query: "",
     closed: false
   }
 
-  toggleClose = () => {
+  readonly toggleClose = () => {
     this.setState(prev => ({ closed: !prev.closed }))
   }
 

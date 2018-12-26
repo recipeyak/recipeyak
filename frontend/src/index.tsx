@@ -31,7 +31,7 @@ render(
 )
 
 declare var module: {
-  hot?: {
+  readonly hot?: {
     accept(str: string, f: () => void): void
   }
 }

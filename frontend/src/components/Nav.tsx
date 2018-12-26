@@ -11,7 +11,7 @@ import { teamURL } from "../urls"
 import { ITeam } from "../store/reducers/teams"
 
 interface ITeamsProps {
-  readonly teams: ITeam[]
+  readonly teams: ReadonlyArray<ITeam>
   readonly loading: boolean
 }
 
@@ -49,12 +49,12 @@ interface INavbarProps {
   readonly darkMode: boolean
   readonly scheduleURL: string
   readonly loadingTeams: boolean
-  readonly teams: ITeam[]
+  readonly teams: ReadonlyArray<ITeam>
   readonly teamID: number | null
 }
 
 class Navbar extends React.Component<INavbarProps> {
-  static defaultProps = {
+  static readonly defaultProps = {
     teams: [],
     className: "",
     loggedIn: true

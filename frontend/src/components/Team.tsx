@@ -18,7 +18,7 @@ import { IRecipe } from "../store/reducers/recipes"
 interface ITeamMembers {
   readonly id: ITeam["id"]
   readonly name: ITeam["name"]
-  readonly members: IMember[]
+  readonly members: ReadonlyArray<IMember>
   readonly loading: boolean
 }
 
@@ -65,7 +65,7 @@ interface ITeamSettingsProps {
   readonly name: ITeam["name"]
   readonly updatingTeam: (
     id: ITeam["id"],
-    team: { name: string }
+    team: { readonly name: string }
   ) => Promise<void>
   readonly deleteTeam: (id: ITeam["id"]) => Promise<void>
   readonly loading: boolean
@@ -81,13 +81,13 @@ class TeamSettings extends React.Component<
   ITeamSettingsProps,
   ITeamSettingsState
 > {
-  state: ITeamSettingsState = {
+  readonly state: ITeamSettingsState = {
     name: "loading...",
     loadingDeleteTeam: false,
     loadingSaveChanges: false
   }
 
-  static defaultProps = {
+  static readonly defaultProps = {
     name: "loading",
     id: 0
   }
@@ -100,11 +100,11 @@ class TeamSettings extends React.Component<
     this.setState({ name: nextProps.name })
   }
 
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  readonly handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ name: e.target.value })
   }
 
-  handleSubmit = (e: React.FormEvent) => {
+  readonly handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     this.setState({ loadingSaveChanges: true })
     this.props
@@ -112,7 +112,7 @@ class TeamSettings extends React.Component<
       .then(() => this.setState({ loadingSaveChanges: false }))
   }
 
-  deleteTeam = () => {
+  readonly deleteTeam = () => {
     if (
       confirm(`Are you sure you want to delete this team "${this.props.name}"?`)
     ) {
@@ -174,16 +174,16 @@ interface ITeamProps {
   readonly deleteTeam: (id: ITeam["id"]) => Promise<void>
   readonly updatingTeam: (
     id: ITeam["id"],
-    team: { name: string }
+    team: { readonly name: string }
   ) => Promise<void>
-  readonly members: IMember[]
+  readonly members: ReadonlyArray<IMember>
   readonly error404: boolean
   readonly loadingTeam: boolean
   readonly name: string
   readonly isSettings: boolean
   readonly loadingMembers: boolean
   readonly loadingRecipes: boolean
-  readonly recipes: IRecipe[]
+  readonly recipes: ReadonlyArray<IRecipe>
 }
 
 class Team extends React.Component<ITeamProps> {
