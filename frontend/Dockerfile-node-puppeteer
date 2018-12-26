@@ -1,4 +1,4 @@
-FROM node:8.9.4
+FROM node:8.9.4-stretch
 
 # we use netcat to wait for a port to be available
 RUN apt-get update -yq && \
@@ -44,9 +44,7 @@ RUN apt-get update -yq && \
     libnss3 \
     lsb-release \
     xdg-utils \
-    wget \
-    # for linting (note with jesse this is python3.4)
-    python3
+    wget
 
 RUN npm install -g yarn
 
