@@ -153,7 +153,6 @@ export interface IMember {
 export interface ITeam {
   readonly id: number
   readonly name: string
-  readonly loading?: boolean // TODO(sbdchd): maybe remove? Is it used?
   readonly updating?: boolean
   readonly loadingRecipes?: boolean
   readonly sendingTeamInvites?: boolean

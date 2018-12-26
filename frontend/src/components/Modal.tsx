@@ -9,12 +9,6 @@ interface IModalProps {
 }
 
 export default class Modal extends React.Component<IModalProps> {
-  // TODO(sbdchd): remove once everything is typescript
-  static defaultProps = {
-    onClose: () => undefined,
-    className: ""
-  }
-
   componentWillMount() {
     document.addEventListener("keydown", this.handleKeyDown)
   }
