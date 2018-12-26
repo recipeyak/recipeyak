@@ -2,10 +2,7 @@ import { connect } from "react-redux"
 
 import { postNewRecipe, fetchTeams, Dispatch } from "store/actions"
 
-import AddRecipe, {
-  IIngredientBasic,
-  IStepBasic
-} from "components/AddRecipe"
+import AddRecipe, { IIngredientBasic, IStepBasic } from "components/AddRecipe"
 
 import { teamsFrom } from "store/mapState"
 import { RootState } from "store/store"

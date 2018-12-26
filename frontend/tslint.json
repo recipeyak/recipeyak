@@ -46,10 +46,7 @@
     "prefer-array-literal": true,
     "react-no-dangerous-html": true,
     "react-unused-props-and-state": true,
-    "no-relative-imports": [
-      true,
-        "allow-siblings"
-    ],
+    "no-relative-imports": [true, "allow-siblings"],
     "ban-types": {
       "options": [
         [
