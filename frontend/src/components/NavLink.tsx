@@ -6,12 +6,20 @@ export const NavLink = ({
   pathname,
   className = "",
   activeClassName = "active",
-  ...props
+  activeStyle,
+  exact,
+  strict,
+  isActive,
+  location
 }: NavLinkProps & { pathname: string }) => {
   const activeClass = pathname === to ? activeClassName : ""
   return (
     // keep react from warning about dispatch being passed down
-    <Link to={to} className={className + " " + activeClass} {...props} />
+    <Link
+      to={to}
+      className={className + " " + activeClass}
+      {...{ activeStyle, exact, strict, isActive, location }}
+    />
   )
 }
 

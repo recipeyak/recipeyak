@@ -43,8 +43,8 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
-          id: 9,
-          name: "1231"
+          ...baseRecipe,
+          id: 9
         }
       },
       {
@@ -54,8 +54,8 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
-          id: 3,
-          name: "1231"
+          ...baseRecipe,
+          id: 3
         }
       }
     ]
@@ -289,8 +289,8 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
-          id: 9,
-          name: "1231"
+          ...baseRecipe,
+          id: 9
         }
       },
       2: {
@@ -300,8 +300,8 @@ describe("Calendar", () => {
         user: 1,
         on: newOn,
         recipe: {
-          id: 9,
-          name: "1231"
+          ...baseRecipe,
+          id: 9
         }
       },
       3: {
@@ -311,8 +311,8 @@ describe("Calendar", () => {
         user: 1,
         on: "2018-06-07",
         recipe: {
-          id: 9,
-          name: "1231"
+          ...baseRecipe,
+          id: 9
         }
       },
       allIds: [id, 2, 3]
@@ -327,8 +327,8 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
-          id: 9,
-          name: "1231"
+          ...baseRecipe,
+          id: 9
         }
       },
       3: {
@@ -338,8 +338,8 @@ describe("Calendar", () => {
         user: 1,
         on: "2018-06-07",
         recipe: {
-          id: 9,
-          name: "123"
+          ...baseRecipe,
+          id: 9
         }
       },
       allIds: [2, 3]
@@ -363,8 +363,7 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
-          name: "foo",
-          id: 9
+          ...baseRecipe
         }
       },
       2: {
@@ -374,8 +373,7 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
-          name: "foo",
-          id: 9
+          ...baseRecipe
         }
       },
       3: {
@@ -385,8 +383,7 @@ describe("Calendar", () => {
         user: 1,
         on: "2018-06-07",
         recipe: {
-          name: "foo",
-          id: 9
+          ...baseRecipe
         }
       },
       allIds: [id, 2, 3]
@@ -412,8 +409,7 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
-          name: "foo",
-          id: 9
+          ...baseRecipe
         }
       },
       3: {
@@ -423,8 +419,7 @@ describe("Calendar", () => {
         user: 1,
         on: "2018-06-07",
         recipe: {
-          name: "foo",
-          id: 9
+          ...baseRecipe
         }
       },
       allIds: [2, 3, recipe.id]
@@ -447,8 +442,8 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
-          id: 9,
-          name: "test"
+          ...baseRecipe,
+          id: 9
         }
       },
       3: {
@@ -471,7 +466,7 @@ describe("Calendar", () => {
       on,
       team: 2,
       user: 1,
-      recipe: { id: 9, name: "123" }
+      recipe: { ...baseRecipe, id: 9 }
     }
 
     const afterState: ICalendarState = {
@@ -483,8 +478,8 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
-          id: 9,
-          name: "123"
+          ...baseRecipe,
+          id: 9
         }
       },
       3: {
@@ -495,8 +490,7 @@ describe("Calendar", () => {
         on: "2018-06-07",
         recipe: {
           ...baseRecipe,
-          id: 9,
-          name: "123"
+          id: 9
         }
       },
       allIds: [3, 9]
