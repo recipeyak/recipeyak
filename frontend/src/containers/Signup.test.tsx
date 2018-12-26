@@ -6,7 +6,7 @@ import { mount } from "enzyme"
 
 import Signup from "./Signup"
 
-import { emptyStore as store } from "../store/store"
+import { emptyStore as store } from "store/store"
 
 describe("<Signup/>", () => {
   it("renders signup", () => {

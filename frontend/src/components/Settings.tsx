@@ -7,9 +7,9 @@ import { ButtonPrimary, Button, ButtonDanger } from "./Buttons"
 
 import { GithubImg, GitlabImg } from "./SocialButtons"
 
-import { GITHUB_OAUTH_URL, GITLAB_OAUTH_URL } from "../settings"
-import { SocialProvider } from "../store/reducers/user"
-import { ISocialAccountsState } from "../store/reducers/user"
+import { GITHUB_OAUTH_URL, GITLAB_OAUTH_URL } from "settings"
+import { SocialProvider } from "store/reducers/user"
+import { ISocialAccountsState } from "store/reducers/user"
 import { AxiosError } from "axios"
 
 interface IOAuthButtonProps {

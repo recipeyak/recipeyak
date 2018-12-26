@@ -4,8 +4,8 @@ import { Link } from "react-router-dom"
 
 import Loader from "./Loader"
 import { RecipeItem as Recipe } from "./RecipeItem"
-import { IRecipe } from "../store/reducers/recipes"
-import { IUserStats } from "../store/reducers/user"
+import { IRecipe } from "store/reducers/recipes"
+import { IUserStats } from "store/reducers/user"
 
 // TODO(sbdchd): must be a better way
 // tslint:disable-next-line:no-var-requires

@@ -1,6 +1,6 @@
 import React from "react"
 import Textarea from "react-textarea-autosize"
-import { IRecipe } from "../store/reducers/recipes"
+import { IRecipe } from "store/reducers/recipes"
 
 interface IListItemProps {
   readonly id: number

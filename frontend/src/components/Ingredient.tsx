@@ -1,7 +1,7 @@
 import React from "react"
 
 import IngredientView from "./IngredientView"
-import { IIngredient, IRecipe } from "../store/reducers/recipes"
+import { IIngredient, IRecipe } from "store/reducers/recipes"
 interface IEmptyField {
   readonly quantity?: string
   readonly name?: string

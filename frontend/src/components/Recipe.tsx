@@ -19,10 +19,10 @@ import {
   deletingIngredient,
   updatingIngredient,
   Dispatch
-} from "../store/actions"
-import { RootState } from "../store/store"
+} from "store/actions"
+import { RootState } from "store/store"
 import { RouteComponentProps } from "react-router"
-import { IRecipe, IStep, IIngredient } from "../store/reducers/recipes"
+import { IRecipe, IStep, IIngredient } from "store/reducers/recipes"
 import { IRecipeBasic } from "./RecipeTitle"
 import { Omit } from "./AddRecipe"
 

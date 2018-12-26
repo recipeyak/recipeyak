@@ -11,9 +11,9 @@ import TeamRecipes from "./TeamRecipes"
 
 import { ButtonPrimary, ButtonLink } from "./Buttons"
 
-import { inviteURL, teamURL, teamSettingsURL } from "../urls"
-import { IMember, ITeam } from "../store/reducers/teams"
-import { IRecipe } from "../store/reducers/recipes"
+import { inviteURL, teamURL, teamSettingsURL } from "urls"
+import { IMember, ITeam } from "store/reducers/teams"
+import { IRecipe } from "store/reducers/recipes"
 
 interface ITeamMembers {
   readonly id: ITeam["id"]

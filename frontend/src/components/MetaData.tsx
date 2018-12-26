@@ -1,7 +1,7 @@
 import React from "react"
 
 import Owner from "./Owner"
-import { IRecipe } from "../store/reducers/recipes"
+import { IRecipe } from "store/reducers/recipes"
 
 interface IMetaDataProps {
   readonly author: string

@@ -6,7 +6,7 @@ import {
   BITBUCKET_OAUTH_URL,
   GOOGLE_OAUTH_URL,
   FACEBOOK_OAUTH_URL
-} from "../settings"
+} from "settings"
 
 import { FormErrorHandler } from "./Forms"
 

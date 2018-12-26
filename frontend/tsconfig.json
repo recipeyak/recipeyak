@@ -15,7 +15,8 @@
     "preserveConstEnums": true,
     "skipLibCheck": true,
     "experimentalDecorators": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "baseUrl": "./src"
   },
   "include": ["./src/**/*"]
 }

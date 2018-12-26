@@ -1,12 +1,12 @@
 import { connect } from "react-redux"
 
-import { fetchUser, loggingOut, fetchTeams, Dispatch } from "../store/actions"
+import { fetchUser, loggingOut, fetchTeams, Dispatch } from "store/actions"
 
-import Nav from "../components/Nav"
+import Nav from "components/Nav"
 
-import { teamsFrom, scheduleURLFromTeamID } from "../store/mapState"
-import { RootState } from "../store/store"
-import { toggleDarkMode } from "../store/reducers/user"
+import { teamsFrom, scheduleURLFromTeamID } from "store/mapState"
+import { RootState } from "store/store"
+import { toggleDarkMode } from "store/reducers/user"
 
 const mapStateToProps = (state: RootState) => ({
   avatarURL: state.user.avatarURL,

@@ -3,10 +3,10 @@ import { Link } from "react-router-dom"
 import Loader from "./Loader"
 
 import { TextInput } from "./Forms"
-import { matchesQuery } from "../search"
+import { matchesQuery } from "search"
 
 import { RecipeItem as Recipe } from "./RecipeItem"
-import { IRecipe } from "../store/reducers/recipes"
+import { IRecipe } from "store/reducers/recipes"
 
 interface ITeamRecipesProps {
   readonly loading: boolean

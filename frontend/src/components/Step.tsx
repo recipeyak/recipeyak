@@ -40,11 +40,11 @@ import {
   ConnectDragPreview,
   DropTargetMonitor
 } from "react-dnd"
-import * as ItemTypes from "../dragDrop"
+import * as ItemTypes from "dragDrop"
 import ListItem from "./ListItem"
 
-import { deletingStep, updatingStep, Dispatch } from "../store/actions"
-import { IStep, IRecipe } from "../store/reducers/recipes"
+import { deletingStep, updatingStep, Dispatch } from "store/actions"
+import { IStep, IRecipe } from "store/reducers/recipes"
 
 const style = {
   backgroundColor: "white"

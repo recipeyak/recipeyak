@@ -6,9 +6,9 @@ import AddIngredientForm from "./AddIngredientForm"
 import AddStepForm from "./AddStepForm"
 import Ingredient from "./Ingredient"
 import { ButtonPrimary } from "./Buttons"
-import { IRecipe, IStep, IIngredient } from "../store/reducers/recipes"
-import { ITeam } from "../store/reducers/teams"
-import { IAddRecipeError } from "../store/reducers/error"
+import { IRecipe, IStep, IIngredient } from "store/reducers/recipes"
+import { ITeam } from "store/reducers/teams"
+import { IAddRecipeError } from "store/reducers/error"
 
 const unfinishedIngredient = ({ quantity = "", name = "" }) =>
   quantity === "" || name === ""

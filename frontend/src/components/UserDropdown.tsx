@@ -1,7 +1,7 @@
 import React from "react"
 import { Link } from "react-router-dom"
 
-import { setDarkModeClass } from "../sideEffects"
+import { setDarkModeClass } from "sideEffects"
 
 interface IUserDropdownProps {
   readonly darkMode: boolean

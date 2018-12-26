@@ -1,7 +1,7 @@
 import addrecipe, { initialState, IAddRecipeState } from "./addrecipe"
 import * as a from "./addrecipe"
 
-import { IIngredientBasic } from "../../components/AddRecipe"
+import { IIngredientBasic } from "components/AddRecipe"
 import { baseIngredient, baseStep } from "./recipes.test"
 
 describe("addrecipe", () => {

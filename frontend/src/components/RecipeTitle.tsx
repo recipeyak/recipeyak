@@ -2,7 +2,7 @@ import React from "react"
 import { Button, ButtonPrimary } from "./Buttons"
 import MetaData from "./MetaData"
 import DatePickerForm from "./DatePickerForm"
-import { IRecipe } from "../store/reducers/recipes"
+import { IRecipe } from "store/reducers/recipes"
 
 interface IRecipeTitleProps {
   readonly id: IRecipe["id"]

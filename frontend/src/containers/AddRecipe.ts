@@ -1,14 +1,14 @@
 import { connect } from "react-redux"
 
-import { postNewRecipe, fetchTeams, Dispatch } from "../store/actions"
+import { postNewRecipe, fetchTeams, Dispatch } from "store/actions"
 
 import AddRecipe, {
   IIngredientBasic,
   IStepBasic
-} from "../components/AddRecipe"
+} from "components/AddRecipe"
 
-import { teamsFrom } from "../store/mapState"
-import { RootState } from "../store/store"
+import { teamsFrom } from "store/mapState"
+import { RootState } from "store/store"
 import {
   setAddRecipeFormName,
   setAddRecipeFormAuthor,
@@ -23,9 +23,9 @@ import {
   removeAddRecipeFormStep,
   updateAddRecipeFormStep,
   clearAddRecipeForm
-} from "../store/reducers/addrecipe"
-import { setErrorAddRecipe } from "../store/reducers/error"
-import { ITeam } from "../store/reducers/teams"
+} from "store/reducers/addrecipe"
+import { setErrorAddRecipe } from "store/reducers/error"
+import { ITeam } from "store/reducers/teams"
 
 const mapStateToProps = (state: RootState) => ({
   name: state.addrecipe.name,

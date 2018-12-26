@@ -1,0 +1,37 @@
+#!/usr/bin/env python3
+"""
+Find conflicting files between our src and node_modules folders.
+
+When using absolute imports, it is possible to have conflicts where a module
+is shadowed by a dependency in node_modules. This lint will detect such an issue
+and warn. We compare without file extensions, to behave as Node imports do.
+
+This file lives in backend/ so we can use our Python tools
+"""
+import argparse
+from pathlib import Path
+import sys
+from typing import Set
+
+parser = argparse.ArgumentParser(description='given directories, find duplicate files/folders, ignoring their extensions')
+parser.add_argument('dir', nargs='*', help='directories to compare')
+args = parser.parse_args()
+
+def find_names(dir: str) -> Set[str]:
+    """Normalize files and dirs, removing their extensions"""
+    return set(f.stem for f in Path(dir).iterdir())
+
+problems = set()
+total = set()
+for dirname in args.dir:
+    new = find_names(dirname)
+    # see if our new file stems are in the running total and store them with any
+    # existing problems
+    problems = problems | (total & new)
+    total = total.union(new)
+
+if len(problems) > 0:
+    print(f'Conflicting file(s) found. Try moving your file to a different namespace:', file=sys.stderr)
+    for filename in problems:
+        print(filename, file=sys.stderr)
+    sys.exit(1)

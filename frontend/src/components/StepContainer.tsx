@@ -33,8 +33,8 @@ import React from "react"
 import { connect } from "react-redux"
 
 import Card from "./Step"
-import { updatingStep, Dispatch } from "../store/actions"
-import { IRecipe, IStep } from "../store/reducers/recipes"
+import { updatingStep, Dispatch } from "store/actions"
+import { IRecipe, IStep } from "store/reducers/recipes"
 
 interface IStepContainerProps {
   readonly steps: IStep[]

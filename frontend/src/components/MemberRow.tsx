@@ -8,10 +8,10 @@ import {
   settingUserTeamLevel,
   deletingMembership,
   Dispatch
-} from "../store/actions"
-import { ITeam, IMember } from "../store/reducers/teams"
-import { RootState } from "../store/store"
-import { IUser } from "../store/reducers/user"
+} from "store/actions"
+import { ITeam, IMember } from "store/reducers/teams"
+import { RootState } from "store/store"
+import { IUser } from "store/reducers/user"
 
 const mapStateToProps = (
   state: RootState,

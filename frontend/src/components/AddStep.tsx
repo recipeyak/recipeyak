@@ -1,7 +1,7 @@
 import React from "react"
 
 import AddStepForm from "./AddStepForm"
-import { IStep } from "../store/reducers/recipes"
+import { IStep } from "store/reducers/recipes"
 
 interface IAddStepProps {
   readonly addStep: (id: IStep["id"], step: string) => Promise<void>

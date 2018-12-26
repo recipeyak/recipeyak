@@ -7,7 +7,7 @@ import { FormErrorHandler } from "./Forms"
 import { ButtonPrimary } from "./Buttons"
 
 import AuthContainer from "./AuthContainer"
-import { ILoginError, ISocialError } from "../store/reducers/error"
+import { ILoginError, ISocialError } from "store/reducers/error"
 
 const redirectURL = ({ pathname = "", search = "", hash = "" }) =>
   `${pathname}${search}${hash}`

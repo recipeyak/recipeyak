@@ -9,13 +9,13 @@ import endOfDay from "date-fns/end_of_day"
 
 import Month from "./DateRangePicker/Month"
 
-import { classNames } from "../classnames"
-import { atLeast1 } from "../input"
+import { classNames } from "classnames"
+import { atLeast1 } from "input"
 import { ButtonPrimary } from "./Buttons"
 
-import { addingScheduledRecipe, Dispatch } from "../store/actions"
-import { IRecipe } from "../store/reducers/recipes"
-import { ITeam } from "../store/reducers/teams"
+import { addingScheduledRecipe, Dispatch } from "store/actions"
+import { IRecipe } from "store/reducers/recipes"
+import { ITeam } from "store/reducers/teams"
 
 function mapDispatchToProps(dispatch: Dispatch) {
   return {

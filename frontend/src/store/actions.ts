@@ -7,7 +7,7 @@ export type Dispatch = ReduxDispatch<Action>
 
 export type GetState = () => RootState
 
-import { uuid4 } from "../uuid"
+import { uuid4 } from "uuid"
 import Cookie from "js-cookie"
 
 import startOfMonth from "date-fns/start_of_month"
@@ -15,7 +15,7 @@ import subWeeks from "date-fns/sub_weeks"
 import endOfMonth from "date-fns/end_of_month"
 import addWeeks from "date-fns/add_weeks"
 
-import { pyFormat } from "../date"
+import { pyFormat } from "date"
 
 import { push, replace } from "react-router-redux"
 import axios, { AxiosError, AxiosResponse, CancelTokenSource } from "axios"
@@ -62,7 +62,7 @@ import {
   setNotification,
   clearNotification
 } from "./reducers/notification"
-import { IRecipeBasic } from "../components/AddRecipe"
+import { IRecipeBasic } from "components/AddRecipe"
 import {
   ITeam,
   deleteTeam,
@@ -116,7 +116,7 @@ import {
   setRecipe404,
   IIngredient
 } from "./reducers/recipes"
-import * as api from "../api"
+import * as api from "api"
 import {
   setLoadingAddRecipe,
   setLoadingRecipes,

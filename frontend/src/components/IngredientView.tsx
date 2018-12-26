@@ -1,5 +1,5 @@
 import React from "react"
-import { IIngredient } from "../store/reducers/recipes"
+import { IIngredient } from "store/reducers/recipes"
 
 interface IIngredientVIewProps {
   readonly quantity: IIngredient["quantity"]

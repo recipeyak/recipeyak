@@ -10,11 +10,11 @@ import {
   acceptingInvite,
   decliningInvite,
   Dispatch
-} from "../store/actions"
+} from "store/actions"
 
-import { teamURL } from "../urls"
-import { IInvite } from "../store/reducers/invites"
-import { RootState } from "../store/store"
+import { teamURL } from "urls"
+import { IInvite } from "store/reducers/invites"
+import { RootState } from "store/store"
 
 interface IInvitesProps {
   readonly loading: boolean

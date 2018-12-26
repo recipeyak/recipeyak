@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 import { FormErrorHandler } from "./Forms"
 import { ButtonPrimary } from "./Buttons"
 import AuthContainer from "./AuthContainer"
-import { IPasswordResetError } from "../store/reducers/error"
+import { IPasswordResetError } from "store/reducers/error"
 
 interface IPasswordResetProps {
   readonly reset: (email: string) => Promise<void>

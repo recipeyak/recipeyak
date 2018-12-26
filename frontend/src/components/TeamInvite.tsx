@@ -9,11 +9,11 @@ import { ButtonPrimary } from "./Buttons"
 import NoMatch from "./NoMatch"
 import Loader from "./Loader"
 
-import { teamURL } from "../urls"
+import { teamURL } from "urls"
 
-import { fetchTeam, sendingTeamInvites, Dispatch } from "../store/actions"
-import { RootState } from "../store/store"
-import { IMember, ITeam } from "../store/reducers/teams"
+import { fetchTeam, sendingTeamInvites, Dispatch } from "store/actions"
+import { RootState } from "store/store"
+import { IMember, ITeam } from "store/reducers/teams"
 
 const mapStateToProps = (state: RootState, props: ITeamInviteProps) => {
   const id = parseInt(props.match.params.id, 10)

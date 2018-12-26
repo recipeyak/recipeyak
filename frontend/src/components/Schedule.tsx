@@ -8,7 +8,7 @@ import Calendar from "./Calendar"
 import Recipes from "./Recipes"
 import ShoppingList from "./ShoppingList"
 
-import { Dispatch, updatingTeamID } from "../store/actions"
+import { Dispatch, updatingTeamID } from "store/actions"
 
 export type ScheduleRouteParams = RouteComponentProps<{
   id?: string

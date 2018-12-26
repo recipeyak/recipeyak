@@ -6,13 +6,13 @@ import DatePickerForm from "./DatePickerForm"
 
 import { ButtonPlain } from "./Buttons"
 
-import { classNames } from "../classnames"
+import { classNames } from "classnames"
 
-import { teamURL, recipeURL } from "../urls"
+import { teamURL, recipeURL } from "urls"
 
-import * as DragDrop from "../dragDrop"
-import { ITeam } from "../store/reducers/teams"
-import { IRecipe } from "../store/reducers/recipes"
+import * as DragDrop from "dragDrop"
+import { ITeam } from "store/reducers/teams"
+import { IRecipe } from "store/reducers/recipes"
 
 const recipeSource = {
   beginDrag(props: IRecipeItemProps) {

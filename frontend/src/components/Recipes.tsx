@@ -4,15 +4,15 @@ import { connect } from "react-redux"
 import RecipeItem from "./RecipeItem"
 import Loader from "./Loader"
 import { TextInput } from "./Forms"
-import { matchesQuery } from "../search"
+import { matchesQuery } from "search"
 import Results from "./Results"
 
-import { byNameAlphabetical } from "../sorters"
+import { byNameAlphabetical } from "sorters"
 
-import { fetchRecipeList, Dispatch } from "../store/actions"
-import { IRecipe } from "../store/reducers/recipes"
-import { ITeam } from "../store/reducers/teams"
-import { RootState } from "../store/store"
+import { fetchRecipeList, Dispatch } from "store/actions"
+import { IRecipe } from "store/reducers/recipes"
+import { ITeam } from "store/reducers/teams"
+import { RootState } from "store/store"
 
 const mapStateToProps = (state: RootState) => {
   return {

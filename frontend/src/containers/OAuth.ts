@@ -1,11 +1,11 @@
 import { connect } from "react-redux"
 import queryString from "query-string"
 
-import { socialLogin as login, Dispatch } from "../store/actions"
-import OAuth from "../components/OAuth"
-import { RootState } from "../store/store"
+import { socialLogin as login, Dispatch } from "store/actions"
+import OAuth from "components/OAuth"
+import { RootState } from "store/store"
 import { RouteComponentProps } from "react-router"
-import { SocialProvider } from "../store/reducers/user"
+import { SocialProvider } from "store/reducers/user"
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {

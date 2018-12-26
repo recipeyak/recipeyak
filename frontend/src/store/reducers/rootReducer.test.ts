@@ -1,4 +1,4 @@
-import { rootReducer, emptyStore, RootState } from "../store"
+import { rootReducer, emptyStore, RootState } from "store/store"
 import { setUserLoggedIn } from "./user"
 
 describe("logout", () => {

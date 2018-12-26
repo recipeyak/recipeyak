@@ -1,7 +1,7 @@
 import { connect } from "react-redux"
 
-import { NavLink } from "../components/NavLink"
-import { RootState } from "../store/store"
+import { NavLink } from "components/NavLink"
+import { RootState } from "store/store"
 
 const mapStateToProps = (state: RootState) => ({
   pathname:

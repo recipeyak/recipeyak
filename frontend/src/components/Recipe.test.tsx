@@ -4,7 +4,7 @@ import { Provider } from "react-redux"
 
 import { mount } from "enzyme"
 
-import { emptyStore as store } from "../store/store"
+import { emptyStore as store } from "store/store"
 
 import Recipe from "./Recipe"
 
