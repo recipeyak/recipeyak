@@ -6,7 +6,8 @@ When using absolute imports, it is possible to have conflicts where a module
 is shadowed by a dependency in node_modules. This lint will detect such an issue
 and warn. We compare without file extensions, to behave as Node imports do.
 
-This file lives in backend/ so we can use our Python tools
+This file lives in backend/ so we can use our Python tools. This is also
+restricted to Python3.4 because of the recipeyak/node-puppeteer container.
 """
 import argparse
 from pathlib import Path
@@ -31,7 +32,7 @@ for dirname in args.dir:
     total = total.union(new)
 
 if len(problems) > 0:
-    print(f'Conflicting file(s) found. Try moving your file to a different namespace:', file=sys.stderr)
+    print('Conflicting file(s) found. Try moving your file to a different namespace:', file=sys.stderr)
     for filename in problems:
         print(filename, file=sys.stderr)
     sys.exit(1)

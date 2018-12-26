@@ -44,7 +44,9 @@ RUN apt-get update -yq && \
     libnss3 \
     lsb-release \
     xdg-utils \
-    wget
+    wget \
+    # for linting (note with jesse this is python3.4)
+    python3
 
 RUN npm install -g yarn
 
