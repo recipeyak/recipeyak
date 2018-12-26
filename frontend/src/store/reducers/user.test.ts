@@ -70,7 +70,9 @@ describe("User", () => {
       loggingOut: true
     }
 
-    expect(user(beforeState as any, a.setLoggingOut(true))).toEqual(afterState)
+    expect(user(beforeState as IUserState, a.setLoggingOut(true))).toEqual(
+      afterState
+    )
   })
 
   it("toggles darkmode", () => {
@@ -82,7 +84,9 @@ describe("User", () => {
       darkMode: true
     }
 
-    expect(user(beforeState as any, a.toggleDarkMode())).toEqual(afterState)
+    expect(user(beforeState as IUserState, a.toggleDarkMode())).toEqual(
+      afterState
+    )
   })
 
   it("sets social connections", () => {
@@ -110,9 +114,9 @@ describe("User", () => {
       }
     }
 
-    expect(user(beforeState as any, a.setSocialConnections(data))).toEqual(
-      afterState
-    )
+    expect(
+      user(beforeState as IUserState, a.setSocialConnections(data))
+    ).toEqual(afterState)
 
     const data2: ISocialConnection[] = [
       {
@@ -131,9 +135,9 @@ describe("User", () => {
       }
     }
 
-    expect(user(afterState as any, a.setSocialConnections(data2))).toEqual(
-      afterState2
-    )
+    expect(
+      user(afterState as IUserState, a.setSocialConnections(data2))
+    ).toEqual(afterState2)
   })
 
   it("handles multiple responses", () => {
@@ -168,9 +172,9 @@ describe("User", () => {
       }
     ]
 
-    expect(user(beforeState as any, a.setSocialConnections(data))).toEqual(
-      afterState
-    )
+    expect(
+      user(beforeState as IUserState, a.setSocialConnections(data))
+    ).toEqual(afterState)
   })
 
   it("sets social connection", () => {
@@ -191,7 +195,7 @@ describe("User", () => {
     const provider = "gitlab"
 
     expect(
-      user(beforeState as any, a.setSocialConnection(provider, null))
+      user(beforeState as IUserState, a.setSocialConnection(provider, null))
     ).toEqual(expected)
   })
 
@@ -202,7 +206,7 @@ describe("User", () => {
     const afterState = {
       loggedIn: false
     }
-    expect(user(beforeState as any, a.setUserLoggedIn(false))).toEqual(
+    expect(user(beforeState as IUserState, a.setUserLoggedIn(false))).toEqual(
       afterState
     )
   })

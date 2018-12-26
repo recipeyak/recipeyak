@@ -36,7 +36,7 @@ interface IIngredientProps {
       description,
       optional
     }: Pick<IIngredient, "quantity" | "name" | "description" | "optional">
-  ) => void
+  ) => Promise<void>
 }
 
 interface IIngredientState {

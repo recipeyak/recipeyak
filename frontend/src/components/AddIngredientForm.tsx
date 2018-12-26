@@ -3,9 +3,11 @@ import React from "react"
 import { ButtonPrimary } from "./Buttons"
 
 interface IAddIngredientFormProps {
-  readonly handleAddIngredient: () => void
-  readonly cancelAddIngredient: () => void
-  readonly handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  readonly handleAddIngredient: () => Promise<void>
+  readonly cancelAddIngredient: () => Promise<void>
+  readonly handleInputChange: (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => Promise<void>
   readonly quantity: string
   readonly name: string
   readonly description: string

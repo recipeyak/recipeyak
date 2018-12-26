@@ -122,6 +122,7 @@ export const history = createHistory()
 const router = routerMiddleware(history)
 
 const composeEnhancers: typeof compose =
+  // tslint:disable-next-line no-any no-unsafe-any
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 // We need an empty store for the unit tests

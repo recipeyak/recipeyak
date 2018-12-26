@@ -6,12 +6,12 @@ interface IListItemProps {
   readonly id: number
   readonly text?: string
   readonly recipeID?: IRecipe["id"]
-  readonly delete: (id: IRecipe["id"]) => void
+  readonly delete: (id: IRecipe["id"]) => Promise<void>
   readonly update: (
     recipeID: IRecipe["id"],
     id: number,
     data: { text: string }
-  ) => void
+  ) => Promise<void>
   readonly removing?: boolean
   readonly updating?: boolean
 }

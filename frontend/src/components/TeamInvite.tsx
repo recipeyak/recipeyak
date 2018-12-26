@@ -50,12 +50,12 @@ export const roles = [
 
 interface ITeamInviteProps extends RouteComponentProps<{ id: string }> {
   readonly id: ITeam["id"]
-  readonly fetchData: (id: ITeam["id"]) => void
+  readonly fetchData: (id: ITeam["id"]) => Promise<void>
   readonly sendInvites: (
     id: ITeam["id"],
     emails: string[],
     level: IMember["level"]
-  ) => void
+  ) => Promise<void>
   readonly loadingTeam: boolean
   readonly name: string
   readonly error404: boolean

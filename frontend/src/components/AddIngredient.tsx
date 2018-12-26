@@ -9,12 +9,12 @@ export interface IIngredientBasic {
 }
 
 interface IAddIngredientProps {
-  readonly onCancel: () => void
+  readonly onCancel: () => Promise<void>
   readonly id: number
   readonly addIngredient: (
     id: number,
     { quantity, name, description }: IIngredientBasic
-  ) => void
+  ) => Promise<void>
   readonly loading: boolean
   readonly autoFocus: boolean
 }

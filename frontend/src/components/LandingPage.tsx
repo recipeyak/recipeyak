@@ -27,6 +27,7 @@ const LandingPage = () => (
     </section>
     <section className="pt-4 bg-50-50-primary pr-4 pl-4">
       <section className="container">
+        {/* tslint:disable-next-line:no-unsafe-any */}
         <img className="box-shadow-normal" src={homepageImg} alt="" />
       </section>
     </section>
@@ -57,6 +58,7 @@ const LandingPage = () => (
               imgURL: cartDoublingImg
             }
           ].map(({ text, imgURL }, i) => (
+            // tslint:disable-next-line:no-unsafe-any
             <li className="feature-grid" key={text}>
               <p
                 className={`align-self-center ${
@@ -65,6 +67,7 @@ const LandingPage = () => (
                 {text}
               </p>
               <div className="fact-img align-self-center ">
+                {/* tslint:disable-next-line:no-unsafe-any */}
                 <img className="box-shadow-normal " src={imgURL} alt="" />
               </div>
             </li>
@@ -112,6 +115,7 @@ const LandingPage = () => (
               imgURL: cartDoublingImg
             }
           ].map(({ text, imgURL }, i) => (
+            // tslint:disable-next-line:no-unsafe-any
             <li className="feature-grid" key={imgURL}>
               <p className="align-self-center">
                 <b>
@@ -121,6 +125,7 @@ const LandingPage = () => (
                 {text}
               </p>
               <div className="fact-img">
+                {/* tslint:disable-next-line:no-unsafe-any */}
                 <img className="box-shadow-normal " src={imgURL} alt="" />
               </div>
             </li>

@@ -65,7 +65,8 @@ const cardSource = {
 
 const cardTarget = {
   hover(props: ICardProps, monitor: DropTargetMonitor, component: Card) {
-    const dragIndex = monitor.getItem().index
+    // tslint:disable-next-line:no-unsafe-any
+    const dragIndex: number = monitor.getItem().index
     const hoverIndex = props.index
 
     // Don't replace items with themselves
@@ -113,6 +114,7 @@ const cardTarget = {
     // Generally it's better to avoid mutations,
     // but it's good here for the sake of performance
     // to avoid expensive index searches.
+    // tslint:disable-next-line:no-unsafe-any
     monitor.getItem().index = hoverIndex
   }
 }
@@ -190,8 +192,8 @@ interface IStepBodyBasic {
     recipeID: number,
     stepID: number,
     step: { text?: string }
-  ) => void
-  readonly delete: (recipeID: IRecipe["id"], id: number) => void
+  ) => Promise<void>
+  readonly delete: (recipeID: IRecipe["id"], id: number) => Promise<void>
 }
 
 function StepBodyBasic(props: IStepBodyBasic) {

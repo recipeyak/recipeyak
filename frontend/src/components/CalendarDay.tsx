@@ -84,7 +84,8 @@ function CalendarDay({
       })}>
       <Title date={date} />
       {item != null
-        ? Object.values(item).map(x => (
+        ? Object.values(item).map((x: ICalRecipe) => (
+            // tslint:disable:no-unsafe-any
             <CalendarItem
               key={x.id}
               id={x.id}
@@ -96,6 +97,7 @@ function CalendarDay({
               refetchShoppingList={() => refetchShoppingList(teamID)}
               count={x.count}
             />
+            // tslint:enable:no-unsafe-any
           ))
         : null}
     </div>

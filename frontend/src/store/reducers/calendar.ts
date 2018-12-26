@@ -127,7 +127,8 @@ export interface ICalRecipe {
   readonly team?: unknown
   readonly user: unknown
   readonly recipe: {
-    readonly id: number | string
+    readonly id: number
+    readonly name: string
   }
 }
 

@@ -94,6 +94,7 @@ const RecentRecipes = ({ recipes, loading, error }: IRecentRecipes) => {
           <p className="stat-small">No recipes here — just this yak.</p>
           <img
             alt="yak in a field"
+            // tslint:disable-next-line:no-unsafe-any
             src={img}
             className="box-shadow-normal br-3 filter-saturate-140"
           />

@@ -145,7 +145,7 @@ export type TeamsActions =
 export interface IMember {
   readonly id: number
   readonly user: IUser
-  readonly level?: "admin" | "contributor" | "viewer"
+  readonly level?: "admin" | "contributor" | "read"
   readonly deleting?: boolean
   readonly is_active?: boolean
 }

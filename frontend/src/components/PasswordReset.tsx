@@ -8,7 +8,7 @@ import AuthContainer from "./AuthContainer"
 import { IPasswordResetError } from "../store/reducers/error"
 
 interface IPasswordResetProps {
-  readonly reset: (email: string) => void
+  readonly reset: (email: string) => Promise<void>
   readonly loggedIn: boolean
   readonly loading: boolean
   readonly error: IPasswordResetError
