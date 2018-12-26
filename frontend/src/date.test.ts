@@ -1,4 +1,4 @@
-import { daysUntilSaturday } from "./date"
+import { daysUntilSaturday } from "@/date"
 
 describe("date", () => {
   it("provides number of days from saturday", () => {

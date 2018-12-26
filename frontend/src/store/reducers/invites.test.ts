@@ -1,5 +1,9 @@
-import invites, { initialState, IInvitesState, IInvite } from "./invites"
-import * as t from "./invites"
+import invites, {
+  initialState,
+  IInvitesState,
+  IInvite
+} from "@/store/reducers/invites"
+import * as t from "@/store/reducers/invites"
 
 const basicInvite: IInvite = {
   id: 1,

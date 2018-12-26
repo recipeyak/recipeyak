@@ -1,5 +1,5 @@
 import { action as act } from "typesafe-actions"
-import { IRecipe } from "./recipes"
+import { IRecipe } from "@/store/reducers/recipes"
 
 const SET_SEARCH_RESULTS = "SET_SEARCH_RESULTS"
 const CLEAR_SEARCH_RESULTS = "CLEAR_SEARCH_RESULTS"

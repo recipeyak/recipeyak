@@ -1,14 +1,14 @@
 import React from "react"
 import { connect } from "react-redux"
-import { Helmet } from "./Helmet"
+import { Helmet } from "@/components/Helmet"
 import { Link } from "react-router-dom"
 import { RouteComponentProps } from "react-router-dom"
 
-import Calendar from "./Calendar"
-import Recipes from "./Recipes"
-import ShoppingList from "./ShoppingList"
+import Calendar from "@/components/Calendar"
+import Recipes from "@/components/Recipes"
+import ShoppingList from "@/components/ShoppingList"
 
-import { Dispatch, updatingTeamID } from "store/actions"
+import { Dispatch, updatingTeamID } from "@/store/actions"
 
 export type ScheduleRouteParams = RouteComponentProps<{
   id?: string

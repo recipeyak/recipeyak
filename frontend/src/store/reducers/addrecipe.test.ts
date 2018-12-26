@@ -1,8 +1,11 @@
-import addrecipe, { initialState, IAddRecipeState } from "./addrecipe"
-import * as a from "./addrecipe"
+import addrecipe, {
+  initialState,
+  IAddRecipeState
+} from "@/store/reducers/addrecipe"
+import * as a from "@/store/reducers/addrecipe"
 
-import { IIngredientBasic } from "components/AddRecipe"
-import { baseIngredient, baseStep } from "./recipes.test"
+import { IIngredientBasic } from "@/components/AddRecipe"
+import { baseIngredient, baseStep } from "@/store/reducers/recipes.test"
 
 describe("addrecipe", () => {
   it("sets addrecipe form name", () => {

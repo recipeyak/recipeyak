@@ -1,6 +1,6 @@
-import auth, { IAuthState } from "./auth"
+import auth, { IAuthState } from "@/store/reducers/auth"
 
-import * as a from "./auth"
+import * as a from "@/store/reducers/auth"
 
 describe("auth", () => {
   it("sets redirect url", () => {

@@ -7,13 +7,13 @@ import {
   deletingTeam,
   updatingTeam,
   Dispatch
-} from "store/actions"
+} from "@/store/actions"
 
-import Team from "components/Team"
-import { RootState } from "store/store"
+import Team from "@/components/Team"
+import { RootState } from "@/store/store"
 import { RouteComponentProps } from "react-router"
-import { IRecipe, IRecipesState } from "store/reducers/recipes"
-import { ITeam } from "store/reducers/teams"
+import { IRecipe, IRecipesState } from "@/store/reducers/recipes"
+import { ITeam } from "@/store/reducers/teams"
 
 const notUndefined = (x?: null | IRecipe) => x != null
 

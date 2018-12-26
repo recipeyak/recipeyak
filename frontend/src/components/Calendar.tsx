@@ -15,21 +15,21 @@ import {
   fetchShoppingList,
   fetchRecipeList,
   Dispatch
-} from "store/actions"
+} from "@/store/actions"
 
-import { pyFormat, daysFromSunday, daysUntilSaturday } from "date"
+import { pyFormat, daysFromSunday, daysUntilSaturday } from "@/date"
 
-import { teamsFrom } from "store/mapState"
+import { teamsFrom } from "@/store/mapState"
 
 import { push } from "react-router-redux"
 
-import { ButtonPrimary, ButtonPlain } from "./Buttons"
-import Loader from "./Loader"
-import CalendarDay from "./CalendarDay"
-import { RootState } from "store/store"
-import { ITeam } from "store/reducers/teams"
-import { ICalRecipe } from "store/reducers/calendar"
-import { ScheduleRouteParams } from "./Schedule"
+import { ButtonPrimary, ButtonPlain } from "@/components/Buttons"
+import Loader from "@/components/Loader"
+import CalendarDay from "@/components/CalendarDay"
+import { RootState } from "@/store/store"
+import { ITeam } from "@/store/reducers/teams"
+import { ICalRecipe } from "@/store/reducers/calendar"
+import { ScheduleRouteParams } from "@/components/Schedule"
 
 function monthYearFromDate(date: Date) {
   return format(date, "MMM | YYYY")

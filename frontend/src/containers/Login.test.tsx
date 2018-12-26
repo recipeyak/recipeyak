@@ -4,9 +4,9 @@ import { Provider } from "react-redux"
 
 import { mount } from "enzyme"
 
-import Login from "./Login"
+import Login from "@/containers/Login"
 
-import { emptyStore as store } from "store/store"
+import { emptyStore as store } from "@/store/store"
 
 describe("<Login/>", () => {
   it("renders login", () => {

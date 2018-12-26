@@ -1,11 +1,11 @@
 import * as React from "react"
-import { Helmet } from "./Helmet"
+import { Helmet } from "@/components/Helmet"
 import { Link } from "react-router-dom"
 
-import Loader from "./Loader"
-import { RecipeItem as Recipe } from "./RecipeItem"
-import { IRecipe } from "store/reducers/recipes"
-import { IUserStats } from "store/reducers/user"
+import Loader from "@/components/Loader"
+import { RecipeItem as Recipe } from "@/components/RecipeItem"
+import { IRecipe } from "@/store/reducers/recipes"
+import { IUserStats } from "@/store/reducers/user"
 
 // TODO(sbdchd): must be a better way
 // tslint:disable-next-line:no-var-requires

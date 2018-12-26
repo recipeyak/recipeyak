@@ -3,13 +3,13 @@ import React from "react"
 import { Link } from "react-router-dom"
 import { DragSource, ConnectDragSource } from "react-dnd"
 
-import { beforeCurrentDay } from "date"
+import { beforeCurrentDay } from "@/date"
 
-import { recipeURL } from "urls"
+import { recipeURL } from "@/urls"
 
-import * as DragDrop from "dragDrop"
-import { IRecipe } from "store/reducers/recipes"
-import { ICalRecipe } from "store/reducers/calendar"
+import * as DragDrop from "@/dragDrop"
+import { IRecipe } from "@/store/reducers/recipes"
+import { ICalRecipe } from "@/store/reducers/calendar"
 import { AxiosResponse } from "axios"
 
 const COUNT_THRESHOLD = 1

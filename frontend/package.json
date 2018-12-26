@@ -98,6 +98,7 @@
     "react-dom": "^16.2.0",
     "react-helmet": "^5.2.0",
     "react-redux": "^5.0.7",
+    "react-router": "^4.3.1",
     "react-router-dom": "^4.1.1",
     "react-router-redux": "^5.0.0-alpha.9",
     "react-textarea-autosize": "^5.2.1",
@@ -146,7 +147,8 @@
       "src"
     ],
     "moduleNameMapper": {
-      "^react-native$": "react-native-web"
+      "^react-native$": "react-native-web",
+      "^@/(.*)": "<rootDir>/src/$1"
     }
   },
   "babel": {

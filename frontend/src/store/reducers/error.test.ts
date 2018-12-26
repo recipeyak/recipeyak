@@ -1,5 +1,5 @@
-import error, { initialState } from "./error"
-import * as a from "./error"
+import error, { initialState } from "@/store/reducers/error"
+import * as a from "@/store/reducers/error"
 
 describe("error", () => {
   it("sets login error", () => {

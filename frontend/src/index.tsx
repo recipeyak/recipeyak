@@ -4,11 +4,11 @@ import { render } from "react-dom"
 import { AppContainer } from "react-hot-loader"
 import { Provider } from "react-redux"
 
-import { SENTRY_DSN, GIT_SHA } from "./settings"
+import { SENTRY_DSN, GIT_SHA } from "@/settings"
 
-import App from "./components/App"
+import App from "@/components/App"
 
-import store from "./store/store"
+import store from "@/store/store"
 
 if (process.env.NODE_ENV === "production" && SENTRY_DSN) {
   Raven.config(SENTRY_DSN, {

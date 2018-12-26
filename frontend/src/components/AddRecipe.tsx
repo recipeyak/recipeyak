@@ -1,19 +1,17 @@
 import React from "react"
-import { Helmet } from "./Helmet"
+import { Helmet } from "@/components/Helmet"
 
-import ListItem from "./ListItem"
-import AddIngredientForm from "./AddIngredientForm"
-import AddStepForm from "./AddStepForm"
-import Ingredient from "./Ingredient"
-import { ButtonPrimary } from "./Buttons"
-import { IRecipe, IStep, IIngredient } from "store/reducers/recipes"
-import { ITeam } from "store/reducers/teams"
-import { IAddRecipeError } from "store/reducers/error"
+import ListItem from "@/components/ListItem"
+import AddIngredientForm from "@/components/AddIngredientForm"
+import AddStepForm from "@/components/AddStepForm"
+import Ingredient from "@/components/Ingredient"
+import { ButtonPrimary } from "@/components/Buttons"
+import { IRecipe, IStep, IIngredient } from "@/store/reducers/recipes"
+import { ITeam } from "@/store/reducers/teams"
+import { IAddRecipeError } from "@/store/reducers/error"
 
 const unfinishedIngredient = ({ quantity = "", name = "" }) =>
   quantity === "" || name === ""
-
-export type Omit<T, K> = Pick<T, Exclude<keyof T, K>>
 
 export interface IRecipeBasic
   extends Omit<

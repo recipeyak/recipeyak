@@ -1,4 +1,4 @@
-import { byNameAlphabetical, ingredientByNameAlphabetical } from "./sorters"
+import { byNameAlphabetical, ingredientByNameAlphabetical } from "@/sorters"
 
 describe("byNameAlphabetical", () => {
   it("sorter keeps already sorted list sorted", () => {

@@ -8,11 +8,11 @@ import startOfDay from "date-fns/start_of_day"
 import endOfDay from "date-fns/end_of_day"
 import isFirstDayOfMonth from "date-fns/is_first_day_of_month"
 
-import { beforeCurrentDay } from "date"
+import { beforeCurrentDay } from "@/date"
 
-import { classNames } from "classnames"
+import { classNames } from "@/classnames"
 
-import CalendarItem from "./CalendarDayItem"
+import CalendarItem from "@/components/CalendarDayItem"
 
 import {
   addingScheduledRecipe,
@@ -21,13 +21,13 @@ import {
   moveScheduledRecipe,
   deletingScheduledRecipe,
   Dispatch
-} from "store/actions"
+} from "@/store/actions"
 
-import * as DragDrop from "dragDrop"
-import { ITeam } from "store/reducers/teams"
-import { IRecipe } from "store/reducers/recipes"
-import { RootState } from "store/store"
-import { ICalendarState, ICalRecipe } from "store/reducers/calendar"
+import * as DragDrop from "@/dragDrop"
+import { ITeam } from "@/store/reducers/teams"
+import { IRecipe } from "@/store/reducers/recipes"
+import { RootState } from "@/store/store"
+import { ICalendarState, ICalRecipe } from "@/store/reducers/calendar"
 import { AxiosResponse } from "axios"
 
 const Title = ({ date }: { date: Date }) => {

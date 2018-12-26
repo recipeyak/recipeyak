@@ -1,8 +1,8 @@
 import React from "react"
-import { Helmet } from "./Helmet"
+import { Helmet } from "@/components/Helmet"
 
-import { FormErrorHandler } from "./Forms"
-import { ButtonPrimary } from "./Buttons"
+import { FormErrorHandler } from "@/components/Forms"
+import { ButtonPrimary } from "@/components/Buttons"
 
 interface IPasswordChangeError {
   readonly oldPassword?: string[]

@@ -1,11 +1,11 @@
 import React from "react"
-import { Helmet } from "./Helmet"
+import { Helmet } from "@/components/Helmet"
 import { Link } from "react-router-dom"
 
-import { FormErrorHandler } from "./Forms"
-import { ButtonPrimary } from "./Buttons"
-import AuthContainer from "./AuthContainer"
-import { IPasswordResetError } from "store/reducers/error"
+import { FormErrorHandler } from "@/components/Forms"
+import { ButtonPrimary } from "@/components/Buttons"
+import AuthContainer from "@/components/AuthContainer"
+import { IPasswordResetError } from "@/store/reducers/error"
 
 interface IPasswordResetProps {
   readonly reset: (email: string) => Promise<void>

@@ -8,10 +8,10 @@ import {
   loggingOut,
   deleteUserAccount,
   Dispatch
-} from "store/actions"
+} from "@/store/actions"
 
-import Settings from "components/Settings"
-import { RootState } from "store/store"
+import Settings from "@/components/Settings"
+import { RootState } from "@/store/store"
 
 const mapStateToProps = (state: RootState) => {
   return {

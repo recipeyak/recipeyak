@@ -1,8 +1,8 @@
 import { uniq, omit } from "lodash"
 
-import { IUser } from "./user"
+import { IUser } from "@/store/reducers/user"
 import { action as act } from "typesafe-actions"
-import { IRecipe } from "./recipes"
+import { IRecipe } from "@/store/reducers/recipes"
 
 const ADD_TEAM = "ADD_TEAM"
 const DELETE_TEAM = "DELETE_TEAM"

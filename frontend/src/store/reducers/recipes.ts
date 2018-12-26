@@ -1,5 +1,5 @@
 import { omit } from "lodash"
-import { ITeam } from "./teams"
+import { ITeam } from "@/store/reducers/teams"
 import { action as act } from "typesafe-actions"
 
 const ADD_RECIPE = "ADD_RECIPE"

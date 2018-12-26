@@ -15,37 +15,43 @@ import {
   RouterAction
 } from "react-router-redux"
 
-import recipes, { IRecipesState, RecipeActions } from "./reducers/recipes"
+import recipes, { IRecipesState, RecipeActions } from "@/store/reducers/recipes"
 import user, {
   SET_USER_LOGGED_IN,
   IUserState,
   UserActions
-} from "./reducers/user"
-import loading, { ILoadingState, LoadingActions } from "./reducers/loading"
-import error, { IErrorState, ErrorActions } from "./reducers/error"
+} from "@/store/reducers/user"
+import loading, {
+  ILoadingState,
+  LoadingActions
+} from "@/store/reducers/loading"
+import error, { IErrorState, ErrorActions } from "@/store/reducers/error"
 import notification, {
   INotificationState,
   NotificationsActions
-} from "./reducers/notification"
+} from "@/store/reducers/notification"
 import passwordChange, {
   IPasswordChangeState,
   PasswordChangeActions
-} from "./reducers/passwordChange"
+} from "@/store/reducers/passwordChange"
 import shoppinglist, {
   IShoppingListState,
   ShoppingListActions
-} from "./reducers/shoppinglist"
+} from "@/store/reducers/shoppinglist"
 import addrecipe, {
   IAddRecipeState,
   AddRecipeActions
-} from "./reducers/addrecipe"
-import auth, { IAuthState, AuthActions } from "./reducers/auth"
-import teams, { ITeamsState, TeamsActions } from "./reducers/teams"
-import invites, { InviteActions, IInvitesState } from "./reducers/invites"
-import calendar, { ICalendarState, CalendarActions } from "./reducers/calendar"
-import search, { ISearchState, SearchActions } from "./reducers/search"
+} from "@/store/reducers/addrecipe"
+import auth, { IAuthState, AuthActions } from "@/store/reducers/auth"
+import teams, { ITeamsState, TeamsActions } from "@/store/reducers/teams"
+import invites, { InviteActions, IInvitesState } from "@/store/reducers/invites"
+import calendar, {
+  ICalendarState,
+  CalendarActions
+} from "@/store/reducers/calendar"
+import search, { ISearchState, SearchActions } from "@/store/reducers/search"
 
-import { loadState, saveState } from "./localStorage"
+import { loadState, saveState } from "@/store/localStorage"
 import { StateType } from "typesafe-actions"
 
 interface IState {

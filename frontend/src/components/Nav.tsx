@@ -1,14 +1,14 @@
 import React from "react"
 import { Link } from "react-router-dom"
 
-import NavLink from "containers/NavLink"
-import Logo from "./Logo"
-import Dropdown from "./Dropdown"
-import NotificationsDropdown from "./NotificationsDropdown"
-import UserDropdown from "./UserDropdown"
+import NavLink from "@/containers/NavLink"
+import Logo from "@/components/Logo"
+import Dropdown from "@/components/Dropdown"
+import NotificationsDropdown from "@/components/NotificationsDropdown"
+import UserDropdown from "@/components/UserDropdown"
 
-import { teamURL } from "urls"
-import { ITeam } from "store/reducers/teams"
+import { teamURL } from "@/urls"
+import { ITeam } from "@/store/reducers/teams"
 
 interface ITeamsProps {
   readonly teams: ITeam[]

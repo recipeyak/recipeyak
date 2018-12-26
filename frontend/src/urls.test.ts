@@ -1,4 +1,4 @@
-import { toURL } from "./urls"
+import { toURL } from "@/urls"
 
 describe("#toURL", () => {
   it("replaces #", () => {

@@ -1,13 +1,13 @@
 import React from "react"
 import { connect } from "react-redux"
 
-import { roles } from "./TeamInvite"
+import { roles } from "@/components/TeamInvite"
 
-import { ButtonPrimary } from "./Buttons"
+import { ButtonPrimary } from "@/components/Buttons"
 
-import { creatingTeam, Dispatch } from "store/actions"
-import { IMember } from "store/reducers/teams"
-import { RootState } from "store/store"
+import { creatingTeam, Dispatch } from "@/store/actions"
+import { IMember } from "@/store/reducers/teams"
+import { RootState } from "@/store/store"
 
 const mapStateToProps = (state: RootState) => ({
   loading: !!state.teams.creating

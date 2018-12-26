@@ -2,17 +2,17 @@ import React from "react"
 import { Link } from "react-router-dom"
 import { DragSource, ConnectDragSource } from "react-dnd"
 
-import DatePickerForm from "./DatePickerForm"
+import DatePickerForm from "@/components/DatePickerForm"
 
-import { ButtonPlain } from "./Buttons"
+import { ButtonPlain } from "@/components/Buttons"
 
-import { classNames } from "classnames"
+import { classNames } from "@/classnames"
 
-import { teamURL, recipeURL } from "urls"
+import { teamURL, recipeURL } from "@/urls"
 
-import * as DragDrop from "dragDrop"
-import { ITeam } from "store/reducers/teams"
-import { IRecipe } from "store/reducers/recipes"
+import * as DragDrop from "@/dragDrop"
+import { ITeam } from "@/store/reducers/teams"
+import { IRecipe } from "@/store/reducers/recipes"
 
 const recipeSource = {
   beginDrag(props: IRecipeItemProps) {

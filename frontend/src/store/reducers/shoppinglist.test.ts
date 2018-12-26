@@ -1,9 +1,9 @@
 import shoppinglist, {
   IShoppingListState,
   IShoppingListItem
-} from "./shoppinglist"
+} from "@/store/reducers/shoppinglist"
 
-import * as a from "./shoppinglist"
+import * as a from "@/store/reducers/shoppinglist"
 
 describe("Shopping List", () => {
   const shopList: IShoppingListItem[] = [

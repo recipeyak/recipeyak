@@ -2,7 +2,11 @@ import React from "react"
 
 import { connect } from "react-redux"
 import { Link } from "react-router-dom"
-import { ButtonLink, ButtonSecondary, ButtonPrimary } from "./Buttons"
+import {
+  ButtonLink,
+  ButtonSecondary,
+  ButtonPrimary
+} from "@/components/Buttons"
 
 import {
   fetchTeams,
@@ -11,13 +15,13 @@ import {
   showNotificationWithTimeout,
   Dispatch,
   INotificationWithTimeout
-} from "store/actions"
-import { RootState } from "store/store"
-import { IRecipe } from "store/reducers/recipes"
-import { ITeamsState } from "store/reducers/teams"
-import { IUserState } from "store/reducers/user"
+} from "@/store/actions"
+import { RootState } from "@/store/store"
+import { IRecipe } from "@/store/reducers/recipes"
+import { ITeamsState } from "@/store/reducers/teams"
+import { IUserState } from "@/store/reducers/user"
 import { AxiosError } from "axios"
-import { teamURL } from "urls"
+import { teamURL } from "@/urls"
 
 const mapStateToProps = (state: RootState) => ({
   teams: state.teams,

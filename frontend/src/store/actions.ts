@@ -7,7 +7,7 @@ export type Dispatch = ReduxDispatch<Action>
 
 export type GetState = () => RootState
 
-import { uuid4 } from "utils/uuid"
+import { uuid4 } from "@/utils/uuid"
 import Cookie from "js-cookie"
 
 import startOfMonth from "date-fns/start_of_month"
@@ -15,13 +15,13 @@ import subWeeks from "date-fns/sub_weeks"
 import endOfMonth from "date-fns/end_of_month"
 import addWeeks from "date-fns/add_weeks"
 
-import { pyFormat } from "date"
+import { pyFormat } from "@/date"
 
 import { push, replace } from "react-router-redux"
 import axios, { AxiosError, AxiosResponse, CancelTokenSource } from "axios"
 import raven from "raven-js"
 
-import { store, RootState, Action } from "./store"
+import { store, RootState, Action } from "@/store/store"
 import {
   SocialProvider,
   updateEmail,
@@ -36,7 +36,7 @@ import {
   IUser,
   IUserStats,
   ISocialConnection
-} from "./reducers/user"
+} from "@/store/reducers/user"
 import {
   ICalRecipe,
   setCalendarLoading,
@@ -46,7 +46,7 @@ import {
   deleteCalendarRecipe,
   setCalendarRecipes,
   moveCalendarRecipe
-} from "./reducers/calendar"
+} from "@/store/reducers/calendar"
 import {
   setDecliningInvite,
   setDeclinedInvite,
@@ -56,13 +56,13 @@ import {
   setErrorFetchingInvites,
   setInvites,
   IInvite
-} from "./reducers/invites"
+} from "@/store/reducers/invites"
 import {
   INotificationState,
   setNotification,
   clearNotification
-} from "./reducers/notification"
-import { IRecipeBasic } from "components/AddRecipe"
+} from "@/store/reducers/notification"
+import { IRecipeBasic } from "@/components/AddRecipe"
 import {
   ITeam,
   deleteTeam,
@@ -85,7 +85,7 @@ import {
   updateTeamById,
   setCopyingTeam,
   IMember
-} from "./reducers/teams"
+} from "@/store/reducers/teams"
 import {
   IRecipe,
   setSchedulingRecipe,
@@ -115,8 +115,8 @@ import {
   setLoadingRecipe,
   setRecipe404,
   IIngredient
-} from "./reducers/recipes"
-import * as api from "api"
+} from "@/store/reducers/recipes"
+import * as api from "@/api"
 import {
   setLoadingAddRecipe,
   setLoadingRecipes,
@@ -124,24 +124,24 @@ import {
   setLoadingSignup,
   setLoadingReset,
   setLoadingResetConfirmation
-} from "./reducers/loading"
+} from "@/store/reducers/loading"
 import {
   clearSearchResults,
   incrLoadingSearch,
   decrLoadingSearch,
   setSearchResults
-} from "./reducers/search"
-import { clearAddRecipeForm } from "./reducers/addrecipe"
+} from "@/store/reducers/search"
+import { clearAddRecipeForm } from "@/store/reducers/addrecipe"
 import {
   setShoppingList,
   setLoadingShoppingList,
   setShoppingListError,
   IShoppingListItem
-} from "./reducers/shoppinglist"
+} from "@/store/reducers/shoppinglist"
 import {
   setLoadingPasswordUpdate,
   setErrorPasswordUpdate
-} from "./reducers/passwordChange"
+} from "@/store/reducers/passwordChange"
 import {
   setErrorSocialLogin,
   setErrorLogin,
@@ -150,7 +150,7 @@ import {
   setErrorReset,
   setErrorResetConfirmation,
   setErrorAddRecipe
-} from "./reducers/error"
+} from "@/store/reducers/error"
 import { Dispatch as ReduxDispatch } from "redux"
 
 const config = { timeout: 15000 }

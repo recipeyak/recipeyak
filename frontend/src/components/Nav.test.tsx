@@ -4,8 +4,8 @@ import { Provider } from "react-redux"
 
 import { mount } from "enzyme"
 
-import { emptyStore as store } from "store/store"
-import Nav from "./Nav"
+import { emptyStore as store } from "@/store/store"
+import Nav from "@/components/Nav"
 
 describe("<Nav/>", () => {
   it("renders without failure", () => {

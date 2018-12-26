@@ -1,14 +1,14 @@
 import { connect } from "react-redux"
 
-import UserHome from "components/UserHome"
+import UserHome from "@/components/UserHome"
 
 import {
   fetchUser,
   fetchUserStats,
   fetchRecentRecipes,
   Dispatch
-} from "store/actions"
-import { RootState } from "store/store"
+} from "@/store/actions"
+import { RootState } from "@/store/store"
 
 const mapStateToProps = (state: RootState) => ({
   userStats: state.user.stats,

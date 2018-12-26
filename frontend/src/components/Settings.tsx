@@ -1,15 +1,15 @@
 import React from "react"
-import { Helmet } from "./Helmet"
+import { Helmet } from "@/components/Helmet"
 import { Link } from "react-router-dom"
 
-import Loader from "./Loader"
-import { ButtonPrimary, Button, ButtonDanger } from "./Buttons"
+import Loader from "@/components/Loader"
+import { ButtonPrimary, Button, ButtonDanger } from "@/components/Buttons"
 
-import { GithubImg, GitlabImg } from "./SocialButtons"
+import { GithubImg, GitlabImg } from "@/components/SocialButtons"
 
-import { GITHUB_OAUTH_URL, GITLAB_OAUTH_URL } from "settings"
-import { SocialProvider } from "store/reducers/user"
-import { ISocialAccountsState } from "store/reducers/user"
+import { GITHUB_OAUTH_URL, GITLAB_OAUTH_URL } from "@/settings"
+import { SocialProvider } from "@/store/reducers/user"
+import { ISocialAccountsState } from "@/store/reducers/user"
 import { AxiosError } from "axios"
 
 interface IOAuthButtonProps {

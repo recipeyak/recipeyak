@@ -1,4 +1,4 @@
-import { inputAbs } from "./input"
+import { inputAbs } from "@/input"
 
 describe("inputAbs", () => {
   it("strips non-digit chars", () => {
