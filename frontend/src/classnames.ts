@@ -1,7 +1,7 @@
 import uniq from "lodash/uniq"
 
 export function classNames(
-  ...args: Array<string | number | string[] | { [key: string]: boolean }>
+  ...args: (string | number | string[] | { [key: string]: boolean })[]
 ) {
   const classes: string[] = []
 
@@ -15,11 +15,11 @@ export function classNames(
     } else if (Array.isArray(arg)) {
       classes.push(...arg)
     } else if (typeof arg === "object") {
-      for (const key in arg) {
-        if (arg.hasOwnProperty(key) && arg[key]) {
+      Object.keys(arg).forEach(key => {
+        if (arg[key]) {
           classes.push(key)
         }
-      }
+      })
     }
   })
 
