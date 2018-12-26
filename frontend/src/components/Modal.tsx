@@ -1,5 +1,4 @@
 import React from "react"
-import PropTypes from "prop-types"
 
 import { classNames } from "../classnames"
 
@@ -10,12 +9,6 @@ interface IModalProps {
 }
 
 export default class Modal extends React.Component<IModalProps> {
-  static propTypes = {
-    onClose: PropTypes.func,
-    show: PropTypes.bool.isRequired,
-    children: PropTypes.arrayOf(PropTypes.node.isRequired)
-  }
-
   // TODO(sbdchd): remove once everything is typescript
   static defaultProps = {
     onClose: () => undefined,

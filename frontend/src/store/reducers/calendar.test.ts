@@ -1,5 +1,6 @@
 import { calendar, initialState, ICalendarState } from "./calendar"
 import * as a from "./calendar"
+import { baseRecipe } from "./recipes.test"
 
 describe("Calendar", () => {
   it("sets calendar recipes starting with empty state", () => {
@@ -16,6 +17,7 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
+          ...baseRecipe,
           id: 9
         }
       },
@@ -26,6 +28,7 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
+          ...baseRecipe,
           id: 3
         }
       },
@@ -40,7 +43,8 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
-          id: 9
+          id: 9,
+          name: "1231"
         }
       },
       {
@@ -50,7 +54,8 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
-          id: 3
+          id: 3,
+          name: "1231"
         }
       }
     ]
@@ -73,7 +78,8 @@ describe("Calendar", () => {
       team: 2,
       user: 1,
       recipe: {
-        id: 9
+        id: 9,
+        name: "1231"
       }
     }
 
@@ -97,7 +103,8 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
-          id: 9
+          id: 9,
+          name: "1231"
         }
       },
       allIds: [1]
@@ -154,7 +161,8 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
-          id: 9
+          id: 9,
+          name: "1231"
         }
       },
       allIds: [id]
@@ -171,7 +179,8 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
-          id: 9
+          id: 9,
+          name: "1231"
         }
       },
       allIds: [id]
@@ -195,7 +204,8 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
-          id: 9
+          id: 9,
+          name: "1231"
         }
       },
       2: {
@@ -205,7 +215,8 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
-          id: 7
+          id: 7,
+          name: "1231"
         }
       },
       3: {
@@ -215,7 +226,8 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
-          id: 9
+          id: 9,
+          name: "1231"
         }
       },
       allIds: [id, 2, 3]
@@ -230,7 +242,8 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
-          id: 9
+          id: 9,
+          name: "1231"
         }
       },
       2: {
@@ -240,7 +253,8 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
-          id: 7
+          id: 7,
+          name: "1231"
         }
       },
       3: {
@@ -250,7 +264,8 @@ describe("Calendar", () => {
         user: 1,
         on: "2018-06-07",
         recipe: {
-          id: 9
+          id: 9,
+          name: "1231"
         }
       },
       allIds: [id, 2, 3]
@@ -274,7 +289,8 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
-          id: 9
+          id: 9,
+          name: "1231"
         }
       },
       2: {
@@ -284,7 +300,8 @@ describe("Calendar", () => {
         user: 1,
         on: newOn,
         recipe: {
-          id: 9
+          id: 9,
+          name: "1231"
         }
       },
       3: {
@@ -294,7 +311,8 @@ describe("Calendar", () => {
         user: 1,
         on: "2018-06-07",
         recipe: {
-          id: 9
+          id: 9,
+          name: "1231"
         }
       },
       allIds: [id, 2, 3]
@@ -309,7 +327,8 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
-          id: 9
+          id: 9,
+          name: "1231"
         }
       },
       3: {
@@ -319,7 +338,8 @@ describe("Calendar", () => {
         user: 1,
         on: "2018-06-07",
         recipe: {
-          id: 9
+          id: 9,
+          name: "123"
         }
       },
       allIds: [2, 3]
@@ -343,6 +363,7 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
+          name: "foo",
           id: 9
         }
       },
@@ -353,6 +374,7 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
+          name: "foo",
           id: 9
         }
       },
@@ -363,20 +385,21 @@ describe("Calendar", () => {
         user: 1,
         on: "2018-06-07",
         recipe: {
+          name: "foo",
           id: 9
         }
       },
       allIds: [id, 2, 3]
     }
 
-    const recipe = {
+    const recipe: a.ICalRecipe = {
       id: 9,
       count: 1,
       on: "2018-07-21",
       team: 2,
       user: 1,
 
-      recipe: { id: 19 }
+      recipe: { id: 19, name: "foo" }
     }
 
     const afterState: ICalendarState = {
@@ -389,6 +412,7 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
+          name: "foo",
           id: 9
         }
       },
@@ -399,6 +423,7 @@ describe("Calendar", () => {
         user: 1,
         on: "2018-06-07",
         recipe: {
+          name: "foo",
           id: 9
         }
       },
@@ -422,7 +447,8 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
-          id: 9
+          id: 9,
+          name: "test"
         }
       },
       3: {
@@ -432,6 +458,7 @@ describe("Calendar", () => {
         user: 1,
         on: "2018-06-07",
         recipe: {
+          ...baseRecipe,
           id: 9
         }
       },
@@ -444,7 +471,7 @@ describe("Calendar", () => {
       on,
       team: 2,
       user: 1,
-      recipe: { id: 9 }
+      recipe: { id: 9, name: "123" }
     }
 
     const afterState: ICalendarState = {
@@ -456,7 +483,8 @@ describe("Calendar", () => {
         team: 2,
         user: 1,
         recipe: {
-          id: 9
+          id: 9,
+          name: "123"
         }
       },
       3: {
@@ -466,7 +494,9 @@ describe("Calendar", () => {
         user: 1,
         on: "2018-06-07",
         recipe: {
-          id: 9
+          ...baseRecipe,
+          id: 9,
+          name: "123"
         }
       },
       allIds: [3, 9]

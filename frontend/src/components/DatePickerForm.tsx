@@ -1,5 +1,5 @@
 import React from "react"
-import PropTypes from "prop-types"
+
 import { connect } from "react-redux"
 import addMonths from "date-fns/add_months"
 import subMonths from "date-fns/sub_months"
@@ -47,15 +47,6 @@ class DatePickerForm extends React.Component<
   IDatePickerProps,
   IDatePickerState
 > {
-  static propTypes = {
-    recipeID: PropTypes.number.isRequired,
-    teamID: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-      .isRequired,
-    show: PropTypes.bool.isRequired,
-    create: PropTypes.func.isRequired,
-    scheduling: PropTypes.bool.isRequired
-  }
-
   state = {
     count: 1,
     date: new Date(),

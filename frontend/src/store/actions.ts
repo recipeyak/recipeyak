@@ -152,7 +152,6 @@ import {
   setErrorAddRecipe
 } from "./reducers/error"
 import { Dispatch as ReduxDispatch } from "redux"
-import Recipe from "../components/Recipe"
 
 const config = { timeout: 15000 }
 
@@ -1495,7 +1494,7 @@ export const moveScheduledRecipe = (dispatch: Dispatch) => (
   const existing = store
     .getState()
     .calendar.allIds.filter((x: unknown) => x !== id)
-    .map(x => store.getState().calendar[x])
+    .map(x => store.getState().calendar[x as number])
     .filter(x => isSameDay(x.on, to))
     .filter(x => {
       if (teamID === "personal") {

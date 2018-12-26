@@ -1,5 +1,5 @@
 import React from "react"
-import PropTypes from "prop-types"
+
 import { Link } from "react-router-dom"
 import { DragSource, ConnectDragSource } from "react-dnd"
 
@@ -28,7 +28,7 @@ interface ICalendarItemProps {
   ) => Promise<void | AxiosResponse<void>>
   readonly refetchShoppingList: () => void
   readonly date: Date
-  readonly recipeID: IRecipe["id"]
+  readonly recipeID: IRecipe["id"] | string
   readonly recipeName: IRecipe["name"]
   readonly id: ICalRecipe["id"]
 }
@@ -45,17 +45,6 @@ class CalendarItem extends React.Component<
   state: ICalendarItemState = {
     count: this.props.count,
     hover: false
-  }
-
-  static propTypes = {
-    id: PropTypes.number.isRequired,
-    recipeID: PropTypes.number.isRequired,
-    recipeName: PropTypes.string.isRequired,
-    count: PropTypes.number.isRequired,
-    remove: PropTypes.func.isRequired,
-    updateCount: PropTypes.func.isRequired,
-    refetchShoppingList: PropTypes.func.isRequired,
-    date: PropTypes.object.isRequired
   }
 
   componentWillMount() {

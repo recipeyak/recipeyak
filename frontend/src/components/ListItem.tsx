@@ -6,12 +6,12 @@ interface IListItemProps {
   readonly id: number
   readonly text?: string
   readonly recipeID?: IRecipe["id"]
-  readonly delete: (id: IRecipe["id"]) => Promise<void>
+  readonly delete: (id: IRecipe["id"]) => void
   readonly update: (
     recipeID: IRecipe["id"],
     id: number,
     data: { text: string }
-  ) => Promise<void>
+  ) => void
   readonly removing?: boolean
   readonly updating?: boolean
 }
@@ -108,14 +108,14 @@ export default class ListItem extends React.Component<
     e.stopPropagation()
     // if the text is empty, we should just delete the item instead of updating
     if (this.state.text === "") {
-      await this.delete()
+      this.delete()
     } else {
       if (this.props.recipeID) {
-        await this.props.update(this.props.recipeID, this.props.id, {
+        this.props.update(this.props.recipeID, this.props.id, {
           text: this.state.text
         })
       } else {
-        await this.props.update(-1, this.props.id, {
+        this.props.update(-1, this.props.id, {
           text: this.state.text
         })
       }

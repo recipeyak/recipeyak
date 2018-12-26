@@ -56,7 +56,8 @@ function setCalendarRecipeState(
 ) {
   const existing = state.allIds
     .filter(x => x !== recipe.id)
-    .map(x => state[x])
+    // tslint:disable-next-line:no-any
+    .map(x => state[x as number])
     .filter(x => isSameDay(x.on, recipe.on))
     .find(x => x.recipe.id === recipe.recipe.id)
 
@@ -94,7 +95,9 @@ function moveCalendarRecipeState(
 
   const existing = state.allIds
     .filter(x => x !== action.payload.id)
-    .map(x => state[x])
+    // TODO(chdsbd): Make index exclusively numbers
+    // tslint:disable-next-line:no-any
+    .map(x => state[x as number])
     .filter(x => isSameDay(x.on, action.payload.on))
     .filter(x => x.team === moving.team && x.user === moving.user)
     .find(x => x.recipe.id === moving.recipe.id)
@@ -127,13 +130,13 @@ export interface ICalRecipe {
   readonly team?: unknown
   readonly user: unknown
   readonly recipe: {
-    readonly id: number
+    readonly id: number | string
     readonly name: string
   }
 }
 
 export interface ICalendarState {
-  readonly allIds: number[]
+  readonly allIds: ICalRecipe["id"][]
   readonly loading: boolean
   readonly error: boolean
   readonly [key: number]: ICalRecipe

@@ -3,11 +3,9 @@ import React from "react"
 import { ButtonPrimary } from "./Buttons"
 
 interface IAddIngredientFormProps {
-  readonly handleAddIngredient: () => Promise<void>
-  readonly cancelAddIngredient: () => Promise<void>
-  readonly handleInputChange: (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => Promise<void>
+  readonly handleAddIngredient: () => void
+  readonly cancelAddIngredient: () => void
+  readonly handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   readonly quantity: string
   readonly name: string
   readonly description: string
@@ -32,7 +30,7 @@ const AddIngredientForm = ({
   <form
     onSubmit={async e => {
       e.preventDefault()
-      await handleAddIngredient()
+      handleAddIngredient()
       const el = document.querySelector<HTMLInputElement>("#firstinput")
       if (el) {
         el.focus()
