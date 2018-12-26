@@ -38,6 +38,7 @@ declare var module: {
 
 if (module.hot) {
   module.hot.accept("./components/App", () => {
+    // tslint:disable:no-unsafe-any
     const NextApp = require("./components/App").default
     render(
       <AppContainer>
@@ -47,5 +48,6 @@ if (module.hot) {
       </AppContainer>,
       rootElement
     )
+    // tslint:enable:no-unsafe-any
   })
 }

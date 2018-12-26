@@ -1,5 +1,4 @@
 import React from "react"
-import PropTypes from "prop-types"
 
 const Chevron = () => (
   <svg
@@ -29,10 +28,6 @@ export default class Dropdown extends React.Component<
   IDropdownProps,
   IDropdownState
 > {
-  static propTypes = {
-    relative: PropTypes.bool
-  }
-
   static defaultProps = {
     relative: true
   }

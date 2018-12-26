@@ -47,9 +47,7 @@ class TeamCreate extends React.Component<ITeamCreateProps, ITeamCreateState> {
     e.preventDefault()
     const emails = this.state.emails.split(",").filter(x => x !== "")
     const { name, level } = this.state
-    try {
-      await this.props.createTeam(name, emails, level)
-    } catch (e) {} // tslint:disable-line:no-empty
+    this.props.createTeam(name, emails, level)
   }
 
   render() {

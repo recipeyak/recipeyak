@@ -10,6 +10,7 @@ import { GithubImg, GitlabImg } from "./SocialButtons"
 import { GITHUB_OAUTH_URL, GITLAB_OAUTH_URL } from "../settings"
 import { SocialProvider } from "../store/reducers/user"
 import { ISocialAccountsState } from "../store/reducers/user"
+import { AxiosError } from "axios"
 
 interface IOAuthButtonProps {
   readonly name: string
@@ -159,21 +160,25 @@ export default class SettingsWithState extends React.Component<
       this.setState({ loadingGitlab: true, errorGitlab: "" })
     }
     this.setState({ errorGeneral: "" })
+    // TODO(chdsbd): Fix this ugly mess with Redux
     this.props
       .disconnectAccount(provider, id)
       .then(() => {
         this.setState({ loadingGithub: false, loadingGitlab: false })
       })
-      .catch(error => {
+      .catch((error: AxiosError) => {
         if (
           error.response &&
           error.response.status === 403 &&
           error.response.data &&
+          // tslint:disable-next-line:no-unsafe-any
           error.response.data.detail
         ) {
           if (provider === "github") {
+            // tslint:disable-next-line:no-unsafe-any
             this.setState({ errorGithub: error.response.data.detail })
           } else if (provider === "gitlab") {
+            // tslint:disable-next-line:no-unsafe-any
             this.setState({ errorGitlab: error.response.data.detail })
           }
         } else {

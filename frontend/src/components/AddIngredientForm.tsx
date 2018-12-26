@@ -30,7 +30,7 @@ const AddIngredientForm = ({
   <form
     onSubmit={async e => {
       e.preventDefault()
-      await handleAddIngredient()
+      handleAddIngredient()
       const el = document.querySelector<HTMLInputElement>("#firstinput")
       if (el) {
         el.focus()

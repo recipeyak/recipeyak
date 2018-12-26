@@ -14,22 +14,22 @@ describe("<AddRecipe/>", () => {
       <Provider store={store}>
         <MemoryRouter>
           <AddRecipe
-            clearErrors={() => undefined}
-            addStep={() => undefined}
-            clearForm={() => undefined}
-            setTime={() => undefined}
-            setServings={() => undefined}
-            setSource={() => undefined}
-            setAuthor={() => undefined}
-            setName={() => undefined}
-            removeStep={() => undefined}
-            updateStep={() => undefined}
-            fetchData={() => undefined}
-            addRecipe={() => undefined}
-            removeIngredient={() => undefined}
-            updateIngredient={() => undefined}
-            addIngredient={() => undefined}
-            setTeamID={() => undefined}
+            clearErrors={jest.fn()}
+            addStep={jest.fn()}
+            clearForm={jest.fn()}
+            setTime={jest.fn()}
+            setServings={jest.fn()}
+            setSource={jest.fn()}
+            setAuthor={jest.fn()}
+            setName={jest.fn()}
+            removeStep={jest.fn()}
+            updateStep={jest.fn()}
+            fetchData={jest.fn()}
+            addRecipe={jest.fn()}
+            removeIngredient={jest.fn()}
+            updateIngredient={jest.fn()}
+            addIngredient={jest.fn()}
+            setTeamID={jest.fn()}
             error={{
               errorWithName: false,
               errorWithIngredients: false,

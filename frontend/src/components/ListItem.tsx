@@ -108,14 +108,14 @@ export default class ListItem extends React.Component<
     e.stopPropagation()
     // if the text is empty, we should just delete the item instead of updating
     if (this.state.text === "") {
-      await this.delete()
+      this.delete()
     } else {
       if (this.props.recipeID) {
-        await this.props.update(this.props.recipeID, this.props.id, {
+        this.props.update(this.props.recipeID, this.props.id, {
           text: this.state.text
         })
       } else {
-        await this.props.update(-1, this.props.id, {
+        this.props.update(-1, this.props.id, {
           text: this.state.text
         })
       }

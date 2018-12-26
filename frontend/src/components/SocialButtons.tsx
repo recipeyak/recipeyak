@@ -28,12 +28,17 @@ const Img = ({ src, alt }: IImgProps) => (
   <img className="mr-2" width="25px" height="25px" src={src} alt={alt} />
 )
 
+// tslint:disable-next-line:no-unsafe-any
 export const GithubImg = () => <Img src={githubIcon} alt="github icon" />
+// tslint:disable-next-line:no-unsafe-any
 export const GitlabImg = () => <Img src={gitlabIcon} alt="gitlab icon" />
+// tslint:disable-next-line:no-unsafe-any
 export const GoogleImg = () => <Img src={googleIcon} alt="google icon" />
 export const BitbucketImg = () => (
+  // tslint:disable-next-line:no-unsafe-any
   <Img src={bitbucketIcon} alt="bitbucket icon" />
 )
+// tslint:disable-next-line:no-unsafe-any
 export const FacebookImg = () => <Img src={facebookIcon} alt="facebook icon" />
 
 export const Github = ({ disable = false }) => {
@@ -42,6 +47,7 @@ export const Github = ({ disable = false }) => {
   }
   return (
     <a href={!disable ? GITHUB_OAUTH_URL : ""} className="github-button">
+      {/* tslint:disable-next-line:no-unsafe-any */}
       <img className="mr-2" src={githubIconWhite} alt="github icon" />
     </a>
   )
@@ -53,6 +59,7 @@ export const Gitlab = () => {
   }
   return (
     <a href={GITLAB_OAUTH_URL} className="gitlab-button">
+      {/* tslint:disable-next-line:no-unsafe-any */}
       <img className="mr-2" src={gitlabIconWhite} alt="gitlab icon" />
     </a>
   )
@@ -64,6 +71,7 @@ export const Bitbucket = () => {
   }
   return (
     <a href={BITBUCKET_OAUTH_URL} className="my-button">
+      {/* tslint:disable-next-line:no-unsafe-any */}
       <img className="mr-2" src={bitbucketIcon} alt="bitbucket icon" />
       Bitbucket
     </a>
@@ -76,6 +84,7 @@ export const Google = () => {
   }
   return (
     <a href={GOOGLE_OAUTH_URL} className="my-button">
+      {/* tslint:disable-next-line:no-unsafe-any */}
       <img className="mr-2" src={googleIcon} alt="google icon" />
       Google
     </a>
@@ -88,6 +97,7 @@ export const Facebook = () => {
 
   return (
     <a href={FACEBOOK_OAUTH_URL} className="my-button">
+      {/* tslint:disable-next-line:no-unsafe-any */}
       <img className="mr-2" src={facebookIcon} alt="facebook icon" />
       Facebook
     </a>

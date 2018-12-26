@@ -12,7 +12,7 @@ describe("<PasswordReset/>", () => {
     const props = {
       error: {},
       loading: false,
-      reset: () => undefined
+      reset: () => Promise.resolve()
     }
     mount(
       <Provider store={store}>

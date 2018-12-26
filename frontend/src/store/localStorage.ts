@@ -1,3 +1,5 @@
+import { RootState } from "./store"
+
 export const loadState = () => {
   try {
     const serializedState = localStorage.getItem("state")
@@ -5,14 +7,14 @@ export const loadState = () => {
     if (serializedState === null) {
       return undefined
     }
-
-    return JSON.parse(serializedState)
+    // We don't serialize all the state
+    return JSON.parse(serializedState) as Partial<RootState>
   } catch (err) {
     return undefined
   }
 }
 
-export const saveState = (state: any) => {
+export const saveState = (state: RootState) => {
   try {
     const serializedState = JSON.stringify(state)
     localStorage.setItem("state", serializedState)

@@ -123,7 +123,7 @@ export default class AddRecipe extends React.Component<
 
   addIngredient = () => {
     if (unfinishedIngredient(this.state.ingredient)) {
-      return
+      return Promise.resolve()
     }
     this.props.addIngredient(this.state.ingredient)
     this.setState({ ingredient: emptyIngredient })

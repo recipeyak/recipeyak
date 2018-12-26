@@ -12,7 +12,7 @@ fi
 
 node scripts/lint.js
 
-$(yarn bin)/tslint 'src/**/*.{ts,tsx}' --format 'codeFrame'
+$(yarn bin)/tslint --project ./tsconfig.json 'src/**/*.{ts,tsx}' --format 'codeFrame'
 
 s/fmt --list-different
 

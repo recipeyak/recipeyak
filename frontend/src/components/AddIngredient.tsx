@@ -1,5 +1,5 @@
 import React from "react"
-import PropTypes from "prop-types"
+
 import AddIngredientForm from "./AddIngredientForm"
 
 export interface IIngredientBasic {
@@ -14,7 +14,7 @@ interface IAddIngredientProps {
   readonly addIngredient: (
     id: number,
     { quantity, name, description }: IIngredientBasic
-  ) => void
+  ) => Promise<void>
   readonly loading: boolean
   readonly autoFocus: boolean
 }
@@ -36,14 +36,6 @@ export default class AddIngredient extends React.Component<
   IAddIngredientProps,
   IAddIngredientState
 > {
-  static propTypes = {
-    id: PropTypes.number.isRequired,
-    addIngredient: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired,
-    autoFocus: PropTypes.bool,
-    onCancel: PropTypes.func.isRequired
-  }
-
   static defaultProps = {
     loading: false
   }
@@ -68,7 +60,7 @@ export default class AddIngredient extends React.Component<
     this.setState({ addingIngredient: true })
   }
 
-  cancelAddIngredient = () => {
+  cancelAddIngredient = async () => {
     this.props.onCancel()
     this.setState(this.emptyState)
   }

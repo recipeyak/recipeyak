@@ -32,7 +32,10 @@ import {
   setUserStats,
   login,
   setUserLoggedIn,
-  setLoggingOut
+  setLoggingOut,
+  IUser,
+  IUserStats,
+  ISocialConnection
 } from "./reducers/user"
 import {
   ICalRecipe,
@@ -51,7 +54,8 @@ import {
   setAcceptedInvite,
   setLoadingInvites,
   setErrorFetchingInvites,
-  setInvites
+  setInvites,
+  IInvite
 } from "./reducers/invites"
 import {
   INotificationState,
@@ -79,7 +83,8 @@ import {
   setTeam,
   setLoadingTeams,
   updateTeamById,
-  setCopyingTeam
+  setCopyingTeam,
+  IMember
 } from "./reducers/teams"
 import {
   IRecipe,
@@ -108,7 +113,8 @@ import {
   addIngredientToRecipe,
   updateIngredient,
   setLoadingRecipe,
-  setRecipe404
+  setRecipe404,
+  IIngredient
 } from "./reducers/recipes"
 import * as api from "../api"
 import {
@@ -129,7 +135,8 @@ import { clearAddRecipeForm } from "./reducers/addrecipe"
 import {
   setShoppingList,
   setLoadingShoppingList,
-  setShoppingListError
+  setShoppingListError,
+  IShoppingListItem
 } from "./reducers/shoppinglist"
 import {
   setLoadingPasswordUpdate,
@@ -175,18 +182,23 @@ http.interceptors.response.use(
     store.dispatch(setUserLoggedIn(true))
     return response
   },
+  // tslint:disable-next-line:no-unsafe-any
   error => handleResponseError(error)
 )
 
 anon.interceptors.response.use(
   response => response,
+  // tslint:disable-next-line:no-unsafe-any
   error => handleResponseError(error)
 )
 
 http.interceptors.request.use(
   cfg => {
     const csrfToken = Cookie.get("csrftoken")
+    // tslint:disable:no-unsafe-any
     cfg.headers["X-CSRFTOKEN"] = csrfToken
+    cfg.headers["X-Request-ID"] = uuid4()
+    // tslint:disable:no-unsafe-any
     return cfg
   },
   error => Promise.reject(error)
@@ -195,7 +207,10 @@ http.interceptors.request.use(
 anon.interceptors.request.use(
   cfg => {
     const csrfToken = Cookie.get("csrftoken")
+    // tslint:disable:no-unsafe-any
     cfg.headers["X-CSRFTOKEN"] = csrfToken
+    cfg.headers["X-Request-ID"] = uuid4()
+    // tslint:enable:no-unsafe-any
     return cfg
   },
   error => Promise.reject(error)
@@ -206,8 +221,10 @@ export { http, anon }
 // We check if detail matches our string because Django will not return 401 when
 // the session expires
 export const invalidToken = (res: AxiosResponse) =>
+  // tslint:disable:no-unsafe-any
   res != null &&
   res.data.detail === "Authentication credentials were not provided."
+// tslint:enable:no-unsafe-any
 
 const isbadRequest = (err: AxiosError) =>
   err.response && err.response.status === 400
@@ -263,9 +280,11 @@ export const loggingOut = (dispatch: Dispatch) => () => {
 }
 
 const emailExists = (err: AxiosError) =>
+  // tslint:disable:no-unsafe-any
   err.response &&
   err.response.data.email != null &&
   err.response.data.email[0].includes("email already exists")
+// tslint:enable:no-unsafe-any
 
 const second = 1000
 
@@ -282,7 +301,7 @@ export const updatingEmail = (dispatch: Dispatch) => (email: string) => {
         delay: 3 * second
       })
     })
-    .catch(err => {
+    .catch((err: AxiosError) => {
       dispatch(updateEmail.failure())
       const messageExtra = emailExists(err) ? "- email already in use" : ""
       dispatch(
@@ -322,7 +341,7 @@ export const fetchUser = (dispatch: Dispatch) => () => {
 
 export const fetchSocialConnections = (dispatch: Dispatch) => () => {
   return http
-    .get("/api/v1/rest-auth/socialaccounts/")
+    .get<ISocialConnection[]>("/api/v1/rest-auth/socialaccounts/")
     .then(res => {
       dispatch(setSocialConnections(res.data))
     })
@@ -357,7 +376,7 @@ export const disconnectSocialAccount = (dispatch: Dispatch) => (
 export const fetchUserStats = (dispatch: Dispatch) => () => {
   dispatch(setLoadingUserStats(true))
   return http
-    .get("api/v1/user_stats/")
+    .get<IUserStats>("api/v1/user_stats/")
     .then(res => {
       dispatch(setUserStats(res.data))
       dispatch(setLoadingUserStats(false))
@@ -389,11 +408,12 @@ export const updatingPassword = (dispatch: Dispatch) => (
         level: "success"
       })
     })
-    .catch(err => {
+    .catch((err: AxiosError) => {
       dispatch(setLoadingPasswordUpdate(false))
-      const badRequest = err.response.status === 400
+      const badRequest = err.response && err.response.status === 400
       if (err.response && badRequest) {
         const data = err.response.data
+        // tslint:disable:no-unsafe-any
         dispatch(
           setErrorPasswordUpdate({
             newPasswordAgain: data["new_password2"],
@@ -401,6 +421,7 @@ export const updatingPassword = (dispatch: Dispatch) => (
             oldPassword: data["old_password"]
           })
         )
+        // tslint:ebale:no-unsafe-any
       }
       throw err
     })
@@ -420,7 +441,7 @@ export const fetchShoppingList = (dispatch: Dispatch) => (
       ? "/api/v1/shoppinglist/"
       : `/api/v1/t/${teamID}/shoppinglist/`
   return http
-    .get(url, {
+    .get<IShoppingListItem[]>(url, {
       params: {
         start: pyFormat(startDay),
         end: pyFormat(endDay)
@@ -441,19 +462,23 @@ export const postNewRecipe = (dispatch: Dispatch) => (recipe: IRecipeBasic) => {
   dispatch(setErrorAddRecipe({}))
 
   return http
-    .post("/api/v1/recipes/", recipe)
+    .post<IRecipe>("/api/v1/recipes/", recipe)
     .then(res => {
       dispatch(addRecipe(res.data))
       dispatch(clearAddRecipeForm())
       dispatch(setLoadingAddRecipe(false))
       dispatch(push("/recipes"))
     })
-    .catch(err => {
-      const errors = {
-        errorWithName: err.response.data.name != null,
-        errorWithIngredients: err.response.data.ingredients != null,
-        errorWithSteps: err.response.data.steps != null
-      }
+    .catch((err: AxiosError) => {
+      // tslint:disable:no-unsafe-any
+      const errors =
+        (err.response && {
+          errorWithName: err.response.data.name != null,
+          errorWithIngredients: err.response.data.ingredients != null,
+          errorWithSteps: err.response.data.steps != null
+        }) ||
+        {}
+      // tslint:enable:no-unsafe-any
       dispatch(setLoadingAddRecipe(false))
       dispatch(setErrorAddRecipe(errors))
 
@@ -469,13 +494,13 @@ export const fetchRecipe = (dispatch: Dispatch) => (id: number) => {
   dispatch(setRecipe404(id, false))
   dispatch(setLoadingRecipe(id, true))
   return http
-    .get(`/api/v1/recipes/${id}/`)
+    .get<IRecipe>(`/api/v1/recipes/${id}/`)
     .then(res => {
       dispatch(addRecipe(res.data))
       dispatch(setLoadingRecipe(id, false))
     })
-    .catch(err => {
-      if (err.response.status === 404) {
+    .catch((err: AxiosError) => {
+      if (err.response && err.response.status === 404) {
         dispatch(setRecipe404(id, true))
       }
       dispatch(setLoadingRecipe(id, false))
@@ -487,7 +512,7 @@ export const fetchRecentRecipes = (dispatch: Dispatch) => () => {
   dispatch(setLoadingRecipes(true))
   dispatch(setErrorRecipes(false))
   return http
-    .get("/api/v1/recipes/?recent")
+    .get<IRecipe[]>("/api/v1/recipes/?recent")
     .then(res => {
       dispatch(setRecipes(res.data))
       dispatch(setLoadingRecipes(false))
@@ -509,7 +534,7 @@ export const fetchRecipeList = (dispatch: Dispatch) => (
     teamID === "personal" ? "/api/v1/recipes/" : `/api/v1/t/${teamID}/recipes/`
 
   return http
-    .get(url)
+    .get<IRecipe[]>(url)
     .then(res => {
       dispatch(setRecipes(res.data))
       dispatch(setLoadingRecipes(false))
@@ -546,14 +571,14 @@ export const searchRecipes = (dispatch: Dispatch) => (query: string) => {
   searchStore.lastRequest = cancelSource
   // make request with cancel token
   return http
-    .get(`/api/v1/recipes?q=${encodeURI(query)}`, {
+    .get<IRecipe[]>(`/api/v1/recipes?q=${encodeURI(query)}`, {
       cancelToken: cancelSource.token
     })
     .then(res => {
       dispatch(decrLoadingSearch())
       dispatch(setSearchResults(res.data))
     })
-    .catch(err => {
+    .catch((err: AxiosError) => {
       dispatch(decrLoadingSearch())
       // Ignore axios cancels
       if (String(err) === "Cancel") {
@@ -570,7 +595,7 @@ export const addingRecipeIngredient = (dispatch: Dispatch) => (
 ) => {
   dispatch(setAddingIngredientToRecipe(recipeID, true))
   return http
-    .post(`/api/v1/recipes/${recipeID}/ingredients/`, ingredient)
+    .post<IIngredient>(`/api/v1/recipes/${recipeID}/ingredients/`, ingredient)
     .then(res => {
       dispatch(addIngredientToRecipe(recipeID, res.data))
       dispatch(setAddingIngredientToRecipe(recipeID, false))
@@ -585,7 +610,7 @@ export const sendUpdatedRecipeName = (id: number, name: string) => (
   dispatch: Dispatch
 ) => {
   return http
-    .patch(`/api/v1/recipes/${id}/`, {
+    .patch<IRecipe>(`/api/v1/recipes/${id}/`, {
       name
     })
     .then(res => {
@@ -600,7 +625,7 @@ export const setRecipeSource = (id: number, source: string) => (
   dispatch: Dispatch
 ) => {
   return http
-    .patch(`/api/v1/recipes/${id}/`, {
+    .patch<IRecipe>(`/api/v1/recipes/${id}/`, {
       source
     })
     .then(res => {
@@ -615,7 +640,7 @@ export const setRecipeAuthor = (id: number, author: unknown) => (
   dispatch: Dispatch
 ) => {
   return http
-    .patch(`/api/v1/recipes/${id}/`, {
+    .patch<IRecipe>(`/api/v1/recipes/${id}/`, {
       author
     })
     .then(res => {
@@ -630,7 +655,7 @@ export const setRecipeTime = (id: number, time: unknown) => (
   dispatch: Dispatch
 ) => {
   return http
-    .patch(`/api/v1/recipes/${id}/`, {
+    .patch<IRecipe>(`/api/v1/recipes/${id}/`, {
       time
     })
     .then(res => {
@@ -647,7 +672,7 @@ export const updateRecipe = (dispatch: Dispatch) => (
 ) => {
   dispatch(setRecipeUpdating(id, true))
   return http
-    .patch(`/api/v1/recipes/${id}/`, data)
+    .patch<IRecipe>(`/api/v1/recipes/${id}/`, data)
     .then(res => {
       dispatch(setRecipe(res.data.id, res.data))
       dispatch(setRecipeUpdating(id, false))
@@ -664,7 +689,7 @@ export const addingRecipeStep = (dispatch: Dispatch) => (
 ) => {
   dispatch(setLoadingAddStepToRecipe(recipeID, true))
   return http
-    .post(`/api/v1/recipes/${recipeID}/steps/`, {
+    .post<IStep>(`/api/v1/recipes/${recipeID}/steps/`, {
       text: step
     })
     .then(res => {
@@ -684,7 +709,10 @@ export const updatingIngredient = (dispatch: Dispatch) => (
 ) => {
   dispatch(setUpdatingIngredient(recipeID, ingredientID, true))
   return http
-    .patch(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, content)
+    .patch<IIngredient>(
+      `/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`,
+      content
+    )
     .then(res => {
       dispatch(updateIngredient(recipeID, ingredientID, res.data))
       dispatch(setUpdatingIngredient(recipeID, ingredientID, false))
@@ -711,6 +739,13 @@ export const deletingIngredient = (dispatch: Dispatch) => (
       throw err
     })
 }
+
+interface IStep {
+  id: number
+  text: string
+  position: number
+}
+
 export const updatingStep = (dispatch: Dispatch) => (
   recipeID: number,
   stepID: number,
@@ -728,7 +763,7 @@ export const updatingStep = (dispatch: Dispatch) => (
     }
   }
   return http
-    .patch(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, data)
+    .patch<IStep>(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, data)
     .then(res => {
       const txt = res.data.text
       const pos = res.data.position
@@ -767,7 +802,7 @@ export const logUserIn = (dispatch: Dispatch) => (
   dispatch(setErrorLogin({}))
   dispatch(clearNotification())
   return anon
-    .post("/api/v1/rest-auth/login/", {
+    .post<{ user: IUser }>("/api/v1/rest-auth/login/", {
       email,
       password
     })
@@ -776,11 +811,12 @@ export const logUserIn = (dispatch: Dispatch) => (
       dispatch(setLoadingLogin(false))
       dispatch(push(redirectUrl))
     })
-    .catch(err => {
+    .catch((err: AxiosError) => {
       dispatch(setLoadingLogin(false))
-      const badRequest = err.response.status === 400
+      const badRequest = err.response && err.response.status === 400
       if (err.response && badRequest) {
         const data = err.response.data
+        // tslint:disable:no-unsafe-any
         dispatch(
           setErrorLogin({
             email: data["email"],
@@ -788,6 +824,7 @@ export const logUserIn = (dispatch: Dispatch) => (
             nonFieldErrors: data["non_field_errors"]
           })
         )
+        // tslint:enable:no-unsafe-any
       }
     })
 }
@@ -798,23 +835,25 @@ export const socialLogin = (dispatch: Dispatch) => (
   redirectUrl: string = ""
 ) => {
   return anon
-    .post(`/api/v1/rest-auth/${service}/`, {
+    .post<{ user: IUser }>(`/api/v1/rest-auth/${service}/`, {
       code: token
     })
     .then(res => {
       dispatch(login(res.data.user))
       dispatch(replace(redirectUrl))
     })
-    .catch(err => {
-      const badRequest = err.response.status === 400
+    .catch((err: AxiosError) => {
+      const badRequest = err.response && err.response.status === 400
       if (err.response && badRequest) {
         const data = err.response.data
+        // tslint:disable:no-unsafe-any
         dispatch(
           setErrorSocialLogin({
             emailSocial: data["email"],
             nonFieldErrorsSocial: data["non_field_errors"]
           })
         )
+        // tslint:enable:no-unsafe-any
       }
       dispatch(replace("/login"))
       throw err
@@ -848,7 +887,7 @@ export const signup = (dispatch: Dispatch) => (
   dispatch(setErrorSignup({}))
   dispatch(clearNotification())
   return anon
-    .post("/api/v1/rest-auth/registration/", {
+    .post<{ user: IUser }>("/api/v1/rest-auth/registration/", {
       email,
       password1,
       password2
@@ -858,9 +897,10 @@ export const signup = (dispatch: Dispatch) => (
       dispatch(setLoadingSignup(false))
       dispatch(push("/recipes/add"))
     })
-    .catch(err => {
+    .catch((err: AxiosError) => {
       if (isbadRequest(err)) {
-        const data = err.response.data
+        // tslint:disable:no-unsafe-any
+        const data = err.response && err.response.data
         dispatch(
           setErrorSignup({
             email: data["email"],
@@ -869,6 +909,7 @@ export const signup = (dispatch: Dispatch) => (
             nonFieldErrors: data["non_field_errors"]
           })
         )
+        // tslint:enable:no-unsafe-any
       }
       dispatch(setLoadingSignup(false))
     })
@@ -888,12 +929,16 @@ export const deletingRecipe = (dispatch: Dispatch) => (id: number) => {
     })
 }
 
+interface IDetailResponse {
+  detail: string
+}
+
 export const reset = (dispatch: Dispatch) => (email: string) => {
   dispatch(setLoadingReset(true))
   dispatch(setErrorReset({}))
   dispatch(clearNotification())
   return anon
-    .post("/api/v1/rest-auth/password/reset/", {
+    .post<IDetailResponse>("/api/v1/rest-auth/password/reset/", {
       email
     })
     .then(res => {
@@ -904,7 +949,7 @@ export const reset = (dispatch: Dispatch) => (email: string) => {
         level: "success"
       })
     })
-    .catch(err => {
+    .catch((err: AxiosError) => {
       dispatch(setLoadingReset(false))
       showNotificationWithTimeout(dispatch)({
         message: "uh oh! problem resetting password",
@@ -912,13 +957,15 @@ export const reset = (dispatch: Dispatch) => (email: string) => {
         sticky: true
       })
       if (isbadRequest(err)) {
-        const data = err.response.data
+        // tslint:disable:no-unsafe-any
+        const data = err.response && err.response.data
         dispatch(
           setErrorReset({
             email: data["email"],
             nonFieldErrors: data["non_field_errors"]
           })
         )
+        // tslint:enable:no-unsafe-any
       }
       showNotificationWithTimeout(dispatch)({
         message: "problem resetting password",
@@ -938,7 +985,7 @@ export const resetConfirmation = (dispatch: Dispatch) => (
   dispatch(setErrorResetConfirmation({}))
   dispatch(clearNotification())
   return anon
-    .post("/api/v1/rest-auth/password/reset/confirm/", {
+    .post<IDetailResponse>("/api/v1/rest-auth/password/reset/confirm/", {
       uid,
       token,
       new_password1: newPassword1,
@@ -953,7 +1000,7 @@ export const resetConfirmation = (dispatch: Dispatch) => (
       })
       dispatch(push("/login"))
     })
-    .catch(err => {
+    .catch((err: AxiosError) => {
       dispatch(setLoadingResetConfirmation(false))
       showNotificationWithTimeout(dispatch)({
         message: "uh oh! problem resetting password",
@@ -961,7 +1008,8 @@ export const resetConfirmation = (dispatch: Dispatch) => (
         sticky: true
       })
       if (isbadRequest(err)) {
-        const data = err.response.data
+        // tslint:disable:no-unsafe-any
+        const data = err.response && err.response.data
 
         const tokenData =
           data["token"] && data["token"].map((x: unknown) => "token: " + x)
@@ -979,6 +1027,7 @@ export const resetConfirmation = (dispatch: Dispatch) => (
             nonFieldErrors
           })
         )
+        // tslint:enable:no-unsafe-any
       }
     })
 }
@@ -986,12 +1035,12 @@ export const resetConfirmation = (dispatch: Dispatch) => (
 export const fetchTeam = (dispatch: Dispatch) => (id: ITeam["id"]) => {
   dispatch(setLoadingTeam(id, true))
   return http
-    .get(`/api/v1/t/${id}/`)
+    .get<ITeam>(`/api/v1/t/${id}/`)
     .then(res => {
       dispatch(addTeam(res.data))
       dispatch(setLoadingTeam(id, false))
     })
-    .catch(err => {
+    .catch((err: AxiosError) => {
       if (is404(err)) {
         dispatch(setTeam404(id))
       }
@@ -1003,7 +1052,7 @@ export const fetchTeam = (dispatch: Dispatch) => (id: ITeam["id"]) => {
 export const fetchTeamMembers = (dispatch: Dispatch) => (id: number) => {
   dispatch(setLoadingTeamMembers(id, true))
   return http
-    .get(`/api/v1/t/${id}/members/`)
+    .get<IMember[]>(`/api/v1/t/${id}/members/`)
     .then(res => {
       dispatch(setTeamMembers(id, res.data))
       dispatch(setLoadingTeamMembers(id, false))
@@ -1017,7 +1066,7 @@ export const fetchTeamMembers = (dispatch: Dispatch) => (id: number) => {
 export const fetchTeamRecipes = (dispatch: Dispatch) => (id: number) => {
   dispatch(setLoadingTeamRecipes(id, true))
   return http
-    .get(`/api/v1/t/${id}/recipes/`)
+    .get<IRecipe[]>(`/api/v1/t/${id}/recipes/`)
     .then(res => {
       dispatch(setRecipes(res.data))
       dispatch(setTeamRecipes(id, res.data))
@@ -1029,10 +1078,12 @@ export const fetchTeamRecipes = (dispatch: Dispatch) => (id: number) => {
     })
 }
 
+// tslint:disable:no-unsafe-any
 const attemptedDeleteLastAdmin = (res: AxiosResponse) =>
   res.status === 400 &&
   res.data.level &&
   res.data.level[0].includes("cannot demote")
+// tslint:enable:no-unsafe-any
 
 export const settingUserTeamLevel = (dispatch: Dispatch) => (
   teamID: number,
@@ -1041,19 +1092,21 @@ export const settingUserTeamLevel = (dispatch: Dispatch) => (
 ) => {
   dispatch(setUpdatingUserTeamLevel(teamID, true))
   return http
-    .patch(`/api/v1/t/${teamID}/members/${membershipID}/`, { level })
+    .patch<IMember>(`/api/v1/t/${teamID}/members/${membershipID}/`, { level })
     .then(res => {
       dispatch(setUserTeamLevel(teamID, membershipID, res.data.level))
       dispatch(setUpdatingUserTeamLevel(teamID, false))
     })
-    .catch(err => {
-      if (attemptedDeleteLastAdmin(err.response)) {
+    .catch((err: AxiosError) => {
+      if (err.response && attemptedDeleteLastAdmin(err.response)) {
+        // tslint:disable:no-unsafe-any
         const message = err.response.data.level[0]
         showNotificationWithTimeout(dispatch)({
           message,
           level: "danger",
           delay: 3 * second
         })
+        // tslint:enable:no-unsafe-any
       }
       dispatch(setUpdatingUserTeamLevel(teamID, false))
       throw err
@@ -1081,9 +1134,10 @@ export const deletingMembership = (dispatch: Dispatch) => (
         dispatch(deleteTeam(teamID))
       }
     })
-    .catch(err => {
-      const message = err.response.data
+    .catch((err: AxiosError) => {
+      const message = err.response && err.response.data
       showNotificationWithTimeout(dispatch)({
+        // tslint:disable-next-line:no-unsafe-any
         message,
         level: "danger",
         delay: 3 * second
@@ -1106,8 +1160,9 @@ export const deletingTeam = (dispatch: Dispatch) => (teamID: number) => {
       })
       dispatch(deleteTeam(teamID))
     })
-    .catch(err => {
+    .catch((err: AxiosError) => {
       let message = "Uh Oh! Something went wrong."
+      // tslint:disable:no-unsafe-any
       if (err.response && err.response.status === 403) {
         message =
           err.response.data && err.response.data.detail
@@ -1121,6 +1176,7 @@ export const deletingTeam = (dispatch: Dispatch) => (teamID: number) => {
       } else {
         raven.captureException(err)
       }
+      // tslint:enable:no-unsafe-any
       showNotificationWithTimeout(dispatch)({
         message,
         level: "danger",
@@ -1132,7 +1188,7 @@ export const deletingTeam = (dispatch: Dispatch) => (teamID: number) => {
 
 export const sendingTeamInvites = (dispatch: Dispatch) => (
   teamID: number,
-  emails: any[],
+  emails: string[],
   level: unknown
 ) => {
   dispatch(setSendingTeamInvites(teamID, true))
@@ -1159,7 +1215,7 @@ export const sendingTeamInvites = (dispatch: Dispatch) => (
 export const fetchTeams = (dispatch: Dispatch) => () => {
   dispatch(setLoadingTeams(true))
   return http
-    .get("/api/v1/t/")
+    .get<ITeam[]>("/api/v1/t/")
     .then(res => {
       dispatch(setTeams(res.data))
       dispatch(setLoadingTeams(false))
@@ -1177,7 +1233,7 @@ export const creatingTeam = (dispatch: Dispatch) => (
 ) => {
   dispatch(setCreatingTeam(true))
   return http
-    .post("/api/v1/t/", { name, emails, level })
+    .post<ITeam>("/api/v1/t/", { name, emails, level })
     .then(res => {
       dispatch(setTeam(res.data.id, res.data))
       dispatch(setCreatingTeam(false))
@@ -1194,7 +1250,7 @@ export const updatingTeam = (dispatch: Dispatch) => (
   teamKVs: unknown
 ) => {
   return http
-    .patch(`/api/v1/t/${teamId}/`, teamKVs)
+    .patch<ITeam>(`/api/v1/t/${teamId}/`, teamKVs)
     .then(res => {
       showNotificationWithTimeout(dispatch)({
         message: "Team updated",
@@ -1203,10 +1259,11 @@ export const updatingTeam = (dispatch: Dispatch) => (
       })
       dispatch(updateTeamById(res.data.id, res.data))
     })
-    .catch(err => {
+    .catch((err: AxiosError) => {
       let message = "Problem updating team."
+      // tslint:disable-next-line:no-unsafe-any
       if (err.response && err.response.status === 403) {
-        message = "You are not unauthorized to perform that action"
+        message = "You are not authorized to perform that action"
       }
       showNotificationWithTimeout(dispatch)({
         message,
@@ -1223,7 +1280,7 @@ export const moveRecipeTo = (dispatch: Dispatch) => (
   type: unknown
 ) => {
   return http
-    .post(`/api/v1/recipes/${recipeId}/move/`, { id: ownerId, type })
+    .post<IRecipe>(`/api/v1/recipes/${recipeId}/move/`, { id: ownerId, type })
     .then(res => {
       dispatch(updateRecipeOwner(res.data.id, res.data.owner))
     })
@@ -1236,7 +1293,7 @@ export const copyRecipeTo = (dispatch: Dispatch) => (
 ) => {
   dispatch(setCopyingTeam(true))
   return http
-    .post(`/api/v1/recipes/${recipeId}/copy/`, { id: ownerId, type })
+    .post<IRecipe>(`/api/v1/recipes/${recipeId}/copy/`, { id: ownerId, type })
     .then(res => {
       dispatch(addRecipe(res.data))
       dispatch(setCopyingTeam(false))
@@ -1251,7 +1308,7 @@ export const fetchInvites = (dispatch: Dispatch) => () => {
   dispatch(setLoadingInvites(true))
   dispatch(setErrorFetchingInvites(false))
   return http
-    .get("/api/v1/invites/")
+    .get<IInvite[]>("/api/v1/invites/")
     .then(res => {
       dispatch(setInvites(res.data))
       dispatch(setLoadingInvites(false))
@@ -1286,6 +1343,7 @@ export const decliningInvite = (dispatch: Dispatch) => (id: number) => {
     })
     .catch(err => {
       dispatch(setDecliningInvite(id, false))
+      // TODO(chdsbd): Remove all these throws and handle the errors
       throw err
     })
 }
@@ -1298,18 +1356,23 @@ export const deleteUserAccount = (dispatch: Dispatch) => () => {
       dispatch(push("/login"))
       showNotificationWithTimeout(dispatch)({ message: "Account deleted" })
     })
-    .catch(error => {
-      if (error.response.status === 403 && error.response.data.detail) {
+    .catch((error: AxiosError) => {
+      // tslint:disable:no-unsafe-any
+      if (
+        error.response &&
+        error.response.status === 403 &&
+        error.response.data.detail
+      ) {
         showNotificationWithTimeout(dispatch)({
           message: error.response.data.detail,
           level: "danger"
         })
+        // tslint:enable:no-unsafe-any
       } else {
         showNotificationWithTimeout(dispatch)({
           message: "failed to delete account",
           level: "danger"
         })
-        throw error
       }
     })
 }
@@ -1345,7 +1408,7 @@ export const fetchCalendar = (dispatch: Dispatch) => (
       : `/api/v1/t/${teamID}/calendar/`
   // we fetch current month plus and minus 1 week
   return http
-    .get(url, {
+    .get<ICalRecipe[]>(url, {
       params: {
         start: pyFormat(subWeeks(startOfMonth(month), 1)),
         end: pyFormat(addWeeks(endOfMonth(month), 1))
@@ -1388,7 +1451,7 @@ export const addingScheduledRecipe = (dispatch: Dispatch) => (
     setCalendarRecipe(({ ...data, id, recipe } as unknown) as ICalRecipe)
   )
   return http
-    .post(url, data)
+    .post<ICalRecipe>(url, data)
     .then(res => {
       dispatch(replaceCalendarRecipe(id, res.data))
       dispatch(setSchedulingRecipe(recipeID, false))
@@ -1431,7 +1494,7 @@ export const moveScheduledRecipe = (dispatch: Dispatch) => (
   const existing = store
     .getState()
     .calendar.allIds.filter((x: unknown) => x !== id)
-    .map(x => store.getState().calendar[x])
+    .map(x => store.getState().calendar[x as number])
     .filter(x => isSameDay(x.on, to))
     .filter(x => {
       if (teamID === "personal") {
@@ -1481,7 +1544,7 @@ export const updatingScheduledRecipe = (dispatch: Dispatch) => (
     teamID === "personal"
       ? `/api/v1/calendar/${id}/`
       : `/api/v1/t/${teamID}/calendar/${id}/`
-  return http.patch(url, { count }).then(res => {
+  return http.patch<ICalRecipe>(url, { count }).then(res => {
     dispatch(setCalendarRecipe(res.data))
   })
 }

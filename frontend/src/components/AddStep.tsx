@@ -1,11 +1,10 @@
 import React from "react"
-import PropTypes from "prop-types"
 
 import AddStepForm from "./AddStepForm"
 import { IStep } from "../store/reducers/recipes"
 
 interface IAddStepProps {
-  readonly addStep: (id: IStep["id"], step: string) => void
+  readonly addStep: (id: IStep["id"], step: string) => Promise<void>
   readonly onCancel: () => void
   readonly loading: boolean
   readonly autoFocus?: boolean
@@ -21,14 +20,6 @@ export default class AddStep extends React.Component<
   IAddStepProps,
   IAddStepState
 > {
-  static propTypes = {
-    addStep: PropTypes.func.isRequired,
-    onCancel: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired,
-    id: PropTypes.number.isRequired,
-    autoFocus: PropTypes.bool
-  }
-
   static defaultProps = {
     loading: false
   }

@@ -70,17 +70,17 @@ interface IRecipeProps extends RouteProps {
   readonly addIngredient: (
     id: number,
     { quantity, name, description }: IIngredientBasic
-  ) => void
+  ) => Promise<void>
   readonly updateIngredient: (
     recipeID: IRecipe["id"],
     ingredientID: IIngredient["id"],
     content: Omit<IIngredient, "id" | "position">
-  ) => void
+  ) => Promise<void>
   readonly removeIngredient: (
     recipeID: IRecipe["id"],
     ingredientID: IIngredient["id"]
   ) => void
-  readonly addStep: (id: IStep["id"], step: IStep["text"]) => void
+  readonly addStep: (id: IStep["id"], step: IStep["text"]) => Promise<void>
 }
 
 interface IRecipeState {

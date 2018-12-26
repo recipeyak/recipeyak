@@ -1,5 +1,4 @@
 import React from "react"
-import PropTypes from "prop-types"
 
 import IngredientView from "./IngredientView"
 import { IIngredient, IRecipe } from "../store/reducers/recipes"
@@ -66,19 +65,6 @@ export default class Ingredient extends React.Component<
   }
 
   element = React.createRef<HTMLLIElement>()
-
-  static propTypes = {
-    quantity: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    update: PropTypes.func.isRequired,
-    id: PropTypes.number.isRequired,
-    recipeID: PropTypes.number.isRequired,
-    remove: PropTypes.func.isRequired,
-    updating: PropTypes.bool.isRequired,
-    optional: PropTypes.bool.isRequired,
-    removing: PropTypes.bool.isRequired
-  }
 
   static defaultProps = {
     // need default recipeID for when we use this in the Add Recipe page
@@ -187,7 +173,7 @@ export default class Ingredient extends React.Component<
 
     const { quantity, name, description, optional } = this.state
 
-    await this.props.update({
+    this.props.update({
       quantity,
       name,
       description,
