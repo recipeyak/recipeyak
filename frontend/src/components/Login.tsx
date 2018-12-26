@@ -8,6 +8,7 @@ import { ButtonPrimary } from "./Buttons"
 
 import AuthContainer from "./AuthContainer"
 import { ILoginError, ISocialError } from "../store/reducers/error"
+import { Location } from "history"
 
 const redirectURL = ({ pathname = "", search = "", hash = "" }) =>
   `${pathname}${search}${hash}`
@@ -20,12 +21,7 @@ interface ILoginProps {
   readonly loading: boolean
   readonly error: ILoginError
   readonly errorSocial: ISocialError
-  // TODO(sbdchd): there is probably a better type for this
-  readonly location: {
-    readonly state?: {
-      readonly from: string
-    }
-  }
+  readonly location: Location<{ from: string } | undefined>
 }
 
 interface ILoginState {

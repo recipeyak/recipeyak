@@ -28,17 +28,13 @@ import Loader from "./Loader"
 import CalendarDay from "./CalendarDay"
 import { RootState } from "../store/store"
 import { ITeam } from "../store/reducers/teams"
-import {
-  ICalRecipe,
-  ICalendarState as ICalendarReducerState
-} from "../store/reducers/calendar"
+import { ICalRecipe } from "../store/reducers/calendar"
 import { ScheduleRouteParams } from "./Schedule"
 
 function monthYearFromDate(date: Date) {
   return format(date, "MMM | YYYY")
 }
 
-// TODO(sbdchd): we can remove this once redux is fully typed
 interface IDays {
   readonly [key: string]: ICalRecipe
 }
@@ -46,12 +42,9 @@ interface IDays {
 const mapStateToProps = (state: RootState, props: ICalendarProps) => {
   const isTeam = props.teamID !== "personal"
 
-  const days = (state.calendar as ICalendarReducerState).allIds
+  const days = state.calendar.allIds
     // TODO(chdsbd): Remove string | number ids
-    .map(
-      (id: number | string) =>
-        (state.calendar as ICalendarReducerState)[id as number]
-    )
+    .map((id: number | string) => state.calendar[id as number])
     .filter((x: ICalRecipe) => {
       if (!isTeam) {
         // we know that if there is a userID, it will be the current user's
@@ -60,14 +53,14 @@ const mapStateToProps = (state: RootState, props: ICalendarProps) => {
       return x.team === props.teamID
     })
     .reduce(
-      (a: IDays, b: ICalRecipe) => ({
+      (a, b) => ({
         ...a,
         [b.on]: {
           ...a[b.on],
           [b.id]: b
         }
       }),
-      {}
+      {} as IDays
     )
 
   return {

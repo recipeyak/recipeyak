@@ -31,7 +31,6 @@ describe("Teams", () => {
       1: {
         id: 1,
         name: "team name",
-        loading: false,
         members: []
       },
       allIds: [1]
@@ -46,7 +45,6 @@ describe("Teams", () => {
       1: {
         id: 1,
         name: "other team name",
-        loading: false,
         members: []
       },
       allIds: [1]
@@ -835,8 +833,7 @@ describe("Teams", () => {
       1: {
         id: 1,
         name: "Acme Inc.",
-        members: [],
-        loading: false
+        members: []
       },
       allIds: [1]
     }
@@ -844,8 +841,7 @@ describe("Teams", () => {
       1: {
         id: 1,
         name: "InnoTech",
-        members: [],
-        loading: false
+        members: []
       },
       allIds: [1]
     }
