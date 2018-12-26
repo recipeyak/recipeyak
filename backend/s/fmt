@@ -9,5 +9,10 @@ if [[ -f ../.env ]]; then
     source ../.env
     set +a
 fi
-FILES='. lints/find_conflicts'
+FILES="."
+EXECUTABLE_FILES="$(find . -perm +111 -type f)"
+if [ -n "$EXECUTABLE_FILES" ];then
+    PYTHON_FILES=$(grep -E -l '^#!/usr/bin/env python3$' $EXECUTABLE_FILES)
+    FILES="$FILES ""$PYTHON_FILES"
+fi
 poetry run black $FILES
