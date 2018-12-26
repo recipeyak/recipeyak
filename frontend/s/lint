@@ -10,9 +10,6 @@ if [[ -f ../.env ]]; then
     set +a
 fi
 
-# find conflicting files, which happens because of our absolute path usage.
-../backend/lints/find_conflicts src/ node_modules/
-
 node scripts/lint.js
 
 $(yarn bin)/tslint --project ./tsconfig.json 'src/**/*.{ts,tsx}' --format 'codeFrame'
