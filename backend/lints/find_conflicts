@@ -26,8 +26,8 @@ def find_names(dir: str) -> Set[str]:
     return set(f.stem for f in Path(dir).iterdir())
 
 
-problems = set()
-total = set()
+problems: Set[str] = set()
+total: Set[str] = set()
 for dirname in args.dir:
     new = find_names(dirname)
     # see if our new file stems are in the running total and store them with any
