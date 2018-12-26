@@ -1,6 +1,4 @@
-/* eslint no-unused-vars: 0 */
-
-/* See env.js for adding environment variables */
+// See env.js for adding environment variables
 
 const DEBUG = process.env.NODE_ENV === "development"
 

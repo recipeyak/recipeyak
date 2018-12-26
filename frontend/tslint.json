@@ -1,5 +1,6 @@
 {
   "extends": ["tslint:recommended", "tslint-config-prettier"],
+  "rulesDirectory": ["node_modules/tslint-microsoft-contrib"],
   "defaultSeverity": "error",
   "rules": {
     "object-literal-sort-keys": false,
@@ -24,6 +25,27 @@
     "no-unsafe-any": true,
     "no-unnecessary-class": true,
     "await-promise": true,
+    "no-banned-terms": true,
+    "no-constant-condition": true,
+    "no-control-regex": true,
+    "no-for-in": true,
+    "no-function-expression": true,
+    "no-increment-decrement": true,
+    "no-inner-html": true,
+    "no-invalid-regexp": true,
+    "no-octal-literal": true,
+    "no-regex-spaces": true,
+    "no-single-line-block-comment": true,
+    "no-typeof-undefined": true,
+    "no-unnecessary-bind": true,
+    "no-unnecessary-field-initialization": true,
+    "no-unnecessary-local-variable": true,
+    "no-unnecessary-override": true,
+    "no-useless-files": true,
+    "no-with-statement": true,
+    "prefer-array-literal": true,
+    "react-no-dangerous-html": true,
+    "react-unused-props-and-state": true,
     "ban-types": {
       "options": [
         [

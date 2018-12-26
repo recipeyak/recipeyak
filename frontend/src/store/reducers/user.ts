@@ -83,7 +83,7 @@ export type UserActions =
   | ReturnType<typeof toggleDarkMode>
   | ActionType<typeof updateEmail>
 
-/** User state from API */
+// User state from API
 export interface IUser {
   readonly avatar_url: string
   readonly email: string
