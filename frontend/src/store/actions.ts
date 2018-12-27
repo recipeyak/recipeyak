@@ -7,7 +7,7 @@ export type Dispatch = ReduxDispatch<Action>
 
 export type GetState = () => RootState
 
-import { uuid4 } from "@/uuid"
+import { uuid4, random32Id } from "@/uuid"
 import Cookie from "js-cookie"
 
 import startOfMonth from "date-fns/start_of_month"
@@ -1431,7 +1431,7 @@ export const addingScheduledRecipe = (dispatch: Dispatch) => (
 ) => {
   const recipe = store.getState().recipes[recipeID]
   dispatch(setSchedulingRecipe(recipeID, true))
-  const id = uuid4()
+  const id = random32Id()
   const data = {
     recipe: recipeID,
     on: pyFormat(on),
