@@ -71,14 +71,14 @@ function setCalendarRecipeState(
       },
       allIds: state.allIds
         .filter(id => id !== existing.id)
-        .concat(String(recipe.id))
+        .concat(toInt(recipe.id))
     }
   }
 
   return {
     ...state,
     [recipe.id]: recipe,
-    allIds: uniq(state.allIds.concat(String(recipe.id)))
+    allIds: uniq(state.allIds.concat(toInt(recipe.id)))
   }
 }
 
@@ -91,7 +91,7 @@ function moveCalendarRecipeState(
   // - remove the old recipe
   // else
   // - update the date of the recipe
-  const moving = state[String(action.payload.id)]
+  const moving = state[toInt(action.payload.id)]
 
   const existing = state.allIds
     .filter(x => x !== action.payload.id)
@@ -116,7 +116,7 @@ function moveCalendarRecipeState(
   return {
     ...state,
     [action.payload.id]: {
-      ...state[String(action.payload.id)],
+      ...state[toInt(action.payload.id)],
       on: action.payload.on
     }
   }
@@ -136,9 +136,7 @@ export interface ICalRecipe {
 }
 
 export interface ICalendarState {
-  // TODO(chdsbd): Replace ascii UUID usage with hex UUID so we can make this
-  // numeric
-  readonly allIds: string[]
+  readonly allIds: ICalRecipe["id"][]
   readonly loading: boolean
   readonly error: boolean
   readonly [key: number]: ICalRecipe
@@ -150,6 +148,10 @@ export const initialState: ICalendarState = {
   error: false
 }
 
+function toInt(x: string | number): number {
+  return parseInt(String(x), 10)
+}
+
 export const calendar = (
   state: ICalendarState = initialState,
   action: CalendarActions
@@ -159,7 +161,7 @@ export const calendar = (
       return {
         ...state,
         ...action.payload.reduce((a, b) => ({ ...a, [b.id]: b }), {}),
-        allIds: uniq(state.allIds.concat(action.payload.map(x => String(x.id))))
+        allIds: uniq(state.allIds.concat(action.payload.map(x => toInt(x.id))))
       }
     case SET_CALENDAR_RECIPE:
       return setCalendarRecipeState(state, action)
@@ -187,7 +189,7 @@ export const calendar = (
         allIds: uniq(
           state.allIds
             .filter(id => id !== action.payload.id)
-            .concat(String(action.payload.recipe.id))
+            .concat(toInt(action.payload.recipe.id))
         )
       }
     default:
