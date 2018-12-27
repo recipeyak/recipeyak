@@ -20,7 +20,7 @@ export const setCalendarError = (error: boolean) =>
 export const setCalendarRecipe = (recipe: ICalRecipe) =>
   act(SET_CALENDAR_RECIPE, recipe)
 
-export const deleteCalendarRecipe = (id: string | number) =>
+export const deleteCalendarRecipe = (id: number) =>
   act(DELETE_CALENDAR_RECIPE, id)
 
 export const moveCalendarRecipe = (id: ICalRecipe["id"], to: string) =>
@@ -69,16 +69,14 @@ function setCalendarRecipeState(
         ...recipe,
         count: existing.count + recipe.count
       },
-      allIds: state.allIds
-        .filter(id => id !== existing.id)
-        .concat(toInt(recipe.id))
+      allIds: state.allIds.filter(id => id !== existing.id).concat(recipe.id)
     }
   }
 
   return {
     ...state,
     [recipe.id]: recipe,
-    allIds: uniq(state.allIds.concat(toInt(recipe.id)))
+    allIds: uniq(state.allIds.concat(recipe.id))
   }
 }
 
@@ -91,13 +89,11 @@ function moveCalendarRecipeState(
   // - remove the old recipe
   // else
   // - update the date of the recipe
-  const moving = state[toInt(action.payload.id)]
+  const moving = state[action.payload.id]
 
   const existing = state.allIds
     .filter(x => x !== action.payload.id)
-    // TODO(chdsbd): Make index exclusively numbers
-    // tslint:disable-next-line:no-any
-    .map(x => state[x as number])
+    .map(x => state[x])
     .filter(x => isSameDay(x.on, action.payload.on))
     .filter(x => x.team === moving.team && x.user === moving.user)
     .find(x => x.recipe.id === moving.recipe.id)
@@ -116,7 +112,7 @@ function moveCalendarRecipeState(
   return {
     ...state,
     [action.payload.id]: {
-      ...state[toInt(action.payload.id)],
+      ...state[action.payload.id],
       on: action.payload.on
     }
   }
@@ -124,13 +120,13 @@ function moveCalendarRecipeState(
 
 // TODO(sbdchd): this should be imported from the recipes reducer
 export interface ICalRecipe {
-  readonly id: number | string
+  readonly id: number
   readonly count: number
   readonly on: string
   readonly team?: unknown
   readonly user: unknown
   readonly recipe: {
-    readonly id: number | string
+    readonly id: number
     readonly name: string
   }
 }
@@ -148,10 +144,6 @@ export const initialState: ICalendarState = {
   error: false
 }
 
-function toInt(x: string | number): number {
-  return parseInt(String(x), 10)
-}
-
 export const calendar = (
   state: ICalendarState = initialState,
   action: CalendarActions
@@ -161,7 +153,7 @@ export const calendar = (
       return {
         ...state,
         ...action.payload.reduce((a, b) => ({ ...a, [b.id]: b }), {}),
-        allIds: uniq(state.allIds.concat(action.payload.map(x => toInt(x.id))))
+        allIds: uniq(state.allIds.concat(action.payload.map(x => x.id)))
       }
     case SET_CALENDAR_RECIPE:
       return setCalendarRecipeState(state, action)
@@ -189,7 +181,7 @@ export const calendar = (
         allIds: uniq(
           state.allIds
             .filter(id => id !== action.payload.id)
-            .concat(toInt(action.payload.recipe.id))
+            .concat(action.payload.recipe.id)
         )
       }
     default:
