@@ -1,4 +1,4 @@
-FROM node:8.9.4-stretch
+FROM node:8.9.4
 
 # we use netcat to wait for a port to be available
 RUN apt-get update -yq && \
