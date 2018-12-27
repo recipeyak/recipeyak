@@ -43,15 +43,7 @@ const mapStateToProps = (state: RootState, props: ICalendarProps) => {
   const isTeam = props.teamID !== "personal"
 
   const days = state.calendar.allIds
-    // TODO(chdsbd): Remove string | number ids
     .map((id: number | string) => state.calendar[id as number])
-    .filter((x: ICalRecipe) => {
-      if (!isTeam) {
-        // we know that if there is a userID, it will be the current user's
-        return x.user != null
-      }
-      return x.team === props.teamID
-    })
     .reduce(
       (a, b) => ({
         ...a,
