@@ -53,6 +53,8 @@ import search, { ISearchState, SearchActions } from "@/store/reducers/search"
 
 import { loadState, saveState } from "@/store/localStorage"
 import { StateType } from "typesafe-actions"
+import { createLogger } from "redux-logger"
+import { DEBUG } from "@/settings"
 
 interface IState {
   readonly user: IUserState
@@ -157,11 +159,16 @@ const defaultData = (): RootState => {
   }
 }
 
+const middleware = [router]
+if (DEBUG) {
+  middleware.push(createLogger({ collapsed: true }))
+}
+
 // A "hydrated" store is nice for UI development
 export const store = createStore(
   rootReducer,
   defaultData(),
-  composeEnhancers(applyMiddleware(router))
+  composeEnhancers(applyMiddleware(...middleware))
 )
 
 store.subscribe(

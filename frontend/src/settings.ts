@@ -1,6 +1,6 @@
 // See env.js for adding environment variables
 
-const DEBUG = process.env.NODE_ENV === "development"
+export const DEBUG = process.env.NODE_ENV === "development"
 
 export const GIT_SHA = DEBUG ? "development" : process.env.GIT_SHA
 
