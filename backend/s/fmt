@@ -9,5 +9,14 @@ if [[ -f ../.env ]]; then
     source ../.env
     set +a
 fi
-
-poetry run black .
+# include "." and find all python files with a shebang
+FILES=".";
+EXECUTABLE_FILES="$(find . -perm +111 -type f)";
+if [ -n "$EXECUTABLE_FILES" ];then
+    set +e
+    # regex on python3, python2, python3.*, python2.*
+    SHEBANG_FILES=$(grep -E -l '^#!/usr/bin/env python(2|3)?(\.\d)?$' $EXECUTABLE_FILES)
+    set -e
+    FILES="$FILES ""$SHEBANG_FILES"
+fi
+poetry run black $FILES

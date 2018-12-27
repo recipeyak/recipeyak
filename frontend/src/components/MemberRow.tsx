@@ -2,16 +2,16 @@ import React from "react"
 
 import { connect } from "react-redux"
 
-import { ButtonPlain, ButtonDanger } from "./Buttons"
+import { ButtonPlain, ButtonDanger } from "@/components/Buttons"
 
 import {
   settingUserTeamLevel,
   deletingMembership,
   Dispatch
-} from "../store/actions"
-import { ITeam, IMember } from "../store/reducers/teams"
-import { RootState } from "../store/store"
-import { IUser } from "../store/reducers/user"
+} from "@/store/actions"
+import { ITeam, IMember } from "@/store/reducers/teams"
+import { RootState } from "@/store/store"
+import { IUser } from "@/store/reducers/user"
 
 const mapStateToProps = (
   state: RootState,

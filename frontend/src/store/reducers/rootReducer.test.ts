@@ -1,5 +1,5 @@
-import { rootReducer, emptyStore, RootState } from "../store"
-import { setUserLoggedIn } from "./user"
+import { rootReducer, emptyStore, RootState } from "@/store/store"
+import { setUserLoggedIn } from "@/store/reducers/user"
 
 describe("logout", () => {
   it("Logs out user and clears entire store", () => {

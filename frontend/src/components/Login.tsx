@@ -1,13 +1,13 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import { Helmet } from "./Helmet"
+import { Helmet } from "@/components/Helmet"
 
-import SocialButtons from "./SocialButtons"
-import { FormErrorHandler } from "./Forms"
-import { ButtonPrimary } from "./Buttons"
+import SocialButtons from "@/components/SocialButtons"
+import { FormErrorHandler } from "@/components/Forms"
+import { ButtonPrimary } from "@/components/Buttons"
 
-import AuthContainer from "./AuthContainer"
-import { ILoginError, ISocialError } from "../store/reducers/error"
+import AuthContainer from "@/components/AuthContainer"
+import { ILoginError, ISocialError } from "@/store/reducers/error"
 import { Location } from "history"
 
 const redirectURL = ({ pathname = "", search = "", hash = "" }) =>

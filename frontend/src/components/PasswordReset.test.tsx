@@ -3,9 +3,9 @@ import { MemoryRouter } from "react-router"
 import { Provider } from "react-redux"
 import { mount } from "enzyme"
 
-import { emptyStore as store } from "../store/store"
+import { emptyStore as store } from "@/store/store"
 
-import PasswordReset from "./PasswordReset"
+import PasswordReset from "@/components/PasswordReset"
 
 describe("<PasswordReset/>", () => {
   it("renders without crashing", () => {

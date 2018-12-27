@@ -1,4 +1,4 @@
-import { setDarkModeClass } from "../../sideEffects"
+import { setDarkModeClass } from "@/sideEffects"
 
 import raven from "raven-js"
 import {
@@ -7,7 +7,7 @@ import {
   action as act,
   ActionType
 } from "typesafe-actions"
-import { IRecipe } from "./recipes"
+import { IRecipe } from "@/store/reducers/recipes"
 
 const LOG_IN = "LOG_IN"
 

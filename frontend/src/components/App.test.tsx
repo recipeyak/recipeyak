@@ -2,9 +2,9 @@ import React from "react"
 import ReactDOM from "react-dom"
 import { Provider } from "react-redux"
 
-import { emptyStore as store } from "../store/store"
+import { emptyStore as store } from "@/store/store"
 
-import App from "./App"
+import App from "@/components/App"
 
 describe("<App/>", () => {
   it("renders without crashing", () => {

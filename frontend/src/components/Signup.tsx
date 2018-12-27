@@ -1,12 +1,12 @@
 import React from "react"
-import { Helmet } from "./Helmet"
+import { Helmet } from "@/components/Helmet"
 import { Link } from "react-router-dom"
 
-import SocialButtons from "./SocialButtons"
-import { FormErrorHandler } from "./Forms"
-import { ButtonPrimary } from "./Buttons"
-import AuthContainer from "./AuthContainer"
-import { ISignupErrors } from "../store/reducers/error"
+import SocialButtons from "@/components/SocialButtons"
+import { FormErrorHandler } from "@/components/Forms"
+import { ButtonPrimary } from "@/components/Buttons"
+import AuthContainer from "@/components/AuthContainer"
+import { ISignupErrors } from "@/store/reducers/error"
 
 interface ISignupProps {
   readonly clearErrors: () => void

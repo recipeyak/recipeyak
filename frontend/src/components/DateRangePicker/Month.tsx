@@ -6,9 +6,9 @@ import isSameDay from "date-fns/is_same_day"
 import startOfDay from "date-fns/start_of_day"
 import endOfDay from "date-fns/end_of_day"
 
-import { ButtonPlain } from "../Buttons"
-import Day from "./Day"
-import { daysOfMonth, daysFromSunday } from "../../date"
+import { ButtonPlain } from "@/components/Buttons"
+import Day from "@/components/DateRangePicker/Day"
+import { daysOfMonth, daysFromSunday } from "@/date"
 
 class MonthWeekTitles extends React.Component {
   render() {

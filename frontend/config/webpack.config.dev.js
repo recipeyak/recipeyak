@@ -65,7 +65,7 @@ module.exports = {
     publicPath: publicPath
   },
   resolve: {
-    modules: ["node_modules", paths.appNodeModules],
+    modules: ["node_modules", paths.appNodeModules, paths.appSrc],
     // These are the reasonable defaults supported by the Node ecosystem.
     // We also include JSX as a common component filename extension to support
     // some tools, although we do not recommend using it, see:
@@ -74,7 +74,8 @@ module.exports = {
     alias: {
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
-      "react-native": "react-native-web"
+      "react-native": "react-native-web",
+      "@": paths.appSrc
     }
   },
 

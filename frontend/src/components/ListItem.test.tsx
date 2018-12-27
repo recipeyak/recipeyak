@@ -4,7 +4,7 @@ import { mount } from "enzyme"
 
 import { MemoryRouter } from "react-router"
 
-import ListItem from "./ListItem"
+import ListItem from "@/components/ListItem"
 
 describe("<ListItem/>", () => {
   it("renders without crashing", () => {

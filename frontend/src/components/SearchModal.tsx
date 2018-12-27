@@ -2,12 +2,12 @@ import React from "react"
 import { connect } from "react-redux"
 import { throttle } from "lodash"
 
-import Modal from "./Modal"
-import { RecipeItem as Recipe } from "./RecipeItem"
-import { searchRecipes, Dispatch } from "../store/actions"
-import { classNames } from "../classnames"
-import { RootState } from "../store/store"
-import { IRecipe } from "../store/reducers/recipes"
+import Modal from "@/components/Modal"
+import { RecipeItem as Recipe } from "@/components/RecipeItem"
+import { searchRecipes, Dispatch } from "@/store/actions"
+import { classNames } from "@/classnames"
+import { RootState } from "@/store/store"
+import { IRecipe } from "@/store/reducers/recipes"
 
 const SEARCH_THROTTLE_MS = 100
 

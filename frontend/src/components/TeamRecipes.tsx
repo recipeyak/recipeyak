@@ -1,12 +1,12 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import Loader from "./Loader"
+import Loader from "@/components/Loader"
 
-import { TextInput } from "./Forms"
-import { matchesQuery } from "../search"
+import { TextInput } from "@/components/Forms"
+import { matchesQuery } from "@/search"
 
-import { RecipeItem as Recipe } from "./RecipeItem"
-import { IRecipe } from "../store/reducers/recipes"
+import { RecipeItem as Recipe } from "@/components/RecipeItem"
+import { IRecipe } from "@/store/reducers/recipes"
 
 interface ITeamRecipesProps {
   readonly loading: boolean

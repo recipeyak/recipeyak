@@ -1,6 +1,6 @@
-import search, { ISearchState } from "./search"
-import * as a from "./search"
-import { baseRecipe } from "./recipes.test"
+import search, { ISearchState } from "@/store/reducers/search"
+import * as a from "@/store/reducers/search"
+import { baseRecipe } from "@/store/reducers/recipes.test"
 
 describe("search", () => {
   test("action#setSearchResults", () => {

@@ -1,6 +1,6 @@
 import React from "react"
 
-import { ButtonPrimary } from "./Buttons"
+import { ButtonPrimary } from "@/components/Buttons"
 
 interface IAddIngredientFormProps {
   readonly handleAddIngredient: () => void

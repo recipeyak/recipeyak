@@ -1,19 +1,19 @@
 import React from "react"
-import { Helmet } from "./Helmet"
+import { Helmet } from "@/components/Helmet"
 import { Link } from "react-router-dom"
 
-import MemberRow from "./MemberRow"
+import MemberRow from "@/components/MemberRow"
 
-import NoMatch from "./NoMatch"
+import NoMatch from "@/components/NoMatch"
 
-import Loader from "./Loader"
-import TeamRecipes from "./TeamRecipes"
+import Loader from "@/components/Loader"
+import TeamRecipes from "@/components/TeamRecipes"
 
-import { ButtonPrimary, ButtonLink } from "./Buttons"
+import { ButtonPrimary, ButtonLink } from "@/components/Buttons"
 
-import { inviteURL, teamURL, teamSettingsURL } from "../urls"
-import { IMember, ITeam } from "../store/reducers/teams"
-import { IRecipe } from "../store/reducers/recipes"
+import { inviteURL, teamURL, teamSettingsURL } from "@/urls"
+import { IMember, ITeam } from "@/store/reducers/teams"
+import { IRecipe } from "@/store/reducers/recipes"
 
 interface ITeamMembers {
   readonly id: ITeam["id"]

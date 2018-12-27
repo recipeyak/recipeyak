@@ -3,10 +3,10 @@ import addMonths from "date-fns/add_months"
 import isPast from "date-fns/is_past"
 import endOfDay from "date-fns/end_of_day"
 
-import { classNames } from "../../classnames"
-import Month from "./Month"
+import { classNames } from "@/classnames"
+import Month from "@/components/DateRangePicker/Month"
 
-import "./date-range-picker.scss"
+import "@/components/DateRangePicker/date-range-picker.scss"
 
 interface IDateRangePickerProps {
   readonly selectingStart: boolean

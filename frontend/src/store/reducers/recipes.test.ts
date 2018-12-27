@@ -1,6 +1,11 @@
-import recipes, { IRecipesState, IRecipe, IIngredient, IStep } from "./recipes"
+import recipes, {
+  IRecipesState,
+  IRecipe,
+  IIngredient,
+  IStep
+} from "@/store/reducers/recipes"
 
-import * as a from "./recipes"
+import * as a from "@/store/reducers/recipes"
 
 export const baseRecipe: IRecipe = {
   id: 1,

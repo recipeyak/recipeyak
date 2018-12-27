@@ -1,6 +1,10 @@
-import user, { ISocialConnection, IUserState, IUser } from "./user"
+import user, {
+  ISocialConnection,
+  IUserState,
+  IUser
+} from "@/store/reducers/user"
 
-import * as a from "./user"
+import * as a from "@/store/reducers/user"
 
 describe("fetchingUser", () => {
   it("#request: sets loading, removes failures", () => {

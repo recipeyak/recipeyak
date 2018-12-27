@@ -1,18 +1,18 @@
 import React from "react"
 import { connect } from "react-redux"
 
-import RecipeItem from "./RecipeItem"
-import Loader from "./Loader"
-import { TextInput } from "./Forms"
-import { matchesQuery } from "../search"
-import Results from "./Results"
+import RecipeItem from "@/components/RecipeItem"
+import Loader from "@/components/Loader"
+import { TextInput } from "@/components/Forms"
+import { matchesQuery } from "@/search"
+import Results from "@/components/Results"
 
-import { byNameAlphabetical } from "../sorters"
+import { byNameAlphabetical } from "@/sorters"
 
-import { fetchRecipeList, Dispatch } from "../store/actions"
-import { IRecipe } from "../store/reducers/recipes"
-import { ITeam } from "../store/reducers/teams"
-import { RootState } from "../store/store"
+import { fetchRecipeList, Dispatch } from "@/store/actions"
+import { IRecipe } from "@/store/reducers/recipes"
+import { ITeam } from "@/store/reducers/teams"
+import { RootState } from "@/store/store"
 
 const mapStateToProps = (state: RootState) => {
   return {

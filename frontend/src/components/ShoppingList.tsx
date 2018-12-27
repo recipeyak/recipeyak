@@ -9,25 +9,25 @@ import isBefore from "date-fns/is_before"
 import isAfter from "date-fns/is_after"
 import isValid from "date-fns/is_valid"
 
-import { classNames } from "../classnames"
+import { classNames } from "@/classnames"
 
 import {
   fetchShoppingList,
   reportBadMerge,
   showNotificationWithTimeout,
   Dispatch
-} from "../store/actions"
+} from "@/store/actions"
 
-import { ingredientByNameAlphabetical } from "../sorters"
+import { ingredientByNameAlphabetical } from "@/sorters"
 
-import DateRangePicker from "./DateRangePicker/DateRangePicker"
-import { RootState } from "../store/store"
-import { ITeam } from "../store/reducers/teams"
+import DateRangePicker from "@/components/DateRangePicker/DateRangePicker"
+import { RootState } from "@/store/store"
+import { ITeam } from "@/store/reducers/teams"
 import {
   IShoppingListItem,
   setSelectingStart,
   setSelectingEnd
-} from "../store/reducers/shoppinglist"
+} from "@/store/reducers/shoppinglist"
 
 const selectElementText = (el: Element) => {
   const sel = window.getSelection()

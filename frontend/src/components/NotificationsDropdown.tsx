@@ -1,7 +1,7 @@
 import React from "react"
-import Dropdown from "./Dropdown"
+import Dropdown from "@/components/Dropdown"
 import { Link } from "react-router-dom"
-import { ButtonPrimary } from "./Buttons"
+import { ButtonPrimary } from "@/components/Buttons"
 
 import { connect } from "react-redux"
 
@@ -10,11 +10,11 @@ import {
   acceptingInvite,
   decliningInvite,
   Dispatch
-} from "../store/actions"
+} from "@/store/actions"
 
-import { teamURL } from "../urls"
-import { IInvite } from "../store/reducers/invites"
-import { RootState } from "../store/store"
+import { teamURL } from "@/urls"
+import { IInvite } from "@/store/reducers/invites"
+import { RootState } from "@/store/store"
 
 interface IInvitesProps {
   readonly loading: boolean

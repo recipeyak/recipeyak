@@ -1,6 +1,6 @@
 import React from "react"
 
-import AddIngredientForm from "./AddIngredientForm"
+import AddIngredientForm from "@/components/AddIngredientForm"
 
 export interface IIngredientBasic {
   quantity: string

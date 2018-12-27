@@ -1,9 +1,9 @@
 import { connect } from "react-redux"
 
-import Home from "../components/Home"
+import Home from "@/components/Home"
 
-import { fetchUser, Dispatch } from "../store/actions"
-import { RootState } from "../store/store"
+import { fetchUser, Dispatch } from "@/store/actions"
+import { RootState } from "@/store/store"
 
 const mapStateToProps = (state: RootState) => ({
   loggedIn: state.user.loggedIn

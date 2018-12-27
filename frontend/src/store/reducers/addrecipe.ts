@@ -1,6 +1,6 @@
 import { action as act } from "typesafe-actions"
-import { IIngredientBasic, IStepBasic } from "../../components/AddRecipe"
-import { ITeam } from "./teams"
+import { IIngredientBasic, IStepBasic } from "@/components/AddRecipe"
+import { ITeam } from "@/store/reducers/teams"
 
 const SET_ADD_RECIPE_FORM_NAME = "SET_ADD_RECIPE_FORM_NAME"
 const SET_ADD_RECIPE_FORM_AUTHOR = "SET_ADD_RECIPE_FORM_AUTHOR"

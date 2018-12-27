@@ -1,5 +1,5 @@
 import React from "react"
-import { INotificationState } from "../store/reducers/notification"
+import { INotificationState } from "@/store/reducers/notification"
 
 interface INotificationProps extends INotificationState {
   readonly close: () => void

@@ -1,14 +1,14 @@
 import React from "react"
 import { connect } from "react-redux"
-import { Helmet } from "./Helmet"
+import { Helmet } from "@/components/Helmet"
 
-import NoMatch from "./NoMatch"
-import Loader from "./Loader"
-import AddStep from "./AddStep"
-import AddIngredient, { IIngredientBasic } from "./AddIngredient"
-import StepContainer from "./StepContainer"
-import Ingredient from "./Ingredient"
-import RecipeTitle from "./RecipeTitle"
+import NoMatch from "@/components/NoMatch"
+import Loader from "@/components/Loader"
+import AddStep from "@/components/AddStep"
+import AddIngredient, { IIngredientBasic } from "@/components/AddIngredient"
+import StepContainer from "@/components/StepContainer"
+import Ingredient from "@/components/Ingredient"
+import RecipeTitle from "@/components/RecipeTitle"
 
 import {
   addingRecipeIngredient,
@@ -19,12 +19,11 @@ import {
   deletingIngredient,
   updatingIngredient,
   Dispatch
-} from "../store/actions"
-import { RootState } from "../store/store"
+} from "@/store/actions"
+import { RootState } from "@/store/store"
 import { RouteComponentProps } from "react-router"
-import { IRecipe, IStep, IIngredient } from "../store/reducers/recipes"
-import { IRecipeBasic } from "./RecipeTitle"
-import { Omit } from "./AddRecipe"
+import { IRecipe, IStep, IIngredient } from "@/store/reducers/recipes"
+import { IRecipeBasic } from "@/components/RecipeTitle"
 
 type RouteProps = RouteComponentProps<{ id: string }>
 

@@ -46,6 +46,8 @@
     "prefer-array-literal": true,
     "react-no-dangerous-html": true,
     "react-unused-props-and-state": true,
+    "no-implicit-dependencies": [true, "dev", ["@"]],
+    "no-relative-imports": [true],
     "ban-types": {
       "options": [
         [

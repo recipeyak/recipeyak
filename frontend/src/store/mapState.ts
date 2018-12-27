@@ -1,5 +1,5 @@
-import { RootState } from "./store"
-import { ITeam } from "./reducers/teams"
+import { RootState } from "@/store/store"
+import { ITeam } from "@/store/reducers/teams"
 
 export const teamsFrom = (state: RootState): ITeam[] =>
   state.teams.allIds.map(id => state.teams[id])

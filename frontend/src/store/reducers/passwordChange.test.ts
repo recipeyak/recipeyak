@@ -1,5 +1,5 @@
-import passwordChange, { initialState } from "./passwordChange"
-import * as a from "./passwordChange"
+import passwordChange, { initialState } from "@/store/reducers/passwordChange"
+import * as a from "@/store/reducers/passwordChange"
 
 describe("passwordChange", () => {
   it("sets the loading state of the updating password", () => {

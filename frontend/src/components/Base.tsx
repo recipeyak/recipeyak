@@ -1,8 +1,8 @@
 import * as React from "react"
 
-import Footer from "./Footer"
-import Navbar from "../containers/Nav"
-import SearchModal from "./SearchModal"
+import Footer from "@/components/Footer"
+import Navbar from "@/containers/Nav"
+import SearchModal from "@/components/SearchModal"
 
 export const ContainerBase: React.SFC = ({ children }) => (
   <div>

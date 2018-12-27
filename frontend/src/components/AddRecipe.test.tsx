@@ -5,8 +5,8 @@ import { mount } from "enzyme"
 import { Provider } from "react-redux"
 import { MemoryRouter } from "react-router"
 
-import { emptyStore as store } from "../store/store"
-import AddRecipe from "./AddRecipe"
+import { emptyStore as store } from "@/store/store"
+import AddRecipe from "@/components/AddRecipe"
 
 describe("<AddRecipe/>", () => {
   it("renders without crashing", () => {

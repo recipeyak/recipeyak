@@ -1,19 +1,19 @@
 import React from "react"
-import { Helmet } from "./Helmet"
+import { Helmet } from "@/components/Helmet"
 import { Link } from "react-router-dom"
 import { connect } from "react-redux"
 import { RouteComponentProps } from "react-router-dom"
 
-import { ButtonPrimary } from "./Buttons"
+import { ButtonPrimary } from "@/components/Buttons"
 
-import NoMatch from "./NoMatch"
-import Loader from "./Loader"
+import NoMatch from "@/components/NoMatch"
+import Loader from "@/components/Loader"
 
-import { teamURL } from "../urls"
+import { teamURL } from "@/urls"
 
-import { fetchTeam, sendingTeamInvites, Dispatch } from "../store/actions"
-import { RootState } from "../store/store"
-import { IMember, ITeam } from "../store/reducers/teams"
+import { fetchTeam, sendingTeamInvites, Dispatch } from "@/store/actions"
+import { RootState } from "@/store/store"
+import { IMember, ITeam } from "@/store/reducers/teams"
 
 const mapStateToProps = (state: RootState, props: ITeamInviteProps) => {
   const id = parseInt(props.match.params.id, 10)

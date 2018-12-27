@@ -1,6 +1,10 @@
-import { calendar, initialState, ICalendarState } from "./calendar"
-import * as a from "./calendar"
-import { baseRecipe } from "./recipes.test"
+import {
+  calendar,
+  initialState,
+  ICalendarState
+} from "@/store/reducers/calendar"
+import * as a from "@/store/reducers/calendar"
+import { baseRecipe } from "@/store/reducers/recipes.test"
 
 describe("Calendar", () => {
   it("sets calendar recipes starting with empty state", () => {

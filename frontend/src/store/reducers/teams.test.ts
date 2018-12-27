@@ -1,6 +1,6 @@
-import { teams, ITeamsState, ITeam } from "./teams"
-import * as a from "./teams"
-import { baseRecipe } from "./recipes.test"
+import { teams, ITeamsState, ITeam } from "@/store/reducers/teams"
+import * as a from "@/store/reducers/teams"
+import { baseRecipe } from "@/store/reducers/recipes.test"
 
 describe("Teams", () => {
   it("Adds team to team object", () => {

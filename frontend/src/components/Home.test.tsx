@@ -4,9 +4,9 @@ import { MemoryRouter } from "react-router"
 import { mount } from "enzyme"
 
 import { Provider } from "react-redux"
-import { emptyStore as store } from "../store/store"
+import { emptyStore as store } from "@/store/store"
 
-import Home from "./Home"
+import Home from "@/components/Home"
 
 describe("<Home/>", () => {
   it("renders without crashing", () => {
