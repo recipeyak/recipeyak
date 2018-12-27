@@ -56,8 +56,7 @@ function setCalendarRecipeState(
 ) {
   const existing = state.allIds
     .filter(x => x !== recipe.id)
-    // tslint:disable-next-line:no-any
-    .map(x => state[x as number])
+    .map(x => state[x])
     .filter(x => isSameDay(x.on, recipe.on))
     .find(x => x.recipe.id === recipe.recipe.id)
 

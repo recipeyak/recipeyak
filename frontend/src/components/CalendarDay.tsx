@@ -141,10 +141,14 @@ export default connect(
       },
       drop(props: ICalendarDayProps, monitor: DropTargetMonitor) {
         const { recipeID, count = 1, id } = monitor.getItem()
+        // NOTE(chdsbd): We use Promise.resolve to elminate slow drop event
+        // warnings.
         if (id != null) {
-          props.move(id, props.teamID, props.date)
+          Promise.resolve().then(() => props.move(id, props.teamID, props.date))
         } else {
-          props.create(recipeID, props.teamID, props.date, count)
+          Promise.resolve().then(() =>
+            props.create(recipeID, props.teamID, props.date, count)
+          )
         }
       }
     },
