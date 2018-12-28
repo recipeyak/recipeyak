@@ -1,6 +1,6 @@
 {
-  "extends": ["tslint:recommended", "tslint-config-prettier"],
-  "rulesDirectory": ["node_modules/tslint-microsoft-contrib", "node_modules/tslint-immutable"],
+  "extends": ["tslint:recommended", "tslint-config-prettier", "tslint-immutable"],
+  "rulesDirectory": ["node_modules/tslint-microsoft-contrib"],
   "defaultSeverity": "error",
   "rules": {
     "object-literal-sort-keys": false,
