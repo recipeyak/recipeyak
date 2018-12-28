@@ -119,10 +119,10 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
   copy() {
     const [id, type] = this.state.values[0].split("-")
     if (id == null || type == null) {
-      throw new TypeError("need id/type to move to")
+      return new TypeError("need id/type to move to")
     }
     if (type !== "team" && type !== "user") {
-      throw new TypeError("type can only either be a team or a user")
+      return new TypeError("type can only either be a team or a user")
     }
     this.props
       .copyRecipeTo(this.props.recipeId, parseInt(id, 10), type)
@@ -139,10 +139,10 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
   move() {
     const [id, type] = this.state.values[0].split("-")
     if (id == null || type == null) {
-      throw new TypeError("need id/type to copy to")
+      return new TypeError("need id/type to copy to")
     }
     if (type !== "team" && type !== "user") {
-      throw new TypeError("type can only either be a team or a user")
+      return new TypeError("type can only either be a team or a user")
     }
 
     this.props

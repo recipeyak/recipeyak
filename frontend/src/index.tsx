@@ -18,6 +18,9 @@ if (process.env.NODE_ENV === "production" && SENTRY_DSN) {
 
 const rootElement = document.getElementById("root")
 if (rootElement == null) {
+  // This is an exceptional case that we should throw about. Nothing can handle
+  // this error.
+  // tslint:disable-next-line:no-throw
   throw new Error("could not find root element")
 }
 

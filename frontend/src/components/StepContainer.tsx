@@ -96,7 +96,7 @@ class StepContainer extends React.Component<
       newPos = (nextCard.position - prevCard.position) / 2 + prevCard.position
     }
     if (newPos == null) {
-      throw new Error("Invalid position")
+      return new Error("Invalid position")
     }
     const newPosition: number = newPos
 
