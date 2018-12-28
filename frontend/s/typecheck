@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -e
+
+cd $(dirname $(dirname "$0"))
+
+if [[ -f ../.env ]]; then
+    # export all variables from env file
+    set -a
+    source ../.env
+    set +a
+fi
+
+$(yarn bin)/tsc --watch --noEmit
