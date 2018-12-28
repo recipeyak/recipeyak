@@ -10,12 +10,6 @@ if [[ -f ../.env ]]; then
     set +a
 fi
 
-MYPY_ARGS=''
-if [[ $CI ]]; then
-  mkdir -p backend/reports
-  MYPY_ARGS='--junit-xml backend/reports/mypy.xml'
-fi
-
 # include "." and find all python files with a shebang
 FILES=".";
 EXECUTABLE_FILES="$(find . ! -name '*.py' -perm +111 -type f)";
@@ -28,13 +22,12 @@ if [ -n "$EXECUTABLE_FILES" ];then
 fi
 
 echo 'start mypy'
-(poetry run mypy --config-file tox.ini $MYPY_ARGS $FILES) &
+./s/typecheck &
 
 echo 'start flake8'
 (poetry run flake8 $FILES) &
 
 echo 'start black'
-
 # black --quiet is too quiet, so we grep for 'would format' in stderr
 (poetry run black --check $FILES 2> >( grep 'would reformat');) &
 

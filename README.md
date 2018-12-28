@@ -26,14 +26,18 @@ frontend/s/install
 frontend/s/run
 frontend/s/test
 frontend/s/lint
+frontend/s/typecheck
 frontend/s/fmt
+frontend/s/exec # e.g. frontend/s/exec yarn add $PKG
 
 # backend
 backend/s/install
 backend/s/run
 backend/s/test # or backend/s/test --watch
 backend/s/lint
+backend/s/typecheck
 backend/s/fmt
+backend/s/exec # e.g. backend/s/exec poetry add $PKG
 backend/s/manage
 ```
 
