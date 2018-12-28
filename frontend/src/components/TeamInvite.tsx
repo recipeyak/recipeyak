@@ -55,7 +55,7 @@ interface ITeamInviteProps extends RouteComponentProps<{ id: string }> {
     id: ITeam["id"],
     emails: string[],
     level: IMember["level"]
-  ) => Promise<void>
+  ) => Promise<void | Error>
   readonly loadingTeam: boolean
   readonly name: string
   readonly error404: boolean
@@ -113,9 +113,9 @@ class TeamInvite extends React.Component<ITeamInviteProps, ITeamInviteState> {
           onSubmit={async e => {
             e.preventDefault()
             const emails = this.state.emails.split(",").filter(x => x !== "")
-            try {
-              await this.props.sendInvites(id, emails, this.state.level)
-            } catch (e) {
+            const result = await this.props.sendInvites(id, emails, this.state.level)
+            if (result instanceof Error) {
+              // On failure, we should leave our email state unchanged.
               return
             }
             this.setState({ emails: "" })

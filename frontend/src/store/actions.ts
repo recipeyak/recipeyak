@@ -1209,6 +1209,7 @@ export const sendingTeamInvites = (dispatch: Dispatch) => (
         delay: 3 * second
       })
       dispatch(setSendingTeamInvites(teamID, false))
+      return Error()
     })
 }
 
