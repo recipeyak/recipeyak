@@ -1202,14 +1202,14 @@ export const sendingTeamInvites = (dispatch: Dispatch) => (
       })
       dispatch(setSendingTeamInvites(teamID, false))
     })
-    .catch(() => {
+    .catch(err => {
       showNotificationWithTimeout(dispatch)({
         message: "error sending team invite",
         level: "danger",
         delay: 3 * second
       })
       dispatch(setSendingTeamInvites(teamID, false))
-      return Error()
+      return err
     })
 }
 
