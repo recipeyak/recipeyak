@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -e
+
+cd $(dirname $(dirname "$0"))
+
+if [[ -f ../.env ]]; then
+    # export all variables from env file
+    set -a
+    source ../.env
+    set +a
+fi
+
+MYPY_ARGS=''
+if [[ $CI ]]; then
+  mkdir -p backend/reports
+  MYPY_ARGS='--junit-xml backend/reports/mypy.xml'
+fi
+
+# include "." and find all python files with a shebang
+FILES=".";
+EXECUTABLE_FILES="$(find . ! -name '*.py' -perm +111 -type f)";
+if [ -n "$EXECUTABLE_FILES" ];then
+    set +e
+    # regex on python3, python2, python3.*, python2.*
+    SHEBANG_FILES=$(grep -E -l '^#!/usr/bin/env python(2|3)?(\.\d)?$' $EXECUTABLE_FILES)
+    set -e
+    FILES="$FILES ""$SHEBANG_FILES"
+fi
+
+poetry run mypy --config-file tox.ini $MYPY_ARGS $FILES
