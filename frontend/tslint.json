@@ -49,6 +49,7 @@
     "no-implicit-dependencies": [true, "dev", ["@"]],
     "no-relative-imports": [true],
     "no-throw": true,
+    "no-try": true,
     "ban-types": {
       "options": [
         [
