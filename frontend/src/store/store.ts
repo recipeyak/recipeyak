@@ -142,10 +142,10 @@ export const emptyStore = createStore(
 
 // NOTE(sbdchd): this is hacky, we should validate the local storage state before using it
 const defaultData = (): RootState => {
-  const saved: undefined | Partial<RootState> = loadState()
+  const saved = loadState()
   const empty = emptyStore.getState()
 
-  if (saved == null) {
+  if (saved == null || saved instanceof SyntaxError) {
     return empty
   }
 
