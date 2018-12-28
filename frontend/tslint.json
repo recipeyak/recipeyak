@@ -1,6 +1,6 @@
 {
   "extends": ["tslint:recommended", "tslint-config-prettier"],
-  "rulesDirectory": ["node_modules/tslint-microsoft-contrib"],
+  "rulesDirectory": ["node_modules/tslint-microsoft-contrib", "node_modules/tslint-immutable"],
   "defaultSeverity": "error",
   "rules": {
     "object-literal-sort-keys": false,
@@ -48,6 +48,7 @@
     "react-unused-props-and-state": true,
     "no-implicit-dependencies": [true, "dev", ["@"]],
     "no-relative-imports": [true],
+    "no-throw": true,
     "ban-types": {
       "options": [
         [
