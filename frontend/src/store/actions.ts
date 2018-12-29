@@ -62,7 +62,6 @@ import {
   setNotification,
   clearNotification
 } from "@/store/reducers/notification"
-import { IRecipeBasic } from "@/components/AddRecipe"
 import {
   ITeam,
   deleteTeam,
@@ -90,8 +89,6 @@ import {
   IRecipe,
   setSchedulingRecipe,
   updateRecipeOwner,
-  addRecipe,
-  setRecipes,
   deleteRecipe,
   setRemovingStep,
   deleteStep,
@@ -103,7 +100,6 @@ import {
   setLoadingAddStepToRecipe,
   addStepToRecipe,
   setRecipeUpdating,
-  setRecipe,
   updateRecipeTime,
   updateRecipeAuthor,
   updateRecipeSource,
@@ -111,14 +107,13 @@ import {
   setAddingIngredientToRecipe,
   addIngredientToRecipe,
   updateIngredient,
-  setLoadingRecipe,
-  setRecipe404,
-  IIngredient
+  IIngredient,
+  fetchRecipe,
+  fetchRecipeList,
+  createRecipe
 } from "@/store/reducers/recipes"
 import * as api from "@/api"
 import {
-  setLoadingAddRecipe,
-  setLoadingRecipes,
   setLoadingLogin,
   setLoadingSignup,
   setLoadingReset,
@@ -144,13 +139,12 @@ import {
 import {
   setErrorSocialLogin,
   setErrorLogin,
-  setErrorRecipes,
   setErrorSignup,
   setErrorReset,
-  setErrorResetConfirmation,
-  setErrorAddRecipe
+  setErrorResetConfirmation
 } from "@/store/reducers/error"
 import { Dispatch as ReduxDispatch } from "redux"
+import { IRecipeBasic } from "@/components/RecipeTitle"
 
 const config = { timeout: 15000 }
 
@@ -460,16 +454,13 @@ export const fetchShoppingList = (dispatch: Dispatch) => (
 }
 
 export const postNewRecipe = (dispatch: Dispatch) => (recipe: IRecipeBasic) => {
-  dispatch(setLoadingAddRecipe(true))
-  dispatch(setErrorAddRecipe({}))
-
+  dispatch(createRecipe.request())
   return http
     .post<IRecipe>("/api/v1/recipes/", recipe)
     .then(res => {
-      dispatch(addRecipe(res.data))
-      dispatch(clearAddRecipeForm())
-      dispatch(setLoadingAddRecipe(false))
+      dispatch(createRecipe.success(res.data))
       dispatch(push("/recipes"))
+      dispatch(clearAddRecipeForm())
     })
     .catch((err: AxiosError) => {
       // tslint:disable:no-unsafe-any
@@ -481,9 +472,7 @@ export const postNewRecipe = (dispatch: Dispatch) => (recipe: IRecipeBasic) => {
         }) ||
         {}
       // tslint:enable:no-unsafe-any
-      dispatch(setLoadingAddRecipe(false))
-      dispatch(setErrorAddRecipe(errors))
-
+      dispatch(createRecipe.failure(errors))
       showNotificationWithTimeout(dispatch)({
         message: "problem creating new recipe",
         level: "danger",
@@ -492,56 +481,46 @@ export const postNewRecipe = (dispatch: Dispatch) => (recipe: IRecipeBasic) => {
     })
 }
 
-export const fetchRecipe = (dispatch: Dispatch) => (id: number) => {
-  dispatch(setRecipe404(id, false))
-  dispatch(setLoadingRecipe(id, true))
+export const fetchingRecipe = (dispatch: Dispatch) => (id: number) => {
+  dispatch(fetchRecipe.request(id))
   return http
     .get<IRecipe>(`/api/v1/recipes/${id}/`)
     .then(res => {
-      dispatch(addRecipe(res.data))
-      dispatch(setLoadingRecipe(id, false))
+      dispatch(fetchRecipe.success(res.data))
     })
     .catch((err: AxiosError) => {
-      if (err.response && err.response.status === 404) {
-        dispatch(setRecipe404(id, true))
-      }
-      dispatch(setLoadingRecipe(id, false))
+      const error404 = !!(err.response && err.response.status === 404)
+      dispatch(fetchRecipe.failure({ id, error404 }))
     })
 }
 
 export const fetchRecentRecipes = (dispatch: Dispatch) => () => {
-  dispatch(setLoadingRecipes(true))
-  dispatch(setErrorRecipes(false))
+  // TODO(sbdchd): these should have their own id array in the reduce and their own actions
+  dispatch(fetchRecipeList.request())
   return http
     .get<IRecipe[]>("/api/v1/recipes/?recent")
     .then(res => {
-      dispatch(setRecipes(res.data))
-      dispatch(setLoadingRecipes(false))
+      dispatch(fetchRecipeList.success(res.data))
     })
     .catch(() => {
-      dispatch(setErrorRecipes(true))
-      dispatch(setLoadingRecipes(false))
+      dispatch(fetchRecipeList.failure())
     })
 }
 
-export const fetchRecipeList = (dispatch: Dispatch) => (
+export const fetchingRecipeList = (dispatch: Dispatch) => (
   teamID: number | "personal"
 ) => {
-  dispatch(setLoadingRecipes(true))
-  dispatch(setErrorRecipes(false))
-
+  dispatch(fetchRecipeList.request())
   const url =
     teamID === "personal" ? "/api/v1/recipes/" : `/api/v1/t/${teamID}/recipes/`
 
   return http
     .get<IRecipe[]>(url)
     .then(res => {
-      dispatch(setRecipes(res.data))
-      dispatch(setLoadingRecipes(false))
+      dispatch(fetchRecipeList.success(res.data))
     })
     .catch(() => {
-      dispatch(setErrorRecipes(true))
-      dispatch(setLoadingRecipes(false))
+      dispatch(fetchRecipeList.failure())
     })
 }
 
@@ -663,7 +642,8 @@ export const updateRecipe = (dispatch: Dispatch) => (
   return http
     .patch<IRecipe>(`/api/v1/recipes/${id}/`, data)
     .then(res => {
-      dispatch(setRecipe(res.data.id, res.data))
+      // TODO(sbdchd): this should have its own actions
+      dispatch(fetchRecipe.success(res.data))
       dispatch(setRecipeUpdating(id, false))
     })
     .catch(() => {
@@ -1041,11 +1021,12 @@ export const fetchTeamMembers = (dispatch: Dispatch) => (id: number) => {
 }
 
 export const fetchTeamRecipes = (dispatch: Dispatch) => (id: number) => {
+  // TODO(sbdchd): this needs its own actions
   dispatch(setLoadingTeamRecipes(id, true))
   return http
     .get<IRecipe[]>(`/api/v1/t/${id}/recipes/`)
     .then(res => {
-      dispatch(setRecipes(res.data))
+      dispatch(fetchRecipeList.success(res.data))
       dispatch(setTeamRecipes(id, res.data))
       dispatch(setLoadingTeamRecipes(id, false))
     })
@@ -1267,7 +1248,7 @@ export const copyRecipeTo = (dispatch: Dispatch) => (
   return http
     .post<IRecipe>(`/api/v1/recipes/${recipeId}/copy/`, { id: ownerId, type })
     .then(res => {
-      dispatch(addRecipe(res.data))
+      dispatch(fetchRecipe.success(res.data))
       dispatch(setCopyingTeam(false))
     })
     .catch(err => {

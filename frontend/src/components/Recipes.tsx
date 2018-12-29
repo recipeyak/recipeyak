@@ -9,7 +9,7 @@ import Results from "@/components/Results"
 
 import { byNameAlphabetical } from "@/sorters"
 
-import { fetchRecipeList, Dispatch } from "@/store/actions"
+import { Dispatch, fetchingRecipeList } from "@/store/actions"
 import { IRecipe, getRecipes } from "@/store/reducers/recipes"
 import { ITeam } from "@/store/reducers/teams"
 import { RootState } from "@/store/store"
@@ -17,12 +17,12 @@ import { RootState } from "@/store/store"
 const mapStateToProps = (state: RootState) => {
   return {
     recipes: getRecipes(state).sort(byNameAlphabetical),
-    loading: state.loading.recipes
+    loading: state.recipes.loadingAll
   }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: fetchRecipeList(dispatch)
+  fetchData: fetchingRecipeList(dispatch)
 })
 
 interface IRecipesProps {

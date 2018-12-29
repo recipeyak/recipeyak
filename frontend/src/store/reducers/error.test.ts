@@ -45,22 +45,6 @@ describe("error", () => {
     expect(error(errorState, a.setErrorSocialLogin({}))).toEqual(notErrorState)
   })
 
-  it("sets recipes error", () => {
-    const notErrorState = {
-      ...initialState,
-      recipes: false
-    }
-
-    const errorState = {
-      ...initialState,
-      recipes: true
-    }
-
-    expect(error(notErrorState, a.setErrorRecipes(true))).toEqual(errorState)
-
-    expect(error(errorState, a.setErrorRecipes(false))).toEqual(notErrorState)
-  })
-
   it("sets signup error", () => {
     const notErrorState = {
       ...initialState,
@@ -81,26 +65,6 @@ describe("error", () => {
     )
 
     expect(error(errorState, a.setErrorSignup({}))).toEqual(notErrorState)
-  })
-
-  it("sets addRecipe error", () => {
-    const notErrorState = {
-      ...initialState,
-      addRecipe: {}
-    }
-
-    const errorState = {
-      ...initialState,
-      addRecipe: {
-        errorWithName: true
-      }
-    }
-
-    expect(
-      error(notErrorState, a.setErrorAddRecipe({ errorWithName: true }))
-    ).toEqual(errorState)
-
-    expect(error(errorState, a.setErrorAddRecipe({}))).toEqual(notErrorState)
   })
 
   it("sets reset error", () => {

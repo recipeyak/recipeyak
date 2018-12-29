@@ -7,12 +7,9 @@ const SET_ERROR_SOCIAL_LOGIN = "SET_ERROR_SOCIAL_LOGIN"
 
 const SET_ERROR_SIGNUP = "SET_ERROR_SIGNUP"
 
-const SET_ERROR_RECIPES = "SET_ERROR_RECIPES"
 const SET_ERROR_RESET = "SET_ERROR_RESET"
 
 const SET_ERROR_RESET_CONFIRMATION = "SET_ERROR_RESET_CONFIRMATION"
-
-const SET_ERROR_ADD_RECIPE = "SET_ERROR_ADD_RECIPE"
 
 export const setErrorLogin = (val: ILoginError) => act(SET_ERROR_LOGIN, val)
 
@@ -21,31 +18,18 @@ export const setErrorSocialLogin = (val: ISocialError) =>
 
 export const setErrorSignup = (val: ISignupErrors) => act(SET_ERROR_SIGNUP, val)
 
-export const setErrorRecipes = (val: boolean) => act(SET_ERROR_RECIPES, val)
-
 export const setErrorReset = (val: IPasswordResetError) =>
   act(SET_ERROR_RESET, val)
 
 export const setErrorResetConfirmation = (val: IPasswordResetConfirmError) =>
   act(SET_ERROR_RESET_CONFIRMATION, val)
 
-export const setErrorAddRecipe = (val: IAddRecipeError) =>
-  act(SET_ERROR_ADD_RECIPE, val)
-
 export type ErrorActions =
   | ReturnType<typeof setErrorLogin>
   | ReturnType<typeof setErrorSocialLogin>
   | ReturnType<typeof setErrorSignup>
-  | ReturnType<typeof setErrorRecipes>
   | ReturnType<typeof setErrorReset>
   | ReturnType<typeof setErrorResetConfirmation>
-  | ReturnType<typeof setErrorAddRecipe>
-
-export interface IAddRecipeError {
-  readonly errorWithName?: boolean
-  readonly errorWithIngredients?: boolean
-  readonly errorWithSteps?: boolean
-}
 
 export interface IPasswordResetConfirmError {
   readonly nonFieldErrors?: string[]
@@ -82,8 +66,6 @@ export interface IErrorState {
   readonly signup: ISignupErrors
   readonly reset: IPasswordResetError
   readonly resetConfirmation: IPasswordResetConfirmError
-  readonly addRecipe: IAddRecipeError
-  readonly recipes: boolean
 }
 
 export const initialState: IErrorState = {
@@ -91,13 +73,7 @@ export const initialState: IErrorState = {
   socialLogin: {},
   signup: {},
   reset: {},
-  resetConfirmation: {},
-  addRecipe: {
-    errorWithName: false,
-    errorWithIngredients: false,
-    errorWithSteps: false
-  },
-  recipes: false
+  resetConfirmation: {}
 }
 
 const error = (
@@ -111,14 +87,10 @@ const error = (
       return { ...state, socialLogin: action.payload }
     case SET_ERROR_SIGNUP:
       return { ...state, signup: action.payload }
-    case SET_ERROR_RECIPES:
-      return { ...state, recipes: action.payload }
     case SET_ERROR_RESET:
       return { ...state, reset: action.payload }
     case SET_ERROR_RESET_CONFIRMATION:
       return { ...state, resetConfirmation: action.payload }
-    case SET_ERROR_ADD_RECIPE:
-      return { ...state, addRecipe: action.payload }
     default:
       return state
   }

@@ -13,8 +13,8 @@ import {
   fetchCalendar,
   fetchTeams,
   fetchShoppingList,
-  fetchRecipeList,
-  Dispatch
+  Dispatch,
+  fetchingRecipeList
 } from "@/store/actions"
 
 import { pyFormat, daysFromSunday, daysUntilSaturday } from "@/date"
@@ -80,7 +80,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     end: Date
   ) => {
     return Promise.all([
-      fetchRecipeList(dispatch)(teamID),
+      fetchingRecipeList(dispatch)(teamID),
       fetchShoppingList(dispatch)(teamID, start, end)
     ])
   }

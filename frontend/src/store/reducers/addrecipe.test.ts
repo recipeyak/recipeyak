@@ -4,8 +4,8 @@ import addrecipe, {
 } from "@/store/reducers/addrecipe"
 import * as a from "@/store/reducers/addrecipe"
 
-import { IIngredientBasic } from "@/components/AddRecipe"
 import { baseIngredient, baseStep } from "@/store/reducers/recipes.test"
+import { IIngredientBasic } from "@/store/reducers/recipes"
 
 describe("addrecipe", () => {
   it("sets addrecipe form name", () => {
