@@ -7,7 +7,6 @@ const SET_ERROR_SOCIAL_LOGIN = "SET_ERROR_SOCIAL_LOGIN"
 
 const SET_ERROR_SIGNUP = "SET_ERROR_SIGNUP"
 
-const SET_ERROR_RECIPES = "SET_ERROR_RECIPES"
 const SET_ERROR_RESET = "SET_ERROR_RESET"
 
 const SET_ERROR_RESET_CONFIRMATION = "SET_ERROR_RESET_CONFIRMATION"
@@ -20,8 +19,6 @@ export const setErrorSocialLogin = (val: ISocialError) =>
   act(SET_ERROR_SOCIAL_LOGIN, val)
 
 export const setErrorSignup = (val: ISignupErrors) => act(SET_ERROR_SIGNUP, val)
-
-export const setErrorRecipes = (val: boolean) => act(SET_ERROR_RECIPES, val)
 
 export const setErrorReset = (val: IPasswordResetError) =>
   act(SET_ERROR_RESET, val)
@@ -36,7 +33,6 @@ export type ErrorActions =
   | ReturnType<typeof setErrorLogin>
   | ReturnType<typeof setErrorSocialLogin>
   | ReturnType<typeof setErrorSignup>
-  | ReturnType<typeof setErrorRecipes>
   | ReturnType<typeof setErrorReset>
   | ReturnType<typeof setErrorResetConfirmation>
   | ReturnType<typeof setErrorAddRecipe>
@@ -111,8 +107,6 @@ const error = (
       return { ...state, socialLogin: action.payload }
     case SET_ERROR_SIGNUP:
       return { ...state, signup: action.payload }
-    case SET_ERROR_RECIPES:
-      return { ...state, recipes: action.payload }
     case SET_ERROR_RESET:
       return { ...state, reset: action.payload }
     case SET_ERROR_RESET_CONFIRMATION:

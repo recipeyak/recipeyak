@@ -90,7 +90,6 @@ import {
   IRecipe,
   setSchedulingRecipe,
   updateRecipeOwner,
-  setRecipes,
   deleteRecipe,
   setRemovingStep,
   deleteStep,
@@ -102,7 +101,6 @@ import {
   setLoadingAddStepToRecipe,
   addStepToRecipe,
   setRecipeUpdating,
-  setRecipe,
   updateRecipeTime,
   updateRecipeAuthor,
   updateRecipeSource,
@@ -111,12 +109,12 @@ import {
   addIngredientToRecipe,
   updateIngredient,
   IIngredient,
-  fetchRecipe
+  fetchRecipe,
+  fetchRecipeList
 } from "@/store/reducers/recipes"
 import * as api from "@/api"
 import {
   setLoadingAddRecipe,
-  setLoadingRecipes,
   setLoadingLogin,
   setLoadingSignup,
   setLoadingReset,
@@ -142,7 +140,6 @@ import {
 import {
   setErrorSocialLogin,
   setErrorLogin,
-  setErrorRecipes,
   setErrorSignup,
   setErrorReset,
   setErrorResetConfirmation,
@@ -504,38 +501,32 @@ export const fetchingRecipe = (dispatch: Dispatch) => (id: number) => {
 }
 
 export const fetchRecentRecipes = (dispatch: Dispatch) => () => {
-  dispatch(setLoadingRecipes(true))
-  dispatch(setErrorRecipes(false))
+  // TODO(sbdchd): these should have their own id array in the reduce and their own actions
+  dispatch(fetchRecipeList.request())
   return http
     .get<IRecipe[]>("/api/v1/recipes/?recent")
     .then(res => {
-      dispatch(setRecipes(res.data))
-      dispatch(setLoadingRecipes(false))
+      dispatch(fetchRecipeList.success(res.data))
     })
     .catch(() => {
-      dispatch(setErrorRecipes(true))
-      dispatch(setLoadingRecipes(false))
+      dispatch(fetchRecipeList.failure())
     })
 }
 
-export const fetchRecipeList = (dispatch: Dispatch) => (
+export const fetchingRecipeList = (dispatch: Dispatch) => (
   teamID: number | "personal"
 ) => {
-  dispatch(setLoadingRecipes(true))
-  dispatch(setErrorRecipes(false))
-
+  dispatch(fetchRecipeList.request())
   const url =
     teamID === "personal" ? "/api/v1/recipes/" : `/api/v1/t/${teamID}/recipes/`
 
   return http
     .get<IRecipe[]>(url)
     .then(res => {
-      dispatch(setRecipes(res.data))
-      dispatch(setLoadingRecipes(false))
+      dispatch(fetchRecipeList.success(res.data))
     })
     .catch(() => {
-      dispatch(setErrorRecipes(true))
-      dispatch(setLoadingRecipes(false))
+      dispatch(fetchRecipeList.failure())
     })
 }
 
@@ -657,7 +648,8 @@ export const updateRecipe = (dispatch: Dispatch) => (
   return http
     .patch<IRecipe>(`/api/v1/recipes/${id}/`, data)
     .then(res => {
-      dispatch(setRecipe(res.data.id, res.data))
+      // TODO(sbdchd): this should have its own actions
+      dispatch(fetchRecipe.success(res.data))
       dispatch(setRecipeUpdating(id, false))
     })
     .catch(() => {
@@ -1035,11 +1027,12 @@ export const fetchTeamMembers = (dispatch: Dispatch) => (id: number) => {
 }
 
 export const fetchTeamRecipes = (dispatch: Dispatch) => (id: number) => {
+  // TODO(sbdchd): this needs its own actions
   dispatch(setLoadingTeamRecipes(id, true))
   return http
     .get<IRecipe[]>(`/api/v1/t/${id}/recipes/`)
     .then(res => {
-      dispatch(setRecipes(res.data))
+      dispatch(fetchRecipeList.success(res.data))
       dispatch(setTeamRecipes(id, res.data))
       dispatch(setLoadingTeamRecipes(id, false))
     })

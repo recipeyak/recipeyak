@@ -17,7 +17,6 @@ const UPDATE_STEP = "UPDATE_STEP"
 const DELETE_RECIPE_START = "DELETE_RECIPE_START"
 const DELETE_RECIPE_SUCCESS = "DELETE_RECIPE_SUCCESS"
 const DELETE_RECIPE_FAILURE = "DELETE_RECIPE_FAILURE"
-const SET_RECIPE = "SET_RECIPE"
 const SET_ADDING_INGREDIENT_TO_RECIPE = "SET_ADDING_INGREDIENT_TO_RECIPE"
 const SET_UPDATING_INGREDIENT = "SET_UPDATING_INGREDIENT"
 const SET_REMOVING_INGREDIENT = "SET_REMOVING_INGREDIENT"
@@ -25,11 +24,13 @@ const SET_UPDATING_STEP = "SET_UPDATING_STEP"
 const SET_REMOVING_STEP = "SET_REMOVING_STEP"
 const SET_RECIPE_UPDATING = "SET_RECIPE_UPDATING"
 const UPDATE_RECIPE_OWNER = "UPDATE_RECIPE_OWNER"
-const SET_RECIPES = "SET_RECIPES"
 const SET_SCHEDULING_RECIPE = "SET_SCHEDULING_RECIPE"
 const FETCH_RECIPE_START = "FETCH_RECIPE_START"
 const FETCH_RECIPE_SUCCESS = "FETCH_RECIPE_SUCCESS"
 const FETCH_RECIPE_FAILURE = "FETCH_RECIPE_FAILURE"
+const FETCH_RECIPE_LIST_START = "FETCH_RECIPE_LIST_START"
+const FETCH_RECIPE_LIST_SUCCESS = "FETCH_RECIPE_LIST_SUCCESS"
+const FETCH_RECIPE_LIST_FAILURE = "FETCH_RECIPE_LIST_FAILURE"
 
 export const updateRecipeTime = (id: IRecipe["id"], time: IRecipe["time"]) =>
   act(UPDATE_RECIPE_TIME, {
@@ -65,6 +66,12 @@ export const fetchRecipe = createAsyncAction(
   FETCH_RECIPE_SUCCESS,
   FETCH_RECIPE_FAILURE
 )<IRecipe["id"], IRecipe, { id: IRecipe["id"]; error404: boolean }>()
+
+export const fetchRecipeList = createAsyncAction(
+  FETCH_RECIPE_LIST_START,
+  FETCH_RECIPE_LIST_SUCCESS,
+  FETCH_RECIPE_LIST_FAILURE
+)<void, IRecipe[], void>()
 
 export const deleteStep = (recipeID: IRecipe["id"], stepID: IStep["id"]) =>
   act(DELETE_STEP, {
@@ -138,12 +145,6 @@ export const setUpdatingIngredient = (
     val
   })
 
-export const setRecipe = (id: IRecipe["id"], data: IRecipe) =>
-  act(SET_RECIPE, {
-    id,
-    data
-  })
-
 export const setRecipeUpdating = (id: IRecipe["id"], val: boolean) =>
   act(SET_RECIPE_UPDATING, {
     id,
@@ -172,11 +173,6 @@ export const updateRecipeName = (id: IRecipe["id"], name: IRecipe["name"]) =>
   act(UPDATE_RECIPE_NAME, {
     id,
     name
-  })
-
-export const setRecipes = (r: IRecipe[]) =>
-  act(SET_RECIPES, {
-    recipes: r
   })
 
 export const setLoadingAddStepToRecipe = (id: IRecipe["id"], val: boolean) =>
@@ -224,12 +220,10 @@ export type RecipeActions =
   | ReturnType<typeof deleteIngredient>
   | ReturnType<typeof setRemovingIngredient>
   | ReturnType<typeof setUpdatingIngredient>
-  | ReturnType<typeof setRecipe>
   | ReturnType<typeof setRecipeUpdating>
   | ReturnType<typeof updateRecipeAuthor>
   | ReturnType<typeof updateRecipeSource>
   | ReturnType<typeof updateRecipeName>
-  | ReturnType<typeof setRecipes>
   | ReturnType<typeof setLoadingAddStepToRecipe>
   | ReturnType<typeof addStepToRecipe>
   | ReturnType<typeof setAddingIngredientToRecipe>
@@ -239,6 +233,7 @@ export type RecipeActions =
   | ReturnType<typeof updateRecipeTime>
   | ActionType<typeof deleteRecipe>
   | ActionType<typeof fetchRecipe>
+  | ActionType<typeof fetchRecipeList>
 
 export const getRecipes = (state: RootState) =>
   state.recipes.allIds.map(id => state.recipes.byId[id])
@@ -298,6 +293,12 @@ export interface IRecipe {
 }
 
 export interface IRecipesState {
+  /** Represents the loading state for the list view.
+   *  Currently shared by other views as well, but should be eliminated
+   *  once we move to sum-types for our data fetching states.
+   */
+  readonly loadingAll: boolean
+  readonly errorLoadingAll: boolean
   readonly byId: {
     readonly [key: number]: IRecipe
   }
@@ -305,6 +306,8 @@ export interface IRecipesState {
 }
 
 export const initialState: IRecipesState = {
+  loadingAll: false,
+  errorLoadingAll: false,
   byId: {},
   allIds: []
 }
@@ -351,6 +354,29 @@ export const recipes = (
           }
         }
       }
+
+    case FETCH_RECIPE_LIST_START: {
+      return {
+        ...state,
+        loadingAll: true
+      }
+    }
+    case FETCH_RECIPE_LIST_SUCCESS: {
+      return {
+        ...state,
+        loadingAll: false,
+        errorLoadingAll: false,
+        byId: action.payload.reduce((a, b) => ({ ...a, [b.id]: b }), {}),
+        allIds: action.payload.map(r => r.id)
+      }
+    }
+    case FETCH_RECIPE_LIST_FAILURE: {
+      return {
+        ...state,
+        loadingAll: false,
+        errorLoadingAll: true
+      }
+    }
     case DELETE_RECIPE_START:
       return {
         ...state,
@@ -528,17 +554,6 @@ export const recipes = (
           }
         }
       }
-    case SET_RECIPES:
-      // convert the array of objects to an object with the recipe.id as the
-      // key, and the recipe as the value
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          ...action.payload.recipes.reduce((a, b) => ({ ...a, [b.id]: b }), {})
-        },
-        allIds: uniq(state.allIds.concat(action.payload.recipes.map(r => r.id)))
-      }
     case SET_ADDING_INGREDIENT_TO_RECIPE:
       return {
         ...state,
@@ -640,18 +655,6 @@ export const recipes = (
             updating: action.payload.val
           }
         }
-      }
-    case SET_RECIPE:
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.id]: {
-            ...state.byId[action.payload.id],
-            ...action.payload.data
-          }
-        },
-        allIds: uniq(state.allIds.concat(action.payload.id))
       }
     case UPDATE_RECIPE_OWNER:
       return {
