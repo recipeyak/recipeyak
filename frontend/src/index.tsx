@@ -14,6 +14,8 @@ if (process.env.NODE_ENV === "production" && SENTRY_DSN) {
   Raven.config(SENTRY_DSN, {
     release: GIT_SHA || ""
   }).install()
+  // tslint:disable-next-line:no-console
+  console.log("version:", GIT_SHA, "\nsentry:", SENTRY_DSN)
 }
 
 const rootElement = document.getElementById("root")
