@@ -1,6 +1,7 @@
 import React from "react"
 import Textarea from "react-textarea-autosize"
 import { IRecipe } from "@/store/reducers/recipes"
+import GlobalEvent from "@/components/GlobalEvent"
 
 interface IListItemProps {
   readonly id: number
@@ -40,16 +41,6 @@ export default class ListItem extends React.Component<
   static defaultProps = {
     recipeID: -1,
     removing: false
-  }
-
-  componentWillMount() {
-    document.addEventListener("mouseup", this.handleGeneralClick)
-    document.addEventListener("keydown", this.handleKeyDown)
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener("mouseup", this.handleGeneralClick)
-    document.removeEventListener("keydown", this.handleKeyDown)
   }
 
   handleKeyDown = (e: KeyboardEvent) => {
@@ -145,6 +136,10 @@ export default class ListItem extends React.Component<
 
     const inner = this.state.editing ? (
       <form>
+        <GlobalEvent
+          mouseUp={this.handleGeneralClick}
+          keyDown={this.handleKeyDown}
+        />
         <div className="field">
           <div className="control">
             <Textarea
