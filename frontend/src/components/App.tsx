@@ -28,6 +28,7 @@ import OAuthConnect from "@/containers/OAuthConnect"
 import Schedule from "@/components/Schedule"
 import HelpMenuModal from "@/components/HelpMenuModal"
 import Recipes from "@/components/Recipes"
+import ErrorBoundary from "@/components/ErrorBoundary"
 
 import "@/components/scss/main.scss"
 
@@ -82,7 +83,7 @@ const PublicOnlyRoute = ({ component: Component, ...rest }: RouteProps) => {
 
 function Base() {
   return (
-    <>
+    <ErrorBoundary>
       <Helmet defaultTitle="Recipe Yak" titleTemplate="%s | Recipe Yak" />
       <ConnectedRouter history={history}>
         <Switch>
@@ -162,7 +163,7 @@ function Base() {
       </ConnectedRouter>
       <Notification />
       <HelpMenuModal />
-    </>
+    </ErrorBoundary>
   )
 }
 
