@@ -1,6 +1,7 @@
 import React from "react"
 
 import Modal from "@/components/Modal"
+import GlobalEvent from "@/components/GlobalEvent"
 
 interface IHelpMenuModalState {
   readonly show: boolean
@@ -12,14 +13,6 @@ export default class HelpMenuModal extends React.Component<
 > {
   state = {
     show: false
-  }
-
-  componentWillMount() {
-    document.addEventListener("keypress", this.handleKeyPress)
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener("keypress", this.handleKeyPress)
   }
 
   handleKeyPress = (e: KeyboardEvent) => {
@@ -60,6 +53,7 @@ export default class HelpMenuModal extends React.Component<
     ]
     return (
       <Modal show={this.state.show} onClose={() => this.close()}>
+        <GlobalEvent keyUp={this.handleKeyPress} />
         <section className="d-flex space-between">
           <h1 className="fs-4 bold">Keybinds</h1>
           <button className="delete" aria-label="close" onClick={this.close} />

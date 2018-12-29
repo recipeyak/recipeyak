@@ -8,6 +8,7 @@ import { searchRecipes, Dispatch } from "@/store/actions"
 import { classNames } from "@/classnames"
 import { RootState } from "@/store/store"
 import { IRecipe } from "@/store/reducers/recipes"
+import GlobalEvent from "@/components/GlobalEvent"
 
 const SEARCH_THROTTLE_MS = 100
 
@@ -52,6 +53,8 @@ class SearchModal extends React.Component<
   handleKeyPress = (event: KeyboardEvent) => {
     const el = document.activeElement
     if (el && el.tagName !== "BODY") {
+      // We are focused on an input element. When we are not focused, the active
+      // element will be BODY.
       return
     }
     const pressF = event.key === "f" && !event.ctrlKey && !event.metaKey
@@ -63,14 +66,6 @@ class SearchModal extends React.Component<
         }
       })
     }
-  }
-
-  componentWillMount() {
-    document.addEventListener("keyup", this.handleKeyPress)
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener("keyup", this.handleKeyPress)
   }
 
   componentDidUpdate(
@@ -97,6 +92,7 @@ class SearchModal extends React.Component<
         show={this.state.show}
         className="search--position-top"
         onClose={() => this.setState({ show: false })}>
+        <GlobalEvent keyUp={this.handleKeyPress} />
         <div className={classNames("control", { "is-loading": loading })}>
           <input
             value={this.state.query}

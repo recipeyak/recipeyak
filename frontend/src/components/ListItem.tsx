@@ -1,6 +1,7 @@
 import React from "react"
 import Textarea from "react-textarea-autosize"
 import { IRecipe } from "@/store/reducers/recipes"
+import GlobalEvent from "@/components/GlobalEvent"
 
 interface IListItemProps {
   readonly id: number
@@ -42,12 +43,10 @@ export default class ListItem extends React.Component<
     removing: false
   }
 
-  componentWillMount() {
-    document.addEventListener("mouseup", this.handleGeneralClick)
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener("mouseup", this.handleGeneralClick)
+  handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      this.cancel()
+    }
   }
 
   // ensures that the list item closes when the user clicks outside of the item
@@ -96,8 +95,12 @@ export default class ListItem extends React.Component<
     e.target.select()
   }
 
-  cancel = (e: React.MouseEvent) => {
+  handleButtonClick = (e: React.MouseEvent) => {
     e.stopPropagation()
+    this.cancel()
+  }
+
+  cancel = () => {
     this.setState((_, props) => ({
       editing: false,
       text: props.text || ""
@@ -133,6 +136,10 @@ export default class ListItem extends React.Component<
 
     const inner = this.state.editing ? (
       <form>
+        <GlobalEvent
+          mouseUp={this.handleGeneralClick}
+          keyDown={this.handleKeyDown}
+        />
         <div className="field">
           <div className="control">
             <Textarea
@@ -170,7 +177,7 @@ export default class ListItem extends React.Component<
             </p>
             <p className="control">
               <input
-                onClick={this.cancel}
+                onClick={this.handleButtonClick}
                 className="my-button is-small"
                 type="button"
                 name="cancel edit"

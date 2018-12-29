@@ -1,6 +1,7 @@
 import React from "react"
 
 import AddStepForm from "@/components/AddStepForm"
+import GlobalEvent from "@/components/GlobalEvent"
 import { IStep } from "@/store/reducers/recipes"
 
 interface IAddStepProps {
@@ -34,31 +35,35 @@ export default class AddStep extends React.Component<
 
   clearStep = () => {
     this.props.onCancel()
-    this.setState({ step: "" })
   }
 
   addStep = async () => {
     await this.props.addStep(this.props.id, this.state.step)
     this.setState({ step: "" })
   }
+  handleKeyUp = (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      this.clearStep()
+    }
+  }
 
   render() {
     const { handleInputChange, addStep, clearStep } = this
-
     const { index, loading, autoFocus } = this.props
-
     const { step } = this.state
-
     return (
-      <AddStepForm
-        handleInputChange={handleInputChange}
-        addStep={addStep}
-        cancelAddStep={clearStep}
-        stepNumber={index}
-        text={step}
-        loading={loading}
-        autoFocus={autoFocus}
-      />
+      <>
+        <GlobalEvent keyUp={this.handleKeyUp} />
+        <AddStepForm
+          handleInputChange={handleInputChange}
+          addStep={addStep}
+          cancelAddStep={clearStep}
+          stepNumber={index}
+          text={step}
+          loading={loading}
+          autoFocus={autoFocus}
+        />
+      </>
     )
   }
 }

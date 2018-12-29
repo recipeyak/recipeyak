@@ -11,6 +11,7 @@ import * as DragDrop from "@/dragDrop"
 import { IRecipe } from "@/store/reducers/recipes"
 import { ICalRecipe } from "@/store/reducers/calendar"
 import { AxiosResponse } from "axios"
+import GlobalEvent from "@/components/GlobalEvent"
 
 const COUNT_THRESHOLD = 1
 
@@ -49,15 +50,10 @@ class CalendarItem extends React.Component<
 
   componentWillMount() {
     this.setState({ count: this.props.count })
-    document.addEventListener("keypress", this.handleKeyPress)
   }
 
   componentWillReceiveProps(nextProps: ICalendarItemProps) {
     this.setState({ count: nextProps.count })
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener("keypress", this.handleKeyPress)
   }
 
   handleKeyPress = (e: KeyboardEvent) => {
@@ -107,6 +103,7 @@ class CalendarItem extends React.Component<
         style={{
           visibility: isDragging ? "hidden" : "visible"
         }}>
+        <GlobalEvent keyUp={this.handleKeyPress} />
         <Link
           to={recipeURL(this.props.recipeID, this.props.recipeName)}
           className="break-word fs-3"

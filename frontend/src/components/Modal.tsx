@@ -1,6 +1,7 @@
 import React from "react"
 
 import { classNames } from "@/classnames"
+import GlobalEvent from "@/components/GlobalEvent"
 
 interface IModalProps {
   readonly onClose: () => void
@@ -9,29 +10,29 @@ interface IModalProps {
 }
 
 export default class Modal extends React.Component<IModalProps> {
-  componentWillMount() {
-    document.addEventListener("keydown", this.handleKeyDown)
-  }
+  element = React.createRef<HTMLDivElement>()
 
-  componentWillUnmount() {
-    document.removeEventListener("keydown", this.handleKeyDown)
-  }
-
-  handleKeyDown = (e: KeyboardEvent) => {
+  handleKeyUp = (e: KeyboardEvent) => {
     if (e.key === "Escape") {
       this.props.onClose()
     }
   }
 
-  close = () => {
-    this.props.onClose()
+  handleClick = (e: MouseEvent) => {
+    const el = this.element.current
+    if (el && e.target && !el.contains(e.target as Node)) {
+      this.props.onClose()
+    }
   }
 
   render() {
-    const { show, children } = this.props
+    const { show, children, onClose: close } = this.props
     return (
-      <div className={classNames("modal", { "is-active": show })}>
-        <div className="modal-background" onClick={this.close} />
+      <div
+        ref={this.element}
+        className={classNames("modal", { "is-active": show })}>
+        <GlobalEvent keyUp={this.handleKeyUp} />
+        <div className="modal-background" onClick={close} />
         <div
           className={`modal-content overflow-y-auto ${this.props.className}`}>
           <div className="box">{children}</div>
@@ -39,7 +40,7 @@ export default class Modal extends React.Component<IModalProps> {
         <button
           className="modal-close is-large"
           aria-label="close"
-          onClick={this.close}
+          onClick={close}
         />
       </div>
     )

@@ -113,14 +113,6 @@ class ShoppingList extends React.Component<
     this.refetchData()
   }
 
-  componentWillMount() {
-    document.addEventListener("click", this.handleGeneralClick)
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener("click", this.handleGeneralClick)
-  }
-
   refetchData = () => {
     // TODO: refetch data on calendar count for scheduled recipes changes
     this.props.fetchData(
@@ -130,16 +122,7 @@ class ShoppingList extends React.Component<
     )
   }
 
-  handleGeneralClick = (e: MouseEvent) => {
-    const picker = document.querySelector("#date-range-picker")
-    const targetElement = e.target as HTMLElement | null
-    const clickedPicker = picker && picker.contains(targetElement)
-
-    const clickedInputs =
-      this.inputs.current && this.inputs.current.contains(targetElement)
-    if (clickedPicker || clickedInputs) {
-      return
-    }
+  closeInputs = () => {
     this.setState({
       showDatePicker: false,
       selectingStart: false,
@@ -220,6 +203,7 @@ class ShoppingList extends React.Component<
           </div>
           <DateRangePicker
             visible={this.state.showDatePicker}
+            onClose={this.closeInputs}
             month={this.state.month}
             startDay={this.props.startDay}
             endDay={this.props.endDay}
