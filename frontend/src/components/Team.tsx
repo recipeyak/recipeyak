@@ -23,7 +23,7 @@ interface ITeamMembers {
 }
 
 const TeamMembers = ({ id, name, members, loading }: ITeamMembers) => (
-  <div>
+  <>
     <section className="d-flex justify-space-between align-items-center">
       <h2 className="fs-6">Members</h2>
       <Link className="button is-primary" to={inviteURL(id, name)}>
@@ -57,7 +57,7 @@ const TeamMembers = ({ id, name, members, loading }: ITeamMembers) => (
         <p className="text-center">Add one via the Invite button</p>
       </section>
     )}
-  </div>
+  </>
 )
 
 interface ITeamSettingsProps {
@@ -230,7 +230,7 @@ class Team extends React.Component<ITeamProps> {
             loading={this.props.loadingTeam}
           />
         ) : (
-          <div>
+          <>
             <TeamMembers
               id={this.props.id}
               name={this.props.name}
@@ -242,7 +242,7 @@ class Team extends React.Component<ITeamProps> {
               loading={this.props.loadingRecipes}
               recipes={this.props.recipes}
             />
-          </div>
+          </>
         )}
       </div>
     )
