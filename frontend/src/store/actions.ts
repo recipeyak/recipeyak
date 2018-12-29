@@ -90,7 +90,6 @@ import {
   IRecipe,
   setSchedulingRecipe,
   updateRecipeOwner,
-  addRecipe,
   setRecipes,
   deleteRecipe,
   setRemovingStep,
@@ -111,9 +110,8 @@ import {
   setAddingIngredientToRecipe,
   addIngredientToRecipe,
   updateIngredient,
-  setLoadingRecipe,
-  setRecipe404,
-  IIngredient
+  IIngredient,
+  fetchRecipe
 } from "@/store/reducers/recipes"
 import * as api from "@/api"
 import {
@@ -466,7 +464,7 @@ export const postNewRecipe = (dispatch: Dispatch) => (recipe: IRecipeBasic) => {
   return http
     .post<IRecipe>("/api/v1/recipes/", recipe)
     .then(res => {
-      dispatch(addRecipe(res.data))
+      dispatch(fetchRecipe.success(res.data))
       dispatch(clearAddRecipeForm())
       dispatch(setLoadingAddRecipe(false))
       dispatch(push("/recipes"))
@@ -492,20 +490,16 @@ export const postNewRecipe = (dispatch: Dispatch) => (recipe: IRecipeBasic) => {
     })
 }
 
-export const fetchRecipe = (dispatch: Dispatch) => (id: number) => {
-  dispatch(setRecipe404(id, false))
-  dispatch(setLoadingRecipe(id, true))
+export const fetchingRecipe = (dispatch: Dispatch) => (id: number) => {
+  dispatch(fetchRecipe.request(id))
   return http
     .get<IRecipe>(`/api/v1/recipes/${id}/`)
     .then(res => {
-      dispatch(addRecipe(res.data))
-      dispatch(setLoadingRecipe(id, false))
+      dispatch(fetchRecipe.success(res.data))
     })
     .catch((err: AxiosError) => {
-      if (err.response && err.response.status === 404) {
-        dispatch(setRecipe404(id, true))
-      }
-      dispatch(setLoadingRecipe(id, false))
+      const error404 = !!(err.response && err.response.status === 404)
+      dispatch(fetchRecipe.failure({ id, error404 }))
     })
 }
 
@@ -1267,7 +1261,7 @@ export const copyRecipeTo = (dispatch: Dispatch) => (
   return http
     .post<IRecipe>(`/api/v1/recipes/${recipeId}/copy/`, { id: ownerId, type })
     .then(res => {
-      dispatch(addRecipe(res.data))
+      dispatch(fetchRecipe.success(res.data))
       dispatch(setCopyingTeam(false))
     })
     .catch(err => {

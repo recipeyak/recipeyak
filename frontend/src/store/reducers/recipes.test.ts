@@ -49,27 +49,6 @@ function recipeStoreWith(recipe: IRecipe | IRecipe[]): IRecipesState {
 }
 
 describe("Recipes", () => {
-  it("Adds recipe to recipe list", () => {
-    const beforeState: IRecipesState = recipeStoreWith({
-      ...baseRecipe,
-      id: 1,
-      name: "a meh recipe"
-    })
-    const recipe: IRecipe = {
-      ...baseRecipe,
-      id: 123,
-      name: "Recipe title",
-      author: "Recipe author",
-      source: "",
-      ingredients: [baseIngredient, baseIngredient]
-    }
-    const afterState: IRecipesState = {
-      ...beforeState,
-      [recipe.id]: recipe
-    }
-    expect(recipes(beforeState, a.addRecipe(recipe))).toEqual(afterState)
-  })
-
   it("Remove recipe from recipe list", () => {
     const beforeState: IRecipesState = recipeStoreWith([
       {
@@ -99,36 +78,6 @@ describe("Recipes", () => {
       byId: {},
       allIds: []
     })
-  })
-
-  it("fetching recipe results in it loading", () => {
-    const beforeState: IRecipesState = {
-      byId: {
-        1: {
-          ...baseRecipe,
-          name: "good recipe",
-          steps: [],
-          loading: false
-        }
-      },
-      allIds: [1]
-    }
-
-    const afterState: IRecipesState = {
-      byId: {
-        1: {
-          ...baseRecipe,
-          name: "good recipe",
-          steps: [],
-          loading: true
-        }
-      },
-      allIds: [1]
-    }
-
-    expect(recipes(beforeState, a.setLoadingRecipe(1, true))).toEqual(
-      afterState
-    )
   })
 
   it("sets deleting of the recipe", () => {
@@ -581,17 +530,40 @@ describe("Recipes", () => {
     )
   })
 
-  it("sets the recipe to 404", () => {
-    const beforeState: IRecipesState = recipeStoreWith({
-      ...baseRecipe,
-      error404: false
-    })
+  it("fetch recipe works", () => {
+    const beforeState: IRecipesState = a.initialState
+    const fetchingState = {
+      byId: {
+        [baseRecipe.id]: {
+          loading: true
+        }
+      },
+      allIds: [baseRecipe.id]
+    }
+    expect(recipes(beforeState, a.fetchRecipe.request(baseRecipe.id))).toEqual(
+      fetchingState
+    )
 
-    const afterState: IRecipesState = recipeStoreWith({
+    const successState: IRecipesState = recipeStoreWith({
       ...baseRecipe,
-      error404: true
+      loading: false
     })
-    expect(recipes(beforeState, a.setRecipe404(1, true))).toEqual(afterState)
+    expect(recipes(beforeState, a.fetchRecipe.success(baseRecipe))).toEqual(
+      successState
+    )
+
+    const failureState = {
+      byId: {
+        [baseRecipe.id]: {
+          error404: true,
+          loading: false
+        }
+      },
+      allIds: []
+    }
+    expect(
+      recipes(beforeState, a.fetchRecipe.failure({ id: 1, error404: true }))
+    ).toEqual(failureState)
   })
 
   it("sets the recipe to updating", () => {

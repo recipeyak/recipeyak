@@ -3,7 +3,6 @@ import { ITeam } from "@/store/reducers/teams"
 import { action as act, createAsyncAction, ActionType } from "typesafe-actions"
 import { RootState } from "@/store/store"
 
-const ADD_RECIPE = "ADD_RECIPE"
 const ADD_STEP_TO_RECIPE = "ADD_STEP_TO_RECIPE"
 const ADD_INGREDIENT_TO_RECIPE = "ADD_INGREDIENT_TO_RECIPE"
 const SET_LOADING_ADD_STEP_TO_RECIPE = "SET_LOADING_ADD_STEP_TO_RECIPE"
@@ -18,18 +17,19 @@ const UPDATE_STEP = "UPDATE_STEP"
 const DELETE_RECIPE_START = "DELETE_RECIPE_START"
 const DELETE_RECIPE_SUCCESS = "DELETE_RECIPE_SUCCESS"
 const DELETE_RECIPE_FAILURE = "DELETE_RECIPE_FAILURE"
-const SET_LOADING_RECIPE = "SET_LOADING_RECIPE"
 const SET_RECIPE = "SET_RECIPE"
 const SET_ADDING_INGREDIENT_TO_RECIPE = "SET_ADDING_INGREDIENT_TO_RECIPE"
 const SET_UPDATING_INGREDIENT = "SET_UPDATING_INGREDIENT"
 const SET_REMOVING_INGREDIENT = "SET_REMOVING_INGREDIENT"
 const SET_UPDATING_STEP = "SET_UPDATING_STEP"
 const SET_REMOVING_STEP = "SET_REMOVING_STEP"
-const SET_RECIPE_404 = "SET_RECIPE_404"
 const SET_RECIPE_UPDATING = "SET_RECIPE_UPDATING"
 const UPDATE_RECIPE_OWNER = "UPDATE_RECIPE_OWNER"
 const SET_RECIPES = "SET_RECIPES"
 const SET_SCHEDULING_RECIPE = "SET_SCHEDULING_RECIPE"
+const FETCH_RECIPE_START = "FETCH_RECIPE_START"
+const FETCH_RECIPE_SUCCESS = "FETCH_RECIPE_SUCCESS"
+const FETCH_RECIPE_FAILURE = "FETCH_RECIPE_FAILURE"
 
 export const updateRecipeTime = (id: IRecipe["id"], time: IRecipe["time"]) =>
   act(UPDATE_RECIPE_TIME, {
@@ -59,6 +59,12 @@ export const deleteRecipe = createAsyncAction(
   DELETE_RECIPE_SUCCESS,
   DELETE_RECIPE_FAILURE
 )<IRecipe["id"], IRecipe["id"], IRecipe["id"]>()
+
+export const fetchRecipe = createAsyncAction(
+  FETCH_RECIPE_START,
+  FETCH_RECIPE_SUCCESS,
+  FETCH_RECIPE_FAILURE
+)<IRecipe["id"], IRecipe, { id: IRecipe["id"]; error404: boolean }>()
 
 export const deleteStep = (recipeID: IRecipe["id"], stepID: IStep["id"]) =>
   act(DELETE_STEP, {
@@ -168,20 +174,6 @@ export const updateRecipeName = (id: IRecipe["id"], name: IRecipe["name"]) =>
     name
   })
 
-export const addRecipe = (recipe: IRecipe) => act(ADD_RECIPE, recipe)
-
-export const setRecipe404 = (id: IRecipe["id"], val: boolean) =>
-  act(SET_RECIPE_404, {
-    id,
-    val
-  })
-
-export const setLoadingRecipe = (id: IRecipe["id"], val: boolean) =>
-  act(SET_LOADING_RECIPE, {
-    id,
-    val
-  })
-
 export const setRecipes = (r: IRecipe[]) =>
   act(SET_RECIPES, {
     recipes: r
@@ -237,9 +229,6 @@ export type RecipeActions =
   | ReturnType<typeof updateRecipeAuthor>
   | ReturnType<typeof updateRecipeSource>
   | ReturnType<typeof updateRecipeName>
-  | ReturnType<typeof addRecipe>
-  | ReturnType<typeof setRecipe404>
-  | ReturnType<typeof setLoadingRecipe>
   | ReturnType<typeof setRecipes>
   | ReturnType<typeof setLoadingAddStepToRecipe>
   | ReturnType<typeof addStepToRecipe>
@@ -249,6 +238,7 @@ export type RecipeActions =
   | ReturnType<typeof updateIngredient>
   | ReturnType<typeof updateRecipeTime>
   | ActionType<typeof deleteRecipe>
+  | ActionType<typeof fetchRecipe>
 
 export const getRecipes = (state: RootState) =>
   state.recipes.allIds.map(id => state.recipes.byId[id])
@@ -324,8 +314,43 @@ export const recipes = (
   action: RecipeActions
 ): IRecipesState => {
   switch (action.type) {
-    case ADD_RECIPE:
-      return { ...state, [action.payload.id]: action.payload }
+    case FETCH_RECIPE_START:
+      return {
+        ...state,
+        byId: {
+          ...state.byId,
+          [action.payload]: {
+            ...state.byId[action.payload],
+            loading: true
+          }
+        },
+        allIds: uniq(state.allIds.concat(action.payload))
+      }
+    case FETCH_RECIPE_SUCCESS:
+      return {
+        ...state,
+        byId: {
+          ...state.byId,
+          [action.payload.id]: {
+            ...state.byId[action.payload.id],
+            ...action.payload,
+            loading: false
+          }
+        },
+        allIds: uniq(state.allIds.concat(action.payload.id))
+      }
+    case FETCH_RECIPE_FAILURE:
+      return {
+        ...state,
+        byId: {
+          ...state.byId,
+          [action.payload.id]: {
+            ...state.byId[action.payload.id],
+            error404: action.payload.error404,
+            loading: false
+          }
+        }
+      }
     case DELETE_RECIPE_START:
       return {
         ...state,
@@ -378,17 +403,7 @@ export const recipes = (
           }
         }
       }
-    case SET_RECIPE_404:
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.id]: {
-            ...state.byId[action.payload.id],
-            error404: action.payload.val
-          }
-        }
-      }
+
     case ADD_INGREDIENT_TO_RECIPE:
       return {
         ...state,
@@ -523,17 +538,6 @@ export const recipes = (
           ...action.payload.recipes.reduce((a, b) => ({ ...a, [b.id]: b }), {})
         },
         allIds: uniq(state.allIds.concat(action.payload.recipes.map(r => r.id)))
-      }
-    case SET_LOADING_RECIPE:
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.id]: {
-            ...state.byId[action.payload.id],
-            loading: action.payload.val
-          }
-        }
       }
     case SET_ADDING_INGREDIENT_TO_RECIPE:
       return {

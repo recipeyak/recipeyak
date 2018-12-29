@@ -13,7 +13,7 @@ import RecipeTitle from "@/components/RecipeTitle"
 import {
   addingRecipeIngredient,
   addingRecipeStep,
-  fetchRecipe,
+  fetchingRecipe,
   deletingRecipe,
   updateRecipe,
   deletingIngredient,
@@ -38,7 +38,7 @@ const mapStateToProps = (state: RootState, props: RouteProps) => {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchRecipe: fetchRecipe(dispatch),
+  fetchRecipe: fetchingRecipe(dispatch),
   addIngredient: addingRecipeIngredient(dispatch),
   addStep: addingRecipeStep(dispatch),
   update: updateRecipe(dispatch),
