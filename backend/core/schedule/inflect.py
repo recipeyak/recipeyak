@@ -551,7 +551,7 @@ plural_categories = {
 }
 
 
-def pluralize(word, pos=NOUN, custom={}, classical=True):
+def pluralize(word: str, pos: str = NOUN, custom={}, classical: bool = True) -> str:
     """ Returns the plural of a given word, e.g., child => children.
         Handles nouns and adjectives, using classical inflection by default
         (i.e., where "matrix" pluralizes to "matrices" and not "matrixes").

@@ -1,4 +1,5 @@
 from typing import List, Dict, Union, Optional, Iterable
+from mypy_extensions import TypedDict
 
 from pint import UnitRegistry, UndefinedUnitError
 from pint.quantity import _Quantity as Quantity
@@ -10,7 +11,7 @@ import core.models as models
 ureg = UnitRegistry()
 
 
-def simplify_units(units):
+def simplify_units(units) -> List[str]:
     """
     tablespoon, sprinkle, some, pinch => tablespoon, some
     """
@@ -75,6 +76,17 @@ def should_pluralize(s) -> bool:
     return False
 
 
+class OriginDict(TypedDict):
+    recipe: int
+    quantity: str
+
+
+class SimpleIngredientDict(TypedDict):
+    unit: str
+    name: str
+    origin: List[OriginDict]
+
+
 class IngredientList:
     """
     Handles combining of ingredients into a list
@@ -87,11 +99,25 @@ class IngredientList:
             for ingre in ingredients:
                 self.__add__(ingre)
 
+    def dump(self) -> List[SimpleIngredientDict]:
+        """
+        Returns a JSON serializable representation of the ingredient list
+        """
+        simple_ingredients: List[SimpleIngredientDict] = []
+        for name, v in self.combined.items():
+            combined_units = " + ".join(simplify_units(v["units"].values()))
+            plural = pluralize(name) if should_pluralize(name) else v.get("plural")
+            simple_ingredients.append(
+                {"unit": combined_units, "name": plural or name, "origin": v["origin"]}
+            )
+
+        return simple_ingredients
+
     def __add__(self, other: "Ingredient") -> "IngredientList":
         quantity = ingredient_quantity(other.quantity)
         base_unit = quantity_baseunit(quantity)
-        raw_name = other.name
-        name = normalize_name(raw_name)
+        other_name = other.name.lower()
+        name = normalize_name(other_name)
         singular_name = singularize(name)
 
         if self.combined.get(singular_name):
@@ -111,7 +137,7 @@ class IngredientList:
 
         is_plural = name != singular_name
         if is_plural:
-            self.combined[singular_name]["plural"] = raw_name
+            self.combined[singular_name]["plural"] = other_name
 
         return self
 
@@ -142,28 +168,13 @@ class Ingredient:
         return f"<{self.__class__.__name__}: quantity={self.quantity} name={self.name}>"
 
 
-def combine_ingredients(ingredients: List[models.Ingredient]) -> List[Dict[str, str]]:
+def combine_ingredients(
+    ingredients: List[models.Ingredient]
+) -> List[SimpleIngredientDict]:
     """
     utilizes IngredientList and simplifies ingredients
     """
     if len(ingredients) == 0:
         return []
 
-    ingre_list = IngredientList(Ingredient(ingre) for ingre in ingredients)
-
-    simple_ingredients = []
-    for name, v in ingre_list.combined.items():
-        units = v["units"].values()
-        combined_units = " + ".join(simplify_units(units))
-        plural = v.get("plural")
-        if should_pluralize(units):
-            plural = pluralize(name)
-        simple_ingredients.append(
-            {
-                "unit": combined_units,
-                "name": name if not plural else plural,
-                "origin": v["origin"],
-            }
-        )
-
-    return simple_ingredients
+    return IngredientList(Ingredient(ingre) for ingre in ingredients).dump()
