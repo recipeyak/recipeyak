@@ -262,7 +262,9 @@ class ShoppingList extends React.Component<
                 {this.props.shoppinglist.map((x, i) => (
                   // padding serves to prevent the button from appearing in front of text
                   // we also use <section>s instead of <p>s to avoid extra new lines in Chrome
-                  <section className={i === 0 ? "mr-15" : ""} key={x.unit + x.name}>
+                  <section
+                    className={i === 0 ? "mr-15" : ""}
+                    key={x.unit + x.name}>
                     {x.unit} {x.name}
                   </section>
                 ))}
