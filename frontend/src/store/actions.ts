@@ -1471,7 +1471,7 @@ export const deletingScheduledRecipe = (dispatch: Dispatch) => (
   teamID: TeamID
 ) => {
   // HACK(sbdchd): we should have these in byId object / Map
-  const recipe = store.getState().calendar[parseInt(String(id), 10)]
+  const recipe = store.getState().calendar.byId[parseInt(String(id), 10)]
   dispatch(deleteCalendarRecipe(id))
 
   const url =
@@ -1490,11 +1490,11 @@ export const moveScheduledRecipe = (dispatch: Dispatch) => (
   to: Date
 ) => {
   // HACK(sbdchd): we should have these in byId object / Map
-  const from = store.getState().calendar[parseInt(String(id), 10)]
+  const from = store.getState().calendar.byId[parseInt(String(id), 10)]
   const existing = store
     .getState()
     .calendar.allIds.filter((x: unknown) => x !== id)
-    .map(x => store.getState().calendar[x as number])
+    .map(x => store.getState().calendar.byId[x as number])
     .filter(x => isSameDay(x.on, to))
     .filter(x => {
       if (teamID === "personal") {

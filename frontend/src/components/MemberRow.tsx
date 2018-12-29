@@ -17,11 +17,10 @@ const mapStateToProps = (
   state: RootState,
   { userID, teamID, membershipID }: IMemberRowProps
 ) => {
-  const teams = state.teams as { [key: number]: ITeam }
   return {
     isUser: state.user.id === userID,
-    deleting: teams[teamID].members[membershipID].deleting,
-    userIsTeamAdmin: Object.values(teams[teamID].members)
+    deleting: state.teams[teamID].members[membershipID].deleting,
+    userIsTeamAdmin: Object.values(state.teams[teamID].members)
       .filter(x => x.level === "admin")
       .some(({ user }) => user.id === state.user.id)
   }
