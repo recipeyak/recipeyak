@@ -9,6 +9,7 @@ import {
   Dispatch
 } from "@/store/actions"
 import { RootState } from "@/store/store"
+import { getRecipes } from "@/store/reducers/recipes"
 
 const mapStateToProps = (state: RootState) => ({
   userStats: state.user.stats,
@@ -16,7 +17,7 @@ const mapStateToProps = (state: RootState) => ({
   loadingRecipes: state.loading.recipes,
   // TODO(chdsbd): Update store to use byId, allId structure
   // tslint:disable:no-unsafe-any
-  recipes: Object.values(state.recipes.byId).sort(
+  recipes: getRecipes(state).sort(
     (x, y) => new Date(y.modified).getTime() - new Date(x.modified).getTime()
   ),
   // tslint:enable:no-unsafe-any

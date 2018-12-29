@@ -1,6 +1,7 @@
 import { omit } from "lodash"
 import { ITeam } from "@/store/reducers/teams"
 import { action as act, createAsyncAction, ActionType } from "typesafe-actions"
+import { RootState } from "@/store/store"
 
 const ADD_RECIPE = "ADD_RECIPE"
 const ADD_STEP_TO_RECIPE = "ADD_STEP_TO_RECIPE"
@@ -248,6 +249,9 @@ export type RecipeActions =
   | ReturnType<typeof updateIngredient>
   | ReturnType<typeof updateRecipeTime>
   | ActionType<typeof deleteRecipe>
+
+export const getRecipes = (state: RootState) =>
+  Object.values(state.recipes.byId)
 
 export interface IIngredient {
   readonly id: number
