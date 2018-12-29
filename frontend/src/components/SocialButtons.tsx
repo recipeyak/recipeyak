@@ -126,7 +126,7 @@ const SocialButtons = ({
     return null
   }
   return (
-    <div>
+    <>
       {signup && (
         <div className="d-flex align-items-center mb-2 mt-1">
           <span className="or-bar" /> or <span className="or-bar" />
@@ -141,7 +141,7 @@ const SocialButtons = ({
       </div>
       <FormErrorHandler error={nonFieldErrors} />
       <FormErrorHandler error={emailError} />
-    </div>
+    </>
   )
 }
 
