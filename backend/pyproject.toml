@@ -20,7 +20,6 @@ pyyaml = "^3.13"
 
 [tool.poetry.dev-dependencies]
 pytest = "3.4.0"
-pytest-watch = "4.1.0"
 pytest-cov = "2.5.1"
 pytest-django = "3.1.2"
 ipdb = "^0.11.0"
@@ -29,3 +28,4 @@ flake8 = "3.6.0"
 flake8-formatter-junit-xml = "0.0.5"
 flake8-assign-and-return = "^0.0.3"
 black = "18.9b0"
+pytest-watch = "^4.2"

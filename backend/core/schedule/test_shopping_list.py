@@ -530,3 +530,21 @@ def test_combining_varied_case(user):
     ]
 
     assert actual == expected
+
+
+def test_combining_single_ingredient(recipe: Recipe) -> None:
+    recipe.ingredients.delete()
+
+    Ingredient.objects.create(
+        quantity="1", name="garlic clove", position=1.0, recipe=recipe
+    )
+
+    ingredients = list(Ingredient.objects.all())
+
+    assert combine_ingredients(ingredients) == [
+        {
+            "name": "garlic clove",
+            "unit": "1",
+            "origin": [{"quantity": "1", "recipe": recipe.id}],
+        }
+    ]
