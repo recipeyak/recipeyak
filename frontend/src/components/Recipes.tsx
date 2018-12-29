@@ -66,7 +66,7 @@ class Recipes extends React.Component<IRecipesProps, IRecipesState> {
 
     const scrollClass = this.props.scroll ? "recipe-scroll" : ""
     return (
-      <div>
+      <>
         <TextInput
           onChange={this.handleQueryChange}
           placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:"
@@ -81,7 +81,7 @@ class Recipes extends React.Component<IRecipesProps, IRecipesState> {
             </div>
           </div>
         )}
-      </div>
+      </>
     )
   }
 }

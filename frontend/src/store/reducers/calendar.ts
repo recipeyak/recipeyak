@@ -50,73 +50,6 @@ export type CalendarActions =
   | ReturnType<typeof setCalendarRecipes>
   | ReturnType<typeof replaceCalendarRecipe>
 
-function setCalendarRecipeState(
-  state: ICalendarState,
-  { payload: recipe }: ReturnType<typeof setCalendarRecipe>
-) {
-  const existing = state.allIds
-    .filter(x => x !== recipe.id)
-    .map(x => state[x])
-    .filter(x => isSameDay(x.on, recipe.on))
-    .find(x => x.recipe.id === recipe.recipe.id)
-
-  if (existing) {
-    // we remove the existing and replace with the pending uuid
-    return {
-      ...omit(state, existing.id),
-      [recipe.id]: {
-        ...recipe,
-        count: existing.count + recipe.count
-      },
-      allIds: state.allIds.filter(id => id !== existing.id).concat(recipe.id)
-    }
-  }
-
-  return {
-    ...state,
-    [recipe.id]: recipe,
-    allIds: uniq(state.allIds.concat(recipe.id))
-  }
-}
-
-function moveCalendarRecipeState(
-  state: ICalendarState,
-  action: ReturnType<typeof moveCalendarRecipe>
-) {
-  // if the same recipe already exists at the date:
-  // - add the two counts
-  // - remove the old recipe
-  // else
-  // - update the date of the recipe
-  const moving = state[action.payload.id]
-
-  const existing = state.allIds
-    .filter(x => x !== action.payload.id)
-    .map(x => state[x])
-    .filter(x => isSameDay(x.on, action.payload.on))
-    .filter(x => x.team === moving.team && x.user === moving.user)
-    .find(x => x.recipe.id === moving.recipe.id)
-
-  if (existing) {
-    return {
-      ...omit(state, action.payload.id),
-      [existing.id]: {
-        ...existing,
-        count: existing.count + moving.count
-      },
-      allIds: state.allIds.filter(id => id !== action.payload.id)
-    }
-  }
-
-  return {
-    ...state,
-    [action.payload.id]: {
-      ...state[action.payload.id],
-      on: action.payload.on
-    }
-  }
-}
-
 // TODO(sbdchd): this should be imported from the recipes reducer
 export interface ICalRecipe {
   readonly id: number
@@ -134,11 +67,14 @@ export interface ICalendarState {
   readonly allIds: ICalRecipe["id"][]
   readonly loading: boolean
   readonly error: boolean
-  readonly [key: number]: ICalRecipe
+  readonly byId: {
+    readonly [key: number]: ICalRecipe
+  }
 }
 
 export const initialState: ICalendarState = {
   allIds: [],
+  byId: {},
   loading: false,
   error: false
 }
@@ -151,14 +87,47 @@ export const calendar = (
     case SET_CALENDAR_RECIPES:
       return {
         ...state,
-        ...action.payload.reduce((a, b) => ({ ...a, [b.id]: b }), {}),
+        byId: action.payload.reduce((a, b) => ({ ...a, [b.id]: b }), {}),
         allIds: uniq(state.allIds.concat(action.payload.map(x => x.id)))
       }
-    case SET_CALENDAR_RECIPE:
-      return setCalendarRecipeState(state, action)
+    case SET_CALENDAR_RECIPE: {
+      const existing = state.allIds
+        .filter(x => x !== action.payload.id)
+        .map(x => state.byId[x])
+        .filter(x => isSameDay(x.on, action.payload.on))
+        .find(x => x.recipe.id === action.payload.recipe.id)
+
+      if (existing) {
+        // we remove the existing and replace with the pending uuid
+        return {
+          ...state,
+          byId: {
+            ...omit(state.byId, existing.id),
+            [action.payload.id]: {
+              ...action.payload,
+              count: existing.count + action.payload.count
+            }
+          },
+          allIds: state.allIds
+            .filter(id => id !== existing.id)
+            .concat(action.payload.id)
+        }
+      }
+
+      return {
+        ...state,
+        byId: {
+          ...state.byId,
+          [action.payload.id]: action.payload
+        },
+        allIds: uniq(state.allIds.concat(action.payload.id))
+      }
+    }
+
     case DELETE_CALENDAR_RECIPE:
       return {
-        ...omit(state, action.payload),
+        ...state,
+        byId: omit(state.byId, action.payload),
         allIds: state.allIds.filter(id => id !== action.payload)
       }
     case SET_CALENDAR_LOADING:
@@ -171,12 +140,53 @@ export const calendar = (
         ...state,
         error: action.payload
       }
-    case MOVE_CALENDAR_RECIPE:
-      return moveCalendarRecipeState(state, action)
+    case MOVE_CALENDAR_RECIPE: {
+      // if the same recipe already exists at the date:
+      // - add the two counts
+      // - remove the old recipe
+      // else
+      // - update the date of the recipe
+      const moving = state.byId[action.payload.id]
+
+      const existing = state.allIds
+        .filter(x => x !== action.payload.id)
+        .map(x => state.byId[x])
+        .filter(x => isSameDay(x.on, action.payload.on))
+        .filter(x => x.team === moving.team && x.user === moving.user)
+        .find(x => x.recipe.id === moving.recipe.id)
+
+      if (existing) {
+        return {
+          ...state,
+          byId: {
+            ...omit(state.byId, action.payload.id),
+            [existing.id]: {
+              ...existing,
+              count: existing.count + moving.count
+            }
+          },
+          allIds: state.allIds.filter(id => id !== action.payload.id)
+        }
+      }
+
+      return {
+        ...state,
+        byId: {
+          ...state.byId,
+          [action.payload.id]: {
+            ...state.byId[action.payload.id],
+            on: action.payload.on
+          }
+        }
+      }
+    }
     case REPLACE_CALENDAR_RECIPE:
       return {
-        ...omit(state, action.payload.id),
-        [action.payload.recipe.id]: action.payload.recipe,
+        ...state,
+        byId: {
+          ...omit(state.byId, action.payload.id),
+          [action.payload.recipe.id]: action.payload.recipe
+        },
         allIds: uniq(
           state.allIds
             .filter(id => id !== action.payload.id)

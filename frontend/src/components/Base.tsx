@@ -5,12 +5,12 @@ import Navbar from "@/containers/Nav"
 import SearchModal from "@/components/SearchModal"
 
 export const ContainerBase: React.SFC = ({ children }) => (
-  <div>
+  <>
     <Navbar className="pl-3 pr-3" />
     {children}
     <SearchModal />
     <Footer />
-  </div>
+  </>
 )
 
 export const Container: React.SFC = ({ children }) => (
