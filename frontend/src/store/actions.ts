@@ -1184,6 +1184,8 @@ export const sendingTeamInvites = (dispatch: Dispatch) => (
         delay: 3 * second
       })
       dispatch(setSendingTeamInvites(teamID, false))
+      // NOTE(chdsbd): We depend on this to return an error in TeamInvite.tsx
+      return Error()
     })
 }
 
