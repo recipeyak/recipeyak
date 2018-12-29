@@ -32,7 +32,14 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
       fetchSocialConnections(dispatch)()
     },
     disconnectAccount: disconnectSocialAccount(dispatch),
-    deleteUserAccount: deleteUserAccount(dispatch),
+    deleteUserAccount: () => {
+      const response = prompt(
+        "Are you sure you want to permanently delete your account? \nPlease type, 'delete my account', to irrevocably delete your account"
+      )
+      if (response != null && response.toLowerCase() === "delete my account") {
+        deleteUserAccount(dispatch)()
+      }
+    },
     updateEmail: updatingEmail(dispatch)
   }
 }
