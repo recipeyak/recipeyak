@@ -551,14 +551,16 @@ plural_categories = {
 }
 
 
-def pluralize(word: str, pos: str = NOUN, custom={}, classical: bool = True) -> str:
+def pluralize(
+    word: str, pos: str = NOUN, custom: Dict[str, str] = {}, classical: bool = True
+) -> str:
     """ Returns the plural of a given word, e.g., child => children.
         Handles nouns and adjectives, using classical inflection by default
         (i.e., where "matrix" pluralizes to "matrices" and not "matrixes").
         The custom dictionary is for user-defined replacements.
     """
     if word in custom:
-        return str(custom[word])
+        return custom[word]
     # Recurse genitives.
     # Remove the apostrophe and any trailing -s,
     # form the plural of the resultant noun, and then append an apostrophe (dog's => dogs').
@@ -823,7 +825,7 @@ singular_irregular = {
 }
 
 
-def singularize(word: str, pos=NOUN, custom: Dict[str, str] = {}) -> str:
+def singularize(word: str, pos: str = NOUN, custom: Dict[str, str] = {}) -> str:
     """ Returns the singular of a given word.
     """
     if word in custom:
