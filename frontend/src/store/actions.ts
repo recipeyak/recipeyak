@@ -92,7 +92,6 @@ import {
   updateRecipeOwner,
   addRecipe,
   setRecipes,
-  setDeletingRecipe,
   deleteRecipe,
   setRemovingStep,
   deleteStep,
@@ -915,16 +914,15 @@ export const signup = (dispatch: Dispatch) => (
     })
 }
 export const deletingRecipe = (dispatch: Dispatch) => (id: number) => {
-  dispatch(setDeletingRecipe(id, true))
+  dispatch(deleteRecipe.request(id))
   return http
     .delete(`/api/v1/recipes/${id}/`)
     .then(() => {
-      dispatch(deleteRecipe(id))
-      dispatch(setDeletingRecipe(id, false))
       dispatch(push("/recipes"))
+      dispatch(deleteRecipe.success(id))
     })
     .catch(err => {
-      dispatch(setDeletingRecipe(id, false))
+      dispatch(deleteRecipe.failure(id))
       throw err
     })
 }
