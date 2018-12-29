@@ -171,9 +171,12 @@ export const calendar = (
 
       return {
         ...state,
-        [action.payload.id]: {
-          ...state.byId[action.payload.id],
-          on: action.payload.on
+        byId: {
+          ...state.byId,
+          [action.payload.id]: {
+            ...state.byId[action.payload.id],
+            on: action.payload.on
+          }
         }
       }
     }

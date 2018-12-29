@@ -8,38 +8,7 @@ import { baseRecipe } from "@/store/reducers/recipes.test"
 
 describe("Calendar", () => {
   it("sets calendar recipes starting with empty state", () => {
-    const beforeState: ICalendarState = {
-      ...initialState,
-      allIds: []
-    }
-    const afterState: ICalendarState = {
-      ...initialState,
-      byId: {
-      1: {
-        id: 1,
-        count: 3,
-        on: "2018-05-11",
-        team: 2,
-        user: 1,
-        recipe: {
-          ...baseRecipe,
-          id: 9
-        }
-      },
-      2: {
-        id: 2,
-        count: 1,
-        on: "2018-05-11",
-        team: 2,
-        user: 1,
-        recipe: {
-          ...baseRecipe,
-          id: 3
-        }
-      },
-    },
-      allIds: [1, 2]
-    }
+    const beforeState: ICalendarState = initialState
 
     const recipes = [
       {
@@ -66,12 +35,21 @@ describe("Calendar", () => {
       }
     ]
 
+    const afterState: ICalendarState = {
+      ...initialState,
+      allIds: [recipes[0].id, recipes[1].id],
+      byId: {
+        [recipes[0].id]: recipes[0],
+        [recipes[1].id]: recipes[1]
+      }
+    }
+
     expect(calendar(beforeState, a.setCalendarRecipes(recipes))).toEqual(
       afterState
     )
   })
 
-  it("sets calendar recipe starting with empty state", () => {
+  it("sets individual calendar recipe", () => {
     const beforeState: ICalendarState = {
       ...initialState,
       allIds: []
@@ -91,8 +69,10 @@ describe("Calendar", () => {
 
     const afterState: ICalendarState = {
       ...initialState,
-      [recipe.id]: recipe,
-      allIds: [1]
+      byId: {
+        [recipe.id]: recipe
+      },
+      allIds: [recipe.id]
     }
 
     expect(calendar(beforeState, a.setCalendarRecipe(recipe))).toEqual(
@@ -103,18 +83,18 @@ describe("Calendar", () => {
     const beforeState: ICalendarState = {
       ...initialState,
       byId: {
-      1: {
-        id: 1,
-        count: 3,
-        on: "2018-05-11",
-        team: 2,
-        user: 1,
-        recipe: {
-          id: 9,
-          name: "1231"
+        1: {
+          id: 1,
+          count: 3,
+          on: "2018-05-11",
+          team: 2,
+          user: 1,
+          recipe: {
+            id: 9,
+            name: "1231"
+          }
         }
       },
-    },
       allIds: [1]
     }
 
@@ -163,18 +143,18 @@ describe("Calendar", () => {
     const beforeState: ICalendarState = {
       ...initialState,
       byId: {
-      [id]: {
-        id,
-        count: 3,
-        on: "2018-05-11",
-        team: 2,
-        user: 1,
-        recipe: {
-          id: 9,
-          name: "1231"
+        [id]: {
+          id,
+          count: 3,
+          on: "2018-05-11",
+          team: 2,
+          user: 1,
+          recipe: {
+            id: 9,
+            name: "1231"
+          }
         }
       },
-    },
       allIds: [id]
     }
 
@@ -193,7 +173,7 @@ describe("Calendar", () => {
             id: 9,
             name: "1231"
           }
-        },
+        }
       },
       allIds: [id]
     }
@@ -204,44 +184,44 @@ describe("Calendar", () => {
   })
 
   it("moves calendar recipe to new date and does not combine with existing recipe", () => {
-    const id = 1
+    const id = 1000
     const newOn = "2018-05-20"
 
     const beforeState: ICalendarState = {
       ...initialState,
       byId: {
-      [id]: {
-        id,
-        count: 3,
-        on: "2018-05-11",
-        team: 2,
-        user: 1,
-        recipe: {
-          id: 9,
-          name: "1231"
-        }
-      },
-      2: {
-        id: 2,
-        count: 3,
-        on: newOn,
-        team: 2,
-        user: 1,
-        recipe: {
-          id: 7,
-          name: "1231"
-        }
-      },
-      3: {
-        id: 3,
-        count: 1,
-        on: "2018-06-07",
-        team: 2,
-        user: 1,
-        recipe: {
-          id: 9,
-          name: "1231"
-        }
+        [id]: {
+          id,
+          count: 3,
+          on: "2018-05-11",
+          team: 2,
+          user: 1,
+          recipe: {
+            id: 9,
+            name: "1231"
+          }
+        },
+        2: {
+          id: 2,
+          count: 3,
+          on: newOn,
+          team: 2,
+          user: 1,
+          recipe: {
+            id: 7,
+            name: "1231"
+          }
+        },
+        3: {
+          id: 3,
+          count: 1,
+          on: "2018-06-07",
+          team: 2,
+          user: 1,
+          recipe: {
+            id: 9,
+            name: "1231"
+          }
         }
       },
       allIds: [id, 2, 3]
@@ -249,42 +229,42 @@ describe("Calendar", () => {
 
     const afterState: ICalendarState = {
       ...initialState,
+      allIds: [id, 2, 3],
       byId: {
-      [id]: {
-        id,
-        count: 3,
-        on: newOn,
-        team: 2,
-        user: 1,
-        recipe: {
-          id: 9,
-          name: "1231"
+        [id]: {
+          id,
+          count: 3,
+          on: newOn,
+          team: 2,
+          user: 1,
+          recipe: {
+            id: 9,
+            name: "1231"
+          }
+        },
+        2: {
+          id: 2,
+          count: 3,
+          on: newOn,
+          team: 2,
+          user: 1,
+          recipe: {
+            id: 7,
+            name: "1231"
+          }
+        },
+        3: {
+          id: 3,
+          count: 1,
+          team: 2,
+          user: 1,
+          on: "2018-06-07",
+          recipe: {
+            id: 9,
+            name: "1231"
+          }
         }
-      },
-      2: {
-        id: 2,
-        count: 3,
-        on: newOn,
-        team: 2,
-        user: 1,
-        recipe: {
-          id: 7,
-          name: "1231"
-        }
-      },
-      3: {
-        id: 3,
-        count: 1,
-        team: 2,
-        user: 1,
-        on: "2018-06-07",
-        recipe: {
-          id: 9,
-          name: "1231"
-        }
-        }
-      },
-      allIds: [id, 2, 3]
+      }
     }
 
     expect(calendar(beforeState, a.moveCalendarRecipe(id, newOn))).toEqual(
@@ -299,38 +279,38 @@ describe("Calendar", () => {
     const beforeState: ICalendarState = {
       ...initialState,
       byId: {
-      [id]: {
-        id,
-        count: 3,
-        on: "2018-05-11",
-        team: 2,
-        user: 1,
-        recipe: {
-          ...baseRecipe,
-          id: 9
-        }
-      },
-      2: {
-        id: 2,
-        count: 3,
-        team: 2,
-        user: 1,
-        on: newOn,
-        recipe: {
-          ...baseRecipe,
-          id: 9
-        }
-      },
-      3: {
-        id: 3,
-        count: 1,
-        team: 2,
-        user: 1,
-        on: "2018-06-07",
-        recipe: {
-          ...baseRecipe,
-          id: 9
-        }
+        [id]: {
+          id,
+          count: 3,
+          on: "2018-05-11",
+          team: 2,
+          user: 1,
+          recipe: {
+            ...baseRecipe,
+            id: 9
+          }
+        },
+        2: {
+          id: 2,
+          count: 3,
+          team: 2,
+          user: 1,
+          on: newOn,
+          recipe: {
+            ...baseRecipe,
+            id: 9
+          }
+        },
+        3: {
+          id: 3,
+          count: 1,
+          team: 2,
+          user: 1,
+          on: "2018-06-07",
+          recipe: {
+            ...baseRecipe,
+            id: 9
+          }
         }
       },
       allIds: [id, 2, 3]
@@ -339,27 +319,27 @@ describe("Calendar", () => {
     const afterState: ICalendarState = {
       ...initialState,
       byId: {
-      2: {
-        id: 2,
-        count: 6,
-        on: newOn,
-        team: 2,
-        user: 1,
-        recipe: {
-          ...baseRecipe,
-          id: 9
-        }
-      },
-      3: {
-        id: 3,
-        count: 1,
-        team: 2,
-        user: 1,
-        on: "2018-06-07",
-        recipe: {
-          ...baseRecipe,
-          id: 9
-        }
+        2: {
+          id: 2,
+          count: 6,
+          on: newOn,
+          team: 2,
+          user: 1,
+          recipe: {
+            ...baseRecipe,
+            id: 9
+          }
+        },
+        3: {
+          id: 3,
+          count: 1,
+          team: 2,
+          user: 1,
+          on: "2018-06-07",
+          recipe: {
+            ...baseRecipe,
+            id: 9
+          }
         }
       },
       allIds: [2, 3]
@@ -377,35 +357,35 @@ describe("Calendar", () => {
     const beforeState: ICalendarState = {
       ...initialState,
       byId: {
-      [id]: {
-        id,
-        count: 3,
-        on: "2018-05-11",
-        team: 2,
-        user: 1,
-        recipe: {
-          ...baseRecipe
-        }
-      },
-      2: {
-        id: 2,
-        count: 3,
-        on: newOn,
-        team: 2,
-        user: 1,
-        recipe: {
-          ...baseRecipe
-        }
-      },
-      3: {
-        id: 3,
-        count: 1,
-        team: 2,
-        user: 1,
-        on: "2018-06-07",
-        recipe: {
-          ...baseRecipe
-        }
+        [id]: {
+          id,
+          count: 3,
+          on: "2018-05-11",
+          team: 2,
+          user: 1,
+          recipe: {
+            ...baseRecipe
+          }
+        },
+        2: {
+          id: 2,
+          count: 3,
+          on: newOn,
+          team: 2,
+          user: 1,
+          recipe: {
+            ...baseRecipe
+          }
+        },
+        3: {
+          id: 3,
+          count: 1,
+          team: 2,
+          user: 1,
+          on: "2018-06-07",
+          recipe: {
+            ...baseRecipe
+          }
         }
       },
       allIds: [id, 2, 3]
@@ -424,27 +404,27 @@ describe("Calendar", () => {
     const afterState: ICalendarState = {
       ...initialState,
       byId: {
-      [recipe.id]: recipe,
-      2: {
-        id: 2,
-        count: 3,
-        on: newOn,
-        team: 2,
-        user: 1,
-        recipe: {
-          ...baseRecipe
+        [recipe.id]: recipe,
+        2: {
+          id: 2,
+          count: 3,
+          on: newOn,
+          team: 2,
+          user: 1,
+          recipe: {
+            ...baseRecipe
+          }
+        },
+        3: {
+          id: 3,
+          count: 1,
+          team: 2,
+          user: 1,
+          on: "2018-06-07",
+          recipe: {
+            ...baseRecipe
+          }
         }
-      },
-      3: {
-        id: 3,
-        count: 1,
-        team: 2,
-        user: 1,
-        on: "2018-06-07",
-        recipe: {
-          ...baseRecipe
-        }
-      }
       },
       allIds: [2, 3, recipe.id]
     }
@@ -460,28 +440,28 @@ describe("Calendar", () => {
     const beforeState: ICalendarState = {
       ...initialState,
       byId: {
-      2: {
-        id: 2,
-        count: 3,
-        on,
-        team: 2,
-        user: 1,
-        recipe: {
-          ...baseRecipe,
-          id: 9
+        2: {
+          id: 2,
+          count: 3,
+          on,
+          team: 2,
+          user: 1,
+          recipe: {
+            ...baseRecipe,
+            id: 9
+          }
+        },
+        3: {
+          id: 3,
+          count: 1,
+          team: 2,
+          user: 1,
+          on: "2018-06-07",
+          recipe: {
+            ...baseRecipe,
+            id: 9
+          }
         }
-      },
-      3: {
-        id: 3,
-        count: 1,
-        team: 2,
-        user: 1,
-        on: "2018-06-07",
-        recipe: {
-          ...baseRecipe,
-          id: 9
-        }
-      }
       },
       allIds: [2, 3]
     }
@@ -498,27 +478,27 @@ describe("Calendar", () => {
     const afterState: ICalendarState = {
       ...initialState,
       byId: {
-      [recipe.id]: {
-        id: recipe.id,
-        count: 3 + recipe.count,
-        on,
-        team: 2,
-        user: 1,
-        recipe: {
-          ...baseRecipe,
-          id: 9
-        }
-      },
-      3: {
-        id: 3,
-        count: 1,
-        team: 2,
-        user: 1,
-        on: "2018-06-07",
-        recipe: {
-          ...baseRecipe,
-          id: 9
-        }
+        [recipe.id]: {
+          id: recipe.id,
+          count: 3 + recipe.count,
+          on,
+          team: 2,
+          user: 1,
+          recipe: {
+            ...baseRecipe,
+            id: 9
+          }
+        },
+        3: {
+          id: 3,
+          count: 1,
+          team: 2,
+          user: 1,
+          on: "2018-06-07",
+          recipe: {
+            ...baseRecipe,
+            id: 9
+          }
         }
       },
       allIds: [3, 9]
