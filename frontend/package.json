@@ -117,6 +117,7 @@
     ],
     "setupFiles": [
       "<rootDir>/config/polyfills.js",
+      "<rootDir>/config/localStorage.js",
       "raf/polyfill"
     ],
     "testMatch": [

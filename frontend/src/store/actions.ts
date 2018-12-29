@@ -176,7 +176,7 @@ const handleResponseError = (error: AxiosError) => {
   } else {
     // NOTE(chdsbd): I think it's a good idea just to report any other bad
     // status to Sentry.
-    raven.captureException(error, {level: "info"})
+    raven.captureException(error, { level: "info" })
   }
   return Promise.reject(error)
 }
