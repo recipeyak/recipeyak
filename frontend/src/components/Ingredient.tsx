@@ -3,6 +3,7 @@ import React from "react"
 import IngredientView from "@/components/IngredientView"
 import { IIngredient, IRecipe } from "@/store/reducers/recipes"
 import GlobalEvent from "@/components/GlobalEvent"
+import { Button } from "./Buttons"
 
 interface IEmptyField {
   readonly quantity?: string
@@ -267,36 +268,33 @@ export default class Ingredient extends React.Component<
         <section className="listitem-button-container">
           <div className="field is-grouped">
             <p className="control">
-              <button
-                className={
-                  "my-button is-small " + (updating ? "is-loading" : "")
-                }
+              <Button
+                size="small"
                 type="submit"
-                name="update">
+                name="update"
+                loading={updating}>
                 Update
-              </button>
+              </Button>
             </p>
             <p className="control">
-              <input
+              <Button
                 onClick={handleCancelButton}
-                className="my-button is-small"
-                type="button"
-                name="cancel edit"
-                value="Cancel"
-              />
+                size="small"
+                type="reset"
+                name="cancel edit">
+                Cancel
+              </Button>
             </p>
           </div>
           <div className="field is-grouped">
             <p className="control">
-              <button
+              <Button
                 onClick={remove}
-                className={
-                  "my-button is-small " + (removing ? "is-loading" : "")
-                }
-                type="button"
+                size="small"
+                loading={removing}
                 name="remove">
                 Remove
-              </button>
+              </Button>
             </p>
           </div>
         </section>
