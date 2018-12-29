@@ -2,6 +2,16 @@ import React from "react"
 import Textarea from "react-textarea-autosize"
 import { IRecipe } from "@/store/reducers/recipes"
 import GlobalEvent from "@/components/GlobalEvent"
+import ReactMarkdown, { NodeType } from "react-markdown"
+
+const ALLOWED_MARKDOWN_TYPES: NodeType[] = [
+  "root",
+  "text",
+  "delete",
+  "paragraph",
+  "strong",
+  "emphasis"
+]
 
 interface IListItemProps {
   readonly id: number
@@ -201,7 +211,10 @@ export default class ListItem extends React.Component<
         </section>
       </form>
     ) : (
-      <p className="listitem-text">{this.state.text}</p>
+      <ReactMarkdown
+        source={this.state.text}
+        allowedTypes={ALLOWED_MARKDOWN_TYPES}
+      />
     )
 
     return (
