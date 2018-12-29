@@ -44,10 +44,18 @@ export default class ListItem extends React.Component<
 
   componentWillMount() {
     document.addEventListener("mouseup", this.handleGeneralClick)
+    document.addEventListener("keydown", this.handleKeyDown)
   }
 
   componentWillUnmount() {
     document.removeEventListener("mouseup", this.handleGeneralClick)
+    document.removeEventListener("keydown", this.handleKeyDown)
+  }
+
+  handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      this.cancel()
+    }
   }
 
   // ensures that the list item closes when the user clicks outside of the item
@@ -96,8 +104,12 @@ export default class ListItem extends React.Component<
     e.target.select()
   }
 
-  cancel = (e: React.MouseEvent) => {
+  handleButtonClick = (e: React.MouseEvent) => {
     e.stopPropagation()
+    this.cancel()
+  }
+
+  cancel = () => {
     this.setState((_, props) => ({
       editing: false,
       text: props.text || ""
@@ -170,7 +182,7 @@ export default class ListItem extends React.Component<
             </p>
             <p className="control">
               <input
-                onClick={this.cancel}
+                onClick={this.handleButtonClick}
                 className="my-button is-small"
                 type="button"
                 name="cancel edit"
