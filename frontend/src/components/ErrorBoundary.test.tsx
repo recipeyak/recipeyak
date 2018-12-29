@@ -3,6 +3,7 @@ import { mount } from "enzyme"
 import ErrorBoundary from "@/components/ErrorBoundary"
 
 describe("<ListItem/>", () => {
+  // SOURCE: https://github.com/facebook/react/issues/11098#issuecomment-370614347
   beforeEach(() => {
     jest.spyOn(console, "error")
     // tslint:disable-next-line:no-any
