@@ -6,7 +6,7 @@ from rest_framework import status
 from datetime import date, timedelta
 
 from .utils import combine_ingredients, simplify_units
-from core.models import Recipe, Ingredient
+from core.models import Recipe, Ingredient, MyUser
 
 pytestmark = pytest.mark.django_db
 
@@ -526,6 +526,35 @@ def test_combining_varied_case(user):
                 {"quantity": "1", "recipe": recipe.id},
                 {"quantity": "8", "recipe": recipe2.id},
             ],
+        }
+    ]
+
+    assert actual == expected
+
+
+def test_combining_single_ingredient(user: MyUser) -> None:
+    """
+    ensure ingredients get their case normalized
+    """
+
+    name = "Recipe name"
+    author = "Recipe author"
+
+    recipe = Recipe.objects.create(name=name, author=author, owner=user)
+
+    Ingredient.objects.create(
+        quantity="1", name="garlic clove", position=11.0, recipe=recipe
+    )
+
+    ingredients = list(Ingredient.objects.all())
+
+    actual = sorted(combine_ingredients(ingredients), key=lambda x: x.get("name"))
+
+    expected = [
+        {
+            "name": "garlic clove",
+            "unit": "1",
+            "origin": [{"quantity": "1", "recipe": recipe.id}],
         }
     ]
 
