@@ -44,10 +44,12 @@ export const baseStep: IStep = {
 describe("Recipes", () => {
   it("Adds recipe to recipe list", () => {
     const beforeState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        id: 1,
-        name: "a meh recipe"
+      byId: {
+        1: {
+          ...baseRecipe,
+          id: 1,
+          name: "a meh recipe"
+        }
       }
     }
     const recipe: IRecipe = {
@@ -66,12 +68,16 @@ describe("Recipes", () => {
   })
 
   it("Remove recipe from recipe list", () => {
-    const beforeState = {
-      123: baseRecipe,
-      1: baseRecipe
+    const beforeState: IRecipesState = {
+      byId: {
+        123: baseRecipe,
+        1: baseRecipe
+      }
     }
-    const afterState = {
-      1: baseRecipe
+    const afterState: IRecipesState = {
+      byId: {
+        1: baseRecipe
+      }
     }
     expect(recipes(beforeState, a.deleteRecipe.success(123))).toEqual(
       afterState
@@ -79,25 +85,31 @@ describe("Recipes", () => {
   })
 
   it("Remove non-existent recipe from recipe list", () => {
-    expect(recipes({}, a.deleteRecipe.success(123))).toEqual({})
+    expect(recipes({ byId: {} }, a.deleteRecipe.success(123))).toEqual({
+      byId: {}
+    })
   })
 
   it("fetching recipe results in it loading", () => {
     const beforeState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        name: "good recipe",
-        steps: [],
-        loading: false
+      byId: {
+        1: {
+          ...baseRecipe,
+          name: "good recipe",
+          steps: [],
+          loading: false
+        }
       }
     }
 
     const afterState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        name: "good recipe",
-        steps: [],
-        loading: true
+      byId: {
+        1: {
+          ...baseRecipe,
+          name: "good recipe",
+          steps: [],
+          loading: true
+        }
       }
     }
 
@@ -108,20 +120,24 @@ describe("Recipes", () => {
 
   it("sets deleting of the recipe", () => {
     const beforeState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        name: "good recipe",
-        steps: [],
-        deleting: false
+      byId: {
+        1: {
+          ...baseRecipe,
+          name: "good recipe",
+          steps: [],
+          deleting: false
+        }
       }
     }
 
     const afterState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        name: "good recipe",
-        steps: [],
-        deleting: true
+      byId: {
+        1: {
+          ...baseRecipe,
+          name: "good recipe",
+          steps: [],
+          deleting: true
+        }
       }
     }
 
@@ -131,10 +147,12 @@ describe("Recipes", () => {
 
   it("adds a step to the recipe", () => {
     const beforeState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        name: "good recipe",
-        steps: []
+      byId: {
+        1: {
+          ...baseRecipe,
+          name: "good recipe",
+          steps: []
+        }
       }
     }
 
@@ -146,10 +164,12 @@ describe("Recipes", () => {
     }
 
     const afterState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        name: "good recipe",
-        steps: [newStep]
+      byId: {
+        1: {
+          ...baseRecipe,
+          name: "good recipe",
+          steps: [newStep]
+        }
       }
     }
 
@@ -160,32 +180,36 @@ describe("Recipes", () => {
 
   it("adds an ingredient to the recipe and doesn't delete steps", () => {
     const beforeState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        ingredients: [],
-        steps: [
-          {
-            id: 1,
-            text: "test",
-            position: 10
-          }
-        ]
+      byId: {
+        1: {
+          ...baseRecipe,
+          ingredients: [],
+          steps: [
+            {
+              id: 1,
+              text: "test",
+              position: 10
+            }
+          ]
+        }
       }
     }
 
     const newIngredient = baseIngredient
 
     const afterState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        ingredients: [newIngredient],
-        steps: [
-          {
-            id: 1,
-            text: "test",
-            position: 10
-          }
-        ]
+      byId: {
+        1: {
+          ...baseRecipe,
+          ingredients: [newIngredient],
+          steps: [
+            {
+              id: 1,
+              text: "test",
+              position: 10
+            }
+          ]
+        }
       }
     }
 
@@ -194,35 +218,39 @@ describe("Recipes", () => {
     ).toEqual(afterState)
   })
 
-  it("it updates a step", () => {
+  it("updates a step", () => {
     const beforeState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        ingredients: [baseIngredient],
-        steps: [
-          {
-            id: 1,
-            text: "test",
-            position: 2.54
-          }
-        ]
+      byId: {
+        1: {
+          ...baseRecipe,
+          ingredients: [baseIngredient],
+          steps: [
+            {
+              id: 1,
+              text: "test",
+              position: 2.54
+            }
+          ]
+        }
       }
     }
 
     const text = "new text"
     const position = 10.0
 
-    const afterState = {
-      1: {
-        ...baseRecipe,
-        ingredients: [baseIngredient],
-        steps: [
-          {
-            id: 1,
-            text,
-            position
-          }
-        ]
+    const afterState: IRecipesState = {
+      byId: {
+        1: {
+          ...baseRecipe,
+          ingredients: [baseIngredient],
+          steps: [
+            {
+              id: 1,
+              text,
+              position
+            }
+          ]
+        }
       }
     }
 
@@ -233,18 +261,20 @@ describe("Recipes", () => {
 
   it("it updates an ingredient", () => {
     const beforeState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        ingredients: [
-          {
-            ...baseIngredient,
-            id: 1,
-            quantity: "2 count",
-            name: "Tomato",
-            description: "sliced"
-          }
-        ],
-        steps: [baseStep]
+      byId: {
+        1: {
+          ...baseRecipe,
+          ingredients: [
+            {
+              ...baseIngredient,
+              id: 1,
+              quantity: "2 count",
+              name: "Tomato",
+              description: "sliced"
+            }
+          ],
+          steps: [baseStep]
+        }
       }
     }
 
@@ -257,10 +287,12 @@ describe("Recipes", () => {
     }
 
     const afterState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        ingredients: [newIngredient],
-        steps: [baseStep]
+      byId: {
+        1: {
+          ...baseRecipe,
+          ingredients: [newIngredient],
+          steps: [baseStep]
+        }
       }
     }
 
@@ -271,18 +303,22 @@ describe("Recipes", () => {
 
   it("updates the name of the recipe", () => {
     const beforeState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        name: "Before title"
+      byId: {
+        1: {
+          ...baseRecipe,
+          name: "Before title"
+        }
       }
     }
 
     const newName = "After title"
 
     const afterState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        name: newName
+      byId: {
+        1: {
+          ...baseRecipe,
+          name: newName
+        }
       }
     }
 
@@ -293,32 +329,36 @@ describe("Recipes", () => {
 
   it("deletes an ingredient from a recipe", () => {
     const beforeState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        id: 1,
-        ingredients: [
-          {
-            ...baseIngredient,
-            id: 1
-          },
-          {
-            ...baseIngredient,
-            id: 2
-          }
-        ]
+      byId: {
+        1: {
+          ...baseRecipe,
+          id: 1,
+          ingredients: [
+            {
+              ...baseIngredient,
+              id: 1
+            },
+            {
+              ...baseIngredient,
+              id: 2
+            }
+          ]
+        }
       }
     }
 
     const afterState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        id: 1,
-        ingredients: [
-          {
-            ...baseIngredient,
-            id: 2
-          }
-        ]
+      byId: {
+        1: {
+          ...baseRecipe,
+          id: 1,
+          ingredients: [
+            {
+              ...baseIngredient,
+              id: 2
+            }
+          ]
+        }
       }
     }
     expect(recipes(beforeState, a.deleteIngredient(1, 1))).toEqual(afterState)
@@ -326,33 +366,37 @@ describe("Recipes", () => {
 
   it("deletes a step from a recipe", () => {
     const beforeState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        steps: [
-          {
-            ...baseStep,
-            id: 1,
-            text: "test"
-          },
-          {
-            ...baseStep,
-            id: 2,
-            text: "target"
-          }
-        ]
+      byId: {
+        1: {
+          ...baseRecipe,
+          steps: [
+            {
+              ...baseStep,
+              id: 1,
+              text: "test"
+            },
+            {
+              ...baseStep,
+              id: 2,
+              text: "target"
+            }
+          ]
+        }
       }
     }
 
     const afterState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        steps: [
-          {
-            ...baseStep,
-            id: 2,
-            text: "target"
-          }
-        ]
+      byId: {
+        1: {
+          ...baseRecipe,
+          steps: [
+            {
+              ...baseStep,
+              id: 2,
+              text: "target"
+            }
+          ]
+        }
       }
     }
 
@@ -361,18 +405,22 @@ describe("Recipes", () => {
 
   it("updates the recipe source", () => {
     const beforeState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        source: "example.com"
+      byId: {
+        1: {
+          ...baseRecipe,
+          source: "example.com"
+        }
       }
     }
 
     const newSource = "abettersource.com"
 
     const afterState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        source: newSource
+      byId: {
+        1: {
+          ...baseRecipe,
+          source: newSource
+        }
       }
     }
 
@@ -383,18 +431,22 @@ describe("Recipes", () => {
 
   it("updates the recipe author", () => {
     const beforeState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        author: "donny"
+      byId: {
+        1: {
+          ...baseRecipe,
+          author: "donny"
+        }
       }
     }
 
     const newAuthor = "aldo raine"
 
     const afterState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        author: newAuthor
+      byId: {
+        1: {
+          ...baseRecipe,
+          author: newAuthor
+        }
       }
     }
 
@@ -405,18 +457,22 @@ describe("Recipes", () => {
 
   it("updates the recipe time", () => {
     const beforeState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        time: "1 hour"
+      byId: {
+        1: {
+          ...baseRecipe,
+          time: "1 hour"
+        }
       }
     }
 
     const newTime = "5.12 years"
 
     const afterState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        time: newTime
+      byId: {
+        1: {
+          ...baseRecipe,
+          time: newTime
+        }
       }
     }
 
@@ -427,16 +483,20 @@ describe("Recipes", () => {
 
   it("sets the loading state for adding a step to a recipe", () => {
     const beforeState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        addingStepToRecipe: false
+      byId: {
+        1: {
+          ...baseRecipe,
+          addingStepToRecipe: false
+        }
       }
     }
 
     const afterState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        addingStepToRecipe: true
+      byId: {
+        1: {
+          ...baseRecipe,
+          addingStepToRecipe: true
+        }
       }
     }
 
@@ -447,16 +507,20 @@ describe("Recipes", () => {
 
   it("sets the recipe to be adding an ingredient", () => {
     const beforeState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        addingIngredient: false
+      byId: {
+        1: {
+          ...baseRecipe,
+          addingIngredient: false
+        }
       }
     }
 
     const afterState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        addingIngredient: true
+      byId: {
+        1: {
+          ...baseRecipe,
+          addingIngredient: true
+        }
       }
     }
 
@@ -467,26 +531,30 @@ describe("Recipes", () => {
 
   it("sets the recipe to be updating a specific ingredient", () => {
     const beforeState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        ingredients: [
-          {
-            ...baseIngredient,
-            updating: false
-          }
-        ]
+      byId: {
+        1: {
+          ...baseRecipe,
+          ingredients: [
+            {
+              ...baseIngredient,
+              updating: false
+            }
+          ]
+        }
       }
     }
 
     const afterState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        ingredients: [
-          {
-            ...baseIngredient,
-            updating: true
-          }
-        ]
+      byId: {
+        1: {
+          ...baseRecipe,
+          ingredients: [
+            {
+              ...baseIngredient,
+              updating: true
+            }
+          ]
+        }
       }
     }
 
@@ -497,26 +565,30 @@ describe("Recipes", () => {
 
   it("sets the recipe to be removing a specific ingredient", () => {
     const beforeState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        ingredients: [
-          {
-            ...baseIngredient,
-            removing: false
-          }
-        ]
+      byId: {
+        1: {
+          ...baseRecipe,
+          ingredients: [
+            {
+              ...baseIngredient,
+              removing: false
+            }
+          ]
+        }
       }
     }
 
     const afterState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        ingredients: [
-          {
-            ...baseIngredient,
-            removing: true
-          }
-        ]
+      byId: {
+        1: {
+          ...baseRecipe,
+          ingredients: [
+            {
+              ...baseIngredient,
+              removing: true
+            }
+          ]
+        }
       }
     }
 
@@ -527,26 +599,30 @@ describe("Recipes", () => {
 
   it("sets the recipe to be updating a specific step", () => {
     const beforeState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        steps: [
-          {
-            ...baseStep,
-            updating: false
-          }
-        ]
+      byId: {
+        1: {
+          ...baseRecipe,
+          steps: [
+            {
+              ...baseStep,
+              updating: false
+            }
+          ]
+        }
       }
     }
 
     const afterState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        steps: [
-          {
-            ...baseStep,
-            updating: true
-          }
-        ]
+      byId: {
+        1: {
+          ...baseRecipe,
+          steps: [
+            {
+              ...baseStep,
+              updating: true
+            }
+          ]
+        }
       }
     }
 
@@ -557,30 +633,34 @@ describe("Recipes", () => {
 
   it("sets the recipe to be removing a specific step", () => {
     const beforeState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        steps: [
-          {
-            ...baseStep,
-            id: 1,
-            text: "a new step",
-            removing: false
-          }
-        ]
+      byId: {
+        1: {
+          ...baseRecipe,
+          steps: [
+            {
+              ...baseStep,
+              id: 1,
+              text: "a new step",
+              removing: false
+            }
+          ]
+        }
       }
     }
 
     const afterState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        steps: [
-          {
-            ...baseStep,
-            id: 1,
-            text: "a new step",
-            removing: true
-          }
-        ]
+      byId: {
+        1: {
+          ...baseRecipe,
+          steps: [
+            {
+              ...baseStep,
+              id: 1,
+              text: "a new step",
+              removing: true
+            }
+          ]
+        }
       }
     }
 
@@ -591,16 +671,20 @@ describe("Recipes", () => {
 
   it("sets the recipe to 404", () => {
     const beforeState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        error404: false
+      byId: {
+        1: {
+          ...baseRecipe,
+          error404: false
+        }
       }
     }
 
     const afterState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        error404: true
+      byId: {
+        1: {
+          ...baseRecipe,
+          error404: true
+        }
       }
     }
 
@@ -609,16 +693,20 @@ describe("Recipes", () => {
 
   it("sets the recipe to updating", () => {
     const beforeState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        updating: false
+      byId: {
+        1: {
+          ...baseRecipe,
+          updating: false
+        }
       }
     }
 
     const afterState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        updating: true
+      byId: {
+        1: {
+          ...baseRecipe,
+          updating: true
+        }
       }
     }
 
@@ -629,10 +717,12 @@ describe("Recipes", () => {
 
   it("overwrites the recipe correctly", () => {
     const beforeState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        name: "Initial recipe name",
-        updating: true
+      byId: {
+        1: {
+          ...baseRecipe,
+          name: "Initial recipe name",
+          updating: true
+        }
       }
     }
 
@@ -642,10 +732,12 @@ describe("Recipes", () => {
     }
 
     const afterState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        name: "new recipe name",
-        updating: true
+      byId: {
+        1: {
+          ...baseRecipe,
+          name: "new recipe name",
+          updating: true
+        }
       }
     }
 
@@ -654,36 +746,39 @@ describe("Recipes", () => {
 
   it("sets recipe owner for recipe move", () => {
     const beforeState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        id: 1,
-        name: "Initial recipe name 1"
-      },
-      2: {
-        ...baseRecipe,
-        id: 2,
-        name: "Initial recipe name 2"
+      byId: {
+        1: {
+          ...baseRecipe,
+          id: 1,
+          name: "Initial recipe name 1"
+        },
+        2: {
+          ...baseRecipe,
+          id: 2,
+          name: "Initial recipe name 2"
+        }
       }
     }
 
     const afterState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        id: 1,
-        name: "Initial recipe name 1",
-        owner: {
-          id: 14,
-          type: "team",
-          name: "A Cool Name"
+      byId: {
+        1: {
+          ...baseRecipe,
+          id: 1,
+          name: "Initial recipe name 1",
+          owner: {
+            id: 14,
+            type: "team",
+            name: "A Cool Name"
+          }
+        },
+        2: {
+          ...baseRecipe,
+          id: 2,
+          name: "Initial recipe name 2"
         }
-      },
-      2: {
-        ...baseRecipe,
-        id: 2,
-        name: "Initial recipe name 2"
       }
     }
-
     const id = 1
     const owner: IRecipe["owner"] = {
       id: 14,
@@ -698,29 +793,33 @@ describe("Recipes", () => {
 
   it("sets recipe owner for recipe move", () => {
     const beforeState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        id: 1,
-        name: "Initial recipe name 1"
-      },
-      2: {
-        ...baseRecipe,
-        id: 2,
-        name: "Initial recipe name 2"
+      byId: {
+        1: {
+          ...baseRecipe,
+          id: 1,
+          name: "Initial recipe name 1"
+        },
+        2: {
+          ...baseRecipe,
+          id: 2,
+          name: "Initial recipe name 2"
+        }
       }
     }
 
     const afterState: IRecipesState = {
-      1: {
-        ...baseRecipe,
-        id: 1,
-        name: "Initial recipe name 1",
-        scheduling: true
-      },
-      2: {
-        ...baseRecipe,
-        id: 2,
-        name: "Initial recipe name 2"
+      byId: {
+        1: {
+          ...baseRecipe,
+          id: 1,
+          name: "Initial recipe name 1",
+          scheduling: true
+        },
+        2: {
+          ...baseRecipe,
+          id: 2,
+          name: "Initial recipe name 2"
+        }
       }
     }
 

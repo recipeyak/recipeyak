@@ -1427,7 +1427,7 @@ export const addingScheduledRecipe = (dispatch: Dispatch) => (
   on: Date,
   count: number | string
 ) => {
-  const recipe = store.getState().recipes[recipeID]
+  const recipe = store.getState().recipes.byId[recipeID]
   dispatch(setSchedulingRecipe(recipeID, true))
   const id = random32Id()
   const data = {

@@ -16,7 +16,7 @@ import { RootState } from "@/store/store"
 
 const mapStateToProps = (state: RootState) => {
   return {
-    recipes: Object.values(state.recipes).sort(byNameAlphabetical),
+    recipes: Object.values(state.recipes.byId).sort(byNameAlphabetical),
     loading: state.loading.recipes
   }
 }

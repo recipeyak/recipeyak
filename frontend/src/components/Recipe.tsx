@@ -29,10 +29,10 @@ type RouteProps = RouteComponentProps<{ id: string }>
 
 const mapStateToProps = (state: RootState, props: RouteProps) => {
   const id = parseInt(props.match.params.id, 10)
-  return state.recipes[id]
+  return state.recipes.byId[id]
     ? {
-        ...state.recipes[id],
-        loading: !!state.recipes[id].loading
+        ...state.recipes.byId[id],
+        loading: !!state.recipes.byId[id].loading
       }
     : { loading: true }
 }

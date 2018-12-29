@@ -12,7 +12,7 @@ import {
 import Team from "@/components/Team"
 import { RootState } from "@/store/store"
 import { RouteComponentProps } from "react-router"
-import { IRecipe, IRecipesState } from "@/store/reducers/recipes"
+import { IRecipe } from "@/store/reducers/recipes"
 import { ITeam } from "@/store/reducers/teams"
 
 const notUndefined = (x?: null | IRecipe) => x != null
@@ -43,7 +43,7 @@ const mapStateToProps = (state: RootState, props: RouteProps) => {
     loadingMembers: team ? !!team.loadingMembers : false,
     loadingRecipes: team ? !!team.loadingRecipes : false,
     recipes: recipes
-      .map(recipeID => (state.recipes as IRecipesState)[recipeID])
+      .map(recipeID => state.recipes.byId[recipeID])
       .filter(notUndefined)
   }
 }
