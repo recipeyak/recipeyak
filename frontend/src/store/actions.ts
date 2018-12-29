@@ -275,7 +275,7 @@ export const loggingOut = (dispatch: Dispatch) => () => {
     })
     .catch(err => {
       dispatch(setLoggingOut(false))
-      throw err
+      return err
     })
 }
 
@@ -346,7 +346,7 @@ export const fetchSocialConnections = (dispatch: Dispatch) => () => {
       dispatch(setSocialConnections(res.data))
     })
     .catch(err => {
-      throw err
+      return err
     })
 }
 
@@ -369,7 +369,7 @@ export const disconnectSocialAccount = (dispatch: Dispatch) => (
       )
     })
     .catch(err => {
-      throw err
+      return err
     })
 }
 
@@ -383,7 +383,7 @@ export const fetchUserStats = (dispatch: Dispatch) => () => {
     })
     .catch(err => {
       dispatch(setLoadingUserStats(false))
-      throw err
+      return err
     })
 }
 
@@ -423,7 +423,7 @@ export const updatingPassword = (dispatch: Dispatch) => (
         )
         // tslint:ebale:no-unsafe-any
       }
-      throw err
+      return err
     })
 }
 
@@ -504,7 +504,7 @@ export const fetchRecipe = (dispatch: Dispatch) => (id: number) => {
         dispatch(setRecipe404(id, true))
       }
       dispatch(setLoadingRecipe(id, false))
-      throw err
+      return err
     })
 }
 
@@ -520,7 +520,7 @@ export const fetchRecentRecipes = (dispatch: Dispatch) => () => {
     .catch(err => {
       dispatch(setErrorRecipes(true))
       dispatch(setLoadingRecipes(false))
-      throw err
+      return err
     })
 }
 
@@ -602,7 +602,7 @@ export const addingRecipeIngredient = (dispatch: Dispatch) => (
     })
     .catch(err => {
       dispatch(setAddingIngredientToRecipe(recipeID, false))
-      throw err
+      return err
     })
 }
 
@@ -617,7 +617,7 @@ export const sendUpdatedRecipeName = (id: number, name: string) => (
       dispatch(updateRecipeName(res.data.id, res.data.name))
     })
     .catch(err => {
-      throw err
+      return err
     })
 }
 
@@ -632,7 +632,7 @@ export const setRecipeSource = (id: number, source: string) => (
       dispatch(updateRecipeSource(res.data.id, res.data.source))
     })
     .catch(err => {
-      throw err
+      return err
     })
 }
 
@@ -647,7 +647,7 @@ export const setRecipeAuthor = (id: number, author: unknown) => (
       dispatch(updateRecipeAuthor(res.data.id, res.data.author))
     })
     .catch(err => {
-      throw err
+      return err
     })
 }
 
@@ -662,7 +662,7 @@ export const setRecipeTime = (id: number, time: unknown) => (
       dispatch(updateRecipeTime(res.data.id, res.data.time))
     })
     .catch(err => {
-      throw err
+      return err
     })
 }
 
@@ -679,7 +679,7 @@ export const updateRecipe = (dispatch: Dispatch) => (
     })
     .catch(err => {
       dispatch(setRecipeUpdating(id, false))
-      throw err
+      return err
     })
 }
 
@@ -698,7 +698,7 @@ export const addingRecipeStep = (dispatch: Dispatch) => (
     })
     .catch(err => {
       dispatch(setLoadingAddStepToRecipe(recipeID, false))
-      throw err
+      return err
     })
 }
 
@@ -719,7 +719,7 @@ export const updatingIngredient = (dispatch: Dispatch) => (
     })
     .catch(err => {
       dispatch(setUpdatingIngredient(recipeID, ingredientID, false))
-      throw err
+      return err
     })
 }
 
@@ -736,7 +736,7 @@ export const deletingIngredient = (dispatch: Dispatch) => (
     })
     .catch(err => {
       dispatch(setRemovingIngredient(recipeID, ingredientID, false))
-      throw err
+      return err
     })
 }
 
@@ -772,7 +772,7 @@ export const updatingStep = (dispatch: Dispatch) => (
     })
     .catch(err => {
       dispatch(setUpdatingStep(recipeID, stepID, false))
-      throw err
+      return err
     })
 }
 
@@ -789,7 +789,7 @@ export const deletingStep = (dispatch: Dispatch) => (
     })
     .catch(err => {
       dispatch(setRemovingStep(recipeID, stepID, false))
-      throw err
+      return err
     })
 }
 
@@ -856,7 +856,7 @@ export const socialLogin = (dispatch: Dispatch) => (
         // tslint:enable:no-unsafe-any
       }
       dispatch(replace("/login"))
-      throw err
+      return err
     })
 }
 
@@ -873,7 +873,7 @@ export const socialConnect = (dispatch: Dispatch) => (
     })
     .catch(err => {
       dispatch(replace("/settings"))
-      throw err
+      return err
     })
 }
 
@@ -925,7 +925,7 @@ export const deletingRecipe = (dispatch: Dispatch) => (id: number) => {
     })
     .catch(err => {
       dispatch(setDeletingRecipe(id, false))
-      throw err
+      return err
     })
 }
 
@@ -1045,7 +1045,7 @@ export const fetchTeam = (dispatch: Dispatch) => (id: ITeam["id"]) => {
         dispatch(setTeam404(id))
       }
       dispatch(setLoadingTeam(id, false))
-      throw err
+      return err
     })
 }
 
@@ -1059,7 +1059,7 @@ export const fetchTeamMembers = (dispatch: Dispatch) => (id: number) => {
     })
     .catch(err => {
       dispatch(setLoadingTeamMembers(id, false))
-      throw err
+      return err
     })
 }
 
@@ -1074,7 +1074,7 @@ export const fetchTeamRecipes = (dispatch: Dispatch) => (id: number) => {
     })
     .catch(err => {
       dispatch(setLoadingTeamRecipes(id, false))
-      throw err
+      return err
     })
 }
 
@@ -1109,7 +1109,7 @@ export const settingUserTeamLevel = (dispatch: Dispatch) => (
         // tslint:enable:no-unsafe-any
       }
       dispatch(setUpdatingUserTeamLevel(teamID, false))
-      throw err
+      return err
     })
 }
 
@@ -1143,7 +1143,7 @@ export const deletingMembership = (dispatch: Dispatch) => (
         delay: 3 * second
       })
       dispatch(setDeletingMembership(teamID, id, false))
-      throw err
+      return err
     })
 }
 
@@ -1182,7 +1182,7 @@ export const deletingTeam = (dispatch: Dispatch) => (teamID: number) => {
         level: "danger",
         delay: 3 * second
       })
-      throw err
+      return err
     })
 }
 
@@ -1223,7 +1223,7 @@ export const fetchTeams = (dispatch: Dispatch) => () => {
     })
     .catch(err => {
       dispatch(setLoadingTeams(false))
-      throw err
+      return err
     })
 }
 
@@ -1242,7 +1242,7 @@ export const creatingTeam = (dispatch: Dispatch) => (
     })
     .catch(err => {
       dispatch(setCreatingTeam(false))
-      throw err
+      return err
     })
 }
 
@@ -1271,7 +1271,7 @@ export const updatingTeam = (dispatch: Dispatch) => (
         level: "danger",
         delay: 3 * second
       })
-      throw err
+      return err
     })
 }
 
@@ -1301,7 +1301,7 @@ export const copyRecipeTo = (dispatch: Dispatch) => (
     })
     .catch(err => {
       dispatch(setCopyingTeam(false))
-      throw err
+      return err
     })
 }
 
@@ -1317,7 +1317,7 @@ export const fetchInvites = (dispatch: Dispatch) => () => {
     .catch(err => {
       dispatch(setLoadingInvites(false))
       dispatch(setErrorFetchingInvites(true))
-      throw err
+      return err
     })
 }
 
@@ -1331,7 +1331,7 @@ export const acceptingInvite = (dispatch: Dispatch) => (id: number) => {
     })
     .catch(err => {
       dispatch(setAcceptingInvite(id, false))
-      throw err
+      return err
     })
 }
 export const decliningInvite = (dispatch: Dispatch) => (id: number) => {
@@ -1345,7 +1345,7 @@ export const decliningInvite = (dispatch: Dispatch) => (id: number) => {
     .catch(err => {
       dispatch(setDecliningInvite(id, false))
       // TODO(chdsbd): Remove all these throws and handle the errors
-      throw err
+      return err
     })
 }
 
