@@ -16,7 +16,6 @@ const jsonParse = <T>(text: string) => {
   }
 }
 
-
 export const loadState = () => {
   const serializedState = localStorage.getItem("state")
   if (serializedState === null) {

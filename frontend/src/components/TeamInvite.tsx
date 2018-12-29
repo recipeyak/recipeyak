@@ -113,7 +113,11 @@ class TeamInvite extends React.Component<ITeamInviteProps, ITeamInviteState> {
           onSubmit={async e => {
             e.preventDefault()
             const emails = this.state.emails.split(",").filter(x => x !== "")
-            const result = await this.props.sendInvites(id, emails, this.state.level)
+            const result = await this.props.sendInvites(
+              id,
+              emails,
+              this.state.level
+            )
             if (result instanceof Error) {
               // On failure, we should leave our email state unchanged.
               return
