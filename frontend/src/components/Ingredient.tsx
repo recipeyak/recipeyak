@@ -3,7 +3,7 @@ import React from "react"
 import IngredientView from "@/components/IngredientView"
 import { IIngredient, IRecipe } from "@/store/reducers/recipes"
 import GlobalEvent from "@/components/GlobalEvent"
-import { Button } from "./Buttons"
+import { Button } from "@/components/Buttons"
 
 interface IEmptyField {
   readonly quantity?: string
