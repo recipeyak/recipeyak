@@ -5,7 +5,7 @@ import ListItem from "@/components/ListItem"
 import AddIngredientForm from "@/components/AddIngredientForm"
 import AddStepForm from "@/components/AddStepForm"
 import Ingredient from "@/components/Ingredient"
-import { ButtonPrimary } from "@/components/Buttons"
+import { ButtonPrimary, Button } from "@/components/Buttons"
 import {
   IStepBasic,
   IRecipeBasic,
@@ -301,12 +301,9 @@ export default class AddRecipe extends React.Component<
           </div>
         </section>
         <div className="d-flex justify-space-between align-items-center">
-          <button
-            className="my-button"
-            onClick={this.props.clearForm}
-            name="create recipe">
+          <Button type="reset" onClick={this.props.clearForm} name="clear form">
             Clear
-          </button>
+          </Button>
 
           <div className="d-flex justify-space-between">
             <label className="d-flex align-center">

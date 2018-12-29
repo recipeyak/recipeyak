@@ -56,7 +56,7 @@ export default class Dropdown extends React.Component<
     const className = this.props.relative ? "p-rel" : ""
     return (
       <section className={className}>
-        <a onClick={this.toggle} className="better-nav-item">
+        <a onClick={this.toggle} tabIndex={0} className="better-nav-item">
           <span>{this.props.name}</span>
           <Chevron />
         </a>
