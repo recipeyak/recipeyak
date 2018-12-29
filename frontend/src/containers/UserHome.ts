@@ -18,7 +18,7 @@ const mapStateToProps = (state: RootState) => ({
   recipes: getRecipes(state).sort(
     (x, y) => new Date(y.modified).getTime() - new Date(x.modified).getTime()
   ),
-  errorRecipes: state.error.recipes
+  errorRecipes: state.recipes.errorLoadingAll
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

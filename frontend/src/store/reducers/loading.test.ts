@@ -62,26 +62,6 @@ describe("loading", () => {
     )
   })
 
-  it("sets loading addRecipe", () => {
-    const notLoadingState = {
-      ...initialState,
-      addRecipe: false
-    }
-
-    const loadingState = {
-      ...initialState,
-      addRecipe: true
-    }
-
-    expect(loading(notLoadingState, a.setLoadingAddRecipe(true))).toEqual(
-      loadingState
-    )
-
-    expect(loading(loadingState, a.setLoadingAddRecipe(false))).toEqual(
-      notLoadingState
-    )
-  })
-
   it("sets loading reset confirmation", () => {
     const notLoadingState = {
       ...initialState,

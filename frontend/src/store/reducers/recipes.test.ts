@@ -69,12 +69,7 @@ describe("Recipes", () => {
   })
 
   it("Remove non-existent recipe from recipe list", () => {
-    expect(
-      recipes(
-        { loadingAll: false, errorLoadingAll: false, byId: {}, allIds: [] },
-        a.deleteRecipe.success(123)
-      )
-    ).toEqual({
+    expect(recipes(a.initialState, a.deleteRecipe.success(123))).toEqual({
       loadingAll: false,
       errorLoadingAll: false,
       byId: {},

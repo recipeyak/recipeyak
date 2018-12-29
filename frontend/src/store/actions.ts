@@ -62,7 +62,6 @@ import {
   setNotification,
   clearNotification
 } from "@/store/reducers/notification"
-import { IRecipeBasic } from "@/components/AddRecipe"
 import {
   ITeam,
   deleteTeam,
@@ -110,11 +109,11 @@ import {
   updateIngredient,
   IIngredient,
   fetchRecipe,
-  fetchRecipeList
+  fetchRecipeList,
+  createRecipe
 } from "@/store/reducers/recipes"
 import * as api from "@/api"
 import {
-  setLoadingAddRecipe,
   setLoadingLogin,
   setLoadingSignup,
   setLoadingReset,
@@ -142,10 +141,10 @@ import {
   setErrorLogin,
   setErrorSignup,
   setErrorReset,
-  setErrorResetConfirmation,
-  setErrorAddRecipe
+  setErrorResetConfirmation
 } from "@/store/reducers/error"
 import { Dispatch as ReduxDispatch } from "redux"
+import { IRecipeBasic } from "@/components/RecipeTitle"
 
 const config = { timeout: 15000 }
 
@@ -455,16 +454,13 @@ export const fetchShoppingList = (dispatch: Dispatch) => (
 }
 
 export const postNewRecipe = (dispatch: Dispatch) => (recipe: IRecipeBasic) => {
-  dispatch(setLoadingAddRecipe(true))
-  dispatch(setErrorAddRecipe({}))
-
+  dispatch(createRecipe.request())
   return http
     .post<IRecipe>("/api/v1/recipes/", recipe)
     .then(res => {
-      dispatch(fetchRecipe.success(res.data))
-      dispatch(clearAddRecipeForm())
-      dispatch(setLoadingAddRecipe(false))
+      dispatch(createRecipe.success(res.data))
       dispatch(push("/recipes"))
+      dispatch(clearAddRecipeForm())
     })
     .catch((err: AxiosError) => {
       // tslint:disable:no-unsafe-any
@@ -476,9 +472,7 @@ export const postNewRecipe = (dispatch: Dispatch) => (recipe: IRecipeBasic) => {
         }) ||
         {}
       // tslint:enable:no-unsafe-any
-      dispatch(setLoadingAddRecipe(false))
-      dispatch(setErrorAddRecipe(errors))
-
+      dispatch(createRecipe.failure(errors))
       showNotificationWithTimeout(dispatch)({
         message: "problem creating new recipe",
         level: "danger",

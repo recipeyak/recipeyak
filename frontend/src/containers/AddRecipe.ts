@@ -2,7 +2,7 @@ import { connect } from "react-redux"
 
 import { postNewRecipe, fetchTeams, Dispatch } from "@/store/actions"
 
-import AddRecipe, { IIngredientBasic, IStepBasic } from "@/components/AddRecipe"
+import AddRecipe from "@/components/AddRecipe"
 
 import { teamsFrom } from "@/store/mapState"
 import { RootState } from "@/store/store"
@@ -21,8 +21,12 @@ import {
   updateAddRecipeFormStep,
   clearAddRecipeForm
 } from "@/store/reducers/addrecipe"
-import { setErrorAddRecipe } from "@/store/reducers/error"
 import { ITeam } from "@/store/reducers/teams"
+import {
+  IIngredientBasic,
+  IStepBasic,
+  resetAddRecipeErrors
+} from "@/store/reducers/recipes"
 
 const mapStateToProps = (state: RootState) => ({
   name: state.addrecipe.name,
@@ -32,8 +36,8 @@ const mapStateToProps = (state: RootState) => ({
   servings: state.addrecipe.servings,
   ingredients: state.addrecipe.ingredients,
   steps: state.addrecipe.steps,
-  loading: state.loading.addRecipe,
-  error: state.error.addRecipe,
+  loading: state.recipes.creatingRecipe,
+  error: state.recipes.errorCreatingRecipe,
   // we remove the loading
   teams: teamsFrom(state),
   loadingTeams: !!state.teams.loading,
@@ -65,7 +69,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     dispatch(updateAddRecipeFormStep(i, step)),
 
   addRecipe: postNewRecipe(dispatch),
-  clearErrors: () => dispatch(setErrorAddRecipe({})),
+  clearErrors: () => dispatch(resetAddRecipeErrors()),
   clearForm: () => dispatch(clearAddRecipeForm()),
 
   fetchData: fetchTeams(dispatch)

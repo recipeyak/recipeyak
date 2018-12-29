@@ -6,32 +6,16 @@ import AddIngredientForm from "@/components/AddIngredientForm"
 import AddStepForm from "@/components/AddStepForm"
 import Ingredient from "@/components/Ingredient"
 import { ButtonPrimary } from "@/components/Buttons"
-import { IRecipe, IStep, IIngredient } from "@/store/reducers/recipes"
+import {
+  IStepBasic,
+  IRecipeBasic,
+  IIngredientBasic,
+  IAddRecipeError
+} from "@/store/reducers/recipes"
 import { ITeam } from "@/store/reducers/teams"
-import { IAddRecipeError } from "@/store/reducers/error"
 
 const unfinishedIngredient = ({ quantity = "", name = "" }) =>
   quantity === "" || name === ""
-
-export interface IRecipeBasic
-  extends Omit<
-    IRecipe,
-    | "id"
-    | "edits"
-    | "modified"
-    | "last_scheduled"
-    | "owner"
-    | "team"
-    | "ingredients"
-    | "steps"
-  > {
-  readonly ingredients: IIngredientBasic[]
-  readonly steps: IStepBasic[]
-  readonly team?: ITeam["id"]
-}
-export type IIngredientBasic = Omit<IIngredient, "id" | "position">
-
-export type IStepBasic = Pick<IStep, "text">
 
 interface IAddRecipeProps {
   readonly clearErrors: () => void

@@ -2,7 +2,6 @@ import { omit, uniq } from "lodash"
 import { ITeam } from "@/store/reducers/teams"
 import { action as act, createAsyncAction, ActionType } from "typesafe-actions"
 import { RootState } from "@/store/store"
-
 const ADD_STEP_TO_RECIPE = "ADD_STEP_TO_RECIPE"
 const ADD_INGREDIENT_TO_RECIPE = "ADD_INGREDIENT_TO_RECIPE"
 const SET_LOADING_ADD_STEP_TO_RECIPE = "SET_LOADING_ADD_STEP_TO_RECIPE"
@@ -31,6 +30,10 @@ const FETCH_RECIPE_FAILURE = "FETCH_RECIPE_FAILURE"
 const FETCH_RECIPE_LIST_START = "FETCH_RECIPE_LIST_START"
 const FETCH_RECIPE_LIST_SUCCESS = "FETCH_RECIPE_LIST_SUCCESS"
 const FETCH_RECIPE_LIST_FAILURE = "FETCH_RECIPE_LIST_FAILURE"
+const CREATE_RECIPE_START = "CREATE_RECIPE_START"
+const CREATE_RECIPE_SUCCESS = "CREATE_RECIPE_SUCCESS"
+const CREATE_RECIPE_FAILURE = "CREATE_RECIPE_FAILURE"
+const RESET_CREATE_RECIPE_ERRORS = "RESET_CREATE_RECIPE_ERRORS"
 
 export const updateRecipeTime = (id: IRecipe["id"], time: IRecipe["time"]) =>
   act(UPDATE_RECIPE_TIME, {
@@ -72,6 +75,20 @@ export const fetchRecipeList = createAsyncAction(
   FETCH_RECIPE_LIST_SUCCESS,
   FETCH_RECIPE_LIST_FAILURE
 )<void, IRecipe[], void>()
+
+export interface IAddRecipeError {
+  readonly errorWithName?: boolean
+  readonly errorWithIngredients?: boolean
+  readonly errorWithSteps?: boolean
+}
+
+export const createRecipe = createAsyncAction(
+  CREATE_RECIPE_START,
+  CREATE_RECIPE_SUCCESS,
+  CREATE_RECIPE_FAILURE
+)<void, IRecipe, IAddRecipeError>()
+
+export const resetAddRecipeErrors = () => act(RESET_CREATE_RECIPE_ERRORS)
 
 export const deleteStep = (recipeID: IRecipe["id"], stepID: IStep["id"]) =>
   act(DELETE_STEP, {
@@ -211,6 +228,26 @@ export const setSchedulingRecipe = (
     scheduling
   })
 
+export interface IRecipeBasic
+  extends Omit<
+    IRecipe,
+    | "id"
+    | "edits"
+    | "modified"
+    | "last_scheduled"
+    | "owner"
+    | "team"
+    | "ingredients"
+    | "steps"
+  > {
+  readonly ingredients: IIngredientBasic[]
+  readonly steps: IStepBasic[]
+  readonly team?: ITeam["id"]
+}
+export type IIngredientBasic = Omit<IIngredient, "id" | "position">
+
+export type IStepBasic = Pick<IStep, "text">
+
 export type RecipeActions =
   | ReturnType<typeof updateRecipeOwner>
   | ReturnType<typeof deleteStep>
@@ -234,6 +271,8 @@ export type RecipeActions =
   | ActionType<typeof deleteRecipe>
   | ActionType<typeof fetchRecipe>
   | ActionType<typeof fetchRecipeList>
+  | ActionType<typeof createRecipe>
+  | ReturnType<typeof resetAddRecipeErrors>
 
 export const getRecipes = (state: RootState) =>
   state.recipes.allIds.map(id => state.recipes.byId[id])
@@ -299,6 +338,11 @@ export interface IRecipesState {
    */
   readonly loadingAll: boolean
   readonly errorLoadingAll: boolean
+
+  // add recipe page
+  readonly creatingRecipe: boolean
+  readonly errorCreatingRecipe: IAddRecipeError
+
   readonly byId: {
     readonly [key: number]: IRecipe
   }
@@ -308,6 +352,10 @@ export interface IRecipesState {
 export const initialState: IRecipesState = {
   loadingAll: false,
   errorLoadingAll: false,
+
+  creatingRecipe: false,
+  errorCreatingRecipe: {},
+
   byId: {},
   allIds: []
 }
@@ -354,7 +402,6 @@ export const recipes = (
           }
         }
       }
-
     case FETCH_RECIPE_LIST_START: {
       return {
         ...state,
@@ -375,6 +422,38 @@ export const recipes = (
         ...state,
         loadingAll: false,
         errorLoadingAll: true
+      }
+    }
+    case CREATE_RECIPE_START: {
+      return {
+        ...state,
+        creatingRecipe: true,
+        errorCreatingRecipe: {}
+      }
+    }
+    case CREATE_RECIPE_SUCCESS: {
+      return {
+        ...state,
+        creatingRecipe: false,
+        errorCreatingRecipe: {},
+        byId: {
+          ...state.byId,
+          [action.payload.id]: action.payload
+        },
+        allIds: uniq(state.allIds.concat(action.payload.id))
+      }
+    }
+    case CREATE_RECIPE_FAILURE: {
+      return {
+        ...state,
+        creatingRecipe: false,
+        errorCreatingRecipe: action.payload
+      }
+    }
+    case RESET_CREATE_RECIPE_ERRORS: {
+      return {
+        ...state,
+        errorCreatingRecipe: {}
       }
     }
     case DELETE_RECIPE_START:
