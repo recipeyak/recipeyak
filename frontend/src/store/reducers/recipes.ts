@@ -1,6 +1,6 @@
 import { omit } from "lodash"
 import { ITeam } from "@/store/reducers/teams"
-import { action as act } from "typesafe-actions"
+import { action as act, createAsyncAction, ActionType } from "typesafe-actions"
 
 const ADD_RECIPE = "ADD_RECIPE"
 const ADD_STEP_TO_RECIPE = "ADD_STEP_TO_RECIPE"
@@ -14,9 +14,10 @@ const DELETE_INGREDIENT = "DELETE_INGREDIENT"
 const UPDATE_INGREDIENT = "UPDATE_INGREDIENT"
 const DELETE_STEP = "DELETE_STEP"
 const UPDATE_STEP = "UPDATE_STEP"
-const DELETE_RECIPE = "DELETE_RECIPE"
+const DELETE_RECIPE_START = "DELETE_RECIPE_START"
+const DELETE_RECIPE_SUCCESS = "DELETE_RECIPE_SUCCESS"
+const DELETE_RECIPE_FAILURE = "DELETE_RECIPE_FAILURE"
 const SET_LOADING_RECIPE = "SET_LOADING_RECIPE"
-const SET_DELETING_RECIPE = "SET_DELETING_RECIPE"
 const SET_RECIPE = "SET_RECIPE"
 const SET_ADDING_INGREDIENT_TO_RECIPE = "SET_ADDING_INGREDIENT_TO_RECIPE"
 const SET_UPDATING_INGREDIENT = "SET_UPDATING_INGREDIENT"
@@ -52,16 +53,11 @@ export const updateRecipeOwner = (id: IRecipe["id"], owner: IRecipe["owner"]) =>
     owner
   })
 
-export const setDeletingRecipe = (id: IRecipe["id"], val: boolean) =>
-  act(SET_DELETING_RECIPE, {
-    id,
-    val
-  })
-
-export const deleteRecipe = (id: IRecipe["id"]) =>
-  act(DELETE_RECIPE, {
-    id
-  })
+export const deleteRecipe = createAsyncAction(
+  DELETE_RECIPE_START,
+  DELETE_RECIPE_SUCCESS,
+  DELETE_RECIPE_FAILURE
+)<IRecipe["id"], IRecipe["id"], IRecipe["id"]>()
 
 export const deleteStep = (recipeID: IRecipe["id"], stepID: IStep["id"]) =>
   act(DELETE_STEP, {
@@ -228,8 +224,6 @@ export const setSchedulingRecipe = (
 
 export type RecipeActions =
   | ReturnType<typeof updateRecipeOwner>
-  | ReturnType<typeof setDeletingRecipe>
-  | ReturnType<typeof deleteRecipe>
   | ReturnType<typeof deleteStep>
   | ReturnType<typeof updateStep>
   | ReturnType<typeof setRemovingStep>
@@ -253,6 +247,7 @@ export type RecipeActions =
   | ReturnType<typeof setSchedulingRecipe>
   | ReturnType<typeof updateIngredient>
   | ReturnType<typeof updateRecipeTime>
+  | ActionType<typeof deleteRecipe>
 
 export interface IIngredient {
   readonly id: number
@@ -321,8 +316,24 @@ export const recipes = (
   switch (action.type) {
     case ADD_RECIPE:
       return { ...state, [action.payload.id]: action.payload }
-    case DELETE_RECIPE:
-      return omit(state, action.payload.id)
+    case DELETE_RECIPE_START:
+      return {
+        ...state,
+        [action.payload]: {
+          ...state[action.payload],
+          deleting: true
+        }
+      }
+    case DELETE_RECIPE_SUCCESS:
+      return omit(state, action.payload)
+    case DELETE_RECIPE_FAILURE:
+      return {
+        ...state,
+        [action.payload]: {
+          ...state[action.payload],
+          deleting: false
+        }
+      }
     case ADD_STEP_TO_RECIPE:
       return {
         ...state,
@@ -446,14 +457,6 @@ export const recipes = (
       // convert the array of objects to an object with the recipe.id as the
       // key, and the recipe as the value
       return action.payload.recipes.reduce((a, b) => ({ ...a, [b.id]: b }), {})
-    case SET_DELETING_RECIPE:
-      return {
-        ...state,
-        [action.payload.id]: {
-          ...state[action.payload.id],
-          deleting: action.payload.val
-        }
-      }
     case SET_LOADING_RECIPE:
       return {
         ...state,

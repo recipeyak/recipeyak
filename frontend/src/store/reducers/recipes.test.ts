@@ -73,11 +73,13 @@ describe("Recipes", () => {
     const afterState = {
       1: baseRecipe
     }
-    expect(recipes(beforeState, a.deleteRecipe(123))).toEqual(afterState)
+    expect(recipes(beforeState, a.deleteRecipe.success(123))).toEqual(
+      afterState
+    )
   })
 
   it("Remove non-existent recipe from recipe list", () => {
-    expect(recipes({}, a.deleteRecipe(123))).toEqual({})
+    expect(recipes({}, a.deleteRecipe.success(123))).toEqual({})
   })
 
   it("fetching recipe results in it loading", () => {
@@ -123,9 +125,8 @@ describe("Recipes", () => {
       }
     }
 
-    expect(recipes(beforeState, a.setDeletingRecipe(1, true))).toEqual(
-      afterState
-    )
+    expect(recipes(beforeState, a.deleteRecipe.request(1))).toEqual(afterState)
+    expect(recipes(afterState, a.deleteRecipe.failure(1))).toEqual(beforeState)
   })
 
   it("adds a step to the recipe", () => {

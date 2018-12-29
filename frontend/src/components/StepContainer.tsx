@@ -128,7 +128,7 @@ class StepContainer extends React.Component<
     const { cards } = this.state
 
     return (
-      <div>
+      <>
         {cards.map((card, i) => (
           <Card
             key={card.id}
@@ -143,7 +143,7 @@ class StepContainer extends React.Component<
             completeMove={this.completeMove}
           />
         ))}
-      </div>
+      </>
     )
   }
 }
