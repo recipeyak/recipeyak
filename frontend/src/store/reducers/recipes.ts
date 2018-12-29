@@ -1,4 +1,4 @@
-import { omit } from "lodash"
+import { omit, uniq } from "lodash"
 import { ITeam } from "@/store/reducers/teams"
 import { action as act, createAsyncAction, ActionType } from "typesafe-actions"
 import { RootState } from "@/store/store"
@@ -251,7 +251,7 @@ export type RecipeActions =
   | ActionType<typeof deleteRecipe>
 
 export const getRecipes = (state: RootState) =>
-  Object.values(state.recipes.byId)
+  state.recipes.allIds.map(id => state.recipes.byId[id])
 
 export interface IIngredient {
   readonly id: number
@@ -311,10 +311,12 @@ export interface IRecipesState {
   readonly byId: {
     readonly [key: number]: IRecipe
   }
+  readonly allIds: IRecipe["id"][]
 }
 
 export const initialState: IRecipesState = {
-  byId: {}
+  byId: {},
+  allIds: []
 }
 
 export const recipes = (
@@ -338,7 +340,8 @@ export const recipes = (
     case DELETE_RECIPE_SUCCESS:
       return {
         ...state,
-        byId: omit(state.byId, action.payload)
+        byId: omit(state.byId, action.payload),
+        allIds: state.allIds.filter(id => id !== action.payload)
       }
     case DELETE_RECIPE_FAILURE:
       return {
@@ -518,7 +521,8 @@ export const recipes = (
         byId: {
           ...state.byId,
           ...action.payload.recipes.reduce((a, b) => ({ ...a, [b.id]: b }), {})
-        }
+        },
+        allIds: uniq(state.allIds.concat(action.payload.recipes.map(r => r.id)))
       }
     case SET_LOADING_RECIPE:
       return {
@@ -642,7 +646,8 @@ export const recipes = (
             ...state.byId[action.payload.id],
             ...action.payload.data
           }
-        }
+        },
+        allIds: uniq(state.allIds.concat(action.payload.id))
       }
     case UPDATE_RECIPE_OWNER:
       return {
