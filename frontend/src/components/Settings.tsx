@@ -125,6 +125,35 @@ function Github(props: ISocialButtonProps) {
   )
 }
 
+function Export() {
+  return (
+    <>
+      <h1 className="fs-6">Export</h1>
+      <p>
+        <a href="/recipes.yaml">recipes.yaml</a>
+      </p>
+      <p>
+        <a href="/recipes.json">recipes.json</a>
+      </p>
+    </>
+  )
+}
+
+interface IDangerZoneProps {
+  readonly deleteAccount: () => void
+}
+
+function DangerZone(props: IDangerZoneProps) {
+  return (
+    <>
+      <h1 className="fs-6">Danger Zone</h1>
+      <a onClick={props.deleteAccount} className="has-text-danger">
+        permanently delete my account
+      </a>
+    </>
+  )
+}
+
 export default class SettingsWithState extends React.Component<
   ISettingsWithStateProps,
   ISettingsWithStateState
@@ -192,15 +221,6 @@ export default class SettingsWithState extends React.Component<
 
   edit = () => this.setState({ editing: true })
 
-  deleteAccountPrompt = () => {
-    const response = prompt(
-      "Are you sure you want to permanently delete your account? \nPlease type, 'delete my account', to irrevocably delete your account"
-    )
-    if (response != null && response.toLowerCase() === "delete my account") {
-      this.props.deleteUserAccount()
-    }
-  }
-
   render() {
     const {
       email,
@@ -230,7 +250,7 @@ export default class SettingsWithState extends React.Component<
     }
 
     return (
-      <section>
+      <>
         <Helmet title="Settings" />
 
         <h1 className="fs-8">User settings</h1>
@@ -343,19 +363,9 @@ export default class SettingsWithState extends React.Component<
           loading={loadingGitlab}
         />
 
-        <h1 className="fs-6">Danger Zone</h1>
-        <a onClick={this.deleteAccountPrompt} className="has-text-danger">
-          permanently delete my account
-        </a>
-
-        <h1 className="fs-6">Export</h1>
-        <p>
-          <a href="/recipes.yaml">recipes.yaml</a>
-        </p>
-        <p>
-          <a href="/recipes.json">recipes.json</a>
-        </p>
-      </section>
+        <Export />
+        <DangerZone deleteAccount={this.props.deleteUserAccount} />
+      </>
     )
   }
 }
