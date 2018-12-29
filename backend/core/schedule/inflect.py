@@ -551,7 +551,9 @@ plural_categories = {
 }
 
 
-def pluralize(word, pos=NOUN, custom={}, classical=True):
+def pluralize(
+    word: str, pos: str = NOUN, custom: Dict[str, str] = {}, classical: bool = True
+) -> str:
     """ Returns the plural of a given word, e.g., child => children.
         Handles nouns and adjectives, using classical inflection by default
         (i.e., where "matrix" pluralizes to "matrices" and not "matrixes").
@@ -567,22 +569,21 @@ def pluralize(word, pos=NOUN, custom={}, classical=True):
         w = pluralize(w, pos, custom, classical)
         if w.endswith("s"):
             return w + "'"
-        else:
-            return w + "'s"
+        return w + "'s"
     # Recurse compound words
     # (e.g., Postmasters General, mothers-in-law, Roman deities).
-    w = word.replace("-", " ").split(" ")
-    if len(w) > 1:
+    wor = word.replace("-", " ").split(" ")
+    if len(wor) > 1:
         if (
-            w[1] == "general"
-            or w[1] == "General"
-            and w[0] not in plural_categories["general-generals"]
+            wor[1] == "general"
+            or wor[1] == "General"
+            and wor[0] not in plural_categories["general-generals"]
         ):
-            return word.replace(w[0], pluralize(w[0], pos, custom, classical))
-        elif w[1] in plural_prepositions:
-            return word.replace(w[0], pluralize(w[0], pos, custom, classical))
+            return word.replace(wor[0], pluralize(wor[0], pos, custom, classical))
+        elif wor[1] in plural_prepositions:
+            return word.replace(wor[0], pluralize(wor[0], pos, custom, classical))
         else:
-            return word.replace(w[-1], pluralize(w[-1], pos, custom, classical))
+            return word.replace(wor[-1], pluralize(wor[-1], pos, custom, classical))
     # Only a very few number of adjectives inflect.
     n = range(len(plural_rules_compiled))
     if pos.startswith(ADJECTIVE):
@@ -824,7 +825,7 @@ singular_irregular = {
 }
 
 
-def singularize(word: str, pos=NOUN, custom: Dict[str, str] = {}) -> str:
+def singularize(word: str, pos: str = NOUN, custom: Dict[str, str] = {}) -> str:
     """ Returns the singular of a given word.
     """
     if word in custom:
