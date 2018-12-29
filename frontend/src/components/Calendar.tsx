@@ -43,7 +43,7 @@ const mapStateToProps = (state: RootState, props: ICalendarProps) => {
   const isTeam = props.teamID !== "personal"
 
   const days = state.calendar.allIds
-    .map((id: number | string) => state.calendar[id as number])
+    .map((id: number | string) => state.calendar.byId[id as number])
     .reduce(
       (a, b) => ({
         ...a,

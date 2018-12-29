@@ -14,6 +14,7 @@ describe("Calendar", () => {
     }
     const afterState: ICalendarState = {
       ...initialState,
+      byId: {
       1: {
         id: 1,
         count: 3,
@@ -36,6 +37,7 @@ describe("Calendar", () => {
           id: 3
         }
       },
+    },
       allIds: [1, 2]
     }
 
@@ -100,6 +102,7 @@ describe("Calendar", () => {
   it("deletes calendar recipe", () => {
     const beforeState: ICalendarState = {
       ...initialState,
+      byId: {
       1: {
         id: 1,
         count: 3,
@@ -111,6 +114,7 @@ describe("Calendar", () => {
           name: "1231"
         }
       },
+    },
       allIds: [1]
     }
 
@@ -158,6 +162,7 @@ describe("Calendar", () => {
 
     const beforeState: ICalendarState = {
       ...initialState,
+      byId: {
       [id]: {
         id,
         count: 3,
@@ -169,6 +174,7 @@ describe("Calendar", () => {
           name: "1231"
         }
       },
+    },
       allIds: [id]
     }
 
@@ -176,16 +182,18 @@ describe("Calendar", () => {
 
     const afterState: ICalendarState = {
       ...initialState,
-      [id]: {
-        id,
-        count: 3,
-        on: newOn,
-        team: 2,
-        user: 1,
-        recipe: {
-          id: 9,
-          name: "1231"
-        }
+      byId: {
+        [id]: {
+          id,
+          count: 3,
+          on: newOn,
+          team: 2,
+          user: 1,
+          recipe: {
+            id: 9,
+            name: "1231"
+          }
+        },
       },
       allIds: [id]
     }
@@ -201,6 +209,7 @@ describe("Calendar", () => {
 
     const beforeState: ICalendarState = {
       ...initialState,
+      byId: {
       [id]: {
         id,
         count: 3,
@@ -233,12 +242,14 @@ describe("Calendar", () => {
           id: 9,
           name: "1231"
         }
+        }
       },
       allIds: [id, 2, 3]
     }
 
     const afterState: ICalendarState = {
       ...initialState,
+      byId: {
       [id]: {
         id,
         count: 3,
@@ -270,6 +281,7 @@ describe("Calendar", () => {
         recipe: {
           id: 9,
           name: "1231"
+        }
         }
       },
       allIds: [id, 2, 3]
@@ -286,6 +298,7 @@ describe("Calendar", () => {
 
     const beforeState: ICalendarState = {
       ...initialState,
+      byId: {
       [id]: {
         id,
         count: 3,
@@ -318,12 +331,14 @@ describe("Calendar", () => {
           ...baseRecipe,
           id: 9
         }
+        }
       },
       allIds: [id, 2, 3]
     }
 
     const afterState: ICalendarState = {
       ...initialState,
+      byId: {
       2: {
         id: 2,
         count: 6,
@@ -345,6 +360,7 @@ describe("Calendar", () => {
           ...baseRecipe,
           id: 9
         }
+        }
       },
       allIds: [2, 3]
     }
@@ -360,6 +376,7 @@ describe("Calendar", () => {
 
     const beforeState: ICalendarState = {
       ...initialState,
+      byId: {
       [id]: {
         id,
         count: 3,
@@ -389,6 +406,7 @@ describe("Calendar", () => {
         recipe: {
           ...baseRecipe
         }
+        }
       },
       allIds: [id, 2, 3]
     }
@@ -405,6 +423,7 @@ describe("Calendar", () => {
 
     const afterState: ICalendarState = {
       ...initialState,
+      byId: {
       [recipe.id]: recipe,
       2: {
         id: 2,
@@ -425,6 +444,7 @@ describe("Calendar", () => {
         recipe: {
           ...baseRecipe
         }
+      }
       },
       allIds: [2, 3, recipe.id]
     }
@@ -439,6 +459,7 @@ describe("Calendar", () => {
 
     const beforeState: ICalendarState = {
       ...initialState,
+      byId: {
       2: {
         id: 2,
         count: 3,
@@ -460,6 +481,7 @@ describe("Calendar", () => {
           ...baseRecipe,
           id: 9
         }
+      }
       },
       allIds: [2, 3]
     }
@@ -475,6 +497,7 @@ describe("Calendar", () => {
 
     const afterState: ICalendarState = {
       ...initialState,
+      byId: {
       [recipe.id]: {
         id: recipe.id,
         count: 3 + recipe.count,
@@ -495,6 +518,7 @@ describe("Calendar", () => {
         recipe: {
           ...baseRecipe,
           id: 9
+        }
         }
       },
       allIds: [3, 9]
