@@ -25,6 +25,8 @@ describe("<ListItem/>", () => {
   })
 
   function BadComponent() {
+    // NOTE(chdsbd): We need to throw for the error boundary to trigger
+    // tslint:disable-next-line:no-throw
     throw Error()
     return null
   }

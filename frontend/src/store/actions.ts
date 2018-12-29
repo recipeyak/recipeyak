@@ -172,6 +172,10 @@ const handleResponseError = (error: AxiosError) => {
     raven.captureException(error)
   } else if (unAuthenticated) {
     store.dispatch(setUserLoggedIn(false))
+  } else {
+    // NOTE(chdsbd): I think it's a good idea just to report any other bad
+    // status to Sentry.
+    raven.captureException(error, { level: "info" })
   }
   return Promise.reject(error)
 }
@@ -272,9 +276,8 @@ export const loggingOut = (dispatch: Dispatch) => () => {
       dispatch(push("/login"))
       dispatch(setLoggingOut(false))
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(setLoggingOut(false))
-      throw err
     })
 }
 
@@ -344,11 +347,16 @@ export const fetchSocialConnections = (dispatch: Dispatch) => () => {
     .then(res => {
       dispatch(setSocialConnections(res.data))
     })
-    .catch(err => {
-      throw err
-    })
+    .catch(() => undefined)
 }
 
+/** Disconnect social account by id
+ *
+ * We intentionally do _not_ catch any error as we catch in the view. This is
+ * poor form and should be refactored.
+ *
+ * TODO(chdsbd): Refactor API usage to not catch in view.
+ */
 export const disconnectSocialAccount = (dispatch: Dispatch) => (
   provider: SocialProvider,
   id: number
@@ -367,9 +375,6 @@ export const disconnectSocialAccount = (dispatch: Dispatch) => (
         ])
       )
     })
-    .catch(err => {
-      throw err
-    })
 }
 
 export const fetchUserStats = (dispatch: Dispatch) => () => {
@@ -380,9 +385,8 @@ export const fetchUserStats = (dispatch: Dispatch) => () => {
       dispatch(setUserStats(res.data))
       dispatch(setLoadingUserStats(false))
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(setLoadingUserStats(false))
-      throw err
     })
 }
 
@@ -422,7 +426,6 @@ export const updatingPassword = (dispatch: Dispatch) => (
         )
         // tslint:ebale:no-unsafe-any
       }
-      throw err
     })
 }
 
@@ -503,7 +506,6 @@ export const fetchRecipe = (dispatch: Dispatch) => (id: number) => {
         dispatch(setRecipe404(id, true))
       }
       dispatch(setLoadingRecipe(id, false))
-      throw err
     })
 }
 
@@ -516,10 +518,9 @@ export const fetchRecentRecipes = (dispatch: Dispatch) => () => {
       dispatch(setRecipes(res.data))
       dispatch(setLoadingRecipes(false))
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(setErrorRecipes(true))
       dispatch(setLoadingRecipes(false))
-      throw err
     })
 }
 
@@ -579,12 +580,10 @@ export const searchRecipes = (dispatch: Dispatch) => (query: string) => {
     })
     .catch((err: AxiosError) => {
       dispatch(decrLoadingSearch())
-      // Ignore axios cancels
       if (String(err) === "Cancel") {
-        return err
+        // Ignore axios cancels
       }
       raven.captureException(err)
-      return err
     })
 }
 
@@ -599,9 +598,8 @@ export const addingRecipeIngredient = (dispatch: Dispatch) => (
       dispatch(addIngredientToRecipe(recipeID, res.data))
       dispatch(setAddingIngredientToRecipe(recipeID, false))
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(setAddingIngredientToRecipe(recipeID, false))
-      throw err
     })
 }
 
@@ -615,9 +613,7 @@ export const sendUpdatedRecipeName = (id: number, name: string) => (
     .then(res => {
       dispatch(updateRecipeName(res.data.id, res.data.name))
     })
-    .catch(err => {
-      throw err
-    })
+    .catch(() => undefined)
 }
 
 export const setRecipeSource = (id: number, source: string) => (
@@ -630,9 +626,7 @@ export const setRecipeSource = (id: number, source: string) => (
     .then(res => {
       dispatch(updateRecipeSource(res.data.id, res.data.source))
     })
-    .catch(err => {
-      throw err
-    })
+    .catch(() => undefined)
 }
 
 export const setRecipeAuthor = (id: number, author: unknown) => (
@@ -645,9 +639,7 @@ export const setRecipeAuthor = (id: number, author: unknown) => (
     .then(res => {
       dispatch(updateRecipeAuthor(res.data.id, res.data.author))
     })
-    .catch(err => {
-      throw err
-    })
+    .catch(() => undefined)
 }
 
 export const setRecipeTime = (id: number, time: unknown) => (
@@ -660,9 +652,7 @@ export const setRecipeTime = (id: number, time: unknown) => (
     .then(res => {
       dispatch(updateRecipeTime(res.data.id, res.data.time))
     })
-    .catch(err => {
-      throw err
-    })
+    .catch(() => undefined)
 }
 
 export const updateRecipe = (dispatch: Dispatch) => (
@@ -676,9 +666,8 @@ export const updateRecipe = (dispatch: Dispatch) => (
       dispatch(setRecipe(res.data.id, res.data))
       dispatch(setRecipeUpdating(id, false))
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(setRecipeUpdating(id, false))
-      throw err
     })
 }
 
@@ -695,9 +684,8 @@ export const addingRecipeStep = (dispatch: Dispatch) => (
       dispatch(addStepToRecipe(recipeID, res.data))
       dispatch(setLoadingAddStepToRecipe(recipeID, false))
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(setLoadingAddStepToRecipe(recipeID, false))
-      throw err
     })
 }
 
@@ -716,9 +704,8 @@ export const updatingIngredient = (dispatch: Dispatch) => (
       dispatch(updateIngredient(recipeID, ingredientID, res.data))
       dispatch(setUpdatingIngredient(recipeID, ingredientID, false))
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(setUpdatingIngredient(recipeID, ingredientID, false))
-      throw err
     })
 }
 
@@ -733,9 +720,8 @@ export const deletingIngredient = (dispatch: Dispatch) => (
       dispatch(setRemovingIngredient(recipeID, ingredientID, false))
       dispatch(deleteIngredient(recipeID, ingredientID))
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(setRemovingIngredient(recipeID, ingredientID, false))
-      throw err
     })
 }
 
@@ -769,9 +755,8 @@ export const updatingStep = (dispatch: Dispatch) => (
       dispatch(updateStep(recipeID, stepID, txt, pos))
       dispatch(setUpdatingStep(recipeID, stepID, false))
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(setUpdatingStep(recipeID, stepID, false))
-      throw err
     })
 }
 
@@ -786,9 +771,8 @@ export const deletingStep = (dispatch: Dispatch) => (
       dispatch(deleteStep(recipeID, stepID))
       dispatch(setRemovingStep(recipeID, stepID, false))
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(setRemovingStep(recipeID, stepID, false))
-      throw err
     })
 }
 
@@ -855,7 +839,6 @@ export const socialLogin = (dispatch: Dispatch) => (
         // tslint:enable:no-unsafe-any
       }
       dispatch(replace("/login"))
-      throw err
     })
 }
 
@@ -870,9 +853,8 @@ export const socialConnect = (dispatch: Dispatch) => (
     .then(() => {
       dispatch(replace("/settings"))
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(replace("/settings"))
-      throw err
     })
 }
 
@@ -921,9 +903,8 @@ export const deletingRecipe = (dispatch: Dispatch) => (id: number) => {
       dispatch(push("/recipes"))
       dispatch(deleteRecipe.success(id))
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(deleteRecipe.failure(id))
-      throw err
     })
 }
 
@@ -1043,7 +1024,6 @@ export const fetchTeam = (dispatch: Dispatch) => (id: ITeam["id"]) => {
         dispatch(setTeam404(id))
       }
       dispatch(setLoadingTeam(id, false))
-      throw err
     })
 }
 
@@ -1055,9 +1035,8 @@ export const fetchTeamMembers = (dispatch: Dispatch) => (id: number) => {
       dispatch(setTeamMembers(id, res.data))
       dispatch(setLoadingTeamMembers(id, false))
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(setLoadingTeamMembers(id, false))
-      throw err
     })
 }
 
@@ -1070,9 +1049,8 @@ export const fetchTeamRecipes = (dispatch: Dispatch) => (id: number) => {
       dispatch(setTeamRecipes(id, res.data))
       dispatch(setLoadingTeamRecipes(id, false))
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(setLoadingTeamRecipes(id, false))
-      throw err
     })
 }
 
@@ -1107,7 +1085,6 @@ export const settingUserTeamLevel = (dispatch: Dispatch) => (
         // tslint:enable:no-unsafe-any
       }
       dispatch(setUpdatingUserTeamLevel(teamID, false))
-      throw err
     })
 }
 
@@ -1141,7 +1118,6 @@ export const deletingMembership = (dispatch: Dispatch) => (
         delay: 3 * second
       })
       dispatch(setDeletingMembership(teamID, id, false))
-      throw err
     })
 }
 
@@ -1180,7 +1156,6 @@ export const deletingTeam = (dispatch: Dispatch) => (teamID: number) => {
         level: "danger",
         delay: 3 * second
       })
-      throw err
     })
 }
 
@@ -1207,6 +1182,8 @@ export const sendingTeamInvites = (dispatch: Dispatch) => (
         delay: 3 * second
       })
       dispatch(setSendingTeamInvites(teamID, false))
+      // NOTE(chdsbd): We depend on this to return an error in TeamInvite.tsx
+      return Error()
     })
 }
 
@@ -1218,9 +1195,8 @@ export const fetchTeams = (dispatch: Dispatch) => () => {
       dispatch(setTeams(res.data))
       dispatch(setLoadingTeams(false))
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(setLoadingTeams(false))
-      throw err
     })
 }
 
@@ -1237,9 +1213,8 @@ export const creatingTeam = (dispatch: Dispatch) => (
       dispatch(setCreatingTeam(false))
       dispatch(push(`/t/${res.data.id}`))
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(setCreatingTeam(false))
-      throw err
     })
 }
 
@@ -1268,7 +1243,6 @@ export const updatingTeam = (dispatch: Dispatch) => (
         level: "danger",
         delay: 3 * second
       })
-      throw err
     })
 }
 
@@ -1298,6 +1272,8 @@ export const copyRecipeTo = (dispatch: Dispatch) => (
     })
     .catch(err => {
       dispatch(setCopyingTeam(false))
+      // TODO(chdsbd): Improve api usage and remove this throw
+      // tslint:disable-next-line:no-throw
       throw err
     })
 }
@@ -1311,10 +1287,9 @@ export const fetchInvites = (dispatch: Dispatch) => () => {
       dispatch(setInvites(res.data))
       dispatch(setLoadingInvites(false))
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(setLoadingInvites(false))
       dispatch(setErrorFetchingInvites(true))
-      throw err
     })
 }
 
@@ -1326,9 +1301,8 @@ export const acceptingInvite = (dispatch: Dispatch) => (id: number) => {
       dispatch(setAcceptingInvite(id, false))
       dispatch(setAcceptedInvite(id))
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(setAcceptingInvite(id, false))
-      throw err
     })
 }
 export const decliningInvite = (dispatch: Dispatch) => (id: number) => {
@@ -1339,10 +1313,8 @@ export const decliningInvite = (dispatch: Dispatch) => (id: number) => {
       dispatch(setDecliningInvite(id, false))
       dispatch(setDeclinedInvite(id))
     })
-    .catch(err => {
+    .catch(() => {
       dispatch(setDecliningInvite(id, false))
-      // TODO(chdsbd): Remove all these throws and handle the errors
-      throw err
     })
 }
 
