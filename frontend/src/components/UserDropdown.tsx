@@ -57,6 +57,7 @@ export default class UserDropdown extends React.Component<
         <img
           onClick={this.toggle}
           alt=""
+          tabIndex={0}
           className="user-profile-image better-nav-item p-0"
           src={avatarURL}
         />
