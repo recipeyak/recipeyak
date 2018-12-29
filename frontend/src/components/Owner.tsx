@@ -22,6 +22,7 @@ import { ITeamsState } from "@/store/reducers/teams"
 import { IUserState } from "@/store/reducers/user"
 import { AxiosError } from "axios"
 import { teamURL } from "@/urls"
+import GlobalEvent from "@/components/GlobalEvent"
 
 const mapStateToProps = (state: RootState) => ({
   teams: state.teams,
@@ -62,8 +63,6 @@ interface IOwnerState {
   readonly values: string[]
 }
 
-// TODO: Create a generalized component with the click event listeners
-// we seems to use this functionality a lot
 class Owner extends React.Component<IOwnerProps, IOwnerState> {
   state: IOwnerState = {
     show: false,
@@ -72,13 +71,8 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
 
   dropdown = React.createRef<HTMLSpanElement>()
 
-  componentWillMount() {
-    document.addEventListener("click", this.handleGeneralClick)
+  componentDidMount() {
     this.props.fetchData()
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener("click", this.handleGeneralClick)
   }
 
   handleGeneralClick = (e: MouseEvent) => {
@@ -177,6 +171,7 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
 
     return (
       <span className="fw-500 p-rel" ref={this.dropdown}>
+        <GlobalEvent mouseUp={this.handleGeneralClick} />
         <b className="cursor-pointer" onClick={this.toggle}>
           via
         </b>{" "}

@@ -2,6 +2,8 @@ import React from "react"
 
 import IngredientView from "@/components/IngredientView"
 import { IIngredient, IRecipe } from "@/store/reducers/recipes"
+import GlobalEvent from "@/components/GlobalEvent"
+
 interface IEmptyField {
   readonly quantity?: string
   readonly name?: string
@@ -77,14 +79,6 @@ export default class Ingredient extends React.Component<
     removing: false
   }
 
-  componentWillMount() {
-    document.addEventListener("mouseup", this.handleGeneralClick)
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener("mouseup", this.handleGeneralClick)
-  }
-
   // ensures that the list item closes when the user clicks outside of the item
   handleGeneralClick = (e: MouseEvent) => {
     const el = this.element.current
@@ -107,6 +101,12 @@ export default class Ingredient extends React.Component<
           (prevState.editing && contentChanged) || prevState.unsavedChanges
       }
     })
+  }
+
+  handleGeneralKeyup = (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      this.cancel()
+    }
   }
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -144,12 +144,10 @@ export default class Ingredient extends React.Component<
     e.target.select()
   }
 
-  cancel = (e: React.MouseEvent) => {
-    e.stopPropagation()
-
+  cancel = () => {
+    // Restore state to match props
     this.setState((_, props) => {
       const { quantity, name, description } = props
-
       return {
         editing: false,
         quantity,
@@ -157,6 +155,11 @@ export default class Ingredient extends React.Component<
         description
       }
     })
+  }
+
+  handleCancelButton = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    this.cancel()
   }
 
   update = async (e: React.FormEvent) => {
@@ -192,7 +195,7 @@ export default class Ingredient extends React.Component<
     const {
       handleInputChange,
       enableEditing,
-      cancel,
+      handleCancelButton,
       remove,
       discardChanges,
       update
@@ -211,6 +214,10 @@ export default class Ingredient extends React.Component<
 
     const inner = editing ? (
       <form onSubmit={update}>
+        <GlobalEvent
+          mouseUp={this.handleGeneralClick}
+          keyUp={this.handleGeneralKeyup}
+        />
         <div className="field">
           <div className="add-ingredient-grid">
             <input
@@ -271,7 +278,7 @@ export default class Ingredient extends React.Component<
             </p>
             <p className="control">
               <input
-                onClick={cancel}
+                onClick={handleCancelButton}
                 className="my-button is-small"
                 type="button"
                 name="cancel edit"
