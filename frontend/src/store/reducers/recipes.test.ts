@@ -69,12 +69,9 @@ describe("Recipes", () => {
   })
 
   it("Remove non-existent recipe from recipe list", () => {
-    expect(recipes(a.initialState, a.deleteRecipe.success(123))).toEqual({
-      loadingAll: false,
-      errorLoadingAll: false,
-      byId: {},
-      allIds: []
-    })
+    expect(recipes(a.initialState, a.deleteRecipe.success(123))).toEqual(
+      a.initialState
+    )
   })
 
   it("sets deleting of the recipe", () => {
@@ -497,11 +494,14 @@ describe("Recipes", () => {
           loading: true
         }
       },
-      allIds: [baseRecipe.id]
+      allIds: []
     }
-    expect(recipes(beforeState, a.fetchRecipe.request(baseRecipe.id))).toEqual(
-      fetchingState
+    const fetchingActual = recipes(
+      beforeState,
+      a.fetchRecipe.request(baseRecipe.id)
     )
+    expect(fetchingActual.byId).toEqual(fetchingState.byId)
+    expect(fetchingActual.allIds).toEqual(fetchingState.allIds)
 
     const successState: IRecipesState = recipeStoreWith({
       ...baseRecipe,
@@ -522,9 +522,13 @@ describe("Recipes", () => {
       },
       allIds: []
     }
-    expect(
-      recipes(beforeState, a.fetchRecipe.failure({ id: 1, error404: true }))
-    ).toEqual(failureState)
+
+    const failActual = recipes(
+      beforeState,
+      a.fetchRecipe.failure({ id: 1, error404: true })
+    )
+    expect(failActual.byId).toEqual(failureState.byId)
+    expect(failActual.allIds).toEqual(failureState.allIds)
   })
 
   it("sets the recipe to updating", () => {

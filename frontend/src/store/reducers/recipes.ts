@@ -374,8 +374,7 @@ export const recipes = (
             ...state.byId[action.payload],
             loading: true
           }
-        },
-        allIds: uniq(state.allIds.concat(action.payload))
+        }
       }
     case FETCH_RECIPE_SUCCESS:
       return {
