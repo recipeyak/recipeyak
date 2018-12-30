@@ -6,7 +6,7 @@ import Loader from "@/components/Loader"
 import { RecipeItem as Recipe } from "@/components/RecipeItem"
 import { IRecipe } from "@/store/reducers/recipes"
 import { IUserStats } from "@/store/reducers/user"
-import Footer from "./Footer"
+import Footer from "@/components/Footer"
 
 // TODO(sbdchd): must be a better way
 // tslint:disable-next-line:no-var-requires

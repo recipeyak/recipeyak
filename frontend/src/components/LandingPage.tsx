@@ -1,6 +1,6 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import Footer from "./Footer"
+import Footer from "@/components/Footer"
 
 // tslint:disable:no-var-requires
 const addRecipeImg = require("./images/add-recipe.png")
