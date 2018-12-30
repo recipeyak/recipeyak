@@ -14,7 +14,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 
 const mapStateToProps = (state: RootState) => {
   return {
-    loading: state.loading.signup,
+    loading: state.auth.loadingSignup,
     error: state.auth.errorSignup
   }
 }

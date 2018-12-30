@@ -18,7 +18,7 @@ const mapStateToProps = (state: RootState, props: RouteProps) => {
   return {
     uid,
     token,
-    loading: state.loading.resetConfirmation,
+    loading: state.auth.loadingResetConfirmation,
     error: state.auth.errorResetConfirmation
   }
 }
