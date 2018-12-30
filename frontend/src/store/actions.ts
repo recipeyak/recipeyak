@@ -136,15 +136,9 @@ import {
   setLoadingPasswordUpdate,
   setErrorPasswordUpdate
 } from "@/store/reducers/passwordChange"
-import {
-  setErrorSocialLogin,
-  setErrorLogin,
-  setErrorSignup,
-  setErrorReset,
-  setErrorResetConfirmation
-} from "@/store/reducers/error"
 import { Dispatch as ReduxDispatch } from "redux"
 import { IRecipeBasic } from "@/components/RecipeTitle"
+import { setErrorLogin, setErrorSocialLogin, setErrorSignup, setErrorReset, setErrorResetConfirmation } from "./reducers/auth";
 
 const config = { timeout: 15000 }
 

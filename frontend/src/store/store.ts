@@ -25,7 +25,6 @@ import loading, {
   ILoadingState,
   LoadingActions
 } from "@/store/reducers/loading"
-import error, { IErrorState, ErrorActions } from "@/store/reducers/error"
 import notification, {
   INotificationState,
   NotificationsActions
@@ -61,7 +60,6 @@ interface IState {
   readonly recipes: IRecipesState
   readonly invites: IInvitesState
   readonly loading: ILoadingState
-  readonly error: IErrorState
   readonly routerReducer: RouterState
   readonly notification: INotificationState
   readonly passwordChange: IPasswordChangeState
@@ -79,7 +77,6 @@ export type Action =
   | InviteActions
   | LoadingActions
   | NotificationsActions
-  | ErrorActions
   | RouterAction
   | PasswordChangeActions
   | ShoppingListActions
@@ -94,7 +91,6 @@ const recipeApp: Reducer<IState, Action> = combineReducers({
   recipes,
   invites,
   loading,
-  error,
   routerReducer,
   notification,
   passwordChange,

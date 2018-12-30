@@ -3,8 +3,7 @@ import { connect } from "react-redux"
 import { logUserIn, Dispatch } from "@/store/actions"
 import Login from "@/components/Login"
 import { RootState } from "@/store/store"
-import { setFromUrl } from "@/store/reducers/auth"
-import { setErrorLogin } from "@/store/reducers/error"
+import { setFromUrl, setErrorLogin } from "@/store/reducers/auth"
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
@@ -17,8 +16,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 const mapStateToProps = (state: RootState) => {
   return {
     loading: state.loading.login,
-    error: state.error.login,
-    errorSocial: state.error.socialLogin,
+    error: state.auth.errorLogin,
+    errorSocial: state.auth.errorSocialLogin,
     fromUrl: state.auth.fromUrl
   }
 }
