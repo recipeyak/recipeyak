@@ -19,7 +19,7 @@ services:
     restart: always
     image: recipeyak/django:latest
     env_file:
-      - .env
+      - .env-production
     command: sh bootstrap-prod.sh
     volumes:
       - django-static-files:/var/app/static-files
@@ -45,7 +45,7 @@ services:
     image: recipeyak/react:latest
     command: sh bootstrap.sh
     env_file:
-      - .env
+      - .env-production
     volumes:
       - react-static-files:/var/app/dist
     logging:

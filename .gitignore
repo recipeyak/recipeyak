@@ -5,13 +5,12 @@ venv/
 .mypy_cache
 .coverage
 .coverage.*
-.env
+.env*
 dist/
 .asset-cache
 frontend/jest_0
 backup
 __pycache__
-.env-dev
 backend/.pytest_cache
 docker-compose-shipit.yml
 .terraform/
