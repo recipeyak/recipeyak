@@ -6,7 +6,7 @@ const CLIEngine = require("eslint").CLIEngine
 const cli = new CLIEngine({
   fix: process.argv.slice(2).indexOf("--fix") >= 0
 })
-const report = cli.executeOnFiles(["src/**/*.{js,jsx,mjs}"])
+const report = cli.executeOnFiles(["src/**/*.{js,jsx}"])
 const formatter = cli.getFormatter()
 
 // persist changed files when using --fix option

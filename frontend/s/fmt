@@ -10,11 +10,13 @@ if [[ -f ../.env ]]; then
     set +a
 fi
 
-glob="**/*.{js,jsx,scss,css,ts,tsx,json}"
+GLOB="\.(js|jsx|scss|css|ts|tsx|json)$"
+
+FILES=$(git diff --name-only master | sed -e "s%frontend/%%"| grep -E "$GLOB")
 
 ARGS="$@"
 if [[ $ARGS == *'--list-different'* ]]; then
-  $(yarn bin)/prettier "$@" "$glob"
+  $(yarn bin)/prettier "$@" $FILES
 else
-  $(yarn bin)/prettier --write "$@" "$glob"
+  $(yarn bin)/prettier --write "$@" $FILES
 fi

@@ -12,7 +12,11 @@ fi
 
 node scripts/lint.js
 
-$(yarn bin)/tslint --project ./tsconfig.json 'src/**/*.{ts,tsx}' --format 'codeFrame'
+GLOB="^src.*\.(ts|tsx)$"
+
+FILES=$(git diff --name-only master | sed -e "s%frontend/%%"| grep -E "$GLOB")
+
+$(yarn bin)/tslint --project ./tsconfig.json --format 'codeFrame' $FILES
 
 s/fmt --list-different
 
