@@ -13,6 +13,7 @@ import { Dispatch, fetchingRecipeList } from "@/store/actions"
 import { IRecipe, getRecipes } from "@/store/reducers/recipes"
 import { ITeam } from "@/store/reducers/teams"
 import { RootState } from "@/store/store"
+import Footer from "./Footer"
 
 const mapStateToProps = (state: RootState) => {
   return {
@@ -32,6 +33,7 @@ interface IRecipesProps {
   readonly teamID: ITeam["id"]
   readonly scroll: boolean
   readonly drag: boolean
+  readonly noPadding?: boolean
 }
 
 interface IRecipesState {
@@ -65,9 +67,11 @@ class Recipes extends React.Component<IRecipesProps, IRecipesState> {
       ))
 
     const scrollClass = this.props.scroll ? "recipe-scroll" : ""
+
     return (
       <>
         <TextInput
+          className={this.props.noPadding ? "" : "mb-4"}
           onChange={this.handleQueryChange}
           placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:"
         />
@@ -76,7 +80,7 @@ class Recipes extends React.Component<IRecipesProps, IRecipesState> {
           <Loader className="pt-4" />
         ) : (
           <div className={scrollClass}>
-            <div className="recipe-grid pt-4">
+            <div className="recipe-grid">
               <Results recipes={results} query={this.state.query} />
             </div>
           </div>
