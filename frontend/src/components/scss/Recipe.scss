@@ -29,9 +29,9 @@ option {
   // we only enable scrolling when not at the small width (aka mobile), since
   // scroll boxes on mobile are much worse than normal scroll behavior
   @media (min-width: $small) {
-    max-height: 720px;
+    height: calc(100vh - 210px);
     overflow: auto;
     // edges of the recipe boxes get cut without extra padding
-    padding: 1px;
+    padding: 0.125rem;
   }
 }

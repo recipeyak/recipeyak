@@ -193,7 +193,7 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
     }
 
     return (
-      <div className={`flex-grow-1 ${this.props.className}`}>
+      <div className={`d-flex flex-column flex-grow-1 ${this.props.className}`}>
         <div className="d-flex justify-space-between align-items-end">
           <div className="d-flex align-items-center">
             <p title={this.state.month.toString()}>
@@ -228,10 +228,7 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
             </ButtonPlain>
           </div>
         </div>
-        <div
-          className={
-            "d-grid grid-gap-1 calendar-grid grid-auto-rows-unset mb-0"
-          }>
+        <div className="d-grid grid-gap-1 calendar-grid grid-auto-rows-unset mb-0">
           <b>Su</b>
           <b>Mo</b>
           <b>Tu</b>
@@ -240,7 +237,7 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
           <b>Fr</b>
           <b>Sa</b>
         </div>
-        <div className={"d-grid grid-gap-1 calendar-grid mb-0"}>
+        <div className="d-grid grid-gap-1 calendar-grid mb-0 flex-grow-1 h-100">
           {eachDay(
             subDays(
               startOfMonth(this.state.month),
@@ -259,7 +256,7 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
             />
           ))}
         </div>
-        <p className="mt-1">
+        <p className="mt-2 mb-1">
           press <kbd>?</kbd> for help
         </p>
       </div>

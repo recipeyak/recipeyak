@@ -6,6 +6,7 @@ import Loader from "@/components/Loader"
 import { RecipeItem as Recipe } from "@/components/RecipeItem"
 import { IRecipe } from "@/store/reducers/recipes"
 import { IUserStats } from "@/store/reducers/user"
+import Footer from "@/components/Footer"
 
 // TODO(sbdchd): must be a better way
 // tslint:disable-next-line:no-var-requires
@@ -202,18 +203,22 @@ const UserHome = ({
       : userStats
 
   return (
-    <div className="container pr-2 pl-2 pb-2">
-      <Helmet title="Home" />
+    <>
+      <div className="container pr-2 pl-2 pb-2">
+        <Helmet title="Home" />
 
-      <section className="home-page-grid font-family-title">
-        <UserStatistics stats={stats} loading={loadingUserStats} />
-        <RecentRecipes
-          loading={loadingRecipes}
-          error={errorRecipes}
-          recipes={recipes}
-        />
-      </section>
-    </div>
+        <section className="home-page-grid font-family-title">
+          <UserStatistics stats={stats} loading={loadingUserStats} />
+          <RecentRecipes
+            loading={loadingRecipes}
+            error={errorRecipes}
+            recipes={recipes}
+          />
+        </section>
+      </div>
+
+      <Footer />
+    </>
   )
 }
 

@@ -64,7 +64,9 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
         : `/t/${teamID}/schedule/shopping`
 
     return (
-      <div className="d-flex pl-2 pr-2">
+      <div
+        className="d-flex pl-2 pr-2"
+        style={{ height: "calc(100vh - 80px)" }}>
         <Helmet title="Schedule" />
         <div
           className="d-grid grid-gap-4 grid-auto-rows-min-content w-350px-if-not-sm"
@@ -81,7 +83,7 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
           </div>
 
           {isRecipes ? (
-            <Recipes teamID={teamID} scroll drag />
+            <Recipes teamID={teamID} scroll drag noPadding />
           ) : (
             <ShoppingList teamID={teamID} />
           )}

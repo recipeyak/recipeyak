@@ -1,5 +1,6 @@
 import React from "react"
 import { Link } from "react-router-dom"
+import Footer from "@/components/Footer"
 
 // tslint:disable:no-var-requires
 const addRecipeImg = require("./images/add-recipe.png")
@@ -13,7 +14,7 @@ const searchImg = require("./images/search.png")
 const isOdd = (i: number) => i % 2 !== 0
 
 const LandingPage = () => (
-  <section>
+  <>
     <section className="container d-grid grid-gap-1rem pb-4 pr-4 pl-4">
       <h1 className="home-hero-text font-family-title">
         A place to store, share, and create recipes
@@ -139,7 +140,8 @@ const LandingPage = () => (
         </Link>
       </section>
     </section>
-  </section>
+    <Footer />
+  </>
 )
 
 export default LandingPage
