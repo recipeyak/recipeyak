@@ -9,6 +9,7 @@ import Recipes from "@/components/Recipes"
 import ShoppingList from "@/components/ShoppingList"
 
 import { Dispatch, updatingTeamID } from "@/store/actions"
+import { Tabs, Tab } from "@/components/Tabs"
 
 export type ScheduleRouteParams = RouteComponentProps<{
   id?: string
@@ -71,16 +72,14 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
         <div
           className="d-grid grid-gap-4 grid-auto-rows-min-content w-350px-if-not-sm"
           style={sideBarStyle}>
-          <div className="tabs is-boxed mb-0 no-print">
-            <ul>
-              <li className={!isRecipes ? "is-active" : ""}>
-                <Link to={shoppingURL}>Shopping</Link>
-              </li>
-              <li className={isRecipes ? "is-active" : ""}>
-                <Link to={recipesURL}>Recipes</Link>
-              </li>
-            </ul>
-          </div>
+          <Tabs small className="mb-0 no-print">
+            <Tab isActive={!isRecipes}>
+              <Link to={shoppingURL}>Shopping</Link>
+            </Tab>
+            <Tab isActive={isRecipes}>
+              <Link to={recipesURL}>Recipes</Link>
+            </Tab>
+          </Tabs>
 
           {isRecipes ? (
             <Recipes teamID={teamID} scroll drag noPadding />
