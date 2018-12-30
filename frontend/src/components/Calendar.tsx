@@ -28,7 +28,11 @@ import Loader from "@/components/Loader"
 import CalendarDay from "@/components/CalendarDay"
 import { RootState } from "@/store/store"
 import { ITeam } from "@/store/reducers/teams"
-import { ICalRecipe } from "@/store/reducers/calendar"
+import {
+  ICalRecipe,
+  getTeamRecipes,
+  getPersonalRecipes
+} from "@/store/reducers/calendar"
 import { ScheduleRouteParams } from "@/components/Schedule"
 
 function monthYearFromDate(date: Date) {
@@ -42,21 +46,21 @@ interface IDays {
 const mapStateToProps = (state: RootState, props: ICalendarProps) => {
   const isTeam = props.teamID !== "personal"
 
-  const days = state.calendar.allIds
-    .map((id: number | string) => state.calendar.byId[id as number])
-    .reduce(
-      (a, b) => ({
-        ...a,
-        [b.on]: {
-          ...a[b.on],
-          [b.id]: b
-        }
-      }),
-      {} as IDays
-    )
+  const days = isTeam ? getTeamRecipes(state) : getPersonalRecipes(state)
+
+  const transformedDays = days.reduce(
+    (a, b) => ({
+      ...a,
+      [b.on]: {
+        ...a[b.on],
+        [b.id]: b
+      }
+    }),
+    {} as IDays
+  )
 
   return {
-    days,
+    days: transformedDays,
     loading: state.calendar.loading,
     error: state.calendar.error,
     loadingTeams: !!state.teams.loading,

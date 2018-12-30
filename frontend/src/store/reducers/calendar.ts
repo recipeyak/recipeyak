@@ -2,6 +2,7 @@ import { uniq, omit } from "lodash"
 import isSameDay from "date-fns/is_same_day"
 
 import { action as act } from "typesafe-actions"
+import { RootState } from "@/store/store"
 
 const SET_CALENDAR_RECIPES = "SET_CALENDAR_RECIPES"
 const SET_CALENDAR_RECIPE = "SET_CALENDAR_RECIPE"
@@ -87,7 +88,10 @@ export const calendar = (
     case SET_CALENDAR_RECIPES:
       return {
         ...state,
-        byId: action.payload.reduce((a, b) => ({ ...a, [b.id]: b }), {}),
+        byId: {
+          ...state.byId,
+          ...action.payload.reduce((a, b) => ({ ...a, [b.id]: b }), {})
+        },
         allIds: uniq(state.allIds.concat(action.payload.map(x => x.id)))
       }
     case SET_CALENDAR_RECIPE: {
@@ -199,3 +203,13 @@ export const calendar = (
 }
 
 export default calendar
+
+export const getTeamRecipes = (state: RootState): ICalRecipe[] =>
+  state.calendar.allIds
+    .map(id => state.calendar.byId[id])
+    .filter(recipe => recipe.team != null)
+
+export const getPersonalRecipes = (state: RootState): ICalRecipe[] =>
+  state.calendar.allIds
+    .map(id => state.calendar.byId[id])
+    .filter(recipe => recipe.team == null)
