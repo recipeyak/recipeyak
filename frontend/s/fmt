@@ -19,7 +19,7 @@ GLOB="\.(js|jsx|scss|css|ts|tsx|json)$"
 
 FILES=$(git diff --name-only master | sed -e "s%frontend/%%"| grep -E "$GLOB")
 
-if [[ -n "$FILES" ]]; then
+if [ "$FILES" = "" ]; then
   exit 0
 fi
 

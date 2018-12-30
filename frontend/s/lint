@@ -15,15 +15,16 @@ c1grep() {
   grep "$@" || test $? = 1
 }
 
-node scripts/lint.js
 
 GLOB="^src.*\.(ts|tsx)$"
 
 FILES=$(git diff --name-only master | sed -e "s%frontend/%%"| c1grep -E "$GLOB")
 
-if [[ -n "$FILES" ]]; then
+if [ "$FILES" = "" ]; then
   exit 0
 fi
+
+node scripts/lint.js
 
 $(yarn bin)/tslint --project ./tsconfig.json --format 'codeFrame' $FILES
 
