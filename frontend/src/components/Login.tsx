@@ -8,7 +8,7 @@ import { ButtonPrimary } from "@/components/Buttons"
 
 import AuthContainer from "@/components/AuthContainer"
 import { Location } from "history"
-import { ILoginError, ISocialError } from "@/store/reducers/auth";
+import { ILoginError, ISocialError } from "@/store/reducers/auth"
 
 const redirectURL = ({ pathname = "", search = "", hash = "" }) =>
   `${pathname}${search}${hash}`

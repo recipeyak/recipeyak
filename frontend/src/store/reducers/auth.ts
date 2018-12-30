@@ -26,7 +26,6 @@ export const setLoadingReset = (val: boolean) => act(SET_LOADING_RESET, val)
 export const setLoadingResetConfirmation = (val: boolean) =>
   act(SET_LOADING_RESET_CONFIRMATION, val)
 
-
 export type AuthActions =
   | ReturnType<typeof setFromUrl>
   | ReturnType<typeof setErrorLogin>
@@ -38,8 +37,6 @@ export type AuthActions =
   | ReturnType<typeof setLoadingSignup>
   | ReturnType<typeof setLoadingReset>
   | ReturnType<typeof setLoadingResetConfirmation>
-
-
 
 export interface IPasswordResetConfirmError {
   readonly nonFieldErrors?: string[]
@@ -81,7 +78,6 @@ export interface IAuthState {
   readonly loadingSignup: boolean
   readonly loadingReset: boolean
   readonly loadingResetConfirmation: boolean
-
 }
 
 export const initialState: IAuthState = {
@@ -122,7 +118,6 @@ const auth = (
       return { ...state, loadingReset: action.payload }
     case SET_LOADING_RESET_CONFIRMATION:
       return { ...state, loadingResetConfirmation: action.payload }
-
     default:
       return state
   }

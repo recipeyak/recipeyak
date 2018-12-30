@@ -8,7 +8,7 @@ import { ButtonPrimary } from "@/components/Buttons"
 
 import { resetConfirmation as reset, Dispatch } from "@/store/actions"
 import { RootState } from "@/store/store"
-import { IPasswordResetConfirmError } from "@/store/reducers/auth";
+import { IPasswordResetConfirmError } from "@/store/reducers/auth"
 
 type RouteProps = RouteComponentProps<{ uid: string; token: string }>
 

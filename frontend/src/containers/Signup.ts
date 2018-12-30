@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import { signup, Dispatch } from "@/store/actions"
 import Signup from "@/components/Signup"
 import { RootState } from "@/store/store"
-import { setErrorSignup } from "@/store/reducers/auth";
+import { setErrorSignup } from "@/store/reducers/auth"
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {

@@ -133,13 +133,16 @@ import {
 import { Dispatch as ReduxDispatch } from "redux"
 import { IRecipeBasic } from "@/components/RecipeTitle"
 import {
-  setErrorLogin, setErrorSocialLogin, setErrorSignup, setErrorReset, setErrorResetConfirmation ,
+  setErrorLogin,
+  setErrorSocialLogin,
+  setErrorSignup,
+  setErrorReset,
+  setErrorResetConfirmation,
   setLoadingLogin,
   setLoadingSignup,
   setLoadingReset,
   setLoadingResetConfirmation
-
-} from "./reducers/auth";
+} from "@/store/reducers/auth"
 
 const config = { timeout: 15000 }
 
