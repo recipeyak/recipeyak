@@ -92,6 +92,12 @@ a {
     }
   }
 
+  &:not(.is-normal) {
+    a {
+      padding: 0.25em 0.75em;
+    }
+  }
+
   a {
     text-decoration: none;
   }

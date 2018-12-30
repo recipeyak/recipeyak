@@ -14,6 +14,48 @@ import { ButtonPrimary, ButtonLink } from "@/components/Buttons"
 import { inviteURL, teamURL, teamSettingsURL } from "@/urls"
 import { IMember, ITeam } from "@/store/reducers/teams"
 import { IRecipe } from "@/store/reducers/recipes"
+import { Tab, Tabs } from "@/components/Tabs"
+
+interface IMembersProps {
+  readonly teamID: ITeam["id"]
+  readonly members: IMember[]
+  readonly loading: boolean
+}
+
+function Members({ teamID, loading, members }: IMembersProps) {
+  if (loading) {
+    return <Loader />
+  }
+  if (members.length > 0) {
+    return (
+      <div className="table-responsive">
+        <table className="table-spacing">
+          <tbody>
+            {members.map(x => (
+              <MemberRow
+                key={x.id}
+                teamID={teamID}
+                userID={x.user.id}
+                membershipID={x.id}
+                level={x.level}
+                avatarURL={x.user.avatar_url}
+                email={x.user.email}
+                isActive={x.is_active}
+              />
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )
+  }
+
+  return (
+    <section>
+      <h1 className="text-center fs-6 bold text-muted">No Team Members</h1>
+      <p className="text-center">Add one via the Invite button</p>
+    </section>
+  )
+}
 
 interface ITeamMembers {
   readonly id: ITeam["id"]
@@ -30,33 +72,7 @@ const TeamMembers = ({ id, name, members, loading }: ITeamMembers) => (
         Invite
       </Link>
     </section>
-    {loading ? (
-      <Loader />
-    ) : Object.values(members).length > 0 ? (
-      <div className="table-responsive">
-        <table className="table-spacing">
-          <tbody>
-            {Object.values(members).map(x => (
-              <MemberRow
-                key={x.id}
-                teamID={id}
-                userID={x.user.id}
-                membershipID={x.id}
-                level={x.level}
-                avatarURL={x.user.avatar_url}
-                email={x.user.email}
-                isActive={x.is_active}
-              />
-            ))}
-          </tbody>
-        </table>
-      </div>
-    ) : (
-      <section>
-        <h1 className="text-center fs-6 bold text-muted">No Team Members</h1>
-        <p className="text-center">Add one via the Invite button</p>
-      </section>
-    )}
+    <Members teamID={id} loading={loading} members={members} />
   </>
 )
 
@@ -207,20 +223,16 @@ class Team extends React.Component<ITeamProps> {
       <div>
         <Helmet title="Team" />
         <TeamName loading={this.props.loadingTeam} name={this.props.name} />
-        <div className="tabs is-boxed">
-          <ul>
-            <li className={!this.props.isSettings ? "is-active" : ""}>
-              <Link to={teamURL(this.props.id, this.props.name)}>
-                <span>Team</span>
-              </Link>
-            </li>
-            <li className={this.props.isSettings ? "is-active" : ""}>
-              <Link to={teamSettingsURL(this.props.id, this.props.name)}>
-                <span>Settings</span>
-              </Link>
-            </li>
-          </ul>
-        </div>
+        <Tabs>
+          <Tab isActive={!this.props.isSettings}>
+            <Link to={teamURL(this.props.id, this.props.name)}>Team</Link>
+          </Tab>
+          <Tab isActive={this.props.isSettings}>
+            <Link to={teamSettingsURL(this.props.id, this.props.name)}>
+              Settings
+            </Link>
+          </Tab>
+        </Tabs>
         {this.props.isSettings ? (
           <TeamSettings
             id={this.props.id}
