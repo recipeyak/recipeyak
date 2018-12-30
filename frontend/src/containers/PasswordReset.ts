@@ -9,8 +9,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 })
 
 const mapStateToProps = (state: RootState) => ({
-  loading: state.loading.reset,
-  error: state.error.reset,
+  loading: state.auth.loadingReset,
+  error: state.auth.errorReset,
   loggedIn: state.user.loggedIn
 })
 

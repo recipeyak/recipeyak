@@ -1,5 +1,6 @@
 import { rootReducer, emptyStore, RootState } from "@/store/store"
 import { setUserLoggedIn } from "@/store/reducers/user"
+import { initialState } from "@/store/reducers/auth"
 
 describe("logout", () => {
   it("Logs out user and clears entire store", () => {
@@ -9,9 +10,7 @@ describe("logout", () => {
         ...emptyStore.getState().user,
         loggedIn: true
       },
-      auth: {
-        fromUrl: ""
-      },
+      auth: initialState,
       routerReducer: {
         location: {
           state: "",

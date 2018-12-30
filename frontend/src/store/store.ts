@@ -21,11 +21,6 @@ import user, {
   IUserState,
   UserActions
 } from "@/store/reducers/user"
-import loading, {
-  ILoadingState,
-  LoadingActions
-} from "@/store/reducers/loading"
-import error, { IErrorState, ErrorActions } from "@/store/reducers/error"
 import notification, {
   INotificationState,
   NotificationsActions
@@ -60,8 +55,6 @@ interface IState {
   readonly user: IUserState
   readonly recipes: IRecipesState
   readonly invites: IInvitesState
-  readonly loading: ILoadingState
-  readonly error: IErrorState
   readonly routerReducer: RouterState
   readonly notification: INotificationState
   readonly passwordChange: IPasswordChangeState
@@ -77,9 +70,7 @@ export type Action =
   | UserActions
   | RecipeActions
   | InviteActions
-  | LoadingActions
   | NotificationsActions
-  | ErrorActions
   | RouterAction
   | PasswordChangeActions
   | ShoppingListActions
@@ -93,8 +84,6 @@ const recipeApp: Reducer<IState, Action> = combineReducers({
   user,
   recipes,
   invites,
-  loading,
-  error,
   routerReducer,
   notification,
   passwordChange,
@@ -155,6 +144,12 @@ const defaultData = (): RootState => {
     user: {
       ...empty.user,
       ...saved.user
+    },
+    // Note(sbdchd): we must spread the initial state for all of these as `undefined` is not
+    // passed into the reducers, resulting in a bad state.
+    auth: {
+      ...empty.auth,
+      ...saved.auth
     }
   }
 }
@@ -183,7 +178,9 @@ store.subscribe(
         teamID: store.getState().user.teamID
       },
       addrecipe: store.getState().addrecipe,
-      auth: store.getState().auth
+      auth: {
+        fromUrl: store.getState().auth.fromUrl
+      }
       // tslint:disable-next-line:no-any
     } as any) as RootState)
   }, 1000)

@@ -114,12 +114,6 @@ import {
 } from "@/store/reducers/recipes"
 import * as api from "@/api"
 import {
-  setLoadingLogin,
-  setLoadingSignup,
-  setLoadingReset,
-  setLoadingResetConfirmation
-} from "@/store/reducers/loading"
-import {
   clearSearchResults,
   incrLoadingSearch,
   decrLoadingSearch,
@@ -136,15 +130,19 @@ import {
   setLoadingPasswordUpdate,
   setErrorPasswordUpdate
 } from "@/store/reducers/passwordChange"
-import {
-  setErrorSocialLogin,
-  setErrorLogin,
-  setErrorSignup,
-  setErrorReset,
-  setErrorResetConfirmation
-} from "@/store/reducers/error"
 import { Dispatch as ReduxDispatch } from "redux"
 import { IRecipeBasic } from "@/components/RecipeTitle"
+import {
+  setErrorLogin,
+  setErrorSocialLogin,
+  setErrorSignup,
+  setErrorReset,
+  setErrorResetConfirmation,
+  setLoadingLogin,
+  setLoadingSignup,
+  setLoadingReset,
+  setLoadingResetConfirmation
+} from "@/store/reducers/auth"
 
 const config = { timeout: 15000 }
 

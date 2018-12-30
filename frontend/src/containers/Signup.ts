@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import { signup, Dispatch } from "@/store/actions"
 import Signup from "@/components/Signup"
 import { RootState } from "@/store/store"
-import { setErrorSignup } from "@/store/reducers/error"
+import { setErrorSignup } from "@/store/reducers/auth"
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
@@ -14,8 +14,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 
 const mapStateToProps = (state: RootState) => {
   return {
-    loading: state.loading.signup,
-    error: state.error.signup
+    loading: state.auth.loadingSignup,
+    error: state.auth.errorSignup
   }
 }
 

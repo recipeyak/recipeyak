@@ -6,7 +6,7 @@ import SocialButtons from "@/components/SocialButtons"
 import { FormErrorHandler } from "@/components/Forms"
 import { ButtonPrimary } from "@/components/Buttons"
 import AuthContainer from "@/components/AuthContainer"
-import { ISignupErrors } from "@/store/reducers/error"
+import { ISignupErrors } from "@/store/reducers/auth"
 
 interface ISignupProps {
   readonly clearErrors: () => void
