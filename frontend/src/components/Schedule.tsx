@@ -93,7 +93,7 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
           onClick={this.toggleClose}>
           {arrow}
         </a>
-        <Calendar className="hide-sm" type={this.props.type} teamID={teamID} />
+        <Calendar type={this.props.type} teamID={teamID} />
       </div>
     )
   }
