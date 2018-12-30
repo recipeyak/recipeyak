@@ -10,11 +10,20 @@ if [[ -f ../.env ]]; then
     set +a
 fi
 
+# ensure grep doesn't return exit code 1 on no match
+c1grep() {
+  grep "$@" || test $? = 1
+}
+
 node scripts/lint.js
 
 GLOB="^src.*\.(ts|tsx)$"
 
-FILES=$(git diff --name-only master | sed -e "s%frontend/%%"| grep -E "$GLOB")
+FILES=$(git diff --name-only master | sed -e "s%frontend/%%"| c1grep -E "$GLOB")
+
+if [[ -n "$FILES" ]]; then
+  exit 0
+fi
 
 $(yarn bin)/tslint --project ./tsconfig.json --format 'codeFrame' $FILES
 

@@ -10,9 +10,18 @@ if [[ -f ../.env ]]; then
     set +a
 fi
 
+# ensure grep doesn't return exit code 1 on no match
+c1grep() {
+  grep "$@" || test $? = 1
+}
+
 GLOB="\.(js|jsx|scss|css|ts|tsx|json)$"
 
 FILES=$(git diff --name-only master | sed -e "s%frontend/%%"| grep -E "$GLOB")
+
+if [[ -n "$FILES" ]]; then
+  exit 0
+fi
 
 ARGS="$@"
 if [[ $ARGS == *'--list-different'* ]]; then
