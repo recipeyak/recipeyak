@@ -144,6 +144,12 @@ const defaultData = (): RootState => {
     user: {
       ...empty.user,
       ...saved.user
+    },
+    // Note(sbdchd): we must spread the initial state for all of these as `undefined` is not
+    // passed into the reducers, resulting in a bad state.
+    auth: {
+      ...empty.auth,
+      ...saved.auth
     }
   }
 }
@@ -172,7 +178,9 @@ store.subscribe(
         teamID: store.getState().user.teamID
       },
       addrecipe: store.getState().addrecipe,
-      auth: store.getState().auth
+      auth: {
+        fromUrl: store.getState().auth.fromUrl
+      }
       // tslint:disable-next-line:no-any
     } as any) as RootState)
   }, 1000)
