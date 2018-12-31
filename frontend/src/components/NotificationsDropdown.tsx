@@ -1,5 +1,5 @@
 import React from "react"
-import Dropdown from "@/components/Dropdown"
+import Dropdown from "@/components/NavDropdown"
 import { Link } from "react-router-dom"
 import { ButtonPrimary } from "@/components/Buttons"
 
