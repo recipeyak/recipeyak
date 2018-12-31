@@ -20,11 +20,11 @@ interface IRecipeTitleProps {
 }
 
 export interface IRecipeBasic {
-  readonly author: string
-  readonly name: string
-  readonly source: string
-  readonly servings: string
-  readonly time: string
+  readonly author?: string
+  readonly name?: string
+  readonly source?: string
+  readonly servings?: string
+  readonly time?: string
 }
 
 interface IRecipeTitleState {
@@ -40,13 +40,7 @@ export default class RecipeTitle extends React.Component<
   state: IRecipeTitleState = {
     show: false,
     edit: false,
-    recipe: {
-      name: "",
-      author: "",
-      source: "",
-      servings: "",
-      time: ""
-    }
+    recipe: {}
   }
 
   toggleEdit = () => this.setState(prev => ({ edit: !prev.edit }))

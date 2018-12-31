@@ -5,10 +5,6 @@ import { RootState } from "@/store/store"
 const ADD_STEP_TO_RECIPE = "ADD_STEP_TO_RECIPE"
 const ADD_INGREDIENT_TO_RECIPE = "ADD_INGREDIENT_TO_RECIPE"
 const SET_LOADING_ADD_STEP_TO_RECIPE = "SET_LOADING_ADD_STEP_TO_RECIPE"
-const UPDATE_RECIPE_NAME = "UPDATE_RECIPE_NAME"
-const UPDATE_RECIPE_SOURCE = "UPDATE_RECIPE_SOURCE"
-const UPDATE_RECIPE_AUTHOR = "UPDATE_RECIPE_AUTHOR"
-const UPDATE_RECIPE_TIME = "UPDATE_RECIPE_TIME"
 const DELETE_INGREDIENT = "DELETE_INGREDIENT"
 const UPDATE_INGREDIENT = "UPDATE_INGREDIENT"
 const DELETE_STEP = "DELETE_STEP"
@@ -34,12 +30,6 @@ const CREATE_RECIPE_START = "CREATE_RECIPE_START"
 const CREATE_RECIPE_SUCCESS = "CREATE_RECIPE_SUCCESS"
 const CREATE_RECIPE_FAILURE = "CREATE_RECIPE_FAILURE"
 const RESET_CREATE_RECIPE_ERRORS = "RESET_CREATE_RECIPE_ERRORS"
-
-export const updateRecipeTime = (id: IRecipe["id"], time: IRecipe["time"]) =>
-  act(UPDATE_RECIPE_TIME, {
-    id,
-    time
-  })
 
 export const updateIngredient = (
   recipeID: IRecipe["id"],
@@ -168,30 +158,6 @@ export const setRecipeUpdating = (id: IRecipe["id"], val: boolean) =>
     val
   })
 
-export const updateRecipeAuthor = (
-  id: IRecipe["id"],
-  author: IRecipe["author"]
-) =>
-  act(UPDATE_RECIPE_AUTHOR, {
-    id,
-    author
-  })
-
-export const updateRecipeSource = (
-  id: IRecipe["id"],
-  source: IRecipe["source"]
-) =>
-  act(UPDATE_RECIPE_SOURCE, {
-    id,
-    source
-  })
-
-export const updateRecipeName = (id: IRecipe["id"], name: IRecipe["name"]) =>
-  act(UPDATE_RECIPE_NAME, {
-    id,
-    name
-  })
-
 export const setLoadingAddStepToRecipe = (id: IRecipe["id"], val: boolean) =>
   act(SET_LOADING_ADD_STEP_TO_RECIPE, {
     id,
@@ -258,16 +224,12 @@ export type RecipeActions =
   | ReturnType<typeof setRemovingIngredient>
   | ReturnType<typeof setUpdatingIngredient>
   | ReturnType<typeof setRecipeUpdating>
-  | ReturnType<typeof updateRecipeAuthor>
-  | ReturnType<typeof updateRecipeSource>
-  | ReturnType<typeof updateRecipeName>
   | ReturnType<typeof setLoadingAddStepToRecipe>
   | ReturnType<typeof addStepToRecipe>
   | ReturnType<typeof setAddingIngredientToRecipe>
   | ReturnType<typeof addIngredientToRecipe>
   | ReturnType<typeof setSchedulingRecipe>
   | ReturnType<typeof updateIngredient>
-  | ReturnType<typeof updateRecipeTime>
   | ActionType<typeof deleteRecipe>
   | ActionType<typeof fetchRecipe>
   | ActionType<typeof fetchRecipeList>
@@ -393,6 +355,27 @@ function WebDict() {
   })
 }
 
+function mapRecipeSuccessById(
+  state: IRecipesState,
+  id: IRecipe["id"],
+  func: (recipe: IRecipe) => IRecipe
+): IRecipesState {
+  const recipe = state.byId[id]
+  if (recipe.kind !== RDK.Success) {
+    return state
+  }
+  return {
+    ...state,
+    byId: {
+      ...state.byId,
+      [id]: {
+        ...recipe,
+        data: func(recipe.data)
+      }
+    }
+  }
+}
+
 type WebDictType = ReturnType<typeof WebDict>
 
 export interface IRecipesState {
@@ -463,13 +446,13 @@ export const recipes = (
         }
       }
     }
-    case FETCH_RECIPE_LIST_START: {
+    case FETCH_RECIPE_LIST_START:
       return {
         ...state,
         loadingAll: true
       }
-    }
-    case FETCH_RECIPE_LIST_SUCCESS: {
+
+    case FETCH_RECIPE_LIST_SUCCESS:
       return {
         ...state,
         loadingAll: false,
@@ -486,22 +469,22 @@ export const recipes = (
         ),
         allIds: action.payload.map(r => r.id)
       }
-    }
-    case FETCH_RECIPE_LIST_FAILURE: {
+
+    case FETCH_RECIPE_LIST_FAILURE:
       return {
         ...state,
         loadingAll: false,
         errorLoadingAll: true
       }
-    }
-    case CREATE_RECIPE_START: {
+
+    case CREATE_RECIPE_START:
       return {
         ...state,
         creatingRecipe: true,
         errorCreatingRecipe: {}
       }
-    }
-    case CREATE_RECIPE_SUCCESS: {
+
+    case CREATE_RECIPE_SUCCESS:
       return {
         ...state,
         creatingRecipe: false,
@@ -515,483 +498,171 @@ export const recipes = (
         },
         allIds: uniq(state.allIds.concat(action.payload.id))
       }
-    }
-    case CREATE_RECIPE_FAILURE: {
+
+    case CREATE_RECIPE_FAILURE:
       return {
         ...state,
         creatingRecipe: false,
         errorCreatingRecipe: action.payload
       }
-    }
-    case RESET_CREATE_RECIPE_ERRORS: {
+
+    case RESET_CREATE_RECIPE_ERRORS:
       return {
         ...state,
         errorCreatingRecipe: {}
       }
-    }
-    case DELETE_RECIPE_START: {
-      const maybeRecipe = state.byId[action.payload]
-      if (maybeRecipe.kind !== RDK.Success) {
-        return state
-      }
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload]: {
-            kind: RDK.Success,
-            data: {
-              ...maybeRecipe.data,
-              deleting: true
-            }
-          }
-        }
-      }
-    }
+
+    case DELETE_RECIPE_START:
+      return mapRecipeSuccessById(state, action.payload, recipe => ({
+        ...recipe,
+        deleting: true
+      }))
+
     case DELETE_RECIPE_SUCCESS:
       return {
         ...state,
         byId: omit(state.byId, action.payload),
         allIds: state.allIds.filter(id => id !== action.payload)
       }
-    case DELETE_RECIPE_FAILURE: {
-      const recipe = state.byId[action.payload]
-      if (recipe.kind !== RDK.Success) {
-        return state
-      }
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload]: {
-            kind: RDK.Success,
-            data: {
-              ...recipe.data,
-              deleting: false
-            }
-          }
-        }
-      }
-    }
-    case ADD_STEP_TO_RECIPE: {
-      const recipe = state.byId[action.payload.id]
-      if (recipe.kind !== RDK.Success) {
-        return state
-      }
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.id]: {
-            kind: RDK.Success,
-            data: {
-              ...recipe.data,
-              steps: recipe.data.steps.concat(action.payload.step)
-            }
-          }
-        }
-      }
-    }
-    case SET_LOADING_ADD_STEP_TO_RECIPE: {
-      const recipe = state.byId[action.payload.id]
-      if (recipe.kind !== RDK.Success) {
-        return state
-      }
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.id]: {
-            kind: RDK.Success,
-            data: {
-              ...recipe.data,
-              addingStepToRecipe: action.payload.val
-            }
-          }
-        }
-      }
-    }
+    case DELETE_RECIPE_FAILURE:
+      return mapRecipeSuccessById(state, action.payload, recipe => ({
+        ...recipe,
+        deleting: false
+      }))
 
-    case ADD_INGREDIENT_TO_RECIPE: {
-      const recipe = state.byId[action.payload.id]
-      if (recipe.kind !== RDK.Success) {
-        return state
-      }
+    case ADD_STEP_TO_RECIPE:
+      return mapRecipeSuccessById(state, action.payload.id, recipe => ({
+        ...recipe,
+        steps: recipe.steps.concat(action.payload.step)
+      }))
 
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.id]: {
-            kind: RDK.Success,
-            data: {
-              ...recipe.data,
-              ingredients: [
-                ...recipe.data.ingredients,
-                action.payload.ingredient
-              ]
-            }
-          }
-        }
-      }
-    }
-    case UPDATE_RECIPE_NAME: {
-      const recipe = state.byId[action.payload.id]
-      if (recipe.kind !== RDK.Success) {
-        return state
-      }
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.id]: {
-            kind: RDK.Success,
-            data: {
-              ...recipe.data,
-              name: action.payload.name
-            }
-          }
-        }
-      }
-    }
-    case UPDATE_RECIPE_SOURCE: {
-      const recipe = state.byId[action.payload.id]
-      if (recipe.kind !== RDK.Success) {
-        return state
-      }
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.id]: {
-            kind: RDK.Success,
-            data: {
-              ...recipe.data,
-              source: action.payload.source
-            }
-          }
-        }
-      }
-    }
-    case UPDATE_RECIPE_TIME: {
-      const recipe = state.byId[action.payload.id]
-      if (recipe.kind !== RDK.Success) {
-        return state
-      }
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.id]: {
-            kind: RDK.Success,
-            data: {
-              ...recipe.data,
-              time: action.payload.time
-            }
-          }
-        }
-      }
-    }
-    case UPDATE_RECIPE_AUTHOR: {
-      const recipe = state.byId[action.payload.id]
-      if (recipe.kind !== RDK.Success) {
-        return state
-      }
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.id]: {
-            kind: RDK.Success,
-            data: {
-              ...recipe.data,
-              author: action.payload.author
-            }
-          }
-        }
-      }
-    }
-    case DELETE_INGREDIENT: {
-      const recipe = state.byId[action.payload.recipeID]
-      if (recipe.kind !== RDK.Success) {
-        return state
-      }
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.recipeID]: {
-            kind: RDK.Success,
-            data: {
-              ...recipe.data,
-              ingredients: recipe.data.ingredients.filter(
-                x => x.id !== action.payload.ingredientID
-              )
-            }
-          }
-        }
-      }
-    }
-    case UPDATE_INGREDIENT: {
-      const recipe = state.byId[action.payload.recipeID]
-      if (recipe.kind !== RDK.Success) {
-        return state
-      }
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.recipeID]: {
-            ...recipe,
-            data: {
-              ...recipe.data,
-              ingredients: recipe.data.ingredients.map(ingre => {
-                if (ingre.id === action.payload.ingredientID) {
-                  return { ...ingre, ...action.payload.content }
-                } else {
-                  return ingre
-                }
-              })
-            }
-          }
-        }
-      }
-    }
-    case DELETE_STEP: {
-      const recipe = state.byId[action.payload.recipeID]
-      if (recipe.kind !== RDK.Success) {
-        return state
-      }
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.recipeID]: {
-            ...recipe,
-            data: {
-              ...recipe.data,
-              steps: recipe.data.steps.filter(
-                x => x.id !== action.payload.stepID
-              )
-            }
-          }
-        }
-      }
-    }
-    case UPDATE_STEP: {
-      const recipe = state.byId[action.payload.recipeID]
-      if (recipe.kind !== RDK.Success) {
-        return state
-      }
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.recipeID]: {
-            ...recipe,
-            data: {
-              ...recipe.data,
-              steps: recipe.data.steps.map(s => {
-                if (s.id === action.payload.stepID) {
-                  return {
-                    ...s,
-                    text: action.payload.text,
-                    position: action.payload.position
-                  }
-                } else {
-                  return s
-                }
-              })
-            }
-          }
-        }
-      }
-    }
-    case SET_ADDING_INGREDIENT_TO_RECIPE: {
-      const recipe = state.byId[action.payload.id]
-      if (recipe.kind !== RDK.Success) {
-        return state
-      }
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.id]: {
-            ...recipe,
-            data: {
-              ...recipe.data,
-              addingIngredient: action.payload.val
-            }
-          }
-        }
-      }
-    }
-    case SET_UPDATING_INGREDIENT: {
-      const recipe = state.byId[action.payload.recipeID]
-      if (recipe.kind !== RDK.Success) {
-        return state
-      }
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.recipeID]: {
-            ...recipe,
-            data: {
-              ...recipe.data,
-              ingredients: recipe.data.ingredients.map(x => {
-                if (x.id === action.payload.ingredientID) {
-                  return {
-                    ...x,
-                    updating: action.payload.val
-                  }
-                }
-                return x
-              })
-            }
-          }
-        }
-      }
-    }
-    case SET_REMOVING_INGREDIENT: {
-      const recipe = state.byId[action.payload.recipeID]
-      if (recipe.kind !== RDK.Success) {
-        return state
-      }
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.recipeID]: {
-            ...recipe,
-            data: {
-              ...recipe.data,
-              ingredients: recipe.data.ingredients.map(x => {
-                if (x.id === action.payload.ingredientID) {
-                  return {
-                    ...x,
-                    removing: action.payload.val
-                  }
-                }
-                return x
-              })
-            }
-          }
-        }
-      }
-    }
-    case SET_UPDATING_STEP: {
-      const recipe = state.byId[action.payload.recipeID]
-      if (recipe.kind !== RDK.Success) {
-        return state
-      }
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.recipeID]: {
-            ...recipe,
-            data: {
-              ...recipe.data,
-              steps: recipe.data.steps.map(x => {
-                if (x.id === action.payload.stepID) {
-                  return {
-                    ...x,
-                    updating: action.payload.val
-                  }
-                }
-                return x
-              })
-            }
-          }
-        }
-      }
-    }
-    case SET_REMOVING_STEP: {
-      const recipe = state.byId[action.payload.recipeID]
-      if (recipe.kind !== RDK.Success) {
-        return state
-      }
+    case SET_LOADING_ADD_STEP_TO_RECIPE:
+      return mapRecipeSuccessById(state, action.payload.id, recipe => ({
+        ...recipe,
+        addingStepToRecipe: action.payload.val
+      }))
 
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.recipeID]: {
-            ...recipe,
-            data: {
-              ...recipe.data,
-              steps: recipe.data.steps.map(x => {
-                if (x.id === action.payload.stepID) {
-                  return {
-                    ...x,
-                    removing: action.payload.val
-                  }
-                }
-                return x
-              })
-            }
+    case ADD_INGREDIENT_TO_RECIPE:
+      return mapRecipeSuccessById(state, action.payload.id, recipe => ({
+        ...recipe,
+        ingredients: recipe.ingredients.concat(action.payload.ingredient)
+      }))
+
+    case DELETE_INGREDIENT:
+      return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
+        ...recipe,
+        ingredients: recipe.ingredients.filter(
+          x => x.id !== action.payload.ingredientID
+        )
+      }))
+    case UPDATE_INGREDIENT:
+      return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
+        ...recipe,
+        ingredients: recipe.ingredients.map(ingre => {
+          if (ingre.id === action.payload.ingredientID) {
+            return { ...ingre, ...action.payload.content }
+          } else {
+            return ingre
           }
-        }
-      }
-    }
-    case SET_RECIPE_UPDATING: {
-      const recipe = state.byId[action.payload.id]
-      if (recipe.kind !== RDK.Success) {
-        return state
-      }
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.id]: {
-            ...recipe,
-            data: {
-              ...recipe.data,
+        })
+      }))
+
+    case DELETE_STEP:
+      return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
+        ...recipe,
+        steps: recipe.steps.filter(x => x.id !== action.payload.stepID)
+      }))
+    case UPDATE_STEP:
+      return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
+        ...recipe,
+        steps: recipe.steps.map(s => {
+          if (s.id === action.payload.stepID) {
+            return {
+              ...s,
+              text: action.payload.text,
+              position: action.payload.position
+            }
+          } else {
+            return s
+          }
+        })
+      }))
+
+    case SET_ADDING_INGREDIENT_TO_RECIPE:
+      return mapRecipeSuccessById(state, action.payload.id, recipe => ({
+        ...recipe,
+        addingIngredient: action.payload.val
+      }))
+
+    case SET_UPDATING_INGREDIENT:
+      return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
+        ...recipe,
+        ingredients: recipe.ingredients.map(x => {
+          if (x.id === action.payload.ingredientID) {
+            return {
+              ...x,
               updating: action.payload.val
             }
           }
-        }
-      }
-    }
-    case UPDATE_RECIPE_OWNER: {
-      const recipe = state.byId[action.payload.id]
-      if (recipe.kind !== RDK.Success) {
-        return state
-      }
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.id]: {
-            ...recipe,
-            data: {
-              ...recipe.data,
-              owner: action.payload.owner
+          return x
+        })
+      }))
+    case SET_REMOVING_INGREDIENT:
+      return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
+        ...recipe,
+        ingredients: recipe.ingredients.map(x => {
+          if (x.id === action.payload.ingredientID) {
+            return {
+              ...x,
+              removing: action.payload.val
             }
           }
-        }
-      }
-    }
-    case SET_SCHEDULING_RECIPE: {
-      const recipe = state.byId[action.payload.recipeID]
-      if (recipe.kind !== RDK.Success) {
-        return state
-      }
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.recipeID]: {
-            ...recipe,
-            data: {
-              ...recipe.data,
-              scheduling: action.payload.scheduling
+          return x
+        })
+      }))
+    case SET_UPDATING_STEP:
+      return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
+        ...recipe,
+        steps: recipe.steps.map(x => {
+          if (x.id === action.payload.stepID) {
+            return {
+              ...x,
+              updating: action.payload.val
             }
           }
-        }
-      }
-    }
+          return x
+        })
+      }))
+    case SET_REMOVING_STEP:
+      return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
+        ...recipe,
+        steps: recipe.steps.map(x => {
+          if (x.id === action.payload.stepID) {
+            return {
+              ...x,
+              removing: action.payload.val
+            }
+          }
+          return x
+        })
+      }))
+    case SET_RECIPE_UPDATING:
+      return mapRecipeSuccessById(state, action.payload.id, recipe => ({
+        ...recipe,
+        updating: action.payload.val
+      }))
+    case UPDATE_RECIPE_OWNER:
+      return mapRecipeSuccessById(state, action.payload.id, recipe => ({
+        ...recipe,
+
+        owner: action.payload.owner
+      }))
+
+    case SET_SCHEDULING_RECIPE:
+      return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
+        ...recipe,
+        scheduling: action.payload.scheduling
+      }))
     default:
       return state
   }

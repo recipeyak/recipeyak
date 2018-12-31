@@ -217,24 +217,6 @@ describe("Recipes", () => {
     ).toEqual(afterState)
   })
 
-  it("updates the name of the recipe", () => {
-    const beforeState: IRecipesState = recipeStoreWith({
-      ...baseRecipe,
-      name: "Before title"
-    })
-
-    const newName = "After title"
-
-    const afterState: IRecipesState = recipeStoreWith({
-      ...baseRecipe,
-      name: newName
-    })
-
-    expect(recipes(beforeState, a.updateRecipeName(1, newName))).toEqual(
-      afterState
-    )
-  })
-
   it("deletes an ingredient from a recipe", () => {
     const beforeState: IRecipesState = recipeStoreWith({
       ...baseRecipe,
@@ -293,58 +275,6 @@ describe("Recipes", () => {
     })
 
     expect(recipes(beforeState, a.deleteStep(1, 1))).toEqual(afterState)
-  })
-
-  it("updates the recipe source", () => {
-    const beforeState: IRecipesState = recipeStoreWith({
-      ...baseRecipe,
-      source: "example.com"
-    })
-
-    const newSource = "abettersource.com"
-
-    const afterState: IRecipesState = recipeStoreWith({
-      ...baseRecipe,
-      source: newSource
-    })
-
-    expect(recipes(beforeState, a.updateRecipeSource(1, newSource))).toEqual(
-      afterState
-    )
-  })
-
-  it("updates the recipe author", () => {
-    const beforeState: IRecipesState = recipeStoreWith({
-      ...baseRecipe,
-      author: "donny"
-    })
-    const newAuthor = "aldo raine"
-
-    const afterState: IRecipesState = recipeStoreWith({
-      ...baseRecipe,
-      author: newAuthor
-    })
-
-    expect(recipes(beforeState, a.updateRecipeAuthor(1, newAuthor))).toEqual(
-      afterState
-    )
-  })
-
-  it("updates the recipe time", () => {
-    const beforeState: IRecipesState = recipeStoreWith({
-      ...baseRecipe,
-      time: "1 hour"
-    })
-    const newTime = "5.12 years"
-
-    const afterState: IRecipesState = recipeStoreWith({
-      ...baseRecipe,
-      time: newTime
-    })
-
-    expect(recipes(beforeState, a.updateRecipeTime(1, newTime))).toEqual(
-      afterState
-    )
   })
 
   it("sets the loading state for adding a step to a recipe", () => {
