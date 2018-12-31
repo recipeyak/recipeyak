@@ -100,10 +100,6 @@ import {
   setLoadingAddStepToRecipe,
   addStepToRecipe,
   setRecipeUpdating,
-  updateRecipeTime,
-  updateRecipeAuthor,
-  updateRecipeSource,
-  updateRecipeName,
   setAddingIngredientToRecipe,
   addIngredientToRecipe,
   updateIngredient,
@@ -578,58 +574,6 @@ export const addingRecipeIngredient = (dispatch: Dispatch) => (
     .catch(() => {
       dispatch(setAddingIngredientToRecipe(recipeID, false))
     })
-}
-
-export const sendUpdatedRecipeName = (id: number, name: string) => (
-  dispatch: Dispatch
-) => {
-  return http
-    .patch<IRecipe>(`/api/v1/recipes/${id}/`, {
-      name
-    })
-    .then(res => {
-      dispatch(updateRecipeName(res.data.id, res.data.name))
-    })
-    .catch(() => undefined)
-}
-
-export const setRecipeSource = (id: number, source: string) => (
-  dispatch: Dispatch
-) => {
-  return http
-    .patch<IRecipe>(`/api/v1/recipes/${id}/`, {
-      source
-    })
-    .then(res => {
-      dispatch(updateRecipeSource(res.data.id, res.data.source))
-    })
-    .catch(() => undefined)
-}
-
-export const setRecipeAuthor = (id: number, author: unknown) => (
-  dispatch: Dispatch
-) => {
-  return http
-    .patch<IRecipe>(`/api/v1/recipes/${id}/`, {
-      author
-    })
-    .then(res => {
-      dispatch(updateRecipeAuthor(res.data.id, res.data.author))
-    })
-    .catch(() => undefined)
-}
-
-export const setRecipeTime = (id: number, time: unknown) => (
-  dispatch: Dispatch
-) => {
-  return http
-    .patch<IRecipe>(`/api/v1/recipes/${id}/`, {
-      time
-    })
-    .then(res => {
-      dispatch(updateRecipeTime(res.data.id, res.data.time))
-    })
-    .catch(() => undefined)
 }
 
 export const updateRecipe = (dispatch: Dispatch) => (

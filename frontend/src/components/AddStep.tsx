@@ -7,7 +7,7 @@ import { IStep } from "@/store/reducers/recipes"
 interface IAddStepProps {
   readonly addStep: (id: IStep["id"], step: string) => Promise<void>
   readonly onCancel: () => void
-  readonly loading: boolean
+  readonly loading?: boolean
   readonly autoFocus?: boolean
   readonly id: number
   readonly index: number

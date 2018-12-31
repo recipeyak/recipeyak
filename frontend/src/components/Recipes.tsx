@@ -10,13 +10,16 @@ import Results from "@/components/Results"
 import { byNameAlphabetical } from "@/sorters"
 
 import { Dispatch, fetchingRecipeList } from "@/store/actions"
-import { IRecipe, getRecipes } from "@/store/reducers/recipes"
+import { IRecipe, getRecipes, isSuccess } from "@/store/reducers/recipes"
 import { ITeam } from "@/store/reducers/teams"
 import { RootState } from "@/store/store"
 
 const mapStateToProps = (state: RootState) => {
   return {
-    recipes: getRecipes(state).sort(byNameAlphabetical),
+    recipes: getRecipes(state)
+      .filter(isSuccess)
+      .map(r => r.data)
+      .sort(byNameAlphabetical),
     loading: state.recipes.loadingAll
   }
 }

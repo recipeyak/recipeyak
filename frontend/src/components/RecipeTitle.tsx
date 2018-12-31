@@ -13,18 +13,18 @@ interface IRecipeTitleProps {
   readonly time: IRecipe["time"]
   readonly owner: IRecipe["owner"]
   readonly update: (id: IRecipe["id"], recipe: IRecipeBasic) => Promise<void>
-  readonly updating: boolean
+  readonly updating?: boolean
   readonly remove: (id: IRecipe["id"]) => void
-  readonly deleting: boolean
+  readonly deleting?: boolean
   readonly lastScheduled?: string
 }
 
 export interface IRecipeBasic {
-  readonly author: string
-  readonly name: string
-  readonly source: string
-  readonly servings: string
-  readonly time: string
+  readonly author?: string
+  readonly name?: string
+  readonly source?: string
+  readonly servings?: string
+  readonly time?: string
 }
 
 interface IRecipeTitleState {
@@ -40,13 +40,7 @@ export default class RecipeTitle extends React.Component<
   state: IRecipeTitleState = {
     show: false,
     edit: false,
-    recipe: {
-      name: "",
-      author: "",
-      source: "",
-      servings: "",
-      time: ""
-    }
+    recipe: {}
   }
 
   toggleEdit = () => this.setState(prev => ({ edit: !prev.edit }))
