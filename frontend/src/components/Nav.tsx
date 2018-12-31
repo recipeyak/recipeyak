@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 
 import NavLink from "@/containers/NavLink"
 import Logo from "@/components/Logo"
-import Dropdown from "@/components/Dropdown"
+import Dropdown from "@/components/NavDropdown"
 import NotificationsDropdown from "@/components/NotificationsDropdown"
 import UserDropdown from "@/components/UserDropdown"
 
