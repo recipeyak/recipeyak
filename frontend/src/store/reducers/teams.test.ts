@@ -2,6 +2,19 @@ import { teams, ITeamsState, ITeam } from "@/store/reducers/teams"
 import * as a from "@/store/reducers/teams"
 import { baseRecipe } from "@/store/reducers/recipes.test"
 
+const baseMember: a.IMember = {
+  id: 1,
+  user: {
+    id: 2,
+    email: "bar",
+    avatar_url: "bar.com",
+    dark_mode_enabled: false,
+    selected_team: null
+  },
+  level: "read",
+  is_active: true
+}
+
 describe("Teams", () => {
   it("Adds team to team object", () => {
     const beforeState: ITeamsState = {
@@ -236,9 +249,9 @@ describe("Teams", () => {
       allIds: []
     }
 
-    const members = [
+    const members: a.IMember[] = [
       {
-        ...baseRecipe,
+        ...baseMember,
         id: 1,
         user: {
           id: 2,
@@ -349,6 +362,7 @@ describe("Teams", () => {
         name: "foobar",
         members: {
           1: {
+            ...baseMember,
             id: 1,
             level: "admin",
             user: {
@@ -360,6 +374,7 @@ describe("Teams", () => {
             }
           },
           2: {
+            ...baseMember,
             id: 2,
             level: "contributor",
             user: {
@@ -381,6 +396,7 @@ describe("Teams", () => {
         name: "foobar",
         members: {
           1: {
+            ...baseMember,
             id: 1,
             level: "admin",
             user: {
@@ -392,6 +408,7 @@ describe("Teams", () => {
             }
           },
           2: {
+            ...baseMember,
             id: 2,
             level: "admin",
             user: {
@@ -419,6 +436,7 @@ describe("Teams", () => {
         name: "foobar",
         members: {
           1: {
+            ...baseMember,
             id: 1,
             level: "admin",
             user: {
@@ -430,6 +448,7 @@ describe("Teams", () => {
             }
           },
           2: {
+            ...baseMember,
             id: 2,
             level: "admin",
             user: {
@@ -451,6 +470,7 @@ describe("Teams", () => {
         name: "foobar",
         members: {
           1: {
+            ...baseMember,
             id: 1,
             level: "admin",
             user: {
@@ -462,6 +482,7 @@ describe("Teams", () => {
             }
           },
           2: {
+            ...baseMember,
             id: 2,
             level: "admin",
             deleting: true,
@@ -490,6 +511,7 @@ describe("Teams", () => {
         name: "foobar",
         members: {
           1: {
+            ...baseMember,
             id: 1,
             level: "admin",
             user: {
@@ -501,6 +523,7 @@ describe("Teams", () => {
             }
           },
           2: {
+            ...baseMember,
             id: 2,
             level: "admin",
             deleting: true,
@@ -523,6 +546,7 @@ describe("Teams", () => {
         name: "foobar",
         members: {
           1: {
+            ...baseMember,
             id: 1,
             level: "admin",
             user: {
@@ -548,6 +572,7 @@ describe("Teams", () => {
         name: "foobar",
         members: {
           1: {
+            ...baseMember,
             id: 1,
             level: "admin",
             user: {
@@ -559,6 +584,7 @@ describe("Teams", () => {
             }
           },
           2: {
+            ...baseMember,
             id: 2,
             level: "admin",
             user: {
@@ -581,6 +607,7 @@ describe("Teams", () => {
         sendingTeamInvites: true,
         members: {
           1: {
+            ...baseMember,
             id: 1,
             level: "admin",
             user: {
@@ -592,6 +619,7 @@ describe("Teams", () => {
             }
           },
           2: {
+            ...baseMember,
             id: 2,
             level: "admin",
             user: {
@@ -619,6 +647,7 @@ describe("Teams", () => {
         name: "foobar",
         members: {
           1: {
+            ...baseMember,
             id: 1,
             level: "admin",
             user: {
@@ -630,6 +659,7 @@ describe("Teams", () => {
             }
           },
           2: {
+            ...baseMember,
             id: 2,
             level: "admin",
             user: {
@@ -652,6 +682,7 @@ describe("Teams", () => {
         name: "foobar",
         members: {
           1: {
+            ...baseMember,
             id: 1,
             level: "admin",
             user: {
@@ -663,6 +694,7 @@ describe("Teams", () => {
             }
           },
           2: {
+            ...baseMember,
             id: 2,
             level: "admin",
             user: {
@@ -688,6 +720,7 @@ describe("Teams", () => {
         name: "foobar",
         members: {
           1: {
+            ...baseMember,
             id: 1,
             level: "admin",
             user: {
@@ -700,6 +733,7 @@ describe("Teams", () => {
             }
           },
           2: {
+            ...baseMember,
             id: 2,
             level: "admin",
             user: {
@@ -722,6 +756,7 @@ describe("Teams", () => {
         name: "foobar",
         members: {
           1: {
+            ...baseMember,
             id: 1,
             level: "admin",
             user: {
@@ -733,6 +768,7 @@ describe("Teams", () => {
             }
           },
           2: {
+            ...baseMember,
             id: 2,
             level: "admin",
             user: {

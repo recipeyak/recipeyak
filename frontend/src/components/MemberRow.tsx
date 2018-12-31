@@ -42,7 +42,7 @@ interface IMemberRowProps {
   readonly handleUserLevelChange: (
     teamID: ITeam["id"],
     membershipID: IMember["id"],
-    level: string
+    level: IMember["level"]
   ) => void
   readonly deleteMembership: (
     teamID: ITeam["id"],
@@ -90,7 +90,10 @@ const MemberRow = ({
           <select
             value={level}
             onChange={e =>
-              handleUserLevelChange(teamID, membershipID, e.target.value)
+              handleUserLevelChange(teamID, membershipID, e.target.value as
+                | "admin"
+                | "contributor"
+                | "read")
             }>
             <option value="admin">Admin</option>
             <option value="contributor">Contributor</option>
