@@ -272,7 +272,7 @@ type RemoteData<E, T> = INotAsked | ILoading | IFailure<E> | ISuccess<T>
 
 type WebData<T, E = unknown> = RemoteData<E, T>
 
-const enum HttpErrorKind {
+export const enum HttpErrorKind {
   error404,
   other
 }
@@ -326,14 +326,12 @@ export interface IRecipe {
   readonly team: ITeam["id"]
   readonly owner: IRecipeOwner
   readonly ingredients: IIngredient[]
-  readonly loading?: boolean
+
   readonly deleting?: boolean
   readonly addingStepToRecipe?: boolean
   readonly addingIngredient?: boolean
-
   readonly scheduling?: boolean
   readonly updating?: boolean
-  readonly error404?: boolean
 }
 
 export type RemoteRecipe = WebData<IRecipe, HttpErrorKind>

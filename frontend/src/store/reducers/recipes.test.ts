@@ -6,6 +6,7 @@ import recipes, {
 } from "@/store/reducers/recipes"
 
 import * as a from "@/store/reducers/recipes"
+import { RootState } from "@/store/store"
 
 export const baseRecipe: IRecipe = {
   id: 1,
@@ -65,7 +66,15 @@ describe("Recipes", () => {
     const after = recipes(beforeState, a.deleteRecipe.success(first.id))
     expect(after.allIds).toEqual([second.id])
     expect(after.byId[first.id]).toEqual(undefined)
-    expect(after.byId[second.id]).toEqual(second)
+
+    const maybeSecond = a.getRecipeById(
+      { recipes: beforeState } as RootState,
+      second.id
+    )
+    expect(maybeSecond.kind).toEqual(a.RDK.Success)
+    if (maybeSecond.kind === a.RDK.Success) {
+      expect(maybeSecond.data).toEqual(second)
+    }
   })
 
   it("Remove non-existent recipe from recipe list", () => {
@@ -421,7 +430,7 @@ describe("Recipes", () => {
       errorLoadingAll: false,
       byId: {
         [baseRecipe.id]: {
-          loading: true
+          kind: a.RDK.Loading
         }
       },
       allIds: []
@@ -434,8 +443,7 @@ describe("Recipes", () => {
     expect(fetchingActual.allIds).toEqual(fetchingState.allIds)
 
     const successState: IRecipesState = recipeStoreWith({
-      ...baseRecipe,
-      loading: false
+      ...baseRecipe
     })
     expect(recipes(beforeState, a.fetchRecipe.success(baseRecipe))).toEqual(
       successState
@@ -446,8 +454,8 @@ describe("Recipes", () => {
       errorLoadingAll: false,
       byId: {
         [baseRecipe.id]: {
-          error404: true,
-          loading: false
+          kind: a.RDK.Failure,
+          failure: a.HttpErrorKind.error404
         }
       },
       allIds: []
@@ -493,8 +501,7 @@ describe("Recipes", () => {
 
     const afterState: IRecipesState = recipeStoreWith({
       ...baseRecipe,
-      name: "new recipe name",
-      updating: true
+      name: "new recipe name"
     })
 
     expect(recipes(beforeState, a.fetchRecipe.success(newRecipe))).toEqual(
