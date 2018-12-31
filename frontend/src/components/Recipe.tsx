@@ -63,7 +63,7 @@ interface IRecipeProps extends RouteProps {
     recipeID: IRecipe["id"],
     ingredientID: IIngredient["id"],
     content: Omit<IIngredient, "id" | "position">
-  ) => Promise<void>
+  ) => void
   readonly removeIngredient: (
     recipeID: IRecipe["id"],
     ingredientID: IIngredient["id"]
@@ -90,7 +90,6 @@ class Recipe extends React.Component<IRecipeProps, IRecipeState> {
 
   render() {
     if (
-      !this.props.recipe ||
       this.props.recipe.kind === RDK.NotAsked ||
       this.props.recipe.kind === RDK.Loading
     ) {
