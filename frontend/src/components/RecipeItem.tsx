@@ -8,6 +8,7 @@ import { teamURL, recipeURL } from "@/urls"
 import * as DragDrop from "@/dragDrop"
 import { ITeam } from "@/store/reducers/teams"
 import { IRecipe } from "@/store/reducers/recipes"
+import GlobalEvent from "@/components/GlobalEvent"
 
 interface IRecipeTitleProps {
   readonly url: string
@@ -52,20 +53,36 @@ interface IScheduleProps {
   readonly onClose: () => void
 }
 
-function Schedule({ id, teamID, show, onClick, onClose }: IScheduleProps) {
-  return (
-    <div className="p-rel">
-      <ButtonPlain onClick={onClick} className="is-small">
-        schedule
-      </ButtonPlain>
-      <DatePickerForm
-        recipeID={id}
-        teamID={teamID}
-        show={show}
-        close={onClose}
-      />
-    </div>
-  )
+class Schedule extends React.Component<IScheduleProps> {
+  element = React.createRef<HTMLDivElement>()
+  handleGlobalClick = (e: MouseEvent) => {
+    // Do nothing if we are hidden
+    if (!this.props.show) {
+      return
+    }
+    const el = this.element.current
+    // Close when we click outside of our dropdown/button group
+    if (el && e.target && !el.contains(e.target as Node)) {
+      this.props.onClose()
+    }
+  }
+  render() {
+    const { id, teamID, show, onClick, onClose } = this.props
+    return (
+      <div className="p-rel" ref={this.element}>
+        <GlobalEvent mouseUp={this.handleGlobalClick} />
+        <ButtonPlain onClick={onClick} className="is-small">
+          schedule
+        </ButtonPlain>
+        <DatePickerForm
+          recipeID={id}
+          teamID={teamID}
+          show={show}
+          close={onClose}
+        />
+      </div>
+    )
+  }
 }
 
 interface IRecipeItemProps {

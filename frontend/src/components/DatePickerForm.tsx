@@ -16,7 +16,6 @@ import { ButtonPrimary } from "@/components/Buttons"
 import { addingScheduledRecipe, Dispatch } from "@/store/actions"
 import { IRecipe } from "@/store/reducers/recipes"
 import { ITeam } from "@/store/reducers/teams"
-import GlobalEvent from "@/components/GlobalEvent"
 
 function mapDispatchToProps(dispatch: Dispatch) {
   return {
@@ -54,8 +53,6 @@ class DatePickerForm extends React.Component<
     month: new Date()
   }
 
-  element = React.createRef<HTMLDivElement>()
-
   handleDateChange = (val: Date) => {
     if (isPast(endOfDay(val))) {
       return
@@ -80,14 +77,6 @@ class DatePickerForm extends React.Component<
       .then(() => this.props.close())
   }
 
-  handleGlobalClick = (e: MouseEvent) => {
-    const el = this.element.current
-    // Outside click
-    if (el && e.target && !el.contains(e.target as Node)) {
-      this.props.close()
-    }
-  }
-
   nextMonth = () => {
     this.setState(({ month }) => ({ month: addMonths(month, 1) }))
   }
@@ -103,7 +92,6 @@ class DatePickerForm extends React.Component<
 
     return (
       <div
-        ref={this.element}
         className={classNames(
           "box-shadow-normal",
           "min-width-max-content",
@@ -126,7 +114,6 @@ class DatePickerForm extends React.Component<
           prevMonth={this.prevMonth}
           nextMonth={this.nextMonth}
         />
-        <GlobalEvent mouseUp={this.handleGlobalClick} />
         <form className="d-grid grid-gap-1" onSubmit={this.handleSubmit}>
           <div className="d-flex">
             <input
