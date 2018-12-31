@@ -250,25 +250,25 @@ export const enum RDK {
   Success
 }
 
-interface NotAsked {
+interface INotAsked {
   readonly kind: RDK.NotAsked
 }
 
-interface Loading {
+interface ILoading {
   readonly kind: RDK.Loading
 }
 
-interface Failure<E> {
+interface IFailure<E> {
   readonly kind: RDK.Failure
   readonly failure: E
 }
 
-interface Success<T> {
+interface ISuccess<T> {
   readonly kind: RDK.Success
   readonly data: T
 }
 
-type RemoteData<E, T> = NotAsked | Loading | Failure<E> | Success<T>
+type RemoteData<E, T> = INotAsked | ILoading | IFailure<E> | ISuccess<T>
 
 type WebData<T, E = unknown> = RemoteData<E, T>
 
@@ -279,7 +279,7 @@ const enum HttpErrorKind {
 
 // for now we have to specify the type guard
 // see https://github.com/Microsoft/TypeScript/issues/16069
-export const isSuccess = <T>(x: WebData<T>): x is Success<T> =>
+export const isSuccess = <T>(x: WebData<T>): x is ISuccess<T> =>
   x.kind === RDK.Success
 
 export interface IIngredient {
@@ -338,12 +338,12 @@ export interface IRecipe {
 
 export type RemoteRecipe = WebData<IRecipe, HttpErrorKind>
 
-interface Dict {
+interface IDict {
   readonly [key: number]: RemoteRecipe
 }
 
 function WebDict() {
-  return new Proxy({} as Dict, {
+  return new Proxy({} as IDict, {
     get: (target, name: number) => {
       if (name in target) {
         return target[name]
@@ -463,7 +463,7 @@ export const recipes = (
             [b.id]: {
               kind: RDK.Success,
               data: b
-            } as Success<IRecipe>
+            } as ISuccess<IRecipe>
           }),
           state.byId
         ),
