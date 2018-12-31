@@ -1217,7 +1217,7 @@ export const deletingScheduledRecipe = (dispatch: Dispatch) => (
   // HACK(sbdchd): we should have these in byId object / Map
   // TODO(sbdchd): we can just have a marker for deleted recipes and just remove
   // that marker if this fails. Or we could put them in their own id list
-  const recipe = store.getState().calendar.byId[parseInt(String(id), 10)]
+  const recipe = store.getState().calendar.byId[id]
   dispatch(deleteCalendarRecipe(id))
   return api.deleteScheduledRecipe(id, teamID).catch(() => {
     dispatch(setCalendarRecipe(recipe))
@@ -1273,7 +1273,7 @@ export const updatingScheduledRecipe = (dispatch: Dispatch) => (
   teamID: ITeam["id"] | "personal",
   count: ICalRecipe["count"]
 ) => {
-  if (parseInt(count.toString(), 10) <= 0) {
+  if (count <= 0) {
     return deletingScheduledRecipe(dispatch)(id, teamID)
   }
 
