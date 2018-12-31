@@ -3,6 +3,7 @@ import { Button, ButtonPrimary } from "@/components/Buttons"
 import MetaData from "@/components/MetaData"
 import DatePickerForm from "@/components/DatePickerForm"
 import { IRecipe } from "@/store/reducers/recipes"
+import GlobalEvent from "@/components/GlobalEvent"
 
 interface IRecipeTitleProps {
   readonly id: IRecipe["id"]
@@ -75,6 +76,16 @@ export default class RecipeTitle extends React.Component<
     }
   }
 
+  handleGlobalKeyUp = (e: KeyboardEvent) => {
+    // Pass if we aren't editing
+    if (!this.state.edit) {
+      return
+    }
+    if (e.key === "Escape") {
+      this.toggleEdit()
+    }
+  }
+
   render() {
     const {
       id,
@@ -94,6 +105,7 @@ export default class RecipeTitle extends React.Component<
     return (
       <div>
         <div className="grid-entire-row d-flex justify-space-between p-rel">
+          <GlobalEvent keyUp={this.handleGlobalKeyUp} />
           {!this.state.edit ? (
             <div className="d-flex align-items-center">
               <h1

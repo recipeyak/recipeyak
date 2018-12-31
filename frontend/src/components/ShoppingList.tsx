@@ -28,6 +28,7 @@ import {
   setSelectingStart,
   setSelectingEnd
 } from "@/store/reducers/shoppinglist"
+import GlobalEvent from "@/components/GlobalEvent"
 
 const selectElementText = (el: Element) => {
   const sel = window.getSelection()
@@ -98,7 +99,7 @@ class ShoppingList extends React.Component<
   IShoppingListProps,
   IShoppingListState
 > {
-  inputs = React.createRef<HTMLDivElement>()
+  element = React.createRef<HTMLDivElement>()
 
   state: IShoppingListState = {
     month: new Date(),
@@ -164,11 +165,22 @@ class ShoppingList extends React.Component<
     )
   }
 
+  handleGeneralClick = (e: MouseEvent) => {
+    const el = this.element.current
+    if (el && e.target && !el.contains(e.target as Node)) {
+      // outside click
+      this.closeInputs()
+    }
+  }
+
   render() {
     return (
       <div className="d-grid grid-gap-2">
         <div className="p-rel">
-          <div ref={this.inputs} className="d-flex align-items-center no-print">
+          <div
+            ref={this.element}
+            className="d-flex align-items-center no-print">
+            <GlobalEvent mouseDown={this.handleGeneralClick} />
             <input
               onFocus={() =>
                 this.setState({

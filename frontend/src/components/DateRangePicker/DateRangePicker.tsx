@@ -5,7 +5,6 @@ import endOfDay from "date-fns/end_of_day"
 
 import { classNames } from "@/classnames"
 import Month from "@/components/DateRangePicker/Month"
-import GlobalEvent from "@/components/GlobalEvent"
 
 import "@/components/DateRangePicker/date-range-picker.scss"
 
@@ -24,8 +23,6 @@ interface IDateRangePickerProps {
 }
 
 class DateRangePicker extends React.Component<IDateRangePickerProps> {
-  element = React.createRef<HTMLDivElement>()
-
   handleClick = (date: Date) => {
     if (isPast(endOfDay(date))) {
       return
@@ -40,18 +37,9 @@ class DateRangePicker extends React.Component<IDateRangePickerProps> {
     }
   }
 
-  handleGeneralClick = (e: MouseEvent) => {
-    const el = this.element.current
-    if (el && e.target && !el.contains(e.target as Node)) {
-      // outside click
-      this.props.onClose()
-    }
-  }
-
   render() {
     return (
       <div
-        ref={this.element}
         className={classNames(
           "p-absolute",
           "box-shadow-normal",
@@ -62,7 +50,6 @@ class DateRangePicker extends React.Component<IDateRangePickerProps> {
           "grid-2-months",
           this.props.visible ? "d-grid" : "d-none"
         )}>
-        <GlobalEvent mouseDown={this.handleGeneralClick} />
         <Month
           showLeft
           date={this.props.month}
