@@ -22,19 +22,22 @@ import {
 } from "@/store/actions"
 import { RootState } from "@/store/store"
 import { RouteComponentProps } from "react-router"
-import { IRecipe, IStep, IIngredient } from "@/store/reducers/recipes"
+import {
+  IRecipe,
+  IStep,
+  IIngredient,
+  getRecipeById,
+  RemoteRecipe,
+  RDK
+} from "@/store/reducers/recipes"
 import { IRecipeBasic } from "@/components/RecipeTitle"
 
 type RouteProps = RouteComponentProps<{ id: string }>
 
 const mapStateToProps = (state: RootState, props: RouteProps) => {
   const id = parseInt(props.match.params.id, 10)
-  return state.recipes.byId[id]
-    ? {
-        ...state.recipes.byId[id],
-        loading: !!state.recipes.byId[id].loading
-      }
-    : { loading: true }
+  const maybeRecipe = getRecipeById(state, id)
+  return { recipe: maybeRecipe }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -48,23 +51,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 })
 
 interface IRecipeProps extends RouteProps {
-  readonly id: IRecipe["id"]
-  readonly name: IRecipe["name"]
-  readonly author: IRecipe["author"]
-  readonly source: IRecipe["source"]
-  readonly servings: IRecipe["servings"]
-  readonly time: IRecipe["time"]
-  readonly ingredients: IIngredient[]
-  readonly steps: IStep[]
-  readonly loading: boolean
-  readonly error404: boolean
-  readonly owner: IRecipe["owner"]
+  readonly recipe: RemoteRecipe
   readonly update: (id: IRecipe["id"], recipe: IRecipeBasic) => Promise<void>
   readonly remove: (id: IRecipe["id"]) => void
-  readonly deleting: boolean
-  readonly updating: boolean
-  readonly addingStepToRecipe: boolean
-  readonly last_scheduled: string
   readonly fetchRecipe: (id: IRecipe["id"]) => void
   readonly addIngredient: (
     id: number,
@@ -100,34 +89,41 @@ class Recipe extends React.Component<IRecipeProps, IRecipeState> {
   }
 
   render() {
-    const { id, name, ingredients, steps, loading, error404 } = this.props
-    if (error404) {
-      return <NoMatch />
-    }
-    if (loading) {
+    if (
+      !this.props.recipe ||
+      this.props.recipe.kind === RDK.NotAsked ||
+      this.props.recipe.kind === RDK.Loading
+    ) {
       return (
         <section className="d-flex justify-content-center">
           <Loader />
         </section>
       )
     }
+
+    if (this.props.recipe.kind === RDK.Failure) {
+      return <NoMatch />
+    }
+
+    const recipe = this.props.recipe.data
+
     return (
       <div className="d-grid grid-gap-2">
         <Helmet title={name} />
 
         <RecipeTitle
-          id={this.props.id}
-          name={this.props.name}
-          author={this.props.author}
-          source={this.props.source}
-          servings={this.props.servings}
-          time={this.props.time}
-          owner={this.props.owner}
-          lastScheduled={this.props.last_scheduled}
+          id={recipe.id}
+          name={recipe.name}
+          author={recipe.author}
+          source={recipe.source}
+          servings={recipe.servings}
+          time={recipe.time}
+          owner={recipe.owner}
+          lastScheduled={recipe.last_scheduled}
           update={this.props.update}
-          updating={this.props.updating}
+          updating={recipe.updating}
           remove={this.props.remove}
-          deleting={this.props.deleting}
+          deleting={recipe.deleting}
         />
         <section className="ingredients-preparation-grid">
           <div>
@@ -135,22 +131,18 @@ class Recipe extends React.Component<IRecipeProps, IRecipeState> {
               Ingredients
             </h2>
             <ul>
-              {ingredients.map(ingre => (
+              {recipe.ingredients.map(ingre => (
                 <Ingredient
                   key={ingre.id}
-                  recipeID={this.props.id}
+                  recipeID={recipe.id}
                   id={ingre.id}
                   quantity={ingre.quantity}
                   name={ingre.name}
                   update={(ingredient: Omit<IIngredient, "id" | "position">) =>
-                    this.props.updateIngredient(
-                      this.props.id,
-                      ingre.id,
-                      ingredient
-                    )
+                    this.props.updateIngredient(recipe.id, ingre.id, ingredient)
                   }
                   remove={() =>
-                    this.props.removeIngredient(this.props.id, ingre.id)
+                    this.props.removeIngredient(recipe.id, ingre.id)
                   }
                   updating={ingre.updating}
                   removing={ingre.removing}
@@ -161,7 +153,7 @@ class Recipe extends React.Component<IRecipeProps, IRecipeState> {
             </ul>
             {this.state.addIngredient ? (
               <AddIngredient
-                id={id}
+                id={recipe.id}
                 autoFocus
                 loading={false}
                 addIngredient={this.props.addIngredient}
@@ -180,15 +172,15 @@ class Recipe extends React.Component<IRecipeProps, IRecipeState> {
             <h2 className="title is-3 mb-1 font-family-title bold">
               Preparation
             </h2>
-            <StepContainer steps={steps} recipeID={id} />
+            <StepContainer steps={recipe.steps} recipeID={recipe.id} />
             {this.state.addStep ? (
               <AddStep
-                id={id}
-                index={steps.length + 1}
+                id={recipe.id}
+                index={recipe.steps.length + 1}
                 autoFocus
                 addStep={this.props.addStep}
                 onCancel={() => this.setState({ addStep: false })}
-                loading={this.props.addingStepToRecipe}
+                loading={recipe.addingStepToRecipe}
               />
             ) : (
               <a

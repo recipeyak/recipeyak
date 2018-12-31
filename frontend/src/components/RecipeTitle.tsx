@@ -13,9 +13,9 @@ interface IRecipeTitleProps {
   readonly time: IRecipe["time"]
   readonly owner: IRecipe["owner"]
   readonly update: (id: IRecipe["id"], recipe: IRecipeBasic) => Promise<void>
-  readonly updating: boolean
+  readonly updating?: boolean
   readonly remove: (id: IRecipe["id"]) => void
-  readonly deleting: boolean
+  readonly deleting?: boolean
   readonly lastScheduled?: string
 }
 
