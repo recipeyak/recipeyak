@@ -9,7 +9,7 @@ export type GetState = () => RootState
 
 import { random32Id } from "@/uuid"
 
-import { pyFormat } from "@/date"
+import { toDateString } from "@/date"
 
 import { push, replace } from "react-router-redux"
 import axios, { AxiosError, AxiosResponse, CancelTokenSource } from "axios"
@@ -1183,7 +1183,7 @@ export const addingScheduledRecipe = (dispatch: Dispatch) => (
   const id = random32Id()
   const data = {
     recipe: recipeID,
-    on: pyFormat(on),
+    on: toDateString(on),
     count
   }
   // 1. preemptively add recipe
@@ -1229,7 +1229,7 @@ export const moveScheduledRecipe = (dispatch: Dispatch) => (
   teamID: TeamID,
   to: Date
 ) => {
-  dispatch(moveCalendarRecipe(id, pyFormat(to)))
+  dispatch(moveCalendarRecipe(id, toDateString(to)))
 
   // HACK(sbdchd): This should be an endpoint
   const from = store.getState().calendar.byId[id]
@@ -1256,15 +1256,15 @@ export const moveScheduledRecipe = (dispatch: Dispatch) => (
         })
       )
       .catch(() => {
-        dispatch(moveCalendarRecipe(id, pyFormat(from.on)))
+        dispatch(moveCalendarRecipe(id, toDateString(from.on)))
       })
   }
 
   return api
-    .updateScheduleRecipe(id, teamID, { on: pyFormat(to) })
+    .updateScheduleRecipe(id, teamID, { on: toDateString(to) })
     .catch(() => {
       // on error we want to move it back to the old position
-      dispatch(moveCalendarRecipe(id, pyFormat(from.on)))
+      dispatch(moveCalendarRecipe(id, toDateString(from.on)))
     })
 }
 
