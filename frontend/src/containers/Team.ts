@@ -8,12 +8,11 @@ import {
   updatingTeam,
   Dispatch
 } from "@/store/actions"
-
 import Team from "@/components/Team"
 import { RootState } from "@/store/store"
 import { RouteComponentProps } from "react-router"
-import { isSuccess } from "@/store/reducers/recipes"
 import { ITeam } from "@/store/reducers/teams"
+import { isSuccess } from "@/store/remotedata"
 
 type RouteProps = RouteComponentProps<{ id: string }>
 
@@ -40,6 +39,7 @@ const mapStateToProps = (state: RootState, props: RouteProps) => {
     name: team ? team.name : "",
     loadingMembers: team ? !!team.loadingMembers : false,
     loadingRecipes: team ? !!team.loadingRecipes : false,
+    // TODO(sbdchd): this should be using a getter
     recipes: recipes
       .map(recipeID => state.recipes.byId[recipeID])
       .filter(isSuccess)

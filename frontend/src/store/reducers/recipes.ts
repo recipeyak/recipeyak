@@ -2,6 +2,7 @@ import { omit, uniq } from "lodash"
 import { ITeam } from "@/store/reducers/teams"
 import { action as act, createAsyncAction, ActionType } from "typesafe-actions"
 import { RootState } from "@/store/store"
+import { WebData, RDK, ISuccess, HttpErrorKind } from "@/store/remotedata"
 const ADD_STEP_TO_RECIPE = "ADD_STEP_TO_RECIPE"
 const ADD_INGREDIENT_TO_RECIPE = "ADD_INGREDIENT_TO_RECIPE"
 const SET_LOADING_ADD_STEP_TO_RECIPE = "SET_LOADING_ADD_STEP_TO_RECIPE"
@@ -243,41 +244,6 @@ export function getRecipeById(state: RootState, id: IRecipe["id"]) {
   return state.recipes.byId[id]
 }
 
-export const enum RDK {
-  NotAsked,
-  Loading,
-  Failure,
-  Success
-}
-
-interface ILoading {
-  readonly kind: RDK.Loading
-}
-
-interface IFailure<E> {
-  readonly kind: RDK.Failure
-  readonly failure: E
-}
-
-interface ISuccess<T> {
-  readonly kind: RDK.Success
-  readonly data: T
-}
-
-type RemoteData<E, T> = undefined | ILoading | IFailure<E> | ISuccess<T>
-
-type WebData<T, E = unknown> = RemoteData<E, T>
-
-export const enum HttpErrorKind {
-  error404,
-  other
-}
-
-// for now we have to specify the type guard
-// see https://github.com/Microsoft/TypeScript/issues/16069
-export const isSuccess = <T>(x: WebData<T>): x is ISuccess<T> =>
-  x != null && x.kind === RDK.Success
-
 export interface IIngredient {
   readonly id: number
   readonly quantity: string
@@ -330,7 +296,7 @@ export interface IRecipe {
   readonly updating?: boolean
 }
 
-export type RemoteRecipe = WebData<IRecipe, HttpErrorKind>
+export type RemoteRecipe = WebData<IRecipe>
 
 function mapRecipeSuccessById(
   state: IRecipesState,

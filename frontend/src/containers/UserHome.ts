@@ -9,7 +9,8 @@ import {
   Dispatch
 } from "@/store/actions"
 import { RootState } from "@/store/store"
-import { getRecipes, isSuccess } from "@/store/reducers/recipes"
+import { getRecipes } from "@/store/reducers/recipes"
+import { isSuccess } from "@/store/remotedata"
 
 const mapStateToProps = (state: RootState) => ({
   userStats: state.user.stats,
