@@ -5,7 +5,7 @@ description = ""
 authors = ["Steve Dignam <steve@dignam.xyz>"]
 
 [tool.poetry.dependencies]
-python = "3.6"
+python = "^3.6"
 djangorestframework = "3.7.7"
 django = "2.0.2"
 dj-database-url = "0.4.2"
