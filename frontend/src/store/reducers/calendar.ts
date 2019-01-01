@@ -1,22 +1,22 @@
 import { uniq, omit } from "lodash"
 import isSameDay from "date-fns/is_same_day"
 
-import { action as act } from "typesafe-actions"
+import { action as act, createAsyncAction, ActionType } from "typesafe-actions"
 import { RootState } from "@/store/store"
 
-const SET_CALENDAR_RECIPES = "SET_CALENDAR_RECIPES"
 const SET_CALENDAR_RECIPE = "SET_CALENDAR_RECIPE"
 const DELETE_CALENDAR_RECIPE = "DELETE_CALENDAR_RECIPE"
-const SET_CALENDAR_ERROR = "SET_CALENDAR_ERROR"
-const SET_CALENDAR_LOADING = "SET_CALENDAR_LOADING"
 const MOVE_CALENDAR_RECIPE = "MOVE_CALENDAR_RECIPE"
 const REPLACE_CALENDAR_RECIPE = "REPLACE_CALENDAR_RECIPE"
+const FETCH_CALENDAR_RECIPES_START = "FETCH_CALENDAR_RECIPES_START"
+const FETCH_CALENDAR_RECIPES_SUCCESS = "FETCH_CALENDAR_RECIPES_SUCCESS "
+const FETCH_CALENDAR_RECIPES_FAILURE = "FETCH_CALENDAR_RECIPES_FAILURE"
 
-export const setCalendarLoading = (loading: boolean) =>
-  act(SET_CALENDAR_LOADING, loading)
-
-export const setCalendarError = (error: boolean) =>
-  act(SET_CALENDAR_ERROR, error)
+export const fetchCalendarRecipes = createAsyncAction(
+  FETCH_CALENDAR_RECIPES_START,
+  FETCH_CALENDAR_RECIPES_SUCCESS,
+  FETCH_CALENDAR_RECIPES_FAILURE
+)<void, ICalRecipe[], void>()
 
 export const setCalendarRecipe = (recipe: ICalRecipe) =>
   act(SET_CALENDAR_RECIPE, recipe)
@@ -30,9 +30,6 @@ export const moveCalendarRecipe = (id: ICalRecipe["id"], to: string) =>
     on: to
   })
 
-export const setCalendarRecipes = (recipes: ICalRecipe[]) =>
-  act(SET_CALENDAR_RECIPES, recipes)
-
 export const replaceCalendarRecipe = (
   id: ICalRecipe["id"],
   recipe: ICalRecipe
@@ -43,13 +40,11 @@ export const replaceCalendarRecipe = (
   })
 
 export type CalendarActions =
-  | ReturnType<typeof setCalendarLoading>
-  | ReturnType<typeof setCalendarError>
   | ReturnType<typeof setCalendarRecipe>
   | ReturnType<typeof deleteCalendarRecipe>
   | ReturnType<typeof moveCalendarRecipe>
-  | ReturnType<typeof setCalendarRecipes>
   | ReturnType<typeof replaceCalendarRecipe>
+  | ActionType<typeof fetchCalendarRecipes>
 
 // TODO(sbdchd): this should be imported from the recipes reducer
 export interface ICalRecipe {
@@ -85,7 +80,7 @@ export const calendar = (
   action: CalendarActions
 ): ICalendarState => {
   switch (action.type) {
-    case SET_CALENDAR_RECIPES:
+    case FETCH_CALENDAR_RECIPES_SUCCESS:
       return {
         ...state,
         byId: {
@@ -134,15 +129,16 @@ export const calendar = (
         byId: omit(state.byId, action.payload),
         allIds: state.allIds.filter(id => id !== action.payload)
       }
-    case SET_CALENDAR_LOADING:
+    case FETCH_CALENDAR_RECIPES_START:
       return {
         ...state,
-        loading: action.payload
+        loading: true,
+        error: false
       }
-    case SET_CALENDAR_ERROR:
+    case FETCH_CALENDAR_RECIPES_FAILURE:
       return {
         ...state,
-        error: action.payload
+        error: true
       }
     case MOVE_CALENDAR_RECIPE: {
       // if the same recipe already exists at the date:

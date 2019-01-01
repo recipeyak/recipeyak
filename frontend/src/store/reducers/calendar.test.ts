@@ -44,9 +44,9 @@ describe("Calendar", () => {
       }
     }
 
-    expect(calendar(beforeState, a.setCalendarRecipes(recipes))).toEqual(
-      afterState
-    )
+    expect(
+      calendar(beforeState, a.fetchCalendarRecipes.success(recipes))
+    ).toEqual(afterState)
   })
 
   it("sets individual calendar recipe", () => {
@@ -117,7 +117,7 @@ describe("Calendar", () => {
       allIds: []
     }
 
-    expect(calendar(beforeState, a.setCalendarLoading(true))).toEqual(
+    expect(calendar(beforeState, a.fetchCalendarRecipes.request())).toEqual(
       afterState
     )
   })
@@ -134,7 +134,9 @@ describe("Calendar", () => {
       allIds: []
     }
 
-    expect(calendar(beforeState, a.setCalendarError(true))).toEqual(afterState)
+    expect(calendar(beforeState, a.fetchCalendarRecipes.failure())).toEqual(
+      afterState
+    )
   })
 
   it("moves calendar recipe to new date", () => {
