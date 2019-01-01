@@ -7,8 +7,6 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from .search import search_recipe_queryset
-
 
 from core.auth.permissions import (
     IsTeamMemberIfPrivate,
@@ -45,17 +43,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         We restrict access via this queryset filtering.
         """
-        SEARCH_LIMIT = 10
         # get all recipes user has access to
         recipes = user_and_team_recipes(self.request.user)
 
         # filtering for homepage
         if self.request.query_params.get("recent") is not None:
             return recipes.order_by("-modified")[:3]
-
-        query = self.request.query_params.get("q")
-        if query is not None:
-            return search_recipe_queryset(recipes, query, limit=SEARCH_LIMIT)
 
         return recipes
 
