@@ -27,10 +27,10 @@ import {
   IStep,
   IIngredient,
   getRecipeById,
-  RemoteRecipe,
-  RDK
+  RemoteRecipe
 } from "@/store/reducers/recipes"
 import { IRecipeBasic } from "@/components/RecipeTitle"
+import { RDK } from "@/store/remotedata"
 
 type RouteProps = RouteComponentProps<{ id: string }>
 
