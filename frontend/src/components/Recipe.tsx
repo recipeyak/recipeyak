@@ -89,10 +89,7 @@ class Recipe extends React.Component<IRecipeProps, IRecipeState> {
   }
 
   render() {
-    if (
-      this.props.recipe.kind === RDK.NotAsked ||
-      this.props.recipe.kind === RDK.Loading
-    ) {
+    if (this.props.recipe == null || this.props.recipe.kind === RDK.Loading) {
       return (
         <section className="d-flex justify-content-center">
           <Loader />

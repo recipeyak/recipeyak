@@ -71,6 +71,12 @@ describe("Recipes", () => {
       { recipes: beforeState } as RootState,
       second.id
     )
+    expect(maybeSecond).not.toBeUndefined()
+    expect(maybeSecond).not.toBeNull()
+    if (maybeSecond == null) {
+      return
+    }
+
     expect(maybeSecond.kind).toEqual(a.RDK.Success)
     if (maybeSecond.kind === a.RDK.Success) {
       expect(maybeSecond.data).toEqual(second)
