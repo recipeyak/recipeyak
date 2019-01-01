@@ -32,13 +32,11 @@ import {
 } from "@/store/reducers/user"
 import {
   ICalRecipe,
-  setCalendarLoading,
-  setCalendarError,
   setCalendarRecipe,
   replaceCalendarRecipe,
   deleteCalendarRecipe,
-  setCalendarRecipes,
-  moveCalendarRecipe
+  moveCalendarRecipe,
+  fetchCalendarRecipes
 } from "@/store/reducers/calendar"
 import {
   setDecliningInvite,
@@ -1158,18 +1156,15 @@ export const fetchCalendar = (dispatch: Dispatch) => (
   teamID: TeamID,
   month = new Date()
 ) => {
-  dispatch(setCalendarLoading(true))
-  dispatch(setCalendarError(false))
+  dispatch(fetchCalendarRecipes.request())
   // we fetch current month plus and minus 1 week
   return api
     .getCalendarRecipeList(teamID, month)
     .then(res => {
-      dispatch(setCalendarRecipes(res.data))
-      dispatch(setCalendarLoading(false))
+      dispatch(fetchCalendarRecipes.success(res.data))
     })
     .catch(() => {
-      dispatch(setCalendarLoading(false))
-      dispatch(setCalendarError(true))
+      dispatch(fetchCalendarRecipes.failure())
     })
 }
 export const addingScheduledRecipe = (dispatch: Dispatch) => (
