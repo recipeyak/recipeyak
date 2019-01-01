@@ -8,7 +8,7 @@ import { teamURL, recipeURL } from "@/urls"
 import * as DragDrop from "@/dragDrop"
 import { ITeam } from "@/store/reducers/teams"
 import { IRecipe } from "@/store/reducers/recipes"
-import GlobalEvent from "@/components/GlobalEvent"
+import Dropdown from "@/components/Dropdown"
 
 interface IRecipeTitleProps {
   readonly url: string
@@ -69,18 +69,21 @@ class Schedule extends React.Component<IScheduleProps> {
   render() {
     const { id, teamID, show, onClick, onClose } = this.props
     return (
-      <div className="p-rel" ref={this.element}>
-        <GlobalEvent mouseUp={this.handleGlobalClick} />
-        <ButtonPlain onClick={onClick} className="is-small">
-          schedule
-        </ButtonPlain>
+      <Dropdown
+        onClose={onClose}
+        show={show}
+        trigger={
+          <ButtonPlain onClick={onClick} className="is-small">
+            schedule
+          </ButtonPlain>
+        }>
         <DatePickerForm
           recipeID={id}
           teamID={teamID}
           show={show}
           close={onClose}
         />
-      </div>
+      </Dropdown>
     )
   }
 }
