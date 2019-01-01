@@ -176,9 +176,8 @@ class ShoppingList extends React.Component<
   render() {
     return (
       <div className="d-grid grid-gap-2">
-        <div className="p-rel">
+        <div className="p-rel" ref={this.element}>
           <div
-            ref={this.element}
             className="d-flex align-items-center no-print">
             <GlobalEvent mouseDown={this.handleGeneralClick} />
             <input
