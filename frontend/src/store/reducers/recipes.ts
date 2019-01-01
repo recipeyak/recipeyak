@@ -250,10 +250,6 @@ export const enum RDK {
   Success
 }
 
-interface INotAsked {
-  readonly kind: RDK.NotAsked
-}
-
 interface ILoading {
   readonly kind: RDK.Loading
 }
@@ -268,7 +264,7 @@ interface ISuccess<T> {
   readonly data: T
 }
 
-type RemoteData<E, T> = INotAsked | ILoading | IFailure<E> | ISuccess<T>
+type RemoteData<E, T> = undefined | ILoading | IFailure<E> | ISuccess<T>
 
 type WebData<T, E = unknown> = RemoteData<E, T>
 
@@ -280,7 +276,7 @@ export const enum HttpErrorKind {
 // for now we have to specify the type guard
 // see https://github.com/Microsoft/TypeScript/issues/16069
 export const isSuccess = <T>(x: WebData<T>): x is ISuccess<T> =>
-  x.kind === RDK.Success
+  x != null && x.kind === RDK.Success
 
 export interface IIngredient {
   readonly id: number
@@ -336,30 +332,13 @@ export interface IRecipe {
 
 export type RemoteRecipe = WebData<IRecipe, HttpErrorKind>
 
-interface IDict {
-  readonly [key: number]: RemoteRecipe
-}
-
-function WebDict() {
-  return new Proxy({} as IDict, {
-    get: (target, name: number) => {
-      if (name in target) {
-        return target[name]
-      }
-      return {
-        kind: RDK.NotAsked
-      }
-    }
-  })
-}
-
 function mapRecipeSuccessById(
   state: IRecipesState,
   id: IRecipe["id"],
   func: (recipe: IRecipe) => IRecipe
 ): IRecipesState {
   const recipe = state.byId[id]
-  if (recipe.kind !== RDK.Success) {
+  if (recipe == null || recipe.kind !== RDK.Success) {
     return state
   }
   return {
@@ -374,8 +353,6 @@ function mapRecipeSuccessById(
   }
 }
 
-type WebDictType = ReturnType<typeof WebDict>
-
 export interface IRecipesState {
   /** Represents the loading state for the list view.
    *  Currently shared by other views as well, but should be eliminated
@@ -388,7 +365,9 @@ export interface IRecipesState {
   readonly creatingRecipe: boolean
   readonly errorCreatingRecipe: IAddRecipeError
 
-  readonly byId: WebDictType
+  readonly byId: {
+    readonly [key: number]: RemoteRecipe
+  }
   readonly allIds: IRecipe["id"][]
 }
 
@@ -398,7 +377,7 @@ export const initialState: IRecipesState = {
 
   creatingRecipe: false,
   errorCreatingRecipe: {},
-  byId: WebDict(),
+  byId: {},
   allIds: []
 }
 
