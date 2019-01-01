@@ -8,7 +8,7 @@ import {
 import { ITeam, IMember } from "@/store/reducers/teams"
 import store from "@/store/store"
 import { IShoppingListItem } from "@/store/reducers/shoppinglist"
-import { pyFormat } from "@/date"
+import { toDateString } from "@/date"
 import { IRecipeBasic } from "@/components/RecipeTitle"
 import { IRecipe, IIngredient, IStep } from "@/store/reducers/recipes"
 import { CancelToken } from "axios"
@@ -103,8 +103,8 @@ export const getShoppingList = (
       : `/api/v1/t/${teamID}/shoppinglist/`
   return http.get<IShoppingListItem[]>(url, {
     params: {
-      start: pyFormat(startDay),
-      end: pyFormat(endDay)
+      start: toDateString(startDay),
+      end: toDateString(endDay)
     }
   })
 }
@@ -251,8 +251,8 @@ export const getCalendarRecipeList = (
   // TODO(sbdchd): I think this is wrong
   return http.get<ICalRecipe[]>(url, {
     params: {
-      start: pyFormat(subWeeks(startOfMonth(month), 1)),
-      end: pyFormat(addWeeks(endOfMonth(month), 1))
+      start: toDateString(subWeeks(startOfMonth(month), 1)),
+      end: toDateString(addWeeks(endOfMonth(month), 1))
     }
   })
 }
@@ -269,7 +269,7 @@ export const scheduleRecipe = (
       : `/api/v1/t/${teamID}/calendar/`
   return http.post<ICalRecipe>(url, {
     recipe: recipeID,
-    on: pyFormat(on),
+    on: toDateString(on),
     count
   })
 }

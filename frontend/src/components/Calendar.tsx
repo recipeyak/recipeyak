@@ -11,7 +11,7 @@ import {
   fetchingRecipeList
 } from "@/store/actions"
 
-import { pyFormat } from "@/date"
+import { toDateString } from "@/date"
 
 import { teamsFrom } from "@/store/mapState"
 
@@ -71,7 +71,7 @@ function Days({ start, end, days, teamID }: IDaysProps) {
     <section className="d-grid grid-gap-1 calendar-grid mb-0 flex-grow-1 h-100">
       {eachDay(start, end).map(date => (
         <CalendarDay
-          item={days[pyFormat(date)]}
+          item={days[toDateString(date)]}
           date={date}
           key={date.toString()}
           teamID={teamID}
