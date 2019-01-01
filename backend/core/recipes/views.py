@@ -43,7 +43,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         We restrict access via this queryset filtering.
         """
-        SEARCH_LIMIT = 10
         # get all recipes user has access to
         recipes = user_and_team_recipes(self.request.user)
 
