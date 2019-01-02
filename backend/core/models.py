@@ -196,12 +196,9 @@ class Recipe(CommonInfo):
         """Return recipe steps ordered by creation date"""
         return Step.objects.filter(recipe=self).order_by("position", "created")
 
-    @property
-    def last_scheduled(self) -> Optional[datetime]:
+    def get_last_scheduled(self) -> Optional[datetime]:
         """Return the most recent date this recipe was scheduled for"""
-        scheduled_recipe = (
-            ScheduledRecipe.objects.filter(recipe=self).order_by("on").first()
-        )
+        scheduled_recipe = self.scheduledrecipe_set.first()
         if scheduled_recipe is not None:
             return scheduled_recipe.on
         return None
@@ -242,7 +239,7 @@ class Ingredient(CommonInfo):
 
     class Meta:
         unique_together = (("recipe", "position"),)
-        ordering = ["-position"]
+        ordering = ["position"]
 
     def __str__(self):
         return f"{self.quantity} {self.name} {self.description}"
@@ -261,7 +258,7 @@ class Step(CommonInfo):
 
     class Meta:
         unique_together = (("recipe", "position"),)
-        ordering = ["-position"]
+        ordering = ["position"]
 
     def __str__(self):
         return self.text
@@ -301,6 +298,7 @@ class ScheduledRecipe(CommonInfo):
 
     class Meta:
         unique_together = (("recipe", "on", "user"), ("recipe", "on", "team"))
+        ordering = ["on"]
 
     def __str__(self):
         owner = self.user if not self.team else self.team
