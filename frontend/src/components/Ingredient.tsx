@@ -3,7 +3,7 @@ import React from "react"
 import IngredientView from "@/components/IngredientView"
 import { IIngredient, IRecipe } from "@/store/reducers/recipes"
 import GlobalEvent from "@/components/GlobalEvent"
-import { Button } from "@/components/Buttons"
+import { Button, ButtonLink } from "@/components/Buttons"
 
 interface IEmptyField {
   readonly quantity?: string
@@ -317,14 +317,12 @@ export default class Ingredient extends React.Component<
           <section className="d-flex justify-space-between align-center">
             <span className="is-italic fs-4">Unsaved Changes</span>
             <section>
-              <a onClick={enableEditing} className="my-button is-small is-link">
+              <ButtonLink size="small" onClick={enableEditing}>
                 View Edits
-              </a>
-              <a
-                onClick={discardChanges}
-                className="my-button is-small is-link">
+              </ButtonLink>
+              <ButtonLink size="small" onClick={discardChanges}>
                 Discard
-              </a>
+              </ButtonLink>
             </section>
           </section>
         )}

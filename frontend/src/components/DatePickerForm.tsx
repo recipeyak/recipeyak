@@ -16,6 +16,7 @@ import { ButtonPrimary } from "@/components/Buttons"
 import { addingScheduledRecipe, Dispatch } from "@/store/actions"
 import { IRecipe } from "@/store/reducers/recipes"
 import { ITeam } from "@/store/reducers/teams"
+import { TextInput } from "@/components/Forms"
 
 function mapDispatchToProps(dispatch: Dispatch) {
   return {
@@ -116,8 +117,9 @@ class DatePickerForm extends React.Component<
         />
         <form className="d-grid grid-gap-1" onSubmit={this.handleSubmit}>
           <div className="d-flex">
-            <input
-              className="my-input is-small w-2rem mr-2 fs-3 text-center"
+            <TextInput
+              size="small"
+              className="w-2rem mr-2 fs-3 text-center"
               onChange={this.handleCountChange}
               value={this.state.count}
             />
@@ -126,7 +128,7 @@ class DatePickerForm extends React.Component<
             </span>
           </div>
           <ButtonPrimary
-            className="is-small"
+            size="small"
             type="submit"
             loading={this.props.scheduling}>
             Schedule

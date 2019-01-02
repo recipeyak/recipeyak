@@ -28,6 +28,7 @@ import {
 } from "@/store/reducers/calendar"
 import { ScheduleRouteParams } from "@/components/Schedule"
 import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
+import { Select } from "@/components/Forms"
 
 function monthYearFromDate(date: Date) {
   return format(date, "MMM DD | YYYY")
@@ -98,16 +99,19 @@ function TeamSelect({
   teams
 }: ITeamSelectProps) {
   return (
-    <div className="select is-small ml-2">
-      <select onChange={handleOwnerChange} value={teamID} disabled={loading}>
-        <option value="personal">Personal</option>
-        {teams.map(t => (
-          <option key={t.id} value={t.id}>
-            {t.name}
-          </option>
-        ))}
-      </select>
-    </div>
+    <Select
+      onChange={handleOwnerChange}
+      value={teamID}
+      size="small"
+      disabled={loading}
+      className="ml-2">
+      <option value="personal">Personal</option>
+      {teams.map(t => (
+        <option key={t.id} value={t.id}>
+          {t.name}
+        </option>
+      ))}
+    </Select>
   )
 }
 
@@ -144,13 +148,13 @@ function Nav({
         />
       </section>
       <section>
-        <ButtonPlain className="is-small" onClick={prev}>
+        <ButtonPlain size="small" onClick={prev}>
           {"←"}
         </ButtonPlain>
-        <ButtonPrimary className="ml-1 mr-1 is-small" onClick={current}>
+        <ButtonPrimary size="small" className="ml-1 mr-1" onClick={current}>
           Today
         </ButtonPrimary>
-        <ButtonPlain className="is-small" onClick={next}>
+        <ButtonPlain size="small" onClick={next}>
           {"→"}
         </ButtonPlain>
       </section>

@@ -1,7 +1,7 @@
 import React from "react"
 import Textarea from "react-textarea-autosize"
 
-import { ButtonPrimary } from "@/components/Buttons"
+import { ButtonPrimary, Button } from "@/components/Buttons"
 
 interface IAddStepFormProps {
   readonly handleInputChange: (
@@ -60,7 +60,7 @@ const AddStepForm = ({
     <div className="field is-grouped">
       <p className="control">
         <ButtonPrimary
-          className="is-small"
+          size="small"
           disabled={text === ""}
           type="submit"
           name="save step"
@@ -69,13 +69,13 @@ const AddStepForm = ({
         </ButtonPrimary>
       </p>
       <p className="control">
-        <input
+        <Button
           onClick={cancelAddStep}
-          className="my-button is-small"
+          size="small"
           type="button"
-          name="cancel step"
-          value="Cancel"
-        />
+          name="cancel step">
+          Cancel
+        </Button>
       </p>
     </div>
   </form>

@@ -3,6 +3,7 @@ import Textarea from "react-textarea-autosize"
 import { IRecipe } from "@/store/reducers/recipes"
 import GlobalEvent from "@/components/GlobalEvent"
 import ReactMarkdown, { NodeType } from "react-markdown"
+import { Button, ButtonLink } from "@/components/Buttons"
 
 const ALLOWED_MARKDOWN_TYPES: NodeType[] = [
   "root",
@@ -175,37 +176,32 @@ export default class ListItem extends React.Component<
         <section className="listitem-button-container">
           <div className="field is-grouped">
             <p className="control">
-              <button
+              <Button
+                size="small"
                 onClick={this.update}
-                className={
-                  "my-button is-small " + (updating ? "is-loading" : "")
-                }
-                type="button"
+                loading={updating}
                 name="save">
                 Save
-              </button>
+              </Button>
             </p>
             <p className="control">
-              <input
-                onClick={this.handleButtonClick}
-                className="my-button is-small"
-                type="button"
+              <Button
+                size="small"
                 name="cancel edit"
-                value="Cancel"
-              />
+                onClick={this.handleButtonClick}>
+                Cancel
+              </Button>
             </p>
           </div>
           <div className="field is-grouped">
             <p className="control">
-              <button
+              <Button
                 onClick={this.delete}
-                className={
-                  "my-button is-small " + (removing ? "is-loading" : "")
-                }
-                type="button"
+                size="small"
+                loading={removing}
                 name="delete">
                 Delete
-              </button>
+              </Button>
             </p>
           </div>
         </section>
@@ -226,16 +222,12 @@ export default class ListItem extends React.Component<
           <section className="d-flex justify-space-between align-center">
             <span className="is-italic">Unsaved Changes</span>
             <section>
-              <a
-                onClick={this.enableEditing}
-                className="my-button is-small is-link">
+              <ButtonLink size="small" onClick={this.enableEditing}>
                 View Edits
-              </a>
-              <a
-                onClick={this.discardChanges}
-                className="my-button is-small is-link">
+              </ButtonLink>
+              <ButtonLink size="small" onClick={this.discardChanges}>
                 Discard
-              </a>
+              </ButtonLink>
             </section>
           </section>
         )}

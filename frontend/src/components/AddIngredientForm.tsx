@@ -1,6 +1,6 @@
 import React from "react"
 
-import { ButtonPrimary } from "@/components/Buttons"
+import { ButtonPrimary, Button } from "@/components/Buttons"
 
 interface IAddIngredientFormProps {
   readonly handleAddIngredient: () => void
@@ -96,7 +96,7 @@ const AddIngredientForm = ({
       <p className="control">
         <ButtonPrimary
           disabled={quantity === "" && name === ""}
-          className="is-small"
+          size="small"
           type="submit"
           name="add ingredient"
           loading={loading}>
@@ -104,13 +104,13 @@ const AddIngredientForm = ({
         </ButtonPrimary>
       </p>
       <p className="control">
-        <input
+        <Button
           onClick={cancelAddIngredient}
-          className="my-button is-small"
+          size="small"
           type="button"
-          name="cancel add ingredient"
-          value="cancel"
-        />
+          name="cancel add ingredient">
+          Cancel
+        </Button>
       </p>
     </div>
   </form>

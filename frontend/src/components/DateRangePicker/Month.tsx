@@ -47,7 +47,8 @@ class Month extends React.Component<IMonthProps> {
           {this.props.showLeft ? (
             <ButtonPlain
               onClick={this.props.prevMonth}
-              className="is-small grid-row-1 grid-column-1 justify-self-left">
+              size="small"
+              className="grid-row-1 grid-column-1 justify-self-left">
               {"←"}
             </ButtonPlain>
           ) : null}
@@ -56,8 +57,9 @@ class Month extends React.Component<IMonthProps> {
           </div>
           {this.props.showRight ? (
             <ButtonPlain
+              size="small"
               onClick={this.props.nextMonth}
-              className="is-small grid-row-1 grid-column-1 justify-self-end">
+              className="grid-row-1 grid-column-1 justify-self-end">
               {"→"}
             </ButtonPlain>
           ) : null}

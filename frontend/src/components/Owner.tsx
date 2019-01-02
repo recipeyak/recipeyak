@@ -23,6 +23,7 @@ import { IUserState } from "@/store/reducers/user"
 import { AxiosError } from "axios"
 import { teamURL } from "@/urls"
 import GlobalEvent from "@/components/GlobalEvent"
+import { Select } from "@/components/Forms"
 
 const mapStateToProps = (state: RootState) => ({
   teams: state.teams,
@@ -181,33 +182,35 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
             <div className="dropdown-content">
               <div className="text-center">Teams</div>
               <hr className="dropdown-divider mt-1 mb-1" />
-              <div className="max-height-25vh overflow-y-scroll select is-multiple w-100">
-                <select
-                  multiple={true}
-                  className="my-select"
-                  value={this.state.values}
-                  onChange={this.handleChange}>
-                  {teamUserKeys.map(opt => (
-                    <option className="fs-3 fw-500" key={opt.id} value={opt.id}>
-                      {opt.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <Select
+                multiple
+                noBorder
+                value={this.state.values}
+                onChange={this.handleChange}
+                className="max-height-25vh overflow-y-scroll w-100">
+                {teamUserKeys.map(opt => (
+                  <option className="fs-3 fw-500" key={opt.id} value={opt.id}>
+                    {opt.name}
+                  </option>
+                ))}
+              </Select>
               <hr className="dropdown-divider" />
               <div className="d-flex justify-space-between ml-2 mr-2">
-                <ButtonLink className="is-small" onClick={this.toggle}>
+                <ButtonLink size="small" onClick={this.toggle}>
                   cancel
                 </ButtonLink>
                 <div className="d-flex justify-space-between">
                   <ButtonSecondary
-                    className={"is-small mr-1" + (moving ? " is-loading" : "")}
+                    size="small"
+                    loading={moving}
+                    className="mr-1"
                     onClick={() => this.move()}
                     disabled={this.disableMove()}>
                     move
                   </ButtonSecondary>
                   <ButtonPrimary
-                    className={"is-small" + (copying ? " is-loading" : "")}
+                    size="small"
+                    loading={copying}
                     onClick={() => this.copy()}
                     disabled={this.disableCopy()}>
                     copy

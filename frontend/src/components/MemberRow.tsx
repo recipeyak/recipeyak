@@ -12,6 +12,7 @@ import {
 import { ITeam, IMember } from "@/store/reducers/teams"
 import { RootState } from "@/store/store"
 import { IUser } from "@/store/reducers/user"
+import { Select } from "@/components/Forms"
 
 const mapStateToProps = (
   state: RootState,
@@ -80,26 +81,25 @@ const MemberRow = ({
       {!isActive ? (
         <section className="d-flex align-items-start direction-column">
           <p className="bold">invite sent</p>
-          <ButtonPlain className="is-small">Resend Invite</ButtonPlain>
+          <ButtonPlain size="small">Resend Invite</ButtonPlain>
         </section>
       ) : null}
     </td>
     <td className="vertical-align-middle pr-4">
       {userIsTeamAdmin ? (
-        <div className="select is-small">
-          <select
-            value={level}
-            onChange={e =>
-              handleUserLevelChange(teamID, membershipID, e.target.value as
-                | "admin"
-                | "contributor"
-                | "read")
-            }>
-            <option value="admin">Admin</option>
-            <option value="contributor">Contributor</option>
-            <option value="read">Read</option>
-          </select>
-        </div>
+        <Select
+          size="small"
+          value={level}
+          onChange={e =>
+            handleUserLevelChange(teamID, membershipID, e.target.value as
+              | "admin"
+              | "contributor"
+              | "read")
+          }>
+          <option value="admin">Admin</option>
+          <option value="contributor">Contributor</option>
+          <option value="read">Read</option>
+        </Select>
       ) : (
         <p>
           <b>{level}</b>
@@ -109,9 +109,9 @@ const MemberRow = ({
     <td className="vertical-align-middle text-right">
       {isUser || userIsTeamAdmin ? (
         <ButtonDanger
+          size="small"
           onClick={() => deleteMembership(teamID, membershipID, isUser)}
-          loading={deleting}
-          className="is-small">
+          loading={deleting}>
           {isUser ? "leave" : "remove"}
         </ButtonDanger>
       ) : null}

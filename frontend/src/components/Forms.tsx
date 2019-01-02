@@ -19,9 +19,45 @@ export const FormErrorHandler = ({ error }: IFormErrorHandlerProps) => {
   )
 }
 
+interface ITextInputProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
+  readonly size?: "small" | "normal" | "medium" | "large"
+}
+
 export const TextInput = ({
   className = "",
+  size = "normal",
   ...props
-}: React.InputHTMLAttributes<HTMLInputElement>) => {
-  return <input type="text" className={"my-input " + className} {...props} />
+}: ITextInputProps) => {
+  const inputSize = "is-" + size
+  return (
+    <input
+      type="text"
+      className={`my-input ${inputSize} ` + className}
+      {...props}
+    />
+  )
+}
+
+interface ISelectProps
+  extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, "size"> {
+  readonly size?: "small" | "normal" | "medium" | "large"
+  readonly noBorder?: boolean
+}
+
+export function Select({
+  className,
+  size = "normal",
+  multiple,
+  noBorder,
+  ...props
+}: ISelectProps) {
+  const inputSize = "is-" + size
+  const multipleClass = multiple ? "is-multiple" : ""
+  const selectClass = noBorder ? "my-select" : ""
+  return (
+    <div className={`select ${inputSize} ${multipleClass} ${className}`}>
+      <select className={selectClass} multiple={multiple} {...props} />
+    </div>
+  )
 }
