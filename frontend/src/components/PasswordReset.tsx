@@ -2,7 +2,7 @@ import React from "react"
 import { Helmet } from "@/components/Helmet"
 import { Link } from "react-router-dom"
 
-import { FormErrorHandler } from "@/components/Forms"
+import { FormErrorHandler, EmailInput } from "@/components/Forms"
 import { ButtonPrimary } from "@/components/Buttons"
 import AuthContainer from "@/components/AuthContainer"
 import { IPasswordResetError } from "@/store/reducers/auth"
@@ -55,15 +55,14 @@ class PasswordReset extends React.Component<
 
           <div className="field">
             <label className="label">Email</label>
-            <input
+            <EmailInput
               autoFocus
               onChange={this.handleInputChange}
-              className={"my-input" + (email ? " is-danger" : "")}
-              type="email"
+              error={email != null}
               name="email"
               value={this.state.email}
               required
-              placeholder="rick.sanchez@me.com"
+              placeholder="a.person@me.com"
             />
             <FormErrorHandler error={email} />
           </div>

@@ -13,7 +13,7 @@ import {
   IAddRecipeError
 } from "@/store/reducers/recipes"
 import { ITeam } from "@/store/reducers/teams"
-import { Select } from "@/components/Forms"
+import { Select, TextInput } from "@/components/Forms"
 
 const unfinishedIngredient = ({ quantity = "", name = "" }) =>
   quantity === "" || name === ""
@@ -178,12 +178,12 @@ export default class AddRecipe extends React.Component<
       <div className="d-grid grid-gap-1rem">
         <Helmet title="Add Recipe" />
         <div>
-          <input
+          <TextInput
             autoFocus
             onChange={this.props.setName}
             value={this.props.name}
-            className={"my-input fs-2rem" + (errorWithName ? " is-danger" : "")}
-            type="text"
+            error={errorWithName}
+            className="fs-2rem"
             placeholder="new recipe title"
             name="name"
           />
@@ -195,44 +195,40 @@ export default class AddRecipe extends React.Component<
         <div className="d-grid  meta-data-grid">
           <label className="d-flex align-center">
             By
-            <input
+            <TextInput
               onChange={this.props.setAuthor}
               value={this.props.author}
-              className="my-input ml-2"
-              type="text"
+              className="ml-2"
               placeholder="Author"
               name="author"
             />
           </label>
           <label className="d-flex align-center">
             from
-            <input
+            <TextInput
               onChange={this.props.setSource}
               value={this.props.source}
-              className="my-input ml-2"
-              type="text"
+              className="ml-2"
               placeholder="http://example.com/dumpling-soup"
               name="source"
             />
           </label>
           <label className="d-flex align-center">
             creating
-            <input
+            <TextInput
               onChange={this.props.setServings}
               value={this.props.servings}
-              className="my-input ml-2"
-              type="text"
+              className="ml-2"
               placeholder="4 to 6 servings"
               name="servings"
             />
           </label>
           <label className="d-flex align-center">
             in
-            <input
+            <TextInput
               onChange={this.props.setTime}
               value={this.props.time}
-              className="my-input ml-2"
-              type="text"
+              className="ml-2"
               placeholder="1 hour"
               name="time"
             />

@@ -4,6 +4,7 @@ import IngredientView from "@/components/IngredientView"
 import { IIngredient, IRecipe } from "@/store/reducers/recipes"
 import GlobalEvent from "@/components/GlobalEvent"
 import { Button, ButtonLink } from "@/components/Buttons"
+import { TextInput, selectTarget, CheckBox } from "@/components/Forms"
 
 interface IEmptyField {
   readonly quantity?: string
@@ -221,33 +222,30 @@ export default class Ingredient extends React.Component<
         />
         <div className="field">
           <div className="add-ingredient-grid">
-            <input
+            <TextInput
               onChange={handleInputChange}
               autoFocus
-              onFocus={e => e.target.select()}
+              onFocus={selectTarget}
               value={quantity}
-              className="my-input input-quantity"
-              type="text"
+              className="input-quantity"
               placeholder="3 lbs"
               name="quantity"
             />
 
-            <input
+            <TextInput
               onChange={handleInputChange}
-              onFocus={e => e.target.select()}
+              onFocus={selectTarget}
               value={name}
-              className="my-input input-ingredient"
-              type="text"
+              className="input-ingredient"
               placeholder="tomato"
               name="name"
             />
 
-            <input
+            <TextInput
               onChange={handleInputChange}
-              onFocus={e => e.target.select()}
+              onFocus={selectTarget}
               value={description}
-              className="my-input input-ingredient grid-entire-row"
-              type="text"
+              className="input-ingredient grid-entire-row"
               placeholder="diced at 3cm in width"
               name="description"
             />
@@ -255,11 +253,10 @@ export default class Ingredient extends React.Component<
         </div>
 
         <label className="d-flex align-items-center cursor-pointer mb-2">
-          <input
+          <CheckBox
             onChange={this.toggleOptional}
             checked={optional}
             name="optional"
-            type="checkbox"
             className="mr-2"
           />
           Optional

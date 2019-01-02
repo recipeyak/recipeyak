@@ -15,6 +15,7 @@ import { inviteURL, teamURL, teamSettingsURL } from "@/urls"
 import { IMember, ITeam } from "@/store/reducers/teams"
 import { IRecipe } from "@/store/reducers/recipes"
 import { Tab, Tabs } from "@/components/Tabs"
+import { TextInput } from "@/components/Forms"
 
 interface IMembersProps {
   readonly teamID: ITeam["id"]
@@ -144,11 +145,9 @@ class TeamSettings extends React.Component<
       <form onSubmit={this.handleSubmit}>
         <div className="field">
           <label className="label">Team Name</label>
-          <input
+          <TextInput
             disabled={this.props.loading}
             onChange={this.handleInputChange}
-            className="my-input"
-            type="text"
             placeholder="The Grand Budapest Staff"
             value={this.state.name}
             name="name"

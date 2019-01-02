@@ -1,4 +1,8 @@
 import * as React from "react"
+import { classNames } from "@/classnames"
+
+export const selectTarget = (e: React.ChangeEvent<HTMLInputElement>) =>
+  e.target.select()
 
 interface IFormErrorHandlerProps {
   readonly error: string[] | null | undefined
@@ -19,25 +23,54 @@ export const FormErrorHandler = ({ error }: IFormErrorHandlerProps) => {
   )
 }
 
-interface ITextInputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
-  readonly size?: "small" | "normal" | "medium" | "large"
+interface ITypelessInput
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type"> {}
+
+export function CheckBox(props: ITypelessInput) {
+  return <input {...props} type="checkbox" />
 }
 
-export const TextInput = ({
+export function RadioButton(props: ITypelessInput) {
+  return <input {...props} type="radio" />
+}
+
+interface IBaseInputProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
+  readonly size?: "small" | "normal" | "medium" | "large"
+  readonly error?: boolean
+  readonly isFocused?: boolean
+}
+
+const BaseInput = ({
   className = "",
   size = "normal",
+  error = false,
+  isFocused = false,
   ...props
-}: ITextInputProps) => {
+}: IBaseInputProps) => {
   const inputSize = "is-" + size
-  return (
-    <input
-      type="text"
-      className={`my-input ${inputSize} ` + className}
-      {...props}
-    />
+  const cls = classNames(
+    "my-input",
+    inputSize,
+    {
+      "is-danger": error,
+      "is-focused": isFocused
+    },
+    className
   )
+  return <input className={cls} {...props} />
 }
+
+const createInput = (
+  type: React.InputHTMLAttributes<HTMLInputElement>["type"]
+) => (props: Omit<IBaseInputProps, "type">) => (
+  <BaseInput {...props} type={type} />
+)
+
+export const TextInput = createInput("text")
+export const PasswordInput = createInput("password")
+export const EmailInput = createInput("email")
+export const DateInput = createInput("date")
 
 interface ISelectProps
   extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, "size"> {

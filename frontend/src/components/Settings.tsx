@@ -11,6 +11,7 @@ import { GITHUB_OAUTH_URL, GITLAB_OAUTH_URL } from "@/settings"
 import { SocialProvider } from "@/store/reducers/user"
 import { ISocialAccountsState } from "@/store/reducers/user"
 import { AxiosError } from "axios"
+import { TextInput } from "@/components/Forms"
 
 interface IOAuthButtonProps {
   readonly name: string
@@ -278,7 +279,7 @@ export default class SettingsWithState extends React.Component<
               }}>
               <label className="better-label">Email</label>
               {editing ? (
-                <input
+                <TextInput
                   onKeyDown={e => {
                     if (e.key === "Escape") {
                       this.cancelEdit()
@@ -287,8 +288,6 @@ export default class SettingsWithState extends React.Component<
                   autoFocus
                   defaultValue={email}
                   onChange={handleInputChange}
-                  type="text"
-                  className="my-input"
                   name="email"
                 />
               ) : (

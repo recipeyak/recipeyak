@@ -8,6 +8,7 @@ import { ButtonPrimary } from "@/components/Buttons"
 import { creatingTeam, Dispatch } from "@/store/actions"
 import { IMember } from "@/store/reducers/teams"
 import { RootState } from "@/store/store"
+import { TextInput, RadioButton } from "@/components/Forms"
 
 const mapStateToProps = (state: RootState) => ({
   loading: !!state.teams.creating
@@ -57,11 +58,10 @@ class TeamCreate extends React.Component<ITeamCreateProps, ITeamCreateState> {
         <form action="" onSubmit={this.handleSubmit}>
           <label className="d-flex align-center mb-3">
             Name
-            <input
+            <TextInput
               value={this.state.name}
               onChange={this.handleInputChange}
-              className="my-input ml-2"
-              type="text"
+              className="ml-2"
               placeholder="A Great Team Name"
               name="name"
             />
@@ -70,9 +70,8 @@ class TeamCreate extends React.Component<ITeamCreateProps, ITeamCreateState> {
           <div style={{ display: this.state.name === "" ? "none" : undefined }}>
             <h2 className="fs-6">Invite Team Members</h2>
 
-            <input
-              type="text"
-              className="my-input mb-4"
+            <TextInput
+              className="mb-4"
               value={this.state.emails}
               name="emails"
               onChange={this.handleInputChange}
@@ -80,8 +79,7 @@ class TeamCreate extends React.Component<ITeamCreateProps, ITeamCreateState> {
             />
             {roles.map(({ name, value, description }, id) => (
               <label key={id} className="d-flex align-items-center pb-4">
-                <input
-                  type="radio"
+                <RadioButton
                   className="mr-2"
                   name="level"
                   checked={this.state.level === value}

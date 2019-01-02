@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import { Helmet } from "@/components/Helmet"
 import { Link, RouteComponentProps } from "react-router-dom"
 
-import { FormErrorHandler } from "@/components/Forms"
+import { FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { ButtonPrimary } from "@/components/Buttons"
 
 import { resetConfirmation as reset, Dispatch } from "@/store/actions"
@@ -91,13 +91,10 @@ class PasswordResetConfirmation extends React.Component<
                 <div className="field">
                   <label className="label">Password</label>
                   <p className="control">
-                    <input
+                    <PasswordInput
                       autoFocus
                       onChange={this.handleInputChange}
-                      className={
-                        "my-input" + (newPassword1 ? " is-danger" : "")
-                      }
-                      type="password"
+                      error={newPassword1 != null}
                       name="newPassword1"
                       value={this.state.newPassword1}
                     />
@@ -108,12 +105,9 @@ class PasswordResetConfirmation extends React.Component<
                 <div className="field">
                   <label className="label">Password Again</label>
                   <p className="control">
-                    <input
+                    <PasswordInput
                       onChange={this.handleInputChange}
-                      className={
-                        "my-input" + (newPassword2 ? " is-danger" : "")
-                      }
-                      type="password"
+                      error={newPassword2 != null}
                       name="newPassword2"
                       value={this.state.newPassword2}
                     />

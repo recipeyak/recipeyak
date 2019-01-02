@@ -3,7 +3,7 @@ import { Helmet } from "@/components/Helmet"
 import { Link } from "react-router-dom"
 
 import SocialButtons from "@/components/SocialButtons"
-import { FormErrorHandler } from "@/components/Forms"
+import { FormErrorHandler, EmailInput, PasswordInput } from "@/components/Forms"
 import { ButtonPrimary } from "@/components/Buttons"
 import AuthContainer from "@/components/AuthContainer"
 import { ISignupErrors } from "@/store/reducers/auth"
@@ -71,12 +71,11 @@ class Signup extends React.Component<ISignupProps, ISignupState> {
           <form onSubmit={this.handleSignup}>
             <div className="field">
               <label className="label">Email</label>
-              <input
+              <EmailInput
                 onChange={this.handleInputChange}
-                className={"my-input" + (email ? " is-danger" : "")}
+                error={email != null}
                 autoFocus
                 name="email"
-                type="email"
                 placeholder="rick.sanchez@me.com"
               />
               <FormErrorHandler error={email} />
@@ -86,10 +85,9 @@ class Signup extends React.Component<ISignupProps, ISignupState> {
               <label htmlFor="password1" className="label">
                 Password
               </label>
-              <input
+              <PasswordInput
                 onChange={this.handleInputChange}
-                className={"my-input" + (password1 ? " is-danger" : "")}
-                type="password"
+                error={password1 != null}
                 name="password1"
                 id="password1"
                 placeholder="Super secret password."
@@ -101,10 +99,9 @@ class Signup extends React.Component<ISignupProps, ISignupState> {
               <label htmlFor="password2" className="label">
                 Password Again
               </label>
-              <input
+              <PasswordInput
                 onChange={this.handleInputChange}
-                className={"my-input" + (password2 ? " is-danger" : "")}
-                type="password"
+                error={password2 != null}
                 name="password2"
                 id="password2"
                 placeholder="Enter your password again."

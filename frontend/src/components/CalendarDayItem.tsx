@@ -12,6 +12,7 @@ import { IRecipe } from "@/store/reducers/recipes"
 import { ICalRecipe } from "@/store/reducers/calendar"
 import { AxiosResponse } from "axios"
 import GlobalEvent from "@/components/GlobalEvent"
+import { TextInput } from "@/components/Forms"
 
 const COUNT_THRESHOLD = 1
 
@@ -114,8 +115,8 @@ class CalendarItem extends React.Component<
         </Link>
         {this.state.count > COUNT_THRESHOLD ? (
           <div className="d-flex">
-            <input
-              className="fs-3 my-input text-right w-2rem"
+            <TextInput
+              className="fs-3 text-right w-2rem"
               name="calendar-item-count"
               onChange={this.handleChange}
               value={this.state.count}
