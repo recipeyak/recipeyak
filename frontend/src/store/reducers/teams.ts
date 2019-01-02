@@ -175,10 +175,27 @@ export interface ITeamsState {
   readonly creating?: boolean
   readonly copying?: boolean
   readonly moving?: boolean
-  readonly [key: number]: ITeam
+  readonly byId: {
+    readonly [key: number]: ITeam
+  }
+}
+
+export function mapById<
+  T extends { byId: { [key: number]: U } },
+  U extends { id: number }
+>(state: T, id: number, func: (team: U) => U): T {
+  const team = state.byId[id]
+  return {
+    ...state,
+    byId: {
+      ...state.byId,
+      [id]: func(team)
+    }
+  }
 }
 
 const initialState: ITeamsState = {
+  byId: {},
   allIds: []
 }
 
@@ -190,148 +207,143 @@ export const teams = (
     case ADD_TEAM:
       return {
         ...state,
-        [action.payload.id]: {
-          ...state[action.payload.id],
-          ...action.payload
+        byId: {
+          ...state.byId,
+          [action.payload.id]: {
+            ...state.byId[action.payload.id],
+            ...action.payload
+          }
         },
         allIds: uniq([...state.allIds, action.payload.id])
       }
     case DELETE_TEAM:
       return {
-        ...omit(state, action.payload),
+        ...state,
+        byId: omit(state.byId, action.payload),
         allIds: state.allIds.filter(id => id !== action.payload)
       }
     case SET_LOADING_TEAM:
       return {
         ...state,
-        [action.payload.id]: {
-          ...state[action.payload.id],
-          loadingTeam: action.payload.loadingTeam
+        byId: {
+          ...state.byId,
+          [action.payload.id]: {
+            ...state.byId[action.payload.id],
+            loadingTeam: action.payload.loadingTeam
+          }
         }
       }
     case SET_LOADING_TEAM_MEMBERS:
       return {
         ...state,
-        [action.payload.id]: {
-          ...state[action.payload.id],
-          loadingMembers: action.payload.loadingMembers
+        byId: {
+          ...state.byId,
+          [action.payload.id]: {
+            ...state.byId[action.payload.id],
+            loadingMembers: action.payload.loadingMembers
+          }
         }
       }
     case SET_LOADING_TEAM_RECIPES:
       return {
         ...state,
-        [action.payload.id]: {
-          ...state[action.payload.id],
-          loadingRecipes: action.payload.loadingRecipes
+        byId: {
+          ...state.byId,
+          [action.payload.id]: {
+            ...state.byId[action.payload.id],
+            loadingRecipes: action.payload.loadingRecipes
+          }
         }
       }
     case SET_TEAM_404:
-      return {
-        ...state,
-        [action.payload.id]: {
-          ...state[action.payload.id],
-          error404: action.payload.val
-        }
-      }
+      return mapById(state, action.payload.id, team => ({
+        ...team,
+        error404: action.payload.val
+      }))
     case SET_TEAM_MEMBERS:
-      return {
-        ...state,
-        [action.payload.id]: {
-          ...state[action.payload.id],
-          members: action.payload.members.reduce(
-            (a, b) => ({
-              ...a,
-              [b.id]: b
-            }),
-            {}
-          )
-        }
-      }
+      return mapById(state, action.payload.id, team => ({
+        ...team,
+        members: action.payload.members.reduce(
+          (a, b) => ({
+            ...a,
+            [b.id]: b
+          }),
+          {}
+        )
+      }))
     case SET_TEAM_RECIPES:
-      return {
-        ...state,
-        [action.payload.id]: {
-          ...state[action.payload.id],
-          recipes: action.payload.recipes.map(r => r.id)
-        }
-      }
+      return mapById(state, action.payload.id, team => ({
+        ...team,
+        recipes: action.payload.recipes.map(r => r.id)
+      }))
     case SET_UPDATING_USER_TEAM_LEVEL:
-      return {
-        ...state,
-        [action.payload.id]: {
-          ...state[action.payload.id],
-          updating: action.payload.updating
-        }
-      }
+      return mapById(state, action.payload.id, team => ({
+        ...team,
+        updating: action.payload.updating
+      }))
     case SET_DELETING_MEMBERSHIP:
-      return {
-        ...state,
-        [action.payload.teamID]: {
-          ...state[action.payload.teamID],
+      return mapById<ITeamsState, ITeam>(
+        state,
+        action.payload.teamID,
+        team => ({
+          ...team,
           // TODO: refactor membership into it's own reducer
           members: {
-            ...state[action.payload.teamID].members,
+            ...team.members,
             [action.payload.membershipID]: {
-              ...state[action.payload.teamID].members[
-                action.payload.membershipID
-              ],
+              ...team.members[action.payload.membershipID],
               deleting: action.payload.val
             }
           }
-        }
-      }
+        })
+      )
     case SET_USER_TEAM_LEVEL:
-      return {
-        ...state,
-        [action.payload.teamID]: {
-          ...state[action.payload.teamID],
+      return mapById<ITeamsState, ITeam>(
+        state,
+        action.payload.teamID,
+        team => ({
+          ...team,
           // TODO: refactor membership into it's own reducer
           members: {
-            ...state[action.payload.teamID].members,
+            ...team.members,
             [action.payload.membershipID]: {
-              ...state[action.payload.teamID].members[
-                action.payload.membershipID
-              ],
+              ...team.members[action.payload.membershipID],
               level: action.payload.level
             }
           }
-        }
-      }
+        })
+      )
     case SET_SENDING_TEAM_INVITES:
-      return {
-        ...state,
-        [action.payload.teamID]: {
-          ...state[action.payload.teamID],
-          sendingTeamInvites: action.payload.val
-        }
-      }
+      return mapById(state, action.payload.teamID, team => ({
+        ...team,
+        sendingTeamInvites: action.payload.val
+      }))
     case DELETE_MEMBERSHIP:
-      return {
-        ...state,
-        [action.payload.teamID]: {
-          ...state[action.payload.teamID],
+      return mapById<ITeamsState, ITeam>(
+        state,
+        action.payload.teamID,
+        team => ({
+          ...team,
           // TODO: refactor membership into it's own reducer
-          members: omit(
-            state[action.payload.teamID].members,
-            action.payload.membershipID
-          )
-        }
-      }
+          members: omit(team.members, action.payload.membershipID)
+        })
+      )
+
     case getType(fetchTeams.success):
       return {
         ...state,
         loading: false,
-        ...action.payload.reduce(
+        byId: action.payload.reduce(
           (a, b) => ({
             ...a,
             [b.id]: {
-              ...state[b.id],
+              ...state.byId[b.id],
               ...b
             }
           }),
-          {}
+          state.byId
         ),
-        allIds: uniq([...state.allIds, ...action.payload.map(x => x.id)])
+        allIds: uniq(state.allIds.concat(action.payload.map(x => x.id)))
       }
     case getType(fetchTeams.request):
       return {
@@ -341,8 +353,11 @@ export const teams = (
     case SET_TEAM:
       return {
         ...state,
-        [action.payload.id]: action.payload.team,
-        allIds: uniq([...state.allIds, action.payload.id])
+        byId: {
+          ...state.byId,
+          [action.payload.id]: action.payload.team
+        },
+        allIds: uniq(state.allIds.concat(action.payload.id))
       }
     case SET_CREATING_TEAM:
       return {
@@ -355,13 +370,7 @@ export const teams = (
         copying: action.payload
       }
     case UPDATE_TEAM:
-      return {
-        ...state,
-        [action.payload.id]: {
-          ...state[action.payload.id],
-          ...action.payload.teamKeys
-        }
-      }
+      return mapById(state, action.payload.id, () => action.payload.teamKeys)
     default:
       return state
   }

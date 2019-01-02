@@ -873,7 +873,7 @@ export const deletingMembership = (dispatch: Dispatch) => (
   return api
     .deleteTeamMember(teamID, id)
     .then(() => {
-      const message = "left team " + store.getState().teams[teamID].name
+      const message = "left team " + store.getState().teams.byId[teamID].name
       dispatch(deleteMembership(teamID, id))
       if (leaving) {
         dispatch(push("/"))
@@ -902,7 +902,7 @@ export const deletingTeam = (dispatch: Dispatch) => (teamID: ITeam["id"]) => {
     .deleteTeam(teamID)
     .then(() => {
       dispatch(push("/"))
-      const teamName = store.getState().teams[teamID].name
+      const teamName = store.getState().teams.byId[teamID].name
       showNotificationWithTimeout(dispatch)({
         message: `Team deleted (${teamName})`,
         level: "success",

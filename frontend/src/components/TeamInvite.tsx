@@ -18,7 +18,7 @@ import { TextInput, RadioButton } from "@/components/Forms"
 
 const mapStateToProps = (state: RootState, props: ITeamInviteProps) => {
   const id = parseInt(props.match.params.id, 10)
-  const team = state.teams[id] ? state.teams[id] : {}
+  const team = state.teams.byId[id] ? state.teams.byId[id] : {}
 
   return {
     ...team,

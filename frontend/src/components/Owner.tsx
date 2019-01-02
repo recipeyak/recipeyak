@@ -164,7 +164,10 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
     const { name, teams, userId } = this.props
     const { moving, copying } = teams
     const teamUserKeys = [
-      ...teams.allIds.map(id => ({ id: id + "-team", name: teams[id].name })),
+      ...teams.allIds.map(id => ({
+        id: id + "-team",
+        name: teams.byId[id].name
+      })),
       { id: userId + "-user", name: "personal" }
     ]
 
