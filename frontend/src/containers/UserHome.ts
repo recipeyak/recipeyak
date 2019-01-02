@@ -4,7 +4,7 @@ import UserHome from "@/components/UserHome"
 
 import {
   fetchUser,
-  fetchUserStats,
+  fetchingUserStats,
   fetchRecentRecipes,
   Dispatch
 } from "@/store/actions"
@@ -14,7 +14,6 @@ import { isSuccess } from "@/store/remotedata"
 
 const mapStateToProps = (state: RootState) => ({
   userStats: state.user.stats,
-  loadingUserStats: state.user.stats_loading,
   loadingRecipes: state.recipes.loadingAll,
   recipes: getRecipes(state)
     .filter(isSuccess)
@@ -29,7 +28,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchData: () => {
     fetchRecentRecipes(dispatch)()
     fetchUser(dispatch)()
-    fetchUserStats(dispatch)()
+    fetchingUserStats(dispatch)()
   }
 })
 

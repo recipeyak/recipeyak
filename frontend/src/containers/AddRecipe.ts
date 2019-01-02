@@ -1,6 +1,6 @@
 import { connect } from "react-redux"
 
-import { postNewRecipe, fetchTeams, Dispatch } from "@/store/actions"
+import { postNewRecipe, Dispatch, fetchingTeams } from "@/store/actions"
 
 import AddRecipe from "@/components/AddRecipe"
 
@@ -72,7 +72,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   clearErrors: () => dispatch(resetAddRecipeErrors()),
   clearForm: () => dispatch(clearAddRecipeForm()),
 
-  fetchData: fetchTeams(dispatch)
+  fetchData: fetchingTeams(dispatch)
 })
 
 export default connect(

@@ -7,7 +7,7 @@ import recipes, {
 
 import * as a from "@/store/reducers/recipes"
 import { RootState } from "@/store/store"
-import { RDK, HttpErrorKind } from "@/store/remotedata"
+import { HttpErrorKind, Loading, isSuccess, Failure } from "@/store/remotedata"
 
 export const baseRecipe: IRecipe = {
   id: 1,
@@ -78,8 +78,8 @@ describe("Recipes", () => {
       return
     }
 
-    expect(maybeSecond.kind).toEqual(RDK.Success)
-    if (maybeSecond.kind === RDK.Success) {
+    expect(isSuccess(maybeSecond)).toEqual(true)
+    if (isSuccess(maybeSecond)) {
       expect(maybeSecond.data).toEqual(second)
     }
   })
@@ -436,9 +436,7 @@ describe("Recipes", () => {
       loadingAll: false,
       errorLoadingAll: false,
       byId: {
-        [baseRecipe.id]: {
-          kind: RDK.Loading
-        }
+        [baseRecipe.id]: Loading()
       },
       allIds: []
     }
@@ -460,10 +458,7 @@ describe("Recipes", () => {
       loadingAll: false,
       errorLoadingAll: false,
       byId: {
-        [baseRecipe.id]: {
-          kind: RDK.Failure,
-          failure: HttpErrorKind.error404
-        }
+        [baseRecipe.id]: Failure(HttpErrorKind.error404)
       },
       allIds: []
     }

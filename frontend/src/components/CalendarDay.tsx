@@ -17,10 +17,10 @@ import CalendarItem from "@/components/CalendarDayItem"
 import {
   addingScheduledRecipe,
   updatingScheduledRecipe,
-  fetchShoppingList,
   moveScheduledRecipe,
   deletingScheduledRecipe,
-  Dispatch
+  Dispatch,
+  fetchingShoppingList
 } from "@/store/actions"
 
 import * as DragDrop from "@/dragDrop"
@@ -121,7 +121,7 @@ function mapDispatchToProps(dispatch: Dispatch) {
   return {
     create: addingScheduledRecipe(dispatch),
     updateCount: updatingScheduledRecipe(dispatch),
-    refetchShoppingList: fetchShoppingList(dispatch),
+    refetchShoppingList: fetchingShoppingList(dispatch),
     move: moveScheduledRecipe(dispatch),
     remove: deletingScheduledRecipe(dispatch)
   }

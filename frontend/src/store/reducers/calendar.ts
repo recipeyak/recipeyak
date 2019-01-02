@@ -1,21 +1,23 @@
 import { uniq, omit } from "lodash"
 import isSameDay from "date-fns/is_same_day"
 
-import { action as act, createAsyncAction, ActionType } from "typesafe-actions"
+import {
+  action as act,
+  createAsyncAction,
+  ActionType,
+  getType
+} from "typesafe-actions"
 import { RootState } from "@/store/store"
 
 const SET_CALENDAR_RECIPE = "SET_CALENDAR_RECIPE"
 const DELETE_CALENDAR_RECIPE = "DELETE_CALENDAR_RECIPE"
 const MOVE_CALENDAR_RECIPE = "MOVE_CALENDAR_RECIPE"
 const REPLACE_CALENDAR_RECIPE = "REPLACE_CALENDAR_RECIPE"
-const FETCH_CALENDAR_RECIPES_START = "FETCH_CALENDAR_RECIPES_START"
-const FETCH_CALENDAR_RECIPES_SUCCESS = "FETCH_CALENDAR_RECIPES_SUCCESS "
-const FETCH_CALENDAR_RECIPES_FAILURE = "FETCH_CALENDAR_RECIPES_FAILURE"
 
 export const fetchCalendarRecipes = createAsyncAction(
-  FETCH_CALENDAR_RECIPES_START,
-  FETCH_CALENDAR_RECIPES_SUCCESS,
-  FETCH_CALENDAR_RECIPES_FAILURE
+  "FETCH_CALENDAR_RECIPES_START",
+  "FETCH_CALENDAR_RECIPES_SUCCESS",
+  "FETCH_CALENDAR_RECIPES_FAILURE"
 )<void, ICalRecipe[], void>()
 
 export const setCalendarRecipe = (recipe: ICalRecipe) =>
@@ -80,7 +82,7 @@ export const calendar = (
   action: CalendarActions
 ): ICalendarState => {
   switch (action.type) {
-    case FETCH_CALENDAR_RECIPES_SUCCESS:
+    case getType(fetchCalendarRecipes.success):
       return {
         ...state,
         byId: {
@@ -129,13 +131,13 @@ export const calendar = (
         byId: omit(state.byId, action.payload),
         allIds: state.allIds.filter(id => id !== action.payload)
       }
-    case FETCH_CALENDAR_RECIPES_START:
+    case getType(fetchCalendarRecipes.request):
       return {
         ...state,
         loading: true,
         error: false
       }
-    case FETCH_CALENDAR_RECIPES_FAILURE:
+    case getType(fetchCalendarRecipes.failure):
       return {
         ...state,
         error: true

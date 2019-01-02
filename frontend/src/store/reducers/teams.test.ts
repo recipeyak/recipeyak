@@ -122,10 +122,11 @@ describe("Teams", () => {
         loadingTeam: false,
         members: []
       },
+      loading: false,
       allIds: [1, 4, 2, 3]
     }
 
-    expect(teams(beforeState, a.setTeams(data))).toEqual(afterState)
+    expect(teams(beforeState, a.fetchTeams.success(data))).toEqual(afterState)
   })
 
   it("Sets loading team data", () => {
@@ -710,7 +711,7 @@ describe("Teams", () => {
       allIds: []
     }
 
-    expect(teams(beforeState, a.setLoadingTeams(true))).toEqual(afterState)
+    expect(teams(beforeState, a.fetchTeams.request())).toEqual(afterState)
   })
 
   it("Sets team to have a creating attribute", () => {
