@@ -128,8 +128,8 @@ export default class RecipeTitle extends React.Component<
           <div>
             <div className="p-rel ml-4" title={toolTip}>
               <ButtonPrimary
-                onClick={() => this.setState(prev => ({ show: !prev.show }))}
-                className="is-small">
+                size="small"
+                onClick={() => this.setState(prev => ({ show: !prev.show }))}>
                 schedule
               </ButtonPrimary>
               <DatePickerForm
@@ -203,7 +203,7 @@ export default class RecipeTitle extends React.Component<
             </div>
             <div className="d-flex grid-entire-row align-items-center justify-space-between">
               <Button
-                className="is-small"
+                size="small"
                 type="submit"
                 loading={deleting}
                 onClick={this.handleDelete}
@@ -212,20 +212,22 @@ export default class RecipeTitle extends React.Component<
               </Button>
               <div>
                 <Button
-                  className="is-small ml-2"
+                  size="small"
+                  className="ml-2"
                   type="submit"
                   loading={updating}
                   onClick={this.handleSave}
                   name="save recipe">
                   Save
                 </Button>
-                <input
-                  className="my-button is-small ml-2"
+                <Button
+                  size="small"
+                  className="ml-2"
                   type="button"
                   name="cancel recipe update"
-                  onClick={this.toggleEdit}
-                  value="Cancel"
-                />
+                  onClick={this.toggleEdit}>
+                  Cancel
+                </Button>
               </div>
             </div>
           </div>

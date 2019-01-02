@@ -13,6 +13,7 @@ import {
   IAddRecipeError
 } from "@/store/reducers/recipes"
 import { ITeam } from "@/store/reducers/teams"
+import { Select } from "@/components/Forms"
 
 const unfinishedIngredient = ({ quantity = "", name = "" }) =>
   quantity === "" || name === ""
@@ -308,21 +309,20 @@ export default class AddRecipe extends React.Component<
           <div className="d-flex justify-space-between">
             <label className="d-flex align-center">
               for
-              <div className="select ml-2 is-small">
-                <select
-                  disabled={this.props.loadingTeams}
-                  value={this.props.teamID || "personal"}
-                  onChange={this.handleTeamChange}>
-                  <option value="personal">Personal</option>
-                  {this.props.teams.map(t => (
-                    <option key={t.id} value={t.id}>
-                      Team: {t.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <Select
+                size="small"
+                className="ml-2"
+                disabled={this.props.loadingTeams}
+                value={this.props.teamID || "personal"}
+                onChange={this.handleTeamChange}>
+                <option value="personal">Personal</option>
+                {this.props.teams.map(t => (
+                  <option key={t.id} value={t.id}>
+                    Team: {t.name}
+                  </option>
+                ))}
+              </Select>
             </label>
-
             <ButtonPrimary
               className="ml-2"
               type="submit"

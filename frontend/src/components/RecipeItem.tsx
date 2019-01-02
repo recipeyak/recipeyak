@@ -73,7 +73,7 @@ class Schedule extends React.Component<IScheduleProps> {
         onClose={onClose}
         show={show}
         trigger={
-          <ButtonPlain onClick={onClick} className="is-small">
+          <ButtonPlain size="small" onClick={onClick}>
             schedule
           </ButtonPlain>
         }>

@@ -2,6 +2,7 @@ import React from "react"
 import { Link } from "react-router-dom"
 
 import { setDarkModeClass } from "@/sideEffects"
+import { Button } from "@/components/Buttons"
 
 interface IUserDropdownProps {
   readonly darkMode: boolean
@@ -82,11 +83,9 @@ export default class UserDropdown extends React.Component<
           <Link to="/settings" className="p-1-0">
             Settings
           </Link>
-          <button
-            onClick={logout}
-            className={"my-button w-100" + (loggingOut ? " is-loading" : "")}>
+          <Button onClick={logout} loading={loggingOut} className="w-100">
             Logout
-          </button>
+          </Button>
         </div>
       </section>
     )

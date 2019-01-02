@@ -62,7 +62,7 @@ const Invites = ({ loading, invites, decline, accept }: IInvitesProps) => {
                 <ButtonPrimary
                   loading={declining || accepting}
                   onClick={() => accept(id)}
-                  className="is-small">
+                  size="small">
                   Accept
                 </ButtonPrimary>
               </div>

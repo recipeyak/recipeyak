@@ -29,6 +29,7 @@ import {
   setSelectingEnd
 } from "@/store/reducers/shoppinglist"
 import GlobalEvent from "@/components/GlobalEvent"
+import { Button } from "@/components/Buttons"
 
 const selectElementText = (el: Element) => {
   const sel = window.getSelection()
@@ -235,7 +236,7 @@ class ShoppingList extends React.Component<
             className={`box p-rel min-height-75px mb-0 ${
               this.props.loading ? "has-text-grey-light" : ""
             }`}>
-            <button
+            <Button
               onClick={() => {
                 const el = document.querySelector("#shoppinglist")
                 if (el == null) {
@@ -246,9 +247,10 @@ class ShoppingList extends React.Component<
                 removeSelection()
                 this.props.sendToast("Shopping list copied to clipboard!")
               }}
-              className="my-button is-small r-5 p-abs">
+              size="small"
+              className="r-5 p-abs">
               Copy
-            </button>
+            </Button>
             {this.props.error ? (
               <p>error fetching shoppinglist</p>
             ) : (
