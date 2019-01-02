@@ -60,9 +60,9 @@ def test_recipe_creation(client, user):
 
     ingredients_data: List[Dict[str, str]] = data.get("ingredients")
     ingredients_return: List[Dict[str, str]] = res.json().get("ingredients")
-    for ingreident_data, ingreident_return in zip(ingredients_data, ingredients_return):
-        assert ingreident_data.get("name") == ingreident_return.get(
-            "name"
+    for ingredient_data, ingredient_return in zip(ingredients_data, ingredients_return):
+        assert (
+            ingredient_data["name"] == ingredient_return["name"]
         ), "Order should be right"
 
 
