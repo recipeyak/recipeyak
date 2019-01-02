@@ -44,7 +44,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         We restrict access via this queryset filtering.
         """
         # get all recipes user has access to
-        recipes = user_and_team_recipes(self.request.user)
+        recipes = user_and_team_recipes(self.request.user).prefetch_related(
+            "owner", "step_set", "ingredient_set", "scheduledrecipe_set"
+        )
 
         # filtering for homepage
         if self.request.query_params.get("recent") is not None:
@@ -132,8 +134,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 raise PermissionDenied(detail="user must be the same as requester")
             new_recipe = recipe.copy_to(user)
 
+        # TODO(chdsbd): Fix to use select_related.
         return Response(
-            RecipeSerializer(new_recipe, context={"request": request}).data,
+            RecipeSerializer(new_recipe, dangerously_allow_db=True).data,
             status=status.HTTP_200_OK,
         )
 

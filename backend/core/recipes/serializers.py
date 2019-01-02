@@ -71,6 +71,13 @@ class StepSerializer(serializers.ModelSerializer):
                 self.fields.pop(field_name)
 
 
+from django.db import connection
+
+
+def blocker(*args):
+    raise Exception("No database access allowed here.")
+
+
 class RecipeSerializer(serializers.ModelSerializer):
     """
     serializer recipe
@@ -102,9 +109,20 @@ class RecipeSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ("owner", "last_scheduled")
 
+    # TODO(chdsbd): Move this to a mixin or base serializer and apply to all of
+    # our serializers
+    @property
+    def data(self):
+        if hasattr(self, "initial_data") or self.dangerously_allow_db:
+            return super().data
+        else:
+            with connection.execute_wrapper(blocker):
+                return super().data
+
     def __init__(self, *args, **kwargs):
         # Don't pass the 'fields' arg up to the superclass
         fields = kwargs.pop("fields", None)
+        self.allow_db = kwargs.pop("allow_db", None)
 
         super().__init__(*args, **kwargs)
 
