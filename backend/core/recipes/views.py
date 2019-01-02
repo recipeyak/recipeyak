@@ -157,7 +157,9 @@ class TeamRecipesViewSet(
 
     def get_queryset(self):
         team = get_object_or_404(Team, pk=self.kwargs["team_pk"])
-        return Recipe.objects.filter(owner_team=team)
+        return Recipe.objects.filter(owner_team=team).prefetch_related(
+            "owner", "step_set", "ingredient_set", "scheduledrecipe_set"
+        )
 
     def list(self, request, team_pk=None):
         serializer = self.get_serializer(self.get_queryset(), many=True)

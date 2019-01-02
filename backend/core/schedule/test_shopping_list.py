@@ -35,15 +35,15 @@ def test_combining_ingredients(user):
     )
 
     Ingredient.objects.create(
-        quantity="1 kg", name="tomato", position=10.0, recipe=recipe
+        quantity="1 kg", name="tomato", position=5.0, recipe=recipe
     )
 
     Ingredient.objects.create(
-        quantity="2 tbs", name="soy sauce", position=11.0, recipe=recipe
+        quantity="2 tbs", name="soy sauce", position=4.0, recipe=recipe
     )
 
     Ingredient.objects.create(
-        quantity="2 lbs", name="tomato", position=12.0, recipe=recipe
+        quantity="2 lbs", name="tomato", position=3.0, recipe=recipe
     )
 
     ingredients = list(Ingredient.objects.all())
@@ -147,8 +147,8 @@ def test_combining_ingredients_with_out_units(user):
             "name": "garlic cloves",
             "unit": "9",
             "origin": [
-                {"quantity": "1", "recipe": recipe.id},
                 {"quantity": "8", "recipe": recipe2.id},
+                {"quantity": "1", "recipe": recipe.id},
             ],
         }
     ]
@@ -191,8 +191,8 @@ def test_combining_ingredients_with_dashes_in_name(user):
             "name": "extra virgin olive oil",
             "unit": "9 tablespoon",
             "origin": [
-                {"quantity": "8 tablespoon", "recipe": recipe2.id},
                 {"quantity": "1 tablespoon", "recipe": recipe.id},
+                {"quantity": "8 tablespoon", "recipe": recipe2.id},
             ],
         }
     ]
@@ -280,10 +280,10 @@ def test_combining_ingredients_with_approximations(user):
             "name": "black pepper",
             "unit": "3 tablespoon + some",
             "origin": [
-                {"quantity": "some", "recipe": recipe2.id},
-                {"quantity": "sprinkle", "recipe": recipe.id},
-                {"quantity": "2 tablespoon", "recipe": recipe.id},
                 {"quantity": "1 tablespoon", "recipe": recipe.id},
+                {"quantity": "2 tablespoon", "recipe": recipe.id},
+                {"quantity": "sprinkle", "recipe": recipe.id},
+                {"quantity": "some", "recipe": recipe2.id},
             ],
         }
     ]
@@ -523,8 +523,8 @@ def test_combining_varied_case(user):
             "name": "garlic cloves",
             "unit": "9",
             "origin": [
-                {"quantity": "1", "recipe": recipe.id},
                 {"quantity": "8", "recipe": recipe2.id},
+                {"quantity": "1", "recipe": recipe.id},
             ],
         }
     ]

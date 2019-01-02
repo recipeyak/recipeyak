@@ -76,8 +76,9 @@ class RecipeSerializer(serializers.ModelSerializer):
     serializer recipe
     """
 
-    steps = StepSerializer(many=True)
-    ingredients = IngredientSerializer(many=True)
+    steps = StepSerializer(many=True, source="step_set")
+    last_scheduled = serializers.DateField(source="get_last_scheduled", read_only=True)
+    ingredients = IngredientSerializer(many=True, source="ingredient_set")
     owner = OwnerRelatedField(read_only=True)
     # specify default None so we can use this as an optional field
     team = serializers.IntegerField(write_only=True, default=None)
@@ -136,8 +137,8 @@ class RecipeSerializer(serializers.ModelSerializer):
         """
         Since this a nested serializer, we need to write a custom create method.
         """
-        ingredients = validated_data.pop("ingredients")
-        steps = validated_data.pop("steps")
+        ingredients = validated_data.pop("ingredient_set")
+        steps = validated_data.pop("step_set")
 
         # essentially an optional field
         team = validated_data.pop("team")
