@@ -1,6 +1,6 @@
 import { connect } from "react-redux"
 
-import { fetchUser, loggingOut, fetchTeams, Dispatch } from "@/store/actions"
+import { fetchUser, loggingOut, fetchingTeams, Dispatch } from "@/store/actions"
 
 import Nav from "@/components/Nav"
 
@@ -24,7 +24,7 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     fetchData: () => {
-      fetchTeams(dispatch)()
+      fetchingTeams(dispatch)()
       fetchUser(dispatch)()
     },
     logout: () => {

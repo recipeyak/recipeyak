@@ -22,13 +22,12 @@ import {
   updateTeamID,
   fetchingUser,
   setSocialConnections,
-  setLoadingUserStats,
-  setUserStats,
   login,
   setUserLoggedIn,
   setLoggingOut,
   IUser,
-  ISocialConnection
+  ISocialConnection,
+  fetchUserStats
 } from "@/store/reducers/user"
 import {
   ICalRecipe,
@@ -66,13 +65,12 @@ import {
   setDeletingMembership,
   setSendingTeamInvites,
   deleteMembership,
-  setTeams,
   setCreatingTeam,
   setTeam,
-  setLoadingTeams,
   updateTeamById,
   setCopyingTeam,
-  IMember
+  IMember,
+  fetchTeams
 } from "@/store/reducers/teams"
 import {
   IRecipe,
@@ -106,11 +104,7 @@ import {
   setSearchResults
 } from "@/store/reducers/search"
 import { clearAddRecipeForm } from "@/store/reducers/addrecipe"
-import {
-  setShoppingList,
-  setLoadingShoppingList,
-  setShoppingListError
-} from "@/store/reducers/shoppinglist"
+import { fetchShoppingList } from "@/store/reducers/shoppinglist"
 import {
   setLoadingPasswordUpdate,
   setErrorPasswordUpdate
@@ -281,16 +275,15 @@ export const disconnectSocialAccount = (dispatch: Dispatch) => (
   })
 }
 
-export const fetchUserStats = (dispatch: Dispatch) => () => {
-  dispatch(setLoadingUserStats(true))
+export const fetchingUserStats = (dispatch: Dispatch) => () => {
+  dispatch(fetchUserStats.request())
   return api
     .getUserStats()
     .then(res => {
-      dispatch(setUserStats(res.data))
-      dispatch(setLoadingUserStats(false))
+      dispatch(fetchUserStats.success(res.data))
     })
     .catch(() => {
-      dispatch(setLoadingUserStats(false))
+      dispatch(fetchUserStats.failure())
     })
 }
 
@@ -329,22 +322,19 @@ export const updatingPassword = (dispatch: Dispatch) => (
     })
 }
 
-export const fetchShoppingList = (dispatch: Dispatch) => (
+export const fetchingShoppingList = (dispatch: Dispatch) => (
   teamID: TeamID,
   start?: Date,
   end?: Date
 ) => {
-  dispatch(setLoadingShoppingList(true))
-  dispatch(setShoppingListError(false))
+  dispatch(fetchShoppingList.request())
   return api
     .getShoppingList(teamID, start, end)
     .then(res => {
-      dispatch(setShoppingList(res.data))
-      dispatch(setLoadingShoppingList(false))
+      dispatch(fetchShoppingList.success(res.data))
     })
     .catch(() => {
-      dispatch(setShoppingListError(true))
-      dispatch(setLoadingShoppingList(false))
+      dispatch(fetchShoppingList.failure())
     })
 }
 
@@ -973,16 +963,15 @@ export const sendingTeamInvites = (dispatch: Dispatch) => (
     })
 }
 
-export const fetchTeams = (dispatch: Dispatch) => () => {
-  dispatch(setLoadingTeams(true))
+export const fetchingTeams = (dispatch: Dispatch) => () => {
+  dispatch(fetchTeams.request())
   return api
     .getTeamList()
     .then(res => {
-      dispatch(setTeams(res.data))
-      dispatch(setLoadingTeams(false))
+      dispatch(fetchTeams.success(res.data))
     })
     .catch(() => {
-      dispatch(setLoadingTeams(false))
+      dispatch(fetchTeams.failure())
     })
 }
 

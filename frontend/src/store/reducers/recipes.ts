@@ -2,7 +2,15 @@ import { omit, uniq } from "lodash"
 import { ITeam } from "@/store/reducers/teams"
 import { action as act, createAsyncAction, ActionType } from "typesafe-actions"
 import { RootState } from "@/store/store"
-import { WebData, RDK, ISuccess, HttpErrorKind } from "@/store/remotedata"
+import {
+  WebData,
+  HttpErrorKind,
+  isInitial,
+  isSuccess,
+  Loading,
+  Success,
+  Failure
+} from "@/store/remotedata"
 const ADD_STEP_TO_RECIPE = "ADD_STEP_TO_RECIPE"
 const ADD_INGREDIENT_TO_RECIPE = "ADD_INGREDIENT_TO_RECIPE"
 const SET_LOADING_ADD_STEP_TO_RECIPE = "SET_LOADING_ADD_STEP_TO_RECIPE"
@@ -304,7 +312,7 @@ function mapRecipeSuccessById(
   func: (recipe: IRecipe) => IRecipe
 ): IRecipesState {
   const recipe = state.byId[id]
-  if (recipe == null || recipe.kind !== RDK.Success) {
+  if (isInitial(recipe) || !isSuccess(recipe)) {
     return state
   }
   return {
@@ -357,9 +365,7 @@ export const recipes = (
         ...state,
         byId: {
           ...state.byId,
-          [action.payload]: {
-            kind: RDK.Loading
-          }
+          [action.payload]: Loading()
         }
       }
     case FETCH_RECIPE_SUCCESS:
@@ -367,10 +373,7 @@ export const recipes = (
         ...state,
         byId: {
           ...state.byId,
-          [action.payload.id]: {
-            kind: RDK.Success,
-            data: action.payload
-          }
+          [action.payload.id]: Success(action.payload)
         },
         allIds: uniq(state.allIds.concat(action.payload.id))
       }
@@ -382,10 +385,7 @@ export const recipes = (
         ...state,
         byId: {
           ...state.byId,
-          [action.payload.id]: {
-            kind: RDK.Failure,
-            failure
-          }
+          [action.payload.id]: Failure(failure)
         }
       }
     }
@@ -403,10 +403,7 @@ export const recipes = (
         byId: action.payload.reduce(
           (a, b) => ({
             ...a,
-            [b.id]: {
-              kind: RDK.Success,
-              data: b
-            } as ISuccess<IRecipe>
+            [b.id]: Success(b)
           }),
           state.byId
         ),
@@ -434,10 +431,7 @@ export const recipes = (
         errorCreatingRecipe: {},
         byId: {
           ...state.byId,
-          [action.payload.id]: {
-            kind: RDK.Success,
-            data: action.payload
-          }
+          [action.payload.id]: Success(action.payload)
         },
         allIds: uniq(state.allIds.concat(action.payload.id))
       }

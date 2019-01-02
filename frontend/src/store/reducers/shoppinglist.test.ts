@@ -4,6 +4,7 @@ import shoppinglist, {
 } from "@/store/reducers/shoppinglist"
 
 import * as a from "@/store/reducers/shoppinglist"
+import { Loading, Success, Failure, HttpErrorKind } from "@/store/remotedata"
 
 describe("Shopping List", () => {
   const shopList: IShoppingListItem[] = [
@@ -18,9 +19,7 @@ describe("Shopping List", () => {
   ]
   it("sets list", () => {
     const beforeState: IShoppingListState = {
-      loading: true,
-      shoppinglist: [],
-      error: false,
+      shoppinglist: Loading(),
       startDay: new Date(1776, 1, 1),
       endDay: new Date(1776, 1, 2)
     }
@@ -28,80 +27,48 @@ describe("Shopping List", () => {
     // normalize the server data in the reducer
 
     const afterState: IShoppingListState = {
-      loading: true,
-      shoppinglist: shopList,
-      error: false,
+      shoppinglist: Success(shopList),
       startDay: new Date(1776, 1, 1),
       endDay: new Date(1776, 1, 2)
     }
 
-    expect(shoppinglist(beforeState, a.setShoppingList(shopList))).toEqual(
-      afterState
-    )
+    expect(
+      shoppinglist(beforeState, a.fetchShoppingList.success(shopList))
+    ).toEqual(afterState)
   })
 
   it("sets loading state", () => {
     const beforeState: IShoppingListState = {
-      loading: false,
-      shoppinglist: shopList,
-      error: false,
+      shoppinglist: undefined,
       startDay: new Date(1776, 1, 1),
       endDay: new Date(1776, 1, 2)
     }
 
     const afterState: IShoppingListState = {
-      loading: true,
-      shoppinglist: shopList,
-      error: false,
+      shoppinglist: Loading(),
       startDay: new Date(1776, 1, 1),
       endDay: new Date(1776, 1, 2)
     }
 
-    expect(shoppinglist(beforeState, a.setLoadingShoppingList(true))).toEqual(
-      afterState
-    )
-  })
-
-  it("empties the shopping list", () => {
-    const beforeState: IShoppingListState = {
-      loading: false,
-      shoppinglist: shopList,
-      error: false,
-      startDay: new Date(1776, 1, 1),
-      endDay: new Date(1776, 1, 2)
-    }
-
-    const afterState: IShoppingListState = {
-      loading: false,
-      shoppinglist: [],
-      error: false,
-      startDay: new Date(1776, 1, 1),
-      endDay: new Date(1776, 1, 2)
-    }
-
-    expect(shoppinglist(beforeState, a.setShoppingListEmpty())).toEqual(
+    expect(shoppinglist(beforeState, a.fetchShoppingList.request())).toEqual(
       afterState
     )
   })
 
   it("sets the error correctly", () => {
     const beforeState: IShoppingListState = {
-      loading: false,
-      shoppinglist: [],
-      error: false,
+      shoppinglist: Loading(),
       startDay: new Date(1776, 1, 1),
       endDay: new Date(1776, 1, 2)
     }
 
     const afterState: IShoppingListState = {
-      loading: false,
-      shoppinglist: [],
-      error: true,
+      shoppinglist: Failure(HttpErrorKind.other),
       startDay: new Date(1776, 1, 1),
       endDay: new Date(1776, 1, 2)
     }
 
-    expect(shoppinglist(beforeState, a.setShoppingListError(true))).toEqual(
+    expect(shoppinglist(beforeState, a.fetchShoppingList.failure())).toEqual(
       afterState
     )
   })
@@ -110,17 +77,13 @@ describe("Shopping List", () => {
     const startDay = new Date(1776, 1, 1)
 
     const beforeState: IShoppingListState = {
-      loading: false,
-      shoppinglist: [],
-      error: false,
+      shoppinglist: undefined,
       startDay: new Date(1776, 1, 1),
       endDay: new Date(1776, 1, 2)
     }
 
     const afterState: IShoppingListState = {
-      loading: false,
-      shoppinglist: [],
-      error: false,
+      shoppinglist: undefined,
       startDay,
       endDay: new Date(1776, 1, 2)
     }
@@ -134,17 +97,13 @@ describe("Shopping List", () => {
     const endDay = new Date(1776, 1, 1)
 
     const beforeState: IShoppingListState = {
-      loading: false,
-      shoppinglist: [],
-      error: false,
+      shoppinglist: undefined,
       startDay: new Date(1776, 1, 1),
       endDay: new Date(1776, 1, 2)
     }
 
     const afterState: IShoppingListState = {
-      loading: false,
-      shoppinglist: [],
-      error: false,
+      shoppinglist: undefined,
       startDay: new Date(1776, 1, 1),
       endDay
     }

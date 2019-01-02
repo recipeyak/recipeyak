@@ -9,12 +9,12 @@ import {
 } from "@/components/Buttons"
 
 import {
-  fetchTeams,
   moveRecipeTo,
   copyRecipeTo,
   showNotificationWithTimeout,
   Dispatch,
-  INotificationWithTimeout
+  INotificationWithTimeout,
+  fetchingTeams
 } from "@/store/actions"
 import { RootState } from "@/store/store"
 import { IRecipe } from "@/store/reducers/recipes"
@@ -31,7 +31,7 @@ const mapStateToProps = (state: RootState) => ({
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: fetchTeams(dispatch),
+  fetchData: fetchingTeams(dispatch),
   showNotificationWithTimeout: showNotificationWithTimeout(dispatch),
   moveRecipeTo: moveRecipeTo(dispatch),
   copyRecipeTo: copyRecipeTo(dispatch)

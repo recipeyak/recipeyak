@@ -1,7 +1,12 @@
 import { uniq, omit } from "lodash"
 
 import { IUser } from "@/store/reducers/user"
-import { action as act } from "typesafe-actions"
+import {
+  action as act,
+  createAsyncAction,
+  getType,
+  ActionType
+} from "typesafe-actions"
 import { IRecipe } from "@/store/reducers/recipes"
 
 const ADD_TEAM = "ADD_TEAM"
@@ -17,8 +22,6 @@ const SET_DELETING_MEMBERSHIP = "SET_DELETING_MEMBERSHIP"
 const SET_USER_TEAM_LEVEL = "SET_USER_TEAM_LEVEL"
 const SET_SENDING_TEAM_INVITES = "SET_SENDING_TEAM_INVITES"
 const DELETE_MEMBERSHIP = "DELETE_MEMBERSHIP"
-const SET_TEAMS = "SET_TEAMS"
-const SET_LOADING_TEAMS = "SET_LOADING_TEAMS"
 const SET_TEAM = "SET_TEAM"
 const SET_CREATING_TEAM = "SET_CREATING_TEAM"
 const SET_COPYING_TEAM = "SET_COPYING_TEAM"
@@ -100,10 +103,6 @@ export const deleteMembership = (teamID: number, membershipID: number) =>
     membershipID
   })
 
-export const setLoadingTeams = (val: boolean) => act(SET_LOADING_TEAMS, val)
-
-export const setTeams = (t: ITeam[]) => act(SET_TEAMS, t)
-
 export const setTeam = (id: number, team: ITeam) =>
   act(SET_TEAM, {
     id,
@@ -120,6 +119,12 @@ export const updateTeamById = (id: number, teamKeys: ITeam) =>
     teamKeys
   })
 
+export const fetchTeams = createAsyncAction(
+  "FETCH_TEAMS_START",
+  "FETCH_TEAMS_SUCCESS",
+  "FETCH_TEAMS_FAILURE"
+)<void, ITeam[], void>()
+
 export type TeamsActions =
   | ReturnType<typeof addTeam>
   | ReturnType<typeof deleteTeam>
@@ -134,12 +139,11 @@ export type TeamsActions =
   | ReturnType<typeof setUserTeamLevel>
   | ReturnType<typeof setSendingTeamInvites>
   | ReturnType<typeof deleteMembership>
-  | ReturnType<typeof setTeams>
-  | ReturnType<typeof setLoadingTeams>
   | ReturnType<typeof setTeam>
   | ReturnType<typeof setCreatingTeam>
   | ReturnType<typeof setCopyingTeam>
   | ReturnType<typeof updateTeamById>
+  | ActionType<typeof fetchTeams>
 
 // TODO(sbdchd): check if these optional fields are always used (aka, required)
 export interface IMember {
@@ -313,9 +317,10 @@ export const teams = (
           )
         }
       }
-    case SET_TEAMS:
+    case getType(fetchTeams.success):
       return {
         ...state,
+        loading: false,
         ...action.payload.reduce(
           (a, b) => ({
             ...a,
@@ -326,15 +331,12 @@ export const teams = (
           }),
           {}
         ),
-        allIds: uniq([
-          ...state.allIds,
-          ...action.payload.map((x: { id: number }) => x.id)
-        ])
+        allIds: uniq([...state.allIds, ...action.payload.map(x => x.id)])
       }
-    case SET_LOADING_TEAMS:
+    case getType(fetchTeams.request):
       return {
         ...state,
-        loading: action.payload
+        loading: true
       }
     case SET_TEAM:
       return {

@@ -5,10 +5,10 @@ import format from "date-fns/format"
 
 import {
   fetchCalendar,
-  fetchTeams,
-  fetchShoppingList,
   Dispatch,
-  fetchingRecipeList
+  fetchingRecipeList,
+  fetchingTeams,
+  fetchingShoppingList
 } from "@/store/actions"
 
 import { toDateString } from "@/date"
@@ -309,7 +309,7 @@ const mapStateToProps = (state: RootState, props: ICalendarProps) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchData: fetchCalendar(dispatch),
-  fetchTeams: fetchTeams(dispatch),
+  fetchTeams: fetchingTeams(dispatch),
   navTo: (url: string) => {
     dispatch(push(url))
   },
@@ -320,7 +320,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   ) => {
     return Promise.all([
       fetchingRecipeList(dispatch)(teamID),
-      fetchShoppingList(dispatch)(teamID, start, end)
+      fetchingShoppingList(dispatch)(teamID, start, end)
     ])
   }
 })

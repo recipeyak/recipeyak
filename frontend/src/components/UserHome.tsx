@@ -7,6 +7,7 @@ import { RecipeItem as Recipe } from "@/components/RecipeItem"
 import { IRecipe } from "@/store/reducers/recipes"
 import { IUserStats } from "@/store/reducers/user"
 import Footer from "@/components/Footer"
+import { WebData, isInitial, isLoading, isFailure } from "@/store/remotedata"
 
 // TODO(sbdchd): must be a better way
 // tslint:disable-next-line:no-var-requires
@@ -127,18 +128,29 @@ const RecentRecipes = ({ recipes, loading, error }: IRecentRecipes) => {
 }
 
 interface IUserStatisticsProps {
-  readonly loading: boolean
-  readonly stats: IUserStats
+  readonly stats: WebData<IUserStats>
 }
 
-const UserStatistics = ({ loading, stats }: IUserStatisticsProps) => {
-  if (loading) {
+const UserStatistics = (props: IUserStatisticsProps) => {
+  if (isInitial(props.stats) || isLoading(props.stats)) {
     return (
       <section className="justify-self-center d-grid align-self-center">
         <Loader />
       </section>
     )
   }
+
+  const stats = isFailure(props.stats)
+    ? {
+        most_added_recipe: null,
+        new_recipes_last_week: 0,
+        total_recipe_edits: 0,
+        total_user_recipes: 0,
+        date_joined: "",
+        recipes_added_by_month: [],
+        total_recipes_added_last_month_by_all_users: 0
+      }
+    : props.stats.data
 
   // NOTE: this breaks sometimes
   const emptyStats = stats.most_added_recipe == null
@@ -176,39 +188,24 @@ const UserStatistics = ({ loading, stats }: IUserStatisticsProps) => {
 
 interface IUserHomeProps {
   readonly loadingRecipes: boolean
-  readonly loadingUserStats: boolean
-  readonly userStats: IUserStats | null
+  readonly userStats: WebData<IUserStats>
   readonly errorRecipes: boolean
   readonly recipes: IRecipe[]
 }
 
 const UserHome = ({
   loadingRecipes,
-  loadingUserStats,
   userStats,
   errorRecipes,
   recipes
 }: IUserHomeProps) => {
-  const stats =
-    userStats == null
-      ? {
-          most_added_recipe: null,
-          new_recipes_last_week: 0,
-          total_recipe_edits: 0,
-          total_user_recipes: 0,
-          date_joined: "",
-          recipes_added_by_month: [],
-          total_recipes_added_last_month_by_all_users: 0
-        }
-      : userStats
-
   return (
     <>
       <div className="container pr-2 pl-2 pb-2">
         <Helmet title="Home" />
 
         <section className="home-page-grid font-family-title">
-          <UserStatistics stats={stats} loading={loadingUserStats} />
+          <UserStatistics stats={userStats} />
           <RecentRecipes
             loading={loadingRecipes}
             error={errorRecipes}

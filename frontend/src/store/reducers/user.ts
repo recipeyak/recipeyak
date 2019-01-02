@@ -5,9 +5,17 @@ import {
   createAsyncAction,
   createStandardAction,
   action as act,
-  ActionType
+  ActionType,
+  getType
 } from "typesafe-actions"
 import { IRecipe } from "@/store/reducers/recipes"
+import {
+  WebData,
+  Success,
+  Failure,
+  HttpErrorKind,
+  Loading
+} from "@/store/remotedata"
 
 const LOG_IN = "LOG_IN"
 
@@ -28,8 +36,11 @@ const TOGGLE_DARK_MODE = "TOGGLE_DARK_MODE"
 
 const SET_LOGGING_OUT = "SET_LOGGING_OUT"
 
-const SET_LOADING_USER_STATS = "SET_LOADING_USER_STATS"
-const SET_USER_STATS = "SET_USER_STATS"
+export const fetchUserStats = createAsyncAction(
+  "FETCH_USER_STATS_START",
+  "FETCH_USER_STATS_SUCCESS",
+  "FETCH_USER_STATS_FAILURE"
+)<void, IUserStats, void>()
 
 export const SET_USER_LOGGED_IN = "SET_USER_LOGGED_IN"
 
@@ -37,11 +48,6 @@ export const SET_USER_LOGGED_IN = "SET_USER_LOGGED_IN"
 export const login = (payload: IUser) => act(LOG_IN, payload)
 
 export const setLoggingOut = (val: boolean) => act(SET_LOGGING_OUT, val)
-
-export const setLoadingUserStats = (val: boolean) =>
-  act(SET_LOADING_USER_STATS, val)
-
-export const setUserStats = (val: IUserStats) => act(SET_USER_STATS, val)
 
 export const updateTeamID = createStandardAction(SET_TEAM_ID)<number | null>()
 
@@ -73,8 +79,6 @@ export const updateEmail = createAsyncAction(
 export type UserActions =
   | ReturnType<typeof login>
   | ReturnType<typeof setLoggingOut>
-  | ReturnType<typeof setLoadingUserStats>
-  | ReturnType<typeof setUserStats>
   | ReturnType<typeof updateTeamID>
   | ReturnType<typeof setSocialConnections>
   | ReturnType<typeof setSocialConnection>
@@ -82,6 +86,7 @@ export type UserActions =
   | ActionType<typeof fetchingUser>
   | ReturnType<typeof toggleDarkMode>
   | ActionType<typeof updateEmail>
+  | ActionType<typeof fetchUserStats>
 
 // User state from API
 export interface IUser {
@@ -126,8 +131,7 @@ export interface IUserState {
   readonly email: string
   readonly loading: boolean
   readonly error: boolean
-  readonly stats: IUserStats | null
-  readonly stats_loading: boolean
+  readonly stats: WebData<IUserStats>
   readonly loggingOut: boolean
   readonly darkMode: boolean
   readonly hasUsablePassword: boolean
@@ -144,8 +148,7 @@ const initialState: IUserState = {
   email: "",
   loading: false,
   error: false,
-  stats: null,
-  stats_loading: false,
+  stats: undefined,
   loggingOut: false,
   darkMode: false,
   hasUsablePassword: false,
@@ -162,10 +165,12 @@ export const user = (
   action: UserActions
 ): IUserState => {
   switch (action.type) {
-    case SET_USER_STATS:
-      return { ...state, stats: action.payload }
-    case SET_LOADING_USER_STATS:
-      return { ...state, stats_loading: action.payload }
+    case getType(fetchUserStats.success):
+      return { ...state, stats: Success(action.payload) }
+    case getType(fetchUserStats.request):
+      return { ...state, stats: Loading() }
+    case getType(fetchUserStats.failure):
+      return { ...state, stats: Failure(HttpErrorKind.other) }
     case SET_LOGGING_OUT:
       raven.setUserContext()
       return { ...state, loggingOut: action.payload }

@@ -10,10 +10,10 @@ import isAfter from "date-fns/is_after"
 import isValid from "date-fns/is_valid"
 
 import {
-  fetchShoppingList,
   reportBadMerge,
   showNotificationWithTimeout,
-  Dispatch
+  Dispatch,
+  fetchingShoppingList
 } from "@/store/actions"
 
 import { ingredientByNameAlphabetical } from "@/sorters"
@@ -29,6 +29,7 @@ import {
 import GlobalEvent from "@/components/GlobalEvent"
 import { Button } from "@/components/Buttons"
 import { DateInput } from "@/components/Forms"
+import { WebData, isFailure, isLoading, isSuccess } from "@/store/remotedata"
 
 const selectElementText = (el: Element) => {
   const sel = window.getSelection()
@@ -53,16 +54,12 @@ function mapStateToProps(state: RootState) {
   return {
     startDay: state.shoppinglist.startDay,
     endDay: state.shoppinglist.endDay,
-    loading: state.shoppinglist.loading,
-    error: state.shoppinglist.error,
-    shoppinglist: state.shoppinglist.shoppinglist.sort(
-      ingredientByNameAlphabetical
-    )
+    shoppinglist: state.shoppinglist.shoppinglist
   }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: fetchShoppingList(dispatch),
+  fetchData: fetchingShoppingList(dispatch),
   setStartDay: (date: Date) => dispatch(setSelectingStart(date)),
   setEndDay: (date: Date) => dispatch(setSelectingEnd(date)),
   reportBadMerge: reportBadMerge(dispatch),
@@ -71,9 +68,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 })
 
 interface IShoppingListContainerProps {
-  readonly loading: boolean
-  readonly error: boolean
-  readonly items: IShoppingListItem[]
+  readonly items: WebData<IShoppingListItem[]>
   readonly sendToast: (message: string) => void
 }
 
@@ -92,10 +87,14 @@ class ShoppingListList extends React.Component<IShoppingListContainerProps> {
   }
 
   render() {
-    if (this.props.error) {
+    if (isFailure(this.props.items)) {
       return <p>error fetching shoppinglist</p>
     }
-    const loadingClass = this.props.loading ? "has-text-grey-light" : ""
+    const loadingClass = isLoading(this.props.items)
+      ? "has-text-grey-light"
+      : ""
+
+    const items = isSuccess(this.props.items) ? this.props.items.data : []
 
     return (
       <div className={`box p-rel min-height-75px mb-0 ${loadingClass}`}>
@@ -106,7 +105,8 @@ class ShoppingListList extends React.Component<IShoppingListContainerProps> {
           Copy
         </Button>
         <section ref={this.shoppingList} style={{ fontSize: "0.9rem" }}>
-          {this.props.items.map((x, i) => (
+          {/* TOOD(sbdchd): sort on backend instead */}
+          {items.sort(ingredientByNameAlphabetical).map((x, i) => (
             // padding serves to prevent the button from appearing in front of text
             // we also use <section>s instead of <p>s to avoid extra new lines in Chrome
             <section className={i === 0 ? "mr-15" : ""} key={x.unit + x.name}>
@@ -128,9 +128,7 @@ interface IShoppingListProps {
   readonly teamID: ITeam["id"] | "personal"
   readonly startDay: Date
   readonly endDay: Date
-  readonly loading: boolean
-  readonly error: boolean
-  readonly shoppinglist: IShoppingListItem[]
+  readonly shoppinglist: WebData<IShoppingListItem[]>
   readonly setStartDay: (date: Date) => void
   readonly setEndDay: (date: Date) => void
   readonly reportBadMerge: () => void
@@ -275,8 +273,6 @@ class ShoppingList extends React.Component<
 
         <div>
           <ShoppingListList
-            loading={this.props.loading}
-            error={this.props.error}
             items={this.props.shoppinglist}
             sendToast={this.props.sendToast}
           />

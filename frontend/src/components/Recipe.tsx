@@ -30,7 +30,7 @@ import {
   RemoteRecipe
 } from "@/store/reducers/recipes"
 import { IRecipeBasic } from "@/components/RecipeTitle"
-import { RDK } from "@/store/remotedata"
+import { isInitial, isLoading, isFailure } from "@/store/remotedata"
 
 type RouteProps = RouteComponentProps<{ id: string }>
 
@@ -89,7 +89,7 @@ class Recipe extends React.Component<IRecipeProps, IRecipeState> {
   }
 
   render() {
-    if (this.props.recipe == null || this.props.recipe.kind === RDK.Loading) {
+    if (isInitial(this.props.recipe) || isLoading(this.props.recipe)) {
       return (
         <section className="d-flex justify-content-center">
           <Loader />
@@ -97,7 +97,7 @@ class Recipe extends React.Component<IRecipeProps, IRecipeState> {
       )
     }
 
-    if (this.props.recipe.kind === RDK.Failure) {
+    if (isFailure(this.props.recipe)) {
       return <NoMatch />
     }
 
