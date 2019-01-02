@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 
 import { setDarkModeClass } from "@/sideEffects"
 import { Button } from "@/components/Buttons"
+import { CheckBox } from "@/components/Forms"
 
 interface IUserDropdownProps {
   readonly darkMode: boolean
@@ -71,10 +72,9 @@ export default class UserDropdown extends React.Component<
           <p className="bold">{email}</p>
           <div className="d-flex align-center p-1-0">
             <label className="d-flex align-items-center cursor-pointer">
-              <input
+              <CheckBox
                 onChange={toggleDarkMode}
                 checked={darkMode}
-                type="checkbox"
                 className="mr-2"
               />
               Dark Mode

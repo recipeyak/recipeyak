@@ -1,6 +1,7 @@
 import React from "react"
 
 import { ButtonPrimary, Button } from "@/components/Buttons"
+import { TextInput, CheckBox, selectTarget } from "@/components/Forms"
 
 interface IAddIngredientFormProps {
   readonly handleAddIngredient: () => void
@@ -31,45 +32,42 @@ const AddIngredientForm = ({
     onSubmit={async e => {
       e.preventDefault()
       handleAddIngredient()
-      const el = document.querySelector<HTMLInputElement>("#firstinput")
+      const el = document.getElementById("firstinput")
       if (el) {
         el.focus()
       }
     }}>
     <div className="add-ingredient-grid mb-2 mt-2">
       <div>
-        <input
+        <TextInput
           id="firstinput"
           onChange={handleInputChange}
-          onFocus={e => e.target.select()}
+          onFocus={selectTarget}
           autoFocus={autoFocus}
           value={quantity}
-          className={"my-input" + (error ? " is-danger" : "")}
-          type="text"
+          error={error}
           placeholder="3 lbs"
           name="quantity"
         />
       </div>
 
       <div>
-        <input
+        <TextInput
           onChange={handleInputChange}
-          onFocus={e => e.target.select()}
+          onFocus={selectTarget}
           value={name}
-          className={"my-input" + (error ? " is-danger" : "")}
-          type="text"
+          error={error}
           placeholder="tomato"
           name="name"
         />
       </div>
 
       <div className="grid-entire-row">
-        <input
+        <TextInput
           onChange={handleInputChange}
-          onFocus={e => e.target.select()}
+          onFocus={selectTarget}
           value={description}
-          className={"my-input" + (error ? " is-danger" : "")}
-          type="text"
+          error={error}
           placeholder="diced at 3cm"
           name="description"
         />
@@ -82,11 +80,10 @@ const AddIngredientForm = ({
     </div>
 
     <label className="d-flex align-items-center cursor-pointer mb-2">
-      <input
+      <CheckBox
         onChange={handleInputChange}
         checked={optional}
         name="optional"
-        type="checkbox"
         className="mr-2"
       />
       Optional

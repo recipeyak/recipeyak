@@ -9,8 +9,6 @@ import isBefore from "date-fns/is_before"
 import isAfter from "date-fns/is_after"
 import isValid from "date-fns/is_valid"
 
-import { classNames } from "@/classnames"
-
 import {
   fetchShoppingList,
   reportBadMerge,
@@ -30,6 +28,7 @@ import {
 } from "@/store/reducers/shoppinglist"
 import GlobalEvent from "@/components/GlobalEvent"
 import { Button } from "@/components/Buttons"
+import { DateInput } from "@/components/Forms"
 
 const selectElementText = (el: Element) => {
   const sel = window.getSelection()
@@ -180,7 +179,7 @@ class ShoppingList extends React.Component<
         <div className="p-rel" ref={this.element}>
           <div className="d-flex align-items-center no-print">
             <GlobalEvent mouseDown={this.handleGeneralClick} />
-            <input
+            <DateInput
               onFocus={() =>
                 this.setState({
                   showDatePicker: true,
@@ -188,15 +187,12 @@ class ShoppingList extends React.Component<
                   selectingEnd: false
                 })
               }
-              type="date"
-              className={classNames("my-input", {
-                "is-focused": this.state.selectingStart
-              })}
+              isFocused={this.state.selectingStart}
               placeholder="from"
               value={formatMonth(this.props.startDay)}
             />
             <h2 className="fs-4 ml-2 mr-2">{" → "}</h2>
-            <input
+            <DateInput
               onFocus={() =>
                 this.setState({
                   showDatePicker: true,
@@ -204,10 +200,7 @@ class ShoppingList extends React.Component<
                   selectingStart: false
                 })
               }
-              type="date"
-              className={classNames("my-input", {
-                "is-focused": this.state.selectingEnd
-              })}
+              isFocused={this.state.selectingEnd}
               placeholder="to"
               value={formatMonth(this.props.endDay)}
             />

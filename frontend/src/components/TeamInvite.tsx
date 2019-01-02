@@ -14,6 +14,7 @@ import { teamURL } from "@/urls"
 import { fetchTeam, sendingTeamInvites, Dispatch } from "@/store/actions"
 import { RootState } from "@/store/store"
 import { IMember, ITeam } from "@/store/reducers/teams"
+import { TextInput, RadioButton } from "@/components/Forms"
 
 const mapStateToProps = (state: RootState, props: ITeamInviteProps) => {
   const id = parseInt(props.match.params.id, 10)
@@ -124,9 +125,8 @@ class TeamInvite extends React.Component<ITeamInviteProps, ITeamInviteState> {
             }
             this.setState({ emails: "" })
           }}>
-          <input
-            type="text"
-            className="input mb-4"
+          <TextInput
+            className="mb-4"
             value={this.state.emails}
             name="emails"
             onChange={this.handleInputChange}
@@ -134,8 +134,7 @@ class TeamInvite extends React.Component<ITeamInviteProps, ITeamInviteState> {
           />
           {roles.map((role, index) => (
             <label key={index} className="d-flex align-items-center pb-4">
-              <input
-                type="radio"
+              <RadioButton
                 className="mr-2"
                 name="level"
                 checked={this.state.level === role.value}

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import { Helmet } from "@/components/Helmet"
 
 import SocialButtons from "@/components/SocialButtons"
-import { FormErrorHandler } from "@/components/Forms"
+import { FormErrorHandler, TextInput, PasswordInput } from "@/components/Forms"
 import { ButtonPrimary } from "@/components/Buttons"
 
 import AuthContainer from "@/components/AuthContainer"
@@ -76,13 +76,12 @@ class Login extends React.Component<ILoginProps, ILoginState> {
           <form onSubmit={e => this.handleLogin(e)}>
             <div className="field">
               <label className="label">Email</label>
-              <input
+              <TextInput
                 onChange={this.handleInputChange}
                 value={this.state.email}
-                className={"my-input" + (email ? " is-danger" : "")}
+                error={email != null}
                 autoFocus
                 name="email"
-                type="email"
                 placeholder="rick.sanchez@me.com"
               />
               <FormErrorHandler error={email} />
@@ -92,13 +91,11 @@ class Login extends React.Component<ILoginProps, ILoginState> {
               <label htmlFor="password" className="label">
                 Password
               </label>
-              <input
+              <PasswordInput
                 onChange={this.handleInputChange}
                 value={this.state.password}
-                className={"my-input" + (password1 ? " is-danger" : "")}
-                type="password"
+                error={password1 != null}
                 name="password"
-                id="password"
                 placeholder="Super secret password."
               />
               <FormErrorHandler error={password1} />

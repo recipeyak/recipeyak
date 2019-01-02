@@ -4,6 +4,7 @@ import MetaData from "@/components/MetaData"
 import DatePickerForm from "@/components/DatePickerForm"
 import { IRecipe } from "@/store/reducers/recipes"
 import GlobalEvent from "@/components/GlobalEvent"
+import { TextInput } from "@/components/Forms"
 
 interface IRecipeTitleProps {
   readonly id: IRecipe["id"]
@@ -115,9 +116,8 @@ export default class RecipeTitle extends React.Component<
               </h1>
             </div>
           ) : (
-            <input
-              className="my-input fs-2rem mb-4"
-              type="text"
+            <TextInput
+              className="fs-2rem mb-4"
               autoFocus
               placeholder="new recipe title"
               onChange={this.handleInputChange}
@@ -158,9 +158,8 @@ export default class RecipeTitle extends React.Component<
             <div className="d-grid grid-entire-row align-items-center meta-data-grid">
               <label className="d-flex align-center">
                 By
-                <input
-                  className="my-input ml-2"
-                  type="text"
+                <TextInput
+                  className="ml-2"
                   placeholder="Author"
                   defaultValue={author}
                   onChange={this.handleInputChange}
@@ -169,9 +168,8 @@ export default class RecipeTitle extends React.Component<
               </label>
               <label className="d-flex align-center">
                 from
-                <input
-                  className="my-input ml-2"
-                  type="text"
+                <TextInput
+                  className="ml-2"
                   placeholder="http://example.com/dumpling-soup"
                   defaultValue={source}
                   onChange={this.handleInputChange}
@@ -180,9 +178,8 @@ export default class RecipeTitle extends React.Component<
               </label>
               <label className="d-flex align-center">
                 creating
-                <input
-                  className="my-input ml-2"
-                  type="text"
+                <TextInput
+                  className="ml-2"
                   placeholder="4 to 6 servings"
                   defaultValue={servings}
                   onChange={this.handleInputChange}
@@ -191,9 +188,8 @@ export default class RecipeTitle extends React.Component<
               </label>
               <label className="d-flex align-center">
                 in
-                <input
-                  className="my-input ml-2"
-                  type="text"
+                <TextInput
+                  className="ml-2"
                   placeholder="1 hour"
                   defaultValue={time}
                   onChange={this.handleInputChange}

@@ -1,7 +1,7 @@
 import React from "react"
 import { Helmet } from "@/components/Helmet"
 
-import { FormErrorHandler } from "@/components/Forms"
+import { FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { ButtonPrimary } from "@/components/Buttons"
 
 interface IPasswordChangeError {
@@ -85,13 +85,10 @@ class PasswordChange extends React.Component<
           <div className="field">
             <label className="label">Current Password</label>
             <div className="control">
-              <input
+              <PasswordInput
                 autoFocus
                 onChange={this.handleInputChange}
-                className={`my-input ${
-                  error.oldPassword != null ? "is-danger" : ""
-                }`}
-                type="password"
+                error={error.oldPassword != null}
                 name="oldPassword"
                 required
               />
@@ -103,10 +100,8 @@ class PasswordChange extends React.Component<
         <div className="field">
           <label className="label">New Password</label>
           <div className="control">
-            <input
+            <PasswordInput
               onChange={this.handleInputChange}
-              className="my-input"
-              type="password"
               name="newPassword"
               required
             />
@@ -117,10 +112,8 @@ class PasswordChange extends React.Component<
         <div className="field">
           <label className="label">New Password Again</label>
           <div className="control">
-            <input
+            <PasswordInput
               onChange={this.handleInputChange}
-              className="my-input"
-              type="password"
               name="newPasswordAgain"
               required
             />
