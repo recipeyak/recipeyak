@@ -42,7 +42,7 @@ interface ICalendarDayProps {
   readonly connectDropTarget: ConnectDropTarget
   readonly isOver: boolean
   readonly canDrop: boolean
-  readonly item?: ICalRecipe[]
+  readonly scheduledRecipes?: ICalRecipe[]
   readonly updateCount: (
     id: ICalRecipe["id"],
     teamID: ITeam["id"],
@@ -66,7 +66,7 @@ function CalendarDay({
   connectDropTarget,
   isOver,
   canDrop,
-  item: calRecipes,
+  scheduledRecipes,
   updateCount,
   refetchShoppingList,
   remove,
@@ -83,8 +83,8 @@ function CalendarDay({
         "selected-day": isSelected || (isOver && canDrop)
       })}>
       <Title date={date} />
-      {calRecipes != null
-        ? calRecipes.map(x => (
+      {scheduledRecipes != null
+        ? scheduledRecipes.map(x => (
             <CalendarItem
               key={x.id}
               id={x.id}

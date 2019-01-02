@@ -70,10 +70,10 @@ function Days({ start, end, days, teamID }: IDaysProps) {
   return (
     <section className="d-grid grid-gap-1 calendar-grid mb-0 flex-grow-1 h-100">
       {eachDay(start, end).map(date => {
-        const item = days[toDateString(date)]
+        const recipes = days[toDateString(date)]
         return (
           <CalendarDay
-            item={item}
+            scheduledRecipes={recipes}
             date={date}
             key={date.toString()}
             teamID={teamID}
