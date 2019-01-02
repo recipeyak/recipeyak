@@ -6,14 +6,14 @@ import { ButtonPrimary } from "@/components/Buttons"
 import { connect } from "react-redux"
 
 import {
-  fetchInvites,
   acceptingInvite,
   decliningInvite,
-  Dispatch
+  Dispatch,
+  fetchingInvites
 } from "@/store/actions"
 
 import { teamURL } from "@/urls"
-import { IInvite } from "@/store/reducers/invites"
+import { IInvite, getInvites } from "@/store/reducers/invites"
 import { RootState } from "@/store/store"
 
 interface IInvitesProps {
@@ -86,14 +86,12 @@ const Invites = ({ loading, invites, decline, accept }: IInvitesProps) => {
 const mapStateToProps = (state: RootState) => {
   return {
     loading: state.invites.loading,
-    // TODO(chdsbd): Fix me with byId allIds structure in redux
-    // tslint:disable-next-line:no-unsafe-any
-    invites: Object.values(state.invites).filter(x => x != null && !!x.id)
+    invites: getInvites(state)
   }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: fetchInvites(dispatch),
+  fetchData: fetchingInvites(dispatch),
   accept: acceptingInvite(dispatch),
   decline: decliningInvite(dispatch)
 })

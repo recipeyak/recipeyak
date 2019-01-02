@@ -24,38 +24,43 @@ describe("Invites", () => {
   it("sets invites", () => {
     const beforeState: IInvitesState = {
       ...initialState,
-      1: {
-        ...basicInvite,
-        id: 1,
-        active: false,
-        team: {
+      byId: {
+        1: {
+          ...basicInvite,
           id: 1,
-          name: "foo"
-        },
-        status: "open"
+          active: false,
+          team: {
+            id: 1,
+            name: "foo"
+          },
+          status: "open"
+        }
       }
     }
 
     const afterState: IInvitesState = {
       ...initialState,
       loading: true,
-      1: {
-        ...basicInvite,
-        id: 1,
-        active: false,
-        team: {
+      byId: {
+        1: {
+          ...basicInvite,
           id: 1,
-          name: "foo"
-        },
-        status: "open"
+          active: false,
+          team: {
+            id: 1,
+            name: "foo"
+          },
+          status: "open"
+        }
       }
     }
 
-    expect(invites(beforeState, t.setLoadingInvites(true))).toEqual(afterState)
+    expect(invites(beforeState, t.fetchInvites.request())).toEqual(afterState)
   })
   it("sets invites", () => {
     const beforeState: IInvitesState = {
-      loading: true
+      loading: true,
+      byId: {}
     }
 
     const newInvites: IInvite[] = [
@@ -82,79 +87,87 @@ describe("Invites", () => {
     ]
 
     const afterState: IInvitesState = {
-      loading: true,
-      1: {
-        ...basicInvite,
-        id: 1,
-        active: false,
-        team: {
+      loading: false,
+      byId: {
+        1: {
+          ...basicInvite,
           id: 1,
-          name: "foo"
+          active: false,
+          team: {
+            id: 1,
+            name: "foo"
+          },
+          status: "open"
         },
-        status: "open"
-      },
-      2: {
-        ...basicInvite,
-        id: 2,
-        active: false,
-        team: {
+        2: {
+          ...basicInvite,
           id: 2,
-          name: "bar"
-        },
-        status: "open"
+          active: false,
+          team: {
+            id: 2,
+            name: "bar"
+          },
+          status: "open"
+        }
       }
     }
 
-    expect(invites(beforeState, t.setInvites(newInvites))).toEqual(afterState)
+    expect(invites(beforeState, t.fetchInvites.success(newInvites))).toEqual(
+      afterState
+    )
   })
 
   it("sets invite to accepting", () => {
     const beforeState: IInvitesState = {
       ...initialState,
-      1: {
-        ...basicInvite,
-        id: 1,
-        active: false,
-        team: {
+      byId: {
+        1: {
+          ...basicInvite,
           id: 1,
-          name: "foo"
+          active: false,
+          team: {
+            id: 1,
+            name: "foo"
+          },
+          status: "open"
         },
-        status: "open"
-      },
-      2: {
-        ...basicInvite,
-        id: 2,
-        active: false,
-        team: {
+        2: {
+          ...basicInvite,
           id: 2,
-          name: "bar"
-        },
-        status: "open"
+          active: false,
+          team: {
+            id: 2,
+            name: "bar"
+          },
+          status: "open"
+        }
       }
     }
 
     const afterState: IInvitesState = {
       ...initialState,
-      1: {
-        ...basicInvite,
-        id: 1,
-        active: false,
-        team: {
+      byId: {
+        1: {
+          ...basicInvite,
           id: 1,
-          name: "foo"
+          active: false,
+          team: {
+            id: 1,
+            name: "foo"
+          },
+          status: "open",
+          accepting: true
         },
-        status: "open",
-        accepting: true
-      },
-      2: {
-        ...basicInvite,
-        id: 2,
-        active: false,
-        team: {
+        2: {
+          ...basicInvite,
           id: 2,
-          name: "bar"
-        },
-        status: "open"
+          active: false,
+          team: {
+            id: 2,
+            name: "bar"
+          },
+          status: "open"
+        }
       }
     }
 
@@ -166,30 +179,34 @@ describe("Invites", () => {
   it("sets invite to declining", () => {
     const beforeState: IInvitesState = {
       ...initialState,
-      1: {
-        ...basicInvite,
-        id: 1,
-        active: false,
-        team: {
+      byId: {
+        1: {
+          ...basicInvite,
           id: 1,
-          name: "foo"
-        },
-        status: "open"
+          active: false,
+          team: {
+            id: 1,
+            name: "foo"
+          },
+          status: "open"
+        }
       }
     }
 
     const afterState: IInvitesState = {
       ...initialState,
-      1: {
-        ...basicInvite,
-        id: 1,
-        active: false,
-        team: {
+      byId: {
+        1: {
+          ...basicInvite,
           id: 1,
-          name: "foo"
-        },
-        status: "open",
-        declining: true
+          active: false,
+          team: {
+            id: 1,
+            name: "foo"
+          },
+          status: "open",
+          declining: true
+        }
       }
     }
 
@@ -201,29 +218,33 @@ describe("Invites", () => {
   it("decline invite", () => {
     const beforeState: IInvitesState = {
       ...initialState,
-      1: {
-        ...basicInvite,
-        id: 1,
-        active: false,
-        team: {
+      byId: {
+        1: {
+          ...basicInvite,
           id: 1,
-          name: "foo"
-        },
-        status: "open"
+          active: false,
+          team: {
+            id: 1,
+            name: "foo"
+          },
+          status: "open"
+        }
       }
     }
 
     const afterState: IInvitesState = {
       ...initialState,
-      1: {
-        ...basicInvite,
-        id: 1,
-        active: false,
-        team: {
+      byId: {
+        1: {
+          ...basicInvite,
           id: 1,
-          name: "foo"
-        },
-        status: "declined"
+          active: false,
+          team: {
+            id: 1,
+            name: "foo"
+          },
+          status: "declined"
+        }
       }
     }
 
@@ -233,29 +254,33 @@ describe("Invites", () => {
   it("accept invite", () => {
     const beforeState: IInvitesState = {
       ...initialState,
-      1: {
-        ...basicInvite,
-        id: 1,
-        active: false,
-        team: {
+      byId: {
+        1: {
+          ...basicInvite,
           id: 1,
-          name: "foo"
-        },
-        status: "open"
+          active: false,
+          team: {
+            id: 1,
+            name: "foo"
+          },
+          status: "open"
+        }
       }
     }
 
     const afterState: IInvitesState = {
       ...initialState,
-      1: {
-        ...basicInvite,
-        id: 1,
-        active: false,
-        team: {
+      byId: {
+        1: {
+          ...basicInvite,
           id: 1,
-          name: "foo"
-        },
-        status: "accepted"
+          active: false,
+          team: {
+            id: 1,
+            name: "foo"
+          },
+          status: "accepted"
+        }
       }
     }
 
