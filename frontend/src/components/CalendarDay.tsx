@@ -27,7 +27,7 @@ import * as DragDrop from "@/dragDrop"
 import { ITeam } from "@/store/reducers/teams"
 import { IRecipe } from "@/store/reducers/recipes"
 import { RootState } from "@/store/store"
-import { ICalendarState, ICalRecipe } from "@/store/reducers/calendar"
+import { ICalRecipe } from "@/store/reducers/calendar"
 import { AxiosResponse } from "axios"
 
 const Title = ({ date }: { date: Date }) => {
@@ -42,7 +42,7 @@ interface ICalendarDayProps {
   readonly connectDropTarget: ConnectDropTarget
   readonly isOver: boolean
   readonly canDrop: boolean
-  readonly item: ICalendarState
+  readonly scheduledRecipes?: ICalRecipe[]
   readonly updateCount: (
     id: ICalRecipe["id"],
     teamID: ITeam["id"],
@@ -66,7 +66,7 @@ function CalendarDay({
   connectDropTarget,
   isOver,
   canDrop,
-  item,
+  scheduledRecipes,
   updateCount,
   refetchShoppingList,
   remove,
@@ -83,9 +83,8 @@ function CalendarDay({
         "selected-day": isSelected || (isOver && canDrop)
       })}>
       <Title date={date} />
-      {item != null
-        ? Object.values(item).map((x: ICalRecipe) => (
-            // tslint:disable:no-unsafe-any
+      {scheduledRecipes != null
+        ? scheduledRecipes.map(x => (
             <CalendarItem
               key={x.id}
               id={x.id}
@@ -97,7 +96,6 @@ function CalendarDay({
               refetchShoppingList={() => refetchShoppingList(teamID)}
               count={x.count}
             />
-            // tslint:enable:no-unsafe-any
           ))
         : null}
     </div>

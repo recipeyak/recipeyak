@@ -43,10 +43,8 @@ import {
   setDeclinedInvite,
   setAcceptingInvite,
   setAcceptedInvite,
-  setLoadingInvites,
-  setErrorFetchingInvites,
-  setInvites,
-  IInvite
+  IInvite,
+  fetchInvites
 } from "@/store/reducers/invites"
 import {
   INotificationState,
@@ -1064,18 +1062,15 @@ export const copyRecipeTo = (dispatch: Dispatch) => (
     })
 }
 
-export const fetchInvites = (dispatch: Dispatch) => () => {
-  dispatch(setLoadingInvites(true))
-  dispatch(setErrorFetchingInvites(false))
+export const fetchingInvites = (dispatch: Dispatch) => () => {
+  dispatch(fetchInvites.request())
   return api
     .getInviteList()
     .then(res => {
-      dispatch(setInvites(res.data))
-      dispatch(setLoadingInvites(false))
+      dispatch(fetchInvites.success(res.data))
     })
     .catch(() => {
-      dispatch(setLoadingInvites(false))
-      dispatch(setErrorFetchingInvites(true))
+      dispatch(fetchInvites.failure())
     })
 }
 

@@ -41,8 +41,8 @@ function CalTitle({ day }: ICalTitleProps) {
   return <p title={day.toString()}>{monthYearFromDate(day)}</p>
 }
 
-interface IDays {
-  readonly [key: string]: ICalRecipe
+export interface IDays {
+  [onDate: string]: ICalRecipe[] | undefined
 }
 
 function Weekdays() {
@@ -69,14 +69,17 @@ interface IDaysProps {
 function Days({ start, end, days, teamID }: IDaysProps) {
   return (
     <section className="d-grid grid-gap-1 calendar-grid mb-0 flex-grow-1 h-100">
-      {eachDay(start, end).map(date => (
-        <CalendarDay
-          item={days[toDateString(date)]}
-          date={date}
-          key={date.toString()}
-          teamID={teamID}
-        />
-      ))}
+      {eachDay(start, end).map(date => {
+        const recipes = days[toDateString(date)]
+        return (
+          <CalendarDay
+            scheduledRecipes={recipes}
+            date={date}
+            key={date.toString()}
+            teamID={teamID}
+          />
+        )
+      })}
     </section>
   )
 }
@@ -279,14 +282,11 @@ const mapStateToProps = (state: RootState, props: ICalendarProps) => {
 
   const days = isTeam ? getTeamRecipes(state) : getPersonalRecipes(state)
 
-  const transformedDays = days.reduce(
-    (a, b) => ({
-      ...a,
-      [b.on]: {
-        ...a[b.on],
-        [b.id]: b
-      }
-    }),
+  const transformedDays: IDays = days.reduce(
+    (a, b) => {
+      a[b.on] = (a[b.on] || []).concat(b)
+      return a
+    },
     {} as IDays
   )
 
