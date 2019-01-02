@@ -18,7 +18,7 @@ type RouteProps = RouteComponentProps<{ id: string }>
 
 const mapStateToProps = (state: RootState, props: RouteProps) => {
   const id = parseInt(props.match.params.id, 10)
-  const team: ITeam | undefined = state.teams[id]
+  const team: ITeam | undefined = state.teams.byId[id]
 
   // TODO(sbdchd): clean up this mess
 
