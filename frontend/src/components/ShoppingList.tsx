@@ -70,6 +70,55 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     showNotificationWithTimeout(dispatch)({ message, level: "info" })
 })
 
+interface IShoppingListContainerProps {
+  readonly loading: boolean
+  readonly error: boolean
+  readonly items: IShoppingListItem[]
+  readonly sendToast: (message: string) => void
+}
+
+class ShoppingListList extends React.Component<IShoppingListContainerProps> {
+  shoppingList = React.createRef<HTMLDivElement>()
+
+  handleSelectList = () => {
+    const el = this.shoppingList.current
+    if (el == null) {
+      return
+    }
+    selectElementText(el)
+    document.execCommand("copy")
+    removeSelection()
+    this.props.sendToast("Shopping list copied to clipboard!")
+  }
+
+  render() {
+    if (this.props.error) {
+      return <p>error fetching shoppinglist</p>
+    }
+    const loadingClass = this.props.loading ? "has-text-grey-light" : ""
+
+    return (
+      <div className={`box p-rel min-height-75px mb-0 ${loadingClass}`}>
+        <Button
+          onClick={this.handleSelectList}
+          size="small"
+          className="r-5 p-abs">
+          Copy
+        </Button>
+        <section ref={this.shoppingList} style={{ fontSize: "0.9rem" }}>
+          {this.props.items.map((x, i) => (
+            // padding serves to prevent the button from appearing in front of text
+            // we also use <section>s instead of <p>s to avoid extra new lines in Chrome
+            <section className={i === 0 ? "mr-15" : ""} key={x.unit + x.name}>
+              {x.unit} {x.name}
+            </section>
+          ))}
+        </section>
+      </div>
+    )
+  }
+}
+
 interface IShoppingListProps {
   readonly fetchData: (
     teamID: ITeam["id"] | "personal",
@@ -225,41 +274,12 @@ class ShoppingList extends React.Component<
         </div>
 
         <div>
-          <div
-            className={`box p-rel min-height-75px mb-0 ${
-              this.props.loading ? "has-text-grey-light" : ""
-            }`}>
-            <Button
-              onClick={() => {
-                const el = document.querySelector("#shoppinglist")
-                if (el == null) {
-                  return
-                }
-                selectElementText(el)
-                document.execCommand("copy")
-                removeSelection()
-                this.props.sendToast("Shopping list copied to clipboard!")
-              }}
-              size="small"
-              className="r-5 p-abs">
-              Copy
-            </Button>
-            {this.props.error ? (
-              <p>error fetching shoppinglist</p>
-            ) : (
-              <section id="shoppinglist" style={{ fontSize: "0.9rem" }}>
-                {this.props.shoppinglist.map((x, i) => (
-                  // padding serves to prevent the button from appearing in front of text
-                  // we also use <section>s instead of <p>s to avoid extra new lines in Chrome
-                  <section
-                    className={i === 0 ? "mr-15" : ""}
-                    key={x.unit + x.name}>
-                    {x.unit} {x.name}
-                  </section>
-                ))}
-              </section>
-            )}
-          </div>
+          <ShoppingListList
+            loading={this.props.loading}
+            error={this.props.error}
+            items={this.props.shoppinglist}
+            sendToast={this.props.sendToast}
+          />
           <div className="d-flex justify-content-end no-print">
             <a
               onClick={this.props.reportBadMerge}
