@@ -23,8 +23,9 @@ from requests.exceptions import HTTPError
 if "allauth.socialaccount" in settings.INSTALLED_APPS:
     from allauth.socialaccount.helpers import complete_social_login
 
+from core.serialization import BaseSerializer, BaseModelSerializer
 
-class SocialLoginSerializer(serializers.Serializer):
+class SocialLoginSerializer(BaseSerializer):
     access_token = serializers.CharField(required=False, allow_blank=True)
     code = serializers.CharField(required=False, allow_blank=True)
 
@@ -137,7 +138,7 @@ class SocialLoginSerializer(serializers.Serializer):
         return attrs
 
 
-class RegisterSerializer(serializers.Serializer):
+class RegisterSerializer(BaseSerializer):
     username = serializers.CharField(
         max_length=get_username_max_length(),
         min_length=allauth_settings.USERNAME_MIN_LENGTH,
@@ -200,11 +201,11 @@ class RegisterSerializer(serializers.Serializer):
         return user
 
 
-class VerifyEmailSerializer(serializers.Serializer):
+class VerifyEmailSerializer(BaseSerializer):
     key = serializers.CharField()
 
 
-class SocialAccountSerializer(serializers.ModelSerializer):
+class SocialAccountSerializer(BaseModelSerializer):
     """
     serializer allauth SocialAccounts for use with a REST API
     """
