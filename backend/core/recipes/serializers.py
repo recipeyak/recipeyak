@@ -122,7 +122,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         # Don't pass the 'fields' arg up to the superclass
         fields = kwargs.pop("fields", None)
-        self.allow_db = kwargs.pop("allow_db", None)
+        self.dangerously_allow_db = kwargs.pop("dangerously_allow_db", None)
 
         super().__init__(*args, **kwargs)
 
