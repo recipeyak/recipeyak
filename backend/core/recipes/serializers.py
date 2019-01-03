@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from core.models import MyUser, Recipe, Ingredient, Step, Team
+from core.serialization import DBBlockerSerializerMixin
 
 
 class OwnerRelatedField(serializers.RelatedField):
@@ -71,18 +72,7 @@ class StepSerializer(serializers.ModelSerializer):
                 self.fields.pop(field_name)
 
 
-from django.db import connection
-
-
-def blocker(*args):
-    raise Exception("No database access allowed here.")
-
-
-class RecipeSerializer(serializers.ModelSerializer):
-    """
-    serializer recipe
-    """
-
+class RecipeSerializer(DBBlockerSerializerMixin, serializers.ModelSerializer):
     steps = StepSerializer(many=True, source="step_set")
     last_scheduled = serializers.DateField(source="get_last_scheduled", read_only=True)
     ingredients = IngredientSerializer(many=True, source="ingredient_set")
@@ -109,20 +99,9 @@ class RecipeSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ("owner", "last_scheduled")
 
-    # TODO(chdsbd): Move this to a mixin or base serializer and apply to all of
-    # our serializers
-    @property
-    def data(self):
-        if hasattr(self, "initial_data") or self.dangerously_allow_db:
-            return super().data
-        else:
-            with connection.execute_wrapper(blocker):
-                return super().data
-
     def __init__(self, *args, **kwargs):
         # Don't pass the 'fields' arg up to the superclass
         fields = kwargs.pop("fields", None)
-        self.dangerously_allow_db = kwargs.pop("dangerously_allow_db", None)
 
         super().__init__(*args, **kwargs)
 
