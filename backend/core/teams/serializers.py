@@ -5,7 +5,7 @@ from core.models import MyUser, Team, Membership, Invite
 from core.serialization import BaseModelSerializer, BaseSerializer
 
 
-class PublicUserSerializer(serializers.ModelSerializer):
+class PublicUserSerializer(BaseModelSerializer):
     class Meta:
         model = MyUser
         editable = False
