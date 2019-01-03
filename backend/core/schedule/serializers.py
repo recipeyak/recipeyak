@@ -1,7 +1,4 @@
-from rest_framework import serializers
-
 from core.models import ScheduledRecipe
-
 from core.recipes.serializers import RecipeSerializer
 from core.serialization import BaseModelSerializer
 

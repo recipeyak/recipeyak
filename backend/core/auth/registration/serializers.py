@@ -2,6 +2,7 @@ from django.http import HttpRequest
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model
+from core.serialization import BaseSerializer, BaseModelSerializer
 
 try:
     from allauth.account import app_settings as allauth_settings
@@ -22,8 +23,6 @@ from requests.exceptions import HTTPError
 # case the allauth.socialaccount will be declared
 if "allauth.socialaccount" in settings.INSTALLED_APPS:
     from allauth.socialaccount.helpers import complete_social_login
-
-from core.serialization import BaseSerializer, BaseModelSerializer
 
 
 class SocialLoginSerializer(BaseSerializer):

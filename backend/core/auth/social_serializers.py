@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.http import HttpRequest
 from rest_framework import serializers
+from core.serialization import BaseSerializer
 
 # Import is needed only if we are using social login, in which
 # case the allauth.socialaccount will be declared
@@ -8,8 +9,6 @@ if "allauth.socialaccount" in settings.INSTALLED_APPS:
     from allauth.socialaccount.helpers import complete_social_login
     from allauth.socialaccount.models import SocialToken
     from allauth.socialaccount.providers.oauth.client import OAuthError
-
-from core.serialization import BaseSerializer
 
 
 class TwitterLoginSerializer(BaseSerializer):
