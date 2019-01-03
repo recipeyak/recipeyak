@@ -36,13 +36,11 @@ const mapStateToProps = (state: RootState, props: RouteProps) => {
     .filter(isSuccess)
     .map(r => r.data)
 
-  const loadingTeam = team ? !!team.loadingTeam && !team.name : false
-  const loadingMembers = team
-    ? !!team.loadingMembers && teamMembers.length === 0
-    : false
-  const loadingRecipes = team
-    ? !!team.loadingRecipes && successfulRecipes.length === 0
-    : false
+  const loadingTeam = team && !!team.loadingTeam && !team.name
+  const loadingMembers =
+    team && !!team.loadingMembers && teamMembers.length === 0
+  const loadingRecipes =
+    team && !!team.loadingRecipes && successfulRecipes.length === 0
 
   return {
     id,
