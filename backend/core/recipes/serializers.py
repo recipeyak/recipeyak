@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from core.models import MyUser, Recipe, Ingredient, Step, Team
+from core.serialization import DBBlockerSerializerMixin
 
 
 class OwnerRelatedField(serializers.RelatedField):
@@ -71,11 +72,7 @@ class StepSerializer(serializers.ModelSerializer):
                 self.fields.pop(field_name)
 
 
-class RecipeSerializer(serializers.ModelSerializer):
-    """
-    serializer recipe
-    """
-
+class RecipeSerializer(DBBlockerSerializerMixin, serializers.ModelSerializer):
     steps = StepSerializer(many=True, source="step_set")
     last_scheduled = serializers.DateField(source="get_last_scheduled", read_only=True)
     ingredients = IngredientSerializer(many=True, source="ingredient_set")
