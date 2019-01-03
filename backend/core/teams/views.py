@@ -109,7 +109,7 @@ class TeamViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Team.objects.filter(
-            membership__user__id=self.request.user.id
+            membership__user_id=self.request.user.id
         ) | Team.objects.filter(is_public=True)
 
     def get_permissions(self):

@@ -2,6 +2,7 @@ from typing import List
 from rest_framework import serializers
 
 from core.models import MyUser, Team, Membership, Invite
+from core.serialization import BaseModelSerializer
 
 
 class PublicUserSerializer(serializers.ModelSerializer):
@@ -11,7 +12,7 @@ class PublicUserSerializer(serializers.ModelSerializer):
         fields = ("id", "email", "avatar_url")
 
 
-class TeamSerializer(serializers.ModelSerializer):
+class TeamSerializer(BaseModelSerializer):
 
     emails = serializers.ListField(
         child=serializers.EmailField(write_only=True), write_only=True
