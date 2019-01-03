@@ -735,9 +735,9 @@ version = "0.1.7"
 python = ">=3.3"
 
 [metadata]
-content-hash = "6fa2cf27067e3d1f5c5e6780d48ea72fcae3c1dda76e0067278da9a07f956bfe"
+content-hash = "e07453e95bfd194bef5dfb2a7a4f96899477cb76e8ccba275215fa16598228ef"
 platform = "*"
-python-versions = "3.6"
+python-versions = "^3.6"
 
 [metadata.hashes]
 appdirs = ["9e5896d1372858f8dd3344faf4e5014d21849c756c8d5701f78f8a103b372d92", "d8b24664561d0d34ddfaec54636d502d7cea6e29c3eaf68f3df6180863e2166e"]
@@ -803,4 +803,3 @@ typed-ast = ["0555eca1671ebe09eb5f2176723826f6f44cca5060502fea259de9b0e893ab53",
 urllib3 = ["61bf29cada3fc2fbefad4fdf059ea4bd1b4a86d2b6d15e1c7c0b582b9752fe39", "de9529817c93f27c8ccbfead6985011db27bd0ddfcdb2d86f3f663385c6a9c22"]
 watchdog = ["965f658d0732de3188211932aeb0bb457587f04f63ab4c1e33eab878e9de961d"]
 wcwidth = ["3df37372226d6e63e1b1e1eda15c594bca98a22d33a23832a90998faa96bc65e", "f4ebe71925af7b40a864553f761ed559b43544f8f71746c2d756c7fe788ade7c"]
-
