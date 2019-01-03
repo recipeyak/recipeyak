@@ -13,10 +13,13 @@ import { RootState } from "@/store/store"
 import { isSuccess } from "@/store/remotedata"
 
 const mapStateToProps = (state: RootState) => {
-  const recipes = getRecipes(state).filter(isSuccess)
+  // TODO(sbdchd): this should be a getter
+  const recipes = getRecipes(state)
+    .filter(isSuccess)
+    .map(r => r.data)
+    .sort(byNameAlphabetical)
   return {
-    // TODO(sbdchd): this should be a getter
-    recipes: recipes.map(r => r.data).sort(byNameAlphabetical),
+    recipes,
     loading: state.recipes.loadingAll && recipes.length === 0
   }
 }
