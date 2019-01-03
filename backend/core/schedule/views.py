@@ -116,13 +116,14 @@ class CalendarViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+# TODO(chdsbd): Merge this into the CalendarViewSet
 class TeamCalendarViewSet(viewsets.ModelViewSet):
     serializer_class = ScheduledRecipeSerializer
     permission_classes = (IsAuthenticated, IsTeamMember)
 
     def get_queryset(self):
         team = get_object_or_404(Team, pk=self.kwargs["team_pk"])
-        return ScheduledRecipe.objects.filter(team=team)
+        return ScheduledRecipe.objects.filter(team=team).select_related("recipe")
 
     def create(self, request, team_pk=None):
         # use different create serializer since we create via primary key, and
