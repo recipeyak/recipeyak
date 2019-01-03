@@ -136,10 +136,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
             new_recipe = recipe.copy_to(user)
 
         # refetch all relations before serialization
-        new_recipe: Recipe = Recipe.objects.prefetch_related(
+        prefetched_recipe: Recipe = Recipe.objects.prefetch_related(
             "owner", "step_set", "ingredient_set", "scheduledrecipe_set"
         ).get(id=new_recipe.id)
-        return Response(RecipeSerializer(new_recipe).data, status=status.HTTP_200_OK)
+        return Response(RecipeSerializer(prefetched_recipe).data, status=status.HTTP_200_OK)
 
 
 class TeamRecipesViewSet(
