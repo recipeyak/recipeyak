@@ -133,7 +133,10 @@ class TeamCalendarViewSet(viewsets.ModelViewSet):
 
         team = get_object_or_404(Team, pk=team_pk)
         n = serializer.save(team=team)
-        return Response(self.get_serializer(n).data, status=status.HTTP_201_CREATED)
+        return Response(
+            self.get_serializer(n, dangerously_allow_db=True).data,
+            status=status.HTTP_201_CREATED,
+        )
 
     def list(self, request, team_pk=None):
         start = request.query_params.get("start")
