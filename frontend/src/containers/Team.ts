@@ -30,20 +30,28 @@ const mapStateToProps = (state: RootState, props: RouteProps) => {
 
   const teamMembers = Object.values(members)
 
+  // TODO(sbdchd): this should be using a getter
+  const successfulRecipes = recipes
+    .map(recipeID => state.recipes.byId[recipeID])
+    .filter(isSuccess)
+    .map(r => r.data)
+
+  const loadingTeam = team && !!team.loadingTeam && !team.name
+  const loadingMembers =
+    team && !!team.loadingMembers && teamMembers.length === 0
+  const loadingRecipes =
+    team && !!team.loadingRecipes && successfulRecipes.length === 0
+
   return {
     id,
     members: teamMembers,
     isSettings,
-    error404: team ? !!team.error404 : false,
-    loadingTeam: team ? !!team.loadingTeam : false,
+    error404: team && !!team.error404,
+    loadingTeam,
     name: team ? team.name : "",
-    loadingMembers: team ? !!team.loadingMembers : false,
-    loadingRecipes: team ? !!team.loadingRecipes : false,
-    // TODO(sbdchd): this should be using a getter
-    recipes: recipes
-      .map(recipeID => state.recipes.byId[recipeID])
-      .filter(isSuccess)
-      .map(r => r.data)
+    loadingMembers,
+    loadingRecipes,
+    recipes: successfulRecipes
   }
 }
 const mapDispatchToProps = (dispatch: Dispatch) => {
