@@ -15,8 +15,8 @@ import { ButtonPrimary } from "@/components/Buttons"
 
 import { addingScheduledRecipe, Dispatch } from "@/store/actions"
 import { IRecipe } from "@/store/reducers/recipes"
-import { ITeam } from "@/store/reducers/teams"
 import { TextInput } from "@/components/Forms"
+import { RootState } from "@/store/store"
 
 function mapDispatchToProps(dispatch: Dispatch) {
   return {
@@ -24,13 +24,19 @@ function mapDispatchToProps(dispatch: Dispatch) {
   }
 }
 
+function mapStateToProps(state: RootState) {
+  return {
+    teamID: state.user.teamID || ("personal" as TeamID)
+  }
+}
+
 interface IDatePickerProps {
   readonly recipeID: IRecipe["id"]
-  readonly teamID: ITeam["id"]
+  readonly teamID: TeamID
   readonly show: boolean
   readonly create: (
     recipeID: IRecipe["id"],
-    teamID: ITeam["id"],
+    teamID: TeamID,
     date: Date,
     count: number
   ) => Promise<void>
@@ -140,6 +146,6 @@ class DatePickerForm extends React.Component<
 }
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(DatePickerForm)

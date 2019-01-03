@@ -94,7 +94,8 @@ import {
   fetchRecipe,
   fetchRecipeList,
   createRecipe,
-  IStep
+  IStep,
+  fetchRecentRecipes
 } from "@/store/reducers/recipes"
 import * as api from "@/api"
 import {
@@ -379,16 +380,16 @@ export const fetchingRecipe = (dispatch: Dispatch) => (id: IRecipe["id"]) => {
     })
 }
 
-export const fetchRecentRecipes = (dispatch: Dispatch) => () => {
+export const fetchingRecentRecipes = (dispatch: Dispatch) => () => {
   // TODO(sbdchd): these should have their own id array in the reduce and their own actions
-  dispatch(fetchRecipeList.request())
+  dispatch(fetchRecentRecipes.request())
   return api
     .getRecentRecipes()
     .then(res => {
-      dispatch(fetchRecipeList.success(res.data))
+      dispatch(fetchRecentRecipes.success(res.data))
     })
     .catch(() => {
-      dispatch(fetchRecipeList.failure())
+      dispatch(fetchRecentRecipes.failure())
     })
 }
 

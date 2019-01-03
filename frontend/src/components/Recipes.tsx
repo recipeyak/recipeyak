@@ -20,7 +20,7 @@ const mapStateToProps = (state: RootState) => {
     .sort(byNameAlphabetical)
   return {
     recipes,
-    loading: state.recipes.loadingAll && recipes.length === 0
+    loading: state.recipes.loadingAll
   }
 }
 
@@ -32,7 +32,7 @@ interface IRecipesProps {
   readonly fetchData: (teamID: ITeam["id"] | "personal") => void
   readonly recipes: IRecipe[]
   readonly loading: boolean
-  readonly teamID: ITeam["id"]
+  readonly teamID: ITeam["id"] | "personal"
   readonly scroll: boolean
   readonly drag: boolean
   readonly noPadding?: boolean
@@ -60,12 +60,7 @@ class Recipes extends React.Component<IRecipesProps, IRecipesState> {
     const results: JSX.Element[] = this.props.recipes
       .filter(recipe => matchesQuery(recipe, this.state.query))
       .map(recipe => (
-        <RecipeItem
-          {...recipe}
-          teamID={this.props.teamID}
-          drag={this.props.drag}
-          key={recipe.id}
-        />
+        <RecipeItem {...recipe} drag={this.props.drag} key={recipe.id} />
       ))
 
     const scrollClass = this.props.scroll ? "recipe-scroll" : ""
