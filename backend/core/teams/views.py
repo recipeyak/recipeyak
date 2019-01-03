@@ -41,11 +41,6 @@ class TeamInviteViewSet(
         team_pk = self.kwargs["team_pk"]
         return Invite.objects.filter(membership__team__id=team_pk)
 
-    def get_serializer_class(self):
-        if self.action == "create":
-            return CreateInviteSerializer
-        return InviteSerializer
-
     def create(self, request, team_pk=None):
         """
         for creating, we want: level, user_id
@@ -54,7 +49,7 @@ class TeamInviteViewSet(
         need to use to_representation or form_represenation
         """
         team = Team.objects.get(pk=team_pk)
-        serializer = self.get_serializer(data={**request.data, "team": team})
+        serializer = CreateInviteSerializer(data={**request.data, "team": team})
         serializer.is_valid(raise_exception=True)
         invite = serializer.save(team=team, creator=self.request.user)
         return Response(

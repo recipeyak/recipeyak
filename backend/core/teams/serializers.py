@@ -2,7 +2,7 @@ from typing import List
 from rest_framework import serializers
 
 from core.models import MyUser, Team, Membership, Invite
-from core.serialization import BaseModelSerializer
+from core.serialization import BaseModelSerializer, BaseSerializer
 
 
 class PublicUserSerializer(serializers.ModelSerializer):
@@ -83,7 +83,7 @@ class InviteSerializer(BaseModelSerializer):
         fields = ("id", "user", "team", "active", "creator", "status")
 
 
-class CreateInviteSerializer(serializers.Serializer):
+class CreateInviteSerializer(BaseSerializer):
     level = serializers.ChoiceField(
         choices=Membership.MEMBERSHIP_CHOICES, write_only=True
     )

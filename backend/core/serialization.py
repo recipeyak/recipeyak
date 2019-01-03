@@ -36,6 +36,12 @@ class DBBlockerSerializerMixin:
         return cast(Any, super()).__init__(*args, **kwargs)
 
 
+class BaseSerializer(DBBlockerSerializerMixin, serializers.Serializer):
+    """
+    Serializer with `DBBlockerSerializerMixin` to disable DB access.
+    """
+    pass
+
 class BaseModelSerializer(DBBlockerSerializerMixin, serializers.ModelSerializer):
     """
     Serializer with `DBBlockerSerializerMixin` to disable DB access.
