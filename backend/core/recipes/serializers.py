@@ -1,10 +1,10 @@
 from rest_framework import serializers
 
 from core.models import MyUser, Recipe, Ingredient, Step, Team
-from core.serialization import BaseModelSerializer, BaseSerializer
+from core.serialization import BaseModelSerializer, BaseSerializer, BaseRelatedField
 
 
-class OwnerRelatedField(serializers.RelatedField):
+class OwnerRelatedField(BaseRelatedField):
     """
     A custom field to use for the `owner` generic relationship.
     """
