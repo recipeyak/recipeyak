@@ -80,7 +80,7 @@ class UserInvitesViewSet(
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return Invite.objects.filter(membership__user=self.request.user)
+        return Invite.objects.filter(membership__user=self.request.user).select_related('membership', 'creator').prefetch_related('membership__user', 'membership__team')
 
     @detail_route(methods=["post"], url_name="accept")
     def accept(self, request, pk=None):

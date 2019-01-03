@@ -37,4 +37,7 @@ class DBBlockerSerializerMixin:
 
 
 class BaseModelSerializer(DBBlockerSerializerMixin, serializers.ModelSerializer):
+    """
+    Serializer with `DBBlockerSerializerMixin` to disable DB access.
+    """
     pass

@@ -72,7 +72,7 @@ class MembershipSerializer(serializers.ModelSerializer):
         return level
 
 
-class InviteSerializer(serializers.ModelSerializer):
+class InviteSerializer(BaseModelSerializer):
     user = PublicUserSerializer()
     team = TeamSerializer(fields=["id", "name"], read_only=True)
     creator = PublicUserSerializer()
