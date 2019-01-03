@@ -7,13 +7,13 @@ from core.serialization import BaseModelSerializer
 
 class RecipeExportSerializer(BaseModelSerializer):
 
-    steps = serializers.ListField(child=serializers.CharField(), source='step_set.all')
+    steps = serializers.ListField(child=serializers.CharField(), source="step_set.all")
 
     ingredients = IngredientSerializer(
         many=True,
         read_only=True,
         fields=("quantity", "name", "description", "optional"),
-        source='ingredient_set'
+        source="ingredient_set",
     )
     owner = OwnerRelatedField(read_only=True, export=True)
 

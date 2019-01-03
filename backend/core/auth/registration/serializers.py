@@ -25,6 +25,7 @@ if "allauth.socialaccount" in settings.INSTALLED_APPS:
 
 from core.serialization import BaseSerializer, BaseModelSerializer
 
+
 class SocialLoginSerializer(BaseSerializer):
     access_token = serializers.CharField(required=False, allow_blank=True)
     code = serializers.CharField(required=False, allow_blank=True)

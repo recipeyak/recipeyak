@@ -3,6 +3,7 @@ from rest_framework import serializers
 from core.models import MyUser
 from core.serialization import BaseModelSerializer
 
+
 class UserSerializer(BaseModelSerializer):
     """serializer custom user model"""
 

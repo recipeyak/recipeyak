@@ -75,7 +75,11 @@ class UserInvitesViewSet(
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return Invite.objects.filter(membership__user=self.request.user).select_related('membership', 'creator').prefetch_related('membership__user', 'membership__team')
+        return (
+            Invite.objects.filter(membership__user=self.request.user)
+            .select_related("membership", "creator")
+            .prefetch_related("membership__user", "membership__team")
+        )
 
     @detail_route(methods=["post"], url_name="accept")
     def accept(self, request, pk=None):
@@ -145,7 +149,7 @@ class MembershipViewSet(
 
     def get_queryset(self):
         team = get_object_or_404(Team.objects.all(), pk=self.kwargs["team_pk"])
-        return team.membership_set.select_related('user').all()
+        return team.membership_set.select_related("user").all()
 
     def get_permissions(self):
         if self.request.method in SAFE_METHODS:

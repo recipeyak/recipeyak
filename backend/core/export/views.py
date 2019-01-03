@@ -15,8 +15,8 @@ from .serializers import RecipeExportSerializer
 def export_recipes(request, filetype, id=None):
 
     queryset = user_and_team_recipes(request.user).prefetch_related(
-            "owner", "step_set", "ingredient_set", "scheduledrecipe_set"
-        )
+        "owner", "step_set", "ingredient_set", "scheduledrecipe_set"
+    )
     many = id is None
 
     if not many:
