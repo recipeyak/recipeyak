@@ -161,7 +161,7 @@ class Recipe(CommonInfo):
             self.save()
             return self
 
-    def copy_to(self, account: Union[MyUser, Team]) -> "Recipe":
+    def copy_to(self, account: Union[MyUser, "Team"]) -> "Recipe":
         """
         Copy recipe to another team or user
         """
