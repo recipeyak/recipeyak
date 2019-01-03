@@ -51,7 +51,7 @@ class TeamSerializer(BaseModelSerializer):
         return team
 
 
-class MembershipSerializer(serializers.ModelSerializer):
+class MembershipSerializer(BaseModelSerializer):
     user = PublicUserSerializer()
 
     class Meta:
