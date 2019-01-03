@@ -3,9 +3,10 @@ from rest_framework import serializers
 from core.models import ScheduledRecipe
 
 from core.recipes.serializers import RecipeSerializer
+from core.serialization import BaseModelSerializer
 
 
-class ScheduledRecipeSerializer(serializers.ModelSerializer):
+class ScheduledRecipeSerializer(BaseModelSerializer):
     recipe = RecipeSerializer(fields=("id", "name"))
 
     class Meta:
@@ -13,7 +14,7 @@ class ScheduledRecipeSerializer(serializers.ModelSerializer):
         fields = ("id", "recipe", "on", "count", "team", "user")
 
 
-class ScheduledRecipeSerializerCreate(serializers.ModelSerializer):
+class ScheduledRecipeSerializerCreate(BaseModelSerializer):
     class Meta:
         model = ScheduledRecipe
         fields = ("id", "recipe", "on", "count")

@@ -5,8 +5,10 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, views
 from django.core.exceptions import ValidationError
 from rest_framework.response import Response
+from rest_framework.request import Request
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import serializers
 
 from core.models import Ingredient, ScheduledRecipe, Team
 
@@ -78,29 +80,38 @@ class ReportBadMerge(APIView):
         return Response(status=status.HTTP_201_CREATED)
 
 
+class StartEndDateSerializer(serializers.Serializer):
+    start = serializers.DateField()
+    end = serializers.DateField()
+
+
 class CalendarViewSet(viewsets.ModelViewSet):
     serializer_class = ScheduledRecipeSerializer
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return ScheduledRecipe.objects.filter(user=self.request.user)
+        return ScheduledRecipe.objects.filter(user=self.request.user).select_related(
+            "recipe"
+        )
 
-    def create(self, request):
+    def create(self, request: Request) -> Response:
         # use different create serializer since we create via primary key, and
         # return an objects
         serializer = ScheduledRecipeSerializerCreate(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         n = serializer.save(user=request.user)
-        return Response(self.get_serializer(n).data, status=status.HTTP_201_CREATED)
+        return Response(
+            self.get_serializer(n, dangerously_allow_db=True).data,
+            status=status.HTTP_201_CREATED,
+        )
 
-    def list(self, request):
-        start = request.query_params.get("start")
-        end = request.query_params.get("end")
-        try:
-            queryset = self.get_queryset().filter(on__gte=start).filter(on__lte=end)
-        except (ValueError, ValidationError):
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+    def list(self, request: Request) -> Response:
+        serializer = StartEndDateSerializer(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+        start = serializer.validated_data["start"]
+        end = serializer.validated_data["end"]
+        queryset = self.get_queryset().filter(on__gte=start).filter(on__lte=end)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

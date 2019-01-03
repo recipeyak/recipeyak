@@ -1,6 +1,7 @@
 from typing import Optional, cast, Any
 
 from django.db import connection
+from rest_framework import serializers
 
 
 def blocker(*args):
@@ -33,3 +34,7 @@ class DBBlockerSerializerMixin:
     def __init__(self, *args, **kwargs):
         self.dangerously_allow_db = kwargs.pop("dangerously_allow_db", None)
         return cast(Any, super()).__init__(*args, **kwargs)
+
+
+class BaseModelSerializer(DBBlockerSerializerMixin, serializers.ModelSerializer):
+    pass
