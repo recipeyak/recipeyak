@@ -11,10 +11,12 @@ from django.utils.encoding import force_text
 from rest_framework import serializers, exceptions
 from rest_framework.exceptions import ValidationError
 
+from core.serialization import BaseSerializer
+
 UserModel = get_user_model()
 
 
-class LoginSerializer(serializers.Serializer):
+class LoginSerializer(BaseSerializer):
     username = serializers.CharField(required=False, allow_blank=True)
     email = serializers.EmailField(required=False, allow_blank=True)
     password = serializers.CharField(style={"input_type": "password"})
@@ -116,7 +118,7 @@ class LoginSerializer(serializers.Serializer):
         return attrs
 
 
-class PasswordResetSerializer(serializers.Serializer):
+class PasswordResetSerializer(BaseSerializer):
     """
     Serializer for requesting a password reset e-mail.
     """
@@ -150,7 +152,7 @@ class PasswordResetSerializer(serializers.Serializer):
         self.reset_form.save(**opts)
 
 
-class PasswordResetConfirmSerializer(serializers.Serializer):
+class PasswordResetConfirmSerializer(BaseSerializer):
     """
     Serializer for requesting a password reset e-mail.
     """
@@ -191,7 +193,7 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
         return self.set_password_form.save()
 
 
-class PasswordChangeSerializer(serializers.Serializer):
+class PasswordChangeSerializer(BaseSerializer):
     old_password = serializers.CharField(max_length=128)
     new_password1 = serializers.CharField(max_length=128)
     new_password2 = serializers.CharField(max_length=128)
