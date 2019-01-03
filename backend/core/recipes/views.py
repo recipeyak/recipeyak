@@ -5,6 +5,7 @@ from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import detail_route
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
+from rest_framework.request import Request
 from rest_framework.permissions import IsAuthenticated
 
 
@@ -113,13 +114,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer_class=RecipeMoveCopySerializer,
         permission_classes=[HasRecipeAccess],
     )
-    def copy(self, request, pk=None):
+    def copy(self, request: Request, pk: str) -> Response:
         """
         Copy recipe from user to team.
         Any team member should be able to copy a recipe from the team.
         User should have write access to team to copy recipe
         """
-        recipe = self.get_object()
+        recipe: Recipe = self.get_object()
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -134,11 +135,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 raise PermissionDenied(detail="user must be the same as requester")
             new_recipe = recipe.copy_to(user)
 
-        # TODO(chdsbd): Fix to use select_related.
-        return Response(
-            RecipeSerializer(new_recipe, dangerously_allow_db=True).data,
-            status=status.HTTP_200_OK,
-        )
+        # refetch all relations before serialization
+        new_recipe: Recipe = Recipe.objects.prefetch_related(
+            "owner", "step_set", "ingredient_set", "scheduledrecipe_set"
+        ).get(id=new_recipe.id)
+        return Response(RecipeSerializer(new_recipe).data, status=status.HTTP_200_OK)
 
 
 class TeamRecipesViewSet(
