@@ -46,7 +46,7 @@ const mapStateToProps = (state: RootState, props: RouteProps) => {
     id,
     members: teamMembers,
     isSettings,
-    error404: team ? !!team.error404 : false,
+    error404: team && !!team.error404,
     loadingTeam,
     name: team ? team.name : "",
     loadingMembers,
