@@ -1,6 +1,11 @@
 import { omit, uniq } from "lodash"
 import { ITeam } from "@/store/reducers/teams"
-import { action as act, createAsyncAction, ActionType } from "typesafe-actions"
+import {
+  action as act,
+  createAsyncAction,
+  ActionType,
+  getType
+} from "typesafe-actions"
 import { RootState } from "@/store/store"
 import {
   WebData,
@@ -18,9 +23,6 @@ const DELETE_INGREDIENT = "DELETE_INGREDIENT"
 const UPDATE_INGREDIENT = "UPDATE_INGREDIENT"
 const DELETE_STEP = "DELETE_STEP"
 const UPDATE_STEP = "UPDATE_STEP"
-const DELETE_RECIPE_START = "DELETE_RECIPE_START"
-const DELETE_RECIPE_SUCCESS = "DELETE_RECIPE_SUCCESS"
-const DELETE_RECIPE_FAILURE = "DELETE_RECIPE_FAILURE"
 const SET_ADDING_INGREDIENT_TO_RECIPE = "SET_ADDING_INGREDIENT_TO_RECIPE"
 const SET_UPDATING_INGREDIENT = "SET_UPDATING_INGREDIENT"
 const SET_REMOVING_INGREDIENT = "SET_REMOVING_INGREDIENT"
@@ -29,12 +31,6 @@ const SET_REMOVING_STEP = "SET_REMOVING_STEP"
 const SET_RECIPE_UPDATING = "SET_RECIPE_UPDATING"
 const UPDATE_RECIPE_OWNER = "UPDATE_RECIPE_OWNER"
 const SET_SCHEDULING_RECIPE = "SET_SCHEDULING_RECIPE"
-const FETCH_RECIPE_START = "FETCH_RECIPE_START"
-const FETCH_RECIPE_SUCCESS = "FETCH_RECIPE_SUCCESS"
-const FETCH_RECIPE_FAILURE = "FETCH_RECIPE_FAILURE"
-const FETCH_RECIPE_LIST_START = "FETCH_RECIPE_LIST_START"
-const FETCH_RECIPE_LIST_SUCCESS = "FETCH_RECIPE_LIST_SUCCESS"
-const FETCH_RECIPE_LIST_FAILURE = "FETCH_RECIPE_LIST_FAILURE"
 const CREATE_RECIPE_START = "CREATE_RECIPE_START"
 const CREATE_RECIPE_SUCCESS = "CREATE_RECIPE_SUCCESS"
 const CREATE_RECIPE_FAILURE = "CREATE_RECIPE_FAILURE"
@@ -58,21 +54,21 @@ export const updateRecipeOwner = (id: IRecipe["id"], owner: IRecipe["owner"]) =>
   })
 
 export const deleteRecipe = createAsyncAction(
-  DELETE_RECIPE_START,
-  DELETE_RECIPE_SUCCESS,
-  DELETE_RECIPE_FAILURE
+  "DELETE_RECIPE_START",
+  "DELETE_RECIPE_SUCCESS",
+  "DELETE_RECIPE_FAILURE"
 )<IRecipe["id"], IRecipe["id"], IRecipe["id"]>()
 
 export const fetchRecipe = createAsyncAction(
-  FETCH_RECIPE_START,
-  FETCH_RECIPE_SUCCESS,
-  FETCH_RECIPE_FAILURE
+  "FETCH_RECIPE_START",
+  "FETCH_RECIPE_SUCCESS",
+  "FETCH_RECIPE_FAILURE"
 )<IRecipe["id"], IRecipe, { id: IRecipe["id"]; error404: boolean }>()
 
 export const fetchRecipeList = createAsyncAction(
-  FETCH_RECIPE_LIST_START,
-  FETCH_RECIPE_LIST_SUCCESS,
-  FETCH_RECIPE_LIST_FAILURE
+  "FETCH_RECIPE_LIST_START",
+  "FETCH_RECIPE_LIST_SUCCESS",
+  "FETCH_RECIPE_LIST_FAILURE"
 )<void, IRecipe[], void>()
 
 export interface IAddRecipeError {
@@ -203,6 +199,12 @@ export const setSchedulingRecipe = (
     scheduling
   })
 
+export const fetchRecentRecipes = createAsyncAction(
+  "FETCH_RECENT_RECIPES_START",
+  "FETCH_RECENT_RECIPES_SUCCESS",
+  "FETCH_RECENT_RECIPES_FAILURE"
+)<void, IRecipe[], void>()
+
 export interface IRecipeBasic
   extends Omit<
     IRecipe,
@@ -243,14 +245,26 @@ export type RecipeActions =
   | ActionType<typeof fetchRecipe>
   | ActionType<typeof fetchRecipeList>
   | ActionType<typeof createRecipe>
+  | ActionType<typeof fetchRecentRecipes>
   | ReturnType<typeof resetAddRecipeErrors>
 
-export const getRecipes = (state: RootState) =>
+export const getRecipes = (state: RootState): WebData<IRecipe>[] =>
   state.recipes.allIds.map(id => state.recipes.byId[id])
 
-export function getRecipeById(state: RootState, id: IRecipe["id"]) {
-  return state.recipes.byId[id]
-}
+export const getRecipeById = (
+  state: RootState,
+  id: IRecipe["id"]
+): WebData<IRecipe> => state.recipes.byId[id]
+
+export const getRecentRecipes = (state: RootState): WebData<IRecipe[]> =>
+  isSuccess(state.recipes.recentIds)
+    ? Success(
+        state.recipes.recentIds.data
+          .map(id => state.recipes.byId[id])
+          .filter(isSuccess)
+          .map(recipe => recipe.data)
+      )
+    : state.recipes.recentIds
 
 export interface IIngredient {
   readonly id: number
@@ -304,8 +318,6 @@ export interface IRecipe {
   readonly updating?: boolean
 }
 
-export type RemoteRecipe = WebData<IRecipe>
-
 function mapRecipeSuccessById(
   state: IRecipesState,
   id: IRecipe["id"],
@@ -340,9 +352,10 @@ export interface IRecipesState {
   readonly errorCreatingRecipe: IAddRecipeError
 
   readonly byId: {
-    readonly [key: number]: RemoteRecipe
+    readonly [key: number]: WebData<IRecipe>
   }
   readonly allIds: IRecipe["id"][]
+  readonly recentIds: WebData<IRecipe["id"][]>
 }
 
 export const initialState: IRecipesState = {
@@ -352,7 +365,8 @@ export const initialState: IRecipesState = {
   creatingRecipe: false,
   errorCreatingRecipe: {},
   byId: {},
-  allIds: []
+  allIds: [],
+  recentIds: undefined
 }
 
 export const recipes = (
@@ -360,7 +374,7 @@ export const recipes = (
   action: RecipeActions
 ): IRecipesState => {
   switch (action.type) {
-    case FETCH_RECIPE_START:
+    case getType(fetchRecipe.request):
       return {
         ...state,
         byId: {
@@ -368,7 +382,7 @@ export const recipes = (
           [action.payload]: Loading()
         }
       }
-    case FETCH_RECIPE_SUCCESS:
+    case getType(fetchRecipe.success):
       return {
         ...state,
         byId: {
@@ -377,7 +391,7 @@ export const recipes = (
         },
         allIds: uniq(state.allIds.concat(action.payload.id))
       }
-    case FETCH_RECIPE_FAILURE: {
+    case getType(fetchRecipe.failure): {
       const failure = action.payload.error404
         ? HttpErrorKind.error404
         : HttpErrorKind.other
@@ -389,13 +403,12 @@ export const recipes = (
         }
       }
     }
-    case FETCH_RECIPE_LIST_START:
+    case getType(fetchRecipeList.request):
       return {
         ...state,
         loadingAll: true
       }
-
-    case FETCH_RECIPE_LIST_SUCCESS:
+    case getType(fetchRecipeList.success):
       return {
         ...state,
         loadingAll: false,
@@ -409,21 +422,40 @@ export const recipes = (
         ),
         allIds: action.payload.map(r => r.id)
       }
-
-    case FETCH_RECIPE_LIST_FAILURE:
+    case getType(fetchRecipeList.failure):
       return {
         ...state,
         loadingAll: false,
         errorLoadingAll: true
       }
-
+    case getType(fetchRecentRecipes.request):
+      return {
+        ...state,
+        recentIds: Loading()
+      }
+    case getType(fetchRecentRecipes.success):
+      return {
+        ...state,
+        byId: action.payload.reduce(
+          (a, b) => ({
+            ...a,
+            [b.id]: Success(b)
+          }),
+          state.byId
+        ),
+        recentIds: Success(action.payload.map(r => r.id))
+      }
+    case getType(fetchRecentRecipes.failure):
+      return {
+        ...state,
+        recentIds: Failure(HttpErrorKind.other)
+      }
     case CREATE_RECIPE_START:
       return {
         ...state,
         creatingRecipe: true,
         errorCreatingRecipe: {}
       }
-
     case CREATE_RECIPE_SUCCESS:
       return {
         ...state,
@@ -435,56 +467,48 @@ export const recipes = (
         },
         allIds: uniq(state.allIds.concat(action.payload.id))
       }
-
     case CREATE_RECIPE_FAILURE:
       return {
         ...state,
         creatingRecipe: false,
         errorCreatingRecipe: action.payload
       }
-
     case RESET_CREATE_RECIPE_ERRORS:
       return {
         ...state,
         errorCreatingRecipe: {}
       }
-
-    case DELETE_RECIPE_START:
+    case getType(deleteRecipe.request):
       return mapRecipeSuccessById(state, action.payload, recipe => ({
         ...recipe,
         deleting: true
       }))
-
-    case DELETE_RECIPE_SUCCESS:
+    case getType(deleteRecipe.success):
       return {
         ...state,
         byId: omit(state.byId, action.payload),
         allIds: state.allIds.filter(id => id !== action.payload)
       }
-    case DELETE_RECIPE_FAILURE:
+    case getType(deleteRecipe.failure):
       return mapRecipeSuccessById(state, action.payload, recipe => ({
         ...recipe,
         deleting: false
       }))
-
     case ADD_STEP_TO_RECIPE:
       return mapRecipeSuccessById(state, action.payload.id, recipe => ({
         ...recipe,
         steps: recipe.steps.concat(action.payload.step)
       }))
-
     case SET_LOADING_ADD_STEP_TO_RECIPE:
       return mapRecipeSuccessById(state, action.payload.id, recipe => ({
         ...recipe,
         addingStepToRecipe: action.payload.val
       }))
-
     case ADD_INGREDIENT_TO_RECIPE:
       return mapRecipeSuccessById(state, action.payload.id, recipe => ({
         ...recipe,
         ingredients: recipe.ingredients.concat(action.payload.ingredient)
       }))
-
     case DELETE_INGREDIENT:
       return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
         ...recipe,
@@ -503,7 +527,6 @@ export const recipes = (
           }
         })
       }))
-
     case DELETE_STEP:
       return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
         ...recipe,
@@ -524,13 +547,11 @@ export const recipes = (
           }
         })
       }))
-
     case SET_ADDING_INGREDIENT_TO_RECIPE:
       return mapRecipeSuccessById(state, action.payload.id, recipe => ({
         ...recipe,
         addingIngredient: action.payload.val
       }))
-
     case SET_UPDATING_INGREDIENT:
       return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
         ...recipe,
