@@ -9,8 +9,10 @@ if "allauth.socialaccount" in settings.INSTALLED_APPS:
     from allauth.socialaccount.models import SocialToken
     from allauth.socialaccount.providers.oauth.client import OAuthError
 
+from core.serialization import BaseSerializer
 
-class TwitterLoginSerializer(serializers.Serializer):
+
+class TwitterLoginSerializer(BaseSerializer):
     access_token = serializers.CharField()
     token_secret = serializers.CharField()
 
