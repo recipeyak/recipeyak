@@ -13,7 +13,6 @@ describe("RecipeItem", () => {
           author="some recipe title"
           url="/someurl"
           name="foo"
-          teamID={1}
           owner={{
             type: "user",
             id: 1

@@ -6,7 +6,6 @@ import { ButtonPlain } from "@/components/Buttons"
 import { classNames } from "@/classnames"
 import { teamURL, recipeURL } from "@/urls"
 import * as DragDrop from "@/dragDrop"
-import { ITeam } from "@/store/reducers/teams"
 import { IRecipe } from "@/store/reducers/recipes"
 import Dropdown from "@/components/Dropdown"
 
@@ -48,7 +47,6 @@ function Via({ owner }: IViaProps) {
 interface IScheduleProps {
   readonly show: boolean
   readonly id: IRecipe["id"]
-  readonly teamID?: ITeam["id"] | "personal"
   readonly onClick: () => void
   readonly onClose: () => void
 }
@@ -67,7 +65,7 @@ class Schedule extends React.Component<IScheduleProps> {
     }
   }
   render() {
-    const { id, teamID, show, onClick, onClose } = this.props
+    const { id, show, onClick, onClose } = this.props
     return (
       <Dropdown
         onClose={onClose}
@@ -77,12 +75,7 @@ class Schedule extends React.Component<IScheduleProps> {
             schedule
           </ButtonPlain>
         }>
-        <DatePickerForm
-          recipeID={id}
-          teamID={teamID}
-          show={show}
-          close={onClose}
-        />
+        <DatePickerForm recipeID={id} show={show} close={onClose} />
       </Dropdown>
     )
   }
@@ -94,7 +87,6 @@ interface IRecipeItemProps {
   readonly id: number
   readonly url?: string
   readonly owner: IRecipe["owner"]
-  readonly teamID?: ITeam["id"] | "personal"
   readonly drag?: boolean
 }
 
@@ -122,8 +114,7 @@ export class RecipeItem extends React.Component<
       id,
       owner,
       connectDragSource,
-      isDragging,
-      teamID
+      isDragging
     } = this.props
 
     const drag = !this.state.show && this.props.drag
@@ -143,7 +134,6 @@ export class RecipeItem extends React.Component<
             <Via owner={owner} />
             <Schedule
               id={id}
-              teamID={teamID}
               show={this.state.show}
               onClick={() => this.setState(prev => ({ show: !prev.show }))}
               onClose={() => this.setState({ show: false })}
