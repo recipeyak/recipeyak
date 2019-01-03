@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from core.models import MyUser, Recipe, Ingredient, Step, Team
-from core.serialization import BaseModelSerializer
+from core.serialization import BaseModelSerializer, BaseSerializer
 
 
 class OwnerRelatedField(serializers.RelatedField):
@@ -152,7 +152,7 @@ class RecipeSerializer(BaseModelSerializer):
         return recipe
 
 
-class RecipeMoveCopySerializer(serializers.Serializer):
+class RecipeMoveCopySerializer(BaseSerializer):
     id = serializers.IntegerField(max_value=None, min_value=0, write_only=True)
     type = serializers.ChoiceField(choices=["user", "team"], write_only=True)
 
