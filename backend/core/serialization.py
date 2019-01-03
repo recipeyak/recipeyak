@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, cast, Any
 
 from django.db import connection
 
@@ -23,11 +23,13 @@ class DBBlockerSerializerMixin:
     @property
     def data(self):
         if hasattr(self, "initial_data") or self.dangerously_allow_db:
-            return super().data
+            # Mypy is correct that we don't have a data property on our parent.
+            # We must cast to Any to support the mixin use of this class
+            return cast(Any, super()).data
         else:
             with connection.execute_wrapper(blocker):
-                return super().data
+                return cast(Any, super()).data
 
     def __init__(self, *args, **kwargs):
         self.dangerously_allow_db = kwargs.pop("dangerously_allow_db", None)
-        return super().__init__(*args, **kwargs)
+        return cast(Any, super()).__init__(*args, **kwargs)
