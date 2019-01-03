@@ -20,7 +20,7 @@ const mapStateToProps = (state: RootState) => {
     .sort(byNameAlphabetical)
   return {
     recipes,
-    loading: state.recipes.loadingAll && recipes.length === 0
+    loading: state.recipes.loadingAll
   }
 }
 
@@ -32,7 +32,7 @@ interface IRecipesProps {
   readonly fetchData: (teamID: ITeam["id"] | "personal") => void
   readonly recipes: IRecipe[]
   readonly loading: boolean
-  readonly teamID: ITeam["id"]
+  readonly teamID: ITeam["id"] | "personal"
   readonly scroll: boolean
   readonly drag: boolean
   readonly noPadding?: boolean

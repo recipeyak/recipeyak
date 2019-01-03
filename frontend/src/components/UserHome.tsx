@@ -7,7 +7,13 @@ import { RecipeItem as Recipe } from "@/components/RecipeItem"
 import { IRecipe } from "@/store/reducers/recipes"
 import { IUserStats } from "@/store/reducers/user"
 import Footer from "@/components/Footer"
-import { WebData, isInitial, isLoading, isFailure } from "@/store/remotedata"
+import {
+  WebData,
+  isInitial,
+  isLoading,
+  isFailure,
+  isSuccess
+} from "@/store/remotedata"
 
 // TODO(sbdchd): must be a better way
 // tslint:disable-next-line:no-var-requires
@@ -78,18 +84,15 @@ const LifetimeRecipeEdits = ({ edits, dateJoined }: ILifeTimeRecipeEdits) => {
 }
 
 interface IRecentRecipes {
-  readonly recipes: IRecipe[]
-  readonly loading: boolean
-  readonly error: boolean
+  readonly recipes: WebData<IRecipe[]>
 }
 
-const RecentRecipes = ({ recipes, loading, error }: IRecentRecipes) => {
-  if (error) {
+const RecentRecipes = ({ recipes }: IRecentRecipes) => {
+  if (isFailure(recipes)) {
     return <p>error fetching recipes</p>
   }
 
-  const noRecipes = recipes.length < 1
-  if (noRecipes && !loading) {
+  if (isSuccess(recipes) && recipes.data.length === 0) {
     return (
       <section>
         <section className="d-grid grid-gap-4 justify-content-center">
@@ -112,16 +115,18 @@ const RecentRecipes = ({ recipes, loading, error }: IRecentRecipes) => {
     <section>
       <p className="stat mb-1 text-center">Recently Active Recipes</p>
       <section className="recent-recipes-grid">
-        {loading ? (
+        {isLoading(recipes) || isInitial(recipes) ? (
           <Loader />
         ) : (
-          recipes.map(recipe => <Recipe {...recipe} key={recipe.id} />)
+          <>
+            {recipes.data.map(recipe => (
+              <Recipe {...recipe} key={recipe.id} />
+            ))}
+            <Link to="/recipes" className="my-button is-primary">
+              See More
+            </Link>
+          </>
         )}
-        {!loading ? (
-          <Link to="/recipes" className="my-button is-primary">
-            See More
-          </Link>
-        ) : null}
       </section>
     </section>
   )
@@ -187,18 +192,11 @@ const UserStatistics = (props: IUserStatisticsProps) => {
 }
 
 interface IUserHomeProps {
-  readonly loadingRecipes: boolean
   readonly userStats: WebData<IUserStats>
-  readonly errorRecipes: boolean
-  readonly recipes: IRecipe[]
+  readonly recipes: WebData<IRecipe[]>
 }
 
-const UserHome = ({
-  loadingRecipes,
-  userStats,
-  errorRecipes,
-  recipes
-}: IUserHomeProps) => {
+const UserHome = ({ userStats, recipes }: IUserHomeProps) => {
   return (
     <>
       <div className="container pr-2 pl-2 pb-2">
@@ -206,11 +204,7 @@ const UserHome = ({
 
         <section className="home-page-grid font-family-title">
           <UserStatistics stats={userStats} />
-          <RecentRecipes
-            loading={loadingRecipes}
-            error={errorRecipes}
-            recipes={recipes}
-          />
+          <RecentRecipes recipes={recipes} />
         </section>
       </div>
 

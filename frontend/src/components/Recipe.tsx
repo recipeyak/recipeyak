@@ -26,11 +26,10 @@ import {
   IRecipe,
   IStep,
   IIngredient,
-  getRecipeById,
-  RemoteRecipe
+  getRecipeById
 } from "@/store/reducers/recipes"
 import { IRecipeBasic } from "@/components/RecipeTitle"
-import { isInitial, isLoading, isFailure } from "@/store/remotedata"
+import { isInitial, isLoading, isFailure, WebData } from "@/store/remotedata"
 
 type RouteProps = RouteComponentProps<{ id: string }>
 
@@ -51,7 +50,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 })
 
 interface IRecipeProps extends RouteProps {
-  readonly recipe: RemoteRecipe
+  readonly recipe: WebData<IRecipe>
   readonly update: (id: IRecipe["id"], recipe: IRecipeBasic) => Promise<void>
   readonly remove: (id: IRecipe["id"]) => void
   readonly fetchRecipe: (id: IRecipe["id"]) => void
