@@ -19,4 +19,4 @@ if [ -n "$EXECUTABLE_FILES" ];then
     set -e
     FILES="$FILES ""$SHEBANG_FILES"
 fi
-poetry run black $FILES
+exec poetry run black $FILES

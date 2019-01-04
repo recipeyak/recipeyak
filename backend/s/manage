@@ -10,4 +10,4 @@ if [[ -f ../.env ]]; then
     set +a
 fi
 
-poetry run ./manage.py "$@"
+exec poetry run ./manage.py "$@"

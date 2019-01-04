@@ -18,8 +18,8 @@ fi
 
 if [[ "$ARGS" == *'--watch'* ]]; then
     ARGS="${ARGS/'--watch'/''}"
-    poetry run ptw -- $ARGS
+    exec poetry run ptw -- $ARGS
 else
-    poetry run pytest $ARGS
+    exec poetry run pytest $ARGS
 fi
 
