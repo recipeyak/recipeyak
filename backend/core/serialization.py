@@ -1,7 +1,11 @@
 from typing import Optional, cast, Any
+from logging import getLogger
 
 from django.db import connection
+from django.conf import settings
 from rest_framework import serializers
+
+log = getLogger(__name__)
 
 
 def blocker(*args):
@@ -27,7 +31,12 @@ class DBBlockerSerializerMixin:
             # Mypy is correct that we don't have a data property on our parent.
             # We must cast to Any to support the mixin use of this class
             return cast(Any, super()).data
+        elif not settings.DEBUG:
+            log.error('Database access in serializer')
+            return cast(Any, super()).data
         else:
+            # only raise error when we are in DEBUG mode. We don't want to cause
+            # errors in production when we don't need to do so.
             with connection.execute_wrapper(blocker):
                 return cast(Any, super()).data
 
