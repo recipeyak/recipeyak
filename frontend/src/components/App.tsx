@@ -4,9 +4,8 @@ import { ConnectedRouter } from "react-router-redux"
 import { Helmet } from "@/components/Helmet"
 import HTML5Backend from "react-dnd-html5-backend"
 import { DragDropContext } from "react-dnd"
-
-import { history, store } from "@/store/store"
-
+import { connect } from "react-redux"
+import { history, RootState } from "@/store/store"
 import Home from "@/containers/Home"
 import Login from "@/containers/Login"
 import Signup from "@/containers/Signup"
@@ -32,54 +31,63 @@ import ErrorBoundary from "@/components/ErrorBoundary"
 
 import "@/components/scss/main.scss"
 
-// TODO(sbdchd): these should be connected components
-const isAuthenticated = () => store.getState().user.loggedIn
-
-const PrivateRoute = ({ component: Component, ...rest }: RouteProps) => {
-  if (Component == null) {
-    return null
-  }
-  return (
-    <Route
-      {...rest}
-      render={props => {
-        return isAuthenticated() ? (
-          <Component {...props} />
-        ) : (
-          <Redirect
-            to={{
-              pathname: "/login",
-              state: { from: props.location }
-            }}
-          />
-        )
-      }}
-    />
-  )
+interface IAuthRouteProps extends RouteProps {
+  readonly authenticated: boolean
 }
 
-const PublicOnlyRoute = ({ component: Component, ...rest }: RouteProps) => {
-  if (Component == null) {
-    return null
+const mapAuthenticated = (state: RootState) => ({
+  authenticated: state.user.loggedIn
+})
+
+const PrivateRoute = connect(mapAuthenticated)(
+  ({ component: Component, authenticated, ...rest }: IAuthRouteProps) => {
+    if (Component == null) {
+      return null
+    }
+    return (
+      <Route
+        {...rest}
+        render={props => {
+          return authenticated ? (
+            <Component {...props} />
+          ) : (
+            <Redirect
+              to={{
+                pathname: "/login",
+                state: { from: props.location }
+              }}
+            />
+          )
+        }}
+      />
+    )
   }
-  return (
-    <Route
-      {...rest}
-      render={props => {
-        return !isAuthenticated() ? (
-          <Component {...props} />
-        ) : (
-          <Redirect
-            to={{
-              pathname: "/",
-              state: { from: props.location }
-            }}
-          />
-        )
-      }}
-    />
-  )
-}
+)
+
+const PublicOnlyRoute = connect(mapAuthenticated)(
+  ({ component: Component, authenticated, ...rest }: IAuthRouteProps) => {
+    if (Component == null) {
+      return null
+    }
+    return (
+      <Route
+        {...rest}
+        render={props => {
+          return !authenticated ? (
+            <Component {...props} />
+          ) : (
+            <Redirect
+              to={{
+                pathname: "/",
+                state: { from: props.location }
+              }}
+            />
+          )
+        }}
+      />
+    )
+  }
+)
 
 function Base() {
   return (
