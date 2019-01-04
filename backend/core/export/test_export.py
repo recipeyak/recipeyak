@@ -5,7 +5,14 @@ import yaml
 from django.urls import reverse
 from django.test import Client
 
+from core.models import MyUser, Recipe
+
 pytestmark = pytest.mark.django_db
+
+
+@pytest.fixture
+def c() -> Client:
+    return Client()
 
 
 def fields_in(data: Dict, fields: Iterable) -> bool:
@@ -24,7 +31,7 @@ def fields_in(data: Dict, fields: Iterable) -> bool:
     return False
 
 
-def test_fields_in():
+def test_fields_in() -> None:
     d = {"id": 1}
     assert fields_in(d, fields=("id",))
 
@@ -41,8 +48,9 @@ def test_fields_in():
     assert fields_in(d4, fields=("id",))
 
 
-def test_bulk_export_json(user, user2, recipe, recipe2):
-    c = Client()
+def test_bulk_export_json(
+    c: Client, user: MyUser, user2: MyUser, recipe: Recipe, recipe2: Recipe
+) -> None:
     url = reverse("export-recipes", kwargs={"filetype": "json"})
     res = c.get(url)
     assert res.status_code == 302
@@ -56,11 +64,12 @@ def test_bulk_export_json(user, user2, recipe, recipe2):
     assert len(res.json()) == 1, "user should only have their recipes"
 
 
-def test_export_fields(user, user2, recipe, recipe2):
+def test_export_fields(
+    c: Client, user: MyUser, user2: MyUser, recipe: Recipe, recipe2: Recipe
+) -> None:
     """
     we don't want to return extraneous fields like position and id
     """
-    c = Client()
     url = reverse("export-recipes", kwargs={"filetype": "json"})
     c.force_login(user)
     res = c.get(url)
@@ -69,30 +78,35 @@ def test_export_fields(user, user2, recipe, recipe2):
     assert not any(fields_in(r, fields=("id",)) for r in recipes)
 
 
-def test_bulk_export_yaml(user, user2, recipe, recipe2):
-    for filetype in ("yaml", "yml"):
-        recipe2.move_to(user)
-        c = Client()
-        url = reverse("export-recipes", kwargs={"filetype": filetype})
-        res = c.get(url)
-        assert res.status_code == 302
-        c.force_login(user)
-        res = c.get(url)
-        assert res.status_code == 200
-        assert "!!python/" not in res.content.decode(
-            "utf-8"
-        ), "we don't want python objects to be serialized"
-        recipes = list(yaml.load_all(res.content))
-        assert len(recipes) == 2, "user should have two recipes"
-        recipe2.move_to(user2)
-        res = c.get(url)
-        assert (
-            len(list(yaml.load_all(res.content))) == 1
-        ), "user should only have their recipes"
+@pytest.mark.parametrize("filetype", ["yaml", "yml"])
+def test_bulk_export_yaml(
+    c: Client,
+    filetype: str,
+    user: MyUser,
+    user2: MyUser,
+    recipe: Recipe,
+    recipe2: Recipe,
+) -> None:
+    recipe2.move_to(user)
+    url = reverse("export-recipes", kwargs={"filetype": filetype})
+    res = c.get(url)
+    assert res.status_code == 302
+    c.force_login(user)
+    res = c.get(url)
+    assert res.status_code == 200
+    assert "!!python/" not in res.content.decode(
+        "utf-8"
+    ), "we don't want python objects to be serialized"
+    recipes = list(yaml.load_all(res.content))
+    assert len(recipes) == 2, "user should have two recipes"
+    recipe2.move_to(user2)
+    res = c.get(url)
+    assert (
+        len(list(yaml.load_all(res.content))) == 1
+    ), "user should only have their recipes"
 
 
-def test_single_export_json(user, recipe):
-    c = Client()
+def test_single_export_json(c: Client, user: MyUser, recipe: Recipe) -> None:
     url = reverse("export-recipe", kwargs={"id": recipe.id, "filetype": "json"})
     res = c.get(url)
     assert res.status_code == 302
@@ -102,16 +116,17 @@ def test_single_export_json(user, recipe):
     assert res.json().get("name") == recipe.name
 
 
-def test_single_export_yaml(user, recipe):
-    for filetype in ("yaml", "yml"):
-        c = Client()
-        url = reverse("export-recipe", kwargs={"id": recipe.id, "filetype": filetype})
-        res = c.get(url)
-        assert res.status_code == 302
-        c.force_login(user)
-        res = c.get(url)
-        assert "!!python/" not in res.content.decode(
-            "utf-8"
-        ), "we don't want python objects to be serialized"
-        assert res.status_code == 200
-        assert next(yaml.load_all(res.content)).get("name") == recipe.name
+@pytest.mark.parametrize("filetype", ["yaml", "yml"])
+def test_single_export_yaml(
+    c: Client, filetype: str, user: MyUser, recipe: Recipe
+) -> None:
+    url = reverse("export-recipe", kwargs={"id": recipe.id, "filetype": filetype})
+    res = c.get(url)
+    assert res.status_code == 302
+    c.force_login(user)
+    res = c.get(url)
+    assert "!!python/" not in res.content.decode(
+        "utf-8"
+    ), "we don't want python objects to be serialized"
+    assert res.status_code == 200
+    assert next(yaml.load_all(res.content)).get("name") == recipe.name

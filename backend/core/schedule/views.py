@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import List, Optional
 
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, views
@@ -48,7 +48,7 @@ class TeamShoppingListViewSet(viewsets.ViewSet):
 
     permission_classes = (IsAuthenticated, IsTeamMember)
 
-    def list(self, request, team_pk=None) -> Response:
+    def list(self, request: Request, team_pk: str) -> Response:
         start = request.query_params.get("start")
         end = request.query_params.get("end")
 
@@ -72,7 +72,7 @@ class TeamShoppingListViewSet(viewsets.ViewSet):
 class ReportBadMerge(APIView):
     permission_classes = (IsAuthenticated,)
 
-    def post(self, request, format=None):
+    def post(self, request: Request, format: Optional[str] = None) -> Response:
         user = request.user
         logger.warn(
             f"bad combine for user: {user} with recipes: {user.scheduled_recipes}"
@@ -125,7 +125,7 @@ class TeamCalendarViewSet(viewsets.ModelViewSet):
         team = get_object_or_404(Team, pk=self.kwargs["team_pk"])
         return ScheduledRecipe.objects.filter(team=team).select_related("recipe")
 
-    def create(self, request, team_pk=None):
+    def create(self, request: Request, team_pk: str) -> Response:
         # use different create serializer since we create via primary key, and
         # return an objects
         serializer = ScheduledRecipeSerializerCreate(data=request.data)
@@ -138,7 +138,7 @@ class TeamCalendarViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED,
         )
 
-    def list(self, request, team_pk=None):
+    def list(self, request: Request, team_pk: str) -> Response:
         start = request.query_params.get("start")
         end = request.query_params.get("end")
 

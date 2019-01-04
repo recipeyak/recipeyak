@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, password=None):
+    def create_user(self, email: str, password: Optional[str] = None) -> "MyUser":
         """
         Creates and saves a user with given email and password.
         """
@@ -36,7 +36,7 @@ class MyUserManager(BaseUserManager):
             logger.info(f"Created new user: {user}")
             return user
 
-    def create_superuser(self, email, password):
+    def create_superuser(self, email: str, password: str) -> "MyUser":
         """
         Creates and saves a superuser with the given email and password.
         """
@@ -149,7 +149,7 @@ class Recipe(CommonInfo):
     object_id = models.PositiveIntegerField()
     owner = GenericForeignKey("content_type", "object_id")
 
-    def move_to(self, account):
+    def move_to(self, account: Union[MyUser, "Team"]) -> "Recipe":
         """
         Move recipe from current owner to another team or user
 
@@ -489,7 +489,7 @@ def user_active_team_ids(user):
     return user.membership_set.filter(is_active=True).values_list("team")
 
 
-def user_and_team_recipes(user):
+def user_and_team_recipes(user: MyUser):
     return Recipe.objects.filter(
         Q(owner_user=user) | Q(owner_team__in=user_active_team_ids(user))
     )

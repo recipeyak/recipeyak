@@ -53,13 +53,13 @@ def test_recipe_creation(client, user):
 
     # compare the nested items and ignore the ids as they don't exist them in the
     # initial data.
-    steps_data: List[Dict[str, str]] = data.get("steps")
-    steps_return: List[Dict[str, str]] = res.json().get("steps")
+    steps_data: List[Dict[str, str]] = data["steps"]
+    steps_return: List[Dict[str, str]] = res.json()["steps"]
     for step_data, step_return in zip(steps_data, steps_return):
         assert step_data.get("text") == step_return.get("text"), "Order should be right"
 
-    ingredients_data: List[Dict[str, str]] = data.get("ingredients")
-    ingredients_return: List[Dict[str, str]] = res.json().get("ingredients")
+    ingredients_data: List[Dict[str, str]] = data["ingredients"]
+    ingredients_return: List[Dict[str, str]] = res.json()["ingredients"]
     for ingredient_data, ingredient_return in zip(ingredients_data, ingredients_return):
         assert (
             ingredient_data["name"] == ingredient_return["name"]
