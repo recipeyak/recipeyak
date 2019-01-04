@@ -12,7 +12,6 @@ import {
   setAddRecipeFormSource,
   setAddRecipeFormTime,
   setAddRecipeFormServings,
-  setAddRecipeFormTeam,
   addAddRecipeFormIngredient,
   removeAddRecipeFormIngredient,
   updateAddRecipeFormIngredient,
@@ -27,6 +26,7 @@ import {
   IStepBasic,
   resetAddRecipeErrors
 } from "@/store/reducers/recipes"
+import { updateTeamID } from "@/store/reducers/user"
 
 const mapStateToProps = (state: RootState) => ({
   name: state.addrecipe.name,
@@ -41,7 +41,7 @@ const mapStateToProps = (state: RootState) => ({
   // we remove the loading
   teams: teamsFrom(state),
   loadingTeams: !!state.teams.loading,
-  teamID: state.addrecipe.team
+  teamID: state.user.teamID
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -55,7 +55,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     dispatch(setAddRecipeFormTime(e.target.value)),
   setServings: (e: React.ChangeEvent<HTMLInputElement>) =>
     dispatch(setAddRecipeFormServings(e.target.value)),
-  setTeamID: (id: ITeam["id"] | null) => dispatch(setAddRecipeFormTeam(id)),
+  setTeamID: (id: ITeam["id"] | null) => dispatch(updateTeamID(id)),
 
   addIngredient: (x: IIngredientBasic) =>
     dispatch(addAddRecipeFormIngredient(x)),
