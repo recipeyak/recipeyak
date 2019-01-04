@@ -23,7 +23,7 @@ def export_recipes(request: Request, filetype: str, id: Optional[str] = None):
     if id is not None:
         queryset = get_object_or_404(queryset, pk=int(id))
 
-    many = id is not None
+    many = id is None
 
     recipes = RecipeExportSerializer(queryset, many=many).data
 
