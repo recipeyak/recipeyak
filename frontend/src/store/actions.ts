@@ -1179,6 +1179,14 @@ export const addingScheduledRecipe = (dispatch: Dispatch) => (
     .then(res => {
       dispatch(replaceCalendarRecipe(id, res.data))
       dispatch(setSchedulingRecipe(recipeID, false))
+      const scheduledDate = new Date(res.data.on).toLocaleDateString()
+      const recipeName = res.data.recipe.name
+      const message = `${recipeName} scheduled on ${scheduledDate}`
+      showNotificationWithTimeout(dispatch)({
+        message,
+        level: "success",
+        delay: 3 * second
+      })
     })
     .catch(() => {
       dispatch(deleteCalendarRecipe(id))

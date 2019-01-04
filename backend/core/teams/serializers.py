@@ -2,16 +2,17 @@ from typing import List
 from rest_framework import serializers
 
 from core.models import MyUser, Team, Membership, Invite
+from core.serialization import BaseModelSerializer, BaseSerializer
 
 
-class PublicUserSerializer(serializers.ModelSerializer):
+class PublicUserSerializer(BaseModelSerializer):
     class Meta:
         model = MyUser
         editable = False
         fields = ("id", "email", "avatar_url")
 
 
-class TeamSerializer(serializers.ModelSerializer):
+class TeamSerializer(BaseModelSerializer):
 
     emails = serializers.ListField(
         child=serializers.EmailField(write_only=True), write_only=True
@@ -50,7 +51,7 @@ class TeamSerializer(serializers.ModelSerializer):
         return team
 
 
-class MembershipSerializer(serializers.ModelSerializer):
+class MembershipSerializer(BaseModelSerializer):
     user = PublicUserSerializer()
 
     class Meta:
@@ -71,7 +72,7 @@ class MembershipSerializer(serializers.ModelSerializer):
         return level
 
 
-class InviteSerializer(serializers.ModelSerializer):
+class InviteSerializer(BaseModelSerializer):
     user = PublicUserSerializer()
     team = TeamSerializer(fields=["id", "name"], read_only=True)
     creator = PublicUserSerializer()
@@ -82,7 +83,7 @@ class InviteSerializer(serializers.ModelSerializer):
         fields = ("id", "user", "team", "active", "creator", "status")
 
 
-class CreateInviteSerializer(serializers.Serializer):
+class CreateInviteSerializer(BaseSerializer):
     level = serializers.ChoiceField(
         choices=Membership.MEMBERSHIP_CHOICES, write_only=True
     )

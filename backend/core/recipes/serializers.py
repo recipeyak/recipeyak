@@ -1,10 +1,10 @@
 from rest_framework import serializers
 
 from core.models import MyUser, Recipe, Ingredient, Step, Team
-from core.serialization import DBBlockerSerializerMixin
+from core.serialization import BaseModelSerializer, BaseSerializer, BaseRelatedField
 
 
-class OwnerRelatedField(serializers.RelatedField):
+class OwnerRelatedField(BaseRelatedField):
     """
     A custom field to use for the `owner` generic relationship.
     """
@@ -26,7 +26,7 @@ class OwnerRelatedField(serializers.RelatedField):
         self.export = export
 
 
-class IngredientSerializer(serializers.ModelSerializer):
+class IngredientSerializer(BaseModelSerializer):
     """
     serializer the ingredient of a recipe
     """
@@ -49,7 +49,7 @@ class IngredientSerializer(serializers.ModelSerializer):
                 self.fields.pop(field_name)
 
 
-class StepSerializer(serializers.ModelSerializer):
+class StepSerializer(BaseModelSerializer):
     """
     serializer the step of a recipe
     """
@@ -72,7 +72,7 @@ class StepSerializer(serializers.ModelSerializer):
                 self.fields.pop(field_name)
 
 
-class RecipeSerializer(DBBlockerSerializerMixin, serializers.ModelSerializer):
+class RecipeSerializer(BaseModelSerializer):
     steps = StepSerializer(many=True, source="step_set")
     last_scheduled = serializers.DateField(source="get_last_scheduled", read_only=True)
     ingredients = IngredientSerializer(many=True, source="ingredient_set")
@@ -152,7 +152,7 @@ class RecipeSerializer(DBBlockerSerializerMixin, serializers.ModelSerializer):
         return recipe
 
 
-class RecipeMoveCopySerializer(serializers.Serializer):
+class RecipeMoveCopySerializer(BaseSerializer):
     id = serializers.IntegerField(max_value=None, min_value=0, write_only=True)
     type = serializers.ChoiceField(choices=["user", "team"], write_only=True)
 

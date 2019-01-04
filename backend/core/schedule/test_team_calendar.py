@@ -14,6 +14,10 @@ def test_adding_to_team_calendar(client, user, team, recipe):
     data = {"recipe": recipe.id, "on": date(1976, 7, 6), "count": 1}
     assert team.is_member(user)
     client.force_authenticate(user)
+    # Making two requests triggers a different case of merging two scheduled
+    # recipes, which caused a DB query at one point.
+    res = client.post(url, data)
+    assert res.status_code == status.HTTP_201_CREATED
     res = client.post(url, data)
     assert res.status_code == status.HTTP_201_CREATED
     scheduled = ScheduledRecipe.objects.get(id=res.json().get("id"))

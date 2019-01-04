@@ -2,6 +2,7 @@ from django.http import HttpRequest
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model
+from core.serialization import BaseSerializer, BaseModelSerializer
 
 try:
     from allauth.account import app_settings as allauth_settings
@@ -24,7 +25,7 @@ if "allauth.socialaccount" in settings.INSTALLED_APPS:
     from allauth.socialaccount.helpers import complete_social_login
 
 
-class SocialLoginSerializer(serializers.Serializer):
+class SocialLoginSerializer(BaseSerializer):
     access_token = serializers.CharField(required=False, allow_blank=True)
     code = serializers.CharField(required=False, allow_blank=True)
 
@@ -137,7 +138,7 @@ class SocialLoginSerializer(serializers.Serializer):
         return attrs
 
 
-class RegisterSerializer(serializers.Serializer):
+class RegisterSerializer(BaseSerializer):
     username = serializers.CharField(
         max_length=get_username_max_length(),
         min_length=allauth_settings.USERNAME_MIN_LENGTH,
@@ -200,11 +201,11 @@ class RegisterSerializer(serializers.Serializer):
         return user
 
 
-class VerifyEmailSerializer(serializers.Serializer):
+class VerifyEmailSerializer(BaseSerializer):
     key = serializers.CharField()
 
 
-class SocialAccountSerializer(serializers.ModelSerializer):
+class SocialAccountSerializer(BaseModelSerializer):
     """
     serializer allauth SocialAccounts for use with a REST API
     """

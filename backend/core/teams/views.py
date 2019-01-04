@@ -41,11 +41,6 @@ class TeamInviteViewSet(
         team_pk = self.kwargs["team_pk"]
         return Invite.objects.filter(membership__team__id=team_pk)
 
-    def get_serializer_class(self):
-        if self.action == "create":
-            return CreateInviteSerializer
-        return InviteSerializer
-
     def create(self, request, team_pk=None):
         """
         for creating, we want: level, user_id
@@ -54,7 +49,7 @@ class TeamInviteViewSet(
         need to use to_representation or form_represenation
         """
         team = Team.objects.get(pk=team_pk)
-        serializer = self.get_serializer(data={**request.data, "team": team})
+        serializer = CreateInviteSerializer(data={**request.data, "team": team})
         serializer.is_valid(raise_exception=True)
         invite = serializer.save(team=team, creator=self.request.user)
         return Response(
@@ -80,7 +75,11 @@ class UserInvitesViewSet(
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return Invite.objects.filter(membership__user=self.request.user)
+        return (
+            Invite.objects.filter(membership__user=self.request.user)
+            .select_related("membership", "creator")
+            .prefetch_related("membership__user", "membership__team")
+        )
 
     @detail_route(methods=["post"], url_name="accept")
     def accept(self, request, pk=None):
@@ -109,7 +108,7 @@ class TeamViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Team.objects.filter(
-            membership__user__id=self.request.user.id
+            membership__user_id=self.request.user.id
         ) | Team.objects.filter(is_public=True)
 
     def get_permissions(self):
@@ -150,7 +149,7 @@ class MembershipViewSet(
 
     def get_queryset(self):
         team = get_object_or_404(Team.objects.all(), pk=self.kwargs["team_pk"])
-        return team.membership_set.all()
+        return team.membership_set.select_related("user").all()
 
     def get_permissions(self):
         if self.request.method in SAFE_METHODS:
