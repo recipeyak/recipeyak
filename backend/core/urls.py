@@ -49,9 +49,9 @@ teams_router.register(
 teams_router.register(r"calendar", TeamCalendarViewSet, base_name="team-calendar")
 
 urlpatterns = [
-    url(r"^api/v1/rest-auth/", include("core.auth.urls")),
+    url(r"^api/v1/auth/", include("core.auth.urls")),
     url(r"^api/v1/", include("core.users.urls")),
-    url(r"^api/v1/rest-auth/registration/", include("core.auth.registration.urls")),
+    url(r"^api/v1/auth/registration/", include("core.auth.registration.urls")),
     url(r"", include("core.export.urls")),
     url(r"api/v1/", include(router.urls)),
     url(r"api/v1/", include(recipes_router.urls)),
