@@ -80,7 +80,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer_class=RecipeMoveCopySerializer,
         permission_classes=[HasRecipeAccess],
     )
-    def move(self, request, pk=None):
+    def move(self, request: Request, pk: str) -> Response:
         """
         Move recipe from user to another team.
         User should have write access to team to move recipe
@@ -167,12 +167,12 @@ class TeamRecipesViewSet(
             "owner", "step_set", "ingredient_set", "scheduledrecipe_set"
         )
 
-    def list(self, request, team_pk=None):
+    def list(self, request: Request, team_pk: str) -> Response:
         serializer = self.get_serializer(self.get_queryset(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def create(self, request, team_pk=None):
-        team = get_object_or_404(Team.objects.all(), pk=team_pk)
+    def create(self, request: Request, team_pk: str) -> Response:
+        team: Team = get_object_or_404(Team.objects.all(), pk=team_pk)
 
         serializer = self.get_serializer(data=request.data)
         serializer.initial_data["steps"] = add_positions(
@@ -194,7 +194,7 @@ class StepViewSet(viewsets.ModelViewSet):
     serializer_class = StepSerializer
     permission_classes = (IsAuthenticated,)
 
-    def create(self, request, recipe_pk=None):
+    def create(self, request: Request, recipe_pk: str) -> Response:
         """
         create the step and attach it to the correct recipe
         """
@@ -223,7 +223,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
     serializer_class = IngredientSerializer
     permission_classes = (IsAuthenticated,)
 
-    def create(self, request, recipe_pk=None):
+    def create(self, request: Request, recipe_pk: str) -> Response:
         """
         create the ingredient and attach it to the correct recipe
         """

@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
+from rest_framework.request import Request
 from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
 
 from core.auth.permissions import (
@@ -41,7 +42,7 @@ class TeamInviteViewSet(
         team_pk = self.kwargs["team_pk"]
         return Invite.objects.filter(membership__team__id=team_pk)
 
-    def create(self, request, team_pk=None):
+    def create(self, request: Request, team_pk: str) -> Response:
         """
         for creating, we want: level, user_id
         for response, we want: id, user data, team
@@ -82,13 +83,13 @@ class UserInvitesViewSet(
         )
 
     @detail_route(methods=["post"], url_name="accept")
-    def accept(self, request, pk=None):
+    def accept(self, request: Request, pk: str) -> Response:
         invite = self.get_object()
         invite.accept()
         return Response({"detail": "accepted invite"}, status=status.HTTP_200_OK)
 
     @detail_route(methods=["post"])
-    def decline(self, request, pk=None):
+    def decline(self, request: Request, pk: str) -> Response:
         invite = self.get_object()
         invite.decline()
         return Response({"detail": "declined invite"}, status=status.HTTP_200_OK)

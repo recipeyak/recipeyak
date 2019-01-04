@@ -1,3 +1,4 @@
+from typing import Optional
 from datetime import datetime, timedelta
 import pytz
 import logging
@@ -16,7 +17,7 @@ logger = logging.getLogger(__name__)
 class UserStats(APIView):
     permission_classes = (IsAuthenticated,)
 
-    def get(self, request, format=None) -> Response:
+    def get(self, request, format: Optional[str] = None) -> Response:
         user_recipes = Recipe.objects.filter(owner_user=request.user)
 
         total_recipe_edits = user_recipes.aggregate(total=Sum("edits")).get("total")
