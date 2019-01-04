@@ -32,7 +32,7 @@ class DBBlockerSerializerMixin:
             # We must cast to Any to support the mixin use of this class
             return cast(Any, super()).data
         elif not settings.DEBUG:
-            log.error('Database access in serializer')
+            log.error("Database access in serializer")
             return cast(Any, super()).data
         else:
             # only raise error when we are in DEBUG mode. We don't want to cause
