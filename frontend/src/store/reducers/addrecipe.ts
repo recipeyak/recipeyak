@@ -1,5 +1,4 @@
 import { action as act } from "typesafe-actions"
-import { ITeam } from "@/store/reducers/teams"
 import { IStepBasic, IIngredientBasic } from "@/store/reducers/recipes"
 
 const SET_ADD_RECIPE_FORM_NAME = "SET_ADD_RECIPE_FORM_NAME"
@@ -81,7 +80,6 @@ export interface IAddRecipeState {
   readonly servings: string
   readonly ingredients: IIngredientBasic[]
   readonly steps: IStepBasic[]
-  readonly team: ITeam["id"] | null
 }
 
 export const initialState: IAddRecipeState = {
@@ -91,8 +89,7 @@ export const initialState: IAddRecipeState = {
   time: "",
   servings: "",
   ingredients: [],
-  steps: [],
-  team: null
+  steps: []
 }
 
 const addrecipe = (
