@@ -22,36 +22,40 @@ export const getUser = () => http.get<IUser>("/api/v1/user/")
 
 export const deleteLoggedInUser = () => http.delete("/api/v1/user/")
 
-export const logoutUser = () => http.post<void>("/api/v1/rest-auth/logout/", {})
+export const logoutUser = () => http.post<void>("/api/v1/auth/logout/", {})
+
+interface IUserResponse {
+  readonly user: IUser
+}
 
 export const loginUserWithSocial = (service: SocialProvider, token: string) =>
-  http.post<{ user: IUser }>(`/api/v1/rest-auth/${service}/`, {
+  http.post<IUserResponse>(`/api/v1/auth/${service}/`, {
     code: token
   })
 
 export const connectSocial = (service: SocialProvider, code: unknown) =>
-  http.post<void>(`/api/v1/rest-auth/${service}/connect/`, {
+  http.post<void>(`/api/v1/auth/${service}/connect/`, {
     code
   })
 
 export const signup = (email: string, password1: string, password2: string) =>
-  http.post<{ user: IUser }>("/api/v1/rest-auth/registration/", {
+  http.post<IUserResponse>("/api/v1/auth/registration/", {
     email,
     password1,
     password2
   })
 
 export const loginUser = (email: string, password: string) =>
-  http.post<{ user: IUser }>("/api/v1/rest-auth/login/", {
+  http.post<IUserResponse>("/api/v1/auth/login/", {
     email,
     password
   })
 
 export const getSocialConnections = () =>
-  http.get<ISocialConnection[]>("/api/v1/rest-auth/socialaccounts/")
+  http.get<ISocialConnection[]>("/api/v1/auth/socialaccounts/")
 
 export const disconnectSocialAccount = (id: ISocialConnection["id"]) =>
-  http.post(`/api/v1/rest-auth/socialaccounts/${id}/disconnect/`, {
+  http.post(`/api/v1/auth/socialaccounts/${id}/disconnect/`, {
     id
   })
 
@@ -60,7 +64,7 @@ interface IDetailResponse {
 }
 
 export const resetPassword = (email: string) =>
-  http.post<IDetailResponse>("/api/v1/rest-auth/password/reset/", {
+  http.post<IDetailResponse>("/api/v1/auth/password/reset/", {
     email
   })
 
@@ -70,7 +74,7 @@ export const resetPasswordConfirm = (
   newPassword1: string,
   newPassword2: string
 ) =>
-  http.post<IDetailResponse>("/api/v1/rest-auth/password/reset/confirm/", {
+  http.post<IDetailResponse>("/api/v1/auth/password/reset/confirm/", {
     uid,
     token,
     new_password1: newPassword1,
@@ -84,7 +88,7 @@ export const changePassword = (
   password2: string,
   oldPassword: string
 ) =>
-  http.post("/api/v1/rest-auth/password/change/", {
+  http.post("/api/v1/auth/password/change/", {
     new_password1: password1,
     new_password2: password2,
     old_password: oldPassword
