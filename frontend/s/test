@@ -12,7 +12,7 @@ fi
 
 
 if [[ $CI ]]; then
-  node scripts/test.js --env=jsdom --coverage --runInBand
+  exec node scripts/test.js --env=jsdom --coverage --runInBand
 else
-  node scripts/test.js --env=jsdom
+  exec node scripts/test.js --env=jsdom
 fi
