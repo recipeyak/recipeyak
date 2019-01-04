@@ -637,7 +637,7 @@ def test_user_invites(client, team, user, user2, user3):
         {"emails": [user.email]},
         {},
     ]:
-        client.post(url, data).status_code == status.HTTP_400_BAD_REQUEST
+        assert client.post(url, data).status_code == status.HTTP_400_BAD_REQUEST
 
     res = client.post(url, {"emails": [user2.email], "level": Membership.ADMIN})
     assert res.status_code == status.HTTP_201_CREATED
@@ -734,34 +734,45 @@ def test_decline_team_invite(client, team, user, user2):
     assert res.status_code == status.HTTP_403_FORBIDDEN, "Non member cannot view team"
 
 
-def test_create_team_recipe(client, team, user, user2):
+@pytest.mark.parametrize(
+    "choice, expected_status",
+    [
+        (Membership.ADMIN, status.HTTP_201_CREATED),
+        (Membership.CONTRIBUTOR, status.HTTP_201_CREATED),
+        (Membership.READ_ONLY, status.HTTP_403_FORBIDDEN),
+    ],
+)
+def test_create_team_recipe(choice, expected_status, client, team, user, user2):
     """
     Team member that is not a READ_ONLY user should be able to 'create'
     recipe owned by team.
     """
+
     team.force_join_admin(user2)
 
     client.force_authenticate(user)
+    url = reverse("team-recipes-list", kwargs={"team_pk": team.id})
+    team.force_join(user, level=choice)
+    recipe = {
+        "name": "Cool new name",
+        "ingredients": [
+            {"quantity": "1", "unit": "pound", "name": "fish", "description": ""}
+        ],
+        "steps": [{"text": "place fish in salt"}],
+    }
+    res = client.post(url, recipe)
+    assert res.status_code == expected_status
 
-    for choice, s in [
-        (Membership.ADMIN, status.HTTP_201_CREATED),
-        (Membership.CONTRIBUTOR, status.HTTP_201_CREATED),
+
+@pytest.mark.parametrize(
+    "choice, expected_status",
+    [
+        (Membership.ADMIN, status.HTTP_200_OK),
+        (Membership.CONTRIBUTOR, status.HTTP_200_OK),
         (Membership.READ_ONLY, status.HTTP_403_FORBIDDEN),
-    ]:
-        url = reverse("team-recipes-list", kwargs={"team_pk": team.id})
-        team.force_join(user, level=choice)
-        recipe = {
-            "name": "Cool new name",
-            "ingredients": [
-                {"quantity": "1", "unit": "pound", "name": "fish", "description": ""}
-            ],
-            "steps": [{"text": "place fish in salt"}],
-        }
-        res = client.post(url, recipe)
-        assert res.status_code == s
-
-
-def test_update_team_recipe(client, team, user, user2):
+    ],
+)
+def test_update_team_recipe(choice, expected_status, client, team, user, user2):
     """
     Team member that is not a READ_ONLY user should be able to 'update'
     recipe owned by team.
@@ -770,20 +781,21 @@ def test_update_team_recipe(client, team, user, user2):
 
     client.force_authenticate(user)
 
-    for choice, s in [
-        (Membership.ADMIN, status.HTTP_200_OK),
-        (Membership.CONTRIBUTOR, status.HTTP_200_OK),
+    recipe = Recipe.objects.create(name="Example Recipe Name", owner=team)
+    url = reverse("team-recipes-detail", kwargs={"team_pk": team.id, "pk": recipe.id})
+    team.force_join(user, level=choice)
+    assert client.patch(url, {"name": "Cool new name"}).status_code == expected_status
+
+
+@pytest.mark.parametrize(
+    "choice, expected_status",
+    [
+        (Membership.ADMIN, status.HTTP_204_NO_CONTENT),
+        (Membership.CONTRIBUTOR, status.HTTP_204_NO_CONTENT),
         (Membership.READ_ONLY, status.HTTP_403_FORBIDDEN),
-    ]:
-        recipe = Recipe.objects.create(name="Example Recipe Name", owner=team)
-        url = reverse(
-            "team-recipes-detail", kwargs={"team_pk": team.id, "pk": recipe.id}
-        )
-        team.force_join(user, level=choice)
-        assert client.patch(url, {"name": "Cool new name"}).status_code == s
-
-
-def test_destroy_team_recipe(client, team, user, user2):
+    ],
+)
+def test_destroy_team_recipe(choice, expected_status, client, team, user, user2):
     """
     Team member that is not a READ_ONLY user should be able to 'destroy'
     recipe owned by team.
@@ -792,17 +804,10 @@ def test_destroy_team_recipe(client, team, user, user2):
 
     client.force_authenticate(user)
 
-    for choice, s in [
-        (Membership.ADMIN, status.HTTP_204_NO_CONTENT),
-        (Membership.CONTRIBUTOR, status.HTTP_204_NO_CONTENT),
-        (Membership.READ_ONLY, status.HTTP_403_FORBIDDEN),
-    ]:
-        recipe = Recipe.objects.create(name="Example Recipe Name", owner=team)
-        url = reverse(
-            "team-recipes-detail", kwargs={"team_pk": team.id, "pk": recipe.id}
-        )
-        team.force_join(user, level=choice)
-        assert client.delete(url).status_code == s
+    recipe = Recipe.objects.create(name="Example Recipe Name", owner=team)
+    url = reverse("team-recipes-detail", kwargs={"team_pk": team.id, "pk": recipe.id})
+    team.force_join(user, level=choice)
+    assert client.delete(url).status_code == expected_status
 
 
 def test_list_team_recipe(client, team, recipe, user, user2):

@@ -4,9 +4,10 @@ from typing import Dict, List, Union
 from django.urls import reverse
 from rest_framework import status
 from datetime import date, timedelta
+from rest_framework.test import APIClient
 
 from .utils import combine_ingredients, simplify_units
-from core.models import Recipe, Ingredient
+from core.models import Recipe, Ingredient, MyUser
 
 pytestmark = pytest.mark.django_db
 
@@ -299,7 +300,10 @@ def test_fetching_shoppinglist_with_invalid_dates(user, client):
     assert res.status_code == status.HTTP_400_BAD_REQUEST
 
 
-def test_scheduling_multiple_times_some_ingredient(user, client):
+@pytest.mark.parametrize("quantity", ["sprinkle", "some"])
+def test_scheduling_multiple_times_some_ingredient(
+    quantity: str, user: MyUser, client: APIClient
+) -> None:
     """
     with an ingredient of quantity sprinkle that we add to the cart multiple
     times shouldn't become sprinklesprinklesprinkle
@@ -307,24 +311,22 @@ def test_scheduling_multiple_times_some_ingredient(user, client):
 
     name = "Recipe name"
     author = "Recipe author"
-    for quantity in ["sprinkle", "some"]:
+    recipe = Recipe.objects.create(name=name, author=author, owner=user)
 
-        recipe = Recipe.objects.create(name=name, author=author, owner=user)
+    Ingredient.objects.create(
+        quantity=quantity, name="black pepper", position=10.0, recipe=recipe
+    )
 
-        Ingredient.objects.create(
-            quantity=quantity, name="black pepper", position=10.0, recipe=recipe
-        )
+    start = date(1976, 7, 6)
+    recipe.schedule(user=user, on=start, count=3)
 
-        start = date(1976, 7, 6)
-        recipe.schedule(user=user, on=start, count=3)
-
-        end = start + timedelta(days=1)
-        params = {"start": start, "end": end}
-        url = reverse("shopping-list")
-        client.force_authenticate(user)
-        res = client.get(url, params)
-        assert res.status_code == status.HTTP_200_OK
-        assert res.json()[0].get("unit") == "some"
+    end = start + timedelta(days=1)
+    params = {"start": start, "end": end}
+    url = reverse("shopping-list")
+    client.force_authenticate(user)
+    res = client.get(url, params)
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json()[0].get("unit") == "some"
 
 
 def test_combining_ingredient_with_range_quantity(user, client, empty_recipe):
