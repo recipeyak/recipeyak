@@ -12,7 +12,7 @@ import { random32Id } from "@/uuid"
 import { toDateString } from "@/date"
 
 import { push, replace } from "react-router-redux"
-import axios, { AxiosError, AxiosResponse, CancelTokenSource } from "axios"
+import { AxiosError, AxiosResponse } from "axios"
 import raven from "raven-js"
 
 import { store, RootState, Action } from "@/store/store"
@@ -98,12 +98,6 @@ import {
   fetchRecentRecipes
 } from "@/store/reducers/recipes"
 import * as api from "@/api"
-import {
-  clearSearchResults,
-  incrLoadingSearch,
-  decrLoadingSearch,
-  setSearchResults
-} from "@/store/reducers/search"
 import { clearAddRecipeForm } from "@/store/reducers/addrecipe"
 import { fetchShoppingList } from "@/store/reducers/shoppinglist"
 import {
@@ -404,46 +398,6 @@ export const fetchingRecipeList = (dispatch: Dispatch) => (
     })
     .catch(() => {
       dispatch(fetchRecipeList.failure())
-    })
-}
-
-interface ISearchStore {
-  lastRequest: null | CancelTokenSource
-}
-
-// container for our promise cancel tokens
-const searchStore: ISearchStore = {
-  lastRequest: null
-}
-
-export const searchRecipes = (dispatch: Dispatch) => (query: string) => {
-  // It's visually pleasing to have all the results disappear when
-  // the search query is cleared.
-  if (query === "") {
-    return dispatch(clearSearchResults())
-  }
-  // count our request
-  dispatch(incrLoadingSearch())
-  // cancel unknown existing request
-  if (searchStore.lastRequest != null) {
-    searchStore.lastRequest.cancel()
-  }
-  // create and store cancel token
-  const cancelSource = axios.CancelToken.source()
-  searchStore.lastRequest = cancelSource
-  // make request with cancel token
-  return api
-    .searchRecipes(query, cancelSource.token)
-    .then(res => {
-      dispatch(decrLoadingSearch())
-      dispatch(setSearchResults(res.data))
-    })
-    .catch((err: AxiosError) => {
-      dispatch(decrLoadingSearch())
-      if (String(err) === "Cancel") {
-        // Ignore axios cancels
-      }
-      raven.captureException(err)
     })
 }
 

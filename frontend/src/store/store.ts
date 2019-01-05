@@ -44,7 +44,6 @@ import calendar, {
   ICalendarState,
   CalendarActions
 } from "@/store/reducers/calendar"
-import search, { ISearchState, SearchActions } from "@/store/reducers/search"
 
 import { loadState, saveState } from "@/store/localStorage"
 import { StateType } from "typesafe-actions"
@@ -63,7 +62,6 @@ interface IState {
   readonly auth: IAuthState
   readonly teams: ITeamsState
   readonly calendar: ICalendarState
-  readonly search: ISearchState
 }
 
 export type Action =
@@ -78,7 +76,6 @@ export type Action =
   | AuthActions
   | TeamsActions
   | CalendarActions
-  | SearchActions
 
 const recipeApp: Reducer<IState, Action> = combineReducers({
   user,
@@ -91,8 +88,7 @@ const recipeApp: Reducer<IState, Action> = combineReducers({
   addrecipe,
   auth,
   teams,
-  calendar,
-  search
+  calendar
 })
 
 export type RootState = StateType<typeof rootReducer>
