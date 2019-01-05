@@ -20,7 +20,7 @@ import {
   SocialProvider,
   updateEmail,
   updateTeamID,
-  fetchingUser,
+  fetchUser,
   setSocialConnections,
   login,
   setUserLoggedIn,
@@ -225,22 +225,22 @@ export const updatingTeamID = (dispatch: Dispatch) => (id: number | null) => {
   api
     .updateUser({ selected_team: id })
     .then(res => {
-      dispatch(fetchingUser.success(res.data))
+      dispatch(fetchUser.success(res.data))
     })
     .catch(() => {
       dispatch(updateTeamID(oldID))
     })
 }
 
-export const fetchUser = (dispatch: Dispatch) => () => {
-  dispatch(fetchingUser.request())
+export const fetchingUser = (dispatch: Dispatch) => () => {
+  dispatch(fetchUser.request())
   return api
     .getUser()
     .then(res => {
-      dispatch(fetchingUser.success(res.data))
+      dispatch(fetchUser.success(res.data))
     })
     .catch(() => {
-      dispatch(fetchingUser.failure())
+      dispatch(fetchUser.failure())
     })
 }
 
