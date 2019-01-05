@@ -433,11 +433,15 @@ export const recipes = (
         loadingAll: false,
         errorLoadingAll: true
       }
-    case getType(fetchRecentRecipes.request):
+    case getType(fetchRecentRecipes.request): {
+      const recentIds = isSuccess(state.recentIds)
+        ? Refetching(state.recentIds.data)
+        : Loading()
       return {
         ...state,
-        recentIds: Loading()
+        recentIds
       }
+    }
     case getType(fetchRecentRecipes.success):
       return {
         ...state,

@@ -3,10 +3,10 @@ import { connect } from "react-redux"
 import UserHome from "@/components/UserHome"
 
 import {
-  fetchUser,
   fetchingUserStats,
   Dispatch,
-  fetchingRecentRecipes
+  fetchingRecentRecipes,
+  fetchingUser
 } from "@/store/actions"
 import { RootState } from "@/store/store"
 import { getRecentRecipes } from "@/store/reducers/recipes"
@@ -19,7 +19,7 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchData: () => {
     fetchingRecentRecipes(dispatch)()
-    fetchUser(dispatch)()
+    fetchingUser(dispatch)()
     fetchingUserStats(dispatch)()
   }
 })

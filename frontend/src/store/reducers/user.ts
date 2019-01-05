@@ -9,22 +9,23 @@ import {
   getType
 } from "typesafe-actions"
 import { IRecipe } from "@/store/reducers/recipes"
-import { WebData, Success, Failure, HttpErrorKind, Loading } from "@/webdata"
+import {
+  WebData,
+  Success,
+  Failure,
+  HttpErrorKind,
+  Loading,
+  isSuccess,
+  isRefetching,
+  Refetching
+} from "@/webdata"
 
 const LOG_IN = "LOG_IN"
-
-const UPDATE_EMAIL_START = "UPDATE_EMAIL_START"
-const UPDATE_EMAIL_SUCCESS = "UPDATE_EMAIL_SUCCESS"
-const UPDATE_EMAIL_FAILURE = "UPDATE_EMAIL_FAILURE"
 
 const SET_TEAM_ID = "SET_TEAM_ID"
 
 const SET_SOCIAL_ACCOUNT_CONNECTIONS = "SET_SOCIAL_ACCOUNT_CONNECTIONS"
 const SET_SOCIAL_ACCOUNT_CONNECTION = "SET_SOCIAL_ACCOUNT_CONNECTION"
-
-const FETCH_USER_START = "FETCH_USER_START"
-const FETCH_USER_SUCCESS = "FETCH_USER_SUCCESS"
-const FETCH_USER_FAILURE = "FETCH_USER_FAILURE"
 
 const TOGGLE_DARK_MODE = "TOGGLE_DARK_MODE"
 
@@ -56,18 +57,18 @@ export const setSocialConnection = (provider: SocialProvider, val: unknown) =>
 
 export const setUserLoggedIn = (val: boolean) => act(SET_USER_LOGGED_IN, val)
 
-export const fetchingUser = createAsyncAction(
-  FETCH_USER_START,
-  FETCH_USER_SUCCESS,
-  FETCH_USER_FAILURE
+export const fetchUser = createAsyncAction(
+  "FETCH_USER_START",
+  "FETCH_USER_SUCCESS",
+  "FETCH_USER_FAILURE"
 )<void, IUser, void>()
 
 export const toggleDarkMode = () => act(TOGGLE_DARK_MODE)
 
 export const updateEmail = createAsyncAction(
-  UPDATE_EMAIL_START,
-  UPDATE_EMAIL_SUCCESS,
-  UPDATE_EMAIL_FAILURE
+  "UPDATE_EMAIL_START",
+  "UPDATE_EMAIL_SUCCESS",
+  "UPDATE_EMAIL_FAILURE"
 )<void, IUser, void>()
 
 export type UserActions =
@@ -77,7 +78,7 @@ export type UserActions =
   | ReturnType<typeof setSocialConnections>
   | ReturnType<typeof setSocialConnection>
   | ReturnType<typeof setUserLoggedIn>
-  | ActionType<typeof fetchingUser>
+  | ActionType<typeof fetchUser>
   | ReturnType<typeof toggleDarkMode>
   | ActionType<typeof updateEmail>
   | ActionType<typeof fetchUserStats>
@@ -161,8 +162,15 @@ export const user = (
   switch (action.type) {
     case getType(fetchUserStats.success):
       return { ...state, stats: Success(action.payload) }
-    case getType(fetchUserStats.request):
-      return { ...state, stats: Loading() }
+    case getType(fetchUserStats.request): {
+      const stats = isSuccess(state.stats)
+        ? Refetching(state.stats.data)
+        : Loading()
+      return {
+        ...state,
+        stats
+      }
+    }
     case getType(fetchUserStats.failure):
       return { ...state, stats: Failure(HttpErrorKind.other) }
     case SET_LOGGING_OUT:
@@ -195,18 +203,18 @@ export const user = (
       const newDarkMode = !state.darkMode
       setDarkModeClass(newDarkMode)
       return { ...state, darkMode: newDarkMode }
-    case UPDATE_EMAIL_START:
+    case getType(updateEmail.request):
       return { ...state, updatingEmail: false }
-    case UPDATE_EMAIL_FAILURE:
+    case getType(updateEmail.failure):
       return { ...state, updatingEmail: false }
-    case FETCH_USER_START:
+    case getType(fetchUser.request):
       return { ...state, loading: true, error: false }
-    case FETCH_USER_FAILURE:
+    case getType(fetchUser.failure):
       return { ...state, loading: false, error: true }
     // TODO(chdsbd): Replace login usage with FETCH_USER_SUCCESS
     case LOG_IN:
-    case UPDATE_EMAIL_SUCCESS:
-    case FETCH_USER_SUCCESS:
+    case getType(updateEmail.success):
+    case getType(fetchUser.success):
       raven.setUserContext({
         ...{
           email: state.email,

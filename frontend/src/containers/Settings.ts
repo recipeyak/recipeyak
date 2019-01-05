@@ -1,13 +1,13 @@
 import { connect } from "react-redux"
 
 import {
-  fetchUser,
   fetchSocialConnections,
   updatingEmail,
   disconnectSocialAccount,
   loggingOut,
   deleteUserAccount,
-  Dispatch
+  Dispatch,
+  fetchingUser
 } from "@/store/actions"
 
 import Settings from "@/components/Settings"
@@ -28,7 +28,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     logout: loggingOut(dispatch),
     fetchData: () => {
-      fetchUser(dispatch)()
+      fetchingUser(dispatch)()
       fetchSocialConnections(dispatch)()
     },
     disconnectAccount: disconnectSocialAccount(dispatch),

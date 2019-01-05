@@ -2,7 +2,7 @@ import { connect } from "react-redux"
 
 import Home from "@/components/Home"
 
-import { fetchUser, Dispatch } from "@/store/actions"
+import { Dispatch, fetchingUser } from "@/store/actions"
 import { RootState } from "@/store/store"
 
 const mapStateToProps = (state: RootState) => ({
@@ -10,7 +10,7 @@ const mapStateToProps = (state: RootState) => ({
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: fetchUser(dispatch)
+  fetchData: fetchingUser(dispatch)
 })
 
 export default connect(

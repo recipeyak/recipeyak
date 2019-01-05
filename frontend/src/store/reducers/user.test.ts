@@ -16,7 +16,7 @@ describe("fetchingUser", () => {
       loading: true,
       error: false
     } as IUserState
-    expect(user(beforeState, a.fetchingUser.request())).toEqual(expected)
+    expect(user(beforeState, a.fetchUser.request())).toEqual(expected)
   })
   it("#success: updates user, sets loading, sets loggedIn", () => {
     const beforeState = {
@@ -46,7 +46,7 @@ describe("fetchingUser", () => {
       hasUsablePassword: true,
       teamID: userPayload.selected_team
     }
-    expect(user(beforeState, a.fetchingUser.success(userPayload))).toEqual(
+    expect(user(beforeState, a.fetchUser.success(userPayload))).toEqual(
       expected
     )
     expect(user(beforeState, a.login(userPayload))).toEqual(expected)
@@ -60,7 +60,7 @@ describe("fetchingUser", () => {
       loading: false,
       error: true
     } as IUserState
-    expect(user(beforeState, a.fetchingUser.failure())).toEqual(expected)
+    expect(user(beforeState, a.fetchUser.failure())).toEqual(expected)
   })
 })
 
