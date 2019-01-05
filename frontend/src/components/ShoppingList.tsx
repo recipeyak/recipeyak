@@ -29,7 +29,13 @@ import {
 import GlobalEvent from "@/components/GlobalEvent"
 import { Button } from "@/components/Buttons"
 import { DateInput } from "@/components/Forms"
-import { WebData, isFailure, isLoading, isSuccess } from "@/webdata"
+import {
+  WebData,
+  isFailure,
+  isLoading,
+  isSuccessOrRefetching,
+  isRefetching
+} from "@/webdata"
 
 const selectElementText = (el: Element) => {
   const sel = window.getSelection()
@@ -90,11 +96,14 @@ class ShoppingListList extends React.Component<IShoppingListContainerProps> {
     if (isFailure(this.props.items)) {
       return <p>error fetching shoppinglist</p>
     }
-    const loadingClass = isLoading(this.props.items)
-      ? "has-text-grey-light"
-      : ""
+    const loadingClass =
+      isLoading(this.props.items) || isRefetching(this.props.items)
+        ? "has-text-grey-light"
+        : ""
 
-    const items = isSuccess(this.props.items) ? this.props.items.data : []
+    const items = isSuccessOrRefetching(this.props.items)
+      ? this.props.items.data
+      : []
 
     return (
       <div className={`box p-rel min-height-75px mb-0 ${loadingClass}`}>
