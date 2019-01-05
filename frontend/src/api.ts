@@ -11,7 +11,6 @@ import { IShoppingListItem } from "@/store/reducers/shoppinglist"
 import { toDateString } from "@/date"
 import { IRecipeBasic } from "@/components/RecipeTitle"
 import { IRecipe, IIngredient, IStep } from "@/store/reducers/recipes"
-import { CancelToken } from "axios"
 import { IInvite } from "@/store/reducers/invites"
 import { ICalRecipe } from "@/store/reducers/calendar"
 import { subWeeks, startOfMonth, addWeeks, endOfMonth } from "date-fns"
@@ -130,11 +129,6 @@ export const getRecipeList = (teamID: ITeam["id"] | "personal") => {
     teamID === "personal" ? "/api/v1/recipes/" : `/api/v1/t/${teamID}/recipes/`
   return http.get<IRecipe[]>(url)
 }
-
-export const searchRecipes = (query: string, cancelToken: CancelToken) =>
-  http.get<IRecipe[]>(`/api/v1/recipes?q=${encodeURI(query)}`, {
-    cancelToken
-  })
 
 export const addIngredientToRecipe = (
   recipeID: IRecipe["id"],

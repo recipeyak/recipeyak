@@ -88,7 +88,7 @@ const recipeApp: Reducer<IState, Action> = combineReducers({
   addrecipe,
   auth,
   teams,
-  calendar,
+  calendar
 })
 
 export type RootState = StateType<typeof rootReducer>
