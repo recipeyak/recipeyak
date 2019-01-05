@@ -17,6 +17,7 @@ from django.contrib.postgres.fields import CIEmailField
 from django.core.validators import MinValueValidator
 
 from allauth.socialaccount.models import EmailAddress
+from softdelete.models import SoftDeleteObject
 
 logger = logging.getLogger(__name__)
 
@@ -136,7 +137,7 @@ class CommonInfo(models.Model):
         abstract = True
 
 
-class Recipe(CommonInfo):
+class Recipe(CommonInfo, SoftDeleteObject):
     name = models.CharField(max_length=255)
     author = models.CharField(max_length=255, blank=True, null=True)
     source = models.CharField(max_length=255, blank=True, null=True)
@@ -217,7 +218,7 @@ class Recipe(CommonInfo):
         super().save(*args, **kwargs)
 
 
-class Ingredient(CommonInfo):
+class Ingredient(CommonInfo, SoftDeleteObject):
     """
     Recipe ingredient
 
@@ -249,7 +250,7 @@ class Ingredient(CommonInfo):
         return f"<quantity={self.quantity} {self.name} description={self.description} recipe={self.recipe} {optional}>"
 
 
-class Step(CommonInfo):
+class Step(CommonInfo, SoftDeleteObject):
     """Recipe step"""
 
     text = models.TextField()

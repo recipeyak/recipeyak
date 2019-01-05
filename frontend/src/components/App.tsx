@@ -26,7 +26,7 @@ import OAuth from "@/containers/OAuth"
 import OAuthConnect from "@/containers/OAuthConnect"
 import Schedule from "@/components/Schedule"
 import HelpMenuModal from "@/components/HelpMenuModal"
-import Recipes from "@/components/Recipes"
+import Recipes from "@/components/RecipeList"
 import ErrorBoundary from "@/components/ErrorBoundary"
 
 import "@/components/scss/main.scss"

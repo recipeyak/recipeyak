@@ -12,27 +12,10 @@ import { ITeam } from "@/store/reducers/teams"
 import { RootState } from "@/store/store"
 import { isSuccess } from "@/webdata"
 
-const mapStateToProps = (state: RootState) => {
-  // TODO(sbdchd): this should be a getter
-  const recipes = getRecipes(state)
-    .filter(isSuccess)
-    .map(r => r.data)
-    .sort(byNameAlphabetical)
-  return {
-    recipes,
-    loading: state.recipes.loadingAll
-  }
-}
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: fetchingRecipeList(dispatch)
-})
-
 interface IRecipesProps {
-  readonly fetchData: (teamID: ITeam["id"] | "personal") => void
+  readonly fetchData: () => void
   readonly recipes: IRecipe[]
   readonly loading: boolean
-  readonly teamID: ITeam["id"] | "personal"
   readonly scroll: boolean
   readonly drag: boolean
   readonly noPadding?: boolean
@@ -42,14 +25,13 @@ interface IRecipesState {
   readonly query: string
 }
 
-class Recipes extends React.Component<IRecipesProps, IRecipesState> {
+class RecipesList extends React.Component<IRecipesProps, IRecipesState> {
   state: IRecipesState = {
     query: ""
   }
 
   componentWillMount() {
-    const teamID = this.props.teamID == null ? "personal" : this.props.teamID
-    this.props.fetchData(teamID)
+    this.props.fetchData()
   }
 
   handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,7 +69,47 @@ class Recipes extends React.Component<IRecipesProps, IRecipesState> {
   }
 }
 
+function mapStateToProps(state: RootState) {
+  // TODO(sbdchd): this should be a getter
+  const recipes = getRecipes(state)
+    .filter(isSuccess)
+    .map(r => r.data)
+    .sort(byNameAlphabetical)
+  return {
+    recipes,
+    loading: state.recipes.loadingAll
+  }
+}
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  fetchData: fetchingRecipeList(dispatch)
+})
+
+type statePropsType = ReturnType<typeof mapStateToProps>
+
+type dispatchPropsType = ReturnType<typeof mapDispatchToProps>
+
+interface IOwnProps
+  extends Minus<IRecipesProps, statePropsType & dispatchPropsType> {
+  readonly teamID: ITeam["id"] | null
+}
+
+function mergeProps(
+  stateProps: statePropsType,
+  dispatchProps: dispatchPropsType,
+  ownProps: IOwnProps
+) {
+  const teamID = ownProps.teamID == null ? "personal" : ownProps.teamID
+  return {
+    ...stateProps,
+    ...dispatchProps,
+    ...ownProps,
+    fetchData: () => dispatchProps.fetchData(teamID)
+  }
+}
+
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
-)(Recipes)
+  mapDispatchToProps,
+  mergeProps
+)(RecipesList)
