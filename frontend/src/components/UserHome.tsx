@@ -7,13 +7,7 @@ import { RecipeItem as Recipe } from "@/components/RecipeItem"
 import { IRecipe } from "@/store/reducers/recipes"
 import { IUserStats } from "@/store/reducers/user"
 import Footer from "@/components/Footer"
-import {
-  WebData,
-  isInitial,
-  isLoading,
-  isFailure,
-  isSuccess
-} from "@/webdata"
+import { WebData, isInitial, isLoading, isFailure, isSuccess } from "@/webdata"
 
 // TODO(sbdchd): must be a better way
 // tslint:disable-next-line:no-var-requires

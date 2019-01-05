@@ -7,13 +7,7 @@ import {
   ActionType,
   getType
 } from "typesafe-actions"
-import {
-  WebData,
-  Success,
-  Loading,
-  Failure,
-  HttpErrorKind
-} from "@/webdata"
+import { WebData, Success, Loading, Failure, HttpErrorKind } from "@/webdata"
 
 const SET_SELECTING_START = "SET_SELECTING_START"
 const SET_SELECTING_END = "SET_SELECTING_END"
