@@ -14,6 +14,7 @@ import {
 } from "@/store/reducers/recipes"
 import { ITeam } from "@/store/reducers/teams"
 import { Select, TextInput } from "@/components/Forms"
+import { SectionTitle } from "@/components/RecipeHelpers"
 
 const unfinishedIngredient = ({ quantity = "", name = "" }) =>
   quantity === "" || name === ""
@@ -237,9 +238,8 @@ export default class AddRecipe extends React.Component<
 
         <section className="ingredients-preparation-grid">
           <div>
-            <h2 className="title is-3 mb-1 font-family-title bold">
-              Ingredients
-            </h2>
+            {/* TODO(chdsbd): Remove duplicated code. Replace with Recipe.tsx components. */}
+            <SectionTitle>Ingredients</SectionTitle>
             <ul>
               {this.props.ingredients.map((x, i) => (
                 <Ingredient
@@ -271,9 +271,7 @@ export default class AddRecipe extends React.Component<
           </div>
 
           <div>
-            <h2 className="title is-3 mb-1 font-family-title bold">
-              Preparation
-            </h2>
+            <SectionTitle>Preparation</SectionTitle>
             <ul>
               {this.props.steps.map((s, i) => (
                 <div key={s.text + i}>

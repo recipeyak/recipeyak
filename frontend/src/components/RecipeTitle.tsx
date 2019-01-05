@@ -110,7 +110,7 @@ export default class RecipeTitle extends React.Component<
           {!this.state.edit ? (
             <div className="d-flex align-items-center">
               <h1
-                className="title fs-3rem mb-0 cursor-pointer"
+                className="title fs-2rem mb-0 cursor-pointer mb-1"
                 onClick={this.toggleEdit}>
                 {name}
               </h1>
