@@ -17,6 +17,7 @@ psycopg2 = "2.7.3.2"
 raven = "6.5.0"
 python-json-logger = "0.1.8"
 pyyaml = "^3.13"
+django-softdelete = {git = "https://github.com/scoursen/django-softdelete.git"}
 
 [tool.poetry.dev-dependencies]
 pytest = "3.4.0"

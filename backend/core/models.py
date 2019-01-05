@@ -17,6 +17,7 @@ from django.contrib.postgres.fields import CIEmailField
 from django.core.validators import MinValueValidator
 
 from allauth.socialaccount.models import EmailAddress
+from softdelete.models import SoftDeleteObject
 
 logger = logging.getLogger(__name__)
 
@@ -136,7 +137,7 @@ class CommonInfo(models.Model):
         abstract = True
 
 
-class Recipe(CommonInfo):
+class Recipe(CommonInfo, SoftDeleteObject):
     name = models.CharField(max_length=255)
     author = models.CharField(max_length=255, blank=True, null=True)
     source = models.CharField(max_length=255, blank=True, null=True)
@@ -217,7 +218,7 @@ class Recipe(CommonInfo):
         super().save(*args, **kwargs)
 
 
-class Ingredient(CommonInfo):
+class Ingredient(CommonInfo, SoftDeleteObject):
     """
     Recipe ingredient
 
@@ -249,7 +250,7 @@ class Ingredient(CommonInfo):
         return f"<quantity={self.quantity} {self.name} description={self.description} recipe={self.recipe} {optional}>"
 
 
-class Step(CommonInfo):
+class Step(CommonInfo, SoftDeleteObject):
     """Recipe step"""
 
     text = models.TextField()
@@ -286,7 +287,7 @@ class ScheduledRecipeManager(models.Manager):
                 )
 
 
-class ScheduledRecipe(CommonInfo):
+class ScheduledRecipe(CommonInfo, SoftDeleteObject):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     on = models.DateField()
     count = models.PositiveIntegerField(validators=[MinValueValidator(1)])
@@ -317,7 +318,7 @@ class InviteManager(models.Manager):
         return invite
 
 
-class Invite(CommonInfo):
+class Invite(CommonInfo, SoftDeleteObject):
     membership = models.OneToOneField("Membership", on_delete=models.CASCADE)
     creator = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
@@ -356,7 +357,7 @@ class Invite(CommonInfo):
         self.save()
 
 
-class Team(CommonInfo):
+class Team(CommonInfo, SoftDeleteObject):
     name = models.CharField(max_length=255)
     is_public = models.BooleanField(default=False)
     recipes = GenericRelation("Recipe", related_query_name="owner_team")
@@ -435,7 +436,7 @@ class Team(CommonInfo):
         return ScheduledRecipe.objects.filter(team=self)
 
 
-class Membership(CommonInfo):
+class Membership(CommonInfo, SoftDeleteObject):
     ADMIN = "admin"
     CONTRIBUTOR = "contributor"
     READ_ONLY = "read"

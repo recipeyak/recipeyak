@@ -160,6 +160,22 @@ requests-oauthlib = ">=0.3.0"
 
 [[package]]
 category = "main"
+description = ""
+name = "django-softdelete"
+optional = false
+platform = "*"
+python-versions = "*"
+version = "0.8.0"
+
+[package.dependencies]
+setuptools = "*"
+
+[package.source]
+reference = "a75444615d00d8eb16b3edab9955b554f2d65d3c"
+type = "git"
+url = "https://github.com/scoursen/django-softdelete.git"
+[[package]]
+category = "main"
 description = "Web APIs for Django, made easy."
 name = "djangorestframework"
 optional = false
@@ -735,7 +751,7 @@ version = "0.1.7"
 python = ">=3.3"
 
 [metadata]
-content-hash = "e07453e95bfd194bef5dfb2a7a4f96899477cb76e8ccba275215fa16598228ef"
+content-hash = "078b9ee3cd1c49c3b154913a4a5e6be566386f367aa0f29e1eeaa7fcf1b754f2"
 platform = "*"
 python-versions = "^3.6"
 
@@ -755,6 +771,7 @@ decorator = ["2c51dff8ef3c447388fe5e4453d24a2bf128d3a4c32af3fabef1f01c6851ab82",
 dj-database-url = ["a6832d8445ee9d788c5baa48aef8130bf61fdc442f7d9a548424d25cd85c9f08", "e16d94c382ea0564c48038fa7fe8d9c890ef1ab1a8ec4cb48e732c124b9482fd"]
 django = ["7c8ff92285406fb349e765e9ade685eec7271d6f5c3f918e495a74768b765c99", "dc3b61d054f1bced64628c62025d480f655303aea9f408e5996c339a543b45f0"]
 django-allauth = ["7b31526cccd1c46f9f09acf0703068e8a9669337d29eb065f7e8143c2d897339"]
+django-softdelete = []
 djangorestframework = ["1f6baf40ed456ed2af6bd1a4ff8bbc3503cebea16509993aea2b7085bc097766", "9f9e94e8d22b100ed3a43cee8c47a7ff7b185e778a1f2da9ec5c73fc4e081b87"]
 docopt = ["49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491"]
 drf-nested-routers = ["3346bcfb151d221d499b3b7932cc6e5cee005ea50f1343a2f5cd2f85e7b1d77f", "818fcc37b6cafff52f4afae012b8de85970a1b931f1e47c2f07a24fd141eb476"]
