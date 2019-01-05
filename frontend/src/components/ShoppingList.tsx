@@ -29,7 +29,7 @@ import {
 import GlobalEvent from "@/components/GlobalEvent"
 import { Button } from "@/components/Buttons"
 import { DateInput } from "@/components/Forms"
-import { WebData, isFailure, isLoading, isSuccess } from "@/store/remotedata"
+import { WebData, isFailure, isLoading, isSuccess } from "@/webdata"
 
 const selectElementText = (el: Element) => {
   const sel = window.getSelection()

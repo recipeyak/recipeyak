@@ -9,13 +9,7 @@ import {
   getType
 } from "typesafe-actions"
 import { IRecipe } from "@/store/reducers/recipes"
-import {
-  WebData,
-  Success,
-  Failure,
-  HttpErrorKind,
-  Loading
-} from "@/store/remotedata"
+import { WebData, Success, Failure, HttpErrorKind, Loading } from "@/webdata"
 
 const LOG_IN = "LOG_IN"
 

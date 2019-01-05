@@ -29,7 +29,7 @@ import {
   getRecipeById
 } from "@/store/reducers/recipes"
 import { IRecipeBasic } from "@/components/RecipeTitle"
-import { isInitial, isLoading, isFailure, WebData } from "@/store/remotedata"
+import { isInitial, isLoading, isFailure, WebData } from "@/webdata"
 
 type RouteProps = RouteComponentProps<{ id: string }>
 

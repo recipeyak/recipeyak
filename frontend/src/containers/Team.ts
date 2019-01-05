@@ -12,7 +12,7 @@ import Team from "@/components/Team"
 import { RootState } from "@/store/store"
 import { RouteComponentProps } from "react-router"
 import { ITeam } from "@/store/reducers/teams"
-import { isSuccess } from "@/store/remotedata"
+import { isSuccess } from "@/webdata"
 
 type RouteProps = RouteComponentProps<{ id: string }>
 
