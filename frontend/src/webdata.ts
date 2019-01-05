@@ -1,7 +1,8 @@
 const enum RDK {
   Loading,
   Failure,
-  Success
+  Success,
+  Refetching
 }
 
 interface ILoading {
@@ -35,7 +36,24 @@ export function Success<T>(data: T): ISuccess<T> {
   }
 }
 
-type RemoteData<E, T> = undefined | ILoading | IFailure<E> | ISuccess<T>
+export interface IRefetching<T> {
+  readonly kind: RDK.Refetching
+  readonly data: T
+}
+
+export function Refetching<T>(data: T): IRefetching<T> {
+  return {
+    kind: RDK.Refetching,
+    data
+  }
+}
+
+type RemoteData<E, T> =
+  | undefined
+  | ILoading
+  | IFailure<E>
+  | ISuccess<T>
+  | IRefetching<T>
 
 export type WebData<T> = RemoteData<HttpErrorKind, T>
 
@@ -55,4 +73,11 @@ export const isLoading = <T>(x: WebData<T>): x is ILoading =>
 export const isInitial = <T>(x: WebData<T>): x is undefined => x == null
 
 export const isFailure = <T>(x: WebData<T>): x is IFailure<HttpErrorKind> =>
-  x == null
+  x != null && x.kind === RDK.Failure
+
+export const isRefetching = <T>(x: WebData<T>): x is IRefetching<T> =>
+  x != null && x.kind === RDK.Refetching
+
+export const isSuccessOrRefetching = <T>(
+  x: WebData<T>
+): x is ISuccess<T> | IRefetching<T> => isSuccess(x) || isRefetching(x)

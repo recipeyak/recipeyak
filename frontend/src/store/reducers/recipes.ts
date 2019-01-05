@@ -14,7 +14,9 @@ import {
   isSuccess,
   Loading,
   Success,
-  Failure
+  Failure,
+  isSuccessOrRefetching,
+  Refetching
 } from "@/webdata"
 const ADD_STEP_TO_RECIPE = "ADD_STEP_TO_RECIPE"
 const ADD_INGREDIENT_TO_RECIPE = "ADD_INGREDIENT_TO_RECIPE"
@@ -257,7 +259,7 @@ export const getRecipeById = (
 ): WebData<IRecipe> => state.recipes.byId[id]
 
 export const getRecentRecipes = (state: RootState): WebData<IRecipe[]> =>
-  isSuccess(state.recipes.recentIds)
+  isSuccessOrRefetching(state.recipes.recentIds)
     ? Success(
         state.recipes.recentIds.data
           .map(id => state.recipes.byId[id])
@@ -324,7 +326,7 @@ function mapRecipeSuccessById(
   func: (recipe: IRecipe) => IRecipe
 ): IRecipesState {
   const recipe = state.byId[id]
-  if (isInitial(recipe) || !isSuccess(recipe)) {
+  if (isInitial(recipe) || !isSuccessOrRefetching(recipe)) {
     return state
   }
   return {
@@ -374,14 +376,17 @@ export const recipes = (
   action: RecipeActions
 ): IRecipesState => {
   switch (action.type) {
-    case getType(fetchRecipe.request):
+    case getType(fetchRecipe.request): {
+      const r = state.byId[action.payload]
+      const nextState = isSuccess(r) ? Refetching(r.data) : Loading()
       return {
         ...state,
         byId: {
           ...state.byId,
-          [action.payload]: Loading()
+          [action.payload]: nextState
         }
       }
+    }
     case getType(fetchRecipe.success):
       return {
         ...state,
