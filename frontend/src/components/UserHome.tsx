@@ -13,7 +13,7 @@ import {
   isLoading,
   isFailure,
   isSuccess
-} from "@/store/remotedata"
+} from "@/webdata"
 
 // TODO(sbdchd): must be a better way
 // tslint:disable-next-line:no-var-requires

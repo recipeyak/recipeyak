@@ -4,7 +4,7 @@ import shoppinglist, {
 } from "@/store/reducers/shoppinglist"
 
 import * as a from "@/store/reducers/shoppinglist"
-import { Loading, Success, Failure, HttpErrorKind } from "@/store/remotedata"
+import { Loading, Success, Failure, HttpErrorKind } from "@/webdata"
 
 describe("Shopping List", () => {
   const shopList: IShoppingListItem[] = [

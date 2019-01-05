@@ -10,7 +10,7 @@ import { Dispatch, fetchingRecipeList } from "@/store/actions"
 import { IRecipe, getRecipes } from "@/store/reducers/recipes"
 import { ITeam } from "@/store/reducers/teams"
 import { RootState } from "@/store/store"
-import { isSuccess } from "@/store/remotedata"
+import { isSuccess } from "@/webdata"
 
 const mapStateToProps = (state: RootState) => {
   // TODO(sbdchd): this should be a getter

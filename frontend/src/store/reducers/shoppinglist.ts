@@ -13,7 +13,7 @@ import {
   Loading,
   Failure,
   HttpErrorKind
-} from "@/store/remotedata"
+} from "@/webdata"
 
 const SET_SELECTING_START = "SET_SELECTING_START"
 const SET_SELECTING_END = "SET_SELECTING_END"

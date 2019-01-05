@@ -15,7 +15,7 @@ import {
   Failure,
   HttpErrorKind,
   Loading
-} from "@/store/remotedata"
+} from "@/webdata"
 
 const LOG_IN = "LOG_IN"
 

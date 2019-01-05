@@ -7,7 +7,7 @@ import recipes, {
 
 import * as a from "@/store/reducers/recipes"
 import { RootState } from "@/store/store"
-import { HttpErrorKind, Loading, isSuccess, Failure } from "@/store/remotedata"
+import { HttpErrorKind, Loading, isSuccess, Failure } from "@/webdata"
 
 export const baseRecipe: IRecipe = {
   id: 1,
