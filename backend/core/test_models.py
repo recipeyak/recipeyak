@@ -1,5 +1,7 @@
 import pytest
 
+from core.models import Recipe, Step, Ingredient
+
 pytestmark = pytest.mark.django_db
 
 
@@ -105,3 +107,45 @@ def test_recipe_copy_to(client, team, user, recipe):
                 x.pop(key)
                 y.pop(key)
             assert x == y
+
+
+@pytest.mark.parametrize("model", [Recipe, Ingredient, Step])
+def test_soft_delete(model, recipe: Recipe):
+    """
+    Verify that soft delete works for provided models
+    """
+    model_count = model.objects.count()
+    assert model_count > 0
+
+    model.objects.all().delete()
+    assert model.objects.count() == 0, "deletion hides objects"
+    assert (
+        model.objects.all_with_deleted().count() == model_count
+    ), "objects are not deleted"
+    model.objects.deleted_set().undelete()
+    assert model.objects.count() == model_count, "restore works"
+
+
+def test_soft_delete_relations(recipe: Recipe):
+    """
+    Verify that soft delete cascades across relations
+    """
+    ingredient_ids = recipe.ingredient_set.all().values_list("id", flat=True)
+    step_ids = recipe.step_set.all().values_list("id", flat=True)
+    recipe_id = recipe.id
+
+    def objects_exist() -> bool:
+        return (
+            Recipe.objects.filter(id=recipe_id).exists()
+            and Ingredient.objects.filter(id__in=ingredient_ids).exists()
+            and Step.objects.filter(id__in=step_ids).exists()
+        )
+
+    assert objects_exist(), "recipe, steps, and ignredients should be accessible"
+    recipe.delete()
+
+    assert not objects_exist(), "soft deleted objects should be hidden"
+
+    recipe.undelete()
+
+    assert objects_exist(), "we should restore steps, ingredients, and the recipe"
