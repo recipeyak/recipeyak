@@ -67,7 +67,6 @@ const MetaData = ({
   ) : null
   const _source = isValid(source) ? (
     <MetaPiece>
-      {/* TODO() */}
       from{" "}
       <MetaBold>
         <SourceLink>{source}</SourceLink>
