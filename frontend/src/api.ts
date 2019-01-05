@@ -15,9 +15,7 @@ import { IInvite } from "@/store/reducers/invites"
 import { ICalRecipe } from "@/store/reducers/calendar"
 import {
   subWeeks,
-  startOfMonth,
   addWeeks,
-  endOfMonth,
   startOfWeek,
   endOfWeek
 } from "date-fns"
