@@ -170,6 +170,9 @@ function HelpPrompt() {
   )
 }
 
+const prevWeekStart = (date: Date) => subWeeks(startOfWeek(date), 1)
+const nextWeekStart = (date: Date) => addWeeks(startOfWeek(date), 1)
+
 interface ICalendarProps extends ScheduleRouteParams {
   readonly loadingTeams: boolean
   readonly loading: boolean
@@ -217,17 +220,25 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
   }
 
   prev = () => {
-    this.setState(prev => ({
-      start: subWeeks(prev.start, 1)
-    }))
-    this.props.fetchData(this.props.teamID, this.state.start)
+    this.setState(
+      prev => ({
+        start: prevWeekStart(prev.start)
+      }),
+      () => {
+        this.props.fetchData(this.props.teamID, this.state.start)
+      }
+    )
   }
 
   next = () => {
-    this.setState(prev => ({
-      start: addWeeks(prev.start, 1)
-    }))
-    this.props.fetchData(this.props.teamID, this.state.start)
+    this.setState(
+      prev => ({
+        start: nextWeekStart(prev.start)
+      }),
+      () => {
+        this.props.fetchData(this.props.teamID, this.state.start)
+      }
+    )
   }
 
   current = () => this.setState({ start: startOfWeek(new Date()) })

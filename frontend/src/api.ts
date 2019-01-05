@@ -13,7 +13,14 @@ import { IRecipeBasic } from "@/components/RecipeTitle"
 import { IRecipe, IIngredient, IStep } from "@/store/reducers/recipes"
 import { IInvite } from "@/store/reducers/invites"
 import { ICalRecipe } from "@/store/reducers/calendar"
-import { subWeeks, startOfMonth, addWeeks, endOfMonth, startOfWeek, endOfWeek } from "date-fns"
+import {
+  subWeeks,
+  startOfMonth,
+  addWeeks,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek
+} from "date-fns"
 
 export const updateUser = (data: Partial<IUser>) =>
   http.patch<IUser>("/api/v1/user/", data)
