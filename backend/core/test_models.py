@@ -1,3 +1,5 @@
+from typing import cast
+
 import pytest
 
 from core.models import Recipe, Step, Ingredient
@@ -136,9 +138,9 @@ def test_soft_delete_relations(recipe: Recipe):
 
     def objects_exist() -> bool:
         return (
-            Recipe.objects.filter(id=recipe_id).exists()
-            and Ingredient.objects.filter(id__in=ingredient_ids).exists()
-            and Step.objects.filter(id__in=step_ids).exists()
+            cast(bool, Recipe.objects.filter(id=recipe_id).exists())
+            and cast(bool, Ingredient.objects.filter(id__in=ingredient_ids).exists())
+            and cast(bool, Step.objects.filter(id__in=step_ids).exists())
         )
 
     assert objects_exist(), "recipe, steps, and ignredients should be accessible"
