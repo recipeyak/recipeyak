@@ -287,7 +287,7 @@ class ScheduledRecipeManager(models.Manager):
                 )
 
 
-class ScheduledRecipe(CommonInfo, SoftDeleteObject):
+class ScheduledRecipe(CommonInfo):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     on = models.DateField()
     count = models.PositiveIntegerField(validators=[MinValueValidator(1)])
@@ -318,7 +318,7 @@ class InviteManager(models.Manager):
         return invite
 
 
-class Invite(CommonInfo, SoftDeleteObject):
+class Invite(CommonInfo):
     membership = models.OneToOneField("Membership", on_delete=models.CASCADE)
     creator = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
@@ -357,7 +357,7 @@ class Invite(CommonInfo, SoftDeleteObject):
         self.save()
 
 
-class Team(CommonInfo, SoftDeleteObject):
+class Team(CommonInfo):
     name = models.CharField(max_length=255)
     is_public = models.BooleanField(default=False)
     recipes = GenericRelation("Recipe", related_query_name="owner_team")
@@ -436,7 +436,7 @@ class Team(CommonInfo, SoftDeleteObject):
         return ScheduledRecipe.objects.filter(team=self)
 
 
-class Membership(CommonInfo, SoftDeleteObject):
+class Membership(CommonInfo):
     ADMIN = "admin"
     CONTRIBUTOR = "contributor"
     READ_ONLY = "read"
