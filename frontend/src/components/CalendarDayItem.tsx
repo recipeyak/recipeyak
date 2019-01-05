@@ -1,12 +1,8 @@
 import React from "react"
-
 import { Link } from "react-router-dom"
 import { DragSource, ConnectDragSource } from "react-dnd"
-
 import { beforeCurrentDay } from "@/date"
-
 import { recipeURL } from "@/urls"
-
 import * as DragDrop from "@/dragDrop"
 import { IRecipe } from "@/store/reducers/recipes"
 import { ICalRecipe } from "@/store/reducers/calendar"
@@ -16,9 +12,45 @@ import { TextInput } from "@/components/Forms"
 
 const COUNT_THRESHOLD = 1
 
+interface ICountProps {
+  readonly value: number
+  readonly onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+}
+function Count({ value: count, onChange }: ICountProps) {
+  if (count > COUNT_THRESHOLD) {
+    return (
+      <div className="d-flex">
+        <TextInput
+          className="fs-3 text-right w-2rem"
+          name="calendar-item-count"
+          onChange={onChange}
+          value={count}
+        />
+      </div>
+    )
+  }
+  return null
+}
+
+interface IRecipeLink {
+  readonly id: IRecipe["id"] | string
+  readonly name: IRecipe["name"]
+}
+function RecipeLink({ name, id }: IRecipeLink) {
+  return (
+    <Link
+      to={recipeURL(id, name)}
+      className="break-word fs-3"
+      style={{
+        lineHeight: 1.1
+      }}>
+      {name}
+    </Link>
+  )
+}
+
 interface ICollectedProps {
   readonly connectDragSource: ConnectDragSource
-
   readonly isDragging: boolean
 }
 
@@ -94,35 +126,22 @@ class CalendarItem extends React.Component<
     this.updateCount(count)
   }
 
+  handleMouseEnter = () => this.setState({ hover: true })
+  handleMouseLeave = () => this.setState({ hover: false })
+
   render() {
     const { connectDragSource, isDragging } = this.props
     return connectDragSource(
       <div
         className="d-flex align-items-center cursor-pointer justify-space-between mb-1"
-        onMouseEnter={() => this.setState({ hover: true })}
-        onMouseLeave={() => this.setState({ hover: false })}
+        onMouseEnter={this.handleMouseEnter}
+        onMouseLeave={this.handleMouseLeave}
         style={{
           visibility: isDragging ? "hidden" : "visible"
         }}>
         <GlobalEvent keyUp={this.handleKeyPress} />
-        <Link
-          to={recipeURL(this.props.recipeID, this.props.recipeName)}
-          className="break-word fs-3"
-          style={{
-            lineHeight: 1.1
-          }}>
-          {this.props.recipeName}
-        </Link>
-        {this.state.count > COUNT_THRESHOLD ? (
-          <div className="d-flex">
-            <TextInput
-              className="fs-3 text-right w-2rem"
-              name="calendar-item-count"
-              onChange={this.handleChange}
-              value={this.state.count}
-            />
-          </div>
-        ) : null}
+        <RecipeLink name={this.props.recipeName} id={this.props.recipeID} />
+        <Count value={this.state.count} onChange={this.handleChange} />
       </div>
     )
   }

@@ -13,7 +13,7 @@ import { IRecipeBasic } from "@/components/RecipeTitle"
 import { IRecipe, IIngredient, IStep } from "@/store/reducers/recipes"
 import { IInvite } from "@/store/reducers/invites"
 import { ICalRecipe } from "@/store/reducers/calendar"
-import { subWeeks, startOfMonth, addWeeks, endOfMonth } from "date-fns"
+import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
 
 export const updateUser = (data: Partial<IUser>) =>
   http.patch<IUser>("/api/v1/user/", data)
@@ -239,18 +239,20 @@ export const reportBadMerge = () => http.post("/api/v1/report-bad-merge", {})
 
 export const getCalendarRecipeList = (
   teamID: ITeam["id"] | "personal",
-  month: Date
+  currentDay: Date
 ) => {
   const url =
     teamID === "personal"
       ? "/api/v1/calendar/"
       : `/api/v1/t/${teamID}/calendar/`
 
-  // TODO(sbdchd): I think this is wrong
+  const start = toDateString(startOfWeek(subWeeks(currentDay, 1)))
+  const end = toDateString(endOfWeek(addWeeks(currentDay, 1)))
+
   return http.get<ICalRecipe[]>(url, {
     params: {
-      start: toDateString(subWeeks(startOfMonth(month), 1)),
-      end: toDateString(addWeeks(endOfMonth(month), 1))
+      start,
+      end
     }
   })
 }
