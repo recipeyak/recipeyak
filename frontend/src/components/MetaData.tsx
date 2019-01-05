@@ -15,6 +15,42 @@ interface IMetaDataProps {
 
 const isValid = (x?: string) => x !== "" && x != null
 
+/**
+ * Extract a hostname from a URL
+ *
+ * Example:
+ *  https://cooking.nytimes.com/recipes/112390-some-example => cooking.nytimes.com
+ */
+function URLToDomain({ children: url }: { children: string }) {
+  // Extract cooking.nytimes.com from https://cooking.nytimes.com/recipes/112390-some-example
+  const regex = /^(https?:\/\/)?([a-zA-z-.]+)/gm
+  const x = regex.exec(url)
+  if (x) {
+    // Our match is in the second capture group
+    const secondGroup: string | undefined = x[2]
+    if (secondGroup) {
+      return <>{secondGroup}</>
+    }
+  }
+  return <>{url}</>
+}
+
+function SourceLink({ children }: { children: string }) {
+  return (
+    <a href={children}>
+      <URLToDomain>{children}</URLToDomain>
+    </a>
+  )
+}
+
+function MetaPiece({ children }: { children: React.ReactNode }) {
+  return <span className="white-space-nowrap">{children}</span>
+}
+
+function MetaBold({ children }: { children: React.ReactNode }) {
+  return <b className="cursor-pointer">{children}</b>
+}
+
 const MetaData = ({
   author = "",
   source = "",
@@ -25,24 +61,27 @@ const MetaData = ({
   onClick
 }: IMetaDataProps) => {
   const _author = isValid(author) ? (
-    <span>
-      By <b className="cursor-pointer">{author}</b>{" "}
-    </span>
+    <MetaPiece>
+      By <MetaBold>{author}</MetaBold>{" "}
+    </MetaPiece>
   ) : null
   const _source = isValid(source) ? (
-    <span>
-      from <b className="cursor-pointer">{source}</b>{" "}
-    </span>
+    <MetaPiece>
+      from{" "}
+      <MetaBold>
+        <SourceLink>{source}</SourceLink>
+      </MetaBold>{" "}
+    </MetaPiece>
   ) : null
   const _servings = isValid(servings) ? (
-    <span>
-      creating <b className="cursor-pointer">{servings}</b>{" "}
-    </span>
+    <MetaPiece>
+      creating <MetaBold>{servings}</MetaBold>{" "}
+    </MetaPiece>
   ) : null
   const _time = isValid(time) ? (
-    <span>
-      in <b className="cursor-pointer">{time}</b>{" "}
-    </span>
+    <MetaPiece>
+      in <MetaBold>{time}</MetaBold>{" "}
+    </MetaPiece>
   ) : null
 
   const ownerName = owner.type === "team" ? owner.name : "you"

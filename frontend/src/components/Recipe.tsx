@@ -30,6 +30,7 @@ import {
 } from "@/store/reducers/recipes"
 import { IRecipeBasic } from "@/components/RecipeTitle"
 import { isInitial, isLoading, isFailure, WebData } from "@/webdata"
+import { SectionTitle } from "@/components/RecipeHelpers"
 
 type RouteProps = RouteComponentProps<{ id: string }>
 
@@ -122,9 +123,7 @@ class Recipe extends React.Component<IRecipeProps, IRecipeState> {
         />
         <section className="ingredients-preparation-grid">
           <div>
-            <h2 className="title is-3 mb-1 font-family-title bold">
-              Ingredients
-            </h2>
+            <SectionTitle>Ingredients</SectionTitle>
             <ul>
               {recipe.ingredients.map(ingre => (
                 <Ingredient
@@ -164,9 +163,7 @@ class Recipe extends React.Component<IRecipeProps, IRecipeState> {
           </div>
 
           <div>
-            <h2 className="title is-3 mb-1 font-family-title bold">
-              Preparation
-            </h2>
+            <SectionTitle>Preparation</SectionTitle>
             <StepContainer steps={recipe.steps} recipeID={recipe.id} />
             {this.state.addStep ? (
               <AddStep
