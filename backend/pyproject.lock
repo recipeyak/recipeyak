@@ -171,7 +171,7 @@ version = "0.8.0"
 setuptools = "*"
 
 [package.source]
-reference = "a75444615d00d8eb16b3edab9955b554f2d65d3c"
+reference = "a754446"
 type = "git"
 url = "https://github.com/scoursen/django-softdelete.git"
 [[package]]
@@ -751,7 +751,7 @@ version = "0.1.7"
 python = ">=3.3"
 
 [metadata]
-content-hash = "078b9ee3cd1c49c3b154913a4a5e6be566386f367aa0f29e1eeaa7fcf1b754f2"
+content-hash = "9deb12d8ef310bc9b353184f1456ed09d2a471139203c58406597fe4cde91c70"
 platform = "*"
 python-versions = "^3.6"
 
