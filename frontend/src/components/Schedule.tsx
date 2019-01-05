@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 import { RouteComponentProps } from "react-router-dom"
 
 import Calendar from "@/components/Calendar"
-import Recipes from "@/components/Recipes"
+import Recipes from "@/components/RecipeList"
 import ShoppingList from "@/components/ShoppingList"
 
 import { Dispatch, updatingTeamID } from "@/store/actions"
