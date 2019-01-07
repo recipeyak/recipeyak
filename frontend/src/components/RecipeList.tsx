@@ -50,6 +50,7 @@ class RecipesList extends React.Component<IRecipesProps, IRecipesState> {
     return (
       <>
         <TextInput
+          autoFocus
           className={this.props.noPadding ? "" : "mb-4"}
           onChange={this.handleQueryChange}
           placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:"
