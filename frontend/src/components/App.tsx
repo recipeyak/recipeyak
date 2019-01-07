@@ -39,54 +39,74 @@ const mapAuthenticated = (state: RootState) => ({
   authenticated: state.user.loggedIn
 })
 
-const PrivateRoute = connect(mapAuthenticated)(
-  ({ component: Component, authenticated, ...rest }: IAuthRouteProps) => {
-    if (Component == null) {
-      return null
-    }
-    return (
-      <Route
-        {...rest}
-        render={props => {
-          return authenticated ? (
-            <Component {...props} />
-          ) : (
-            <Redirect
-              to={{
-                pathname: "/login",
-                state: { from: props.location }
-              }}
-            />
-          )
-        }}
-      />
-    )
+type ComponentProps = ArgumentsType<RouteProps["render"]>[0]
+
+/** Return a ReactNode when provided a component or render function
+ *
+ * This utility function supports component and render props for React Router.
+ */
+const renderComponent = (
+  props: ComponentProps,
+  component: RouteProps["component"],
+  render: RouteProps["render"]
+): React.ReactNode => {
+  if (component) {
+    return React.createElement(component, props)
   }
+  if (render) {
+    return render(props)
+  }
+  return null
+}
+
+const PrivateRoute = connect(mapAuthenticated)(
+  ({
+    component: Component,
+    render,
+    authenticated,
+    ...rest
+  }: IAuthRouteProps) => (
+    <Route
+      {...rest}
+      render={props => {
+        return authenticated ? (
+          renderComponent(props, Component, render)
+        ) : (
+          <Redirect
+            to={{
+              pathname: "/login",
+              state: { from: props.location }
+            }}
+          />
+        )
+      }}
+    />
+  )
 )
 
 const PublicOnlyRoute = connect(mapAuthenticated)(
-  ({ component: Component, authenticated, ...rest }: IAuthRouteProps) => {
-    if (Component == null) {
-      return null
-    }
-    return (
-      <Route
-        {...rest}
-        render={props => {
-          return !authenticated ? (
-            <Component {...props} />
-          ) : (
-            <Redirect
-              to={{
-                pathname: "/",
-                state: { from: props.location }
-              }}
-            />
-          )
-        }}
-      />
-    )
-  }
+  ({
+    component: Component,
+    render,
+    authenticated,
+    ...rest
+  }: IAuthRouteProps) => (
+    <Route
+      {...rest}
+      render={props => {
+        return !authenticated ? (
+          renderComponent(props, Component, render)
+        ) : (
+          <Redirect
+            to={{
+              pathname: "/",
+              state: { from: props.location }
+            }}
+          />
+        )
+      }}
+    />
+  )
 )
 
 function Base() {
@@ -133,7 +153,11 @@ function Base() {
                     path="/recipes/add"
                     component={AddRecipe}
                   />
-                  <PrivateRoute exact path="/recipes/" component={Recipes} />
+                  <PrivateRoute
+                    exact
+                    path="/recipes/"
+                    render={() => <Recipes autoFocusSearch />}
+                  />
                   <PrivateRoute
                     exact
                     path="/recipes/:id(\d+)(.*)"

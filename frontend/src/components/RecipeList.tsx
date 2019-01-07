@@ -19,6 +19,7 @@ interface IRecipesProps {
   readonly scroll: boolean
   readonly drag: boolean
   readonly noPadding?: boolean
+  readonly autoFocusSearch?: boolean
 }
 
 interface IRecipesState {
@@ -50,7 +51,7 @@ class RecipesList extends React.Component<IRecipesProps, IRecipesState> {
     return (
       <>
         <TextInput
-          autoFocus
+          autoFocus={this.props.autoFocusSearch}
           className={this.props.noPadding ? "" : "mb-4"}
           onChange={this.handleQueryChange}
           placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:"
