@@ -117,6 +117,7 @@ import {
   setLoadingReset,
   setLoadingResetConfirmation
 } from "@/store/reducers/auth"
+import { recipeURL } from "@/urls"
 
 // We check if detail matches our string because Django will not return 401 when
 // the session expires
@@ -339,7 +340,7 @@ export const postNewRecipe = (dispatch: Dispatch) => (recipe: IRecipeBasic) => {
     .createRecipe(recipe)
     .then(res => {
       dispatch(createRecipe.success(res.data))
-      dispatch(push("/recipes"))
+      dispatch(push(recipeURL(res.data.id)))
       dispatch(clearAddRecipeForm())
     })
     .catch((err: AxiosError) => {

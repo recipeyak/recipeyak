@@ -2,9 +2,21 @@ import { toURL } from "@/urls"
 
 describe("#toURL", () => {
   it("replaces #", () => {
-    expect(toURL("/recipes/12-####")).toEqual("%2Frecipes%2F12-%23%23%23%23")
+    expect(toURL("/recipes/12-####")).toEqual("recipes12")
   })
   it("replaces ?", () => {
-    expect(toURL("/recipes/12-good?no!")).toEqual("%2Frecipes%2F12-good%3Fno!")
+    expect(toURL("/recipes/12-good?no!")).toEqual("recipes12-goodno")
+  })
+  it("removes quotes", () => {
+    expect(toURL("J. Shmoe's")).toEqual("j-shmoes")
+  })
+  it("removes commas", () => {
+    expect(toURL("Blueberry, Almond")).toEqual("blueberry-almond")
+  })
+  it("trim leading space", () => {
+    expect(toURL("   foo")).toEqual("foo")
+  })
+  it("trim trailing space", () => {
+    expect(toURL("bar    ")).toEqual("bar")
   })
 })
