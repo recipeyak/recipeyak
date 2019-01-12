@@ -34,4 +34,11 @@ type Diff<T, U> = T extends U ? never : T
  */
 type Minus<T, U> = { [P in Diff<keyof T, keyof U>]: T[P] }
 
+/** Extract arguments from a function
+ *
+ * This is based on ReturnType
+ */
+// tslint:disable-next-line:no-any
+type ArgumentsType<T> = T extends (...args: infer A) => any ? A : never
+
 type TeamID = number | "personal"
