@@ -44,7 +44,7 @@ function SourceLink({ children }: { children: string }) {
 }
 
 function MetaPiece({ children }: { children: React.ReactNode }) {
-  return <span className="white-space-nowrap">{children}</span>
+  return <>{children}</>
 }
 
 function MetaBold({ children }: { children: React.ReactNode }) {
