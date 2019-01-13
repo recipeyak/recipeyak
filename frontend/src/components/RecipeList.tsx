@@ -7,11 +7,7 @@ import { matchesQuery } from "@/search"
 import Results from "@/components/Results"
 import { byNameAlphabetical } from "@/sorters"
 import { Dispatch, fetchingRecipeList } from "@/store/actions"
-import {
-  IRecipe,
-  getTeamRecipes,
-  getAllRecipes
-} from "@/store/reducers/recipes"
+import { IRecipe, getTeamRecipes } from "@/store/reducers/recipes"
 import { ITeam } from "@/store/reducers/teams"
 import { RootState } from "@/store/store"
 import { WebData, isSuccessOrRefetching } from "@/webdata"
@@ -91,13 +87,7 @@ class RecipesListSearch extends React.Component<IRecipesProps, IRecipesState> {
 }
 
 function mapStateToProps(state: RootState, ownProps: IOwnProps) {
-  if (ownProps.teamID == null) {
-    return {
-      recipes: getAllRecipes(state)
-    }
-  }
   return {
-    // TODO(sbdchd): fix this hack
     recipes: getTeamRecipes(state, ownProps.teamID || "personal")
   }
 }

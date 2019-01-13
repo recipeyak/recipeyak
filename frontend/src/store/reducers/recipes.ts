@@ -264,11 +264,6 @@ const mapSuccessLikeById = <T extends IRecipe["id"][]>(
       .map(unWrap)
   )
 
-export function getAllRecipes(state: RootState): WebData<IRecipe[]> {
-  // personalIDs will include both personal recipes as well as the team recipes a user has access to
-  return mapSuccessLikeById(state.recipes.personalIDs, state)
-}
-
 export function getTeamRecipes(
   state: RootState,
   teamID: TeamID
