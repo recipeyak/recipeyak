@@ -7,15 +7,42 @@ import { matchesQuery } from "@/search"
 import Results from "@/components/Results"
 import { byNameAlphabetical } from "@/sorters"
 import { Dispatch, fetchingRecipeList } from "@/store/actions"
-import { IRecipe, getRecipes } from "@/store/reducers/recipes"
+import { IRecipe, getTeamRecipes } from "@/store/reducers/recipes"
 import { ITeam } from "@/store/reducers/teams"
 import { RootState } from "@/store/store"
-import { isSuccess } from "@/webdata"
+import { WebData, isSuccessOrRefetching } from "@/webdata"
+
+interface IRecipeList {
+  readonly recipes: WebData<IRecipe[]>
+  readonly query: string
+  readonly drag: boolean
+  readonly scroll: boolean
+}
+
+function RecipeList(props: IRecipeList) {
+  if (!isSuccessOrRefetching(props.recipes)) {
+    return <Loader className="pt-4" />
+  }
+
+  const results: JSX.Element[] = props.recipes.data
+    .filter(recipe => matchesQuery(recipe, props.query))
+    .sort(byNameAlphabetical)
+    .map(recipe => <RecipeItem {...recipe} drag={props.drag} key={recipe.id} />)
+
+  const scrollClass = props.scroll ? "recipe-scroll" : ""
+
+  return (
+    <div className={scrollClass}>
+      <div className="recipe-grid">
+        <Results recipes={results} query={props.query} />
+      </div>
+    </div>
+  )
+}
 
 interface IRecipesProps {
   readonly fetchData: () => void
-  readonly recipes: IRecipe[]
-  readonly loading: boolean
+  readonly recipes: WebData<IRecipe[]>
   readonly scroll: boolean
   readonly drag: boolean
   readonly noPadding?: boolean
@@ -26,7 +53,7 @@ interface IRecipesState {
   readonly query: string
 }
 
-class RecipesList extends React.Component<IRecipesProps, IRecipesState> {
+class RecipesListSearch extends React.Component<IRecipesProps, IRecipesState> {
   state: IRecipesState = {
     query: ""
   }
@@ -40,14 +67,6 @@ class RecipesList extends React.Component<IRecipesProps, IRecipesState> {
   }
 
   render() {
-    const results: JSX.Element[] = this.props.recipes
-      .filter(recipe => matchesQuery(recipe, this.state.query))
-      .map(recipe => (
-        <RecipeItem {...recipe} drag={this.props.drag} key={recipe.id} />
-      ))
-
-    const scrollClass = this.props.scroll ? "recipe-scroll" : ""
-
     return (
       <>
         <TextInput
@@ -56,30 +75,20 @@ class RecipesList extends React.Component<IRecipesProps, IRecipesState> {
           onChange={this.handleQueryChange}
           placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:"
         />
-
-        {this.props.loading ? (
-          <Loader className="pt-4" />
-        ) : (
-          <div className={scrollClass}>
-            <div className="recipe-grid">
-              <Results recipes={results} query={this.state.query} />
-            </div>
-          </div>
-        )}
+        <RecipeList
+          recipes={this.props.recipes}
+          query={this.state.query}
+          drag={this.props.drag}
+          scroll={this.props.scroll}
+        />
       </>
     )
   }
 }
 
-function mapStateToProps(state: RootState) {
-  // TODO(sbdchd): this should be a getter
-  const recipes = getRecipes(state)
-    .filter(isSuccess)
-    .map(r => r.data)
-    .sort(byNameAlphabetical)
+function mapStateToProps(state: RootState, ownProps: IOwnProps) {
   return {
-    recipes,
-    loading: state.recipes.loadingAll
+    recipes: getTeamRecipes(state, ownProps.teamID || "personal")
   }
 }
 
@@ -91,8 +100,7 @@ type statePropsType = ReturnType<typeof mapStateToProps>
 
 type dispatchPropsType = ReturnType<typeof mapDispatchToProps>
 
-interface IOwnProps
-  extends Minus<IRecipesProps, statePropsType & dispatchPropsType> {
+interface IOwnProps {
   readonly teamID: ITeam["id"] | null
 }
 
@@ -114,4 +122,4 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps,
   mergeProps
-)(RecipesList)
+)(RecipesListSearch)

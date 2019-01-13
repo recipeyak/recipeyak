@@ -7,15 +7,7 @@ import {
   ActionType,
   getType
 } from "typesafe-actions"
-import {
-  WebData,
-  Success,
-  Loading,
-  Failure,
-  HttpErrorKind,
-  isSuccess,
-  Refetching
-} from "@/webdata"
+import { WebData, Success, Failure, HttpErrorKind, toLoading } from "@/webdata"
 
 const SET_SELECTING_START = "SET_SELECTING_START"
 const SET_SELECTING_END = "SET_SELECTING_END"
@@ -59,12 +51,8 @@ const shoppinglist = (
   switch (action.type) {
     case getType(fetchShoppingList.success):
       return { ...state, shoppinglist: Success(action.payload) }
-    case getType(fetchShoppingList.request): {
-      const nextState = isSuccess(state.shoppinglist)
-        ? Refetching(state.shoppinglist.data)
-        : Loading()
-      return { ...state, shoppinglist: nextState }
-    }
+    case getType(fetchShoppingList.request):
+      return { ...state, shoppinglist: toLoading(state.shoppinglist) }
     case getType(fetchShoppingList.failure):
       return { ...state, shoppinglist: Failure(HttpErrorKind.other) }
     case SET_SELECTING_START:

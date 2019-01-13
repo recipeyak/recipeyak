@@ -7,7 +7,7 @@ import recipes, {
 
 import * as a from "@/store/reducers/recipes"
 import { RootState } from "@/store/store"
-import { HttpErrorKind, Loading, isSuccess, Failure } from "@/webdata"
+import { HttpErrorKind, Loading, isSuccess, Failure, Success } from "@/webdata"
 
 export const baseRecipe: IRecipe = {
   id: 1,
@@ -45,7 +45,10 @@ export const baseStep: IStep = {
 
 function recipeStoreWith(recipe: IRecipe | IRecipe[]): IRecipesState {
   if (Array.isArray(recipe)) {
-    return recipes(undefined, a.fetchRecipeList.success(recipe))
+    return recipes(
+      undefined,
+      a.fetchRecipeList.success({ recipes: recipe, teamID: "personal" })
+    )
   }
   return recipes(undefined, a.fetchRecipe.success(recipe))
 }
@@ -65,7 +68,7 @@ describe("Recipes", () => {
     const [first, second] = res
     const beforeState = recipeStoreWith(res)
     const after = recipes(beforeState, a.deleteRecipe.success(first.id))
-    expect(after.allIds).toEqual([second.id])
+    expect(after.personalIDs).toEqual(Success([second.id]))
     expect(after.byId[first.id]).toEqual(undefined)
 
     const maybeSecond = a.getRecipeById(
@@ -438,14 +441,14 @@ describe("Recipes", () => {
       byId: {
         [baseRecipe.id]: Loading()
       },
-      allIds: []
+      personalIDs: undefined
     }
     const fetchingActual = recipes(
       beforeState,
       a.fetchRecipe.request(baseRecipe.id)
     )
     expect(fetchingActual.byId).toEqual(fetchingState.byId)
-    expect(fetchingActual.allIds).toEqual(fetchingState.allIds)
+    expect(fetchingActual.personalIDs).toEqual(fetchingState.personalIDs)
 
     const successState: IRecipesState = recipeStoreWith({
       ...baseRecipe
@@ -460,7 +463,7 @@ describe("Recipes", () => {
       byId: {
         [baseRecipe.id]: Failure(HttpErrorKind.error404)
       },
-      allIds: []
+      personalIDs: undefined
     }
 
     const failActual = recipes(
@@ -468,7 +471,7 @@ describe("Recipes", () => {
       a.fetchRecipe.failure({ id: 1, error404: true })
     )
     expect(failActual.byId).toEqual(failureState.byId)
-    expect(failActual.allIds).toEqual(failureState.allIds)
+    expect(failActual.personalIDs).toEqual(failureState.personalIDs)
   })
 
   it("sets the recipe to updating", () => {
@@ -501,10 +504,13 @@ describe("Recipes", () => {
       name: "new recipe name"
     }
 
-    const afterState: IRecipesState = recipeStoreWith({
-      ...baseRecipe,
-      name: "new recipe name"
-    })
+    const afterState: IRecipesState = {
+      ...recipeStoreWith({
+        ...baseRecipe,
+        name: "new recipe name"
+      }),
+      personalIDs: Success([baseRecipe.id])
+    }
 
     expect(recipes(beforeState, a.fetchRecipe.success(newRecipe))).toEqual(
       afterState

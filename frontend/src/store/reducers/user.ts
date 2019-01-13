@@ -9,15 +9,7 @@ import {
   getType
 } from "typesafe-actions"
 import { IRecipe } from "@/store/reducers/recipes"
-import {
-  WebData,
-  Success,
-  Failure,
-  HttpErrorKind,
-  Loading,
-  isSuccess,
-  Refetching
-} from "@/webdata"
+import { WebData, Success, Failure, HttpErrorKind, toLoading } from "@/webdata"
 
 const LOG_IN = "LOG_IN"
 
@@ -162,12 +154,9 @@ export const user = (
     case getType(fetchUserStats.success):
       return { ...state, stats: Success(action.payload) }
     case getType(fetchUserStats.request): {
-      const stats = isSuccess(state.stats)
-        ? Refetching(state.stats.data)
-        : Loading()
       return {
         ...state,
-        stats
+        stats: toLoading(state.stats)
       }
     }
     case getType(fetchUserStats.failure):
@@ -178,13 +167,10 @@ export const user = (
     case SET_SOCIAL_ACCOUNT_CONNECTIONS:
       return {
         ...state,
-        socialAccountConnections: {
-          ...state.socialAccountConnections,
-          ...action.payload.reduce(
-            (acc, { provider, id }) => ({ ...acc, [provider]: id }),
-            {}
-          )
-        }
+        socialAccountConnections: action.payload.reduce(
+          (acc, { provider, id }) => ({ ...acc, [provider]: id }),
+          state.socialAccountConnections
+        )
       }
     case SET_SOCIAL_ACCOUNT_CONNECTION:
       return {

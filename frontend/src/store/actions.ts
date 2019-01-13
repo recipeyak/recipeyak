@@ -391,14 +391,14 @@ export const fetchingRecentRecipes = (dispatch: Dispatch) => () => {
 export const fetchingRecipeList = (dispatch: Dispatch) => (
   teamID: ITeam["id"] | "personal"
 ) => {
-  dispatch(fetchRecipeList.request())
+  dispatch(fetchRecipeList.request({ teamID }))
   return api
     .getRecipeList(teamID)
     .then(res => {
-      dispatch(fetchRecipeList.success(res.data))
+      dispatch(fetchRecipeList.success({ recipes: res.data, teamID }))
     })
     .catch(() => {
-      dispatch(fetchRecipeList.failure())
+      dispatch(fetchRecipeList.failure({ teamID }))
     })
 }
 
@@ -777,7 +777,7 @@ export const fetchTeamRecipes = (dispatch: Dispatch) => (id: number) => {
   return api
     .getTeamRecipes(id)
     .then(res => {
-      dispatch(fetchRecipeList.success(res.data))
+      dispatch(fetchRecipeList.success({ recipes: res.data, teamID: id }))
       dispatch(setTeamRecipes(id, res.data))
       dispatch(setLoadingTeamRecipes(id, false))
     })

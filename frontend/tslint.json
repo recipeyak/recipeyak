@@ -39,7 +39,7 @@
     "no-invalid-regexp": true,
     "no-octal-literal": true,
     "no-regex-spaces": true,
-    "no-single-line-block-comment": true,
+    "no-single-line-block-comment": false,
     "no-typeof-undefined": true,
     "no-unnecessary-bind": true,
     "no-unnecessary-field-initialization": true,
