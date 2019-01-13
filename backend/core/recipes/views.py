@@ -201,8 +201,9 @@ class StepViewSet(viewsets.ModelViewSet):
         serializer = self.serializer_class(data=request.data)
         recipe = get_object_or_404(Recipe, pk=recipe_pk)
 
-        # set a position if not provided
-        last_step = recipe.steps.last()
+        # set a position if not provided. We must included deleted because they
+        # still take up a position.
+        last_step = recipe.step_set.all_with_deleted().last()
         if serializer.initial_data.get("position") is None:
             if last_step is not None:
                 serializer.initial_data["position"] = last_step.position + 10.0
@@ -230,8 +231,9 @@ class IngredientViewSet(viewsets.ModelViewSet):
         serializer = self.serializer_class(data=request.data)
         recipe = get_object_or_404(Recipe, pk=recipe_pk)
 
-        # set a position if not provided
-        last_ingredient = recipe.ingredients.last()
+        # set a position if not provided. We must included deleted because they
+        # still take up a position.
+        last_ingredient = recipe.ingredient_set.all_with_deleted().last()
         if serializer.initial_data.get("position") is None:
             if last_ingredient is not None:
                 serializer.initial_data["position"] = last_ingredient.position + 10.0

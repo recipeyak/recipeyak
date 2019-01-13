@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.conf import settings
 from rest_framework import status
 
-from core.models import Recipe, Membership, Team
+from core.models import Recipe, Membership, Team, Ingredient, Step
 
 pytestmark = pytest.mark.django_db
 
@@ -195,6 +195,38 @@ def test_deleting_step_from_recipe(client, user, recipe):
     assert step_id not in (
         step.get("id") for step in res.json().get("steps")
     ), "step was still in the recipe after being deleted"
+
+
+ingredient = {
+    "quantity": "1",
+    "unit": "tablespoon",
+    "name": "black pepper",
+    "description": "",
+}
+step = {"text": "place fish in salt"}
+
+
+@pytest.mark.parametrize(
+    "data,base_name,model",
+    [
+        (ingredient, "recipe-ingredient-list", Ingredient),
+        (step, "recipe-step-list", Step),
+    ],
+)
+def test_position_step_ingredient(client, user, recipe, data, base_name, model):
+    """
+    Catch bug in positioning code where soft deletion would hide already taken
+    position from application code. This triggered an integrity error at the
+    database level.
+    """
+    client.force_authenticate(user)
+    url = reverse(base_name, kwargs=dict(recipe_pk=recipe.id))
+
+    res = client.post(url, data)
+    assert res.status_code == status.HTTP_201_CREATED
+    model.objects.get(id=res.json()["id"]).delete()
+    res = client.post(url, data)
+    assert res.status_code == status.HTTP_201_CREATED
 
 
 def test_adding_ingredient_to_recipe(client, user, recipe):
