@@ -1,4 +1,4 @@
-import { omit, uniq } from "lodash"
+import { omit } from "lodash"
 import { ITeam } from "@/store/reducers/teams"
 import {
   action as act,
@@ -10,13 +10,12 @@ import { RootState } from "@/store/store"
 import {
   WebData,
   HttpErrorKind,
-  isInitial,
-  isSuccess,
-  Loading,
   Success,
   Failure,
   isSuccessOrRefetching,
-  Refetching
+  unWrap,
+  mapSuccessLike,
+  toLoading
 } from "@/webdata"
 const ADD_STEP_TO_RECIPE = "ADD_STEP_TO_RECIPE"
 const ADD_INGREDIENT_TO_RECIPE = "ADD_INGREDIENT_TO_RECIPE"
@@ -71,7 +70,11 @@ export const fetchRecipeList = createAsyncAction(
   "FETCH_RECIPE_LIST_START",
   "FETCH_RECIPE_LIST_SUCCESS",
   "FETCH_RECIPE_LIST_FAILURE"
-)<void, IRecipe[], void>()
+)<
+  { teamID: TeamID },
+  { recipes: IRecipe[]; teamID: TeamID },
+  { teamID: TeamID }
+>()
 
 export interface IAddRecipeError {
   readonly errorWithName?: boolean
@@ -250,8 +253,32 @@ export type RecipeActions =
   | ActionType<typeof fetchRecentRecipes>
   | ReturnType<typeof resetAddRecipeErrors>
 
-export const getRecipes = (state: RootState): WebData<IRecipe>[] =>
-  state.recipes.allIds.map(id => state.recipes.byId[id])
+const mapSuccessLikeById = <T extends IRecipe["id"][]>(
+  arr: WebData<T>,
+  state: RootState
+): WebData<IRecipe[]> =>
+  mapSuccessLike(arr, a =>
+    a
+      .map(id => getRecipeById(state, id))
+      .filter(isSuccessOrRefetching)
+      .map(unWrap)
+  )
+
+export function getAllRecipes(state: RootState): WebData<IRecipe[]> {
+  // personalIDs will include both personal recipes as well as the team recipes a user has access to
+  return mapSuccessLikeById(state.recipes.personalIDs, state)
+}
+
+export function getTeamRecipes(
+  state: RootState,
+  teamID: TeamID
+): WebData<IRecipe[]> {
+  const ids =
+    teamID === "personal"
+      ? state.recipes.personalIDs
+      : state.recipes.teamIDs[teamID]
+  return mapSuccessLikeById(ids, state)
+}
 
 export const getRecipeById = (
   state: RootState,
@@ -259,14 +286,7 @@ export const getRecipeById = (
 ): WebData<IRecipe> => state.recipes.byId[id]
 
 export const getRecentRecipes = (state: RootState): WebData<IRecipe[]> =>
-  isSuccessOrRefetching(state.recipes.recentIds)
-    ? Success(
-        state.recipes.recentIds.data
-          .map(id => state.recipes.byId[id])
-          .filter(isSuccess)
-          .map(recipe => recipe.data)
-      )
-    : state.recipes.recentIds
+  mapSuccessLikeById(state.recipes.recentIds, state)
 
 export interface IIngredient {
   readonly id: number
@@ -326,7 +346,7 @@ function mapRecipeSuccessById(
   func: (recipe: IRecipe) => IRecipe
 ): IRecipesState {
   const recipe = state.byId[id]
-  if (isInitial(recipe) || !isSuccessOrRefetching(recipe)) {
+  if (!isSuccessOrRefetching(recipe)) {
     return state
   }
   return {
@@ -335,20 +355,13 @@ function mapRecipeSuccessById(
       ...state.byId,
       [id]: {
         ...recipe,
-        data: func(recipe.data)
+        data: func(unWrap(recipe))
       }
     }
   }
 }
 
 export interface IRecipesState {
-  /** Represents the loading state for the list view.
-   *  Currently shared by other views as well, but should be eliminated
-   *  once we move to sum-types for our data fetching states.
-   */
-  readonly loadingAll: boolean
-  readonly errorLoadingAll: boolean
-
   // add recipe page
   readonly creatingRecipe: boolean
   readonly errorCreatingRecipe: IAddRecipeError
@@ -356,18 +369,19 @@ export interface IRecipesState {
   readonly byId: {
     readonly [key: number]: WebData<IRecipe>
   }
-  readonly allIds: IRecipe["id"][]
+  readonly personalIDs: WebData<IRecipe["id"][]>
+  readonly teamIDs: {
+    readonly [key: number]: WebData<IRecipe["id"][]>
+  }
   readonly recentIds: WebData<IRecipe["id"][]>
 }
 
 export const initialState: IRecipesState = {
-  loadingAll: false,
-  errorLoadingAll: false,
-
   creatingRecipe: false,
   errorCreatingRecipe: {},
   byId: {},
-  allIds: [],
+  personalIDs: undefined,
+  teamIDs: {},
   recentIds: undefined
 }
 
@@ -378,12 +392,11 @@ export const recipes = (
   switch (action.type) {
     case getType(fetchRecipe.request): {
       const r = state.byId[action.payload]
-      const nextState = isSuccess(r) ? Refetching(r.data) : Loading()
       return {
         ...state,
         byId: {
           ...state.byId,
-          [action.payload]: nextState
+          [action.payload]: toLoading(r)
         }
       }
     }
@@ -393,8 +406,7 @@ export const recipes = (
         byId: {
           ...state.byId,
           [action.payload.id]: Success(action.payload)
-        },
-        allIds: uniq(state.allIds.concat(action.payload.id))
+        }
       }
     case getType(fetchRecipe.failure): {
       const failure = action.payload.error404
@@ -408,38 +420,67 @@ export const recipes = (
         }
       }
     }
-    case getType(fetchRecipeList.request):
-      return {
-        ...state,
-        loadingAll: true
+    case getType(fetchRecipeList.request): {
+      if (action.payload.teamID === "personal") {
+        return {
+          ...state,
+          personalIDs: toLoading(state.personalIDs)
+        }
       }
-    case getType(fetchRecipeList.success):
+      const teamIdsState = state.teamIDs[action.payload.teamID]
       return {
         ...state,
-        loadingAll: false,
-        errorLoadingAll: false,
-        byId: action.payload.reduce(
+        teamIDs: {
+          ...state.teamIDs,
+          [action.payload.teamID]: toLoading(teamIdsState)
+        }
+      }
+    }
+    case getType(fetchRecipeList.success): {
+      const newIds = action.payload.recipes.map(r => r.id)
+
+      const newState = {
+        ...state,
+        byId: action.payload.recipes.reduce(
           (a, b) => ({
             ...a,
             [b.id]: Success(b)
           }),
           state.byId
-        ),
-        allIds: action.payload.map(r => r.id)
+        )
       }
-    case getType(fetchRecipeList.failure):
+
+      if (action.payload.teamID === "personal") {
+        return { ...newState, personalIDs: Success(newIds) }
+      }
+
+      return {
+        ...newState,
+        teamIDs: {
+          ...state.teamIDs,
+          [action.payload.teamID]: Success(newIds)
+        }
+      }
+    }
+    case getType(fetchRecipeList.failure): {
+      if (action.payload.teamID === "personal") {
+        return {
+          ...state,
+          personalIDs: Failure(HttpErrorKind.other)
+        }
+      }
       return {
         ...state,
-        loadingAll: false,
-        errorLoadingAll: true
+        teamIDs: {
+          ...state.teamIDs,
+          [action.payload.teamID]: Failure(HttpErrorKind.other)
+        }
       }
+    }
     case getType(fetchRecentRecipes.request): {
-      const recentIds = isSuccess(state.recentIds)
-        ? Refetching(state.recentIds.data)
-        : Loading()
       return {
         ...state,
-        recentIds
+        recentIds: toLoading(state.recentIds)
       }
     }
     case getType(fetchRecentRecipes.success):
@@ -473,8 +514,7 @@ export const recipes = (
         byId: {
           ...state.byId,
           [action.payload.id]: Success(action.payload)
-        },
-        allIds: uniq(state.allIds.concat(action.payload.id))
+        }
       }
     case CREATE_RECIPE_FAILURE:
       return {
@@ -496,7 +536,18 @@ export const recipes = (
       return {
         ...state,
         byId: omit(state.byId, action.payload),
-        allIds: state.allIds.filter(id => id !== action.payload)
+        personalIDs: mapSuccessLike(state.personalIDs, ids =>
+          ids.filter(id => id !== action.payload)
+        ),
+        teamIDs: Object.entries(state.teamIDs).reduce(
+          (acc, [key, value]) => ({
+            ...acc,
+            [key]: mapSuccessLike(value, v =>
+              v.filter(id => id !== action.payload)
+            )
+          }),
+          {}
+        )
       }
     case getType(deleteRecipe.failure):
       return mapRecipeSuccessById(state, action.payload, recipe => ({

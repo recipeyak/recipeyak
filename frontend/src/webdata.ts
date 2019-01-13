@@ -5,7 +5,7 @@ const enum RDK {
   Refetching
 }
 
-interface ILoading {
+export interface ILoading {
   readonly kind: RDK.Loading
 }
 export function Loading(): ILoading {
@@ -81,3 +81,24 @@ export const isRefetching = <T>(x: WebData<T>): x is IRefetching<T> =>
 export const isSuccessOrRefetching = <T>(
   x: WebData<T>
 ): x is ISuccess<T> | IRefetching<T> => isSuccess(x) || isRefetching(x)
+
+export const unWrap = <T>(d: ISuccess<T> | IRefetching<T>): T => d.data
+
+/** map over WebData with @param func if data is a type structurally similar to Success */
+export function mapSuccessLike<T, R>(
+  d: WebData<T>,
+  func: (data: T) => R
+): WebData<R> {
+  if (isSuccessOrRefetching(d)) {
+    return { ...d, data: func(unWrap(d)) }
+  }
+  return d
+}
+
+/** handle transitioning from Success & InitialState to Loading */
+export function toLoading<T>(state: WebData<T>): IRefetching<T> | ILoading {
+  if (isSuccess(state)) {
+    return Refetching(unWrap(state))
+  }
+  return Loading()
+}
