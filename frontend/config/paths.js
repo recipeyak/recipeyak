@@ -5,6 +5,7 @@ const url = require("url")
 // Make sure any symlinks in the project folder are resolved:
 // https://github.com/facebookincubator/create-react-app/issues/637
 const appDirectory = fs.realpathSync(process.cwd())
+/** @param {string} relativePath */
 function resolveApp(relativePath) {
   return path.resolve(appDirectory, relativePath)
 }
@@ -32,10 +33,11 @@ const nodePaths = (process.env.NODE_PATH || "")
 
 const envPublicUrl = process.env.PUBLIC_URL
 
+/** @param {string} path @param {boolean} needsSlash */
 function ensureSlash(path, needsSlash) {
   const hasSlash = path.endsWith("/")
   if (hasSlash && !needsSlash) {
-    return path.substr(path, path.length - 1)
+    return path.substr(0, path.length - 1)
   } else if (!hasSlash && needsSlash) {
     return path + "/"
   } else {
@@ -43,6 +45,9 @@ function ensureSlash(path, needsSlash) {
   }
 }
 
+/** @param {string} appPackageJson
+ * @returns {string}
+ */
 function getPublicUrl(appPackageJson) {
   return envPublicUrl || require(appPackageJson).homepage
 }
@@ -53,10 +58,11 @@ function getPublicUrl(appPackageJson) {
 // single-page apps that may serve index.html for nested URLs like /todos/42.
 // We can't use a relative path in HTML because we don't want to load something
 // like /todos/42/static/js/bundle.7289d.js. We have to know the root.
+/** @param {string} appPackageJson */
 function getServedPath(appPackageJson) {
   const publicUrl = getPublicUrl(appPackageJson)
   const servedUrl =
-    envPublicUrl || (publicUrl ? url.parse(publicUrl).pathname : "/")
+    envPublicUrl || ((publicUrl && url.parse(publicUrl).pathname) || "/")
   return ensureSlash(servedUrl, true)
 }
 

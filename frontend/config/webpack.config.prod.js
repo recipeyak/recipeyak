@@ -1,6 +1,7 @@
 const autoprefixer = require("autoprefixer")
 const webpack = require("webpack")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
+// @ts-ignore
 const FaviconsWebpackPlugin = require("favicons-webpack-plugin")
 const ExtractTextPlugin = require("extract-text-webpack-plugin")
 const ManifestPlugin = require("webpack-manifest-plugin")
@@ -52,8 +53,7 @@ module.exports = {
   // You can exclude the *.map files from the build during deployment.
 
   devtool: "source-map",
-  // In production, we only want to load the polyfills and the app code.
-  entry: [require.resolve("./polyfills"), paths.appIndexTsx],
+  entry: [paths.appIndexTsx],
   output: {
     // The build folder.
     path: paths.appBuild,
@@ -67,15 +67,8 @@ module.exports = {
   },
   resolve: {
     modules: ["node_modules", paths.appNodeModules, paths.appSrc],
-    // These are the reasonable defaults supported by the Node ecosystem.
-    // We also include JSX as a common component filename extension to support
-    // some tools, although we do not recommend using it, see:
-    // https://github.com/facebookincubator/create-react-app/issues/290
     extensions: [".js", ".json", ".jsx", ".ts", ".tsx"],
     alias: {
-      // Support React Native Web
-      // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
-      "react-native": "react-native-web",
       "@": paths.appSrc
     }
   },
@@ -141,6 +134,7 @@ module.exports = {
       // in the main CSS file.
       {
         test: /\.css$/,
+        // @ts-ignore
         use: ExtractTextPlugin.extract(
           {
             fallback: "style-loader",
@@ -155,7 +149,7 @@ module.exports = {
               {
                 loader: "postcss-loader",
                 options: {
-                  plugins: loader => [
+                  plugins: () => [
                     autoprefixer({
                       browsers: [
                         ">1%",
@@ -177,6 +171,7 @@ module.exports = {
       },
       {
         test: /\.(scss|sass)$/,
+        // @ts-ignore
         loader: ExtractTextPlugin.extract(
           {
             fallback: "style-loader",
@@ -241,10 +236,12 @@ module.exports = {
     // generate and insert favicons based off of favicon url
     new FaviconsWebpackPlugin(faviconPath),
     // This helps ensure the builds are consistent if source hasn't changed:
+    // @ts-ignore
     new webpack.optimize.OccurrenceOrderPlugin(),
     // Minify the code.
     new webpack.optimize.UglifyJsPlugin({
       compress: {
+        // @ts-ignore
         screw_ie8: true, // React doesn't support IE8
         warnings: false
       },
@@ -263,6 +260,7 @@ module.exports = {
     // to their corresponding output file so that tools can pick it up without
     // having to parse `index.html`.
     new ManifestPlugin({
+      // @ts-ignore
       fileName: "asset-manifest.json"
     })
   ],

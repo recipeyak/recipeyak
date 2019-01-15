@@ -1,7 +1,7 @@
 const autoprefixer = require("autoprefixer")
 const webpack = require("webpack")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
-const FaviconsWebpackPlugin = require("favicons-webpack-plugin")
+// @ts-ignore
 const CaseSensitivePathsPlugin = require("case-sensitive-paths-webpack-plugin")
 const InterpolateHtmlPlugin = require("react-dev-utils/InterpolateHtmlPlugin")
 const WatchMissingNodeModulesPlugin = require("react-dev-utils/WatchMissingNodeModulesPlugin")
@@ -17,9 +17,6 @@ const publicPath = "/"
 const publicUrl = ""
 // Get environment variables to inject into our app.
 const env = getClientEnvironment(publicUrl)
-
-// we use this in both dev and prod configs
-const faviconPath = "./src/components/images/recipeyak-logo.png"
 
 // This is the development configuration.
 // It is focused on developer experience and fast rebuilds.
@@ -44,8 +41,6 @@ module.exports = {
     // require.resolve('webpack-dev-server/client') + '?/',
     // require.resolve('webpack/hot/dev-server'),
     require.resolve("react-dev-utils/webpackHotDevClient"),
-    // We ship a few polyfills by default:
-    require.resolve("./polyfills"),
     // Finally, this is your app's code:
     paths.appIndexTsx
     // We include the app code last so that if there is a runtime error during
@@ -72,9 +67,6 @@ module.exports = {
     // https://github.com/facebookincubator/create-react-app/issues/290
     extensions: [".js", ".json", ".jsx", ".ts", ".tsx"],
     alias: {
-      // Support React Native Web
-      // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
-      "react-native": "react-native-web",
       "@": paths.appSrc
     }
   },
@@ -165,6 +157,7 @@ module.exports = {
             loader: "postcss-loader",
             options: {
               plugins: () => [
+                // @ts-ignore
                 require("postcss-flexbugs-fixes"),
                 autoprefixer({
                   browsers: [
