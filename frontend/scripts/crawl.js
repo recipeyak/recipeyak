@@ -5,6 +5,9 @@ const puppeteer = require("puppeteer")
 
 const HELP = `usage: ./crawl.js url [file]`
 
+/** @param {string} filename
+ *  @param {string} content
+ */
 function writeFile(filename, content) {
   return new Promise((resolve, reject) => {
     fs.writeFile(filename, content, err => {

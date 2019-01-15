@@ -10,9 +10,7 @@ if [[ -f ../.env ]]; then
     set +a
 fi
 
-node scripts/lint.js
-
-$(yarn bin)/tslint --project ./tsconfig.json 'src/**/*.{ts,tsx}' --format 'codeFrame'
+$(yarn bin)/tslint --project ./tsconfig.json --format 'codeFrame'
 
 s/fmt --list-different
 
