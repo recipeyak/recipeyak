@@ -6,6 +6,22 @@
   ],
   "rulesDirectory": ["node_modules/tslint-microsoft-contrib"],
   "defaultSeverity": "error",
+  "jsRules": {
+    "no-console": false,
+    "object-literal-sort-keys": false,
+    "no-shadowed-variable": true,
+    "member-ordering": false,
+    "prefer-const": true,
+    "no-var-keyword": true,
+    "no-implicit-dependencies": false,
+    "variable-name": [
+      true,
+      "ban-keywords",
+      "allow-pascal-case",
+      "check-format",
+      "allow-leading-underscore"
+    ]
+  },
   "rules": {
     "object-literal-sort-keys": false,
     "ordered-imports": false,
@@ -68,6 +84,5 @@
       ]
     },
     "max-classes-per-file": false
-  },
-  "jsRules": {}
+  }
 }

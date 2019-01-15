@@ -33,15 +33,15 @@ const nodePaths = (process.env.NODE_PATH || "")
 
 const envPublicUrl = process.env.PUBLIC_URL
 
-/** @param {string} path @param {boolean} needsSlash */
-function ensureSlash(path, needsSlash) {
-  const hasSlash = path.endsWith("/")
+/** @param {string} filePath @param {boolean} needsSlash */
+function ensureSlash(filePath, needsSlash) {
+  const hasSlash = filePath.endsWith("/")
   if (hasSlash && !needsSlash) {
-    return path.substr(0, path.length - 1)
+    return filePath.substr(0, filePath.length - 1)
   } else if (!hasSlash && needsSlash) {
-    return path + "/"
+    return filePath + "/"
   } else {
-    return path
+    return filePath
   }
 }
 

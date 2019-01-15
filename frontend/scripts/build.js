@@ -204,9 +204,9 @@ function build(previousFileSizes) {
           )
           console.log()
         }
-        const build = path.relative(process.cwd(), paths.appBuild)
+        const buildFolder = path.relative(process.cwd(), paths.appBuild)
         console.log(
-          "The " + chalk.cyan(build) + " folder is ready to be deployed."
+          "The " + chalk.cyan(buildFolder) + " folder is ready to be deployed."
         )
         console.log("You may serve it with a static server:")
         console.log()
