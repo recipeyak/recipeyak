@@ -202,16 +202,16 @@ export const calendar = (
 
 export default calendar
 
-export const getCalRecipeById = (state: RootState, id: ICalRecipe['id']): ICalRecipe => state.calendar.byId[id]
+export const getCalRecipeById = (
+  state: RootState,
+  id: ICalRecipe["id"]
+): ICalRecipe => state.calendar.byId[id]
 
 export const getAllCalRecipes = (state: RootState): ICalRecipe[] =>
-  state.calendar.allIds
-    .map(id => getCalRecipeById(state, id))
+  state.calendar.allIds.map(id => getCalRecipeById(state, id))
 
 export const getTeamRecipes = (state: RootState): ICalRecipe[] =>
-  getAllCalRecipes(state)
-    .filter(recipe => recipe.team != null)
+  getAllCalRecipes(state).filter(recipe => recipe.team != null)
 
 export const getPersonalRecipes = (state: RootState): ICalRecipe[] =>
-  getAllCalRecipes(state)
-    .filter(recipe => recipe.team == null)
+  getAllCalRecipes(state).filter(recipe => recipe.team == null)

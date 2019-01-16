@@ -388,9 +388,7 @@ export const fetchingRecentRecipes = (dispatch: Dispatch) => () => {
     })
 }
 
-export const fetchingRecipeList = (dispatch: Dispatch) => (
-  teamID: TeamID
-) => {
+export const fetchingRecipeList = (dispatch: Dispatch) => (teamID: TeamID) => {
   dispatch(fetchRecipeList.request({ teamID }))
   return api
     .getRecipeList(teamID)
@@ -1185,10 +1183,10 @@ export const deletingScheduledRecipe = (dispatch: Dispatch) => (
 }
 
 function isSameTeam(x: ICalRecipe, teamID: TeamID): boolean {
-    if (teamID === "personal") {
-      return x.user != null
-    }
-    return x.team === teamID
+  if (teamID === "personal") {
+    return x.user != null
+  }
+  return x.team === teamID
 }
 
 export const moveScheduledRecipe = (dispatch: Dispatch) => (
@@ -1199,8 +1197,7 @@ export const moveScheduledRecipe = (dispatch: Dispatch) => (
   // HACK(sbdchd): With an endpoint we can eliminate this
   const state = store.getState()
   const from = getCalRecipeById(state, id)
-  const existing =
-    getAllCalRecipes(state)
+  const existing = getAllCalRecipes(state)
     .filter(x => isSameDay(x.on, to) && isSameTeam(x, teamID))
     .find(x => x.recipe.id === from.recipe.id)
 
@@ -1232,7 +1229,7 @@ export const moveScheduledRecipe = (dispatch: Dispatch) => (
 
 export const updatingScheduledRecipe = (dispatch: Dispatch) => (
   id: ICalRecipe["id"],
-  teamID: ITeam["id"] | "personal",
+  teamID: TeamID,
   count: ICalRecipe["count"]
 ) => {
   if (count <= 0) {
