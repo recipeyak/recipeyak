@@ -1,8 +1,5 @@
 import isSameDay from "date-fns/is_same_day"
 
-// TODO(chdsbd): Replace "personal" with null in all uses
-type TeamID = number | "personal"
-
 export type Dispatch = ReduxDispatch<Action>
 
 export type GetState = () => RootState
@@ -35,7 +32,9 @@ import {
   replaceCalendarRecipe,
   deleteCalendarRecipe,
   moveCalendarRecipe,
-  fetchCalendarRecipes
+  fetchCalendarRecipes,
+  getAllCalRecipes,
+  getCalRecipeById
 } from "@/store/reducers/calendar"
 import {
   setDecliningInvite,
@@ -118,6 +117,7 @@ import {
   setLoadingResetConfirmation
 } from "@/store/reducers/auth"
 import { recipeURL } from "@/urls"
+import { isSuccessOrRefetching } from "@/webdata"
 
 // We check if detail matches our string because Django will not return 401 when
 // the session expires
@@ -389,7 +389,7 @@ export const fetchingRecentRecipes = (dispatch: Dispatch) => () => {
 }
 
 export const fetchingRecipeList = (dispatch: Dispatch) => (
-  teamID: ITeam["id"] | "personal"
+  teamID: TeamID
 ) => {
   dispatch(fetchRecipeList.request({ teamID }))
   return api
@@ -1107,32 +1107,49 @@ export const fetchCalendar = (dispatch: Dispatch) => (
       dispatch(fetchCalendarRecipes.failure())
     })
 }
+
+function toCalRecipe(
+  recipe: IRecipe,
+  tempId: ICalRecipe["id"],
+  on: ICalRecipe["on"],
+  count: ICalRecipe["count"]
+): ICalRecipe {
+  return {
+    id: tempId,
+    recipe: {
+      id: recipe.id,
+      name: recipe.name
+    },
+    on: toDateString(on),
+    count,
+    user: recipe.owner.id
+  }
+}
+
 export const addingScheduledRecipe = (dispatch: Dispatch) => (
   recipeID: IRecipe["id"],
   teamID: TeamID,
   on: Date,
-  count: number | string
+  count: number
 ) => {
   const recipe = store.getState().recipes.byId[recipeID]
   dispatch(setSchedulingRecipe(recipeID, true))
-  const id = random32Id()
-  const data = {
-    recipe: recipeID,
-    on: toDateString(on),
-    count
+  const tempId = random32Id()
+  if (!isSuccessOrRefetching(recipe)) {
+    return Promise.resolve()
   }
+
   // 1. preemptively add recipe
   // 2. if succeeded, then we replace the preemptively added one
   //    if failed, then we remove the preemptively added one, and display an error
 
-  // HACK(sbdchd): we need to add the user to the recipe
   dispatch(
-    setCalendarRecipe(({ ...data, id, recipe } as unknown) as ICalRecipe)
+    setCalendarRecipe(toCalRecipe(recipe.data, tempId, toDateString(on), count))
   )
   return api
     .scheduleRecipe(recipeID, teamID, on, count)
     .then(res => {
-      dispatch(replaceCalendarRecipe(id, res.data))
+      dispatch(replaceCalendarRecipe(tempId, res.data))
       dispatch(setSchedulingRecipe(recipeID, false))
       const scheduledDate = new Date(res.data.on).toLocaleDateString()
       const recipeName = res.data.recipe.name
@@ -1144,7 +1161,7 @@ export const addingScheduledRecipe = (dispatch: Dispatch) => (
       })
     })
     .catch(() => {
-      dispatch(deleteCalendarRecipe(id))
+      dispatch(deleteCalendarRecipe(tempId))
       showNotificationWithTimeout(dispatch)({
         message: "error scheduling recipe",
         level: "danger",
@@ -1167,34 +1184,36 @@ export const deletingScheduledRecipe = (dispatch: Dispatch) => (
   })
 }
 
+function isSameTeam(x: ICalRecipe, teamID: TeamID): boolean {
+    if (teamID === "personal") {
+      return x.user != null
+    }
+    return x.team === teamID
+}
+
 export const moveScheduledRecipe = (dispatch: Dispatch) => (
   id: ICalRecipe["id"],
   teamID: TeamID,
   to: Date
 ) => {
-  dispatch(moveCalendarRecipe(id, toDateString(to)))
-
-  // HACK(sbdchd): This should be an endpoint
-  const from = store.getState().calendar.byId[id]
-  const existing = store
-    .getState()
-    .calendar.allIds.filter(x => x !== id)
-    .map(x => store.getState().calendar.byId[x])
-    .filter(x => isSameDay(x.on, to))
-    .filter(x => {
-      if (teamID === "personal") {
-        return x.user != null
-      }
-      return x.team === teamID
-    })
+  // HACK(sbdchd): With an endpoint we can eliminate this
+  const state = store.getState()
+  const from = getCalRecipeById(state, id)
+  const existing =
+    getAllCalRecipes(state)
+    .filter(x => isSameDay(x.on, to) && isSameTeam(x, teamID))
     .find(x => x.recipe.id === from.recipe.id)
+
+  // Note(sbdchd): we need move to be after the checking of the store so we
+  // don't delete the `from` recipe and update the `existing`
+  dispatch(moveCalendarRecipe(id, toDateString(to)))
 
   if (existing) {
     // HACK(sbdchd): this should be an endpoint so we can have this be in a transaction
     return api
-      .deleteScheduledRecipe(id, teamID)
+      .deleteScheduledRecipe(from.id, teamID)
       .then(() =>
-        api.updateScheduleRecipe(id, teamID, {
+        api.updateScheduleRecipe(existing.id, teamID, {
           count: existing.count + from.count
         })
       )
