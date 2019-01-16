@@ -40,7 +40,6 @@ const extractTextPluginOptions = shouldUseRelativeAssetPaths
     { publicPath: Array(cssFilename.split("/").length).join("../") }
   : {}
 
-// we use this in both dev and prod configs
 const faviconPath = "./src/components/images/recipeyak-logo.png"
 
 // This is the production configuration.
@@ -62,8 +61,7 @@ module.exports = {
     // We don't currently advertise code splitting but Webpack supports it.
     filename: "static/js/[name].[chunkhash:8].js",
     chunkFilename: "static/js/[name].[chunkhash:8].chunk.js",
-    // We inferred the "public path" (such as / or /my-project) from homepage.
-    publicPath: publicPath
+    publicPath
   },
   resolve: {
     modules: ["node_modules", paths.appNodeModules, paths.appSrc],
@@ -101,24 +99,10 @@ module.exports = {
           name: "static/media/[name].[hash:8].[ext]"
         }
       },
-      // Process JS with Babel.
       {
-        test: /\.(js|jsx)$/,
+        test: /\.(js|jsx|ts|tsx)$/,
         include: paths.appSrc,
-        use: {
-          loader: "babel-loader",
-          query: {
-            // This is a feature of `babel-loader` for webpack (not Babel itself).
-            // It enables caching results in ./node_modules/.cache/babel-loader/
-            // directory for faster rebuilds.
-            cacheDirectory: true
-          }
-        }
-      },
-      {
-        test: /\.(ts|tsx)$/,
-        include: paths.appSrc,
-        loaders: ["babel-loader", "ts-loader"]
+        loaders: ["ts-loader"]
       },
       // The notation here is somewhat confusing.
       // "postcss" loader applies autoprefixer to our CSS.

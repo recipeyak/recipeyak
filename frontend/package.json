@@ -8,16 +8,6 @@
     "@types/react-dom": "^16.0.4",
     "@types/react-helmet": "^5.0.4",
     "autoprefixer": "6.7.2",
-    "babel-core": "6.22.1",
-    "babel-eslint": "7.1.1",
-    "babel-jest": "18.0.0",
-    "babel-loader": "^7.1.2",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-plugin-transform-decorators-legacy": "^1.3.4",
-    "babel-plugin-transform-do-expressions": "^6.22.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-react-app": "^2.2.0",
-    "babel-runtime": "^6.20.0",
     "case-sensitive-paths-webpack-plugin": "1.1.4",
     "chalk": "2.4.2",
     "connect-history-api-fallback": "1.3.0",
@@ -113,15 +103,15 @@
   "jest": {
     "setupTestFrameworkScriptFile": "<rootDir>/config/setupEnzyme.ts",
     "collectCoverageFrom": [
-      "src/**/*.{js,jsx,ts,tsx}"
+      "src/**/*.{ts,tsx}"
     ],
     "setupFiles": [
       "<rootDir>/config/jest/localStorage.js",
       "raf/polyfill"
     ],
     "testMatch": [
-      "<rootDir>/src/**/__tests__/**/*.{js,jsx,mjs,ts,tsx}",
-      "<rootDir>/src/**/?(*.)(spec|test).{js,jsx,mjs,ts,tsx}"
+      "<rootDir>/src/**/__tests__/**/*.{ts,tsx}",
+      "<rootDir>/src/**/?(*.)(spec|test).{ts,tsx}"
     ],
     "testPathIgnorePatterns": [
       "<rootDir>[/\\\\](build|docs|node_modules|scripts)[/\\\\]"
@@ -129,8 +119,7 @@
     "testEnvironment": "node",
     "testURL": "http://localhost",
     "transform": {
-      "^.+\\.(js|jsx)$": "babel-jest",
-      "^.+\\.(ts|tsx)$": "ts-jest",
+      "^.+\\.(js|jsx|ts|tsx)$": "ts-jest",
       "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
       "^(?!.*\\.(js|jsx|ts|tsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
     },
@@ -142,8 +131,7 @@
       "tsx",
       "js",
       "jsx",
-      "json",
-      "node"
+      "json"
     ],
     "moduleDirectories": [
       "node_modules",
@@ -152,21 +140,5 @@
     "moduleNameMapper": {
       "^@/(.*)": "<rootDir>/src/$1"
     }
-  },
-  "babel": {
-    "presets": [
-      "react-app",
-      [
-        "env",
-        {
-          "modules": false
-        }
-      ]
-    ],
-    "plugins": [
-      "transform-decorators-legacy",
-      "transform-do-expressions",
-      "transform-class-properties"
-    ]
   }
 }

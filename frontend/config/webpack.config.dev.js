@@ -18,9 +18,6 @@ const publicUrl = ""
 // Get environment variables to inject into our app.
 const env = getClientEnvironment(publicUrl)
 
-// This is the development configuration.
-// It is focused on developer experience and fast rebuilds.
-// The production configuration is different and lives in a separate file.
 module.exports = {
   // You may want 'eval' instead if you prefer to see the compiled output in DevTools.
   // See the discussion in https://github.com/facebookincubator/create-react-app/issues/343.
@@ -56,15 +53,10 @@ module.exports = {
     // served by WebpackDevServer in development. This is the JS bundle
     // containing code from all our entry points, and the Webpack runtime.
     filename: "static/js/bundle.js",
-    // This is the URL that app is served from. We use "/" in development.
-    publicPath: publicPath
+    publicPath
   },
   resolve: {
     modules: ["node_modules", paths.appNodeModules, paths.appSrc],
-    // These are the reasonable defaults supported by the Node ecosystem.
-    // We also include JSX as a common component filename extension to support
-    // some tools, although we do not recommend using it, see:
-    // https://github.com/facebookincubator/create-react-app/issues/290
     extensions: [".js", ".json", ".jsx", ".ts", ".tsx"],
     alias: {
       "@": paths.appSrc
@@ -72,8 +64,6 @@ module.exports = {
   },
 
   module: {
-    // First, run the linter.
-    // It's important to do this before Babel processes the JS.
     rules: [
       // ** ADDING/UPDATING LOADERS **
       // The "url" loader handles all assets unless explicitly excluded.
@@ -101,35 +91,10 @@ module.exports = {
           name: "static/media/[name].[hash:8].[ext]"
         }
       },
-      // Process JS with Babel.
-      {
-        test: /\.(js|jsx)$/,
-        include: paths.appSrc,
-        use: {
-          loader: "babel-loader",
-          query: {
-            // This is a feature of `babel-loader` for webpack (not Babel itself).
-            // It enables caching results in ./node_modules/.cache/babel-loader/
-            // directory for faster rebuilds.
-            cacheDirectory: true,
-            plugins: ["react-hot-loader/babel"]
-          }
-        }
-      },
       {
         test: /\.(ts|tsx)$/,
         include: paths.appSrc,
         use: [
-          {
-            loader: "babel-loader",
-            query: {
-              // This is a feature of `babel-loader` for webpack (not Babel itself).
-              // It enables caching results in ./node_modules/.cache/babel-loader/
-              // directory for faster rebuilds.
-              cacheDirectory: true,
-              plugins: ["react-hot-loader/babel"]
-            }
-          },
           {
             loader: "ts-loader",
             options: {
