@@ -93,11 +93,7 @@ export const changePassword = (
     old_password: oldPassword
   })
 
-export const getShoppingList = (
-  teamID: ITeam["id"] | "personal",
-  start?: Date,
-  end?: Date
-) => {
+export const getShoppingList = (teamID: TeamID, start?: Date, end?: Date) => {
   const startDay = start || store.getState().shoppinglist.startDay
   const endDay = end || store.getState().shoppinglist.endDay
   const url =
@@ -124,7 +120,7 @@ export const deleteRecipe = (id: IRecipe["id"]) =>
 export const getRecentRecipes = () =>
   http.get<IRecipe[]>("/api/v1/recipes/?recent")
 
-export const getRecipeList = (teamID: ITeam["id"] | "personal") => {
+export const getRecipeList = (teamID: TeamID) => {
   const url =
     teamID === "personal" ? "/api/v1/recipes/" : `/api/v1/t/${teamID}/recipes/`
   return http.get<IRecipe[]>(url)
@@ -237,10 +233,7 @@ export const declineInvite = (id: IInvite["id"]) =>
 
 export const reportBadMerge = () => http.post("/api/v1/report-bad-merge", {})
 
-export const getCalendarRecipeList = (
-  teamID: ITeam["id"] | "personal",
-  currentDay: Date
-) => {
+export const getCalendarRecipeList = (teamID: TeamID, currentDay: Date) => {
   const url =
     teamID === "personal"
       ? "/api/v1/calendar/"
@@ -259,7 +252,7 @@ export const getCalendarRecipeList = (
 
 export const scheduleRecipe = (
   recipeID: IRecipe["id"],
-  teamID: ITeam["id"] | "personal",
+  teamID: TeamID,
   on: Date,
   count: string | number
 ) => {
@@ -275,10 +268,7 @@ export const scheduleRecipe = (
 }
 
 // TODO(sbdchd): we shouldn't need teamID here
-export const deleteScheduledRecipe = (
-  id: ICalRecipe["id"],
-  teamID: ITeam["id"] | "personal"
-) => {
+export const deleteScheduledRecipe = (id: ICalRecipe["id"], teamID: TeamID) => {
   const url =
     teamID === "personal"
       ? `/api/v1/calendar/${id}/`
@@ -290,7 +280,7 @@ export const deleteScheduledRecipe = (
 // TODO(sbdchd): we shouldn't need teamID here
 export const updateScheduleRecipe = (
   id: ICalRecipe["id"],
-  teamID: ITeam["id"] | "personal",
+  teamID: TeamID,
   recipe: Partial<ICalRecipe>
 ) => {
   const url =

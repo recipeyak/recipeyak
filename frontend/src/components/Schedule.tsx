@@ -15,7 +15,7 @@ import { ITeam } from "@/store/reducers/teams"
 interface ISidebarProps {
   readonly isRecipes: boolean
   readonly closed: boolean
-  readonly teamID: ITeam["id"] | "personal"
+  readonly teamID: TeamID
   readonly toggleClose: () => void
 }
 

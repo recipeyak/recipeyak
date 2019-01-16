@@ -55,7 +55,7 @@ interface ICalendarDayProps {
     recipeID: IRecipe["id"],
     teamID: ITeam["id"],
     date: Date,
-    count: string
+    count: number
   ) => void
   readonly teamID: ITeam["id"]
   readonly isSelected: boolean

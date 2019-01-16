@@ -20,7 +20,6 @@ import { ingredientByNameAlphabetical } from "@/sorters"
 
 import DateRangePicker from "@/components/DateRangePicker/DateRangePicker"
 import { RootState } from "@/store/store"
-import { ITeam } from "@/store/reducers/teams"
 import {
   IShoppingListItem,
   setSelectingStart,
@@ -129,12 +128,8 @@ class ShoppingListList extends React.Component<IShoppingListContainerProps> {
 }
 
 interface IShoppingListProps {
-  readonly fetchData: (
-    teamID: ITeam["id"] | "personal",
-    startDay: Date,
-    endDay: Date
-  ) => void
-  readonly teamID: ITeam["id"] | "personal"
+  readonly fetchData: (teamID: TeamID, startDay: Date, endDay: Date) => void
+  readonly teamID: TeamID
   readonly startDay: Date
   readonly endDay: Date
   readonly shoppinglist: WebData<IShoppingListItem[]>

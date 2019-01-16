@@ -64,7 +64,7 @@ interface IDaysProps {
   readonly start: Date
   readonly end: Date
   readonly days: IDays
-  readonly teamID: ITeam["id"] | "personal"
+  readonly teamID: TeamID
 }
 
 function Days({ start, end, days, teamID }: IDaysProps) {
@@ -89,7 +89,7 @@ interface ITeamSelectProps {
   readonly handleOwnerChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
   readonly teams: ITeam[]
   readonly loading: boolean
-  readonly teamID: ITeam["id"] | "personal"
+  readonly teamID: TeamID
 }
 
 function TeamSelect({
@@ -123,7 +123,7 @@ interface INavProps {
   readonly current: () => void
   readonly teams: ITeam[]
   readonly loadingTeams: boolean
-  readonly teamID: ITeam["id"] | "personal"
+  readonly teamID: TeamID
 }
 
 function Nav({
@@ -179,16 +179,16 @@ interface ICalendarProps extends ScheduleRouteParams {
   readonly error: boolean
   readonly fetchTeams: () => void
   readonly navTo: (url: string) => void
-  readonly fetchData: (teamID: ITeam["id"] | "personal", month: Date) => void
+  readonly fetchData: (teamID: TeamID, month: Date) => void
   readonly refetchShoppingListAndRecipes: (
-    teamID: ITeam["id"] | "personal",
+    teamID: TeamID,
     startDay: Date,
     endDay: Date
   ) => void
   readonly teams: ITeam[]
   readonly days: IDays
   readonly isTeam: boolean
-  readonly teamID: ITeam["id"] | "personal"
+  readonly teamID: TeamID
   readonly startDay: Date
   readonly endDay: Date
   readonly type: "shopping" | "recipes"
@@ -196,7 +196,7 @@ interface ICalendarProps extends ScheduleRouteParams {
 
 interface ICalendarState {
   readonly start: Date
-  readonly owner: ITeam["id"] | "personal"
+  readonly owner: TeamID
 }
 
 class Calendar extends React.Component<ICalendarProps, ICalendarState> {
@@ -210,7 +210,7 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
     this.props.fetchData(this.props.teamID, this.state.start)
   }
 
-  refetchData = (teamID: ITeam["id"] | "personal" = this.props.teamID) => {
+  refetchData = (teamID: TeamID = this.props.teamID) => {
     this.props.fetchData(teamID, this.state.start)
     this.props.refetchShoppingListAndRecipes(
       teamID,
@@ -324,11 +324,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   navTo: (url: string) => {
     dispatch(push(url))
   },
-  refetchShoppingListAndRecipes: (
-    teamID: ITeam["id"] | "personal",
-    start: Date,
-    end: Date
-  ) => {
+  refetchShoppingListAndRecipes: (teamID: TeamID, start: Date, end: Date) => {
     return Promise.all([
       fetchingRecipeList(dispatch)(teamID),
       fetchingShoppingList(dispatch)(teamID, start, end)
