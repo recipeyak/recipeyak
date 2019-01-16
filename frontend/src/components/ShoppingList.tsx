@@ -139,11 +139,15 @@ interface IShoppingListProps {
   readonly sendToast: (message: string) => void
 }
 
+export const enum Selecting {
+  End,
+  Start,
+  None
+}
+
 interface IShoppingListState {
   readonly month: Date
-  readonly selectingStart: boolean
-  readonly selectingEnd: boolean
-  readonly showDatePicker: boolean
+  readonly selecting: Selecting
 }
 
 class ShoppingList extends React.Component<
@@ -154,11 +158,7 @@ class ShoppingList extends React.Component<
 
   state: IShoppingListState = {
     month: new Date(),
-
-    selectingStart: false,
-    selectingEnd: false,
-
-    showDatePicker: false
+    selecting: Selecting.None
   }
 
   componentDidMount() {
@@ -176,9 +176,7 @@ class ShoppingList extends React.Component<
 
   closeInputs = () => {
     this.setState({
-      showDatePicker: false,
-      selectingStart: false,
-      selectingEnd: false
+      selecting: Selecting.None
     })
   }
 
@@ -192,8 +190,7 @@ class ShoppingList extends React.Component<
     }
     this.setState(
       {
-        selectingStart: false,
-        selectingEnd: true
+        selecting: Selecting.End
       },
       this.refetchData
     )
@@ -209,8 +206,7 @@ class ShoppingList extends React.Component<
     }
     this.setState(
       {
-        selectingEnd: false,
-        showDatePicker: false
+        selecting: Selecting.None
       },
       this.refetchData
     )
@@ -224,6 +220,14 @@ class ShoppingList extends React.Component<
     }
   }
 
+  handleStartPickerClick = () => this.setState({ selecting: Selecting.Start })
+  handleEndPickerClick = () => this.setState({ selecting: Selecting.End })
+
+  incrMonth = () =>
+    this.setState(({ month }) => ({ month: addMonths(month, 1) }))
+  decrMonth = () =>
+    this.setState(({ month }) => ({ month: subMonths(month, 1) }))
+
   render() {
     return (
       <div className="d-grid grid-gap-2">
@@ -231,47 +235,29 @@ class ShoppingList extends React.Component<
           <div className="d-flex align-items-center no-print">
             <GlobalEvent mouseDown={this.handleGeneralClick} />
             <DateInput
-              onFocus={() =>
-                this.setState({
-                  showDatePicker: true,
-                  selectingStart: true,
-                  selectingEnd: false
-                })
-              }
-              isFocused={this.state.selectingStart}
+              onFocus={this.handleStartPickerClick}
+              isFocused={this.state.selecting === Selecting.Start}
               placeholder="from"
               value={formatMonth(this.props.startDay)}
             />
             <h2 className="fs-4 ml-2 mr-2">{" → "}</h2>
             <DateInput
-              onFocus={() =>
-                this.setState({
-                  showDatePicker: true,
-                  selectingEnd: true,
-                  selectingStart: false
-                })
-              }
-              isFocused={this.state.selectingEnd}
+              onFocus={this.handleEndPickerClick}
+              isFocused={this.state.selecting === Selecting.End}
               placeholder="to"
               value={formatMonth(this.props.endDay)}
             />
           </div>
           <DateRangePicker
-            visible={this.state.showDatePicker}
             onClose={this.closeInputs}
             month={this.state.month}
             startDay={this.props.startDay}
             endDay={this.props.endDay}
-            selectingStart={this.state.selectingStart}
-            selectingEnd={this.state.selectingEnd}
+            selecting={this.state.selecting}
             setStartDay={this.setStartDay}
             setEndDay={this.setEndDay}
-            nextMonth={() =>
-              this.setState(({ month }) => ({ month: addMonths(month, 1) }))
-            }
-            prevMonth={() =>
-              this.setState(({ month }) => ({ month: subMonths(month, 1) }))
-            }
+            nextMonth={this.incrMonth}
+            prevMonth={this.decrMonth}
           />
         </div>
 

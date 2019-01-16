@@ -7,13 +7,12 @@ import { classNames } from "@/classnames"
 import Month from "@/components/DateRangePicker/Month"
 
 import "@/components/DateRangePicker/date-range-picker.scss"
+import { Selecting } from "@/components/ShoppingList"
 
 interface IDateRangePickerProps {
-  readonly selectingStart: boolean
-  readonly selectingEnd: boolean
+  readonly selecting: Selecting
   readonly setStartDay: (date: Date) => void
   readonly setEndDay: (date: Date) => void
-  readonly visible: boolean
   readonly month: Date
   readonly startDay: Date
   readonly endDay: Date
@@ -22,17 +21,19 @@ interface IDateRangePickerProps {
   readonly onClose: () => void
 }
 
-class DateRangePicker extends React.Component<IDateRangePickerProps> {
+export default class DateRangePicker extends React.Component<
+  IDateRangePickerProps
+> {
   handleClick = (date: Date) => {
     if (isPast(endOfDay(date))) {
       return
     }
 
-    if (this.props.selectingStart) {
+    if (this.props.selecting === Selecting.Start) {
       this.props.setStartDay(date)
     }
 
-    if (this.props.selectingEnd) {
+    if (this.props.selecting === Selecting.End) {
       this.props.setEndDay(date)
     }
   }
@@ -48,7 +49,7 @@ class DateRangePicker extends React.Component<IDateRangePickerProps> {
           "bg-whitesmoke",
           "z-index-100",
           "grid-2-months",
-          this.props.visible ? "d-grid" : "d-none"
+          this.props.selecting !== Selecting.None ? "d-grid" : "d-none"
         )}>
         <Month
           showLeft
@@ -72,5 +73,3 @@ class DateRangePicker extends React.Component<IDateRangePickerProps> {
     )
   }
 }
-
-export default DateRangePicker
