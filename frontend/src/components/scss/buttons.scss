@@ -107,12 +107,11 @@
     background-color: transparent;
     border-color: transparent !important;
     color: #4a4a4a;
-    text-decoration: underline;
 
     &:hover,
     &:focus,
     &:active {
-      background-color: whitesmoke;
+      text-decoration: underline;
       color: #363636;
     }
   }
