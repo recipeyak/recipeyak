@@ -10,7 +10,6 @@ interface IMetaDataProps {
   readonly time: string
   readonly owner: IRecipe["owner"]
   readonly recipeId: IRecipe["id"]
-  readonly onClick: () => void
 }
 
 const isValid = (x?: string) => x !== "" && x != null
@@ -48,7 +47,7 @@ function MetaPiece({ children }: { children: React.ReactNode }) {
 }
 
 function MetaBold({ children }: { children: React.ReactNode }) {
-  return <b className="cursor-pointer">{children}</b>
+  return <b>{children}</b>
 }
 
 const MetaData = ({
@@ -57,8 +56,7 @@ const MetaData = ({
   servings = "",
   time = "",
   owner,
-  recipeId,
-  onClick
+  recipeId
 }: IMetaDataProps) => {
   const _author = isValid(author) ? (
     <MetaPiece>
@@ -88,7 +86,7 @@ const MetaData = ({
 
   return (
     <div className="break-word">
-      <span onClick={onClick}>
+      <span>
         {_author}
         {_source}
         {_servings}

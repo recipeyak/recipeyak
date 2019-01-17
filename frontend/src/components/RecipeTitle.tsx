@@ -1,5 +1,5 @@
 import React from "react"
-import { Button, ButtonPrimary } from "@/components/Buttons"
+import { Button, ButtonPrimary, ButtonLink } from "@/components/Buttons"
 import MetaData from "@/components/MetaData"
 import DatePickerForm from "@/components/DatePickerForm"
 import { IRecipe } from "@/store/reducers/recipes"
@@ -109,11 +109,7 @@ export default class RecipeTitle extends React.Component<
           <GlobalEvent keyUp={this.handleGlobalKeyUp} />
           {!this.state.edit ? (
             <div className="d-flex align-items-center">
-              <h1
-                className="title fs-2rem mb-0 cursor-pointer mb-1"
-                onClick={this.toggleEdit}>
-                {name}
-              </h1>
+              <h1 className="title fs-2rem mb-0 mb-1">{name}</h1>
             </div>
           ) : (
             <TextInput
@@ -125,8 +121,8 @@ export default class RecipeTitle extends React.Component<
               name="name"
             />
           )}
-          <div>
-            <div className="p-rel ml-4" title={toolTip}>
+          <div className="d-flex flex-column">
+            <div className="p-rel ml-4 control" title={toolTip}>
               <ButtonPrimary
                 size="small"
                 onClick={() => this.setState(prev => ({ show: !prev.show }))}>
@@ -138,13 +134,16 @@ export default class RecipeTitle extends React.Component<
                 close={() => this.setState({ show: false })}
               />
             </div>
+
+            <ButtonLink size="small" onClick={this.toggleEdit} className="ml-4">
+              edit
+            </ButtonLink>
           </div>
         </div>
 
         {!this.state.edit ? (
           <div className="grid-entire-row">
             <MetaData
-              onClick={this.toggleEdit}
               owner={owner}
               author={author}
               source={source}
