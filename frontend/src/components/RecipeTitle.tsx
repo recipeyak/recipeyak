@@ -109,10 +109,7 @@ export default class RecipeTitle extends React.Component<
           <GlobalEvent keyUp={this.handleGlobalKeyUp} />
           {!this.state.edit ? (
             <div className="d-flex align-items-center">
-              <h1
-                className="title fs-2rem mb-0 mb-1">
-                {name}
-              </h1>
+              <h1 className="title fs-2rem mb-0 mb-1">{name}</h1>
             </div>
           ) : (
             <TextInput
@@ -124,28 +121,24 @@ export default class RecipeTitle extends React.Component<
               name="name"
             />
           )}
-            <div className="d-flex flex-column">
-              <div className="p-rel ml-4 control" title={toolTip}>
-                <ButtonPrimary
-                  size="small"
-                  onClick={() => this.setState(prev => ({ show: !prev.show }))}>
-                  schedule
+          <div className="d-flex flex-column">
+            <div className="p-rel ml-4 control" title={toolTip}>
+              <ButtonPrimary
+                size="small"
+                onClick={() => this.setState(prev => ({ show: !prev.show }))}>
+                schedule
               </ButtonPrimary>
-                <DatePickerForm
-                  recipeID={id}
-                  show={this.state.show}
-                  close={() => this.setState({ show: false })}
-                />
-              </div>
-
-            <ButtonLink
-                  size="small"
-              onClick={this.toggleEdit}
-                  className="ml-4">
-                  edit
-              </ButtonLink>
+              <DatePickerForm
+                recipeID={id}
+                show={this.state.show}
+                close={() => this.setState({ show: false })}
+              />
             </div>
 
+            <ButtonLink size="small" onClick={this.toggleEdit} className="ml-4">
+              edit
+            </ButtonLink>
+          </div>
         </div>
 
         {!this.state.edit ? (
