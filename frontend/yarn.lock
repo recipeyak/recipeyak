@@ -8315,6 +8315,11 @@ tslib@^1.8.0, tslib@^1.8.1:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.3.tgz#d7e4dd79245d85428c4d7e4822a79917954ca286"
 
+tslint-cake@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/tslint-cake/-/tslint-cake-0.0.3.tgz#a3e757ab5601e1a3b7f9468acecca0389dc412da"
+  integrity sha512-RLjcXOcUfDqgc6pwTMB6UtNKlSd4d6nM2o0KzI83cHe69XRC2n5fxs/czte0T/Z9S9a2MFXGOCMEXSco4q8AAQ==
+
 tslint-config-prettier@^1.17.0:
   version "1.17.0"
   resolved "https://registry.yarnpkg.com/tslint-config-prettier/-/tslint-config-prettier-1.17.0.tgz#946ed6117f98f3659a65848279156d87628c33dc"

@@ -28,7 +28,7 @@ class AuthContainer extends React.Component {
               <Link
                 to="/"
                 className="pl-0 pr-0 fs-2rem fw-normal font-family-title d-flex align-center justify-content-center pb-3 text-decoration-none has-text-white">
-                <Logo light={true} />
+                <Logo light />
                 <span className="fw-500">Recipe Yak</span>
               </Link>
               {this.props.children}

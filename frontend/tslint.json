@@ -2,7 +2,8 @@
   "extends": [
     "tslint:recommended",
     "tslint-config-prettier",
-    "tslint-immutable"
+    "tslint-immutable",
+    "tslint-cake"
   ],
   "rulesDirectory": ["node_modules/tslint-microsoft-contrib"],
   "defaultSeverity": "error",
@@ -23,6 +24,9 @@
     ]
   },
   "rules": {
+    "react-prefer-simple-fragment": true,
+    "no-pointless-computed-property-name": true,
+    "jsx-no-true-attribute": true,
     "object-literal-sort-keys": false,
     "ordered-imports": false,
     "array-type": false,
