@@ -132,7 +132,7 @@ class CalendarItem extends React.Component<
   render() {
     const { connectDragSource, isDragging } = this.props
     return connectDragSource(
-      <div
+      <li
         className="d-flex align-items-center cursor-pointer justify-space-between mb-1"
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
@@ -142,7 +142,7 @@ class CalendarItem extends React.Component<
         <GlobalEvent keyUp={this.handleKeyPress} />
         <RecipeLink name={this.props.recipeName} id={this.props.recipeID} />
         <Count value={this.state.count} onChange={this.handleChange} />
-      </div>
+      </li>
     )
   }
 }
