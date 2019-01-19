@@ -83,8 +83,9 @@ function CalendarDay({
         "selected-day": isSelected || (isOver && canDrop)
       })}>
       <Title date={date} />
-      {scheduledRecipes != null
-        ? scheduledRecipes.map(x => (
+      <ul>
+        {scheduledRecipes &&
+          scheduledRecipes.map(x => (
             <CalendarItem
               key={x.id}
               id={x.id}
@@ -96,8 +97,8 @@ function CalendarDay({
               refetchShoppingList={() => refetchShoppingList(teamID)}
               count={x.count}
             />
-          ))
-        : null}
+          ))}
+      </ul>
     </div>
   )
 }
