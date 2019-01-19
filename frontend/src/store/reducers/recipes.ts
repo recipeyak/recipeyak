@@ -520,7 +520,7 @@ export const recipes = (
       return mapRecipeSuccessById(state, action.payload.id, recipe => ({
         ...recipe,
         steps: recipe.steps.concat(action.payload.step),
-        addingStepToRecipe: false,
+        addingStepToRecipe: false
       }))
     case getType(addStepToRecipe.failure):
       return mapRecipeSuccessById(state, action.payload, recipe => ({

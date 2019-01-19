@@ -130,7 +130,7 @@ describe("Recipes", () => {
       ...baseRecipe,
       name: "good recipe",
       steps: [newStep],
-      addingStepToRecipe: false,
+      addingStepToRecipe: false
     })
 
     expect(
@@ -197,7 +197,7 @@ describe("Recipes", () => {
           id: 1,
           text,
           position,
-          updating: false,
+          updating: false
         }
       ]
     })
@@ -235,10 +235,12 @@ describe("Recipes", () => {
 
     const afterState: IRecipesState = recipeStoreWith({
       ...baseRecipe,
-      ingredients: [{
-        ...newIngredient,
-        updating: false,
-      }],
+      ingredients: [
+        {
+          ...newIngredient,
+          updating: false
+        }
+      ],
       steps: [baseStep]
     })
 
