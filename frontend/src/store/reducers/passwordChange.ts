@@ -50,6 +50,11 @@ export const passwordChange = (
         loadingPasswordUpdate: false,
         errorPasswordUpdate: action.payload || {}
       }
+    case getType(clearPasswordUpdateError):
+      return {
+        ...state,
+        errorPasswordUpdate: {}
+      }
     default:
       return state
   }

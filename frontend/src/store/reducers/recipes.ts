@@ -535,12 +535,13 @@ export const recipes = (
     case getType(addIngredientToRecipe.success):
       return mapRecipeSuccessById(state, action.payload.id, recipe => ({
         ...recipe,
-        ingredients: recipe.ingredients.concat(action.payload.ingredient)
+        ingredients: recipe.ingredients.concat(action.payload.ingredient),
+        addingIngredient: false
       }))
     case getType(addIngredientToRecipe.failure):
       return mapRecipeSuccessById(state, action.payload, recipe => ({
         ...recipe,
-        addingIngredient: true
+        addingIngredient: false
       }))
     case getType(deleteIngredient.request):
       return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
@@ -606,7 +607,7 @@ export const recipes = (
           if (x.id === action.payload.ingredientID) {
             return {
               ...x,
-              updating: true
+              updating: false
             }
           }
           return x
@@ -694,7 +695,13 @@ export const recipes = (
     case getType(updateRecipe.success):
       return mapRecipeSuccessById(state, action.payload.id, recipe => ({
         ...recipe,
-        updating: true
+        ...action.payload,
+        updating: false
+      }))
+    case getType(updateRecipe.failure):
+      return mapRecipeSuccessById(state, action.payload, recipe => ({
+        ...recipe,
+        updating: false
       }))
     case getType(updateRecipeOwner):
       return mapRecipeSuccessById(state, action.payload.id, recipe => ({
