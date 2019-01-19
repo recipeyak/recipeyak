@@ -15,10 +15,10 @@ import {
   addingRecipeStep,
   fetchingRecipe,
   deletingRecipe,
-  updateRecipe,
   deletingIngredient,
   updatingIngredient,
-  Dispatch
+  Dispatch,
+  updatingRecipe
 } from "@/store/thunks"
 import { RootState } from "@/store/store"
 import { RouteComponentProps } from "react-router"
@@ -44,7 +44,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchRecipe: fetchingRecipe(dispatch),
   addIngredient: addingRecipeIngredient(dispatch),
   addStep: addingRecipeStep(dispatch),
-  update: updateRecipe(dispatch),
+  update: updatingRecipe(dispatch),
   remove: deletingRecipe(dispatch),
   updateIngredient: updatingIngredient(dispatch),
   removeIngredient: deletingIngredient(dispatch)

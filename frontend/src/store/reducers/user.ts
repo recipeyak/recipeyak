@@ -18,9 +18,13 @@ export const fetchUserStats = createAsyncAction(
 
 // TODO(chdsbd): Replace usage with fetchUser#success. Update user reducer.
 export const login = createStandardAction("LOG_IN")<IUser>()
-export const setLoggingOut = createStandardAction("SET_LOGGING_OUT")<
-  IUserState["loggingOut"]
->()
+
+export const logOut = createAsyncAction(
+  "LOGOUT_START",
+  "LOGOUT_SUCCESS",
+  "LOGOUT_FAILURE"
+)<void, void, void>()
+
 export const updateTeamID = createStandardAction("SET_TEAM_ID")<
   IUserState["teamID"]
 >()
@@ -47,11 +51,11 @@ export const updateEmail = createAsyncAction(
 
 export type UserActions =
   | ReturnType<typeof login>
-  | ReturnType<typeof setLoggingOut>
+  | ActionType<typeof logOut>
+  | ReturnType<typeof setUserLoggedIn>
   | ReturnType<typeof updateTeamID>
   | ReturnType<typeof setSocialConnections>
   | ReturnType<typeof setSocialConnection>
-  | ReturnType<typeof setUserLoggedIn>
   | ActionType<typeof fetchUser>
   | ReturnType<typeof toggleDarkMode>
   | ActionType<typeof updateEmail>
@@ -144,9 +148,13 @@ export const user = (
     }
     case getType(fetchUserStats.failure):
       return { ...state, stats: Failure(HttpErrorKind.other) }
-    case getType(setLoggingOut):
+    case getType(logOut.request):
       raven.setUserContext()
-      return { ...state, loggingOut: action.payload }
+      return { ...state, loggingOut: true }
+    case getType(logOut.success):
+      return { ...state, loggingOut: false, loggedIn: false }
+    case getType(logOut.failure):
+      return { ...state, loggingOut: false }
     case getType(setSocialConnections):
       return {
         ...state,

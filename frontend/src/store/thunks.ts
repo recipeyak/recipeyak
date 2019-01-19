@@ -19,10 +19,11 @@ import {
   setSocialConnections,
   login,
   setUserLoggedIn,
-  setLoggingOut,
   IUser,
   ISocialConnection,
-  fetchUserStats
+  fetchUserStats,
+  IUserState,
+  logOut
 } from "@/store/reducers/user"
 import {
   ICalRecipe,
@@ -74,17 +75,10 @@ import {
   setSchedulingRecipe,
   updateRecipeOwner,
   deleteRecipe,
-  setRemovingStep,
   deleteStep,
   updateStep,
-  setUpdatingStep,
-  setRemovingIngredient,
   deleteIngredient,
-  setUpdatingIngredient,
-  setLoadingAddStepToRecipe,
   addStepToRecipe,
-  setRecipeUpdating,
-  setAddingIngredientToRecipe,
   addIngredientToRecipe,
   updateIngredient,
   IIngredient,
@@ -92,15 +86,13 @@ import {
   fetchRecipeList,
   createRecipe,
   IStep,
-  fetchRecentRecipes
+  fetchRecentRecipes,
+  updateRecipe
 } from "@/store/reducers/recipes"
 import * as api from "@/api"
 import { clearAddRecipeForm } from "@/store/reducers/addrecipe"
 import { fetchShoppingList } from "@/store/reducers/shoppinglist"
-import {
-  setLoadingPasswordUpdate,
-  setErrorPasswordUpdate
-} from "@/store/reducers/passwordChange"
+import { passwordUpdate } from "@/store/reducers/passwordChange"
 import { Dispatch as ReduxDispatch } from "redux"
 import { IRecipeBasic } from "@/components/RecipeTitle"
 import {
@@ -164,17 +156,15 @@ export const showNotificationWithTimeout = (dispatch: Dispatch) => ({
 }
 
 export const loggingOut = (dispatch: Dispatch) => () => {
-  // TODO(sbdchd): refactor to use createActionAsync
-  dispatch(setLoggingOut(true))
+  dispatch(logOut.request())
   return api
     .logoutUser()
     .then(() => {
-      dispatch(setUserLoggedIn(false))
+      dispatch(logOut.success())
       dispatch(push("/login"))
-      dispatch(setLoggingOut(false))
     })
     .catch(() => {
-      dispatch(setLoggingOut(false))
+      dispatch(logOut.failure())
     })
 }
 
@@ -187,7 +177,9 @@ const emailExists = (err: AxiosError) =>
 
 const second = 1000
 
-export const updatingEmail = (dispatch: Dispatch) => (email: string) => {
+export const updatingEmail = (dispatch: Dispatch) => (
+  email: IUser["email"]
+) => {
   dispatch(updateEmail.request())
   return api
     .updateUser({ email })
@@ -212,7 +204,9 @@ export const updatingEmail = (dispatch: Dispatch) => (email: string) => {
     })
 }
 
-export const updatingTeamID = (dispatch: Dispatch) => (id: number | null) => {
+export const updatingTeamID = (dispatch: Dispatch) => (
+  id: IUserState["teamID"]
+) => {
   // store old id so we can undo
   const oldID = store.getState().user.teamID
   dispatch(updateTeamID(id))
@@ -287,13 +281,11 @@ export const updatingPassword = (dispatch: Dispatch) => (
   password2: string,
   oldPassword: string
 ) => {
-  // TODO(sbdchd): refactor to use createActionAsync
-  dispatch(setLoadingPasswordUpdate(true))
-  dispatch(setErrorPasswordUpdate({}))
+  dispatch(passwordUpdate.request())
   return api
     .changePassword(password1, password2, oldPassword)
     .then(() => {
-      dispatch(setLoadingPasswordUpdate(false))
+      dispatch(passwordUpdate.success())
       dispatch(push("/"))
       showNotificationWithTimeout(dispatch)({
         message: "Successfully updated password",
@@ -301,20 +293,21 @@ export const updatingPassword = (dispatch: Dispatch) => (
       })
     })
     .catch((err: AxiosError) => {
-      dispatch(setLoadingPasswordUpdate(false))
       const badRequest = err.response && err.response.status === 400
       if (err.response && badRequest) {
         const data = err.response.data
         // tslint:disable:no-unsafe-any
         dispatch(
-          setErrorPasswordUpdate({
+          passwordUpdate.failure({
             newPasswordAgain: data["new_password2"],
             newPassword: data["new_password1"],
             oldPassword: data["old_password"]
           })
         )
+        return
         // tslint:ebale:no-unsafe-any
       }
+      dispatch(passwordUpdate.failure())
     })
 }
 
@@ -401,54 +394,50 @@ export const fetchingRecipeList = (dispatch: Dispatch) => (teamID: TeamID) => {
 }
 
 export const addingRecipeIngredient = (dispatch: Dispatch) => (
-  recipeID: number,
+  recipeID: IRecipe["id"],
   ingredient: unknown
 ) => {
-  // TODO(sbdchd): refactor to use createActionAsync
-  dispatch(setAddingIngredientToRecipe({ id: recipeID, val: true }))
+  dispatch(addIngredientToRecipe.request(recipeID))
   return api
     .addIngredientToRecipe(recipeID, ingredient)
     .then(res => {
-      dispatch(addIngredientToRecipe({ id: recipeID, ingredient: res.data }))
-      dispatch(setAddingIngredientToRecipe({ id: recipeID, val: false }))
+      dispatch(
+        addIngredientToRecipe.success({ id: recipeID, ingredient: res.data })
+      )
     })
     .catch(() => {
-      dispatch(setAddingIngredientToRecipe({ id: recipeID, val: false }))
+      dispatch(addIngredientToRecipe.failure(recipeID))
     })
 }
 
-export const updateRecipe = (dispatch: Dispatch) => (
-  id: number,
+export const updatingRecipe = (dispatch: Dispatch) => (
+  id: IRecipe["id"],
   data: unknown
 ) => {
-  // TODO(sbdchd): refactor to use createActionAsync
-  dispatch(setRecipeUpdating({ id, val: true }))
+  dispatch(updateRecipe.request(id))
   return api
     .updateRecipe(id, data)
     .then(res => {
       // TODO(sbdchd): this should have its own actions
-      dispatch(fetchRecipe.success(res.data))
-      dispatch(setRecipeUpdating({ id, val: false }))
+      dispatch(updateRecipe.success(res.data))
     })
     .catch(() => {
-      dispatch(setRecipeUpdating({ id, val: false }))
+      dispatch(updateRecipe.failure(id))
     })
 }
 
 export const addingRecipeStep = (dispatch: Dispatch) => (
-  recipeID: number,
+  recipeID: IRecipe["id"],
   step: unknown
 ) => {
-  // TODO(sbdchd): refactor to use createActionAsync
-  dispatch(setLoadingAddStepToRecipe({ id: recipeID, val: true }))
+  dispatch(addStepToRecipe.request(recipeID))
   return api
     .addStepToRecipe(recipeID, step)
     .then(res => {
-      dispatch(addStepToRecipe({ id: recipeID, step: res.data }))
-      dispatch(setLoadingAddStepToRecipe({ id: recipeID, val: false }))
+      dispatch(addStepToRecipe.success({ id: recipeID, step: res.data }))
     })
     .catch(() => {
-      dispatch(setLoadingAddStepToRecipe({ id: recipeID, val: false }))
+      dispatch(addStepToRecipe.failure(recipeID))
     })
 }
 
@@ -457,16 +446,16 @@ export const updatingIngredient = (dispatch: Dispatch) => (
   ingredientID: IIngredient["id"],
   content: unknown
 ) => {
-  // TODO(sbdchd): refactor to use createActionAsync
-  dispatch(setUpdatingIngredient({ recipeID, ingredientID, val: true }))
+  dispatch(updateIngredient.request({ recipeID, ingredientID }))
   return api
     .updateIngredient(recipeID, ingredientID, content)
     .then(res => {
-      dispatch(updateIngredient({ recipeID, ingredientID, content: res.data }))
-      dispatch(setUpdatingIngredient({ recipeID, ingredientID, val: false }))
+      dispatch(
+        updateIngredient.success({ recipeID, ingredientID, content: res.data })
+      )
     })
     .catch(() => {
-      dispatch(setUpdatingIngredient({ recipeID, ingredientID, val: false }))
+      dispatch(updateIngredient.failure({ recipeID, ingredientID }))
     })
 }
 
@@ -474,16 +463,14 @@ export const deletingIngredient = (dispatch: Dispatch) => (
   recipeID: IRecipe["id"],
   ingredientID: IIngredient["id"]
 ) => {
-  // TODO(sbdchd): refactor to use createActionAsync
-  dispatch(setRemovingIngredient({ recipeID, ingredientID, val: true }))
+  dispatch(deleteIngredient.request({ recipeID, ingredientID }))
   return api
     .deleteIngredient(recipeID, ingredientID)
     .then(() => {
-      dispatch(setRemovingIngredient({ recipeID, ingredientID, val: false }))
-      dispatch(deleteIngredient({ recipeID, ingredientID }))
+      dispatch(deleteIngredient.success({ recipeID, ingredientID }))
     })
     .catch(() => {
-      dispatch(setRemovingIngredient({ recipeID, ingredientID, val: false }))
+      dispatch(deleteIngredient.failure({ recipeID, ingredientID }))
     })
 }
 
@@ -492,8 +479,7 @@ export const updatingStep = (dispatch: Dispatch) => (
   stepID: IStep["id"],
   { text, position }: { text?: string; position?: number }
 ) => {
-  // TODO(sbdchd): refactor to use createActionAsync
-  dispatch(setUpdatingStep({ recipeID, stepID, val: true }))
+  dispatch(updateStep.request({ recipeID, stepID }))
   const data: { [key: string]: unknown } = {
     text,
     position
@@ -508,17 +494,16 @@ export const updatingStep = (dispatch: Dispatch) => (
     .updateStep(recipeID, stepID, data)
     .then(res => {
       dispatch(
-        updateStep({
+        updateStep.success({
           recipeID,
           stepID,
           text: res.data.text,
           position: res.data.position
         })
       )
-      dispatch(setUpdatingStep({ recipeID, stepID, val: false }))
     })
     .catch(() => {
-      dispatch(setUpdatingStep({ recipeID, stepID, val: false }))
+      dispatch(updateStep.failure({ recipeID, stepID }))
     })
 }
 
@@ -526,16 +511,14 @@ export const deletingStep = (dispatch: Dispatch) => (
   recipeID: IRecipe["id"],
   stepID: IStep["id"]
 ) => {
-  // TODO(sbdchd): refactor to use createActionAsync
-  dispatch(setRemovingStep({ recipeID, stepID, val: true }))
+  dispatch(deleteStep.request({ recipeID, stepID }))
   return api
     .deleteStep(recipeID, stepID)
     .then(() => {
-      dispatch(deleteStep({ recipeID, stepID }))
-      dispatch(setRemovingStep({ recipeID, stepID, val: false }))
+      dispatch(deleteStep.success({ recipeID, stepID }))
     })
     .catch(() => {
-      dispatch(setRemovingStep({ recipeID, stepID, val: false }))
+      dispatch(deleteStep.failure({ recipeID, stepID }))
     })
 }
 
@@ -787,7 +770,7 @@ export const fetchTeamMembers = (dispatch: Dispatch) => (id: ITeam["id"]) => {
     })
 }
 
-export const fetchTeamRecipes = (dispatch: Dispatch) => (id: number) => {
+export const fetchTeamRecipes = (dispatch: Dispatch) => (id: ITeam["id"]) => {
   // TODO(sbdchd): refactor to use createActionAsync
   dispatch(setLoadingTeamRecipes({ id, loadingRecipes: true }))
   return api
@@ -951,7 +934,7 @@ export const fetchingTeams = (dispatch: Dispatch) => () => {
 }
 
 export const creatingTeam = (dispatch: Dispatch) => (
-  name: string,
+  name: ITeam["name"],
   emails: string[],
   level: IMember["level"]
 ) => {

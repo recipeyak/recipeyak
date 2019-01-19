@@ -74,7 +74,7 @@ describe("User", () => {
       loggingOut: true
     }
 
-    expect(user(beforeState as IUserState, a.setLoggingOut(true))).toEqual(
+    expect(user(beforeState as IUserState, a.logOut.request())).toEqual(
       afterState
     )
   })

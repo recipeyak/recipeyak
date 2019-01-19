@@ -10,18 +10,18 @@ describe("passwordChange", () => {
       loadingPasswordUpdate: true
     }
 
-    expect(
-      passwordChange(beforeState, a.setLoadingPasswordUpdate(true))
-    ).toEqual(afterState)
+    expect(passwordChange(beforeState, a.passwordUpdate.request())).toEqual(
+      afterState
+    )
 
     const anotherAfterState = {
       ...initialState,
       loadingPasswordUpdate: false
     }
 
-    expect(
-      passwordChange(beforeState, a.setLoadingPasswordUpdate(false))
-    ).toEqual(anotherAfterState)
+    expect(passwordChange(beforeState, a.passwordUpdate.success())).toEqual(
+      anotherAfterState
+    )
   })
 
   it("sets the error state of the updating password", () => {
@@ -36,7 +36,7 @@ describe("passwordChange", () => {
       errorPasswordUpdate: error
     }
     expect(
-      passwordChange(beforeState, a.setErrorPasswordUpdate(error))
+      passwordChange(beforeState, a.passwordUpdate.failure(error))
     ).toEqual(afterState)
   })
 })
