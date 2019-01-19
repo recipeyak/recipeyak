@@ -61,12 +61,12 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     dispatch(addAddRecipeFormIngredient(x)),
   removeIngredient: (i: number) => dispatch(removeAddRecipeFormIngredient(i)),
   updateIngredient: (i: number, ingredient: IIngredientBasic) =>
-    dispatch(updateAddRecipeFormIngredient(i, ingredient)),
+    dispatch(updateAddRecipeFormIngredient({ index: i, ingredient })),
 
   addStep: (x: IStepBasic) => dispatch(addAddRecipeFormStep(x)),
   removeStep: (i: number) => dispatch(removeAddRecipeFormStep(i)),
   updateStep: (_recipeID: number, i: number, step: IStepBasic) =>
-    dispatch(updateAddRecipeFormStep(i, step)),
+    dispatch(updateAddRecipeFormStep({ index: i, step })),
 
   addRecipe: postNewRecipe(dispatch),
   clearErrors: () => dispatch(resetAddRecipeErrors()),

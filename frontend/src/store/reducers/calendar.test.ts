@@ -180,9 +180,9 @@ describe("Calendar", () => {
       allIds: [id]
     }
 
-    expect(calendar(beforeState, a.moveCalendarRecipe(id, newOn))).toEqual(
-      afterState
-    )
+    expect(
+      calendar(beforeState, a.moveCalendarRecipe({ id, to: newOn }))
+    ).toEqual(afterState)
   })
 
   it("moves calendar recipe to new date and does not combine with existing recipe", () => {
@@ -269,9 +269,9 @@ describe("Calendar", () => {
       }
     }
 
-    expect(calendar(beforeState, a.moveCalendarRecipe(id, newOn))).toEqual(
-      afterState
-    )
+    expect(
+      calendar(beforeState, a.moveCalendarRecipe({ id, to: newOn }))
+    ).toEqual(afterState)
   })
 
   it("moves calendar recipe to new date & combines with existing recipe", () => {
@@ -347,9 +347,9 @@ describe("Calendar", () => {
       allIds: [2, 3]
     }
 
-    expect(calendar(beforeState, a.moveCalendarRecipe(id, newOn))).toEqual(
-      afterState
-    )
+    expect(
+      calendar(beforeState, a.moveCalendarRecipe({ id, to: newOn }))
+    ).toEqual(afterState)
   })
 
   it("replaces existing recipe", () => {
@@ -431,9 +431,9 @@ describe("Calendar", () => {
       allIds: [2, 3, recipe.id]
     }
 
-    expect(calendar(beforeState, a.replaceCalendarRecipe(id, recipe))).toEqual(
-      afterState
-    )
+    expect(
+      calendar(beforeState, a.replaceCalendarRecipe({ id, recipe }))
+    ).toEqual(afterState)
   })
 
   it("combines with existing recipe", () => {

@@ -2,15 +2,12 @@ import addWeeks from "date-fns/add_weeks"
 import startOfToday from "date-fns/start_of_today"
 
 import {
-  action as act,
   createAsyncAction,
   ActionType,
-  getType
+  getType,
+  createStandardAction
 } from "typesafe-actions"
 import { WebData, Success, Failure, HttpErrorKind, toLoading } from "@/webdata"
-
-const SET_SELECTING_START = "SET_SELECTING_START"
-const SET_SELECTING_END = "SET_SELECTING_END"
 
 export const fetchShoppingList = createAsyncAction(
   "FETCH_SHOPPING_LIST_START",
@@ -18,9 +15,10 @@ export const fetchShoppingList = createAsyncAction(
   "FETCH_SHOPPING_LIST_FAILURE"
 )<void, IShoppingListItem[], void>()
 
-export const setSelectingStart = (date: Date) => act(SET_SELECTING_START, date)
-
-export const setSelectingEnd = (date: Date) => act(SET_SELECTING_END, date)
+export const setSelectingStart = createStandardAction("SET_SELECTING_START")<
+  Date
+>()
+export const setSelectingEnd = createStandardAction("SET_SELECTING_END")<Date>()
 
 export type ShoppingListActions =
   | ReturnType<typeof setSelectingStart>
@@ -55,9 +53,9 @@ const shoppinglist = (
       return { ...state, shoppinglist: toLoading(state.shoppinglist) }
     case getType(fetchShoppingList.failure):
       return { ...state, shoppinglist: Failure(HttpErrorKind.other) }
-    case SET_SELECTING_START:
+    case getType(setSelectingStart):
       return { ...state, startDay: action.payload }
-    case SET_SELECTING_END:
+    case getType(setSelectingEnd):
       return { ...state, endDay: action.payload }
     default:
       return state

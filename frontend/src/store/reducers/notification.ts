@@ -1,7 +1,4 @@
-import { action as act } from "typesafe-actions"
-
-const SET_NOTIFICATION = "SET_NOTIFICATION"
-const CLEAR_NOTIFICATION = "CLEAR_NOTIFICATION"
+import { createStandardAction, getType } from "typesafe-actions"
 
 interface ISetNotification {
   readonly message: string
@@ -9,20 +6,10 @@ interface ISetNotification {
   readonly level?: INotificationState["level"]
 }
 
-export const setNotification = ({
-  message,
-  closeable,
-  level = "info"
-}: ISetNotification) =>
-  act(SET_NOTIFICATION, {
-    notification: {
-      message,
-      closeable,
-      level
-    }
-  })
-
-export const clearNotification = () => act(CLEAR_NOTIFICATION)
+export const setNotification = createStandardAction("SET_NOTIFICATION")<
+  ISetNotification
+>()
+export const clearNotification = createStandardAction("CLEAR_NOTIFICATION")()
 
 export type NotificationsActions =
   | ReturnType<typeof setNotification>
@@ -47,13 +34,12 @@ const notification = (
   action: NotificationsActions
 ): INotificationState => {
   switch (action.type) {
-    case SET_NOTIFICATION: {
-      const { message, level, closeable } = action.payload.notification
+    case getType(setNotification): {
+      const { message, level = "info", closeable } = action.payload
       return { ...state, message, level, closeable, show: true }
     }
-    case CLEAR_NOTIFICATION: {
+    case getType(clearNotification):
       return { ...state, message: "", show: false, closeable: false }
-    }
     default:
       return state
   }

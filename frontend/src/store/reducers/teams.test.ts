@@ -6,7 +6,7 @@ function teamStateWith(team: ITeam | ITeam[]): ITeamsState {
   if (Array.isArray(team)) {
     return teams(undefined, a.fetchTeams.success(team))
   }
-  return teams(undefined, a.setTeam(team.id, team))
+  return teams(undefined, a.setTeam({ id: team.id, team }))
 }
 
 const baseMember: a.IMember = {
@@ -145,7 +145,9 @@ describe("Teams", () => {
       members: []
     })
 
-    expect(teams(beforeState, a.setLoadingTeam(1, true))).toEqual(afterState)
+    expect(
+      teams(beforeState, a.setLoadingTeam({ id: 1, loadingTeam: true }))
+    ).toEqual(afterState)
   })
 
   it("Sets loading team members", () => {
@@ -162,9 +164,12 @@ describe("Teams", () => {
       members: []
     })
 
-    expect(teams(beforeState, a.setLoadingTeamMembers(1, true))).toEqual(
-      afterState
-    )
+    expect(
+      teams(
+        beforeState,
+        a.setLoadingTeamMembers({ id: 1, loadingMembers: true })
+      )
+    ).toEqual(afterState)
   })
 
   it("Sets loading team recipes", () => {
@@ -181,9 +186,12 @@ describe("Teams", () => {
       members: []
     })
 
-    expect(teams(beforeState, a.setLoadingTeamRecipes(1, true))).toEqual(
-      afterState
-    )
+    expect(
+      teams(
+        beforeState,
+        a.setLoadingTeamRecipes({ id: 1, loadingRecipes: true })
+      )
+    ).toEqual(afterState)
   })
 
   it("Sets team to 404", () => {
@@ -214,7 +222,9 @@ describe("Teams", () => {
       }
     ])
 
-    expect(teams(beforeState, a.setTeam404(1, true))).toEqual(afterState)
+    expect(teams(beforeState, a.setTeam404({ id: 1, val: true }))).toEqual(
+      afterState
+    )
   })
 
   it("Sets team members", () => {
@@ -261,7 +271,9 @@ describe("Teams", () => {
       }
     ])
 
-    expect(teams(beforeState, a.setTeamMembers(1, members))).toEqual(afterState)
+    expect(teams(beforeState, a.setTeamMembers({ id: 1, members }))).toEqual(
+      afterState
+    )
   })
 
   it("Sets team recipes", () => {
@@ -306,7 +318,9 @@ describe("Teams", () => {
       }
     ])
 
-    expect(teams(beforeState, a.setTeamRecipes(1, recipes))).toEqual(afterState)
+    expect(teams(beforeState, a.setTeamRecipes({ id: 1, recipes }))).toEqual(
+      afterState
+    )
   })
 
   it("Sets updating membership data", () => {
@@ -323,9 +337,9 @@ describe("Teams", () => {
       members: []
     })
 
-    expect(teams(beforeState, a.setUpdatingUserTeamLevel(1, true))).toEqual(
-      afterState
-    )
+    expect(
+      teams(beforeState, a.setUpdatingUserTeamLevel({ id: 1, updating: true }))
+    ).toEqual(afterState)
   })
 
   it("Sets user team membership level", () => {
@@ -391,9 +405,12 @@ describe("Teams", () => {
       }
     })
 
-    expect(teams(beforeState, a.setUserTeamLevel(1, 2, "admin"))).toEqual(
-      afterState
-    )
+    expect(
+      teams(
+        beforeState,
+        a.setUserTeamLevel({ teamID: 1, membershipID: 2, level: "admin" })
+      )
+    ).toEqual(afterState)
   })
 
   it("Sets team membership to deleting", () => {
@@ -460,9 +477,12 @@ describe("Teams", () => {
       }
     })
 
-    expect(teams(beforeState, a.setDeletingMembership(1, 2, true))).toEqual(
-      afterState
-    )
+    expect(
+      teams(
+        beforeState,
+        a.setDeletingMembership({ teamID: 1, membershipID: 2, val: true })
+      )
+    ).toEqual(afterState)
   })
 
   it("deletes team membership", () => {
@@ -517,7 +537,9 @@ describe("Teams", () => {
       }
     })
 
-    expect(teams(beforeState, a.deleteMembership(1, 2))).toEqual(afterState)
+    expect(
+      teams(beforeState, a.deleteMembership({ teamID: 1, membershipID: 2 }))
+    ).toEqual(afterState)
   })
 
   it("Sets the sending team invites in team", () => {
@@ -584,9 +606,9 @@ describe("Teams", () => {
       }
     })
 
-    expect(teams(beforeState, a.setSendingTeamInvites(1, true))).toEqual(
-      afterState
-    )
+    expect(
+      teams(beforeState, a.setSendingTeamInvites({ teamID: 1, val: true }))
+    ).toEqual(afterState)
   })
 
   it("Sets teams to loading", () => {
@@ -761,7 +783,9 @@ describe("Teams", () => {
       allIds: [1, team.id]
     }
 
-    expect(teams(beforeState, a.setTeam(team.id, team))).toEqual(afterState)
+    expect(teams(beforeState, a.setTeam({ id: team.id, team }))).toEqual(
+      afterState
+    )
   })
 
   it("deletes team", () => {
@@ -826,7 +850,10 @@ describe("Teams", () => {
     expect(
       teams(
         beforeState,
-        a.updateTeamById(1, { id: 1, name: "InnoTech", members: [] })
+        a.updateTeamById({
+          id: 1,
+          teamKeys: { id: 1, name: "InnoTech", members: [] }
+        })
       )
     ).toEqual(afterState)
   })

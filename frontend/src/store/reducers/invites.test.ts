@@ -171,9 +171,9 @@ describe("Invites", () => {
       }
     }
 
-    expect(invites(beforeState, t.setAcceptingInvite(1, true))).toEqual(
-      afterState
-    )
+    expect(
+      invites(beforeState, t.setAcceptingInvite({ id: 1, val: true }))
+    ).toEqual(afterState)
   })
 
   it("sets invite to declining", () => {
@@ -210,9 +210,9 @@ describe("Invites", () => {
       }
     }
 
-    expect(invites(beforeState, t.setDecliningInvite(1, true))).toEqual(
-      afterState
-    )
+    expect(
+      invites(beforeState, t.setDecliningInvite({ id: 1, val: true }))
+    ).toEqual(afterState)
   })
 
   it("decline invite", () => {

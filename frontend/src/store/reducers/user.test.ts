@@ -199,7 +199,10 @@ describe("User", () => {
     const provider = "gitlab"
 
     expect(
-      user(beforeState as IUserState, a.setSocialConnection(provider, null))
+      user(
+        beforeState as IUserState,
+        a.setSocialConnection({ provider, val: null })
+      )
     ).toEqual(expected)
   })
 

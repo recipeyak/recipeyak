@@ -1,30 +1,35 @@
-import { action as act } from "typesafe-actions"
+import { createStandardAction, getType } from "typesafe-actions"
 
-const SET_FROM_URL = "SET_FROM_URL"
-const SET_ERROR_LOGIN = "SET_ERROR_LOGIN"
-const SET_ERROR_SOCIAL_LOGIN = "SET_ERROR_SOCIAL_LOGIN"
-const SET_ERROR_SIGNUP = "SET_ERROR_SIGNUP"
-const SET_ERROR_RESET = "SET_ERROR_RESET"
-const SET_ERROR_RESET_CONFIRMATION = "SET_ERROR_RESET_CONFIRMATION"
-const SET_LOADING_LOGIN = "SET_LOADING_LOGIN"
-const SET_LOADING_SIGNUP = "SET_LOADING_SIGNUP"
-const SET_LOADING_RESET = "SET_LOADING_RESET"
-const SET_LOADING_RESET_CONFIRMATION = "SET_LOADING_RESET_CONFIRMATION"
-
-export const setFromUrl = (val: string) => act(SET_FROM_URL, val)
-export const setErrorLogin = (val: ILoginError) => act(SET_ERROR_LOGIN, val)
-export const setErrorSocialLogin = (val: ISocialError) =>
-  act(SET_ERROR_SOCIAL_LOGIN, val)
-export const setErrorSignup = (val: ISignupErrors) => act(SET_ERROR_SIGNUP, val)
-export const setErrorReset = (val: IPasswordResetError) =>
-  act(SET_ERROR_RESET, val)
-export const setErrorResetConfirmation = (val: IPasswordResetConfirmError) =>
-  act(SET_ERROR_RESET_CONFIRMATION, val)
-export const setLoadingLogin = (val: boolean) => act(SET_LOADING_LOGIN, val)
-export const setLoadingSignup = (val: boolean) => act(SET_LOADING_SIGNUP, val)
-export const setLoadingReset = (val: boolean) => act(SET_LOADING_RESET, val)
-export const setLoadingResetConfirmation = (val: boolean) =>
-  act(SET_LOADING_RESET_CONFIRMATION, val)
+export const setFromUrl = createStandardAction("SET_FROM_URL")<
+  IAuthState["fromUrl"]
+>()
+export const setErrorLogin = createStandardAction("SET_ERROR_LOGIN")<
+  ILoginError
+>()
+export const setErrorSocialLogin = createStandardAction(
+  "SET_ERROR_SOCIAL_LOGIN"
+)<ISocialError>()
+export const setErrorSignup = createStandardAction("SET_ERROR_SIGNUP")<
+  ISignupErrors
+>()
+export const setErrorReset = createStandardAction("SET_ERROR_RESET")<
+  IPasswordResetError
+>()
+export const setErrorResetConfirmation = createStandardAction(
+  "SET_ERROR_RESET_CONFIRMATION"
+)<IPasswordResetConfirmError>()
+export const setLoadingLogin = createStandardAction("SET_LOADING_LOGIN")<
+  boolean
+>()
+export const setLoadingSignup = createStandardAction("SET_LOADING_SIGNUP")<
+  IAuthState["loadingSignup"]
+>()
+export const setLoadingReset = createStandardAction("SET_LOADING_RESET")<
+  IAuthState["loadingReset"]
+>()
+export const setLoadingResetConfirmation = createStandardAction(
+  "SET_LOADING_RESET_CONFIRMATION"
+)<IAuthState["loadingResetConfirmation"]>()
 
 export type AuthActions =
   | ReturnType<typeof setFromUrl>
@@ -98,25 +103,25 @@ const auth = (
   action: AuthActions
 ): IAuthState => {
   switch (action.type) {
-    case SET_FROM_URL:
+    case getType(setFromUrl):
       return { ...state, fromUrl: action.payload }
-    case SET_ERROR_LOGIN:
+    case getType(setErrorLogin):
       return { ...state, errorLogin: action.payload }
-    case SET_ERROR_SOCIAL_LOGIN:
+    case getType(setErrorSocialLogin):
       return { ...state, errorSocialLogin: action.payload }
-    case SET_ERROR_SIGNUP:
+    case getType(setErrorSignup):
       return { ...state, errorSignup: action.payload }
-    case SET_ERROR_RESET:
+    case getType(setErrorReset):
       return { ...state, errorReset: action.payload }
-    case SET_ERROR_RESET_CONFIRMATION:
+    case getType(setErrorResetConfirmation):
       return { ...state, errorResetConfirmation: action.payload }
-    case SET_LOADING_LOGIN:
+    case getType(setLoadingLogin):
       return { ...state, loadingLogin: action.payload }
-    case SET_LOADING_SIGNUP:
+    case getType(setLoadingSignup):
       return { ...state, loadingSignup: action.payload }
-    case SET_LOADING_RESET:
+    case getType(setLoadingReset):
       return { ...state, loadingReset: action.payload }
-    case SET_LOADING_RESET_CONFIRMATION:
+    case getType(setLoadingResetConfirmation):
       return { ...state, loadingResetConfirmation: action.payload }
     default:
       return state
