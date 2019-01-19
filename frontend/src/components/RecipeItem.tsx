@@ -19,7 +19,7 @@ function RecipeTitle({ url, name, author }: IRecipeTitleProps) {
   return (
     <section className="flex-grow-1">
       <div className="title fs-6 d-flex justify-space-between">
-        <Link tabindex="0" to={url}>
+        <Link tabIndex={0} to={url}>
           {name}
         </Link>
       </div>
