@@ -66,11 +66,6 @@ class PasswordChange extends React.Component<
   render() {
     const { loading, setPassword = false, error } = this.props
 
-    const { password, newPassword, newPasswordAgain } = this.state
-
-    const disabled =
-      password === "" || newPassword === "" || newPasswordAgain === ""
-
     const pageTitle = !setPassword ? "Password Change" : "Password Set"
 
     return (
@@ -122,11 +117,7 @@ class PasswordChange extends React.Component<
         </div>
 
         <p className="control">
-          <ButtonPrimary
-            disabled={disabled}
-            type="submit"
-            className="w-100"
-            loading={loading}>
+          <ButtonPrimary type="submit" className="w-100" loading={loading}>
             Update
           </ButtonPrimary>
         </p>
