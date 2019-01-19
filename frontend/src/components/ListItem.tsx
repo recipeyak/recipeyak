@@ -199,6 +199,7 @@ export default class ListItem extends React.Component<
                 onClick={this.delete}
                 size="small"
                 loading={removing}
+                type="button"
                 name="delete">
                 Delete
               </Button>
