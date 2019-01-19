@@ -38,12 +38,15 @@ describe("Teams", () => {
       ...beforeState,
       byId: {
         ...beforeState.byId,
-        [recipe.id]: recipe
+        [recipe.id]: {
+          ...recipe,
+          loadingTeam: false
+        }
       },
       allIds: [1, recipe.id]
     }
 
-    expect(teams(beforeState, a.addTeam(recipe))).toEqual(afterState)
+    expect(teams(beforeState, a.fetchTeam.success(recipe))).toEqual(afterState)
   })
 
   it("Updates team object", () => {
@@ -61,10 +64,11 @@ describe("Teams", () => {
     const afterState = teamStateWith({
       id: 1,
       name: "other team name",
-      members: []
+      members: [],
+      loadingTeam: false
     })
 
-    expect(teams(beforeState, a.addTeam(recipe))).toEqual(afterState)
+    expect(teams(beforeState, a.fetchTeam.success(recipe))).toEqual(afterState)
   })
 
   it("Adds all teams given", () => {
@@ -145,9 +149,7 @@ describe("Teams", () => {
       members: []
     })
 
-    expect(
-      teams(beforeState, a.setLoadingTeam({ id: 1, loadingTeam: true }))
-    ).toEqual(afterState)
+    expect(teams(beforeState, a.fetchTeam.request(1))).toEqual(afterState)
   })
 
   it("Sets loading team members", () => {
@@ -164,12 +166,9 @@ describe("Teams", () => {
       members: []
     })
 
-    expect(
-      teams(
-        beforeState,
-        a.setLoadingTeamMembers({ id: 1, loadingMembers: true })
-      )
-    ).toEqual(afterState)
+    expect(teams(beforeState, a.fetchTeamMembers.request(1))).toEqual(
+      afterState
+    )
   })
 
   it("Sets loading team recipes", () => {
@@ -186,12 +185,9 @@ describe("Teams", () => {
       members: []
     })
 
-    expect(
-      teams(
-        beforeState,
-        a.setLoadingTeamRecipes({ id: 1, loadingRecipes: true })
-      )
-    ).toEqual(afterState)
+    expect(teams(beforeState, a.fetchTeamRecipes.request(1))).toEqual(
+      afterState
+    )
   })
 
   it("Sets team to 404", () => {
@@ -213,7 +209,8 @@ describe("Teams", () => {
         id: 1,
         name: "team name",
         error404: true,
-        members: []
+        members: [],
+        loadingTeam: false
       },
       {
         id: 2,
@@ -222,9 +219,9 @@ describe("Teams", () => {
       }
     ])
 
-    expect(teams(beforeState, a.setTeam404({ id: 1, val: true }))).toEqual(
-      afterState
-    )
+    expect(
+      teams(beforeState, a.fetchTeam.failure({ id: 1, error404: true }))
+    ).toEqual(afterState)
   })
 
   it("Sets team members", () => {
@@ -259,6 +256,7 @@ describe("Teams", () => {
     const afterState = teamStateWith([
       {
         id: 1,
+        loadingMembers: false,
         name: "team name",
         members: {
           [members[0].id]: members[0]
@@ -271,9 +269,9 @@ describe("Teams", () => {
       }
     ])
 
-    expect(teams(beforeState, a.setTeamMembers({ id: 1, members }))).toEqual(
-      afterState
-    )
+    expect(
+      teams(beforeState, a.fetchTeamMembers.success({ id: 1, members }))
+    ).toEqual(afterState)
   })
 
   it("Sets team recipes", () => {
@@ -309,7 +307,8 @@ describe("Teams", () => {
         id: 1,
         name: "team name",
         members: [],
-        recipes: [1]
+        recipes: [1],
+        loadingRecipes: false
       },
       {
         id: 2,
@@ -318,9 +317,9 @@ describe("Teams", () => {
       }
     ])
 
-    expect(teams(beforeState, a.setTeamRecipes({ id: 1, recipes }))).toEqual(
-      afterState
-    )
+    expect(
+      teams(beforeState, a.fetchTeamRecipes.success({ id: 1, recipes }))
+    ).toEqual(afterState)
   })
 
   it("Sets updating membership data", () => {

@@ -3,12 +3,12 @@ import { connect } from "react-redux"
 import { logUserIn, Dispatch } from "@/store/thunks"
 import Login from "@/components/Login"
 import { RootState } from "@/store/store"
-import { setFromUrl, setErrorLogin } from "@/store/reducers/auth"
+import { setFromUrl, cleareLoginErrors } from "@/store/reducers/auth"
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     login: logUserIn(dispatch),
-    clearErrors: () => dispatch(setErrorLogin({})),
+    clearErrors: () => dispatch(cleareLoginErrors()),
     setFromUrl: (url: string) => dispatch(setFromUrl(url))
   }
 }

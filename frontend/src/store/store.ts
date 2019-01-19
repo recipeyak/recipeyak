@@ -16,7 +16,7 @@ import {
 } from "react-router-redux"
 
 import recipes, { IRecipesState, RecipeActions } from "@/store/reducers/recipes"
-import user, { IUserState, UserActions, login } from "@/store/reducers/user"
+import user, { IUserState, UserActions } from "@/store/reducers/user"
 import notification, {
   INotificationState,
   NotificationsActions
@@ -33,7 +33,7 @@ import addrecipe, {
   IAddRecipeState,
   AddRecipeActions
 } from "@/store/reducers/addrecipe"
-import auth, { IAuthState, AuthActions } from "@/store/reducers/auth"
+import auth, { IAuthState, AuthActions, login } from "@/store/reducers/auth"
 import teams, { ITeamsState, TeamsActions } from "@/store/reducers/teams"
 import invites, { InviteActions, IInvitesState } from "@/store/reducers/invites"
 import calendar, {
@@ -94,7 +94,7 @@ export function rootReducer(state: IState | undefined, action: Action): IState {
   if (state == null) {
     return recipeApp(undefined, action)
   }
-  if (action.type === getType(login) && !action.payload) {
+  if (action.type === getType(login.success) && !action.payload) {
     return {
       ...recipeApp(undefined, action),
       // We need to save this auth state (fromUrl) through logout

@@ -1,11 +1,15 @@
-import { createStandardAction, getType } from "typesafe-actions"
+import {
+  createStandardAction,
+  getType,
+  createAsyncAction,
+  ActionType
+} from "typesafe-actions"
+import { IUser } from "@/store/reducers/user"
 
 export const setFromUrl = createStandardAction("SET_FROM_URL")<
   IAuthState["fromUrl"]
 >()
-export const setErrorLogin = createStandardAction("SET_ERROR_LOGIN")<
-  ILoginError
->()
+
 export const setErrorSocialLogin = createStandardAction(
   "SET_ERROR_SOCIAL_LOGIN"
 )<ISocialError>()
@@ -18,9 +22,15 @@ export const setErrorReset = createStandardAction("SET_ERROR_RESET")<
 export const setErrorResetConfirmation = createStandardAction(
   "SET_ERROR_RESET_CONFIRMATION"
 )<IPasswordResetConfirmError>()
-export const setLoadingLogin = createStandardAction("SET_LOADING_LOGIN")<
-  boolean
->()
+
+export const login = createAsyncAction(
+  "LOGIN_REQUEST",
+  "LOGIN_SUCCESS",
+  "LOGIN_FAILURE"
+)<void, IUser, ILoginError | void>()
+
+export const cleareLoginErrors = createStandardAction("CLEAR_LOGIN_ERRORS")()
+
 export const setLoadingSignup = createStandardAction("SET_LOADING_SIGNUP")<
   IAuthState["loadingSignup"]
 >()
@@ -33,12 +43,12 @@ export const setLoadingResetConfirmation = createStandardAction(
 
 export type AuthActions =
   | ReturnType<typeof setFromUrl>
-  | ReturnType<typeof setErrorLogin>
   | ReturnType<typeof setErrorSocialLogin>
   | ReturnType<typeof setErrorSignup>
   | ReturnType<typeof setErrorReset>
   | ReturnType<typeof setErrorResetConfirmation>
-  | ReturnType<typeof setLoadingLogin>
+  | ActionType<typeof login>
+  | ActionType<typeof cleareLoginErrors>
   | ReturnType<typeof setLoadingSignup>
   | ReturnType<typeof setLoadingReset>
   | ReturnType<typeof setLoadingResetConfirmation>
@@ -105,8 +115,14 @@ const auth = (
   switch (action.type) {
     case getType(setFromUrl):
       return { ...state, fromUrl: action.payload }
-    case getType(setErrorLogin):
-      return { ...state, errorLogin: action.payload }
+    case getType(login.request):
+      return { ...state, errorLogin: {}, loadingLogin: true }
+    case getType(login.success):
+      return { ...state, loadingLogin: false }
+    case getType(login.failure):
+      return { ...state, errorLogin: action.payload || {} }
+    case getType(cleareLoginErrors):
+      return { ...state, errorLogin: {} }
     case getType(setErrorSocialLogin):
       return { ...state, errorSocialLogin: action.payload }
     case getType(setErrorSignup):
@@ -115,8 +131,6 @@ const auth = (
       return { ...state, errorReset: action.payload }
     case getType(setErrorResetConfirmation):
       return { ...state, errorResetConfirmation: action.payload }
-    case getType(setLoadingLogin):
-      return { ...state, loadingLogin: action.payload }
     case getType(setLoadingSignup):
       return { ...state, loadingSignup: action.payload }
     case getType(setLoadingReset):

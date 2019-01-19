@@ -1,9 +1,9 @@
 import { connect } from "react-redux"
 
 import {
-  fetchTeam,
-  fetchTeamMembers,
-  fetchTeamRecipes,
+  fetchingTeam,
+  fetchingTeamMembers,
+  fetchingTeamRecipes,
   deletingTeam,
   updatingTeam,
   Dispatch
@@ -58,9 +58,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     fetchData: (id: ITeam["id"]) =>
       Promise.all([
-        fetchTeam(dispatch)(id),
-        fetchTeamMembers(dispatch)(id),
-        fetchTeamRecipes(dispatch)(id)
+        fetchingTeam(dispatch)(id),
+        fetchingTeamMembers(dispatch)(id),
+        fetchingTeamRecipes(dispatch)(id)
       ]),
     deleteTeam: deletingTeam(dispatch),
     updatingTeam: updatingTeam(dispatch)
