@@ -171,9 +171,7 @@ describe("Invites", () => {
       }
     }
 
-    expect(
-      invites(beforeState, t.setAcceptingInvite({ id: 1, val: true }))
-    ).toEqual(afterState)
+    expect(invites(beforeState, t.acceptInvite.request(1))).toEqual(afterState)
   })
 
   it("sets invite to declining", () => {
@@ -210,9 +208,7 @@ describe("Invites", () => {
       }
     }
 
-    expect(
-      invites(beforeState, t.setDecliningInvite({ id: 1, val: true }))
-    ).toEqual(afterState)
+    expect(invites(beforeState, t.declineInvite.request(1))).toEqual(afterState)
   })
 
   it("decline invite", () => {
@@ -243,12 +239,13 @@ describe("Invites", () => {
             id: 1,
             name: "foo"
           },
-          status: "declined"
+          status: "declined",
+          declining: false
         }
       }
     }
 
-    expect(invites(beforeState, t.setDeclinedInvite(1))).toEqual(afterState)
+    expect(invites(beforeState, t.declineInvite.success(1))).toEqual(afterState)
   })
 
   it("accept invite", () => {
@@ -279,11 +276,12 @@ describe("Invites", () => {
             id: 1,
             name: "foo"
           },
-          status: "accepted"
+          status: "accepted",
+          accepting: false
         }
       }
     }
 
-    expect(invites(beforeState, t.setAcceptedInvite(1))).toEqual(afterState)
+    expect(invites(beforeState, t.acceptInvite.success(1))).toEqual(afterState)
   })
 })

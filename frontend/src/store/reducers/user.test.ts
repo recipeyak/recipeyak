@@ -5,6 +5,7 @@ import user, {
 } from "@/store/reducers/user"
 
 import * as a from "@/store/reducers/user"
+import { login } from "@/store/reducers/auth"
 
 describe("fetchingUser", () => {
   it("#request: sets loading, removes failures", () => {
@@ -49,7 +50,7 @@ describe("fetchingUser", () => {
     expect(user(beforeState, a.fetchUser.success(userPayload))).toEqual(
       expected
     )
-    expect(user(beforeState, a.login(userPayload))).toEqual(expected)
+    expect(user(beforeState, login.success(userPayload))).toEqual(expected)
   })
   it("#failure: sets loading, sets error", () => {
     const beforeState = {

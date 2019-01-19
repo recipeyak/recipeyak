@@ -9,6 +9,7 @@ import {
 } from "typesafe-actions"
 import { IRecipe } from "@/store/reducers/recipes"
 import { WebData, Success, Failure, HttpErrorKind, toLoading } from "@/webdata"
+import { login, AuthActions } from "@/store/reducers/auth"
 
 export const fetchUserStats = createAsyncAction(
   "FETCH_USER_STATS_START",
@@ -17,8 +18,6 @@ export const fetchUserStats = createAsyncAction(
 )<void, IUserStats, void>()
 
 // TODO(chdsbd): Replace usage with fetchUser#success. Update user reducer.
-export const login = createStandardAction("LOG_IN")<IUser>()
-
 export const logOut = createAsyncAction(
   "LOGOUT_START",
   "LOGOUT_SUCCESS",
@@ -50,7 +49,6 @@ export const updateEmail = createAsyncAction(
 )<void, IUser, void>()
 
 export type UserActions =
-  | ReturnType<typeof login>
   | ActionType<typeof logOut>
   | ReturnType<typeof setUserLoggedIn>
   | ReturnType<typeof updateTeamID>
@@ -135,7 +133,7 @@ const initialState: IUserState = {
 
 export const user = (
   state: IUserState = initialState,
-  action: UserActions
+  action: UserActions | AuthActions
 ): IUserState => {
   switch (action.type) {
     case getType(fetchUserStats.success):
@@ -187,8 +185,7 @@ export const user = (
       return { ...state, loading: true, error: false }
     case getType(fetchUser.failure):
       return { ...state, loading: false, error: true }
-    // TODO(chdsbd): Replace login usage with FETCH_USER_SUCCESS
-    case getType(login):
+    case getType(login.success):
     case getType(updateEmail.success):
     case getType(fetchUser.success):
       raven.setUserContext({

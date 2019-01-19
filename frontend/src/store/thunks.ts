@@ -17,7 +17,6 @@ import {
   updateTeamID,
   fetchUser,
   setSocialConnections,
-  login,
   setUserLoggedIn,
   IUser,
   ISocialConnection,
@@ -36,12 +35,10 @@ import {
   getCalRecipeById
 } from "@/store/reducers/calendar"
 import {
-  setDecliningInvite,
-  setDeclinedInvite,
-  setAcceptingInvite,
-  setAcceptedInvite,
   IInvite,
-  fetchInvites
+  fetchInvites,
+  declineInvite,
+  acceptInvite
 } from "@/store/reducers/invites"
 import {
   INotificationState,
@@ -51,24 +48,20 @@ import {
 import {
   ITeam,
   deleteTeam,
-  addTeam,
-  setLoadingTeam,
-  setLoadingTeamMembers,
-  setLoadingTeamRecipes,
-  setTeamMembers,
-  setTeam404,
-  setTeamRecipes,
   setUpdatingUserTeamLevel,
   setUserTeamLevel,
   setDeletingMembership,
   setSendingTeamInvites,
   deleteMembership,
   setCreatingTeam,
-  setTeam,
   updateTeamById,
   setCopyingTeam,
   IMember,
-  fetchTeams
+  fetchTeams,
+  fetchTeam,
+  setTeam,
+  fetchTeamMembers,
+  fetchTeamRecipes
 } from "@/store/reducers/teams"
 import {
   IRecipe,
@@ -96,15 +89,14 @@ import { passwordUpdate } from "@/store/reducers/passwordChange"
 import { Dispatch as ReduxDispatch } from "redux"
 import { IRecipeBasic } from "@/components/RecipeTitle"
 import {
-  setErrorLogin,
   setErrorSocialLogin,
   setErrorSignup,
   setErrorReset,
   setErrorResetConfirmation,
-  setLoadingLogin,
   setLoadingSignup,
   setLoadingReset,
-  setLoadingResetConfirmation
+  setLoadingResetConfirmation,
+  login
 } from "@/store/reducers/auth"
 import { recipeURL } from "@/urls"
 import { isSuccessOrRefetching } from "@/webdata"
@@ -527,32 +519,30 @@ export const logUserIn = (dispatch: Dispatch) => (
   password: string,
   redirectUrl: string = ""
 ) => {
-  // TODO(sbdchd): refactor to use createActionAsync
-  dispatch(setLoadingLogin(true))
-  dispatch(setErrorLogin({}))
   dispatch(clearNotification())
+  dispatch(login.request())
   return api
     .loginUser(email, password)
     .then(res => {
-      dispatch(login(res.data.user))
-      dispatch(setLoadingLogin(false))
+      dispatch(login.success(res.data.user))
       dispatch(push(redirectUrl))
     })
     .catch((err: AxiosError) => {
-      dispatch(setLoadingLogin(false))
       const badRequest = err.response && err.response.status === 400
       if (err.response && badRequest) {
         const data = err.response.data
         // tslint:disable:no-unsafe-any
         dispatch(
-          setErrorLogin({
+          login.failure({
             email: data["email"],
             password1: data["password1"],
             nonFieldErrors: data["non_field_errors"]
           })
         )
         // tslint:enable:no-unsafe-any
+        return
       }
+      dispatch(login.failure())
     })
 }
 
@@ -564,7 +554,7 @@ export const socialLogin = (dispatch: Dispatch) => (
   return api
     .loginUserWithSocial(service, token)
     .then(res => {
-      dispatch(login(res.data.user))
+      dispatch(login.success(res.data.user))
       dispatch(replace(redirectUrl))
     })
     .catch((err: AxiosError) => {
@@ -611,7 +601,7 @@ export const signup = (dispatch: Dispatch) => (
   return api
     .signup(email, password1, password2)
     .then(res => {
-      dispatch(login(res.data.user))
+      dispatch(login.success(res.data.user))
       dispatch(setLoadingSignup(false))
       dispatch(push("/recipes/add"))
     })
@@ -739,49 +729,49 @@ export const resetConfirmation = (dispatch: Dispatch) => (
     })
 }
 
-export const fetchTeam = (dispatch: Dispatch) => (id: ITeam["id"]) => {
-  // TODO(sbdchd): refactor to use createActionAsync
-  dispatch(setLoadingTeam({ id, loadingTeam: true }))
+export const fetchingTeam = (dispatch: Dispatch) => (id: ITeam["id"]) => {
+  dispatch(fetchTeam.request(id))
   return api
     .getTeam(id)
     .then(res => {
-      dispatch(addTeam(res.data))
-      dispatch(setLoadingTeam({ id, loadingTeam: false }))
+      dispatch(fetchTeam.success(res.data))
     })
     .catch((err: AxiosError) => {
       if (is404(err)) {
-        dispatch(setTeam404({ id, val: true }))
+        dispatch(fetchTeam.failure({ id, error404: true }))
+        return
       }
-      dispatch(setLoadingTeam({ id, loadingTeam: false }))
+      dispatch(fetchTeam.failure({ id }))
     })
 }
 
-export const fetchTeamMembers = (dispatch: Dispatch) => (id: ITeam["id"]) => {
-  // TODO(sbdchd): refactor to use createActionAsync
-  dispatch(setLoadingTeamMembers({ id, loadingMembers: true }))
+export const fetchingTeamMembers = (dispatch: Dispatch) => (
+  id: ITeam["id"]
+) => {
+  dispatch(fetchTeamMembers.request(id))
   return api
     .getTeamMembers(id)
     .then(res => {
-      dispatch(setTeamMembers({ id, members: res.data }))
-      dispatch(setLoadingTeamMembers({ id, loadingMembers: false }))
+      dispatch(fetchTeamMembers.success({ id, members: res.data }))
     })
     .catch(() => {
-      dispatch(setLoadingTeamMembers({ id, loadingMembers: false }))
+      dispatch(fetchTeamMembers.failure(id))
     })
 }
 
-export const fetchTeamRecipes = (dispatch: Dispatch) => (id: ITeam["id"]) => {
-  // TODO(sbdchd): refactor to use createActionAsync
-  dispatch(setLoadingTeamRecipes({ id, loadingRecipes: true }))
+export const fetchingTeamRecipes = (dispatch: Dispatch) => (
+  id: ITeam["id"]
+) => {
+  dispatch(fetchTeamRecipes.request(id))
   return api
     .getTeamRecipes(id)
     .then(res => {
+      // TODO(sbdchd): kind of hacky
       dispatch(fetchRecipeList.success({ recipes: res.data, teamID: id }))
-      dispatch(setTeamRecipes({ id, recipes: res.data }))
-      dispatch(setLoadingTeamRecipes({ id, loadingRecipes: false }))
+      dispatch(fetchTeamRecipes.success({ id, recipes: res.data }))
     })
     .catch(() => {
-      dispatch(setLoadingTeamRecipes({ id, loadingRecipes: false }))
+      dispatch(fetchTeamRecipes.failure(id))
     })
 }
 
@@ -982,7 +972,7 @@ export const updatingTeam = (dispatch: Dispatch) => (
 export const moveRecipeTo = (dispatch: Dispatch) => (
   recipeId: IRecipe["id"],
   ownerId: IUser["id"],
-  type: unknown
+  type: IRecipe["owner"]["type"]
 ) => {
   return api.moveRecipe(recipeId, ownerId, type).then(res => {
     dispatch(updateRecipeOwner({ id: res.data.id, owner: res.data.owner }))
@@ -992,7 +982,7 @@ export const moveRecipeTo = (dispatch: Dispatch) => (
 export const copyRecipeTo = (dispatch: Dispatch) => (
   recipeId: IRecipe["id"],
   ownerId: IUser["id"],
-  type: unknown
+  type: IRecipe["owner"]["type"]
 ) => {
   // TODO(sbdchd): refactor to use createActionAsync
   dispatch(setCopyingTeam(true))
@@ -1023,29 +1013,25 @@ export const fetchingInvites = (dispatch: Dispatch) => () => {
 }
 
 export const acceptingInvite = (dispatch: Dispatch) => (id: IInvite["id"]) => {
-  // TODO(sbdchd): refactor these to use createActionAsync()
-  dispatch(setAcceptingInvite({ id, val: true }))
+  dispatch(acceptInvite.request(id))
   return api
     .acceptInvite(id)
     .then(() => {
-      dispatch(setAcceptingInvite({ id, val: false }))
-      dispatch(setAcceptedInvite(id))
+      dispatch(acceptInvite.success(id))
     })
     .catch(() => {
-      dispatch(setAcceptingInvite({ id, val: false }))
+      dispatch(acceptInvite.failure(id))
     })
 }
 export const decliningInvite = (dispatch: Dispatch) => (id: IInvite["id"]) => {
-  // TODO(sbdchd): refactor to use createActionAsync
-  dispatch(setDecliningInvite({ id, val: true }))
+  dispatch(declineInvite.request(id))
   return api
     .declineInvite(id)
     .then(() => {
-      dispatch(setDecliningInvite({ id, val: false }))
-      dispatch(setDeclinedInvite(id))
+      dispatch(declineInvite.success(id))
     })
     .catch(() => {
-      dispatch(setDecliningInvite({ id, val: false }))
+      dispatch(declineInvite.failure(id))
     })
 }
 
