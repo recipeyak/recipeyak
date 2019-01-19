@@ -136,11 +136,15 @@ export const calendar = (
       const moving = state.byId[action.payload.id]
 
       const existing = state.allIds
-        .filter(x => x !== action.payload.id)
-        .map(x => state.byId[x])
-        .filter(x => isSameDay(x.on, action.payload.to))
-        .filter(x => x.team === moving.team && x.user === moving.user)
-        .find(x => x.recipe.id === moving.recipe.id)
+        .map(id => state.byId[id])
+        .filter(
+          r =>
+            r.id !== action.payload.id &&
+            isSameDay(r.on, action.payload.to) &&
+            r.team === moving.team &&
+            r.user === moving.user
+        )
+        .find(r => r.recipe.id === moving.recipe.id)
 
       if (existing) {
         return {
