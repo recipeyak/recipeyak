@@ -8,7 +8,7 @@ import {
   deleteUserAccount,
   Dispatch,
   fetchingUser
-} from "@/store/actions"
+} from "@/store/thunks"
 
 import Settings from "@/components/Settings"
 import { RootState } from "@/store/store"

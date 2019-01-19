@@ -15,7 +15,7 @@ import {
   Dispatch,
   INotificationWithTimeout,
   fetchingTeams
-} from "@/store/actions"
+} from "@/store/thunks"
 import { RootState } from "@/store/store"
 import { IRecipe } from "@/store/reducers/recipes"
 import { ITeamsState } from "@/store/reducers/teams"

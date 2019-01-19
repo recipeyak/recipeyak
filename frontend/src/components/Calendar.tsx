@@ -9,7 +9,7 @@ import {
   fetchingRecipeList,
   fetchingTeams,
   fetchingShoppingList
-} from "@/store/actions"
+} from "@/store/thunks"
 
 import { toDateString } from "@/date"
 

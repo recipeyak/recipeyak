@@ -1,6 +1,6 @@
 import { connect } from "react-redux"
 
-import { Dispatch } from "@/store/actions"
+import { Dispatch } from "@/store/thunks"
 import Notification from "@/components/Notification"
 import { RootState } from "@/store/store"
 import { clearNotification } from "@/store/reducers/notification"

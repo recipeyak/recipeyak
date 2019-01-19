@@ -8,7 +8,7 @@ import {
   settingUserTeamLevel,
   deletingMembership,
   Dispatch
-} from "@/store/actions"
+} from "@/store/thunks"
 import { ITeam, IMember } from "@/store/reducers/teams"
 import { RootState } from "@/store/store"
 import { IUser } from "@/store/reducers/user"

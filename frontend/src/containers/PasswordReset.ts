@@ -1,6 +1,6 @@
 import { connect } from "react-redux"
 
-import { reset, Dispatch } from "@/store/actions"
+import { reset, Dispatch } from "@/store/thunks"
 import PasswordReset from "@/components/PasswordReset"
 import { RootState } from "@/store/store"
 

@@ -7,7 +7,7 @@ import {
   Dispatch,
   fetchingRecentRecipes,
   fetchingUser
-} from "@/store/actions"
+} from "@/store/thunks"
 import { RootState } from "@/store/store"
 import { getRecentRecipes } from "@/store/reducers/recipes"
 

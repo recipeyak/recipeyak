@@ -2,7 +2,7 @@ import { connect } from "react-redux"
 
 import Home from "@/components/Home"
 
-import { Dispatch, fetchingUser } from "@/store/actions"
+import { Dispatch, fetchingUser } from "@/store/thunks"
 import { RootState } from "@/store/store"
 
 const mapStateToProps = (state: RootState) => ({

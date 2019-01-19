@@ -6,7 +6,7 @@ import { Link, RouteComponentProps } from "react-router-dom"
 import { FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { ButtonPrimary } from "@/components/Buttons"
 
-import { resetConfirmation as reset, Dispatch } from "@/store/actions"
+import { resetConfirmation as reset, Dispatch } from "@/store/thunks"
 import { RootState } from "@/store/store"
 import { IPasswordResetConfirmError } from "@/store/reducers/auth"
 

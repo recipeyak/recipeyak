@@ -8,7 +8,7 @@ import Calendar from "@/components/Calendar"
 import Recipes from "@/components/RecipeList"
 import ShoppingList from "@/components/ShoppingList"
 
-import { Dispatch, updatingTeamID } from "@/store/actions"
+import { Dispatch, updatingTeamID } from "@/store/thunks"
 import { Tabs, Tab } from "@/components/Tabs"
 import { ITeam } from "@/store/reducers/teams"
 

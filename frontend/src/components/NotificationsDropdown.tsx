@@ -10,7 +10,7 @@ import {
   decliningInvite,
   Dispatch,
   fetchingInvites
-} from "@/store/actions"
+} from "@/store/thunks"
 
 import { teamURL } from "@/urls"
 import { IInvite, getInvites } from "@/store/reducers/invites"
