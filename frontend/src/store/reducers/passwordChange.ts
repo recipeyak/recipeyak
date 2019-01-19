@@ -1,15 +1,23 @@
-import { createStandardAction, getType } from "typesafe-actions"
+import {
+  getType,
+  createAsyncAction,
+  ActionType,
+  createStandardAction
+} from "typesafe-actions"
 
-export const setLoadingPasswordUpdate = createStandardAction(
-  "SET_LOADING_PASSWORD_UPDATE"
-)<IPasswordChangeState["loadingPasswordUpdate"]>()
-export const setErrorPasswordUpdate = createStandardAction(
-  "SET_ERROR_PASSWORD_UPDATE"
-)<IPasswordUpdateError>()
+export const passwordUpdate = createAsyncAction(
+  "PASSWORD_UPDATE_START",
+  "PASSWORD_UPDATE_SUCCESS",
+  "PASSWORD_UPDATE_FAILURE"
+)<void, void, IPasswordUpdateError | void>()
+
+export const clearPasswordUpdateError = createStandardAction(
+  "CLEAR_PASSWORD_UPDATE_ERROR"
+)()
 
 export type PasswordChangeActions =
-  | ReturnType<typeof setLoadingPasswordUpdate>
-  | ReturnType<typeof setErrorPasswordUpdate>
+  | ActionType<typeof passwordUpdate>
+  | ActionType<typeof clearPasswordUpdateError>
 
 interface IPasswordUpdateError {
   readonly newPasswordAgain?: string[]
@@ -32,10 +40,21 @@ export const passwordChange = (
   action: PasswordChangeActions
 ): IPasswordChangeState => {
   switch (action.type) {
-    case getType(setLoadingPasswordUpdate):
-      return { ...state, loadingPasswordUpdate: action.payload }
-    case getType(setErrorPasswordUpdate):
-      return { ...state, errorPasswordUpdate: action.payload }
+    case getType(passwordUpdate.request):
+      return { ...state, loadingPasswordUpdate: true, errorPasswordUpdate: {} }
+    case getType(passwordUpdate.success):
+      return { ...state, loadingPasswordUpdate: false }
+    case getType(passwordUpdate.failure):
+      return {
+        ...state,
+        loadingPasswordUpdate: false,
+        errorPasswordUpdate: action.payload || {}
+      }
+    case getType(clearPasswordUpdateError):
+      return {
+        ...state,
+        errorPasswordUpdate: {}
+      }
     default:
       return state
   }

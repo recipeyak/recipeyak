@@ -18,25 +18,23 @@ import {
   toLoading
 } from "@/webdata"
 
-export const updateIngredient = createStandardAction("UPDATE_INGREDIENT")<{
-  recipeID: IRecipe["id"]
-  ingredientID: IIngredient["id"]
-  content: IIngredient
-}>()
 export const updateRecipeOwner = createStandardAction("UPDATE_RECIPE_OWNER")<{
   id: IRecipe["id"]
   owner: IRecipe["owner"]
 }>()
+
 export const deleteRecipe = createAsyncAction(
   "DELETE_RECIPE_START",
   "DELETE_RECIPE_SUCCESS",
   "DELETE_RECIPE_FAILURE"
 )<IRecipe["id"], IRecipe["id"], IRecipe["id"]>()
+
 export const fetchRecipe = createAsyncAction(
   "FETCH_RECIPE_START",
   "FETCH_RECIPE_SUCCESS",
   "FETCH_RECIPE_FAILURE"
 )<IRecipe["id"], IRecipe, { id: IRecipe["id"]; error404: boolean }>()
+
 export const fetchRecipeList = createAsyncAction(
   "FETCH_RECIPE_LIST_START",
   "FETCH_RECIPE_LIST_SUCCESS",
@@ -62,64 +60,112 @@ export const createRecipe = createAsyncAction(
 export const resetAddRecipeErrors = createStandardAction(
   "RESET_CREATE_RECIPE_ERRORS"
 )()
-export const deleteStep = createStandardAction("DELETE_STEP")<{
-  recipeID: IRecipe["id"]
-  stepID: IStep["id"]
-}>()
-export const updateStep = createStandardAction("UPDATE_STEP")<{
-  recipeID: IRecipe["id"]
-  stepID: IStep["id"]
-  text: IStep["text"]
-  position: IStep["position"]
-}>()
-export const setRemovingStep = createStandardAction("SET_REMOVING_STEP")<{
-  recipeID: IRecipe["id"]
-  stepID: IStep["id"]
-  val: boolean
-}>()
-export const setUpdatingStep = createStandardAction("SET_UPDATING_STEP")<{
-  recipeID: IRecipe["id"]
-  stepID: IStep["id"]
-  val: boolean
-}>()
-export const deleteIngredient = createStandardAction("DELETE_INGREDIENT")<{
-  recipeID: IRecipe["id"]
-  ingredientID: IIngredient["id"]
-}>()
-export const setRemovingIngredient = createStandardAction(
-  "SET_REMOVING_INGREDIENT"
-)<{
-  recipeID: IIngredient["id"]
-  ingredientID: IIngredient["id"]
-  val: boolean
-}>()
-export const setUpdatingIngredient = createStandardAction(
-  "SET_UPDATING_INGREDIENT"
-)<{
-  recipeID: IRecipe["id"]
-  ingredientID: number
-  val: boolean
-}>()
-export const setRecipeUpdating = createStandardAction("SET_RECIPE_UPDATING")<{
-  id: IRecipe["id"]
-  val: boolean
-}>()
-export const setLoadingAddStepToRecipe = createStandardAction(
-  "SET_LOADING_ADD_STEP_TO_RECIPE"
-)<{ id: IRecipe["id"]; val: boolean }>()
-export const addStepToRecipe = createStandardAction("ADD_STEP_TO_RECIPE")<{
-  id: IRecipe["id"]
-  step: IStep
-}>()
-export const setAddingIngredientToRecipe = createStandardAction(
-  "SET_ADDING_INGREDIENT_TO_RECIPE"
-)<{ id: IRecipe["id"]; val: boolean }>()
-export const addIngredientToRecipe = createStandardAction(
-  "ADD_INGREDIENT_TO_RECIPE"
-)<{
-  id: IRecipe["id"]
-  ingredient: IIngredient
-}>()
+
+export const deleteStep = createAsyncAction(
+  "DELETE_STEP_REQUEST",
+  "DELETE_STEP_SUCCESS",
+  "DELETE_STEP_FAILURE"
+)<
+  {
+    recipeID: IRecipe["id"]
+    stepID: IStep["id"]
+  },
+  {
+    recipeID: IRecipe["id"]
+    stepID: IStep["id"]
+  },
+  {
+    recipeID: IRecipe["id"]
+    stepID: IStep["id"]
+  }
+>()
+
+export const updateStep = createAsyncAction(
+  "UPDATING_STEP_REQUEST",
+  "UPDATING_STEP_SUCCESS",
+  "UPDATING_STEP_FAILURE"
+)<
+  {
+    recipeID: IRecipe["id"]
+    stepID: IStep["id"]
+  },
+  {
+    recipeID: IRecipe["id"]
+    stepID: IStep["id"]
+    text: IStep["text"]
+    position: IStep["position"]
+  },
+  {
+    recipeID: IRecipe["id"]
+    stepID: IStep["id"]
+  }
+>()
+
+export const deleteIngredient = createAsyncAction(
+  "DELETE_INGREDIENT_REQUEST",
+  "DELETE_INGREDIENT_SUCCESS",
+  "DELETE_INGREDIENT_FAILURE"
+)<
+  {
+    recipeID: IRecipe["id"]
+    ingredientID: IIngredient["id"]
+  },
+  {
+    recipeID: IRecipe["id"]
+    ingredientID: IIngredient["id"]
+  },
+  {
+    recipeID: IRecipe["id"]
+    ingredientID: IIngredient["id"]
+  }
+>()
+
+export const updateIngredient = createAsyncAction(
+  "UPDATE_INGREDIENT_REQUEST",
+  "UPDATE_INGREDIENT_SUCCESS",
+  "UPDATE_INGREDIENT_FAILURE"
+)<
+  { recipeID: IRecipe["id"]; ingredientID: IIngredient["id"] },
+  {
+    recipeID: IRecipe["id"]
+    ingredientID: IIngredient["id"]
+    content: IIngredient
+  },
+  { recipeID: IRecipe["id"]; ingredientID: IIngredient["id"] }
+>()
+
+export const updateRecipe = createAsyncAction(
+  "UPDATE_RECIPE_REQUEST",
+  "UPDATE_RECIPE_SUCCESS",
+  "UPDATE_RECIPE_FAILIURE"
+)<IRecipe["id"], IRecipe, IRecipe["id"]>()
+
+export const addStepToRecipe = createAsyncAction(
+  "ADD_STEP_TO_RECIPE_REQUEST",
+  "ADD_STEP_TO_RECIPE_SUCCESS",
+  "ADD_STEP_TO_RECIPE_FAILURE"
+)<
+  IRecipe["id"],
+  {
+    id: IRecipe["id"]
+    step: IStep
+  },
+  IRecipe["id"]
+>()
+
+export const addIngredientToRecipe = createAsyncAction(
+  "ADD_INGREDIENT_TO_RECIPE_REQUEST",
+  "ADD_INGREDIENT_TO_RECIPE_SUCCESS",
+  "ADD_INGREDIENT_TO_RECIPE_FAILURE"
+)<
+  IRecipe["id"],
+  {
+    id: IRecipe["id"]
+    ingredient: IIngredient
+  },
+  IRecipe["id"]
+>()
+
 export const setSchedulingRecipe = createStandardAction(
   "SET_SCHEDULING_RECIPE"
 )<{
@@ -154,20 +200,14 @@ export type IStepBasic = Pick<IStep, "text">
 
 export type RecipeActions =
   | ReturnType<typeof updateRecipeOwner>
-  | ReturnType<typeof deleteStep>
-  | ReturnType<typeof updateStep>
-  | ReturnType<typeof setRemovingStep>
-  | ReturnType<typeof setUpdatingStep>
-  | ReturnType<typeof deleteIngredient>
-  | ReturnType<typeof setRemovingIngredient>
-  | ReturnType<typeof setUpdatingIngredient>
-  | ReturnType<typeof setRecipeUpdating>
-  | ReturnType<typeof setLoadingAddStepToRecipe>
-  | ReturnType<typeof addStepToRecipe>
-  | ReturnType<typeof setAddingIngredientToRecipe>
-  | ReturnType<typeof addIngredientToRecipe>
+  | ActionType<typeof deleteStep>
+  | ActionType<typeof updateStep>
+  | ActionType<typeof deleteIngredient>
+  | ActionType<typeof updateRecipe>
+  | ActionType<typeof addStepToRecipe>
+  | ActionType<typeof addIngredientToRecipe>
   | ReturnType<typeof setSchedulingRecipe>
-  | ReturnType<typeof updateIngredient>
+  | ActionType<typeof updateIngredient>
   | ActionType<typeof deleteRecipe>
   | ActionType<typeof fetchRecipe>
   | ActionType<typeof fetchRecipeList>
@@ -471,45 +511,153 @@ export const recipes = (
         ...recipe,
         deleting: false
       }))
-    case getType(addStepToRecipe):
+    case getType(addStepToRecipe.request):
+      return mapRecipeSuccessById(state, action.payload, recipe => ({
+        ...recipe,
+        addingStepToRecipe: true
+      }))
+    case getType(addStepToRecipe.success):
       return mapRecipeSuccessById(state, action.payload.id, recipe => ({
         ...recipe,
-        steps: recipe.steps.concat(action.payload.step)
+        steps: recipe.steps.concat(action.payload.step),
+        addingStepToRecipe: false
       }))
-    case getType(setLoadingAddStepToRecipe):
+    case getType(addStepToRecipe.failure):
+      return mapRecipeSuccessById(state, action.payload, recipe => ({
+        ...recipe,
+        addingStepToRecipe: false
+      }))
+    case getType(addIngredientToRecipe.request):
+      return mapRecipeSuccessById(state, action.payload, recipe => ({
+        ...recipe,
+        addingIngredient: true
+      }))
+    case getType(addIngredientToRecipe.success):
       return mapRecipeSuccessById(state, action.payload.id, recipe => ({
         ...recipe,
-        addingStepToRecipe: action.payload.val
+        ingredients: recipe.ingredients.concat(action.payload.ingredient),
+        addingIngredient: false
       }))
-    case getType(addIngredientToRecipe):
-      return mapRecipeSuccessById(state, action.payload.id, recipe => ({
+    case getType(addIngredientToRecipe.failure):
+      return mapRecipeSuccessById(state, action.payload, recipe => ({
         ...recipe,
-        ingredients: recipe.ingredients.concat(action.payload.ingredient)
+        addingIngredient: false
       }))
-    case getType(deleteIngredient):
+    case getType(deleteIngredient.request):
+      return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
+        ...recipe,
+        ingredients: recipe.ingredients.map(x => {
+          if (x.id === action.payload.ingredientID) {
+            return {
+              ...x,
+              removing: true
+            }
+          }
+          return x
+        })
+      }))
+    case getType(deleteIngredient.success):
       return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
         ...recipe,
         ingredients: recipe.ingredients.filter(
           x => x.id !== action.payload.ingredientID
         )
       }))
-    case getType(updateIngredient):
+    case getType(deleteIngredient.failure):
+      return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
+        ...recipe,
+        ingredients: recipe.ingredients.map(x => {
+          if (x.id === action.payload.ingredientID) {
+            return {
+              ...x,
+              removing: false
+            }
+          }
+          return x
+        })
+      }))
+    case getType(updateIngredient.request):
+      return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
+        ...recipe,
+        ingredients: recipe.ingredients.map(x => {
+          if (x.id === action.payload.ingredientID) {
+            return {
+              ...x,
+              updating: true
+            }
+          }
+          return x
+        })
+      }))
+    case getType(updateIngredient.success):
       return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
         ...recipe,
         ingredients: recipe.ingredients.map(ingre => {
           if (ingre.id === action.payload.ingredientID) {
-            return { ...ingre, ...action.payload.content }
+            return { ...ingre, ...action.payload.content, updating: false }
           } else {
             return ingre
           }
         })
       }))
-    case getType(deleteStep):
+    case getType(updateIngredient.failure):
+      return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
+        ...recipe,
+        ingredients: recipe.ingredients.map(x => {
+          if (x.id === action.payload.ingredientID) {
+            return {
+              ...x,
+              updating: false
+            }
+          }
+          return x
+        })
+      }))
+    case getType(deleteStep.request):
+      return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
+        ...recipe,
+        steps: recipe.steps.map(x => {
+          if (x.id === action.payload.stepID) {
+            return {
+              ...x,
+              removing: true
+            }
+          }
+          return x
+        })
+      }))
+    case getType(deleteStep.success):
       return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
         ...recipe,
         steps: recipe.steps.filter(x => x.id !== action.payload.stepID)
       }))
-    case getType(updateStep):
+    case getType(deleteStep.failure):
+      return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
+        ...recipe,
+        steps: recipe.steps.map(x => {
+          if (x.id === action.payload.stepID) {
+            return {
+              ...x,
+              removing: false
+            }
+          }
+          return x
+        })
+      }))
+    case getType(updateStep.request):
+      return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
+        ...recipe,
+        steps: recipe.steps.map(x => {
+          if (x.id === action.payload.stepID) {
+            return {
+              ...x,
+              updating: true
+            }
+          }
+          return x
+        })
+      }))
+    case getType(updateStep.success):
       return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
         ...recipe,
         steps: recipe.steps.map(s => {
@@ -517,74 +665,43 @@ export const recipes = (
             return {
               ...s,
               text: action.payload.text,
-              position: action.payload.position
+              position: action.payload.position,
+              updating: false
             }
           } else {
             return s
           }
         })
       }))
-    case getType(setAddingIngredientToRecipe):
-      return mapRecipeSuccessById(state, action.payload.id, recipe => ({
-        ...recipe,
-        addingIngredient: action.payload.val
-      }))
-    case getType(setUpdatingIngredient):
-      return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
-        ...recipe,
-        ingredients: recipe.ingredients.map(x => {
-          if (x.id === action.payload.ingredientID) {
-            return {
-              ...x,
-              updating: action.payload.val
-            }
-          }
-          return x
-        })
-      }))
-    case getType(setRemovingIngredient):
-      return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
-        ...recipe,
-        ingredients: recipe.ingredients.map(x => {
-          if (x.id === action.payload.ingredientID) {
-            return {
-              ...x,
-              removing: action.payload.val
-            }
-          }
-          return x
-        })
-      }))
-    case getType(setUpdatingStep):
+    case getType(updateStep.failure):
       return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
         ...recipe,
         steps: recipe.steps.map(x => {
           if (x.id === action.payload.stepID) {
             return {
               ...x,
-              updating: action.payload.val
+              updating: false
             }
           }
           return x
         })
       }))
-    case getType(setRemovingStep):
-      return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
+
+    case getType(updateRecipe.request):
+      return mapRecipeSuccessById(state, action.payload, recipe => ({
         ...recipe,
-        steps: recipe.steps.map(x => {
-          if (x.id === action.payload.stepID) {
-            return {
-              ...x,
-              removing: action.payload.val
-            }
-          }
-          return x
-        })
+        updating: true
       }))
-    case getType(setRecipeUpdating):
+    case getType(updateRecipe.success):
       return mapRecipeSuccessById(state, action.payload.id, recipe => ({
         ...recipe,
-        updating: action.payload.val
+        ...action.payload,
+        updating: false
+      }))
+    case getType(updateRecipe.failure):
+      return mapRecipeSuccessById(state, action.payload, recipe => ({
+        ...recipe,
+        updating: false
       }))
     case getType(updateRecipeOwner):
       return mapRecipeSuccessById(state, action.payload.id, recipe => ({

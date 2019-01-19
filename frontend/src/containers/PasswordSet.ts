@@ -4,12 +4,12 @@ import { updatingPassword, Dispatch } from "@/store/thunks"
 
 import PasswordChange from "@/components/PasswordChange"
 import { RootState } from "@/store/store"
-import { setErrorPasswordUpdate } from "@/store/reducers/passwordChange"
+import { clearPasswordUpdateError } from "@/store/reducers/passwordChange"
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   update: updatingPassword(dispatch),
   setPassword: true,
-  clearErrors: () => dispatch(setErrorPasswordUpdate({}))
+  clearErrors: () => dispatch(clearPasswordUpdateError())
 })
 
 const mapStateToProps = (state: RootState) => ({
