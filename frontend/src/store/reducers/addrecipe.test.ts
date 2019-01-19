@@ -176,7 +176,7 @@ describe("addrecipe", () => {
     expect(
       addrecipe(
         beforeState,
-        a.updateAddRecipeFormIngredient(index, newIngredient)
+        a.updateAddRecipeFormIngredient({ index, ingredient: newIngredient })
       )
     ).toEqual(afterState)
   })
@@ -254,7 +254,10 @@ describe("addrecipe", () => {
     const index = 0
 
     expect(
-      addrecipe(beforeState, a.updateAddRecipeFormStep(index, newStep))
+      addrecipe(
+        beforeState,
+        a.updateAddRecipeFormStep({ index, step: newStep })
+      )
     ).toEqual(afterState)
   })
 

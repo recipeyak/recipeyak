@@ -1,13 +1,11 @@
-import { action as act } from "typesafe-actions"
+import { createStandardAction, getType } from "typesafe-actions"
 
-const SET_LOADING_PASSWORD_UPDATE = "SET_LOADING_PASSWORD_UPDATE"
-const SET_ERROR_PASSWORD_UPDATE = "SET_ERROR_PASSWORD_UPDATE"
-
-export const setLoadingPasswordUpdate = (val: boolean) =>
-  act(SET_LOADING_PASSWORD_UPDATE, val)
-
-export const setErrorPasswordUpdate = (val: IPasswordUpdateError) =>
-  act(SET_ERROR_PASSWORD_UPDATE, val)
+export const setLoadingPasswordUpdate = createStandardAction(
+  "SET_LOADING_PASSWORD_UPDATE"
+)<IPasswordChangeState["loadingPasswordUpdate"]>()
+export const setErrorPasswordUpdate = createStandardAction(
+  "SET_ERROR_PASSWORD_UPDATE"
+)<IPasswordUpdateError>()
 
 export type PasswordChangeActions =
   | ReturnType<typeof setLoadingPasswordUpdate>
@@ -34,9 +32,9 @@ export const passwordChange = (
   action: PasswordChangeActions
 ): IPasswordChangeState => {
   switch (action.type) {
-    case SET_LOADING_PASSWORD_UPDATE:
+    case getType(setLoadingPasswordUpdate):
       return { ...state, loadingPasswordUpdate: action.payload }
-    case SET_ERROR_PASSWORD_UPDATE:
+    case getType(setErrorPasswordUpdate):
       return { ...state, errorPasswordUpdate: action.payload }
     default:
       return state

@@ -1,45 +1,31 @@
 import { uniq, omit } from "lodash"
 import isSameDay from "date-fns/is_same_day"
-
 import {
-  action as act,
   createAsyncAction,
   ActionType,
-  getType
+  getType,
+  createStandardAction
 } from "typesafe-actions"
 import { RootState } from "@/store/store"
-
-const SET_CALENDAR_RECIPE = "SET_CALENDAR_RECIPE"
-const DELETE_CALENDAR_RECIPE = "DELETE_CALENDAR_RECIPE"
-const MOVE_CALENDAR_RECIPE = "MOVE_CALENDAR_RECIPE"
-const REPLACE_CALENDAR_RECIPE = "REPLACE_CALENDAR_RECIPE"
 
 export const fetchCalendarRecipes = createAsyncAction(
   "FETCH_CALENDAR_RECIPES_START",
   "FETCH_CALENDAR_RECIPES_SUCCESS",
   "FETCH_CALENDAR_RECIPES_FAILURE"
 )<void, ICalRecipe[], void>()
-
-export const setCalendarRecipe = (recipe: ICalRecipe) =>
-  act(SET_CALENDAR_RECIPE, recipe)
-
-export const deleteCalendarRecipe = (id: number) =>
-  act(DELETE_CALENDAR_RECIPE, id)
-
-export const moveCalendarRecipe = (id: ICalRecipe["id"], to: string) =>
-  act(MOVE_CALENDAR_RECIPE, {
-    id,
-    on: to
-  })
-
-export const replaceCalendarRecipe = (
-  id: ICalRecipe["id"],
-  recipe: ICalRecipe
-) =>
-  act(REPLACE_CALENDAR_RECIPE, {
-    id,
-    recipe
-  })
+export const setCalendarRecipe = createStandardAction("SET_CALENDAR_RECIPE")<
+  ICalRecipe
+>()
+export const deleteCalendarRecipe = createStandardAction(
+  "DELETE_CALENDAR_RECIPE"
+)<number>()
+export const moveCalendarRecipe = createStandardAction("MOVE_CALENDAR_RECIPE")<{
+  id: ICalRecipe["id"]
+  to: string
+}>()
+export const replaceCalendarRecipe = createStandardAction(
+  "REPLACE_CALENDAR_RECIPE"
+)<{ id: ICalRecipe["id"]; recipe: ICalRecipe }>()
 
 export type CalendarActions =
   | ReturnType<typeof setCalendarRecipe>
@@ -91,7 +77,7 @@ export const calendar = (
         },
         allIds: uniq(state.allIds.concat(action.payload.map(x => x.id)))
       }
-    case SET_CALENDAR_RECIPE: {
+    case getType(setCalendarRecipe): {
       const existing = state.allIds
         .filter(x => x !== action.payload.id)
         .map(x => state.byId[x])
@@ -124,8 +110,7 @@ export const calendar = (
         allIds: uniq(state.allIds.concat(action.payload.id))
       }
     }
-
-    case DELETE_CALENDAR_RECIPE:
+    case getType(deleteCalendarRecipe):
       return {
         ...state,
         byId: omit(state.byId, action.payload),
@@ -142,7 +127,7 @@ export const calendar = (
         ...state,
         error: true
       }
-    case MOVE_CALENDAR_RECIPE: {
+    case getType(moveCalendarRecipe): {
       // if the same recipe already exists at the date:
       // - add the two counts
       // - remove the old recipe
@@ -151,11 +136,15 @@ export const calendar = (
       const moving = state.byId[action.payload.id]
 
       const existing = state.allIds
-        .filter(x => x !== action.payload.id)
-        .map(x => state.byId[x])
-        .filter(x => isSameDay(x.on, action.payload.on))
-        .filter(x => x.team === moving.team && x.user === moving.user)
-        .find(x => x.recipe.id === moving.recipe.id)
+        .map(id => state.byId[id])
+        .filter(
+          r =>
+            r.id !== action.payload.id &&
+            isSameDay(r.on, action.payload.to) &&
+            r.team === moving.team &&
+            r.user === moving.user
+        )
+        .find(r => r.recipe.id === moving.recipe.id)
 
       if (existing) {
         return {
@@ -177,12 +166,12 @@ export const calendar = (
           ...state.byId,
           [action.payload.id]: {
             ...state.byId[action.payload.id],
-            on: action.payload.on
+            on: action.payload.to
           }
         }
       }
     }
-    case REPLACE_CALENDAR_RECIPE:
+    case getType(replaceCalendarRecipe):
       return {
         ...state,
         byId: {

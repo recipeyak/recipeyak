@@ -4,23 +4,11 @@ import raven from "raven-js"
 import {
   createAsyncAction,
   createStandardAction,
-  action as act,
   ActionType,
   getType
 } from "typesafe-actions"
 import { IRecipe } from "@/store/reducers/recipes"
 import { WebData, Success, Failure, HttpErrorKind, toLoading } from "@/webdata"
-
-const LOG_IN = "LOG_IN"
-
-const SET_TEAM_ID = "SET_TEAM_ID"
-
-const SET_SOCIAL_ACCOUNT_CONNECTIONS = "SET_SOCIAL_ACCOUNT_CONNECTIONS"
-const SET_SOCIAL_ACCOUNT_CONNECTION = "SET_SOCIAL_ACCOUNT_CONNECTION"
-
-const TOGGLE_DARK_MODE = "TOGGLE_DARK_MODE"
-
-const SET_LOGGING_OUT = "SET_LOGGING_OUT"
 
 export const fetchUserStats = createAsyncAction(
   "FETCH_USER_STATS_START",
@@ -28,34 +16,29 @@ export const fetchUserStats = createAsyncAction(
   "FETCH_USER_STATS_FAILURE"
 )<void, IUserStats, void>()
 
-export const SET_USER_LOGGED_IN = "SET_USER_LOGGED_IN"
-
 // TODO(chdsbd): Replace usage with fetchUser#success. Update user reducer.
-export const login = (payload: IUser) => act(LOG_IN, payload)
-
-export const setLoggingOut = (val: boolean) => act(SET_LOGGING_OUT, val)
-
-export const updateTeamID = createStandardAction(SET_TEAM_ID)<number | null>()
-
-export const setSocialConnections = (val: ISocialConnection[]) =>
-  act(SET_SOCIAL_ACCOUNT_CONNECTIONS, val)
-
-export const setSocialConnection = (provider: SocialProvider, val: unknown) =>
-  act(SET_SOCIAL_ACCOUNT_CONNECTION, {
-    provider,
-    val
-  })
-
-export const setUserLoggedIn = (val: boolean) => act(SET_USER_LOGGED_IN, val)
-
+export const login = createStandardAction("LOG_IN")<IUser>()
+export const setLoggingOut = createStandardAction("SET_LOGGING_OUT")<
+  IUserState["loggingOut"]
+>()
+export const updateTeamID = createStandardAction("SET_TEAM_ID")<
+  IUserState["teamID"]
+>()
+export const setSocialConnections = createStandardAction(
+  "SET_SOCIAL_ACCOUNT_CONNECTIONS"
+)<ISocialConnection[]>()
+export const setSocialConnection = createStandardAction(
+  "SET_SOCIAL_ACCOUNT_CONNECTION"
+)<{ provider: SocialProvider; val: unknown }>()
+export const setUserLoggedIn = createStandardAction("SET_USER_LOGGED_IN")<
+  IUserState["loggedIn"]
+>()
 export const fetchUser = createAsyncAction(
   "FETCH_USER_START",
   "FETCH_USER_SUCCESS",
   "FETCH_USER_FAILURE"
 )<void, IUser, void>()
-
-export const toggleDarkMode = () => act(TOGGLE_DARK_MODE)
-
+export const toggleDarkMode = createStandardAction("TOGGLE_DARK_MODE")()
 export const updateEmail = createAsyncAction(
   "UPDATE_EMAIL_START",
   "UPDATE_EMAIL_SUCCESS",
@@ -161,10 +144,10 @@ export const user = (
     }
     case getType(fetchUserStats.failure):
       return { ...state, stats: Failure(HttpErrorKind.other) }
-    case SET_LOGGING_OUT:
+    case getType(setLoggingOut):
       raven.setUserContext()
       return { ...state, loggingOut: action.payload }
-    case SET_SOCIAL_ACCOUNT_CONNECTIONS:
+    case getType(setSocialConnections):
       return {
         ...state,
         socialAccountConnections: action.payload.reduce(
@@ -172,7 +155,7 @@ export const user = (
           state.socialAccountConnections
         )
       }
-    case SET_SOCIAL_ACCOUNT_CONNECTION:
+    case getType(setSocialConnection):
       return {
         ...state,
         socialAccountConnections: {
@@ -180,11 +163,11 @@ export const user = (
           [action.payload.provider]: action.payload.val
         }
       }
-    case SET_TEAM_ID:
+    case getType(updateTeamID):
       return { ...state, teamID: action.payload }
-    case SET_USER_LOGGED_IN:
+    case getType(setUserLoggedIn):
       return { ...state, loggedIn: action.payload }
-    case TOGGLE_DARK_MODE:
+    case getType(toggleDarkMode):
       const newDarkMode = !state.darkMode
       setDarkModeClass(newDarkMode)
       return { ...state, darkMode: newDarkMode }
@@ -197,7 +180,7 @@ export const user = (
     case getType(fetchUser.failure):
       return { ...state, loading: false, error: true }
     // TODO(chdsbd): Replace login usage with FETCH_USER_SUCCESS
-    case LOG_IN:
+    case getType(login):
     case getType(updateEmail.success):
     case getType(fetchUser.success):
       raven.setUserContext({

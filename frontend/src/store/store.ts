@@ -16,11 +16,7 @@ import {
 } from "react-router-redux"
 
 import recipes, { IRecipesState, RecipeActions } from "@/store/reducers/recipes"
-import user, {
-  SET_USER_LOGGED_IN,
-  IUserState,
-  UserActions
-} from "@/store/reducers/user"
+import user, { IUserState, UserActions, login } from "@/store/reducers/user"
 import notification, {
   INotificationState,
   NotificationsActions
@@ -46,7 +42,7 @@ import calendar, {
 } from "@/store/reducers/calendar"
 
 import { loadState, saveState } from "@/store/localStorage"
-import { StateType } from "typesafe-actions"
+import { StateType, getType } from "typesafe-actions"
 import { createLogger } from "redux-logger"
 import { DEBUG } from "@/settings"
 
@@ -98,7 +94,7 @@ export function rootReducer(state: IState | undefined, action: Action): IState {
   if (state == null) {
     return recipeApp(undefined, action)
   }
-  if (action.type === SET_USER_LOGGED_IN && !action.payload) {
+  if (action.type === getType(login) && !action.payload) {
     return {
       ...recipeApp(undefined, action),
       // We need to save this auth state (fromUrl) through logout

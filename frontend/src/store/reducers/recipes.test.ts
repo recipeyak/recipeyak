@@ -132,9 +132,9 @@ describe("Recipes", () => {
       steps: [newStep]
     })
 
-    expect(recipes(beforeState, a.addStepToRecipe(1, newStep))).toEqual(
-      afterState
-    )
+    expect(
+      recipes(beforeState, a.addStepToRecipe({ id: 1, step: newStep }))
+    ).toEqual(afterState)
   })
 
   it("adds an ingredient to the recipe and doesn't delete steps", () => {
@@ -165,7 +165,10 @@ describe("Recipes", () => {
     })
 
     expect(
-      recipes(beforeState, a.addIngredientToRecipe(1, newIngredient))
+      recipes(
+        beforeState,
+        a.addIngredientToRecipe({ id: 1, ingredient: newIngredient })
+      )
     ).toEqual(afterState)
   })
 
@@ -197,9 +200,12 @@ describe("Recipes", () => {
       ]
     })
 
-    expect(recipes(beforeState, a.updateStep(1, 1, text, position))).toEqual(
-      afterState
-    )
+    expect(
+      recipes(
+        beforeState,
+        a.updateStep({ recipeID: 1, stepID: 1, text, position })
+      )
+    ).toEqual(afterState)
   })
 
   it("it updates an ingredient", () => {
@@ -232,7 +238,14 @@ describe("Recipes", () => {
     })
 
     expect(
-      recipes(beforeState, a.updateIngredient(1, 1, newIngredient))
+      recipes(
+        beforeState,
+        a.updateIngredient({
+          recipeID: 1,
+          ingredientID: 1,
+          content: newIngredient
+        })
+      )
     ).toEqual(afterState)
   })
 
@@ -262,7 +275,9 @@ describe("Recipes", () => {
         }
       ]
     })
-    expect(recipes(beforeState, a.deleteIngredient(1, 1))).toEqual(afterState)
+    expect(
+      recipes(beforeState, a.deleteIngredient({ recipeID: 1, ingredientID: 1 }))
+    ).toEqual(afterState)
   })
 
   it("deletes a step from a recipe", () => {
@@ -293,7 +308,9 @@ describe("Recipes", () => {
       ]
     })
 
-    expect(recipes(beforeState, a.deleteStep(1, 1))).toEqual(afterState)
+    expect(
+      recipes(beforeState, a.deleteStep({ recipeID: 1, stepID: 1 }))
+    ).toEqual(afterState)
   })
 
   it("sets the loading state for adding a step to a recipe", () => {
@@ -307,9 +324,9 @@ describe("Recipes", () => {
       addingStepToRecipe: true
     })
 
-    expect(recipes(beforeState, a.setLoadingAddStepToRecipe(1, true))).toEqual(
-      afterState
-    )
+    expect(
+      recipes(beforeState, a.setLoadingAddStepToRecipe({ id: 1, val: true }))
+    ).toEqual(afterState)
   })
 
   it("sets the recipe to be adding an ingredient", () => {
@@ -324,7 +341,7 @@ describe("Recipes", () => {
     })
 
     expect(
-      recipes(beforeState, a.setAddingIngredientToRecipe(1, true))
+      recipes(beforeState, a.setAddingIngredientToRecipe({ id: 1, val: true }))
     ).toEqual(afterState)
   })
 
@@ -348,9 +365,12 @@ describe("Recipes", () => {
       ]
     })
 
-    expect(recipes(beforeState, a.setUpdatingIngredient(1, 1, true))).toEqual(
-      afterState
-    )
+    expect(
+      recipes(
+        beforeState,
+        a.setUpdatingIngredient({ recipeID: 1, ingredientID: 1, val: true })
+      )
+    ).toEqual(afterState)
   })
 
   it("sets the recipe to be removing a specific ingredient", () => {
@@ -374,9 +394,12 @@ describe("Recipes", () => {
       ]
     })
 
-    expect(recipes(beforeState, a.setRemovingIngredient(1, 1, true))).toEqual(
-      afterState
-    )
+    expect(
+      recipes(
+        beforeState,
+        a.setRemovingIngredient({ recipeID: 1, ingredientID: 1, val: true })
+      )
+    ).toEqual(afterState)
   })
 
   it("sets the recipe to be updating a specific step", () => {
@@ -399,9 +422,12 @@ describe("Recipes", () => {
       ]
     })
 
-    expect(recipes(beforeState, a.setUpdatingStep(1, 1, true))).toEqual(
-      afterState
-    )
+    expect(
+      recipes(
+        beforeState,
+        a.setUpdatingStep({ recipeID: 1, stepID: 1, val: true })
+      )
+    ).toEqual(afterState)
   })
 
   it("sets the recipe to be removing a specific step", () => {
@@ -428,9 +454,12 @@ describe("Recipes", () => {
         }
       ]
     })
-    expect(recipes(beforeState, a.setRemovingStep(1, 1, true))).toEqual(
-      afterState
-    )
+    expect(
+      recipes(
+        beforeState,
+        a.setRemovingStep({ recipeID: 1, stepID: 1, val: true })
+      )
+    ).toEqual(afterState)
   })
 
   it("fetch recipe works", () => {
@@ -485,9 +514,9 @@ describe("Recipes", () => {
       updating: true
     })
 
-    expect(recipes(beforeState, a.setRecipeUpdating(1, true))).toEqual(
-      afterState
-    )
+    expect(
+      recipes(beforeState, a.setRecipeUpdating({ id: 1, val: true }))
+    ).toEqual(afterState)
   })
 
   it("overwrites the recipe correctly", () => {
@@ -555,7 +584,7 @@ describe("Recipes", () => {
       name: "A Cool Name"
     }
 
-    expect(recipes(beforeState, a.updateRecipeOwner(id, owner))).toEqual(
+    expect(recipes(beforeState, a.updateRecipeOwner({ id, owner }))).toEqual(
       afterState
     )
   })
@@ -588,8 +617,11 @@ describe("Recipes", () => {
       }
     ])
 
-    expect(recipes(beforeState, a.setSchedulingRecipe(1, true))).toEqual(
-      afterState
-    )
+    expect(
+      recipes(
+        beforeState,
+        a.setSchedulingRecipe({ recipeID: 1, scheduling: true })
+      )
+    ).toEqual(afterState)
   })
 })

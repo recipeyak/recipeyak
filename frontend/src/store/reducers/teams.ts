@@ -1,124 +1,70 @@
 import { uniq, omit } from "lodash"
-
 import { IUser } from "@/store/reducers/user"
 import {
-  action as act,
   createAsyncAction,
   getType,
-  ActionType
+  ActionType,
+  createStandardAction
 } from "typesafe-actions"
 import { IRecipe } from "@/store/reducers/recipes"
 
-const ADD_TEAM = "ADD_TEAM"
-const DELETE_TEAM = "DELETE_TEAM"
-const SET_LOADING_TEAM = "SET_LOADING_TEAM"
-const SET_LOADING_TEAM_MEMBERS = "SET_LOADING_TEAM_MEMBERS"
-const SET_LOADING_TEAM_RECIPES = "SET_LOADING_TEAM_RECIPES"
-const SET_TEAM_404 = "SET_TEAM_404"
-const SET_TEAM_MEMBERS = "SET_TEAM_MEMBERS"
-const SET_TEAM_RECIPES = "SET_TEAM_RECIPES"
-const SET_UPDATING_USER_TEAM_LEVEL = "SET_UPDATING_USER_TEAM_LEVEL"
-const SET_DELETING_MEMBERSHIP = "SET_DELETING_MEMBERSHIP"
-const SET_USER_TEAM_LEVEL = "SET_USER_TEAM_LEVEL"
-const SET_SENDING_TEAM_INVITES = "SET_SENDING_TEAM_INVITES"
-const DELETE_MEMBERSHIP = "DELETE_MEMBERSHIP"
-const SET_TEAM = "SET_TEAM"
-const SET_CREATING_TEAM = "SET_CREATING_TEAM"
-const SET_COPYING_TEAM = "SET_COPYING_TEAM"
-const UPDATE_TEAM = "UPDATE_TEAM"
-
-export const addTeam = (team: ITeam) => act(ADD_TEAM, team)
-export const deleteTeam = (id: number) => act(DELETE_TEAM, id)
-export const setLoadingTeam = (id: number, loadingTeam: boolean) =>
-  act(SET_LOADING_TEAM, {
-    id,
-    loadingTeam
-  })
-export const setLoadingTeamMembers = (id: number, loadingMembers: boolean) =>
-  act(SET_LOADING_TEAM_MEMBERS, {
-    id,
-    loadingMembers
-  })
-
-export const setLoadingTeamRecipes = (id: number, loadingRecipes: boolean) =>
-  act(SET_LOADING_TEAM_RECIPES, {
-    id,
-    loadingRecipes
-  })
-export const setTeam404 = (id: number, val = true) =>
-  act(SET_TEAM_404, {
-    id,
-    val
-  })
-
-export const setTeamMembers = (id: number, members: IMember[]) =>
-  act(SET_TEAM_MEMBERS, {
-    id,
-    members
-  })
-
-export const setTeamRecipes = (id: number, recipes: IRecipe[]) =>
-  act(SET_TEAM_RECIPES, {
-    id,
-    recipes
-  })
-
-export const setUpdatingUserTeamLevel = (id: number, updating: boolean) =>
-  act(SET_UPDATING_USER_TEAM_LEVEL, {
-    id,
-    updating
-  })
-
-export const setDeletingMembership = (
-  teamID: number,
-  membershipID: number,
+export const addTeam = createStandardAction("ADD_TEAM")<ITeam>()
+export const deleteTeam = createStandardAction("DELETE_TEAM")<ITeam["id"]>()
+export const setLoadingTeam = createStandardAction("SET_LOADING_TEAM")<{
+  id: ITeam["id"]
+  loadingTeam: boolean
+}>()
+export const setLoadingTeamMembers = createStandardAction(
+  "SET_LOADING_TEAM_MEMBERS"
+)<{ id: ITeam["id"]; loadingMembers: boolean }>()
+export const setLoadingTeamRecipes = createStandardAction(
+  "SET_LOADING_TEAM_RECIPES"
+)<{ id: ITeam["id"]; loadingRecipes: boolean }>()
+export const setTeam404 = createStandardAction("SET_TEAM_404")<{
+  id: ITeam["id"]
   val: boolean
-) =>
-  act(SET_DELETING_MEMBERSHIP, {
-    teamID,
-    membershipID,
-    val
-  })
-
-export const setUserTeamLevel = (
-  teamID: number,
-  membershipID: number,
+}>()
+export const setTeamMembers = createStandardAction("SET_TEAM_MEMBERS")<{
+  id: ITeam["id"]
+  members: IMember[]
+}>()
+export const setTeamRecipes = createStandardAction("SET_TEAM_RECIPES")<{
+  id: ITeam["id"]
+  recipes: IRecipe[]
+}>()
+export const setUpdatingUserTeamLevel = createStandardAction(
+  "SET_UPDATING_USER_TEAM_LEVEL"
+)<{ id: ITeam["id"]; updating: boolean }>()
+export const setDeletingMembership = createStandardAction(
+  "SET_DELETING_MEMBERSHIP"
+)<{ teamID: number; membershipID: number; val: boolean }>()
+export const setUserTeamLevel = createStandardAction("SET_USER_TEAM_LEVEL")<{
+  teamID: ITeam["id"]
+  membershipID: IMember["id"]
   level: IMember["level"]
-) =>
-  act(SET_USER_TEAM_LEVEL, {
-    teamID,
-    membershipID,
-    level
-  })
-
-export const setSendingTeamInvites = (teamID: number, val: boolean) =>
-  act(SET_SENDING_TEAM_INVITES, {
-    teamID,
-    val
-  })
-
-export const deleteMembership = (teamID: number, membershipID: number) =>
-  act(DELETE_MEMBERSHIP, {
-    teamID,
-    membershipID
-  })
-
-export const setTeam = (id: number, team: ITeam) =>
-  act(SET_TEAM, {
-    id,
-    team
-  })
-
-export const setCreatingTeam = (val: boolean) => act(SET_CREATING_TEAM, val)
-
-export const setCopyingTeam = (val: boolean) => act(SET_COPYING_TEAM, val)
-
-export const updateTeamById = (id: number, teamKeys: ITeam) =>
-  act(UPDATE_TEAM, {
-    id,
-    teamKeys
-  })
-
+}>()
+export const setSendingTeamInvites = createStandardAction(
+  "SET_SENDING_TEAM_INVITES"
+)<{ teamID: ITeam["id"]; val: boolean }>()
+export const deleteMembership = createStandardAction("DELETE_MEMBERSHIP")<{
+  teamID: ITeam["id"]
+  membershipID: IMember["id"]
+}>()
+// TODO(sbdchd): we shouldn't need to pass id as a seperate obj prop
+export const setTeam = createStandardAction("SET_TEAM")<{
+  id: ITeam["id"]
+  team: ITeam
+}>()
+export const setCreatingTeam = createStandardAction("SET_CREATING_TEAM")<
+  boolean
+>()
+export const setCopyingTeam = createStandardAction("SET_COPYING_TEAM")<
+  boolean
+>()
+export const updateTeamById = createStandardAction("UPDATE_TEAM")<{
+  id: ITeam["id"]
+  teamKeys: ITeam
+}>()
 export const fetchTeams = createAsyncAction(
   "FETCH_TEAMS_START",
   "FETCH_TEAMS_SUCCESS",
@@ -204,7 +150,7 @@ export const teams = (
   action: TeamsActions
 ): ITeamsState => {
   switch (action.type) {
-    case ADD_TEAM:
+    case getType(addTeam):
       return {
         ...state,
         byId: {
@@ -216,13 +162,13 @@ export const teams = (
         },
         allIds: uniq([...state.allIds, action.payload.id])
       }
-    case DELETE_TEAM:
+    case getType(deleteTeam):
       return {
         ...state,
         byId: omit(state.byId, action.payload),
         allIds: state.allIds.filter(id => id !== action.payload)
       }
-    case SET_LOADING_TEAM:
+    case getType(setLoadingTeam):
       return {
         ...state,
         byId: {
@@ -233,7 +179,7 @@ export const teams = (
           }
         }
       }
-    case SET_LOADING_TEAM_MEMBERS:
+    case getType(setLoadingTeamMembers):
       return {
         ...state,
         byId: {
@@ -244,7 +190,7 @@ export const teams = (
           }
         }
       }
-    case SET_LOADING_TEAM_RECIPES:
+    case getType(setLoadingTeamRecipes):
       return {
         ...state,
         byId: {
@@ -255,12 +201,12 @@ export const teams = (
           }
         }
       }
-    case SET_TEAM_404:
+    case getType(setTeam404):
       return mapById(state, action.payload.id, team => ({
         ...team,
         error404: action.payload.val
       }))
-    case SET_TEAM_MEMBERS:
+    case getType(setTeamMembers):
       return mapById(state, action.payload.id, team => ({
         ...team,
         members: action.payload.members.reduce(
@@ -271,17 +217,17 @@ export const teams = (
           {}
         )
       }))
-    case SET_TEAM_RECIPES:
+    case getType(setTeamRecipes):
       return mapById(state, action.payload.id, team => ({
         ...team,
         recipes: action.payload.recipes.map(r => r.id)
       }))
-    case SET_UPDATING_USER_TEAM_LEVEL:
+    case getType(setUpdatingUserTeamLevel):
       return mapById(state, action.payload.id, team => ({
         ...team,
         updating: action.payload.updating
       }))
-    case SET_DELETING_MEMBERSHIP:
+    case getType(setDeletingMembership):
       return mapById<ITeamsState, ITeam>(
         state,
         action.payload.teamID,
@@ -297,7 +243,7 @@ export const teams = (
           }
         })
       )
-    case SET_USER_TEAM_LEVEL:
+    case getType(setUserTeamLevel):
       return mapById<ITeamsState, ITeam>(
         state,
         action.payload.teamID,
@@ -313,12 +259,12 @@ export const teams = (
           }
         })
       )
-    case SET_SENDING_TEAM_INVITES:
+    case getType(setSendingTeamInvites):
       return mapById(state, action.payload.teamID, team => ({
         ...team,
         sendingTeamInvites: action.payload.val
       }))
-    case DELETE_MEMBERSHIP:
+    case getType(deleteMembership):
       return mapById<ITeamsState, ITeam>(
         state,
         action.payload.teamID,
@@ -328,7 +274,6 @@ export const teams = (
           members: omit(team.members, action.payload.membershipID)
         })
       )
-
     case getType(fetchTeams.success):
       return {
         ...state,
@@ -350,7 +295,7 @@ export const teams = (
         ...state,
         loading: true
       }
-    case SET_TEAM:
+    case getType(setTeam):
       return {
         ...state,
         byId: {
@@ -359,17 +304,17 @@ export const teams = (
         },
         allIds: uniq(state.allIds.concat(action.payload.id))
       }
-    case SET_CREATING_TEAM:
+    case getType(setCreatingTeam):
       return {
         ...state,
         creating: action.payload
       }
-    case SET_COPYING_TEAM:
+    case getType(setCopyingTeam):
       return {
         ...state,
         copying: action.payload
       }
-    case UPDATE_TEAM:
+    case getType(updateTeamById):
       return mapById(state, action.payload.id, () => action.payload.teamKeys)
     default:
       return state
