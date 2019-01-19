@@ -5,7 +5,7 @@ import { roles } from "@/components/TeamInvite"
 
 import { ButtonPrimary } from "@/components/Buttons"
 
-import { creatingTeam, Dispatch } from "@/store/actions"
+import { creatingTeam, Dispatch } from "@/store/thunks"
 import { IMember } from "@/store/reducers/teams"
 import { RootState } from "@/store/store"
 import { TextInput, RadioButton } from "@/components/Forms"

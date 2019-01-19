@@ -19,7 +19,7 @@ import {
   deletingIngredient,
   updatingIngredient,
   Dispatch
-} from "@/store/actions"
+} from "@/store/thunks"
 import { RootState } from "@/store/store"
 import { RouteComponentProps } from "react-router"
 import {

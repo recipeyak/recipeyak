@@ -1,6 +1,6 @@
 import { connect } from "react-redux"
 
-import { signup, Dispatch } from "@/store/actions"
+import { signup, Dispatch } from "@/store/thunks"
 import Signup from "@/components/Signup"
 import { RootState } from "@/store/store"
 import { setErrorSignup } from "@/store/reducers/auth"

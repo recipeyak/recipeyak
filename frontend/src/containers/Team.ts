@@ -7,7 +7,7 @@ import {
   deletingTeam,
   updatingTeam,
   Dispatch
-} from "@/store/actions"
+} from "@/store/thunks"
 import Team from "@/components/Team"
 import { RootState } from "@/store/store"
 import { RouteComponentProps } from "react-router"

@@ -33,7 +33,7 @@ import React from "react"
 import { connect } from "react-redux"
 
 import Card from "@/components/Step"
-import { updatingStep, Dispatch } from "@/store/actions"
+import { updatingStep, Dispatch } from "@/store/thunks"
 import { IRecipe, IStep } from "@/store/reducers/recipes"
 
 interface IStepContainerProps {

@@ -43,7 +43,7 @@ import {
 import * as ItemTypes from "@/dragDrop"
 import ListItem from "@/components/ListItem"
 
-import { deletingStep, updatingStep, Dispatch } from "@/store/actions"
+import { deletingStep, updatingStep, Dispatch } from "@/store/thunks"
 import { IStep, IRecipe } from "@/store/reducers/recipes"
 
 const style = {

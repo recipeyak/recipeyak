@@ -21,7 +21,7 @@ import {
   deletingScheduledRecipe,
   Dispatch,
   fetchingShoppingList
-} from "@/store/actions"
+} from "@/store/thunks"
 
 import * as DragDrop from "@/dragDrop"
 import { ITeam } from "@/store/reducers/teams"

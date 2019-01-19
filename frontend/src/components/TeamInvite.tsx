@@ -11,7 +11,7 @@ import Loader from "@/components/Loader"
 
 import { teamURL } from "@/urls"
 
-import { fetchTeam, sendingTeamInvites, Dispatch } from "@/store/actions"
+import { fetchTeam, sendingTeamInvites, Dispatch } from "@/store/thunks"
 import { RootState } from "@/store/store"
 import { IMember, ITeam } from "@/store/reducers/teams"
 import { TextInput, RadioButton } from "@/components/Forms"

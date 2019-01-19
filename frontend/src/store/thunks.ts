@@ -2,8 +2,6 @@ import isSameDay from "date-fns/is_same_day"
 
 export type Dispatch = ReduxDispatch<Action>
 
-export type GetState = () => RootState
-
 import { random32Id } from "@/uuid"
 
 import { toDateString } from "@/date"
@@ -12,7 +10,7 @@ import { push, replace } from "react-router-redux"
 import { AxiosError, AxiosResponse } from "axios"
 import raven from "raven-js"
 
-import { store, RootState, Action } from "@/store/store"
+import { store, Action } from "@/store/store"
 import {
   SocialProvider,
   updateEmail,

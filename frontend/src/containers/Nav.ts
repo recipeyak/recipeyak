@@ -5,7 +5,7 @@ import {
   loggingOut,
   fetchingTeams,
   Dispatch
-} from "@/store/actions"
+} from "@/store/thunks"
 
 import Nav from "@/components/Nav"
 

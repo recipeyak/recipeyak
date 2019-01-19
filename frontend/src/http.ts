@@ -3,7 +3,7 @@ import { uuid4 } from "@/uuid"
 import Cookie from "js-cookie"
 import { store } from "@/store/store"
 import raven from "raven-js"
-import { invalidToken } from "@/store/actions"
+import { invalidToken } from "@/store/thunks"
 import { setUserLoggedIn } from "@/store/reducers/user"
 
 const config = { timeout: 15000 }

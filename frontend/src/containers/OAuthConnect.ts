@@ -1,7 +1,7 @@
 import { connect } from "react-redux"
 import queryString from "query-string"
 
-import { socialConnect, Dispatch } from "@/store/actions"
+import { socialConnect, Dispatch } from "@/store/thunks"
 import OAuth from "@/components/OAuth"
 import { RootState } from "@/store/store"
 import { SocialProvider } from "@/store/reducers/user"

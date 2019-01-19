@@ -14,7 +14,7 @@ import {
   showNotificationWithTimeout,
   Dispatch,
   fetchingShoppingList
-} from "@/store/actions"
+} from "@/store/thunks"
 
 import { ingredientByNameAlphabetical } from "@/sorters"
 
