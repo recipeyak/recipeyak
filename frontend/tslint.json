@@ -27,6 +27,8 @@
     "react-prefer-simple-fragment": true,
     "no-pointless-computed-property-name": true,
     "jsx-no-true-attribute": true,
+    "no-template-string-cast": true,
+    "no-never-identifier": true,
     "object-literal-sort-keys": false,
     "ordered-imports": false,
     "array-type": false,
