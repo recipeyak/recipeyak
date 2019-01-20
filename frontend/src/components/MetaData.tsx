@@ -3,14 +3,13 @@ import React from "react"
 import Owner from "@/components/Owner"
 import { IRecipe } from "@/store/reducers/recipes"
 
-interface IMetaDataProps {
+interface IMetaDataProps extends React.HTMLAttributes<HTMLDivElement> {
   readonly author: string
   readonly source: string
   readonly servings: string
   readonly time: string
   readonly owner: IRecipe["owner"]
   readonly recipeId: IRecipe["id"]
-  readonly onClick: () => void
 }
 
 const isValid = (x?: string) => x !== "" && x != null
@@ -48,7 +47,11 @@ function MetaPiece({ children }: React.HTMLAttributes<HTMLDivElement>) {
 }
 
 function MetaBold({ children, onClick }: React.HTMLAttributes<HTMLDivElement>) {
-  return <b onClick={onClick}>{children}</b>
+  return (
+    <b title="click  to edit" className="cursor-pointer" onClick={onClick}>
+      {children}
+    </b>
+  )
 }
 
 const MetaData = ({

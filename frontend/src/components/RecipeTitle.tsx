@@ -119,6 +119,7 @@ export default class RecipeTitle extends React.Component<
             <div className="d-flex align-items-center">
               <h1
                 className="title fs-2rem mb-0 mb-1 cursor-pointer"
+                title="click to edit"
                 onClick={this.handleEnableEdit}>
                 {name}
               </h1>
@@ -150,6 +151,7 @@ export default class RecipeTitle extends React.Component<
         {!this.state.edit ? (
           <div className="grid-entire-row">
             <MetaData
+              title="click to edit"
               onClick={this.handleEnableEdit}
               owner={owner}
               author={author}

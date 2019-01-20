@@ -221,7 +221,10 @@ export default class ListItem extends React.Component<
 
     return (
       <div ref={this.element}>
-        <section className="cursor-pointer" onClick={this.enableEditing}>
+        <section
+          className="cursor-pointer"
+          title="click to edit"
+          onClick={this.enableEditing}>
           {inner}
         </section>
         {this.state.unsavedChanges && (
