@@ -1,11 +1,11 @@
 import React from "react"
 import { Button, ButtonPrimary } from "@/components/Buttons"
 import MetaData from "@/components/MetaData"
-import DatePickerForm from "@/components/DatePickerForm"
 import { IRecipe } from "@/store/reducers/recipes"
 import GlobalEvent from "@/components/GlobalEvent"
 import { TextInput } from "@/components/Forms"
 import { hasSelection } from "@/utils/general"
+import { Schedule } from "@/components/RecipeItem"
 
 interface IRecipeTitleProps {
   readonly id: IRecipe["id"]
@@ -134,18 +134,19 @@ export default class RecipeTitle extends React.Component<
               name="name"
             />
           )}
-          <div className="p-rel ml-4 control" title={toolTip}>
-            <ButtonPrimary
-              size="small"
-              onClick={() => this.setState(prev => ({ show: !prev.show }))}>
-              schedule
-            </ButtonPrimary>
-            <DatePickerForm
-              recipeID={id}
-              show={this.state.show}
-              close={() => this.setState({ show: false })}
-            />
-          </div>
+          <Schedule
+            id={id}
+            show={this.state.show}
+            onClose={() => this.setState({ show: false })}
+            trigger={
+              <ButtonPrimary
+                size="small"
+                title={toolTip}
+                onClick={() => this.setState(prev => ({ show: !prev.show }))}>
+                schedule
+              </ButtonPrimary>
+            }
+          />
         </div>
 
         {!this.state.edit ? (

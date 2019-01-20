@@ -49,34 +49,15 @@ function Via({ owner }: IViaProps) {
 interface IScheduleProps {
   readonly show: boolean
   readonly id: IRecipe["id"]
-  readonly onClick: () => void
   readonly onClose: () => void
+  readonly trigger: React.ReactElement<{}>
 }
 
-class Schedule extends React.Component<IScheduleProps> {
-  element = React.createRef<HTMLDivElement>()
-  handleGlobalClick = (e: MouseEvent) => {
-    // Do nothing if we are hidden
-    if (!this.props.show) {
-      return
-    }
-    const el = this.element.current
-    // Close when we click outside of our dropdown/button group
-    if (el && e.target && !el.contains(e.target as Node)) {
-      this.props.onClose()
-    }
-  }
+export class Schedule extends React.Component<IScheduleProps> {
   render() {
-    const { id, show, onClick, onClose } = this.props
+    const { id, show, onClose, trigger } = this.props
     return (
-      <Dropdown
-        onClose={onClose}
-        show={show}
-        trigger={
-          <ButtonPlain size="small" onClick={onClick}>
-            schedule
-          </ButtonPlain>
-        }>
+      <Dropdown onClose={onClose} show={show} trigger={trigger}>
         <DatePickerForm recipeID={id} show={show} close={onClose} />
       </Dropdown>
     )
@@ -125,10 +106,10 @@ export class RecipeItem extends React.Component<
 
     const component = (
       <section
-        className={classNames("card", { "cursor-move": !!drag })}
-        style={{
-          opacity: isDragging ? 0.5 : 1
-        }}>
+        className={classNames("card", {
+          "cursor-move": !!drag
+        })}
+        style={{ opacity: isDragging ? 0.5 : 1 }}>
         <div className="card-content h-100 d-flex flex-column">
           <RecipeTitle name={name} author={author} url={url} />
 
@@ -137,8 +118,18 @@ export class RecipeItem extends React.Component<
             <Schedule
               id={id}
               show={this.state.show}
-              onClick={() => this.setState(prev => ({ show: !prev.show }))}
-              onClose={() => this.setState({ show: false })}
+              onClose={() =>
+                this.setState({
+                  show: false
+                })
+              }
+              trigger={
+                <ButtonPlain
+                  size="small"
+                  onClick={() => this.setState(prev => ({ show: !prev.show }))}>
+                  schedule
+                </ButtonPlain>
+              }
             />
           </div>
         </div>
