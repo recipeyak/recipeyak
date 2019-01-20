@@ -88,6 +88,11 @@ export default class ListItem extends React.Component<
   }
 
   enableEditing = () => {
+    // Don't enable editing when user is selecting text
+    if (window.getSelection().toString().length > 0) {
+      return
+    }
+
     this.setState({
       editing: true,
       unsavedChanges: false

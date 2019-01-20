@@ -122,6 +122,11 @@ export default class Ingredient extends React.Component<
   }
 
   enableEditing = () => {
+    // Don't enable editing when user is selecting text
+    if (window.getSelection().toString().length > 0) {
+      return
+    }
+    // FIXME(chdsbd): This is identical to the method in ListItem
     this.setState({
       editing: true,
       unsavedChanges: false
