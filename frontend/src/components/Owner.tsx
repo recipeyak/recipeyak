@@ -176,9 +176,12 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
     return (
       <span className="fw-500 p-rel" ref={this.dropdown}>
         <GlobalEvent mouseUp={this.handleGeneralClick} />
-        <b className="cursor-pointer" onClick={this.toggle}>
+        <span
+          className="cursor-pointer"
+          title="click to edit"
+          onClick={this.toggle}>
           via
-        </b>{" "}
+        </span>{" "}
         <Link to={url}>{name}</Link>
         <div className={"" + (this.state.show ? " d-block" : " d-none")}>
           <div className="p-abs">

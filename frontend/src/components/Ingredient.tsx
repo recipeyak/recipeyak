@@ -312,7 +312,10 @@ export default class Ingredient extends React.Component<
 
     return (
       <li ref={this.element}>
-        <section className="cursor-pointer" onClick={enableEditing}>
+        <section
+          title="click to edit"
+          className="cursor-pointer"
+          onClick={enableEditing}>
           {inner}
         </section>
         {unsavedChanges && (
