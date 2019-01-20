@@ -5,6 +5,7 @@ import { IIngredient, IRecipe } from "@/store/reducers/recipes"
 import GlobalEvent from "@/components/GlobalEvent"
 import { Button, ButtonLink } from "@/components/Buttons"
 import { TextInput, selectTarget, CheckBox } from "@/components/Forms"
+import { hasSelection } from "@/utils/general"
 
 interface IEmptyField {
   readonly quantity?: string
@@ -122,6 +123,10 @@ export default class Ingredient extends React.Component<
   }
 
   enableEditing = () => {
+    if (hasSelection()) {
+      return
+    }
+    // FIXME(chdsbd): This is identical to the method in ListItem
     this.setState({
       editing: true,
       unsavedChanges: false

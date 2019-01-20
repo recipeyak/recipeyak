@@ -4,6 +4,7 @@ import { IRecipe } from "@/store/reducers/recipes"
 import GlobalEvent from "@/components/GlobalEvent"
 import ReactMarkdown, { NodeType } from "react-markdown"
 import { Button, ButtonLink } from "@/components/Buttons"
+import { hasSelection } from "@/utils/general"
 
 const ALLOWED_MARKDOWN_TYPES: NodeType[] = [
   "root",
@@ -88,6 +89,10 @@ export default class ListItem extends React.Component<
   }
 
   enableEditing = () => {
+    if (hasSelection()) {
+      return
+    }
+
     this.setState({
       editing: true,
       unsavedChanges: false
