@@ -105,7 +105,7 @@ class Recipe extends React.Component<IRecipeProps, IRecipeState> {
 
     return (
       <div className="d-grid grid-gap-2">
-        <Helmet title={name} />
+        <Helmet title={recipe.name} />
 
         <RecipeTitle
           id={recipe.id}
