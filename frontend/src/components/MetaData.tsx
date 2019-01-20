@@ -10,6 +10,7 @@ interface IMetaDataProps {
   readonly time: string
   readonly owner: IRecipe["owner"]
   readonly recipeId: IRecipe["id"]
+  readonly onClick: () => void
 }
 
 const isValid = (x?: string) => x !== "" && x != null
@@ -42,12 +43,12 @@ function SourceLink({ children }: { children: string }) {
   )
 }
 
-function MetaPiece({ children }: { children: React.ReactNode }) {
+function MetaPiece({ children }: React.HTMLAttributes<HTMLDivElement>) {
   return <>{children}</>
 }
 
-function MetaBold({ children }: { children: React.ReactNode }) {
-  return <b>{children}</b>
+function MetaBold({ children, onClick }: React.HTMLAttributes<HTMLDivElement>) {
+  return <b onClick={onClick}>{children}</b>
 }
 
 const MetaData = ({
@@ -56,29 +57,30 @@ const MetaData = ({
   servings = "",
   time = "",
   owner,
+  onClick,
   recipeId
 }: IMetaDataProps) => {
   const _author = isValid(author) ? (
     <MetaPiece>
-      By <MetaBold>{author}</MetaBold>{" "}
+      By <MetaBold onClick={onClick}>{author}</MetaBold>{" "}
     </MetaPiece>
   ) : null
   const _source = isValid(source) ? (
     <MetaPiece>
       from{" "}
-      <MetaBold>
+      <MetaBold onClick={onClick}>
         <SourceLink>{source}</SourceLink>
       </MetaBold>{" "}
     </MetaPiece>
   ) : null
   const _servings = isValid(servings) ? (
     <MetaPiece>
-      creating <MetaBold>{servings}</MetaBold>{" "}
+      creating <MetaBold onClick={onClick}>{servings}</MetaBold>{" "}
     </MetaPiece>
   ) : null
   const _time = isValid(time) ? (
     <MetaPiece>
-      in <MetaBold>{time}</MetaBold>{" "}
+      in <MetaBold onClick={onClick}>{time}</MetaBold>{" "}
     </MetaPiece>
   ) : null
 

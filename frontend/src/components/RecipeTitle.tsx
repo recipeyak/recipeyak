@@ -1,10 +1,11 @@
 import React from "react"
-import { Button, ButtonPrimary, ButtonLink } from "@/components/Buttons"
+import { Button, ButtonPrimary } from "@/components/Buttons"
 import MetaData from "@/components/MetaData"
 import DatePickerForm from "@/components/DatePickerForm"
 import { IRecipe } from "@/store/reducers/recipes"
 import GlobalEvent from "@/components/GlobalEvent"
 import { TextInput } from "@/components/Forms"
+import { hasSelection } from "@/utils/general"
 
 interface IRecipeTitleProps {
   readonly id: IRecipe["id"]
@@ -87,6 +88,13 @@ export default class RecipeTitle extends React.Component<
     }
   }
 
+  handleEnableEdit = () => {
+    if (hasSelection()) {
+      return
+    }
+    this.toggleEdit()
+  }
+
   render() {
     const {
       id,
@@ -109,7 +117,11 @@ export default class RecipeTitle extends React.Component<
           <GlobalEvent keyUp={this.handleGlobalKeyUp} />
           {!this.state.edit ? (
             <div className="d-flex align-items-center">
-              <h1 className="title fs-2rem mb-0 mb-1">{name}</h1>
+              <h1
+                className="title fs-2rem mb-0 mb-1 cursor-pointer"
+                onClick={this.handleEnableEdit}>
+                {name}
+              </h1>
             </div>
           ) : (
             <TextInput
@@ -121,29 +133,24 @@ export default class RecipeTitle extends React.Component<
               name="name"
             />
           )}
-          <div className="d-flex flex-column">
-            <div className="p-rel ml-4 control" title={toolTip}>
-              <ButtonPrimary
-                size="small"
-                onClick={() => this.setState(prev => ({ show: !prev.show }))}>
-                schedule
-              </ButtonPrimary>
-              <DatePickerForm
-                recipeID={id}
-                show={this.state.show}
-                close={() => this.setState({ show: false })}
-              />
-            </div>
-
-            <ButtonLink size="small" onClick={this.toggleEdit} className="ml-4">
-              edit
-            </ButtonLink>
+          <div className="p-rel ml-4 control" title={toolTip}>
+            <ButtonPrimary
+              size="small"
+              onClick={() => this.setState(prev => ({ show: !prev.show }))}>
+              schedule
+            </ButtonPrimary>
+            <DatePickerForm
+              recipeID={id}
+              show={this.state.show}
+              close={() => this.setState({ show: false })}
+            />
           </div>
         </div>
 
         {!this.state.edit ? (
           <div className="grid-entire-row">
             <MetaData
+              onClick={this.handleEnableEdit}
               owner={owner}
               author={author}
               source={source}
