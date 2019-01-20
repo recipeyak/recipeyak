@@ -50,8 +50,7 @@ interface IScheduleProps {
   readonly show: boolean
   readonly id: IRecipe["id"]
   readonly onClose: () => void
-  // tslint:disable-next-line:no-any
-  readonly trigger: React.ReactElement<any>
+  readonly trigger: React.ReactElement<{}>
 }
 
 export class Schedule extends React.Component<IScheduleProps> {

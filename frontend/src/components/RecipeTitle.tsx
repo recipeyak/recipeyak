@@ -1,7 +1,6 @@
 import React from "react"
 import { Button, ButtonPrimary } from "@/components/Buttons"
 import MetaData from "@/components/MetaData"
-import DatePickerForm from "@/components/DatePickerForm"
 import { IRecipe } from "@/store/reducers/recipes"
 import GlobalEvent from "@/components/GlobalEvent"
 import { TextInput } from "@/components/Forms"
@@ -139,14 +138,10 @@ export default class RecipeTitle extends React.Component<
             id={id}
             show={this.state.show}
             onClose={() => this.setState({ show: false })}
-            onClick={() =>
-              this.setState(prev => ({
-                show: !prev.show
-              }))
-            }
             trigger={
               <ButtonPrimary
                 size="small"
+                title={toolTip}
                 onClick={() => this.setState(prev => ({ show: !prev.show }))}>
                 schedule
               </ButtonPrimary>
