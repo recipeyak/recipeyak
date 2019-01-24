@@ -174,6 +174,7 @@ setuptools = "*"
 reference = "a754446"
 type = "git"
 url = "https://github.com/scoursen/django-softdelete.git"
+
 [[package]]
 category = "main"
 description = "Web APIs for Django, made easy."
@@ -222,18 +223,6 @@ setuptools = ">=30"
 
 [[package]]
 category = "dev"
-description = "A flake8 extension that checks for assignment and return in Python"
-name = "flake8-assign-and-return"
-optional = false
-platform = "*"
-python-versions = "*"
-version = "0.0.3"
-
-[package.dependencies]
-flake8 = "*"
-
-[[package]]
-category = "dev"
 description = "JUnit XML Formatter for flake8"
 name = "flake8-formatter-junit-xml"
 optional = false
@@ -244,6 +233,18 @@ version = "0.0.5"
 [package.dependencies]
 flake8 = ">3.0.0"
 junit-xml = ">=1.8"
+
+[[package]]
+category = "dev"
+description = "A flake8 extension that implements misc. lints"
+name = "flake8-pie"
+optional = false
+platform = "*"
+python-versions = "*"
+version = "0.0.4"
+
+[package.dependencies]
+flake8 = "*"
 
 [[package]]
 category = "main"
@@ -751,7 +752,7 @@ version = "0.1.7"
 python = ">=3.3"
 
 [metadata]
-content-hash = "9deb12d8ef310bc9b353184f1456ed09d2a471139203c58406597fe4cde91c70"
+content-hash = "e98669e0ff94cee848ee06ffa0bc47cd76b337f48048a7f4cbe183c11d65e7d3"
 platform = "*"
 python-versions = "^3.6"
 
@@ -776,8 +777,8 @@ djangorestframework = ["1f6baf40ed456ed2af6bd1a4ff8bbc3503cebea16509993aea2b7085
 docopt = ["49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491"]
 drf-nested-routers = ["3346bcfb151d221d499b3b7932cc6e5cee005ea50f1343a2f5cd2f85e7b1d77f", "818fcc37b6cafff52f4afae012b8de85970a1b931f1e47c2f07a24fd141eb476"]
 flake8 = ["6a35f5b8761f45c5513e3405f110a86bea57982c3b75b766ce7b65217abe1670", "c01f8a3963b3571a8e6bd7a4063359aff90749e160778e03817cd9b71c9e07d2"]
-flake8-assign-and-return = ["1efe9c134c367e50eb1a3ef521da16352e07594c4ebef93c685cc5e2054d5afa", "c41747116dff5ab9d9f570d67b1c55935917cb44637fa2b516d35bedfad87dd2"]
 flake8-formatter-junit-xml = ["b49c6b528d9518e855548ac76041cc333b56b5bcb24ae84af44668d37f2aec16", "e537adea0638bd4dbe7debce37844d9082a3d6aeb29304505b12caf97ff6f80b"]
+flake8-pie = ["3f89dda90bd6a3f898197140ebceed084449aee2ff5c814620712b13e055c0e9", "7ad9801876df62a682dcc633ca495bfcd9933694b9efa7a578d120ea94001b39"]
 gunicorn = ["75af03c99389535f218cc596c7de74df4763803f7b63eb09d77e92b3956b36c6", "eee1169f0ca667be05db3351a0960765620dad53f53434262ff8901b68a1b622"]
 idna = ["c357b3f628cf53ae2c4c05627ecc484553142ca23264e593d327bcde5e9c3407", "ea8b7f6188e6fa117537c3df7da9fc686d485087abf6ac197f9c46432f7e4a3c"]
 ipdb = ["7081c65ed7bfe7737f83fa4213ca8afd9617b42ff6b3f1daf9a3419839a2a00a"]
@@ -820,3 +821,4 @@ typed-ast = ["0555eca1671ebe09eb5f2176723826f6f44cca5060502fea259de9b0e893ab53",
 urllib3 = ["61bf29cada3fc2fbefad4fdf059ea4bd1b4a86d2b6d15e1c7c0b582b9752fe39", "de9529817c93f27c8ccbfead6985011db27bd0ddfcdb2d86f3f663385c6a9c22"]
 watchdog = ["965f658d0732de3188211932aeb0bb457587f04f63ab4c1e33eab878e9de961d"]
 wcwidth = ["3df37372226d6e63e1b1e1eda15c594bca98a22d33a23832a90998faa96bc65e", "f4ebe71925af7b40a864553f761ed559b43544f8f71746c2d756c7fe788ade7c"]
+
