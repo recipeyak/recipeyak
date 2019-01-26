@@ -129,6 +129,7 @@ OLD_PASSWORD_FIELD_ENABLED = True
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "backend.middleware.XForwardedForMiddleware",
     "user_sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
