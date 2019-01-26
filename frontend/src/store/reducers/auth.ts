@@ -120,7 +120,7 @@ const auth = (
     case getType(login.success):
       return { ...state, loadingLogin: false }
     case getType(login.failure):
-      return { ...state, errorLogin: action.payload || {} }
+      return { ...state, errorLogin: action.payload || {}, loadingLogin: false }
     case getType(cleareLoginErrors):
       return { ...state, errorLogin: {} }
     case getType(setErrorSocialLogin):
