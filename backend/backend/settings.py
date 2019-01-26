@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
-    "django.contrib.sessions",
+    "user_sessions",
     "django.contrib.staticfiles",
     "core.apps.CoreConfig",
     "rest_framework",
@@ -129,7 +129,7 @@ OLD_PASSWORD_FIELD_ENABLED = True
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
+    "user_sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -137,6 +137,9 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.middleware.http.ConditionalGetMiddleware",
 ]
+
+
+SESSION_ENGINE = "user_sessions.backends.db"
 
 if DEBUG:
     MIDDLEWARE.append("backend.middleware.ServerTimingMiddleware")

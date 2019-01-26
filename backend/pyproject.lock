@@ -177,6 +177,18 @@ url = "https://github.com/scoursen/django-softdelete.git"
 
 [[package]]
 category = "main"
+description = "Django sessions with a foreign key to the user"
+name = "django-user-sessions"
+optional = false
+platform = "*"
+python-versions = "*"
+version = "1.6.0"
+
+[package.dependencies]
+Django = ">=1.11"
+
+[[package]]
+category = "main"
 description = "Web APIs for Django, made easy."
 name = "djangorestframework"
 optional = false
@@ -752,7 +764,7 @@ version = "0.1.7"
 python = ">=3.3"
 
 [metadata]
-content-hash = "e98669e0ff94cee848ee06ffa0bc47cd76b337f48048a7f4cbe183c11d65e7d3"
+content-hash = "6f7ec01fd128fc5f746080bd852cbe9b86aed4b454c00e95e621defaeb446b6b"
 platform = "*"
 python-versions = "^3.6"
 
@@ -773,6 +785,7 @@ dj-database-url = ["a6832d8445ee9d788c5baa48aef8130bf61fdc442f7d9a548424d25cd85c
 django = ["7c8ff92285406fb349e765e9ade685eec7271d6f5c3f918e495a74768b765c99", "dc3b61d054f1bced64628c62025d480f655303aea9f408e5996c339a543b45f0"]
 django-allauth = ["7b31526cccd1c46f9f09acf0703068e8a9669337d29eb065f7e8143c2d897339"]
 django-softdelete = []
+django-user-sessions = ["5d47ca6dc258662424c88383717a9f5c74b582c5646f9164f4bd6a9f3c3ea138", "b626eb9acd4b60f09d6222c772277717b78e0fde3c5772a7d3a309866b5e9f55"]
 djangorestframework = ["1f6baf40ed456ed2af6bd1a4ff8bbc3503cebea16509993aea2b7085bc097766", "9f9e94e8d22b100ed3a43cee8c47a7ff7b185e778a1f2da9ec5c73fc4e081b87"]
 docopt = ["49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491"]
 drf-nested-routers = ["3346bcfb151d221d499b3b7932cc6e5cee005ea50f1343a2f5cd2f85e7b1d77f", "818fcc37b6cafff52f4afae012b8de85970a1b931f1e47c2f07a24fd141eb476"]

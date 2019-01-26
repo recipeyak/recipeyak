@@ -31,7 +31,7 @@ import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
 import { Select } from "@/components/Forms"
 
 function monthYearFromDate(date: Date) {
-  return format(date, "MMM DD | YYYY")
+  return format(date, "MMM D | YYYY")
 }
 
 interface ICalTitleProps {
