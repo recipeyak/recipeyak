@@ -1,9 +1,8 @@
 from core.models import MyUser
 from core.serialization import BaseModelSerializer
 from user_sessions.models import Session
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 from core import user_agent
-from core.user_agent import Device
 import dataclasses
 
 from rest_framework import serializers

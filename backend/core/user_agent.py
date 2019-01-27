@@ -1,5 +1,4 @@
-from typing import Optional, Dict
-from django.utils.translation import ugettext_lazy as _
+from typing import Optional
 from dataclasses import dataclass
 from enum import Enum
 import re
