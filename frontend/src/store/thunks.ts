@@ -22,7 +22,11 @@ import {
   ISocialConnection,
   fetchUserStats,
   IUserState,
-  logOut
+  logOut,
+  fetchSessions,
+  ISession,
+  logoutSessionById,
+  logoutAllSessions
 } from "@/store/reducers/user"
 import {
   ICalRecipe,
@@ -221,6 +225,44 @@ export const fetchingUser = (dispatch: Dispatch) => () => {
     })
     .catch(() => {
       dispatch(fetchUser.failure())
+    })
+}
+
+export const fetchingSessions = (dispatch: Dispatch) => () => {
+  dispatch(fetchSessions.request())
+  return api
+    .getSessions()
+    .then(res => {
+      dispatch(fetchSessions.success(res.data))
+    })
+    .catch(() => {
+      dispatch(fetchSessions.failure())
+    })
+}
+
+export const loggingOutSessionById = (dispatch: Dispatch) => (
+  id: ISession["id"]
+) => {
+  dispatch(logoutSessionById.request(id))
+  return api
+    .deleteSessionById(id)
+    .then(() => {
+      dispatch(logoutSessionById.success(id))
+    })
+    .catch(() => {
+      dispatch(logoutSessionById.failure(id))
+    })
+}
+
+export const loggingOutAllSessions = (dispatch: Dispatch) => () => {
+  dispatch(logoutAllSessions.request())
+  return api
+    .deleteAllSessions()
+    .then(() => {
+      dispatch(logoutAllSessions.success())
+    })
+    .catch(() => {
+      dispatch(logoutAllSessions.failure())
     })
 }
 

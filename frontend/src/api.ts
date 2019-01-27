@@ -3,7 +3,8 @@ import {
   IUser,
   ISocialConnection,
   SocialProvider,
-  IUserStats
+  IUserStats,
+  ISession
 } from "@/store/reducers/user"
 import { ITeam, IMember } from "@/store/reducers/teams"
 import store from "@/store/store"
@@ -107,6 +108,12 @@ export const getShoppingList = (teamID: TeamID, start?: Date, end?: Date) => {
     }
   })
 }
+
+export const getSessions = () =>
+  http.get<ReadonlyArray<ISession>>("/api/v1/sessions/")
+export const deleteAllSessions = () => http.delete("/api/v1/sessions/")
+export const deleteSessionById = (id: ISession["id"]) =>
+  http.delete(`/api/v1/sessions/${id}`)
 
 export const createRecipe = (recipe: IRecipeBasic) =>
   http.post<IRecipe>("/api/v1/recipes/", recipe)
