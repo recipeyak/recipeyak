@@ -156,6 +156,144 @@ function DangerZone(props: IDangerZoneProps) {
   )
 }
 
+interface IProfileImgProps {
+  readonly avatarURL: string
+}
+function ProfileImg({ avatarURL }: IProfileImgProps) {
+  return (
+    <a href="https://secure.gravatar.com" className="justify-self-center mr-3">
+      <img
+        width="128px"
+        height="128px"
+        alt="user profile"
+        className="br-5"
+        src={avatarURL + "&s=128"}
+      />
+    </a>
+  )
+}
+
+interface IEmailEditForm {
+  readonly updateEmail: () => void
+  readonly email: string
+  readonly editing: boolean
+  readonly updatingEmail: boolean
+  readonly handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  readonly cancelEdit: () => void
+  readonly edit: () => void
+}
+
+function EmailEditForm(props: IEmailEditForm) {
+  return (
+    <form
+      className="d-flex align-center"
+      onSubmit={e => {
+        e.preventDefault()
+        props.updateEmail()
+      }}>
+      <label className="better-label">Email</label>
+      {props.editing ? (
+        <TextInput
+          onKeyDown={e => {
+            if (e.key === "Escape") {
+              props.cancelEdit()
+            }
+          }}
+          autoFocus
+          defaultValue={props.email}
+          onChange={props.handleInputChange}
+          name="email"
+        />
+      ) : (
+        <span>{props.email}</span>
+      )}
+      {props.editing ? (
+        <div className="d-flex">
+          <ButtonPrimary
+            className="ml-2"
+            name="email"
+            type="submit"
+            loading={props.updatingEmail}
+            value="save email">
+            Save
+          </ButtonPrimary>
+          <Button
+            className="ml-2"
+            disabled={props.updatingEmail}
+            name="email"
+            onClick={props.cancelEdit}
+            value="save email">
+            Cancel
+          </Button>
+        </div>
+      ) : (
+        <a className="ml-2 has-text-primary" onClick={props.edit}>
+          Edit
+        </a>
+      )}
+    </form>
+  )
+}
+
+interface IChangePasswordProps {
+  readonly hasPassword: boolean
+}
+
+function ChangePassword({ hasPassword }: IChangePasswordProps) {
+  return (
+    <div className="d-flex justify-space-between">
+      <label className="better-label">Password</label>
+      {hasPassword ? (
+        <Link to="/password" className="has-text-primary">
+          Change Password
+        </Link>
+      ) : (
+        <Link to="/password/set" className="has-text-primary">
+          Set Password
+        </Link>
+      )}
+    </div>
+  )
+}
+
+interface ISocialAccountsProps {
+  readonly errorGithub: string
+  readonly loadingGithub: boolean
+  readonly errorGitlab: string
+  readonly loadingGitlab: boolean
+  readonly socialAccountConnections: ISocialAccountsState
+  readonly disconnect: (account: "github" | "gitlab", id: number) => void
+}
+
+function SocialAccounts(props: ISocialAccountsProps) {
+  return (
+    <>
+      <h1 className="fs-6">Social Accounts</h1>
+
+      <Github
+        error={props.errorGithub}
+        connected={props.socialAccountConnections.github != null}
+        disconnect={() => {
+          if (props.socialAccountConnections.github != null) {
+            props.disconnect("github", props.socialAccountConnections.github)
+          }
+        }}
+        loading={props.loadingGithub}
+      />
+      <Gitlab
+        error={props.errorGitlab}
+        connected={props.socialAccountConnections.gitlab != null}
+        disconnect={() => {
+          if (props.socialAccountConnections.gitlab != null) {
+            props.disconnect("gitlab", props.socialAccountConnections.gitlab)
+          }
+        }}
+        loading={props.loadingGitlab}
+      />
+    </>
+  )
+}
+
 export default class SettingsWithState extends React.Component<
   ISettingsWithStateProps,
   ISettingsWithStateState
@@ -223,6 +361,12 @@ export default class SettingsWithState extends React.Component<
 
   edit = () => this.setState({ editing: true })
 
+  updateEmail = () => {
+    this.props.updateEmail(this.state.email).then(() => {
+      this.setState({ editing: false })
+    })
+  }
+
   render() {
     const {
       email,
@@ -235,7 +379,6 @@ export default class SettingsWithState extends React.Component<
     const { handleInputChange, disconnectAccount } = this
 
     const {
-      updateEmail,
       avatarURL,
       updatingEmail,
       socialAccountConnections,
@@ -258,109 +401,29 @@ export default class SettingsWithState extends React.Component<
         <h1 className="fs-8">User settings</h1>
 
         <div className="d-flex">
-          <a
-            href="https://secure.gravatar.com"
-            className="justify-self-center mr-3">
-            <img
-              width="128px"
-              height="128px"
-              alt="user profile"
-              src={avatarURL + "&s=128"}
-            />
-          </a>
+          <ProfileImg avatarURL={avatarURL} />
 
           <div className="align-self-center d-flex flex-direction-column">
-            <form
-              className="d-flex align-center"
-              onSubmit={e => {
-                e.preventDefault()
-                updateEmail(this.state.email).then(() => {
-                  this.setState({ editing: false })
-                })
-              }}>
-              <label className="better-label">Email</label>
-              {editing ? (
-                <TextInput
-                  onKeyDown={e => {
-                    if (e.key === "Escape") {
-                      this.cancelEdit()
-                    }
-                  }}
-                  autoFocus
-                  defaultValue={email}
-                  onChange={handleInputChange}
-                  name="email"
-                />
-              ) : (
-                <span>{email}</span>
-              )}
-              {editing ? (
-                <div className="d-flex">
-                  <ButtonPrimary
-                    className="ml-2"
-                    name="email"
-                    type="submit"
-                    loading={updatingEmail}
-                    value="save email">
-                    Save
-                  </ButtonPrimary>
-                  <Button
-                    className="ml-2"
-                    loading={updatingEmail}
-                    name="email"
-                    onClick={this.cancelEdit}
-                    value="save email">
-                    Cancel
-                  </Button>
-                </div>
-              ) : (
-                <a
-                  className={
-                    "ml-2 has-text-primary" +
-                    (updatingEmail ? " is-loading" : "")
-                  }
-                  onClick={this.edit}>
-                  Edit
-                </a>
-              )}
-            </form>
-
-            <div className="d-flex justify-space-between">
-              <label className="better-label">Password</label>
-              {hasPassword ? (
-                <Link to="/password" className="has-text-primary">
-                  Change Password
-                </Link>
-              ) : (
-                <Link to="/password/set" className="has-text-primary">
-                  Set Password
-                </Link>
-              )}
-            </div>
+            <EmailEditForm
+              email={email}
+              editing={editing}
+              cancelEdit={this.cancelEdit}
+              edit={this.edit}
+              updatingEmail={updatingEmail}
+              handleInputChange={handleInputChange}
+              updateEmail={this.updateEmail}
+            />
+            <ChangePassword hasPassword={hasPassword} />
           </div>
         </div>
 
-        <h1 className="fs-6">Social Accounts</h1>
-
-        <Github
-          error={errorGithub}
-          connected={socialAccountConnections.github != null}
-          disconnect={() => {
-            if (socialAccountConnections.github != null) {
-              disconnectAccount("github", socialAccountConnections.github)
-            }
-          }}
-          loading={loadingGithub}
-        />
-        <Gitlab
-          error={errorGitlab}
-          connected={socialAccountConnections.gitlab != null}
-          disconnect={() => {
-            if (socialAccountConnections.gitlab != null) {
-              disconnectAccount("gitlab", socialAccountConnections.gitlab)
-            }
-          }}
-          loading={loadingGitlab}
+        <SocialAccounts
+          errorGithub={errorGithub}
+          errorGitlab={errorGitlab}
+          loadingGithub={loadingGithub}
+          loadingGitlab={loadingGitlab}
+          socialAccountConnections={socialAccountConnections}
+          disconnect={disconnectAccount}
         />
 
         <Export />
