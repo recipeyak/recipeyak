@@ -18,7 +18,7 @@ interface ISessionProps extends ISession {
 }
 
 function Session(props: ISessionProps) {
-  const last_activity = distanceInWordsToNow(props.last_activity) + " ago"
+  const lastActivity = distanceInWordsToNow(props.last_activity) + " ago"
   return (
     <li className="mb-2">
       <section className="d-flex">
@@ -30,7 +30,7 @@ function Session(props: ISessionProps) {
           Logout
         </Button>
       </section>
-      <p>Last used: {last_activity}</p>
+      <p>Last used: {lastActivity}</p>
       <p>{props.device}</p>
     </li>
   )

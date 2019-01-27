@@ -1,4 +1,4 @@
-from typing import Union, Type, List, Dict, Any
+from typing import Union, Type, List, Dict
 import pytest
 from django.urls import reverse
 from rest_framework.response import Response

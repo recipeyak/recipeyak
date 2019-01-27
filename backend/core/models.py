@@ -1,5 +1,5 @@
 import hashlib
-from typing import List, Union, Optional
+from typing import List, Union, Optional, cast
 import logging
 import itertools
 from datetime import datetime
@@ -314,8 +314,7 @@ class InviteManager(models.Manager):
         m = Membership.objects.create(
             user=user, team=team, level=level, is_active=False
         )
-        invite: Invite = self.model.objects.create(membership=m, creator=creator)
-        return invite
+        return cast(Invite, self.model.objects.create(membership=m, creator=creator))
 
 
 class Invite(CommonInfo):
