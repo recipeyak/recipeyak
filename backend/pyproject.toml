@@ -19,6 +19,7 @@ python-json-logger = "0.1.8"
 pyyaml = "^3.13"
 django-softdelete = {git = "https://github.com/scoursen/django-softdelete.git", rev = "a754446"}
 django-user-sessions = "^1.6"
+dataclasses = "^0.6.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "3.4.0"

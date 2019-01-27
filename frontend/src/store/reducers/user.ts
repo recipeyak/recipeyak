@@ -8,7 +8,14 @@ import {
   getType
 } from "typesafe-actions"
 import { IRecipe } from "@/store/reducers/recipes"
-import { WebData, Success, Failure, HttpErrorKind, toLoading } from "@/webdata"
+import {
+  WebData,
+  Success,
+  Failure,
+  HttpErrorKind,
+  toLoading,
+  mapSuccessLike
+} from "@/webdata"
 import { login, AuthActions } from "@/store/reducers/auth"
 
 export const fetchUserStats = createAsyncAction(
@@ -48,6 +55,24 @@ export const updateEmail = createAsyncAction(
   "UPDATE_EMAIL_FAILURE"
 )<void, IUser, void>()
 
+export const fetchSessions = createAsyncAction(
+  "FETCH_SESSIONS_REQUEST",
+  "FETCH_SESSIONS_SUCCESS",
+  "FETCH_SESSIONS_FAILURE"
+)<void, ReadonlyArray<ISession>, void>()
+
+export const logoutSessionById = createAsyncAction(
+  "LOGOUT_SESSION_BY_ID_REQUEST",
+  "LOGOUT_SESSION_BY_ID_SUCCESS",
+  "LOGOUT_SESSION_BY_ID_FAILURE"
+)<ISession["id"], ISession["id"], ISession["id"]>()
+
+export const logoutAllSessions = createAsyncAction(
+  "LOGOUT_ALL_SESSIONS_REQUEST",
+  "LOGOUT_ALL_SESSIONS_SUCCESS",
+  "LOGOUT_ALL_SESSIONS_FAILURE"
+)<void, void, void>()
+
 export type UserActions =
   | ActionType<typeof logOut>
   | ReturnType<typeof setUserLoggedIn>
@@ -58,6 +83,9 @@ export type UserActions =
   | ReturnType<typeof toggleDarkMode>
   | ActionType<typeof updateEmail>
   | ActionType<typeof fetchUserStats>
+  | ActionType<typeof fetchSessions>
+  | ActionType<typeof logoutSessionById>
+  | ActionType<typeof logoutAllSessions>
 
 // User state from API
 export interface IUser {
@@ -95,6 +123,21 @@ export interface IUserStats {
   readonly total_recipes_added_last_month_by_all_users: number
 }
 
+export interface ISession {
+  readonly id: string
+  readonly device: string
+  readonly last_activity: string
+  readonly ip: string
+  readonly current: boolean
+  readonly loggingOut?: LoggingOutStatus
+}
+
+export const enum LoggingOutStatus {
+  Initial,
+  Loading,
+  Failure
+}
+
 export interface IUserState {
   readonly id: null | number
   readonly loggedIn: boolean
@@ -110,6 +153,8 @@ export interface IUserState {
   // ID of currently focused team. null if using personal team.
   readonly teamID: number | null
   readonly updatingEmail: boolean
+  readonly sessions: WebData<ReadonlyArray<ISession>>
+  readonly loggingOutAllSessionsStatus: LoggingOutStatus
 }
 
 const initialState: IUserState = {
@@ -128,7 +173,9 @@ const initialState: IUserState = {
     gitlab: null
   },
   teamID: null,
-  updatingEmail: false
+  updatingEmail: false,
+  sessions: undefined,
+  loggingOutAllSessionsStatus: LoggingOutStatus.Initial
 }
 
 export const user = (
@@ -168,6 +215,71 @@ export const user = (
           ...state.socialAccountConnections,
           [action.payload.provider]: action.payload.val
         }
+      }
+    case getType(fetchSessions.request):
+      return {
+        ...state,
+        sessions: toLoading(state.sessions)
+      }
+    case getType(fetchSessions.success):
+      return {
+        ...state,
+        sessions: Success(action.payload)
+      }
+    case getType(fetchSessions.failure):
+      return {
+        ...state,
+        sessions: Failure(HttpErrorKind.other)
+      }
+    case getType(logoutSessionById.request):
+      return {
+        ...state,
+        sessions: mapSuccessLike(state.sessions, data =>
+          data.map(s => {
+            if (s.id === action.payload) {
+              return { ...s, loggingOut: LoggingOutStatus.Loading }
+            }
+            return s
+          })
+        )
+      }
+    case getType(logoutSessionById.success):
+      return {
+        ...state,
+        sessions: mapSuccessLike(state.sessions, data =>
+          data.filter(s => s.id !== action.payload)
+        )
+      }
+    case getType(logoutSessionById.failure):
+      return {
+        ...state,
+        sessions: mapSuccessLike(state.sessions, data =>
+          data.map(s => {
+            if (s.id === action.payload) {
+              return { ...s, loggingOut: LoggingOutStatus.Failure }
+            }
+            return s
+          })
+        )
+      }
+
+    case getType(logoutAllSessions.request):
+      return {
+        ...state,
+        loggingOutAllSessionsStatus: LoggingOutStatus.Loading
+      }
+    case getType(logoutAllSessions.success):
+      return {
+        ...state,
+        sessions: mapSuccessLike(state.sessions, data =>
+          data.filter(s => s.current)
+        ),
+        loggingOutAllSessionsStatus: LoggingOutStatus.Initial
+      }
+    case getType(logoutAllSessions.failure):
+      return {
+        ...state,
+        loggingOutAllSessionsStatus: LoggingOutStatus.Failure
       }
     case getType(updateTeamID):
       return { ...state, teamID: action.payload }

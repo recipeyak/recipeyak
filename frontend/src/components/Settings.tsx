@@ -12,6 +12,7 @@ import { SocialProvider } from "@/store/reducers/user"
 import { ISocialAccountsState } from "@/store/reducers/user"
 import { AxiosError } from "axios"
 import { TextInput } from "@/components/Forms"
+import Sessions from "@/components/Sessions"
 
 interface IOAuthButtonProps {
   readonly name: string
@@ -363,6 +364,7 @@ export default class SettingsWithState extends React.Component<
         />
 
         <Export />
+        <Sessions />
         <DangerZone deleteAccount={this.props.deleteUserAccount} />
       </>
     )
