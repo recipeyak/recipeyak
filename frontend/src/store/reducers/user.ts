@@ -290,7 +290,7 @@ export const user = (
       setDarkModeClass(newDarkMode)
       return { ...state, darkMode: newDarkMode }
     case getType(updateEmail.request):
-      return { ...state, updatingEmail: false }
+      return { ...state, updatingEmail: true }
     case getType(updateEmail.failure):
       return { ...state, updatingEmail: false }
     case getType(fetchUser.request):
