@@ -13,6 +13,57 @@ import {
   loggingOutAllSessions
 } from "@/store/thunks"
 
+function getDeviceEmoji(kind: ISession["device"]["kind"]): string | null {
+  switch (kind) {
+    case null:
+      return null
+    case "mobile":
+      return "📱"
+    case "desktop":
+      return "🖥"
+  }
+}
+
+function getOSBrowser(device: ISession["device"]): string | null {
+  if (device.browser && device.os) {
+    return `${device.browser} on ${device.os}`
+  }
+  if (device.browser) {
+    return device.browser
+  }
+  if (device.os) {
+    return device.os
+  }
+  return null
+}
+
+function getDeviceName(device: ISession["device"]): string | null {
+  const deviceEmoji = getDeviceEmoji(device.kind)
+  const osBrowser = getOSBrowser(device)
+
+  if (osBrowser && deviceEmoji) {
+    return deviceEmoji + osBrowser
+  }
+
+  if (osBrowser) {
+    return osBrowser
+  }
+
+  if (deviceEmoji) {
+    return deviceEmoji
+  }
+
+  return null
+}
+
+interface IDeviceNameProps {
+  readonly device: ISession["device"]
+}
+
+function DeviceName({ device }: IDeviceNameProps) {
+  return <p>{getDeviceName(device)}</p>
+}
+
 interface ISessionProps extends ISession {
   readonly logout: (id: ISession["id"]) => void
 }
@@ -31,7 +82,7 @@ function Session(props: ISessionProps) {
         </Button>
       </section>
       <p>Last used: {lastActivity}</p>
-      <p>{props.device}</p>
+      <DeviceName device={props.device} />
     </li>
   )
 }

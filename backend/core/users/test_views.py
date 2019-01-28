@@ -53,7 +53,7 @@ KindType = Union[Type[str], Type[int], Type[bool], Type[list], Type[dict]]
 @dataclass
 class Key:
     name: str
-    kind: Union[KindType, List[KindType]]
+    kind: KindType
 
 
 @dataclass
@@ -74,12 +74,8 @@ def matches_shape(res: Response, shape: Shape) -> bool:
         if k not in obj:
             return False
 
-        if obj[k] is None:
-            if isinstance(v, (list, tuple)):
-                if None not in v:
-                    return False
-            elif v is not None:
-                return False
+        if obj[k] is None and v is not None:
+            return False
         elif not isinstance(obj[k], v):
             return False
     return True
@@ -109,7 +105,7 @@ def test_session_list(client: APIClient, logged_in_user) -> None:
             url="/api/v1/sessions/",
             keys=[
                 Key("id", str),
-                Key("device", (str, None)),
+                Key("device", dict),
                 Key("last_activity", str),
                 Key("ip", str),
             ],

@@ -125,7 +125,11 @@ export interface IUserStats {
 
 export interface ISession {
   readonly id: string
-  readonly device: string
+  readonly device: {
+    readonly kind: "mobile" | "desktop" | null
+    readonly os: string | null
+    readonly browser: string | null
+  }
   readonly last_activity: string
   readonly ip: string
   readonly current: boolean
