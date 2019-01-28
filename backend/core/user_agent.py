@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Pattern, Tuple, List, Union
 from dataclasses import dataclass
 from enum import Enum
 import re
@@ -45,61 +45,63 @@ class Device:
     browser: Optional[Browser]
 
 
-BROWSERS = (
-    (re.compile("Chrome"), Browser.chrome),
-    (re.compile("Safari"), Browser.safari),
-    (re.compile("Firefox"), Browser.firefox),
-    (re.compile("Opera"), Browser.opera),
-    (re.compile("IE"), Browser.ie),
-)
+BROWSERS = [
+    ("Chrome", Browser.chrome),
+    ("Safari", Browser.safari),
+    ("Firefox", Browser.firefox),
+    ("Opera", Browser.opera),
+    ("IE", Browser.ie),
+]
 
-MOBILE_DEVICES = (
-    (re.compile("Android"), OS.Android),
-    (re.compile("iPhone"), OS.IPhone),
-    (re.compile("iPad"), OS.IPad),
-)
+MOBILE_DEVICES = [("Android", OS.Android), ("iPhone", OS.IPhone), ("iPad", OS.IPad)]
 
-DESKTOP_DEVICES = (
-    (re.compile("Linux"), OS.Linux),
+DESKTOP_DEVICES: List[Tuple[Union[str, Pattern], OS]] = [
+    ("Linux", OS.Linux),
     (re.compile("Mac OS X 10[._]9"), OS.OSX_Mavericks),
     (re.compile("Mac OS X 10[._]10"), OS.OSX_Yosemite),
     (re.compile("Mac OS X 10[._]11"), OS.OSX_El_Capitan),
     (re.compile("Mac OS X 10[._]12"), OS.MacOS_Sierra),
     (re.compile("Mac OS X 10[._]13"), OS.MacOS_High_Sierra),
-    (re.compile("Mac OS X"), OS.OSX),
-    (re.compile("NT 5.1"), OS.Windows_XP),
-    (re.compile("NT 6.0"), OS.Windows_Vista),
-    (re.compile("NT 6.1"), OS.Windows_7),
-    (re.compile("NT 6.2"), OS.Windows_8),
-    (re.compile("NT 6.3"), OS.Windows_8_1),
-    (re.compile("NT 10.0"), OS.Windows_10),
-    (re.compile("Windows"), OS.Windows),
-)
+    ("Mac OS X", OS.OSX),
+    ("NT 5.1", OS.Windows_XP),
+    ("NT 6.0", OS.Windows_Vista),
+    ("NT 6.1", OS.Windows_7),
+    ("NT 6.2", OS.Windows_8),
+    ("NT 6.3", OS.Windows_8_1),
+    ("NT 10.0", OS.Windows_10),
+    ("Windows", OS.Windows),
+]
 
 
 def get_os(user_agent: str) -> Optional[OS]:
-    for regex, name in chain(MOBILE_DEVICES, DESKTOP_DEVICES):
-        if regex.search(user_agent):
+    for substr_name, name in chain(MOBILE_DEVICES, DESKTOP_DEVICES):
+        if isinstance(substr_name, str):
+            if substr_name in user_agent:
+                return name
+        elif substr_name.search(user_agent):
             return name
+
     return None
 
 
 def get_browser(user_agent: str) -> Optional[Browser]:
-    for regex, name in BROWSERS:
-        if regex.search(user_agent):
+    for browser, name in BROWSERS:
+        if browser in user_agent:
             return name
     return None
 
 
 def get_kind(user_agent: str) -> Optional[DeviceKind]:
-    for regex, mobile in MOBILE_DEVICES:
-        if regex.search(user_agent):
+    for name, _ in MOBILE_DEVICES:
+        if name in user_agent:
             return DeviceKind.mobile
 
-    for regex, desktop in DESKTOP_DEVICES:
-        if regex.search(user_agent):
+    for matcher, _ in DESKTOP_DEVICES:
+        if isinstance(matcher, str):
+            if matcher in user_agent:
+                return DeviceKind.desktop
+        elif matcher.search(user_agent):
             return DeviceKind.desktop
-
     return None
 
 

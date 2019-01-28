@@ -26,15 +26,6 @@ from core.user_agent import Device, DeviceKind, OS, Browser
             "Mozilla/5.0 (IE 11.0; Windows NT 6.3; Trident/7.0; .NET4.0E; .NET4.0C; rv:11.0) like Gecko",
             Device(kind=DeviceKind.desktop, os=OS.Windows_8_1, browser=Browser.ie),
         ),
-    ],
-)
-def test_ie(agent: str, expected: Device) -> None:
-    assert user_agent.parse(agent) == expected
-
-
-@pytest.mark.parametrize(
-    "agent, expected",
-    [
         (
             "Mozilla/5.0 (iPad; U; CPU OS 4_2_1 like Mac OS X; ja-jp) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8C148 Safari/6533.18.5",
             Device(kind=DeviceKind.mobile, os=OS.IPad, browser=Browser.safari),
@@ -47,34 +38,18 @@ def test_ie(agent: str, expected: Device) -> None:
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/536.26.17 (KHTML, like Gecko) Version/6.0.2 Safari/536.26.17",
             Device(kind=DeviceKind.desktop, os=OS.OSX, browser=Browser.safari),
         ),
-    ],
-)
-def test_apple(agent: str, expected: Device) -> None:
-    assert user_agent.parse(agent) == expected
-
-
-def test_android() -> None:
-    # androids identify themselves as Safari to get the good stuff
-    assert user_agent.parse(
-        "Mozilla/5.0 (Linux; U; Android 1.5; de-de; HTC Magic Build/CRB17) AppleWebKit/528.5+ (KHTML, like Gecko) Version/3.1.2 Mobile Safari/525.20.1"
-    ) == Device(kind=DeviceKind.mobile, os=OS.Android, browser=Browser.safari)
-
-
-def test_firefox() -> None:
-    assert user_agent.parse(
-        "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:22.0) Gecko/20130328 Firefox/22.0"
-    ) == Device(kind=DeviceKind.desktop, os=OS.Windows_7, browser=Browser.firefox)
-
-
-def test_chrome() -> None:
-    assert user_agent.parse(
-        "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36"
-    ) == Device(kind=DeviceKind.desktop, os=OS.Windows_8_1, browser=Browser.chrome)
-
-
-@pytest.mark.parametrize(
-    "agent, expected",
-    [
+        (
+            "Mozilla/5.0 (Linux; U; Android 1.5; de-de; HTC Magic Build/CRB17) AppleWebKit/528.5+ (KHTML, like Gecko) Version/3.1.2 Mobile Safari/525.20.1",
+            Device(kind=DeviceKind.mobile, os=OS.Android, browser=Browser.safari),
+        ),
+        (
+            "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:22.0) Gecko/20130328 Firefox/22.0",
+            Device(kind=DeviceKind.desktop, os=OS.Windows_7, browser=Browser.firefox),
+        ),
+        (
+            "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36",
+            Device(kind=DeviceKind.desktop, os=OS.Windows_8_1, browser=Browser.chrome),
+        ),
         (
             "Not a legit OS Firefox/51.0",
             Device(kind=None, os=None, browser=Browser.firefox),
@@ -87,47 +62,44 @@ def test_chrome() -> None:
             "Not a legit OS Safari/5.2",
             Device(kind=None, os=None, browser=Browser.safari),
         ),
-    ],
-)
-def test_browser_only(agent: str, expected: Device) -> None:
-    assert user_agent.parse(agent) == expected
-
-
-@pytest.mark.parametrize(
-    "agent, expected",
-    [
-        ("Linux not a real browser/10.3", Device(kind=None, os=OS.Linux, browser=None)),
-        ("iPad not a real browser/10.3", Device(kind=None, os=OS.IPad, browser=None)),
+        (
+            "Linux not a real browser/10.3",
+            Device(kind=DeviceKind.desktop, os=OS.Linux, browser=None),
+        ),
+        (
+            "iPad not a real browser/10.3",
+            Device(kind=DeviceKind.mobile, os=OS.IPad, browser=None),
+        ),
         (
             "Not a legit OS Safari/5.2",
             Device(kind=None, os=None, browser=Browser.safari),
         ),
         (
             "iPhone not a real browser/10.3",
-            Device(kind=None, os=OS.IPhone, browser=None),
+            Device(kind=DeviceKind.mobile, os=OS.IPhone, browser=None),
         ),
         (
             "NT 5.1 not a real browser/10.3",
-            Device(kind=None, os=OS.Windows_XP, browser=None),
+            Device(kind=DeviceKind.desktop, os=OS.Windows_XP, browser=None),
         ),
         (
             "NT 6.0 not a real browser/10.3",
-            Device(kind=None, os=OS.Windows_Vista, browser=None),
+            Device(kind=DeviceKind.desktop, os=OS.Windows_Vista, browser=None),
         ),
         (
             "NT 6.1 not a real browser/10.3",
-            Device(kind=None, os=OS.Windows_7, browser=None),
+            Device(kind=DeviceKind.desktop, os=OS.Windows_7, browser=None),
         ),
         (
             "NT 6.2 not a real browser/10.3",
-            Device(kind=None, os=OS.Windows_8, browser=None),
+            Device(kind=DeviceKind.desktop, os=OS.Windows_8, browser=None),
         ),
         (
             "NT 6.3 not a real browser/10.3",
-            Device(kind=None, os=OS.Windows_8_1, browser=None),
+            Device(kind=DeviceKind.desktop, os=OS.Windows_8_1, browser=None),
         ),
-        ("Windows", Device(kind=None, os=OS.Windows, browser=None)),
+        ("Windows", Device(kind=DeviceKind.desktop, os=OS.Windows, browser=None)),
     ],
 )
-def test_os_only(agent: str, expected: Device) -> None:
+def test_user_agent(agent: str, expected: Device) -> None:
     assert user_agent.parse(agent) == expected
