@@ -42,7 +42,7 @@ function getDeviceName(device: ISession["device"]): string | null {
   const osBrowser = getOSBrowser(device)
 
   if (osBrowser && deviceEmoji) {
-    return deviceEmoji + osBrowser
+    return deviceEmoji + " " + osBrowser
   }
 
   if (osBrowser) {
@@ -73,7 +73,7 @@ function Session(props: ISessionProps) {
   return (
     <li className="mb-2">
       <section className="d-flex">
-        <strong className="mr-2">{props.ip}</strong>{" "}
+        <strong className="mr-2">{props.ip}</strong>
         <Button
           size="small"
           onClick={() => props.logout(props.id)}
@@ -81,8 +81,8 @@ function Session(props: ISessionProps) {
           Logout
         </Button>
       </section>
-      <p>Last used: {lastActivity}</p>
       <DeviceName device={props.device} />
+      <p>Last used: {lastActivity}</p>
     </li>
   )
 }
