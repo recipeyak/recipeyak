@@ -17,14 +17,12 @@ interface IRecipeTitleProps {
 
 function RecipeTitle({ url, name, author }: IRecipeTitleProps) {
   return (
-    <section className="flex-grow-1">
-      <div className="title fs-6 d-flex justify-space-between">
-        <Link tabIndex={0} to={url}>
-          {name}
-        </Link>
-      </div>
-      {author !== "" && <p className="subtitle fs-4 mb-0">{author}</p>}
-    </section>
+    <>
+      <Link tabIndex={0} to={url}>
+        <span>{name}</span>
+      </Link>
+      {author !== "" && <small>{author}</small>}
+    </>
   )
 }
 
