@@ -30,7 +30,6 @@ import { RootState } from "@/store/store"
 import { ICalRecipe } from "@/store/reducers/calendar"
 import { AxiosResponse } from "axios"
 import { IRecipeItemDrag } from "@/components/RecipeItem"
-import { isPast } from "date-fns"
 
 const Title = ({ date }: { date: Date }) => {
   if (isFirstDayOfMonth(date)) {
