@@ -142,11 +142,17 @@ export class RecipeItem extends React.Component<
   }
 }
 
+export interface IRecipeItemDrag {
+  readonly recipeID: IRecipeItemProps["id"]
+  readonly kind: typeof DragDrop.RECIPE
+}
+
 export default DragSource(
   DragDrop.RECIPE,
   {
-    beginDrag(props: IRecipeItemProps) {
+    beginDrag(props: IRecipeItemProps): IRecipeItemDrag {
       return {
+        kind: DragDrop.RECIPE,
         recipeID: props.id
       }
     },

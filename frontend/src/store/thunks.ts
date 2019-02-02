@@ -104,6 +104,7 @@ import {
 } from "@/store/reducers/auth"
 import { recipeURL } from "@/urls"
 import { isSuccessOrRefetching } from "@/webdata"
+import { isPast } from "date-fns"
 
 // We check if detail matches our string because Django will not return 401 when
 // the session expires
@@ -1232,6 +1233,16 @@ export const moveScheduledRecipe = (dispatch: Dispatch) => (
   // HACK(sbdchd): With an endpoint we can eliminate this
   const state = store.getState()
   const from = getCalRecipeById(state, id)
+
+  // We want to copy recipes from the past, not move them
+  if (isPast(from.on)) {
+    return addingScheduledRecipe(dispatch)(
+      from.recipe.id,
+      teamID,
+      to,
+      from.count
+    )
+  }
   const existing = getAllCalRecipes(state)
     .filter(x => isSameDay(x.on, to) && isSameTeam(x, teamID))
     .find(x => x.recipe.id === from.recipe.id)

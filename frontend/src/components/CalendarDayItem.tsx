@@ -9,6 +9,7 @@ import { ICalRecipe } from "@/store/reducers/calendar"
 import { AxiosResponse } from "axios"
 import GlobalEvent from "@/components/GlobalEvent"
 import { TextInput } from "@/components/Forms"
+import { isPast } from "date-fns"
 
 const COUNT_THRESHOLD = 1
 
@@ -54,7 +55,7 @@ interface ICollectedProps {
   readonly isDragging: boolean
 }
 
-interface ICalendarItemProps {
+export interface ICalendarItemProps {
   readonly count: ICalRecipe["count"]
   readonly remove: () => void
   readonly updateCount: (
@@ -131,14 +132,16 @@ class CalendarItem extends React.Component<
 
   render() {
     const { connectDragSource, isDragging } = this.props
+
+    const style: React.CSSProperties = {
+      visibility: isDragging && !isPast(this.props.date) ? "hidden" : "visible"
+    }
     return connectDragSource(
       <li
         className="d-flex align-items-center cursor-pointer justify-space-between mb-1"
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
-        style={{
-          visibility: isDragging ? "hidden" : "visible"
-        }}>
+        style={style}>
         <GlobalEvent keyUp={this.handleKeyPress} />
         <RecipeLink name={this.props.recipeName} id={this.props.recipeID} />
         <Count value={this.state.count} onChange={this.handleChange} />
@@ -147,22 +150,27 @@ class CalendarItem extends React.Component<
   }
 }
 
+export interface ICalendarDragItem
+  extends Pick<ICalendarItemProps, "recipeID" | "count" | "id" | "date"> {
+  readonly kind: typeof DragDrop.CAL_RECIPE
+}
+
 export default DragSource(
-  DragDrop.RECIPE,
+  DragDrop.CAL_RECIPE,
   {
-    beginDrag(props: ICalendarItemProps) {
+    beginDrag(props: ICalendarItemProps): ICalendarDragItem {
       return {
+        kind: DragDrop.CAL_RECIPE,
         recipeID: props.recipeID,
         count: props.count,
-        id: props.id
+        id: props.id,
+        date: props.date
       }
-    },
-    canDrag({ date }: ICalendarItemProps) {
-      return !beforeCurrentDay(date)
     },
     endDrag(props, monitor) {
       // when dragged onto something that isn't a target, we remove it
-      if (!monitor.didDrop()) {
+      // but we don't remove when in past as we only copy from the past
+      if (!monitor.didDrop() && !isPast(props.date)) {
         props.remove()
       }
     }

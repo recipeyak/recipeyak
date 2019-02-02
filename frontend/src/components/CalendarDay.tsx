@@ -12,7 +12,7 @@ import { beforeCurrentDay } from "@/date"
 
 import { classNames } from "@/classnames"
 
-import CalendarItem from "@/components/CalendarDayItem"
+import CalendarItem, { ICalendarDragItem } from "@/components/CalendarDayItem"
 
 import {
   addingScheduledRecipe,
@@ -29,6 +29,7 @@ import { IRecipe } from "@/store/reducers/recipes"
 import { RootState } from "@/store/store"
 import { ICalRecipe } from "@/store/reducers/calendar"
 import { AxiosResponse } from "axios"
+import { IRecipeItemDrag } from "@/components/RecipeItem"
 
 const Title = ({ date }: { date: Date }) => {
   if (isFirstDayOfMonth(date)) {
@@ -133,20 +134,23 @@ export default connect(
   mapDispatchToProps
 )(
   DropTarget(
-    DragDrop.RECIPE,
+    [DragDrop.RECIPE, DragDrop.CAL_RECIPE],
     {
       canDrop({ date }: ICalendarDayProps) {
+        // event when copying from past, we don't want to copy to past dates
         return !beforeCurrentDay(date)
       },
       drop(props: ICalendarDayProps, monitor: DropTargetMonitor) {
-        const { recipeID, count = 1, id } = monitor.getItem()
+        const recipe: ICalendarDragItem | IRecipeItemDrag = monitor.getItem()
         // NOTE(chdsbd): We use Promise.resolve to elminate slow drop event
         // warnings.
-        if (id != null) {
-          Promise.resolve().then(() => props.move(id, props.teamID, props.date))
-        } else {
+        if (recipe.kind === DragDrop.CAL_RECIPE) {
           Promise.resolve().then(() =>
-            props.create(recipeID, props.teamID, props.date, count)
+            props.move(recipe.id, props.teamID, props.date)
+          )
+        } else if (recipe.kind === DragDrop.RECIPE) {
+          Promise.resolve().then(() =>
+            props.create(recipe.recipeID, props.teamID, props.date, 1)
           )
         }
       }
