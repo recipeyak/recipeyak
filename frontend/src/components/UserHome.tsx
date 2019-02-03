@@ -107,7 +107,7 @@ const RecentRecipes = ({ recipes }: IRecentRecipes) => {
 
   return (
     <section>
-      <p className="stat mb-1 text-center">Recently Active Recipes</p>
+      <h1 className="title is-3 mb-2 text-center">Recently Active Recipes</h1>
       <section className="recent-recipes-grid">
         {isLoading(recipes) || isInitial(recipes) ? (
           <Loader />
