@@ -104,7 +104,7 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
     return (
       <div
         className="d-flex pl-2 pr-2"
-        style={{ height: "calc(100vh - 80px)" }}>
+        style={{ height: "calc(100vh - 72px)" }}>
         <Helmet title="Schedule" />
         <Sidebar
           toggleClose={this.toggleClose}
