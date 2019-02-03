@@ -31,3 +31,7 @@ $gitlab: #ed6924;
 $github: #444444;
 
 $small: 630px;
+
+// HACK(sbdchd): so that the schedule page doesn't scroll / overflow
+$nav-height: 72px;
+$search-and-tab-height: 98px;

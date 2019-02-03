@@ -4,6 +4,10 @@
   color: hsl(0, 0%, 71%);
 }
 
+.schedule-height {
+  height: calc(100vh - #{$nav-height});
+}
+
 .new-container {
   display: grid;
   grid-gap: 0.2rem;

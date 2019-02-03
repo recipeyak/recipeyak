@@ -25,11 +25,13 @@ option {
   }
 }
 
+$nav-bar-search-tab-height: $nav-height + $search-and-tab-height;
+
 .recipe-scroll {
   // we only enable scrolling when not at the small width (aka mobile), since
   // scroll boxes on mobile are much worse than normal scroll behavior
   @media (min-width: $small) {
-    height: calc(100vh - 210px);
+    height: calc(100vh - #{$nav-bar-search-tab-height});
     overflow: auto;
     // edges of the recipe boxes get cut without extra padding
     padding: 0.125rem;

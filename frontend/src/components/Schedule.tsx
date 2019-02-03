@@ -101,10 +101,9 @@ class Schedule extends React.Component<IScheduleProps, IScheduleState> {
     const teamID = this.props.teamID || "personal"
 
     const isRecipes = this.props.type === "recipes"
+
     return (
-      <div
-        className="d-flex pl-2 pr-2"
-        style={{ height: "calc(100vh - 72px)" }}>
+      <div className="d-flex pl-2 pr-2 schedule-height">
         <Helmet title="Schedule" />
         <Sidebar
           toggleClose={this.toggleClose}
