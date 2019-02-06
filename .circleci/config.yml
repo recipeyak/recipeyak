@@ -129,6 +129,11 @@ jobs:
           command: |
             ./s/lint
             ./s/build
+            mkdir -p /tmp/frontend-artifacts
+            # copy bundle analyzer report
+            cp -R build/report.html /tmp/frontend-artifacts
+      - store_artifacts:
+          path: /tmp/frontend-artifacts
 
   # https://circleci.com/docs/2.0/building-docker-images/
   build_api_container:
