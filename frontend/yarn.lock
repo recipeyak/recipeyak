@@ -341,6 +341,13 @@
   dependencies:
     source-map "^0.6.1"
 
+"@types/webpack-bundle-analyzer@^2.13.0":
+  version "2.13.0"
+  resolved "https://registry.yarnpkg.com/@types/webpack-bundle-analyzer/-/webpack-bundle-analyzer-2.13.0.tgz#07bcd469690869c249047a7ca993a8f918922e33"
+  integrity sha512-+qy5xatScNZW4NbIVaiV38XOeHbKRa4FIPeMf2VDpZEon9W/cxjaVR080vRrRGvfq4tRvOusTEypSMxTvjcSzw==
+  dependencies:
+    "@types/webpack" "*"
+
 "@types/webpack-dev-server@^2.9.6":
   version "2.9.6"
   resolved "https://registry.yarnpkg.com/@types/webpack-dev-server/-/webpack-dev-server-2.9.6.tgz#423d96ae2a0956543b18cb399a0841bf20f77b24"
