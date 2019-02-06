@@ -6,6 +6,8 @@ const FaviconsWebpackPlugin = require("favicons-webpack-plugin")
 const ExtractTextPlugin = require("extract-text-webpack-plugin")
 const ManifestPlugin = require("webpack-manifest-plugin")
 const InterpolateHtmlPlugin = require("react-dev-utils/InterpolateHtmlPlugin")
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin
 const paths = require("./paths")
 const getClientEnvironment = require("./env")
 
@@ -262,6 +264,11 @@ module.exports = {
     new ManifestPlugin({
       // @ts-ignore
       fileName: "asset-manifest.json"
+    }),
+    new BundleAnalyzerPlugin({
+      analyzerMode: "static",
+      generateStatsFile: true,
+      openAnalyzer: false
     })
   ],
   // Some libraries import Node modules but don't use them in the browser.

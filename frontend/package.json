@@ -108,7 +108,8 @@
     "tslint-cake": "^0.4.0",
     "tslint-immutable": "^5.0.1",
     "tslint-microsoft-contrib": "^6.0.0",
-    "typesafe-actions": "^2.0.4"
+    "typesafe-actions": "^2.0.4",
+    "webpack-bundle-analyzer": "^3.0.3"
   },
   "proxy": "http://localhost:8000",
   "jest": {
