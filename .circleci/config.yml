@@ -130,7 +130,8 @@ jobs:
             ./s/lint
             ./s/build
             mkdir -p /tmp/frontend-artifacts
-            cp -R build/* /tmp/frontend-artifacts
+            # copy bundle analyzer report
+            cp -R build/report.html /tmp/frontend-artifacts
       - store_artifacts:
           path: /tmp/frontend-artifacts
 
