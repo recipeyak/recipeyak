@@ -18,7 +18,7 @@ interface IRecipeTitleProps {
 function RecipeTitle({ url, name, author }: IRecipeTitleProps) {
   return (
     <>
-      <Link tabIndex={0} to={url}>
+      <Link tabIndex={0} to={url} className="align-self-start">
         <span>{name}</span>
       </Link>
       {author !== "" && <small>{author}</small>}
