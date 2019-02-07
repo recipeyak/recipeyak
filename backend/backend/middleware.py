@@ -1,6 +1,7 @@
 import time
 
 from django.db import connection
+from django.conf import settings
 
 MSEC_CONVERT_FACTOR = 1000
 
@@ -63,4 +64,18 @@ class XForwardedForMiddleware:
             request.META["REMOTE_ADDR"] = (
                 request.META["HTTP_X_FORWARDED_FOR"].split(",")[0].strip()
             )
+        return self.get_response(request)
+
+
+class APIDelayMiddleware:
+    """
+    Add artificial delay to request. Useful for development.
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+        self.API_DELAY_MS = getattr(settings, "API_DELAY_MS", 200)
+
+    def __call__(self, request):
+        time.sleep(self.API_DELAY_MS / 1000)
         return self.get_response(request)

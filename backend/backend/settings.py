@@ -143,7 +143,12 @@ MIDDLEWARE = [
 SESSION_ENGINE = "user_sessions.backends.db"
 
 if DEBUG:
-    MIDDLEWARE.append("backend.middleware.ServerTimingMiddleware")
+    MIDDLEWARE += (
+        "backend.middleware.ServerTimingMiddleware",
+        "backend.middleware.APIDelayMiddleware",
+    )
+
+API_DELAY_MS = 200
 
 AUTH_USER_MODEL = "core.MyUser"
 
