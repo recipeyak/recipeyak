@@ -186,8 +186,8 @@ interface IStepBodyBasic {
   readonly id: IStep["id"]
   readonly recipeID: IRecipe["id"]
   readonly text: IStep["text"]
-  readonly updating: boolean
-  readonly removing: boolean
+  readonly updating?: boolean
+  readonly removing?: boolean
   readonly update: (
     recipeID: number,
     stepID: number,
