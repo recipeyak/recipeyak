@@ -14,6 +14,24 @@ import { RootState } from "@/store/store"
 import { IUser } from "@/store/reducers/user"
 import { Select } from "@/components/Forms"
 
+const mapStateToProps = (
+  state: RootState,
+  { userID, teamID, membershipID }: IMemberRowProps
+) => {
+  return {
+    isUser: state.user.id === userID,
+    deleting: state.teams.byId[teamID].members[membershipID].deleting,
+    userIsTeamAdmin: Object.values(state.teams.byId[teamID].members)
+      .filter(x => x.level === "admin")
+      .some(({ user }) => user.id === state.user.id)
+  }
+}
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  handleUserLevelChange: settingUserTeamLevel(dispatch),
+  deleteMembership: deletingMembership(dispatch)
+})
+
 interface IMemberRowProps {
   readonly userID: IUser["id"]
   readonly teamID: ITeam["id"]
@@ -100,25 +118,6 @@ const MemberRow = ({
     </td>
   </tr>
 )
-
-const mapStateToProps = (
-  state: RootState,
-  { userID, teamID, membershipID }: IMemberRowProps
-): Partial<IMemberRowProps> => {
-  return {
-    isUser: state.user.id === userID,
-    deleting: state.teams.byId[teamID].members[membershipID].deleting,
-    userIsTeamAdmin: Object.values(state.teams.byId[teamID].members)
-      .filter(x => x.level === "admin")
-      .some(({ user }) => user.id === state.user.id)
-  }
-}
-
-const mapDispatchToProps = (dispatch: Dispatch): Partial<IMemberRowProps> => ({
-  handleUserLevelChange: settingUserTeamLevel(dispatch),
-  deleteMembership: deletingMembership(dispatch)
-})
-
 export default connect(
   mapStateToProps,
   mapDispatchToProps

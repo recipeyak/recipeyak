@@ -51,10 +51,7 @@ const renderComponent = (
   render: RouteProps["render"]
 ): React.ReactNode => {
   if (component) {
-    return React.createElement(
-      component as React.FunctionComponent<typeof props>,
-      props
-    )
+    return React.createElement(component, props)
   }
   if (render) {
     return render(props)
