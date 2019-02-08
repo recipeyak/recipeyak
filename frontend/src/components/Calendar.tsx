@@ -26,7 +26,6 @@ import {
   getTeamRecipes,
   getPersonalRecipes
 } from "@/store/reducers/calendar"
-import { ScheduleRouteParams } from "@/components/Schedule"
 import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
 import { Select } from "@/components/Forms"
 
@@ -173,7 +172,7 @@ function HelpPrompt() {
 const prevWeekStart = (date: Date) => subWeeks(startOfWeek(date), 1)
 const nextWeekStart = (date: Date) => addWeeks(startOfWeek(date), 1)
 
-interface ICalendarProps extends ScheduleRouteParams {
+interface ICalendarProps {
   readonly loadingTeams: boolean
   readonly loading: boolean
   readonly error: boolean
@@ -318,7 +317,12 @@ const mapStateToProps = (state: RootState, props: ICalendarProps) => {
   }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
+const mapDispatchToProps = (
+  dispatch: Dispatch
+): Pick<
+  ICalendarProps,
+  "fetchData" | "fetchTeams" | "navTo" | "refetchShoppingListAndRecipes"
+> => ({
   fetchData: fetchCalendar(dispatch),
   fetchTeams: fetchingTeams(dispatch),
   navTo: (url: string) => {

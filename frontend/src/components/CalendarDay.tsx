@@ -24,7 +24,6 @@ import {
 } from "@/store/thunks"
 
 import * as DragDrop from "@/dragDrop"
-import { ITeam } from "@/store/reducers/teams"
 import { IRecipe } from "@/store/reducers/recipes"
 import { RootState } from "@/store/store"
 import { ICalRecipe } from "@/store/reducers/calendar"
@@ -46,19 +45,19 @@ interface ICalendarDayProps {
   readonly scheduledRecipes?: ICalRecipe[]
   readonly updateCount: (
     id: ICalRecipe["id"],
-    teamID: ITeam["id"],
+    teamID: TeamID,
     count: ICalRecipe["count"]
   ) => Promise<void | AxiosResponse<void>>
-  readonly refetchShoppingList: (teamID: ITeam["id"]) => void
-  readonly remove: (id: ICalRecipe["id"], teamID: ITeam["id"]) => void
-  readonly move: (id: ICalRecipe["id"], teamID: ITeam["id"], date: Date) => void
+  readonly refetchShoppingList: (teamID: TeamID) => void
+  readonly remove: (id: ICalRecipe["id"], teamID: TeamID) => void
+  readonly move: (id: ICalRecipe["id"], teamID: TeamID, date: Date) => void
   readonly create: (
     recipeID: IRecipe["id"],
-    teamID: ITeam["id"],
+    teamID: TeamID,
     date: Date,
     count: number
   ) => void
-  readonly teamID: ITeam["id"]
+  readonly teamID: TeamID
   readonly isSelected: boolean
 }
 
@@ -119,15 +118,13 @@ function mapStateToProps(state: RootState, props: ICalendarDayProps) {
   }
 }
 
-function mapDispatchToProps(dispatch: Dispatch) {
-  return {
-    create: addingScheduledRecipe(dispatch),
-    updateCount: updatingScheduledRecipe(dispatch),
-    refetchShoppingList: fetchingShoppingList(dispatch),
-    move: moveScheduledRecipe(dispatch),
-    remove: deletingScheduledRecipe(dispatch)
-  }
-}
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  create: addingScheduledRecipe(dispatch),
+  updateCount: updatingScheduledRecipe(dispatch),
+  refetchShoppingList: fetchingShoppingList(dispatch),
+  move: moveScheduledRecipe(dispatch),
+  remove: deletingScheduledRecipe(dispatch)
+})
 
 export default connect(
   mapStateToProps,

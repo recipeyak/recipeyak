@@ -70,7 +70,7 @@ export type ScheduleRouteParams = RouteComponentProps<{
   type: "shopping" | "recipes"
 }>
 
-interface IScheduleProps extends ScheduleRouteParams {
+interface IScheduleProps {
   readonly updateTeamID: (id: ITeam["id"] | null) => void
   readonly teamID: ITeam["id"] | null
   readonly type: "shopping" | "recipes"

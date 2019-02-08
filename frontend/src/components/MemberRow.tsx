@@ -17,17 +17,17 @@ import { Select } from "@/components/Forms"
 const mapStateToProps = (
   state: RootState,
   { userID, teamID, membershipID }: IMemberRowProps
-) => {
-  return {
-    isUser: state.user.id === userID,
-    deleting: state.teams.byId[teamID].members[membershipID].deleting,
-    userIsTeamAdmin: Object.values(state.teams.byId[teamID].members)
-      .filter(x => x.level === "admin")
-      .some(({ user }) => user.id === state.user.id)
-  }
-}
+): Pick<IMemberRowProps, "isUser" | "deleting" | "userIsTeamAdmin"> => ({
+  isUser: state.user.id === userID,
+  deleting: state.teams.byId[teamID].members[membershipID].deleting,
+  userIsTeamAdmin: Object.values(state.teams.byId[teamID].members)
+    .filter(x => x.level === "admin")
+    .some(({ user }) => user.id === state.user.id)
+})
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
+const mapDispatchToProps = (
+  dispatch: Dispatch
+): Pick<IMemberRowProps, "handleUserLevelChange" | "deleteMembership"> => ({
   handleUserLevelChange: settingUserTeamLevel(dispatch),
   deleteMembership: deletingMembership(dispatch)
 })
@@ -35,7 +35,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 interface IMemberRowProps {
   readonly userID: IUser["id"]
   readonly teamID: ITeam["id"]
-  readonly userIsTeamAdmin: boolean
+  readonly userIsTeamAdmin?: boolean
   readonly membershipID: IMember["id"]
   readonly avatarURL: string
   readonly email: string
@@ -48,11 +48,11 @@ interface IMemberRowProps {
   readonly deleteMembership: (
     teamID: ITeam["id"],
     membershipID: IMember["id"],
-    leaving: boolean
+    leaving?: boolean
   ) => void
-  readonly isUser: boolean
-  readonly isActive: IMember["is_active"]
-  readonly deleting: IMember["deleting"]
+  readonly isUser?: boolean
+  readonly isActive?: IMember["is_active"]
+  readonly deleting?: IMember["deleting"]
 }
 
 const MemberRow = ({
