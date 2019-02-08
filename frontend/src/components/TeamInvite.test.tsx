@@ -1,5 +1,5 @@
 import React from "react"
-import { MemoryRouter } from "react-router"
+import { MemoryRouter, match } from "react-router"
 import { Provider } from "react-redux"
 import { mount } from "enzyme"
 
@@ -10,15 +10,29 @@ import TeamInvite from "@/components/TeamInvite"
 describe("<TeamInvite/>", () => {
   it("renders without crashing", () => {
     // fake react router props
-    const match = {
+    const fakeMatch = {
       params: {
-        id: 1
-      }
-    }
+        id: "1"
+      },
+      isExact: false,
+      path: "",
+      url: ""
+    } as match<{ id: string }>
     mount(
       <Provider store={store}>
         <MemoryRouter>
-          <TeamInvite match={match} />
+          <TeamInvite
+            match={fakeMatch}
+            id={123}
+            fetchData={jest.fn()}
+            name="hello"
+            error404
+            sendInvites={jest.fn()}
+            // tslint:disable:no-any
+            history={{} as any}
+            location={{} as any}
+            // tslint:enable:no-any
+          />
         </MemoryRouter>
       </Provider>
     )
