@@ -17,9 +17,10 @@
     "skipLibCheck": true,
     "experimentalDecorators": true,
     "esModuleInterop": true,
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["./src/*"],
+      "*": ["./node_modules/@types/*"]
     }
   },
   "include": ["**/*", "*"],
