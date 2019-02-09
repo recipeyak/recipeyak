@@ -15,6 +15,7 @@ import { fetchingTeam, sendingTeamInvites, Dispatch } from "@/store/thunks"
 import { RootState } from "@/store/store"
 import { IMember, ITeam } from "@/store/reducers/teams"
 import { TextInput, RadioButton } from "@/components/Forms"
+import { Result, isErr } from "@/result"
 
 const mapStateToProps = (state: RootState, props: ITeamInviteProps) => {
   const id = parseInt(props.match.params.id, 10)
@@ -56,7 +57,7 @@ interface ITeamInviteProps extends RouteComponentProps<{ id: string }> {
     id: ITeam["id"],
     emails: string[],
     level: IMember["level"]
-  ) => Promise<void | Error>
+  ) => Promise<Result<void, void>>
   readonly loadingTeam: boolean
   readonly name: string
   readonly error404: boolean
@@ -119,7 +120,7 @@ class TeamInvite extends React.Component<ITeamInviteProps, ITeamInviteState> {
               emails,
               this.state.level
             )
-            if (result instanceof Error) {
+            if (isErr(result)) {
               // On failure, we should leave our email state unchanged.
               return
             }

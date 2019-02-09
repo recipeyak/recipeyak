@@ -105,7 +105,7 @@ import {
 import { recipeURL } from "@/urls"
 import { isSuccessOrRefetching } from "@/webdata"
 import { isPast, endOfDay } from "date-fns"
-import { isOk } from "@/result"
+import { isOk, isErr, Ok, Err } from "@/result"
 
 // We check if detail matches our string because Django will not return 401 when
 // the session expires
@@ -153,17 +153,15 @@ export const showNotificationWithTimeout = (dispatch: Dispatch) => ({
   }
 }
 
-export const loggingOut = (dispatch: Dispatch) => () => {
+export const loggingOut = (dispatch: Dispatch) => async () => {
   dispatch(logOut.request())
-  return api
-    .logoutUser()
-    .then(() => {
-      dispatch(logOut.success())
-      dispatch(push("/login"))
-    })
-    .catch(() => {
-      dispatch(logOut.failure())
-    })
+  const res = await api.logoutUser()
+  if (isOk(res)) {
+    dispatch(logOut.success())
+    dispatch(push("/login"))
+  } else {
+    dispatch(logOut.failure())
+  }
 }
 
 const emailExists = (err: AxiosError) =>
@@ -175,106 +173,93 @@ const emailExists = (err: AxiosError) =>
 
 const second = 1000
 
-export const updatingEmail = (dispatch: Dispatch) => (
+export const updatingEmail = (dispatch: Dispatch) => async (
   email: IUser["email"]
 ) => {
   dispatch(updateEmail.request())
-  return api
-    .updateUser({ email })
-    .then(res => {
-      dispatch(updateEmail.success(res.data))
+  const res = await api.updateUser({ email })
 
-      showNotificationWithTimeout(dispatch)({
-        message: "updated email",
-        level: "success",
-        delay: 3 * second
+  if (isOk(res)) {
+    dispatch(updateEmail.success(res.data))
+
+    showNotificationWithTimeout(dispatch)({
+      message: "updated email",
+      level: "success",
+      delay: 3 * second
+    })
+  } else {
+    dispatch(updateEmail.failure())
+    const messageExtra = emailExists(res.error) ? "- email already in use" : ""
+    dispatch(
+      setNotification({
+        message: `problem updating email ${messageExtra}`,
+        level: "danger"
       })
-    })
-    .catch((err: AxiosError) => {
-      dispatch(updateEmail.failure())
-      const messageExtra = emailExists(err) ? "- email already in use" : ""
-      dispatch(
-        setNotification({
-          message: `problem updating email ${messageExtra}`,
-          level: "danger"
-        })
-      )
-    })
+    )
+  }
 }
 
-export const updatingTeamID = (dispatch: Dispatch) => (
+export const updatingTeamID = (dispatch: Dispatch) => async (
   id: IUserState["teamID"]
 ) => {
   // store old id so we can undo
   const oldID = store.getState().user.teamID
   dispatch(updateTeamID(id))
-  api
-    .updateUser({ selected_team: id })
-    .then(res => {
-      dispatch(fetchUser.success(res.data))
-    })
-    .catch(() => {
-      dispatch(updateTeamID(oldID))
-    })
+  const res = await api.updateUser({ selected_team: id })
+  if (isOk(res)) {
+    dispatch(fetchUser.success(res.data))
+  } else {
+    dispatch(updateTeamID(oldID))
+  }
 }
 
-export const fetchingUser = (dispatch: Dispatch) => () => {
+export const fetchingUser = (dispatch: Dispatch) => async () => {
   dispatch(fetchUser.request())
-  return api
-    .getUser()
-    .then(res => {
-      dispatch(fetchUser.success(res.data))
-    })
-    .catch(() => {
-      dispatch(fetchUser.failure())
-    })
+  const res = await api.getUser()
+  if (isOk(res)) {
+    dispatch(fetchUser.success(res.data))
+  } else {
+    dispatch(fetchUser.failure())
+  }
 }
 
-export const fetchingSessions = (dispatch: Dispatch) => () => {
+export const fetchingSessions = (dispatch: Dispatch) => async () => {
   dispatch(fetchSessions.request())
-  return api
-    .getSessions()
-    .then(res => {
-      dispatch(fetchSessions.success(res.data))
-    })
-    .catch(() => {
-      dispatch(fetchSessions.failure())
-    })
+  const res = await api.getSessions()
+  if (isOk(res)) {
+    dispatch(fetchSessions.success(res.data))
+  } else {
+    dispatch(fetchSessions.failure())
+  }
 }
 
-export const loggingOutSessionById = (dispatch: Dispatch) => (
+export const loggingOutSessionById = (dispatch: Dispatch) => async (
   id: ISession["id"]
 ) => {
   dispatch(logoutSessionById.request(id))
-  return api
-    .deleteSessionById(id)
-    .then(() => {
-      dispatch(logoutSessionById.success(id))
-    })
-    .catch(() => {
-      dispatch(logoutSessionById.failure(id))
-    })
+  const res = await api.deleteSessionById(id)
+  if (isOk(res)) {
+    dispatch(logoutSessionById.success(id))
+  } else {
+    dispatch(logoutSessionById.failure(id))
+  }
 }
 
-export const loggingOutAllSessions = (dispatch: Dispatch) => () => {
+export const loggingOutAllSessions = (dispatch: Dispatch) => async () => {
   dispatch(logoutAllSessions.request())
-  return api
-    .deleteAllSessions()
-    .then(() => {
-      dispatch(logoutAllSessions.success())
-    })
-    .catch(() => {
-      dispatch(logoutAllSessions.failure())
-    })
+  const res = await api.deleteAllSessions()
+  if (isOk(res)) {
+    dispatch(logoutAllSessions.success())
+  } else {
+    dispatch(logoutAllSessions.failure())
+  }
 }
 
-export const fetchSocialConnections = (dispatch: Dispatch) => () => {
-  return api
-    .getSocialConnections()
-    .then(res => {
-      dispatch(setSocialConnections(res.data))
-    })
-    .catch(() => undefined)
+export const fetchSocialConnections = (dispatch: Dispatch) => async () => {
+  const res = await api.getSocialConnections()
+  if (isOk(res)) {
+    dispatch(setSocialConnections(res.data))
+  }
 }
 
 /** Disconnect social account by id
@@ -284,11 +269,12 @@ export const fetchSocialConnections = (dispatch: Dispatch) => () => {
  *
  * TODO(chdsbd): Refactor API usage to not catch in view.
  */
-export const disconnectSocialAccount = (dispatch: Dispatch) => (
+export const disconnectSocialAccount = (dispatch: Dispatch) => async (
   provider: SocialProvider,
   id: ISocialConnection["id"]
 ) => {
-  return api.disconnectSocialAccount(id).then(() => {
+  const res = await api.disconnectSocialAccount(id)
+  if (isOk(res)) {
     dispatch(
       setSocialConnections([
         {
@@ -297,96 +283,92 @@ export const disconnectSocialAccount = (dispatch: Dispatch) => (
         }
       ])
     )
-  })
+  }
 }
 
-export const fetchingUserStats = (dispatch: Dispatch) => () => {
+export const fetchingUserStats = (dispatch: Dispatch) => async () => {
   dispatch(fetchUserStats.request())
-  return api
-    .getUserStats()
-    .then(res => {
-      dispatch(fetchUserStats.success(res.data))
-    })
-    .catch(() => {
-      dispatch(fetchUserStats.failure())
-    })
+  const res = await api.getUserStats()
+  if (isOk(res)) {
+    dispatch(fetchUserStats.success(res.data))
+  } else {
+    dispatch(fetchUserStats.failure())
+  }
 }
 
-export const updatingPassword = (dispatch: Dispatch) => (
+export const updatingPassword = (dispatch: Dispatch) => async (
   password1: string,
   password2: string,
   oldPassword: string
 ) => {
   dispatch(passwordUpdate.request())
-  return api
-    .changePassword(password1, password2, oldPassword)
-    .then(() => {
-      dispatch(passwordUpdate.success())
-      dispatch(push("/"))
-      showNotificationWithTimeout(dispatch)({
-        message: "Successfully updated password",
-        level: "success"
-      })
+  const res = await api.changePassword(password1, password2, oldPassword)
+  if (isOk(res)) {
+    dispatch(passwordUpdate.success())
+    dispatch(push("/"))
+    showNotificationWithTimeout(dispatch)({
+      message: "Successfully updated password",
+      level: "success"
     })
-    .catch((err: AxiosError) => {
-      const badRequest = err.response && err.response.status === 400
-      if (err.response && badRequest) {
-        const data = err.response.data
-        // tslint:disable:no-unsafe-any
-        dispatch(
-          passwordUpdate.failure({
-            newPasswordAgain: data["new_password2"],
-            newPassword: data["new_password1"],
-            oldPassword: data["old_password"]
-          })
-        )
-        return
-        // tslint:ebale:no-unsafe-any
-      }
-      dispatch(passwordUpdate.failure())
-    })
+  } else {
+    const err = res.error
+    const badRequest = err.response && err.response.status === 400
+    if (err.response && badRequest) {
+      const data = err.response.data
+      // tslint:disable:no-unsafe-any
+      dispatch(
+        passwordUpdate.failure({
+          newPasswordAgain: data["new_password2"],
+          newPassword: data["new_password1"],
+          oldPassword: data["old_password"]
+        })
+      )
+      return
+      // tslint:ebale:no-unsafe-any
+    }
+    dispatch(passwordUpdate.failure())
+  }
 }
 
-export const fetchingShoppingList = (dispatch: Dispatch) => (
+export const fetchingShoppingList = (dispatch: Dispatch) => async (
   teamID: TeamID
 ) => {
   dispatch(fetchShoppingList.request())
-  return api
-    .getShoppingList(teamID)
-    .then(res => {
-      dispatch(fetchShoppingList.success(res.data))
-    })
-    .catch(() => {
-      dispatch(fetchShoppingList.failure())
-    })
+  const res = await api.getShoppingList(teamID)
+  if (isOk(res)) {
+    dispatch(fetchShoppingList.success(res.data))
+  } else {
+    dispatch(fetchShoppingList.failure())
+  }
 }
 
-export const postNewRecipe = (dispatch: Dispatch) => (recipe: IRecipeBasic) => {
+export const postNewRecipe = (dispatch: Dispatch) => async (
+  recipe: IRecipeBasic
+) => {
   dispatch(createRecipe.request())
-  return api
-    .createRecipe(recipe)
-    .then(res => {
-      dispatch(createRecipe.success(res.data))
-      dispatch(push(recipeURL(res.data.id)))
-      dispatch(clearAddRecipeForm())
+  const res = await api.createRecipe(recipe)
+  if (isOk(res)) {
+    dispatch(createRecipe.success(res.data))
+    dispatch(push(recipeURL(res.data.id)))
+    dispatch(clearAddRecipeForm())
+  } else {
+    const err = res.error
+    // tslint:disable:no-unsafe-any
+    const errors =
+      (err.response && {
+        errorWithName: err.response.data.name != null,
+        errorWithIngredients: err.response.data.ingredients != null,
+        errorWithSteps: err.response.data.steps != null
+      }) ||
+      {}
+    // tslint:enable:no-unsafe-any
+    dispatch(createRecipe.failure(errors))
+    showNotificationWithTimeout(dispatch)({
+      message: "problem creating new recipe",
+      level: "danger",
+      delay: 5 * second
     })
-    .catch((err: AxiosError) => {
-      // tslint:disable:no-unsafe-any
-      const errors =
-        (err.response && {
-          errorWithName: err.response.data.name != null,
-          errorWithIngredients: err.response.data.ingredients != null,
-          errorWithSteps: err.response.data.steps != null
-        }) ||
-        {}
-      // tslint:enable:no-unsafe-any
-      dispatch(createRecipe.failure(errors))
-      showNotificationWithTimeout(dispatch)({
-        message: "problem creating new recipe",
-        level: "danger",
-        delay: 5 * second
-      })
-    })
+  }
 }
 
 export const fetchingRecipe = (dispatch: Dispatch) => async (
@@ -397,117 +379,106 @@ export const fetchingRecipe = (dispatch: Dispatch) => async (
   if (isOk(res)) {
     dispatch(fetchRecipe.success(res.data))
   } else {
-    dispatch(fetchRecipe.failure(res.error))
+    const error404 = !!(res.error.response && res.error.response.status === 404)
+    dispatch(fetchRecipe.failure({ id, error404 }))
   }
 }
 
-export const fetchingRecentRecipes = (dispatch: Dispatch) => () => {
+export const fetchingRecentRecipes = (dispatch: Dispatch) => async () => {
   // TODO(sbdchd): these should have their own id array in the reduce and their own actions
   dispatch(fetchRecentRecipes.request())
-  return api
-    .getRecentRecipes()
-    .then(res => {
-      dispatch(fetchRecentRecipes.success(res.data))
-    })
-    .catch(() => {
-      dispatch(fetchRecentRecipes.failure())
-    })
+  const res = await api.getRecentRecipes()
+  if (isOk(res)) {
+    dispatch(fetchRecentRecipes.success(res.data))
+  } else {
+    dispatch(fetchRecentRecipes.failure())
+  }
 }
 
-export const fetchingRecipeList = (dispatch: Dispatch) => (teamID: TeamID) => {
+export const fetchingRecipeList = (dispatch: Dispatch) => async (
+  teamID: TeamID
+) => {
   dispatch(fetchRecipeList.request({ teamID }))
-  return api
-    .getRecipeList(teamID)
-    .then(res => {
-      dispatch(fetchRecipeList.success({ recipes: res.data, teamID }))
-    })
-    .catch(() => {
-      dispatch(fetchRecipeList.failure({ teamID }))
-    })
+  const res = await api.getRecipeList(teamID)
+  if (isOk(res)) {
+    dispatch(fetchRecipeList.success({ recipes: res.data, teamID }))
+  } else {
+    dispatch(fetchRecipeList.failure({ teamID }))
+  }
 }
 
-export const addingRecipeIngredient = (dispatch: Dispatch) => (
+export const addingRecipeIngredient = (dispatch: Dispatch) => async (
   recipeID: IRecipe["id"],
   ingredient: unknown
 ) => {
   dispatch(addIngredientToRecipe.request(recipeID))
-  return api
-    .addIngredientToRecipe(recipeID, ingredient)
-    .then(res => {
-      dispatch(
-        addIngredientToRecipe.success({ id: recipeID, ingredient: res.data })
-      )
-    })
-    .catch(() => {
-      dispatch(addIngredientToRecipe.failure(recipeID))
-    })
+  const res = await api.addIngredientToRecipe(recipeID, ingredient)
+  if (isOk(res)) {
+    dispatch(
+      addIngredientToRecipe.success({ id: recipeID, ingredient: res.data })
+    )
+  } else {
+    dispatch(addIngredientToRecipe.failure(recipeID))
+  }
 }
 
-export const updatingRecipe = (dispatch: Dispatch) => (
+export const updatingRecipe = (dispatch: Dispatch) => async (
   id: IRecipe["id"],
   data: unknown
 ) => {
   dispatch(updateRecipe.request(id))
-  return api
-    .updateRecipe(id, data)
-    .then(res => {
-      // TODO(sbdchd): this should have its own actions
-      dispatch(updateRecipe.success(res.data))
-    })
-    .catch(() => {
-      dispatch(updateRecipe.failure(id))
-    })
+  const res = await api.updateRecipe(id, data)
+  if (isOk(res)) {
+    // TODO(sbdchd): this should have its own actions
+    dispatch(updateRecipe.success(res.data))
+  } else {
+    dispatch(updateRecipe.failure(id))
+  }
 }
 
-export const addingRecipeStep = (dispatch: Dispatch) => (
+export const addingRecipeStep = (dispatch: Dispatch) => async (
   recipeID: IRecipe["id"],
   step: unknown
 ) => {
   dispatch(addStepToRecipe.request(recipeID))
-  return api
-    .addStepToRecipe(recipeID, step)
-    .then(res => {
-      dispatch(addStepToRecipe.success({ id: recipeID, step: res.data }))
-    })
-    .catch(() => {
-      dispatch(addStepToRecipe.failure(recipeID))
-    })
+  const res = await api.addStepToRecipe(recipeID, step)
+  if (isOk(res)) {
+    dispatch(addStepToRecipe.success({ id: recipeID, step: res.data }))
+  } else {
+    dispatch(addStepToRecipe.failure(recipeID))
+  }
 }
 
-export const updatingIngredient = (dispatch: Dispatch) => (
+export const updatingIngredient = (dispatch: Dispatch) => async (
   recipeID: IRecipe["id"],
   ingredientID: IIngredient["id"],
   content: unknown
 ) => {
   dispatch(updateIngredient.request({ recipeID, ingredientID }))
-  return api
-    .updateIngredient(recipeID, ingredientID, content)
-    .then(res => {
-      dispatch(
-        updateIngredient.success({ recipeID, ingredientID, content: res.data })
-      )
-    })
-    .catch(() => {
-      dispatch(updateIngredient.failure({ recipeID, ingredientID }))
-    })
+  const res = await api.updateIngredient(recipeID, ingredientID, content)
+  if (isOk(res)) {
+    dispatch(
+      updateIngredient.success({ recipeID, ingredientID, content: res.data })
+    )
+  } else {
+    dispatch(updateIngredient.failure({ recipeID, ingredientID }))
+  }
 }
 
-export const deletingIngredient = (dispatch: Dispatch) => (
+export const deletingIngredient = (dispatch: Dispatch) => async (
   recipeID: IRecipe["id"],
   ingredientID: IIngredient["id"]
 ) => {
   dispatch(deleteIngredient.request({ recipeID, ingredientID }))
-  return api
-    .deleteIngredient(recipeID, ingredientID)
-    .then(() => {
-      dispatch(deleteIngredient.success({ recipeID, ingredientID }))
-    })
-    .catch(() => {
-      dispatch(deleteIngredient.failure({ recipeID, ingredientID }))
-    })
+  const res = await api.deleteIngredient(recipeID, ingredientID)
+  if (isOk(res)) {
+    dispatch(deleteIngredient.success({ recipeID, ingredientID }))
+  } else {
+    dispatch(deleteIngredient.failure({ recipeID, ingredientID }))
+  }
 }
 
-export const updatingStep = (dispatch: Dispatch) => (
+export const updatingStep = (dispatch: Dispatch) => async (
   recipeID: IRecipe["id"],
   stepID: IStep["id"],
   { text, position }: { text?: string; position?: number }
@@ -523,113 +494,103 @@ export const updatingStep = (dispatch: Dispatch) => (
       delete data[key]
     }
   }
-  return api
-    .updateStep(recipeID, stepID, data)
-    .then(res => {
-      dispatch(
-        updateStep.success({
-          recipeID,
-          stepID,
-          text: res.data.text,
-          position: res.data.position
-        })
-      )
-    })
-    .catch(() => {
-      dispatch(updateStep.failure({ recipeID, stepID }))
-    })
+  const res = await api.updateStep(recipeID, stepID, data)
+  if (isOk(res)) {
+    dispatch(
+      updateStep.success({
+        recipeID,
+        stepID,
+        text: res.data.text,
+        position: res.data.position
+      })
+    )
+  } else {
+    dispatch(updateStep.failure({ recipeID, stepID }))
+  }
 }
 
-export const deletingStep = (dispatch: Dispatch) => (
+export const deletingStep = (dispatch: Dispatch) => async (
   recipeID: IRecipe["id"],
   stepID: IStep["id"]
 ) => {
   dispatch(deleteStep.request({ recipeID, stepID }))
-  return api
-    .deleteStep(recipeID, stepID)
-    .then(() => {
-      dispatch(deleteStep.success({ recipeID, stepID }))
-    })
-    .catch(() => {
-      dispatch(deleteStep.failure({ recipeID, stepID }))
-    })
+  const res = await api.deleteStep(recipeID, stepID)
+  if (isOk(res)) {
+    dispatch(deleteStep.success({ recipeID, stepID }))
+  } else {
+    dispatch(deleteStep.failure({ recipeID, stepID }))
+  }
 }
 
-export const logUserIn = (dispatch: Dispatch) => (
+export const logUserIn = (dispatch: Dispatch) => async (
   email: string,
   password: string,
   redirectUrl: string = ""
 ) => {
   dispatch(clearNotification())
   dispatch(login.request())
-  return api
-    .loginUser(email, password)
-    .then(res => {
-      dispatch(login.success(res.data.user))
-      dispatch(push(redirectUrl))
-    })
-    .catch((err: AxiosError) => {
-      const badRequest = err.response && err.response.status === 400
-      if (err.response && badRequest) {
-        const data = err.response.data
-        // tslint:disable:no-unsafe-any
-        dispatch(
-          login.failure({
-            email: data["email"],
-            password1: data["password1"],
-            nonFieldErrors: data["non_field_errors"]
-          })
-        )
-        // tslint:enable:no-unsafe-any
-        return
-      }
-      dispatch(login.failure())
-    })
+  const res = await api.loginUser(email, password)
+
+  if (isOk(res)) {
+    dispatch(login.success(res.data.user))
+    dispatch(push(redirectUrl))
+  } else {
+    const err = res.error
+    const badRequest = err.response && err.response.status === 400
+    if (err.response && badRequest) {
+      const data = err.response.data
+      // tslint:disable:no-unsafe-any
+      dispatch(
+        login.failure({
+          email: data["email"],
+          password1: data["password1"],
+          nonFieldErrors: data["non_field_errors"]
+        })
+      )
+      // tslint:enable:no-unsafe-any
+      return
+    }
+    dispatch(login.failure())
+  }
 }
 
-export const socialLogin = (dispatch: Dispatch) => (
+export const socialLogin = (dispatch: Dispatch) => async (
   service: SocialProvider,
   token: string,
   redirectUrl: string = ""
 ) => {
-  return api
-    .loginUserWithSocial(service, token)
-    .then(res => {
-      dispatch(login.success(res.data.user))
-      dispatch(replace(redirectUrl))
-    })
-    .catch((err: AxiosError) => {
-      const badRequest = err.response && err.response.status === 400
-      if (err.response && badRequest) {
-        const data = err.response.data
-        // tslint:disable:no-unsafe-any
-        dispatch(
-          setErrorSocialLogin({
-            emailSocial: data["email"],
-            nonFieldErrorsSocial: data["non_field_errors"]
-          })
-        )
-        // tslint:enable:no-unsafe-any
-      }
-      dispatch(replace("/login"))
-    })
+  const res = await api.loginUserWithSocial(service, token)
+
+  if (isOk(res)) {
+    dispatch(login.success(res.data.user))
+    dispatch(replace(redirectUrl))
+  } else {
+    const err = res.error
+    const badRequest = err.response && err.response.status === 400
+    if (err.response && badRequest) {
+      const data = err.response.data
+      // tslint:disable:no-unsafe-any
+      dispatch(
+        setErrorSocialLogin({
+          emailSocial: data["email"],
+          nonFieldErrorsSocial: data["non_field_errors"]
+        })
+      )
+      // tslint:enable:no-unsafe-any
+    }
+    dispatch(replace("/login"))
+  }
 }
 
-export const socialConnect = (dispatch: Dispatch) => (
+export const socialConnect = (dispatch: Dispatch) => async (
   service: SocialProvider,
   code: unknown
 ) => {
-  return api
-    .connectSocial(service, code)
-    .then(() => {
-      dispatch(replace("/settings"))
-    })
-    .catch(() => {
-      dispatch(replace("/settings"))
-    })
+  await api.connectSocial(service, code)
+  dispatch(replace("/settings"))
 }
 
-export const signup = (dispatch: Dispatch) => (
+export const signup = (dispatch: Dispatch) => async (
   email: string,
   password1: string,
   password2: string
@@ -639,85 +600,85 @@ export const signup = (dispatch: Dispatch) => (
   // clear previous signup errors
   dispatch(setErrorSignup({}))
   dispatch(clearNotification())
-  return api
-    .signup(email, password1, password2)
-    .then(res => {
-      dispatch(login.success(res.data.user))
-      dispatch(setLoadingSignup(false))
-      dispatch(push("/recipes/add"))
-    })
-    .catch((err: AxiosError) => {
-      if (isbadRequest(err)) {
-        // tslint:disable:no-unsafe-any
-        const data = err.response && err.response.data
-        dispatch(
-          setErrorSignup({
-            email: data["email"],
-            password1: data["password1"],
-            password2: data["password2"],
-            nonFieldErrors: data["non_field_errors"]
-          })
-        )
-        // tslint:enable:no-unsafe-any
-      }
-      dispatch(setLoadingSignup(false))
-    })
+
+  const res = await api.signup(email, password1, password2)
+
+  if (isOk(res)) {
+    dispatch(login.success(res.data.user))
+    dispatch(setLoadingSignup(false))
+    dispatch(push("/recipes/add"))
+  } else {
+    const err = res.error
+    if (isbadRequest(err)) {
+      // tslint:disable:no-unsafe-any
+      const data = err.response && err.response.data
+      dispatch(
+        setErrorSignup({
+          email: data["email"],
+          password1: data["password1"],
+          password2: data["password2"],
+          nonFieldErrors: data["non_field_errors"]
+        })
+      )
+      // tslint:enable:no-unsafe-any
+    }
+    dispatch(setLoadingSignup(false))
+  }
 }
-export const deletingRecipe = (dispatch: Dispatch) => (id: IRecipe["id"]) => {
+export const deletingRecipe = (dispatch: Dispatch) => async (
+  id: IRecipe["id"]
+) => {
   dispatch(deleteRecipe.request(id))
-  return api
-    .deleteRecipe(id)
-    .then(() => {
-      dispatch(push("/recipes"))
-      dispatch(deleteRecipe.success(id))
-    })
-    .catch(() => {
-      dispatch(deleteRecipe.failure(id))
-    })
+  const res = await api.deleteRecipe(id)
+  if (isOk(res)) {
+    dispatch(push("/recipes"))
+    dispatch(deleteRecipe.success(id))
+  } else {
+    dispatch(deleteRecipe.failure(id))
+  }
 }
 
-export const reset = (dispatch: Dispatch) => (email: string) => {
+export const reset = (dispatch: Dispatch) => async (email: string) => {
   // TODO(sbdchd): refactor to use createActionAsync
   dispatch(setLoadingReset(true))
   dispatch(setErrorReset({}))
   dispatch(clearNotification())
-  return api
-    .resetPassword(email)
-    .then(res => {
-      dispatch(setLoadingReset(false))
-      const message = res && res.data && res.data.detail
-      showNotificationWithTimeout(dispatch)({
-        message,
-        level: "success"
-      })
+  const res = await api.resetPassword(email)
+  if (isOk(res)) {
+    dispatch(setLoadingReset(false))
+    const message = res && res.data && res.data.detail
+    showNotificationWithTimeout(dispatch)({
+      message,
+      level: "success"
     })
-    .catch((err: AxiosError) => {
-      dispatch(setLoadingReset(false))
-      showNotificationWithTimeout(dispatch)({
-        message: "uh oh! problem resetting password",
-        level: "danger",
-        sticky: true
-      })
-      if (isbadRequest(err)) {
-        // tslint:disable:no-unsafe-any
-        const data = err.response && err.response.data
-        dispatch(
-          setErrorReset({
-            email: data["email"],
-            nonFieldErrors: data["non_field_errors"]
-          })
-        )
-        // tslint:enable:no-unsafe-any
-      }
-      showNotificationWithTimeout(dispatch)({
-        message: "problem resetting password",
-        level: "danger",
-        sticky: true
-      })
+  } else {
+    const err = res.error
+    dispatch(setLoadingReset(false))
+    showNotificationWithTimeout(dispatch)({
+      message: "uh oh! problem resetting password",
+      level: "danger",
+      sticky: true
     })
+    if (isbadRequest(err)) {
+      // tslint:disable:no-unsafe-any
+      const data = err.response && err.response.data
+      dispatch(
+        setErrorReset({
+          email: data["email"],
+          nonFieldErrors: data["non_field_errors"]
+        })
+      )
+      // tslint:enable:no-unsafe-any
+    }
+    showNotificationWithTimeout(dispatch)({
+      message: "problem resetting password",
+      level: "danger",
+      sticky: true
+    })
+  }
 }
 
-export const resetConfirmation = (dispatch: Dispatch) => (
+export const resetConfirmation = (dispatch: Dispatch) => async (
   uid: string,
   token: string,
   newPassword1: string,
@@ -727,93 +688,93 @@ export const resetConfirmation = (dispatch: Dispatch) => (
   dispatch(setLoadingResetConfirmation(true))
   dispatch(setErrorResetConfirmation({}))
   dispatch(clearNotification())
-  return api
-    .resetPasswordConfirm(uid, token, newPassword1, newPassword2)
-    .then(res => {
-      dispatch(setLoadingResetConfirmation(false))
-      const message = res && res.data && res.data.detail
-      showNotificationWithTimeout(dispatch)({
-        message,
-        level: "success"
-      })
-      dispatch(push("/login"))
-    })
-    .catch((err: AxiosError) => {
-      dispatch(setLoadingResetConfirmation(false))
-      showNotificationWithTimeout(dispatch)({
-        message: "uh oh! problem resetting password",
-        level: "danger",
-        sticky: true
-      })
-      if (isbadRequest(err)) {
-        // tslint:disable:no-unsafe-any
-        const data = err.response && err.response.data
 
-        const tokenData =
-          data["token"] && data["token"].map((x: unknown) => "token: " + x)
-        const uidData =
-          data["uid"] && data["uid"].map((x: unknown) => "uid: " + x)
-        const nonFieldErrors = []
-          .concat(data["non_field_errors"])
-          .concat(tokenData)
-          .concat(uidData)
-
-        dispatch(
-          setErrorResetConfirmation({
-            newPassword1: data["new_password1"],
-            newPassword2: data["new_password2"],
-            nonFieldErrors
-          })
-        )
-        // tslint:enable:no-unsafe-any
-      }
+  const res = await api.resetPasswordConfirm(
+    uid,
+    token,
+    newPassword1,
+    newPassword2
+  )
+  if (isOk(res)) {
+    dispatch(setLoadingResetConfirmation(false))
+    const message = res && res.data && res.data.detail
+    showNotificationWithTimeout(dispatch)({
+      message,
+      level: "success"
     })
+    dispatch(push("/login"))
+  } else {
+    const err = res.error
+    dispatch(setLoadingResetConfirmation(false))
+    showNotificationWithTimeout(dispatch)({
+      message: "uh oh! problem resetting password",
+      level: "danger",
+      sticky: true
+    })
+    if (isbadRequest(err)) {
+      // tslint:disable:no-unsafe-any
+      const data = err.response && err.response.data
+
+      const tokenData =
+        data["token"] && data["token"].map((x: unknown) => "token: " + x)
+      const uidData =
+        data["uid"] && data["uid"].map((x: unknown) => "uid: " + x)
+      const nonFieldErrors = []
+        .concat(data["non_field_errors"])
+        .concat(tokenData)
+        .concat(uidData)
+
+      dispatch(
+        setErrorResetConfirmation({
+          newPassword1: data["new_password1"],
+          newPassword2: data["new_password2"],
+          nonFieldErrors
+        })
+      )
+      // tslint:enable:no-unsafe-any
+    }
+  }
 }
 
-export const fetchingTeam = (dispatch: Dispatch) => (id: ITeam["id"]) => {
+export const fetchingTeam = (dispatch: Dispatch) => async (id: ITeam["id"]) => {
   dispatch(fetchTeam.request(id))
-  return api
-    .getTeam(id)
-    .then(res => {
-      dispatch(fetchTeam.success(res.data))
-    })
-    .catch((err: AxiosError) => {
-      if (is404(err)) {
-        dispatch(fetchTeam.failure({ id, error404: true }))
-        return
-      }
-      dispatch(fetchTeam.failure({ id }))
-    })
+  const res = await api.getTeam(id)
+  if (isOk(res)) {
+    dispatch(fetchTeam.success(res.data))
+  } else {
+    const err = res.error
+    if (is404(err)) {
+      dispatch(fetchTeam.failure({ id, error404: true }))
+      return
+    }
+    dispatch(fetchTeam.failure({ id }))
+  }
 }
 
-export const fetchingTeamMembers = (dispatch: Dispatch) => (
+export const fetchingTeamMembers = (dispatch: Dispatch) => async (
   id: ITeam["id"]
 ) => {
   dispatch(fetchTeamMembers.request(id))
-  return api
-    .getTeamMembers(id)
-    .then(res => {
-      dispatch(fetchTeamMembers.success({ id, members: res.data }))
-    })
-    .catch(() => {
-      dispatch(fetchTeamMembers.failure(id))
-    })
+  const res = await api.getTeamMembers(id)
+  if (isOk(res)) {
+    dispatch(fetchTeamMembers.success({ id, members: res.data }))
+  } else {
+    dispatch(fetchTeamMembers.failure(id))
+  }
 }
 
-export const fetchingTeamRecipes = (dispatch: Dispatch) => (
+export const fetchingTeamRecipes = (dispatch: Dispatch) => async (
   id: ITeam["id"]
 ) => {
   dispatch(fetchTeamRecipes.request(id))
-  return api
-    .getTeamRecipes(id)
-    .then(res => {
-      // TODO(sbdchd): kind of hacky
-      dispatch(fetchRecipeList.success({ recipes: res.data, teamID: id }))
-      dispatch(fetchTeamRecipes.success({ id, recipes: res.data }))
-    })
-    .catch(() => {
-      dispatch(fetchTeamRecipes.failure(id))
-    })
+  const res = await api.getTeamRecipes(id)
+  if (isOk(res)) {
+    // TODO(sbdchd): kind of hacky
+    dispatch(fetchRecipeList.success({ recipes: res.data, teamID: id }))
+    dispatch(fetchTeamRecipes.success({ id, recipes: res.data }))
+  } else {
+    dispatch(fetchTeamRecipes.failure(id))
+  }
 }
 
 // tslint:disable:no-unsafe-any
@@ -823,286 +784,277 @@ const attemptedDeleteLastAdmin = (res: AxiosResponse) =>
   res.data.level[0].includes("cannot demote")
 // tslint:enable:no-unsafe-any
 
-export const settingUserTeamLevel = (dispatch: Dispatch) => (
+export const settingUserTeamLevel = (dispatch: Dispatch) => async (
   teamID: ITeam["id"],
   membershipID: IMember["id"],
   level: IMember["level"]
 ) => {
   // TODO(sbdchd): refactor to use createActionAsync
   dispatch(setUpdatingUserTeamLevel({ id: teamID, updating: true }))
-  return api
-    .updateTeamMemberLevel(teamID, membershipID, level)
-    .then(res => {
-      dispatch(
-        setUserTeamLevel({ teamID, membershipID, level: res.data.level })
-      )
-      dispatch(setUpdatingUserTeamLevel({ id: teamID, updating: false }))
-    })
-    .catch((err: AxiosError) => {
-      if (err.response && attemptedDeleteLastAdmin(err.response)) {
-        // tslint:disable:no-unsafe-any
-        const message = err.response.data.level[0]
-        showNotificationWithTimeout(dispatch)({
-          message,
-          level: "danger",
-          delay: 3 * second
-        })
-        // tslint:enable:no-unsafe-any
-      }
-      dispatch(setUpdatingUserTeamLevel({ id: teamID, updating: false }))
-    })
+  const res = await api.updateTeamMemberLevel(teamID, membershipID, level)
+  if (isOk(res)) {
+    dispatch(setUserTeamLevel({ teamID, membershipID, level: res.data.level }))
+    dispatch(setUpdatingUserTeamLevel({ id: teamID, updating: false }))
+  } else {
+    const err = res.error
+    if (err.response && attemptedDeleteLastAdmin(err.response)) {
+      // tslint:disable:no-unsafe-any
+      const message = err.response.data.level[0]
+      showNotificationWithTimeout(dispatch)({
+        message,
+        level: "danger",
+        delay: 3 * second
+      })
+      // tslint:enable:no-unsafe-any
+    }
+    dispatch(setUpdatingUserTeamLevel({ id: teamID, updating: false }))
+  }
 }
 
-export const deletingMembership = (dispatch: Dispatch) => (
+export const deletingMembership = (dispatch: Dispatch) => async (
   teamID: ITeam["id"],
   id: IMember["id"],
   leaving: boolean = false
 ) => {
   dispatch(setDeletingMembership({ teamID, membershipID: id, val: true }))
-  return api
-    .deleteTeamMember(teamID, id)
-    .then(() => {
-      const message = "left team " + store.getState().teams.byId[teamID].name
-      dispatch(deleteMembership({ teamID, membershipID: id }))
-      if (leaving) {
-        dispatch(push("/"))
-        showNotificationWithTimeout(dispatch)({
-          message,
-          level: "success",
-          delay: 3 * second
-        })
-        dispatch(deleteTeam(teamID))
-      }
-    })
-    .catch((err: AxiosError) => {
-      const message = err.response && err.response.data
-      showNotificationWithTimeout(dispatch)({
-        // tslint:disable-next-line:no-unsafe-any
-        message,
-        level: "danger",
-        delay: 3 * second
-      })
-      dispatch(setDeletingMembership({ teamID, membershipID: id, val: false }))
-    })
-}
-
-export const deletingTeam = (dispatch: Dispatch) => (teamID: ITeam["id"]) => {
-  return api
-    .deleteTeam(teamID)
-    .then(() => {
+  const res = await api.deleteTeamMember(teamID, id)
+  if (isOk(res)) {
+    const message = "left team " + store.getState().teams.byId[teamID].name
+    dispatch(deleteMembership({ teamID, membershipID: id }))
+    if (leaving) {
       dispatch(push("/"))
-      const teamName = store.getState().teams.byId[teamID].name
       showNotificationWithTimeout(dispatch)({
-        message: `Team deleted (${teamName})`,
+        message,
         level: "success",
         delay: 3 * second
       })
       dispatch(deleteTeam(teamID))
+    }
+  } else {
+    const err = res.error
+    const message = err.response && err.response.data
+    showNotificationWithTimeout(dispatch)({
+      // tslint:disable-next-line:no-unsafe-any
+      message,
+      level: "danger",
+      delay: 3 * second
     })
-    .catch((err: AxiosError) => {
-      let message = "Uh Oh! Something went wrong."
-      // tslint:disable:no-unsafe-any
-      if (err.response && err.response.status === 403) {
-        message =
-          err.response.data && err.response.data.detail
-            ? err.response.data.detail
-            : "You are not authorized to delete this team"
-      } else if (err.response && err.response.status === 404) {
-        message =
-          err.response.data && err.response.data.detail
-            ? err.response.data.detail
-            : "The team you are attempting to delete doesn't exist"
-      } else {
-        raven.captureException(err)
-      }
-      // tslint:enable:no-unsafe-any
-      showNotificationWithTimeout(dispatch)({
-        message,
-        level: "danger",
-        delay: 3 * second
-      })
-    })
+    dispatch(setDeletingMembership({ teamID, membershipID: id, val: false }))
+  }
 }
 
-export const sendingTeamInvites = (dispatch: Dispatch) => (
+export const deletingTeam = (dispatch: Dispatch) => async (
+  teamID: ITeam["id"]
+) => {
+  const res = await api.deleteTeam(teamID)
+  if (isOk(res)) {
+    dispatch(push("/"))
+    const teamName = store.getState().teams.byId[teamID].name
+    showNotificationWithTimeout(dispatch)({
+      message: `Team deleted (${teamName})`,
+      level: "success",
+      delay: 3 * second
+    })
+    dispatch(deleteTeam(teamID))
+  } else {
+    const err = res.error
+    let message = "Uh Oh! Something went wrong."
+    // tslint:disable:no-unsafe-any
+    if (err.response && err.response.status === 403) {
+      message =
+        err.response.data && err.response.data.detail
+          ? err.response.data.detail
+          : "You are not authorized to delete this team"
+    } else if (err.response && err.response.status === 404) {
+      message =
+        err.response.data && err.response.data.detail
+          ? err.response.data.detail
+          : "The team you are attempting to delete doesn't exist"
+    } else {
+      raven.captureException(err)
+    }
+    // tslint:enable:no-unsafe-any
+    showNotificationWithTimeout(dispatch)({
+      message,
+      level: "danger",
+      delay: 3 * second
+    })
+  }
+}
+
+export const sendingTeamInvites = (dispatch: Dispatch) => async (
   teamID: ITeam["id"],
   emails: string[],
   level: IMember["level"]
 ) => {
   dispatch(setSendingTeamInvites({ teamID, val: true }))
-  return api
-    .sendTeamInvites(teamID, emails, level)
-    .then(() => {
-      showNotificationWithTimeout(dispatch)({
-        message: "invites sent!",
-        level: "success",
-        delay: 3 * second
-      })
-      dispatch(setSendingTeamInvites({ teamID, val: false }))
+  const res = await api.sendTeamInvites(teamID, emails, level)
+  if (isOk(res)) {
+    showNotificationWithTimeout(dispatch)({
+      message: "invites sent!",
+      level: "success",
+      delay: 3 * second
     })
-    .catch(() => {
-      showNotificationWithTimeout(dispatch)({
-        message: "error sending team invite",
-        level: "danger",
-        delay: 3 * second
-      })
-      dispatch(setSendingTeamInvites({ teamID, val: false }))
-      // NOTE(chdsbd): We depend on this to return an error in TeamInvite.tsx
-      return Error()
+    dispatch(setSendingTeamInvites({ teamID, val: false }))
+    return Ok(undefined)
+  } else {
+    showNotificationWithTimeout(dispatch)({
+      message: "error sending team invite",
+      level: "danger",
+      delay: 3 * second
     })
+    dispatch(setSendingTeamInvites({ teamID, val: false }))
+    return Err(undefined)
+  }
 }
 
-export const fetchingTeams = (dispatch: Dispatch) => () => {
+export const fetchingTeams = (dispatch: Dispatch) => async () => {
   dispatch(fetchTeams.request())
-  return api
-    .getTeamList()
-    .then(res => {
-      dispatch(fetchTeams.success(res.data))
-    })
-    .catch(() => {
-      dispatch(fetchTeams.failure())
-    })
+  const res = await api.getTeamList()
+  if (isOk(res)) {
+    dispatch(fetchTeams.success(res.data))
+  } else {
+    dispatch(fetchTeams.failure())
+  }
 }
 
-export const creatingTeam = (dispatch: Dispatch) => (
+export const creatingTeam = (dispatch: Dispatch) => async (
   name: ITeam["name"],
   emails: string[],
   level: IMember["level"]
 ) => {
+  // TODO(sbdchd): use createAsyncActions
   dispatch(setCreatingTeam(true))
-  return api
-    .createTeam(name, emails, level)
-    .then(res => {
-      dispatch(setTeam({ id: res.data.id, team: res.data }))
-      dispatch(setCreatingTeam(false))
-      dispatch(push(`/t/${res.data.id}`))
-    })
-    .catch(() => {
-      dispatch(setCreatingTeam(false))
-    })
+  const res = await api.createTeam(name, emails, level)
+  if (isOk(res)) {
+    dispatch(setTeam({ id: res.data.id, team: res.data }))
+    dispatch(setCreatingTeam(false))
+    dispatch(push(`/t/${res.data.id}`))
+  } else {
+    dispatch(setCreatingTeam(false))
+  }
 }
 
-export const updatingTeam = (dispatch: Dispatch) => (
+export const updatingTeam = (dispatch: Dispatch) => async (
   teamId: ITeam["id"],
   teamKVs: unknown
 ) => {
-  return api
-    .updateTeam(teamId, teamKVs)
-    .then(res => {
-      showNotificationWithTimeout(dispatch)({
-        message: "Team updated",
-        level: "success",
-        delay: 3 * second
-      })
-      dispatch(updateTeamById({ id: res.data.id, teamKeys: res.data }))
+  const res = await api.updateTeam(teamId, teamKVs)
+  if (isOk(res)) {
+    showNotificationWithTimeout(dispatch)({
+      message: "Team updated",
+      level: "success",
+      delay: 3 * second
     })
-    .catch((err: AxiosError) => {
-      let message = "Problem updating team."
-      // tslint:disable-next-line:no-unsafe-any
-      if (err.response && err.response.status === 403) {
-        message = "You are not authorized to perform that action"
-      }
-      showNotificationWithTimeout(dispatch)({
-        message,
-        level: "danger",
-        delay: 3 * second
-      })
+    dispatch(updateTeamById({ id: res.data.id, teamKeys: res.data }))
+  } else {
+    const err = res.error
+    let message = "Problem updating team."
+    // tslint:disable-next-line:no-unsafe-any
+    if (err.response && err.response.status === 403) {
+      message = "You are not authorized to perform that action"
+    }
+    showNotificationWithTimeout(dispatch)({
+      message,
+      level: "danger",
+      delay: 3 * second
     })
+  }
 }
 
-export const moveRecipeTo = (dispatch: Dispatch) => (
+export const moveRecipeTo = (dispatch: Dispatch) => async (
   recipeId: IRecipe["id"],
   ownerId: IUser["id"],
   type: IRecipe["owner"]["type"]
 ) => {
-  return api.moveRecipe(recipeId, ownerId, type).then(res => {
+  const res = await api.moveRecipe(recipeId, ownerId, type)
+  if (isOk(res)) {
     dispatch(updateRecipeOwner({ id: res.data.id, owner: res.data.owner }))
-  })
+  }
 }
 
-export const copyRecipeTo = (dispatch: Dispatch) => (
+export const copyRecipeTo = (dispatch: Dispatch) => async (
   recipeId: IRecipe["id"],
   ownerId: IUser["id"],
   type: IRecipe["owner"]["type"]
 ) => {
   // TODO(sbdchd): refactor to use createActionAsync
   dispatch(setCopyingTeam(true))
-  return api
-    .copyRecipe(recipeId, ownerId, type)
-    .then(res => {
-      dispatch(fetchRecipe.success(res.data))
-      dispatch(setCopyingTeam(false))
+  const res = await api.copyRecipe(recipeId, ownerId, type)
+  if (isOk(res)) {
+    dispatch(fetchRecipe.success(res.data))
+    dispatch(setCopyingTeam(false))
+  } else {
+    dispatch(setCopyingTeam(false))
+    // TODO(chdsbd): Improve api usage and remove this throw
+    // tslint:disable-next-line:no-throw
+    showNotificationWithTimeout(dispatch)({
+      message: `Problem copying recipe: ${res.error}`,
+      level: "danger",
+      sticky: true
     })
-    .catch(err => {
-      dispatch(setCopyingTeam(false))
-      // TODO(chdsbd): Improve api usage and remove this throw
-      // tslint:disable-next-line:no-throw
-      throw err
-    })
+  }
 }
 
-export const fetchingInvites = (dispatch: Dispatch) => () => {
+export const fetchingInvites = (dispatch: Dispatch) => async () => {
   dispatch(fetchInvites.request())
-  return api
-    .getInviteList()
-    .then(res => {
-      dispatch(fetchInvites.success(res.data))
-    })
-    .catch(() => {
-      dispatch(fetchInvites.failure())
-    })
+  const res = await api.getInviteList()
+  if (isOk(res)) {
+    dispatch(fetchInvites.success(res.data))
+  } else {
+    dispatch(fetchInvites.failure())
+  }
 }
 
-export const acceptingInvite = (dispatch: Dispatch) => (id: IInvite["id"]) => {
+export const acceptingInvite = (dispatch: Dispatch) => async (
+  id: IInvite["id"]
+) => {
   dispatch(acceptInvite.request(id))
-  return api
-    .acceptInvite(id)
-    .then(() => {
-      dispatch(acceptInvite.success(id))
-    })
-    .catch(() => {
-      dispatch(acceptInvite.failure(id))
-    })
+  const res = await api.acceptInvite(id)
+  if (isOk(res)) {
+    dispatch(acceptInvite.success(id))
+  } else {
+    dispatch(acceptInvite.failure(id))
+  }
 }
-export const decliningInvite = (dispatch: Dispatch) => (id: IInvite["id"]) => {
+export const decliningInvite = (dispatch: Dispatch) => async (
+  id: IInvite["id"]
+) => {
   dispatch(declineInvite.request(id))
-  return api
-    .declineInvite(id)
-    .then(() => {
-      dispatch(declineInvite.success(id))
-    })
-    .catch(() => {
-      dispatch(declineInvite.failure(id))
-    })
+  const res = await api.declineInvite(id)
+  if (isOk(res)) {
+    dispatch(declineInvite.success(id))
+  } else {
+    dispatch(declineInvite.failure(id))
+  }
 }
 
-export const deleteUserAccount = (dispatch: Dispatch) => () => {
-  return api
-    .deleteLoggedInUser()
-    .then(() => {
-      dispatch(setUserLoggedIn(false))
-      dispatch(push("/login"))
-      showNotificationWithTimeout(dispatch)({ message: "Account deleted" })
-    })
-    .catch((error: AxiosError) => {
-      // tslint:disable:no-unsafe-any
-      if (
-        error.response &&
-        error.response.status === 403 &&
-        error.response.data.detail
-      ) {
-        showNotificationWithTimeout(dispatch)({
-          message: error.response.data.detail,
-          level: "danger"
-        })
-        // tslint:enable:no-unsafe-any
-      } else {
-        showNotificationWithTimeout(dispatch)({
-          message: "failed to delete account",
-          level: "danger"
-        })
-      }
-    })
+export const deleteUserAccount = (dispatch: Dispatch) => async () => {
+  const res = await api.deleteLoggedInUser()
+  if (isOk(res)) {
+    dispatch(setUserLoggedIn(false))
+    dispatch(push("/login"))
+    showNotificationWithTimeout(dispatch)({ message: "Account deleted" })
+  } else {
+    const error = res.error
+    // tslint:disable:no-unsafe-any
+    if (
+      error.response &&
+      error.response.status === 403 &&
+      error.response.data.detail
+    ) {
+      showNotificationWithTimeout(dispatch)({
+        message: error.response.data.detail,
+        level: "danger"
+      })
+      // tslint:enable:no-unsafe-any
+    } else {
+      showNotificationWithTimeout(dispatch)({
+        message: "failed to delete account",
+        level: "danger"
+      })
+    }
+  }
 }
 
 export const reportBadMerge = (dispatch: Dispatch) => async () => {
@@ -1197,7 +1149,7 @@ export const addingScheduledRecipe = (dispatch: Dispatch) => async (
     dispatch(setSchedulingRecipe({ recipeID, scheduling: false }))
   }
 }
-export const deletingScheduledRecipe = (dispatch: Dispatch) => (
+export const deletingScheduledRecipe = (dispatch: Dispatch) => async (
   id: ICalRecipe["id"],
   teamID: TeamID
 ) => {
@@ -1206,9 +1158,10 @@ export const deletingScheduledRecipe = (dispatch: Dispatch) => (
   // that marker if this fails. Or we could put them in their own id list
   const recipe = store.getState().calendar.byId[id]
   dispatch(deleteCalendarRecipe(id))
-  return api.deleteScheduledRecipe(id, teamID).catch(() => {
+  const res = await api.deleteScheduledRecipe(id, teamID)
+  if (isErr(res)) {
     dispatch(setCalendarRecipe(recipe))
-  })
+  }
 }
 
 function isSameTeam(x: ICalRecipe, teamID: TeamID): boolean {
@@ -1218,7 +1171,7 @@ function isSameTeam(x: ICalRecipe, teamID: TeamID): boolean {
   return x.team === teamID
 }
 
-export const moveScheduledRecipe = (dispatch: Dispatch) => (
+export const moveScheduledRecipe = (dispatch: Dispatch) => async (
   id: ICalRecipe["id"],
   teamID: TeamID,
   to: Date
@@ -1246,27 +1199,26 @@ export const moveScheduledRecipe = (dispatch: Dispatch) => (
 
   if (existing) {
     // HACK(sbdchd): this should be an endpoint so we can have this be in a transaction
-    return api
-      .deleteScheduledRecipe(from.id, teamID)
-      .then(() =>
-        api.updateScheduleRecipe(existing.id, teamID, {
-          count: existing.count + from.count
-        })
-      )
-      .catch(() => {
-        dispatch(moveCalendarRecipe({ id, to: toDateString(from.on) }))
+    const resp = await api.deleteScheduledRecipe(from.id, teamID)
+    if (isOk(resp)) {
+      api.updateScheduleRecipe(existing.id, teamID, {
+        count: existing.count + from.count
       })
+    } else {
+      dispatch(moveCalendarRecipe({ id, to: toDateString(from.on) }))
+    }
   }
 
-  return api
-    .updateScheduleRecipe(id, teamID, { on: toDateString(to) })
-    .catch(() => {
-      // on error we want to move it back to the old position
-      dispatch(moveCalendarRecipe({ id, to: toDateString(from.on) }))
-    })
+  const res = await api.updateScheduleRecipe(id, teamID, {
+    on: toDateString(to)
+  })
+  if (isErr(res)) {
+    // on error we want to move it back to the old position
+    dispatch(moveCalendarRecipe({ id, to: toDateString(from.on) }))
+  }
 }
 
-export const updatingScheduledRecipe = (dispatch: Dispatch) => (
+export const updatingScheduledRecipe = (dispatch: Dispatch) => async (
   id: ICalRecipe["id"],
   teamID: TeamID,
   count: ICalRecipe["count"]
@@ -1275,7 +1227,8 @@ export const updatingScheduledRecipe = (dispatch: Dispatch) => (
     return deletingScheduledRecipe(dispatch)(id, teamID)
   }
 
-  return api.updateScheduleRecipe(id, teamID, { count }).then(res => {
+  const res = await api.updateScheduleRecipe(id, teamID, { count })
+  if (isOk(res)) {
     dispatch(setCalendarRecipe(res.data))
-  })
+  }
 }

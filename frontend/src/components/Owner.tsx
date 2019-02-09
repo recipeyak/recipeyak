@@ -122,13 +122,6 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
     this.props
       .copyRecipeTo(this.props.recipeId, parseInt(id, 10), type)
       .then(() => this.setState({ show: false, values: [] }))
-      .catch((err: AxiosError) => {
-        this.props.showNotificationWithTimeout({
-          message: `Problem copying recipe: ${err}`,
-          level: "danger",
-          sticky: true
-        })
-      })
   }
 
   move() {
