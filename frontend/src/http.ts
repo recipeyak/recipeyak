@@ -50,7 +50,7 @@ baseHttp.interceptors.request.use(
   error => Promise.reject(error)
 )
 
-type HttpRes<T> = Promise<Result<T, AxiosError>>
+type HttpResult<T> = Promise<Result<T, AxiosError>>
 
 const toOk = <T>(res: AxiosResponse<T>) => Ok(res.data)
 const toErr = (res: AxiosError) => Err(res)
@@ -59,17 +59,17 @@ const toErr = (res: AxiosError) => Err(res)
  * Result<T> based HTTP client
  */
 export const http = {
-  get: <T>(url: string, config?: AxiosRequestConfig): HttpRes<T> =>
+  get: <T>(url: string, config?: AxiosRequestConfig): HttpResult<T> =>
     baseHttp
       .get<T>(url, config)
       .then(toOk)
       .catch(toErr),
-  delete: (url: string, config?: AxiosRequestConfig): HttpRes<void> =>
+  delete: (url: string, config?: AxiosRequestConfig): HttpResult<void> =>
     baseHttp
       .delete(url, config)
       .then(toOk)
       .catch(toErr),
-  head: (url: string, config?: AxiosRequestConfig): HttpRes<void> =>
+  head: (url: string, config?: AxiosRequestConfig): HttpResult<void> =>
     baseHttp
       .head(url, config)
       .then(toOk)
@@ -78,7 +78,7 @@ export const http = {
     url: string,
     data?: {} | unknown,
     config?: AxiosRequestConfig
-  ): HttpRes<T> =>
+  ): HttpResult<T> =>
     baseHttp
       .patch<T>(url, data, config)
       .then(toOk)
@@ -87,7 +87,7 @@ export const http = {
     url: string,
     data?: {} | unknown,
     config?: AxiosRequestConfig
-  ): HttpRes<T> =>
+  ): HttpResult<T> =>
     baseHttp
       .put<T>(url, data, config)
       .then(toOk)
@@ -96,7 +96,7 @@ export const http = {
     url: string,
     data?: {} | unknown,
     config?: AxiosRequestConfig
-  ): HttpRes<T> =>
+  ): HttpResult<T> =>
     baseHttp
       .post<T>(url, data, config)
       .then(toOk)

@@ -18,7 +18,6 @@ import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
 
 export const updateUser = (data: Partial<IUser>) =>
   http.patch<IUser>("/api/v1/user/", data)
-
 export const getUser = () => http.get<IUser>("/api/v1/user/")
 
 export const deleteLoggedInUser = () => http.delete("/api/v1/user/")
