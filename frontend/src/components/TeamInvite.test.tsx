@@ -28,10 +28,10 @@ describe("<TeamInvite/>", () => {
             name="hello"
             error404
             sendInvites={jest.fn()}
-            // tslint:disable:no-any
+            // tslint:disable:no-any no-unsafe-any
             history={{} as any}
             location={{} as any}
-            // tslint:enable:no-any
+            // tslint:enable:no-any no-unsafe-any
           />
         </MemoryRouter>
       </Provider>

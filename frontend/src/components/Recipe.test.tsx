@@ -32,9 +32,13 @@ describe("<Recipe/>", () => {
     mount(
       <Provider store={store}>
         <MemoryRouter>
-          // tslint:disable:no-any
-          <Recipe {...props} location={{} as any} history={{} as any} />
-          // tslint:enable:no-any
+          <Recipe
+            {...props}
+            // tslint:disable:no-any no-unsafe-any
+            location={{} as any}
+            history={{} as any}
+            // tslint:enable:no-any no-unsafe-any
+          />
         </MemoryRouter>
       </Provider>
     )
