@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { connect } from "react-redux"
 import eachDay from "date-fns/each_day"
 import format from "date-fns/format"
@@ -187,98 +187,82 @@ interface ICalendarProps {
   readonly type: "shopping" | "recipes"
 }
 
-interface ICalendarState {
-  readonly start: Date
-  readonly owner: TeamID
-}
+function Calendar(props: ICalendarProps) {
+  const [start, setStart] = useState(startOfWeek(new Date()))
 
-class Calendar extends React.Component<ICalendarProps, ICalendarState> {
-  state: ICalendarState = {
-    start: startOfWeek(new Date()),
-    owner: "personal"
+  useEffect(() => {
+    props.fetchTeams()
+    props.fetchData(props.teamID, start)
+  }, [])
+
+  const refetchData = (teamID: TeamID = props.teamID) => {
+    props.fetchData(teamID, start)
+    props.refetchShoppingListAndRecipes(teamID)
   }
 
-  componentDidMount() {
-    this.props.fetchTeams()
-    this.props.fetchData(this.props.teamID, this.state.start)
+  useEffect(
+    () => {
+      props.fetchData(props.teamID, start)
+    },
+    [start]
+  )
+
+  const prev = () => {
+    setStart(prevStart => prevWeekStart(prevStart))
   }
 
-  refetchData = (teamID: TeamID = this.props.teamID) => {
-    this.props.fetchData(teamID, this.state.start)
-    this.props.refetchShoppingListAndRecipes(teamID)
+  const next = () => {
+    setStart(prevStart => nextWeekStart(prevStart))
   }
 
-  prev = () => {
-    this.setState(
-      prev => ({
-        start: prevWeekStart(prev.start)
-      }),
-      () => {
-        this.props.fetchData(this.props.teamID, this.state.start)
-      }
-    )
-  }
+  const current = () => setStart(startOfWeek(new Date()))
 
-  next = () => {
-    this.setState(
-      prev => ({
-        start: nextWeekStart(prev.start)
-      }),
-      () => {
-        this.props.fetchData(this.props.teamID, this.state.start)
-      }
-    )
-  }
-
-  current = () => this.setState({ start: startOfWeek(new Date()) })
-
-  handleOwnerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleOwnerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const teamID =
       e.target.value === "personal" ? "personal" : parseInt(e.target.value, 10)
     const url = teamID === "personal" ? "/schedule/" : `/t/${teamID}/schedule/`
 
-    const isRecipes = this.props.type === "recipes"
+    const isRecipes = props.type === "recipes"
 
     const ending = isRecipes ? "recipes" : "shopping"
 
     const urlWithEnding = url + ending
 
     // navTo is async so we can't count on the URL to have changed by the time we refetch the data
-    this.props.navTo(urlWithEnding)
-    this.refetchData(teamID)
+    props.navTo(urlWithEnding)
+    refetchData(teamID)
   }
 
-  render() {
-    if (this.props.error) {
-      return <p>Error fetching data</p>
-    }
-
-    const current = startOfWeek(this.state.start)
-    const start = startOfWeek(subWeeks(current, 1))
-    const end = endOfWeek(addWeeks(current, 1))
-    return (
-      <section className="d-flex flex-column flex-grow-1 hide-sm">
-        <Nav
-          teams={this.props.teams}
-          loadingTeams={this.props.loadingTeams}
-          handleOwnerChange={this.handleOwnerChange}
-          day={current}
-          teamID={this.props.teamID}
-          next={this.next}
-          prev={this.prev}
-          current={this.current}
-        />
-        <Weekdays />
-        <Days
-          start={start}
-          end={end}
-          days={this.props.days}
-          teamID={this.props.teamID}
-        />
-        <HelpPrompt />
-      </section>
-    )
+  if (props.error) {
+    return <p>Error fetching data</p>
   }
+
+  const currentDate = startOfWeek(start)
+  const startDate = startOfWeek(subWeeks(currentDate, 1))
+  const endDate = endOfWeek(addWeeks(currentDate, 1))
+
+  return (
+    <section className="d-flex flex-column flex-grow-1 hide-sm">
+      <Nav
+        teams={props.teams}
+        loadingTeams={props.loadingTeams}
+        handleOwnerChange={handleOwnerChange}
+        day={currentDate}
+        teamID={props.teamID}
+        next={next}
+        prev={prev}
+        current={current}
+      />
+      <Weekdays />
+      <Days
+        start={startDate}
+        end={endDate}
+        days={props.days}
+        teamID={props.teamID}
+      />
+      <HelpPrompt />
+    </section>
+  )
 }
 
 const mapStateToProps = (

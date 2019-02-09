@@ -1,7 +1,6 @@
 import Raven from "raven-js"
 import React from "react"
 import { render } from "react-dom"
-import { AppContainer } from "react-hot-loader"
 import { Provider } from "react-redux"
 
 import { SENTRY_DSN, GIT_SHA } from "@/settings"
@@ -27,32 +26,8 @@ if (rootElement == null) {
 }
 
 render(
-  <AppContainer>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </AppContainer>,
+  <Provider store={store}>
+    <App />
+  </Provider>,
   rootElement
 )
-
-declare var module: {
-  hot?: {
-    accept(str: string, f: () => void): void
-  }
-}
-
-if (module.hot) {
-  module.hot.accept("./components/App", () => {
-    // tslint:disable:no-unsafe-any
-    const NextApp = require("./components/App").default
-    render(
-      <AppContainer>
-        <Provider store={store}>
-          <NextApp />
-        </Provider>
-      </AppContainer>,
-      rootElement
-    )
-    // tslint:enable:no-unsafe-any
-  })
-}

@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 import { connect } from "react-redux"
 import RecipeItem from "@/components/RecipeItem"
 import Loader from "@/components/Loader"
@@ -49,41 +49,32 @@ interface IRecipesProps {
   readonly autoFocusSearch?: boolean
 }
 
-interface IRecipesState {
-  readonly query: string
-}
+function RecipesListSearch(props: IRecipesProps) {
+  const [query, setQuery] = useState("")
 
-class RecipesListSearch extends React.Component<IRecipesProps, IRecipesState> {
-  state: IRecipesState = {
-    query: ""
-  }
+  useEffect(() => {
+    props.fetchData()
+  }, [])
 
-  componentWillMount() {
-    this.props.fetchData()
-  }
+  const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setQuery(e.target.value)
 
-  handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ query: e.target.value })
-  }
-
-  render() {
-    return (
-      <>
-        <TextInput
-          autoFocus={this.props.autoFocusSearch}
-          className={this.props.noPadding ? "" : "mb-4"}
-          onChange={this.handleQueryChange}
-          placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:"
-        />
-        <RecipeList
-          recipes={this.props.recipes}
-          query={this.state.query}
-          drag={this.props.drag}
-          scroll={this.props.scroll}
-        />
-      </>
-    )
-  }
+  return (
+    <>
+      <TextInput
+        autoFocus={props.autoFocusSearch}
+        className={props.noPadding ? "" : "mb-4"}
+        onChange={handleQueryChange}
+        placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:"
+      />
+      <RecipeList
+        recipes={props.recipes}
+        query={query}
+        drag={props.drag}
+        scroll={props.scroll}
+      />
+    </>
+  )
 }
 
 function mapStateToProps(state: RootState, ownProps: IOwnProps) {

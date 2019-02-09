@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { ISession, LoggingOutStatus } from "@/store/reducers/user"
 import { distanceInWordsToNow } from "date-fns"
 import { WebData, isLoading, isInitial, isFailure } from "@/webdata"
@@ -95,37 +95,40 @@ interface ISessionListProps {
   readonly loggingOutAll: LoggingOutStatus
 }
 
-class SessionListBasic extends React.Component<ISessionListProps> {
-  componentDidMount() {
-    this.props.fetchData()
-  }
-  render() {
-    const { sessions, logoutAll, logoutById, loggingOutAll } = this.props
+function SessionListBasic({
+  sessions,
+  logoutAll,
+  logoutById,
+  loggingOutAll,
+  fetchData
+}: ISessionListProps) {
+  useEffect(() => {
+    fetchData()
+  }, [])
 
-    if (isLoading(sessions) || isInitial(sessions)) {
-      return <Loader />
-    }
-
-    if (isFailure(sessions)) {
-      return <p className="text-muted">Failure fetching sessions</p>
-    }
-    return (
-      <>
-        <ul>
-          {sessions.data.map(s => (
-            <Session key={s.id} logout={logoutById} {...s} />
-          ))}
-        </ul>
-        <Button
-          size="small"
-          className="mb-2"
-          onClick={logoutAll}
-          loading={loggingOutAll === LoggingOutStatus.Loading}>
-          Logout Other Sessions
-        </Button>
-      </>
-    )
+  if (isLoading(sessions) || isInitial(sessions)) {
+    return <Loader />
   }
+
+  if (isFailure(sessions)) {
+    return <p className="text-muted">Failure fetching sessions</p>
+  }
+  return (
+    <>
+      <ul>
+        {sessions.data.map(s => (
+          <Session key={s.id} logout={logoutById} {...s} />
+        ))}
+      </ul>
+      <Button
+        size="small"
+        className="mb-2"
+        onClick={logoutAll}
+        loading={loggingOutAll === LoggingOutStatus.Loading}>
+        Logout Other Sessions
+      </Button>
+    </>
+  )
 }
 
 const mapStateToProps = (state: RootState) => ({

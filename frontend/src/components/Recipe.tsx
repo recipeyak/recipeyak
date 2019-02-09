@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { connect } from "react-redux"
 import { Helmet } from "@/components/Helmet"
 
@@ -71,121 +71,105 @@ interface IRecipeProps extends RouteProps {
   readonly addStep: (id: IStep["id"], step: IStep["text"]) => Promise<void>
 }
 
-interface IRecipeState {
-  readonly show: boolean
-  readonly addStep: boolean
-  readonly addIngredient: boolean
-}
+function Recipe(props: IRecipeProps) {
+  const [addStep, setAddStep] = useState(false)
+  const [addIngredient, setAddIngredient] = useState(false)
 
-class Recipe extends React.Component<IRecipeProps, IRecipeState> {
-  state: IRecipeState = {
-    show: false,
-    addStep: false,
-    addIngredient: false
-  }
+  useEffect(() => {
+    // TODO(sbdchd): use mergeProps
+    props.fetchRecipe(parseInt(props.match.params.id, 10))
+  }, [])
 
-  componentWillMount() {
-    this.props.fetchRecipe(parseInt(this.props.match.params.id, 10))
-  }
-
-  render() {
-    if (isInitial(this.props.recipe) || isLoading(this.props.recipe)) {
-      return (
-        <section className="d-flex justify-content-center">
-          <Loader />
-        </section>
-      )
-    }
-
-    if (isFailure(this.props.recipe)) {
-      return <NoMatch />
-    }
-
-    const recipe = this.props.recipe.data
-
+  if (isInitial(props.recipe) || isLoading(props.recipe)) {
     return (
-      <div className="d-grid grid-gap-2">
-        <Helmet title={recipe.name} />
-
-        <RecipeTitle
-          id={recipe.id}
-          name={recipe.name}
-          author={recipe.author}
-          source={recipe.source}
-          servings={recipe.servings}
-          time={recipe.time}
-          owner={recipe.owner}
-          lastScheduled={recipe.last_scheduled}
-          update={this.props.update}
-          updating={recipe.updating}
-          remove={this.props.remove}
-          deleting={recipe.deleting}
-        />
-        <section className="ingredients-preparation-grid">
-          <div>
-            <SectionTitle>Ingredients</SectionTitle>
-            <ul>
-              {recipe.ingredients.map(ingre => (
-                <Ingredient
-                  key={ingre.id}
-                  recipeID={recipe.id}
-                  id={ingre.id}
-                  quantity={ingre.quantity}
-                  name={ingre.name}
-                  update={(ingredient: Omit<IIngredient, "id" | "position">) =>
-                    this.props.updateIngredient(recipe.id, ingre.id, ingredient)
-                  }
-                  remove={() =>
-                    this.props.removeIngredient(recipe.id, ingre.id)
-                  }
-                  updating={ingre.updating}
-                  removing={ingre.removing}
-                  description={ingre.description}
-                  optional={ingre.optional}
-                />
-              ))}
-            </ul>
-            {this.state.addIngredient ? (
-              <AddIngredient
-                id={recipe.id}
-                autoFocus
-                loading={false}
-                addIngredient={this.props.addIngredient}
-                onCancel={() => this.setState({ addIngredient: false })}
-              />
-            ) : (
-              <a
-                className="text-muted"
-                onClick={() => this.setState({ addIngredient: true })}>
-                add
-              </a>
-            )}
-          </div>
-
-          <div>
-            <SectionTitle>Preparation</SectionTitle>
-            <StepContainer steps={recipe.steps} recipeID={recipe.id} />
-            {this.state.addStep ? (
-              <AddStep
-                id={recipe.id}
-                index={recipe.steps.length + 1}
-                autoFocus
-                addStep={this.props.addStep}
-                onCancel={() => this.setState({ addStep: false })}
-                loading={recipe.addingStepToRecipe}
-              />
-            ) : (
-              <a
-                className="text-muted"
-                onClick={() => this.setState({ addStep: true })}>
-                add
-              </a>
-            )}
-          </div>
-        </section>
-      </div>
+      <section className="d-flex justify-content-center">
+        <Loader />
+      </section>
     )
   }
+
+  if (isFailure(props.recipe)) {
+    return <NoMatch />
+  }
+
+  const recipe = props.recipe.data
+
+  return (
+    <div className="d-grid grid-gap-2">
+      <Helmet title={recipe.name} />
+
+      <RecipeTitle
+        id={recipe.id}
+        name={recipe.name}
+        author={recipe.author}
+        source={recipe.source}
+        servings={recipe.servings}
+        time={recipe.time}
+        owner={recipe.owner}
+        lastScheduled={recipe.last_scheduled}
+        update={props.update}
+        updating={recipe.updating}
+        remove={props.remove}
+        deleting={recipe.deleting}
+      />
+      <section className="ingredients-preparation-grid">
+        <div>
+          <SectionTitle>Ingredients</SectionTitle>
+          <ul>
+            {recipe.ingredients.map(ingre => (
+              <Ingredient
+                key={ingre.id}
+                recipeID={recipe.id}
+                id={ingre.id}
+                quantity={ingre.quantity}
+                name={ingre.name}
+                update={(ingredient: Omit<IIngredient, "id" | "position">) =>
+                  props.updateIngredient(recipe.id, ingre.id, ingredient)
+                }
+                remove={() => props.removeIngredient(recipe.id, ingre.id)}
+                updating={ingre.updating}
+                removing={ingre.removing}
+                description={ingre.description}
+                optional={ingre.optional}
+              />
+            ))}
+          </ul>
+          {addIngredient ? (
+            <AddIngredient
+              id={recipe.id}
+              autoFocus
+              loading={false}
+              addIngredient={props.addIngredient}
+              onCancel={() => setAddIngredient(false)}
+            />
+          ) : (
+            <a className="text-muted" onClick={() => setAddIngredient(true)}>
+              add
+            </a>
+          )}
+        </div>
+
+        <div>
+          <SectionTitle>Preparation</SectionTitle>
+          <StepContainer steps={recipe.steps} recipeID={recipe.id} />
+          {addStep ? (
+            <AddStep
+              id={recipe.id}
+              index={recipe.steps.length + 1}
+              autoFocus
+              addStep={props.addStep}
+              onCancel={() => setAddStep(false)}
+              loading={recipe.addingStepToRecipe}
+            />
+          ) : (
+            <a className="text-muted" onClick={() => setAddStep(true)}>
+              add
+            </a>
+          )}
+        </div>
+      </section>
+    </div>
+  )
 }
 
 export default connect(

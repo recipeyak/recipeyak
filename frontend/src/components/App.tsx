@@ -2,6 +2,8 @@ import React from "react"
 import { Route, Switch, Redirect, RouteProps } from "react-router-dom"
 import { ConnectedRouter } from "react-router-redux"
 import { Helmet } from "@/components/Helmet"
+import { hot } from "react-hot-loader/root"
+import { setConfig } from "react-hot-loader"
 import HTML5Backend from "react-dnd-html5-backend"
 import { DragDropContext } from "react-dnd"
 import { connect } from "react-redux"
@@ -199,4 +201,11 @@ function Base() {
   )
 }
 
-export default DragDropContext(HTML5Backend)(Base)
+// The following is necessary to make hooks work
+// see: https://github.com/gaearon/react-hot-loader
+setConfig({
+  ignoreSFC: true,
+  pureRender: true
+})
+
+export default hot(DragDropContext(HTML5Backend)(Base))
