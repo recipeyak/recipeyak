@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import { Link } from "react-router-dom"
 
 import { setDarkModeClass } from "@/sideEffects"
@@ -14,80 +14,72 @@ interface IUserDropdownProps {
   readonly loggingOut: boolean
 }
 
-interface IUserDropdownState {
-  readonly show: boolean
-}
-export default class UserDropdown extends React.Component<
-  IUserDropdownProps,
-  IUserDropdownState
-> {
-  state = {
-    show: false
-  }
+export default function UserDropdown(props: IUserDropdownProps) {
+  const [show, setShow] = useState(false)
 
-  componentDidMount() {
-    setDarkModeClass(this.props.darkMode)
-  }
+  const handleGeneralClick = useCallback(() => setShow(false), [])
 
-  handleGeneralClick = () => {
-    if (this.state.show) {
-      document.removeEventListener("click", this.handleGeneralClick)
+  useEffect(() => {
+    setDarkModeClass(props.darkMode)
+    return () => {
+      document.removeEventListener("click", handleGeneralClick)
     }
-    this.setState({ show: false })
-  }
+  }, [])
 
-  toggle = () => {
-    if (this.state.show) {
-      document.removeEventListener("click", this.handleGeneralClick)
-    } else {
-      document.addEventListener("click", this.handleGeneralClick)
-    }
-    this.setState(prev => ({ show: !prev.show }))
-  }
+  useEffect(
+    () => {
+      if (show) {
+        document.addEventListener("click", handleGeneralClick)
+      } else {
+        document.removeEventListener("click", handleGeneralClick)
+      }
+    },
+    [show]
+  )
 
-  render() {
-    const {
-      avatarURL,
-      email,
-      toggleDarkMode,
-      darkMode,
-      logout,
-      loggingOut
-    } = this.props
-    return (
-      <section>
-        <img
-          onClick={this.toggle}
-          alt=""
-          tabIndex={0}
-          className="user-profile-image better-nav-item p-0"
-          src={avatarURL}
-        />
+  const toggle = () => setShow(prevShow => !prevShow)
 
-        <div
-          className={
-            "box p-absolute direction-column align-items-start right-0 mt-1" +
-            (this.state.show ? " d-flex" : " d-none")
-          }>
-          <p className="bold">{email}</p>
-          <div className="d-flex align-center p-1-0">
-            <label className="d-flex align-items-center cursor-pointer">
-              <CheckBox
-                onChange={toggleDarkMode}
-                checked={darkMode}
-                className="mr-2"
-              />
-              Dark Mode
-            </label>
-          </div>
-          <Link to="/settings" className="p-1-0">
-            Settings
-          </Link>
-          <Button onClick={logout} loading={loggingOut} className="w-100">
-            Logout
-          </Button>
+  const {
+    avatarURL,
+    email,
+    toggleDarkMode,
+    darkMode,
+    logout,
+    loggingOut
+  } = props
+  return (
+    <section>
+      <img
+        onClick={toggle}
+        alt=""
+        tabIndex={0}
+        className="user-profile-image better-nav-item p-0"
+        src={avatarURL}
+      />
+
+      <div
+        className={
+          "box p-absolute direction-column align-items-start right-0 mt-1" +
+          (show ? " d-flex" : " d-none")
+        }>
+        <p className="bold">{email}</p>
+        <div className="d-flex align-center p-1-0">
+          <label className="d-flex align-items-center cursor-pointer">
+            <CheckBox
+              onChange={toggleDarkMode}
+              checked={darkMode}
+              className="mr-2"
+            />
+            Dark Mode
+          </label>
         </div>
-      </section>
-    )
-  }
+        <Link to="/settings" className="p-1-0">
+          Settings
+        </Link>
+        <Button onClick={logout} loading={loggingOut} className="w-100">
+          Logout
+        </Button>
+      </div>
+    </section>
+  )
 }

@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState, useEffect, useRef } from "react"
 
 import { connect } from "react-redux"
 
@@ -145,139 +145,111 @@ export const enum Selecting {
   None
 }
 
-interface IShoppingListState {
-  readonly month: Date
-  readonly selecting: Selecting
-}
+function ShoppingList(props: IShoppingListProps) {
+  const element = useRef<HTMLDivElement>(null)
+  const [month, setMonth] = useState(new Date())
+  const [selecting, setSelecting] = useState(Selecting.None)
 
-class ShoppingList extends React.Component<
-  IShoppingListProps,
-  IShoppingListState
-> {
-  element = React.createRef<HTMLDivElement>()
+  useEffect(
+    () => {
+      if (selecting === Selecting.None) {
+        refetchData()
+      }
+    },
+    [selecting]
+  )
 
-  state: IShoppingListState = {
-    month: new Date(),
-    selecting: Selecting.None
-  }
-
-  componentDidMount() {
-    this.refetchData()
-  }
-
-  refetchData = () => {
+  const refetchData = () => {
     // TODO: refetch data on calendar count for scheduled recipes changes
-    this.props.fetchData(
-      this.props.teamID,
-      this.props.startDay,
-      this.props.endDay
-    )
+    // TODO(sbdchd): use mergeProps to remove this
+    props.fetchData(props.teamID, props.startDay, props.endDay)
   }
 
-  closeInputs = () => {
-    this.setState({
-      selecting: Selecting.None
-    })
-  }
+  const closeInputs = () => setSelecting(Selecting.None)
 
-  setStartDay = (date: Date) => {
+  const setStartDay = (date: Date) => {
     if (!isValid(date)) {
       return
     }
-    this.props.setStartDay(date)
-    if (isAfter(date, this.props.endDay)) {
-      this.props.setEndDay(date)
+    props.setStartDay(date)
+    if (isAfter(date, props.endDay)) {
+      props.setEndDay(date)
     }
-    this.setState(
-      {
-        selecting: Selecting.End
-      },
-      this.refetchData
-    )
+    setSelecting(Selecting.End)
   }
 
-  setEndDay = (date: Date) => {
+  const setEndDay = (date: Date) => {
     if (!isValid(date)) {
       return
     }
-    this.props.setEndDay(date)
-    if (isBefore(date, this.props.startDay)) {
-      this.props.setStartDay(date)
+    props.setEndDay(date)
+    if (isBefore(date, props.startDay)) {
+      props.setStartDay(date)
     }
-    this.setState(
-      {
-        selecting: Selecting.None
-      },
-      this.refetchData
-    )
+    setSelecting(Selecting.None)
   }
 
-  handleGeneralClick = (e: MouseEvent) => {
-    const el = this.element.current
+  const handleGeneralClick = (e: MouseEvent) => {
+    const el = element.current
     if (el && e.target && !el.contains(e.target as Node)) {
       // outside click
-      this.closeInputs()
+      closeInputs()
     }
   }
 
-  handleStartPickerClick = () => this.setState({ selecting: Selecting.Start })
-  handleEndPickerClick = () => this.setState({ selecting: Selecting.End })
+  const handleStartPickerClick = () => setSelecting(Selecting.Start)
+  const handleEndPickerClick = () => setSelecting(Selecting.End)
 
-  incrMonth = () =>
-    this.setState(({ month }) => ({ month: addMonths(month, 1) }))
-  decrMonth = () =>
-    this.setState(({ month }) => ({ month: subMonths(month, 1) }))
+  const incrMonth = () => setMonth(m => addMonths(m, 1))
+  const decrMonth = () => setMonth(m => subMonths(m, 1))
 
-  render() {
-    return (
-      <div className="d-grid grid-gap-2">
-        <div className="p-rel" ref={this.element}>
-          <div className="d-flex align-items-center no-print">
-            <GlobalEvent mouseDown={this.handleGeneralClick} />
-            <DateInput
-              onFocus={this.handleStartPickerClick}
-              isFocused={this.state.selecting === Selecting.Start}
-              placeholder="from"
-              value={formatMonth(this.props.startDay)}
-            />
-            <h2 className="fs-4 ml-2 mr-2">{" → "}</h2>
-            <DateInput
-              onFocus={this.handleEndPickerClick}
-              isFocused={this.state.selecting === Selecting.End}
-              placeholder="to"
-              value={formatMonth(this.props.endDay)}
-            />
-          </div>
-          <DateRangePicker
-            onClose={this.closeInputs}
-            month={this.state.month}
-            startDay={this.props.startDay}
-            endDay={this.props.endDay}
-            selecting={this.state.selecting}
-            setStartDay={this.setStartDay}
-            setEndDay={this.setEndDay}
-            nextMonth={this.incrMonth}
-            prevMonth={this.decrMonth}
+  return (
+    <div className="d-grid grid-gap-2">
+      <div className="p-rel" ref={element}>
+        <div className="d-flex align-items-center no-print">
+          <GlobalEvent mouseDown={handleGeneralClick} />
+          <DateInput
+            onFocus={handleStartPickerClick}
+            isFocused={selecting === Selecting.Start}
+            placeholder="from"
+            value={formatMonth(props.startDay)}
+          />
+          <h2 className="fs-4 ml-2 mr-2">{" → "}</h2>
+          <DateInput
+            onFocus={handleEndPickerClick}
+            isFocused={selecting === Selecting.End}
+            placeholder="to"
+            value={formatMonth(props.endDay)}
           />
         </div>
+        <DateRangePicker
+          onClose={closeInputs}
+          month={month}
+          startDay={props.startDay}
+          endDay={props.endDay}
+          selecting={selecting}
+          setStartDay={setStartDay}
+          setEndDay={setEndDay}
+          nextMonth={incrMonth}
+          prevMonth={decrMonth}
+        />
+      </div>
 
-        <div>
-          <ShoppingListList
-            items={this.props.shoppinglist}
-            sendToast={this.props.sendToast}
-          />
-          <div className="d-flex justify-content-end no-print">
-            <a
-              onClick={this.props.reportBadMerge}
-              className="text-muted italic fs-3">
-              report bad merge
-            </a>
-          </div>
+      <div>
+        <ShoppingListList
+          items={props.shoppinglist}
+          sendToast={props.sendToast}
+        />
+        <div className="d-flex justify-content-end no-print">
+          <a onClick={props.reportBadMerge} className="text-muted italic fs-3">
+            report bad merge
+          </a>
         </div>
       </div>
-    )
-  }
+    </div>
+  )
 }
+
 export default connect(
   mapStateToProps,
   mapDispatchToProps

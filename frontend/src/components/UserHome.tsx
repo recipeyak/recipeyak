@@ -1,4 +1,4 @@
-import * as React from "react"
+import React, { useEffect } from "react"
 import { Helmet } from "@/components/Helmet"
 import { Link } from "react-router-dom"
 
@@ -188,9 +188,14 @@ const UserStatistics = (props: IUserStatisticsProps) => {
 interface IUserHomeProps {
   readonly userStats: WebData<IUserStats>
   readonly recipes: WebData<IRecipe[]>
+  readonly fetchData: () => void
 }
 
-const UserHome = ({ userStats, recipes }: IUserHomeProps) => {
+const UserHome = ({ userStats, recipes, fetchData }: IUserHomeProps) => {
+  useEffect(() => {
+    fetchData()
+  }, [])
+
   return (
     <>
       <div className="container pr-2 pl-2 pb-2">
@@ -207,16 +212,4 @@ const UserHome = ({ userStats, recipes }: IUserHomeProps) => {
   )
 }
 
-interface IUserHomeFetchProps extends IUserHomeProps {
-  readonly fetchData: () => void
-}
-
-function UserHomeFetch(props: IUserHomeFetchProps) {
-  React.useEffect(() => {
-    props.fetchData()
-  }, [])
-
-  return <UserHome {...props} />
-}
-
-export default UserHomeFetch
+export default UserHome
