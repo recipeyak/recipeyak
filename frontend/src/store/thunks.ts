@@ -389,14 +389,16 @@ export const postNewRecipe = (dispatch: Dispatch) => (recipe: IRecipeBasic) => {
     })
 }
 
-export const fetchingRecipe = (dispatch: Dispatch) => async (id: IRecipe["id"]) => {
+export const fetchingRecipe = (dispatch: Dispatch) => async (
+  id: IRecipe["id"]
+) => {
   dispatch(fetchRecipe.request(id))
   const res = await api.getRecipe(id)
   if (isOk(res)) {
     dispatch(fetchRecipe.success(res.data))
   } else {
     dispatch(fetchRecipe.failure(res.error))
-}
+  }
 }
 
 export const fetchingRecentRecipes = (dispatch: Dispatch) => () => {
