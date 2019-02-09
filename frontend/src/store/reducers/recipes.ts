@@ -19,8 +19,6 @@ import {
   toLoading
 } from "@/webdata"
 import { Loop, loop, Cmd } from "redux-loop"
-import { AxiosError } from "axios"
-import { Dispatch } from "@/store/thunks"
 export const updateRecipeOwner = createStandardAction("UPDATE_RECIPE_OWNER")<{
   id: IRecipe["id"]
   owner: IRecipe["owner"]
@@ -217,18 +215,6 @@ export type RecipeActions =
   | ActionType<typeof createRecipe>
   | ActionType<typeof fetchRecentRecipes>
   | ReturnType<typeof resetAddRecipeErrors>
-
-export const fetchingRecipe = (id: IRecipe["id"]) => (dispatch: Dispatch) => {
-  return api
-    .getRecipe(id)
-    .then(res => {
-      dispatch(fetchRecipe.success(res))
-    })
-    .catch((err: AxiosError) => {
-      const error404 = !!(err.response && err.response.status === 404)
-      dispatch(fetchRecipe.failure({ id, error404 }))
-    })
-}
 
 const mapSuccessLikeById = <T extends IRecipe["id"][]>(
   arr: WebData<T>,
