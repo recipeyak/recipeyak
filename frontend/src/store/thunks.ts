@@ -105,7 +105,7 @@ import {
 import { recipeURL } from "@/urls"
 import { isSuccessOrRefetching } from "@/webdata"
 import { isPast, endOfDay } from "date-fns"
-import { Ok } from "@/result"
+import { Ok, isOk } from "@/result"
 
 // We check if detail matches our string because Django will not return 401 when
 // the session expires
@@ -1093,39 +1093,35 @@ export const deleteUserAccount = (dispatch: Dispatch) => () => {
     })
 }
 
-export const reportBadMerge = (dispatch: Dispatch) => () => {
-  return api
-    .reportBadMerge()
-    .then(() => {
-      showNotificationWithTimeout(dispatch)({
-        message: "reported bad merge",
-        level: "success",
-        delay: 3 * second
-      })
+export const reportBadMerge = (dispatch: Dispatch) => async () => {
+  const res = await api.reportBadMerge()
+  if (isOk(res)) {
+    showNotificationWithTimeout(dispatch)({
+      message: "reported bad merge",
+      level: "success",
+      delay: 3 * second
     })
-    .catch(() => {
-      showNotificationWithTimeout(dispatch)({
-        message: "error reporting bad merge",
-        level: "danger",
-        delay: 3 * second
-      })
+  } else {
+    showNotificationWithTimeout(dispatch)({
+      message: "error reporting bad merge",
+      level: "danger",
+      delay: 3 * second
     })
+  }
 }
 
-export const fetchCalendar = (dispatch: Dispatch) => (
+export const fetchCalendar = (dispatch: Dispatch) => async (
   teamID: TeamID,
   month = new Date()
 ) => {
   dispatch(fetchCalendarRecipes.request())
   // we fetch current month plus and minus 1 week
-  return api
-    .getCalendarRecipeList(teamID, month)
-    .then(res => {
-      dispatch(fetchCalendarRecipes.success(res.data))
-    })
-    .catch(() => {
-      dispatch(fetchCalendarRecipes.failure())
-    })
+  const res = await api.getCalendarRecipeList(teamID, month)
+  if (isOk(res)) {
+    dispatch(fetchCalendarRecipes.success(res.data))
+  } else {
+    dispatch(fetchCalendarRecipes.failure())
+  }
 }
 
 function toCalRecipe(
@@ -1146,7 +1142,7 @@ function toCalRecipe(
   }
 }
 
-export const addingScheduledRecipe = (dispatch: Dispatch) => (
+export const addingScheduledRecipe = (dispatch: Dispatch) => async (
   recipeID: IRecipe["id"],
   teamID: TeamID,
   on: Date,
@@ -1166,29 +1162,28 @@ export const addingScheduledRecipe = (dispatch: Dispatch) => (
   dispatch(
     setCalendarRecipe(toCalRecipe(recipe.data, tempId, toDateString(on), count))
   )
-  return api
-    .scheduleRecipe(recipeID, teamID, on, count)
-    .then(res => {
-      dispatch(replaceCalendarRecipe({ id: tempId, recipe: res.data }))
-      dispatch(setSchedulingRecipe({ recipeID, scheduling: false }))
-      const scheduledDate = new Date(res.data.on).toLocaleDateString()
-      const recipeName = res.data.recipe.name
-      const message = `${recipeName} scheduled on ${scheduledDate}`
-      showNotificationWithTimeout(dispatch)({
-        message,
-        level: "success",
-        delay: 3 * second
-      })
+  const res = await api.scheduleRecipe(recipeID, teamID, on, count)
+
+  if (isOk(res)) {
+    dispatch(replaceCalendarRecipe({ id: tempId, recipe: res.data }))
+    dispatch(setSchedulingRecipe({ recipeID, scheduling: false }))
+    const scheduledDate = new Date(res.data.on).toLocaleDateString()
+    const recipeName = res.data.recipe.name
+    const message = `${recipeName} scheduled on ${scheduledDate}`
+    showNotificationWithTimeout(dispatch)({
+      message,
+      level: "success",
+      delay: 3 * second
     })
-    .catch(() => {
-      dispatch(deleteCalendarRecipe(tempId))
-      showNotificationWithTimeout(dispatch)({
-        message: "error scheduling recipe",
-        level: "danger",
-        delay: 3 * second
-      })
-      dispatch(setSchedulingRecipe({ recipeID, scheduling: false }))
+  } else {
+    dispatch(deleteCalendarRecipe(tempId))
+    showNotificationWithTimeout(dispatch)({
+      message: "error scheduling recipe",
+      level: "danger",
+      delay: 3 * second
     })
+    dispatch(setSchedulingRecipe({ recipeID, scheduling: false }))
+  }
 }
 export const deletingScheduledRecipe = (dispatch: Dispatch) => (
   id: ICalRecipe["id"],
