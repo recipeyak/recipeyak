@@ -15,6 +15,8 @@ import { IRecipe, IIngredient, IStep } from "@/store/reducers/recipes"
 import { IInvite } from "@/store/reducers/invites"
 import { ICalRecipe } from "@/store/reducers/calendar"
 import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
+import { AxiosError } from "axios"
+import { Result, Ok, Err } from "@/result"
 
 export const updateUser = (data: Partial<IUser>) =>
   http.patch<IUser>("/api/v1/user/", data)
@@ -118,8 +120,17 @@ export const deleteSessionById = (id: ISession["id"]) =>
 export const createRecipe = (recipe: IRecipeBasic) =>
   http.post<IRecipe>("/api/v1/recipes/", recipe)
 
-export const getRecipe = (id: IRecipe["id"]) =>
-  http.get<IRecipe>(`/api/v1/recipes/${id}/`)
+export function getRecipe(
+  id: IRecipe["id"]
+): Promise<Result<IRecipe, { id: IRecipe["id"]; error404: boolean }>> {
+  return http
+    .get<IRecipe>(`/api/v1/recipes/${id}/`)
+    .then(r => Ok(r.data))
+    .catch((err: AxiosError) => {
+      const error404 = !!(err.response && err.response.status === 404)
+      return Err({ id, error404 })
+    })
+}
 
 export const deleteRecipe = (id: IRecipe["id"]) =>
   http.delete(`/api/v1/recipes/${id}/`)
@@ -238,7 +249,11 @@ export const acceptInvite = (id: IInvite["id"]) =>
 export const declineInvite = (id: IInvite["id"]) =>
   http.post(`/api/v1/invites/${id}/decline/`, {})
 
-export const reportBadMerge = () => http.post("/api/v1/report-bad-merge", {})
+export const reportBadMerge = () =>
+  http
+    .post("/api/v1/report-bad-merge", {})
+    .then(r => Ok(r.data))
+    .catch(() => Err(undefined))
 
 export const getCalendarRecipeList = (teamID: TeamID, currentDay: Date) => {
   const url =
@@ -249,12 +264,15 @@ export const getCalendarRecipeList = (teamID: TeamID, currentDay: Date) => {
   const start = toDateString(startOfWeek(subWeeks(currentDay, 1)))
   const end = toDateString(endOfWeek(addWeeks(currentDay, 1)))
 
-  return http.get<ICalRecipe[]>(url, {
-    params: {
-      start,
-      end
-    }
-  })
+  return http
+    .get<ICalRecipe[]>(url, {
+      params: {
+        start,
+        end
+      }
+    })
+    .then(r => Ok(r.data))
+    .catch(() => Err(undefined))
 }
 
 export const scheduleRecipe = (
@@ -267,11 +285,14 @@ export const scheduleRecipe = (
     teamID === "personal"
       ? "/api/v1/calendar/"
       : `/api/v1/t/${teamID}/calendar/`
-  return http.post<ICalRecipe>(url, {
-    recipe: recipeID,
-    on: toDateString(on),
-    count
-  })
+  return http
+    .post<ICalRecipe>(url, {
+      recipe: recipeID,
+      on: toDateString(on),
+      count
+    })
+    .then(r => Ok(r.data))
+    .catch(() => Err(undefined))
 }
 
 // TODO(sbdchd): we shouldn't need teamID here
