@@ -179,17 +179,11 @@ interface ICalendarProps {
   readonly fetchTeams: () => void
   readonly navTo: (url: string) => void
   readonly fetchData: (teamID: TeamID, month: Date) => void
-  readonly refetchShoppingListAndRecipes: (
-    teamID: TeamID,
-    startDay: Date,
-    endDay: Date
-  ) => void
+  readonly refetchShoppingListAndRecipes: (teamID: TeamID) => void
   readonly teams: ITeam[]
   readonly days: IDays
   readonly isTeam: boolean
   readonly teamID: TeamID
-  readonly startDay: Date
-  readonly endDay: Date
   readonly type: "shopping" | "recipes"
 }
 
@@ -211,11 +205,7 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
 
   refetchData = (teamID: TeamID = this.props.teamID) => {
     this.props.fetchData(teamID, this.state.start)
-    this.props.refetchShoppingListAndRecipes(
-      teamID,
-      this.props.startDay,
-      this.props.endDay
-    )
+    this.props.refetchShoppingListAndRecipes(teamID)
   }
 
   prev = () => {
@@ -291,8 +281,11 @@ class Calendar extends React.Component<ICalendarProps, ICalendarState> {
   }
 }
 
-const mapStateToProps = (state: RootState, props: ICalendarProps) => {
-  const isTeam = props.teamID !== "personal"
+const mapStateToProps = (
+  state: RootState,
+  { teamID }: Pick<ICalendarProps, "teamID">
+) => {
+  const isTeam = teamID !== "personal"
 
   const days = isTeam ? getTeamRecipes(state) : getPersonalRecipes(state)
 
@@ -310,28 +303,21 @@ const mapStateToProps = (state: RootState, props: ICalendarProps) => {
     error: state.calendar.error,
     loadingTeams: !!state.teams.loading,
     teams: teamsFrom(state),
-    teamID: props.teamID,
-    isTeam,
-    start: state.shoppinglist.startDay,
-    end: state.shoppinglist.endDay
+    teamID,
+    isTeam
   }
 }
 
-const mapDispatchToProps = (
-  dispatch: Dispatch
-): Pick<
-  ICalendarProps,
-  "fetchData" | "fetchTeams" | "navTo" | "refetchShoppingListAndRecipes"
-> => ({
+const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchData: fetchCalendar(dispatch),
   fetchTeams: fetchingTeams(dispatch),
   navTo: (url: string) => {
     dispatch(push(url))
   },
-  refetchShoppingListAndRecipes: (teamID: TeamID, start: Date, end: Date) => {
+  refetchShoppingListAndRecipes: (teamID: TeamID) => {
     return Promise.all([
       fetchingRecipeList(dispatch)(teamID),
-      fetchingShoppingList(dispatch)(teamID, start, end)
+      fetchingShoppingList(dispatch)(teamID)
     ])
   }
 })
