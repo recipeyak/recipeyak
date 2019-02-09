@@ -35,7 +35,13 @@ export function RadioButton(props: ITypelessInput) {
 }
 
 interface IBaseInputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
+  extends Omit<
+    React.DetailedHTMLProps<
+      React.InputHTMLAttributes<HTMLInputElement>,
+      HTMLInputElement
+    >,
+    "size"
+  > {
   readonly size?: "small" | "normal" | "medium" | "large"
   readonly error?: boolean
   readonly isFocused?: boolean

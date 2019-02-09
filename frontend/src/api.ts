@@ -94,9 +94,9 @@ export const changePassword = (
     old_password: oldPassword
   })
 
-export const getShoppingList = (teamID: TeamID, start?: Date, end?: Date) => {
-  const startDay = start || store.getState().shoppinglist.startDay
-  const endDay = end || store.getState().shoppinglist.endDay
+export const getShoppingList = (teamID: TeamID) => {
+  const startDay = store.getState().shoppinglist.startDay
+  const endDay = store.getState().shoppinglist.endDay
   const url =
     teamID === "personal"
       ? "/api/v1/shoppinglist/"

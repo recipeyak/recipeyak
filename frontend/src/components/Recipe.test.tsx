@@ -20,15 +20,25 @@ describe("<Recipe/>", () => {
       // a bodge to mock out `this.props.match.params.id`
       match: {
         params: {
-          id: 1
-        }
+          id: "1"
+        },
+        isExact: false,
+        path: "",
+        url: "",
+        id: ""
       },
       fetchRecipe: () => true
     }
     mount(
       <Provider store={store}>
         <MemoryRouter>
-          <Recipe {...props} />
+          <Recipe
+            {...props}
+            // tslint:disable:no-any no-unsafe-any
+            location={{} as any}
+            history={{} as any}
+            // tslint:enable:no-any no-unsafe-any
+          />
         </MemoryRouter>
       </Provider>
     )

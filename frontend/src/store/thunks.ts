@@ -347,13 +347,11 @@ export const updatingPassword = (dispatch: Dispatch) => (
 }
 
 export const fetchingShoppingList = (dispatch: Dispatch) => (
-  teamID: TeamID,
-  start?: Date,
-  end?: Date
+  teamID: TeamID
 ) => {
   dispatch(fetchShoppingList.request())
   return api
-    .getShoppingList(teamID, start, end)
+    .getShoppingList(teamID)
     .then(res => {
       dispatch(fetchShoppingList.success(res.data))
     })

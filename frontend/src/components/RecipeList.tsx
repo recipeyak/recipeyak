@@ -15,8 +15,8 @@ import { WebData, isSuccessOrRefetching } from "@/webdata"
 interface IRecipeList {
   readonly recipes: WebData<IRecipe[]>
   readonly query: string
-  readonly drag: boolean
-  readonly scroll: boolean
+  readonly drag?: boolean
+  readonly scroll?: boolean
 }
 
 function RecipeList(props: IRecipeList) {
@@ -43,8 +43,8 @@ function RecipeList(props: IRecipeList) {
 interface IRecipesProps {
   readonly fetchData: () => void
   readonly recipes: WebData<IRecipe[]>
-  readonly scroll: boolean
-  readonly drag: boolean
+  readonly scroll?: boolean
+  readonly drag?: boolean
   readonly noPadding?: boolean
   readonly autoFocusSearch?: boolean
 }
@@ -101,7 +101,7 @@ type statePropsType = ReturnType<typeof mapStateToProps>
 type dispatchPropsType = ReturnType<typeof mapDispatchToProps>
 
 interface IOwnProps {
-  readonly teamID: ITeam["id"] | null
+  readonly teamID?: ITeam["id"] | "personal" | null
 }
 
 function mergeProps(

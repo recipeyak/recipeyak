@@ -41,7 +41,7 @@ interface IDatePickerProps {
     count: number
   ) => Promise<void>
   readonly close: () => void
-  readonly scheduling: boolean
+  readonly scheduling?: boolean
 }
 
 interface IDatePickerState {

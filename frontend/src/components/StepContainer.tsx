@@ -39,7 +39,6 @@ import { IRecipe, IStep } from "@/store/reducers/recipes"
 interface IStepContainerProps {
   readonly steps: IStep[]
   readonly recipeID: IRecipe["id"]
-  readonly dispatch: (func: Dispatch) => void
   readonly updatingStep: (
     recipeID: number,
     stepID: number,
