@@ -14,7 +14,8 @@ To have a centralized location where multiple people can organize a meal plan.
 ## Dev
 
 **Note:** postgres is required. Either run it via `docker-compose -f
-docker-compose-dev.yml -d` or via the homebrew cask mac app.
+docker-compose-dev.yml -d` or via the homebrew cask mac app. Yarn and Poetry
+(0.12) are required for frontend and backend installation.
 
 ```shell
 # create a .env with `DEBUG=1`
