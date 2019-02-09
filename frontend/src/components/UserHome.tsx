@@ -211,13 +211,12 @@ interface IUserHomeFetchProps extends IUserHomeProps {
   readonly fetchData: () => void
 }
 
-class UserHomeFetch extends React.Component<IUserHomeFetchProps> {
-  componentWillMount = () => {
-    this.props.fetchData()
-  }
-  render() {
-    return <UserHome {...this.props} />
-  }
+function UserHomeFetch(props: IUserHomeFetchProps) {
+  React.useEffect(() => {
+    props.fetchData()
+  }, [])
+
+  return <UserHome {...props} />
 }
 
 export default UserHomeFetch

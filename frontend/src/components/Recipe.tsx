@@ -72,14 +72,12 @@ interface IRecipeProps extends RouteProps {
 }
 
 interface IRecipeState {
-  readonly show: boolean
   readonly addStep: boolean
   readonly addIngredient: boolean
 }
 
 class Recipe extends React.Component<IRecipeProps, IRecipeState> {
   state: IRecipeState = {
-    show: false,
     addStep: false,
     addIngredient: false
   }
