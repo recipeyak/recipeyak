@@ -388,19 +388,6 @@ export const postNewRecipe = (dispatch: Dispatch) => (recipe: IRecipeBasic) => {
     })
 }
 
-export const fetchingRecipe = (dispatch: Dispatch) => (id: IRecipe["id"]) => {
-  dispatch(fetchRecipe.request(id))
-  return api
-    .getRecipe(id)
-    .then(res => {
-      dispatch(fetchRecipe.success(res.data))
-    })
-    .catch((err: AxiosError) => {
-      const error404 = !!(err.response && err.response.status === 404)
-      dispatch(fetchRecipe.failure({ id, error404 }))
-    })
-}
-
 export const fetchingRecentRecipes = (dispatch: Dispatch) => () => {
   // TODO(sbdchd): these should have their own id array in the reduce and their own actions
   dispatch(fetchRecentRecipes.request())
@@ -1176,7 +1163,9 @@ export const addingScheduledRecipe = (dispatch: Dispatch) => (
   //    if failed, then we remove the preemptively added one, and display an error
 
   dispatch(
-    setCalendarRecipe(toCalRecipe(recipe.data, tempId, toDateString(on), count))
+    setCalendarRecipe(
+      toCalRecipe(recipe.data as IRecipe, tempId, toDateString(on), count)
+    )
   )
   return api
     .scheduleRecipe(recipeID, teamID, on, count)

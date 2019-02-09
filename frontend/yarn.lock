@@ -7297,6 +7297,11 @@ redux-logger@^3.0.6:
   dependencies:
     deep-diff "^0.3.5"
 
+redux-loop@^4.5.4:
+  version "4.5.4"
+  resolved "https://registry.yarnpkg.com/redux-loop/-/redux-loop-4.5.4.tgz#4c87f5eb0a726a39af3d391641eba27dd91f7126"
+  integrity sha512-4DU7W7koaPWY3PwfVFYCBdi+12yYFTohaU2ajMgdKe4yPX7ZJJB6h2idjRuyr+usMNt7ewm6Y22u5e8qhy25yw==
+
 "redux@>= 3.7.2", redux@^4.0.0, redux@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/redux/-/redux-4.0.1.tgz#436cae6cc40fbe4727689d7c8fae44808f1bfef5"

@@ -13,7 +13,6 @@ import RecipeTitle from "@/components/RecipeTitle"
 import {
   addingRecipeIngredient,
   addingRecipeStep,
-  fetchingRecipe,
   deletingRecipe,
   deletingIngredient,
   updatingIngredient,
@@ -26,7 +25,8 @@ import {
   IRecipe,
   IStep,
   IIngredient,
-  getRecipeById
+  getRecipeById,
+  fetchRecipe
 } from "@/store/reducers/recipes"
 import { IRecipeBasic } from "@/components/RecipeTitle"
 import { isInitial, isLoading, isFailure, WebData } from "@/webdata"
@@ -41,7 +41,7 @@ const mapStateToProps = (state: RootState, props: RouteProps) => {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchRecipe: fetchingRecipe(dispatch),
+  fetchRecipe: (id: IRecipe["id"]) => dispatch(fetchRecipe.request(id)),
   addIngredient: addingRecipeIngredient(dispatch),
   addStep: addingRecipeStep(dispatch),
   update: updatingRecipe(dispatch),

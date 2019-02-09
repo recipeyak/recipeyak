@@ -1,10 +1,13 @@
 import {
-  createStore,
-  combineReducers,
+  createStore as basicCreateStore,
   applyMiddleware,
-  compose,
-  Reducer
+  compose as reduxCompose,
+  Store,
+  StoreEnhancer
 } from "redux"
+
+import { combineReducers, LoopReducer, Loop, StoreCreator } from "redux-loop"
+
 import throttle from "lodash/throttle"
 
 import createHistory from "history/createBrowserHistory"
@@ -40,11 +43,13 @@ import calendar, {
   ICalendarState,
   CalendarActions
 } from "@/store/reducers/calendar"
-
+import { install } from "redux-loop"
 import { loadState, saveState } from "@/store/localStorage"
-import { StateType, getType } from "typesafe-actions"
+import { getType } from "typesafe-actions"
 import { createLogger } from "redux-logger"
 import { DEBUG } from "@/settings"
+
+const createStore = basicCreateStore as StoreCreator
 
 interface IState {
   readonly user: IUserState
@@ -73,7 +78,7 @@ export type Action =
   | TeamsActions
   | CalendarActions
 
-const recipeApp: Reducer<IState, Action> = combineReducers({
+const recipeApp: LoopReducer<IState, Action> = combineReducers({
   user,
   recipes,
   invites,
@@ -87,10 +92,13 @@ const recipeApp: Reducer<IState, Action> = combineReducers({
   calendar
 })
 
-export type RootState = StateType<typeof rootReducer>
+export type RootState = IState
 
 // reset redux to default state on logout
-export function rootReducer(state: IState | undefined, action: Action): IState {
+export function rootReducer(
+  state: IState | undefined,
+  action: Action
+): IState | Loop<IState, Action> {
   if (state == null) {
     return recipeApp(undefined, action)
   }
@@ -110,15 +118,20 @@ export function rootReducer(state: IState | undefined, action: Action): IState {
 export const history = createHistory()
 const router = routerMiddleware(history)
 
-const composeEnhancers: typeof compose =
+const compose: typeof reduxCompose =
   // tslint:disable-next-line no-any no-unsafe-any
-  (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+  (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || reduxCompose
+
+const emptyStoreEnhancers = compose(
+  applyMiddleware(router),
+  install()
+) as StoreEnhancer<IState, Action>
 
 // We need an empty store for the unit tests
 export const emptyStore = createStore(
   rootReducer,
-  {},
-  composeEnhancers(applyMiddleware(router))
+  {} as IState,
+  emptyStoreEnhancers
 )
 
 // NOTE(sbdchd): this is hacky, we should validate the local storage state before using it
@@ -151,11 +164,16 @@ if (DEBUG) {
   middleware.push(createLogger({ collapsed: true }))
 }
 
+const enhancer = compose(
+  install(),
+  applyMiddleware(...middleware)
+) as StoreEnhancer<IState, Action>
+
 // A "hydrated" store is nice for UI development
-export const store = createStore(
+export const store: Store<IState, Action> = createStore(
   rootReducer,
   defaultData(),
-  composeEnhancers(applyMiddleware(...middleware))
+  enhancer
 )
 
 store.subscribe(

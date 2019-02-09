@@ -15,6 +15,15 @@ import { IRecipe, IIngredient, IStep } from "@/store/reducers/recipes"
 import { IInvite } from "@/store/reducers/invites"
 import { ICalRecipe } from "@/store/reducers/calendar"
 import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
+import { AxiosResponse } from "axios"
+
+/**
+ * Unwrap data from AxiosResponse so that we don't have to work off
+ * AxiosResponse in our data types
+ */
+function getData<T>(res: AxiosResponse<T>): T {
+  return res.data
+}
 
 export const updateUser = (data: Partial<IUser>) =>
   http.patch<IUser>("/api/v1/user/", data)
@@ -119,7 +128,7 @@ export const createRecipe = (recipe: IRecipeBasic) =>
   http.post<IRecipe>("/api/v1/recipes/", recipe)
 
 export const getRecipe = (id: IRecipe["id"]) =>
-  http.get<IRecipe>(`/api/v1/recipes/${id}/`)
+  http.get<IRecipe>(`/api/v1/recipes/${id}/`).then(getData)
 
 export const deleteRecipe = (id: IRecipe["id"]) =>
   http.delete(`/api/v1/recipes/${id}/`)

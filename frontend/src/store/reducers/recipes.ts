@@ -1,5 +1,6 @@
 import { omit } from "lodash"
 import { ITeam } from "@/store/reducers/teams"
+import * as api from "@/api"
 import {
   createAsyncAction,
   ActionType,
@@ -17,7 +18,9 @@ import {
   mapSuccessLike,
   toLoading
 } from "@/webdata"
-
+import { Loop, loop, Cmd } from "redux-loop"
+import { AxiosError } from "axios"
+import { Dispatch } from "@/store/thunks"
 export const updateRecipeOwner = createStandardAction("UPDATE_RECIPE_OWNER")<{
   id: IRecipe["id"]
   owner: IRecipe["owner"]
@@ -215,6 +218,18 @@ export type RecipeActions =
   | ActionType<typeof fetchRecentRecipes>
   | ReturnType<typeof resetAddRecipeErrors>
 
+export const fetchingRecipe = (id: IRecipe["id"]) => (dispatch: Dispatch) => {
+  return api
+    .getRecipe(id)
+    .then(res => {
+      dispatch(fetchRecipe.success(res))
+    })
+    .catch((err: AxiosError) => {
+      const error404 = !!(err.response && err.response.status === 404)
+      dispatch(fetchRecipe.failure({ id, error404 }))
+    })
+}
+
 const mapSuccessLikeById = <T extends IRecipe["id"][]>(
   arr: WebData<T>,
   state: RootState
@@ -345,17 +360,25 @@ export const initialState: IRecipesState = {
 export const recipes = (
   state: IRecipesState = initialState,
   action: RecipeActions
-): IRecipesState => {
+): IRecipesState | Loop<IRecipesState, RecipeActions> => {
   switch (action.type) {
     case getType(fetchRecipe.request): {
-      const r = state.byId[action.payload]
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload]: toLoading(r)
-        }
-      }
+      const recipeID = action.payload
+      const r = state.byId[recipeID]
+      return loop(
+        {
+          ...state,
+          byId: {
+            ...state.byId,
+            [recipeID]: toLoading(r)
+          }
+        },
+        Cmd.run(api.getRecipe, {
+          args: [recipeID],
+          successActionCreator: fetchRecipe.success,
+          failActionCreator: fetchRecipe.failure
+        })
+      )
     }
     case getType(fetchRecipe.success):
       return {
