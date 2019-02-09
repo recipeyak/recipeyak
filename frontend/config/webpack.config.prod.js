@@ -120,8 +120,10 @@ module.exports = {
       {
         test: /\.(ts|tsx)$/,
         include: paths.appSrc,
-        loaders: ["babel-loader",  {
-            loader: 'ts-loader',
+        loaders: [
+          "babel-loader",
+          {
+            loader: "ts-loader",
             options: {
               transpileOnly: true
             }
