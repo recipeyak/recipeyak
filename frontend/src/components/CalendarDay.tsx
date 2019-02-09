@@ -103,7 +103,10 @@ function CalendarDay({
   )
 }
 
-function mapStateToProps(state: RootState, props: ICalendarDayProps) {
+function mapStateToProps(
+  state: RootState,
+  props: Pick<ICalendarDayProps, "date" | "scheduledRecipes">
+) {
   const isShopping =
     state.routerReducer.location != null
       ? state.routerReducer.location.pathname.includes("shopping")
@@ -133,11 +136,14 @@ export default connect(
   DropTarget(
     [DragDrop.RECIPE, DragDrop.CAL_RECIPE],
     {
-      canDrop({ date }: ICalendarDayProps) {
+      canDrop({ date }: Pick<ICalendarDayProps, "date">) {
         // event when copying from past, we don't want to copy to past dates
         return !beforeCurrentDay(date)
       },
-      drop(props: ICalendarDayProps, monitor: DropTargetMonitor) {
+      drop(
+        props: Pick<ICalendarDayProps, "move" | "teamID" | "date" | "create">,
+        monitor: DropTargetMonitor
+      ) {
         const recipe: ICalendarDragItem | IRecipeItemDrag = monitor.getItem()
         // NOTE(chdsbd): We use Promise.resolve to elminate slow drop event
         // warnings.
