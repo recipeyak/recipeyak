@@ -50,6 +50,7 @@
     "ts-loader": "^3.5.0",
     "tslint": "^5.12.0",
     "tslint-config-prettier": "^1.17.0",
+    "tslint-react-hooks": "^1.0.1",
     "typescript": "3.2.2",
     "url-loader": "0.5.7",
     "webpack": "^3.5.6",
