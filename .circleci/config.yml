@@ -87,8 +87,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - frontend-v1-dependencies-{{ checksum "frontend/package.json" }}
-            - frontend-v1-dependencies-
+            - frontend-v2-dependencies-{{ checksum "frontend/package.json" }}
+            - frontend-v2-dependencies-
       - run:
           name: install dependencies
           working_directory: frontend
@@ -97,7 +97,7 @@ jobs:
       - save_cache:
           paths:
             - ./frontend/node_modules
-          key: frontend-v1-dependencies-{{ checksum "frontend/package.json" }}
+          key: frontend-v2-dependencies-{{ checksum "frontend/package.json" }}
       - run:
           name: run tests
           working_directory: frontend
@@ -112,8 +112,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - frontend-v1-dependencies-{{ checksum "frontend/package.json" }}
-            - frontend-v1-dependencies-
+            - frontend-v2-dependencies-{{ checksum "frontend/package.json" }}
+            - frontend-v2-dependencies-
       - run:
           name: install dependencies
           working_directory: frontend
@@ -122,7 +122,7 @@ jobs:
       - save_cache:
           paths:
             - ./frontend/node_modules
-          key: frontend-v1-dependencies-{{ checksum "frontend/package.json" }}
+          key: frontend-v2-dependencies-{{ checksum "frontend/package.json" }}
       - run:
           name: run linter
           working_directory: frontend
