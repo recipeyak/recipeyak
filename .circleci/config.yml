@@ -139,9 +139,6 @@ jobs:
 
   # https://circleci.com/docs/2.0/building-docker-images/
   build_api_container:
-    requires:
-      - backend_test
-      - backend_lint
     docker:
       - image: docker:18.05.0-ce
     steps:
@@ -160,9 +157,6 @@ jobs:
 
   # https://circleci.com/docs/2.0/building-docker-images/
   build_ui_container:
-    requires:
-      - frontend_test
-      - frontend_lint
     docker:
       - image: docker:18.05.0-ce
     steps:
@@ -211,11 +205,17 @@ workflows:
       - frontend_lint
       - build_api_container:
           context: DockerHub
+          requires:
+            - backend_test
+            - backend_lint
           filters:
             branches:
               only: master
       - build_ui_container:
           context: DockerHub
+          requires:
+            - frontend_test
+            - frontend_lint
           filters:
             branches:
               only: master
