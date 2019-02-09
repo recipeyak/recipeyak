@@ -18,7 +18,9 @@ import {
   mapSuccessLike,
   toLoading
 } from "@/webdata"
+import { IErr, IOk, isOk } from "@/result"
 import { Loop, loop, Cmd } from "redux-loop"
+
 export const updateRecipeOwner = createStandardAction("UPDATE_RECIPE_OWNER")<{
   id: IRecipe["id"]
   owner: IRecipe["owner"]
@@ -30,11 +32,13 @@ export const deleteRecipe = createAsyncAction(
   "DELETE_RECIPE_FAILURE"
 )<IRecipe["id"], IRecipe["id"], IRecipe["id"]>()
 
+type FetchRecipeFailure = IErr<{ id: IRecipe["id"]; error404: boolean }>
+
 export const fetchRecipe = createAsyncAction(
   "FETCH_RECIPE_START",
   "FETCH_RECIPE_SUCCESS",
   "FETCH_RECIPE_FAILURE"
-)<IRecipe["id"], IRecipe, { id: IRecipe["id"]; error404: boolean }>()
+)<IRecipe["id"], IOk<IRecipe> | FetchRecipeFailure, FetchRecipeFailure>()
 
 export const fetchRecipeList = createAsyncAction(
   "FETCH_RECIPE_LIST_START",
@@ -361,28 +365,32 @@ export const recipes = (
         },
         Cmd.run(api.getRecipe, {
           args: [recipeID],
-          successActionCreator: fetchRecipe.success,
-          failActionCreator: fetchRecipe.failure
+          // TODO(sbdchd): update redux loop to use result type and branch on IOk and IErr
+          successActionCreator: fetchRecipe.success
         })
       )
     }
     case getType(fetchRecipe.success):
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.id]: Success(action.payload)
+      if (isOk(action.payload)) {
+        return {
+          ...state,
+          byId: {
+            ...state.byId,
+            [action.payload.data.id]: Success(action.payload.data)
+          }
         }
+      } else {
+        return loop(state, Cmd.action(fetchRecipe.failure(action.payload)))
       }
     case getType(fetchRecipe.failure): {
-      const failure = action.payload.error404
+      const failure = action.payload.error.error404
         ? HttpErrorKind.error404
         : HttpErrorKind.other
       return {
         ...state,
         byId: {
           ...state.byId,
-          [action.payload.id]: Failure(failure)
+          [action.payload.error.id]: Failure(failure)
         }
       }
     }

@@ -105,6 +105,7 @@ import {
 import { recipeURL } from "@/urls"
 import { isSuccessOrRefetching } from "@/webdata"
 import { isPast, endOfDay } from "date-fns"
+import { Ok } from "@/result"
 
 // We check if detail matches our string because Django will not return 401 when
 // the session expires
@@ -1017,7 +1018,7 @@ export const copyRecipeTo = (dispatch: Dispatch) => (
   return api
     .copyRecipe(recipeId, ownerId, type)
     .then(res => {
-      dispatch(fetchRecipe.success(res.data))
+      dispatch(fetchRecipe.success(Ok(res.data)))
       dispatch(setCopyingTeam(false))
     })
     .catch(err => {
@@ -1163,9 +1164,7 @@ export const addingScheduledRecipe = (dispatch: Dispatch) => (
   //    if failed, then we remove the preemptively added one, and display an error
 
   dispatch(
-    setCalendarRecipe(
-      toCalRecipe(recipe.data as IRecipe, tempId, toDateString(on), count)
-    )
+    setCalendarRecipe(toCalRecipe(recipe.data, tempId, toDateString(on), count))
   )
   return api
     .scheduleRecipe(recipeID, teamID, on, count)

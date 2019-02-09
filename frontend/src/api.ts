@@ -15,7 +15,8 @@ import { IRecipe, IIngredient, IStep } from "@/store/reducers/recipes"
 import { IInvite } from "@/store/reducers/invites"
 import { ICalRecipe } from "@/store/reducers/calendar"
 import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
-import { AxiosResponse } from "axios"
+import { AxiosResponse, AxiosError } from "axios"
+import { Result, Ok, Err } from "@/result"
 
 /**
  * Unwrap data from AxiosResponse so that we don't have to work off
@@ -127,8 +128,17 @@ export const deleteSessionById = (id: ISession["id"]) =>
 export const createRecipe = (recipe: IRecipeBasic) =>
   http.post<IRecipe>("/api/v1/recipes/", recipe)
 
-export const getRecipe = (id: IRecipe["id"]) =>
-  http.get<IRecipe>(`/api/v1/recipes/${id}/`).then(getData)
+export function getRecipe(
+  id: IRecipe["id"]
+): Promise<Result<IRecipe, { id: IRecipe["id"]; error404: boolean }>> {
+  return http
+    .get<IRecipe>(`/api/v1/recipes/${id}/`)
+    .then(r => Ok(getData(r)))
+    .catch((err: AxiosError) => {
+      const error404 = !!(err.response && err.response.status === 404)
+      return Err({ id, error404 })
+    })
+}
 
 export const deleteRecipe = (id: IRecipe["id"]) =>
   http.delete(`/api/v1/recipes/${id}/`)
