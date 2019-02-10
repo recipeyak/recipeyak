@@ -78,6 +78,7 @@
     "no-relative-imports": [true],
     "no-throw": true,
     "no-try": true,
+    "no-promise-catch": true,
     "ban-types": {
       "options": [
         [
