@@ -14,12 +14,12 @@ drf-nested-routers = "0.90.0"
 pint = "0.8.1"
 gunicorn = "19.7.1"
 psycopg2 = "2.7.3.2"
-raven = "6.5.0"
 python-json-logger = "0.1.8"
 pyyaml = "^3.13"
 django-user-sessions = "^1.6"
 dataclasses = "^0.6.0"
 django-softdelete = "^0.9.0"
+sentry-sdk = "^0.7.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "3.4.0"
