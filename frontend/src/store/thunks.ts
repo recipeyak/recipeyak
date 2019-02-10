@@ -1,15 +1,10 @@
 import isSameDay from "date-fns/is_same_day"
-
-export type Dispatch = ReduxDispatch<Action>
-
 import { random32Id } from "@/uuid"
-
 import { toDateString } from "@/date"
-
 import { push, replace } from "react-router-redux"
+import { Dispatch as ReduxDispatch } from "redux"
 import { AxiosError, AxiosResponse } from "axios"
 import raven from "raven-js"
-
 import { store, Action } from "@/store/store"
 import {
   SocialProvider,
@@ -71,26 +66,20 @@ import {
   IRecipe,
   setSchedulingRecipe,
   updateRecipeOwner,
-  deleteRecipe,
   deleteStep,
   updateStep,
   deleteIngredient,
-  addStepToRecipe,
-  addIngredientToRecipe,
-  updateIngredient,
   IIngredient,
   fetchRecipe,
   fetchRecipeList,
   createRecipe,
   IStep,
-  fetchRecentRecipes,
-  updateRecipe
+  fetchRecentRecipes
 } from "@/store/reducers/recipes"
 import * as api from "@/api"
 import { clearAddRecipeForm } from "@/store/reducers/addrecipe"
 import { fetchShoppingList } from "@/store/reducers/shoppinglist"
 import { passwordUpdate } from "@/store/reducers/passwordChange"
-import { Dispatch as ReduxDispatch } from "redux"
 import { IRecipeBasic } from "@/components/RecipeTitle"
 import {
   setErrorSocialLogin,
@@ -107,13 +96,8 @@ import { isSuccessOrRefetching } from "@/webdata"
 import { isPast, endOfDay } from "date-fns"
 import { isOk, isErr, Ok, Err } from "@/result"
 
-// We check if detail matches our string because Django will not return 401 when
-// the session expires
-export const invalidToken = (res: AxiosResponse) =>
-  // tslint:disable:no-unsafe-any
-  res != null &&
-  res.data.detail === "Authentication credentials were not provided."
-// tslint:enable:no-unsafe-any
+// TODO(sbdchd): move to @/store/store
+export type Dispatch = ReduxDispatch<Action>
 
 const isbadRequest = (err: AxiosError) =>
   err.response && err.response.status === 400
@@ -336,8 +320,10 @@ export const updatingPassword = (dispatch: Dispatch) => async (
 export const fetchingShoppingList = (dispatch: Dispatch) => async (
   teamID: TeamID
 ) => {
+  const startDay = store.getState().shoppinglist.startDay
+  const endDay = store.getState().shoppinglist.endDay
   dispatch(fetchShoppingList.request())
-  const res = await api.getShoppingList(teamID)
+  const res = await api.getShoppingList(teamID, startDay, endDay)
   if (isOk(res)) {
     dispatch(fetchShoppingList.success(res.data))
   } else {
@@ -374,19 +360,6 @@ export const postNewRecipe = (dispatch: Dispatch) => async (
   }
 }
 
-export const fetchingRecipe = (dispatch: Dispatch) => async (
-  id: IRecipe["id"]
-) => {
-  dispatch(fetchRecipe.request(id))
-  const res = await api.getRecipe(id)
-  if (isOk(res)) {
-    dispatch(fetchRecipe.success(res.data))
-  } else {
-    const error404 = !!(res.error.response && res.error.response.status === 404)
-    dispatch(fetchRecipe.failure({ id, error404 }))
-  }
-}
-
 export const fetchingRecentRecipes = (dispatch: Dispatch) => async () => {
   // TODO(sbdchd): these should have their own id array in the reduce and their own actions
   dispatch(fetchRecentRecipes.request())
@@ -407,64 +380,6 @@ export const fetchingRecipeList = (dispatch: Dispatch) => async (
     dispatch(fetchRecipeList.success({ recipes: res.data, teamID }))
   } else {
     dispatch(fetchRecipeList.failure({ teamID }))
-  }
-}
-
-export const addingRecipeIngredient = (dispatch: Dispatch) => async (
-  recipeID: IRecipe["id"],
-  ingredient: unknown
-) => {
-  dispatch(addIngredientToRecipe.request(recipeID))
-  const res = await api.addIngredientToRecipe(recipeID, ingredient)
-  if (isOk(res)) {
-    dispatch(
-      addIngredientToRecipe.success({ id: recipeID, ingredient: res.data })
-    )
-  } else {
-    dispatch(addIngredientToRecipe.failure(recipeID))
-  }
-}
-
-export const updatingRecipe = (dispatch: Dispatch) => async (
-  id: IRecipe["id"],
-  data: unknown
-) => {
-  dispatch(updateRecipe.request(id))
-  const res = await api.updateRecipe(id, data)
-  if (isOk(res)) {
-    // TODO(sbdchd): this should have its own actions
-    dispatch(updateRecipe.success(res.data))
-  } else {
-    dispatch(updateRecipe.failure(id))
-  }
-}
-
-export const addingRecipeStep = (dispatch: Dispatch) => async (
-  recipeID: IRecipe["id"],
-  step: unknown
-) => {
-  dispatch(addStepToRecipe.request(recipeID))
-  const res = await api.addStepToRecipe(recipeID, step)
-  if (isOk(res)) {
-    dispatch(addStepToRecipe.success({ id: recipeID, step: res.data }))
-  } else {
-    dispatch(addStepToRecipe.failure(recipeID))
-  }
-}
-
-export const updatingIngredient = (dispatch: Dispatch) => async (
-  recipeID: IRecipe["id"],
-  ingredientID: IIngredient["id"],
-  content: unknown
-) => {
-  dispatch(updateIngredient.request({ recipeID, ingredientID }))
-  const res = await api.updateIngredient(recipeID, ingredientID, content)
-  if (isOk(res)) {
-    dispatch(
-      updateIngredient.success({ recipeID, ingredientID, content: res.data })
-    )
-  } else {
-    dispatch(updateIngredient.failure({ recipeID, ingredientID }))
   }
 }
 
@@ -626,18 +541,6 @@ export const signup = (dispatch: Dispatch) => async (
       // tslint:enable:no-unsafe-any
     }
     dispatch(setLoadingSignup(false))
-  }
-}
-export const deletingRecipe = (dispatch: Dispatch) => async (
-  id: IRecipe["id"]
-) => {
-  dispatch(deleteRecipe.request(id))
-  const res = await api.deleteRecipe(id)
-  if (isOk(res)) {
-    dispatch(push("/recipes"))
-    dispatch(deleteRecipe.success(id))
-  } else {
-    dispatch(deleteRecipe.failure(id))
   }
 }
 

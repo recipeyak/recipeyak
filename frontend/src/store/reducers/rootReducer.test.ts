@@ -1,6 +1,7 @@
 import { rootReducer, emptyStore, RootState } from "@/store/store"
 import { setUserLoggedIn } from "@/store/reducers/user"
 import { initialState } from "@/store/reducers/auth"
+import { getModel } from "redux-loop"
 
 describe("logout", () => {
   it("Logs out user and clears entire store", () => {
@@ -26,6 +27,8 @@ describe("logout", () => {
       routerReducer: beforeState.routerReducer
     }
 
-    expect(rootReducer(beforeState, setUserLoggedIn(false))).toEqual(afterState)
+    expect(getModel(rootReducer(beforeState, setUserLoggedIn(false)))).toEqual(
+      afterState
+    )
   })
 })

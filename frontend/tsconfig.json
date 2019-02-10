@@ -20,7 +20,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "*": ["./node_modules/@types/*"]
+      "*": ["./types/*", "./node_modules/@types/*"]
     }
   },
   "include": ["**/*", "*"],

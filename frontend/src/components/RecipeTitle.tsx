@@ -1,11 +1,17 @@
 import React from "react"
 import { Button, ButtonPrimary } from "@/components/Buttons"
 import MetaData from "@/components/MetaData"
-import { IRecipe } from "@/store/reducers/recipes"
+import {
+  IRecipe,
+  updateRecipe,
+  deleteRecipe,
+  toggleEditingRecipe
+} from "@/store/reducers/recipes"
 import GlobalEvent from "@/components/GlobalEvent"
 import { TextInput } from "@/components/Forms"
 import { hasSelection } from "@/utils/general"
 import { Schedule } from "@/components/RecipeItem"
+import { connect } from "react-redux"
 
 interface IRecipeTitleProps {
   readonly id: IRecipe["id"]
@@ -15,10 +21,12 @@ interface IRecipeTitleProps {
   readonly servings: IRecipe["servings"]
   readonly time: IRecipe["time"]
   readonly owner: IRecipe["owner"]
-  readonly update: (id: IRecipe["id"], recipe: IRecipeBasic) => Promise<void>
+  readonly update: (args: { id: IRecipe["id"]; data: IRecipeBasic }) => void
   readonly updating?: boolean
   readonly remove: (id: IRecipe["id"]) => void
   readonly deleting?: boolean
+  readonly editing?: boolean
+  readonly toggleEditing: (recipeID: IRecipe["id"]) => void
   readonly lastScheduled?: string
 }
 
@@ -32,30 +40,26 @@ export interface IRecipeBasic {
 
 interface IRecipeTitleState {
   readonly show: boolean
-  readonly edit: boolean
   readonly recipe: IRecipeBasic
 }
 
-export default class RecipeTitle extends React.Component<
+class RecipeTitle extends React.Component<
   IRecipeTitleProps,
   IRecipeTitleState
 > {
   state: IRecipeTitleState = {
     show: false,
-    edit: false,
     recipe: {}
   }
 
-  toggleEdit = () => this.setState(prev => ({ edit: !prev.edit }))
+  toggleEdit = () => this.props.toggleEditing(this.props.id)
 
   handleSave = () => {
     const data = this.state.recipe
     if (data == null) {
       return
     }
-    this.props.update(this.props.id, data).then(() => {
-      this.setState({ edit: false })
-    })
+    this.props.update({ id: this.props.id, data })
   }
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,7 +84,7 @@ export default class RecipeTitle extends React.Component<
 
   handleGlobalKeyUp = (e: KeyboardEvent) => {
     // Pass if we aren't editing
-    if (!this.state.edit) {
+    if (!this.props.editing) {
       return
     }
     if (e.key === "Escape") {
@@ -115,7 +119,7 @@ export default class RecipeTitle extends React.Component<
       <div>
         <div className="grid-entire-row d-flex justify-space-between p-rel">
           <GlobalEvent keyUp={this.handleGlobalKeyUp} />
-          {!this.state.edit ? (
+          {!this.props.editing ? (
             <div className="d-flex align-items-center">
               <h1
                 className="title fs-2rem mb-0 mb-1 cursor-pointer"
@@ -149,7 +153,7 @@ export default class RecipeTitle extends React.Component<
           />
         </div>
 
-        {!this.state.edit ? (
+        {!this.props.editing ? (
           <div className="grid-entire-row">
             <MetaData
               title="click to edit"
@@ -241,3 +245,14 @@ export default class RecipeTitle extends React.Component<
     )
   }
 }
+
+const mapDispatchToProps = {
+  update: updateRecipe.request,
+  remove: deleteRecipe.request,
+  toggleEditing: toggleEditingRecipe
+}
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(RecipeTitle)

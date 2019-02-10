@@ -62,6 +62,7 @@ interface IAddRecipeState {
     readonly [key: string]: string | boolean
   }
   readonly step: string
+  readonly loading: boolean
 }
 
 const emptyIngredient = {
@@ -77,7 +78,8 @@ export default class AddRecipe extends React.Component<
 > {
   state: IAddRecipeState = {
     ingredient: emptyIngredient,
-    step: ""
+    step: "",
+    loading: false
   }
 
   componentDidMount() {
@@ -107,10 +109,11 @@ export default class AddRecipe extends React.Component<
 
   addIngredient = () => {
     if (unfinishedIngredient(this.state.ingredient)) {
-      return Promise.resolve()
+      return
     }
+    this.setState({ loading: true })
     this.props.addIngredient(this.state.ingredient)
-    this.setState({ ingredient: emptyIngredient })
+    this.setState({ ingredient: emptyIngredient, loading: false })
   }
 
   handleIngredientChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -267,6 +270,7 @@ export default class AddRecipe extends React.Component<
               description={description}
               optional={optional}
               error={errorWithIngredients}
+              loading={this.state.loading}
             />
           </div>
 

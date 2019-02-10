@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { connect } from "react-redux"
 import { Helmet } from "@/components/Helmet"
-
 import NoMatch from "@/components/NoMatch"
 import Loader from "@/components/Loader"
 import AddStep from "@/components/AddStep"
@@ -9,26 +8,17 @@ import AddIngredient, { IIngredientBasic } from "@/components/AddIngredient"
 import StepContainer from "@/components/StepContainer"
 import Ingredient from "@/components/Ingredient"
 import RecipeTitle from "@/components/RecipeTitle"
-
-import {
-  addingRecipeIngredient,
-  addingRecipeStep,
-  fetchingRecipe,
-  deletingRecipe,
-  deletingIngredient,
-  updatingIngredient,
-  Dispatch,
-  updatingRecipe
-} from "@/store/thunks"
 import { RootState } from "@/store/store"
 import { RouteComponentProps } from "react-router"
 import {
   IRecipe,
-  IStep,
   IIngredient,
-  getRecipeById
+  getRecipeById,
+  fetchRecipe,
+  addIngredientToRecipe,
+  deleteIngredient,
+  updateIngredient
 } from "@/store/reducers/recipes"
-import { IRecipeBasic } from "@/components/RecipeTitle"
 import { isInitial, isLoading, isFailure, WebData } from "@/webdata"
 import { SectionTitle } from "@/components/RecipeHelpers"
 
@@ -40,35 +30,35 @@ const mapStateToProps = (state: RootState, props: RouteProps) => {
   return { recipe: maybeRecipe }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchRecipe: fetchingRecipe(dispatch),
-  addIngredient: addingRecipeIngredient(dispatch),
-  addStep: addingRecipeStep(dispatch),
-  update: updatingRecipe(dispatch),
-  remove: deletingRecipe(dispatch),
-  updateIngredient: updatingIngredient(dispatch),
-  removeIngredient: deletingIngredient(dispatch)
-})
+const mapDispatchToProps = {
+  fetchRecipe: fetchRecipe.request,
+  addIngredient: addIngredientToRecipe.request,
+  removeIngredient: deleteIngredient.request,
+  updateIngredient: updateIngredient.request
+}
 
 interface IRecipeProps extends RouteProps {
   readonly recipe: WebData<IRecipe>
-  readonly update: (id: IRecipe["id"], recipe: IRecipeBasic) => Promise<void>
-  readonly remove: (id: IRecipe["id"]) => void
   readonly fetchRecipe: (id: IRecipe["id"]) => void
   readonly addIngredient: (
-    id: number,
-    { quantity, name, description }: IIngredientBasic
-  ) => Promise<void>
+    args: {
+      recipeID: number
+      ingredient: IIngredientBasic
+    }
+  ) => void
   readonly updateIngredient: (
-    recipeID: IRecipe["id"],
-    ingredientID: IIngredient["id"],
-    content: Omit<IIngredient, "id" | "position">
+    args: {
+      recipeID: IRecipe["id"]
+      ingredientID: IIngredient["id"]
+      content: Omit<IIngredient, "id" | "position">
+    }
   ) => void
   readonly removeIngredient: (
-    recipeID: IRecipe["id"],
-    ingredientID: IIngredient["id"]
+    args: {
+      recipeID: IRecipe["id"]
+      ingredientID: IIngredient["id"]
+    }
   ) => void
-  readonly addStep: (id: IStep["id"], step: IStep["text"]) => Promise<void>
 }
 
 function Recipe(props: IRecipeProps) {
@@ -107,10 +97,9 @@ function Recipe(props: IRecipeProps) {
         time={recipe.time}
         owner={recipe.owner}
         lastScheduled={recipe.last_scheduled}
-        update={props.update}
         updating={recipe.updating}
-        remove={props.remove}
         deleting={recipe.deleting}
+        editing={recipe.editing}
       />
       <section className="ingredients-preparation-grid">
         <div>
@@ -124,9 +113,18 @@ function Recipe(props: IRecipeProps) {
                 quantity={ingre.quantity}
                 name={ingre.name}
                 update={(ingredient: Omit<IIngredient, "id" | "position">) =>
-                  props.updateIngredient(recipe.id, ingre.id, ingredient)
+                  props.updateIngredient({
+                    recipeID: recipe.id,
+                    ingredientID: ingre.id,
+                    content: ingredient
+                  })
                 }
-                remove={() => props.removeIngredient(recipe.id, ingre.id)}
+                remove={() =>
+                  props.removeIngredient({
+                    recipeID: recipe.id,
+                    ingredientID: ingre.id
+                  })
+                }
                 updating={ingre.updating}
                 removing={ingre.removing}
                 description={ingre.description}
@@ -138,7 +136,7 @@ function Recipe(props: IRecipeProps) {
             <AddIngredient
               id={recipe.id}
               autoFocus
-              loading={false}
+              loading={!!recipe.addingIngredient}
               addIngredient={props.addIngredient}
               onCancel={() => setAddIngredient(false)}
             />
@@ -156,8 +154,8 @@ function Recipe(props: IRecipeProps) {
             <AddStep
               id={recipe.id}
               index={recipe.steps.length + 1}
+              step={props.recipe.data.draftStep}
               autoFocus
-              addStep={props.addStep}
               onCancel={() => setAddStep(false)}
               loading={recipe.addingStepToRecipe}
             />

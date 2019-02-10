@@ -7,7 +7,6 @@ import {
   ISession
 } from "@/store/reducers/user"
 import { ITeam, IMember } from "@/store/reducers/teams"
-import store from "@/store/store"
 import { IShoppingListItem } from "@/store/reducers/shoppinglist"
 import { toDateString } from "@/date"
 import { IRecipeBasic } from "@/components/RecipeTitle"
@@ -94,17 +93,15 @@ export const changePassword = (
     old_password: oldPassword
   })
 
-export const getShoppingList = (teamID: TeamID) => {
-  const startDay = store.getState().shoppinglist.startDay
-  const endDay = store.getState().shoppinglist.endDay
+export const getShoppingList = (teamID: TeamID, start: Date, end: Date) => {
   const url =
     teamID === "personal"
       ? "/api/v1/shoppinglist/"
       : `/api/v1/t/${teamID}/shoppinglist/`
   return http.get<IShoppingListItem[]>(url, {
     params: {
-      start: toDateString(startDay),
-      end: toDateString(endDay)
+      start: toDateString(start),
+      end: toDateString(end)
     }
   })
 }
