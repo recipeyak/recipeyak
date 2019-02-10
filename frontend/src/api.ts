@@ -233,10 +233,10 @@ export const copyRecipe = (
 export const getInviteList = () => http.get<IInvite[]>("/api/v1/invites/")
 
 export const acceptInvite = (id: IInvite["id"]) =>
-  http.post(`/api/v1/invites/${id}/accept/`, {})
+  http.post<void>(`/api/v1/invites/${id}/accept/`, {})
 
 export const declineInvite = (id: IInvite["id"]) =>
-  http.post(`/api/v1/invites/${id}/decline/`, {})
+  http.post<void>(`/api/v1/invites/${id}/decline/`, {})
 
 export const reportBadMerge = () => http.post("/api/v1/report-bad-merge", {})
 

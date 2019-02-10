@@ -1,14 +1,13 @@
-import axios, { AxiosError } from "axios"
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios"
 import { uuid4 } from "@/uuid"
 import Cookie from "js-cookie"
 import { store } from "@/store/store"
 import raven from "raven-js"
 import { invalidToken } from "@/store/thunks"
 import { setUserLoggedIn } from "@/store/reducers/user"
+import { Result, Ok, Err } from "@/result"
 
-const config = { timeout: 15000 }
-
-const http = axios.create(config)
+const baseHttp = axios.create({ timeout: 15000 })
 
 const handleResponseError = (error: AxiosError) => {
   // 503 means we are in maintenance mode. Reload to show maintenance page.
@@ -33,13 +32,13 @@ const handleResponseError = (error: AxiosError) => {
   return Promise.reject(error)
 }
 
-http.interceptors.response.use(
+baseHttp.interceptors.response.use(
   response => response,
   // tslint:disable-next-line:no-unsafe-any
   error => handleResponseError(error)
 )
 
-http.interceptors.request.use(
+baseHttp.interceptors.request.use(
   cfg => {
     const csrfToken = Cookie.get("csrftoken")
     // tslint:disable:no-unsafe-any
@@ -51,4 +50,55 @@ http.interceptors.request.use(
   error => Promise.reject(error)
 )
 
-export { http }
+type HttpResult<T> = Promise<Result<T, AxiosError>>
+
+const toOk = <T>(res: AxiosResponse<T>) => Ok(res.data)
+const toErr = (res: AxiosError) => Err(res)
+
+/**
+ * Result<T> based HTTP client
+ */
+export const http = {
+  get: <T>(url: string, config?: AxiosRequestConfig): HttpResult<T> =>
+    baseHttp
+      .get<T>(url, config)
+      .then(toOk)
+      .catch(toErr),
+  delete: (url: string, config?: AxiosRequestConfig): HttpResult<void> =>
+    baseHttp
+      .delete(url, config)
+      .then(toOk)
+      .catch(toErr),
+  head: (url: string, config?: AxiosRequestConfig): HttpResult<void> =>
+    baseHttp
+      .head(url, config)
+      .then(toOk)
+      .catch(toErr),
+  patch: <T>(
+    url: string,
+    data?: {} | unknown,
+    config?: AxiosRequestConfig
+  ): HttpResult<T> =>
+    baseHttp
+      .patch<T>(url, data, config)
+      .then(toOk)
+      .catch(toErr),
+  put: <T>(
+    url: string,
+    data?: {} | unknown,
+    config?: AxiosRequestConfig
+  ): HttpResult<T> =>
+    baseHttp
+      .put<T>(url, data, config)
+      .then(toOk)
+      .catch(toErr),
+  post: <T>(
+    url: string,
+    data?: {} | unknown,
+    config?: AxiosRequestConfig
+  ): HttpResult<T> =>
+    baseHttp
+      .post<T>(url, data, config)
+      .then(toOk)
+      .catch(toErr)
+}
