@@ -1,7 +1,12 @@
 import time
+from uuid import uuid4
 
 from django.db import connection
 from django.conf import settings
+from django.http import HttpRequest
+import sentry_sdk
+
+from backend.request_state import State
 
 MSEC_CONVERT_FACTOR = 1000
 
@@ -78,4 +83,22 @@ class APIDelayMiddleware:
 
     def __call__(self, request):
         time.sleep(self.API_DELAY_MS / 1000)
+        return self.get_response(request)
+
+
+class RequestIDMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    @staticmethod
+    def generate_request_id():
+        return uuid4().hex
+
+    def __call__(self, request: HttpRequest):
+        request_id = request.META.get("HTTP_X_REQUEST_ID", self.generate_request_id())
+
+        State.request_id = request_id
+        with sentry_sdk.configure_scope() as scope:
+            scope.set_tag("request_id", request_id)
+
         return self.get_response(request)
