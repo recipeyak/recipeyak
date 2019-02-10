@@ -10,6 +10,7 @@ const WebpackDevServer = require("webpack-dev-server")
 const historyApiFallback = require("connect-history-api-fallback")
 const httpProxyMiddleware = require("http-proxy-middleware")
 const detect = require("detect-port")
+const inquirer = require("inquirer")
 // @ts-ignore
 const clearConsole = require("react-dev-utils/clearConsole")
 // @ts-ignore
@@ -20,8 +21,6 @@ const formatWebpackMessages = require("react-dev-utils/formatWebpackMessages")
 const getProcessForPort = require("react-dev-utils/getProcessForPort")
 // @ts-ignore
 const openBrowser = require("react-dev-utils/openBrowser")
-// @ts-ignore
-const prompt = require("react-dev-utils/prompt")
 const fs = require("fs")
 const config = require("../config/webpack.config.dev")
 const paths = require("../config/paths")
@@ -365,21 +364,22 @@ detect(DEFAULT_PORT).then(port => {
   if (isInteractive) {
     clearConsole()
     const existingProcess = getProcessForPort(DEFAULT_PORT)
-    const question =
-      chalk.yellow(
-        "Something is already running on port " +
-          DEFAULT_PORT +
-          "." +
-          (existingProcess ? " Probably:\n  " + existingProcess : "")
-      ) + "\n\nWould you like to run the app on another port instead?"
+    const question = {
+      type: "confirm",
+      name: "shouldChangePort",
+      message:
+        chalk.yellow(
+          `Something is already running on port ${DEFAULT_PORT}.` +
+            `${existingProcess ? ` Probably:\n  ${existingProcess}` : ""}`
+        ) + "\n\nWould you like to run the app on another port instead?",
+      default: true
+    }
 
-    prompt(question, true).then(
-      /** @param {boolean} shouldChangePort */ shouldChangePort => {
-        if (shouldChangePort) {
-          run(port)
-        }
+    inquirer.prompt(question).then(answer => {
+      if (answer.shouldChangePort) {
+        run(port)
       }
-    )
+    })
   } else {
     console.log(
       chalk.red("Something is already running on port " + DEFAULT_PORT + ".")
