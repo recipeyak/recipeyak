@@ -1,14 +1,11 @@
 import isSameDay from "date-fns/is_same_day"
-
 import { random32Id } from "@/uuid"
-
 import { toDateString } from "@/date"
-
 import { push, replace } from "react-router-redux"
+import { Dispatch as ReduxDispatch } from "redux"
 import { AxiosError, AxiosResponse } from "axios"
 import raven from "raven-js"
-
-import { Dispatch, store } from "@/store/store"
+import { store, Action } from "@/store/store"
 import {
   SocialProvider,
   updateEmail,
@@ -98,6 +95,9 @@ import { recipeURL } from "@/urls"
 import { isSuccessOrRefetching } from "@/webdata"
 import { isPast, endOfDay } from "date-fns"
 import { isOk, isErr, Ok, Err } from "@/result"
+
+// TODO(sbdchd): move to @/store/store
+export type Dispatch = ReduxDispatch<Action>
 
 const isbadRequest = (err: AxiosError) =>
   err.response && err.response.status === 400

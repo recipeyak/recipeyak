@@ -3,8 +3,7 @@ import {
   applyMiddleware,
   compose as reduxCompose,
   Store as ReduxStore,
-  StoreEnhancer,
-  Dispatch as ReduxDispatch
+  StoreEnhancer
 } from "redux"
 
 import {
@@ -84,8 +83,6 @@ export type Action =
   | AuthActions
   | TeamsActions
   | CalendarActions
-
-export type Dispatch = ReduxDispatch<Action>
 
 /**
  * A hack to prevent errors in testing. Jest does some weird sourcing of

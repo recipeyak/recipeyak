@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { connect } from "react-redux"
 import { Helmet } from "@/components/Helmet"
-
 import NoMatch from "@/components/NoMatch"
 import Loader from "@/components/Loader"
 import AddStep from "@/components/AddStep"
@@ -9,8 +8,7 @@ import AddIngredient, { IIngredientBasic } from "@/components/AddIngredient"
 import StepContainer from "@/components/StepContainer"
 import Ingredient from "@/components/Ingredient"
 import RecipeTitle from "@/components/RecipeTitle"
-
-import { RootState, Dispatch } from "@/store/store"
+import { RootState } from "@/store/store"
 import { RouteComponentProps } from "react-router"
 import {
   IRecipe,
@@ -24,6 +22,7 @@ import {
 import { isInitial, isLoading, isFailure, WebData } from "@/webdata"
 import { SectionTitle } from "@/components/RecipeHelpers"
 import { bindActionCreators } from "redux"
+import { Dispatch } from "@/store/thunks"
 
 type RouteProps = RouteComponentProps<{ id: string }>
 

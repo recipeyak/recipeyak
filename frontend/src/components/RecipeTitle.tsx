@@ -12,7 +12,7 @@ import { TextInput } from "@/components/Forms"
 import { hasSelection } from "@/utils/general"
 import { Schedule } from "@/components/RecipeItem"
 import { connect } from "react-redux"
-import { Dispatch } from "@/store/store"
+import { Dispatch } from "@/store/thunks"
 import { bindActionCreators } from "redux"
 
 interface IRecipeTitleProps {
