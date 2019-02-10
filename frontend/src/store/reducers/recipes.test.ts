@@ -9,7 +9,6 @@ import * as a from "@/store/reducers/recipes"
 import { RootState } from "@/store/store"
 import { HttpErrorKind, Loading, isSuccess, Failure, Success } from "@/webdata"
 import { getModel } from "redux-loop"
-import { Ok, Err } from "@/result"
 
 export const baseRecipe: IRecipe = {
   id: 1,
@@ -54,7 +53,7 @@ function recipeStoreWith(recipe: IRecipe | IRecipe[]): IRecipesState {
       )
     )
   }
-  return getModel(recipes(undefined, a.fetchRecipe.success(Ok(recipe))))
+  return getModel(recipes(undefined, a.fetchRecipe.success(recipe)))
 }
 
 describe("Recipes", () => {
@@ -382,9 +381,9 @@ describe("Recipes", () => {
       addingStepToRecipe: true
     })
 
-    expect(recipes(beforeState, a.addStepToRecipe.request(1))).toEqual(
-      afterState
-    )
+    expect(
+      recipes(beforeState, a.addStepToRecipe.request({ id: 1, step: "foo" }))
+    ).toEqual(afterState)
   })
 
   it("sets the recipe to be adding an ingredient", () => {
@@ -398,9 +397,15 @@ describe("Recipes", () => {
       addingIngredient: true
     })
 
-    expect(recipes(beforeState, a.addIngredientToRecipe.request(1))).toEqual(
-      afterState
-    )
+    expect(
+      recipes(
+        beforeState,
+        a.addIngredientToRecipe.request({
+          recipeID: 1,
+          ingredient: { name: "foo" }
+        })
+      )
+    ).toEqual(afterState)
   })
 
   it("sets the recipe to be updating a specific ingredient", () => {
@@ -426,7 +431,11 @@ describe("Recipes", () => {
     expect(
       recipes(
         beforeState,
-        a.updateIngredient.request({ recipeID: 1, ingredientID: 1 })
+        a.updateIngredient.request({
+          recipeID: 1,
+          ingredientID: 1,
+          content: { name: "foo" }
+        })
       )
     ).toEqual(afterState)
   })
@@ -533,7 +542,7 @@ describe("Recipes", () => {
     const successState: IRecipesState = recipeStoreWith({
       ...baseRecipe
     })
-    expect(recipes(beforeState, a.fetchRecipe.success(Ok(baseRecipe)))).toEqual(
+    expect(recipes(beforeState, a.fetchRecipe.success(baseRecipe))).toEqual(
       successState
     )
 
@@ -547,10 +556,7 @@ describe("Recipes", () => {
     }
 
     const failActual = getModel(
-      recipes(
-        beforeState,
-        a.fetchRecipe.failure(Err({ id: 1, error404: false }))
-      )
+      recipes(beforeState, a.fetchRecipe.failure({ id: 1, error404: false }))
     )
     expect(failActual.byId).toEqual(failureState.byId)
     expect(failActual.personalIDs).toEqual(failureState.personalIDs)
@@ -564,7 +570,12 @@ describe("Recipes", () => {
       updating: true
     })
 
-    expect(recipes(beforeState, a.updateRecipe.request(1))).toEqual(afterState)
+    expect(
+      recipes(
+        beforeState,
+        a.updateRecipe.request({ id: 1, data: { name: "foo" } })
+      )
+    ).toEqual(afterState)
 
     const newRecipe: IRecipe = {
       ...baseRecipe,
@@ -600,7 +611,7 @@ describe("Recipes", () => {
       personalIDs: Success([baseRecipe.id])
     }
 
-    expect(recipes(beforeState, a.fetchRecipe.success(Ok(newRecipe)))).toEqual(
+    expect(recipes(beforeState, a.fetchRecipe.success(newRecipe))).toEqual(
       afterState
     )
   })

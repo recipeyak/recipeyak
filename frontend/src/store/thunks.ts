@@ -1,5 +1,6 @@
 import isSameDay from "date-fns/is_same_day"
 
+// TODO(sbdchd): move to store/store
 export type Dispatch = ReduxDispatch<Action>
 
 import { random32Id } from "@/uuid"
@@ -71,20 +72,15 @@ import {
   IRecipe,
   setSchedulingRecipe,
   updateRecipeOwner,
-  deleteRecipe,
   deleteStep,
   updateStep,
   deleteIngredient,
-  addStepToRecipe,
-  addIngredientToRecipe,
-  updateIngredient,
   IIngredient,
   fetchRecipe,
   fetchRecipeList,
   createRecipe,
   IStep,
-  fetchRecentRecipes,
-  updateRecipe
+  fetchRecentRecipes
 } from "@/store/reducers/recipes"
 import * as api from "@/api"
 import { clearAddRecipeForm } from "@/store/reducers/addrecipe"
@@ -397,64 +393,6 @@ export const fetchingRecipeList = (dispatch: Dispatch) => async (
   }
 }
 
-export const addingRecipeIngredient = (dispatch: Dispatch) => async (
-  recipeID: IRecipe["id"],
-  ingredient: unknown
-) => {
-  dispatch(addIngredientToRecipe.request(recipeID))
-  const res = await api.addIngredientToRecipe(recipeID, ingredient)
-  if (isOk(res)) {
-    dispatch(
-      addIngredientToRecipe.success({ id: recipeID, ingredient: res.data })
-    )
-  } else {
-    dispatch(addIngredientToRecipe.failure(recipeID))
-  }
-}
-
-export const updatingRecipe = (dispatch: Dispatch) => async (
-  id: IRecipe["id"],
-  data: unknown
-) => {
-  dispatch(updateRecipe.request(id))
-  const res = await api.updateRecipe(id, data)
-  if (isOk(res)) {
-    // TODO(sbdchd): this should have its own actions
-    dispatch(updateRecipe.success(res.data))
-  } else {
-    dispatch(updateRecipe.failure(id))
-  }
-}
-
-export const addingRecipeStep = (dispatch: Dispatch) => async (
-  recipeID: IRecipe["id"],
-  step: unknown
-) => {
-  dispatch(addStepToRecipe.request(recipeID))
-  const res = await api.addStepToRecipe(recipeID, step)
-  if (isOk(res)) {
-    dispatch(addStepToRecipe.success({ id: recipeID, step: res.data }))
-  } else {
-    dispatch(addStepToRecipe.failure(recipeID))
-  }
-}
-
-export const updatingIngredient = (dispatch: Dispatch) => async (
-  recipeID: IRecipe["id"],
-  ingredientID: IIngredient["id"],
-  content: unknown
-) => {
-  dispatch(updateIngredient.request({ recipeID, ingredientID }))
-  const res = await api.updateIngredient(recipeID, ingredientID, content)
-  if (isOk(res)) {
-    dispatch(
-      updateIngredient.success({ recipeID, ingredientID, content: res.data })
-    )
-  } else {
-    dispatch(updateIngredient.failure({ recipeID, ingredientID }))
-  }
-}
-
 export const deletingIngredient = (dispatch: Dispatch) => async (
   recipeID: IRecipe["id"],
   ingredientID: IIngredient["id"]
@@ -613,18 +551,6 @@ export const signup = (dispatch: Dispatch) => async (
       // tslint:enable:no-unsafe-any
     }
     dispatch(setLoadingSignup(false))
-  }
-}
-export const deletingRecipe = (dispatch: Dispatch) => async (
-  id: IRecipe["id"]
-) => {
-  dispatch(deleteRecipe.request(id))
-  const res = await api.deleteRecipe(id)
-  if (isOk(res)) {
-    dispatch(push("/recipes"))
-    dispatch(deleteRecipe.success(id))
-  } else {
-    dispatch(deleteRecipe.failure(id))
   }
 }
 

@@ -18,9 +18,10 @@ import {
   mapSuccessLike,
   toLoading
 } from "@/webdata"
-import { IErr, IOk, isOk } from "@/result"
-import { Loop, loop, Cmd, GetState } from "redux-loop"
+import { isOk } from "@/result"
+import { Loop, loop, Cmd } from "redux-loop"
 import { Dispatch } from "@/store/thunks"
+import { push } from "react-router-redux"
 
 export const updateRecipeOwner = createStandardAction("UPDATE_RECIPE_OWNER")<{
   id: IRecipe["id"]
@@ -129,7 +130,11 @@ export const updateIngredient = createAsyncAction(
   "UPDATE_INGREDIENT_SUCCESS",
   "UPDATE_INGREDIENT_FAILURE"
 )<
-  { recipeID: IRecipe["id"]; ingredientID: IIngredient["id"] },
+  {
+    recipeID: IRecipe["id"]
+    ingredientID: IIngredient["id"]
+    content: Partial<Omit<IIngredient, "id" | "position">>
+  },
   {
     recipeID: IRecipe["id"]
     ingredientID: IIngredient["id"]
@@ -142,14 +147,21 @@ export const updateRecipe = createAsyncAction(
   "UPDATE_RECIPE_REQUEST",
   "UPDATE_RECIPE_SUCCESS",
   "UPDATE_RECIPE_FAILIURE"
-)<IRecipe["id"], IRecipe, IRecipe["id"]>()
+)<
+  { id: IRecipe["id"]; data: Partial<Omit<IRecipe, "id">> },
+  IRecipe,
+  IRecipe["id"]
+>()
 
 export const addStepToRecipe = createAsyncAction(
   "ADD_STEP_TO_RECIPE_REQUEST",
   "ADD_STEP_TO_RECIPE_SUCCESS",
   "ADD_STEP_TO_RECIPE_FAILURE"
 )<
-  IRecipe["id"],
+  {
+    id: IRecipe["id"]
+    step: IStep["text"]
+  },
   {
     id: IRecipe["id"]
     step: IStep
@@ -162,7 +174,11 @@ export const addIngredientToRecipe = createAsyncAction(
   "ADD_INGREDIENT_TO_RECIPE_SUCCESS",
   "ADD_INGREDIENT_TO_RECIPE_FAILURE"
 )<
-  IRecipe["id"],
+  {
+    recipeID: IRecipe["id"]
+    // TODO(sbdchd): this type should be more specific
+    ingredient: Partial<Omit<IIngredient, "id">>
+  },
   {
     id: IRecipe["id"]
     ingredient: IIngredient
@@ -513,10 +529,24 @@ export const recipes = (
         errorCreatingRecipe: {}
       }
     case getType(deleteRecipe.request):
-      return mapRecipeSuccessById(state, action.payload, recipe => ({
-        ...recipe,
-        deleting: true
-      }))
+      return loop(
+        mapRecipeSuccessById(state, action.payload, recipe => ({
+          ...recipe,
+          deleting: true
+        })),
+        Cmd.run(
+          async (dispatch: Dispatch) => {
+            const res = await api.deleteRecipe(action.payload)
+            if (isOk(res)) {
+              dispatch(push("/recipes"))
+              dispatch(deleteRecipe.success(action.payload))
+            } else {
+              dispatch(deleteRecipe.failure(action.payload))
+            }
+          },
+          { args: [Cmd.dispatch] }
+        )
+      )
     case getType(deleteRecipe.success):
       return {
         ...state,
@@ -540,10 +570,31 @@ export const recipes = (
         deleting: false
       }))
     case getType(addStepToRecipe.request):
-      return mapRecipeSuccessById(state, action.payload, recipe => ({
-        ...recipe,
-        addingStepToRecipe: true
-      }))
+      return loop(
+        mapRecipeSuccessById(state, action.payload.id, recipe => ({
+          ...recipe,
+          addingStepToRecipe: true
+        })),
+        Cmd.run(
+          async (dispatch: Dispatch) => {
+            const res = await api.addStepToRecipe(
+              action.payload.id,
+              action.payload.step
+            )
+            if (isOk(res)) {
+              dispatch(
+                addStepToRecipe.success({
+                  id: action.payload.id,
+                  step: res.data
+                })
+              )
+            } else {
+              dispatch(addStepToRecipe.failure(action.payload.id))
+            }
+          },
+          { args: [Cmd.dispatch] }
+        )
+      )
     case getType(addStepToRecipe.success):
       return mapRecipeSuccessById(state, action.payload.id, recipe => ({
         ...recipe,
@@ -556,10 +607,37 @@ export const recipes = (
         addingStepToRecipe: false
       }))
     case getType(addIngredientToRecipe.request):
-      return mapRecipeSuccessById(state, action.payload, recipe => ({
-        ...recipe,
-        addingIngredient: true
-      }))
+      return loop(
+        mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
+          ...recipe,
+          addingIngredient: true
+        })),
+        Cmd.run(
+          (dispatch: Dispatch) =>
+            api
+              .addIngredientToRecipe(
+                action.payload.recipeID,
+                action.payload.ingredient
+              )
+              .then(res => {
+                if (isOk(res)) {
+                  dispatch(
+                    addIngredientToRecipe.success({
+                      id: action.payload.recipeID,
+                      ingredient: res.data
+                    })
+                  )
+                } else {
+                  dispatch(
+                    addIngredientToRecipe.failure(action.payload.recipeID)
+                  )
+                }
+              }),
+          {
+            args: [Cmd.dispatch]
+          }
+        )
+      )
     case getType(addIngredientToRecipe.success):
       return mapRecipeSuccessById(state, action.payload.id, recipe => ({
         ...recipe,
@@ -604,19 +682,44 @@ export const recipes = (
           return x
         })
       }))
-    case getType(updateIngredient.request):
-      return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
-        ...recipe,
-        ingredients: recipe.ingredients.map(x => {
-          if (x.id === action.payload.ingredientID) {
-            return {
-              ...x,
-              updating: true
+    case getType(updateIngredient.request): {
+      const { recipeID, ingredientID, content } = action.payload
+      return loop(
+        mapRecipeSuccessById(state, recipeID, recipe => ({
+          ...recipe,
+          ingredients: recipe.ingredients.map(x => {
+            if (x.id === ingredientID) {
+              return {
+                ...x,
+                updating: true
+              }
             }
-          }
-          return x
-        })
-      }))
+            return x
+          })
+        })),
+        Cmd.run(
+          async (dispatch: Dispatch) => {
+            const res = await api.updateIngredient(
+              recipeID,
+              ingredientID,
+              content
+            )
+            if (isOk(res)) {
+              dispatch(
+                updateIngredient.success({
+                  recipeID,
+                  ingredientID,
+                  content: res.data
+                })
+              )
+            } else {
+              dispatch(updateIngredient.failure({ recipeID, ingredientID }))
+            }
+          },
+          { args: [Cmd.dispatch] }
+        )
+      )
+    }
     case getType(updateIngredient.success):
       return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
         ...recipe,
@@ -716,10 +819,28 @@ export const recipes = (
       }))
 
     case getType(updateRecipe.request):
-      return mapRecipeSuccessById(state, action.payload, recipe => ({
-        ...recipe,
-        updating: true
-      }))
+      return loop(
+        mapRecipeSuccessById(state, action.payload.id, recipe => ({
+          ...recipe,
+          updating: true
+        })),
+        Cmd.run(
+          (dispatch: Dispatch) => {
+            api
+              .updateRecipe(action.payload.id, action.payload.data)
+              .then(res => {
+                if (isOk(res)) {
+                  dispatch(updateRecipe.success(res.data))
+                } else {
+                  dispatch(updateRecipe.failure(action.payload.id))
+                }
+              })
+          },
+          {
+            args: [Cmd.dispatch]
+          }
+        )
+      )
     case getType(updateRecipe.success):
       return mapRecipeSuccessById(state, action.payload.id, recipe => ({
         ...recipe,

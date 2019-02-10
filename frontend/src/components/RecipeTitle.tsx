@@ -15,7 +15,7 @@ interface IRecipeTitleProps {
   readonly servings: IRecipe["servings"]
   readonly time: IRecipe["time"]
   readonly owner: IRecipe["owner"]
-  readonly update: (id: IRecipe["id"], recipe: IRecipeBasic) => Promise<void>
+  readonly update: (args: { id: IRecipe["id"]; data: IRecipeBasic }) => void
   readonly updating?: boolean
   readonly remove: (id: IRecipe["id"]) => void
   readonly deleting?: boolean
@@ -53,9 +53,9 @@ export default class RecipeTitle extends React.Component<
     if (data == null) {
       return
     }
-    this.props.update(this.props.id, data).then(() => {
-      this.setState({ edit: false })
-    })
+    this.props.update({ id: this.props.id, data })
+    // TODO(sbdchd): this should execute after
+    this.setState({ edit: false })
   }
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

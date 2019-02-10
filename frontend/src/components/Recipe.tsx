@@ -10,15 +10,7 @@ import StepContainer from "@/components/StepContainer"
 import Ingredient from "@/components/Ingredient"
 import RecipeTitle from "@/components/RecipeTitle"
 
-import {
-  addingRecipeIngredient,
-  addingRecipeStep,
-  deletingRecipe,
-  deletingIngredient,
-  updatingIngredient,
-  Dispatch,
-  updatingRecipe
-} from "@/store/thunks"
+import { Dispatch } from "@/store/thunks"
 import { RootState } from "@/store/store"
 import { RouteComponentProps } from "react-router"
 import {
@@ -26,11 +18,18 @@ import {
   IStep,
   IIngredient,
   getRecipeById,
-  fetchRecipe
+  fetchRecipe,
+  updateRecipe,
+  addIngredientToRecipe,
+  addStepToRecipe,
+  deleteIngredient,
+  updateIngredient,
+  deleteRecipe
 } from "@/store/reducers/recipes"
 import { IRecipeBasic } from "@/components/RecipeTitle"
 import { isInitial, isLoading, isFailure, WebData } from "@/webdata"
 import { SectionTitle } from "@/components/RecipeHelpers"
+import { bindActionCreators } from "redux"
 
 type RouteProps = RouteComponentProps<{ id: string }>
 
@@ -40,35 +39,45 @@ const mapStateToProps = (state: RootState, props: RouteProps) => {
   return { recipe: maybeRecipe }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchRecipe: (id: IRecipe["id"]) => dispatch(fetchRecipe.request(id)),
-  addIngredient: addingRecipeIngredient(dispatch),
-  addStep: addingRecipeStep(dispatch),
-  update: updatingRecipe(dispatch),
-  remove: deletingRecipe(dispatch),
-  updateIngredient: updatingIngredient(dispatch),
-  removeIngredient: deletingIngredient(dispatch)
-})
+const mapDispatchToProps = (dispatch: Dispatch) =>
+  bindActionCreators(
+    {
+      fetchRecipe: fetchRecipe.request,
+      update: updateRecipe.request,
+      addIngredient: addIngredientToRecipe.request,
+      addStep: addStepToRecipe.request,
+      removeIngredient: deleteIngredient.request,
+      updateIngredient: updateIngredient.request,
+      remove: deleteRecipe.request
+    },
+    dispatch
+  )
 
 interface IRecipeProps extends RouteProps {
   readonly recipe: WebData<IRecipe>
-  readonly update: (id: IRecipe["id"], recipe: IRecipeBasic) => Promise<void>
+  readonly update: (args: { id: IRecipe["id"]; data: IRecipeBasic }) => void
   readonly remove: (id: IRecipe["id"]) => void
   readonly fetchRecipe: (id: IRecipe["id"]) => void
   readonly addIngredient: (
-    id: number,
-    { quantity, name, description }: IIngredientBasic
-  ) => Promise<void>
+    args: {
+      recipeID: number
+      ingredient: IIngredientBasic
+    }
+  ) => void
   readonly updateIngredient: (
-    recipeID: IRecipe["id"],
-    ingredientID: IIngredient["id"],
-    content: Omit<IIngredient, "id" | "position">
+    args: {
+      recipeID: IRecipe["id"]
+      ingredientID: IIngredient["id"]
+      content: Omit<IIngredient, "id" | "position">
+    }
   ) => void
   readonly removeIngredient: (
-    recipeID: IRecipe["id"],
-    ingredientID: IIngredient["id"]
+    args: {
+      recipeID: IRecipe["id"]
+      ingredientID: IIngredient["id"]
+    }
   ) => void
-  readonly addStep: (id: IStep["id"], step: IStep["text"]) => Promise<void>
+  readonly addStep: (args: { id: IStep["id"]; step: IStep["text"] }) => void
 }
 
 function Recipe(props: IRecipeProps) {
@@ -124,9 +133,18 @@ function Recipe(props: IRecipeProps) {
                 quantity={ingre.quantity}
                 name={ingre.name}
                 update={(ingredient: Omit<IIngredient, "id" | "position">) =>
-                  props.updateIngredient(recipe.id, ingre.id, ingredient)
+                  props.updateIngredient({
+                    recipeID: recipe.id,
+                    ingredientID: ingre.id,
+                    content: ingredient
+                  })
                 }
-                remove={() => props.removeIngredient(recipe.id, ingre.id)}
+                remove={() =>
+                  props.removeIngredient({
+                    recipeID: recipe.id,
+                    ingredientID: ingre.id
+                  })
+                }
                 updating={ingre.updating}
                 removing={ingre.removing}
                 description={ingre.description}

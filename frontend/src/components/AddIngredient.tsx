@@ -12,9 +12,11 @@ interface IAddIngredientProps {
   readonly onCancel: () => void
   readonly id: number
   readonly addIngredient: (
-    id: number,
-    { quantity, name, description }: IIngredientBasic
-  ) => Promise<void>
+    args: {
+      recipeID: number
+      ingredient: IIngredientBasic
+    }
+  ) => void
   readonly loading: boolean
   readonly autoFocus: boolean
 }
@@ -76,8 +78,13 @@ export default class AddIngredient extends React.Component<
 
     return (
       <AddIngredientForm
-        handleAddIngredient={async () => {
-          await addIngredient(id, { quantity, name, description })
+        handleAddIngredient={() => {
+          // TODO(sbdchd): fix this
+          addIngredient({
+            recipeID: id,
+            ingredient: { quantity, name, description }
+          })
+          // this needs to execute after
           clearInputs()
         }}
         loading={loading}

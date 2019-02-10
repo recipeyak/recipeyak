@@ -5,7 +5,7 @@ import GlobalEvent from "@/components/GlobalEvent"
 import { IStep } from "@/store/reducers/recipes"
 
 interface IAddStepProps {
-  readonly addStep: (id: IStep["id"], step: string) => Promise<void>
+  readonly addStep: (args: { id: IStep["id"]; step: IStep["text"] }) => void
   readonly onCancel: () => void
   readonly loading?: boolean
   readonly autoFocus?: boolean
@@ -38,7 +38,8 @@ export default class AddStep extends React.Component<
   }
 
   addStep = async () => {
-    await this.props.addStep(this.props.id, this.state.step)
+    // TODO(sbdchd): fix this
+    this.props.addStep({ id: this.props.id, step: this.state.step })
     this.setState({ step: "" })
   }
   handleKeyUp = (e: KeyboardEvent) => {
