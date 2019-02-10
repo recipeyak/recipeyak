@@ -133,7 +133,7 @@ jobs:
             ./s/build
             mkdir -p /tmp/frontend-artifacts
             # copy bundle analyzer report
-            cp -R build/report.html /tmp/frontend-artifacts
+            cp -R build/report.html build/webpack-stats.json /tmp/frontend-artifacts
       - store_artifacts:
           path: /tmp/frontend-artifacts
 

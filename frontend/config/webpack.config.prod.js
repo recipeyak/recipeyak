@@ -276,7 +276,8 @@ module.exports = {
     new BundleAnalyzerPlugin({
       analyzerMode: "static",
       generateStatsFile: true,
-      openAnalyzer: false
+      openAnalyzer: false,
+      statsFilename: "webpack-stats.json"
     })
   ],
   // Some libraries import Node modules but don't use them in the browser.
