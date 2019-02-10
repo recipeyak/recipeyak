@@ -6,7 +6,13 @@ import {
   StoreEnhancer
 } from "redux"
 
-import { combineReducers, LoopReducer, Loop, StoreCreator } from "redux-loop"
+import {
+  combineReducers,
+  LoopReducer,
+  Loop,
+  StoreCreator,
+  install
+} from "redux-loop"
 
 import throttle from "lodash/throttle"
 
@@ -43,7 +49,6 @@ import calendar, {
   ICalendarState,
   CalendarActions
 } from "@/store/reducers/calendar"
-import { install } from "redux-loop"
 import { loadState, saveState } from "@/store/localStorage"
 import { getType } from "typesafe-actions"
 import { createLogger } from "redux-logger"

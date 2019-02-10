@@ -368,10 +368,13 @@ export const recipes = (
               if (isOk(res)) {
                 dispatch(fetchRecipe.success(res.data))
               } else {
+                const error404 = !!(
+                  res.error.response && res.error.response.status === 404
+                )
                 dispatch(
                   fetchRecipe.failure({
                     id: recipeID,
-                    error404: res.error.error404
+                    error404
                   })
                 )
               }

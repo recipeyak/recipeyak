@@ -374,19 +374,6 @@ export const postNewRecipe = (dispatch: Dispatch) => async (
   }
 }
 
-export const fetchingRecipe = (dispatch: Dispatch) => async (
-  id: IRecipe["id"]
-) => {
-  dispatch(fetchRecipe.request(id))
-  const res = await api.getRecipe(id)
-  if (isOk(res)) {
-    dispatch(fetchRecipe.success(res.data))
-  } else {
-    const error404 = !!(res.error.response && res.error.response.status === 404)
-    dispatch(fetchRecipe.failure({ id, error404 }))
-  }
-}
-
 export const fetchingRecentRecipes = (dispatch: Dispatch) => async () => {
   // TODO(sbdchd): these should have their own id array in the reduce and their own actions
   dispatch(fetchRecentRecipes.request())
