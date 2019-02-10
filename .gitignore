@@ -13,7 +13,4 @@ __pycache__
 backend/.pytest_cache
 docker-compose-shipit.yml
 .terraform/
-# allow .env at root for PYTHONPATH config
-!.env
-.env-*
-*/**/*env*
+*env*
