@@ -200,6 +200,8 @@ DATABASES = {}
 
 DATABASES["default"] = dj_database_url.config(conn_max_age=600)
 
+ERROR_ON_SERIALIZER_DB_ACCESS = DEBUG or TESTING
+
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
