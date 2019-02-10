@@ -283,6 +283,9 @@ export const disconnectSocialAccount = (dispatch: Dispatch) => async (
         }
       ])
     )
+    return Ok(undefined)
+  } else {
+    return res
   }
 }
 
@@ -970,7 +973,9 @@ export const moveRecipeTo = (dispatch: Dispatch) => async (
   const res = await api.moveRecipe(recipeId, ownerId, type)
   if (isOk(res)) {
     dispatch(updateRecipeOwner({ id: res.data.id, owner: res.data.owner }))
+    return Ok(undefined)
   }
+  return Err(undefined)
 }
 
 export const copyRecipeTo = (dispatch: Dispatch) => async (
@@ -1230,5 +1235,7 @@ export const updatingScheduledRecipe = (dispatch: Dispatch) => async (
   const res = await api.updateScheduleRecipe(id, teamID, { count })
   if (isOk(res)) {
     dispatch(setCalendarRecipe(res.data))
+    return Ok(undefined)
   }
+  return Err(undefined)
 }

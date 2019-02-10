@@ -20,10 +20,10 @@ import { RootState } from "@/store/store"
 import { IRecipe } from "@/store/reducers/recipes"
 import { ITeamsState } from "@/store/reducers/teams"
 import { IUserState } from "@/store/reducers/user"
-import { AxiosError } from "axios"
 import { teamURL } from "@/urls"
 import GlobalEvent from "@/components/GlobalEvent"
 import { Select } from "@/components/Forms"
+import { isOk, Result } from "@/result"
 
 const mapStateToProps = (state: RootState) => ({
   teams: state.teams,
@@ -48,7 +48,7 @@ interface IOwnerProps {
     recipeId: IRecipe["id"],
     id: IRecipe["owner"]["id"],
     type: IRecipe["owner"]["type"]
-  ) => Promise<void>
+  ) => Promise<Result<void, void>>
   readonly showNotificationWithTimeout: (
     props: INotificationWithTimeout
   ) => void
@@ -135,13 +135,16 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
 
     this.props
       .moveRecipeTo(this.props.recipeId, parseInt(id, 10), type)
-      .then(() => this.setState({ show: false, values: [] }))
-      .catch((err: AxiosError) => {
-        this.props.showNotificationWithTimeout({
-          message: `Problem moving recipe: ${err}`,
-          level: "danger",
-          sticky: true
-        })
+      .then(res => {
+        if (isOk(res)) {
+          this.setState({ show: false, values: [] })
+        } else {
+          this.props.showNotificationWithTimeout({
+            message: `Problem moving recipe: ${res.error}`,
+            level: "danger",
+            sticky: true
+          })
+        }
       })
   }
 
