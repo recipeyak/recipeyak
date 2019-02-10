@@ -264,6 +264,6 @@ if PRODUCTION:
                 "level": "DEBUG",
                 "class": "logging.StreamHandler",
                 "formatter": "json",
-            },
+            }
         },
     }
