@@ -374,7 +374,20 @@ export const postNewRecipe = (dispatch: Dispatch) => async (
   }
 }
 
+export const fetchingRecipe = (dispatch: Dispatch) => async (
+  id: IRecipe["id"]
+) => {
+  dispatch(fetchRecipe.request(id))
+  const res = await api.getRecipe(id)
+  if (isOk(res)) {
+    dispatch(fetchRecipe.success(res.data))
+  } else {
+    const error404 = !!(res.error.response && res.error.response.status === 404)
+    dispatch(fetchRecipe.failure({ id, error404 }))
+  }
+}
 
+export const fetchingRecentRecipes = (dispatch: Dispatch) => async () => {
   // TODO(sbdchd): these should have their own id array in the reduce and their own actions
   dispatch(fetchRecentRecipes.request())
   const res = await api.getRecentRecipes()
@@ -972,7 +985,18 @@ export const copyRecipeTo = (dispatch: Dispatch) => async (
 ) => {
   // TODO(sbdchd): refactor to use createActionAsync
   dispatch(setCopyingTeam(true))
-
+  const res = await api.copyRecipe(recipeId, ownerId, type)
+  if (isOk(res)) {
+    dispatch(fetchRecipe.success(res.data))
+    dispatch(setCopyingTeam(false))
+  } else {
+    dispatch(setCopyingTeam(false))
+    // TODO(chdsbd): Improve api usage and remove this throw
+    // tslint:disable-next-line:no-throw
+    showNotificationWithTimeout(dispatch)({
+      message: `Problem copying recipe: ${res.error}`,
+      level: "danger",
+      sticky: true
     })
   }
 }
@@ -1010,7 +1034,47 @@ export const decliningInvite = (dispatch: Dispatch) => async (
   }
 }
 
+export const deleteUserAccount = (dispatch: Dispatch) => async () => {
+  const res = await api.deleteLoggedInUser()
+  if (isOk(res)) {
+    dispatch(setUserLoggedIn(false))
+    dispatch(push("/login"))
+    showNotificationWithTimeout(dispatch)({ message: "Account deleted" })
+  } else {
+    const error = res.error
+    // tslint:disable:no-unsafe-any
+    if (
+      error.response &&
+      error.response.status === 403 &&
+      error.response.data.detail
+    ) {
+      showNotificationWithTimeout(dispatch)({
+        message: error.response.data.detail,
+        level: "danger"
+      })
+      // tslint:enable:no-unsafe-any
+    } else {
+      showNotificationWithTimeout(dispatch)({
+        message: "failed to delete account",
+        level: "danger"
+      })
+    }
+  }
+}
 
+export const reportBadMerge = (dispatch: Dispatch) => async () => {
+  const res = await api.reportBadMerge()
+  if (isOk(res)) {
+    showNotificationWithTimeout(dispatch)({
+      message: "reported bad merge",
+      level: "success",
+      delay: 3 * second
+    })
+  } else {
+    showNotificationWithTimeout(dispatch)({
+      message: "error reporting bad merge",
+      level: "danger",
+      delay: 3 * second
     })
   }
 }
