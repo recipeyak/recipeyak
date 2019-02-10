@@ -160,7 +160,7 @@ export const addStepToRecipe = createAsyncAction(
 )<
   {
     id: IRecipe["id"]
-    step: IStep["text"]
+    step: IStep["text"] | undefined
   },
   {
     id: IRecipe["id"]
@@ -198,6 +198,14 @@ export const fetchRecentRecipes = createAsyncAction(
   "FETCH_RECENT_RECIPES_FAILURE"
 )<void, IRecipe[], void>()
 
+export const toggleEditingRecipe = createStandardAction(
+  "TOGGLE_RECIPE_EDITING"
+)<IRecipe["id"]>()
+
+export const setRecipeStepDraft = createStandardAction(
+  "SET_RECIPE_STEP_DRAFT"
+)<{ id: IRecipe["id"]; draftStep: IRecipe["draftStep"] }>()
+
 export interface IRecipeBasic
   extends Omit<
     IRecipe,
@@ -233,7 +241,9 @@ export type RecipeActions =
   | ActionType<typeof fetchRecipeList>
   | ActionType<typeof createRecipe>
   | ActionType<typeof fetchRecentRecipes>
-  | ReturnType<typeof resetAddRecipeErrors>
+  | ActionType<typeof resetAddRecipeErrors>
+  | ActionType<typeof toggleEditingRecipe>
+  | ActionType<typeof setRecipeStepDraft>
 
 const mapSuccessLikeById = <T extends IRecipe["id"][]>(
   arr: WebData<T>,
@@ -310,11 +320,13 @@ export interface IRecipe {
   readonly owner: IRecipeOwner
   readonly ingredients: IIngredient[]
 
+  readonly editing?: boolean
   readonly deleting?: boolean
   readonly addingStepToRecipe?: boolean
   readonly addingIngredient?: boolean
   readonly scheduling?: boolean
   readonly updating?: boolean
+  readonly draftStep?: string
 }
 
 function mapRecipeSuccessById(
@@ -421,6 +433,18 @@ export const recipes = (
         }
       }
     }
+    case getType(toggleEditingRecipe):
+      return mapRecipeSuccessById(state, action.payload, recipe => ({
+        ...recipe,
+        editing: !recipe.editing
+      }))
+
+    case getType(setRecipeStepDraft):
+      return mapRecipeSuccessById(state, action.payload.id, recipe => ({
+        ...recipe,
+        draftStep: action.payload.draftStep
+      }))
+
     case getType(fetchRecipeList.request): {
       if (action.payload.teamID === "personal") {
         return {
@@ -599,7 +623,8 @@ export const recipes = (
       return mapRecipeSuccessById(state, action.payload.id, recipe => ({
         ...recipe,
         steps: recipe.steps.concat(action.payload.step),
-        addingStepToRecipe: false
+        addingStepToRecipe: false,
+        draftStep: ""
       }))
     case getType(addStepToRecipe.failure):
       return mapRecipeSuccessById(state, action.payload, recipe => ({
@@ -845,7 +870,8 @@ export const recipes = (
       return mapRecipeSuccessById(state, action.payload.id, recipe => ({
         ...recipe,
         ...action.payload,
-        updating: false
+        updating: false,
+        editing: false
       }))
     case getType(updateRecipe.failure):
       return mapRecipeSuccessById(state, action.payload, recipe => ({

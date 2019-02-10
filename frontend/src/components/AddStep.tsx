@@ -2,10 +2,24 @@ import React from "react"
 
 import AddStepForm from "@/components/AddStepForm"
 import GlobalEvent from "@/components/GlobalEvent"
-import { IStep } from "@/store/reducers/recipes"
+import {
+  IStep,
+  addStepToRecipe,
+  setRecipeStepDraft,
+  IRecipe
+} from "@/store/reducers/recipes"
+import { connect } from "react-redux"
+import { bindActionCreators } from "redux"
+import { Dispatch } from "@/store/thunks"
 
 interface IAddStepProps {
-  readonly addStep: (args: { id: IStep["id"]; step: IStep["text"] }) => void
+  readonly addStep: (
+    args: { id: IStep["id"]; step: IRecipe["draftStep"] }
+  ) => void
+  readonly step?: string
+  readonly setStep: (
+    args: { id: IRecipe["id"]; draftStep: IRecipe["draftStep"] }
+  ) => void
   readonly onCancel: () => void
   readonly loading?: boolean
   readonly autoFocus?: boolean
@@ -13,58 +27,46 @@ interface IAddStepProps {
   readonly index: number
 }
 
-interface IAddStepState {
-  readonly step: string
-}
+function AddStep(props: IAddStepProps) {
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
+    props.setStep({ id: props.id, draftStep: e.target.value })
 
-export default class AddStep extends React.Component<
-  IAddStepProps,
-  IAddStepState
-> {
-  static defaultProps = {
-    loading: false
-  }
+  const clearStep = () => props.onCancel()
 
-  state = {
-    step: ""
-  }
+  const addStep = () => props.addStep({ id: props.id, step: props.step })
 
-  handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    this.setState({ step: e.target.value })
-  }
-
-  clearStep = () => {
-    this.props.onCancel()
-  }
-
-  addStep = async () => {
-    // TODO(sbdchd): fix this
-    this.props.addStep({ id: this.props.id, step: this.state.step })
-    this.setState({ step: "" })
-  }
-  handleKeyUp = (e: KeyboardEvent) => {
+  const handleKeyUp = (e: KeyboardEvent) => {
     if (e.key === "Escape") {
-      this.clearStep()
+      clearStep()
     }
   }
 
-  render() {
-    const { handleInputChange, addStep, clearStep } = this
-    const { index, loading, autoFocus } = this.props
-    const { step } = this.state
-    return (
-      <>
-        <GlobalEvent keyUp={this.handleKeyUp} />
-        <AddStepForm
-          handleInputChange={handleInputChange}
-          addStep={addStep}
-          cancelAddStep={clearStep}
-          stepNumber={index}
-          text={step}
-          loading={loading}
-          autoFocus={autoFocus}
-        />
-      </>
-    )
-  }
+  return (
+    <>
+      <GlobalEvent keyUp={handleKeyUp} />
+      <AddStepForm
+        handleInputChange={handleInputChange}
+        addStep={addStep}
+        cancelAddStep={clearStep}
+        stepNumber={props.index}
+        text={props.step || ""}
+        loading={props.loading}
+        autoFocus={props.autoFocus}
+      />
+    </>
+  )
 }
+
+const mapDispatchToProps = (dispatch: Dispatch) =>
+  bindActionCreators(
+    {
+      addStep: addStepToRecipe.request,
+      setStep: setRecipeStepDraft
+    },
+    dispatch
+  )
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(AddStep)

@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 
 import AddIngredientForm from "@/components/AddIngredientForm"
 
@@ -34,68 +34,70 @@ export type AddIngredientFields = Exclude<
   "addingIngredient"
 >
 
-export default class AddIngredient extends React.Component<
-  IAddIngredientProps,
-  IAddIngredientState
-> {
-  static defaultProps = {
-    loading: false
+export default function AddIngredient({
+  id,
+  loading,
+  onCancel,
+  addIngredient,
+  autoFocus
+}: IAddIngredientProps) {
+  const [quantity, setQuantity] = useState("")
+  const [name, setName] = useState("")
+  const [description, setDescription] = useState("")
+  const [optional, setOptional] = useState(false)
+
+  const setEmptyState = () => {
+    setQuantity("")
+    setName("")
+    setDescription("")
+    setOptional(false)
   }
 
-  emptyState: IAddIngredientState = {
-    quantity: "",
-    name: "",
-    description: "",
-    optional: false,
-    addingIngredient: false
+  useEffect(
+    () => {
+      if (!loading) {
+        setEmptyState()
+      }
+    },
+    [loading]
+  )
+
+  const cancelAddIngredient = () => {
+    onCancel()
+    setEmptyState()
   }
 
-  state: IAddIngredientState = this.emptyState
-
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState(({
-      [e.target.name]: e.target.value
-    } as unknown) as IAddIngredientState)
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    switch (e.target.name) {
+      case "quantity":
+        return setQuantity(e.target.value)
+      case "name":
+        return setName(e.target.value)
+      case "description":
+        return setDescription(e.target.value)
+      case "optional":
+        return setOptional(e.target.value === "on")
+    }
   }
 
-  addingIngredient = () => {
-    this.setState({ addingIngredient: true })
+  const handleAddIngredient = () => {
+    addIngredient({
+      recipeID: id,
+      ingredient: { quantity, name, description }
+    })
   }
 
-  cancelAddIngredient = async () => {
-    this.props.onCancel()
-    this.setState(this.emptyState)
-  }
-
-  clearInputs = () => {
-    this.setState(this.emptyState)
-  }
-
-  render() {
-    const { clearInputs, cancelAddIngredient, handleInputChange } = this
-    const { id, addIngredient, loading, autoFocus } = this.props
-    const { quantity, name, description, optional } = this.state
-
-    return (
-      <AddIngredientForm
-        handleAddIngredient={() => {
-          // TODO(sbdchd): fix this
-          addIngredient({
-            recipeID: id,
-            ingredient: { quantity, name, description }
-          })
-          // this needs to execute after
-          clearInputs()
-        }}
-        loading={loading}
-        cancelAddIngredient={cancelAddIngredient}
-        handleInputChange={handleInputChange}
-        quantity={quantity}
-        name={name}
-        description={description}
-        optional={optional}
-        autoFocus={autoFocus}
-      />
-    )
-  }
+  return (
+    <AddIngredientForm
+      handleAddIngredient={handleAddIngredient}
+      loading={loading}
+      cancelAddIngredient={cancelAddIngredient}
+      handleInputChange={handleInputChange}
+      quantity={quantity}
+      name={name}
+      description={description}
+      optional={optional}
+      autoFocus={autoFocus}
+    />
+  )
 }

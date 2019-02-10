@@ -15,18 +15,13 @@ import { RootState } from "@/store/store"
 import { RouteComponentProps } from "react-router"
 import {
   IRecipe,
-  IStep,
   IIngredient,
   getRecipeById,
   fetchRecipe,
-  updateRecipe,
   addIngredientToRecipe,
-  addStepToRecipe,
   deleteIngredient,
-  updateIngredient,
-  deleteRecipe
+  updateIngredient
 } from "@/store/reducers/recipes"
-import { IRecipeBasic } from "@/components/RecipeTitle"
 import { isInitial, isLoading, isFailure, WebData } from "@/webdata"
 import { SectionTitle } from "@/components/RecipeHelpers"
 import { bindActionCreators } from "redux"
@@ -43,20 +38,15 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
       fetchRecipe: fetchRecipe.request,
-      update: updateRecipe.request,
       addIngredient: addIngredientToRecipe.request,
-      addStep: addStepToRecipe.request,
       removeIngredient: deleteIngredient.request,
-      updateIngredient: updateIngredient.request,
-      remove: deleteRecipe.request
+      updateIngredient: updateIngredient.request
     },
     dispatch
   )
 
 interface IRecipeProps extends RouteProps {
   readonly recipe: WebData<IRecipe>
-  readonly update: (args: { id: IRecipe["id"]; data: IRecipeBasic }) => void
-  readonly remove: (id: IRecipe["id"]) => void
   readonly fetchRecipe: (id: IRecipe["id"]) => void
   readonly addIngredient: (
     args: {
@@ -77,7 +67,6 @@ interface IRecipeProps extends RouteProps {
       ingredientID: IIngredient["id"]
     }
   ) => void
-  readonly addStep: (args: { id: IStep["id"]; step: IStep["text"] }) => void
 }
 
 function Recipe(props: IRecipeProps) {
@@ -116,10 +105,9 @@ function Recipe(props: IRecipeProps) {
         time={recipe.time}
         owner={recipe.owner}
         lastScheduled={recipe.last_scheduled}
-        update={props.update}
         updating={recipe.updating}
-        remove={props.remove}
         deleting={recipe.deleting}
+        editing={recipe.editing}
       />
       <section className="ingredients-preparation-grid">
         <div>
@@ -156,7 +144,7 @@ function Recipe(props: IRecipeProps) {
             <AddIngredient
               id={recipe.id}
               autoFocus
-              loading={false}
+              loading={!!recipe.addingIngredient}
               addIngredient={props.addIngredient}
               onCancel={() => setAddIngredient(false)}
             />
@@ -174,8 +162,8 @@ function Recipe(props: IRecipeProps) {
             <AddStep
               id={recipe.id}
               index={recipe.steps.length + 1}
+              step={props.recipe.data.draftStep}
               autoFocus
-              addStep={props.addStep}
               onCancel={() => setAddStep(false)}
               loading={recipe.addingStepToRecipe}
             />
