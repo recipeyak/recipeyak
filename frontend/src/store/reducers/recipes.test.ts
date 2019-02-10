@@ -113,8 +113,12 @@ describe("Recipes", () => {
       deleting: true
     })
 
-    expect(recipes(beforeState, a.deleteRecipe.request(1))).toEqual(afterState)
-    expect(recipes(afterState, a.deleteRecipe.failure(1))).toEqual(beforeState)
+    expect(getModel(recipes(beforeState, a.deleteRecipe.request(1)))).toEqual(
+      afterState
+    )
+    expect(getModel(recipes(afterState, a.deleteRecipe.failure(1)))).toEqual(
+      beforeState
+    )
   })
 
   it("adds a step to the recipe", () => {
@@ -135,11 +139,17 @@ describe("Recipes", () => {
       ...baseRecipe,
       name: "good recipe",
       steps: [newStep],
-      addingStepToRecipe: false
+      addingStepToRecipe: false,
+      draftStep: ""
     })
 
     expect(
-      recipes(beforeState, a.addStepToRecipe.success({ id: 1, step: newStep }))
+      getModel(
+        recipes(
+          beforeState,
+          a.addStepToRecipe.success({ id: 1, step: newStep })
+        )
+      )
     ).toEqual(afterState)
   })
 
@@ -172,9 +182,11 @@ describe("Recipes", () => {
     })
 
     expect(
-      recipes(
-        beforeState,
-        a.addIngredientToRecipe.success({ id: 1, ingredient: newIngredient })
+      getModel(
+        recipes(
+          beforeState,
+          a.addIngredientToRecipe.success({ id: 1, ingredient: newIngredient })
+        )
       )
     ).toEqual(afterState)
 
@@ -382,7 +394,9 @@ describe("Recipes", () => {
     })
 
     expect(
-      recipes(beforeState, a.addStepToRecipe.request({ id: 1, step: "foo" }))
+      getModel(
+        recipes(beforeState, a.addStepToRecipe.request({ id: 1, step: "foo" }))
+      )
     ).toEqual(afterState)
   })
 
@@ -398,12 +412,14 @@ describe("Recipes", () => {
     })
 
     expect(
-      recipes(
-        beforeState,
-        a.addIngredientToRecipe.request({
-          recipeID: 1,
-          ingredient: { name: "foo" }
-        })
+      getModel(
+        recipes(
+          beforeState,
+          a.addIngredientToRecipe.request({
+            recipeID: 1,
+            ingredient: { name: "foo" }
+          })
+        )
       )
     ).toEqual(afterState)
   })
@@ -429,13 +445,15 @@ describe("Recipes", () => {
     })
 
     expect(
-      recipes(
-        beforeState,
-        a.updateIngredient.request({
-          recipeID: 1,
-          ingredientID: 1,
-          content: { name: "foo" }
-        })
+      getModel(
+        recipes(
+          beforeState,
+          a.updateIngredient.request({
+            recipeID: 1,
+            ingredientID: 1,
+            content: { name: "foo" }
+          })
+        )
       )
     ).toEqual(afterState)
   })
@@ -556,7 +574,7 @@ describe("Recipes", () => {
     }
 
     const failActual = getModel(
-      recipes(beforeState, a.fetchRecipe.failure({ id: 1, error404: false }))
+      recipes(beforeState, a.fetchRecipe.failure({ id: 1, error404: true }))
     )
     expect(failActual.byId).toEqual(failureState.byId)
     expect(failActual.personalIDs).toEqual(failureState.personalIDs)
@@ -571,9 +589,11 @@ describe("Recipes", () => {
     })
 
     expect(
-      recipes(
-        beforeState,
-        a.updateRecipe.request({ id: 1, data: { name: "foo" } })
+      getModel(
+        recipes(
+          beforeState,
+          a.updateRecipe.request({ id: 1, data: { name: "foo" } })
+        )
       )
     ).toEqual(afterState)
 
@@ -585,7 +605,7 @@ describe("Recipes", () => {
     expect(newRecipe.name).not.toEqual(baseRecipe.name)
 
     expect(recipes(beforeState, a.updateRecipe.success(newRecipe))).toEqual(
-      recipeStoreWith({ ...newRecipe, updating: false })
+      recipeStoreWith({ ...newRecipe, updating: false, editing: false })
     )
   })
 

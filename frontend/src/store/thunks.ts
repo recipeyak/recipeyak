@@ -8,7 +8,7 @@ import { push, replace } from "react-router-redux"
 import { AxiosError, AxiosResponse } from "axios"
 import raven from "raven-js"
 
-import { Dispatch, Store, store } from "@/store/store"
+import { Dispatch, store } from "@/store/store"
 import {
   SocialProvider,
   updateEmail,
@@ -83,7 +83,6 @@ import * as api from "@/api"
 import { clearAddRecipeForm } from "@/store/reducers/addrecipe"
 import { fetchShoppingList } from "@/store/reducers/shoppinglist"
 import { passwordUpdate } from "@/store/reducers/passwordChange"
-import { Dispatch as ReduxDispatch } from "redux"
 import { IRecipeBasic } from "@/components/RecipeTitle"
 import {
   setErrorSocialLogin,

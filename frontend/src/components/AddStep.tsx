@@ -10,7 +10,7 @@ import {
 } from "@/store/reducers/recipes"
 import { connect } from "react-redux"
 import { bindActionCreators } from "redux"
-import { Dispatch } from "@/store/thunks"
+import { Dispatch } from "@/store/store"
 
 interface IAddStepProps {
   readonly addStep: (

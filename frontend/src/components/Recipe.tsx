@@ -10,8 +10,7 @@ import StepContainer from "@/components/StepContainer"
 import Ingredient from "@/components/Ingredient"
 import RecipeTitle from "@/components/RecipeTitle"
 
-import { Dispatch } from "@/store/thunks"
-import { RootState } from "@/store/store"
+import { RootState, Dispatch } from "@/store/store"
 import { RouteComponentProps } from "react-router"
 import {
   IRecipe,
