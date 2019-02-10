@@ -109,7 +109,7 @@
     "redux": "^4.0.1",
     "redux-logger": "^3.0.6",
     "redux-loop": "^4.5.4",
-    "tslint-cake": "^0.4.0",
+    "tslint-cake": "^0.6.0",
     "tslint-immutable": "^5.0.1",
     "tslint-microsoft-contrib": "^6.0.0",
     "typesafe-actions": "^2.0.4",

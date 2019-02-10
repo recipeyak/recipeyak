@@ -27,8 +27,8 @@ import * as DragDrop from "@/dragDrop"
 import { IRecipe } from "@/store/reducers/recipes"
 import { RootState } from "@/store/store"
 import { ICalRecipe } from "@/store/reducers/calendar"
-import { AxiosResponse } from "axios"
 import { IRecipeItemDrag } from "@/components/RecipeItem"
+import { Result } from "@/result"
 
 const Title = ({ date }: { date: Date }) => {
   if (isFirstDayOfMonth(date)) {
@@ -47,7 +47,7 @@ interface ICalendarDayProps {
     id: ICalRecipe["id"],
     teamID: TeamID,
     count: ICalRecipe["count"]
-  ) => Promise<void | AxiosResponse<void>>
+  ) => Promise<Result<void, void>>
   readonly refetchShoppingList: (teamID: TeamID) => void
   readonly remove: (id: ICalRecipe["id"], teamID: TeamID) => void
   readonly move: (id: ICalRecipe["id"], teamID: TeamID, date: Date) => void

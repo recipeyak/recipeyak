@@ -16,6 +16,8 @@ import logging
 
 from django.conf import global_settings
 import dj_database_url
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 logger = logging.getLogger(__name__)
 
@@ -70,11 +72,16 @@ INSTALLED_APPS = [
     "softdelete",
 ]
 
-if PRODUCTION and not DOCKERBUILD:
-    import raven  # noqa: F401
+configure_sentry = PRODUCTION and not DOCKERBUILD
+DSN = (
+    "https://3b11e5eed068478390e1e8f01e2190a9@sentry.io/250295"
+    if configure_sentry
+    else ""
+)
+sentry_sdk.init(
+    dsn=DSN, integrations=[DjangoIntegration()], release=GIT_SHA, send_default_pii=True
+)
 
-    RAVEN_CONFIG = {"dsn": os.environ["SENTRY_DSN"], "release": GIT_SHA}
-    INSTALLED_APPS.append("raven.contrib.django.raven_compat")
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("core.auth.permissions.DisallowAny",),
@@ -238,7 +245,7 @@ if PRODUCTION:
     LOGGING = {
         "version": 1,
         "disable_existing_loggers": False,
-        "root": {"level": "INFO", "handlers": ["sentry", "console"]},
+        "root": {"level": "INFO", "handlers": ["console"]},
         "formatters": {
             "verbose": {
                 "format": 'level=%(levelname)s msg="%(message)s" module=%(module)s '
@@ -253,15 +260,10 @@ if PRODUCTION:
             },
         },
         "handlers": {
-            "sentry": {
-                "level": "WARNING",
-                "class": "raven.contrib.django.raven_compat.handlers.SentryHandler",
-                "tags": {"custom-tag": "x"},
-            },
             "console": {
                 "level": "DEBUG",
                 "class": "logging.StreamHandler",
                 "formatter": "json",
-            },
+            }
         },
     }

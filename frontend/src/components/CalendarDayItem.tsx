@@ -6,10 +6,10 @@ import { recipeURL } from "@/urls"
 import * as DragDrop from "@/dragDrop"
 import { IRecipe } from "@/store/reducers/recipes"
 import { ICalRecipe } from "@/store/reducers/calendar"
-import { AxiosResponse } from "axios"
 import GlobalEvent from "@/components/GlobalEvent"
 import { TextInput } from "@/components/Forms"
 import { isPast } from "date-fns"
+import { Result, isOk } from "@/result"
 
 const COUNT_THRESHOLD = 1
 
@@ -60,7 +60,7 @@ export interface ICalendarItemProps {
   readonly remove: () => void
   readonly updateCount: (
     count: ICalRecipe["count"]
-  ) => Promise<void | AxiosResponse<void>>
+  ) => Promise<Result<void, void>>
   readonly refetchShoppingList: () => void
   readonly date: Date
   readonly recipeID: IRecipe["id"] | string
@@ -116,10 +116,13 @@ class CalendarItem extends React.Component<
       return
     }
     this.setState({ count })
-    this.props
-      .updateCount(count)
-      .then(() => this.props.refetchShoppingList())
-      .catch(() => this.setState({ count: oldCount }))
+    this.props.updateCount(count).then(res => {
+      if (isOk(res)) {
+        this.props.refetchShoppingList()
+      } else {
+        this.setState({ count: oldCount })
+      }
+    })
   }
 
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

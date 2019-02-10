@@ -16,7 +16,7 @@ jobs:
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
-            - backend-v2-{{ .Branch }}-{{ checksum "backend/pyproject.lock" }}
+            - backend-v2-{{ .Branch }}-{{ checksum "backend/poetry.lock" }}
             - backend-v2-{{ .Branch }}-
             - backend-v2-
       - run:
@@ -26,13 +26,14 @@ jobs:
             echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
             # Use our new PATH so we can call poetry from bash
             source $BASH_ENV
-            python3 -m pip install --user poetry===0.11.5
+            # update backend_lint job and dockerfile if you change this version
+            python3 -m pip install --user poetry===0.12.11
             poetry install
       - save_cache:
           paths:
             - ./backend/.mypy_cache
             - /home/circleci/.cache/pypoetry/
-          key: backend-v2-{{ .Branch }}-{{ checksum "backend/pyproject.lock" }}
+          key: backend-v2-{{ .Branch }}-{{ checksum "backend/poetry.lock" }}
       - run:
           name: run tests
           working_directory: backend
@@ -54,7 +55,7 @@ jobs:
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
-            - backend-v2-{{ .Branch }}-{{ checksum "backend/pyproject.lock" }}
+            - backend-v2-{{ .Branch }}-{{ checksum "backend/poetry.lock" }}
             - backend-v2-{{ .Branch }}-
             - backend-v2-
       - run:
@@ -64,13 +65,14 @@ jobs:
             echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
             # Use our new PATH so we can call poetry from bash
             source $BASH_ENV
-            python3 -m pip install --user poetry===0.11.5
+            # update backend_test job and dockerfile if you change this version
+            python3 -m pip install --user poetry===0.12.11
             poetry install
       - save_cache:
           paths:
             - ./backend/.mypy_cache
             - /home/circleci/.cache/pypoetry/
-          key: backend-v2-{{ .Branch }}-{{ checksum "backend/pyproject.lock" }}
+          key: backend-v2-{{ .Branch }}-{{ checksum "backend/poetry.lock" }}
       - run:
           name: run lints
           working_directory: backend
@@ -137,9 +139,6 @@ jobs:
 
   # https://circleci.com/docs/2.0/building-docker-images/
   build_api_container:
-    requires:
-      - backend_test
-      - backend_lint
     docker:
       - image: docker:18.05.0-ce
     steps:
@@ -158,9 +157,6 @@ jobs:
 
   # https://circleci.com/docs/2.0/building-docker-images/
   build_ui_container:
-    requires:
-      - frontend_test
-      - frontend_lint
     docker:
       - image: docker:18.05.0-ce
     steps:
@@ -209,11 +205,17 @@ workflows:
       - frontend_lint
       - build_api_container:
           context: DockerHub
+          requires:
+            - backend_test
+            - backend_lint
           filters:
             branches:
               only: master
       - build_ui_container:
           context: DockerHub
+          requires:
+            - frontend_test
+            - frontend_lint
           filters:
             branches:
               only: master

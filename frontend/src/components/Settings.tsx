@@ -13,6 +13,7 @@ import { ISocialAccountsState } from "@/store/reducers/user"
 import { AxiosError } from "axios"
 import { TextInput } from "@/components/Forms"
 import Sessions from "@/components/Sessions"
+import { isOk, Result } from "@/result"
 
 interface IOAuthButtonProps {
   readonly name: string
@@ -71,7 +72,7 @@ interface ISettingsWithStateProps {
   readonly disconnectAccount: (
     provider: SocialProvider,
     id: number
-  ) => Promise<void>
+  ) => Promise<Result<void, AxiosError>>
   readonly deleteUserAccount: () => void
   readonly email: string
   readonly updateEmail: (email: string) => Promise<void>
@@ -330,12 +331,11 @@ export default class SettingsWithState extends React.Component<
     }
     this.setState({ errorGeneral: "" })
     // TODO(chdsbd): Fix this ugly mess with Redux
-    this.props
-      .disconnectAccount(provider, id)
-      .then(() => {
+    this.props.disconnectAccount(provider, id).then(res => {
+      if (isOk(res)) {
         this.setState({ loadingGithub: false, loadingGitlab: false })
-      })
-      .catch((error: AxiosError) => {
+      } else {
+        const error = res.error
         if (
           error.response &&
           error.response.status === 403 &&
@@ -354,7 +354,8 @@ export default class SettingsWithState extends React.Component<
           this.setState({ errorGeneral: "Problem with action" })
         }
         this.setState({ loadingGithub: false, loadingGitlab: false })
-      })
+      }
+    })
   }
 
   cancelEdit = () => this.setState({ editing: false })

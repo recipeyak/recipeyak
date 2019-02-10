@@ -5,7 +5,6 @@ venv/
 .mypy_cache
 .coverage
 .coverage.*
-.env*
 dist/
 .asset-cache
 frontend/jest_0
@@ -14,4 +13,7 @@ __pycache__
 backend/.pytest_cache
 docker-compose-shipit.yml
 .terraform/
-*env
+# allow .env at root for PYTHONPATH config
+!.env
+.env-*
+*/**/*env*

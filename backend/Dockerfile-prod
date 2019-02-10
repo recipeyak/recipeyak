@@ -2,7 +2,8 @@ FROM python:3.6.4
 ENV PYTHONUNBUFFERD 1
 
 # Install Poetry
-RUN set -ex && python3 -m pip install poetry===0.11.5
+# update circleci jobs if you change this version
+RUN set -ex && python3 -m pip install poetry===0.12.11
 
 # Install Application into container
 RUN set -ex && mkdir -p /var/app
@@ -11,7 +12,7 @@ WORKDIR /var/app
 
 # Adding dependency files
 COPY pyproject.toml pyproject.toml
-COPY pyproject.lock pyproject.lock
+COPY poetry.lock poetry.lock
 
 # Install our dev dependencies
 RUN poetry install
