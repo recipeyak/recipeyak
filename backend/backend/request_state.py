@@ -1,5 +1,6 @@
 from threading import local
 from typing import Optional
+from django.http import HttpRequest
 
 
 class State(local):
@@ -8,3 +9,4 @@ class State(local):
     """
 
     request_id: Optional[str] = None
+    request: Optional[HttpRequest] = None

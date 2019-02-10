@@ -86,7 +86,7 @@ class APIDelayMiddleware:
         return self.get_response(request)
 
 
-class RequestIDMiddleware:
+class CurrentRequestMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
@@ -95,9 +95,12 @@ class RequestIDMiddleware:
         return uuid4().hex
 
     def __call__(self, request: HttpRequest):
-        request_id = request.META.get("HTTP_X_REQUEST_ID", self.generate_request_id())
+        request_id = request.META.get("HTTP_X_REQUEST_ID")
+        if request_id is None:
+            request_id = self.generate_request_id()
 
         State.request_id = request_id
+        State.request = request
         with sentry_sdk.configure_scope() as scope:
             scope.set_tag("request_id", request_id)
 
