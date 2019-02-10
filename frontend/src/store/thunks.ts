@@ -1,8 +1,5 @@
 import isSameDay from "date-fns/is_same_day"
 
-// TODO(sbdchd): move to store/store
-export type Dispatch = ReduxDispatch<Action>
-
 import { random32Id } from "@/uuid"
 
 import { toDateString } from "@/date"
@@ -11,7 +8,7 @@ import { push, replace } from "react-router-redux"
 import { AxiosError, AxiosResponse } from "axios"
 import raven from "raven-js"
 
-import { store, Action } from "@/store/store"
+import { Dispatch, Store, store } from "@/store/store"
 import {
   SocialProvider,
   updateEmail,

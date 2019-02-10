@@ -2,8 +2,9 @@ import {
   createStore as basicCreateStore,
   applyMiddleware,
   compose as reduxCompose,
-  Store,
-  StoreEnhancer
+  Store as ReduxStore,
+  StoreEnhancer,
+  Dispatch as ReduxDispatch
 } from "redux"
 
 import {
@@ -11,7 +12,8 @@ import {
   LoopReducer,
   Loop,
   StoreCreator,
-  install
+  install,
+  ReducerMapObject
 } from "redux-loop"
 
 import throttle from "lodash/throttle"
@@ -83,19 +85,39 @@ export type Action =
   | TeamsActions
   | CalendarActions
 
-const recipeApp: LoopReducer<IState, Action> = combineReducers({
-  user,
-  recipes,
-  invites,
-  routerReducer,
-  notification,
-  passwordChange,
-  shoppinglist,
-  addrecipe,
-  auth,
-  teams,
-  calendar
-})
+export type Dispatch = ReduxDispatch<Action>
+
+/**
+ * A hack to prevent errors in testing. Jest does some weird sourcing of
+ * dependencies which breaks tests. Actual dev & prod work fine.
+ */
+function omitUndefined(
+  obj: ReducerMapObject<IState, Action>
+): ReducerMapObject<IState, Action> {
+  const n = {} as ReducerMapObject<IState, Action> & { [key: string]: unknown }
+  for (const [key, value] of Object.entries(obj)) {
+    if (value) {
+      n[key] = value
+    }
+  }
+  return n
+}
+
+const recipeApp: LoopReducer<IState, Action> = combineReducers(
+  omitUndefined({
+    user,
+    recipes,
+    invites,
+    routerReducer,
+    notification,
+    passwordChange,
+    shoppinglist,
+    addrecipe,
+    auth,
+    teams,
+    calendar
+  })
+)
 
 export type RootState = IState
 
@@ -174,12 +196,10 @@ const enhancer = compose(
   applyMiddleware(...middleware)
 ) as StoreEnhancer<IState, Action>
 
+export type Store = ReduxStore<IState, Action>
+
 // A "hydrated" store is nice for UI development
-export const store: Store<IState, Action> = createStore(
-  rootReducer,
-  defaultData(),
-  enhancer
-)
+export const store: Store = createStore(rootReducer, defaultData(), enhancer)
 
 store.subscribe(
   throttle(() => {
