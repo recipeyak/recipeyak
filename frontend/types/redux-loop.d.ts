@@ -1,4 +1,11 @@
-import { Action, ActionCreator, AnyAction, StoreEnhancer, Store } from "redux"
+import {
+  Action,
+  ActionCreator,
+  AnyAction,
+  StoreEnhancer,
+  Store,
+  Dispatch
+} from "redux"
 
 export interface StoreCreator {
   <S, A extends Action>(
@@ -98,9 +105,14 @@ type UnwrappedReturn<F> = F extends (...args: any[]) => infer R
 
 type FunctionArgs<F> = F extends (...args: infer T) => any ? T : never
 
+// see: https://github.com/redux-loop/redux-loop/pull/191/files#diff-b52768974e6bc0faccb7d4b75b162c99R87
+type Opaque<K, T> = T & { __TYPE__: K }
+type GetState = { (getState: () => any): any } & Opaque<"GetState", symbol>
+
 declare namespace Cmd {
-  export const dispatch: symbol
-  export const getState: symbol
+  export const dispatch: Dispatch & Opaque<"Dispatch", symbol>
+  export const getState: GetState
+
   export const none: NoneCmd
   export function action<A extends Action>(action: A): ActionCmd<A>
   export function batch<A extends Action>(cmds: CmdType<A>[]): BatchCmd<A>
