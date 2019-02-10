@@ -1,5 +1,5 @@
-from backend.request_state import State
-from backend.utils import getattr_path
+from .request_state import State
+from .utils import getattr_path
 
 
 class UserInfoFilter:
