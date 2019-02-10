@@ -136,7 +136,7 @@ SESSION_COOKIE_AGE = 365 * 24 * 60 * 60  # sessions expire in one year
 OLD_PASSWORD_FIELD_ENABLED = True
 
 MIDDLEWARE = [
-    "backend.middleware.RequestIDMiddleware",
+    "backend.middleware.CurrentRequestMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "backend.middleware.XForwardedForMiddleware",
     "user_sessions.middleware.SessionMiddleware",
@@ -250,7 +250,7 @@ LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {
         "verbose": {
-            "format": 'level=%(levelname)s msg="%(message)s" request_id=%(request_id)s name=%(name)s '
+            "format": 'level=%(levelname)s msg="%(message)s" user_id=%(user_id)s request_id=%(request_id)s name=%(name)s '
             'pathname="%(pathname)s" lineno=%(lineno)s funcname=%(funcName)s '
             "process=%(process)d thread=%(thread)d "
         },
@@ -266,12 +266,13 @@ LOGGING = {
             "level": "DEBUG",
             "class": "logging.StreamHandler",
             "formatter": "verbose",
-            "filters": ["no_testing", "request_id"],
+            "filters": ["no_testing", "request_id", "user_id"],
         }
     },
     "filters": {
         "no_testing": {"()": "backend.logging.TestingDisableFilter"},
         "request_id": {"()": "backend.logging.RequestIDFilter"},
+        "user_id": {"()": "backend.logging.CurrentUserFilter"},
     },
     "loggers": {"": {"level": "INFO", "handlers": ["console"]}},
 }
