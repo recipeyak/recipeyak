@@ -3,12 +3,19 @@ import { uuid4 } from "@/uuid"
 import Cookie from "js-cookie"
 import { store } from "@/store/store"
 import raven from "raven-js"
-import { invalidToken } from "@/store/thunks"
 import { setUserLoggedIn } from "@/store/reducers/user"
 import { Result, Ok, Err } from "@/result"
 
 const baseHttp = axios.create({ timeout: 15000 })
 
+/* We check if detail matches our string because Django will not return 401 when
+ * the session expires
+ */
+const invalidToken = (res: AxiosResponse) =>
+  // tslint:disable:no-unsafe-any
+  res != null &&
+  res.data.detail === "Authentication credentials were not provided."
+// tslint:enable:no-unsafe-any
 const handleResponseError = (error: AxiosError) => {
   // 503 means we are in maintenance mode. Reload to show maintenance page.
   const maintenanceMode = error.response && error.response.status === 503

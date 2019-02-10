@@ -103,14 +103,6 @@ import { isSuccessOrRefetching } from "@/webdata"
 import { isPast, endOfDay } from "date-fns"
 import { isOk, isErr, Ok, Err } from "@/result"
 
-// We check if detail matches our string because Django will not return 401 when
-// the session expires
-export const invalidToken = (res: AxiosResponse) =>
-  // tslint:disable:no-unsafe-any
-  res != null &&
-  res.data.detail === "Authentication credentials were not provided."
-// tslint:enable:no-unsafe-any
-
 const isbadRequest = (err: AxiosError) =>
   err.response && err.response.status === 400
 
@@ -332,8 +324,10 @@ export const updatingPassword = (dispatch: Dispatch) => async (
 export const fetchingShoppingList = (dispatch: Dispatch) => async (
   teamID: TeamID
 ) => {
+  const startDay = store.getState().shoppinglist.startDay
+  const endDay = store.getState().shoppinglist.endDay
   dispatch(fetchShoppingList.request())
-  const res = await api.getShoppingList(teamID)
+  const res = await api.getShoppingList(teamID, startDay, endDay)
   if (isOk(res)) {
     dispatch(fetchShoppingList.success(res.data))
   } else {
