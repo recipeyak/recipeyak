@@ -259,7 +259,6 @@ LOGGING = {
     },
     "filters": {
         "request_id": {"()": "backend.logging.RequestIDFilter"},
-                "class": "raven.contrib.django.raven_compat.handlers.SentryHandler",
     },
     "handlers": {
         "console": {
