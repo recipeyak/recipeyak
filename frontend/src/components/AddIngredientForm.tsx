@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 
 import { ButtonPrimary, Button } from "@/components/Buttons"
 import { TextInput, CheckBox, selectTarget } from "@/components/Forms"
@@ -12,7 +12,7 @@ interface IAddIngredientFormProps {
   readonly name: string
   readonly description: string
   readonly optional: boolean
-  readonly loading?: boolean
+  readonly loading: boolean
   readonly error?: boolean // TODO(sbdchd): this isn't passed in
   readonly autoFocus?: boolean
 }
@@ -29,9 +29,12 @@ function AddIngredientForm({
   error,
   autoFocus = false
 }: IAddIngredientFormProps) {
+  const [isInitialLoad, setInitialLoad] = useState(true)
+
   useEffect(
     () => {
-      if (!loading) {
+      setInitialLoad(false)
+      if (!loading && (autoFocus || !isInitialLoad)) {
         const el = document.getElementById("firstinput")
         if (el) {
           el.focus()

@@ -80,12 +80,11 @@ export default function AddIngredient({
     }
   }
 
-  const handleAddIngredient = () => {
+  const handleAddIngredient = () =>
     addIngredient({
       recipeID: id,
       ingredient: { quantity, name, description }
     })
-  }
 
   return (
     <AddIngredientForm
