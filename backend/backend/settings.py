@@ -16,6 +16,8 @@ import logging
 
 from django.conf import global_settings
 import dj_database_url
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 logger = logging.getLogger(__name__)
 
@@ -70,11 +72,15 @@ INSTALLED_APPS = [
     "softdelete",
 ]
 
-if PRODUCTION and not DOCKERBUILD:
-    import raven  # noqa: F401
-
-    RAVEN_CONFIG = {"dsn": os.environ["SENTRY_DSN"], "release": GIT_SHA}
-    INSTALLED_APPS.append("raven.contrib.django.raven_compat")
+configure_sentry = PRODUCTION and not DOCKERBUILD
+DSN = (
+    "https://3b11e5eed068478390e1e8f01e2190a9@sentry.io/250295"
+    if configure_sentry
+    else ""
+)
+sentry_sdk.init(
+    dsn=DSN, integrations=[DjangoIntegration()], release=GIT_SHA, send_default_pii=True
+)
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("core.auth.permissions.DisallowAny",),
@@ -128,6 +134,7 @@ SESSION_COOKIE_AGE = 365 * 24 * 60 * 60  # sessions expire in one year
 OLD_PASSWORD_FIELD_ENABLED = True
 
 MIDDLEWARE = [
+    "backend.middleware.RequestIDMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "backend.middleware.XForwardedForMiddleware",
     "user_sessions.middleware.SessionMiddleware",
@@ -234,34 +241,36 @@ STATIC_URL = "/static/"
 STATIC_ROOT = "/var/app/static"
 
 # https://docs.djangoproject.com/en/dev/topics/logging/#module-django.utils.log
-if PRODUCTION:
-    LOGGING = {
-        "version": 1,
-        "disable_existing_loggers": False,
-        "root": {"level": "INFO", "handlers": ["sentry", "console"]},
-        "formatters": {
-            "verbose": {
-                "format": 'level=%(levelname)s msg="%(message)s" module=%(module)s '
-                'pathname="%(pathname)s" lineno=%(lineno)s funcname=%(funcName)s '
-                "process=%(process)d thread=%(thread)d "
-            },
-            "json": {
-                "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
-                "format": '%(levelname)s "%(message)s" %(module)s '
-                '"%(pathname)s" %(lineno)s %(funcName)s '
-                "%(process)d %(thread)d ",
-            },
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": 'level=%(levelname)s msg="%(message)s" request_id=%(request_id)s module=%(module)s '
+            'pathname="%(pathname)s" lineno=%(lineno)s funcname=%(funcName)s '
+            "process=%(process)d thread=%(thread)d "
         },
-        "handlers": {
-            "sentry": {
-                "level": "WARNING",
+        "json": {
+            "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
+            "format": '%(levelname)s "%(message)s" %(module)s '
+            '"%(pathname)s" %(lineno)s %(funcName)s '
+            "%(process)d %(thread)d ",
+        },
+    },
+    "filters": {
+        "request_id": {"()": "backend.logging.RequestIDFilter"},
                 "class": "raven.contrib.django.raven_compat.handlers.SentryHandler",
-                "tags": {"custom-tag": "x"},
-            },
-            "console": {
-                "level": "DEBUG",
-                "class": "logging.StreamHandler",
-                "formatter": "json",
-            },
-        },
-    }
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+            "filters": ["request_id"],
+        }
+    },
+    "loggers": {
+        # root logger
+        "": {"level": "INFO", "handlers": ["console"]}
+    },
+}
