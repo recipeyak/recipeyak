@@ -29,9 +29,19 @@ DEBUG = os.getenv("DEBUG") == "1"
 CI = os.getenv("CI", False)
 PRODUCTION = not DEBUG and not CI
 DOCKERBUILD = os.getenv("DOCKERBUILD", False)
+TESTING = os.getenv("TESTING", False)
 
 logger.info(
-    "CI:", CI, "DEBUG:", DEBUG, "PRODUCTION:", PRODUCTION, "DOCKERBUILD", DOCKERBUILD
+    "CI:",
+    CI,
+    "DEBUG:",
+    DEBUG,
+    "PRODUCTION:",
+    PRODUCTION,
+    "DOCKERBUILD",
+    DOCKERBUILD,
+    "TESTING",
+    TESTING,
 )
 
 # Quick-start development settings - unsuitable for production
@@ -273,3 +283,8 @@ LOGGING = {
         "": {"level": "INFO", "handlers": ["console"]}
     },
 }
+
+# hide logs when running tests
+if TESTING:
+    LOGGING["loggers"] = {}
+
