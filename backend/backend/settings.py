@@ -29,6 +29,7 @@ DEBUG = os.getenv("DEBUG") == "1"
 CI = os.getenv("CI", False)
 PRODUCTION = not DEBUG and not CI
 DOCKERBUILD = os.getenv("DOCKERBUILD", False)
+TESTING = os.getenv("TESTING") is not None
 
 logger.info(
     "CI:", CI, "DEBUG:", DEBUG, "PRODUCTION:", PRODUCTION, "DOCKERBUILD", DOCKERBUILD
@@ -241,29 +242,30 @@ STATIC_URL = "/static/"
 STATIC_ROOT = "/var/app/static"
 
 # https://docs.djangoproject.com/en/dev/topics/logging/#module-django.utils.log
-if PRODUCTION:
-    LOGGING = {
-        "version": 1,
-        "disable_existing_loggers": False,
-        "root": {"level": "INFO", "handlers": ["console"]},
-        "formatters": {
-            "verbose": {
-                "format": 'level=%(levelname)s msg="%(message)s" module=%(module)s '
-                'pathname="%(pathname)s" lineno=%(lineno)s funcname=%(funcName)s '
-                "process=%(process)d thread=%(thread)d "
-            },
-            "json": {
-                "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
-                "format": '%(levelname)s "%(message)s" %(module)s '
-                '"%(pathname)s" %(lineno)s %(funcName)s '
-                "%(process)d %(thread)d ",
-            },
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": 'level=%(levelname)s msg="%(message)s" name=%(name)s '
+            'pathname="%(pathname)s" lineno=%(lineno)s funcname=%(funcName)s '
+            "process=%(process)d thread=%(thread)d "
         },
-        "handlers": {
-            "console": {
-                "level": "DEBUG",
-                "class": "logging.StreamHandler",
-                "formatter": "json",
-            }
+        "json": {
+            "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
+            "format": '%(levelname)s "%(message)s" %(name)s '
+            '"%(pathname)s" %(lineno)s %(funcName)s '
+            "%(process)d %(thread)d ",
         },
-    }
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+            "filters": ["no_testing"],
+        }
+    },
+    "filters": {"no_testing": {"()": "backend.logging.TestingDisableFilter"}},
+    "loggers": {"": {"level": "INFO", "handlers": ["console"]}},
+}
