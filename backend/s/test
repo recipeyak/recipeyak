@@ -16,6 +16,8 @@ if [[ $ARGS == *'--coverage'* ]]; then
     ARGS=' --cov-config .coveragerc --cov --junit-xml backend/reports/pytest.xml '"${ARGS/'--coverage'/''}"
 fi
 
+# set TESTING so we can disable logging with TestingDisableFilter
+export TESTING=1
 if [[ "$ARGS" == *'--watch'* ]]; then
     ARGS="${ARGS/'--watch'/''}"
     exec poetry run ptw -- $ARGS
