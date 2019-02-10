@@ -9,8 +9,6 @@ import {
   IRecipe
 } from "@/store/reducers/recipes"
 import { connect } from "react-redux"
-import { bindActionCreators } from "redux"
-import { Dispatch } from "@/store/thunks"
 
 interface IAddStepProps {
   readonly addStep: (
@@ -57,14 +55,10 @@ function AddStep(props: IAddStepProps) {
   )
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators(
-    {
-      addStep: addStepToRecipe.request,
-      setStep: setRecipeStepDraft
-    },
-    dispatch
-  )
+const mapDispatchToProps = {
+  addStep: addStepToRecipe.request,
+  setStep: setRecipeStepDraft
+}
 
 export default connect(
   null,

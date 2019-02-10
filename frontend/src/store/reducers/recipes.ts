@@ -34,11 +34,36 @@ export const deleteRecipe = createAsyncAction(
   "DELETE_RECIPE_FAILURE"
 )<IRecipe["id"], IRecipe["id"], IRecipe["id"]>()
 
+async function deletingRecipe(recipeID: IRecipe["id"], dispatch: Dispatch) {
+  const res = await api.deleteRecipe(recipeID)
+  if (isOk(res)) {
+    dispatch(push("/recipes"))
+    dispatch(deleteRecipe.success(recipeID))
+  } else {
+    dispatch(deleteRecipe.failure(recipeID))
+  }
+}
+
 export const fetchRecipe = createAsyncAction(
   "FETCH_RECIPE_START",
   "FETCH_RECIPE_SUCCESS",
   "FETCH_RECIPE_FAILURE"
 )<IRecipe["id"], IRecipe, { id: IRecipe["id"]; error404: boolean }>()
+
+async function fetchingRecipe(recipeID: IRecipe["id"], dispatch: Dispatch) {
+  const res = await api.getRecipe(recipeID)
+  if (isOk(res)) {
+    dispatch(fetchRecipe.success(res.data))
+  } else {
+    const error404 = !!(res.error.response && res.error.response.status === 404)
+    dispatch(
+      fetchRecipe.failure({
+        id: recipeID,
+        error404
+      })
+    )
+  }
+}
 
 export const fetchRecipeList = createAsyncAction(
   "FETCH_RECIPE_LIST_START",
@@ -125,16 +150,18 @@ export const deleteIngredient = createAsyncAction(
   }
 >()
 
+interface IUpdateIngredientArg {
+  recipeID: IRecipe["id"]
+  ingredientID: IIngredient["id"]
+  content: Partial<Omit<IIngredient, "id" | "position">>
+}
+
 export const updateIngredient = createAsyncAction(
   "UPDATE_INGREDIENT_REQUEST",
   "UPDATE_INGREDIENT_SUCCESS",
   "UPDATE_INGREDIENT_FAILURE"
 )<
-  {
-    recipeID: IRecipe["id"]
-    ingredientID: IIngredient["id"]
-    content: Partial<Omit<IIngredient, "id" | "position">>
-  },
+  IUpdateIngredientArg,
   {
     recipeID: IRecipe["id"]
     ingredientID: IIngredient["id"]
@@ -143,25 +170,59 @@ export const updateIngredient = createAsyncAction(
   { recipeID: IRecipe["id"]; ingredientID: IIngredient["id"] }
 >()
 
+async function updatingIngredient(
+  payload: IUpdateIngredientArg,
+  dispatch: Dispatch
+) {
+  const { recipeID, ingredientID, content } = payload
+  const res = await api.updateIngredient(recipeID, ingredientID, content)
+  if (isOk(res)) {
+    dispatch(
+      updateIngredient.success({
+        recipeID,
+        ingredientID,
+        content: res.data
+      })
+    )
+  } else {
+    dispatch(updateIngredient.failure({ recipeID, ingredientID }))
+  }
+}
+
+interface IUpdateRecipeRequestArg {
+  readonly id: IRecipe["id"]
+  readonly data: Partial<Omit<IRecipe, "id">>
+}
+
 export const updateRecipe = createAsyncAction(
   "UPDATE_RECIPE_REQUEST",
   "UPDATE_RECIPE_SUCCESS",
   "UPDATE_RECIPE_FAILIURE"
-)<
-  { id: IRecipe["id"]; data: Partial<Omit<IRecipe, "id">> },
-  IRecipe,
-  IRecipe["id"]
->()
+)<IUpdateRecipeRequestArg, IRecipe, IRecipe["id"]>()
+
+export async function updatingRecipe(
+  payload: IUpdateRecipeRequestArg,
+  dispatch: Dispatch
+) {
+  const res = await api.updateRecipe(payload.id, payload.data)
+  if (isOk(res)) {
+    dispatch(updateRecipe.success(res.data))
+  } else {
+    dispatch(updateRecipe.failure(payload.id))
+  }
+}
+
+interface IAddStepToRecipeArg {
+  readonly id: IRecipe["id"]
+  readonly step: IStep["text"] | undefined
+}
 
 export const addStepToRecipe = createAsyncAction(
   "ADD_STEP_TO_RECIPE_REQUEST",
   "ADD_STEP_TO_RECIPE_SUCCESS",
   "ADD_STEP_TO_RECIPE_FAILURE"
 )<
-  {
-    id: IRecipe["id"]
-    step: IStep["text"] | undefined
-  },
+  IAddStepToRecipeArg,
   {
     id: IRecipe["id"]
     step: IStep
@@ -169,22 +230,62 @@ export const addStepToRecipe = createAsyncAction(
   IRecipe["id"]
 >()
 
+async function addingStepToRecipe(
+  payload: IAddStepToRecipeArg,
+  dispatch: Dispatch
+) {
+  const res = await api.addStepToRecipe(payload.id, payload.step)
+  if (isOk(res)) {
+    dispatch(
+      addStepToRecipe.success({
+        id: payload.id,
+        step: res.data
+      })
+    )
+  } else {
+    dispatch(addStepToRecipe.failure(payload.id))
+  }
+}
+
+interface IAddIngredientToRecipeArg {
+  readonly recipeID: IRecipe["id"]
+  // TODO(sbdchd): this type should be more specific
+  readonly ingredient: Partial<Omit<IIngredient, "id">>
+}
+
 export const addIngredientToRecipe = createAsyncAction(
   "ADD_INGREDIENT_TO_RECIPE_REQUEST",
   "ADD_INGREDIENT_TO_RECIPE_SUCCESS",
   "ADD_INGREDIENT_TO_RECIPE_FAILURE"
 )<
-  {
-    recipeID: IRecipe["id"]
-    // TODO(sbdchd): this type should be more specific
-    ingredient: Partial<Omit<IIngredient, "id">>
-  },
+  IAddIngredientToRecipeArg,
   {
     id: IRecipe["id"]
     ingredient: IIngredient
   },
   IRecipe["id"]
 >()
+
+async function addingIngredientToRecipe(
+  payload: IAddIngredientToRecipeArg,
+  dispatch: Dispatch
+) {
+  const res = await api.addIngredientToRecipe(
+    payload.recipeID,
+    payload.ingredient
+  )
+
+  if (isOk(res)) {
+    dispatch(
+      addIngredientToRecipe.success({
+        id: payload.recipeID,
+        ingredient: res.data
+      })
+    )
+  } else {
+    dispatch(addIngredientToRecipe.failure(payload.recipeID))
+  }
+}
 
 export const setSchedulingRecipe = createStandardAction(
   "SET_SCHEDULING_RECIPE"
@@ -380,37 +481,18 @@ export const recipes = (
 ): IRecipesState | Loop<IRecipesState, RecipeActions> => {
   switch (action.type) {
     case getType(fetchRecipe.request): {
-      const recipeID = action.payload
-      const r = state.byId[recipeID]
+      const r = state.byId[action.payload]
       return loop(
         {
           ...state,
           byId: {
             ...state.byId,
-            [recipeID]: toLoading(r)
+            [action.payload]: toLoading(r)
           }
         },
-        Cmd.run(
-          (dispatch: Dispatch) =>
-            api.getRecipe(recipeID).then(res => {
-              if (isOk(res)) {
-                dispatch(fetchRecipe.success(res.data))
-              } else {
-                const error404 = !!(
-                  res.error.response && res.error.response.status === 404
-                )
-                dispatch(
-                  fetchRecipe.failure({
-                    id: recipeID,
-                    error404
-                  })
-                )
-              }
-            }),
-          {
-            args: [Cmd.dispatch]
-          }
-        )
+        Cmd.run(fetchingRecipe, {
+          args: [action.payload, Cmd.dispatch]
+        })
       )
     }
     case getType(fetchRecipe.success):
@@ -558,18 +640,7 @@ export const recipes = (
           ...recipe,
           deleting: true
         })),
-        Cmd.run(
-          async (dispatch: Dispatch) => {
-            const res = await api.deleteRecipe(action.payload)
-            if (isOk(res)) {
-              dispatch(push("/recipes"))
-              dispatch(deleteRecipe.success(action.payload))
-            } else {
-              dispatch(deleteRecipe.failure(action.payload))
-            }
-          },
-          { args: [Cmd.dispatch] }
-        )
+        Cmd.run(deletingRecipe, { args: [action.payload, Cmd.dispatch] })
       )
     case getType(deleteRecipe.success):
       return {
@@ -599,25 +670,7 @@ export const recipes = (
           ...recipe,
           addingStepToRecipe: true
         })),
-        Cmd.run(
-          async (dispatch: Dispatch) => {
-            const res = await api.addStepToRecipe(
-              action.payload.id,
-              action.payload.step
-            )
-            if (isOk(res)) {
-              dispatch(
-                addStepToRecipe.success({
-                  id: action.payload.id,
-                  step: res.data
-                })
-              )
-            } else {
-              dispatch(addStepToRecipe.failure(action.payload.id))
-            }
-          },
-          { args: [Cmd.dispatch] }
-        )
+        Cmd.run(addingStepToRecipe, { args: [action.payload, Cmd.dispatch] })
       )
     case getType(addStepToRecipe.success):
       return mapRecipeSuccessById(state, action.payload.id, recipe => ({
@@ -637,31 +690,9 @@ export const recipes = (
           ...recipe,
           addingIngredient: true
         })),
-        Cmd.run(
-          (dispatch: Dispatch) =>
-            api
-              .addIngredientToRecipe(
-                action.payload.recipeID,
-                action.payload.ingredient
-              )
-              .then(res => {
-                if (isOk(res)) {
-                  dispatch(
-                    addIngredientToRecipe.success({
-                      id: action.payload.recipeID,
-                      ingredient: res.data
-                    })
-                  )
-                } else {
-                  dispatch(
-                    addIngredientToRecipe.failure(action.payload.recipeID)
-                  )
-                }
-              }),
-          {
-            args: [Cmd.dispatch]
-          }
-        )
+        Cmd.run(addingIngredientToRecipe, {
+          args: [action.payload, Cmd.dispatch]
+        })
       )
     case getType(addIngredientToRecipe.success):
       return mapRecipeSuccessById(state, action.payload.id, recipe => ({
@@ -708,12 +739,11 @@ export const recipes = (
         })
       }))
     case getType(updateIngredient.request): {
-      const { recipeID, ingredientID, content } = action.payload
       return loop(
-        mapRecipeSuccessById(state, recipeID, recipe => ({
+        mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
           ...recipe,
           ingredients: recipe.ingredients.map(x => {
-            if (x.id === ingredientID) {
+            if (x.id === action.payload.ingredientID) {
               return {
                 ...x,
                 updating: true
@@ -722,27 +752,7 @@ export const recipes = (
             return x
           })
         })),
-        Cmd.run(
-          async (dispatch: Dispatch) => {
-            const res = await api.updateIngredient(
-              recipeID,
-              ingredientID,
-              content
-            )
-            if (isOk(res)) {
-              dispatch(
-                updateIngredient.success({
-                  recipeID,
-                  ingredientID,
-                  content: res.data
-                })
-              )
-            } else {
-              dispatch(updateIngredient.failure({ recipeID, ingredientID }))
-            }
-          },
-          { args: [Cmd.dispatch] }
-        )
+        Cmd.run(updatingIngredient, { args: [action.payload, Cmd.dispatch] })
       )
     }
     case getType(updateIngredient.success):
@@ -849,22 +859,9 @@ export const recipes = (
           ...recipe,
           updating: true
         })),
-        Cmd.run(
-          (dispatch: Dispatch) => {
-            api
-              .updateRecipe(action.payload.id, action.payload.data)
-              .then(res => {
-                if (isOk(res)) {
-                  dispatch(updateRecipe.success(res.data))
-                } else {
-                  dispatch(updateRecipe.failure(action.payload.id))
-                }
-              })
-          },
-          {
-            args: [Cmd.dispatch]
-          }
-        )
+        Cmd.run(updatingRecipe, {
+          args: [action.payload, Cmd.dispatch]
+        })
       )
     case getType(updateRecipe.success):
       return mapRecipeSuccessById(state, action.payload.id, recipe => ({

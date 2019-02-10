@@ -12,8 +12,6 @@ import { TextInput } from "@/components/Forms"
 import { hasSelection } from "@/utils/general"
 import { Schedule } from "@/components/RecipeItem"
 import { connect } from "react-redux"
-import { Dispatch } from "@/store/thunks"
-import { bindActionCreators } from "redux"
 
 interface IRecipeTitleProps {
   readonly id: IRecipe["id"]
@@ -248,15 +246,11 @@ class RecipeTitle extends React.Component<
   }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators(
-    {
-      update: updateRecipe.request,
-      remove: deleteRecipe.request,
-      toggleEditing: toggleEditingRecipe
-    },
-    dispatch
-  )
+const mapDispatchToProps = {
+  update: updateRecipe.request,
+  remove: deleteRecipe.request,
+  toggleEditing: toggleEditingRecipe
+}
 
 export default connect(
   null,

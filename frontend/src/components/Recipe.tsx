@@ -8,7 +8,7 @@ import AddIngredient, { IIngredientBasic } from "@/components/AddIngredient"
 import StepContainer from "@/components/StepContainer"
 import Ingredient from "@/components/Ingredient"
 import RecipeTitle from "@/components/RecipeTitle"
-import { RootState } from "@/store/store"
+import { RootState, Action } from "@/store/store"
 import { RouteComponentProps } from "react-router"
 import {
   IRecipe,
@@ -21,8 +21,6 @@ import {
 } from "@/store/reducers/recipes"
 import { isInitial, isLoading, isFailure, WebData } from "@/webdata"
 import { SectionTitle } from "@/components/RecipeHelpers"
-import { bindActionCreators } from "redux"
-import { Dispatch } from "@/store/thunks"
 
 type RouteProps = RouteComponentProps<{ id: string }>
 
@@ -32,16 +30,12 @@ const mapStateToProps = (state: RootState, props: RouteProps) => {
   return { recipe: maybeRecipe }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators(
-    {
-      fetchRecipe: fetchRecipe.request,
-      addIngredient: addIngredientToRecipe.request,
-      removeIngredient: deleteIngredient.request,
-      updateIngredient: updateIngredient.request
-    },
-    dispatch
-  )
+const mapDispatchToProps = {
+  fetchRecipe: fetchRecipe.request,
+  addIngredient: addIngredientToRecipe.request,
+  removeIngredient: deleteIngredient.request,
+  updateIngredient: updateIngredient.request
+}
 
 interface IRecipeProps extends RouteProps {
   readonly recipe: WebData<IRecipe>

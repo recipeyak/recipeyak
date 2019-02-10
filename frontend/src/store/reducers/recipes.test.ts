@@ -8,7 +8,7 @@ import recipes, {
 import * as a from "@/store/reducers/recipes"
 import { RootState } from "@/store/store"
 import { HttpErrorKind, Loading, isSuccess, Failure, Success } from "@/webdata"
-import { getModel } from "redux-loop"
+import { getModel, getCmd } from "redux-loop"
 
 export const baseRecipe: IRecipe = {
   id: 1,
@@ -74,7 +74,7 @@ describe("Recipes", () => {
       recipes(beforeState, a.deleteRecipe.success(first.id))
     )
     expect(after.personalIDs).toEqual(Success([second.id]))
-    expect(after.byId[first.id]).toEqual(undefined)
+    expect(after.byId[first.id]).toBeUndefined()
 
     const maybeSecond = a.getRecipeById(
       { recipes: beforeState } as RootState,
@@ -588,14 +588,24 @@ describe("Recipes", () => {
       updating: true
     })
 
-    expect(
-      getModel(
-        recipes(
-          beforeState,
-          a.updateRecipe.request({ id: 1, data: { name: "foo" } })
-        )
-      )
-    ).toEqual(afterState)
+    const actual = recipes(
+      beforeState,
+      a.updateRecipe.request({ id: 1, data: { name: "foo" } })
+    )
+
+    expect(getModel(actual)).toEqual(afterState)
+
+    const maybeCmd = getCmd(actual)
+
+    expect(maybeCmd).not.toBeNull()
+
+    if (maybeCmd != null) {
+      expect(maybeCmd.type).toEqual("RUN")
+
+      if (maybeCmd.type === "RUN") {
+        expect(maybeCmd.func).toEqual(a.updatingRecipe)
+      }
+    }
 
     const newRecipe: IRecipe = {
       ...baseRecipe,

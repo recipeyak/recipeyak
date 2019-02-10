@@ -87,6 +87,8 @@ export type Action =
 /**
  * A hack to prevent errors in testing. Jest does some weird sourcing of
  * dependencies which breaks tests. Actual dev & prod work fine.
+ * The sourcing issue is from a cylical dependency. See the usage of `store` in
+ * `@/http`
  */
 function omitUndefined(
   obj: ReducerMapObject<IState, Action>
@@ -116,6 +118,7 @@ const recipeApp: LoopReducer<IState, Action> = combineReducers(
   })
 )
 
+// TODO(sbdchd): remove and just use IState
 export type RootState = IState
 
 // reset redux to default state on logout
