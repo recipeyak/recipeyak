@@ -58,6 +58,7 @@ const toErr = (res: AxiosError) => Err(res)
 /**
  * Result<T> based HTTP client
  */
+// tslint:disable:no-promise-catch
 export const http = {
   get: <T>(url: string, config?: AxiosRequestConfig): HttpResult<T> =>
     baseHttp
@@ -102,3 +103,4 @@ export const http = {
       .then(toOk)
       .catch(toErr)
 }
+// tslint:enable:no-promise-catch
