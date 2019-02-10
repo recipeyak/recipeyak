@@ -12,6 +12,10 @@ def blocker(*args):
     raise Exception("No database access allowed here.")
 
 
+def warning_blocker(*args):
+    log.warning("Database access in serializer.")
+
+
 class DBBlockerSerializerMixin:
     """
     Block database access within serializer
@@ -31,14 +35,15 @@ class DBBlockerSerializerMixin:
             # Mypy is correct that we don't have a data property on our parent.
             # We must cast to Any to support the mixin use of this class
             return cast(Any, super()).data
-        elif settings.DEBUG:
+        elif settings.ERROR_ON_SERIALIZER_DB_ACCESS:
             # only raise error when we are in DEBUG mode. We don't want to cause
             # errors in production when we don't need to do so.
             with connection.execute_wrapper(blocker):
                 return cast(Any, super()).data
         else:
-            log.error("Database access in serializer")
-            return cast(Any, super()).data
+            # use a warning blocker elsewhere
+            with connection.execute_wrapper(warning_blocker):
+                return cast(Any, super()).data
 
     def __init__(self, *args, **kwargs):
         self.dangerously_allow_db = kwargs.pop("dangerously_allow_db", None)
