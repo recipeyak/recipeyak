@@ -8,7 +8,7 @@ import AddIngredient, { IIngredientBasic } from "@/components/AddIngredient"
 import StepContainer from "@/components/StepContainer"
 import Ingredient from "@/components/Ingredient"
 import RecipeTitle from "@/components/RecipeTitle"
-import { RootState, Action } from "@/store/store"
+import { RootState } from "@/store/store"
 import { RouteComponentProps } from "react-router"
 import {
   IRecipe,
