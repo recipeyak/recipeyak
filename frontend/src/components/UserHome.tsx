@@ -11,7 +11,7 @@ import { WebData, isInitial, isLoading, isFailure, isSuccess } from "@/webdata"
 
 // TODO(sbdchd): must be a better way
 // tslint:disable-next-line:no-var-requires
-const img = require("./images/yak.jpg")
+const img = require("@/static/images/yak.jpg")
 
 interface ITotalRecipeCountProps {
   readonly count: number
