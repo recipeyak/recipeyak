@@ -45,8 +45,3 @@ RUN apt-get update -yq && \
     lsb-release \
     xdg-utils \
     wget
-
-RUN npm install -g yarn
-
-# add a basic http server
-RUN yarn global add serve
