@@ -45,7 +45,8 @@ function ensureSlash(filePath, needsSlash) {
   }
 }
 
-/** @param {string} appPackageJson
+/**
+ * @param {string} appPackageJson
  * @returns {string}
  */
 function getPublicUrl(appPackageJson) {

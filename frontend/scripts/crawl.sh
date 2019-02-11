@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
-set -eux
+set -eu
 
-PORT=8008
+cd $(dirname $(dirname "$0"))
 
-serve build -l "$PORT" &
+PORT=8808
+
+python3 -m http.server "$PORT" &
 
 # wait for port
 MAX_INC=20
