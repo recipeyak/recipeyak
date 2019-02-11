@@ -46,10 +46,6 @@ function printErrors(summary, errors) {
   })
 }
 
-// from create-react-app
-const WARN_AFTER_BUNDLE_GZIP_SIZE = 512 * 1024
-const WARN_AFTER_CHUNK_GZIP_SIZE = 1024 * 1024
-
 // Create the production build and print the deployment instructions.
 /** @param {{ root: string; sizes: unknown }} previousFileSizes */
 function build(previousFileSizes) {
@@ -80,13 +76,7 @@ function build(previousFileSizes) {
       console.log()
 
       console.log("File sizes after gzip:\n")
-      printFileSizesAfterBuild(
-        stats,
-        previousFileSizes,
-        paths.appBuild,
-        WARN_AFTER_BUNDLE_GZIP_SIZE,
-        WARN_AFTER_CHUNK_GZIP_SIZE
-      )
+      printFileSizesAfterBuild(stats, previousFileSizes, paths.appBuild)
       console.log()
     }
   )
