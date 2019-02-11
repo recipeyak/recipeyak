@@ -2,6 +2,8 @@ const autoprefixer = require("autoprefixer")
 const webpack = require("webpack")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin")
+const TerserPlugin = require("terser-webpack-plugin")
 const ManifestPlugin = require("webpack-manifest-plugin")
 const InterpolateHtmlPlugin = require("react-dev-utils/InterpolateHtmlPlugin")
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
@@ -34,7 +36,29 @@ module.exports = {
   optimization: {
     splitChunks: {
       chunks: "all"
-    }
+    },
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          compress: {
+            comparisons: false,
+            inline: 2 // inline functions with arguments
+          },
+          output: {
+            ascii_only: true
+          }
+        },
+        parallel: true,
+        cache: true,
+        sourceMap: true
+      }),
+      new OptimizeCSSAssetsPlugin({
+        cssProcessorOptions: {
+          inline: false,
+          annotation: true
+        }
+      })
+    ]
   },
   entry: [paths.appIndexTsx],
   output: {
@@ -112,8 +136,7 @@ module.exports = {
           {
             loader: "css-loader",
             options: {
-              importLoaders: 1,
-              minimize: 1
+              importLoaders: 1
             }
           },
           {
@@ -142,8 +165,7 @@ module.exports = {
           {
             loader: "css-loader",
             options: {
-              importLoaders: 1,
-              minimize: 1
+              importLoaders: 1
             }
           },
           "sass-loader"

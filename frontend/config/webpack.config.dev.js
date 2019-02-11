@@ -1,7 +1,6 @@
 const autoprefixer = require("autoprefixer")
 const webpack = require("webpack")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
-// @ts-ignore
 const CaseSensitivePathsPlugin = require("case-sensitive-paths-webpack-plugin")
 const InterpolateHtmlPlugin = require("react-dev-utils/InterpolateHtmlPlugin")
 const WatchMissingNodeModulesPlugin = require("react-dev-utils/WatchMissingNodeModulesPlugin")
@@ -15,7 +14,6 @@ const publicPath = "/"
 // as %PUBLIC_URL% in `index.html` and `process.env.PUBLIC_URL` in JavaScript.
 // Omit trailing slash as %PUBLIC_PATH%/xyz looks better than %PUBLIC_PATH%xyz.
 const publicUrl = ""
-// Get environment variables to inject into our app.
 const env = getClientEnvironment(publicUrl)
 
 module.exports = {
@@ -23,27 +21,9 @@ module.exports = {
   // You may want 'eval' instead if you prefer to see the compiled output in DevTools.
   // See the discussion in https://github.com/facebookincubator/create-react-app/issues/343.
   devtool: "cheap-module-source-map",
-  // export favicon logcation so we can reuse it in the production config
-  // These are the "entry points" to our application.
-  // This means they will be the "root" imports that are included in JS bundle.
-  // The first two entry points enable "hot" CSS and auto-refreshes for JS.
   entry: [
-    // Include an alternative client for WebpackDevServer. A client's job is to
-    // connect to WebpackDevServer by a socket and get notified about changes.
-    // When you save a file, the client will either apply hot updates (in case
-    // of CSS changes), or refresh the page (in case of JS changes). When you
-    // make a syntax error, this client will display a syntax error overlay.
-    // Note: instead of the default WebpackDevServer client, we use a custom one
-    // to bring better experience for Create React App users. You can replace
-    // the line below with these two lines if you prefer the stock client:
-    // require.resolve('webpack-dev-server/client') + '?/',
-    // require.resolve('webpack/hot/dev-server'),
     require.resolve("react-dev-utils/webpackHotDevClient"),
-    // Finally, this is your app's code:
     paths.appIndexTsx
-    // We include the app code last so that if there is a runtime error during
-    // initialization, it doesn't blow up the WebpackDevServer client, and
-    // changing JS code would still trigger a refresh.
   ],
   output: {
     // Next line is not used in dev but WebpackDevServer crashes without it:
@@ -200,12 +180,5 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new CaseSensitivePathsPlugin(),
     new WatchMissingNodeModulesPlugin(paths.appNodeModules)
-  ],
-  // Some libraries import Node modules but don't use them in the browser.
-  // Tell Webpack to provide empty mocks for them so importing them works.
-  node: {
-    fs: "empty",
-    net: "empty",
-    tls: "empty"
-  }
+  ]
 }
