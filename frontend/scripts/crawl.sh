@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-set -eux
+set -eu
 
-PORT=8008
+cd $(dirname $(dirname "$0"))
 
 serve build -l "$PORT" &
 
