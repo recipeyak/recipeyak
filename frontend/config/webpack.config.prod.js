@@ -31,7 +31,8 @@ module.exports = {
   optimization: {
     splitChunks: {
       chunks: "all"
-    }
+    },
+    hints: false
   },
   entry: [paths.appIndexTsx],
   output: {
