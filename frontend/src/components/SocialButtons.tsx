@@ -11,13 +11,13 @@ import {
 import { FormErrorHandler } from "@/components/Forms"
 
 // tslint:disable:no-var-requires
-const githubIcon = require("./images/github-logo.svg")
-const githubIconWhite = require("./images/github-logo-white.svg")
-const gitlabIcon = require("./images/gitlab-logo.svg")
-const gitlabIconWhite = require("./images/gitlab-logo-white.svg")
-const googleIcon = require("./images/google-logo.svg")
-const bitbucketIcon = require("./images/bitbucket-logo.svg")
-const facebookIcon = require("./images/facebook-logo.svg")
+const githubIcon = require("@/static/images/oauth/github-logo.svg")
+const githubIconWhite = require("@/static/images/oauth/github-logo-white.svg")
+const gitlabIcon = require("@/static/images/oauth/gitlab-logo.svg")
+const gitlabIconWhite = require("@/static/images/oauth/gitlab-logo-white.svg")
+const googleIcon = require("@/static/images/oauth/google-logo.svg")
+const bitbucketIcon = require("@/static/images/oauth/bitbucket-logo.svg")
+const facebookIcon = require("@/static/images/oauth/facebook-logo.svg")
 // tslint:enable:no-var-requires
 
 interface IImgProps {

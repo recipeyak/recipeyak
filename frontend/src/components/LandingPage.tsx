@@ -3,12 +3,12 @@ import { Link } from "react-router-dom"
 import Footer from "@/components/Footer"
 
 // tslint:disable:no-var-requires
-const addRecipeImg = require("./images/add-recipe.png")
-const cartDoublingImg = require("./images/cart-doubling.png")
-const cartImg = require("./images/cart.png")
-const homepageImg = require("./images/homepage.png")
-const listImg = require("./images/list.png")
-const searchImg = require("./images/search.png")
+const addRecipeImg = require("@/static/images/pages/add-recipe.png")
+const cartDoublingImg = require("@/static/images/pages/cart-doubling.png")
+const cartImg = require("@/static/images/pages/cart.png")
+const homepageImg = require("@/static/images/pages/homepage.png")
+const listImg = require("@/static/images/pages/list.png")
+const searchImg = require("@/static/images/pages/search.png")
 // tslint:enable:no-var-requires
 
 const isOdd = (i: number) => i % 2 !== 0
