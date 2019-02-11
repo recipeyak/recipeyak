@@ -5,7 +5,12 @@ cd $(dirname $(dirname "$0"))
 
 PORT=8808
 
+
+cd build
+
 python3 -m http.server "$PORT" &
+
+cd ..
 
 # wait for port
 MAX_INC=20
