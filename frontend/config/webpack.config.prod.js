@@ -28,11 +28,13 @@ module.exports = {
   // Don't attempt to continue if there are any errors.
   bail: true,
   devtool: "source-map",
+  performance: {
+    hints: false
+  },
   optimization: {
     splitChunks: {
       chunks: "all"
-    },
-    hints: false
+    }
   },
   entry: [paths.appIndexTsx],
   output: {
