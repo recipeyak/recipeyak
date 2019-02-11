@@ -216,7 +216,8 @@ module.exports = {
     new BundleAnalyzerPlugin({
       analyzerMode: "static",
       generateStatsFile: true,
-      openAnalyzer: false
+      openAnalyzer: false,
+      statsFilename: "webpack-stats.json"
     })
   ]
 }
