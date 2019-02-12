@@ -154,7 +154,8 @@ class Ingredient:
     """
 
     def __init__(self, ingredient: models.Ingredient) -> None:
-        self.quantity = ingredient.quantity
+        # Note(sbdchd): pint doesn't handle casing
+        self.quantity = ingredient.quantity.lower()
         self.name = ingredient.name
         self.origin = ingredient.recipe.id
 
