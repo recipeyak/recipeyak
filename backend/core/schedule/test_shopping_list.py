@@ -144,7 +144,10 @@ def test_scheduling_multiple_times_some_ingredient(
         ),
         ([("1", "garlic clove")], ("1", "garlic clove")),
         ([("8", "Garlic Cloves"), ("1", "garlic clove")], ("9", "garlic cloves")),
-        ([("2 Tablespoons", "scallions"), ("4", "scallions")], ("6", "scallions")),
+        (
+            [("2 Tablespoons", "scallions"), ("4", "scallions")],
+            ("2 tablespoon + 4", "scallions"),
+        ),
         ([("2 tbs", "soy sauce")], ("2 tablespoon", "soy sauce")),
         (
             [("2 lbs", "tomato"), ("1 kg", "tomato")],
