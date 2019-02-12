@@ -65,7 +65,7 @@ export default class TeamRecipes extends React.Component<
             {results.length > 0 ? (
               results.map(x => <Recipe {...x} key={x.id} />)
             ) : (
-              <p className="grid-entire-row justify-center fs-6 font-family-title break-word">
+              <p className="grid-entire-row justify-center fs-6 break-word">
                 No recipes found matching <strong>{this.state.query}</strong>
               </p>
             )}

@@ -39,7 +39,7 @@ function Sidebar({ closed, teamID, isRecipes, toggleClose }: ISidebarProps) {
   return (
     <>
       <div
-        className="d-grid grid-gap-2 grid-auto-rows-min-content w-350px-if-not-sm"
+        className="d-grid grid-gap-2 grid-auto-rows-min-content w-300px-if-not-sm"
         style={sideBarStyle}>
         <Tabs small className="mb-0 no-print">
           <Tab isActive={!isRecipes}>
