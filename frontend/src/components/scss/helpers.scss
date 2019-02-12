@@ -278,14 +278,6 @@
   font-weight: normal !important;
 }
 
-.font-family-serif {
-  font-family: $font-family-serif;
-}
-
-.font-family-title {
-  font-family: $font-family-title;
-}
-
 .flex-grow-1,
 .flex-grow {
   flex-grow: 1;
@@ -320,11 +312,11 @@
   }
 }
 
-.w-350px-if-not-sm {
+.w-300px-if-not-sm {
   width: 100%;
   @media (min-width: $small) {
-    width: 350px;
-    min-width: 350px;
+    width: 300px;
+    min-width: 300px;
   }
 }
 

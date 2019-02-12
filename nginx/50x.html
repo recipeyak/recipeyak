@@ -1,12 +1,17 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset=utf-8>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
     <title>Application Error | RecipeYak</title>
     <style>
       html {
-        font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+        font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto",
+          "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+          "Helvetica Neue", "Helvetica", "Arial", sans-serif;
         height: calc(100% - 2px);
         border-top: 2px solid #ff7247;
         font-size: 18px;
@@ -30,14 +35,12 @@
       }
 
       h1 {
-        font-family: Avenir, Futura, Lato, sans-serif;
-        font-weight: 100;
         margin: 0;
       }
 
       p {
         margin: 0;
-        color: #7F828B;
+        color: #7f828b;
         line-height: 1.25rem;
       }
 
@@ -49,12 +52,13 @@
         font-size: 1rem;
         height: 2em;
         border-color: #dbdbdb;
-        padding: calc(.375em - 1px) .75em;
-        transition: border-color .2s;
+        padding: calc(0.375em - 1px) 0.75em;
+        transition: border-color 0.2s;
         color: #4a4a4a;
       }
 
-      button:hover, button:active {
+      button:hover,
+      button:active {
         border-color: #ff4b14;
       }
 
@@ -64,12 +68,22 @@
     </style>
   </head>
   <body>
-    <div class=message>
-      <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
-       width="50.000000pt" height="50.000000pt" viewBox="0 0 1700.000000 1700.000000"
-       preserveAspectRatio="xMidYMid meet" class="app-icon">
-        <g transform="translate(0.000000,1700.000000) scale(0.100000,-0.100000)" stroke="none">
-          <path d="M795 16665 c-61 -33 -86 -79 -124 -230 -17 -70 -54 -242 -67 -315 -3
+    <div class="message">
+      <svg
+        version="1.0"
+        xmlns="http://www.w3.org/2000/svg"
+        width="50.000000pt"
+        height="50.000000pt"
+        viewBox="0 0 1700.000000 1700.000000"
+        preserveAspectRatio="xMidYMid meet"
+        class="app-icon"
+      >
+        <g
+          transform="translate(0.000000,1700.000000) scale(0.100000,-0.100000)"
+          stroke="none"
+        >
+          <path
+            d="M795 16665 c-61 -33 -86 -79 -124 -230 -17 -70 -54 -242 -67 -315 -3
           -14 -16 -83 -29 -155 -22 -120 -28 -156 -41 -240 -3 -16 -9 -52 -14 -80 -10
           -51 -74 -482 -85 -565 -3 -25 -8 -61 -10 -80 -3 -19 -7 -62 -11 -95 -3 -33 -8
           -71 -10 -85 -2 -14 -7 -54 -10 -90 -3 -36 -7 -83 -9 -105 -27 -276 -27 -923 0
@@ -153,21 +167,31 @@
           1375 20 44 2 127 7 185 10 58 3 130 8 160 10 30 2 96 6 145 10 50 3 110 8 135
           10 25 2 79 7 120 11 145 12 266 24 310 29 19 3 64 7 100 10 36 3 76 7 90 10
           14 2 54 7 90 11 36 3 73 8 83 10 10 2 44 6 75 9 31 3 80 9 107 13 l50 8 13
-          -35 c7 -19 14 -44 17 -55z"/>
+          -35 c7 -19 14 -44 17 -55z"
+          />
         </g>
       </svg>
 
       <h1>Application error</h1>
-      <p>An error occurred in the application and your page could not be served.</p>
+      <p>
+        An error occurred in the application and your page could not be served.
+      </p>
       <button id="report-button">Submit Error Report</button>
     </div>
   </body>
-  <script src="https://cdn.ravenjs.com/3.21.0/raven.min.js" crossorigin="anonymous"></script>
+  <script
+    src="https://cdn.ravenjs.com/3.21.0/raven.min.js"
+    crossorigin="anonymous"
+  ></script>
   <script>
-    Raven.config('https://3b11e5eed068478390e1e8f01e2190a9@sentry.io/250295').install()
-    Raven.captureMessage('500 error')
-    document.querySelector('#report-button').addEventListener('click', function() {
-      Raven.showReportDialog()
-    })
+    Raven.config(
+      "https://3b11e5eed068478390e1e8f01e2190a9@sentry.io/250295"
+    ).install();
+    Raven.captureMessage("500 error");
+    document
+      .querySelector("#report-button")
+      .addEventListener("click", function() {
+        Raven.showReportDialog();
+      });
   </script>
 </html>

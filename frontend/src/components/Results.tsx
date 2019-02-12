@@ -10,7 +10,7 @@ export function Results({ recipes, query }: IResultsProps) {
   if (recipes.length === 0 && query === "") {
     return (
       <section className="d-flex grid-entire-row justify-center">
-        <p className="fs-6 font-family-title mr-2">No recipes here.</p>
+        <p className="fs-6 mr-2">No recipes here.</p>
 
         <Link to="/recipes/add" className="my-button is-primary">
           Add a Recipe
