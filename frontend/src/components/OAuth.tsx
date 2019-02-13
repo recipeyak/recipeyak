@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 
 import Loader from "@/components/Loader"
 import { SocialProvider } from "@/store/reducers/user"
@@ -6,20 +6,18 @@ import { SocialProvider } from "@/store/reducers/user"
 interface IOAuthProps {
   readonly service: SocialProvider
   readonly token: string
-  readonly login: (
-    service: SocialProvider,
-    token: string,
-    redirectUrl: string
-  ) => void
+  readonly login: () => void
   readonly redirectUrl?: string
 }
 
-const OAuth = ({ service, token, login, redirectUrl = "" }: IOAuthProps) => {
-  login(service, token, redirectUrl)
+const OAuth = ({ service, login }: IOAuthProps) => {
+  useEffect(() => {
+    login()
+  }, [])
 
   return (
-    <div className="d-flex justify-content-center direction-column align-items-center">
-      <p className="mb-4 fs-8">Signing in...</p>
+    <div className="d-flex justify-content-center direction-column align-items-center h-100 mt-5rem">
+      <p className="mb-4 fs-8">Signing in via {service}</p>
       <Loader />
     </div>
   )

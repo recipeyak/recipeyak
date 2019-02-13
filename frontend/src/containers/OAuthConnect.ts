@@ -25,7 +25,16 @@ const mapStateToProps = (_: IState, props: RouteProps) => {
   }
 }
 
+const mergeProps = (
+  stateProps: ReturnType<typeof mapStateToProps>,
+  dispatchProps: ReturnType<typeof mapDispatchToProps>
+) => ({
+  ...stateProps,
+  login: () => dispatchProps.login(stateProps.service, stateProps.token)
+})
+
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  mergeProps
 )(OAuth)
