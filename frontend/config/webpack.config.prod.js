@@ -8,6 +8,7 @@ const WebappWebpackPlugin = require("webapp-webpack-plugin")
 const TerserPlugin = require("terser-webpack-plugin")
 const ManifestPlugin = require("webpack-manifest-plugin")
 const InterpolateHtmlPlugin = require("react-dev-utils/InterpolateHtmlPlugin")
+const OpenGraphPlugin = require("./open-graph-plugin")
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin
 const paths = require("./paths")
@@ -25,6 +26,11 @@ const env = getClientEnvironment(publicUrl)
 
 if (env.stringified["process.env"].NODE_ENV !== '"production"') {
   throw new Error("Production builds must have NODE_ENV=production.")
+}
+
+const openGraphConfig = {
+  title: "RecipeYak",
+  type: "Website"
 }
 
 const faviconConfig = {
@@ -210,6 +216,16 @@ module.exports = {
         minifyURLs: true
       }
     }),
+    new OpenGraphPlugin([
+      {
+        property: "og:title",
+        content: openGraphConfig.title
+      },
+      {
+        property: "og:type",
+        content: openGraphConfig.type
+      }
+    ]),
     new WebappWebpackPlugin({
       logo: faviconConfig.faviconPath,
       cache: true,
