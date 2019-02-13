@@ -9,6 +9,8 @@
 
 // bulma override
 .user-profile {
+  $user-profile-size: 30px;
+
   cursor: pointer;
   user-select: none;
   padding-left: 0;
@@ -16,9 +18,9 @@
 
   &-image {
     background-color: rgb(240, 240, 240);
-    height: 40px;
-    width: 40px;
-    min-width: 40px;
+    height: $user-profile-size;
+    width: $user-profile-size;
+    min-width: $user-profile-size;
     margin: 5px;
     border-radius: 100%;
     max-height: none;
