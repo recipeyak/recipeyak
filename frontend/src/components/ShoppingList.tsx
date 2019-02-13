@@ -55,6 +55,21 @@ function formatMonth(date: Date | null) {
   return format(date, "YYYY-MM-DD")
 }
 
+interface IShoppingListItemProps {
+  readonly item: IShoppingListItem
+  readonly isFirst: boolean
+}
+
+function ShoppingListItem({ item, isFirst }: IShoppingListItemProps) {
+  // padding serves to prevent the button from appearing in front of text
+  // we also use <section>s instead of <p>s to avoid extra new lines in Chrome
+  return (
+    <section className={isFirst ? "mr-15" : ""} key={item.unit + item.name}>
+      {item.unit} {item.name}
+    </section>
+  )
+}
+
 function mapStateToProps(state: IState) {
   return {
     startDay: state.shoppinglist.startDay,
@@ -112,14 +127,10 @@ class ShoppingListList extends React.Component<IShoppingListContainerProps> {
           className="r-5 p-abs">
           Copy
         </Button>
-        <section ref={this.shoppingList} style={{ fontSize: "0.9rem" }}>
+        <section ref={this.shoppingList}>
           {/* TOOD(sbdchd): sort on backend instead */}
           {items.sort(ingredientByNameAlphabetical).map((x, i) => (
-            // padding serves to prevent the button from appearing in front of text
-            // we also use <section>s instead of <p>s to avoid extra new lines in Chrome
-            <section className={i === 0 ? "mr-15" : ""} key={x.unit + x.name}>
-              {x.unit} {x.name}
-            </section>
+            <ShoppingListItem item={x} isFirst={i === 0} />
           ))}
         </section>
       </div>
@@ -241,7 +252,9 @@ function ShoppingList(props: IShoppingListProps) {
           sendToast={props.sendToast}
         />
         <div className="d-flex justify-content-end no-print">
-          <a onClick={props.reportBadMerge} className="text-muted italic fs-3">
+          <a
+            onClick={props.reportBadMerge}
+            className="text-muted italic text-small">
             report bad merge
           </a>
         </div>

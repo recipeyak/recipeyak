@@ -25,12 +25,14 @@ interface IInvitesProps {
 
 const Invites = ({ loading, invites, decline, accept }: IInvitesProps) => {
   if (loading) {
-    return <p className="text-muted fs-3 align-self-center">Loading...</p>
+    return <p className="text-muted text-small align-self-center">Loading...</p>
   }
 
   if (invites.length === 0) {
     return (
-      <p className="text-muted fs-3 align-self-center">No new notifications.</p>
+      <p className="text-muted text-small align-self-center">
+        No new notifications.
+      </p>
     )
   }
 

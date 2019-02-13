@@ -191,7 +191,10 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
                 onChange={this.handleChange}
                 className="max-height-25vh overflow-y-scroll w-100">
                 {teamUserKeys.map(opt => (
-                  <option className="fs-3 fw-500" key={opt.id} value={opt.id}>
+                  <option
+                    className="text-small fw-500"
+                    key={opt.id}
+                    value={opt.id}>
                     {opt.name}
                   </option>
                 ))}
