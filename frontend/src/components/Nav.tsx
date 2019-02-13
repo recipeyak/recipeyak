@@ -129,12 +129,10 @@ class Navbar extends React.Component<INavbarProps> {
     )
 
     return (
-      <nav className={`nav flex-wrap ${className}`}>
-        <Link
-          to="/"
-          className="better-nav-item pb-1 pt-1 pl-0 pr-0 fs-2rem fw-normal">
+      <nav className={`nav flex-wrap mb-1 ${className}`}>
+        <Link to="/" className="better-nav-item pb-1 pt-1 pl-0 pr-0 fw-normal">
           <Logo width="45px" />
-          <span>Recipe Yak</span>
+          <span className="fs-6">Recipe Yak</span>
         </Link>
         {buttons}
       </nav>
