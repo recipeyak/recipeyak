@@ -10,7 +10,7 @@ import {
 export interface StoreCreator {
   <S, A extends Action>(
     reducer: LoopReducer<S, A>,
-    preloadedState: S,
+    preloadedState: S | undefined,
     enhancer: StoreEnhancer<S>
   ): Store<S>
 }

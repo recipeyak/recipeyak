@@ -12,12 +12,12 @@ import Loader from "@/components/Loader"
 import { teamURL } from "@/urls"
 
 import { fetchingTeam, sendingTeamInvites, Dispatch } from "@/store/thunks"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 import { IMember, ITeam } from "@/store/reducers/teams"
 import { TextInput, RadioButton } from "@/components/Forms"
 import { Result, isErr } from "@/result"
 
-const mapStateToProps = (state: RootState, props: ITeamInviteProps) => {
+const mapStateToProps = (state: IState, props: ITeamInviteProps) => {
   const id = parseInt(props.match.params.id, 10)
   const team = state.teams.byId[id] ? state.teams.byId[id] : {}
 

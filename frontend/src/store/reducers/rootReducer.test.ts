@@ -1,11 +1,11 @@
-import { rootReducer, emptyStore, RootState } from "@/store/store"
+import { rootReducer, emptyStore, IState } from "@/store/store"
 import { setUserLoggedIn } from "@/store/reducers/user"
 import { initialState } from "@/store/reducers/auth"
 import { getModel } from "redux-loop"
 
 describe("logout", () => {
   it("Logs out user and clears entire store", () => {
-    const beforeState: RootState = {
+    const beforeState: IState = {
       ...emptyStore.getState(),
       user: {
         ...emptyStore.getState().user,

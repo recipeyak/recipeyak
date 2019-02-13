@@ -5,7 +5,7 @@ import { postNewRecipe, Dispatch, fetchingTeams } from "@/store/thunks"
 import AddRecipe from "@/components/AddRecipe"
 
 import { teamsFrom } from "@/store/mapState"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 import {
   setAddRecipeFormName,
   setAddRecipeFormAuthor,
@@ -28,7 +28,7 @@ import {
 } from "@/store/reducers/recipes"
 import { updateTeamID } from "@/store/reducers/user"
 
-const mapStateToProps = (state: RootState) => ({
+const mapStateToProps = (state: IState) => ({
   name: state.addrecipe.name,
   author: state.addrecipe.author,
   source: state.addrecipe.source,

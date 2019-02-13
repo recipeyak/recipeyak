@@ -57,7 +57,7 @@ import { DEBUG } from "@/settings"
 
 const createStore = basicCreateStore as StoreCreator
 
-interface IState {
+export interface IState {
   readonly user: IUserState
   readonly recipes: IRecipesState
   readonly invites: IInvitesState
@@ -118,9 +118,6 @@ const recipeApp: LoopReducer<IState, Action> = combineReducers(
   })
 )
 
-// TODO(sbdchd): remove and just use IState
-export type RootState = IState
-
 // reset redux to default state on logout
 export function rootReducer(
   state: IState | undefined,
@@ -154,15 +151,15 @@ const emptyStoreEnhancers = compose(
   install()
 ) as StoreEnhancer<IState, Action>
 
-// We need an empty store for the unit tests
-export const emptyStore = createStore(
+// We need an empty store for the unit tests & hydrating from localstorage
+export const emptyStore: Store = createStore(
   rootReducer,
-  {} as IState,
+  undefined,
   emptyStoreEnhancers
 )
 
 // NOTE(sbdchd): this is hacky, we should validate the local storage state before using it
-const defaultData = (): RootState => {
+const defaultData = (): IState => {
   const saved = loadState()
   const empty = emptyStore.getState()
 
@@ -217,7 +214,7 @@ store.subscribe(
         fromUrl: store.getState().auth.fromUrl
       }
       // tslint:disable-next-line:no-any
-    } as any) as RootState)
+    } as any) as IState)
   }, 1000)
 )
 

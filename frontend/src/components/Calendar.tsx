@@ -19,7 +19,7 @@ import { push } from "react-router-redux"
 
 import { ButtonPrimary, ButtonPlain } from "@/components/Buttons"
 import CalendarDay from "@/components/CalendarDay"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 import { ITeam } from "@/store/reducers/teams"
 import {
   ICalRecipe,
@@ -266,7 +266,7 @@ function Calendar(props: ICalendarProps) {
 }
 
 const mapStateToProps = (
-  state: RootState,
+  state: IState,
   { teamID }: Pick<ICalendarProps, "teamID">
 ) => {
   const isTeam = teamID !== "personal"

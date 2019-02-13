@@ -7,12 +7,12 @@ import { FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { ButtonPrimary } from "@/components/Buttons"
 
 import { resetConfirmation as reset, Dispatch } from "@/store/thunks"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 import { IPasswordResetConfirmError } from "@/store/reducers/auth"
 
 type RouteProps = RouteComponentProps<{ uid: string; token: string }>
 
-const mapStateToProps = (state: RootState, props: RouteProps) => {
+const mapStateToProps = (state: IState, props: RouteProps) => {
   const uid = props.match.params.uid
   const token = props.match.params.token
   return {

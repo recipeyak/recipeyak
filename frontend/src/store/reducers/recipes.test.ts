@@ -6,7 +6,7 @@ import recipes, {
 } from "@/store/reducers/recipes"
 
 import * as a from "@/store/reducers/recipes"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 import { HttpErrorKind, Loading, isSuccess, Failure, Success } from "@/webdata"
 import { getModel, getCmd } from "redux-loop"
 
@@ -77,7 +77,7 @@ describe("Recipes", () => {
     expect(after.byId[first.id]).toBeUndefined()
 
     const maybeSecond = a.getRecipeById(
-      { recipes: beforeState } as RootState,
+      { recipes: beforeState } as IState,
       second.id
     )
     expect(maybeSecond).not.toBeUndefined()
