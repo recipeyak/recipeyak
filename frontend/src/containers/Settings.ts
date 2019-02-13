@@ -11,9 +11,9 @@ import {
 } from "@/store/thunks"
 
 import Settings from "@/components/Settings"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 
-const mapStateToProps = (state: RootState) => {
+const mapStateToProps = (state: IState) => {
   return {
     avatarURL: state.user.avatarURL,
     email: state.user.email,

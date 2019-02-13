@@ -19,7 +19,7 @@ import {
 import { ingredientByNameAlphabetical } from "@/sorters"
 
 import DateRangePicker from "@/components/DateRangePicker/DateRangePicker"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 import {
   IShoppingListItem,
   setSelectingStart,
@@ -55,7 +55,7 @@ function formatMonth(date: Date | null) {
   return format(date, "YYYY-MM-DD")
 }
 
-function mapStateToProps(state: RootState) {
+function mapStateToProps(state: IState) {
   return {
     startDay: state.shoppinglist.startDay,
     endDay: state.shoppinglist.endDay,

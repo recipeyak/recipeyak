@@ -25,7 +25,7 @@ import {
 
 import * as DragDrop from "@/dragDrop"
 import { IRecipe } from "@/store/reducers/recipes"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 import { ICalRecipe } from "@/store/reducers/calendar"
 import { IRecipeItemDrag } from "@/components/RecipeItem"
 import { Result } from "@/result"
@@ -104,7 +104,7 @@ function CalendarDay({
 }
 
 function mapStateToProps(
-  state: RootState,
+  state: IState,
   props: Pick<ICalendarDayProps, "date" | "scheduledRecipes">
 ) {
   const isShopping =

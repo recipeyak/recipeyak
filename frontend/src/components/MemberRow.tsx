@@ -10,7 +10,7 @@ import {
   Dispatch
 } from "@/store/thunks"
 import { ITeam, IMember } from "@/store/reducers/teams"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 import { IUser } from "@/store/reducers/user"
 import { Select } from "@/components/Forms"
 
@@ -102,7 +102,7 @@ const MemberRow = ({
 )
 
 const mapStateToProps = (
-  state: RootState,
+  state: IState,
   {
     userID,
     teamID,

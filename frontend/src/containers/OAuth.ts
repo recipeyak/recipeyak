@@ -3,7 +3,7 @@ import queryString from "query-string"
 
 import { socialLogin as login, Dispatch } from "@/store/thunks"
 import OAuth from "@/components/OAuth"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 import { RouteComponentProps } from "react-router"
 import { SocialProvider } from "@/store/reducers/user"
 
@@ -17,7 +17,7 @@ type RouteProps = RouteComponentProps<{
   service: SocialProvider
 }>
 
-const mapStateToProps = (state: RootState, props: RouteProps) => {
+const mapStateToProps = (state: IState, props: RouteProps) => {
   const service = props.match.params.service
   const parsed = queryString.parse(props.location.search)
   const token = parsed.token || parsed.code

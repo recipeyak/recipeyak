@@ -6,7 +6,7 @@ import {
   getType,
   createStandardAction
 } from "typesafe-actions"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 
 export const fetchCalendarRecipes = createAsyncAction(
   "FETCH_CALENDAR_RECIPES_START",
@@ -192,15 +192,15 @@ export const calendar = (
 export default calendar
 
 export const getCalRecipeById = (
-  state: RootState,
+  state: IState,
   id: ICalRecipe["id"]
 ): ICalRecipe => state.calendar.byId[id]
 
-export const getAllCalRecipes = (state: RootState): ICalRecipe[] =>
+export const getAllCalRecipes = (state: IState): ICalRecipe[] =>
   state.calendar.allIds.map(id => getCalRecipeById(state, id))
 
-export const getTeamRecipes = (state: RootState): ICalRecipe[] =>
+export const getTeamRecipes = (state: IState): ICalRecipe[] =>
   getAllCalRecipes(state).filter(recipe => recipe.team != null)
 
-export const getPersonalRecipes = (state: RootState): ICalRecipe[] =>
+export const getPersonalRecipes = (state: IState): ICalRecipe[] =>
   getAllCalRecipes(state).filter(recipe => recipe.team == null)

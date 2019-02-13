@@ -2,7 +2,7 @@ import { connect } from "react-redux"
 
 import { Dispatch } from "@/store/thunks"
 import Notification from "@/components/Notification"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 import { clearNotification } from "@/store/reducers/notification"
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
@@ -11,7 +11,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 
-const mapStateToProps = (state: RootState) => {
+const mapStateToProps = (state: IState) => {
   return {
     message: state.notification.message,
     closeable: state.notification.closeable,

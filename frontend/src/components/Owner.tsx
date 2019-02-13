@@ -16,7 +16,7 @@ import {
   INotificationWithTimeout,
   fetchingTeams
 } from "@/store/thunks"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 import { IRecipe } from "@/store/reducers/recipes"
 import { ITeamsState } from "@/store/reducers/teams"
 import { IUserState } from "@/store/reducers/user"
@@ -25,7 +25,7 @@ import GlobalEvent from "@/components/GlobalEvent"
 import { Select } from "@/components/Forms"
 import { isOk, Result } from "@/result"
 
-const mapStateToProps = (state: RootState) => ({
+const mapStateToProps = (state: IState) => ({
   teams: state.teams,
   userId: state.user.id
 })

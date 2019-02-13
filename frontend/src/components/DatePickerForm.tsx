@@ -16,7 +16,7 @@ import { ButtonPrimary } from "@/components/Buttons"
 import { addingScheduledRecipe, Dispatch } from "@/store/thunks"
 import { IRecipe } from "@/store/reducers/recipes"
 import { TextInput } from "@/components/Forms"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 
 function mapDispatchToProps(dispatch: Dispatch) {
   return {
@@ -24,7 +24,7 @@ function mapDispatchToProps(dispatch: Dispatch) {
   }
 }
 
-function mapStateToProps(state: RootState) {
+function mapStateToProps(state: IState) {
   return {
     teamID: state.user.teamID || ("personal" as TeamID)
   }

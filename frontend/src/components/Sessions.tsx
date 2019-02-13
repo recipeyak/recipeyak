@@ -5,7 +5,7 @@ import { WebData, isLoading, isInitial, isFailure } from "@/webdata"
 import { Button } from "@/components/Buttons"
 import Loader from "@/components/Loader"
 import { connect } from "react-redux"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 import {
   Dispatch,
   fetchingSessions,
@@ -131,7 +131,7 @@ function SessionListBasic({
   )
 }
 
-const mapStateToProps = (state: RootState) => ({
+const mapStateToProps = (state: IState) => ({
   sessions: state.user.sessions,
   loggingOutAll: state.user.loggingOutAllSessionsStatus
 })

@@ -8,10 +8,10 @@ import {
   fetchingRecentRecipes,
   fetchingUser
 } from "@/store/thunks"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 import { getRecentRecipes } from "@/store/reducers/recipes"
 
-const mapStateToProps = (state: RootState) => ({
+const mapStateToProps = (state: IState) => ({
   userStats: state.user.stats,
   recipes: getRecentRecipes(state)
 })

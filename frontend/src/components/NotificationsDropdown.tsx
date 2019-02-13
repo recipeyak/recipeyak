@@ -14,7 +14,7 @@ import {
 
 import { teamURL } from "@/urls"
 import { IInvite, getInvites } from "@/store/reducers/invites"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 
 interface IInvitesProps {
   readonly loading: boolean
@@ -83,7 +83,7 @@ const Invites = ({ loading, invites, decline, accept }: IInvitesProps) => {
   )
 }
 
-const mapStateToProps = (state: RootState) => {
+const mapStateToProps = (state: IState) => {
   return {
     loading: state.invites.loading,
     invites: getInvites(state)
