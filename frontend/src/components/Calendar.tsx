@@ -28,6 +28,8 @@ import {
 } from "@/store/reducers/calendar"
 import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
 import { Select } from "@/components/Forms"
+import { classNames } from "@/classnames"
+import { isSafari } from "@/utils/general"
 
 function monthYearFromDate(date: Date) {
   return format(date, "MMM D | YYYY")
@@ -68,7 +70,15 @@ interface IDaysProps {
 
 function Days({ start, end, days, teamID }: IDaysProps) {
   return (
-    <section className="d-grid grid-gap-1 calendar-grid mb-0 flex-grow-1 h-100">
+    <section
+      className={classNames(
+        "d-grid",
+        "grid-gap-1",
+        "calendar-grid",
+        "mb-0",
+        "flex-grow-1",
+        { "h-100": isSafari() }
+      )}>
       {eachDay(start, end).map(date => {
         const recipes = days[toDateString(date)]
         return (
