@@ -41,15 +41,15 @@ class OpenGraphPlugin {
         "OpenGraphPlugin",
         /**
          * @param {any} htmlPluginData
-         * @param {Function} callback
+         * @param {Function} callbk
          */
-        (htmlPluginData, callback) => {
+        (htmlPluginData, callbk) => {
           const filesToInclude = this.options.map(format).join("\n")
           htmlPluginData.html = htmlPluginData.html.replace(
             "</head>",
             filesToInclude + "\n</head>"
           )
-          callback(null, htmlPluginData)
+          callbk(null, htmlPluginData)
         }
       )
       return callback()
