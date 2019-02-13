@@ -136,7 +136,7 @@ function Nav({
   current
 }: INavProps) {
   return (
-    <div className="d-flex justify-space-between align-items-end">
+    <div className="d-flex justify-space-between align-items-end min-height-content">
       <section className="d-flex align-items-center">
         <CalTitle day={day} />
         <TeamSelect
