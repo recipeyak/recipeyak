@@ -116,6 +116,7 @@
     "tslint-immutable": "^5.0.1",
     "tslint-microsoft-contrib": "^6.0.0",
     "typesafe-actions": "^2.0.4",
+    "webapp-webpack-plugin": "^2.6.0",
     "webpack-bundle-analyzer": "^3.0.3"
   },
   "proxy": "http://localhost:8000",
