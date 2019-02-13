@@ -43,9 +43,7 @@ const OAuthButton = ({
       <div className="d-flex align-center">
         {connected ? (
           <div className="d-flex align-center flex-wrap">
-            <ButtonDanger
-              onClick={disconnect}
-              loading={disconnecting}>
+            <ButtonDanger onClick={disconnect} loading={disconnecting}>
               Disconnect
             </ButtonDanger>
           </div>
