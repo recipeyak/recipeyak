@@ -11,13 +11,15 @@ import {
 import { connect } from "react-redux"
 
 interface IAddStepProps {
-  readonly addStep: (
-    args: { id: IStep["id"]; step: IRecipe["draftStep"] }
-  ) => void
+  readonly addStep: (args: {
+    id: IStep["id"]
+    step: IRecipe["draftStep"]
+  }) => void
   readonly step?: string
-  readonly setStep: (
-    args: { id: IRecipe["id"]; draftStep: IRecipe["draftStep"] }
-  ) => void
+  readonly setStep: (args: {
+    id: IRecipe["id"]
+    draftStep: IRecipe["draftStep"]
+  }) => void
   readonly onCancel: () => void
   readonly loading?: boolean
   readonly autoFocus?: boolean

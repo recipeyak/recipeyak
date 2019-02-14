@@ -33,14 +33,15 @@ interface IIngredientProps {
   readonly updating?: boolean
   readonly removing?: boolean
   readonly remove: (recipeID: IRecipe["id"], id: IIngredient["id"]) => void
-  readonly update: (
-    {
-      quantity,
-      name,
-      description,
-      optional
-    }: Pick<IIngredient, "quantity" | "name" | "description" | "optional">
-  ) => void
+  readonly update: ({
+    quantity,
+    name,
+    description,
+    optional
+  }: Pick<
+    IIngredient,
+    "quantity" | "name" | "description" | "optional"
+  >) => void
 }
 
 interface IIngredientState {

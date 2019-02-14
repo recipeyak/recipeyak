@@ -26,16 +26,13 @@ export default function UserDropdown(props: IUserDropdownProps) {
     }
   }, [])
 
-  useEffect(
-    () => {
-      if (show) {
-        document.addEventListener("click", handleGeneralClick)
-      } else {
-        document.removeEventListener("click", handleGeneralClick)
-      }
-    },
-    [show]
-  )
+  useEffect(() => {
+    if (show) {
+      document.addEventListener("click", handleGeneralClick)
+    } else {
+      document.removeEventListener("click", handleGeneralClick)
+    }
+  }, [show])
 
   const toggle = () => setShow(prevShow => !prevShow)
 
