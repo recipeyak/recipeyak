@@ -40,25 +40,19 @@ const mapDispatchToProps = {
 interface IRecipeProps extends RouteProps {
   readonly recipe: WebData<IRecipe>
   readonly fetchRecipe: (id: IRecipe["id"]) => void
-  readonly addIngredient: (
-    args: {
-      recipeID: number
-      ingredient: IIngredientBasic
-    }
-  ) => void
-  readonly updateIngredient: (
-    args: {
-      recipeID: IRecipe["id"]
-      ingredientID: IIngredient["id"]
-      content: Omit<IIngredient, "id" | "position">
-    }
-  ) => void
-  readonly removeIngredient: (
-    args: {
-      recipeID: IRecipe["id"]
-      ingredientID: IIngredient["id"]
-    }
-  ) => void
+  readonly addIngredient: (args: {
+    recipeID: number
+    ingredient: IIngredientBasic
+  }) => void
+  readonly updateIngredient: (args: {
+    recipeID: IRecipe["id"]
+    ingredientID: IIngredient["id"]
+    content: Omit<IIngredient, "id" | "position">
+  }) => void
+  readonly removeIngredient: (args: {
+    recipeID: IRecipe["id"]
+    ingredientID: IIngredient["id"]
+  }) => void
 }
 
 function Recipe(props: IRecipeProps) {

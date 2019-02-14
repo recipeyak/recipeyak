@@ -11,12 +11,10 @@ export interface IIngredientBasic {
 interface IAddIngredientProps {
   readonly onCancel: () => void
   readonly id: number
-  readonly addIngredient: (
-    args: {
-      recipeID: number
-      ingredient: IIngredientBasic
-    }
-  ) => void
+  readonly addIngredient: (args: {
+    recipeID: number
+    ingredient: IIngredientBasic
+  }) => void
   readonly loading: boolean
   readonly autoFocus: boolean
 }
@@ -53,14 +51,11 @@ export default function AddIngredient({
     setOptional(false)
   }
 
-  useEffect(
-    () => {
-      if (!loading) {
-        setEmptyState()
-      }
-    },
-    [loading]
-  )
+  useEffect(() => {
+    if (!loading) {
+      setEmptyState()
+    }
+  }, [loading])
 
   const cancelAddIngredient = () => {
     onCancel()

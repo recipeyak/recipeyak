@@ -31,18 +31,15 @@ function AddIngredientForm({
 }: IAddIngredientFormProps) {
   const [isInitialLoad, setInitialLoad] = useState(true)
 
-  useEffect(
-    () => {
-      setInitialLoad(false)
-      if (!loading && (autoFocus || !isInitialLoad)) {
-        const el = document.getElementById("firstinput")
-        if (el) {
-          el.focus()
-        }
+  useEffect(() => {
+    setInitialLoad(false)
+    if (!loading && (autoFocus || !isInitialLoad)) {
+      const el = document.getElementById("firstinput")
+      if (el) {
+        el.focus()
       }
-    },
-    [loading]
-  )
+    }
+  }, [loading])
   const handleKeyUp = (e: KeyboardEvent) => {
     if (e.key === "Escape") {
       cancelAddIngredient()

@@ -161,14 +161,11 @@ function ShoppingList(props: IShoppingListProps) {
   const [month, setMonth] = useState(new Date())
   const [selecting, setSelecting] = useState(Selecting.None)
 
-  useEffect(
-    () => {
-      if (selecting === Selecting.None) {
-        refetchData()
-      }
-    },
-    [selecting]
-  )
+  useEffect(() => {
+    if (selecting === Selecting.None) {
+      refetchData()
+    }
+  }, [selecting])
 
   const refetchData = () => {
     // TODO: refetch data on calendar count for scheduled recipes changes
