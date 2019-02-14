@@ -1,5 +1,5 @@
 import { createAsyncAction, ActionType, getType } from "typesafe-actions"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 
 export const fetchInvites = createAsyncAction(
   "FETCH_INVITES_START",
@@ -136,6 +136,6 @@ const invites = (
 
 export default invites
 
-export function getInvites(state: RootState): IInvite[] {
+export function getInvites(state: IState): IInvite[] {
   return Object.values(state.invites.byId)
 }

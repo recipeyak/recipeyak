@@ -14,7 +14,7 @@ import {
 
 import { teamURL } from "@/urls"
 import { IInvite, getInvites } from "@/store/reducers/invites"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 
 interface IInvitesProps {
   readonly loading: boolean
@@ -25,12 +25,14 @@ interface IInvitesProps {
 
 const Invites = ({ loading, invites, decline, accept }: IInvitesProps) => {
   if (loading) {
-    return <p className="text-muted fs-3 align-self-center">Loading...</p>
+    return <p className="text-muted text-small align-self-center">Loading...</p>
   }
 
   if (invites.length === 0) {
     return (
-      <p className="text-muted fs-3 align-self-center">No new notifications.</p>
+      <p className="text-muted text-small align-self-center">
+        No new notifications.
+      </p>
     )
   }
 
@@ -83,7 +85,7 @@ const Invites = ({ loading, invites, decline, accept }: IInvitesProps) => {
   )
 }
 
-const mapStateToProps = (state: RootState) => {
+const mapStateToProps = (state: IState) => {
   return {
     loading: state.invites.loading,
     invites: getInvites(state)

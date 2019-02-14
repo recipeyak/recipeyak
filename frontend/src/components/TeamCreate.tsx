@@ -7,10 +7,10 @@ import { ButtonPrimary } from "@/components/Buttons"
 
 import { creatingTeam, Dispatch } from "@/store/thunks"
 import { IMember } from "@/store/reducers/teams"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 import { TextInput, RadioButton } from "@/components/Forms"
 
-const mapStateToProps = (state: RootState) => ({
+const mapStateToProps = (state: IState) => ({
   loading: !!state.teams.creating
 })
 

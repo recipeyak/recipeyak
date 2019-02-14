@@ -3,9 +3,12 @@ const webpack = require("webpack")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin")
+// @ts-ignore
+const WebappWebpackPlugin = require("webapp-webpack-plugin")
 const TerserPlugin = require("terser-webpack-plugin")
 const ManifestPlugin = require("webpack-manifest-plugin")
 const InterpolateHtmlPlugin = require("react-dev-utils/InterpolateHtmlPlugin")
+const OpenGraphPlugin = require("./open-graph-plugin")
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin
 const paths = require("./paths")
@@ -23,6 +26,18 @@ const env = getClientEnvironment(publicUrl)
 
 if (env.stringified["process.env"].NODE_ENV !== '"production"') {
   throw new Error("Production builds must have NODE_ENV=production.")
+}
+
+const openGraphConfig = {
+  title: "RecipeYak",
+  type: "Website"
+}
+
+const faviconConfig = {
+  faviconPath: paths.appSrc + "/static/images/logo/recipeyak-logo.svg",
+  appName: "RecipeYak",
+  themeColor: "#ff7247",
+  backgroundColor: "#fff"
 }
 
 module.exports = {
@@ -199,6 +214,35 @@ module.exports = {
         minifyJS: true,
         minifyCSS: true,
         minifyURLs: true
+      }
+    }),
+    new OpenGraphPlugin([
+      {
+        property: "og:title",
+        content: openGraphConfig.title
+      },
+      {
+        property: "og:type",
+        content: openGraphConfig.type
+      }
+    ]),
+    new WebappWebpackPlugin({
+      logo: faviconConfig.faviconPath,
+      cache: true,
+      prefix: "assets-[hash:8]/",
+      favicons: {
+        appName: faviconConfig.appName,
+        appDescription: null,
+        developerName: null,
+        developerURL: null,
+        background: faviconConfig.backgroundColor,
+        theme_color: faviconConfig.themeColor,
+        icons: {
+          appleStartup: false,
+          firefox: false,
+          coast: false,
+          yandex: false
+        }
       }
     }),
     new webpack.DefinePlugin(env.stringified),

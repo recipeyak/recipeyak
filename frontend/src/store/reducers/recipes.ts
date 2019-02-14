@@ -7,7 +7,7 @@ import {
   getType,
   createStandardAction
 } from "typesafe-actions"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 import {
   WebData,
   HttpErrorKind,
@@ -348,7 +348,7 @@ export type RecipeActions =
 
 const mapSuccessLikeById = <T extends IRecipe["id"][]>(
   arr: WebData<T>,
-  state: RootState
+  state: IState
 ): WebData<IRecipe[]> =>
   mapSuccessLike(arr, a =>
     a
@@ -358,7 +358,7 @@ const mapSuccessLikeById = <T extends IRecipe["id"][]>(
   )
 
 export function getTeamRecipes(
-  state: RootState,
+  state: IState,
   teamID: TeamID
 ): WebData<IRecipe[]> {
   const ids =
@@ -369,11 +369,11 @@ export function getTeamRecipes(
 }
 
 export const getRecipeById = (
-  state: RootState,
+  state: IState,
   id: IRecipe["id"]
 ): WebData<IRecipe> => state.recipes.byId[id]
 
-export const getRecentRecipes = (state: RootState): WebData<IRecipe[]> =>
+export const getRecentRecipes = (state: IState): WebData<IRecipe[]> =>
   mapSuccessLikeById(state.recipes.recentIds, state)
 
 export interface IIngredient {

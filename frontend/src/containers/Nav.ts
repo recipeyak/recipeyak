@@ -10,10 +10,10 @@ import {
 import Nav from "@/components/Nav"
 
 import { teamsFrom, scheduleURLFromTeamID } from "@/store/mapState"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 import { toggleDarkMode } from "@/store/reducers/user"
 
-const mapStateToProps = (state: RootState) => ({
+const mapStateToProps = (state: IState) => ({
   avatarURL: state.user.avatarURL,
   email: state.user.email,
   loading: state.user.loading,

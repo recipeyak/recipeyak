@@ -16,7 +16,7 @@ import {
   INotificationWithTimeout,
   fetchingTeams
 } from "@/store/thunks"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 import { IRecipe } from "@/store/reducers/recipes"
 import { ITeamsState } from "@/store/reducers/teams"
 import { IUserState } from "@/store/reducers/user"
@@ -25,7 +25,7 @@ import GlobalEvent from "@/components/GlobalEvent"
 import { Select } from "@/components/Forms"
 import { isOk, Result } from "@/result"
 
-const mapStateToProps = (state: RootState) => ({
+const mapStateToProps = (state: IState) => ({
   teams: state.teams,
   userId: state.user.id
 })
@@ -191,7 +191,10 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
                 onChange={this.handleChange}
                 className="max-height-25vh overflow-y-scroll w-100">
                 {teamUserKeys.map(opt => (
-                  <option className="fs-3 fw-500" key={opt.id} value={opt.id}>
+                  <option
+                    className="text-small fw-500"
+                    key={opt.id}
+                    value={opt.id}>
                     {opt.name}
                   </option>
                 ))}

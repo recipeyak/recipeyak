@@ -8,7 +8,7 @@ import AddIngredient, { IIngredientBasic } from "@/components/AddIngredient"
 import StepContainer from "@/components/StepContainer"
 import Ingredient from "@/components/Ingredient"
 import RecipeTitle from "@/components/RecipeTitle"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 import { RouteComponentProps } from "react-router"
 import {
   IRecipe,
@@ -24,7 +24,7 @@ import { SectionTitle } from "@/components/RecipeHelpers"
 
 type RouteProps = RouteComponentProps<{ id: string }>
 
-const mapStateToProps = (state: RootState, props: RouteProps) => {
+const mapStateToProps = (state: IState, props: RouteProps) => {
   const id = parseInt(props.match.params.id, 10)
   const maybeRecipe = getRecipeById(state, id)
   return { recipe: maybeRecipe }

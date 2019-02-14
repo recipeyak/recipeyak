@@ -25,6 +25,7 @@
     ]
   },
   "rules": {
+    "no-non-null-assertion": true,
     "react-prefer-simple-fragment": true,
     "no-pointless-computed-property-name": true,
     "jsx-no-true-attribute": true,

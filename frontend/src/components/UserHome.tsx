@@ -201,7 +201,7 @@ const UserHome = ({ userStats, recipes, fetchData }: IUserHomeProps) => {
       <div className="container pr-2 pl-2 pb-2">
         <Helmet title="Home" />
 
-        <section className="home-page-grid font-family-title">
+        <section className="home-page-grid">
           <UserStatistics stats={userStats} />
           <RecentRecipes recipes={recipes} />
         </section>

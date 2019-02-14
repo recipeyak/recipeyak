@@ -22,7 +22,7 @@ function Count({ value: count, onChange }: ICountProps) {
     return (
       <div className="d-flex">
         <TextInput
-          className="fs-3 text-right w-2rem"
+          className="text-small text-right w-2rem"
           name="calendar-item-count"
           onChange={onChange}
           value={count}
@@ -41,7 +41,7 @@ function RecipeLink({ name, id }: IRecipeLink) {
   return (
     <Link
       to={recipeURL(id, name)}
-      className="break-word fs-3"
+      className="break-word text-small"
       style={{
         lineHeight: 1.1
       }}>

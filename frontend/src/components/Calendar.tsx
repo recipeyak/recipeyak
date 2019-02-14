@@ -19,7 +19,7 @@ import { push } from "react-router-redux"
 
 import { ButtonPrimary, ButtonPlain } from "@/components/Buttons"
 import CalendarDay from "@/components/CalendarDay"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 import { ITeam } from "@/store/reducers/teams"
 import {
   ICalRecipe,
@@ -28,6 +28,8 @@ import {
 } from "@/store/reducers/calendar"
 import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
 import { Select } from "@/components/Forms"
+import { classNames } from "@/classnames"
+import { isSafari } from "@/utils/general"
 
 function monthYearFromDate(date: Date) {
   return format(date, "MMM D | YYYY")
@@ -68,7 +70,15 @@ interface IDaysProps {
 
 function Days({ start, end, days, teamID }: IDaysProps) {
   return (
-    <section className="d-grid grid-gap-1 calendar-grid mb-0 flex-grow-1 h-100">
+    <section
+      className={classNames(
+        "d-grid",
+        "grid-gap-1",
+        "calendar-grid",
+        "mb-0",
+        "flex-grow-1",
+        { "h-100": isSafari() }
+      )}>
       {eachDay(start, end).map(date => {
         const recipes = days[toDateString(date)]
         return (
@@ -136,7 +146,7 @@ function Nav({
   current
 }: INavProps) {
   return (
-    <div className="d-flex justify-space-between align-items-end">
+    <div className="d-flex justify-space-between align-items-end min-height-content">
       <section className="d-flex align-items-center">
         <CalTitle day={day} />
         <TeamSelect
@@ -266,7 +276,7 @@ function Calendar(props: ICalendarProps) {
 }
 
 const mapStateToProps = (
-  state: RootState,
+  state: IState,
   { teamID }: Pick<ICalendarProps, "teamID">
 ) => {
   const isTeam = teamID !== "personal"

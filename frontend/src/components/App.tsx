@@ -7,7 +7,7 @@ import { setConfig } from "react-hot-loader"
 import HTML5Backend from "react-dnd-html5-backend"
 import { DragDropContext } from "react-dnd"
 import { connect } from "react-redux"
-import { history, RootState } from "@/store/store"
+import { history, IState } from "@/store/store"
 import Home from "@/containers/Home"
 import Login from "@/containers/Login"
 import Signup from "@/containers/Signup"
@@ -37,7 +37,7 @@ interface IAuthRouteProps extends RouteProps {
   readonly authenticated: boolean
 }
 
-const mapAuthenticated = (state: RootState) => ({
+const mapAuthenticated = (state: IState) => ({
   authenticated: state.user.loggedIn
 })
 

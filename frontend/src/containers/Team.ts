@@ -9,14 +9,14 @@ import {
   Dispatch
 } from "@/store/thunks"
 import Team from "@/components/Team"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 import { RouteComponentProps } from "react-router"
 import { ITeam } from "@/store/reducers/teams"
 import { isSuccess } from "@/webdata"
 
 type RouteProps = RouteComponentProps<{ id: string }>
 
-const mapStateToProps = (state: RootState, props: RouteProps) => {
+const mapStateToProps = (state: IState, props: RouteProps) => {
   const id = parseInt(props.match.params.id, 10)
   const team: ITeam | undefined = state.teams.byId[id]
 

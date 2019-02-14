@@ -16,7 +16,7 @@ import { ButtonPrimary } from "@/components/Buttons"
 import { addingScheduledRecipe, Dispatch } from "@/store/thunks"
 import { IRecipe } from "@/store/reducers/recipes"
 import { TextInput } from "@/components/Forms"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 
 function mapDispatchToProps(dispatch: Dispatch) {
   return {
@@ -24,7 +24,7 @@ function mapDispatchToProps(dispatch: Dispatch) {
   }
 }
 
-function mapStateToProps(state: RootState) {
+function mapStateToProps(state: IState) {
   return {
     teamID: state.user.teamID || ("personal" as TeamID)
   }
@@ -108,8 +108,7 @@ class DatePickerForm extends React.Component<
           "cursor-default",
           "z-index-100",
           "bg-whitesmoke",
-          "p-2",
-          "fs-4"
+          "p-2"
         )}>
         <Month
           showLeft
@@ -125,7 +124,7 @@ class DatePickerForm extends React.Component<
           <div className="d-flex">
             <TextInput
               size="small"
-              className="w-2rem mr-2 fs-3 text-center"
+              className="w-2rem mr-2 text-small text-center"
               onChange={this.handleCountChange}
               value={this.state.count}
             />

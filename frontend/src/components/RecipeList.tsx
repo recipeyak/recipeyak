@@ -9,7 +9,7 @@ import { byNameAlphabetical } from "@/sorters"
 import { Dispatch, fetchingRecipeList } from "@/store/thunks"
 import { IRecipe, getTeamRecipes } from "@/store/reducers/recipes"
 import { ITeam } from "@/store/reducers/teams"
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 import { WebData, isSuccessOrRefetching } from "@/webdata"
 
 interface IRecipeList {
@@ -77,7 +77,7 @@ function RecipesListSearch(props: IRecipesProps) {
   )
 }
 
-function mapStateToProps(state: RootState, ownProps: IOwnProps) {
+function mapStateToProps(state: IState, ownProps: IOwnProps) {
   return {
     recipes: getTeamRecipes(state, ownProps.teamID || "personal")
   }

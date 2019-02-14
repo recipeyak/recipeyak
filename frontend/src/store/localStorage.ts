@@ -1,4 +1,4 @@
-import { RootState } from "@/store/store"
+import { IState } from "@/store/store"
 
 /** JSONParse that doesn't throw
  *
@@ -21,10 +21,10 @@ export const loadState = () => {
   if (serializedState === null) {
     return undefined
   }
-  return jsonParse<Partial<RootState>>(serializedState)
+  return jsonParse<Partial<IState>>(serializedState)
 }
 
-export const saveState = (state: RootState) => {
+export const saveState = (state: IState) => {
   const serializedState = JSON.stringify(state)
   localStorage.setItem("state", serializedState)
 }

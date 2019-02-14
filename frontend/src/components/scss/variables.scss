@@ -1,6 +1,6 @@
 $border-color: #dbdbdb;
 
-$base-font-size: 18px;
+$base-font-size: 16px;
 $printing-font-size: 14px;
 
 $success: rgb(99, 203, 137);
@@ -16,8 +16,6 @@ $text-color: #4a4a4a;
 $font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen",
   "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
   "Helvetica", "Arial", sans-serif;
-$font-family-title: Avenir, Futura, Lato, sans-serif;
-$font-family-serif: Charter, georgia, serif;
 
 $primary-color: adjust-hue(tomato, 5deg);
 $primary-color-dark: darken($primary-color, 10%);
@@ -33,5 +31,5 @@ $github: #444444;
 $small: 630px;
 
 // HACK(sbdchd): so that the schedule page doesn't scroll / overflow
-$nav-height: 72px;
+$nav-height: 65px;
 $search-and-tab-height: 98px;
