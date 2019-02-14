@@ -23,4 +23,5 @@ psql -c "Create database $DATE"
 gzip -d "$1" -c |  psql -d "$DATE"
 
 # remove recipeyak table if it exists and rename our table to recipeyak
-psql -c "DROP DATABASE IF EXISTS recipeyak; ALTER DATABASE $DATE RENAME TO recipeyak"
+psql -c "DROP DATABASE IF EXISTS recipeyak"
+psql -c "ALTER DATABASE $DATE RENAME TO recipeyak"
