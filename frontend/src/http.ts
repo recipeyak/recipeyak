@@ -36,6 +36,7 @@ const handleResponseError = (error: AxiosError) => {
     // status to Sentry.
     raven.captureException(error, { level: "info" })
   }
+  // tslint:disable-next-line:no-throw
   return Promise.reject(error)
 }
 
@@ -54,6 +55,7 @@ baseHttp.interceptors.request.use(
     // tslint:disable:no-unsafe-any
     return cfg
   },
+  // tslint:disable-next-line:no-throw
   error => Promise.reject(error)
 )
 
