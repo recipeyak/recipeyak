@@ -10036,20 +10036,20 @@ tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.3.tgz#d7e4dd79245d85428c4d7e4822a79917954ca286"
 
-tslint-cake@^0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/tslint-cake/-/tslint-cake-0.6.0.tgz#24ae689c23a842be6ed6589c5c3093edf8a5cf7a"
-  integrity sha512-zRSIYPt1DS8t3eEFgQEGASgpZw0V55eyskTToc7TMY6PpTmKetOX0pe3BUDJT9X+QqM6XNxuvB5gojbxupXKOg==
+tslint-cake@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/tslint-cake/-/tslint-cake-0.7.0.tgz#487b6f3508cfde6e6233af54c68f17b8c7be348c"
+  integrity sha512-EfCZONGrq38GPFfZMZ8SCKrYgIUjMpbzqmgCk+nh0hIBa4FQt0LYyhJUpOz8Bhtxs+BpNMaCpxwaqEHgYSMjJw==
 
 tslint-config-prettier@^1.17.0:
   version "1.17.0"
   resolved "https://registry.yarnpkg.com/tslint-config-prettier/-/tslint-config-prettier-1.17.0.tgz#946ed6117f98f3659a65848279156d87628c33dc"
   integrity sha512-NKWNkThwqE4Snn4Cm6SZB7lV5RMDDFsBwz6fWUkTxOKGjMx8ycOHnjIbhn7dZd5XmssW3CwqUjlANR6EhP9YQw==
 
-tslint-immutable@^5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/tslint-immutable/-/tslint-immutable-5.0.1.tgz#757cdbede20d7217a3f68ddaaa87682424c424fe"
-  integrity sha512-2tmUnfHI/BOM+0Fsny8/h/lBna9XI+34kqcCRddLukZbv9Fis79YbPyQw5Ml0hGzP0H0fS7jFBWUM/6eX1+0ug==
+tslint-immutable@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/tslint-immutable/-/tslint-immutable-5.2.0.tgz#e5f650be98608d434e93a93301746506f812046e"
+  integrity sha512-XKB62fBweW+2oCJQs1W/jLY1ythJBpYA6mz6x6+bs7Y7NofVrrYTQqQYEiFi2sxaU7wVKwiz2W8opIkkX8xnJw==
   dependencies:
     tsutils "^2.28.0 || ^3.0.0"
 
@@ -10065,10 +10065,10 @@ tslint-react-hooks@^1.0.1:
   resolved "https://registry.yarnpkg.com/tslint-react-hooks/-/tslint-react-hooks-1.0.1.tgz#cb075fbc435af0f2540874f6b8d70cc7c0a0895b"
   integrity sha512-lOcKPT0+oK25U0aaj0SEzSLiZ7Wr/D+gK88RxWjEkOvSyRwqF1WHINQ/sY7oQftEkRW1mGIv5BDoYNvmUMHJoQ==
 
-tslint@^5.12.0:
-  version "5.12.0"
-  resolved "https://registry.yarnpkg.com/tslint/-/tslint-5.12.0.tgz#47f2dba291ed3d580752d109866fb640768fca36"
-  integrity sha512-CKEcH1MHUBhoV43SA/Jmy1l24HJJgI0eyLbBNSRyFlsQvb9v6Zdq+Nz2vEOH00nC5SUx4SneJ59PZUS/ARcokQ==
+tslint@^5.12.1:
+  version "5.12.1"
+  resolved "https://registry.yarnpkg.com/tslint/-/tslint-5.12.1.tgz#8cec9d454cf8a1de9b0a26d7bdbad6de362e52c1"
+  integrity sha512-sfodBHOucFg6egff8d1BvuofoOQ/nOeYNfbp7LDlKBcLNrL3lmS5zoiDGyOMdT7YsEXAwWpTdAHwOGOc8eRZAw==
   dependencies:
     babel-code-frame "^6.22.0"
     builtin-modules "^1.1.1"
