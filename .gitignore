@@ -14,3 +14,4 @@ backend/.pytest_cache
 docker-compose-shipit.yml
 .terraform/
 *env*
+.pytest_cache/
