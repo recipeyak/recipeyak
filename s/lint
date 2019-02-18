@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 set -e
 
+# TODO(chdsbd): Combine with frontend lints via proper CLI
+
 cd $(dirname $(dirname "$0"))
 
-if [[ -f ../.env ]]; then
+if [[ -f .env ]]; then
     # export all variables from env file
     set -a
-    source ../.env
+    source .env
     set +a
 fi
 
@@ -14,15 +16,15 @@ echo 'start mypy'
 ./s/typecheck &
 
 echo 'start flake8'
-(poetry run flake8 $FILES) &
+(poetry run flake8 .) &
 
 echo 'start black'
 # black --quiet is too quiet, so we grep for 'would format' in stderr
-(poetry run black --check .. 2> >( grep 'would reformat');) &
+(poetry run black --check . 2> >( grep 'would reformat');) &
 
 if [[ "$@" == *'--db'* ]] || [[ $CI ]]; then
     echo 'check for missing migrations'
-    ./s/check_missing_migrations &
+    ./backend/s/check_missing_migrations &
 else
     echo '--db not passed. Skipping migration check that requires Postgres.'
 fi

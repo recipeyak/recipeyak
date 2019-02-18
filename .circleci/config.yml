@@ -36,7 +36,6 @@ jobs:
           key: backend-v2-{{ .Branch }}-{{ checksum "poetry.lock" }}
       - run:
           name: run tests
-          working_directory: backend
           command: ./s/test
       - store_test_results:
           path: backend/reports
@@ -75,7 +74,6 @@ jobs:
           key: backend-v2-{{ .Branch }}-{{ checksum "poetry.lock" }}
       - run:
           name: run lints
-          working_directory: backend
           command: ./s/lint
       - store_test_results:
           path: backend/reports

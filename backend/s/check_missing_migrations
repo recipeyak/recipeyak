@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+cd $(dirname $(dirname "$0"))
+
 # https://docs.djangoproject.com/en/2.0/ref/django-admin/#cmdoption-makemigrations-check
 poetry run ./manage.py makemigrations --dry-run --noinput --check > /dev/null
 status="$?"
