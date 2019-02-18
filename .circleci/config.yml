@@ -145,7 +145,6 @@ jobs:
       # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
       - run:
           name: build container
-          working_directory: backend
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
             docker build -f Dockerfile-prod \
@@ -163,7 +162,6 @@ jobs:
       # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
       - run:
           name: build container
-          working_directory: frontend
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
             docker build -f Dockerfile-prod \
