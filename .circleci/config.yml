@@ -16,7 +16,7 @@ jobs:
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
-            - backend-v2-{{ .Branch }}-{{ checksum "backend/poetry.lock" }}
+            - backend-v2-{{ .Branch }}-{{ checksum "poetry.lock" }}
             - backend-v2-{{ .Branch }}-
             - backend-v2-
       - run:
@@ -55,7 +55,7 @@ jobs:
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
-            - backend-v2-{{ .Branch }}-{{ checksum "backend/poetry.lock" }}
+            - backend-v2-{{ .Branch }}-{{ checksum "poetry.lock" }}
             - backend-v2-{{ .Branch }}-
             - backend-v2-
       - run:
