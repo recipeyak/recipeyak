@@ -33,7 +33,7 @@ jobs:
           paths:
             - ./backend/.mypy_cache
             - /home/circleci/.cache/pypoetry/
-          key: backend-v2-{{ .Branch }}-{{ checksum "backend/poetry.lock" }}
+          key: backend-v2-{{ .Branch }}-{{ checksum "poetry.lock" }}
       - run:
           name: run tests
           working_directory: backend
@@ -72,7 +72,7 @@ jobs:
           paths:
             - ./backend/.mypy_cache
             - /home/circleci/.cache/pypoetry/
-          key: backend-v2-{{ .Branch }}-{{ checksum "backend/poetry.lock" }}
+          key: backend-v2-{{ .Branch }}-{{ checksum "poetry.lock" }}
       - run:
           name: run lints
           working_directory: backend
