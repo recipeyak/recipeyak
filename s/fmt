@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# TODO(chdsbd):
+# - add support for only diffing changed files
+# - add support for prettier when yarn is moved to root
+
+exec poetry run black .
