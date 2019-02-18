@@ -8,6 +8,7 @@ To have a centralized location where multiple people can organize a meal plan.
 ## Prior Art
 
 - <https://www.paprikaapp.com>
+- <https://www.anylist.com>
 - <http://thinkle.github.io/gourmet/>
 - <http://krecipes.sourceforge.net>
 

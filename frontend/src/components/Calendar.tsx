@@ -210,12 +210,9 @@ function Calendar(props: ICalendarProps) {
     props.refetchShoppingListAndRecipes(teamID)
   }
 
-  useEffect(
-    () => {
-      props.fetchData(props.teamID, start)
-    },
-    [start]
-  )
+  useEffect(() => {
+    props.fetchData(props.teamID, start)
+  }, [start])
 
   const prev = () => {
     setStart(prevStart => prevWeekStart(prevStart))

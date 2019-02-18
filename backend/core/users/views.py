@@ -1,3 +1,5 @@
+from typing import cast
+
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
@@ -31,7 +33,7 @@ class UserDetailsView(RetrieveUpdateAPIView):
     permission_classes = (IsAuthenticated,)
 
     def get_object(self) -> MyUser:
-        return self.request.user
+        return cast(MyUser, self.request.user)
 
     def delete(self, request: Request) -> Response:
         if request.user.has_team():

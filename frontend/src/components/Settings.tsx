@@ -42,13 +42,14 @@ const OAuthButton = ({
       </div>
       <div className="d-flex align-center">
         {connected ? (
-          <div className="d-flex align-center flex-wrap">
-            <ButtonDanger onClick={disconnect} loading={disconnecting}>
-              Disconnect
-            </ButtonDanger>
-          </div>
+          <ButtonDanger
+            onClick={disconnect}
+            size="small"
+            loading={disconnecting}>
+            Disconnect
+          </ButtonDanger>
         ) : (
-          <a href={OAUTH_URL + "/connect"} className="my-button">
+          <a href={OAUTH_URL + "/connect"} className="my-button is-small">
             Connect
           </a>
         )}

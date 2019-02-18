@@ -36,6 +36,7 @@ const handleResponseError = (error: AxiosError) => {
     // status to Sentry.
     raven.captureException(error, { level: "info" })
   }
+  // tslint:disable-next-line:no-throw
   return Promise.reject(error)
 }
 
@@ -54,13 +55,14 @@ baseHttp.interceptors.request.use(
     // tslint:disable:no-unsafe-any
     return cfg
   },
+  // tslint:disable-next-line:no-throw
   error => Promise.reject(error)
 )
 
 type HttpResult<T> = Promise<Result<T, AxiosError>>
 
 const toOk = <T>(res: AxiosResponse<T>) => Ok(res.data)
-const toErr = (res: AxiosError) => Err(res)
+const toErr = Err
 
 /**
  * Result<T> based HTTP client

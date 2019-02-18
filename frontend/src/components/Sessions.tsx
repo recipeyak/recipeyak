@@ -83,6 +83,7 @@ function Session(props: ISessionProps) {
       </section>
       <DeviceName device={props.device} />
       <p>Last used: {lastActivity}</p>
+      {props.current ? <span className="has-text-success">Current</span> : null}
     </li>
   )
 }

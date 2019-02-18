@@ -1,7 +1,7 @@
 from core.models import MyUser
 from core.serialization import BaseModelSerializer
 from user_sessions.models import Session
-from typing import Dict, Any
+from typing import Dict, Any, cast
 from core import user_agent
 import dataclasses
 
@@ -38,4 +38,4 @@ class SessionSerializer(BaseModelSerializer):
         return dataclasses.asdict(user_agent.parse(obj.user_agent))
 
     def get_current(self, obj: Session) -> bool:
-        return obj.pk == self.context["request"].session.session_key
+        return cast(bool, obj.pk == self.context["request"].session.session_key)
