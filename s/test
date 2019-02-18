@@ -3,19 +3,16 @@ set -e
 
 cd $(dirname $(dirname "$0"))
 
-if [[ -f ../.env ]]; then
+if [[ -f .env ]]; then
     # export all variables from env file
     set -a
-    source ../.env
+    source .env
     set +a
 fi
 
-ARGS="$@"
-if [[ $ARGS == *'--coverage'* ]]; then
-    mkdir -p backend/reports
-    ARGS=' --cov-config .coveragerc --cov --junit-xml backend/reports/pytest.xml '"${ARGS/'--coverage'/''}"
-fi
+cd backend
 
+ARGS="$@"
 # set TESTING so we can disable logging with TestingDisableFilter
 export TESTING=1
 if [[ "$ARGS" == *'--watch'* ]]; then

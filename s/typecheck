@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -e
+
+cd $(dirname $(dirname "$0"))
+
+FILES=$(find . -name '*.py' -type f | grep -vE '.*env.*' | grep -vE '.*node_modules.*')
+
+poetry run mypy --config-file tox.ini $FILES
