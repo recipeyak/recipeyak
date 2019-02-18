@@ -87,7 +87,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - frontend-v2-dependencies-{{ checksum "frontend/package.json" }}
+            - frontend-v2-dependencies-{{ checksum "yarn.lock" }}
             - frontend-v2-dependencies-
       - run:
           name: install dependencies
@@ -97,7 +97,7 @@ jobs:
       - save_cache:
           paths:
             - ./frontend/node_modules
-          key: frontend-v2-dependencies-{{ checksum "frontend/package.json" }}
+          key: frontend-v2-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: run tests
           working_directory: frontend
@@ -112,7 +112,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - frontend-v2-dependencies-{{ checksum "frontend/package.json" }}
+            - frontend-v2-dependencies-{{ checksum "yarn.lock" }}
             - frontend-v2-dependencies-
       - run:
           name: install dependencies
@@ -122,7 +122,7 @@ jobs:
       - save_cache:
           paths:
             - ./frontend/node_modules
-          key: frontend-v2-dependencies-{{ checksum "frontend/package.json" }}
+          key: frontend-v2-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: run linter
           working_directory: frontend
