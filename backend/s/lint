@@ -10,17 +10,6 @@ if [[ -f ../.env ]]; then
     set +a
 fi
 
-# include "." and find all python files with a shebang
-FILES=".";
-EXECUTABLE_FILES="$(find . ! -name '*.py' -perm +111 -type f)";
-if [ -n "$EXECUTABLE_FILES" ];then
-    set +e
-    # regex on python3, python2, python3.*, python2.*
-    SHEBANG_FILES=$(grep -E -l '^#!/usr/bin/env python(2|3)?(\.\d)?$' $EXECUTABLE_FILES)
-    set -e
-    FILES="$FILES ""$SHEBANG_FILES"
-fi
-
 echo 'start mypy'
 ./s/typecheck &
 
@@ -29,7 +18,7 @@ echo 'start flake8'
 
 echo 'start black'
 # black --quiet is too quiet, so we grep for 'would format' in stderr
-(poetry run black --check $FILES 2> >( grep 'would reformat');) &
+(poetry run black --check .. 2> >( grep 'would reformat');) &
 
 if [[ "$@" == *'--db'* ]] || [[ $CI ]]; then
     echo 'check for missing migrations'

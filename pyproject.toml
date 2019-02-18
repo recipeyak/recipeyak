@@ -33,3 +33,13 @@ black = "18.9b0"
 pytest-watch = "^4.2"
 mypy_extensions = "^0.4.1"
 flake8-pie = "^0.0.4"
+
+
+[tool.black]
+py36 = true
+exclude = '''
+/(
+  | \.venv
+  | node_modules
+)/
+'''
