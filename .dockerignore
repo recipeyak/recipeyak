@@ -10,3 +10,5 @@
 **/.mypy_cache/
 **/.terraform/
 **/build/
+# allow frontend/s/build
+!frontend/s/*
