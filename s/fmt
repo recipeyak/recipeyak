@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+cd $(dirname $(dirname "$0"))
+
 # TODO(chdsbd):
 # - add support for only diffing changed files
 # - add support for prettier when yarn is moved to root
