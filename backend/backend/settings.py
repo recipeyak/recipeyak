@@ -151,7 +151,7 @@ MIDDLEWARE = [
 
 SESSION_ENGINE = "user_sessions.backends.db"
 
-if DEBUG:
+if DEBUG and not TESTING:
     MIDDLEWARE += (
         "backend.middleware.ServerTimingMiddleware",
         "backend.middleware.APIDelayMiddleware",
