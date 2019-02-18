@@ -62,7 +62,7 @@ baseHttp.interceptors.request.use(
 type HttpResult<T> = Promise<Result<T, AxiosError>>
 
 const toOk = <T>(res: AxiosResponse<T>) => Ok(res.data)
-const toErr = (res: AxiosError) => Err(res)
+const toErr = Err
 
 /**
  * Result<T> based HTTP client
