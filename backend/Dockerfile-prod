@@ -17,7 +17,7 @@ COPY poetry.lock poetry.lock
 # Install our dev dependencies
 RUN poetry install
 
-COPY . /var/app
+COPY backend /var/app
 RUN DOCKERBUILD=1 poetry run ./manage.py collectstatic --noinput
 
 # Inject GIT SHA into settings file to track releases via Sentry

@@ -1,0 +1,14 @@
+.git
+**/*.pyc
+**/*env
+**/.cache/
+**/node_modules/
+**/coverage/
+**/Dockerfile-*
+**/.gitignore
+**/__pycache__/
+**/.mypy_cache/
+**/.terraform/
+**/build/
+# allow frontend/s/build
+!frontend/s/*
