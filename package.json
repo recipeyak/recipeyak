@@ -121,28 +121,28 @@
   },
   "proxy": "http://localhost:8000",
   "jest": {
-    "setupTestFrameworkScriptFile": "<rootDir>/config/setupEnzyme.ts",
+    "setupTestFrameworkScriptFile": "<rootDir>/frontend/config/setupEnzyme.ts",
     "collectCoverageFrom": [
       "src/**/*.{js,jsx,ts,tsx}"
     ],
     "setupFiles": [
-      "<rootDir>/config/jest/localStorage.js",
+      "<rootDir>/frontend/config/jest/localStorage.js",
       "raf/polyfill"
     ],
     "testMatch": [
-      "<rootDir>/src/**/__tests__/**/*.{js,jsx,mjs,ts,tsx}",
-      "<rootDir>/src/**/?(*.)(spec|test).{js,jsx,mjs,ts,tsx}"
+      "<rootDir>/frontend/src/**/__tests__/**/*.{js,jsx,mjs,ts,tsx}",
+      "<rootDir>/frontend/src/**/?(*.)(spec|test).{js,jsx,mjs,ts,tsx}"
     ],
     "testPathIgnorePatterns": [
-      "<rootDir>[/\\\\](build|docs|node_modules|scripts)[/\\\\]"
+      "<rootDir>/frontend[/\\\\](build|docs|node_modules|scripts)[/\\\\]"
     ],
     "testEnvironment": "node",
     "testURL": "http://localhost",
     "transform": {
       "^.+\\.(js|jsx)$": "babel-jest",
       "^.+\\.(ts|tsx)$": "ts-jest",
-      "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
-      "^(?!.*\\.(js|jsx|ts|tsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
+      "^.+\\.css$": "<rootDir>/frontend/config/jest/cssTransform.js",
+      "^(?!.*\\.(js|jsx|ts|tsx|css|json)$)": "<rootDir>/frontend/config/jest/fileTransform.js"
     },
     "transformIgnorePatterns": [
       "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$"
@@ -160,7 +160,7 @@
       "src"
     ],
     "moduleNameMapper": {
-      "^@/(.*)": "<rootDir>/src/$1"
+      "^@/(.*)": "<rootDir>/frontend/src/$1"
     }
   },
   "babel": {
