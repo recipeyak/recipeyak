@@ -76,6 +76,41 @@ def should_pluralize(s) -> bool:
     return False
 
 
+UNICODE_FRACTION_MAPPING = {
+    "½": "1/2",
+    "⅓": "1/3",
+    "⅔": "2/3",
+    "¼": "1/4",
+    "¾": "3/4",
+    "⅕": "1/5",
+    "⅖": "2/5",
+    "⅗": "3/5",
+    "⅘": "4/5",
+    "⅙": "1/6",
+    "⅚": "5/6",
+    "⅐": "1/7",
+    "⅛": "1/8",
+    "⅜": "3/8",
+    "⅝": "5/8",
+    "⅞": "7/8",
+    "⅑": "1/9",
+    "⅒": "1/10",
+}
+
+
+def unicode_fractions_to_ascii(s: str) -> str:
+    """
+    convert occurances of unicode fractions like `½` to their ascii
+    equivalent `1/2`
+    """
+
+    output = ""
+    for char in s:
+        output += UNICODE_FRACTION_MAPPING.get(char, char)
+
+    return output
+
+
 class OriginDict(TypedDict):
     recipe: int
     quantity: str
@@ -155,7 +190,7 @@ class Ingredient:
 
     def __init__(self, ingredient: models.Ingredient) -> None:
         # Note(sbdchd): pint doesn't handle casing
-        self.quantity = ingredient.quantity.lower()
+        self.quantity = unicode_fractions_to_ascii(ingredient.quantity.lower())
         self.name = ingredient.name
         self.origin = ingredient.recipe.id
 

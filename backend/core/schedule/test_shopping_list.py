@@ -6,7 +6,7 @@ from rest_framework import status
 from datetime import date, timedelta
 from rest_framework.test import APIClient
 
-from .utils import combine_ingredients, simplify_units
+from .utils import combine_ingredients, simplify_units, unicode_fractions_to_ascii
 from core.models import Recipe, Ingredient, MyUser
 
 pytestmark = pytest.mark.django_db
@@ -153,6 +153,12 @@ def test_scheduling_multiple_times_some_ingredient(
             [("2 lbs", "tomato"), ("1 kg", "tomato")],
             ("4.204622621848776 pound", "tomato"),
         ),
+        (
+            [("1 teaspoon + 1 Tablespoon", "soy sauce"), ("1 teaspoon", "Soy Sauce")],
+            ("5.0 teaspoon", "soy sauce"),
+        ),
+        ([("1/2 cup", "scallions")], ("0.5 cup", "scallions")),
+        ([("½ cup", "scallions")], ("0.5 cup", "scallions")),
     ],
 )
 def test_combine_ingredients(empty_recipe, ingredients, combined):
@@ -168,6 +174,13 @@ def test_combine_ingredients(empty_recipe, ingredients, combined):
 
     unit, name = combined
     assert omit(combine_ingredients(ingres), "origin") == [dict(name=name, unit=unit)]
+
+
+@pytest.mark.parametrize(
+    "input_str,expected", [("½ cup", "1/2 cup"), ("⅒ gram", "1/10 gram")]
+)
+def test_unicode_fractions_to_ascii(input_str: str, expected: str) -> None:
+    assert unicode_fractions_to_ascii(input_str) == expected
 
 
 def test_report_bad_merge(user, client, recipe):
