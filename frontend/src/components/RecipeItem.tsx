@@ -1,10 +1,10 @@
-import React from "react"
+import React, { useState } from "react"
 import { Link } from "react-router-dom"
 import { DragSource, ConnectDragSource } from "react-dnd"
 import DatePickerForm from "@/components/DatePickerForm"
 import { ButtonPlain } from "@/components/Buttons"
 import { classNames } from "@/classnames"
-import { teamURL, recipeURL } from "@/urls"
+import { recipeURL } from "@/urls"
 import * as DragDrop from "@/dragDrop"
 import { IRecipe } from "@/store/reducers/recipes"
 import Dropdown from "@/components/Dropdown"
@@ -12,36 +12,14 @@ import Dropdown from "@/components/Dropdown"
 interface IRecipeTitleProps {
   readonly url: string
   readonly name: string
-  readonly author: string
 }
 
-function RecipeTitle({ url, name, author }: IRecipeTitleProps) {
+function RecipeTitle({ url, name }: IRecipeTitleProps) {
   return (
-    <>
-      <Link tabIndex={0} to={url} className="align-self-start">
-        <span>{name}</span>
-      </Link>
-      {author !== "" && <small>{author}</small>}
-    </>
+    <Link tabIndex={0} to={url} className="align-self-start mb-1">
+      {name}
+    </Link>
   )
-}
-
-interface IViaProps {
-  readonly owner: IRecipe["owner"]
-}
-
-function Via({ owner }: IViaProps) {
-  if (owner.type === "team" && owner.name && owner.id) {
-    return (
-      <div className="text-muted fw-500">
-        via{" "}
-        <Link to={teamURL(owner.id, owner.name)} className="text-muted bold">
-          {owner.name}
-        </Link>
-      </div>
-    )
-  }
-  return <div />
 }
 
 interface IScheduleProps {
@@ -51,15 +29,44 @@ interface IScheduleProps {
   readonly trigger: React.ReactElement<{}>
 }
 
-export class Schedule extends React.Component<IScheduleProps> {
-  render() {
-    const { id, show, onClose, trigger } = this.props
-    return (
-      <Dropdown onClose={onClose} show={show} trigger={trigger}>
-        <DatePickerForm recipeID={id} show={show} close={onClose} />
-      </Dropdown>
-    )
-  }
+export function Schedule({ id, show, onClose, trigger }: IScheduleProps) {
+  return (
+    <Dropdown onClose={onClose} show={show} trigger={trigger}>
+      <DatePickerForm recipeID={id} show={show} close={onClose} />
+    </Dropdown>
+  )
+}
+
+interface IMetaProps {
+  readonly id: IRecipe["id"]
+  readonly author: string
+  readonly show: boolean
+  readonly onClose: () => void
+  readonly onToggle: () => void
+}
+
+function Meta({ id, author, show, onClose, onToggle }: IMetaProps) {
+  return (
+    <div
+      className={classNames(
+        "content",
+        "d-flex",
+        "align-items-center",
+        author !== "" ? "justify-space-between" : "justify-content-end"
+      )}>
+      {author !== "" ? <small>{author}</small> : null}
+      <Schedule
+        id={id}
+        show={show}
+        onClose={onClose}
+        trigger={
+          <ButtonPlain size="small" onClick={onToggle}>
+            schedule
+          </ButtonPlain>
+        }
+      />
+    </div>
+  )
 }
 
 interface IRecipeItemProps {
@@ -67,7 +74,6 @@ interface IRecipeItemProps {
   readonly author: string
   readonly id: number
   readonly url?: string
-  readonly owner: IRecipe["owner"]
   readonly drag?: boolean
 }
 
@@ -76,68 +82,42 @@ interface ICollectedProps {
   readonly isDragging?: boolean
 }
 
-interface IRecipeItemState {
-  readonly show: boolean
-}
+export function RecipeItem({
+  name,
+  author,
+  id,
+  connectDragSource,
+  isDragging,
+  ...props
+}: IRecipeItemProps & ICollectedProps) {
+  const [show, setShow] = useState(false)
 
-export class RecipeItem extends React.Component<
-  IRecipeItemProps & ICollectedProps,
-  IRecipeItemState
-> {
-  state = {
-    show: false
-  }
+  const drag = !show && props.drag
 
-  render() {
-    const {
-      name,
-      author,
-      id,
-      owner,
-      connectDragSource,
-      isDragging
-    } = this.props
+  const url = props.url || recipeURL(id, name)
 
-    const drag = !this.state.show && this.props.drag
+  const component = (
+    <section
+      className={classNames("card", {
+        "cursor-move": !!drag
+      })}
+      style={{ opacity: isDragging ? 0.5 : 1 }}>
+      <div className="card-content h-100 d-flex flex-column">
+        <RecipeTitle name={name} url={url} />
+        <Meta
+          id={id}
+          author={author}
+          show={show}
+          onClose={() => setShow(false)}
+          onToggle={() => setShow(prev => !prev)}
+        />
+      </div>
+    </section>
+  )
 
-    const url = this.props.url || recipeURL(id, name)
-
-    const component = (
-      <section
-        className={classNames("card", {
-          "cursor-move": !!drag
-        })}
-        style={{ opacity: isDragging ? 0.5 : 1 }}>
-        <div className="card-content h-100 d-flex flex-column">
-          <RecipeTitle name={name} author={author} url={url} />
-
-          <div className="content d-flex align-items-center justify-space-between">
-            <Via owner={owner} />
-            <Schedule
-              id={id}
-              show={this.state.show}
-              onClose={() =>
-                this.setState({
-                  show: false
-                })
-              }
-              trigger={
-                <ButtonPlain
-                  size="small"
-                  onClick={() => this.setState(prev => ({ show: !prev.show }))}>
-                  schedule
-                </ButtonPlain>
-              }
-            />
-          </div>
-        </div>
-      </section>
-    )
-
-    return drag && connectDragSource
-      ? connectDragSource(component, { dropEffect: "copy" })
-      : component
-  }
+  return drag && connectDragSource
+    ? connectDragSource(component, { dropEffect: "copy" })
+    : component
 }
 
 export interface IRecipeItemDrag {

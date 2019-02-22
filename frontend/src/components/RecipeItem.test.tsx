@@ -13,10 +13,6 @@ describe("RecipeItem", () => {
           author="some recipe title"
           url="/someurl"
           name="foo"
-          owner={{
-            type: "user",
-            id: 1
-          }}
           drag
         />
       </DndTestContext>
