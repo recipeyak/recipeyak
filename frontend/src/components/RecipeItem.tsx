@@ -16,9 +16,11 @@ interface IRecipeTitleProps {
 
 function RecipeTitle({ url, name }: IRecipeTitleProps) {
   return (
-    <Link tabIndex={0} to={url} className="align-self-start mb-1">
-      {name}
-    </Link>
+    <div className="flex-grow">
+      <Link tabIndex={0} to={url} className="align-self-start mb-1">
+        {name}
+      </Link>
+    </div>
   )
 }
 
