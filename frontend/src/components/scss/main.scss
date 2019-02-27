@@ -133,27 +133,6 @@ a {
   grid-gap: 1rem;
 }
 
-.feature-grid {
-  display: grid;
-  grid-gap: 2rem;
-  grid-template-columns: repeat(1, 1fr);
-  font-size: 2rem;
-
-  @media (min-width: 841px) {
-    grid-template-columns: repeat(2, 1fr);
-    font-size: 2.5rem;
-  }
-
-  @media (max-width: 841px) {
-    .grid-column-2 {
-      grid-column: unset;
-    }
-    .grid-row-1 {
-      grid-row: unset;
-    }
-  }
-}
-
 .card {
   display: flex;
   flex-direction: column;
