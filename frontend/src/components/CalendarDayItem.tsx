@@ -141,7 +141,7 @@ class CalendarItem extends React.Component<
     }
     return connectDragSource(
       <li
-        className="d-flex align-items-center cursor-pointer justify-space-between mb-1"
+        className="d-flex align-items-center cursor-pointer justify-space-between mb-2"
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
         style={style}>
