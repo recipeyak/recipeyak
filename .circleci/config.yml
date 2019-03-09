@@ -4,7 +4,7 @@ jobs:
 
   backend_test:
     docker:
-      - image: circleci/python:3.6.4
+      - image: circleci/python:3.7
         environment:
           DEBUG: 1
           DATABASE_URL: postgres://postgres@127.0.0.1:5432/postgres
@@ -47,7 +47,7 @@ jobs:
 
   backend_lint:
     docker:
-      - image: circleci/python:3.6.4
+      - image: circleci/python:3.7
         environment:
           DEBUG: 1
           DATABASE_URL: postgres://postgres@127.0.0.1:5432/postgres
