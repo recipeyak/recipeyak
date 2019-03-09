@@ -33,6 +33,7 @@ black = "18.9b0"
 pytest-watch = "^4.2"
 mypy_extensions = "^0.4.1"
 flake8-pie = "^0.0.4"
+flake8-print = "^3.1"
 
 
 [tool.black]
