@@ -6,7 +6,7 @@ authors = ["Steve Dignam <steve@dignam.xyz>"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
-djangorestframework = "3.7.7"
+djangorestframework = "3.9.2"
 django = "2.2b1"
 dj-database-url = "0.4.2"
 django-allauth = "0.35.0"

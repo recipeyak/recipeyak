@@ -172,8 +172,8 @@ category = "main"
 description = "Web APIs for Django, made easy."
 name = "djangorestframework"
 optional = false
-python-versions = "*"
-version = "3.7.7"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "3.9.2"
 
 [[package]]
 category = "dev"
@@ -673,7 +673,7 @@ python-versions = "*"
 version = "0.1.7"
 
 [metadata]
-content-hash = "15fe6d73329a75cd8d57784e465c068928712849f18d8580b1a64af634f3740f"
+content-hash = "ad5d7b1615cd19a821abc2bdf25d5bdb448f55ea793f446a04f766123004009a"
 python-versions = "^3.6"
 
 [metadata.hashes]
@@ -695,7 +695,7 @@ django = ["58819ca72a13b963c16383687421261657abe5754aad9ad66166a921dd17559f", "6
 django-allauth = ["7b31526cccd1c46f9f09acf0703068e8a9669337d29eb065f7e8143c2d897339"]
 django-softdelete = ["c0bd6251e76950963fd0bcd14ba0f4adebe0d61854d1adacc949de6a2e8d5a3f"]
 django-user-sessions = ["5d47ca6dc258662424c88383717a9f5c74b582c5646f9164f4bd6a9f3c3ea138", "b626eb9acd4b60f09d6222c772277717b78e0fde3c5772a7d3a309866b5e9f55"]
-djangorestframework = ["1f6baf40ed456ed2af6bd1a4ff8bbc3503cebea16509993aea2b7085bc097766", "9f9e94e8d22b100ed3a43cee8c47a7ff7b185e778a1f2da9ec5c73fc4e081b87"]
+djangorestframework = ["8a435df9007c8b7d8e69a21ef06650e3c0cbe0d4b09e55dd1bd74c89a75a9fcd", "f7a266260d656e1cf4ca54d7a7349609dc8af4fe2590edd0ecd7d7643ea94a17"]
 docopt = ["49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491"]
 drf-nested-routers = ["3346bcfb151d221d499b3b7932cc6e5cee005ea50f1343a2f5cd2f85e7b1d77f", "818fcc37b6cafff52f4afae012b8de85970a1b931f1e47c2f07a24fd141eb476"]
 flake8 = ["6a35f5b8761f45c5513e3405f110a86bea57982c3b75b766ce7b65217abe1670", "c01f8a3963b3571a8e6bd7a4063359aff90749e160778e03817cd9b71c9e07d2"]
