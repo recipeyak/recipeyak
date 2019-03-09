@@ -208,12 +208,7 @@ ERROR_ON_SERIALIZER_DB_ACCESS = DEBUG or TESTING
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
-    },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"}
 ]
 
 # use fast password hasher for testing
@@ -222,6 +217,15 @@ if DEBUG:
         "django.contrib.auth.hashers.UnsaltedMD5PasswordHasher",
         *global_settings.PASSWORD_HASHERS,
     ]
+
+# system check framework
+SILENCED_SYSTEM_CHECKS = [
+    # We don't use messages and sessions in our user facing app. The admin page works fine without these too.
+    # (admin.E406) 'django.contrib.messages' must be in INSTALLED_APPS in order to use the admin application.
+    "admin.E406",
+    # (admin.E407) 'django.contrib.sessions' must be in INSTALLED_APPS in order to use the admin application.
+    "admin.E407",
+]
 
 
 # Internationalization

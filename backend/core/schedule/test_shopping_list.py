@@ -72,7 +72,7 @@ def test_fetching_shoppinglist_with_team_recipe(client, team, user, recipe):
 
 
 def test_fetching_shoppinglist_with_invalid_dates(user, client):
-    params = {"start": None, "end": "invalid date"}
+    params = {"start": "", "end": "invalid date"}
     url = reverse("shopping-list")
     client.force_authenticate(user)
     res = client.get(url, params)
