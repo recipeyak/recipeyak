@@ -8,8 +8,10 @@ from .views import (
     PasswordResetConfirmView,
     GithubLogin,
     GitlabLogin,
+    GoogleLogin,
     GithubConnect,
     GitlabConnect,
+    GoogleConnect,
 )
 
 from .registration.views import SocialAccountListView, SocialAccountDisconnectView
@@ -28,10 +30,16 @@ urlpatterns = [
     url(
         r"^password/change/$", PasswordChangeView.as_view(), name="rest_password_change"
     ),
+    # TODO
+    # - do oauth login all on backend
+    # - make oauth configuration more generic so it's easier to add new providers
+    # - make it easy to add oauth providers to the connect page
     url(r"^github/$", GithubLogin.as_view(), name="github_login"),
     url(r"^github/connect/$", GithubConnect.as_view(), name="github_connect"),
     url(r"^gitlab/$", GitlabLogin.as_view(), name="gitlab_login"),
     url(r"^gitlab/connect/$", GitlabConnect.as_view(), name="gitlab_connect"),
+    url(r"^google/$", GoogleLogin.as_view(), name="google_login"),
+    url(r"^google/connect/$", GoogleConnect.as_view(), name="google_connect"),
     url(
         r"^socialaccounts/$",
         SocialAccountListView.as_view(),

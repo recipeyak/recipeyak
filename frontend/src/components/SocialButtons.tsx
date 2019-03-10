@@ -83,10 +83,9 @@ export const Google = () => {
     return null
   }
   return (
-    <a href={GOOGLE_OAUTH_URL} className="my-button">
+    <a href={GOOGLE_OAUTH_URL} className="google-button">
       {/* tslint:disable-next-line:no-unsafe-any */}
       <img className="mr-2" src={googleIcon} alt="google icon" />
-      Google
     </a>
   )
 }

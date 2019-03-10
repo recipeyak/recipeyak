@@ -122,7 +122,7 @@ function Base() {
           <Route exact path="/password-reset" component={PasswordReset} />
           <Route
             exact
-            path="/accounts/:service(gitlab|github)"
+            path="/accounts/:service"
             component={OAuth}
           />
           <ContainerBase>
@@ -142,7 +142,7 @@ function Base() {
                 <Switch>
                   <Route
                     exact
-                    path="/accounts/:service(gitlab|github)/connect"
+                    path="/accounts/:service/connect"
                     component={OAuthConnect}
                   />
                   <Route
