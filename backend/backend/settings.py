@@ -103,6 +103,11 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_VERIFICATION = None
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 
+
+def get_oauth_url(env_var: str, default: str) -> str:
+    return os.getenv(env_var, default) if DEBUG else os.environ[env_var]
+
+
 # https://django-allauth.readthedocs.io/en/latest/providers.html#django-configuration
 # Add at least a key for each provider you add to INSTALLED_APPS here
 if not DOCKERBUILD:
@@ -110,22 +115,21 @@ if not DOCKERBUILD:
         "google": {
             "SCOPE": ["profile", "email"],
             "AUTH_PARAMS": {"access_type": "online"},
+            "URL": get_oauth_url(
+                "OAUTH_GOOGLE_REDIRECT_URI", "http://localhost:3000/accounts/google"
+            ),
         },
         "github": {
             "SCOPE": ["user:email"],
-            "URL": os.getenv(
+            "URL": get_oauth_url(
                 "OAUTH_GITHUB_REDIRECT_URI", "http://localhost:3000/accounts/github"
-            )
-            if DEBUG
-            else os.environ["OAUTH_GITHUB_REDIRECT_URI"],
+            ),
         },
         "gitlab": {
             "SCOPE": ["read_user"],
-            "URL": os.getenv(
+            "URL": get_oauth_url(
                 "OAUTH_GITLAB_REDIRECT_URI", "http://localhost:3000/accounts/gitlab"
-            )
-            if DEBUG
-            else os.environ["OAUTH_GITLAB_REDIRECT_URI"],
+            ),
         },
     }
 

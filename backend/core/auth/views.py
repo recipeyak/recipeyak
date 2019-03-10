@@ -30,6 +30,7 @@ from .registration.serializers import (
 from allauth.account.adapter import get_adapter
 from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
 from allauth.socialaccount.providers.gitlab.views import GitLabOAuth2Adapter
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 
 from allauth.socialaccount import signals
@@ -219,6 +220,12 @@ class GitlabLogin(SocialLoginView):
     callback_url = settings.SOCIALACCOUNT_PROVIDERS["gitlab"]["URL"]
 
 
+class GoogleLogin(SocialLoginView):
+    adapter_class = GoogleOAuth2Adapter
+    client_class = OAuth2Client
+    callback_url = settings.SOCIALACCOUNT_PROVIDERS["google"]["URL"]
+
+
 class SocialConnectView(SocialLoginView):
     """
     class used for social account linking
@@ -280,3 +287,9 @@ class GitlabConnect(SocialConnectView):
     adapter_class = GitLabOAuth2Adapter
     client_class = OAuth2Client
     callback_url = settings.SOCIALACCOUNT_PROVIDERS["gitlab"]["URL"] + "/connect"
+
+
+class GoogleConnect(SocialConnectView):
+    adapter_class = GoogleOAuth2Adapter
+    client_class = OAuth2Client
+    callback_url = settings.SOCIALACCOUNT_PROVIDERS["google"]["URL"] + "/connect"
