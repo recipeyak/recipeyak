@@ -697,8 +697,8 @@ python-versions = "*"
 version = "0.1.7"
 
 [metadata]
-content-hash = "a24fa5c7a4ef8b64ef7a72e4589c355375e70a16ff0e83d60a0632d30b003b99"
-python-versions = "^3.6"
+content-hash = "a1ae415c1319c335070ba65b86b8a62856e7c06ba69f5cf51fc2278fe81fb133"
+python-versions = "^3.7"
 
 [metadata.hashes]
 appdirs = ["9e5896d1372858f8dd3344faf4e5014d21849c756c8d5701f78f8a103b372d92", "d8b24664561d0d34ddfaec54636d502d7cea6e29c3eaf68f3df6180863e2166e"]
