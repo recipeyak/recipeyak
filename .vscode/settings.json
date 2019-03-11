@@ -9,7 +9,7 @@
     "typescript.updateImportsOnFileMove.enabled": "always",
 
     // use Miscrosoft's C#-based language server instead of jedi
-    "python.pythonPath": "backend/.venv/bin/python",
+    "python.pythonPath": ".venv/bin/python",
     "python.envFile": "${workspaceFolder}/.vscode/.env",
     "python.jediEnabled": false,
     "python.linting.mypyEnabled": true,
