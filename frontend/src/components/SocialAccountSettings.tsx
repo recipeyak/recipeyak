@@ -118,42 +118,35 @@ const ConnectedOAuthButton = connect(
   mapDispatchToPropsOAuthButton
 )(OAuthButton)
 
-interface ISocialButtonProps {
-  readonly connection: number | null
+interface IProvider {
+  readonly name: string
+  readonly id: "github" | "gitlab" | "google"
+  readonly logo: () => JSX.Element
+  readonly oauthUrl: string
 }
-
-function Gitlab({ connection }: ISocialButtonProps) {
-  return (
-    <ConnectedOAuthButton
-      name="Gitlab"
-      id="gitlab"
-      Logo={GitlabImg}
-      OAUTH_URL={GITLAB_OAUTH_URL}
-      connection={connection}
-    />
-  )
+const providers: ReadonlyArray<IProvider> = [
+  { name: "Github", id: "github", logo: GithubImg, oauthUrl: GITHUB_OAUTH_URL },
+  { name: "Gitlab", id: "gitlab", logo: GitlabImg, oauthUrl: GITLAB_OAUTH_URL },
+  { name: "Google", id: "google", logo: GoogleImg, oauthUrl: GOOGLE_OAUTH_URL }
+]
+interface IGenerateOAuthButtonsProps {
+  readonly state: ISocialAccountsState
 }
-
-function Github({ connection }: ISocialButtonProps) {
+function OAuthButtons({ state }: IGenerateOAuthButtonsProps) {
   return (
-    <ConnectedOAuthButton
-      name="Github"
-      id="github"
-      Logo={GithubImg}
-      OAUTH_URL={GITHUB_OAUTH_URL}
-      connection={connection}
-    />
-  )
-}
-function Google({ connection }: ISocialButtonProps) {
-  return (
-    <ConnectedOAuthButton
-      name="Google"
-      id="google"
-      Logo={GoogleImg}
-      OAUTH_URL={GOOGLE_OAUTH_URL}
-      connection={connection}
-    />
+    <>
+      {providers.map(x => {
+        return (
+          <ConnectedOAuthButton
+            name={x.name}
+            id={x.id}
+            Logo={x.logo}
+            OAUTH_URL={x.oauthUrl}
+            connection={state[x.id]}
+          />
+        )
+      })}
+    </>
   )
 }
 
@@ -164,15 +157,15 @@ interface ISocialAccountsProps {
 
 function SocialAccounts({ fetchData, connections }: ISocialAccountsProps) {
   useEffect(fetchData, [])
-  if (!isSuccessOrRefetching(connections)) {
-    return null
-  }
+  const data = !isSuccessOrRefetching(connections) ? (
+    "Loading providers...."
+  ) : (
+    <OAuthButtons state={connections.data} />
+  )
   return (
     <>
       <h1 className="fs-6">Social Accounts</h1>
-      <Github connection={connections.data.github} />
-      <Gitlab connection={connections.data.gitlab} />
-      <Google connection={connections.data.google} />
+      {data}
     </>
   )
 }
