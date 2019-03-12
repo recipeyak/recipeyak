@@ -32,6 +32,7 @@ import Recipes from "@/components/RecipeList"
 import ErrorBoundary from "@/components/ErrorBoundary"
 
 import "@/components/scss/main.scss"
+import GlobalEvent from "@/components/GlobalEvent"
 
 interface IAuthRouteProps extends RouteProps {
   readonly authenticated: boolean
@@ -111,10 +112,25 @@ const PublicOnlyRoute = connect(mapAuthenticated)(
   )
 )
 
+export const heldKeys = new Set<string>()
+
+function CurrentKeys() {
+  const handleKeyDown = (e: KeyboardEvent) => {
+    heldKeys.add(e.key)
+    console.log("down", heldKeys)
+  }
+  const handleKeyUp = (e: KeyboardEvent) => {
+    heldKeys.delete(e.key)
+    console.log("up", heldKeys)
+  }
+  return <GlobalEvent keyDown={handleKeyDown} keyUp={handleKeyUp} />
+}
+
 function Base() {
   return (
     <ErrorBoundary>
       <Helmet defaultTitle="Recipe Yak" titleTemplate="%s | Recipe Yak" />
+      <CurrentKeys />
       <ConnectedRouter history={history}>
         <Switch>
           <PublicOnlyRoute exact path="/login" component={Login} />
