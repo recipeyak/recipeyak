@@ -117,11 +117,9 @@ export const heldKeys = new Set<string>()
 function CurrentKeys() {
   const handleKeyDown = (e: KeyboardEvent) => {
     heldKeys.add(e.key)
-    console.log("down", heldKeys)
   }
   const handleKeyUp = (e: KeyboardEvent) => {
     heldKeys.delete(e.key)
-    console.log("up", heldKeys)
   }
   return <GlobalEvent keyDown={handleKeyDown} keyUp={handleKeyUp} />
 }
