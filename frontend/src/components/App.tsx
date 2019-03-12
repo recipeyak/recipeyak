@@ -32,6 +32,7 @@ import Recipes from "@/components/RecipeList"
 import ErrorBoundary from "@/components/ErrorBoundary"
 
 import "@/components/scss/main.scss"
+import { CurrentKeys } from "@/components/CurrentKeys"
 
 interface IAuthRouteProps extends RouteProps {
   readonly authenticated: boolean
@@ -115,6 +116,7 @@ function Base() {
   return (
     <ErrorBoundary>
       <Helmet defaultTitle="Recipe Yak" titleTemplate="%s | Recipe Yak" />
+      <CurrentKeys />
       <ConnectedRouter history={history}>
         <Switch>
           <PublicOnlyRoute exact path="/login" component={Login} />

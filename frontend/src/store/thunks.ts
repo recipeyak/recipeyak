@@ -94,6 +94,7 @@ import { recipeURL } from "@/urls"
 import { isSuccessOrRefetching } from "@/webdata"
 import { isPast, endOfDay } from "date-fns"
 import { isOk, isErr, Ok, Err, Result } from "@/result"
+import { heldKeys } from "@/components/CurrentKeys"
 
 // TODO(sbdchd): move to @/store/store
 export type Dispatch = ReduxDispatch<Action>
@@ -997,7 +998,8 @@ function toCalRecipe(
     },
     on: toDateString(on),
     count,
-    user: recipe.owner.id
+    user: recipe.owner.type === "user" ? recipe.owner.id : null,
+    team: recipe.owner.type === "team" ? recipe.owner.id : null
   }
 }
 
@@ -1079,8 +1081,12 @@ export const moveScheduledRecipe = (dispatch: Dispatch) => async (
   const state = store.getState()
   const from = getCalRecipeById(state, id)
 
-  // We want to copy recipes from the past, not move them
-  if (isPast(endOfDay(from.on))) {
+  // copy recipe if
+  // - recipe from the past
+  // - user is holding shift
+  const holdingShift = heldKeys.size === 1 && heldKeys.has("Shift")
+  const copyRecipe = isPast(endOfDay(from.on)) || holdingShift
+  if (copyRecipe) {
     return addingScheduledRecipe(dispatch)(
       from.recipe.id,
       teamID,
