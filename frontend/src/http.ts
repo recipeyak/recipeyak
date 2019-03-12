@@ -113,3 +113,16 @@ export const http = {
       .catch(toErr)
 }
 // tslint:enable:no-promise-catch
+
+/** Get the detail string from a response, if available, otherwise return the default */
+export function detailOrDefault(err: AxiosError, def: string): string {
+  if (err.response && err.response.data) {
+    if (typeof err.response.data.detail === "string") {
+      return err.response.data.detail
+    }
+    if (Array.isArray(err.response.data.detail)) {
+      return err.response.data.detail.join(" ")
+    }
+  }
+  return def
+}

@@ -14,7 +14,8 @@ import {
   Failure,
   HttpErrorKind,
   toLoading,
-  mapSuccessLike
+  mapSuccessLike,
+  Loading
 } from "@/webdata"
 import { login, AuthActions } from "@/store/reducers/auth"
 
@@ -34,12 +35,13 @@ export const logOut = createAsyncAction(
 export const updateTeamID = createStandardAction("SET_TEAM_ID")<
   IUserState["teamID"]
 >()
-export const setSocialConnections = createStandardAction(
-  "SET_SOCIAL_ACCOUNT_CONNECTIONS"
-)<ISocialConnection[]>()
-export const setSocialConnection = createStandardAction(
-  "SET_SOCIAL_ACCOUNT_CONNECTION"
-)<{ provider: SocialProvider; val: unknown }>()
+
+export const socialConnections = createAsyncAction(
+  "REQUEST_SOCIAL_ACCOUNT_CONNECTIONS",
+  "SUCCESS_SOCIAL_ACCOUNT_CONNECTIONS",
+  "FAILURE_SOCIAL_ACCOUNT_CONNECTIONS"
+)<void, ISocialConnection[], void>()
+
 export const setUserLoggedIn = createStandardAction("SET_USER_LOGGED_IN")<
   IUserState["loggedIn"]
 >()
@@ -77,8 +79,7 @@ export type UserActions =
   | ActionType<typeof logOut>
   | ReturnType<typeof setUserLoggedIn>
   | ReturnType<typeof updateTeamID>
-  | ReturnType<typeof setSocialConnections>
-  | ReturnType<typeof setSocialConnection>
+  | ActionType<typeof socialConnections>
   | ActionType<typeof fetchUser>
   | ReturnType<typeof toggleDarkMode>
   | ActionType<typeof updateEmail>
@@ -97,7 +98,7 @@ export interface IUser {
   readonly selected_team: number | null
 }
 
-export type SocialProvider = "github" | "gitlab"
+export type SocialProvider = keyof ISocialAccountsState
 
 // API response
 export interface ISocialConnection {
@@ -111,6 +112,7 @@ export interface ISocialConnection {
 export interface ISocialAccountsState {
   readonly github: number | null
   readonly gitlab: number | null
+  readonly google: number | null
 }
 
 export interface IUserStats {
@@ -153,7 +155,7 @@ export interface IUserState {
   readonly loggingOut: boolean
   readonly darkMode: boolean
   readonly hasUsablePassword: boolean
-  readonly socialAccountConnections: ISocialAccountsState
+  readonly socialAccountConnections: WebData<ISocialAccountsState, void>
   // ID of currently focused team. null if using personal team.
   readonly teamID: number | null
   readonly updatingEmail: boolean
@@ -172,10 +174,7 @@ const initialState: IUserState = {
   loggingOut: false,
   darkMode: false,
   hasUsablePassword: false,
-  socialAccountConnections: {
-    github: null,
-    gitlab: null
-  },
+  socialAccountConnections: undefined,
   teamID: null,
   updatingEmail: false,
   sessions: undefined,
@@ -204,21 +203,29 @@ export const user = (
       return { ...state, loggingOut: false, loggedIn: false }
     case getType(logOut.failure):
       return { ...state, loggingOut: false }
-    case getType(setSocialConnections):
+
+    case getType(socialConnections.request):
       return {
         ...state,
-        socialAccountConnections: action.payload.reduce(
-          (acc, { provider, id }) => ({ ...acc, [provider]: id }),
-          state.socialAccountConnections
-        )
+        socialAccountConnections: Loading()
       }
-    case getType(setSocialConnection):
+    case getType(socialConnections.success): {
+      const socialAccountConnections: ISocialAccountsState = action.payload.reduce(
+        (acc, cur) => {
+          acc[cur.provider] = cur.id
+          return acc
+        },
+        {} as Mutable<ISocialAccountsState>
+      )
       return {
         ...state,
-        socialAccountConnections: {
-          ...state.socialAccountConnections,
-          [action.payload.provider]: action.payload.val
-        }
+        socialAccountConnections: Success(socialAccountConnections)
+      }
+    }
+    case getType(socialConnections.failure):
+      return {
+        ...state,
+        socialAccountConnections: Failure(undefined)
       }
     case getType(fetchSessions.request):
       return {
