@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional
+from typing import List
 
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, views
@@ -72,10 +72,10 @@ class TeamShoppingListViewSet(viewsets.ViewSet):
 class ReportBadMerge(APIView):
     permission_classes = (IsAuthenticated,)
 
-    def post(self, request: Request, format: Optional[str] = None) -> Response:
+    def post(self, request: Request) -> Response:
         user = request.user
-        logger.warn(
-            f"bad combine for user: {user} with recipes: {user.scheduled_recipes}"
+        logger.warning(
+            "bad combine for user: %s with recipes: %s", user, user.scheduled_recipes
         )
         return Response(status=status.HTTP_201_CREATED)
 

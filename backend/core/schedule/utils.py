@@ -210,7 +210,7 @@ def combine_ingredients(
     """
     utilizes IngredientList and simplifies ingredients
     """
-    if len(ingredients) == 0:
+    if not ingredients:
         return []
 
     return IngredientList(Ingredient(ingre) for ingre in ingredients).dump()

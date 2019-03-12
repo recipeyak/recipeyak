@@ -169,8 +169,8 @@ def test_updating_step_of_recipe(client, user, recipe):
 
     assert res.json().get("id") is not None
 
-    for key in step_data.keys():
-        assert res.json().get(key) == step_data.get(key)
+    for key, value in step_data.items():
+        assert res.json().get(key) == value
 
 
 def test_deleting_step_from_recipe(client, user, recipe):

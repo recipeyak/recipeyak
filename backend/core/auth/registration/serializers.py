@@ -24,6 +24,8 @@ from requests.exceptions import HTTPError
 if "allauth.socialaccount" in settings.INSTALLED_APPS:
     from allauth.socialaccount.helpers import complete_social_login
 
+# pylint:disable=protected-access,attribute-defined-outside-init,too-many-locals
+
 
 class SocialLoginSerializer(BaseSerializer):
     access_token = serializers.CharField(required=False, allow_blank=True)

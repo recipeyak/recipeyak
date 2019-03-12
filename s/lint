@@ -29,6 +29,11 @@ else
     echo '--db not passed. Skipping migration check that requires Postgres.'
 fi
 
+if [[ $CI ]]; then
+  echo 'start pylint'
+  PYTHON_DIRS=$(find backend -name "__init__.py" | grep -E -v '\.venv|node_modules' | awk -F '/' '{print "backend/"$2 }' | uniq | xargs)
+  poetry run pylint --rcfile='.pylintrc' $PYTHON_DIRS &
+fi
 
 echo 'wait for background jobs to execute'
 FAIL=0

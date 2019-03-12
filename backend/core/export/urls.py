@@ -7,7 +7,7 @@ urlpatterns = [
         r"^recipes.(?P<filetype>json|yaml|yml)$", export_recipes, name="export-recipes"
     ),
     url(
-        r"^recipes/(?P<id>[0-9]+).*\.(?P<filetype>json|yaml|yml)$",
+        r"^recipes/(?P<pk>[0-9]+).*\.(?P<filetype>json|yaml|yml)$",
         export_recipes,
         name="export-recipe",
     ),

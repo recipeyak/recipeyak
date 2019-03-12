@@ -129,7 +129,7 @@ def test_list_team(client, team, user, user2, user3):
     assert (
         res.status_code == status.HTTP_200_OK
     ), "all users should be able to list teams"
-    assert len(res.json()) == 0, "Non member shouldn't see private team"
+    assert not res.json(), "Non member shouldn't see private team"
 
     # verify members can see private team
     client.force_authenticate(user)
@@ -597,7 +597,7 @@ def test_list_user_invites(client, team, user, user2):
     client.force_authenticate(user)
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK
-    assert len(res.json()) == 0, "user should not get invite for user2"
+    assert not res.json(), "user should not get invite for user2"
 
     client.force_authenticate(user2)
     res = client.get(url)
@@ -896,7 +896,7 @@ def test_adding_recipe_to_team(client, team, user, user2):
     client.force_authenticate(user)
     res = client.get(recipe_url)
     assert res.status_code == status.HTTP_200_OK
-    assert len(res.json()) == 0
+    assert not res.json()
 
     recipe = {
         "name": "Recipe name",

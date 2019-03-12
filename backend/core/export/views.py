@@ -14,16 +14,16 @@ from .serializers import RecipeExportSerializer
 
 @require_http_methods(["GET"])
 @login_required(login_url="/login/")
-def export_recipes(request: Request, filetype: str, id: Optional[str] = None):
+def export_recipes(request: Request, filetype: str, pk: Optional[str] = None):
 
     queryset = user_and_team_recipes(request.user).prefetch_related(
         "owner", "step_set", "ingredient_set", "scheduledrecipe_set"
     )
 
-    if id is not None:
-        queryset = get_object_or_404(queryset, pk=int(id))
+    if pk is not None:
+        queryset = get_object_or_404(queryset, pk=pk)
 
-    many = id is None
+    many = pk is None
 
     recipes = RecipeExportSerializer(queryset, many=many).data
 
