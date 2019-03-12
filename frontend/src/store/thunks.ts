@@ -91,7 +91,7 @@ import {
   login
 } from "@/store/reducers/auth"
 import { recipeURL } from "@/urls"
-import { isSuccessOrRefetching, WebData } from "@/webdata"
+import { isSuccessOrRefetching } from "@/webdata"
 import { isPast, endOfDay } from "date-fns"
 import { isOk, isErr, Ok, Err, Result } from "@/result"
 
