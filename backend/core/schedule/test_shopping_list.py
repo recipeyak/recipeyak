@@ -12,10 +12,10 @@ from core.models import Recipe, Ingredient, MyUser
 pytestmark = pytest.mark.django_db
 
 
-def omit(d: Union[Dict, List], keys=[]) -> Union[List[Dict], Dict]:
+def omit(d: Union[Dict, List], key: str) -> Union[List[Dict], Dict]:
     if isinstance(d, list):
-        return [{k: v for k, v in i.items() if k not in keys} for i in d]
-    return {k: v for k, v in d.items() if k not in keys}
+        return [{k: v for k, v in i.items() if k != key} for i in d]
+    return {k: v for k, v in d.items() if k != key}
 
 
 def test_fetching_shoppinglist(client, user, recipe):

@@ -29,6 +29,8 @@ from core.users.serializers import UserSerializer as UserDetailsSerializer
 
 logger = logging.getLogger(__name__)
 
+# pylint:disable=protected-access
+
 
 class RegisterView(CreateAPIView):
     serializer_class = RegisterSerializer
@@ -57,7 +59,7 @@ class RegisterView(CreateAPIView):
             data = {"user": UserDetailsSerializer(user).data}
 
         headers = self.get_success_headers(serializer.data)
-        logger.info(f"User registration: {user}")
+        logger.info("User registration: %s", user)
 
         return Response(data, status=status.HTTP_201_CREATED, headers=headers)
 
@@ -75,7 +77,7 @@ class VerifyEmailView(APIView, ConfirmEmailView):
         self.kwargs["key"] = serializer.validated_data["key"]
         confirmation = self.get_object()
         confirmation.confirm(self.request)
-        logger.info(f"Email verified: {confirmation.email_address.email}")
+        logger.info("Email verified: %s", confirmation.email_address.email)
         return Response({"detail": _("ok")}, status=status.HTTP_200_OK)
 
 
@@ -114,7 +116,7 @@ class SocialAccountDisconnectView(GenericAPIView):
         except ValidationError as e:
             raise PermissionDenied(detail=e.args[0])
 
-        logger.info(f"Social account disconnected: {account}")
+        logger.info("Social account disconnected: %s", account)
         account.delete()
         signals.social_account_removed.send(
             sender=SocialAccount, request=self.request, socialaccount=account

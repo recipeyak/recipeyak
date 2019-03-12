@@ -552,13 +552,18 @@ plural_categories = {
 
 
 def pluralize(
-    word: str, pos: str = NOUN, custom: Dict[str, str] = {}, classical: bool = True
+    word: str,
+    pos: str = NOUN,
+    custom: Optional[Dict[str, str]] = None,
+    classical: bool = True,
 ) -> str:
     """ Returns the plural of a given word, e.g., child => children.
         Handles nouns and adjectives, using classical inflection by default
         (i.e., where "matrix" pluralizes to "matrices" and not "matrixes").
         The custom dictionary is for user-defined replacements.
     """
+    if custom is None:
+        custom = {}
     if word in custom:
         return custom[word]
     # Recurse genitives.
@@ -580,10 +585,9 @@ def pluralize(
             and wor[0] not in plural_categories["general-generals"]
         ):
             return word.replace(wor[0], pluralize(wor[0], pos, custom, classical))
-        elif wor[1] in plural_prepositions:
+        if wor[1] in plural_prepositions:
             return word.replace(wor[0], pluralize(wor[0], pos, custom, classical))
-        else:
-            return word.replace(wor[-1], pluralize(wor[-1], pos, custom, classical))
+        return word.replace(wor[-1], pluralize(wor[-1], pos, custom, classical))
     # Only a very few number of adjectives inflect.
     n = range(len(plural_rules_compiled))
     if pos.startswith(ADJECTIVE):
@@ -825,9 +829,13 @@ singular_irregular = {
 }
 
 
-def singularize(word: str, pos: str = NOUN, custom: Dict[str, str] = {}) -> str:
+def singularize(
+    word: str, pos: str = NOUN, custom: Optional[Dict[str, str]] = None
+) -> str:
     """ Returns the singular of a given word.
     """
+    if custom is None:
+        custom = {}
     if word in custom:
         return custom[word]
 
@@ -850,15 +858,15 @@ def singularize(word: str, pos: str = NOUN, custom: Dict[str, str] = {}) -> str:
     for x in singular_ie:
         if word_normalized.endswith(x + "s"):
             return word_normalized
-    for x in singular_irregular.keys():
+    for x, value in singular_irregular.items():
         if word_normalized.endswith(x):
-            return re.sub("(?i)" + x + "$", singular_irregular[x], word)
+            return re.sub("(?i)" + x + "$", value, word)
     for suffix, inflection in singular_rules_compiled:
         m = suffix.search(word)
-        g = m and m.groups() or []
+        g = m.groups() if m else []
         if m:
-            for k in range(len(g)):
-                if g[k] is None:
-                    inflection = inflection.replace("\\" + str(k + 1), "")
+            for i, val in enumerate(g):
+                if val is None:
+                    inflection = inflection.replace("\\" + str(i + 1), "")
             return suffix.sub(inflection, word)
     return word

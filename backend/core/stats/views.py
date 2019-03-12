@@ -1,9 +1,9 @@
-from typing import Optional
 from datetime import datetime, timedelta
 import pytz
 import logging
 
 from rest_framework.response import Response
+from rest_framework.request import Request
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Sum, Count
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 class UserStats(APIView):
     permission_classes = (IsAuthenticated,)
 
-    def get(self, request, format: Optional[str] = None) -> Response:
+    def get(self, request: Request) -> Response:
         user_recipes = Recipe.objects.filter(owner_user=request.user)
 
         total_recipe_edits = user_recipes.aggregate(total=Sum("edits")).get("total")
@@ -45,7 +45,7 @@ class UserStats(APIView):
 
         date_joined = request.user.created.strftime("%b, %Y")
 
-        logger.info(f"UserStats fetched by {request.user}")
+        logger.info("UserStats fetched by %s", request.user)
 
         return Response(
             {

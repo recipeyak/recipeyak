@@ -61,7 +61,7 @@ def test_total_recipes_added_last_month_by_all_users(client, user, user2):
     author = "Recipe author"
 
     count = 5
-    for n in range(count):
+    for _ in range(count):
         Recipe.objects.create(name=name, author=author, owner=user2)
 
     Recipe.objects.update(created=datetime.now(tz=pytz.UTC) - timedelta(days=60))

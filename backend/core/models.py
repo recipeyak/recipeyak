@@ -34,7 +34,7 @@ class MyUserManager(BaseUserManager):
             user.set_password(password)
             user.save(using=self._db)
             EmailAddress.objects.create(user=user, email=email)
-            logger.info(f"Created new user: {user}")
+            logger.info("Created new user: %s", user)
             return user
 
     def create_superuser(self, email: str, password: str) -> "MyUser":
@@ -281,10 +281,9 @@ class ScheduledRecipeManager(models.Manager):
                 existing.count += count
                 existing.save()
                 return existing
-            else:
-                return ScheduledRecipe.objects.create(
-                    recipe=recipe, on=on, count=count, team=team, user=user
-                )
+            return ScheduledRecipe.objects.create(
+                recipe=recipe, on=on, count=count, team=team, user=user
+            )
 
 
 class ScheduledRecipe(CommonInfo):

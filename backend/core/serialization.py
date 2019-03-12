@@ -35,19 +35,19 @@ class DBBlockerSerializerMixin:
             # Mypy is correct that we don't have a data property on our parent.
             # We must cast to Any to support the mixin use of this class
             return cast(Any, super()).data
-        elif settings.ERROR_ON_SERIALIZER_DB_ACCESS:
+        if settings.ERROR_ON_SERIALIZER_DB_ACCESS:
             # only raise error when we are in DEBUG mode. We don't want to cause
             # errors in production when we don't need to do so.
             with connection.execute_wrapper(blocker):
                 return cast(Any, super()).data
-        else:
-            # use a warning blocker elsewhere
-            with connection.execute_wrapper(warning_blocker):
-                return cast(Any, super()).data
 
-    def __init__(self, *args, **kwargs):
+        # use a warning blocker elsewhere
+        with connection.execute_wrapper(warning_blocker):
+            return cast(Any, super()).data
+
+    def __init__(self, *args, **kwargs) -> None:
         self.dangerously_allow_db = kwargs.pop("dangerously_allow_db", None)
-        return cast(Any, super()).__init__(*args, **kwargs)
+        cast(Any, super()).__init__(*args, **kwargs)
 
 
 class BaseSerializer(DBBlockerSerializerMixin, serializers.Serializer):

@@ -107,7 +107,7 @@ def test_bulk_export_yaml(
 
 
 def test_single_export_json(c: Client, user: MyUser, recipe: Recipe) -> None:
-    url = reverse("export-recipe", kwargs={"id": recipe.id, "filetype": "json"})
+    url = reverse("export-recipe", kwargs={"pk": recipe.id, "filetype": "json"})
     res = c.get(url)
     assert res.status_code == 302
     c.force_login(user)
@@ -120,7 +120,7 @@ def test_single_export_json(c: Client, user: MyUser, recipe: Recipe) -> None:
 def test_single_export_yaml(
     c: Client, filetype: str, user: MyUser, recipe: Recipe
 ) -> None:
-    url = reverse("export-recipe", kwargs={"id": recipe.id, "filetype": filetype})
+    url = reverse("export-recipe", kwargs={"pk": recipe.id, "filetype": filetype})
     res = c.get(url)
     assert res.status_code == 302
     c.force_login(user)

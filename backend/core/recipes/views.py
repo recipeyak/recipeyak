@@ -71,7 +71,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         serializer.save()
 
-        logger.info(f"Recipe created by {self.request.user}")
+        logger.info("Recipe created by %s", self.request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @detail_route(
@@ -212,10 +212,9 @@ class StepViewSet(viewsets.ModelViewSet):
 
         if serializer.is_valid():
             serializer.save(recipe=recipe)
-            logger.info(f"Step created by {self.request.user}")
+            logger.info("Step created by %s", self.request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
@@ -243,7 +242,6 @@ class IngredientViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             recipe = Recipe.objects.get(pk=recipe_pk)
             serializer.save(recipe=recipe)
-            logger.info(f"Ingredient created by {self.request.user}")
+            logger.info("Ingredient created by %s", self.request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -71,7 +71,7 @@ class LoginView(GenericAPIView):
         user = serializer.validated_data.get("user")
 
         login(request, user)
-        logger.info(f"Login by {user}")
+        logger.info("Login by %s", user)
 
         return Response(
             {"user": UserDetailsSerializer(user).data}, status=status.HTTP_200_OK
@@ -88,7 +88,7 @@ class LogoutView(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
-        logger.info(f"Logout by {request.user}")
+        logger.info("Logout by %s", request.user)
         logout(request)
 
         return Response(
@@ -113,7 +113,7 @@ class PasswordResetView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
 
         serializer.save()
-        logger.info(f"Password reset request by {request.user}")
+        logger.info("Password reset request by %s", request.user)
         # Return the success message with OK HTTP status
         return Response(
             {"detail": _("Password reset e-mail has been sent.")},
@@ -146,7 +146,7 @@ class PasswordResetConfirmView(GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        logger.info(f"Password reset completed by {request.user}")
+        logger.info("Password reset completed by %s", request.user)
         return Response({"detail": _("Password has been reset with the new password.")})
 
 
@@ -173,7 +173,7 @@ class PasswordChangeView(GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        logger.info(f"Password changed by {request.user}")
+        logger.info("Password changed by %s", request.user)
         return Response({"detail": _("New password has been saved.")})
 
 
@@ -204,7 +204,7 @@ class SocialLoginView(LoginView):
     serializer_class = SocialLoginSerializer
 
     def process_login(self):
-        logger.info(f"Social login attempt by {self.user}")
+        logger.info("Social login attempt by %s", self.user)
         get_adapter(self.request).login(self.request, self.user)
 
 
@@ -273,7 +273,7 @@ class SocialAccountViewSet(GenericViewSet):
         signals.social_account_removed.send(
             sender=SocialAccount, request=self.request, socialaccount=account
         )
-        logger.info(f"Social Account disconnected for {request.user}")
+        logger.info("Social Account disconnected for %s", request.user)
         return Response(self.get_serializer(account).data)
 
 
