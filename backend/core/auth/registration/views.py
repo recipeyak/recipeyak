@@ -3,6 +3,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.debug import sensitive_post_parameters
 from django.core.exceptions import ValidationError
+from django.shortcuts import get_object_or_404
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -29,6 +30,7 @@ from core.users.serializers import UserSerializer as UserDetailsSerializer
 
 logger = logging.getLogger(__name__)
 
+# TODO(chdsbd): Add tests
 
 class RegisterView(CreateAPIView):
     serializer_class = RegisterSerializer
@@ -103,11 +105,9 @@ class SocialAccountDisconnectView(GenericAPIView):
     def get_queryset(self):
         return SocialAccount.objects.filter(user=self.request.user)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, provider: str):
         accounts = self.get_queryset()
-        account = accounts.filter(pk=kwargs["pk"]).first()
-        if not account:
-            raise NotFound
+        account = get_object_or_404(accounts, provider=provider)
 
         try:
             get_social_adapter(self.request).validate_disconnect(account, accounts)
@@ -119,4 +119,4 @@ class SocialAccountDisconnectView(GenericAPIView):
         signals.social_account_removed.send(
             sender=SocialAccount, request=self.request, socialaccount=account
         )
-        return Response(self.get_serializer(account).data)
+        return Response(SocialAccountSerializer(self.get_queryset(), many=True).data)
