@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
-from rest_framework.exceptions import NotFound, PermissionDenied
+from rest_framework.exceptions import PermissionDenied
 
 from allauth.account.views import ConfirmEmailView
 from allauth.account.utils import complete_signup
@@ -31,6 +31,7 @@ from core.users.serializers import UserSerializer as UserDetailsSerializer
 logger = logging.getLogger(__name__)
 
 # TODO(chdsbd): Add tests
+
 
 class RegisterView(CreateAPIView):
     serializer_class = RegisterSerializer
