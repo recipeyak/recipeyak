@@ -94,7 +94,7 @@ import { recipeURL } from "@/urls"
 import { isSuccessOrRefetching } from "@/webdata"
 import { isPast, endOfDay } from "date-fns"
 import { isOk, isErr, Ok, Err } from "@/result"
-import { heldKeys } from "@/components/CurrentKeys";
+import { heldKeys } from "@/components/CurrentKeys"
 
 // TODO(sbdchd): move to @/store/store
 export type Dispatch = ReduxDispatch<Action>
