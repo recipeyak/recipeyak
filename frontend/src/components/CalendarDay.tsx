@@ -121,7 +121,12 @@ function mapStateToProps(
   }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
+const mapDispatchToProps = (
+  dispatch: Dispatch
+): Pick<
+  ICalendarDayProps,
+  "create" | "updateCount" | "refetchShoppingList" | "move" | "remove"
+> => ({
   create: addingScheduledRecipe(dispatch),
   updateCount: updatingScheduledRecipe(dispatch),
   refetchShoppingList: fetchingShoppingList(dispatch),

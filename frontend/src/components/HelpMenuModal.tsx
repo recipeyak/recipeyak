@@ -1,80 +1,83 @@
 import React from "react"
-
 import Modal from "@/components/Modal"
 import GlobalEvent from "@/components/GlobalEvent"
 
-interface IHelpMenuModalState {
-  readonly show: boolean
+const keybinds = [
+  {
+    key: ["Delete", "#"],
+    description: "delete scheduled recipe"
+  },
+  {
+    key: "?",
+    description: "toggle help menu"
+  },
+  {
+    key: ["+", "A"],
+    description: "increment scheduled recipe amount"
+  },
+  {
+    key: ["-", "X"],
+    description: "decrement scheduled recipe amount"
+  }
+]
+
+interface IKeyBindProps {
+  readonly bind: string | ReadonlyArray<string>
 }
 
-export default class HelpMenuModal extends React.Component<
-  {},
-  IHelpMenuModalState
-> {
-  state = {
-    show: false
-  }
+function KeyBind({ bind }: IKeyBindProps) {
+  return (
+    <div className="mb-1">
+      {typeof bind === "string" ? (
+        <kbd key={bind}>{bind}</kbd>
+      ) : (
+        bind.map((k, i) => (
+          <React.Fragment key={k}>
+            {i !== 0 ? <span className="mx-1">or</span> : null}
+            <kbd key={k}>{k}</kbd>
+          </React.Fragment>
+        ))
+      )}
+    </div>
+  )
+}
 
-  handleKeyPress = (e: KeyboardEvent) => {
+export default function HelpMenuModal() {
+  const [show, setShow] = React.useState(false)
+
+  function handleKeyPress(e: KeyboardEvent) {
     const el = document.activeElement
     if (el == null || el.tagName !== "BODY") {
       return
     }
     if (e.key === "?") {
-      this.setState(prev => ({ show: !prev.show }))
+      setShow(prev => !prev)
     }
   }
 
-  close = () => {
-    this.setState({ show: false })
-  }
-  render() {
-    const keybinds = [
-      {
-        key: "#",
-        description: "delete scheduled recipe"
-      },
-      {
-        key: "?",
-        description: "toggle help menu"
-      },
-      {
-        key: "A",
-        description: "increment scheduled recipe amount"
-      },
-      {
-        key: "X",
-        description: "decrement scheduled recipe amount"
-      },
-      {
-        key: "f",
-        description: "open search box"
-      }
-    ]
-    return (
-      <Modal show={this.state.show} onClose={() => this.close()}>
-        <GlobalEvent keyUp={this.handleKeyPress} />
-        <section className="d-flex space-between">
-          <h1 className="fs-4 bold">Keybinds</h1>
-          <button className="delete" aria-label="close" onClick={this.close} />
-        </section>
-        <section className="d-flex">
-          <div className="mr-4">
-            {keybinds.map(({ description }) => (
-              <div className="mb-1" key={description}>
-                {description}
-              </div>
-            ))}
-          </div>
-          <div>
-            {keybinds.map(({ key }) => (
-              <div className="mb-1" key={key}>
-                <kbd>{key}</kbd>
-              </div>
-            ))}
-          </div>
-        </section>
-      </Modal>
-    )
-  }
+  const close = () => setShow(false)
+
+  return (
+    <Modal show={show} onClose={close}>
+      <GlobalEvent keyUp={handleKeyPress} />
+      <section className="d-flex space-between">
+        <h1 className="fs-4 bold">Keybinds</h1>
+        <button className="delete" aria-label="close" onClick={close} />
+      </section>
+      <section className="d-flex">
+        <div className="mr-4">
+          {keybinds.map(b => (
+            <div className="mb-1" key={b.description}>
+              {b.description}
+            </div>
+          ))}
+        </div>
+        <div>
+          {keybinds.map(b => (
+            <KeyBind bind={b.key} key={b.description} />
+          ))}
+        </div>
+      </section>
+    </Modal>
+  )
 }

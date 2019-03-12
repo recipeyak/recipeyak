@@ -93,7 +93,7 @@ import {
 import { recipeURL } from "@/urls"
 import { isSuccessOrRefetching } from "@/webdata"
 import { isPast, endOfDay } from "date-fns"
-import { isOk, isErr, Ok, Err } from "@/result"
+import { isOk, isErr, Ok, Err, Result } from "@/result"
 import { heldKeys } from "@/components/CurrentKeys"
 
 // TODO(sbdchd): move to @/store/store
@@ -1062,6 +1062,7 @@ export const deletingScheduledRecipe = (dispatch: Dispatch) => async (
   if (isErr(res)) {
     dispatch(setCalendarRecipe(recipe))
   }
+  return Ok(undefined)
 }
 
 function isSameTeam(x: ICalRecipe, teamID: TeamID): boolean {
@@ -1126,7 +1127,7 @@ export const updatingScheduledRecipe = (dispatch: Dispatch) => async (
   id: ICalRecipe["id"],
   teamID: TeamID,
   count: ICalRecipe["count"]
-) => {
+): Promise<Result<undefined, undefined>> => {
   if (count <= 0) {
     return deletingScheduledRecipe(dispatch)(id, teamID)
   }
