@@ -1,4 +1,4 @@
-import { http } from "@/http"
+import { http, detailOrDefault } from "@/http"
 import {
   IUser,
   ISocialConnection,
@@ -14,6 +14,7 @@ import { IRecipe, IIngredient, IStep } from "@/store/reducers/recipes"
 import { IInvite } from "@/store/reducers/invites"
 import { ICalRecipe } from "@/store/reducers/calendar"
 import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
+import { isOk, Err } from "@/result"
 
 export const updateUser = (data: Partial<IUser>) =>
   http.patch<IUser>("/api/v1/user/", data)
@@ -53,10 +54,16 @@ export const loginUser = (email: string, password: string) =>
 export const getSocialConnections = () =>
   http.get<ISocialConnection[]>("/api/v1/auth/socialaccounts/")
 
-export const disconnectSocialAccount = (id: ISocialConnection["id"]) =>
-  http.post(`/api/v1/auth/socialaccounts/${id}/disconnect/`, {
-    id
-  })
+export const disconnectSocialAccount = async (providerName: SocialProvider) => {
+  const res = await http.post<ISocialConnection[]>(
+    `/api/v1/auth/socialaccounts/${providerName}/disconnect/`
+  )
+  if (isOk(res)) {
+    return res
+  }
+  const DEFAULT_ERROR = "This social account could not be disconnected."
+  return Err(detailOrDefault(res.error, DEFAULT_ERROR))
+}
 
 interface IDetailResponse {
   readonly detail: string

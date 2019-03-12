@@ -1,4 +1,5 @@
 from django.conf.urls import url
+from django.urls import path
 
 from .views import (
     LoginView,
@@ -45,8 +46,8 @@ urlpatterns = [
         SocialAccountListView.as_view(),
         name="social_account_list",
     ),
-    url(
-        r"^socialaccounts/(?P<pk>\d+)/disconnect/$",
+    path(
+        "socialaccounts/<str:provider>/disconnect/",
         SocialAccountDisconnectView.as_view(),
         name="social_account_disconnect",
     ),
