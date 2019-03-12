@@ -11,17 +11,16 @@ import {
   updateEmail,
   updateTeamID,
   fetchUser,
-  setSocialConnections,
   setUserLoggedIn,
   IUser,
-  ISocialConnection,
   fetchUserStats,
   IUserState,
   logOut,
   fetchSessions,
   ISession,
   logoutSessionById,
-  logoutAllSessions
+  logoutAllSessions,
+  socialConnections
 } from "@/store/reducers/user"
 import {
   ICalRecipe,
@@ -240,33 +239,21 @@ export const loggingOutAllSessions = (dispatch: Dispatch) => async () => {
 }
 
 export const fetchSocialConnections = (dispatch: Dispatch) => async () => {
+  dispatch(socialConnections.request())
   const res = await api.getSocialConnections()
   if (isOk(res)) {
-    dispatch(setSocialConnections(res.data))
+    dispatch(socialConnections.success(res.data))
+  } else {
+    dispatch(socialConnections.failure())
   }
 }
 
-/** Disconnect social account by id
- *
- * We intentionally do _not_ catch any error as we catch in the view. This is
- * poor form and should be refactored.
- *
- * TODO(chdsbd): Refactor API usage to not catch in view.
- */
 export const disconnectSocialAccount = (dispatch: Dispatch) => async (
-  provider: SocialProvider,
-  id: ISocialConnection["id"]
+  provider: SocialProvider
 ) => {
-  const res = await api.disconnectSocialAccount(id)
+  const res = await api.disconnectSocialAccount(provider)
   if (isOk(res)) {
-    dispatch(
-      setSocialConnections([
-        {
-          provider,
-          id: null
-        }
-      ])
-    )
+    dispatch(socialConnections.success(res.data))
     return Ok(undefined)
   } else {
     return res

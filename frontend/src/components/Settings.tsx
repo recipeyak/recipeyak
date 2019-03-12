@@ -1,129 +1,11 @@
 import React from "react"
 import { Helmet } from "@/components/Helmet"
 import { Link } from "react-router-dom"
-
 import Loader from "@/components/Loader"
-import { ButtonPrimary, Button, ButtonDanger } from "@/components/Buttons"
-
-import { GithubImg, GitlabImg } from "@/components/SocialButtons"
-
-import { GITHUB_OAUTH_URL, GITLAB_OAUTH_URL } from "@/settings"
-import { SocialProvider } from "@/store/reducers/user"
-import { ISocialAccountsState } from "@/store/reducers/user"
-import { AxiosError } from "axios"
+import { ButtonPrimary, Button } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
 import Sessions from "@/components/Sessions"
-import { isOk, Result } from "@/result"
-
-interface IOAuthButtonProps {
-  readonly name: string
-  readonly Logo: () => JSX.Element
-  readonly error: unknown
-  readonly connected: boolean
-  readonly disconnect: () => void
-  readonly disconnecting: boolean
-  readonly OAUTH_URL: string
-}
-
-const OAuthButton = ({
-  name,
-  Logo,
-  error,
-  connected,
-  OAUTH_URL,
-  disconnect,
-  disconnecting
-}: IOAuthButtonProps) => (
-  <div className="mb-2">
-    <div className="d-flex">
-      <div className="d-flex align-items-center w-200px">
-        <Logo />
-        {name}
-      </div>
-      <div className="d-flex align-center">
-        {connected ? (
-          <ButtonDanger
-            onClick={disconnect}
-            size="small"
-            loading={disconnecting}>
-            Disconnect
-          </ButtonDanger>
-        ) : (
-          <a href={OAUTH_URL + "/connect"} className="my-button is-small">
-            Connect
-          </a>
-        )}
-      </div>
-    </div>
-    {error && (
-      <p className="help is-danger">
-        <b>Error: </b>
-        {error}
-      </p>
-    )}
-  </div>
-)
-
-interface ISettingsWithStateProps {
-  readonly fetchData: () => void
-  readonly disconnectAccount: (
-    provider: SocialProvider,
-    id: number
-  ) => Promise<Result<void, AxiosError>>
-  readonly deleteUserAccount: () => void
-  readonly email: string
-  readonly updateEmail: (email: string) => Promise<void>
-  readonly avatarURL: string
-  readonly updatingEmail: boolean
-  readonly socialAccountConnections: ISocialAccountsState
-  readonly loading: boolean
-  readonly hasPassword: boolean
-}
-
-interface ISettingsWithStateState {
-  readonly email: string
-  readonly loadingGithub: boolean
-  readonly errorGithub: string
-  readonly loadingGitlab: boolean
-  readonly errorGitlab: string
-  readonly errorGeneral: string
-  readonly editing: boolean
-}
-
-interface ISocialButtonProps {
-  readonly error: string
-  readonly connected: boolean
-  readonly disconnect: () => void
-  readonly loading: boolean
-}
-
-function Gitlab(props: ISocialButtonProps) {
-  return (
-    <OAuthButton
-      name="Gitlab"
-      Logo={GitlabImg}
-      error={props.error}
-      connected={props.connected}
-      OAUTH_URL={GITLAB_OAUTH_URL}
-      disconnect={props.disconnect}
-      disconnecting={props.loading}
-    />
-  )
-}
-
-function Github(props: ISocialButtonProps) {
-  return (
-    <OAuthButton
-      name="Github"
-      Logo={GithubImg}
-      error={props.error}
-      connected={props.connected}
-      OAUTH_URL={GITHUB_OAUTH_URL}
-      disconnect={props.disconnect}
-      disconnecting={props.loading}
-    />
-  )
-}
+import SocialAccountSettings from "@/components/SocialAccountSettings"
 
 function Export() {
   return (
@@ -254,59 +136,30 @@ function ChangePassword({ hasPassword }: IChangePasswordProps) {
   )
 }
 
-interface ISocialAccountsProps {
-  readonly errorGithub: string
-  readonly loadingGithub: boolean
-  readonly errorGitlab: string
-  readonly loadingGitlab: boolean
-  readonly socialAccountConnections: ISocialAccountsState
-  readonly disconnect: (account: "github" | "gitlab", id: number) => void
+export interface ISettingsProps {
+  readonly fetchData: () => void
+  readonly deleteUserAccount: () => void
+  readonly email: string
+  readonly updateEmail: (email: string) => Promise<void>
+  readonly avatarURL: string
+  readonly updatingEmail: boolean
+  readonly loading: boolean
+  readonly hasPassword: boolean
 }
-
-function SocialAccounts(props: ISocialAccountsProps) {
-  return (
-    <>
-      <h1 className="fs-6">Social Accounts</h1>
-
-      <Github
-        error={props.errorGithub}
-        connected={props.socialAccountConnections.github != null}
-        disconnect={() => {
-          if (props.socialAccountConnections.github != null) {
-            props.disconnect("github", props.socialAccountConnections.github)
-          }
-        }}
-        loading={props.loadingGithub}
-      />
-      <Gitlab
-        error={props.errorGitlab}
-        connected={props.socialAccountConnections.gitlab != null}
-        disconnect={() => {
-          if (props.socialAccountConnections.gitlab != null) {
-            props.disconnect("gitlab", props.socialAccountConnections.gitlab)
-          }
-        }}
-        loading={props.loadingGitlab}
-      />
-    </>
-  )
+interface ISettingsState {
+  readonly email: string
+  readonly editing: boolean
 }
-
-export default class SettingsWithState extends React.Component<
-  ISettingsWithStateProps,
-  ISettingsWithStateState
+export default class Settings extends React.Component<
+  ISettingsProps,
+  ISettingsState
 > {
-  state: ISettingsWithStateState = {
+  state: ISettingsState = {
     email: this.props.email,
-    loadingGithub: false,
-    errorGithub: "",
-    loadingGitlab: false,
-    errorGitlab: "",
-    errorGeneral: "",
     editing: false
   }
 
-  componentWillReceiveProps = (nextProps: ISettingsWithStateProps) => {
+  componentWillReceiveProps = (nextProps: ISettingsProps) => {
     this.setState({ email: nextProps.email })
   }
 
@@ -317,42 +170,7 @@ export default class SettingsWithState extends React.Component<
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState(({
       [e.target.name]: e.target.value
-    } as unknown) as ISettingsWithStateState)
-  }
-
-  disconnectAccount = (provider: SocialProvider, id: number) => {
-    if (provider === "github") {
-      this.setState({ loadingGithub: true, errorGithub: "" })
-    } else if (provider === "gitlab") {
-      this.setState({ loadingGitlab: true, errorGitlab: "" })
-    }
-    this.setState({ errorGeneral: "" })
-    // TODO(chdsbd): Fix this ugly mess with Redux
-    this.props.disconnectAccount(provider, id).then(res => {
-      if (isOk(res)) {
-        this.setState({ loadingGithub: false, loadingGitlab: false })
-      } else {
-        const error = res.error
-        if (
-          error.response &&
-          error.response.status === 403 &&
-          error.response.data &&
-          // tslint:disable-next-line:no-unsafe-any
-          error.response.data.detail
-        ) {
-          if (provider === "github") {
-            // tslint:disable-next-line:no-unsafe-any
-            this.setState({ errorGithub: error.response.data.detail })
-          } else if (provider === "gitlab") {
-            // tslint:disable-next-line:no-unsafe-any
-            this.setState({ errorGitlab: error.response.data.detail })
-          }
-        } else {
-          this.setState({ errorGeneral: "Problem with action" })
-        }
-        this.setState({ loadingGithub: false, loadingGitlab: false })
-      }
-    })
+    } as unknown) as ISettingsState)
   }
 
   cancelEdit = () => this.setState({ editing: false })
@@ -366,23 +184,10 @@ export default class SettingsWithState extends React.Component<
   }
 
   render() {
-    const {
-      email,
-      editing,
-      loadingGithub,
-      loadingGitlab,
-      errorGithub,
-      errorGitlab
-    } = this.state
-    const { handleInputChange, disconnectAccount } = this
+    const { email, editing } = this.state
+    const { handleInputChange } = this
 
-    const {
-      avatarURL,
-      updatingEmail,
-      socialAccountConnections,
-      loading,
-      hasPassword
-    } = this.props
+    const { avatarURL, updatingEmail, loading, hasPassword } = this.props
 
     if (loading) {
       return (
@@ -415,14 +220,7 @@ export default class SettingsWithState extends React.Component<
           </div>
         </div>
 
-        <SocialAccounts
-          errorGithub={errorGithub}
-          errorGitlab={errorGitlab}
-          loadingGithub={loadingGithub}
-          loadingGitlab={loadingGitlab}
-          socialAccountConnections={socialAccountConnections}
-          disconnect={disconnectAccount}
-        />
+        <SocialAccountSettings />
 
         <Export />
         <Sessions />

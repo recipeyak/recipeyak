@@ -1,10 +1,7 @@
 import { connect } from "react-redux"
 
 import {
-  fetchSocialConnections,
   updatingEmail,
-  disconnectSocialAccount,
-  loggingOut,
   deleteUserAccount,
   Dispatch,
   fetchingUser
@@ -13,36 +10,30 @@ import {
 import Settings from "@/components/Settings"
 import { IState } from "@/store/store"
 
-const mapStateToProps = (state: IState) => {
-  return {
-    avatarURL: state.user.avatarURL,
-    email: state.user.email,
-    updatingEmail: state.user.updatingEmail,
-    hasPassword: state.user.hasUsablePassword,
-    socialAccountConnections: state.user.socialAccountConnections,
-    loading: state.user.loading
-  }
-}
+const ACCOUNT_DELETION_PROMPT =
+  "Are you sure you want to permanently delete your account? \nPlease type, 'delete my account', to irrevocably delete your account"
+const DELETION_RESPONSE = "delete my account"
 
-const mapDispatchToProps = (dispatch: Dispatch) => {
-  return {
-    logout: loggingOut(dispatch),
-    fetchData: () => {
-      fetchingUser(dispatch)()
-      fetchSocialConnections(dispatch)()
-    },
-    disconnectAccount: disconnectSocialAccount(dispatch),
-    deleteUserAccount: () => {
-      const response = prompt(
-        "Are you sure you want to permanently delete your account? \nPlease type, 'delete my account', to irrevocably delete your account"
-      )
-      if (response != null && response.toLowerCase() === "delete my account") {
-        deleteUserAccount(dispatch)()
-      }
-    },
-    updateEmail: updatingEmail(dispatch)
-  }
-}
+const mapStateToProps = (state: IState) => ({
+  avatarURL: state.user.avatarURL,
+  email: state.user.email,
+  updatingEmail: state.user.updatingEmail,
+  hasPassword: state.user.hasUsablePassword,
+  loading: state.user.loading
+})
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  fetchData: () => {
+    fetchingUser(dispatch)()
+  },
+  deleteUserAccount: () => {
+    const response = prompt(ACCOUNT_DELETION_PROMPT)
+    if (response != null && response.toLowerCase() === DELETION_RESPONSE) {
+      deleteUserAccount(dispatch)()
+    }
+  },
+  updateEmail: updatingEmail(dispatch)
+})
 
 export default connect(
   mapStateToProps,

@@ -55,7 +55,8 @@ type RemoteData<E, T> =
   | ISuccess<T>
   | IRefetching<T>
 
-export type WebData<T> = RemoteData<HttpErrorKind, T>
+// TODO(chdsbd): Make the default error type void
+export type WebData<T = void, E = HttpErrorKind> = RemoteData<E, T>
 
 export const enum HttpErrorKind {
   error404,
@@ -64,31 +65,31 @@ export const enum HttpErrorKind {
 
 // for now we have to specify the type guard
 // see https://github.com/Microsoft/TypeScript/issues/16069
-export const isSuccess = <T>(x: WebData<T>): x is ISuccess<T> =>
+export const isSuccess = <T, E>(x: WebData<T, E>): x is ISuccess<T> =>
   x != null && x.kind === RDK.Success
 
-export const isLoading = <T>(x: WebData<T>): x is ILoading =>
+export const isLoading = <T, E>(x: WebData<T, E>): x is ILoading =>
   x != null && x.kind === RDK.Loading
 
-export const isInitial = <T>(x: WebData<T>): x is undefined => x == null
+export const isInitial = <T, E>(x: WebData<T, E>): x is undefined => x == null
 
-export const isFailure = <T>(x: WebData<T>): x is IFailure<HttpErrorKind> =>
+export const isFailure = <T, E>(x: WebData<T, E>): x is IFailure<E> =>
   x != null && x.kind === RDK.Failure
 
-export const isRefetching = <T>(x: WebData<T>): x is IRefetching<T> =>
+export const isRefetching = <T, E>(x: WebData<T, E>): x is IRefetching<T> =>
   x != null && x.kind === RDK.Refetching
 
-export const isSuccessOrRefetching = <T>(
-  x: WebData<T>
+export const isSuccessOrRefetching = <T, E>(
+  x: WebData<T, E>
 ): x is ISuccess<T> | IRefetching<T> => isSuccess(x) || isRefetching(x)
 
 export const unWrap = <T>(d: ISuccess<T> | IRefetching<T>): T => d.data
 
 /** map over WebData with @param func if data is a type structurally similar to Success */
-export function mapSuccessLike<T, R>(
-  d: WebData<T>,
+export function mapSuccessLike<T, R, E>(
+  d: WebData<T, E>,
   func: (data: T) => R
-): WebData<R> {
+): WebData<R, E> {
   if (isSuccessOrRefetching(d)) {
     return { ...d, data: func(unWrap(d)) }
   }
@@ -96,7 +97,9 @@ export function mapSuccessLike<T, R>(
 }
 
 /** handle transitioning from Success & InitialState to Loading */
-export function toLoading<T>(state: WebData<T>): IRefetching<T> | ILoading {
+export function toLoading<T, E>(
+  state: WebData<T, E>
+): IRefetching<T> | ILoading {
   if (isSuccess(state)) {
     return Refetching(unWrap(state))
   }

@@ -3,13 +3,14 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.debug import sensitive_post_parameters
 from django.core.exceptions import ValidationError
+from django.shortcuts import get_object_or_404
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
-from rest_framework.exceptions import NotFound, PermissionDenied
+from rest_framework.exceptions import PermissionDenied
 
 from allauth.account.views import ConfirmEmailView
 from allauth.account.utils import complete_signup
@@ -28,6 +29,8 @@ from .serializers import (
 from core.users.serializers import UserSerializer as UserDetailsSerializer
 
 logger = logging.getLogger(__name__)
+
+# TODO(chdsbd): Add tests
 
 # pylint:disable=protected-access
 
@@ -105,11 +108,9 @@ class SocialAccountDisconnectView(GenericAPIView):
     def get_queryset(self):
         return SocialAccount.objects.filter(user=self.request.user)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, provider: str):
         accounts = self.get_queryset()
-        account = accounts.filter(pk=kwargs["pk"]).first()
-        if not account:
-            raise NotFound
+        account = get_object_or_404(accounts, provider=provider)
 
         try:
             get_social_adapter(self.request).validate_disconnect(account, accounts)
@@ -121,4 +122,4 @@ class SocialAccountDisconnectView(GenericAPIView):
         signals.social_account_removed.send(
             sender=SocialAccount, request=self.request, socialaccount=account
         )
-        return Response(self.get_serializer(account).data)
+        return Response(SocialAccountSerializer(self.get_queryset(), many=True).data)
