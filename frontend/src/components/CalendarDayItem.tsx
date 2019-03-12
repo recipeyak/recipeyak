@@ -99,13 +99,13 @@ class CalendarItem extends React.Component<
       return
     }
 
-    if (e.key === "#") {
+    if (e.key === "#" || e.key === "Delete") {
       this.props.remove()
     }
-    if (e.key === "A") {
+    if (e.key === "A" || e.key === "+") {
       this.updateCount(this.state.count + 1)
     }
-    if (e.key === "X") {
+    if (e.key === "X" || e.key === "-") {
       this.updateCount(this.state.count - 1)
     }
   }

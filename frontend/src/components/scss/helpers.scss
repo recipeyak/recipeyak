@@ -68,6 +68,10 @@
   .ml-#{$i} {
     margin-left: #{$i/4}rem !important;
   }
+  .mx-#{$i} {
+    margin-left: #{$i/4}rem !important;
+    margin-right: #{$i/4}rem !important;
+  }
   .mt-#{$i} {
     margin-top: #{$i/4}rem !important;
   }
