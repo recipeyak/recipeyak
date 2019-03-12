@@ -20,7 +20,12 @@ import { IState } from "@/store/store"
 
 function mapDispatchToProps(dispatch: Dispatch) {
   return {
-    create: addingScheduledRecipe(dispatch)
+    create: (
+      recipeID: IRecipe["id"],
+      teamID: TeamID,
+      on: Date,
+      count: number
+    ) => addingScheduledRecipe(dispatch)(recipeID, teamID, on, count, true)
   }
 }
 
