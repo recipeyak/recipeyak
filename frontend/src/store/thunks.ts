@@ -1005,7 +1005,8 @@ export const addingScheduledRecipe = (dispatch: Dispatch) => async (
   recipeID: IRecipe["id"],
   teamID: TeamID,
   on: Date,
-  count: number
+  count: number,
+  showNotification?: boolean
 ) => {
   const recipe = store.getState().recipes.byId[recipeID]
   dispatch(setSchedulingRecipe({ recipeID, scheduling: true }))
@@ -1028,12 +1029,14 @@ export const addingScheduledRecipe = (dispatch: Dispatch) => async (
     dispatch(setSchedulingRecipe({ recipeID, scheduling: false }))
     const scheduledDate = new Date(res.data.on).toLocaleDateString()
     const recipeName = res.data.recipe.name
-    const message = `${recipeName} scheduled on ${scheduledDate}`
-    showNotificationWithTimeout(dispatch)({
-      message,
-      level: "success",
-      delay: 3 * second
-    })
+    if (showNotification) {
+      const message = `${recipeName} scheduled on ${scheduledDate}`
+      showNotificationWithTimeout(dispatch)({
+        message,
+        level: "success",
+        delay: 3 * second
+      })
+    }
   } else {
     dispatch(deleteCalendarRecipe(tempId))
     showNotificationWithTimeout(dispatch)({
