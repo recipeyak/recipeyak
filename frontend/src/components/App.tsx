@@ -32,7 +32,7 @@ import Recipes from "@/components/RecipeList"
 import ErrorBoundary from "@/components/ErrorBoundary"
 
 import "@/components/scss/main.scss"
-import GlobalEvent from "@/components/GlobalEvent"
+import { CurrentKeys } from "@/components/CurrentKeys"
 
 interface IAuthRouteProps extends RouteProps {
   readonly authenticated: boolean
@@ -111,18 +111,6 @@ const PublicOnlyRoute = connect(mapAuthenticated)(
     />
   )
 )
-
-export const heldKeys = new Set<string>()
-
-function CurrentKeys() {
-  const handleKeyDown = (e: KeyboardEvent) => {
-    heldKeys.add(e.key)
-  }
-  const handleKeyUp = (e: KeyboardEvent) => {
-    heldKeys.delete(e.key)
-  }
-  return <GlobalEvent keyDown={handleKeyDown} keyUp={handleKeyUp} />
-}
 
 function Base() {
   return (
