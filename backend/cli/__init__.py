@@ -1,6 +1,6 @@
 import click
 
-from .config import setup_django
+from .config import setup_django, setup_django_sites
 
 
 @click.group()
@@ -40,10 +40,19 @@ def test(api, web):
 @cli.command(help="start dev services")
 @click.option("-a", "--api/--no-api")
 @click.option("-w", "--web/--no-web")
-def dev(api, web):
+@click.pass_context
+def dev(ctx, api, web):
     """Start dev services. Defaults to all."""
     # TODO(chdsbd): How can we capture stdin to support debugging via ipdb?
-    raise NotImplementedError()
+    setup_django()
+    from django.core.management import call_command
+
+    call_command("check", fail_level="WARNING")
+    call_command("migrate")
+    setup_django_sites()
+    from django.core.management import execute_from_command_line
+
+    execute_from_command_line([ctx.command_path, "runserver"])
 
 
 @cli.command(help="start prod services")
@@ -77,6 +86,7 @@ def update(api, web):
 def build(api, web):
     """Build services for deployment. Defaults to all."""
     raise NotImplementedError()
+
 
 @cli.command(add_help_option=False, context_settings=dict(ignore_unknown_options=True))
 @click.argument("management_args", nargs=-1, type=click.UNPROCESSED)
