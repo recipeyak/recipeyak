@@ -1,7 +1,3 @@
-import sys
-from honcho.manager import Manager
-
-
 import click
 
 
