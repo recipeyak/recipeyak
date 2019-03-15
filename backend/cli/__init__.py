@@ -84,9 +84,21 @@ def prod(api, web):
 @cli.command(help="install dependencies/tools")
 @click.option("-a", "--api/--no-api")
 @click.option("-w", "--web/--no-web")
-def install(api, web):
+def install(api: bool, web: bool) -> None:
     """Install tools and dependencies. Defaults to all."""
-    raise NotImplementedError()
+
+    is_all = not api and not web
+    from cli.manager import ProcessManager
+
+    m = ProcessManager()
+    if api or is_all:
+        m.add_process("poetry", "poetry install")
+    if web or is_all:
+        m.add_process("yarn", "yarn install")
+    m.loop()
+    import sys
+
+    sys.exit(m.returncode)
 
 
 @cli.command(help="update dependencies")
