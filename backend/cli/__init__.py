@@ -77,19 +77,50 @@ def build(api, web):
     raise NotImplementedError()
 
 
+def configure_django():
+    import os
+    from dotenv import load_dotenv
+    import django
+
+    load_dotenv()
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
+    django.setup(set_prefix=False)
+
+
 @cli.command(add_help_option=False, context_settings=dict(ignore_unknown_options=True))
 @click.argument("management_args", nargs=-1, type=click.UNPROCESSED)
 @click.pass_context
 def django(ctx, management_args):
     """run django management commands"""
-    import os
-    from dotenv import load_dotenv
-
-    load_dotenv()
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
+    configure_django()
     from django.core.management import execute_from_command_line
 
     execute_from_command_line([ctx.command_path, *management_args])
+
+
+@cli.command()
+@click.pass_context
+def missing_migrations(ctx):
+    """Check for missing django migrations"""
+    configure_django()
+    import io
+    from django.core.management import call_command
+
+    try:
+        # call command and swallow output
+        call_command(
+            "makemigrations",
+            dry_run=True,
+            no_input=True,
+            check=True,
+            stdout=io.StringIO(),
+            stderr=io.StringIO(),
+        )
+    except SystemExit as e:
+        if e.code != 0:
+            raise click.ClickException(
+                "Missing migrations. Run yak django makemigations to add missing migrations."
+            )
 
 
 @cli.command()

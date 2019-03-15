@@ -24,7 +24,7 @@ echo 'start black'
 
 if [[ "$@" == *'--db'* ]] || [[ $CI ]]; then
     echo 'check for missing migrations'
-    ./backend/s/check_missing_migrations &
+    poetry run yak missing-migrations &
 else
     echo '--db not passed. Skipping migration check that requires Postgres.'
 fi
