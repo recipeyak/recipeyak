@@ -1,5 +1,7 @@
 import click
 
+from .config import setup_django
+
 
 @click.group()
 def cli():
@@ -76,23 +78,12 @@ def build(api, web):
     """Build services for deployment. Defaults to all."""
     raise NotImplementedError()
 
-
-def configure_django():
-    import os
-    from dotenv import load_dotenv
-    import django
-
-    load_dotenv()
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
-    django.setup(set_prefix=False)
-
-
 @cli.command(add_help_option=False, context_settings=dict(ignore_unknown_options=True))
 @click.argument("management_args", nargs=-1, type=click.UNPROCESSED)
 @click.pass_context
 def django(ctx, management_args):
     """run django management commands"""
-    configure_django()
+    setup_django()
     from django.core.management import execute_from_command_line
 
     execute_from_command_line([ctx.command_path, *management_args])
@@ -102,7 +93,7 @@ def django(ctx, management_args):
 @click.pass_context
 def missing_migrations(ctx):
     """Check for missing django migrations"""
-    configure_django()
+    setup_django()
     import io
     from django.core.management import call_command
 
