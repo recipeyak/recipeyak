@@ -1,8 +1,11 @@
 [tool.poetry]
-name = "recipeyak"
+name = "backend"
 version = "0.1.0"
 description = ""
-authors = ["Steve Dignam <steve@dignam.xyz>"]
+authors = ["Steve Dignam <steve@dignam.xyz>", "Christopher Dignam <chris@dignam.xyz>"]
+packages = [
+    { include = "cli", from = "backend" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.7"
@@ -20,6 +23,9 @@ django-user-sessions = "^1.6"
 dataclasses = "^0.6.0"
 django-softdelete = "^0.9.0"
 sentry-sdk = "^0.7.2"
+honcho = "^1.0"
+click = "^7.0"
+python-dotenv = "^0.10.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "3.4.0"
@@ -36,6 +42,8 @@ flake8-pie = "^0.0.4"
 flake8-print = "^3.1"
 pylint = "^2.3"
 
+[tool.poetry.scripts]
+yak = 'cli:cli'
 
 [tool.black]
 py36 = true
@@ -45,3 +53,8 @@ exclude = '''
   | node_modules
 )/
 '''
+
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
