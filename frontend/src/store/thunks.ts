@@ -271,11 +271,16 @@ export const fetchingUserStats = (dispatch: Dispatch) => async () => {
   }
 }
 
-export const updatingPassword = (dispatch: Dispatch) => async (
-  password1: string,
-  password2: string,
+interface IUpdatePassword {
+  password1: string
+  password2: string
   oldPassword: string
-) => {
+}
+export const updatingPassword = (dispatch: Dispatch) => async ({
+  password1,
+  password2,
+  oldPassword
+}) => {
   dispatch(passwordUpdate.request())
   const res = await api.changePassword(password1, password2, oldPassword)
   if (isOk(res)) {

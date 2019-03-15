@@ -12,11 +12,11 @@ interface IPasswordChangeError {
 
 interface IPasswordChangeProps {
   readonly clearErrors: () => void
-  readonly update: (
-    oldPassword: string,
-    newPassword: string,
-    newPasswordAgain: string
-  ) => void
+  readonly update: ({
+    password1: string,
+    password2: string,
+    oldPassword: string
+  }) => void
   readonly error: IPasswordChangeError
   readonly setPassword?: boolean
   readonly loading: boolean
@@ -56,11 +56,12 @@ class PasswordChange extends React.Component<
 
   handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    this.props.update(
-      this.state.oldPassword,
-      this.state.newPassword,
-      this.state.newPasswordAgain
-    )
+    const { oldPassword, newPassword, newPasswordAgain } = this.state
+    this.props.update({
+      password1: newPassword,
+      password2: newPasswordAgain,
+      oldPassword
+    })
   }
 
   render() {
