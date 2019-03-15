@@ -1,6 +1,6 @@
 import click
 
-from .config import setup_django, setup_django_sites
+from cli.config import setup_django, setup_django_sites
 
 
 @click.group()
@@ -24,9 +24,26 @@ def lint(api, web):
 @cli.command(help="format code")
 @click.option("-a", "--api/--no-api")
 @click.option("-w", "--web/--no-web")
-def fmt(api, web):
+@click.option("--check", is_flag=True)
+def fmt(api: bool, web: bool, check: bool) -> None:
     """Format code. Defaults to all."""
-    raise NotImplementedError()
+    is_all = not api and not web
+    from cli.manager import ProcessManager
+
+    m = ProcessManager()
+    if api or is_all:
+        check_flag = "--check" if check else ""
+        m.add_process("black", f"black . {check_flag}")
+
+    if web or is_all:
+        glob = "frontend/**/*.{js,jsx,scss,css,ts,tsx,json}"
+        check_flag = "--list-different" if check else "--write"
+        m.add_process("prettier", f'$(yarn bin)/prettier "{glob}" {check_flag}')
+
+    m.loop()
+    import sys
+
+    sys.exit(m.returncode)
 
 
 @cli.command(help="test services")
