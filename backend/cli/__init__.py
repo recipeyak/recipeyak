@@ -1,3 +1,4 @@
+import os
 import click
 
 from cli.config import setup_django, setup_django_sites
@@ -13,12 +14,74 @@ def cli():
 # maybe formatters (Prettier, Black) since Prettier formats multiple languages.
 
 
+def prettier(check: bool) -> str:
+    check_flag = "--list-different" if check else "--write"
+    glob = "frontend/**/*.{js,jsx,scss,css,ts,tsx,json}"
+    return f"$(yarn bin)/prettier '{glob}' {check_flag}"
+
+
+def mypy() -> str:
+    from pathlib import Path
+
+    files = " ".join(
+        str(p)
+        for p in Path("backend").rglob("*.py")
+        if ".ropeproject" not in str(p) and ".venv" not in str(p)
+    )
+
+    return f"mypy --config-file tox.ini {files}"
+
+
+def pylint() -> str:
+    from pathlib import Path
+
+    python_dirs = " ".join(
+        list(str(p.parent) for p in Path("backend").glob("*/__init__.py"))
+    )
+    return f"pylint --rcfile='.pylintrc' {python_dirs}"
+
+
+def black(check: bool) -> str:
+    check_flag = "--check" if check else ""
+    return f"black . {check_flag}"
+
+
+def tslint() -> str:
+    return "$(yarn bin)/tslint --project tsconfig.json --format 'codeFrame'"
+
+
+def typescript() -> str:
+    return "$(yarn bin)/tsc --noEmit"
+
+
+def flake8() -> str:
+    return "flake8 ."
+
+
 @cli.command(help="lint code")
 @click.option("-a", "--api/--no-api")
 @click.option("-w", "--web/--no-web")
-def lint(api, web):
+def lint(api: bool, web: bool) -> None:
     """Lint code. Defaults to all."""
-    raise NotImplementedError()
+    is_all = not api and not web
+    from cli.manager import ProcessManager
+
+    m = ProcessManager()
+
+    if web or is_all:
+        m.add_process("tslint", tslint())
+        m.add_process("prettier", prettier(check=True))
+        m.add_process("typescript", typescript())
+
+    if api or is_all:
+        m.add_process("mypy", mypy())
+        m.add_process("flake8", flake8())
+        m.add_process("black", black(check=True))
+
+        if os.getenv("CI"):
+            m.add_process("pylint", pylint())
+
+    m.loop()
 
 
 @cli.command(help="format code")
@@ -32,18 +95,12 @@ def fmt(api: bool, web: bool, check: bool) -> None:
 
     m = ProcessManager()
     if api or is_all:
-        check_flag = "--check" if check else ""
-        m.add_process("black", f"black . {check_flag}")
+        m.add_process("black", black(check=check))
 
     if web or is_all:
-        glob = "frontend/**/*.{js,jsx,scss,css,ts,tsx,json}"
-        check_flag = "--list-different" if check else "--write"
-        m.add_process("prettier", f'$(yarn bin)/prettier "{glob}" {check_flag}')
+        m.add_process("prettier", prettier(check=check))
 
     m.loop()
-    import sys
-
-    sys.exit(m.returncode)
 
 
 @cli.command(help="test services")
@@ -96,9 +153,6 @@ def install(api: bool, web: bool) -> None:
     if web or is_all:
         m.add_process("yarn", "yarn install")
     m.loop()
-    import sys
-
-    sys.exit(m.returncode)
 
 
 @cli.command(help="update dependencies")

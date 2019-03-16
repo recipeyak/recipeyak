@@ -7,3 +7,9 @@ class ProcessManager(Manager):
 
     def kill(self):
         pass
+
+    def loop(self):
+        super().loop()
+        import sys
+
+        sys.exit(self.returncode)
