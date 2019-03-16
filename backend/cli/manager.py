@@ -103,9 +103,7 @@ class _ProcessManager(Manager):
 def ProcessManager():
     m = _ProcessManager()
     yield m
-
     m.loop()
-
     sys.exit(m.returncode)
 
 
