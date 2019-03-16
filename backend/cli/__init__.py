@@ -133,6 +133,7 @@ def prod(api: bool, web: bool) -> None:
     is_all = not api and not web
     from cli.manager import DefaultManager
     from subprocess import list2cmdline
+
     os.environ["PYTHONUNBUFFERED"] = "true"
 
     with DefaultManager() as m:
@@ -209,6 +210,7 @@ def django(ctx: click.core.Context, management_args: List[str]) -> None:
     from django.core.management import execute_from_command_line
 
     execute_from_command_line([ctx.command_path, *management_args])
+
 
 @cli.command()
 def django_setup_sites():
