@@ -1,4 +1,4 @@
-FROM recipeyak/base@sha256:8897faf71cb791feea88b1012db32d1b0d2970a2ffc722be9973f548af057bcd as builder
+FROM recipeyak/base:v3 as builder
 
 # Install Application into container
 RUN set -ex && mkdir -p /var/app
