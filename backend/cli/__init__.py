@@ -6,7 +6,7 @@ import io
 
 import click
 
-from cli.config import setup_django_sites
+from cli.config import setup_django_sites, setup_django as configure_django
 from cli.decorators import setup_django
 
 
@@ -231,7 +231,7 @@ def build(api: bool, web: bool) -> None:
     if api or is_all:
         from django.core.management import call_command
 
-        setup_django()
+        configure_django()
         os.environ["DOCKERBUILD"] = "1"
         call_command("collectstatic", no_input=True)
         git_sha = os.environ["GIT_SHA"]
