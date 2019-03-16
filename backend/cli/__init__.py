@@ -1,3 +1,4 @@
+from typing import List
 import os
 import click
 
@@ -58,11 +59,25 @@ def flake8() -> str:
     return "flake8 ."
 
 
+def pytest(watch: bool, args: List[str]) -> str:
+    args = " ".join(args)
+    if watch:
+        return f"ptw -- {args}"
+
+    return f"pytest {args}"
+
+
+def jest() -> str:
+    if os.getenv("CI"):
+        return "node scripts/test.js --env=jsdom --coverage --runInBand"
+    return "node scripts/test.js --env=jsdom"
+
+
 @cli.command(help="lint code")
 @click.option("-a", "--api/--no-api")
 @click.option("-w", "--web/--no-web")
 @click.pass_context
-def lint(ctx, api: bool, web: bool) -> None:
+def lint(ctx: click.core.Context, api: bool, web: bool) -> None:
     """Lint code. Defaults to all."""
     is_all = not api and not web
     from cli.manager import ProcessManager
@@ -108,16 +123,34 @@ def fmt(api: bool, web: bool, check: bool) -> None:
 @cli.command(help="test services")
 @click.option("-a", "--api/--no-api")
 @click.option("-w", "--web/--no-web")
-def test(api, web):
+@click.option("--watch/--no-watch")
+@click.argument("test_args", nargs=-1, type=click.UNPROCESSED)
+def test(api: bool, web: bool, watch: bool, test_args: List[str]) -> None:
     """Run tests for service. Defaults to all."""
-    raise NotImplementedError()
+    is_all = not api and not web
+    from cli.manager import ProcessManager
+
+    from dotenv import load_dotenv
+
+    load_dotenv()
+
+    os.environ["TESTING"] = "1"
+
+    m = ProcessManager()
+    if api or is_all:
+        m.add_process("api", pytest(watch=watch, args=test_args), cwd="backend")
+
+    if web or is_all:
+        m.add_process("web", jest())
+
+    m.loop()
 
 
 @cli.command(help="start dev services")
 @click.option("-a", "--api/--no-api")
 @click.option("-w", "--web/--no-web")
 @click.pass_context
-def dev(ctx, api, web):
+def dev(ctx: click.core.Context, api: bool, web: bool) -> None:
     """Start dev services. Defaults to all."""
     # TODO(chdsbd): How can we capture stdin to support debugging via ipdb?
     setup_django()
@@ -134,7 +167,7 @@ def dev(ctx, api, web):
 @cli.command(help="start prod services")
 @click.option("-a", "--api/--no-api")
 @click.option("-w", "--web/--no-web")
-def prod(api, web):
+def prod(api: bool, web: bool) -> None:
     """Start prod services. Defaults to all."""
     # TODO(chdsbd): How can we capture stdin to support debugging via ipdb?
     raise NotImplementedError()
@@ -157,18 +190,10 @@ def install(api: bool, web: bool) -> None:
     m.loop()
 
 
-@cli.command(help="update dependencies")
-@click.option("--api/--no-api")
-@click.option("--web/--no-web")
-def update(api, web):
-    """Update dependencies. Defaults to all."""
-    raise NotImplementedError()
-
-
 @cli.command(help="build services")
 @click.option("--api/--no-api")
 @click.option("--web/--no-web")
-def build(api, web):
+def build(api: bool, web: bool) -> None:
     """Build services for deployment. Defaults to all."""
     raise NotImplementedError()
 
@@ -176,7 +201,7 @@ def build(api, web):
 @cli.command(add_help_option=False, context_settings=dict(ignore_unknown_options=True))
 @click.argument("management_args", nargs=-1, type=click.UNPROCESSED)
 @click.pass_context
-def django(ctx, management_args):
+def django(ctx: click.core.Context, management_args: List[str]) -> str:
     """run django management commands"""
     setup_django()
     from django.core.management import execute_from_command_line
@@ -210,6 +235,6 @@ def missing_migrations() -> None:
 
 @cli.command()
 @click.option("--shell", is_flag=True, help="output env in shell format")
-def env(shell):
+def env(shell: bool) -> None:
     """print environment"""
     raise NotImplementedError()
