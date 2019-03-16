@@ -1,5 +1,9 @@
 from typing import List
+import subprocess
 import os
+import sys
+import io
+
 import click
 
 from cli.config import setup_django_sites
@@ -175,7 +179,6 @@ def dev(ctx: click.core.Context, api: bool, web: bool, migrate: bool) -> None:
     for service in services:
         m.add_process(*service)
     m.loop()
-    import sys
 
     sys.exit(m.returncode)
 
@@ -210,7 +213,32 @@ def install(api: bool, web: bool) -> None:
 @click.option("--web/--no-web")
 def build(api: bool, web: bool) -> None:
     """Build services for deployment. Defaults to all."""
-    raise NotImplementedError()
+
+    from dotenv import load_dotenv
+
+    load_dotenv()
+
+    is_all = not api and not web
+    if web or is_all:
+        subprocess.run(["node", "frontend/scripts/build.js"], check=True)
+        subprocess.run(
+            ["bash", "frontend/scripts/crawl.sh"],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+
+    if api or is_all:
+        from django.core.management import call_command
+
+        setup_django()
+        os.environ["DOCKERBUILD"] = "1"
+        call_command("collectstatic", no_input=True)
+        git_sha = os.environ["GIT_SHA"]
+        subprocess.run(
+            [f"sed -i s/\<%=GIT_SHA=%\>/{git_sha}/ backend/settings.py"], check=True
+        )
+        subprocess.run(["grep GIT_SHA backend/settings.py"], check=True)
 
 
 @cli.command(add_help_option=False, context_settings=dict(ignore_unknown_options=True))
@@ -228,7 +256,6 @@ def django(ctx: click.core.Context, management_args: List[str]) -> None:
 @setup_django
 def missing_migrations() -> None:
     """Check for missing django migrations"""
-    import io
     from django.core.management import call_command
 
     try:
