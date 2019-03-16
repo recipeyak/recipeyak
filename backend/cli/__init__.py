@@ -7,7 +7,7 @@ import io
 import click
 
 from cli.config import setup_django_sites, setup_django as configure_django
-from cli.decorators import setup_django, env
+from cli.decorators import setup_django, load_env
 
 
 @click.group()
@@ -125,7 +125,7 @@ def fmt(api: bool, web: bool, check: bool) -> None:
 @click.option("-w", "--web/--no-web")
 @click.option("--watch/--no-watch")
 @click.argument("test_args", nargs=-1, type=click.UNPROCESSED)
-@env
+@load_env
 def test(api: bool, web: bool, watch: bool, test_args: List[str]) -> None:
     """Run tests for service. Defaults to all."""
     is_all = not api and not web
@@ -185,7 +185,7 @@ def dev(ctx: click.core.Context, api: bool, web: bool, migrate: bool) -> None:
 @cli.command(help="start prod services")
 @click.option("-a", "--api/--no-api")
 @click.option("-w", "--web/--no-web")
-@env
+@load_env
 def prod(api: bool, web: bool) -> None:
     """Start prod services. Defaults to all."""
     is_all = not api and not web
@@ -231,13 +231,9 @@ def install(api: bool, web: bool) -> None:
 @cli.command(help="build services")
 @click.option("--api/--no-api")
 @click.option("--web/--no-web")
+@load_env
 def build(api: bool, web: bool) -> None:
     """Build services for deployment. Defaults to all."""
-
-    from dotenv import load_dotenv
-
-    load_dotenv()
-
     is_all = not api and not web
     if web or is_all:
         subprocess.run(["node", "frontend/scripts/build.js"], check=True)

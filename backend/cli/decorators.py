@@ -12,7 +12,12 @@ def setup_django(f):
 
     return wrapper
 
-def env(f):
+
+def load_env(f):
+    """
+    source .env files
+    """
+
     @wraps(f)
     def wrapper(*args, **kwds):
         load_dotenv()
