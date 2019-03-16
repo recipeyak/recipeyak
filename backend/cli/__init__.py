@@ -82,23 +82,20 @@ def lint(ctx: click.core.Context, api: bool, web: bool) -> None:
     is_all = not api and not web
     from cli.manager import ProcessManager
 
-    m = ProcessManager()
+    with ProcessManager() as m:
+        if web or is_all:
+            m.add_process("tslint", tslint())
+            m.add_process("prettier", prettier(check=True))
+            m.add_process("typescript", typescript())
 
-    if web or is_all:
-        m.add_process("tslint", tslint())
-        m.add_process("prettier", prettier(check=True))
-        m.add_process("typescript", typescript())
+        if api or is_all:
+            ctx.invoke(missing_migrations)
+            m.add_process("mypy", mypy())
+            m.add_process("flake8", flake8())
+            m.add_process("black", black(check=True))
 
-    if api or is_all:
-        ctx.invoke(missing_migrations)
-        m.add_process("mypy", mypy())
-        m.add_process("flake8", flake8())
-        m.add_process("black", black(check=True))
-
-        if os.getenv("CI"):
-            m.add_process("pylint", pylint())
-
-    m.loop()
+            if os.getenv("CI"):
+                m.add_process("pylint", pylint())
 
 
 @cli.command(help="format code")
@@ -110,14 +107,12 @@ def fmt(api: bool, web: bool, check: bool) -> None:
     is_all = not api and not web
     from cli.manager import ProcessManager
 
-    m = ProcessManager()
-    if api or is_all:
-        m.add_process("black", black(check=check))
+    with ProcessManager() as m:
+        if api or is_all:
+            m.add_process("black", black(check=check))
 
-    if web or is_all:
-        m.add_process("prettier", prettier(check=check))
-
-    m.loop()
+        if web or is_all:
+            m.add_process("prettier", prettier(check=check))
 
 
 @cli.command(help="test services")
@@ -136,14 +131,12 @@ def test(api: bool, web: bool, watch: bool, test_args: List[str]) -> None:
 
     os.environ["TESTING"] = "1"
 
-    m = ProcessManager()
-    if api or is_all:
-        m.add_process("api", pytest(watch=watch, args=test_args), cwd="backend")
+    with ProcessManager() as m:
+        if api or is_all:
+            m.add_process("api", pytest(watch=watch, args=test_args), cwd="backend")
 
-    if web or is_all:
-        m.add_process("web", jest())
-
-    m.loop()
+        if web or is_all:
+            m.add_process("web", jest())
 
 
 @cli.command(help="start dev services")
@@ -182,12 +175,11 @@ def install(api: bool, web: bool) -> None:
     is_all = not api and not web
     from cli.manager import ProcessManager
 
-    m = ProcessManager()
-    if api or is_all:
-        m.add_process("poetry", "poetry install")
-    if web or is_all:
-        m.add_process("yarn", "yarn install")
-    m.loop()
+    with ProcessManager() as m:
+        if api or is_all:
+            m.add_process("poetry", "poetry install")
+        if web or is_all:
+            m.add_process("yarn", "yarn install")
 
 
 @cli.command(help="build services")

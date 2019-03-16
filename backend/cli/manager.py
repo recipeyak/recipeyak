@@ -1,15 +1,21 @@
+import sys
+from contextlib import contextmanager
 from honcho.manager import Manager
 
 
-class ProcessManager(Manager):
+class _ProcessManager(Manager):
     def terminate(self):
         pass
 
     def kill(self):
         pass
 
-    def loop(self):
-        super().loop()
-        import sys
 
-        sys.exit(self.returncode)
+@contextmanager
+def ProcessManager():
+    m = _ProcessManager()
+    yield m
+
+    m.loop()
+
+    sys.exit(m.returncode)
