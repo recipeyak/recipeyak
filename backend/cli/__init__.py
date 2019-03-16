@@ -130,6 +130,7 @@ def test(api: bool, web: bool, watch: bool, test_args: List[str]) -> None:
     """Run tests for service. Defaults to all."""
     is_all = not api and not web
     from cli.manager import ProcessManager
+
     os.environ["TESTING"] = "1"
 
     with ProcessManager() as m:
@@ -172,14 +173,11 @@ def dev(ctx: click.core.Context, api: bool, web: bool, migrate: bool) -> None:
         call_command("runserver")
         return
 
-    from honcho.manager import Manager
+    from cli.manager import DefaultManager
 
-    m = Manager()
-    for service in services:
-        m.add_process(*service)
-    m.loop()
-
-    sys.exit(m.returncode)
+    with DefaultManager() as m:
+        for service in services:
+            m.add_process(*service)
 
 
 @cli.command(help="start prod services")
