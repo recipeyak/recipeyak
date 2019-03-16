@@ -133,6 +133,7 @@ def prod(api: bool, web: bool) -> None:
     is_all = not api and not web
     from cli.manager import DefaultManager
     from subprocess import list2cmdline
+    os.environ["PYTHONUNBUFFERED"] = "true"
 
     with DefaultManager() as m:
         if api or is_all:
@@ -209,11 +210,16 @@ def django(ctx: click.core.Context, management_args: List[str]) -> None:
 
     execute_from_command_line([ctx.command_path, *management_args])
 
+@cli.command()
+def django_setup_sites():
+    """configure Django sites for recipe yak"""
+    setup_django_sites()
+
 
 @cli.command()
 @setup_django
 def missing_migrations() -> None:
-    """Check for missing django migrations"""
+    """check for missing django migrations"""
     from django.core.management import call_command
 
     try:
