@@ -279,4 +279,8 @@ def missing_migrations() -> None:
 @click.option("--shell", is_flag=True, help="output env in shell format")
 def env(shell: bool) -> None:
     """print environment"""
-    raise NotImplementedError()
+    output = []
+    for key, value in os.environ.items():
+        output.append(f"{key}: {value}")
+    output.sort()
+    click.echo("\n".join(output))
