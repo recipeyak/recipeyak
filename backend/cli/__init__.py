@@ -61,11 +61,11 @@ def flake8() -> str:
 
 
 def pytest(watch: bool, args: List[str]) -> str:
-    args = " ".join(args)
+    args_str = " ".join(args)
     if watch:
-        return f"ptw -- {args}"
+        return f"ptw -- {args_str}"
 
-    return f"pytest {args}"
+    return f"pytest {args_str}"
 
 
 def jest() -> str:
