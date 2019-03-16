@@ -77,7 +77,6 @@ jobs:
             # update backend_test job and dockerfile if you change this version
             python3 -m pip install --user poetry===0.12.11
             poetry install
-            poetry shell
       - save_cache:
           paths:
             - ./backend/.mypy_cache
@@ -85,7 +84,7 @@ jobs:
           key: backend-v2-{{ .Branch }}-{{ checksum "poetry.lock" }}
       - run:
           name: run lints
-          command: yak lint --api
+          command: poetry run yak lint --api
       - store_test_results:
           path: backend/reports
 
