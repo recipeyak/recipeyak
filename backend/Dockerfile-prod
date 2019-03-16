@@ -1,4 +1,4 @@
-FROM python:3.7
+FROM recipeyak/base@sha256:da2185c839f75241eee104adf24bab335ce392d607734a0a5c79f25848c00916
 ENV PYTHONUNBUFFERD 1
 
 # Install Poetry
