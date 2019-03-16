@@ -1,6 +1,16 @@
-FROM recipeyak/base@sha256:da2185c839f75241eee104adf24bab335ce392d607734a0a5c79f25848c00916 as builder
+FROM recipeyak/base@sha256:8897faf71cb791feea88b1012db32d1b0d2970a2ffc722be9973f548af057bcd as builder
 
-RUN mkdir -p /var/app
+# Install Application into container
+RUN set -ex && mkdir -p /var/app
+
+WORKDIR /var/app
+
+# Adding dependency files
+COPY pyproject.toml pyproject.toml
+COPY poetry.lock poetry.lock
+
+# Install our dev dependencies
+RUN poetry install
 
 # Install package.json /var/ so we can mount at /app and not have issues with dependences
 # http://stackoverflow.com/a/33106611/3555105
@@ -20,7 +30,7 @@ ARG OAUTH_GOOGLE_CLIENT_ID
 ARG FRONTEND_SENTRY_DSN
 ARG GIT_SHA
 
-RUN ./frontend/s/build
+RUN poetry run yak build --web
 
 FROM alpine:3.7
 RUN mkdir -p /var/app/build
