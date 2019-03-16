@@ -137,12 +137,15 @@ jobs:
           key: frontend-v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
       - run:
           name: run linter
-          working_directory: frontend
           command: |
             poetry run yak lint --web
             poetry run yak build --web
+      - run:
+          name: move artifacts
+          working_directory: frontend
+          # copy bundle analyzer report
+          command: |
             mkdir -p /tmp/frontend-artifacts
-            # copy bundle analyzer report
             cp -R build/report.html build/webpack-stats.json /tmp/frontend-artifacts
       - store_artifacts:
           path: /tmp/frontend-artifacts
