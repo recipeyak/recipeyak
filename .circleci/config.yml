@@ -4,7 +4,7 @@ jobs:
 
   backend_test:
     docker:
-      - image: circleci/python:3.7
+      - image: recipeyak/base@sha256:8897faf71cb791feea88b1012db32d1b0d2970a2ffc722be9973f548af057bcd
         environment:
           DEBUG: 1
           DATABASE_URL: postgres://postgres@127.0.0.1:5432/postgres
@@ -47,7 +47,7 @@ jobs:
 
   backend_lint:
     docker:
-      - image: circleci/python:3.7
+      - image: recipeyak/base@sha256:8897faf71cb791feea88b1012db32d1b0d2970a2ffc722be9973f548af057bcd
         environment:
           DEBUG: 1
           DATABASE_URL: postgres://postgres@127.0.0.1:5432/postgres
@@ -90,7 +90,7 @@ jobs:
 
   frontend_test:
     docker:
-      - image: recipeyak/node-puppeteer:latest
+      - image: recipeyak/base@sha256:8897faf71cb791feea88b1012db32d1b0d2970a2ffc722be9973f548af057bcd
         environment:
           DEBUG: 1
     steps:
@@ -115,7 +115,7 @@ jobs:
 
   frontend_lint:
     docker:
-      - image: recipeyak/node-puppeteer:latest
+      - image: recipeyak/base@sha256:8897faf71cb791feea88b1012db32d1b0d2970a2ffc722be9973f548af057bcd
         environment:
           DEBUG: 1
     steps:
