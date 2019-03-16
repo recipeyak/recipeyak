@@ -2,7 +2,8 @@ from typing import List
 import os
 import click
 
-from cli.config import setup_django, setup_django_sites
+from cli.config import setup_django_sites
+from cli.decorators import setup_django
 
 
 @click.group()
@@ -144,10 +145,10 @@ def test(api: bool, web: bool, watch: bool, test_args: List[str]) -> None:
 @click.option("-w", "--web/--no-web")
 @click.option("--migrate", is_flag=True)
 @click.pass_context
+@setup_django
 def dev(ctx: click.core.Context, api: bool, web: bool, migrate: bool) -> None:
     """Start dev services. Defaults to all."""
     # TODO(chdsbd): How can we capture stdin to support debugging via ipdb?
-    setup_django()
     is_all = not (web or api)
     run_django = api or is_all
     run_web = web or is_all
@@ -215,18 +216,18 @@ def build(api: bool, web: bool) -> None:
 @cli.command(add_help_option=False, context_settings=dict(ignore_unknown_options=True))
 @click.argument("management_args", nargs=-1, type=click.UNPROCESSED)
 @click.pass_context
+@setup_django
 def django(ctx: click.core.Context, management_args: List[str]) -> None:
     """run django management commands"""
-    setup_django()
     from django.core.management import execute_from_command_line
 
     execute_from_command_line([ctx.command_path, *management_args])
 
 
 @cli.command()
+@setup_django
 def missing_migrations() -> None:
     """Check for missing django migrations"""
-    setup_django()
     import io
     from django.core.management import call_command
 
