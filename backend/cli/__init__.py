@@ -61,7 +61,8 @@ def flake8() -> str:
 @cli.command(help="lint code")
 @click.option("-a", "--api/--no-api")
 @click.option("-w", "--web/--no-web")
-def lint(api: bool, web: bool) -> None:
+@click.pass_context
+def lint(ctx, api: bool, web: bool) -> None:
     """Lint code. Defaults to all."""
     is_all = not api and not web
     from cli.manager import ProcessManager
@@ -74,6 +75,7 @@ def lint(api: bool, web: bool) -> None:
         m.add_process("typescript", typescript())
 
     if api or is_all:
+        ctx.invoke(missing_migrations)
         m.add_process("mypy", mypy())
         m.add_process("flake8", flake8())
         m.add_process("black", black(check=True))
@@ -183,8 +185,7 @@ def django(ctx, management_args):
 
 
 @cli.command()
-@click.pass_context
-def missing_migrations(ctx):
+def missing_migrations() -> None:
     """Check for missing django migrations"""
     setup_django()
     import io
