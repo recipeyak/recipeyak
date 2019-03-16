@@ -151,8 +151,11 @@ def test(api: bool, web: bool, watch: bool, test_args: List[str]) -> None:
 @click.pass_context
 @setup_django
 def dev(ctx: click.core.Context, api: bool, web: bool, migrate: bool) -> None:
-    """Start dev services. Defaults to all."""
-    # TODO(chdsbd): How can we capture stdin to support debugging via ipdb?
+    """
+    Start dev services. Defaults to all.
+
+    Only run the api server (--api) to enable stdin access for `ipdb`.
+    """
     is_all = not (web or api)
     run_django = api or is_all
     run_web = web or is_all
