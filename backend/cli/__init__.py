@@ -7,7 +7,7 @@ import io
 import click
 
 from cli.config import setup_django_sites, setup_django as configure_django
-from cli.decorators import setup_django
+from cli.decorators import setup_django, env
 
 
 @click.group()
@@ -125,15 +125,11 @@ def fmt(api: bool, web: bool, check: bool) -> None:
 @click.option("-w", "--web/--no-web")
 @click.option("--watch/--no-watch")
 @click.argument("test_args", nargs=-1, type=click.UNPROCESSED)
+@env
 def test(api: bool, web: bool, watch: bool, test_args: List[str]) -> None:
     """Run tests for service. Defaults to all."""
     is_all = not api and not web
     from cli.manager import ProcessManager
-
-    from dotenv import load_dotenv
-
-    load_dotenv()
-
     os.environ["TESTING"] = "1"
 
     with ProcessManager() as m:
@@ -189,10 +185,31 @@ def dev(ctx: click.core.Context, api: bool, web: bool, migrate: bool) -> None:
 @cli.command(help="start prod services")
 @click.option("-a", "--api/--no-api")
 @click.option("-w", "--web/--no-web")
+@env
 def prod(api: bool, web: bool) -> None:
     """Start prod services. Defaults to all."""
-    # TODO(chdsbd): How can we capture stdin to support debugging via ipdb?
-    raise NotImplementedError()
+    is_all = not api and not web
+    from cli.manager import DefaultManager
+    from subprocess import list2cmdline
+
+    with DefaultManager() as m:
+        if api or is_all:
+            m.add_process(
+                "gunicorn",
+                list2cmdline(
+                    [
+                        "gunicorn",
+                        "-w 3",
+                        "-b 0.0.0.0:8000",
+                        "backend.wsgi",
+                        "--access-logfile -",
+                        "--error-logfile -",
+                        "--capture-output",
+                        "--enable-stdio-inheritance",
+                        '--access-logformat=\'request="%(r)s" request_time=%(L)s remote_addr="%(h)s" request_id=%({X-Request-Id}i)s response_id=%({X-Response-Id}i)s method=%(m)s protocol=%(H)s status_code=%(s)s response_length=%(b)s referer="%(f)s" process_id=%(p)s user_agent="%(a)s"\'',
+                    ]
+                ),
+            )
 
 
 @cli.command(help="install dependencies/tools")

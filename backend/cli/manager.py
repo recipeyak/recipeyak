@@ -107,3 +107,12 @@ def ProcessManager():
     m.loop()
 
     sys.exit(m.returncode)
+
+
+@contextmanager
+def DefaultManager():
+    """Context manager for default honcho manager"""
+    m = Manager()
+    yield m
+    m.loop()
+    sys.exit(m.returncode)
