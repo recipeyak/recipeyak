@@ -142,19 +142,41 @@ def test(api: bool, web: bool, watch: bool, test_args: List[str]) -> None:
 @cli.command(help="start dev services")
 @click.option("-a", "--api/--no-api")
 @click.option("-w", "--web/--no-web")
+@click.option("--migrate", is_flag=True)
 @click.pass_context
-def dev(ctx: click.core.Context, api: bool, web: bool) -> None:
+def dev(ctx: click.core.Context, api: bool, web: bool, migrate: bool) -> None:
     """Start dev services. Defaults to all."""
     # TODO(chdsbd): How can we capture stdin to support debugging via ipdb?
     setup_django()
-    from django.core.management import call_command
+    is_all = not (web or api)
+    run_django = api or is_all
+    run_web = web or is_all
+    services = []
+    if run_django:
+        from django.core.management import call_command
 
-    call_command("check", fail_level="WARNING")
-    call_command("migrate")
-    setup_django_sites()
-    from django.core.management import execute_from_command_line
+        if migrate:
+            call_command("migrate")
+        setup_django_sites()
+        services.append(("django", "yak django runserver"))
+    if run_web:
+        services.append(("webpack", "node frontend/scripts/start.js"))
+    if not services:
+        raise click.ClickException("No services were selected.")
 
-    execute_from_command_line([ctx.command_path, "runserver"])
+    if run_django and not run_web:
+        call_command("runserver")
+        return
+
+    from honcho.manager import Manager
+
+    m = Manager()
+    for service in services:
+        m.add_process(*service)
+    m.loop()
+    import sys
+
+    sys.exit(m.returncode)
 
 
 @cli.command(help="start prod services")
@@ -193,7 +215,7 @@ def build(api: bool, web: bool) -> None:
 @cli.command(add_help_option=False, context_settings=dict(ignore_unknown_options=True))
 @click.argument("management_args", nargs=-1, type=click.UNPROCESSED)
 @click.pass_context
-def django(ctx: click.core.Context, management_args: List[str]) -> str:
+def django(ctx: click.core.Context, management_args: List[str]) -> None:
     """run django management commands"""
     setup_django()
     from django.core.management import execute_from_command_line

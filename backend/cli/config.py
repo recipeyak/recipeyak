@@ -4,6 +4,7 @@ def setup_django():
     import django
 
     load_dotenv()
+    os.environ['PYTHONUNBUFFERED'] = 'true'
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
     django.setup(set_prefix=False)
 
