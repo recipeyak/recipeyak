@@ -26,6 +26,7 @@ sentry-sdk = "^0.7.2"
 honcho = "^1.0"
 click = "^7.0"
 python-dotenv = "^0.10.1"
+typing_extensions = "^3.7"
 
 [tool.poetry.dev-dependencies]
 pytest = "3.4.0"

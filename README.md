@@ -70,8 +70,8 @@ docker-machine create --driver amazonec2 $MACHINE_NAME
 
 Enabling maintenance mode returns a 503 status code with a webpage explaining the site is down for maintenance.
 
-- Enable `./maintenance_mode $MACHINE_NAME on`
-- Disable `./maintenance_mode $MACHINE_NAME off`
+- Enable `yak maintenance-mode $MACHINE_NAME on`
+- Disable `yak maintenance-mode $MACHINE_NAME off`
 
 ## Configuration
 

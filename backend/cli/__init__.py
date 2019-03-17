@@ -1,4 +1,5 @@
 from typing import List
+from typing_extensions import Literal
 import subprocess
 import os
 import io
@@ -264,3 +265,66 @@ def env(shell: bool) -> None:
         output.append(f"{key}: {value}")
     output.sort()
     click.echo("\n".join(output))
+
+
+@cli.command()
+@click.argument("machine_name")
+@click.argument("action", type=click.Choice(["on", "off"]))
+def maintenance_mode(machine_name: str, action: Literal["on", "off"]) -> None:
+    """
+    Setup prod to return a 503 status code with a webpage explaining the site is down for maintenance.
+    """
+    if os.getenv("DOCKER_MACHINE_NAME"):
+        click.echo("Disconnecting from existing docker hot")
+        # vars derived from `docker-machin-env`
+        for envvar in {
+            "DOCKER_CERT_PATH",
+            "DOCKER_CERT_PATH",
+            "DOCKER_HOST",
+            "DOCKER_MACHINE_NAME",
+            "DOCKER_MACHINE_NAME",
+            "DOCKER_TLS_VERIFY",
+        }:
+            os.unsetenv(envvar)
+
+    env = (
+        subprocess.check_output(f"docker-machine env {machine_name}", shell=True)
+        .decode()
+        .split("\n")
+    )
+
+    for l in env:
+        if l.startswith("export"):
+            # export FOO="127.0.0.1" --> ('FOO', '"127.0.0.1"')
+            start, end = l.replace("export", "").strip().split("=")
+            os.environ[start] = end.strip('"')
+
+    if action == "on":
+        click.echo("Enabling maintence mode")
+        subprocess.run(
+            [
+                "docker-compose",
+                "-f",
+                "docker-compose-shipit.yml",
+                "exec",
+                "nginx",
+                "touch",
+                "maintenance_on",
+            ]
+        )
+        click.echo("Maintenance mode: ON")
+    if action == "off":
+        click.echo("Disabling maintenance mode")
+        subprocess.run(
+            [
+                "docker-compose",
+                "-f",
+                "docker-compose-shipit.yml",
+                "exec",
+                "nginx",
+                "rm",
+                "-f",
+                "maintenance_on",
+            ]
+        )
+        click.echo("Maintenance mode: OFF")
