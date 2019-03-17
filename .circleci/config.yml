@@ -35,6 +35,7 @@ jobs:
           paths:
             - ./backend/.mypy_cache
             - /home/circleci/.cache/pypoetry/
+            - $HOME/.cache/
           key: backend-v2-{{ .Branch }}-{{ checksum "poetry.lock" }}
       - run:
           name: run tests
@@ -75,6 +76,7 @@ jobs:
           paths:
             - ./backend/.mypy_cache
             - /home/circleci/.cache/pypoetry/
+            - $HOME/.cache/
           key: backend-v2-{{ .Branch }}-{{ checksum "poetry.lock" }}
       - run:
           name: run lints
@@ -106,6 +108,7 @@ jobs:
           paths:
             - ./frontend/node_modules
             - /home/circleci/.cache/pypoetry/
+            - $HOME/.cache/
           key: frontend-v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
       - run:
           name: run tests
@@ -136,6 +139,7 @@ jobs:
           paths:
             - ./frontend/node_modules
             - /home/circleci/.cache/pypoetry/
+            - $HOME/.cache/
           key: frontend-v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
       - run:
           name: run linter
