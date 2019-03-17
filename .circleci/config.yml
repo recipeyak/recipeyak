@@ -21,9 +21,9 @@ jobs:
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
-            - backend-v2-{{ .Branch }}-{{ checksum "poetry.lock" }}
-            - backend-v2-{{ .Branch }}-
-            - backend-v2-
+            - backend-v3-{{ .Branch }}-{{ checksum "poetry.lock" }}
+            - backend-v3-{{ .Branch }}-
+            - backend-v3-
       - run:
           name: install dependencies
           command: |
@@ -36,7 +36,7 @@ jobs:
             - ./backend/.mypy_cache
             - /home/circleci/.cache/pypoetry/
             - $HOME/.cache/
-          key: backend-v2-{{ .Branch }}-{{ checksum "poetry.lock" }}
+          key: backend-v3-{{ .Branch }}-{{ checksum "poetry.lock" }}
       - run:
           name: run tests
           command: poetry run yak test --api
@@ -62,9 +62,9 @@ jobs:
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
-            - backend-v2-{{ .Branch }}-{{ checksum "poetry.lock" }}
-            - backend-v2-{{ .Branch }}-
-            - backend-v2-
+            - backend-v3-{{ .Branch }}-{{ checksum "poetry.lock" }}
+            - backend-v3-{{ .Branch }}-
+            - backend-v3-
       - run:
           name: install dependencies
           command: |
@@ -77,7 +77,7 @@ jobs:
             - ./backend/.mypy_cache
             - /home/circleci/.cache/pypoetry/
             - $HOME/.cache/
-          key: backend-v2-{{ .Branch }}-{{ checksum "poetry.lock" }}
+          key: backend-v3-{{ .Branch }}-{{ checksum "poetry.lock" }}
       - run:
           name: run lints
           command: poetry run yak lint --api
@@ -93,9 +93,9 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - frontend-v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - frontend-v2-dependencies-{{ .Branch }}-
-            - frontend-v2-dependencies-
+            - frontend-v3-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - frontend-v3-dependencies-{{ .Branch }}-
+            - frontend-v3-dependencies-
       - run:
           name: install dependencies
           command: |
@@ -109,7 +109,7 @@ jobs:
             - ./frontend/node_modules
             - /home/circleci/.cache/pypoetry/
             - $HOME/.cache/
-          key: frontend-v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: frontend-v3-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
       - run:
           name: run tests
           working_directory: frontend
@@ -124,9 +124,9 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - frontend-v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - frontend-v2-dependencies-{{ .Branch }}-
-            - frontend-v2-dependencies-
+            - frontend-v3-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - frontend-v3-dependencies-{{ .Branch }}-
+            - frontend-v3-dependencies-
       - run:
           name: install dependencies
           command: |
@@ -140,7 +140,7 @@ jobs:
             - ./frontend/node_modules
             - /home/circleci/.cache/pypoetry/
             - $HOME/.cache/
-          key: frontend-v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: frontend-v3-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
       - run:
           name: run linter
           command: |
