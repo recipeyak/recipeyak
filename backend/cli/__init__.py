@@ -332,7 +332,7 @@ def maintenance_mode(machine_name: str, action: Literal["on", "off"]) -> None:
 
 
 @cli.command()
-@click.argument("backup")
+@click.argument("backup", type=click.Path(exists=True))
 @click.argument("database_name")
 def create_db_from_backup(backup: str, database_name: str) -> None:
     """
@@ -347,13 +347,19 @@ def create_db_from_backup(backup: str, database_name: str) -> None:
 
     # Create a new database using with the current time so it's unique
     date = int(datetime.now().timestamp())
-    db_name = f"db{date}"
-    subprocess.run(["psql", "-c", f"Create database {db_name}"])
+    temp_db_name = f"db{date}"
+    subprocess.run(["psql", "-c", f"Create database {temp_db_name}"], check=True)
 
     # unzip backup and insert into database
-    ps = subprocess.run(["gzip", "-d", backup, "-c"], stdout=subprocess.PIPE)
-    subprocess.run(["psql", "-d", backup], stdin=ps.stdout)
+    ps = subprocess.Popen(["gzip", "-d", backup, "-c"], stdout=subprocess.PIPE)
+    subprocess.run(["psql", "-d", temp_db_name], stdin=ps.stdout, check=True)
 
-    # remove recipeyak table if it exists and rename our table to recipeyak
-    subprocess.run(["psql", "-c", "DROP DATABASE IF EXISTS recipeyak"])
-    subprocess.run(["psql", "-c", f"ALTER DATABASE {db_name} RENAME TO recipeyak"])
+    # # remove recipeyak table if it exists and rename our table to recipeyak
+    subprocess.run(
+        ["psql", "-c", f"DROP DATABASE IF EXISTS {database_name}"], check=True
+    )
+    subprocess.run(
+        ["psql", "-c", f"ALTER DATABASE {temp_db_name} RENAME TO {database_name}"],
+        check=True,
+    )
+    click.echo(f"Successfully imported backup into database: {database_name}")
