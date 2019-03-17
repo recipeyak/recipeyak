@@ -220,6 +220,7 @@ def django(ctx: click.core.Context, management_args: List[str]) -> None:
 
 
 @cli.command()
+@setup_django
 def django_setup_sites():
     """configure Django sites for recipe yak"""
     setup_django_sites()
