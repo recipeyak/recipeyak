@@ -1,4 +1,5 @@
 # Recipe Yak [![CircleCI](https://circleci.com/gh/recipeyak/recipeyak.svg?style=svg)](https://circleci.com/gh/recipeyak/recipeyak)
+
 > Application to automate the selection of meals and creation of shopping lists.
 
 ## Why?
@@ -14,33 +15,31 @@ To have a centralized location where multiple people can organize a meal plan.
 
 ## Dev
 
-**Note:** postgres is required. Either run it via `docker-compose -f
-docker-compose-dev.yml -d` or via the homebrew cask mac app. Yarn and Poetry
-(0.12) are required for frontend and backend installation.
+**Note:** postgres is required. Either run it via `docker-compose -f **docker-compose-dev.yml -d` or via the homebrew cask mac app.
+[Yarn](https://yarnpkg.com/en/) and [Poetry](https://github.com/sdispater/poetry) (0.12) are required for frontend and backend installation.
 
 ```shell
-# create a .env with `DEBUG=1`
+# create a .env with `DEBUG=1`. Note: you may need to update database URIs and related vars.
 cp .env-example .env
 echo "DEBUG=1" >> .env
 
-# frontend
-frontend/s/install
-frontend/s/run
-frontend/s/test
-frontend/s/lint
-frontend/s/typecheck
-frontend/s/fmt
-frontend/s/exec # e.g. frontend/s/exec yarn add $PKG
+# initial cli setup (only need to do this once)
+poetry install
 
-# backend
-backend/s/install
-backend/s/run
-backend/s/test # or backend/s/test --watch
-backend/s/lint
-backend/s/typecheck
-backend/s/fmt
-backend/s/exec # e.g. backend/s/exec poetry add $PKG
-backend/s/manage
+poetry shell
+
+yak --help
+yak install
+yak dev
+yak test
+yak lint
+yak typecheck
+yak fmt
+yak django # access django's manage.py commands
+
+# use `yarn` and `poetry` to add and upgrade dependencies
+yarn add $FOO
+poetry add $BAR
 ```
 
 ### Testing with OAuth
@@ -49,8 +48,11 @@ After dev setup, configure the identity provider to enable redirecting to
 `http://localhost:3000/accounts/$providerName`.
 
 ## Prod
+
 ### Creating environment
+
 You can create a remote docker machine on AWS using:
+
 ```shell
 MACHINE_NAME='grunniens'
 docker-machine create --driver amazonec2 $MACHINE_NAME
@@ -72,26 +74,27 @@ Enabling maintenance mode returns a 503 status code with a webpage explaining th
 - Disable `./maintenance_mode $MACHINE_NAME off`
 
 ## Configuration
+
 Environment variables are used for configuration. Unless otherwise stated, a value is required.
 
 - [`DJANGO_SECRET_KEY`][django-secret] — long, randomized string required for django
-    + ex: `284urfljkdflsdf`
+  - ex: `284urfljkdflsdf`
 - `DATABASE_URL` — URL for Django's database
-    + ex: `postgres://postgres@db:5432/postgres`
+  - ex: `postgres://postgres@db:5432/postgres`
 - `EMAIL_HOST` — SMTP hostname for sending email from Django
-    + ex:`smtp.mailgun.org`
+  - ex:`smtp.mailgun.org`
 - `EMAIL_HOST_USER` — SMTP email for logging into server
-    + ex: `server@example.com`
+  - ex: `server@example.com`
 - `EMAIL_HOST_PASSWORD` — SMTP password for authenticating
-    + ex: `SomeUnguessablePassword`
--   [`OAUTH_xxxxx_CLIENT_ID`][github-oauth] — Client ID from OAuth provider for use on server and client.
-    +   ex: `094809fsdf098123040`
+  - ex: `SomeUnguessablePassword`
+- [`OAUTH_xxxxx_CLIENT_ID`][github-oauth] — Client ID from OAuth provider for use on server and client.
+  - ex: `094809fsdf098123040`
 - [`OAUTH_xxxxx_SECRET`][github-oauth] — Client secret from OAuth provider for use on server.
-    + ex: `09482409fa234fsdf098d12d23d43d040`
+  - ex: `09482409fa234fsdf098d12d23d43d040`
 - [`SENTRY_DSN`][sentry-dsn] — Sentry secret configuration for backend.
-    + ex: `https://<key>:<secret>@sentry.io/<project>`
+  - ex: `https://<key>:<secret>@sentry.io/<project>`
 - [`FRONTEND_SENTRY_DSN`][sentry-dsn] — Sentry configuration for frontend.
-    + ex: `https://<key>@sentry.io/<project>`
+  - ex: `https://<key>@sentry.io/<project>`
 
 [django-secret]: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-SECRET_KEY
 [sentry-dsn]: https://docs.sentry.io/quickstart/#about-the-dsn
