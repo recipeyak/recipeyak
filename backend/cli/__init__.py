@@ -195,10 +195,8 @@ def build(api: bool, web: bool) -> None:
         configure_django()
         call_command("collectstatic", no_input=True)
         git_sha = os.environ["GIT_SHA"]
-        subprocess.run(
-            [rf"sed -i s/\<%=GIT_SHA=%\>/{git_sha}/ backend/settings.py"], check=True
-        )
-        subprocess.run(["grep GIT_SHA backend/settings.py"], check=True)
+        subprocess.run(["sed","-i ''", f"s#<%=GIT_SHA=%>#{git_sha}#", "backend/backend/settings.py"], check=True)
+        subprocess.run(["grep" ,"GIT_SHA", "backend/backend/settings.py"], check=True)
 
 
 @cli.command(add_help_option=False, context_settings=dict(ignore_unknown_options=True))
