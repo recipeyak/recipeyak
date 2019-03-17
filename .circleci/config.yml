@@ -21,9 +21,9 @@ jobs:
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
-            - backend-v4-{{ .Branch }}-{{ checksum "poetry.lock" }}
-            - backend-v4-{{ .Branch }}-
-            - backend-v4-
+            - backend-v8-{{ .Branch }}-{{ checksum "poetry.lock" }}
+            - backend-v8-{{ .Branch }}-
+            - backend-v8-
       - run:
           name: install dependencies
           command: |
@@ -35,7 +35,7 @@ jobs:
           paths:
             - ./backend/.mypy_cache
             - /root/.cache/
-          key: backend-v4-{{ .Branch }}-{{ checksum "poetry.lock" }}
+          key: backend-v8-{{ .Branch }}-{{ checksum "poetry.lock" }}
       - run:
           name: run tests
           command: poetry run yak test --api
@@ -61,9 +61,9 @@ jobs:
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
-            - backend-v4-{{ .Branch }}-{{ checksum "poetry.lock" }}
-            - backend-v4-{{ .Branch }}-
-            - backend-v4-
+            - backend-v8-{{ .Branch }}-{{ checksum "poetry.lock" }}
+            - backend-v8-{{ .Branch }}-
+            - backend-v8-
       - run:
           name: install dependencies
           command: |
@@ -75,7 +75,7 @@ jobs:
           paths:
             - ./backend/.mypy_cache
             - /root/.cache/
-          key: backend-v4-{{ .Branch }}-{{ checksum "poetry.lock" }}
+          key: backend-v8-{{ .Branch }}-{{ checksum "poetry.lock" }}
       - run:
           name: run lints
           command: poetry run yak lint --api
@@ -91,9 +91,9 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - frontend-v5-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - frontend-v5-dependencies-{{ .Branch }}-
-            - frontend-v5-dependencies-
+            - frontend-v8-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - frontend-v8-dependencies-{{ .Branch }}-
+            - frontend-v8-dependencies-
       - run:
           name: install dependencies
           command: |
@@ -106,7 +106,7 @@ jobs:
           paths:
             - /root/project/node_modules
             - /root/.cache/
-          key: frontend-v5-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: frontend-v8-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
       - run:
           name: run tests
           working_directory: frontend
@@ -121,9 +121,9 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - frontend-v5-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - frontend-v5-dependencies-{{ .Branch }}-
-            - frontend-v5-dependencies-
+            - frontend-v8-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - frontend-v8-dependencies-{{ .Branch }}-
+            - frontend-v8-dependencies-
       - run:
           name: install dependencies
           command: |
@@ -136,7 +136,7 @@ jobs:
           paths:
             - /root/project/node_modules
             - /root/.cache/
-          key: frontend-v5-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: frontend-v8-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
       - run:
           name: run linter
           command: |
