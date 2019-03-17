@@ -351,8 +351,8 @@ def create_db_from_backup(backup: str, database_name: str) -> None:
     subprocess.run(["psql", "-c", f"Create database {db_name}"])
 
     # unzip backup and insert into database
-    ps = subprocess.run(["gzip", "-d", "{backup}", "-c"], stdout=subprocess.PIPE)
-    subprocess.run(["psql", "-d", "{backup}"], stdin=ps.stdout)
+    ps = subprocess.run(["gzip", "-d", backup, "-c"], stdout=subprocess.PIPE)
+    subprocess.run(["psql", "-d", backup], stdin=ps.stdout)
 
     # remove recipeyak table if it exists and rename our table to recipeyak
     subprocess.run(["psql", "-c", "DROP DATABASE IF EXISTS recipeyak"])
