@@ -34,7 +34,6 @@ jobs:
       - save_cache:
           paths:
             - ./backend/.mypy_cache
-            - /home/circleci/.cache/pypoetry/
             - /root/.cache/
           key: backend-v4-{{ .Branch }}-{{ checksum "poetry.lock" }}
       - run:
@@ -75,7 +74,6 @@ jobs:
       - save_cache:
           paths:
             - ./backend/.mypy_cache
-            - /home/circleci/.cache/pypoetry/
             - /root/.cache/
           key: backend-v4-{{ .Branch }}-{{ checksum "poetry.lock" }}
       - run:
@@ -93,9 +91,9 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - frontend-v4-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - frontend-v4-dependencies-{{ .Branch }}-
-            - frontend-v4-dependencies-
+            - frontend-v5-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - frontend-v5-dependencies-{{ .Branch }}-
+            - frontend-v5-dependencies-
       - run:
           name: install dependencies
           command: |
@@ -103,13 +101,12 @@ jobs:
             # Use our new PATH so we can call poetry from bash
             source $BASH_ENV
             poetry install
-            yarn install
+            yarn install --frozen-lockfile --cache-folder /root/.cache/yarn
       - save_cache:
           paths:
-            - ./frontend/node_modules
-            - /home/circleci/.cache/pypoetry/
+            - /root/project/node_modules
             - /root/.cache/
-          key: frontend-v4-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: frontend-v5-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
       - run:
           name: run tests
           working_directory: frontend
@@ -124,9 +121,9 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - frontend-v4-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - frontend-v4-dependencies-{{ .Branch }}-
-            - frontend-v4-dependencies-
+            - frontend-v5-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - frontend-v5-dependencies-{{ .Branch }}-
+            - frontend-v5-dependencies-
       - run:
           name: install dependencies
           command: |
@@ -134,13 +131,12 @@ jobs:
             # Use our new PATH so we can call poetry from bash
             source $BASH_ENV
             poetry install
-            yarn install
+            yarn install --frozen-lockfile --cache-folder /root/.cache/yarn
       - save_cache:
           paths:
-            - ./frontend/node_modules
-            - /home/circleci/.cache/pypoetry/
+            - /root/project/node_modules
             - /root/.cache/
-          key: frontend-v4-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: frontend-v5-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
       - run:
           name: run linter
           command: |
