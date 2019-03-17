@@ -35,11 +35,12 @@ def black(check: bool) -> str:
 
 
 def tslint() -> str:
-    return "$(yarn bin)/tslint --project tsconfig.json --format 'codeFrame'"
+    return "node_modules/.bin/tslint --project tsconfig.json --format 'codeFrame'"
 
 
-def typescript() -> str:
-    return "$(yarn bin)/tsc --noEmit"
+def typescript(watch: bool) -> str:
+    watch_flag = "--watch" if watch else ""
+    return f"node_modules/.bin/tsc --noEmit {watch_flag}"
 
 
 def flake8() -> str:

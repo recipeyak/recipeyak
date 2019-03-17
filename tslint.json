@@ -48,7 +48,6 @@
     "no-any": true,
     "ban-ts-ignore": true,
     "prefer-object-spread": true,
-    "no-non-null-assertion": true,
     "ban-comma-operator": true,
     "no-unsafe-any": true,
     "no-unnecessary-class": true,

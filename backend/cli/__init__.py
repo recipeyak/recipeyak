@@ -33,7 +33,7 @@ def lint(ctx: click.core.Context, api: bool, web: bool) -> None:
         if web or is_all:
             m.add_process("tslint", cmds.tslint())
             m.add_process("prettier", cmds.prettier(check=True))
-            m.add_process("typescript", cmds.typescript())
+            m.add_process("typescript", cmds.typescript(watch=False))
 
         if api or is_all:
             ctx.invoke(missing_migrations)
@@ -43,6 +43,21 @@ def lint(ctx: click.core.Context, api: bool, web: bool) -> None:
 
             if os.getenv("CI"):
                 m.add_process("pylint", cmds.pylint())
+
+
+@cli.command(help="typecheck code")
+@click.option("-a", "--api/--no-api")
+@click.option("-w", "--web/--no-web")
+@click.option("--watch/--no-watch")
+def typecheck(api: bool, web: bool, watch: bool) -> None:
+    if not api and not web:
+        raise click.ClickException("No services were selected.")
+
+    if web:
+        subprocess.run(cmds.typescript(watch=watch).split())
+        return
+    if api:
+        subprocess.run(cmds.mypy().split())
 
 
 @cli.command(help="format code")
