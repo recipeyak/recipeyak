@@ -337,8 +337,11 @@ def maintenance_mode(machine_name: str, action: Literal["on", "off"]) -> None:
 def create_db_from_backup(backup: str, database_name: str) -> None:
     """
     Restore to recipeyak database using production backup.
+
     1. Search for database backup in s3: `aws s3 ls recipeyak-backups`
+
     2. Download database: `aws s3 cp s3://recipeyak-backups/2019-02-12T0227Z-db.sql.gz ~/Downloads`
+
     3. Restore using this utility: `yak create_db_from_backup ~/Downloads/2019-02-12T0227Z-db.sql.gz recipeyak`
     """
 
