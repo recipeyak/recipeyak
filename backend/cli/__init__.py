@@ -3,6 +3,7 @@ from typing_extensions import Literal
 import subprocess
 import os
 import io
+from datetime import datetime
 
 import click
 
@@ -328,3 +329,37 @@ def maintenance_mode(machine_name: str, action: Literal["on", "off"]) -> None:
             ]
         )
         click.echo("Maintenance mode: OFF")
+
+
+@cli.command()
+@click.argument("backup", type=click.Path(exists=True))
+@click.argument("database_name")
+def create_db_from_backup(backup: str, database_name: str) -> None:
+    """
+    Restore to recipeyak database using production backup.
+
+    1. Search for database backup in s3: `aws s3 ls recipeyak-backups`
+
+    2. Download database: `aws s3 cp s3://recipeyak-backups/2019-02-12T0227Z-db.sql.gz ~/Downloads`
+
+    3. Restore using this utility: `yak create_db_from_backup ~/Downloads/2019-02-12T0227Z-db.sql.gz recipeyak`
+    """
+
+    # Create a new database using with the current time so it's unique
+    date = int(datetime.now().timestamp())
+    temp_db_name = f"db{date}"
+    subprocess.run(["psql", "-c", f"Create database {temp_db_name}"], check=True)
+
+    # unzip backup and insert into database
+    ps = subprocess.Popen(["gzip", "-d", backup, "-c"], stdout=subprocess.PIPE)
+    subprocess.run(["psql", "-d", temp_db_name], stdin=ps.stdout, check=True)
+
+    # # remove recipeyak table if it exists and rename our table to recipeyak
+    subprocess.run(
+        ["psql", "-c", f"DROP DATABASE IF EXISTS {database_name}"], check=True
+    )
+    subprocess.run(
+        ["psql", "-c", f"ALTER DATABASE {temp_db_name} RENAME TO {database_name}"],
+        check=True,
+    )
+    click.echo(f"Successfully imported backup into database: {database_name}")
