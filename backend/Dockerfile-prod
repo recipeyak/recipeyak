@@ -5,10 +5,7 @@ FROM recipeyak/base:v3
 RUN set -ex && mkdir -p /var/app
 
 WORKDIR /var/app
-
-# Adding dependency files
-COPY pyproject.toml pyproject.toml
-COPY poetry.lock poetry.lock
+COPY . /var/app
 
 # Install our dev dependencies
 RUN poetry install
