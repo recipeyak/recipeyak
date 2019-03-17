@@ -204,7 +204,8 @@ def build(api: bool, web: bool) -> None:
             ],
             check=True,
         )
-        subprocess.run(["grep", "GIT_SHA", "backend/backend/settings.py"], check=True)
+        # ensure we set the git_sha
+        subprocess.run(["grep", git_sha, "backend/backend/settings.py"], check=True)
 
 
 @cli.command(add_help_option=False, context_settings=dict(ignore_unknown_options=True))
