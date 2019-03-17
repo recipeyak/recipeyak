@@ -296,7 +296,7 @@ def maintenance_mode(machine_name: str, action: Literal["on", "off"]) -> None:
     for l in env:
         if l.startswith("export"):
             # export FOO="127.0.0.1" --> ('FOO', '"127.0.0.1"')
-            start, end = l.replace("export", "").trim().split("=")
+            start, end = l.replace("export", "").strip().split("=")
             os.environ[start] = end.strip('"')
 
     if action == "on":
