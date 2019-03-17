@@ -130,10 +130,6 @@ def dev(ctx: click.core.Context, api: bool, web: bool, migrate: bool) -> None:
 @load_env
 def prod(api: bool, web: bool) -> None:
     """Start prod services. Defaults to all."""
-    is_all = not api and not web
-    from cli.manager import DefaultManager
-    from subprocess import list2cmdline
-
     os.environ["PYTHONUNBUFFERED"] = "true"
     subprocess.run(
         [
