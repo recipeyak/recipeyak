@@ -4,7 +4,7 @@ jobs:
 
   backend_test:
     docker:
-      - image: circleci/python:3.7
+      - image: recipeyak/base:v3
         environment:
           DEBUG: 1
           DATABASE_URL: postgres://postgres@127.0.0.1:5432/postgres
@@ -26,13 +26,10 @@ jobs:
             - backend-v2-
       - run:
           name: install dependencies
-          working_directory: backend
           command: |
             echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
             # Use our new PATH so we can call poetry from bash
             source $BASH_ENV
-            # update backend_lint job and dockerfile if you change this version
-            python3 -m pip install --user poetry===0.12.11
             poetry install
       - save_cache:
           paths:
@@ -41,13 +38,13 @@ jobs:
           key: backend-v2-{{ .Branch }}-{{ checksum "poetry.lock" }}
       - run:
           name: run tests
-          command: ./s/test
+          command: poetry run yak test --api
       - store_test_results:
           path: backend/reports
 
   backend_lint:
     docker:
-      - image: circleci/python:3.7
+      - image: recipeyak/base:v3
         environment:
           DEBUG: 1
           DATABASE_URL: postgres://postgres@127.0.0.1:5432/postgres
@@ -69,13 +66,10 @@ jobs:
             - backend-v2-
       - run:
           name: install dependencies
-          working_directory: backend
           command: |
             echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
             # Use our new PATH so we can call poetry from bash
             source $BASH_ENV
-            # update backend_test job and dockerfile if you change this version
-            python3 -m pip install --user poetry===0.12.11
             poetry install
       - save_cache:
           paths:
@@ -84,63 +78,74 @@ jobs:
           key: backend-v2-{{ .Branch }}-{{ checksum "poetry.lock" }}
       - run:
           name: run lints
-          command: ./s/lint
+          command: poetry run yak lint --api
       - store_test_results:
           path: backend/reports
 
   frontend_test:
     docker:
-      - image: recipeyak/node-puppeteer:latest
+      - image: recipeyak/base:v3
         environment:
           DEBUG: 1
     steps:
       - checkout
       - restore_cache:
           keys:
-            - frontend-v2-dependencies-{{ checksum "yarn.lock" }}
+            - frontend-v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - frontend-v2-dependencies-{{ .Branch }}-
             - frontend-v2-dependencies-
       - run:
           name: install dependencies
-          working_directory: frontend
           command: |
+            echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
+            # Use our new PATH so we can call poetry from bash
+            source $BASH_ENV
+            poetry install
             yarn install
       - save_cache:
           paths:
             - ./frontend/node_modules
-          key: frontend-v2-dependencies-{{ checksum "yarn.lock" }}
+          key: frontend-v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
       - run:
           name: run tests
           working_directory: frontend
-          command: ./s/test
+          command: poetry run yak test --web
 
   frontend_lint:
     docker:
-      - image: recipeyak/node-puppeteer:latest
+      - image: recipeyak/base:v3
         environment:
           DEBUG: 1
     steps:
       - checkout
       - restore_cache:
           keys:
-            - frontend-v2-dependencies-{{ checksum "yarn.lock" }}
+            - frontend-v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - frontend-v2-dependencies-{{ .Branch }}-
             - frontend-v2-dependencies-
       - run:
           name: install dependencies
-          working_directory: frontend
           command: |
+            echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
+            # Use our new PATH so we can call poetry from bash
+            source $BASH_ENV
+            poetry install
             yarn install
       - save_cache:
           paths:
             - ./frontend/node_modules
-          key: frontend-v2-dependencies-{{ checksum "yarn.lock" }}
+          key: frontend-v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
       - run:
           name: run linter
-          working_directory: frontend
           command: |
-            ./s/lint
-            ./s/build
+            poetry run yak lint --web
+            poetry run yak build --web
+      - run:
+          name: move artifacts
+          working_directory: frontend
+          # copy bundle analyzer report
+          command: |
             mkdir -p /tmp/frontend-artifacts
-            # copy bundle analyzer report
             cp -R build/report.html build/webpack-stats.json /tmp/frontend-artifacts
       - store_artifacts:
           path: /tmp/frontend-artifacts

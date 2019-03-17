@@ -85,7 +85,7 @@ python-versions = "*"
 version = "3.0.4"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Composable command line interface toolkit"
 name = "click"
 optional = false
@@ -93,7 +93,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "7.0"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Cross-platform colored terminal text."
 name = "colorama"
 optional = false
@@ -274,6 +274,17 @@ name = "gunicorn"
 optional = false
 python-versions = "*"
 version = "19.7.1"
+
+[[package]]
+category = "main"
+description = "Honcho: a Python clone of Foreman. For managing Procfile-based applications."
+name = "honcho"
+optional = false
+python-versions = "*"
+version = "1.0.1"
+
+[package.dependencies]
+colorama = "*"
 
 [[package]]
 category = "main"
@@ -590,6 +601,14 @@ watchdog = ">=0.6.0"
 
 [[package]]
 category = "main"
+description = "Add .env support to your django/flask apps in development and deployments"
+name = "python-dotenv"
+optional = false
+python-versions = "*"
+version = "0.10.1"
+
+[[package]]
+category = "main"
 description = "A python library adding a json log formatter"
 name = "python-json-logger"
 optional = false
@@ -749,7 +768,7 @@ python-versions = "*"
 version = "1.11.1"
 
 [metadata]
-content-hash = "9aa4c4d4ea310d1f276ad77ee6d49de7ecb57445fd7a5a4aa82a5a4dac66a643"
+content-hash = "4795713281052205515f7e2df2f8d95cff9fbc48ecaf5b24be2198e66c027482"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -781,6 +800,7 @@ flake8-formatter-junit-xml = ["b49c6b528d9518e855548ac76041cc333b56b5bcb24ae84af
 flake8-pie = ["3f89dda90bd6a3f898197140ebceed084449aee2ff5c814620712b13e055c0e9", "7ad9801876df62a682dcc633ca495bfcd9933694b9efa7a578d120ea94001b39"]
 flake8-print = ["5010e6c138b63b62400da4b06afa33becc5e08bd1fcce9af3752445cf3342f54"]
 gunicorn = ["75af03c99389535f218cc596c7de74df4763803f7b63eb09d77e92b3956b36c6", "eee1169f0ca667be05db3351a0960765620dad53f53434262ff8901b68a1b622"]
+honcho = ["af5806bf13e3b20acdcb9ff8c0beb91eee6fe07393c3448dfad89667e6ac7576", "c189402ad2e337777283c6a12d0f4f61dc6dd20c254c9a3a4af5087fc66cea6e"]
 idna = ["c357b3f628cf53ae2c4c05627ecc484553142ca23264e593d327bcde5e9c3407", "ea8b7f6188e6fa117537c3df7da9fc686d485087abf6ac197f9c46432f7e4a3c"]
 ipdb = ["7081c65ed7bfe7737f83fa4213ca8afd9617b42ff6b3f1daf9a3419839a2a00a"]
 ipython = ["06de667a9e406924f97781bda22d5d76bfb39762b678762d86a466e63f65dc39", "5d3e020a6b5f29df037555e5c45ab1088d6a7cf3bd84f47e0ba501eeb0c3ec82"]
@@ -811,6 +831,7 @@ pytest = ["6074ea3b9c999bd6d0df5fa9d12dd95ccd23550df2a582f5f5b848331d2e82ca", "9
 pytest-cov = ["03aa752cf11db41d281ea1d807d954c4eda35cfa1b21d6971966cc041bbf6e2d", "890fe5565400902b0c78b5357004aab1c814115894f4f21370e2433256a3eeec"]
 pytest-django = ["00995c2999b884a38ae9cd30a8c00ed32b3d38c1041250ea84caf18085589662", "038ccc5a9daa1b1b0eb739ab7dce54e495811eca5ea3af4815a2a3ac45152309"]
 pytest-watch = ["06136f03d5b361718b8d0d234042f7b2f203910d8568f63df2f866b547b3d4b9"]
+python-dotenv = ["a84569d0e00d178bc5b957f7ff208bf49287cbf61857c31c258c4a91f571527b", "c9b1ddd3cdbe75c7d462cb84674d87130f4b948f090f02c7d7144779afb99ae0"]
 python-json-logger = ["30999d1d742ecf6645991a2ce9273188505e98b713ad63be06aabff47dd1b3c4", "8205cfe7061715de5cd1b37e3565d5b97d0ac13b30ff3ee612554abb6093d640"]
 python3-openid = ["0086da6b6ef3161cfe50fb1ee5cceaf2cda1700019fda03c2c5c440ca6abe4fa", "628d365d687e12da12d02c6691170f4451db28d6d68d050007e4a40065868502"]
 pytz = ["32b0891edff07e28efe91284ed9c31e123d84bea3fd98e1f72be2508f43ef8d9", "d5f05e487007e29e03409f9398d074e158d920d36eb82eaf66fb1136b0c5374c"]

@@ -4,7 +4,7 @@ const url = require("url")
 
 // Make sure any symlinks in the project folder are resolved:
 // https://github.com/facebookincubator/create-react-app/issues/637
-const appDirectory = fs.realpathSync(process.cwd())
+const appDirectory = fs.realpathSync(process.cwd()) + "/frontend"
 /** @param {string} relativePath */
 function resolveApp(relativePath) {
   return path.resolve(appDirectory, relativePath)

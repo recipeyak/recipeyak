@@ -15,3 +15,5 @@ docker-compose-shipit.yml
 .terraform/
 *env*
 .pytest_cache/
+*.egg*
+pip-wheel-metadata

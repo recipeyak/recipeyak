@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-set -e
-
-cd $(dirname $(dirname "$0"))
-
-FILES=$(find . -name '*.py' -type f | grep -vE 'env|node_modules|\.ropeproject')
-
-poetry run mypy --config-file tox.ini $FILES

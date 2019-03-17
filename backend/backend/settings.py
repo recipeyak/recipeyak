@@ -282,5 +282,8 @@ LOGGING = {
         "request_id": {"()": "backend.logging.RequestIDFilter"},
         "user_id": {"()": "backend.logging.CurrentUserFilter"},
     },
-    "loggers": {"": {"level": "INFO", "handlers": ["console"]}},
+    "loggers": {
+        "": {"level": "INFO", "handlers": ["console"]},
+        "django.utils.autoreload": {"propagate": False},
+    },
 }
