@@ -8,7 +8,8 @@ from datetime import datetime
 import click
 
 from cli.config import setup_django_sites, setup_django as configure_django
-from cli.decorators import setup_django, load_env, docker_machine_env
+from cli.decorators import setup_django, load_env
+from cli.docker_machine import docker_machine_env
 from cli import cmds
 
 
@@ -271,11 +272,11 @@ def env(shell: bool) -> None:
 @cli.command()
 @click.argument("machine_name")
 @click.argument("action", type=click.Choice(["on", "off"]))
-@docker_machine_env
 def maintenance_mode(machine_name: str, action: Literal["on", "off"]) -> None:
     """
     Setup prod to return a 503 status code with a webpage explaining the site is down for maintenance.
     """
+    docker_machine_env(machine_name)
 
     if action == "on":
         click.echo("Enabling maintence mode")
@@ -345,11 +346,11 @@ def create_db_from_backup(backup: str, database_name: str) -> None:
 @cli.command()
 @click.argument("machine_name")
 @click.argument("tag")
-@docker_machine_env
 def deploy(machine_name: str, tag: str) -> None:
     """
     deploy the given `tag` to `machine_name`
     """
+    docker_machine_env(machine_name)
 
     click.echo(f"Deploying to tag ({tag}) to docker machine ({machine_name})")
 
