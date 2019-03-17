@@ -324,7 +324,7 @@ def maintenance_mode(machine_name: str, action: Literal["on", "off"]) -> None:
                 "nginx",
                 "rm",
                 "-f",
-                "maintenance_on"
+                "maintenance_on",
             ]
         )
         click.echo("Maintenance mode: OFF")
