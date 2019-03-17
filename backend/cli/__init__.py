@@ -288,7 +288,7 @@ def maintenance_mode(machine_name: str, action: Literal["on", "off"]) -> None:
             os.unsetenv(envvar)
 
     env = (
-        subprocess.check_output([f"docker-machine env {machine_name}"], shell=True)
+        subprocess.check_output(f"docker-machine env {machine_name}", shell=True)
         .decode()
         .split("\n")
     )
@@ -304,12 +304,10 @@ def maintenance_mode(machine_name: str, action: Literal["on", "off"]) -> None:
         subprocess.run(
             [
                 "docker-compose",
-                "-f",
-                "docker-compose-shipit.yml",
+                "-f docker-compose-shipit.yml",
                 "exec",
                 "nginx",
-                "touch",
-                "maintenance_on",
+                "touch maintenance_on",
             ]
         )
         click.echo("Maintenance mode: ON")
@@ -318,13 +316,10 @@ def maintenance_mode(machine_name: str, action: Literal["on", "off"]) -> None:
         subprocess.run(
             [
                 "docker-compose",
-                "-f",
-                "docker-compose-shipit.yml",
+                "-f docker-compose-shipit.yml",
                 "exec",
                 "nginx",
-                "rm",
-                "-f",
-                "maintenance_on",
+                "rm -f maintenance_on",
             ]
         )
         click.echo("Maintenance mode: OFF")
