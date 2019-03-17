@@ -191,8 +191,8 @@ def build(api: bool, web: bool) -> None:
     if api or is_all:
         from django.core.management import call_command
 
-        configure_django()
         os.environ["DOCKERBUILD"] = "1"
+        configure_django()
         call_command("collectstatic", no_input=True)
         git_sha = os.environ["GIT_SHA"]
         subprocess.run(
