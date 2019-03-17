@@ -102,11 +102,8 @@ jobs:
             echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
             # Use our new PATH so we can call poetry from bash
             source $BASH_ENV
-            (
-              poetry install &
-              yarn install &
-              FAIL=0; for job in $(jobs -p); do wait $job || FAIL=1; done; exit $FAIL
-            )
+            poetry install
+            yarn install
       - save_cache:
           paths:
             - ./frontend/node_modules
@@ -136,11 +133,8 @@ jobs:
             echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
             # Use our new PATH so we can call poetry from bash
             source $BASH_ENV
-            (
-              poetry install &
-              yarn install &
-              FAIL=0; for job in $(jobs -p); do wait $job || FAIL=1; done; exit $FAIL
-            )
+            poetry install
+            yarn install
       - save_cache:
           paths:
             - ./frontend/node_modules
