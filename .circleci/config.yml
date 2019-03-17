@@ -105,6 +105,7 @@ jobs:
       - save_cache:
           paths:
             - ./frontend/node_modules
+            - /home/circleci/.cache/pypoetry/
           key: frontend-v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
       - run:
           name: run tests
@@ -134,6 +135,7 @@ jobs:
       - save_cache:
           paths:
             - ./frontend/node_modules
+            - /home/circleci/.cache/pypoetry/
           key: frontend-v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
       - run:
           name: run linter
