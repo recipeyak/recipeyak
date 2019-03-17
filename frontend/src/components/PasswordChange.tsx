@@ -10,13 +10,14 @@ interface IPasswordChangeError {
   readonly newPasswordAgain?: string[]
 }
 
+interface IUpdate {
+  password1: string
+  password2: string
+  oldPassword: string
+}
 interface IPasswordChangeProps {
   readonly clearErrors: () => void
-  readonly update: ({
-    password1: string,
-    password2: string,
-    oldPassword: string
-  }) => void
+  readonly update: ({ password1, password2, oldPassword }: IUpdate) => void
   readonly error: IPasswordChangeError
   readonly setPassword?: boolean
   readonly loading: boolean

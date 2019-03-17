@@ -280,7 +280,7 @@ export const updatingPassword = (dispatch: Dispatch) => async ({
   password1,
   password2,
   oldPassword
-}) => {
+}: IUpdatePassword) => {
   dispatch(passwordUpdate.request())
   const res = await api.changePassword(password1, password2, oldPassword)
   if (isOk(res)) {
