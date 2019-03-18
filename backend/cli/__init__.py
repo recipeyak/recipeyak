@@ -356,7 +356,7 @@ def deploy(machine_name: str, tag: str) -> None:
 
     # pull new files
     for docker_file in {"nginx", "django", "react"}:
-        subprocess.run(["docker", "pull", "recipeyak/{docker_file}:{tag}"], check=True)
+        subprocess.run(["docker", "pull", f"recipeyak/{docker_file}:{tag}"], check=True)
 
     output_compose_file = "docker-compose-shipit.yml"
 
