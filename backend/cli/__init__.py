@@ -9,6 +9,7 @@ import click
 
 from cli.config import setup_django_sites, setup_django as configure_django
 from cli.decorators import setup_django, load_env
+from cli.docker_machine import docker_machine_env
 from cli import cmds
 
 
@@ -275,30 +276,7 @@ def maintenance_mode(machine_name: str, action: Literal["on", "off"]) -> None:
     """
     Setup prod to return a 503 status code with a webpage explaining the site is down for maintenance.
     """
-    if os.getenv("DOCKER_MACHINE_NAME"):
-        click.echo("Disconnecting from existing docker hot")
-        # vars derived from `docker-machin-env`
-        for envvar in {
-            "DOCKER_CERT_PATH",
-            "DOCKER_CERT_PATH",
-            "DOCKER_HOST",
-            "DOCKER_MACHINE_NAME",
-            "DOCKER_MACHINE_NAME",
-            "DOCKER_TLS_VERIFY",
-        }:
-            os.unsetenv(envvar)
-
-    env = (
-        subprocess.check_output(f"docker-machine env {machine_name}", shell=True)
-        .decode()
-        .split("\n")
-    )
-
-    for l in env:
-        if l.startswith("export"):
-            # export FOO="127.0.0.1" --> ('FOO', '"127.0.0.1"')
-            start, end = l.replace("export", "").strip().split("=")
-            os.environ[start] = end.strip('"')
+    docker_machine_env(machine_name)
 
     if action == "on":
         click.echo("Enabling maintence mode")
@@ -363,3 +341,34 @@ def create_db_from_backup(backup: str, database_name: str) -> None:
         check=True,
     )
     click.echo(f"Successfully imported backup into database: {database_name}")
+
+
+@cli.command()
+@click.argument("machine_name")
+@click.argument("tag")
+def deploy(machine_name: str, tag: str) -> None:
+    """
+    deploy the given `tag` to `machine_name`
+    """
+    docker_machine_env(machine_name)
+
+    click.echo(f"Deploying tag ({tag}) to docker machine ({machine_name})")
+
+    # pull new files
+    for docker_file in {"nginx", "django", "react"}:
+        subprocess.run(["docker", "pull", f"recipeyak/{docker_file}:{tag}"], check=True)
+
+    output_compose_file = "docker-compose-shipit.yml"
+
+    # replace ':latest' with chosen tag
+    with open(output_compose_file, "w") as f:
+        subprocess.run(
+            ["sed", "-e", f"s#:latest$#:{tag}#", "docker-compose-deploy.yml"],
+            stdout=f,
+            check=True,
+        )
+
+    # update containers
+    subprocess.run(
+        ["docker-compose", "-f", output_compose_file, "up", "--build", "-d"], check=True
+    )
