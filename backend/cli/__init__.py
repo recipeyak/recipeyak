@@ -352,7 +352,7 @@ def deploy(machine_name: str, tag: str) -> None:
     """
     docker_machine_env(machine_name)
 
-    click.echo(f"Deploying to tag ({tag}) to docker machine ({machine_name})")
+    click.echo(f"Deploying tag ({tag}) to docker machine ({machine_name})")
 
     # pull new files
     for docker_file in {"nginx", "django", "react"}:
