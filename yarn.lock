@@ -10036,10 +10036,10 @@ tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.3.tgz#d7e4dd79245d85428c4d7e4822a79917954ca286"
 
-tslint-cake@^0.9.1:
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/tslint-cake/-/tslint-cake-0.9.1.tgz#1ab78df808fbb03ebdbed947b4d68584a9b8a003"
-  integrity sha512-lY6GuAVwYmrgI+5ofDqB7PcYUdkqIeBGFg1shSq0uvrq1jXxyfciFOU1Fzjxes/k5EflPS8tesaMb0Pt8+7Y9g==
+tslint-cake@^0.13.0:
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/tslint-cake/-/tslint-cake-0.13.0.tgz#4a626eefacefdf287ab688479cf1b4a4f186484f"
+  integrity sha512-8jSo8ntzU5aKpWuvAO+9wwIL38KT1HA3stVhDxbmFqGUGdwEkl9ZTlF3vYBtQoIMRT0TCLzX+5kP3eEb+bEcJA==
 
 tslint-config-prettier@^1.17.0:
   version "1.17.0"
