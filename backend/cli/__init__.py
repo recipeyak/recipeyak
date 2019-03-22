@@ -392,6 +392,9 @@ def connect(machine_name: str) -> None:
 @click.option("--nginx", is_flag=True)
 @load_env
 def build(ignore_staged: bool, web: bool, api: bool, nginx: bool) -> None:
+    """
+    build prod containers
+    """
     docker_machine_unset_env()
 
     git_changes = subprocess.check_output(["git", "status", "-s"])
@@ -466,3 +469,23 @@ def build(ignore_staged: bool, web: bool, api: bool, nginx: bool) -> None:
                 f"GIT_SHA={git_rev}",
             ]
         )
+
+
+@cli.command()
+def upload() -> None:
+    """
+    upload prod images to container registry
+    """
+    docker_machine_unset_env()
+
+    images = []
+    for rows in subprocess.check_output(["docker", "images"]).decode().split("\n"):
+        row = rows.split()
+        if row and "recipeyak" in row[0]:
+            images.append(row[0] + ":" + row[1])
+
+    from cli.manager import ProcessManager
+
+    with ProcessManager() as m:
+        for img in images:
+            m.add_process(img, "docker push " + img)
