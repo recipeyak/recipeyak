@@ -372,3 +372,13 @@ def deploy(machine_name: str, tag: str) -> None:
     subprocess.run(
         ["docker-compose", "-f", output_compose_file, "up", "--build", "-d"], check=True
     )
+
+
+@cli.command()
+@click.argument("machine_name")
+def connect(machine_name: str) -> None:
+    """
+    connect via ssh to docker `machine_name`
+    """
+    docker_machine_env(machine_name)
+    subprocess.run(["docker-machine", "ssh", machine_name])

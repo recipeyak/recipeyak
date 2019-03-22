@@ -18,11 +18,16 @@ def docker_machine_unset_env() -> None:
 
 def docker_machine_env(machine_name: str) -> None:
     docker_machine_unset_env()
-    env = (
-        subprocess.check_output(f"docker-machine env {machine_name}", shell=True)
-        .decode()
-        .split("\n")
-    )
+
+    env = ()
+    try:
+        env = (
+            subprocess.check_output(f"docker-machine env {machine_name}", shell=True)
+            .decode()
+            .split("\n")
+        )
+    except subprocess.CalledProcessError:
+        exit(1)
 
     for l in env:
         if l.startswith("export"):
