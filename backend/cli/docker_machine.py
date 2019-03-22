@@ -1,5 +1,6 @@
 import os
 import subprocess
+from typing import List
 
 
 def docker_machine_unset_env() -> None:
@@ -19,7 +20,7 @@ def docker_machine_unset_env() -> None:
 def docker_machine_env(machine_name: str) -> None:
     docker_machine_unset_env()
 
-    env = ()
+    env: List[str] = []
     try:
         env = (
             subprocess.check_output(f"docker-machine env {machine_name}", shell=True)

@@ -391,7 +391,7 @@ def connect(machine_name: str) -> None:
 @click.option("--api", is_flag=True)
 @click.option("--nginx", is_flag=True)
 @load_env
-def build(ignore_staged: bool, web: bool, api: bool, nginx: bool) -> None:
+def docker_build(ignore_staged: bool, web: bool, api: bool, nginx: bool) -> None:
     """
     build prod containers
     """
@@ -425,7 +425,7 @@ def build(ignore_staged: bool, web: bool, api: bool, nginx: bool) -> None:
             ("FRONTEND_SENTRY_DSN", os.environ["FRONTEND_SENTRY_DSN"]),
         ]
 
-        build_args = []
+        build_args: List[str] = []
         for name, value in args:
             build_args += ["--build-arg", f"{name}={value}"]
 
@@ -472,7 +472,7 @@ def build(ignore_staged: bool, web: bool, api: bool, nginx: bool) -> None:
 
 
 @cli.command()
-def upload() -> None:
+def docker_upload() -> None:
     """
     upload prod images to container registry
     """
