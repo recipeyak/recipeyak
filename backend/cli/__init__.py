@@ -4,12 +4,13 @@ import subprocess
 import os
 import io
 from datetime import datetime
+from pathlib import Path
 
 import click
 
 from cli.config import setup_django_sites, setup_django as configure_django
 from cli.decorators import setup_django, load_env
-from cli.docker_machine import docker_machine_env
+from cli.docker_machine import docker_machine_env, docker_machine_unset_env
 from cli import cmds
 
 
@@ -382,3 +383,86 @@ def connect(machine_name: str) -> None:
     """
     docker_machine_env(machine_name)
     subprocess.run(["docker-machine", "ssh", machine_name])
+
+
+@cli.command()
+@click.option("--ignore-staged", is_flag=True)
+@click.option("--web", is_flag=True)
+@click.option("--api", is_flag=True)
+@click.option("--nginx", is_flag=True)
+@load_env
+def build(ignore_staged: bool, web: bool, api: bool, nginx: bool) -> None:
+    docker_machine_unset_env()
+
+    git_changes = subprocess.check_output(["git", "status", "-s"])
+    if git_changes and not ignore_staged:
+        click.echo("Please stash your changes before building.")
+        exit(1)
+
+    project_root = Path(__file__).parent.parent.parent
+
+    git_rev = subprocess.check_output(["git", "rev-parse", "HEAD"]).strip().decode()
+
+    none_set = not any([web, api, nginx])
+
+    if web or none_set:
+        OAUTH_VARS = [
+            "OAUTH_BITBUCKET_CLIENT_ID",
+            "OAUTH_FACEBOOK_CLIENT_ID",
+            "OAUTH_GITHUB_CLIENT_ID",
+            "OAUTH_GITLAB_CLIENT_ID",
+            "OAUTH_GOOGLE_CLIENT_ID",
+        ]
+
+        oauth_args = [(arg, os.getenv(arg, "")) for arg in OAUTH_VARS]
+
+        args = [
+            *oauth_args,
+            ("GIT_SHA", git_rev),
+            ("FRONTEND_SENTRY_DSN", os.environ["FRONTEND_SENTRY_DSN"]),
+        ]
+
+        build_args = []
+        for name, value in args:
+            build_args += ["--build-arg", f"{name}={value}"]
+
+        subprocess.run(
+            [
+                "docker",
+                "build",
+                "-f",
+                str(project_root / "frontend" / "Dockerfile-prod"),
+                str(project_root / "frontend"),
+                "--tag",
+                f"recipeyak/react:{git_rev}",
+                *build_args,
+            ]
+        )
+
+    if nginx or none_set:
+        subprocess.run(
+            [
+                "docker",
+                "build",
+                "-f",
+                str(project_root / "nginx" / "Dockerfile"),
+                str(project_root / "nginx"),
+                "--tag",
+                f"recipeyak/nginx:{git_rev}",
+            ]
+        )
+
+    if api or none_set:
+        subprocess.run(
+            [
+                "docker",
+                "build",
+                "-f",
+                str(project_root / "backend" / "Dockerfile-prod"),
+                str(project_root / "backend"),
+                "--tag",
+                f"recipeyak/django:{git_rev}",
+                "--build-arg",
+                f"GIT_SHA={git_rev}",
+            ]
+        )
