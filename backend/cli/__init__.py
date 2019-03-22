@@ -409,7 +409,7 @@ def docker_build(ignore_staged: bool, web: bool, api: bool, nginx: bool) -> None
     is_all = not any([web, api, nginx])
 
     def build_container(
-        path: Path, tag: str, build_args: Optional[List[Tuple[str, str]]] = None
+        path: Path, name: str, build_args: Optional[List[Tuple[str, str]]] = None
     ) -> None:
         build_args = build_args or []
 
