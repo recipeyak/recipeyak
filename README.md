@@ -62,9 +62,9 @@ docker-machine create --driver amazonec2 $MACHINE_NAME
 
 1. Copy `.env-example` to `.env` and add in the proper configuration variables
 2. Configure OAuth with identity providers (leaving CLIENT_ID variables undefined will disable a provider)
-3. Build containers `./build [frontend|react|backend|django|nginx]`
-4. Upload containers to registry `./upload`
-5. Deploy containers `./deploy $MACHINE_NAME`
+3. Build containers `yak docker_build`
+4. Upload containers to registry `yak docker_upload`
+5. Deploy containers `yak deploy $MACHINE_NAME`
 
 ### Maintenance mode
 
