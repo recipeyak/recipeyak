@@ -406,9 +406,9 @@ def docker_build(ignore_staged: bool, web: bool, api: bool, nginx: bool) -> None
 
     git_rev = subprocess.check_output(["git", "rev-parse", "HEAD"]).strip().decode()
 
-    none_set = not any([web, api, nginx])
+    is_all = not any([web, api, nginx])
 
-    if web or none_set:
+    if web or is_all:
         OAUTH_VARS = [
             "OAUTH_BITBUCKET_CLIENT_ID",
             "OAUTH_FACEBOOK_CLIENT_ID",
@@ -442,7 +442,7 @@ def docker_build(ignore_staged: bool, web: bool, api: bool, nginx: bool) -> None
             ]
         )
 
-    if nginx or none_set:
+    if nginx or is_all:
         subprocess.run(
             [
                 "docker",
@@ -455,7 +455,7 @@ def docker_build(ignore_staged: bool, web: bool, api: bool, nginx: bool) -> None
             ]
         )
 
-    if api or none_set:
+    if api or is_all:
         subprocess.run(
             [
                 "docker",
