@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple, Optional
 from typing_extensions import Literal
 import subprocess
 import os
@@ -408,6 +408,28 @@ def docker_build(ignore_staged: bool, web: bool, api: bool, nginx: bool) -> None
 
     is_all = not any([web, api, nginx])
 
+    def build_container(
+        path: Path, tag: str, build_args: Optional[List[Tuple[str, str]]] = None
+    ) -> None:
+        build_args = build_args or []
+
+        args: List[str] = []
+        for name, value in build_args:
+            args += ["--build-arg", f"{name}={value}"]
+
+        subprocess.run(
+            [
+                "docker",
+                "build",
+                "-f",
+                path / "Dockerfile-prod",
+                path,
+                "--tag",
+                f"recipeyak/{name}:{git_rev}",
+                *args,
+            ]
+        )
+
     if web or is_all:
         OAUTH_VARS = [
             "OAUTH_BITBUCKET_CLIENT_ID",
@@ -425,49 +447,16 @@ def docker_build(ignore_staged: bool, web: bool, api: bool, nginx: bool) -> None
             ("FRONTEND_SENTRY_DSN", os.environ["FRONTEND_SENTRY_DSN"]),
         ]
 
-        build_args: List[str] = []
-        for name, value in args:
-            build_args += ["--build-arg", f"{name}={value}"]
-
-        subprocess.run(
-            [
-                "docker",
-                "build",
-                "-f",
-                project_root / "frontend" / "Dockerfile-prod",
-                project_root / "frontend",
-                "--tag",
-                f"recipeyak/react:{git_rev}",
-                *build_args,
-            ]
-        )
+        build_container(name="react", path=project_root / "frontend", build_args=args)
 
     if nginx or is_all:
-        subprocess.run(
-            [
-                "docker",
-                "build",
-                "-f",
-                project_root / "nginx" / "Dockerfile",
-                project_root / "nginx",
-                "--tag",
-                f"recipeyak/nginx:{git_rev}",
-            ]
-        )
+        build_container(name="nginx", path=project_root / "nginx")
 
     if api or is_all:
-        subprocess.run(
-            [
-                "docker",
-                "build",
-                "-f",
-                project_root / "backend" / "Dockerfile-prod",
-                project_root / "backend",
-                "--tag",
-                f"recipeyak/django:{git_rev}",
-                "--build-arg",
-                f"GIT_SHA={git_rev}",
-            ]
+        build_container(
+            name="django",
+            path=project_root / "backend",
+            build_args=[("GIT_SHA", git_rev)],
         )
 
 
