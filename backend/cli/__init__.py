@@ -414,8 +414,8 @@ def docker_build(ignore_staged: bool, web: bool, api: bool, nginx: bool) -> None
         build_args = build_args or []
 
         args: List[str] = []
-        for name, value in build_args:
-            args += ["--build-arg", f"{name}={value}"]
+        for arg_name, arg_value in build_args:
+            args += ["--build-arg", f"{arg_name}={arg_value}"]
 
         subprocess.run(
             [
