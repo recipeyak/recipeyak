@@ -1,7 +1,3 @@
-import os
-from typing import List
-
-
 def prettier(check: bool) -> str:
     check_flag = "--list-different" if check else "--write"
     glob = "frontend/**/*.{js,jsx,scss,css,ts,tsx,json}"
@@ -45,17 +41,3 @@ def typescript(watch: bool) -> str:
 
 def flake8() -> str:
     return "flake8 ."
-
-
-def pytest(watch: bool, args: List[str]) -> str:
-    args_str = " ".join(args)
-    if watch:
-        return f"ptw -- {args_str}"
-
-    return f"pytest {args_str}"
-
-
-def jest() -> str:
-    if os.getenv("CI"):
-        return "node scripts/test.js --env=jsdom --coverage --runInBand"
-    return "node scripts/test.js --env=jsdom"

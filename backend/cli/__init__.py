@@ -94,14 +94,24 @@ def test(api: bool, web: bool, watch: bool, test_args: List[str]) -> None:
 
     os.environ["TESTING"] = "1"
 
-    with ProcessManager() as m:
-        if api or is_all:
-            m.add_process(
-                "api", cmds.pytest(watch=watch, args=test_args), cwd="backend"
-            )
+    jest = ["node", "frontend/scripts/test.js", "--env=jsdom"]
+    if os.getenv("CI"):
+        jest += ["--coverage", "--runInBand"]
+    if watch:
+        jest += ["--watch"]
 
-        if web or is_all:
-            m.add_process("web", cmds.jest())
+    pytest = ["ptw", "--", *test_args] if watch else ["pytest", *test_args]
+
+    if is_all:
+        with ProcessManager() as m:
+            m.add_process("api", pytest, cwd="backend")
+            m.add_process("web", jest)
+
+    if web:
+        subprocess.run(jest)
+
+    if api:
+        subprocess.run(pytest, cwd="backend")
 
 
 @cli.command(help="start dev services")
