@@ -40,31 +40,35 @@ import {
   ConnectDragPreview,
   DropTargetMonitor
 } from "react-dnd"
-import * as ItemTypes from "@/dragDrop"
+import { DragDrop } from "@/dragDrop"
 import ListItem from "@/components/ListItem"
 
-import { deletingStep, updatingStep, Dispatch } from "@/store/thunks"
-import { IStep, IRecipe } from "@/store/reducers/recipes"
+import {
+  IStep,
+  IRecipe,
+  updateStep,
+  deleteStep
+} from "@/store/reducers/recipes"
 
-const style = {
-  backgroundColor: "white"
-}
-
-const cardSource = {
-  beginDrag(props: ICardProps) {
+const stepSource = {
+  beginDrag(props: IStepProps) {
     return {
       id: props.id,
       index: props.index,
       position: props.position
     }
   },
-  endDrag(props: ICardProps) {
+  endDrag(props: IStepProps) {
     props.completeMove(props.id, props.index)
   }
 }
 
-const cardTarget = {
-  hover(props: ICardProps, monitor: DropTargetMonitor, component: Card) {
+const stepTarget = {
+  hover(
+    props: IStepProps,
+    monitor: DropTargetMonitor,
+    component: React.Component
+  ) {
     // tslint:disable-next-line:no-unsafe-any
     const dragIndex: number = monitor.getItem().index
     const hoverIndex = props.index
@@ -108,7 +112,7 @@ const cardTarget = {
     }
 
     // Time to actually perform the action
-    props.moveCard(dragIndex, hoverIndex)
+    props.moveStep(dragIndex, hoverIndex)
 
     // Note: we're mutating the monitor item here!
     // Generally it's better to avoid mutations,
@@ -127,60 +131,50 @@ interface ICollectedProps {
   readonly isDragging: boolean
 }
 
-interface ICardProps {
+interface IStepProps {
   readonly index: number
   readonly id: number
   readonly recipeID: IRecipe["id"]
   readonly text: string
-  readonly moveCard: (dragIndex: number, hoverIndex: number) => void
+  readonly moveStep: (dragIndex: number, hoverIndex: number) => void
   readonly completeMove: (dragIndex: number, hoverIndex: number) => void
   readonly updating?: boolean
   readonly removing?: boolean
   readonly position?: number
 }
 
-class Card extends React.Component<ICardProps & ICollectedProps, {}> {
-  static defaultProps = {
-    updating: false,
-    removing: false
+function Step({
+  text,
+  isDragging,
+  connectDragSource,
+  connectDropTarget,
+  connectDragPreview,
+  index,
+  ...props
+}: IStepProps & ICollectedProps) {
+  const style = {
+    backgroundColor: "white",
+    opacity: isDragging ? 0 : 1
   }
-
-  render() {
-    const {
-      text,
-      isDragging,
-      connectDragSource,
-      connectDropTarget,
-      connectDragPreview,
-      index
-    } = this.props
-    const opacity = isDragging ? 0 : 1
-
-    return connectDragPreview(
-      connectDropTarget(
-        <div style={{ ...style, opacity }}>
-          {connectDragSource(
-            <label className="better-label" style={{ cursor: "move" }}>
-              Step {index + 1}
-            </label>
-          )}
-          <StepBody
-            id={this.props.id}
-            recipeID={this.props.recipeID}
-            updating={this.props.updating}
-            removing={this.props.removing}
-            text={text}
-          />
-        </div>
-      )
+  return connectDragPreview(
+    connectDropTarget(
+      <div style={style}>
+        {connectDragSource(
+          <label className="better-label" style={{ cursor: "move" }}>
+            Step {index + 1}
+          </label>
+        )}
+        <StepBody
+          id={props.id}
+          recipeID={props.recipeID}
+          updating={props.updating}
+          removing={props.removing}
+          text={text}
+        />
+      </div>
     )
-  }
+  )
 }
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  update: updatingStep(dispatch),
-  delete: deletingStep(dispatch)
-})
 
 interface IStepBodyBasic {
   readonly id: IStep["id"]
@@ -188,38 +182,53 @@ interface IStepBodyBasic {
   readonly text: IStep["text"]
   readonly updating?: boolean
   readonly removing?: boolean
-  readonly update: (
-    recipeID: number,
-    stepID: number,
-    step: { text?: string }
-  ) => Promise<void>
-  readonly delete: (recipeID: IRecipe["id"], id: number) => Promise<void>
+  readonly update: (data: {
+    recipeID: number
+    stepID: number
+    text?: string
+  }) => void
+  readonly remove: (data: { recipeID: IRecipe["id"]; stepID: number }) => void
 }
 
-function StepBodyBasic(props: IStepBodyBasic) {
+function StepBodyBasic({
+  recipeID,
+  id,
+  text,
+  update,
+  remove,
+  updating,
+  removing
+}: IStepBodyBasic) {
+  const listItemUpdate = (rID: number, sID: number, data: { text: string }) =>
+    update({ recipeID: rID, stepID: sID, ...data })
+
   return (
     <ListItem
-      id={props.id}
-      recipeID={props.recipeID}
-      text={props.text}
-      update={props.update}
-      updating={props.updating}
-      removing={props.removing}
-      delete={() => props.delete(props.recipeID, props.id)}
+      id={id}
+      recipeID={recipeID}
+      text={text}
+      update={listItemUpdate}
+      updating={updating}
+      removing={removing}
+      delete={() => remove({ recipeID, stepID: id })}
     />
   )
 }
+
 const StepBody = connect(
   null,
-  mapDispatchToProps
+  {
+    update: updateStep.request,
+    remove: deleteStep.request
+  }
 )(StepBodyBasic)
 
-export default DropTarget(ItemTypes.CARD, cardTarget, cnct => ({
+export default DropTarget(DragDrop.STEP, stepTarget, cnct => ({
   connectDropTarget: cnct.dropTarget()
 }))(
-  DragSource(ItemTypes.CARD, cardSource, (cnct, monitor) => ({
+  DragSource(DragDrop.STEP, stepSource, (cnct, monitor) => ({
     connectDragSource: cnct.dragSource(),
     connectDragPreview: cnct.dragPreview(),
     isDragging: monitor.isDragging()
-  }))(Card)
+  }))(Step)
 )

@@ -20,7 +20,7 @@ import {
 } from "@/webdata"
 import { isOk } from "@/result"
 import { Loop, loop, Cmd } from "redux-loop"
-import { Dispatch } from "@/store/thunks"
+import { Dispatch, updatingStep, deletingStep } from "@/store/thunks"
 import { push } from "react-router-redux"
 
 export const updateRecipeOwner = createStandardAction("UPDATE_RECIPE_OWNER")<{
@@ -118,6 +118,8 @@ export const updateStep = createAsyncAction(
   {
     recipeID: IRecipe["id"]
     stepID: IStep["id"]
+    text?: IStep["text"]
+    position?: IStep["position"]
   },
   {
     recipeID: IRecipe["id"]
@@ -780,18 +782,23 @@ export const recipes = (
         })
       }))
     case getType(deleteStep.request):
-      return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
-        ...recipe,
-        steps: recipe.steps.map(x => {
-          if (x.id === action.payload.stepID) {
-            return {
-              ...x,
-              removing: true
+      return loop(
+        mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
+          ...recipe,
+          steps: recipe.steps.map(x => {
+            if (x.id === action.payload.stepID) {
+              return {
+                ...x,
+                removing: true
+              }
             }
-          }
-          return x
+            return x
+          })
+        })),
+        Cmd.run(deletingStep, {
+          args: [action.payload, Cmd.dispatch]
         })
-      }))
+      )
     case getType(deleteStep.success):
       return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
         ...recipe,
@@ -810,19 +817,35 @@ export const recipes = (
           return x
         })
       }))
-    case getType(updateStep.request):
-      return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
-        ...recipe,
-        steps: recipe.steps.map(x => {
-          if (x.id === action.payload.stepID) {
-            return {
-              ...x,
-              updating: true
+    case getType(updateStep.request): {
+      const data: { [key: string]: unknown } = action.payload
+      // Remove null/empty keys for PATCH
+      for (const key of Object.keys(data)) {
+        if (data[key] == null) {
+          delete data[key]
+        }
+      }
+      return loop(
+        mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
+          ...recipe,
+          steps: recipe.steps.map(x => {
+            if (x.id === action.payload.stepID) {
+              return {
+                ...x,
+                text: action.payload.text || x.text,
+                position: action.payload.position || x.position,
+                updating: true
+              }
             }
-          }
-          return x
+            return x
+          })
+        })),
+        Cmd.run(updatingStep, {
+          args: [action.payload, Cmd.dispatch]
         })
-      }))
+      )
+    }
+
     case getType(updateStep.success):
       return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
         ...recipe,

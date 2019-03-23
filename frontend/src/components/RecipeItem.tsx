@@ -5,7 +5,7 @@ import DatePickerForm from "@/components/DatePickerForm"
 import { ButtonPlain } from "@/components/Buttons"
 import { classNames } from "@/classnames"
 import { recipeURL } from "@/urls"
-import * as DragDrop from "@/dragDrop"
+import { DragDrop } from "@/dragDrop"
 import { IRecipe } from "@/store/reducers/recipes"
 import Dropdown from "@/components/Dropdown"
 
@@ -124,7 +124,7 @@ export function RecipeItem({
 
 export interface IRecipeItemDrag {
   readonly recipeID: IRecipeItemProps["id"]
-  readonly kind: typeof DragDrop.RECIPE
+  readonly kind: DragDrop.RECIPE
 }
 
 export default DragSource(

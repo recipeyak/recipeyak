@@ -389,22 +389,17 @@ export const deletingIngredient = (dispatch: Dispatch) => async (
   }
 }
 
-export const updatingStep = (dispatch: Dispatch) => async (
-  recipeID: IRecipe["id"],
-  stepID: IStep["id"],
-  { text, position }: { text?: string; position?: number }
+interface IUpdatingStepPayload {
+  readonly recipeID: IRecipe["id"]
+  readonly stepID: IStep["id"]
+  readonly text?: string
+  readonly position?: number
+}
+
+export const updatingStep = async (
+  { recipeID, stepID, ...data }: IUpdatingStepPayload,
+  dispatch: Dispatch
 ) => {
-  dispatch(updateStep.request({ recipeID, stepID }))
-  const data: { [key: string]: unknown } = {
-    text,
-    position
-  }
-  // Remove null/empty keys for PATCH
-  for (const key of Object.keys(data)) {
-    if (data[key] == null) {
-      delete data[key]
-    }
-  }
   const res = await api.updateStep(recipeID, stepID, data)
   if (isOk(res)) {
     dispatch(
@@ -420,11 +415,14 @@ export const updatingStep = (dispatch: Dispatch) => async (
   }
 }
 
-export const deletingStep = (dispatch: Dispatch) => async (
-  recipeID: IRecipe["id"],
-  stepID: IStep["id"]
+interface IDeletingStepPayload {
+  readonly recipeID: IRecipe["id"]
+  readonly stepID: IStep["id"]
+}
+export const deletingStep = async (
+  { recipeID, stepID }: IDeletingStepPayload,
+  dispatch: Dispatch
 ) => {
-  dispatch(deleteStep.request({ recipeID, stepID }))
   const res = await api.deleteStep(recipeID, stepID)
   if (isOk(res)) {
     dispatch(deleteStep.success({ recipeID, stepID }))

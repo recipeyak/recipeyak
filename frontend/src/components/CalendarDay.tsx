@@ -23,7 +23,7 @@ import {
   fetchingShoppingList
 } from "@/store/thunks"
 
-import * as DragDrop from "@/dragDrop"
+import { DragDrop } from "@/dragDrop"
 import { IRecipe } from "@/store/reducers/recipes"
 import { IState } from "@/store/store"
 import { ICalRecipe } from "@/store/reducers/calendar"
