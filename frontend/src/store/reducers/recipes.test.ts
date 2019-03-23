@@ -378,7 +378,9 @@ describe("Recipes", () => {
     })
 
     expect(
-      recipes(beforeState, a.deleteStep.success({ recipeID: 1, stepID: 1 }))
+      getModel(
+        recipes(beforeState, a.deleteStep.success({ recipeID: 1, stepID: 1 }))
+      )
     ).toEqual(afterState)
   })
 
@@ -508,7 +510,9 @@ describe("Recipes", () => {
     })
 
     expect(
-      recipes(beforeState, a.updateStep.request({ recipeID: 1, stepID: 1 }))
+      getModel(
+        recipes(beforeState, a.updateStep.request({ recipeID: 1, stepID: 1 }))
+      )
     ).toEqual(afterState)
   })
 
@@ -537,7 +541,9 @@ describe("Recipes", () => {
       ]
     })
     expect(
-      recipes(beforeState, a.deleteStep.request({ recipeID: 1, stepID: 1 }))
+      getModel(
+        recipes(beforeState, a.deleteStep.request({ recipeID: 1, stepID: 1 }))
+      )
     ).toEqual(afterState)
   })
 
