@@ -100,7 +100,7 @@ def test(api: bool, web: bool, watch: bool, test_args: List[str]) -> None:
     if watch:
         jest += ["--watch"]
 
-    pytest = ["ptw", "--", test_args] if watch else ["pytest", test_args]
+    pytest = ["ptw", "--", *test_args] if watch else ["pytest", *test_args]
 
     if is_all:
         with ProcessManager() as m:

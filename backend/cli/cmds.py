@@ -1,7 +1,3 @@
-import os
-from typing import List
-
-
 def prettier(check: bool) -> str:
     check_flag = "--list-different" if check else "--write"
     glob = "frontend/**/*.{js,jsx,scss,css,ts,tsx,json}"
