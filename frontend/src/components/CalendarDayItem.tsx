@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import { DragSource, ConnectDragSource } from "react-dnd"
 import { beforeCurrentDay } from "@/date"
 import { recipeURL } from "@/urls"
-import * as DragDrop from "@/dragDrop"
+import { DragDrop } from "@/dragDrop"
 import { IRecipe } from "@/store/reducers/recipes"
 import { ICalRecipe } from "@/store/reducers/calendar"
 import GlobalEvent from "@/components/GlobalEvent"
@@ -155,7 +155,7 @@ class CalendarItem extends React.Component<
 
 export interface ICalendarDragItem
   extends Pick<ICalendarItemProps, "recipeID" | "count" | "id" | "date"> {
-  readonly kind: typeof DragDrop.CAL_RECIPE
+  readonly kind: DragDrop.CAL_RECIPE
 }
 
 export default DragSource(

@@ -29,128 +29,119 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import React from "react"
+import React, { useEffect } from "react"
 import { connect } from "react-redux"
 
-import Card from "@/components/Step"
-import { updatingStep, Dispatch } from "@/store/thunks"
-import { IRecipe, IStep } from "@/store/reducers/recipes"
+import Step from "@/components/Step"
+import { IRecipe, IStep, updateStep } from "@/store/reducers/recipes"
+import sortBy from "lodash/sortBy"
 
 interface IStepContainerProps {
-  readonly steps: IStep[]
+  readonly steps: ReadonlyArray<IStep>
   readonly recipeID: IRecipe["id"]
-  readonly updatingStep: (
-    recipeID: number,
-    stepID: number,
-    { text, position }: { text?: string; position?: number }
-  ) => void
+  readonly updatingStep: ({
+    recipeID,
+    stepID,
+    text,
+    position
+  }: {
+    text?: string
+    position?: number
+    recipeID: number
+    stepID: number
+  }) => void
 }
 
-interface IStepContainerState {
-  readonly cards: IStepContainerProps["steps"]
+interface IListItem {
+  readonly position: number
 }
 
-class StepContainer extends React.Component<
-  IStepContainerProps,
-  IStepContainerState
-> {
-  constructor(props: IStepContainerProps) {
-    super(props)
-
-    this.state = {
-      cards: this.props.steps
-    }
+function getNewPos(
+  list: ReadonlyArray<IListItem>,
+  index: number
+): number | null {
+  const nextCard = list[index + 1]
+  const prevCard = list[index - 1]
+  if (nextCard == null && prevCard == null) {
+    // there is only one card in the list, so we don't make any change
+    return null
   }
-
-  componentWillReceiveProps(nextProps: IStepContainerProps) {
-    this.setState({ cards: nextProps.steps })
+  if (nextCard == null && prevCard != null) {
+    return prevCard.position + 10.0
   }
+  if (nextCard != null && prevCard == null) {
+    return nextCard.position / 2
+  }
+  if (nextCard != null && prevCard != null) {
+    return (nextCard.position - prevCard.position) / 2 + prevCard.position
+  }
+  return null
+}
 
-  moveCard = (dragIndex: number, hoverIndex: number) => {
-    const dragCard = this.state.cards[dragIndex]
+function StepContainer(props: IStepContainerProps) {
+  const [steps, setSteps] = React.useState(props.steps)
 
-    this.setState(prevState => {
-      const cards = prevState.cards
-      cards.splice(dragIndex, 1)
-      cards.splice(hoverIndex, 0, dragCard)
-      return {
-        cards
-      }
+  useEffect(() => {
+    setSteps(sortBy(props.steps, "position"))
+  }, [props.steps])
+
+  const move = (dragIndex: number, hoverIndex: number) => {
+    const dragCard = steps[dragIndex]
+
+    setSteps(prevSteps => {
+      const newSteps = [...prevSteps]
+      newSteps.splice(dragIndex, 1)
+      newSteps.splice(hoverIndex, 0, dragCard)
+      return newSteps
     })
   }
 
-  completeMove = (stepID: number, arrIndex: number) => {
-    const nextCard = this.state.cards[arrIndex + 1]
-    const prevCard = this.state.cards[arrIndex - 1]
-    let newPos: IStep["position"] | null = null
-
-    if (nextCard == null && prevCard == null) {
-      // there is only one card in the list, so we don't make any change
+  const completeMove = (stepID: number, arrIndex: number) => {
+    const newPosition = getNewPos(steps, arrIndex)
+    if (newPosition == null) {
       return
-    } else if (nextCard == null && prevCard != null) {
-      newPos = prevCard.position + 10.0
-    } else if (nextCard != null && prevCard == null) {
-      newPos = nextCard.position / 2
-    } else if (nextCard != null && prevCard != null) {
-      newPos = (nextCard.position - prevCard.position) / 2 + prevCard.position
     }
-    if (newPos == null) {
-      return new Error("Invalid position")
-    }
-    const newPosition: number = newPos
 
-    this.setState(
-      prevState => {
-        return {
-          cards: [
-            ...prevState.cards.map((c, index) => {
-              if (index === arrIndex) {
-                return {
-                  ...c,
-                  position: newPosition
-                }
-              }
-              return c
-            })
-          ]
+    setSteps(prevSteps =>
+      prevSteps.map((c, index) => {
+        if (index === arrIndex) {
+          return {
+            ...c,
+            position: newPosition
+          }
         }
-      },
-      () => {
-        this.props.updatingStep(this.props.recipeID, stepID, {
-          position: newPosition
-        })
-      }
+        return c
+      })
     )
+    props.updatingStep({
+      recipeID: props.recipeID,
+      stepID,
+      position: newPosition
+    })
   }
 
-  render() {
-    const { cards } = this.state
-
-    return (
-      <>
-        {cards.map((card, i) => (
-          <Card
-            key={card.id}
-            index={i}
-            id={card.id}
-            recipeID={this.props.recipeID}
-            text={card.text}
-            moveCard={this.moveCard}
-            position={card.position}
-            updating={card.updating}
-            removing={card.removing}
-            completeMove={this.completeMove}
-          />
-        ))}
-      </>
-    )
-  }
+  return (
+    <>
+      {steps.map((card, i) => (
+        <Step
+          key={card.id}
+          index={i}
+          id={card.id}
+          recipeID={props.recipeID}
+          text={card.text}
+          moveStep={move}
+          position={card.position}
+          updating={card.updating}
+          removing={card.removing}
+          completeMove={completeMove}
+        />
+      ))}
+    </>
+  )
 }
 
-function mapDispatchToProps(dispatch: Dispatch) {
-  return {
-    updatingStep: updatingStep(dispatch)
-  }
+const mapDispatchToProps = {
+  updatingStep: updateStep.request
 }
 
 export default connect(

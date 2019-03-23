@@ -1,3 +1,5 @@
-export const RECIPE = "RECIPE"
-export const CAL_RECIPE = "CAL_RECIPE"
-export const CARD = "CARD"
+export const enum DragDrop {
+  RECIPE = "RECIPE",
+  CAL_RECIPE = "CAL_RECIPE",
+  STEP = "STEP"
+}
