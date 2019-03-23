@@ -158,7 +158,7 @@ function Step({
   }
   return connectDragPreview(
     connectDropTarget(
-      <div style={style}>
+      <div style={style} className="mb-2">
         {connectDragSource(
           <label className="better-label" style={{ cursor: "move" }}>
             Step {index + 1}
