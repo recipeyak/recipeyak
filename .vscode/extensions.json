@@ -6,6 +6,7 @@
         "ms-python.python",
         "ms-vscode.vscode-typescript-tslint-plugin",
         "ms-vsliveshare.vsliveshare",
+        "PeterJausovec.vscode-docker",
         "wmaurer.change-case",
         "chdsbd.githubinator"
     ]
