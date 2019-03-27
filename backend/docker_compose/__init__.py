@@ -12,7 +12,7 @@ class Service:
     name: str
     image: str
     volumes: List[Tuple[Volume, str]]
-    logging: Logger
+    logging: Optional[Logger] = None
     command: Optional[Union[str, List[str]]] = None
     depends_on: Optional[List[Service]] = None
     env_file: Optional[List[str]] = None
