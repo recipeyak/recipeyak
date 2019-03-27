@@ -218,7 +218,7 @@ def build(api: bool, web: bool) -> None:
 
         os.environ["DOCKERBUILD"] = "1"
         configure_django()
-        # call_command("collectstatic", no_input=True)
+        call_command("collectstatic", no_input=True)
         git_sha = os.environ["GIT_SHA"]
         subprocess.run(
             [
