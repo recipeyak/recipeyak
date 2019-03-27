@@ -164,7 +164,13 @@ disable=print-statement,
         # see: https://docs.djangoproject.com/en/2.1/ref/contrib/postgres/operations/#createextension
         super-init-not-called,
         ungrouped-imports,
-        logging-too-many-args
+        logging-too-many-args,
+        # doesn't handle python 3.7 scoping for type annotations
+        used-before-assignment,
+        # doesn't handle python 3.7 scoping for type annotations
+        undefined-variable,
+        # style is handled by formatter
+        trailing-newlines
 
 
 # Enable the message, report, category or checker with the given id(s). You can
