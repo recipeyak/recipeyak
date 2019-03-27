@@ -17,8 +17,11 @@
         "--ignore-missing-imports",
         "--follow-imports=silent",
         "--show-column-numbers",
-        "--config-file backend/tox.ini"
+        "--config-file tox.ini"
     ],
     "python.linting.flake8Enabled": true,
-    "python.linting.flake8Args": ["--config backend/tox.ini"]
+    "python.linting.flake8Args": [
+        "--config tox.ini"
+    ],
+    "python.linting.pylintEnabled": true
 }
