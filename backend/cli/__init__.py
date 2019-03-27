@@ -215,16 +215,18 @@ def build(api: bool, web: bool) -> None:
 
     if api or is_all:
         from django.core.management import call_command
+        import platform
 
         os.environ["DOCKERBUILD"] = "1"
         configure_django()
         call_command("collectstatic", no_input=True)
         git_sha = os.environ["GIT_SHA"]
+        # sed's `-i` flag behaves differently on macOS vs Linux
+        sed_arg = ["-i", ""] if "darwin" in platform.system().lower() else ["-i"]
         subprocess.run(
             [
                 "sed",
-                "-i",
-                "",
+                *sed_arg,
                 f"s#<%=GIT_SHA=%>#{git_sha}#",
                 "backend/backend/settings.py",
             ],
