@@ -170,7 +170,10 @@ disable=print-statement,
         # doesn't handle python 3.7 scoping for type annotations
         undefined-variable,
         # style is handled by formatter
-        trailing-newlines
+        trailing-newlines,
+        trailing-whitespace,
+        bad-whitespace,
+        bad-indentation
 
 
 # Enable the message, report, category or checker with the given id(s). You can
