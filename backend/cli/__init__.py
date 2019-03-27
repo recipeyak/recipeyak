@@ -163,14 +163,19 @@ def prod(api: bool, web: bool) -> None:
     subprocess.run(
         [
             "gunicorn",
-            "-w 3",
-            "-b 0.0.0.0:8000",
+            "-w",
+            "3",
+            "-b",
+            "0.0.0.0:8000",
             "backend.wsgi",
-            "--access-logfile -",
-            "--error-logfile -",
+            "--access-logfile",
+            "-",
+            "--error-logfile",
+            "-",
             "--capture-output",
             "--enable-stdio-inheritance",
-            '--access-logformat=\'request="%(r)s" request_time=%(L)s remote_addr="%(h)s" request_id=%({X-Request-Id}i)s response_id=%({X-Response-Id}i)s method=%(m)s protocol=%(H)s status_code=%(s)s response_length=%(b)s referer="%(f)s" process_id=%(p)s user_agent="%(a)s"\'',
+            "--access-logformat",
+            'request="%(r)s" request_time=%(L)s remote_addr="%(h)s" request_id=%({X-Request-Id}i)s response_id=%({X-Response-Id}i)s method=%(m)s protocol=%(H)s status_code=%(s)s response_length=%(b)s referer="%(f)s" process_id=%(p)s user_agent="%(a)s"',
         ],
         check=True,
     )
@@ -213,12 +218,13 @@ def build(api: bool, web: bool) -> None:
 
         os.environ["DOCKERBUILD"] = "1"
         configure_django()
-        call_command("collectstatic", no_input=True)
+        # call_command("collectstatic", no_input=True)
         git_sha = os.environ["GIT_SHA"]
         subprocess.run(
             [
                 "sed",
-                "-i ''",
+                "-i",
+                "",
                 f"s#<%=GIT_SHA=%>#{git_sha}#",
                 "backend/backend/settings.py",
             ],
