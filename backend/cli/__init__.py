@@ -198,6 +198,19 @@ def install(api: bool, web: bool) -> None:
 @load_env
 def build(api: bool, web: bool) -> None:
     """Build services for deployment. Defaults to all."""
+
+    from docker_compose import docker_compose_deploy, docker_compose_dev
+
+    project_root = Path(__file__).parent.parent.parent
+
+    (project_root / "docker-compose-deploy.yml").write_text(
+        docker_compose_deploy.main().to_json()
+    )
+
+    (project_root / "docker-compose-dev.yml").write_text(
+        docker_compose_dev.main().to_json()
+    )
+
     is_all = not api and not web
     if web or is_all:
         subprocess.run(["node", "frontend/scripts/build.js"], check=True)
