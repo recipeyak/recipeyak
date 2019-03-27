@@ -256,9 +256,8 @@ export const disconnectSocialAccount = (dispatch: Dispatch) => async (
   if (isOk(res)) {
     dispatch(socialConnections.success(res.data))
     return Ok(undefined)
-  } else {
-    return res
   }
+  return res
 }
 
 export const fetchingUserStats = (dispatch: Dispatch) => async () => {
@@ -794,15 +793,14 @@ export const sendingTeamInvites = (dispatch: Dispatch) => async (
     })
     dispatch(setSendingTeamInvites({ teamID, val: false }))
     return Ok(undefined)
-  } else {
-    showNotificationWithTimeout(dispatch)({
-      message: "error sending team invite",
-      level: "danger",
-      delay: 3 * second
-    })
-    dispatch(setSendingTeamInvites({ teamID, val: false }))
-    return Err(undefined)
   }
+  showNotificationWithTimeout(dispatch)({
+    message: "error sending team invite",
+    level: "danger",
+    delay: 3 * second
+  })
+  dispatch(setSendingTeamInvites({ teamID, val: false }))
+  return Err(undefined)
 }
 
 export const fetchingTeams = (dispatch: Dispatch) => async () => {

@@ -763,9 +763,8 @@ export const recipes = (
         ingredients: recipe.ingredients.map(ingre => {
           if (ingre.id === action.payload.ingredientID) {
             return { ...ingre, ...action.payload.content, updating: false }
-          } else {
-            return ingre
           }
+          return ingre
         })
       }))
     case getType(updateIngredient.failure):
@@ -857,9 +856,8 @@ export const recipes = (
               position: action.payload.position,
               updating: false
             }
-          } else {
-            return s
           }
+          return s
         })
       }))
     case getType(updateStep.failure):

@@ -17,7 +17,9 @@ export function Results({ recipes, query }: IResultsProps) {
         </Link>
       </section>
     )
-  } else if (recipes.length === 0 && query !== "") {
+  }
+
+  if (recipes.length === 0 && query !== "") {
     return (
       <p className="grid-entire-row justify-center break-word">
         No recipes found matching <strong>{query}</strong>
