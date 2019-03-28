@@ -39,6 +39,14 @@ wrapt = "*"
 
 [[package]]
 category = "dev"
+description = "Atomic file writes."
+name = "atomicwrites"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "1.3.0"
+
+[[package]]
+category = "dev"
 description = "Classes Without Boilerplate"
 name = "attrs"
 optional = false
@@ -219,17 +227,25 @@ djangorestframework = ">=2.4.3"
 
 [[package]]
 category = "dev"
+description = "Discover and load entry points from installed packages."
+name = "entrypoints"
+optional = false
+python-versions = ">=2.7"
+version = "0.3"
+
+[[package]]
+category = "dev"
 description = "the modular source code checker: pep8, pyflakes and co"
 name = "flake8"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "3.6.0"
+version = "3.7.7"
 
 [package.dependencies]
+entrypoints = ">=0.3.0,<0.4.0"
 mccabe = ">=0.6.0,<0.7.0"
-pycodestyle = ">=2.4.0,<2.5.0"
-pyflakes = ">=2.0.0,<2.1.0"
-setuptools = ">=30"
+pycodestyle = ">=2.5.0,<2.6.0"
+pyflakes = ">=2.1.0,<2.2.0"
 
 [[package]]
 category = "dev"
@@ -389,6 +405,14 @@ version = "0.6.1"
 
 [[package]]
 category = "dev"
+description = "More routines for operating on iterables, beyond itertools"
+name = "more-itertools"
+optional = false
+python-versions = ">=3.4"
+version = "7.0.0"
+
+[[package]]
+category = "dev"
 description = "Optional static typing for Python"
 name = "mypy"
 optional = false
@@ -479,7 +503,7 @@ description = "plugin and hook calling mechanisms for python"
 name = "pluggy"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "0.6.0"
+version = "0.9.0"
 
 [[package]]
 category = "dev"
@@ -524,8 +548,8 @@ category = "dev"
 description = "Python style guide checker"
 name = "pycodestyle"
 optional = false
-python-versions = "*"
-version = "2.4.0"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "2.5.0"
 
 [[package]]
 category = "dev"
@@ -533,7 +557,7 @@ description = "passive checker of Python programs"
 name = "pyflakes"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "2.0.0"
+version = "2.1.1"
 
 [[package]]
 category = "dev"
@@ -572,12 +596,14 @@ description = "pytest: simple powerful testing with Python"
 name = "pytest"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "3.4.0"
+version = "3.10.1"
 
 [package.dependencies]
-attrs = ">=17.2.0"
+atomicwrites = ">=1.0"
+attrs = ">=17.4.0"
 colorama = "*"
-pluggy = ">=0.5,<0.7"
+more-itertools = ">=4.0.0"
+pluggy = ">=0.7"
 py = ">=1.5.0"
 setuptools = "*"
 six = ">=1.10.0"
@@ -587,23 +613,23 @@ category = "dev"
 description = "Pytest plugin for measuring coverage."
 name = "pytest-cov"
 optional = false
-python-versions = "*"
-version = "2.5.1"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "2.6.1"
 
 [package.dependencies]
-coverage = ">=3.7.1"
-pytest = ">=2.6.0"
+coverage = ">=4.4"
+pytest = ">=3.6"
 
 [[package]]
 category = "dev"
 description = "A Django plugin for pytest."
 name = "pytest-django"
 optional = false
-python-versions = "*"
-version = "3.1.2"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "3.4.8"
 
 [package.dependencies]
-pytest = ">=2.9"
+pytest = ">=3.6"
 
 [[package]]
 category = "dev"
@@ -839,7 +865,7 @@ python-versions = "*"
 version = "1.11.1"
 
 [metadata]
-content-hash = "4f4fcbcc910f89aaaf242825b297969c3253cf4c6b28121c90ce2ef15604d2c5"
+content-hash = "e4e5521273f9ed395c3ff484c1371999597ca1e40be723dd9b9480796c4b147a"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -847,6 +873,7 @@ appdirs = ["9e5896d1372858f8dd3344faf4e5014d21849c756c8d5701f78f8a103b372d92", "
 appnope = ["5b26757dc6f79a3b7dc9fab95359328d5747fcb2409d331ea66d0272b90ab2a0", "8b995ffe925347a2138d7ac0fe77155e4311a0ea6d6da4f5128fe4b3cbe5ed71"]
 argh = ["a9b3aaa1904eeb78e32394cd46c6f37ac0fb4af6dc488daa58971bdc7d7fcaf3", "e9535b8c84dc9571a48999094fda7f33e63c3f1b74f3e5f3ac0105a58405bb65"]
 astroid = ["6560e1e1749f68c64a4b5dee4e091fce798d2f0d84ebe638cf0e0585a343acf4", "b65db1bbaac9f9f4d190199bb8680af6f6f84fd3769a5ea883df8a91fe68b4c4"]
+atomicwrites = ["03472c30eb2c5d1ba9227e4c2ca66ab8287fbfbbda3888aa93dc2e28fc6811b4", "75a9445bac02d8d058d5e1fe689654ba5a6556a1dfd8ce6ec55a0ed79866cfa6"]
 attrs = ["69c0dbf2ed392de1cb5ec704444b08a5ef81680a61cb899dc08127123af36a79", "f0b870f674851ecbfbbbd364d6b5cbdff9dcedbc7f3f5e18a6891057f21fe399"]
 backcall = ["38ecd85be2c1e78f77fd91700c76e14667dc21e2713b63876c0eb901196e01e4", "bbbf4b1e5cd2bdb08f915895b51081c041bac22394fdfcfdfbe9f14b77c08bf2"]
 black = ["817243426042db1d36617910df579a54f1afd659adb96fc5032fcf4b36209739", "e030a9a28f542debc08acceb273f228ac422798e5215ba2a791a6ddeaaca22a5"]
@@ -866,7 +893,8 @@ django-user-sessions = ["5d47ca6dc258662424c88383717a9f5c74b582c5646f9164f4bd6a9
 djangorestframework = ["8a435df9007c8b7d8e69a21ef06650e3c0cbe0d4b09e55dd1bd74c89a75a9fcd", "f7a266260d656e1cf4ca54d7a7349609dc8af4fe2590edd0ecd7d7643ea94a17"]
 docopt = ["49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491"]
 drf-nested-routers = ["3346bcfb151d221d499b3b7932cc6e5cee005ea50f1343a2f5cd2f85e7b1d77f", "818fcc37b6cafff52f4afae012b8de85970a1b931f1e47c2f07a24fd141eb476"]
-flake8 = ["6a35f5b8761f45c5513e3405f110a86bea57982c3b75b766ce7b65217abe1670", "c01f8a3963b3571a8e6bd7a4063359aff90749e160778e03817cd9b71c9e07d2"]
+entrypoints = ["589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19", "c70dd71abe5a8c85e55e12c19bd91ccfeec11a6e99044204511f9ed547d48451"]
+flake8 = ["859996073f341f2670741b51ec1e67a01da142831aa1fdc6242dbf88dffbe661", "a796a115208f5c03b18f332f7c11729812c8c3ded6c46319c59b53efd3819da8"]
 flake8-formatter-junit-xml = ["b49c6b528d9518e855548ac76041cc333b56b5bcb24ae84af44668d37f2aec16", "e537adea0638bd4dbe7debce37844d9082a3d6aeb29304505b12caf97ff6f80b"]
 flake8-pie = ["3f89dda90bd6a3f898197140ebceed084449aee2ff5c814620712b13e055c0e9", "7ad9801876df62a682dcc633ca495bfcd9933694b9efa7a578d120ea94001b39"]
 flake8-print = ["5010e6c138b63b62400da4b06afa33becc5e08bd1fcce9af3752445cf3342f54"]
@@ -881,6 +909,7 @@ jedi = ["2bb0603e3506f708e792c7f4ad8fc2a7a9d9c2d292a358fbbd58da531695595b", "2c6
 junit-xml = ["602f1c480a19d64edb452bf7632f76b5f2cb92c1938c6e071dcda8ff9541dc21"]
 lazy-object-proxy = ["0ce34342b419bd8f018e6666bfef729aec3edf62345a53b537a4dcc115746a33", "1b668120716eb7ee21d8a38815e5eb3bb8211117d9a90b0f8e21722c0758cc39", "209615b0fe4624d79e50220ce3310ca1a9445fd8e6d3572a896e7f9146bbf019", "27bf62cb2b1a2068d443ff7097ee33393f8483b570b475db8ebf7e1cba64f088", "27ea6fd1c02dcc78172a82fc37fcc0992a94e4cecf53cb6d73f11749825bd98b", "2c1b21b44ac9beb0fc848d3993924147ba45c4ebc24be19825e57aabbe74a99e", "2df72ab12046a3496a92476020a1a0abf78b2a7db9ff4dc2036b8dd980203ae6", "320ffd3de9699d3892048baee45ebfbbf9388a7d65d832d7e580243ade426d2b", "50e3b9a464d5d08cc5227413db0d1c4707b6172e4d4d915c1c70e4de0bbff1f5", "5276db7ff62bb7b52f77f1f51ed58850e315154249aceb42e7f4c611f0f847ff", "61a6cf00dcb1a7f0c773ed4acc509cb636af2d6337a08f362413c76b2b47a8dd", "6ae6c4cb59f199d8827c5a07546b2ab7e85d262acaccaacd49b62f53f7c456f7", "7661d401d60d8bf15bb5da39e4dd72f5d764c5aff5a86ef52a042506e3e970ff", "7bd527f36a605c914efca5d3d014170b2cb184723e423d26b1fb2fd9108e264d", "7cb54db3535c8686ea12e9535eb087d32421184eacc6939ef15ef50f83a5e7e2", "7f3a2d740291f7f2c111d86a1c4851b70fb000a6c8883a59660d95ad57b9df35", "81304b7d8e9c824d058087dcb89144842c8e0dea6d281c031f59f0acf66963d4", "933947e8b4fbe617a51528b09851685138b49d511af0b6c0da2539115d6d4514", "94223d7f060301b3a8c09c9b3bc3294b56b2188e7d8179c762a1cda72c979252", "ab3ca49afcb47058393b0122428358d2fbe0408cf99f1b58b295cfeb4ed39109", "bd6292f565ca46dee4e737ebcc20742e3b5be2b01556dafe169f6c65d088875f", "cb924aa3e4a3fb644d0c463cad5bc2572649a6a3f68a7f8e4fbe44aaa6d77e4c", "d0fc7a286feac9077ec52a927fc9fe8fe2fabab95426722be4c953c9a8bede92", "ddc34786490a6e4ec0a855d401034cbd1242ef186c20d79d2166d6a4bd449577", "e34b155e36fa9da7e1b7c738ed7767fc9491a62ec6af70fe9da4a057759edc2d", "e5b9e8f6bda48460b7b143c3821b21b452cb3a835e6bbd5dd33aa0c8d3f5137d", "e81ebf6c5ee9684be8f2c87563880f93eedd56dd2b6146d8a725b50b7e5adb0f", "eb91be369f945f10d3a49f5f9be8b3d0b93a4c2be8f8a5b83b0571b8123e0a7a", "f460d1ceb0e4a5dcb2a652db0904224f367c9b3c1470d5a7683c0480e582468b"]
 mccabe = ["ab8a6258860da4b6677da4bd2fe5dc2c659cff31b3ee4f7f5d64e79735b80d42", "dd8d182285a0fe56bace7f45b5e7d1a6ebcbf524e8f3bd87eb0f125271b8831f"]
+more-itertools = ["2112d2ca570bb7c3e53ea1a35cd5df42bb0fd10c45f0fb97178679c3c03d64c7", "c3e4748ba1aad8dba30a4886b0b1a2004f9a863837b8654e7059eebf727afa5a"]
 mypy = ["308c274eb8482fbf16006f549137ddc0d69e5a589465e37b99c4564414363ca7", "e80fd6af34614a0e898a57f14296d0dacb584648f0339c2e000ddbf0f4cc2f8d"]
 mypy-extensions = ["37e0e956f41369209a3d5f34580150bcacfabaa57b33a15c0b25f4b5725e0812", "b16cabe759f55e3409a7d231ebd2841378fb0c27a5d1994719e340e4f429ac3e"]
 oauthlib = ["0ce32c5d989a1827e3f1148f98b9085ed2370fc939bf524c9c851d8714797298", "3e1e14f6cde7e5475128d30e97edc3bfb4dc857cb884d8714ec161fdbb3b358e"]
@@ -890,19 +919,19 @@ pathtools = ["7c35c5421a39bb82e58018febd90e3b6e5db34c5443aaaf742b3f33d4655f1c0"]
 pexpect = ["2a8e88259839571d1251d278476f3eec5db26deb73a70be5ed5dc5435e418aba", "3fbd41d4caf27fa4a377bfd16fef87271099463e6fa73e92a52f92dfee5d425b"]
 pickleshare = ["87683d47965c1da65cdacaf31c8441d12b8044cdec9aca500cd78fc2c683afca", "9649af414d74d4df115d5d718f82acb59c9d418196b7b4290ed47a12ce62df56"]
 pint = ["afcf31443a478c32bbac4b00337ee9026a13d0e2ac83d30c79151462513bb0d4"]
-pluggy = ["7f8ae7f5bdf75671a718d2daf0a64b7885f74510bcd98b1a0bb420eb9a9d0cff", "d345c8fe681115900d6da8d048ba67c25df42973bda370783cd58826442dcd7c", "e160a7fcf25762bb60efc7e171d4497ff1d8d2d75a3d0df7a21b76821ecbf5c5"]
+pluggy = ["19ecf9ce9db2fce065a7a0586e07cfb4ac8614fe96edf628a264b1c70116cf8f", "84d306a647cc805219916e62aab89caa97a33a1dd8c342e87a37f91073cd4746"]
 prompt-toolkit = ["11adf3389a996a6d45cc277580d0d53e8a5afd281d0c9ec71b28e6f121463780", "2519ad1d8038fd5fc8e770362237ad0364d16a7650fb5724af6997ed5515e3c1", "977c6583ae813a37dc1c2e1b715892461fcbdaa57f6fc62f33a528c4886c8f55"]
 psycopg2 = ["009e0bc09a57dbef4b601cb8b46a2abad51f5274c8be4bba276ff2884cd4cc53", "0344b181e1aea37a58c218ccb0f0f771295de9aa25a625ed076e6996c6530f9e", "0cd4c848f0e9d805d531e44973c8f48962e20eb7fc0edac3db4f9dbf9ed5ab82", "1286dd16d0e46d59fa54582725986704a7a3f3d9aca6c5902a7eceb10c60cb7e", "1cf5d84290c771eeecb734abe2c6c3120e9837eb12f99474141a862b9061ac51", "207ba4f9125a0a4200691e82d5eee7ea1485708eabe99a07fc7f08696fae62f4", "25250867a4cd1510fb755ef9cb38da3065def999d8e92c44e49a39b9b76bc893", "2954557393cfc9a5c11a5199c7a78cd9c0c793a047552d27b1636da50d013916", "317612d5d0ca4a9f7e42afb2add69b10be360784d21ce4ecfbca19f1f5eadf43", "37f54452c7787dbdc0a634ca9773362b91709917f0b365ed14b831f03cbd34ba", "40fa5630cd7d237cd93c4d4b64b9e5ed9273d1cfce55241c7f9066f5db70629d", "57baf63aeb2965ca4b52613ce78e968b6d2bde700c97f6a7e8c6c236b51ab83e", "594aa9a095de16614f703d759e10c018bdffeafce2921b8e80a0e8a0ebbc12e5", "5c3213be557d0468f9df8fe2487eaf2990d9799202c5ff5cb8d394d09fad9b2a", "697ff63bc5451e0b0db48ad205151123d25683b3754198be7ab5fcb44334e519", "6c2f1a76a9ebd9ecf7825b9e20860139ca502c2bf1beabf6accf6c9e66a7e0c3", "7a75565181e75ba0b9fb174b58172bf6ea9b4331631cfe7bafff03f3641f5d73", "7a9c6c62e6e05df5406e9b5235c31c376a22620ef26715a663cee57083b3c2ea", "7c31dade89634807196a6b20ced831fbd5bec8a21c4e458ea950c9102c3aa96f", "82c40ea3ac1555e0462803380609fbe8b26f52620f3d4f8eb480cfd8ceed8a14", "8f5942a4daf1ffac42109dc4a72f786af4baa4fa702ede1d7c57b4b696c2e7d6", "92179bd68c2efe72924a99b6745a9172471931fc296f9bfdf9645b75eebd6344", "94e4128ba1ea56f02522fffac65520091a9de3f5c00da31539e085e13db4771b", "988d2ec7560d42ef0ac34b3b97aad14c4f068792f00e1524fa1d3749fe4e4b64", "9d6266348b15b4a48623bf4d3e50445d8e581da413644f365805b321703d0fac", "9d64fed2681552ed642e9c0cc831a9e95ab91de72b47d0cb68b5bf506ba88647", "b9358e203168fef7bfe9f430afaed3a2a624717a1d19c7afa7dfcbd76e3cd95c", "bf708455cd1e9fa96c05126e89a0c59b200d086c7df7bbafc7d9be769e4149a3", "d3ac07240e2304181ffdb13c099840b5eb555efc7be9344503c0c03aa681de79", "ddca39cc55877653b5fcf59976d073e3d58c7c406ef54ae8e61ddf8782867182", "fc993c9331d91766d54757bbc70231e29d5ceb2d1ac08b1570feaa0c38ab9582"]
 ptyprocess = ["923f299cc5ad920c68f2bc0bc98b75b9f838b93b599941a6b63ddbc2476394c0", "d7cc528d76e76342423ca640335bd3633420dc1366f258cb31d05e865ef5ca1f"]
 py = ["64f65755aee5b381cea27766a3a147c3f15b9b6b9ac88676de66ba2ae36793fa", "dc639b046a6e2cff5bbe40194ad65936d6ba360b52b3c3fe1d08a82dd50b5e53"]
-pycodestyle = ["74abc4e221d393ea5ce1f129ea6903209940c1ecd29e002e8c6933c2b21026e0", "cbc619d09254895b0d12c2c691e237b2e91e9b2ecf5e84c26b35400f93dcfb83", "cbfca99bd594a10f674d0cd97a3d802a1fdef635d4361e1a2658de47ed261e3a"]
-pyflakes = ["9a7662ec724d0120012f6e29d6248ae3727d821bba522a0e6b356eff19126a49", "f661252913bc1dbe7fcfcbf0af0db3f42ab65aabd1a6ca68fe5d466bace94dae"]
+pycodestyle = ["95a2219d12372f05704562a14ec30bc76b05a5b297b21a5dfe3f6fac3491ae56", "e40a936c9a450ad81df37f549d676d127b1b66000a6c500caa2b085bc0ca976c"]
+pyflakes = ["17dbeb2e3f4d772725c777fabc446d5634d1038f234e77343108ce445ea69ce0", "d976835886f8c5b31d47970ed689944a0262b5f3afa00a5a7b4dc81e5449f8a2"]
 pygments = ["5ffada19f6203563680669ee7f53b64dabbeb100eb51b61996085e99c03b284a", "e8218dd399a61674745138520d0d4cf2621d7e032439341bc3f647bff125818d"]
 pylint = ["5d77031694a5fb97ea95e828c8d10fc770a1df6eb3906067aaed42201a8a6a09", "723e3db49555abaf9bf79dc474c6b9e2935ad82230b10c1138a71ea41ac0fff1"]
 pyparsing = ["66c9268862641abcac4a96ba74506e594c884e3f57690a696d21ad8210ed667a", "f6c5ef0d7480ad048c054c37632c67fca55299990fff127850181659eea33fc3"]
-pytest = ["6074ea3b9c999bd6d0df5fa9d12dd95ccd23550df2a582f5f5b848331d2e82ca", "95fa025cd6deb5d937e04e368a00552332b58cae23f63b76c8c540ff1733ab6d"]
-pytest-cov = ["03aa752cf11db41d281ea1d807d954c4eda35cfa1b21d6971966cc041bbf6e2d", "890fe5565400902b0c78b5357004aab1c814115894f4f21370e2433256a3eeec"]
-pytest-django = ["00995c2999b884a38ae9cd30a8c00ed32b3d38c1041250ea84caf18085589662", "038ccc5a9daa1b1b0eb739ab7dce54e495811eca5ea3af4815a2a3ac45152309"]
+pytest = ["3f193df1cfe1d1609d4c583838bea3d532b18d6160fd3f55c9447fdca30848ec", "e246cf173c01169b9617fc07264b7b1316e78d7a650055235d6d897bc80d9660"]
+pytest-cov = ["0ab664b25c6aa9716cbf203b17ddb301932383046082c081b9848a0edf5add33", "230ef817450ab0699c6cc3c9c8f7a829c34674456f2ed8df1fe1d39780f7c87f"]
+pytest-django = ["30d773f1768e8f214a3106f1090e00300ce6edfcac8c55fd13b675fe1cbd1c85", "4d3283e774fe1d40630ee58bf34929b83875e4751b525eeb07a7506996eb42ee"]
 pytest-randomly = ["0ff564fabb638ab52d535d8ce1da71353c7ecd54edcc5dc117f6f21f8269cfef", "f76a068dcadb4ffbd4f6c55dd447cf95fb78cfe4f3f1445c3bee5657fdf5b3d1"]
 pytest-sugar = ["26cf8289fe10880cbbc130bd77398c4e6a8b936d8393b116a5c16121d95ab283", "fcd87a74b2bce5386d244b49ad60549bfbc4602527797fac167da147983f58ab"]
 pytest-watch = ["06136f03d5b361718b8d0d234042f7b2f203910d8568f63df2f866b547b3d4b9"]
