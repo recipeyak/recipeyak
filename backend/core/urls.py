@@ -35,9 +35,7 @@ router.register(r"calendar", CalendarViewSet, basename="calendar")
 
 recipes_router = routers.NestedSimpleRouter(router, r"recipes", lookup="recipe")
 recipes_router.register(r"steps", StepViewSet, basename="recipe-step")
-recipes_router.register(
-    r"ingredients", IngredientViewSet, basename="recipe-ingredient"
-)
+recipes_router.register(r"ingredients", IngredientViewSet, basename="recipe-ingredient")
 
 teams_router = routers.NestedSimpleRouter(router, r"t", lookup="team")
 teams_router.register(r"members", MembershipViewSet, basename="team-member")
