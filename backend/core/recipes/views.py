@@ -2,7 +2,7 @@ import logging
 
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, mixins
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.request import Request
@@ -74,7 +74,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         logger.info("Recipe created by %s", self.request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    @detail_route(
+    @action(
+        detail=True,
         methods=["post"],
         url_name="move",
         serializer_class=RecipeMoveCopySerializer,
@@ -108,7 +109,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             status=status.HTTP_200_OK,
         )
 
-    @detail_route(
+    @action(
+        detail=True,
         methods=["post"],
         url_name="copy",
         serializer_class=RecipeMoveCopySerializer,
