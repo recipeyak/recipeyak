@@ -97,12 +97,12 @@ def test_bulk_export_yaml(
     assert "!!python/" not in res.content.decode(
         "utf-8"
     ), "we don't want python objects to be serialized"
-    recipes = list(yaml.full_load_all(res.content))
+    recipes = list(yaml.safe_load_all(res.content))
     assert len(recipes) == 2, "user should have two recipes"
     recipe2.move_to(user2)
     res = c.get(url)
     assert (
-        len(list(yaml.full_load_all(res.content))) == 1
+        len(list(yaml.safe_load_all(res.content))) == 1
     ), "user should only have their recipes"
 
 
@@ -129,4 +129,4 @@ def test_single_export_yaml(
         "utf-8"
     ), "we don't want python objects to be serialized"
     assert res.status_code == 200
-    assert next(yaml.full_load_all(res.content)).get("name") == recipe.name
+    assert next(yaml.safe_load_all(res.content)).get("name") == recipe.name
