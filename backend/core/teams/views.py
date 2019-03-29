@@ -2,7 +2,7 @@ from typing import Tuple, Any
 
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, mixins
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
@@ -82,13 +82,13 @@ class UserInvitesViewSet(
             .prefetch_related("membership__user", "membership__team")
         )
 
-    @detail_route(methods=["post"], url_name="accept")
+    @action(detail=True, methods=["post"], url_name="accept")
     def accept(self, request: Request, pk: str) -> Response:
         invite = self.get_object()
         invite.accept()
         return Response({"detail": "accepted invite"}, status=status.HTTP_200_OK)
 
-    @detail_route(methods=["post"])
+    @action(detail=True, methods=["post"])
     def decline(self, request: Request, pk: str) -> Response:
         invite = self.get_object()
         invite.decline()

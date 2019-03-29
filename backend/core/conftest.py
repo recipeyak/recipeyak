@@ -108,8 +108,7 @@ def recipe(user):
     return recipe
 
 
-@pytest.fixture
-def recipe_pie(user):
+def recipe_pie_facotry(user):
     """
     Recipe with metadata, Ingredient, Step owned by `user`.
     Contains the word "pie" in name and source.
@@ -141,11 +140,16 @@ def recipe_pie(user):
 
 
 @pytest.fixture
+def recipe_pie(user):
+    return recipe_pie_facotry(user)
+
+
+@pytest.fixture
 def recipe2(user):
     """
     Pie recipe owned by `user`
     """
-    return recipe_pie(user)
+    return recipe_pie_facotry(user)
 
 
 @pytest.fixture

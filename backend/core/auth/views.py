@@ -36,7 +36,7 @@ from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from allauth.socialaccount import signals
 from allauth.socialaccount.models import SocialAccount
 from allauth.socialaccount.adapter import get_adapter as get_social_adapter
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import action
 from rest_framework.viewsets import GenericViewSet
 
 logger = logging.getLogger(__name__)
@@ -261,7 +261,7 @@ class SocialAccountViewSet(GenericViewSet):
         """
         return Response(self.get_serializer(self.get_queryset(), many=True).data)
 
-    @detail_route(methods=["POST"])
+    @action(detail=True, methods=["POST"])
     def disconnect(self, request, pk):
         """
         disconnect SocialAccount from remote service for the currently logged in user
