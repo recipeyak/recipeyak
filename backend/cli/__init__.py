@@ -81,7 +81,7 @@ def fmt(api: bool, web: bool, check: bool) -> None:
             m.add_process("prettier", cmds.prettier(check=check))
 
 
-@cli.command(help="test services")
+@cli.command(help="test services", context_settings=dict(ignore_unknown_options=True))
 @click.option("-a", "--api/--no-api")
 @click.option("-w", "--web/--no-web")
 @click.option("--watch/--no-watch")
