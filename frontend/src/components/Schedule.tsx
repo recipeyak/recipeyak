@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { connect } from "react-redux"
 import { Helmet } from "@/components/Helmet"
 import { Link } from "react-router-dom"
@@ -14,12 +14,12 @@ import { ITeam } from "@/store/reducers/teams"
 
 interface ISidebarProps {
   readonly isRecipes: boolean
-  readonly closed: boolean
   readonly teamID: TeamID
-  readonly toggleClose: () => void
 }
 
-function Sidebar({ closed, teamID, isRecipes, toggleClose }: ISidebarProps) {
+function Sidebar({ teamID, isRecipes }: ISidebarProps) {
+  const [closed, setClosed] = React.useState(false)
+
   const arrow = closed ? "→" : "←"
 
   const sideBarStyle = {
@@ -35,6 +35,10 @@ function Sidebar({ closed, teamID, isRecipes, toggleClose }: ISidebarProps) {
     teamID === "personal"
       ? "/schedule/shopping"
       : `/t/${teamID}/schedule/shopping`
+
+  const toggleClose = React.useCallback(() => {
+    setClosed(prev => !prev)
+  }, [])
 
   return (
     <>
@@ -76,45 +80,22 @@ interface IScheduleProps {
   readonly type: "shopping" | "recipes"
 }
 
-interface IScheduleState {
-  readonly query: string
-  readonly closed: boolean
-}
+function Schedule(props: IScheduleProps) {
+  useEffect(() => {
+    props.updateTeamID(props.teamID)
+  }, [props.teamID])
 
-class Schedule extends React.Component<IScheduleProps, IScheduleState> {
-  state: IScheduleState = {
-    query: "",
-    closed: false
-  }
+  const teamID = props.teamID || "personal"
 
-  toggleClose = () => {
-    this.setState(prev => ({ closed: !prev.closed }))
-  }
+  const isRecipes = props.type === "recipes"
 
-  componentDidUpdate(prevProps: IScheduleProps) {
-    if (prevProps.teamID !== this.props.teamID) {
-      this.props.updateTeamID(this.props.teamID)
-    }
-  }
-
-  render() {
-    const teamID = this.props.teamID || "personal"
-
-    const isRecipes = this.props.type === "recipes"
-
-    return (
-      <div className="d-flex pl-2 pr-2 schedule-height">
-        <Helmet title="Schedule" />
-        <Sidebar
-          toggleClose={this.toggleClose}
-          teamID={teamID}
-          closed={this.state.closed}
-          isRecipes={isRecipes}
-        />
-        <Calendar type={this.props.type} teamID={teamID} />
-      </div>
-    )
-  }
+  return (
+    <div className="d-flex pl-2 pr-2 schedule-height">
+      <Helmet title="Schedule" />
+      <Sidebar teamID={teamID} isRecipes={isRecipes} />
+      <Calendar type={props.type} teamID={teamID} />
+    </div>
+  )
 }
 
 const getTeamID = (params: ScheduleRouteParams["match"]["params"]) => {
