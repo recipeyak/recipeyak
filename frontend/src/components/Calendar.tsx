@@ -70,27 +70,23 @@ interface IDaysProps {
 
 function Days({ start, end, days, teamID }: IDaysProps) {
   return (
-    <section
-      className={classNames("mb-0", "flex-grow-1", "d-flex", "flex-column")}>
-      {chunk(eachDay(start, end), 7).map(dates => {
-        return (
-          <section
-            className={classNames("d-flex", "flex-grow-1", "calendar-week")}>
-            {dates.map(date => {
-              const recipes = days[toDateString(date)]
+    <section className="mb-0 flex-grow-1 d-flex flex-column">
+      {chunk(eachDay(start, end), 7).map(dates => (
+        <section className="d-flex flex-grow-1 calendar-week">
+          {dates.map(date => {
+            const recipes = days[toDateString(date)]
 
-              return (
-                <CalendarDay
-                  scheduledRecipes={recipes}
-                  date={date}
-                  key={date.toString()}
-                  teamID={teamID}
-                />
-              )
-            })}
-          </section>
-        )
-      })}
+            return (
+              <CalendarDay
+                scheduledRecipes={recipes}
+                date={date}
+                key={date.toString()}
+                teamID={teamID}
+              />
+            )
+          })}
+        </section>
+      ))}
     </section>
   )
 }
