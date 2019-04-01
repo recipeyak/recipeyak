@@ -1,0 +1,3 @@
+{
+  "ignore_dirs": [".venv", "nodue_modules", ".pytest_cache", ".mypy_cache", "dist"]
+}
