@@ -61,6 +61,8 @@ function Weekdays() {
   )
 }
 
+const WEEK_DAYS = 7
+
 interface IDaysProps {
   readonly start: Date
   readonly end: Date
@@ -71,20 +73,16 @@ interface IDaysProps {
 function Days({ start, end, days, teamID }: IDaysProps) {
   return (
     <section className="mb-0 flex-grow-1 d-flex flex-column">
-      {chunk(eachDay(start, end), 7).map(dates => (
+      {chunk(eachDay(start, end), WEEK_DAYS).map(dates => (
         <section className="d-flex flex-grow-1 calendar-week">
-          {dates.map(date => {
-            const recipes = days[toDateString(date)]
-
-            return (
-              <CalendarDay
-                scheduledRecipes={recipes}
-                date={date}
-                key={date.toString()}
-                teamID={teamID}
-              />
-            )
-          })}
+          {dates.map(date => (
+            <CalendarDay
+              scheduledRecipes={days[toDateString(date)]}
+              date={date}
+              key={date.toString()}
+              teamID={teamID}
+            />
+          ))}
         </section>
       ))}
     </section>
