@@ -75,12 +75,7 @@ function Days({ start, end, days, teamID }: IDaysProps) {
       {chunk(eachDay(start, end), 7).map(dates => {
         return (
           <section
-            className={classNames(
-              "d-flex",
-              "flex-grow-1",
-              "mb-1",
-              "calendar-week"
-            )}>
+            className={classNames("d-flex", "flex-grow-1", "calendar-week")}>
             {dates.map(date => {
               const recipes = days[toDateString(date)]
 
