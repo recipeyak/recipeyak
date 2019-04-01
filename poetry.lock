@@ -155,7 +155,7 @@ description = "A high-level Python Web framework that encourages rapid developme
 name = "django"
 optional = false
 python-versions = ">=3.5"
-version = "2.2b1"
+version = "2.2"
 
 [package.dependencies]
 pytz = "*"
@@ -938,7 +938,7 @@ dataclasses = ["454a69d788c7fda44efd71e259be79577822f5e3f53f029a22d08004e951dc9f
 decorator = ["33cd704aea07b4c28b3eb2c97d288a06918275dac0ecebdaf1bc8a48d98adb9e", "cabb249f4710888a2fc0e13e9a16c343d932033718ff62e1e9bc93a9d3a9122b"]
 defusedxml = ["24d7f2f94f7f3cb6061acb215685e5125fbcdc40a857eff9de22518820b0a4f4", "702a91ade2968a82beb0db1e0766a6a273f33d4616a6ce8cde475d8e09853b20"]
 dj-database-url = ["a6832d8445ee9d788c5baa48aef8130bf61fdc442f7d9a548424d25cd85c9f08", "e16d94c382ea0564c48038fa7fe8d9c890ef1ab1a8ec4cb48e732c124b9482fd"]
-django = ["58819ca72a13b963c16383687421261657abe5754aad9ad66166a921dd17559f", "62644444551e8e6fd36600e741a4d24dd2b4b58acf7bae8847a8da952468d771"]
+django = ["7c3543e4fb070d14e10926189a7fcf42ba919263b7473dceaefce34d54e8a119", "a2814bffd1f007805b19194eb0b9a331933b82bd5da1c3ba3d7b7ba16e06dc4b"]
 django-allauth = ["4444434c2f43188e16e0a7732c3638e12787ca7e5032f69b6d30b2912f53809e"]
 django-softdelete = ["c0bd6251e76950963fd0bcd14ba0f4adebe0d61854d1adacc949de6a2e8d5a3f"]
 django-user-sessions = ["5d47ca6dc258662424c88383717a9f5c74b582c5646f9164f4bd6a9f3c3ea138", "b626eb9acd4b60f09d6222c772277717b78e0fde3c5772a7d3a309866b5e9f55"]
