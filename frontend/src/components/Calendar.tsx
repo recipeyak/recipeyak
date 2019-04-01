@@ -28,7 +28,6 @@ import {
 } from "@/store/reducers/calendar"
 import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
 import { Select } from "@/components/Forms"
-import { classNames } from "@/classnames"
 import chunk from "lodash/chunk"
 
 function monthYearFromDate(date: Date) {
