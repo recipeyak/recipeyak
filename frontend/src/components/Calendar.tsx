@@ -71,7 +71,7 @@ interface IDaysProps {
 
 function Days({ start, end, days, teamID }: IDaysProps) {
   return (
-    <section className="mb-0 flex-grow-1 d-flex flex-column">
+    <section className="mb-2 h-100">
       {chunk(eachDay(start, end), WEEK_DAYS).map(dates => (
         <section className="d-flex flex-grow-1 calendar-week">
           {dates.map(date => (
