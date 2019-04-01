@@ -29,7 +29,7 @@ import {
 import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
 import { Select } from "@/components/Forms"
 import { classNames } from "@/classnames"
-import { isSafari } from "@/utils/general"
+import chunk from "lodash/chunk"
 
 function monthYearFromDate(date: Date) {
   return format(date, "MMM D | YYYY")
@@ -71,23 +71,29 @@ interface IDaysProps {
 function Days({ start, end, days, teamID }: IDaysProps) {
   return (
     <section
-      className={classNames(
-        "d-grid",
-        "grid-gap-1",
-        "calendar-grid",
-        "mb-0",
-        "flex-grow-1",
-        { "h-100": isSafari() }
-      )}>
-      {eachDay(start, end).map(date => {
-        const recipes = days[toDateString(date)]
+      className={classNames("mb-0", "flex-grow-1", "d-flex", "flex-column")}>
+      {chunk(eachDay(start, end), 7).map(dates => {
         return (
-          <CalendarDay
-            scheduledRecipes={recipes}
-            date={date}
-            key={date.toString()}
-            teamID={teamID}
-          />
+          <section
+            className={classNames(
+              "d-flex",
+              "flex-grow-1",
+              "mb-1",
+              "calendar-week"
+            )}>
+            {dates.map(date => {
+              const recipes = days[toDateString(date)]
+
+              return (
+                <CalendarDay
+                  scheduledRecipes={recipes}
+                  date={date}
+                  key={date.toString()}
+                  teamID={teamID}
+                />
+              )
+            })}
+          </section>
         )
       })}
     </section>
