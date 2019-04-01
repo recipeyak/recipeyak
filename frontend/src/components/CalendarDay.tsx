@@ -78,7 +78,7 @@ function CalendarDay({
       style={{
         opacity: isOver && canDrop ? 0.5 : 1
       }}
-      className={classNames("day", "p-1", {
+      className={classNames("calendar-day", "p-1", "flex-grow-1", {
         "current-day": isToday(date),
         "selected-day": isSelected || (isOver && canDrop)
       })}>
