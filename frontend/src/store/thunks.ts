@@ -1,3 +1,4 @@
+import pickBy from "lodash/pickBy"
 import isSameDay from "date-fns/is_same_day"
 import { random32Id } from "@/uuid"
 import { toDateString } from "@/date"
@@ -399,7 +400,11 @@ export const updatingStep = async (
   { recipeID, stepID, ...data }: IUpdatingStepPayload,
   dispatch: Dispatch
 ) => {
-  const res = await api.updateStep(recipeID, stepID, data)
+  const res = await api.updateStep(
+    recipeID,
+    stepID,
+    pickBy(data, x => x != null)
+  )
   if (isOk(res)) {
     dispatch(
       updateStep.success({
@@ -715,7 +720,9 @@ export const deletingMembership = (dispatch: Dispatch) => async (
   dispatch(setDeletingMembership({ teamID, membershipID: id, val: true }))
   const res = await api.deleteTeamMember(teamID, id)
   if (isOk(res)) {
-    const message = "left team " + store.getState().teams.byId[teamID].name
+    const team = store.getState().teams.byId[teamID]
+    const teamName = team ? team.name : "unknown"
+    const message = "left team " + teamName
     dispatch(deleteMembership({ teamID, membershipID: id }))
     if (leaving) {
       dispatch(push("/"))
@@ -745,7 +752,8 @@ export const deletingTeam = (dispatch: Dispatch) => async (
   const res = await api.deleteTeam(teamID)
   if (isOk(res)) {
     dispatch(push("/"))
-    const teamName = store.getState().teams.byId[teamID].name
+    const team = store.getState().teams.byId[teamID]
+    const teamName = team ? team.name : "unknown"
     showNotificationWithTimeout(dispatch)({
       message: `Team deleted (${teamName})`,
       level: "success",
@@ -1058,6 +1066,9 @@ export const deletingScheduledRecipe = (dispatch: Dispatch) => async (
   // TODO(sbdchd): we can just have a marker for deleted recipes and just remove
   // that marker if this fails. Or we could put them in their own id list
   const recipe = store.getState().calendar.byId[id]
+  if (recipe == null) {
+    return Err(undefined)
+  }
   dispatch(deleteCalendarRecipe(id))
   const res = await api.deleteScheduledRecipe(id, teamID)
   if (isErr(res)) {
@@ -1081,6 +1092,10 @@ export const moveScheduledRecipe = (dispatch: Dispatch) => async (
   // HACK(sbdchd): With an endpoint we can eliminate this
   const state = store.getState()
   const from = getCalRecipeById(state, id)
+
+  if (from == null) {
+    return
+  }
 
   // copy recipe if
   // - recipe from the past

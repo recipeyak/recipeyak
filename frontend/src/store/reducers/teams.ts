@@ -116,7 +116,7 @@ export interface ITeam {
   readonly error404?: boolean
   readonly recipes?: number[]
   readonly members: {
-    readonly [key: number]: IMember
+    readonly [key: number]: IMember | undefined
   }
 }
 
@@ -127,15 +127,19 @@ export interface ITeamsState {
   readonly copying?: boolean
   readonly moving?: boolean
   readonly byId: {
-    readonly [key: number]: ITeam
+    readonly [key: number]: ITeam | undefined
   }
 }
 
-function mapById<
-  T extends { byId: { [key: number]: U } },
-  U extends { id: number }
->(state: T, id: number, func: (team: U) => U): T {
+function mapById(
+  state: ITeamsState,
+  id: ITeam["id"],
+  func: (team: ITeam) => ITeam
+): ITeamsState {
   const team = state.byId[id]
+  if (team == null) {
+    return state
+  }
   return {
     ...state,
     byId: {
@@ -230,52 +234,53 @@ export const teams = (
         updating: action.payload.updating
       }))
     case getType(setDeletingMembership):
-      return mapById<ITeamsState, ITeam>(
-        state,
-        action.payload.teamID,
-        team => ({
+      return mapById(state, action.payload.teamID, team => {
+        const member = team.members[action.payload.membershipID]
+        if (member == null) {
+          return team
+        }
+
+        return {
           ...team,
           // TODO: refactor membership into it's own reducer
           members: {
             ...team.members,
             [action.payload.membershipID]: {
-              ...team.members[action.payload.membershipID],
+              ...member,
               deleting: action.payload.val
             }
           }
-        })
-      )
+        }
+      })
     case getType(setUserTeamLevel):
-      return mapById<ITeamsState, ITeam>(
-        state,
-        action.payload.teamID,
-        team => ({
+      return mapById(state, action.payload.teamID, team => {
+        const member = team.members[action.payload.membershipID]
+        if (member == null) {
+          return team
+        }
+        return {
           ...team,
           // TODO: refactor membership into it's own reducer
           members: {
             ...team.members,
             [action.payload.membershipID]: {
-              ...team.members[action.payload.membershipID],
+              ...member,
               level: action.payload.level
             }
           }
-        })
-      )
+        }
+      })
     case getType(setSendingTeamInvites):
       return mapById(state, action.payload.teamID, team => ({
         ...team,
         sendingTeamInvites: action.payload.val
       }))
     case getType(deleteMembership):
-      return mapById<ITeamsState, ITeam>(
-        state,
-        action.payload.teamID,
-        team => ({
-          ...team,
-          // TODO: refactor membership into it's own reducer
-          members: omit(team.members, action.payload.membershipID)
-        })
-      )
+      return mapById(state, action.payload.teamID, team => ({
+        ...team,
+        // TODO: refactor membership into it's own reducer
+        members: omit(team.members, action.payload.membershipID)
+      }))
     case getType(fetchTeams.success):
       return {
         ...state,

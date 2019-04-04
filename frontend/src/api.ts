@@ -168,11 +168,16 @@ export const deleteIngredient = (
 export const updateRecipe = (id: IRecipe["id"], data: unknown) =>
   http.patch<IRecipe>(`/api/v1/recipes/${id}/`, data)
 
+interface IUpdateStepPayload {
+  readonly text?: string
+  readonly position?: number
+}
+
 // TODO(sbdchd): this shouldn't require recipeID
 export const updateStep = (
   recipeID: IRecipe["id"],
   stepID: IStep["id"],
-  data: { readonly [key: string]: unknown }
+  data: IUpdateStepPayload
 ) => http.patch<IStep>(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, data)
 
 // TODO(sbdchd): this shouldn't require recipeID
