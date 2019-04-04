@@ -1,7 +1,11 @@
 import uniq from "lodash/uniq"
 
 export function classNames(
-  ...args: (string | number | string[] | { [key: string]: boolean })[]
+  ...args: (
+    | string
+    | number
+    | string[]
+    | { [key: string]: boolean | undefined })[]
 ) {
   const classes: string[] = []
 

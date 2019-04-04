@@ -13,6 +13,7 @@ import { ITeam, IMember } from "@/store/reducers/teams"
 import { IState } from "@/store/store"
 import { IUser } from "@/store/reducers/user"
 import { Select } from "@/components/Forms"
+import { notUndefined } from "@/utils/general"
 
 interface IMemberRowProps {
   readonly userID: IUser["id"]
@@ -108,13 +109,20 @@ const mapStateToProps = (
     teamID,
     membershipID
   }: Pick<IMemberRowProps, "userID" | "teamID" | "membershipID">
-) => ({
-  isUser: state.user.id === userID,
-  deleting: state.teams.byId[teamID].members[membershipID].deleting,
-  userIsTeamAdmin: Object.values(state.teams.byId[teamID].members)
-    .filter(x => x.level === "admin")
-    .some(({ user }) => user.id === state.user.id)
-})
+) => {
+  const team = state.teams.byId[teamID]
+  const members = team ? team.members : {}
+  const member = members[membershipID]
+  const deleting = member ? member.deleting : false
+  return {
+    isUser: state.user.id === userID,
+    deleting,
+    userIsTeamAdmin: Object.values(members)
+      .filter(notUndefined)
+      .filter(x => x.level === "admin")
+      .some(({ user }) => user.id === state.user.id)
+  }
+}
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   handleUserLevelChange: settingUserTeamLevel(dispatch),

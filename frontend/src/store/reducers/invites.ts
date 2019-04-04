@@ -1,5 +1,6 @@
 import { createAsyncAction, ActionType, getType } from "typesafe-actions"
 import { IState } from "@/store/store"
+import { notUndefined } from "@/utils/general"
 
 export const fetchInvites = createAsyncAction(
   "FETCH_INVITES_START",
@@ -51,6 +52,9 @@ function mapById(
   func: (invite: IInvite) => IInvite
 ): IInvitesState {
   const invite = state.byId[id]
+  if (invite == null) {
+    return state
+  }
   return {
     ...state,
     byId: {
@@ -63,7 +67,7 @@ function mapById(
 export interface IInvitesState {
   readonly loading: boolean
   readonly byId: {
-    readonly [key: number]: IInvite
+    readonly [key: number]: IInvite | undefined
   }
 }
 
@@ -137,5 +141,5 @@ const invites = (
 export default invites
 
 export function getInvites(state: IState): IInvite[] {
-  return Object.values(state.invites.byId)
+  return Object.values(state.invites.byId).filter(notUndefined)
 }

@@ -15,6 +15,7 @@ import {
   ReducerMapObject
 } from "redux-loop"
 
+import pickBy from "lodash/pickBy"
 import throttle from "lodash/throttle"
 
 import createHistory from "history/createBrowserHistory"
@@ -90,16 +91,9 @@ export type Action =
  * The sourcing issue is from a cylical dependency. See the usage of `store` in
  * `@/http`
  */
-function omitUndefined(
-  obj: ReducerMapObject<IState, Action>
-): ReducerMapObject<IState, Action> {
-  const n = {} as ReducerMapObject<IState, Action> & { [key: string]: unknown }
-  for (const [key, value] of Object.entries(obj)) {
-    if (value) {
-      n[key] = value
-    }
-  }
-  return n
+type ReducerMapObj = ReducerMapObject<IState, Action>
+function omitUndefined(obj: ReducerMapObj): ReducerMapObj {
+  return pickBy(obj, x => x != null) as ReducerMapObj
 }
 
 const recipeApp: LoopReducer<IState, Action> = combineReducers(

@@ -1,4 +1,4 @@
-import { omit } from "lodash"
+import omit from "lodash/omit"
 import { ITeam } from "@/store/reducers/teams"
 import * as api from "@/api"
 import {
@@ -817,13 +817,6 @@ export const recipes = (
         })
       }))
     case getType(updateStep.request): {
-      const data: { [key: string]: unknown } = action.payload
-      // Remove null/empty keys for PATCH
-      for (const key of Object.keys(data)) {
-        if (data[key] == null) {
-          delete data[key]
-        }
-      }
       return loop(
         mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
           ...recipe,

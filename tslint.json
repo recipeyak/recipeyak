@@ -25,6 +25,7 @@
     ]
   },
   "rules": {
+    "object-index-must-return-possibly-undefined": true,
     "unnecessary-else": true,
     "no-implicit-to-string": true,
     "no-non-null-assertion": true,

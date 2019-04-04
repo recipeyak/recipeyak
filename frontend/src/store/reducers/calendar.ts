@@ -7,6 +7,8 @@ import {
   createStandardAction
 } from "typesafe-actions"
 import { IState } from "@/store/store"
+import { isUndefined } from "util"
+import { notUndefined } from "@/utils/general"
 
 export const fetchCalendarRecipes = createAsyncAction(
   "FETCH_CALENDAR_RECIPES_START",
@@ -52,7 +54,7 @@ export interface ICalendarState {
   readonly loading: boolean
   readonly error: boolean
   readonly byId: {
-    readonly [key: number]: ICalRecipe
+    readonly [key: number]: ICalRecipe | undefined
   }
 }
 
@@ -81,6 +83,7 @@ export const calendar = (
       const existing = state.allIds
         .filter(x => x !== action.payload.id)
         .map(x => state.byId[x])
+        .filter(notUndefined)
         .filter(x => isSameDay(x.on, action.payload.on))
         .find(x => x.recipe.id === action.payload.recipe.id)
 
@@ -135,18 +138,26 @@ export const calendar = (
       // - update the date of the recipe
       const moving = state.byId[action.payload.id]
 
-      const existing = state.allIds
-        .map(id => state.byId[id])
-        .filter(
-          r =>
-            r.id !== action.payload.id &&
-            isSameDay(r.on, action.payload.to) &&
-            r.team === moving.team &&
-            r.user === moving.user
+      const isSameTeamAndDay = (r: ICalRecipe | undefined): r is ICalRecipe => {
+        if (isUndefined(moving) || isUndefined(r)) {
+          return false
+        }
+        return (
+          r.id !== action.payload.id &&
+          isSameDay(r.on, action.payload.to) &&
+          r.team === moving.team &&
+          r.user === moving.user
         )
-        .find(r => r.recipe.id === moving.recipe.id)
+      }
 
-      if (existing) {
+      const existing =
+        notUndefined(moving) &&
+        state.allIds
+          .map(id => state.byId[id])
+          .filter(isSameTeamAndDay)
+          .find(r => r.recipe.id === moving.recipe.id)
+
+      if (existing && notUndefined(moving)) {
         return {
           ...state,
           byId: {
@@ -160,12 +171,16 @@ export const calendar = (
         }
       }
 
+      const cal = state.byId[action.payload.id]
+      if (cal == null) {
+        return state
+      }
       return {
         ...state,
         byId: {
           ...state.byId,
           [action.payload.id]: {
-            ...state.byId[action.payload.id],
+            ...cal,
             on: action.payload.to
           }
         }
@@ -194,10 +209,12 @@ export default calendar
 export const getCalRecipeById = (
   state: IState,
   id: ICalRecipe["id"]
-): ICalRecipe => state.calendar.byId[id]
+): ICalRecipe | undefined => state.calendar.byId[id]
 
 export const getAllCalRecipes = (state: IState): ICalRecipe[] =>
-  state.calendar.allIds.map(id => getCalRecipeById(state, id))
+  state.calendar.allIds
+    .map(id => getCalRecipeById(state, id))
+    .filter(notUndefined)
 
 export const getTeamRecipes = (state: IState): ICalRecipe[] =>
   getAllCalRecipes(state).filter(recipe => recipe.team != null)

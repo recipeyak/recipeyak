@@ -59,7 +59,7 @@ interface IAddRecipeState {
     readonly name: string
     readonly description: string
     readonly optional: boolean
-    readonly [key: string]: string | boolean
+    readonly [key: string]: string | boolean | undefined
   }
   readonly step: string
   readonly loading: boolean

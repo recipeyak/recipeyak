@@ -13,12 +13,13 @@ import { IState } from "@/store/store"
 import { RouteComponentProps } from "react-router"
 import { ITeam } from "@/store/reducers/teams"
 import { isSuccess } from "@/webdata"
+import { notUndefined } from "@/utils/general"
 
 type RouteProps = RouteComponentProps<{ id: string }>
 
 const mapStateToProps = (state: IState, props: RouteProps) => {
   const id = parseInt(props.match.params.id, 10)
-  const team: ITeam | undefined = state.teams.byId[id]
+  const team = state.teams.byId[id]
 
   // TODO(sbdchd): clean up this mess
 
@@ -28,7 +29,7 @@ const mapStateToProps = (state: IState, props: RouteProps) => {
 
   const members = team == null || team.members == null ? [] : team.members
 
-  const teamMembers = Object.values(members)
+  const teamMembers = Object.values(members).filter(notUndefined)
 
   // TODO(sbdchd): this should be using a getter
   const successfulRecipes = recipes
@@ -36,17 +37,19 @@ const mapStateToProps = (state: IState, props: RouteProps) => {
     .filter(isSuccess)
     .map(r => r.data)
 
-  const loadingTeam = team && !!team.loadingTeam && !team.name
-  const loadingMembers =
-    team && !!team.loadingMembers && teamMembers.length === 0
-  const loadingRecipes =
-    team && !!team.loadingRecipes && successfulRecipes.length === 0
+  const loadingTeam = team ? !!team.loadingTeam && !team.name : false
+  const loadingMembers = team
+    ? !!team.loadingMembers && teamMembers.length === 0
+    : false
+  const loadingRecipes = team
+    ? !!team.loadingRecipes && successfulRecipes.length === 0
+    : false
 
   return {
     id,
     members: teamMembers,
     isSettings,
-    error404: team && !!team.error404,
+    error404: team ? !!team.error404 : false,
     loadingTeam,
     name: team ? team.name : "",
     loadingMembers,

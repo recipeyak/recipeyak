@@ -19,11 +19,31 @@ import {
 import { IState } from "@/store/store"
 import { IRecipe } from "@/store/reducers/recipes"
 import { ITeamsState } from "@/store/reducers/teams"
-import { IUserState } from "@/store/reducers/user"
+import { IUserState, IUser } from "@/store/reducers/user"
 import { teamURL } from "@/urls"
 import GlobalEvent from "@/components/GlobalEvent"
 import { Select } from "@/components/Forms"
 import { isOk, Result } from "@/result"
+import { notUndefined } from "@/utils/general"
+
+function getTeamUserKeys(
+  teams: ITeamsState,
+  userId: IUser["id"] | null
+): ReadonlyArray<{ id: string; name: string }> {
+  return teams.allIds
+    .map(id => {
+      const team = teams.byId[id]
+      if (team == null) {
+        return
+      }
+      return {
+        id: id + "-team",
+        name: team.name
+      }
+    })
+    .filter(notUndefined)
+    .concat({ id: userId + "-user", name: "personal" })
+}
 
 const mapStateToProps = (state: IState) => ({
   teams: state.teams,
@@ -159,13 +179,8 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
   render() {
     const { name, teams, userId } = this.props
     const { moving, copying } = teams
-    const teamUserKeys = [
-      ...teams.allIds.map(id => ({
-        id: id + "-team",
-        name: teams.byId[id].name
-      })),
-      { id: userId + "-user", name: "personal" }
-    ]
+
+    const teamUserKeys = getTeamUserKeys(teams, userId)
 
     const url = teamURL(this.props.id, this.props.name)
 
