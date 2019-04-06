@@ -30,11 +30,24 @@ import { ICalRecipe } from "@/store/reducers/calendar"
 import { IRecipeItemDrag } from "@/components/RecipeItem"
 import { Result } from "@/result"
 
+function DayOfWeek({ date }: { date: Date }) {
+  const dayOfWeek = format(date, "ddd")
+  return (
+    <div className="d-none d-medium-block">
+      <span>{dayOfWeek}</span>
+      <span className="mx-1">∙</span>
+    </div>
+  )
+}
+
 const Title = ({ date }: { date: Date }) => {
-  if (isFirstDayOfMonth(date)) {
-    return <p>{format(date, "MMM D")}</p>
-  }
-  return <p>{format(date, "D")}</p>
+  const dateFmt = isFirstDayOfMonth(date) ? "MMM D" : "D"
+  return (
+    <p className="d-flex">
+      <DayOfWeek date={date} />
+      <span>{format(date, dateFmt)}</span>
+    </p>
+  )
 }
 
 interface ICalendarDayProps {

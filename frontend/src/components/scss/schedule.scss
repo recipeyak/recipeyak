@@ -51,6 +51,12 @@
   }
 }
 
+.d-medium-block {
+  @media (max-width: $medium) {
+    display: block !important;
+  }
+}
+
 .calendar-day {
   background-color: whitesmoke;
   transition: background-color 0.2s;
