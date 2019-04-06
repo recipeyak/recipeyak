@@ -48,7 +48,7 @@ export interface IDays {
 
 function Weekdays() {
   return (
-    <div className="d-grid grid-gap-1 calendar-grid grid-auto-rows-unset mb-0">
+    <div className="calendar-week-days">
       <b>Su</b>
       <b>Mo</b>
       <b>Tu</b>

@@ -15,31 +15,58 @@
   padding-right: 0.5rem;
 }
 
-@media (min-width: 700px) {
+@media (min-width: $medium) {
   .new-container {
     grid-template-columns: repeat(3, auto);
   }
 }
 
-.calendar-grid {
-  grid-template-columns: repeat(7, minmax(100px, 1fr));
-  grid-auto-rows: 1fr;
-}
-
 .calendar-week {
+  @media (max-width: $medium) {
+    height: 100%;
+    flex-direction: column;
+    margin-top: 0.5rem;
+    // skip prev and future week, keeping the current week
+    &:first-child,
+    &:last-child {
+      display: none;
+    }
+  }
   height: (1/3) * 100%;
   &:not(:last-child) {
     margin-bottom: 0.25rem;
   }
 }
 
+.calendar-week-days {
+  @media (max-width: $medium) {
+    display: none;
+  }
+  display: flex;
+  & > b {
+    width: (1/7) * 100%;
+    &:not(:last-child) {
+      margin-right: 0.25rem;
+    }
+  }
+}
+
 .calendar-day {
   background-color: whitesmoke;
-  transition: all 0.2s;
+  transition: background-color 0.2s;
+
   &:not(:last-child) {
     margin-right: 0.25rem;
+    @media (max-width: $medium) {
+      margin-right: 0;
+      margin-bottom: 0.25rem;
+    }
   }
   width: (1/7) * 100%;
+  @media (max-width: $medium) {
+    width: 100%;
+    height: (1/7) * 100%;
+  }
 }
 
 .current-day {
