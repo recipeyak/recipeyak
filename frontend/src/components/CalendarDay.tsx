@@ -41,11 +41,11 @@ function DayOfWeek({ date }: { date: Date }) {
 }
 
 const Title = ({ date }: { date: Date }) => {
-  const dateFmt = isFirstDayOfMonth(date) ? "MMM D" : "D"
+  const dateFmtText = isFirstDayOfMonth(date) ? "MMM D" : "D"
   return (
     <p className="d-flex">
       <DayOfWeek date={date} />
-      <span>{format(date, dateFmt)}</span>
+      <span>{format(date, dateFmtText)}</span>
     </p>
   )
 }
