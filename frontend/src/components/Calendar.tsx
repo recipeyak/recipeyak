@@ -47,15 +47,12 @@ export interface IDays {
 }
 
 function Weekdays() {
+  const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
   return (
     <div className="calendar-week-days">
-      <b>Su</b>
-      <b>Mo</b>
-      <b>Tu</b>
-      <b>We</b>
-      <b>Th</b>
-      <b>Fr</b>
-      <b>Sa</b>
+      {weekDays.map(x => (
+        <b>{x}</b>
+      ))}
     </div>
   )
 }
