@@ -265,7 +265,7 @@ description = "A flake8 extension that implements misc. lints"
 name = "flake8-pie"
 optional = false
 python-versions = "*"
-version = "0.0.4"
+version = "0.2.1"
 
 [package.dependencies]
 flake8 = "*"
@@ -925,7 +925,7 @@ python-versions = "*"
 version = "1.11.1"
 
 [metadata]
-content-hash = "dd2efafe979b826537c8183dec4943df8a45bdc968eed45f84ea013eba14e6a2"
+content-hash = "ca3e75c9af8146447d84922444cd1c486eabe34eaf7b1ca80b5d6f21ea398848"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -956,7 +956,7 @@ drf-nested-routers = ["3346bcfb151d221d499b3b7932cc6e5cee005ea50f1343a2f5cd2f85e
 entrypoints = ["589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19", "c70dd71abe5a8c85e55e12c19bd91ccfeec11a6e99044204511f9ed547d48451"]
 flake8 = ["859996073f341f2670741b51ec1e67a01da142831aa1fdc6242dbf88dffbe661", "a796a115208f5c03b18f332f7c11729812c8c3ded6c46319c59b53efd3819da8"]
 flake8-formatter-junit-xml = ["b49c6b528d9518e855548ac76041cc333b56b5bcb24ae84af44668d37f2aec16", "e537adea0638bd4dbe7debce37844d9082a3d6aeb29304505b12caf97ff6f80b"]
-flake8-pie = ["3f89dda90bd6a3f898197140ebceed084449aee2ff5c814620712b13e055c0e9", "7ad9801876df62a682dcc633ca495bfcd9933694b9efa7a578d120ea94001b39"]
+flake8-pie = ["1e04f483c892f44cb22e6ce45c8c161a098300e0eeeae73ca4fe38cfbb60272f", "7769e32be5ad03dade9b1d61c0c25991d8f646761460a78575e17e4fcd49ea8b"]
 flake8-print = ["5010e6c138b63b62400da4b06afa33becc5e08bd1fcce9af3752445cf3342f54"]
 gunicorn = ["75af03c99389535f218cc596c7de74df4763803f7b63eb09d77e92b3956b36c6", "eee1169f0ca667be05db3351a0960765620dad53f53434262ff8901b68a1b622"]
 honcho = ["af5806bf13e3b20acdcb9ff8c0beb91eee6fe07393c3448dfad89667e6ac7576", "c189402ad2e337777283c6a12d0f4f61dc6dd20c254c9a3a4af5087fc66cea6e"]
