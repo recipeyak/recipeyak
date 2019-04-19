@@ -7,6 +7,7 @@ from datetime import datetime
 from pathlib import Path
 
 import click
+from dotenv import load_dotenv
 
 from cli.config import setup_django_sites, setup_django as configure_django
 from cli.decorators import setup_django, load_env
@@ -35,6 +36,7 @@ def lint(ctx: click.core.Context, api: bool, web: bool) -> None:
 
     os.environ["DEBUG"] = "1"
     os.environ["DATABASE_URL"] = "postgres://postgres@127.0.0.1:5432/postgres"
+    load_dotenv()
 
     with ProcessManager() as m:
         if web or is_all:
