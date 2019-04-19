@@ -9,7 +9,11 @@ from pathlib import Path
 import click
 from dotenv import load_dotenv
 
-from cli.config import setup_django_sites, setup_django as configure_django
+from cli.config import (
+    setup_django_sites,
+    setup_django as configure_django,
+    set_default as set_default_config,
+)
 from cli.decorators import setup_django, load_env
 from cli.docker_machine import docker_machine_env, docker_machine_unset_env
 from cli import cmds
@@ -34,8 +38,7 @@ def lint(ctx: click.core.Context, api: bool, web: bool) -> None:
     is_all = not api and not web
     from cli.manager import ProcessManager
 
-    os.environ["DEBUG"] = "1"
-    os.environ["DATABASE_URL"] = "postgres://postgres@127.0.0.1:5432/postgres"
+    set_default_config()
     load_dotenv()
 
     with ProcessManager() as m:
