@@ -34,6 +34,7 @@ def lint(ctx: click.core.Context, api: bool, web: bool) -> None:
     from cli.manager import ProcessManager
 
     os.environ["DEBUG"] = "1"
+    os.environ["DATABASE_URL"] = "postgres://postgres@127.0.0.1:5432/postgres"
 
     with ProcessManager() as m:
         if web or is_all:
