@@ -37,5 +37,7 @@ def set_default():
     load_dotenv() should be called after this to allow overriding these
     variables.
     """
+    import os
+
     os.environ["DEBUG"] = "1"
     os.environ["DATABASE_URL"] = "postgres://postgres@127.0.0.1:5432/postgres"

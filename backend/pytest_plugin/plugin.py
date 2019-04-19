@@ -1,5 +1,4 @@
 import pytest
-import os
 from cli import config
 from dotenv import load_dotenv
 
