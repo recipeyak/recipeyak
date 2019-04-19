@@ -6,9 +6,7 @@ jobs:
     docker:
       - image: recipeyak/base:v3
         environment:
-          DEBUG: 1
           DATABASE_URL: postgres://postgres@127.0.0.1:5432/postgres
-          PIPENV_VENV_IN_PROJECT: 1
       # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
       - image: circleci/postgres:9.5-alpine-ram
         command: [
@@ -46,9 +44,7 @@ jobs:
     docker:
       - image: recipeyak/base:v3
         environment:
-          DEBUG: 1
           DATABASE_URL: postgres://postgres@127.0.0.1:5432/postgres
-          PIPENV_VENV_IN_PROJECT: 1
       # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
       - image: circleci/postgres:9.5-alpine-ram
         command: [
@@ -85,8 +81,6 @@ jobs:
   frontend_test:
     docker:
       - image: recipeyak/base:v3
-        environment:
-          DEBUG: 1
     steps:
       - checkout
       - restore_cache:
@@ -115,8 +109,6 @@ jobs:
   frontend_lint:
     docker:
       - image: recipeyak/base:v3
-        environment:
-          DEBUG: 1
     steps:
       - checkout
       - restore_cache:
