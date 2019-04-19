@@ -33,6 +33,8 @@ def lint(ctx: click.core.Context, api: bool, web: bool) -> None:
     is_all = not api and not web
     from cli.manager import ProcessManager
 
+    os.environ["DEBUG"] = "1"
+
     with ProcessManager() as m:
         if web or is_all:
             m.add_process("tslint", cmds.tslint())
