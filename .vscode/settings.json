@@ -8,10 +8,11 @@
     "typescript.preferences.importModuleSpecifier": "non-relative",
     "typescript.updateImportsOnFileMove.enabled": "always",
 
-    // use Miscrosoft's C#-based language server instead of jedi
     "python.pythonPath": ".venv/bin/python",
     "python.envFile": "${workspaceFolder}/.vscode/.env",
-    "python.jediEnabled": false,
+    // Use jedi instead of Microsoft's C# Python language server (MLS). I think
+    // MLS has introduced too many regressions to be depended on.
+    "python.jediEnabled": true,
     "python.linting.mypyEnabled": true,
     "python.linting.mypyArgs": [
         "--ignore-missing-imports",
