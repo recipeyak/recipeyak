@@ -20,3 +20,5 @@ export function daysFromSunday(date: Date) {
 export function beforeCurrentDay(date: Date) {
   return isBefore(date, startOfDay(new Date()))
 }
+
+export const second = 1000
