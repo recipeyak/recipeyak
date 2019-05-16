@@ -1,7 +1,6 @@
 import React from "react"
 import { connect } from "react-redux"
 import format from "date-fns/format"
-import isToday from "date-fns/is_today"
 import { DropTarget, ConnectDropTarget, DropTargetMonitor } from "react-dnd"
 import isWithinRange from "date-fns/is_within_range"
 import startOfDay from "date-fns/start_of_day"
@@ -29,6 +28,8 @@ import { IState } from "@/store/store"
 import { ICalRecipe } from "@/store/reducers/calendar"
 import { IRecipeItemDrag } from "@/components/RecipeItem"
 import { Result } from "@/result"
+import { useCurrentDay } from "@/hooks"
+import { isSameDay } from "date-fns"
 
 function DayOfWeek({ date }: { date: Date }) {
   const dayOfWeek = format(date, "ddd")
@@ -86,13 +87,16 @@ function CalendarDay({
   teamID,
   isSelected
 }: ICalendarDayProps) {
+  const today = useCurrentDay()
+  const isToday = isSameDay(date, today)
+
   return connectDropTarget(
     <div
       style={{
         opacity: isOver && canDrop ? 0.5 : 1
       }}
       className={classNames("calendar-day", "p-1", "flex-grow-1", {
-        "current-day": isToday(date),
+        "current-day": isToday,
         "selected-day": isSelected || (isOver && canDrop)
       })}>
       <Title date={date} />

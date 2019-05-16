@@ -1,7 +1,7 @@
 import pickBy from "lodash/pickBy"
 import isSameDay from "date-fns/is_same_day"
 import { random32Id } from "@/uuid"
-import { toDateString } from "@/date"
+import { toDateString, second } from "@/date"
 import { push, replace } from "react-router-redux"
 import { Dispatch as ReduxDispatch } from "redux"
 import { AxiosError, AxiosResponse } from "axios"
@@ -155,8 +155,6 @@ const emailExists = (err: AxiosError) =>
   err.response.data.email != null &&
   err.response.data.email[0].includes("email already exists")
 // tslint:enable:no-unsafe-any
-
-const second = 1000
 
 export const updatingEmail = (dispatch: Dispatch) => async (
   email: IUser["email"]

@@ -55,6 +55,7 @@ import { loadState, saveState } from "@/store/localStorage"
 import { getType } from "typesafe-actions"
 import { createLogger } from "redux-logger"
 import { DEBUG } from "@/settings"
+import { second } from "@/date"
 
 const createStore = basicCreateStore as StoreCreator
 
@@ -209,7 +210,7 @@ store.subscribe(
       }
       // tslint:disable-next-line:no-any
     } as any) as IState)
-  }, 1000)
+  }, second)
 )
 
 export default store
