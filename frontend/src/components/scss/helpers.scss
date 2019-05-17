@@ -321,7 +321,6 @@
 }
 
 .w-300px-if-not-sm {
-  width: 100%;
   @media (min-width: $small) {
     width: 300px;
     min-width: 300px;

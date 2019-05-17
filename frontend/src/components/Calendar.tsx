@@ -240,7 +240,7 @@ function Calendar(props: ICalendarProps) {
   const endDate = endOfWeek(addWeeks(currentDate, 1))
 
   return (
-    <section className="d-flex flex-column flex-grow-1 hide-sm">
+    <section className="d-flex flex-column flex-grow-1">
       <Nav
         teams={props.teams}
         loadingTeams={props.loadingTeams}
