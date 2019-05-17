@@ -23,7 +23,7 @@ function Sidebar({ teamID, isRecipes }: ISidebarProps) {
   const arrow = closed ? "→" : "←"
 
   const sideBarStyle = {
-    display: closed ? "none" : "grid"
+    display: closed ? "none" : ""
   }
 
   const recipesURL =
@@ -43,7 +43,7 @@ function Sidebar({ teamID, isRecipes }: ISidebarProps) {
   return (
     <>
       <div
-        className="d-grid grid-gap-2 grid-auto-rows-min-content w-300px-if-not-sm"
+        className="d-grid grid-gap-2 grid-auto-rows-min-content w-300px-if-not-sm hide-sm"
         style={sideBarStyle}>
         <Tabs small className="mb-0 no-print">
           <Tab isActive={!isRecipes}>
