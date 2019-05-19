@@ -5,7 +5,9 @@
 }
 
 .schedule-height {
-  height: calc(100vh - #{$nav-height});
+  @media (min-width: $small) {
+    height: calc(100vh - #{$nav-height});
+  }
 }
 
 .new-container {
