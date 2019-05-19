@@ -39,7 +39,11 @@ interface ICalTitleProps {
 }
 
 function CalTitle({ day }: ICalTitleProps) {
-  return <p title={day.toString()}>{monthYearFromDate(day)}</p>
+  return (
+    <p title={day.toString()} className="mr-2">
+      {monthYearFromDate(day)}
+    </p>
+  )
 }
 
 export interface IDays {
@@ -103,8 +107,7 @@ function TeamSelect({
       onChange={handleOwnerChange}
       value={teamID}
       size="small"
-      disabled={loading}
-      className="ml-2">
+      disabled={loading}>
       <option value="personal">Personal</option>
       {teams.map(t => (
         <option key={t.id} value={t.id}>
@@ -137,26 +140,26 @@ function Nav({
   current
 }: INavProps) {
   return (
-    <div className="d-flex justify-space-between align-items-end min-height-content">
-      <section className="d-flex align-items-center">
-        <CalTitle day={day} />
+    <div className="d-flex flex-wrap flex-shrink-0">
+      <CalTitle day={day} />
+      <section className="d-flex flex-grow justify-space-between">
         <TeamSelect
           teams={teams}
           teamID={teamID}
           handleOwnerChange={handleOwnerChange}
           loading={loadingTeams}
         />
-      </section>
-      <section>
-        <ButtonPlain size="small" onClick={prev}>
-          {"←"}
-        </ButtonPlain>
-        <ButtonPrimary size="small" className="ml-1 mr-1" onClick={current}>
-          Today
-        </ButtonPrimary>
-        <ButtonPlain size="small" onClick={next}>
-          {"→"}
-        </ButtonPlain>
+        <section>
+          <ButtonPlain size="small" onClick={prev}>
+            {"←"}
+          </ButtonPlain>
+          <ButtonPrimary size="small" className="ml-1 mr-1" onClick={current}>
+            Today
+          </ButtonPrimary>
+          <ButtonPlain size="small" onClick={next}>
+            {"→"}
+          </ButtonPlain>
+        </section>
       </section>
     </div>
   )
