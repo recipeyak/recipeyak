@@ -74,7 +74,7 @@ function Days({ start, end, days, teamID }: IDaysProps) {
   return (
     <section className="mb-2 h-100">
       {chunk(eachDay(start, end), WEEK_DAYS).map(dates => (
-        <section className="d-flex flex-grow-1 calendar-week">
+        <section className="d-flex calendar-week">
           {dates.map(date => (
             <CalendarDay
               scheduledRecipes={days[toDateString(date)]}
