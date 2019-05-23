@@ -1,6 +1,7 @@
-from django.http import HttpResponse
-import yaml
 from collections import OrderedDict
+
+import yaml
+from django.http import HttpResponse
 
 
 def represent_ordereddict(dumper, data):

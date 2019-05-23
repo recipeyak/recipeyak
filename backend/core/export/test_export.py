@@ -1,9 +1,9 @@
-import pytest
-from typing import Iterable, Dict
+from typing import Dict, Iterable
 
+import pytest
 import yaml
-from django.urls import reverse
 from django.test import Client
+from django.urls import reverse
 
 from core.models import MyUser, Recipe
 

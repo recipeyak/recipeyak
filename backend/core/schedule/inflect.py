@@ -1,23 +1,24 @@
-# PATTERN | EN | INFLECT
-# -*- coding: utf-8 -*-
-# Copyright (c) 2010 University of Antwerp, Belgium
-# Author: Tom De Smedt <tom@organisms.be>
-# License: BSD (see LICENSE.txt for details).
+"""
+PATTERN | EN | INFLECT
+Copyright (c) 2010 University of Antwerp, Belgium
+Author: Tom De Smedt <tom@organisms.be>
+License: BSD (see LICENSE.txt for details).
 
-# Regular expressions-based rules for English word inflection:
-# - pluralization and singularization of nouns and adjectives,
-# - conjugation of verbs,
-# - comparative and superlative of adjectives.
+Regular expressions-based rules for English word inflection:
+- pluralization and singularization of nouns and adjectives,
+- conjugation of verbs,
+- comparative and superlative of adjectives.
 
-# Accuracy (measured on CELEX English morphology word forms):
-# 95% for pluralize()
-# 96% for singularize()
-# 95% for Verbs.find_lemma() (for regular verbs)
-# 96% for Verbs.find_lexeme() (for regular verbs)
-# https://github.com/clips/pattern/blob/ec95f97b2e34c2232e7c43ef1e34e3f0dea6654b/pattern/text/en/inflect.py
-from typing import Dict, List, Tuple, Optional
+Accuracy (measured on CELEX English morphology word forms):
+95% for pluralize()
+96% for singularize()
+95% for Verbs.find_lemma() (for regular verbs)
 
+96% for Verbs.find_lexeme() (for regular verbs)
+https://github.com/clips/pattern/blob/ec95f97b2e34c2232e7c43ef1e34e3f0dea6654b/pattern/text/en/inflect.py
+"""
 import re
+from typing import Dict, List, Optional, Tuple
 
 VERB, NOUN, ADJECTIVE, ADVERB = "VB", "NN", "JJ", "RB"
 

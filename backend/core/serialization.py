@@ -1,8 +1,8 @@
-from typing import Optional, cast, Any
 from logging import getLogger
+from typing import Any, Optional, cast
 
-from django.db import connection
 from django.conf import settings
+from django.db import connection
 from rest_framework import serializers
 
 log = getLogger(__name__)

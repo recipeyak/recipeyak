@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from core.recipes.serializers import IngredientSerializer, OwnerRelatedField
 from core.models import Recipe
+from core.recipes.serializers import IngredientSerializer, OwnerRelatedField
 from core.serialization import BaseModelSerializer
 
 

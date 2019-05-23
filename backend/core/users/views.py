@@ -1,20 +1,18 @@
 from typing import cast
 
-from rest_framework.generics import RetrieveUpdateAPIView
-from rest_framework.exceptions import PermissionDenied
-from rest_framework.response import Response
-from rest_framework.request import Request
-from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import api_view, permission_classes
-from django.utils import timezone
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
+from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.request import Request
+from rest_framework.response import Response
 
 from core.models import MyUser
-from core.users.serializers import (
-    UserSerializer as UserDetailsSerializer,
-    SessionSerializer,
-)
+from core.users.serializers import SessionSerializer
+from core.users.serializers import UserSerializer as UserDetailsSerializer
 
 
 class UserDetailsView(RetrieveUpdateAPIView):

@@ -1,43 +1,39 @@
 import logging
+
+from allauth.account.adapter import get_adapter
+from allauth.socialaccount import signals
+from allauth.socialaccount.adapter import get_adapter as get_social_adapter
+from allauth.socialaccount.models import SocialAccount
+from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
+from allauth.socialaccount.providers.gitlab.views import GitLabOAuth2Adapter
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from django.conf import settings
 from django.contrib.auth import login, logout
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.debug import sensitive_post_parameters
-
 from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from rest_framework.decorators import action
 from rest_framework.generics import GenericAPIView
-from rest_framework.permissions import IsAuthenticated, AllowAny
-
-from .serializers import (
-    LoginSerializer,
-    PasswordResetSerializer,
-    PasswordResetConfirmSerializer,
-    PasswordChangeSerializer,
-)
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.viewsets import GenericViewSet
 
 from core.users.serializers import UserSerializer as UserDetailsSerializer
 
-
 from .registration.serializers import (
-    SocialLoginSerializer,
-    SocialConnectSerializer,
     SocialAccountSerializer,
+    SocialConnectSerializer,
+    SocialLoginSerializer,
 )
-
-from allauth.account.adapter import get_adapter
-from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
-from allauth.socialaccount.providers.gitlab.views import GitLabOAuth2Adapter
-from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
-from allauth.socialaccount.providers.oauth2.client import OAuth2Client
-
-from allauth.socialaccount import signals
-from allauth.socialaccount.models import SocialAccount
-from allauth.socialaccount.adapter import get_adapter as get_social_adapter
-from rest_framework.decorators import action
-from rest_framework.viewsets import GenericViewSet
+from .serializers import (
+    LoginSerializer,
+    PasswordChangeSerializer,
+    PasswordResetConfirmSerializer,
+    PasswordResetSerializer,
+)
 
 logger = logging.getLogger(__name__)
 

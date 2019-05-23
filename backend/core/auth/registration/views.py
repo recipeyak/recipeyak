@@ -1,32 +1,31 @@
 import logging
+
+from allauth.account import app_settings as allauth_settings
+from allauth.account.utils import complete_signup
+from allauth.account.views import ConfirmEmailView
+from allauth.socialaccount import signals
+from allauth.socialaccount.adapter import get_adapter as get_social_adapter
+from allauth.socialaccount.models import SocialAccount
+from django.core.exceptions import ValidationError
+from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.debug import sensitive_post_parameters
-from django.core.exceptions import ValidationError
-from django.shortcuts import get_object_or_404
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView
-from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
 from rest_framework.exceptions import PermissionDenied
-
-from allauth.account.views import ConfirmEmailView
-from allauth.account.utils import complete_signup
-from allauth.account import app_settings as allauth_settings
-from allauth.socialaccount.models import SocialAccount
-from allauth.socialaccount import signals
-from allauth.socialaccount.adapter import get_adapter as get_social_adapter
-
-from .serializers import (
-    VerifyEmailSerializer,
-    SocialAccountSerializer,
-    SocialConnectSerializer,
-    RegisterSerializer,
-)
+from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from core.users.serializers import UserSerializer as UserDetailsSerializer
+
+from .serializers import (
+    RegisterSerializer,
+    SocialAccountSerializer,
+    SocialConnectSerializer,
+    VerifyEmailSerializer,
+)
 
 logger = logging.getLogger(__name__)
 

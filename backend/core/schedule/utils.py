@@ -1,12 +1,12 @@
-from typing import List, Dict, Union, Optional, Iterable
-from mypy_extensions import TypedDict
+from typing import Dict, Iterable, List, Optional, Union
 
-from pint import UnitRegistry, UndefinedUnitError
+from mypy_extensions import TypedDict
+from pint import UndefinedUnitError, UnitRegistry
 from pint.quantity import _Quantity as Quantity
 
-from .inflect import singularize, pluralize
-
 import core.models as models
+
+from .inflect import pluralize, singularize
 
 ureg = UnitRegistry()
 

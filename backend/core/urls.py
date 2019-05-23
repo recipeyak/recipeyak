@@ -1,30 +1,26 @@
-from django.conf.urls import url, include
-
+from django.conf.urls import include, url
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers
 
-from core.schedule.views import (
-    ShoppingListView,
-    TeamShoppingListViewSet,
-    ReportBadMerge,
-    CalendarViewSet,
-    TeamCalendarViewSet,
+from core.recipes.views import (
+    IngredientViewSet,
+    RecipeViewSet,
+    StepViewSet,
+    TeamRecipesViewSet,
 )
-
+from core.schedule.views import (
+    CalendarViewSet,
+    ReportBadMerge,
+    ShoppingListView,
+    TeamCalendarViewSet,
+    TeamShoppingListViewSet,
+)
 from core.stats.views import UserStats
-
 from core.teams.views import (
-    TeamViewSet,
     MembershipViewSet,
     TeamInviteViewSet,
+    TeamViewSet,
     UserInvitesViewSet,
-)
-
-from core.recipes.views import (
-    RecipeViewSet,
-    TeamRecipesViewSet,
-    StepViewSet,
-    IngredientViewSet,
 )
 
 router = DefaultRouter()

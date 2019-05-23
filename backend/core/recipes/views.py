@@ -1,31 +1,27 @@
 import logging
 
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, status, mixins
+from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.response import Response
-from rest_framework.request import Request
 from rest_framework.permissions import IsAuthenticated
-
+from rest_framework.request import Request
+from rest_framework.response import Response
 
 from core.auth.permissions import (
+    HasRecipeAccess,
     IsTeamMemberIfPrivate,
     NonSafeIfMemberOrAdmin,
-    HasRecipeAccess,
 )
-
-from core.models import Recipe, Step, Ingredient, Team, MyUser
+from core.models import Ingredient, MyUser, Recipe, Step, Team, user_and_team_recipes
 
 from .serializers import (
-    RecipeSerializer,
-    StepSerializer,
     IngredientSerializer,
     RecipeMoveCopySerializer,
+    RecipeSerializer,
+    StepSerializer,
 )
-
 from .utils import add_positions
-from core.models import user_and_team_recipes
 
 logger = logging.getLogger(__name__)
 

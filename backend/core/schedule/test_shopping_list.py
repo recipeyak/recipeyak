@@ -1,13 +1,14 @@
-import pytest
+from datetime import date, timedelta
 from typing import Dict, List, Union
 
+import pytest
 from django.urls import reverse
 from rest_framework import status
-from datetime import date, timedelta
 from rest_framework.test import APIClient
 
+from core.models import Ingredient, MyUser, Recipe
+
 from .utils import combine_ingredients, simplify_units, unicode_fractions_to_ascii
-from core.models import Recipe, Ingredient, MyUser
 
 pytestmark = pytest.mark.django_db
 

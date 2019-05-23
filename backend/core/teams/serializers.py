@@ -1,7 +1,8 @@
 from typing import List
+
 from rest_framework import serializers
 
-from core.models import MyUser, Team, Membership, Invite
+from core.models import Invite, Membership, MyUser, Team
 from core.serialization import BaseModelSerializer, BaseSerializer
 
 

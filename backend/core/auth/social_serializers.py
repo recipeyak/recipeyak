@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.http import HttpRequest
 from rest_framework import serializers
+
 from core.serialization import BaseSerializer
 
 # Import is needed only if we are using social login, in which

@@ -1,12 +1,10 @@
 from typing import cast
 
+from django.db.models import Q
+from django.shortcuts import get_object_or_404
 from rest_framework import permissions
 
-from django.shortcuts import get_object_or_404
-from django.db.models import Q
-
-
-from core.models import Team, Membership, Recipe, MyUser
+from core.models import Membership, MyUser, Recipe, Team
 
 
 class DisallowAny:

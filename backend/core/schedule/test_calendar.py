@@ -1,10 +1,10 @@
-import pytest
-
-from django.urls import reverse
-from rest_framework import status
 from datetime import date
 
-from core.models import ScheduledRecipe, Recipe
+import pytest
+from django.urls import reverse
+from rest_framework import status
+
+from core.models import Recipe, ScheduledRecipe
 
 pytestmark = pytest.mark.django_db
 

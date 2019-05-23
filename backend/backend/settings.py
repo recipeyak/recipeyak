@@ -10,13 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
+import logging
 import os
 from typing import List
-import logging
 
-from django.conf import global_settings
 import dj_database_url
 import sentry_sdk
+from django.conf import global_settings
 from sentry_sdk.integrations.django import DjangoIntegration
 
 logger = logging.getLogger(__name__)

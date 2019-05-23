@@ -1,10 +1,10 @@
 import time
 from uuid import uuid4
 
-from django.db import connection
-from django.conf import settings
-from django.http import HttpRequest
 import sentry_sdk
+from django.conf import settings
+from django.db import connection
+from django.http import HttpRequest
 
 from backend.request_state import State
 

@@ -1,11 +1,11 @@
-from typing import Dict, List, Any
-import pytest
+from typing import Any, Dict, List
 
-from django.urls import reverse
+import pytest
 from django.conf import settings
+from django.urls import reverse
 from rest_framework import status
 
-from core.models import Recipe, Membership, Team, Ingredient, Step
+from core.models import Ingredient, Membership, Recipe, Step, Team
 
 pytestmark = pytest.mark.django_db
 

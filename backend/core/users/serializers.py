@@ -1,11 +1,12 @@
-from core.models import MyUser
-from core.serialization import BaseModelSerializer
-from user_sessions.models import Session
-from typing import Dict, Any, cast
-from core import user_agent
 import dataclasses
+from typing import Any, Dict, cast
 
 from rest_framework import serializers
+from user_sessions.models import Session
+
+from core import user_agent
+from core.models import MyUser
+from core.serialization import BaseModelSerializer
 
 
 class UserSerializer(BaseModelSerializer):

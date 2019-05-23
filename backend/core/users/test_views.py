@@ -1,14 +1,14 @@
-from typing import Union, Type, List, Dict
+from dataclasses import dataclass
+from typing import Dict, List, Type, Union
+
 import pytest
 from django.urls import reverse
-from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.response import Response
 from rest_framework.test import APIClient
-from core.models import MyUser
-
-from dataclasses import dataclass
-
 from user_sessions.models import Session
+
+from core.models import MyUser
 
 
 @pytest.mark.django_db

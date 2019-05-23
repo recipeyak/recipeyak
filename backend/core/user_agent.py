@@ -1,8 +1,8 @@
-from typing import Optional, Pattern, Tuple, List, Union
+import re
 from dataclasses import dataclass
 from enum import Enum
-import re
 from itertools import chain
+from typing import List, Optional, Pattern, Tuple, Union
 
 
 class DeviceKind(str, Enum):

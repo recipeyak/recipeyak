@@ -1,21 +1,20 @@
 from django.conf.urls import url
 from django.urls import path
 
+from .registration.views import SocialAccountDisconnectView, SocialAccountListView
 from .views import (
+    GithubConnect,
+    GithubLogin,
+    GitlabConnect,
+    GitlabLogin,
+    GoogleConnect,
+    GoogleLogin,
     LoginView,
     LogoutView,
     PasswordChangeView,
-    PasswordResetView,
     PasswordResetConfirmView,
-    GithubLogin,
-    GitlabLogin,
-    GoogleLogin,
-    GithubConnect,
-    GitlabConnect,
-    GoogleConnect,
+    PasswordResetView,
 )
-
-from .registration.views import SocialAccountListView, SocialAccountDisconnectView
 
 urlpatterns = [
     # URLs that do not require a session or valid token

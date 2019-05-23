@@ -1,5 +1,6 @@
 import pytest
 from django.http import HttpResponse
+
 from backend.middleware import ServerTimingMiddleware
 
 pytestmark = pytest.mark.django_db
