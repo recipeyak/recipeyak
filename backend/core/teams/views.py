@@ -1,25 +1,24 @@
-from typing import Tuple, Any
+from typing import Any, Tuple
 
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, status, mixins
+from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.response import Response
+from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
 from rest_framework.request import Request
-from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
+from rest_framework.response import Response
 
 from core.auth.permissions import (
-    IsTeamMember,
     IsTeamAdmin,
     IsTeamAdminOrMembershipOwner,
+    IsTeamMember,
 )
-
-from core.models import Team, Invite
+from core.models import Invite, Team
 
 from .serializers import (
-    TeamSerializer,
-    MembershipSerializer,
-    InviteSerializer,
     CreateInviteSerializer,
+    InviteSerializer,
+    MembershipSerializer,
+    TeamSerializer,
 )
 
 

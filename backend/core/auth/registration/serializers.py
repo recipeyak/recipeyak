@@ -1,8 +1,11 @@
-from django.http import HttpRequest
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model
-from core.serialization import BaseSerializer, BaseModelSerializer
+from django.http import HttpRequest
+from django.utils.translation import ugettext_lazy as _
+from requests.exceptions import HTTPError
+from rest_framework import serializers
+
+from core.serialization import BaseModelSerializer, BaseSerializer
 
 try:
     from allauth.account import app_settings as allauth_settings
@@ -16,8 +19,6 @@ try:
 except ImportError:
     raise ImportError("allauth needs to be added to INSTALLED_APPS.")
 
-from rest_framework import serializers
-from requests.exceptions import HTTPError
 
 # Import is needed only if we are using social login, in which
 # case the allauth.socialaccount will be declared

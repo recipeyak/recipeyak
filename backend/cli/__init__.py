@@ -1,22 +1,20 @@
-from typing import List, Tuple, Optional
-from typing_extensions import Literal
-import subprocess
-import os
 import io
+import os
+import subprocess
 from datetime import datetime
 from pathlib import Path
+from typing import List, Optional, Tuple
 
 import click
 from dotenv import load_dotenv
+from typing_extensions import Literal
 
-from cli.config import (
-    setup_django_sites,
-    setup_django as configure_django,
-    set_default as set_default_config,
-)
-from cli.decorators import setup_django, load_env
-from cli.docker_machine import docker_machine_env, docker_machine_unset_env
 from cli import cmds
+from cli.config import set_default as set_default_config
+from cli.config import setup_django as configure_django
+from cli.config import setup_django_sites
+from cli.decorators import load_env, setup_django
+from cli.docker_machine import docker_machine_env, docker_machine_unset_env
 
 
 @click.group()
@@ -48,12 +46,17 @@ def lint(ctx: click.core.Context, api: bool, web: bool) -> None:
             m.add_process("typescript", cmds.typescript(watch=False))
 
         if api or is_all:
+            is_ci = bool(os.getenv("CI"))
             ctx.invoke(missing_migrations)
             m.add_process("mypy", cmds.mypy())
             m.add_process("flake8", cmds.flake8())
-            m.add_process("black", cmds.black(check=True))
+            m.add_process("black", cmds.black(check=is_ci))
+            if is_ci:
+                m.add_process("isort", "isort --check-only")
+            else:
+                m.add_process("isort", "isort -y")
 
-            if os.getenv("CI"):
+            if is_ci:
                 m.add_process("pylint", cmds.pylint())
 
 

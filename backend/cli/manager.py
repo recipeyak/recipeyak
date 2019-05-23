@@ -1,11 +1,10 @@
-from contextlib import contextmanager
-from honcho.manager import Manager
-
 import datetime
 import signal
 import sys
+from contextlib import contextmanager
 
 from honcho.compat import Empty
+from honcho.manager import Manager
 
 KILL_WAIT = 5
 SIGNALS = {

@@ -1,11 +1,10 @@
 import hashlib
-from typing import List, Union, Optional, cast
-import logging
 import itertools
+import logging
 from datetime import datetime
+from typing import List, Optional, Union, cast
 
-from django.db.models import Q
-from django.db import models, transaction
+from allauth.socialaccount.models import EmailAddress
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
@@ -15,8 +14,8 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import CIEmailField
 from django.core.validators import MinValueValidator
-
-from allauth.socialaccount.models import EmailAddress
+from django.db import models, transaction
+from django.db.models import Q
 from softdelete.models import SoftDeleteObject
 
 logger = logging.getLogger(__name__)

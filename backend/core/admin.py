@@ -1,19 +1,19 @@
 from django import forms
 from django.contrib import admin
-from django.utils.html import format_html
-from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from django.contrib.auth.models import Group
+from django.utils.html import format_html
 
 from core.models import (
-    MyUser,
-    Recipe,
     Ingredient,
-    Step,
-    Team,
     Invite,
     Membership,
+    MyUser,
+    Recipe,
     ScheduledRecipe,
+    Step,
+    Team,
 )
 
 

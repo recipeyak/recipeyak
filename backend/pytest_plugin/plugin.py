@@ -1,6 +1,7 @@
 import pytest
-from cli import config
 from dotenv import load_dotenv
+
+from cli import config
 
 
 @pytest.hookimpl(tryfirst=True)

@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
+
 import pytest
 import pytz
-
 from django.urls import reverse
 from rest_framework import status
 

@@ -1,12 +1,10 @@
-import pytest
-
+from datetime import date
 from logging import getLogger
 
+import pytest
 from rest_framework.test import APIClient
 
-from datetime import date
-
-from core.models import MyUser, Recipe, Ingredient, Step, Team, ScheduledRecipe
+from core.models import Ingredient, MyUser, Recipe, ScheduledRecipe, Step, Team
 
 getLogger("flake8").propagate = False
 
