@@ -30,7 +30,7 @@ def setup_django_sites():
         obj.save()
 
 
-def set_default():
+def set_default_testing_variables():
     """
     Default configuration to load for testing and linting
 
@@ -40,4 +40,4 @@ def set_default():
     import os
 
     os.environ["DEBUG"] = "1"
-    os.environ["DATABASE_URL"] = "postgres://postgres@127.0.0.1:5432/postgres"
+    os.environ.setdefault("DATABASE_URL", "postgres://postgres@127.0.0.1:5432/postgres")

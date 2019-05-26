@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from typing_extensions import Literal
 
 from cli import cmds
-from cli.config import set_default as set_default_config
+from cli.config import set_default_testing_variables as set_default_config
 from cli.config import setup_django as configure_django
 from cli.config import setup_django_sites
 from cli.decorators import load_env, setup_django
