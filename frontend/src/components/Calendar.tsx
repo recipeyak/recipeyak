@@ -17,7 +17,7 @@ import { teamsFrom } from "@/store/mapState"
 
 import { push } from "react-router-redux"
 
-import { ButtonPrimary, ButtonPlain } from "@/components/Buttons"
+import { ButtonPlain } from "@/components/Buttons"
 import CalendarDay from "@/components/CalendarDay"
 import { IState } from "@/store/store"
 import { ITeam } from "@/store/reducers/teams"
