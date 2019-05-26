@@ -24,5 +24,5 @@ def test_avatar_url(user):
     """
     assert (
         user.avatar_url
-        == "//www.gravatar.com/avatar/bc6a715808d9aae0ddeefb1e47e482a6?d=identicon&r=g"
+        == "/avatar/bc6a715808d9aae0ddeefb1e47e482a6?d=identicon&r=g"
     )
