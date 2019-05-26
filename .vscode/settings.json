@@ -30,5 +30,6 @@
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.nosetestsEnabled": false,
-    "python.testing.pyTestEnabled": true
+    "python.testing.pyTestEnabled": true,
+    "typescript.tsdk": "node_modules/typescript/lib"
 }
