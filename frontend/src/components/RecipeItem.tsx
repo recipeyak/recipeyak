@@ -1,25 +1,27 @@
-import React, { useState } from "react"
+import React from "react"
 import { Link } from "react-router-dom"
 import { DragSource, ConnectDragSource } from "react-dnd"
 import DatePickerForm from "@/components/DatePickerForm"
-import { ButtonPlain } from "@/components/Buttons"
 import { classNames } from "@/classnames"
 import { recipeURL } from "@/urls"
 import { DragDrop } from "@/dragDrop"
 import { IRecipe } from "@/store/reducers/recipes"
 import Dropdown from "@/components/Dropdown"
+import { DragIcon } from "@/components/icons"
 
 interface IRecipeTitleProps {
   readonly url: string
   readonly name: string
+  readonly dragable: boolean
 }
 
-function RecipeTitle({ url, name }: IRecipeTitleProps) {
+function RecipeTitle({ url, name, dragable }: IRecipeTitleProps) {
   return (
-    <div className="flex-grow">
+    <div className="flex-grow d-flex justify-between">
       <Link tabIndex={0} to={url} className="align-self-start mb-1">
         {name}
       </Link>
+      {dragable && <DragIcon />}
     </div>
   )
 }
@@ -40,33 +42,13 @@ export function Schedule({ id, show, onClose, trigger }: IScheduleProps) {
 }
 
 interface IMetaProps {
-  readonly id: IRecipe["id"]
   readonly author: string
-  readonly show: boolean
-  readonly onClose: () => void
-  readonly onToggle: () => void
 }
 
-function Meta({ id, author, show, onClose, onToggle }: IMetaProps) {
+function Meta({ author }: IMetaProps) {
   return (
-    <div
-      className={classNames(
-        "content",
-        "d-flex",
-        "align-items-center",
-        author !== "" ? "justify-space-between" : "justify-content-end"
-      )}>
+    <div className={classNames("content", "d-flex", "align-items-center")}>
       {author !== "" ? <small>{author}</small> : null}
-      <Schedule
-        id={id}
-        show={show}
-        onClose={onClose}
-        trigger={
-          <ButtonPlain size="small" onClick={onToggle}>
-            schedule
-          </ButtonPlain>
-        }
-      />
     </div>
   )
 }
@@ -92,27 +74,19 @@ export function RecipeItem({
   isDragging,
   ...props
 }: IRecipeItemProps & ICollectedProps) {
-  const [show, setShow] = useState(false)
-
-  const drag = !show && props.drag
+  const drag = !!props.drag
 
   const url = props.url || recipeURL(id, name)
 
   const component = (
     <section
       className={classNames("card", {
-        "cursor-move": !!drag
+        "cursor-move": drag
       })}
       style={{ opacity: isDragging ? 0.5 : 1 }}>
       <div className="card-content h-100 d-flex flex-column">
-        <RecipeTitle name={name} url={url} />
-        <Meta
-          id={id}
-          author={author}
-          show={show}
-          onClose={() => setShow(false)}
-          onToggle={() => setShow(prev => !prev)}
-        />
+        <RecipeTitle name={name} url={url} dragable={drag} />
+        <Meta author={author} />
       </div>
     </section>
   )

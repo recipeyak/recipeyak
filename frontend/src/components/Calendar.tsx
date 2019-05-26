@@ -153,9 +153,9 @@ function Nav({
           <ButtonPlain size="small" onClick={prev}>
             {"←"}
           </ButtonPlain>
-          <ButtonPrimary size="small" className="ml-1 mr-1" onClick={current}>
+          <ButtonPlain size="small" className="ml-1 mr-1" onClick={current}>
             Today
-          </ButtonPrimary>
+          </ButtonPlain>
           <ButtonPlain size="small" onClick={next}>
             {"→"}
           </ButtonPlain>
@@ -167,7 +167,7 @@ function Nav({
 
 function HelpPrompt() {
   return (
-    <p className="mt-2 mb-1">
+    <p className="mt-2 mb-1 hide-sm">
       press <kbd>?</kbd> for help
     </p>
   )

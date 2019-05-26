@@ -310,7 +310,7 @@
   }
 }
 
-@each $i in (120px, 200px, 350px, 400px, 50px) {
+@each $i in (120px, 200px, 300px, 350px, 400px, 50px) {
   .w-#{$i},
   .width-#{$i} {
     width: $i;
@@ -321,13 +321,6 @@
 @for $i from 1 through 4 {
   .w-#{$i}rem {
     width: #{$i}rem;
-  }
-}
-
-.w-300px-if-not-sm {
-  @media (min-width: $small) {
-    width: 300px;
-    min-width: 300px;
   }
 }
 
