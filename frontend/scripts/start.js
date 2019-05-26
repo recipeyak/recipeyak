@@ -254,7 +254,7 @@ function addMiddleware(devServer) {
         }
       },
       router: {
-        '/avatar': 'https://www.gravatar.com'
+        "/avatar": "https://www.gravatar.com"
       },
       onError: onProxyError(proxy),
       secure: false,
