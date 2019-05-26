@@ -35,6 +35,7 @@ import {
   isSuccessOrRefetching,
   isRefetching
 } from "@/webdata"
+import { classNames } from "@/classnames"
 
 const selectElementText = (el: Element) => {
   const sel = window.getSelection()
@@ -63,8 +64,9 @@ interface IShoppingListItemProps {
 function ShoppingListItem({ item, isFirst }: IShoppingListItemProps) {
   // padding serves to prevent the button from appearing in front of text
   // we also use <section>s instead of <p>s to avoid extra new lines in Chrome
+  const cls = classNames("text-small", { "mr-15": isFirst })
   return (
-    <section className={isFirst ? "mr-15" : ""} key={item.unit + item.name}>
+    <section className={cls} key={item.unit + item.name}>
       {item.unit} {item.name}
     </section>
   )
@@ -120,11 +122,11 @@ class ShoppingListList extends React.Component<IShoppingListContainerProps> {
       : []
 
     return (
-      <div className={`box p-rel min-height-75px mb-0 ${loadingClass}`}>
+      <div className={`box p-rel min-height-75px mb-0 p-3 ${loadingClass}`}>
         <Button
           onClick={this.handleSelectList}
           size="small"
-          className="r-5 p-abs">
+          className="r-3 p-abs">
           Copy
         </Button>
         <section ref={this.shoppingList}>
