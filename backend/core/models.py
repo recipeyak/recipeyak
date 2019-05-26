@@ -116,7 +116,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         # indenticons by default `d=identicon`
         # Avatars with ratings of G only `r=g`
         # https://secure.gravatar.com/site/implement/images/
-        return f"//www.gravatar.com/avatar/{md5_email}?d=identicon&r=g"
+        return f"/avatar/{md5_email}?d=identicon&r=g"
 
     @property
     def scheduled_recipes(self):

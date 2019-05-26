@@ -253,6 +253,9 @@ function addMiddleware(devServer) {
           proxyReq.setHeader("origin", proxy)
         }
       },
+      router: {
+        "/avatar": "https://www.gravatar.com"
+      },
       onError: onProxyError(proxy),
       secure: false,
       changeOrigin: true,
