@@ -39,5 +39,7 @@ def set_default():
     """
     import os
 
-    os.environ["DEBUG"] = "1"
-    os.environ["DATABASE_URL"] = "postgres://postgres@127.0.0.1:5432/postgres"
+    if os.environ.get("DEBUG") == "1":
+        os.environ.setdefault(
+            "DATABASE_URL", "postgres://postgres@127.0.0.1:5432/postgres"
+        )
