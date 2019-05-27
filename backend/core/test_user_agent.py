@@ -52,6 +52,10 @@ from core.user_agent import OS, Browser, Device, DeviceKind
             Device(kind=DeviceKind.desktop, os=OS.Windows_8_1, browser=Browser.chrome),
         ),
         (
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36",
+            Device(kind=DeviceKind.desktop, os=OS.MacOS_Mojave, browser=Browser.chrome),
+        ),
+        (
             "Not a legit OS Firefox/51.0",
             Device(kind=None, os=None, browser=Browser.firefox),
         ),

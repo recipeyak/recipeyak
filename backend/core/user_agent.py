@@ -25,6 +25,7 @@ class OS(str, Enum):
     OSX_El_Capitan = "OS X El Capitan"
     MacOS_Sierra = "macOS Sierra"
     MacOS_High_Sierra = "macOS High Sierra"
+    MacOS_Mojave = "macOS Mojave"
     OSX = "OS X"
     Windows_XP = "Windows XP"
     Windows_Vista = "Windows Vista"
@@ -62,6 +63,7 @@ DESKTOP_DEVICES: List[Tuple[Union[str, Pattern], OS]] = [
     (re.compile("Mac OS X 10[._]11"), OS.OSX_El_Capitan),
     (re.compile("Mac OS X 10[._]12"), OS.MacOS_Sierra),
     (re.compile("Mac OS X 10[._]13"), OS.MacOS_High_Sierra),
+    (re.compile("Mac OS X 10[._]14"), OS.MacOS_Mojave),
     ("Mac OS X", OS.OSX),
     ("NT 5.1", OS.Windows_XP),
     ("NT 6.0", OS.Windows_Vista),
