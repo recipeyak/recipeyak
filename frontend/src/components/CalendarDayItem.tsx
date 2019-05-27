@@ -8,7 +8,7 @@ import { IRecipe } from "@/store/reducers/recipes"
 import { ICalRecipe } from "@/store/reducers/calendar"
 import GlobalEvent from "@/components/GlobalEvent"
 import { TextInput } from "@/components/Forms"
-import { isPast } from "date-fns"
+import { isPast, endOfDay } from "date-fns"
 import { Result, isOk } from "@/result"
 
 const COUNT_THRESHOLD = 1
@@ -173,7 +173,7 @@ export default DragSource(
     endDrag(props, monitor) {
       // when dragged onto something that isn't a target, we remove it
       // but we don't remove when in past as we only copy from the past
-      if (!monitor.didDrop() && !isPast(props.date)) {
+      if (!monitor.didDrop() && !isPast(endOfDay(props.date))) {
         props.remove()
       }
     }
