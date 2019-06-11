@@ -60,7 +60,6 @@ interface IRecipeItemProps {
   readonly url?: string
   readonly drag?: boolean
 }
-}
 
 export function RecipeItem({
   name,
