@@ -9,6 +9,13 @@ import {
 import { IState } from "@/store/store"
 import { isUndefined } from "util"
 import { notUndefined } from "@/utils/general"
+import { Loop, loop, Cmd } from "redux-loop"
+import {
+  moveScheduledRecipe,
+  addingScheduledRecipe,
+  IAddingScheduledRecipeProps,
+  IMoveScheduledRecipeProps
+} from "@/store/thunks"
 
 export const fetchCalendarRecipes = createAsyncAction(
   "FETCH_CALENDAR_RECIPES_START",
@@ -29,12 +36,22 @@ export const replaceCalendarRecipe = createStandardAction(
   "REPLACE_CALENDAR_RECIPE"
 )<{ id: ICalRecipe["id"]; recipe: ICalRecipe }>()
 
+export const moveOrCreateCalendarRecipe = createStandardAction(
+  "MOVE_OR_CREATE_CALENDAR_RECIPE"
+)<IMoveScheduledRecipeProps>()
+
+export const createCalendarRecipe = createStandardAction(
+  "CREATE_CALENDAR_RECIPE"
+)<IAddingScheduledRecipeProps>()
+
 export type CalendarActions =
   | ReturnType<typeof setCalendarRecipe>
   | ReturnType<typeof deleteCalendarRecipe>
   | ReturnType<typeof moveCalendarRecipe>
   | ReturnType<typeof replaceCalendarRecipe>
   | ActionType<typeof fetchCalendarRecipes>
+  | ActionType<typeof moveOrCreateCalendarRecipe>
+  | ActionType<typeof createCalendarRecipe>
 
 // TODO(sbdchd): this should be imported from the recipes reducer
 export interface ICalRecipe {
@@ -68,7 +85,7 @@ export const initialState: ICalendarState = {
 export const calendar = (
   state: ICalendarState = initialState,
   action: CalendarActions
-): ICalendarState => {
+): ICalendarState | Loop<ICalendarState, CalendarActions> => {
   switch (action.type) {
     case getType(fetchCalendarRecipes.success):
       return {
@@ -186,6 +203,20 @@ export const calendar = (
         }
       }
     }
+    case getType(moveOrCreateCalendarRecipe):
+      return loop(
+        state,
+        Cmd.run(moveScheduledRecipe, {
+          args: [Cmd.dispatch, Cmd.getState, action.payload]
+        })
+      )
+    case getType(createCalendarRecipe):
+      return loop(
+        state,
+        Cmd.run(addingScheduledRecipe, {
+          args: [Cmd.dispatch, Cmd.getState, action.payload]
+        })
+      )
     case getType(replaceCalendarRecipe):
       return {
         ...state,

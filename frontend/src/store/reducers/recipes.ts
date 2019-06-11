@@ -20,7 +20,12 @@ import {
 } from "@/webdata"
 import { isOk } from "@/result"
 import { Loop, loop, Cmd } from "redux-loop"
-import { Dispatch, updatingStep, deletingStep } from "@/store/thunks"
+import {
+  Dispatch,
+  updatingStep,
+  deletingStep,
+  moveScheduledRecipe
+} from "@/store/thunks"
 import { push } from "react-router-redux"
 
 export const updateRecipeOwner = createStandardAction("UPDATE_RECIPE_OWNER")<{
