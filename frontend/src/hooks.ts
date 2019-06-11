@@ -43,4 +43,49 @@ export function useGlobalEvent({
       }
     }
   }, [keyUp])
+  React.useEffect(() => {
+    if (keyDown) {
+      document.addEventListener("keydown", keyDown)
+    }
+    return () => {
+      if (keyDown) {
+        document.removeEventListener("keydown", keyDown)
+      }
+    }
+  }, [keyDown])
+  React.useEffect(() => {
+    if (mouseUp) {
+      document.addEventListener("mouseup", mouseUp)
+    }
+    return () => {
+      if (mouseUp) {
+        document.removeEventListener("mouseup", mouseUp)
+      }
+    }
+  }, [mouseUp])
+  React.useEffect(() => {
+    if (mouseDown) {
+      document.addEventListener("mousedown", mouseDown)
+    }
+    return () => {
+      if (mouseDown) {
+        document.removeEventListener("mousedown", mouseDown)
+      }
+    }
+  }, [mouseDown])
+}
+
+/**
+ * React hook to create a ref that auto-focuses on mount
+ */
+export function useAutoFocusRef() {
+  const ref = React.useRef<HTMLInputElement>(null)
+  const el = ref.current
+  React.useEffect(() => {
+    if (el) {
+      el.focus()
+    }
+  }, [el])
+
+  return ref
 }

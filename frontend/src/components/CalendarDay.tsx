@@ -1,7 +1,7 @@
 import React from "react"
 import { connect } from "react-redux"
 import format from "date-fns/format"
-import { DropTarget, ConnectDropTarget, DropTargetMonitor } from "react-dnd"
+import { useDrop } from "react-dnd"
 import isWithinRange from "date-fns/is_within_range"
 import startOfDay from "date-fns/start_of_day"
 import endOfDay from "date-fns/end_of_day"

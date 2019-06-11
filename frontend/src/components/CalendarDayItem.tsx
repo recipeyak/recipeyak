@@ -1,6 +1,6 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import { DragSource, ConnectDragSource } from "react-dnd"
+import { useDrag } from "react-dnd"
 import { beforeCurrentDay } from "@/date"
 import { recipeURL } from "@/urls"
 import { DragDrop } from "@/dragDrop"
@@ -41,18 +41,13 @@ function RecipeLink({ name, id }: IRecipeLink) {
   return (
     <Link
       to={recipeURL(id, name)}
-      className="break-word text-small"
+      className="cal-day-item break-word text-small"
       style={{
         lineHeight: 1.1
       }}>
       {name}
     </Link>
   )
-}
-
-interface ICollectedProps {
-  readonly connectDragSource: ConnectDragSource
-  readonly isDragging: boolean
 }
 
 export interface ICalendarItemProps {
@@ -68,11 +63,7 @@ export interface ICalendarItemProps {
   readonly id: ICalRecipe["id"]
 }
 
-function CalendarItem({
-  connectDragSource,
-  isDragging,
-  ...props
-}: ICalendarItemProps & ICollectedProps) {
+function CalendarItem(props: ICalendarItemProps) {
   const [count, setCount] = React.useState(props.count)
   const [hover, setHover] = React.useState(false)
 
@@ -99,7 +90,6 @@ function CalendarItem({
   )
 
   const handleKeyPress = (e: KeyboardEvent) => {
-    console.info(hover, count)
     if (!hover) {
       return
     }
@@ -125,15 +115,39 @@ function CalendarItem({
   const handleMouseEnter = () => setHover(true)
   const handleMouseLeave = () => setHover(false)
 
+  const dragItem: ICalendarDragItem = {
+    type: DragDrop.CAL_RECIPE,
+    recipeID: props.recipeID,
+    count: props.count,
+    id: props.id,
+    date: props.date
+  }
+
+  const [{ isDragging }, drag] = useDrag({
+    item: dragItem,
+    end: (_dropResult, monitor) => {
+      // when dragged onto something that isn't a target, we remove it
+      // but we don't remove when in past as we only copy from the past
+      if (!monitor.didDrop() && !isPast(endOfDay(props.date))) {
+        props.remove()
+      }
+    },
+    collect: monitor => {
+      return {
+        isDragging: monitor.isDragging()
+      }
+    }
+  })
+
   const style: React.CSSProperties = {
-    visibility: isDragging && !isPast(props.date) ? "hidden" : "visible",
-    backgroundColor: hover ? "red" : "black"
+    visibility: isDragging && !isPast(props.date) ? "hidden" : "visible"
   }
 
   useGlobalEvent({ keyUp: handleKeyPress })
 
-  return connectDragSource(
+  return (
     <li
+      ref={drag}
       className="d-flex align-items-center cursor-pointer justify-space-between mb-2"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -149,30 +163,4 @@ export interface ICalendarDragItem
   readonly type: DragDrop.CAL_RECIPE
 }
 
-export default DragSource(
-  DragDrop.CAL_RECIPE,
-  {
-    beginDrag(props: ICalendarItemProps): ICalendarDragItem {
-      return {
-        type: DragDrop.CAL_RECIPE,
-        recipeID: props.recipeID,
-        count: props.count,
-        id: props.id,
-        date: props.date
-      }
-    },
-    endDrag(props, monitor) {
-      // when dragged onto something that isn't a target, we remove it
-      // but we don't remove when in past as we only copy from the past
-      if (!monitor.didDrop() && !isPast(endOfDay(props.date))) {
-        props.remove()
-      }
-    }
-  },
-  (connect, monitor) => {
-    return {
-      connectDragSource: connect.dragSource(),
-      isDragging: monitor.isDragging()
-    }
-  }
-)(CalendarItem)
+export default CalendarItem
