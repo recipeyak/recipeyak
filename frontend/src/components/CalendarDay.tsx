@@ -14,18 +14,22 @@ import { classNames } from "@/classnames"
 import CalendarItem, { ICalendarDragItem } from "@/components/CalendarDayItem"
 
 import {
-  addingScheduledRecipe,
   updatingScheduledRecipe,
-  moveScheduledRecipe,
   deletingScheduledRecipe,
   Dispatch,
-  fetchingShoppingList
+  fetchingShoppingList,
+  IAddingScheduledRecipeProps,
+  IMoveScheduledRecipeProps
 } from "@/store/thunks"
 
 import { DragDrop } from "@/dragDrop"
 import { IRecipe } from "@/store/reducers/recipes"
 import { IState } from "@/store/store"
-import { ICalRecipe } from "@/store/reducers/calendar"
+import {
+  ICalRecipe,
+  moveOrCreateCalendarRecipe,
+  createCalendarRecipe
+} from "@/store/reducers/calendar"
 import { IRecipeItemDrag } from "@/components/RecipeItem"
 import { Result } from "@/result"
 import { useCurrentDay } from "@/hooks"
