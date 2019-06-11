@@ -19,3 +19,28 @@ export function useCurrentDay() {
 
   return date
 }
+
+interface IGlobalEventProps {
+  readonly mouseUp?: (e: MouseEvent) => void
+  readonly mouseDown?: (e: MouseEvent) => void
+  readonly keyDown?: (e: KeyboardEvent) => void
+  readonly keyUp?: (e: KeyboardEvent) => void
+}
+
+export function useGlobalEvent({
+  mouseUp,
+  mouseDown,
+  keyDown,
+  keyUp
+}: IGlobalEventProps) {
+  React.useEffect(() => {
+    if (keyUp) {
+      document.addEventListener("keyup", keyUp)
+    }
+    return () => {
+      if (keyUp) {
+        document.removeEventListener("keyup", keyUp)
+      }
+    }
+  }, [keyUp])
+}
