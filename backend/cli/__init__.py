@@ -36,8 +36,8 @@ def lint(ctx: click.core.Context, api: bool, web: bool) -> None:
     is_all = not api and not web
     from cli.manager import ProcessManager
 
-    set_default_config()
     load_dotenv()
+    set_default_config()
 
     with ProcessManager() as m:
         if web or is_all:
