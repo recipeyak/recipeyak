@@ -80,7 +80,7 @@ export function RecipeItem({ name, author, id, ...props }: IRecipeItemProps) {
   })
 
   return (
-    <a
+    <section
       ref={props.drag ? drag : undefined}
       className={classNames("card", {
         "cursor-move": props.drag
@@ -90,7 +90,7 @@ export function RecipeItem({ name, author, id, ...props }: IRecipeItemProps) {
         <RecipeTitle name={name} url={url} dragable={!!props.drag} />
         <Meta author={author} />
       </div>
-    </a>
+    </section>
   )
 }
 
