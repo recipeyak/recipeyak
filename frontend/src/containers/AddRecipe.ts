@@ -1,6 +1,10 @@
 import { connect } from "react-redux"
 
-import { postNewRecipeAsync, Dispatch, fetchingTeamsAsync } from "@/store/thunks"
+import {
+  postNewRecipeAsync,
+  Dispatch,
+  fetchingTeamsAsync
+} from "@/store/thunks"
 
 import AddRecipe from "@/components/AddRecipe"
 

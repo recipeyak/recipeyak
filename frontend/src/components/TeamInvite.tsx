@@ -11,7 +11,11 @@ import Loader from "@/components/Loader"
 
 import { teamURL } from "@/urls"
 
-import { fetchingTeamAsync, sendingTeamInvitesAsync, Dispatch } from "@/store/thunks"
+import {
+  fetchingTeamAsync,
+  sendingTeamInvitesAsync,
+  Dispatch
+} from "@/store/thunks"
 import { IState } from "@/store/store"
 import { IMember, ITeam } from "@/store/reducers/teams"
 import { TextInput, RadioButton } from "@/components/Forms"
