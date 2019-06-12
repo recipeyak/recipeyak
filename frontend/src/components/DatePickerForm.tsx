@@ -13,10 +13,11 @@ import { classNames } from "@/classnames"
 import { atLeast1 } from "@/input"
 import { ButtonPrimary } from "@/components/Buttons"
 
-import { addingScheduledRecipe, Dispatch } from "@/store/thunks"
+import { Dispatch } from "@/store/thunks"
 import { IRecipe } from "@/store/reducers/recipes"
 import { TextInput } from "@/components/Forms"
 import { IState } from "@/store/store"
+import { createCalendarRecipe } from "@/store/reducers/calendar"
 
 function mapDispatchToProps(dispatch: Dispatch) {
   return {
@@ -25,7 +26,7 @@ function mapDispatchToProps(dispatch: Dispatch) {
       teamID: TeamID,
       on: Date,
       count: number
-    ) => addingScheduledRecipe(dispatch)(recipeID, teamID, on, count, true)
+    ) => dispatch(createCalendarRecipe({ recipeID, teamID, on, count }))
   }
 }
 
@@ -44,7 +45,7 @@ interface IDatePickerProps {
     teamID: TeamID,
     date: Date,
     count: number
-  ) => Promise<void>
+  ) => void
   readonly close: () => void
   readonly scheduling?: boolean
 }
@@ -79,14 +80,13 @@ class DatePickerForm extends React.Component<
 
   handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    this.props
-      .create(
-        this.props.recipeID,
-        this.props.teamID,
-        this.state.date,
-        this.state.count
-      )
-      .then(() => this.props.close())
+    this.props.create(
+      this.props.recipeID,
+      this.props.teamID,
+      this.state.date,
+      this.state.count
+    )
+    this.props.close()
   }
 
   nextMonth = () => {

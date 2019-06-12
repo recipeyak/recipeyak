@@ -107,7 +107,7 @@ type FunctionArgs<F> = F extends (...args: infer T) => any ? T : never
 
 // see: https://github.com/redux-loop/redux-loop/pull/191/files#diff-b52768974e6bc0faccb7d4b75b162c99R87
 type Opaque<K, T> = T & { __TYPE__: K }
-type GetState = { (getState: () => any): any } & Opaque<"GetState", symbol>
+type GetState = <T>() => T & Opaque<"GetState", symbol>
 
 declare namespace Cmd {
   export const dispatch: Dispatch & Opaque<"Dispatch", symbol>

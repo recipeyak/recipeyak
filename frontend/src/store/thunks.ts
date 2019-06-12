@@ -6,7 +6,7 @@ import { push, replace } from "react-router-redux"
 import { Dispatch as ReduxDispatch } from "redux"
 import { AxiosError, AxiosResponse } from "axios"
 import raven from "raven-js"
-import { store, Action } from "@/store/store"
+import { store, Action, IState } from "@/store/store"
 import {
   SocialProvider,
   updateEmail,
@@ -1010,16 +1010,25 @@ function toCalRecipe(
   }
 }
 
-export const addingScheduledRecipe = (dispatch: Dispatch) => async (
-  recipeID: IRecipe["id"],
-  teamID: TeamID,
-  on: Date,
-  count: number,
-  showNotification?: boolean
+export interface IAddingScheduledRecipeProps {
+  readonly recipeID: IRecipe["id"]
+  readonly teamID: TeamID
+  readonly on: Date
+  readonly count: number
+  readonly showNotification?: boolean
+}
+
+export const addingScheduledRecipe = async (
+  dispatch: Dispatch,
+  getState: () => IState,
+  { recipeID, teamID, on, count, showNotification }: IAddingScheduledRecipeProps
 ) => {
-  const recipe = store.getState().recipes.byId[recipeID]
+  // TODO(sbdchd): we should split this into one function for creating a new
+  // scheduled recipe and one function for moving a scheduled recipe.
+  const recipe = getState().recipes.byId[recipeID]
   dispatch(setSchedulingRecipe({ recipeID, scheduling: true }))
   const tempId = random32Id()
+
   if (!isSuccessOrRefetching(recipe)) {
     return Promise.resolve()
   }
@@ -1082,13 +1091,19 @@ function isSameTeam(x: ICalRecipe, teamID: TeamID): boolean {
   return x.team === teamID
 }
 
-export const moveScheduledRecipe = (dispatch: Dispatch) => async (
-  id: ICalRecipe["id"],
-  teamID: TeamID,
+export interface IMoveScheduledRecipeProps {
+  id: ICalRecipe["id"]
+  teamID: TeamID
   to: Date
+}
+
+export const moveScheduledRecipe = async (
+  dispatch: Dispatch,
+  getState: () => IState,
+  { id, teamID, to }: IMoveScheduledRecipeProps
 ) => {
   // HACK(sbdchd): With an endpoint we can eliminate this
-  const state = store.getState()
+  const state = getState()
   const from = getCalRecipeById(state, id)
 
   if (from == null) {
@@ -1101,12 +1116,12 @@ export const moveScheduledRecipe = (dispatch: Dispatch) => async (
   const holdingShift = heldKeys.size === 1 && heldKeys.has("Shift")
   const copyRecipe = isPast(endOfDay(from.on)) || holdingShift
   if (copyRecipe) {
-    return addingScheduledRecipe(dispatch)(
-      from.recipe.id,
+    return addingScheduledRecipe(dispatch, getState, {
+      recipeID: from.recipe.id,
       teamID,
-      to,
-      from.count
-    )
+      on: to,
+      count: from.count
+    })
   }
   const existing = getAllCalRecipes(state)
     .filter(x => isSameDay(x.on, to) && isSameTeam(x, teamID))

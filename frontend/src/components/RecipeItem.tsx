@@ -1,6 +1,6 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import { DragSource, ConnectDragSource } from "react-dnd"
+import { useDrag } from "react-dnd"
 import DatePickerForm from "@/components/DatePickerForm"
 import { classNames } from "@/classnames"
 import { recipeURL } from "@/urls"
@@ -61,61 +61,42 @@ interface IRecipeItemProps {
   readonly drag?: boolean
 }
 
-interface ICollectedProps {
-  readonly connectDragSource?: ConnectDragSource
-  readonly isDragging?: boolean
-}
-
-export function RecipeItem({
-  name,
-  author,
-  id,
-  connectDragSource,
-  isDragging,
-  ...props
-}: IRecipeItemProps & ICollectedProps) {
-  const drag = !!props.drag
-
+export function RecipeItem({ name, author, id, ...props }: IRecipeItemProps) {
   const url = props.url || recipeURL(id, name)
 
-  const component = (
+  const item: IRecipeItemDrag = { type: DragDrop.RECIPE, recipeID: id }
+
+  const [{ isDragging }, drag] = useDrag({
+    item,
+    options: { dropEffect: "copy" },
+    canDrag: () => {
+      return !!props.drag
+    },
+    collect: monitor => {
+      return {
+        isDragging: monitor.isDragging()
+      }
+    }
+  })
+
+  return (
     <section
+      ref={props.drag ? drag : undefined}
       className={classNames("card", {
-        "cursor-move": drag
+        "cursor-move": props.drag
       })}
       style={{ opacity: isDragging ? 0.5 : 1 }}>
       <div className="card-content h-100 d-flex flex-column">
-        <RecipeTitle name={name} url={url} dragable={drag} />
+        <RecipeTitle name={name} url={url} dragable={!!props.drag} />
         <Meta author={author} />
       </div>
     </section>
   )
-
-  return drag && connectDragSource
-    ? connectDragSource(component, { dropEffect: "copy" })
-    : component
 }
 
 export interface IRecipeItemDrag {
   readonly recipeID: IRecipeItemProps["id"]
-  readonly kind: DragDrop.RECIPE
+  readonly type: DragDrop.RECIPE
 }
 
-export default DragSource(
-  DragDrop.RECIPE,
-  {
-    beginDrag(props: IRecipeItemProps): IRecipeItemDrag {
-      return {
-        kind: DragDrop.RECIPE,
-        recipeID: props.id
-      }
-    },
-    canDrag(props: IRecipeItemProps): boolean {
-      return !!props.drag
-    }
-  },
-  (connect, monitor) => ({
-    connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging()
-  })
-)(RecipeItem)
+export default RecipeItem
