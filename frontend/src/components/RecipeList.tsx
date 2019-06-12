@@ -6,7 +6,7 @@ import { TextInput } from "@/components/Forms"
 import { matchesQuery } from "@/search"
 import Results from "@/components/Results"
 import { byNameAlphabetical } from "@/sorters"
-import { Dispatch, fetchingRecipeList } from "@/store/thunks"
+import { Dispatch, fetchingRecipeListAsync } from "@/store/thunks"
 import { IRecipe, getTeamRecipes } from "@/store/reducers/recipes"
 import { ITeam } from "@/store/reducers/teams"
 import { IState } from "@/store/store"
@@ -84,7 +84,7 @@ function mapStateToProps(state: IState, ownProps: IOwnProps) {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: fetchingRecipeList(dispatch)
+  fetchData: fetchingRecipeListAsync(dispatch)
 })
 
 type statePropsType = ReturnType<typeof mapStateToProps>

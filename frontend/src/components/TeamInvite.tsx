@@ -11,7 +11,7 @@ import Loader from "@/components/Loader"
 
 import { teamURL } from "@/urls"
 
-import { fetchingTeam, sendingTeamInvites, Dispatch } from "@/store/thunks"
+import { fetchingTeamAsync, sendingTeamInvitesAsync, Dispatch } from "@/store/thunks"
 import { IState } from "@/store/store"
 import { IMember, ITeam } from "@/store/reducers/teams"
 import { TextInput, RadioButton } from "@/components/Forms"
@@ -28,8 +28,8 @@ const mapStateToProps = (state: IState, props: ITeamInviteProps) => {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: fetchingTeam(dispatch),
-  sendInvites: sendingTeamInvites(dispatch)
+  fetchData: fetchingTeamAsync(dispatch),
+  sendInvites: sendingTeamInvitesAsync(dispatch)
 })
 
 export const roles = [

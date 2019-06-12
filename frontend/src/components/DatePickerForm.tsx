@@ -13,7 +13,7 @@ import { classNames } from "@/classnames"
 import { atLeast1 } from "@/input"
 import { ButtonPrimary } from "@/components/Buttons"
 
-import { addingScheduledRecipe, Dispatch } from "@/store/thunks"
+import { addingScheduledRecipeAsync, Dispatch } from "@/store/thunks"
 import { IRecipe } from "@/store/reducers/recipes"
 import { TextInput } from "@/components/Forms"
 import { IState } from "@/store/store"
@@ -25,7 +25,7 @@ function mapDispatchToProps(dispatch: Dispatch) {
       teamID: TeamID,
       on: Date,
       count: number
-    ) => addingScheduledRecipe(dispatch)(recipeID, teamID, on, count, true)
+    ) => addingScheduledRecipeAsync(dispatch)(recipeID, teamID, on, count, true)
   }
 }
 

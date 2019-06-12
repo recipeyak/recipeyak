@@ -1,7 +1,7 @@
 import { connect } from "react-redux"
 import queryString from "query-string"
 
-import { socialLogin as login, Dispatch } from "@/store/thunks"
+import { socialLoginAsync as login, Dispatch } from "@/store/thunks"
 import OAuth from "@/components/OAuth"
 import { IState } from "@/store/store"
 import { RouteComponentProps } from "react-router"

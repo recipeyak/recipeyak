@@ -1,13 +1,13 @@
 import { connect } from "react-redux"
 
-import { logUserIn, Dispatch } from "@/store/thunks"
+import { logUserInAsync, Dispatch } from "@/store/thunks"
 import Login from "@/components/Login"
 import { IState } from "@/store/store"
 import { setFromUrl, cleareLoginErrors } from "@/store/reducers/auth"
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    login: logUserIn(dispatch),
+    login: logUserInAsync(dispatch),
     clearErrors: () => dispatch(cleareLoginErrors()),
     setFromUrl: (url: string) => dispatch(setFromUrl(url))
   }

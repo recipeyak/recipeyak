@@ -1,10 +1,10 @@
 import { connect } from "react-redux"
 
 import {
-  updatingEmail,
-  deleteUserAccount,
+  updatingEmailAsync,
+  deleteUserAccountAsync,
   Dispatch,
-  fetchingUser
+  fetchingUserAsync
 } from "@/store/thunks"
 
 import Settings from "@/components/Settings"
@@ -24,15 +24,15 @@ const mapStateToProps = (state: IState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchData: () => {
-    fetchingUser(dispatch)()
+    fetchingUserAsync(dispatch)()
   },
   deleteUserAccount: () => {
     const response = prompt(ACCOUNT_DELETION_PROMPT)
     if (response != null && response.toLowerCase() === DELETION_RESPONSE) {
-      deleteUserAccount(dispatch)()
+      deleteUserAccountAsync(dispatch)()
     }
   },
-  updateEmail: updatingEmail(dispatch)
+  updateEmail: updatingEmailAsync(dispatch)
 })
 
 export default connect(

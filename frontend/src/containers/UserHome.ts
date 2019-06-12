@@ -3,10 +3,10 @@ import { connect } from "react-redux"
 import UserHome from "@/components/UserHome"
 
 import {
-  fetchingUserStats,
+  fetchingUserStatsAsync,
   Dispatch,
-  fetchingRecentRecipes,
-  fetchingUser
+  fetchingRecentRecipesAsync,
+  fetchingUserAsync
 } from "@/store/thunks"
 import { IState } from "@/store/store"
 import { getRecentRecipes } from "@/store/reducers/recipes"
@@ -18,9 +18,9 @@ const mapStateToProps = (state: IState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchData: () => {
-    fetchingRecentRecipes(dispatch)()
-    fetchingUser(dispatch)()
-    fetchingUserStats(dispatch)()
+    fetchingRecentRecipesAsync(dispatch)()
+    fetchingUserAsync(dispatch)()
+    fetchingUserStatsAsync(dispatch)()
   }
 })
 
