@@ -1,6 +1,7 @@
 import io
 import os
 import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
 from typing import List, Optional, Tuple
@@ -142,6 +143,10 @@ def dev(ctx: click.core.Context, api: bool, web: bool, migrate: bool) -> None:
     run_web = web or is_all
     services = []
     if run_django:
+        # start postgres
+        if sys.platform == "darwin" and Path("/Applications/Postgres.app").exists():
+            subprocess.run(["open", "/Applications/Postgres.app"])
+
         from django.core.management import call_command
 
         if migrate:
