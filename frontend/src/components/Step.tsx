@@ -29,9 +29,17 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import React, { useRef } from "react"
+import React from "react"
 import { connect } from "react-redux"
-import { useDrop, useDrag } from "react-dnd"
+import { findDOMNode } from "react-dom"
+import {
+  DragSource,
+  DropTarget,
+  ConnectDragSource,
+  ConnectDropTarget,
+  ConnectDragPreview,
+  DropTargetMonitor
+} from "react-dnd"
 import { DragDrop } from "@/dragDrop"
 import ListItem from "@/components/ListItem"
 
@@ -41,6 +49,87 @@ import {
   updateStep,
   deleteStep
 } from "@/store/reducers/recipes"
+
+const stepSource = {
+  beginDrag(props: IStepProps) {
+    return {
+      id: props.id,
+      index: props.index,
+      position: props.position
+    }
+  },
+  endDrag(props: IStepProps) {
+    props.completeMove(props.id, props.index)
+  }
+}
+
+const stepTarget = {
+  hover(
+    props: IStepProps,
+    monitor: DropTargetMonitor,
+    component: React.Component
+  ) {
+    // tslint:disable-next-line:no-unsafe-any
+    const dragIndex: number = monitor.getItem().index
+    const hoverIndex = props.index
+
+    // Don't replace items with themselves
+    if (dragIndex === hoverIndex) {
+      return
+    }
+
+    // Determine rectangle on screen
+    const el = findDOMNode(component) as HTMLDivElement | null
+    if (el == null) {
+      return
+    }
+    const hoverBoundingRect = el.getBoundingClientRect()
+
+    // Get vertical middle
+    const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
+
+    // Determine mouse position
+    const clientOffset = monitor.getClientOffset()
+    if (clientOffset == null) {
+      return
+    }
+
+    // Get pixels to the top
+    const hoverClientY = clientOffset.y - hoverBoundingRect.top
+
+    // Only perform the move when the mouse has crossed half of the items height
+    // When dragging downwards, only move when the cursor is below 50%
+    // When dragging upwards, only move when the cursor is above 50%
+
+    // Dragging downwards
+    if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+      return
+    }
+
+    // Dragging upwards
+    if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+      return
+    }
+
+    // Time to actually perform the action
+    props.moveStep(dragIndex, hoverIndex)
+
+    // Note: we're mutating the monitor item here!
+    // Generally it's better to avoid mutations,
+    // but it's good here for the sake of performance
+    // to avoid expensive index searches.
+    // tslint:disable-next-line:no-unsafe-any
+    monitor.getItem().index = hoverIndex
+  }
+}
+
+interface ICollectedProps {
+  readonly connectDragSource: ConnectDragSource
+  readonly connectDropTarget: ConnectDropTarget
+  readonly connectDragPreview: ConnectDragPreview
+
+  readonly isDragging: boolean
+}
 
 interface IStepProps {
   readonly index: number
@@ -54,103 +143,36 @@ interface IStepProps {
   readonly position?: number
 }
 
-function Step({ text, index, ...props }: IStepProps) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [, drop] = useDrop({
-    accept: DragDrop.STEP,
-    hover: (_item, monitor) => {
-      if (!ref.current) {
-        return
-      }
-
-      // tslint:disable-next-line:no-unsafe-any
-      const dragIndex: number = monitor.getItem().index
-      const hoverIndex = index
-
-      // Don't replace items with themselves
-      if (dragIndex === hoverIndex) {
-        return
-      }
-
-      // Determine rectangle on screen
-      const el = ref.current
-      const hoverBoundingRect = el.getBoundingClientRect()
-
-      // Get vertical middle
-      const hoverMiddleY =
-        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
-
-      // Determine mouse position
-      const clientOffset = monitor.getClientOffset()
-      if (clientOffset == null) {
-        return
-      }
-
-      // Get pixels to the top
-      const hoverClientY = clientOffset.y - hoverBoundingRect.top
-
-      // Only perform the move when the mouse has crossed half of the items height
-      // When dragging downwards, only move when the cursor is below 50%
-      // When dragging upwards, only move when the cursor is above 50%
-
-      // Dragging downwards
-      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-        return
-      }
-
-      // Dragging upwards
-      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-        return
-      }
-
-      // Time to actually perform the action
-      props.moveStep(dragIndex, hoverIndex)
-
-      // Note: we're mutating the monitor item here!
-      // Generally it's better to avoid mutations,
-      // but it's good here for the sake of performance
-      // to avoid expensive index searches.
-      // tslint:disable-next-line:no-unsafe-any
-      monitor.getItem().index = hoverIndex
-    }
-  })
-
-  const [{ isDragging }, drag, preview] = useDrag({
-    item: {
-      type: DragDrop.STEP,
-      id: props.id,
-      index,
-      position: props.position
-    },
-    end: () => {
-      props.completeMove(props.id, index)
-    },
-    collect: monitor => {
-      return {
-        isDragging: monitor.isDragging()
-      }
-    }
-  })
-
+function Step({
+  text,
+  isDragging,
+  connectDragSource,
+  connectDropTarget,
+  connectDragPreview,
+  index,
+  ...props
+}: IStepProps & ICollectedProps) {
   const style = {
     backgroundColor: "white",
     opacity: isDragging ? 0 : 1
   }
-
-  preview(drop(ref))
-  return (
-    <div style={style} ref={ref} className="mb-2">
-      <label className="better-label" ref={drag} style={{ cursor: "move" }}>
-        Step {index + 1}
-      </label>
-      <StepBody
-        id={props.id}
-        recipeID={props.recipeID}
-        updating={props.updating}
-        removing={props.removing}
-        text={text}
-      />
-    </div>
+  return connectDragPreview(
+    connectDropTarget(
+      <div style={style} className="mb-2">
+        {connectDragSource(
+          <label className="better-label" style={{ cursor: "move" }}>
+            Step {index + 1}
+          </label>
+        )}
+        <StepBody
+          id={props.id}
+          recipeID={props.recipeID}
+          updating={props.updating}
+          removing={props.removing}
+          text={text}
+        />
+      </div>
+    )
   )
 }
 
@@ -201,4 +223,12 @@ const StepBody = connect(
   }
 )(StepBodyBasic)
 
-export default Step
+export default DropTarget(DragDrop.STEP, stepTarget, cnct => ({
+  connectDropTarget: cnct.dropTarget()
+}))(
+  DragSource(DragDrop.STEP, stepSource, (cnct, monitor) => ({
+    connectDragSource: cnct.dragSource(),
+    connectDragPreview: cnct.dragPreview(),
+    isDragging: monitor.isDragging()
+  }))(Step)
+)

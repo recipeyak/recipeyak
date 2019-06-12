@@ -1,7 +1,7 @@
 import React from "react"
 import { connect } from "react-redux"
 import format from "date-fns/format"
-import { useDrop } from "react-dnd"
+import { DropTarget, ConnectDropTarget, DropTargetMonitor } from "react-dnd"
 import isWithinRange from "date-fns/is_within_range"
 import startOfDay from "date-fns/start_of_day"
 import endOfDay from "date-fns/end_of_day"
@@ -14,21 +14,18 @@ import { classNames } from "@/classnames"
 import CalendarItem, { ICalendarDragItem } from "@/components/CalendarDayItem"
 
 import {
+  addingScheduledRecipe,
   updatingScheduledRecipe,
+  moveScheduledRecipe,
   deletingScheduledRecipe,
   Dispatch,
-  fetchingShoppingList,
-  IAddingScheduledRecipeProps,
-  IMoveScheduledRecipeProps
+  fetchingShoppingList
 } from "@/store/thunks"
 
 import { DragDrop } from "@/dragDrop"
+import { IRecipe } from "@/store/reducers/recipes"
 import { IState } from "@/store/store"
-import {
-  ICalRecipe,
-  moveOrCreateCalendarRecipe,
-  createCalendarRecipe
-} from "@/store/reducers/calendar"
+import { ICalRecipe } from "@/store/reducers/calendar"
 import { IRecipeItemDrag } from "@/components/RecipeItem"
 import { Result } from "@/result"
 import { useCurrentDay } from "@/hooks"
@@ -56,6 +53,9 @@ const Title = ({ date }: { date: Date }) => {
 
 interface ICalendarDayProps {
   readonly date: Date
+  readonly connectDropTarget: ConnectDropTarget
+  readonly isOver: boolean
+  readonly canDrop: boolean
   readonly scheduledRecipes?: ICalRecipe[]
   readonly updateCount: (
     id: ICalRecipe["id"],
@@ -64,65 +64,40 @@ interface ICalendarDayProps {
   ) => Promise<Result<void, void>>
   readonly refetchShoppingList: (teamID: TeamID) => void
   readonly remove: (id: ICalRecipe["id"], teamID: TeamID) => void
-  readonly move: ({ id, teamID, to }: IMoveScheduledRecipeProps) => void
-  readonly create: ({
-    recipeID,
-    teamID,
-    on,
-    count
-  }: IAddingScheduledRecipeProps) => void
+  readonly move: (id: ICalRecipe["id"], teamID: TeamID, date: Date) => void
+  readonly create: (
+    recipeID: IRecipe["id"],
+    teamID: TeamID,
+    date: Date,
+    count: number
+  ) => void
   readonly teamID: TeamID
   readonly isSelected: boolean
 }
 
 function CalendarDay({
   date,
+  connectDropTarget,
+  isOver,
+  canDrop,
   scheduledRecipes,
   updateCount,
   refetchShoppingList,
   remove,
   teamID,
-  isSelected,
-  move,
-  create
+  isSelected
 }: ICalendarDayProps) {
   const today = useCurrentDay()
   const isToday = isSameDay(date, today)
 
-  const [{ isOver, canDrop }, drop] = useDrop({
-    accept: [DragDrop.RECIPE, DragDrop.CAL_RECIPE],
-    canDrop: () => {
-      // event when copying from past, we don't want to copy to past dates
-      return !beforeCurrentDay(date)
-    },
-    drop: dropped => {
-      const item = dropped as ICalendarDragItem | IRecipeItemDrag
-      // TOOD(sbdchd): We should move this logic into the calendar reducer
-      // NOTE(chdsbd): We use Promise.resolve to elminate slow drop event
-      // warnings.
-      if (item.type === DragDrop.CAL_RECIPE) {
-        move({ id: item.id, teamID, to: date })
-      } else if (item.type === DragDrop.RECIPE) {
-        create({ recipeID: item.recipeID, teamID, on: date, count: 1 })
-      }
-    },
-    collect: monitor => {
-      return {
-        isOver: monitor.isOver(),
-        canDrop: monitor.canDrop()
-      }
-    }
-  })
-
-  return (
+  return connectDropTarget(
     <div
-      ref={drop}
       style={{
         opacity: isOver && canDrop ? 0.5 : 1
       }}
       className={classNames("calendar-day", "p-1", "flex-grow-1", {
         "current-day": isToday,
-        "selected-day": isSelected
+        "selected-day": isSelected || (isOver && canDrop)
       })}>
       <Title date={date} />
       <ul>
@@ -169,16 +144,48 @@ const mapDispatchToProps = (
   ICalendarDayProps,
   "create" | "updateCount" | "refetchShoppingList" | "move" | "remove"
 > => ({
-  create: (props: IAddingScheduledRecipeProps) =>
-    dispatch(createCalendarRecipe(props)),
+  create: addingScheduledRecipe(dispatch),
   updateCount: updatingScheduledRecipe(dispatch),
   refetchShoppingList: fetchingShoppingList(dispatch),
-  move: (props: IMoveScheduledRecipeProps) =>
-    dispatch(moveOrCreateCalendarRecipe(props)),
+  move: moveScheduledRecipe(dispatch),
   remove: deletingScheduledRecipe(dispatch)
 })
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(CalendarDay)
+)(
+  DropTarget(
+    [DragDrop.RECIPE, DragDrop.CAL_RECIPE],
+    {
+      canDrop({ date }: Pick<ICalendarDayProps, "date">) {
+        // event when copying from past, we don't want to copy to past dates
+        return !beforeCurrentDay(date)
+      },
+      drop(
+        props: Pick<ICalendarDayProps, "move" | "teamID" | "date" | "create">,
+        monitor: DropTargetMonitor
+      ) {
+        const recipe: ICalendarDragItem | IRecipeItemDrag = monitor.getItem()
+        // NOTE(chdsbd): We use Promise.resolve to elminate slow drop event
+        // warnings.
+        if (recipe.kind === DragDrop.CAL_RECIPE) {
+          Promise.resolve().then(() =>
+            props.move(recipe.id, props.teamID, props.date)
+          )
+        } else if (recipe.kind === DragDrop.RECIPE) {
+          Promise.resolve().then(() =>
+            props.create(recipe.recipeID, props.teamID, props.date, 1)
+          )
+        }
+      }
+    },
+    (cnct, monitor) => {
+      return {
+        connectDropTarget: cnct.dropTarget(),
+        isOver: monitor.isOver(),
+        canDrop: monitor.canDrop()
+      }
+    }
+  )(CalendarDay)
+)
