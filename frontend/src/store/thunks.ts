@@ -96,7 +96,6 @@ import { isSuccessOrRefetching } from "@/webdata"
 import { isPast, endOfDay } from "date-fns"
 import { isOk, isErr, Ok, Err, Result } from "@/result"
 import { heldKeys } from "@/components/CurrentKeys"
-import { GetState } from "redux-loop"
 
 // TODO(sbdchd): move to @/store/store
 export type Dispatch = ReduxDispatch<Action>

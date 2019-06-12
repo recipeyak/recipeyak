@@ -23,7 +23,6 @@ import {
 } from "@/store/thunks"
 
 import { DragDrop } from "@/dragDrop"
-import { IRecipe } from "@/store/reducers/recipes"
 import { IState } from "@/store/store"
 import {
   ICalRecipe,
@@ -89,10 +88,6 @@ function CalendarDay({
 }: ICalendarDayProps) {
   const today = useCurrentDay()
   const isToday = isSameDay(date, today)
-
-  const handleSelect = (id: IRecipe["id"]) => {
-    console.info(`selected recipe with id: ${id} for date: ${today}`)
-  }
 
   interface ICollectedProps {
     readonly isOver: boolean

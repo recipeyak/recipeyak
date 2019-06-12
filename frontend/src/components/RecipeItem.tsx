@@ -1,6 +1,6 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import { DragSource, ConnectDragSource } from "react-dnd"
+import { useDrag } from "react-dnd"
 import DatePickerForm from "@/components/DatePickerForm"
 import { classNames } from "@/classnames"
 import { recipeURL } from "@/urls"
@@ -61,13 +61,7 @@ interface IRecipeItemProps {
   readonly drag?: boolean
 }
 
-export function RecipeItem({
-  name,
-  author,
-  id,
-  onSelect,
-  ...props
-}: IRecipeItemProps) {
+export function RecipeItem({ name, author, id, ...props }: IRecipeItemProps) {
   const url = props.url || recipeURL(id, name)
 
   const item: IRecipeItemDrag = { type: DragDrop.RECIPE, recipeID: id }
@@ -88,7 +82,6 @@ export function RecipeItem({
   return (
     <a
       ref={props.drag ? drag : undefined}
-      onClick={() => onSelect(id)}
       className={classNames("card", {
         "cursor-move": props.drag
       })}
