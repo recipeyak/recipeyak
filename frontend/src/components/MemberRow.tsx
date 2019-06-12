@@ -5,8 +5,8 @@ import { connect } from "react-redux"
 import { ButtonPlain, ButtonDanger } from "@/components/Buttons"
 
 import {
-  settingUserTeamLevel,
-  deletingMembership,
+  settingUserTeamLevelAsync,
+  deletingMembershipAsync,
   Dispatch
 } from "@/store/thunks"
 import { ITeam, IMember } from "@/store/reducers/teams"
@@ -125,8 +125,8 @@ const mapStateToProps = (
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  handleUserLevelChange: settingUserTeamLevel(dispatch),
-  deleteMembership: deletingMembership(dispatch)
+  handleUserLevelChange: settingUserTeamLevelAsync(dispatch),
+  deleteMembership: deletingMembershipAsync(dispatch)
 })
 
 export default connect(

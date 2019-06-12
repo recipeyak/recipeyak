@@ -1,6 +1,10 @@
 import { connect } from "react-redux"
 
-import { postNewRecipe, Dispatch, fetchingTeams } from "@/store/thunks"
+import {
+  postNewRecipeAsync,
+  Dispatch,
+  fetchingTeamsAsync
+} from "@/store/thunks"
 
 import AddRecipe from "@/components/AddRecipe"
 
@@ -68,11 +72,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   updateStep: (_recipeID: number, i: number, step: IStepBasic) =>
     dispatch(updateAddRecipeFormStep({ index: i, step })),
 
-  addRecipe: postNewRecipe(dispatch),
+  addRecipe: postNewRecipeAsync(dispatch),
   clearErrors: () => dispatch(resetAddRecipeErrors()),
   clearForm: () => dispatch(clearAddRecipeForm()),
 
-  fetchData: fetchingTeams(dispatch)
+  fetchData: fetchingTeamsAsync(dispatch)
 })
 
 export default connect(

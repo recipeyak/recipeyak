@@ -15,8 +15,8 @@ import { IState } from "@/store/store"
 import { connect } from "react-redux"
 import {
   Dispatch,
-  fetchSocialConnections,
-  disconnectSocialAccount
+  fetchSocialConnectionsAsync,
+  disconnectSocialAccountAsync
 } from "@/store/thunks"
 import {
   WebData,
@@ -110,7 +110,7 @@ const OAuthButton = ({
 }
 
 const mapDispatchToPropsOAuthButton = (dispatch: Dispatch) => ({
-  disconnect: disconnectSocialAccount(dispatch)
+  disconnect: disconnectSocialAccountAsync(dispatch)
 })
 
 const ConnectedOAuthButton = connect(
@@ -175,7 +175,7 @@ const mapStateToProps = (state: IState) => ({
 })
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchData: () => {
-    fetchSocialConnections(dispatch)()
+    fetchSocialConnectionsAsync(dispatch)()
   }
 })
 

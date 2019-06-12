@@ -1,11 +1,11 @@
 import { connect } from "react-redux"
 
-import { reset, Dispatch } from "@/store/thunks"
+import { resetAsync, Dispatch } from "@/store/thunks"
 import PasswordReset from "@/components/PasswordReset"
 import { IState } from "@/store/store"
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  reset: reset(dispatch)
+  reset: resetAsync(dispatch)
 })
 
 const mapStateToProps = (state: IState) => ({

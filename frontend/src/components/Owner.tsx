@@ -9,12 +9,12 @@ import {
 } from "@/components/Buttons"
 
 import {
-  moveRecipeTo,
-  copyRecipeTo,
-  showNotificationWithTimeout,
+  moveRecipeToAsync,
+  copyRecipeToAsync,
+  showNotificationWithTimeoutAsync,
   Dispatch,
   INotificationWithTimeout,
-  fetchingTeams
+  fetchingTeamsAsync
 } from "@/store/thunks"
 import { IState } from "@/store/store"
 import { IRecipe } from "@/store/reducers/recipes"
@@ -51,10 +51,10 @@ const mapStateToProps = (state: IState) => ({
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: fetchingTeams(dispatch),
-  showNotificationWithTimeout: showNotificationWithTimeout(dispatch),
-  moveRecipeTo: moveRecipeTo(dispatch),
-  copyRecipeTo: copyRecipeTo(dispatch)
+  fetchData: fetchingTeamsAsync(dispatch),
+  showNotificationWithTimeout: showNotificationWithTimeoutAsync(dispatch),
+  moveRecipeTo: moveRecipeToAsync(dispatch),
+  copyRecipeTo: copyRecipeToAsync(dispatch)
 })
 
 interface IOwnerProps {

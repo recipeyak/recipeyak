@@ -8,7 +8,7 @@ import Calendar from "@/components/Calendar"
 import Recipes from "@/components/RecipeList"
 import ShoppingList from "@/components/ShoppingList"
 
-import { Dispatch, updatingTeamID } from "@/store/thunks"
+import { Dispatch, updatingTeamIDAsync } from "@/store/thunks"
 import { Tabs, Tab } from "@/components/Tabs"
 import { ITeam } from "@/store/reducers/teams"
 
@@ -114,7 +114,7 @@ export default connect(
   (dispatch: Dispatch, ownProps: ScheduleRouteParams) => {
     const teamID = getTeamID(ownProps.match.params)
     return {
-      updateTeamID: updatingTeamID(dispatch),
+      updateTeamID: updatingTeamIDAsync(dispatch),
       teamID,
       type: ownProps.match.params["type"]
     }

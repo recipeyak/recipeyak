@@ -609,7 +609,7 @@ describe("Recipes", () => {
       expect(maybeCmd.type).toEqual("RUN")
 
       if (maybeCmd.type === "RUN") {
-        expect(maybeCmd.func).toEqual(a.updatingRecipe)
+        expect(maybeCmd.func).toEqual(a.updatingRecipeAsync)
       }
     }
 

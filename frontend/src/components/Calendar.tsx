@@ -4,11 +4,11 @@ import eachDay from "date-fns/each_day"
 import format from "date-fns/format"
 
 import {
-  fetchCalendar,
+  fetchCalendarAsync,
   Dispatch,
-  fetchingRecipeList,
-  fetchingTeams,
-  fetchingShoppingList
+  fetchingRecipeListAsync,
+  fetchingTeamsAsync,
+  fetchingShoppingListAsync
 } from "@/store/thunks"
 
 import { toDateString } from "@/date"
@@ -294,15 +294,15 @@ const mapStateToProps = (
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: fetchCalendar(dispatch),
-  fetchTeams: fetchingTeams(dispatch),
+  fetchData: fetchCalendarAsync(dispatch),
+  fetchTeams: fetchingTeamsAsync(dispatch),
   navTo: (url: string) => {
     dispatch(push(url))
   },
   refetchShoppingListAndRecipes: (teamID: TeamID) => {
     return Promise.all([
-      fetchingRecipeList(dispatch)(teamID),
-      fetchingShoppingList(dispatch)(teamID)
+      fetchingRecipeListAsync(dispatch)(teamID),
+      fetchingShoppingListAsync(dispatch)(teamID)
     ])
   }
 })
