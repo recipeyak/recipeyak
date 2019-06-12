@@ -69,7 +69,7 @@ export function RecipeItem({ name, author, id, ...props }: IRecipeItemProps) {
   const [{ isDragging }, drag] = useDrag({
     item,
     options: { dropEffect: "copy" },
-    canDrag(): boolean {
+    canDrag: () => {
       return !!props.drag
     },
     collect: monitor => {
