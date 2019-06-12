@@ -89,21 +89,14 @@ function CalendarDay({
   const today = useCurrentDay()
   const isToday = isSameDay(date, today)
 
-  interface ICollectedProps {
-    readonly isOver: boolean
-    readonly canDrop: boolean
-  }
-  const [{ isOver, canDrop }, drop] = useDrop<
-    ICalendarDragItem | IRecipeItemDrag,
-    void,
-    ICollectedProps
-  >({
+  const [{ isOver, canDrop }, drop] = useDrop({
     accept: [DragDrop.RECIPE, DragDrop.CAL_RECIPE],
     canDrop: () => {
       // event when copying from past, we don't want to copy to past dates
       return !beforeCurrentDay(date)
     },
-    drop: item => {
+    drop: dropped => {
+      const item = dropped as ICalendarDragItem | IRecipeItemDrag
       // TOOD(sbdchd): We should move this logic into the calendar reducer
       // NOTE(chdsbd): We use Promise.resolve to elminate slow drop event
       // warnings.
@@ -129,7 +122,7 @@ function CalendarDay({
       }}
       className={classNames("calendar-day", "p-1", "flex-grow-1", {
         "current-day": isToday,
-        "selected-day": isSelected || (isOver && canDrop)
+        "selected-day": isSelected
       })}>
       <Title date={date} />
       <ul>
