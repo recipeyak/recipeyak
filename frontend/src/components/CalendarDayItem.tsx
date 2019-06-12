@@ -41,7 +41,7 @@ function RecipeLink({ name, id }: IRecipeLink) {
   return (
     <Link
       to={recipeURL(id, name)}
-      className="cal-day-item break-word text-small"
+      className="break-word text-small"
       style={{
         lineHeight: 1.1
       }}>

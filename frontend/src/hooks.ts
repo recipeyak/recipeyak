@@ -74,18 +74,3 @@ export function useGlobalEvent({
     }
   }, [mouseDown])
 }
-
-/**
- * React hook to create a ref that auto-focuses on mount
- */
-export function useAutoFocusRef() {
-  const ref = React.useRef<HTMLInputElement>(null)
-  const el = ref.current
-  React.useEffect(() => {
-    if (el) {
-      el.focus()
-    }
-  }, [el])
-
-  return ref
-}
