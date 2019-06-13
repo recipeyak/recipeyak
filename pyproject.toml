@@ -28,6 +28,7 @@ honcho = "^1.0"
 click = "^7.0"
 python-dotenv = "^0.10.1"
 typing_extensions = "^3.7"
+drf-yasg = "^1.16"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.4.0"
