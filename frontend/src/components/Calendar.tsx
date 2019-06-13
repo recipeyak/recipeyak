@@ -29,6 +29,8 @@ import {
 import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
 import { Select } from "@/components/Forms"
 import chunk from "lodash/chunk"
+import { classNames } from "@/classnames"
+import { isSafari } from "@/utils/general"
 
 function monthYearFromDate(date: Date) {
   return format(date, "MMM D | YYYY")
@@ -72,7 +74,8 @@ interface IDaysProps {
 
 function Days({ start, end, days, teamID }: IDaysProps) {
   return (
-    <section className="mb-2 h-100">
+    <section
+      className={classNames("mb-2", "flex-grow-1", { "h-100": isSafari() })}>
       {chunk(eachDay(start, end), WEEK_DAYS).map(dates => (
         <section className="d-flex calendar-week">
           {dates.map(date => (
