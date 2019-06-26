@@ -199,7 +199,6 @@ function Calendar(props: ICalendarProps) {
 
   useEffect(() => {
     props.fetchTeams()
-    props.fetchData(props.teamID, start)
   }, [])
 
   const refetchData = (teamID: TeamID = props.teamID) => {
