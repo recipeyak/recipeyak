@@ -10,7 +10,7 @@ pytestmark = pytest.mark.django_db
 
 
 def test_creating_scheduled_recipe(client, recipe, user):
-    url = reverse("calendar-list")
+    url = reverse("calendar-list", kwargs=dict(team_pk="me"))
     data = {"recipe": recipe.id, "on": date(1976, 7, 6), "count": 1}
     client.force_authenticate(user)
     res = client.post(url, data)
@@ -34,7 +34,7 @@ def test_recipe_returns_last_scheduled_date(client, scheduled_recipe, recipe2):
 
 
 def test_updating_scheduled_recipe(client, user, scheduled_recipe):
-    url = reverse("calendar-detail", kwargs={"pk": scheduled_recipe.id})
+    url = reverse("calendar-detail", kwargs=dict(pk=scheduled_recipe.id, team_pk="me"))
     assert scheduled_recipe.count == 1
     data = {"count": 2}
     client.force_authenticate(user)
@@ -44,7 +44,7 @@ def test_updating_scheduled_recipe(client, user, scheduled_recipe):
 
 
 def test_deleting_scheduled_recipe(client, user, scheduled_recipe):
-    url = reverse("calendar-detail", kwargs={"pk": scheduled_recipe.id})
+    url = reverse("calendar-detail", kwargs=dict(pk=scheduled_recipe.id, team_pk="me"))
     client.force_authenticate(user)
     res = client.delete(url)
     assert res.status_code == status.HTTP_204_NO_CONTENT
@@ -52,7 +52,7 @@ def test_deleting_scheduled_recipe(client, user, scheduled_recipe):
 
 
 def test_fetching_scheduled_recipes(client, user, scheduled_recipe):
-    url = reverse("calendar-list")
+    url = reverse("calendar-list", kwargs=dict(team_pk="me"))
     client.force_authenticate(user)
     res = client.get(url)
     assert (
@@ -88,7 +88,7 @@ def test_scheduling_the_same_recipe_twice_on_a_day(recipe, user):
 
 def test_dupe_scheduling_with_http(client, recipe, user):
     client.force_authenticate(user)
-    url = reverse("calendar-list")
+    url = reverse("calendar-list", kwargs=dict(team_pk="me"))
     data = {"recipe": recipe.id, "on": date(1976, 7, 6), "count": 1}
     client.force_authenticate(user)
     assert client.post(url, data).status_code == status.HTTP_201_CREATED
