@@ -22,6 +22,8 @@ class DisallowAny:
 class IsTeamMember(permissions.BasePermission):
     def has_permission(self, request, view) -> bool:
         team_pk = view.kwargs["team_pk"]
+        if team_pk == "me":
+            return True
         team: Team = get_object_or_404(Team, pk=team_pk)
         return team.is_member(request.user)
 

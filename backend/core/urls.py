@@ -17,7 +17,6 @@ from core.schedule.views import (
     CalendarViewSet,
     ReportBadMerge,
     ShoppingListView,
-    TeamCalendarViewSet,
     TeamShoppingListViewSet,
 )
 from core.stats.views import UserStats
@@ -32,7 +31,6 @@ router = DefaultRouter()
 router.register(r"recipes", RecipeViewSet, basename="recipes")
 router.register(r"t", TeamViewSet, basename="teams")
 router.register(r"invites", UserInvitesViewSet, basename="user-invites")
-router.register(r"calendar", CalendarViewSet, basename="calendar")
 
 recipes_router = routers.NestedSimpleRouter(router, r"recipes", lookup="recipe")
 recipes_router.register(r"steps", StepViewSet, basename="recipe-step")
@@ -45,7 +43,7 @@ teams_router.register(r"recipes", TeamRecipesViewSet, basename="team-recipes")
 teams_router.register(
     r"shoppinglist", TeamShoppingListViewSet, basename="team-shoppinglist"
 )
-teams_router.register(r"calendar", TeamCalendarViewSet, basename="team-calendar")
+teams_router.register(r"calendar", CalendarViewSet, basename="calendar")
 
 urlpatterns = [
     url(r"^api/v1/auth/", include("core.auth.urls")),

@@ -250,15 +250,10 @@ export const declineInvite = (id: IInvite["id"]) =>
 export const reportBadMerge = () => http.post("/api/v1/report-bad-merge", {})
 
 export const getCalendarRecipeList = (teamID: TeamID, currentDay: Date) => {
-  const url =
-    teamID === "personal"
-      ? "/api/v1/calendar/"
-      : `/api/v1/t/${teamID}/calendar/`
-
   const start = toDateString(startOfWeek(subWeeks(currentDay, 1)))
   const end = toDateString(endOfWeek(addWeeks(currentDay, 1)))
-
-  return http.get<ICalRecipe[]>(url, {
+  const id = teamID === "personal" ? "me" : teamID
+  return http.get<ICalRecipe[]>(`/api/v1/t/${id}/calendar/`, {
     params: {
       start,
       end
@@ -272,11 +267,8 @@ export const scheduleRecipe = (
   on: Date,
   count: string | number
 ) => {
-  const url =
-    teamID === "personal"
-      ? "/api/v1/calendar/"
-      : `/api/v1/t/${teamID}/calendar/`
-  return http.post<ICalRecipe>(url, {
+  const id = teamID === "personal" ? "me" : teamID
+  return http.post<ICalRecipe>(`/api/v1/t/${id}/calendar/`, {
     recipe: recipeID,
     on: toDateString(on),
     count
@@ -284,25 +276,20 @@ export const scheduleRecipe = (
 }
 
 // TODO(sbdchd): we shouldn't need teamID here
-export const deleteScheduledRecipe = (id: ICalRecipe["id"], teamID: TeamID) => {
-  const url =
-    teamID === "personal"
-      ? `/api/v1/calendar/${id}/`
-      : `/api/v1/t/${teamID}/calendar/${id}/`
-
-  return http.delete(url)
+export const deleteScheduledRecipe = (
+  calId: ICalRecipe["id"],
+  teamID: TeamID
+) => {
+  const id = teamID === "personal" ? "me" : teamID
+  return http.delete(`/api/v1/t/${id}/calendar/${calId}/`)
 }
 
 // TODO(sbdchd): we shouldn't need teamID here
 export const updateScheduleRecipe = (
-  id: ICalRecipe["id"],
+  calId: ICalRecipe["id"],
   teamID: TeamID,
   recipe: Partial<ICalRecipe>
 ) => {
-  const url =
-    teamID === "personal"
-      ? `/api/v1/calendar/${id}/`
-      : `/api/v1/t/${teamID}/calendar/${id}/`
-
-  return http.patch<ICalRecipe>(url, recipe)
+  const id = teamID === "personal" ? "me" : teamID
+  return http.patch<ICalRecipe>(`/api/v1/t/${id}/calendar/${calId}/`, recipe)
 }

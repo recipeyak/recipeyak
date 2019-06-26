@@ -82,44 +82,18 @@ class StartEndDateSerializer(serializers.Serializer):
     end = serializers.DateField()
 
 
-class CalendarViewSet(viewsets.ModelViewSet):
-    serializer_class = ScheduledRecipeSerializer
-    permission_classes = (IsAuthenticated,)
-
-    def get_queryset(self):
-        return ScheduledRecipe.objects.filter(user=self.request.user).select_related(
-            "recipe"
-        )
-
-    def create(self, request: Request) -> Response:
-        # use different create serializer since we create via primary key, and
-        # return an objects
-        serializer = ScheduledRecipeSerializerCreate(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        n = serializer.save(user=request.user)
-        return Response(
-            self.get_serializer(n, dangerously_allow_db=True).data,
-            status=status.HTTP_201_CREATED,
-        )
-
-    def list(self, request: Request) -> Response:
-        serializer = StartEndDateSerializer(data=request.query_params)
-        serializer.is_valid(raise_exception=True)
-        start = serializer.validated_data["start"]
-        end = serializer.validated_data["end"]
-        queryset = self.get_queryset().filter(on__gte=start).filter(on__lte=end)
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
 # TODO(chdsbd): Merge this into the CalendarViewSet
-class TeamCalendarViewSet(viewsets.ModelViewSet):
+class CalendarViewSet(viewsets.ModelViewSet):
     serializer_class = ScheduledRecipeSerializer
     permission_classes = (IsAuthenticated, IsTeamMember)
 
     def get_queryset(self):
-        team = get_object_or_404(Team, pk=self.kwargs["team_pk"])
+        pk = self.kwargs["team_pk"]
+        if pk == "me":
+            return ScheduledRecipe.objects.filter(
+                user=self.request.user
+            ).select_related("recipe")
+        team = get_object_or_404(Team, pk=pk)
         return ScheduledRecipe.objects.filter(team=team).select_related("recipe")
 
     def create(self, request: Request, team_pk: str) -> Response:
@@ -128,21 +102,22 @@ class TeamCalendarViewSet(viewsets.ModelViewSet):
         serializer = ScheduledRecipeSerializerCreate(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        team = get_object_or_404(Team, pk=team_pk)
-        n = serializer.save(team=team)
+        if team_pk == "me":
+            data = serializer.save(user=request.user)
+        else:
+            team = get_object_or_404(Team, pk=team_pk)
+            data = serializer.save(team=team)
         return Response(
-            self.get_serializer(n, dangerously_allow_db=True).data,
+            self.get_serializer(data, dangerously_allow_db=True).data,
             status=status.HTTP_201_CREATED,
         )
 
     def list(self, request: Request, team_pk: str) -> Response:
-        start = request.query_params.get("start")
-        end = request.query_params.get("end")
+        serializer = StartEndDateSerializer(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+        start = serializer.validated_data["start"]
+        end = serializer.validated_data["end"]
 
-        team = get_object_or_404(Team, pk=team_pk)
-        try:
-            queryset = team.scheduled_recipes.filter(on__gte=start).filter(on__lte=end)
-        except (ValueError, ValidationError):
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        queryset = self.get_queryset().filter(on__gte=start).filter(on__lte=end)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
