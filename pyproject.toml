@@ -51,6 +51,7 @@ pytest-testmon = "^0.9.16"
 pytest-icdiff = "^0.2.0"
 pywatchman = "^1.4"
 isort = "^4.3"
+flake8-comprehensions = "^2.1"
 
 [tool.poetry.scripts]
 yak = 'cli:cli'

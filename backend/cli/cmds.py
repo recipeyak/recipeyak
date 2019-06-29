@@ -19,9 +19,7 @@ def mypy() -> str:
 def pylint() -> str:
     from pathlib import Path
 
-    python_dirs = " ".join(
-        list(str(p.parent) for p in Path("backend").glob("*/__init__.py"))
-    )
+    python_dirs = " ".join(str(p.parent) for p in Path("backend").glob("*/__init__.py"))
     return f"pylint --rcfile='.pylintrc' {python_dirs}"
 
 

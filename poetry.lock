@@ -292,6 +292,17 @@ pyflakes = ">=2.1.0,<2.2.0"
 
 [[package]]
 category = "dev"
+description = "A flake8 plugin to help you write better list/set/dict comprehensions."
+name = "flake8-comprehensions"
+optional = false
+python-versions = ">=3.4"
+version = "2.1.0"
+
+[package.dependencies]
+flake8 = "!=3.2.0"
+
+[[package]]
+category = "dev"
 description = "JUnit XML Formatter for flake8"
 name = "flake8-formatter-junit-xml"
 optional = false
@@ -1016,7 +1027,7 @@ python-versions = "*"
 version = "1.11.1"
 
 [metadata]
-content-hash = "8243cdc1349edf20a015d47fdb60c98f173528cf09155a992acb8a59ded43432"
+content-hash = "8ebd77f9c2a9ae77497f6c0ed4de3ad168072bc4389ae9f4898dd5dba5669c74"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1049,6 +1060,7 @@ drf-nested-routers = ["3346bcfb151d221d499b3b7932cc6e5cee005ea50f1343a2f5cd2f85e
 drf-yasg = ["4e282ba668b257bc26b9cddd688e50f7b7f39ad38caa15612b96e8e2bab74904", "82b535a22fc13e0a202217df4c6470c40b54d21f742e69798f53c69afccbfdac"]
 entrypoints = ["589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19", "c70dd71abe5a8c85e55e12c19bd91ccfeec11a6e99044204511f9ed547d48451"]
 flake8 = ["859996073f341f2670741b51ec1e67a01da142831aa1fdc6242dbf88dffbe661", "a796a115208f5c03b18f332f7c11729812c8c3ded6c46319c59b53efd3819da8"]
+flake8-comprehensions = ["35f826956e87f230415cde9c3b8b454e785736cf5ff0be551c441b41b937f699", "f0b61d983d608790abf3664830d68efd3412265c2d10f6a4ba1a353274dbeb64"]
 flake8-formatter-junit-xml = ["b49c6b528d9518e855548ac76041cc333b56b5bcb24ae84af44668d37f2aec16", "e537adea0638bd4dbe7debce37844d9082a3d6aeb29304505b12caf97ff6f80b"]
 flake8-pie = ["1f68d70390ac498df0c171cafed742040fa8b969fd83fe91e416e931e27ab94c", "6aff0f0ebc4648037997ee826d37fa29b633dd03c28e6ea5c6cc40159f79455f"]
 flake8-print = ["5010e6c138b63b62400da4b06afa33becc5e08bd1fcce9af3752445cf3342f54"]
