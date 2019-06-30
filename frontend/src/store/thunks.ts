@@ -6,7 +6,7 @@ import { push, replace } from "react-router-redux"
 import { Dispatch as ReduxDispatch } from "redux"
 import { AxiosError, AxiosResponse } from "axios"
 import raven from "raven-js"
-import { store, Action } from "@/store/store"
+import { store, Action, IState } from "@/store/store"
 import {
   SocialProvider,
   updateEmail,
@@ -30,8 +30,8 @@ import {
   deleteCalendarRecipe,
   moveCalendarRecipe,
   fetchCalendarRecipes,
-  getAllCalRecipes,
-  getCalRecipeById
+  getCalRecipeById,
+  getExistingRecipe
 } from "@/store/reducers/calendar"
 import {
   IInvite,
@@ -1077,13 +1077,6 @@ export const deletingScheduledRecipeAsync = (dispatch: Dispatch) => async (
   return Ok(undefined)
 }
 
-function isSameTeam(x: ICalRecipe, teamID: TeamID): boolean {
-  if (teamID === "personal") {
-    return x.user != null
-  }
-  return x.team === teamID
-}
-
 export const moveScheduledRecipeAsync = (dispatch: Dispatch) => async (
   id: ICalRecipe["id"],
   teamID: TeamID,
@@ -1110,13 +1103,7 @@ export const moveScheduledRecipeAsync = (dispatch: Dispatch) => async (
       from.count
     )
   }
-  const existing = getAllCalRecipes(state).find(
-    x =>
-      isSameDay(x.on, to) &&
-      isSameTeam(x, teamID) &&
-      x.id !== from.id &&
-      x.recipe.id === from.recipe.id
-  )
+  const existing = getExistingRecipe({ state, on: to, teamID, from })
 
   // Note(sbdchd): we need move to be after the checking of the store so we
   // don't delete the `from` recipe and update the `existing`

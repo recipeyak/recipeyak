@@ -5,6 +5,9 @@ import {
 } from "@/store/reducers/calendar"
 import * as a from "@/store/reducers/calendar"
 import { baseRecipe } from "@/store/reducers/recipes.test"
+import { rootReducer } from "@/store/store"
+import { getModel } from "redux-loop"
+import { addWeeks, isSameDay, isAfter } from "date-fns"
 
 describe("Calendar", () => {
   it("sets calendar recipes starting with empty state", () => {
@@ -509,5 +512,81 @@ describe("Calendar", () => {
     expect(calendar(beforeState, a.setCalendarRecipe(recipe))).toEqual(
       afterState
     )
+  })
+})
+
+describe("calendar selectors", () => {
+  test("#getExistingRecipe", () => {
+    // initialize state
+    const emptyState = getModel(
+      rootReducer(undefined, a.fetchCalendarRecipes.failure())
+    )
+
+    const teamID = 5
+    const userID = 1
+    const recipeID = 10
+
+    const fromDate = new Date()
+    const from: a.ICalRecipe = {
+      id: 1,
+      count: 1,
+      on: String(fromDate),
+      team: teamID,
+      user: userID,
+      recipe: {
+        id: recipeID,
+        name: "foo recipe"
+      }
+    }
+    const toDate = addWeeks(fromDate, 1)
+
+    expect(isAfter(toDate, fromDate)).toEqual(true)
+
+    // smoke test. There aren't any other recipes in the reducer so we should
+    // get undefined.
+    expect(
+      a.getExistingRecipe({
+        state: emptyState,
+        on: toDate,
+        teamID,
+        from
+      })
+    ).toEqual(undefined)
+
+    // existing recipe scheduled at the toDate
+    const calRecipeOnSameDay: a.ICalRecipe = {
+      id: 2,
+      count: 1,
+      on: String(toDate),
+      team: teamID,
+      user: userID,
+      recipe: {
+        id: recipeID,
+        name: "foo recipe"
+      }
+    }
+    expect(calRecipeOnSameDay.id).not.toEqual(from.id)
+    expect(isSameDay(calRecipeOnSameDay.on, toDate)).toEqual(true)
+
+    const nextState = getModel(
+      rootReducer(
+        emptyState,
+        a.fetchCalendarRecipes.success([calRecipeOnSameDay])
+      )
+    )
+
+    expect(
+      a.getExistingRecipe({ state: nextState, on: toDate, teamID, from })
+    ).not.toBeUndefined()
+
+    // moving recipe from its location and back to its location in one
+    // drag-and-drop go.
+    const calRecipe = a.getExistingRecipe({
+      state: nextState,
+      on: toDate,
+      teamID,
+      from: calRecipeOnSameDay
+    })
+    expect(calRecipe).toBeUndefined()
   })
 })

@@ -9,6 +9,8 @@ import {
 import { IState } from "@/store/store"
 import { isUndefined } from "util"
 import { notUndefined } from "@/utils/general"
+import { ITeam } from "@/store/reducers/teams"
+import { IUser } from "@/store/reducers/user"
 
 export const fetchCalendarRecipes = createAsyncAction(
   "FETCH_CALENDAR_RECIPES_START",
@@ -41,8 +43,8 @@ export interface ICalRecipe {
   readonly id: number
   readonly count: number
   readonly on: string
-  readonly team?: unknown
-  readonly user: unknown
+  readonly team: ITeam["id"] | null
+  readonly user: IUser["id"] | null
   readonly recipe: {
     readonly id: number
     readonly name: string
@@ -80,12 +82,17 @@ export const calendar = (
         allIds: uniq(state.allIds.concat(action.payload.map(x => x.id)))
       }
     case getType(setCalendarRecipe): {
+      // TOOD(sbdchd): move to selector
       const existing = state.allIds
-        .filter(x => x !== action.payload.id)
         .map(x => state.byId[x])
-        .filter(notUndefined)
-        .filter(x => isSameDay(x.on, action.payload.on))
-        .find(x => x.recipe.id === action.payload.recipe.id)
+        .find(
+          x =>
+            notUndefined(x) &&
+            isSameDay(x.on, action.payload.on) &&
+            haveSameTeam(x, action.payload) &&
+            x.recipe.id === action.payload.recipe.id &&
+            x.id !== action.payload.id
+        )
 
       if (existing) {
         // we remove the existing and replace with the pending uuid
@@ -221,3 +228,36 @@ export const getTeamRecipes = (state: IState): ICalRecipe[] =>
 
 export const getPersonalRecipes = (state: IState): ICalRecipe[] =>
   getAllCalRecipes(state).filter(recipe => recipe.team == null)
+
+function haveSameTeam(a: ICalRecipe, b: ICalRecipe): boolean {
+  return a.team === b.team && a.user === b.user
+}
+
+function isSameTeam(x: ICalRecipe, teamID: TeamID): boolean {
+  if (teamID === "personal") {
+    return x.user != null
+  }
+  return x.team === teamID
+}
+
+interface IGetExistingRecipeProps {
+  readonly state: IState
+  readonly on: Date
+  // recipe that is going to be moved
+  readonly from: ICalRecipe
+  readonly teamID: TeamID
+}
+
+export const getExistingRecipe = ({
+  state,
+  on,
+  teamID,
+  from
+}: IGetExistingRecipeProps) =>
+  getAllCalRecipes(state).find(
+    x =>
+      isSameDay(x.on, on) &&
+      isSameTeam(x, teamID) &&
+      x.id !== from.id &&
+      x.recipe.id === from.recipe.id
+  )
