@@ -1,5 +1,4 @@
 import pickBy from "lodash/pickBy"
-import isSameDay from "date-fns/is_same_day"
 import { random32Id } from "@/uuid"
 import { toDateString, second } from "@/date"
 import { push, replace } from "react-router-redux"
@@ -30,8 +29,8 @@ import {
   deleteCalendarRecipe,
   moveCalendarRecipe,
   fetchCalendarRecipes,
-  getAllCalRecipes,
-  getCalRecipeById
+  getCalRecipeById,
+  getExistingRecipe
 } from "@/store/reducers/calendar"
 import {
   IInvite,
@@ -1077,13 +1076,6 @@ export const deletingScheduledRecipeAsync = (dispatch: Dispatch) => async (
   return Ok(undefined)
 }
 
-function isSameTeam(x: ICalRecipe, teamID: TeamID): boolean {
-  if (teamID === "personal") {
-    return x.user != null
-  }
-  return x.team === teamID
-}
-
 export const moveScheduledRecipeAsync = (dispatch: Dispatch) => async (
   id: ICalRecipe["id"],
   teamID: TeamID,
@@ -1091,7 +1083,7 @@ export const moveScheduledRecipeAsync = (dispatch: Dispatch) => async (
 ) => {
   // HACK(sbdchd): With an endpoint we can eliminate this
   const state = store.getState()
-  const from = getCalRecipeById(state, id)
+  const from = getCalRecipeById(state.calendar, id)
 
   if (from == null) {
     return
@@ -1110,9 +1102,7 @@ export const moveScheduledRecipeAsync = (dispatch: Dispatch) => async (
       from.count
     )
   }
-  const existing = getAllCalRecipes(state)
-    .filter(x => isSameDay(x.on, to) && isSameTeam(x, teamID))
-    .find(x => x.recipe.id === from.recipe.id)
+  const existing = getExistingRecipe({ state: state.calendar, on: to, from })
 
   // Note(sbdchd): we need move to be after the checking of the store so we
   // don't delete the `from` recipe and update the `existing`
