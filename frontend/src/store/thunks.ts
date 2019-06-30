@@ -1110,9 +1110,13 @@ export const moveScheduledRecipeAsync = (dispatch: Dispatch) => async (
       from.count
     )
   }
-  const existing = getAllCalRecipes(state)
-    .filter(x => isSameDay(x.on, to) && isSameTeam(x, teamID))
-    .find(x => x.recipe.id === from.recipe.id)
+  const existing = getAllCalRecipes(state).find(
+    x =>
+      isSameDay(x.on, to) &&
+      isSameTeam(x, teamID) &&
+      x.id !== from.id &&
+      x.recipe.id === from.recipe.id
+  )
 
   // Note(sbdchd): we need move to be after the checking of the store so we
   // don't delete the `from` recipe and update the `existing`
