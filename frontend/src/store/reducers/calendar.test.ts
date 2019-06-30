@@ -546,9 +546,8 @@ describe("calendar selectors", () => {
     // get undefined.
     expect(
       a.getExistingRecipe({
-        state: emptyState,
+        state: emptyState.calendar,
         on: toDate,
-        teamID,
         from
       })
     ).toEqual(undefined)
@@ -576,15 +575,18 @@ describe("calendar selectors", () => {
     )
 
     expect(
-      a.getExistingRecipe({ state: nextState, on: toDate, teamID, from })
+      a.getExistingRecipe({
+        state: nextState.calendar,
+        on: toDate,
+        from
+      })
     ).not.toBeUndefined()
 
     // moving recipe from its location and back to its location in one
     // drag-and-drop go.
     const calRecipe = a.getExistingRecipe({
-      state: nextState,
+      state: nextState.calendar,
       on: toDate,
-      teamID,
       from: calRecipeOnSameDay
     })
     expect(calRecipe).toBeUndefined()

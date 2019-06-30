@@ -274,7 +274,9 @@ const mapStateToProps = (
 ) => {
   const isTeam = teamID !== "personal"
 
-  const days = isTeam ? getTeamRecipes(state) : getPersonalRecipes(state)
+  const days = isTeam
+    ? getTeamRecipes(state.calendar)
+    : getPersonalRecipes(state.calendar)
 
   const transformedDays: IDays = days.reduce(
     (a, b) => {

@@ -6,7 +6,6 @@ import {
   getType,
   createStandardAction
 } from "typesafe-actions"
-import { IState } from "@/store/store"
 import { isUndefined } from "util"
 import { notUndefined } from "@/utils/general"
 import { ITeam } from "@/store/reducers/teams"
@@ -82,17 +81,11 @@ export const calendar = (
         allIds: uniq(state.allIds.concat(action.payload.map(x => x.id)))
       }
     case getType(setCalendarRecipe): {
-      // TOOD(sbdchd): move to selector
-      const existing = state.allIds
-        .map(x => state.byId[x])
-        .find(
-          x =>
-            notUndefined(x) &&
-            isSameDay(x.on, action.payload.on) &&
-            haveSameTeam(x, action.payload) &&
-            x.recipe.id === action.payload.recipe.id &&
-            x.id !== action.payload.id
-        )
+      const existing = getExistingRecipe({
+        state,
+        on: new Date(action.payload.on),
+        from: action.payload
+      })
 
       if (existing) {
         // we remove the existing and replace with the pending uuid
@@ -214,50 +207,39 @@ export const calendar = (
 export default calendar
 
 export const getCalRecipeById = (
-  state: IState,
+  state: ICalendarState,
   id: ICalRecipe["id"]
-): ICalRecipe | undefined => state.calendar.byId[id]
+): ICalRecipe | undefined => state.byId[id]
 
-export const getAllCalRecipes = (state: IState): ICalRecipe[] =>
-  state.calendar.allIds
-    .map(id => getCalRecipeById(state, id))
-    .filter(notUndefined)
+export const getAllCalRecipes = (state: ICalendarState): ICalRecipe[] =>
+  state.allIds.map(id => getCalRecipeById(state, id)).filter(notUndefined)
 
-export const getTeamRecipes = (state: IState): ICalRecipe[] =>
+export const getTeamRecipes = (state: ICalendarState): ICalRecipe[] =>
   getAllCalRecipes(state).filter(recipe => recipe.team != null)
 
-export const getPersonalRecipes = (state: IState): ICalRecipe[] =>
+export const getPersonalRecipes = (state: ICalendarState): ICalRecipe[] =>
   getAllCalRecipes(state).filter(recipe => recipe.team == null)
 
 function haveSameTeam(a: ICalRecipe, b: ICalRecipe): boolean {
   return a.team === b.team && a.user === b.user
 }
 
-function isSameTeam(x: ICalRecipe, teamID: TeamID): boolean {
-  if (teamID === "personal") {
-    return x.user != null
-  }
-  return x.team === teamID
-}
-
 interface IGetExistingRecipeProps {
-  readonly state: IState
+  readonly state: ICalendarState
   readonly on: Date
   // recipe that is going to be moved
   readonly from: ICalRecipe
-  readonly teamID: TeamID
 }
 
 export const getExistingRecipe = ({
   state,
   on,
-  teamID,
   from
 }: IGetExistingRecipeProps) =>
   getAllCalRecipes(state).find(
     x =>
       isSameDay(x.on, on) &&
-      isSameTeam(x, teamID) &&
+      haveSameTeam(x, from) &&
       x.id !== from.id &&
       x.recipe.id === from.recipe.id
   )

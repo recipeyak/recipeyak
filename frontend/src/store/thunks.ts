@@ -1,12 +1,11 @@
 import pickBy from "lodash/pickBy"
-import isSameDay from "date-fns/is_same_day"
 import { random32Id } from "@/uuid"
 import { toDateString, second } from "@/date"
 import { push, replace } from "react-router-redux"
 import { Dispatch as ReduxDispatch } from "redux"
 import { AxiosError, AxiosResponse } from "axios"
 import raven from "raven-js"
-import { store, Action, IState } from "@/store/store"
+import { store, Action } from "@/store/store"
 import {
   SocialProvider,
   updateEmail,
@@ -1084,7 +1083,7 @@ export const moveScheduledRecipeAsync = (dispatch: Dispatch) => async (
 ) => {
   // HACK(sbdchd): With an endpoint we can eliminate this
   const state = store.getState()
-  const from = getCalRecipeById(state, id)
+  const from = getCalRecipeById(state.calendar, id)
 
   if (from == null) {
     return
@@ -1103,7 +1102,7 @@ export const moveScheduledRecipeAsync = (dispatch: Dispatch) => async (
       from.count
     )
   }
-  const existing = getExistingRecipe({ state, on: to, teamID, from })
+  const existing = getExistingRecipe({ state: state.calendar, on: to, from })
 
   // Note(sbdchd): we need move to be after the checking of the store so we
   // don't delete the `from` recipe and update the `existing`
