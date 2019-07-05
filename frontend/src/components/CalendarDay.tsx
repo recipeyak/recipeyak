@@ -122,7 +122,7 @@ function CalendarDay({
       }}
       className={classNames("calendar-day", "p-1", "flex-grow-1", {
         "current-day": isToday,
-        "selected-day": isSelected
+        "selected-day": isSelected || (isOver && canDrop)
       })}>
       <Title date={date} />
       <ul>
