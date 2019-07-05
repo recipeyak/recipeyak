@@ -98,8 +98,6 @@ function CalendarDay({
     drop: dropped => {
       const item = dropped as ICalendarDragItem | IRecipeItemDrag
       // TOOD(sbdchd): We should move this logic into the calendar reducer
-      // NOTE(chdsbd): We use Promise.resolve to elminate slow drop event
-      // warnings.
       if (item.type === DragDrop.CAL_RECIPE) {
         move({ id: item.id, teamID, to: date })
       } else if (item.type === DragDrop.RECIPE) {
