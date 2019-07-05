@@ -5,7 +5,7 @@ import { Helmet } from "@/components/Helmet"
 import { hot } from "react-hot-loader/root"
 import { setConfig } from "react-hot-loader"
 import HTML5Backend from "react-dnd-html5-backend"
-import { DragDropContext } from "react-dnd"
+import { DndProvider } from "react-dnd"
 import { connect } from "react-redux"
 import { history, IState } from "@/store/store"
 import Home from "@/containers/Home"
@@ -114,88 +114,90 @@ const PublicOnlyRoute = connect(mapAuthenticated)(
 
 function Base() {
   return (
-    <ErrorBoundary>
-      <Helmet defaultTitle="Recipe Yak" titleTemplate="%s | Recipe Yak" />
-      <CurrentKeys />
-      <ConnectedRouter history={history}>
-        <Switch>
-          <PublicOnlyRoute exact path="/login" component={Login} />
-          <PublicOnlyRoute exact path="/signup" component={Signup} />
-          <Route exact path="/password-reset" component={PasswordReset} />
-          <Route exact path="/accounts/:service" component={OAuth} />
-          <ContainerBase>
-            <Switch>
-              <Route exact path="/" component={Home} />
-              <PrivateRoute
-                exact
-                path="/schedule/:type(shopping|recipes)?"
-                component={Schedule}
-              />
-              <PrivateRoute
-                exact
-                path="/t/:id(\d+)(.*)/schedule/:type(shopping|recipes)?"
-                component={Schedule}
-              />
-              <Container>
-                <Switch>
-                  <Route
-                    exact
-                    path="/accounts/:service/connect"
-                    component={OAuthConnect}
-                  />
-                  <Route
-                    exact
-                    path="/password-reset/confirm/:uid([0-9A-Za-z_\-]+).:token([0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})"
-                    component={PasswordResetConfirmation}
-                  />
-                  <PrivateRoute
-                    exact
-                    path="/recipes/add"
-                    component={AddRecipe}
-                  />
-                  <PrivateRoute
-                    exact
-                    path="/recipes/"
-                    render={() => <Recipes autoFocusSearch />}
-                  />
-                  <PrivateRoute
-                    exact
-                    path="/recipes/:id(\d+)(.*)"
-                    component={Recipe}
-                  />
-                  <PrivateRoute exact path="/settings" component={Settings} />
-                  <PrivateRoute
-                    exact
-                    path="/password"
-                    component={PasswordChange}
-                  />
-                  <PrivateRoute
-                    exact
-                    path="/password/set"
-                    component={PasswordSet}
-                  />
-                  <Route exact path="/t/create" component={TeamCreate} />
-                  <Route
-                    exact
-                    path="/t/:id(\d+)(.*)/invite"
-                    component={TeamInvite}
-                  />
-                  <Route
-                    exact
-                    path="/t/:id(\d+)(.*)/settings"
-                    component={Team}
-                  />
-                  <Route exact path="/t/:id(\d+)(.*)" component={Team} />
-                  <Route component={NoMatch} />
-                </Switch>
-              </Container>
-            </Switch>
-          </ContainerBase>
-        </Switch>
-      </ConnectedRouter>
-      <Notification />
-      <HelpMenuModal />
-    </ErrorBoundary>
+    <DndProvider backend={HTML5Backend}>
+      <ErrorBoundary>
+        <Helmet defaultTitle="Recipe Yak" titleTemplate="%s | Recipe Yak" />
+        <CurrentKeys />
+        <ConnectedRouter history={history}>
+          <Switch>
+            <PublicOnlyRoute exact path="/login" component={Login} />
+            <PublicOnlyRoute exact path="/signup" component={Signup} />
+            <Route exact path="/password-reset" component={PasswordReset} />
+            <Route exact path="/accounts/:service" component={OAuth} />
+            <ContainerBase>
+              <Switch>
+                <Route exact path="/" component={Home} />
+                <PrivateRoute
+                  exact
+                  path="/schedule/:type(shopping|recipes)?"
+                  component={Schedule}
+                />
+                <PrivateRoute
+                  exact
+                  path="/t/:id(\d+)(.*)/schedule/:type(shopping|recipes)?"
+                  component={Schedule}
+                />
+                <Container>
+                  <Switch>
+                    <Route
+                      exact
+                      path="/accounts/:service/connect"
+                      component={OAuthConnect}
+                    />
+                    <Route
+                      exact
+                      path="/password-reset/confirm/:uid([0-9A-Za-z_\-]+).:token([0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})"
+                      component={PasswordResetConfirmation}
+                    />
+                    <PrivateRoute
+                      exact
+                      path="/recipes/add"
+                      component={AddRecipe}
+                    />
+                    <PrivateRoute
+                      exact
+                      path="/recipes/"
+                      render={() => <Recipes autoFocusSearch />}
+                    />
+                    <PrivateRoute
+                      exact
+                      path="/recipes/:id(\d+)(.*)"
+                      component={Recipe}
+                    />
+                    <PrivateRoute exact path="/settings" component={Settings} />
+                    <PrivateRoute
+                      exact
+                      path="/password"
+                      component={PasswordChange}
+                    />
+                    <PrivateRoute
+                      exact
+                      path="/password/set"
+                      component={PasswordSet}
+                    />
+                    <Route exact path="/t/create" component={TeamCreate} />
+                    <Route
+                      exact
+                      path="/t/:id(\d+)(.*)/invite"
+                      component={TeamInvite}
+                    />
+                    <Route
+                      exact
+                      path="/t/:id(\d+)(.*)/settings"
+                      component={Team}
+                    />
+                    <Route exact path="/t/:id(\d+)(.*)" component={Team} />
+                    <Route component={NoMatch} />
+                  </Switch>
+                </Container>
+              </Switch>
+            </ContainerBase>
+          </Switch>
+        </ConnectedRouter>
+        <Notification />
+        <HelpMenuModal />
+      </ErrorBoundary>
+    </DndProvider>
   )
 }
 
@@ -206,4 +208,4 @@ setConfig({
   pureRender: true
 })
 
-export default hot(DragDropContext(HTML5Backend)(Base))
+export default hot(Base)

@@ -1,15 +1,15 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import { DragSource, ConnectDragSource } from "react-dnd"
+import { useDrag } from "react-dnd"
 import { beforeCurrentDay } from "@/date"
 import { recipeURL } from "@/urls"
 import { DragDrop } from "@/dragDrop"
 import { IRecipe } from "@/store/reducers/recipes"
 import { ICalRecipe } from "@/store/reducers/calendar"
-import GlobalEvent from "@/components/GlobalEvent"
 import { TextInput } from "@/components/Forms"
 import { isPast, endOfDay } from "date-fns"
 import { Result, isOk } from "@/result"
+import { useGlobalEvent } from "@/hooks"
 
 const COUNT_THRESHOLD = 1
 
@@ -50,11 +50,6 @@ function RecipeLink({ name, id }: IRecipeLink) {
   )
 }
 
-interface ICollectedProps {
-  readonly connectDragSource: ConnectDragSource
-  readonly isDragging: boolean
-}
-
 export interface ICalendarItemProps {
   readonly count: ICalRecipe["count"]
   readonly remove: () => void
@@ -68,120 +63,104 @@ export interface ICalendarItemProps {
   readonly id: ICalRecipe["id"]
 }
 
-interface ICalendarItemState {
-  readonly hover: boolean
-  readonly count: number
-}
+function CalendarItem(props: ICalendarItemProps) {
+  const [count, setCount] = React.useState(props.count)
+  const [hover, setHover] = React.useState(false)
 
-class CalendarItem extends React.Component<
-  ICalendarItemProps & ICollectedProps,
-  ICalendarItemState
-> {
-  state: ICalendarItemState = {
-    count: this.props.count,
-    hover: false
-  }
+  React.useEffect(() => {
+    setCount(props.count)
+  }, [props.count])
 
-  componentWillMount() {
-    this.setState({ count: this.props.count })
-  }
+  const updateCount = React.useCallback(
+    (newCount: number) => {
+      if (beforeCurrentDay(props.date)) {
+        return
+      }
+      const oldCount = count
+      setCount(newCount)
+      props.updateCount(newCount).then(res => {
+        if (isOk(res)) {
+          props.refetchShoppingList()
+        } else {
+          setCount(oldCount)
+        }
+      })
+    },
+    [count]
+  )
 
-  componentWillReceiveProps(nextProps: ICalendarItemProps) {
-    this.setState({ count: nextProps.count })
-  }
-
-  handleKeyPress = (e: KeyboardEvent) => {
-    if (!this.state.hover) {
+  const handleKeyPress = (e: KeyboardEvent) => {
+    if (!hover) {
       return
     }
 
-    if (beforeCurrentDay(this.props.date)) {
+    if (beforeCurrentDay(props.date)) {
       return
     }
 
     if (e.key === "#" || e.key === "Delete") {
-      this.props.remove()
+      props.remove()
     }
     if (e.key === "A" || e.key === "+") {
-      this.updateCount(this.state.count + 1)
+      updateCount(count + 1)
     }
     if (e.key === "X" || e.key === "-") {
-      this.updateCount(this.state.count - 1)
+      updateCount(count - 1)
     }
   }
 
-  updateCount = (count: number) => {
-    const oldCount = this.state.count
-    if (beforeCurrentDay(this.props.date)) {
-      return
-    }
-    this.setState({ count })
-    this.props.updateCount(count).then(res => {
-      if (isOk(res)) {
-        this.props.refetchShoppingList()
-      } else {
-        this.setState({ count: oldCount })
-      }
-    })
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    updateCount(parseInt(e.target.value, 10))
+
+  const handleMouseEnter = () => setHover(true)
+  const handleMouseLeave = () => setHover(false)
+
+  const dragItem: ICalendarDragItem = {
+    type: DragDrop.CAL_RECIPE,
+    recipeID: props.recipeID,
+    count: props.count,
+    id: props.id,
+    date: props.date
   }
 
-  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const count = parseInt(e.target.value, 10)
-    this.updateCount(count)
-  }
-
-  handleMouseEnter = () => this.setState({ hover: true })
-  handleMouseLeave = () => this.setState({ hover: false })
-
-  render() {
-    const { connectDragSource, isDragging } = this.props
-
-    const style: React.CSSProperties = {
-      visibility: isDragging && !isPast(this.props.date) ? "hidden" : "visible"
-    }
-    return connectDragSource(
-      <li
-        className="d-flex align-items-center cursor-pointer justify-space-between mb-2"
-        onMouseEnter={this.handleMouseEnter}
-        onMouseLeave={this.handleMouseLeave}
-        style={style}>
-        <GlobalEvent keyUp={this.handleKeyPress} />
-        <RecipeLink name={this.props.recipeName} id={this.props.recipeID} />
-        <Count value={this.state.count} onChange={this.handleChange} />
-      </li>
-    )
-  }
-}
-
-export interface ICalendarDragItem
-  extends Pick<ICalendarItemProps, "recipeID" | "count" | "id" | "date"> {
-  readonly kind: DragDrop.CAL_RECIPE
-}
-
-export default DragSource(
-  DragDrop.CAL_RECIPE,
-  {
-    beginDrag(props: ICalendarItemProps): ICalendarDragItem {
-      return {
-        kind: DragDrop.CAL_RECIPE,
-        recipeID: props.recipeID,
-        count: props.count,
-        id: props.id,
-        date: props.date
-      }
-    },
-    endDrag(props, monitor) {
+  const [{ isDragging }, drag] = useDrag({
+    item: dragItem,
+    end: (_dropResult, monitor) => {
       // when dragged onto something that isn't a target, we remove it
       // but we don't remove when in past as we only copy from the past
       if (!monitor.didDrop() && !isPast(endOfDay(props.date))) {
         props.remove()
       }
+    },
+    collect: monitor => {
+      return {
+        isDragging: monitor.isDragging()
+      }
     }
-  },
-  (connect, monitor) => {
-    return {
-      connectDragSource: connect.dragSource(),
-      isDragging: monitor.isDragging()
-    }
+  })
+
+  const style: React.CSSProperties = {
+    visibility: isDragging && !isPast(props.date) ? "hidden" : "visible"
   }
-)(CalendarItem)
+
+  useGlobalEvent({ keyUp: handleKeyPress })
+
+  return (
+    <li
+      ref={drag}
+      className="d-flex align-items-center cursor-pointer justify-space-between mb-2"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      style={style}>
+      <RecipeLink name={props.recipeName} id={props.recipeID} />
+      <Count value={count} onChange={handleChange} />
+    </li>
+  )
+}
+
+export interface ICalendarDragItem
+  extends Pick<ICalendarItemProps, "recipeID" | "count" | "id" | "date"> {
+  readonly type: DragDrop.CAL_RECIPE
+}
+
+export default CalendarItem
