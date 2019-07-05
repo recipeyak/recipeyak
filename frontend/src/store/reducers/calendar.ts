@@ -13,9 +13,9 @@ import { IUser } from "@/store/reducers/user"
 import { Loop, loop, Cmd } from "redux-loop"
 import {
   moveScheduledRecipe,
-  addingScheduledRecipe,
   IAddingScheduledRecipeProps,
-  IMoveScheduledRecipeProps
+  IMoveScheduledRecipeProps,
+  addingScheduledRecipeAsync
 } from "@/store/thunks"
 
 export const fetchCalendarRecipes = createAsyncAction(
@@ -213,7 +213,7 @@ export const calendar = (
     case getType(createCalendarRecipe):
       return loop(
         state,
-        Cmd.run(addingScheduledRecipe, {
+        Cmd.run(addingScheduledRecipeAsync, {
           args: [Cmd.dispatch, Cmd.getState, action.payload]
         })
       )

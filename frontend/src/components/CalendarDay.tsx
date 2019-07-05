@@ -14,12 +14,12 @@ import { classNames } from "@/classnames"
 import CalendarItem, { ICalendarDragItem } from "@/components/CalendarDayItem"
 
 import {
-  addingScheduledRecipeAsync,
   updatingScheduledRecipeAsync,
-  moveScheduledRecipeAsync,
   deletingScheduledRecipeAsync,
   Dispatch,
-
+  fetchingShoppingListAsync,
+  IAddingScheduledRecipeProps,
+  IMoveScheduledRecipeProps
 } from "@/store/thunks"
 
 import { DragDrop } from "@/dragDrop"

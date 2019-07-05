@@ -1085,17 +1085,10 @@ export const deletingScheduledRecipeAsync = (dispatch: Dispatch) => async (
   return Ok(undefined)
 }
 
-function isSameTeam(x: ICalRecipe, teamID: TeamID): boolean {
-  if (teamID === "personal") {
-    return x.user != null
-  }
-  return x.team === teamID
-}
-
 export interface IMoveScheduledRecipeProps {
-  id: ICalRecipe["id"]
-  teamID: TeamID
-  to: Date
+  readonly id: ICalRecipe["id"]
+  readonly teamID: TeamID
+  readonly to: Date
 }
 
 export const moveScheduledRecipe = async (
@@ -1105,7 +1098,7 @@ export const moveScheduledRecipe = async (
 ) => {
   // HACK(sbdchd): With an endpoint we can eliminate this
   const state = getState()
-  const from = getCalRecipeById(state, id)
+  const from = getCalRecipeById(state.calendar, id)
 
   if (from == null) {
     return
