@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.google",
     "allauth.socialaccount.providers.gitlab",
     "softdelete",
+    "drf_yasg",
 ]
 
 configure_sentry = PRODUCTION and not DOCKERBUILD

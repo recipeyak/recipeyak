@@ -1,7 +1,7 @@
 import { connect } from "react-redux"
 import queryString from "query-string"
 
-import { socialConnect, Dispatch } from "@/store/thunks"
+import { socialConnectAsync, Dispatch } from "@/store/thunks"
 import OAuth from "@/components/OAuth"
 import { IState } from "@/store/store"
 import { SocialProvider } from "@/store/reducers/user"
@@ -9,7 +9,7 @@ import { RouteComponentProps } from "react-router"
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    login: socialConnect(dispatch)
+    login: socialConnectAsync(dispatch)
   }
 }
 type RouteProps = RouteComponentProps<{ service: SocialProvider }>

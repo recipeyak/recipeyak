@@ -1,11 +1,11 @@
 import { connect } from "react-redux"
 
 import {
-  fetchingTeam,
-  fetchingTeamMembers,
-  fetchingTeamRecipes,
-  deletingTeam,
-  updatingTeam,
+  fetchingTeamAsync,
+  fetchingTeamMembersAsync,
+  fetchingTeamRecipesAsync,
+  deletingTeamAsync,
+  updatingTeamAsync,
   Dispatch
 } from "@/store/thunks"
 import Team from "@/components/Team"
@@ -61,12 +61,12 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     fetchData: (id: ITeam["id"]) =>
       Promise.all([
-        fetchingTeam(dispatch)(id),
-        fetchingTeamMembers(dispatch)(id),
-        fetchingTeamRecipes(dispatch)(id)
+        fetchingTeamAsync(dispatch)(id),
+        fetchingTeamMembersAsync(dispatch)(id),
+        fetchingTeamRecipesAsync(dispatch)(id)
       ]),
-    deleteTeam: deletingTeam(dispatch),
-    updatingTeam: updatingTeam(dispatch)
+    deleteTeam: deletingTeamAsync(dispatch),
+    updatingTeam: updatingTeamAsync(dispatch)
   }
 }
 

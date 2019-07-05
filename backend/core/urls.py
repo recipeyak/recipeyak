@@ -1,4 +1,9 @@
+from django.conf import settings
 from django.conf.urls import include, url
+from django.urls import path
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers
 
@@ -12,7 +17,6 @@ from core.schedule.views import (
     CalendarViewSet,
     ReportBadMerge,
     ShoppingListView,
-    TeamCalendarViewSet,
     TeamShoppingListViewSet,
 )
 from core.stats.views import UserStats
@@ -27,7 +31,6 @@ router = DefaultRouter()
 router.register(r"recipes", RecipeViewSet, basename="recipes")
 router.register(r"t", TeamViewSet, basename="teams")
 router.register(r"invites", UserInvitesViewSet, basename="user-invites")
-router.register(r"calendar", CalendarViewSet, basename="calendar")
 
 recipes_router = routers.NestedSimpleRouter(router, r"recipes", lookup="recipe")
 recipes_router.register(r"steps", StepViewSet, basename="recipe-step")
@@ -40,7 +43,7 @@ teams_router.register(r"recipes", TeamRecipesViewSet, basename="team-recipes")
 teams_router.register(
     r"shoppinglist", TeamShoppingListViewSet, basename="team-shoppinglist"
 )
-teams_router.register(r"calendar", TeamCalendarViewSet, basename="team-calendar")
+teams_router.register(r"calendar", CalendarViewSet, basename="calendar")
 
 urlpatterns = [
     url(r"^api/v1/auth/", include("core.auth.urls")),
@@ -54,3 +57,17 @@ urlpatterns = [
     url(r"^api/v1/user_stats", UserStats.as_view(), name="user-stats"),
     url(r"^api/v1/report-bad-merge", ReportBadMerge.as_view(), name="report-bad-merge"),
 ]
+
+if settings.DEBUG:
+    schema_view = get_schema_view(
+        openapi.Info(title="Recipe Yak API", default_version="v1"),
+        public=True,
+        permission_classes=(permissions.AllowAny,),
+    )
+    urlpatterns.append(
+        path(
+            "swagger/",
+            schema_view.with_ui("swagger", cache_timeout=0),
+            name="schema-swagger-ui",
+        )
+    )

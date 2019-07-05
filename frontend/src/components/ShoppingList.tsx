@@ -10,10 +10,10 @@ import isAfter from "date-fns/is_after"
 import isValid from "date-fns/is_valid"
 
 import {
-  reportBadMerge,
-  showNotificationWithTimeout,
+  reportBadMergeAsync,
+  showNotificationWithTimeoutAsync,
   Dispatch,
-  fetchingShoppingList
+  fetchingShoppingListAsync
 } from "@/store/thunks"
 
 import { ingredientByNameAlphabetical } from "@/sorters"
@@ -81,12 +81,12 @@ function mapStateToProps(state: IState) {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: fetchingShoppingList(dispatch),
+  fetchData: fetchingShoppingListAsync(dispatch),
   setStartDay: (date: Date) => dispatch(setSelectingStart(date)),
   setEndDay: (date: Date) => dispatch(setSelectingEnd(date)),
-  reportBadMerge: reportBadMerge(dispatch),
+  reportBadMerge: reportBadMergeAsync(dispatch),
   sendToast: (message: string) =>
-    showNotificationWithTimeout(dispatch)({ message, level: "info" })
+    showNotificationWithTimeoutAsync(dispatch)({ message, level: "info" })
 })
 
 interface IShoppingListContainerProps {

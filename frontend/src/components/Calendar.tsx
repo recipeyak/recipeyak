@@ -4,11 +4,11 @@ import eachDay from "date-fns/each_day"
 import format from "date-fns/format"
 
 import {
-  fetchCalendar,
+  fetchCalendarAsync,
   Dispatch,
-  fetchingRecipeList,
-  fetchingTeams,
-  fetchingShoppingList
+  fetchingRecipeListAsync,
+  fetchingTeamsAsync,
+  fetchingShoppingListAsync
 } from "@/store/thunks"
 
 import { toDateString } from "@/date"
@@ -29,6 +29,8 @@ import {
 import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
 import { Select } from "@/components/Forms"
 import chunk from "lodash/chunk"
+import { classNames } from "@/classnames"
+import { isSafari } from "@/utils/general"
 
 function monthYearFromDate(date: Date) {
   return format(date, "MMM D | YYYY")
@@ -72,7 +74,8 @@ interface IDaysProps {
 
 function Days({ start, end, days, teamID }: IDaysProps) {
   return (
-    <section className="mb-2 h-100">
+    <section
+      className={classNames("mb-2", "flex-grow-1", { "h-100": isSafari() })}>
       {chunk(eachDay(start, end), WEEK_DAYS).map(dates => (
         <section className="d-flex calendar-week">
           {dates.map(date => (
@@ -196,7 +199,6 @@ function Calendar(props: ICalendarProps) {
 
   useEffect(() => {
     props.fetchTeams()
-    props.fetchData(props.teamID, start)
   }, [])
 
   const refetchData = (teamID: TeamID = props.teamID) => {
@@ -272,7 +274,9 @@ const mapStateToProps = (
 ) => {
   const isTeam = teamID !== "personal"
 
-  const days = isTeam ? getTeamRecipes(state) : getPersonalRecipes(state)
+  const days = isTeam
+    ? getTeamRecipes(state.calendar)
+    : getPersonalRecipes(state.calendar)
 
   const transformedDays: IDays = days.reduce(
     (a, b) => {
@@ -294,15 +298,15 @@ const mapStateToProps = (
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: fetchCalendar(dispatch),
-  fetchTeams: fetchingTeams(dispatch),
+  fetchData: fetchCalendarAsync(dispatch),
+  fetchTeams: fetchingTeamsAsync(dispatch),
   navTo: (url: string) => {
     dispatch(push(url))
   },
   refetchShoppingListAndRecipes: (teamID: TeamID) => {
     return Promise.all([
-      fetchingRecipeList(dispatch)(teamID),
-      fetchingShoppingList(dispatch)(teamID)
+      fetchingRecipeListAsync(dispatch)(teamID),
+      fetchingShoppingListAsync(dispatch)(teamID)
     ])
   }
 })

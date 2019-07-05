@@ -144,6 +144,11 @@
       "^.+\\.css$": "<rootDir>/frontend/config/jest/cssTransform.js",
       "^(?!.*\\.(js|jsx|ts|tsx|css|json)$)": "<rootDir>/frontend/config/jest/fileTransform.js"
     },
+    "globals": {
+      "ts-jest": {
+        "diagnostics": false
+      }
+    },
     "transformIgnorePatterns": [
       "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$"
     ],

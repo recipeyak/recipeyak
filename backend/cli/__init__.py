@@ -1,6 +1,7 @@
 import io
 import os
 import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
 from typing import List, Optional, Tuple
@@ -36,8 +37,8 @@ def lint(ctx: click.core.Context, api: bool, web: bool) -> None:
     is_all = not api and not web
     from cli.manager import ProcessManager
 
-    set_default_config()
     load_dotenv()
+    set_default_config()
 
     with ProcessManager() as m:
         if web or is_all:
@@ -142,6 +143,10 @@ def dev(ctx: click.core.Context, api: bool, web: bool, migrate: bool) -> None:
     run_web = web or is_all
     services = []
     if run_django:
+        # start postgres
+        if sys.platform == "darwin" and Path("/Applications/Postgres.app").exists():
+            subprocess.run(["open", "/Applications/Postgres.app"])
+
         from django.core.management import call_command
 
         if migrate:

@@ -5,7 +5,7 @@ import { roles } from "@/components/TeamInvite"
 
 import { ButtonPrimary } from "@/components/Buttons"
 
-import { creatingTeam, Dispatch } from "@/store/thunks"
+import { creatingTeamAsync, Dispatch } from "@/store/thunks"
 import { IMember } from "@/store/reducers/teams"
 import { IState } from "@/store/store"
 import { TextInput, RadioButton } from "@/components/Forms"
@@ -15,7 +15,7 @@ const mapStateToProps = (state: IState) => ({
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  createTeam: creatingTeam(dispatch)
+  createTeam: creatingTeamAsync(dispatch)
 })
 
 interface ITeamCreateProps {

@@ -28,6 +28,7 @@ honcho = "^1.0"
 click = "^7.0"
 python-dotenv = "^0.10.1"
 typing_extensions = "^3.7"
+drf-yasg = "^1.16"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.4.0"
@@ -40,7 +41,7 @@ flake8-formatter-junit-xml = "^0.0.5"
 black = "18.9b0"
 pytest-watch = "^4.2"
 mypy_extensions = "^0.4.1"
-flake8-pie = "^0.2.2"
+flake8-pie = "^0.4.0"
 flake8-print = "^3.1"
 pylint = "^2.3"
 pytest-sugar = "^0.9.2"
@@ -50,6 +51,7 @@ pytest-testmon = "^0.9.16"
 pytest-icdiff = "^0.2.0"
 pywatchman = "^1.4"
 isort = "^4.3"
+flake8-comprehensions = "^2.1"
 
 [tool.poetry.scripts]
 yak = 'cli:cli'

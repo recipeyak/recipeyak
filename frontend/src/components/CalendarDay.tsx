@@ -14,12 +14,12 @@ import { classNames } from "@/classnames"
 import CalendarItem, { ICalendarDragItem } from "@/components/CalendarDayItem"
 
 import {
-  updatingScheduledRecipe,
-  deletingScheduledRecipe,
+  addingScheduledRecipeAsync,
+  updatingScheduledRecipeAsync,
+  moveScheduledRecipeAsync,
+  deletingScheduledRecipeAsync,
   Dispatch,
-  fetchingShoppingList,
-  IAddingScheduledRecipeProps,
-  IMoveScheduledRecipeProps
+
 } from "@/store/thunks"
 
 import { DragDrop } from "@/dragDrop"
@@ -171,11 +171,11 @@ const mapDispatchToProps = (
 > => ({
   create: (props: IAddingScheduledRecipeProps) =>
     dispatch(createCalendarRecipe(props)),
-  updateCount: updatingScheduledRecipe(dispatch),
-  refetchShoppingList: fetchingShoppingList(dispatch),
+  updateCount: updatingScheduledRecipeAsync(dispatch),
+  refetchShoppingList: fetchingShoppingListAsync(dispatch),
   move: (props: IMoveScheduledRecipeProps) =>
     dispatch(moveOrCreateCalendarRecipe(props)),
-  remove: deletingScheduledRecipe(dispatch)
+  remove: deletingScheduledRecipeAsync(dispatch)
 })
 
 export default connect(

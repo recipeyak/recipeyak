@@ -8,9 +8,9 @@ import { connect } from "react-redux"
 import { IState } from "@/store/store"
 import {
   Dispatch,
-  fetchingSessions,
-  loggingOutSessionById,
-  loggingOutAllSessions
+  fetchingSessionsAsync,
+  loggingOutSessionByIdAsync,
+  loggingOutAllSessionsAsync
 } from "@/store/thunks"
 
 function getDeviceEmoji(kind: ISession["device"]["kind"]): string | null {
@@ -138,9 +138,9 @@ const mapStateToProps = (state: IState) => ({
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: fetchingSessions(dispatch),
-  logoutById: loggingOutSessionById(dispatch),
-  logoutAll: loggingOutAllSessions(dispatch)
+  fetchData: fetchingSessionsAsync(dispatch),
+  logoutById: loggingOutSessionByIdAsync(dispatch),
+  logoutAll: loggingOutAllSessionsAsync(dispatch)
 })
 
 const SessionList = connect(

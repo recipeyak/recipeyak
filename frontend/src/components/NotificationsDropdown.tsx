@@ -6,10 +6,10 @@ import { ButtonPrimary } from "@/components/Buttons"
 import { connect } from "react-redux"
 
 import {
-  acceptingInvite,
-  decliningInvite,
+  acceptingInviteAsync,
+  decliningInviteAsync,
   Dispatch,
-  fetchingInvites
+  fetchingInvitesAsync
 } from "@/store/thunks"
 
 import { teamURL } from "@/urls"
@@ -93,9 +93,9 @@ const mapStateToProps = (state: IState) => {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: fetchingInvites(dispatch),
-  accept: acceptingInvite(dispatch),
-  decline: decliningInvite(dispatch)
+  fetchData: fetchingInvitesAsync(dispatch),
+  accept: acceptingInviteAsync(dispatch),
+  decline: decliningInviteAsync(dispatch)
 })
 
 interface INotificationsDropdownProps {

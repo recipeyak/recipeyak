@@ -20,7 +20,7 @@ import {
 } from "@/webdata"
 import { isOk } from "@/result"
 import { Loop, loop, Cmd } from "redux-loop"
-import { Dispatch, updatingStep, deletingStep } from "@/store/thunks"
+import { Dispatch, updatingStepAsync, deletingStepAsync } from "@/store/thunks"
 import { push } from "react-router-redux"
 
 export const updateRecipeOwner = createStandardAction("UPDATE_RECIPE_OWNER")<{
@@ -34,7 +34,10 @@ export const deleteRecipe = createAsyncAction(
   "DELETE_RECIPE_FAILURE"
 )<IRecipe["id"], IRecipe["id"], IRecipe["id"]>()
 
-async function deletingRecipe(recipeID: IRecipe["id"], dispatch: Dispatch) {
+async function deletingRecipeAsync(
+  recipeID: IRecipe["id"],
+  dispatch: Dispatch
+) {
   const res = await api.deleteRecipe(recipeID)
   if (isOk(res)) {
     dispatch(push("/recipes"))
@@ -50,7 +53,10 @@ export const fetchRecipe = createAsyncAction(
   "FETCH_RECIPE_FAILURE"
 )<IRecipe["id"], IRecipe, { id: IRecipe["id"]; error404: boolean }>()
 
-async function fetchingRecipe(recipeID: IRecipe["id"], dispatch: Dispatch) {
+async function fetchingRecipeAsync(
+  recipeID: IRecipe["id"],
+  dispatch: Dispatch
+) {
   const res = await api.getRecipe(recipeID)
   if (isOk(res)) {
     dispatch(fetchRecipe.success(res.data))
@@ -172,7 +178,7 @@ export const updateIngredient = createAsyncAction(
   { recipeID: IRecipe["id"]; ingredientID: IIngredient["id"] }
 >()
 
-async function updatingIngredient(
+async function updatingIngredientAsync(
   payload: IUpdateIngredientArg,
   dispatch: Dispatch
 ) {
@@ -202,7 +208,7 @@ export const updateRecipe = createAsyncAction(
   "UPDATE_RECIPE_FAILIURE"
 )<IUpdateRecipeRequestArg, IRecipe, IRecipe["id"]>()
 
-export async function updatingRecipe(
+export async function updatingRecipeAsync(
   payload: IUpdateRecipeRequestArg,
   dispatch: Dispatch
 ) {
@@ -232,7 +238,7 @@ export const addStepToRecipe = createAsyncAction(
   IRecipe["id"]
 >()
 
-async function addingStepToRecipe(
+async function addingStepToRecipeAsync(
   payload: IAddStepToRecipeArg,
   dispatch: Dispatch
 ) {
@@ -268,7 +274,7 @@ export const addIngredientToRecipe = createAsyncAction(
   IRecipe["id"]
 >()
 
-async function addingIngredientToRecipe(
+async function addingIngredientToRecipeAsync(
   payload: IAddIngredientToRecipeArg,
   dispatch: Dispatch
 ) {
@@ -492,7 +498,7 @@ export const recipes = (
             [action.payload]: toLoading(r)
           }
         },
-        Cmd.run(fetchingRecipe, {
+        Cmd.run(fetchingRecipeAsync, {
           args: [action.payload, Cmd.dispatch]
         })
       )
@@ -642,7 +648,7 @@ export const recipes = (
           ...recipe,
           deleting: true
         })),
-        Cmd.run(deletingRecipe, { args: [action.payload, Cmd.dispatch] })
+        Cmd.run(deletingRecipeAsync, { args: [action.payload, Cmd.dispatch] })
       )
     case getType(deleteRecipe.success):
       return {
@@ -672,7 +678,9 @@ export const recipes = (
           ...recipe,
           addingStepToRecipe: true
         })),
-        Cmd.run(addingStepToRecipe, { args: [action.payload, Cmd.dispatch] })
+        Cmd.run(addingStepToRecipeAsync, {
+          args: [action.payload, Cmd.dispatch]
+        })
       )
     case getType(addStepToRecipe.success):
       return mapRecipeSuccessById(state, action.payload.id, recipe => ({
@@ -692,7 +700,7 @@ export const recipes = (
           ...recipe,
           addingIngredient: true
         })),
-        Cmd.run(addingIngredientToRecipe, {
+        Cmd.run(addingIngredientToRecipeAsync, {
           args: [action.payload, Cmd.dispatch]
         })
       )
@@ -754,7 +762,9 @@ export const recipes = (
             return x
           })
         })),
-        Cmd.run(updatingIngredient, { args: [action.payload, Cmd.dispatch] })
+        Cmd.run(updatingIngredientAsync, {
+          args: [action.payload, Cmd.dispatch]
+        })
       )
     }
     case getType(updateIngredient.success):
@@ -794,7 +804,7 @@ export const recipes = (
             return x
           })
         })),
-        Cmd.run(deletingStep, {
+        Cmd.run(deletingStepAsync, {
           args: [action.payload, Cmd.dispatch]
         })
       )
@@ -832,7 +842,7 @@ export const recipes = (
             return x
           })
         })),
-        Cmd.run(updatingStep, {
+        Cmd.run(updatingStepAsync, {
           args: [action.payload, Cmd.dispatch]
         })
       )
@@ -873,7 +883,7 @@ export const recipes = (
           ...recipe,
           updating: true
         })),
-        Cmd.run(updatingRecipe, {
+        Cmd.run(updatingRecipeAsync, {
           args: [action.payload, Cmd.dispatch]
         })
       )

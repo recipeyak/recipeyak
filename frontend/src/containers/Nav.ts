@@ -1,9 +1,9 @@
 import { connect } from "react-redux"
 
 import {
-  fetchingUser,
-  loggingOut,
-  fetchingTeams,
+  fetchingUserAsync,
+  loggingOutAsync,
+  fetchingTeamsAsync,
   Dispatch
 } from "@/store/thunks"
 
@@ -29,11 +29,11 @@ const mapStateToProps = (state: IState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     fetchData: () => {
-      fetchingTeams(dispatch)()
-      fetchingUser(dispatch)()
+      fetchingTeamsAsync(dispatch)()
+      fetchingUserAsync(dispatch)()
     },
     logout: () => {
-      loggingOut(dispatch)()
+      loggingOutAsync(dispatch)()
     },
     toggleDarkMode: () => dispatch(toggleDarkMode())
   }

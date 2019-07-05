@@ -2,7 +2,7 @@ import { connect } from "react-redux"
 
 import Home from "@/components/Home"
 
-import { Dispatch, fetchingUser } from "@/store/thunks"
+import { Dispatch, fetchingUserAsync } from "@/store/thunks"
 import { IState } from "@/store/store"
 
 const mapStateToProps = (state: IState) => ({
@@ -10,7 +10,7 @@ const mapStateToProps = (state: IState) => ({
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: fetchingUser(dispatch)
+  fetchData: fetchingUserAsync(dispatch)
 })
 
 export default connect(
