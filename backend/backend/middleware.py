@@ -130,7 +130,7 @@ class HealthCheckMiddleware:
         if request.method == "GET":
             if request.path == "/readiness":
                 return self.readiness(request)
-            elif request.path == "/healthz":
+            if request.path == "/healthz":
                 return self.healthz(request)
         return self.get_response(request)
 
