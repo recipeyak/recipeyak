@@ -1,12 +1,17 @@
+import enum
+import logging
 import time
 from uuid import uuid4
 
 import sentry_sdk
 from django.conf import settings
 from django.db import connection
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse, HttpResponseServerError
 
 from backend.request_state import State
+
+log = logging.getLogger(__name__)
+
 
 MSEC_CONVERT_FACTOR = 1000
 
@@ -105,3 +110,54 @@ class CurrentRequestMiddleware:
             scope.set_tag("request_id", request_id)
 
         return self.get_response(request)
+
+
+@enum.unique
+class ReadinessError(enum.IntEnum):
+    PG_BAD_RESPONSE = 1
+    PG_CANNOT_CONNECT = 2
+
+
+class HealthCheckMiddleware:
+    """
+    from: https://www.ianlewis.org/en/kubernetes-health-checks-django
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request: HttpRequest):
+        if request.method == "GET":
+            if request.path == "/readiness":
+                return self.readiness(request)
+            if request.path == "/healthz":
+                return self.healthz(request)
+        return self.get_response(request)
+
+    def healthz(self, request: HttpRequest) -> HttpResponse:
+        """
+        Note: we don't check the database here because if the database
+        connection failed then this service would restart, not the database.
+        """
+        return HttpResponse("OK")
+
+    def readiness(self, request: HttpRequest) -> HttpResponse:
+        """
+        Connect to each database and do a generic standard SQL query
+        that doesn't write any data and doesn't depend on any tables
+        being present.
+        """
+        try:
+            from django.db import connections
+
+            for name in connections:
+                cursor = connections[name].cursor()
+                cursor.execute("SELECT 1;")
+                row = cursor.fetchone()
+                if row is None:
+                    return HttpResponseServerError(ReadinessError.PG_BAD_RESPONSE)
+        except Exception:  # pylint: disable=broad-except
+            log.exception("could not connect to postgres")
+            return HttpResponseServerError(ReadinessError.PG_CANNOT_CONNECT)
+
+        return HttpResponse("OK")

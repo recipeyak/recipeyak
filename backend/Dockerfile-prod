@@ -13,3 +13,4 @@ RUN poetry install
 COPY backend /var/app
 ARG GIT_SHA
 RUN poetry run yak build --api
+HEALTHCHECK CMD curl --fail http://localhost:8000/healthz

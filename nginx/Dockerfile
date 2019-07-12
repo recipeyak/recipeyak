@@ -7,3 +7,4 @@ WORKDIR /var/www
 COPY maintenance.html .
 COPY 404.html .
 COPY 50x.html .
+HEALTHCHECK CMD curl --fail http://localhost/healthz

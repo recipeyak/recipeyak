@@ -141,6 +141,7 @@ SESSION_COOKIE_AGE = 365 * 24 * 60 * 60  # sessions expire in one year
 OLD_PASSWORD_FIELD_ENABLED = True
 
 MIDDLEWARE = [
+    "backend.middleware.HealthCheckMiddleware",
     "backend.middleware.CurrentRequestMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "backend.middleware.XForwardedForMiddleware",

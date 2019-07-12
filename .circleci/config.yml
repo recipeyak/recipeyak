@@ -196,6 +196,22 @@ jobs:
               --tag recipeyak/nginx:$CIRCLE_SHA1 .
             docker push recipeyak/nginx:$CIRCLE_SHA1
 
+  build_postgres_container:
+    docker:
+      - image: docker:18.05.0-ce
+    steps:
+      - checkout
+      - setup_remote_docker
+      # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
+      - run:
+          name: build container
+          command: |
+            docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
+            docker build -f backend/Dockerfile-postgres \
+              --tag recipeyak/postgres:$CIRCLE_SHA1 \
+              --build-arg GIT_SHA=$CIRCLE_SHA1 .
+            docker push recipeyak/postgres:$CIRCLE_SHA1
+
 workflows:
   version: 2
   test:
@@ -221,6 +237,11 @@ workflows:
             branches:
               only: master
       - build_proxy_container:
+          context: DockerHub
+          filters:
+            branches:
+              only: master
+      - build_postgres_container:
           context: DockerHub
           filters:
             branches:
