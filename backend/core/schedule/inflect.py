@@ -861,11 +861,6 @@ def singularize(
         if word_normalized.endswith(x):
             return re.sub("(?i)" + x + "$", value, word)
     for suffix, inflection in singular_rules_compiled:
-        m = suffix.search(word)
-        g = m.groups() if m else []
-        if m:
-            for i, val in enumerate(g):
-                if val is None:
-                    inflection = inflection.replace("\\" + str(i + 1), "")
+        if suffix.search(word):
             return suffix.sub(inflection, word)
     return word

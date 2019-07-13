@@ -16,8 +16,6 @@ def c() -> Client:
 
 
 def fields_in(data: Dict, fields: Iterable) -> bool:
-    if not isinstance(data, dict):
-        return False
     for key, value in data.items():
         if key in fields:
             return True
