@@ -105,7 +105,7 @@ class LoginSerializer(BaseSerializer):
             msg = _("Unable to log in with provided credentials.")
             raise exceptions.ValidationError(msg)
 
-        from allauth.account import app_settings  # type: ignore # duplicate import
+        from allauth.account import app_settings
 
         if (
             app_settings.EMAIL_VERIFICATION
