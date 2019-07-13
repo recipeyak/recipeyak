@@ -1,0 +1,18 @@
+digraph RecipeYak {
+
+  subgraph cluster_recipeyak {
+    label = RecipeYak
+
+    "ReactJS App" -> NGINX [label="HTTP"]
+
+    NGINX -> gunicorn -> "Django (API)" [label="HTTP"]
+
+    Postgres[shape=cylinder]
+
+
+    "Django (API)" -> Postgres [label="SQL"]
+
+  }
+
+}
+
