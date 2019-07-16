@@ -1,16 +1,29 @@
 digraph RecipeYak {
 
+  nodesep=0.75;
+
   subgraph cluster_recipeyak {
     label = RecipeYak
 
+    Cloudflare[shape=doublecircle]
+
+    in[style=invis]
+
+    in -> Cloudflare -> "ReactJS App"
+
     "ReactJS App" -> NGINX [label="HTTP"]
 
-    NGINX -> gunicorn -> "Django (API)" [label="HTTP"]
+    NGINX -> gunicorn [label="HTTP"]
+
+    gunicorn -> "Django (API)" [label=WSGI]
 
     Postgres[shape=cylinder]
 
 
     "Django (API)" -> Postgres [label="SQL"]
+    "Django (API)" -> Mailgun [label="SMTP"]
+
+    Mailgun[shape=doublecircle]
 
   }
 
