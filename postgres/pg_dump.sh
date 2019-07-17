@@ -1,4 +1,3 @@
 #!/usr/bin/env sh
 
-# TODO(sbdchd): add script to upload to S3
-pg_dump
+pg_dump "$POSTGRES_DB_NAME" | gzip | aws s3 cp - "s3://$POSTGRES_BACKUP_S3_BUCKET/backup-$(date '+%Y-%m-%d-%H-%M-%S')"
