@@ -46,6 +46,13 @@ services:
         tag: "{{.Name}}"
     volumes:
       - pgdata:/var/lib/postgresql/data/
+  pgdump:
+    image: recipeyak/pgdump:latest
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "udp://logs.papertrailapp.com:50183"
+        tag: "{{.Name}}"
   react:
     image: recipeyak/react:latest
     command: sh bootstrap.sh
