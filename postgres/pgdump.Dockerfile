@@ -1,9 +1,13 @@
 FROM debian:stretch-slim
 
-RUN apt-get update && \
+RUN mkdir -p /usr/share/man/man1 && \
+    mkdir -p /usr/share/man/man7 && \
+    apt-get update && \
     apt-get install -y postgresql-client
 
-RUN python3 -m pip install -U awscli==1.16
+RUN apt-get update && \
+    apt-get install -y python3-pip && \
+    pip3 install -U awscli==1.16
 
 COPY ./pg_dump.sh /var/
 
