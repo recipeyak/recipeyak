@@ -1,2 +1,4 @@
 # every 5 minutes
-*/5 * * * * ~/pg_dump.sh
+# also get logs script to docker output
+# from: https://stackoverflow.com/a/46220104/3720597
+*/5 * * * * /var/pg_dump.sh > /proc/1/fd/1 2>/proc/1/fd/2
