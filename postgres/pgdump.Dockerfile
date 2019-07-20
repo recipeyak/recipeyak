@@ -1,4 +1,4 @@
-FROM debian:stretch
+FROM debian:stretch-slim
 
 RUN mkdir -p /usr/share/man/man1 && \
       mkdir -p /usr/share/man/man7 && \
