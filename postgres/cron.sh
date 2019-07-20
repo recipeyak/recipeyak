@@ -9,4 +9,8 @@ set -o nounset
 # We filter out any vars that are 'readonly'.
 declare -p | grep -Ev 'BASHOPTS|BASH_VERSINFO|EUID|PPID|SHELLOPTS|UID' > /var/container.env
 
+echo "$PGDUMP_CRON_SCHEDULE /var/pg_dump.sh > /proc/1/fd/1 2>/proc/1/fd/2" >> /var/spool/cron/crontabs/root
+
+crontab /var/spool/cron/crontabs/root
+
 cron -f

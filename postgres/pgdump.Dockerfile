@@ -15,6 +15,4 @@ COPY ./pg_dump_cron /var/spool/cron/crontabs/root
 COPY ./pg_dump.sh /var/
 COPY ./cron.sh /var/
 
-RUN /usr/bin/crontab /var/spool/cron/crontabs/root
-
 CMD ["/var/cron.sh"]
