@@ -80,7 +80,7 @@ Environment variables are used for configuration. Unless otherwise stated, a val
 - [`DJANGO_SECRET_KEY`][django-secret] — long, randomized string required for django
   - ex: `284urfljkdflsdf`
 - `DATABASE_URL` — URL for Django's database
-  - ex: `postgres://postgres@db:5432/postgres`
+  - ex: `postgres://postgres@postgres:5432/postgres`
 - `EMAIL_HOST` — SMTP hostname for sending email from Django
   - ex:`smtp.mailgun.org`
 - `EMAIL_HOST_USER` — SMTP email for logging into server
