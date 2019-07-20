@@ -11,8 +11,8 @@ RUN mkdir -p /usr/share/man/man1 && \
 
 RUN pip3 install -U awscli==1.16
 
-COPY ./pg_dump_cron /var/spool/cron/crontabs/root
-COPY ./pg_dump.sh /var/
+COPY ./pgdump_cron /var/spool/cron/crontabs/root
+COPY ./pgdump.sh /var/
 COPY ./cron.sh /var/
 
 CMD ["/var/cron.sh"]
