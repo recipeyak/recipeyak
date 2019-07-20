@@ -1,6 +1,4 @@
-# every 5 minutes
-# also get logs script to docker output
-# from: https://stackoverflow.com/a/46220104/3720597
+# source env vars for cron
 SHELL=/bin/bash
 BASH_ENV=/var/container.env
 # Note: we copy over the pgdump cron entry at container run time so that the
