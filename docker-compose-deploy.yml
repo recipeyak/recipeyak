@@ -48,6 +48,8 @@ services:
       - pgdata:/var/lib/postgresql/data/
   pgdump:
     image: recipeyak/pgdump:latest
+    env_file:
+      - .env-production
     logging:
       driver: syslog
       options:
