@@ -1,4 +1,5 @@
 # every 5 minutes
 # also get logs script to docker output
 # from: https://stackoverflow.com/a/46220104/3720597
-*/5 * * * * /var/pg_dump.sh > /proc/1/fd/1 2>/proc/1/fd/2
+SHELL=/bin/bash
+BASH_ENV=/var/container.env

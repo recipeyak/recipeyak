@@ -12,7 +12,8 @@ RUN pip3 install -U awscli==1.16
 
 COPY ./pg_dump_cron /var/spool/cron/crontabs/root
 COPY ./pg_dump.sh /var/
+COPY ./cron.sh /var/
 
 RUN /usr/bin/crontab /var/spool/cron/crontabs/root
 
-CMD ["cron", "-f"]
+CMD ["/var/cron.sh"]
