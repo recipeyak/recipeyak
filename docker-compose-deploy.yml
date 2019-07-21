@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 services:
   nginx:
     image: recipeyak/nginx:latest
@@ -20,7 +20,6 @@ services:
     image: recipeyak/django:latest
     env_file:
       - .env-production
-    command: sh bootstrap-prod.sh
     volumes:
       - django-static-files:/var/app/static-files
     logging:
@@ -29,7 +28,7 @@ services:
         syslog-address: "udp://logs.papertrailapp.com:50183"
         tag: "{{.Name}}"
     depends_on:
-     - postgres
+      - postgres
   postgres:
     image: recipeyak/postgres:latest
     ports:
@@ -52,7 +51,6 @@ services:
         tag: "{{.Name}}"
   react:
     image: recipeyak/react:latest
-    command: sh bootstrap.sh
     env_file:
       - .env-production
     volumes:
