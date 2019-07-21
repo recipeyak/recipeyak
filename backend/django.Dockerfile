@@ -15,6 +15,4 @@ ARG GIT_SHA
 RUN poetry run yak build --api
 HEALTHCHECK CMD curl --fail http://localhost:8000/healthz
 
-COPY ./bootstrap.sh /var/
-
-CMD ["/var/bootstrap.sh"]
+CMD ["/var/app/backend/bootstrap.sh"]
