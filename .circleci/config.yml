@@ -152,7 +152,7 @@ jobs:
           name: build container
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            docker build -f backend/Dockerfile-prod \
+            docker build -f backend/django.Dockerfile \
               --tag recipeyak/django:$CIRCLE_SHA1 \
               --build-arg GIT_SHA=$CIRCLE_SHA1 .
             docker push recipeyak/django:$CIRCLE_SHA1
@@ -169,7 +169,7 @@ jobs:
           name: build container
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            docker build -f frontend/Dockerfile-prod \
+            docker build -f frontend/react.Dockerfile \
               --tag recipeyak/react:$CIRCLE_SHA1 \
               --build-arg OAUTH_BITBUCKET_CLIENT_ID=${OAUTH_BITBUCKET_CLIENT_ID-""} \
               --build-arg OAUTH_FACEBOOK_CLIENT_ID=${OAUTH_FACEBOOK_CLIENT_ID-""} \
@@ -192,7 +192,7 @@ jobs:
           working_directory: nginx
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            docker build -f Dockerfile \
+            docker build -f nginx.Dockerfile \
               --tag recipeyak/nginx:$CIRCLE_SHA1 .
             docker push recipeyak/nginx:$CIRCLE_SHA1
 
