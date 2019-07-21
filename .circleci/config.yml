@@ -150,10 +150,9 @@ jobs:
       # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
       - run:
           name: build container
-          working_directory: backend
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            docker build -f django.Dockerfile \
+            docker build -f backend/django.Dockerfile \
               --tag recipeyak/django:$CIRCLE_SHA1 \
               --build-arg GIT_SHA=$CIRCLE_SHA1 .
             docker push recipeyak/django:$CIRCLE_SHA1
@@ -168,10 +167,9 @@ jobs:
       # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
       - run:
           name: build container
-          working_directory: frontend
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            docker build -f react.Dockerfile \
+            docker build -f frontend/react.Dockerfile \
               --tag recipeyak/react:$CIRCLE_SHA1 \
               --build-arg OAUTH_BITBUCKET_CLIENT_ID=${OAUTH_BITBUCKET_CLIENT_ID-""} \
               --build-arg OAUTH_FACEBOOK_CLIENT_ID=${OAUTH_FACEBOOK_CLIENT_ID-""} \

@@ -26,6 +26,4 @@ COPY --from=builder /var/app/frontend/build /var/app/build
 COPY --from=builder /var/app/frontend/bootstrap.sh /var/app/
 WORKDIR /var/app
 
-COPY ./bootstrap.sh /var/
-
-CMD ["/var/bootstrap.sh"]
+CMD ["/var/app/frontend/bootstrap.sh"]
