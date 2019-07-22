@@ -164,6 +164,7 @@ jobs:
           key: frontend-v8-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
       - run:
           name: run linter
+          shell: /bin/bash
           command: |
             fd Dockerfile | xargs hadolint
 
