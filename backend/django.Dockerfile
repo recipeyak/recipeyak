@@ -1,4 +1,4 @@
-FROM recipeyak/base:v3
+FROM recipeyak/base:v3@sha256:8897faf71cb791feea88b1012db32d1b0d2970a2ffc722be9973f548af057bcd
 
 
 # Install Application into container

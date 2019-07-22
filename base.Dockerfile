@@ -1,4 +1,4 @@
-FROM python:3.7
+FROM python:3.7@sha256:d8718f4c8f28360c88d2d8b53681edb3c95e6a7bacedabd32eb5b1d120a75dc5
 
 
 ### NODE DOCKERFILE FROM https://github.com/nodejs/docker-node/blob/de76fb48b532d6be012098dc3538bd15329a27d0/8/jessie/Dockerfile
