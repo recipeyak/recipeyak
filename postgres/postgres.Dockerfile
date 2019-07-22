@@ -1,4 +1,4 @@
-FROM postgres:10.1
+FROM postgres:10.1@sha256:3f4441460029e12905a5d447a3549ae2ac13323d045391b0cb0cf8b48ea17463
 
 COPY ./postgresql.conf /etc/postgresql/
 

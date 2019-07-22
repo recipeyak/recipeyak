@@ -1,4 +1,4 @@
-FROM debian:stretch-slim
+FROM debian:stretch-slim@sha256:0c04edb9ae10feb7ac03a659dd41e16c79e04fdb2b10cf93c3cbcef1fd6cc1d5
 
 ENV PG_MAJOR 10
 
