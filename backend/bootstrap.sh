@@ -1,10 +1,11 @@
+#!/usr/bin/env sh
 set -eux
 
 # copy static files to mounted volume (app/static => app/static-files)
 cp -af static/* static-files
 
 # wait for databases
-bash wait-for-it.sh db:5432 -- echo 'Database available'
+/var/app/backend/wait-for-it.sh db:5432 -- echo 'Database available'
 
 # apply migrations
 poetry run yak django migrate
