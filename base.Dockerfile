@@ -67,7 +67,8 @@ RUN set -ex && key=6A010C5166006599AA17F08146C2130DFD2497F5 && \
 # we use netcat to wait for a port to be available
 # hadolint ignore=DL3008
 RUN apt-get update -yq && \
-  apt-get install -yq --no-install-recommends netcat && \
+  apt-get install -yq --no-install-recommends \
+  netcat && \
   rm -rf /var/lib/apt/lists/*
 
 # install chrome dependencies for puppeteer
