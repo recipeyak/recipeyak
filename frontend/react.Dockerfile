@@ -23,7 +23,7 @@ RUN poetry run yak build --web
 FROM alpine:3.7@sha256:8421d9a84432575381bfabd248f1eb56f3aa21d9d7cd2511583c68c9b7511d10
 RUN mkdir -p /var/app/build
 COPY --from=builder /var/app/frontend/build /var/app/build
-COPY --from=builder /var/app/frontend/bootstrap.sh /var/app/
+COPY --from=builder /var/app/frontend/entrypoint.sh /var/app/
 WORKDIR /var/app
 
-CMD ["/var/app/bootstrap.sh"]
+CMD ["/var/app/entrypoint.sh"]
