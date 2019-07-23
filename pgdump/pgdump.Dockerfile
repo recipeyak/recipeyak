@@ -9,6 +9,8 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update && \
       apt-get install -y --no-install-recommends \
       curl \
+      ca-certificates \
+      dirmngr \
       gnupg && \
       echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main $PG_MAJOR" > /etc/apt/sources.list.d/pgdg.list && \
       curl -s https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
@@ -20,6 +22,8 @@ RUN mkdir -p /usr/share/man/man1 && \
       apt-get update && \
       apt-get install -y --no-install-recommends \
       postgresql-client-10 \
+      python3-wheel \
+      python3-setuptools \
       cron \
       python3-pip && \
       rm -rf /var/lib/apt/lists/*
