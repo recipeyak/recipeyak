@@ -154,7 +154,6 @@ jobs:
             mv hadolint /bin/
       - run:
           name: run linter
-          shell: /bin/bash
           command: |
             fd Dockerfile | xargs hadolint
 
