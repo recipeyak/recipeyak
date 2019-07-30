@@ -785,17 +785,6 @@ pytest = ">=2.8.0,<5"
 
 [[package]]
 category = "dev"
-description = "py.test plugin to abort hanging tests"
-name = "pytest-timeout"
-optional = false
-python-versions = "*"
-version = "1.3.3"
-
-[package.dependencies]
-pytest = ">=3.6.0"
-
-[[package]]
-category = "dev"
 description = "Local continuous test runner with pytest and watchdog."
 name = "pytest-watch"
 optional = false
@@ -1028,7 +1017,7 @@ python-versions = "*"
 version = "1.11.1"
 
 [metadata]
-content-hash = "06b21d4f832a8f40d96ce2d575085a116f703e9fd76c6801f513c5c05d020e5a"
+content-hash = "66c44b028708577add377a3b3d855aad0ef2b029a8b3c3b4975ade7ef1d1a0fc"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1109,7 +1098,6 @@ pytest-icdiff = ["9ff97fb493085f8099a8a7f6161fd570fad96699f42dc08ffc66d04e806386
 pytest-randomly = ["0ff564fabb638ab52d535d8ce1da71353c7ecd54edcc5dc117f6f21f8269cfef", "f76a068dcadb4ffbd4f6c55dd447cf95fb78cfe4f3f1445c3bee5657fdf5b3d1"]
 pytest-sugar = ["26cf8289fe10880cbbc130bd77398c4e6a8b936d8393b116a5c16121d95ab283", "fcd87a74b2bce5386d244b49ad60549bfbc4602527797fac167da147983f58ab"]
 pytest-testmon = ["df00594e55f8f8f826e0e345dc23863ebac066eb749f8229c515a0373669c5bb"]
-pytest-timeout = ["4a30ba76837a32c7b7cd5c84ee9933fde4b9022b0cd20ea7d4a577c2a1649fb1", "d49f618c6448c14168773b6cdda022764c63ea80d42274e3156787e8088d04c6"]
 pytest-watch = ["06136f03d5b361718b8d0d234042f7b2f203910d8568f63df2f866b547b3d4b9"]
 python-dotenv = ["a84569d0e00d178bc5b957f7ff208bf49287cbf61857c31c258c4a91f571527b", "c9b1ddd3cdbe75c7d462cb84674d87130f4b948f090f02c7d7144779afb99ae0"]
 python-json-logger = ["30999d1d742ecf6645991a2ce9273188505e98b713ad63be06aabff47dd1b3c4", "8205cfe7061715de5cd1b37e3565d5b97d0ac13b30ff3ee612554abb6093d640"]

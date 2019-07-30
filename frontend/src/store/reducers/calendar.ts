@@ -59,6 +59,7 @@ export interface ICalRecipe {
   readonly id: number
   readonly count: number
   readonly on: string
+  readonly created: string
   readonly team: ITeam["id"] | null
   readonly user: IUser["id"] | null
   readonly recipe: {

@@ -78,14 +78,17 @@ function Days({ start, end, days, teamID }: IDaysProps) {
       className={classNames("mb-2", "flex-grow-1", { "h-100": isSafari() })}>
       {chunk(eachDay(start, end), WEEK_DAYS).map(dates => (
         <section className="d-flex calendar-week">
-          {dates.map(date => (
-            <CalendarDay
-              scheduledRecipes={days[toDateString(date)]}
-              date={date}
-              key={date.toString()}
-              teamID={teamID}
-            />
-          ))}
+          {dates.map(date => {
+            const scheduledRecipes = days[toDateString(date)] || []
+            return (
+              <CalendarDay
+                scheduledRecipes={scheduledRecipes}
+                date={date}
+                key={date.toString()}
+                teamID={teamID}
+              />
+            )
+          })}
         </section>
       ))}
     </section>

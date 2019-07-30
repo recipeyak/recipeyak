@@ -15,13 +15,13 @@ def c() -> Client:
     return Client()
 
 
-def fields_in(data: Dict, fields: Iterable) -> bool:
+def fields_in(data: Dict, fields: Iterable[str]) -> bool:
     for key, value in data.items():
         if key in fields:
             return True
         if isinstance(value, list):
             for x in value:
-                if fields_in(x, fields=fields):
+                if isinstance(x, dict) and fields_in(x, fields=fields):
                     return True
         elif isinstance(value, dict):
             if fields_in(value, fields=fields):
@@ -29,21 +29,18 @@ def fields_in(data: Dict, fields: Iterable) -> bool:
     return False
 
 
-def test_fields_in() -> None:
-    d = {"id": 1}
-    assert fields_in(d, fields=("id",))
-
-    d1 = {"blah": 1}
-    assert not fields_in(d1, fields=("id",))
-
-    d2 = {"blah": 1, "hmm": [{"id": 1}]}
-    assert fields_in(d2, fields=("id",))
-
-    d3 = {"blah": 1, "hmm": [{"blah": 1}]}
-    assert not fields_in(d3, fields=("id",))
-
-    d4 = {"blah": 1, "hmm": [{"blah": 1}], "owner": {"id": 1}}
-    assert fields_in(d4, fields=("id",))
+@pytest.mark.parametrize(
+    "dict_,expected",
+    [
+        ({"id": 1}, True),
+        ({"blah": 1}, False),
+        ({"blah": 1, "hmm": [{"id": 1}]}, True),
+        ({"blah": 1, "hmm": [{"blah": 1}]}, False),
+        ({"blah": 1, "hmm": [{"blah": 1}], "owner": {"id": 1}}, True),
+    ],
+)
+def test_fields_in(dict_: Dict, expected: bool) -> None:
+    assert fields_in(dict_, fields=("id",)) == expected
 
 
 def test_bulk_export_json(

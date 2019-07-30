@@ -287,7 +287,7 @@ class ScheduledRecipeManager(models.Manager):
 
 class ScheduledRecipe(CommonInfo):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    on = models.DateField()
+    on = models.DateField(help_text="day when recipe is scheduled")
     count = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     # TODO(sbdchd): add restriction so that only one of these is set
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE, blank=True, null=True)
