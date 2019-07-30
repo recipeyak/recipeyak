@@ -13,9 +13,10 @@ describe("Calendar", () => {
   it("sets calendar recipes starting with empty state", () => {
     const beforeState: ICalendarState = initialState
 
-    const recipes = [
+    const recipes: a.ICalRecipe[] = [
       {
         id: 1,
+        created: "2019-02-01T05:00:00.000Z",
         count: 3,
         on: "2018-05-11",
         team: 2,
@@ -27,6 +28,7 @@ describe("Calendar", () => {
       },
       {
         id: 2,
+        created: "2019-02-01T05:00:00.000Z",
         count: 1,
         on: "2018-05-11",
         team: 2,
@@ -58,8 +60,9 @@ describe("Calendar", () => {
       allIds: []
     }
 
-    const recipe = {
+    const recipe: a.ICalRecipe = {
       id: 1,
+      created: "2019-02-01T05:00:00.000Z",
       count: 3,
       on: "2018-05-11",
       team: 2,
@@ -88,6 +91,7 @@ describe("Calendar", () => {
       byId: {
         1: {
           id: 1,
+          created: "2019-02-01T05:00:00.000Z",
           count: 3,
           on: "2018-05-11",
           team: 2,
@@ -150,6 +154,7 @@ describe("Calendar", () => {
       byId: {
         [id]: {
           id,
+          created: "2019-02-01T05:00:00.000Z",
           count: 3,
           on: "2018-05-11",
           team: 2,
@@ -170,6 +175,7 @@ describe("Calendar", () => {
       byId: {
         [id]: {
           id,
+          created: "2019-02-01T05:00:00.000Z",
           count: 3,
           on: newOn,
           team: 2,
@@ -197,6 +203,7 @@ describe("Calendar", () => {
       byId: {
         [id]: {
           id,
+          created: "2019-02-01T05:00:00.000Z",
           count: 3,
           on: "2018-05-11",
           team: 2,
@@ -208,6 +215,7 @@ describe("Calendar", () => {
         },
         2: {
           id: 2,
+          created: "2019-02-01T05:00:00.000Z",
           count: 3,
           on: newOn,
           team: 2,
@@ -219,6 +227,7 @@ describe("Calendar", () => {
         },
         3: {
           id: 3,
+          created: "2019-02-01T05:00:00.000Z",
           count: 1,
           on: "2018-06-07",
           team: 2,
@@ -238,6 +247,7 @@ describe("Calendar", () => {
       byId: {
         [id]: {
           id,
+          created: "2019-02-01T05:00:00.000Z",
           count: 3,
           on: newOn,
           team: 2,
@@ -249,6 +259,7 @@ describe("Calendar", () => {
         },
         2: {
           id: 2,
+          created: "2019-02-01T05:00:00.000Z",
           count: 3,
           on: newOn,
           team: 2,
@@ -260,6 +271,7 @@ describe("Calendar", () => {
         },
         3: {
           id: 3,
+          created: "2019-02-01T05:00:00.000Z",
           count: 1,
           team: 2,
           user: 1,
@@ -286,6 +298,7 @@ describe("Calendar", () => {
       byId: {
         [id]: {
           id,
+          created: "2019-02-01T05:00:00.000Z",
           count: 3,
           on: "2018-05-11",
           team: 2,
@@ -297,6 +310,7 @@ describe("Calendar", () => {
         },
         2: {
           id: 2,
+          created: "2019-02-01T05:00:00.000Z",
           count: 3,
           team: 2,
           user: 1,
@@ -308,6 +322,7 @@ describe("Calendar", () => {
         },
         3: {
           id: 3,
+          created: "2019-02-01T05:00:00.000Z",
           count: 1,
           team: 2,
           user: 1,
@@ -326,6 +341,7 @@ describe("Calendar", () => {
       byId: {
         2: {
           id: 2,
+          created: "2019-02-01T05:00:00.000Z",
           count: 6,
           on: newOn,
           team: 2,
@@ -337,6 +353,7 @@ describe("Calendar", () => {
         },
         3: {
           id: 3,
+          created: "2019-02-01T05:00:00.000Z",
           count: 1,
           team: 2,
           user: 1,
@@ -364,6 +381,7 @@ describe("Calendar", () => {
       byId: {
         [id]: {
           id,
+          created: "2019-02-01T05:00:00.000Z",
           count: 3,
           on: "2018-05-11",
           team: 2,
@@ -374,6 +392,7 @@ describe("Calendar", () => {
         },
         2: {
           id: 2,
+          created: "2019-02-01T05:00:00.000Z",
           count: 3,
           on: newOn,
           team: 2,
@@ -384,6 +403,7 @@ describe("Calendar", () => {
         },
         3: {
           id: 3,
+          created: "2019-02-01T05:00:00.000Z",
           count: 1,
           team: 2,
           user: 1,
@@ -398,6 +418,7 @@ describe("Calendar", () => {
 
     const recipe: a.ICalRecipe = {
       id: 9,
+      created: "2019-02-01T05:00:00.000Z",
       count: 1,
       on: "2018-07-21",
       team: 2,
@@ -412,6 +433,7 @@ describe("Calendar", () => {
         [recipe.id]: recipe,
         2: {
           id: 2,
+          created: "2019-02-01T05:00:00.000Z",
           count: 3,
           on: newOn,
           team: 2,
@@ -422,6 +444,7 @@ describe("Calendar", () => {
         },
         3: {
           id: 3,
+          created: "2019-02-01T05:00:00.000Z",
           count: 1,
           team: 2,
           user: 1,
@@ -447,6 +470,7 @@ describe("Calendar", () => {
       byId: {
         2: {
           id: 2,
+          created: "2019-02-01T05:00:00.000Z",
           count: 3,
           on,
           team: 2,
@@ -458,6 +482,7 @@ describe("Calendar", () => {
         },
         3: {
           id: 3,
+          created: "2019-02-01T05:00:00.000Z",
           count: 1,
           team: 2,
           user: 1,
@@ -471,8 +496,9 @@ describe("Calendar", () => {
       allIds: [2, 3]
     }
 
-    const recipe = {
+    const recipe: a.ICalRecipe = {
       id: 9,
+      created: "2019-02-01T05:00:00.000Z",
       count: 1,
       on,
       team: 2,
@@ -485,6 +511,7 @@ describe("Calendar", () => {
       byId: {
         [recipe.id]: {
           id: recipe.id,
+          created: "2019-02-01T05:00:00.000Z",
           count: 3 + recipe.count,
           on,
           team: 2,
@@ -496,6 +523,7 @@ describe("Calendar", () => {
         },
         3: {
           id: 3,
+          created: "2019-02-01T05:00:00.000Z",
           count: 1,
           team: 2,
           user: 1,
@@ -529,6 +557,7 @@ describe("calendar selectors", () => {
     const fromDate = new Date()
     const from: a.ICalRecipe = {
       id: 1,
+      created: "2019-02-01T05:00:00.000Z",
       count: 1,
       on: String(fromDate),
       team: teamID,
@@ -555,6 +584,7 @@ describe("calendar selectors", () => {
     // existing recipe scheduled at the toDate
     const calRecipeOnSameDay: a.ICalRecipe = {
       id: 2,
+      created: "2019-02-01T05:00:00.000Z",
       count: 1,
       on: String(toDate),
       team: teamID,
