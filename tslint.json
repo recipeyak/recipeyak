@@ -28,7 +28,7 @@
     "react-anchor-blank-noopener": true,
     "object-index-must-return-possibly-undefined": true,
     "unnecessary-else": true,
-    "no-implicit-to-string": true,
+    "no-implicit-to-string": false,
     "no-non-null-assertion": true,
     "react-prefer-simple-fragment": true,
     "no-pointless-computed-property-name": true,
