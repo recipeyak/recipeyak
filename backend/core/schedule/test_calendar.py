@@ -15,7 +15,10 @@ def test_creating_scheduled_recipe(client, recipe, user):
     client.force_authenticate(user)
     res = client.post(url, data)
     assert res.status_code == status.HTTP_201_CREATED
-    assert ScheduledRecipe.objects.filter(id=res.json().get("id")).exists()
+    assert ScheduledRecipe.objects.filter(id=res.json()["id"]).exists()
+    assert res.json()[
+        "created"
+    ], "ensure we have the created at property for sorting on the frontend"
 
 
 def test_recipe_returns_last_scheduled_date(client, scheduled_recipe, recipe2):
@@ -61,7 +64,10 @@ def test_fetching_scheduled_recipes(client, user, scheduled_recipe):
 
     res = client.get(url, {"start": date(1976, 1, 1), "end": date(1977, 1, 1)})
     assert res.status_code == status.HTTP_200_OK
-    assert scheduled_recipe.id in [x["id"] for x in res.json()]
+    assert any(x["id"] == scheduled_recipe.id for x in res.json())
+    assert res.json()[0][
+        "created"
+    ], "ensure we have the created at property for sorting on the frontend"
 
 
 def test_deleting_recipe_deletes_scheduled_recipes(recipe, scheduled_recipe, user):

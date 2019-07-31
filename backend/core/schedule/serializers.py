@@ -8,13 +8,13 @@ class ScheduledRecipeSerializer(BaseModelSerializer):
 
     class Meta:
         model = ScheduledRecipe
-        fields = ("id", "recipe", "on", "count", "team", "user")
+        fields = ("id", "recipe", "created", "on", "count", "team", "user")
 
 
 class ScheduledRecipeSerializerCreate(BaseModelSerializer):
     class Meta:
         model = ScheduledRecipe
-        fields = ("id", "recipe", "on", "count")
+        fields = ("id", "recipe", "created", "on", "count")
 
     def create(self, validated_data):
         recipe = validated_data.pop("recipe")

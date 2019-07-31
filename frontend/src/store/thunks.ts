@@ -1000,6 +1000,7 @@ function toCalRecipe(
 ): ICalRecipe {
   return {
     id: tempId,
+    created: String(new Date()),
     recipe: {
       id: recipe.id,
       name: recipe.name

@@ -6,6 +6,7 @@ import isWithinRange from "date-fns/is_within_range"
 import startOfDay from "date-fns/start_of_day"
 import endOfDay from "date-fns/end_of_day"
 import isFirstDayOfMonth from "date-fns/is_first_day_of_month"
+import sortBy from "lodash/sortBy"
 
 import { beforeCurrentDay } from "@/date"
 
@@ -56,7 +57,7 @@ const Title = ({ date }: { date: Date }) => {
 
 interface ICalendarDayProps {
   readonly date: Date
-  readonly scheduledRecipes?: ICalRecipe[]
+  readonly scheduledRecipes: ICalRecipe[]
   readonly updateCount: (
     id: ICalRecipe["id"],
     teamID: TeamID,
@@ -112,6 +113,8 @@ function CalendarDay({
     }
   })
 
+  const scheduled = sortBy(scheduledRecipes, x => new Date(x.created))
+
   return (
     <div
       ref={drop}
@@ -124,20 +127,19 @@ function CalendarDay({
       })}>
       <Title date={date} />
       <ul>
-        {scheduledRecipes &&
-          scheduledRecipes.map(x => (
-            <CalendarItem
-              key={x.id}
-              id={x.id}
-              date={date}
-              recipeName={x.recipe.name}
-              recipeID={x.recipe.id}
-              remove={() => remove(x.id, teamID)}
-              updateCount={count => updateCount(x.id, teamID, count)}
-              refetchShoppingList={() => refetchShoppingList(teamID)}
-              count={x.count}
-            />
-          ))}
+        {scheduled.map(x => (
+          <CalendarItem
+            key={x.id}
+            id={x.id}
+            date={date}
+            recipeName={x.recipe.name}
+            recipeID={x.recipe.id}
+            remove={() => remove(x.id, teamID)}
+            updateCount={count => updateCount(x.id, teamID, count)}
+            refetchShoppingList={() => refetchShoppingList(teamID)}
+            count={x.count}
+          />
+        ))}
       </ul>
     </div>
   )
@@ -145,7 +147,7 @@ function CalendarDay({
 
 function mapStateToProps(
   state: IState,
-  props: Pick<ICalendarDayProps, "date" | "scheduledRecipes">
+  props: Pick<ICalendarDayProps, "date">
 ) {
   const isShopping =
     state.routerReducer.location != null
