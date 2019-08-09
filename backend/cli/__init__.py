@@ -170,28 +170,20 @@ def dev(ctx: click.core.Context, api: bool, web: bool, migrate: bool) -> None:
 
 
 @cli.command(help="start prod services")
-@click.option("-a", "--api/--no-api")
-@click.option("-w", "--web/--no-web")
 @load_env
-def prod(api: bool, web: bool) -> None:
+def prod() -> None:
     """Start prod services. Defaults to all."""
     os.environ["PYTHONUNBUFFERED"] = "true"
     subprocess.run(
         [
-            "gunicorn",
-            "-w",
+            "uvicorn",
+            "--host",
+            "0.0.0.0",
+            "--port",
+            "8000",
+            "--workers",
             "3",
-            "-b",
-            "0.0.0.0:8000",
-            "backend.wsgi",
-            "--access-logfile",
-            "-",
-            "--error-logfile",
-            "-",
-            "--capture-output",
-            "--enable-stdio-inheritance",
-            "--access-logformat",
-            'request="%(r)s" request_time=%(L)s remote_addr="%(h)s" request_id=%({X-Request-Id}i)s response_id=%({X-Response-Id}i)s method=%(m)s protocol=%(H)s status_code=%(s)s response_length=%(b)s referer="%(f)s" process_id=%(p)s user_agent="%(a)s"',
+            "backend.asgi:application",
         ],
         check=True,
     )

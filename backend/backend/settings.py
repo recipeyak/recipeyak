@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.gitlab",
     "softdelete",
     "drf_yasg",
+    "channels",
 ]
 
 configure_sentry = PRODUCTION and not DOCKERBUILD
@@ -84,6 +85,14 @@ sentry_sdk.init(
     dsn=DSN, integrations=[DjangoIntegration()], release=GIT_SHA, send_default_pii=True
 )
 
+ASGI_APPLICATION = "backend.routing.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {"hosts": [("redis-server-name", 6379)]},
+    }
+}
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("core.auth.permissions.DisallowAny",),
