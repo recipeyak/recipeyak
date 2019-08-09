@@ -226,8 +226,7 @@ jobs:
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
             docker build -f postgres.Dockerfile \
-              --tag recipeyak/postgres:$CIRCLE_SHA1 \
-              --build-arg GIT_SHA=$CIRCLE_SHA1 .
+              --tag recipeyak/postgres:$CIRCLE_SHA1 .
             docker push recipeyak/postgres:$CIRCLE_SHA1
 
   build_pgdump_container:
@@ -243,8 +242,7 @@ jobs:
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
             docker build -f pgdump.Dockerfile \
-              --tag recipeyak/pgdump:$CIRCLE_SHA1 \
-              --build-arg GIT_SHA=$CIRCLE_SHA1 .
+              --tag recipeyak/pgdump:$CIRCLE_SHA1 .
             docker push recipeyak/pgdump:$CIRCLE_SHA1
 
   build_redis_container:
