@@ -5,7 +5,7 @@ set -eux
 cp -af static/* static-files
 
 # wait for databases
-/var/app/backend/wait-for-it.sh db:5432 -- echo 'Database available'
+/var/app/backend/wait-for-it.sh postgres:5432 -- echo 'Database available'
 
 # apply migrations
 poetry run yak django migrate
@@ -14,4 +14,4 @@ poetry run yak django migrate
 poetry run yak django-setup-sites
 
 # start server
-poetry run yak prod --api
+poetry run yak prod
