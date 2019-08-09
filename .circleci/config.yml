@@ -43,11 +43,6 @@ jobs:
       - image: recipeyak/base:v3
       # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
       - image: circleci/postgres:9.5-alpine-ram
-        command: [
-          "-c", 'shared_preload_libraries="pg_stat_statements"',
-          "-c", "pg_stat_statements.max=10000",
-          "-c", "pg_stat_statements.track=all",
-        ]
     steps:
       - checkout
       # https://circleci.com/docs/2.0/caching/
