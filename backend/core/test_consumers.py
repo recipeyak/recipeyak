@@ -18,9 +18,10 @@ async def test_pub_sub_consumer_without_auth() -> None:
     connection
     """
     path = "/ws/"
-    communicator_one = WebsocketCommunicator(application, path)
-    connected, _subprotocol = await communicator_one.connect()
+    comm = WebsocketCommunicator(application, path)
+    connected, _subprotocol = await comm.connect()
     assert connected is False
+    await comm.disconnect()
 
 
 def get_headers_for_user(
