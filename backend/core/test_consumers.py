@@ -12,7 +12,7 @@ from asgiref.sync import sync_to_async
 
 @pytest.mark.django_db(transaction=True)
 @pytest.mark.asyncio
-async def test_pub_sub_consumer_without_auth() -> None:
+async def test_consumer_without_auth() -> None:
     """
     when the user doesn't have authentication, we should just close the
     connection
