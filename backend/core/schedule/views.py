@@ -11,10 +11,6 @@ from core.auth.permissions import IsTeamMember
 @api_view(["POST"])
 @permission_classes([IsAuthenticated, IsTeamMember])
 def presence(request: Request, team_pk: str) -> Response:
-    # TODO(sbdchd): need to rate limit this so we don't send a message
-    # every time, but then we need to send a message to the schedule page
-    # team at least every 10 seconds, but not more
-    # at most once every 5 seconds / user
     user = request.user
 
     channel_layer = get_channel_layer()

@@ -14,22 +14,5 @@ class Subscribe(BaseModel):
     data: SchedulepresenceSubscribe
 
 
-class SchedulepresenceUser(BaseModel):
-    id: int
-    avatar_url: str
-    email: str
-
-
-class PublishSchedulepresence(BaseModel):
-    event: Literal["schedule_presence"]
-    team_id: int
-    users: List[SchedulepresenceUser]
-
-
-class Publish(BaseModel):
-    type: Literal["publish"]
-    data: PublishSchedulepresence
-
-
 class PubSub(BaseModel):
-    message: Union[Subscribe, Publish]
+    message: Subscribe
