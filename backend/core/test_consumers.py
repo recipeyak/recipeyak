@@ -102,7 +102,11 @@ async def test_pub_sub_consumer(
     # 3. assert we get an update through the websocket
     expected_response = {
         "type": "publish",
-        "data": {"event": "schedule_presence", "team_id": team.id, "user_id": user.id},
+        "data": {
+            "event": "schedule_presence",
+            "team_id": team.id,
+            "user": {"id": user.id, "avatarURL": user.avatar_url, "email": user.email},
+        },
     }
     assert (
         await communicator_one.receive_json_from() == expected_response

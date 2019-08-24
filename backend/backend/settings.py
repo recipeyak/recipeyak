@@ -17,6 +17,10 @@ PRODUCTION = not DEBUG and not CI
 DOCKERBUILD = os.getenv("DOCKERBUILD", False)
 TESTING = os.getenv("TESTING") is not None
 
+logger.info(
+    "CI:", CI, "DEBUG:", DEBUG, "PRODUCTION:", PRODUCTION, "DOCKERBUILD", DOCKERBUILD
+)
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
