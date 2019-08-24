@@ -32,6 +32,7 @@ drf-yasg = "^1.16"
 channels = "^2.2"
 channels_redis = "^2.4"
 uvicorn = "^0.8.6"
+pydantic = "^0.32.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.4.0"
@@ -54,6 +55,8 @@ pytest-icdiff = "^0.2.0"
 pywatchman = "^1.4"
 isort = "^4.3"
 flake8-comprehensions = "^2.1"
+rope = "^0.14.0"
+pytest-asyncio = "^0.10.0"
 
 [tool.poetry.scripts]
 yak = 'cli:cli'

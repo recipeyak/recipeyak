@@ -3,14 +3,19 @@ from typing import List
 
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
+from rest_framework.decorators import action
 from rest_framework import serializers, status, views, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from channels.layers import get_channel_layer
 from core.auth.permissions import IsTeamMember
 from core.models import Ingredient, ScheduledRecipe, Team
+
+from asgiref.sync import async_to_sync
+
 
 from .serializers import ScheduledRecipeSerializer, ScheduledRecipeSerializerCreate
 from .utils import combine_ingredients
@@ -82,7 +87,6 @@ class StartEndDateSerializer(serializers.Serializer):
     end = serializers.DateField()
 
 
-# TODO(chdsbd): Merge this into the CalendarViewSet
 class CalendarViewSet(viewsets.ModelViewSet):
     serializer_class = ScheduledRecipeSerializer
     permission_classes = (IsAuthenticated, IsTeamMember)
@@ -121,3 +125,26 @@ class CalendarViewSet(viewsets.ModelViewSet):
         queryset = self.get_queryset().filter(on__gte=start).filter(on__lte=end)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=["post"])
+    def presence(self, request: Request, team_pk: str) -> Response:
+        # TODO(sbdchd): need to rate limit this so we don't send a message
+        # every time, but then we need to send a message to the schedule page
+        # team at least every 10 seconds, but not more
+        # at most once every 5 seconds / user
+        user = request.user
+
+        channel_layer = get_channel_layer()
+
+        group_name = f"schedule_presence.{team_pk}"
+
+        async_to_sync(channel_layer.group_send)(
+            group_name,
+            dict(
+                type="broadcast_message",
+                team_id=int(team_pk),
+                user=dict(id=user.id, avatar_url=user.avatar_url, email=user.email),
+            ),
+        )
+
+        return Response()
