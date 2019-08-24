@@ -13,7 +13,7 @@ def user():
     """
     Connected to `team`. Has 5 recipes. Member of `team`.
     """
-    email = "john@doe.org"
+    email = "jperson@example.org"
     return MyUser.objects.create_user(email=email)
 
 
