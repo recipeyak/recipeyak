@@ -3,9 +3,7 @@ import os
 from typing import List
 
 import dj_database_url
-import sentry_sdk
 from django.conf import global_settings
-from sentry_sdk.integrations.django import DjangoIntegration
 
 logger = logging.getLogger(__name__)
 
@@ -59,19 +57,8 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.google",
     "allauth.socialaccount.providers.gitlab",
     "softdelete",
-    "drf_yasg",
     "channels",
 ]
-
-configure_sentry = PRODUCTION and not DOCKERBUILD
-DSN = (
-    "https://3b11e5eed068478390e1e8f01e2190a9@sentry.io/250295"
-    if configure_sentry
-    else ""
-)
-sentry_sdk.init(
-    dsn=DSN, integrations=[DjangoIntegration()], release=GIT_SHA, send_default_pii=True
-)
 
 ASGI_APPLICATION = "backend.routing.application"
 
@@ -141,10 +128,7 @@ SESSION_COOKIE_AGE = 365 * 24 * 60 * 60  # sessions expire in one year
 OLD_PASSWORD_FIELD_ENABLED = True
 
 MIDDLEWARE = [
-    "backend.middleware.HealthCheckMiddleware",
-    "backend.middleware.CurrentRequestMiddleware",
     "django.middleware.security.SecurityMiddleware",
-    "backend.middleware.XForwardedForMiddleware",
     "user_sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -157,35 +141,11 @@ MIDDLEWARE = [
 
 SESSION_ENGINE = "user_sessions.backends.db"
 
-if DEBUG and not TESTING:
-    MIDDLEWARE += (
-        "backend.middleware.ServerTimingMiddleware",
-        "backend.middleware.APIDelayMiddleware",
-    )
-
-API_DELAY_MS = 200
-
 AUTH_USER_MODEL = "core.MyUser"
 
 ROOT_URLCONF = "backend.urls"
 
 API_BASE_URL = "api/v1"
-
-TEMPLATES = [
-    {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-            ]
-        },
-    }
-]
 
 WSGI_APPLICATION = "backend.wsgi.application"
 
@@ -253,39 +213,3 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = "/var/app/static"
-
-# https://docs.djangoproject.com/en/dev/topics/logging/#module-django.utils.log
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "verbose": {
-            "format": 'level=%(levelname)s msg="%(message)s" user_id=%(user_id)s request_id=%(request_id)s name=%(name)s '
-            'pathname="%(pathname)s" lineno=%(lineno)s funcname=%(funcName)s '
-            "process=%(process)d thread=%(thread)d "
-        },
-        "json": {
-            "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
-            "format": '%(levelname)s "%(message)s" %(request_id)s %(name)s '
-            '"%(pathname)s" %(lineno)s %(funcName)s '
-            "%(process)d %(thread)d ",
-        },
-    },
-    "handlers": {
-        "console": {
-            "level": "DEBUG",
-            "class": "logging.StreamHandler",
-            "formatter": "verbose",
-            "filters": ["no_testing", "request_id", "user_id"],
-        }
-    },
-    "filters": {
-        "no_testing": {"()": "backend.logging.TestingDisableFilter"},
-        "request_id": {"()": "backend.logging.RequestIDFilter"},
-        "user_id": {"()": "backend.logging.CurrentUserFilter"},
-    },
-    "loggers": {
-        "": {"level": "INFO", "handlers": ["console"]},
-        "django.utils.autoreload": {"propagate": False},
-    },
-}
