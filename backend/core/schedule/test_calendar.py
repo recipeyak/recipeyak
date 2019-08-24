@@ -3,7 +3,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Team, MyUser
+from core.models import MyUser, Team
 
 pytestmark = pytest.mark.django_db
 

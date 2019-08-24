@@ -1,8 +1,9 @@
-from channels.generic.websocket import JsonWebsocketConsumer
 from asgiref.sync import async_to_sync
-from core.schemas import PubSub
-from core.models import Team, MyUser
 from channels.auth import get_user
+from channels.generic.websocket import JsonWebsocketConsumer
+
+from core.models import MyUser, Team
+from core.schemas import PubSub
 
 
 def is_member_of_team(*, user: MyUser, team_id: int) -> bool:
@@ -57,4 +58,3 @@ class PubSubConsumer(JsonWebsocketConsumer):
                 },
             }
         )
-

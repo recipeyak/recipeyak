@@ -1,12 +1,11 @@
-from rest_framework.decorators import permission_classes, api_view
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from channels.layers import get_channel_layer
 from core.auth.permissions import IsTeamMember
-
-from asgiref.sync import async_to_sync
 
 
 @api_view(["POST"])
