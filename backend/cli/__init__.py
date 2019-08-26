@@ -176,14 +176,21 @@ def prod() -> None:
     os.environ["PYTHONUNBUFFERED"] = "true"
     subprocess.run(
         [
-            "uvicorn",
-            "--host",
-            "0.0.0.0",
-            "--port",
-            "8000",
-            "--workers",
+            "gunicorn",
+            "-w",
             "3",
+            "-b",
+            "0.0.0.0:8000",
             "backend.asgi:application",
+            "-k",
+            "uvicorn.workers.UvicornWorker", "--access-logfile",
+            "-",
+            "--error-logfile",
+            "-",
+            "--capture-output",
+            "--enable-stdio-inheritance",
+            "--access-logformat",
+            'request="%(r)s" request_time=%(L)s remote_addr="%(h)s" request_id=%({X-Request-Id}i)s response_id=%({X-Response-Id}i)s method=%(m)s protocol=%(H)s status_code=%(s)s response_length=%(b)s referer="%(f)s" process_id=%(p)s user_agent="%(a)s"',
         ],
         check=True,
     )
