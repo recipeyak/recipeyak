@@ -973,17 +973,6 @@ pytest = "*"
 
 [[package]]
 category = "dev"
-description = "Pytest plugin to randomly order tests and control random.seed."
-name = "pytest-randomly"
-optional = false
-python-versions = ">=3.4"
-version = "2.1.1"
-
-[package.dependencies]
-pytest = "*"
-
-[[package]]
-category = "dev"
 description = "pytest-sugar is a plugin for pytest that changes the default look and feel of pytest (e.g. progressbar, show tests that fail instantly)."
 name = "pytest-sugar"
 optional = false
@@ -1320,7 +1309,7 @@ version = "4.6.0"
 setuptools = "*"
 
 [metadata]
-content-hash = "9a6799e7fdf200ed168586a63a7c756cd71a39f1cfbba9b95bb4dbdef2999cfc"
+content-hash = "ba389bc4b81641612460543e564f883c9915d7568dfa444df44e48279ce9a9a7"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1420,7 +1409,6 @@ pytest-asyncio = ["9fac5100fd716cbecf6ef89233e8590a4ad61d729d1732e0a96b84182df1d
 pytest-cov = ["0ab664b25c6aa9716cbf203b17ddb301932383046082c081b9848a0edf5add33", "230ef817450ab0699c6cc3c9c8f7a829c34674456f2ed8df1fe1d39780f7c87f"]
 pytest-django = ["30d773f1768e8f214a3106f1090e00300ce6edfcac8c55fd13b675fe1cbd1c85", "4d3283e774fe1d40630ee58bf34929b83875e4751b525eeb07a7506996eb42ee"]
 pytest-icdiff = ["9ff97fb493085f8099a8a7f6161fd570fad96699f42dc08ffc66d04e8063862f"]
-pytest-randomly = ["0ff564fabb638ab52d535d8ce1da71353c7ecd54edcc5dc117f6f21f8269cfef", "f76a068dcadb4ffbd4f6c55dd447cf95fb78cfe4f3f1445c3bee5657fdf5b3d1"]
 pytest-sugar = ["26cf8289fe10880cbbc130bd77398c4e6a8b936d8393b116a5c16121d95ab283", "fcd87a74b2bce5386d244b49ad60549bfbc4602527797fac167da147983f58ab"]
 pytest-testmon = ["df00594e55f8f8f826e0e345dc23863ebac066eb749f8229c515a0373669c5bb"]
 pytest-watch = ["06136f03d5b361718b8d0d234042f7b2f203910d8568f63df2f866b547b3d4b9"]
