@@ -4,7 +4,6 @@ from channels.security.websocket import AllowedHostsOriginValidator
 
 import core.routing
 
-
 application = ProtocolTypeRouter(
     {
         "websocket": AllowedHostsOriginValidator(
@@ -12,4 +11,3 @@ application = ProtocolTypeRouter(
         )
     }
 )
-

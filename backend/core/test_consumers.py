@@ -1,13 +1,15 @@
-import pytest
-from channels.testing import WebsocketCommunicator
-from rest_framework.test import APIClient
-from rest_framework import status
-from django.urls import reverse
-from core.models import MyUser, Team
-from channels.db import database_sync_to_async
-from backend.routing import application
 from typing import List, Tuple
+
+import pytest
 from asgiref.sync import sync_to_async
+from channels.db import database_sync_to_async
+from channels.testing import WebsocketCommunicator
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APIClient
+
+from backend.routing import application
+from core.models import MyUser, Team
 
 
 @pytest.mark.django_db(transaction=True)
