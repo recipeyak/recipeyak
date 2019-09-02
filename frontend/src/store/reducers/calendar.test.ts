@@ -5,7 +5,6 @@ import {
 } from "@/store/reducers/calendar"
 import * as a from "@/store/reducers/calendar"
 import { baseRecipe } from "@/store/reducers/recipes.test"
-import { rootReducer } from "@/store/store"
 import { getModel } from "redux-loop"
 import { addWeeks, isSameDay, isAfter } from "date-fns"
 
@@ -547,7 +546,7 @@ describe("calendar selectors", () => {
   test("#getExistingRecipe", () => {
     // initialize state
     const emptyState = getModel(
-      rootReducer(undefined, a.fetchCalendarRecipes.failure())
+      calendar(undefined, a.fetchCalendarRecipes.failure())
     )
 
     const teamID = 5
@@ -575,7 +574,7 @@ describe("calendar selectors", () => {
     // get undefined.
     expect(
       a.getExistingRecipe({
-        state: emptyState.calendar,
+        state: emptyState,
         on: toDate,
         from
       })
@@ -598,15 +597,12 @@ describe("calendar selectors", () => {
     expect(isSameDay(calRecipeOnSameDay.on, toDate)).toEqual(true)
 
     const nextState = getModel(
-      rootReducer(
-        emptyState,
-        a.fetchCalendarRecipes.success([calRecipeOnSameDay])
-      )
+      calendar(emptyState, a.fetchCalendarRecipes.success([calRecipeOnSameDay]))
     )
 
     expect(
       a.getExistingRecipe({
-        state: nextState.calendar,
+        state: nextState,
         on: toDate,
         from
       })
@@ -615,7 +611,7 @@ describe("calendar selectors", () => {
     // moving recipe from its location and back to its location in one
     // drag-and-drop go.
     const calRecipe = a.getExistingRecipe({
-      state: nextState.calendar,
+      state: nextState,
       on: toDate,
       from: calRecipeOnSameDay
     })
