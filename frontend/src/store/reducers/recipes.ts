@@ -20,7 +20,12 @@ import {
 } from "@/webdata"
 import { isOk } from "@/result"
 import { Loop, loop, Cmd } from "redux-loop"
-import { Dispatch, updatingStepAsync, deletingStepAsync } from "@/store/thunks"
+import {
+  Dispatch,
+  updatingStepAsync,
+  deletingStepAsync,
+  deletingIngredientAsync
+} from "@/store/thunks"
 import { push } from "react-router-redux"
 
 export const updateRecipeOwner = createStandardAction("UPDATE_RECIPE_OWNER")<{
@@ -716,18 +721,23 @@ export const recipes = (
         addingIngredient: false
       }))
     case getType(deleteIngredient.request):
-      return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
-        ...recipe,
-        ingredients: recipe.ingredients.map(x => {
-          if (x.id === action.payload.ingredientID) {
-            return {
-              ...x,
-              removing: true
+      return loop(
+        mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
+          ...recipe,
+          ingredients: recipe.ingredients.map(x => {
+            if (x.id === action.payload.ingredientID) {
+              return {
+                ...x,
+                removing: true
+              }
             }
-          }
-          return x
+            return x
+          })
+        })),
+        Cmd.run(deletingIngredientAsync, {
+          args: [action.payload, Cmd.dispatch]
         })
-      }))
+      )
     case getType(deleteIngredient.success):
       return mapRecipeSuccessById(state, action.payload.recipeID, recipe => ({
         ...recipe,

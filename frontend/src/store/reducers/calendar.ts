@@ -101,7 +101,7 @@ export const calendar = (
     case getType(setCalendarRecipe): {
       const existing = getExistingRecipe({
         state,
-        on: new Date(action.payload.on),
+        on: action.payload.on,
         from: action.payload
       })
 
@@ -258,7 +258,7 @@ function haveSameTeam(a: ICalRecipe, b: ICalRecipe): boolean {
 
 interface IGetExistingRecipeProps {
   readonly state: ICalendarState
-  readonly on: Date
+  readonly on: Date | string
   // recipe that is going to be moved
   readonly from: ICalRecipe
 }

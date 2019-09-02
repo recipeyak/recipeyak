@@ -8,7 +8,9 @@ import recipes, {
 import * as a from "@/store/reducers/recipes"
 import { IState } from "@/store/store"
 import { HttpErrorKind, Loading, isSuccess, Failure, Success } from "@/webdata"
-import { getModel, getCmd } from "redux-loop"
+import { getModel } from "redux-loop"
+import { deletingIngredientAsync } from "@/store/thunks"
+import { assertCmdFuncEq } from "@/testUtils"
 
 export const baseRecipe: IRecipe = {
   id: 1,
@@ -481,12 +483,14 @@ describe("Recipes", () => {
       ]
     })
 
-    expect(
-      recipes(
-        beforeState,
-        a.deleteIngredient.request({ recipeID: 1, ingredientID: 1 })
-      )
-    ).toEqual(afterState)
+    const nextState = recipes(
+      beforeState,
+      a.deleteIngredient.request({ recipeID: 1, ingredientID: 1 })
+    )
+
+    expect(getModel(nextState)).toEqual(afterState)
+
+    assertCmdFuncEq(nextState, deletingIngredientAsync)
   })
 
   it("sets the recipe to be updating a specific step", () => {
@@ -601,17 +605,7 @@ describe("Recipes", () => {
 
     expect(getModel(actual)).toEqual(afterState)
 
-    const maybeCmd = getCmd(actual)
-
-    expect(maybeCmd).not.toBeNull()
-
-    if (maybeCmd != null) {
-      expect(maybeCmd.type).toEqual("RUN")
-
-      if (maybeCmd.type === "RUN") {
-        expect(maybeCmd.func).toEqual(a.updatingRecipeAsync)
-      }
-    }
+    assertCmdFuncEq(actual, a.updatingRecipeAsync)
 
     const newRecipe: IRecipe = {
       ...baseRecipe,

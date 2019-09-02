@@ -373,11 +373,15 @@ export const fetchingRecipeListAsync = (dispatch: Dispatch) => async (
   }
 }
 
-export const deletingIngredientAsync = (dispatch: Dispatch) => async (
-  recipeID: IRecipe["id"],
-  ingredientID: IIngredient["id"]
-) => {
-  dispatch(deleteIngredient.request({ recipeID, ingredientID }))
+interface IDeletingIngredientAsyncPayload {
+  readonly recipeID: IRecipe["id"]
+  readonly ingredientID: IIngredient["id"]
+}
+
+export async function deletingIngredientAsync(
+  { recipeID, ingredientID }: IDeletingIngredientAsyncPayload,
+  dispatch: Dispatch
+) {
   const res = await api.deleteIngredient(recipeID, ingredientID)
   if (isOk(res)) {
     dispatch(deleteIngredient.success({ recipeID, ingredientID }))
