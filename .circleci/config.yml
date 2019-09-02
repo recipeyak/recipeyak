@@ -94,7 +94,6 @@ jobs:
           key: frontend-v8-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
       - run:
           name: run tests
-          working_directory: frontend
           command: poetry run yak test --web
 
   frontend_lint:
