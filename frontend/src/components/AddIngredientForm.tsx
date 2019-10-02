@@ -4,6 +4,13 @@ import { ButtonPrimary, Button } from "@/components/Buttons"
 import { TextInput, CheckBox, selectTarget } from "@/components/Forms"
 import GlobalEvent from "@/components/GlobalEvent"
 
+function focusFirstInput() {
+  const el = document.getElementById("firstinput")
+  if (el) {
+    el.focus()
+  }
+}
+
 interface IAddIngredientFormProps {
   readonly handleAddIngredient: () => void
   readonly cancelAddIngredient: () => void
@@ -18,7 +25,7 @@ interface IAddIngredientFormProps {
 }
 
 function AddIngredientForm({
-  handleAddIngredient,
+  handleAddIngredient: addIngredient,
   cancelAddIngredient,
   handleInputChange,
   quantity,
@@ -34,16 +41,17 @@ function AddIngredientForm({
   useEffect(() => {
     setInitialLoad(false)
     if (!loading && (autoFocus || !isInitialLoad)) {
-      const el = document.getElementById("firstinput")
-      if (el) {
-        el.focus()
-      }
+      focusFirstInput()
     }
   }, [loading])
   const handleKeyUp = (e: KeyboardEvent) => {
     if (e.key === "Escape") {
       cancelAddIngredient()
     }
+  }
+  const handleAddIngredient = () => {
+    addIngredient()
+    focusFirstInput()
   }
 
   return (
