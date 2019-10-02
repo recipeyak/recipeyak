@@ -1,5 +1,5 @@
 import React from "react"
-import styled from "styled-components"
+import { styled } from "@/theme"
 import { Link } from "react-router-dom"
 import { useDrag } from "react-dnd"
 import { beforeCurrentDay } from "@/date"
@@ -43,7 +43,7 @@ const StyledLink = styled(Link)`
   line-height: 1.3;
   font-size: 0.875rem;
   word-break: break-word;
-  background-color: #ff7247;
+  background-color: ${props => props.theme.primaryColor};
   border-radius: 5px;
   padding: 0.35rem;
   color: whitesmoke;
