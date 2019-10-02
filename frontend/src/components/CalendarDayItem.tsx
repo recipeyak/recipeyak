@@ -1,4 +1,5 @@
 import React from "react"
+import styled from "styled-components"
 import { Link } from "react-router-dom"
 import { useDrag } from "react-dnd"
 import { beforeCurrentDay } from "@/date"
@@ -37,17 +38,24 @@ interface IRecipeLink {
   readonly id: IRecipe["id"] | string
   readonly name: IRecipe["name"]
 }
+
+const StyledLink = styled(Link)`
+  line-height: 1.3;
+  font-size: 0.875rem;
+  word-break: break-word;
+  background-color: #ff7247;
+  border-radius: 5px;
+  padding: 0.35rem;
+  color: whitesmoke;
+  font-weight: 500;
+  :hover {
+    color: whitesmoke;
+  }
+`
+
 function RecipeLink({ name, id }: IRecipeLink) {
-  return (
-    <Link
-      to={recipeURL(id, name)}
-      className="break-word text-small"
-      style={{
-        lineHeight: 1.1
-      }}>
-      {name}
-    </Link>
-  )
+  const to = recipeURL(id, name)
+  return <StyledLink to={to}>{name}</StyledLink>
 }
 
 export interface ICalendarItemProps {
