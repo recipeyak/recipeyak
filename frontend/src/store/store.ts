@@ -142,8 +142,8 @@ const compose: typeof reduxCompose =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || reduxCompose
 
 const emptyStoreEnhancers = compose(
-  applyMiddleware(router),
-  install()
+  install(),
+  applyMiddleware(router)
 ) as StoreEnhancer<IState, Action>
 
 // We need an empty store for the unit tests & hydrating from localstorage

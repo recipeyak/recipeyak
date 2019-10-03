@@ -39,6 +39,9 @@ import { classNames } from "@/classnames"
 
 const selectElementText = (el: Element) => {
   const sel = window.getSelection()
+  if (sel == null) {
+    return
+  }
   const range = document.createRange()
   range.selectNodeContents(el)
   sel.removeAllRanges()
@@ -46,7 +49,11 @@ const selectElementText = (el: Element) => {
 }
 
 const removeSelection = () => {
-  window.getSelection().removeAllRanges()
+  const sel = window.getSelection()
+  if (sel == null) {
+    return
+  }
+  sel.removeAllRanges()
 }
 
 function formatMonth(date: Date | null) {
