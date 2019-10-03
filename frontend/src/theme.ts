@@ -1,13 +1,11 @@
 import * as styledComponents from "styled-components"
 
-export interface IThemeInterface {
+export interface ITheme {
   readonly primaryColor: string
   readonly textSmall: string
 }
 
-// TODO(sbdchd): upgrade typescript and use `as const` and `typeof`
-
-export const theme: IThemeInterface = {
+export const theme: ITheme = {
   primaryColor: "#ff7247",
   textSmall: "0.875rem"
 }
@@ -17,8 +15,6 @@ const {
   css,
   keyframes,
   ThemeProvider
-} = styledComponents as styledComponents.ThemedStyledComponentsModule<
-  IThemeInterface
->
+} = styledComponents as styledComponents.ThemedStyledComponentsModule<ITheme>
 
 export { styled, css, keyframes, ThemeProvider }

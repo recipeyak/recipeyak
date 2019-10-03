@@ -94,6 +94,7 @@
     "enzyme-adapter-react-16": "^1.14.0",
     "history": "^4.7.2",
     "inquirer": "^6.2.2",
+    "jest-styled-components": "^6.3.3",
     "js-cookie": "^2.2.0",
     "lodash": "^4.17.4",
     "mini-css-extract-plugin": "^0.5.0",
@@ -126,7 +127,7 @@
   },
   "proxy": "http://localhost:8000",
   "jest": {
-    "setupTestFrameworkScriptFile": "<rootDir>/frontend/config/setupEnzyme.ts",
+    "setupTestFrameworkScriptFile": "<rootDir>/frontend/config/jestSetup.ts",
     "collectCoverageFrom": [
       "src/**/*.{js,jsx,ts,tsx}"
     ],

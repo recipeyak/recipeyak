@@ -71,7 +71,7 @@ export interface ICalendarItemProps {
   readonly id: ICalRecipe["id"]
 }
 
-function CalendarItem(props: ICalendarItemProps) {
+export function CalendarItem(props: ICalendarItemProps) {
   const [count, setCount] = React.useState(props.count)
   const [hover, setHover] = React.useState(false)
 
@@ -170,5 +170,3 @@ export interface ICalendarDragItem
   extends Pick<ICalendarItemProps, "recipeID" | "count" | "id" | "date"> {
   readonly type: DragDrop.CAL_RECIPE
 }
-
-export default CalendarItem
