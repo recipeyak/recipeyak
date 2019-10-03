@@ -1,6 +1,6 @@
 def prettier(check: bool) -> str:
     check_flag = "--list-different" if check else "--write"
-    glob = "frontend/**/*.{js,jsx,scss,css,ts,tsx,json}"
+    glob = "**/*.{js,jsx,scss,css,ts,tsx,json,yaml,yml,md}"
     return f"$(yarn bin)/prettier '{glob}' {check_flag}"
 
 
