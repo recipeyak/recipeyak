@@ -134,6 +134,39 @@ jobs:
       - store_artifacts:
           path: /tmp/frontend-artifacts
 
+  frontend_stylelint:
+    docker:
+      - image: recipeyak/base:v3
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - frontend-v8-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - frontend-v8-dependencies-{{ .Branch }}-
+            - frontend-v8-dependencies-
+      - run:
+          name: install dependencies
+          command: |
+            yarn install --frozen-lockfile --cache-folder /root/.cache/yarn
+      - save_cache:
+          paths:
+            - /root/project/node_modules
+            - /root/.cache/
+          key: frontend-v8-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - run:
+          name: run linter
+          command: |
+            ./node_modules/.bin/stylelint frontend/src/**/*.{ts,tsx}
+      - run:
+          name: move artifacts
+          working_directory: frontend
+          # copy bundle analyzer report
+          command: |
+            mkdir -p /tmp/frontend-artifacts
+            cp -R build/report.html build/webpack-stats.json /tmp/frontend-artifacts
+      - store_artifacts:
+          path: /tmp/frontend-artifacts
+
   docker_lint:
     docker:
       - image: recipeyak/base:v3
