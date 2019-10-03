@@ -47,7 +47,7 @@ const StyledLink = styled(Link)`
   border-radius: 5px;
   padding: 0.35rem;
   color: whitesmoke;
-  font-weight: 500;
+  font-weight: 600;
   :hover {
     color: whitesmoke;
   }
