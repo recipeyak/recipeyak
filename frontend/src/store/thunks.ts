@@ -113,7 +113,7 @@ export interface INotificationWithTimeout {
 }
 
 // https://stackoverflow.com/a/38574266/3555105
-let notificationTimeout: NodeJS.Timer
+let notificationTimeout: number
 export const showNotificationWithTimeoutAsync = (dispatch: Dispatch) => ({
   message,
   level = "info",

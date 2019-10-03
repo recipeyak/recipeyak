@@ -25,11 +25,11 @@
         "--config", "tox.ini"
     ],
     "python.linting.pylintEnabled": true,
-    "python.testing.pyTestArgs": [
+    "python.testing.pytestArgs": [
         "backend"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.nosetestsEnabled": false,
-    "python.testing.pyTestEnabled": true,
+    "python.testing.pytestEnabled": true,
     "typescript.tsdk": "node_modules/typescript/lib"
 }

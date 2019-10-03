@@ -1,4 +1,5 @@
 import React from "react"
+import { styled } from "@/theme"
 import { Link } from "react-router-dom"
 import { useDrag } from "react-dnd"
 import { beforeCurrentDay } from "@/date"
@@ -37,17 +38,24 @@ interface IRecipeLink {
   readonly id: IRecipe["id"] | string
   readonly name: IRecipe["name"]
 }
+
+const StyledLink = styled(Link)`
+  line-height: 1.3;
+  font-size: ${props => props.theme.textSmall};
+  word-break: break-word;
+  background-color: ${props => props.theme.primaryColor};
+  border-radius: 5px;
+  padding: 0.35rem;
+  color: whitesmoke;
+  font-weight: 600;
+  :hover {
+    color: whitesmoke;
+  }
+`
+
 function RecipeLink({ name, id }: IRecipeLink) {
-  return (
-    <Link
-      to={recipeURL(id, name)}
-      className="break-word text-small"
-      style={{
-        lineHeight: 1.1
-      }}>
-      {name}
-    </Link>
-  )
+  const to = recipeURL(id, name)
+  return <StyledLink to={to}>{name}</StyledLink>
 }
 
 export interface ICalendarItemProps {
@@ -63,7 +71,7 @@ export interface ICalendarItemProps {
   readonly id: ICalRecipe["id"]
 }
 
-function CalendarItem(props: ICalendarItemProps) {
+export function CalendarItem(props: ICalendarItemProps) {
   const [count, setCount] = React.useState(props.count)
   const [hover, setHover] = React.useState(false)
 
@@ -162,5 +170,3 @@ export interface ICalendarDragItem
   extends Pick<ICalendarItemProps, "recipeID" | "count" | "id" | "date"> {
   readonly type: DragDrop.CAL_RECIPE
 }
-
-export default CalendarItem

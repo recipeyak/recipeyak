@@ -8,6 +8,7 @@ import { SENTRY_DSN, GIT_SHA } from "@/settings"
 import App from "@/components/App"
 
 import store from "@/store/store"
+import { ThemeProvider, theme } from "@/theme"
 
 if (process.env.NODE_ENV === "production" && SENTRY_DSN) {
   Raven.config(SENTRY_DSN, {
@@ -26,8 +27,10 @@ if (rootElement == null) {
 }
 
 render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  <ThemeProvider theme={theme}>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </ThemeProvider>,
   rootElement
 )

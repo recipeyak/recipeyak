@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<CalendarDayItem> Snap smoke test render with styled components 1`] = `
+.c0 {
+  line-height: 1.3;
+  font-size: 0.875rem;
+  word-break: break-word;
+  background-color: #ff7247;
+  border-radius: 5px;
+  padding: 0.35rem;
+  color: whitesmoke;
+  font-weight: 600;
+}
+
+.c0:hover {
+  color: whitesmoke;
+}
+
+<li
+  className="d-flex align-items-center cursor-pointer justify-space-between mb-2"
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+  style={
+    Object {
+      "visibility": "visible",
+    }
+  }
+>
+  <a
+    className="c0"
+    href="/recipes/10-baked-ziti"
+    onClick={[Function]}
+  >
+    Baked Ziti
+  </a>
+</li>
+`;

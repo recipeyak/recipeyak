@@ -12,7 +12,7 @@ import { beforeCurrentDay } from "@/date"
 
 import { classNames } from "@/classnames"
 
-import CalendarItem, { ICalendarDragItem } from "@/components/CalendarDayItem"
+import { CalendarItem, ICalendarDragItem } from "@/components/CalendarDayItem"
 
 import {
   updatingScheduledRecipeAsync,
@@ -48,10 +48,10 @@ function DayOfWeek({ date }: { date: Date }) {
 const Title = ({ date }: { date: Date }) => {
   const dateFmtText = isFirstDayOfMonth(date) ? "MMM D" : "D"
   return (
-    <p className="d-flex">
+    <div className="d-flex">
       <DayOfWeek date={date} />
       <span>{format(date, dateFmtText)}</span>
-    </p>
+    </div>
   )
 }
 
