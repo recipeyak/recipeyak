@@ -5,8 +5,6 @@ type GetComponentProps<T> = T extends
   ? P
   : never
 
-type Omit<T, K> = Pick<T, Exclude<keyof T, K>>
-
 type Diff<T, U> = T extends U ? never : T
 
 /** subtract an `interface` from another `interface`
