@@ -1,35 +1,32 @@
 {
-    "editor.formatOnSave": true,
-    "javascript.format.enable": true,
-    "typescript.format.enable": true,
-    "files.insertFinalNewline": true,
-    "python.formatting.provider": "black",
+  "editor.formatOnSave": true,
+  "javascript.format.enable": true,
+  "typescript.format.enable": true,
+  "files.insertFinalNewline": true,
+  "python.formatting.provider": "black",
 
-    "typescript.preferences.importModuleSpecifier": "non-relative",
-    "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.updateImportsOnFileMove.enabled": "always",
 
-    "python.pythonPath": ".venv/bin/python",
-    "python.envFile": "${workspaceFolder}/.vscode/.env",
-    // Use jedi instead of Microsoft's C# Python language server (MLS). I think
-    // MLS has introduced too many regressions to be depended on.
-    "python.jediEnabled": true,
-    "python.linting.mypyEnabled": true,
-    "python.linting.mypyArgs": [
-        "--ignore-missing-imports",
-        "--follow-imports=silent",
-        "--show-column-numbers",
-        "--config-file", "tox.ini"
-    ],
-    "python.linting.flake8Enabled": true,
-    "python.linting.flake8Args": [
-        "--config", "tox.ini"
-    ],
-    "python.linting.pylintEnabled": true,
-    "python.testing.pytestArgs": [
-        "backend"
-    ],
-    "python.testing.unittestEnabled": false,
-    "python.testing.nosetestsEnabled": false,
-    "python.testing.pytestEnabled": true,
-    "typescript.tsdk": "node_modules/typescript/lib"
+  "python.pythonPath": ".venv/bin/python",
+  "python.envFile": "${workspaceFolder}/.vscode/.env",
+  // Use jedi instead of Microsoft's C# Python language server (MLS). I think
+  // MLS has introduced too many regressions to be depended on.
+  "python.jediEnabled": true,
+  "python.linting.mypyEnabled": true,
+  "python.linting.mypyArgs": [
+    "--ignore-missing-imports",
+    "--follow-imports=silent",
+    "--show-column-numbers",
+    "--config-file",
+    "tox.ini"
+  ],
+  "python.linting.flake8Enabled": true,
+  "python.linting.flake8Args": ["--config", "tox.ini"],
+  "python.linting.pylintEnabled": true,
+  "python.testing.pytestArgs": ["backend"],
+  "python.testing.unittestEnabled": false,
+  "python.testing.nosetestsEnabled": false,
+  "python.testing.pytestEnabled": true,
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
