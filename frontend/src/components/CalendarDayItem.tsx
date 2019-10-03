@@ -41,7 +41,7 @@ interface IRecipeLink {
 
 const StyledLink = styled(Link)`
   line-height: 1.3;
-  font-size: 0.875rem;
+  font-size: ${props => props.theme.textSmall};
   word-break: break-word;
   background-color: ${props => props.theme.primaryColor};
   border-radius: 5px;

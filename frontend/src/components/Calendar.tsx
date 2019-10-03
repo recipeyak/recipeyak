@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { connect } from "react-redux"
 import eachDay from "date-fns/each_day"
 import format from "date-fns/format"
+import first from "lodash/first"
 
 import {
   fetchCalendarAsync,
@@ -57,7 +58,7 @@ function Weekdays() {
   return (
     <div className="calendar-week-days">
       {weekDays.map(x => (
-        <b>{x}</b>
+        <b key={x}>{x}</b>
       ))}
     </div>
   )
@@ -76,21 +77,28 @@ function Days({ start, end, days, teamID }: IDaysProps) {
   return (
     <section
       className={classNames("mb-2", "flex-grow-1", { "h-100": isSafari() })}>
-      {chunk(eachDay(start, end), WEEK_DAYS).map(dates => (
-        <section className="d-flex calendar-week">
-          {dates.map(date => {
-            const scheduledRecipes = days[toDateString(date)] || []
-            return (
-              <CalendarDay
-                scheduledRecipes={scheduledRecipes}
-                date={date}
-                key={date.toString()}
-                teamID={teamID}
-              />
-            )
-          })}
-        </section>
-      ))}
+      {chunk(eachDay(start, end), WEEK_DAYS).map(dates => {
+        const firstDay = first(dates)
+        if (firstDay == null) {
+          return <section className="d-flex calendar-week" />
+        }
+        const week = String(startOfWeek(firstDay))
+        return (
+          <section className="d-flex calendar-week" key={week}>
+            {dates.map(date => {
+              const scheduledRecipes = days[toDateString(date)] || []
+              return (
+                <CalendarDay
+                  scheduledRecipes={scheduledRecipes}
+                  date={date}
+                  key={date.toString()}
+                  teamID={teamID}
+                />
+              )
+            })}
+          </section>
+        )
+      })}
     </section>
   )
 }
