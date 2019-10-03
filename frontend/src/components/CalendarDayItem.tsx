@@ -44,7 +44,7 @@ const StyledLink = styled(Link)`
   font-size: ${props => props.theme.textSmall};
   word-break: break-word;
   background-color: ${props => props.theme.primaryColor};
-  border-radis: 5px;
+  border-radius: 5px;
   padding: 0.35rem;
   color: whitesmoke;
   font-weight: 600;
