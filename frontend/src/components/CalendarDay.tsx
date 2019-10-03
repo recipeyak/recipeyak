@@ -12,7 +12,7 @@ import { beforeCurrentDay } from "@/date"
 
 import { classNames } from "@/classnames"
 
-import CalendarItem, { ICalendarDragItem } from "@/components/CalendarDayItem"
+import { CalendarItem, ICalendarDragItem } from "@/components/CalendarDayItem"
 
 import {
   updatingScheduledRecipeAsync,
