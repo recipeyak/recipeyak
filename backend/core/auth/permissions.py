@@ -42,13 +42,10 @@ class IsTeamAdmin(permissions.BasePermission):
         else:
             team_pk = view.kwargs["team_pk"]
         team = get_object_or_404(Team, pk=team_pk)
-        return cast(
-            bool,
-            (
-                team.membership_set.filter(level=Membership.ADMIN)
-                .filter(user=request.user)
-                .exists()
-            ),
+        return (
+            team.membership_set.filter(level=Membership.ADMIN)
+            .filter(user=request.user)
+            .exists()
         )
 
 
@@ -71,15 +68,12 @@ class NonSafeIfMemberOrAdmin(IsTeamMember):
             return True
         team_pk = view.kwargs["team_pk"]
         team = get_object_or_404(Team, pk=team_pk)
-        return cast(
-            bool,
-            (
-                team.membership_set.filter(
-                    Q(level=Membership.ADMIN) | Q(level=Membership.CONTRIBUTOR)
-                )
-                .filter(user=request.user)
-                .exists()
-            ),
+        return (
+            team.membership_set.filter(
+                Q(level=Membership.ADMIN) | Q(level=Membership.CONTRIBUTOR)
+            )
+            .filter(user=request.user)
+            .exists()
         )
 
 
