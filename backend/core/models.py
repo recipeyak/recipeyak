@@ -1,7 +1,7 @@
 import hashlib
 import itertools
 import logging
-from datetime import datetime
+from datetime import datetime, date
 from typing import List, Optional, Union, cast
 
 from allauth.socialaccount.models import EmailAddress
@@ -167,7 +167,7 @@ class Recipe(CommonInfo, SoftDeleteObject):
         """
         with transaction.atomic():
             # clone top level recipe object
-            recipe_copy = Recipe.objects.get(pk=self.pk)
+            recipe_copy: Recipe = Recipe.objects.get(pk=self.pk)
             recipe_copy.pk = None
             recipe_copy.owner = account
             recipe_copy.save()
@@ -196,7 +196,7 @@ class Recipe(CommonInfo, SoftDeleteObject):
         """Return recipe steps ordered by creation date"""
         return Step.objects.filter(recipe=self).order_by("position", "created")
 
-    def get_last_scheduled(self) -> Optional[datetime]:
+    def get_last_scheduled(self) -> Optional[date]:
         """Return the most recent date this recipe was scheduled for"""
         scheduled_recipe = self.scheduledrecipe_set.first()
         if scheduled_recipe is not None:

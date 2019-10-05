@@ -38,7 +38,7 @@ pytest = "^3.4.0"
 pytest-cov = "^2.5.1"
 pytest-django = "^3.1.2"
 ipdb = "^0.11.0"
-mypy = "0.720"
+mypy = "0.730"
 flake8 = "^3.6.0"
 flake8-formatter-junit-xml = "^0.0.5"
 black = "18.9b0"
@@ -54,6 +54,7 @@ pytest-icdiff = "^0.2.0"
 pywatchman = "^1.4"
 isort = "^4.3"
 flake8-comprehensions = "^2.1"
+django-stubs = "^1.2"
 
 [tool.poetry.scripts]
 yak = 'cli:cli'
