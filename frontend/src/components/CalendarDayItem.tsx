@@ -41,15 +41,15 @@ interface IRecipeLink {
 
 const StyledLink = styled(Link)`
   line-height: 1.3;
-  font-size: ${props => props.theme.textSmall};
+  font-size: ${props => props.theme.text.small};
   word-break: break-word;
-  background-color: ${props => props.theme.primaryColor};
+  background-color: ${props => props.theme.color.primary};
   border-radius: 5px;
   padding: 0.35rem;
-  color: whitesmoke;
+  color: ${props => props.theme.color.white};
   font-weight: 600;
   :hover {
-    color: whitesmoke;
+    color: ${props => props.theme.color.white};
   }
 `
 
