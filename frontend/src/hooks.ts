@@ -1,6 +1,9 @@
 import React from "react"
 import { isSameDay } from "date-fns"
 import { second } from "@/date"
+import { IState } from '@/store/store';
+import { Dispatch } from '@/store/thunks';
+import { TypedUseSelectorHook, useDispatch as useDispatchRedux, useSelector as useSelectorRedux } from 'react-redux';
 
 export function useCurrentDay() {
   const [date, setDate] = React.useState(new Date())
@@ -74,3 +77,8 @@ export function useGlobalEvent({
     }
   }, [mouseDown])
 }
+
+// Type useDispatch for our actions
+export const useDispatch = () => useDispatchRedux<Dispatch>()
+// Type useSelector for out root state
+export const useSelector: TypedUseSelectorHook<IState> = useSelectorRedux
