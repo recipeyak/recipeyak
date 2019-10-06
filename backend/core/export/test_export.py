@@ -70,7 +70,7 @@ def test_export_fields(
     res = c.get(url)
     assert res.status_code == 200
     recipes = res.json()
-    assert not any(fields_in(r, fields=("id",)) for r in recipes)
+    assert not any(fields_in(r, fields=("id",)) for r in recipes)  # type: ignore
 
 
 @pytest.mark.parametrize("filetype", ["yaml", "yml"])

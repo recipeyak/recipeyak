@@ -48,7 +48,7 @@ class TeamInviteViewSet(
         We want id, user object, and team data response
         need to use to_representation or form_represenation
         """
-        team = Team.objects.get(pk=team_pk)
+        team = Team.objects.get(pk=int(team_pk))
         serializer = CreateInviteSerializer(data={**request.data, "team": team})
         serializer.is_valid(raise_exception=True)
         invite = serializer.save(team=team, creator=self.request.user)

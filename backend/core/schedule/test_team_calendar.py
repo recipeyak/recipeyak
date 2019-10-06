@@ -21,6 +21,7 @@ def test_adding_to_team_calendar(client, user, team, recipe):
     res = client.post(url, data)
     assert res.status_code == status.HTTP_201_CREATED
     scheduled = ScheduledRecipe.objects.get(id=res.json().get("id"))
+    assert scheduled.team is not None
     assert scheduled.team.pk == team.pk
 
 

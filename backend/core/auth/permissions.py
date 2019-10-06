@@ -1,4 +1,4 @@
-from typing import cast
+from typing import cast, Union
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
@@ -83,11 +83,11 @@ class HasRecipeAccess(permissions.BasePermission):
     """
 
     def has_object_permission(self, request, view, recipe: Recipe) -> bool:
-        return cast(
-            bool,
-            (
-                recipe.owner == request.user
-                if isinstance(recipe.owner, MyUser)
-                else recipe.owner.is_member(request.user)
-            ),
+        recipe_owner = cast(Union[MyUser, Team], recipe.owner)
+        return (
+            isinstance(recipe_owner, MyUser)
+            and recipe_owner == request.user
+            or isinstance(recipe_owner, Team)
+            and recipe_owner.is_member(request.user)
         )
+
