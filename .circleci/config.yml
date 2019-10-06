@@ -21,8 +21,6 @@ jobs:
       - restore_cache:
           keys:
             - backend-v8-{{ .Branch }}-{{ checksum "poetry.lock" }}
-            - backend-v8-{{ .Branch }}-
-            - backend-v8-
       - run:
           name: install dependencies
           command: |
@@ -52,8 +50,6 @@ jobs:
       - restore_cache:
           keys:
             - backend-v8-{{ .Branch }}-{{ checksum "poetry.lock" }}
-            - backend-v8-{{ .Branch }}-
-            - backend-v8-
       - run:
           name: install dependencies
           command: |
@@ -80,8 +76,6 @@ jobs:
       - restore_cache:
           keys:
             - frontend-v8-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - frontend-v8-dependencies-{{ .Branch }}-
-            - frontend-v8-dependencies-
       - run:
           name: install dependencies
           command: |
@@ -107,8 +101,6 @@ jobs:
       - restore_cache:
           keys:
             - frontend-v8-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - frontend-v8-dependencies-{{ .Branch }}-
-            - frontend-v8-dependencies-
       - run:
           name: install dependencies
           command: |
@@ -145,8 +137,6 @@ jobs:
       - restore_cache:
           keys:
             - frontend-v8-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - frontend-v8-dependencies-{{ .Branch }}-
-            - frontend-v8-dependencies-
       - run:
           name: install dependencies
           command: |
