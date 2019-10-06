@@ -67,11 +67,13 @@ def typecheck(api: bool, web: bool, watch: bool) -> None:
     if not api and not web:
         raise click.ClickException("No services were selected.")
 
-    if web:
-        subprocess.run(cmds.typescript(watch=watch).split(), check=True)
-        return
-    if api:
-        subprocess.run(cmds.mypy().split(), check=True)
+    from cli.manager import ProcessManager
+
+    with ProcessManager() as m:
+        if web:
+            m.add_process("typescript", cmds.typescript(watch=watch))
+        if api:
+            m.add_process("mypy", cmds.mypy())
 
 
 @cli.command(help="format code")
@@ -112,16 +114,11 @@ def test(api: bool, web: bool, watch: bool, test_args: List[str]) -> None:
 
     pytest = ["ptw", "--", *test_args] if watch else ["pytest", *test_args]
 
-    if is_all:
-        with ProcessManager() as m:
+    with ProcessManager() as m:
+        if is_all or api:
             m.add_process("api", pytest, cwd="backend")
+        if is_all or web:
             m.add_process("web", jest)
-
-    if web:
-        subprocess.run(jest, check=True)
-
-    if api:
-        subprocess.run(pytest, cwd="backend", check=True)
 
 
 @cli.command(help="start dev services")
