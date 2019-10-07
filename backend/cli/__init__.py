@@ -38,14 +38,16 @@ def lint(ctx: click.core.Context, api: bool, web: bool) -> None:
     load_dotenv()
     set_default_config()
 
+    is_ci = bool(os.getenv("CI"))
+
     with ProcessManager() as m:
         if web or is_all:
             m.add_process("tslint", cmds.tslint())
-            m.add_process("prettier", cmds.prettier(check=True))
+            m.add_process("prettier", cmds.prettier(check=is_ci))
             m.add_process("typescript", cmds.typescript(watch=False))
+            m.add_process("eslint", cmds.eslint(check=is_ci))
 
         if api or is_all:
-            is_ci = bool(os.getenv("CI"))
             ctx.invoke(missing_migrations)
             m.add_process("mypy", cmds.mypy())
             m.add_process("flake8", cmds.flake8())

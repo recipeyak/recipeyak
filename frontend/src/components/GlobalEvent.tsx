@@ -40,7 +40,7 @@ export default function GlobalEvent(props: IGlobalEventProps) {
         document.removeEventListener("keyup", props.keyUp)
       }
     }
-  }, [])
+  }, [props.keyDown, props.keyUp, props.mouseDown, props.mouseUp])
 
   return null
 }

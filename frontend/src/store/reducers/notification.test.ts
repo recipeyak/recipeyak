@@ -1,6 +1,8 @@
-import notification, { initialState } from "@/store/reducers/notification"
-
-import * as a from "@/store/reducers/notification"
+import notification, {
+  initialState,
+  setNotification,
+  clearNotification
+} from "@/store/reducers/notification"
 
 describe("Notification", () => {
   it("Sets notification settings", () => {
@@ -21,7 +23,7 @@ describe("Notification", () => {
       show: true
     }
 
-    expect(notification(beforeState, a.setNotification(action))).toEqual(
+    expect(notification(beforeState, setNotification(action))).toEqual(
       afterState
     )
   })
@@ -40,6 +42,6 @@ describe("Notification", () => {
       show: false
     }
 
-    expect(notification(beforeState, a.clearNotification())).toEqual(afterState)
+    expect(notification(beforeState, clearNotification())).toEqual(afterState)
   })
 })

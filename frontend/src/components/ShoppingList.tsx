@@ -165,22 +165,23 @@ export const enum Selecting {
   None
 }
 
-function ShoppingList(props: IShoppingListProps) {
+function ShoppingList({
+  fetchData,
+  teamID,
+  startDay,
+  endDay,
+  ...props
+}: IShoppingListProps) {
   const element = useRef<HTMLDivElement>(null)
   const [month, setMonth] = useState(new Date())
   const [selecting, setSelecting] = useState(Selecting.None)
 
   useEffect(() => {
     if (selecting === Selecting.None) {
-      refetchData()
+      // TODO: refetch data on calendar count for scheduled recipes changes
+      fetchData(teamID, startDay, endDay)
     }
-  }, [selecting])
-
-  const refetchData = () => {
-    // TODO: refetch data on calendar count for scheduled recipes changes
-    // TODO(sbdchd): use mergeProps to remove this
-    props.fetchData(props.teamID, props.startDay, props.endDay)
-  }
+  }, [fetchData, teamID, startDay, endDay, selecting])
 
   const closeInputs = () => setSelecting(Selecting.None)
 
@@ -189,7 +190,7 @@ function ShoppingList(props: IShoppingListProps) {
       return
     }
     props.setStartDay(date)
-    if (isAfter(date, props.endDay)) {
+    if (isAfter(date, endDay)) {
       props.setEndDay(date)
     }
     setSelecting(Selecting.End)
@@ -200,7 +201,7 @@ function ShoppingList(props: IShoppingListProps) {
       return
     }
     props.setEndDay(date)
-    if (isBefore(date, props.startDay)) {
+    if (isBefore(date, startDay)) {
       props.setStartDay(date)
     }
     setSelecting(Selecting.None)
@@ -229,21 +230,21 @@ function ShoppingList(props: IShoppingListProps) {
             onFocus={handleStartPickerClick}
             isFocused={selecting === Selecting.Start}
             placeholder="from"
-            value={formatMonth(props.startDay)}
+            value={formatMonth(startDay)}
           />
           <h2 className="fs-4 ml-2 mr-2">{" → "}</h2>
           <DateInput
             onFocus={handleEndPickerClick}
             isFocused={selecting === Selecting.End}
             placeholder="to"
-            value={formatMonth(props.endDay)}
+            value={formatMonth(endDay)}
           />
         </div>
         <DateRangePicker
           onClose={closeInputs}
           month={month}
-          startDay={props.startDay}
-          endDay={props.endDay}
+          startDay={startDay}
+          endDay={endDay}
           selecting={selecting}
           setStartDay={setStartDay}
           setEndDay={setEndDay}
