@@ -1,13 +1,23 @@
 import * as styledComponents from "styled-components"
 
 export interface ITheme {
-  readonly primaryColor: string
-  readonly textSmall: string
+  readonly color: {
+    readonly white: string
+    readonly primary: string
+  }
+  readonly text: {
+    readonly small: string
+  }
 }
 
 export const theme: ITheme = {
-  primaryColor: "#ff7247",
-  textSmall: "0.875rem"
+  color: {
+    white: "#f9f9f9",
+    primary: "#ff7247"
+  },
+  text: {
+    small: "0.875rem"
+  }
 }
 
 const {

@@ -8,12 +8,12 @@ exports[`<CalendarDayItem> Snap smoke test render with styled components 1`] = `
   background-color: #ff7247;
   border-radius: 5px;
   padding: 0.35rem;
-  color: whitesmoke;
+  color: #f9f9f9;
   font-weight: 600;
 }
 
 .c0:hover {
-  color: whitesmoke;
+  color: #f9f9f9;
 }
 
 <li

@@ -104,7 +104,7 @@ def test(api: bool, web: bool, watch: bool, test_args: List[str]) -> None:
 
     os.environ["TESTING"] = "1"
 
-    jest = ["node", "frontend/scripts/test.js", "--env=jsdom"]
+    jest = ["node", "frontend/scripts/test.js", "--env=jsdom", *test_args]
     if os.getenv("CI"):
         jest += ["--coverage", "--runInBand"]
     if watch:
@@ -343,7 +343,12 @@ def maintenance_mode(machine_name: str, action: Literal["on", "off"]) -> None:
 @cli.command()
 @click.argument("backup", type=click.Path(exists=True))
 @click.argument("database_name")
-def create_db_from_backup(backup: str, database_name: str) -> None:
+@click.option("--host", default="localhost")
+@click.option("--port", default="5432")
+@click.option("--database_username", default="postgres")
+def create_db_from_backup(
+    backup: str, host: str, port: str, database_name: str, database_username: str
+) -> None:
     """
     Restore to recipeyak database using production backup.
 
@@ -357,18 +362,56 @@ def create_db_from_backup(backup: str, database_name: str) -> None:
     # Create a new database using with the current time so it's unique
     date = int(datetime.now().timestamp())
     temp_db_name = f"db{date}"
-    subprocess.run(["psql", "-c", f"Create database {temp_db_name}"], check=True)
+    subprocess.run(
+        [
+            "psql",
+            "-h",
+            host,
+            "-p",
+            port,
+            "-U",
+            database_username,
+            "-c",
+            f"Create database {temp_db_name}",
+        ],
+        check=True,
+    )
 
     # unzip backup and insert into database
     ps = subprocess.Popen(["gzip", "-d", backup, "-c"], stdout=subprocess.PIPE)
-    subprocess.run(["psql", "-d", temp_db_name], stdin=ps.stdout, check=True)
+    subprocess.run(
+        ["psql", "-h", host, "-p", port, "-U", database_username, "-d", temp_db_name],
+        stdin=ps.stdout,
+        check=True,
+    )
 
     # # remove recipeyak table if it exists and rename our table to recipeyak
     subprocess.run(
-        ["psql", "-c", f"DROP DATABASE IF EXISTS {database_name}"], check=True
+        [
+            "psql",
+            "-h",
+            host,
+            "-p",
+            port,
+            "-U",
+            database_username,
+            "-c",
+            f"DROP DATABASE IF EXISTS {database_name}",
+        ],
+        check=True,
     )
     subprocess.run(
-        ["psql", "-c", f"ALTER DATABASE {temp_db_name} RENAME TO {database_name}"],
+        [
+            "psql",
+            "-h",
+            host,
+            "-p",
+            port,
+            "-U",
+            database_username,
+            "-c",
+            f"ALTER DATABASE {temp_db_name} RENAME TO {database_name}",
+        ],
         check=True,
     )
     click.echo(f"Successfully imported backup into database: {database_name}")
