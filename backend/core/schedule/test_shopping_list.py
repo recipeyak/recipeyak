@@ -160,6 +160,16 @@ def test_scheduling_multiple_times_some_ingredient(
         ),
         ([("1/2 cup", "scallions")], ("0.5 cup", "scallions")),
         ([("½ cup", "scallions")], ("0.5 cup", "scallions")),
+        (
+            [
+                ("2", "lemons"),
+                ("1", "lemon"),
+                ("1 large", "lemon"),
+                ("1/2", "lemon"),
+                ("some", "lemon"),
+            ],
+            ("4.5 + some", "lemons"),
+        ),
     ],
 )
 def test_combine_ingredients(empty_recipe, ingredients, combined):
