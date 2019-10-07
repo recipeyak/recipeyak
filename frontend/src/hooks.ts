@@ -1,9 +1,13 @@
 import React from "react"
 import { isSameDay } from "date-fns"
 import { second } from "@/date"
-import { IState } from '@/store/store';
-import { Dispatch } from '@/store/thunks';
-import { TypedUseSelectorHook, useDispatch as useDispatchRedux, useSelector as useSelectorRedux } from 'react-redux';
+import { IState } from "@/store/store"
+import { Dispatch } from "@/store/thunks"
+import {
+  TypedUseSelectorHook,
+  useDispatch as useDispatchRedux,
+  useSelector as useSelectorRedux
+} from "react-redux"
 
 export function useCurrentDay() {
   const [date, setDate] = React.useState(new Date())
