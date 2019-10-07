@@ -84,5 +84,5 @@ export function useGlobalEvent({
 
 // Type useDispatch for our actions
 export const useDispatch = () => useDispatchRedux<Dispatch>()
-// Type useSelector for out root state
+// Type useSelector for our root state
 export const useSelector: TypedUseSelectorHook<IState> = useSelectorRedux
