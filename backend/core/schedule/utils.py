@@ -1,5 +1,5 @@
-from typing import Dict, Iterable, List, Optional, Union
 import string
+from typing import Dict, Iterable, List, Optional, Union, cast
 
 from mypy_extensions import TypedDict
 from pint import UndefinedUnitError, UnitRegistry
@@ -58,7 +58,7 @@ def quantity_baseunit(quantity) -> Union[str, int]:
     if not_real_quantity(quantity):
         return "some"
     try:
-        return quantity.to_base_units().units
+        return cast(Union[str, int], quantity.to_base_units().units)
     except AttributeError:
         return ""
 
@@ -139,7 +139,7 @@ def naive_parse_int(val: Union[str, int, float]) -> Union[float, str]:
         try:
             return float(tmp)
         except ValueError:
-            # tmp is usually an empty string
+            # tmp is probably an empty string
             return val
 
     return val
