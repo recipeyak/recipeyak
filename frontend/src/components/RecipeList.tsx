@@ -64,7 +64,7 @@ function RecipesListSearch({
   useEffect(() => {
     const teamID_ = teamID == null ? "personal" : teamID
     fetchData(teamID_)
-  }, [teamID])
+  }, [fetchData, teamID])
 
   const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setQuery(e.target.value)
