@@ -1,4 +1,5 @@
-from typing import Dict, Iterable, List, Optional, Union
+import string
+from typing import Dict, Iterable, List, Optional, Union, cast
 
 from mypy_extensions import TypedDict
 from pint import UndefinedUnitError, UnitRegistry
@@ -53,11 +54,11 @@ def ingredient_quantity(quantity: str) -> Union[str, Quantity]:
         return quantity
 
 
-def quantity_baseunit(quantity):
+def quantity_baseunit(quantity) -> Union[str, int]:
     if not_real_quantity(quantity):
         return "some"
     try:
-        return quantity.to_base_units().units
+        return cast(Union[str, int], quantity.to_base_units().units)
     except AttributeError:
         return ""
 
@@ -122,6 +123,28 @@ class SimpleIngredientDict(TypedDict):
     origin: List[OriginDict]
 
 
+float_chars = set(string.digits) | {"."}
+
+
+def naive_parse_int(val: Union[str, int, float]) -> Union[float, str]:
+    """
+    we are supporting improper quantities like "`1 large` `potato`" when the
+    user should have described the ingredient as "`1` `large potato`"
+    """
+    if isinstance(val, str):
+        tmp = ""
+        for c in val:
+            if c in float_chars:
+                tmp += c
+        try:
+            return float(tmp)
+        except ValueError:
+            # tmp is probably an empty string
+            return val
+
+    return val
+
+
 class IngredientList:
     """
     Handles combining of ingredients into a list
@@ -157,7 +180,9 @@ class IngredientList:
 
         if self.combined.get(singular_name):
             if self.combined[singular_name]["units"].get(base_unit):
-                self.combined[singular_name]["units"][base_unit] += quantity
+                self.combined[singular_name]["units"][base_unit] += naive_parse_int(
+                    quantity
+                )
             else:
                 self.combined[singular_name]["units"][base_unit] = quantity
         else:
