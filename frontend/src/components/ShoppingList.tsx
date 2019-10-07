@@ -3,11 +3,11 @@ import React, { useState, useEffect, useRef } from "react"
 import { connect } from "react-redux"
 
 import format from "date-fns/format"
-import addMonths from "date-fns/add_months"
-import subMonths from "date-fns/sub_months"
-import isBefore from "date-fns/is_before"
-import isAfter from "date-fns/is_after"
-import isValid from "date-fns/is_valid"
+import addMonths from "date-fns/addMonths"
+import subMonths from "date-fns/subMonths"
+import isBefore from "date-fns/isBefore"
+import isAfter from "date-fns/isAfter"
+import isValid from "date-fns/isValid"
 
 import {
   reportBadMergeAsync,

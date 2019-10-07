@@ -2,10 +2,10 @@ import React from "react"
 import { connect } from "react-redux"
 import format from "date-fns/format"
 import { useDrop } from "react-dnd"
-import isWithinRange from "date-fns/is_within_range"
-import startOfDay from "date-fns/start_of_day"
-import endOfDay from "date-fns/end_of_day"
-import isFirstDayOfMonth from "date-fns/is_first_day_of_month"
+import isWithinInterval from "date-fns/isWithinInterval"
+import startOfDay from "date-fns/startOfDay"
+import endOfDay from "date-fns/endOfDay"
+import isFirstDayOfMonth from "date-fns/isFirstDayOfMonth"
 import sortBy from "lodash/sortBy"
 
 import { beforeCurrentDay } from "@/date"
@@ -155,7 +155,7 @@ function mapStateToProps(
       : false
   return {
     isSelected:
-      isWithinRange(
+      isWithinInterval(
         props.date,
         startOfDay(state.shoppinglist.startDay),
         endOfDay(state.shoppinglist.endDay)

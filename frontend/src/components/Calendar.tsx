@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { connect } from "react-redux"
-import eachDay from "date-fns/each_day"
+import eachDayOfInterval from "date-fns/eachDayOfInterval"
 import format from "date-fns/format"
 import first from "lodash/first"
 
@@ -77,7 +77,7 @@ function Days({ start, end, days, teamID }: IDaysProps) {
   return (
     <section
       className={classNames("mb-2", "flex-grow-1", { "h-100": isSafari() })}>
-      {chunk(eachDay(start, end), WEEK_DAYS).map(dates => {
+      {chunk(eachDayOfInterval(start, end), WEEK_DAYS).map(dates => {
         const firstDay = first(dates)
         if (firstDay == null) {
           return <section className="d-flex calendar-week" />

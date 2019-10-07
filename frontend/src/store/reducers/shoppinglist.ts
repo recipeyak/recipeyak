@@ -1,5 +1,5 @@
-import addWeeks from "date-fns/add_weeks"
-import startOfToday from "date-fns/start_of_today"
+import addWeeks from "date-fns/addWeeks"
+import startOfToday from "date-fns/startOfToday"
 
 import {
   createAsyncAction,

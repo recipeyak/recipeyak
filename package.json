@@ -89,7 +89,7 @@
     "babel-plugin-styled-components": "^1.10.6",
     "bulma": "^0.4.2",
     "circular-dependency-plugin": "^5.2.0",
-    "date-fns": "^1.29.0",
+    "date-fns": "^2.4.1",
     "dnd-core": "^9.3.4",
     "enzyme-adapter-react-16": "^1.14.0",
     "history": "^4.7.2",
