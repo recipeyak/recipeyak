@@ -71,43 +71,49 @@ export interface ICalendarItemProps {
   readonly id: ICalRecipe["id"]
 }
 
-export function CalendarItem(props: ICalendarItemProps) {
-  const [count, setCount] = React.useState(props.count)
+export function CalendarItem({
+  count: propsCount,
+  updateCount: propsUpdateCount,
+  date,
+  refetchShoppingList,
+  remove,
+  recipeName,
+  recipeID,
+  id
+}: ICalendarItemProps) {
+  const [count, setCount] = React.useState(propsCount)
   const [hover, setHover] = React.useState(false)
 
   React.useEffect(() => {
-    setCount(props.count)
-  }, [props.count])
+    setCount(propsCount)
+  }, [propsCount])
 
-  const updateCount = React.useCallback(
-    (newCount: number) => {
-      if (beforeCurrentDay(props.date)) {
-        return
+  const updateCount = (newCount: number) => {
+    if (beforeCurrentDay(date)) {
+      return
+    }
+    const oldCount = count
+    setCount(newCount)
+    propsUpdateCount(newCount).then(res => {
+      if (isOk(res)) {
+        refetchShoppingList()
+      } else {
+        setCount(oldCount)
       }
-      const oldCount = count
-      setCount(newCount)
-      props.updateCount(newCount).then(res => {
-        if (isOk(res)) {
-          props.refetchShoppingList()
-        } else {
-          setCount(oldCount)
-        }
-      })
-    },
-    [count]
-  )
+    })
+  }
 
   const handleKeyPress = (e: KeyboardEvent) => {
     if (!hover) {
       return
     }
 
-    if (beforeCurrentDay(props.date)) {
+    if (beforeCurrentDay(date)) {
       return
     }
 
     if (e.key === "#" || e.key === "Delete") {
-      props.remove()
+      remove()
     }
     if (e.key === "A" || e.key === "+") {
       updateCount(count + 1)
@@ -125,10 +131,10 @@ export function CalendarItem(props: ICalendarItemProps) {
 
   const dragItem: ICalendarDragItem = {
     type: DragDrop.CAL_RECIPE,
-    recipeID: props.recipeID,
-    count: props.count,
-    id: props.id,
-    date: props.date
+    recipeID,
+    count,
+    id,
+    date
   }
 
   const [{ isDragging }, drag] = useDrag({
@@ -136,8 +142,8 @@ export function CalendarItem(props: ICalendarItemProps) {
     end: (_dropResult, monitor) => {
       // when dragged onto something that isn't a target, we remove it
       // but we don't remove when in past as we only copy from the past
-      if (!monitor.didDrop() && !isPast(endOfDay(props.date))) {
-        props.remove()
+      if (!monitor.didDrop() && !isPast(endOfDay(date))) {
+        remove()
       }
     },
     collect: monitor => {
@@ -148,7 +154,7 @@ export function CalendarItem(props: ICalendarItemProps) {
   })
 
   const style: React.CSSProperties = {
-    visibility: isDragging && !isPast(props.date) ? "hidden" : "visible"
+    visibility: isDragging && !isPast(date) ? "hidden" : "visible"
   }
 
   useGlobalEvent({ keyUp: handleKeyPress })
@@ -160,7 +166,7 @@ export function CalendarItem(props: ICalendarItemProps) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       style={style}>
-      <RecipeLink name={props.recipeName} id={props.recipeID} />
+      <RecipeLink name={recipeName} id={recipeID} />
       <Count value={count} onChange={handleChange} />
     </li>
   )

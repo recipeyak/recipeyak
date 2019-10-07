@@ -1,9 +1,10 @@
 import shoppinglist, {
   IShoppingListState,
-  IShoppingListItem
+  IShoppingListItem,
+  fetchShoppingList,
+  setSelectingStart,
+  setSelectingEnd
 } from "@/store/reducers/shoppinglist"
-
-import * as a from "@/store/reducers/shoppinglist"
 import { Loading, Success, Failure, HttpErrorKind } from "@/webdata"
 
 describe("Shopping List", () => {
@@ -33,7 +34,7 @@ describe("Shopping List", () => {
     }
 
     expect(
-      shoppinglist(beforeState, a.fetchShoppingList.success(shopList))
+      shoppinglist(beforeState, fetchShoppingList.success(shopList))
     ).toEqual(afterState)
   })
 
@@ -50,7 +51,7 @@ describe("Shopping List", () => {
       endDay: new Date(1776, 1, 2)
     }
 
-    expect(shoppinglist(beforeState, a.fetchShoppingList.request())).toEqual(
+    expect(shoppinglist(beforeState, fetchShoppingList.request())).toEqual(
       afterState
     )
   })
@@ -68,7 +69,7 @@ describe("Shopping List", () => {
       endDay: new Date(1776, 1, 2)
     }
 
-    expect(shoppinglist(beforeState, a.fetchShoppingList.failure())).toEqual(
+    expect(shoppinglist(beforeState, fetchShoppingList.failure())).toEqual(
       afterState
     )
   })
@@ -88,7 +89,7 @@ describe("Shopping List", () => {
       endDay: new Date(1776, 1, 2)
     }
 
-    expect(shoppinglist(beforeState, a.setSelectingStart(startDay))).toEqual(
+    expect(shoppinglist(beforeState, setSelectingStart(startDay))).toEqual(
       afterState
     )
   })
@@ -108,7 +109,7 @@ describe("Shopping List", () => {
       endDay
     }
 
-    expect(shoppinglist(beforeState, a.setSelectingEnd(endDay))).toEqual(
+    expect(shoppinglist(beforeState, setSelectingEnd(endDay))).toEqual(
       afterState
     )
   })

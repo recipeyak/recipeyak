@@ -49,12 +49,19 @@ interface IRecipesProps {
   readonly autoFocusSearch?: boolean
 }
 
-function RecipesListSearch(props: IRecipesProps) {
+function RecipesListSearch({
+  fetchData,
+  autoFocusSearch,
+  noPadding,
+  recipes,
+  drag,
+  scroll
+}: IRecipesProps) {
   const [query, setQuery] = useState("")
 
   useEffect(() => {
-    props.fetchData()
-  }, [])
+    fetchData()
+  }, [fetchData])
 
   const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setQuery(e.target.value)
@@ -62,17 +69,12 @@ function RecipesListSearch(props: IRecipesProps) {
   return (
     <>
       <TextInput
-        autoFocus={props.autoFocusSearch}
-        className={props.noPadding ? "" : "mb-4"}
+        autoFocus={autoFocusSearch}
+        className={noPadding ? "" : "mb-4"}
         onChange={handleQueryChange}
         placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:"
       />
-      <RecipeList
-        recipes={props.recipes}
-        query={query}
-        drag={props.drag}
-        scroll={props.scroll}
-      />
+      <RecipeList recipes={recipes} query={query} drag={drag} scroll={scroll} />
     </>
   )
 }

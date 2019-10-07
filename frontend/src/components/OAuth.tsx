@@ -13,7 +13,7 @@ interface IOAuthProps {
 const OAuth = ({ service, login }: IOAuthProps) => {
   useEffect(() => {
     login()
-  }, [])
+  }, [login])
 
   return (
     <div className="d-flex justify-content-center direction-column align-items-center h-100 mt-5rem">

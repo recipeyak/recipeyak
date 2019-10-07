@@ -105,7 +105,7 @@ function SessionListBasic({
 }: ISessionListProps) {
   useEffect(() => {
     fetchData()
-  }, [])
+  }, [fetchData])
 
   if (isLoading(sessions) || isInitial(sessions)) {
     return <Loader />

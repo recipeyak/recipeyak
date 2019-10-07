@@ -1,6 +1,11 @@
-import user, { IUserState, IUser } from "@/store/reducers/user"
-
-import * as a from "@/store/reducers/user"
+import user, {
+  IUserState,
+  IUser,
+  fetchUser,
+  logOut,
+  toggleDarkMode,
+  setUserLoggedIn
+} from "@/store/reducers/user"
 import { login } from "@/store/reducers/auth"
 
 describe("fetchingUser", () => {
@@ -13,7 +18,7 @@ describe("fetchingUser", () => {
       loading: true,
       error: false
     } as IUserState
-    expect(user(beforeState, a.fetchUser.request())).toEqual(expected)
+    expect(user(beforeState, fetchUser.request())).toEqual(expected)
   })
   it("#success: updates user, sets loading, sets loggedIn", () => {
     const beforeState = {
@@ -43,9 +48,7 @@ describe("fetchingUser", () => {
       hasUsablePassword: true,
       teamID: userPayload.selected_team
     }
-    expect(user(beforeState, a.fetchUser.success(userPayload))).toEqual(
-      expected
-    )
+    expect(user(beforeState, fetchUser.success(userPayload))).toEqual(expected)
     expect(user(beforeState, login.success(userPayload))).toEqual(expected)
   })
   it("#failure: sets loading, sets error", () => {
@@ -57,7 +60,7 @@ describe("fetchingUser", () => {
       loading: false,
       error: true
     } as IUserState
-    expect(user(beforeState, a.fetchUser.failure())).toEqual(expected)
+    expect(user(beforeState, fetchUser.failure())).toEqual(expected)
   })
 })
 
@@ -71,7 +74,7 @@ describe("User", () => {
       loggingOut: true
     }
 
-    expect(user(beforeState as IUserState, a.logOut.request())).toEqual(
+    expect(user(beforeState as IUserState, logOut.request())).toEqual(
       afterState
     )
   })
@@ -85,7 +88,7 @@ describe("User", () => {
       darkMode: true
     }
 
-    expect(user(beforeState as IUserState, a.toggleDarkMode())).toEqual(
+    expect(user(beforeState as IUserState, toggleDarkMode())).toEqual(
       afterState
     )
   })
@@ -97,7 +100,7 @@ describe("User", () => {
     const afterState = {
       loggedIn: false
     }
-    expect(user(beforeState as IUserState, a.setUserLoggedIn(false))).toEqual(
+    expect(user(beforeState as IUserState, setUserLoggedIn(false))).toEqual(
       afterState
     )
   })

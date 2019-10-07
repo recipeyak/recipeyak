@@ -1,8 +1,7 @@
 import React from "react"
 import { Helmet } from "@/components/Helmet"
-import { Link } from "react-router-dom"
+import { Link, RouteComponentProps } from "react-router-dom"
 import { connect } from "react-redux"
-import { RouteComponentProps } from "react-router-dom"
 
 import { ButtonPrimary } from "@/components/Buttons"
 
