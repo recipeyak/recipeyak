@@ -41,12 +41,13 @@ function RecipeList(props: IRecipeList) {
 }
 
 interface IRecipesProps {
-  readonly fetchData: () => void
+  readonly fetchData: (teamID: TeamID) => void
   readonly recipes: WebData<IRecipe[]>
   readonly scroll?: boolean
   readonly drag?: boolean
   readonly noPadding?: boolean
   readonly autoFocusSearch?: boolean
+  readonly teamID?: ITeam["id"] | "personal" | null
 }
 
 function RecipesListSearch({
@@ -55,13 +56,15 @@ function RecipesListSearch({
   noPadding,
   recipes,
   drag,
-  scroll
+  scroll,
+  teamID
 }: IRecipesProps) {
   const [query, setQuery] = useState("")
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    const teamID_ = teamID == null ? "personal" : teamID
+    fetchData(teamID_)
+  }, [teamID])
 
   const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setQuery(e.target.value)
@@ -79,40 +82,22 @@ function RecipesListSearch({
   )
 }
 
-function mapStateToProps(state: IState, ownProps: IOwnProps) {
+function mapStateToProps(
+  state: IState,
+  ownProps: Pick<IRecipesProps, "teamID">
+): Pick<IRecipesProps, "recipes"> {
   return {
     recipes: getTeamRecipes(state, ownProps.teamID || "personal")
   }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
+const mapDispatchToProps = (
+  dispatch: Dispatch
+): Pick<IRecipesProps, "fetchData"> => ({
   fetchData: fetchingRecipeListAsync(dispatch)
 })
 
-type statePropsType = ReturnType<typeof mapStateToProps>
-
-type dispatchPropsType = ReturnType<typeof mapDispatchToProps>
-
-interface IOwnProps {
-  readonly teamID?: ITeam["id"] | "personal" | null
-}
-
-function mergeProps(
-  stateProps: statePropsType,
-  dispatchProps: dispatchPropsType,
-  ownProps: IOwnProps
-) {
-  const teamID = ownProps.teamID == null ? "personal" : ownProps.teamID
-  return {
-    ...stateProps,
-    ...dispatchProps,
-    ...ownProps,
-    fetchData: () => dispatchProps.fetchData(teamID)
-  }
-}
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
+  mapDispatchToProps
 )(RecipesListSearch)
