@@ -16,7 +16,7 @@ import { toDateString } from "@/date"
 
 import { teamsFrom } from "@/store/mapState"
 
-import { push } from "react-router-redux"
+import { push } from "connected-react-router"
 
 import { ButtonPlain } from "@/components/Buttons"
 import CalendarDay from "@/components/CalendarDay"

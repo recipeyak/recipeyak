@@ -1,6 +1,6 @@
 import React from "react"
 import { Route, Switch, Redirect, RouteProps } from "react-router-dom"
-import { ConnectedRouter } from "react-router-redux"
+import { ConnectedRouter } from "connected-react-router"
 import { Helmet } from "@/components/Helmet"
 import { hot } from "react-hot-loader/root"
 import { setConfig } from "react-hot-loader"

@@ -19,12 +19,8 @@ import pickBy from "lodash/pickBy"
 import throttle from "lodash/throttle"
 
 import createHistory from "history/createBrowserHistory"
-import {
-  routerReducer,
-  routerMiddleware,
-  RouterState,
-  RouterAction
-} from "react-router-redux"
+import { RouterState, RouterAction } from "connected-react-router"
+import { connectRouter, routerMiddleware } from "connected-react-router"
 
 import recipes, { IRecipesState, RecipeActions } from "@/store/reducers/recipes"
 import user, { IUserState, UserActions } from "@/store/reducers/user"
@@ -63,7 +59,7 @@ export interface IState {
   readonly user: IUserState
   readonly recipes: IRecipesState
   readonly invites: IInvitesState
-  readonly routerReducer: RouterState
+  readonly router: RouterState
   readonly notification: INotificationState
   readonly passwordChange: IPasswordChangeState
   readonly shoppinglist: IShoppingListState
@@ -96,13 +92,17 @@ type ReducerMapObj = ReducerMapObject<IState, Action>
 function omitUndefined(obj: ReducerMapObj): ReducerMapObj {
   return pickBy(obj, x => x != null) as ReducerMapObj
 }
+export const history = createHistory()
 
 const recipeApp: LoopReducer<IState, Action> = combineReducers(
   omitUndefined({
     user,
     recipes,
     invites,
-    routerReducer,
+    router: (connectRouter(history) as unknown) as LoopReducer<
+      RouterState,
+      Action
+    >,
     notification,
     passwordChange,
     shoppinglist,
@@ -128,13 +128,12 @@ export function rootReducer(
       // so we can redirect users to where they were attempting to
       // visit before being asked for authentication
       auth: state.auth,
-      routerReducer: state.routerReducer
+      router: state.router
     }
   }
   return recipeApp(state, action)
 }
 
-export const history = createHistory()
 const router = routerMiddleware(history)
 
 const compose: typeof reduxCompose =
