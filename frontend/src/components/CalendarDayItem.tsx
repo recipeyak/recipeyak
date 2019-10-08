@@ -58,6 +58,18 @@ function RecipeLink({ name, id }: IRecipeLink) {
   return <StyledLink to={to}>{name}</StyledLink>
 }
 
+interface ICalendarListItemProps {
+  readonly visibility: React.CSSProperties["visibility"]
+}
+
+const CalendarListItem = styled.li<ICalendarListItemProps>`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  visibility: ${props => props.visibility};
+`
+
 export interface ICalendarItemProps {
   readonly count: ICalRecipe["count"]
   readonly remove: () => void
@@ -153,22 +165,19 @@ export function CalendarItem({
     }
   })
 
-  const style: React.CSSProperties = {
-    visibility: isDragging && !isPast(date) ? "hidden" : "visible"
-  }
+  const visibility = isDragging && !isPast(date) ? "hidden" : "visible"
 
   useGlobalEvent({ keyUp: handleKeyPress })
 
   return (
-    <li
+    <CalendarListItem
       ref={drag}
-      className="d-flex align-items-center cursor-pointer justify-space-between mb-2"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      style={style}>
+      visibility={visibility}>
       <RecipeLink name={recipeName} id={recipeID} />
       <Count value={count} onChange={handleChange} />
-    </li>
+    </CalendarListItem>
   )
 }
 
