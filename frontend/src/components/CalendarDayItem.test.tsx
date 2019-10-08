@@ -5,7 +5,7 @@ import HTML5Backend from "react-dnd-html5-backend"
 import { DndProvider } from "react-dnd"
 import { MemoryRouter } from "react-router"
 import { ThemeProvider, theme } from "@/theme"
-import { isPast, isFuture, addYears } from "date-fns"
+import { isPast } from "date-fns"
 
 const Provider: React.FC = ({ children }) => (
   <ThemeProvider theme={theme}>
