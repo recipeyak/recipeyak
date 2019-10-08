@@ -1,5 +1,7 @@
-import passwordChange, { initialState } from "@/store/reducers/passwordChange"
-import * as a from "@/store/reducers/passwordChange"
+import passwordChange, {
+  initialState,
+  passwordUpdate
+} from "@/store/reducers/passwordChange"
 
 describe("passwordChange", () => {
   it("sets the loading state of the updating password", () => {
@@ -10,7 +12,7 @@ describe("passwordChange", () => {
       loadingPasswordUpdate: true
     }
 
-    expect(passwordChange(beforeState, a.passwordUpdate.request())).toEqual(
+    expect(passwordChange(beforeState, passwordUpdate.request())).toEqual(
       afterState
     )
 
@@ -19,7 +21,7 @@ describe("passwordChange", () => {
       loadingPasswordUpdate: false
     }
 
-    expect(passwordChange(beforeState, a.passwordUpdate.success())).toEqual(
+    expect(passwordChange(beforeState, passwordUpdate.success())).toEqual(
       anotherAfterState
     )
   })
@@ -35,8 +37,8 @@ describe("passwordChange", () => {
       ...initialState,
       errorPasswordUpdate: error
     }
-    expect(
-      passwordChange(beforeState, a.passwordUpdate.failure(error))
-    ).toEqual(afterState)
+    expect(passwordChange(beforeState, passwordUpdate.failure(error))).toEqual(
+      afterState
+    )
   })
 })

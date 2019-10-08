@@ -1,47 +1,43 @@
 module.exports = {
   root: true,
-  parser: "babel-eslint",
+  parser: "@typescript-eslint/parser",
   parserOptions: {
     sourceType: "module",
     ecmaFeatures: {
       jsx: true
     }
   },
-  plugins: ["html", "react"],
-  // https://github.com/standard/eslint-config-standard/blob/c4902d20cab15971932f591d0d8cf7915ade307f/eslintrc.json
-  extends: ["react-app", "standard", "prettier"],
+  plugins: ["html", "react", "react-hooks", "@typescript-eslint", "import"],
+  extends: ["prettier"],
   env: {
     browser: true
   },
-  // add your custom rules here
   rules: {
-    // allow async-await
-    "generator-star-spacing": 0,
-    "import/first": ["warn", "always"],
-    "one-var": ["warn", "never"],
-    "no-constant-condition": ["warn", { checkLoops: false }],
-    "no-unused-vars": [
-      "warn",
-      {
-        vars: "all",
-        args: "all",
-        ignoreRestSiblings: false,
-        argsIgnorePattern: "^_"
-      }
-    ],
-    // we don't trigger on properties since the python backend returns json
-    // with snake case
-    camelcase: ["warn", { properties: "never" }],
-    // allow debugger during development
-    "no-debugger": process.env.NODE_ENV === "production" ? 2 : 0,
-    "prefer-const": [
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "error",
+    "import/no-duplicates": "error",
+    "no-restricted-imports": [
       "error",
       {
-        destructuring: "any",
-        ignoreReadBeforeAssign: false
+        paths: [
+          {
+            name: "redux",
+            importNames: ["Dispatch", "useDispatch"],
+            message: "Please import 'Dispatch' from '@/store/thunks' instead."
+          },
+          {
+            name: "styled-components",
+            message:
+              "Please import from '@/theme' for type safe versions of 'styled-components' instead."
+          },
+          {
+            name: "typesafe-actions",
+            importNames: ["action"],
+            message:
+              "Please use 'createStandardAction' or 'createAsyncAction' instead as they allow for easy discrimination with 'getType()'. see: https://github.com/piotrwitek/typesafe-actions#action"
+          }
+        ]
       }
-    ],
-    "no-useless-return": "warn",
-    "no-unreachable": "warn"
+    ]
   }
 }

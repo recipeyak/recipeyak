@@ -2,6 +2,7 @@ import pickBy from "lodash/pickBy"
 import { random32Id } from "@/uuid"
 import { toDateString, second } from "@/date"
 import { push, replace } from "connected-react-router"
+// eslint-disable-next-line no-restricted-imports
 import { Dispatch as ReduxDispatch } from "redux"
 import { AxiosError, AxiosResponse } from "axios"
 import raven from "raven-js"

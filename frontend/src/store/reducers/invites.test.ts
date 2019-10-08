@@ -1,9 +1,11 @@
 import invites, {
   initialState,
   IInvitesState,
-  IInvite
+  IInvite,
+  fetchInvites,
+  acceptInvite,
+  declineInvite
 } from "@/store/reducers/invites"
-import * as t from "@/store/reducers/invites"
 
 const basicInvite: IInvite = {
   id: 1,
@@ -55,7 +57,7 @@ describe("Invites", () => {
       }
     }
 
-    expect(invites(beforeState, t.fetchInvites.request())).toEqual(afterState)
+    expect(invites(beforeState, fetchInvites.request())).toEqual(afterState)
   })
   it("sets invites", () => {
     const beforeState: IInvitesState = {
@@ -112,7 +114,7 @@ describe("Invites", () => {
       }
     }
 
-    expect(invites(beforeState, t.fetchInvites.success(newInvites))).toEqual(
+    expect(invites(beforeState, fetchInvites.success(newInvites))).toEqual(
       afterState
     )
   })
@@ -171,7 +173,7 @@ describe("Invites", () => {
       }
     }
 
-    expect(invites(beforeState, t.acceptInvite.request(1))).toEqual(afterState)
+    expect(invites(beforeState, acceptInvite.request(1))).toEqual(afterState)
   })
 
   it("sets invite to declining", () => {
@@ -208,7 +210,7 @@ describe("Invites", () => {
       }
     }
 
-    expect(invites(beforeState, t.declineInvite.request(1))).toEqual(afterState)
+    expect(invites(beforeState, declineInvite.request(1))).toEqual(afterState)
   })
 
   it("decline invite", () => {
@@ -245,7 +247,7 @@ describe("Invites", () => {
       }
     }
 
-    expect(invites(beforeState, t.declineInvite.success(1))).toEqual(afterState)
+    expect(invites(beforeState, declineInvite.success(1))).toEqual(afterState)
   })
 
   it("accept invite", () => {
@@ -282,6 +284,6 @@ describe("Invites", () => {
       }
     }
 
-    expect(invites(beforeState, t.acceptInvite.success(1))).toEqual(afterState)
+    expect(invites(beforeState, acceptInvite.success(1))).toEqual(afterState)
   })
 })

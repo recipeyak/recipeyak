@@ -8,8 +8,8 @@ import {
   GITLAB_OAUTH_URL,
   GOOGLE_OAUTH_URL
 } from "@/settings"
-import { SocialProvider } from "@/store/reducers/user"
-import { ISocialAccountsState } from "@/store/reducers/user"
+import { SocialProvider, ISocialAccountsState } from "@/store/reducers/user"
+
 import { isOk, Result } from "@/result"
 import { IState } from "@/store/store"
 import { connect } from "react-redux"

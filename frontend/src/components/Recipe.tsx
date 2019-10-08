@@ -14,7 +14,7 @@ import {
   IRecipe,
   IIngredient,
   getRecipeById,
-  fetchRecipe,
+  fetchRecipe as fetchRecipeAction,
   addIngredientToRecipe,
   deleteIngredient,
   updateIngredient
@@ -31,7 +31,7 @@ const mapStateToProps = (state: IState, props: RouteProps) => {
 }
 
 const mapDispatchToProps = {
-  fetchRecipe: fetchRecipe.request,
+  fetchRecipe: fetchRecipeAction.request,
   addIngredient: addIngredientToRecipe.request,
   removeIngredient: deleteIngredient.request,
   updateIngredient: updateIngredient.request
@@ -55,14 +55,13 @@ interface IRecipeProps extends RouteProps {
   }) => void
 }
 
-function Recipe(props: IRecipeProps) {
+function Recipe({ fetchRecipe, ...props }: IRecipeProps) {
   const [addStep, setAddStep] = useState(false)
   const [addIngredient, setAddIngredient] = useState(false)
 
   useEffect(() => {
-    // TODO(sbdchd): use mergeProps
-    props.fetchRecipe(parseInt(props.match.params.id, 10))
-  }, [])
+    fetchRecipe(parseInt(props.match.params.id, 10))
+  }, [fetchRecipe, props.match.params.id])
 
   if (isInitial(props.recipe) || isLoading(props.recipe)) {
     return (

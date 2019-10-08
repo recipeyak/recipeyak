@@ -21,7 +21,8 @@
       "ban-keywords",
       "allow-pascal-case",
       "check-format",
-      "allow-leading-underscore"
+      "allow-leading-underscore",
+      "allow-trailing-underscore"
     ]
   },
   "rules": {
@@ -47,7 +48,8 @@
       "allow-pascal-case",
 
       "allow-leading-underscore",
-      "ban-keywords"
+      "ban-keywords",
+      "allow-trailing-underscore"
     ],
     "no-any": true,
     "ban-ts-ignore": true,

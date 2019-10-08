@@ -32,6 +32,11 @@ def tslint() -> str:
     return "node_modules/.bin/tslint --project tsconfig.json --format 'codeFrame'"
 
 
+def eslint(check: bool) -> str:
+    auto_fix = "--fix" if not check else ""
+    return f"node_modules/.bin/eslint '**/*.{{ts,tsx,js,jsx}}' {auto_fix}"
+
+
 def typescript(watch: bool) -> str:
     watch_flag = "--watch" if watch else ""
     return f"node_modules/.bin/tsc --noEmit {watch_flag}"

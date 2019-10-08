@@ -1,9 +1,19 @@
 import addrecipe, {
   initialState,
-  IAddRecipeState
+  IAddRecipeState,
+  setAddRecipeFormName,
+  setAddRecipeFormAuthor,
+  setAddRecipeFormTime,
+  setAddRecipeFormSource,
+  setAddRecipeFormServings,
+  addAddRecipeFormIngredient,
+  removeAddRecipeFormIngredient,
+  updateAddRecipeFormIngredient,
+  addAddRecipeFormStep,
+  removeAddRecipeFormStep,
+  updateAddRecipeFormStep,
+  clearAddRecipeForm
 } from "@/store/reducers/addrecipe"
-import * as a from "@/store/reducers/addrecipe"
-
 import { baseIngredient, baseStep } from "@/store/reducers/recipes.test"
 import { IIngredientBasic } from "@/store/reducers/recipes"
 
@@ -21,7 +31,7 @@ describe("addrecipe", () => {
       name
     }
 
-    expect(addrecipe(beforeState, a.setAddRecipeFormName(name))).toEqual(
+    expect(addrecipe(beforeState, setAddRecipeFormName(name))).toEqual(
       afterState
     )
   })
@@ -39,7 +49,7 @@ describe("addrecipe", () => {
       author
     }
 
-    expect(addrecipe(beforeState, a.setAddRecipeFormAuthor(author))).toEqual(
+    expect(addrecipe(beforeState, setAddRecipeFormAuthor(author))).toEqual(
       afterState
     )
   })
@@ -57,7 +67,7 @@ describe("addrecipe", () => {
       time
     }
 
-    expect(addrecipe(beforeState, a.setAddRecipeFormTime(time))).toEqual(
+    expect(addrecipe(beforeState, setAddRecipeFormTime(time))).toEqual(
       afterState
     )
   })
@@ -75,7 +85,7 @@ describe("addrecipe", () => {
       source
     }
 
-    expect(addrecipe(beforeState, a.setAddRecipeFormSource(source))).toEqual(
+    expect(addrecipe(beforeState, setAddRecipeFormSource(source))).toEqual(
       afterState
     )
   })
@@ -93,9 +103,9 @@ describe("addrecipe", () => {
       servings
     }
 
-    expect(
-      addrecipe(beforeState, a.setAddRecipeFormServings(servings))
-    ).toEqual(afterState)
+    expect(addrecipe(beforeState, setAddRecipeFormServings(servings))).toEqual(
+      afterState
+    )
   })
 
   it("add add recipe form ingredient", () => {
@@ -117,7 +127,7 @@ describe("addrecipe", () => {
     }
 
     expect(
-      addrecipe(beforeState, a.addAddRecipeFormIngredient(ingredient))
+      addrecipe(beforeState, addAddRecipeFormIngredient(ingredient))
     ).toEqual(afterState)
   })
 
@@ -142,7 +152,7 @@ describe("addrecipe", () => {
     const index = 0
 
     expect(
-      addrecipe(beforeState, a.removeAddRecipeFormIngredient(index))
+      addrecipe(beforeState, removeAddRecipeFormIngredient(index))
     ).toEqual(afterState)
   })
 
@@ -176,7 +186,7 @@ describe("addrecipe", () => {
     expect(
       addrecipe(
         beforeState,
-        a.updateAddRecipeFormIngredient({ index, ingredient: newIngredient })
+        updateAddRecipeFormIngredient({ index, ingredient: newIngredient })
       )
     ).toEqual(afterState)
   })
@@ -196,7 +206,7 @@ describe("addrecipe", () => {
       steps: [step]
     }
 
-    expect(addrecipe(beforeState, a.addAddRecipeFormStep(step))).toEqual(
+    expect(addrecipe(beforeState, addAddRecipeFormStep(step))).toEqual(
       afterState
     )
   })
@@ -221,7 +231,7 @@ describe("addrecipe", () => {
 
     const index = 0
 
-    expect(addrecipe(beforeState, a.removeAddRecipeFormStep(index))).toEqual(
+    expect(addrecipe(beforeState, removeAddRecipeFormStep(index))).toEqual(
       afterState
     )
   })
@@ -254,10 +264,7 @@ describe("addrecipe", () => {
     const index = 0
 
     expect(
-      addrecipe(
-        beforeState,
-        a.updateAddRecipeFormStep({ index, step: newStep })
-      )
+      addrecipe(beforeState, updateAddRecipeFormStep({ index, step: newStep }))
     ).toEqual(afterState)
   })
 
@@ -277,6 +284,6 @@ describe("addrecipe", () => {
 
     const afterState = initialState
 
-    expect(addrecipe(beforeState, a.clearAddRecipeForm())).toEqual(afterState)
+    expect(addrecipe(beforeState, clearAddRecipeForm())).toEqual(afterState)
   })
 })
