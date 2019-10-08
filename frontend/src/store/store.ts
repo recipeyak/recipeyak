@@ -19,8 +19,12 @@ import pickBy from "lodash/pickBy"
 import throttle from "lodash/throttle"
 
 import createHistory from "history/createBrowserHistory"
-import { RouterState, RouterAction } from "connected-react-router"
-import { connectRouter, routerMiddleware } from "connected-react-router"
+import {
+  RouterState,
+  RouterAction,
+  connectRouter,
+  routerMiddleware
+} from "connected-react-router"
 
 import recipes, { IRecipesState, RecipeActions } from "@/store/reducers/recipes"
 import user, { IUserState, UserActions } from "@/store/reducers/user"
