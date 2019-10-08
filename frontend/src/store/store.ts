@@ -104,7 +104,7 @@ const recipeApp: LoopReducer<IState, Action> = combineReducers(
     recipes,
     invites,
     router: (connectRouter(history) as unknown) as LoopReducer<
-      RouterState,
+      Pick<RouterState, "location">,
       Action
     >,
     notification,
