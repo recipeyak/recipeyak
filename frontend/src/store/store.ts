@@ -63,7 +63,7 @@ export interface IState {
   readonly user: IUserState
   readonly recipes: IRecipesState
   readonly invites: IInvitesState
-  readonly router: RouterState
+  readonly router: Omit<RouterState, "action">
   readonly notification: INotificationState
   readonly passwordChange: IPasswordChangeState
   readonly shoppinglist: IShoppingListState
