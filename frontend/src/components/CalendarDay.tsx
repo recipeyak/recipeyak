@@ -150,8 +150,8 @@ function mapStateToProps(
   props: Pick<ICalendarDayProps, "date">
 ) {
   const isShopping =
-    state.routerReducer.location != null
-      ? state.routerReducer.location.pathname.includes("shopping")
+    state.router.location != null
+      ? state.router.location.pathname.includes("shopping")
       : false
   return {
     isSelected:

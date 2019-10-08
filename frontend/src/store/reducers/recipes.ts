@@ -26,7 +26,7 @@ import {
   deletingStepAsync,
   deletingIngredientAsync
 } from "@/store/thunks"
-import { push } from "react-router-redux"
+import { push } from "connected-react-router"
 
 export const updateRecipeOwner = createStandardAction("UPDATE_RECIPE_OWNER")<{
   id: IRecipe["id"]

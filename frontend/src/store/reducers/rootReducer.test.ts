@@ -12,7 +12,7 @@ describe("logout", () => {
         loggedIn: true
       },
       auth: initialState,
-      routerReducer: {
+      router: {
         location: {
           state: "",
           pathname: "",
@@ -24,7 +24,7 @@ describe("logout", () => {
 
     const afterState = {
       ...emptyStore.getState(),
-      routerReducer: beforeState.routerReducer
+      router: beforeState.router
     }
 
     expect(getModel(rootReducer(beforeState, setUserLoggedIn(false)))).toEqual(
