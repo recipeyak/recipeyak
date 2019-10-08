@@ -5,10 +5,18 @@ import HTML5Backend from "react-dnd-html5-backend"
 import { DndProvider } from "react-dnd"
 import { MemoryRouter } from "react-router"
 import { ThemeProvider, theme } from "@/theme"
+import { isPast } from "date-fns"
+
+const Provider: React.FC = ({ children }) => (
+  <ThemeProvider theme={theme}>
+    <MemoryRouter>
+      <DndProvider backend={HTML5Backend}>{children}</DndProvider>
+    </MemoryRouter>
+  </ThemeProvider>
+)
 
 describe("<CalendarDayItem> Snap", () => {
   test("smoke test render with styled components", () => {
-    const date = new Date(1776, 1, 1)
     const scheduledRecipe = {
       id: 25,
       recipe: {
@@ -16,24 +24,24 @@ describe("<CalendarDayItem> Snap", () => {
         name: "Baked Ziti"
       }
     }
+
+    const pastDate = new Date(1776, 1, 1)
+    expect(isPast(pastDate)).toBe(true)
+
     const tree = renderer
       .create(
-        <ThemeProvider theme={theme}>
-          <MemoryRouter>
-            <DndProvider backend={HTML5Backend}>
-              <CalendarItem
-                count={1}
-                id={scheduledRecipe.id}
-                recipeID={scheduledRecipe.recipe.id}
-                recipeName={scheduledRecipe.recipe.name}
-                remove={jest.fn()}
-                updateCount={jest.fn()}
-                refetchShoppingList={jest.fn()}
-                date={date}
-              />
-            </DndProvider>
-          </MemoryRouter>
-        </ThemeProvider>
+        <Provider>
+          <CalendarItem
+            count={1}
+            id={scheduledRecipe.id}
+            recipeID={scheduledRecipe.recipe.id}
+            recipeName={scheduledRecipe.recipe.name}
+            remove={jest.fn()}
+            updateCount={jest.fn()}
+            refetchShoppingList={jest.fn()}
+            date={pastDate}
+          />
+        </Provider>
       )
       .toJSON()
 
