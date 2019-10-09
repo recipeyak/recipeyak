@@ -79,11 +79,10 @@ class Month extends React.Component<IMonthProps> {
               handleClick={this.props.handleClick}
               date={date}
               inPast={isPast(endOfDay(date))}
-              highlight={isWithinInterval(
-                date,
-                startOfDay(this.props.startDay),
-                endOfDay(this.props.endDay)
-              )}
+              highlight={isWithinInterval(date, {
+                start: startOfDay(this.props.startDay),
+                end: endOfDay(this.props.endDay)
+              })}
               endDate={
                 isSameDay(date, this.props.startDay) ||
                 isSameDay(date, this.props.endDay)

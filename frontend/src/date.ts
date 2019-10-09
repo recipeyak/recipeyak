@@ -6,11 +6,14 @@ import isBefore from "date-fns/isBefore"
 import startOfDay from "date-fns/startOfDay"
 
 export function toDateString(date: Date | string) {
-  return format(date, "YYYY-MM-DD")
+  return format(new Date(date), "YYYY-MM-DD")
 }
 
 export function daysOfMonth(date: Date) {
-  return eachDayOfInterval(startOfMonth(date), lastDayOfMonth(date))
+  return eachDayOfInterval({
+    start: startOfMonth(date),
+    end: lastDayOfMonth(date)
+  })
 }
 
 export function daysFromSunday(date: Date) {

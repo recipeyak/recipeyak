@@ -155,11 +155,10 @@ function mapStateToProps(
       : false
   return {
     isSelected:
-      isWithinInterval(
-        props.date,
-        startOfDay(state.shoppinglist.startDay),
-        endOfDay(state.shoppinglist.endDay)
-      ) && isShopping
+      isWithinInterval(props.date, {
+        start: startOfDay(state.shoppinglist.startDay),
+        end: endOfDay(state.shoppinglist.endDay)
+      }) && isShopping
   }
 }
 

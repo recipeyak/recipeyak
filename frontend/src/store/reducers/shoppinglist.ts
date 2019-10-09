@@ -1,6 +1,3 @@
-import addWeeks from "date-fns/addWeeks"
-import startOfToday from "date-fns/startOfToday"
-
 import {
   createAsyncAction,
   ActionType,
@@ -8,6 +5,7 @@ import {
   createStandardAction
 } from "typesafe-actions"
 import { WebData, Success, Failure, HttpErrorKind, toLoading } from "@/webdata"
+import { startOfToday, addWeeks } from "date-fns"
 
 export const fetchShoppingList = createAsyncAction(
   "FETCH_SHOPPING_LIST_START",

@@ -162,7 +162,7 @@ export const calendar = (
         }
         return (
           r.id !== action.payload.id &&
-          isSameDay(r.on, action.payload.to) &&
+          isSameDay(new Date(r.on), new Date(action.payload.to)) &&
           r.team === moving.team &&
           r.user === moving.user
         )
