@@ -16,7 +16,7 @@ import { toDateString } from "@/date"
 
 import { teamsFrom } from "@/store/mapState"
 
-import { push } from "react-router-redux"
+import { push } from "connected-react-router"
 
 import { ButtonPlain } from "@/components/Buttons"
 import CalendarDay from "@/components/CalendarDay"
@@ -205,21 +205,26 @@ interface ICalendarProps {
   readonly type: "shopping" | "recipes"
 }
 
-function Calendar(props: ICalendarProps) {
+function Calendar({
+  fetchTeams,
+  fetchData,
+  teamID: propsTeamID,
+  ...props
+}: ICalendarProps) {
   const [start, setStart] = useState(startOfWeek(new Date()))
 
   useEffect(() => {
-    props.fetchTeams()
-  }, [])
+    fetchTeams()
+  }, [fetchTeams])
 
-  const refetchData = (teamID: TeamID = props.teamID) => {
-    props.fetchData(teamID, start)
+  const refetchData = (teamID: TeamID = propsTeamID) => {
+    fetchData(teamID, start)
     props.refetchShoppingListAndRecipes(teamID)
   }
 
   useEffect(() => {
-    props.fetchData(props.teamID, start)
-  }, [start])
+    fetchData(propsTeamID, start)
+  }, [fetchData, propsTeamID, start])
 
   const prev = () => {
     setStart(prevStart => prevWeekStart(prevStart))
@@ -262,7 +267,7 @@ function Calendar(props: ICalendarProps) {
         loadingTeams={props.loadingTeams}
         handleOwnerChange={handleOwnerChange}
         day={currentDate}
-        teamID={props.teamID}
+        teamID={propsTeamID}
         next={next}
         prev={prev}
         current={current}
@@ -272,7 +277,7 @@ function Calendar(props: ICalendarProps) {
         start={startDate}
         end={endDate}
         days={props.days}
-        teamID={props.teamID}
+        teamID={propsTeamID}
       />
       <HelpPrompt />
     </section>

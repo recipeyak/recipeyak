@@ -1,15 +1,33 @@
-import { teams, ITeamsState, ITeam } from "@/store/reducers/teams"
-import * as a from "@/store/reducers/teams"
+import {
+  teams,
+  ITeamsState,
+  ITeam,
+  fetchTeams,
+  setTeam,
+  IMember,
+  fetchTeam,
+  updateTeamById,
+  setCopyingTeam,
+  deleteTeam,
+  setCreatingTeam,
+  setSendingTeamInvites,
+  deleteMembership,
+  setDeletingMembership,
+  setUserTeamLevel,
+  setUpdatingUserTeamLevel,
+  fetchTeamRecipes,
+  fetchTeamMembers
+} from "@/store/reducers/teams"
 import { baseRecipe } from "@/store/reducers/recipes.test"
 
 function teamStateWith(team: ITeam | ITeam[]): ITeamsState {
   if (Array.isArray(team)) {
-    return teams(undefined, a.fetchTeams.success(team))
+    return teams(undefined, fetchTeams.success(team))
   }
-  return teams(undefined, a.setTeam({ id: team.id, team }))
+  return teams(undefined, setTeam({ id: team.id, team }))
 }
 
-const baseMember: a.IMember = {
+const baseMember: IMember = {
   id: 1,
   user: {
     id: 2,
@@ -46,7 +64,7 @@ describe("Teams", () => {
       allIds: [1, recipe.id]
     }
 
-    expect(teams(beforeState, a.fetchTeam.success(recipe))).toEqual(afterState)
+    expect(teams(beforeState, fetchTeam.success(recipe))).toEqual(afterState)
   })
 
   it("Updates team object", () => {
@@ -68,7 +86,7 @@ describe("Teams", () => {
       loadingTeam: false
     })
 
-    expect(teams(beforeState, a.fetchTeam.success(recipe))).toEqual(afterState)
+    expect(teams(beforeState, fetchTeam.success(recipe))).toEqual(afterState)
   })
 
   it("Adds all teams given", () => {
@@ -132,7 +150,7 @@ describe("Teams", () => {
       loading: false
     }
 
-    expect(teams(beforeState, a.fetchTeams.success(data))).toEqual(afterState)
+    expect(teams(beforeState, fetchTeams.success(data))).toEqual(afterState)
   })
 
   it("Sets loading team data", () => {
@@ -149,7 +167,7 @@ describe("Teams", () => {
       members: []
     })
 
-    expect(teams(beforeState, a.fetchTeam.request(1))).toEqual(afterState)
+    expect(teams(beforeState, fetchTeam.request(1))).toEqual(afterState)
   })
 
   it("Sets loading team members", () => {
@@ -166,9 +184,7 @@ describe("Teams", () => {
       members: []
     })
 
-    expect(teams(beforeState, a.fetchTeamMembers.request(1))).toEqual(
-      afterState
-    )
+    expect(teams(beforeState, fetchTeamMembers.request(1))).toEqual(afterState)
   })
 
   it("Sets loading team recipes", () => {
@@ -185,9 +201,7 @@ describe("Teams", () => {
       members: []
     })
 
-    expect(teams(beforeState, a.fetchTeamRecipes.request(1))).toEqual(
-      afterState
-    )
+    expect(teams(beforeState, fetchTeamRecipes.request(1))).toEqual(afterState)
   })
 
   it("Sets team to 404", () => {
@@ -220,7 +234,7 @@ describe("Teams", () => {
     ])
 
     expect(
-      teams(beforeState, a.fetchTeam.failure({ id: 1, error404: true }))
+      teams(beforeState, fetchTeam.failure({ id: 1, error404: true }))
     ).toEqual(afterState)
   })
 
@@ -238,7 +252,7 @@ describe("Teams", () => {
       }
     ])
 
-    const members: a.IMember[] = [
+    const members: IMember[] = [
       {
         ...baseMember,
         id: 1,
@@ -270,7 +284,7 @@ describe("Teams", () => {
     ])
 
     expect(
-      teams(beforeState, a.fetchTeamMembers.success({ id: 1, members }))
+      teams(beforeState, fetchTeamMembers.success({ id: 1, members }))
     ).toEqual(afterState)
   })
 
@@ -318,7 +332,7 @@ describe("Teams", () => {
     ])
 
     expect(
-      teams(beforeState, a.fetchTeamRecipes.success({ id: 1, recipes }))
+      teams(beforeState, fetchTeamRecipes.success({ id: 1, recipes }))
     ).toEqual(afterState)
   })
 
@@ -337,7 +351,7 @@ describe("Teams", () => {
     })
 
     expect(
-      teams(beforeState, a.setUpdatingUserTeamLevel({ id: 1, updating: true }))
+      teams(beforeState, setUpdatingUserTeamLevel({ id: 1, updating: true }))
     ).toEqual(afterState)
   })
 
@@ -407,7 +421,7 @@ describe("Teams", () => {
     expect(
       teams(
         beforeState,
-        a.setUserTeamLevel({ teamID: 1, membershipID: 2, level: "admin" })
+        setUserTeamLevel({ teamID: 1, membershipID: 2, level: "admin" })
       )
     ).toEqual(afterState)
   })
@@ -479,7 +493,7 @@ describe("Teams", () => {
     expect(
       teams(
         beforeState,
-        a.setDeletingMembership({ teamID: 1, membershipID: 2, val: true })
+        setDeletingMembership({ teamID: 1, membershipID: 2, val: true })
       )
     ).toEqual(afterState)
   })
@@ -537,7 +551,7 @@ describe("Teams", () => {
     })
 
     expect(
-      teams(beforeState, a.deleteMembership({ teamID: 1, membershipID: 2 }))
+      teams(beforeState, deleteMembership({ teamID: 1, membershipID: 2 }))
     ).toEqual(afterState)
   })
 
@@ -606,7 +620,7 @@ describe("Teams", () => {
     })
 
     expect(
-      teams(beforeState, a.setSendingTeamInvites({ teamID: 1, val: true }))
+      teams(beforeState, setSendingTeamInvites({ teamID: 1, val: true }))
     ).toEqual(afterState)
   })
 
@@ -676,7 +690,7 @@ describe("Teams", () => {
       loading: true
     }
 
-    expect(teams(beforeState, a.fetchTeams.request())).toEqual(afterState)
+    expect(teams(beforeState, fetchTeams.request())).toEqual(afterState)
   })
 
   it("Sets team to have a creating attribute", () => {
@@ -749,7 +763,7 @@ describe("Teams", () => {
       allIds: [1]
     }
 
-    expect(teams(beforeState, a.setCreatingTeam(true))).toEqual(afterState)
+    expect(teams(beforeState, setCreatingTeam(true))).toEqual(afterState)
   })
 
   it("Sets team", () => {
@@ -782,7 +796,7 @@ describe("Teams", () => {
       allIds: [1, team.id]
     }
 
-    expect(teams(beforeState, a.setTeam({ id: team.id, team }))).toEqual(
+    expect(teams(beforeState, setTeam({ id: team.id, team }))).toEqual(
       afterState
     )
   })
@@ -819,7 +833,7 @@ describe("Teams", () => {
       }
     ])
 
-    expect(teams(beforeState, a.deleteTeam(2))).toEqual(afterState)
+    expect(teams(beforeState, deleteTeam(2))).toEqual(afterState)
   })
 
   it("sets copying team status", () => {
@@ -832,7 +846,7 @@ describe("Teams", () => {
       byId: {},
       allIds: []
     }
-    expect(teams(beforeState, a.setCopyingTeam(true))).toEqual(afterState)
+    expect(teams(beforeState, setCopyingTeam(true))).toEqual(afterState)
   })
 
   it("updates team partially", () => {
@@ -849,7 +863,7 @@ describe("Teams", () => {
     expect(
       teams(
         beforeState,
-        a.updateTeamById({
+        updateTeamById({
           id: 1,
           teamKeys: { id: 1, name: "InnoTech", members: [] }
         })

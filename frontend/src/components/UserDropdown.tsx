@@ -24,7 +24,7 @@ export default function UserDropdown(props: IUserDropdownProps) {
     return () => {
       document.removeEventListener("click", handleGeneralClick)
     }
-  }, [])
+  }, [handleGeneralClick, props.darkMode])
 
   useEffect(() => {
     if (show) {
@@ -32,7 +32,7 @@ export default function UserDropdown(props: IUserDropdownProps) {
     } else {
       document.removeEventListener("click", handleGeneralClick)
     }
-  }, [show])
+  }, [handleGeneralClick, show])
 
   const toggle = () => setShow(prevShow => !prevShow)
 

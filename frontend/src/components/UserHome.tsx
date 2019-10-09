@@ -194,7 +194,7 @@ interface IUserHomeProps {
 const UserHome = ({ userStats, recipes, fetchData }: IUserHomeProps) => {
   useEffect(() => {
     fetchData()
-  }, [])
+  }, [fetchData])
 
   return (
     <>

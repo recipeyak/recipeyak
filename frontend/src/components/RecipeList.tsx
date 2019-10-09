@@ -41,20 +41,30 @@ function RecipeList(props: IRecipeList) {
 }
 
 interface IRecipesProps {
-  readonly fetchData: () => void
+  readonly fetchData: (teamID: TeamID) => void
   readonly recipes: WebData<IRecipe[]>
   readonly scroll?: boolean
   readonly drag?: boolean
   readonly noPadding?: boolean
   readonly autoFocusSearch?: boolean
+  readonly teamID?: ITeam["id"] | "personal" | null
 }
 
-function RecipesListSearch(props: IRecipesProps) {
+function RecipesListSearch({
+  fetchData,
+  autoFocusSearch,
+  noPadding,
+  recipes,
+  drag,
+  scroll,
+  teamID
+}: IRecipesProps) {
   const [query, setQuery] = useState("")
 
   useEffect(() => {
-    props.fetchData()
-  }, [])
+    const teamID_ = teamID == null ? "personal" : teamID
+    fetchData(teamID_)
+  }, [fetchData, teamID])
 
   const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setQuery(e.target.value)
@@ -62,55 +72,32 @@ function RecipesListSearch(props: IRecipesProps) {
   return (
     <>
       <TextInput
-        autoFocus={props.autoFocusSearch}
-        className={props.noPadding ? "" : "mb-4"}
+        autoFocus={autoFocusSearch}
+        className={noPadding ? "" : "mb-4"}
         onChange={handleQueryChange}
         placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:"
       />
-      <RecipeList
-        recipes={props.recipes}
-        query={query}
-        drag={props.drag}
-        scroll={props.scroll}
-      />
+      <RecipeList recipes={recipes} query={query} drag={drag} scroll={scroll} />
     </>
   )
 }
 
-function mapStateToProps(state: IState, ownProps: IOwnProps) {
+function mapStateToProps(
+  state: IState,
+  ownProps: Pick<IRecipesProps, "teamID">
+): Pick<IRecipesProps, "recipes"> {
   return {
     recipes: getTeamRecipes(state, ownProps.teamID || "personal")
   }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
+const mapDispatchToProps = (
+  dispatch: Dispatch
+): Pick<IRecipesProps, "fetchData"> => ({
   fetchData: fetchingRecipeListAsync(dispatch)
 })
 
-type statePropsType = ReturnType<typeof mapStateToProps>
-
-type dispatchPropsType = ReturnType<typeof mapDispatchToProps>
-
-interface IOwnProps {
-  readonly teamID?: ITeam["id"] | "personal" | null
-}
-
-function mergeProps(
-  stateProps: statePropsType,
-  dispatchProps: dispatchPropsType,
-  ownProps: IOwnProps
-) {
-  const teamID = ownProps.teamID == null ? "personal" : ownProps.teamID
-  return {
-    ...stateProps,
-    ...dispatchProps,
-    ...ownProps,
-    fetchData: () => dispatchProps.fetchData(teamID)
-  }
-}
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
+  mapDispatchToProps
 )(RecipesListSearch)

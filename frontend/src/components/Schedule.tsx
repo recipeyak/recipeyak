@@ -1,8 +1,7 @@
 import React, { useEffect } from "react"
 import { connect } from "react-redux"
 import { Helmet } from "@/components/Helmet"
-import { Link } from "react-router-dom"
-import { RouteComponentProps } from "react-router-dom"
+import { Link, RouteComponentProps } from "react-router-dom"
 
 import Calendar from "@/components/Calendar"
 import Recipes from "@/components/RecipeList"
@@ -80,20 +79,20 @@ interface IScheduleProps {
   readonly type: "shopping" | "recipes"
 }
 
-function Schedule(props: IScheduleProps) {
+function Schedule({ updateTeamID, teamID, type }: IScheduleProps) {
   useEffect(() => {
-    props.updateTeamID(props.teamID)
-  }, [props.teamID])
+    updateTeamID(teamID)
+  }, [updateTeamID, teamID])
 
-  const teamID = props.teamID || "personal"
+  const teamID_ = teamID || "personal"
 
-  const isRecipes = props.type === "recipes"
+  const isRecipes = type === "recipes"
 
   return (
     <div className="d-flex pl-2 pr-2 schedule-height">
       <Helmet title="Schedule" />
-      <Sidebar teamID={teamID} isRecipes={isRecipes} />
-      <Calendar type={props.type} teamID={teamID} />
+      <Sidebar teamID={teamID_} isRecipes={isRecipes} />
+      <Calendar type={type} teamID={teamID_} />
     </div>
   )
 }

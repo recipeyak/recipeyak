@@ -43,7 +43,7 @@ function AddIngredientForm({
     if (!loading && (autoFocus || !isInitialLoad)) {
       focusFirstInput()
     }
-  }, [loading])
+  }, [autoFocus, isInitialLoad, loading])
   const handleKeyUp = (e: KeyboardEvent) => {
     if (e.key === "Escape") {
       cancelAddIngredient()
