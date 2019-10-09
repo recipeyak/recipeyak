@@ -270,7 +270,7 @@ export const getExistingRecipe = ({
 }: IGetExistingRecipeProps) =>
   getAllCalRecipes(state).find(
     x =>
-      isSameDay(new Date(x.on), on) &&
+      isSameDay(new Date(x.on), new Date(on)) &&
       haveSameTeam(x, from) &&
       x.id !== from.id &&
       x.recipe.id === from.recipe.id
