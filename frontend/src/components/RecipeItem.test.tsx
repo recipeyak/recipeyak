@@ -2,12 +2,12 @@ import React from "react"
 import { mount } from "enzyme"
 
 import RecipeItem from "@/components/RecipeItem"
-import { DndTestContext } from "@/testUtils"
+import { TestProvider } from "@/testUtils"
 
 describe("RecipeItem", () => {
   it("renders without crashing", () => {
     mount(
-      <DndTestContext>
+      <TestProvider>
         <RecipeItem
           id={123}
           author="some recipe title"
@@ -15,7 +15,7 @@ describe("RecipeItem", () => {
           name="foo"
           drag
         />
-      </DndTestContext>
+      </TestProvider>
     )
   })
 })

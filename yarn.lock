@@ -11705,11 +11705,6 @@ tslint-microsoft-contrib@^6.0.0:
   dependencies:
     tsutils "^2.27.2 <2.29.0"
 
-tslint-react-hooks@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/tslint-react-hooks/-/tslint-react-hooks-1.0.1.tgz#cb075fbc435af0f2540874f6b8d70cc7c0a0895b"
-  integrity sha512-lOcKPT0+oK25U0aaj0SEzSLiZ7Wr/D+gK88RxWjEkOvSyRwqF1WHINQ/sY7oQftEkRW1mGIv5BDoYNvmUMHJoQ==
-
 tslint@^5.14.0:
   version "5.14.0"
   resolved "https://registry.yarnpkg.com/tslint/-/tslint-5.14.0.tgz#be62637135ac244fc9b37ed6ea5252c9eba1616e"

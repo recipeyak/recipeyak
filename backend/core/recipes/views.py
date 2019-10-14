@@ -1,27 +1,39 @@
 import logging
+from typing import Optional
 
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from rest_framework import mixins, status, viewsets
-from rest_framework.decorators import action
+from rest_framework import status, viewsets
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from core.auth.permissions import (
     HasRecipeAccess,
     IsTeamMemberIfPrivate,
     NonSafeIfMemberOrAdmin,
+    has_recipe_access,
 )
-from core.models import Ingredient, MyUser, Recipe, Step, Team, user_and_team_recipes
-
-from .serializers import (
+from core.models import (
+    Ingredient,
+    MyUser,
+    Recipe,
+    ScheduledRecipe,
+    Step,
+    Team,
+    user_and_team_recipes,
+)
+from core.recipes.serializers import (
     IngredientSerializer,
     RecipeMoveCopySerializer,
     RecipeSerializer,
+    RecipeTimelineSerializer,
     StepSerializer,
 )
-from .utils import add_positions
+from core.recipes.utils import add_positions
 
 logger = logging.getLogger(__name__)
 
@@ -142,48 +154,50 @@ class RecipeViewSet(viewsets.ModelViewSet):
         )
 
 
-class TeamRecipesViewSet(
-    viewsets.GenericViewSet,
-    mixins.RetrieveModelMixin,
-    mixins.DestroyModelMixin,
-    mixins.UpdateModelMixin,
-):
+def parse_int(val: str) -> Optional[int]:
+    try:
+        return int(val)
+    except ValueError:
+        return None
 
-    serializer_class = RecipeSerializer
+
+@api_view(["GET"])
+@permission_classes((IsAuthenticated,))
+def get_recipe_timeline(request: Request, recipe_pk: int) -> Response:
+    user: MyUser = request.user
+    team = user.selected_team
+
+    recipe = get_object_or_404(Recipe, pk=recipe_pk)
+
+    if not has_recipe_access(recipe=recipe, user=user):
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+    scheduled_recipes = ScheduledRecipe.objects.filter(
+        (Q(team=team)) | Q(user=user)
+    ).filter(recipe=recipe_pk)
+
+    return Response(RecipeTimelineSerializer(scheduled_recipes, many=True).data)
+
+
+class TeamRecipesViewSet(APIView):
     permission_classes = (
         IsAuthenticated,
         IsTeamMemberIfPrivate,
         NonSafeIfMemberOrAdmin,
     )
 
-    def get_serializer_context(self):
-        return {"request": self.request}
-
-    def get_queryset(self):
+    def get(self, request: Request, team_pk: str) -> Response:
+        # TODO(sbdchd): combine with the normal recipe viewset and just pass an
+        # extra query param for filtering
         team = get_object_or_404(Team, pk=self.kwargs["team_pk"])
-        return Recipe.objects.filter(owner_team=team).prefetch_related(
+        queryset = Recipe.objects.filter(owner_team=team).prefetch_related(
             "owner", "step_set", "ingredient_set", "scheduledrecipe_set"
         )
+        serializer = RecipeSerializer(
+            queryset, many=True, context={"request": self.request}
+        )
 
-    def list(self, request: Request, team_pk: str) -> Response:
-        serializer = self.get_serializer(self.get_queryset(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def create(self, request: Request, team_pk: str) -> Response:
-        team: Team = get_object_or_404(Team.objects.all(), pk=team_pk)
-
-        serializer = self.get_serializer(data=request.data)
-        serializer.initial_data["steps"] = add_positions(
-            serializer.initial_data["steps"]
-        )
-        serializer.initial_data["ingredients"] = add_positions(
-            serializer.initial_data["ingredients"]
-        )
-
-        serializer.is_valid(raise_exception=True)
-
-        serializer.save(team=team)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class StepViewSet(viewsets.ModelViewSet):

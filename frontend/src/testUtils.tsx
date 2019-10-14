@@ -1,11 +1,12 @@
 import React from "react"
-import { Provider } from "react-redux"
+import { Provider as ReduxProvider } from "react-redux"
 import { DndProvider } from "react-dnd"
 import { MemoryRouter } from "react-router"
 import HTML5Backend from "react-dnd-html5-backend"
 
 import { emptyStore as store } from "@/store/store"
 import { getCmd } from "redux-loop"
+import { ThemeProvider, theme } from "@/theme"
 
 export function assertCmdFuncEq<T, F>(state: T, expected: F) {
   const maybeCmd = getCmd(state)
@@ -18,14 +19,12 @@ export function assertCmdFuncEq<T, F>(state: T, expected: F) {
   }
 }
 
-export class DndTestContext extends React.Component {
-  render() {
-    return (
-      <DndProvider backend={HTML5Backend}>
-        <Provider store={store}>
-          <MemoryRouter>{this.props.children}</MemoryRouter>
-        </Provider>
-      </DndProvider>
-    )
-  }
-}
+export const TestProvider: React.FC = ({ children }) => (
+  <ThemeProvider theme={theme}>
+    <ReduxProvider store={store}>
+      <MemoryRouter>
+        <DndProvider backend={HTML5Backend}>{children}</DndProvider>
+      </MemoryRouter>
+    </ReduxProvider>
+  </ThemeProvider>
+)

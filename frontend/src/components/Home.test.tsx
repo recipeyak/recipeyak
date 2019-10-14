@@ -1,30 +1,21 @@
 import * as React from "react"
-import { MemoryRouter } from "react-router"
-
 import { mount } from "enzyme"
-
-import { Provider } from "react-redux"
-import { emptyStore as store } from "@/store/store"
-
 import Home from "@/components/Home"
+import { TestProvider } from "@/testUtils"
 
 describe("<Home/>", () => {
   it("renders without crashing", () => {
     mount(
-      <Provider store={store}>
-        <MemoryRouter>
-          <Home loggedIn={false} />
-        </MemoryRouter>
-      </Provider>
+      <TestProvider>
+        <Home loggedIn={false} />
+      </TestProvider>
     )
   })
   it("Has some text in footer", () => {
     const home = mount(
-      <Provider store={store}>
-        <MemoryRouter>
-          <Home loggedIn={false} />
-        </MemoryRouter>
-      </Provider>
+      <TestProvider>
+        <Home loggedIn={false} />
+      </TestProvider>
     )
     expect(
       home

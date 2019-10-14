@@ -20,7 +20,7 @@ interface IIngredient {
 interface IIRecipe {
   readonly name: string
   readonly author: string
-  readonly ingredients: IIngredient[]
+  readonly ingredients: ReadonlyArray<IIngredient>
 }
 
 export const matchesQuery = (recipe: IIRecipe, query: string) => {

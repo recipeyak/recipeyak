@@ -3,8 +3,7 @@
     "tslint:recommended",
     "tslint-config-prettier",
     "tslint-immutable",
-    "tslint-cake",
-    "tslint-react-hooks"
+    "tslint-cake"
   ],
   "rulesDirectory": ["node_modules/tslint-microsoft-contrib"],
   "defaultSeverity": "error",
@@ -77,7 +76,6 @@
     "no-useless-files": true,
     "no-with-statement": true,
     "prefer-array-literal": true,
-    "react-hooks-nesting": "error",
     "react-no-dangerous-html": true,
     "react-unused-props-and-state": true,
     "no-implicit-dependencies": [true, "dev", ["@"]],

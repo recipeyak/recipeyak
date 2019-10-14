@@ -1,6 +1,5 @@
 import pytest
 from allauth.socialaccount.models import EmailAddress
-from django.conf import settings
 from django.urls import reverse
 from rest_framework import status
 
@@ -8,8 +7,6 @@ from core.models import MyUser
 from core.users.serializers import UserSerializer
 
 pytestmark = pytest.mark.django_db
-
-BASE_URL = f"/{settings.API_BASE_URL}"
 
 
 def test_signup(client):

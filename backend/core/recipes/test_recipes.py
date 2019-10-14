@@ -1,15 +1,14 @@
+from datetime import datetime
 from typing import Any, Dict, List
 
 import pytest
-from django.conf import settings
 from django.urls import reverse
+from django.utils.dateparse import parse_datetime
 from rest_framework import status
 
 from core.models import Ingredient, Membership, Recipe, Step, Team
 
 pytestmark = pytest.mark.django_db
-
-BASE_URL = f"/{settings.API_BASE_URL}"
 
 
 def test_recipe_creation(client, user):
@@ -41,15 +40,19 @@ def test_recipe_creation(client, user):
         ],
     }
 
-    res = client.post(f"{BASE_URL}/recipes/", data)
+    res = client.post("/api/v1/recipes/", data)
     assert res.status_code == status.HTTP_201_CREATED
 
     recipe_id = res.json().get("id")
-    res = client.get(f"{BASE_URL}/recipes/{recipe_id}/")
+    res = client.get(f"/api/v1/recipes/{recipe_id}/")
     assert res.status_code == status.HTTP_200_OK
 
+    # ensure our schema doesn't change
     for key in ["name", "author", "source", "time", "servings"]:
-        assert data.get(key) == res.json().get(key)
+        assert data[key] == res.json()[key]
+    assert isinstance(
+        parse_datetime(res.json()["created"]), datetime
+    ), "return a valid date time string"
 
     # compare the nested items and ignore the ids as they don't exist them in the
     # initial data.
@@ -75,11 +78,11 @@ def test_creating_recipe_with_empty_ingredients_and_steps(client, user):
 
     data = {"name": "", "ingredients": [], "steps": []}
 
-    res = client.post(f"{BASE_URL}/recipes/", data)
+    res = client.post("/api/v1/recipes/", data)
     assert res.status_code == status.HTTP_400_BAD_REQUEST
-    assert res.data.get("name") is not None
-    assert res.data.get("ingredients") is not None
-    assert res.data.get("steps") is not None
+    assert res.data["name"] is not None
+    assert res.data["ingredients"] is not None
+    assert res.data["steps"] is not None
 
 
 def test_recipe_creation_for_a_team(client, team, user):
@@ -110,7 +113,7 @@ def test_recipe_creation_for_a_team(client, team, user):
     res = client.post(url, data)
     assert res.status_code == status.HTTP_201_CREATED
 
-    recipe_id = res.json().get("id")
+    recipe_id = res.json()["id"]
 
     assert isinstance(Recipe.objects.get(id=recipe_id).owner, Team)
 
@@ -126,10 +129,10 @@ def test_recipe_deletion(client, user, recipe):
     """
     client.force_authenticate(user)
 
-    res = client.delete(f"{BASE_URL}/recipes/{recipe.id}/")
+    res = client.delete(f"/api/v1/recipes/{recipe.id}/")
     assert res.status_code == status.HTTP_204_NO_CONTENT
 
-    res = client.get(f"{BASE_URL}/recipes/{recipe.id}/")
+    res = client.get(f"/api/v1/recipes/{recipe.id}/")
     assert res.status_code == status.HTTP_404_NOT_FOUND
 
 
@@ -143,7 +146,7 @@ def test_recipe_updating(client, user, recipe):
 
     assert recipe.name != data.get("name")
 
-    res = client.patch(f"{BASE_URL}/recipes/{recipe.id}/", data)
+    res = client.patch(f"/api/v1/recipes/{recipe.id}/", data)
     assert res.status_code == status.HTTP_200_OK
 
     assert res.json().get("name") == data.get("name")
@@ -183,13 +186,13 @@ def test_deleting_step_from_recipe(client, user, recipe):
 
     assert isinstance(step_id, int)
 
-    res = client.delete(f"{BASE_URL}/recipes/{recipe.id}/steps/{step_id}/")
+    res = client.delete(f"/api/v1/recipes/{recipe.id}/steps/{step_id}/")
     assert res.status_code == status.HTTP_204_NO_CONTENT
 
-    res = client.get(f"{BASE_URL}/recipes/{recipe.id}/steps/{step_id}/")
+    res = client.get(f"/api/v1/recipes/{recipe.id}/steps/{step_id}/")
     assert res.status_code == status.HTTP_404_NOT_FOUND
 
-    res = client.get(f"{BASE_URL}/recipes/{recipe.id}/")
+    res = client.get(f"/api/v1/recipes/{recipe.id}/")
     assert res.status_code == status.HTTP_200_OK
 
     assert step_id not in (
@@ -242,10 +245,10 @@ def test_adding_ingredient_to_recipe(client, user, recipe):
         "description": "",
     }
 
-    res = client.post(f"{BASE_URL}/recipes/{recipe.id}/ingredients/", ingredient)
+    res = client.post(f"/api/v1/recipes/{recipe.id}/ingredients/", ingredient)
     assert res.status_code == status.HTTP_201_CREATED
 
-    res = client.get(f"{BASE_URL}/recipes/{recipe.id}/")
+    res = client.get(f"/api/v1/recipes/{recipe.id}/")
     assert res.status_code == status.HTTP_200_OK
 
     assert ingredient.get("name") in (
@@ -264,11 +267,11 @@ def test_updating_ingredient_of_recipe(client, user, recipe):
     ingredient = {"name": "black pepper"}
 
     res = client.patch(
-        f"{BASE_URL}/recipes/{recipe.id}/ingredients/{ingredient_id}/", ingredient
+        f"/api/v1/recipes/{recipe.id}/ingredients/{ingredient_id}/", ingredient
     )
     assert res.status_code == status.HTTP_200_OK
 
-    res = client.get(f"{BASE_URL}/recipes/{recipe.id}/ingredients/{ingredient_id}/")
+    res = client.get(f"/api/v1/recipes/{recipe.id}/ingredients/{ingredient_id}/")
     assert res.status_code == status.HTTP_200_OK
 
     assert res.json().get("name") == ingredient.get("name"), "ingredient didn't update"
@@ -282,13 +285,13 @@ def test_deleting_ingredient_from_recipe(client, user, recipe):
 
     ingredient_id = recipe.ingredients[0].id
 
-    res = client.delete(f"{BASE_URL}/recipes/{recipe.id}/ingredients/{ingredient_id}/")
+    res = client.delete(f"/api/v1/recipes/{recipe.id}/ingredients/{ingredient_id}/")
     assert res.status_code == status.HTTP_204_NO_CONTENT
 
-    res = client.get(f"{BASE_URL}/recipes/{recipe.id}/ingredients/{ingredient_id}/")
+    res = client.get(f"/api/v1/recipes/{recipe.id}/ingredients/{ingredient_id}/")
     assert res.status_code == status.HTTP_404_NOT_FOUND
 
-    res = client.get(f"{BASE_URL}/recipes/{recipe.id}/")
+    res = client.get(f"/api/v1/recipes/{recipe.id}/")
     assert res.status_code == status.HTTP_200_OK
 
     assert ingredient_id not in (
@@ -304,7 +307,7 @@ def test_filtering_recipes_by_recent(client, user, recipes):
 
     client.force_authenticate(user)
 
-    res = client.get(f"{BASE_URL}/recipes/?recent")
+    res = client.get("/api/v1/recipes/?recent")
     assert res.status_code == status.HTTP_200_OK
 
     recipes_reversed = recipes[::-1]
@@ -360,7 +363,7 @@ def test_updating_edit_recipe_via_api(client, user, recipe):
     """
     client.force_authenticate(user)
 
-    res = client.patch(f"{BASE_URL}/recipes/{recipe.id}/", {"name": "A new name"})
+    res = client.patch(f"/api/v1/recipes/{recipe.id}/", {"name": "A new name"})
     assert res.status_code == status.HTTP_200_OK
 
     assert Recipe.objects.get(pk=recipe.id).edits == 1
