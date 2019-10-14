@@ -5,7 +5,6 @@ import renderer, { act } from "react-test-renderer"
 import { mount } from "enzyme"
 import { emptyStore as store, history } from "@/store/store"
 import { Recipe } from "@/components/Recipe"
-import { WebData, Loading, Failure, Success } from "@/webdata"
 import { IRecipe, fetchRecipe } from "@/store/reducers/recipes"
 import {
   baseRecipe,

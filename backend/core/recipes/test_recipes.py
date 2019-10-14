@@ -40,7 +40,7 @@ def test_recipe_creation(client, user):
         ],
     }
 
-    res = client.post(f"/api/v1/recipes/", data)
+    res = client.post("/api/v1/recipes/", data)
     assert res.status_code == status.HTTP_201_CREATED
 
     recipe_id = res.json().get("id")
@@ -78,7 +78,7 @@ def test_creating_recipe_with_empty_ingredients_and_steps(client, user):
 
     data = {"name": "", "ingredients": [], "steps": []}
 
-    res = client.post(f"/api/v1/recipes/", data)
+    res = client.post("/api/v1/recipes/", data)
     assert res.status_code == status.HTTP_400_BAD_REQUEST
     assert res.data["name"] is not None
     assert res.data["ingredients"] is not None
@@ -307,7 +307,7 @@ def test_filtering_recipes_by_recent(client, user, recipes):
 
     client.force_authenticate(user)
 
-    res = client.get(f"/api/v1/recipes/?recent")
+    res = client.get("/api/v1/recipes/?recent")
     assert res.status_code == status.HTTP_200_OK
 
     recipes_reversed = recipes[::-1]

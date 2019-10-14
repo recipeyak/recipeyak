@@ -86,7 +86,7 @@ class NonSafeIfMemberOrAdmin(IsTeamMember):
 def has_recipe_access(*, user: MyUser, recipe: Recipe) -> bool:
     recipe_owner = cast(Union[MyUser, Team], recipe.owner)
     return (
-        recipe.owner == user
+        cast(bool, recipe.owner == user)
         if isinstance(recipe_owner, MyUser)
         else recipe_owner.is_member(user)
     )

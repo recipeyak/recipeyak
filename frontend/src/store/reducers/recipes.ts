@@ -331,6 +331,7 @@ export interface IRecipeBasic
     | "team"
     | "ingredients"
     | "steps"
+    | "created"
   > {
   readonly ingredients: IIngredientBasic[]
   readonly steps: IStepBasic[]
