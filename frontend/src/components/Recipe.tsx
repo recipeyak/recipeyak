@@ -130,7 +130,7 @@ function useRecipe(recipeId: number) {
   const dispatch = useDispatch()
   React.useEffect(() => {
     dispatch(fetchRecipe.request(recipeId))
-  }, [recipeId])
+  }, [dispatch, recipeId])
   return useSelector(state => getRecipeById(state, recipeId))
 }
 

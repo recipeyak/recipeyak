@@ -732,6 +732,7 @@ def test_decline_team_invite(client, team, user, user2):
     res = client.get(url)
     assert res.status_code == status.HTTP_403_FORBIDDEN, "Non member cannot view team"
 
+
 def test_list_team_recipe(client, team, recipe, user, user2):
     """
     Team member should be able to list team recipes.
@@ -765,6 +766,7 @@ def test_list_team_recipe(client, team, recipe, user, user2):
     ]:
         client.force_authenticate(u)
         assert client.get(url).status_code == s
+
 
 def test_fetching_team_recipes(client, team_with_recipes, user, user2):
     url = f"/api/v1/t/{team_with_recipes.id}/recipes/"

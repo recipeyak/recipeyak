@@ -1,15 +1,15 @@
 import logging
 from typing import Optional
 
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
-from rest_framework.decorators import action, permission_classes, api_view
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
-from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.db.models import Q
+from rest_framework.views import APIView
 
 from core.auth.permissions import (
     HasRecipeAccess,
@@ -21,18 +21,17 @@ from core.models import (
     Ingredient,
     MyUser,
     Recipe,
+    ScheduledRecipe,
     Step,
     Team,
     user_and_team_recipes,
-    ScheduledRecipe,
 )
-
 from core.recipes.serializers import (
     IngredientSerializer,
     RecipeMoveCopySerializer,
     RecipeSerializer,
-    StepSerializer,
     RecipeTimelineSerializer,
+    StepSerializer,
 )
 from core.recipes.utils import add_positions
 

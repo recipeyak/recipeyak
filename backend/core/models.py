@@ -1,9 +1,8 @@
 import hashlib
 import itertools
 import logging
-from datetime import datetime, date
+from datetime import date, datetime
 from typing import List, Optional, Union, cast
-from typing_extensions import Literal
 
 from allauth.socialaccount.models import EmailAddress
 from django.contrib.auth.models import (
@@ -18,6 +17,7 @@ from django.core.validators import MinValueValidator
 from django.db import models, transaction
 from django.db.models import Q
 from softdelete.models import SoftDeleteObject
+from typing_extensions import Literal
 
 logger = logging.getLogger(__name__)
 

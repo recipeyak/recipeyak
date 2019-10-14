@@ -1,14 +1,15 @@
+from datetime import datetime
 from typing import Any, Dict, List
 
 import pytest
 from django.urls import reverse
 from django.utils.dateparse import parse_datetime
 from rest_framework import status
-from datetime import datetime
 
 from core.models import Ingredient, Membership, Recipe, Step, Team
 
 pytestmark = pytest.mark.django_db
+
 
 def test_recipe_creation(client, user):
     """

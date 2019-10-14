@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from core.models import Ingredient, MyUser, Recipe, Step, Team, ScheduledRecipe
+from core.models import Ingredient, MyUser, Recipe, ScheduledRecipe, Step, Team
 from core.serialization import BaseModelSerializer, BaseRelatedField, BaseSerializer
 
 
@@ -169,4 +169,3 @@ class RecipeTimelineSerializer(BaseModelSerializer):
     class Meta:
         model = ScheduledRecipe
         fields = ("id", "on")
-

@@ -1,4 +1,4 @@
-from typing import cast, Union
+from typing import Union, cast
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
