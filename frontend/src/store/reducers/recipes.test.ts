@@ -41,7 +41,8 @@ export const baseRecipe: IRecipe = {
     id: 1,
     type: "user"
   },
-  ingredients: []
+  ingredients: [],
+  created: "1776-1-1"
 }
 
 export const baseIngredient: IIngredient = {

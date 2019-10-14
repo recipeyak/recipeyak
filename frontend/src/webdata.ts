@@ -56,7 +56,7 @@ type RemoteData<E, T> =
   | IRefetching<T>
 
 // TODO(chdsbd): Make the default error type void
-export type WebData<T = void, E = HttpErrorKind> = RemoteData<E, T>
+export type WebData<T = void, E = HttpErrorKind | undefined> = RemoteData<E, T>
 
 export const enum HttpErrorKind {
   error404,
@@ -82,6 +82,8 @@ export const isRefetching = <T, E>(x: WebData<T, E>): x is IRefetching<T> =>
 export const isSuccessOrRefetching = <T, E>(
   x: WebData<T, E>
 ): x is ISuccess<T> | IRefetching<T> => isSuccess(x) || isRefetching(x)
+
+export const isSuccessLike = isSuccessOrRefetching
 
 export const unWrap = <T>(d: ISuccess<T> | IRefetching<T>): T => d.data
 

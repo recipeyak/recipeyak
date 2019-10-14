@@ -1,0 +1,99 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Recipe/> snaps recipe 1`] = `
+<section>
+  <h1
+    className="fs-10rem bold text-center"
+  >
+    404
+  </h1>
+  <p
+    className="fs-3rem text-center"
+  >
+    Nothing here 🌵
+  </p>
+</section>
+`;
+
+exports[`<Recipe/> snaps recipe 2`] = `
+<section
+  className="d-flex justify-content-center"
+>
+  <div
+    className="d-flex justify-content-center "
+  >
+    <div
+      className="ball-grid-pulse grid-entire-row justify-self-center"
+    >
+      <div />
+      <div />
+      <div />
+      <div />
+      <div />
+      <div />
+      <div />
+      <div />
+      <div />
+    </div>
+  </div>
+</section>
+`;
+
+exports[`<Recipe/> snaps timeline 1`] = `
+.c3 {
+  font-weight: 500;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid lightgray;
+}
+
+.c0 {
+  max-width: 600px;
+}
+
+.c1 {
+  list-style: none;
+  margin-left: 0.5rem;
+  padding-left: 0.5rem;
+  border-left: 3px solid;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.c2 {
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+<div
+  className="c0"
+>
+  <h2
+    className="bold fs-6 mb-0"
+  >
+    Timeline
+  </h2>
+  <ol
+    className="c1"
+  >
+    <div
+      className="c2"
+    >
+      Loading timeline..
+    </div>
+    <li
+      className="c3"
+      type="created"
+    >
+      🎉 Recipe created on 
+      <time
+        dateTime="1776-1-1"
+        title="1776-1-1"
+      >
+        Jan 1, 1776
+      </time>
+    </li>
+  </ol>
+</div>
+`;

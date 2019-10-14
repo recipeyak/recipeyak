@@ -125,6 +125,16 @@ export const createRecipe = (recipe: IRecipeBasic) =>
 export const getRecipe = (id: IRecipe["id"]) =>
   http.get<IRecipe>(`/api/v1/recipes/${id}/`)
 
+export interface IRecipeTimelineEvent {
+  readonly id: number
+  readonly on: string
+}
+
+export const getRecipeTimeline = (id: IRecipe["id"]) =>
+  http.get<ReadonlyArray<IRecipeTimelineEvent>>(
+    `/api/v1/recipes/${id}/timeline`
+  )
+
 export const deleteRecipe = (id: IRecipe["id"]) =>
   http.delete(`/api/v1/recipes/${id}/`)
 
@@ -132,9 +142,10 @@ export const getRecentRecipes = () =>
   http.get<IRecipe[]>("/api/v1/recipes/?recent")
 
 export const getRecipeList = (teamID: TeamID) => {
-  const url =
-    teamID === "personal" ? "/api/v1/recipes/" : `/api/v1/t/${teamID}/recipes/`
-  return http.get<IRecipe[]>(url)
+  if (teamID === "personal") {
+    return http.get<IRecipe[]>("/api/v1/recipes/")
+  }
+  return getTeamRecipes(teamID)
 }
 
 export const addIngredientToRecipe = (

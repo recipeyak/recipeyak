@@ -426,13 +426,14 @@ export interface IRecipe {
   readonly source: string
   readonly time: string
   readonly servings: string
-  readonly steps: IStep[]
-  readonly edits: unknown[]
+  readonly steps: ReadonlyArray<IStep>
+  readonly edits: ReadonlyArray<unknown>
   readonly modified: string
   readonly last_scheduled: string
   readonly team: ITeam["id"]
   readonly owner: IRecipeOwner
-  readonly ingredients: IIngredient[]
+  readonly ingredients: ReadonlyArray<IIngredient>
+  readonly created: string
 
   readonly editing?: boolean
   readonly deleting?: boolean

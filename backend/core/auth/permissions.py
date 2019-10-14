@@ -1,4 +1,4 @@
-from typing import cast
+from typing import cast, Union
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
@@ -83,17 +83,19 @@ class NonSafeIfMemberOrAdmin(IsTeamMember):
         )
 
 
+def has_recipe_access(*, user: MyUser, recipe: Recipe) -> bool:
+    recipe_owner = cast(Union[MyUser, Team], recipe.owner)
+    return (
+        recipe.owner == user
+        if isinstance(recipe_owner, MyUser)
+        else recipe_owner.is_member(user)
+    )
+
+
 class HasRecipeAccess(permissions.BasePermission):
     """
     User is recipe owner or is a member of team with Recipe
     """
 
     def has_object_permission(self, request, view, recipe: Recipe) -> bool:
-        return cast(
-            bool,
-            (
-                recipe.owner == request.user
-                if isinstance(recipe.owner, MyUser)
-                else recipe.owner.is_member(request.user)
-            ),
-        )
+        return has_recipe_access(user=request.user, recipe=recipe)

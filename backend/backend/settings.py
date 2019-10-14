@@ -178,8 +178,6 @@ AUTH_USER_MODEL = "core.MyUser"
 
 ROOT_URLCONF = "backend.urls"
 
-API_BASE_URL = "api/v1"
-
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",

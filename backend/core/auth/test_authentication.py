@@ -9,8 +9,6 @@ from core.users.serializers import UserSerializer
 
 pytestmark = pytest.mark.django_db
 
-BASE_URL = f"/{settings.API_BASE_URL}"
-
 
 def test_signup(client):
     """

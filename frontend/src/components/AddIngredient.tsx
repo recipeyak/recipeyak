@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react"
 
 import AddIngredientForm from "@/components/AddIngredientForm"
+import { useDispatch } from "@/hooks"
+import { addIngredientToRecipe } from "@/store/reducers/recipes"
 
 export interface IIngredientBasic {
   quantity: string
@@ -11,10 +13,6 @@ export interface IIngredientBasic {
 interface IAddIngredientProps {
   readonly onCancel: () => void
   readonly id: number
-  readonly addIngredient: (args: {
-    recipeID: number
-    ingredient: IIngredientBasic
-  }) => void
   readonly loading: boolean
   readonly autoFocus: boolean
 }
@@ -36,9 +34,9 @@ export default function AddIngredient({
   id,
   loading,
   onCancel,
-  addIngredient,
   autoFocus
 }: IAddIngredientProps) {
+  const dispatch = useDispatch()
   const [quantity, setQuantity] = useState("")
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
@@ -76,10 +74,12 @@ export default function AddIngredient({
   }
 
   const handleAddIngredient = () =>
-    addIngredient({
-      recipeID: id,
-      ingredient: { quantity, name, description }
-    })
+    dispatch(
+      addIngredientToRecipe.request({
+        recipeID: id,
+        ingredient: { quantity, name, description }
+      })
+    )
 
   return (
     <AddIngredientForm

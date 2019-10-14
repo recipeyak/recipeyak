@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from core.models import Ingredient, MyUser, Recipe, Step, Team
+from core.models import Ingredient, MyUser, Recipe, Step, Team, ScheduledRecipe
 from core.serialization import BaseModelSerializer, BaseRelatedField, BaseSerializer
 
 
@@ -96,6 +96,7 @@ class RecipeSerializer(BaseModelSerializer):
             "owner",
             "team",
             "last_scheduled",
+            "created",
         )
         read_only_fields = ("owner", "last_scheduled")
 
@@ -162,3 +163,10 @@ class RecipeMoveCopySerializer(BaseSerializer):
         if data["type"] == "user" and not MyUser.objects.filter(id=data["id"]).exists():
             raise serializers.ValidationError("user must exist")
         return data
+
+
+class RecipeTimelineSerializer(BaseModelSerializer):
+    class Meta:
+        model = ScheduledRecipe
+        fields = ("id", "on")
+
