@@ -39,6 +39,574 @@ exports[`<Recipe/> snaps recipe 2`] = `
 </section>
 `;
 
+exports[`<Recipe/> snaps recipe all states 1`] = `
+.c5 {
+  font-weight: 500;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid lightgray;
+}
+
+.c2 {
+  max-width: 600px;
+}
+
+.c3 {
+  list-style: none;
+  margin-left: 0.5rem;
+  padding-left: 0.5rem;
+  border-left: 3px solid;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.c4 {
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.c0 {
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+.c0:hover {
+  border-bottom: 2px solid;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
+
+.c1 {
+  font-weight: bold;
+  margin-right: 0.5rem;
+  border-bottom: 2px solid;
+}
+
+.c1:hover {
+  border-bottom: 2px solid;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
+
+<div
+  className="d-grid grid-gap-2"
+>
+  <div>
+    <div
+      className="grid-entire-row d-flex justify-space-between p-rel"
+    >
+      <div
+        className="d-flex align-items-center"
+      >
+        <h1
+          className="title fs-2rem mb-0 mb-1 cursor-pointer"
+          onClick={[Function]}
+          title="click to edit"
+        >
+          Apple Crisp
+        </h1>
+      </div>
+      <div
+        className="p-rel"
+      >
+        <button
+          className="my-button undefined is-primary is-small"
+          onClick={[Function]}
+          title="last scheduled: 1779"
+        >
+          schedule
+        </button>
+      </div>
+    </div>
+    <div
+      className="grid-entire-row"
+    >
+      <div
+        className="break-word"
+      >
+        <span>
+          By 
+          <b
+            className="cursor-pointer"
+            onClick={[Function]}
+            title="click  to edit"
+          >
+            bar
+          </b>
+           
+          from
+           
+          <b
+            className="cursor-pointer"
+            onClick={[Function]}
+            title="click  to edit"
+          >
+            <a
+              href="foo.com"
+            >
+              foo.com
+            </a>
+          </b>
+           
+          creating 
+          <b
+            className="cursor-pointer"
+            onClick={[Function]}
+            title="click  to edit"
+          >
+            12 servings
+          </b>
+           
+          in 
+          <b
+            className="cursor-pointer"
+            onClick={[Function]}
+            title="click  to edit"
+          >
+            1776
+          </b>
+           
+        </span>
+        <span
+          className="fw-500 p-rel"
+        >
+          <span
+            className="cursor-pointer"
+            onClick={[Function]}
+            title="click to edit"
+          >
+            via
+          </span>
+           
+          <a
+            href="/t/1-you"
+            onClick={[Function]}
+          >
+            you
+          </a>
+          <div
+            className=" d-none"
+          >
+            <div
+              className="p-abs"
+            >
+              <div
+                className="dropdown-content"
+              >
+                <div
+                  className="text-center"
+                >
+                  Teams
+                </div>
+                <hr
+                  className="dropdown-divider mt-1 mb-1"
+                />
+                <div
+                  className="select is-normal is-multiple max-height-25vh overflow-y-scroll w-100"
+                >
+                  <select
+                    className="my-select"
+                    multiple={true}
+                    onChange={[Function]}
+                    value={Array []}
+                  >
+                    <option
+                      className="text-small fw-500"
+                      value="null-user"
+                    >
+                      personal
+                    </option>
+                  </select>
+                </div>
+                <hr
+                  className="dropdown-divider"
+                />
+                <div
+                  className="d-flex justify-space-between ml-2 mr-2"
+                >
+                  <button
+                    className="my-button undefined is-link is-small"
+                    onClick={[Function]}
+                  >
+                    cancel
+                  </button>
+                  <div
+                    className="d-flex justify-space-between"
+                  >
+                    <button
+                      className="my-button mr-1 is-secondary is-small"
+                      disabled={true}
+                      onClick={[Function]}
+                    >
+                      move
+                    </button>
+                    <button
+                      className="my-button undefined is-primary is-small"
+                      disabled={true}
+                      onClick={[Function]}
+                    >
+                      copy
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    className=""
+  >
+    <a
+      className="c0"
+      href="/recipes/98-apple-crisp"
+      isActive={false}
+      onClick={[Function]}
+    >
+      Detail
+    </a>
+    <a
+      className="c1"
+      href="/recipes/98-apple-crisp?timeline=1"
+      isActive={true}
+      onClick={[Function]}
+    >
+      Timeline
+    </a>
+  </div>
+  <div
+    className="c2"
+  >
+    <h2
+      className="bold fs-6 mb-0"
+    >
+      Timeline
+    </h2>
+    <ol
+      className="c3"
+    >
+      <div
+        className="c4"
+      >
+        Loading timeline..
+      </div>
+      <li
+        className="c5"
+        type="created"
+      >
+        🎉 Recipe created on 
+        <time
+          dateTime="1776-1-1"
+          title="1776-1-1"
+        >
+          Jan 1, 1776
+        </time>
+      </li>
+    </ol>
+  </div>
+</div>
+`;
+
+exports[`<Recipe/> snaps recipe all states 2`] = `
+.c1 {
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+.c1:hover {
+  border-bottom: 2px solid;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
+
+.c0 {
+  font-weight: bold;
+  margin-right: 0.5rem;
+  border-bottom: 2px solid;
+}
+
+.c0:hover {
+  border-bottom: 2px solid;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
+
+<div
+  className="d-grid grid-gap-2"
+>
+  <div>
+    <div
+      className="grid-entire-row d-flex justify-space-between p-rel"
+    >
+      <div
+        className="d-flex align-items-center"
+      >
+        <h1
+          className="title fs-2rem mb-0 mb-1 cursor-pointer"
+          onClick={[Function]}
+          title="click to edit"
+        >
+          Apple Crisp
+        </h1>
+      </div>
+      <div
+        className="p-rel"
+      >
+        <button
+          className="my-button undefined is-primary is-small"
+          onClick={[Function]}
+          title="last scheduled: 1779"
+        >
+          schedule
+        </button>
+      </div>
+    </div>
+    <div
+      className="grid-entire-row"
+    >
+      <div
+        className="break-word"
+      >
+        <span>
+          By 
+          <b
+            className="cursor-pointer"
+            onClick={[Function]}
+            title="click  to edit"
+          >
+            bar
+          </b>
+           
+          from
+           
+          <b
+            className="cursor-pointer"
+            onClick={[Function]}
+            title="click  to edit"
+          >
+            <a
+              href="foo.com"
+            >
+              foo.com
+            </a>
+          </b>
+           
+          creating 
+          <b
+            className="cursor-pointer"
+            onClick={[Function]}
+            title="click  to edit"
+          >
+            12 servings
+          </b>
+           
+          in 
+          <b
+            className="cursor-pointer"
+            onClick={[Function]}
+            title="click  to edit"
+          >
+            1776
+          </b>
+           
+        </span>
+        <span
+          className="fw-500 p-rel"
+        >
+          <span
+            className="cursor-pointer"
+            onClick={[Function]}
+            title="click to edit"
+          >
+            via
+          </span>
+           
+          <a
+            href="/t/1-you"
+            onClick={[Function]}
+          >
+            you
+          </a>
+          <div
+            className=" d-none"
+          >
+            <div
+              className="p-abs"
+            >
+              <div
+                className="dropdown-content"
+              >
+                <div
+                  className="text-center"
+                >
+                  Teams
+                </div>
+                <hr
+                  className="dropdown-divider mt-1 mb-1"
+                />
+                <div
+                  className="select is-normal is-multiple max-height-25vh overflow-y-scroll w-100"
+                >
+                  <select
+                    className="my-select"
+                    multiple={true}
+                    onChange={[Function]}
+                    value={Array []}
+                  >
+                    <option
+                      className="text-small fw-500"
+                      value="null-user"
+                    >
+                      personal
+                    </option>
+                  </select>
+                </div>
+                <hr
+                  className="dropdown-divider"
+                />
+                <div
+                  className="d-flex justify-space-between ml-2 mr-2"
+                >
+                  <button
+                    className="my-button undefined is-link is-small"
+                    onClick={[Function]}
+                  >
+                    cancel
+                  </button>
+                  <div
+                    className="d-flex justify-space-between"
+                  >
+                    <button
+                      className="my-button mr-1 is-secondary is-small"
+                      disabled={true}
+                      onClick={[Function]}
+                    >
+                      move
+                    </button>
+                    <button
+                      className="my-button undefined is-primary is-small"
+                      disabled={true}
+                      onClick={[Function]}
+                    >
+                      copy
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    className=""
+  >
+    <a
+      className="c0"
+      href="/recipes/98-apple-crisp"
+      isActive={true}
+      onClick={[Function]}
+    >
+      Detail
+    </a>
+    <a
+      className="c1"
+      href="/recipes/98-apple-crisp?timeline=1"
+      isActive={false}
+      onClick={[Function]}
+    >
+      Timeline
+    </a>
+  </div>
+  <section
+    className="ingredients-preparation-grid"
+  >
+    <div>
+      <h2
+        className="bold fs-6 mb-0"
+      >
+        Ingredients
+      </h2>
+      <ul>
+        <li>
+          <section
+            className="cursor-pointer"
+            onClick={[Function]}
+            title="click to edit"
+          >
+            <p
+              className="listitem-text justify-space-between"
+            >
+              1 cup
+               
+              foo
+              , chopped
+               
+              
+            </p>
+          </section>
+        </li>
+      </ul>
+      <a
+        className="text-muted"
+        onClick={[Function]}
+      >
+        add
+      </a>
+    </div>
+    <div>
+      <h2
+        className="bold fs-6 mb-0"
+      >
+        Preparation
+      </h2>
+      <div
+        className="mb-2"
+        style={
+          Object {
+            "backgroundColor": "white",
+            "opacity": 1,
+          }
+        }
+      >
+        <label
+          className="better-label"
+          style={
+            Object {
+              "cursor": "move",
+            }
+          }
+        >
+          Step 
+          1
+        </label>
+        <div>
+          <section
+            className="cursor-pointer"
+            onClick={[Function]}
+            title="click to edit"
+          >
+            <p>
+              foo
+            </p>
+          </section>
+        </div>
+      </div>
+      <a
+        className="text-muted"
+        onClick={[Function]}
+      >
+        add
+      </a>
+    </div>
+  </section>
+</div>
+`;
+
 exports[`<Recipe/> snaps timeline 1`] = `
 .c3 {
   font-weight: 500;
@@ -96,4 +664,44 @@ exports[`<Recipe/> snaps timeline 1`] = `
     </li>
   </ol>
 </div>
+`;
+
+exports[`<Recipe/> snaps useRecipe hook: Refetching 1`] = `
+Object {
+  "data": Object {
+    "author": "bar",
+    "created": "1776-1-1",
+    "edits": Array [],
+    "id": 98,
+    "ingredients": Array [
+      Object {
+        "description": "chopped",
+        "id": 1,
+        "name": "foo",
+        "optional": false,
+        "position": 12.3,
+        "quantity": "1 cup",
+      },
+    ],
+    "last_scheduled": "1779",
+    "modified": "1778",
+    "name": "Apple Crisp",
+    "owner": Object {
+      "id": 1,
+      "type": "user",
+    },
+    "servings": "12 servings",
+    "source": "foo.com",
+    "steps": Array [
+      Object {
+        "id": 1,
+        "position": 10,
+        "text": "foo",
+      },
+    ],
+    "team": 1,
+    "time": "1776",
+  },
+  "kind": 3,
+}
 `;

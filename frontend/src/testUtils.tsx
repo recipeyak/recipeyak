@@ -4,7 +4,7 @@ import { DndProvider } from "react-dnd"
 import { MemoryRouter } from "react-router"
 import HTML5Backend from "react-dnd-html5-backend"
 
-import { emptyStore as store } from "@/store/store"
+import { Store, createEmptyStore } from "@/store/store"
 import { getCmd } from "redux-loop"
 import { ThemeProvider, theme } from "@/theme"
 
@@ -19,12 +19,21 @@ export function assertCmdFuncEq<T, F>(state: T, expected: F) {
   }
 }
 
-export const TestProvider: React.FC = ({ children }) => (
-  <ThemeProvider theme={theme}>
-    <ReduxProvider store={store}>
-      <MemoryRouter>
-        <DndProvider backend={HTML5Backend}>{children}</DndProvider>
-      </MemoryRouter>
-    </ReduxProvider>
-  </ThemeProvider>
-)
+interface ITestProviderProps {
+  readonly store?: Store
+}
+
+export const TestProvider: React.FC<ITestProviderProps> = ({
+  children,
+  store
+}) => {
+  return (
+    <ThemeProvider theme={theme}>
+      <ReduxProvider store={store || createEmptyStore()}>
+        <MemoryRouter>
+          <DndProvider backend={HTML5Backend}>{children}</DndProvider>
+        </MemoryRouter>
+      </ReduxProvider>
+    </ThemeProvider>
+  )
+}
