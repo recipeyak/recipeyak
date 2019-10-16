@@ -126,7 +126,7 @@ const NavItem = styled(Link)<INavItemProps>`
   }
 `
 
-function useRecipe(recipeId: number) {
+export function useRecipe(recipeId: number) {
   const dispatch = useDispatch()
   React.useEffect(() => {
     dispatch(fetchRecipe.request(recipeId))

@@ -1,21 +1,14 @@
 import React from "react"
-import { MemoryRouter, Route } from "react-router"
-import { Provider } from "react-redux"
-
 import { mount } from "enzyme"
-
 import Signup from "@/containers/Signup"
-
-import { emptyStore as store } from "@/store/store"
+import { TestProvider } from "@/testUtils"
 
 describe("<Signup/>", () => {
   it("renders signup", () => {
     const element = mount(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={["/signup"]} initialIndex={1}>
-          <Route path="/signup" component={Signup} />
-        </MemoryRouter>
-      </Provider>
+      <TestProvider>
+        <Signup />
+      </TestProvider>
     )
     expect(element.text()).toContain("Email")
     expect(element.text()).toContain("Password")

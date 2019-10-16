@@ -1,11 +1,7 @@
 import React from "react"
-import { MemoryRouter } from "react-router"
-import { Provider } from "react-redux"
 import { mount } from "enzyme"
-
-import { emptyStore as store } from "@/store/store"
-
 import PasswordReset from "@/components/PasswordReset"
+import { TestProvider } from "@/testUtils"
 
 describe("<PasswordReset/>", () => {
   it("renders without crashing", () => {
@@ -15,11 +11,9 @@ describe("<PasswordReset/>", () => {
       reset: () => Promise.resolve()
     }
     mount(
-      <Provider store={store}>
-        <MemoryRouter>
-          <PasswordReset loggedIn={false} {...props} />
-        </MemoryRouter>
-      </Provider>
+      <TestProvider>
+        <PasswordReset loggedIn={false} {...props} />
+      </TestProvider>
     )
   })
 })

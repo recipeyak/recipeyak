@@ -85,15 +85,13 @@ export const isSuccessOrRefetching = <T, E>(
 
 export const isSuccessLike = isSuccessOrRefetching
 
-export const unWrap = <T>(d: ISuccess<T> | IRefetching<T>): T => d.data
-
 /** map over WebData with @param func if data is a type structurally similar to Success */
 export function mapSuccessLike<T, R, E>(
   d: WebData<T, E>,
   func: (data: T) => R
 ): WebData<R, E> {
   if (isSuccessOrRefetching(d)) {
-    return { ...d, data: func(unWrap(d)) }
+    return { ...d, data: func(d.data) }
   }
   return d
 }
@@ -103,7 +101,7 @@ export function toLoading<T, E>(
   state: WebData<T, E>
 ): IRefetching<T> | ILoading {
   if (isSuccess(state)) {
-    return Refetching(unWrap(state))
+    return Refetching(state.data)
   }
   return Loading()
 }

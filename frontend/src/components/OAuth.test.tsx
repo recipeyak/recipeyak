@@ -1,20 +1,14 @@
 import React from "react"
-import { MemoryRouter } from "react-router"
-import { Provider } from "react-redux"
 import { mount } from "enzyme"
-
-import { emptyStore as store } from "@/store/store"
-
 import OAuth from "@/components/OAuth"
+import { TestProvider } from "@/testUtils"
 
 describe("<OAuth/>", () => {
   it("renders without crashing", () => {
     mount(
-      <Provider store={store}>
-        <MemoryRouter>
-          <OAuth service="gitlab" token="12345" login={jest.fn()} />
-        </MemoryRouter>
-      </Provider>
+      <TestProvider>
+        <OAuth service="gitlab" token="12345" login={jest.fn()} />
+      </TestProvider>
     )
   })
 })

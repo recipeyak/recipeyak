@@ -144,18 +144,6 @@ const compose: typeof reduxCompose =
   // tslint:disable-next-line no-any no-unsafe-any
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || reduxCompose
 
-const emptyStoreEnhancers = compose(
-  install(),
-  applyMiddleware(router)
-) as StoreEnhancer<IState, Action>
-
-// We need an empty store for the unit tests & hydrating from localstorage
-export const emptyStore: Store = createStore(
-  rootReducer,
-  undefined,
-  emptyStoreEnhancers
-)
-
 // NOTE(sbdchd): this is hacky, we should validate the local storage state before using it
 const defaultData = (): IState => {
   const saved = loadState()
@@ -186,10 +174,17 @@ if (DEBUG) {
   middleware.push(createLogger({ collapsed: true }))
 }
 
-const enhancer = compose(
+export const enhancer = compose(
   install(),
   applyMiddleware(...middleware)
 ) as StoreEnhancer<IState, Action>
+
+// We need an empty store for the unit tests & hydrating from localstorage
+const emptyStore: Store = createStore(rootReducer, undefined, enhancer)
+
+export function createEmptyStore(state?: IState) {
+  return createStore(rootReducer, state, enhancer)
+}
 
 export type Store = ReduxStore<IState, Action>
 

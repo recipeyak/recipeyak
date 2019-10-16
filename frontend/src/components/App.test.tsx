@@ -1,18 +1,15 @@
 import React from "react"
 import ReactDOM from "react-dom"
-import { Provider } from "react-redux"
-
-import { emptyStore as store } from "@/store/store"
-
 import App from "@/components/App"
+import { TestProvider } from "@/testUtils"
 
 describe("<App/>", () => {
   it("renders without crashing", () => {
     const div = document.createElement("div")
     ReactDOM.render(
-      <Provider store={store}>
+      <TestProvider>
         <App />
-      </Provider>,
+      </TestProvider>,
       div
     )
   })

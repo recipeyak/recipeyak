@@ -14,7 +14,6 @@ import {
   Success,
   Failure,
   isSuccessOrRefetching,
-  unWrap,
   mapSuccessLike,
   toLoading
 } from "@/webdata"
@@ -368,7 +367,7 @@ const mapSuccessLikeById = <T extends IRecipe["id"][]>(
     a
       .map(id => getRecipeById(state, id))
       .filter(isSuccessOrRefetching)
-      .map(unWrap)
+      .map(d => d.data)
   )
 
 export function getTeamRecipes(
@@ -460,7 +459,7 @@ function mapRecipeSuccessById(
       ...state.byId,
       [id]: {
         ...recipe,
-        data: func(unWrap(recipe))
+        data: func(recipe.data)
       }
     }
   }
