@@ -7,13 +7,8 @@ import startOfDay from "date-fns/start_of_day"
 import endOfDay from "date-fns/end_of_day"
 import isFirstDayOfMonth from "date-fns/is_first_day_of_month"
 import sortBy from "lodash/sortBy"
-
 import { beforeCurrentDay } from "@/date"
-
-import { classNames } from "@/classnames"
-
 import { CalendarItem, ICalendarDragItem } from "@/components/CalendarDayItem"
-
 import {
   updatingScheduledRecipeAsync,
   deletingScheduledRecipeAsync,
@@ -22,7 +17,6 @@ import {
   IAddingScheduledRecipeProps,
   IMoveScheduledRecipeProps
 } from "@/store/thunks"
-
 import { DragDrop } from "@/dragDrop"
 import { IState } from "@/store/store"
 import {
