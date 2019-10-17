@@ -85,7 +85,6 @@ const CalendarWeekContainer = styled.div`
     height: 100%;
     flex-direction: column;
     margin-top: 0.5rem;
-    // skip prev and future week, keeping the current week
     &:first-child,
     &:last-child {
       display: none;
