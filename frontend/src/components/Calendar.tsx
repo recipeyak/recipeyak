@@ -32,6 +32,7 @@ import { Select } from "@/components/Forms"
 import chunk from "lodash/chunk"
 import { classNames } from "@/classnames"
 import { isSafari } from "@/utils/general"
+import { styled } from "@/theme"
 
 function monthYearFromDate(date: Date) {
   return format(date, "MMM D | YYYY")
@@ -53,16 +54,48 @@ export interface IDays {
   [onDate: string]: ICalRecipe[] | undefined
 }
 
+const WeekdaysContainer = styled.div`
+  @media (max-width: ${p => p.theme.medium}) {
+    display: none;
+  }
+  display: flex;
+  flex-shrink: 0;
+  & > b {
+    width: ${(1 / 7) * 100}%;
+    &:not(:last-child) {
+      margin-right: 0.25rem;
+    }
+  }
+`
+
 function Weekdays() {
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
   return (
-    <div className="calendar-week-days">
+    <WeekdaysContainer>
       {weekDays.map(x => (
         <b key={x}>{x}</b>
       ))}
-    </div>
+    </WeekdaysContainer>
   )
 }
+
+const CalendarWeekContainer = styled.div`
+  display: flex;
+  @media (max-width: ${p => p.theme.medium}) {
+    height: 100%;
+    flex-direction: column;
+    margin-top: 0.5rem;
+    // skip prev and future week, keeping the current week
+    &:first-child,
+    &:last-child {
+      display: none;
+    }
+  }
+  height: ${(1 / 3) * 100}%;
+  &:not(:last-child) {
+    margin-bottom: 0.25rem;
+  }
+`
 
 const WEEK_DAYS = 7
 
@@ -80,11 +113,11 @@ function Days({ start, end, days, teamID }: IDaysProps) {
       {chunk(eachDay(start, end), WEEK_DAYS).map(dates => {
         const firstDay = first(dates)
         if (firstDay == null) {
-          return <section className="d-flex calendar-week" />
+          return <CalendarWeekContainer />
         }
         const week = String(startOfWeek(firstDay))
         return (
-          <section className="d-flex calendar-week" key={week}>
+          <CalendarWeekContainer key={week}>
             {dates.map(date => {
               const scheduledRecipes = days[toDateString(date)] || []
               return (
@@ -96,7 +129,7 @@ function Days({ start, end, days, teamID }: IDaysProps) {
                 />
               )
             })}
-          </section>
+          </CalendarWeekContainer>
         )
       })}
     </section>

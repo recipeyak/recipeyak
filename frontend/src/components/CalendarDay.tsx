@@ -34,6 +34,7 @@ import { IRecipeItemDrag } from "@/components/RecipeItem"
 import { Result } from "@/result"
 import { useCurrentDay } from "@/hooks"
 import { isSameDay } from "date-fns"
+import { styled, css } from "@/theme"
 
 function DayOfWeek({ date }: { date: Date }) {
   const dayOfWeek = format(date, "ddd")
@@ -54,6 +55,52 @@ const Title = ({ date }: { date: Date }) => {
     </div>
   )
 }
+
+const isTodayStyle = css`
+  border-bottom: 2px solid ${p => p.theme.color.primary};
+`
+
+const isSelectedDayStyle = css`
+  background-color: ${p => p.theme.color.primaryShadow};
+  color: white;
+  a:hover,
+  a {
+    color: white;
+  }
+`
+
+const isDroppableStyle = css`
+  opacity: 0.5;
+`
+
+interface ICalendarDayContainerProps {
+  readonly isToday: boolean
+  readonly isSelectedDay: boolean
+  readonly isDroppable: boolean
+}
+
+const CalendarDayContainer = styled.div<ICalendarDayContainerProps>`
+  flex: 1 1 0%;
+  padding: 0.25rem;
+  background-color: whitesmoke;
+  transition: background-color 0.2s;
+
+  ${p => p.isToday && isTodayStyle}
+  ${p => p.isSelectedDay && isSelectedDayStyle}
+  ${p => p.isDroppable && isDroppableStyle}
+
+  &:not(:last-child) {
+    margin-right: 0.25rem;
+    @media (max-width: ${p => p.theme.medium}) {
+      margin-right: 0;
+      margin-bottom: 0.25rem;
+    }
+  }
+  @media (max-width: ${p => p.theme.medium}) {
+    width: 100%;
+    min-height: 75px;
+  }
+`
 
 interface ICalendarDayProps {
   readonly date: Date
@@ -115,16 +162,14 @@ function CalendarDay({
 
   const scheduled = sortBy(scheduledRecipes, x => new Date(x.created))
 
+  const isDroppable = isOver && canDrop
+
   return (
-    <div
+    <CalendarDayContainer
       ref={drop}
-      style={{
-        opacity: isOver && canDrop ? 0.5 : 1
-      }}
-      className={classNames("calendar-day", "p-1", "flex-grow-1", {
-        "current-day": isToday,
-        "selected-day": isSelected || (isOver && canDrop)
-      })}>
+      isDroppable={isDroppable}
+      isToday={isToday}
+      isSelectedDay={isSelected || isDroppable}>
       <Title date={date} />
       <ul>
         {scheduled.map(x => (
@@ -141,7 +186,7 @@ function CalendarDay({
           />
         ))}
       </ul>
-    </div>
+    </CalendarDayContainer>
   )
 }
 
