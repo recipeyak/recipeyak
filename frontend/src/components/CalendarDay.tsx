@@ -57,8 +57,8 @@ const isTodayStyle = css`
 const isSelectedDayStyle = css`
   background-color: ${p => p.theme.color.primaryShadow};
   color: white;
-  a:hover,
-  a {
+  a,
+  a:hover {
     color: white;
   }
 `
