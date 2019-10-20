@@ -171,7 +171,6 @@ export function Recipe(props: IRecipeProps) {
         servings={recipe.servings}
         time={recipe.time}
         owner={recipe.owner}
-        lastScheduled={recipe.last_scheduled}
         updating={recipe.updating}
         deleting={recipe.deleting}
         editing={recipe.editing}

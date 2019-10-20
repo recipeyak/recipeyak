@@ -40,7 +40,75 @@ exports[`<Recipe/> snaps recipe 2`] = `
 `;
 
 exports[`<Recipe/> snaps recipe all states 1`] = `
-.c5 {
+.c0 {
+  position: relative;
+}
+
+.c2 {
+  display: block;
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  font-weight: 400;
+  color: #212529;
+  white-space: nowrap;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  background-color: transparent;
+  border: none;
+}
+
+.c2:hover {
+  color: #16181b;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
+
+.c2:active {
+  background-color: rgba(255,114,71,0.8);
+}
+
+.c3 {
+  display: block;
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  font-weight: 400;
+  color: #212529;
+  white-space: nowrap;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  background-color: transparent;
+  border: none;
+}
+
+.c3:hover {
+  color: #16181b;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
+
+.c3:active {
+  background-color: rgba(255,114,71,0.8);
+}
+
+.c1 {
+  position: absolute;
+  left: auto;
+  right: 0;
+  z-index: 1000;
+  padding: 0.5rem 0;
+  margin: 0.125rem 0 0;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 0.25rem;
+  display: none;
+}
+
+.c9 {
   font-weight: 500;
   padding: 0.5rem;
   margin-bottom: 0.5rem;
@@ -48,11 +116,11 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
   border: 1px solid lightgray;
 }
 
-.c2 {
+.c6 {
   max-width: 600px;
 }
 
-.c3 {
+.c7 {
   list-style: none;
   margin-left: 0.5rem;
   padding-left: 0.5rem;
@@ -61,29 +129,29 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
   padding-bottom: 0.5rem;
 }
 
-.c4 {
+.c8 {
   margin-bottom: 0.5rem;
   margin-top: 0.5rem;
 }
 
-.c0 {
+.c4 {
   font-weight: bold;
   margin-right: 0.5rem;
 }
 
-.c0:hover {
+.c4:hover {
   border-bottom: 2px solid;
   -webkit-text-decoration: none;
   text-decoration: none;
 }
 
-.c1 {
+.c5 {
   font-weight: bold;
   margin-right: 0.5rem;
   border-bottom: 2px solid;
 }
 
-.c1:hover {
+.c5:hover {
   border-bottom: 2px solid;
   -webkit-text-decoration: none;
   text-decoration: none;
@@ -108,15 +176,62 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
         </h1>
       </div>
       <div
-        className="p-rel"
+        className="c0"
       >
         <button
-          className="my-button undefined is-primary is-small"
+          className="my-button is-small"
           onClick={[Function]}
-          title="last scheduled: 1779"
         >
-          schedule
+          Options 
+          <svg
+            className="fill-text-color"
+            style={
+              Object {
+                "width": "1.5em",
+              }
+            }
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <g>
+              <path
+                d="M14.1711599,9.3535 L9.99925636,13.529 L5.82735283,9.3535 C5.51262415,9.0385 5.73543207,8.5 6.18054835,8.5 L13.8179644,8.5 C14.2630807,8.5 14.4858886,9.0385 14.1711599,9.3535"
+                fill="inherit"
+              />
+            </g>
+          </svg>
         </button>
+        <div
+          className="c1"
+        >
+          <a
+            className="c2"
+            href="/schedule/recipes?recipeId=98"
+            onClick={[Function]}
+          >
+            Schedule
+          </a>
+          <button
+            className="c3"
+            onClick={[Function]}
+          >
+            Copy Ingredients to Clipboard
+          </button>
+          <a
+            className="c2"
+            href="/recipes/98.yaml"
+            onClick={[Function]}
+          >
+            Export as YAML
+          </a>
+          <a
+            className="c2"
+            href="/recipes/98.json"
+            onClick={[Function]}
+          >
+            Export as JSON
+          </a>
+        </div>
       </div>
     </div>
     <div
@@ -261,7 +376,7 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
     className=""
   >
     <a
-      className="c0"
+      className="c4"
       href="/recipes/98-apple-crisp"
       isActive={false}
       onClick={[Function]}
@@ -269,7 +384,7 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
       Detail
     </a>
     <a
-      className="c1"
+      className="c5"
       href="/recipes/98-apple-crisp?timeline=1"
       isActive={true}
       onClick={[Function]}
@@ -278,7 +393,7 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
     </a>
   </div>
   <div
-    className="c2"
+    className="c6"
   >
     <h2
       className="bold fs-6 mb-0"
@@ -286,15 +401,15 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
       Timeline
     </h2>
     <ol
-      className="c3"
+      className="c7"
     >
       <div
-        className="c4"
+        className="c8"
       >
         Loading timeline..
       </div>
       <li
-        className="c5"
+        className="c9"
         type="created"
       >
         🎉 Recipe created on 
@@ -311,24 +426,92 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
 `;
 
 exports[`<Recipe/> snaps recipe all states 2`] = `
+.c0 {
+  position: relative;
+}
+
+.c2 {
+  display: block;
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  font-weight: 400;
+  color: #212529;
+  white-space: nowrap;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  background-color: transparent;
+  border: none;
+}
+
+.c2:hover {
+  color: #16181b;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
+
+.c2:active {
+  background-color: rgba(255,114,71,0.8);
+}
+
+.c3 {
+  display: block;
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  font-weight: 400;
+  color: #212529;
+  white-space: nowrap;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  background-color: transparent;
+  border: none;
+}
+
+.c3:hover {
+  color: #16181b;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
+
+.c3:active {
+  background-color: rgba(255,114,71,0.8);
+}
+
 .c1 {
+  position: absolute;
+  left: auto;
+  right: 0;
+  z-index: 1000;
+  padding: 0.5rem 0;
+  margin: 0.125rem 0 0;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 0.25rem;
+  display: none;
+}
+
+.c5 {
   font-weight: bold;
   margin-right: 0.5rem;
 }
 
-.c1:hover {
+.c5:hover {
   border-bottom: 2px solid;
   -webkit-text-decoration: none;
   text-decoration: none;
 }
 
-.c0 {
+.c4 {
   font-weight: bold;
   margin-right: 0.5rem;
   border-bottom: 2px solid;
 }
 
-.c0:hover {
+.c4:hover {
   border-bottom: 2px solid;
   -webkit-text-decoration: none;
   text-decoration: none;
@@ -353,15 +536,62 @@ exports[`<Recipe/> snaps recipe all states 2`] = `
         </h1>
       </div>
       <div
-        className="p-rel"
+        className="c0"
       >
         <button
-          className="my-button undefined is-primary is-small"
+          className="my-button is-small"
           onClick={[Function]}
-          title="last scheduled: 1779"
         >
-          schedule
+          Options 
+          <svg
+            className="fill-text-color"
+            style={
+              Object {
+                "width": "1.5em",
+              }
+            }
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <g>
+              <path
+                d="M14.1711599,9.3535 L9.99925636,13.529 L5.82735283,9.3535 C5.51262415,9.0385 5.73543207,8.5 6.18054835,8.5 L13.8179644,8.5 C14.2630807,8.5 14.4858886,9.0385 14.1711599,9.3535"
+                fill="inherit"
+              />
+            </g>
+          </svg>
         </button>
+        <div
+          className="c1"
+        >
+          <a
+            className="c2"
+            href="/schedule/recipes?recipeId=98"
+            onClick={[Function]}
+          >
+            Schedule
+          </a>
+          <button
+            className="c3"
+            onClick={[Function]}
+          >
+            Copy Ingredients to Clipboard
+          </button>
+          <a
+            className="c2"
+            href="/recipes/98.yaml"
+            onClick={[Function]}
+          >
+            Export as YAML
+          </a>
+          <a
+            className="c2"
+            href="/recipes/98.json"
+            onClick={[Function]}
+          >
+            Export as JSON
+          </a>
+        </div>
       </div>
     </div>
     <div
@@ -506,7 +736,7 @@ exports[`<Recipe/> snaps recipe all states 2`] = `
     className=""
   >
     <a
-      className="c0"
+      className="c4"
       href="/recipes/98-apple-crisp"
       isActive={true}
       onClick={[Function]}
@@ -514,7 +744,7 @@ exports[`<Recipe/> snaps recipe all states 2`] = `
       Detail
     </a>
     <a
-      className="c1"
+      className="c5"
       href="/recipes/98-apple-crisp?timeline=1"
       isActive={false}
       onClick={[Function]}

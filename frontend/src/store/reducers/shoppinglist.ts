@@ -31,7 +31,7 @@ export interface IShoppingListItem {
 }
 
 export interface IShoppingListState {
-  readonly shoppinglist: WebData<IShoppingListItem[]>
+  readonly shoppinglist: WebData<ReadonlyArray<IShoppingListItem>>
   readonly startDay: Date
   readonly endDay: Date
 }

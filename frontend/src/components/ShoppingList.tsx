@@ -97,7 +97,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 })
 
 interface IShoppingListContainerProps {
-  readonly items: WebData<IShoppingListItem[]>
+  readonly items: WebData<ReadonlyArray<IShoppingListItem>>
   readonly sendToast: (message: string) => void
 }
 
@@ -137,8 +137,7 @@ class ShoppingListList extends React.Component<IShoppingListContainerProps> {
           Copy
         </Button>
         <section ref={this.shoppingList}>
-          {/* TOOD(sbdchd): sort on backend instead */}
-          {items.sort(ingredientByNameAlphabetical).map((x, i) => (
+          {[...items].sort(ingredientByNameAlphabetical).map((x, i) => (
             <ShoppingListItem item={x} isFirst={i === 0} />
           ))}
         </section>
@@ -152,7 +151,7 @@ interface IShoppingListProps {
   readonly teamID: TeamID
   readonly startDay: Date
   readonly endDay: Date
-  readonly shoppinglist: WebData<IShoppingListItem[]>
+  readonly shoppinglist: WebData<ReadonlyArray<IShoppingListItem>>
   readonly setStartDay: (date: Date) => void
   readonly setEndDay: (date: Date) => void
   readonly reportBadMerge: () => void

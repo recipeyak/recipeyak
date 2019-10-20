@@ -1,5 +1,5 @@
 import React from "react"
-import { Button, ButtonPrimary } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import MetaData from "@/components/MetaData"
 import {
   IRecipe,
@@ -10,8 +10,8 @@ import {
 import GlobalEvent from "@/components/GlobalEvent"
 import { TextInput } from "@/components/Forms"
 import { hasSelection } from "@/utils/general"
-import { Schedule } from "@/components/RecipeItem"
 import { connect } from "react-redux"
+import { Dropdown } from "@/components/RecipeTitleDropdown"
 
 interface IRecipeTitleProps {
   readonly id: IRecipe["id"]
@@ -27,7 +27,6 @@ interface IRecipeTitleProps {
   readonly deleting?: boolean
   readonly editing?: boolean
   readonly toggleEditing: (recipeID: IRecipe["id"]) => void
-  readonly lastScheduled?: string
 }
 
 export interface IRecipeBasic {
@@ -109,12 +108,8 @@ class RecipeTitle extends React.Component<
       time,
       owner,
       updating,
-      deleting,
-      lastScheduled
+      deleting
     } = this.props
-    const toolTip = lastScheduled
-      ? "last scheduled: " + lastScheduled
-      : "never scheduled"
     return (
       <div>
         <div className="grid-entire-row d-flex justify-space-between p-rel">
@@ -138,19 +133,7 @@ class RecipeTitle extends React.Component<
               name="name"
             />
           )}
-          <Schedule
-            id={id}
-            show={this.state.show}
-            onClose={() => this.setState({ show: false })}
-            trigger={
-              <ButtonPrimary
-                size="small"
-                title={toolTip}
-                onClick={() => this.setState(prev => ({ show: !prev.show }))}>
-                schedule
-              </ButtonPrimary>
-            }
-          />
+          <Dropdown recipeId={id} />
         </div>
 
         {!this.props.editing ? (

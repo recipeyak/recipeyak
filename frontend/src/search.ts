@@ -1,3 +1,7 @@
+import { IRecipe } from "@/store/reducers/recipes"
+import { parseIntOrNull } from "@/parseIntOrNull"
+import nth from "lodash/nth"
+
 // https://stackoverflow.com/a/37511463/3720597
 const removeAccents = (x: string) =>
   x.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
@@ -13,17 +17,7 @@ const normalizeQuery = (x: string) => {
   return z.length > 0 ? normalize(z[1]) : normalize(x)
 }
 
-interface IIngredient {
-  readonly name: string
-}
-
-interface IIRecipe {
-  readonly name: string
-  readonly author: string
-  readonly ingredients: ReadonlyArray<IIngredient>
-}
-
-export const matchesQuery = (recipe: IIRecipe, query: string) => {
+export function matchesQuery(recipe: IRecipe, query: string) {
   // basic search with ability to prepend a tag to query and only search for
   // things relevent to that tag
 
@@ -32,6 +26,11 @@ export const matchesQuery = (recipe: IIRecipe, query: string) => {
 
   if (query.indexOf("author:") === 0) {
     return author.includes(normalizeQuery(query))
+  }
+
+  if (query.indexOf("recipeId:") === 0) {
+    const id = parseIntOrNull(nth(query.split(":"), 1))
+    return recipe.id === id
   }
 
   if (query.indexOf("ingredient:") === 0) {
