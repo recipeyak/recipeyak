@@ -170,9 +170,13 @@ jobs:
 
   shellcheck:
     docker:
-      - image: koalaman/shellcheck-alpine
+      - image: koalaman/shellcheck
     steps:
       - checkout
+      - run:
+          name: install dependencies
+          command: |
+            apt-get install -y git
       - run:
         name: run shellcheck
         command: |
