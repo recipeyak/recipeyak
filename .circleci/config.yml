@@ -168,6 +168,21 @@ jobs:
           command: |
             fd Dockerfile | xargs hadolint
 
+  shellcheck:
+    docker:
+      - image: koalaman/shellcheck-alpine
+    steps:
+      - checkout
+      - run:
+        name: run shellcheck
+        command: |
+          # based on https://github.com/koalaman/shellcheck/wiki/Recursiveness#by-shebang
+          for f in $(git ls-files); do
+            if [[ $(grep -Eq '^#!(.*/|.*env +)(sh|bash|ksh)' "$f"; echo $?) -eq 0 ]]; then
+              shellcheck "$f"
+            fi
+          done
+
   # https://circleci.com/docs/2.0/building-docker-images/
   build_api_container:
     docker:
@@ -282,6 +297,7 @@ workflows:
       - frontend_lint
       - frontend_stylelint
       - docker_lint
+      - shellcheck
       - build_api_container:
           context: DockerHub
           requires:
