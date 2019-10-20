@@ -173,6 +173,9 @@ jobs:
       - image: koalaman/shellcheck
     steps:
       - checkout
+      - run:
+          name: run shellcheck
+          command: shellcheck --version
       # - run:
       #     name: install dependencies
       #     command: |
