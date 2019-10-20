@@ -170,12 +170,17 @@ jobs:
 
   shellcheck:
     docker:
-      - image: koalaman/shellcheck
+      - image: recipeyak/base:v3
     steps:
       - checkout
       - run:
+          name: install dependencies
+          command: |
+            apt-get install -y git shellcheck
+      - run:
           name: run shellcheck
-          command: shellcheck --version
+          command: |
+            ./s/shellcheck
 
   # https://circleci.com/docs/2.0/building-docker-images/
   build_api_container:
