@@ -63,11 +63,10 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
   color: #16181b;
   -webkit-text-decoration: none;
   text-decoration: none;
-  background-color: #f9f9f9;
 }
 
 .c2:active {
-  background-color: rgba(255,202,95,0.3);
+  background-color: rgba(255,114,71,0.8);
 }
 
 .c3 {
@@ -89,11 +88,10 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
   color: #16181b;
   -webkit-text-decoration: none;
   text-decoration: none;
-  background-color: #f9f9f9;
 }
 
 .c3:active {
-  background-color: rgba(255,202,95,0.3);
+  background-color: rgba(255,114,71,0.8);
 }
 
 .c1 {
@@ -104,7 +102,7 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
   padding: 0.5rem 0;
   margin: 0.125rem 0 0;
   font-size: 1rem;
-  background-color: #fff;
+  background-color: #f9f9f9;
   border: 1px solid rgba(0,0,0,0.15);
   border-radius: 0.25rem;
   display: none;
@@ -451,11 +449,10 @@ exports[`<Recipe/> snaps recipe all states 2`] = `
   color: #16181b;
   -webkit-text-decoration: none;
   text-decoration: none;
-  background-color: #f9f9f9;
 }
 
 .c2:active {
-  background-color: rgba(255,202,95,0.3);
+  background-color: rgba(255,114,71,0.8);
 }
 
 .c3 {
@@ -477,11 +474,10 @@ exports[`<Recipe/> snaps recipe all states 2`] = `
   color: #16181b;
   -webkit-text-decoration: none;
   text-decoration: none;
-  background-color: #f9f9f9;
 }
 
 .c3:active {
-  background-color: rgba(255,202,95,0.3);
+  background-color: rgba(255,114,71,0.8);
 }
 
 .c1 {
@@ -492,7 +488,7 @@ exports[`<Recipe/> snaps recipe all states 2`] = `
   padding: 0.5rem 0;
   margin: 0.125rem 0 0;
   font-size: 1rem;
-  background-color: #fff;
+  background-color: #f9f9f9;
   border: 1px solid rgba(0,0,0,0.15);
   border-radius: 0.25rem;
   display: none;
