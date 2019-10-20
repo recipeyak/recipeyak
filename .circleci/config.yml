@@ -176,14 +176,6 @@ jobs:
       - run:
           name: run shellcheck
           command: shellcheck --version
-      # - run:
-      #     name: install dependencies
-      #     command: |
-      #       apt-get install -y git
-      # - run:
-      #     name: run shellcheck
-      #     command: |
-      #       sh ./s/shellcheck
 
   # https://circleci.com/docs/2.0/building-docker-images/
   build_api_container:
