@@ -5,7 +5,10 @@ set -o nounset
 
 
 for f in $(git ls-files); do
-  if grep -Eq '^#!(.*/|.*env +)(sh|bash|ksh)' "$f"; then
-    shellcheck "$f"
+  if [ -f "$f" ]; then
+    if grep -Eq '^#!(.*/|.*env +)(sh|bash|ksh)' "$f" || [[ "$f" =~ \.(sh|bash|ksh)$ ]]; then
+      echo "$f"
+      shellcheck "$f"
+    fi
   fi
 done
