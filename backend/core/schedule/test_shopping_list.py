@@ -170,13 +170,6 @@ def test_scheduling_multiple_times_some_ingredient(
             ],
             ("4.5 + some", "lemons"),
         ),
-        (
-            [
-                ("0.5 cup, plus 2 tablespoons", "vegetable oil"),
-                ("0.5 cup, plus 4 tablespoons", "vegetable oil"),
-            ],
-            ("1 cup + 6 tablespoons", "vegetable oil"),
-        ),
     ],
 )
 def test_combine_ingredients(empty_recipe, ingredients, combined):
