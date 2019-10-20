@@ -5,10 +5,13 @@ cd "$(dirname "$(dirname "$0")")"
 
 PORT=8808
 
-(
-  cd build || exit
-  python3 -m http.server "$PORT" &
-)
+pushd build || exit
+
+python3 -m http.server "$PORT" &
+
+popd
+
+HTTP_SERVER=$!
 
 # wait for port
 MAX_INC=20
@@ -27,7 +30,7 @@ TMP_FILE=$(mktemp)
 ./scripts/crawl.js http://localhost:"$PORT" "$TMP_FILE"
 
 # kill the background webserver
-kill %%
+kill "$HTTP_SERVER"
 
 mv -f "$TMP_FILE" build/landing.html
 chmod +r build/landing.html
