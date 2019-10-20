@@ -11,6 +11,10 @@ import { IRecipe, getTeamRecipes } from "@/store/reducers/recipes"
 import { ITeam } from "@/store/reducers/teams"
 import { IState } from "@/store/store"
 import { WebData, isSuccessOrRefetching } from "@/webdata"
+import queryString from "query-string"
+import { useDispatch } from "@/hooks"
+import { push } from "connected-react-router"
+import { parseIntOrNull } from "@/parseIntOrNull"
 
 interface IRecipeList {
   readonly recipes: WebData<IRecipe[]>
@@ -46,20 +50,43 @@ interface IRecipesProps {
   readonly scroll?: boolean
   readonly drag?: boolean
   readonly noPadding?: boolean
-  readonly autoFocusSearch?: boolean
   readonly teamID?: ITeam["id"] | "personal" | null
+}
+
+function getInitialQuery(): string {
+  const params = window.location.search
+  const recipeIdParam = queryString.parse(params).recipeId
+  if (recipeIdParam == null || Array.isArray(recipeIdParam)) {
+    return ""
+  }
+  const recipeId = parseIntOrNull(recipeIdParam)
+  if (recipeId == null) {
+    return ""
+  }
+  return `recipeId:${recipeId}`
+}
+
+function useClearSearchOnLoad() {
+  const dispatch = useDispatch()
+  React.useEffect(() => {
+    dispatch(
+      push({
+        search: ""
+      })
+    )
+  }, [dispatch])
 }
 
 function RecipesListSearch({
   fetchData,
-  autoFocusSearch,
   noPadding,
   recipes,
   drag,
   scroll,
   teamID
 }: IRecipesProps) {
-  const [query, setQuery] = useState("")
+  useClearSearchOnLoad()
+  const [query, setQuery] = useState(getInitialQuery)
 
   useEffect(() => {
     const teamID_ = teamID == null ? "personal" : teamID
@@ -72,7 +99,7 @@ function RecipesListSearch({
   return (
     <>
       <TextInput
-        autoFocus={autoFocusSearch}
+        value={query}
         className={noPadding ? "" : "mb-4"}
         onChange={handleQueryChange}
         placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:"

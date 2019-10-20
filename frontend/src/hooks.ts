@@ -86,3 +86,30 @@ export function useGlobalEvent({
 export const useDispatch = () => useDispatchRedux<Dispatch>()
 // Type useSelector for our root state
 export const useSelector: TypedUseSelectorHook<IState> = useSelectorRedux
+
+export function useOnClickOutside(
+  ref: React.MutableRefObject<HTMLElement | null>,
+  handler: (e: MouseEvent | TouchEvent) => void
+) {
+  React.useEffect(() => {
+    const listener = (event: MouseEvent | TouchEvent) => {
+      const el = ref.current
+      if (
+        el == null ||
+        (event.target instanceof HTMLElement && el.contains(event.target))
+      ) {
+        return
+      }
+
+      handler(event)
+    }
+
+    document.addEventListener("mousedown", listener)
+    document.addEventListener("touchstart", listener)
+
+    return () => {
+      document.removeEventListener("mousedown", listener)
+      document.removeEventListener("touchstart", listener)
+    }
+  }, [ref, handler])
+}

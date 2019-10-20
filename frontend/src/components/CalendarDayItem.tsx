@@ -46,10 +46,10 @@ const StyledLink = styled(Link)`
   background-color: ${props => props.theme.color.primary};
   border-radius: 5px;
   padding: 0.35rem;
-  color: ${props => props.theme.color.white};
+  color: ${props => props.theme.color.dark};
   font-weight: 600;
   :hover {
-    color: ${props => props.theme.color.white};
+    color: ${props => props.theme.color.dark};
   }
 `
 
