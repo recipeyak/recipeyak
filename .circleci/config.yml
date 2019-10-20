@@ -178,7 +178,7 @@ jobs:
         command: |
           # based on https://github.com/koalaman/shellcheck/wiki/Recursiveness#by-shebang
           for f in $(git ls-files); do
-            if [[ $(grep -Eq '^#!(.*/|.*env +)(sh|bash|ksh)' "$f"; echo $?) -eq 0 ]]; then
+            if grep -Eq '^#!(.*/|.*env +)(sh|bash|ksh)' "$f"; then
               shellcheck "$f"
             fi
           done
