@@ -180,7 +180,7 @@ jobs:
       - run:
         name: run shellcheck
         command: |
-          s/shellcheck
+          ./s/shellcheck
 
   # https://circleci.com/docs/2.0/building-docker-images/
   build_api_container:
