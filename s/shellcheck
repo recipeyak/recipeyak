@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -o pipefail
+set -o errexit
+set -o nounset
+
+
+for f in $(git ls-files); do
+  if grep -Eq '^#!(.*/|.*env +)(sh|bash|ksh)' "$f"; then
+    shellcheck "$f"
+  fi
+done
