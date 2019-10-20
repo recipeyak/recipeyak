@@ -48,7 +48,6 @@ const dropdownItemStyle = css`
   :hover {
     color: #16181b;
     text-decoration: none;
-    background-color: ${p => p.theme.color.light};
   }
 
   :active {
