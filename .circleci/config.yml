@@ -173,10 +173,10 @@ jobs:
       - image: koalaman/shellcheck
     steps:
       - checkout
-      - run:
-          name: install dependencies
-          command: |
-            apt-get install -y git
+      # - run:
+      #     name: install dependencies
+      #     command: |
+      #       apt-get install -y git
       # - run:
       #     name: run shellcheck
       #     command: |
