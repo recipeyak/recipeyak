@@ -87,10 +87,11 @@ export const useDispatch = () => useDispatchRedux<Dispatch>()
 // Type useSelector for our root state
 export const useSelector: TypedUseSelectorHook<IState> = useSelectorRedux
 
-export function useOnClickOutside(
-  ref: React.MutableRefObject<HTMLElement | null>,
+export function useOnClickOutside<T extends HTMLElement>(
   handler: (e: MouseEvent | TouchEvent) => void
-) {
+): React.MutableRefObject<T | null> {
+  const ref = React.useRef<T | null>(null)
+
   React.useEffect(() => {
     const listener = (event: MouseEvent | TouchEvent) => {
       const el = ref.current
@@ -112,4 +113,5 @@ export function useOnClickOutside(
       document.removeEventListener("touchstart", listener)
     }
   }, [ref, handler])
+  return ref
 }
