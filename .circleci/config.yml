@@ -178,9 +178,9 @@ jobs:
           command: |
             apt-get install -y git
       - run:
-        name: run shellcheck
-        command: |
-          ./s/shellcheck
+          name: run shellcheck
+          command: |
+            ./s/shellcheck
 
   # https://circleci.com/docs/2.0/building-docker-images/
   build_api_container:
