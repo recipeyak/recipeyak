@@ -180,12 +180,7 @@ jobs:
       - run:
         name: run shellcheck
         command: |
-          # based on https://github.com/koalaman/shellcheck/wiki/Recursiveness#by-shebang
-          for f in $(git ls-files); do
-            if grep -Eq '^#!(.*/|.*env +)(sh|bash|ksh)' "$f"; then
-              shellcheck "$f"
-            fi
-          done
+          s/shellcheck
 
   # https://circleci.com/docs/2.0/building-docker-images/
   build_api_container:
