@@ -1,5 +1,6 @@
 import React from "react"
 import { IIngredient } from "@/store/reducers/recipes"
+import { capitalizeUnits } from "@/text"
 
 interface IIngredientVIewProps {
   readonly quantity: IIngredient["quantity"]
@@ -18,7 +19,7 @@ export default function IngredientView({
 
   return (
     <p className="listitem-text justify-space-between">
-      {quantity} {name}
+      {capitalizeUnits(quantity)} {name}
       {fmtDescription}{" "}
       {optional ? <span className="text-muted">[optional]</span> : ""}
     </p>

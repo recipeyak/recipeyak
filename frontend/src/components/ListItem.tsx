@@ -5,6 +5,7 @@ import GlobalEvent from "@/components/GlobalEvent"
 import ReactMarkdown, { NodeType } from "react-markdown"
 import { Button, ButtonLink } from "@/components/Buttons"
 import { hasSelection } from "@/utils/general"
+import { capitalizeUnits } from "@/text"
 
 const ALLOWED_MARKDOWN_TYPES: NodeType[] = [
   "root",
@@ -214,7 +215,7 @@ export default class ListItem extends React.Component<
       </form>
     ) : (
       <ReactMarkdown
-        source={this.state.text}
+        source={capitalizeUnits(this.state.text)}
         allowedTypes={ALLOWED_MARKDOWN_TYPES}
       />
     )
