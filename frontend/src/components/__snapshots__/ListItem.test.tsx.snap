@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ListItem/> snap with capitalization 1`] = `
+<div>
+  <section
+    className="cursor-pointer"
+    onClick={[Function]}
+    title="click to edit"
+  >
+    <p>
+      Add 3 Tablespoons of tomato paste. Cook 1 minute.
+    </p>
+  </section>
+</div>
+`;
+
+exports[`<ListItem/> snap with capitalization 2`] = `
+<div>
+  <section
+    className="cursor-pointer"
+    onClick={[Function]}
+    title="click to edit"
+  >
+    <p>
+      Measure 1 teaspoon of rice vinegar.
+    </p>
+  </section>
+</div>
+`;
+
+exports[`<ListItem/> snap with capitalization 3`] = `
+<div>
+  <section
+    className="cursor-pointer"
+    onClick={[Function]}
+    title="click to edit"
+  >
+    <p>
+      Add 1 Tablespoon + 2 teaspoons of soy sauce.
+    </p>
+  </section>
+</div>
+`;
+
+exports[`<ListItem/> snap with capitalization 4`] = `
+<div>
+  <section
+    className="cursor-pointer"
+    onClick={[Function]}
+    title="click to edit"
+  >
+    <p>
+      Stir in 1 teaspoon salt
+    </p>
+  </section>
+</div>
+`;
