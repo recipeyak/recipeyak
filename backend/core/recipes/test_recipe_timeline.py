@@ -78,3 +78,25 @@ def test_get_recipe_timeline(
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK
     assert len(res.json()) == 1, "should return the same response"
+
+
+def test_get_recipe_timeline_ordering(
+    user: MyUser, client: APIClient, recipe: Recipe
+) -> None:
+    """
+    ensure we return the timeline items in the correct ordering
+    """
+
+    for time in [date(1776, 1, 1), date(1776, 2, 1), date(1776, 3, 1)]:
+        recipe.schedule(on=time, user=user)
+
+    url = f"/api/v1/recipes/{recipe.id}/timeline"
+    client.force_authenticate(user)
+    res = client.get(url)
+    assert res.status_code == status.HTTP_200_OK
+
+    assert [scheduled["on"] for scheduled in res.json()] == [
+        "1776-03-01",
+        "1776-02-01",
+        "1776-01-01",
+    ]
