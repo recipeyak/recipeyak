@@ -5,10 +5,13 @@ import { Calendar } from "@/components/Calendar"
 
 describe("<Calendar> Snap", () => {
   beforeAll(() => {
-    mockDate.set("1776-1-1")
+    const dateStr = "1776-1-1"
+    mockDate.set(dateStr)
+    jest.spyOn(Date.prototype, "toString").mockImplementation(() => dateStr)
   })
   afterAll(() => {
     mockDate.reset()
+    jest.restoreAllMocks()
   })
   test("smoke test render with empty data", () => {
     const tree = renderer

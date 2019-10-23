@@ -134,7 +134,7 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
 >
   <p
     className="mr-2"
-    title="Sun Dec 31 1775 00:00:00 GMT+0000 (Coordinated Universal Time)"
+    title="1776-1-1"
   >
     Dec 31 | 1775
   </p>
