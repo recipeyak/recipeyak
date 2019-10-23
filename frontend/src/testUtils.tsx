@@ -3,10 +3,12 @@ import { Provider as ReduxProvider } from "react-redux"
 import { DndProvider } from "react-dnd"
 import { MemoryRouter } from "react-router"
 import HTML5Backend from "react-dnd-html5-backend"
-
+import MockDate from "mockdate"
 import { Store, createEmptyStore } from "@/store/store"
 import { getCmd } from "redux-loop"
 import { ThemeProvider, theme } from "@/theme"
+
+export const mockDate = MockDate
 
 export function assertCmdFuncEq<T, F>(state: T, expected: F) {
   const maybeCmd = getCmd(state)

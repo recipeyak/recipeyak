@@ -1,9 +1,15 @@
 import React from "react"
 import renderer from "react-test-renderer"
-import { TestProvider } from "@/testUtils"
+import { TestProvider, mockDate } from "@/testUtils"
 import { Calendar } from "@/components/Calendar"
 
 describe("<Calendar> Snap", () => {
+  beforeAll(() => {
+    mockDate.set("1776-1-1")
+  })
+  afterAll(() => {
+    mockDate.reset()
+  })
   test("smoke test render with empty data", () => {
     const tree = renderer
       .create(
