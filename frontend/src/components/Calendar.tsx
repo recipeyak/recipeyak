@@ -137,7 +137,7 @@ function Days({ start, end, days, teamID }: IDaysProps) {
 
 interface ITeamSelectProps {
   readonly handleOwnerChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
-  readonly teams: ITeam[]
+  readonly teams: ReadonlyArray<ITeam>
   readonly loading: boolean
   readonly teamID: TeamID
 }
@@ -170,7 +170,7 @@ interface INavProps {
   readonly prev: () => void
   readonly next: () => void
   readonly current: () => void
-  readonly teams: ITeam[]
+  readonly teams: ReadonlyArray<ITeam>
   readonly loadingTeams: boolean
   readonly teamID: TeamID
 }
@@ -186,7 +186,7 @@ function Nav({
   current
 }: INavProps) {
   return (
-    <div className="d-flex flex-wrap flex-shrink-0">
+    <>
       <CalTitle day={day} />
       <section className="d-flex flex-grow justify-space-between">
         <TeamSelect
@@ -207,7 +207,7 @@ function Nav({
           </ButtonPlain>
         </section>
       </section>
-    </div>
+    </>
   )
 }
 
@@ -222,26 +222,39 @@ function HelpPrompt() {
 const prevWeekStart = (date: Date) => subWeeks(startOfWeek(date), 1)
 const nextWeekStart = (date: Date) => addWeeks(startOfWeek(date), 1)
 
+const CalContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  @media (max-width: ${p => p.theme.small}) {
+    height: 100%;
+  }
+`
+
 interface ICalendarProps {
   readonly loadingTeams: boolean
-  readonly loading: boolean
   readonly error: boolean
   readonly fetchTeams: () => void
   readonly navTo: (url: string) => void
   readonly fetchData: (teamID: TeamID, month: Date) => void
   readonly refetchShoppingListAndRecipes: (teamID: TeamID) => void
-  readonly teams: ITeam[]
+  readonly teams: ReadonlyArray<ITeam>
   readonly days: IDays
-  readonly isTeam: boolean
   readonly teamID: TeamID
   readonly type: "shopping" | "recipes"
 }
 
-function Calendar({
+export function Calendar({
   fetchTeams,
   fetchData,
   teamID: propsTeamID,
-  ...props
+  days,
+  refetchShoppingListAndRecipes,
+  type,
+  navTo,
+  error,
+  teams,
+  loadingTeams
 }: ICalendarProps) {
   const [start, setStart] = useState(startOfWeek(new Date()))
 
@@ -251,7 +264,7 @@ function Calendar({
 
   const refetchData = (teamID: TeamID = propsTeamID) => {
     fetchData(teamID, start)
-    props.refetchShoppingListAndRecipes(teamID)
+    refetchShoppingListAndRecipes(teamID)
   }
 
   useEffect(() => {
@@ -273,18 +286,18 @@ function Calendar({
       e.target.value === "personal" ? "personal" : parseInt(e.target.value, 10)
     const url = teamID === "personal" ? "/schedule/" : `/t/${teamID}/schedule/`
 
-    const isRecipes = props.type === "recipes"
+    const isRecipes = type === "recipes"
 
     const ending = isRecipes ? "recipes" : "shopping"
 
     const urlWithEnding = url + ending
 
     // navTo is async so we can't count on the URL to have changed by the time we refetch the data
-    props.navTo(urlWithEnding)
+    navTo(urlWithEnding)
     refetchData(teamID)
   }
 
-  if (props.error) {
+  if (error) {
     return <p>Error fetching data</p>
   }
 
@@ -293,10 +306,10 @@ function Calendar({
   const endDate = endOfWeek(addWeeks(currentDate, 1))
 
   return (
-    <section className="d-flex flex-column flex-grow-1">
+    <CalContainer>
       <Nav
-        teams={props.teams}
-        loadingTeams={props.loadingTeams}
+        teams={teams}
+        loadingTeams={loadingTeams}
         handleOwnerChange={handleOwnerChange}
         day={currentDate}
         teamID={propsTeamID}
@@ -305,14 +318,9 @@ function Calendar({
         current={current}
       />
       <Weekdays />
-      <Days
-        start={startDate}
-        end={endDate}
-        days={props.days}
-        teamID={propsTeamID}
-      />
+      <Days start={startDate} end={endDate} days={days} teamID={propsTeamID} />
       <HelpPrompt />
-    </section>
+    </CalContainer>
   )
 }
 

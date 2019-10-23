@@ -12,6 +12,7 @@ export interface ITheme {
     readonly small: string
   }
   readonly medium: string
+  readonly small: string
 }
 
 const primary = "#ff7247"
@@ -25,7 +26,8 @@ export const theme: ITheme = {
   text: {
     small: "0.875rem"
   },
-  medium: "992px"
+  medium: "992px",
+  small: "630px"
 }
 
 const {
