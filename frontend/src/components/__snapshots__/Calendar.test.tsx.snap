@@ -1,0 +1,737 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Calendar> Snap smoke test render with empty data 1`] = `
+.c3 {
+  -webkit-flex: 1 1 0%;
+  -ms-flex: 1 1 0%;
+  flex: 1 1 0%;
+  padding: 0.25rem;
+  background-color: whitesmoke;
+  -webkit-transition: background-color 0.2s;
+  transition: background-color 0.2s;
+}
+
+.c3:not(:last-child) {
+  margin-right: 0.25rem;
+}
+
+.c4 {
+  -webkit-flex: 1 1 0%;
+  -ms-flex: 1 1 0%;
+  flex: 1 1 0%;
+  padding: 0.25rem;
+  background-color: whitesmoke;
+  -webkit-transition: background-color 0.2s;
+  transition: background-color 0.2s;
+  border-bottom: 2px solid #ff7247;
+}
+
+.c4:not(:last-child) {
+  margin-right: 0.25rem;
+}
+
+.c1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-shrink: 0;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+}
+
+.c1 > b {
+  width: 14.285714285714285%;
+}
+
+.c1 > b:not(:last-child) {
+  margin-right: 0.25rem;
+}
+
+.c2 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  height: 33.33333333333333%;
+}
+
+.c2:not(:last-child) {
+  margin-bottom: 0.25rem;
+}
+
+.c0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+}
+
+@media (max-width:992px) {
+  .c3:not(:last-child) {
+    margin-right: 0;
+    margin-bottom: 0.25rem;
+  }
+}
+
+@media (max-width:992px) {
+  .c3 {
+    width: 100%;
+    min-height: 75px;
+  }
+}
+
+@media (max-width:992px) {
+  .c4:not(:last-child) {
+    margin-right: 0;
+    margin-bottom: 0.25rem;
+  }
+}
+
+@media (max-width:992px) {
+  .c4 {
+    width: 100%;
+    min-height: 75px;
+  }
+}
+
+@media (max-width:992px) {
+  .c1 {
+    display: none;
+  }
+}
+
+@media (max-width:992px) {
+  .c2 {
+    height: 100%;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    margin-top: 0.5rem;
+  }
+
+  .c2:first-child,
+  .c2:last-child {
+    display: none;
+  }
+}
+
+@media (max-width:630px) {
+  .c0 {
+    height: 100%;
+  }
+}
+
+<div
+  className="c0"
+>
+  <p
+    className="mr-2"
+    title="1776-1-1"
+  >
+    Dec 31 | 1775
+  </p>
+  <section
+    className="d-flex flex-grow justify-space-between"
+  >
+    <div
+      className="select is-small  undefined"
+    >
+      <select
+        className=""
+        disabled={false}
+        multiple={undefined}
+        onChange={[Function]}
+        value={10}
+      >
+        <option
+          value="personal"
+        >
+          Personal
+        </option>
+      </select>
+    </div>
+    <section>
+      <button
+        className="my-button is-small"
+        onClick={[Function]}
+      >
+        ←
+      </button>
+      <button
+        className="my-button ml-1 mr-1 is-small"
+        onClick={[Function]}
+      >
+        Today
+      </button>
+      <button
+        className="my-button is-small"
+        onClick={[Function]}
+      >
+        →
+      </button>
+    </section>
+  </section>
+  <div
+    className="c1"
+  >
+    <b>
+      Sun
+    </b>
+    <b>
+      Mon
+    </b>
+    <b>
+      Tue
+    </b>
+    <b>
+      Wed
+    </b>
+    <b>
+      Thu
+    </b>
+    <b>
+      Fri
+    </b>
+    <b>
+      Sat
+    </b>
+  </div>
+  <section
+    className="mb-2 flex-grow-1 h-100"
+  >
+    <div
+      className="c2"
+    >
+      <div
+        className="c3"
+      >
+        <div
+          className="d-flex"
+        >
+          <div
+            className="d-none d-medium-block"
+          >
+            <span>
+              Sun
+            </span>
+            <span
+              className="mx-1"
+            >
+              ∙
+            </span>
+          </div>
+          <span>
+            24
+          </span>
+        </div>
+        <ul />
+      </div>
+      <div
+        className="c3"
+      >
+        <div
+          className="d-flex"
+        >
+          <div
+            className="d-none d-medium-block"
+          >
+            <span>
+              Mon
+            </span>
+            <span
+              className="mx-1"
+            >
+              ∙
+            </span>
+          </div>
+          <span>
+            25
+          </span>
+        </div>
+        <ul />
+      </div>
+      <div
+        className="c3"
+      >
+        <div
+          className="d-flex"
+        >
+          <div
+            className="d-none d-medium-block"
+          >
+            <span>
+              Tue
+            </span>
+            <span
+              className="mx-1"
+            >
+              ∙
+            </span>
+          </div>
+          <span>
+            26
+          </span>
+        </div>
+        <ul />
+      </div>
+      <div
+        className="c3"
+      >
+        <div
+          className="d-flex"
+        >
+          <div
+            className="d-none d-medium-block"
+          >
+            <span>
+              Wed
+            </span>
+            <span
+              className="mx-1"
+            >
+              ∙
+            </span>
+          </div>
+          <span>
+            27
+          </span>
+        </div>
+        <ul />
+      </div>
+      <div
+        className="c3"
+      >
+        <div
+          className="d-flex"
+        >
+          <div
+            className="d-none d-medium-block"
+          >
+            <span>
+              Thu
+            </span>
+            <span
+              className="mx-1"
+            >
+              ∙
+            </span>
+          </div>
+          <span>
+            28
+          </span>
+        </div>
+        <ul />
+      </div>
+      <div
+        className="c3"
+      >
+        <div
+          className="d-flex"
+        >
+          <div
+            className="d-none d-medium-block"
+          >
+            <span>
+              Fri
+            </span>
+            <span
+              className="mx-1"
+            >
+              ∙
+            </span>
+          </div>
+          <span>
+            29
+          </span>
+        </div>
+        <ul />
+      </div>
+      <div
+        className="c3"
+      >
+        <div
+          className="d-flex"
+        >
+          <div
+            className="d-none d-medium-block"
+          >
+            <span>
+              Sat
+            </span>
+            <span
+              className="mx-1"
+            >
+              ∙
+            </span>
+          </div>
+          <span>
+            30
+          </span>
+        </div>
+        <ul />
+      </div>
+    </div>
+    <div
+      className="c2"
+    >
+      <div
+        className="c3"
+      >
+        <div
+          className="d-flex"
+        >
+          <div
+            className="d-none d-medium-block"
+          >
+            <span>
+              Sun
+            </span>
+            <span
+              className="mx-1"
+            >
+              ∙
+            </span>
+          </div>
+          <span>
+            31
+          </span>
+        </div>
+        <ul />
+      </div>
+      <div
+        className="c4"
+      >
+        <div
+          className="d-flex"
+        >
+          <div
+            className="d-none d-medium-block"
+          >
+            <span>
+              Mon
+            </span>
+            <span
+              className="mx-1"
+            >
+              ∙
+            </span>
+          </div>
+          <span>
+            Jan 1
+          </span>
+        </div>
+        <ul />
+      </div>
+      <div
+        className="c3"
+      >
+        <div
+          className="d-flex"
+        >
+          <div
+            className="d-none d-medium-block"
+          >
+            <span>
+              Tue
+            </span>
+            <span
+              className="mx-1"
+            >
+              ∙
+            </span>
+          </div>
+          <span>
+            2
+          </span>
+        </div>
+        <ul />
+      </div>
+      <div
+        className="c3"
+      >
+        <div
+          className="d-flex"
+        >
+          <div
+            className="d-none d-medium-block"
+          >
+            <span>
+              Wed
+            </span>
+            <span
+              className="mx-1"
+            >
+              ∙
+            </span>
+          </div>
+          <span>
+            3
+          </span>
+        </div>
+        <ul />
+      </div>
+      <div
+        className="c3"
+      >
+        <div
+          className="d-flex"
+        >
+          <div
+            className="d-none d-medium-block"
+          >
+            <span>
+              Thu
+            </span>
+            <span
+              className="mx-1"
+            >
+              ∙
+            </span>
+          </div>
+          <span>
+            4
+          </span>
+        </div>
+        <ul />
+      </div>
+      <div
+        className="c3"
+      >
+        <div
+          className="d-flex"
+        >
+          <div
+            className="d-none d-medium-block"
+          >
+            <span>
+              Fri
+            </span>
+            <span
+              className="mx-1"
+            >
+              ∙
+            </span>
+          </div>
+          <span>
+            5
+          </span>
+        </div>
+        <ul />
+      </div>
+      <div
+        className="c3"
+      >
+        <div
+          className="d-flex"
+        >
+          <div
+            className="d-none d-medium-block"
+          >
+            <span>
+              Sat
+            </span>
+            <span
+              className="mx-1"
+            >
+              ∙
+            </span>
+          </div>
+          <span>
+            6
+          </span>
+        </div>
+        <ul />
+      </div>
+    </div>
+    <div
+      className="c2"
+    >
+      <div
+        className="c3"
+      >
+        <div
+          className="d-flex"
+        >
+          <div
+            className="d-none d-medium-block"
+          >
+            <span>
+              Sun
+            </span>
+            <span
+              className="mx-1"
+            >
+              ∙
+            </span>
+          </div>
+          <span>
+            7
+          </span>
+        </div>
+        <ul />
+      </div>
+      <div
+        className="c3"
+      >
+        <div
+          className="d-flex"
+        >
+          <div
+            className="d-none d-medium-block"
+          >
+            <span>
+              Mon
+            </span>
+            <span
+              className="mx-1"
+            >
+              ∙
+            </span>
+          </div>
+          <span>
+            8
+          </span>
+        </div>
+        <ul />
+      </div>
+      <div
+        className="c3"
+      >
+        <div
+          className="d-flex"
+        >
+          <div
+            className="d-none d-medium-block"
+          >
+            <span>
+              Tue
+            </span>
+            <span
+              className="mx-1"
+            >
+              ∙
+            </span>
+          </div>
+          <span>
+            9
+          </span>
+        </div>
+        <ul />
+      </div>
+      <div
+        className="c3"
+      >
+        <div
+          className="d-flex"
+        >
+          <div
+            className="d-none d-medium-block"
+          >
+            <span>
+              Wed
+            </span>
+            <span
+              className="mx-1"
+            >
+              ∙
+            </span>
+          </div>
+          <span>
+            10
+          </span>
+        </div>
+        <ul />
+      </div>
+      <div
+        className="c3"
+      >
+        <div
+          className="d-flex"
+        >
+          <div
+            className="d-none d-medium-block"
+          >
+            <span>
+              Thu
+            </span>
+            <span
+              className="mx-1"
+            >
+              ∙
+            </span>
+          </div>
+          <span>
+            11
+          </span>
+        </div>
+        <ul />
+      </div>
+      <div
+        className="c3"
+      >
+        <div
+          className="d-flex"
+        >
+          <div
+            className="d-none d-medium-block"
+          >
+            <span>
+              Fri
+            </span>
+            <span
+              className="mx-1"
+            >
+              ∙
+            </span>
+          </div>
+          <span>
+            12
+          </span>
+        </div>
+        <ul />
+      </div>
+      <div
+        className="c3"
+      >
+        <div
+          className="d-flex"
+        >
+          <div
+            className="d-none d-medium-block"
+          >
+            <span>
+              Sat
+            </span>
+            <span
+              className="mx-1"
+            >
+              ∙
+            </span>
+          </div>
+          <span>
+            13
+          </span>
+        </div>
+        <ul />
+      </div>
+    </div>
+  </section>
+  <p
+    className="mt-2 mb-1 hide-sm"
+  >
+    press 
+    <kbd>
+      ?
+    </kbd>
+     for help
+  </p>
+</div>
+`;
