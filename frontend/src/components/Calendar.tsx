@@ -34,7 +34,7 @@ import { classNames } from "@/classnames"
 import { isSafari } from "@/utils/general"
 
 function monthYearFromDate(date: Date) {
-  return format(date, "MMM D | YYYY")
+  return format(date, "MMM d | yyyy")
 }
 
 interface ICalTitleProps {

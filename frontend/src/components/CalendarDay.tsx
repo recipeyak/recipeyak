@@ -36,7 +36,7 @@ import { useCurrentDay } from "@/hooks"
 import { isSameDay } from "date-fns"
 
 function DayOfWeek({ date }: { date: Date }) {
-  const dayOfWeek = format(date, "ddd")
+  const dayOfWeek = format(date, "E")
   return (
     <div className="d-none d-medium-block">
       <span>{dayOfWeek}</span>
@@ -46,7 +46,7 @@ function DayOfWeek({ date }: { date: Date }) {
 }
 
 const Title = ({ date }: { date: Date }) => {
-  const dateFmtText = isFirstDayOfMonth(date) ? "MMM D" : "D"
+  const dateFmtText = isFirstDayOfMonth(date) ? "MMM d" : "d"
   return (
     <div className="d-flex">
       <DayOfWeek date={date} />

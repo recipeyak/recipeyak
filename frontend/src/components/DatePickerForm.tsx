@@ -134,7 +134,7 @@ class DatePickerForm extends React.Component<
               value={this.state.count}
             />
             <span className="align-self-center">
-              on {format(this.state.date, "MMM D, YYYY")}
+              on {format(this.state.date, "MMM dd, yyyy")}
             </span>
           </div>
           <ButtonPrimary

@@ -53,7 +53,7 @@ class Month extends React.Component<IMonthProps> {
             </ButtonPlain>
           ) : null}
           <div className="text-center grid-row-1 grid-column-1 align-self-center">
-            {format(this.props.date, "MMM YYYY")}
+            {format(this.props.date, "MMM yyyy")}
           </div>
           {this.props.showRight ? (
             <ButtonPlain

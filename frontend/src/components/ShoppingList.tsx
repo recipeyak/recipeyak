@@ -60,7 +60,7 @@ function formatMonth(date: Date | null) {
   if (date == null) {
     return ""
   }
-  return format(date, "YYYY-MM-DD")
+  return format(date, "yyyy-MM-dd")
 }
 
 interface IShoppingListItemProps {
