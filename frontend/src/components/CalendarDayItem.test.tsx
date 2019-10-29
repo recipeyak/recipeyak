@@ -1,19 +1,8 @@
 import React from "react"
 import renderer from "react-test-renderer"
 import { CalendarItem } from "@/components/CalendarDayItem"
-import HTML5Backend from "react-dnd-html5-backend"
-import { DndProvider } from "react-dnd"
-import { MemoryRouter } from "react-router"
-import { ThemeProvider, theme } from "@/theme"
 import { isPast } from "date-fns"
-
-const Provider: React.FC = ({ children }) => (
-  <ThemeProvider theme={theme}>
-    <MemoryRouter>
-      <DndProvider backend={HTML5Backend}>{children}</DndProvider>
-    </MemoryRouter>
-  </ThemeProvider>
-)
+import { TestProvider } from "@/testUtils"
 
 describe("<CalendarDayItem> Snap", () => {
   test("smoke test render with styled components", () => {
@@ -30,7 +19,7 @@ describe("<CalendarDayItem> Snap", () => {
 
     const tree = renderer
       .create(
-        <Provider>
+        <TestProvider>
           <CalendarItem
             count={1}
             id={scheduledRecipe.id}
@@ -41,7 +30,7 @@ describe("<CalendarDayItem> Snap", () => {
             refetchShoppingList={jest.fn()}
             date={pastDate}
           />
-        </Provider>
+        </TestProvider>
       )
       .toJSON()
 

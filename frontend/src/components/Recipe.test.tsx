@@ -1,46 +1,177 @@
 import React from "react"
-import { MemoryRouter } from "react-router"
-import { Provider } from "react-redux"
-
+import { match as Match } from "react-router"
+import { Location } from "history"
+import renderer, { act } from "react-test-renderer"
 import { mount } from "enzyme"
+import { history, Store, createEmptyStore } from "@/store/store"
+import { Recipe, useRecipe } from "@/components/Recipe"
+import {
+  IRecipe,
+  fetchRecipe,
+  IRecipesState,
+  initialState
+} from "@/store/reducers/recipes"
+import {
+  baseRecipe,
+  baseIngredient,
+  baseStep
+} from "@/store/reducers/recipes.test"
+import { TestProvider } from "@/testUtils"
+import { RecipeTimeline } from "@/components/RecipeTimeline"
+import { Success } from "@/webdata"
 
-import { emptyStore as store } from "@/store/store"
+// based on https://dev.to/itsjoekent/write-functional-tests-for-react-hooks-4b07
+// with the added benefit of being typed
+function testHook<T>(func: () => T, store: Store): T {
+  interface ISpanProps<P> {
+    readonly output: P
+  }
+  function Span<S>(_props: ISpanProps<S>) {
+    return <></>
+  }
+  function TestComponent() {
+    const state = func()
+    return <Span output={state} />
+  }
+  const root = mount(
+    <TestProvider store={store}>
+      <TestComponent />
+    </TestProvider>
+  )
 
-import Recipe from "@/components/Recipe"
+  return root.find<ISpanProps<T>>(Span).props().output
+}
 
 describe("<Recipe/>", () => {
-  it("renders without failure", () => {
-    const props = {
-      ingredients: [],
-      steps: [],
-      name: "",
-      author: "",
-      source: "",
-      time: "",
-      // a bodge to mock out `this.props.match.params.id`
-      match: {
-        params: {
-          id: "1"
-        },
-        isExact: false,
-        path: "",
-        url: "",
-        id: ""
-      },
-      fetchRecipe: () => true
+  const match: Match<{ id: string }> = {
+    path: "/recipes/:id(\\d+)(.*)",
+    url: "/recipes/98-apple-crisp",
+    isExact: true,
+    params: {
+      id: "98"
     }
+  }
+  const location: Location = {
+    pathname: "/recipes/98-apple-crisp",
+    search: "?timeline=1",
+    hash: "",
+    key: "u3gfv7",
+    state: null
+  }
+
+  it("renders without failure", () => {
     mount(
-      <Provider store={store}>
-        <MemoryRouter>
-          <Recipe
-            {...props}
-            // tslint:disable:no-any no-unsafe-any
-            location={{} as any}
-            history={{} as any}
-            // tslint:enable:no-any no-unsafe-any
-          />
-        </MemoryRouter>
-      </Provider>
+      <TestProvider>
+        <Recipe history={history} match={match} location={location} />
+      </TestProvider>
     )
+  })
+
+  describe("snaps", () => {
+    test("recipe", () => {
+      const recipe: IRecipe = {
+        ...baseRecipe,
+        id: 98,
+        name: "Apple Crisp",
+        ingredients: [baseIngredient],
+        steps: [baseStep]
+      }
+      const store = createEmptyStore()
+
+      const actions = [
+        fetchRecipe.failure({ id: recipe.id, error404: true }),
+        fetchRecipe.success(recipe)
+      ]
+
+      actions.forEach(action => {
+        act(() => {
+          store.dispatch(action)
+        })
+
+        const tree = renderer
+          .create(
+            <TestProvider store={store}>
+              <Recipe
+                history={history}
+                match={match}
+                location={{ ...location, search: "?timeline=1" }}
+              />
+            </TestProvider>
+          )
+          .toJSON()
+        expect(tree).toMatchSnapshot()
+      })
+    })
+
+    test("recipe all states", () => {
+      const store = createEmptyStore()
+      const recipe: IRecipe = {
+        ...baseRecipe,
+        id: 98,
+        name: "Apple Crisp",
+        ingredients: [baseIngredient],
+        steps: [baseStep]
+      }
+
+      store.dispatch(fetchRecipe.success(recipe))
+
+      const root = renderer.create(
+        <TestProvider store={store}>
+          <Recipe
+            history={history}
+            match={match}
+            location={{ ...location, search: "?timeline=1" }}
+          />
+        </TestProvider>
+      )
+      expect(root.toJSON()).toMatchSnapshot()
+
+      root.update(
+        <TestProvider store={store}>
+          <Recipe
+            history={history}
+            match={match}
+            location={{ ...location, search: "" }}
+          />
+        </TestProvider>
+      )
+      expect(root.toJSON()).toMatchSnapshot()
+    })
+
+    test("useRecipe hook", () => {
+      const recipe: IRecipe = {
+        ...baseRecipe,
+        id: 98,
+        name: "Apple Crisp",
+        ingredients: [baseIngredient],
+        steps: [baseStep]
+      }
+
+      const recipes: IRecipesState = {
+        ...initialState,
+        byId: {
+          98: Success(recipe)
+        }
+      }
+      const emptyState = createEmptyStore().getState()
+      const store = createEmptyStore({
+        ...emptyState,
+        recipes
+      })
+
+      const res = testHook(() => useRecipe(recipe.id), store)
+      expect(res).toMatchSnapshot("Refetching")
+    })
+
+    test("timeline", () => {
+      const timelineTree = renderer
+        .create(
+          <TestProvider>
+            <RecipeTimeline createdAt="1776-1-1" recipeId={10} />
+          </TestProvider>
+        )
+        .toJSON()
+      expect(timelineTree).toMatchSnapshot()
+    })
   })
 })

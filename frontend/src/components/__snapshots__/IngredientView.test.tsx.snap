@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<IngredientView/> snap with capitalization 1`] = `
+<p
+  className="listitem-text justify-space-between"
+>
+  3 Tablespoons
+   
+  salt
+  
+   
+  
+</p>
+`;
+
+exports[`<IngredientView/> snap with capitalization 2`] = `
+<p
+  className="listitem-text justify-space-between"
+>
+  1 teaspoon
+   
+  salt
+  
+   
+  
+</p>
+`;
+
+exports[`<IngredientView/> snap with capitalization 3`] = `
+<p
+  className="listitem-text justify-space-between"
+>
+  1 Tablespoon + 2 teaspoons
+   
+  salt
+  
+   
+  
+</p>
+`;
+
+exports[`<IngredientView/> snap with capitalization 4`] = `
+<p
+  className="listitem-text justify-space-between"
+>
+  1 teaspoon
+   
+  salt
+  
+   
+  
+</p>
+`;

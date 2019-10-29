@@ -56,7 +56,7 @@ type RemoteData<E, T> =
   | IRefetching<T>
 
 // TODO(chdsbd): Make the default error type void
-export type WebData<T = void, E = HttpErrorKind> = RemoteData<E, T>
+export type WebData<T = void, E = HttpErrorKind | undefined> = RemoteData<E, T>
 
 export const enum HttpErrorKind {
   error404,
@@ -83,7 +83,7 @@ export const isSuccessOrRefetching = <T, E>(
   x: WebData<T, E>
 ): x is ISuccess<T> | IRefetching<T> => isSuccess(x) || isRefetching(x)
 
-export const unWrap = <T>(d: ISuccess<T> | IRefetching<T>): T => d.data
+export const isSuccessLike = isSuccessOrRefetching
 
 /** map over WebData with @param func if data is a type structurally similar to Success */
 export function mapSuccessLike<T, R, E>(
@@ -91,7 +91,7 @@ export function mapSuccessLike<T, R, E>(
   func: (data: T) => R
 ): WebData<R, E> {
   if (isSuccessOrRefetching(d)) {
-    return { ...d, data: func(unWrap(d)) }
+    return { ...d, data: func(d.data) }
   }
   return d
 }
@@ -101,7 +101,7 @@ export function toLoading<T, E>(
   state: WebData<T, E>
 ): IRefetching<T> | ILoading {
   if (isSuccess(state)) {
-    return Refetching(unWrap(state))
+    return Refetching(state.data)
   }
   return Loading()
 }

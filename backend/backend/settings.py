@@ -71,7 +71,6 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.google",
     "allauth.socialaccount.providers.gitlab",
     "softdelete",
-    "drf_yasg",
     "channels",
 ]
 
@@ -177,8 +176,6 @@ API_DELAY_MS = 200
 AUTH_USER_MODEL = "core.MyUser"
 
 ROOT_URLCONF = "backend.urls"
-
-API_BASE_URL = "api/v1"
 
 TEMPLATES = [
     {

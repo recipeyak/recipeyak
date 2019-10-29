@@ -168,6 +168,20 @@ jobs:
           command: |
             fd Dockerfile | xargs hadolint
 
+  shellcheck:
+    docker:
+      - image: recipeyak/base:v3
+    steps:
+      - checkout
+      - run:
+          name: install dependencies
+          command: |
+            apt-get install -y git shellcheck
+      - run:
+          name: run shellcheck
+          command: |
+            ./s/shellcheck
+
   # https://circleci.com/docs/2.0/building-docker-images/
   build_api_container:
     docker:
@@ -282,6 +296,7 @@ workflows:
       - frontend_lint
       - frontend_stylelint
       - docker_lint
+      - shellcheck
       - build_api_container:
           context: DockerHub
           requires:

@@ -154,11 +154,7 @@ function Base() {
                       path="/recipes/add"
                       component={AddRecipe}
                     />
-                    <PrivateRoute
-                      exact
-                      path="/recipes/"
-                      render={() => <Recipes autoFocusSearch />}
-                    />
+                    <PrivateRoute exact path="/recipes/" component={Recipes} />
                     <PrivateRoute
                       exact
                       path="/recipes/:id(\d+)(.*)"

@@ -10,84 +10,9 @@
   }
 }
 
-.new-container {
-  display: grid;
-  grid-gap: 0.2rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-}
-
-@media (min-width: $medium) {
-  .new-container {
-    grid-template-columns: repeat(3, auto);
-  }
-}
-
-.calendar-week {
-  @media (max-width: $medium) {
-    height: 100%;
-    flex-direction: column;
-    margin-top: 0.5rem;
-    // skip prev and future week, keeping the current week
-    &:first-child,
-    &:last-child {
-      display: none;
-    }
-  }
-  height: (1/3) * 100%;
-  &:not(:last-child) {
-    margin-bottom: 0.25rem;
-  }
-}
-
-.calendar-week-days {
-  @media (max-width: $medium) {
-    display: none;
-  }
-  display: flex;
-  flex-shrink: 0;
-  & > b {
-    width: (1/7) * 100%;
-    &:not(:last-child) {
-      margin-right: 0.25rem;
-    }
-  }
-}
-
 .d-medium-block {
   @media (max-width: $medium) {
     display: block !important;
-  }
-}
-
-.calendar-day {
-  background-color: whitesmoke;
-  transition: background-color 0.2s;
-
-  &:not(:last-child) {
-    margin-right: 0.25rem;
-    @media (max-width: $medium) {
-      margin-right: 0;
-      margin-bottom: 0.25rem;
-    }
-  }
-  width: (1/7) * 100%;
-  @media (max-width: $medium) {
-    width: 100%;
-    min-height: 75px;
-  }
-}
-
-.current-day {
-  border-bottom: 2px solid $primary-color;
-}
-
-.selected-day {
-  background-color: $primary-color-shadow;
-  color: white;
-  a:hover,
-  a {
-    color: white;
   }
 }
 

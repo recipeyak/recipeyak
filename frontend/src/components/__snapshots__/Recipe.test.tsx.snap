@@ -1,0 +1,937 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Recipe/> snaps recipe 1`] = `
+<section>
+  <h1
+    className="fs-10rem bold text-center"
+  >
+    404
+  </h1>
+  <p
+    className="fs-3rem text-center"
+  >
+    Nothing here 🌵
+  </p>
+</section>
+`;
+
+exports[`<Recipe/> snaps recipe 2`] = `
+<section
+  className="d-flex justify-content-center"
+>
+  <div
+    className="d-flex justify-content-center "
+  >
+    <div
+      className="ball-grid-pulse grid-entire-row justify-self-center"
+    >
+      <div />
+      <div />
+      <div />
+      <div />
+      <div />
+      <div />
+      <div />
+      <div />
+      <div />
+    </div>
+  </div>
+</section>
+`;
+
+exports[`<Recipe/> snaps recipe all states 1`] = `
+.c0 {
+  position: relative;
+}
+
+.c2 {
+  display: block;
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  font-weight: 400;
+  color: #212529;
+  white-space: nowrap;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  background-color: transparent;
+  border: none;
+}
+
+.c2:hover {
+  color: #16181b;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
+
+.c2:active {
+  background-color: rgba(255,114,71,0.8);
+}
+
+.c3 {
+  display: block;
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  font-weight: 400;
+  color: #212529;
+  white-space: nowrap;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  background-color: transparent;
+  border: none;
+}
+
+.c3:hover {
+  color: #16181b;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
+
+.c3:active {
+  background-color: rgba(255,114,71,0.8);
+}
+
+.c1 {
+  position: absolute;
+  left: auto;
+  right: 0;
+  z-index: 1000;
+  padding: 0.5rem 0;
+  margin: 0.125rem 0 0;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 0.25rem;
+  display: none;
+}
+
+.c9 {
+  font-weight: 500;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid lightgray;
+}
+
+.c6 {
+  max-width: 600px;
+}
+
+.c7 {
+  list-style: none;
+  margin-left: 0.5rem;
+  padding-left: 0.5rem;
+  border-left: 3px solid;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.c8 {
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.c4 {
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+.c4:hover {
+  border-bottom: 2px solid;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
+
+.c5 {
+  font-weight: bold;
+  margin-right: 0.5rem;
+  border-bottom: 2px solid;
+}
+
+.c5:hover {
+  border-bottom: 2px solid;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
+
+<div
+  className="d-grid grid-gap-2"
+>
+  <div>
+    <div
+      className="grid-entire-row d-flex justify-space-between p-rel"
+    >
+      <div
+        className="d-flex align-items-center"
+      >
+        <h1
+          className="title fs-2rem mb-0 mb-1 cursor-pointer"
+          onClick={[Function]}
+          title="click to edit"
+        >
+          Apple Crisp
+        </h1>
+      </div>
+      <div
+        className="c0"
+      >
+        <button
+          className="my-button is-small"
+          onClick={[Function]}
+        >
+          Options 
+          <svg
+            className="fill-text-color"
+            style={
+              Object {
+                "width": "1.5em",
+              }
+            }
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <g>
+              <path
+                d="M14.1711599,9.3535 L9.99925636,13.529 L5.82735283,9.3535 C5.51262415,9.0385 5.73543207,8.5 6.18054835,8.5 L13.8179644,8.5 C14.2630807,8.5 14.4858886,9.0385 14.1711599,9.3535"
+                fill="inherit"
+              />
+            </g>
+          </svg>
+        </button>
+        <div
+          className="c1"
+        >
+          <a
+            className="c2"
+            href="/schedule/recipes?recipeId=98"
+            onClick={[Function]}
+          >
+            Schedule
+          </a>
+          <button
+            className="c3"
+            onClick={[Function]}
+          >
+            Copy Ingredients to Clipboard
+          </button>
+          <a
+            className="c2"
+            href="/recipes/98.yaml"
+            onClick={[Function]}
+          >
+            Export as YAML
+          </a>
+          <a
+            className="c2"
+            href="/recipes/98.json"
+            onClick={[Function]}
+          >
+            Export as JSON
+          </a>
+        </div>
+      </div>
+    </div>
+    <div
+      className="grid-entire-row"
+    >
+      <div
+        className="break-word"
+      >
+        <span>
+          By 
+          <b
+            className="cursor-pointer"
+            onClick={[Function]}
+            title="click  to edit"
+          >
+            bar
+          </b>
+           
+          from
+           
+          <b
+            className="cursor-pointer"
+            onClick={[Function]}
+            title="click  to edit"
+          >
+            <a
+              href="foo.com"
+            >
+              foo.com
+            </a>
+          </b>
+           
+          creating 
+          <b
+            className="cursor-pointer"
+            onClick={[Function]}
+            title="click  to edit"
+          >
+            12 servings
+          </b>
+           
+          in 
+          <b
+            className="cursor-pointer"
+            onClick={[Function]}
+            title="click  to edit"
+          >
+            1776
+          </b>
+           
+        </span>
+        <span
+          className="fw-500 p-rel"
+        >
+          <span
+            className="cursor-pointer"
+            onClick={[Function]}
+            title="click to edit"
+          >
+            via
+          </span>
+           
+          <a
+            href="/t/1-you"
+            onClick={[Function]}
+          >
+            you
+          </a>
+          <div
+            className=" d-none"
+          >
+            <div
+              className="p-abs"
+            >
+              <div
+                className="dropdown-content"
+              >
+                <div
+                  className="text-center"
+                >
+                  Teams
+                </div>
+                <hr
+                  className="dropdown-divider mt-1 mb-1"
+                />
+                <div
+                  className="select is-normal is-multiple max-height-25vh overflow-y-scroll w-100"
+                >
+                  <select
+                    className="my-select"
+                    multiple={true}
+                    onChange={[Function]}
+                    value={Array []}
+                  >
+                    <option
+                      className="text-small fw-500"
+                      value="null-user"
+                    >
+                      personal
+                    </option>
+                  </select>
+                </div>
+                <hr
+                  className="dropdown-divider"
+                />
+                <div
+                  className="d-flex justify-space-between ml-2 mr-2"
+                >
+                  <button
+                    className="my-button undefined is-link is-small"
+                    onClick={[Function]}
+                  >
+                    cancel
+                  </button>
+                  <div
+                    className="d-flex justify-space-between"
+                  >
+                    <button
+                      className="my-button mr-1 is-secondary is-small"
+                      disabled={true}
+                      onClick={[Function]}
+                    >
+                      move
+                    </button>
+                    <button
+                      className="my-button undefined is-primary is-small"
+                      disabled={true}
+                      onClick={[Function]}
+                    >
+                      copy
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    className=""
+  >
+    <a
+      className="c4"
+      href="/recipes/98-apple-crisp"
+      isActive={false}
+      onClick={[Function]}
+    >
+      Detail
+    </a>
+    <a
+      className="c5"
+      href="/recipes/98-apple-crisp?timeline=1"
+      isActive={true}
+      onClick={[Function]}
+    >
+      Timeline
+    </a>
+  </div>
+  <div
+    className="c6"
+  >
+    <h2
+      className="bold fs-6 mb-0"
+    >
+      Timeline
+    </h2>
+    <ol
+      className="c7"
+    >
+      <div
+        className="c8"
+      >
+        Loading timeline..
+      </div>
+      <li
+        className="c9"
+        type="created"
+      >
+        🎉 Recipe created on 
+        <time
+          dateTime="1776-1-1"
+          title="1776-1-1"
+        >
+          Jan 1, 1776
+        </time>
+      </li>
+    </ol>
+  </div>
+</div>
+`;
+
+exports[`<Recipe/> snaps recipe all states 2`] = `
+.c0 {
+  position: relative;
+}
+
+.c2 {
+  display: block;
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  font-weight: 400;
+  color: #212529;
+  white-space: nowrap;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  background-color: transparent;
+  border: none;
+}
+
+.c2:hover {
+  color: #16181b;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
+
+.c2:active {
+  background-color: rgba(255,114,71,0.8);
+}
+
+.c3 {
+  display: block;
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  font-weight: 400;
+  color: #212529;
+  white-space: nowrap;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  background-color: transparent;
+  border: none;
+}
+
+.c3:hover {
+  color: #16181b;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
+
+.c3:active {
+  background-color: rgba(255,114,71,0.8);
+}
+
+.c1 {
+  position: absolute;
+  left: auto;
+  right: 0;
+  z-index: 1000;
+  padding: 0.5rem 0;
+  margin: 0.125rem 0 0;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 0.25rem;
+  display: none;
+}
+
+.c5 {
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+.c5:hover {
+  border-bottom: 2px solid;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
+
+.c4 {
+  font-weight: bold;
+  margin-right: 0.5rem;
+  border-bottom: 2px solid;
+}
+
+.c4:hover {
+  border-bottom: 2px solid;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
+
+<div
+  className="d-grid grid-gap-2"
+>
+  <div>
+    <div
+      className="grid-entire-row d-flex justify-space-between p-rel"
+    >
+      <div
+        className="d-flex align-items-center"
+      >
+        <h1
+          className="title fs-2rem mb-0 mb-1 cursor-pointer"
+          onClick={[Function]}
+          title="click to edit"
+        >
+          Apple Crisp
+        </h1>
+      </div>
+      <div
+        className="c0"
+      >
+        <button
+          className="my-button is-small"
+          onClick={[Function]}
+        >
+          Options 
+          <svg
+            className="fill-text-color"
+            style={
+              Object {
+                "width": "1.5em",
+              }
+            }
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <g>
+              <path
+                d="M14.1711599,9.3535 L9.99925636,13.529 L5.82735283,9.3535 C5.51262415,9.0385 5.73543207,8.5 6.18054835,8.5 L13.8179644,8.5 C14.2630807,8.5 14.4858886,9.0385 14.1711599,9.3535"
+                fill="inherit"
+              />
+            </g>
+          </svg>
+        </button>
+        <div
+          className="c1"
+        >
+          <a
+            className="c2"
+            href="/schedule/recipes?recipeId=98"
+            onClick={[Function]}
+          >
+            Schedule
+          </a>
+          <button
+            className="c3"
+            onClick={[Function]}
+          >
+            Copy Ingredients to Clipboard
+          </button>
+          <a
+            className="c2"
+            href="/recipes/98.yaml"
+            onClick={[Function]}
+          >
+            Export as YAML
+          </a>
+          <a
+            className="c2"
+            href="/recipes/98.json"
+            onClick={[Function]}
+          >
+            Export as JSON
+          </a>
+        </div>
+      </div>
+    </div>
+    <div
+      className="grid-entire-row"
+    >
+      <div
+        className="break-word"
+      >
+        <span>
+          By 
+          <b
+            className="cursor-pointer"
+            onClick={[Function]}
+            title="click  to edit"
+          >
+            bar
+          </b>
+           
+          from
+           
+          <b
+            className="cursor-pointer"
+            onClick={[Function]}
+            title="click  to edit"
+          >
+            <a
+              href="foo.com"
+            >
+              foo.com
+            </a>
+          </b>
+           
+          creating 
+          <b
+            className="cursor-pointer"
+            onClick={[Function]}
+            title="click  to edit"
+          >
+            12 servings
+          </b>
+           
+          in 
+          <b
+            className="cursor-pointer"
+            onClick={[Function]}
+            title="click  to edit"
+          >
+            1776
+          </b>
+           
+        </span>
+        <span
+          className="fw-500 p-rel"
+        >
+          <span
+            className="cursor-pointer"
+            onClick={[Function]}
+            title="click to edit"
+          >
+            via
+          </span>
+           
+          <a
+            href="/t/1-you"
+            onClick={[Function]}
+          >
+            you
+          </a>
+          <div
+            className=" d-none"
+          >
+            <div
+              className="p-abs"
+            >
+              <div
+                className="dropdown-content"
+              >
+                <div
+                  className="text-center"
+                >
+                  Teams
+                </div>
+                <hr
+                  className="dropdown-divider mt-1 mb-1"
+                />
+                <div
+                  className="select is-normal is-multiple max-height-25vh overflow-y-scroll w-100"
+                >
+                  <select
+                    className="my-select"
+                    multiple={true}
+                    onChange={[Function]}
+                    value={Array []}
+                  >
+                    <option
+                      className="text-small fw-500"
+                      value="null-user"
+                    >
+                      personal
+                    </option>
+                  </select>
+                </div>
+                <hr
+                  className="dropdown-divider"
+                />
+                <div
+                  className="d-flex justify-space-between ml-2 mr-2"
+                >
+                  <button
+                    className="my-button undefined is-link is-small"
+                    onClick={[Function]}
+                  >
+                    cancel
+                  </button>
+                  <div
+                    className="d-flex justify-space-between"
+                  >
+                    <button
+                      className="my-button mr-1 is-secondary is-small"
+                      disabled={true}
+                      onClick={[Function]}
+                    >
+                      move
+                    </button>
+                    <button
+                      className="my-button undefined is-primary is-small"
+                      disabled={true}
+                      onClick={[Function]}
+                    >
+                      copy
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    className=""
+  >
+    <a
+      className="c4"
+      href="/recipes/98-apple-crisp"
+      isActive={true}
+      onClick={[Function]}
+    >
+      Detail
+    </a>
+    <a
+      className="c5"
+      href="/recipes/98-apple-crisp?timeline=1"
+      isActive={false}
+      onClick={[Function]}
+    >
+      Timeline
+    </a>
+  </div>
+  <section
+    className="ingredients-preparation-grid"
+  >
+    <div>
+      <h2
+        className="bold fs-6 mb-0"
+      >
+        Ingredients
+      </h2>
+      <ul>
+        <li>
+          <section
+            className="cursor-pointer"
+            onClick={[Function]}
+            title="click to edit"
+          >
+            <p
+              className="listitem-text justify-space-between"
+            >
+              1 cup
+               
+              foo
+              , chopped
+               
+              
+            </p>
+          </section>
+        </li>
+      </ul>
+      <a
+        className="text-muted"
+        onClick={[Function]}
+      >
+        add
+      </a>
+    </div>
+    <div>
+      <h2
+        className="bold fs-6 mb-0"
+      >
+        Preparation
+      </h2>
+      <div
+        className="mb-2"
+        style={
+          Object {
+            "backgroundColor": "white",
+            "opacity": 1,
+          }
+        }
+      >
+        <label
+          className="better-label"
+          style={
+            Object {
+              "cursor": "move",
+            }
+          }
+        >
+          Step 
+          1
+        </label>
+        <div>
+          <section
+            className="cursor-pointer"
+            onClick={[Function]}
+            title="click to edit"
+          >
+            <p>
+              foo
+            </p>
+          </section>
+        </div>
+      </div>
+      <a
+        className="text-muted"
+        onClick={[Function]}
+      >
+        add
+      </a>
+    </div>
+  </section>
+</div>
+`;
+
+exports[`<Recipe/> snaps timeline 1`] = `
+.c3 {
+  font-weight: 500;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid lightgray;
+}
+
+.c0 {
+  max-width: 600px;
+}
+
+.c1 {
+  list-style: none;
+  margin-left: 0.5rem;
+  padding-left: 0.5rem;
+  border-left: 3px solid;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.c2 {
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+<div
+  className="c0"
+>
+  <h2
+    className="bold fs-6 mb-0"
+  >
+    Timeline
+  </h2>
+  <ol
+    className="c1"
+  >
+    <div
+      className="c2"
+    >
+      Loading timeline..
+    </div>
+    <li
+      className="c3"
+      type="created"
+    >
+      🎉 Recipe created on 
+      <time
+        dateTime="1776-1-1"
+        title="1776-1-1"
+      >
+        Jan 1, 1776
+      </time>
+    </li>
+  </ol>
+</div>
+`;
+
+exports[`<Recipe/> snaps useRecipe hook: Refetching 1`] = `
+Object {
+  "data": Object {
+    "author": "bar",
+    "created": "1776-1-1",
+    "edits": Array [],
+    "id": 98,
+    "ingredients": Array [
+      Object {
+        "description": "chopped",
+        "id": 1,
+        "name": "foo",
+        "optional": false,
+        "position": 12.3,
+        "quantity": "1 cup",
+      },
+    ],
+    "last_scheduled": "1779",
+    "modified": "1778",
+    "name": "Apple Crisp",
+    "owner": Object {
+      "id": 1,
+      "type": "user",
+    },
+    "servings": "12 servings",
+    "source": "foo.com",
+    "steps": Array [
+      Object {
+        "id": 1,
+        "position": 10,
+        "text": "foo",
+      },
+    ],
+    "team": 1,
+    "time": "1776",
+  },
+  "kind": 3,
+}
+`;

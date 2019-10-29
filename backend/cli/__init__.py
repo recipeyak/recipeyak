@@ -106,6 +106,8 @@ def test(api: bool, web: bool, watch: bool, test_args: List[str]) -> None:
 
     os.environ["TESTING"] = "1"
 
+    os.environ["TZ"] = "UTC"
+
     jest = ["node", "frontend/scripts/test.js", "--env=jsdom", *test_args]
     if os.getenv("CI"):
         jest += ["--coverage", "--runInBand"]

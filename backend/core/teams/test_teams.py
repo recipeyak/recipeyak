@@ -733,82 +733,6 @@ def test_decline_team_invite(client, team, user, user2):
     assert res.status_code == status.HTTP_403_FORBIDDEN, "Non member cannot view team"
 
 
-@pytest.mark.parametrize(
-    "choice, expected_status",
-    [
-        (Membership.ADMIN, status.HTTP_201_CREATED),
-        (Membership.CONTRIBUTOR, status.HTTP_201_CREATED),
-        (Membership.READ_ONLY, status.HTTP_403_FORBIDDEN),
-    ],
-)
-def test_create_team_recipe(choice, expected_status, client, team, user, user2):
-    """
-    Team member that is not a READ_ONLY user should be able to 'create'
-    recipe owned by team.
-    """
-
-    team.force_join_admin(user2)
-
-    client.force_authenticate(user)
-    url = reverse("team-recipes-list", kwargs={"team_pk": team.id})
-    team.force_join(user, level=choice)
-    recipe = {
-        "name": "Cool new name",
-        "ingredients": [
-            {"quantity": "1", "unit": "pound", "name": "fish", "description": ""}
-        ],
-        "steps": [{"text": "place fish in salt"}],
-    }
-    res = client.post(url, recipe)
-    assert res.status_code == expected_status
-
-
-@pytest.mark.parametrize(
-    "choice, expected_status",
-    [
-        (Membership.ADMIN, status.HTTP_200_OK),
-        (Membership.CONTRIBUTOR, status.HTTP_200_OK),
-        (Membership.READ_ONLY, status.HTTP_403_FORBIDDEN),
-    ],
-)
-def test_update_team_recipe(choice, expected_status, client, team, user, user2):
-    """
-    Team member that is not a READ_ONLY user should be able to 'update'
-    recipe owned by team.
-    """
-    team.force_join_admin(user2)
-
-    client.force_authenticate(user)
-
-    recipe = Recipe.objects.create(name="Example Recipe Name", owner=team)
-    url = reverse("team-recipes-detail", kwargs={"team_pk": team.id, "pk": recipe.id})
-    team.force_join(user, level=choice)
-    assert client.patch(url, {"name": "Cool new name"}).status_code == expected_status
-
-
-@pytest.mark.parametrize(
-    "choice, expected_status",
-    [
-        (Membership.ADMIN, status.HTTP_204_NO_CONTENT),
-        (Membership.CONTRIBUTOR, status.HTTP_204_NO_CONTENT),
-        (Membership.READ_ONLY, status.HTTP_403_FORBIDDEN),
-    ],
-)
-def test_destroy_team_recipe(choice, expected_status, client, team, user, user2):
-    """
-    Team member that is not a READ_ONLY user should be able to 'destroy'
-    recipe owned by team.
-    """
-    team.force_join_admin(user2)
-
-    client.force_authenticate(user)
-
-    recipe = Recipe.objects.create(name="Example Recipe Name", owner=team)
-    url = reverse("team-recipes-detail", kwargs={"team_pk": team.id, "pk": recipe.id})
-    team.force_join(user, level=choice)
-    assert client.delete(url).status_code == expected_status
-
-
 def test_list_team_recipe(client, team, recipe, user, user2):
     """
     Team member should be able to list team recipes.
@@ -818,41 +742,7 @@ def test_list_team_recipe(client, team, recipe, user, user2):
 
     team.recipes.add(recipe)
 
-    url = reverse("team-recipes-list", kwargs={"team_pk": team.id})
-
-    assert not team.is_member(user2)
-    assert not team.is_public
-
-    for u, s in [
-        (None, status.HTTP_403_FORBIDDEN),
-        (user, status.HTTP_200_OK),
-        (user2, status.HTTP_403_FORBIDDEN),
-    ]:
-        client.force_authenticate(u)
-        assert client.get(url).status_code == s
-
-    team.is_public = True
-    team.save()
-    assert team.is_public
-
-    for u, s in [
-        (None, status.HTTP_403_FORBIDDEN),
-        (user, status.HTTP_200_OK),
-        (user2, status.HTTP_200_OK),
-    ]:
-        client.force_authenticate(u)
-        assert client.get(url).status_code == s
-
-
-def test_retrieve_team_recipe(client, team, recipe, user, user2):
-    """
-    Team member should be able to retrieve team recipe.
-    For public teams, recipe should be viewable to authenticated users.
-    """
-
-    team.recipes.add(recipe)
-
-    url = reverse("team-recipes-detail", kwargs={"team_pk": team.id, "pk": recipe.id})
+    url = f"/api/v1/t/{team.id}/recipes/"
 
     assert not team.is_member(user2)
     assert not team.is_public
@@ -879,7 +769,7 @@ def test_retrieve_team_recipe(client, team, recipe, user, user2):
 
 
 def test_fetching_team_recipes(client, team_with_recipes, user, user2):
-    url = reverse("team-recipes-list", kwargs={"team_pk": team_with_recipes.id})
+    url = f"/api/v1/t/{team_with_recipes.id}/recipes/"
 
     client.force_authenticate(user2)
     res = client.get(url)
@@ -888,48 +778,16 @@ def test_fetching_team_recipes(client, team_with_recipes, user, user2):
     client.force_authenticate(user)
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK
-
-
-def test_adding_recipe_to_team(client, team, user, user2):
-    recipe_url = reverse("team-recipes-list", kwargs={"team_pk": team.id})
-    client.force_authenticate(user)
-    res = client.get(recipe_url)
-    assert res.status_code == status.HTTP_200_OK
-    assert not res.json()
-
-    recipe = {
-        "name": "Recipe name",
-        "ingredients": [
-            {"quantity": "1", "unit": "pound", "name": "salt", "description": ""}
-        ],
-        "steps": [{"text": "cover with pepper"}],
-    }
-
-    res = client.post(recipe_url, recipe)
-    assert res.status_code == status.HTTP_201_CREATED
-    recipe_id = res.json().get("id")
-
-    url = reverse("team-recipes-detail", kwargs={"team_pk": team.id, "pk": recipe_id})
-
-    res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK
-
-    client.force_authenticate(user2)
-
-    res = client.get(url)
-    assert res.status_code == status.HTTP_403_FORBIDDEN
 
 
 def test_removing_recipe_from_team(client, team_with_recipes, user):
     client.force_authenticate(user)
-    url = reverse("team-recipes-list", kwargs={"team_pk": team_with_recipes.id})
+    url = f"/api/v1/t/{team_with_recipes.id}/recipes/"
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK
     recipe_id = res.json()[0].get("id")
 
-    url = reverse(
-        "team-recipes-detail", kwargs={"team_pk": team_with_recipes.id, "pk": recipe_id}
-    )
+    url = f"/api/v1/recipes/{recipe_id}/"
 
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK

@@ -14,7 +14,6 @@ import {
   Success,
   Failure,
   isSuccessOrRefetching,
-  unWrap,
   mapSuccessLike,
   toLoading
 } from "@/webdata"
@@ -331,6 +330,7 @@ export interface IRecipeBasic
     | "team"
     | "ingredients"
     | "steps"
+    | "created"
   > {
   readonly ingredients: IIngredientBasic[]
   readonly steps: IStepBasic[]
@@ -367,7 +367,7 @@ const mapSuccessLikeById = <T extends IRecipe["id"][]>(
     a
       .map(id => getRecipeById(state, id))
       .filter(isSuccessOrRefetching)
-      .map(unWrap)
+      .map(d => d.data)
   )
 
 export function getTeamRecipes(
@@ -426,13 +426,14 @@ export interface IRecipe {
   readonly source: string
   readonly time: string
   readonly servings: string
-  readonly steps: IStep[]
-  readonly edits: unknown[]
+  readonly steps: ReadonlyArray<IStep>
+  readonly edits: ReadonlyArray<unknown>
   readonly modified: string
   readonly last_scheduled: string
   readonly team: ITeam["id"]
   readonly owner: IRecipeOwner
-  readonly ingredients: IIngredient[]
+  readonly ingredients: ReadonlyArray<IIngredient>
+  readonly created: string
 
   readonly editing?: boolean
   readonly deleting?: boolean
@@ -458,7 +459,7 @@ function mapRecipeSuccessById(
       ...state.byId,
       [id]: {
         ...recipe,
-        data: func(unWrap(recipe))
+        data: func(recipe.data)
       }
     }
   }

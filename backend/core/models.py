@@ -1,7 +1,7 @@
 import hashlib
 import itertools
 import logging
-from datetime import datetime
+from datetime import date, datetime
 from typing import List, Optional, Union, cast
 
 from allauth.socialaccount.models import EmailAddress
@@ -17,6 +17,7 @@ from django.core.validators import MinValueValidator
 from django.db import models, transaction
 from django.db.models import Q
 from softdelete.models import SoftDeleteObject
+from typing_extensions import Literal
 
 logger = logging.getLogger(__name__)
 
@@ -96,14 +97,14 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         # TODO: Add permissions
         return True
 
-    def has_invite(self, team) -> bool:
+    def has_invite(self, team: "Team") -> bool:
         """
         Return if user has invite to team.
         """
         return self.membership_set.filter(team=team).exclude(invite=None).exists()
 
-    def has_team(self):
-        return self.membership_set.filter(invite=None).count() > 0
+    def has_team(self) -> bool:
+        return self.membership_set.filter(invite=None).exists()
 
     # required for admin
     @property
@@ -181,7 +182,16 @@ class Recipe(CommonInfo, SoftDeleteObject):
             recipe_copy.save()
             return recipe_copy
 
-    def schedule(self, on, user=None, team=None, count=1):
+    # TODO(sbdchd): this needs an `@overload` for the user case an the team
+    # case since they can't occur at the same time.
+    def schedule(
+        self,
+        *,
+        on: date,
+        user: Optional[MyUser] = None,
+        team: Optional["Team"] = None,
+        count: int = 1,
+    ):
         return ScheduledRecipe.objects.create_scheduled(
             recipe=self, on=on, count=count, user=user, team=team
         )
@@ -297,7 +307,7 @@ class ScheduledRecipe(CommonInfo):
 
     class Meta:
         unique_together = (("recipe", "on", "user"), ("recipe", "on", "team"))
-        ordering = ["on"]
+        ordering = ["-on"]
         # This was previously defined in raw sql: https://github.com/recipeyak/recipeyak/blob/8952d2592f8a13edfcaa63566d99c83c7594a910/backend/core/migrations/0061_auto_20180630_0131.py#L10-L20
         constraints = [
             models.CheckConstraint(
@@ -369,7 +379,11 @@ class Team(CommonInfo):
     def __str__(self):
         return f"<Team • name: {self.name}, is_public: {self.is_public}>"
 
-    def force_join(self, user, level=None):
+    def force_join(
+        self,
+        user: MyUser,
+        level: Literal["admin", "contributor", "read"] = "contributor",
+    ) -> "Membership":
         with transaction.atomic():
             if level is None:
                 level = Membership.CONTRIBUTOR
@@ -385,7 +399,7 @@ class Team(CommonInfo):
                 user.membership_set.exclude(invite=None).get(team=self).invite.delete()
             return m
 
-    def force_join_admin(self, user):
+    def force_join_admin(self, user: MyUser) -> "Membership":
         return self.force_join(user, level=Membership.ADMIN)
 
     def invite_user(self, user, creator, level=None) -> Invite:

@@ -1,21 +1,22 @@
 import React from "react"
-import { MemoryRouter, Route } from "react-router"
-import { Provider } from "react-redux"
-
 import { mount } from "enzyme"
-
 import Login from "@/containers/Login"
-
-import { emptyStore as store } from "@/store/store"
+import { TestProvider } from "@/testUtils"
+import { Location } from "history"
 
 describe("<Login/>", () => {
   it("renders login", () => {
+    const location: Location = {
+      pathname: "/login",
+      search: "",
+      hash: "",
+      key: "",
+      state: null
+    }
     const element = mount(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={["/login"]} initialIndex={1}>
-          <Route path="/login" component={Login} />
-        </MemoryRouter>
-      </Provider>
+      <TestProvider>
+        <Login location={location} />
+      </TestProvider>
     )
     expect(element.text()).toContain("Email")
     expect(element.text()).toContain("Password")

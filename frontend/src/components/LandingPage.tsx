@@ -178,14 +178,14 @@ const LandingPage = () => (
     <FeaturesContainer>
       {features.map(({ text, imgURL }, i) => (
         // tslint:disable-next-line:no-unsafe-any
-        <Feature text={text} imageURL={imgURL} index={i} />
+        <Feature key={imgURL} text={text} imageURL={imgURL} index={i} />
       ))}
     </FeaturesContainer>
 
     <HowItWorksContainer>
       {howToSteps.map(({ text, imgURL }, i) => (
         // tslint:disable-next-line:no-unsafe-any
-        <HowTo content={text} imageURL={imgURL} index={i} />
+        <HowTo key={imgURL} content={text} imageURL={imgURL} index={i} />
       ))}
 
       <Link
