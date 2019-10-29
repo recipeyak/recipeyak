@@ -30,8 +30,6 @@ import {
 import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
 import { Select } from "@/components/Forms"
 import chunk from "lodash/chunk"
-import { classNames } from "@/classnames"
-import { isSafari } from "@/utils/general"
 import { styled } from "@/theme"
 
 function monthYearFromDate(date: Date) {
@@ -96,6 +94,12 @@ const CalendarWeekContainer = styled.div`
   }
 `
 
+const DaysContainer = styled.div`
+  margin-bottom: 0.5rem;
+  flex-grow: 1;
+  height: 100%;
+`
+
 const WEEK_DAYS = 7
 
 interface IDaysProps {
@@ -107,8 +111,7 @@ interface IDaysProps {
 
 function Days({ start, end, days, teamID }: IDaysProps) {
   return (
-    <section
-      className={classNames("mb-2", "flex-grow-1", { "h-100": isSafari() })}>
+    <DaysContainer>
       {chunk(eachDay(start, end), WEEK_DAYS).map(dates => {
         const firstDay = first(dates)
         if (firstDay == null) {
@@ -131,7 +134,7 @@ function Days({ start, end, days, teamID }: IDaysProps) {
           </CalendarWeekContainer>
         )
       })}
-    </section>
+    </DaysContainer>
   )
 }
 
@@ -186,28 +189,28 @@ function Nav({
   current
 }: INavProps) {
   return (
-    <>
-      <CalTitle day={day} />
-      <section className="d-flex flex-grow justify-space-between">
+    <section className="d-flex flex-grow justify-space-between align-items-center">
+      <div className="d-flex">
+        <CalTitle day={day} />
         <TeamSelect
           teams={teams}
           teamID={teamID}
           handleOwnerChange={handleOwnerChange}
           loading={loadingTeams}
         />
-        <section>
-          <ButtonPlain size="small" onClick={prev}>
-            {"←"}
-          </ButtonPlain>
-          <ButtonPlain size="small" className="ml-1 mr-1" onClick={current}>
-            Today
-          </ButtonPlain>
-          <ButtonPlain size="small" onClick={next}>
-            {"→"}
-          </ButtonPlain>
-        </section>
+      </div>
+      <section>
+        <ButtonPlain size="small" onClick={prev}>
+          {"←"}
+        </ButtonPlain>
+        <ButtonPlain size="small" className="ml-1 mr-1" onClick={current}>
+          Today
+        </ButtonPlain>
+        <ButtonPlain size="small" onClick={next}>
+          {"→"}
+        </ButtonPlain>
       </section>
-    </>
+    </section>
   )
 }
 
