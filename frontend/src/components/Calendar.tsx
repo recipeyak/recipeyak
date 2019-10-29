@@ -77,7 +77,7 @@ function Days({ start, end, days, teamID }: IDaysProps) {
   return (
     <section
       className={classNames("mb-2", "flex-grow-1", { "h-100": isSafari() })}>
-      {chunk(eachDayOfInterval({start, end}), WEEK_DAYS).map(dates => {
+      {chunk(eachDayOfInterval({ start, end }), WEEK_DAYS).map(dates => {
         const firstDay = first(dates)
         if (firstDay == null) {
           return <section className="d-flex calendar-week" />
