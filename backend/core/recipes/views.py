@@ -54,7 +54,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         """
         # get all recipes user has access to
         recipes = user_and_team_recipes(self.request.user).prefetch_related(
-            "owner", "step_set", "ingredient_set", "scheduledrecipe_set"
+            "owner", "step_set", "ingredient_set", "scheduledrecipe_set", "note_set"
         )
 
         # filtering for homepage
