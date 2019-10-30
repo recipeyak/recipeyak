@@ -1114,7 +1114,7 @@ export const moveScheduledRecipe = async (
   // - recipe from the past
   // - user is holding shift
   const holdingShift = heldKeys.size === 1 && heldKeys.has("Shift")
-  const copyRecipe = isPast(endOfDay(from.on)) || holdingShift
+  const copyRecipe = isPast(endOfDay(new Date(from.on))) || holdingShift
   if (copyRecipe) {
     return addingScheduledRecipeAsync(dispatch, getState, {
       recipeID: from.recipe.id,

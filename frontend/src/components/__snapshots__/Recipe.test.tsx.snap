@@ -415,7 +415,7 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
         🎉 Recipe created on 
         <time
           dateTime="1776-1-1"
-          title="1776-1-1"
+          title="Jan 1, 1776"
         >
           Jan 1, 1776
         </time>
@@ -887,7 +887,7 @@ exports[`<Recipe/> snaps timeline 1`] = `
       🎉 Recipe created on 
       <time
         dateTime="1776-1-1"
-        title="1776-1-1"
+        title="Jan 1, 1776"
       >
         Jan 1, 1776
       </time>

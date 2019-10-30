@@ -1,11 +1,11 @@
 import React from "react"
 
 import { connect } from "react-redux"
-import addMonths from "date-fns/add_months"
-import subMonths from "date-fns/sub_months"
+import addMonths from "date-fns/addMonths"
+import subMonths from "date-fns/subMonths"
 import format from "date-fns/format"
-import isPast from "date-fns/is_past"
-import endOfDay from "date-fns/end_of_day"
+import isPast from "date-fns/isPast"
+import endOfDay from "date-fns/endOfDay"
 
 import Month from "@/components/DateRangePicker/Month"
 
@@ -134,7 +134,7 @@ class DatePickerForm extends React.Component<
               value={this.state.count}
             />
             <span className="align-self-center">
-              on {format(this.state.date, "MMM D, YYYY")}
+              on {format(this.state.date, "MMM dd, yyyy")}
             </span>
           </div>
           <ButtonPrimary

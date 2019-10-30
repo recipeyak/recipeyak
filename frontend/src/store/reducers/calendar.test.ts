@@ -596,7 +596,7 @@ describe("calendar selectors", () => {
       }
     }
     expect(calRecipeOnSameDay.id).not.toEqual(from.id)
-    expect(isSameDay(calRecipeOnSameDay.on, toDate)).toEqual(true)
+    expect(isSameDay(new Date(calRecipeOnSameDay.on), toDate)).toEqual(true)
 
     const nextState = getModel(
       calendar(emptyState, fetchCalendarRecipes.success([calRecipeOnSameDay]))

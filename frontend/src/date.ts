@@ -1,16 +1,19 @@
 import format from "date-fns/format"
-import startOfMonth from "date-fns/start_of_month"
-import lastDayOfMonth from "date-fns/last_day_of_month"
-import eachDay from "date-fns/each_day"
-import isBefore from "date-fns/is_before"
-import startOfDay from "date-fns/start_of_day"
+import startOfMonth from "date-fns/startOfMonth"
+import lastDayOfMonth from "date-fns/lastDayOfMonth"
+import eachDayOfInterval from "date-fns/eachDayOfInterval"
+import isBefore from "date-fns/isBefore"
+import startOfDay from "date-fns/startOfDay"
 
 export function toDateString(date: Date | string) {
-  return format(date, "YYYY-MM-DD")
+  return format(new Date(date), "yyyy-MM-dd")
 }
 
 export function daysOfMonth(date: Date) {
-  return eachDay(startOfMonth(date), lastDayOfMonth(date))
+  return eachDayOfInterval({
+    start: startOfMonth(date),
+    end: lastDayOfMonth(date)
+  })
 }
 
 export function daysFromSunday(date: Date) {
