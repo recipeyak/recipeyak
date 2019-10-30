@@ -23,10 +23,11 @@ interface ITimeProps {
 }
 function Time({ dateTime }: ITimeProps) {
   const date = new Date(dateTime)
-  const dateFormatted = format(date, "MMM d, yyyy")
+  const dateFormat = format(date, "yyyy-M-d")
+  const prettyDate = format(date, "MMM d, yyyy")
   return (
-    <time title={dateFormatted} dateTime={date.toISOString()}>
-      {dateFormatted}
+    <time title={prettyDate} dateTime={dateFormat}>
+      {prettyDate}
     </time>
   )
 }
