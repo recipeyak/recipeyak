@@ -31,6 +31,7 @@ from core.recipes.serializers import (
     RecipeMoveCopySerializer,
     RecipeSerializer,
     RecipeTimelineSerializer,
+    NoteSerializer,
     StepSerializer,
 )
 from core.recipes.utils import add_positions
@@ -80,6 +81,20 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer.save()
 
         logger.info("Recipe created by %s", self.request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @action(
+        detail=True,
+        methods=["post"],
+        url_name="note",
+        serializer_class=NoteSerializer,
+        permission_classes=[HasRecipeAccess],
+    )
+    def add_note(self, request: Request, pk: str) -> Response:
+        recipe = self.get_object()
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(recipe=recipe, created_by=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @action(

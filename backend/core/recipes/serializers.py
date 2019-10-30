@@ -75,7 +75,14 @@ class StepSerializer(BaseModelSerializer):
 class NoteSerializer(BaseModelSerializer):
     class Meta:
         model = Note
-        fields = ("id", "created_by", "last_modified_by", "created", "modified")
+        read_only_fields = (
+            "id",
+            "created_by",
+            "last_modified_by",
+            "created",
+            "modified",
+        )
+        fields = (*read_only_fields, "text")
 
     def __init__(self, *args, **kwargs):
         # Don't pass the 'fields' arg up to the superclass
