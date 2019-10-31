@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils.dateparse import parse_datetime
 from rest_framework import status
 
-from core.models import Ingredient, Membership, Recipe, Step, Team
+from core.models import Ingredient, Membership, Recipe, Step, Team, Note
 
 pytestmark = pytest.mark.django_db
 

@@ -149,7 +149,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         # refetch all relations before serialization
         prefetched_recipe: Recipe = Recipe.objects.prefetch_related(
-            "owner", "step_set", "ingredient_set", "scheduledrecipe_set"
+            "owner", "step_set", "ingredient_set", "scheduledrecipe_set", "note_set"
         ).get(id=new_recipe.id)
         return Response(
             RecipeSerializer(prefetched_recipe).data, status=status.HTTP_200_OK
@@ -273,3 +273,6 @@ class NoteViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save(recipe=recipe, created_by=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def perform_update(self, serializer):
+        serializer.save(last_modified_by=self.request.user)
