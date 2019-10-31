@@ -278,12 +278,18 @@ class Note(CommonInfo, SoftDeleteObject):
     """Helpful information for a recipe"""
 
     text = models.TextField()
-    created_by = models.ForeignKey(MyUser, on_delete=models.CASCADE)
-    last_modified_by = models.ForeignKey(MyUser, null=True, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(
+        MyUser, related_name="notes_created_by", on_delete=models.CASCADE
+    )
+    last_modified_by = models.ForeignKey(
+        MyUser,
+        null=True,
+        related_name="notes_last_modified_by",
+        on_delete=models.CASCADE,
+    )
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = (("recipe", "position"),)
         ordering = ["-created"]
 
     def __str__(self):

@@ -117,6 +117,7 @@ class RecipeSerializer(BaseModelSerializer):
             "time",
             "ingredients",
             "steps",
+            "notes",
             "servings",
             "edits",
             "modified",

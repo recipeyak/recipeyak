@@ -7,6 +7,7 @@ from core.recipes.views import (
     IngredientViewSet,
     RecipeViewSet,
     StepViewSet,
+    NoteViewSet,
     TeamRecipesViewSet,
     get_recipe_timeline,
 )
@@ -32,6 +33,7 @@ router.register(r"invites", UserInvitesViewSet, basename="user-invites")
 recipes_router = routers.NestedSimpleRouter(router, r"recipes", lookup="recipe")
 recipes_router.register(r"steps", StepViewSet, basename="recipe-step")
 recipes_router.register(r"ingredients", IngredientViewSet, basename="recipe-ingredient")
+recipes_router.register(r"notes", NoteViewSet, basename="recipe-note")
 
 teams_router = routers.NestedSimpleRouter(router, r"t", lookup="team")
 teams_router.register(r"members", MembershipViewSet, basename="team-member")
