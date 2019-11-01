@@ -1,10 +1,10 @@
 import * as React from "react"
-import isWithinRange from "date-fns/is_within_range"
+import isWithinInterval from "date-fns/isWithinInterval"
 import format from "date-fns/format"
-import isPast from "date-fns/is_past"
-import isSameDay from "date-fns/is_same_day"
-import startOfDay from "date-fns/start_of_day"
-import endOfDay from "date-fns/end_of_day"
+import isPast from "date-fns/isPast"
+import isSameDay from "date-fns/isSameDay"
+import startOfDay from "date-fns/startOfDay"
+import endOfDay from "date-fns/endOfDay"
 
 import { ButtonPlain } from "@/components/Buttons"
 import Day from "@/components/DateRangePicker/Day"
@@ -53,7 +53,7 @@ class Month extends React.Component<IMonthProps> {
             </ButtonPlain>
           ) : null}
           <div className="text-center grid-row-1 grid-column-1 align-self-center">
-            {format(this.props.date, "MMM YYYY")}
+            {format(this.props.date, "MMM yyyy")}
           </div>
           {this.props.showRight ? (
             <ButtonPlain
@@ -79,11 +79,10 @@ class Month extends React.Component<IMonthProps> {
               handleClick={this.props.handleClick}
               date={date}
               inPast={isPast(endOfDay(date))}
-              highlight={isWithinRange(
-                date,
-                startOfDay(this.props.startDay),
-                endOfDay(this.props.endDay)
-              )}
+              highlight={isWithinInterval(date, {
+                start: startOfDay(this.props.startDay),
+                end: endOfDay(this.props.endDay)
+              })}
               endDate={
                 isSameDay(date, this.props.startDay) ||
                 isSameDay(date, this.props.endDay)

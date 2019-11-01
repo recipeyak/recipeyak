@@ -22,10 +22,12 @@ interface ITimeProps {
   readonly dateTime: Date | string
 }
 function Time({ dateTime }: ITimeProps) {
-  const datestr = String(dateTime)
+  const date = new Date(dateTime)
+  const dateFormat = format(date, "yyyy-M-d")
+  const prettyDate = format(date, "MMM d, yyyy")
   return (
-    <time title={datestr} dateTime={datestr}>
-      {format(dateTime, "MMM D, YYYY")}
+    <time title={prettyDate} dateTime={dateFormat}>
+      {prettyDate}
     </time>
   )
 }
@@ -136,7 +138,7 @@ export function RecipeTimeline({ createdAt, recipeId }: IRecipeTimelineProps) {
           <FailureLoadingTimeline />
         ) : null}
         <TimelineItem type="created">
-          🎉 Recipe created on <Time dateTime={createdAt} />
+          🎉 Recipe created on <Time dateTime={new Date(createdAt)} />
         </TimelineItem>
       </TimelineList>
     </TimelineContainer>

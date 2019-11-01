@@ -1,5 +1,5 @@
 import { uniq, omit } from "lodash"
-import isSameDay from "date-fns/is_same_day"
+import isSameDay from "date-fns/isSameDay"
 import {
   createAsyncAction,
   ActionType,
@@ -162,7 +162,7 @@ export const calendar = (
         }
         return (
           r.id !== action.payload.id &&
-          isSameDay(r.on, action.payload.to) &&
+          isSameDay(new Date(r.on), new Date(action.payload.to)) &&
           r.team === moving.team &&
           r.user === moving.user
         )
@@ -270,7 +270,7 @@ export const getExistingRecipe = ({
 }: IGetExistingRecipeProps) =>
   getAllCalRecipes(state).find(
     x =>
-      isSameDay(x.on, on) &&
+      isSameDay(new Date(x.on), new Date(on)) &&
       haveSameTeam(x, from) &&
       x.id !== from.id &&
       x.recipe.id === from.recipe.id

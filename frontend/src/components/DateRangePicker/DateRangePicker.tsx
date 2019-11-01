@@ -1,7 +1,7 @@
 import * as React from "react"
-import addMonths from "date-fns/add_months"
-import isPast from "date-fns/is_past"
-import endOfDay from "date-fns/end_of_day"
+import addMonths from "date-fns/addMonths"
+import isPast from "date-fns/isPast"
+import endOfDay from "date-fns/endOfDay"
 
 import { classNames } from "@/classnames"
 import Month from "@/components/DateRangePicker/Month"
