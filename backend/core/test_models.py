@@ -2,7 +2,7 @@ from typing import cast
 
 import pytest
 
-from core.models import Ingredient, Recipe, Step, Team, MyUser
+from core.models import Ingredient, MyUser, Recipe, Step, Team
 
 pytestmark = pytest.mark.django_db
 
