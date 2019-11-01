@@ -91,7 +91,7 @@ def test_recipe_copy_to(client, team, user, recipe):
     """
     assert recipe.owner == user
 
-    team_recipe = recipe.copy_to(team)
+    team_recipe = recipe.copy_to(team, actor=user)
 
     assert recipe != team_recipe
     assert team_recipe.owner == team and recipe.owner == user

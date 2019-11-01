@@ -5,8 +5,9 @@ import pytest
 from django.urls import reverse
 from django.utils.dateparse import parse_datetime
 from rest_framework import status
+from rest_framework.test import APIClient
 
-from core.models import Ingredient, Membership, Recipe, Step, Team
+from core.models import Ingredient, Membership, Recipe, Step, Team, MyUser
 
 pytestmark = pytest.mark.django_db
 
@@ -438,3 +439,39 @@ def test_move_recipe(client, user_with_recipes, empty_team, user3):
         "type": "team",
         "name": empty_team.name,
     }
+
+
+def test_duplicate_recipe_view(
+    client: APIClient, user: MyUser, recipe: Recipe, user2: MyUser
+) -> None:
+    """
+    Duplicating a recipe should return the response type of recipe detail
+    endpoint
+    """
+
+    res = client.post(f"/api/v1/recipes/{recipe.id}/duplicate/")
+    assert res.status_code == status.HTTP_403_FORBIDDEN
+
+    client.force_authenticate(user2)
+
+    res = client.post(f"/api/v1/recipes/{recipe.id}/duplicate/")
+    assert res.status_code == status.HTTP_404_NOT_FOUND
+
+    client.force_authenticate(user)
+
+    res = client.post(f"/api/v1/recipes/{recipe.id}/duplicate/")
+    assert res.status_code == status.HTTP_200_OK
+
+    assert res.json()["id"] != recipe.id
+    duped_recipe = Recipe.objects.get(id=res.json()["id"])
+
+    # default clone values for an original
+    assert recipe.cloned_at is None
+    assert recipe.cloned_by is None
+    assert recipe.cloned_from is None
+
+    assert duped_recipe.cloned_by == user
+    assert isinstance(duped_recipe.cloned_at, datetime)
+    assert duped_recipe.cloned_from == recipe
+
+    assert res.json()["name"] == "Recipe name (copy)"

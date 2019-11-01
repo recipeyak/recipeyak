@@ -138,6 +138,9 @@ export const getRecipeTimeline = (id: IRecipe["id"]) =>
 export const deleteRecipe = (id: IRecipe["id"]) =>
   http.delete(`/api/v1/recipes/${id}/`)
 
+export const duplicateRecipe = (id: IRecipe["id"]) =>
+  http.post<IRecipe>(`/api/v1/recipes/${id}/duplicate/`)
+
 export const getRecentRecipes = () =>
   http.get<IRecipe[]>("/api/v1/recipes/?recent")
 

@@ -17,13 +17,17 @@ import recipes, {
   updateIngredient,
   deleteIngredient,
   updatingRecipeAsync,
-  setSchedulingRecipe
+  setSchedulingRecipe,
+  duplicateRecipe,
+  duplicateRecipeAsync
 } from "@/store/reducers/recipes"
 import { IState } from "@/store/store"
 import { HttpErrorKind, Loading, isSuccess, Failure, Success } from "@/webdata"
 import { getModel } from "redux-loop"
-import { deletingIngredientAsync } from "@/store/thunks"
-import { assertCmdFuncEq } from "@/testUtils"
+import { deletingIngredientAsync, Dispatch } from "@/store/thunks"
+import { assertCmdFuncEq, createHttpMocker } from "@/testUtils"
+import { push } from "connected-react-router"
+import { recipeURL } from "@/urls"
 
 export const baseRecipe: IRecipe = {
   id: 1,
@@ -732,5 +736,72 @@ describe("Recipes", () => {
         setSchedulingRecipe({ recipeID: 1, scheduling: true })
       )
     ).toEqual(afterState)
+  })
+
+  describe("duplicating recipe", () => {
+    test("duplicating recipe", () => {
+      const initialRecipe: IRecipe = {
+        ...baseRecipe,
+        id: 1,
+        name: "Initial Recipe"
+      }
+
+      const duplicatedRecipe: IRecipe = {
+        ...initialRecipe,
+        id: 2,
+        name: "Initial Recipe (copy)"
+      }
+
+      const startState = recipeStoreWith(initialRecipe)
+      expect(startState.duplicatingById[initialRecipe.id]).toBeUndefined()
+
+      const requestState = getModel(
+        recipes(
+          startState,
+          duplicateRecipe.request({ recipeId: initialRecipe.id })
+        )
+      )
+      expect(requestState.duplicatingById[initialRecipe.id]).toBe(true)
+
+      const successState = recipes(
+        requestState,
+        duplicateRecipe.success(initialRecipe)
+      )
+      const successModel = getModel(successState)
+      expect(successModel.duplicatingById[initialRecipe.id]).toBe(false)
+      expect(Object.keys(successModel.byId)).toHaveLength(2)
+      expect(successModel.byId[duplicatedRecipe.id]).toEqual(
+        Success(duplicateRecipe)
+      )
+      assertCmdFuncEq(successState, duplicateRecipeAsync)
+
+      const failureState = getModel(
+        recipes(requestState, duplicateRecipe.success(initialRecipe))
+      )
+      expect(failureState.duplicatingById[initialRecipe.id]).toBe(false)
+    })
+    test("duplicateRecipeAsync", async () => {
+      const recipeId = 123
+      const dispatch = jest.fn()
+      const successResponse: IRecipe = { ...baseRecipe, id: 144 }
+      expect(successResponse.id).not.toEqual(recipeId)
+
+      createHttpMocker()
+        .onPost(`/api/v1/recipes/${recipeId}/duplicate/`)
+        .replyOnce(200, successResponse)
+
+      const callback = jest.fn()
+
+      await duplicateRecipeAsync({ recipeId }, dispatch, callback)
+
+      expect(callback).toHaveBeenCalled()
+      expect(dispatch).toHaveBeenCalledWith(
+        duplicateRecipe.success(successResponse)
+      )
+      expect(dispatch).toHaveBeenCalledWith(push(recipeURL(successResponse.id)))
+      expect(dispatch).not.toHaveBeenCalledWith(
+        duplicateRecipe.failure(recipeId)
+      )
+    })
   })
 })

@@ -16,6 +16,7 @@ from django.contrib.postgres.fields import CIEmailField
 from django.core.validators import MinValueValidator
 from django.db import models, transaction
 from django.db.models import Q
+from django.utils import timezone
 from softdelete.models import SoftDeleteObject
 from typing_extensions import Literal
 
@@ -150,6 +151,29 @@ class Recipe(CommonInfo, SoftDeleteObject):
     object_id = models.PositiveIntegerField()
     owner = GenericForeignKey("content_type", "object_id")
 
+    cloned_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        default=None,
+        help_text="If a clone, when the Recipe was cloned from a parent. Otherwise null.",
+    )
+    cloned_by = models.ForeignKey(
+        "MyUser",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        default=None,
+        help_text="If a clone, User who cloned the recipe.",
+    )
+    cloned_from = models.ForeignKey(
+        "Recipe",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        default=None,
+        help_text="If a clone, the parent this Recipe was cloned from.",
+    )
+
     def move_to(self, account: Union[MyUser, "Team"]) -> "Recipe":
         """
         Move recipe from current owner to another team or user
@@ -162,15 +186,33 @@ class Recipe(CommonInfo, SoftDeleteObject):
             self.save()
             return self
 
-    def copy_to(self, account: Union[MyUser, "Team"]) -> "Recipe":
+    def copy_to(self, *, actor: "MyUser", account: Union[MyUser, "Team"]) -> "Recipe":
         """
         Copy recipe to another team or user
         """
+        return self.duplicate(actor=actor, account=account, update_title=False)
+
+    def duplicate(
+        self,
+        *,
+        actor: "MyUser",
+        update_title: bool = True,
+        account: Union[MyUser, "Team", None] = None,
+    ) -> "Recipe":
+        """
+        Duplicate / clone a recipe to its current owner
+        """
         with transaction.atomic():
             # clone top level recipe object
-            recipe_copy = Recipe.objects.get(pk=self.pk)
+            original = self
+            recipe_copy = Recipe.objects.get(pk=original.pk)
             recipe_copy.pk = None
-            recipe_copy.owner = account
+            recipe_copy.name += " (copy)"
+            if account is not None:
+                recipe_copy.owner = account
+            recipe_copy.cloned_from = original
+            recipe_copy.cloned_by = actor
+            recipe_copy.cloned_at = timezone.now()
             recipe_copy.save()
 
             for recipe_component in itertools.chain(self.steps, self.ingredients):
