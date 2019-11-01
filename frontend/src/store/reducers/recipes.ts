@@ -326,7 +326,7 @@ export const duplicateRecipe = createAsyncAction(
   "DUPLICATE_RECIPE/FAILURE"
 )<
   { readonly recipeId: IRecipe["id"]; readonly onComplete?: () => void },
-  IRecipe,
+  { readonly recipe: IRecipe; readonly originalRecipeId: IRecipe["id"] },
   number
 >()
 
@@ -342,7 +342,9 @@ export async function duplicateRecipeAsync(
   const res = await api.duplicateRecipe(recipeId)
 
   if (isOk(res)) {
-    dispatch(duplicateRecipe.success(res.data))
+    dispatch(
+      duplicateRecipe.success({ recipe: res.data, originalRecipeId: recipeId })
+    )
     dispatch(push(recipeURL(res.data.id)))
   } else {
     dispatch(duplicateRecipe.failure(recipeId))
@@ -979,11 +981,11 @@ export const recipes = (
         ...state,
         duplicatingById: {
           ...state.duplicatingById,
-          [action.payload.id]: false
+          [action.payload.originalRecipeId]: false
         },
         byId: {
           ...state.byId,
-          [action.payload.id]: Success(action.payload)
+          [action.payload.recipe.id]: Success(action.payload.recipe)
         }
       }
 

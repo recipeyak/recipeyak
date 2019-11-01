@@ -754,29 +754,32 @@ describe("Recipes", () => {
 
       const startState = recipeStoreWith(initialRecipe)
       expect(startState.duplicatingById[initialRecipe.id]).toBeUndefined()
+      expect(Object.keys(startState.byId)).toHaveLength(1)
 
-      const requestState = getModel(
-        recipes(
-          startState,
-          duplicateRecipe.request({ recipeId: initialRecipe.id })
-        )
+      const requestState = recipes(
+        startState,
+        duplicateRecipe.request({ recipeId: initialRecipe.id })
       )
-      expect(requestState.duplicatingById[initialRecipe.id]).toBe(true)
+      const requestModel = getModel(requestState)
+      expect(requestModel.duplicatingById[initialRecipe.id]).toBe(true)
+      assertCmdFuncEq(requestState, duplicateRecipeAsync)
 
       const successState = recipes(
-        requestState,
-        duplicateRecipe.success(initialRecipe)
+        requestModel,
+        duplicateRecipe.success({
+          recipe: duplicatedRecipe,
+          originalRecipeId: initialRecipe.id
+        })
       )
       const successModel = getModel(successState)
       expect(successModel.duplicatingById[initialRecipe.id]).toBe(false)
       expect(Object.keys(successModel.byId)).toHaveLength(2)
       expect(successModel.byId[duplicatedRecipe.id]).toEqual(
-        Success(duplicateRecipe)
+        Success(duplicatedRecipe)
       )
-      assertCmdFuncEq(successState, duplicateRecipeAsync)
 
       const failureState = getModel(
-        recipes(requestState, duplicateRecipe.success(initialRecipe))
+        recipes(requestModel, duplicateRecipe.failure(initialRecipe.id))
       )
       expect(failureState.duplicatingById[initialRecipe.id]).toBe(false)
     })
@@ -796,7 +799,10 @@ describe("Recipes", () => {
 
       expect(callback).toHaveBeenCalled()
       expect(dispatch).toHaveBeenCalledWith(
-        duplicateRecipe.success(successResponse)
+        duplicateRecipe.success({
+          recipe: successResponse,
+          originalRecipeId: recipeId
+        })
       )
       expect(dispatch).toHaveBeenCalledWith(push(recipeURL(successResponse.id)))
       expect(dispatch).not.toHaveBeenCalledWith(
