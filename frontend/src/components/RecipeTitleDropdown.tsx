@@ -7,7 +7,7 @@ import { copyToClipboard } from "@/clipboard"
 import { isSuccessLike } from "@/webdata"
 import { showNotificationWithTimeoutAsync } from "@/store/thunks"
 import { Chevron } from "@/components/icons"
-import { IIngredient } from "@/store/reducers/recipes"
+import { IIngredient, duplicateRecipe, IRecipe } from "@/store/reducers/recipes"
 import { Button } from "@/components/Buttons"
 
 const DropdownContainer = styled.div`
@@ -27,12 +27,14 @@ function Link({ to, replace, isRaw, ...rest }: ILinkProps) {
 }
 
 const dropdownItemStyle = css`
-  display: block;
+  display: flex;
+  justify-content: space-between;
   width: 100%;
   padding: 0.25rem 0.5rem;
   font-weight: 400;
   color: #212529;
   white-space: nowrap;
+  text-align: left;
 
   :hover {
     color: #16181b;
@@ -108,17 +110,41 @@ function useIngredientString(recipeId: number) {
   })
 }
 
+interface IUseDuplicateRecipe {
+  readonly recipeId: IRecipe["id"]
+  readonly onComplete?: () => void
+}
+
+function useDuplicateRecipe({
+  recipeId,
+  onComplete
+}: IUseDuplicateRecipe): [boolean, () => void] {
+  const dispatch = useDispatch()
+
+  const onDuplicate = React.useCallback(() => {
+    dispatch(duplicateRecipe.request({ recipeId, onComplete }))
+  }, [dispatch, onComplete, recipeId])
+
+  const isDuplicating = useSelector(s => !!s.recipes.duplicatingById[recipeId])
+
+  return [isDuplicating, onDuplicate]
+}
+
 interface IDropdownProps {
   readonly recipeId: number
 }
 export function Dropdown({ recipeId }: IDropdownProps) {
   const [isOpen, setIsOpen] = React.useState(false)
-
   const handleClick = React.useCallback(() => setIsOpen(p => !p), [])
   const closeDropdown = React.useCallback(() => setIsOpen(false), [])
 
-  const ingredients = useIngredientString(recipeId)
   const dispatch = useDispatch()
+  const ingredients = useIngredientString(recipeId)
+
+  const [creatingDuplicate, onDuplicate] = useDuplicateRecipe({
+    recipeId,
+    onComplete: closeDropdown
+  })
 
   const handleCopyIngredients = React.useCallback(() => {
     copyToClipboard(ingredients)
@@ -145,6 +171,10 @@ export function Dropdown({ recipeId }: IDropdownProps) {
         <DropdownItemLink to={scheduleUrl} onClick={closeDropdown}>
           Schedule
         </DropdownItemLink>
+        <DropdownItemButton onClick={onDuplicate}>
+          <span>Duplicate</span>
+          {creatingDuplicate && <span>(creating...)</span>}
+        </DropdownItemButton>
         <DropdownItemButton onClick={handleCopyIngredients}>
           Copy Ingredients to Clipboard
         </DropdownItemButton>

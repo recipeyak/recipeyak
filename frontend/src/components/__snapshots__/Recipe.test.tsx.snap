@@ -45,12 +45,20 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
 }
 
 .c2 {
-  display: block;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
   width: 100%;
   padding: 0.25rem 0.5rem;
   font-weight: 400;
   color: #212529;
   white-space: nowrap;
+  text-align: left;
   cursor: pointer;
   font-family: inherit;
   font-size: inherit;
@@ -70,12 +78,20 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
 }
 
 .c3 {
-  display: block;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
   width: 100%;
   padding: 0.25rem 0.5rem;
   font-weight: 400;
   color: #212529;
   white-space: nowrap;
+  text-align: left;
   cursor: pointer;
   font-family: inherit;
   font-size: inherit;
@@ -211,6 +227,14 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
           >
             Schedule
           </a>
+          <button
+            className="c3"
+            onClick={[Function]}
+          >
+            <span>
+              Duplicate
+            </span>
+          </button>
           <button
             className="c3"
             onClick={[Function]}
@@ -431,12 +455,20 @@ exports[`<Recipe/> snaps recipe all states 2`] = `
 }
 
 .c2 {
-  display: block;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
   width: 100%;
   padding: 0.25rem 0.5rem;
   font-weight: 400;
   color: #212529;
   white-space: nowrap;
+  text-align: left;
   cursor: pointer;
   font-family: inherit;
   font-size: inherit;
@@ -456,12 +488,20 @@ exports[`<Recipe/> snaps recipe all states 2`] = `
 }
 
 .c3 {
-  display: block;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
   width: 100%;
   padding: 0.25rem 0.5rem;
   font-weight: 400;
   color: #212529;
   white-space: nowrap;
+  text-align: left;
   cursor: pointer;
   font-family: inherit;
   font-size: inherit;
@@ -571,6 +611,14 @@ exports[`<Recipe/> snaps recipe all states 2`] = `
           >
             Schedule
           </a>
+          <button
+            className="c3"
+            onClick={[Function]}
+          >
+            <span>
+              Duplicate
+            </span>
+          </button>
           <button
             className="c3"
             onClick={[Function]}

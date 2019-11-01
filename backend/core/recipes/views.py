@@ -87,7 +87,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         methods=["post"],
         url_name="move",
         serializer_class=RecipeMoveCopySerializer,
-        permission_classes=[HasRecipeAccess],
+        permission_classes=[IsAuthenticated, HasRecipeAccess],
     )
     def move(self, request: Request, pk: str) -> Response:
         """
@@ -122,7 +122,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         methods=["post"],
         url_name="copy",
         serializer_class=RecipeMoveCopySerializer,
-        permission_classes=[HasRecipeAccess],
+        permission_classes=[IsAuthenticated, HasRecipeAccess],
     )
     def copy(self, request: Request, pk: str) -> Response:
         """
@@ -134,16 +134,18 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
+        user: MyUser = request.user
+
         if serializer.validated_data["type"] == "team":
             team = Team.objects.get(id=serializer.validated_data["id"])
             if not (team.is_contributor(request.user) or team.is_admin(request.user)):
                 raise PermissionDenied(detail="user must have write permissions")
-            new_recipe = recipe.copy_to(team)
+            new_recipe = recipe.copy_to(account=team, actor=user)
         elif serializer.validated_data["type"] == "user":
             user = MyUser.objects.get(id=serializer.validated_data["id"])
             if user != request.user:
                 raise PermissionDenied(detail="user must be the same as requester")
-            new_recipe = recipe.copy_to(user)
+            new_recipe = recipe.copy_to(account=user, actor=user)
 
         # refetch all relations before serialization
         prefetched_recipe: Recipe = Recipe.objects.prefetch_related(
@@ -151,6 +153,20 @@ class RecipeViewSet(viewsets.ModelViewSet):
         ).get(id=new_recipe.id)
         return Response(
             RecipeSerializer(prefetched_recipe).data, status=status.HTTP_200_OK
+        )
+
+    @action(
+        detail=True,
+        methods=["post"],
+        permission_classes=[IsAuthenticated, HasRecipeAccess],
+    )
+    def duplicate(self, request: Request, pk: str) -> Response:
+        user: MyUser = request.user
+        recipe: Recipe = self.get_object()
+        return Response(
+            RecipeSerializer(
+                recipe.duplicate(actor=user), dangerously_allow_db=True
+            ).data
         )
 
 

@@ -6,7 +6,7 @@ import raven from "raven-js"
 import { setUserLoggedIn } from "@/store/reducers/user"
 import { Result, Ok, Err } from "@/result"
 
-const baseHttp = axios.create({ timeout: 15000 })
+export const baseHttp = axios.create({ timeout: 15000 })
 
 /* We check if detail matches our string because Django will not return 401 when
  * the session expires

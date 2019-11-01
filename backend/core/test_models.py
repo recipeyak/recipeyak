@@ -2,7 +2,7 @@ from typing import cast
 
 import pytest
 
-from core.models import Ingredient, Recipe, Step
+from core.models import Ingredient, MyUser, Recipe, Step, Team
 
 pytestmark = pytest.mark.django_db
 
@@ -85,13 +85,13 @@ def test_recipe_move_to(client, team, user, recipe):
     assert recipe.owner == team
 
 
-def test_recipe_copy_to(client, team, user, recipe):
+def test_recipe_copy_to(client, team: Team, user: MyUser, recipe: Recipe) -> None:
     """
     Copy recipe to team from user or another team
     """
     assert recipe.owner == user
 
-    team_recipe = recipe.copy_to(team)
+    team_recipe = recipe.copy_to(account=team, actor=user)
 
     assert recipe != team_recipe
     assert team_recipe.owner == team and recipe.owner == user
