@@ -21,7 +21,6 @@ import { ingredientByNameAlphabetical } from "@/sorters"
 import DateRangePicker from "@/components/DateRangePicker/DateRangePicker"
 import { IState } from "@/store/store"
 import {
-  IShoppingListItem,
   setSelectingStart,
   setSelectingEnd
 } from "@/store/reducers/shoppinglist"
@@ -36,6 +35,12 @@ import {
   isRefetching
 } from "@/webdata"
 import { classNames } from "@/classnames"
+import {
+  IGetShoppingListResponse,
+  IIngredientItem,
+  IQuantity,
+  Unit
+} from "@/api"
 
 const selectElementText = (el: Element) => {
   const sel = window.getSelection()
@@ -64,40 +69,41 @@ function formatMonth(date: Date | null) {
 }
 
 interface IShoppingListItemProps {
-  readonly item: IShoppingListItem
+  readonly item: [string, IIngredientItem]
   readonly isFirst: boolean
 }
 
-function ShoppingListItem({ item, isFirst }: IShoppingListItemProps) {
+function toQuantity(x: IQuantity): string {
+  if (x.unit === Unit.NONE) {
+    return x.quantity
+  }
+  const unit = x.unit.toLowerCase()
+  return x.quantity + " " + unit
+}
+
+function quantitiesToString(quantities: ReadonlyArray<IQuantity>): string {
+  return quantities.map(toQuantity).join(" + ")
+}
+
+function ShoppingListItem({
+  item: [name, { quantities }],
+  isFirst
+}: IShoppingListItemProps) {
   // padding serves to prevent the button from appearing in front of text
   // we also use <section>s instead of <p>s to avoid extra new lines in Chrome
   const cls = classNames("text-small", { "mr-15": isFirst })
+
+  const units = quantitiesToString(quantities)
+
   return (
-    <section className={cls} key={item.unit + item.name}>
-      {item.unit} {item.name}
+    <section className={cls} key={name + units}>
+      {units} {name}
     </section>
   )
 }
 
-function mapStateToProps(state: IState) {
-  return {
-    startDay: state.shoppinglist.startDay,
-    endDay: state.shoppinglist.endDay,
-    shoppinglist: state.shoppinglist.shoppinglist
-  }
-}
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: fetchingShoppingListAsync(dispatch),
-  setStartDay: (date: Date) => dispatch(setSelectingStart(date)),
-  setEndDay: (date: Date) => dispatch(setSelectingEnd(date)),
-  reportBadMerge: reportBadMergeAsync(dispatch),
-  sendToast: (message: string) =>
-    showNotificationWithTimeoutAsync(dispatch)({ message, level: "info" })
-})
-
 interface IShoppingListContainerProps {
-  readonly items: WebData<ReadonlyArray<IShoppingListItem>>
+  readonly items: WebData<IGetShoppingListResponse>
   readonly sendToast: (message: string) => void
 }
 
@@ -125,7 +131,7 @@ class ShoppingListList extends React.Component<IShoppingListContainerProps> {
         : ""
 
     const items = isSuccessOrRefetching(this.props.items)
-      ? this.props.items.data
+      ? Object.entries(this.props.items.data)
       : []
 
     return (
@@ -137,9 +143,20 @@ class ShoppingListList extends React.Component<IShoppingListContainerProps> {
           Copy
         </Button>
         <section ref={this.shoppingList}>
-          {[...items].sort(ingredientByNameAlphabetical).map((x, i) => (
-            <ShoppingListItem item={x} isFirst={i === 0} />
-          ))}
+          {items
+            .sort((x, y) => ingredientByNameAlphabetical(x[0], y[0]))
+            .map(([name, quantities], i) => {
+              if (quantities == null) {
+                return null
+              }
+              return (
+                <ShoppingListItem
+                  key={name}
+                  item={[name, quantities]}
+                  isFirst={i === 0}
+                />
+              )
+            })}
         </section>
       </div>
     )
@@ -151,7 +168,7 @@ interface IShoppingListProps {
   readonly teamID: TeamID
   readonly startDay: Date
   readonly endDay: Date
-  readonly shoppinglist: WebData<ReadonlyArray<IShoppingListItem>>
+  readonly shoppinglist: WebData<IGetShoppingListResponse>
   readonly setStartDay: (date: Date) => void
   readonly setEndDay: (date: Date) => void
   readonly reportBadMerge: () => void
@@ -169,7 +186,11 @@ function ShoppingList({
   teamID,
   startDay,
   endDay,
-  ...props
+  setStartDay: propsSetStartDay,
+  setEndDay: propsSetEndDay,
+  shoppinglist,
+  sendToast,
+  reportBadMerge
 }: IShoppingListProps) {
   const element = useRef<HTMLDivElement>(null)
   const [month, setMonth] = useState(new Date())
@@ -188,9 +209,9 @@ function ShoppingList({
     if (!isValid(date)) {
       return
     }
-    props.setStartDay(date)
+    propsSetStartDay(date)
     if (isAfter(date, endDay)) {
-      props.setEndDay(date)
+      propsSetEndDay(date)
     }
     setSelecting(Selecting.End)
   }
@@ -199,9 +220,9 @@ function ShoppingList({
     if (!isValid(date)) {
       return
     }
-    props.setEndDay(date)
+    propsSetEndDay(date)
     if (isBefore(date, startDay)) {
-      props.setStartDay(date)
+      propsSetStartDay(date)
     }
     setSelecting(Selecting.None)
   }
@@ -253,14 +274,9 @@ function ShoppingList({
       </div>
 
       <div>
-        <ShoppingListList
-          items={props.shoppinglist}
-          sendToast={props.sendToast}
-        />
+        <ShoppingListList items={shoppinglist} sendToast={sendToast} />
         <div className="d-flex justify-content-end no-print">
-          <a
-            onClick={props.reportBadMerge}
-            className="text-muted italic text-small">
+          <a onClick={reportBadMerge} className="text-muted italic text-small">
             report bad merge
           </a>
         </div>
@@ -268,6 +284,23 @@ function ShoppingList({
     </div>
   )
 }
+
+function mapStateToProps(state: IState) {
+  return {
+    startDay: state.shoppinglist.startDay,
+    endDay: state.shoppinglist.endDay,
+    shoppinglist: state.shoppinglist.shoppinglist
+  }
+}
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  fetchData: fetchingShoppingListAsync(dispatch),
+  setStartDay: (date: Date) => dispatch(setSelectingStart(date)),
+  setEndDay: (date: Date) => dispatch(setSelectingEnd(date)),
+  reportBadMerge: reportBadMergeAsync(dispatch),
+  sendToast: (message: string) =>
+    showNotificationWithTimeoutAsync(dispatch)({ message, level: "info" })
+})
 
 export default connect(
   mapStateToProps,

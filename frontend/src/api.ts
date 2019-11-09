@@ -7,7 +7,6 @@ import {
   ISession
 } from "@/store/reducers/user"
 import { ITeam, IMember } from "@/store/reducers/teams"
-import { IShoppingListItem } from "@/store/reducers/shoppinglist"
 import { toDateString } from "@/date"
 import { IRecipeBasic } from "@/components/RecipeTitle"
 import { IRecipe, IIngredient, IStep } from "@/store/reducers/recipes"
@@ -100,12 +99,40 @@ export const changePassword = (
     old_password: oldPassword
   })
 
+export const enum Unit {
+  POUND = "POUND",
+  OUNCE = "OUNCE",
+  GRAM = "GRAM",
+  KILOGRAM = "KILOGRAM",
+  TEASPOON = "TEASPOON",
+  TABLESPOON = "TABLESPOON",
+  FLUID_OUNCE = "FLUID_OUNCE",
+  CUP = "CUP",
+  PINT = "PINT",
+  QUART = "QUART",
+  GALLON = "GALLON",
+  LITER = "LITER",
+  MILLILITER = "MILLILITER",
+  SOME = "SOME",
+  NONE = "NONE"
+}
+
+export interface IQuantity {
+  readonly quantity: string
+  readonly unit: Unit
+}
+
+export interface IIngredientItem {
+  readonly quantities: ReadonlyArray<IQuantity>
+}
+
+export interface IGetShoppingListResponse {
+  readonly [_: string]: IIngredientItem | undefined
+}
+
 export const getShoppingList = (teamID: TeamID, start: Date, end: Date) => {
-  const url =
-    teamID === "personal"
-      ? "/api/v1/shoppinglist/"
-      : `/api/v1/t/${teamID}/shoppinglist/`
-  return http.get<IShoppingListItem[]>(url, {
+  const id = teamID === "personal" ? "me" : teamID
+  return http.get<IGetShoppingListResponse>(`/api/v1/t/${id}/shoppinglist/`, {
     params: {
       start: toDateString(start),
       end: toDateString(end)

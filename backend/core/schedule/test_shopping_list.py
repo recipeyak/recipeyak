@@ -1,22 +1,24 @@
 from datetime import date, timedelta
-from typing import Dict, List, Union
+from decimal import Decimal
+from typing import List, Tuple
 
 import pytest
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from core.cumin import (
+    IngredientItem,
+    IngredientList,
+    Quantity,
+    Unit,
+    combine_ingredients,
+)
 from core.models import Ingredient, MyUser, Recipe
-
-from .utils import combine_ingredients, simplify_units, unicode_fractions_to_ascii
 
 pytestmark = pytest.mark.django_db
 
-
-def omit(d: Union[Dict, List], key: str) -> Union[List[Dict], Dict]:
-    if isinstance(d, list):
-        return [{k: v for k, v in i.items() if k != key} for i in d]
-    return {k: v for k, v in d.items() if k != key}
+url = "/api/v1/t/me/shoppinglist/"
 
 
 def test_fetching_shoppinglist(client, user, recipe):
@@ -26,21 +28,18 @@ def test_fetching_shoppinglist(client, user, recipe):
     end = start + timedelta(days=1)
     params = dict(start=start, end=end)
 
-    shoppinglist_url = reverse("shopping-list")
-    res = client.get(shoppinglist_url, params)
+    res = client.get(url, params)
     assert res.status_code == status.HTTP_200_OK
-    assert res.json() == []
+    assert res.json() == {}
 
     recipe.schedule(user=user, on=start, count=2)
 
-    res = client.get(shoppinglist_url, params)
+    res = client.get(url, params)
     assert res.status_code == status.HTTP_200_OK
-    assert res.json() != []
-
-    assert omit(res.json(), "origin") == [
-        dict(unit="2 pound", name="egg"),
-        dict(unit="4 tablespoon", name="soy sauce"),
-    ]
+    assert res.json() == {
+        "egg": {"quantities": [{"quantity": "2", "unit": "POUND"}]},
+        "soy sauce": {"quantities": [{"quantity": "4", "unit": "TABLESPOON"}]},
+    }
 
 
 def test_fetching_shoppinglist_with_team_recipe(client, team, user, recipe):
@@ -55,10 +54,9 @@ def test_fetching_shoppinglist_with_team_recipe(client, team, user, recipe):
     end = start + timedelta(days=1)
     params = dict(start=start, end=end)
 
-    url = reverse("shopping-list")
     res = client.get(url, params)
     assert res.status_code == status.HTTP_200_OK
-    assert res.json() == []
+    assert res.json() == {}
 
     recipe.schedule(user=user, on=start, count=2)
 
@@ -66,15 +64,14 @@ def test_fetching_shoppinglist_with_team_recipe(client, team, user, recipe):
     assert res.status_code == status.HTTP_200_OK
     assert res.json() != []
 
-    assert omit(res.json(), "origin") == [
-        dict(unit="2 pound", name="egg"),
-        dict(unit="4 tablespoon", name="soy sauce"),
-    ]
+    assert res.json() == {
+        "egg": {"quantities": [{"quantity": "2", "unit": "POUND"}]},
+        "soy sauce": {"quantities": [{"quantity": "4", "unit": "TABLESPOON"}]},
+    }
 
 
 def test_fetching_shoppinglist_with_invalid_dates(user, client):
     params = {"start": "", "end": "invalid date"}
-    url = reverse("shopping-list")
     client.force_authenticate(user)
     res = client.get(url, params)
     assert res.status_code == status.HTTP_400_BAD_REQUEST
@@ -102,22 +99,48 @@ def test_scheduling_multiple_times_some_ingredient(
 
     end = start + timedelta(days=1)
     params = dict(start=start, end=end)
-    url = reverse("shopping-list")
     client.force_authenticate(user)
     res = client.get(url, params)
     assert res.status_code == status.HTTP_200_OK
-    assert res.json()[0].get("unit") == "some"
+    assert res.json() == {
+        "black pepper": {"quantities": [{"quantity": "3", "unit": "SOME"}]}
+    }
 
 
 @pytest.mark.parametrize(
-    "ingredients,combined",
+    "ingredients,expected",
     [
-        ([("1/2", "lemon"), ("1", "lemon"), ("2", "lemons")], ("3.5", "lemons")),
-        ([("1", "bay leaf"), ("4", "bay leaves")], ("5", "bay leaves")),
-        ([("1", "large tomato"), ("2", "large tomatoes")], ("3", "large tomatoes")),
+        (
+            [("1/2", "lemon"), ("1", "lemon"), ("2", "lemons")],
+            {
+                "lemons": IngredientItem(
+                    quantities=[Quantity(quantity=Decimal(3.5), unit=Unit.NONE)]
+                )
+            },
+        ),
+        (
+            [("1", "bay leaf"), ("4", "bay leaves")],
+            {
+                "bay leaves": IngredientItem(
+                    quantities=[Quantity(quantity=Decimal(5), unit=Unit.NONE)]
+                )
+            },
+        ),
+        (
+            [("1", "large tomato"), ("2", "large tomatoes")],
+            {
+                "large tomatoes": IngredientItem(
+                    quantities=[Quantity(quantity=Decimal(3), unit=Unit.NONE)]
+                )
+            },
+        ),
         (
             [("4-5", "medium button mushrooms"), ("4-5", "medium button mushrooms")],
-            ("10", "medium button mushrooms"),
+            {
+                "medium button mushrooms": IngredientItem(
+                    quantities=[Quantity(quantity=Decimal(10), unit=Unit.NONE)]
+                )
+            },
         ),
         (
             [
@@ -126,7 +149,14 @@ def test_scheduling_multiple_times_some_ingredient(
                 ("sprinkle", "black pepper"),
                 ("some", "black pepper"),
             ],
-            ("3 tablespoon + some", "black pepper"),
+            {
+                "black pepper": IngredientItem(
+                    quantities=[
+                        Quantity(quantity=Decimal(3), unit=Unit.TABLESPOON),
+                        Quantity(quantity=Decimal(2), unit=Unit.SOME),
+                    ]
+                )
+            },
         ),
         (
             [
@@ -134,32 +164,98 @@ def test_scheduling_multiple_times_some_ingredient(
                 ("some", "basil leaves"),
                 ("sprinkle", "basil leaves"),
             ],
-            ("16 + some", "basil leaves"),
+            {
+                "basil leaves": IngredientItem(
+                    quantities=[
+                        Quantity(quantity=Decimal(16), unit=Unit.NONE),
+                        Quantity(quantity=Decimal(2), unit=Unit.SOME),
+                    ]
+                )
+            },
         ),
         (
             [
                 ("1 tablespoon", "extra-virgin olive oil"),
                 ("8 tablespoons", "extra virgin olive oil"),
             ],
-            ("9 tablespoon", "extra virgin olive oil"),
+            {
+                "extra virgin olive oil": IngredientItem(
+                    quantities=[Quantity(quantity=Decimal(9), unit=Unit.TABLESPOON)]
+                )
+            },
         ),
-        ([("1", "garlic clove")], ("1", "garlic clove")),
-        ([("8", "Garlic Cloves"), ("1", "garlic clove")], ("9", "garlic cloves")),
+        (
+            [("1", "garlic clove")],
+            {
+                "garlic clove": IngredientItem(
+                    quantities=[Quantity(quantity=Decimal(1), unit=Unit.NONE)]
+                )
+            },
+        ),
+        (
+            [("8", "Garlic Cloves"), ("1", "garlic clove")],
+            {
+                "garlic cloves": IngredientItem(
+                    quantities=[Quantity(quantity=Decimal(9), unit=Unit.NONE)]
+                )
+            },
+        ),
         (
             [("2 Tablespoons", "scallions"), ("4", "scallions")],
-            ("2 tablespoon + 4", "scallions"),
+            {
+                "scallions": IngredientItem(
+                    quantities=[
+                        Quantity(quantity=Decimal(2), unit=Unit.TABLESPOON),
+                        Quantity(quantity=Decimal(4), unit=Unit.NONE),
+                    ]
+                )
+            },
         ),
-        ([("2 tbs", "soy sauce")], ("2 tablespoon", "soy sauce")),
+        (
+            [("2 tbs", "soy sauce")],
+            {
+                "soy sauce": IngredientItem(
+                    quantities=[Quantity(quantity=Decimal(2), unit=Unit.TABLESPOON)]
+                )
+            },
+        ),
         (
             [("2 lbs", "tomato"), ("1 kg", "tomato")],
-            ("4.204622621848776 pound", "tomato"),
+            {
+                "tomato": IngredientItem(
+                    quantities=[
+                        Quantity(
+                            quantity=Decimal("4.204622864866847967783965457"),
+                            unit=Unit.POUND,
+                        )
+                    ]
+                )
+            },
         ),
         (
-            [("1 teaspoon + 1 Tablespoon", "soy sauce"), ("1 teaspoon", "Soy Sauce")],
-            ("5.0 teaspoon", "soy sauce"),
+            [("1 teaspoon + 1 Tablespoon", "ginger"), ("1 teaspoon", "Ginger")],
+            {
+                "ginger": IngredientItem(
+                    quantities=[Quantity(quantity=Decimal(5), unit=Unit.TEASPOON)]
+                )
+            },
         ),
-        ([("1/2 cup", "scallions")], ("0.5 cup", "scallions")),
-        ([("½ cup", "scallions")], ("0.5 cup", "scallions")),
+        (
+            [("1/2 cup", "scallions")],
+            {
+                "scallions": IngredientItem(
+                    quantities=[Quantity(quantity=Decimal(0.5), unit=Unit.CUP)]
+                )
+            },
+        ),
+        (
+            [("½ cup", "scallions")],
+            {
+                "scallions": IngredientItem(
+                    quantities=[Quantity(quantity=Decimal(0.5), unit=Unit.CUP)]
+                )
+            },
+        ),
         (
             [
                 ("2", "lemons"),
@@ -168,11 +264,20 @@ def test_scheduling_multiple_times_some_ingredient(
                 ("1/2", "lemon"),
                 ("some", "lemon"),
             ],
-            ("4.5 + some", "lemons"),
+            {
+                "lemons": IngredientItem(
+                    quantities=[
+                        Quantity(quantity=Decimal(4.5), unit=Unit.NONE),
+                        Quantity(quantity=Decimal(1), unit=Unit.SOME),
+                    ]
+                )
+            },
         ),
     ],
 )
-def test_combine_ingredients(empty_recipe, ingredients, combined):
+def test_combine_ingredients(
+    empty_recipe, ingredients: List[Tuple[str, str]], expected: IngredientList
+) -> None:
     ingres = []
     position = 1
     for quantity, name in ingredients:
@@ -183,15 +288,7 @@ def test_combine_ingredients(empty_recipe, ingredients, combined):
         )
         position += 1
 
-    unit, name = combined
-    assert omit(combine_ingredients(ingres), "origin") == [dict(name=name, unit=unit)]
-
-
-@pytest.mark.parametrize(
-    "input_str,expected", [("½ cup", "1/2 cup"), ("⅒ gram", "1/10 gram")]
-)
-def test_unicode_fractions_to_ascii(input_str: str, expected: str) -> None:
-    assert unicode_fractions_to_ascii(input_str) == expected
+    assert combine_ingredients(ingres) == expected
 
 
 def test_report_bad_merge(user, client, recipe):
@@ -230,16 +327,13 @@ def test_combining_feta(user, client, empty_recipe):
     end = start + timedelta(days=1)
     params = dict(start=start, end=end)
     client.force_authenticate(user)
-    url = reverse("shopping-list")
     res = client.get(url, params)
     assert res.status_code == status.HTTP_200_OK
 
-    for processed, (_, name) in zip(res.json(), ingredients):
-        assert processed.get("name") == name
-
-
-def test_simplify_units():
-    assert simplify_units(["tablespoon", "some", "sprinkle", "pinch"]) == [
-        "tablespoon",
-        "some",
-    ]
+    assert res.json() == {
+        "all purpose flour": {"quantities": [{"quantity": "1.25", "unit": "CUP"}]},
+        "feta": {"quantities": [{"quantity": "1", "unit": "SOME"}]},
+        "katamata olives": {"quantities": [{"quantity": "1", "unit": "SOME"}]},
+        "molasses": {"quantities": [{"quantity": "2", "unit": "TABLESPOON"}]},
+        "red pepper flakes": {"quantities": [{"quantity": "1", "unit": "SOME"}]},
+    }

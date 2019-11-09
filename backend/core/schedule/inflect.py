@@ -660,6 +660,7 @@ singular_rules = [
 singular_rules_compiled = [(re.compile(regex), text) for regex, text in singular_rules]
 
 singular_uninflected = {
+    "flour",
     "bison",
     "debris",
     "headquarters",
