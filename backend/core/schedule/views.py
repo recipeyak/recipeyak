@@ -27,7 +27,7 @@ def get_scheduled_recipes(*, request: Request, team_pk: str) -> Optional[QuerySe
     end = request.query_params.get("end")
 
     if team_pk in {"personal", "me"}:
-        scheduled_recipes = cast(QuerySet, request.user.scheduled_recipes)
+        scheduled_recipes = request.user.scheduled_recipes
     else:
         team = Team.objects.filter(pk=team_pk).first()
         if team is None:
@@ -35,7 +35,9 @@ def get_scheduled_recipes(*, request: Request, team_pk: str) -> Optional[QuerySe
         scheduled_recipes = team.scheduled_recipes
 
     try:
-        return scheduled_recipes.filter(on__gte=start).filter(on__lte=end)
+        return cast(
+            QuerySet, scheduled_recipes.filter(on__gte=start).filter(on__lte=end)
+        )
     except (ValueError, ValidationError):
         return None
 
