@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional, cast
+from typing import List, Optional
 
 from django.core.exceptions import ValidationError
 from django.db.models import QuerySet
@@ -35,9 +35,7 @@ def get_scheduled_recipes(*, request: Request, team_pk: str) -> Optional[QuerySe
         scheduled_recipes = team.scheduled_recipes
 
     try:
-        return cast(
-            QuerySet, scheduled_recipes.filter(on__gte=start).filter(on__lte=end)
-        )
+        return scheduled_recipes.filter(on__gte=start).filter(on__lte=end)
     except (ValueError, ValidationError):
         return None
 
