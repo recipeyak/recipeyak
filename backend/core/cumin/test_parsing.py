@@ -170,7 +170,7 @@ def test_adding_incompatible_units() -> None:
             {
                 "flour": IngredientItem(
                     quantities=[
-                        # mass != volume so we get two seperate quantities
+                        # mass != volume so we get two separate quantities
                         Quantity(quantity=Decimal(3), unit=Unit.CUP),
                         Quantity(quantity=Decimal(1), unit=Unit.SOME),
                         Quantity(quantity=Decimal(250), unit=Unit.GRAM),
