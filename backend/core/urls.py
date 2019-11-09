@@ -10,12 +10,7 @@ from core.recipes.views import (
     TeamRecipesViewSet,
     get_recipe_timeline,
 )
-from core.schedule.views import (
-    CalendarViewSet,
-    ReportBadMerge,
-    ShoppingListView,
-    TeamShoppingListViewSet,
-)
+from core.schedule.views import CalendarViewSet, ReportBadMerge, get_shopping_list_view
 from core.stats.views import UserStats
 from core.teams.views import (
     MembershipViewSet,
@@ -36,9 +31,6 @@ recipes_router.register(r"ingredients", IngredientViewSet, basename="recipe-ingr
 teams_router = routers.NestedSimpleRouter(router, r"t", lookup="team")
 teams_router.register(r"members", MembershipViewSet, basename="team-member")
 teams_router.register(r"invites", TeamInviteViewSet, basename="team-invites")
-teams_router.register(
-    r"shoppinglist", TeamShoppingListViewSet, basename="team-shoppinglist"
-)
 teams_router.register(r"calendar", CalendarViewSet, basename="calendar")
 
 urlpatterns = [
@@ -50,7 +42,7 @@ urlpatterns = [
     path("api/v1/", include(recipes_router.urls)),
     path("api/v1/recipes/<int:recipe_pk>/timeline", get_recipe_timeline),
     path("api/v1/", include(teams_router.urls)),
-    path("api/v1/shoppinglist", ShoppingListView.as_view(), name="shopping-list"),
+    path("api/v1/t/<team_pk>/shoppinglist/", get_shopping_list_view),
     path("api/v1/user_stats", UserStats.as_view(), name="user-stats"),
     path("api/v1/report-bad-merge", ReportBadMerge.as_view(), name="report-bad-merge"),
     path(

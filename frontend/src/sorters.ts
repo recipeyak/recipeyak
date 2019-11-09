@@ -13,10 +13,6 @@ const normalize = (x: string) =>
     .trim()
     .toUpperCase()
 
-export const ingredientByNameAlphabetical = (x: IName, y: IName) => {
-  if (x.name == null || y.name == null) {
-    return 0
-  }
-
-  return normalize(x.name).localeCompare(normalize(y.name))
+export function ingredientByNameAlphabetical(x: string, y: string) {
+  return normalize(x).localeCompare(normalize(y))
 }

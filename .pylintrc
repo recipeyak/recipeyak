@@ -161,6 +161,7 @@ disable=print-statement,
         arguments-differ,
         duplicate-code,
         invalid-envvar-default,
+        method-hidden,
         # see: https://docs.djangoproject.com/en/2.1/ref/contrib/postgres/operations/#createextension
         super-init-not-called,
         ungrouped-imports,

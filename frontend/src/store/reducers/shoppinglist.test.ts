@@ -1,23 +1,31 @@
 import shoppinglist, {
   IShoppingListState,
-  IShoppingListItem,
   fetchShoppingList,
   setSelectingStart,
   setSelectingEnd
 } from "@/store/reducers/shoppinglist"
 import { Loading, Success, Failure, HttpErrorKind } from "@/webdata"
+import { IGetShoppingListResponse, Unit } from "@/api"
 
 describe("Shopping List", () => {
-  const shopList: IShoppingListItem[] = [
-    {
-      name: "tomato",
-      unit: "4.204622621848776 pound"
+  const shopList: IGetShoppingListResponse = {
+    tomato: {
+      quantities: [
+        {
+          quantity: "4.204622621848776",
+          unit: Unit.POUND
+        }
+      ]
     },
-    {
-      name: "soy sauce",
-      unit: "2 tablespoon"
+    "soy sauce": {
+      quantities: [
+        {
+          quantity: "2",
+          unit: Unit.TABLESPOON
+        }
+      ]
     }
-  ]
+  }
   it("sets list", () => {
     const beforeState: IShoppingListState = {
       shoppinglist: Loading(),

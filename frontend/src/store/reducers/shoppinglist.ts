@@ -6,12 +6,13 @@ import {
 } from "typesafe-actions"
 import { WebData, Success, Failure, HttpErrorKind, toLoading } from "@/webdata"
 import { startOfToday, addWeeks } from "date-fns"
+import { IGetShoppingListResponse } from "@/api"
 
 export const fetchShoppingList = createAsyncAction(
   "FETCH_SHOPPING_LIST_START",
   "FETCH_SHOPPING_LIST_SUCCESS",
   "FETCH_SHOPPING_LIST_FAILURE"
-)<void, IShoppingListItem[], void>()
+)<void, IGetShoppingListResponse, void>()
 
 export const setSelectingStart = createStandardAction("SET_SELECTING_START")<
   Date
@@ -23,13 +24,8 @@ export type ShoppingListActions =
   | ReturnType<typeof setSelectingEnd>
   | ActionType<typeof fetchShoppingList>
 
-export interface IShoppingListItem {
-  readonly name: string
-  readonly unit: string
-}
-
 export interface IShoppingListState {
-  readonly shoppinglist: WebData<ReadonlyArray<IShoppingListItem>>
+  readonly shoppinglist: WebData<IGetShoppingListResponse>
   readonly startDay: Date
   readonly endDay: Date
 }

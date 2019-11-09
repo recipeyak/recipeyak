@@ -692,14 +692,6 @@ python-versions = "*"
 version = "0.7.5"
 
 [[package]]
-category = "main"
-description = "Physical quantities module"
-name = "pint"
-optional = false
-python-versions = "*"
-version = "0.8.1"
-
-[[package]]
 category = "dev"
 description = "plugin and hook calling mechanisms for python"
 name = "pluggy"
@@ -1199,7 +1191,7 @@ version = "4.6.0"
 setuptools = "*"
 
 [metadata]
-content-hash = "b857ed6af0c17b5ba142b4d3e5d689dfe1365fdb3fabdf270eb75f46bf0a611d"
+content-hash = "d856ab192935928db110c7d4fba8544e77119c71965c81d36944482cae86508b"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1272,7 +1264,6 @@ parso = ["4580328ae3f548b358f4901e38c0578229186835f0fa0846e47369796dd5bcc9", "68
 pathtools = ["7c35c5421a39bb82e58018febd90e3b6e5db34c5443aaaf742b3f33d4655f1c0"]
 pexpect = ["2a8e88259839571d1251d278476f3eec5db26deb73a70be5ed5dc5435e418aba", "3fbd41d4caf27fa4a377bfd16fef87271099463e6fa73e92a52f92dfee5d425b"]
 pickleshare = ["87683d47965c1da65cdacaf31c8441d12b8044cdec9aca500cd78fc2c683afca", "9649af414d74d4df115d5d718f82acb59c9d418196b7b4290ed47a12ce62df56"]
-pint = ["afcf31443a478c32bbac4b00337ee9026a13d0e2ac83d30c79151462513bb0d4"]
 pluggy = ["19ecf9ce9db2fce065a7a0586e07cfb4ac8614fe96edf628a264b1c70116cf8f", "84d306a647cc805219916e62aab89caa97a33a1dd8c342e87a37f91073cd4746"]
 pprintpp = ["b6b4dcdd0c0c0d75e4d7b2f21a9e933e5b2ce62b26e1a54537f9651ae5a5c01d", "ea826108e2c7f49dc6d66c752973c3fc9749142a798d6b254e1e301cfdbc6403"]
 prompt-toolkit = ["11adf3389a996a6d45cc277580d0d53e8a5afd281d0c9ec71b28e6f121463780", "2519ad1d8038fd5fc8e770362237ad0364d16a7650fb5724af6997ed5515e3c1", "977c6583ae813a37dc1c2e1b715892461fcbdaa57f6fc62f33a528c4886c8f55"]
