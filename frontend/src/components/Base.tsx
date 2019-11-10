@@ -1,12 +1,12 @@
 import * as React from "react"
 
 import Footer from "@/components/Footer"
-import Navbar from "@/containers/Nav"
+import { Navbar } from "@/components/Nav"
 import ErrorBoundary from "@/components/ErrorBoundary"
 
 export const ContainerBase: React.SFC = ({ children }) => (
   <>
-    <Navbar className="pl-3 pr-3" />
+    <Navbar />
     <ErrorBoundary>{children}</ErrorBoundary>
   </>
 )

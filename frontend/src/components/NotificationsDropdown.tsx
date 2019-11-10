@@ -1,34 +1,95 @@
 import React from "react"
-import Dropdown from "@/components/NavDropdown"
 import { Link } from "react-router-dom"
 import { ButtonPrimary } from "@/components/Buttons"
 
-import { connect } from "react-redux"
-
 import {
   acceptingInviteAsync,
-  decliningInviteAsync,
-  Dispatch,
-  fetchingInvitesAsync
+  fetchingInvitesAsync,
+  decliningInviteAsync
 } from "@/store/thunks"
 
 import { teamURL } from "@/urls"
-import { IInvite, getInvites } from "@/store/reducers/invites"
-import { IState } from "@/store/store"
+import { getInvites, IInvite } from "@/store/reducers/invites"
+import {
+  DropdownContainer,
+  useDropdown,
+  DropdownMenu
+} from "@/components/Dropdown"
+import { Chevron } from "@/components/icons"
+import { useDispatch, useSelector } from "@/hooks"
+import { isLoading, isFailure, isInitial } from "@/webdata"
+import { ITeam } from "@/store/reducers/teams"
 
-interface IInvitesProps {
-  readonly loading: boolean
-  readonly invites: IInvite[]
-  readonly accept: (id: IInvite["id"]) => void
-  readonly decline: (id: IInvite["id"]) => void
+function useNotifications() {
+  const dispatch = useDispatch()
+  React.useEffect(() => {
+    fetchingInvitesAsync(dispatch)()
+  }, [dispatch])
+  const invites = useSelector(getInvites)
+  return { invites }
 }
 
-const Invites = ({ loading, invites, decline, accept }: IInvitesProps) => {
-  if (loading) {
+function useInviteUpdate(inviteId: IInvite["id"]) {
+  const dispatch = useDispatch()
+  const decline = React.useCallback(() => {
+    decliningInviteAsync(dispatch)(inviteId)
+  }, [dispatch, inviteId])
+  const accept = React.useCallback(() => {
+    acceptingInviteAsync(dispatch)(inviteId)
+  }, [dispatch, inviteId])
+  const accepting = useSelector(s => !!s.invites.byId[inviteId]?.accepting)
+  return { decline, accept, accepting }
+}
+
+interface IInviteButtonsProps {
+  readonly inviteId: IInvite["id"]
+}
+
+function InviteButtons({ inviteId }: IInviteButtonsProps) {
+  const { decline, accept, accepting } = useInviteUpdate(inviteId)
+
+  if (status === "declined") {
+    return <p className="text-muted">declined</p>
+  }
+
+  if (status === "accepted") {
+    return <p className="text-muted">accepted</p>
+  }
+
+  return (
+    <div className="d-flex justify-space-between align-items-center">
+      <a onClick={decline} className="text-muted">
+        Decline
+      </a>
+      <ButtonPrimary loading={accepting} onClick={accept} size="small">
+        Accept
+      </ButtonPrimary>
+    </div>
+  )
+}
+
+interface ITeamNameProps {
+  readonly teamId: ITeam["id"]
+  readonly name: ITeam["name"]
+  readonly active: IInvite["active"]
+}
+function TeamName({ teamId, name, active }: ITeamNameProps) {
+  if (active) {
+    return <Link to={teamURL(teamId, name)}>{name}</Link>
+  }
+  return <b>{name}</b>
+}
+function Invites() {
+  const { invites } = useNotifications()
+  if (isLoading(invites) || isInitial(invites)) {
     return <p className="text-muted text-small align-self-center">Loading...</p>
   }
 
-  if (invites.length === 0) {
+  if (isFailure(invites)) {
+    return <p>failure loading</p>
+  }
+
+  if (invites.data.length === 0) {
     return (
       <p className="text-muted text-small align-self-center">
         No new notifications.
@@ -38,96 +99,38 @@ const Invites = ({ loading, invites, decline, accept }: IInvitesProps) => {
 
   return (
     <div>
-      {invites.map(
-        ({ id, active, team, creator, status, accepting, declining }) => {
-          const TeamName = () =>
-            active ? (
-              <Link to={teamURL(team.id, team.name)}>{team.name}</Link>
-            ) : (
-              <b>{team.name}</b>
-            )
-
-          const InviteButtons = () => {
-            if (status === "declined") {
-              return <p className="text-muted">declined</p>
-            }
-
-            if (status === "accepted") {
-              return <p className="text-muted">accepted</p>
-            }
-
-            return (
-              <div className="d-flex justify-space-between align-items-center">
-                <a onClick={() => decline(id)} className="text-muted">
-                  Decline
-                </a>
-                <ButtonPrimary
-                  loading={declining || accepting}
-                  onClick={() => accept(id)}
-                  size="small">
-                  Accept
-                </ButtonPrimary>
-              </div>
-            )
-          }
-
-          return (
-            <div key={id} className="mb-2">
-              <p className="mb-1 text-left break-word">
-                Invited to <TeamName /> by <b>{creator.email}</b>
-              </p>
-              <InviteButtons />
-            </div>
-          )
-        }
-      )}
+      {invites.data.map(invite => {
+        return (
+          <div key={invite.id} className="mb-2">
+            <p className="mb-1 text-left break-word">
+              Invited to{" "}
+              <TeamName
+                teamId={invite.team.id}
+                name={invite.team.name}
+                active={invite.active}
+              />{" "}
+              by <b>{invite.creator.email}</b>
+            </p>
+            <InviteButtons inviteId={invite.id} />
+          </div>
+        )
+      })}
     </div>
   )
 }
 
-const mapStateToProps = (state: IState) => {
-  return {
-    loading: state.invites.loading,
-    invites: getInvites(state)
-  }
+export function NotificationsDropdown() {
+  const { ref, toggle, isOpen } = useDropdown()
+  return (
+    <DropdownContainer ref={ref}>
+      <a onClick={toggle} tabIndex={0} className="better-nav-item">
+        <span>Notifications</span>
+        <Chevron />
+      </a>
+
+      <DropdownMenu isOpen={isOpen}>
+        <Invites />
+      </DropdownMenu>
+    </DropdownContainer>
+  )
 }
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: fetchingInvitesAsync(dispatch),
-  accept: acceptingInviteAsync(dispatch),
-  decline: decliningInviteAsync(dispatch)
-})
-
-interface INotificationsDropdownProps {
-  readonly fetchData: () => void
-  readonly loading: boolean
-  readonly invites: IInvite[]
-  readonly accept: (id: IInvite["id"]) => void
-  readonly decline: (id: IInvite["id"]) => void
-}
-
-class NotificationsDropdown extends React.Component<
-  INotificationsDropdownProps
-> {
-  componentWillMount() {
-    this.props.fetchData()
-  }
-
-  render() {
-    return (
-      <Dropdown name="Notifications" relative={false}>
-        <Invites
-          invites={this.props.invites}
-          loading={this.props.loading}
-          accept={this.props.accept}
-          decline={this.props.decline}
-        />
-      </Dropdown>
-    )
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(NotificationsDropdown)
