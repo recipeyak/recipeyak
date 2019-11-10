@@ -5,7 +5,7 @@ import eachDayOfInterval from "date-fns/eachDayOfInterval"
 import isBefore from "date-fns/isBefore"
 import startOfDay from "date-fns/startOfDay"
 
-export function toDateString(date: Date | string) {
+export function toISODateString(date: Date | string): string {
   return format(new Date(date), "yyyy-MM-dd")
 }
 

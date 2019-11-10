@@ -7,7 +7,7 @@ import {
   ISession
 } from "@/store/reducers/user"
 import { ITeam, IMember } from "@/store/reducers/teams"
-import { toDateString } from "@/date"
+import { toISODateString } from "@/date"
 import { IRecipeBasic } from "@/components/RecipeTitle"
 import { IRecipe, IIngredient, IStep } from "@/store/reducers/recipes"
 import { IInvite } from "@/store/reducers/invites"
@@ -134,8 +134,8 @@ export const getShoppingList = (teamID: TeamID, start: Date, end: Date) => {
   const id = teamID === "personal" ? "me" : teamID
   return http.get<IGetShoppingListResponse>(`/api/v1/t/${id}/shoppinglist/`, {
     params: {
-      start: toDateString(start),
-      end: toDateString(end)
+      start: toISODateString(start),
+      end: toISODateString(end)
     }
   })
 }
@@ -291,8 +291,8 @@ export const declineInvite = (id: IInvite["id"]) =>
 export const reportBadMerge = () => http.post("/api/v1/report-bad-merge", {})
 
 export const getCalendarRecipeList = (teamID: TeamID, currentDay: Date) => {
-  const start = toDateString(startOfWeek(subWeeks(currentDay, 1)))
-  const end = toDateString(endOfWeek(addWeeks(currentDay, 1)))
+  const start = toISODateString(startOfWeek(subWeeks(currentDay, 1)))
+  const end = toISODateString(endOfWeek(addWeeks(currentDay, 1)))
   const id = teamID === "personal" ? "me" : teamID
   return http.get<ICalRecipe[]>(`/api/v1/t/${id}/calendar/`, {
     params: {
@@ -311,7 +311,7 @@ export const scheduleRecipe = (
   const id = teamID === "personal" ? "me" : teamID
   return http.post<ICalRecipe>(`/api/v1/t/${id}/calendar/`, {
     recipe: recipeID,
-    on: toDateString(on),
+    on: toISODateString(on),
     count
   })
 }
