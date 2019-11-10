@@ -4,9 +4,12 @@ import lastDayOfMonth from "date-fns/lastDayOfMonth"
 import eachDayOfInterval from "date-fns/eachDayOfInterval"
 import isBefore from "date-fns/isBefore"
 import startOfDay from "date-fns/startOfDay"
+import parseISO from "date-fns/parseISO"
 
-export function toDateString(date: Date | string) {
-  return format(new Date(date), "yyyy-MM-dd")
+export function toISODateString(date: Date | string): string {
+  // Note(sbdchd): parseISO("2019-11-09") !== new Date("2019-11-09")
+  const dateObj = typeof date === "string" ? parseISO(date) : date
+  return format(dateObj, "yyyy-MM-dd")
 }
 
 export function daysOfMonth(date: Date) {

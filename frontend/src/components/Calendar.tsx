@@ -12,7 +12,7 @@ import {
   fetchingShoppingListAsync
 } from "@/store/thunks"
 
-import { toDateString } from "@/date"
+import { toISODateString } from "@/date"
 
 import { teamsFrom } from "@/store/mapState"
 
@@ -121,7 +121,7 @@ function Days({ start, end, days, teamID }: IDaysProps) {
         return (
           <CalendarWeekContainer key={week}>
             {dates.map(date => {
-              const scheduledRecipes = days[toDateString(date)] || []
+              const scheduledRecipes = days[toISODateString(date)] || []
               return (
                 <CalendarDay
                   scheduledRecipes={scheduledRecipes}
