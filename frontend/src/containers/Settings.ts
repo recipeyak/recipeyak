@@ -35,7 +35,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   updateEmail: updatingEmailAsync(dispatch)
 })
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Settings)
+export default connect(mapStateToProps, mapDispatchToProps)(Settings)

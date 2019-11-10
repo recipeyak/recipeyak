@@ -149,7 +149,4 @@ class DatePickerForm extends React.Component<
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DatePickerForm)
+export default connect(mapStateToProps, mapDispatchToProps)(DatePickerForm)

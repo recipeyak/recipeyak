@@ -43,8 +43,4 @@ const mergeProps = (
     )
 })
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
-)(OAuth)
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(OAuth)

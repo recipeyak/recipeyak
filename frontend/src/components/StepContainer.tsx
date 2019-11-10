@@ -144,7 +144,4 @@ const mapDispatchToProps = {
   updatingStep: updateStep.request
 }
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(StepContainer)
+export default connect(null, mapDispatchToProps)(StepContainer)

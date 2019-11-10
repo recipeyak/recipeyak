@@ -302,7 +302,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     showNotificationWithTimeoutAsync(dispatch)({ message, level: "info" })
 })
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ShoppingList)
+export default connect(mapStateToProps, mapDispatchToProps)(ShoppingList)

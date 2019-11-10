@@ -74,10 +74,11 @@ const MemberRow = ({
           size="small"
           value={level}
           onChange={e =>
-            handleUserLevelChange(teamID, membershipID, e.target.value as
-              | "admin"
-              | "contributor"
-              | "read")
+            handleUserLevelChange(
+              teamID,
+              membershipID,
+              e.target.value as "admin" | "contributor" | "read"
+            )
           }>
           <option value="admin">Admin</option>
           <option value="contributor">Contributor</option>
@@ -111,9 +112,9 @@ const mapStateToProps = (
   }: Pick<IMemberRowProps, "userID" | "teamID" | "membershipID">
 ) => {
   const team = state.teams.byId[teamID]
-  const members = team ? team.members : {}
+  const members = team?.members ?? {}
   const member = members[membershipID]
-  const deleting = member ? member.deleting : false
+  const deleting = member?.deleting ?? false
   return {
     isUser: state.user.id === userID,
     deleting,
@@ -129,7 +130,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   deleteMembership: deletingMembershipAsync(dispatch)
 })
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(MemberRow)
+export default connect(mapStateToProps, mapDispatchToProps)(MemberRow)

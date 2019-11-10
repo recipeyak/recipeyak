@@ -337,13 +337,10 @@ const mapStateToProps = (
     ? getTeamRecipes(state.calendar)
     : getPersonalRecipes(state.calendar)
 
-  const transformedDays: IDays = days.reduce(
-    (a, b) => {
-      a[b.on] = (a[b.on] || []).concat(b)
-      return a
-    },
-    {} as IDays
-  )
+  const transformedDays: IDays = days.reduce((a, b) => {
+    a[b.on] = (a[b.on] || []).concat(b)
+    return a
+  }, {} as IDays)
 
   return {
     days: transformedDays,
@@ -370,7 +367,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   }
 })
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Calendar)
+export default connect(mapStateToProps, mapDispatchToProps)(Calendar)

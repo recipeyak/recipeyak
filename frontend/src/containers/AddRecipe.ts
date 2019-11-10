@@ -79,7 +79,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchData: fetchingTeamsAsync(dispatch)
 })
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AddRecipe)
+export default connect(mapStateToProps, mapDispatchToProps)(AddRecipe)

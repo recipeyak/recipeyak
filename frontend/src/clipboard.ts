@@ -21,8 +21,8 @@ export function copyToClipboard(text: string) {
     return
   }
   // restore previous selection
-  if (selected && selection != null) {
-    selection.removeAllRanges()
-    selection.addRange(selected)
+  if (selected) {
+    selection?.removeAllRanges()
+    selection?.addRange(selected)
   }
 }

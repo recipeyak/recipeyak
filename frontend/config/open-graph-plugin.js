@@ -14,9 +14,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin")
  */
 const format = item => {
   if (item.lang) {
-    return `<meta property="${item.property}" lang="${item.lang}" content="${
-      item.content
-    }" />`
+    return `<meta property="${item.property}" lang="${item.lang}" content="${item.content}" />`
   }
   return `<meta property="${item.property}" content="${item.content}" />`
 }

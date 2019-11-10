@@ -110,7 +110,4 @@ class TeamCreate extends React.Component<ITeamCreateProps, ITeamCreateState> {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TeamCreate)
+export default connect(mapStateToProps, mapDispatchToProps)(TeamCreate)

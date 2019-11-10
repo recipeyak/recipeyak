@@ -33,8 +33,4 @@ const mergeProps = (
   login: () => dispatchProps.login(stateProps.service, stateProps.token)
 })
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
-)(OAuth)
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(OAuth)

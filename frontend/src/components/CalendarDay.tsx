@@ -216,7 +216,4 @@ const mapDispatchToProps = (
   remove: deletingScheduledRecipeAsync(dispatch)
 })
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CalendarDay)
+export default connect(mapStateToProps, mapDispatchToProps)(CalendarDay)
