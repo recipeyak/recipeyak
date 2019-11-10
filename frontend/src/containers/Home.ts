@@ -13,7 +13,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchData: fetchingUserAsync(dispatch)
 })
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Home)
+export default connect(mapStateToProps, mapDispatchToProps)(Home)

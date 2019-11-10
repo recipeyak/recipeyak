@@ -14,7 +14,4 @@ const mapStateToProps = (state: IState) => ({
   loggedIn: state.user.loggedIn
 })
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PasswordReset)
+export default connect(mapStateToProps, mapDispatchToProps)(PasswordReset)

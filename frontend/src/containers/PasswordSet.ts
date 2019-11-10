@@ -17,7 +17,4 @@ const mapStateToProps = (state: IState) => ({
   error: state.passwordChange.errorPasswordUpdate
 })
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PasswordChange)
+export default connect(mapStateToProps, mapDispatchToProps)(PasswordChange)

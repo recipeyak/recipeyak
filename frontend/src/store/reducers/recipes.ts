@@ -349,9 +349,7 @@ export async function duplicateRecipeAsync(
   } else {
     dispatch(duplicateRecipe.failure(recipeId))
   }
-  if (cb != null) {
-    cb()
-  }
+  cb?.()
 }
 
 export interface IRecipeBasic

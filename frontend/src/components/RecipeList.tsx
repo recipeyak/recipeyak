@@ -124,7 +124,4 @@ const mapDispatchToProps = (
   fetchData: fetchingRecipeListAsync(dispatch)
 })
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(RecipesListSearch)
+export default connect(mapStateToProps, mapDispatchToProps)(RecipesListSearch)

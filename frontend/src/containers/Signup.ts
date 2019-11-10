@@ -19,7 +19,4 @@ const mapStateToProps = (state: IState) => {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Signup)
+export default connect(mapStateToProps, mapDispatchToProps)(Signup)
