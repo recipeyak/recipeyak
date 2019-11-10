@@ -8,7 +8,7 @@
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "typescript.updateImportsOnFileMove.enabled": "always",
 
-  "python.pythonPath": ".venv/bin/python3.7",
+  "python.pythonPath": ".venv/bin/python",
   "python.envFile": "${workspaceFolder}/.vscode/.env",
   // Use jedi instead of Microsoft's C# Python language server (MLS). I think
   // MLS has introduced too many regressions to be depended on.
