@@ -1045,7 +1045,9 @@ export const addingScheduledRecipeAsync = async (
   //    if failed, then we remove the preemptively added one, and display an error
 
   dispatch(
-    setCalendarRecipe(toCalRecipe(recipe.data, tempId, toISODateString(on), count))
+    setCalendarRecipe(
+      toCalRecipe(recipe.data, tempId, toISODateString(on), count)
+    )
   )
   const res = await api.scheduleRecipe(recipeID, teamID, on, count)
 
