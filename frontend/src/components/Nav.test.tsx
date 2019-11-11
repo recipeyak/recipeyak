@@ -1,26 +1,15 @@
 import React from "react"
-import { mount } from "enzyme"
-import Nav from "@/components/Nav"
+import { Navbar } from "@/components/Nav"
 import { TestProvider } from "@/testUtils"
+import renderer from "react-test-renderer"
 
 describe("<Nav/>", () => {
   it("renders without failure", () => {
-    mount(
+    const tree = renderer.create(
       <TestProvider>
-        <Nav
-          avatarURL="foo"
-          email="foo@foo.com"
-          loadingTeams
-          darkMode
-          loggingOut
-          teams={[]}
-          logout={() => undefined}
-          toggleDarkMode={() => undefined}
-          fetchData={() => undefined}
-          teamID={0}
-          scheduleURL={"/schedule"}
-        />
+        <Navbar />
       </TestProvider>
     )
+    expect(tree).toMatchSnapshot()
   })
 })
