@@ -115,9 +115,10 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
   left: auto;
   right: 0;
   z-index: 1000;
-  padding: 0.5rem 0;
+  padding: 0.5rem;
   margin: 0.125rem 0 0;
   font-size: 1rem;
+  white-space: nowrap;
   background-color: #f9f9f9;
   border: 1px solid rgba(0,0,0,0.15);
   border-radius: 0.25rem;
@@ -525,9 +526,10 @@ exports[`<Recipe/> snaps recipe all states 2`] = `
   left: auto;
   right: 0;
   z-index: 1000;
-  padding: 0.5rem 0;
+  padding: 0.5rem;
   margin: 0.125rem 0 0;
   font-size: 1rem;
+  white-space: nowrap;
   background-color: #f9f9f9;
   border: 1px solid rgba(0,0,0,0.15);
   border-radius: 0.25rem;
