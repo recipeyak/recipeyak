@@ -1,6 +1,7 @@
 import { createAsyncAction, ActionType, getType } from "typesafe-actions"
 import { IState } from "@/store/store"
 import { notUndefined } from "@/utils/general"
+import { Loading, Success } from "@/webdata"
 
 export const fetchInvites = createAsyncAction(
   "FETCH_INVITES_START",
@@ -140,6 +141,9 @@ const invites = (
 
 export default invites
 
-export function getInvites(state: IState): IInvite[] {
-  return Object.values(state.invites.byId).filter(notUndefined)
+export function getInvites(state: IState) {
+  if (state.invites.loading) {
+    return Loading()
+  }
+  return Success(Object.values(state.invites.byId).filter(notUndefined))
 }

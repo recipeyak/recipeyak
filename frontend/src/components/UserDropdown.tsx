@@ -1,82 +1,96 @@
-import React, { useState, useEffect, useCallback } from "react"
+import React from "react"
 import { Link } from "react-router-dom"
 
 import { setDarkModeClass } from "@/sideEffects"
 import { Button } from "@/components/Buttons"
 import { CheckBox } from "@/components/Forms"
+import { useSelector, useDispatch } from "@/hooks"
+import { toggleDarkMode as toggleDarkModeAction } from "@/store/reducers/user"
+import { loggingOutAsync } from "@/store/thunks"
+import {
+  DropdownContainer,
+  DropdownMenu,
+  useDropdown
+} from "@/components/Dropdown"
 
-interface IUserDropdownProps {
-  readonly darkMode: boolean
-  readonly avatarURL: string
-  readonly email: string
-  readonly toggleDarkMode: () => void
-  readonly logout: () => void
-  readonly loggingOut: boolean
+function useDarkMode(): [boolean, () => void] {
+  const dispatch = useDispatch()
+  const darkMode = useSelector(s => s.user.darkMode)
+  const toggle = React.useCallback(() => {
+    dispatch(toggleDarkModeAction())
+  }, [dispatch])
+  return [darkMode, toggle]
 }
 
-export default function UserDropdown(props: IUserDropdownProps) {
-  const [show, setShow] = useState(false)
-
-  const handleGeneralClick = useCallback(() => setShow(false), [])
-
-  useEffect(() => {
-    setDarkModeClass(props.darkMode)
-    return () => {
-      document.removeEventListener("click", handleGeneralClick)
-    }
-  }, [handleGeneralClick, props.darkMode])
-
-  useEffect(() => {
-    if (show) {
-      document.addEventListener("click", handleGeneralClick)
-    } else {
-      document.removeEventListener("click", handleGeneralClick)
-    }
-  }, [handleGeneralClick, show])
-
-  const toggle = () => setShow(prevShow => !prevShow)
-
-  const {
-    avatarURL,
-    email,
-    toggleDarkMode,
-    darkMode,
-    logout,
-    loggingOut
-  } = props
+interface IUserAvatarProps {
+  readonly onClick?: () => void
+}
+function UserAvatar({ onClick }: IUserAvatarProps) {
+  const avatarURL = useSelector(s => s.user.avatarURL)
   return (
-    <section>
-      <img
-        onClick={toggle}
-        alt=""
-        tabIndex={0}
-        className="user-profile-image better-nav-item p-0"
-        src={avatarURL}
-      />
+    <img
+      onClick={onClick}
+      alt=""
+      tabIndex={0}
+      className="user-profile-image better-nav-item p-0"
+      src={avatarURL}
+    />
+  )
+}
 
-      <div
-        className={
-          "box p-absolute direction-column align-items-start right-0 mt-1" +
-          (show ? " d-flex" : " d-none")
-        }>
-        <p className="bold">{email}</p>
-        <div className="d-flex align-center p-1-0">
-          <label className="d-flex align-items-center cursor-pointer">
-            <CheckBox
-              onChange={toggleDarkMode}
-              checked={darkMode}
-              className="mr-2"
-            />
-            Dark Mode
-          </label>
-        </div>
-        <Link to="/settings" className="p-1-0">
-          Settings
-        </Link>
-        <Button onClick={logout} loading={loggingOut} className="w-100">
-          Logout
-        </Button>
-      </div>
-    </section>
+function DarkModeToggle() {
+  const [darkMode, toggleDarkMode] = useDarkMode()
+
+  React.useEffect(() => {
+    setDarkModeClass(darkMode)
+  }, [darkMode])
+  return (
+    <div className="d-flex align-center p-1-0">
+      <label className="d-flex align-items-center cursor-pointer">
+        <CheckBox
+          onChange={toggleDarkMode}
+          checked={darkMode}
+          className="mr-2"
+        />
+        Dark Mode
+      </label>
+    </div>
+  )
+}
+
+function LogoutButton() {
+  const loggingOut = useSelector(s => s.user.loggingOut)
+  const dispatch = useDispatch()
+  const logout = React.useCallback(() => {
+    loggingOutAsync(dispatch)()
+  }, [dispatch])
+  return (
+    <Button onClick={logout} loading={loggingOut} className="w-100">
+      Logout
+    </Button>
+  )
+}
+
+function UserEmail() {
+  const email = useSelector(s => s.user.email)
+  return <p className="bold">{email}</p>
+}
+
+export function UserDropdown() {
+  const { ref, toggle, isOpen } = useDropdown()
+  return (
+    <DropdownContainer ref={ref}>
+      <UserAvatar onClick={toggle} />
+      <DropdownMenu isOpen={isOpen}>
+        <UserEmail />
+        <DarkModeToggle />
+        <p>
+          <Link to="/settings" className="p-1-0">
+            Settings
+          </Link>
+        </p>
+        <LogoutButton />
+      </DropdownMenu>
+    </DropdownContainer>
   )
 }
