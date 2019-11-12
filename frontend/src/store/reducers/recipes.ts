@@ -408,6 +408,21 @@ export interface IStep {
   readonly removing?: boolean
 }
 
+export interface IPublicUser {
+  readonly id: string
+  readonly email: string
+  readonly avatar_url: string
+}
+
+export interface INote {
+  readonly id: number
+  readonly text: string
+  readonly modified: string
+  readonly created: string
+  readonly last_modified_by: IPublicUser
+  readonly created_by: IPublicUser
+}
+
 type IRecipeOwner =
   | {
       type: "team"
@@ -428,6 +443,7 @@ export interface IRecipe {
   readonly servings: string
   readonly steps: ReadonlyArray<IStep>
   readonly edits: ReadonlyArray<unknown>
+  readonly notes: ReadonlyArray<INote>
   readonly modified: string
   readonly last_scheduled: string
   readonly team: ITeam["id"]

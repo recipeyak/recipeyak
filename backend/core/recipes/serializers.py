@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from core.models import Ingredient, MyUser, Recipe, ScheduledRecipe, Step, Note, Team
 from core.serialization import BaseModelSerializer, BaseRelatedField, BaseSerializer
+from core.teams.serializers import PublicUserSerializer
 
 
 class OwnerRelatedField(BaseRelatedField):
@@ -73,6 +74,9 @@ class StepSerializer(BaseModelSerializer):
 
 
 class NoteSerializer(BaseModelSerializer):
+    created_by = PublicUserSerializer()
+    last_modified_by = PublicUserSerializer()
+
     class Meta:
         model = Note
         read_only_fields = (
