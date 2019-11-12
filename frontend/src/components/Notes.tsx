@@ -48,10 +48,10 @@ interface INoteContainerProps {
 export function NoteContainer(props: INoteContainerProps) {
   return (
     <>
-      <NoteCreator />
+      <NoteCreator recipeId={props.recipeId} />
       <hr />
       {props.notes.map(note => (
-        <Note note={note} />
+        <Note note={note} className="pb-4" />
       ))}
     </>
   )
