@@ -10,7 +10,7 @@ import { ITeam, IMember } from "@/store/reducers/teams"
 import { IShoppingListItem } from "@/store/reducers/shoppinglist"
 import { toDateString } from "@/date"
 import { IRecipeBasic } from "@/components/RecipeTitle"
-import { IRecipe, IIngredient, IStep } from "@/store/reducers/recipes"
+import { IRecipe, IIngredient, IStep, INote } from "@/store/reducers/recipes"
 import { IInvite } from "@/store/reducers/invites"
 import { ICalRecipe } from "@/store/reducers/calendar"
 import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
@@ -175,6 +175,13 @@ export const deleteIngredient = (
   recipeID: IRecipe["id"],
   ingredientID: IIngredient["id"]
 ) => http.delete(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`)
+
+interface IAddNoteToRecipe {
+  readonly recipeId: IRecipe["id"]
+  readonly note: string
+}
+export const addNoteToRecipe = ({ recipeId, note }: IAddNoteToRecipe) =>
+  http.post<INote>(`/api/v1/recipes/${recipeId}/notes/`, { text: note })
 
 export const updateRecipe = (id: IRecipe["id"], data: unknown) =>
   http.patch<IRecipe>(`/api/v1/recipes/${id}/`, data)
