@@ -14,6 +14,7 @@ from core.models import (
     ScheduledRecipe,
     Step,
     Team,
+    Note,
 )
 
 
@@ -141,6 +142,7 @@ class RecipeAdmin(admin.ModelAdmin):
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Ingredient)
 admin.site.register(Step)
+admin.site.register(Note)
 admin.site.register(Team)
 admin.site.register(Invite)
 admin.site.register(Membership)
