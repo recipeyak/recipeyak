@@ -74,8 +74,8 @@ class StepSerializer(BaseModelSerializer):
 
 
 class NoteSerializer(BaseModelSerializer):
-    created_by = PublicUserSerializer()
-    last_modified_by = PublicUserSerializer()
+    created_by = PublicUserSerializer(read_only=True)
+    last_modified_by = PublicUserSerializer(read_only=True)
 
     class Meta:
         model = Note
