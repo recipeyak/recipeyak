@@ -3,6 +3,7 @@ import uniq from "lodash/uniq"
 export function classNames(
   ...args: (
     | string
+    | undefined
     | number
     | string[]
     | { [key: string]: boolean | undefined })[]
