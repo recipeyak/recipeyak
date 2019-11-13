@@ -259,6 +259,59 @@ async function addingStepToRecipeAsync(
   }
 }
 
+export const addNoteToRecipe = createAsyncAction(
+  "ADD_NOTE_TO_RECIPE_REQUEST",
+  "ADD_NOTE_TO_RECIPE_SUCCESS",
+  "ADD_NOTE_TO_RECIPE_FAILURE"
+)<
+  { id: IRecipe["id"] },
+  {
+    recipeId: IRecipe["id"]
+    note: INote
+  },
+  IRecipe["id"]
+>()
+
+export const toggleEditingNote = createStandardAction("TOGGLE_EDITING_NOTE")<{
+  recipeId: number
+  value: boolean
+}>()
+export const setDraftNote = createStandardAction("SET_DRAFT_NOTE")<{
+  recipeId: number
+  text: string
+}>()
+interface IAddNoteToRecipeArg {
+  readonly id: IRecipe["id"]
+  readonly note: string
+}
+
+async function addingNoteToRecipeAsync(
+  payload: IAddNoteToRecipeArg,
+  dispatch: Dispatch
+) {
+  const res = await api.addNoteToRecipe({
+    recipeId: payload.id,
+    note: payload.note
+  })
+  if (isOk(res)) {
+    dispatch(
+      addNoteToRecipe.success({
+        recipeId: payload.id,
+        note: res.data
+      })
+    )
+  } else {
+    dispatch(addNoteToRecipe.failure(payload.id))
+  }
+}
+
+export const blurNoteTextArea = () => {
+  const el = document.getElementById("new_note_textarea")
+  if (el) {
+    el.blur()
+  }
+}
+
 interface IAddIngredientToRecipeArg {
   readonly recipeID: IRecipe["id"]
   // TODO(sbdchd): this type should be more specific
@@ -358,6 +411,9 @@ export type RecipeActions =
   | ActionType<typeof resetAddRecipeErrors>
   | ActionType<typeof toggleEditingRecipe>
   | ActionType<typeof setRecipeStepDraft>
+  | ActionType<typeof addNoteToRecipe>
+  | ActionType<typeof toggleEditingNote>
+  | ActionType<typeof setDraftNote>
 
 const mapSuccessLikeById = <T extends IRecipe["id"][]>(
   arr: WebData<T>,
@@ -454,10 +510,13 @@ export interface IRecipe {
   readonly editing?: boolean
   readonly deleting?: boolean
   readonly addingStepToRecipe?: boolean
+  readonly addingNoteToRecipe?: boolean
   readonly addingIngredient?: boolean
   readonly scheduling?: boolean
   readonly updating?: boolean
   readonly draftStep?: string
+  readonly draftNote?: string
+  readonly editingNote?: boolean
 }
 
 function mapRecipeSuccessById(
@@ -693,6 +752,55 @@ export const recipes = (
       return mapRecipeSuccessById(state, action.payload, recipe => ({
         ...recipe,
         deleting: false
+      }))
+    case getType(toggleEditingNote):
+      const nextState = mapRecipeSuccessById(
+        state,
+        action.payload.recipeId,
+        recipe => ({
+          ...recipe,
+          editingNote: action.payload.value
+        })
+      )
+      if (!action.payload.value) {
+        return loop(nextState, Cmd.run(blurNoteTextArea))
+      }
+      return nextState
+    case getType(setDraftNote):
+      return mapRecipeSuccessById(state, action.payload.recipeId, recipe => ({
+        ...recipe,
+        draftNote: action.payload.text
+      }))
+    case getType(addNoteToRecipe.request):
+      const maybeRecipe = state.byId[action.payload.id]
+      if (!isSuccessOrRefetching(maybeRecipe)) {
+        return state
+      }
+      const text = maybeRecipe.data.draftNote || ""
+      return loop(
+        mapRecipeSuccessById(state, action.payload.id, recipe => ({
+          ...recipe,
+          addingNoteToRecipe: true
+        })),
+        Cmd.run(addingNoteToRecipeAsync, {
+          args: [{ id: action.payload.id, note: text }, Cmd.dispatch]
+        })
+      )
+    case getType(addNoteToRecipe.success):
+      return loop(
+        mapRecipeSuccessById(state, action.payload.recipeId, recipe => ({
+          ...recipe,
+          notes: recipe.notes.concat(action.payload.note),
+          draftNote: "",
+          editingNote: false,
+          addingNoteToRecipe: false
+        })),
+        Cmd.run(blurNoteTextArea)
+      )
+    case getType(addNoteToRecipe.failure):
+      return mapRecipeSuccessById(state, action.payload, recipe => ({
+        ...recipe,
+        addingNoteToRecipe: false
       }))
     case getType(addStepToRecipe.request):
       return loop(
