@@ -8,7 +8,8 @@ import {
   setDraftNote,
   updateNote,
   toggleEditingNoteById,
-  deleteNote
+  deleteNote,
+  INote
 } from "@/store/reducers/recipes"
 import { ButtonPrimary, ButtonSecondary } from "@/components/Buttons"
 import { classNames } from "@/classnames"
@@ -18,26 +19,24 @@ import orderBy from "lodash/orderBy"
 import Textarea from "react-textarea-autosize"
 import { Markdown } from "@/components/Markdown"
 
-interface INoteProps {
-  readonly note: IRecipe["notes"][0]
+interface IUseNoteEditHandlers {
+  readonly note: INote
   readonly recipeId: IRecipe["id"]
-  readonly className?: string
 }
-export function Note({ recipeId, note, className }: INoteProps) {
+function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
   const dispatch = useDispatch()
-  const [newText, setNewText] = useState(note.text)
+  const [draftText, setNewText] = useState(note.text)
   useEffect(() => {
     setNewText(note.text)
   }, [note])
-  const created_by = note.created_by
-  const isOpen = useSelector(s => {
+  const isEditing = useSelector(s => {
     const noteData = s.recipes.notesById[note.id]
     if (!noteData) {
       return false
     }
     return Boolean(noteData.openForEditing)
   })
-  const updating = useSelector(s => {
+  const isUpdating = useSelector(s => {
     const noteData = s.recipes.notesById[note.id]
     if (!noteData) {
       return false
@@ -45,13 +44,13 @@ export function Note({ recipeId, note, className }: INoteProps) {
     return Boolean(noteData.saving)
   })
 
-  const onUpdate = () => {
-    dispatch(updateNote.request({ recipeId, noteId: note.id, text: newText }))
+  const onSave = () => {
+    dispatch(updateNote.request({ recipeId, noteId: note.id, text: draftText }))
   }
   const setEditing = (value: boolean) => {
     dispatch(toggleEditingNoteById({ noteId: note.id, value }))
   }
-  const onClose = () => {
+  const onCancel = () => {
     setEditing(false)
   }
   const onDelete = () => {
@@ -59,33 +58,63 @@ export function Note({ recipeId, note, className }: INoteProps) {
       dispatch(deleteNote.request({ noteId: note.id, recipeId }))
     }
   }
-  const handleTextAreaKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const onEditorKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Escape") {
-      onClose()
+      onCancel()
     }
     if (e.key === "Enter" && e.metaKey) {
-      onUpdate()
+      onSave()
     }
   }
-  const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) {
-      setNewText(e.target.value)
+  const onEditorChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setNewText(e.target.value)
   }
-  const handleNoteTextClick = () => {
+  const onNoteClick = () => {
     setEditing(true)
   }
+  return {
+    draftText,
+    isEditing,
+    isUpdating,
+    onCancel,
+    onDelete,
+    onEditorChange,
+    onEditorKeyDown,
+    onNoteClick,
+    onSave
+  }
+}
+
+interface INoteProps {
+  readonly note: INote
+  readonly recipeId: IRecipe["id"]
+  readonly className?: string
+}
+export function Note({ recipeId, note, className }: INoteProps) {
+  const {
+    draftText,
+    isEditing,
+    isUpdating,
+    onCancel,
+    onDelete,
+    onEditorChange,
+    onEditorKeyDown,
+    onNoteClick,
+    onSave
+  } = useNoteEditHandlers({ note, recipeId })
   return (
     <div className={classNames("d-flex align-items-start", className)}>
-      <Avatar avatarURL={created_by.avatar_url} className="mr-2" />
+      <Avatar avatarURL={note.created_by.avatar_url} className="mr-2" />
       <div className="w-100">
         <p>
-          {created_by.email} |{" "}
+          {note.created_by.email} |{" "}
           {formatDistanceToNow(new Date(note.created), { addSuffix: true })}
         </p>
-        {!isOpen ? (
+        {!isEditing ? (
           <Markdown
             className="cursor-pointer"
             title="click to edit"
-            onClick={handleNoteTextClick}>
+            onClick={onNoteClick}>
             {note.text}
           </Markdown>
         ) : (
@@ -93,23 +122,23 @@ export function Note({ recipeId, note, className }: INoteProps) {
             <Textarea
               autoFocus
               className="my-textarea mb-2"
-              onKeyDown={handleTextAreaKeyDown}
+              onKeyDown={onEditorKeyDown}
               minRows={5}
-              value={newText}
-              onChange={handleTextAreaChange}
+              value={draftText}
+              onChange={onEditorChange}
               placeholder="Add a note..."
             />
-            {isOpen && (
+            {isEditing && (
               <div className="d-flex justify-between align-center">
                 <div className="d-flex justify-between align-center">
                   <ButtonPrimary
                     size="small"
-                    onClick={onUpdate}
-                    loading={updating}
+                    onClick={onSave}
+                    loading={isUpdating}
                     className="mr-2">
                     save
                   </ButtonPrimary>
-                  <ButtonSecondary size="small" onClick={onClose}>
+                  <ButtonSecondary size="small" onClick={onCancel}>
                     cancel
                   </ButtonSecondary>
                 </div>
@@ -125,10 +154,10 @@ export function Note({ recipeId, note, className }: INoteProps) {
   )
 }
 
-interface INoteCreatorProps {
-  readonly recipeId: number
+interface IUseNoteCreatorHandlers {
+  readonly recipeId: IRecipe["id"]
 }
-function NoteCreator({ recipeId }: INoteCreatorProps) {
+function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
   const dispatch = useDispatch()
   const recipe = useSelector(state => {
     const maybeRecipe = state.recipes.byId[recipeId]
@@ -137,12 +166,6 @@ function NoteCreator({ recipeId }: INoteCreatorProps) {
     }
     return maybeRecipe.data
   })
-  if (!recipe) {
-    return null
-  }
-  const isOpen = recipe.creatingNewNote
-  const note = recipe.draftNote
-  const loading = recipe.addingNoteToRecipe
 
   const onCreate = () => {
     dispatch(addNoteToRecipe.request({ id: recipeId }))
@@ -150,36 +173,82 @@ function NoteCreator({ recipeId }: INoteCreatorProps) {
   const onCancel = () => {
     dispatch(toggleCreatingNewNote({ recipeId, value: false }))
   }
+  const onEditorKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Escape") {
+      dispatch(toggleCreatingNewNote({ recipeId, value: false }))
+    }
+    if (e.key === "Enter" && e.metaKey) {
+      onCreate()
+    }
+  }
+  const onEditorFocus = () => {
+    dispatch(toggleCreatingNewNote({ recipeId, value: true }))
+  }
+  const onEditorChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    dispatch(setDraftNote({ recipeId, text: e.target.value }))
+  }
+
+
+  const isEditing = recipe?.creatingNewNote ?? false
+  const isLoading = recipe?.addingNoteToRecipe ?? false
+  const editorText = isEditing && recipe?.draftNote || ""
+  const editorRowCount = !isEditing ? 1 : undefined
+  const editorMinRowCount = isEditing ? 5 : 0
+  const editorClassNames = classNames({
+    "my-textarea mb-2": isEditing,
+    textarea: !isEditing
+  })
+
+  return {
+    isEditing,
+    onEditorKeyDown,
+    editorClassNames,
+    onEditorChange,
+    editorMinRowCount,
+    editorRowCount,
+    editorText,
+    onEditorFocus,
+    onCreate,
+    isLoading,
+    onCancel,
+  }
+}
+
+interface INoteCreatorProps {
+  readonly recipeId: IRecipe["id"]
+}
+function NoteCreator({ recipeId }: INoteCreatorProps) {
+  const {
+    isEditing,
+    onEditorKeyDown,
+    editorClassNames,
+    onEditorChange,
+    editorMinRowCount,
+    editorRowCount,
+    editorText,
+    onEditorFocus,
+    onCreate,
+    isLoading,
+    onCancel,
+  } = useNoteCreatorHandlers({
+    recipeId
+  })
   return (
     <div>
       <Textarea
         id="new_note_textarea"
-        className={classNames({
-          "my-textarea mb-2": isOpen,
-          textarea: !isOpen
-        })}
-        onKeyDown={e => {
-          if (e.key === "Escape") {
-            dispatch(toggleCreatingNewNote({ recipeId, value: false }))
-          }
-          if (e.key === "Enter" && e.metaKey) {
-            onCreate()
-          }
-        }}
-        minRows={isOpen ? 5 : 0}
-        rows={!isOpen ? 1 : undefined}
-        value={isOpen ? note : ""}
-        onFocus={() =>
-          dispatch(toggleCreatingNewNote({ recipeId, value: true }))
-        }
-        onChange={e =>
-          dispatch(setDraftNote({ recipeId, text: e.target.value }))
-        }
+        className={editorClassNames}
+        onKeyDown={onEditorKeyDown}
+        minRows={editorMinRowCount}
+        rows={editorRowCount}
+        value={editorText}
+        onFocus={onEditorFocus}
+        onChange={onEditorChange}
         placeholder="Add a note..."
       />
-      {isOpen && (
+      {isEditing && (
         <div className="d-flex justify-between align-center">
-          <ButtonPrimary size="small" onClick={onCreate} loading={loading}>
+          <ButtonPrimary size="small" onClick={onCreate} loading={isLoading}>
             add
           </ButtonPrimary>
           <ButtonSecondary size="small" onClick={onCancel}>
