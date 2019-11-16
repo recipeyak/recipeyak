@@ -2,19 +2,10 @@ import React from "react"
 import Textarea from "react-textarea-autosize"
 import { IRecipe } from "@/store/reducers/recipes"
 import GlobalEvent from "@/components/GlobalEvent"
-import ReactMarkdown, { NodeType } from "react-markdown"
+import { Markdown } from "@/components/Markdown"
 import { Button, ButtonLink } from "@/components/Buttons"
 import { hasSelection } from "@/utils/general"
 import { capitalizeUnits } from "@/text"
-
-const ALLOWED_MARKDOWN_TYPES: NodeType[] = [
-  "root",
-  "text",
-  "delete",
-  "paragraph",
-  "strong",
-  "emphasis"
-]
 
 interface IListItemProps {
   readonly id: number
@@ -214,10 +205,7 @@ export default class ListItem extends React.Component<
         </section>
       </form>
     ) : (
-      <ReactMarkdown
-        source={capitalizeUnits(this.state.text)}
-        allowedTypes={ALLOWED_MARKDOWN_TYPES}
-      />
+      <Markdown>{capitalizeUnits(this.state.text)}</Markdown>
     )
 
     return (

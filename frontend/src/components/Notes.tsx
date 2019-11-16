@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "@/hooks"
 import { isSuccessLike } from "@/webdata"
 import orderBy from "lodash/orderBy"
 import Textarea from "react-textarea-autosize"
+import { Markdown } from "@/components/Markdown"
 
 interface INoteProps {
   readonly note: IRecipe["notes"][0]
@@ -67,14 +68,14 @@ export function Note({ recipeId, note, className }: INoteProps) {
           {distanceInWordsToNow(new Date(note.created), { addSuffix: true })}
         </p>
         {!isOpen ? (
-          <p
+          <Markdown
             className="cursor-pointer"
             title="click to edit"
             onClick={() => {
               setEditing(true)
             }}>
             {note.text}
-          </p>
+          </Markdown>
         ) : (
           <>
             <Textarea
