@@ -45,7 +45,7 @@ export function Note({ recipeId, note, className }: INoteProps) {
     return Boolean(noteData.saving)
   })
 
-  const onCreate = () => {
+  const onUpdate = () => {
     dispatch(updateNote.request({ recipeId, noteId: note.id, text: newText }))
   }
   const setEditing = (value: boolean) => {
@@ -59,6 +59,20 @@ export function Note({ recipeId, note, className }: INoteProps) {
       dispatch(deleteNote.request({ noteId: note.id, recipeId }))
     }
   }
+  const handleTextAreaKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Escape") {
+      onClose()
+    }
+    if (e.key === "Enter" && e.metaKey) {
+      onUpdate()
+    }
+  }
+  const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) {
+      setNewText(e.target.value)
+  }
+  const handleNoteTextClick = () => {
+    setEditing(true)
+  }
   return (
     <div className={classNames("d-flex align-items-start", className)}>
       <Avatar avatarURL={created_by.avatar_url} className="mr-2" />
@@ -71,9 +85,7 @@ export function Note({ recipeId, note, className }: INoteProps) {
           <Markdown
             className="cursor-pointer"
             title="click to edit"
-            onClick={() => {
-              setEditing(true)
-            }}>
+            onClick={handleNoteTextClick}>
             {note.text}
           </Markdown>
         ) : (
@@ -81,17 +93,10 @@ export function Note({ recipeId, note, className }: INoteProps) {
             <Textarea
               autoFocus
               className="my-textarea mb-2"
-              onKeyDown={e => {
-                if (e.key === "Escape") {
-                  onClose()
-                }
-                if (e.key === "Enter" && e.metaKey) {
-                  onCreate()
-                }
-              }}
+              onKeyDown={handleTextAreaKeyDown}
               minRows={5}
               value={newText}
-              onChange={e => setNewText(e.target.value)}
+              onChange={handleTextAreaChange}
               placeholder="Add a note..."
             />
             {isOpen && (
@@ -99,7 +104,7 @@ export function Note({ recipeId, note, className }: INoteProps) {
                 <div className="d-flex justify-between align-center">
                   <ButtonPrimary
                     size="small"
-                    onClick={onCreate}
+                    onClick={onUpdate}
                     loading={updating}
                     className="mr-2">
                     save

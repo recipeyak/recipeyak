@@ -107,6 +107,7 @@ function RecipeDetails({ recipe }: IRecipeDetailsProps) {
           </a>
         )}
       </div>
+      {/* extra div to push notes to the right side of the grid */}
       <div />
       <div>
         <SectionTitle>Notes</SectionTitle>
