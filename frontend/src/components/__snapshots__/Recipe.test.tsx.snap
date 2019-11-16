@@ -966,6 +966,7 @@ Object {
     "last_scheduled": "1779",
     "modified": "1778",
     "name": "Apple Crisp",
+    "notes": Array [],
     "owner": Object {
       "id": 1,
       "type": "user",
