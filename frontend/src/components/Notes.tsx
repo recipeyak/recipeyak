@@ -188,10 +188,9 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     dispatch(setDraftNote({ recipeId, text: e.target.value }))
   }
 
-
   const isEditing = recipe?.creatingNewNote ?? false
   const isLoading = recipe?.addingNoteToRecipe ?? false
-  const editorText = isEditing && recipe?.draftNote || ""
+  const editorText = (isEditing && recipe?.draftNote) || ""
   const editorRowCount = !isEditing ? 1 : undefined
   const editorMinRowCount = isEditing ? 5 : 0
   const editorClassNames = classNames({
@@ -210,7 +209,7 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     onEditorFocus,
     onCreate,
     isLoading,
-    onCancel,
+    onCancel
   }
 }
 
@@ -229,7 +228,7 @@ function NoteCreator({ recipeId }: INoteCreatorProps) {
     onEditorFocus,
     onCreate,
     isLoading,
-    onCancel,
+    onCancel
   } = useNoteCreatorHandlers({
     recipeId
   })
