@@ -2,7 +2,7 @@ import React, { ReactElement } from "react"
 import { match as Match } from "react-router"
 import { Location } from "history"
 import renderer, { act } from "react-test-renderer"
-import { mount, render } from "enzyme"
+import { mount } from "enzyme"
 import { history, Store, createEmptyStore } from "@/store/store"
 import { Recipe, useRecipe } from "@/components/Recipe"
 import {

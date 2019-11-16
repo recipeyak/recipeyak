@@ -1,5 +1,5 @@
 import React from "react"
-import ReactMarkdown, { NodeType, ReactMarkdownProps } from "react-markdown"
+import ReactMarkdown, { NodeType } from "react-markdown"
 const ALLOWED_MARKDOWN_TYPES: NodeType[] = [
   "root",
   "text",
