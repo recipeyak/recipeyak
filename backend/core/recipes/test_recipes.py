@@ -250,7 +250,7 @@ def test_modifying_note_of_recipe(client, user, user2, recipe):
     res = client.patch(f"/api/v1/recipes/{recipe.id}/notes/{note.id}/", data)
     assert status.is_success(res.status_code)
     assert res.json()["last_modified_by"]["id"] == user2.id
-    assert res.json()["created_by"] == user.id
+    assert res.json()["created_by"]["id"] == user.id
 
 
 def test_delete_note_of_recipe(client, user, user2, recipe):
