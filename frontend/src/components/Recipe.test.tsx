@@ -1,8 +1,8 @@
-import React from "react"
+import React, { ReactElement } from "react"
 import { match as Match } from "react-router"
 import { Location } from "history"
 import renderer, { act } from "react-test-renderer"
-import { mount } from "enzyme"
+import { mount, render } from "enzyme"
 import { history, Store, createEmptyStore } from "@/store/store"
 import { Recipe, useRecipe } from "@/components/Recipe"
 import {
@@ -40,6 +40,13 @@ function testHook<T>(func: () => T, store: Store): T {
   )
 
   return root.find<ISpanProps<T>>(Span).props().output
+}
+
+// tslint:disable-next-line no-any
+function rendererCreate(x: ReactElement<any>) {
+  return renderer.create(x, {
+    createNodeMock: () => document.createElement("textarea")
+  })
 }
 
 describe("<Recipe/>", () => {
@@ -88,17 +95,15 @@ describe("<Recipe/>", () => {
           store.dispatch(action)
         })
 
-        const tree = renderer
-          .create(
-            <TestProvider store={store}>
-              <Recipe
-                history={history}
-                match={match}
-                location={{ ...location, search: "?timeline=1" }}
-              />
-            </TestProvider>
-          )
-          .toJSON()
+        const tree = rendererCreate(
+          <TestProvider store={store}>
+            <Recipe
+              history={history}
+              match={match}
+              location={{ ...location, search: "?timeline=1" }}
+            />
+          </TestProvider>
+        ).toJSON()
         expect(tree).toMatchSnapshot()
       })
     })
@@ -115,7 +120,7 @@ describe("<Recipe/>", () => {
 
       store.dispatch(fetchRecipe.success(recipe))
 
-      const root = renderer.create(
+      const root = rendererCreate(
         <TestProvider store={store}>
           <Recipe
             history={history}
