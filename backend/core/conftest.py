@@ -4,7 +4,7 @@ from logging import getLogger
 import pytest
 from rest_framework.test import APIClient
 
-from core.models import Ingredient, MyUser, Recipe, ScheduledRecipe, Step, Team, Note
+from core.models import Ingredient, MyUser, Note, Recipe, ScheduledRecipe, Step, Team
 
 getLogger("flake8").propagate = False
 

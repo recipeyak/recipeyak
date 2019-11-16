@@ -20,19 +20,19 @@ from core.auth.permissions import (
 from core.models import (
     Ingredient,
     MyUser,
+    Note,
     Recipe,
     ScheduledRecipe,
     Step,
     Team,
-    Note,
     user_and_team_recipes,
 )
 from core.recipes.serializers import (
     IngredientSerializer,
+    NoteSerializer,
     RecipeMoveCopySerializer,
     RecipeSerializer,
     RecipeTimelineSerializer,
-    NoteSerializer,
     StepSerializer,
 )
 from core.recipes.utils import add_positions

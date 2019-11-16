@@ -10,11 +10,11 @@ from core.models import (
     Invite,
     Membership,
     MyUser,
+    Note,
     Recipe,
     ScheduledRecipe,
     Step,
     Team,
-    Note,
 )
 
 

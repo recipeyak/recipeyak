@@ -5,9 +5,9 @@ from rest_framework_nested import routers
 
 from core.recipes.views import (
     IngredientViewSet,
+    NoteViewSet,
     RecipeViewSet,
     StepViewSet,
-    NoteViewSet,
     TeamRecipesViewSet,
     get_recipe_timeline,
 )
