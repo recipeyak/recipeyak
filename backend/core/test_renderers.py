@@ -1,5 +1,6 @@
 import json
 from decimal import Decimal
+
 from core.renderers import JSONEncoder
 
 
@@ -19,4 +20,3 @@ def test_decimal_encoding() -> None:
         decimal="0.125",
         larger_than_float="2000000.123456789",
     )
-
