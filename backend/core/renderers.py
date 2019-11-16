@@ -5,12 +5,23 @@ from rest_framework.renderers import JSONRenderer as DRFJSONRenderer
 from rest_framework.utils.encoders import JSONEncoder as DRFEncoder
 
 
+def fmt_decimal(d: Decimal) -> str:
+    """
+    remove trailing zeros
+
+    Decimal("4.0000") -> "4"
+    """
+    if d == d.to_integral():
+        return str(d.quantize(Decimal(1)))
+    return str(d.normalize())
+
+
 class JSONEncoder(DRFEncoder):
     def default(self, o):
         if dataclasses.is_dataclass(o):
             return dataclasses.asdict(o)
         if isinstance(o, Decimal):
-            return str(o.normalize())
+            return fmt_decimal(o)
         return super().default(o)
 
 
