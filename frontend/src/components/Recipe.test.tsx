@@ -42,8 +42,7 @@ function testHook<T>(func: () => T, store: Store): T {
   return root.find<ISpanProps<T>>(Span).props().output
 }
 
-// tslint:disable-next-line no-any
-function rendererCreate(x: ReactElement<any>) {
+function rendererCreate<T>(x: ReactElement<T>) {
   return renderer.create(x, {
     createNodeMock: () => document.createElement("textarea")
   })
