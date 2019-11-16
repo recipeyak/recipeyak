@@ -348,6 +348,38 @@ async function updatingNoteAsync(
   }
 }
 
+export const deleteNote = createAsyncAction(
+  "DELETE_NOTE_REQUEST",
+  "DELETE_NOTE_SUCCESS",
+  "DELETE_NOTE_FAILURE"
+)<
+  { recipeId: IRecipe["id"]; noteId: INote["id"] },
+  { recipeId: IRecipe["id"]; noteId: INote["id"] },
+  { recipeId: IRecipe["id"]; noteId: INote["id"] }
+>()
+
+interface IDeletingNoteAsync {
+  readonly noteId: INote["id"]
+  readonly recipeId: IRecipe["id"]
+}
+async function deletingNoteAsync(
+  payload: IDeletingNoteAsync,
+  dispatch: Dispatch
+) {
+  const res = await api.deleteNote({
+    noteId: payload.noteId
+  })
+  if (isOk(res)) {
+    dispatch(
+      deleteNote.success({ recipeId: payload.recipeId, noteId: payload.noteId })
+    )
+  } else {
+    dispatch(
+      deleteNote.failure({ recipeId: payload.recipeId, noteId: payload.noteId })
+    )
+  }
+}
+
 export const blurNoteTextArea = () => {
   const el = document.getElementById("new_note_textarea")
   if (el) {
@@ -459,6 +491,7 @@ export type RecipeActions =
   | ActionType<typeof setDraftNote>
   | ActionType<typeof updateNote>
   | ActionType<typeof toggleEditingNoteById>
+  | ActionType<typeof deleteNote>
 
 const mapSuccessLikeById = <T extends IRecipe["id"][]>(
   arr: WebData<T>,
@@ -603,6 +636,7 @@ function mapNoteById(
 interface INoteByIdState {
   openForEditing?: boolean
   saving?: boolean
+  deleting?: boolean
 }
 
 export interface IRecipesState {
@@ -871,6 +905,42 @@ export const recipes = (
           state.notesById,
           action.payload.noteId,
           note => ({ ...note, saving: false })
+        )
+      }
+    case getType(deleteNote.request):
+      return loop(
+        {
+          ...state,
+          notesById: mapNoteById(
+            state.notesById,
+            action.payload.noteId,
+            note => ({ ...note, deleting: true })
+          )
+        },
+        Cmd.run(deletingNoteAsync, {
+          args: [
+            {
+              recipeId: action.payload.recipeId,
+              noteId: action.payload.noteId
+            },
+            Cmd.dispatch
+          ]
+        })
+      )
+    case getType(deleteNote.success):
+      return mapRecipeSuccessById(state, action.payload.recipeId, recipe => {
+        return {
+          ...recipe,
+          notes: recipe.notes.filter(x => x.id !== action.payload.noteId)
+        }
+      })
+    case getType(deleteNote.failure):
+      return {
+        ...state,
+        notesById: mapNoteById(
+          state.notesById,
+          action.payload.noteId,
+          note => ({ ...note, deleting: false })
         )
       }
     case getType(toggleEditingNoteById):

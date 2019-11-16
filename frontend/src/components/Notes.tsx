@@ -7,7 +7,8 @@ import {
   toggleCreatingNewNote,
   setDraftNote,
   updateNote,
-  toggleEditingNoteById
+  toggleEditingNoteById,
+  deleteNote
 } from "@/store/reducers/recipes"
 import { ButtonPrimary, ButtonSecondary } from "@/components/Buttons"
 import { classNames } from "@/classnames"
@@ -54,7 +55,9 @@ export function Note({ recipeId, note, className }: INoteProps) {
     setEditing(false)
   }
   const onDelete = () => {
-    alert("delete")
+    if (confirm("Are you sure you want to delete this note?")) {
+      dispatch(deleteNote.request({ noteId: note.id, recipeId }))
+    }
   }
   return (
     <div className={classNames("d-flex align-items-start", className)}>
