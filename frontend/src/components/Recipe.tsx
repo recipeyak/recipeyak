@@ -23,6 +23,7 @@ import { Link } from "react-router-dom"
 import queryString from "query-string"
 import { RecipeTimeline } from "@/components/RecipeTimeline"
 import { useDispatch, useSelector } from "@/hooks"
+import { NoteContainer } from "@/components/Notes"
 
 interface IRecipeDetailsProps {
   readonly recipe: IRecipe
@@ -105,6 +106,12 @@ function RecipeDetails({ recipe }: IRecipeDetailsProps) {
             add
           </a>
         )}
+      </div>
+      {/* extra div to push notes to the right side of the grid */}
+      <div />
+      <div>
+        <SectionTitle>Notes</SectionTitle>
+        <NoteContainer notes={recipe.notes} recipeId={recipe.id} />
       </div>
     </section>
   )

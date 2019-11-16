@@ -316,6 +316,28 @@ class Step(CommonInfo, SoftDeleteObject):
         return self.text
 
 
+class Note(CommonInfo, SoftDeleteObject):
+    """Helpful information for a recipe"""
+
+    text = models.TextField()
+    created_by = models.ForeignKey(
+        MyUser, related_name="notes_created_by", on_delete=models.CASCADE
+    )
+    last_modified_by = models.ForeignKey(
+        MyUser,
+        null=True,
+        related_name="notes_last_modified_by",
+        on_delete=models.CASCADE,
+    )
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ["-created"]
+
+    def __str__(self):
+        return self.text
+
+
 class ScheduledRecipeManager(models.Manager):
     def create_scheduled(
         self, recipe: Recipe, on, team, count: int, user: MyUser

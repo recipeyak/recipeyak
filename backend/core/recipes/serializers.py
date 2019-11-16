@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
-from core.models import Ingredient, MyUser, Recipe, ScheduledRecipe, Step, Team
+from core.models import Ingredient, MyUser, Note, Recipe, ScheduledRecipe, Step, Team
 from core.serialization import BaseModelSerializer, BaseRelatedField, BaseSerializer
+from core.teams.serializers import PublicUserSerializer
 
 
 class OwnerRelatedField(BaseRelatedField):
@@ -72,10 +73,40 @@ class StepSerializer(BaseModelSerializer):
                 self.fields.pop(field_name)
 
 
+class NoteSerializer(BaseModelSerializer):
+    created_by = PublicUserSerializer(read_only=True)
+    last_modified_by = PublicUserSerializer(read_only=True)
+
+    class Meta:
+        model = Note
+        read_only_fields = (
+            "id",
+            "created_by",
+            "last_modified_by",
+            "created",
+            "modified",
+        )
+        fields = (*read_only_fields, "text")
+
+    def __init__(self, *args, **kwargs):
+        # Don't pass the 'fields' arg up to the superclass
+        fields = kwargs.pop("fields", None)
+
+        super().__init__(*args, **kwargs)
+
+        if fields is not None:
+            # Drop any fields that are not specified in the `fields` argument.
+            allowed = set(fields)
+            existing = set(self.fields)
+            for field_name in existing - allowed:
+                self.fields.pop(field_name)
+
+
 class RecipeSerializer(BaseModelSerializer):
     steps = StepSerializer(many=True, source="step_set")
     last_scheduled = serializers.DateField(source="get_last_scheduled", read_only=True)
     ingredients = IngredientSerializer(many=True, source="ingredient_set")
+    notes = NoteSerializer(many=True, source="note_set", read_only=True)
     owner = OwnerRelatedField(read_only=True)
     # specify default None so we can use this as an optional field
     team = serializers.IntegerField(write_only=True, default=None)
@@ -90,6 +121,7 @@ class RecipeSerializer(BaseModelSerializer):
             "time",
             "ingredients",
             "steps",
+            "notes",
             "servings",
             "edits",
             "modified",

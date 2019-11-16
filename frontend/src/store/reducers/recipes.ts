@@ -260,6 +260,134 @@ async function addingStepToRecipeAsync(
   }
 }
 
+export const addNoteToRecipe = createAsyncAction(
+  "ADD_NOTE_TO_RECIPE_REQUEST",
+  "ADD_NOTE_TO_RECIPE_SUCCESS",
+  "ADD_NOTE_TO_RECIPE_FAILURE"
+)<
+  { id: IRecipe["id"] },
+  {
+    recipeId: IRecipe["id"]
+    note: INote
+  },
+  IRecipe["id"]
+>()
+
+export const toggleCreatingNewNote = createStandardAction(
+  "TOGGLE_EDITING_NOTE"
+)<{
+  recipeId: number
+  value: boolean
+}>()
+export const toggleEditingNoteById = createStandardAction(
+  "TOGGLE_EDITING_NOTE_BY_ID"
+)<{
+  noteId: number
+  value: boolean
+}>()
+export const setDraftNote = createStandardAction("SET_DRAFT_NOTE")<{
+  recipeId: number
+  text: string
+}>()
+interface IAddNoteToRecipeArg {
+  readonly id: IRecipe["id"]
+  readonly note: string
+}
+
+async function addingNoteToRecipeAsync(
+  payload: IAddNoteToRecipeArg,
+  dispatch: Dispatch
+) {
+  const res = await api.addNoteToRecipe({
+    recipeId: payload.id,
+    note: payload.note
+  })
+  if (isOk(res)) {
+    dispatch(
+      addNoteToRecipe.success({
+        recipeId: payload.id,
+        note: res.data
+      })
+    )
+  } else {
+    dispatch(addNoteToRecipe.failure(payload.id))
+  }
+}
+
+export const updateNote = createAsyncAction(
+  "UPDATE_NOTE_REQUEST",
+  "UPDATE_NOTE_SUCCESS",
+  "UPDATE_NOTE_FAILURE"
+)<
+  { recipeId: IRecipe["id"]; noteId: INote["id"]; text: INote["text"] },
+  {
+    recipeId: IRecipe["id"]
+    note: INote
+  },
+  { recipeId: IRecipe["id"]; noteId: INote["id"] }
+>()
+
+interface IUpdatingNoteAysnc {
+  readonly noteId: INote["id"]
+  readonly recipeId: IRecipe["id"]
+  readonly text: INote["text"]
+}
+async function updatingNoteAsync(
+  payload: IUpdatingNoteAysnc,
+  dispatch: Dispatch
+) {
+  const res = await api.updateNote({
+    noteId: payload.noteId,
+    note: payload.text
+  })
+  if (isOk(res)) {
+    dispatch(updateNote.success({ recipeId: payload.recipeId, note: res.data }))
+  } else {
+    dispatch(
+      updateNote.failure({ recipeId: payload.recipeId, noteId: payload.noteId })
+    )
+  }
+}
+
+export const deleteNote = createAsyncAction(
+  "DELETE_NOTE_REQUEST",
+  "DELETE_NOTE_SUCCESS",
+  "DELETE_NOTE_FAILURE"
+)<
+  { recipeId: IRecipe["id"]; noteId: INote["id"] },
+  { recipeId: IRecipe["id"]; noteId: INote["id"] },
+  { recipeId: IRecipe["id"]; noteId: INote["id"] }
+>()
+
+interface IDeletingNoteAsync {
+  readonly noteId: INote["id"]
+  readonly recipeId: IRecipe["id"]
+}
+async function deletingNoteAsync(
+  payload: IDeletingNoteAsync,
+  dispatch: Dispatch
+) {
+  const res = await api.deleteNote({
+    noteId: payload.noteId
+  })
+  if (isOk(res)) {
+    dispatch(
+      deleteNote.success({ recipeId: payload.recipeId, noteId: payload.noteId })
+    )
+  } else {
+    dispatch(
+      deleteNote.failure({ recipeId: payload.recipeId, noteId: payload.noteId })
+    )
+  }
+}
+
+export const blurNoteTextArea = () => {
+  const el = document.getElementById("new_note_textarea")
+  if (el) {
+    el.blur()
+  }
+}
+
 interface IAddIngredientToRecipeArg {
   readonly recipeID: IRecipe["id"]
   // TODO(sbdchd): this type should be more specific
@@ -392,6 +520,12 @@ export type RecipeActions =
   | ActionType<typeof toggleEditingRecipe>
   | ActionType<typeof setRecipeStepDraft>
   | ActionType<typeof duplicateRecipe>
+  | ActionType<typeof addNoteToRecipe>
+  | ActionType<typeof toggleCreatingNewNote>
+  | ActionType<typeof setDraftNote>
+  | ActionType<typeof updateNote>
+  | ActionType<typeof toggleEditingNoteById>
+  | ActionType<typeof deleteNote>
 
 const mapSuccessLikeById = <T extends IRecipe["id"][]>(
   arr: WebData<T>,
@@ -442,6 +576,22 @@ export interface IStep {
   readonly removing?: boolean
 }
 
+export interface IPublicUser {
+  readonly id: string
+  readonly email: string
+  readonly avatar_url: string
+}
+
+export interface INote {
+  readonly id: number
+  readonly text: string
+  readonly modified: string
+  readonly created: string
+  readonly last_modified_by: IPublicUser
+  readonly created_by: IPublicUser
+  readonly updatingNote?: boolean
+}
+
 type IRecipeOwner =
   | {
       type: "team"
@@ -462,6 +612,7 @@ export interface IRecipe {
   readonly servings: string
   readonly steps: ReadonlyArray<IStep>
   readonly edits: ReadonlyArray<unknown>
+  readonly notes: ReadonlyArray<INote>
   readonly modified: string
   readonly last_scheduled: string
   readonly team: ITeam["id"]
@@ -472,10 +623,13 @@ export interface IRecipe {
   readonly editing?: boolean
   readonly deleting?: boolean
   readonly addingStepToRecipe?: boolean
+  readonly addingNoteToRecipe?: boolean
   readonly addingIngredient?: boolean
   readonly scheduling?: boolean
   readonly updating?: boolean
   readonly draftStep?: string
+  readonly draftNote?: string
+  readonly creatingNewNote?: boolean
 }
 
 function mapRecipeSuccessById(
@@ -498,6 +652,26 @@ function mapRecipeSuccessById(
     }
   }
 }
+function mapNoteById(
+  state: IRecipesState["notesById"],
+  id: INote["id"],
+  func: (note: INoteByIdState) => INoteByIdState
+): IRecipesState["notesById"] {
+  const note = state[id] || {}
+  return {
+    ...state,
+    [id]: {
+      ...note,
+      ...func(note)
+    }
+  }
+}
+
+interface INoteByIdState {
+  openForEditing?: boolean
+  saving?: boolean
+  deleting?: boolean
+}
 
 export interface IRecipesState {
   // add recipe page
@@ -515,6 +689,9 @@ export interface IRecipesState {
     readonly [key: number]: boolean | undefined
   }
   readonly recentIds: WebData<IRecipe["id"][]>
+  readonly notesById: {
+    readonly [key: number]: INoteByIdState | undefined
+  }
 }
 
 export const initialState: IRecipesState = {
@@ -524,7 +701,8 @@ export const initialState: IRecipesState = {
   duplicatingById: {},
   personalIDs: undefined,
   teamIDs: {},
-  recentIds: undefined
+  recentIds: undefined,
+  notesById: {}
 }
 
 export const recipes = (
@@ -715,6 +893,151 @@ export const recipes = (
       return mapRecipeSuccessById(state, action.payload, recipe => ({
         ...recipe,
         deleting: false
+      }))
+    case getType(updateNote.request):
+      return loop(
+        {
+          ...state,
+          notesById: mapNoteById(
+            state.notesById,
+            action.payload.noteId,
+            note => ({ ...note, saving: true })
+          )
+        },
+        Cmd.run(updatingNoteAsync, {
+          args: [
+            {
+              recipeId: action.payload.recipeId,
+              noteId: action.payload.noteId,
+              text: action.payload.text
+            },
+            Cmd.dispatch
+          ]
+        })
+      )
+    case getType(updateNote.success):
+      return {
+        ...mapRecipeSuccessById(state, action.payload.recipeId, recipe => {
+          return {
+            ...recipe,
+            notes: [
+              ...recipe.notes.filter(x => x.id !== action.payload.note.id),
+              action.payload.note
+            ]
+          }
+        }),
+        notesById: mapNoteById(
+          state.notesById,
+          action.payload.note.id,
+          note => ({
+            ...note,
+            openForEditing: false,
+            saving: false
+          })
+        )
+      }
+    case getType(updateNote.failure):
+      return {
+        ...state,
+        notesById: mapNoteById(
+          state.notesById,
+          action.payload.noteId,
+          note => ({ ...note, saving: false })
+        )
+      }
+    case getType(deleteNote.request):
+      return loop(
+        {
+          ...state,
+          notesById: mapNoteById(
+            state.notesById,
+            action.payload.noteId,
+            note => ({ ...note, deleting: true })
+          )
+        },
+        Cmd.run(deletingNoteAsync, {
+          args: [
+            {
+              recipeId: action.payload.recipeId,
+              noteId: action.payload.noteId
+            },
+            Cmd.dispatch
+          ]
+        })
+      )
+    case getType(deleteNote.success):
+      return mapRecipeSuccessById(state, action.payload.recipeId, recipe => {
+        return {
+          ...recipe,
+          notes: recipe.notes.filter(x => x.id !== action.payload.noteId)
+        }
+      })
+    case getType(deleteNote.failure):
+      return {
+        ...state,
+        notesById: mapNoteById(
+          state.notesById,
+          action.payload.noteId,
+          note => ({ ...note, deleting: false })
+        )
+      }
+    case getType(toggleEditingNoteById):
+      return {
+        ...state,
+        notesById: mapNoteById(
+          state.notesById,
+          action.payload.noteId,
+          note => ({ ...note, openForEditing: action.payload.value })
+        )
+      }
+    case getType(toggleCreatingNewNote):
+      const nextState = mapRecipeSuccessById(
+        state,
+        action.payload.recipeId,
+        recipe => ({
+          ...recipe,
+          creatingNewNote: action.payload.value
+        })
+      )
+      if (!action.payload.value) {
+        return loop(nextState, Cmd.run(blurNoteTextArea))
+      }
+      return nextState
+    case getType(setDraftNote):
+      return mapRecipeSuccessById(state, action.payload.recipeId, recipe => ({
+        ...recipe,
+        draftNote: action.payload.text
+      }))
+    case getType(addNoteToRecipe.request):
+      const maybeRecipe = state.byId[action.payload.id]
+      if (!isSuccessOrRefetching(maybeRecipe)) {
+        return state
+      }
+      const text = maybeRecipe.data.draftNote || ""
+      return loop(
+        mapRecipeSuccessById(state, action.payload.id, recipe => ({
+          ...recipe,
+          addingNoteToRecipe: true
+        })),
+        Cmd.run(addingNoteToRecipeAsync, {
+          args: [{ id: action.payload.id, note: text }, Cmd.dispatch]
+        })
+      )
+    case getType(addNoteToRecipe.success):
+      return loop(
+        mapRecipeSuccessById(state, action.payload.recipeId, recipe => ({
+          ...recipe,
+          notes: recipe.notes.concat(action.payload.note),
+          draftNote: "",
+          creatingNewNote: false,
+          addingNoteToRecipe: false
+        })),
+        Cmd.run(blurNoteTextArea)
+      )
+    case getType(addNoteToRecipe.failure):
+      return mapRecipeSuccessById(state, action.payload, recipe => ({
+        ...recipe,
+        addingNoteToRecipe: false
       }))
     case getType(addStepToRecipe.request):
       return loop(

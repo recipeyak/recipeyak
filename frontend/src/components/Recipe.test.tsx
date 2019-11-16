@@ -1,4 +1,4 @@
-import React from "react"
+import React, { ReactElement } from "react"
 import { match as Match } from "react-router"
 import { Location } from "history"
 import renderer, { act } from "react-test-renderer"
@@ -40,6 +40,12 @@ function testHook<T>(func: () => T, store: Store): T {
   )
 
   return root.find<ISpanProps<T>>(Span).props().output
+}
+
+function rendererCreate<T>(x: ReactElement<T>) {
+  return renderer.create(x, {
+    createNodeMock: () => document.createElement("textarea")
+  })
 }
 
 describe("<Recipe/>", () => {
@@ -88,17 +94,15 @@ describe("<Recipe/>", () => {
           store.dispatch(action)
         })
 
-        const tree = renderer
-          .create(
-            <TestProvider store={store}>
-              <Recipe
-                history={history}
-                match={match}
-                location={{ ...location, search: "?timeline=1" }}
-              />
-            </TestProvider>
-          )
-          .toJSON()
+        const tree = rendererCreate(
+          <TestProvider store={store}>
+            <Recipe
+              history={history}
+              match={match}
+              location={{ ...location, search: "?timeline=1" }}
+            />
+          </TestProvider>
+        ).toJSON()
         expect(tree).toMatchSnapshot()
       })
     })
@@ -115,7 +119,7 @@ describe("<Recipe/>", () => {
 
       store.dispatch(fetchRecipe.success(recipe))
 
-      const root = renderer.create(
+      const root = rendererCreate(
         <TestProvider store={store}>
           <Recipe
             history={history}

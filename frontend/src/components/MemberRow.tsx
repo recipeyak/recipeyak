@@ -14,6 +14,7 @@ import { IState } from "@/store/store"
 import { IUser } from "@/store/reducers/user"
 import { Select } from "@/components/Forms"
 import { notUndefined } from "@/utils/general"
+import { Avatar } from "@/components/Avatar"
 
 interface IMemberRowProps {
   readonly userID: IUser["id"]
@@ -53,9 +54,7 @@ const MemberRow = ({
 }: IMemberRowProps) => (
   <tr key={membershipID}>
     <td className="d-flex align-items-center pr-4">
-      <div className="w-50px mr-2 d-flex align-items-center">
-        <img src={avatarURL} className="br-10-percent" alt="avatar" />
-      </div>
+      <Avatar avatarURL={avatarURL} className="mr-2" />
       <div className="d-flex direction-column">
         <b>{email}</b>
       </div>
