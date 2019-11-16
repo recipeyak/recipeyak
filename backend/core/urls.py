@@ -29,6 +29,7 @@ router = DefaultRouter()
 router.register(r"recipes", RecipeViewSet, basename="recipes")
 router.register(r"t", TeamViewSet, basename="teams")
 router.register(r"invites", UserInvitesViewSet, basename="user-invites")
+router.register(r"notes", NoteViewSet)
 
 recipes_router = routers.NestedSimpleRouter(router, r"recipes", lookup="recipe")
 recipes_router.register(r"steps", StepViewSet, basename="recipe-step")
