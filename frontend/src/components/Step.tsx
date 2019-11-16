@@ -193,12 +193,9 @@ function StepBodyBasic({
   )
 }
 
-const StepBody = connect(
-  null,
-  {
-    update: updateStep.request,
-    remove: deleteStep.request
-  }
-)(StepBodyBasic)
+const StepBody = connect(null, {
+  update: updateStep.request,
+  remove: deleteStep.request
+})(StepBodyBasic)
 
 export default Step

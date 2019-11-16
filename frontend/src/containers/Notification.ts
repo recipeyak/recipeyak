@@ -20,7 +20,4 @@ const mapStateToProps = (state: IState) => {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Notification)
+export default connect(mapStateToProps, mapDispatchToProps)(Notification)

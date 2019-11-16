@@ -7,8 +7,7 @@ import {
   ISession
 } from "@/store/reducers/user"
 import { ITeam, IMember } from "@/store/reducers/teams"
-import { IShoppingListItem } from "@/store/reducers/shoppinglist"
-import { toDateString } from "@/date"
+import { toISODateString } from "@/date"
 import { IRecipeBasic } from "@/components/RecipeTitle"
 import { IRecipe, IIngredient, IStep, INote } from "@/store/reducers/recipes"
 import { IInvite } from "@/store/reducers/invites"
@@ -100,15 +99,43 @@ export const changePassword = (
     old_password: oldPassword
   })
 
+export const enum Unit {
+  POUND = "POUND",
+  OUNCE = "OUNCE",
+  GRAM = "GRAM",
+  KILOGRAM = "KILOGRAM",
+  TEASPOON = "TEASPOON",
+  TABLESPOON = "TABLESPOON",
+  FLUID_OUNCE = "FLUID_OUNCE",
+  CUP = "CUP",
+  PINT = "PINT",
+  QUART = "QUART",
+  GALLON = "GALLON",
+  LITER = "LITER",
+  MILLILITER = "MILLILITER",
+  SOME = "SOME",
+  NONE = "NONE"
+}
+
+export interface IQuantity {
+  readonly quantity: string
+  readonly unit: Unit
+}
+
+export interface IIngredientItem {
+  readonly quantities: ReadonlyArray<IQuantity>
+}
+
+export interface IGetShoppingListResponse {
+  readonly [_: string]: IIngredientItem | undefined
+}
+
 export const getShoppingList = (teamID: TeamID, start: Date, end: Date) => {
-  const url =
-    teamID === "personal"
-      ? "/api/v1/shoppinglist/"
-      : `/api/v1/t/${teamID}/shoppinglist/`
-  return http.get<IShoppingListItem[]>(url, {
+  const id = teamID === "personal" ? "me" : teamID
+  return http.get<IGetShoppingListResponse>(`/api/v1/t/${id}/shoppinglist/`, {
     params: {
-      start: toDateString(start),
-      end: toDateString(end)
+      start: toISODateString(start),
+      end: toISODateString(end)
     }
   })
 }
@@ -137,6 +164,9 @@ export const getRecipeTimeline = (id: IRecipe["id"]) =>
 
 export const deleteRecipe = (id: IRecipe["id"]) =>
   http.delete(`/api/v1/recipes/${id}/`)
+
+export const duplicateRecipe = (id: IRecipe["id"]) =>
+  http.post<IRecipe>(`/api/v1/recipes/${id}/duplicate/`)
 
 export const getRecentRecipes = () =>
   http.get<IRecipe[]>("/api/v1/recipes/?recent")
@@ -279,8 +309,8 @@ export const declineInvite = (id: IInvite["id"]) =>
 export const reportBadMerge = () => http.post("/api/v1/report-bad-merge", {})
 
 export const getCalendarRecipeList = (teamID: TeamID, currentDay: Date) => {
-  const start = toDateString(startOfWeek(subWeeks(currentDay, 1)))
-  const end = toDateString(endOfWeek(addWeeks(currentDay, 1)))
+  const start = toISODateString(startOfWeek(subWeeks(currentDay, 1)))
+  const end = toISODateString(endOfWeek(addWeeks(currentDay, 1)))
   const id = teamID === "personal" ? "me" : teamID
   return http.get<ICalRecipe[]>(`/api/v1/t/${id}/calendar/`, {
     params: {
@@ -299,7 +329,7 @@ export const scheduleRecipe = (
   const id = teamID === "personal" ? "me" : teamID
   return http.post<ICalRecipe>(`/api/v1/t/${id}/calendar/`, {
     recipe: recipeID,
-    on: toDateString(on),
+    on: toISODateString(on),
     count
   })
 }

@@ -7,8 +7,21 @@ import MockDate from "mockdate"
 import { Store, createEmptyStore } from "@/store/store"
 import { getCmd } from "redux-loop"
 import { ThemeProvider, theme } from "@/theme"
+import { baseHttp } from "@/http"
+import MockAdapter from "axios-mock-adapter"
+import timezoneMock, { TimeZone } from "timezone-mock"
 
 export const mockDate = MockDate
+
+export function createHttpMocker() {
+  return new MockAdapter(baseHttp)
+}
+
+export function mockTimezone(timezone: TimeZone, cb: () => void) {
+  timezoneMock.register(timezone)
+  cb()
+  timezoneMock.unregister()
+}
 
 export function assertCmdFuncEq<T, F>(state: T, expected: F) {
   const maybeCmd = getCmd(state)

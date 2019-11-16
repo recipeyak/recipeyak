@@ -245,7 +245,4 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Owner)
+export default connect(mapStateToProps, mapDispatchToProps)(Owner)

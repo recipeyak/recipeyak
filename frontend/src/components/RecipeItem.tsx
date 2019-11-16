@@ -1,12 +1,9 @@
 import React from "react"
 import { Link } from "react-router-dom"
 import { useDrag } from "react-dnd"
-import DatePickerForm from "@/components/DatePickerForm"
 import { classNames } from "@/classnames"
 import { recipeURL } from "@/urls"
 import { DragDrop } from "@/dragDrop"
-import { IRecipe } from "@/store/reducers/recipes"
-import Dropdown from "@/components/Dropdown"
 import { DragIcon } from "@/components/icons"
 
 interface IRecipeTitleProps {
@@ -23,21 +20,6 @@ function RecipeTitle({ url, name, dragable }: IRecipeTitleProps) {
       </Link>
       {dragable && <DragIcon />}
     </div>
-  )
-}
-
-interface IScheduleProps {
-  readonly show: boolean
-  readonly id: IRecipe["id"]
-  readonly onClose: () => void
-  readonly trigger: React.ReactElement<{}>
-}
-
-export function Schedule({ id, show, onClose, trigger }: IScheduleProps) {
-  return (
-    <Dropdown onClose={onClose} show={show} trigger={trigger}>
-      <DatePickerForm recipeID={id} show={show} close={onClose} />
-    </Dropdown>
   )
 }
 

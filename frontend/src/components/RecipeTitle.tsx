@@ -235,7 +235,4 @@ const mapDispatchToProps = {
   toggleEditing: toggleEditingRecipe
 }
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(RecipeTitle)
+export default connect(null, mapDispatchToProps)(RecipeTitle)

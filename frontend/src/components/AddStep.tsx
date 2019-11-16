@@ -62,7 +62,4 @@ const mapDispatchToProps = {
   setStep: setRecipeStepDraft
 }
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(AddStep)
+export default connect(null, mapDispatchToProps)(AddStep)

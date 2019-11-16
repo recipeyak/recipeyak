@@ -1,67 +1,78 @@
 import React from "react"
-import GlobalEvent from "@/components/GlobalEvent"
+import { css, styled } from "@/theme"
+import { Link } from "@/components/Routing"
+import { useOnClickOutside } from "@/hooks"
 
-interface IDropdownProps {
-  /**
-   * Displays children
-   */
-  show: boolean
-  /**
-   * Handler called when click occurs outside of trigger and children.
-   * Also called when `ESC` is pressed.
-   */
-  onClose: () => void
-  /**
-   * The component used to trigger the dropdown
-   */
-  // tslint:disable-next-line:no-any
-  trigger: React.ReactElement<any>
-  /**
-   * The components to render upon show.
-   */
-  children: React.ReactNode
+export const DropdownContainer = styled.div`
+  position: relative;
+`
+
+const dropdownItemStyle = css`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  font-weight: 400;
+  color: #212529;
+  white-space: nowrap;
+  text-align: left;
+
+  :hover {
+    color: #16181b;
+    text-decoration: none;
+  }
+
+  :active {
+    background-color: ${p => p.theme.color.primaryShadow};
+  }
+
+  cursor: pointer;
+
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+
+  background-color: transparent;
+  border: none;
+`
+
+export const DropdownItemLink = styled(Link)`
+  ${dropdownItemStyle}
+`
+
+export const DropdownItemButton = styled.button`
+  ${dropdownItemStyle}
+`
+
+const isOpenStyle = css`
+  display: block;
+`
+
+interface IDropdownMenuProps {
+  readonly isOpen: boolean
 }
 
-/**
- * Manage a simple Dropdown
- *
- * Calls onClose when `ESC` is pressed or click occurs outside of tree.
- */
-export default class Dropdown extends React.Component<IDropdownProps> {
-  /**
-   * Reference that allows us to see that we are click inside our tree
-   */
-  element = React.createRef<HTMLDivElement>()
-  handleGlobalClick = (e: MouseEvent) => {
-    // Do nothing if we are hidden
-    if (!this.props.show) {
-      return
-    }
-    const el = this.element.current
-    // Close when we click outside of our dropdown/button group
-    if (el && e.target && !el.contains(e.target as Node)) {
-      this.props.onClose()
-    }
-  }
-  handleGlobalKeyUp = (e: KeyboardEvent) => {
-    // Do nothing if we are hidden
-    if (!this.props.show) {
-      return
-    }
-    if (e.key === "Escape") {
-      this.props.onClose()
-    }
-  }
-  render() {
-    return (
-      <div className="p-rel" ref={this.element}>
-        <GlobalEvent
-          mouseUp={this.handleGlobalClick}
-          keyUp={this.handleGlobalKeyUp}
-        />
-        {this.props.trigger}
-        {this.props.children}
-      </div>
-    )
-  }
+export const DropdownMenu = styled.div<IDropdownMenuProps>`
+  position: absolute;
+  left: auto;
+  right: 0;
+  z-index: 1000;
+  padding: 0.5rem;
+  margin: 0.125rem 0 0;
+  font-size: 1rem;
+  white-space: nowrap;
+
+  background-color: ${p => p.theme.color.white};
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 0.25rem;
+  display: none;
+
+  ${p => p.isOpen && isOpenStyle}
+`
+export function useDropdown() {
+  const [isOpen, setIsOpen] = React.useState(false)
+  const closeDropdown = React.useCallback(() => setIsOpen(false), [])
+  const toggle = React.useCallback(() => setIsOpen(p => !p), [])
+  const ref = useOnClickOutside<HTMLDivElement>(closeDropdown)
+  return { ref, toggle, close, isOpen, setIsOpen }
 }

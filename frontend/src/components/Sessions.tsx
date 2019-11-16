@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 import { ISession, LoggingOutStatus } from "@/store/reducers/user"
-import { distanceInWordsToNow } from "date-fns"
+import { formatDistanceToNow } from "date-fns"
 import { WebData, isLoading, isInitial, isFailure } from "@/webdata"
 import { Button } from "@/components/Buttons"
 import Loader from "@/components/Loader"
@@ -69,7 +69,9 @@ interface ISessionProps extends ISession {
 }
 
 function Session(props: ISessionProps) {
-  const lastActivity = distanceInWordsToNow(props.last_activity) + " ago"
+  const lastActivity = formatDistanceToNow(new Date(props.last_activity), {
+    addSuffix: true
+  })
   return (
     <li className="mb-2">
       <section className="d-flex">

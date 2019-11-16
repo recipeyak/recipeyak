@@ -167,7 +167,4 @@ class TeamInvite extends React.Component<ITeamInviteProps, ITeamInviteState> {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TeamInvite)
+export default connect(mapStateToProps, mapDispatchToProps)(TeamInvite)

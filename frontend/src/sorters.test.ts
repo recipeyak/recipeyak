@@ -343,61 +343,17 @@ describe("byNameAlphabetical", () => {
   })
 
   it("should ignore words medium, large, small", () => {
-    const before = [
-      {
-        unit: "1",
-        name: "large tomato"
-      },
-      {
-        unit: "1",
-        name: "medium tomato"
-      },
-      {
-        unit: "1",
-        name: "mushroom"
-      }
-    ]
+    const before = ["large tomato", "medium tomato", "mushroom"]
 
-    const expected = [
-      {
-        unit: "1",
-        name: "mushroom"
-      },
-      {
-        unit: "1",
-        name: "large tomato"
-      },
-      {
-        unit: "1",
-        name: "medium tomato"
-      }
-    ]
+    const expected = ["mushroom", "large tomato", "medium tomato"]
 
     expect(before.sort(ingredientByNameAlphabetical)).toEqual(expected)
   })
 
   it("should ignore ground", () => {
-    const before = [
-      {
-        unit: "1 teaspoon",
-        name: "garam masala"
-      },
-      {
-        unit: "1 teaspoon",
-        name: "ground cumin"
-      }
-    ]
+    const before = ["garam masala", "ground cumin"]
 
-    const expected = [
-      {
-        unit: "1 teaspoon",
-        name: "ground cumin"
-      },
-      {
-        unit: "1 teaspoon",
-        name: "garam masala"
-      }
-    ]
+    const expected = ["ground cumin", "garam masala"]
 
     expect(before.sort(ingredientByNameAlphabetical)).toEqual(expected)
   })

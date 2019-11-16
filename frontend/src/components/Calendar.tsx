@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { connect } from "react-redux"
-import eachDay from "date-fns/each_day"
+import eachDayOfInterval from "date-fns/eachDayOfInterval"
 import format from "date-fns/format"
 import first from "lodash/first"
 
@@ -12,7 +12,7 @@ import {
   fetchingShoppingListAsync
 } from "@/store/thunks"
 
-import { toDateString } from "@/date"
+import { toISODateString } from "@/date"
 
 import { teamsFrom } from "@/store/mapState"
 
@@ -33,7 +33,7 @@ import chunk from "lodash/chunk"
 import { styled } from "@/theme"
 
 function monthYearFromDate(date: Date) {
-  return format(date, "MMM D | YYYY")
+  return format(date, "MMM d | yyyy")
 }
 
 interface ICalTitleProps {
@@ -112,7 +112,7 @@ interface IDaysProps {
 function Days({ start, end, days, teamID }: IDaysProps) {
   return (
     <DaysContainer>
-      {chunk(eachDay(start, end), WEEK_DAYS).map(dates => {
+      {chunk(eachDayOfInterval({ start, end }), WEEK_DAYS).map(dates => {
         const firstDay = first(dates)
         if (firstDay == null) {
           return <CalendarWeekContainer />
@@ -121,7 +121,7 @@ function Days({ start, end, days, teamID }: IDaysProps) {
         return (
           <CalendarWeekContainer key={week}>
             {dates.map(date => {
-              const scheduledRecipes = days[toDateString(date)] || []
+              const scheduledRecipes = days[toISODateString(date)] || []
               return (
                 <CalendarDay
                   scheduledRecipes={scheduledRecipes}
@@ -337,13 +337,10 @@ const mapStateToProps = (
     ? getTeamRecipes(state.calendar)
     : getPersonalRecipes(state.calendar)
 
-  const transformedDays: IDays = days.reduce(
-    (a, b) => {
-      a[b.on] = (a[b.on] || []).concat(b)
-      return a
-    },
-    {} as IDays
-  )
+  const transformedDays: IDays = days.reduce((a, b) => {
+    a[b.on] = (a[b.on] || []).concat(b)
+    return a
+  }, {} as IDays)
 
   return {
     days: transformedDays,
@@ -370,7 +367,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   }
 })
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Calendar)
+export default connect(mapStateToProps, mapDispatchToProps)(Calendar)

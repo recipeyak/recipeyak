@@ -6,7 +6,8 @@ export function classNames(
     | undefined
     | number
     | string[]
-    | { [key: string]: boolean | undefined })[]
+    | { [key: string]: boolean | undefined }
+  )[]
 ) {
   const classes: string[] = []
 

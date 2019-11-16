@@ -1,6 +1,6 @@
 import pickBy from "lodash/pickBy"
 import { random32Id } from "@/uuid"
-import { toDateString, second } from "@/date"
+import { toISODateString, second } from "@/date"
 import { push, replace } from "connected-react-router"
 // eslint-disable-next-line no-restricted-imports
 import { Dispatch as ReduxDispatch } from "redux"
@@ -1010,7 +1010,7 @@ function toCalRecipe(
       id: recipe.id,
       name: recipe.name
     },
-    on: toDateString(on),
+    on: toISODateString(on),
     count,
     user: recipe.owner.type === "user" ? recipe.owner.id : null,
     team: recipe.owner.type === "team" ? recipe.owner.id : null
@@ -1045,7 +1045,9 @@ export const addingScheduledRecipeAsync = async (
   //    if failed, then we remove the preemptively added one, and display an error
 
   dispatch(
-    setCalendarRecipe(toCalRecipe(recipe.data, tempId, toDateString(on), count))
+    setCalendarRecipe(
+      toCalRecipe(recipe.data, tempId, toISODateString(on), count)
+    )
   )
   const res = await api.scheduleRecipe(recipeID, teamID, on, count)
 
@@ -1114,7 +1116,7 @@ export const moveScheduledRecipe = async (
   // - recipe from the past
   // - user is holding shift
   const holdingShift = heldKeys.size === 1 && heldKeys.has("Shift")
-  const copyRecipe = isPast(endOfDay(from.on)) || holdingShift
+  const copyRecipe = isPast(endOfDay(new Date(from.on))) || holdingShift
   if (copyRecipe) {
     return addingScheduledRecipeAsync(dispatch, getState, {
       recipeID: from.recipe.id,
@@ -1127,7 +1129,7 @@ export const moveScheduledRecipe = async (
 
   // Note(sbdchd): we need move to be after the checking of the store so we
   // don't delete the `from` recipe and update the `existing`
-  dispatch(moveCalendarRecipe({ id, to: toDateString(to) }))
+  dispatch(moveCalendarRecipe({ id, to: toISODateString(to) }))
 
   if (existing) {
     // HACK(sbdchd): this should be an endpoint so we can have this be in a transaction
@@ -1137,16 +1139,16 @@ export const moveScheduledRecipe = async (
         count: existing.count + from.count
       })
     } else {
-      dispatch(moveCalendarRecipe({ id, to: toDateString(from.on) }))
+      dispatch(moveCalendarRecipe({ id, to: toISODateString(from.on) }))
     }
   }
 
   const res = await api.updateScheduleRecipe(id, teamID, {
-    on: toDateString(to)
+    on: toISODateString(to)
   })
   if (isErr(res)) {
     // on error we want to move it back to the old position
-    dispatch(moveCalendarRecipe({ id, to: toDateString(from.on) }))
+    dispatch(moveCalendarRecipe({ id, to: toISODateString(from.on) }))
   }
 }
 

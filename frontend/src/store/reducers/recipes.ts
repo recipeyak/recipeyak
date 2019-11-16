@@ -26,6 +26,7 @@ import {
   deletingIngredientAsync
 } from "@/store/thunks"
 import { push } from "connected-react-router"
+import { recipeURL } from "@/urls"
 
 export const updateRecipeOwner = createStandardAction("UPDATE_RECIPE_OWNER")<{
   id: IRecipe["id"]
@@ -447,6 +448,38 @@ export const setRecipeStepDraft = createStandardAction(
   "SET_RECIPE_STEP_DRAFT"
 )<{ id: IRecipe["id"]; draftStep: IRecipe["draftStep"] }>()
 
+export const duplicateRecipe = createAsyncAction(
+  "DUPLICATE_RECIPE/REQUEST",
+  "DUPLICATE_RECIPE/SUCCESS",
+  "DUPLICATE_RECIPE/FAILURE"
+)<
+  { readonly recipeId: IRecipe["id"]; readonly onComplete?: () => void },
+  { readonly recipe: IRecipe; readonly originalRecipeId: IRecipe["id"] },
+  number
+>()
+
+interface IDuplicateRecipeAsync {
+  readonly recipeId: number
+}
+
+export async function duplicateRecipeAsync(
+  { recipeId }: IDuplicateRecipeAsync,
+  dispatch: Dispatch,
+  cb?: () => void
+) {
+  const res = await api.duplicateRecipe(recipeId)
+
+  if (isOk(res)) {
+    dispatch(
+      duplicateRecipe.success({ recipe: res.data, originalRecipeId: recipeId })
+    )
+    dispatch(push(recipeURL(res.data.id)))
+  } else {
+    dispatch(duplicateRecipe.failure(recipeId))
+  }
+  cb?.()
+}
+
 export interface IRecipeBasic
   extends Omit<
     IRecipe,
@@ -486,6 +519,7 @@ export type RecipeActions =
   | ActionType<typeof resetAddRecipeErrors>
   | ActionType<typeof toggleEditingRecipe>
   | ActionType<typeof setRecipeStepDraft>
+  | ActionType<typeof duplicateRecipe>
   | ActionType<typeof addNoteToRecipe>
   | ActionType<typeof toggleCreatingNewNote>
   | ActionType<typeof setDraftNote>
@@ -651,6 +685,9 @@ export interface IRecipesState {
   readonly teamIDs: {
     readonly [key: number]: WebData<IRecipe["id"][]>
   }
+  readonly duplicatingById: {
+    readonly [key: number]: boolean | undefined
+  }
   readonly recentIds: WebData<IRecipe["id"][]>
   readonly notesById: {
     readonly [key: number]: INoteByIdState | undefined
@@ -661,6 +698,7 @@ export const initialState: IRecipesState = {
   creatingRecipe: false,
   errorCreatingRecipe: {},
   byId: {},
+  duplicatingById: {},
   personalIDs: undefined,
   teamIDs: {},
   recentIds: undefined,
@@ -1244,6 +1282,42 @@ export const recipes = (
         ...recipe,
         scheduling: action.payload.scheduling
       }))
+    case getType(duplicateRecipe.request): {
+      const { recipeId, onComplete } = action.payload
+      return loop(
+        {
+          ...state,
+          duplicatingById: {
+            ...state.duplicatingById,
+            [recipeId]: true
+          }
+        },
+        Cmd.run(duplicateRecipeAsync, {
+          args: [{ recipeId }, Cmd.dispatch, onComplete]
+        })
+      )
+    }
+    case getType(duplicateRecipe.success):
+      return {
+        ...state,
+        duplicatingById: {
+          ...state.duplicatingById,
+          [action.payload.originalRecipeId]: false
+        },
+        byId: {
+          ...state.byId,
+          [action.payload.recipe.id]: Success(action.payload.recipe)
+        }
+      }
+
+    case getType(duplicateRecipe.failure):
+      return {
+        ...state,
+        duplicatingById: {
+          ...state.duplicatingById,
+          [action.payload]: false
+        }
+      }
     default:
       return state
   }
