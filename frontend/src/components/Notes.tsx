@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { distanceInWordsToNow } from "date-fns"
+import { formatDistanceToNow } from "date-fns"
 import { Avatar } from "@/components/Avatar"
 import {
   IRecipe,
@@ -65,7 +65,7 @@ export function Note({ recipeId, note, className }: INoteProps) {
       <div className="w-100">
         <p>
           {created_by.email} |{" "}
-          {distanceInWordsToNow(new Date(note.created), { addSuffix: true })}
+          {formatDistanceToNow(new Date(note.created), { addSuffix: true })}
         </p>
         {!isOpen ? (
           <Markdown
