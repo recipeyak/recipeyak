@@ -29,7 +29,6 @@ export function Note({ recipeId, note, className }: INoteProps) {
     setNewText(note.text)
   }, [note])
   const created_by = note.created_by
-  const textareaId = `edit_note_id:${note.id}`
   const isOpen = useSelector(s => {
     const noteData = s.recipes.notesById[note.id]
     if (!noteData) {
@@ -71,21 +70,15 @@ export function Note({ recipeId, note, className }: INoteProps) {
           <p
             className="cursor-pointer"
             title="click to edit"
-            onClick={e => {
+            onClick={() => {
               setEditing(true)
-              setTimeout(() => {
-                const el = document.getElementById(textareaId)
-                if (el) {
-                  el.focus()
-                }
-              }, 100)
             }}>
             {note.text}
           </p>
         ) : (
           <>
             <Textarea
-              id={textareaId}
+              autoFocus
               className="my-textarea mb-2"
               onKeyDown={e => {
                 if (e.key === "Escape") {
