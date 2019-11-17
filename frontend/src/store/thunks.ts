@@ -93,7 +93,7 @@ import {
 } from "@/store/reducers/auth"
 import { recipeURL } from "@/urls"
 import { isSuccessOrRefetching } from "@/webdata"
-import { isPast, endOfDay } from "date-fns"
+import { isPast, endOfDay, parseISO } from "date-fns"
 import { isOk, isErr, Ok, Err, Result } from "@/result"
 import { heldKeys } from "@/components/CurrentKeys"
 
@@ -1116,7 +1116,7 @@ export const moveScheduledRecipe = async (
   // - recipe from the past
   // - user is holding shift
   const holdingShift = heldKeys.size === 1 && heldKeys.has("Shift")
-  const copyRecipe = isPast(endOfDay(new Date(from.on))) || holdingShift
+  const copyRecipe = isPast(endOfDay(parseISO(from.on))) || holdingShift
   if (copyRecipe) {
     return addingScheduledRecipeAsync(dispatch, getState, {
       recipeID: from.recipe.id,
