@@ -20,6 +20,7 @@ from core.auth.permissions import (
 from core.models import (
     Ingredient,
     MyUser,
+    Note,
     Recipe,
     ScheduledRecipe,
     Step,
@@ -28,6 +29,7 @@ from core.models import (
 )
 from core.recipes.serializers import (
     IngredientSerializer,
+    NoteSerializer,
     RecipeMoveCopySerializer,
     RecipeSerializer,
     RecipeTimelineSerializer,
@@ -54,7 +56,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
         """
         # get all recipes user has access to
         recipes = user_and_team_recipes(self.request.user).prefetch_related(
-            "owner", "step_set", "ingredient_set", "scheduledrecipe_set"
+            "owner",
+            "step_set",
+            "ingredient_set",
+            "scheduledrecipe_set",
+            "note_set",
+            "note_set__created_by",
+            "note_set__last_modified_by",
         )
 
         # filtering for homepage
@@ -149,7 +157,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         # refetch all relations before serialization
         prefetched_recipe: Recipe = Recipe.objects.prefetch_related(
-            "owner", "step_set", "ingredient_set", "scheduledrecipe_set"
+            "owner", "step_set", "ingredient_set", "scheduledrecipe_set", "note_set"
         ).get(id=new_recipe.id)
         return Response(
             RecipeSerializer(prefetched_recipe).data, status=status.HTTP_200_OK
@@ -273,3 +281,20 @@ class IngredientViewSet(viewsets.ModelViewSet):
             logger.info("Ingredient created by %s", self.request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class NoteViewSet(viewsets.ModelViewSet):
+
+    queryset = Note.objects.all()
+    serializer_class = NoteSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def create(self, request: Request, recipe_pk: str) -> Response:
+        serializer = self.serializer_class(data=request.data)
+        recipe = get_object_or_404(Recipe, pk=recipe_pk)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(recipe=recipe, created_by=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def perform_update(self, serializer):
+        serializer.save(last_modified_by=self.request.user)

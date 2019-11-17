@@ -103,6 +103,7 @@ export default class AddRecipe extends React.Component<
       servings: this.props.servings,
       ingredients: this.props.ingredients,
       steps: this.props.steps,
+      notes: [],
       team: this.props.teamID || undefined
     })
   }
