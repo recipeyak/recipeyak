@@ -1,16 +1,7 @@
-// https://gist.github.com/mathewbyrne/1280286
-const slugify = (text: string): string =>
-  text
-    .toLowerCase()
-    .replace(/\s+/g, "-") // Replace spaces with -
-    .replace(/[^\w\-]+/g, "") // Remove all non-word chars
-    .replace(/\-\-+/g, "-") // Replace multiple - with single -
-    .replace(/^-+/, "") // Trim - from start of text
-    .replace(/-+$/, "") // Trim - from end of text
+import kebabCase from 'lodash/kebabCase'
 
-// we replace spaces since they are pretty common, but leave the reset to
-// `encodeURIComponent`
-export const toURL = (x = ""): string => encodeURIComponent(slugify(x))
+// we use `encodeURIComponent` for good measure
+export const toURL = (x = ""): string => encodeURIComponent(kebabCase(x))
 
 interface IStr {
   readonly toString: () => string

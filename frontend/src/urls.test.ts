@@ -19,4 +19,7 @@ describe("#toURL", () => {
   it("trim trailing space", () => {
     expect(toURL("bar    ")).toEqual("bar")
   })
+  it("regression deburring", () => {
+    expect(toURL("Classic Tiramisù")).toEqual("classic-tiramisu")
+  })
 })
