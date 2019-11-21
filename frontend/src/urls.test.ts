@@ -5,7 +5,7 @@ describe("#toURL", () => {
     expect(toURL("/recipes/12-####")).toEqual("recipes-12")
   })
   it("replaces ?", () => {
-    expect(toURL("/recipes/12-good?no!")).toEqual("recipes-12-goodno")
+    expect(toURL("/recipes/12-good?no!")).toEqual("recipes-12-good-no")
   })
   it("removes quotes", () => {
     expect(toURL("J. Shmoe's")).toEqual("j-shmoes")
