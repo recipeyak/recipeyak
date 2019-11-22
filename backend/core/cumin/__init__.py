@@ -3,7 +3,8 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from decimal import Decimal
 from enum import Enum
-from typing import Dict, List, Optional, Sequence, Tuple
+import enum
+from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 from core.schedule.inflect import singularize
 
@@ -18,6 +19,7 @@ class IncompatibleUnit(Exception):
     units: Tuple["Unit", "Unit"]
 
 
+@enum.unique
 class Unit(str, Enum):
     # mass/weight
     POUND = "POUND"
@@ -44,6 +46,10 @@ class Unit(str, Enum):
     # for instance `1 cucumber`
     NONE = "NONE"
 
+    # "1 bag", we don't parse bag so we just return UNKNOWN and let the caller
+    # handle the result
+    UNKNOWN = "UNKNOWN"
+
     def base_unit(self) -> "BaseUnit":
         if self in VOLUME:
             return BaseUnit.VOLUME
@@ -53,6 +59,8 @@ class Unit(str, Enum):
             return BaseUnit.SOME
         if self == Unit.NONE:
             return BaseUnit.NONE
+        if self == Unit.UNKNOWN:
+            return BaseUnit.UNKNOWN
         raise UnhandledCase(case=self)
 
     def __lt__(self, other) -> bool:
@@ -93,26 +101,40 @@ MASS: Dict[Unit, Decimal] = {
 }
 
 
+@enum.unique
 class BaseUnit(Enum):
     MASS = "MASS"
     VOLUME = "VOLUME"
     SOME = "SOME"
     NONE = "NONE"
+    UNKNOWN = "UNKNOWN"
 
 
 @dataclass
 class Quantity:
     quantity: Decimal
     unit: Unit
+    unknown_unit: Optional[str] = None
 
     def __add__(self, other: "Quantity") -> "Quantity":
-        if self.unit == other.unit:
+        if self.unit == other.unit != Unit.UNKNOWN:
             return Quantity(quantity=self.quantity + other.quantity, unit=self.unit)
+        if (
+            self.unit == other.unit == Unit.UNKNOWN
+            and self.unknown_unit == other.unknown_unit
+        ):
+            return Quantity(
+                quantity=self.quantity + other.quantity,
+                unit=Unit.UNKNOWN,
+                unknown_unit=self.unknown_unit,
+            )
         if self.unit == Unit.SOME:
             return other
         if other.unit == Unit.SOME:
             return self
         if self.unit.base_unit() == other.unit.base_unit():
+            if self.unit == Unit.UNKNOWN:
+                raise IncompatibleUnit(units=(self.unit, other.unit))
             unit_lookup = VOLUME if self.unit in VOLUME else MASS
             smallest_unit = self.unit if self.unit < other.unit else other.unit
             quantity = self.to_base_unit().quantity + other.to_base_unit().quantity
@@ -205,7 +227,7 @@ def get_unit(val: str) -> Unit:
         return Unit.TABLESPOON
     if "pinch" in val:
         return Unit.SOME
-    if val == "lbs":
+    if "lbs" in val or "lb" in val or "pound" in val:
         return Unit.POUND
     if "quart" in val:
         return Unit.QUART
@@ -213,7 +235,9 @@ def get_unit(val: str) -> Unit:
         return Unit.LITER
     if val in {"some", "sprinkle", "dash"}:
         return Unit.SOME
-    return Unit.NONE
+    if val == "":
+        return Unit.NONE
+    return Unit.UNKNOWN
 
 
 def fraction_to_decimal(val: str) -> Optional[Decimal]:
@@ -248,23 +272,38 @@ def parse_quantity(val: str) -> Quantity:
     return a
 
 
+MALFORMED_UNITS = {"large", "medium", "small", "fresh"}
+
+
 def _parse_quantity(val: str) -> Quantity:
     value = iter(unicode_fractions_to_ascii(max_quantity(val).strip()))
 
     quantity = ""
-    unit = ""
+    unit_str = ""
     for c in value:
         if c in quantity_chars:
             quantity += c
         else:
-            unit += c
+            unit_str += c
             break
 
     for c in value:
-        unit += c
+        unit_str += c
+
+    # strip out misplaced words, e.g., `1 large` `lemon` instead of `1` `large lemon`
+    if unit_str in MALFORMED_UNITS:
+        unit_str = ""
+
+    unit = get_unit(unit_str)
+
+    unknown_unit = None
+    if unit == Unit.UNKNOWN:
+        unknown_unit = unit_str
 
     return Quantity(
-        quantity=fraction_to_decimal(quantity) or Decimal(1), unit=get_unit(unit)
+        quantity=fraction_to_decimal(quantity) or Decimal(1),
+        unit=unit,
+        unknown_unit=unknown_unit,
     )
 
 
@@ -281,7 +320,10 @@ IngredientList = Dict[str, IngredientItem]
 
 
 def combine_ingredients(ingredients: Sequence[Ingredient]) -> IngredientList:
-    ingredient_map: Dict[str, Dict[BaseUnit, Quantity]] = defaultdict(dict)
+    # being kind of dynamic with the types here so not the easiest on the eyes.
+    ingredient_map: Dict[str, Dict[Union[BaseUnit, str, None], Quantity]] = defaultdict(
+        dict
+    )
 
     plural_name: Dict[str, str] = dict()
 
@@ -290,9 +332,19 @@ def combine_ingredients(ingredients: Sequence[Ingredient]) -> IngredientList:
         quantity = parse_quantity(ingr.quantity)
         base_unit = quantity.unit.base_unit()
         name = singularize(normalized_name)
+
+        # keep track of whether an ingredient should be plural
         if name != normalized_name:
             plural_name[name] = normalized_name
-        if name not in ingredient_map:
+
+        if base_unit == BaseUnit.UNKNOWN:
+            # For each Unit.UNKNOWN, we treat the unknown_unit, as a unique
+            # base value.
+            if quantity.unknown_unit not in ingredient_map[name]:
+                ingredient_map[name][quantity.unknown_unit] = quantity
+            else:
+                ingredient_map[name][quantity.unknown_unit] += quantity
+        elif name not in ingredient_map:
             ingredient_map[name][base_unit] = quantity
         else:
             base_unit_quantity = ingredient_map[name].get(base_unit)

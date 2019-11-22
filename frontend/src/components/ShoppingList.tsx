@@ -73,9 +73,18 @@ interface IShoppingListItemProps {
   readonly isFirst: boolean
 }
 
-function toQuantity(x: IQuantity): string {
+export function toQuantity(x: IQuantity): string {
   if (x.unit === Unit.NONE) {
     return x.quantity
+  }
+  if (x.unit === Unit.SOME) {
+    return "some"
+  }
+  if (x.unit === Unit.UNKNOWN && x.unknown_unit == null) {
+    return x.quantity
+  }
+  if (x.unit === Unit.UNKNOWN && x.unknown_unit != null) {
+    return x.quantity + " " + x.unknown_unit
   }
   const unit = x.unit.toLowerCase()
   return x.quantity + " " + unit
