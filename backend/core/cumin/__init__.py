@@ -1,9 +1,9 @@
 import decimal
+import enum
 from collections import defaultdict
 from dataclasses import dataclass, field
 from decimal import Decimal
 from enum import Enum
-import enum
 from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 from core.schedule.inflect import singularize

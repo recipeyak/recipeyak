@@ -1,5 +1,5 @@
 import dataclasses
-from decimal import Decimal, getcontext
+from decimal import Decimal
 
 from rest_framework.renderers import JSONRenderer as DRFJSONRenderer
 from rest_framework.utils.encoders import JSONEncoder as DRFEncoder
