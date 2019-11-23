@@ -310,7 +310,7 @@ export const declineInvite = (id: IInvite["id"]) =>
 
 export const reportBadMerge = () => http.post("/api/v1/report-bad-merge", {})
 
-export const getCalendarRecipeList = (teamID: TeamID, currentDay: Date) => {
+export const getCalendarRecipeList = (teamID: TeamID, currentDay: number) => {
   const start = toISODateString(startOfWeek(subWeeks(currentDay, 1)))
   const end = toISODateString(endOfWeek(addWeeks(currentDay, 1)))
   const id = teamID === "personal" ? "me" : teamID

@@ -1,8 +1,8 @@
 const enum RDK {
-  Loading,
-  Failure,
-  Success,
-  Refetching
+  Loading = "Loading",
+  Failure = "Failure",
+  Success = "Success",
+  Refetching = "Refetching"
 }
 
 export interface ILoading {

@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react"
-import { connect } from "react-redux"
 import eachDayOfInterval from "date-fns/eachDayOfInterval"
 import format from "date-fns/format"
 import first from "lodash/first"
 
 import {
   fetchCalendarAsync,
-  Dispatch,
   fetchingRecipeListAsync,
   fetchingTeamsAsync,
   fetchingShoppingListAsync
@@ -20,7 +18,6 @@ import { push } from "connected-react-router"
 
 import { ButtonPlain } from "@/components/Buttons"
 import CalendarDay from "@/components/CalendarDay"
-import { IState } from "@/store/store"
 import { ITeam } from "@/store/reducers/teams"
 import {
   ICalRecipe,
@@ -31,21 +28,26 @@ import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
 import { Select } from "@/components/Forms"
 import chunk from "lodash/chunk"
 import { styled } from "@/theme"
+import { useCurrentDay, useSelector, useDispatch } from "@/hooks"
+import {
+  isFailure,
+  Success,
+  Loading,
+  WebData,
+  isSuccessLike,
+  Failure
+} from "@/webdata"
 
-function monthYearFromDate(date: Date) {
+function monthYearFromDate(date: number) {
   return format(date, "MMM d | yyyy")
 }
 
 interface ICalTitleProps {
-  readonly day: Date
+  readonly day: number
 }
 
 function CalTitle({ day }: ICalTitleProps) {
-  return (
-    <p title={day.toString()} className="mr-2">
-      {monthYearFromDate(day)}
-    </p>
-  )
+  return <p className="mr-2">{monthYearFromDate(day)}</p>
 }
 
 export interface IDays {
@@ -105,11 +107,17 @@ const WEEK_DAYS = 7
 interface IDaysProps {
   readonly start: Date
   readonly end: Date
-  readonly days: IDays
+  readonly days: WebData<IDays>
   readonly teamID: TeamID
 }
 
 function Days({ start, end, days, teamID }: IDaysProps) {
+  if (isFailure(days)) {
+    return <p>error fetching calendar</p>
+  }
+
+  const daysData = isSuccessLike(days) ? days.data : {}
+
   return (
     <DaysContainer>
       {chunk(eachDayOfInterval({ start, end }), WEEK_DAYS).map(dates => {
@@ -121,7 +129,7 @@ function Days({ start, end, days, teamID }: IDaysProps) {
         return (
           <CalendarWeekContainer key={week}>
             {dates.map(date => {
-              const scheduledRecipes = days[toISODateString(date)] || []
+              const scheduledRecipes = daysData[toISODateString(date)] || []
               return (
                 <CalendarDay
                   scheduledRecipes={scheduledRecipes}
@@ -139,74 +147,53 @@ function Days({ start, end, days, teamID }: IDaysProps) {
 }
 
 interface ITeamSelectProps {
-  readonly handleOwnerChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
-  readonly teams: ReadonlyArray<ITeam>
-  readonly loading: boolean
-  readonly teamID: TeamID
+  readonly onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
+  readonly teams: WebData<ReadonlyArray<ITeam>>
+  readonly value: TeamID
 }
 
-function TeamSelect({
-  handleOwnerChange,
-  teamID,
-  loading,
-  teams
-}: ITeamSelectProps) {
+function TeamSelect({ onChange, value, teams }: ITeamSelectProps) {
+  const disabled = !isSuccessLike(teams)
   return (
-    <Select
-      onChange={handleOwnerChange}
-      value={teamID}
-      size="small"
-      disabled={loading}>
+    <Select onChange={onChange} value={value} size="small" disabled={disabled}>
       <option value="personal">Personal</option>
-      {teams.map(t => (
-        <option key={t.id} value={t.id}>
-          {t.name}
-        </option>
-      ))}
+      {isSuccessLike(teams)
+        ? teams.data.map(t => (
+            <option key={t.id} value={t.id}>
+              {t.name}
+            </option>
+          ))
+        : null}
     </Select>
   )
 }
 
 interface INavProps {
-  readonly day: Date
-  readonly handleOwnerChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
-  readonly prev: () => void
-  readonly next: () => void
-  readonly current: () => void
-  readonly teams: ReadonlyArray<ITeam>
-  readonly loadingTeams: boolean
+  readonly day: number
+  readonly onPrev: () => void
+  readonly onNext: () => void
+  readonly onCurrent: () => void
   readonly teamID: TeamID
+  readonly type: "shopping" | "recipes"
 }
 
-function Nav({
-  teams,
-  day,
-  handleOwnerChange,
-  teamID,
-  loadingTeams,
-  prev,
-  next,
-  current
-}: INavProps) {
+function Nav({ day, teamID, onPrev, onNext, onCurrent, type }: INavProps) {
+  const { handleOwnerChange, teams } = useTeamSelect(day, type)
+
   return (
     <section className="d-flex flex-grow justify-space-between align-items-center">
       <div className="d-flex">
         <CalTitle day={day} />
-        <TeamSelect
-          teams={teams}
-          teamID={teamID}
-          handleOwnerChange={handleOwnerChange}
-          loading={loadingTeams}
-        />
+        <TeamSelect teams={teams} value={teamID} onChange={handleOwnerChange} />
       </div>
       <section>
-        <ButtonPlain size="small" onClick={prev}>
+        <ButtonPlain size="small" onClick={onPrev}>
           {"←"}
         </ButtonPlain>
-        <ButtonPlain size="small" className="ml-1 mr-1" onClick={current}>
+        <ButtonPlain size="small" className="ml-1 mr-1" onClick={onCurrent}>
           Today
         </ButtonPlain>
-        <ButtonPlain size="small" onClick={next}>
+        <ButtonPlain size="small" onClick={onNext}>
           {"→"}
         </ButtonPlain>
       </section>
@@ -222,8 +209,8 @@ function HelpPrompt() {
   )
 }
 
-const prevWeekStart = (date: Date) => subWeeks(startOfWeek(date), 1)
-const nextWeekStart = (date: Date) => addWeeks(startOfWeek(date), 1)
+const prevWeekStart = (date: Date | number) => subWeeks(startOfWeek(date), 1)
+const nextWeekStart = (date: Date | number) => addWeeks(startOfWeek(date), 1)
 
 const CalContainer = styled.div`
   display: flex;
@@ -234,55 +221,105 @@ const CalContainer = styled.div`
   }
 `
 
-interface ICalendarProps {
-  readonly loadingTeams: boolean
-  readonly error: boolean
-  readonly fetchTeams: () => void
-  readonly navTo: (url: string) => void
-  readonly fetchData: (teamID: TeamID, month: Date) => void
-  readonly refetchShoppingListAndRecipes: (teamID: TeamID) => void
-  readonly teams: ReadonlyArray<ITeam>
-  readonly days: IDays
-  readonly teamID: TeamID
-  readonly type: "shopping" | "recipes"
+interface IUseCurrentWeekState {
+  readonly weekStartDate: Date
+  readonly isTouched: boolean
 }
 
-export function Calendar({
-  fetchTeams,
-  fetchData,
-  teamID: propsTeamID,
-  days,
-  refetchShoppingListAndRecipes,
-  type,
-  navTo,
-  error,
-  teams,
-  loadingTeams
-}: ICalendarProps) {
-  const [start, setStart] = useState(startOfWeek(new Date()))
+function useCurrentWeek() {
+  const today = useCurrentDay()
+  const [{ weekStartDate }, setStart] = useState<IUseCurrentWeekState>(() => ({
+    weekStartDate: startOfWeek(today),
+    isTouched: true
+  }))
+  React.useEffect(() => {
+    // Only update the current day if we aren't navigating the calendar.
+    setStart(prev => {
+      if (prev.isTouched) {
+        return prev
+      }
+      return { ...prev, weekStartDate: startOfWeek(today) }
+    })
+  }, [today])
 
+  const currentDate = startOfWeek(weekStartDate).getTime()
+  const startDate = startOfWeek(subWeeks(currentDate, 1))
+  const endDate = endOfWeek(addWeeks(currentDate, 1))
+
+  const navPrev = () => {
+    setStart(prev => ({
+      weekStartDate: prevWeekStart(prev.weekStartDate),
+      isTouched: true
+    }))
+  }
+
+  const navNext = () => {
+    setStart(prev => ({
+      weekStartDate: nextWeekStart(prev.weekStartDate),
+      isTouched: true
+    }))
+  }
+
+  const navCurrent = () => {
+    setStart(() => ({
+      weekStartDate: startOfWeek(today),
+      isTouched: false
+    }))
+  }
+
+  return { currentDate, startDate, endDate, navNext, navPrev, navCurrent }
+}
+
+function useTeams(): WebData<ReadonlyArray<ITeam>> {
+  const dispatch = useDispatch()
+  const teams = useSelector(teamsFrom)
   useEffect(() => {
-    fetchTeams()
-  }, [fetchTeams])
+    fetchingTeamsAsync(dispatch)()
+  }, [dispatch])
+  const isLoading = useSelector(s => !!s.teams.loading)
 
-  const refetchData = (teamID: TeamID = propsTeamID) => {
-    fetchData(teamID, start)
-    refetchShoppingListAndRecipes(teamID)
+  if (isLoading) {
+    return Loading()
   }
 
+  return Success(teams)
+}
+
+function useDays(teamID: TeamID, currentDate: number): WebData<IDays> {
+  const dispatch = useDispatch()
   useEffect(() => {
-    fetchData(propsTeamID, start)
-  }, [fetchData, propsTeamID, start])
+    fetchCalendarAsync(dispatch)(teamID, currentDate)
+  }, [currentDate, dispatch, teamID])
 
-  const prev = () => {
-    setStart(prevStart => prevWeekStart(prevStart))
+  const isTeam = teamID !== "personal"
+  const days = useSelector(s => {
+    if (isTeam) {
+      return getTeamRecipes(s.calendar)
+    }
+    return getPersonalRecipes(s.calendar)
+  })
+
+  const status = useSelector(s => s.calendar.status)
+
+  if (status === "loading") {
+    return Loading()
   }
 
-  const next = () => {
-    setStart(prevStart => nextWeekStart(prevStart))
+  if (status === "failure") {
+    return Failure(undefined)
   }
 
-  const current = () => setStart(startOfWeek(new Date()))
+  return Success(
+    days.reduce((a, b) => {
+      a[b.on] = (a[b.on] || []).concat(b)
+      return a
+    }, {} as IDays)
+  )
+}
+
+function useTeamSelect(currentDate: number, type: "shopping" | "recipes") {
+  const teams = useTeams()
+  const dispatch = useDispatch()
 
   const handleOwnerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const teamID =
@@ -296,75 +333,47 @@ export function Calendar({
     const urlWithEnding = url + ending
 
     // navTo is async so we can't count on the URL to have changed by the time we refetch the data
-    navTo(urlWithEnding)
-    refetchData(teamID)
+    dispatch(push(urlWithEnding))
+    fetchCalendarAsync(dispatch)(teamID, currentDate)
+    fetchingRecipeListAsync(dispatch)(teamID)
+    fetchingShoppingListAsync(dispatch)(teamID)
   }
 
-  if (error) {
-    return <p>Error fetching data</p>
-  }
+  return { handleOwnerChange, teams }
+}
 
-  const currentDate = startOfWeek(start)
-  const startDate = startOfWeek(subWeeks(currentDate, 1))
-  const endDate = endOfWeek(addWeeks(currentDate, 1))
+interface ICalendarProps {
+  readonly teamID: TeamID
+  readonly type: "shopping" | "recipes"
+}
+
+export function Calendar({ teamID, type }: ICalendarProps) {
+  const {
+    currentDate,
+    startDate,
+    endDate,
+    navNext,
+    navCurrent,
+    navPrev
+  } = useCurrentWeek()
+
+  const days = useDays(teamID, currentDate)
 
   return (
     <CalContainer>
       <Nav
-        teams={teams}
-        loadingTeams={loadingTeams}
-        handleOwnerChange={handleOwnerChange}
         day={currentDate}
-        teamID={propsTeamID}
-        next={next}
-        prev={prev}
-        current={current}
+        teamID={teamID}
+        onNext={navNext}
+        onPrev={navPrev}
+        onCurrent={navCurrent}
+        type={type}
       />
       <Weekdays />
-      <Days start={startDate} end={endDate} days={days} teamID={propsTeamID} />
+      <Days start={startDate} end={endDate} days={days} teamID={teamID} />
       <HelpPrompt />
     </CalContainer>
   )
 }
 
-const mapStateToProps = (
-  state: IState,
-  { teamID }: Pick<ICalendarProps, "teamID">
-) => {
-  const isTeam = teamID !== "personal"
-
-  const days = isTeam
-    ? getTeamRecipes(state.calendar)
-    : getPersonalRecipes(state.calendar)
-
-  const transformedDays: IDays = days.reduce((a, b) => {
-    a[b.on] = (a[b.on] || []).concat(b)
-    return a
-  }, {} as IDays)
-
-  return {
-    days: transformedDays,
-    loading: state.calendar.loading,
-    error: state.calendar.error,
-    loadingTeams: !!state.teams.loading,
-    teams: teamsFrom(state),
-    teamID,
-    isTeam
-  }
-}
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: fetchCalendarAsync(dispatch),
-  fetchTeams: fetchingTeamsAsync(dispatch),
-  navTo: (url: string) => {
-    dispatch(push(url))
-  },
-  refetchShoppingListAndRecipes: (teamID: TeamID) => {
-    return Promise.all([
-      fetchingRecipeListAsync(dispatch)(teamID),
-      fetchingShoppingListAsync(dispatch)(teamID)
-    ])
-  }
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Calendar)
+export default Calendar

@@ -17,18 +17,7 @@ describe("<Calendar> Snap", () => {
     const tree = renderer
       .create(
         <TestProvider>
-          <Calendar
-            loadingTeams={false}
-            error={false}
-            fetchTeams={jest.fn()}
-            navTo={jest.fn()}
-            fetchData={jest.fn()}
-            teams={[]}
-            days={{}}
-            teamID={10}
-            type="recipes"
-            refetchShoppingListAndRecipes={jest.fn()}
-          />
+          <Calendar teamID={10} type="recipes" />
         </TestProvider>
       )
       .toJSON()

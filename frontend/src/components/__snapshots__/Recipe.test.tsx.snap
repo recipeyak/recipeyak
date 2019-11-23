@@ -1011,6 +1011,6 @@ Object {
     "team": 1,
     "time": "1776",
   },
-  "kind": 3,
+  "kind": "Refetching",
 }
 `;
