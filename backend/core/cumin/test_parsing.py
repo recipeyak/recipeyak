@@ -40,6 +40,9 @@ from core.renderers import JSONEncoder
         ("1/8 T", Quantity(quantity=Decimal(1) / Decimal(8), unit=Unit.TABLESPOON)),
         ("1 tbs", Quantity(quantity=Decimal(1), unit=Unit.TABLESPOON)),
         ("4-5", Quantity(quantity=Decimal(5), unit=Unit.NONE)),
+        ("1lb", Quantity(quantity=Decimal(1), unit=Unit.POUND)),
+        ("1 pound", Quantity(quantity=Decimal(1), unit=Unit.POUND)),
+        ("1 bag", Quantity(quantity=Decimal(1), unit=Unit.UNKNOWN, unknown_unit="bag")),
         (
             "1 Tablespoon + 1 teaspoon",
             Quantity(quantity=Decimal(4), unit=Unit.TEASPOON),
@@ -121,6 +124,13 @@ def test_fraction_to_decimal(fraction: str, expected: Optional[Decimal]) -> None
             ),
             Quantity(quantity=Decimal(2), unit=Unit.TEASPOON),
         ),
+        (
+            (
+                Quantity(quantity=Decimal(1), unit=Unit.UNKNOWN, unknown_unit="bag"),
+                Quantity(quantity=Decimal(1), unit=Unit.UNKNOWN, unknown_unit="bag"),
+            ),
+            Quantity(quantity=Decimal(2), unit=Unit.UNKNOWN, unknown_unit="bag"),
+        ),
     ],
 )
 def test_quantity_addition(
@@ -128,6 +138,19 @@ def test_quantity_addition(
 ) -> None:
     a, b = quantities
     assert a + b == expected
+
+
+def test_adding_quantities_with_diff_unknown_units() -> None:
+    """
+    Units that are unknown shouldn't be combined if the `unknown_unit`
+    doesn't match.
+    """
+
+    with pytest.raises(IncompatibleUnit):
+        # pylint:disable=expression-not-assigned
+        Quantity(quantity=Decimal(1), unit=Unit.UNKNOWN, unknown_unit="bag") + Quantity(
+            quantity=Decimal(2), unit=Unit.UNKNOWN, unknown_unit="thing"
+        )
 
 
 def test_adding_incompatible_units() -> None:
@@ -198,8 +221,8 @@ def test_combining_ingredients_to_json() -> None:
     ) == {
         "soy sauce": {
             "quantities": [
-                {"quantity": "4", "unit": "TEASPOON"},
-                {"quantity": "1", "unit": "SOME"},
+                {"quantity": "4", "unit": "TEASPOON", "unknown_unit": None},
+                {"quantity": "1", "unit": "SOME", "unknown_unit": None},
             ]
         }
     }

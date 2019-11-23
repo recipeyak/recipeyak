@@ -4,6 +4,8 @@ from decimal import Decimal
 from rest_framework.renderers import JSONRenderer as DRFJSONRenderer
 from rest_framework.utils.encoders import JSONEncoder as DRFEncoder
 
+MAX_DECIMAL_PLACES = 8
+
 
 def fmt_decimal(d: Decimal) -> str:
     """
@@ -11,6 +13,7 @@ def fmt_decimal(d: Decimal) -> str:
 
     Decimal("4.0000") -> "4"
     """
+    d = round(d, MAX_DECIMAL_PLACES)
     if d == d.to_integral():
         return str(d.quantize(Decimal(1)))
     return str(d.normalize())

@@ -37,8 +37,14 @@ def test_fetching_shoppinglist(client, user, recipe):
     res = client.get(url, params)
     assert res.status_code == status.HTTP_200_OK
     assert res.json() == {
-        "egg": {"quantities": [{"quantity": "2", "unit": "POUND"}]},
-        "soy sauce": {"quantities": [{"quantity": "4", "unit": "TABLESPOON"}]},
+        "egg": {
+            "quantities": [{"quantity": "2", "unit": "POUND", "unknown_unit": None}]
+        },
+        "soy sauce": {
+            "quantities": [
+                {"quantity": "4", "unit": "TABLESPOON", "unknown_unit": None}
+            ]
+        },
     }
 
 
@@ -65,8 +71,14 @@ def test_fetching_shoppinglist_with_team_recipe(client, team, user, recipe):
     assert res.json() != []
 
     assert res.json() == {
-        "egg": {"quantities": [{"quantity": "2", "unit": "POUND"}]},
-        "soy sauce": {"quantities": [{"quantity": "4", "unit": "TABLESPOON"}]},
+        "egg": {
+            "quantities": [{"quantity": "2", "unit": "POUND", "unknown_unit": None}]
+        },
+        "soy sauce": {
+            "quantities": [
+                {"quantity": "4", "unit": "TABLESPOON", "unknown_unit": None}
+            ]
+        },
     }
 
 
@@ -103,7 +115,9 @@ def test_scheduling_multiple_times_some_ingredient(
     res = client.get(url, params)
     assert res.status_code == status.HTTP_200_OK
     assert res.json() == {
-        "black pepper": {"quantities": [{"quantity": "3", "unit": "SOME"}]}
+        "black pepper": {
+            "quantities": [{"quantity": "3", "unit": "SOME", "unknown_unit": None}]
+        }
     }
 
 
@@ -313,6 +327,11 @@ def test_combining_feta(user, client, empty_recipe):
         ("some", "katamata olives"),
         ("some", "red pepper flakes"),
         ("2 tablespoon", "molasses"),
+        # duplicate the ingredient to replicate scheduling the recipe multiple
+        # times
+        ("1 bag", "tortilla chips"),
+        ("1 bag", "tortilla chips"),
+        ("1 container", "tortilla chips"),
     ]
 
     for quantity, name in ingredients:
@@ -331,9 +350,27 @@ def test_combining_feta(user, client, empty_recipe):
     assert res.status_code == status.HTTP_200_OK
 
     assert res.json() == {
-        "all purpose flour": {"quantities": [{"quantity": "1.25", "unit": "CUP"}]},
-        "feta": {"quantities": [{"quantity": "1", "unit": "SOME"}]},
-        "katamata olives": {"quantities": [{"quantity": "1", "unit": "SOME"}]},
-        "molasses": {"quantities": [{"quantity": "2", "unit": "TABLESPOON"}]},
-        "red pepper flakes": {"quantities": [{"quantity": "1", "unit": "SOME"}]},
+        "all purpose flour": {
+            "quantities": [{"quantity": "1.25", "unit": "CUP", "unknown_unit": None}]
+        },
+        "feta": {
+            "quantities": [{"quantity": "1", "unit": "SOME", "unknown_unit": None}]
+        },
+        "katamata olives": {
+            "quantities": [{"quantity": "1", "unit": "SOME", "unknown_unit": None}]
+        },
+        "molasses": {
+            "quantities": [
+                {"quantity": "2", "unit": "TABLESPOON", "unknown_unit": None}
+            ]
+        },
+        "red pepper flakes": {
+            "quantities": [{"quantity": "1", "unit": "SOME", "unknown_unit": None}]
+        },
+        "tortilla chips": {
+            "quantities": [
+                {"quantity": "2", "unit": "UNKNOWN", "unknown_unit": "bag"},
+                {"quantity": "1", "unit": "UNKNOWN", "unknown_unit": "container"},
+            ]
+        },
     }

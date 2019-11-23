@@ -114,12 +114,14 @@ export const enum Unit {
   LITER = "LITER",
   MILLILITER = "MILLILITER",
   SOME = "SOME",
+  UNKNOWN = "UNKNOWN",
   NONE = "NONE"
 }
 
 export interface IQuantity {
   readonly quantity: string
   readonly unit: Unit
+  readonly unknown_unit?: string | null
 }
 
 export interface IIngredientItem {
