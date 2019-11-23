@@ -1,0 +1,64 @@
+#!/usr/bin/env python3
+
+import os
+import sys
+from pathlib import Path
+from typing import Dict, List, NoReturn
+
+from utils import run_all
+
+
+def get_commands(*, is_fix: bool) -> Dict[str, List[str]]:
+    frontend_lints = {
+        "tslint": [
+            "./node_modules/.bin/tslint",
+            "--project",
+            "tsconfig.json",
+            "--format",
+            "codeFrame",
+        ],
+        "eslint": ["./node_modules/.bin/eslint", "**/*.{ts,tsx,js,jsx}"],
+        "typescript": ["./node_modules/.bin/tsc", "--noEmit"],
+        "prettier": [
+            "./node_modules/.bin/prettier",
+            "**/*.{js,jsx,scss,css,ts,tsx,json,yaml,yml,md}",
+        ],
+    }
+
+    mypy_python_files = [
+        str(p)
+        for p in Path("backend").rglob("*.py")
+        if ".ropeproject" not in str(p) and ".venv" not in str(p)
+    ]
+
+    backend_lints = {
+        "mypy": ["./.venv/bin/mypy", "--config-file", "tox.ini", *mypy_python_files],
+        "flake8": ["./.venv/bin/flake8", "."],
+        "black": ["./.venv/bin/black", "."],
+        "isort": ["./.venv/bin/isort"],
+        "shellcheck": ["./s/shellcheck"],
+    }
+
+    if is_fix:
+        frontend_lints["eslint"].append("--fix")
+        frontend_lints["prettier"].append("--write")
+        backend_lints["isort"].append("-y")
+    else:
+        frontend_lints["prettier"].append("--list-different")
+        backend_lints["black"].append("--check")
+        backend_lints["isort"].append("--check-only")
+
+    return {**frontend_lints, **backend_lints}
+
+
+def main() -> NoReturn:
+    is_fix = os.getenv("CI") is None
+    cmds = get_commands(is_fix=is_fix)
+
+    os.chdir(Path(__file__).parent.parent)
+    exit_code = run_all(cmds=cmds)
+    sys.exit(exit_code)
+
+
+if __name__ == "__main__":
+    main()

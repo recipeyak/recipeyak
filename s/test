@@ -1,0 +1,52 @@
+#!/usr/bin/env python3
+
+import os
+import sys
+from pathlib import Path
+from typing import NoReturn
+
+from utils import run_all
+
+
+def main() -> NoReturn:
+    os.environ["TESTING"] = "1"
+    os.environ["TZ"] = "UTC"
+
+    args = set(sys.argv[1:])
+
+    is_web = "--web" in args
+    is_api = "--api" in args
+    is_watch = "--watch" in args
+
+    if is_web:
+        args.remove("--web")
+    if is_api:
+        args.remove("--api")
+    if is_watch:
+        args.remove("--watch")
+
+    cmds = {
+        "jest": ["node", "frontend/scripts/test.js", "--env=jsdom", *args],
+        "pytest": ["pytest", *args],
+    }
+
+    if os.getenv("CI"):
+        cmds["jest"] += ["--coverage", "--runInBand"]
+
+    if is_watch:
+        cmds["jest"] += ["--watch"]
+        cmds["pytest"] = ["ptw", "--", *args]
+
+    if is_web:
+        del cmds["pytest"]
+
+    if is_api:
+        del cmds["jest"]
+
+    os.chdir(Path(__file__).parent.parent)
+    exit_code = run_all(cmds=cmds)
+    sys.exit(exit_code)
+
+
+if __name__ == "__main__":
+    main()
