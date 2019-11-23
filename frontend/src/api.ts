@@ -121,7 +121,7 @@ export const enum Unit {
 export interface IQuantity {
   readonly quantity: string
   readonly unit: Unit
-  readonly unknown_unit: string | null
+  readonly unknown_unit?: string | null
 }
 
 export interface IIngredientItem {
