@@ -43,11 +43,11 @@ function monthYearFromDate(date: number) {
 }
 
 interface ICalTitleProps {
-  readonly day: number
+  readonly dayTs: number
 }
 
-function CalTitle({ day }: ICalTitleProps) {
-  return <p className="mr-2">{monthYearFromDate(day)}</p>
+function CalTitle({ dayTs }: ICalTitleProps) {
+  return <p className="mr-2">{monthYearFromDate(dayTs)}</p>
 }
 
 export interface IDays {
@@ -169,7 +169,7 @@ function TeamSelect({ onChange, value, teams }: ITeamSelectProps) {
 }
 
 interface INavProps {
-  readonly day: number
+  readonly dayTs: number
   readonly onPrev: () => void
   readonly onNext: () => void
   readonly onCurrent: () => void
@@ -177,13 +177,13 @@ interface INavProps {
   readonly type: "shopping" | "recipes"
 }
 
-function Nav({ day, teamID, onPrev, onNext, onCurrent, type }: INavProps) {
-  const { handleOwnerChange, teams } = useTeamSelect(day, type)
+function Nav({ dayTs, teamID, onPrev, onNext, onCurrent, type }: INavProps) {
+  const { handleOwnerChange, teams } = useTeamSelect(dayTs, type)
 
   return (
     <section className="d-flex flex-grow justify-space-between align-items-center">
       <div className="d-flex">
-        <CalTitle day={day} />
+        <CalTitle dayTs={dayTs} />
         <TeamSelect teams={teams} value={teamID} onChange={handleOwnerChange} />
       </div>
       <section>
@@ -242,9 +242,9 @@ function useCurrentWeek() {
     })
   }, [today])
 
-  const currentDate = startOfWeek(weekStartDate).getTime()
-  const startDate = startOfWeek(subWeeks(currentDate, 1))
-  const endDate = endOfWeek(addWeeks(currentDate, 1))
+  const currentDateTs = startOfWeek(weekStartDate).getTime()
+  const startDate = startOfWeek(subWeeks(currentDateTs, 1))
+  const endDate = endOfWeek(addWeeks(currentDateTs, 1))
 
   const navPrev = () => {
     setStart(prev => ({
@@ -267,7 +267,7 @@ function useCurrentWeek() {
     }))
   }
 
-  return { currentDate, startDate, endDate, navNext, navPrev, navCurrent }
+  return { currentDateTs, startDate, endDate, navNext, navPrev, navCurrent }
 }
 
 function useTeams(): WebData<ReadonlyArray<ITeam>> {
@@ -285,11 +285,11 @@ function useTeams(): WebData<ReadonlyArray<ITeam>> {
   return Success(teams)
 }
 
-function useDays(teamID: TeamID, currentDate: number): WebData<IDays> {
+function useDays(teamID: TeamID, currentDateTs: number): WebData<IDays> {
   const dispatch = useDispatch()
   useEffect(() => {
-    fetchCalendarAsync(dispatch)(teamID, currentDate)
-  }, [currentDate, dispatch, teamID])
+    fetchCalendarAsync(dispatch)(teamID, currentDateTs)
+  }, [currentDateTs, dispatch, teamID])
 
   const isTeam = teamID !== "personal"
   const days = useSelector(s => {
@@ -317,7 +317,7 @@ function useDays(teamID: TeamID, currentDate: number): WebData<IDays> {
   )
 }
 
-function useTeamSelect(currentDate: number, type: "shopping" | "recipes") {
+function useTeamSelect(currentDateTs: number, type: "shopping" | "recipes") {
   const teams = useTeams()
   const dispatch = useDispatch()
 
@@ -334,7 +334,7 @@ function useTeamSelect(currentDate: number, type: "shopping" | "recipes") {
 
     // navTo is async so we can't count on the URL to have changed by the time we refetch the data
     dispatch(push(urlWithEnding))
-    fetchCalendarAsync(dispatch)(teamID, currentDate)
+    fetchCalendarAsync(dispatch)(teamID, currentDateTs)
     fetchingRecipeListAsync(dispatch)(teamID)
     fetchingShoppingListAsync(dispatch)(teamID)
   }
@@ -349,7 +349,7 @@ interface ICalendarProps {
 
 export function Calendar({ teamID, type }: ICalendarProps) {
   const {
-    currentDate,
+    currentDateTs,
     startDate,
     endDate,
     navNext,
@@ -357,12 +357,12 @@ export function Calendar({ teamID, type }: ICalendarProps) {
     navPrev
   } = useCurrentWeek()
 
-  const days = useDays(teamID, currentDate)
+  const days = useDays(teamID, currentDateTs)
 
   return (
     <CalContainer>
       <Nav
-        day={currentDate}
+        dayTs={currentDateTs}
         teamID={teamID}
         onNext={navNext}
         onPrev={navPrev}
