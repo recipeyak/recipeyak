@@ -70,8 +70,7 @@ export interface ICalRecipe {
 
 export interface ICalendarState {
   readonly allIds: ICalRecipe["id"][]
-  readonly loading: boolean
-  readonly error: boolean
+  readonly status: "success" | "failure" | "loading" | "initial" | "refetching"
   readonly byId: {
     readonly [key: number]: ICalRecipe | undefined
   }
@@ -80,8 +79,7 @@ export interface ICalendarState {
 export const initialState: ICalendarState = {
   allIds: [],
   byId: {},
-  loading: false,
-  error: false
+  status: "initial"
 }
 
 export const calendar = (
@@ -96,7 +94,8 @@ export const calendar = (
           ...state.byId,
           ...action.payload.reduce((a, b) => ({ ...a, [b.id]: b }), {})
         },
-        allIds: uniq(state.allIds.concat(action.payload.map(x => x.id)))
+        allIds: uniq(state.allIds.concat(action.payload.map(x => x.id))),
+        status: "success"
       }
     case getType(setCalendarRecipe): {
       const existing = getExistingRecipe({
@@ -137,16 +136,25 @@ export const calendar = (
         byId: omit(state.byId, action.payload),
         allIds: state.allIds.filter(id => id !== action.payload)
       }
-    case getType(fetchCalendarRecipes.request):
-      return {
-        ...state,
-        loading: true,
-        error: false
+    case getType(fetchCalendarRecipes.request): {
+      if (state.status === "initial") {
+        return {
+          ...state,
+          status: "loading"
+        }
       }
+      if (state.status === "success") {
+        return {
+          ...state,
+          status: "refetching"
+        }
+      }
+      return state
+    }
     case getType(fetchCalendarRecipes.failure):
       return {
         ...state,
-        error: true
+        status: "failure"
       }
     case getType(moveCalendarRecipe): {
       // if the same recipe already exists at the date:

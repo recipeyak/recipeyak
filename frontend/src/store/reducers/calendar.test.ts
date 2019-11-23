@@ -46,7 +46,7 @@ describe("Calendar", () => {
     ]
 
     const afterState: ICalendarState = {
-      ...initialState,
+      status: "success",
       allIds: [recipes[0].id, recipes[1].id],
       byId: {
         [recipes[0].id]: recipes[0],
@@ -123,7 +123,7 @@ describe("Calendar", () => {
 
     const afterState: ICalendarState = {
       ...initialState,
-      loading: true,
+      status: "loading",
       allIds: []
     }
 
@@ -140,7 +140,7 @@ describe("Calendar", () => {
 
     const afterState: ICalendarState = {
       ...initialState,
-      error: true,
+      status: "failure",
       allIds: []
     }
 

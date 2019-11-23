@@ -985,11 +985,11 @@ export const reportBadMergeAsync = (dispatch: Dispatch) => async () => {
 
 export const fetchCalendarAsync = (dispatch: Dispatch) => async (
   teamID: TeamID,
-  month = new Date()
+  monthTs: number
 ) => {
   dispatch(fetchCalendarRecipes.request())
   // we fetch current month plus and minus 1 week
-  const res = await api.getCalendarRecipeList(teamID, month)
+  const res = await api.getCalendarRecipeList(teamID, monthTs)
   if (isOk(res)) {
     dispatch(fetchCalendarRecipes.success(res.data))
   } else {
