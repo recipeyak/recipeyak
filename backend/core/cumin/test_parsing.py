@@ -24,6 +24,8 @@ from core.renderers import JSONEncoder
         ("1/2 Tablespoon", Quantity(quantity=Decimal(0.5), unit=Unit.TABLESPOON)),
         ("3 1/2 Tablespoon", Quantity(quantity=Decimal(3.5), unit=Unit.TABLESPOON)),
         ("1 tsp", Quantity(quantity=Decimal(1), unit=Unit.TEASPOON)),
+        ("4 oz", Quantity(quantity=Decimal(4), unit=Unit.OUNCE)),
+        ("4 ounces/112 grams", Quantity(quantity=Decimal(4), unit=Unit.OUNCE)),
         ("4 ounces", Quantity(quantity=Decimal(4), unit=Unit.OUNCE)),
         ("1 1/2 cups", Quantity(quantity=Decimal(1.5), unit=Unit.CUP)),
         ("3lbs", Quantity(quantity=Decimal(3), unit=Unit.POUND)),

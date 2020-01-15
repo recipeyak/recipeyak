@@ -217,7 +217,7 @@ def get_unit(val: str) -> Unit:
         return Unit.GRAM
     if "gallon" in val:
         return Unit.GALLON
-    if "ounce" in val:
+    if "ounce" in val or val == "oz":
         return Unit.OUNCE
     if "milliliter" in val:
         return Unit.MILLILITER
@@ -288,6 +288,9 @@ def _parse_quantity(val: str) -> Quantity:
             break
 
     for c in value:
+        if c in quantity_chars:
+            break
+        # handle case of two units and quantities next to each other
         unit_str += c
 
     # strip out misplaced words, e.g., `1 large` `lemon` instead of `1` `large lemon`
