@@ -1,3 +1,4 @@
+import json
 import logging
 from typing import List, Optional
 
@@ -13,7 +14,8 @@ from rest_framework.views import APIView
 
 from core.auth.permissions import IsTeamMember
 from core.cumin import combine_ingredients
-from core.models import Ingredient, ScheduledRecipe, Team
+from core.models import Ingredient, ScheduledRecipe, ShoppingList, Team
+from core.renderers import JSONEncoder
 from core.schedule.serializers import (
     ScheduledRecipeSerializer,
     ScheduledRecipeSerializerCreate,
@@ -57,7 +59,13 @@ def get_shopping_list_view(request: Request, team_pk: str) -> Response:
         for i in ingredients
     ]
 
-    return Response(combine_ingredients(ingredients), status=status.HTTP_200_OK)
+    ingredient_mapping = combine_ingredients(ingredients)
+
+    ShoppingList.objects.create(
+        ingredients=json.dumps(ingredient_mapping, cls=JSONEncoder)
+    )
+
+    return Response(ingredient_mapping, status=status.HTTP_200_OK)
 
 
 class ReportBadMerge(APIView):

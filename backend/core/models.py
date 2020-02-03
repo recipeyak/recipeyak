@@ -13,7 +13,7 @@ from django.contrib.auth.models import (
 )
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.postgres.fields import CIEmailField
+from django.contrib.postgres.fields import CIEmailField, JSONField
 from django.core.validators import MinValueValidator
 from django.db import models, transaction
 from django.db.models import Q
@@ -563,6 +563,16 @@ class RecipeChange(CommonInfo):
         max_length=255,
         help_text="The field / model changed.",
     )
+
+
+class ShoppingList(CommonInfo):
+    """
+    Store a shoppinglist anytime we generate one.
+
+    Useful for looking back at bad combines and similar parsing issues.
+    """
+
+    ingredients = JSONField()
 
 
 class Membership(CommonInfo):

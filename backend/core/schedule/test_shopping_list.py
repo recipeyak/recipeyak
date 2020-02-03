@@ -1,3 +1,4 @@
+import json
 from datetime import date, timedelta
 from decimal import Decimal
 from typing import List, Tuple
@@ -14,7 +15,7 @@ from core.cumin import (
     Unit,
     combine_ingredients,
 )
-from core.models import Ingredient, MyUser, Recipe
+from core.models import Ingredient, MyUser, Recipe, ShoppingList
 
 pytestmark = pytest.mark.django_db
 
@@ -22,6 +23,7 @@ url = "/api/v1/t/me/shoppinglist/"
 
 
 def test_fetching_shoppinglist(client, user, recipe):
+    assert ShoppingList.objects.count() == 0
 
     client.force_authenticate(user)
     start = date(1976, 7, 6)
@@ -31,6 +33,7 @@ def test_fetching_shoppinglist(client, user, recipe):
     res = client.get(url, params)
     assert res.status_code == status.HTTP_200_OK
     assert res.json() == {}
+    assert ShoppingList.objects.count() == 1
 
     recipe.schedule(user=user, on=start, count=2)
 
@@ -46,6 +49,10 @@ def test_fetching_shoppinglist(client, user, recipe):
             ]
         },
     }
+
+    assert ShoppingList.objects.count() == 2
+    shopping_list: ShoppingList = ShoppingList.objects.order_by("-created").first()
+    assert json.loads(shopping_list.ingredients) == res.json()
 
 
 def test_fetching_shoppinglist_with_team_recipe(client, team, user, recipe):
