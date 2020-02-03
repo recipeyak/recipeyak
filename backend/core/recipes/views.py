@@ -18,16 +18,16 @@ from core.auth.permissions import (
     has_recipe_access,
 )
 from core.models import (
+    ChangeType,
     Ingredient,
     MyUser,
     Note,
     Recipe,
+    RecipeChange,
     ScheduledRecipe,
     Step,
     Team,
     user_and_team_recipes,
-    RecipeChange,
-    ChangeType,
 )
 from core.recipes.serializers import (
     IngredientSerializer,

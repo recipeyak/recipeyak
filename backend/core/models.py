@@ -1,9 +1,9 @@
+import enum
 import hashlib
 import itertools
 import logging
 from datetime import date, datetime
 from typing import List, Optional, Union, cast
-import enum
 
 from allauth.socialaccount.models import EmailAddress
 from django.contrib.auth.models import (
