@@ -3,6 +3,7 @@ import itertools
 import logging
 from datetime import date, datetime
 from typing import List, Optional, Union, cast
+import enum
 
 from allauth.socialaccount.models import EmailAddress
 from django.contrib.auth.models import (
@@ -516,6 +517,52 @@ class Team(CommonInfo):
     @property
     def scheduled_recipes(self):
         return ScheduledRecipe.objects.filter(team=self)
+
+
+@enum.unique
+class ChangeType(str, enum.Enum):
+    NAME = "NAME"
+    AUTHOR = "AUTHOR"
+    SOURCE = "SOURCE"
+    SERVINGS = "SERVINGS"
+    TIME = "TIME"
+
+    STEP_CREATE = "STEP_CREATE"
+    STEP_UPDATE = "STEP_UPDATE"
+    STEP_DELETE = "STEP_DELETE"
+
+    INGREDIENT_CREATE = "INGREDIENT_CREATE"
+    INGREDIENT_UPDATE = "INGREDIENT_UPDATE"
+    INGREDIENT_DELETE = "INGREDIENT_DELETE"
+
+
+class RecipeChange(CommonInfo):
+    """
+    Record changes of a recipe. Useful for constructing a timeline of a
+    recipe's evolution.
+    """
+
+    actor = models.ForeignKey(
+        "MyUser", on_delete=models.CASCADE, help_text="User who made the change."
+    )
+
+    before = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text="The previous value, sometimes derived from multiple fields",
+    )
+
+    after = models.CharField(
+        max_length=255,
+        blank=False,
+        help_text="The new value, sometimes derived from multiple fields",
+    )
+
+    change_type = models.CharField(
+        choices=[(c.value, c.value) for c in ChangeType],
+        max_length=255,
+        help_text="The field / model changed.",
+    )
 
 
 class Membership(CommonInfo):
