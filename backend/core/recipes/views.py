@@ -18,10 +18,12 @@ from core.auth.permissions import (
     has_recipe_access,
 )
 from core.models import (
+    ChangeType,
     Ingredient,
     MyUser,
     Note,
     Recipe,
+    RecipeChange,
     ScheduledRecipe,
     Step,
     Team,
@@ -89,6 +91,35 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         logger.info("Recipe created by %s", self.request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop("partial", False)
+        instance: Step = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+
+        fields = [
+            ("name", ChangeType.NAME),
+            ("author", ChangeType.AUTHOR),
+            ("source", ChangeType.SOURCE),
+            ("servings", ChangeType.SERVINGS),
+            ("time", ChangeType.TIME),
+        ]
+        for field, change_type in fields:
+            if (
+                field in serializer.validated_data
+                and getattr(instance, field) != serializer.validated_data[field]
+            ):
+                RecipeChange.objects.create(
+                    actor=request.user,
+                    before=getattr(instance, field) or "",
+                    after=serializer.validated_data[field],
+                    change_type=change_type,
+                )
+
+        self.perform_update(serializer)
+
+        return Response(serializer.data)
 
     @action(
         detail=True,
@@ -248,9 +279,53 @@ class StepViewSet(viewsets.ModelViewSet):
 
         if serializer.is_valid():
             serializer.save(recipe=recipe)
-            logger.info("Step created by %s", self.request.user)
+            logger.info("Step created by %s", request.user)
+            RecipeChange.objects.create(
+                actor=request.user,
+                before="",
+                after=serializer.validated_data["text"],
+                change_type=ChangeType.STEP_CREATE,
+            )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop("partial", False)
+        instance: Step = self.get_object()
+        before_text = instance.text
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        RecipeChange.objects.create(
+            actor=request.user,
+            before=before_text,
+            after=instance.text,
+            change_type=ChangeType.STEP_UPDATE,
+        )
+
+        return Response(serializer.data)
+
+    def perform_destroy(self, instance: Step) -> None:
+        RecipeChange.objects.create(
+            actor=self.request.user,
+            before=instance.text,
+            after="",
+            change_type=ChangeType.STEP_DELETE,
+        )
+        super().perform_destroy(instance)
+
+
+def ingredient_to_text(ingredient: Ingredient) -> str:
+    text = f"{ingredient.quantity} {ingredient.name}"
+
+    if ingredient.description:
+        text += f", {ingredient.description}"
+
+    if ingredient.optional:
+        text += " [optional]"
+
+    return text
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
@@ -277,10 +352,46 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
         if serializer.is_valid():
             recipe = Recipe.objects.get(pk=recipe_pk)
-            serializer.save(recipe=recipe)
+            instance: Ingredient = serializer.save(recipe=recipe)
             logger.info("Ingredient created by %s", self.request.user)
+            RecipeChange.objects.create(
+                actor=request.user,
+                before="",
+                after=ingredient_to_text(instance),
+                change_type=ChangeType.INGREDIENT_CREATE,
+            )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop("partial", False)
+        instance: Step = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+
+        before = ingredient_to_text(instance)
+
+        self.perform_update(serializer)
+
+        after = ingredient_to_text(instance)
+
+        RecipeChange.objects.create(
+            actor=request.user,
+            before=before,
+            after=after,
+            change_type=ChangeType.INGREDIENT_UPDATE,
+        )
+
+        return Response(serializer.data)
+
+    def perform_destroy(self, instance: Ingredient) -> None:
+        RecipeChange.objects.create(
+            actor=self.request.user,
+            before=ingredient_to_text(instance),
+            after="",
+            change_type=ChangeType.INGREDIENT_DELETE,
+        )
+        super().perform_destroy(instance)
 
 
 class NoteViewSet(viewsets.ModelViewSet):
