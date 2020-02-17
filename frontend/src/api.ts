@@ -12,7 +12,6 @@ import { IRecipeBasic } from "@/components/RecipeTitle"
 import { IRecipe, IIngredient, IStep, INote } from "@/store/reducers/recipes"
 import { IInvite } from "@/store/reducers/invites"
 import { ICalRecipe } from "@/store/reducers/calendar"
-import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
 import { isOk, Err } from "@/result"
 
 export const updateUser = (data: Partial<IUser>) =>

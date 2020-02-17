@@ -1,4 +1,4 @@
-import { uniq, omit } from "lodash"
+import { omit } from "lodash"
 import isSameDay from "date-fns/isSameDay"
 import {
   createAsyncAction,
