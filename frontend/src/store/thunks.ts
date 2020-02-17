@@ -30,7 +30,6 @@ import {
   deleteCalendarRecipe,
   moveCalendarRecipe,
   fetchCalendarRecipes,
-  getCalRecipeById,
   getExistingRecipe
 } from "@/store/reducers/calendar"
 import {
@@ -93,7 +92,15 @@ import {
 } from "@/store/reducers/auth"
 import { recipeURL } from "@/urls"
 import { isSuccessOrRefetching } from "@/webdata"
-import { isPast, endOfDay, parseISO } from "date-fns"
+import {
+  isPast,
+  endOfDay,
+  parseISO,
+  startOfWeek,
+  subWeeks,
+  addWeeks,
+  endOfWeek
+} from "date-fns"
 import { isOk, isErr, Ok, Err, Result } from "@/result"
 import { heldKeys } from "@/components/CurrentKeys"
 
@@ -985,13 +992,15 @@ export const reportBadMergeAsync = (dispatch: Dispatch) => async () => {
 
 export const fetchCalendarAsync = (dispatch: Dispatch) => async (
   teamID: TeamID,
-  monthTs: number
+  currentDayTs: number
 ) => {
   dispatch(fetchCalendarRecipes.request())
   // we fetch current month plus and minus 1 week
-  const res = await api.getCalendarRecipeList(teamID, monthTs)
+  const start = toISODateString(startOfWeek(subWeeks(currentDayTs, 1)))
+  const end = toISODateString(endOfWeek(addWeeks(currentDayTs, 1)))
+  const res = await api.getCalendarRecipeList({ teamID, start, end })
   if (isOk(res)) {
-    dispatch(fetchCalendarRecipes.success(res.data))
+    dispatch(fetchCalendarRecipes.success({ data: res.data, start, end }))
   } else {
     dispatch(fetchCalendarRecipes.failure())
   }
@@ -1106,7 +1115,7 @@ export const moveScheduledRecipe = async (
 ) => {
   // HACK(sbdchd): With an endpoint we can eliminate this
   const state = getState()
-  const from = getCalRecipeById(state.calendar, id)
+  const from = state.calendar.byId[id]
 
   if (from == null) {
     return

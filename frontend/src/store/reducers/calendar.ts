@@ -1,4 +1,4 @@
-import { uniq, omit } from "lodash"
+import { omit } from "lodash"
 import isSameDay from "date-fns/isSameDay"
 import {
   createAsyncAction,
@@ -17,12 +17,13 @@ import {
   IMoveScheduledRecipeProps,
   addingScheduledRecipeAsync
 } from "@/store/thunks"
+import { isAfter, isBefore, parseISO } from "date-fns"
 
 export const fetchCalendarRecipes = createAsyncAction(
   "FETCH_CALENDAR_RECIPES_START",
   "FETCH_CALENDAR_RECIPES_SUCCESS",
   "FETCH_CALENDAR_RECIPES_FAILURE"
-)<void, ICalRecipe[], void>()
+)<void, { data: ICalRecipe[]; start: string; end: string }, void>()
 export const setCalendarRecipe = createStandardAction("SET_CALENDAR_RECIPE")<
   ICalRecipe
 >()
@@ -69,7 +70,6 @@ export interface ICalRecipe {
 }
 
 export interface ICalendarState {
-  readonly allIds: ICalRecipe["id"][]
   readonly status: "success" | "failure" | "loading" | "initial" | "refetching"
   readonly byId: {
     readonly [key: number]: ICalRecipe | undefined
@@ -77,9 +77,13 @@ export interface ICalendarState {
 }
 
 export const initialState: ICalendarState = {
-  allIds: [],
   byId: {},
   status: "initial"
+}
+
+// tslint:disable-next-line object-index-must-return-possibly-undefined
+function byId<T extends { id: number }>(a: { [_: number]: T }, b: T) {
+  return { ...a, [b.id]: b }
 }
 
 export const calendar = (
@@ -88,13 +92,21 @@ export const calendar = (
 ): ICalendarState | Loop<ICalendarState, CalendarActions> => {
   switch (action.type) {
     case getType(fetchCalendarRecipes.success):
+      const byIdState = Object.values(state.byId)
+        .filter(notUndefined)
+        .filter(
+          value =>
+            isAfter(parseISO(value.on), parseISO(action.payload.end)) ||
+            isBefore(parseISO(value.on), parseISO(action.payload.start))
+        )
+        .reduce(byId, {})
+
       return {
         ...state,
         byId: {
-          ...state.byId,
-          ...action.payload.reduce((a, b) => ({ ...a, [b.id]: b }), {})
+          ...byIdState,
+          ...action.payload.data.reduce(byId, {})
         },
-        allIds: uniq(state.allIds.concat(action.payload.map(x => x.id))),
         status: "success"
       }
     case getType(setCalendarRecipe): {
@@ -114,10 +126,7 @@ export const calendar = (
               ...action.payload,
               count: existing.count + action.payload.count
             }
-          },
-          allIds: state.allIds
-            .filter(id => id !== existing.id)
-            .concat(action.payload.id)
+          }
         }
       }
 
@@ -126,15 +135,13 @@ export const calendar = (
         byId: {
           ...state.byId,
           [action.payload.id]: action.payload
-        },
-        allIds: uniq(state.allIds.concat(action.payload.id))
+        }
       }
     }
     case getType(deleteCalendarRecipe):
       return {
         ...state,
-        byId: omit(state.byId, action.payload),
-        allIds: state.allIds.filter(id => id !== action.payload)
+        byId: omit(state.byId, action.payload)
       }
     case getType(fetchCalendarRecipes.request): {
       if (state.status === "initial") {
@@ -178,8 +185,7 @@ export const calendar = (
 
       const existing =
         notUndefined(moving) &&
-        state.allIds
-          .map(id => state.byId[id])
+        Object.values(state.byId)
           .filter(isSameTeamAndDay)
           .find(r => r.recipe.id === moving.recipe.id)
 
@@ -192,8 +198,7 @@ export const calendar = (
               ...existing,
               count: existing.count + moving.count
             }
-          },
-          allIds: state.allIds.filter(id => id !== action.payload.id)
+          }
         }
       }
 
@@ -232,12 +237,7 @@ export const calendar = (
         byId: {
           ...omit(state.byId, action.payload.id),
           [action.payload.recipe.id]: action.payload.recipe
-        },
-        allIds: uniq(
-          state.allIds
-            .filter(id => id !== action.payload.id)
-            .concat(action.payload.recipe.id)
-        )
+        }
       }
     default:
       return state
@@ -246,13 +246,8 @@ export const calendar = (
 
 export default calendar
 
-export const getCalRecipeById = (
-  state: ICalendarState,
-  id: ICalRecipe["id"]
-): ICalRecipe | undefined => state.byId[id]
-
 export const getAllCalRecipes = (state: ICalendarState): ICalRecipe[] =>
-  state.allIds.map(id => getCalRecipeById(state, id)).filter(notUndefined)
+  Object.values(state.byId).filter(notUndefined)
 
 export const getTeamRecipes = (state: ICalendarState): ICalRecipe[] =>
   getAllCalRecipes(state).filter(recipe => recipe.team != null)

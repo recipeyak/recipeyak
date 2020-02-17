@@ -12,7 +12,9 @@ import {
 } from "@/store/reducers/calendar"
 import { baseRecipe } from "@/store/reducers/recipes.test"
 import { getModel } from "redux-loop"
-import { addWeeks, isSameDay, isAfter } from "date-fns"
+import { addWeeks, isSameDay, isAfter, subWeeks, startOfWeek } from "date-fns"
+import parseISO from "date-fns/parseISO"
+import { toISODateString } from "@/date"
 
 describe("Calendar", () => {
   it("sets calendar recipes starting with empty state", () => {
@@ -47,22 +49,26 @@ describe("Calendar", () => {
 
     const afterState: ICalendarState = {
       status: "success",
-      allIds: [recipes[0].id, recipes[1].id],
       byId: {
         [recipes[0].id]: recipes[0],
         [recipes[1].id]: recipes[1]
       }
     }
 
+    const start = "2019-02-01T00:00:00.000Z"
+    const end = "2019-02-04T00:00:00.000Z"
+
     expect(
-      calendar(beforeState, fetchCalendarRecipes.success(recipes))
+      calendar(
+        beforeState,
+        fetchCalendarRecipes.success({ data: recipes, start, end })
+      )
     ).toEqual(afterState)
   })
 
   it("sets individual calendar recipe", () => {
     const beforeState: ICalendarState = {
-      ...initialState,
-      allIds: []
+      ...initialState
     }
 
     const recipe: ICalRecipe = {
@@ -82,8 +88,7 @@ describe("Calendar", () => {
       ...initialState,
       byId: {
         [recipe.id]: recipe
-      },
-      allIds: [recipe.id]
+      }
     }
 
     expect(calendar(beforeState, setCalendarRecipe(recipe))).toEqual(afterState)
@@ -104,27 +109,23 @@ describe("Calendar", () => {
             name: "1231"
           }
         }
-      },
-      allIds: [1]
+      }
     }
 
     const afterState: ICalendarState = {
-      ...initialState,
-      allIds: []
+      ...initialState
     }
 
     expect(calendar(beforeState, deleteCalendarRecipe(1))).toEqual(afterState)
   })
   it("sets calendar loading", () => {
     const beforeState: ICalendarState = {
-      ...initialState,
-      allIds: []
+      ...initialState
     }
 
     const afterState: ICalendarState = {
       ...initialState,
-      status: "loading",
-      allIds: []
+      status: "loading"
     }
 
     expect(calendar(beforeState, fetchCalendarRecipes.request())).toEqual(
@@ -134,14 +135,12 @@ describe("Calendar", () => {
 
   it("sets calendar error", () => {
     const beforeState: ICalendarState = {
-      ...initialState,
-      allIds: []
+      ...initialState
     }
 
     const afterState: ICalendarState = {
       ...initialState,
-      status: "failure",
-      allIds: []
+      status: "failure"
     }
 
     expect(calendar(beforeState, fetchCalendarRecipes.failure())).toEqual(
@@ -167,8 +166,7 @@ describe("Calendar", () => {
             name: "1231"
           }
         }
-      },
-      allIds: [id]
+      }
     }
 
     const newOn = "2018-05-20"
@@ -188,8 +186,7 @@ describe("Calendar", () => {
             name: "1231"
           }
         }
-      },
-      allIds: [id]
+      }
     }
 
     expect(
@@ -240,13 +237,11 @@ describe("Calendar", () => {
             name: "1231"
           }
         }
-      },
-      allIds: [id, 2, 3]
+      }
     }
 
     const afterState: ICalendarState = {
       ...initialState,
-      allIds: [id, 2, 3],
       byId: {
         [id]: {
           id,
@@ -335,8 +330,7 @@ describe("Calendar", () => {
             id: 9
           }
         }
-      },
-      allIds: [id, 2, 3]
+      }
     }
 
     const afterState: ICalendarState = {
@@ -366,8 +360,7 @@ describe("Calendar", () => {
             id: 9
           }
         }
-      },
-      allIds: [2, 3]
+      }
     }
 
     expect(
@@ -415,8 +408,7 @@ describe("Calendar", () => {
             ...baseRecipe
           }
         }
-      },
-      allIds: [id, 2, 3]
+      }
     }
 
     const recipe: ICalRecipe = {
@@ -456,8 +448,7 @@ describe("Calendar", () => {
             ...baseRecipe
           }
         }
-      },
-      allIds: [2, 3, recipe.id]
+      }
     }
 
     expect(
@@ -495,8 +486,7 @@ describe("Calendar", () => {
             id: 9
           }
         }
-      },
-      allIds: [2, 3]
+      }
     }
 
     const recipe: ICalRecipe = {
@@ -536,11 +526,69 @@ describe("Calendar", () => {
             id: 9
           }
         }
-      },
-      allIds: [3, 9]
+      }
     }
 
     expect(calendar(beforeState, setCalendarRecipe(recipe))).toEqual(afterState)
+  })
+
+  test("refetching clears the existing data in the range", () => {
+    const on = "2018-06-07"
+
+    const recipe4 = {
+      id: 4,
+      created: "2019-02-01T05:00:00.000Z",
+      count: 1,
+      team: 2,
+      user: 1,
+      on: "2018-07-07",
+      recipe: {
+        ...baseRecipe,
+        id: 9
+      }
+    }
+
+    const beforeState: ICalendarState = {
+      ...initialState,
+      byId: {
+        2: {
+          id: 2,
+          created: "2019-02-01T05:00:00.000Z",
+          count: 3,
+          on,
+          team: 2,
+          user: 1,
+          recipe: {
+            ...baseRecipe,
+            id: 9
+          }
+        },
+        3: {
+          id: 3,
+          created: "2019-02-01T05:00:00.000Z",
+          count: 1,
+          team: 2,
+          user: 1,
+          on: "2018-06-07",
+          recipe: {
+            ...baseRecipe,
+            id: 9
+          }
+        },
+        4: recipe4
+      }
+    }
+
+    const start = toISODateString(startOfWeek(subWeeks(parseISO(on), 1)))
+    const end = toISODateString(startOfWeek(addWeeks(parseISO(on), 1)))
+    const nextState = getModel(
+      calendar(
+        beforeState,
+        fetchCalendarRecipes.success({ data: [], start, end })
+      )
+    )
+
+    expect(nextState.byId).toEqual({ 4: recipe4 })
   })
 })
 
@@ -598,8 +646,14 @@ describe("calendar selectors", () => {
     expect(calRecipeOnSameDay.id).not.toEqual(from.id)
     expect(isSameDay(new Date(calRecipeOnSameDay.on), toDate)).toEqual(true)
 
+    const start = calRecipeOnSameDay.on
+    const end = calRecipeOnSameDay.on
+
     const nextState = getModel(
-      calendar(emptyState, fetchCalendarRecipes.success([calRecipeOnSameDay]))
+      calendar(
+        emptyState,
+        fetchCalendarRecipes.success({ data: [calRecipeOnSameDay], start, end })
+      )
     )
 
     expect(

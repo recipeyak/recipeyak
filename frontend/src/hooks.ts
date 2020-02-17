@@ -115,3 +115,12 @@ export function useOnClickOutside<T extends HTMLElement>(
   }, [ref, handler])
   return ref
 }
+
+export function useOnWindowFocusChange(cb: () => void) {
+  React.useEffect(() => {
+    window.addEventListener("focus", cb)
+    return () => {
+      window.removeEventListener("focus", cb)
+    }
+  }, [cb])
+}

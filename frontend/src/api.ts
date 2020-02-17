@@ -12,7 +12,6 @@ import { IRecipeBasic } from "@/components/RecipeTitle"
 import { IRecipe, IIngredient, IStep, INote } from "@/store/reducers/recipes"
 import { IInvite } from "@/store/reducers/invites"
 import { ICalRecipe } from "@/store/reducers/calendar"
-import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
 import { isOk, Err } from "@/result"
 
 export const updateUser = (data: Partial<IUser>) =>
@@ -310,9 +309,15 @@ export const declineInvite = (id: IInvite["id"]) =>
 
 export const reportBadMerge = () => http.post("/api/v1/report-bad-merge", {})
 
-export const getCalendarRecipeList = (teamID: TeamID, currentDayTs: number) => {
-  const start = toISODateString(startOfWeek(subWeeks(currentDayTs, 1)))
-  const end = toISODateString(endOfWeek(addWeeks(currentDayTs, 1)))
+export function getCalendarRecipeList({
+  teamID,
+  start,
+  end
+}: {
+  teamID: TeamID
+  start: string
+  end: string
+}) {
   const id = teamID === "personal" ? "me" : teamID
   return http.get<ICalRecipe[]>(`/api/v1/t/${id}/calendar/`, {
     params: {

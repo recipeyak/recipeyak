@@ -28,7 +28,12 @@ import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
 import { Select } from "@/components/Forms"
 import chunk from "lodash/chunk"
 import { styled } from "@/theme"
-import { useCurrentDay, useSelector, useDispatch } from "@/hooks"
+import {
+  useCurrentDay,
+  useSelector,
+  useDispatch,
+  useOnWindowFocusChange
+} from "@/hooks"
 import {
   isFailure,
   Success,
@@ -287,9 +292,16 @@ function useTeams(): WebData<ReadonlyArray<ITeam>> {
 
 function useDays(teamID: TeamID, currentDateTs: number): WebData<IDays> {
   const dispatch = useDispatch()
-  useEffect(() => {
+
+  const fetchData = React.useCallback(() => {
     fetchCalendarAsync(dispatch)(teamID, currentDateTs)
   }, [currentDateTs, dispatch, teamID])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
+
+  useOnWindowFocusChange(fetchData)
 
   const isTeam = teamID !== "personal"
   const days = useSelector(s => {
