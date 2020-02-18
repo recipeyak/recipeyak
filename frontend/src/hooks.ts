@@ -8,6 +8,7 @@ import {
   useDispatch as useDispatchRedux,
   useSelector as useSelectorRedux
 } from "react-redux"
+import debounce from "lodash/debounce"
 
 export function useCurrentDay() {
   const [date, setDate] = React.useState(new Date())
@@ -118,9 +119,16 @@ export function useOnClickOutside<T extends HTMLElement>(
 
 export function useOnWindowFocusChange(cb: () => void) {
   React.useEffect(() => {
-    window.addEventListener("focus", cb)
+    // Sometimes Safari triggers multiple focus events for window focus change
+    // instead of 1. We avoid this by debouncing.
+    // webkit bug: https://bugs.webkit.org/show_bug.cgi?id=179990
+    const handleEvent = debounce(cb, 400, {
+      leading: true,
+      trailing: false
+    })
+    window.addEventListener("focus", handleEvent)
     return () => {
-      window.removeEventListener("focus", cb)
+      window.removeEventListener("focus", handleEvent)
     }
   }, [cb])
 }
