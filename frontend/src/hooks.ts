@@ -122,15 +122,13 @@ export function useOnWindowFocusChange(cb: () => void) {
     // Sometimes Safari triggers multiple focus events for window focus change
     // instead of 1. We avoid this by debouncing.
     // webkit bug: https://bugs.webkit.org/show_bug.cgi?id=179990
-    window.addEventListener(
-      "focus",
-      debounce(cb, 400, {
-        leading: true,
-        trailing: false
-      })
-    )
+    const handleEvent = debounce(cb, 400, {
+      leading: true,
+      trailing: false
+    })
+    window.addEventListener("focus", handleEvent)
     return () => {
-      window.removeEventListener("focus", cb)
+      window.removeEventListener("focus", handleEvent)
     }
   }, [cb])
 }
