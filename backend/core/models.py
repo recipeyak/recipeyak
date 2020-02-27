@@ -546,16 +546,13 @@ class RecipeChange(CommonInfo):
         "MyUser", on_delete=models.CASCADE, help_text="User who made the change."
     )
 
-    before = models.CharField(
-        max_length=255,
+    before = models.TextField(
         blank=True,
         help_text="The previous value, sometimes derived from multiple fields",
     )
 
-    after = models.CharField(
-        max_length=255,
-        blank=False,
-        help_text="The new value, sometimes derived from multiple fields",
+    after = models.TextField(
+        blank=False, help_text="The new value, sometimes derived from multiple fields"
     )
 
     change_type = models.CharField(
