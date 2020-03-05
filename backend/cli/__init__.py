@@ -13,7 +13,6 @@ from cli.config import set_default_testing_variables as set_default_config
 from cli.config import setup_django as configure_django
 from cli.config import setup_django_sites
 from cli.decorators import load_env, setup_django
-from cli.docker_machine import docker_machine_env
 
 
 @click.group()
@@ -303,48 +302,6 @@ def env(shell: bool) -> None:
 
 
 @cli.command()
-@click.argument("machine_name")
-@click.argument("action", type=click.Choice(["on", "off"]))
-def maintenance_mode(machine_name: str, action: Literal["on", "off"]) -> None:
-    """
-    Setup prod to return a 503 status code with a webpage explaining the site is down for maintenance.
-    """
-    docker_machine_env(machine_name)
-
-    if action == "on":
-        click.echo("Enabling maintence mode")
-        subprocess.run(
-            [
-                "docker-compose",
-                "-f",
-                "docker-compose-shipit.yml",
-                "exec",
-                "nginx",
-                "touch",
-                "maintenance_on",
-            ],
-            check=True,
-        )
-        click.echo("Maintenance mode: ON")
-    if action == "off":
-        click.echo("Disabling maintenance mode")
-        subprocess.run(
-            [
-                "docker-compose",
-                "-f",
-                "docker-compose-shipit.yml",
-                "exec",
-                "nginx",
-                "rm",
-                "-f",
-                "maintenance_on",
-            ],
-            check=True,
-        )
-        click.echo("Maintenance mode: OFF")
-
-
-@cli.command()
 @click.argument("backup", type=click.Path(exists=True))
 @click.argument("database_name")
 @click.option("--host", default="localhost")
@@ -419,40 +376,3 @@ def create_db_from_backup(
         check=True,
     )
     click.echo(f"Successfully imported backup into database: {database_name}")
-
-
-@cli.command()
-@click.argument("machine_name")
-@click.argument("tag")
-def deploy(machine_name: str, tag: str) -> None:
-    """
-    deploy the given `tag` to `machine_name`
-    """
-    docker_machine_env(machine_name)
-
-    click.echo(f"Deploying tag ({tag}) to docker machine ({machine_name})")
-
-    output_compose_file = "docker-compose-shipit.yml"
-
-    # replace ':latest' with chosen tag
-    with open(output_compose_file, "w") as f:
-        subprocess.run(
-            ["sed", "-e", f"s#:latest$#:{tag}#", "docker-compose-deploy.yml"],
-            stdout=f,
-            check=True,
-        )
-
-    # update containers
-    subprocess.run(
-        ["docker-compose", "-f", output_compose_file, "up", "--build", "-d"], check=True
-    )
-
-
-@cli.command()
-@click.argument("machine_name")
-def connect(machine_name: str) -> None:
-    """
-    connect via ssh to docker `machine_name`
-    """
-    docker_machine_env(machine_name)
-    subprocess.run(["docker-machine", "ssh", machine_name], check=True)
