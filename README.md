@@ -58,20 +58,35 @@ MACHINE_NAME='grunniens'
 docker-machine create --driver amazonec2 $MACHINE_NAME
 ```
 
-### Deploying containers
+### Deploy a new release
 
 1. Copy `.env-example` to `.env` and add in the proper configuration variables
 2. Configure OAuth with identity providers (leaving CLIENT_ID variables undefined will disable a provider)
-3. Build containers `yak docker_build`
-4. Upload containers to registry `yak docker_upload`
-5. Deploy containers `yak deploy $MACHINE_NAME`
+3. [Install Ansible](https://docs.ansible.com/ansible/latest/index.html)
+4. Setup [Ansible Inventory](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html)
+
+   ```yml
+   ---
+   all:
+     hosts:
+       recipeyak:
+         ansible_host: 255.255.255.255
+         ansible_user: root
+   ```
+
+5. Run the playbook
+
+   ```shell
+   ansible-playbook ./infrastructure/playbooks/deploy.yml
+   ```
 
 ### Maintenance mode
 
 Enabling maintenance mode returns a 503 status code with a webpage explaining the site is down for maintenance.
 
-- Enable `yak maintenance-mode $MACHINE_NAME on`
-- Disable `yak maintenance-mode $MACHINE_NAME off`
+```shell
+ansible-playbook ./infrastructure/playbooks/maintenance_mode.yml
+```
 
 ## Configuration
 
