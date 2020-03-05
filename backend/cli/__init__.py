@@ -6,7 +6,6 @@ from typing import List
 
 import click
 from dotenv import load_dotenv
-from typing_extensions import Literal
 
 from cli import cmds
 from cli.config import set_default_testing_variables as set_default_config
