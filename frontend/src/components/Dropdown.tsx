@@ -74,5 +74,5 @@ export function useDropdown() {
   const closeDropdown = React.useCallback(() => setIsOpen(false), [])
   const toggle = React.useCallback(() => setIsOpen(p => !p), [])
   const ref = useOnClickOutside<HTMLDivElement>(closeDropdown)
-  return { ref, toggle, close, isOpen, setIsOpen }
+  return { ref, toggle, close: closeDropdown, isOpen, setIsOpen }
 }
