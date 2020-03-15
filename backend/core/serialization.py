@@ -8,12 +8,21 @@ from rest_framework import serializers
 log = getLogger(__name__)
 
 
+class UnexpectedDatabaseAccess(Exception):
+    pass
+
+
 def blocker(*args):
-    raise Exception("No database access allowed here.")
+    raise UnexpectedDatabaseAccess
 
 
-def warning_blocker(*args):
+def warning_blocker(execute, sql, params, many, context):
+    """
+    expected to call `execute` and return the call's result:
+    https://docs.djangoproject.com/en/dev/topics/db/instrumentation/#connection-execute-wrapper
+    """
     log.warning("Database access in serializer.")
+    return execute(sql, params, many, context)
 
 
 class DBBlockerSerializerMixin:

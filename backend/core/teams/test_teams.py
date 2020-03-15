@@ -2,7 +2,7 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 
-from core.models import Invite, Membership, Recipe, Team
+from core.models import Invite, Membership, Recipe, Team, Note
 
 pytestmark = pytest.mark.django_db
 
@@ -774,6 +774,8 @@ def test_fetching_team_recipes(client, team_with_recipes, user, user2):
     client.force_authenticate(user2)
     res = client.get(url)
     assert res.status_code == status.HTTP_403_FORBIDDEN
+
+    assert Note.objects.exists() is True
 
     client.force_authenticate(user)
     res = client.get(url)

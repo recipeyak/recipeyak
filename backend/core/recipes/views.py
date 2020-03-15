@@ -252,6 +252,7 @@ class TeamRecipesViewSet(APIView):
             "scheduledrecipe_set",
             "note_set",
             "note_set__created_by",
+            "note_set__last_modified_by",
         )
         serializer = RecipeSerializer(
             queryset, many=True, context={"request": self.request}
