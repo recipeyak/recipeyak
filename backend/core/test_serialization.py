@@ -1,7 +1,8 @@
 import pytest
+
 from core.models import Recipe
-from core.serialization import UnexpectedDatabaseAccess
 from core.recipes.serializers import RecipeSerializer
+from core.serialization import UnexpectedDatabaseAccess
 
 
 @pytest.mark.django_db
