@@ -104,6 +104,12 @@ def recipe(user):
     )
 
     Note.objects.create(recipe=recipe, text="Use a small pot.", created_by=user)
+    Note.objects.create(
+        recipe=recipe,
+        text="I'd say we should use an even smaller pot next time.",
+        created_by=user,
+        last_modified_by=user,
+    )
 
     return recipe
 
