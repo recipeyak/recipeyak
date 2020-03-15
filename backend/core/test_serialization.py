@@ -13,7 +13,7 @@ def test_db_blocker_warn_still_calls_db(settings, recipe) -> None:
     settings.ERROR_ON_SERIALIZER_DB_ACCESS = False
     queryset = Recipe.objects.all()
 
-    assert len(RecipeSerializer(queryset, many=True).data) > 0
+    assert RecipeSerializer(queryset, many=True).data
 
 
 @pytest.mark.django_db
@@ -26,4 +26,5 @@ def test_db_blocker_fails_with_proper_settings(settings, recipe) -> None:
     queryset = Recipe.objects.all()
 
     with pytest.raises(UnexpectedDatabaseAccess):
+        # pylint:disable=expression-not-assigned
         RecipeSerializer(queryset, many=True).data
