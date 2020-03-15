@@ -74,7 +74,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return recipes
 
     def create(self, request):
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(data=request.data, dangerously_allow_db=True)
 
         # If the client doesn't set the position on one of the objects we need
         # to renumber them all.
@@ -246,7 +246,12 @@ class TeamRecipesViewSet(APIView):
         # extra query param for filtering
         team = get_object_or_404(Team, pk=self.kwargs["team_pk"])
         queryset = Recipe.objects.filter(owner_team=team).prefetch_related(
-            "owner", "step_set", "ingredient_set", "scheduledrecipe_set"
+            "owner",
+            "step_set",
+            "ingredient_set",
+            "scheduledrecipe_set",
+            "note_set",
+            "note_set__created_by",
         )
         serializer = RecipeSerializer(
             queryset, many=True, context={"request": self.request}
@@ -397,11 +402,13 @@ class IngredientViewSet(viewsets.ModelViewSet):
 class NoteViewSet(viewsets.ModelViewSet):
 
     queryset = Note.objects.all()
-    serializer_class = NoteSerializer
     permission_classes = (IsAuthenticated,)
 
+    def get_serializer(self, *args, **kwargs):
+        return NoteSerializer(*args, dangerously_allow_db=True, **kwargs)
+
     def create(self, request: Request, recipe_pk: str) -> Response:
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.get_serializer(data=request.data)
         recipe = get_object_or_404(Recipe, pk=recipe_pk)
         serializer.is_valid(raise_exception=True)
         serializer.save(recipe=recipe, created_by=request.user)

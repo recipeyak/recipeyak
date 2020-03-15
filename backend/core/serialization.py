@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import Any, Optional, cast
+from typing import Any, cast
 
 from django.conf import settings
 from django.db import connection
@@ -27,23 +27,19 @@ class DBBlockerSerializerMixin:
     before calling the parent.
     """
 
-    dangerously_allow_db: Optional[bool] = None
+    def to_representation(self, instance):
+        if self.dangerously_allow_db:
+            return cast(Any, super()).to_representation(instance)
 
-    @property
-    def data(self):
-        if hasattr(self, "initial_data") or self.dangerously_allow_db:
-            # Mypy is correct that we don't have a data property on our parent.
-            # We must cast to Any to support the mixin use of this class
-            return cast(Any, super()).data
         if settings.ERROR_ON_SERIALIZER_DB_ACCESS:
             # only raise error when we are in DEBUG mode. We don't want to cause
             # errors in production when we don't need to do so.
             with connection.execute_wrapper(blocker):
-                return cast(Any, super()).data
+                return cast(Any, super()).to_representation(instance)
 
         # use a warning blocker elsewhere
         with connection.execute_wrapper(warning_blocker):
-            return cast(Any, super()).data
+            return cast(Any, super()).to_representation(instance)
 
     def __init__(self, *args, **kwargs) -> None:
         self.dangerously_allow_db = kwargs.pop("dangerously_allow_db", None)
