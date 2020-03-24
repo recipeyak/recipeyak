@@ -40,10 +40,10 @@ function AddIngredientForm({
 
   useEffect(() => {
     setInitialLoad(false)
-    if (!loading && (autoFocus || !isInitialLoad)) {
+    if (!loading && autoFocus) {
       focusFirstInput()
     }
-  }, [autoFocus, isInitialLoad, loading])
+  }, [autoFocus, loading])
   const handleKeyUp = (e: KeyboardEvent) => {
     if (e.key === "Escape") {
       cancelAddIngredient()
