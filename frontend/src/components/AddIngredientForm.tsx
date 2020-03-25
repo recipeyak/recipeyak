@@ -36,7 +36,6 @@ function AddIngredientForm({
   error,
   autoFocus = false
 }: IAddIngredientFormProps) {
-
   useEffect(() => {
     if (!loading && autoFocus) {
       focusFirstInput()
