@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 
 import { ButtonPrimary, Button } from "@/components/Buttons"
 import { TextInput, CheckBox, selectTarget } from "@/components/Forms"
@@ -36,14 +36,11 @@ function AddIngredientForm({
   error,
   autoFocus = false
 }: IAddIngredientFormProps) {
-  const [isInitialLoad, setInitialLoad] = useState(true)
-
   useEffect(() => {
-    setInitialLoad(false)
-    if (!loading && (autoFocus || !isInitialLoad)) {
+    if (!loading && autoFocus) {
       focusFirstInput()
     }
-  }, [autoFocus, isInitialLoad, loading])
+  }, [autoFocus, loading])
   const handleKeyUp = (e: KeyboardEvent) => {
     if (e.key === "Escape") {
       cancelAddIngredient()
