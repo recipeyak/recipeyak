@@ -13,7 +13,7 @@ import { IState } from "@/store/store"
 import { WebData, isSuccessOrRefetching } from "@/webdata"
 import queryString from "query-string"
 import { useDispatch } from "@/hooks"
-import { push } from "connected-react-router"
+import { replace } from "connected-react-router"
 import { parseIntOrNull } from "@/parseIntOrNull"
 
 interface IRecipeList {
@@ -70,7 +70,7 @@ function useClearSearchOnLoad() {
   const dispatch = useDispatch()
   React.useEffect(() => {
     dispatch(
-      push({
+      replace({
         search: ""
       })
     )
