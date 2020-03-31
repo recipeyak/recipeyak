@@ -451,6 +451,15 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
 `;
 
 exports[`<Recipe/> snaps recipe all states 2`] = `
+.c6 ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+
+.c6 ol {
+  padding-left: 1.5rem;
+}
+
 .c0 {
   position: relative;
 }
@@ -870,7 +879,11 @@ exports[`<Recipe/> snaps recipe all states 2`] = `
             onClick={[Function]}
             title="click to edit"
           >
-            <div>
+            <div
+              className="c6"
+              onClick={undefined}
+              title={undefined}
+            >
               <p>
                 foo
               </p>
