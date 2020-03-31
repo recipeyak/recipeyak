@@ -1,13 +1,26 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<ListItem/> snap with capitalization 1`] = `
+.c0 ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+
+.c0 ol {
+  padding-left: 1.5rem;
+}
+
 <div>
   <section
     className="cursor-pointer"
     onClick={[Function]}
     title="click to edit"
   >
-    <div>
+    <div
+      className="c0"
+      onClick={undefined}
+      title={undefined}
+    >
       <p>
         Add 3 Tablespoons of tomato paste. Cook 1 minute.
       </p>
@@ -17,13 +30,26 @@ exports[`<ListItem/> snap with capitalization 1`] = `
 `;
 
 exports[`<ListItem/> snap with capitalization 2`] = `
+.c0 ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+
+.c0 ol {
+  padding-left: 1.5rem;
+}
+
 <div>
   <section
     className="cursor-pointer"
     onClick={[Function]}
     title="click to edit"
   >
-    <div>
+    <div
+      className="c0"
+      onClick={undefined}
+      title={undefined}
+    >
       <p>
         Measure 1 teaspoon of rice vinegar.
       </p>
@@ -33,13 +59,26 @@ exports[`<ListItem/> snap with capitalization 2`] = `
 `;
 
 exports[`<ListItem/> snap with capitalization 3`] = `
+.c0 ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+
+.c0 ol {
+  padding-left: 1.5rem;
+}
+
 <div>
   <section
     className="cursor-pointer"
     onClick={[Function]}
     title="click to edit"
   >
-    <div>
+    <div
+      className="c0"
+      onClick={undefined}
+      title={undefined}
+    >
       <p>
         Add 1 Tablespoon + 2 teaspoons of soy sauce.
       </p>
@@ -49,13 +88,26 @@ exports[`<ListItem/> snap with capitalization 3`] = `
 `;
 
 exports[`<ListItem/> snap with capitalization 4`] = `
+.c0 ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+
+.c0 ol {
+  padding-left: 1.5rem;
+}
+
 <div>
   <section
     className="cursor-pointer"
     onClick={[Function]}
     title="click to edit"
   >
-    <div>
+    <div
+      className="c0"
+      onClick={undefined}
+      title={undefined}
+    >
       <p>
         Stir in 1 teaspoon salt
       </p>
