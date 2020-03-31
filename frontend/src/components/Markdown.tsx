@@ -1,5 +1,18 @@
 import React from "react"
 import ReactMarkdown, { NodeType } from "react-markdown"
+import { styled } from "@/theme"
+
+const MarkdownWrapper = styled.div`
+  ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+  }
+
+  ol {
+    padding-left: 1.5rem;
+  }
+`
+
 const ALLOWED_MARKDOWN_TYPES: NodeType[] = [
   "root",
   "text",
@@ -7,25 +20,30 @@ const ALLOWED_MARKDOWN_TYPES: NodeType[] = [
   "paragraph",
   "strong",
   "emphasis",
-  "paragraph"
+  "list",
+  "listItem"
 ]
 
-interface IMarkdownProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {
+interface IMarkdownProps {
   readonly children: string
+  readonly onClick?: () => void
+  readonly className?: string
+  readonly title?: string
 }
 
-export function Markdown({ children: text, ...rest }: IMarkdownProps) {
+export function Markdown({
+  children: text,
+  className,
+  title,
+  onClick
+}: IMarkdownProps) {
   return (
-    <div {...rest}>
+    <MarkdownWrapper className={className} title={title} onClick={onClick}>
       <ReactMarkdown
         allowedTypes={ALLOWED_MARKDOWN_TYPES}
         source={text}
         unwrapDisallowed
       />
-    </div>
+    </MarkdownWrapper>
   )
 }
