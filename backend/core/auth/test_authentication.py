@@ -75,7 +75,7 @@ def test_login(client):
         client.cookies[settings.SESSION_COOKIE_NAME]["samesite"]
         == settings.SESSION_COOKIE_SAMESITE
     )
-    assert settings.SESSION_COOKIE_SAMESITE == "lax"
+    assert settings.SESSION_COOKIE_SAMESITE == "Lax"
 
     assert (
         res.json().get("user") == UserSerializer(user).data
