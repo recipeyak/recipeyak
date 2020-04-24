@@ -5,11 +5,11 @@ from uuid import uuid4
 
 import sentry_sdk
 from django.conf import settings
-from django.db import connection
-from django.http import HttpRequest, HttpResponse, HttpResponseServerError
 from django.contrib.sessions.middleware import (
     SessionMiddleware as DjangoSessionMiddleware,
 )
+from django.db import connection
+from django.http import HttpRequest, HttpResponse, HttpResponseServerError
 
 from backend.request_state import State
 
