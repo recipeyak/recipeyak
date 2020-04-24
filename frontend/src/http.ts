@@ -1,6 +1,5 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios"
 import { uuid4 } from "@/uuid"
-import Cookie from "js-cookie"
 import { store } from "@/store/store"
 import raven from "raven-js"
 import { setUserLoggedIn } from "@/store/reducers/user"
@@ -48,9 +47,7 @@ baseHttp.interceptors.response.use(
 
 baseHttp.interceptors.request.use(
   cfg => {
-    const csrfToken = Cookie.get("csrftoken")
     // tslint:disable:no-unsafe-any
-    cfg.headers["X-CSRFTOKEN"] = csrfToken
     cfg.headers["X-Request-ID"] = uuid4()
     // tslint:disable:no-unsafe-any
     return cfg
