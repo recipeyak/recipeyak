@@ -96,9 +96,7 @@ CHANNEL_LAYERS = {
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("core.auth.permissions.DisallowAny",),
     "DEFAULT_RENDERER_CLASSES": ("core.renderers.JSONRenderer",),
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.SessionAuthentication",
-    ),
+    "DEFAULT_AUTHENTICATION_CLASSES": ("backend.authentication.SessionAuthentication",),
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
 }
 
@@ -154,9 +152,8 @@ MIDDLEWARE = [
     "backend.middleware.CurrentRequestMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "backend.middleware.XForwardedForMiddleware",
-    "user_sessions.middleware.SessionMiddleware",
+    "backend.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",

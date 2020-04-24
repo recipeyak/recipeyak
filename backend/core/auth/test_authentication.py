@@ -1,7 +1,9 @@
 import pytest
 from allauth.socialaccount.models import EmailAddress
+from django.conf import settings
 from django.urls import reverse
 from rest_framework import status
+from user_sessions.models import Session
 
 from core.models import MyUser
 from core.users.serializers import UserSerializer
@@ -54,8 +56,26 @@ def test_login(client):
 
     data = {"email": email, "password": password}
 
-    res = client.post(reverse("rest_login"), data)
+    assert Session.objects.count() == 0
+
+    headers = {
+        "HTTP_X_FORWARDED_FOR": "10.0.0.1",
+        "HTTP_USER_AGENT": "j person's cool bot",
+    }
+
+    res = client.post(reverse("rest_login"), data, **headers)
     assert res.status_code == status.HTTP_200_OK
+
+    assert Session.objects.count() == 1
+    session = Session.objects.get()
+    assert session.user_agent == headers["HTTP_USER_AGENT"]
+    assert session.ip == headers["HTTP_X_FORWARDED_FOR"]
+
+    assert (
+        client.cookies[settings.SESSION_COOKIE_NAME]["samesite"]
+        == settings.SESSION_COOKIE_SAMESITE
+    )
+    assert settings.SESSION_COOKIE_SAMESITE == "Lax"
 
     assert (
         res.json().get("user") == UserSerializer(user).data

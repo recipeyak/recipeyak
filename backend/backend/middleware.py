@@ -5,6 +5,9 @@ from uuid import uuid4
 
 import sentry_sdk
 from django.conf import settings
+from django.contrib.sessions.middleware import (
+    SessionMiddleware as DjangoSessionMiddleware,
+)
 from django.db import connection
 from django.http import HttpRequest, HttpResponse, HttpResponseServerError
 
@@ -161,3 +164,18 @@ class HealthCheckMiddleware:
             return HttpResponseServerError(ReadinessError.PG_CANNOT_CONNECT)
 
         return HttpResponse("OK")
+
+
+class SessionMiddleware(DjangoSessionMiddleware):
+    """
+    Custom middleware to override a small part of Django's SessionMiddleware
+    so we can record ip and user_agent via the `user_sessions` package.
+    """
+
+    def process_request(self, request):
+        session_key = request.COOKIES.get(settings.SESSION_COOKIE_NAME, None)
+        request.session = self.SessionStore(
+            ip=request.META.get("REMOTE_ADDR", ""),
+            user_agent=request.META.get("HTTP_USER_AGENT", ""),
+            session_key=session_key,
+        )
