@@ -143,6 +143,11 @@ if not DOCKERBUILD:
 
 SESSION_COOKIE_AGE = 365 * 24 * 60 * 60  # sessions expire in one year
 
+if not DEBUG:
+    # make the cookie HTTPS only
+    # https://docs.djangoproject.com/en/2.2/ref/settings/#session-cookie-secure
+    SESSION_COOKIE_SECURE = True
+
 # http://django-rest-auth.readthedocs.io/en/latest/api_endpoints.html#basic
 # Require the old password be provided to change a your password
 OLD_PASSWORD_FIELD_ENABLED = True
