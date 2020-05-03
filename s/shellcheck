@@ -25,3 +25,15 @@ echo "CIRCLE_WORKING_DIRECTORY" "$CIRCLE_WORKING_DIRECTORY"
 echo "CIRCLECI" "$CIRCLECI"
 echo "HOME" "$HOME"
 
+echo "git rev-parse master"
+git rev-parse master
+echo "git rev-parse FETCH_HEAD"
+git rev-parse FETCH_HEAD
+echo "git merge-base FETCH_HEAD master"
+git merge-base FETCH_HEAD master
+
+first=$(git --no-pager diff --name-only FETCH_HEAD $(git merge-base FETCH_HEAD master))
+second=$(git --no-pager diff --name-only FETCH_HEAD)
+
+echo "first" "${first}"
+echo "second" "${second}"
