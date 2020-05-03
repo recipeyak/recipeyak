@@ -33,7 +33,7 @@ echo "git merge-base FETCH_HEAD master"
 git merge-base FETCH_HEAD master
 
 echo "diff list with merge-base"
-git --no-pager diff --name-only FETCH_HEAD $(git merge-base FETCH_HEAD master))
+git --no-pager diff --name-only FETCH_HEAD $(git merge-base FETCH_HEAD master)
 
 echo "diff list against FETCH_HEAD"
 git --no-pager diff --name-only FETCH_HEAD
