@@ -29,8 +29,6 @@ echo "git rev-parse master"
 git rev-parse master
 echo "git rev-parse FETCH_HEAD"
 git rev-parse FETCH_HEAD
-echo "git rev-parse head"
-git rev-parse head
 echo "git merge-base FETCH_HEAD master"
 git merge-base FETCH_HEAD master
 
@@ -46,4 +44,3 @@ git branch -f master origin/master
 echo "parse revs"
 git rev-parse master
 git rev-parse FETCH_HEAD
-git rev-parse head
