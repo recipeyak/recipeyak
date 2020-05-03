@@ -29,15 +29,4 @@ echo "HOME" "$HOME"
 # following to make it not point to the current ref.
 # https://discuss.circleci.com/t/git-checkout-of-a-branch-destroys-local-reference-to-master/23781/7
 git branch -f master origin/master
-
-echo "parse rev master"
-git rev-parse master
-echo "parse rev FETCH_HEAD"
-git rev-parse FETCH_HEAD
-echo "merge base"
-git merge-base FETCH_HEAD master
-
-
-echo "diff list with merge-base"
-git --no-pager diff --name-only FETCH_HEAD $(git merge-base FETCH_HEAD master)
-git --no-pager diff --name-only FETCH_HEAD FETCH_HEAD
+git --no-pager diff --name-only FETCH_HEAD master
