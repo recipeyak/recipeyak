@@ -32,8 +32,8 @@ git rev-parse FETCH_HEAD
 echo "git merge-base FETCH_HEAD master"
 git merge-base FETCH_HEAD master
 
-first=$(git --no-pager diff --name-only FETCH_HEAD $(git merge-base FETCH_HEAD master))
-second=$(git --no-pager diff --name-only FETCH_HEAD)
+echo "diff list with merge-base"
+git --no-pager diff --name-only FETCH_HEAD $(git merge-base FETCH_HEAD master))
 
-echo "first" "${first}"
-echo "second" "${second}"
+echo "diff list against FETCH_HEAD"
+git --no-pager diff --name-only FETCH_HEAD
