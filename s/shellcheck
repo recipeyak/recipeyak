@@ -29,6 +29,8 @@ echo "git rev-parse master"
 git rev-parse master
 echo "git rev-parse FETCH_HEAD"
 git rev-parse FETCH_HEAD
+echo "git rev-parse head"
+git rev-parse head
 echo "git merge-base FETCH_HEAD master"
 git merge-base FETCH_HEAD master
 
@@ -37,3 +39,11 @@ git --no-pager diff --name-only FETCH_HEAD $(git merge-base FETCH_HEAD master)
 
 echo "diff list against FETCH_HEAD"
 git --no-pager diff --name-only FETCH_HEAD
+
+
+git branch -f master origin/master
+
+echo "parse revs"
+git rev-parse master
+git rev-parse FETCH_HEAD
+git rev-parse head
