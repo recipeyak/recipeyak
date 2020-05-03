@@ -25,12 +25,15 @@ echo "CIRCLE_WORKING_DIRECTORY" "$CIRCLE_WORKING_DIRECTORY"
 echo "CIRCLECI" "$CIRCLECI"
 echo "HOME" "$HOME"
 
-echo "git rev-parse master"
+# circle's built in git checkout code clobbers the `master` ref so we do the
+# following to make it not point to the current ref.
+# https://discuss.circleci.com/t/git-checkout-of-a-branch-destroys-local-reference-to-master/23781/7
+git branch -f master origin/master
+
+echo "parse revs"
 git rev-parse master
-echo "git rev-parse FETCH_HEAD"
 git rev-parse FETCH_HEAD
-echo "git merge-base FETCH_HEAD master"
-git merge-base FETCH_HEAD master
+
 
 echo "diff list with merge-base"
 git --no-pager diff --name-only FETCH_HEAD $(git merge-base FETCH_HEAD master)
@@ -38,9 +41,3 @@ git --no-pager diff --name-only FETCH_HEAD $(git merge-base FETCH_HEAD master)
 echo "diff list against FETCH_HEAD"
 git --no-pager diff --name-only FETCH_HEAD
 
-
-git branch -f master origin/master
-
-echo "parse revs"
-git rev-parse master
-git rev-parse FETCH_HEAD
