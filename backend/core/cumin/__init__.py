@@ -258,6 +258,8 @@ def max_quantity(quantity: str) -> str:
     """
     take the '4-5' medium button mushrooms and find the max, 5
     """
+    if " to " in quantity:
+        return quantity.split(" to ")[-1]
     return quantity.split("-")[-1]
 
 
