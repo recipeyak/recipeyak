@@ -42,6 +42,7 @@ from core.renderers import JSONEncoder
         ("1/8 T", Quantity(quantity=Decimal(1) / Decimal(8), unit=Unit.TABLESPOON)),
         ("1 tbs", Quantity(quantity=Decimal(1), unit=Unit.TABLESPOON)),
         ("4-5", Quantity(quantity=Decimal(5), unit=Unit.NONE)),
+        ("4 to 6", Quantity(quantity=Decimal(6), unit=Unit.NONE)),
         ("1lb", Quantity(quantity=Decimal(1), unit=Unit.POUND)),
         ("1 pound", Quantity(quantity=Decimal(1), unit=Unit.POUND)),
         ("1 bag", Quantity(quantity=Decimal(1), unit=Unit.UNKNOWN, unknown_unit="bag")),
