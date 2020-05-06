@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import eachDayOfInterval from "date-fns/eachDayOfInterval"
 import format from "date-fns/format"
 import first from "lodash/first"
@@ -29,14 +29,7 @@ import {
   getTeamRecipes,
   getPersonalRecipes
 } from "@/store/reducers/calendar"
-import {
-  subWeeks,
-  addWeeks,
-  startOfWeek,
-  endOfWeek,
-  isSameDay,
-  isSameMinute
-} from "date-fns"
+import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
 import { Select } from "@/components/Forms"
 import chunk from "lodash/chunk"
 import { styled } from "@/theme"
@@ -220,9 +213,6 @@ function HelpPrompt() {
     </p>
   )
 }
-
-const prevWeekStart = (date: Date | number) => subWeeks(startOfWeek(date), 1)
-const nextWeekStart = (date: Date | number) => addWeeks(startOfWeek(date), 1)
 
 const CalContainer = styled.div`
   display: flex;
