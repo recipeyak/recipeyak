@@ -233,6 +233,7 @@ const CalContainer = styled.div`
   }
 `
 
+// pull the week from the URL otherwise default to the current time.
 function getToday(search: string): Date {
   const week = queryString.parse(search).week
   if (week == null || Array.isArray(week)) {
@@ -243,22 +244,6 @@ function getToday(search: string): Date {
     return parsedDate
   }
   return new Date()
-}
-
-function useOnDayChange(func: () => void) {
-  const [prevDate, setPrevDate] = React.useState(new Date())
-  React.useEffect(() => {
-    const timerID = setInterval(() => {
-      const currentDate = new Date()
-      if (!isSameMinute(prevDate, currentDate)) {
-        func()
-      }
-      setPrevDate(currentDate)
-    }, 5 * 1000)
-    return () => {
-      clearInterval(timerID)
-    }
-  }, [func, prevDate])
 }
 
 function useCurrentWeek() {
