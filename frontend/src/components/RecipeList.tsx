@@ -12,8 +12,6 @@ import { ITeam } from "@/store/reducers/teams"
 import { IState } from "@/store/store"
 import { WebData, isSuccessOrRefetching } from "@/webdata"
 import queryString from "query-string"
-import { useDispatch } from "@/hooks"
-import { replace } from "connected-react-router"
 import { parseIntOrNull } from "@/parseIntOrNull"
 
 interface IRecipeList {
@@ -66,17 +64,6 @@ function getInitialQuery(): string {
   return `recipeId:${recipeId}`
 }
 
-function useClearSearchOnLoad() {
-  const dispatch = useDispatch()
-  React.useEffect(() => {
-    dispatch(
-      replace({
-        search: ""
-      })
-    )
-  }, [dispatch])
-}
-
 function RecipesListSearch({
   fetchData,
   noPadding,
@@ -85,7 +72,6 @@ function RecipesListSearch({
   scroll,
   teamID
 }: IRecipesProps) {
-  useClearSearchOnLoad()
   const [query, setQuery] = useState(getInitialQuery)
 
   useEffect(() => {

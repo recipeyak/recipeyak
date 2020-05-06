@@ -1,7 +1,12 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import eachDayOfInterval from "date-fns/eachDayOfInterval"
 import format from "date-fns/format"
 import first from "lodash/first"
+import { history } from "@/store/store"
+import queryString from "query-string"
+import parseISO from "date-fns/parseISO"
+import isValid from "date-fns/isValid"
+import { useLocation } from "react-router-dom"
 
 import {
   fetchCalendarAsync,
@@ -28,12 +33,7 @@ import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
 import { Select } from "@/components/Forms"
 import chunk from "lodash/chunk"
 import { styled } from "@/theme"
-import {
-  useCurrentDay,
-  useSelector,
-  useDispatch,
-  useOnWindowFocusChange
-} from "@/hooks"
+import { useSelector, useDispatch, useOnWindowFocusChange } from "@/hooks"
 import {
   isFailure,
   Success,
@@ -214,9 +214,6 @@ function HelpPrompt() {
   )
 }
 
-const prevWeekStart = (date: Date | number) => subWeeks(startOfWeek(date), 1)
-const nextWeekStart = (date: Date | number) => addWeeks(startOfWeek(date), 1)
-
 const CalContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -226,50 +223,50 @@ const CalContainer = styled.div`
   }
 `
 
-interface IUseCurrentWeekState {
-  readonly weekStartDate: Date
-  readonly isTouched: boolean
+// pull the week from the URL otherwise default to the current time.
+function getToday(search: string): Date {
+  const week = queryString.parse(search).week
+  if (week == null || Array.isArray(week)) {
+    return new Date()
+  }
+  const parsedDate = parseISO(week)
+  if (isValid(parsedDate)) {
+    return parsedDate
+  }
+  return new Date()
 }
 
 function useCurrentWeek() {
-  const today = useCurrentDay()
-  const [{ weekStartDate }, setStart] = useState<IUseCurrentWeekState>(() => ({
-    weekStartDate: startOfWeek(today),
-    isTouched: true
-  }))
-  React.useEffect(() => {
-    // Only update the current day if we aren't navigating the calendar.
-    setStart(prev => {
-      if (prev.isTouched) {
-        return prev
-      }
-      return { ...prev, weekStartDate: startOfWeek(today) }
-    })
-  }, [today])
+  const location = useLocation()
+  const today = getToday(location.search)
+  const weekStartDate = startOfWeek(today)
 
   const currentDateTs = startOfWeek(weekStartDate).getTime()
   const startDate = startOfWeek(subWeeks(currentDateTs, 1))
   const endDate = endOfWeek(addWeeks(currentDateTs, 1))
 
   const navPrev = () => {
-    setStart(prev => ({
-      weekStartDate: prevWeekStart(prev.weekStartDate),
-      isTouched: true
-    }))
+    history.push({
+      search: queryString.stringify({
+        week: toISODateString(subWeeks(weekStartDate, 1))
+      })
+    })
   }
 
   const navNext = () => {
-    setStart(prev => ({
-      weekStartDate: nextWeekStart(prev.weekStartDate),
-      isTouched: true
-    }))
+    history.push({
+      search: queryString.stringify({
+        week: toISODateString(addWeeks(weekStartDate, 1))
+      })
+    })
   }
 
   const navCurrent = () => {
-    setStart(() => ({
-      weekStartDate: startOfWeek(today),
-      isTouched: false
-    }))
+    // navigating to the current page when we're already on the current page
+    // shouldn't cause another item to be added to the history
+    if (location.search !== "") {
+      history.push({ search: "" })
+    }
   }
 
   return { currentDateTs, startDate, endDate, navNext, navPrev, navCurrent }
