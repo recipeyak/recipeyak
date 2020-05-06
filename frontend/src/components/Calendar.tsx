@@ -288,7 +288,7 @@ function useTeams(): WebData<ReadonlyArray<ITeam>> {
     return undefined
   }
   if (status === "failure") {
-    return Failure()
+    return Failure(undefined)
   }
   if (status === "loading") {
     return Loading()

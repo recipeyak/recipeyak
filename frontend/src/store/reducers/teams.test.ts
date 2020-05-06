@@ -122,7 +122,7 @@ describe("Teams", () => {
       }
     ]
 
-    const afterState = {
+    const afterState: ITeamsState = {
       byId: {
         1: {
           id: 1,
@@ -147,7 +147,7 @@ describe("Teams", () => {
         }
       },
       allIds: [1, 4, 2, 3],
-      loading: false
+      status: "success"
     }
 
     expect(teams(beforeState, fetchTeams.success(data))).toEqual(afterState)
