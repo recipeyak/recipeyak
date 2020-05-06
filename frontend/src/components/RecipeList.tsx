@@ -66,17 +66,6 @@ function getInitialQuery(): string {
   return `recipeId:${recipeId}`
 }
 
-function useClearSearchOnLoad() {
-  const dispatch = useDispatch()
-  React.useEffect(() => {
-    dispatch(
-      replace({
-        search: ""
-      })
-    )
-  }, [dispatch])
-}
-
 function RecipesListSearch({
   fetchData,
   noPadding,
@@ -85,7 +74,6 @@ function RecipesListSearch({
   scroll,
   teamID
 }: IRecipesProps) {
-  useClearSearchOnLoad()
   const [query, setQuery] = useState(getInitialQuery)
 
   useEffect(() => {
