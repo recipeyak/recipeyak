@@ -272,7 +272,11 @@ function useCurrentWeek() {
   }
 
   const navCurrent = () => {
-    history.push({ search: "" })
+    // navigating to the current page when we're already on the current page
+    // shouldn't cause another item to be added to the history
+    if (location.search !== "") {
+      history.push({ search: "" })
+    }
   }
 
   return { currentDateTs, startDate, endDate, navNext, navPrev, navCurrent }
