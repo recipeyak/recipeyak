@@ -122,7 +122,7 @@ export interface ITeam {
 
 export interface ITeamsState {
   readonly allIds: number[]
-  readonly loading?: boolean
+  readonly status: "initial" | "loading" | "failure" | "success" | "refetching"
   readonly creating?: boolean
   readonly copying?: boolean
   readonly moving?: boolean
@@ -152,7 +152,8 @@ function mapById(
 // TODO(sbdchd): teams should use WebData<T>
 const initialState: ITeamsState = {
   byId: {},
-  allIds: []
+  allIds: [],
+  status: "initial"
 }
 
 export const teams = (
@@ -284,7 +285,7 @@ export const teams = (
     case getType(fetchTeams.success):
       return {
         ...state,
-        loading: false,
+        status: "success",
         byId: action.payload.reduce(
           (a, b) => ({
             ...a,
@@ -300,8 +301,10 @@ export const teams = (
     case getType(fetchTeams.request):
       return {
         ...state,
-        loading: true
+        status: state.status === "initial" ? "loading" : "refetching"
       }
+    case getType(fetchTeams.failure):
+      return { ...state, status: "failure" }
     case getType(setTeam):
       return {
         ...state,

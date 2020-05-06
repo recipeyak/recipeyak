@@ -281,9 +281,16 @@ function useTeams(): WebData<ReadonlyArray<ITeam>> {
   useEffect(() => {
     fetchingTeamsAsync(dispatch)()
   }, [dispatch])
-  const isLoading = useSelector(s => !!s.teams.loading)
 
-  if (isLoading) {
+  const status = useSelector(s => s.teams.status)
+
+  if (status === "initial") {
+    return undefined
+  }
+  if (status === "failure") {
+    return Failure()
+  }
+  if (status === "loading") {
     return Loading()
   }
 
