@@ -122,7 +122,7 @@ describe("Teams", () => {
       }
     ]
 
-    const afterState = {
+    const afterState: ITeamsState = {
       byId: {
         1: {
           id: 1,
@@ -147,7 +147,7 @@ describe("Teams", () => {
         }
       },
       allIds: [1, 4, 2, 3],
-      loading: false
+      status: "success"
     }
 
     expect(teams(beforeState, fetchTeams.success(data))).toEqual(afterState)
@@ -687,7 +687,7 @@ describe("Teams", () => {
           }
         }
       }),
-      loading: true
+      status: "loading"
     }
 
     expect(teams(beforeState, fetchTeams.request())).toEqual(afterState)
@@ -727,6 +727,7 @@ describe("Teams", () => {
     })
 
     const afterState: ITeamsState = {
+      status: "initial",
       creating: true,
       byId: {
         1: {
@@ -774,6 +775,7 @@ describe("Teams", () => {
     }
 
     const beforeState: ITeamsState = {
+      status: "initial",
       byId: {
         1: {
           id: 1,
@@ -785,6 +787,7 @@ describe("Teams", () => {
     }
 
     const afterState: ITeamsState = {
+      status: "initial",
       byId: {
         1: {
           id: 1,
@@ -838,10 +841,12 @@ describe("Teams", () => {
 
   it("sets copying team status", () => {
     const beforeState: ITeamsState = {
+      status: "initial",
       byId: {},
       allIds: []
     }
     const afterState: ITeamsState = {
+      status: "initial",
       copying: true,
       byId: {},
       allIds: []

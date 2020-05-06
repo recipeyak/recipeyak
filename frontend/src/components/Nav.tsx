@@ -36,7 +36,9 @@ function useTeams() {
   React.useEffect(() => {
     fetchingTeamsAsync(dispatch)()
   }, [dispatch])
-  const loading = useSelector(s => !!s.teams.loading)
+  const loading = useSelector(
+    s => s.teams.status === "loading" || s.teams.status === "initial"
+  )
   const teams = useSelector(teamsFrom)
   if (loading) {
     return Loading()

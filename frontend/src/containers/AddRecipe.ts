@@ -44,7 +44,8 @@ const mapStateToProps = (state: IState) => ({
   error: state.recipes.errorCreatingRecipe,
   // we remove the loading
   teams: teamsFrom(state),
-  loadingTeams: !!state.teams.loading,
+  loadingTeams:
+    state.teams.status === "loading" || state.teams.status === "initial",
   teamID: state.user.teamID
 })
 
