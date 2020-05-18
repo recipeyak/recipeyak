@@ -3,6 +3,7 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers
 
+from core.ical.views import get_ical_view
 from core.recipes.views import (
     IngredientViewSet,
     NoteViewSet,
@@ -41,6 +42,7 @@ urlpatterns = [
     path("api/v1/", include("core.users.urls")),
     path("api/v1/auth/registration/", include("core.auth.registration.urls")),
     path("", include("core.export.urls")),
+    path("t/<int:team_id>/ical/<str:ical_id>/schedule.ics", get_ical_view),
     path("api/v1/", include(router.urls)),
     path("api/v1/", include(recipes_router.urls)),
     path("api/v1/recipes/<int:recipe_pk>/timeline", get_recipe_timeline),

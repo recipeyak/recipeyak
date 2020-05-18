@@ -18,6 +18,7 @@ from django.core.validators import MinValueValidator
 from django.db import models, transaction
 from django.db.models import Q
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 from softdelete.models import SoftDeleteObject
 from typing_extensions import Literal
 
@@ -436,10 +437,18 @@ class Invite(CommonInfo):
         self.save()
 
 
+def get_random_ical_id() -> str:
+    return get_random_string(length=48)
+
+
 class Team(CommonInfo):
     name = models.CharField(max_length=255)
     is_public = models.BooleanField(default=False)
     recipes = GenericRelation("Recipe", related_query_name="owner_team")
+    ical_id = models.TextField(
+        default=get_random_ical_id,
+        help_text="Secret key used to prevent unauthorized access to schedule calendar.",
+    )
 
     def __str__(self):
         return f"<Team • name: {self.name}, is_public: {self.is_public}>"
