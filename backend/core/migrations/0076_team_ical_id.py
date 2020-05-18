@@ -5,6 +5,17 @@ from django.db import migrations, models
 import core.models
 
 
+def forwards_func(apps, schema_editor):
+    """
+    Want each team to get their own secret ical id
+    """
+    Team = apps.get_model("core", "Team")
+    db_alias = schema_editor.connection.alias
+    for team in Team.objects.using(db_alias):
+        team.ical_id = core.models.get_random_ical_id()
+        team.save()
+
+
 class Migration(migrations.Migration):
 
     dependencies = [("core", "0075_auto_20200227_0349")]
@@ -17,5 +28,6 @@ class Migration(migrations.Migration):
                 default=core.models.get_random_ical_id,
                 help_text="Secret key used to prevent unauthorized access to schedule calendar.",
             ),
-        )
+        ),
+        migrations.RunPython(forwards_func, migrations.RunPython.noop),
     ]
