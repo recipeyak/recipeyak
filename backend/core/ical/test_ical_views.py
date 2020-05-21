@@ -104,3 +104,18 @@ def test_ical_view_with_correct_id(
         "END:VEVENT\r\n"
         "END:VCALENDAR\r\n"
     )
+
+
+def test_get_ical_view_works_with_accept_encoding(
+    client: APIClient, user: MyUser, recipe: Recipe, team: Team
+) -> None:
+    """
+    Clicking an .ics link on iOS will trigger iOS to make a GET request to
+    the URL with accept header set to `text/calendar`.
+
+    When the view is setup using DRF this fails and returns a 406, which
+    prevents the Calendar app from using the "subscribed" calendar.
+    """
+    url = f"/t/{team.id}/ical/{team.ical_id}/schedule.ics"
+    res = client.get(url, HTTP_ACCEPT="text/calendar")
+    assert res.status_code == status.HTTP_200_OK

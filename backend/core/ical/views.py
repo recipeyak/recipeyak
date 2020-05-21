@@ -1,21 +1,18 @@
 from datetime import timedelta
 from typing import Optional
 
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.http import http_date
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
-from rest_framework.request import Request
+from django.views.decorators.http import require_http_methods
 
 from core.ical.utils import create_calendar, create_event
 from core.models import ScheduledRecipe, Team
 
 
-@api_view(["GET"])
-@permission_classes([AllowAny])
-def get_ical_view(request: Request, team_id: int, ical_id: str) -> HttpResponse:
+@require_http_methods(["GET", "HEAD"])
+def get_ical_view(request: HttpRequest, team_id: int, ical_id: str) -> HttpResponse:
     """
     Return an icalendar formatted string of scheduled recipes.
 
