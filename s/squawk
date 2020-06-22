@@ -1,35 +1,62 @@
-#!/bin/bash
+#!/usr/bin/env python3
+import os
+import subprocess
+from shutil import which
+import logging
 
-set -e
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger(__file__)
 
-main() {
-  # circle's built in git checkout code clobbers the `master` ref so we do the
-  # following to make it not point to the current ref.
-  # https://discuss.circleci.com/t/git-checkout-of-a-branch-destroys-local-reference-to-master/23781/7
-  if [ "${CIRCLECI}" ]; then
-    git branch -f master origin/master
-  fi
 
-  if ! command -v squawk &>/dev/null; then
-    # allow root to install squawk globally
-    npm config set unsafe-perm true
-    echo "squawk not found, installing"
-    npm i -g squawk-cli@0.1.4
-  fi
+def is_installed(name: str) -> bool:
+    return which(name) is not None
 
-  local changed_migration_files
 
-  changed_migration_files=$(git --no-pager diff --name-only FETCH_HEAD master ./backend/core/migrations)
+def main() -> None:
+    # circle's built in git checkout code clobbers the `master` ref so we do the
+    # following to make it not point to the current ref.
+    # https://discuss.circleci.com/t/git-checkout-of-a-branch-destroys-local-reference-to-master/23781/7
+    if os.getenv("CIRCLECI"):
+        subprocess.run(["git", "branch", "-f", "master", "origin/master"], check=True)
 
-  echo $changed_migration_files
+    if not is_installed("squawk"):
+        subprocess.run(["npm", "config", "set", "unsafe-perm", "true"], check=True)
+        log.info("squawk not found, installing")
+        subprocess.run(["npm", "install", "-g", "squawk-cli@0.1.4"], check=True)
 
-  for f in $changed_migration_files
-  do
-    echo "file"
-    echo $f
-  done
+    changed_migration_files = str(
+        subprocess.run(
+            [
+                "git",
+                "--no-pager",
+                "diff",
+                "--name-only",
+                "FETCH_HEAD",
+                "master",
+                "./backend/core/migrations",
+            ],
+            capture_output=True,
+            check=True,
+        )
+    )
 
-  squawk example.sql
-}
+    changed_migration_files_v2 = str(
+        subprocess.run(
+            [
+                "git",
+                "--no-pager",
+                "diff",
+                "--name-only",
+                "master..",
+                "./backend/core/migrations",
+            ],
+            capture_output=True,
+            check=True,
+        )
+    )
+    log.info(changed_migration_files)
+    log.info(changed_migration_files_v2)
 
-main "${@}"
+
+if __name__ == "__main__":
+    main()
