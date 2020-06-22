@@ -1,0 +1,40 @@
+#!/bin/bash
+
+set -e
+
+dir_changed() {
+  # when the script fails in an unexpected way we default to exit code 0 so
+  # that the dir will be considered changed.
+  local -r dir="${1}" || exit 0
+  local changed_files
+  changed_files="$(git --no-pager diff --name-only FETCH_HEAD master)" || exit 0
+  grep -q "^${dir}" <<< "${changed_files}"
+}
+
+main() {
+  if ! command -v squawk &>/dev/null; then
+    echo "squawk not found, installing"
+    npm i -g squawk-cli@0.1.4
+  fi
+
+  local changed_files
+
+  changed_files=$(git --no-pager diff --name-only FETCH_HEAD master)
+
+  echo $changed_files
+
+
+  local changed_migration_files
+
+  changed_migration_files=$(git --no-pager diff --name-only FETCH_HEAD master ./backend/core/migrations)
+
+  echo $changed_migration_files
+
+  if dir_changed "backend/core/migrations"; then
+    echo "dir changed"
+  fi
+
+  squawk example.sql
+}
+
+main "${@}"

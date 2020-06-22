@@ -290,6 +290,7 @@ class Ingredient(CommonInfo, SoftDeleteObject):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     position = models.FloatField()
     optional = models.BooleanField(default=False)
+    foo = models.TextField()
 
     class Meta:
         unique_together = (("recipe", "position"),)
