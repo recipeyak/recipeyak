@@ -13,6 +13,8 @@ dir_changed() {
 
 main() {
   if ! command -v squawk &>/dev/null; then
+    # allow root to install squawk globally
+    npm config set unsafe-perm true
     echo "squawk not found, installing"
     npm i -g squawk-cli@0.1.4
   fi
