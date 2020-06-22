@@ -291,6 +291,7 @@ class Ingredient(CommonInfo, SoftDeleteObject):
     position = models.FloatField()
     optional = models.BooleanField(default=False)
     foo = models.TextField()
+    bar = models.IntegerField()
 
     class Meta:
         unique_together = (("recipe", "position"),)
