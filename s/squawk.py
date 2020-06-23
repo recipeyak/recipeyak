@@ -101,7 +101,12 @@ def main() -> None:
             check=True,
         )
         log.info("running squawk for %s", filename)
-        log.info(subprocess.run(["squawk", "upload-to-github", output_sql_file.name]))
+        log.info(
+            subprocess.run(
+                ["squawk", "upload-to-github", output_sql_file.name],
+                capture_output=True,
+            )
+        )
 
 
 if __name__ == "__main__":
