@@ -83,7 +83,7 @@ def main() -> None:
         "GITHUB_INSTALL_ID",
         "GITHUB_PRIVATE_KEY",
     }:
-        assert env_var in os.environ
+        assert env_var in os.environ, env_var
 
     for migration_id, filename in changed_migrations_ids:
         log.info("getting sql for %s", filename)
