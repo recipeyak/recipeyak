@@ -76,6 +76,8 @@ def main() -> None:
     os.environ.setdefault("GITHUB_PR_NUMBER", pr_info.pr_number)
     os.environ.setdefault("GITHUB_REPO_NAME", pr_info.repo)
     os.environ.setdefault("GITHUB_REPO_OWNER", pr_info.owner)
+    os.environ.setdefault("DEBUG", "1")
+    os.environ.setdefault("DATABASE_URL", "postgres://postgres@127.0.0.1:5432/postgres")
 
     for env_var in {
         "GITHUB_APP_ID",
