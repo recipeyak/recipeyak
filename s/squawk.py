@@ -6,6 +6,7 @@ import logging
 from pathlib import Path
 from typing import Optional
 from dataclasses import dataclass
+import base64
 
 APP_LABEL = "core"
 
@@ -78,6 +79,10 @@ def main() -> None:
     os.environ.setdefault("GITHUB_REPO_OWNER", pr_info.owner)
     os.environ.setdefault("DEBUG", "1")
     os.environ.setdefault("DATABASE_URL", "postgres://postgres@127.0.0.1:5432/postgres")
+    os.environ.setdefault(
+        "GITHUB_PRIVATE_KEY",
+        base64.b64decode(os.environ["GITHUB_PRIVATE_KEY_BASE64"]).decode(),
+    )
 
     for env_var in {
         "GITHUB_APP_ID",
