@@ -74,23 +74,25 @@ def main() -> None:
     assert pr_info is not None
     log.info(pr_info)
 
-    os.environ.setdefault("GITHUB_PR_NUMBER", pr_info.pr_number)
-    os.environ.setdefault("GITHUB_REPO_NAME", pr_info.repo)
-    os.environ.setdefault("GITHUB_REPO_OWNER", pr_info.owner)
+    os.environ.setdefault("SQUAWK_GITHUB_PR_NUMBER", pr_info.pr_number)
+    os.environ.setdefault("SQUAWK_GITHUB_REPO_NAME", pr_info.repo)
+    os.environ.setdefault("SQUAWK_GITHUB_REPO_OWNER", pr_info.owner)
     os.environ.setdefault("DEBUG", "1")
     os.environ.setdefault("DATABASE_URL", "postgres://postgres@127.0.0.1:5432/postgres")
-    os.environ.setdefault(
-        "GITHUB_PRIVATE_KEY",
-        base64.b64decode(os.environ["GITHUB_PRIVATE_KEY_BASE64"]).decode(),
-    )
 
     for env_var in {
-        "GITHUB_APP_ID",
-        "GITHUB_BOT_NAME",
-        "GITHUB_INSTALL_ID",
-        "GITHUB_PRIVATE_KEY",
+        "SQUAWK_GITHUB_APP_ID",
+        "SQUAWK_GITHUB_BOT_NAME",
+        "SQUAWK_GITHUB_INSTALL_ID",
     }:
         assert env_var in os.environ, env_var
+
+    assert (
+        "SQUAWK_GITHUB_PRIVATE_KEY_BASE64" in os.environ
+        or "SQUAWK_GITHUB_PRIVATE_KEY" in os.environ
+    )
+
+    output_files = []
 
     for migration_id, filename in changed_migrations_ids:
         log.info("getting sql for %s", filename)
@@ -101,12 +103,15 @@ def main() -> None:
             check=True,
         )
         log.info("running squawk for %s", filename)
-        log.info(
-            subprocess.run(
-                ["squawk", "upload-to-github", output_sql_file.name],
-                capture_output=True,
-            )
+        output_files.append(output_sql_file.name)
+
+    log.info("sql files found: %s", output_files)
+
+    log.info(
+        subprocess.run(
+            ["squawk", "upload-to-github", *output_files], capture_output=True
         )
+    )
 
 
 if __name__ == "__main__":
