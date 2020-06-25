@@ -4,9 +4,8 @@ import subprocess
 from shutil import which
 import logging
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Mapping
 from dataclasses import dataclass
-import base64
 
 APP_LABEL = "core"
 
@@ -32,8 +31,8 @@ class PRInfo:
     pr_number: str
 
 
-def get_pr_info() -> Optional[PRInfo]:
-    circle_pr = os.getenv("CIRCLE_PULL_REQUEST")
+def get_pr_info(env: Mapping[str, str]) -> Optional[PRInfo]:
+    circle_pr = env.get("CIRCLE_PULL_REQUEST")
     if circle_pr is None:
         return None
     _, _, _, owner, repo, _, pr_number = circle_pr.split("/")
@@ -51,7 +50,7 @@ def main() -> None:
     if not is_installed("squawk"):
         subprocess.run(["npm", "config", "set", "unsafe-perm", "true"], check=True)
         log.info("squawk not found, installing")
-        subprocess.run(["npm", "install", "-g", "squawk-cli@0.1.4"], check=True)
+        subprocess.run(["npm", "install", "-g", "squawk-cli@0.2.1"], check=True)
 
     diff_cmd = [
         "git",
@@ -70,27 +69,16 @@ def main() -> None:
     ]
     log.info("found migrations: %s", changed_migrations_ids)
 
-    pr_info = get_pr_info()
+    pr_info = get_pr_info(os.environ)
     assert pr_info is not None
     log.info(pr_info)
 
     os.environ.setdefault("SQUAWK_GITHUB_PR_NUMBER", pr_info.pr_number)
     os.environ.setdefault("SQUAWK_GITHUB_REPO_NAME", pr_info.repo)
     os.environ.setdefault("SQUAWK_GITHUB_REPO_OWNER", pr_info.owner)
+    # get sqlmigrate to behave
     os.environ.setdefault("DEBUG", "1")
     os.environ.setdefault("DATABASE_URL", "postgres://postgres@127.0.0.1:5432/postgres")
-
-    for env_var in {
-        "SQUAWK_GITHUB_APP_ID",
-        "SQUAWK_GITHUB_BOT_NAME",
-        "SQUAWK_GITHUB_INSTALL_ID",
-    }:
-        assert env_var in os.environ, env_var
-
-    assert (
-        "SQUAWK_GITHUB_PRIVATE_KEY_BASE64" in os.environ
-        or "SQUAWK_GITHUB_PRIVATE_KEY" in os.environ
-    )
 
     output_files = []
 
