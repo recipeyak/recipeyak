@@ -50,7 +50,7 @@ def main() -> None:
     if not is_installed("squawk"):
         subprocess.run(["npm", "config", "set", "unsafe-perm", "true"], check=True)
         log.info("squawk not found, installing")
-        subprocess.run(["npm", "install", "-g", "squawk-cli@0.2.1"], check=True)
+        subprocess.run(["npm", "install", "-g", "squawk-cli@0.2.2"], check=True)
 
     diff_cmd = [
         "git",
