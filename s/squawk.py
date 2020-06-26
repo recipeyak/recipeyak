@@ -47,11 +47,6 @@ def main() -> None:
     if os.getenv("CIRCLECI"):
         subprocess.run(["git", "branch", "-f", "master", "origin/master"], check=True)
 
-    if not is_installed("squawk"):
-        subprocess.run(["npm", "config", "set", "unsafe-perm", "true"], check=True)
-        log.info("squawk not found, installing")
-        subprocess.run(["npm", "install", "-g", "squawk-cli@0.2.2"], check=True)
-
     diff_cmd = [
         "git",
         "--no-pager",
@@ -69,13 +64,6 @@ def main() -> None:
     ]
     log.info("found migrations: %s", changed_migrations_ids)
 
-    pr_info = get_pr_info(os.environ)
-    assert pr_info is not None
-    log.info(pr_info)
-
-    os.environ.setdefault("SQUAWK_GITHUB_PR_NUMBER", pr_info.pr_number)
-    os.environ.setdefault("SQUAWK_GITHUB_REPO_NAME", pr_info.repo)
-    os.environ.setdefault("SQUAWK_GITHUB_REPO_OWNER", pr_info.owner)
     # get sqlmigrate to behave
     os.environ.setdefault("DEBUG", "1")
     os.environ.setdefault("DATABASE_URL", "postgres://postgres@127.0.0.1:5432/postgres")
@@ -94,6 +82,22 @@ def main() -> None:
         output_files.append(output_sql_file.name)
 
     log.info("sql files found: %s", output_files)
+
+    if not output_files:
+        return
+
+    if not is_installed("squawk"):
+        subprocess.run(["npm", "config", "set", "unsafe-perm", "true"], check=True)
+        log.info("squawk not found, installing")
+        subprocess.run(["npm", "install", "-g", "squawk-cli@0.2.2"], check=True)
+
+    pr_info = get_pr_info(os.environ)
+    assert pr_info is not None
+    log.info(pr_info)
+
+    os.environ.setdefault("SQUAWK_GITHUB_PR_NUMBER", pr_info.pr_number)
+    os.environ.setdefault("SQUAWK_GITHUB_REPO_NAME", pr_info.repo)
+    os.environ.setdefault("SQUAWK_GITHUB_REPO_OWNER", pr_info.owner)
 
     log.info(
         subprocess.run(
