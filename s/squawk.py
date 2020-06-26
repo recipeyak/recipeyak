@@ -97,7 +97,9 @@ def main() -> None:
 
     log.info(
         subprocess.run(
-            ["squawk", "upload-to-github", *output_files], capture_output=True
+            ["squawk", "upload-to-github", *output_files],
+            capture_output=True,
+            check=True,
         )
     )
 
