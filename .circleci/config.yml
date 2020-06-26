@@ -68,6 +68,28 @@ jobs:
       - store_test_results:
           path: backend/reports
 
+  squawk:
+    docker:
+      - image: recipeyak/base:v3
+      # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
+      - image: circleci/postgres:9.5-alpine-ram
+    steps:
+      - checkout
+      # https://circleci.com/docs/2.0/caching/
+      - restore_cache:
+          keys:
+            - backend-v9-{{ checksum "poetry.lock" }}
+      - run:
+          name: install dependencies
+          command: |
+            echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
+            # Use our new PATH so we can call poetry from bash
+            source $BASH_ENV
+            poetry install
+      - run:
+          name: run lints
+          command: ./s/squawk.py
+
   frontend_test:
     docker:
       - image: recipeyak/base:v3
@@ -268,6 +290,7 @@ workflows:
   version: 2
   test:
     jobs:
+      - squawk
       - backend_test
       - backend_lint
       - frontend_test
