@@ -44,7 +44,7 @@ def main() -> None:
     # circle's built in git checkout code clobbers the `master` ref so we do the
     # following to make it not point to the current ref.
     # https://discuss.circleci.com/t/git-checkout-of-a-branch-destroys-local-reference-to-master/23781/7
-    if os.getenv("CIRCLECI"):
+    if os.getenv("CIRCLECI") and os.getenv("CIRCLE_BRANCH") != "master":
         subprocess.run(["git", "branch", "-f", "master", "origin/master"], check=True)
 
     diff_cmd = [
@@ -99,13 +99,11 @@ def main() -> None:
     os.environ.setdefault("SQUAWK_GITHUB_REPO_NAME", pr_info.repo)
     os.environ.setdefault("SQUAWK_GITHUB_REPO_OWNER", pr_info.owner)
 
-    log.info(
-        subprocess.run(
-            ["squawk", "upload-to-github", *output_files],
-            capture_output=True,
-            check=True,
-        )
+    res = subprocess.run(
+        ["squawk", "upload-to-github", *output_files], capture_output=True
     )
+    log.info(res)
+    res.check_returncode()
 
 
 if __name__ == "__main__":
