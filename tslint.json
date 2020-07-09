@@ -26,6 +26,7 @@
   },
   "rules": {
     "react-anchor-blank-noopener": true,
+    "interface-over-type-literal": false,
     "object-index-must-return-possibly-undefined": true,
     "unnecessary-else": true,
     "no-implicit-to-string": false,

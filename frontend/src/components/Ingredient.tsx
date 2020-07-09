@@ -1,91 +1,74 @@
 import React from "react"
 
 import IngredientView from "@/components/IngredientView"
-import { IIngredient, IRecipe } from "@/store/reducers/recipes"
 import GlobalEvent from "@/components/GlobalEvent"
 import { Button, ButtonLink } from "@/components/Buttons"
 import { TextInput, selectTarget, CheckBox } from "@/components/Forms"
 import { hasSelection } from "@/utils/general"
 
-interface IEmptyField {
-  readonly quantity?: string
-  readonly name?: string
-}
+const emptyField = ({
+  quantity,
+  name
+}: {
+  readonly quantity: string | undefined
+  readonly name: string | undefined
+}) => quantity === "" || name === ""
 
-const emptyField = ({ quantity, name }: IEmptyField) =>
-  quantity === "" || name === ""
-
-interface IAllEmptyFields {
+const allEmptyFields = ({
+  quantity,
+  name,
+  description
+}: {
   readonly quantity?: string
   readonly name?: string
   readonly description?: string
-}
-const allEmptyFields = ({ quantity, name, description }: IAllEmptyFields) =>
-  quantity === "" && name === "" && description === ""
+}) => quantity === "" && name === "" && description === ""
 
-interface IIngredientProps {
-  readonly quantity: IIngredient["quantity"]
-  readonly name: IIngredient["name"]
-  readonly description: IIngredient["description"]
-  readonly optional: IIngredient["optional"]
-  readonly recipeID: IRecipe["id"]
-  readonly id: IIngredient["id"]
+type IngredientState = {
+  readonly quantity: string
+  readonly name: string
+  readonly description: string
+  readonly optional: boolean
+  readonly editing: boolean
+  readonly unsavedChanges: boolean
+}
+
+export function Ingredient(props: {
+  readonly quantity: string
+  readonly name: string
+  readonly description: string
+  readonly optional: boolean
+  readonly recipeID: number
+  readonly id: number
   readonly updating?: boolean
   readonly removing?: boolean
-  readonly remove: (recipeID: IRecipe["id"], id: IIngredient["id"]) => void
+  readonly remove: (recipeID: number, id: number) => void
   readonly update: ({
     quantity,
     name,
     description,
     optional
-  }: Pick<
-    IIngredient,
-    "quantity" | "name" | "description" | "optional"
-  >) => void
-}
+  }: {
+    readonly quantity: string
+    readonly name: string
+    readonly description: string
+    readonly optional: boolean
+  }) => void
+}) {
+  const [state, setState] = React.useState<IngredientState>({
+    quantity: props.quantity,
+    name: props.name,
+    description: props.description,
+    optional: props.optional,
+    editing: false,
+    unsavedChanges: false
+  })
 
-interface IIngredientState {
-  readonly quantity: IIngredient["quantity"]
-  readonly name: IIngredient["name"]
-  readonly description: IIngredient["description"]
-  readonly optional: IIngredient["optional"]
-  readonly editing: boolean
-  readonly unsavedChanges: boolean
-}
-
-export default class Ingredient extends React.Component<
-  IIngredientProps,
-  IIngredientState
-> {
-  constructor(props: IIngredientProps) {
-    super(props)
-    this.state = {
-      quantity: props.quantity,
-      name: props.name,
-      description: props.description,
-      optional: props.optional,
-
-      editing: false,
-      unsavedChanges: false
-    }
-  }
-
-  element = React.createRef<HTMLLIElement>()
-
-  static defaultProps = {
-    // need default recipeID for when we use this in the Add Recipe page
-    recipeID: -1,
-    quantity: "",
-    name: "",
-    description: "",
-    optional: false,
-    updating: false,
-    removing: false
-  }
+  const element = React.useRef<HTMLLIElement | null>(null)
 
   // ensures that the list item closes when the user clicks outside of the item
-  handleGeneralClick = (e: MouseEvent) => {
-    const el = this.element.current
+  const handleGeneralClick = (e: MouseEvent) => {
+    const el = element.current
     const target = e.target as HTMLElement | null
     if (el == null || target == null) {
       return
@@ -94,12 +77,13 @@ export default class Ingredient extends React.Component<
     if (clickedInComponent) {
       return
     }
-    this.setState((prevState, props) => {
+    setState(prevState => {
       const contentChanged =
         prevState.quantity !== props.quantity ||
         prevState.name !== props.name ||
         prevState.description !== props.description
       return {
+        ...prevState,
         editing: false,
         unsavedChanges:
           (prevState.editing && contentChanged) || prevState.unsavedChanges
@@ -107,232 +91,198 @@ export default class Ingredient extends React.Component<
     })
   }
 
-  handleGeneralKeyup = (e: KeyboardEvent) => {
+  const handleGeneralKeyup = (e: KeyboardEvent) => {
     if (e.key === "Escape") {
-      this.cancel()
+      cancel()
     }
   }
 
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState(({
-      [e.target.name]: e.target.value
-    } as unknown) as IIngredientState)
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const name = e.target.name
+    const value = e.target.value
+    setState(s => ({
+      ...s,
+      [name]: value
+    }))
   }
 
-  toggleOptional = () => {
-    this.setState(prev => ({ optional: !prev.optional }))
-  }
+  const toggleOptional = () =>
+    setState(prev => ({ ...prev, optional: !prev.optional }))
 
-  enableEditing = () => {
+  const enableEditing = () => {
     if (hasSelection()) {
       return
     }
     // FIXME(chdsbd): This is identical to the method in ListItem
-    this.setState({
+    setState(s => ({
+      ...s,
       editing: true,
       unsavedChanges: false
-    })
+    }))
   }
 
-  discardChanges = () => {
-    this.setState((_, props) => {
-      const { quantity, name, description } = props
+  const discardChanges = () =>
+    setState(s => ({
+      ...s,
+      editing: false,
+      unsavedChanges: false,
+      quantity: props.quantity,
+      name: props.quantity,
+      description: props.description
+    }))
 
-      return {
-        editing: false,
-        unsavedChanges: false,
-        quantity,
-        name,
-        description
-      }
-    })
-  }
-
-  handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    e.target.select()
-  }
-
-  cancel = () => {
+  const cancel = () =>
     // Restore state to match props
-    this.setState((_, props) => {
-      const { quantity, name, description } = props
-      return {
-        editing: false,
-        quantity,
-        name,
-        description
-      }
-    })
-  }
+    setState(s => ({
+      ...s,
+      editing: false,
+      quantity: props.quantity,
+      name: props.name,
+      description: props.description
+    }))
 
-  handleCancelButton = (e: React.MouseEvent) => {
+  const handleCancelButton = (e: React.MouseEvent) => {
     e.stopPropagation()
-    this.cancel()
+    cancel()
   }
 
-  update = async (e: React.FormEvent) => {
+  const update = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (emptyField(this.state)) {
+    if (emptyField(state)) {
       return
     }
 
     e.stopPropagation()
 
-    if (allEmptyFields(this.state)) {
-      return this.remove()
+    if (allEmptyFields(state)) {
+      return remove()
     }
 
-    const { quantity, name, description, optional } = this.state
-
-    this.props.update({
-      quantity,
-      name,
-      description,
-      optional
+    props.update({
+      quantity: state.quantity,
+      name: state.name,
+      description: state.description,
+      optional: state.optional
     })
 
-    this.setState({
+    setState(s => ({
+      ...s,
       editing: false,
       unsavedChanges: false
-    })
+    }))
   }
 
-  remove = () => this.props.remove(this.props.recipeID, this.props.id)
+  const remove = () => props.remove(props.recipeID, props.id)
 
-  render() {
-    const {
-      handleInputChange,
-      enableEditing,
-      handleCancelButton,
-      remove,
-      discardChanges,
-      update
-    } = this
-
-    const {
-      name,
-      quantity,
-      description,
-      optional,
-      editing,
-      unsavedChanges
-    } = this.state
-
-    const { updating, removing } = this.props
-
-    const inner = editing ? (
-      <form onSubmit={update}>
-        <GlobalEvent
-          mouseUp={this.handleGeneralClick}
-          keyUp={this.handleGeneralKeyup}
-        />
-        <div className="field">
-          <div className="add-ingredient-grid">
-            <TextInput
-              onChange={handleInputChange}
-              autoFocus
-              onFocus={selectTarget}
-              value={quantity}
-              className="input-quantity"
-              placeholder="3 lbs"
-              name="quantity"
-            />
-
-            <TextInput
-              onChange={handleInputChange}
-              onFocus={selectTarget}
-              value={name}
-              className="input-ingredient"
-              placeholder="tomato"
-              name="name"
-            />
-
-            <TextInput
-              onChange={handleInputChange}
-              onFocus={selectTarget}
-              value={description}
-              className="input-ingredient grid-entire-row"
-              placeholder="diced at 3cm in width"
-              name="description"
-            />
-          </div>
-        </div>
-
-        <label className="d-flex align-items-center cursor-pointer mb-2">
-          <CheckBox
-            onChange={this.toggleOptional}
-            checked={optional}
-            name="optional"
-            className="mr-2"
+  const inner = state.editing ? (
+    <form onSubmit={update}>
+      <GlobalEvent mouseUp={handleGeneralClick} keyUp={handleGeneralKeyup} />
+      <div className="field">
+        <div className="add-ingredient-grid">
+          <TextInput
+            onChange={handleInputChange}
+            autoFocus
+            onFocus={selectTarget}
+            value={state.quantity}
+            className="input-quantity"
+            placeholder="3 lbs"
+            name="quantity"
           />
-          Optional
-        </label>
 
-        <section className="listitem-button-container">
-          <div className="field is-grouped">
-            <p className="control">
-              <Button
-                size="small"
-                type="submit"
-                name="update"
-                loading={updating}>
-                Update
-              </Button>
-            </p>
-            <p className="control">
-              <Button
-                onClick={handleCancelButton}
-                size="small"
-                type="reset"
-                name="cancel edit">
-                Cancel
-              </Button>
-            </p>
-          </div>
-          <div className="field is-grouped">
-            <p className="control">
-              <Button
-                onClick={remove}
-                size="small"
-                loading={removing}
-                name="remove">
-                Remove
-              </Button>
-            </p>
-          </div>
-        </section>
-      </form>
-    ) : (
-      <IngredientView
-        quantity={quantity}
-        name={name}
-        description={description}
-        optional={this.state.optional}
-      />
-    )
+          <TextInput
+            onChange={handleInputChange}
+            onFocus={selectTarget}
+            value={state.name}
+            className="input-ingredient"
+            placeholder="tomato"
+            name="name"
+          />
 
-    return (
-      <li ref={this.element}>
-        <section
-          title="click to edit"
-          className="cursor-pointer"
-          onClick={enableEditing}>
-          {inner}
-        </section>
-        {unsavedChanges && (
-          <section className="d-flex justify-space-between align-center">
-            <span className="is-italic fs-4">Unsaved Changes</span>
-            <section>
-              <ButtonLink size="small" onClick={enableEditing}>
-                View Edits
-              </ButtonLink>
-              <ButtonLink size="small" onClick={discardChanges}>
-                Discard
-              </ButtonLink>
-            </section>
+          <TextInput
+            onChange={handleInputChange}
+            onFocus={selectTarget}
+            value={state.description}
+            className="input-ingredient grid-entire-row"
+            placeholder="diced at 3cm in width"
+            name="description"
+          />
+        </div>
+      </div>
+
+      <label className="d-flex align-items-center cursor-pointer mb-2">
+        <CheckBox
+          onChange={toggleOptional}
+          checked={state.optional}
+          name="optional"
+          className="mr-2"
+        />
+        Optional
+      </label>
+
+      <section className="listitem-button-container">
+        <div className="field is-grouped">
+          <p className="control">
+            <Button
+              size="small"
+              type="submit"
+              name="update"
+              loading={props.updating}>
+              Update
+            </Button>
+          </p>
+          <p className="control">
+            <Button
+              onClick={handleCancelButton}
+              size="small"
+              type="reset"
+              name="cancel edit">
+              Cancel
+            </Button>
+          </p>
+        </div>
+        <div className="field is-grouped">
+          <p className="control">
+            <Button
+              onClick={remove}
+              size="small"
+              loading={props.removing}
+              name="remove">
+              Remove
+            </Button>
+          </p>
+        </div>
+      </section>
+    </form>
+  ) : (
+    <IngredientView
+      quantity={state.quantity}
+      name={state.name}
+      description={state.description}
+      optional={state.optional}
+    />
+  )
+
+  return (
+    <li ref={element}>
+      <section
+        title="click to edit"
+        className="cursor-pointer"
+        onClick={enableEditing}>
+        {inner}
+      </section>
+      {state.unsavedChanges && (
+        <section className="d-flex justify-space-between align-center">
+          <span className="is-italic fs-4">Unsaved Changes</span>
+          <section>
+            <ButtonLink size="small" onClick={enableEditing}>
+              View Edits
+            </ButtonLink>
+            <ButtonLink size="small" onClick={discardChanges}>
+              Discard
+            </ButtonLink>
           </section>
-        )}
-      </li>
-    )
-  }
+        </section>
+      )}
+    </li>
+  )
 }
