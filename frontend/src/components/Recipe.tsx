@@ -5,7 +5,7 @@ import Loader from "@/components/Loader"
 import AddStep from "@/components/AddStep"
 import AddIngredient from "@/components/AddIngredient"
 import StepContainer from "@/components/StepContainer"
-import Ingredient from "@/components/Ingredient"
+import { Ingredient } from "@/components/Ingredient"
 import RecipeTitle from "@/components/RecipeTitle"
 import { RouteComponentProps } from "react-router"
 import {

@@ -4,7 +4,7 @@ import { Helmet } from "@/components/Helmet"
 import ListItem from "@/components/ListItem"
 import AddIngredientForm from "@/components/AddIngredientForm"
 import AddStepForm from "@/components/AddStepForm"
-import Ingredient from "@/components/Ingredient"
+import { Ingredient } from "@/components/Ingredient"
 import { ButtonPrimary, Button } from "@/components/Buttons"
 import {
   IStepBasic,
