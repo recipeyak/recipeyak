@@ -821,7 +821,14 @@ exports[`<Recipe/> snaps recipe all states 2`] = `
         Ingredients
       </h2>
       <ul>
-        <li>
+        <li
+          style={
+            Object {
+              "backgroundColor": "white",
+              "opacity": 1,
+            }
+          }
+        >
           <section
             className="cursor-pointer"
             onClick={[Function]}
