@@ -249,6 +249,7 @@ export default class AddRecipe extends React.Component<
                 <Ingredient
                   key={x.name + i}
                   recipeID={-1}
+                  index={i}
                   id={i}
                   update={(ingre: IIngredientBasic) =>
                     this.props.updateIngredient(i, ingre)

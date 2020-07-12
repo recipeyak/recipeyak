@@ -166,7 +166,7 @@ export const deleteIngredient = createAsyncAction(
 interface IUpdateIngredientArg {
   recipeID: IRecipe["id"]
   ingredientID: IIngredient["id"]
-  content: Partial<Omit<IIngredient, "id" | "position">>
+  content: Partial<Omit<IIngredient, "id">>
 }
 
 export const updateIngredient = createAsyncAction(
@@ -1128,7 +1128,8 @@ export const recipes = (
             if (x.id === action.payload.ingredientID) {
               return {
                 ...x,
-                updating: true
+                updating: true,
+                position: action.payload.content.position ?? x.position
               }
             }
             return x
