@@ -32,7 +32,7 @@
 import React, { useRef } from "react"
 import { connect } from "react-redux"
 import { useDrop, useDrag } from "react-dnd"
-import { DragDrop } from "@/dragDrop"
+import { DragDrop, handleDndHover } from "@/dragDrop"
 import ListItem from "@/components/ListItem"
 
 import {
@@ -47,7 +47,7 @@ interface IStepProps {
   readonly id: number
   readonly recipeID: IRecipe["id"]
   readonly text: string
-  readonly moveStep: (dragIndex: number, hoverIndex: number) => void
+  readonly move: (_: { from: number; to: number }) => void
   readonly completeMove: (dragIndex: number, hoverIndex: number) => void
   readonly updating?: boolean
   readonly removing?: boolean
@@ -58,61 +58,7 @@ function Step({ text, index, ...props }: IStepProps) {
   const ref = useRef<HTMLDivElement>(null)
   const [, drop] = useDrop({
     accept: DragDrop.STEP,
-    hover: (_item, monitor) => {
-      if (!ref.current) {
-        return
-      }
-
-      // tslint:disable-next-line:no-unsafe-any
-      const dragIndex: number = monitor.getItem().index
-      const hoverIndex = index
-
-      // Don't replace items with themselves
-      if (dragIndex === hoverIndex) {
-        return
-      }
-
-      // Determine rectangle on screen
-      const el = ref.current
-      const hoverBoundingRect = el.getBoundingClientRect()
-
-      // Get vertical middle
-      const hoverMiddleY =
-        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
-
-      // Determine mouse position
-      const clientOffset = monitor.getClientOffset()
-      if (clientOffset == null) {
-        return
-      }
-
-      // Get pixels to the top
-      const hoverClientY = clientOffset.y - hoverBoundingRect.top
-
-      // Only perform the move when the mouse has crossed half of the items height
-      // When dragging downwards, only move when the cursor is below 50%
-      // When dragging upwards, only move when the cursor is above 50%
-
-      // Dragging downwards
-      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-        return
-      }
-
-      // Dragging upwards
-      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-        return
-      }
-
-      // Time to actually perform the action
-      props.moveStep(dragIndex, hoverIndex)
-
-      // Note: we're mutating the monitor item here!
-      // Generally it's better to avoid mutations,
-      // but it's good here for the sake of performance
-      // to avoid expensive index searches.
-      // tslint:disable-next-line:no-unsafe-any
-      monitor.getItem().index = hoverIndex
-    }
+    hover: handleDndHover({ ref, props: { index, move: props.move } })
   })
 
   const [{ isDragging }, drag, preview] = useDrag({

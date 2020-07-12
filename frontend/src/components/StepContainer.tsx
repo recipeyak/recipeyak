@@ -60,12 +60,12 @@ function StepContainer(props: IStepContainerProps) {
     setSteps(sortBy(props.steps, "position"))
   }, [props.steps])
 
-  const move = (dragIndex: number, hoverIndex: number) =>
+  const move = ({ from, to }: { readonly to: number; readonly from: number }) =>
     setSteps(prevSteps => {
-      const dragCard = steps[dragIndex]
+      const dragCard = steps[from]
       const newSteps = [...prevSteps]
-      newSteps.splice(dragIndex, 1)
-      newSteps.splice(hoverIndex, 0, dragCard)
+      newSteps.splice(from, 1)
+      newSteps.splice(to, 0, dragCard)
       return newSteps
     })
 
