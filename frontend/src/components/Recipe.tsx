@@ -10,7 +10,6 @@ import RecipeTitle from "@/components/RecipeTitle"
 import { RouteComponentProps } from "react-router"
 import {
   IRecipe,
-  IIngredient,
   getRecipeById,
   fetchRecipe,
   deleteIngredient,
