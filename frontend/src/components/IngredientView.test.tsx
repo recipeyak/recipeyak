@@ -17,6 +17,7 @@ describe("<IngredientView/>", () => {
         .create(
           <TestProvider>
             <IngredientView
+              dragRef={undefined}
               quantity={quantity}
               name="salt"
               optional={false}

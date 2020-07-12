@@ -5,6 +5,8 @@ import GlobalEvent from "@/components/GlobalEvent"
 import { Button, ButtonLink } from "@/components/Buttons"
 import { TextInput, selectTarget, CheckBox } from "@/components/Forms"
 import { hasSelection } from "@/utils/general"
+import { useDrop, useDrag } from "react-dnd"
+import { DragDrop, handleDndHover } from "@/dragDrop"
 
 const emptyField = ({
   quantity,
@@ -42,6 +44,7 @@ export function Ingredient(props: {
   readonly id: number
   readonly updating?: boolean
   readonly removing?: boolean
+  readonly index: number
   readonly remove: (recipeID: number, id: number) => void
   readonly update: ({
     quantity,
@@ -54,6 +57,20 @@ export function Ingredient(props: {
     readonly description: string
     readonly optional: boolean
   }) => void
+  readonly move?: ({
+    from,
+    to
+  }: {
+    readonly from: number
+    readonly to: number
+  }) => void
+  readonly completeMove?: ({
+    id,
+    to
+  }: {
+    readonly id: number
+    readonly to: number
+  }) => void
 }) {
   const [state, setState] = React.useState<IngredientState>({
     quantity: props.quantity,
@@ -64,11 +81,10 @@ export function Ingredient(props: {
     unsavedChanges: false
   })
 
-  const element = React.useRef<HTMLLIElement | null>(null)
-
+  const ref = React.useRef<HTMLLIElement>(null)
   // ensures that the list item closes when the user clicks outside of the item
   const handleGeneralClick = (e: MouseEvent) => {
-    const el = element.current
+    const el = ref.current
     const target = e.target as HTMLElement | null
     if (el == null || target == null) {
       return
@@ -174,6 +190,35 @@ export function Ingredient(props: {
 
   const remove = () => props.remove(props.recipeID, props.id)
 
+  const [, drop] = useDrop({
+    accept: DragDrop.INGREDIENT,
+    hover: handleDndHover({ ref, index: props.index, move: props.move })
+  })
+
+  const [{ isDragging }, drag, preview] = useDrag({
+    item: {
+      type: DragDrop.INGREDIENT,
+      index: props.index
+    },
+    end: () => {
+      props.completeMove?.({ id: props.id, to: props.index })
+    },
+    collect: monitor => ({
+      isDragging: monitor.isDragging()
+    })
+  })
+
+  const dragAndDropEnabled = props.completeMove != null && props.move != null
+
+  const style = {
+    backgroundColor: "white",
+    opacity: isDragging ? 0 : 1
+  }
+
+  if (dragAndDropEnabled) {
+    preview(drop(ref))
+  }
+
   const inner = state.editing ? (
     <form onSubmit={update}>
       <GlobalEvent mouseUp={handleGeneralClick} keyUp={handleGeneralKeyup} />
@@ -255,6 +300,7 @@ export function Ingredient(props: {
     </form>
   ) : (
     <IngredientView
+      dragRef={dragAndDropEnabled ? drag : undefined}
       quantity={state.quantity}
       name={state.name}
       description={state.description}
@@ -263,7 +309,7 @@ export function Ingredient(props: {
   )
 
   return (
-    <li ref={element}>
+    <li ref={dragAndDropEnabled ? ref : undefined} style={style}>
       <section
         title="click to edit"
         className="cursor-pointer"

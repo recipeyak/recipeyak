@@ -35,6 +35,7 @@ import { connect } from "react-redux"
 import Step from "@/components/Step"
 import { IRecipe, IStep, updateStep } from "@/store/reducers/recipes"
 import sortBy from "lodash/sortBy"
+import { getNewPos } from "@/position"
 
 interface IStepContainerProps {
   readonly steps: ReadonlyArray<IStep>
@@ -52,32 +53,6 @@ interface IStepContainerProps {
   }) => void
 }
 
-interface IListItem {
-  readonly position: number
-}
-
-function getNewPos(
-  list: ReadonlyArray<IListItem>,
-  index: number
-): number | null {
-  const nextCard = list[index + 1]
-  const prevCard = list[index - 1]
-  if (nextCard == null && prevCard == null) {
-    // there is only one card in the list, so we don't make any change
-    return null
-  }
-  if (nextCard == null && prevCard != null) {
-    return prevCard.position + 10.0
-  }
-  if (nextCard != null && prevCard == null) {
-    return nextCard.position / 2
-  }
-  if (nextCard != null && prevCard != null) {
-    return (nextCard.position - prevCard.position) / 2 + prevCard.position
-  }
-  return null
-}
-
 function StepContainer(props: IStepContainerProps) {
   const [steps, setSteps] = React.useState(props.steps)
 
@@ -85,16 +60,14 @@ function StepContainer(props: IStepContainerProps) {
     setSteps(sortBy(props.steps, "position"))
   }, [props.steps])
 
-  const move = (dragIndex: number, hoverIndex: number) => {
-    const dragCard = steps[dragIndex]
-
-    setSteps(prevSteps => {
-      const newSteps = [...prevSteps]
-      newSteps.splice(dragIndex, 1)
-      newSteps.splice(hoverIndex, 0, dragCard)
+  const move = ({ from, to }: { readonly to: number; readonly from: number }) =>
+    setSteps(prev => {
+      const newSteps = [...prev]
+      const item = newSteps[from]
+      newSteps.splice(from, 1)
+      newSteps.splice(to, 0, item)
       return newSteps
     })
-  }
 
   const completeMove = (stepID: number, arrIndex: number) => {
     const newPosition = getNewPos(steps, arrIndex)
@@ -129,7 +102,7 @@ function StepContainer(props: IStepContainerProps) {
           id={card.id}
           recipeID={props.recipeID}
           text={card.text}
-          moveStep={move}
+          move={move}
           position={card.position}
           updating={card.updating}
           removing={card.removing}

@@ -318,6 +318,25 @@ def test_updating_ingredient_of_recipe(client, user, recipe):
     assert res.json().get("name") == ingredient.get("name"), "ingredient didn't update"
 
 
+def test_updating_ingredient_position(client, user, recipe):
+    """
+    ensure we can update the position, necessary for drag and drop in the ui
+    """
+    client.force_authenticate(user)
+
+    ingredient = recipe.ingredients[0]
+
+    data = {"position": 15}
+    assert data["position"] != ingredient.position
+
+    res = client.patch(
+        f"/api/v1/recipes/{recipe.id}/ingredients/{ingredient.id}/", data
+    )
+    assert res.status_code == status.HTTP_200_OK
+    ingredient.refresh_from_db()
+    assert res.json()["position"] == data["position"] == ingredient.position
+
+
 def test_deleting_ingredient_from_recipe(client, user, recipe):
     """
     ensure a user can remove a ingredient from a recipe

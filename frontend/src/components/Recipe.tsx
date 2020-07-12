@@ -10,7 +10,6 @@ import RecipeTitle from "@/components/RecipeTitle"
 import { RouteComponentProps } from "react-router"
 import {
   IRecipe,
-  IIngredient,
   getRecipeById,
   fetchRecipe,
   deleteIngredient,
@@ -24,6 +23,8 @@ import queryString from "query-string"
 import { RecipeTimeline } from "@/components/RecipeTimeline"
 import { useDispatch, useSelector } from "@/hooks"
 import { NoteContainer } from "@/components/Notes"
+import { getNewPos } from "@/position"
+import sortBy from "lodash/sortBy"
 
 interface IRecipeDetailsProps {
   readonly recipe: IRecipe
@@ -33,15 +34,67 @@ function RecipeDetails({ recipe }: IRecipeDetailsProps) {
   const [addStep, setAddStep] = React.useState(false)
   const dispatch = useDispatch()
 
+  const [ingredients, setIngre] = React.useState(recipe.ingredients)
+  React.useEffect(() => {
+    setIngre(sortBy(recipe.ingredients, "position"))
+  }, [recipe.ingredients])
+
+  const handleMove = ({
+    from,
+    to
+  }: {
+    readonly from: number
+    readonly to: number
+  }) => {
+    setIngre(prev => {
+      const newIngredients = [...prev]
+      const item = newIngredients[from]
+      newIngredients.splice(from, 1)
+      newIngredients.splice(to, 0, item)
+      return newIngredients
+    })
+  }
+
+  const handleCompleteMove = (args: {
+    readonly id: number
+    readonly to: number
+  }) => {
+    const newPosition = getNewPos(ingredients, args.to)
+    if (newPosition == null) {
+      return
+    }
+    setIngre(prev =>
+      prev.map(ingre => {
+        if (ingre.id === args.id) {
+          return {
+            ...ingre,
+            position: newPosition
+          }
+        }
+        return ingre
+      })
+    )
+    dispatch(
+      updateIngredient.request({
+        recipeID: recipe.id,
+        ingredientID: args.id,
+        content: { position: newPosition }
+      })
+    )
+  }
+
   return (
     <section className="ingredients-preparation-grid">
       <div>
         <SectionTitle>Ingredients</SectionTitle>
         <ul>
-          {recipe.ingredients.map(ingre => {
-            const handleUpdate = (
-              ingredient: Omit<IIngredient, "id" | "position">
-            ) =>
+          {ingredients.map((ingre, i) => {
+            const handleUpdate = (ingredient: {
+              readonly quantity: string
+              readonly name: string
+              readonly description: string
+              readonly optional: boolean
+            }) =>
               dispatch(
                 updateIngredient.request({
                   recipeID: recipe.id,
@@ -61,6 +114,7 @@ function RecipeDetails({ recipe }: IRecipeDetailsProps) {
             return (
               <Ingredient
                 key={ingre.id}
+                index={i}
                 recipeID={recipe.id}
                 id={ingre.id}
                 quantity={ingre.quantity}
@@ -71,6 +125,8 @@ function RecipeDetails({ recipe }: IRecipeDetailsProps) {
                 removing={ingre.removing}
                 description={ingre.description}
                 optional={ingre.optional}
+                completeMove={handleCompleteMove}
+                move={handleMove}
               />
             )
           })}
