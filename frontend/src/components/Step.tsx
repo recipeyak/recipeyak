@@ -58,7 +58,7 @@ function Step({ text, index, ...props }: IStepProps) {
   const ref = useRef<HTMLDivElement>(null)
   const [, drop] = useDrop({
     accept: DragDrop.STEP,
-    hover: handleDndHover({ ref, props: { index, move: props.move } })
+    hover: handleDndHover({ ref, index, move: props.move })
   })
 
   const [{ isDragging }, drag, preview] = useDrag({

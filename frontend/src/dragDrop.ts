@@ -9,19 +9,18 @@ export const enum DragDrop {
 
 export const handleDndHover = ({
   ref,
-  props
+  index,
+  move
 }: {
   readonly ref: React.RefObject<HTMLElement>
-  readonly props: {
-    readonly index: number
-    readonly move?: ({
-      from,
-      to
-    }: {
-      readonly from: number
-      readonly to: number
-    }) => void
-  }
+  readonly index: number
+  readonly move?: ({
+    from,
+    to
+  }: {
+    readonly from: number
+    readonly to: number
+  }) => void
 }) => (_item: DragObjectWithType, monitor: DropTargetMonitor) => {
   if (!ref.current) {
     return
@@ -29,7 +28,7 @@ export const handleDndHover = ({
 
   // tslint:disable-next-line:no-unsafe-any
   const dragIndex: number = monitor.getItem().index
-  const hoverIndex = props.index
+  const hoverIndex = index
 
   // Don't replace items with themselves
   if (dragIndex === hoverIndex) {
@@ -67,7 +66,7 @@ export const handleDndHover = ({
   }
 
   // Time to actually perform the action
-  props.move?.({ from: dragIndex, to: hoverIndex })
+  move?.({ from: dragIndex, to: hoverIndex })
 
   // Note: we're mutating the monitor item here!
   // Generally it's better to avoid mutations,

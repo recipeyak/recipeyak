@@ -192,7 +192,7 @@ export function Ingredient(props: {
 
   const [, drop] = useDrop({
     accept: DragDrop.INGREDIENT,
-    hover: handleDndHover({ ref, props })
+    hover: handleDndHover({ ref, index: props.index, move: props.move })
   })
 
   const [{ isDragging }, drag, preview] = useDrag({
