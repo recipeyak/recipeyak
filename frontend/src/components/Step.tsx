@@ -64,18 +64,14 @@ function Step({ text, index, ...props }: IStepProps) {
   const [{ isDragging }, drag, preview] = useDrag({
     item: {
       type: DragDrop.STEP,
-      id: props.id,
-      index,
-      position: props.position
+      index
     },
     end: () => {
       props.completeMove(props.id, index)
     },
-    collect: monitor => {
-      return {
-        isDragging: monitor.isDragging()
-      }
-    }
+    collect: monitor => ({
+      isDragging: monitor.isDragging()
+    })
   })
 
   const style = {

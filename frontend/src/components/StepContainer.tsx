@@ -61,11 +61,11 @@ function StepContainer(props: IStepContainerProps) {
   }, [props.steps])
 
   const move = ({ from, to }: { readonly to: number; readonly from: number }) =>
-    setSteps(prevSteps => {
-      const dragCard = steps[from]
-      const newSteps = [...prevSteps]
+    setSteps(prev => {
+      const newSteps = [...prev]
+      const item = newSteps[from]
       newSteps.splice(from, 1)
-      newSteps.splice(to, 0, dragCard)
+      newSteps.splice(to, 0, item)
       return newSteps
     })
 
@@ -102,7 +102,7 @@ function StepContainer(props: IStepContainerProps) {
           id={card.id}
           recipeID={props.recipeID}
           text={card.text}
-          moveStep={move}
+          move={move}
           position={card.position}
           updating={card.updating}
           removing={card.removing}

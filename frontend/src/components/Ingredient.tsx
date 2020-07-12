@@ -198,12 +198,7 @@ export function Ingredient(props: {
   const [{ isDragging }, drag, preview] = useDrag({
     item: {
       type: DragDrop.INGREDIENT,
-      id: props.id,
-      index: props.index,
-      position: props.index,
-      data: {
-        foo: "bar"
-      }
+      index: props.index
     },
     end: () => {
       props.completeMove?.({ id: props.id, to: props.index })
