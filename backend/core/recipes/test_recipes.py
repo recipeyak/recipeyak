@@ -55,8 +55,6 @@ def test_recipe_creation(client, user):
         parse_datetime(res.json()["created"]), datetime
     ), "return a valid date time string"
 
-    assert isinstance(res.json()[0]["sections"], list)
-
     # compare the nested items and ignore the ids as they don't exist them in the
     # initial data.
     steps_data: List[Dict[str, str]] = data["steps"]
