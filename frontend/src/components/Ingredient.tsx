@@ -45,13 +45,16 @@ export function Ingredient(props: {
   readonly updating?: boolean
   readonly removing?: boolean
   readonly index: number
-  readonly remove: (recipeID: number, id: number) => void
+  readonly position: number
+  readonly remove: ({ ingredientId }: { readonly ingredientId: number }) => void
   readonly update: ({
+    ingredientId,
     quantity,
     name,
     description,
     optional
   }: {
+    readonly ingredientId: number
     readonly quantity: string
     readonly name: string
     readonly description: string
@@ -65,9 +68,11 @@ export function Ingredient(props: {
     readonly to: number
   }) => void
   readonly completeMove?: ({
+    kind,
     id,
     to
   }: {
+    readonly kind: "ingredient"
     readonly id: number
     readonly to: number
   }) => void
@@ -175,6 +180,7 @@ export function Ingredient(props: {
     }
 
     props.update({
+      ingredientId: props.id,
       quantity: state.quantity,
       name: state.name,
       description: state.description,
@@ -188,20 +194,30 @@ export function Ingredient(props: {
     }))
   }
 
-  const remove = () => props.remove(props.recipeID, props.id)
+  const remove = () => props.remove({ ingredientId: props.id })
 
   const [, drop] = useDrop({
-    accept: DragDrop.INGREDIENT,
-    hover: handleDndHover({ ref, index: props.index, move: props.move })
+    accept: [DragDrop.SECTION, DragDrop.INGREDIENT],
+    hover: handleDndHover({
+      ref,
+      index: props.index,
+      move: props.move
+    })
   })
 
   const [{ isDragging }, drag, preview] = useDrag({
     item: {
       type: DragDrop.INGREDIENT,
-      index: props.index
+      index: props.index,
+      id: props.id,
+      position: props.position
     },
     end: () => {
-      props.completeMove?.({ id: props.id, to: props.index })
+      props.completeMove?.({
+        kind: "ingredient",
+        id: props.id,
+        to: props.index
+      })
     },
     collect: monitor => ({
       isDragging: monitor.isDragging()
@@ -211,7 +227,6 @@ export function Ingredient(props: {
   const dragAndDropEnabled = props.completeMove != null && props.move != null
 
   const style = {
-    backgroundColor: "white",
     opacity: isDragging ? 0 : 1
   }
 
@@ -309,7 +324,10 @@ export function Ingredient(props: {
   )
 
   return (
-    <li ref={dragAndDropEnabled ? ref : undefined} style={style}>
+    <li
+      ref={dragAndDropEnabled ? ref : undefined}
+      style={style}
+      className="bg-white">
       <section
         title="click to edit"
         className="cursor-pointer"

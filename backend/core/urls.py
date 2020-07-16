@@ -11,6 +11,8 @@ from core.recipes.views import (
     StepViewSet,
     TeamRecipesViewSet,
     get_recipe_timeline,
+    create_section_view,
+    delete_or_update_section_view,
 )
 from core.schedule.views import CalendarViewSet, ReportBadMerge, get_shopping_list_view
 from core.stats.views import UserStats
@@ -46,6 +48,8 @@ urlpatterns = [
     path("api/v1/", include(router.urls)),
     path("api/v1/", include(recipes_router.urls)),
     path("api/v1/recipes/<int:recipe_pk>/timeline", get_recipe_timeline),
+    path("api/v1/recipes/<int:recipe_pk>/sections", create_section_view),
+    path("api/v1/sections/<int:section_pk>/", delete_or_update_section_view),
     path("api/v1/", include(teams_router.urls)),
     path("api/v1/t/<team_pk>/shoppinglist/", get_shopping_list_view),
     path("api/v1/user_stats", UserStats.as_view(), name="user-stats"),

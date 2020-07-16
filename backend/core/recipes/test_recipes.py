@@ -55,6 +55,8 @@ def test_recipe_creation(client, user):
         parse_datetime(res.json()["created"]), datetime
     ), "return a valid date time string"
 
+    assert isinstance(res.json()[0]["sections"], list)
+
     # compare the nested items and ignore the ids as they don't exist them in the
     # initial data.
     steps_data: List[Dict[str, str]] = data["steps"]
@@ -291,6 +293,7 @@ def test_adding_ingredient_to_recipe(client, user, recipe):
 
     res = client.get(f"/api/v1/recipes/{recipe.id}/")
     assert res.status_code == status.HTTP_200_OK
+    assert isinstance(res.json()["sections"], list)
 
     assert ingredient.get("name") in (
         ingredient.get("name") for ingredient in res.json().get("ingredients")

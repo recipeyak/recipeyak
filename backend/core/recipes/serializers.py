@@ -1,6 +1,15 @@
 from rest_framework import serializers
 
-from core.models import Ingredient, MyUser, Note, Recipe, ScheduledRecipe, Step, Team
+from core.models import (
+    Ingredient,
+    MyUser,
+    Note,
+    Recipe,
+    ScheduledRecipe,
+    Step,
+    Team,
+    Section,
+)
 from core.serialization import BaseModelSerializer, BaseRelatedField, BaseSerializer
 from core.teams.serializers import PublicUserSerializer
 
@@ -102,11 +111,21 @@ class NoteSerializer(BaseModelSerializer):
                 self.fields.pop(field_name)
 
 
+class SectionSerializer(BaseModelSerializer):
+    position = serializers.FloatField(required=False)
+
+    class Meta:
+        model = Section
+        read_only_fields = ("id",)
+        fields = (*read_only_fields, "position", "title")
+
+
 class RecipeSerializer(BaseModelSerializer):
     steps = StepSerializer(many=True, source="step_set")
     last_scheduled = serializers.DateField(source="get_last_scheduled", read_only=True)
     ingredients = IngredientSerializer(many=True, source="ingredient_set")
     notes = NoteSerializer(many=True, source="note_set", read_only=True)
+    sections = SectionSerializer(many=True, source="section_set", read_only=True)
     owner = OwnerRelatedField(read_only=True)
     # specify default None so we can use this as an optional field
     team = serializers.IntegerField(write_only=True, default=None)
@@ -122,6 +141,7 @@ class RecipeSerializer(BaseModelSerializer):
             "ingredients",
             "steps",
             "notes",
+            "sections",
             "servings",
             "edits",
             "modified",

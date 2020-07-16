@@ -185,6 +185,35 @@ export const addIngredientToRecipe = (
 ) =>
   http.post<IIngredient>(`/api/v1/recipes/${recipeID}/ingredients/`, ingredient)
 
+export const addSectionToRecipe = ({
+  recipeId,
+  section
+}: {
+  readonly recipeId: number
+  readonly section: string
+}) =>
+  http.post<{ title: string; position: number; id: number }>(
+    `/api/v1/recipes/${recipeId}/sections`,
+    { title: section }
+  )
+
+export const updateSection = ({
+  sectionId,
+  position,
+  title
+}: {
+  readonly sectionId: number
+  readonly position?: number
+  readonly title?: string
+}) =>
+  http.patch<{ title: string; position: number; id: number }>(
+    `/api/v1/sections/${sectionId}/`,
+    { title, position }
+  )
+
+export const deleteSection = ({ sectionId }: { readonly sectionId: number }) =>
+  http.delete(`/api/v1/sections/${sectionId}/`)
+
 export const addStepToRecipe = (recipeID: IRecipe["id"], step: unknown) =>
   http.post<IStep>(`/api/v1/recipes/${recipeID}/steps/`, {
     text: step

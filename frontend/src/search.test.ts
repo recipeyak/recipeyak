@@ -17,6 +17,7 @@ describe("search", () => {
       team: 10,
       owner: { type: "user", id: 5 },
       ingredients: [],
+      sections: [],
       notes: [],
       created: ""
     }

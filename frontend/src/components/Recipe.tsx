@@ -3,7 +3,7 @@ import { Helmet } from "@/components/Helmet"
 import NoMatch from "@/components/NoMatch"
 import Loader from "@/components/Loader"
 import AddStep from "@/components/AddStep"
-import AddIngredient from "@/components/AddIngredient"
+import AddIngredientOrSection from "@/components/AddIngredient"
 import StepContainer from "@/components/StepContainer"
 import { Ingredient } from "@/components/Ingredient"
 import RecipeTitle from "@/components/RecipeTitle"
@@ -13,7 +13,9 @@ import {
   getRecipeById,
   fetchRecipe,
   deleteIngredient,
-  updateIngredient
+  updateIngredient,
+  IIngredient,
+  updateSectionForRecipe
 } from "@/store/reducers/recipes"
 import { isInitial, isLoading, isFailure } from "@/webdata"
 import { SectionTitle } from "@/components/RecipeHelpers"
@@ -23,21 +25,62 @@ import queryString from "query-string"
 import { RecipeTimeline } from "@/components/RecipeTimeline"
 import { useDispatch, useSelector } from "@/hooks"
 import { NoteContainer } from "@/components/Notes"
-import { getNewPos } from "@/position"
+import { getNewPos, getNewPosIngredients } from "@/position"
 import sortBy from "lodash/sortBy"
+import { Section } from "@/components/Section"
+import * as api from "@/api"
+import { isOk } from "@/result"
 
-interface IRecipeDetailsProps {
-  readonly recipe: IRecipe
+type SectionsAndIngredients = ReadonlyArray<
+  | {
+      readonly kind: "ingredient"
+      readonly item: IIngredient
+    }
+  | {
+      readonly kind: "section"
+      readonly item: {
+        readonly id: number
+        readonly title: string
+        readonly position: number
+      }
+    }
+>
+
+function getInitialIngredients({
+  sections,
+  ingredients
+}: Pick<IRecipe, "sections" | "ingredients">): SectionsAndIngredients {
+  const out: Mutable<SectionsAndIngredients> = []
+  for (const s of sections) {
+    out.push({
+      kind: "section" as const,
+      item: s
+    })
+  }
+  for (const i of ingredients) {
+    out.push({
+      kind: "ingredient" as const,
+      item: i
+    })
+  }
+  return sortBy(out, x => x.item.position)
 }
-function RecipeDetails({ recipe }: IRecipeDetailsProps) {
+
+function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
   const [addIngredient, setAddIngredient] = React.useState(false)
   const [addStep, setAddStep] = React.useState(false)
   const dispatch = useDispatch()
-
-  const [ingredients, setIngre] = React.useState(recipe.ingredients)
+  const [sectionsAndIngredients, setSectionsAndIngredients] = React.useState<
+    SectionsAndIngredients
+  >(() => getInitialIngredients(recipe))
   React.useEffect(() => {
-    setIngre(sortBy(recipe.ingredients, "position"))
-  }, [recipe.ingredients])
+    setSectionsAndIngredients(
+      getInitialIngredients({
+        sections: recipe.sections,
+        ingredients: recipe.ingredients
+      })
+    )
+  }, [recipe.ingredients, recipe.sections])
 
   const handleMove = ({
     from,
@@ -46,7 +89,7 @@ function RecipeDetails({ recipe }: IRecipeDetailsProps) {
     readonly from: number
     readonly to: number
   }) => {
-    setIngre(prev => {
+    setSectionsAndIngredients(prev => {
       const newIngredients = [...prev]
       const item = newIngredients[from]
       newIngredients.splice(from, 1)
@@ -56,90 +99,149 @@ function RecipeDetails({ recipe }: IRecipeDetailsProps) {
   }
 
   const handleCompleteMove = (args: {
+    readonly kind: "section" | "ingredient"
     readonly id: number
     readonly to: number
   }) => {
-    const newPosition = getNewPos(ingredients, args.to)
+    const newPosition = getNewPosIngredients(sectionsAndIngredients, args.to)
     if (newPosition == null) {
       return
     }
-    setIngre(prev =>
-      prev.map(ingre => {
-        if (ingre.id === args.id) {
-          return {
-            ...ingre,
-            position: newPosition
+    setSectionsAndIngredients(prev => {
+      const out: Mutable<SectionsAndIngredients> = []
+      for (const item of prev) {
+        if (item.item.id === args.id) {
+          // NOTE(sbdchd): we do this weird `if` to make typescript happy
+          if (item.kind === "ingredient") {
+            out.push({
+              ...item,
+              item: {
+                ...item.item,
+                position: newPosition
+              }
+            })
+          } else {
+            out.push({
+              ...item,
+              item: {
+                ...item.item,
+                position: newPosition
+              }
+            })
           }
+        } else {
+          out.push(item)
         }
-        return ingre
+      }
+      return out
+    })
+    if (args.kind === "ingredient") {
+      dispatch(
+        updateIngredient.request({
+          recipeID: recipe.id,
+          ingredientID: args.id,
+          content: { position: newPosition }
+        })
+      )
+    } else {
+      api
+        .updateSection({ sectionId: args.id, position: newPosition })
+        .then(res => {
+          if (isOk(res)) {
+            dispatch(
+              updateSectionForRecipe({
+                recipeId: recipe.id,
+                sectionId: args.id,
+                position: newPosition
+              })
+            )
+          }
+        })
+    }
+  }
+
+  const handleHideAddIngredient = () => setAddIngredient(false)
+  const handleShowAddIngredient = () => setAddIngredient(true)
+
+  const handleRemove = ({ ingredientId }: { readonly ingredientId: number }) =>
+    dispatch(
+      deleteIngredient.request({
+        recipeID: recipe.id,
+        ingredientID: ingredientId
       })
     )
+
+  const handleUpdate = ({
+    ingredientId,
+    ...ingredient
+  }: {
+    readonly ingredientId: number
+    readonly quantity: string
+    readonly name: string
+    readonly description: string
+    readonly optional: boolean
+  }) =>
     dispatch(
       updateIngredient.request({
         recipeID: recipe.id,
-        ingredientID: args.id,
-        content: { position: newPosition }
+        ingredientID: ingredientId,
+        content: ingredient
       })
     )
-  }
 
   return (
     <section className="ingredients-preparation-grid">
       <div>
         <SectionTitle>Ingredients</SectionTitle>
         <ul>
-          {ingredients.map((ingre, i) => {
-            const handleUpdate = (ingredient: {
-              readonly quantity: string
-              readonly name: string
-              readonly description: string
-              readonly optional: boolean
-            }) =>
-              dispatch(
-                updateIngredient.request({
-                  recipeID: recipe.id,
-                  ingredientID: ingre.id,
-                  content: ingredient
-                })
+          {sectionsAndIngredients.map((item, i) => {
+            if (item.kind === "ingredient") {
+              const ingre = item.item
+              return (
+                <Ingredient
+                  key={"ingredient" + ingre.id}
+                  index={i}
+                  position={ingre.position}
+                  recipeID={recipe.id}
+                  id={ingre.id}
+                  quantity={ingre.quantity}
+                  name={ingre.name}
+                  update={handleUpdate}
+                  remove={handleRemove}
+                  updating={ingre.updating}
+                  removing={ingre.removing}
+                  description={ingre.description}
+                  optional={ingre.optional}
+                  completeMove={handleCompleteMove}
+                  move={handleMove}
+                />
               )
-
-            const handleRemove = () =>
-              dispatch(
-                deleteIngredient.request({
-                  recipeID: recipe.id,
-                  ingredientID: ingre.id
-                })
+            }
+            if (item.kind === "section") {
+              const sec = item.item
+              return (
+                <Section
+                  key={"section" + sec.id}
+                  recipeId={recipe.id}
+                  sectionId={sec.id}
+                  title={sec.title}
+                  index={i}
+                  move={handleMove}
+                  completeMove={handleCompleteMove}
+                />
               )
-
-            return (
-              <Ingredient
-                key={ingre.id}
-                index={i}
-                recipeID={recipe.id}
-                id={ingre.id}
-                quantity={ingre.quantity}
-                name={ingre.name}
-                update={handleUpdate}
-                remove={handleRemove}
-                updating={ingre.updating}
-                removing={ingre.removing}
-                description={ingre.description}
-                optional={ingre.optional}
-                completeMove={handleCompleteMove}
-                move={handleMove}
-              />
-            )
+            }
           })}
         </ul>
         {addIngredient ? (
-          <AddIngredient
-            id={recipe.id}
+          <AddIngredientOrSection
+            recipeId={recipe.id}
             autoFocus
-            loading={!!recipe.addingIngredient}
-            onCancel={() => setAddIngredient(false)}
+            addingIngredient={!!recipe.addingIngredient}
+            onCancel={handleHideAddIngredient}
           />
         ) : (
-          <a className="text-muted" onClick={() => setAddIngredient(true)}>
+          <a className="text-muted" onClick={handleShowAddIngredient}>
             add
           </a>
         )}

@@ -303,6 +303,29 @@ class Ingredient(CommonInfo, SoftDeleteObject):
         return f"<quantity={self.quantity} {self.name} description={self.description} recipe={self.recipe} {optional}>"
 
 
+class Section(CommonInfo, SoftDeleteObject):
+    """
+    Recipe ingredient section. Used to divide the ingredients into groups for
+    the UI.
+    """
+
+    recipe = models.ForeignKey(
+        "Recipe", on_delete=models.CASCADE, help_text="Recipe the section is part of."
+    )
+    title = models.CharField(
+        max_length=255, help_text="name of the ingredient section group"
+    )
+    position = models.FloatField(
+        help_text="position of the section across both the ingredients and other sections for a recipe."
+    )
+
+    class Meta:
+        ordering = ["position"]
+
+    def __repr__(self):
+        return f"<Section id={self.id} title='{self.title}' position='{self.position}'>"
+
+
 class Step(CommonInfo, SoftDeleteObject):
     """Recipe step"""
 
@@ -543,6 +566,10 @@ class ChangeType(str, enum.Enum):
     INGREDIENT_CREATE = "INGREDIENT_CREATE"
     INGREDIENT_UPDATE = "INGREDIENT_UPDATE"
     INGREDIENT_DELETE = "INGREDIENT_DELETE"
+
+    SECTION_CREATE = "SECTION_CREATE"
+    SECTION_UPDATE = "SECTION_UPDATE"
+    SECTION_DELETE = "SECTION_DELETE"
 
 
 class RecipeChange(CommonInfo):

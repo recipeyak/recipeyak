@@ -1,0 +1,147 @@
+import pytest
+from rest_framework import status
+from rest_framework.test import APIClient
+
+from core.models import MyUser, Recipe, Team, Section, RecipeChange
+
+pytestmark = pytest.mark.django_db
+
+
+def test_creating_section(client: APIClient, user: MyUser, recipe: Recipe) -> None:
+    client.force_authenticate(user)
+
+    before_section_count = Section.objects.count()
+    data = {"title": "a section title", "position": 17.76}
+
+    before_change_log_count = RecipeChange.objects.count()
+
+    res = client.post(f"/api/v1/recipes/{recipe.id}/sections", data)
+
+    assert res.status_code == status.HTTP_201_CREATED
+    assert isinstance(res.json()["id"], int)
+    assert isinstance(res.json()["title"], str)
+    assert isinstance(res.json()["position"], float)
+    assert res.json()["title"] == data["title"]
+    assert res.json()["position"] == data["position"]
+
+    after_section_count = Section.objects.count()
+    assert after_section_count == before_section_count + 1
+
+    after_change_log_count = RecipeChange.objects.count()
+
+    assert after_change_log_count == before_change_log_count + 1
+
+
+def test_creating_section_without_position(
+    client: APIClient, user: MyUser, recipe: Recipe
+) -> None:
+    client.force_authenticate(user)
+
+    before_section_count = Section.objects.count()
+    data = {"title": "a section title"}
+
+    before_change_log_count = RecipeChange.objects.count()
+
+    res = client.post(f"/api/v1/recipes/{recipe.id}/sections", data)
+
+    assert res.status_code == status.HTTP_201_CREATED
+    assert isinstance(res.json()["id"], int)
+    assert isinstance(res.json()["title"], str)
+    assert isinstance(res.json()["position"], float)
+    assert res.json()["title"] == data["title"]
+
+    after_section_count = Section.objects.count()
+    assert after_section_count == before_section_count + 1
+
+    after_change_log_count = RecipeChange.objects.count()
+
+    assert after_change_log_count == before_change_log_count + 1
+
+    assert (
+        max(
+            list(recipe.ingredients.values_list("position", flat=True))
+            + list(recipe.section_set.values_list("position", flat=True))
+        )
+        == res.json()["position"]
+    )
+
+
+def test_fetching_sections_for_recipe(
+    client: APIClient, user: MyUser, recipe: Recipe, team: Team
+) -> None:
+    """
+    check both team list view and list view
+    """
+    client.force_authenticate(user)
+
+    # detail
+    res = client.get(f"/api/v1/recipes/{recipe.id}/")
+    assert res.status_code == status.HTTP_200_OK
+    assert isinstance(res.json()["sections"], list)
+    assert res.json()["sections"]
+    for s in res.json()["sections"]:
+        assert isinstance(s["id"], int)
+        assert isinstance(s["title"], str)
+        assert isinstance(s["position"], float)
+
+    team.recipes.add(recipe)
+    # team list view
+    res = client.get(f"/api/v1/t/{team.id}/recipes/")
+    assert res.status_code == status.HTTP_200_OK
+    assert isinstance(res.json(), list)
+    assert res.json()
+    for r in res.json():
+        for s in r["sections"]:
+            assert isinstance(s["id"], int)
+            assert isinstance(s["title"], str)
+            assert isinstance(s["position"], float)
+
+    # list view
+    res = client.get("/api/v1/recipes/")
+    assert res.status_code == status.HTTP_200_OK
+    assert isinstance(res.json(), list)
+    assert res.json()
+    for r in res.json():
+        for s in r["sections"]:
+            assert isinstance(s["id"], int)
+            assert isinstance(s["title"], str)
+            assert isinstance(s["position"], float)
+
+
+def test_updating_section(client: APIClient, user: MyUser, recipe: Recipe) -> None:
+    client.force_authenticate(user)
+
+    section = Section.objects.create(
+        recipe=recipe, title="a new section", position=88.0
+    )
+
+    data = {"title": "different section title", "position": 123.0}
+    assert data["title"] != section.title
+    assert data["position"] != section.position
+
+    before_change_log_count = RecipeChange.objects.count()
+    res = client.patch(f"/api/v1/sections/{section.id}/", data)
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json()["title"] == data["title"]
+    assert res.json()["position"] == data["position"]
+    after_change_log_count = RecipeChange.objects.count()
+    assert after_change_log_count == before_change_log_count + 1
+
+
+def test_deleting_section(client: APIClient, user: MyUser, recipe: Recipe) -> None:
+    client.force_authenticate(user)
+
+    section = Section.objects.create(
+        recipe=recipe, title="a new section", position=88.0
+    )
+    before_count = recipe.section_set.count()
+    before_change_log_count = RecipeChange.objects.count()
+
+    res = client.delete(f"/api/v1/sections/{section.id}/")
+
+    assert res.status_code == status.HTTP_204_NO_CONTENT
+    after_count = recipe.section_set.count()
+    assert after_count == before_count - 1
+    after_change_log_count = RecipeChange.objects.count()
+    assert after_change_log_count == before_change_log_count + 1
+

@@ -1,4 +1,5 @@
 import omit from "lodash/omit"
+import omitBy from "lodash/omitBy"
 import { ITeam } from "@/store/reducers/teams"
 import * as api from "@/api"
 import {
@@ -428,6 +429,32 @@ async function addingIngredientToRecipeAsync(
   }
 }
 
+export const addSectionToRecipe = createStandardAction(
+  "ADD_SECTION_TO_RECIPE"
+)<{
+  readonly recipeId: number
+  readonly section: {
+    readonly title: string
+    readonly position: number
+    readonly id: number
+  }
+}>()
+
+export const removeSectionFromRecipe = createStandardAction(
+  "REMOVE_SECTION_FROM_RECIPE"
+)<{
+  readonly recipeId: number
+  readonly sectionId: number
+}>()
+export const updateSectionForRecipe = createStandardAction(
+  "UPDATE_SECTION_FOR_RECIPE"
+)<{
+  readonly recipeId: number
+  readonly sectionId: number
+  readonly title?: string
+  readonly position?: number
+}>()
+
 export const setSchedulingRecipe = createStandardAction(
   "SET_SCHEDULING_RECIPE"
 )<{
@@ -526,6 +553,9 @@ export type RecipeActions =
   | ActionType<typeof updateNote>
   | ActionType<typeof toggleEditingNoteById>
   | ActionType<typeof deleteNote>
+  | ActionType<typeof addSectionToRecipe>
+  | ActionType<typeof removeSectionFromRecipe>
+  | ActionType<typeof updateSectionForRecipe>
 
 const mapSuccessLikeById = <T extends IRecipe["id"][]>(
   arr: WebData<T>,
@@ -618,6 +648,11 @@ export interface IRecipe {
   readonly team: ITeam["id"]
   readonly owner: IRecipeOwner
   readonly ingredients: ReadonlyArray<IIngredient>
+  readonly sections: ReadonlyArray<{
+    readonly id: number
+    readonly title: string
+    readonly position: number
+  }>
   readonly created: string
 
   readonly editing?: boolean
@@ -1071,6 +1106,43 @@ export const recipes = (
           args: [action.payload, Cmd.dispatch]
         })
       )
+    case getType(addSectionToRecipe):
+      return mapRecipeSuccessById(state, action.payload.recipeId, recipe => {
+        const sections = recipe.sections.concat(action.payload.section)
+        return {
+          ...recipe,
+          sections
+        }
+      })
+    case getType(removeSectionFromRecipe):
+      return mapRecipeSuccessById(state, action.payload.recipeId, recipe => {
+        if (recipe.sections == null) {
+          return recipe
+        }
+        const sections = recipe.sections.filter(
+          x => x.id !== action.payload.sectionId
+        )
+        return {
+          ...recipe,
+          sections
+        }
+      })
+    case getType(updateSectionForRecipe):
+      return mapRecipeSuccessById(state, action.payload.recipeId, recipe => {
+        if (recipe.sections == null) {
+          return recipe
+        }
+        const sections = recipe.sections.map(s => {
+          if (s.id === action.payload.sectionId) {
+            return { ...s, ...omitBy(action.payload, x => x == null) }
+          }
+          return s
+        })
+        return {
+          ...recipe,
+          sections
+        }
+      })
     case getType(addIngredientToRecipe.success):
       return mapRecipeSuccessById(state, action.payload.id, recipe => ({
         ...recipe,

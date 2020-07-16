@@ -4,7 +4,8 @@ export const enum DragDrop {
   RECIPE = "RECIPE",
   CAL_RECIPE = "CAL_RECIPE",
   STEP = "STEP",
-  INGREDIENT = "INGREDIENT"
+  INGREDIENT = "INGREDIENT",
+  SECTION = "SECTION"
 }
 
 export const handleDndHover = ({
