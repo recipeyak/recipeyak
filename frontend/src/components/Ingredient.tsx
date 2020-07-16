@@ -45,7 +45,6 @@ export function Ingredient(props: {
   readonly updating?: boolean
   readonly removing?: boolean
   readonly index: number
-  readonly position: number
   readonly remove: ({ ingredientId }: { readonly ingredientId: number }) => void
   readonly update: ({
     ingredientId,
@@ -208,9 +207,7 @@ export function Ingredient(props: {
   const [{ isDragging }, drag, preview] = useDrag({
     item: {
       type: DragDrop.INGREDIENT,
-      index: props.index,
-      id: props.id,
-      position: props.position
+      index: props.index
     },
     end: () => {
       props.completeMove?.({

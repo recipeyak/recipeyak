@@ -25,7 +25,7 @@ import queryString from "query-string"
 import { RecipeTimeline } from "@/components/RecipeTimeline"
 import { useDispatch, useSelector } from "@/hooks"
 import { NoteContainer } from "@/components/Notes"
-import { getNewPos, getNewPosIngredients } from "@/position"
+import { getNewPosIngredients } from "@/position"
 import sortBy from "lodash/sortBy"
 import { Section } from "@/components/Section"
 import * as api from "@/api"
@@ -201,7 +201,6 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
                 <Ingredient
                   key={"ingredient" + ingre.id}
                   index={i}
-                  position={ingre.position}
                   recipeID={recipe.id}
                   id={ingre.id}
                   quantity={ingre.quantity}
