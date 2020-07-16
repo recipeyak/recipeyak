@@ -2,7 +2,7 @@ import pytest
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import MyUser, Recipe, Team, Section, RecipeChange
+from core.models import MyUser, Recipe, RecipeChange, Section, Team
 
 pytestmark = pytest.mark.django_db
 
@@ -144,4 +144,3 @@ def test_deleting_section(client: APIClient, user: MyUser, recipe: Recipe) -> No
     assert after_count == before_count - 1
     after_change_log_count = RecipeChange.objects.count()
     assert after_change_log_count == before_change_log_count + 1
-

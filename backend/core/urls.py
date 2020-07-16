@@ -10,9 +10,9 @@ from core.recipes.views import (
     RecipeViewSet,
     StepViewSet,
     TeamRecipesViewSet,
-    get_recipe_timeline,
     create_section_view,
     delete_or_update_section_view,
+    get_recipe_timeline,
 )
 from core.schedule.views import CalendarViewSet, ReportBadMerge, get_shopping_list_view
 from core.stats.views import UserStats

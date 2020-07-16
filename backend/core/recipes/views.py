@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
 from rest_framework.decorators import action, api_view, permission_classes
-from rest_framework.exceptions import PermissionDenied, MethodNotAllowed
+from rest_framework.exceptions import MethodNotAllowed, PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -25,10 +25,10 @@ from core.models import (
     Recipe,
     RecipeChange,
     ScheduledRecipe,
+    Section,
     Step,
     Team,
     user_and_team_recipes,
-    Section,
 )
 from core.recipes.serializers import (
     IngredientSerializer,
@@ -36,8 +36,8 @@ from core.recipes.serializers import (
     RecipeMoveCopySerializer,
     RecipeSerializer,
     RecipeTimelineSerializer,
-    StepSerializer,
     SectionSerializer,
+    StepSerializer,
 )
 from core.recipes.utils import add_positions
 

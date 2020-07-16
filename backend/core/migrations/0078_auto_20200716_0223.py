@@ -5,18 +5,32 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0077_section'),
-    ]
+    dependencies = [("core", "0077_section")]
 
     operations = [
         migrations.AlterField(
-            model_name='recipechange',
-            name='change_type',
-            field=models.CharField(choices=[('NAME', 'NAME'), ('AUTHOR', 'AUTHOR'), ('SOURCE', 'SOURCE'), ('SERVINGS', 'SERVINGS'), ('TIME', 'TIME'), ('STEP_CREATE', 'STEP_CREATE'), ('STEP_UPDATE', 'STEP_UPDATE'), ('STEP_DELETE', 'STEP_DELETE'), ('INGREDIENT_CREATE', 'INGREDIENT_CREATE'), ('INGREDIENT_UPDATE', 'INGREDIENT_UPDATE'), ('INGREDIENT_DELETE', 'INGREDIENT_DELETE'), ('SECTION_CREATE', 'SECTION_CREATE'), ('SECTION_UPDATE', 'SECTION_UPDATE'), ('SECTION_DELETE', 'SECTION_DELETE')], help_text='The field / model changed.', max_length=255),
+            model_name="recipechange",
+            name="change_type",
+            field=models.CharField(
+                choices=[
+                    ("NAME", "NAME"),
+                    ("AUTHOR", "AUTHOR"),
+                    ("SOURCE", "SOURCE"),
+                    ("SERVINGS", "SERVINGS"),
+                    ("TIME", "TIME"),
+                    ("STEP_CREATE", "STEP_CREATE"),
+                    ("STEP_UPDATE", "STEP_UPDATE"),
+                    ("STEP_DELETE", "STEP_DELETE"),
+                    ("INGREDIENT_CREATE", "INGREDIENT_CREATE"),
+                    ("INGREDIENT_UPDATE", "INGREDIENT_UPDATE"),
+                    ("INGREDIENT_DELETE", "INGREDIENT_DELETE"),
+                    ("SECTION_CREATE", "SECTION_CREATE"),
+                    ("SECTION_UPDATE", "SECTION_UPDATE"),
+                    ("SECTION_DELETE", "SECTION_DELETE"),
+                ],
+                help_text="The field / model changed.",
+                max_length=255,
+            ),
         ),
-        migrations.AlterUniqueTogether(
-            name='section',
-            unique_together=set(),
-        ),
+        migrations.AlterUniqueTogether(name="section", unique_together=set()),
     ]

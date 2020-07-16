@@ -10,9 +10,9 @@ from core.models import (
     Note,
     Recipe,
     ScheduledRecipe,
+    Section,
     Step,
     Team,
-    Section,
 )
 
 getLogger("flake8").propagate = False

@@ -6,9 +6,9 @@ from core.models import (
     Note,
     Recipe,
     ScheduledRecipe,
+    Section,
     Step,
     Team,
-    Section,
 )
 from core.serialization import BaseModelSerializer, BaseRelatedField, BaseSerializer
 from core.teams.serializers import PublicUserSerializer
