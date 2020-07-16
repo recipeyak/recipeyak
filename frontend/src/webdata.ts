@@ -105,3 +105,5 @@ export function toLoading<T, E>(
   }
   return Loading()
 }
+
+export type Status = "loading" | "failure" | "success" | "initial"

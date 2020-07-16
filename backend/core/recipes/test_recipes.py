@@ -291,6 +291,7 @@ def test_adding_ingredient_to_recipe(client, user, recipe):
 
     res = client.get(f"/api/v1/recipes/{recipe.id}/")
     assert res.status_code == status.HTTP_200_OK
+    assert isinstance(res.json()["sections"], list)
 
     assert ingredient.get("name") in (
         ingredient.get("name") for ingredient in res.json().get("ingredients")

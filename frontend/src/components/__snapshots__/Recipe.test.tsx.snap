@@ -822,9 +822,9 @@ exports[`<Recipe/> snaps recipe all states 2`] = `
       </h2>
       <ul>
         <li
+          className="bg-white"
           style={
             Object {
-              "backgroundColor": "white",
               "opacity": 1,
             }
           }
@@ -1019,6 +1019,7 @@ Object {
       "id": 1,
       "type": "user",
     },
+    "sections": Array [],
     "servings": "12 servings",
     "source": "foo.com",
     "steps": Array [

@@ -4,7 +4,16 @@ from logging import getLogger
 import pytest
 from rest_framework.test import APIClient
 
-from core.models import Ingredient, MyUser, Note, Recipe, ScheduledRecipe, Step, Team
+from core.models import (
+    Ingredient,
+    MyUser,
+    Note,
+    Recipe,
+    ScheduledRecipe,
+    Section,
+    Step,
+    Team,
+)
 
 getLogger("flake8").propagate = False
 
@@ -110,6 +119,9 @@ def recipe(user):
         created_by=user,
         last_modified_by=user,
     )
+
+    Section.objects.create(recipe=recipe, title="a section title", position=14.0)
+    Section.objects.create(recipe=recipe, title="a diff section", position=5.5)
 
     return recipe
 

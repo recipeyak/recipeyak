@@ -11,53 +11,25 @@ function focusFirstInput() {
   }
 }
 
-interface IAddIngredientFormProps {
-  readonly handleAddIngredient: () => void
-  readonly cancelAddIngredient: () => void
+function IngredientForm({
+  handleInputChange,
+  quantity,
+  autoFocus,
+  error,
+  optional,
+  description,
+  name
+}: {
   readonly handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   readonly quantity: string
   readonly name: string
   readonly description: string
   readonly optional: boolean
-  readonly loading: boolean
-  readonly error?: boolean // TODO(sbdchd): this isn't passed in
+  readonly error: boolean | undefined
   readonly autoFocus?: boolean
-}
-
-function AddIngredientForm({
-  handleAddIngredient: addIngredient,
-  cancelAddIngredient,
-  handleInputChange,
-  quantity,
-  name,
-  description,
-  optional,
-  loading,
-  error,
-  autoFocus = false
-}: IAddIngredientFormProps) {
-  useEffect(() => {
-    if (!loading && autoFocus) {
-      focusFirstInput()
-    }
-  }, [autoFocus, loading])
-  const handleKeyUp = (e: KeyboardEvent) => {
-    if (e.key === "Escape") {
-      cancelAddIngredient()
-    }
-  }
-  const handleAddIngredient = () => {
-    addIngredient()
-    focusFirstInput()
-  }
-
+}) {
   return (
-    <form
-      onSubmit={e => {
-        e.preventDefault()
-        handleAddIngredient()
-      }}>
-      <GlobalEvent keyUp={handleKeyUp} />
+    <>
       <div className="add-ingredient-grid mb-2 mt-2">
         <div>
           <TextInput
@@ -109,14 +81,75 @@ function AddIngredientForm({
         />
         Optional
       </label>
+    </>
+  )
+}
 
+function AddIngredientForm({
+  handleAddIngredient: addIngredient,
+  cancelAddIngredient,
+  handleInputChange,
+  toggleShowAddSection,
+  quantity,
+  name,
+  description,
+  optional,
+  loading,
+  error,
+  autoFocus = false
+}: {
+  readonly handleAddIngredient: () => void
+  readonly cancelAddIngredient: () => void
+  readonly handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  readonly quantity: string
+  readonly name: string
+  readonly description: string
+  readonly optional: boolean
+  readonly loading: boolean
+  readonly error?: boolean
+  readonly autoFocus?: boolean
+  readonly toggleShowAddSection: (() => void) | undefined
+}) {
+  useEffect(() => {
+    if (!loading && autoFocus) {
+      focusFirstInput()
+    }
+  }, [autoFocus, loading])
+
+  const handleKeyUp = (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      cancelAddIngredient()
+    }
+  }
+  const handleAddIngredient = () => {
+    addIngredient()
+    focusFirstInput()
+  }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    handleAddIngredient()
+  }
+
+  const addDisabled = quantity === "" && name === ""
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <GlobalEvent keyUp={handleKeyUp} />
+      <IngredientForm
+        quantity={quantity}
+        name={name}
+        description={description}
+        optional={optional}
+        handleInputChange={handleInputChange}
+        error={error}
+      />
       <div className="field is-grouped">
         <p className="control">
           <ButtonPrimary
-            disabled={quantity === "" && name === ""}
+            disabled={addDisabled}
             size="small"
             type="submit"
-            name="add ingredient"
+            name="add item"
             loading={loading}>
             Add
           </ButtonPrimary>
@@ -130,6 +163,18 @@ function AddIngredientForm({
             Cancel
           </Button>
         </p>
+        {toggleShowAddSection ? (
+          <div>
+            <span className="mr-3">or</span>
+            <Button
+              size="small"
+              type="button"
+              name="toggle add section"
+              onClick={toggleShowAddSection}>
+              Add Section
+            </Button>
+          </div>
+        ) : null}
       </div>
     </form>
   )

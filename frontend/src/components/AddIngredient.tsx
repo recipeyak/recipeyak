@@ -3,39 +3,21 @@ import React, { useState, useEffect } from "react"
 import AddIngredientForm from "@/components/AddIngredientForm"
 import { useDispatch } from "@/hooks"
 import { addIngredientToRecipe } from "@/store/reducers/recipes"
+import { AddSectionForm } from "@/components/AddSectionForm"
 
-export interface IIngredientBasic {
-  quantity: string
-  name: string
-  description: string
-}
-
-interface IAddIngredientProps {
-  readonly onCancel: () => void
-  readonly id: number
-  readonly loading: boolean
-  readonly autoFocus: boolean
-}
-
-interface IAddIngredientState {
-  readonly quantity: string
-  readonly name: string
-  readonly description: string
-  readonly optional: boolean
-  readonly addingIngredient: boolean
-}
-
-export type AddIngredientFields = Exclude<
-  keyof IAddIngredientState,
-  "addingIngredient"
->
-
-export default function AddIngredient({
-  id,
+function AddIngredientSubForm({
+  recipeId,
   loading,
   onCancel,
-  autoFocus
-}: IAddIngredientProps) {
+  autoFocus,
+  onChangeSection
+}: {
+  readonly onCancel: () => void
+  readonly recipeId: number
+  readonly loading: boolean
+  readonly autoFocus: boolean
+  readonly onChangeSection: () => void
+}) {
   const dispatch = useDispatch()
   const [quantity, setQuantity] = useState("")
   const [name, setName] = useState("")
@@ -76,7 +58,7 @@ export default function AddIngredient({
   const handleAddIngredient = () =>
     dispatch(
       addIngredientToRecipe.request({
-        recipeID: id,
+        recipeID: recipeId,
         ingredient: { quantity, name, description }
       })
     )
@@ -92,6 +74,41 @@ export default function AddIngredient({
       description={description}
       optional={optional}
       autoFocus={autoFocus}
+      toggleShowAddSection={onChangeSection}
+    />
+  )
+}
+
+export default function AddIngredient({
+  recipeId,
+  addingIngredient,
+  onCancel,
+  autoFocus
+}: {
+  readonly onCancel: () => void
+  readonly recipeId: number
+  readonly addingIngredient: boolean
+  readonly autoFocus: boolean
+}) {
+  const [showAddSection, setShowAddSection] = React.useState(false)
+  const toggleShowAddSection = () => setShowAddSection(p => !p)
+
+  if (showAddSection) {
+    return (
+      <AddSectionForm
+        recipeId={recipeId}
+        toggleShowAddSection={toggleShowAddSection}
+        onCancel={onCancel}
+      />
+    )
+  }
+  return (
+    <AddIngredientSubForm
+      recipeId={recipeId}
+      loading={addingIngredient}
+      onCancel={onCancel}
+      autoFocus={autoFocus}
+      onChangeSection={toggleShowAddSection}
     />
   )
 }

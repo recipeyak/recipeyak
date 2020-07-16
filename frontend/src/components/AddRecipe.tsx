@@ -104,6 +104,7 @@ export default class AddRecipe extends React.Component<
       ingredients: this.props.ingredients,
       steps: this.props.steps,
       notes: [],
+      sections: [],
       team: this.props.teamID || undefined
     })
   }
@@ -264,6 +265,7 @@ export default class AddRecipe extends React.Component<
             </ul>
 
             <AddIngredientForm
+              toggleShowAddSection={undefined}
               handleAddIngredient={addIngredient}
               cancelAddIngredient={cancelAddIngredient}
               handleInputChange={handleIngredientChange}
