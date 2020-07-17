@@ -1,12 +1,12 @@
 from datetime import date, datetime
 from typing import Sequence, cast
-from uuid import uuid4
 
 from icalendar import Calendar, Event, vDate, vDatetime
 
 
 def create_event(
     *,
+    id: str,
     name: str,
     description: str,
     url: str,
@@ -15,7 +15,7 @@ def create_event(
     created: datetime,
 ) -> Event:
     event = Event(
-        uid=str(uuid4()),
+        uid=id,
         dtstart=vDate(start_date),
         dtend=vDate(end_date),
         summary=name,

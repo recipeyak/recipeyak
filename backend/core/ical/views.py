@@ -34,6 +34,8 @@ def get_ical_view(request: HttpRequest, team_id: int, ical_id: str) -> HttpRespo
         description = f"Takes about {recipe.time}" if recipe.time else ""
         events.append(
             create_event(
+                # prefix with table name to ensure uniqueness of the primary key
+                id=f"core_scheduledrecipe:{scheduled_recipe.id}",
                 name=recipe.name,
                 description=description,
                 url=f"https://recipeyak.com/recipes/{recipe.id}",
