@@ -34,6 +34,34 @@ def omit_entry_ids(content: str) -> str:
     return output
 
 
+def test_ical_ids_consistent(
+    client: APIClient, user: MyUser, recipe: Recipe, team: Team
+) -> None:
+    """
+    Regression test to ensure the ids for the items aren't changing on each
+    request.
+    """
+    ScheduledRecipe.objects.create(
+        recipe=recipe, team=team, on=date(1976, 7, 6), count=1
+    )
+    ScheduledRecipe.objects.create(
+        recipe=recipe, team=team, on=date(1976, 7, 7), count=2
+    )
+    ScheduledRecipe.objects.create(
+        recipe=recipe, team=team, on=date(1976, 7, 10), count=2
+    )
+    url = f"/t/{team.id}/ical/{team.ical_id}/schedule.ics"
+    res = client.get(url)
+    assert res.status_code == status.HTTP_200_OK
+
+    res_second = client.get(url)
+    assert res_second.status_code == status.HTTP_200_OK
+
+    assert (
+        res.content == res_second.content
+    ), "Ensure we don't have ids being regenerated and changing on each request"
+
+
 def test_ical_view_with_correct_id(
     client: APIClient, user: MyUser, recipe: Recipe, team: Team
 ) -> None:
