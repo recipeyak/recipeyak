@@ -57,7 +57,9 @@ def test_ical_ids_consistent(
     res_second = client.get(url)
     assert res_second.status_code == status.HTTP_200_OK
 
-    assert res.content == res_second.content
+    assert (
+        res.content == res_second.content
+    ), "Ensure we don't have ids being regenerated and changing on each request"
 
 
 def test_ical_view_with_correct_id(
