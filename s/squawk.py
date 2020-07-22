@@ -21,7 +21,7 @@ def is_installed(name: str) -> bool:
 
 
 def get_migration_id(filename: str) -> str:
-    return Path(filename).stem.split("_")[0]
+    return Path(filename).stem
 
 
 @dataclass(frozen=True)
@@ -52,7 +52,7 @@ def main() -> None:
         "--no-pager",
         "diff",
         "--name-only",
-        "master..",
+        "master...",
         MIGRATIONS_DIRECTORY,
     ]
 
@@ -89,7 +89,7 @@ def main() -> None:
     if not is_installed("squawk"):
         subprocess.run(["npm", "config", "set", "unsafe-perm", "true"], check=True)
         log.info("squawk not found, installing")
-        subprocess.run(["npm", "install", "-g", "squawk-cli@0.2.2"], check=True)
+        subprocess.run(["npm", "install", "-g", "squawk-cli@0.3.0"], check=True)
 
     pr_info = get_pr_info(os.environ)
     assert pr_info is not None
