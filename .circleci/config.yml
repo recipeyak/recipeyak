@@ -270,22 +270,6 @@ jobs:
               --tag recipeyak/pgdump:$CIRCLE_SHA1 .
             docker push recipeyak/pgdump:$CIRCLE_SHA1
 
-  build_redis_container:
-    docker:
-      - image: docker:18.05.0-ce
-    steps:
-      - checkout
-      - setup_remote_docker
-      # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
-      - run:
-          name: build container
-          working_directory: redis
-          command: |
-            docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            docker build -f redis.Dockerfile \
-              --tag recipeyak/redis:$CIRCLE_SHA1 .
-            docker push recipeyak/redis:$CIRCLE_SHA1
-
 workflows:
   version: 2
   test:
@@ -324,11 +308,6 @@ workflows:
             branches:
               only: master
       - build_pgdump_container:
-          context: DockerHub
-          filters:
-            branches:
-              only: master
-      - build_redis_container:
           context: DockerHub
           filters:
             branches:
