@@ -57,7 +57,7 @@ import { createLogger } from "redux-logger"
 import { DEBUG } from "@/settings"
 import { second } from "@/date"
 
-const createStore = basicCreateStore as StoreCreator
+const createStore: StoreCreator = basicCreateStore
 
 export interface IState {
   readonly user: IUserState
@@ -94,6 +94,7 @@ export type Action =
  */
 type ReducerMapObj = ReducerMapObject<IState, Action>
 function omitUndefined(obj: ReducerMapObj): ReducerMapObj {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   return pickBy(obj, x => x != null) as ReducerMapObj
 }
 export const history = createHistory()
@@ -103,6 +104,7 @@ const recipeApp: LoopReducer<IState, Action> = combineReducers(
     user,
     recipes,
     invites,
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     router: (connectRouter(history) as unknown) as LoopReducer<
       Pick<RouterState, "location">,
       Action
@@ -141,8 +143,10 @@ export function rootReducer(
 const router = routerMiddleware(history)
 
 const compose: typeof reduxCompose =
+  /* eslint-disable @typescript-eslint/consistent-type-assertions */
   // tslint:disable-next-line no-any no-unsafe-any
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || reduxCompose
+/* eslint-enable @typescript-eslint/consistent-type-assertions */
 
 // NOTE(sbdchd): this is hacky, we should validate the local storage state before using it
 const defaultData = (): IState => {
@@ -174,10 +178,10 @@ if (DEBUG) {
   middleware.push(createLogger({ collapsed: true }))
 }
 
-export const enhancer = compose(
+export const enhancer: StoreEnhancer<IState, Action> = compose(
   install(),
   applyMiddleware(...middleware)
-) as StoreEnhancer<IState, Action>
+)
 
 // We need an empty store for the unit tests & hydrating from localstorage
 const emptyStore: Store = createStore(rootReducer, undefined, enhancer)
@@ -193,6 +197,7 @@ export const store: Store = createStore(rootReducer, defaultData(), enhancer)
 
 store.subscribe(
   throttle(() => {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     saveState(({
       user: {
         // We assume this is true and if the session expires we have axios interceptors

@@ -138,6 +138,7 @@ function OAuthButtons({ state }: IGenerateOAuthButtonsProps) {
       {providers.map(x => {
         return (
           <ConnectedOAuthButton
+            key={x.id}
             name={x.name}
             id={x.id}
             Logo={x.logo}

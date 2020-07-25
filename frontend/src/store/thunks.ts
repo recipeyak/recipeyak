@@ -121,7 +121,7 @@ export interface INotificationWithTimeout {
 }
 
 // https://stackoverflow.com/a/38574266/3555105
-let notificationTimeout: number
+let notificationTimeout: number = 0
 export const showNotificationWithTimeoutAsync = (dispatch: Dispatch) => ({
   message,
   level = "info",

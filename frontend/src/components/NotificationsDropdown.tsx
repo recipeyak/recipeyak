@@ -38,7 +38,8 @@ function useInviteUpdate(inviteId: IInvite["id"]) {
     acceptingInviteAsync(dispatch)(inviteId)
   }, [dispatch, inviteId])
   const accepting = useSelector(s => !!s.invites.byId[inviteId]?.accepting)
-  return { decline, accept, accepting }
+  const status = useSelector(s => s.invites.byId[inviteId]?.status)
+  return { decline, accept, accepting, status }
 }
 
 interface IInviteButtonsProps {
@@ -46,7 +47,7 @@ interface IInviteButtonsProps {
 }
 
 function InviteButtons({ inviteId }: IInviteButtonsProps) {
-  const { decline, accept, accepting } = useInviteUpdate(inviteId)
+  const { status, decline, accept, accepting } = useInviteUpdate(inviteId)
 
   if (status === "declined") {
     return <p className="text-muted">declined</p>

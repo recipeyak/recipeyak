@@ -107,6 +107,7 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
       return
     }
 
+    /* eslint-disable-next-line @typescript-eslint/consistent-type-assertions */
     const clickedDropdown = el.contains(target as HTMLElement)
 
     if (clickedDropdown) {

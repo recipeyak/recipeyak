@@ -238,6 +238,7 @@ function ShoppingList({
 
   const handleGeneralClick = (e: MouseEvent) => {
     const el = element.current
+    /* eslint-disable-next-line @typescript-eslint/consistent-type-assertions */
     if (el && e.target && !el.contains(e.target as Node)) {
       // outside click
       closeInputs()

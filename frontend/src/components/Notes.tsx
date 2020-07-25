@@ -269,7 +269,12 @@ export function NoteContainer(props: INoteContainerProps) {
       <NoteCreator recipeId={props.recipeId} />
       <hr />
       {orderBy(props.notes, "created", "desc").map(note => (
-        <Note recipeId={props.recipeId} note={note} className="pb-4" />
+        <Note
+          key={note.id}
+          recipeId={props.recipeId}
+          note={note}
+          className="pb-4"
+        />
       ))}
     </>
   )

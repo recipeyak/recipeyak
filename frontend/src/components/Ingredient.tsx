@@ -89,6 +89,7 @@ export function Ingredient(props: {
   // ensures that the list item closes when the user clicks outside of the item
   const handleGeneralClick = (e: MouseEvent) => {
     const el = ref.current
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     const target = e.target as HTMLElement | null
     if (el == null || target == null) {
       return

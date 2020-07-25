@@ -580,7 +580,7 @@ export function getTeamRecipes(
 }
 
 export const getRecipeById = (
-  state: IState,
+  state: Pick<IState, "recipes">,
   id: IRecipe["id"]
 ): WebData<IRecipe> => state.recipes.byId[id]
 

@@ -76,6 +76,7 @@ const MemberRow = ({
             handleUserLevelChange(
               teamID,
               membershipID,
+              /* eslint-disable-next-line @typescript-eslint/consistent-type-assertions */
               e.target.value as "admin" | "contributor" | "read"
             )
           }>

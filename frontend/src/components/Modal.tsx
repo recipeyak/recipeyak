@@ -20,6 +20,7 @@ export default class Modal extends React.Component<IModalProps> {
 
   handleClick = (e: MouseEvent) => {
     const el = this.element.current
+    /* eslint-disable-next-line @typescript-eslint/consistent-type-assertions */
     if (el && e.target && !el.contains(e.target as Node)) {
       this.props.onClose()
     }
