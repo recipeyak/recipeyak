@@ -97,16 +97,15 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - frontend-v8-dependencies-{{ checksum "yarn.lock" }}
+            - frontend-v9-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: install dependencies
           command: |
-            yarn install --frozen-lockfile --cache-folder /root/.cache/yarn
+            yarn install --frozen-lockfile --non-interactive
       - save_cache:
           paths:
-            - /root/project/node_modules
-            - /root/.cache/
-          key: frontend-v8-dependencies-{{ checksum "yarn.lock" }}
+            - ./node_modules
+          key: frontend-v9-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: run tests
           command: ./frontend/s/test
@@ -118,16 +117,15 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - frontend-v8-dependencies-{{ checksum "yarn.lock" }}
+            - frontend-v9-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: install dependencies
           command: |
-            yarn install --frozen-lockfile --cache-folder /root/.cache/yarn
+            yarn install --frozen-lockfile --non-interactive
       - save_cache:
           paths:
-            - /root/project/node_modules
-            - /root/.cache/
-          key: frontend-v8-dependencies-{{ checksum "yarn.lock" }}
+            - ./node_modules
+          key: frontend-v9-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: run linter
           command: |
