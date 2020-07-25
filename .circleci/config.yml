@@ -92,55 +92,45 @@ jobs:
 
   frontend_test:
     docker:
-      - image: recipeyak/base:v3
+      - image: circleci/node:12.4.0
     steps:
       - checkout
       - restore_cache:
           keys:
-            - frontend-v8-dependencies-{{ checksum "yarn.lock" }}
+            - frontend-v9-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: install dependencies
           command: |
-            echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
-            # Use our new PATH so we can call poetry from bash
-            source $BASH_ENV
-            poetry install
-            yarn install --frozen-lockfile --cache-folder /root/.cache/yarn
+            yarn install --frozen-lockfile --non-interactive
       - save_cache:
           paths:
-            - /root/project/node_modules
-            - /root/.cache/
-          key: frontend-v8-dependencies-{{ checksum "yarn.lock" }}
+            - ./node_modules
+          key: frontend-v9-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: run tests
-          command: poetry run yak test --web
+          command: ./frontend/s/test
 
   frontend_lint:
     docker:
-      - image: recipeyak/base:v3
+      - image: circleci/node:12.4.0
     steps:
       - checkout
       - restore_cache:
           keys:
-            - frontend-v8-dependencies-{{ checksum "yarn.lock" }}
+            - frontend-v9-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: install dependencies
           command: |
-            echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
-            # Use our new PATH so we can call poetry from bash
-            source $BASH_ENV
-            poetry install
-            yarn install --frozen-lockfile --cache-folder /root/.cache/yarn
+            yarn install --frozen-lockfile --non-interactive
       - save_cache:
           paths:
-            - /root/project/node_modules
-            - /root/.cache/
-          key: frontend-v8-dependencies-{{ checksum "yarn.lock" }}
+            - ./node_modules
+          key: frontend-v9-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: run linter
           command: |
-            poetry run yak lint --web
-            poetry run yak build --web
+            ./frontend/s/lint
+            ./frontend/s/build
       - run:
           name: move artifacts
           working_directory: frontend
