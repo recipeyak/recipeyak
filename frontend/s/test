@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -ex
+
+main() {
+  if [ "$CI" ]; then
+    node ./scripts/test.js --env=jsdom --coverage --runInBand
+  else
+    node ./scripts/test.js --env=jsdom --watch "$@"
+  fi
+}
+
+main "$@"
