@@ -56,6 +56,6 @@
   ],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
-},
-"python.languageServer": "Jedi"
+  },
+  "python.languageServer": "Jedi"
 }
