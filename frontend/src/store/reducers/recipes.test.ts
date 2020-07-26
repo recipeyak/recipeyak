@@ -21,7 +21,6 @@ import recipes, {
   duplicateRecipe,
   duplicateRecipeAsync
 } from "@/store/reducers/recipes"
-import { IState } from "@/store/store"
 import { HttpErrorKind, Loading, isSuccess, Failure, Success } from "@/webdata"
 import { getModel } from "redux-loop"
 import { deletingIngredientAsync } from "@/store/thunks"
