@@ -6,14 +6,18 @@ describe("<ListItem/>", () => {
   // SOURCE: https://github.com/facebook/react/issues/11098#issuecomment-370614347
   beforeEach(() => {
     jest.spyOn(console, "error")
+    /* eslint-disable @typescript-eslint/consistent-type-assertions */
     // tslint:disable-next-line:no-any
     ;((global.console.error as any) as jest.SpyInstance).mockImplementation(
+      /* eslint-enable @typescript-eslint/consistent-type-assertions */
       jest.fn()
     )
   })
   afterEach(() => {
+    /* eslint-disable @typescript-eslint/consistent-type-assertions */
     // tslint:disable-next-line:no-any
     ;((global.console.error as any) as jest.SpyInstance).mockRestore()
+    /* eslint-enable @typescript-eslint/consistent-type-assertions */
   })
 
   it("renders without crashing", () => {

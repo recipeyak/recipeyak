@@ -55,6 +55,7 @@ export default class ListItem extends React.Component<
 
   // ensures that the list item closes when the user clicks outside of the item
   handleGeneralClick = (e: MouseEvent) => {
+    /* eslint-disable-next-line @typescript-eslint/consistent-type-assertions */
     const target = e.target as HTMLElement | null
     const el = this.element.current
 
@@ -75,9 +76,11 @@ export default class ListItem extends React.Component<
   }
 
   handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    /* eslint-disable @typescript-eslint/consistent-type-assertions */
     this.setState(({
       [e.target.name]: e.target.value
     } as unknown) as IListItemState)
+    /* eslint-enable @typescript-eslint/consistent-type-assertions */
   }
 
   enableEditing = () => {
@@ -120,16 +123,14 @@ export default class ListItem extends React.Component<
     // if the text is empty, we should just delete the item instead of updating
     if (this.state.text === "") {
       this.delete()
+    } else if (this.props.recipeID) {
+      this.props.update(this.props.recipeID, this.props.id, {
+        text: this.state.text
+      })
     } else {
-      if (this.props.recipeID) {
-        this.props.update(this.props.recipeID, this.props.id, {
-          text: this.state.text
-        })
-      } else {
-        this.props.update(-1, this.props.id, {
-          text: this.state.text
-        })
-      }
+      this.props.update(-1, this.props.id, {
+        text: this.state.text
+      })
     }
     this.setState({
       editing: false,

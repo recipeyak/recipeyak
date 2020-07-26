@@ -7,14 +7,14 @@ import { TestProvider } from "@/testUtils"
 describe("<TeamInvite/>", () => {
   it("renders without crashing", () => {
     // fake react router props
-    const fakeMatch = {
+    const fakeMatch: match<{ id: string }> = {
       params: {
         id: "1"
       },
       isExact: false,
       path: "",
       url: ""
-    } as match<{ id: string }>
+    }
     mount(
       <TestProvider>
         <TeamInvite
@@ -24,10 +24,12 @@ describe("<TeamInvite/>", () => {
           name="hello"
           error404
           sendInvites={jest.fn()}
+          /* eslint-disable @typescript-eslint/consistent-type-assertions */
           // tslint:disable:no-any no-unsafe-any
           history={{} as any}
           location={{} as any}
           // tslint:enable:no-any no-unsafe-any
+          /* eslint-enable @typescript-eslint/consistent-type-assertions */
         />
       </TestProvider>
     )

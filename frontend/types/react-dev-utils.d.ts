@@ -1,3 +1,4 @@
+/* eslint-disable init-declarations*/
 declare module "react-dev-utils/checkRequiredFiles" {
   // https://github.com/facebook/create-react-app/blob/fd382772a1ab656087c1467c5fe9ab8926af1d01/packages/react-dev-utils/checkRequiredFiles.js#L14
   const checkRequiredFiles: (files: string[]) => boolean

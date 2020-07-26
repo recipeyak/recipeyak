@@ -40,9 +40,11 @@ class TeamCreate extends React.Component<ITeamCreateProps, ITeamCreateState> {
   }
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    /* eslint-disable @typescript-eslint/consistent-type-assertions */
     this.setState(({
       [e.target.name]: e.target.value
     } as unknown) as ITeamCreateState)
+  /* eslint-enable @typescript-eslint/consistent-type-assertions */
 
   handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

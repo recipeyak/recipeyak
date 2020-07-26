@@ -17,6 +17,16 @@ module.exports = {
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "error",
     "import/no-duplicates": "error",
+    "no-restricted-globals": [
+      "error",
+      "close",
+      "closed",
+      "status",
+      "name",
+      "length",
+      "origin",
+      "event"
+    ],
     "no-restricted-imports": [
       "error",
       {
@@ -39,6 +49,32 @@ module.exports = {
           }
         ]
       }
-    ]
+    ],
+    "react/self-closing-comp": [
+      "error",
+      {
+        component: true,
+        html: true
+      }
+    ],
+    "no-unneeded-ternary": ["error", { defaultAssignment: false }],
+    "@typescript-eslint/no-non-null-assertion": "error",
+    "@typescript-eslint/await-thenable": "error",
+    "@typescript-eslint/no-for-in-array": "error",
+    "@typescript-eslint/prefer-as-const": "error",
+    "@typescript-eslint/prefer-reduce-type-parameter": "error",
+    "init-declarations": ["error", "always"],
+    "react/jsx-fragments": "error",
+    "no-lonely-if": "error",
+    "object-shorthand": ["error", "always"],
+    "@typescript-eslint/consistent-type-assertions": [
+      "error",
+      {
+        assertionStyle: "never"
+      }
+    ],
+    "react/jsx-key": ["error", { checkFragmentShorthand: true }],
+    "react/no-danger": "error",
+    eqeqeq: ["error", "smart"]
   }
 }

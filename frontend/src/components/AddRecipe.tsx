@@ -88,9 +88,11 @@ export default class AddRecipe extends React.Component<
   }
 
   handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    /* eslint-disable @typescript-eslint/consistent-type-assertions */
     this.setState(({
       [e.target.name]: e.target.value
     } as unknown) as IAddRecipeState)
+    /* eslint-enable @typescript-eslint/consistent-type-assertions */
   }
 
   handleSubmit = (event: React.FormEvent) => {

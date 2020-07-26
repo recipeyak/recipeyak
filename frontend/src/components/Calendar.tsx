@@ -326,10 +326,10 @@ function useDays(teamID: TeamID, currentDateTs: number): WebData<IDays> {
   }
 
   return Success(
-    days.reduce((a, b) => {
+    days.reduce<IDays>((a, b) => {
       a[b.on] = (a[b.on] || []).concat(b)
       return a
-    }, {} as IDays)
+    }, {})
   )
 }
 

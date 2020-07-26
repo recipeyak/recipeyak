@@ -43,9 +43,11 @@ class Login extends React.Component<ILoginProps, ILoginState> {
   }
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    /* eslint-disable @typescript-eslint/consistent-type-assertions */
     this.setState(({
       [e.target.name]: e.target.value
     } as unknown) as ILoginState)
+    /* eslint-enable @typescript-eslint/consistent-type-assertions */
   }
 
   handleLogin = (e: React.FormEvent) => {

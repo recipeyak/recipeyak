@@ -37,8 +37,10 @@ if (!checkRequiredFiles([paths.appHtml, paths.appIndexTsx])) {
 // Tools like Cloud9 rely on this.
 const DEFAULT_PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000
 
+/* eslint-disable init-declarations */
 /** @type {import("webpack").Compiler | import("webpack").Compiler.Watching} */
 let compiler
+/* eslint-enable init-declarations */
 
 /**
  * @param {number} port
@@ -201,7 +203,7 @@ function addMiddleware(devServer) {
       rewrites: [
         {
           from: /.*\.(json|yaml|yml)\/?$/,
-          to: function(ctx) {
+          to(ctx) {
             return proxy + ctx.parsedUrl.pathname
           }
         }
@@ -323,7 +325,7 @@ function runDevServer(host, port, protocol) {
     },
     // Enable HTTPS if the HTTPS environment variable is set to 'true'
     https: protocol === "https",
-    host: host
+    host
   })
 
   // Our custom middleware proxies requests to /index.html or a remote API.

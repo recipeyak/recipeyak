@@ -1,3 +1,4 @@
+/* eslint-disable init-declarations*/
 // eslint-disable-next-line no-restricted-imports
 import {
   Action,

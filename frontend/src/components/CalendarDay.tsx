@@ -138,6 +138,7 @@ function CalendarDay({
       return !beforeCurrentDay(date)
     },
     drop: dropped => {
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       const item = dropped as ICalendarDragItem | IRecipeItemDrag
       // TOOD(sbdchd): We should move this logic into the calendar reducer
       if (item.type === DragDrop.CAL_RECIPE) {

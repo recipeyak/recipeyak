@@ -32,7 +32,7 @@ function mapDispatchToProps(dispatch: Dispatch) {
 
 function mapStateToProps(state: IState) {
   return {
-    teamID: state.user.teamID || ("personal" as TeamID)
+    teamID: state.user.teamID || ("personal" as const)
   }
 }
 

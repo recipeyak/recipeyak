@@ -21,7 +21,6 @@ import recipes, {
   duplicateRecipe,
   duplicateRecipeAsync
 } from "@/store/reducers/recipes"
-import { IState } from "@/store/store"
 import { HttpErrorKind, Loading, isSuccess, Failure, Success } from "@/webdata"
 import { getModel } from "redux-loop"
 import { deletingIngredientAsync } from "@/store/thunks"
@@ -96,10 +95,7 @@ describe("Recipes", () => {
     expect(after.personalIDs).toEqual(Success([second.id]))
     expect(after.byId[first.id]).toBeUndefined()
 
-    const maybeSecond = getRecipeById(
-      { recipes: beforeState } as IState,
-      second.id
-    )
+    const maybeSecond = getRecipeById({ recipes: beforeState }, second.id)
     expect(maybeSecond).not.toBeUndefined()
     expect(maybeSecond).not.toBeNull()
     if (maybeSecond == null) {

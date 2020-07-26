@@ -8,6 +8,7 @@ import user, {
 } from "@/store/reducers/user"
 import { login } from "@/store/reducers/auth"
 
+/* eslint-disable @typescript-eslint/consistent-type-assertions */
 describe("fetchingUser", () => {
   it("#request: sets loading, removes failures", () => {
     const beforeState = {

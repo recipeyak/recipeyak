@@ -210,12 +210,14 @@ export const user = (
         socialAccountConnections: Loading()
       }
     case getType(socialConnections.success): {
-      const socialAccountConnections: ISocialAccountsState = action.payload.reduce(
+      const socialAccountConnections: ISocialAccountsState = action.payload.reduce<
+        Mutable<ISocialAccountsState>
+      >(
         (acc, cur) => {
           acc[cur.provider] = cur.id
           return acc
         },
-        {} as Mutable<ISocialAccountsState>
+        { github: null, gitlab: null, google: null }
       )
       return {
         ...state,

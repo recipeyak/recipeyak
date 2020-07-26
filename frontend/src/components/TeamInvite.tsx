@@ -87,9 +87,11 @@ class TeamInvite extends React.Component<ITeamInviteProps, ITeamInviteState> {
   }
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    /* eslint-disable @typescript-eslint/consistent-type-assertions */
     this.setState(({
       [e.target.name]: e.target.value
     } as unknown) as ITeamInviteState)
+  /* eslint-enable @typescript-eslint/consistent-type-assertions */
 
   render() {
     const { name, id, loadingTeam } = this.props

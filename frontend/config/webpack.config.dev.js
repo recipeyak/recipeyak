@@ -35,7 +35,7 @@ module.exports = {
     // containing code from all our entry points, and the Webpack runtime.
     filename: "static/js/bundle.js",
     // This is the URL that app is served from. We use "/" in development.
-    publicPath: publicPath
+    publicPath
   },
   resolve: {
     modules: ["node_modules", paths.appNodeModules, paths.appSrc],
