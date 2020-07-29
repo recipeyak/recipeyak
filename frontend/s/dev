@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -ex
+
+node frontend/scripts/start.js

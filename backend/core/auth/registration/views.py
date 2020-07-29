@@ -31,8 +31,6 @@ logger = logging.getLogger(__name__)
 
 # TODO(chdsbd): Add tests
 
-# pylint:disable=protected-access
-
 
 class RegisterView(CreateAPIView):
     serializer_class = RegisterSerializer

@@ -2,6 +2,7 @@
 set -ex
 
 main() {
+  export TZ=UTC
   if [ "$CI" ]; then
     node ./frontend/scripts/test.js --env=jsdom --coverage --runInBand
   else

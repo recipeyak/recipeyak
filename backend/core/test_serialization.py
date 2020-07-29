@@ -26,5 +26,4 @@ def test_db_blocker_fails_with_proper_settings(settings, recipe) -> None:
     queryset = Recipe.objects.all()
 
     with pytest.raises(UnexpectedDatabaseAccess):
-        # pylint:disable=expression-not-assigned
         RecipeSerializer(queryset, many=True).data

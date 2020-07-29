@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -e
+
+main() {
+  if [ "$CI" ]; then
+    ./backend/s/check_migrations
+  fi
+  ./backend/s/typecheck
+  ./.venv/bin/flake8 .
+
+  if [ "$CI" ]; then
+    ./.venv/bin/black . --check
+    ./.venv/bin/isort --check-only
+  else
+    ./.venv/bin/black .
+    ./.venv/bin/isort -y
+  fi
+}
+
+main "$@"
