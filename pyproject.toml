@@ -3,9 +3,6 @@ name = "backend"
 version = "0.1.0"
 description = ""
 authors = ["Steve Dignam <steve@dignam.xyz>", "Christopher Dignam <chris@dignam.xyz>"]
-packages = [
-    { include = "pytest_plugin", from = "backend" },
-]
 
 [tool.poetry.dependencies]
 python = "^3.7"
@@ -46,9 +43,6 @@ pytest-icdiff = "^0.2.0"
 pywatchman = "^1.4"
 isort = "^4.3"
 flake8-comprehensions = "^2.1"
-
-[tool.poetry.plugins."pytest11"]
-"pytest_plugin" = "pytest_plugin.plugin"
 
 [tool.black]
 py36 = true

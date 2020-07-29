@@ -3,6 +3,8 @@ set -e
 
 main() {
   export TESTING=1
+  export DATABASE_URL=postgres://postgres@127.0.0.1:5432/postgres
+  export DEBUG=1
 
   # shellcheck disable=SC2124
   ARGS="${@}"
