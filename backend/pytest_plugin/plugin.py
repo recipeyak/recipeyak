@@ -1,10 +1,11 @@
+import os
+
 import pytest
 from dotenv import load_dotenv
-
-from cli import config
 
 
 @pytest.hookimpl(tryfirst=True)
 def pytest_load_initial_conftests(args, early_config, parser):
-    config.set_default_testing_variables()
+    os.environ["DEBUG"] = "1"
+    os.environ.setdefault("DATABASE_URL", "postgres://postgres@127.0.0.1:5432/postgres")
     load_dotenv()
