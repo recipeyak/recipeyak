@@ -283,29 +283,29 @@ workflows:
           requires:
             - backend_test
             - backend_lint
-      # filters:
-      #   branches:
-      #     only: master
+          filters:
+            branches:
+              only: master
       - build_ui_container:
           context: DockerHub
           requires:
             - frontend_test
             - frontend_lint
-      # filters:
-      #   branches:
-      #     only: master
+          filters:
+            branches:
+              only: master
       - build_proxy_container:
           context: DockerHub
-      # filters:
-      #   branches:
-      #     only: master
+          filters:
+            branches:
+              only: master
       - build_postgres_container:
           context: DockerHub
-      # filters:
-      #   branches:
-      #     only: master
+          filters:
+            branches:
+              only: master
       - build_pgdump_container:
           context: DockerHub
-      # filters:
-      #   branches:
-      #     only: master
+          filters:
+            branches:
+              only: master
