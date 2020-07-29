@@ -3,7 +3,7 @@ version: 2
 jobs:
   backend_test:
     docker:
-      - image: circleci/python:3.7
+      - image: python:3.7
       # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
       - image: circleci/postgres:9.5-alpine-ram
         command:
@@ -20,16 +20,15 @@ jobs:
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
-            - backend-v9-{{ checksum "poetry.lock" }}
+            - backend-v10-{{ checksum "poetry.lock" }}
       - run:
           name: install dependencies
           command: |
-            echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
             # Use our new PATH so we can call poetry from bash
+            echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
             source $BASH_ENV
+            command -v poetry || python -m pip install --user poetry==0.12.12
             poetry install
-            # update backend_lint job and dockerfile if you change this version
-            python3 -m pip install --user poetry===0.12.11
       - save_cache:
           paths:
             - ./backend/.mypy_cache
@@ -43,7 +42,7 @@ jobs:
 
   backend_lint:
     docker:
-      - image: circleci/python:3.7
+      - image: python:3.7
       # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
       - image: circleci/postgres:9.5-alpine-ram
     steps:
@@ -51,16 +50,15 @@ jobs:
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
-            - backend-v9-{{ checksum "poetry.lock" }}
+            - backend-v10-{{ checksum "poetry.lock" }}
       - run:
           name: install dependencies
           command: |
-            echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
             # Use our new PATH so we can call poetry from bash
+            echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
             source $BASH_ENV
+            command -v poetry || python -m pip install --user poetry==0.12.12
             poetry install
-            # update backend_lint job and dockerfile if you change this version
-            python3 -m pip install --user poetry===0.12.11
       - save_cache:
           paths:
             - ./backend/.mypy_cache
@@ -74,7 +72,7 @@ jobs:
 
   squawk:
     docker:
-      - image: circleci/python:3.7
+      - image: python:3.7
       # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
       - image: circleci/postgres:9.5-alpine-ram
     steps:
@@ -82,16 +80,15 @@ jobs:
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
-            - backend-v9-{{ checksum "poetry.lock" }}
+            - backend-v10-{{ checksum "poetry.lock" }}
       - run:
           name: install dependencies
           command: |
-            echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
             # Use our new PATH so we can call poetry from bash
+            echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
             source $BASH_ENV
+            command -v poetry || python -m pip install --user poetry==0.12.12
             poetry install
-            # update backend_lint job and dockerfile if you change this version
-            python3 -m pip install --user poetry===0.12.11
       - run:
           name: run lints
           command: ./s/squawk.py
