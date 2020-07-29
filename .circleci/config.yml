@@ -169,6 +169,7 @@ jobs:
       - run:
           name: install dependencies
           command: |
+            apt-get update -yq && \
             apt-get install -y git shellcheck
       - run:
           name: run shellcheck
