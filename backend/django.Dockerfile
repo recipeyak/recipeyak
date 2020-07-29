@@ -18,7 +18,7 @@ COPY poetry.lock poetry.lock
 RUN poetry install
 
 COPY backend /var/app
-RUN DOCKERBUILD=1 /var/app/.venv/bin/python /var/app/backend/manage.py collectstatic --noinput
+RUN DOCKERBUILD=1 /var/app/.venv/bin/python /var/app/manage.py collectstatic --noinput
 
 # Inject GIT SHA into settings file to track releases via Sentry
 ARG GIT_SHA
@@ -26,4 +26,4 @@ RUN sh -c 'sed -i s/\<%=GIT_SHA=%\>/"$GIT_SHA"/ backend/settings.py && grep GIT_
 
 HEALTHCHECK CMD curl --fail http://localhost:8000/healthz
 
-CMD ["/var/app/backend/entrypoint.sh"]
+CMD ["/var/app/entrypoint.sh"]

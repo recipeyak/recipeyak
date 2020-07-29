@@ -5,7 +5,7 @@ set -eux
 cp -af static/* static-files
 
 # wait for databases
-/var/app/backend/wait-for-it.sh postgres:5432 -- echo 'Database available'
+/var/app/wait-for-it.sh postgres:5432 -- echo 'Database available'
 
 # apply migrations
 /var/app/.venv/bin/python manage.py migrate
