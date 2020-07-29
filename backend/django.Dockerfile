@@ -1,4 +1,4 @@
-FROM python:3.7
+FROM python:3.7@sha256:d8718f4c8f28360c88d2d8b53681edb3c95e6a7bacedabd32eb5b1d120a75dc5
 
 # Install Poetry
 # update circleci jobs if you change this version
