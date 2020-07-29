@@ -1,4 +1,4 @@
-FROM node:14 as builder
+FROM node:14@sha256:a33ccec42e036118e7c797a7251387f8c4fb3486905d587b0453725a84e4d3e3 as builder
 
 # we use netcat to wait for a port to be available
 # hadolint ignore=DL3008
