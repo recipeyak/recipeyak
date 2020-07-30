@@ -14,8 +14,6 @@ from core.serialization import BaseSerializer
 
 UserModel = get_user_model()
 
-# pylint:disable=attribute-defined-outside-init,protected-access
-
 
 class LoginSerializer(BaseSerializer):
     username = serializers.CharField(required=False, allow_blank=True)

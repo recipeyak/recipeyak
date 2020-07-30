@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2206
 # https://github.com/vishnubob/wait-for-it/blob/db049716e42767d39961e95dd9696103dca813f1/wait-for-it.sh
 # The MIT License (MIT)
 # Copyright (c) 2016 Giles Hall
@@ -163,6 +164,7 @@ CHILD=${CHILD:-0}
 QUIET=${QUIET:-0}
 
 # check to see if timeout is from busybox?
+# shellcheck disable=SC2230
 TIMEOUT_PATH=$(realpath "$(which timeout)")
 if [[ $TIMEOUT_PATH =~ "busybox" ]]; then
         ISBUSY=1
@@ -186,6 +188,7 @@ else
     fi
 fi
 
+# shellcheck disable=SC2199
 if [[ -n "${CLI[@]}" ]]; then
     if [[ $RESULT -ne 0 && $STRICT -eq 1 ]]; then
         echoerr "$cmdname: strict mode, refusing to execute subprocess"

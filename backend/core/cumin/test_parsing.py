@@ -150,7 +150,6 @@ def test_adding_quantities_with_diff_unknown_units() -> None:
     """
 
     with pytest.raises(IncompatibleUnit):
-        # pylint:disable=expression-not-assigned
         Quantity(quantity=Decimal(1), unit=Unit.UNKNOWN, unknown_unit="bag") + Quantity(
             quantity=Decimal(2), unit=Unit.UNKNOWN, unknown_unit="thing"
         )
@@ -162,7 +161,6 @@ def test_adding_incompatible_units() -> None:
     error higher up.
     """
     with pytest.raises(IncompatibleUnit):
-        # pylint:disable=expression-not-assigned
         Quantity(quantity=Decimal(1), unit=Unit.TABLESPOON) + Quantity(
             quantity=Decimal(2), unit=Unit.GRAM
         )

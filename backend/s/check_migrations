@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -e
+
+main() {
+  # https://docs.djangoproject.com/en/2.0/ref/django-admin/#cmdoption-makemigrations-check
+  DEBUG=1 ./.venv/bin/python ./backend/manage.py makemigrations --dry-run --noinput --check > /dev/null
+  status="$?"
+  if [[ "$status" != 0 ]]; then
+      echo "🚨  Missing migrations"
+      exit 1
+  fi
+}
+
+main "$@"

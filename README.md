@@ -28,16 +28,13 @@ echo "DEBUG=1" >> .env
 # initial cli setup (only need to do this once)
 poetry install
 
-poetry shell
+frontend/s/dev
+frontend/s/test
+frontend/s/lint
 
-yak --help
-yak install
-yak dev
-yak test
-yak lint
-yak typecheck
-yak fmt
-yak django # access django's manage.py commands
+backend/s/dev
+backend/s/test
+backend/s/lint
 
 # use `yarn` and `poetry` to add and upgrade dependencies
 yarn add $FOO
@@ -50,15 +47,6 @@ After dev setup, configure the identity provider to enable redirecting to
 `http://localhost:3000/accounts/$providerName`.
 
 ## Prod
-
-### Creating environment
-
-You can create a remote docker machine on AWS using:
-
-```shell
-MACHINE_NAME='grunniens'
-docker-machine create --driver amazonec2 $MACHINE_NAME
-```
 
 ### Deploy a new release
 

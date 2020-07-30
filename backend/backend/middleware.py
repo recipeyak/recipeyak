@@ -159,7 +159,7 @@ class HealthCheckMiddleware:
                 row = cursor.fetchone()
                 if row is None:
                     return HttpResponseServerError(ReadinessError.PG_BAD_RESPONSE)
-        except Exception:  # pylint: disable=broad-except
+        except Exception:
             log.exception("could not connect to postgres")
             return HttpResponseServerError(ReadinessError.PG_CANNOT_CONNECT)
 

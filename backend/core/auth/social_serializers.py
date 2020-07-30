@@ -11,8 +11,6 @@ if "allauth.socialaccount" in settings.INSTALLED_APPS:
     from allauth.socialaccount.models import SocialToken
     from allauth.socialaccount.providers.oauth.client import OAuthError
 
-# pylint:disable=protected-access
-
 
 class TwitterLoginSerializer(BaseSerializer):
     access_token = serializers.CharField()
