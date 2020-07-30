@@ -250,13 +250,7 @@ LOGGING = {
             "format": 'level=%(levelname)s msg="%(message)s" user_id=%(user_id)s request_id=%(request_id)s name=%(name)s '
             'pathname="%(pathname)s" lineno=%(lineno)s funcname=%(funcName)s '
             "process=%(process)d thread=%(thread)d "
-        },
-        "json": {
-            "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
-            "format": '%(levelname)s "%(message)s" %(request_id)s %(name)s '
-            '"%(pathname)s" %(lineno)s %(funcName)s '
-            "%(process)d %(thread)d ",
-        },
+        }
     },
     "handlers": {
         "console": {
