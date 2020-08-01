@@ -1,9 +1,9 @@
 import pytest
+from django.db.utils import IntegrityError
 from django.urls import reverse
 from rest_framework import status
-from django.db.utils import IntegrityError
 
-from core.models import Step, Recipe
+from core.models import Recipe, Step
 
 pytestmark = pytest.mark.django_db
 
