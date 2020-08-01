@@ -74,7 +74,13 @@ def main() -> None:
         log.info("getting sql for %s", filename)
         output_sql_file = (Path(".") / filename).with_suffix(".sql").open(mode="w")
         subprocess.run(
-            ["poetry", "run", "yak", "django", "sqlmigrate", APP_LABEL, migration_id],
+            [
+                "./.venv/bin/python",
+                "./backend/manage.py",
+                "sqlmigrate",
+                APP_LABEL,
+                migration_id,
+            ],
             stdout=output_sql_file,
             check=True,
         )
