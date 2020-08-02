@@ -86,7 +86,7 @@ def main() -> None:
             stdout=output_sql_file,
             check=True,
         )
-        log.info("running squawk for %s", filename)
+        log.info("running sqlmigrate for %s", filename)
         output_files.append(output_sql_file.name)
 
     log.info("sql files found: %s", output_files)
