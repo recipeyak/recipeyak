@@ -279,7 +279,7 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
            
           <b
             className="cursor-pointer"
-            onClick={[Function]}
+            onClick={undefined}
             title="click  to edit"
           >
             <a
@@ -673,7 +673,7 @@ exports[`<Recipe/> snaps recipe all states 2`] = `
            
           <b
             className="cursor-pointer"
-            onClick={[Function]}
+            onClick={undefined}
             title="click  to edit"
           >
             <a

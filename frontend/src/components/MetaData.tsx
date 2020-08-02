@@ -71,7 +71,7 @@ const MetaData = ({
   const _source = isValid(source) ? (
     <MetaPiece>
       from{" "}
-      <MetaBold onClick={onClick}>
+      <MetaBold>
         <SourceLink>{source}</SourceLink>
       </MetaBold>{" "}
     </MetaPiece>
