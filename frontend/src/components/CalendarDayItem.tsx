@@ -94,7 +94,7 @@ export function CalendarItem({
   id
 }: ICalendarItemProps) {
   const [count, setCount] = React.useState(propsCount)
-  const [hover, setHover] = React.useState(false)
+  const ref = React.useRef<HTMLLIElement>(null)
 
   React.useEffect(() => {
     setCount(propsCount)
@@ -116,7 +116,7 @@ export function CalendarItem({
   }
 
   const handleKeyPress = (e: KeyboardEvent) => {
-    if (!hover) {
+    if (!ref.current?.matches(":hover")) {
       return
     }
 
@@ -137,9 +137,6 @@ export function CalendarItem({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     updateCount(parseInt(e.target.value, 10))
-
-  const handleMouseEnter = () => setHover(true)
-  const handleMouseLeave = () => setHover(false)
 
   const dragItem: ICalendarDragItem = {
     type: DragDrop.CAL_RECIPE,
@@ -169,12 +166,10 @@ export function CalendarItem({
 
   useGlobalEvent({ keyUp: handleKeyPress })
 
+  drag(ref)
+
   return (
-    <CalendarListItem
-      ref={drag}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      visibility={visibility}>
+    <CalendarListItem ref={ref} visibility={visibility}>
       <RecipeLink name={recipeName} id={recipeID} />
       <Count value={count} onChange={handleChange} />
     </CalendarListItem>
