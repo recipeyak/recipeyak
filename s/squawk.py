@@ -68,6 +68,8 @@ def main() -> None:
     os.environ.setdefault("DEBUG", "1")
     os.environ.setdefault("DATABASE_URL", "postgres://postgres@127.0.0.1:5432/postgres")
 
+    subprocess.run(["./.venv/bin/python", "./backend/manage.py", "migrate"], check=True)
+
     output_files = []
 
     for migration_id, filename in changed_migrations_ids:
