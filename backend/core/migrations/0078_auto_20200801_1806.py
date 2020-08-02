@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
             """
 CREATE UNIQUE INDEX core_ingredient_recipe_id_position_not_deleted_uniq_indx
     ON core_ingredient("recipe_id", "position")
-    WHERE "deleted_at" IS NOT NULL;
+    WHERE "deleted_at" IS NULL;
             """
         ),
     ]
