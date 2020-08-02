@@ -68,17 +68,25 @@ def main() -> None:
     os.environ.setdefault("DEBUG", "1")
     os.environ.setdefault("DATABASE_URL", "postgres://postgres@127.0.0.1:5432/postgres")
 
+    subprocess.run(["./.venv/bin/python", "./backend/manage.py", "migrate"], check=True)
+
     output_files = []
 
     for migration_id, filename in changed_migrations_ids:
         log.info("getting sql for %s", filename)
         output_sql_file = (Path(".") / filename).with_suffix(".sql").open(mode="w")
         subprocess.run(
-            ["poetry", "run", "yak", "django", "sqlmigrate", APP_LABEL, migration_id],
+            [
+                "./.venv/bin/python",
+                "./backend/manage.py",
+                "sqlmigrate",
+                APP_LABEL,
+                migration_id,
+            ],
             stdout=output_sql_file,
             check=True,
         )
-        log.info("running squawk for %s", filename)
+        log.info("running sqlmigrate for %s", filename)
         output_files.append(output_sql_file.name)
 
     log.info("sql files found: %s", output_files)

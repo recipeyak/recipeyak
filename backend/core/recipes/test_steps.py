@@ -1,8 +1,9 @@
 import pytest
+from django.db.utils import IntegrityError
 from django.urls import reverse
 from rest_framework import status
 
-from core.models import Step
+from core.models import Recipe, Step
 
 pytestmark = pytest.mark.django_db
 
@@ -44,3 +45,28 @@ def test_adding_step_to_recipe(step, client, user, recipe):
     assert step.get("text") in (
         step.get("text") for step in res.json().get("steps")
     ), "step was not in the steps of the recipe"
+
+
+def test_position_constraint_with_deleted_steps(recipe: Recipe) -> None:
+    """
+    We want to keep the constraint requiring position to be unique for the
+    recipe but we want to ignore the constraint when the step is soft
+    deleted.
+    """
+    first_step = Step.objects.create(recipe=recipe, position=100, text="alpha")
+    second_step = Step.objects.create(recipe=recipe, position=150, text="bravo")
+    second_step.delete()
+
+    # shouldn't fail
+    first_step.position = second_step.position
+    first_step.save()
+
+
+def test_position_constraint(recipe: Recipe) -> None:
+    """
+    Ensure that with undeleted steps we enforce the unique constraint on
+    (recipe, position).
+    """
+    Step.objects.create(recipe=recipe, position=100, text="alpha")
+    with pytest.raises(IntegrityError):
+        Step.objects.create(recipe=recipe, position=100, text="bravo")

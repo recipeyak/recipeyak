@@ -292,7 +292,6 @@ class Ingredient(CommonInfo, SoftDeleteObject):
     optional = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = (("recipe", "position"),)
         ordering = ["position"]
 
     def __str__(self):
@@ -334,7 +333,6 @@ class Step(CommonInfo, SoftDeleteObject):
     position = models.FloatField()
 
     class Meta:
-        unique_together = (("recipe", "position"),)
         ordering = ["position"]
 
     def __str__(self):

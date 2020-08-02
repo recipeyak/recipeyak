@@ -84,7 +84,12 @@ jobs:
           keys:
             - backend-v10-{{ checksum "poetry.lock" }}
       - run:
-          name: install dependencies
+          name: install npm
+          command: |
+            apt-get update -yq && \
+            apt-get install -y npm
+      - run:
+          name: install python dependencies
           command: |
             # Use our new PATH so we can call poetry from bash
             echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
