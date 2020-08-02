@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { formatDistanceToNow } from "date-fns"
+import { formatDistanceToNow, format } from "date-fns"
 import { Avatar } from "@/components/Avatar"
 import {
   IRecipe,
@@ -85,6 +85,18 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
   }
 }
 
+function NoteTimeStamp({ created }: { readonly created: string }) {
+  const date = new Date(created)
+  const dateFormat = format(date, "yyyy-M-d")
+  const prettyDate = format(date, "MMM d, yyyy")
+  const humanizedDate = formatDistanceToNow(date, { addSuffix: true })
+  return (
+    <time title={prettyDate} dateTime={dateFormat}>
+      {humanizedDate}
+    </time>
+  )
+}
+
 interface INoteProps {
   readonly note: INote
   readonly recipeId: IRecipe["id"]
@@ -107,8 +119,7 @@ export function Note({ recipeId, note, className }: INoteProps) {
       <Avatar avatarURL={note.created_by.avatar_url} className="mr-2" />
       <div className="w-100">
         <p>
-          {note.created_by.email} |{" "}
-          {formatDistanceToNow(new Date(note.created), { addSuffix: true })}
+          {note.created_by.email} | <NoteTimeStamp created={note.created} />
         </p>
         {!isEditing ? (
           <Markdown
