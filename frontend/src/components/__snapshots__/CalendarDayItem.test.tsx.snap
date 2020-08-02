@@ -35,8 +35,6 @@ exports[`<CalendarDayItem> Snap smoke test render with styled components 1`] = `
 
 <li
   className="c0"
-  onMouseEnter={[Function]}
-  onMouseLeave={[Function]}
   visibility="visible"
 >
   <a
