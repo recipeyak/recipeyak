@@ -18,6 +18,7 @@ import { isSuccessLike } from "@/webdata"
 import orderBy from "lodash/orderBy"
 import Textarea from "react-textarea-autosize"
 import { Markdown } from "@/components/Markdown"
+import { Link } from "@/components/Routing"
 
 interface IUseNoteEditHandlers {
   readonly note: INote
@@ -69,7 +70,12 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
   const onEditorChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNewText(e.target.value)
   }
-  const onNoteClick = () => {
+  const onNoteClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Opening edit when a user clicks links results in weird looking UI as edit
+    // opens right as they are navigating away navigation.
+    if (e.target instanceof Element && e.target.tagName === "A") {
+      return
+    }
     setEditing(true)
   }
   return {
