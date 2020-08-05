@@ -18,6 +18,7 @@ import { isSuccessLike } from "@/webdata"
 import orderBy from "lodash/orderBy"
 import Textarea from "react-textarea-autosize"
 import { Markdown } from "@/components/Markdown"
+import { useLocation } from "react-router-dom"
 
 interface IUseNoteEditHandlers {
   readonly note: INote
@@ -119,12 +120,35 @@ export function Note({ recipeId, note, className }: INoteProps) {
     onNoteClick,
     onSave
   } = useNoteEditHandlers({ note, recipeId })
+
+  const ref = React.useRef<HTMLDivElement>(null)
+  const noteId = `note-${note.id}`
+  const location = useLocation()
+  const isSharedNote = location.hash === `#${noteId}`
+
+  React.useEffect(() => {
+    if (isSharedNote) {
+      ref.current?.scrollIntoView()
+    }
+  }, [isSharedNote])
   return (
-    <div className={classNames("d-flex align-items-start", className)}>
+    <div
+      ref={ref}
+      className={classNames(
+        "d-flex align-items-start",
+        {
+          "bg-highlight": isSharedNote
+        },
+        className
+      )}
+      id={noteId}>
       <Avatar avatarURL={note.created_by.avatar_url} className="mr-2" />
       <div className="w-100">
         <p>
-          {note.created_by.email} | <NoteTimeStamp created={note.created} />
+          {note.created_by.email} |{" "}
+          <a href={`#${noteId}`}>
+            <NoteTimeStamp created={note.created} />
+          </a>
         </p>
         {!isEditing ? (
           <Markdown
