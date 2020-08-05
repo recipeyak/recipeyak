@@ -18,7 +18,6 @@ import { isSuccessLike } from "@/webdata"
 import orderBy from "lodash/orderBy"
 import Textarea from "react-textarea-autosize"
 import { Markdown } from "@/components/Markdown"
-import { Link } from "@/components/Routing"
 
 interface IUseNoteEditHandlers {
   readonly note: INote
