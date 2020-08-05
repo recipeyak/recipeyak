@@ -350,6 +350,21 @@
   background-color: white;
 }
 
+.bg-highlight {
+  animation: bg-highlighted-fade 3s;
+  animation-timing-function: ease-out;
+}
+
+@keyframes bg-highlighted-fade {
+  0% {
+    background-color: rgba(251, 242, 212, 1);
+  }
+
+  100% {
+    background-color: rgba(0, 0, 0, 0);
+  }
+}
+
 .height-100 {
   height: 100%;
 }
