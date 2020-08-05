@@ -21,12 +21,14 @@ const ALLOWED_MARKDOWN_TYPES: NodeType[] = [
   "strong",
   "emphasis",
   "list",
+  "linkReference",
+  "link",
   "listItem"
 ]
 
 interface IMarkdownProps {
   readonly children: string
-  readonly onClick?: () => void
+  readonly onClick?: (_: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
   readonly className?: string
   readonly title?: string
 }
