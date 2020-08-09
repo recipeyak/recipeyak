@@ -14,6 +14,7 @@ To have a centralized location where multiple people can organize a meal plan.
 - <http://krecipes.sourceforge.net>
 - <https://cinc.kitchen>
 - <https://cookpad.com>
+- <https://www.prepear.com>
 
 ## Dev
 
