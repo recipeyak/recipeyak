@@ -363,7 +363,12 @@ class Note(CommonInfo, SoftDeleteObject):
 
 class ScheduledRecipeManager(models.Manager):
     def create_scheduled(
-        self, recipe: Recipe, on, team, count: int, user: MyUser
+        self,
+        recipe: Recipe,
+        on: date,
+        team: Optional["Team"],
+        count: int,
+        user: Optional[MyUser],
     ) -> "ScheduledRecipe":
         """
         add to existing scheduled recipe count for dupes
@@ -480,8 +485,6 @@ class Team(CommonInfo):
         level: Literal["admin", "contributor", "read"] = "contributor",
     ) -> "Membership":
         with transaction.atomic():
-            if level is None:
-                level = Membership.CONTRIBUTOR
             m, created = Membership.objects.get_or_create(
                 team=self, user=user, defaults={"level": level, "is_active": True}
             )
@@ -607,9 +610,9 @@ class ShoppingList(CommonInfo):
 
 
 class Membership(CommonInfo):
-    ADMIN = "admin"
-    CONTRIBUTOR = "contributor"
-    READ_ONLY = "read"
+    ADMIN: Literal["admin"] = "admin"
+    CONTRIBUTOR: Literal["contributor"] = "contributor"
+    READ_ONLY: Literal["read"] = "read"
 
     MEMBERSHIP_CHOICES = (
         (ADMIN, ADMIN),
