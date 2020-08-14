@@ -15,15 +15,32 @@ import {
   moveScheduledRecipe,
   IAddingScheduledRecipeProps,
   IMoveScheduledRecipeProps,
-  addingScheduledRecipeAsync
+  addingScheduledRecipeAsync,
+  Dispatch
 } from "@/store/thunks"
 import { isAfter, isBefore, parseISO } from "date-fns"
+import { WebData, Success, isSuccessLike, mapSuccessLike } from "@/webdata"
+import * as api from "@/api"
+import { isRight } from "fp-ts/lib/Either"
+import { IState } from "@/store/store"
 
 export const fetchCalendarRecipes = createAsyncAction(
   "FETCH_CALENDAR_RECIPES_START",
   "FETCH_CALENDAR_RECIPES_SUCCESS",
   "FETCH_CALENDAR_RECIPES_FAILURE"
-)<void, { data: ICalRecipe[]; start: string; end: string }, void>()
+)<
+  void,
+  {
+    readonly scheduledRecipes: readonly ICalRecipe[]
+    readonly start: string
+    readonly end: string
+    readonly settings: {
+      readonly syncEnabled: boolean
+      readonly calendarLink: string
+    }
+  },
+  void
+>()
 export const setCalendarRecipe = createStandardAction("SET_CALENDAR_RECIPE")<
   ICalRecipe
 >()
@@ -46,6 +63,68 @@ export const createCalendarRecipe = createStandardAction(
   "CREATE_CALENDAR_RECIPE"
 )<IAddingScheduledRecipeProps>()
 
+export const updateCalendarSettings = createAsyncAction(
+  "UPDATE_CALENDAR_SETTINGS_START",
+  "UPDATE_CALENDAR_SETTINGS_SUCCESS",
+  "UPDATE_CALENDAR_SETTINGS_FAILURE"
+)<
+  { readonly teamID: TeamID; readonly syncEnabled: boolean },
+  {
+    readonly syncEnabled: boolean
+    readonly calendarLink: string
+  },
+  {
+    readonly syncEnabled: boolean
+  }
+>()
+
+export async function updateCalendarSettingsAsync(
+  {
+    teamID,
+    syncEnabled
+  }: {
+    readonly teamID: TeamID
+    readonly syncEnabled: boolean
+  },
+  dispatch: Dispatch
+) {
+  const res = await api.updateCalendarSettings({
+    teamID,
+    data: { syncEnabled }
+  })
+  if (isRight(res)) {
+    dispatch(updateCalendarSettings.success(res.right))
+  } else {
+    dispatch(updateCalendarSettings.failure({ syncEnabled: !syncEnabled }))
+  }
+}
+
+export const regenerateCalendarLink = createAsyncAction(
+  "REGENERATE_CALENDAR_LINK_START",
+  "REGENERATE_CALENDAR_LINK_SUCCESS",
+  "REGENERATE_CALENDAR_LINK_FAILURE"
+)<
+  { readonly teamID: TeamID },
+  {
+    readonly calendarLink: string
+  },
+  void
+>()
+
+export async function regenerateCalendarLinkAsync(
+  teamID: TeamID,
+  dispatch: Dispatch
+) {
+  const res = await api.generateCalendarLink({
+    teamID
+  })
+  if (isRight(res)) {
+    dispatch(regenerateCalendarLink.success(res.right))
+  } else {
+    dispatch(regenerateCalendarLink.failure())
+  }
+}
+
 export type CalendarActions =
   | ReturnType<typeof setCalendarRecipe>
   | ReturnType<typeof deleteCalendarRecipe>
@@ -54,6 +133,8 @@ export type CalendarActions =
   | ActionType<typeof fetchCalendarRecipes>
   | ActionType<typeof moveOrCreateCalendarRecipe>
   | ActionType<typeof createCalendarRecipe>
+  | ActionType<typeof updateCalendarSettings>
+  | ActionType<typeof regenerateCalendarLink>
 
 // TODO(sbdchd): this should be imported from the recipes reducer
 export interface ICalRecipe {
@@ -74,11 +155,16 @@ export interface ICalendarState {
   readonly byId: {
     readonly [key: number]: ICalRecipe | undefined
   }
+  readonly settings: WebData<{
+    readonly syncEnabled: boolean
+    readonly calendarLink: string
+  }>
 }
 
 export const initialState: ICalendarState = {
   byId: {},
-  status: "initial"
+  status: "initial",
+  settings: undefined
 }
 
 // tslint:disable-next-line object-index-must-return-possibly-undefined
@@ -105,8 +191,9 @@ export const calendar = (
         ...state,
         byId: {
           ...byIdState,
-          ...action.payload.data.reduce(byId, {})
+          ...action.payload.scheduledRecipes.reduce(byId, {})
         },
+        settings: Success(action.payload.settings),
         status: "success"
       }
     case getType(setCalendarRecipe): {
@@ -217,6 +304,49 @@ export const calendar = (
         }
       }
     }
+    case getType(updateCalendarSettings.request):
+      return loop(
+        {
+          ...state,
+          settings: mapSuccessLike(state.settings, s => ({
+            ...s,
+            ...action.payload
+          }))
+        },
+        Cmd.run(updateCalendarSettingsAsync, {
+          args: [action.payload, Cmd.dispatch]
+        })
+      )
+    case getType(updateCalendarSettings.success):
+      return {
+        ...state,
+        settings: Success(action.payload)
+      }
+    case getType(updateCalendarSettings.failure):
+      return {
+        ...state,
+        settings: mapSuccessLike(state.settings, s => ({
+          ...s,
+          ...action.payload
+        }))
+      }
+    case getType(regenerateCalendarLink.request):
+      return loop(
+        state,
+        Cmd.run(regenerateCalendarLinkAsync, {
+          args: [action.payload.teamID, Cmd.dispatch]
+        })
+      )
+    case getType(regenerateCalendarLink.success):
+      return {
+        ...state,
+        settings: mapSuccessLike(state.settings, s => ({
+          ...s,
+          ...action.payload
+        }))
+      }
+    case getType(regenerateCalendarLink.failure):
+      return state
     case getType(moveOrCreateCalendarRecipe):
       return loop(
         state,

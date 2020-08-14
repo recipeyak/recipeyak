@@ -23,11 +23,14 @@ import { push } from "connected-react-router"
 
 import { ButtonPlain } from "@/components/Buttons"
 import CalendarDay from "@/components/CalendarDay"
+import { CalendarMoreDropdown } from "@/components/CalendarMoreDropdown"
 import { ITeam } from "@/store/reducers/teams"
 import {
   ICalRecipe,
   getTeamRecipes,
-  getPersonalRecipes
+  getPersonalRecipes,
+  updateCalendarSettings,
+  regenerateCalendarLink as regenerateCalendarLinkAction
 } from "@/store/reducers/calendar"
 import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
 import { Select } from "@/components/Forms"
@@ -43,16 +46,13 @@ import {
   Failure
 } from "@/webdata"
 
-function monthYearFromDate(date: number) {
-  return format(date, "MMM d | yyyy")
-}
-
-interface ICalTitleProps {
-  readonly dayTs: number
-}
-
-function CalTitle({ dayTs }: ICalTitleProps) {
-  return <p className="mr-2">{monthYearFromDate(dayTs)}</p>
+function CalTitle({ dayTs }: { readonly dayTs: number }) {
+  return (
+    <p className="mr-2">
+      <span>{format(dayTs, "MMM d")}</span>
+      <span className="hide-sm"> | {format(dayTs, "yyyy")}</span>
+    </p>
+  )
 }
 
 export interface IDays {
@@ -118,7 +118,7 @@ interface IDaysProps {
 
 function Days({ start, end, days, teamID }: IDaysProps) {
   if (isFailure(days)) {
-    return <p>error fetching calendar</p>
+    return <p className="m-auto">error fetching calendar</p>
   }
 
   const daysData = isSuccessLike(days) ? days.data : {}
@@ -185,11 +185,22 @@ interface INavProps {
 function Nav({ dayTs, teamID, onPrev, onNext, onCurrent, type }: INavProps) {
   const { handleOwnerChange, teams } = useTeamSelect(dayTs, type)
 
+  const {
+    settings,
+    setSyncEnabled,
+    regenerateCalendarLink
+  } = useCalendarSettings(teamID)
+
   return (
-    <section className="d-flex flex-grow justify-space-between align-items-center">
+    <section className="d-flex justify-space-between align-items-center">
       <div className="d-flex">
         <CalTitle dayTs={dayTs} />
         <TeamSelect teams={teams} value={teamID} onChange={handleOwnerChange} />
+        <CalendarMoreDropdown
+          settings={settings}
+          setSyncEnabled={setSyncEnabled}
+          regenerateCalendarLink={regenerateCalendarLink}
+        />
       </div>
       <section>
         <ButtonPlain size="small" onClick={onPrev}>
@@ -356,6 +367,27 @@ function useTeamSelect(currentDateTs: number, type: "shopping" | "recipes") {
   }
 
   return { handleOwnerChange, teams }
+}
+
+function useCalendarSettings(teamID: TeamID) {
+  const settings = useSelector(s => s.calendar.settings)
+  const dispatch = useDispatch()
+  const setSyncEnabled = (syncEnabled: boolean) => {
+    dispatch(
+      updateCalendarSettings.request({
+        teamID,
+        syncEnabled
+      })
+    )
+  }
+  const regenerateCalendarLink = () => {
+    dispatch(
+      regenerateCalendarLinkAction.request({
+        teamID
+      })
+    )
+  }
+  return { settings, setSyncEnabled, regenerateCalendarLink }
 }
 
 interface ICalendarProps {

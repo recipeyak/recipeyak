@@ -3,8 +3,9 @@ from datetime import date
 import pytest
 from django.urls import reverse
 from rest_framework import status
+from rest_framework.test import APIClient
 
-from core.models import ScheduledRecipe
+from core.models import MyUser, Recipe, ScheduledRecipe, Team
 
 pytestmark = pytest.mark.django_db
 
@@ -44,7 +45,9 @@ def test_updating_team_schedule_recipe(client, user, team, recipe):
     assert ScheduledRecipe.objects.get(id=scheduled.id).count == 2
 
 
-def test_fetching_team_calendar(client, user, team, recipe):
+def test_fetching_team_calendar(
+    client: APIClient, user: MyUser, team: Team, recipe: Recipe
+) -> None:
     url = reverse("calendar-list", kwargs={"team_pk": team.pk})
 
     client.force_authenticate(user)
@@ -58,3 +61,98 @@ def test_fetching_team_calendar(client, user, team, recipe):
     res = client.get(url, {"start": date(1976, 1, 1), "end": date(1977, 1, 1)})
     assert res.status_code == status.HTTP_200_OK
     assert recipe.id in {x["recipe"]["id"] for x in res.json()}
+
+
+def test_fetching_team_calendar_v2(
+    client: APIClient, user: MyUser, team: Team, recipe: Recipe
+) -> None:
+    """
+    Updated response type to include config options for the icalendar
+    syncing.
+    """
+    url = f"/api/v1/t/{team.pk}/calendar/"
+    client.force_authenticate(user)
+    recipe.schedule(on=date(1976, 1, 2), team=team)
+
+    res = client.get(url, {"start": date(1976, 1, 1), "end": date(1977, 1, 1), "v2": 1})
+    assert res.status_code == status.HTTP_200_OK
+
+    assert isinstance(res.json()["scheduledRecipes"], list)
+    assert len(res.json()["scheduledRecipes"]) > 0
+    assert recipe.id in {x["recipe"]["id"] for x in res.json()["scheduledRecipes"]}
+
+    assert isinstance(res.json()["settings"], dict)
+    assert isinstance(res.json()["settings"]["syncEnabled"], bool)
+    assert isinstance(res.json()["settings"]["calendarLink"], str)
+
+
+def test_fetching_team_cal_v2_content(
+    client: APIClient, user: MyUser, team: Team, recipe: Recipe
+) -> None:
+    """
+    Ensure changing the rows updates the response.
+    """
+    url = f"/api/v1/t/{team.pk}/calendar/"
+    client.force_authenticate(user)
+
+    res = client.get(url, {"start": date(1976, 1, 1), "end": date(1977, 1, 1), "v2": 1})
+    assert res.status_code == status.HTTP_200_OK
+
+    membership = user.membership_set.get(team=team)
+
+    assert res.json()["settings"]["syncEnabled"] == membership.calendar_sync_enabled
+    assert membership.calendar_sync_enabled is False
+    res_cal_link = res.json()["settings"]["calendarLink"]
+    assert (
+        res_cal_link
+        == f"http://testserver/t/{team.pk}/ical/{membership.calendar_secret_key}/schedule.ics"
+    )
+
+    membership.calendar_sync_enabled = True
+    membership.calendar_secret_key = "foo"
+    membership.save()
+
+    res = client.get(url, {"start": date(1976, 1, 1), "end": date(1977, 1, 1), "v2": 1})
+
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json()["settings"]["syncEnabled"] == membership.calendar_sync_enabled
+    assert membership.calendar_sync_enabled is True
+
+
+def test_cal_updating_settings_view(
+    client: APIClient, user: MyUser, team: Team, recipe: Recipe
+) -> None:
+    """
+    Ensure we can update the `syncEnabled` setting for the UI to work.
+    """
+    url = f"/api/v1/t/{team.pk}/calendar/settings/"
+
+    membership = user.membership_set.get(team=team)
+    assert membership.calendar_sync_enabled is False
+
+    client.force_authenticate(user)
+    res = client.patch(url, {"syncEnabled": True})
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json()["syncEnabled"] is True
+    membership.refresh_from_db()
+    assert membership.calendar_sync_enabled is True
+
+
+def test_cal_generate_link_view(
+    client: APIClient, user: MyUser, team: Team, recipe: Recipe
+) -> None:
+    """
+    Get the current link and ensure it changes after regen.
+    """
+    client.force_authenticate(user)
+    res = client.get(
+        f"/api/v1/t/{team.pk}/calendar/",
+        {"start": date(1976, 1, 1), "end": date(1977, 1, 1), "v2": 1},
+    )
+    assert res.status_code == status.HTTP_200_OK
+    initial_link = res.json()["settings"]["calendarLink"]
+
+    res = client.post(f"/api/v1/t/{team.pk}/calendar/generate_link/")
+    assert res.status_code == status.HTTP_200_OK
+    assert isinstance(res.json()["calendarLink"], str)
+    assert res.json()["calendarLink"] != initial_link, "ensure we changed the link"
