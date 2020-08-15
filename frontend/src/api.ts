@@ -13,6 +13,7 @@ import { IRecipe, IIngredient, IStep, INote } from "@/store/reducers/recipes"
 import { IInvite } from "@/store/reducers/invites"
 import { ICalRecipe } from "@/store/reducers/calendar"
 import { isOk, Err } from "@/result"
+import * as t from "io-ts"
 
 export const updateUser = (data: Partial<IUser>) =>
   http.patch<IUser>("/api/v1/user/", data)
@@ -343,19 +344,71 @@ export function getCalendarRecipeList({
   start,
   end
 }: {
-  teamID: TeamID
-  start: string
-  end: string
+  readonly teamID: TeamID
+  readonly start: string
+  readonly end: string
 }) {
   const id = teamID === "personal" ? "me" : teamID
-  return http.get<ICalRecipe[]>(`/api/v1/t/${id}/calendar/`, {
+  return http.request({
+    method: "GET",
+    url: `/api/v1/t/${id}/calendar/`,
+    shape: t.type({
+      scheduledRecipes: t.array(
+        t.type({
+          id: t.number,
+          count: t.number,
+          on: t.string,
+          created: t.string,
+          team: t.union([t.number, t.null]),
+          user: t.union([t.number, t.null]),
+          recipe: t.type({
+            id: t.number,
+            name: t.string
+          })
+        })
+      ),
+      settings: t.type({
+        syncEnabled: t.boolean,
+        calendarLink: t.string
+      })
+    }),
     params: {
+      v2: 1,
       start,
       end
     }
   })
 }
 
+export function updateCalendarSettings({
+  teamID,
+  data
+}: {
+  readonly teamID: TeamID
+  readonly data: {
+    readonly syncEnabled: boolean
+  }
+}) {
+  return http.request({
+    method: "PATCH",
+    url: `/api/v1/t/${teamID}/calendar/settings/`,
+    data,
+    shape: t.type({
+      syncEnabled: t.boolean,
+      calendarLink: t.string
+    })
+  })
+}
+
+export function generateCalendarLink({ teamID }: { readonly teamID: TeamID }) {
+  return http.request({
+    method: "POST",
+    url: `/api/v1/t/${teamID}/calendar/generate_link/`,
+    shape: t.type({
+      calendarLink: t.string
+    })
+  })
+}
 export const scheduleRecipe = (
   recipeID: IRecipe["id"],
   teamID: TeamID,

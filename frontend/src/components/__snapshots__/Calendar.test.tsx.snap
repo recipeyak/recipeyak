@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<Calendar> Snap smoke test render with empty data 1`] = `
-.c4 {
+.c6 {
   -webkit-flex: 1 1 0%;
   -ms-flex: 1 1 0%;
   flex: 1 1 0%;
@@ -11,11 +11,11 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
   transition: background-color 0.2s;
 }
 
-.c4:not(:last-child) {
+.c6:not(:last-child) {
   margin-right: 0.25rem;
 }
 
-.c5 {
+.c7 {
   -webkit-flex: 1 1 0%;
   -ms-flex: 1 1 0%;
   flex: 1 1 0%;
@@ -26,11 +26,30 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
   border-bottom: 2px solid #ff7247;
 }
 
-.c5:not(:last-child) {
+.c7:not(:last-child) {
   margin-right: 0.25rem;
 }
 
 .c1 {
+  position: relative;
+}
+
+.c2 {
+  position: absolute;
+  left: auto;
+  right: 0;
+  z-index: 1000;
+  padding: 0.5rem;
+  margin: 0.125rem 0 0;
+  font-size: 1rem;
+  white-space: nowrap;
+  background-color: #f9f9f9;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 0.25rem;
+  display: none;
+}
+
+.c3 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -40,15 +59,15 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
   flex-shrink: 0;
 }
 
-.c1 > b {
+.c3 > b {
   width: 14.285714285714285%;
 }
 
-.c1 > b:not(:last-child) {
+.c3 > b:not(:last-child) {
   margin-right: 0.25rem;
 }
 
-.c3 {
+.c5 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -56,11 +75,11 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
   height: 33.33333333333333%;
 }
 
-.c3:not(:last-child) {
+.c5:not(:last-child) {
   margin-bottom: 0.25rem;
 }
 
-.c2 {
+.c4 {
   margin-bottom: 0.5rem;
   -webkit-box-flex: 1;
   -webkit-flex-grow: 1;
@@ -84,41 +103,41 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
 }
 
 @media (max-width:992px) {
-  .c4:not(:last-child) {
+  .c6:not(:last-child) {
     margin-right: 0;
     margin-bottom: 0.25rem;
   }
 }
 
 @media (max-width:992px) {
-  .c4 {
+  .c6 {
     width: 100%;
     min-height: 75px;
   }
 }
 
 @media (max-width:992px) {
-  .c5:not(:last-child) {
+  .c7:not(:last-child) {
     margin-right: 0;
     margin-bottom: 0.25rem;
   }
 }
 
 @media (max-width:992px) {
-  .c5 {
+  .c7 {
     width: 100%;
     min-height: 75px;
-  }
-}
-
-@media (max-width:992px) {
-  .c1 {
-    display: none;
   }
 }
 
 @media (max-width:992px) {
   .c3 {
+    display: none;
+  }
+}
+
+@media (max-width:992px) {
+  .c5 {
     height: 100%;
     -webkit-flex-direction: column;
     -ms-flex-direction: column;
@@ -126,8 +145,8 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
     margin-top: 0.5rem;
   }
 
-  .c3:first-child,
-  .c3:last-child {
+  .c5:first-child,
+  .c5:last-child {
     display: none;
   }
 }
@@ -142,7 +161,7 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
   className="c0"
 >
   <section
-    className="d-flex flex-grow justify-space-between align-items-center"
+    className="d-flex justify-space-between align-items-center"
   >
     <div
       className="d-flex"
@@ -150,7 +169,15 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
       <p
         className="mr-2"
       >
-        Dec 31 | 1775
+        <span>
+          Dec 31
+        </span>
+        <span
+          className="hide-sm"
+        >
+           | 
+          1775
+        </span>
       </p>
       <div
         className="select is-small  undefined"
@@ -168,6 +195,26 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
             Personal
           </option>
         </select>
+      </div>
+      <div
+        className="c1"
+      >
+        <button
+          className="my-button ml-1 is-small"
+          disabled={true}
+          onClick={[Function]}
+        >
+          more
+        </button>
+        <div
+          className="c2 white-space-initial w-300px"
+        >
+          <p
+            className="text-center"
+          >
+            loading...
+          </p>
+        </div>
       </div>
     </div>
     <section>
@@ -192,7 +239,7 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
     </section>
   </section>
   <div
-    className="c1"
+    className="c3"
   >
     <b>
       Sun
@@ -217,13 +264,13 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
     </b>
   </div>
   <div
-    className="c2"
+    className="c4"
   >
     <div
-      className="c3"
+      className="c5"
     >
       <div
-        className="c4"
+        className="c6"
       >
         <div
           className="d-flex"
@@ -247,7 +294,7 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
         <ul />
       </div>
       <div
-        className="c4"
+        className="c6"
       >
         <div
           className="d-flex"
@@ -271,7 +318,7 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
         <ul />
       </div>
       <div
-        className="c4"
+        className="c6"
       >
         <div
           className="d-flex"
@@ -295,7 +342,7 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
         <ul />
       </div>
       <div
-        className="c4"
+        className="c6"
       >
         <div
           className="d-flex"
@@ -319,7 +366,7 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
         <ul />
       </div>
       <div
-        className="c4"
+        className="c6"
       >
         <div
           className="d-flex"
@@ -343,7 +390,7 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
         <ul />
       </div>
       <div
-        className="c4"
+        className="c6"
       >
         <div
           className="d-flex"
@@ -367,7 +414,7 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
         <ul />
       </div>
       <div
-        className="c4"
+        className="c6"
       >
         <div
           className="d-flex"
@@ -392,10 +439,10 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
       </div>
     </div>
     <div
-      className="c3"
+      className="c5"
     >
       <div
-        className="c4"
+        className="c6"
       >
         <div
           className="d-flex"
@@ -419,7 +466,7 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
         <ul />
       </div>
       <div
-        className="c5"
+        className="c7"
       >
         <div
           className="d-flex"
@@ -443,7 +490,7 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
         <ul />
       </div>
       <div
-        className="c4"
+        className="c6"
       >
         <div
           className="d-flex"
@@ -467,7 +514,7 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
         <ul />
       </div>
       <div
-        className="c4"
+        className="c6"
       >
         <div
           className="d-flex"
@@ -491,7 +538,7 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
         <ul />
       </div>
       <div
-        className="c4"
+        className="c6"
       >
         <div
           className="d-flex"
@@ -515,7 +562,7 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
         <ul />
       </div>
       <div
-        className="c4"
+        className="c6"
       >
         <div
           className="d-flex"
@@ -539,7 +586,7 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
         <ul />
       </div>
       <div
-        className="c4"
+        className="c6"
       >
         <div
           className="d-flex"
@@ -564,10 +611,10 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
       </div>
     </div>
     <div
-      className="c3"
+      className="c5"
     >
       <div
-        className="c4"
+        className="c6"
       >
         <div
           className="d-flex"
@@ -591,7 +638,7 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
         <ul />
       </div>
       <div
-        className="c4"
+        className="c6"
       >
         <div
           className="d-flex"
@@ -615,7 +662,7 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
         <ul />
       </div>
       <div
-        className="c4"
+        className="c6"
       >
         <div
           className="d-flex"
@@ -639,7 +686,7 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
         <ul />
       </div>
       <div
-        className="c4"
+        className="c6"
       >
         <div
           className="d-flex"
@@ -663,7 +710,7 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
         <ul />
       </div>
       <div
-        className="c4"
+        className="c6"
       >
         <div
           className="d-flex"
@@ -687,7 +734,7 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
         <ul />
       </div>
       <div
-        className="c4"
+        className="c6"
       >
         <div
           className="d-flex"
@@ -711,7 +758,7 @@ exports[`<Calendar> Snap smoke test render with empty data 1`] = `
         <ul />
       </div>
       <div
-        className="c4"
+        className="c6"
       >
         <div
           className="d-flex"

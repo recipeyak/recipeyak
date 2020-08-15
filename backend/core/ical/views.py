@@ -8,7 +8,7 @@ from django.utils.http import http_date
 from django.views.decorators.http import require_http_methods
 
 from core.ical.utils import create_calendar, create_event
-from core.models import ScheduledRecipe, Team
+from core.models import Membership, ScheduledRecipe, Team
 
 
 @require_http_methods(["GET", "HEAD"])
@@ -19,7 +19,14 @@ def get_ical_view(request: HttpRequest, team_id: int, ical_id: str) -> HttpRespo
     We limit the recipes to the last year to avoid having the response size
     gradually increasing & time.
     """
-    team: Team = get_object_or_404(Team, id=team_id, ical_id=ical_id)
+    membership = Membership.objects.filter(
+        team_id=team_id, calendar_secret_key=ical_id, calendar_sync_enabled=True
+    ).first()
+    if membership is not None:
+        team = membership.team
+    else:
+        # deprecated url
+        team = get_object_or_404(Team, id=team_id, ical_id=ical_id)
 
     scheduled_recipes = (
         ScheduledRecipe.objects.filter(team=team)

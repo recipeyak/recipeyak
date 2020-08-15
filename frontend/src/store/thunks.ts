@@ -103,6 +103,7 @@ import {
 } from "date-fns"
 import { isOk, isErr, Ok, Err, Result } from "@/result"
 import { heldKeys } from "@/components/CurrentKeys"
+import { isRight } from "fp-ts/lib/Either"
 
 // TODO(sbdchd): move to @/store/store
 export type Dispatch = ReduxDispatch<Action>
@@ -999,8 +1000,15 @@ export const fetchCalendarAsync = (dispatch: Dispatch) => async (
   const start = toISODateString(startOfWeek(subWeeks(currentDayTs, 1)))
   const end = toISODateString(endOfWeek(addWeeks(currentDayTs, 1)))
   const res = await api.getCalendarRecipeList({ teamID, start, end })
-  if (isOk(res)) {
-    dispatch(fetchCalendarRecipes.success({ data: res.data, start, end }))
+  if (isRight(res)) {
+    dispatch(
+      fetchCalendarRecipes.success({
+        scheduledRecipes: res.right.scheduledRecipes,
+        start,
+        end,
+        settings: res.right.settings
+      })
+    )
   } else {
     dispatch(fetchCalendarRecipes.failure())
   }

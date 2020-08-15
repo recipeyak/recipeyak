@@ -1,5 +1,6 @@
 from datetime import date, datetime
 from email.utils import parsedate_to_datetime
+from urllib.parse import urlparse
 
 import pytest
 from rest_framework import status
@@ -147,3 +148,62 @@ def test_get_ical_view_works_with_accept_encoding(
     url = f"/t/{team.id}/ical/{team.ical_id}/schedule.ics"
     res = client.get(url, HTTP_ACCEPT="text/calendar")
     assert res.status_code == status.HTTP_200_OK
+
+
+def test_get_ical_view_with_user_specific_id(
+    client: APIClient, user: MyUser, recipe: Recipe, team: Team
+) -> None:
+    """
+    Ensure the user specific secret key works.
+    """
+    membership = user.membership_set.get(team=team)
+    membership.calendar_sync_enabled = True
+    membership.save()
+    url = f"/t/{team.id}/ical/{membership.calendar_secret_key}/schedule.ics"
+    res = client.get(url, HTTP_ACCEPT="text/calendar")
+    assert res.status_code == status.HTTP_200_OK
+
+
+def test_get_ical_view_with_schedule_endpoint(
+    client: APIClient, user: MyUser, recipe: Recipe, team: Team
+) -> None:
+    """
+    Ensure the url from the schedule endpoint is valid.
+    """
+    url = f"/api/v1/t/{team.pk}/calendar/"
+    client.force_authenticate(user)
+
+    res = client.get(url, {"start": date(1976, 1, 1), "end": date(1977, 1, 1), "v2": 1})
+    assert res.status_code == status.HTTP_200_OK
+    calendar_link = res.json()["settings"]["calendarLink"]
+
+    client.force_authenticate(None)
+    relative_url = urlparse(calendar_link).path
+
+    membership = user.membership_set.get(team=team)
+    membership.calendar_sync_enabled = True
+    membership.save()
+
+    res = client.get(relative_url, HTTP_ACCEPT="text/calendar")
+    assert (
+        res.status_code == status.HTTP_200_OK
+    ), "API returned a valid URL for retrieving calendar info."
+
+
+def test_get_ical_view_404_when_disabled(
+    client: APIClient, user: MyUser, recipe: Recipe, team: Team
+) -> None:
+    """
+    Url should be disabled when calendar_sync_enabled is false.
+    """
+    membership = user.membership_set.get(team=team)
+    membership.calendar_sync_enabled = True
+    membership.save()
+    url = f"/t/{team.id}/ical/{membership.calendar_secret_key}/schedule.ics"
+    res = client.get(url, HTTP_ACCEPT="text/calendar")
+    assert res.status_code == status.HTTP_200_OK
+
+    membership.calendar_sync_enabled = False
+    membership.save()
+    res = client.get(url, HTTP_ACCEPT="text/calendar")
+    assert res.status_code == status.HTTP_404_NOT_FOUND

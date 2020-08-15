@@ -471,6 +471,7 @@ class Team(CommonInfo):
     name = models.CharField(max_length=255)
     is_public = models.BooleanField(default=False)
     recipes = GenericRelation("Recipe", related_query_name="owner_team")
+    # deprecated
     ical_id = models.TextField(
         default=get_random_ical_id,
         help_text="Secret key used to prevent unauthorized access to schedule calendar.",
@@ -626,6 +627,15 @@ class Membership(CommonInfo):
 
     team: Team = models.ForeignKey(Team, on_delete=models.CASCADE)
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+
+    calendar_sync_enabled = models.BooleanField(
+        default=False,
+        help_text="When enabled, accept requests that have the valid secret key.",
+    )
+    calendar_secret_key = models.TextField(
+        default=get_random_ical_id,
+        help_text="Secret key used to construct the icalendar url.",
+    )
 
     class Meta:
         unique_together = (("user", "team"),)

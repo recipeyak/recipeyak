@@ -1,11 +1,67 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios"
+import axios, {
+  AxiosError,
+  CancelToken,
+  AxiosRequestConfig,
+  AxiosResponse
+} from "axios"
 import { uuid4 } from "@/uuid"
 import { store } from "@/store/store"
 import raven from "raven-js"
 import { setUserLoggedIn } from "@/store/reducers/user"
 import { Result, Ok, Err } from "@/result"
+import * as t from "io-ts"
+import { Either, left } from "fp-ts/lib/Either"
 
 export const baseHttp = axios.create({ timeout: 15000 })
+
+type Method =
+  | "GET"
+  | "POST"
+  | "PUT"
+  | "DELETE"
+  | "HEAD"
+  | "OPTIONS"
+  | "CONNECT"
+  | "PATCH"
+  | "TRACE"
+
+type Params = Record<string, string | number>
+
+/**
+ * Version 3 of the http client library used in this repo. First we used
+ * axios, then we wrapped axios in some exception handling to get result
+ * types, now we incorporate runtime type checking via io-ts to validate the
+ * response types.
+ */
+async function http3<T, A, O>({
+  url,
+  method,
+  params,
+  cancelToken,
+  shape,
+  data
+}: {
+  readonly url: string
+  readonly method: Method
+  readonly data?: T
+  readonly shape: t.Type<A, O>
+  readonly params?: Params
+  readonly cancelToken?: CancelToken
+}): Promise<Either<t.Errors | AxiosError | Error, A>> {
+  // tslint:disable-next-line: no-try
+  try {
+    const r = await baseHttp.request<unknown>({
+      url,
+      method,
+      params,
+      cancelToken,
+      data
+    })
+    return shape.decode(r.data)
+  } catch (e) {
+    return left(e)
+  }
+}
 
 /* We check if detail matches our string because Django will not return 401 when
  * the session expires
@@ -107,7 +163,16 @@ export const http = {
     baseHttp
       .post<T>(url, data, config)
       .then(toOk)
-      .catch(toErr)
+      .catch(toErr),
+  request: <T, A, O>(options: {
+    readonly shape: t.Type<A, O>
+    readonly params?: Params
+    readonly method: Method
+    readonly url: string
+    readonly data?: T
+  }): Promise<Either<t.Errors | AxiosError | Error, A>> => {
+    return http3(options)
+  }
 }
 // tslint:enable:no-promise-catch
 

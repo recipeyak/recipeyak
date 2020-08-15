@@ -5,6 +5,10 @@
   display: flex;
 }
 
+.d-block {
+  display: block !important;
+}
+
 .d-none {
   display: none;
 }
@@ -74,6 +78,10 @@
   }
   .mt-#{$i} {
     margin-top: #{$i/4}rem !important;
+  }
+  .my-#{$i} {
+    margin-top: #{$i/4}rem !important;
+    margin-bottom: #{$i/4}rem !important;
   }
   .mr-#{$i} {
     margin-right: #{$i/4}rem !important;
@@ -206,6 +214,20 @@
 
 .margin-0-auto {
   margin: 0 auto;
+}
+
+.mx-auto {
+  margin-right: auto !important;
+  margin-left: auto !important;
+}
+
+.m-auto {
+  margin: auto !important;
+}
+
+.my-auto {
+  margin-top: auto !important;
+  margin-bottom: auto !important;
 }
 
 // make new lines actual appear
@@ -492,4 +514,12 @@
 
 .min-width-max-content {
   min-width: max-content;
+}
+
+.box-shadow-none {
+  box-shadow: none !important;
+}
+
+.white-space-initial {
+  white-space: initial !important;
 }

@@ -1,8 +1,14 @@
 import * as React from "react"
 import { classNames } from "@/classnames"
 
-export const selectTarget = (e: React.ChangeEvent<HTMLInputElement>) =>
-  e.target.select()
+type Target = { select: () => void }
+
+export const selectTarget = (e: { target: EventTarget | Target }) => {
+  // hack to get around typescript not knowing about the select property
+  if ("select" in e.target) {
+    e.target.select()
+  }
+}
 
 interface IFormErrorHandlerProps {
   readonly error: string[] | null | undefined

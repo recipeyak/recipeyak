@@ -15,6 +15,7 @@ import { getModel } from "redux-loop"
 import { addWeeks, isSameDay, isAfter, subWeeks, startOfWeek } from "date-fns"
 import parseISO from "date-fns/parseISO"
 import { toISODateString } from "@/date"
+import { Success } from "@/webdata"
 
 describe("Calendar", () => {
   it("sets calendar recipes starting with empty state", () => {
@@ -52,7 +53,11 @@ describe("Calendar", () => {
       byId: {
         [recipes[0].id]: recipes[0],
         [recipes[1].id]: recipes[1]
-      }
+      },
+      settings: Success({
+        syncEnabled: false,
+        calendarLink: ""
+      })
     }
 
     const start = "2019-02-01T00:00:00.000Z"
@@ -61,7 +66,15 @@ describe("Calendar", () => {
     expect(
       calendar(
         beforeState,
-        fetchCalendarRecipes.success({ data: recipes, start, end })
+        fetchCalendarRecipes.success({
+          scheduledRecipes: recipes,
+          start,
+          end,
+          settings: {
+            syncEnabled: false,
+            calendarLink: ""
+          }
+        })
       )
     ).toEqual(afterState)
   })
@@ -584,7 +597,15 @@ describe("Calendar", () => {
     const nextState = getModel(
       calendar(
         beforeState,
-        fetchCalendarRecipes.success({ data: [], start, end })
+        fetchCalendarRecipes.success({
+          scheduledRecipes: [],
+          start,
+          end,
+          settings: {
+            syncEnabled: false,
+            calendarLink: ""
+          }
+        })
       )
     )
 
@@ -652,7 +673,15 @@ describe("calendar selectors", () => {
     const nextState = getModel(
       calendar(
         emptyState,
-        fetchCalendarRecipes.success({ data: [calRecipeOnSameDay], start, end })
+        fetchCalendarRecipes.success({
+          scheduledRecipes: [calRecipeOnSameDay],
+          settings: {
+            syncEnabled: false,
+            calendarLink: ""
+          },
+          start,
+          end
+        })
       )
     )
 
