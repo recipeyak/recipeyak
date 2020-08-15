@@ -78,6 +78,11 @@ REST_FRAMEWORK = {
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
 }
 
+# Ensure request.is_secure returns true with the correct header since we're
+# running behind a proxy
+# see: https://docs.djangoproject.com/en/2.2/ref/settings/#secure-proxy-ssl-header
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 # https://stackoverflow.com/questions/25468676/django-sites-model-what-is-and-why-is-site-id-1#25468782
 SITE_ID = 1
 
