@@ -19,10 +19,9 @@ import {
   Dispatch
 } from "@/store/thunks"
 import { isAfter, isBefore, parseISO } from "date-fns"
-import { WebData, Success, isSuccessLike, mapSuccessLike } from "@/webdata"
+import { WebData, Success, mapSuccessLike } from "@/webdata"
 import * as api from "@/api"
 import { isRight } from "fp-ts/lib/Either"
-import { IState } from "@/store/store"
 
 export const fetchCalendarRecipes = createAsyncAction(
   "FETCH_CALENDAR_RECIPES_START",
