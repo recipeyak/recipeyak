@@ -9,12 +9,12 @@ import {
   IRecipe,
   fetchRecipe,
   IRecipesState,
-  initialState
+  initialState,
 } from "@/store/reducers/recipes"
 import {
   baseRecipe,
   baseIngredient,
-  baseStep
+  baseStep,
 } from "@/store/reducers/recipes.test"
 import { TestProvider } from "@/testUtils"
 import { RecipeTimeline } from "@/components/RecipeTimeline"
@@ -36,7 +36,7 @@ function testHook<T>(func: () => T, store: Store): T {
   const root = mount(
     <TestProvider store={store}>
       <TestComponent />
-    </TestProvider>
+    </TestProvider>,
   )
 
   return root.find<ISpanProps<T>>(Span).props().output
@@ -44,7 +44,7 @@ function testHook<T>(func: () => T, store: Store): T {
 
 function rendererCreate<T>(x: ReactElement<T>) {
   return renderer.create(x, {
-    createNodeMock: () => document.createElement("textarea")
+    createNodeMock: () => document.createElement("textarea"),
   })
 }
 
@@ -54,22 +54,22 @@ describe("<Recipe/>", () => {
     url: "/recipes/98-apple-crisp",
     isExact: true,
     params: {
-      id: "98"
-    }
+      id: "98",
+    },
   }
   const location: Location = {
     pathname: "/recipes/98-apple-crisp",
     search: "?timeline=1",
     hash: "",
     key: "u3gfv7",
-    state: null
+    state: null,
   }
 
   it("renders without failure", () => {
     mount(
       <TestProvider>
         <Recipe history={history} match={match} location={location} />
-      </TestProvider>
+      </TestProvider>,
     )
   })
 
@@ -80,13 +80,13 @@ describe("<Recipe/>", () => {
         id: 98,
         name: "Apple Crisp",
         ingredients: [baseIngredient],
-        steps: [baseStep]
+        steps: [baseStep],
       }
       const store = createEmptyStore()
 
       const actions = [
         fetchRecipe.failure({ id: recipe.id, error404: true }),
-        fetchRecipe.success(recipe)
+        fetchRecipe.success(recipe),
       ]
 
       actions.forEach(action => {
@@ -101,7 +101,7 @@ describe("<Recipe/>", () => {
               match={match}
               location={{ ...location, search: "?timeline=1" }}
             />
-          </TestProvider>
+          </TestProvider>,
         ).toJSON()
         expect(tree).toMatchSnapshot()
       })
@@ -114,7 +114,7 @@ describe("<Recipe/>", () => {
         id: 98,
         name: "Apple Crisp",
         ingredients: [baseIngredient],
-        steps: [baseStep]
+        steps: [baseStep],
       }
 
       store.dispatch(fetchRecipe.success(recipe))
@@ -126,7 +126,7 @@ describe("<Recipe/>", () => {
             match={match}
             location={{ ...location, search: "?timeline=1" }}
           />
-        </TestProvider>
+        </TestProvider>,
       )
       expect(root.toJSON()).toMatchSnapshot()
 
@@ -137,7 +137,7 @@ describe("<Recipe/>", () => {
             match={match}
             location={{ ...location, search: "" }}
           />
-        </TestProvider>
+        </TestProvider>,
       )
       expect(root.toJSON()).toMatchSnapshot()
     })
@@ -148,19 +148,19 @@ describe("<Recipe/>", () => {
         id: 98,
         name: "Apple Crisp",
         ingredients: [baseIngredient],
-        steps: [baseStep]
+        steps: [baseStep],
       }
 
       const recipes: IRecipesState = {
         ...initialState,
         byId: {
-          98: Success(recipe)
-        }
+          98: Success(recipe),
+        },
       }
       const emptyState = createEmptyStore().getState()
       const store = createEmptyStore({
         ...emptyState,
-        recipes
+        recipes,
       })
 
       const res = testHook(() => useRecipe(recipe.id), store)
@@ -172,7 +172,7 @@ describe("<Recipe/>", () => {
         .create(
           <TestProvider>
             <RecipeTimeline createdAt="1776-1-1" recipeId={10} />
-          </TestProvider>
+          </TestProvider>,
         )
         .toJSON()
       expect(timelineTree).toMatchSnapshot()

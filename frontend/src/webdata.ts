@@ -2,7 +2,7 @@ const enum RDK {
   Loading = "Loading",
   Failure = "Failure",
   Success = "Success",
-  Refetching = "Refetching"
+  Refetching = "Refetching",
 }
 
 export interface ILoading {
@@ -20,7 +20,7 @@ interface IFailure<E> {
 export function Failure<T>(failure: T): IFailure<T> {
   return {
     kind: RDK.Failure,
-    failure
+    failure,
   }
 }
 
@@ -32,7 +32,7 @@ export interface ISuccess<T> {
 export function Success<T>(data: T): ISuccess<T> {
   return {
     kind: RDK.Success,
-    data
+    data,
   }
 }
 
@@ -44,7 +44,7 @@ export interface IRefetching<T> {
 export function Refetching<T>(data: T): IRefetching<T> {
   return {
     kind: RDK.Refetching,
-    data
+    data,
   }
 }
 
@@ -60,7 +60,7 @@ export type WebData<T = void, E = HttpErrorKind | undefined> = RemoteData<E, T>
 
 export const enum HttpErrorKind {
   error404,
-  other
+  other,
 }
 
 // for now we have to specify the type guard
@@ -80,7 +80,7 @@ export const isRefetching = <T, E>(x: WebData<T, E>): x is IRefetching<T> =>
   x != null && x.kind === RDK.Refetching
 
 export const isSuccessOrRefetching = <T, E>(
-  x: WebData<T, E>
+  x: WebData<T, E>,
 ): x is ISuccess<T> | IRefetching<T> => isSuccess(x) || isRefetching(x)
 
 export const isSuccessLike = isSuccessOrRefetching
@@ -88,7 +88,7 @@ export const isSuccessLike = isSuccessOrRefetching
 /** map over WebData with @param func if data is a type structurally similar to Success */
 export function mapSuccessLike<T, R, E>(
   d: WebData<T, E>,
-  func: (data: T) => R
+  func: (data: T) => R,
 ): WebData<R, E> {
   if (isSuccessOrRefetching(d)) {
     return { ...d, data: func(d.data) }
@@ -98,7 +98,7 @@ export function mapSuccessLike<T, R, E>(
 
 /** handle transitioning from Success & InitialState to Loading */
 export function toLoading<T, E>(
-  state: WebData<T, E>
+  state: WebData<T, E>,
 ): IRefetching<T> | ILoading {
   if (isSuccess(state)) {
     return Refetching(state.data)

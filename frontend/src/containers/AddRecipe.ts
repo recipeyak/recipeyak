@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import {
   postNewRecipeAsync,
   Dispatch,
-  fetchingTeamsAsync
+  fetchingTeamsAsync,
 } from "@/store/thunks"
 
 import AddRecipe from "@/components/AddRecipe"
@@ -22,13 +22,13 @@ import {
   addAddRecipeFormStep,
   removeAddRecipeFormStep,
   updateAddRecipeFormStep,
-  clearAddRecipeForm
+  clearAddRecipeForm,
 } from "@/store/reducers/addrecipe"
 import { ITeam } from "@/store/reducers/teams"
 import {
   IIngredientBasic,
   IStepBasic,
-  resetAddRecipeErrors
+  resetAddRecipeErrors,
 } from "@/store/reducers/recipes"
 import { updateTeamID } from "@/store/reducers/user"
 
@@ -46,7 +46,7 @@ const mapStateToProps = (state: IState) => ({
   teams: teamsFrom(state),
   loadingTeams:
     state.teams.status === "loading" || state.teams.status === "initial",
-  teamID: state.user.teamID
+  teamID: state.user.teamID,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -77,7 +77,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   clearErrors: () => dispatch(resetAddRecipeErrors()),
   clearForm: () => dispatch(clearAddRecipeForm()),
 
-  fetchData: fetchingTeamsAsync(dispatch)
+  fetchData: fetchingTeamsAsync(dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddRecipe)

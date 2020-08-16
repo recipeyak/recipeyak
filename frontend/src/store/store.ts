@@ -3,7 +3,7 @@ import {
   applyMiddleware,
   compose as reduxCompose,
   Store as ReduxStore,
-  StoreEnhancer
+  StoreEnhancer,
 } from "redux"
 
 import {
@@ -12,7 +12,7 @@ import {
   Loop,
   StoreCreator,
   install,
-  ReducerMapObject
+  ReducerMapObject,
 } from "redux-loop"
 
 import pickBy from "lodash/pickBy"
@@ -23,33 +23,33 @@ import {
   RouterState,
   RouterAction,
   connectRouter,
-  routerMiddleware
+  routerMiddleware,
 } from "connected-react-router"
 
 import recipes, { IRecipesState, RecipeActions } from "@/store/reducers/recipes"
 import user, { IUserState, UserActions } from "@/store/reducers/user"
 import notification, {
   INotificationState,
-  NotificationsActions
+  NotificationsActions,
 } from "@/store/reducers/notification"
 import passwordChange, {
   IPasswordChangeState,
-  PasswordChangeActions
+  PasswordChangeActions,
 } from "@/store/reducers/passwordChange"
 import shoppinglist, {
   IShoppingListState,
-  ShoppingListActions
+  ShoppingListActions,
 } from "@/store/reducers/shoppinglist"
 import addrecipe, {
   IAddRecipeState,
-  AddRecipeActions
+  AddRecipeActions,
 } from "@/store/reducers/addrecipe"
 import auth, { IAuthState, AuthActions, login } from "@/store/reducers/auth"
 import teams, { ITeamsState, TeamsActions } from "@/store/reducers/teams"
 import invites, { InviteActions, IInvitesState } from "@/store/reducers/invites"
 import calendar, {
   ICalendarState,
-  CalendarActions
+  CalendarActions,
 } from "@/store/reducers/calendar"
 import { loadState, saveState } from "@/store/localStorage"
 import { getType } from "typesafe-actions"
@@ -115,14 +115,14 @@ const recipeApp: LoopReducer<IState, Action> = combineReducers(
     addrecipe,
     auth,
     teams,
-    calendar
-  })
+    calendar,
+  }),
 )
 
 // reset redux to default state on logout
 export function rootReducer(
   state: IState | undefined,
-  action: Action
+  action: Action,
 ): IState | Loop<IState, Action> {
   if (state == null) {
     return recipeApp(undefined, action)
@@ -134,7 +134,7 @@ export function rootReducer(
       // so we can redirect users to where they were attempting to
       // visit before being asked for authentication
       auth: state.auth,
-      router: state.router
+      router: state.router,
     }
   }
   return recipeApp(state, action)
@@ -162,14 +162,14 @@ const defaultData = (): IState => {
     ...saved,
     user: {
       ...empty.user,
-      ...saved.user
+      ...saved.user,
     },
     // Note(sbdchd): we must spread the initial state for all of these as `undefined` is not
     // passed into the reducers, resulting in a bad state.
     auth: {
       ...empty.auth,
-      ...saved.auth
-    }
+      ...saved.auth,
+    },
   }
 }
 
@@ -180,7 +180,7 @@ if (DEBUG) {
 
 export const enhancer: StoreEnhancer<IState, Action> = compose(
   install(),
-  applyMiddleware(...middleware)
+  applyMiddleware(...middleware),
 )
 
 // We need an empty store for the unit tests & hydrating from localstorage
@@ -205,15 +205,15 @@ store.subscribe(
         // this is acceptable for us for the added performance
         loggedIn: store.getState().user.loggedIn,
         darkMode: store.getState().user.darkMode,
-        teamID: store.getState().user.teamID
+        teamID: store.getState().user.teamID,
       },
       addrecipe: store.getState().addrecipe,
       auth: {
-        fromUrl: store.getState().auth.fromUrl
-      }
+        fromUrl: store.getState().auth.fromUrl,
+      },
       // tslint:disable-next-line:no-any
     } as any) as IState)
-  }, second)
+  }, second),
 )
 
 export default store

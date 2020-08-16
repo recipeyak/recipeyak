@@ -11,11 +11,11 @@ import { IState } from "@/store/store"
 import { TextInput, RadioButton } from "@/components/Forms"
 
 const mapStateToProps = (state: IState) => ({
-  loading: !!state.teams.creating
+  loading: !!state.teams.creating,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  createTeam: creatingTeamAsync(dispatch)
+  createTeam: creatingTeamAsync(dispatch),
 })
 
 interface ITeamCreateProps {
@@ -23,7 +23,7 @@ interface ITeamCreateProps {
   readonly createTeam: (
     name: string,
     emails: string[],
-    level: IMember["level"]
+    level: IMember["level"],
   ) => void
 }
 interface ITeamCreateState {
@@ -36,13 +36,13 @@ class TeamCreate extends React.Component<ITeamCreateProps, ITeamCreateState> {
   state: ITeamCreateState = {
     level: "contributor",
     emails: "",
-    name: ""
+    name: "",
   }
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     /* eslint-disable @typescript-eslint/consistent-type-assertions */
     this.setState(({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     } as unknown) as ITeamCreateState)
   /* eslint-enable @typescript-eslint/consistent-type-assertions */
 

@@ -6,7 +6,7 @@ import { GithubImg, GitlabImg, GoogleImg } from "@/components/SocialButtons"
 import {
   GITHUB_OAUTH_URL,
   GITLAB_OAUTH_URL,
-  GOOGLE_OAUTH_URL
+  GOOGLE_OAUTH_URL,
 } from "@/settings"
 import { SocialProvider, ISocialAccountsState } from "@/store/reducers/user"
 
@@ -16,7 +16,7 @@ import { connect } from "react-redux"
 import {
   Dispatch,
   fetchSocialConnectionsAsync,
-  disconnectSocialAccountAsync
+  disconnectSocialAccountAsync,
 } from "@/store/thunks"
 import {
   WebData,
@@ -25,7 +25,7 @@ import {
   Loading,
   Failure,
   isFailure,
-  isLoading
+  isLoading,
 } from "@/webdata"
 
 function createRedirectURI(uri: string) {
@@ -55,7 +55,7 @@ interface IOAuthButtonProps {
   readonly Logo: () => JSX.Element
   readonly connection: number | null
   readonly disconnect: (
-    providerName: SocialProvider
+    providerName: SocialProvider,
   ) => Promise<Result<void, string>>
   readonly OAUTH_URL: string
 }
@@ -65,7 +65,7 @@ const OAuthButton = ({
   Logo,
   OAUTH_URL,
   disconnect,
-  connection
+  connection,
 }: IOAuthButtonProps) => {
   const [state, setState] = useState<WebData<void, string>>(undefined)
   const handleDisconnect = async () => {
@@ -110,12 +110,12 @@ const OAuthButton = ({
 }
 
 const mapDispatchToPropsOAuthButton = (dispatch: Dispatch) => ({
-  disconnect: disconnectSocialAccountAsync(dispatch)
+  disconnect: disconnectSocialAccountAsync(dispatch),
 })
 
 const ConnectedOAuthButton = connect(
   null,
-  mapDispatchToPropsOAuthButton
+  mapDispatchToPropsOAuthButton,
 )(OAuthButton)
 
 interface IProvider {
@@ -127,7 +127,7 @@ interface IProvider {
 const providers: ReadonlyArray<IProvider> = [
   { name: "Github", id: "github", logo: GithubImg, oauthUrl: GITHUB_OAUTH_URL },
   { name: "Gitlab", id: "gitlab", logo: GitlabImg, oauthUrl: GITLAB_OAUTH_URL },
-  { name: "Google", id: "google", logo: GoogleImg, oauthUrl: GOOGLE_OAUTH_URL }
+  { name: "Google", id: "google", logo: GoogleImg, oauthUrl: GOOGLE_OAUTH_URL },
 ]
 interface IGenerateOAuthButtonsProps {
   readonly state: ISocialAccountsState
@@ -172,12 +172,12 @@ function SocialAccounts({ fetchData, connections }: ISocialAccountsProps) {
 }
 
 const mapStateToProps = (state: IState) => ({
-  connections: state.user.socialAccountConnections
+  connections: state.user.socialAccountConnections,
 })
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchData: () => {
     fetchSocialConnectionsAsync(dispatch)()
-  }
+  },
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(SocialAccounts)

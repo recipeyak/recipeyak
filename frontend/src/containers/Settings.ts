@@ -4,7 +4,7 @@ import {
   updatingEmailAsync,
   deleteUserAccountAsync,
   Dispatch,
-  fetchingUserAsync
+  fetchingUserAsync,
 } from "@/store/thunks"
 
 import Settings from "@/components/Settings"
@@ -19,7 +19,7 @@ const mapStateToProps = (state: IState) => ({
   email: state.user.email,
   updatingEmail: state.user.updatingEmail,
   hasPassword: state.user.hasUsablePassword,
-  loading: state.user.loading
+  loading: state.user.loading,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -32,7 +32,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
       deleteUserAccountAsync(dispatch)()
     }
   },
-  updateEmail: updatingEmailAsync(dispatch)
+  updateEmail: updatingEmailAsync(dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Settings)

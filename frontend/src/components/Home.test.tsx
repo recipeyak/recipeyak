@@ -8,20 +8,20 @@ describe("<Home/>", () => {
     mount(
       <TestProvider>
         <Home loggedIn={false} />
-      </TestProvider>
+      </TestProvider>,
     )
   })
   it("Has some text in footer", () => {
     const home = mount(
       <TestProvider>
         <Home loggedIn={false} />
-      </TestProvider>
+      </TestProvider>,
     )
     expect(
       home
         .find("a")
         .first()
-        .text()
+        .text(),
     ).toContain("Create Account")
   })
 })

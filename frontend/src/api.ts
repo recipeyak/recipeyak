@@ -4,7 +4,7 @@ import {
   ISocialConnection,
   SocialProvider,
   IUserStats,
-  ISession
+  ISession,
 } from "@/store/reducers/user"
 import { ITeam, IMember } from "@/store/reducers/teams"
 import { toISODateString } from "@/date"
@@ -29,25 +29,25 @@ interface IUserResponse {
 
 export const loginUserWithSocial = (service: SocialProvider, token: string) =>
   http.post<IUserResponse>(`/api/v1/auth/${service}/`, {
-    code: token
+    code: token,
   })
 
 export const connectSocial = (service: SocialProvider, code: unknown) =>
   http.post<void>(`/api/v1/auth/${service}/connect/`, {
-    code
+    code,
   })
 
 export const signup = (email: string, password1: string, password2: string) =>
   http.post<IUserResponse>("/api/v1/auth/registration/", {
     email,
     password1,
-    password2
+    password2,
   })
 
 export const loginUser = (email: string, password: string) =>
   http.post<IUserResponse>("/api/v1/auth/login/", {
     email,
-    password
+    password,
   })
 
 export const getSocialConnections = () =>
@@ -55,7 +55,7 @@ export const getSocialConnections = () =>
 
 export const disconnectSocialAccount = async (providerName: SocialProvider) => {
   const res = await http.post<ISocialConnection[]>(
-    `/api/v1/auth/socialaccounts/${providerName}/disconnect/`
+    `/api/v1/auth/socialaccounts/${providerName}/disconnect/`,
   )
   if (isOk(res)) {
     return res
@@ -70,20 +70,20 @@ interface IDetailResponse {
 
 export const resetPassword = (email: string) =>
   http.post<IDetailResponse>("/api/v1/auth/password/reset/", {
-    email
+    email,
   })
 
 export const resetPasswordConfirm = (
   uid: string,
   token: string,
   newPassword1: string,
-  newPassword2: string
+  newPassword2: string,
 ) =>
   http.post<IDetailResponse>("/api/v1/auth/password/reset/confirm/", {
     uid,
     token,
     new_password1: newPassword1,
-    new_password2: newPassword2
+    new_password2: newPassword2,
   })
 
 export const getUserStats = () => http.get<IUserStats>("api/v1/user_stats/")
@@ -91,12 +91,12 @@ export const getUserStats = () => http.get<IUserStats>("api/v1/user_stats/")
 export const changePassword = (
   password1: string,
   password2: string,
-  oldPassword: string
+  oldPassword: string,
 ) =>
   http.post("/api/v1/auth/password/change/", {
     new_password1: password1,
     new_password2: password2,
-    old_password: oldPassword
+    old_password: oldPassword,
   })
 
 export const enum Unit {
@@ -115,7 +115,7 @@ export const enum Unit {
   MILLILITER = "MILLILITER",
   SOME = "SOME",
   UNKNOWN = "UNKNOWN",
-  NONE = "NONE"
+  NONE = "NONE",
 }
 
 export interface IQuantity {
@@ -137,8 +137,8 @@ export const getShoppingList = (teamID: TeamID, start: Date, end: Date) => {
   return http.get<IGetShoppingListResponse>(`/api/v1/t/${id}/shoppinglist/`, {
     params: {
       start: toISODateString(start),
-      end: toISODateString(end)
-    }
+      end: toISODateString(end),
+    },
   })
 }
 
@@ -161,7 +161,7 @@ export interface IRecipeTimelineEvent {
 
 export const getRecipeTimeline = (id: IRecipe["id"]) =>
   http.get<ReadonlyArray<IRecipeTimelineEvent>>(
-    `/api/v1/recipes/${id}/timeline`
+    `/api/v1/recipes/${id}/timeline`,
   )
 
 export const deleteRecipe = (id: IRecipe["id"]) =>
@@ -182,26 +182,26 @@ export const getRecipeList = (teamID: TeamID) => {
 
 export const addIngredientToRecipe = (
   recipeID: IRecipe["id"],
-  ingredient: unknown
+  ingredient: unknown,
 ) =>
   http.post<IIngredient>(`/api/v1/recipes/${recipeID}/ingredients/`, ingredient)
 
 export const addSectionToRecipe = ({
   recipeId,
-  section
+  section,
 }: {
   readonly recipeId: number
   readonly section: string
 }) =>
   http.post<{ title: string; position: number; id: number }>(
     `/api/v1/recipes/${recipeId}/sections`,
-    { title: section }
+    { title: section },
   )
 
 export const updateSection = ({
   sectionId,
   position,
-  title
+  title,
 }: {
   readonly sectionId: number
   readonly position?: number
@@ -209,7 +209,7 @@ export const updateSection = ({
 }) =>
   http.patch<{ title: string; position: number; id: number }>(
     `/api/v1/sections/${sectionId}/`,
-    { title, position }
+    { title, position },
   )
 
 export const deleteSection = ({ sectionId }: { readonly sectionId: number }) =>
@@ -217,24 +217,24 @@ export const deleteSection = ({ sectionId }: { readonly sectionId: number }) =>
 
 export const addStepToRecipe = (recipeID: IRecipe["id"], step: unknown) =>
   http.post<IStep>(`/api/v1/recipes/${recipeID}/steps/`, {
-    text: step
+    text: step,
   })
 
 // TODO(sbdchd): this shouldn't require recipeID
 export const updateIngredient = (
   recipeID: IRecipe["id"],
   ingredientID: IIngredient["id"],
-  content: unknown
+  content: unknown,
 ) =>
   http.patch<IIngredient>(
     `/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`,
-    content
+    content,
   )
 
 // TODO(sbdchd): this shouldn't require recipeID
 export const deleteIngredient = (
   recipeID: IRecipe["id"],
-  ingredientID: IIngredient["id"]
+  ingredientID: IIngredient["id"],
 ) => http.delete(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`)
 
 interface IAddNoteToRecipe {
@@ -267,7 +267,7 @@ interface IUpdateStepPayload {
 export const updateStep = (
   recipeID: IRecipe["id"],
   stepID: IStep["id"],
-  data: IUpdateStepPayload
+  data: IUpdateStepPayload,
 ) => http.patch<IStep>(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, data)
 
 // TODO(sbdchd): this shouldn't require recipeID
@@ -285,13 +285,13 @@ export const getTeamRecipes = (id: ITeam["id"]) =>
 export const updateTeamMemberLevel = (
   teamID: ITeam["id"],
   membershipID: IMember["id"],
-  level: IMember["level"]
+  level: IMember["level"],
 ) =>
   http.patch<IMember>(`/api/v1/t/${teamID}/members/${membershipID}/`, { level })
 
 export const deleteTeamMember = (
   teamID: ITeam["id"],
-  memberID: IMember["id"]
+  memberID: IMember["id"],
 ) => http.delete(`/api/v1/t/${teamID}/members/${memberID}/`)
 
 export const deleteTeam = (teamID: ITeam["id"]) =>
@@ -300,7 +300,7 @@ export const deleteTeam = (teamID: ITeam["id"]) =>
 export const sendTeamInvites = (
   teamID: ITeam["id"],
   emails: string[],
-  level: IMember["level"]
+  level: IMember["level"],
 ) => http.post<void>(`/api/v1/t/${teamID}/invites/`, { emails, level })
 
 export const getTeamList = () => http.get<ITeam[]>("/api/v1/t/")
@@ -308,7 +308,7 @@ export const getTeamList = () => http.get<ITeam[]>("/api/v1/t/")
 export const createTeam = (
   name: string,
   emails: string[],
-  level: IMember["level"]
+  level: IMember["level"],
 ) => http.post<ITeam>("/api/v1/t/", { name, emails, level })
 
 export const updateTeam = (teamId: ITeam["id"], data: unknown) =>
@@ -318,14 +318,14 @@ export const updateTeam = (teamId: ITeam["id"], data: unknown) =>
 export const moveRecipe = (
   recipeId: IRecipe["id"],
   ownerId: IUser["id"],
-  type: unknown
+  type: unknown,
 ) =>
   http.post<IRecipe>(`/api/v1/recipes/${recipeId}/move/`, { id: ownerId, type })
 
 export const copyRecipe = (
   recipeId: IRecipe["id"],
   ownerId: IUser["id"],
-  type: unknown
+  type: unknown,
 ) =>
   http.post<IRecipe>(`/api/v1/recipes/${recipeId}/copy/`, { id: ownerId, type })
 
@@ -342,7 +342,7 @@ export const reportBadMerge = () => http.post("/api/v1/report-bad-merge", {})
 export function getCalendarRecipeList({
   teamID,
   start,
-  end
+  end,
 }: {
   readonly teamID: TeamID
   readonly start: string
@@ -363,26 +363,26 @@ export function getCalendarRecipeList({
           user: t.union([t.number, t.null]),
           recipe: t.type({
             id: t.number,
-            name: t.string
-          })
-        })
+            name: t.string,
+          }),
+        }),
       ),
       settings: t.type({
         syncEnabled: t.boolean,
-        calendarLink: t.string
-      })
+        calendarLink: t.string,
+      }),
     }),
     params: {
       v2: 1,
       start,
-      end
-    }
+      end,
+    },
   })
 }
 
 export function updateCalendarSettings({
   teamID,
-  data
+  data,
 }: {
   readonly teamID: TeamID
   readonly data: {
@@ -395,8 +395,8 @@ export function updateCalendarSettings({
     data,
     shape: t.type({
       syncEnabled: t.boolean,
-      calendarLink: t.string
-    })
+      calendarLink: t.string,
+    }),
   })
 }
 
@@ -405,28 +405,28 @@ export function generateCalendarLink({ teamID }: { readonly teamID: TeamID }) {
     method: "POST",
     url: `/api/v1/t/${teamID}/calendar/generate_link/`,
     shape: t.type({
-      calendarLink: t.string
-    })
+      calendarLink: t.string,
+    }),
   })
 }
 export const scheduleRecipe = (
   recipeID: IRecipe["id"],
   teamID: TeamID,
   on: Date,
-  count: string | number
+  count: string | number,
 ) => {
   const id = teamID === "personal" ? "me" : teamID
   return http.post<ICalRecipe>(`/api/v1/t/${id}/calendar/`, {
     recipe: recipeID,
     on: toISODateString(on),
-    count
+    count,
   })
 }
 
 // TODO(sbdchd): we shouldn't need teamID here
 export const deleteScheduledRecipe = (
   calId: ICalRecipe["id"],
-  teamID: TeamID
+  teamID: TeamID,
 ) => {
   const id = teamID === "personal" ? "me" : teamID
   return http.delete(`/api/v1/t/${id}/calendar/${calId}/`)
@@ -436,7 +436,7 @@ export const deleteScheduledRecipe = (
 export const updateScheduleRecipe = (
   calId: ICalRecipe["id"],
   teamID: TeamID,
-  recipe: Partial<ICalRecipe>
+  recipe: Partial<ICalRecipe>,
 ) => {
   const id = teamID === "personal" ? "me" : teamID
   return http.patch<ICalRecipe>(`/api/v1/t/${id}/calendar/${calId}/`, recipe)

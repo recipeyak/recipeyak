@@ -8,12 +8,12 @@ import { clearPasswordUpdateError } from "@/store/reducers/passwordChange"
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   update: updatingPasswordAsync(dispatch),
-  clearErrors: () => dispatch(clearPasswordUpdateError())
+  clearErrors: () => dispatch(clearPasswordUpdateError()),
 })
 
 const mapStateToProps = (state: IState) => ({
   loading: state.passwordChange.loadingPasswordUpdate,
-  error: state.passwordChange.errorPasswordUpdate
+  error: state.passwordChange.errorPasswordUpdate,
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(PasswordChange)

@@ -6,14 +6,14 @@ import {
   AnyAction,
   StoreEnhancer,
   Store,
-  Dispatch
+  Dispatch,
 } from "redux"
 
 export interface StoreCreator {
   <S, A extends Action>(
     reducer: LoopReducer<S, A>,
     preloadedState: S | undefined,
-    enhancer: StoreEnhancer<S>
+    enhancer: StoreEnhancer<S>,
   ): Store<S>
 }
 
@@ -97,7 +97,7 @@ declare function install<S>(config?: LoopConfig): StoreEnhancer<S>
 
 declare function loop<S, A extends Action>(
   state: S,
-  cmd: CmdType<A>
+  cmd: CmdType<A>,
 ): Loop<S, A>
 
 type UnwrapPromise<T> = T extends Promise<infer U> ? U : T
@@ -126,13 +126,13 @@ declare namespace Cmd {
       batch?: boolean
       sequence?: boolean
       testInvariants?: boolean
-    }
+    },
   ): ListCmd<A>
 
   export function map<A extends Action, B extends Action>(
     cmd: CmdType<B>,
     tagger: (subAction: B) => A,
-    args?: any[]
+    args?: any[],
   ): MapCmd<A>
 
   // see: https://github.com/antoinewdg/redux-loop/blob/6e4caeb81e563da84741cb3fad83976ce9c601f3/index.d.ts
@@ -142,7 +142,7 @@ declare namespace Cmd {
       failActionCreator?: ActionCreator<A>
       successActionCreator?: (arg: UnwrappedReturn<F>) => B
       forceSync?: boolean
-    }
+    },
   ): RunCmd<A>
 
   export function run<A extends Action, B extends Action, F extends Function>(
@@ -152,7 +152,7 @@ declare namespace Cmd {
       failActionCreator?: ActionCreator<A>
       successActionCreator?: (arg: UnwrappedReturn<F>) => B
       forceSync?: boolean
-    }
+    },
   ): RunCmd<A>
 }
 
@@ -161,13 +161,13 @@ export type ReducerMapObject<S, A extends Action = AnyAction> = {
 }
 
 declare function combineReducers<S, A extends Action = AnyAction>(
-  reducers: ReducerMapObject<S, A>
+  reducers: ReducerMapObject<S, A>,
 ): LiftedLoopReducer<S, A>
 
 declare function mergeChildReducers<S, A extends Action = AnyAction>(
   parentResult: S | Loop<S, A>,
   action: AnyAction,
-  childMap: ReducerMapObject<S, A>
+  childMap: ReducerMapObject<S, A>,
 ): Loop<S, A>
 
 declare function reduceReducers<S, A extends Action = AnyAction>(
@@ -176,7 +176,7 @@ declare function reduceReducers<S, A extends Action = AnyAction>(
 ): LiftedLoopReducer<S, A>
 
 declare function liftState<S, A extends Action>(
-  state: S | Loop<S, A>
+  state: S | Loop<S, A>,
 ): Loop<S, A>
 
 declare function isLoop(test: any): boolean

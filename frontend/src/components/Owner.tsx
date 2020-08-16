@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 import {
   ButtonLink,
   ButtonSecondary,
-  ButtonPrimary
+  ButtonPrimary,
 } from "@/components/Buttons"
 
 import {
@@ -14,7 +14,7 @@ import {
   showNotificationWithTimeoutAsync,
   Dispatch,
   INotificationWithTimeout,
-  fetchingTeamsAsync
+  fetchingTeamsAsync,
 } from "@/store/thunks"
 import { IState } from "@/store/store"
 import { IRecipe } from "@/store/reducers/recipes"
@@ -28,7 +28,7 @@ import { notUndefined } from "@/utils/general"
 
 function getTeamUserKeys(
   teams: ITeamsState,
-  userId: IUser["id"] | null
+  userId: IUser["id"] | null,
 ): ReadonlyArray<{ id: string; name: string }> {
   return teams.allIds
     .map(id => {
@@ -38,7 +38,7 @@ function getTeamUserKeys(
       }
       return {
         id: id + "-team",
-        name: team.name
+        name: team.name,
       }
     })
     .filter(notUndefined)
@@ -47,14 +47,14 @@ function getTeamUserKeys(
 
 const mapStateToProps = (state: IState) => ({
   teams: state.teams,
-  userId: state.user.id
+  userId: state.user.id,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchData: fetchingTeamsAsync(dispatch),
   showNotificationWithTimeout: showNotificationWithTimeoutAsync(dispatch),
   moveRecipeTo: moveRecipeToAsync(dispatch),
-  copyRecipeTo: copyRecipeToAsync(dispatch)
+  copyRecipeTo: copyRecipeToAsync(dispatch),
 })
 
 interface IOwnerProps {
@@ -62,15 +62,15 @@ interface IOwnerProps {
   readonly copyRecipeTo: (
     recipeId: IRecipe["id"],
     id: IRecipe["owner"]["id"],
-    type: IRecipe["owner"]["type"]
+    type: IRecipe["owner"]["type"],
   ) => Promise<void>
   readonly moveRecipeTo: (
     recipeId: IRecipe["id"],
     id: IRecipe["owner"]["id"],
-    type: IRecipe["owner"]["type"]
+    type: IRecipe["owner"]["type"],
   ) => Promise<Result<void, void>>
   readonly showNotificationWithTimeout: (
-    props: INotificationWithTimeout
+    props: INotificationWithTimeout,
   ) => void
   readonly recipeId: IRecipe["id"]
   readonly id: IRecipe["owner"]["id"]
@@ -87,7 +87,7 @@ interface IOwnerState {
 class Owner extends React.Component<IOwnerProps, IOwnerState> {
   state: IOwnerState = {
     show: false,
-    values: []
+    values: [],
   }
 
   dropdown = React.createRef<HTMLSpanElement>()
@@ -163,7 +163,7 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
           this.props.showNotificationWithTimeout({
             message: `Problem moving recipe: ${res.error}`,
             level: "danger",
-            sticky: true
+            sticky: true,
           })
         }
       })

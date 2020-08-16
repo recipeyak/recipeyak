@@ -8,7 +8,7 @@ describe("<OAuth/>", () => {
     mount(
       <TestProvider>
         <OAuth service="gitlab" token="12345" login={jest.fn()} />
-      </TestProvider>
+      </TestProvider>,
     )
   })
 })

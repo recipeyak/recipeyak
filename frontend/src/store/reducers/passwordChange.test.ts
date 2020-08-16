@@ -1,6 +1,6 @@
 import passwordChange, {
   initialState,
-  passwordUpdate
+  passwordUpdate,
 } from "@/store/reducers/passwordChange"
 
 describe("passwordChange", () => {
@@ -9,20 +9,20 @@ describe("passwordChange", () => {
 
     const afterState = {
       ...initialState,
-      loadingPasswordUpdate: true
+      loadingPasswordUpdate: true,
     }
 
     expect(passwordChange(beforeState, passwordUpdate.request())).toEqual(
-      afterState
+      afterState,
     )
 
     const anotherAfterState = {
       ...initialState,
-      loadingPasswordUpdate: false
+      loadingPasswordUpdate: false,
     }
 
     expect(passwordChange(beforeState, passwordUpdate.success())).toEqual(
-      anotherAfterState
+      anotherAfterState,
     )
   })
 
@@ -30,15 +30,15 @@ describe("passwordChange", () => {
     const beforeState = initialState
 
     const error = {
-      newPassword: ["The two password fields didn't match."]
+      newPassword: ["The two password fields didn't match."],
     }
 
     const afterState = {
       ...initialState,
-      errorPasswordUpdate: error
+      errorPasswordUpdate: error,
     }
     expect(passwordChange(beforeState, passwordUpdate.failure(error))).toEqual(
-      afterState
+      afterState,
     )
   })
 })

@@ -8,7 +8,7 @@ describe("<NoMatch/>", () => {
     mount(
       <MemoryRouter>
         <NoMatch />
-      </MemoryRouter>
+      </MemoryRouter>,
     )
   })
 })

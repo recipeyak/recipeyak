@@ -7,7 +7,7 @@ import {
   isSuccessLike,
   isLoading,
   isFailure,
-  isInitial
+  isInitial,
 } from "@/webdata"
 import { IRecipe } from "@/store/reducers/recipes"
 import { getRecipeTimeline, IRecipeTimelineEvent } from "@/api"
@@ -90,7 +90,7 @@ function toTimelineEvent(event: IRecipeTimelineEvent): ITimelineEvent {
   return {
     type: "scheduled",
     id: event.id,
-    date: new Date(event.on)
+    date: new Date(event.on),
   }
 }
 
@@ -99,7 +99,7 @@ function useRecipeTimeline(recipeId: IRecipe["id"]): IRecipeTimelineState {
   React.useEffect(() => {
     getRecipeTimeline(recipeId).then(res => {
       setState(
-        mapSuccessLike(resultToWebdata(res), d => d.map(toTimelineEvent))
+        mapSuccessLike(resultToWebdata(res), d => d.map(toTimelineEvent)),
       )
     })
   }, [recipeId])

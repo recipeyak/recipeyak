@@ -5,112 +5,112 @@ describe("byNameAlphabetical", () => {
     const ingredients = [
       {
         unit: "12",
-        name: "barley rusks"
+        name: "barley rusks",
       },
       {
         unit: "0.5 cup",
-        name: "celery"
+        name: "celery",
       },
       {
         unit: "2",
-        name: "cinnamon sticks"
+        name: "cinnamon sticks",
       },
       {
         unit: "1 teaspoon",
-        name: "cumin seeds"
+        name: "cumin seeds",
       },
       {
         unit: "2 ounce",
-        name: "feta"
+        name: "feta",
       },
       {
         unit: "2 tablespoon",
-        name: "fresh mint"
+        name: "fresh mint",
       },
       {
         unit: "1 teaspoon",
-        name: "garam masala"
+        name: "garam masala",
       },
       {
         unit: "1",
-        name: "garlic clove"
+        name: "garlic clove",
       },
       {
         unit: "12",
-        name: "garlic cloves"
+        name: "garlic cloves",
       },
       {
         unit: "1",
-        name: "ginger piece"
+        name: "ginger piece",
       },
       {
         unit: "2",
-        name: "green jalapeno peppers"
+        name: "green jalapeno peppers",
       },
       {
         unit: "1.5 teaspoon",
-        name: "ground cumin"
+        name: "ground cumin",
       },
       {
         unit: "0.5 teaspoon",
-        name: "ground turmeric"
+        name: "ground turmeric",
       },
       {
         unit: "1 teaspoon",
-        name: "kosher salt"
+        name: "kosher salt",
       },
       {
         unit: "2",
-        name: "lemons"
+        name: "lemons",
       },
       {
         unit: "1 tablespoon",
-        name: "neutral oil"
+        name: "neutral oil",
       },
       {
         unit: "0.5625 cup",
-        name: "olive oil"
+        name: "olive oil",
       },
       {
         unit: "0.75 cup",
-        name: "pureed tomatoes"
+        name: "pureed tomatoes",
       },
       {
         unit: "1.5 cup",
-        name: "red beans"
+        name: "red beans",
       },
       {
         unit: "2 tablespoon",
-        name: "sherry vinegar"
+        name: "sherry vinegar",
       },
       {
         unit: "2 pound",
-        name: "skinless, bonless chicken thighs"
+        name: "skinless, bonless chicken thighs",
       },
       {
         unit: "3 tablespoon",
-        name: "slivered almonds"
+        name: "slivered almonds",
       },
       {
         unit: "2 tablespoon",
-        name: "tomato paste"
+        name: "tomato paste",
       },
       {
         unit: "2 pound",
-        name: "tomatoes"
+        name: "tomatoes",
       },
       {
         unit: "2 tablespoon",
-        name: "unsalted butter"
+        name: "unsalted butter",
       },
       {
         unit: "2",
-        name: "white onions"
+        name: "white onions",
       },
       {
         unit: "3 tablespoon",
-        name: "whole-milk yogurt"
-      }
+        name: "whole-milk yogurt",
+      },
     ]
 
     expect(ingredients).toEqual(ingredients.sort(byNameAlphabetical))
@@ -120,223 +120,223 @@ describe("byNameAlphabetical", () => {
     const ingredients = [
       {
         unit: "2",
-        name: "lemons"
+        name: "lemons",
       },
       {
         unit: "0.5625 cup",
-        name: "olive oil"
+        name: "olive oil",
       },
       {
         unit: "12",
-        name: "garlic cloves"
+        name: "garlic cloves",
       },
       {
         unit: "1 teaspoon",
-        name: "kosher salt"
+        name: "kosher salt",
       },
       {
         unit: "2 pound",
-        name: "tomatoes"
+        name: "tomatoes",
       },
       {
         unit: "1.5 cup",
-        name: "red beans"
+        name: "red beans",
       },
       {
         unit: "0.5 cup",
-        name: "celery"
+        name: "celery",
       },
       {
         unit: "1",
-        name: "garlic clove"
+        name: "garlic clove",
       },
       {
         unit: "2 ounce",
-        name: "feta"
+        name: "feta",
       },
       {
         unit: "2 tablespoon",
-        name: "fresh mint"
+        name: "fresh mint",
       },
       {
         unit: "2 tablespoon",
-        name: "sherry vinegar"
+        name: "sherry vinegar",
       },
       {
         unit: "12",
-        name: "barley rusks"
+        name: "barley rusks",
       },
       {
         unit: "2 tablespoon",
-        name: "unsalted butter"
+        name: "unsalted butter",
       },
       {
         unit: "1 tablespoon",
-        name: "neutral oil"
+        name: "neutral oil",
       },
       {
         unit: "1 teaspoon",
-        name: "cumin seeds"
+        name: "cumin seeds",
       },
       {
         unit: "2",
-        name: "cinnamon sticks"
+        name: "cinnamon sticks",
       },
       {
         unit: "2",
-        name: "white onions"
+        name: "white onions",
       },
       {
         unit: "1",
-        name: "ginger piece"
+        name: "ginger piece",
       },
       {
         unit: "2",
-        name: "green jalapeno peppers"
+        name: "green jalapeno peppers",
       },
       {
         unit: "0.75 cup",
-        name: "pureed tomatoes"
+        name: "pureed tomatoes",
       },
       {
         unit: "2 tablespoon",
-        name: "tomato paste"
+        name: "tomato paste",
       },
       {
         unit: "1.5 teaspoon",
-        name: "ground cumin"
+        name: "ground cumin",
       },
       {
         unit: "0.5 teaspoon",
-        name: "ground turmeric"
+        name: "ground turmeric",
       },
       {
         unit: "3 tablespoon",
-        name: "whole-milk yogurt"
+        name: "whole-milk yogurt",
       },
       {
         unit: "2 pound",
-        name: "skinless, bonless chicken thighs"
+        name: "skinless, bonless chicken thighs",
       },
       {
         unit: "3 tablespoon",
-        name: "slivered almonds"
+        name: "slivered almonds",
       },
       {
         unit: "1 teaspoon",
-        name: "garam masala"
-      }
+        name: "garam masala",
+      },
     ]
 
     const expected = [
       {
         unit: "12",
-        name: "barley rusks"
+        name: "barley rusks",
       },
       {
         unit: "0.5 cup",
-        name: "celery"
+        name: "celery",
       },
       {
         unit: "2",
-        name: "cinnamon sticks"
+        name: "cinnamon sticks",
       },
       {
         unit: "1 teaspoon",
-        name: "cumin seeds"
+        name: "cumin seeds",
       },
       {
         unit: "2 ounce",
-        name: "feta"
+        name: "feta",
       },
       {
         unit: "2 tablespoon",
-        name: "fresh mint"
+        name: "fresh mint",
       },
       {
         unit: "1 teaspoon",
-        name: "garam masala"
+        name: "garam masala",
       },
       {
         unit: "1",
-        name: "garlic clove"
+        name: "garlic clove",
       },
       {
         unit: "12",
-        name: "garlic cloves"
+        name: "garlic cloves",
       },
       {
         unit: "1",
-        name: "ginger piece"
+        name: "ginger piece",
       },
       {
         unit: "2",
-        name: "green jalapeno peppers"
+        name: "green jalapeno peppers",
       },
       {
         unit: "1.5 teaspoon",
-        name: "ground cumin"
+        name: "ground cumin",
       },
       {
         unit: "0.5 teaspoon",
-        name: "ground turmeric"
+        name: "ground turmeric",
       },
       {
         unit: "1 teaspoon",
-        name: "kosher salt"
+        name: "kosher salt",
       },
       {
         unit: "2",
-        name: "lemons"
+        name: "lemons",
       },
       {
         unit: "1 tablespoon",
-        name: "neutral oil"
+        name: "neutral oil",
       },
       {
         unit: "0.5625 cup",
-        name: "olive oil"
+        name: "olive oil",
       },
       {
         unit: "0.75 cup",
-        name: "pureed tomatoes"
+        name: "pureed tomatoes",
       },
       {
         unit: "1.5 cup",
-        name: "red beans"
+        name: "red beans",
       },
       {
         unit: "2 tablespoon",
-        name: "sherry vinegar"
+        name: "sherry vinegar",
       },
       {
         unit: "2 pound",
-        name: "skinless, bonless chicken thighs"
+        name: "skinless, bonless chicken thighs",
       },
       {
         unit: "3 tablespoon",
-        name: "slivered almonds"
+        name: "slivered almonds",
       },
       {
         unit: "2 tablespoon",
-        name: "tomato paste"
+        name: "tomato paste",
       },
       {
         unit: "2 pound",
-        name: "tomatoes"
+        name: "tomatoes",
       },
       {
         unit: "2 tablespoon",
-        name: "unsalted butter"
+        name: "unsalted butter",
       },
       {
         unit: "2",
-        name: "white onions"
+        name: "white onions",
       },
       {
         unit: "3 tablespoon",
-        name: "whole-milk yogurt"
-      }
+        name: "whole-milk yogurt",
+      },
     ]
 
     expect(ingredients.sort(byNameAlphabetical)).toEqual(expected)

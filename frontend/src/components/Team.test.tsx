@@ -21,7 +21,7 @@ describe("<Team/>", () => {
           loadingMembers={false}
           loadingRecipes={false}
         />
-      </TestProvider>
+      </TestProvider>,
     )
   })
 })

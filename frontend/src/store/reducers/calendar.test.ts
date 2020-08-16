@@ -8,7 +8,7 @@ import {
   deleteCalendarRecipe,
   moveCalendarRecipe,
   replaceCalendarRecipe,
-  getExistingRecipe
+  getExistingRecipe,
 } from "@/store/reducers/calendar"
 import { baseRecipe } from "@/store/reducers/recipes.test"
 import { getModel } from "redux-loop"
@@ -31,8 +31,8 @@ describe("Calendar", () => {
         user: 1,
         recipe: {
           ...baseRecipe,
-          id: 9
-        }
+          id: 9,
+        },
       },
       {
         id: 2,
@@ -43,21 +43,21 @@ describe("Calendar", () => {
         user: 1,
         recipe: {
           ...baseRecipe,
-          id: 3
-        }
-      }
+          id: 3,
+        },
+      },
     ]
 
     const afterState: ICalendarState = {
       status: "success",
       byId: {
         [recipes[0].id]: recipes[0],
-        [recipes[1].id]: recipes[1]
+        [recipes[1].id]: recipes[1],
       },
       settings: Success({
         syncEnabled: false,
-        calendarLink: ""
-      })
+        calendarLink: "",
+      }),
     }
 
     const start = "2019-02-01T00:00:00.000Z"
@@ -72,16 +72,16 @@ describe("Calendar", () => {
           end,
           settings: {
             syncEnabled: false,
-            calendarLink: ""
-          }
-        })
-      )
+            calendarLink: "",
+          },
+        }),
+      ),
     ).toEqual(afterState)
   })
 
   it("sets individual calendar recipe", () => {
     const beforeState: ICalendarState = {
-      ...initialState
+      ...initialState,
     }
 
     const recipe: ICalRecipe = {
@@ -93,15 +93,15 @@ describe("Calendar", () => {
       user: 1,
       recipe: {
         id: 9,
-        name: "1231"
-      }
+        name: "1231",
+      },
     }
 
     const afterState: ICalendarState = {
       ...initialState,
       byId: {
-        [recipe.id]: recipe
-      }
+        [recipe.id]: recipe,
+      },
     }
 
     expect(calendar(beforeState, setCalendarRecipe(recipe))).toEqual(afterState)
@@ -119,45 +119,45 @@ describe("Calendar", () => {
           user: 1,
           recipe: {
             id: 9,
-            name: "1231"
-          }
-        }
-      }
+            name: "1231",
+          },
+        },
+      },
     }
 
     const afterState: ICalendarState = {
-      ...initialState
+      ...initialState,
     }
 
     expect(calendar(beforeState, deleteCalendarRecipe(1))).toEqual(afterState)
   })
   it("sets calendar loading", () => {
     const beforeState: ICalendarState = {
-      ...initialState
+      ...initialState,
     }
 
     const afterState: ICalendarState = {
       ...initialState,
-      status: "loading"
+      status: "loading",
     }
 
     expect(calendar(beforeState, fetchCalendarRecipes.request())).toEqual(
-      afterState
+      afterState,
     )
   })
 
   it("sets calendar error", () => {
     const beforeState: ICalendarState = {
-      ...initialState
+      ...initialState,
     }
 
     const afterState: ICalendarState = {
       ...initialState,
-      status: "failure"
+      status: "failure",
     }
 
     expect(calendar(beforeState, fetchCalendarRecipes.failure())).toEqual(
-      afterState
+      afterState,
     )
   })
 
@@ -176,10 +176,10 @@ describe("Calendar", () => {
           user: 1,
           recipe: {
             id: 9,
-            name: "1231"
-          }
-        }
-      }
+            name: "1231",
+          },
+        },
+      },
     }
 
     const newOn = "2018-05-20"
@@ -196,14 +196,14 @@ describe("Calendar", () => {
           user: 1,
           recipe: {
             id: 9,
-            name: "1231"
-          }
-        }
-      }
+            name: "1231",
+          },
+        },
+      },
     }
 
     expect(
-      calendar(beforeState, moveCalendarRecipe({ id, to: newOn }))
+      calendar(beforeState, moveCalendarRecipe({ id, to: newOn })),
     ).toEqual(afterState)
   })
 
@@ -223,8 +223,8 @@ describe("Calendar", () => {
           user: 1,
           recipe: {
             id: 9,
-            name: "1231"
-          }
+            name: "1231",
+          },
         },
         2: {
           id: 2,
@@ -235,8 +235,8 @@ describe("Calendar", () => {
           user: 1,
           recipe: {
             id: 7,
-            name: "1231"
-          }
+            name: "1231",
+          },
         },
         3: {
           id: 3,
@@ -247,10 +247,10 @@ describe("Calendar", () => {
           user: 1,
           recipe: {
             id: 9,
-            name: "1231"
-          }
-        }
-      }
+            name: "1231",
+          },
+        },
+      },
     }
 
     const afterState: ICalendarState = {
@@ -265,8 +265,8 @@ describe("Calendar", () => {
           user: 1,
           recipe: {
             id: 9,
-            name: "1231"
-          }
+            name: "1231",
+          },
         },
         2: {
           id: 2,
@@ -277,8 +277,8 @@ describe("Calendar", () => {
           user: 1,
           recipe: {
             id: 7,
-            name: "1231"
-          }
+            name: "1231",
+          },
         },
         3: {
           id: 3,
@@ -289,14 +289,14 @@ describe("Calendar", () => {
           on: "2018-06-07",
           recipe: {
             id: 9,
-            name: "1231"
-          }
-        }
-      }
+            name: "1231",
+          },
+        },
+      },
     }
 
     expect(
-      calendar(beforeState, moveCalendarRecipe({ id, to: newOn }))
+      calendar(beforeState, moveCalendarRecipe({ id, to: newOn })),
     ).toEqual(afterState)
   })
 
@@ -316,8 +316,8 @@ describe("Calendar", () => {
           user: 1,
           recipe: {
             ...baseRecipe,
-            id: 9
-          }
+            id: 9,
+          },
         },
         2: {
           id: 2,
@@ -328,8 +328,8 @@ describe("Calendar", () => {
           on: newOn,
           recipe: {
             ...baseRecipe,
-            id: 9
-          }
+            id: 9,
+          },
         },
         3: {
           id: 3,
@@ -340,10 +340,10 @@ describe("Calendar", () => {
           on: "2018-06-07",
           recipe: {
             ...baseRecipe,
-            id: 9
-          }
-        }
-      }
+            id: 9,
+          },
+        },
+      },
     }
 
     const afterState: ICalendarState = {
@@ -358,8 +358,8 @@ describe("Calendar", () => {
           user: 1,
           recipe: {
             ...baseRecipe,
-            id: 9
-          }
+            id: 9,
+          },
         },
         3: {
           id: 3,
@@ -370,14 +370,14 @@ describe("Calendar", () => {
           on: "2018-06-07",
           recipe: {
             ...baseRecipe,
-            id: 9
-          }
-        }
-      }
+            id: 9,
+          },
+        },
+      },
     }
 
     expect(
-      calendar(beforeState, moveCalendarRecipe({ id, to: newOn }))
+      calendar(beforeState, moveCalendarRecipe({ id, to: newOn })),
     ).toEqual(afterState)
   })
 
@@ -396,8 +396,8 @@ describe("Calendar", () => {
           team: 2,
           user: 1,
           recipe: {
-            ...baseRecipe
-          }
+            ...baseRecipe,
+          },
         },
         2: {
           id: 2,
@@ -407,8 +407,8 @@ describe("Calendar", () => {
           team: 2,
           user: 1,
           recipe: {
-            ...baseRecipe
-          }
+            ...baseRecipe,
+          },
         },
         3: {
           id: 3,
@@ -418,10 +418,10 @@ describe("Calendar", () => {
           user: 1,
           on: "2018-06-07",
           recipe: {
-            ...baseRecipe
-          }
-        }
-      }
+            ...baseRecipe,
+          },
+        },
+      },
     }
 
     const recipe: ICalRecipe = {
@@ -432,7 +432,7 @@ describe("Calendar", () => {
       team: 2,
       user: 1,
 
-      recipe: { id: 19, name: "foo" }
+      recipe: { id: 19, name: "foo" },
     }
 
     const afterState: ICalendarState = {
@@ -447,8 +447,8 @@ describe("Calendar", () => {
           team: 2,
           user: 1,
           recipe: {
-            ...baseRecipe
-          }
+            ...baseRecipe,
+          },
         },
         3: {
           id: 3,
@@ -458,14 +458,14 @@ describe("Calendar", () => {
           user: 1,
           on: "2018-06-07",
           recipe: {
-            ...baseRecipe
-          }
-        }
-      }
+            ...baseRecipe,
+          },
+        },
+      },
     }
 
     expect(
-      calendar(beforeState, replaceCalendarRecipe({ id, recipe }))
+      calendar(beforeState, replaceCalendarRecipe({ id, recipe })),
     ).toEqual(afterState)
   })
 
@@ -484,8 +484,8 @@ describe("Calendar", () => {
           user: 1,
           recipe: {
             ...baseRecipe,
-            id: 9
-          }
+            id: 9,
+          },
         },
         3: {
           id: 3,
@@ -496,10 +496,10 @@ describe("Calendar", () => {
           on: "2018-06-07",
           recipe: {
             ...baseRecipe,
-            id: 9
-          }
-        }
-      }
+            id: 9,
+          },
+        },
+      },
     }
 
     const recipe: ICalRecipe = {
@@ -509,7 +509,7 @@ describe("Calendar", () => {
       on,
       team: 2,
       user: 1,
-      recipe: { ...baseRecipe, id: 9 }
+      recipe: { ...baseRecipe, id: 9 },
     }
 
     const afterState: ICalendarState = {
@@ -524,8 +524,8 @@ describe("Calendar", () => {
           user: 1,
           recipe: {
             ...baseRecipe,
-            id: 9
-          }
+            id: 9,
+          },
         },
         3: {
           id: 3,
@@ -536,10 +536,10 @@ describe("Calendar", () => {
           on: "2018-06-07",
           recipe: {
             ...baseRecipe,
-            id: 9
-          }
-        }
-      }
+            id: 9,
+          },
+        },
+      },
     }
 
     expect(calendar(beforeState, setCalendarRecipe(recipe))).toEqual(afterState)
@@ -557,8 +557,8 @@ describe("Calendar", () => {
       on: "2018-07-07",
       recipe: {
         ...baseRecipe,
-        id: 9
-      }
+        id: 9,
+      },
     }
 
     const beforeState: ICalendarState = {
@@ -573,8 +573,8 @@ describe("Calendar", () => {
           user: 1,
           recipe: {
             ...baseRecipe,
-            id: 9
-          }
+            id: 9,
+          },
         },
         3: {
           id: 3,
@@ -585,11 +585,11 @@ describe("Calendar", () => {
           on: "2018-06-07",
           recipe: {
             ...baseRecipe,
-            id: 9
-          }
+            id: 9,
+          },
         },
-        4: recipe4
-      }
+        4: recipe4,
+      },
     }
 
     const start = toISODateString(startOfWeek(subWeeks(parseISO(on), 1)))
@@ -603,10 +603,10 @@ describe("Calendar", () => {
           end,
           settings: {
             syncEnabled: false,
-            calendarLink: ""
-          }
-        })
-      )
+            calendarLink: "",
+          },
+        }),
+      ),
     )
 
     expect(nextState.byId).toEqual({ 4: recipe4 })
@@ -617,7 +617,7 @@ describe("calendar selectors", () => {
   test("#getExistingRecipe", () => {
     // initialize state
     const emptyState = getModel(
-      calendar(undefined, fetchCalendarRecipes.failure())
+      calendar(undefined, fetchCalendarRecipes.failure()),
     )
 
     const teamID = 5
@@ -634,8 +634,8 @@ describe("calendar selectors", () => {
       user: userID,
       recipe: {
         id: recipeID,
-        name: "foo recipe"
-      }
+        name: "foo recipe",
+      },
     }
     const toDate = addWeeks(fromDate, 1)
 
@@ -647,8 +647,8 @@ describe("calendar selectors", () => {
       getExistingRecipe({
         state: emptyState,
         on: toDate,
-        from
-      })
+        from,
+      }),
     ).toEqual(undefined)
 
     // existing recipe scheduled at the toDate
@@ -661,8 +661,8 @@ describe("calendar selectors", () => {
       user: userID,
       recipe: {
         id: recipeID,
-        name: "foo recipe"
-      }
+        name: "foo recipe",
+      },
     }
     expect(calRecipeOnSameDay.id).not.toEqual(from.id)
     expect(isSameDay(new Date(calRecipeOnSameDay.on), toDate)).toEqual(true)
@@ -677,20 +677,20 @@ describe("calendar selectors", () => {
           scheduledRecipes: [calRecipeOnSameDay],
           settings: {
             syncEnabled: false,
-            calendarLink: ""
+            calendarLink: "",
           },
           start,
-          end
-        })
-      )
+          end,
+        }),
+      ),
     )
 
     expect(
       getExistingRecipe({
         state: nextState,
         on: toDate,
-        from
-      })
+        from,
+      }),
     ).not.toBeUndefined()
 
     // moving recipe from its location and back to its location in one
@@ -698,7 +698,7 @@ describe("calendar selectors", () => {
     const calRecipe = getExistingRecipe({
       state: nextState,
       on: toDate,
-      from: calRecipeOnSameDay
+      from: calRecipeOnSameDay,
     })
     expect(calRecipe).toBeUndefined()
   })

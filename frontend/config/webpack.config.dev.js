@@ -23,7 +23,7 @@ module.exports = {
   devtool: "cheap-module-source-map",
   entry: [
     require.resolve("react-dev-utils/webpackHotDevClient"),
-    paths.appIndexTsx
+    paths.appIndexTsx,
   ],
   output: {
     // Next line is not used in dev but WebpackDevServer crashes without it:
@@ -35,14 +35,14 @@ module.exports = {
     // containing code from all our entry points, and the Webpack runtime.
     filename: "static/js/bundle.js",
     // This is the URL that app is served from. We use "/" in development.
-    publicPath
+    publicPath,
   },
   resolve: {
     modules: ["node_modules", paths.appNodeModules, paths.appSrc],
     extensions: [".js", ".json", ".jsx", ".ts", ".tsx"],
     alias: {
-      "@": paths.appSrc
-    }
+      "@": paths.appSrc,
+    },
   },
 
   module: {
@@ -65,13 +65,13 @@ module.exports = {
           /\.json$/,
           /\.svg$/,
           /\.png$/,
-          /\.jpg$/
+          /\.jpg$/,
         ],
         loader: "url-loader",
         query: {
           limit: 10000,
-          name: "static/media/[name].[hash:8].[ext]"
-        }
+          name: "static/media/[name].[hash:8].[ext]",
+        },
       },
       {
         test: /\.(js|jsx)$/,
@@ -83,9 +83,9 @@ module.exports = {
             // It enables caching results in ./node_modules/.cache/babel-loader/
             // directory for faster rebuilds.
             cacheDirectory: true,
-            plugins: ["react-hot-loader/babel"]
-          }
-        }
+            plugins: ["react-hot-loader/babel"],
+          },
+        },
       },
       {
         test: /\.(ts|tsx)$/,
@@ -98,16 +98,16 @@ module.exports = {
               // It enables caching results in ./node_modules/.cache/babel-loader/
               // directory for faster rebuilds.
               cacheDirectory: true,
-              plugins: ["react-hot-loader/babel"]
-            }
+              plugins: ["react-hot-loader/babel"],
+            },
           },
           {
             loader: "ts-loader",
             options: {
-              transpileOnly: true
-            }
-          }
-        ]
+              transpileOnly: true,
+            },
+          },
+        ],
       },
       // "postcss" loader applies autoprefixer to our CSS.
       // "css" loader resolves paths in CSS and adds assets as dependencies.
@@ -121,8 +121,8 @@ module.exports = {
           {
             loader: "css-loader",
             options: {
-              importLoaders: 1
-            }
+              importLoaders: 1,
+            },
           },
           {
             loader: "postcss-loader",
@@ -135,14 +135,14 @@ module.exports = {
                     ">1%",
                     "last 4 versions",
                     "Firefox ESR",
-                    "not ie < 9" // React doesn't support IE8 anyway
+                    "not ie < 9", // React doesn't support IE8 anyway
                   ],
-                  flexbox: "no-2009"
-                })
-              ]
-            }
-          }
-        ]
+                  flexbox: "no-2009",
+                }),
+              ],
+            },
+          },
+        ],
       },
       {
         test: /\.(scss|sass)$/,
@@ -151,33 +151,33 @@ module.exports = {
           {
             loader: "css-loader",
             options: {
-              importLoaders: 1
-            }
+              importLoaders: 1,
+            },
           },
-          "sass-loader"
-        ]
+          "sass-loader",
+        ],
       },
       {
         test: /\.(svg|png|jpg)$/,
         use: {
           loader: "file-loader",
           query: {
-            name: "static/media/[name].[hash:8].[ext]"
-          }
-        }
-      }
+            name: "static/media/[name].[hash:8].[ext]",
+          },
+        },
+      },
       // ** STOP ** Are you adding a new loader?
       // Remember to add the new extension(s) to the "url" loader exclusion list.
-    ]
+    ],
   },
   plugins: [
     new InterpolateHtmlPlugin(HtmlWebpackPlugin, env.raw),
     new HtmlWebpackPlugin({
-      template: paths.appHtml
+      template: paths.appHtml,
     }),
     new webpack.DefinePlugin(env.stringified),
     new webpack.HotModuleReplacementPlugin(),
     new CaseSensitivePathsPlugin(),
-    new WatchMissingNodeModulesPlugin(paths.appNodeModules)
-  ]
+    new WatchMissingNodeModulesPlugin(paths.appNodeModules),
+  ],
 }

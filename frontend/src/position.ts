@@ -1,6 +1,6 @@
 export function getNewPos(
   list: ReadonlyArray<{ readonly position: number }>,
-  index: number
+  index: number,
 ): number | null {
   const nextCard = list[index + 1]
   const prevCard = list[index - 1]
@@ -22,7 +22,7 @@ export function getNewPos(
 
 export function getNewPosIngredients(
   list: ReadonlyArray<{ readonly item: { readonly position: number } }>,
-  index: number
+  index: number,
 ): number | null {
   const nextCard = list[index + 1]
   const prevCard = list[index - 1]

@@ -67,7 +67,7 @@ function build(previousFileSizes) {
       if (process.env.CI && stats.compilation.warnings.length) {
         printErrors(
           "Failed to compile. When process.env.CI = true, warnings are treated as failures. Most CI servers set this automatically.",
-          stats.compilation.warnings
+          stats.compilation.warnings,
         )
         process.exit(1)
       }
@@ -78,13 +78,13 @@ function build(previousFileSizes) {
       console.log("File sizes after gzip:\n")
       printFileSizesAfterBuild(stats, previousFileSizes, paths.appBuild)
       console.log()
-    }
+    },
   )
 }
 
 function copyPublicFolder() {
   fs.copySync(paths.appPublic, paths.appBuild, {
     dereference: true,
-    filter: file => file !== paths.appHtml
+    filter: file => file !== paths.appHtml,
   })
 }

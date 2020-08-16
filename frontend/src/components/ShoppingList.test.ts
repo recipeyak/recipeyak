@@ -8,7 +8,7 @@ describe("shoppinglist", () => {
       [{ quantity: "1", unit: Unit.SOME }, "some"],
       [{ quantity: "1", unit: Unit.UNKNOWN }, "1"],
       [{ quantity: "1", unit: Unit.UNKNOWN, unknown_unit: "bag" }, "1 bag"],
-      [{ quantity: "1", unit: Unit.NONE }, "1"]
+      [{ quantity: "1", unit: Unit.NONE }, "1"],
     ]
 
     testCases.forEach(([quantity, expected]) => {

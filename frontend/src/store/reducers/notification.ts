@@ -26,12 +26,12 @@ export const initialState: INotificationState = {
   message: "",
   level: "info",
   closeable: false,
-  show: false
+  show: false,
 }
 
 const notification = (
   state: INotificationState = initialState,
-  action: NotificationsActions
+  action: NotificationsActions,
 ): INotificationState => {
   switch (action.type) {
     case getType(setNotification): {

@@ -2,7 +2,7 @@ import axios, {
   AxiosError,
   CancelToken,
   AxiosRequestConfig,
-  AxiosResponse
+  AxiosResponse,
 } from "axios"
 import { uuid4 } from "@/uuid"
 import { store } from "@/store/store"
@@ -39,7 +39,7 @@ async function http3<T, A, O>({
   params,
   cancelToken,
   shape,
-  data
+  data,
 }: {
   readonly url: string
   readonly method: Method
@@ -55,7 +55,7 @@ async function http3<T, A, O>({
       method,
       params,
       cancelToken,
-      data
+      data,
     })
     return shape.decode(r.data)
   } catch (e) {
@@ -98,7 +98,7 @@ const handleResponseError = (error: AxiosError) => {
 baseHttp.interceptors.response.use(
   response => response,
   // tslint:disable-next-line:no-unsafe-any
-  error => handleResponseError(error)
+  error => handleResponseError(error),
 )
 
 baseHttp.interceptors.request.use(
@@ -109,7 +109,7 @@ baseHttp.interceptors.request.use(
     return cfg
   },
   // tslint:disable-next-line:no-throw
-  error => Promise.reject(error)
+  error => Promise.reject(error),
 )
 
 type HttpResult<T> = Promise<Result<T, AxiosError>>
@@ -140,7 +140,7 @@ export const http = {
   patch: <T>(
     url: string,
     data?: {} | unknown,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
   ): HttpResult<T> =>
     baseHttp
       .patch<T>(url, data, config)
@@ -149,7 +149,7 @@ export const http = {
   put: <T>(
     url: string,
     data?: {} | unknown,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
   ): HttpResult<T> =>
     baseHttp
       .put<T>(url, data, config)
@@ -158,7 +158,7 @@ export const http = {
   post: <T>(
     url: string,
     data?: {} | unknown,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
   ): HttpResult<T> =>
     baseHttp
       .post<T>(url, data, config)
@@ -172,7 +172,7 @@ export const http = {
     readonly data?: T
   }): Promise<Either<t.Errors | AxiosError | Error, A>> => {
     return http3(options)
-  }
+  },
 }
 // tslint:enable:no-promise-catch
 

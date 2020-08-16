@@ -95,14 +95,14 @@ function setupCompiler(host, port, protocol) {
         console.log("The app is running at:")
         console.log()
         console.log(
-          "  " + chalk.cyan(protocol + "://" + host + ":" + port + "/")
+          "  " + chalk.cyan(protocol + "://" + host + ":" + port + "/"),
         )
         console.log()
         console.log("Note that the development build is not optimized.")
         console.log(
           "To create a production build, use " +
             chalk.cyan(cli + " run build") +
-            "."
+            ".",
         )
         console.log()
         isFirstCompile = false
@@ -132,15 +132,15 @@ function setupCompiler(host, port, protocol) {
         console.log(
           "Use " +
             chalk.yellow("// eslint-disable-next-line") +
-            " to ignore the next line."
+            " to ignore the next line.",
         )
         console.log(
           "Use " +
             chalk.yellow("/* eslint-disable */") +
-            " to ignore all warnings in a file."
+            " to ignore all warnings in a file.",
         )
       }
-    }
+    },
   )
 }
 
@@ -151,7 +151,7 @@ function onProxyError(proxy) {
   return /** @param {any} err @param {any} req @param {any} res */ function(
     err,
     req,
-    res
+    res,
   ) {
     const host = req.headers && req.headers.host
     console.log(
@@ -162,12 +162,12 @@ function onProxyError(proxy) {
         chalk.cyan(host) +
         " to " +
         chalk.cyan(proxy) +
-        "."
+        ".",
     )
     console.log(
       "See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (" +
         chalk.cyan(err.code) +
-        ")."
+        ").",
     )
     console.log()
 
@@ -185,7 +185,7 @@ function onProxyError(proxy) {
         proxy +
         " (" +
         err.code +
-        ")."
+        ").",
     )
   }
 }
@@ -205,8 +205,8 @@ function addMiddleware(devServer) {
           from: /.*\.(json|yaml|yml)\/?$/,
           to(ctx) {
             return proxy + ctx.parsedUrl.pathname
-          }
-        }
+          },
+        },
       ],
       // For single page apps, we generally want to fallback to /index.html.
       // However we also want to respect `proxy` for API calls.
@@ -215,21 +215,21 @@ function addMiddleware(devServer) {
       // Modern browsers include text/html into `accept` header when navigating.
       // However API calls like `fetch()` won’t generally accept text/html.
       // If this heuristic doesn’t work well for you, don’t use `proxy`.
-      htmlAcceptHeaders: proxy ? ["text/html"] : ["text/html", "*/*"]
-    })
+      htmlAcceptHeaders: proxy ? ["text/html"] : ["text/html", "*/*"],
+    }),
   )
   if (proxy) {
     if (typeof proxy !== "string") {
       console.log(
-        chalk.red('When specified, "proxy" in package.json must be a string.')
+        chalk.red('When specified, "proxy" in package.json must be a string.'),
       )
       console.log(
-        chalk.red('Instead, the type of "proxy" was "' + typeof proxy + '".')
+        chalk.red('Instead, the type of "proxy" was "' + typeof proxy + '".'),
       )
       console.log(
         chalk.red(
-          'Either remove "proxy" from package.json, or make it a string.'
-        )
+          'Either remove "proxy" from package.json, or make it a string.',
+        ),
       )
       process.exit(1)
     }
@@ -256,13 +256,13 @@ function addMiddleware(devServer) {
         }
       },
       router: {
-        "/avatar": "https://www.gravatar.com"
+        "/avatar": "https://www.gravatar.com",
       },
       onError: onProxyError(proxy),
       secure: false,
       changeOrigin: true,
       ws: true,
-      xfwd: true
+      xfwd: true,
     })
     devServer.use(mayProxy, hpm)
 
@@ -321,11 +321,11 @@ function runDevServer(host, port, protocol) {
     // Reportedly, this avoids CPU overload on some systems.
     // https://github.com/facebookincubator/create-react-app/issues/293
     watchOptions: {
-      ignored: /node_modules/
+      ignored: /node_modules/,
     },
     // Enable HTTPS if the HTTPS environment variable is set to 'true'
     https: protocol === "https",
-    host
+    host,
   })
 
   // Our custom middleware proxies requests to /index.html or a remote API.
@@ -346,7 +346,7 @@ function runDevServer(host, port, protocol) {
       console.log()
 
       openBrowser(protocol + "://" + host + ":" + port + "/")
-    }
+    },
   )
 }
 
@@ -375,9 +375,9 @@ detect(DEFAULT_PORT).then(port => {
       message:
         chalk.yellow(
           `Something is already running on port ${DEFAULT_PORT}.` +
-            `${existingProcess ? ` Probably:\n  ${existingProcess}` : ""}`
+            `${existingProcess ? ` Probably:\n  ${existingProcess}` : ""}`,
         ) + "\n\nWould you like to run the app on another port instead?",
-      default: true
+      default: true,
     }
 
     inquirer.prompt(question).then(answer => {
@@ -387,7 +387,7 @@ detect(DEFAULT_PORT).then(port => {
     })
   } else {
     console.log(
-      chalk.red("Something is already running on port " + DEFAULT_PORT + ".")
+      chalk.red("Something is already running on port " + DEFAULT_PORT + "."),
     )
   }
 })

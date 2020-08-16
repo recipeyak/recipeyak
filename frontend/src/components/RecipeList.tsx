@@ -70,7 +70,7 @@ function RecipesListSearch({
   recipes,
   drag,
   scroll,
-  teamID
+  teamID,
 }: IRecipesProps) {
   const [query, setQuery] = useState(getInitialQuery)
 
@@ -97,17 +97,17 @@ function RecipesListSearch({
 
 function mapStateToProps(
   state: IState,
-  ownProps: Pick<IRecipesProps, "teamID">
+  ownProps: Pick<IRecipesProps, "teamID">,
 ): Pick<IRecipesProps, "recipes"> {
   return {
-    recipes: getTeamRecipes(state, ownProps.teamID || "personal")
+    recipes: getTeamRecipes(state, ownProps.teamID || "personal"),
   }
 }
 
 const mapDispatchToProps = (
-  dispatch: Dispatch
+  dispatch: Dispatch,
 ): Pick<IRecipesProps, "fetchData"> => ({
-  fetchData: fetchingRecipeListAsync(dispatch)
+  fetchData: fetchingRecipeListAsync(dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(RecipesListSearch)

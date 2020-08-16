@@ -10,7 +10,7 @@ import {
   IStepBasic,
   IRecipeBasic,
   IIngredientBasic,
-  IAddRecipeError
+  IAddRecipeError,
 } from "@/store/reducers/recipes"
 import { ITeam } from "@/store/reducers/teams"
 import { Select, TextInput } from "@/components/Forms"
@@ -35,7 +35,7 @@ interface IAddRecipeProps {
   readonly removeIngredient: (index: number) => void
   readonly updateIngredient: (
     index: number,
-    ingredient: IIngredientBasic
+    ingredient: IIngredientBasic,
   ) => void
   readonly addIngredient: (ingredient: IIngredientBasic) => void
   readonly error: IAddRecipeError
@@ -69,7 +69,7 @@ const emptyIngredient = {
   quantity: "",
   name: "",
   description: "",
-  optional: false
+  optional: false,
 }
 
 export default class AddRecipe extends React.Component<
@@ -79,7 +79,7 @@ export default class AddRecipe extends React.Component<
   state: IAddRecipeState = {
     ingredient: emptyIngredient,
     step: "",
-    loading: false
+    loading: false,
   }
 
   componentDidMount() {
@@ -90,7 +90,7 @@ export default class AddRecipe extends React.Component<
   handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     /* eslint-disable @typescript-eslint/consistent-type-assertions */
     this.setState(({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     } as unknown) as IAddRecipeState)
     /* eslint-enable @typescript-eslint/consistent-type-assertions */
   }
@@ -107,7 +107,7 @@ export default class AddRecipe extends React.Component<
       steps: this.props.steps,
       notes: [],
       sections: [],
-      team: this.props.teamID || undefined
+      team: this.props.teamID || undefined,
     })
   }
 
@@ -126,16 +126,16 @@ export default class AddRecipe extends React.Component<
       this.setState(prev => ({
         ingredient: {
           ...prev.ingredient,
-          [e.target.name]: !prev.ingredient[e.target.name]
-        }
+          [e.target.name]: !prev.ingredient[e.target.name],
+        },
       }))
       return
     }
     this.setState(prevState => ({
       ingredient: {
         ...prevState.ingredient,
-        [e.target.name]: e.target.value
-      }
+        [e.target.name]: e.target.value,
+      },
     }))
   }
 
@@ -166,20 +166,20 @@ export default class AddRecipe extends React.Component<
       handleSubmit,
       addIngredient,
       cancelAddIngredient,
-      handleIngredientChange
+      handleIngredientChange,
     } = this
 
     const {
       errorWithName,
       errorWithIngredients,
-      errorWithSteps
+      errorWithSteps,
     } = this.props.error
 
     const {
       quantity = "",
       name = "",
       description = "",
-      optional = false
+      optional = false,
     } = ingredient
 
     return (

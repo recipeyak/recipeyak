@@ -15,7 +15,7 @@ interface IListItemProps {
   readonly update: (
     recipeID: IRecipe["id"],
     id: number,
-    data: { text: string }
+    data: { text: string },
   ) => void
   readonly removing?: boolean
   readonly updating?: boolean
@@ -36,7 +36,7 @@ export default class ListItem extends React.Component<
     this.state = {
       text: props.text || "",
       editing: false,
-      unsavedChanges: false
+      unsavedChanges: false,
     }
   }
 
@@ -44,7 +44,7 @@ export default class ListItem extends React.Component<
 
   static defaultProps = {
     recipeID: -1,
-    removing: false
+    removing: false,
   }
 
   handleKeyDown = (e: KeyboardEvent) => {
@@ -71,14 +71,14 @@ export default class ListItem extends React.Component<
       editing: false,
       unsavedChanges:
         (prevState.editing && prevState.text !== text) ||
-        prevState.unsavedChanges
+        prevState.unsavedChanges,
     }))
   }
 
   handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     /* eslint-disable @typescript-eslint/consistent-type-assertions */
     this.setState(({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     } as unknown) as IListItemState)
     /* eslint-enable @typescript-eslint/consistent-type-assertions */
   }
@@ -90,7 +90,7 @@ export default class ListItem extends React.Component<
 
     this.setState({
       editing: true,
-      unsavedChanges: false
+      unsavedChanges: false,
     })
   }
 
@@ -98,7 +98,7 @@ export default class ListItem extends React.Component<
     this.setState((_, props) => ({
       editing: false,
       text: props.text || "",
-      unsavedChanges: false
+      unsavedChanges: false,
     }))
   }
 
@@ -114,7 +114,7 @@ export default class ListItem extends React.Component<
   cancel = () => {
     this.setState((_, props) => ({
       editing: false,
-      text: props.text || ""
+      text: props.text || "",
     }))
   }
 
@@ -125,16 +125,16 @@ export default class ListItem extends React.Component<
       this.delete()
     } else if (this.props.recipeID) {
       this.props.update(this.props.recipeID, this.props.id, {
-        text: this.state.text
+        text: this.state.text,
       })
     } else {
       this.props.update(-1, this.props.id, {
-        text: this.state.text
+        text: this.state.text,
       })
     }
     this.setState({
       editing: false,
-      unsavedChanges: false
+      unsavedChanges: false,
     })
   }
 

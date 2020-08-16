@@ -29,7 +29,7 @@ describe("<AddRecipe/>", () => {
           error={{
             errorWithName: false,
             errorWithIngredients: false,
-            errorWithSteps: false
+            errorWithSteps: false,
           }}
           loading={false}
           name={""}
@@ -43,7 +43,7 @@ describe("<AddRecipe/>", () => {
           teams={[]}
           teamID={0}
         />
-      </TestProvider>
+      </TestProvider>,
     )
   })
 })

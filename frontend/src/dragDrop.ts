@@ -5,19 +5,19 @@ export const enum DragDrop {
   CAL_RECIPE = "CAL_RECIPE",
   STEP = "STEP",
   INGREDIENT = "INGREDIENT",
-  SECTION = "SECTION"
+  SECTION = "SECTION",
 }
 
 export const handleDndHover = ({
   ref,
   index,
-  move
+  move,
 }: {
   readonly ref: React.RefObject<HTMLElement>
   readonly index: number
   readonly move?: ({
     from,
-    to
+    to,
   }: {
     readonly from: number
     readonly to: number

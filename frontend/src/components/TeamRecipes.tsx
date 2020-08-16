@@ -24,7 +24,7 @@ export default class TeamRecipes extends React.Component<
   ENABLE_SEARCH_THRESHOLD = 8
 
   state: ITeamRecipesState = {
-    query: ""
+    query: "",
   }
 
   render() {

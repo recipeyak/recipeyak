@@ -11,12 +11,12 @@ describe("<Login/>", () => {
       search: "",
       hash: "",
       key: "",
-      state: null
+      state: null,
     }
     const element = mount(
       <TestProvider>
         <Login location={location} />
-      </TestProvider>
+      </TestProvider>,
     )
     expect(element.text()).toContain("Email")
     expect(element.text()).toContain("Password")

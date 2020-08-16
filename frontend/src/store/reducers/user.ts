@@ -5,7 +5,7 @@ import {
   createAsyncAction,
   createStandardAction,
   ActionType,
-  getType
+  getType,
 } from "typesafe-actions"
 import { IRecipe } from "@/store/reducers/recipes"
 import {
@@ -15,21 +15,21 @@ import {
   HttpErrorKind,
   toLoading,
   mapSuccessLike,
-  Loading
+  Loading,
 } from "@/webdata"
 import { login, AuthActions } from "@/store/reducers/auth"
 
 export const fetchUserStats = createAsyncAction(
   "FETCH_USER_STATS_START",
   "FETCH_USER_STATS_SUCCESS",
-  "FETCH_USER_STATS_FAILURE"
+  "FETCH_USER_STATS_FAILURE",
 )<void, IUserStats, void>()
 
 // TODO(chdsbd): Replace usage with fetchUser#success. Update user reducer.
 export const logOut = createAsyncAction(
   "LOGOUT_START",
   "LOGOUT_SUCCESS",
-  "LOGOUT_FAILURE"
+  "LOGOUT_FAILURE",
 )<void, void, void>()
 
 export const updateTeamID = createStandardAction("SET_TEAM_ID")<
@@ -39,7 +39,7 @@ export const updateTeamID = createStandardAction("SET_TEAM_ID")<
 export const socialConnections = createAsyncAction(
   "REQUEST_SOCIAL_ACCOUNT_CONNECTIONS",
   "SUCCESS_SOCIAL_ACCOUNT_CONNECTIONS",
-  "FAILURE_SOCIAL_ACCOUNT_CONNECTIONS"
+  "FAILURE_SOCIAL_ACCOUNT_CONNECTIONS",
 )<void, ISocialConnection[], void>()
 
 export const setUserLoggedIn = createStandardAction("SET_USER_LOGGED_IN")<
@@ -48,31 +48,31 @@ export const setUserLoggedIn = createStandardAction("SET_USER_LOGGED_IN")<
 export const fetchUser = createAsyncAction(
   "FETCH_USER_START",
   "FETCH_USER_SUCCESS",
-  "FETCH_USER_FAILURE"
+  "FETCH_USER_FAILURE",
 )<void, IUser, void>()
 export const toggleDarkMode = createStandardAction("TOGGLE_DARK_MODE")()
 export const updateEmail = createAsyncAction(
   "UPDATE_EMAIL_START",
   "UPDATE_EMAIL_SUCCESS",
-  "UPDATE_EMAIL_FAILURE"
+  "UPDATE_EMAIL_FAILURE",
 )<void, IUser, void>()
 
 export const fetchSessions = createAsyncAction(
   "FETCH_SESSIONS_REQUEST",
   "FETCH_SESSIONS_SUCCESS",
-  "FETCH_SESSIONS_FAILURE"
+  "FETCH_SESSIONS_FAILURE",
 )<void, ReadonlyArray<ISession>, void>()
 
 export const logoutSessionById = createAsyncAction(
   "LOGOUT_SESSION_BY_ID_REQUEST",
   "LOGOUT_SESSION_BY_ID_SUCCESS",
-  "LOGOUT_SESSION_BY_ID_FAILURE"
+  "LOGOUT_SESSION_BY_ID_FAILURE",
 )<ISession["id"], ISession["id"], ISession["id"]>()
 
 export const logoutAllSessions = createAsyncAction(
   "LOGOUT_ALL_SESSIONS_REQUEST",
   "LOGOUT_ALL_SESSIONS_SUCCESS",
-  "LOGOUT_ALL_SESSIONS_FAILURE"
+  "LOGOUT_ALL_SESSIONS_FAILURE",
 )<void, void, void>()
 
 export type UserActions =
@@ -141,7 +141,7 @@ export interface ISession {
 export const enum LoggingOutStatus {
   Initial,
   Loading,
-  Failure
+  Failure,
 }
 
 export interface IUserState {
@@ -178,12 +178,12 @@ const initialState: IUserState = {
   teamID: null,
   updatingEmail: false,
   sessions: undefined,
-  loggingOutAllSessionsStatus: LoggingOutStatus.Initial
+  loggingOutAllSessionsStatus: LoggingOutStatus.Initial,
 }
 
 export const user = (
   state: IUserState = initialState,
-  action: UserActions | AuthActions
+  action: UserActions | AuthActions,
 ): IUserState => {
   switch (action.type) {
     case getType(fetchUserStats.success):
@@ -191,7 +191,7 @@ export const user = (
     case getType(fetchUserStats.request): {
       return {
         ...state,
-        stats: toLoading(state.stats)
+        stats: toLoading(state.stats),
       }
     }
     case getType(fetchUserStats.failure):
@@ -207,7 +207,7 @@ export const user = (
     case getType(socialConnections.request):
       return {
         ...state,
-        socialAccountConnections: Loading()
+        socialAccountConnections: Loading(),
       }
     case getType(socialConnections.success): {
       const socialAccountConnections: ISocialAccountsState = action.payload.reduce<
@@ -217,32 +217,32 @@ export const user = (
           acc[cur.provider] = cur.id
           return acc
         },
-        { github: null, gitlab: null, google: null }
+        { github: null, gitlab: null, google: null },
       )
       return {
         ...state,
-        socialAccountConnections: Success(socialAccountConnections)
+        socialAccountConnections: Success(socialAccountConnections),
       }
     }
     case getType(socialConnections.failure):
       return {
         ...state,
-        socialAccountConnections: Failure(undefined)
+        socialAccountConnections: Failure(undefined),
       }
     case getType(fetchSessions.request):
       return {
         ...state,
-        sessions: toLoading(state.sessions)
+        sessions: toLoading(state.sessions),
       }
     case getType(fetchSessions.success):
       return {
         ...state,
-        sessions: Success(action.payload)
+        sessions: Success(action.payload),
       }
     case getType(fetchSessions.failure):
       return {
         ...state,
-        sessions: Failure(HttpErrorKind.other)
+        sessions: Failure(HttpErrorKind.other),
       }
     case getType(logoutSessionById.request):
       return {
@@ -253,15 +253,15 @@ export const user = (
               return { ...s, loggingOut: LoggingOutStatus.Loading }
             }
             return s
-          })
-        )
+          }),
+        ),
       }
     case getType(logoutSessionById.success):
       return {
         ...state,
         sessions: mapSuccessLike(state.sessions, data =>
-          data.filter(s => s.id !== action.payload)
-        )
+          data.filter(s => s.id !== action.payload),
+        ),
       }
     case getType(logoutSessionById.failure):
       return {
@@ -272,27 +272,27 @@ export const user = (
               return { ...s, loggingOut: LoggingOutStatus.Failure }
             }
             return s
-          })
-        )
+          }),
+        ),
       }
 
     case getType(logoutAllSessions.request):
       return {
         ...state,
-        loggingOutAllSessionsStatus: LoggingOutStatus.Loading
+        loggingOutAllSessionsStatus: LoggingOutStatus.Loading,
       }
     case getType(logoutAllSessions.success):
       return {
         ...state,
         sessions: mapSuccessLike(state.sessions, data =>
-          data.filter(s => s.current)
+          data.filter(s => s.current),
         ),
-        loggingOutAllSessionsStatus: LoggingOutStatus.Initial
+        loggingOutAllSessionsStatus: LoggingOutStatus.Initial,
       }
     case getType(logoutAllSessions.failure):
       return {
         ...state,
-        loggingOutAllSessionsStatus: LoggingOutStatus.Failure
+        loggingOutAllSessionsStatus: LoggingOutStatus.Failure,
       }
     case getType(updateTeamID):
       return { ...state, teamID: action.payload }
@@ -316,10 +316,10 @@ export const user = (
       raven.setUserContext({
         ...{
           email: state.email,
-          id: state.id
+          id: state.id,
         },
         email: action.payload.email,
-        id: action.payload.id
+        id: action.payload.id,
       })
       return {
         ...state,
@@ -331,7 +331,7 @@ export const user = (
         id: action.payload.id,
         darkMode: action.payload.dark_mode_enabled,
         teamID: action.payload.selected_team,
-        updatingEmail: false
+        updatingEmail: false,
       }
     default:
       return state

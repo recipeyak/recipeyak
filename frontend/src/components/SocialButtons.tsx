@@ -5,7 +5,7 @@ import {
   GITLAB_OAUTH_URL,
   BITBUCKET_OAUTH_URL,
   GOOGLE_OAUTH_URL,
-  FACEBOOK_OAUTH_URL
+  FACEBOOK_OAUTH_URL,
 } from "@/settings"
 
 import { FormErrorHandler } from "@/components/Forms"
@@ -119,7 +119,7 @@ interface ISocialButtonsProps {
 const SocialButtons = ({
   nonFieldErrors,
   emailError,
-  signup = true
+  signup = true,
 }: ISocialButtonsProps) => {
   if (!enableSocialButtons) {
     return null

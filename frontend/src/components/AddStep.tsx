@@ -6,7 +6,7 @@ import {
   IStep,
   addStepToRecipe,
   setRecipeStepDraft,
-  IRecipe
+  IRecipe,
 } from "@/store/reducers/recipes"
 import { connect } from "react-redux"
 
@@ -59,7 +59,7 @@ function AddStep(props: IAddStepProps) {
 
 const mapDispatchToProps = {
   addStep: addStepToRecipe.request,
-  setStep: setRecipeStepDraft
+  setStep: setRecipeStepDraft,
 }
 
 export default connect(null, mapDispatchToProps)(AddStep)

@@ -18,7 +18,7 @@ describe("<Calendar> Snap", () => {
       .create(
         <TestProvider>
           <Calendar teamID={10} type="recipes" />
-        </TestProvider>
+        </TestProvider>,
       )
       .toJSON()
 

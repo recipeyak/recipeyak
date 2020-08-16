@@ -5,7 +5,7 @@ import { ButtonPrimary } from "@/components/Buttons"
 import {
   acceptingInviteAsync,
   fetchingInvitesAsync,
-  decliningInviteAsync
+  decliningInviteAsync,
 } from "@/store/thunks"
 
 import { teamURL } from "@/urls"
@@ -13,7 +13,7 @@ import { getInvites, IInvite } from "@/store/reducers/invites"
 import {
   DropdownContainer,
   useDropdown,
-  DropdownMenu
+  DropdownMenu,
 } from "@/components/Dropdown"
 import { Chevron } from "@/components/icons"
 import { useDispatch, useSelector } from "@/hooks"

@@ -15,7 +15,7 @@ describe("RecipeItem", () => {
           name="foo"
           drag
         />
-      </TestProvider>
+      </TestProvider>,
     )
   })
 })

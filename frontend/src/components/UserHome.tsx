@@ -147,7 +147,7 @@ const UserStatistics = (props: IUserStatisticsProps) => {
         total_user_recipes: 0,
         date_joined: "",
         recipes_added_by_month: [],
-        total_recipes_added_last_month_by_all_users: 0
+        total_recipes_added_last_month_by_all_users: 0,
       }
     : props.stats.data
 

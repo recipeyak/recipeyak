@@ -39,7 +39,7 @@ interface IAuthRouteProps extends RouteProps {
 }
 
 const mapAuthenticated = (state: IState) => ({
-  authenticated: state.user.loggedIn
+  authenticated: state.user.loggedIn,
 })
 
 type ComponentProps = ArgumentsType<RouteProps["render"]>[0]
@@ -51,7 +51,7 @@ type ComponentProps = ArgumentsType<RouteProps["render"]>[0]
 const renderComponent = (
   props: ComponentProps,
   component: RouteProps["component"],
-  render: RouteProps["render"]
+  render: RouteProps["render"],
 ): React.ReactNode => {
   if (component) {
     return React.createElement(component, props)
@@ -78,13 +78,13 @@ const PrivateRoute = connect(mapAuthenticated)(
           <Redirect
             to={{
               pathname: "/login",
-              state: { from: props.location }
+              state: { from: props.location },
             }}
           />
         )
       }}
     />
-  )
+  ),
 )
 
 const PublicOnlyRoute = connect(mapAuthenticated)(
@@ -103,13 +103,13 @@ const PublicOnlyRoute = connect(mapAuthenticated)(
           <Redirect
             to={{
               pathname: "/",
-              state: { from: props.location }
+              state: { from: props.location },
             }}
           />
         )
       }}
     />
-  )
+  ),
 )
 
 function Base() {
@@ -201,7 +201,7 @@ function Base() {
 // see: https://github.com/gaearon/react-hot-loader
 setConfig({
   ignoreSFC: true,
-  pureRender: true
+  pureRender: true,
 })
 
 export default hot(Base)

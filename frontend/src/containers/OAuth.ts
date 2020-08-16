@@ -9,7 +9,7 @@ import { SocialProvider } from "@/store/reducers/user"
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    login: login(dispatch)
+    login: login(dispatch),
   }
 }
 
@@ -26,21 +26,21 @@ const mapStateToProps = (state: IState, props: RouteProps) => {
   return {
     service,
     token: String(token),
-    redirectUrl
+    redirectUrl,
   }
 }
 
 const mergeProps = (
   stateProps: ReturnType<typeof mapStateToProps>,
-  dispatchProps: ReturnType<typeof mapDispatchToProps>
+  dispatchProps: ReturnType<typeof mapDispatchToProps>,
 ) => ({
   ...stateProps,
   login: () =>
     dispatchProps.login(
       stateProps.service,
       stateProps.token,
-      stateProps.redirectUrl
-    )
+      stateProps.redirectUrl,
+    ),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(OAuth)

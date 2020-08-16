@@ -19,7 +19,7 @@ describe("search", () => {
       ingredients: [],
       sections: [],
       notes: [],
-      created: ""
+      created: "",
     }
 
     const testCases = [
@@ -27,7 +27,7 @@ describe("search", () => {
       ["id:150", false],
       ["recipeId:75", false],
       ["recipeId:", false],
-      ["recipeId:150", true]
+      ["recipeId:150", true],
     ] as const
 
     testCases.forEach(([query, expected]) => {

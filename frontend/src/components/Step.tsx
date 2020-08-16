@@ -39,7 +39,7 @@ import {
   IStep,
   IRecipe,
   updateStep,
-  deleteStep
+  deleteStep,
 } from "@/store/reducers/recipes"
 
 interface IStepProps {
@@ -58,25 +58,25 @@ function Step({ text, index, ...props }: IStepProps) {
   const ref = useRef<HTMLDivElement>(null)
   const [, drop] = useDrop({
     accept: DragDrop.STEP,
-    hover: handleDndHover({ ref, index, move: props.move })
+    hover: handleDndHover({ ref, index, move: props.move }),
   })
 
   const [{ isDragging }, drag, preview] = useDrag({
     item: {
       type: DragDrop.STEP,
-      index
+      index,
     },
     end: () => {
       props.completeMove(props.id, index)
     },
     collect: monitor => ({
-      isDragging: monitor.isDragging()
-    })
+      isDragging: monitor.isDragging(),
+    }),
   })
 
   const style = {
     backgroundColor: "white",
-    opacity: isDragging ? 0 : 1
+    opacity: isDragging ? 0 : 1,
   }
 
   preview(drop(ref))
@@ -117,7 +117,7 @@ function StepBodyBasic({
   update,
   remove,
   updating,
-  removing
+  removing,
 }: IStepBodyBasic) {
   const listItemUpdate = (rID: number, sID: number, data: { text: string }) =>
     update({ recipeID: rID, stepID: sID, ...data })
@@ -137,7 +137,7 @@ function StepBodyBasic({
 
 const StepBody = connect(null, {
   update: updateStep.request,
-  remove: deleteStep.request
+  remove: deleteStep.request,
 })(StepBodyBasic)
 
 export default Step

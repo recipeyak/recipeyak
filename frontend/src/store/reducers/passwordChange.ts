@@ -2,17 +2,17 @@ import {
   getType,
   createAsyncAction,
   ActionType,
-  createStandardAction
+  createStandardAction,
 } from "typesafe-actions"
 
 export const passwordUpdate = createAsyncAction(
   "PASSWORD_UPDATE_START",
   "PASSWORD_UPDATE_SUCCESS",
-  "PASSWORD_UPDATE_FAILURE"
+  "PASSWORD_UPDATE_FAILURE",
 )<void, void, IPasswordUpdateError | void>()
 
 export const clearPasswordUpdateError = createStandardAction(
-  "CLEAR_PASSWORD_UPDATE_ERROR"
+  "CLEAR_PASSWORD_UPDATE_ERROR",
 )()
 
 export type PasswordChangeActions =
@@ -32,12 +32,12 @@ export interface IPasswordChangeState {
 
 export const initialState: IPasswordChangeState = {
   loadingPasswordUpdate: false,
-  errorPasswordUpdate: {}
+  errorPasswordUpdate: {},
 }
 
 export const passwordChange = (
   state: IPasswordChangeState = initialState,
-  action: PasswordChangeActions
+  action: PasswordChangeActions,
 ): IPasswordChangeState => {
   switch (action.type) {
     case getType(passwordUpdate.request):
@@ -48,12 +48,12 @@ export const passwordChange = (
       return {
         ...state,
         loadingPasswordUpdate: false,
-        errorPasswordUpdate: action.payload || {}
+        errorPasswordUpdate: action.payload || {},
       }
     case getType(clearPasswordUpdateError):
       return {
         ...state,
-        errorPasswordUpdate: {}
+        errorPasswordUpdate: {},
       }
     default:
       return state

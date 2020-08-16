@@ -49,7 +49,7 @@ export default class DateRangePicker extends React.Component<
           "bg-whitesmoke",
           "z-index-100",
           "grid-2-months",
-          this.props.selecting !== Selecting.None ? "d-grid" : "d-none"
+          this.props.selecting !== Selecting.None ? "d-grid" : "d-none",
         )}>
         <Month
           showLeft

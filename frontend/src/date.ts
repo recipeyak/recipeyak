@@ -15,7 +15,7 @@ export function toISODateString(date: Date | string): string {
 export function daysOfMonth(date: Date) {
   return eachDayOfInterval({
     start: startOfMonth(date),
-    end: lastDayOfMonth(date)
+    end: lastDayOfMonth(date),
   })
 }
 

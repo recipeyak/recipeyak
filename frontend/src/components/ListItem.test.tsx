@@ -10,7 +10,7 @@ describe("<ListItem/>", () => {
     mount(
       <MemoryRouter>
         <ListItem id={0} delete={jest.fn()} update={jest.fn()} />
-      </MemoryRouter>
+      </MemoryRouter>,
     )
   })
 
@@ -19,7 +19,7 @@ describe("<ListItem/>", () => {
       "Add 3 tablespoons of tomato paste. Cook 1 minute.",
       "Measure 1 teaspoon of rice vinegar.",
       "Add 1 tablespoon + 2 teaspoons of soy sauce.",
-      "Stir in 1 Teaspoon salt"
+      "Stir in 1 Teaspoon salt",
     ]
 
     testCases.forEach(text => {
@@ -32,7 +32,7 @@ describe("<ListItem/>", () => {
               update={jest.fn()}
               text={text}
             />
-          </TestProvider>
+          </TestProvider>,
         )
         .toJSON()
 

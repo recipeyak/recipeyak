@@ -5,7 +5,7 @@ import {
   IRecipe,
   updateRecipe,
   deleteRecipe,
-  toggleEditingRecipe
+  toggleEditingRecipe,
 } from "@/store/reducers/recipes"
 import GlobalEvent from "@/components/GlobalEvent"
 import { TextInput } from "@/components/Forms"
@@ -48,7 +48,7 @@ class RecipeTitle extends React.Component<
 > {
   state: IRecipeTitleState = {
     show: false,
-    recipe: {}
+    recipe: {},
   }
 
   toggleEdit = () => this.props.toggleEditing(this.props.id)
@@ -66,15 +66,15 @@ class RecipeTitle extends React.Component<
     this.setState(prevState => ({
       recipe: {
         ...prevState.recipe,
-        [e.target.name]: e.target.value
-      }
+        [e.target.name]: e.target.value,
+      },
     }))
   }
 
   handleDelete = () => {
     if (
       confirm(
-        `Are you sure you want to delete this recipe "${this.props.name}"?`
+        `Are you sure you want to delete this recipe "${this.props.name}"?`,
       )
     ) {
       this.props.remove(this.props.id)
@@ -108,7 +108,7 @@ class RecipeTitle extends React.Component<
       time,
       owner,
       updating,
-      deleting
+      deleting,
     } = this.props
     return (
       <div>
@@ -232,7 +232,7 @@ class RecipeTitle extends React.Component<
 const mapDispatchToProps = {
   update: updateRecipe.request,
   remove: deleteRecipe.request,
-  toggleEditing: toggleEditingRecipe
+  toggleEditing: toggleEditingRecipe,
 }
 
 export default connect(null, mapDispatchToProps)(RecipeTitle)

@@ -74,7 +74,7 @@ export interface ICalendarItemProps {
   readonly count: ICalRecipe["count"]
   readonly remove: () => void
   readonly updateCount: (
-    count: ICalRecipe["count"]
+    count: ICalRecipe["count"],
   ) => Promise<Result<void, void>>
   readonly refetchShoppingList: () => void
   readonly date: Date
@@ -91,7 +91,7 @@ export function CalendarItem({
   remove,
   recipeName,
   recipeID,
-  id
+  id,
 }: ICalendarItemProps) {
   const [count, setCount] = React.useState(propsCount)
   const ref = React.useRef<HTMLLIElement>(null)
@@ -143,7 +143,7 @@ export function CalendarItem({
     recipeID,
     count,
     id,
-    date
+    date,
   }
 
   const [{ isDragging }, drag] = useDrag({
@@ -157,9 +157,9 @@ export function CalendarItem({
     },
     collect: monitor => {
       return {
-        isDragging: monitor.isDragging()
+        isDragging: monitor.isDragging(),
       }
-    }
+    },
   })
 
   const visibility = isDragging && !isPast(date) ? "hidden" : "visible"

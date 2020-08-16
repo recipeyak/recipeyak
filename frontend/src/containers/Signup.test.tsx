@@ -8,7 +8,7 @@ describe("<Signup/>", () => {
     const element = mount(
       <TestProvider>
         <Signup />
-      </TestProvider>
+      </TestProvider>,
     )
     expect(element.text()).toContain("Email")
     expect(element.text()).toContain("Password")

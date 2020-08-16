@@ -38,11 +38,11 @@ class PasswordChange extends React.Component<
     password: "",
     oldPassword: "",
     newPassword: "",
-    newPasswordAgain: ""
+    newPasswordAgain: "",
   }
 
   static defaultProps = {
-    setPassword: false
+    setPassword: false,
   }
 
   componentWillMount = () => {
@@ -52,7 +52,7 @@ class PasswordChange extends React.Component<
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     /* eslint-disable @typescript-eslint/consistent-type-assertions */
     this.setState(({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     } as unknown) as IPasswordChangestate)
     /* eslint-enable @typescript-eslint/consistent-type-assertions */
   }
@@ -63,7 +63,7 @@ class PasswordChange extends React.Component<
     this.props.update({
       password1: newPassword,
       password2: newPasswordAgain,
-      oldPassword
+      oldPassword,
     })
   }
 

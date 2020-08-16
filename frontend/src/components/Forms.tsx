@@ -66,15 +66,15 @@ const BaseInput = ({
     inputSize,
     {
       "is-danger": error,
-      "is-focused": isFocused
+      "is-focused": isFocused,
     },
-    className
+    className,
   )
   return <input className={cls} {...props} />
 }
 
 const createInput = (
-  type: React.InputHTMLAttributes<HTMLInputElement>["type"]
+  type: React.InputHTMLAttributes<HTMLInputElement>["type"],
 ) => (props: Omit<IBaseInputProps, "type">) => (
   <BaseInput {...props} type={type} />
 )

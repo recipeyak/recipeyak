@@ -7,7 +7,7 @@ import { ButtonPlain, ButtonDanger } from "@/components/Buttons"
 import {
   settingUserTeamLevelAsync,
   deletingMembershipAsync,
-  Dispatch
+  Dispatch,
 } from "@/store/thunks"
 import { ITeam, IMember } from "@/store/reducers/teams"
 import { IState } from "@/store/store"
@@ -27,12 +27,12 @@ interface IMemberRowProps {
   readonly handleUserLevelChange: (
     teamID: ITeam["id"],
     membershipID: IMember["id"],
-    level: IMember["level"]
+    level: IMember["level"],
   ) => void
   readonly deleteMembership: (
     teamID: ITeam["id"],
     membershipID: IMember["id"],
-    leaving?: boolean
+    leaving?: boolean,
   ) => void
   readonly isUser?: boolean
   readonly isActive?: IMember["is_active"]
@@ -50,7 +50,7 @@ const MemberRow = ({
   deleteMembership,
   isUser,
   isActive,
-  deleting
+  deleting,
 }: IMemberRowProps) => (
   <tr key={membershipID}>
     <td className="d-flex align-items-center pr-4">
@@ -77,7 +77,7 @@ const MemberRow = ({
               teamID,
               membershipID,
               /* eslint-disable-next-line @typescript-eslint/consistent-type-assertions */
-              e.target.value as "admin" | "contributor" | "read"
+              e.target.value as "admin" | "contributor" | "read",
             )
           }>
           <option value="admin">Admin</option>
@@ -108,8 +108,8 @@ const mapStateToProps = (
   {
     userID,
     teamID,
-    membershipID
-  }: Pick<IMemberRowProps, "userID" | "teamID" | "membershipID">
+    membershipID,
+  }: Pick<IMemberRowProps, "userID" | "teamID" | "membershipID">,
 ) => {
   const team = state.teams.byId[teamID]
   const members = team?.members ?? {}
@@ -121,13 +121,13 @@ const mapStateToProps = (
     userIsTeamAdmin: Object.values(members)
       .filter(notUndefined)
       .filter(x => x.level === "admin")
-      .some(({ user }) => user.id === state.user.id)
+      .some(({ user }) => user.id === state.user.id),
   }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   handleUserLevelChange: settingUserTeamLevelAsync(dispatch),
-  deleteMembership: deletingMembershipAsync(dispatch)
+  deleteMembership: deletingMembershipAsync(dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(MemberRow)

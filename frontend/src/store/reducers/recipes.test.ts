@@ -19,7 +19,7 @@ import recipes, {
   updatingRecipeAsync,
   setSchedulingRecipe,
   duplicateRecipe,
-  duplicateRecipeAsync
+  duplicateRecipeAsync,
 } from "@/store/reducers/recipes"
 import { HttpErrorKind, Loading, isSuccess, Failure, Success } from "@/webdata"
 import { getModel } from "redux-loop"
@@ -42,12 +42,12 @@ export const baseRecipe: IRecipe = {
   team: 1,
   owner: {
     id: 1,
-    type: "user"
+    type: "user",
   },
   ingredients: [],
   notes: [],
   sections: [],
-  created: "1776-1-1"
+  created: "1776-1-1",
 }
 
 export const baseIngredient: IIngredient = {
@@ -56,13 +56,13 @@ export const baseIngredient: IIngredient = {
   quantity: "1 cup",
   description: "chopped",
   position: 12.3,
-  optional: false
+  optional: false,
 }
 
 export const baseStep: IStep = {
   id: 1,
   text: "foo",
-  position: 10
+  position: 10,
 }
 
 function recipeStoreWith(recipe: IRecipe | IRecipe[]): IRecipesState {
@@ -70,8 +70,8 @@ function recipeStoreWith(recipe: IRecipe | IRecipe[]): IRecipesState {
     return getModel(
       recipes(
         undefined,
-        fetchRecipeList.success({ recipes: recipe, teamID: "personal" })
-      )
+        fetchRecipeList.success({ recipes: recipe, teamID: "personal" }),
+      ),
     )
   }
   return getModel(recipes(undefined, fetchRecipe.success(recipe)))
@@ -82,12 +82,12 @@ describe("Recipes", () => {
     const res = [
       {
         ...baseRecipe,
-        id: 123
+        id: 123,
       },
       {
         ...baseRecipe,
-        id: 2
-      }
+        id: 2,
+      },
     ]
     const [first, second] = res
     const beforeState = recipeStoreWith(res)
@@ -110,7 +110,7 @@ describe("Recipes", () => {
 
   it("Remove non-existent recipe from recipe list", () => {
     expect(recipes(initialState, deleteRecipe.success(123))).toEqual(
-      initialState
+      initialState,
     )
   })
 
@@ -119,21 +119,21 @@ describe("Recipes", () => {
       ...baseRecipe,
       name: "good recipe",
       steps: [],
-      deleting: false
+      deleting: false,
     })
 
     const afterState: IRecipesState = recipeStoreWith({
       ...baseRecipe,
       name: "good recipe",
       steps: [],
-      deleting: true
+      deleting: true,
     })
 
     expect(getModel(recipes(beforeState, deleteRecipe.request(1)))).toEqual(
-      afterState
+      afterState,
     )
     expect(getModel(recipes(afterState, deleteRecipe.failure(1)))).toEqual(
-      beforeState
+      beforeState,
     )
   })
 
@@ -141,14 +141,14 @@ describe("Recipes", () => {
     const beforeState: IRecipesState = recipeStoreWith({
       ...baseRecipe,
       name: "good recipe",
-      steps: []
+      steps: [],
     })
 
     const newStep = {
       ...baseStep,
       id: 1,
       text: "a new step",
-      position: 10
+      position: 10,
     }
 
     const afterState: IRecipesState = recipeStoreWith({
@@ -156,13 +156,13 @@ describe("Recipes", () => {
       name: "good recipe",
       steps: [newStep],
       addingStepToRecipe: false,
-      draftStep: ""
+      draftStep: "",
     })
 
     expect(
       getModel(
-        recipes(beforeState, addStepToRecipe.success({ id: 1, step: newStep }))
-      )
+        recipes(beforeState, addStepToRecipe.success({ id: 1, step: newStep })),
+      ),
     ).toEqual(afterState)
   })
 
@@ -174,9 +174,9 @@ describe("Recipes", () => {
         {
           id: 1,
           text: "test",
-          position: 10
-        }
-      ]
+          position: 10,
+        },
+      ],
     })
 
     const newIngredient = baseIngredient
@@ -188,19 +188,19 @@ describe("Recipes", () => {
         {
           id: 1,
           text: "test",
-          position: 10
-        }
+          position: 10,
+        },
       ],
-      addingIngredient: false
+      addingIngredient: false,
     })
 
     expect(
       getModel(
         recipes(
           beforeState,
-          addIngredientToRecipe.success({ id: 1, ingredient: newIngredient })
-        )
-      )
+          addIngredientToRecipe.success({ id: 1, ingredient: newIngredient }),
+        ),
+      ),
     ).toEqual(afterState)
 
     const failureAfterState: IRecipesState = recipeStoreWith({
@@ -209,14 +209,14 @@ describe("Recipes", () => {
         {
           id: 1,
           text: "test",
-          position: 10
-        }
+          position: 10,
+        },
       ],
-      addingIngredient: false
+      addingIngredient: false,
     })
 
     expect(recipes(beforeState, addIngredientToRecipe.failure(1))).toEqual(
-      failureAfterState
+      failureAfterState,
     )
   })
 
@@ -228,9 +228,9 @@ describe("Recipes", () => {
         {
           id: 1,
           text: "test",
-          position: 2.54
-        }
-      ]
+          position: 2.54,
+        },
+      ],
     })
 
     const text = "new text"
@@ -244,16 +244,16 @@ describe("Recipes", () => {
           id: 1,
           text,
           position,
-          updating: false
-        }
-      ]
+          updating: false,
+        },
+      ],
     })
 
     expect(
       recipes(
         beforeState,
-        updateStep.success({ recipeID: 1, stepID: 1, text, position })
-      )
+        updateStep.success({ recipeID: 1, stepID: 1, text, position }),
+      ),
     ).toEqual(afterState)
   })
 
@@ -266,10 +266,10 @@ describe("Recipes", () => {
           id: 1,
           quantity: "2 count",
           name: "Tomato",
-          description: "sliced"
-        }
+          description: "sliced",
+        },
       ],
-      steps: [baseStep]
+      steps: [baseStep],
     })
 
     const newIngredient: IIngredient = {
@@ -277,7 +277,7 @@ describe("Recipes", () => {
       id: 1,
       quantity: "4 count",
       name: "Tomato",
-      description: "diced"
+      description: "diced",
     }
 
     const afterState: IRecipesState = recipeStoreWith({
@@ -285,10 +285,10 @@ describe("Recipes", () => {
       ingredients: [
         {
           ...newIngredient,
-          updating: false
-        }
+          updating: false,
+        },
       ],
-      steps: [baseStep]
+      steps: [baseStep],
     })
 
     expect(
@@ -297,9 +297,9 @@ describe("Recipes", () => {
         updateIngredient.success({
           recipeID: 1,
           ingredientID: 1,
-          content: newIngredient
-        })
-      )
+          content: newIngredient,
+        }),
+      ),
     ).toEqual(afterState)
 
     const failureAfterState: IRecipesState = recipeStoreWith({
@@ -311,10 +311,10 @@ describe("Recipes", () => {
           quantity: "2 count",
           name: "Tomato",
           description: "sliced",
-          updating: false
-        }
+          updating: false,
+        },
       ],
-      steps: [baseStep]
+      steps: [baseStep],
     })
 
     expect(
@@ -322,9 +322,9 @@ describe("Recipes", () => {
         beforeState,
         updateIngredient.failure({
           recipeID: 1,
-          ingredientID: 1
-        })
-      )
+          ingredientID: 1,
+        }),
+      ),
     ).toEqual(failureAfterState)
   })
 
@@ -335,13 +335,13 @@ describe("Recipes", () => {
       ingredients: [
         {
           ...baseIngredient,
-          id: 1
+          id: 1,
         },
         {
           ...baseIngredient,
-          id: 2
-        }
-      ]
+          id: 2,
+        },
+      ],
     })
 
     const afterState: IRecipesState = recipeStoreWith({
@@ -350,15 +350,15 @@ describe("Recipes", () => {
       ingredients: [
         {
           ...baseIngredient,
-          id: 2
-        }
-      ]
+          id: 2,
+        },
+      ],
     })
     expect(
       recipes(
         beforeState,
-        deleteIngredient.success({ recipeID: 1, ingredientID: 1 })
-      )
+        deleteIngredient.success({ recipeID: 1, ingredientID: 1 }),
+      ),
     ).toEqual(afterState)
   })
 
@@ -369,14 +369,14 @@ describe("Recipes", () => {
         {
           ...baseStep,
           id: 1,
-          text: "test"
+          text: "test",
         },
         {
           ...baseStep,
           id: 2,
-          text: "target"
-        }
-      ]
+          text: "target",
+        },
+      ],
     })
 
     const afterState: IRecipesState = recipeStoreWith({
@@ -385,45 +385,45 @@ describe("Recipes", () => {
         {
           ...baseStep,
           id: 2,
-          text: "target"
-        }
-      ]
+          text: "target",
+        },
+      ],
     })
 
     expect(
       getModel(
-        recipes(beforeState, deleteStep.success({ recipeID: 1, stepID: 1 }))
-      )
+        recipes(beforeState, deleteStep.success({ recipeID: 1, stepID: 1 })),
+      ),
     ).toEqual(afterState)
   })
 
   it("sets the loading state for adding a step to a recipe", () => {
     const beforeState: IRecipesState = recipeStoreWith({
       ...baseRecipe,
-      addingStepToRecipe: false
+      addingStepToRecipe: false,
     })
 
     const afterState: IRecipesState = recipeStoreWith({
       ...baseRecipe,
-      addingStepToRecipe: true
+      addingStepToRecipe: true,
     })
 
     expect(
       getModel(
-        recipes(beforeState, addStepToRecipe.request({ id: 1, step: "foo" }))
-      )
+        recipes(beforeState, addStepToRecipe.request({ id: 1, step: "foo" })),
+      ),
     ).toEqual(afterState)
   })
 
   it("sets the recipe to be adding an ingredient", () => {
     const beforeState: IRecipesState = recipeStoreWith({
       ...baseRecipe,
-      addingIngredient: false
+      addingIngredient: false,
     })
 
     const afterState: IRecipesState = recipeStoreWith({
       ...baseRecipe,
-      addingIngredient: true
+      addingIngredient: true,
     })
 
     expect(
@@ -432,10 +432,10 @@ describe("Recipes", () => {
           beforeState,
           addIngredientToRecipe.request({
             recipeID: 1,
-            ingredient: { name: "foo" }
-          })
-        )
-      )
+            ingredient: { name: "foo" },
+          }),
+        ),
+      ),
     ).toEqual(afterState)
   })
 
@@ -445,18 +445,18 @@ describe("Recipes", () => {
       ingredients: [
         {
           ...baseIngredient,
-          updating: false
-        }
-      ]
+          updating: false,
+        },
+      ],
     })
     const afterState: IRecipesState = recipeStoreWith({
       ...baseRecipe,
       ingredients: [
         {
           ...baseIngredient,
-          updating: true
-        }
-      ]
+          updating: true,
+        },
+      ],
     })
 
     expect(
@@ -466,10 +466,10 @@ describe("Recipes", () => {
           updateIngredient.request({
             recipeID: 1,
             ingredientID: 1,
-            content: { name: "foo" }
-          })
-        )
-      )
+            content: { name: "foo" },
+          }),
+        ),
+      ),
     ).toEqual(afterState)
   })
 
@@ -479,9 +479,9 @@ describe("Recipes", () => {
       ingredients: [
         {
           ...baseIngredient,
-          removing: false
-        }
-      ]
+          removing: false,
+        },
+      ],
     })
 
     const afterState: IRecipesState = recipeStoreWith({
@@ -489,14 +489,14 @@ describe("Recipes", () => {
       ingredients: [
         {
           ...baseIngredient,
-          removing: true
-        }
-      ]
+          removing: true,
+        },
+      ],
     })
 
     const nextState = recipes(
       beforeState,
-      deleteIngredient.request({ recipeID: 1, ingredientID: 1 })
+      deleteIngredient.request({ recipeID: 1, ingredientID: 1 }),
     )
 
     expect(getModel(nextState)).toEqual(afterState)
@@ -510,24 +510,24 @@ describe("Recipes", () => {
       steps: [
         {
           ...baseStep,
-          updating: false
-        }
-      ]
+          updating: false,
+        },
+      ],
     })
     const afterState: IRecipesState = recipeStoreWith({
       ...baseRecipe,
       steps: [
         {
           ...baseStep,
-          updating: true
-        }
-      ]
+          updating: true,
+        },
+      ],
     })
 
     expect(
       getModel(
-        recipes(beforeState, updateStep.request({ recipeID: 1, stepID: 1 }))
-      )
+        recipes(beforeState, updateStep.request({ recipeID: 1, stepID: 1 })),
+      ),
     ).toEqual(afterState)
   })
 
@@ -539,9 +539,9 @@ describe("Recipes", () => {
           ...baseStep,
           id: 1,
           text: "a new step",
-          removing: false
-        }
-      ]
+          removing: false,
+        },
+      ],
     })
 
     const afterState: IRecipesState = recipeStoreWith({
@@ -551,14 +551,14 @@ describe("Recipes", () => {
           ...baseStep,
           id: 1,
           text: "a new step",
-          removing: true
-        }
-      ]
+          removing: true,
+        },
+      ],
     })
     expect(
       getModel(
-        recipes(beforeState, deleteStep.request({ recipeID: 1, stepID: 1 }))
-      )
+        recipes(beforeState, deleteStep.request({ recipeID: 1, stepID: 1 })),
+      ),
     ).toEqual(afterState)
   })
 
@@ -568,34 +568,34 @@ describe("Recipes", () => {
       loadingAll: false,
       errorLoadingAll: false,
       byId: {
-        [baseRecipe.id]: Loading()
+        [baseRecipe.id]: Loading(),
       },
-      personalIDs: undefined
+      personalIDs: undefined,
     }
     const fetchingActual = getModel(
-      recipes(beforeState, fetchRecipe.request(baseRecipe.id))
+      recipes(beforeState, fetchRecipe.request(baseRecipe.id)),
     )
     expect(fetchingActual.byId).toEqual(fetchingState.byId)
     expect(fetchingActual.personalIDs).toEqual(fetchingState.personalIDs)
 
     const successState: IRecipesState = recipeStoreWith({
-      ...baseRecipe
+      ...baseRecipe,
     })
     expect(recipes(beforeState, fetchRecipe.success(baseRecipe))).toEqual(
-      successState
+      successState,
     )
 
     const failureState = {
       loadingAll: false,
       errorLoadingAll: false,
       byId: {
-        [baseRecipe.id]: Failure(HttpErrorKind.error404)
+        [baseRecipe.id]: Failure(HttpErrorKind.error404),
       },
-      personalIDs: undefined
+      personalIDs: undefined,
     }
 
     const failActual = getModel(
-      recipes(beforeState, fetchRecipe.failure({ id: 1, error404: true }))
+      recipes(beforeState, fetchRecipe.failure({ id: 1, error404: true })),
     )
     expect(failActual.byId).toEqual(failureState.byId)
     expect(failActual.personalIDs).toEqual(failureState.personalIDs)
@@ -606,12 +606,12 @@ describe("Recipes", () => {
 
     const afterState: IRecipesState = recipeStoreWith({
       ...baseRecipe,
-      updating: true
+      updating: true,
     })
 
     const actual = recipes(
       beforeState,
-      updateRecipe.request({ id: 1, data: { name: "foo" } })
+      updateRecipe.request({ id: 1, data: { name: "foo" } }),
     )
 
     expect(getModel(actual)).toEqual(afterState)
@@ -620,13 +620,13 @@ describe("Recipes", () => {
 
     const newRecipe: IRecipe = {
       ...baseRecipe,
-      name: baseRecipe.name + "foo"
+      name: baseRecipe.name + "foo",
     }
 
     expect(newRecipe.name).not.toEqual(baseRecipe.name)
 
     expect(recipes(beforeState, updateRecipe.success(newRecipe))).toEqual(
-      recipeStoreWith({ ...newRecipe, updating: false, editing: false })
+      recipeStoreWith({ ...newRecipe, updating: false, editing: false }),
     )
   })
 
@@ -635,25 +635,25 @@ describe("Recipes", () => {
       {
         ...baseRecipe,
         name: "Initial recipe name",
-        updating: true
-      }
+        updating: true,
+      },
     ])
 
     const newRecipe = {
       ...baseRecipe,
-      name: "new recipe name"
+      name: "new recipe name",
     }
 
     const afterState: IRecipesState = {
       ...recipeStoreWith({
         ...baseRecipe,
-        name: "new recipe name"
+        name: "new recipe name",
       }),
-      personalIDs: Success([baseRecipe.id])
+      personalIDs: Success([baseRecipe.id]),
     }
 
     expect(recipes(beforeState, fetchRecipe.success(newRecipe))).toEqual(
-      afterState
+      afterState,
     )
   })
 
@@ -662,13 +662,13 @@ describe("Recipes", () => {
       {
         ...baseRecipe,
         id: 1,
-        name: "Initial recipe name 1"
+        name: "Initial recipe name 1",
       },
       {
         ...baseRecipe,
         id: 2,
-        name: "Initial recipe name 2"
-      }
+        name: "Initial recipe name 2",
+      },
     ])
 
     const afterState: IRecipesState = recipeStoreWith([
@@ -679,24 +679,24 @@ describe("Recipes", () => {
         owner: {
           id: 14,
           type: "team",
-          name: "A Cool Name"
-        }
+          name: "A Cool Name",
+        },
       },
       {
         ...baseRecipe,
         id: 2,
-        name: "Initial recipe name 2"
-      }
+        name: "Initial recipe name 2",
+      },
     ])
     const id = 1
     const owner: IRecipe["owner"] = {
       id: 14,
       type: "team",
-      name: "A Cool Name"
+      name: "A Cool Name",
     }
 
     expect(recipes(beforeState, updateRecipeOwner({ id, owner }))).toEqual(
-      afterState
+      afterState,
     )
   })
 
@@ -705,13 +705,13 @@ describe("Recipes", () => {
       {
         ...baseRecipe,
         id: 1,
-        name: "Initial recipe name 1"
+        name: "Initial recipe name 1",
       },
       {
         ...baseRecipe,
         id: 2,
-        name: "Initial recipe name 2"
-      }
+        name: "Initial recipe name 2",
+      },
     ])
 
     const afterState: IRecipesState = recipeStoreWith([
@@ -719,20 +719,20 @@ describe("Recipes", () => {
         ...baseRecipe,
         id: 1,
         name: "Initial recipe name 1",
-        scheduling: true
+        scheduling: true,
       },
       {
         ...baseRecipe,
         id: 2,
-        name: "Initial recipe name 2"
-      }
+        name: "Initial recipe name 2",
+      },
     ])
 
     expect(
       recipes(
         beforeState,
-        setSchedulingRecipe({ recipeID: 1, scheduling: true })
-      )
+        setSchedulingRecipe({ recipeID: 1, scheduling: true }),
+      ),
     ).toEqual(afterState)
   })
 
@@ -741,13 +741,13 @@ describe("Recipes", () => {
       const initialRecipe: IRecipe = {
         ...baseRecipe,
         id: 1,
-        name: "Initial Recipe"
+        name: "Initial Recipe",
       }
 
       const duplicatedRecipe: IRecipe = {
         ...initialRecipe,
         id: 2,
-        name: "Initial Recipe (copy)"
+        name: "Initial Recipe (copy)",
       }
 
       const startState = recipeStoreWith(initialRecipe)
@@ -756,7 +756,7 @@ describe("Recipes", () => {
 
       const requestState = recipes(
         startState,
-        duplicateRecipe.request({ recipeId: initialRecipe.id })
+        duplicateRecipe.request({ recipeId: initialRecipe.id }),
       )
       const requestModel = getModel(requestState)
       expect(requestModel.duplicatingById[initialRecipe.id]).toBe(true)
@@ -766,18 +766,18 @@ describe("Recipes", () => {
         requestModel,
         duplicateRecipe.success({
           recipe: duplicatedRecipe,
-          originalRecipeId: initialRecipe.id
-        })
+          originalRecipeId: initialRecipe.id,
+        }),
       )
       const successModel = getModel(successState)
       expect(successModel.duplicatingById[initialRecipe.id]).toBe(false)
       expect(Object.keys(successModel.byId)).toHaveLength(2)
       expect(successModel.byId[duplicatedRecipe.id]).toEqual(
-        Success(duplicatedRecipe)
+        Success(duplicatedRecipe),
       )
 
       const failureState = getModel(
-        recipes(requestModel, duplicateRecipe.failure(initialRecipe.id))
+        recipes(requestModel, duplicateRecipe.failure(initialRecipe.id)),
       )
       expect(failureState.duplicatingById[initialRecipe.id]).toBe(false)
     })
@@ -799,12 +799,12 @@ describe("Recipes", () => {
       expect(dispatch).toHaveBeenCalledWith(
         duplicateRecipe.success({
           recipe: successResponse,
-          originalRecipeId: recipeId
-        })
+          originalRecipeId: recipeId,
+        }),
       )
       expect(dispatch).toHaveBeenCalledWith(push(recipeURL(successResponse.id)))
       expect(dispatch).not.toHaveBeenCalledWith(
-        duplicateRecipe.failure(recipeId)
+        duplicateRecipe.failure(recipeId),
       )
     })
   })

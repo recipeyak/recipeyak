@@ -7,7 +7,7 @@ import { clearNotification } from "@/store/reducers/notification"
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    close: () => dispatch(clearNotification())
+    close: () => dispatch(clearNotification()),
   }
 }
 
@@ -16,7 +16,7 @@ const mapStateToProps = (state: IState) => {
     message: state.notification.message,
     closeable: state.notification.closeable,
     show: state.notification.show,
-    level: state.notification.level
+    level: state.notification.level,
   }
 }
 

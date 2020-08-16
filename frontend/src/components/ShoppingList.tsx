@@ -13,7 +13,7 @@ import {
   reportBadMergeAsync,
   showNotificationWithTimeoutAsync,
   Dispatch,
-  fetchingShoppingListAsync
+  fetchingShoppingListAsync,
 } from "@/store/thunks"
 
 import { ingredientByNameAlphabetical } from "@/sorters"
@@ -22,7 +22,7 @@ import DateRangePicker from "@/components/DateRangePicker/DateRangePicker"
 import { IState } from "@/store/store"
 import {
   setSelectingStart,
-  setSelectingEnd
+  setSelectingEnd,
 } from "@/store/reducers/shoppinglist"
 import GlobalEvent from "@/components/GlobalEvent"
 import { Button } from "@/components/Buttons"
@@ -32,14 +32,14 @@ import {
   isFailure,
   isLoading,
   isSuccessOrRefetching,
-  isRefetching
+  isRefetching,
 } from "@/webdata"
 import { classNames } from "@/classnames"
 import {
   IGetShoppingListResponse,
   IIngredientItem,
   IQuantity,
-  Unit
+  Unit,
 } from "@/api"
 
 const selectElementText = (el: Element) => {
@@ -96,7 +96,7 @@ function quantitiesToString(quantities: ReadonlyArray<IQuantity>): string {
 
 function ShoppingListItem({
   item: [name, { quantities }],
-  isFirst
+  isFirst,
 }: IShoppingListItemProps) {
   // padding serves to prevent the button from appearing in front of text
   // we also use <section>s instead of <p>s to avoid extra new lines in Chrome
@@ -187,7 +187,7 @@ interface IShoppingListProps {
 export const enum Selecting {
   End,
   Start,
-  None
+  None,
 }
 
 function ShoppingList({
@@ -199,7 +199,7 @@ function ShoppingList({
   setEndDay: propsSetEndDay,
   shoppinglist,
   sendToast,
-  reportBadMerge
+  reportBadMerge,
 }: IShoppingListProps) {
   const element = useRef<HTMLDivElement>(null)
   const [month, setMonth] = useState(new Date())
@@ -299,7 +299,7 @@ function mapStateToProps(state: IState) {
   return {
     startDay: state.shoppinglist.startDay,
     endDay: state.shoppinglist.endDay,
-    shoppinglist: state.shoppinglist.shoppinglist
+    shoppinglist: state.shoppinglist.shoppinglist,
   }
 }
 
@@ -309,7 +309,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   setEndDay: (date: Date) => dispatch(setSelectingEnd(date)),
   reportBadMerge: reportBadMergeAsync(dispatch),
   sendToast: (message: string) =>
-    showNotificationWithTimeoutAsync(dispatch)({ message, level: "info" })
+    showNotificationWithTimeoutAsync(dispatch)({ message, level: "info" }),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShoppingList)

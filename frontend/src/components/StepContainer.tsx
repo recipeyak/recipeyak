@@ -44,7 +44,7 @@ interface IStepContainerProps {
     recipeID,
     stepID,
     text,
-    position
+    position,
   }: {
     text?: string
     position?: number
@@ -80,16 +80,16 @@ function StepContainer(props: IStepContainerProps) {
         if (index === arrIndex) {
           return {
             ...c,
-            position: newPosition
+            position: newPosition,
           }
         }
         return c
-      })
+      }),
     )
     props.updatingStep({
       recipeID: props.recipeID,
       stepID,
-      position: newPosition
+      position: newPosition,
     })
   }
 
@@ -114,7 +114,7 @@ function StepContainer(props: IStepContainerProps) {
 }
 
 const mapDispatchToProps = {
-  updatingStep: updateStep.request
+  updatingStep: updateStep.request,
 }
 
 export default connect(null, mapDispatchToProps)(StepContainer)

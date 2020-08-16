@@ -4,7 +4,7 @@ import {
   createAsyncAction,
   ActionType,
   getType,
-  createStandardAction
+  createStandardAction,
 } from "typesafe-actions"
 import { isUndefined } from "util"
 import { notUndefined } from "@/utils/general"
@@ -16,7 +16,7 @@ import {
   IAddingScheduledRecipeProps,
   IMoveScheduledRecipeProps,
   addingScheduledRecipeAsync,
-  Dispatch
+  Dispatch,
 } from "@/store/thunks"
 import { isAfter, isBefore, parseISO } from "date-fns"
 import { WebData, Success, mapSuccessLike } from "@/webdata"
@@ -26,7 +26,7 @@ import { isRight } from "fp-ts/lib/Either"
 export const fetchCalendarRecipes = createAsyncAction(
   "FETCH_CALENDAR_RECIPES_START",
   "FETCH_CALENDAR_RECIPES_SUCCESS",
-  "FETCH_CALENDAR_RECIPES_FAILURE"
+  "FETCH_CALENDAR_RECIPES_FAILURE",
 )<
   void,
   {
@@ -44,28 +44,28 @@ export const setCalendarRecipe = createStandardAction("SET_CALENDAR_RECIPE")<
   ICalRecipe
 >()
 export const deleteCalendarRecipe = createStandardAction(
-  "DELETE_CALENDAR_RECIPE"
+  "DELETE_CALENDAR_RECIPE",
 )<number>()
 export const moveCalendarRecipe = createStandardAction("MOVE_CALENDAR_RECIPE")<{
   id: ICalRecipe["id"]
   to: string
 }>()
 export const replaceCalendarRecipe = createStandardAction(
-  "REPLACE_CALENDAR_RECIPE"
+  "REPLACE_CALENDAR_RECIPE",
 )<{ id: ICalRecipe["id"]; recipe: ICalRecipe }>()
 
 export const moveOrCreateCalendarRecipe = createStandardAction(
-  "MOVE_OR_CREATE_CALENDAR_RECIPE"
+  "MOVE_OR_CREATE_CALENDAR_RECIPE",
 )<IMoveScheduledRecipeProps>()
 
 export const createCalendarRecipe = createStandardAction(
-  "CREATE_CALENDAR_RECIPE"
+  "CREATE_CALENDAR_RECIPE",
 )<IAddingScheduledRecipeProps>()
 
 export const updateCalendarSettings = createAsyncAction(
   "UPDATE_CALENDAR_SETTINGS_START",
   "UPDATE_CALENDAR_SETTINGS_SUCCESS",
-  "UPDATE_CALENDAR_SETTINGS_FAILURE"
+  "UPDATE_CALENDAR_SETTINGS_FAILURE",
 )<
   { readonly teamID: TeamID; readonly syncEnabled: boolean },
   {
@@ -80,16 +80,16 @@ export const updateCalendarSettings = createAsyncAction(
 export async function updateCalendarSettingsAsync(
   {
     teamID,
-    syncEnabled
+    syncEnabled,
   }: {
     readonly teamID: TeamID
     readonly syncEnabled: boolean
   },
-  dispatch: Dispatch
+  dispatch: Dispatch,
 ) {
   const res = await api.updateCalendarSettings({
     teamID,
-    data: { syncEnabled }
+    data: { syncEnabled },
   })
   if (isRight(res)) {
     dispatch(updateCalendarSettings.success(res.right))
@@ -101,7 +101,7 @@ export async function updateCalendarSettingsAsync(
 export const regenerateCalendarLink = createAsyncAction(
   "REGENERATE_CALENDAR_LINK_START",
   "REGENERATE_CALENDAR_LINK_SUCCESS",
-  "REGENERATE_CALENDAR_LINK_FAILURE"
+  "REGENERATE_CALENDAR_LINK_FAILURE",
 )<
   { readonly teamID: TeamID },
   {
@@ -112,10 +112,10 @@ export const regenerateCalendarLink = createAsyncAction(
 
 export async function regenerateCalendarLinkAsync(
   teamID: TeamID,
-  dispatch: Dispatch
+  dispatch: Dispatch,
 ) {
   const res = await api.generateCalendarLink({
-    teamID
+    teamID,
   })
   if (isRight(res)) {
     dispatch(regenerateCalendarLink.success(res.right))
@@ -163,7 +163,7 @@ export interface ICalendarState {
 export const initialState: ICalendarState = {
   byId: {},
   status: "initial",
-  settings: undefined
+  settings: undefined,
 }
 
 // tslint:disable-next-line object-index-must-return-possibly-undefined
@@ -173,7 +173,7 @@ function byId<T extends { id: number }>(a: { [_: number]: T }, b: T) {
 
 export const calendar = (
   state: ICalendarState = initialState,
-  action: CalendarActions
+  action: CalendarActions,
 ): ICalendarState | Loop<ICalendarState, CalendarActions> => {
   switch (action.type) {
     case getType(fetchCalendarRecipes.success):
@@ -182,7 +182,7 @@ export const calendar = (
         .filter(
           value =>
             isAfter(parseISO(value.on), parseISO(action.payload.end)) ||
-            isBefore(parseISO(value.on), parseISO(action.payload.start))
+            isBefore(parseISO(value.on), parseISO(action.payload.start)),
         )
         .reduce(byId, {})
 
@@ -190,16 +190,16 @@ export const calendar = (
         ...state,
         byId: {
           ...byIdState,
-          ...action.payload.scheduledRecipes.reduce(byId, {})
+          ...action.payload.scheduledRecipes.reduce(byId, {}),
         },
         settings: Success(action.payload.settings),
-        status: "success"
+        status: "success",
       }
     case getType(setCalendarRecipe): {
       const existing = getExistingRecipe({
         state,
         on: action.payload.on,
-        from: action.payload
+        from: action.payload,
       })
 
       if (existing) {
@@ -210,9 +210,9 @@ export const calendar = (
             ...omit(state.byId, existing.id),
             [action.payload.id]: {
               ...action.payload,
-              count: existing.count + action.payload.count
-            }
-          }
+              count: existing.count + action.payload.count,
+            },
+          },
         }
       }
 
@@ -220,26 +220,26 @@ export const calendar = (
         ...state,
         byId: {
           ...state.byId,
-          [action.payload.id]: action.payload
-        }
+          [action.payload.id]: action.payload,
+        },
       }
     }
     case getType(deleteCalendarRecipe):
       return {
         ...state,
-        byId: omit(state.byId, action.payload)
+        byId: omit(state.byId, action.payload),
       }
     case getType(fetchCalendarRecipes.request): {
       if (state.status === "initial") {
         return {
           ...state,
-          status: "loading"
+          status: "loading",
         }
       }
       if (state.status === "success") {
         return {
           ...state,
-          status: "refetching"
+          status: "refetching",
         }
       }
       return state
@@ -247,7 +247,7 @@ export const calendar = (
     case getType(fetchCalendarRecipes.failure):
       return {
         ...state,
-        status: "failure"
+        status: "failure",
       }
     case getType(moveCalendarRecipe): {
       // if the same recipe already exists at the date:
@@ -282,9 +282,9 @@ export const calendar = (
             ...omit(state.byId, action.payload.id),
             [existing.id]: {
               ...existing,
-              count: existing.count + moving.count
-            }
-          }
+              count: existing.count + moving.count,
+            },
+          },
         }
       }
 
@@ -298,9 +298,9 @@ export const calendar = (
           ...state.byId,
           [action.payload.id]: {
             ...cal,
-            on: action.payload.to
-          }
-        }
+            on: action.payload.to,
+          },
+        },
       }
     }
     case getType(updateCalendarSettings.request):
@@ -309,40 +309,40 @@ export const calendar = (
           ...state,
           settings: mapSuccessLike(state.settings, s => ({
             ...s,
-            ...action.payload
-          }))
+            ...action.payload,
+          })),
         },
         Cmd.run(updateCalendarSettingsAsync, {
-          args: [action.payload, Cmd.dispatch]
-        })
+          args: [action.payload, Cmd.dispatch],
+        }),
       )
     case getType(updateCalendarSettings.success):
       return {
         ...state,
-        settings: Success(action.payload)
+        settings: Success(action.payload),
       }
     case getType(updateCalendarSettings.failure):
       return {
         ...state,
         settings: mapSuccessLike(state.settings, s => ({
           ...s,
-          ...action.payload
-        }))
+          ...action.payload,
+        })),
       }
     case getType(regenerateCalendarLink.request):
       return loop(
         state,
         Cmd.run(regenerateCalendarLinkAsync, {
-          args: [action.payload.teamID, Cmd.dispatch]
-        })
+          args: [action.payload.teamID, Cmd.dispatch],
+        }),
       )
     case getType(regenerateCalendarLink.success):
       return {
         ...state,
         settings: mapSuccessLike(state.settings, s => ({
           ...s,
-          ...action.payload
-        }))
+          ...action.payload,
+        })),
       }
     case getType(regenerateCalendarLink.failure):
       return state
@@ -350,23 +350,23 @@ export const calendar = (
       return loop(
         state,
         Cmd.run(moveScheduledRecipe, {
-          args: [Cmd.dispatch, Cmd.getState, action.payload]
-        })
+          args: [Cmd.dispatch, Cmd.getState, action.payload],
+        }),
       )
     case getType(createCalendarRecipe):
       return loop(
         state,
         Cmd.run(addingScheduledRecipeAsync, {
-          args: [Cmd.dispatch, Cmd.getState, action.payload]
-        })
+          args: [Cmd.dispatch, Cmd.getState, action.payload],
+        }),
       )
     case getType(replaceCalendarRecipe):
       return {
         ...state,
         byId: {
           ...omit(state.byId, action.payload.id),
-          [action.payload.recipe.id]: action.payload.recipe
-        }
+          [action.payload.recipe.id]: action.payload.recipe,
+        },
       }
     default:
       return state
@@ -398,12 +398,12 @@ interface IGetExistingRecipeProps {
 export const getExistingRecipe = ({
   state,
   on,
-  from
+  from,
 }: IGetExistingRecipeProps) =>
   getAllCalRecipes(state).find(
     x =>
       isSameDay(new Date(x.on), new Date(on)) &&
       haveSameTeam(x, from) &&
       x.id !== from.id &&
-      x.recipe.id === from.recipe.id
+      x.recipe.id === from.recipe.id,
   )

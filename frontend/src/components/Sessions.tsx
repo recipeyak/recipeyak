@@ -10,7 +10,7 @@ import {
   Dispatch,
   fetchingSessionsAsync,
   loggingOutSessionByIdAsync,
-  loggingOutAllSessionsAsync
+  loggingOutAllSessionsAsync,
 } from "@/store/thunks"
 
 function getDeviceEmoji(kind: ISession["device"]["kind"]): string | null {
@@ -70,7 +70,7 @@ interface ISessionProps extends ISession {
 
 function Session(props: ISessionProps) {
   const lastActivity = formatDistanceToNow(new Date(props.last_activity), {
-    addSuffix: true
+    addSuffix: true,
   })
   return (
     <li className="mb-2">
@@ -103,7 +103,7 @@ function SessionListBasic({
   logoutAll,
   logoutById,
   loggingOutAll,
-  fetchData
+  fetchData,
 }: ISessionListProps) {
   useEffect(() => {
     fetchData()
@@ -136,18 +136,18 @@ function SessionListBasic({
 
 const mapStateToProps = (state: IState) => ({
   sessions: state.user.sessions,
-  loggingOutAll: state.user.loggingOutAllSessionsStatus
+  loggingOutAll: state.user.loggingOutAllSessionsStatus,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchData: fetchingSessionsAsync(dispatch),
   logoutById: loggingOutSessionByIdAsync(dispatch),
-  logoutAll: loggingOutAllSessionsAsync(dispatch)
+  logoutAll: loggingOutAllSessionsAsync(dispatch),
 })
 
 const SessionList = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(SessionListBasic)
 
 export default function Sessions() {

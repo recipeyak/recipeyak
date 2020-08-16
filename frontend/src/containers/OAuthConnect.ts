@@ -9,7 +9,7 @@ import { RouteComponentProps } from "react-router"
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    login: socialConnectAsync(dispatch)
+    login: socialConnectAsync(dispatch),
   }
 }
 type RouteProps = RouteComponentProps<{ service: SocialProvider }>
@@ -21,16 +21,16 @@ const mapStateToProps = (_: IState, props: RouteProps) => {
 
   return {
     service,
-    token: String(token)
+    token: String(token),
   }
 }
 
 const mergeProps = (
   stateProps: ReturnType<typeof mapStateToProps>,
-  dispatchProps: ReturnType<typeof mapDispatchToProps>
+  dispatchProps: ReturnType<typeof mapDispatchToProps>,
 ) => ({
   ...stateProps,
-  login: () => dispatchProps.login(stateProps.service, stateProps.token)
+  login: () => dispatchProps.login(stateProps.service, stateProps.token),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(OAuth)

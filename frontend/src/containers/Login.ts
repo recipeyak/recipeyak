@@ -9,7 +9,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     login: logUserInAsync(dispatch),
     clearErrors: () => dispatch(cleareLoginErrors()),
-    setFromUrl: (url: string) => dispatch(setFromUrl(url))
+    setFromUrl: (url: string) => dispatch(setFromUrl(url)),
   }
 }
 
@@ -18,7 +18,7 @@ const mapStateToProps = (state: IState) => {
     loading: state.auth.loadingLogin,
     error: state.auth.errorLogin,
     errorSocial: state.auth.errorSocialLogin,
-    fromUrl: state.auth.fromUrl
+    fromUrl: state.auth.fromUrl,
   }
 }
 
