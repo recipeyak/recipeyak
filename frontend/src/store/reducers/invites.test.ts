@@ -4,7 +4,7 @@ import invites, {
   IInvite,
   fetchInvites,
   acceptInvite,
-  declineInvite
+  declineInvite,
 } from "@/store/reducers/invites"
 
 const basicInvite: IInvite = {
@@ -12,14 +12,14 @@ const basicInvite: IInvite = {
   active: false,
   team: {
     id: 1,
-    name: "foo"
+    name: "foo",
   },
   status: "open",
   creator: {
     id: 1,
     email: "foo@foo.com",
-    avatar_url: "foo.com"
-  }
+    avatar_url: "foo.com",
+  },
 }
 
 describe("Invites", () => {
@@ -33,11 +33,11 @@ describe("Invites", () => {
           active: false,
           team: {
             id: 1,
-            name: "foo"
+            name: "foo",
           },
-          status: "open"
-        }
-      }
+          status: "open",
+        },
+      },
     }
 
     const afterState: IInvitesState = {
@@ -50,11 +50,11 @@ describe("Invites", () => {
           active: false,
           team: {
             id: 1,
-            name: "foo"
+            name: "foo",
           },
-          status: "open"
-        }
-      }
+          status: "open",
+        },
+      },
     }
 
     expect(invites(beforeState, fetchInvites.request())).toEqual(afterState)
@@ -62,7 +62,7 @@ describe("Invites", () => {
   it("sets invites", () => {
     const beforeState: IInvitesState = {
       loading: true,
-      byId: {}
+      byId: {},
     }
 
     const newInvites: IInvite[] = [
@@ -72,9 +72,9 @@ describe("Invites", () => {
         active: false,
         team: {
           id: 1,
-          name: "foo"
+          name: "foo",
         },
-        status: "open"
+        status: "open",
       },
       {
         ...basicInvite,
@@ -82,10 +82,10 @@ describe("Invites", () => {
         active: false,
         team: {
           id: 2,
-          name: "bar"
+          name: "bar",
         },
-        status: "open"
-      }
+        status: "open",
+      },
     ]
 
     const afterState: IInvitesState = {
@@ -97,9 +97,9 @@ describe("Invites", () => {
           active: false,
           team: {
             id: 1,
-            name: "foo"
+            name: "foo",
           },
-          status: "open"
+          status: "open",
         },
         2: {
           ...basicInvite,
@@ -107,15 +107,15 @@ describe("Invites", () => {
           active: false,
           team: {
             id: 2,
-            name: "bar"
+            name: "bar",
           },
-          status: "open"
-        }
-      }
+          status: "open",
+        },
+      },
     }
 
     expect(invites(beforeState, fetchInvites.success(newInvites))).toEqual(
-      afterState
+      afterState,
     )
   })
 
@@ -129,9 +129,9 @@ describe("Invites", () => {
           active: false,
           team: {
             id: 1,
-            name: "foo"
+            name: "foo",
           },
-          status: "open"
+          status: "open",
         },
         2: {
           ...basicInvite,
@@ -139,11 +139,11 @@ describe("Invites", () => {
           active: false,
           team: {
             id: 2,
-            name: "bar"
+            name: "bar",
           },
-          status: "open"
-        }
-      }
+          status: "open",
+        },
+      },
     }
 
     const afterState: IInvitesState = {
@@ -155,10 +155,10 @@ describe("Invites", () => {
           active: false,
           team: {
             id: 1,
-            name: "foo"
+            name: "foo",
           },
           status: "open",
-          accepting: true
+          accepting: true,
         },
         2: {
           ...basicInvite,
@@ -166,11 +166,11 @@ describe("Invites", () => {
           active: false,
           team: {
             id: 2,
-            name: "bar"
+            name: "bar",
           },
-          status: "open"
-        }
-      }
+          status: "open",
+        },
+      },
     }
 
     expect(invites(beforeState, acceptInvite.request(1))).toEqual(afterState)
@@ -186,11 +186,11 @@ describe("Invites", () => {
           active: false,
           team: {
             id: 1,
-            name: "foo"
+            name: "foo",
           },
-          status: "open"
-        }
-      }
+          status: "open",
+        },
+      },
     }
 
     const afterState: IInvitesState = {
@@ -202,12 +202,12 @@ describe("Invites", () => {
           active: false,
           team: {
             id: 1,
-            name: "foo"
+            name: "foo",
           },
           status: "open",
-          declining: true
-        }
-      }
+          declining: true,
+        },
+      },
     }
 
     expect(invites(beforeState, declineInvite.request(1))).toEqual(afterState)
@@ -223,11 +223,11 @@ describe("Invites", () => {
           active: false,
           team: {
             id: 1,
-            name: "foo"
+            name: "foo",
           },
-          status: "open"
-        }
-      }
+          status: "open",
+        },
+      },
     }
 
     const afterState: IInvitesState = {
@@ -239,12 +239,12 @@ describe("Invites", () => {
           active: false,
           team: {
             id: 1,
-            name: "foo"
+            name: "foo",
           },
           status: "declined",
-          declining: false
-        }
-      }
+          declining: false,
+        },
+      },
     }
 
     expect(invites(beforeState, declineInvite.success(1))).toEqual(afterState)
@@ -260,11 +260,11 @@ describe("Invites", () => {
           active: false,
           team: {
             id: 1,
-            name: "foo"
+            name: "foo",
           },
-          status: "open"
-        }
-      }
+          status: "open",
+        },
+      },
     }
 
     const afterState: IInvitesState = {
@@ -276,12 +276,12 @@ describe("Invites", () => {
           active: false,
           team: {
             id: 1,
-            name: "foo"
+            name: "foo",
           },
           status: "accepted",
-          accepting: false
-        }
-      }
+          accepting: false,
+        },
+      },
     }
 
     expect(invites(beforeState, acceptInvite.success(1))).toEqual(afterState)

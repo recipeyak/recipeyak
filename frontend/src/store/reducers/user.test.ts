@@ -4,7 +4,7 @@ import user, {
   fetchUser,
   logOut,
   toggleDarkMode,
-  setUserLoggedIn
+  setUserLoggedIn,
 } from "@/store/reducers/user"
 import { login } from "@/store/reducers/auth"
 
@@ -13,11 +13,11 @@ describe("fetchingUser", () => {
   it("#request: sets loading, removes failures", () => {
     const beforeState = {
       loading: false,
-      error: true
+      error: true,
     } as IUserState
     const expected = {
       loading: true,
-      error: false
+      error: false,
     } as IUserState
     expect(user(beforeState, fetchUser.request())).toEqual(expected)
   })
@@ -25,7 +25,7 @@ describe("fetchingUser", () => {
     const beforeState = {
       loading: true,
       error: false,
-      updatingEmail: false
+      updatingEmail: false,
     } as IUserState
 
     const userPayload = {
@@ -34,7 +34,7 @@ describe("fetchingUser", () => {
       id: 123,
       has_usable_password: true,
       dark_mode_enabled: true,
-      selected_team: 456
+      selected_team: 456,
     } as IUser
 
     const expected = {
@@ -47,7 +47,7 @@ describe("fetchingUser", () => {
       error: false,
       darkMode: true,
       hasUsablePassword: true,
-      teamID: userPayload.selected_team
+      teamID: userPayload.selected_team,
     }
     expect(user(beforeState, fetchUser.success(userPayload))).toEqual(expected)
     expect(user(beforeState, login.success(userPayload))).toEqual(expected)
@@ -55,11 +55,11 @@ describe("fetchingUser", () => {
   it("#failure: sets loading, sets error", () => {
     const beforeState = {
       loading: true,
-      error: false
+      error: false,
     } as IUserState
     const expected = {
       loading: false,
-      error: true
+      error: true,
     } as IUserState
     expect(user(beforeState, fetchUser.failure())).toEqual(expected)
   })
@@ -68,41 +68,41 @@ describe("fetchingUser", () => {
 describe("User", () => {
   it("sets user to logging out", () => {
     const beforeState = {
-      loggingOut: false
+      loggingOut: false,
     }
 
     const afterState = {
-      loggingOut: true
+      loggingOut: true,
     }
 
     expect(user(beforeState as IUserState, logOut.request())).toEqual(
-      afterState
+      afterState,
     )
   })
 
   it("toggles darkmode", () => {
     const beforeState = {
-      darkMode: false
+      darkMode: false,
     }
 
     const afterState = {
-      darkMode: true
+      darkMode: true,
     }
 
     expect(user(beforeState as IUserState, toggleDarkMode())).toEqual(
-      afterState
+      afterState,
     )
   })
 
   it("should set user logged in", () => {
     const beforeState = {
-      loggedIn: true
+      loggedIn: true,
     }
     const afterState = {
-      loggedIn: false
+      loggedIn: false,
     }
     expect(user(beforeState as IUserState, setUserLoggedIn(false))).toEqual(
-      afterState
+      afterState,
     )
   })
 })

@@ -40,7 +40,7 @@ interface ITestProviderProps {
 
 export const TestProvider: React.FC<ITestProviderProps> = ({
   children,
-  store
+  store,
 }) => {
   return (
     <ThemeProvider theme={theme}>

@@ -18,7 +18,7 @@ function IngredientForm({
   error,
   optional,
   description,
-  name
+  name,
 }: {
   readonly handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   readonly quantity: string
@@ -96,7 +96,7 @@ function AddIngredientForm({
   optional,
   loading,
   error,
-  autoFocus = false
+  autoFocus = false,
 }: {
   readonly handleAddIngredient: () => void
   readonly cancelAddIngredient: () => void

@@ -38,7 +38,7 @@ interface IMonthProps {
 class Month extends React.Component<IMonthProps> {
   static defaultProps = {
     showRight: false,
-    showLeft: false
+    showLeft: false,
   }
   render() {
     return (
@@ -81,7 +81,7 @@ class Month extends React.Component<IMonthProps> {
               inPast={isPast(endOfDay(date))}
               highlight={isWithinInterval(date, {
                 start: startOfDay(this.props.startDay),
-                end: endOfDay(this.props.endDay)
+                end: endOfDay(this.props.endDay),
               })}
               endDate={
                 isSameDay(date, this.props.startDay) ||

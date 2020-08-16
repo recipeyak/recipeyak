@@ -1,21 +1,21 @@
 import auth, {
   IAuthState,
   initialState,
-  setFromUrl
+  setFromUrl,
 } from "@/store/reducers/auth"
 
 describe("auth", () => {
   it("sets redirect url", () => {
     const beforeState = {
       ...initialState,
-      fromUrl: ""
+      fromUrl: "",
     }
 
     const fromUrl = "/recipes/15?test#1234"
 
     const afterState: IAuthState = {
       ...initialState,
-      fromUrl
+      fromUrl,
     }
 
     expect(auth(beforeState, setFromUrl(fromUrl))).toEqual(afterState)

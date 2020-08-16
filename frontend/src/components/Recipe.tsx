@@ -15,7 +15,7 @@ import {
   deleteIngredient,
   updateIngredient,
   IIngredient,
-  updateSectionForRecipe
+  updateSectionForRecipe,
 } from "@/store/reducers/recipes"
 import { isInitial, isLoading, isFailure } from "@/webdata"
 import { SectionTitle } from "@/components/RecipeHelpers"
@@ -48,19 +48,19 @@ type SectionsAndIngredients = ReadonlyArray<
 
 function getInitialIngredients({
   sections,
-  ingredients
+  ingredients,
 }: Pick<IRecipe, "sections" | "ingredients">): SectionsAndIngredients {
   const out: Mutable<SectionsAndIngredients> = []
   for (const s of sections) {
     out.push({
       kind: "section" as const,
-      item: s
+      item: s,
     })
   }
   for (const i of ingredients) {
     out.push({
       kind: "ingredient" as const,
-      item: i
+      item: i,
     })
   }
   return sortBy(out, x => x.item.position)
@@ -77,14 +77,14 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
     setSectionsAndIngredients(
       getInitialIngredients({
         sections: recipe.sections,
-        ingredients: recipe.ingredients
-      })
+        ingredients: recipe.ingredients,
+      }),
     )
   }, [recipe.ingredients, recipe.sections])
 
   const handleMove = ({
     from,
-    to
+    to,
   }: {
     readonly from: number
     readonly to: number
@@ -117,16 +117,16 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
               ...item,
               item: {
                 ...item.item,
-                position: newPosition
-              }
+                position: newPosition,
+              },
             })
           } else {
             out.push({
               ...item,
               item: {
                 ...item.item,
-                position: newPosition
-              }
+                position: newPosition,
+              },
             })
           }
         } else {
@@ -140,8 +140,8 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
         updateIngredient.request({
           recipeID: recipe.id,
           ingredientID: args.id,
-          content: { position: newPosition }
-        })
+          content: { position: newPosition },
+        }),
       )
     } else {
       api
@@ -152,8 +152,8 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
               updateSectionForRecipe({
                 recipeId: recipe.id,
                 sectionId: args.id,
-                position: newPosition
-              })
+                position: newPosition,
+              }),
             )
           }
         })
@@ -167,8 +167,8 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
     dispatch(
       deleteIngredient.request({
         recipeID: recipe.id,
-        ingredientID: ingredientId
-      })
+        ingredientID: ingredientId,
+      }),
     )
 
   const handleUpdate = ({
@@ -185,8 +185,8 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
       updateIngredient.request({
         recipeID: recipe.id,
         ingredientID: ingredientId,
-        content: ingredient
-      })
+        content: ingredient,
+      }),
     )
 
   return (

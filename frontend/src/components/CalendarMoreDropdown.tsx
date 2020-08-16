@@ -2,7 +2,7 @@ import React from "react"
 import {
   useDropdown,
   DropdownContainer,
-  DropdownMenu
+  DropdownMenu,
 } from "@/components/Dropdown"
 import { ButtonPlain, ButtonLink, ButtonSecondary } from "@/components/Buttons"
 import { TextInput, selectTarget } from "@/components/Forms"
@@ -15,7 +15,7 @@ function Hr() {
 export function CalendarMoreDropdown({
   settings,
   setSyncEnabled,
-  regenerateCalendarLink
+  regenerateCalendarLink,
 }: {
   readonly settings: WebData<{
     readonly syncEnabled: boolean

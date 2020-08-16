@@ -10,7 +10,7 @@ describe("<App/>", () => {
       <TestProvider>
         <App />
       </TestProvider>,
-      div
+      div,
     )
   })
 })

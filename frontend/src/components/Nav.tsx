@@ -11,7 +11,7 @@ import { styled } from "@/theme"
 import {
   DropdownContainer,
   useDropdown,
-  DropdownMenu
+  DropdownMenu,
 } from "@/components/Dropdown"
 import { Chevron } from "@/components/icons"
 import { lighten } from "polished"
@@ -37,7 +37,7 @@ function useTeams() {
     fetchingTeamsAsync(dispatch)()
   }, [dispatch])
   const loading = useSelector(
-    s => s.teams.status === "loading" || s.teams.status === "initial"
+    s => s.teams.status === "loading" || s.teams.status === "initial",
   )
   const teams = useSelector(teamsFrom)
   if (loading) {

@@ -10,8 +10,8 @@ describe("<CalendarDayItem> Snap", () => {
       id: 25,
       recipe: {
         id: 10,
-        name: "Baked Ziti"
-      }
+        name: "Baked Ziti",
+      },
     }
 
     const pastDate = new Date(1776, 1, 1)
@@ -30,7 +30,7 @@ describe("<CalendarDayItem> Snap", () => {
             refetchShoppingList={jest.fn()}
             date={pastDate}
           />
-        </TestProvider>
+        </TestProvider>,
       )
       .toJSON()
 

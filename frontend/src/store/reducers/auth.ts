@@ -2,7 +2,7 @@ import {
   createStandardAction,
   getType,
   createAsyncAction,
-  ActionType
+  ActionType,
 } from "typesafe-actions"
 import { IUser } from "@/store/reducers/user"
 
@@ -11,7 +11,7 @@ export const setFromUrl = createStandardAction("SET_FROM_URL")<
 >()
 
 export const setErrorSocialLogin = createStandardAction(
-  "SET_ERROR_SOCIAL_LOGIN"
+  "SET_ERROR_SOCIAL_LOGIN",
 )<ISocialError>()
 export const setErrorSignup = createStandardAction("SET_ERROR_SIGNUP")<
   ISignupErrors
@@ -20,13 +20,13 @@ export const setErrorReset = createStandardAction("SET_ERROR_RESET")<
   IPasswordResetError
 >()
 export const setErrorResetConfirmation = createStandardAction(
-  "SET_ERROR_RESET_CONFIRMATION"
+  "SET_ERROR_RESET_CONFIRMATION",
 )<IPasswordResetConfirmError>()
 
 export const login = createAsyncAction(
   "LOGIN_REQUEST",
   "LOGIN_SUCCESS",
-  "LOGIN_FAILURE"
+  "LOGIN_FAILURE",
 )<void, IUser, ILoginError | void>()
 
 export const cleareLoginErrors = createStandardAction("CLEAR_LOGIN_ERRORS")()
@@ -38,7 +38,7 @@ export const setLoadingReset = createStandardAction("SET_LOADING_RESET")<
   IAuthState["loadingReset"]
 >()
 export const setLoadingResetConfirmation = createStandardAction(
-  "SET_LOADING_RESET_CONFIRMATION"
+  "SET_LOADING_RESET_CONFIRMATION",
 )<IAuthState["loadingResetConfirmation"]>()
 
 export type AuthActions =
@@ -105,12 +105,12 @@ export const initialState: IAuthState = {
   loadingLogin: false,
   loadingSignup: false,
   loadingReset: false,
-  loadingResetConfirmation: false
+  loadingResetConfirmation: false,
 }
 
 const auth = (
   state: IAuthState = initialState,
-  action: AuthActions
+  action: AuthActions,
 ): IAuthState => {
   switch (action.type) {
     case getType(setFromUrl):

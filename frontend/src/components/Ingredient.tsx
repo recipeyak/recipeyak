@@ -10,7 +10,7 @@ import { DragDrop, handleDndHover } from "@/dragDrop"
 
 const emptyField = ({
   quantity,
-  name
+  name,
 }: {
   readonly quantity: string | undefined
   readonly name: string | undefined
@@ -19,7 +19,7 @@ const emptyField = ({
 const allEmptyFields = ({
   quantity,
   name,
-  description
+  description,
 }: {
   readonly quantity?: string
   readonly name?: string
@@ -51,7 +51,7 @@ export function Ingredient(props: {
     quantity,
     name,
     description,
-    optional
+    optional,
   }: {
     readonly ingredientId: number
     readonly quantity: string
@@ -61,7 +61,7 @@ export function Ingredient(props: {
   }) => void
   readonly move?: ({
     from,
-    to
+    to,
   }: {
     readonly from: number
     readonly to: number
@@ -69,7 +69,7 @@ export function Ingredient(props: {
   readonly completeMove?: ({
     kind,
     id,
-    to
+    to,
   }: {
     readonly kind: "ingredient"
     readonly id: number
@@ -82,7 +82,7 @@ export function Ingredient(props: {
     description: props.description,
     optional: props.optional,
     editing: false,
-    unsavedChanges: false
+    unsavedChanges: false,
   })
 
   const ref = React.useRef<HTMLLIElement>(null)
@@ -107,7 +107,7 @@ export function Ingredient(props: {
         ...prevState,
         editing: false,
         unsavedChanges:
-          (prevState.editing && contentChanged) || prevState.unsavedChanges
+          (prevState.editing && contentChanged) || prevState.unsavedChanges,
       }
     })
   }
@@ -123,7 +123,7 @@ export function Ingredient(props: {
     const value = e.target.value
     setState(s => ({
       ...s,
-      [name]: value
+      [name]: value,
     }))
   }
 
@@ -138,7 +138,7 @@ export function Ingredient(props: {
     setState(s => ({
       ...s,
       editing: true,
-      unsavedChanges: false
+      unsavedChanges: false,
     }))
   }
 
@@ -149,7 +149,7 @@ export function Ingredient(props: {
       unsavedChanges: false,
       quantity: props.quantity,
       name: props.quantity,
-      description: props.description
+      description: props.description,
     }))
 
   const cancel = () =>
@@ -159,7 +159,7 @@ export function Ingredient(props: {
       editing: false,
       quantity: props.quantity,
       name: props.name,
-      description: props.description
+      description: props.description,
     }))
 
   const handleCancelButton = (e: React.MouseEvent) => {
@@ -184,13 +184,13 @@ export function Ingredient(props: {
       quantity: state.quantity,
       name: state.name,
       description: state.description,
-      optional: state.optional
+      optional: state.optional,
     })
 
     setState(s => ({
       ...s,
       editing: false,
-      unsavedChanges: false
+      unsavedChanges: false,
     }))
   }
 
@@ -201,31 +201,31 @@ export function Ingredient(props: {
     hover: handleDndHover({
       ref,
       index: props.index,
-      move: props.move
-    })
+      move: props.move,
+    }),
   })
 
   const [{ isDragging }, drag, preview] = useDrag({
     item: {
       type: DragDrop.INGREDIENT,
-      index: props.index
+      index: props.index,
     },
     end: () => {
       props.completeMove?.({
         kind: "ingredient",
         id: props.id,
-        to: props.index
+        to: props.index,
       })
     },
     collect: monitor => ({
-      isDragging: monitor.isDragging()
-    })
+      isDragging: monitor.isDragging(),
+    }),
   })
 
   const dragAndDropEnabled = props.completeMove != null && props.move != null
 
   const style = {
-    opacity: isDragging ? 0 : 1
+    opacity: isDragging ? 0 : 1,
   }
 
   if (dragAndDropEnabled) {

@@ -21,20 +21,20 @@ export const theme: ITheme = {
   color: {
     white: "#f9f9f9",
     primary,
-    primaryShadow: transparentize(0.2, primary)
+    primaryShadow: transparentize(0.2, primary),
   },
   text: {
-    small: "0.875rem"
+    small: "0.875rem",
   },
   medium: "992px",
-  small: "630px"
+  small: "630px",
 }
 
 const {
   default: styled,
   css,
   keyframes,
-  ThemeProvider
+  ThemeProvider,
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 } = styledComponents as styledComponents.ThemedStyledComponentsModule<ITheme>
 

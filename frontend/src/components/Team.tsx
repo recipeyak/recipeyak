@@ -82,7 +82,7 @@ interface ITeamSettingsProps {
   readonly name: ITeam["name"]
   readonly updatingTeam: (
     id: ITeam["id"],
-    team: { name: string }
+    team: { name: string },
   ) => Promise<void>
   readonly deleteTeam: (id: ITeam["id"]) => Promise<void>
   readonly loading: boolean
@@ -101,12 +101,12 @@ class TeamSettings extends React.Component<
   state: ITeamSettingsState = {
     name: "loading...",
     loadingDeleteTeam: false,
-    loadingSaveChanges: false
+    loadingSaveChanges: false,
   }
 
   static defaultProps = {
     name: "loading",
-    id: 0
+    id: 0,
   }
 
   componentWillMount() {
@@ -189,7 +189,7 @@ interface ITeamProps {
   readonly deleteTeam: (id: ITeam["id"]) => Promise<void>
   readonly updatingTeam: (
     id: ITeam["id"],
-    team: { name: string }
+    team: { name: string },
   ) => Promise<void>
   readonly members: IMember[]
   readonly error404: boolean

@@ -4,7 +4,7 @@ import {
   createAsyncAction,
   getType,
   ActionType,
-  createStandardAction
+  createStandardAction,
 } from "typesafe-actions"
 import { IRecipe } from "@/store/reducers/recipes"
 
@@ -13,12 +13,12 @@ export const deleteTeam = createStandardAction("DELETE_TEAM")<ITeam["id"]>()
 export const fetchTeam = createAsyncAction(
   "FETCH_TEAM_REQUEST",
   "FETCH_TEAM_SUCCESS",
-  "FETCH_TEAM_FAILURE"
+  "FETCH_TEAM_FAILURE",
 )<ITeam["id"], ITeam, { id: ITeam["id"]; error404?: boolean }>()
 export const fetchTeamMembers = createAsyncAction(
   "FETCH_TEAM_MEMBERS_REQUEST",
   "FETCH_TEAM_MEMBERS_SUCCESS",
-  "FETCH_TEAM_MEMBERS_FAILURE"
+  "FETCH_TEAM_MEMBERS_FAILURE",
 )<
   ITeam["id"],
   {
@@ -31,7 +31,7 @@ export const fetchTeamMembers = createAsyncAction(
 export const fetchTeamRecipes = createAsyncAction(
   "FETCH_TEAM_RECIPES_REQUEST",
   "FETCH_TEAM_RECIPES_SUCCESS",
-  "FETCH_TEAM_RECIPES_FAILURE"
+  "FETCH_TEAM_RECIPES_FAILURE",
 )<
   ITeam["id"],
   {
@@ -42,10 +42,10 @@ export const fetchTeamRecipes = createAsyncAction(
 >()
 
 export const setUpdatingUserTeamLevel = createStandardAction(
-  "SET_UPDATING_USER_TEAM_LEVEL"
+  "SET_UPDATING_USER_TEAM_LEVEL",
 )<{ id: ITeam["id"]; updating: boolean }>()
 export const setDeletingMembership = createStandardAction(
-  "SET_DELETING_MEMBERSHIP"
+  "SET_DELETING_MEMBERSHIP",
 )<{ teamID: number; membershipID: number; val: boolean }>()
 export const setUserTeamLevel = createStandardAction("SET_USER_TEAM_LEVEL")<{
   teamID: ITeam["id"]
@@ -53,7 +53,7 @@ export const setUserTeamLevel = createStandardAction("SET_USER_TEAM_LEVEL")<{
   level: IMember["level"]
 }>()
 export const setSendingTeamInvites = createStandardAction(
-  "SET_SENDING_TEAM_INVITES"
+  "SET_SENDING_TEAM_INVITES",
 )<{ teamID: ITeam["id"]; val: boolean }>()
 export const deleteMembership = createStandardAction("DELETE_MEMBERSHIP")<{
   teamID: ITeam["id"]
@@ -77,7 +77,7 @@ export const updateTeamById = createStandardAction("UPDATE_TEAM")<{
 export const fetchTeams = createAsyncAction(
   "FETCH_TEAMS_START",
   "FETCH_TEAMS_SUCCESS",
-  "FETCH_TEAMS_FAILURE"
+  "FETCH_TEAMS_FAILURE",
 )<void, ITeam[], void>()
 
 export type TeamsActions =
@@ -134,7 +134,7 @@ export interface ITeamsState {
 function mapById(
   state: ITeamsState,
   id: ITeam["id"],
-  func: (team: ITeam) => ITeam
+  func: (team: ITeam) => ITeam,
 ): ITeamsState {
   const team = state.byId[id]
   if (team == null) {
@@ -144,8 +144,8 @@ function mapById(
     ...state,
     byId: {
       ...state.byId,
-      [id]: func(team)
-    }
+      [id]: func(team),
+    },
   }
 }
 
@@ -153,18 +153,18 @@ function mapById(
 const initialState: ITeamsState = {
   byId: {},
   allIds: [],
-  status: "initial"
+  status: "initial",
 }
 
 export const teams = (
   state: ITeamsState = initialState,
-  action: TeamsActions
+  action: TeamsActions,
 ): ITeamsState => {
   switch (action.type) {
     case getType(fetchTeam.request):
       return mapById(state, action.payload, team => ({
         ...team,
-        loadingTeam: true
+        loadingTeam: true,
       }))
     case getType(fetchTeam.success):
       return {
@@ -174,27 +174,27 @@ export const teams = (
           [action.payload.id]: {
             ...state.byId[action.payload.id],
             ...action.payload,
-            loadingTeam: false
-          }
+            loadingTeam: false,
+          },
         },
-        allIds: uniq([...state.allIds, action.payload.id])
+        allIds: uniq([...state.allIds, action.payload.id]),
       }
     case getType(fetchTeam.failure):
       return mapById(state, action.payload.id, team => ({
         ...team,
         loadingTeam: false,
-        error404: action.payload.error404 || false
+        error404: action.payload.error404 || false,
       }))
     case getType(deleteTeam):
       return {
         ...state,
         byId: omit(state.byId, action.payload),
-        allIds: state.allIds.filter(id => id !== action.payload)
+        allIds: state.allIds.filter(id => id !== action.payload),
       }
     case getType(fetchTeamMembers.request):
       return mapById(state, action.payload, team => ({
         ...team,
-        loadingMembers: true
+        loadingMembers: true,
       }))
     case getType(fetchTeamMembers.success):
       return mapById(state, action.payload.id, team => ({
@@ -202,37 +202,37 @@ export const teams = (
         members: action.payload.members.reduce(
           (a, b) => ({
             ...a,
-            [b.id]: b
+            [b.id]: b,
           }),
-          {}
+          {},
         ),
-        loadingMembers: false
+        loadingMembers: false,
       }))
     case getType(fetchTeamMembers.failure):
       return mapById(state, action.payload, team => ({
         ...team,
-        loadingMembers: false
+        loadingMembers: false,
       }))
     case getType(fetchTeamRecipes.request):
       return mapById(state, action.payload, team => ({
         ...team,
-        loadingRecipes: true
+        loadingRecipes: true,
       }))
     case getType(fetchTeamRecipes.success):
       return mapById(state, action.payload.id, team => ({
         ...team,
         recipes: action.payload.recipes.map(r => r.id),
-        loadingRecipes: false
+        loadingRecipes: false,
       }))
     case getType(fetchTeamRecipes.failure):
       return mapById(state, action.payload, team => ({
         ...team,
-        loadingRecipes: false
+        loadingRecipes: false,
       }))
     case getType(setUpdatingUserTeamLevel):
       return mapById(state, action.payload.id, team => ({
         ...team,
-        updating: action.payload.updating
+        updating: action.payload.updating,
       }))
     case getType(setDeletingMembership):
       return mapById(state, action.payload.teamID, team => {
@@ -248,9 +248,9 @@ export const teams = (
             ...team.members,
             [action.payload.membershipID]: {
               ...member,
-              deleting: action.payload.val
-            }
-          }
+              deleting: action.payload.val,
+            },
+          },
         }
       })
     case getType(setUserTeamLevel):
@@ -266,21 +266,21 @@ export const teams = (
             ...team.members,
             [action.payload.membershipID]: {
               ...member,
-              level: action.payload.level
-            }
-          }
+              level: action.payload.level,
+            },
+          },
         }
       })
     case getType(setSendingTeamInvites):
       return mapById(state, action.payload.teamID, team => ({
         ...team,
-        sendingTeamInvites: action.payload.val
+        sendingTeamInvites: action.payload.val,
       }))
     case getType(deleteMembership):
       return mapById(state, action.payload.teamID, team => ({
         ...team,
         // TODO: refactor membership into it's own reducer
-        members: omit(team.members, action.payload.membershipID)
+        members: omit(team.members, action.payload.membershipID),
       }))
     case getType(fetchTeams.success):
       return {
@@ -291,17 +291,17 @@ export const teams = (
             ...a,
             [b.id]: {
               ...state.byId[b.id],
-              ...b
-            }
+              ...b,
+            },
           }),
-          state.byId
+          state.byId,
         ),
-        allIds: uniq(state.allIds.concat(action.payload.map(x => x.id)))
+        allIds: uniq(state.allIds.concat(action.payload.map(x => x.id))),
       }
     case getType(fetchTeams.request):
       return {
         ...state,
-        status: state.status === "initial" ? "loading" : "refetching"
+        status: state.status === "initial" ? "loading" : "refetching",
       }
     case getType(fetchTeams.failure):
       return { ...state, status: "failure" }
@@ -310,19 +310,19 @@ export const teams = (
         ...state,
         byId: {
           ...state.byId,
-          [action.payload.id]: action.payload.team
+          [action.payload.id]: action.payload.team,
         },
-        allIds: uniq(state.allIds.concat(action.payload.id))
+        allIds: uniq(state.allIds.concat(action.payload.id)),
       }
     case getType(setCreatingTeam):
       return {
         ...state,
-        creating: action.payload
+        creating: action.payload,
       }
     case getType(setCopyingTeam):
       return {
         ...state,
-        copying: action.payload
+        copying: action.payload,
       }
     case getType(updateTeamById):
       return mapById(state, action.payload.id, () => action.payload.teamKeys)

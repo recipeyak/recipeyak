@@ -11,7 +11,7 @@ test("toISODateString", () => {
   mockTimezone("US/Pacific", () => {
     expect(new Date().getTimezoneOffset()).not.toBe(0)
     expect(toISODateString(new Date())).toEqual(
-      toISODateString(toISODateString(toISODateString(new Date())))
+      toISODateString(toISODateString(toISODateString(new Date()))),
     )
   })
   expect(new Date().getTimezoneOffset()).toBe(0)

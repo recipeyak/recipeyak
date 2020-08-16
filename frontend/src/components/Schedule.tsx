@@ -22,7 +22,7 @@ function Sidebar({ teamID, isRecipes }: ISidebarProps) {
   const arrow = closed ? "→" : "←"
 
   const sideBarStyle = {
-    display: closed ? "none" : ""
+    display: closed ? "none" : "",
   }
 
   const recipesURL =
@@ -115,7 +115,7 @@ export default connect(
     return {
       updateTeamID: updatingTeamIDAsync(dispatch),
       teamID,
-      type: ownProps.match.params["type"]
+      type: ownProps.match.params["type"],
     }
-  }
+  },
 )(Schedule)

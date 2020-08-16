@@ -5,7 +5,7 @@ import { ButtonPrimary, Button } from "@/components/Buttons"
 
 interface IAddStepFormProps {
   readonly handleInputChange: (
-    e: React.ChangeEvent<HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLTextAreaElement>,
   ) => void
   readonly addStep: () => void
   readonly cancelAddStep: () => void
@@ -24,7 +24,7 @@ const AddStepForm = ({
   text,
   loading = false,
   error = false,
-  autoFocus = false
+  autoFocus = false,
 }: IAddStepFormProps) => (
   <form
     onSubmit={e => {

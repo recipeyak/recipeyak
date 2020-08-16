@@ -10,7 +10,7 @@ import { loggingOutAsync } from "@/store/thunks"
 import {
   DropdownContainer,
   DropdownMenu,
-  useDropdown
+  useDropdown,
 } from "@/components/Dropdown"
 
 function useDarkMode(): [boolean, () => void] {

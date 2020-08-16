@@ -33,7 +33,7 @@ export const ButtonPlain = ({
     <button
       {...props}
       className={classNames("my-button", className, buttonSize, {
-        "is-loading": loading
+        "is-loading": loading,
       })}>
       {children}
     </button>

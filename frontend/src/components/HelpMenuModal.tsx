@@ -5,20 +5,20 @@ import GlobalEvent from "@/components/GlobalEvent"
 const keybinds = [
   {
     key: ["Delete", "#"],
-    description: "delete scheduled recipe"
+    description: "delete scheduled recipe",
   },
   {
     key: "?",
-    description: "toggle help menu"
+    description: "toggle help menu",
   },
   {
     key: ["+", "A"],
-    description: "increment scheduled recipe amount"
+    description: "increment scheduled recipe amount",
   },
   {
     key: ["-", "X"],
-    description: "decrement scheduled recipe amount"
-  }
+    description: "decrement scheduled recipe amount",
+  },
 ]
 
 interface IKeyBindProps {

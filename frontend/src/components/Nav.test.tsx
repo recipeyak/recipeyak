@@ -9,7 +9,7 @@ describe("<Nav/>", () => {
     const tree = renderer.create(
       <TestProvider>
         <Navbar />
-      </TestProvider>
+      </TestProvider>,
     )
     expect(tree).toMatchSnapshot()
   })
@@ -20,13 +20,13 @@ describe("<Nav/>", () => {
       ...emptyState,
       user: {
         ...emptyState.user,
-        loggedIn: true
-      }
+        loggedIn: true,
+      },
     })
     const tree = renderer.create(
       <TestProvider store={store}>
         <Navbar />
-      </TestProvider>
+      </TestProvider>,
     )
     expect(tree).toMatchSnapshot()
   })

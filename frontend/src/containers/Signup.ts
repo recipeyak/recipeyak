@@ -8,14 +8,14 @@ import { setErrorSignup } from "@/store/reducers/auth"
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     signup: signupAsync(dispatch),
-    clearErrors: () => dispatch(setErrorSignup({}))
+    clearErrors: () => dispatch(setErrorSignup({})),
   }
 }
 
 const mapStateToProps = (state: IState) => {
   return {
     loading: state.auth.loadingSignup,
-    error: state.auth.errorSignup
+    error: state.auth.errorSignup,
   }
 }
 

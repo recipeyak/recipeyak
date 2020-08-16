@@ -12,7 +12,7 @@ import {
   fetchCalendarAsync,
   fetchingRecipeListAsync,
   fetchingTeamsAsync,
-  fetchingShoppingListAsync
+  fetchingShoppingListAsync,
 } from "@/store/thunks"
 
 import { toISODateString } from "@/date"
@@ -30,7 +30,7 @@ import {
   getTeamRecipes,
   getPersonalRecipes,
   updateCalendarSettings,
-  regenerateCalendarLink as regenerateCalendarLinkAction
+  regenerateCalendarLink as regenerateCalendarLinkAction,
 } from "@/store/reducers/calendar"
 import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
 import { Select } from "@/components/Forms"
@@ -43,7 +43,7 @@ import {
   Loading,
   WebData,
   isSuccessLike,
-  Failure
+  Failure,
 } from "@/webdata"
 
 function CalTitle({ dayTs }: { readonly dayTs: number }) {
@@ -188,7 +188,7 @@ function Nav({ dayTs, teamID, onPrev, onNext, onCurrent, type }: INavProps) {
   const {
     settings,
     setSyncEnabled,
-    regenerateCalendarLink
+    regenerateCalendarLink,
   } = useCalendarSettings(teamID)
 
   return (
@@ -259,16 +259,16 @@ function useCurrentWeek() {
   const navPrev = () => {
     history.push({
       search: queryString.stringify({
-        week: toISODateString(subWeeks(weekStartDate, 1))
-      })
+        week: toISODateString(subWeeks(weekStartDate, 1)),
+      }),
     })
   }
 
   const navNext = () => {
     history.push({
       search: queryString.stringify({
-        week: toISODateString(addWeeks(weekStartDate, 1))
-      })
+        week: toISODateString(addWeeks(weekStartDate, 1)),
+      }),
     })
   }
 
@@ -340,7 +340,7 @@ function useDays(teamID: TeamID, currentDateTs: number): WebData<IDays> {
     days.reduce<IDays>((a, b) => {
       a[b.on] = (a[b.on] || []).concat(b)
       return a
-    }, {})
+    }, {}),
   )
 }
 
@@ -376,15 +376,15 @@ function useCalendarSettings(teamID: TeamID) {
     dispatch(
       updateCalendarSettings.request({
         teamID,
-        syncEnabled
-      })
+        syncEnabled,
+      }),
     )
   }
   const regenerateCalendarLink = () => {
     dispatch(
       regenerateCalendarLinkAction.request({
-        teamID
-      })
+        teamID,
+      }),
     )
   }
   return { settings, setSyncEnabled, regenerateCalendarLink }
@@ -402,7 +402,7 @@ export function Calendar({ teamID, type }: ICalendarProps) {
     endDate,
     navNext,
     navCurrent,
-    navPrev
+    navPrev,
   } = useCurrentWeek()
 
   const days = useDays(teamID, currentDateTs)

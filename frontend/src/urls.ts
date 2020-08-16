@@ -9,7 +9,7 @@ interface IStr {
 
 export const recipeURL = <T extends IStr, U extends IStr>(
   id: T,
-  name?: U
+  name?: U,
 ): string => {
   const baseUrl = `/recipes/${id}`
   if (name) {

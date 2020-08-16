@@ -10,7 +10,7 @@ describe("<ListItem/>", () => {
     // tslint:disable-next-line:no-any
     ;((global.console.error as any) as jest.SpyInstance).mockImplementation(
       /* eslint-enable @typescript-eslint/consistent-type-assertions */
-      jest.fn()
+      jest.fn(),
     )
   })
   afterEach(() => {
@@ -24,7 +24,7 @@ describe("<ListItem/>", () => {
     mount(
       <ErrorBoundary>
         <div />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     )
   })
 
@@ -38,7 +38,7 @@ describe("<ListItem/>", () => {
     mount(
       <ErrorBoundary>
         <BadComponent />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     )
   })
 })

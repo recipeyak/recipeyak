@@ -92,18 +92,18 @@ const features = [
   {
     text:
       "Full text recipe search. Easily find recipes by ingredient, author, and name.",
-    imgURL: searchImg
+    imgURL: searchImg,
   },
   {
     text:
       "Collaborate using Recipe Yak Teams to create a shared recipe schedule and shopping list.",
-    imgURL: teamImg
+    imgURL: teamImg,
   },
   {
     text:
       "Automatically generate a condensed shopping list when selecting days to shop.",
-    imgURL: copyShoppingList
-  }
+    imgURL: copyShoppingList,
+  },
 ]
 
 const howToSteps = [
@@ -117,7 +117,7 @@ const howToSteps = [
         form.
       </span>
     ),
-    imgURL: addRecipeImg
+    imgURL: addRecipeImg,
   },
   {
     text: (
@@ -129,7 +129,7 @@ const howToSteps = [
         and add drag recipes onto your calendar.
       </span>
     ),
-    imgURL: landingImg
+    imgURL: landingImg,
   },
   {
     text: (
@@ -141,7 +141,7 @@ const howToSteps = [
         and adjust the days you are shopping for.
       </span>
     ),
-    imgURL: shopImg
+    imgURL: shopImg,
   },
   {
     text: (
@@ -149,8 +149,8 @@ const howToSteps = [
         Copy the automatically generated shopping list with one click.
       </span>
     ),
-    imgURL: copyShoppingList
-  }
+    imgURL: copyShoppingList,
+  },
 ]
 
 const LandingPage = () => (

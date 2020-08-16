@@ -2,46 +2,46 @@ import { createStandardAction, ActionType, getType } from "typesafe-actions"
 import { IStepBasic, IIngredientBasic } from "@/store/reducers/recipes"
 
 export const setAddRecipeFormName = createStandardAction(
-  "SET_ADD_RECIPE_FORM_NAME"
+  "SET_ADD_RECIPE_FORM_NAME",
 )<string>()
 export const setAddRecipeFormAuthor = createStandardAction(
-  "SET_ADD_RECIPE_FORM_AUTHOR"
+  "SET_ADD_RECIPE_FORM_AUTHOR",
 )<string>()
 export const setAddRecipeFormSource = createStandardAction(
-  "SET_ADD_RECIPE_FORM_SOURCE"
+  "SET_ADD_RECIPE_FORM_SOURCE",
 )<string>()
 export const setAddRecipeFormTime = createStandardAction(
-  "SET_ADD_RECIPE_FORM_TIME"
+  "SET_ADD_RECIPE_FORM_TIME",
 )<IAddRecipeState["time"]>()
 export const setAddRecipeFormServings = createStandardAction(
-  "SET_ADD_RECIPE_FORM_SERVINGS"
+  "SET_ADD_RECIPE_FORM_SERVINGS",
 )<IAddRecipeState["servings"]>()
 export const addAddRecipeFormIngredient = createStandardAction(
-  "ADD_ADD_RECIPE_FORM_INGREDIENT"
+  "ADD_ADD_RECIPE_FORM_INGREDIENT",
 )<IIngredientBasic>()
 export const removeAddRecipeFormIngredient = createStandardAction(
-  "REMOVE_ADD_RECIPE_FORM_INGREDIENT"
+  "REMOVE_ADD_RECIPE_FORM_INGREDIENT",
 )<number>()
 export const addAddRecipeFormStep = createStandardAction(
-  "ADD_ADD_RECIPE_FORM_STEP"
+  "ADD_ADD_RECIPE_FORM_STEP",
 )<IStepBasic>()
 export const removeAddRecipeFormStep = createStandardAction(
-  "REMOVE_ADD_RECIPE_FORM_STEP"
+  "REMOVE_ADD_RECIPE_FORM_STEP",
 )<number>()
 export const updateAddRecipeFormIngredient = createStandardAction(
-  "UPDATE_ADD_RECIPE_FORM_INGREDIENT"
+  "UPDATE_ADD_RECIPE_FORM_INGREDIENT",
 )<{
   index: number
   ingredient: IIngredientBasic
 }>()
 export const updateAddRecipeFormStep = createStandardAction(
-  "UPDATE_ADD_RECIPE_FORM_STEP"
+  "UPDATE_ADD_RECIPE_FORM_STEP",
 )<{
   index: number
   step: IStepBasic
 }>()
 export const clearAddRecipeForm = createStandardAction(
-  "CLEAR_ADD_RECIPE_FORM"
+  "CLEAR_ADD_RECIPE_FORM",
 )()
 
 export type AddRecipeActions =
@@ -75,12 +75,12 @@ export const initialState: IAddRecipeState = {
   time: "",
   servings: "",
   ingredients: [],
-  steps: []
+  steps: [],
 }
 
 const addrecipe = (
   state: IAddRecipeState = initialState,
-  action: AddRecipeActions
+  action: AddRecipeActions,
 ): IAddRecipeState => {
   switch (action.type) {
     case getType(setAddRecipeFormName):
@@ -96,12 +96,12 @@ const addrecipe = (
     case getType(addAddRecipeFormIngredient):
       return {
         ...state,
-        ingredients: [...state.ingredients, action.payload]
+        ingredients: [...state.ingredients, action.payload],
       }
     case getType(removeAddRecipeFormIngredient):
       return {
         ...state,
-        ingredients: state.ingredients.filter((_, i) => i !== action.payload)
+        ingredients: state.ingredients.filter((_, i) => i !== action.payload),
       }
     case getType(updateAddRecipeFormIngredient):
       return {
@@ -111,17 +111,17 @@ const addrecipe = (
             return action.payload.ingredient
           }
           return x
-        })
+        }),
       }
     case getType(addAddRecipeFormStep):
       return {
         ...state,
-        steps: [...state.steps, action.payload]
+        steps: [...state.steps, action.payload],
       }
     case getType(removeAddRecipeFormStep):
       return {
         ...state,
-        steps: state.steps.filter((_, i) => i !== action.payload)
+        steps: state.steps.filter((_, i) => i !== action.payload),
       }
     case getType(updateAddRecipeFormStep):
       return {
@@ -131,7 +131,7 @@ const addrecipe = (
             return action.payload.step
           }
           return x
-        })
+        }),
       }
     case getType(clearAddRecipeForm):
       return initialState

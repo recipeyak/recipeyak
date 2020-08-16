@@ -1,30 +1,30 @@
 import notification, {
   initialState,
   setNotification,
-  clearNotification
+  clearNotification,
 } from "@/store/reducers/notification"
 
 describe("Notification", () => {
   it("Sets notification settings", () => {
     const beforeState = {
       ...initialState,
-      message: ""
+      message: "",
     }
 
     const action = {
       message: "testing",
-      closeable: true
+      closeable: true,
     }
 
     const afterState = {
       ...initialState,
       message: "testing",
       closeable: true,
-      show: true
+      show: true,
     }
 
     expect(notification(beforeState, setNotification(action))).toEqual(
-      afterState
+      afterState,
     )
   })
   it("clears notification", () => {
@@ -32,14 +32,14 @@ describe("Notification", () => {
       ...initialState,
       message: "testing",
       closeable: true,
-      show: true
+      show: true,
     }
 
     const afterState = {
       ...initialState,
       message: "",
       closeable: false,
-      show: false
+      show: false,
     }
 
     expect(notification(beforeState, clearNotification())).toEqual(afterState)

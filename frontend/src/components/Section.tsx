@@ -8,7 +8,7 @@ import { isOk } from "@/result"
 import { useDispatch } from "@/hooks"
 import {
   removeSectionFromRecipe,
-  updateSectionForRecipe
+  updateSectionForRecipe,
 } from "@/store/reducers/recipes"
 
 type State = {
@@ -23,7 +23,7 @@ function getInitialState(title: string) {
     updating: "initial",
     removing: "initial",
     editing: false,
-    localTitle: title
+    localTitle: title,
   } as const
 }
 
@@ -33,7 +33,7 @@ export function Section({
   recipeId,
   title,
   move,
-  completeMove
+  completeMove,
 }: {
   readonly index: number
   readonly recipeId: number
@@ -41,7 +41,7 @@ export function Section({
   readonly title: string
   readonly move: ({
     from,
-    to
+    to,
   }: {
     readonly from: number
     readonly to: number
@@ -49,7 +49,7 @@ export function Section({
   readonly completeMove: ({
     kind,
     id,
-    to
+    to,
   }: {
     readonly kind: "section"
     readonly id: number
@@ -86,8 +86,8 @@ export function Section({
             recipeId,
             sectionId,
             title: res.data.title,
-            position: res.data.position
-          })
+            position: res.data.position,
+          }),
         )
         setState(prev => ({ ...prev, updating: "success", editing: false }))
       } else {
@@ -104,25 +104,25 @@ export function Section({
     hover: handleDndHover({
       ref,
       index,
-      move
-    })
+      move,
+    }),
   })
 
   const [{ isDragging }, drag, preview] = useDrag({
     item: {
       type: DragDrop.SECTION,
-      index
+      index,
     },
     end: () => {
       completeMove({ kind: "section", id: sectionId, to: index })
     },
     collect: monitor => ({
-      isDragging: monitor.isDragging()
-    })
+      isDragging: monitor.isDragging(),
+    }),
   })
 
   const style: React.CSSProperties = {
-    opacity: isDragging ? 0 : 1
+    opacity: isDragging ? 0 : 1,
   }
 
   preview(drag(drop(ref)))

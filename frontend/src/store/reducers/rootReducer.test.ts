@@ -10,7 +10,7 @@ describe("logout", () => {
       ...emptyStore.getState(),
       user: {
         ...emptyStore.getState().user,
-        loggedIn: true
+        loggedIn: true,
       },
       auth: initialState,
       router: {
@@ -18,18 +18,18 @@ describe("logout", () => {
           state: "",
           pathname: "",
           search: "",
-          hash: ""
-        }
-      }
+          hash: "",
+        },
+      },
     }
 
     const afterState = {
       ...emptyStore.getState(),
-      router: beforeState.router
+      router: beforeState.router,
     }
 
     expect(getModel(rootReducer(beforeState, setUserLoggedIn(false)))).toEqual(
-      afterState
+      afterState,
     )
   })
 })

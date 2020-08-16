@@ -6,19 +6,19 @@ import { Loading, Success } from "@/webdata"
 export const fetchInvites = createAsyncAction(
   "FETCH_INVITES_START",
   "FETCH_INVITES_SUCCESS",
-  "FETCH_INVITES_FAILURE"
+  "FETCH_INVITES_FAILURE",
 )<void, IInvite[], void>()
 
 export const acceptInvite = createAsyncAction(
   "ACCEPT_INVITE_REQUEST",
   "ACCEPT_INVITE_SUCCESS",
-  "ACCEPT_INVITE_FAILURE"
+  "ACCEPT_INVITE_FAILURE",
 )<IInvite["id"], IInvite["id"], IInvite["id"]>()
 
 export const declineInvite = createAsyncAction(
   "DECLINE_INVITE_REQUEST",
   "DECLINE_INVITE_SUCCESS",
-  "DECLINE_INVITE_FAILURE"
+  "DECLINE_INVITE_FAILURE",
 )<IInvite["id"], IInvite["id"], IInvite["id"]>()
 
 export type InviteActions =
@@ -50,7 +50,7 @@ export interface IInvite {
 function mapById(
   state: IInvitesState,
   id: IInvite["id"],
-  func: (invite: IInvite) => IInvite
+  func: (invite: IInvite) => IInvite,
 ): IInvitesState {
   const invite = state.byId[id]
   if (invite == null) {
@@ -60,8 +60,8 @@ function mapById(
     ...state,
     byId: {
       ...state.byId,
-      [id]: func(invite)
-    }
+      [id]: func(invite),
+    },
   }
 }
 
@@ -74,12 +74,12 @@ export interface IInvitesState {
 
 export const initialState: IInvitesState = {
   loading: false,
-  byId: {}
+  byId: {},
 }
 
 const invites = (
   state: IInvitesState = initialState,
-  action: InviteActions
+  action: InviteActions,
 ): IInvitesState => {
   switch (action.type) {
     case getType(fetchInvites.success):
@@ -91,11 +91,11 @@ const invites = (
           ...action.payload.reduce(
             (a, b) => ({
               ...a,
-              [b.id]: b
+              [b.id]: b,
             }),
-            {}
-          )
-        }
+            {},
+          ),
+        },
       }
     case getType(fetchInvites.request):
       return { ...state, loading: true }
@@ -104,35 +104,35 @@ const invites = (
     case getType(acceptInvite.request):
       return mapById(state, action.payload, invite => ({
         ...invite,
-        accepting: true
+        accepting: true,
       }))
     case getType(acceptInvite.success):
       return mapById(state, action.payload, invite => ({
         ...invite,
         accepting: false,
-        status: "accepted"
+        status: "accepted",
       }))
     case getType(acceptInvite.failure):
       return mapById(state, action.payload, invite => ({
         ...invite,
-        accepting: false
+        accepting: false,
       }))
     case getType(declineInvite.request):
       return mapById(state, action.payload, invite => ({
         ...invite,
-        declining: true
+        declining: true,
       }))
     case getType(declineInvite.success):
       return mapById(state, action.payload, invite => ({
         ...invite,
         status: "declined",
-        declining: false
+        declining: false,
       }))
     case getType(declineInvite.failure):
       return mapById(state, action.payload, invite => ({
         ...invite,
         status: "declined",
-        declining: false
+        declining: false,
       }))
     default:
       return state

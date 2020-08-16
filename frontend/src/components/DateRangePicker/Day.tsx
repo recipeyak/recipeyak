@@ -28,7 +28,7 @@ class Day extends React.Component<IDayProps> {
           { "color-white": this.props.highlight || this.props.endDate },
           { "cal-in-past": this.props.inPast },
           this.props.inPast ? "cursor-default" : "cursor-pointer",
-          { "text-muted": this.props.inPast }
+          { "text-muted": this.props.inPast },
         )}
         onClick={() => this.props.handleClick(this.props.date)}>
         {this.props.date.getDate()}

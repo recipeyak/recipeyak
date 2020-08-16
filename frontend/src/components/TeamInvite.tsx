@@ -13,7 +13,7 @@ import { teamURL } from "@/urls"
 import {
   fetchingTeamAsync,
   sendingTeamInvitesAsync,
-  Dispatch
+  Dispatch,
 } from "@/store/thunks"
 import { IState } from "@/store/store"
 import { IMember, ITeam } from "@/store/reducers/teams"
@@ -26,31 +26,31 @@ const mapStateToProps = (state: IState, props: ITeamInviteProps) => {
 
   return {
     ...team,
-    id
+    id,
   }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchData: fetchingTeamAsync(dispatch),
-  sendInvites: sendingTeamInvitesAsync(dispatch)
+  sendInvites: sendingTeamInvitesAsync(dispatch),
 })
 
 export const roles = [
   {
     name: "Admin",
     value: "admin",
-    description: "Add and remove recipes, members."
+    description: "Add and remove recipes, members.",
   },
   {
     name: "Contributor",
     value: "contributor",
-    description: "Add and remove recipes and view all members."
+    description: "Add and remove recipes and view all members.",
   },
   {
     name: "Viewer",
     value: "viewer",
-    description: "View all team recipes and members."
-  }
+    description: "View all team recipes and members.",
+  },
 ]
 
 interface ITeamInviteProps extends RouteComponentProps<{ id: string }> {
@@ -59,7 +59,7 @@ interface ITeamInviteProps extends RouteComponentProps<{ id: string }> {
   readonly sendInvites: (
     id: ITeam["id"],
     emails: string[],
-    level: IMember["level"]
+    level: IMember["level"],
   ) => Promise<Result<void, void>>
   readonly loadingTeam: boolean
   readonly name: string
@@ -74,12 +74,12 @@ interface ITeamInviteState {
 class TeamInvite extends React.Component<ITeamInviteProps, ITeamInviteState> {
   state: ITeamInviteState = {
     level: "contributor",
-    emails: ""
+    emails: "",
   }
 
   static defaultProps = {
     loadingTeam: true,
-    sendingTeamInvites: false
+    sendingTeamInvites: false,
   }
 
   componentWillMount() {
@@ -89,7 +89,7 @@ class TeamInvite extends React.Component<ITeamInviteProps, ITeamInviteState> {
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     /* eslint-disable @typescript-eslint/consistent-type-assertions */
     this.setState(({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     } as unknown) as ITeamInviteState)
   /* eslint-enable @typescript-eslint/consistent-type-assertions */
 
@@ -123,7 +123,7 @@ class TeamInvite extends React.Component<ITeamInviteProps, ITeamInviteState> {
             const result = await this.props.sendInvites(
               id,
               emails,
-              this.state.level
+              this.state.level,
             )
             if (isErr(result)) {
               // On failure, we should leave our email state unchanged.

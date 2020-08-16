@@ -6,7 +6,7 @@ import {
   fetchingTeamRecipesAsync,
   deletingTeamAsync,
   updatingTeamAsync,
-  Dispatch
+  Dispatch,
 } from "@/store/thunks"
 import Team from "@/components/Team"
 import { IState } from "@/store/store"
@@ -54,7 +54,7 @@ const mapStateToProps = (state: IState, props: RouteProps) => {
     name: team ? team.name : "",
     loadingMembers,
     loadingRecipes,
-    recipes: successfulRecipes
+    recipes: successfulRecipes,
   }
 }
 const mapDispatchToProps = (dispatch: Dispatch) => {
@@ -63,10 +63,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
       Promise.all([
         fetchingTeamAsync(dispatch)(id),
         fetchingTeamMembersAsync(dispatch)(id),
-        fetchingTeamRecipesAsync(dispatch)(id)
+        fetchingTeamRecipesAsync(dispatch)(id),
       ]),
     deleteTeam: deletingTeamAsync(dispatch),
-    updatingTeam: updatingTeamAsync(dispatch)
+    updatingTeam: updatingTeamAsync(dispatch),
   }
 }
 

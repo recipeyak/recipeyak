@@ -9,7 +9,7 @@ import {
   updateNote,
   toggleEditingNoteById,
   deleteNote,
-  INote
+  INote,
 } from "@/store/reducers/recipes"
 import { ButtonPrimary, ButtonSecondary } from "@/components/Buttons"
 import { classNames } from "@/classnames"
@@ -87,7 +87,7 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
     onEditorChange,
     onEditorKeyDown,
     onNoteClick,
-    onSave
+    onSave,
   }
 }
 
@@ -118,7 +118,7 @@ export function Note({ recipeId, note, className }: INoteProps) {
     onEditorChange,
     onEditorKeyDown,
     onNoteClick,
-    onSave
+    onSave,
   } = useNoteEditHandlers({ note, recipeId })
 
   const ref = React.useRef<HTMLDivElement>(null)
@@ -137,9 +137,9 @@ export function Note({ recipeId, note, className }: INoteProps) {
       className={classNames(
         "d-flex align-items-start",
         {
-          "bg-highlight": isSharedNote
+          "bg-highlight": isSharedNote,
         },
-        className
+        className,
       )}
       id={noteId}>
       <Avatar avatarURL={note.created_by.avatar_url} className="mr-2" />
@@ -235,7 +235,7 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
   const editorMinRowCount = isEditing ? 5 : 0
   const editorClassNames = classNames({
     "my-textarea mb-2": isEditing,
-    textarea: !isEditing
+    textarea: !isEditing,
   })
 
   return {
@@ -249,7 +249,7 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     onEditorFocus,
     onCreate,
     isLoading,
-    onCancel
+    onCancel,
   }
 }
 
@@ -268,9 +268,9 @@ function NoteCreator({ recipeId }: INoteCreatorProps) {
     onEditorFocus,
     onCreate,
     isLoading,
-    onCancel
+    onCancel,
   } = useNoteCreatorHandlers({
-    recipeId
+    recipeId,
   })
   return (
     <div>

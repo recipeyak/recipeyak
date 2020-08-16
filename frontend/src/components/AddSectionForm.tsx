@@ -16,7 +16,7 @@ export function AddSectionFormInner({
   value,
   removing,
   onChange,
-  toggleShowAddSection
+  toggleShowAddSection,
 }: {
   readonly onSave: () => void
   readonly onCancel: () => void
@@ -104,7 +104,7 @@ type StateType = {
 export function AddSectionForm({
   toggleShowAddSection,
   onCancel,
-  recipeId
+  recipeId,
 }: {
   readonly toggleShowAddSection: () => void
   readonly onCancel: () => void
@@ -113,7 +113,7 @@ export function AddSectionForm({
   const dispatch = useDispatch()
   const [state, setState] = React.useState<StateType>({
     sectionTitle: "",
-    status: "initial"
+    status: "initial",
   })
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const sectionTitle = e.target.value
@@ -128,8 +128,8 @@ export function AddSectionForm({
           dispatch(
             addSectionToRecipe({
               recipeId,
-              section: res.data
-            })
+              section: res.data,
+            }),
           )
           setState(prev => ({ ...prev, status: "success", sectionTitle: "" }))
         } else {

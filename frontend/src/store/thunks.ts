@@ -21,7 +21,7 @@ import {
   ISession,
   logoutSessionById,
   logoutAllSessions,
-  socialConnections
+  socialConnections,
 } from "@/store/reducers/user"
 import {
   ICalRecipe,
@@ -30,18 +30,18 @@ import {
   deleteCalendarRecipe,
   moveCalendarRecipe,
   fetchCalendarRecipes,
-  getExistingRecipe
+  getExistingRecipe,
 } from "@/store/reducers/calendar"
 import {
   IInvite,
   fetchInvites,
   declineInvite,
-  acceptInvite
+  acceptInvite,
 } from "@/store/reducers/invites"
 import {
   INotificationState,
   setNotification,
-  clearNotification
+  clearNotification,
 } from "@/store/reducers/notification"
 import {
   ITeam,
@@ -59,7 +59,7 @@ import {
   fetchTeam,
   setTeam,
   fetchTeamMembers,
-  fetchTeamRecipes
+  fetchTeamRecipes,
 } from "@/store/reducers/teams"
 import {
   IRecipe,
@@ -73,7 +73,7 @@ import {
   fetchRecipeList,
   createRecipe,
   IStep,
-  fetchRecentRecipes
+  fetchRecentRecipes,
 } from "@/store/reducers/recipes"
 import * as api from "@/api"
 import { clearAddRecipeForm } from "@/store/reducers/addrecipe"
@@ -88,7 +88,7 @@ import {
   setLoadingSignup,
   setLoadingReset,
   setLoadingResetConfirmation,
-  login
+  login,
 } from "@/store/reducers/auth"
 import { recipeURL } from "@/urls"
 import { isSuccessOrRefetching } from "@/webdata"
@@ -99,7 +99,7 @@ import {
   startOfWeek,
   subWeeks,
   addWeeks,
-  endOfWeek
+  endOfWeek,
 } from "date-fns"
 import { isOk, isErr, Ok, Err, Result } from "@/result"
 import { heldKeys } from "@/components/CurrentKeys"
@@ -128,15 +128,15 @@ export const showNotificationWithTimeoutAsync = (dispatch: Dispatch) => ({
   level = "info",
   closeable = true,
   delay = 2000,
-  sticky = false
+  sticky = false,
 }: INotificationWithTimeout) => {
   clearTimeout(notificationTimeout)
   dispatch(
     setNotification({
       message,
       level,
-      closeable
-    })
+      closeable,
+    }),
   )
 
   if (!sticky) {
@@ -165,7 +165,7 @@ const emailExists = (err: AxiosError) =>
 // tslint:enable:no-unsafe-any
 
 export const updatingEmailAsync = (dispatch: Dispatch) => async (
-  email: IUser["email"]
+  email: IUser["email"],
 ) => {
   dispatch(updateEmail.request())
   const res = await api.updateUser({ email })
@@ -176,7 +176,7 @@ export const updatingEmailAsync = (dispatch: Dispatch) => async (
     showNotificationWithTimeoutAsync(dispatch)({
       message: "updated email",
       level: "success",
-      delay: 3 * second
+      delay: 3 * second,
     })
   } else {
     dispatch(updateEmail.failure())
@@ -184,14 +184,14 @@ export const updatingEmailAsync = (dispatch: Dispatch) => async (
     dispatch(
       setNotification({
         message: `problem updating email ${messageExtra}`,
-        level: "danger"
-      })
+        level: "danger",
+      }),
     )
   }
 }
 
 export const updatingTeamIDAsync = (dispatch: Dispatch) => async (
-  id: IUserState["teamID"]
+  id: IUserState["teamID"],
 ) => {
   // store old id so we can undo
   const oldID = store.getState().user.teamID
@@ -225,7 +225,7 @@ export const fetchingSessionsAsync = (dispatch: Dispatch) => async () => {
 }
 
 export const loggingOutSessionByIdAsync = (dispatch: Dispatch) => async (
-  id: ISession["id"]
+  id: ISession["id"],
 ) => {
   dispatch(logoutSessionById.request(id))
   const res = await api.deleteSessionById(id)
@@ -257,7 +257,7 @@ export const fetchSocialConnectionsAsync = (dispatch: Dispatch) => async () => {
 }
 
 export const disconnectSocialAccountAsync = (dispatch: Dispatch) => async (
-  provider: SocialProvider
+  provider: SocialProvider,
 ) => {
   const res = await api.disconnectSocialAccount(provider)
   if (isOk(res)) {
@@ -285,7 +285,7 @@ interface IUpdatePassword {
 export const updatingPasswordAsync = (dispatch: Dispatch) => async ({
   password1,
   password2,
-  oldPassword
+  oldPassword,
 }: IUpdatePassword) => {
   dispatch(passwordUpdate.request())
   const res = await api.changePassword(password1, password2, oldPassword)
@@ -294,7 +294,7 @@ export const updatingPasswordAsync = (dispatch: Dispatch) => async ({
     dispatch(push("/"))
     showNotificationWithTimeoutAsync(dispatch)({
       message: "Successfully updated password",
-      level: "success"
+      level: "success",
     })
   } else {
     const err = res.error
@@ -306,8 +306,8 @@ export const updatingPasswordAsync = (dispatch: Dispatch) => async ({
         passwordUpdate.failure({
           newPasswordAgain: data["new_password2"],
           newPassword: data["new_password1"],
-          oldPassword: data["old_password"]
-        })
+          oldPassword: data["old_password"],
+        }),
       )
       return
       // tslint:ebale:no-unsafe-any
@@ -317,7 +317,7 @@ export const updatingPasswordAsync = (dispatch: Dispatch) => async ({
 }
 
 export const fetchingShoppingListAsync = (dispatch: Dispatch) => async (
-  teamID: TeamID
+  teamID: TeamID,
 ) => {
   const startDay = store.getState().shoppinglist.startDay
   const endDay = store.getState().shoppinglist.endDay
@@ -331,7 +331,7 @@ export const fetchingShoppingListAsync = (dispatch: Dispatch) => async (
 }
 
 export const postNewRecipeAsync = (dispatch: Dispatch) => async (
-  recipe: IRecipeBasic
+  recipe: IRecipeBasic,
 ) => {
   dispatch(createRecipe.request())
   const res = await api.createRecipe(recipe)
@@ -346,7 +346,7 @@ export const postNewRecipeAsync = (dispatch: Dispatch) => async (
       (err.response && {
         errorWithName: err.response.data.name != null,
         errorWithIngredients: err.response.data.ingredients != null,
-        errorWithSteps: err.response.data.steps != null
+        errorWithSteps: err.response.data.steps != null,
       }) ||
       {}
     // tslint:enable:no-unsafe-any
@@ -354,7 +354,7 @@ export const postNewRecipeAsync = (dispatch: Dispatch) => async (
     showNotificationWithTimeoutAsync(dispatch)({
       message: "problem creating new recipe",
       level: "danger",
-      delay: 5 * second
+      delay: 5 * second,
     })
   }
 }
@@ -371,7 +371,7 @@ export const fetchingRecentRecipesAsync = (dispatch: Dispatch) => async () => {
 }
 
 export const fetchingRecipeListAsync = (dispatch: Dispatch) => async (
-  teamID: TeamID
+  teamID: TeamID,
 ) => {
   dispatch(fetchRecipeList.request({ teamID }))
   const res = await api.getRecipeList(teamID)
@@ -389,7 +389,7 @@ interface IDeletingIngredientAsyncPayload {
 
 export async function deletingIngredientAsync(
   { recipeID, ingredientID }: IDeletingIngredientAsyncPayload,
-  dispatch: Dispatch
+  dispatch: Dispatch,
 ) {
   const res = await api.deleteIngredient(recipeID, ingredientID)
   if (isOk(res)) {
@@ -408,12 +408,12 @@ interface IUpdatingStepPayload {
 
 export const updatingStepAsync = async (
   { recipeID, stepID, ...data }: IUpdatingStepPayload,
-  dispatch: Dispatch
+  dispatch: Dispatch,
 ) => {
   const res = await api.updateStep(
     recipeID,
     stepID,
-    pickBy(data, x => x != null)
+    pickBy(data, x => x != null),
   )
   if (isOk(res)) {
     dispatch(
@@ -421,8 +421,8 @@ export const updatingStepAsync = async (
         recipeID,
         stepID,
         text: res.data.text,
-        position: res.data.position
-      })
+        position: res.data.position,
+      }),
     )
   } else {
     dispatch(updateStep.failure({ recipeID, stepID }))
@@ -435,7 +435,7 @@ interface IDeletingStepPayload {
 }
 export const deletingStepAsync = async (
   { recipeID, stepID }: IDeletingStepPayload,
-  dispatch: Dispatch
+  dispatch: Dispatch,
 ) => {
   const res = await api.deleteStep(recipeID, stepID)
   if (isOk(res)) {
@@ -448,7 +448,7 @@ export const deletingStepAsync = async (
 export const logUserInAsync = (dispatch: Dispatch) => async (
   email: string,
   password: string,
-  redirectUrl: string = ""
+  redirectUrl: string = "",
 ) => {
   dispatch(clearNotification())
   dispatch(login.request())
@@ -467,8 +467,8 @@ export const logUserInAsync = (dispatch: Dispatch) => async (
         login.failure({
           email: data["email"],
           password1: data["password1"],
-          nonFieldErrors: data["non_field_errors"]
-        })
+          nonFieldErrors: data["non_field_errors"],
+        }),
       )
       // tslint:enable:no-unsafe-any
       return
@@ -480,7 +480,7 @@ export const logUserInAsync = (dispatch: Dispatch) => async (
 export const socialLoginAsync = (dispatch: Dispatch) => async (
   service: SocialProvider,
   token: string,
-  redirectUrl: string = ""
+  redirectUrl: string = "",
 ) => {
   const res = await api.loginUserWithSocial(service, token)
 
@@ -496,8 +496,8 @@ export const socialLoginAsync = (dispatch: Dispatch) => async (
       dispatch(
         setErrorSocialLogin({
           emailSocial: data["email"],
-          nonFieldErrorsSocial: data["non_field_errors"]
-        })
+          nonFieldErrorsSocial: data["non_field_errors"],
+        }),
       )
       // tslint:enable:no-unsafe-any
     }
@@ -507,7 +507,7 @@ export const socialLoginAsync = (dispatch: Dispatch) => async (
 
 export const socialConnectAsync = (dispatch: Dispatch) => async (
   service: SocialProvider,
-  code: unknown
+  code: unknown,
 ) => {
   await api.connectSocial(service, code)
   dispatch(replace("/settings"))
@@ -516,7 +516,7 @@ export const socialConnectAsync = (dispatch: Dispatch) => async (
 export const signupAsync = (dispatch: Dispatch) => async (
   email: string,
   password1: string,
-  password2: string
+  password2: string,
 ) => {
   // TODO(sbdchd): refactor to use createActionAsync
   dispatch(setLoadingSignup(true))
@@ -540,8 +540,8 @@ export const signupAsync = (dispatch: Dispatch) => async (
           email: data["email"],
           password1: data["password1"],
           password2: data["password2"],
-          nonFieldErrors: data["non_field_errors"]
-        })
+          nonFieldErrors: data["non_field_errors"],
+        }),
       )
       // tslint:enable:no-unsafe-any
     }
@@ -560,7 +560,7 @@ export const resetAsync = (dispatch: Dispatch) => async (email: string) => {
     const message = res && res.data && res.data.detail
     showNotificationWithTimeoutAsync(dispatch)({
       message,
-      level: "success"
+      level: "success",
     })
   } else {
     const err = res.error
@@ -568,7 +568,7 @@ export const resetAsync = (dispatch: Dispatch) => async (email: string) => {
     showNotificationWithTimeoutAsync(dispatch)({
       message: "uh oh! problem resetting password",
       level: "danger",
-      sticky: true
+      sticky: true,
     })
     if (isbadRequest(err)) {
       // tslint:disable:no-unsafe-any
@@ -576,15 +576,15 @@ export const resetAsync = (dispatch: Dispatch) => async (email: string) => {
       dispatch(
         setErrorReset({
           email: data["email"],
-          nonFieldErrors: data["non_field_errors"]
-        })
+          nonFieldErrors: data["non_field_errors"],
+        }),
       )
       // tslint:enable:no-unsafe-any
     }
     showNotificationWithTimeoutAsync(dispatch)({
       message: "problem resetting password",
       level: "danger",
-      sticky: true
+      sticky: true,
     })
   }
 }
@@ -593,7 +593,7 @@ export const resetConfirmationAsync = (dispatch: Dispatch) => async (
   uid: string,
   token: string,
   newPassword1: string,
-  newPassword2: string
+  newPassword2: string,
 ) => {
   // TODO(sbdchd): refactor to use createActionAsync
   dispatch(setLoadingResetConfirmation(true))
@@ -604,14 +604,14 @@ export const resetConfirmationAsync = (dispatch: Dispatch) => async (
     uid,
     token,
     newPassword1,
-    newPassword2
+    newPassword2,
   )
   if (isOk(res)) {
     dispatch(setLoadingResetConfirmation(false))
     const message = res && res.data && res.data.detail
     showNotificationWithTimeoutAsync(dispatch)({
       message,
-      level: "success"
+      level: "success",
     })
     dispatch(push("/login"))
   } else {
@@ -620,7 +620,7 @@ export const resetConfirmationAsync = (dispatch: Dispatch) => async (
     showNotificationWithTimeoutAsync(dispatch)({
       message: "uh oh! problem resetting password",
       level: "danger",
-      sticky: true
+      sticky: true,
     })
     if (isbadRequest(err)) {
       // tslint:disable:no-unsafe-any
@@ -639,8 +639,8 @@ export const resetConfirmationAsync = (dispatch: Dispatch) => async (
         setErrorResetConfirmation({
           newPassword1: data["new_password1"],
           newPassword2: data["new_password2"],
-          nonFieldErrors
-        })
+          nonFieldErrors,
+        }),
       )
       // tslint:enable:no-unsafe-any
     }
@@ -648,7 +648,7 @@ export const resetConfirmationAsync = (dispatch: Dispatch) => async (
 }
 
 export const fetchingTeamAsync = (dispatch: Dispatch) => async (
-  id: ITeam["id"]
+  id: ITeam["id"],
 ) => {
   dispatch(fetchTeam.request(id))
   const res = await api.getTeam(id)
@@ -665,7 +665,7 @@ export const fetchingTeamAsync = (dispatch: Dispatch) => async (
 }
 
 export const fetchingTeamMembersAsync = (dispatch: Dispatch) => async (
-  id: ITeam["id"]
+  id: ITeam["id"],
 ) => {
   dispatch(fetchTeamMembers.request(id))
   const res = await api.getTeamMembers(id)
@@ -677,7 +677,7 @@ export const fetchingTeamMembersAsync = (dispatch: Dispatch) => async (
 }
 
 export const fetchingTeamRecipesAsync = (dispatch: Dispatch) => async (
-  id: ITeam["id"]
+  id: ITeam["id"],
 ) => {
   dispatch(fetchTeamRecipes.request(id))
   const res = await api.getTeamRecipes(id)
@@ -700,7 +700,7 @@ const attemptedDeleteLastAdmin = (res: AxiosResponse) =>
 export const settingUserTeamLevelAsync = (dispatch: Dispatch) => async (
   teamID: ITeam["id"],
   membershipID: IMember["id"],
-  level: IMember["level"]
+  level: IMember["level"],
 ) => {
   // TODO(sbdchd): refactor to use createActionAsync
   dispatch(setUpdatingUserTeamLevel({ id: teamID, updating: true }))
@@ -716,7 +716,7 @@ export const settingUserTeamLevelAsync = (dispatch: Dispatch) => async (
       showNotificationWithTimeoutAsync(dispatch)({
         message,
         level: "danger",
-        delay: 3 * second
+        delay: 3 * second,
       })
       // tslint:enable:no-unsafe-any
     }
@@ -727,7 +727,7 @@ export const settingUserTeamLevelAsync = (dispatch: Dispatch) => async (
 export const deletingMembershipAsync = (dispatch: Dispatch) => async (
   teamID: ITeam["id"],
   id: IMember["id"],
-  leaving: boolean = false
+  leaving: boolean = false,
 ) => {
   dispatch(setDeletingMembership({ teamID, membershipID: id, val: true }))
   const res = await api.deleteTeamMember(teamID, id)
@@ -741,7 +741,7 @@ export const deletingMembershipAsync = (dispatch: Dispatch) => async (
       showNotificationWithTimeoutAsync(dispatch)({
         message,
         level: "success",
-        delay: 3 * second
+        delay: 3 * second,
       })
       dispatch(deleteTeam(teamID))
     }
@@ -752,14 +752,14 @@ export const deletingMembershipAsync = (dispatch: Dispatch) => async (
       // tslint:disable-next-line:no-unsafe-any
       message,
       level: "danger",
-      delay: 3 * second
+      delay: 3 * second,
     })
     dispatch(setDeletingMembership({ teamID, membershipID: id, val: false }))
   }
 }
 
 export const deletingTeamAsync = (dispatch: Dispatch) => async (
-  teamID: ITeam["id"]
+  teamID: ITeam["id"],
 ) => {
   const res = await api.deleteTeam(teamID)
   if (isOk(res)) {
@@ -769,7 +769,7 @@ export const deletingTeamAsync = (dispatch: Dispatch) => async (
     showNotificationWithTimeoutAsync(dispatch)({
       message: `Team deleted (${teamName})`,
       level: "success",
-      delay: 3 * second
+      delay: 3 * second,
     })
     dispatch(deleteTeam(teamID))
   } else {
@@ -793,7 +793,7 @@ export const deletingTeamAsync = (dispatch: Dispatch) => async (
     showNotificationWithTimeoutAsync(dispatch)({
       message,
       level: "danger",
-      delay: 3 * second
+      delay: 3 * second,
     })
   }
 }
@@ -801,7 +801,7 @@ export const deletingTeamAsync = (dispatch: Dispatch) => async (
 export const sendingTeamInvitesAsync = (dispatch: Dispatch) => async (
   teamID: ITeam["id"],
   emails: string[],
-  level: IMember["level"]
+  level: IMember["level"],
 ) => {
   dispatch(setSendingTeamInvites({ teamID, val: true }))
   const res = await api.sendTeamInvites(teamID, emails, level)
@@ -809,7 +809,7 @@ export const sendingTeamInvitesAsync = (dispatch: Dispatch) => async (
     showNotificationWithTimeoutAsync(dispatch)({
       message: "invites sent!",
       level: "success",
-      delay: 3 * second
+      delay: 3 * second,
     })
     dispatch(setSendingTeamInvites({ teamID, val: false }))
     return Ok(undefined)
@@ -817,7 +817,7 @@ export const sendingTeamInvitesAsync = (dispatch: Dispatch) => async (
   showNotificationWithTimeoutAsync(dispatch)({
     message: "error sending team invite",
     level: "danger",
-    delay: 3 * second
+    delay: 3 * second,
   })
   dispatch(setSendingTeamInvites({ teamID, val: false }))
   return Err(undefined)
@@ -836,7 +836,7 @@ export const fetchingTeamsAsync = (dispatch: Dispatch) => async () => {
 export const creatingTeamAsync = (dispatch: Dispatch) => async (
   name: ITeam["name"],
   emails: string[],
-  level: IMember["level"]
+  level: IMember["level"],
 ) => {
   // TODO(sbdchd): use createAsyncActions
   dispatch(setCreatingTeam(true))
@@ -852,14 +852,14 @@ export const creatingTeamAsync = (dispatch: Dispatch) => async (
 
 export const updatingTeamAsync = (dispatch: Dispatch) => async (
   teamId: ITeam["id"],
-  teamKVs: unknown
+  teamKVs: unknown,
 ) => {
   const res = await api.updateTeam(teamId, teamKVs)
   if (isOk(res)) {
     showNotificationWithTimeoutAsync(dispatch)({
       message: "Team updated",
       level: "success",
-      delay: 3 * second
+      delay: 3 * second,
     })
     dispatch(updateTeamById({ id: res.data.id, teamKeys: res.data }))
   } else {
@@ -872,7 +872,7 @@ export const updatingTeamAsync = (dispatch: Dispatch) => async (
     showNotificationWithTimeoutAsync(dispatch)({
       message,
       level: "danger",
-      delay: 3 * second
+      delay: 3 * second,
     })
   }
 }
@@ -880,7 +880,7 @@ export const updatingTeamAsync = (dispatch: Dispatch) => async (
 export const moveRecipeToAsync = (dispatch: Dispatch) => async (
   recipeId: IRecipe["id"],
   ownerId: IUser["id"],
-  type: IRecipe["owner"]["type"]
+  type: IRecipe["owner"]["type"],
 ) => {
   const res = await api.moveRecipe(recipeId, ownerId, type)
   if (isOk(res)) {
@@ -893,7 +893,7 @@ export const moveRecipeToAsync = (dispatch: Dispatch) => async (
 export const copyRecipeToAsync = (dispatch: Dispatch) => async (
   recipeId: IRecipe["id"],
   ownerId: IUser["id"],
-  type: IRecipe["owner"]["type"]
+  type: IRecipe["owner"]["type"],
 ) => {
   // TODO(sbdchd): refactor to use createActionAsync
   dispatch(setCopyingTeam(true))
@@ -908,7 +908,7 @@ export const copyRecipeToAsync = (dispatch: Dispatch) => async (
     showNotificationWithTimeoutAsync(dispatch)({
       message: `Problem copying recipe: ${res.error}`,
       level: "danger",
-      sticky: true
+      sticky: true,
     })
   }
 }
@@ -924,7 +924,7 @@ export const fetchingInvitesAsync = (dispatch: Dispatch) => async () => {
 }
 
 export const acceptingInviteAsync = (dispatch: Dispatch) => async (
-  id: IInvite["id"]
+  id: IInvite["id"],
 ) => {
   dispatch(acceptInvite.request(id))
   const res = await api.acceptInvite(id)
@@ -935,7 +935,7 @@ export const acceptingInviteAsync = (dispatch: Dispatch) => async (
   }
 }
 export const decliningInviteAsync = (dispatch: Dispatch) => async (
-  id: IInvite["id"]
+  id: IInvite["id"],
 ) => {
   dispatch(declineInvite.request(id))
   const res = await api.declineInvite(id)
@@ -962,13 +962,13 @@ export const deleteUserAccountAsync = (dispatch: Dispatch) => async () => {
     ) {
       showNotificationWithTimeoutAsync(dispatch)({
         message: error.response.data.detail,
-        level: "danger"
+        level: "danger",
       })
       // tslint:enable:no-unsafe-any
     } else {
       showNotificationWithTimeoutAsync(dispatch)({
         message: "failed to delete account",
-        level: "danger"
+        level: "danger",
       })
     }
   }
@@ -980,20 +980,20 @@ export const reportBadMergeAsync = (dispatch: Dispatch) => async () => {
     showNotificationWithTimeoutAsync(dispatch)({
       message: "reported bad merge",
       level: "success",
-      delay: 3 * second
+      delay: 3 * second,
     })
   } else {
     showNotificationWithTimeoutAsync(dispatch)({
       message: "error reporting bad merge",
       level: "danger",
-      delay: 3 * second
+      delay: 3 * second,
     })
   }
 }
 
 export const fetchCalendarAsync = (dispatch: Dispatch) => async (
   teamID: TeamID,
-  currentDayTs: number
+  currentDayTs: number,
 ) => {
   dispatch(fetchCalendarRecipes.request())
   // we fetch current month plus and minus 1 week
@@ -1006,8 +1006,8 @@ export const fetchCalendarAsync = (dispatch: Dispatch) => async (
         scheduledRecipes: res.right.scheduledRecipes,
         start,
         end,
-        settings: res.right.settings
-      })
+        settings: res.right.settings,
+      }),
     )
   } else {
     dispatch(fetchCalendarRecipes.failure())
@@ -1018,19 +1018,19 @@ function toCalRecipe(
   recipe: IRecipe,
   tempId: ICalRecipe["id"],
   on: ICalRecipe["on"],
-  count: ICalRecipe["count"]
+  count: ICalRecipe["count"],
 ): ICalRecipe {
   return {
     id: tempId,
     created: String(new Date()),
     recipe: {
       id: recipe.id,
-      name: recipe.name
+      name: recipe.name,
     },
     on: toISODateString(on),
     count,
     user: recipe.owner.type === "user" ? recipe.owner.id : null,
-    team: recipe.owner.type === "team" ? recipe.owner.id : null
+    team: recipe.owner.type === "team" ? recipe.owner.id : null,
   }
 }
 
@@ -1045,7 +1045,13 @@ export interface IAddingScheduledRecipeProps {
 export const addingScheduledRecipeAsync = async (
   dispatch: Dispatch,
   getState: () => IState,
-  { recipeID, teamID, on, count, showNotification }: IAddingScheduledRecipeProps
+  {
+    recipeID,
+    teamID,
+    on,
+    count,
+    showNotification,
+  }: IAddingScheduledRecipeProps,
 ) => {
   // TODO(sbdchd): we should split this into one function for creating a new
   // scheduled recipe and one function for moving a scheduled recipe.
@@ -1063,8 +1069,8 @@ export const addingScheduledRecipeAsync = async (
 
   dispatch(
     setCalendarRecipe(
-      toCalRecipe(recipe.data, tempId, toISODateString(on), count)
-    )
+      toCalRecipe(recipe.data, tempId, toISODateString(on), count),
+    ),
   )
   const res = await api.scheduleRecipe(recipeID, teamID, on, count)
 
@@ -1078,7 +1084,7 @@ export const addingScheduledRecipeAsync = async (
       showNotificationWithTimeoutAsync(dispatch)({
         message,
         level: "success",
-        delay: 3 * second
+        delay: 3 * second,
       })
     }
   } else {
@@ -1086,14 +1092,14 @@ export const addingScheduledRecipeAsync = async (
     showNotificationWithTimeoutAsync(dispatch)({
       message: "error scheduling recipe",
       level: "danger",
-      delay: 3 * second
+      delay: 3 * second,
     })
     dispatch(setSchedulingRecipe({ recipeID, scheduling: false }))
   }
 }
 export const deletingScheduledRecipeAsync = (dispatch: Dispatch) => async (
   id: ICalRecipe["id"],
-  teamID: TeamID
+  teamID: TeamID,
 ) => {
   // HACK(sbdchd): we should have these in byId object / Map
   // TODO(sbdchd): we can just have a marker for deleted recipes and just remove
@@ -1119,7 +1125,7 @@ export interface IMoveScheduledRecipeProps {
 export const moveScheduledRecipe = async (
   dispatch: Dispatch,
   getState: () => IState,
-  { id, teamID, to }: IMoveScheduledRecipeProps
+  { id, teamID, to }: IMoveScheduledRecipeProps,
 ) => {
   // HACK(sbdchd): With an endpoint we can eliminate this
   const state = getState()
@@ -1139,7 +1145,7 @@ export const moveScheduledRecipe = async (
       recipeID: from.recipe.id,
       teamID,
       on: to,
-      count: from.count
+      count: from.count,
     })
   }
   const existing = getExistingRecipe({ state: state.calendar, on: to, from })
@@ -1153,7 +1159,7 @@ export const moveScheduledRecipe = async (
     const resp = await api.deleteScheduledRecipe(from.id, teamID)
     if (isOk(resp)) {
       api.updateScheduleRecipe(existing.id, teamID, {
-        count: existing.count + from.count
+        count: existing.count + from.count,
       })
     } else {
       dispatch(moveCalendarRecipe({ id, to: toISODateString(from.on) }))
@@ -1161,7 +1167,7 @@ export const moveScheduledRecipe = async (
   }
 
   const res = await api.updateScheduleRecipe(id, teamID, {
-    on: toISODateString(to)
+    on: toISODateString(to),
   })
   if (isErr(res)) {
     // on error we want to move it back to the old position
@@ -1172,7 +1178,7 @@ export const moveScheduledRecipe = async (
 export const updatingScheduledRecipeAsync = (dispatch: Dispatch) => async (
   id: ICalRecipe["id"],
   teamID: TeamID,
-  count: ICalRecipe["count"]
+  count: ICalRecipe["count"],
 ): Promise<Result<undefined, undefined>> => {
   if (count <= 0) {
     return deletingScheduledRecipeAsync(dispatch)(id, teamID)

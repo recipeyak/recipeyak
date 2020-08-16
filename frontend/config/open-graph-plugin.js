@@ -45,10 +45,10 @@ class OpenGraphPlugin {
           const filesToInclude = this.options.map(format).join("\n")
           htmlPluginData.html = htmlPluginData.html.replace(
             "</head>",
-            filesToInclude + "\n</head>"
+            filesToInclude + "\n</head>",
           )
           callbk(null, htmlPluginData)
-        }
+        },
       )
       return callback()
     })

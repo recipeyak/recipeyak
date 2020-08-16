@@ -2,7 +2,7 @@ import {
   createAsyncAction,
   ActionType,
   getType,
-  createStandardAction
+  createStandardAction,
 } from "typesafe-actions"
 import { WebData, Success, Failure, HttpErrorKind, toLoading } from "@/webdata"
 import { startOfToday, addWeeks } from "date-fns"
@@ -11,7 +11,7 @@ import { IGetShoppingListResponse } from "@/api"
 export const fetchShoppingList = createAsyncAction(
   "FETCH_SHOPPING_LIST_START",
   "FETCH_SHOPPING_LIST_SUCCESS",
-  "FETCH_SHOPPING_LIST_FAILURE"
+  "FETCH_SHOPPING_LIST_FAILURE",
 )<void, IGetShoppingListResponse, void>()
 
 export const setSelectingStart = createStandardAction("SET_SELECTING_START")<
@@ -33,12 +33,12 @@ export interface IShoppingListState {
 const initialState: IShoppingListState = {
   shoppinglist: undefined,
   startDay: startOfToday(),
-  endDay: addWeeks(startOfToday(), 1)
+  endDay: addWeeks(startOfToday(), 1),
 }
 
 const shoppinglist = (
   state: IShoppingListState = initialState,
-  action: ShoppingListActions
+  action: ShoppingListActions,
 ): IShoppingListState => {
   switch (action.type) {
     case getType(fetchShoppingList.success):

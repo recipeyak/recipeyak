@@ -19,12 +19,12 @@ const mapStateToProps = (state: IState, props: RouteProps) => {
     uid,
     token,
     loading: state.auth.loadingResetConfirmation,
-    error: state.auth.errorResetConfirmation
+    error: state.auth.errorResetConfirmation,
   }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  reset: reset(dispatch)
+  reset: reset(dispatch),
 })
 
 interface IPasswordResetConfirmationProps {
@@ -32,7 +32,7 @@ interface IPasswordResetConfirmationProps {
     uid: string,
     token: string,
     newPassword1: string,
-    newPassword2: string
+    newPassword2: string,
   ) => Promise<void>
   readonly uid: string
   readonly token: string
@@ -51,13 +51,13 @@ class PasswordResetConfirmation extends React.Component<
 > {
   state = {
     newPassword1: "",
-    newPassword2: ""
+    newPassword2: "",
   }
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     /* eslint-disable @typescript-eslint/consistent-type-assertions */
     this.setState(({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     } as unknown) as IPasswordResetConfirmationState)
     /* eslint-enable @typescript-eslint/consistent-type-assertions */
   }
@@ -68,11 +68,11 @@ class PasswordResetConfirmation extends React.Component<
       this.props.uid,
       this.props.token,
       this.state.newPassword1,
-      this.state.newPassword2
+      this.state.newPassword2,
     )
     this.setState({
       newPassword1: "",
-      newPassword2: ""
+      newPassword2: "",
     })
   }
 
@@ -139,5 +139,5 @@ class PasswordResetConfirmation extends React.Component<
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(PasswordResetConfirmation)

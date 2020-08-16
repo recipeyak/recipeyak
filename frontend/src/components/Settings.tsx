@@ -156,7 +156,7 @@ export default class Settings extends React.Component<
 > {
   state: ISettingsState = {
     email: this.props.email,
-    editing: false
+    editing: false,
   }
 
   componentWillReceiveProps = (nextProps: ISettingsProps) => {
@@ -170,7 +170,7 @@ export default class Settings extends React.Component<
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     /* eslint-disable @typescript-eslint/consistent-type-assertions */
     this.setState(({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     } as unknown) as ISettingsState)
     /* eslint-enable @typescript-eslint/consistent-type-assertions */
   }

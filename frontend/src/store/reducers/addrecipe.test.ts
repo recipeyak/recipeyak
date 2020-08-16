@@ -12,7 +12,7 @@ import addrecipe, {
   addAddRecipeFormStep,
   removeAddRecipeFormStep,
   updateAddRecipeFormStep,
-  clearAddRecipeForm
+  clearAddRecipeForm,
 } from "@/store/reducers/addrecipe"
 import { baseIngredient, baseStep } from "@/store/reducers/recipes.test"
 import { IIngredientBasic } from "@/store/reducers/recipes"
@@ -21,113 +21,113 @@ describe("addrecipe", () => {
   it("sets addrecipe form name", () => {
     const beforeState = {
       ...initialState,
-      name: ""
+      name: "",
     }
 
     const name = "example name"
 
     const afterState: IAddRecipeState = {
       ...initialState,
-      name
+      name,
     }
 
     expect(addrecipe(beforeState, setAddRecipeFormName(name))).toEqual(
-      afterState
+      afterState,
     )
   })
 
   it("set add recipe form author", () => {
     const beforeState = {
       ...initialState,
-      author: ""
+      author: "",
     }
 
     const author = "author"
 
     const afterState: IAddRecipeState = {
       ...initialState,
-      author
+      author,
     }
 
     expect(addrecipe(beforeState, setAddRecipeFormAuthor(author))).toEqual(
-      afterState
+      afterState,
     )
   })
 
   it("set add recipe form time", () => {
     const beforeState = {
       ...initialState,
-      time: ""
+      time: "",
     }
 
     const time = "time"
 
     const afterState: IAddRecipeState = {
       ...initialState,
-      time
+      time,
     }
 
     expect(addrecipe(beforeState, setAddRecipeFormTime(time))).toEqual(
-      afterState
+      afterState,
     )
   })
 
   it("set add recipe form source", () => {
     const beforeState = {
       ...initialState,
-      source: ""
+      source: "",
     }
 
     const source = "source"
 
     const afterState: IAddRecipeState = {
       ...initialState,
-      source
+      source,
     }
 
     expect(addrecipe(beforeState, setAddRecipeFormSource(source))).toEqual(
-      afterState
+      afterState,
     )
   })
 
   it("set add recipe form servings", () => {
     const beforeState = {
       ...initialState,
-      servings: ""
+      servings: "",
     }
 
     const servings = "servings"
 
     const afterState: IAddRecipeState = {
       ...initialState,
-      servings
+      servings,
     }
 
     expect(addrecipe(beforeState, setAddRecipeFormServings(servings))).toEqual(
-      afterState
+      afterState,
     )
   })
 
   it("add add recipe form ingredient", () => {
     const beforeState = {
       ...initialState,
-      ingredients: []
+      ingredients: [],
     }
 
     const ingredient = {
       ...baseIngredient,
       quantity: "1 lbs",
       name: "tomato",
-      description: "sliced"
+      description: "sliced",
     }
 
     const afterState: IAddRecipeState = {
       ...initialState,
-      ingredients: [ingredient]
+      ingredients: [ingredient],
     }
 
     expect(
-      addrecipe(beforeState, addAddRecipeFormIngredient(ingredient))
+      addrecipe(beforeState, addAddRecipeFormIngredient(ingredient)),
     ).toEqual(afterState)
   })
 
@@ -136,23 +136,23 @@ describe("addrecipe", () => {
       ...baseIngredient,
       quantity: "1 lbs",
       name: "tomato",
-      description: "sliced"
+      description: "sliced",
     }
 
     const beforeState = {
       ...initialState,
-      ingredients: [ingredient]
+      ingredients: [ingredient],
     }
 
     const afterState: IAddRecipeState = {
       ...initialState,
-      ingredients: []
+      ingredients: [],
     }
 
     const index = 0
 
     expect(
-      addrecipe(beforeState, removeAddRecipeFormIngredient(index))
+      addrecipe(beforeState, removeAddRecipeFormIngredient(index)),
     ).toEqual(afterState)
   })
 
@@ -161,24 +161,24 @@ describe("addrecipe", () => {
       ...baseIngredient,
       quantity: "1 lbs",
       name: "tomato",
-      description: "sliced"
+      description: "sliced",
     }
 
     const beforeState = {
       ...initialState,
-      ingredients: [ingredient]
+      ingredients: [ingredient],
     }
 
     const newIngredient: IIngredientBasic = {
       quantity: "12 lbs",
       name: "tomato",
       description: "sliced",
-      optional: false
+      optional: false,
     }
 
     const afterState: IAddRecipeState = {
       ...initialState,
-      ingredients: [newIngredient]
+      ingredients: [newIngredient],
     }
 
     const index = 0
@@ -186,28 +186,28 @@ describe("addrecipe", () => {
     expect(
       addrecipe(
         beforeState,
-        updateAddRecipeFormIngredient({ index, ingredient: newIngredient })
-      )
+        updateAddRecipeFormIngredient({ index, ingredient: newIngredient }),
+      ),
     ).toEqual(afterState)
   })
 
   it("add add recipe form step", () => {
     const beforeState = {
       ...initialState,
-      steps: []
+      steps: [],
     }
 
     const step = {
-      text: "cook the food"
+      text: "cook the food",
     }
 
     const afterState = {
       ...initialState,
-      steps: [step]
+      steps: [step],
     }
 
     expect(addrecipe(beforeState, addAddRecipeFormStep(step))).toEqual(
-      afterState
+      afterState,
     )
   })
 
@@ -216,23 +216,23 @@ describe("addrecipe", () => {
       ...baseStep,
       quantity: "1 lbs",
       name: "tomato",
-      description: "sliced"
+      description: "sliced",
     }
 
     const beforeState = {
       ...initialState,
-      steps: [step]
+      steps: [step],
     }
 
     const afterState = {
       ...initialState,
-      steps: []
+      steps: [],
     }
 
     const index = 0
 
     expect(addrecipe(beforeState, removeAddRecipeFormStep(index))).toEqual(
-      afterState
+      afterState,
     )
   })
 
@@ -241,30 +241,30 @@ describe("addrecipe", () => {
       ...baseStep,
       quantity: "1 lbs",
       name: "tomato",
-      description: "sliced"
+      description: "sliced",
     }
 
     const beforeState = {
       ...initialState,
-      steps: [step]
+      steps: [step],
     }
 
     const newStep = {
       ...baseStep,
       quantity: "12 lbs",
       name: "tomato",
-      description: "sliced"
+      description: "sliced",
     }
 
     const afterState = {
       ...initialState,
-      steps: [newStep]
+      steps: [newStep],
     }
 
     const index = 0
 
     expect(
-      addrecipe(beforeState, updateAddRecipeFormStep({ index, step: newStep }))
+      addrecipe(beforeState, updateAddRecipeFormStep({ index, step: newStep })),
     ).toEqual(afterState)
   })
 
@@ -273,13 +273,13 @@ describe("addrecipe", () => {
       ...baseStep,
       quantity: "1 lbs",
       name: "tomato",
-      description: "sliced"
+      description: "sliced",
     }
 
     const beforeState = {
       ...initialState,
       steps: [step],
-      name: "tesitng"
+      name: "tesitng",
     }
 
     const afterState = initialState

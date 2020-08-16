@@ -12,7 +12,7 @@ import {
   DropdownItemLink,
   DropdownItemButton,
   DropdownMenu,
-  useDropdown
+  useDropdown,
 } from "@/components/Dropdown"
 
 function useScheduleUrl(recipeId: number) {
@@ -44,7 +44,7 @@ interface IUseDuplicateRecipe {
 
 function useDuplicateRecipe({
   recipeId,
-  onComplete
+  onComplete,
 }: IUseDuplicateRecipe): [boolean, () => void] {
   const dispatch = useDispatch()
 
@@ -68,14 +68,14 @@ export function Dropdown({ recipeId }: IDropdownProps) {
 
   const [creatingDuplicate, onDuplicate] = useDuplicateRecipe({
     recipeId,
-    onComplete: close
+    onComplete: close,
   })
 
   const handleCopyIngredients = React.useCallback(() => {
     copyToClipboard(ingredients)
     showNotificationWithTimeoutAsync(dispatch)({
       message: "Copied ingredients to clipboard!",
-      level: "info"
+      level: "info",
     })
     close()
   }, [close, dispatch, ingredients])

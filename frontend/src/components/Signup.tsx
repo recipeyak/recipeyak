@@ -25,7 +25,7 @@ class Signup extends React.Component<ISignupProps, ISignupState> {
   state = {
     email: "",
     password1: "",
-    password2: ""
+    password2: "",
   }
 
   componentWillMount = () => {
@@ -35,7 +35,7 @@ class Signup extends React.Component<ISignupProps, ISignupState> {
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     /* eslint-disable @typescript-eslint/consistent-type-assertions */
     this.setState(({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     } as unknown) as ISignupState)
     /* eslint-enable @typescript-eslint/consistent-type-assertions */
   }
@@ -45,7 +45,7 @@ class Signup extends React.Component<ISignupProps, ISignupState> {
     this.props.signup(
       this.state.email,
       this.state.password1,
-      this.state.password2
+      this.state.password2,
     )
   }
 

@@ -10,7 +10,7 @@ function AddIngredientSubForm({
   loading,
   onCancel,
   autoFocus,
-  onChangeSection
+  onChangeSection,
 }: {
   readonly onCancel: () => void
   readonly recipeId: number
@@ -59,8 +59,8 @@ function AddIngredientSubForm({
     dispatch(
       addIngredientToRecipe.request({
         recipeID: recipeId,
-        ingredient: { quantity, name, description }
-      })
+        ingredient: { quantity, name, description },
+      }),
     )
 
   return (
@@ -83,7 +83,7 @@ export default function AddIngredient({
   recipeId,
   addingIngredient,
   onCancel,
-  autoFocus
+  autoFocus,
 }: {
   readonly onCancel: () => void
   readonly recipeId: number

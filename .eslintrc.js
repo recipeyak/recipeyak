@@ -5,13 +5,13 @@ module.exports = {
     sourceType: "module",
     project: "./tsconfig.json",
     ecmaFeatures: {
-      jsx: true
-    }
+      jsx: true,
+    },
   },
   plugins: ["html", "react", "react-hooks", "@typescript-eslint", "import"],
   extends: ["prettier"],
   env: {
-    browser: true
+    browser: true,
   },
   rules: {
     "react-hooks/rules-of-hooks": "error",
@@ -25,7 +25,7 @@ module.exports = {
       "name",
       "length",
       "origin",
-      "event"
+      "event",
     ],
     "no-restricted-imports": [
       "error",
@@ -34,28 +34,28 @@ module.exports = {
           {
             name: "redux",
             importNames: ["Dispatch", "useDispatch"],
-            message: "Please import 'Dispatch' from '@/store/thunks' instead."
+            message: "Please import 'Dispatch' from '@/store/thunks' instead.",
           },
           {
             name: "styled-components",
             message:
-              "Please import from '@/theme' for type safe versions of 'styled-components' instead."
+              "Please import from '@/theme' for type safe versions of 'styled-components' instead.",
           },
           {
             name: "typesafe-actions",
             importNames: ["action"],
             message:
-              "Please use 'createStandardAction' or 'createAsyncAction' instead as they allow for easy discrimination with 'getType()'. see: https://github.com/piotrwitek/typesafe-actions#action"
-          }
-        ]
-      }
+              "Please use 'createStandardAction' or 'createAsyncAction' instead as they allow for easy discrimination with 'getType()'. see: https://github.com/piotrwitek/typesafe-actions#action",
+          },
+        ],
+      },
     ],
     "react/self-closing-comp": [
       "error",
       {
         component: true,
-        html: true
-      }
+        html: true,
+      },
     ],
     "no-unneeded-ternary": ["error", { defaultAssignment: false }],
     "@typescript-eslint/no-non-null-assertion": "error",
@@ -70,11 +70,11 @@ module.exports = {
     "@typescript-eslint/consistent-type-assertions": [
       "error",
       {
-        assertionStyle: "never"
-      }
+        assertionStyle: "never",
+      },
     ],
     "react/jsx-key": ["error", { checkFragmentShorthand: true }],
     "react/no-danger": "error",
-    eqeqeq: ["error", "smart"]
-  }
+    eqeqeq: ["error", "smart"],
+  },
 }

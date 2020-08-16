@@ -30,14 +30,14 @@ if (env.stringified["process.env"].NODE_ENV !== '"production"') {
 
 const openGraphConfig = {
   title: "RecipeYak",
-  type: "Website"
+  type: "Website",
 }
 
 const faviconConfig = {
   faviconPath: paths.appSrc + "/static/images/logo/recipeyak-logo.svg",
   appName: "RecipeYak",
   themeColor: "#ff7247",
-  backgroundColor: "#fff"
+  backgroundColor: "#fff",
 }
 
 module.exports = {
@@ -46,48 +46,48 @@ module.exports = {
   bail: true,
   devtool: "source-map",
   performance: {
-    hints: false
+    hints: false,
   },
   optimization: {
     splitChunks: {
-      chunks: "all"
+      chunks: "all",
     },
     minimizer: [
       new TerserPlugin({
         terserOptions: {
           compress: {
             comparisons: false,
-            inline: 2 // inline functions with arguments
+            inline: 2, // inline functions with arguments
           },
           output: {
-            ascii_only: true
-          }
+            ascii_only: true,
+          },
         },
         parallel: true,
         cache: true,
-        sourceMap: true
+        sourceMap: true,
       }),
       new OptimizeCSSAssetsPlugin({
         cssProcessorOptions: {
           inline: false,
-          annotation: true
-        }
-      })
-    ]
+          annotation: true,
+        },
+      }),
+    ],
   },
   entry: [paths.appIndexTsx],
   output: {
     path: paths.appBuild,
     filename: "static/js/[name].[contenthash:8].js",
     chunkFilename: "static/js/[name].[contenthash:8].chunk.js",
-    publicPath
+    publicPath,
   },
   resolve: {
     modules: ["node_modules", paths.appNodeModules, paths.appSrc],
     extensions: [".js", ".json", ".jsx", ".ts", ".tsx"],
     alias: {
-      "@": paths.appSrc
-    }
+      "@": paths.appSrc,
+    },
   },
 
   module: {
@@ -110,13 +110,13 @@ module.exports = {
           /\.json$/,
           /\.svg$/,
           /\.png$/,
-          /\.jpg$/
+          /\.jpg$/,
         ],
         loader: "url-loader",
         query: {
           limit: 10000,
-          name: "static/media/[name].[hash:8].[ext]"
-        }
+          name: "static/media/[name].[hash:8].[ext]",
+        },
       },
       {
         test: /\.(js|jsx)$/,
@@ -127,9 +127,9 @@ module.exports = {
             // This is a feature of `babel-loader` for webpack (not Babel itself).
             // It enables caching results in ./node_modules/.cache/babel-loader/
             // directory for faster rebuilds.
-            cacheDirectory: true
-          }
-        }
+            cacheDirectory: true,
+          },
+        },
       },
       {
         test: /\.(ts|tsx)$/,
@@ -139,10 +139,10 @@ module.exports = {
           {
             loader: "ts-loader",
             options: {
-              transpileOnly: true
-            }
-          }
-        ]
+              transpileOnly: true,
+            },
+          },
+        ],
       },
       {
         test: /\.css$/,
@@ -151,8 +151,8 @@ module.exports = {
           {
             loader: "css-loader",
             options: {
-              importLoaders: 1
-            }
+              importLoaders: 1,
+            },
           },
           {
             loader: "postcss-loader",
@@ -163,14 +163,14 @@ module.exports = {
                     ">1%",
                     "last 4 versions",
                     "Firefox ESR",
-                    "not ie < 9" // React doesn't support IE8 anyway
+                    "not ie < 9", // React doesn't support IE8 anyway
                   ],
-                  flexbox: "no-2009"
-                })
-              ]
-            }
-          }
-        ]
+                  flexbox: "no-2009",
+                }),
+              ],
+            },
+          },
+        ],
       },
       {
         test: /\.(scss|sass)$/,
@@ -179,24 +179,24 @@ module.exports = {
           {
             loader: "css-loader",
             options: {
-              importLoaders: 1
-            }
+              importLoaders: 1,
+            },
           },
-          "sass-loader"
-        ]
+          "sass-loader",
+        ],
       },
       {
         test: /\.(svg|png|jpg)$/,
         use: {
           loader: "file-loader",
           query: {
-            name: "static/media/[name].[hash:8].[ext]"
-          }
-        }
-      }
+            name: "static/media/[name].[hash:8].[ext]",
+          },
+        },
+      },
       // ** STOP ** Are you adding a new loader?
       // Remember to add the new extension(s) to the "url" loader exclusion list.
-    ]
+    ],
   },
 
   plugins: [
@@ -213,18 +213,18 @@ module.exports = {
         keepClosingSlash: true,
         minifyJS: true,
         minifyCSS: true,
-        minifyURLs: true
-      }
+        minifyURLs: true,
+      },
     }),
     new OpenGraphPlugin([
       {
         property: "og:title",
-        content: openGraphConfig.title
+        content: openGraphConfig.title,
       },
       {
         property: "og:type",
-        content: openGraphConfig.type
-      }
+        content: openGraphConfig.type,
+      },
     ]),
     new WebappWebpackPlugin({
       logo: faviconConfig.faviconPath,
@@ -241,27 +241,27 @@ module.exports = {
           appleStartup: false,
           firefox: false,
           coast: false,
-          yandex: false
-        }
-      }
+          yandex: false,
+        },
+      },
     }),
     new webpack.DefinePlugin(env.stringified),
     new MiniCssExtractPlugin({
       filename: "static/css/[name].[contenthash:8].css",
-      chunkFilename: "static/css/[name].[contenthash:8].chunk.css"
+      chunkFilename: "static/css/[name].[contenthash:8].chunk.css",
     }),
     // Generate a manifest file which contains a mapping of all asset filenames
     // to their corresponding output file so that tools can pick it up without
     // having to parse `index.html`.
     new ManifestPlugin({
       // @ts-ignore
-      fileName: "asset-manifest.json"
+      fileName: "asset-manifest.json",
     }),
     new BundleAnalyzerPlugin({
       analyzerMode: "static",
       generateStatsFile: true,
       openAnalyzer: false,
-      statsFilename: "webpack-stats.json"
-    })
-  ]
+      statsFilename: "webpack-stats.json",
+    }),
+  ],
 }

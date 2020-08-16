@@ -9,7 +9,7 @@ describe("<IngredientView/>", () => {
       "3 tablespoons",
       "1 teaspoon",
       "1 tablespoon + 2 teaspoons",
-      "1 Teaspoon"
+      "1 Teaspoon",
     ]
 
     testCases.forEach(quantity => {
@@ -23,7 +23,7 @@ describe("<IngredientView/>", () => {
               optional={false}
               description=""
             />
-          </TestProvider>
+          </TestProvider>,
         )
         .toJSON()
 

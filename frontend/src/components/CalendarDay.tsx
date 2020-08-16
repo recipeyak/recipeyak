@@ -15,14 +15,14 @@ import {
   Dispatch,
   fetchingShoppingListAsync,
   IAddingScheduledRecipeProps,
-  IMoveScheduledRecipeProps
+  IMoveScheduledRecipeProps,
 } from "@/store/thunks"
 import { DragDrop } from "@/dragDrop"
 import { IState } from "@/store/store"
 import {
   ICalRecipe,
   moveOrCreateCalendarRecipe,
-  createCalendarRecipe
+  createCalendarRecipe,
 } from "@/store/reducers/calendar"
 import { IRecipeItemDrag } from "@/components/RecipeItem"
 import { Result } from "@/result"
@@ -102,7 +102,7 @@ interface ICalendarDayProps {
   readonly updateCount: (
     id: ICalRecipe["id"],
     teamID: TeamID,
-    count: ICalRecipe["count"]
+    count: ICalRecipe["count"],
   ) => Promise<Result<void, void>>
   readonly refetchShoppingList: (teamID: TeamID) => void
   readonly remove: (id: ICalRecipe["id"], teamID: TeamID) => void
@@ -111,7 +111,7 @@ interface ICalendarDayProps {
     recipeID,
     teamID,
     on,
-    count
+    count,
   }: IAddingScheduledRecipeProps) => void
   readonly teamID: TeamID
   readonly isSelected: boolean
@@ -126,7 +126,7 @@ function CalendarDay({
   teamID,
   isSelected,
   move,
-  create
+  create,
 }: ICalendarDayProps) {
   const today = useCurrentDay()
   const isToday = isSameDay(date, today)
@@ -150,9 +150,9 @@ function CalendarDay({
     collect: monitor => {
       return {
         isOver: monitor.isOver(),
-        canDrop: monitor.canDrop()
+        canDrop: monitor.canDrop(),
       }
-    }
+    },
   })
 
   const scheduled = sortBy(scheduledRecipes, x => new Date(x.created))
@@ -187,7 +187,7 @@ function CalendarDay({
 
 function mapStateToProps(
   state: IState,
-  props: Pick<ICalendarDayProps, "date">
+  props: Pick<ICalendarDayProps, "date">,
 ) {
   const isShopping =
     state.router.location != null
@@ -197,13 +197,13 @@ function mapStateToProps(
     isSelected:
       isWithinInterval(props.date, {
         start: startOfDay(state.shoppinglist.startDay),
-        end: endOfDay(state.shoppinglist.endDay)
-      }) && isShopping
+        end: endOfDay(state.shoppinglist.endDay),
+      }) && isShopping,
   }
 }
 
 const mapDispatchToProps = (
-  dispatch: Dispatch
+  dispatch: Dispatch,
 ): Pick<
   ICalendarDayProps,
   "create" | "updateCount" | "refetchShoppingList" | "move" | "remove"
@@ -214,7 +214,7 @@ const mapDispatchToProps = (
   refetchShoppingList: fetchingShoppingListAsync(dispatch),
   move: (props: IMoveScheduledRecipeProps) =>
     dispatch(moveOrCreateCalendarRecipe(props)),
-  remove: deletingScheduledRecipeAsync(dispatch)
+  remove: deletingScheduledRecipeAsync(dispatch),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CalendarDay)

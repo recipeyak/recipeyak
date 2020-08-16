@@ -9,11 +9,11 @@ describe("<TeamInvite/>", () => {
     // fake react router props
     const fakeMatch: match<{ id: string }> = {
       params: {
-        id: "1"
+        id: "1",
       },
       isExact: false,
       path: "",
-      url: ""
+      url: "",
     }
     mount(
       <TestProvider>
@@ -31,7 +31,7 @@ describe("<TeamInvite/>", () => {
           // tslint:enable:no-any no-unsafe-any
           /* eslint-enable @typescript-eslint/consistent-type-assertions */
         />
-      </TestProvider>
+      </TestProvider>,
     )
   })
 })

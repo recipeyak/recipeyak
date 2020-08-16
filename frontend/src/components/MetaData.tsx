@@ -61,7 +61,7 @@ const MetaData = ({
   time = "",
   owner,
   onClick,
-  recipeId
+  recipeId,
 }: IMetaDataProps) => {
   const _author = isValid(author) ? (
     <MetaPiece>

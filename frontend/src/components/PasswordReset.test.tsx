@@ -8,12 +8,12 @@ describe("<PasswordReset/>", () => {
     const props = {
       error: {},
       loading: false,
-      reset: () => Promise.resolve()
+      reset: () => Promise.resolve(),
     }
     mount(
       <TestProvider>
         <PasswordReset loggedIn={false} {...props} />
-      </TestProvider>
+      </TestProvider>,
     )
   })
 })

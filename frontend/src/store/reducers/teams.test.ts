@@ -16,7 +16,7 @@ import {
   setUserTeamLevel,
   setUpdatingUserTeamLevel,
   fetchTeamRecipes,
-  fetchTeamMembers
+  fetchTeamMembers,
 } from "@/store/reducers/teams"
 import { baseRecipe } from "@/store/reducers/recipes.test"
 
@@ -34,10 +34,10 @@ const baseMember: IMember = {
     email: "bar",
     avatar_url: "bar.com",
     dark_mode_enabled: false,
-    selected_team: null
+    selected_team: null,
   },
   level: "read",
-  is_active: true
+  is_active: true,
 }
 
 describe("Teams", () => {
@@ -45,12 +45,12 @@ describe("Teams", () => {
     const beforeState = teamStateWith({
       id: 1,
       name: "team name",
-      members: []
+      members: [],
     })
     const recipe = {
       id: 123,
       name: "other team name",
-      members: []
+      members: [],
     }
     const afterState = {
       ...beforeState,
@@ -58,10 +58,10 @@ describe("Teams", () => {
         ...beforeState.byId,
         [recipe.id]: {
           ...recipe,
-          loadingTeam: false
-        }
+          loadingTeam: false,
+        },
       },
-      allIds: [1, recipe.id]
+      allIds: [1, recipe.id],
     }
 
     expect(teams(beforeState, fetchTeam.success(recipe))).toEqual(afterState)
@@ -71,19 +71,19 @@ describe("Teams", () => {
     const beforeState = teamStateWith({
       id: 1,
       name: "team name",
-      members: []
+      members: [],
     })
     const recipe = {
       id: 1,
       name: "other team name",
-      members: []
+      members: [],
     }
 
     const afterState = teamStateWith({
       id: 1,
       name: "other team name",
       members: [],
-      loadingTeam: false
+      loadingTeam: false,
     })
 
     expect(teams(beforeState, fetchTeam.success(recipe))).toEqual(afterState)
@@ -94,32 +94,32 @@ describe("Teams", () => {
       {
         id: 1,
         name: "add all teams",
-        members: []
+        members: [],
       },
       {
         id: 4,
         name: "blah",
         loadingTeam: false,
-        members: []
-      }
+        members: [],
+      },
     ])
 
     const data: ITeam[] = [
       {
         id: 2,
         name: "another name",
-        members: []
+        members: [],
       },
       {
         id: 3,
         name: "yet another name",
-        members: []
+        members: [],
       },
       {
         id: 4,
         name: "blah",
-        members: []
-      }
+        members: [],
+      },
     ]
 
     const afterState: ITeamsState = {
@@ -127,27 +127,27 @@ describe("Teams", () => {
         1: {
           id: 1,
           name: "add all teams",
-          members: []
+          members: [],
         },
         2: {
           id: 2,
           name: "another name",
-          members: []
+          members: [],
         },
         3: {
           id: 3,
           name: "yet another name",
-          members: []
+          members: [],
         },
         4: {
           id: 4,
           name: "blah",
           loadingTeam: false,
-          members: []
-        }
+          members: [],
+        },
       },
       allIds: [1, 4, 2, 3],
-      status: "success"
+      status: "success",
     }
 
     expect(teams(beforeState, fetchTeams.success(data))).toEqual(afterState)
@@ -157,14 +157,14 @@ describe("Teams", () => {
     const beforeState = teamStateWith({
       id: 1,
       name: "team name",
-      members: []
+      members: [],
     })
 
     const afterState = teamStateWith({
       id: 1,
       name: "team name",
       loadingTeam: true,
-      members: []
+      members: [],
     })
 
     expect(teams(beforeState, fetchTeam.request(1))).toEqual(afterState)
@@ -174,14 +174,14 @@ describe("Teams", () => {
     const beforeState = teamStateWith({
       id: 1,
       name: "team name",
-      members: []
+      members: [],
     })
 
     const afterState = teamStateWith({
       id: 1,
       name: "team name",
       loadingMembers: true,
-      members: []
+      members: [],
     })
 
     expect(teams(beforeState, fetchTeamMembers.request(1))).toEqual(afterState)
@@ -191,14 +191,14 @@ describe("Teams", () => {
     const beforeState = teamStateWith({
       id: 1,
       name: "team name",
-      members: []
+      members: [],
     })
 
     const afterState = teamStateWith({
       id: 1,
       name: "team name",
       loadingRecipes: true,
-      members: []
+      members: [],
     })
 
     expect(teams(beforeState, fetchTeamRecipes.request(1))).toEqual(afterState)
@@ -209,13 +209,13 @@ describe("Teams", () => {
       {
         id: 1,
         name: "team name",
-        members: []
+        members: [],
       },
       {
         id: 2,
         name: "another team name",
-        members: []
-      }
+        members: [],
+      },
     ])
 
     const afterState = teamStateWith([
@@ -224,17 +224,17 @@ describe("Teams", () => {
         name: "team name",
         error404: true,
         members: [],
-        loadingTeam: false
+        loadingTeam: false,
       },
       {
         id: 2,
         name: "another team name",
-        members: []
-      }
+        members: [],
+      },
     ])
 
     expect(
-      teams(beforeState, fetchTeam.failure({ id: 1, error404: true }))
+      teams(beforeState, fetchTeam.failure({ id: 1, error404: true })),
     ).toEqual(afterState)
   })
 
@@ -243,13 +243,13 @@ describe("Teams", () => {
       {
         id: 1,
         name: "team name",
-        members: []
+        members: [],
       },
       {
         id: 2,
         name: "another team name",
-        members: []
-      }
+        members: [],
+      },
     ])
 
     const members: IMember[] = [
@@ -262,9 +262,9 @@ describe("Teams", () => {
           avatar_url: "http://lksjdflsjdf",
           has_usable_password: false,
           dark_mode_enabled: false,
-          selected_team: null
-        }
-      }
+          selected_team: null,
+        },
+      },
     ]
 
     const afterState = teamStateWith([
@@ -273,18 +273,18 @@ describe("Teams", () => {
         loadingMembers: false,
         name: "team name",
         members: {
-          [members[0].id]: members[0]
-        }
+          [members[0].id]: members[0],
+        },
       },
       {
         id: 2,
         name: "another team name",
-        members: []
-      }
+        members: [],
+      },
     ])
 
     expect(
-      teams(beforeState, fetchTeamMembers.success({ id: 1, members }))
+      teams(beforeState, fetchTeamMembers.success({ id: 1, members })),
     ).toEqual(afterState)
   })
 
@@ -293,13 +293,13 @@ describe("Teams", () => {
       {
         id: 1,
         name: "team name",
-        members: []
+        members: [],
       },
       {
         id: 2,
         name: "another team name",
-        members: []
-      }
+        members: [],
+      },
     ])
 
     const recipes = [
@@ -311,9 +311,9 @@ describe("Teams", () => {
           email: "blah@blah.com",
           avatar_url: "http://lksjdflsjdf",
           dark_mode_enabled: false,
-          selected_team: null
-        }
-      }
+          selected_team: null,
+        },
+      },
     ]
 
     const afterState = teamStateWith([
@@ -322,17 +322,17 @@ describe("Teams", () => {
         name: "team name",
         members: [],
         recipes: [1],
-        loadingRecipes: false
+        loadingRecipes: false,
       },
       {
         id: 2,
         name: "another team name",
-        members: []
-      }
+        members: [],
+      },
     ])
 
     expect(
-      teams(beforeState, fetchTeamRecipes.success({ id: 1, recipes }))
+      teams(beforeState, fetchTeamRecipes.success({ id: 1, recipes })),
     ).toEqual(afterState)
   })
 
@@ -340,18 +340,18 @@ describe("Teams", () => {
     const beforeState = teamStateWith({
       id: 1,
       name: "foo",
-      members: []
+      members: [],
     })
 
     const afterState = teamStateWith({
       id: 1,
       name: "foo",
       updating: true,
-      members: []
+      members: [],
     })
 
     expect(
-      teams(beforeState, setUpdatingUserTeamLevel({ id: 1, updating: true }))
+      teams(beforeState, setUpdatingUserTeamLevel({ id: 1, updating: true })),
     ).toEqual(afterState)
   })
 
@@ -369,8 +369,8 @@ describe("Teams", () => {
             email: "foo",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
-            selected_team: null
-          }
+            selected_team: null,
+          },
         },
         2: {
           ...baseMember,
@@ -381,10 +381,10 @@ describe("Teams", () => {
             email: "bar",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
-            selected_team: null
-          }
-        }
-      }
+            selected_team: null,
+          },
+        },
+      },
     })
 
     const afterState = teamStateWith({
@@ -400,8 +400,8 @@ describe("Teams", () => {
             email: "foo",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
-            selected_team: null
-          }
+            selected_team: null,
+          },
         },
         2: {
           ...baseMember,
@@ -412,17 +412,17 @@ describe("Teams", () => {
             email: "bar",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
-            selected_team: null
-          }
-        }
-      }
+            selected_team: null,
+          },
+        },
+      },
     })
 
     expect(
       teams(
         beforeState,
-        setUserTeamLevel({ teamID: 1, membershipID: 2, level: "admin" })
-      )
+        setUserTeamLevel({ teamID: 1, membershipID: 2, level: "admin" }),
+      ),
     ).toEqual(afterState)
   })
 
@@ -440,8 +440,8 @@ describe("Teams", () => {
             email: "foo",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
-            selected_team: null
-          }
+            selected_team: null,
+          },
         },
         2: {
           ...baseMember,
@@ -452,10 +452,10 @@ describe("Teams", () => {
             email: "bar",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
-            selected_team: null
-          }
-        }
-      }
+            selected_team: null,
+          },
+        },
+      },
     })
 
     const afterState = teamStateWith({
@@ -471,8 +471,8 @@ describe("Teams", () => {
             email: "foo",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
-            selected_team: null
-          }
+            selected_team: null,
+          },
         },
         2: {
           ...baseMember,
@@ -484,17 +484,17 @@ describe("Teams", () => {
             email: "bar",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
-            selected_team: null
-          }
-        }
-      }
+            selected_team: null,
+          },
+        },
+      },
     })
 
     expect(
       teams(
         beforeState,
-        setDeletingMembership({ teamID: 1, membershipID: 2, val: true })
-      )
+        setDeletingMembership({ teamID: 1, membershipID: 2, val: true }),
+      ),
     ).toEqual(afterState)
   })
 
@@ -512,8 +512,8 @@ describe("Teams", () => {
             email: "foo",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
-            selected_team: null
-          }
+            selected_team: null,
+          },
         },
         2: {
           ...baseMember,
@@ -525,10 +525,10 @@ describe("Teams", () => {
             email: "bar",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
-            selected_team: null
-          }
-        }
-      }
+            selected_team: null,
+          },
+        },
+      },
     })
 
     const afterState = teamStateWith({
@@ -544,14 +544,14 @@ describe("Teams", () => {
             email: "foo",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
-            selected_team: null
-          }
-        }
-      }
+            selected_team: null,
+          },
+        },
+      },
     })
 
     expect(
-      teams(beforeState, deleteMembership({ teamID: 1, membershipID: 2 }))
+      teams(beforeState, deleteMembership({ teamID: 1, membershipID: 2 })),
     ).toEqual(afterState)
   })
 
@@ -569,8 +569,8 @@ describe("Teams", () => {
             email: "foo",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
-            selected_team: null
-          }
+            selected_team: null,
+          },
         },
         2: {
           ...baseMember,
@@ -581,10 +581,10 @@ describe("Teams", () => {
             email: "bar",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
-            selected_team: null
-          }
-        }
-      }
+            selected_team: null,
+          },
+        },
+      },
     })
 
     const afterState = teamStateWith({
@@ -601,8 +601,8 @@ describe("Teams", () => {
             email: "foo",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
-            selected_team: null
-          }
+            selected_team: null,
+          },
         },
         2: {
           ...baseMember,
@@ -613,14 +613,14 @@ describe("Teams", () => {
             email: "bar",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
-            selected_team: null
-          }
-        }
-      }
+            selected_team: null,
+          },
+        },
+      },
     })
 
     expect(
-      teams(beforeState, setSendingTeamInvites({ teamID: 1, val: true }))
+      teams(beforeState, setSendingTeamInvites({ teamID: 1, val: true })),
     ).toEqual(afterState)
   })
 
@@ -638,8 +638,8 @@ describe("Teams", () => {
             email: "foo",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
-            selected_team: null
-          }
+            selected_team: null,
+          },
         },
         2: {
           ...baseMember,
@@ -650,10 +650,10 @@ describe("Teams", () => {
             email: "bar",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
-            selected_team: null
-          }
-        }
-      }
+            selected_team: null,
+          },
+        },
+      },
     })
 
     const afterState: ITeamsState = {
@@ -670,8 +670,8 @@ describe("Teams", () => {
               email: "foo",
               avatar_url: "foo.com",
               dark_mode_enabled: false,
-              selected_team: null
-            }
+              selected_team: null,
+            },
           },
           2: {
             ...baseMember,
@@ -682,12 +682,12 @@ describe("Teams", () => {
               email: "bar",
               avatar_url: "bar.com",
               dark_mode_enabled: false,
-              selected_team: null
-            }
-          }
-        }
+              selected_team: null,
+            },
+          },
+        },
       }),
-      status: "loading"
+      status: "loading",
     }
 
     expect(teams(beforeState, fetchTeams.request())).toEqual(afterState)
@@ -708,8 +708,8 @@ describe("Teams", () => {
             avatar_url: "foo.com",
 
             dark_mode_enabled: false,
-            selected_team: null
-          }
+            selected_team: null,
+          },
         },
         2: {
           ...baseMember,
@@ -720,10 +720,10 @@ describe("Teams", () => {
             email: "bar",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
-            selected_team: null
-          }
-        }
-      }
+            selected_team: null,
+          },
+        },
+      },
     })
 
     const afterState: ITeamsState = {
@@ -743,8 +743,8 @@ describe("Teams", () => {
                 email: "foo",
                 avatar_url: "foo.com",
                 dark_mode_enabled: false,
-                selected_team: null
-              }
+                selected_team: null,
+              },
             },
             2: {
               ...baseMember,
@@ -755,13 +755,13 @@ describe("Teams", () => {
                 email: "bar",
                 avatar_url: "bar.com",
                 dark_mode_enabled: false,
-                selected_team: null
-              }
-            }
-          }
-        }
+                selected_team: null,
+              },
+            },
+          },
+        },
       },
-      allIds: [1]
+      allIds: [1],
     }
 
     expect(teams(beforeState, setCreatingTeam(true))).toEqual(afterState)
@@ -771,7 +771,7 @@ describe("Teams", () => {
     const team: ITeam = {
       id: 2,
       name: "buzz",
-      members: {}
+      members: {},
     }
 
     const beforeState: ITeamsState = {
@@ -780,10 +780,10 @@ describe("Teams", () => {
         1: {
           id: 1,
           name: "foobar",
-          members: {}
-        }
+          members: {},
+        },
       },
-      allIds: [1]
+      allIds: [1],
     }
 
     const afterState: ITeamsState = {
@@ -792,15 +792,15 @@ describe("Teams", () => {
         1: {
           id: 1,
           name: "foobar",
-          members: {}
+          members: {},
         },
-        [team.id]: team
+        [team.id]: team,
       },
-      allIds: [1, team.id]
+      allIds: [1, team.id],
     }
 
     expect(teams(beforeState, setTeam({ id: team.id, team }))).toEqual(
-      afterState
+      afterState,
     )
   })
 
@@ -809,31 +809,31 @@ describe("Teams", () => {
       {
         id: 1,
         name: "foo",
-        members: []
+        members: [],
       },
       {
         id: 2,
         name: "bar",
-        members: []
+        members: [],
       },
       {
         id: 3,
         name: "buzz",
-        members: []
-      }
+        members: [],
+      },
     ])
 
     const afterState = teamStateWith([
       {
         id: 1,
         name: "foo",
-        members: []
+        members: [],
       },
       {
         id: 3,
         name: "buzz",
-        members: []
-      }
+        members: [],
+      },
     ])
 
     expect(teams(beforeState, deleteTeam(2))).toEqual(afterState)
@@ -843,13 +843,13 @@ describe("Teams", () => {
     const beforeState: ITeamsState = {
       status: "initial",
       byId: {},
-      allIds: []
+      allIds: [],
     }
     const afterState: ITeamsState = {
       status: "initial",
       copying: true,
       byId: {},
-      allIds: []
+      allIds: [],
     }
     expect(teams(beforeState, setCopyingTeam(true))).toEqual(afterState)
   })
@@ -858,21 +858,21 @@ describe("Teams", () => {
     const beforeState = teamStateWith({
       id: 1,
       name: "Acme Inc.",
-      members: []
+      members: [],
     })
     const afterState = teamStateWith({
       id: 1,
       name: "InnoTech",
-      members: []
+      members: [],
     })
     expect(
       teams(
         beforeState,
         updateTeamById({
           id: 1,
-          teamKeys: { id: 1, name: "InnoTech", members: [] }
-        })
-      )
+          teamKeys: { id: 1, name: "InnoTech", members: [] },
+        }),
+      ),
     ).toEqual(afterState)
   })
 })

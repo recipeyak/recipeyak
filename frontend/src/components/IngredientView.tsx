@@ -16,7 +16,7 @@ export default function IngredientView({
   name,
   description,
   optional,
-  dragRef
+  dragRef,
 }: IIngredientVIewProps) {
   const fmtDescription = description ? ", " + description : ""
 

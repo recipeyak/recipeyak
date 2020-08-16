@@ -23,7 +23,7 @@ const ALLOWED_MARKDOWN_TYPES: NodeType[] = [
   "list",
   "linkReference",
   "link",
-  "listItem"
+  "listItem",
 ]
 
 interface IMarkdownProps {
@@ -37,7 +37,7 @@ export function Markdown({
   children: text,
   className,
   title,
-  onClick
+  onClick,
 }: IMarkdownProps) {
   return (
     <MarkdownWrapper className={className} title={title} onClick={onClick}>

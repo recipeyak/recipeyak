@@ -2,7 +2,7 @@ import { WebData, Success, Failure } from "@/webdata"
 
 const enum IResultKind {
   Ok,
-  Err
+  Err,
 }
 
 export interface IOk<T> {
@@ -18,14 +18,14 @@ export interface IErr<E> {
 export function Ok<T>(data: T): IOk<T> {
   return {
     kind: IResultKind.Ok,
-    data
+    data,
   }
 }
 
 export function Err<T>(error: T): IErr<T> {
   return {
     kind: IResultKind.Err,
-    error
+    error,
   }
 }
 
@@ -37,7 +37,7 @@ export const isErr = <T, E>(x: Result<T, E>): x is IErr<E> =>
   x.kind === IResultKind.Err
 
 export function resultToWebdata<T, E>(
-  result: Result<T, E>
+  result: Result<T, E>,
 ): WebData<T, undefined> {
   if (isOk(result)) {
     return Success(result.data)

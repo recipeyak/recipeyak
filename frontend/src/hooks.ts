@@ -6,7 +6,7 @@ import { Dispatch } from "@/store/thunks"
 import {
   TypedUseSelectorHook,
   useDispatch as useDispatchRedux,
-  useSelector as useSelectorRedux
+  useSelector as useSelectorRedux,
 } from "react-redux"
 import debounce from "lodash/debounce"
 
@@ -39,7 +39,7 @@ export function useGlobalEvent({
   mouseUp,
   mouseDown,
   keyDown,
-  keyUp
+  keyUp,
 }: IGlobalEventProps) {
   React.useEffect(() => {
     if (keyUp) {
@@ -89,7 +89,7 @@ export const useDispatch = () => useDispatchRedux<Dispatch>()
 export const useSelector: TypedUseSelectorHook<IState> = useSelectorRedux
 
 export function useOnClickOutside<T extends HTMLElement>(
-  handler: (e: MouseEvent | TouchEvent) => void
+  handler: (e: MouseEvent | TouchEvent) => void,
 ): React.MutableRefObject<T | null> {
   const ref = React.useRef<T | null>(null)
 
@@ -124,7 +124,7 @@ export function useOnWindowFocusChange(cb: () => void) {
     // webkit bug: https://bugs.webkit.org/show_bug.cgi?id=179990
     const handleEvent = debounce(cb, 400, {
       leading: true,
-      trailing: false
+      trailing: false,
     })
     window.addEventListener("focus", handleEvent)
     return () => {

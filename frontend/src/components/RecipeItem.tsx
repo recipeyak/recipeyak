@@ -56,16 +56,16 @@ export function RecipeItem({ name, author, id, ...props }: IRecipeItemProps) {
     },
     collect: monitor => {
       return {
-        isDragging: monitor.isDragging()
+        isDragging: monitor.isDragging(),
       }
-    }
+    },
   })
 
   return (
     <section
       ref={props.drag ? drag : undefined}
       className={classNames("card", {
-        "cursor-move": props.drag
+        "cursor-move": props.drag,
       })}
       style={{ opacity: isDragging ? 0.5 : 1 }}>
       <div className="card-content h-100 d-flex flex-column">

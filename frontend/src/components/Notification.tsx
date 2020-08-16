@@ -10,7 +10,7 @@ const notification = ({
   level = "info",
   show = true,
   closeable = true,
-  close
+  close,
 }: INotificationProps) => {
   if (show) {
     return (

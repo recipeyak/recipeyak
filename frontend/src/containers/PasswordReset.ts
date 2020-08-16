@@ -5,13 +5,13 @@ import PasswordReset from "@/components/PasswordReset"
 import { IState } from "@/store/store"
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  reset: resetAsync(dispatch)
+  reset: resetAsync(dispatch),
 })
 
 const mapStateToProps = (state: IState) => ({
   loading: state.auth.loadingReset,
   error: state.auth.errorReset,
-  loggedIn: state.user.loggedIn
+  loggedIn: state.user.loggedIn,
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(PasswordReset)
