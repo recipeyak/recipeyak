@@ -62,7 +62,7 @@ class IsTeamAdminOrMembershipOwner(permissions.BasePermission):
             raise TypeError("This permission only works for membership objects")
         object_owner = membership.user == request.user
         team_admin = membership.team.is_admin(request.user)
-        return object_owner or team_admin
+        return cast(bool, (object_owner or team_admin))
 
 
 class NonSafeIfMemberOrAdmin(IsTeamMember):
