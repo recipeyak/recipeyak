@@ -148,7 +148,7 @@ export function Section({
     <li
       ref={ref}
       style={style}
-      className="bg-white mt-1 fw-500 text-small"
+      className="bg-white mt-1 bold text-small"
       title="click to edit"
       onClick={handleEnableEditing}>
       {title}
