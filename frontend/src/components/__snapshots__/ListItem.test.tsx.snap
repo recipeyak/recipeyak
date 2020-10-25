@@ -1,6 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<ListItem/> snap with capitalization 1`] = `
+.c0 a {
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+}
+
+.c0 a:hover {
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
+
 .c0 ul {
   list-style-type: disc;
   padding-left: 1.5rem;
@@ -30,6 +40,16 @@ exports[`<ListItem/> snap with capitalization 1`] = `
 `;
 
 exports[`<ListItem/> snap with capitalization 2`] = `
+.c0 a {
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+}
+
+.c0 a:hover {
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
+
 .c0 ul {
   list-style-type: disc;
   padding-left: 1.5rem;
@@ -59,6 +79,16 @@ exports[`<ListItem/> snap with capitalization 2`] = `
 `;
 
 exports[`<ListItem/> snap with capitalization 3`] = `
+.c0 a {
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+}
+
+.c0 a:hover {
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
+
 .c0 ul {
   list-style-type: disc;
   padding-left: 1.5rem;
@@ -88,6 +118,16 @@ exports[`<ListItem/> snap with capitalization 3`] = `
 `;
 
 exports[`<ListItem/> snap with capitalization 4`] = `
+.c0 a {
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+}
+
+.c0 a:hover {
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
+
 .c0 ul {
   list-style-type: disc;
   padding-left: 1.5rem;
