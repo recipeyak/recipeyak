@@ -6,7 +6,7 @@ export const GIT_SHA = DEBUG ? "development" : process.env.GIT_SHA
 
 export const SENTRY_DSN = process.env.FRONTEND_SENTRY_DSN
 
-const DOMAIN = DEBUG ? "http://localhost:3000" : "https://recipeyak.com"
+export const DOMAIN = DEBUG ? "http://localhost:3000" : "https://recipeyak.com"
 
 // TODO(sbdchd): we export these as a quick hack since we aren't using them
 export const OAUTH_BITBUCKET_CLIENT_ID = process.env.OAUTH_BITBUCKET_CLIENT_ID

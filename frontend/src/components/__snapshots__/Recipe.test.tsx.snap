@@ -451,6 +451,16 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
 `;
 
 exports[`<Recipe/> snaps recipe all states 2`] = `
+.c6 a {
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+}
+
+.c6 a:hover {
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
+
 .c6 ul {
   list-style-type: disc;
   padding-left: 1.5rem;
