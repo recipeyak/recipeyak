@@ -19,12 +19,29 @@ const MarkdownWrapper = styled.div`
   ol {
     padding-left: 1.5rem;
   }
+
+  blockquote {
+    padding-left: 0.25rem;
+    border-left: 5px solid lightgray;
+    & > p {
+      margin-bottom: 0rem;
+    }
+
+    &:last-of-type > p {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  p {
+    margin-bottom: 0.5rem;
+  }
 `
 
 const ALLOWED_MARKDOWN_TYPES: NodeType[] = [
   "root",
   "text",
   "delete",
+  "blockquote",
   "paragraph",
   "strong",
   "emphasis",

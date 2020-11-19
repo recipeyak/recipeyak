@@ -20,6 +20,23 @@ exports[`<ListItem/> snap with capitalization 1`] = `
   padding-left: 1.5rem;
 }
 
+.c0 blockquote {
+  padding-left: 0.25rem;
+  border-left: 5px solid lightgray;
+}
+
+.c0 blockquote > p {
+  margin-bottom: 0rem;
+}
+
+.c0 blockquote:last-of-type > p {
+  margin-bottom: 0.5rem;
+}
+
+.c0 p {
+  margin-bottom: 0.5rem;
+}
+
 <div>
   <section
     className="cursor-pointer"
@@ -57,6 +74,23 @@ exports[`<ListItem/> snap with capitalization 2`] = `
 
 .c0 ol {
   padding-left: 1.5rem;
+}
+
+.c0 blockquote {
+  padding-left: 0.25rem;
+  border-left: 5px solid lightgray;
+}
+
+.c0 blockquote > p {
+  margin-bottom: 0rem;
+}
+
+.c0 blockquote:last-of-type > p {
+  margin-bottom: 0.5rem;
+}
+
+.c0 p {
+  margin-bottom: 0.5rem;
 }
 
 <div>
@@ -98,6 +132,23 @@ exports[`<ListItem/> snap with capitalization 3`] = `
   padding-left: 1.5rem;
 }
 
+.c0 blockquote {
+  padding-left: 0.25rem;
+  border-left: 5px solid lightgray;
+}
+
+.c0 blockquote > p {
+  margin-bottom: 0rem;
+}
+
+.c0 blockquote:last-of-type > p {
+  margin-bottom: 0.5rem;
+}
+
+.c0 p {
+  margin-bottom: 0.5rem;
+}
+
 <div>
   <section
     className="cursor-pointer"
@@ -135,6 +186,23 @@ exports[`<ListItem/> snap with capitalization 4`] = `
 
 .c0 ol {
   padding-left: 1.5rem;
+}
+
+.c0 blockquote {
+  padding-left: 0.25rem;
+  border-left: 5px solid lightgray;
+}
+
+.c0 blockquote > p {
+  margin-bottom: 0rem;
+}
+
+.c0 blockquote:last-of-type > p {
+  margin-bottom: 0.5rem;
+}
+
+.c0 p {
+  margin-bottom: 0.5rem;
 }
 
 <div>
