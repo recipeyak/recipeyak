@@ -48,7 +48,7 @@ export const baseRecipe: IRecipe = {
   notes: [],
   sections: [],
   created: "1776-1-1",
-  archived_at: null
+  archived_at: null,
 }
 
 export const baseIngredient: IIngredient = {
