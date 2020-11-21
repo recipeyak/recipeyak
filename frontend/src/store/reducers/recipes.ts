@@ -528,6 +528,7 @@ export interface IRecipeBasic
     | "ingredients"
     | "steps"
     | "created"
+    | "archived_at"
   > {
   readonly ingredients: IIngredientBasic[]
   readonly steps: IStepBasic[]

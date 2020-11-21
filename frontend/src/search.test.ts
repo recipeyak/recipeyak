@@ -20,6 +20,7 @@ describe("search", () => {
       sections: [],
       notes: [],
       created: "",
+      archived_at: null
     }
 
     const testCases = [
