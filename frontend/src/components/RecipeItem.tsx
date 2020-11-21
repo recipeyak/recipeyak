@@ -61,18 +61,28 @@ export function RecipeItem({ name, author, id, ...props }: IRecipeItemProps) {
     },
   })
 
+  const recipeContent = (
+    <div className="card-content h-100 d-flex flex-column">
+      <RecipeTitle name={name} url={url} dragable={!!props.drag} />
+      <Meta author={author} />
+    </div>
+  )
+
+  if (props.drag) {
+    return (
+      <section
+        ref={drag}
+        className="card cursor-move"
+        style={{ opacity: isDragging ? 0.5 : 1 }}>
+        {recipeContent}
+      </section>
+    )
+  }
+
   return (
-    <section
-      ref={props.drag ? drag : undefined}
-      className={classNames("card", {
-        "cursor-move": props.drag,
-      })}
-      style={{ opacity: isDragging ? 0.5 : 1 }}>
-      <div className="card-content h-100 d-flex flex-column">
-        <RecipeTitle name={name} url={url} dragable={!!props.drag} />
-        <Meta author={author} />
-      </div>
-    </section>
+    <Link tabIndex={0} to={url} className="card">
+      {recipeContent}
+    </Link>
   )
 }
 
