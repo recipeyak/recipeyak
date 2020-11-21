@@ -5,7 +5,12 @@ import { copyToClipboard } from "@/clipboard"
 import { isSuccessLike } from "@/webdata"
 import { showNotificationWithTimeoutAsync } from "@/store/thunks"
 import { Chevron } from "@/components/icons"
-import { IIngredient, duplicateRecipe, IRecipe } from "@/store/reducers/recipes"
+import {
+  IIngredient,
+  duplicateRecipe,
+  IRecipe,
+  updateRecipe,
+} from "@/store/reducers/recipes"
 import { Button } from "@/components/Buttons"
 import {
   DropdownContainer,
@@ -65,6 +70,13 @@ export function Dropdown({ recipeId }: IDropdownProps) {
 
   const dispatch = useDispatch()
   const ingredients = useIngredientString(recipeId)
+  const isArchived = useSelector(s => {
+    const maybeRecipe = s.recipes.byId[recipeId]
+    if (maybeRecipe?.kind === "Success") {
+      return Boolean(maybeRecipe.data.archived_at)
+    }
+    return false
+  })
 
   const [creatingDuplicate, onDuplicate] = useDuplicateRecipe({
     recipeId,
@@ -79,6 +91,28 @@ export function Dropdown({ recipeId }: IDropdownProps) {
     })
     close()
   }, [close, dispatch, ingredients])
+
+  const archiveRecipe = React.useCallback(() => {
+    if (confirm("Are you sure you want to archive this recipe?")) {
+      dispatch(
+        updateRecipe.request({
+          id: recipeId,
+          data: { archived_at: new Date().toISOString() },
+        }),
+      )
+      close()
+    }
+  }, [close, dispatch, recipeId])
+
+  const unArchiveRecipe = React.useCallback(() => {
+    dispatch(
+      updateRecipe.request({
+        id: recipeId,
+        data: { archived_at: null },
+      }),
+    )
+    close()
+  }, [close, dispatch, recipeId])
 
   const scheduleUrl = useScheduleUrl(recipeId)
 
@@ -107,6 +141,15 @@ export function Dropdown({ recipeId }: IDropdownProps) {
         <DropdownItemLink isRaw to={exportJsonUrl} onClick={close}>
           Export as JSON
         </DropdownItemLink>
+        {!isArchived ? (
+          <DropdownItemButton onClick={archiveRecipe}>
+            Archive Recipe
+          </DropdownItemButton>
+        ) : (
+          <DropdownItemButton onClick={unArchiveRecipe}>
+            Unarchive Recipe
+          </DropdownItemButton>
+        )}
       </DropdownMenu>
     </DropdownContainer>
   )

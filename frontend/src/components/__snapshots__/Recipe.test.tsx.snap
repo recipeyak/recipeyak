@@ -256,6 +256,12 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
           >
             Export as JSON
           </a>
+          <button
+            className="c3"
+            onClick={[Function]}
+          >
+            Archive Recipe
+          </button>
         </div>
       </div>
     </div>
@@ -677,6 +683,12 @@ exports[`<Recipe/> snaps recipe all states 2`] = `
           >
             Export as JSON
           </a>
+          <button
+            className="c3"
+            onClick={[Function]}
+          >
+            Archive Recipe
+          </button>
         </div>
       </div>
     </div>
@@ -1024,6 +1036,7 @@ exports[`<Recipe/> snaps timeline 1`] = `
 exports[`<Recipe/> snaps useRecipe hook: Refetching 1`] = `
 Object {
   "data": Object {
+    "archived_at": null,
     "author": "bar",
     "created": "1776-1-1",
     "edits": Array [],

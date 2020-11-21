@@ -528,6 +528,7 @@ export interface IRecipeBasic
     | "ingredients"
     | "steps"
     | "created"
+    | "archived_at"
   > {
   readonly ingredients: IIngredientBasic[]
   readonly steps: IStepBasic[]
@@ -663,6 +664,7 @@ export interface IRecipe {
     readonly position: number
   }>
   readonly created: string
+  readonly archived_at: string | null
 
   readonly editing?: boolean
   readonly deleting?: boolean

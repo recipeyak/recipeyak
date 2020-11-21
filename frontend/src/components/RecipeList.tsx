@@ -4,7 +4,6 @@ import RecipeItem from "@/components/RecipeItem"
 import Loader from "@/components/Loader"
 import { TextInput } from "@/components/Forms"
 import { matchesQuery } from "@/search"
-import Results from "@/components/Results"
 import { byNameAlphabetical } from "@/sorters"
 import { Dispatch, fetchingRecipeListAsync } from "@/store/thunks"
 import { IRecipe, getTeamRecipes } from "@/store/reducers/recipes"
@@ -13,6 +12,41 @@ import { IState } from "@/store/store"
 import { WebData, isSuccessOrRefetching } from "@/webdata"
 import queryString from "query-string"
 import { parseIntOrNull } from "@/parseIntOrNull"
+import { Link } from "react-router-dom"
+
+interface IResultsProps {
+  readonly recipes: JSX.Element[]
+  readonly query: string
+}
+
+function Results({ recipes, query }: IResultsProps) {
+  if (recipes.length === 0 && query !== "") {
+    return <NoMatchingRecipe query={query} />
+  }
+  return <>{recipes}</>
+}
+
+function AddRecipeCallToAction() {
+  return (
+    <div className="d-flex">
+      <section className="d-flex mx-auto">
+        <p className="fs-6 mr-2">No recipes here.</p>
+
+        <Link to="/recipes/add" className="my-button is-primary">
+          Add a Recipe
+        </Link>
+      </section>
+    </div>
+  )
+}
+
+function NoMatchingRecipe({ query }: { readonly query: string }) {
+  return (
+    <p className="grid-entire-row justify-center break-word">
+      No recipes found matching <strong>{query}</strong>
+    </p>
+  )
+}
 
 interface IRecipeList {
   readonly recipes: WebData<IRecipe[]>
@@ -26,18 +60,40 @@ function RecipeList(props: IRecipeList) {
     return <Loader className="pt-4" />
   }
 
-  const results: JSX.Element[] = props.recipes.data
+  const results = props.recipes.data
     .filter(recipe => matchesQuery(recipe, props.query))
     .sort(byNameAlphabetical)
+
+  const normalResults = results
+    .filter(recipe => !recipe.archived_at)
+    .map(recipe => <RecipeItem {...recipe} drag={props.drag} key={recipe.id} />)
+  const archivedResults = results
+    .filter(recipe => recipe.archived_at)
     .map(recipe => <RecipeItem {...recipe} drag={props.drag} key={recipe.id} />)
 
   const scrollClass = props.scroll ? "recipe-scroll" : ""
 
+  if (results.length === 0 && props.query === "") {
+    return <AddRecipeCallToAction />
+  }
+
   return (
     <div className={scrollClass}>
       <div className="recipe-grid">
-        <Results recipes={results} query={props.query} />
+        <Results recipes={normalResults} query={props.query} />
       </div>
+      {archivedResults.length > 0 && (
+        <>
+          <div className="d-flex align-items-center">
+            <hr className="flex-grow-1" />
+            <b className="mx-4 my-4">Archived Recipes</b>
+            <hr className="flex-grow-1" />
+          </div>
+          <div className="recipe-grid">
+            <Results recipes={archivedResults} query={props.query} />
+          </div>
+        </>
+      )}
     </div>
   )
 }

@@ -153,6 +153,32 @@ def test_recipe_updating(client, user, recipe):
     assert res.json().get("name") == data.get("name")
 
 
+def test_recipe_archived_at(client, user, recipe):
+    """
+    check we can set archived_at on the recipe
+    """
+    client.force_authenticate(user)
+
+    res = client.get("/api/v1/recipes/")
+    assert res.status_code == status.HTTP_200_OK
+    assert len(res.json()) == 1
+    assert res.json()[0]["archived_at"] is None, "archived_at should be on list view"
+
+    res = client.get(f"/api/v1/recipes/{recipe.id}/")
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json()["archived_at"] is None, "archived_at should be on detail view"
+
+    data = {"archived_at": datetime.now()}
+    res = client.patch(f"/api/v1/recipes/{recipe.id}/", data)
+    assert res.status_code == status.HTTP_200_OK
+    assert isinstance(res.json()["archived_at"], str), "should be a date string"
+
+    res = client.get("/api/v1/recipes/")
+    assert res.status_code == status.HTTP_200_OK
+    assert len(res.json()) == 1
+    assert isinstance(res.json()[0]["archived_at"], str), "should be a date string"
+
+
 def test_updating_step_of_recipe(client, user, recipe):
     """
     ensure a user can update an step of a recipe

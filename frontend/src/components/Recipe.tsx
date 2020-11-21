@@ -298,6 +298,27 @@ export function useRecipe(recipeId: number) {
   return useSelector(state => getRecipeById(state, recipeId))
 }
 
+const ArchiveMessage = styled.div`
+  background: whitesmoke;
+  font-weight: bold;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  border-radius: 5px;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+`
+
+function ArchiveBanner({ date }: { readonly date: Date }) {
+  const formattedDate = date.toLocaleDateString()
+  return (
+    <div className="d-flex align-items-center">
+      <hr className="flex-grow mb-0 mt-0" />
+      <ArchiveMessage>Recipe Archived on {formattedDate}</ArchiveMessage>
+      <hr className="flex-grow mb-0 mt-0" />
+    </div>
+  )
+}
+
 type IRecipeProps = RouteComponentProps<{ id: string }>
 
 export function Recipe(props: IRecipeProps) {
@@ -326,6 +347,9 @@ export function Recipe(props: IRecipeProps) {
   return (
     <div className="d-grid grid-gap-2">
       <Helmet title={recipe.name} />
+      {recipe.archived_at != null && (
+        <ArchiveBanner date={new Date(recipe.archived_at)} />
+      )}
 
       <RecipeTitle
         id={recipe.id}
