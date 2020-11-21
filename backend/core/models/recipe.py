@@ -33,6 +33,8 @@ class Recipe(CommonInfo, SoftDeleteObject):
     object_id = models.PositiveIntegerField()
     owner = GenericForeignKey("content_type", "object_id")
 
+    archived_at = models.DateTimeField(null=True)
+
     cloned_at = models.DateTimeField(
         blank=True,
         null=True,

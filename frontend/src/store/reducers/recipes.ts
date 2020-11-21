@@ -663,6 +663,7 @@ export interface IRecipe {
     readonly position: number
   }>
   readonly created: string
+  readonly archived_at?: string
 
   readonly editing?: boolean
   readonly deleting?: boolean
