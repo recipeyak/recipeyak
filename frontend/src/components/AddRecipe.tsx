@@ -97,14 +97,23 @@ export default class AddRecipe extends React.Component<
 
   handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
+    // If we have an unsaved step, save it anyway.
+    const steps = this.state.step.trim()
+      ? [...this.props.steps, { text: this.state.step }]
+      : this.props.steps
+    // Save non-empty, unsaved ingredients.
+    const ingredients =
+      this.state.ingredient.name && this.state.ingredient.quantity
+        ? [...this.props.ingredients, this.state.ingredient]
+        : this.props.ingredients
     this.props.addRecipe({
       name: this.props.name,
       author: this.props.author,
       source: this.props.source,
       time: this.props.time,
       servings: this.props.servings,
-      ingredients: this.props.ingredients,
-      steps: this.props.steps,
+      ingredients,
+      steps,
       notes: [],
       sections: [],
       team: this.props.teamID || undefined,
