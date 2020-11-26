@@ -68,8 +68,10 @@ const suggestionStyle = css`
   text-overflow: ellipsis;
 `
 
-const SuggestionItem = styled(Link)`
+const SuggestionItem = styled(Link)<{ readonly firstItem?: boolean }>`
   ${suggestionStyle}
+  // Underline the first item because we navigate to it on "Enter".
+  ${props => props.firstItem && "text-decoration: underline;"}
 `
 
 const BrowseRecipes = styled(Link)`
@@ -103,9 +105,12 @@ const UserHome = () => {
   const loadingSuggestions = recipes?.kind !== "Success"
 
   const suggestions = filteredRecipes
-    .map(recipe => {
+    .map((recipe, index) => {
       return (
-        <SuggestionItem key={recipe.id} to={`/recipes/${recipe.id}`}>
+        <SuggestionItem
+          key={recipe.id}
+          to={`/recipes/${recipe.id}`}
+          firstItem={index === 0}>
           <b>{recipe.name}</b> by {recipe.author}
         </SuggestionItem>
       )
