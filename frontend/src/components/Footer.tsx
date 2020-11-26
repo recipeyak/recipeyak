@@ -1,12 +1,22 @@
+import { styled } from "@/theme"
 import * as React from "react"
 
+const StyledFooter = styled.footer`
+  font-weight: bold;
+  padding: 1rem 1.5rem;
+  /* font-size:  */
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+`
+
 const Footer = () => (
-  <footer className="fw-bold pt-4 pb-4 fs-4 d-flex space-between container pr-4 pl-4">
+  <StyledFooter>
     <span>
       Recipe Yak • <a href="https://github.com/recipeyak/recipeyak">src</a>
     </span>
     <span>Est. 2017</span>
-  </footer>
+  </StyledFooter>
 )
 
 export default Footer
