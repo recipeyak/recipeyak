@@ -148,7 +148,7 @@ const UserHome = () => {
                         No Results Found.
                       </p>
                     )}
-                    {suggestions.map(x => x)}
+                    {suggestions}
                     <BrowseRecipes
                       to={{
                         pathname: "/recipes",
