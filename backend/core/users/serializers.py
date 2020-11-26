@@ -10,7 +10,7 @@ from core.serialization import BaseModelSerializer
 
 
 class UserSerializer(BaseModelSerializer):
-    """serializer custom user model"""
+    selected_team = serializers.IntegerField(source="recipe_team")
 
     class Meta:
         model = MyUser
@@ -22,6 +22,7 @@ class UserSerializer(BaseModelSerializer):
             "has_usable_password",
             "dark_mode_enabled",
             "selected_team",
+            "schedule_team",
         )
 
 

@@ -72,7 +72,7 @@ def test_get_recipe_timeline(
     scheduled.team = team
     scheduled.save()
     team.force_join_admin(user2)
-    user2.selected_team = team
+    user2.recipe_team = team
     user2.save()
 
     res = client.get(url)
