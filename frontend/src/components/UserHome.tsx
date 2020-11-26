@@ -32,6 +32,7 @@ const SearchInputContainer = styled.div`
 
 const SearchOptions = styled.div`
   font-size: 0.85rem;
+  color: ${props => props.theme.color.muted};
 `
 
 const Code = styled.code`
@@ -66,6 +67,12 @@ const suggestionStyle = css`
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+`
+
+const SuggestionInfo = styled.div`
+  ${suggestionStyle}
+  text-align: center;
+  color: ${props => props.theme.color.muted};
 `
 
 const SuggestionItem = styled(Link)<{ readonly firstItem?: boolean }>`
@@ -149,9 +156,7 @@ const UserHome = () => {
                 {!loadingSuggestions ? (
                   <>
                     {suggestions.length === 0 && (
-                      <p className="text-muted text-center">
-                        No Results Found.
-                      </p>
+                      <SuggestionInfo>No Results Found</SuggestionInfo>
                     )}
                     {suggestions}
                     <BrowseRecipes
@@ -163,11 +168,11 @@ const UserHome = () => {
                     </BrowseRecipes>
                   </>
                 ) : (
-                  <p className="text-center">Loading...</p>
+                  <SuggestionInfo>Loading...</SuggestionInfo>
                 )}
               </SuggestionBox>
             )}
-            <SearchOptions className="text-muted">
+            <SearchOptions>
               fields <Code>author:Jane Doe</Code>,{" "}
               <Code>ingredient:onions</Code>, <Code>name:cake</Code>
             </SearchOptions>
