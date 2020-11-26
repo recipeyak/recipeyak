@@ -10,7 +10,7 @@ import { store, Action, IState } from "@/store/store"
 import {
   SocialProvider,
   updateEmail,
-  updateTeamID,
+  updateRecipeTeamID,
   fetchUser,
   setUserLoggedIn,
   IUser,
@@ -190,17 +190,31 @@ export const updatingEmailAsync = (dispatch: Dispatch) => async (
   }
 }
 
-export const updatingTeamIDAsync = (dispatch: Dispatch) => async (
-  id: IUserState["teamID"],
+export const updatingDefaultRecipeTeamID = (dispatch: Dispatch) => async (
+  id: IUserState["recipeTeamID"],
 ) => {
   // store old id so we can undo
-  const oldID = store.getState().user.teamID
-  dispatch(updateTeamID(id))
+  const oldID = store.getState().user.recipeTeamID
+  dispatch(updateRecipeTeamID(id))
   const res = await api.updateUser({ selected_team: id })
   if (isOk(res)) {
     dispatch(fetchUser.success(res.data))
   } else {
-    dispatch(updateTeamID(oldID))
+    dispatch(updateRecipeTeamID(oldID))
+  }
+}
+
+export const updatingDefaultScheduleTeamIDAsync = (dispatch: Dispatch) => async (
+  id: IUserState["scheduleTeamID"],
+) => {
+  // store old id so we can undo
+  const oldID = store.getState().user.scheduleTeamID
+  dispatch(updateRecipeTeamID(id))
+  const res = await api.updateUser({ schedule_team: id })
+  if (isOk(res)) {
+    dispatch(fetchUser.success(res.data))
+  } else {
+    dispatch(updateRecipeTeamID(oldID))
   }
 }
 

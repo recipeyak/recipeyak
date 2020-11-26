@@ -32,8 +32,11 @@ export const logOut = createAsyncAction(
   "LOGOUT_FAILURE",
 )<void, void, void>()
 
-export const updateTeamID = createStandardAction("SET_TEAM_ID")<
-  IUserState["teamID"]
+export const updateRecipeTeamID = createStandardAction("SET_TEAM_ID")<
+  IUserState["recipeTeamID"]
+>()
+export const updateScheduleTeamID = createStandardAction("SET_TEAM_ID")<
+  IUserState["scheduleTeamID"]
 >()
 
 export const socialConnections = createAsyncAction(
@@ -78,7 +81,8 @@ export const logoutAllSessions = createAsyncAction(
 export type UserActions =
   | ActionType<typeof logOut>
   | ReturnType<typeof setUserLoggedIn>
-  | ReturnType<typeof updateTeamID>
+  | ReturnType<typeof updateRecipeTeamID>
+  | ReturnType<typeof updateScheduleTeamID>
   | ActionType<typeof socialConnections>
   | ActionType<typeof fetchUser>
   | ReturnType<typeof toggleDarkMode>
@@ -96,6 +100,7 @@ export interface IUser {
   readonly has_usable_password?: boolean
   readonly dark_mode_enabled: boolean
   readonly selected_team: number | null
+  readonly schedule_team: number | null
 }
 
 export type SocialProvider = keyof ISocialAccountsState
@@ -157,7 +162,8 @@ export interface IUserState {
   readonly hasUsablePassword: boolean
   readonly socialAccountConnections: WebData<ISocialAccountsState, void>
   // ID of currently focused team. null if using personal team.
-  readonly teamID: number | null
+  readonly recipeTeamID: number | null
+  readonly scheduleTeamID: number | null
   readonly updatingEmail: boolean
   readonly sessions: WebData<ReadonlyArray<ISession>>
   readonly loggingOutAllSessionsStatus: LoggingOutStatus
@@ -175,7 +181,8 @@ const initialState: IUserState = {
   darkMode: false,
   hasUsablePassword: false,
   socialAccountConnections: undefined,
-  teamID: null,
+  recipeTeamID: null,
+  scheduleTeamID: null,
   updatingEmail: false,
   sessions: undefined,
   loggingOutAllSessionsStatus: LoggingOutStatus.Initial,
@@ -294,8 +301,10 @@ export const user = (
         ...state,
         loggingOutAllSessionsStatus: LoggingOutStatus.Failure,
       }
-    case getType(updateTeamID):
-      return { ...state, teamID: action.payload }
+    case getType(updateRecipeTeamID):
+      return { ...state, recipeTeamID: action.payload }
+    case getType(updateScheduleTeamID):
+      return { ...state, scheduleTeamID: action.payload }
     case getType(setUserLoggedIn):
       return { ...state, loggedIn: action.payload }
     case getType(toggleDarkMode):
@@ -330,7 +339,8 @@ export const user = (
         avatarURL: action.payload.avatar_url,
         id: action.payload.id,
         darkMode: action.payload.dark_mode_enabled,
-        teamID: action.payload.selected_team,
+        recipeTeamID: action.payload.selected_team,
+        scheduleTeamID: action.payload.schedule_team,
         updatingEmail: false,
       }
     default:

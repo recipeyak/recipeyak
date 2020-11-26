@@ -7,7 +7,7 @@ export const teamsFrom = (state: IState): ITeam[] =>
   state.teams.allIds.map(id => state.teams.byId[id]).filter(notUndefined)
 
 export const scheduleURLFromTeamID = (state: IState): string => {
-  const id = state.user.teamID
+  const id = state.user.scheduleTeamID
   if (id == null) {
     return "/schedule/recipes"
   }
