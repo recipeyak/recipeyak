@@ -25,6 +25,13 @@ html {
 
 body {
   border-top: 3px solid $accent;
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .dark-mode {
