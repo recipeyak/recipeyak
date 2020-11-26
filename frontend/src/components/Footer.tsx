@@ -4,7 +4,6 @@ import * as React from "react"
 const StyledFooter = styled.footer`
   font-weight: bold;
   padding: 1rem 1.5rem;
-  /* font-size:  */
   display: flex;
   justify-content: space-between;
   margin-top: auto;
