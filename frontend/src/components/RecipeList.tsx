@@ -3,8 +3,7 @@ import { connect } from "react-redux"
 import RecipeItem from "@/components/RecipeItem"
 import Loader from "@/components/Loader"
 import { TextInput } from "@/components/Forms"
-import { matchesQuery } from "@/search"
-import { byNameAlphabetical } from "@/sorters"
+import { searchRecipes } from "@/search"
 import { Dispatch, fetchingRecipeListAsync } from "@/store/thunks"
 import { IRecipe, getTeamRecipes } from "@/store/reducers/recipes"
 import { ITeam } from "@/store/reducers/teams"
@@ -60,9 +59,11 @@ function RecipeList(props: IRecipeList) {
     return <Loader className="pt-4" />
   }
 
-  const results = props.recipes.data
-    .filter(recipe => matchesQuery(recipe, props.query))
-    .sort(byNameAlphabetical)
+  const results = searchRecipes({
+    recipes: props.recipes.data,
+    query: props.query,
+    includeArchived: true,
+  })
 
   const normalResults = results
     .filter(recipe => !recipe.archived_at)
