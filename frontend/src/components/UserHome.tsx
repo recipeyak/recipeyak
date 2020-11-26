@@ -152,7 +152,7 @@ const UserHome = () => {
                     <BrowseRecipes
                       to={{
                         pathname: "/recipes",
-                        search: `search=${searchQuery}`,
+                        search: `search=${encodeURIComponent(searchQuery)}`,
                       }}>
                       Browse Recipes
                     </BrowseRecipes>

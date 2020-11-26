@@ -12,6 +12,8 @@ import { WebData, isSuccessOrRefetching } from "@/webdata"
 import queryString from "query-string"
 import { parseIntOrNull } from "@/parseIntOrNull"
 import { Link } from "react-router-dom"
+import { useDispatch } from "@/hooks"
+import { replace } from "connected-react-router"
 
 interface IResultsProps {
   readonly recipes: JSX.Element[]
@@ -108,9 +110,13 @@ interface IRecipesProps {
   readonly teamID?: ITeam["id"] | "personal" | null
 }
 
-function getInitialQuery(): string {
-  const params = window.location.search
-  const recipeIdParam = queryString.parse(params).recipeId
+function getSearch(qs: string): string {
+  const params = queryString.parse(qs)
+  const searchQuery = params.search
+  if (searchQuery != null && typeof searchQuery === "string") {
+    return decodeURIComponent(searchQuery)
+  }
+  const recipeIdParam = params.recipeId
   if (recipeIdParam == null || Array.isArray(recipeIdParam)) {
     return ""
   }
@@ -120,7 +126,6 @@ function getInitialQuery(): string {
   }
   return `recipeId:${recipeId}`
 }
-
 function RecipesListSearch({
   fetchData,
   noPadding,
@@ -129,7 +134,12 @@ function RecipesListSearch({
   scroll,
   teamID,
 }: IRecipesProps) {
-  const [query, setQuery] = useState(getInitialQuery)
+  const dispatch = useDispatch()
+  const [query, setQuery] = useState(() => {
+    const urlQuery = getSearch(window.location.search)
+    dispatch(replace({ search: "" }))
+    return urlQuery
+  })
 
   useEffect(() => {
     const teamID_ = teamID == null ? "personal" : teamID
