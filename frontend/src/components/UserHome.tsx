@@ -1,210 +1,168 @@
 import React, { useEffect } from "react"
 import { Helmet } from "@/components/Helmet"
 import { Link } from "react-router-dom"
-
-import Loader from "@/components/Loader"
-import { RecipeItem as Recipe } from "@/components/RecipeItem"
-import { IRecipe } from "@/store/reducers/recipes"
-import { IUserStats } from "@/store/reducers/user"
 import Footer from "@/components/Footer"
-import { WebData, isInitial, isLoading, isFailure, isSuccess } from "@/webdata"
+import { TextInput } from "@/components/Forms"
+import { styled } from "@/theme"
+import { useDispatch, useSelector } from "@/hooks"
+import { push } from "connected-react-router"
+import { fetchingRecipeListAsync } from "@/store/thunks"
+import { getTeamRecipes } from "@/store/reducers/recipes"
+import { searchRecipes } from "@/search"
 
-// TODO(sbdchd): must be a better way
-// tslint:disable-next-line:no-var-requires
-const img = require("@/static/images/yak.jpg")
+const SearchInput = styled(TextInput)`
+  font-size: 1.5rem !important;
+  margin-bottom: 0.25rem;
+`
 
-interface ITotalRecipeCountProps {
-  readonly count: number
-}
-const TotalRecipeCount = ({ count }: ITotalRecipeCountProps) => (
-  <p className="stat mb-1">
-    You have{" "}
-    <b>
-      {count} recipe{count === 1 ? "" : "s"}
-    </b>
-    .
-    {count < 1 && (
-      <span>
-        Try adding one via the{" "}
-        <Link className="big-link" to="/recipes/add">
-          Add Recipe
-        </Link>{" "}
-        page.
-      </span>
-    )}
-  </p>
-)
+const SearchInputAligner = styled.div`
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+  padding-bottom: 4rem;
+`
 
-interface IRecipesAddedThisWeek {
-  readonly count: number
-}
+const SearchInputContainer = styled.div`
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  position: relative;
+`
 
-const RecipesAddedThisWeek = ({ count }: IRecipesAddedThisWeek) => {
-  if (count < 1) {
-    return null
-  }
-  return (
-    <p className="stat mb-1">
-      <b>
-        {count} recipe{count === 1 ? " " : "s "}
-      </b>
-      {count === 1 ? "has" : "have"} been added in the <b>last week</b>.
-    </p>
-  )
-}
+const SearchOptions = styled.div`
+  font-size: 0.85rem;
+`
 
-const toInt = (x: number) => Math.max(0, x)
+const Code = styled.code`
+  margin: 0 2px;
+  padding: 0px 5px;
+  border: 1px solid #ddd;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+  color: inherit;
+  white-space: pre;
+`
 
-interface ILifeTimeRecipeEdits {
-  readonly edits: number
-  readonly dateJoined: string
-}
+const SuggestionBox = styled.div`
+  position: absolute;
+  z-index: 10;
+  top: 60px;
+  background: white;
+  max-width: 400px;
+  width: 100%;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #dddd;
+  border-radius: 5px;
+  box-shadow: 0px 4px 5px 0px hsl(0 0% 90% / 1);
+  padding: 0.25rem;
+  display: inline-grid;
+`
 
-const LifetimeRecipeEdits = ({ edits, dateJoined }: ILifeTimeRecipeEdits) => {
-  if (dateJoined === "") {
-    return null
-  }
-  return (
-    <p className="stat mb-1">
-      Since <b>{dateJoined}</b>, you have edited your recipes a total of{" "}
-      <b>{toInt(edits)} times</b>.
-      {edits < 1 ? (
-        <span>
-          Try the <u>Edit</u> button.
-        </span>
-      ) : null}
-    </p>
-  )
-}
+const SuggestionItem = styled(Link)`
+  padding: 0.25rem 0.25rem;
 
-interface IRecentRecipes {
-  readonly recipes: WebData<IRecipe[]>
-}
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`
 
-const RecentRecipes = ({ recipes }: IRecentRecipes) => {
-  if (isFailure(recipes)) {
-    return <p>error fetching recipes</p>
-  }
+const BrowseRecipes = styled(SuggestionItem)`
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-color: #f2f2f2;
+  margin-top: 0.5rem;
+  text-align: center;
+`
 
-  if (isSuccess(recipes) && recipes.data.length === 0) {
-    return (
-      <section>
-        <section className="d-grid grid-gap-4 justify-content-center">
-          <p className="stat-small">No recipes here — just this yak.</p>
-          <img
-            alt="yak in a field"
-            // tslint:disable-next-line:no-unsafe-any
-            src={img}
-            className="box-shadow-normal br-3 filter-saturate-140"
-          />
-          <Link to="/recipes/add" className="my-button is-medium is-primary">
-            Add a Recipe
-          </Link>
-        </section>
-      </section>
-    )
-  }
-
-  return (
-    <section>
-      <h1 className="title is-3 mb-2 text-center">Recently Active Recipes</h1>
-      <section className="recent-recipes-grid">
-        {isLoading(recipes) || isInitial(recipes) ? (
-          <Loader />
-        ) : (
-          <>
-            {recipes.data.map(recipe => (
-              <Recipe {...recipe} key={recipe.id} />
-            ))}
-            <Link to="/recipes" className="my-button is-primary">
-              See More
-            </Link>
-          </>
-        )}
-      </section>
-    </section>
-  )
-}
-
-interface IUserStatisticsProps {
-  readonly stats: WebData<IUserStats>
-}
-
-const UserStatistics = (props: IUserStatisticsProps) => {
-  if (isInitial(props.stats) || isLoading(props.stats)) {
-    return (
-      <section className="justify-self-center d-grid align-self-center">
-        <Loader />
-      </section>
-    )
-  }
-
-  const stats = isFailure(props.stats)
-    ? {
-        most_added_recipe: null,
-        new_recipes_last_week: 0,
-        total_recipe_edits: 0,
-        total_user_recipes: 0,
-        date_joined: "",
-        recipes_added_by_month: [],
-        total_recipes_added_last_month_by_all_users: 0,
-      }
-    : props.stats.data
-
-  // NOTE: this breaks sometimes
-  const emptyStats = stats.most_added_recipe == null
-  if (emptyStats) {
-    return (
-      <div>
-        <p className="stat">
-          <b>Welcome!</b>
-        </p>
-        <p className="stat">
-          So far <b>{stats.total_recipes_added_last_month_by_all_users}</b>{" "}
-          recipes have been added in the <b>last month</b>.
-        </p>
-        <p className="stat">
-          <Link className="big-link" to="/recipes/add">
-            Add some recipes
-          </Link>
-          and check back later for more stats.
-        </p>
-      </div>
-    )
-  }
-
-  return (
-    <section>
-      <TotalRecipeCount count={stats.total_user_recipes} />
-      <RecipesAddedThisWeek count={stats.new_recipes_last_week} />
-      <LifetimeRecipeEdits
-        edits={stats.total_recipe_edits}
-        dateJoined={stats.date_joined || ""}
-      />
-    </section>
-  )
-}
-
-interface IUserHomeProps {
-  readonly userStats: WebData<IUserStats>
-  readonly recipes: WebData<IRecipe[]>
-  readonly fetchData: () => void
-}
-
-const UserHome = ({ userStats, recipes, fetchData }: IUserHomeProps) => {
+const UserHome = () => {
+  const [searchQuery, setSearchQuery] = React.useState("")
+  const recipes = useSelector(s => getTeamRecipes(s, "personal"))
+  const dispatch = useDispatch()
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    fetchingRecipeListAsync(dispatch)("personal")
+  }, [dispatch])
+  const setQuery = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(event.target.value)
+    },
+    [],
+  )
+
+  const filteredRecipes =
+    recipes?.kind === "Success"
+      ? searchRecipes({ recipes: recipes.data, query: searchQuery })
+      : []
+
+  const loadingSuggestions = recipes?.kind !== "Success"
+
+  const suggestions = filteredRecipes
+    .map(recipe => {
+      return (
+        <SuggestionItem key={recipe.id} to={`/recipes/${recipe.id}`}>
+          <b>{recipe.name}</b> by {recipe.author}
+        </SuggestionItem>
+      )
+    })
+    .slice(0, 7)
+
+  const handleSearchKeydown = React.useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      const key = e.key
+      const suggestion = filteredRecipes[0]
+      if (!suggestion) {
+        return
+      }
+      if (key === "Enter") {
+        dispatch(push(`/recipes/${suggestion.id}`))
+      }
+    },
+    [dispatch, filteredRecipes],
+  )
 
   return (
     <>
       <div className="container pr-2 pl-2 pb-2">
         <Helmet title="Home" />
-
-        <section className="home-page-grid">
-          <UserStatistics stats={userStats} />
-          <RecentRecipes recipes={recipes} />
-        </section>
+        <SearchInputAligner>
+          <SearchInputContainer>
+            <SearchInput
+              autoFocus
+              value={searchQuery}
+              onChange={setQuery}
+              onKeyDown={handleSearchKeydown}
+              placeholder="Search your recipes..."
+            />
+            {searchQuery && (
+              <SuggestionBox>
+                {!loadingSuggestions ? (
+                  <>
+                    {suggestions.length === 0 && (
+                      <p className="text-muted text-center">
+                        No Results Found.
+                      </p>
+                    )}
+                    {suggestions.map(x => x)}
+                    <BrowseRecipes
+                      to={{
+                        pathname: "/recipes",
+                        search: `search=${searchQuery}`,
+                      }}>
+                      Browse Recipes
+                    </BrowseRecipes>
+                  </>
+                ) : (
+                  <p className="text-center">Loading...</p>
+                )}
+              </SuggestionBox>
+            )}
+            <SearchOptions className="text-muted">
+              fields <Code>author:Jane Doe</Code>,{" "}
+              <Code>ingredient:onions</Code>, <Code>name:cake</Code>
+            </SearchOptions>
+          </SearchInputContainer>
+        </SearchInputAligner>
       </div>
 
       <Footer />
