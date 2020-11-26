@@ -3,7 +3,7 @@ import { Helmet } from "@/components/Helmet"
 import { Link } from "react-router-dom"
 import Footer from "@/components/Footer"
 import { TextInput } from "@/components/Forms"
-import { styled } from "@/theme"
+import { css, styled } from "@/theme"
 import { useDispatch, useSelector } from "@/hooks"
 import { push } from "connected-react-router"
 import { fetchingRecipeListAsync } from "@/store/thunks"
@@ -60,7 +60,7 @@ const SuggestionBox = styled.div`
   display: inline-grid;
 `
 
-const SuggestionItem = styled(Link)`
+const suggestionStyle = css`
   padding: 0.25rem 0.25rem;
 
   overflow-x: hidden;
@@ -68,7 +68,12 @@ const SuggestionItem = styled(Link)`
   text-overflow: ellipsis;
 `
 
-const BrowseRecipes = styled(SuggestionItem)`
+const SuggestionItem = styled(Link)`
+  ${suggestionStyle}
+`
+
+const BrowseRecipes = styled(Link)`
+  ${suggestionStyle}
   border-top-style: solid;
   border-top-width: 1px;
   border-color: #f2f2f2;
