@@ -34,7 +34,8 @@ const baseMember: IMember = {
     email: "bar",
     avatar_url: "bar.com",
     dark_mode_enabled: false,
-    selected_team: null,
+    schedule_team: null,
+    selected_team: null
   },
   level: "read",
   is_active: true,
@@ -262,7 +263,8 @@ describe("Teams", () => {
           avatar_url: "http://lksjdflsjdf",
           has_usable_password: false,
           dark_mode_enabled: false,
-          selected_team: null,
+          schedule_team: null,
+          selected_team: null
         },
       },
     ]
@@ -311,7 +313,8 @@ describe("Teams", () => {
           email: "blah@blah.com",
           avatar_url: "http://lksjdflsjdf",
           dark_mode_enabled: false,
-          selected_team: null,
+          schedule_team: null,
+          selected_team: null
         },
       },
     ]
@@ -369,7 +372,8 @@ describe("Teams", () => {
             email: "foo",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
-            selected_team: null,
+            schedule_team: null,
+            selected_team: null
           },
         },
         2: {
@@ -381,7 +385,8 @@ describe("Teams", () => {
             email: "bar",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
-            selected_team: null,
+            schedule_team: null,
+            selected_team: null
           },
         },
       },
@@ -400,7 +405,8 @@ describe("Teams", () => {
             email: "foo",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
-            selected_team: null,
+            schedule_team: null,
+            selected_team: null
           },
         },
         2: {
@@ -412,7 +418,8 @@ describe("Teams", () => {
             email: "bar",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
-            selected_team: null,
+            schedule_team: null,
+            selected_team: null
           },
         },
       },
@@ -440,7 +447,8 @@ describe("Teams", () => {
             email: "foo",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
-            selected_team: null,
+            schedule_team: null,
+            selected_team: null
           },
         },
         2: {
@@ -452,7 +460,8 @@ describe("Teams", () => {
             email: "bar",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
-            selected_team: null,
+            schedule_team: null,
+            selected_team: null
           },
         },
       },
@@ -471,7 +480,8 @@ describe("Teams", () => {
             email: "foo",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
-            selected_team: null,
+            schedule_team: null,
+            selected_team: null
           },
         },
         2: {
@@ -484,7 +494,8 @@ describe("Teams", () => {
             email: "bar",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
-            selected_team: null,
+            schedule_team: null,
+            selected_team: null
           },
         },
       },
@@ -512,7 +523,8 @@ describe("Teams", () => {
             email: "foo",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
-            selected_team: null,
+            schedule_team: null,
+            selected_team: null
           },
         },
         2: {
@@ -525,7 +537,8 @@ describe("Teams", () => {
             email: "bar",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
-            selected_team: null,
+            schedule_team: null,
+            selected_team: null
           },
         },
       },
@@ -544,7 +557,8 @@ describe("Teams", () => {
             email: "foo",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
-            selected_team: null,
+            schedule_team: null,
+            selected_team: null
           },
         },
       },
@@ -569,7 +583,8 @@ describe("Teams", () => {
             email: "foo",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
-            selected_team: null,
+            schedule_team: null,
+            selected_team: null
           },
         },
         2: {
@@ -581,7 +596,8 @@ describe("Teams", () => {
             email: "bar",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
-            selected_team: null,
+            schedule_team: null,
+            selected_team: null
           },
         },
       },
@@ -601,7 +617,8 @@ describe("Teams", () => {
             email: "foo",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
-            selected_team: null,
+            schedule_team: null,
+            selected_team: null
           },
         },
         2: {
@@ -613,7 +630,8 @@ describe("Teams", () => {
             email: "bar",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
-            selected_team: null,
+            schedule_team: null,
+            selected_team: null
           },
         },
       },
@@ -638,7 +656,8 @@ describe("Teams", () => {
             email: "foo",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
-            selected_team: null,
+            schedule_team: null,
+            selected_team: null
           },
         },
         2: {
@@ -650,7 +669,8 @@ describe("Teams", () => {
             email: "bar",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
-            selected_team: null,
+            schedule_team: null,
+            selected_team: null
           },
         },
       },
@@ -670,7 +690,8 @@ describe("Teams", () => {
               email: "foo",
               avatar_url: "foo.com",
               dark_mode_enabled: false,
-              selected_team: null,
+              schedule_team: null,
+              selected_team: null
             },
           },
           2: {
@@ -682,7 +703,8 @@ describe("Teams", () => {
               email: "bar",
               avatar_url: "bar.com",
               dark_mode_enabled: false,
-              selected_team: null,
+              schedule_team: null,
+              selected_team: null
             },
           },
         },
@@ -708,7 +730,8 @@ describe("Teams", () => {
             avatar_url: "foo.com",
 
             dark_mode_enabled: false,
-            selected_team: null,
+            schedule_team: null,
+            selected_team: null
           },
         },
         2: {
@@ -720,7 +743,8 @@ describe("Teams", () => {
             email: "bar",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
-            selected_team: null,
+            schedule_team: null,
+            selected_team: null
           },
         },
       },
@@ -743,7 +767,8 @@ describe("Teams", () => {
                 email: "foo",
                 avatar_url: "foo.com",
                 dark_mode_enabled: false,
-                selected_team: null,
+                schedule_team: null,
+                selected_team: null
               },
             },
             2: {
@@ -755,7 +780,8 @@ describe("Teams", () => {
                 email: "bar",
                 avatar_url: "bar.com",
                 dark_mode_enabled: false,
-                selected_team: null,
+                schedule_team: null,
+                selected_team: null
               },
             },
           },
