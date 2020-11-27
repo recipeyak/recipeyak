@@ -17,7 +17,7 @@ export interface ITheme {
 }
 
 const primary = "#ff7247"
-const muted = '#7a7a7a'
+const muted = "#7a7a7a"
 
 export const theme: ITheme = {
   color: {
