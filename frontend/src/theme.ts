@@ -6,6 +6,7 @@ export interface ITheme {
   readonly color: {
     readonly white: string
     readonly primary: string
+    readonly muted: string
     readonly primaryShadow: string
   }
   readonly text: {
@@ -16,11 +17,13 @@ export interface ITheme {
 }
 
 const primary = "#ff7247"
+const muted = "#7a7a7a"
 
 export const theme: ITheme = {
   color: {
     white: "#f9f9f9",
     primary,
+    muted,
     primaryShadow: transparentize(0.2, primary),
   },
   text: {
