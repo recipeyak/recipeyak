@@ -22,6 +22,7 @@ import {
   logoutSessionById,
   logoutAllSessions,
   socialConnections,
+  updateScheduleTeamID,
 } from "@/store/reducers/user"
 import {
   ICalRecipe,
@@ -209,12 +210,12 @@ export const updatingDefaultScheduleTeamIDAsync = (dispatch: Dispatch) => async 
 ) => {
   // store old id so we can undo
   const oldID = store.getState().user.scheduleTeamID
-  dispatch(updateRecipeTeamID(id))
+  dispatch(updateScheduleTeamID(id))
   const res = await api.updateUser({ schedule_team: id })
   if (isOk(res)) {
     dispatch(fetchUser.success(res.data))
   } else {
-    dispatch(updateRecipeTeamID(oldID))
+    dispatch(updateScheduleTeamID(oldID))
   }
 }
 
