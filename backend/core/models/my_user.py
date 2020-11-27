@@ -64,12 +64,23 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     dark_mode_enabled = models.BooleanField(
         default=False, help_text="frontend darkmode setting"
     )
-    selected_team = models.ForeignKey(
+    recipe_team = models.ForeignKey(
         "Team",
         null=True,
+        db_column="selected_team_id",
         blank=True,
         help_text="team currently focused on UI, null if personal items selected.",
         on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
+    schedule_team = models.ForeignKey(
+        "Team",
+        null=True,
+        blank=True,
+        help_text="default team selected for scheduled view.",
+        on_delete=models.SET_NULL,
+        related_name="+",
     )
 
     USERNAME_FIELD = "email"
