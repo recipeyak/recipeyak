@@ -7,11 +7,7 @@ import Calendar from "@/components/Calendar"
 import Recipes from "@/components/RecipeList"
 import ShoppingList from "@/components/ShoppingList"
 
-import {
-  Dispatch,
-  updatingDefaultRecipeTeamID,
-  updatingDefaultScheduleTeamIDAsync,
-} from "@/store/thunks"
+import { Dispatch, updatingDefaultScheduleTeamIDAsync } from "@/store/thunks"
 import { Tabs, Tab } from "@/components/Tabs"
 import { ITeam } from "@/store/reducers/teams"
 
