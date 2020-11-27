@@ -1,6 +1,7 @@
 import { IRecipe } from "@/store/reducers/recipes"
 import { parseIntOrNull } from "@/parseIntOrNull"
 import nth from "lodash/nth"
+import { byNameAlphabetical } from "@/sorters"
 
 // https://stackoverflow.com/a/37511463/3720597
 const removeAccents = (x: string) =>
@@ -52,4 +53,14 @@ export function matchesQuery(recipe: IRecipe, query: string) {
     : query
 
   return name.includes(query) || author.includes(query)
+}
+
+export function searchRecipes(params: {
+  readonly recipes: IRecipe[]
+  readonly query: string
+  readonly includeArchived?: boolean
+}): readonly IRecipe[] {
+  return params.recipes
+    .filter(recipe => matchesQuery(recipe, params.query))
+    .sort(byNameAlphabetical)
 }
