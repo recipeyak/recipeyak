@@ -218,6 +218,7 @@ const NavContainer = styled.nav`
   padding-right: 0.75rem;
   display: flex;
   justify-content: space-between;
+  flex-shrink: 0;
 `
 
 export function Navbar() {
