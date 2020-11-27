@@ -5,12 +5,16 @@ from rest_framework import serializers
 from user_sessions.models import Session
 
 from core import user_agent
-from core.models import MyUser
+from core.models import MyUser, Team
 from core.serialization import BaseModelSerializer
 
 
 class UserSerializer(BaseModelSerializer):
-    """serializer custom user model"""
+    # we've renamed `recipe_team` in the backend, but to prevent breaking the
+    # API we're preserving the API facing name.
+    selected_team = serializers.PrimaryKeyRelatedField(
+        source="recipe_team", queryset=Team.objects.all(), allow_null=True
+    )
 
     class Meta:
         model = MyUser
@@ -22,6 +26,7 @@ class UserSerializer(BaseModelSerializer):
             "has_usable_password",
             "dark_mode_enabled",
             "selected_team",
+            "schedule_team",
         )
 
 
