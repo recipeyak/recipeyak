@@ -205,9 +205,9 @@ export const updatingDefaultRecipeTeamID = (dispatch: Dispatch) => async (
   }
 }
 
-export const updatingDefaultScheduleTeamIDAsync = (dispatch: Dispatch) => async (
-  id: IUserState["scheduleTeamID"],
-) => {
+export const updatingDefaultScheduleTeamIDAsync = (
+  dispatch: Dispatch,
+) => async (id: IUserState["scheduleTeamID"]) => {
   // store old id so we can undo
   const oldID = store.getState().user.scheduleTeamID
   dispatch(updateScheduleTeamID(id))
