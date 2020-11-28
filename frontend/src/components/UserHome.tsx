@@ -64,9 +64,7 @@ const Code = styled.code`
 `
 
 const SectionTitle = styled.div`
-  /* font-weight: bold; */
   font-size: 1.25rem;
-  /* text-decoration: underline; */
 `
 
 const ScheduledRecipeContainer = styled.div`
