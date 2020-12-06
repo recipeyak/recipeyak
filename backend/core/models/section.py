@@ -1,8 +1,11 @@
+from typing import TYPE_CHECKING
 from django.db import models
 from softdelete.models import SoftDeleteObject, SoftDeleteManager
 
 from core.models.base import CommonInfo
-from core.models import Recipe
+
+if TYPE_CHECKING:
+    from core.models.recipe import Recipe
 
 
 class Section(CommonInfo, SoftDeleteObject):
@@ -13,8 +16,8 @@ class Section(CommonInfo, SoftDeleteObject):
 
     id = models.AutoField(primary_key=True)
 
-    recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE, help_text="Recipe the section is part of."
+    recipe = models.ForeignKey["Recipe"](
+        "Recipe", on_delete=models.CASCADE, help_text="Recipe the section is part of."
     )
     title = models.CharField(
         max_length=255, help_text="name of the ingredient section group"
