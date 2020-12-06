@@ -47,7 +47,8 @@ describe("fetchingUser", () => {
       error: false,
       darkMode: true,
       hasUsablePassword: true,
-      teamID: userPayload.selected_team,
+      recipeTeamID: userPayload.selected_team,
+      scheduleTeamID: undefined,
     }
     expect(user(beforeState, fetchUser.success(userPayload))).toEqual(expected)
     expect(user(beforeState, login.success(userPayload))).toEqual(expected)

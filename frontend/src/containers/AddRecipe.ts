@@ -4,6 +4,7 @@ import {
   postNewRecipeAsync,
   Dispatch,
   fetchingTeamsAsync,
+  updatingDefaultRecipeTeamID,
 } from "@/store/thunks"
 
 import AddRecipe from "@/components/AddRecipe"
@@ -30,7 +31,6 @@ import {
   IStepBasic,
   resetAddRecipeErrors,
 } from "@/store/reducers/recipes"
-import { updateTeamID } from "@/store/reducers/user"
 
 const mapStateToProps = (state: IState) => ({
   name: state.addrecipe.name,
@@ -46,7 +46,7 @@ const mapStateToProps = (state: IState) => ({
   teams: teamsFrom(state),
   loadingTeams:
     state.teams.status === "loading" || state.teams.status === "initial",
-  teamID: state.user.teamID,
+  teamID: state.user.recipeTeamID,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -60,7 +60,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     dispatch(setAddRecipeFormTime(e.target.value)),
   setServings: (e: React.ChangeEvent<HTMLInputElement>) =>
     dispatch(setAddRecipeFormServings(e.target.value)),
-  setTeamID: (id: ITeam["id"] | null) => dispatch(updateTeamID(id)),
+  setTeamID: (id: ITeam["id"] | null) => {
+    updatingDefaultRecipeTeamID(dispatch)(id)
+  },
 
   addIngredient: (x: IIngredientBasic) =>
     dispatch(addAddRecipeFormIngredient(x)),

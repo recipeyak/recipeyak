@@ -228,7 +228,7 @@ def parse_int(val: str) -> Optional[int]:
 @permission_classes((IsAuthenticated,))
 def get_recipe_timeline(request: Request, recipe_pk: int) -> Response:
     user: MyUser = request.user
-    team = user.selected_team
+    team = user.recipe_team
 
     recipe = get_object_or_404(Recipe, pk=recipe_pk)
 

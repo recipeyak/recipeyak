@@ -205,7 +205,8 @@ store.subscribe(
         // this is acceptable for us for the added performance
         loggedIn: store.getState().user.loggedIn,
         darkMode: store.getState().user.darkMode,
-        teamID: store.getState().user.teamID,
+        recipeTeamID: store.getState().user.recipeTeamID,
+        scheduleTeamID: store.getState().user.scheduleTeamID,
       },
       addrecipe: store.getState().addrecipe,
       auth: {

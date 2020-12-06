@@ -92,6 +92,9 @@ exports[`<Nav/> render when logged in 1`] = `
   -webkit-justify-content: space-between;
   -ms-flex-pack: justify;
   justify-content: space-between;
+  -webkit-flex-shrink: 0;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
 }
 
 @media (max-width:630px) {
@@ -370,6 +373,9 @@ exports[`<Nav/> renders default 1`] = `
   -webkit-justify-content: space-between;
   -ms-flex-pack: justify;
   justify-content: space-between;
+  -webkit-flex-shrink: 0;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
 }
 
 @media (max-width:630px) {
