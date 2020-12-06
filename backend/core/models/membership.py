@@ -12,7 +12,6 @@ if TYPE_CHECKING:
     from core.models.my_user import MyUser  # noqa: F401
 
 
-
 def get_random_ical_id() -> str:
     return get_random_string(length=48)
 
