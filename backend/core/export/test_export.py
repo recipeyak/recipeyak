@@ -1,4 +1,4 @@
-from typing import Dict, Iterable
+from typing import Any, Dict, Iterable
 
 import pytest
 import yaml
@@ -15,7 +15,7 @@ def c() -> Client:
     return Client()
 
 
-def fields_in(data: Dict, fields: Iterable[str]) -> bool:
+def fields_in(data: Dict[str, object], fields: Iterable[str]) -> bool:
     for key, value in data.items():
         if key in fields:
             return True
@@ -39,7 +39,7 @@ def fields_in(data: Dict, fields: Iterable[str]) -> bool:
         ({"blah": 1, "hmm": [{"blah": 1}], "owner": {"id": 1}}, True),
     ],
 )
-def test_fields_in(dict_: Dict, expected: bool) -> None:
+def test_fields_in(dict_: Dict[str, object], expected: bool) -> None:
     assert fields_in(dict_, fields=("id",)) == expected
 
 

@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Any, cast
 
 from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model
@@ -12,7 +12,7 @@ from rest_framework.exceptions import ValidationError
 
 from core.serialization import BaseSerializer
 
-UserModel = get_user_model()
+UserModel = cast(Any, get_user_model())
 
 
 class LoginSerializer(BaseSerializer):

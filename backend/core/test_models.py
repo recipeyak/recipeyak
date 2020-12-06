@@ -100,8 +100,8 @@ def test_recipe_copy_to(client, team: Team, user: MyUser, recipe: Recipe) -> Non
         (recipe.steps.values(), team_recipe.steps.values()),
         (recipe.ingredients.values(), team_recipe.ingredients.values()),
     ]:
-        assert len(a) == len(b)
-        for x, y in zip(a, b):
+        assert len(a) == len(b)  # type: ignore [arg-type]
+        for x, y in zip(a, b):  # type: ignore [call-overload]
             assert x["id"] != y["id"]
             assert x["recipe_id"] != y["recipe_id"]
             # ignore keys that will change
@@ -138,9 +138,9 @@ def test_soft_delete_relations(recipe: Recipe):
 
     def objects_exist() -> bool:
         return (
-            cast(bool, Recipe.objects.filter(id=recipe_id).exists())
-            and cast(bool, Ingredient.objects.filter(id__in=ingredient_ids).exists())
-            and cast(bool, Step.objects.filter(id__in=step_ids).exists())
+            Recipe.objects.filter(id=recipe_id).exists()
+            and Ingredient.objects.filter(id__in=ingredient_ids).exists()
+            and Step.objects.filter(id__in=step_ids).exists()
         )
 
     assert objects_exist(), "recipe, steps, and ignredients should be accessible"

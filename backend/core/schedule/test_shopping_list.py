@@ -10,6 +10,7 @@ from rest_framework.test import APIClient
 
 from core.cumin import (
     IngredientItem,
+    Ingredient as IngredientCumin,
     IngredientList,
     Quantity,
     Unit,
@@ -51,7 +52,8 @@ def test_fetching_shoppinglist(client, user, recipe):
     }
 
     assert ShoppingList.objects.count() == 2
-    shopping_list: ShoppingList = ShoppingList.objects.order_by("-created").first()
+    shopping_list = ShoppingList.objects.order_by("-created").first()
+    assert shopping_list is not None
     assert json.loads(shopping_list.ingredients) == res.json()
 
 
@@ -297,16 +299,12 @@ def test_scheduling_multiple_times_some_ingredient(
     ],
 )
 def test_combine_ingredients(
-    empty_recipe, ingredients: List[Tuple[str, str]], expected: IngredientList
+    ingredients: List[Tuple[str, str]], expected: IngredientList
 ) -> None:
     ingres = []
     position = 1
     for quantity, name in ingredients:
-        ingres.append(
-            Ingredient.objects.create(
-                quantity=quantity, name=name, position=position, recipe=empty_recipe
-            )
-        )
+        ingres.append(IngredientCumin(quantity=quantity, name=name))
         position += 1
 
     assert combine_ingredients(ingres) == expected

@@ -1,3 +1,4 @@
+from core.models.membership import Membership
 from datetime import date, datetime
 from email.utils import parsedate_to_datetime
 from urllib.parse import urlparse
@@ -156,7 +157,7 @@ def test_get_ical_view_with_user_specific_id(
     """
     Ensure the user specific secret key works.
     """
-    membership = user.membership_set.get(team=team)
+    membership = Membership.objects.filter(user=user).get(team=team)
     membership.calendar_sync_enabled = True
     membership.save()
     url = f"/t/{team.id}/ical/{membership.calendar_secret_key}/schedule.ics"
@@ -196,7 +197,7 @@ def test_get_ical_view_404_when_disabled(
     """
     Url should be disabled when calendar_sync_enabled is false.
     """
-    membership = user.membership_set.get(team=team)
+    membership = Membership.objects.filter(user=user).get(team=team)
     membership.calendar_sync_enabled = True
     membership.save()
     url = f"/t/{team.id}/ical/{membership.calendar_secret_key}/schedule.ics"

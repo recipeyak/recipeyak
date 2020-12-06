@@ -1,7 +1,11 @@
+from typing import TYPE_CHECKING
 from django.db import models
-from softdelete.models import SoftDeleteObject
+from softdelete.models import SoftDeleteObject, SoftDeleteManager
 
 from core.models.base import CommonInfo
+
+if TYPE_CHECKING:
+    from core.models import Recipe
 
 
 class Ingredient(CommonInfo, SoftDeleteObject):
@@ -17,12 +21,17 @@ class Ingredient(CommonInfo, SoftDeleteObject):
 
     """
 
+    id = models.AutoField(primary_key=True)
     quantity = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255, blank=True)
-    recipe = models.ForeignKey("Recipe", on_delete=models.CASCADE)
+    recipe = models.ForeignKey["Recipe"]("Recipe", on_delete=models.CASCADE)
+    if TYPE_CHECKING:
+        recipe_id: int
     position = models.FloatField()
     optional = models.BooleanField(default=False)
+
+    objects = SoftDeleteManager["Ingredient"]()
 
     class Meta:
         ordering = ["position"]

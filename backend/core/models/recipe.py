@@ -1,19 +1,22 @@
 from __future__ import annotations
+from typing import Any
 
 import itertools
-from datetime import date, datetime
+from datetime import date
 from typing import TYPE_CHECKING, Optional, Union
 
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models, transaction
 from django.utils import timezone
-from softdelete.models import SoftDeleteObject
+from softdelete.models import SoftDeleteObject, SoftDeleteManager
+from django.db.models import QuerySet
 
 from core.models.base import CommonInfo
 from core.models.ingredient import Ingredient
 from core.models.scheduled_recipe import ScheduledRecipe
 from core.models.step import Step
+from core.models.section import Section
 
 if TYPE_CHECKING:
     from core.models.my_user import MyUser
@@ -21,6 +24,7 @@ if TYPE_CHECKING:
 
 
 class Recipe(CommonInfo, SoftDeleteObject):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     author = models.CharField(max_length=255, blank=True, null=True)
     source = models.CharField(max_length=255, blank=True, null=True)
@@ -41,7 +45,7 @@ class Recipe(CommonInfo, SoftDeleteObject):
         default=None,
         help_text="If a clone, when the Recipe was cloned from a parent. Otherwise null.",
     )
-    cloned_by = models.ForeignKey(
+    cloned_by = models.ForeignKey["MyUser"](
         "MyUser",
         on_delete=models.SET_NULL,
         blank=True,
@@ -49,7 +53,7 @@ class Recipe(CommonInfo, SoftDeleteObject):
         default=None,
         help_text="If a clone, User who cloned the recipe.",
     )
-    cloned_from = models.ForeignKey(
+    cloned_from = models.ForeignKey["Recipe"](
         "Recipe",
         on_delete=models.SET_NULL,
         blank=True,
@@ -57,6 +61,8 @@ class Recipe(CommonInfo, SoftDeleteObject):
         default=None,
         help_text="If a clone, the parent this Recipe was cloned from.",
     )
+
+    objects = SoftDeleteManager["Recipe"]()
 
     def move_to(self, account: Union[MyUser, Team]) -> "Recipe":
         """
@@ -103,7 +109,9 @@ class Recipe(CommonInfo, SoftDeleteObject):
                 recipe_component.pk = None
                 # alternative to recipe_copy.steps_set.add(step)
                 # this is required due to the db constraint on recipe, position
-                recipe_component.recipe_id = recipe_copy.pk
+                recipe_component.recipe_id = (  # type: ignore [attr-defined]
+                    recipe_copy.pk
+                )
                 recipe_component.save()
             recipe_copy.save()
             return recipe_copy
@@ -123,28 +131,44 @@ class Recipe(CommonInfo, SoftDeleteObject):
         )
 
     @property
-    def ingredients(self):
+    def ingredients(self) -> SoftDeleteManager[Ingredient]:
         """Return recipe ingredients ordered by creation date"""
         # TODO(sbdchd): can use reverse relation instead
         return Ingredient.objects.filter(recipe=self).order_by("created")
 
     @property
-    def steps(self):
+    def ingredient_set(self) -> SoftDeleteManager[Ingredient]:
+        return self.ingredients
+
+    @property
+    def steps(self) -> SoftDeleteManager["Step"]:
         """Return recipe steps ordered by creation date"""
         # TODO(sbdchd): can use reverse relation instead
         return Step.objects.filter(recipe=self).order_by("position", "created")
 
-    def get_last_scheduled(self) -> Optional[datetime]:
+    @property
+    def scheduledrecipe_set(self) -> QuerySet[ScheduledRecipe]:
+        return ScheduledRecipe.objects.filter(recipe=self)
+
+    @property
+    def step_set(self) -> SoftDeleteManager[Step]:
+        return self.steps
+
+    @property
+    def section_set(self) -> QuerySet[Section]:
+        return Section.objects.filter(recipe=self)
+
+    def get_last_scheduled(self) -> Optional[date]:
         """Return the most recent date this recipe was scheduled for"""
         scheduled_recipe = self.scheduledrecipe_set.first()
         if scheduled_recipe is not None:
             return scheduled_recipe.on
         return None
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.name} by {self.author}"
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         is_new = self.pk is None
         if not is_new:
             # we only want to increment the edits if we aren't setting the

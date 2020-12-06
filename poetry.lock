@@ -174,6 +174,14 @@ version = "0.9.0"
 setuptools = "*"
 
 [[package]]
+category = "dev"
+description = "Type subs for Django"
+name = "django-types"
+optional = false
+python-versions = ">=3.7,<4.0"
+version = "0.1.0"
+
+[[package]]
 category = "main"
 description = "Django sessions with a foreign key to the user"
 name = "django-user-sessions"
@@ -808,7 +816,7 @@ python-versions = ">=3.6"
 version = "3.1.0"
 
 [metadata]
-content-hash = "a864e7c5f16cc07684b39f8204bfe90fe4264405a69544b5e58e09c829b112e0"
+content-hash = "b146119759db4eb4b88b0a35d5920fada33328c13915ba1697aa0e6dc0355e88"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -831,6 +839,7 @@ dj-database-url = ["a6832d8445ee9d788c5baa48aef8130bf61fdc442f7d9a548424d25cd85c
 django = ["69897097095f336d5aeef45b4103dceae51c00afa6d3ae198a2a18e519791b7a", "6ecd229e1815d4fc5240fc98f1cca78c41e7a8cd3e3f2eefadc4735031077916"]
 django-allauth = ["4444434c2f43188e16e0a7732c3638e12787ca7e5032f69b6d30b2912f53809e"]
 django-softdelete = ["c0bd6251e76950963fd0bcd14ba0f4adebe0d61854d1adacc949de6a2e8d5a3f"]
+django-types = ["bebd7e71cad62aec2d73e3371831b1ed68824c1297158568e0d5b3343fe7e97e", "e75b97f32eb2bacc726aa0880d6ff86045b4efa4d3628b67e29291c7fc0818db"]
 django-user-sessions = ["5d47ca6dc258662424c88383717a9f5c74b582c5646f9164f4bd6a9f3c3ea138", "b626eb9acd4b60f09d6222c772277717b78e0fde3c5772a7d3a309866b5e9f55"]
 djangorestframework = ["8a435df9007c8b7d8e69a21ef06650e3c0cbe0d4b09e55dd1bd74c89a75a9fcd", "f7a266260d656e1cf4ca54d7a7349609dc8af4fe2590edd0ecd7d7643ea94a17"]
 docopt = ["49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491"]

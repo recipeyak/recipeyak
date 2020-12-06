@@ -5,7 +5,7 @@ from core.models.membership import Membership
 from core.models.my_user import MyUser
 
 
-class InviteManager(models.Manager):
+class InviteManager(models.Manager["Invite"]):
     def create_invite(self, email, team, level, creator) -> "Invite":
         user = MyUser.objects.filter(email=email).first()
         if not user:
@@ -17,8 +17,8 @@ class InviteManager(models.Manager):
 
 
 class Invite(CommonInfo):
-    membership = models.OneToOneField("Membership", on_delete=models.CASCADE)
-    creator = models.ForeignKey("MyUser", on_delete=models.CASCADE)
+    membership = models.OneToOneField(Membership, on_delete=models.CASCADE)
+    creator = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
     OPEN = "open"
     DECLINED = "declined"

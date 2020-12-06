@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import List, Optional
+from typing import List, Optional, cast
 
 from django.core.exceptions import ValidationError
 from django.db.models import QuerySet
@@ -14,9 +14,8 @@ from rest_framework.views import APIView
 from typing_extensions import TypedDict
 
 from core.auth.permissions import IsTeamMember
-from core.cumin import combine_ingredients
+from core.cumin import combine_ingredients, Ingredient
 from core.models import (
-    Ingredient,
     Membership,
     ScheduledRecipe,
     ShoppingList,
@@ -32,12 +31,16 @@ from core.schedule.serializers import (
 logger = logging.getLogger(__name__)
 
 
-def get_scheduled_recipes(*, request: Request, team_pk: str) -> Optional[QuerySet]:
+def get_scheduled_recipes(
+    *, request: Request, team_pk: str
+) -> Optional[QuerySet[ScheduledRecipe]]:
     start = request.query_params.get("start")
     end = request.query_params.get("end")
 
     if team_pk in {"personal", "me"}:
-        scheduled_recipes = request.user.scheduled_recipes
+        scheduled_recipes = cast(
+            QuerySet[ScheduledRecipe], request.user.scheduled_recipes
+        )
     else:
         team = Team.objects.filter(pk=team_pk).first()
         if team is None:
@@ -60,7 +63,9 @@ def get_shopping_list_view(request: Request, team_pk: str) -> Response:
     ingredients: List[Ingredient] = []
     for scheduled_recipe in scheduled_recipes:
         for _ in range(scheduled_recipe.count):
-            ingredients += scheduled_recipe.recipe.ingredients
+            ingredients += (
+                scheduled_recipe.recipe.ingredients  # type: ignore [arg-type]
+            )
 
     ingredients = [
         Ingredient(quantity=i.quantity, name=i.name, description=i.description)

@@ -1,3 +1,4 @@
+from typing import cast, Any
 import pytest
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -30,4 +31,4 @@ def test_user_delete(client, user, team):
     res = client.delete(url)
     assert res.status_code == status.HTTP_204_NO_CONTENT
 
-    assert not get_user_model().objects.filter(id=user.id).exists()
+    assert not cast(Any, get_user_model()).objects.filter(id=user.id).exists()

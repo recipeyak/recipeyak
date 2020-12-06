@@ -1,6 +1,12 @@
+from typing import TYPE_CHECKING
 from django.db import models
 from django.utils.crypto import get_random_string
 from typing_extensions import Literal
+from django.db.models.manager import Manager
+
+if TYPE_CHECKING:
+    from core.models.team import Team
+    from core.models.my_user import MyUser
 
 from core.models.base import CommonInfo
 
@@ -24,8 +30,8 @@ class Membership(CommonInfo):
         max_length=11, choices=MEMBERSHIP_CHOICES, default=CONTRIBUTOR
     )
 
-    team = models.ForeignKey("Team", on_delete=models.CASCADE)
-    user = models.ForeignKey("MyUser", on_delete=models.CASCADE)
+    team = models.ForeignKey["Team"]("Team", on_delete=models.CASCADE)
+    user = models.ForeignKey["MyUser"]("MyUser", on_delete=models.CASCADE)
 
     calendar_sync_enabled = models.BooleanField(
         default=False,
@@ -35,6 +41,8 @@ class Membership(CommonInfo):
         default=get_random_ical_id,
         help_text="Secret key used to construct the icalendar url.",
     )
+
+    objects = Manager["Membership"]()
 
     class Meta:
         unique_together = (("user", "team"),)

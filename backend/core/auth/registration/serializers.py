@@ -1,3 +1,4 @@
+from typing import cast, Any
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.http import HttpRequest
@@ -121,7 +122,7 @@ class SocialLoginSerializer(BaseSerializer):
             # link up the accounts due to security constraints
             if allauth_settings.UNIQUE_EMAIL:
                 # Do we have an account already with this email address?
-                User = get_user_model()
+                User = cast(Any, get_user_model())
                 user_account = User.objects.filter(email=login.user.email).first()
                 if user_account is not None:
                     social_account = user_account.socialaccount_set.first()
@@ -158,7 +159,7 @@ class RegisterSerializer(BaseSerializer):
             if email and email_address_exists(email):
                 # Do we have an account already with this email address?
                 user_account = (
-                    get_user_model().objects.filter(email=email).first()
+                    cast(Any, get_user_model()).objects.filter(email=email).first()
                     or EmailAddress.objects.get(email=email).user
                 )
 

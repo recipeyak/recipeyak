@@ -1,3 +1,4 @@
+from typing import Any
 from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
@@ -125,17 +126,17 @@ admin.site.register(MyUser, UserAdmin)
 admin.site.unregister(Group)
 
 
-class IngredientsInLine(admin.TabularInline):
+class IngredientsInLine(admin.TabularInline[Any]):
     model = Ingredient
     extra = 6
 
 
-class StepsInLine(admin.TabularInline):
+class StepsInLine(admin.TabularInline[Any]):
     model = Step
     extra = 1
 
 
-class RecipeAdmin(admin.ModelAdmin):
+class RecipeAdmin(admin.ModelAdmin[Any]):
     inlines = [IngredientsInLine, StepsInLine]
 
 

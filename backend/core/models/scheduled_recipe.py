@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from core.models.my_user import MyUser
 
 
-class ScheduledRecipeManager(models.Manager):
+class ScheduledRecipeManager(models.Manager["ScheduledRecipe"]):
     def create_scheduled(
         self,
         recipe: Recipe,
@@ -41,12 +41,21 @@ class ScheduledRecipeManager(models.Manager):
 
 
 class ScheduledRecipe(CommonInfo):
-    recipe = models.ForeignKey("Recipe", on_delete=models.CASCADE)
+    id = models.AutoField(primary_key=True)
+
+    recipe = models.ForeignKey["Recipe"]("Recipe", on_delete=models.CASCADE)
+    if TYPE_CHECKING:
+        recipe_id: int
+
     on = models.DateField(help_text="day when recipe is scheduled")
     count = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     # TODO(sbdchd): add restriction so that only one of these is set
-    user = models.ForeignKey("MyUser", on_delete=models.CASCADE, blank=True, null=True)
-    team = models.ForeignKey("Team", on_delete=models.CASCADE, blank=True, null=True)
+    user = models.ForeignKey["MyUser"](
+        "MyUser", on_delete=models.CASCADE, blank=True, null=True
+    )
+    team = models.ForeignKey["Team"](
+        "Team", on_delete=models.CASCADE, blank=True, null=True
+    )
 
     objects = ScheduledRecipeManager()
 

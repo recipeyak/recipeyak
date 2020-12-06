@@ -42,13 +42,10 @@ class IsTeamAdmin(permissions.BasePermission):
         else:
             team_pk = view.kwargs["team_pk"]
         team = get_object_or_404(Team, pk=team_pk)
-        return cast(
-            bool,
-            (
-                team.membership_set.filter(level=Membership.ADMIN)
-                .filter(user=request.user)
-                .exists()
-            ),
+        return (
+            team.membership_set.filter(level=Membership.ADMIN)
+            .filter(user=request.user)
+            .exists()
         )
 
 
@@ -60,9 +57,9 @@ class IsTeamAdminOrMembershipOwner(permissions.BasePermission):
     def has_object_permission(self, request, view, membership: Membership) -> bool:
         if not isinstance(membership, Membership):
             raise TypeError("This permission only works for membership objects")
-        object_owner = membership.user == request.user
+        object_owner: bool = membership.user == request.user
         team_admin = membership.team.is_admin(request.user)
-        return cast(bool, (object_owner or team_admin))
+        return object_owner or team_admin
 
 
 class NonSafeIfMemberOrAdmin(IsTeamMember):
@@ -71,15 +68,12 @@ class NonSafeIfMemberOrAdmin(IsTeamMember):
             return True
         team_pk = view.kwargs["team_pk"]
         team = get_object_or_404(Team, pk=team_pk)
-        return cast(
-            bool,
-            (
-                team.membership_set.filter(
-                    Q(level=Membership.ADMIN) | Q(level=Membership.CONTRIBUTOR)
-                )
-                .filter(user=request.user)
-                .exists()
-            ),
+        return (
+            team.membership_set.filter(
+                Q(level=Membership.ADMIN) | Q(level=Membership.CONTRIBUTOR)
+            )
+            .filter(user=request.user)
+            .exists()
         )
 
 

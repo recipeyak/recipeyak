@@ -1,3 +1,5 @@
+from django.db.models.query import QuerySet
+from core.models.membership import Membership
 import hashlib
 import logging
 from typing import TYPE_CHECKING, List, Optional
@@ -20,7 +22,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-class MyUserManager(BaseUserManager):
+class MyUserManager(BaseUserManager["MyUser"]):
     def create_user(self, email: str, password: Optional[str] = None) -> "MyUser":
         """
         Creates and saves a user with given email and password.
@@ -49,6 +51,8 @@ class MyUserManager(BaseUserManager):
 class MyUser(AbstractBaseUser, PermissionsMixin):
     """Custom user model that only requires an email and password"""
 
+    id = models.AutoField(primary_key=True)
+
     email = CIEmailField(unique=True)
 
     # required for admin
@@ -64,7 +68,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     dark_mode_enabled = models.BooleanField(
         default=False, help_text="frontend darkmode setting"
     )
-    selected_team = models.ForeignKey(
+    selected_team = models.ForeignKey["Team"](
         "Team",
         null=True,
         blank=True,
@@ -99,10 +103,14 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         """
         Return if user has invite to team.
         """
-        return self.membership_set.filter(team=team).exclude(invite=None).exists()
+        return (
+            Membership.objects.filter(team=team, user=self)
+            .exclude(invite=None)
+            .exists()
+        )
 
     def has_team(self) -> bool:
-        return self.membership_set.filter(invite=None).exists()
+        return Membership.objects.filter(invite=None, user=self).exists()
 
     # required for admin
     @property
@@ -121,6 +129,10 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     def scheduled_recipes(self):
         # TODO(sbdchd): this can probably be user.scheduled_recipes_set
         return ScheduledRecipe.objects.filter(user=self)
+
+    @property
+    def membership_set(self) -> QuerySet["Membership"]:
+        return Membership.objects.filter(user=self)
 
     def __str__(self):
         return self.email

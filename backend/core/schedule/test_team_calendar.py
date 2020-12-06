@@ -1,3 +1,4 @@
+from core.models.membership import Membership
 from datetime import date
 
 import pytest
@@ -22,7 +23,7 @@ def test_adding_to_team_calendar(client, user, team, recipe):
     res = client.post(url, data)
     assert res.status_code == status.HTTP_201_CREATED
     scheduled = ScheduledRecipe.objects.get(id=res.json().get("id"))
-    assert scheduled.team.pk == team.pk
+    assert scheduled.team is not None and scheduled.team.pk == team.pk
 
 
 def test_removing_from_team_calendar(client, user, team, recipe):
@@ -98,7 +99,7 @@ def test_fetching_team_cal_v2_content(
     res = client.get(url, {"start": date(1976, 1, 1), "end": date(1977, 1, 1), "v2": 1})
     assert res.status_code == status.HTTP_200_OK
 
-    membership = user.membership_set.get(team=team)
+    membership = Membership.objects.filter(user=user).get(team=team)
 
     assert res.json()["settings"]["syncEnabled"] == membership.calendar_sync_enabled
     assert membership.calendar_sync_enabled is False
@@ -127,7 +128,7 @@ def test_cal_updating_settings_view(
     """
     url = f"/api/v1/t/{team.pk}/calendar/settings/"
 
-    membership = user.membership_set.get(team=team)
+    membership = Membership.objects.filter(user=user).get(team=team)
     assert membership.calendar_sync_enabled is False
 
     client.force_authenticate(user)
