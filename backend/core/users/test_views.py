@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List, Type, Union, Any
+from typing import Any, Dict, List, Type, Union
 
 import pytest
 from django.urls import reverse

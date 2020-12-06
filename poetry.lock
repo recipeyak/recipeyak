@@ -222,25 +222,20 @@ djangorestframework = ">=2.4.3"
 
 [[package]]
 category = "dev"
-description = "Discover and load entry points from installed packages."
-name = "entrypoints"
-optional = false
-python-versions = ">=2.7"
-version = "0.3"
-
-[[package]]
-category = "dev"
-description = "the modular source code checker: pep8, pyflakes and co"
+description = "the modular source code checker: pep8 pyflakes and co"
 name = "flake8"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "3.7.7"
+python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,>=2.7"
+version = "3.8.4"
 
 [package.dependencies]
-entrypoints = ">=0.3.0,<0.4.0"
 mccabe = ">=0.6.0,<0.7.0"
-pycodestyle = ">=2.5.0,<2.6.0"
-pyflakes = ">=2.1.0,<2.2.0"
+pycodestyle = ">=2.6.0a1,<2.7.0"
+pyflakes = ">=2.2.0,<2.3.0"
+
+[package.dependencies.importlib-metadata]
+python = "<3.8"
+version = "*"
 
 [[package]]
 category = "dev"
@@ -540,7 +535,7 @@ description = "Python style guide checker"
 name = "pycodestyle"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "2.5.0"
+version = "2.6.0"
 
 [[package]]
 category = "dev"
@@ -548,7 +543,7 @@ description = "passive checker of Python programs"
 name = "pyflakes"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "2.1.1"
+version = "2.2.0"
 
 [[package]]
 category = "dev"
@@ -816,7 +811,7 @@ python-versions = ">=3.6"
 version = "3.1.0"
 
 [metadata]
-content-hash = "48970e298ffb2bcc6afdc975fb710288dae37d09745749966b76993c3c4c3c6f"
+content-hash = "bb627970564d0192539c1409af91c89d63f31c42d423dc2be8261e30a4680f1c"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -844,8 +839,7 @@ django-user-sessions = ["5d47ca6dc258662424c88383717a9f5c74b582c5646f9164f4bd6a9
 djangorestframework = ["8a435df9007c8b7d8e69a21ef06650e3c0cbe0d4b09e55dd1bd74c89a75a9fcd", "f7a266260d656e1cf4ca54d7a7349609dc8af4fe2590edd0ecd7d7643ea94a17"]
 docopt = ["49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491"]
 drf-nested-routers = ["3346bcfb151d221d499b3b7932cc6e5cee005ea50f1343a2f5cd2f85e7b1d77f", "818fcc37b6cafff52f4afae012b8de85970a1b931f1e47c2f07a24fd141eb476"]
-entrypoints = ["589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19", "c70dd71abe5a8c85e55e12c19bd91ccfeec11a6e99044204511f9ed547d48451"]
-flake8 = ["859996073f341f2670741b51ec1e67a01da142831aa1fdc6242dbf88dffbe661", "a796a115208f5c03b18f332f7c11729812c8c3ded6c46319c59b53efd3819da8"]
+flake8 = ["749dbbd6bfd0cf1318af27bf97a14e28e5ff548ef8e5b1566ccfb25a11e7c839", "aadae8761ec651813c24be05c6f7b4680857ef6afaae4651a4eccaef97ce6c3b"]
 flake8-comprehensions = ["35f826956e87f230415cde9c3b8b454e785736cf5ff0be551c441b41b937f699", "f0b61d983d608790abf3664830d68efd3412265c2d10f6a4ba1a353274dbeb64"]
 flake8-pie = ["09c71b6a52c08ee9f8bd8da5a5cd4a7a9a0ee2906b46472a66830bab085be26c", "95ceb14440429de6e445504db4f0e2ff7a80d227fb7ef68548ce5ac74751a60e"]
 flake8-print = ["5010e6c138b63b62400da4b06afa33becc5e08bd1fcce9af3752445cf3342f54"]
@@ -874,8 +868,8 @@ prompt-toolkit = ["11adf3389a996a6d45cc277580d0d53e8a5afd281d0c9ec71b28e6f121463
 psycopg2 = ["009e0bc09a57dbef4b601cb8b46a2abad51f5274c8be4bba276ff2884cd4cc53", "0344b181e1aea37a58c218ccb0f0f771295de9aa25a625ed076e6996c6530f9e", "0cd4c848f0e9d805d531e44973c8f48962e20eb7fc0edac3db4f9dbf9ed5ab82", "1286dd16d0e46d59fa54582725986704a7a3f3d9aca6c5902a7eceb10c60cb7e", "1cf5d84290c771eeecb734abe2c6c3120e9837eb12f99474141a862b9061ac51", "207ba4f9125a0a4200691e82d5eee7ea1485708eabe99a07fc7f08696fae62f4", "25250867a4cd1510fb755ef9cb38da3065def999d8e92c44e49a39b9b76bc893", "2954557393cfc9a5c11a5199c7a78cd9c0c793a047552d27b1636da50d013916", "317612d5d0ca4a9f7e42afb2add69b10be360784d21ce4ecfbca19f1f5eadf43", "37f54452c7787dbdc0a634ca9773362b91709917f0b365ed14b831f03cbd34ba", "40fa5630cd7d237cd93c4d4b64b9e5ed9273d1cfce55241c7f9066f5db70629d", "57baf63aeb2965ca4b52613ce78e968b6d2bde700c97f6a7e8c6c236b51ab83e", "594aa9a095de16614f703d759e10c018bdffeafce2921b8e80a0e8a0ebbc12e5", "5c3213be557d0468f9df8fe2487eaf2990d9799202c5ff5cb8d394d09fad9b2a", "697ff63bc5451e0b0db48ad205151123d25683b3754198be7ab5fcb44334e519", "6c2f1a76a9ebd9ecf7825b9e20860139ca502c2bf1beabf6accf6c9e66a7e0c3", "7a75565181e75ba0b9fb174b58172bf6ea9b4331631cfe7bafff03f3641f5d73", "7a9c6c62e6e05df5406e9b5235c31c376a22620ef26715a663cee57083b3c2ea", "7c31dade89634807196a6b20ced831fbd5bec8a21c4e458ea950c9102c3aa96f", "82c40ea3ac1555e0462803380609fbe8b26f52620f3d4f8eb480cfd8ceed8a14", "8f5942a4daf1ffac42109dc4a72f786af4baa4fa702ede1d7c57b4b696c2e7d6", "92179bd68c2efe72924a99b6745a9172471931fc296f9bfdf9645b75eebd6344", "94e4128ba1ea56f02522fffac65520091a9de3f5c00da31539e085e13db4771b", "988d2ec7560d42ef0ac34b3b97aad14c4f068792f00e1524fa1d3749fe4e4b64", "9d6266348b15b4a48623bf4d3e50445d8e581da413644f365805b321703d0fac", "9d64fed2681552ed642e9c0cc831a9e95ab91de72b47d0cb68b5bf506ba88647", "b9358e203168fef7bfe9f430afaed3a2a624717a1d19c7afa7dfcbd76e3cd95c", "bf708455cd1e9fa96c05126e89a0c59b200d086c7df7bbafc7d9be769e4149a3", "d3ac07240e2304181ffdb13c099840b5eb555efc7be9344503c0c03aa681de79", "ddca39cc55877653b5fcf59976d073e3d58c7c406ef54ae8e61ddf8782867182", "fc993c9331d91766d54757bbc70231e29d5ceb2d1ac08b1570feaa0c38ab9582"]
 ptyprocess = ["923f299cc5ad920c68f2bc0bc98b75b9f838b93b599941a6b63ddbc2476394c0", "d7cc528d76e76342423ca640335bd3633420dc1366f258cb31d05e865ef5ca1f"]
 py = ["366389d1db726cd2fcfc79732e75410e5fe4d31db13692115529d34069a043c2", "9ca6883ce56b4e8da7e79ac18787889fa5206c79dcc67fb065376cd2fe03f342"]
-pycodestyle = ["95a2219d12372f05704562a14ec30bc76b05a5b297b21a5dfe3f6fac3491ae56", "e40a936c9a450ad81df37f549d676d127b1b66000a6c500caa2b085bc0ca976c"]
-pyflakes = ["17dbeb2e3f4d772725c777fabc446d5634d1038f234e77343108ce445ea69ce0", "d976835886f8c5b31d47970ed689944a0262b5f3afa00a5a7b4dc81e5449f8a2"]
+pycodestyle = ["2295e7b2f6b5bd100585ebcb1f616591b652db8a741695b3d8f5d28bdc934367", "c58a7d2815e0e8d7972bf1803331fb0152f867bd89adf8a01dfd55085434192e"]
+pyflakes = ["0d94e0e05a19e57a99444b6ddcf9a6eb2e5c68d3ca1e98e90707af8152c90a92", "35b2d75ee967ea93b55750aa9edbbf72813e06a66ba54438df2cfac9e3c27fc8"]
 pygments = ["5ffada19f6203563680669ee7f53b64dabbeb100eb51b61996085e99c03b284a", "e8218dd399a61674745138520d0d4cf2621d7e032439341bc3f647bff125818d"]
 pyparsing = ["c203ec8783bf771a155b207279b9bccb8dea02d8f0c9e5f8ead507bc3246ecc1", "ef9d7589ef3c200abe66653d3f1ab1033c3c419ae9b9bdb1240a85b024efc88b"]
 pytest = ["85228d75db9f45e06e57ef9bf4429267f81ac7c0d742cc9ed63d09886a9fe6f4", "8b6007800c53fdacd5a5c192203f4e531eb2a1540ad9c752e052ec0f7143dbad"]

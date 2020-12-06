@@ -1,5 +1,3 @@
-from django.db.models.query import QuerySet
-from core.models.membership import Membership
 import hashlib
 import logging
 from typing import TYPE_CHECKING, List, Optional
@@ -13,7 +11,9 @@ from django.contrib.auth.models import (
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.postgres.fields import CIEmailField
 from django.db import models, transaction
+from django.db.models.query import QuerySet
 
+from core.models.membership import Membership
 from core.models.scheduled_recipe import ScheduledRecipe
 
 if TYPE_CHECKING:

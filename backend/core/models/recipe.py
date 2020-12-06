@@ -1,22 +1,21 @@
 from __future__ import annotations
-from typing import Any
 
 import itertools
 from datetime import date
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models, transaction
-from django.utils import timezone
-from softdelete.models import SoftDeleteObject, SoftDeleteManager
 from django.db.models import QuerySet
+from django.utils import timezone
+from softdelete.models import SoftDeleteManager, SoftDeleteObject
 
 from core.models.base import CommonInfo
 from core.models.ingredient import Ingredient
 from core.models.scheduled_recipe import ScheduledRecipe
-from core.models.step import Step
 from core.models.section import Section
+from core.models.step import Step
 
 if TYPE_CHECKING:
     from core.models.my_user import MyUser

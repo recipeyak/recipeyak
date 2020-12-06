@@ -14,7 +14,7 @@ from rest_framework.views import APIView
 from typing_extensions import TypedDict
 
 from core.auth.permissions import IsTeamMember
-from core.cumin import combine_ingredients, Ingredient
+from core.cumin import Ingredient, combine_ingredients
 from core.models import (
     Membership,
     ScheduledRecipe,

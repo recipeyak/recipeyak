@@ -1,14 +1,16 @@
 from typing import TYPE_CHECKING
+
 from django.db import models
+from django.db.models.manager import Manager
 from django.utils.crypto import get_random_string
 from typing_extensions import Literal
-from django.db.models.manager import Manager
-
-if TYPE_CHECKING:
-    from core.models.team import Team
-    from core.models.my_user import MyUser
 
 from core.models.base import CommonInfo
+
+if TYPE_CHECKING:
+    from core.models.team import Team  # noqa: F401
+    from core.models.my_user import MyUser  # noqa: F401
+
 
 
 def get_random_ical_id() -> str:

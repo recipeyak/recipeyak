@@ -1,4 +1,4 @@
-from typing import Dict, Any, cast
+from typing import Any, Dict, cast
 
 from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model

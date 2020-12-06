@@ -1,4 +1,3 @@
-from core.models.membership import Membership
 from datetime import date, datetime
 from email.utils import parsedate_to_datetime
 from urllib.parse import urlparse
@@ -9,6 +8,7 @@ from rest_framework.test import APIClient
 
 from core.ical.utils import to_ical_time
 from core.models import MyUser, Recipe, ScheduledRecipe, Team, get_random_ical_id
+from core.models.membership import Membership
 
 pytestmark = pytest.mark.django_db
 

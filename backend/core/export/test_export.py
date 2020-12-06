@@ -1,4 +1,4 @@
-from typing import Any, Dict, Iterable
+from typing import Dict, Iterable
 
 import pytest
 import yaml

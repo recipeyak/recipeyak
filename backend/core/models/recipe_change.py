@@ -7,7 +7,7 @@ from django.db.models.manager import Manager
 from core.models.base import CommonInfo
 
 if TYPE_CHECKING:
-    from core.models import MyUser
+    from core.models import MyUser  # noqa: F401
 
 
 @enum.unique

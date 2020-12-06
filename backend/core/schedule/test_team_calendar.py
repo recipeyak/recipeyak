@@ -1,4 +1,3 @@
-from core.models.membership import Membership
 from datetime import date
 
 import pytest
@@ -7,6 +6,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from core.models import MyUser, Recipe, ScheduledRecipe, Team
+from core.models.membership import Membership
 
 pytestmark = pytest.mark.django_db
 

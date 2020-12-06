@@ -1,5 +1,3 @@
-from typing import cast
-
 import pytest
 
 from core.models import Ingredient, MyUser, Recipe, Step, Team

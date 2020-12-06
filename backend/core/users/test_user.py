@@ -1,4 +1,5 @@
-from typing import cast, Any
+from typing import Any, cast
+
 import pytest
 from django.contrib.auth import get_user_model
 from django.urls import reverse

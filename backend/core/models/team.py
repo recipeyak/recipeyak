@@ -4,10 +4,9 @@ from typing import TYPE_CHECKING, Union
 
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models, transaction
-from typing_extensions import Literal
-from django.db.models.manager import Manager
 from django.db.models import QuerySet
-
+from django.db.models.manager import Manager
+from typing_extensions import Literal
 
 from core.models.base import CommonInfo
 from core.models.invite import Invite

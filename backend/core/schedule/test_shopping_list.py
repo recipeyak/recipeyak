@@ -8,9 +8,9 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from core.cumin import Ingredient as IngredientCumin
 from core.cumin import (
     IngredientItem,
-    Ingredient as IngredientCumin,
     IngredientList,
     Quantity,
     Unit,

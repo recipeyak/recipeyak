@@ -1,11 +1,12 @@
 from typing import TYPE_CHECKING
+
 from django.db import models
-from softdelete.models import SoftDeleteObject, SoftDeleteManager
+from softdelete.models import SoftDeleteManager, SoftDeleteObject
 
 from core.models.base import CommonInfo
 
 if TYPE_CHECKING:
-    from core.models.recipe import Recipe
+    from core.models.recipe import Recipe  # noqa: F401
 
 
 class Section(CommonInfo, SoftDeleteObject):
