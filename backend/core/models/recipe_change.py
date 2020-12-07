@@ -1,8 +1,13 @@
 import enum
+from typing import TYPE_CHECKING
 
 from django.db import models
+from django.db.models.manager import Manager
 
 from core.models.base import CommonInfo
+
+if TYPE_CHECKING:
+    from core.models import MyUser  # noqa: F401
 
 
 @enum.unique
@@ -32,7 +37,7 @@ class RecipeChange(CommonInfo):
     recipe's evolution.
     """
 
-    actor = models.ForeignKey(
+    actor = models.ForeignKey["MyUser"](
         "MyUser", on_delete=models.CASCADE, help_text="User who made the change."
     )
 
@@ -50,3 +55,5 @@ class RecipeChange(CommonInfo):
         max_length=255,
         help_text="The field / model changed.",
     )
+
+    objects = Manager["RecipeChange"]()

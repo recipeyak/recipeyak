@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List, Type, Union
+from typing import Any, Dict, List, Type, Union
 
 import pytest
 from django.urls import reverse
@@ -82,7 +82,7 @@ def matches_shape(res: Response, shape: Shape) -> bool:
 
 
 @pytest.fixture
-def login_info() -> Dict:
+def login_info() -> Dict[str, str]:
     return dict(email="john@doe.org", password="testing123")
 
 
@@ -115,7 +115,7 @@ def test_session_list(client: APIClient, logged_in_user) -> None:
 
 @pytest.mark.django_db
 def test_session_delete_all(
-    client: APIClient, logged_in_user, login_info: Dict
+    client: APIClient, logged_in_user, login_info: Dict[str, Any]
 ) -> None:
     # login a second time with a different client to create multiple sessions
     APIClient().post(reverse("rest_login"), login_info)

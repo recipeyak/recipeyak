@@ -1,4 +1,5 @@
 from django.contrib.postgres.fields import JSONField
+from django.db.models.manager import Manager
 
 from core.models.base import CommonInfo
 
@@ -11,3 +12,5 @@ class ShoppingList(CommonInfo):
     """
 
     ingredients = JSONField()
+
+    objects = Manager["ShoppingList"]()

@@ -56,7 +56,7 @@ BROWSERS = [
 
 MOBILE_DEVICES = [("Android", OS.Android), ("iPhone", OS.IPhone), ("iPad", OS.IPad)]
 
-DESKTOP_DEVICES: List[Tuple[Union[str, Pattern], OS]] = [
+DESKTOP_DEVICES: List[Tuple[Union[str, Pattern[str]], OS]] = [
     ("Linux", OS.Linux),
     (re.compile("Mac OS X 10[._]9"), OS.OSX_Mavericks),
     (re.compile("Mac OS X 10[._]10"), OS.OSX_Yosemite),

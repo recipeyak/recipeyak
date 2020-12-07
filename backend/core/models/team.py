@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING, Union
 
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models, transaction
+from django.db.models import QuerySet
+from django.db.models.manager import Manager
 from typing_extensions import Literal
 
 from core.models.base import CommonInfo
@@ -16,6 +18,7 @@ if TYPE_CHECKING:
 
 
 class Team(CommonInfo):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     is_public = models.BooleanField(default=False)
     recipes = GenericRelation("Recipe", related_query_name="owner_team")
@@ -24,6 +27,8 @@ class Team(CommonInfo):
         default=get_random_ical_id,
         help_text="Secret key used to prevent unauthorized access to schedule calendar.",
     )
+
+    objects = Manager["Team"]()
 
     def __str__(self):
         return f"<Team • name: {self.name}, is_public: {self.is_public}>"
@@ -43,7 +48,10 @@ class Team(CommonInfo):
                 m.save()
             # remove existing invite
             if user.has_invite(self):
-                user.membership_set.exclude(invite=None).get(team=self).invite.delete()
+                # this probably explodes at runtime, but ignoring for now
+                Membership.objects.filter(  # type: ignore [attr-defined]
+                    user=user
+                ).exclude(invite=None).get(team=self).invite.delete()
             return m
 
     def force_join_admin(self, user: MyUser) -> Membership:
@@ -65,7 +73,7 @@ class Team(CommonInfo):
         """
         Remove user from team. If they have an invite, remove it as well.
         """
-        membership = user.membership_set.get(team=self)
+        membership = Membership.objects.filter(user=user).get(team=self)
         # delete membership. By deleting, associated invites will be deleted.
         membership.delete()
 
@@ -78,23 +86,29 @@ class Team(CommonInfo):
         self.save()
 
     def admins(self):
-        return self.membership_set.filter(is_active=True, level=Membership.ADMIN)
+        return Membership.objects.filter(team=self).filter(
+            is_active=True, level=Membership.ADMIN
+        )
 
     def is_member(self, user) -> bool:
-        return self.membership_set.filter(user=user, is_active=True).exists()
+        return Membership.objects.filter(team=self, user=user, is_active=True).exists()
 
     def is_contributor(self, user) -> bool:
-        return self.membership_set.filter(
-            user=user, is_active=True, level=Membership.CONTRIBUTOR
+        return Membership.objects.filter(
+            team=self, user=user, is_active=True, level=Membership.CONTRIBUTOR
         ).exists()
 
     def is_admin(self, user) -> bool:
-        return self.membership_set.filter(
-            user=user, is_active=True, level=Membership.ADMIN
+        return Membership.objects.filter(
+            team=self, user=user, is_active=True, level=Membership.ADMIN
         ).exists()
 
     def invite_exists(self, email: Union[MyUser, str]) -> bool:
         return Membership.objects.filter(team=self, user__email=email).exists()
+
+    @property
+    def membership_set(self) -> QuerySet[Membership]:
+        return Membership.objects.filter(team=self)
 
     @property
     def scheduled_recipes(self):
