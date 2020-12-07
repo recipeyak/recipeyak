@@ -360,7 +360,6 @@ export function Recipe(props: IRecipeProps) {
         time={recipe.time}
         owner={recipe.owner}
         updating={recipe.updating}
-        deleting={recipe.deleting}
         editing={recipe.editing}
       />
 

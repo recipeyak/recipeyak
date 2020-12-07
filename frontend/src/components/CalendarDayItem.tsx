@@ -2,13 +2,12 @@ import React from "react"
 import { styled } from "@/theme"
 import { Link } from "react-router-dom"
 import { useDrag } from "react-dnd"
-import { beforeCurrentDay } from "@/date"
+import { isInsideChangeWindow } from "@/date"
 import { recipeURL } from "@/urls"
 import { DragDrop } from "@/dragDrop"
 import { IRecipe } from "@/store/reducers/recipes"
 import { ICalRecipe } from "@/store/reducers/calendar"
 import { TextInput } from "@/components/Forms"
-import { isPast, endOfDay } from "date-fns"
 import { Result, isOk } from "@/result"
 import { useGlobalEvent } from "@/hooks"
 
@@ -101,7 +100,7 @@ export function CalendarItem({
   }, [propsCount])
 
   const updateCount = (newCount: number) => {
-    if (beforeCurrentDay(date)) {
+    if (!isInsideChangeWindow(date)) {
       return
     }
     const oldCount = count
@@ -120,7 +119,7 @@ export function CalendarItem({
       return
     }
 
-    if (beforeCurrentDay(date)) {
+    if (!isInsideChangeWindow(date)) {
       return
     }
 
@@ -151,7 +150,7 @@ export function CalendarItem({
     end: (_dropResult, monitor) => {
       // when dragged onto something that isn't a target, we remove it
       // but we don't remove when in past as we only copy from the past
-      if (!monitor.didDrop() && !isPast(endOfDay(date))) {
+      if (!monitor.didDrop() && isInsideChangeWindow(date)) {
         remove()
       }
     },
@@ -162,7 +161,8 @@ export function CalendarItem({
     },
   })
 
-  const visibility = isDragging && !isPast(date) ? "hidden" : "visible"
+  const visibility =
+    isDragging && isInsideChangeWindow(date) ? "hidden" : "visible"
 
   useGlobalEvent({ keyUp: handleKeyPress })
 

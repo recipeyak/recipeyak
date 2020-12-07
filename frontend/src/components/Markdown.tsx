@@ -5,6 +5,9 @@ import * as settings from "@/settings"
 import { Link } from "@/components/Routing"
 
 const MarkdownWrapper = styled.div`
+  /* handle long links in markdown */
+  word-break: break-all;
+
   a {
     text-decoration: underline;
   }

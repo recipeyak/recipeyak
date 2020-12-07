@@ -1,6 +1,6 @@
 import pickBy from "lodash/pickBy"
 import { random32Id } from "@/uuid"
-import { toISODateString, second } from "@/date"
+import { toISODateString, second, isInsideChangeWindow } from "@/date"
 import { push, replace } from "connected-react-router"
 // eslint-disable-next-line no-restricted-imports
 import { Dispatch as ReduxDispatch } from "redux"
@@ -93,15 +93,7 @@ import {
 } from "@/store/reducers/auth"
 import { recipeURL } from "@/urls"
 import { isSuccessOrRefetching } from "@/webdata"
-import {
-  isPast,
-  endOfDay,
-  parseISO,
-  startOfWeek,
-  subWeeks,
-  addWeeks,
-  endOfWeek,
-} from "date-fns"
+import { parseISO, startOfWeek, subWeeks, addWeeks, endOfWeek } from "date-fns"
 import { isOk, isErr, Ok, Err, Result } from "@/result"
 import { heldKeys } from "@/components/CurrentKeys"
 import { isRight } from "fp-ts/lib/Either"
@@ -1154,7 +1146,7 @@ export const moveScheduledRecipe = async (
   // - recipe from the past
   // - user is holding shift
   const holdingShift = heldKeys.size === 1 && heldKeys.has("Shift")
-  const copyRecipe = isPast(endOfDay(parseISO(from.on))) || holdingShift
+  const copyRecipe = !isInsideChangeWindow(parseISO(from.on)) || holdingShift
   if (copyRecipe) {
     return addingScheduledRecipeAsync(dispatch, getState, {
       recipeID: from.recipe.id,
