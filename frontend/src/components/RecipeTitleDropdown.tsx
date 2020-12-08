@@ -10,6 +10,7 @@ import {
   duplicateRecipe,
   IRecipe,
   updateRecipe,
+  deleteRecipe,
 } from "@/store/reducers/recipes"
 import { Button } from "@/components/Buttons"
 import {
@@ -70,12 +71,12 @@ export function Dropdown({ recipeId }: IDropdownProps) {
 
   const dispatch = useDispatch()
   const ingredients = useIngredientString(recipeId)
-  const isArchived = useSelector(s => {
+  const [isArchived, isDeleting] = useSelector(s => {
     const maybeRecipe = s.recipes.byId[recipeId]
     if (maybeRecipe?.kind === "Success") {
-      return Boolean(maybeRecipe.data.archived_at)
+      return [!!maybeRecipe.data.archived_at, !!maybeRecipe.data.deleting]
     }
-    return false
+    return [false, false]
   })
 
   const [creatingDuplicate, onDuplicate] = useDuplicateRecipe({
@@ -114,6 +115,12 @@ export function Dropdown({ recipeId }: IDropdownProps) {
     close()
   }, [close, dispatch, recipeId])
 
+  const handleDeleteRecipe = React.useCallback(() => {
+    if (confirm("Are you sure you want to delete this recipe?")) {
+      dispatch(deleteRecipe.request(recipeId))
+    }
+  }, [dispatch, recipeId])
+
   const scheduleUrl = useScheduleUrl(recipeId)
 
   const exportYamlUrl = `/recipes/${recipeId}.yaml`
@@ -150,6 +157,9 @@ export function Dropdown({ recipeId }: IDropdownProps) {
             Unarchive Recipe
           </DropdownItemButton>
         )}
+        <DropdownItemButton onClick={handleDeleteRecipe}>
+          {!isDeleting ? "Delete Recipe" : "Deleting Recipe.."}
+        </DropdownItemButton>
       </DropdownMenu>
     </DropdownContainer>
   )
