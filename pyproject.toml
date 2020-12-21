@@ -30,17 +30,16 @@ pytest-django = "^3.1.2"
 ipdb = "^0.11.0"
 mypy = "0.790"
 flake8 = "3.8.4"
-black = "18.9b0"
+black = "19.10b0"
 pytest-watch = "^4.2"
 mypy_extensions = "^0.4.1"
 flake8-pie = "^0.4.0"
 flake8-print = "^3.1"
-isort = "^4.3"
+isort = "4.3.21"
 flake8-comprehensions = "^2.1"
 django-types = "^0.2.0"
 
 [tool.black]
-py36 = true
 exclude = '''
 /(
   | \.venv
