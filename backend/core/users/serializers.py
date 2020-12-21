@@ -41,7 +41,9 @@ class SessionSerializer(BaseModelSerializer):
         fields = ("id", "device", "current", "last_activity", "ip")
 
     def get_device(self, obj: Session) -> Dict[str, Any]:
-        return dataclasses.asdict(user_agent.parse(obj.user_agent))
+        ua = obj.user_agent
+        assert ua is not None
+        return dataclasses.asdict(user_agent.parse(ua))
 
     def get_current(self, obj: Session) -> bool:
         return cast(bool, obj.pk == self.context["request"].session.session_key)

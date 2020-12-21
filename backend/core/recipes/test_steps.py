@@ -23,7 +23,7 @@ def test_step_position_order(client, user, recipe):
     res = client.get(reverse("recipes-detail", args=[recipe.id]))
     assert res.status_code in (status.HTTP_201_CREATED, status.HTTP_200_OK)
     assert res.json()["steps"] == sorted(
-        res.json()["steps"], key=lambda x: x["position"]
+        res.json()["steps"], key=lambda x: x["position"]  # type: ignore [no-any-return]
     )
 
 

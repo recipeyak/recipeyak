@@ -12,6 +12,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.postgres.fields import CIEmailField
 from django.db import models, transaction
 from django.db.models.query import QuerySet
+from user_sessions.models import Session
 
 from core.models.membership import Membership
 from core.models.scheduled_recipe import ScheduledRecipe
@@ -144,6 +145,10 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     @property
     def membership_set(self) -> QuerySet["Membership"]:
         return Membership.objects.filter(user=self)
+
+    @property
+    def session_set(self) -> QuerySet["Session"]:
+        return Session.objects.filter(user=self)
 
     def __str__(self):
         return self.email

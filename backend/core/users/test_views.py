@@ -130,7 +130,9 @@ def test_session_delete_all(
 @pytest.mark.django_db
 def test_session_delete_by_id(client: APIClient, logged_in_user) -> None:
     assert Session.objects.count() == 1
-    pk = Session.objects.first().pk
+    session = Session.objects.first()
+    assert session is not None
+    pk = session.pk
     res = client.delete(reverse("sessions-detail", kwargs=dict(pk=pk)))
     assert res.status_code == status.HTTP_204_NO_CONTENT
     assert Session.objects.count() == 0
