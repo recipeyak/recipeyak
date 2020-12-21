@@ -7,10 +7,10 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.request import Request
 from rest_framework.response import Response
 
 from core.models import MyUser
+from core.request import AuthedRequest
 from core.users.serializers import SessionSerializer
 from core.users.serializers import UserSerializer as UserDetailsSerializer
 
@@ -33,7 +33,7 @@ class UserDetailsView(RetrieveUpdateAPIView):
     def get_object(self) -> MyUser:
         return cast(MyUser, self.request.user)
 
-    def delete(self, request: Request) -> Response:
+    def delete(self, request: AuthedRequest) -> Response:
         if request.user.has_team():
             raise PermissionDenied(
                 detail="you must leave all your teams to delete your account"
@@ -44,7 +44,7 @@ class UserDetailsView(RetrieveUpdateAPIView):
 
 @api_view(["GET", "DELETE"])
 @permission_classes([IsAuthenticated])
-def sessions(request: Request) -> Response:
+def sessions(request: AuthedRequest) -> Response:
     query_set = request.user.session_set
 
     if request.method == "DELETE":
@@ -62,6 +62,6 @@ def sessions(request: Request) -> Response:
 
 @api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
-def sessions_detail(request: Request, pk: str) -> Response:
+def sessions_detail(request: AuthedRequest, pk: str) -> Response:
     get_object_or_404(request.user.session_set, pk=pk).delete()
     return Response(status=status.HTTP_204_NO_CONTENT)

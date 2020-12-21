@@ -5,11 +5,11 @@ import pytz
 from django.db.models import Count, Sum
 from django.db.models.functions import TruncMonth
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.models import Recipe
+from core.request import AuthedRequest
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 class UserStats(APIView):
     permission_classes = (IsAuthenticated,)
 
-    def get(self, request: Request) -> Response:
+    def get(self, request: AuthedRequest) -> Response:
         user_recipes = Recipe.objects.filter(owner_user=request.user)
 
         total_recipe_edits = user_recipes.aggregate(total=Sum("edits")).get("total")

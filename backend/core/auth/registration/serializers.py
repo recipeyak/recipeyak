@@ -35,6 +35,7 @@ class SocialLoginSerializer(BaseSerializer):
     def _get_request(self):
         request = self.context.get("request")
         if not isinstance(request, HttpRequest):
+            assert request is not None
             request = request._request
         return request
 

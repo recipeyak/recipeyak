@@ -542,7 +542,7 @@ def test_update_user_invite(client, team, user, user2):
             ],
         ),
     ]:
-        for u, s in users:
+        for u, s in users:  # type: ignore [attr-defined]
             client.force_authenticate(u)
             assert client.patch(url, {"membership": 2}).status_code == s
 
@@ -576,7 +576,7 @@ def test_destroy_user_invite(client, team, user, user2):
             [(user, status.HTTP_204_NO_CONTENT), (user2, status.HTTP_403_FORBIDDEN)],
         ),
     ]:
-        for u, s in users:
+        for u, s in users:  # type: ignore [attr-defined]
             client.force_authenticate(u)
             assert client.delete(url).status_code == s
 
