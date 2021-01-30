@@ -13,7 +13,7 @@ def test_creating_section(client: APIClient, user: MyUser, recipe: Recipe) -> No
     before_section_count = Section.objects.count()
     data = {"title": "a section title", "position": 17.76}
 
-    before_change_log_count = RecipeChange.objects.count()
+    assert RecipeChange.objects.count() == 0
 
     res = client.post(f"/api/v1/recipes/{recipe.id}/sections", data)
 
@@ -27,9 +27,9 @@ def test_creating_section(client: APIClient, user: MyUser, recipe: Recipe) -> No
     after_section_count = Section.objects.count()
     assert after_section_count == before_section_count + 1
 
-    after_change_log_count = RecipeChange.objects.count()
-
-    assert after_change_log_count == before_change_log_count + 1
+    assert RecipeChange.objects.count() == 1
+    recipe_change = RecipeChange.objects.get()
+    assert recipe_change.recipe.id == recipe.id
 
 
 def test_creating_section_without_position(
@@ -40,7 +40,7 @@ def test_creating_section_without_position(
     before_section_count = Section.objects.count()
     data = {"title": "a section title"}
 
-    before_change_log_count = RecipeChange.objects.count()
+    assert RecipeChange.objects.count() == 0
 
     res = client.post(f"/api/v1/recipes/{recipe.id}/sections", data)
 
@@ -53,9 +53,9 @@ def test_creating_section_without_position(
     after_section_count = Section.objects.count()
     assert after_section_count == before_section_count + 1
 
-    after_change_log_count = RecipeChange.objects.count()
-
-    assert after_change_log_count == before_change_log_count + 1
+    assert RecipeChange.objects.count() == 1
+    recipe_change = RecipeChange.objects.get()
+    assert recipe_change.recipe.id == recipe.id
 
     assert (
         max(
@@ -118,14 +118,16 @@ def test_updating_section(client: APIClient, user: MyUser, recipe: Recipe) -> No
     data = {"title": "different section title", "position": 123.0}
     assert data["title"] != section.title
     assert data["position"] != section.position
+    assert RecipeChange.objects.count() == 0
 
-    before_change_log_count = RecipeChange.objects.count()
     res = client.patch(f"/api/v1/sections/{section.id}/", data)
+
     assert res.status_code == status.HTTP_200_OK
     assert res.json()["title"] == data["title"]
     assert res.json()["position"] == data["position"]
-    after_change_log_count = RecipeChange.objects.count()
-    assert after_change_log_count == before_change_log_count + 1
+    assert RecipeChange.objects.count() == 1
+    recipe_change = RecipeChange.objects.get()
+    assert recipe_change.recipe.id == recipe.id
 
 
 def test_deleting_section(client: APIClient, user: MyUser, recipe: Recipe) -> None:
@@ -135,12 +137,13 @@ def test_deleting_section(client: APIClient, user: MyUser, recipe: Recipe) -> No
         recipe=recipe, title="a new section", position=88.0
     )
     before_count = recipe.section_set.count()
-    before_change_log_count = RecipeChange.objects.count()
+    assert RecipeChange.objects.count() == 0
 
     res = client.delete(f"/api/v1/sections/{section.id}/")
 
     assert res.status_code == status.HTTP_204_NO_CONTENT
     after_count = recipe.section_set.count()
     assert after_count == before_count - 1
-    after_change_log_count = RecipeChange.objects.count()
-    assert after_change_log_count == before_change_log_count + 1
+    assert RecipeChange.objects.count() == 0
+    recipe_change = RecipeChange.objects.get()
+    assert recipe_change.recipe.id == recipe.id
