@@ -144,6 +144,6 @@ def test_deleting_section(client: APIClient, user: MyUser, recipe: Recipe) -> No
     assert res.status_code == status.HTTP_204_NO_CONTENT
     after_count = recipe.section_set.count()
     assert after_count == before_count - 1
-    assert RecipeChange.objects.count() == 0
+    assert RecipeChange.objects.count() == 1
     recipe_change = RecipeChange.objects.get()
     assert recipe_change.recipe.id == recipe.id

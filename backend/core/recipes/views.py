@@ -98,7 +98,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)
-        instance: Step = self.get_object()
+        instance: Recipe = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
 
@@ -117,7 +117,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             ):
                 changes.append(
                     RecipeChange(
-                        recipe=instance.recipe,
+                        recipe=instance,
                         actor=request.user,
                         before=getattr(instance, field) or "",
                         after=serializer.validated_data[field],
@@ -498,7 +498,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
         after = ingredient_to_text(instance)
 
         RecipeChange.objects.create(
-            recipe=recipe,
+            recipe=instance.recipe,
             actor=request.user,
             before=before,
             after=after,
