@@ -98,10 +98,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)
-        instance: Step = self.get_object()
+        instance: Recipe = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
 
+        changes = []
         fields = [
             ("name", ChangeType.NAME),
             ("author", ChangeType.AUTHOR),
@@ -114,12 +115,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 field in serializer.validated_data
                 and getattr(instance, field) != serializer.validated_data[field]
             ):
-                RecipeChange.objects.create(
-                    actor=request.user,
-                    before=getattr(instance, field) or "",
-                    after=serializer.validated_data[field],
-                    change_type=change_type,
+                changes.append(
+                    RecipeChange(
+                        recipe=instance,
+                        actor=request.user,
+                        before=getattr(instance, field) or "",
+                        after=serializer.validated_data[field],
+                        change_type=change_type,
+                    )
                 )
+
+        RecipeChange.objects.bulk_create(changes)
 
         self.perform_update(serializer)
 
@@ -269,6 +275,7 @@ def create_section_view(request: AuthedRequest, recipe_pk: int) -> Response:
     serializer.is_valid(raise_exception=True)
 
     RecipeChange.objects.create(
+        recipe=recipe,
         actor=request.user,
         before="",
         after=serializer.validated_data["title"],
@@ -286,10 +293,12 @@ def create_section_view(request: AuthedRequest, recipe_pk: int) -> Response:
 
 def delete_section_view(request: AuthedRequest, section_pk: int) -> Response:
     section = get_object_or_404(Section, pk=section_pk)
-    if not has_recipe_access(recipe=section.recipe, user=request.user):
+    recipe = section.recipe
+    if not has_recipe_access(recipe=recipe, user=request.user):
         return Response(status=status.HTTP_403_FORBIDDEN)
 
     RecipeChange.objects.create(
+        recipe=recipe,
         actor=request.user,
         before=section.title,
         after="",
@@ -303,12 +312,14 @@ def delete_section_view(request: AuthedRequest, section_pk: int) -> Response:
 
 def update_section_view(request: AuthedRequest, section_pk: int) -> Response:
     section = get_object_or_404(Section, pk=section_pk)
+    recipe = section.recipe
     if not has_recipe_access(recipe=section.recipe, user=request.user):
         return Response(status=status.HTTP_403_FORBIDDEN)
 
     serializer = SectionSerializer(section, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     RecipeChange.objects.create(
+        recipe=recipe,
         actor=request.user,
         before=section.title,
         after=serializer.validated_data.get("title", ""),
@@ -386,6 +397,7 @@ class StepViewSet(viewsets.ModelViewSet):
             serializer.save(recipe=recipe)
             logger.info("Step created by %s", request.user)
             RecipeChange.objects.create(
+                recipe=recipe,
                 actor=request.user,
                 before="",
                 after=serializer.validated_data["text"],
@@ -403,6 +415,7 @@ class StepViewSet(viewsets.ModelViewSet):
         self.perform_update(serializer)
 
         RecipeChange.objects.create(
+            recipe=instance.recipe,
             actor=request.user,
             before=before_text,
             after=instance.text,
@@ -413,6 +426,7 @@ class StepViewSet(viewsets.ModelViewSet):
 
     def perform_destroy(self, instance: Step) -> None:
         RecipeChange.objects.create(
+            recipe=instance.recipe,
             actor=self.request.user,
             before=instance.text,
             after="",
@@ -462,6 +476,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
             instance: Ingredient = serializer.save(recipe=recipe)
             logger.info("Ingredient created by %s", self.request.user)
             RecipeChange.objects.create(
+                recipe=recipe,
                 actor=request.user,
                 before="",
                 after=ingredient_to_text(instance),
@@ -483,6 +498,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
         after = ingredient_to_text(instance)
 
         RecipeChange.objects.create(
+            recipe=instance.recipe,
             actor=request.user,
             before=before,
             after=after,
@@ -493,6 +509,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
     def perform_destroy(self, instance: Ingredient) -> None:
         RecipeChange.objects.create(
+            recipe=instance.recipe,
             actor=self.request.user,
             before=ingredient_to_text(instance),
             after="",
