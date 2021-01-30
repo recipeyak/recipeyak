@@ -29,6 +29,7 @@ def test_creating_section(client: APIClient, user: MyUser, recipe: Recipe) -> No
 
     assert RecipeChange.objects.count() == 1
     recipe_change = RecipeChange.objects.get()
+    assert recipe_change.recipe is not None
     assert recipe_change.recipe.id == recipe.id
 
 
@@ -55,6 +56,7 @@ def test_creating_section_without_position(
 
     assert RecipeChange.objects.count() == 1
     recipe_change = RecipeChange.objects.get()
+    assert recipe_change.recipe is not None
     assert recipe_change.recipe.id == recipe.id
 
     assert (
@@ -127,6 +129,7 @@ def test_updating_section(client: APIClient, user: MyUser, recipe: Recipe) -> No
     assert res.json()["position"] == data["position"]
     assert RecipeChange.objects.count() == 1
     recipe_change = RecipeChange.objects.get()
+    assert recipe_change.recipe is not None
     assert recipe_change.recipe.id == recipe.id
 
 
@@ -146,4 +149,5 @@ def test_deleting_section(client: APIClient, user: MyUser, recipe: Recipe) -> No
     assert after_count == before_count - 1
     assert RecipeChange.objects.count() == 1
     recipe_change = RecipeChange.objects.get()
+    assert recipe_change.recipe is not None
     assert recipe_change.recipe.id == recipe.id

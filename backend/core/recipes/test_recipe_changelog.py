@@ -37,6 +37,7 @@ def test_step_create(client: APIClient, recipe: Recipe, user: MyUser) -> None:
     assert change.after == res.json()["text"]
     assert change.change_type == ChangeType.STEP_CREATE
     assert change.actor == user
+    assert change.recipe is not None
     assert change.recipe.id == recipe.id
 
 
@@ -59,6 +60,7 @@ def test_step_update(
     assert change.after == res.json()["text"]
     assert change.change_type == ChangeType.STEP_UPDATE
     assert change.actor == user
+    assert change.recipe is not None
     assert change.recipe.id == recipe.id
 
 
@@ -78,6 +80,7 @@ def test_step_delete(
     assert change.after == ""
     assert change.change_type == ChangeType.STEP_DELETE
     assert change.actor == user
+    assert change.recipe is not None
     assert change.recipe.id == recipe.id
 
 
@@ -98,6 +101,7 @@ def test_recipe_name_update(client: APIClient, recipe: Recipe, user: MyUser) -> 
     assert change.after == res.json()["name"]
     assert change.change_type == ChangeType.NAME
     assert change.actor == user
+    assert change.recipe is not None
     assert change.recipe.id == recipe.id
 
 
@@ -118,6 +122,7 @@ def test_recipe_source_update(client: APIClient, recipe: Recipe, user: MyUser) -
     assert change.after == res.json()["source"]
     assert change.change_type == ChangeType.SOURCE
     assert change.actor == user
+    assert change.recipe is not None
     assert change.recipe.id == recipe.id
 
 
@@ -140,6 +145,7 @@ def test_recipe_servings_update(
     assert change.after == res.json()["servings"]
     assert change.change_type == ChangeType.SERVINGS
     assert change.actor == user
+    assert change.recipe is not None
     assert change.recipe.id == recipe.id
 
 
@@ -160,6 +166,7 @@ def test_recipe_time_update(client: APIClient, recipe: Recipe, user: MyUser) -> 
     assert change.after == res.json()["time"]
     assert change.change_type == ChangeType.TIME
     assert change.actor == user
+    assert change.recipe is not None
     assert change.recipe.id == recipe.id
 
 
@@ -182,6 +189,7 @@ def test_ingredient_create(client: APIClient, recipe: Recipe, user: MyUser) -> N
     assert change.before == ""
     assert change.after == "1 tablespoon black pepper, roughly ground"
     assert change.change_type == ChangeType.INGREDIENT_CREATE
+    assert change.recipe is not None
     assert change.recipe.id == recipe.id
 
 
@@ -205,6 +213,7 @@ def test_ingredient_update(
     assert change.before == "1 cup flour, sifted"
     assert change.after == "3 cups flour, sifted [optional]"
     assert change.change_type == ChangeType.INGREDIENT_UPDATE
+    assert change.recipe is not None
     assert change.recipe.id == recipe.id
 
 
@@ -225,4 +234,5 @@ def test_ingredient_delete(
     assert change.before == "1 cup flour, sifted"
     assert change.after == ""
     assert change.change_type == ChangeType.INGREDIENT_DELETE
+    assert change.recipe is not None
     assert change.recipe.id == recipe.id
