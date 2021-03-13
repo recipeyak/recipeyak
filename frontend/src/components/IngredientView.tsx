@@ -1,6 +1,6 @@
 import React from "react"
 import { IIngredient } from "@/store/reducers/recipes"
-import { capitalizeUnits } from "@/text"
+import { normalizeUnitsFracs } from "@/text"
 import { DragElementWrapper, DragSourceOptions } from "react-dnd"
 
 interface IIngredientVIewProps {
@@ -22,7 +22,7 @@ export default function IngredientView({
 
   return (
     <p className="listitem-text justify-space-between" ref={dragRef}>
-      {capitalizeUnits(quantity)} {name}
+      {normalizeUnitsFracs(quantity)} {name}
       {fmtDescription}{" "}
       {optional ? <span className="text-muted">[optional]</span> : ""}
     </p>

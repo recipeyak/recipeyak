@@ -13,7 +13,7 @@ export const ContainerBase: React.SFC = ({ children }) => (
 
 export const Container: React.SFC = ({ children }) => (
   <>
-    <div className="pb-3 pt-0 container pl-3 pr-3">
+    <div className="pb-3 pt-0 container w-100 pl-3 pr-3">
       <ErrorBoundary>{children}</ErrorBoundary>
     </div>
     <Footer />
