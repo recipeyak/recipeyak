@@ -9,7 +9,7 @@ describe("text", () => {
   })
   test("normalize fractions", () => {
     expect(normalizeUnitsFracs("1 ½ teaspoon + ¼ tablespoon")).toEqual(
-      "1 1/2 teaspoon + 1/4 tablespoon",
+      "1 1/2 teaspoon + 1/4 Tablespoon",
     )
   })
 })
