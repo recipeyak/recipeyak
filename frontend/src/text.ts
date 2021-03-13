@@ -27,7 +27,8 @@ const NORMALIZE_MAPPING = {
  */
 export function normalizeUnitsFracs(str: string): string {
   return Object.entries(NORMALIZE_MAPPING).reduce(
-    (acc, [unicode, plain]) => acc.replace(new RegExp(unicode, "g"), plain),
+    (acc, [pattern, replaceVal]) =>
+      acc.replace(new RegExp(pattern, "g"), replaceVal),
     str,
   )
 }
