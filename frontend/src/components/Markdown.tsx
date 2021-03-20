@@ -5,6 +5,7 @@ import * as settings from "@/settings"
 import { Link } from "@/components/Routing"
 
 const MarkdownWrapper = styled.div`
+  word-break: break-word;
   a {
     text-decoration: underline;
   }

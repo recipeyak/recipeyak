@@ -41,6 +41,7 @@ import {
   IQuantity,
   Unit,
 } from "@/api"
+import { normalizeUnitsFracs } from "@/text"
 
 const selectElementText = (el: Element) => {
   const sel = window.getSelection()
@@ -102,7 +103,7 @@ function ShoppingListItem({
   // we also use <section>s instead of <p>s to avoid extra new lines in Chrome
   const cls = classNames("text-small", { "mr-15": isFirst })
 
-  const units = quantitiesToString(quantities)
+  const units = normalizeUnitsFracs(quantitiesToString(quantities))
 
   return (
     <section className={cls} key={name + units}>
