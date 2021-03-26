@@ -132,3 +132,7 @@ export function useOnWindowFocusChange(cb: () => void) {
     }
   }, [cb])
 }
+
+export function useScheduleTeamID() {
+  return useSelector(s => s.user.scheduleTeamID) || "personal"
+}

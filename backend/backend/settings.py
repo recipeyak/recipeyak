@@ -7,6 +7,10 @@ import sentry_sdk
 from django.conf import global_settings
 from sentry_sdk.integrations.django import DjangoIntegration
 
+from backend.patches import patch_django
+
+patch_django()
+
 logger = logging.getLogger(__name__)
 
 

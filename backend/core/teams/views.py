@@ -1,4 +1,4 @@
-from typing import Any, Tuple
+from typing import Any, Tuple, cast
 
 from django.shortcuts import get_object_or_404
 from rest_framework import mixins, status, viewsets
@@ -13,6 +13,7 @@ from core.auth.permissions import (
     IsTeamMember,
 )
 from core.models import Invite, Team
+from core.request import AuthedRequest
 
 from .serializers import (
     CreateInviteSerializer,
@@ -41,7 +42,9 @@ class TeamInviteViewSet(
         team_pk = self.kwargs["team_pk"]
         return Invite.objects.filter(membership__team__id=team_pk)
 
-    def create(self, request: Request, team_pk: str) -> Response:
+    def create(  # type: ignore [override]
+        self, request: Request, team_pk: str
+    ) -> Response:
         """
         for creating, we want: level, user_id
         for response, we want: id, user data, team
@@ -108,7 +111,7 @@ class TeamViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Team.objects.filter(
-            membership__user_id=self.request.user.id
+            membership__user_id=cast(AuthedRequest, self.request).user.id
         ) | Team.objects.filter(is_public=True)
 
     def get_permissions(self):
@@ -152,6 +155,7 @@ class MembershipViewSet(
         return team.membership_set.select_related("user").all()
 
     def get_permissions(self):
+        permission_classes: Tuple[Any, ...]
         if self.request.method in SAFE_METHODS:
             permission_classes = (IsAuthenticated, IsTeamMember)
         elif self.request.method == "DELETE":

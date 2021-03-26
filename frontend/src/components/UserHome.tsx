@@ -4,11 +4,29 @@ import { Link } from "react-router-dom"
 import Footer from "@/components/Footer"
 import { TextInput } from "@/components/Forms"
 import { css, styled } from "@/theme"
-import { useDispatch, useSelector } from "@/hooks"
+import { useDispatch, useSelector, useScheduleTeamID } from "@/hooks"
 import { push } from "connected-react-router"
 import { fetchingRecipeListAsync } from "@/store/thunks"
 import { getTeamRecipes } from "@/store/reducers/recipes"
 import { searchRecipes } from "@/search"
+import * as api from "@/api"
+import { toISODateString } from "@/date"
+import {
+  addDays,
+  eachDayOfInterval,
+  format,
+  parseISO,
+  startOfToday,
+} from "date-fns"
+import { isRight } from "fp-ts/lib/Either"
+import {
+  Failure,
+  isFailure,
+  isSuccess,
+  Loading,
+  Success,
+  WebData,
+} from "@/webdata"
 
 const SearchInput = styled(TextInput)`
   font-size: 1.5rem !important;
@@ -43,6 +61,55 @@ const Code = styled.code`
   border-radius: 3px;
   color: inherit;
   white-space: pre;
+`
+
+const SectionTitle = styled.div`
+  font-size: 1.25rem;
+`
+
+const ScheduledRecipeContainer = styled.div`
+  display: flex;
+`
+const Day = styled.div`
+  font-weight: bold;
+  text-align: right;
+  min-width: 2.5rem;
+  margin-right: 0.5rem;
+  color: hsl(0 0% 40% / 1);
+`
+const Recipes = styled.div`
+  display: inline-grid;
+`
+
+const Recipe = styled(Link)`
+  font-weight: bold;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`
+
+function ScheduledRecipe(props: {
+  readonly day: string
+  readonly recipes: { readonly id: string; readonly name: string }[]
+}) {
+  return (
+    <ScheduledRecipeContainer>
+      <Day>{props.day}</Day>
+      <Recipes>
+        {props.recipes.length === 0 ? (
+          <div className="text-muted">—</div>
+        ) : null}
+        {props.recipes.map(x => (
+          <Recipe key={x.id} to={`/recipes/${x.id}`}>
+            {x.name}
+          </Recipe>
+        ))}
+      </Recipes>
+    </ScheduledRecipeContainer>
+  )
+}
+const ScheduleContainer = styled.div`
+  max-width: 300px;
 `
 
 const SuggestionBox = styled.div`
@@ -90,6 +157,96 @@ const BrowseRecipes = styled(Link)`
   text-align: center;
 `
 
+type Recipe = { readonly id: string; readonly name: string }
+type RecipeSchedule = { readonly day: string; readonly recipes: Recipe[] }
+
+function buildSchedule(
+  schedule: readonly {
+    readonly on: string
+    readonly recipe: {
+      readonly id: string
+      readonly name: string
+    }
+  }[],
+  start: Date,
+  end: Date,
+): readonly RecipeSchedule[] {
+  const newSchedule: {
+    [key: string]: { id: string; name: string }[] | undefined
+  } = {}
+  eachDayOfInterval({
+    start,
+    end,
+  }).forEach(day => {
+    newSchedule[day.toISOString()] = []
+  })
+  schedule.forEach(x => {
+    const date = parseISO(x.on)
+    const s = newSchedule[date.toISOString()]
+    if (s == null) {
+      newSchedule[date.toISOString()] = []
+    }
+    newSchedule[date.toISOString()]?.push({
+      id: x.recipe.id,
+      name: x.recipe.name,
+    })
+  })
+  return Object.entries(newSchedule).map(
+    ([key, value]): RecipeSchedule => {
+      return { day: format(parseISO(key), "E"), recipes: value || [] }
+    },
+  )
+}
+
+function SchedulePreview() {
+  const teamID = useScheduleTeamID()
+  const [scheduledRecipes, setScheduledRecipes] = React.useState<
+    WebData<readonly RecipeSchedule[]>
+  >(undefined)
+  React.useEffect(() => {
+    const today = startOfToday()
+    const start = today
+    const end = addDays(today, 6)
+
+    setScheduledRecipes(Loading())
+    api
+      .getCalendarRecipeList({
+        teamID,
+        start: toISODateString(start),
+        end: toISODateString(end),
+      })
+      .then(res => {
+        if (isRight(res)) {
+          const formattedSchedule = res.right.scheduledRecipes.map(x => ({
+            on: x.on,
+            recipe: { id: x.recipe.id.toString(), name: x.recipe.name },
+          }))
+          setScheduledRecipes(
+            Success(buildSchedule(formattedSchedule, start, end)),
+          )
+        } else {
+          setScheduledRecipes(Failure(undefined))
+        }
+      })
+  }, [teamID])
+
+  return (
+    <ScheduleContainer>
+      <SectionTitle>Schedule</SectionTitle>
+      <div>
+        {isSuccess(scheduledRecipes) ? (
+          scheduledRecipes.data.map(x => (
+            <ScheduledRecipe key={x.day} day={x.day} recipes={x.recipes} />
+          ))
+        ) : isFailure(scheduledRecipes) ? (
+          <p>Failed to Load Schedule</p>
+        ) : (
+          <p>Loading schedule...</p>
+        )}
+      </div>
+    </ScheduleContainer>
+  )
+}
 const UserHome = () => {
   const [searchQuery, setSearchQuery] = React.useState("")
   const recipes = useSelector(s => getTeamRecipes(s, "personal"))
@@ -178,6 +335,9 @@ const UserHome = () => {
             </SearchOptions>
           </SearchInputContainer>
         </SearchInputAligner>
+        <div className="home-page-grid">
+          <SchedulePreview />
+        </div>
       </div>
 
       <Footer />

@@ -7,7 +7,7 @@ import startOfDay from "date-fns/startOfDay"
 import endOfDay from "date-fns/endOfDay"
 import isFirstDayOfMonth from "date-fns/isFirstDayOfMonth"
 import sortBy from "lodash/sortBy"
-import { beforeCurrentDay } from "@/date"
+import { isInsideChangeWindow } from "@/date"
 import { CalendarItem, ICalendarDragItem } from "@/components/CalendarDayItem"
 import {
   updatingScheduledRecipeAsync,
@@ -134,8 +134,7 @@ function CalendarDay({
   const [{ isOver, canDrop }, drop] = useDrop({
     accept: [DragDrop.RECIPE, DragDrop.CAL_RECIPE],
     canDrop: () => {
-      // event when copying from past, we don't want to copy to past dates
-      return !beforeCurrentDay(date)
+      return isInsideChangeWindow(date)
     },
     drop: dropped => {
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions

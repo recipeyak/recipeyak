@@ -197,11 +197,15 @@ class SocialLoginView(LoginView):
     -------------
     """
 
-    serializer_class = SocialLoginSerializer
+    serializer_class = SocialLoginSerializer  # type: ignore [assignment]
 
     def process_login(self):
-        logger.info("Social login attempt by %s", self.user)
-        get_adapter(self.request).login(self.request, self.user)
+        logger.info(
+            "Social login attempt by %s", self.user  # type: ignore [attr-defined]
+        )
+        get_adapter(self.request).login(
+            self.request, self.user  # type: ignore [attr-defined]
+        )
 
 
 class GithubLogin(SocialLoginView):
@@ -233,8 +237,8 @@ class SocialConnectView(SocialLoginView):
     -------------
     """
 
-    serializer_class = SocialConnectSerializer
-    permission_classes = (IsAuthenticated,)
+    serializer_class = SocialConnectSerializer  # type: ignore [assignment]
+    permission_classes = (IsAuthenticated,)  # type: ignore [assignment]
 
 
 class SocialAccountViewSet(GenericViewSet):

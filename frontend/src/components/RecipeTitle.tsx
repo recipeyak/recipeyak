@@ -4,7 +4,6 @@ import MetaData from "@/components/MetaData"
 import {
   IRecipe,
   updateRecipe,
-  deleteRecipe,
   toggleEditingRecipe,
 } from "@/store/reducers/recipes"
 import GlobalEvent from "@/components/GlobalEvent"
@@ -23,8 +22,6 @@ interface IRecipeTitleProps {
   readonly owner: IRecipe["owner"]
   readonly update: (args: { id: IRecipe["id"]; data: IRecipeBasic }) => void
   readonly updating?: boolean
-  readonly remove: (id: IRecipe["id"]) => void
-  readonly deleting?: boolean
   readonly editing?: boolean
   readonly toggleEditing: (recipeID: IRecipe["id"]) => void
 }
@@ -71,16 +68,6 @@ class RecipeTitle extends React.Component<
     }))
   }
 
-  handleDelete = () => {
-    if (
-      confirm(
-        `Are you sure you want to delete this recipe "${this.props.name}"?`,
-      )
-    ) {
-      this.props.remove(this.props.id)
-    }
-  }
-
   handleGlobalKeyUp = (e: KeyboardEvent) => {
     // Pass if we aren't editing
     if (!this.props.editing) {
@@ -108,7 +95,6 @@ class RecipeTitle extends React.Component<
       time,
       owner,
       updating,
-      deleting,
     } = this.props
     return (
       <div>
@@ -193,34 +179,23 @@ class RecipeTitle extends React.Component<
                 />
               </label>
             </div>
-            <div className="d-flex grid-entire-row align-items-center justify-space-between">
+            <div className="d-flex grid-entire-row align-items-end justify-content-end">
               <Button
                 size="small"
                 type="submit"
-                loading={deleting}
-                onClick={this.handleDelete}
-                name="delete recipe">
-                Delete
+                loading={updating}
+                onClick={this.handleSave}
+                name="save recipe">
+                Save
               </Button>
-              <div>
-                <Button
-                  size="small"
-                  className="ml-2"
-                  type="submit"
-                  loading={updating}
-                  onClick={this.handleSave}
-                  name="save recipe">
-                  Save
-                </Button>
-                <Button
-                  size="small"
-                  className="ml-2"
-                  type="button"
-                  name="cancel recipe update"
-                  onClick={this.toggleEdit}>
-                  Cancel
-                </Button>
-              </div>
+              <Button
+                size="small"
+                className="ml-2"
+                type="button"
+                name="cancel recipe update"
+                onClick={this.toggleEdit}>
+                Cancel
+              </Button>
             </div>
           </div>
         )}
@@ -231,7 +206,6 @@ class RecipeTitle extends React.Component<
 
 const mapDispatchToProps = {
   update: updateRecipe.request,
-  remove: deleteRecipe.request,
   toggleEditing: toggleEditingRecipe,
 }
 

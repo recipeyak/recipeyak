@@ -5,7 +5,7 @@ import GlobalEvent from "@/components/GlobalEvent"
 import { Markdown } from "@/components/Markdown"
 import { Button, ButtonLink } from "@/components/Buttons"
 import { hasSelection } from "@/utils/general"
-import { capitalizeUnits } from "@/text"
+import { normalizeUnitsFracs } from "@/text"
 
 interface IListItemProps {
   readonly id: number
@@ -206,7 +206,7 @@ export default class ListItem extends React.Component<
         </section>
       </form>
     ) : (
-      <Markdown>{capitalizeUnits(this.state.text)}</Markdown>
+      <Markdown>{normalizeUnitsFracs(this.state.text)}</Markdown>
     )
 
     return (

@@ -1,4 +1,5 @@
 import logging
+from typing import Any, Dict
 
 from allauth.account import app_settings as allauth_settings
 from allauth.account.utils import complete_signup
@@ -44,7 +45,7 @@ class RegisterView(CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = serializer.save(self.request)
+        user = serializer.save(request=self.request)
 
         complete_signup(
             self.request._request, user, allauth_settings.EMAIL_VERIFICATION, None
@@ -54,7 +55,7 @@ class RegisterView(CreateAPIView):
             allauth_settings.EMAIL_VERIFICATION
             == allauth_settings.EmailVerificationMethod.MANDATORY
         ):
-            data = {"detail": _("Verification e-mail sent.")}
+            data: Dict[str, Any] = {"detail": _("Verification e-mail sent.")}
         else:
             data = {"user": UserDetailsSerializer(user).data}
 

@@ -262,6 +262,12 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
           >
             Archive Recipe
           </button>
+          <button
+            className="c3"
+            onClick={[Function]}
+          >
+            Delete Recipe
+          </button>
         </div>
       </div>
     </div>
@@ -457,6 +463,10 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
 `;
 
 exports[`<Recipe/> snaps recipe all states 2`] = `
+.c6 {
+  word-break: break-word;
+}
+
 .c6 a {
   -webkit-text-decoration: underline;
   text-decoration: underline;
@@ -688,6 +698,12 @@ exports[`<Recipe/> snaps recipe all states 2`] = `
             onClick={[Function]}
           >
             Archive Recipe
+          </button>
+          <button
+            className="c3"
+            onClick={[Function]}
+          >
+            Delete Recipe
           </button>
         </div>
       </div>

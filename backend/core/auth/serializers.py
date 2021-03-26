@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Any, Dict, cast
 
 from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model
@@ -12,7 +12,7 @@ from rest_framework.exceptions import ValidationError
 
 from core.serialization import BaseSerializer
 
-UserModel = get_user_model()
+UserModel = cast(Any, get_user_model())
 
 
 class LoginSerializer(BaseSerializer):
@@ -138,8 +138,9 @@ class PasswordResetSerializer(BaseSerializer):
 
         return value
 
-    def save(self):
+    def save(self, **kwargs: Any) -> None:
         request = self.context.get("request")
+        assert request is not None
         # Set some values to trigger the send_email method.
         opts = {
             "use_https": request.is_secure(),
@@ -240,4 +241,5 @@ class PasswordChangeSerializer(BaseSerializer):
         if not self.logout_on_password_change:
             from django.contrib.auth import update_session_auth_hash
 
+            assert self.request is not None
             update_session_auth_hash(self.request, self.user)

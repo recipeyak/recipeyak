@@ -38,17 +38,17 @@ class DBBlockerSerializerMixin:
 
     def to_representation(self, instance):
         if self.dangerously_allow_db:
-            return cast(Any, super()).to_representation(instance)
+            return super().to_representation(instance)  # type: ignore [misc]
 
         if settings.ERROR_ON_SERIALIZER_DB_ACCESS:
             # only raise error when we are in DEBUG mode. We don't want to cause
             # errors in production when we don't need to do so.
             with connection.execute_wrapper(blocker):
-                return cast(Any, super()).to_representation(instance)
+                return super().to_representation(instance)  # type: ignore [misc]
 
         # use a warning blocker elsewhere
         with connection.execute_wrapper(warning_blocker):
-            return cast(Any, super()).to_representation(instance)
+            return super().to_representation(instance)  # type: ignore [misc]
 
     def __init__(self, *args, **kwargs) -> None:
         self.dangerously_allow_db = kwargs.pop("dangerously_allow_db", None)

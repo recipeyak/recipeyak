@@ -1,16 +1,16 @@
 import logging
-from typing import Optional
+from typing import Any, Optional
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from rest_framework import status, viewsets
+from rest_framework import status
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.exceptions import MethodNotAllowed, PermissionDenied
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from core import viewsets
 from core.auth.permissions import (
     HasRecipeAccess,
     IsTeamMemberIfPrivate,
@@ -40,6 +40,7 @@ from core.recipes.serializers import (
     StepSerializer,
 )
 from core.recipes.utils import add_positions
+from core.request import AuthedRequest
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +77,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         return recipes
 
-    def create(self, request):
+    def create(self, request: AuthedRequest) -> Response:  # type: ignore [override]
         serializer = self.get_serializer(data=request.data, dangerously_allow_db=True)
 
         # If the client doesn't set the position on one of the objects we need
@@ -97,10 +98,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)
-        instance: Step = self.get_object()
+        instance: Recipe = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
 
+        changes = []
         fields = [
             ("name", ChangeType.NAME),
             ("author", ChangeType.AUTHOR),
@@ -113,12 +115,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 field in serializer.validated_data
                 and getattr(instance, field) != serializer.validated_data[field]
             ):
-                RecipeChange.objects.create(
-                    actor=request.user,
-                    before=getattr(instance, field) or "",
-                    after=serializer.validated_data[field],
-                    change_type=change_type,
+                changes.append(
+                    RecipeChange(
+                        recipe=instance,
+                        actor=request.user,
+                        before=getattr(instance, field) or "",
+                        after=serializer.validated_data[field],
+                        change_type=change_type,
+                    )
                 )
+
+        RecipeChange.objects.bulk_create(changes)
 
         self.perform_update(serializer)
 
@@ -131,7 +138,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer_class=RecipeMoveCopySerializer,
         permission_classes=[IsAuthenticated, HasRecipeAccess],
     )
-    def move(self, request: Request, pk: str) -> Response:
+    def move(self, request: AuthedRequest, pk: str) -> Response:
         """
         Move recipe from user to another team.
         User should have write access to team to move recipe
@@ -166,7 +173,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer_class=RecipeMoveCopySerializer,
         permission_classes=[IsAuthenticated, HasRecipeAccess],
     )
-    def copy(self, request: Request, pk: str) -> Response:
+    def copy(self, request: AuthedRequest, pk: str) -> Response:
         """
         Copy recipe from user to team.
         Any team member should be able to copy a recipe from the team.
@@ -207,7 +214,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         methods=["post"],
         permission_classes=[IsAuthenticated, HasRecipeAccess],
     )
-    def duplicate(self, request: Request, pk: str) -> Response:
+    def duplicate(self, request: AuthedRequest, pk: str) -> Response:
         user: MyUser = request.user
         recipe: Recipe = self.get_object()
         return Response(
@@ -226,7 +233,7 @@ def parse_int(val: str) -> Optional[int]:
 
 @api_view(["GET"])
 @permission_classes((IsAuthenticated,))
-def get_recipe_timeline(request: Request, recipe_pk: int) -> Response:
+def get_recipe_timeline(request: AuthedRequest, recipe_pk: int) -> Response:
     user: MyUser = request.user
     team = user.recipe_team
 
@@ -259,7 +266,7 @@ def get_next_max_pos(*, recipe: Recipe) -> float:
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def create_section_view(request: Request, recipe_pk: int) -> Response:
+def create_section_view(request: AuthedRequest, recipe_pk: int) -> Response:
     recipe = get_object_or_404(Recipe, pk=recipe_pk)
     if not has_recipe_access(recipe=recipe, user=request.user):
         return Response(status=status.HTTP_403_FORBIDDEN)
@@ -268,6 +275,7 @@ def create_section_view(request: Request, recipe_pk: int) -> Response:
     serializer.is_valid(raise_exception=True)
 
     RecipeChange.objects.create(
+        recipe=recipe,
         actor=request.user,
         before="",
         after=serializer.validated_data["title"],
@@ -283,12 +291,14 @@ def create_section_view(request: Request, recipe_pk: int) -> Response:
     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-def delete_section_view(request: Request, section_pk: int) -> Response:
+def delete_section_view(request: AuthedRequest, section_pk: int) -> Response:
     section = get_object_or_404(Section, pk=section_pk)
-    if not has_recipe_access(recipe=section.recipe, user=request.user):
+    recipe = section.recipe
+    if not has_recipe_access(recipe=recipe, user=request.user):
         return Response(status=status.HTTP_403_FORBIDDEN)
 
     RecipeChange.objects.create(
+        recipe=recipe,
         actor=request.user,
         before=section.title,
         after="",
@@ -300,14 +310,16 @@ def delete_section_view(request: Request, section_pk: int) -> Response:
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-def update_section_view(request: Request, section_pk: int) -> Response:
+def update_section_view(request: AuthedRequest, section_pk: int) -> Response:
     section = get_object_or_404(Section, pk=section_pk)
+    recipe = section.recipe
     if not has_recipe_access(recipe=section.recipe, user=request.user):
         return Response(status=status.HTTP_403_FORBIDDEN)
 
     serializer = SectionSerializer(section, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     RecipeChange.objects.create(
+        recipe=recipe,
         actor=request.user,
         before=section.title,
         after=serializer.validated_data.get("title", ""),
@@ -320,11 +332,12 @@ def update_section_view(request: Request, section_pk: int) -> Response:
 
 @api_view(["PATCH", "DELETE"])
 @permission_classes([IsAuthenticated])
-def delete_or_update_section_view(request: Request, section_pk: int) -> Response:
+def delete_or_update_section_view(request: AuthedRequest, section_pk: int) -> Response:
     if request.method == "PATCH":
         return update_section_view(request, section_pk)
     if request.method == "DELETE":
         return delete_section_view(request, section_pk)
+    assert request.method is not None
     raise MethodNotAllowed(method=request.method)
 
 
@@ -335,7 +348,7 @@ class TeamRecipesViewSet(APIView):
         NonSafeIfMemberOrAdmin,
     )
 
-    def get(self, request: Request, team_pk: str) -> Response:
+    def get(self, request: AuthedRequest, team_pk: str) -> Response:
         # TODO(sbdchd): combine with the normal recipe viewset and just pass an
         # extra query param for filtering
         team = get_object_or_404(Team, pk=self.kwargs["team_pk"])
@@ -362,7 +375,9 @@ class StepViewSet(viewsets.ModelViewSet):
     serializer_class = StepSerializer
     permission_classes = (IsAuthenticated,)
 
-    def create(self, request: Request, recipe_pk: str) -> Response:
+    def create(  # type: ignore [override]
+        self, request: AuthedRequest, recipe_pk: str
+    ) -> Response:
         """
         create the step and attach it to the correct recipe
         """
@@ -382,6 +397,7 @@ class StepViewSet(viewsets.ModelViewSet):
             serializer.save(recipe=recipe)
             logger.info("Step created by %s", request.user)
             RecipeChange.objects.create(
+                recipe=recipe,
                 actor=request.user,
                 before="",
                 after=serializer.validated_data["text"],
@@ -399,6 +415,7 @@ class StepViewSet(viewsets.ModelViewSet):
         self.perform_update(serializer)
 
         RecipeChange.objects.create(
+            recipe=instance.recipe,
             actor=request.user,
             before=before_text,
             after=instance.text,
@@ -409,6 +426,7 @@ class StepViewSet(viewsets.ModelViewSet):
 
     def perform_destroy(self, instance: Step) -> None:
         RecipeChange.objects.create(
+            recipe=instance.recipe,
             actor=self.request.user,
             before=instance.text,
             after="",
@@ -435,7 +453,9 @@ class IngredientViewSet(viewsets.ModelViewSet):
     serializer_class = IngredientSerializer
     permission_classes = (IsAuthenticated,)
 
-    def create(self, request: Request, recipe_pk: str) -> Response:
+    def create(  # type: ignore [override]
+        self, request: AuthedRequest, recipe_pk: str
+    ) -> Response:
         """
         create the ingredient and attach it to the correct recipe
         """
@@ -456,6 +476,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
             instance: Ingredient = serializer.save(recipe=recipe)
             logger.info("Ingredient created by %s", self.request.user)
             RecipeChange.objects.create(
+                recipe=recipe,
                 actor=request.user,
                 before="",
                 after=ingredient_to_text(instance),
@@ -464,9 +485,9 @@ class IngredientViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def update(self, request, *args, **kwargs):
+    def update(self, request: AuthedRequest, *args: Any, **kwargs: Any) -> Response:
         partial = kwargs.pop("partial", False)
-        instance: Step = self.get_object()
+        instance: Ingredient = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
 
@@ -477,6 +498,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
         after = ingredient_to_text(instance)
 
         RecipeChange.objects.create(
+            recipe=instance.recipe,
             actor=request.user,
             before=before,
             after=after,
@@ -487,6 +509,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
     def perform_destroy(self, instance: Ingredient) -> None:
         RecipeChange.objects.create(
+            recipe=instance.recipe,
             actor=self.request.user,
             before=ingredient_to_text(instance),
             after="",
@@ -503,7 +526,9 @@ class NoteViewSet(viewsets.ModelViewSet):
     def get_serializer(self, *args, **kwargs):
         return NoteSerializer(*args, dangerously_allow_db=True, **kwargs)
 
-    def create(self, request: Request, recipe_pk: str) -> Response:
+    def create(  # type: ignore [override]
+        self, request: AuthedRequest, recipe_pk: str
+    ) -> Response:
         serializer = self.get_serializer(data=request.data)
         recipe = get_object_or_404(Recipe, pk=recipe_pk)
         serializer.is_valid(raise_exception=True)
