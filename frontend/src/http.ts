@@ -12,7 +12,7 @@ import { Result, Ok, Err } from "@/result"
 import * as t from "io-ts"
 import { Either, left } from "fp-ts/lib/Either"
 
-export const baseHttp = axios.create({ timeout: 15000 })
+export const baseHttp = axios.create()
 
 type Method =
   | "GET"
