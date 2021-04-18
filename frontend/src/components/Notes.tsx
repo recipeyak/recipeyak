@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { formatDistanceToNow, format } from "date-fns"
+import { format } from "date-fns"
 import { Avatar } from "@/components/Avatar"
 import {
   IRecipe,
@@ -19,6 +19,7 @@ import orderBy from "lodash/orderBy"
 import Textarea from "react-textarea-autosize"
 import { Markdown } from "@/components/Markdown"
 import { useLocation } from "react-router-dom"
+import { formatDistanceToNow } from "@/date"
 
 interface IUseNoteEditHandlers {
   readonly note: INote
@@ -95,7 +96,7 @@ function NoteTimeStamp({ created }: { readonly created: string }) {
   const date = new Date(created)
   const dateFormat = format(date, "yyyy-M-d")
   const prettyDate = format(date, "MMM d, yyyy")
-  const humanizedDate = formatDistanceToNow(date, { addSuffix: true })
+  const humanizedDate = formatDistanceToNow(date)
   return (
     <time title={prettyDate} dateTime={dateFormat}>
       {humanizedDate}

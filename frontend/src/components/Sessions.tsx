@@ -1,6 +1,5 @@
 import React, { useEffect } from "react"
 import { ISession, LoggingOutStatus } from "@/store/reducers/user"
-import { formatDistanceToNow } from "date-fns"
 import { WebData, isLoading, isInitial, isFailure } from "@/webdata"
 import { Button } from "@/components/Buttons"
 import Loader from "@/components/Loader"
@@ -12,6 +11,7 @@ import {
   loggingOutSessionByIdAsync,
   loggingOutAllSessionsAsync,
 } from "@/store/thunks"
+import { formatDistanceToNow } from "@/date"
 
 function getDeviceEmoji(kind: ISession["device"]["kind"]): string | null {
   switch (kind) {
@@ -69,9 +69,7 @@ interface ISessionProps extends ISession {
 }
 
 function Session(props: ISessionProps) {
-  const lastActivity = formatDistanceToNow(new Date(props.last_activity), {
-    addSuffix: true,
-  })
+  const lastActivity = formatDistanceToNow(new Date(props.last_activity))
   return (
     <li className="mb-2">
       <section className="d-flex">
