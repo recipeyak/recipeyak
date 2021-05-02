@@ -142,19 +142,58 @@ const SuggestionInfo = styled.div`
   color: ${props => props.theme.color.muted};
 `
 
-const SuggestionItem = styled(Link)<{ readonly firstItem?: boolean }>`
+const SuggestionItem = styled(Link)<{
+  readonly firstItem?: boolean
+  readonly archived?: boolean
+}>`
   ${suggestionStyle}
   // Underline the first item because we navigate to it on "Enter".
-  ${props => props.firstItem && "text-decoration: underline;"}
+  ${props =>
+    props.firstItem &&
+    css`
+      text-decoration: underline;
+    `}
+  ${props =>
+    props.archived &&
+    css`
+      color: ${props.theme.color.muted};
+    `}
+`
+const RecipeMatchPiece = styled.div<{ readonly firstItem?: boolean }>`
+  margin-left: 1rem;
+  font-weight: bold;
+`
+const SuggestionAuthorContainer = styled.span`
+  flex-grow: 1;
+`
+const SuggestionAuthor = styled.span<{ readonly bold: boolean }>`
+  font-weight: ${props => (props.bold ? "bold" : "normal")};
+`
+const RecipeName = styled.span<{ readonly bold: boolean }>`
+  font-weight: ${props => (props.bold ? "bold" : "normal")};
+  flex-grow: 0;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: pre;
+`
+const MatchType = styled.span`
+  color: ${props => props.theme.color.muted};
 `
 
-const BrowseRecipes = styled(Link)`
+const BrowseRecipes = styled(Link)``
+
+const BrowseRecipesContainer = styled.div`
   ${suggestionStyle}
   border-top-style: solid;
   border-top-width: 1px;
   border-color: #f2f2f2;
   margin-top: 0.5rem;
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+`
+
+const NameAuthorContainer = styled.div`
+  display: flex;
 `
 
 type Recipe = { readonly id: string; readonly name: string }
@@ -264,18 +303,33 @@ const UserHome = () => {
   const filteredRecipes =
     recipes?.kind === "Success"
       ? searchRecipes({ recipes: recipes.data, query: searchQuery })
-      : []
+      : { recipes: [], matchOn: [] }
 
   const loadingSuggestions = recipes?.kind !== "Success"
 
-  const suggestions = filteredRecipes
-    .map((recipe, index) => {
+  const suggestions = filteredRecipes?.recipes
+    .map((result, index) => {
+      const { recipe, match } = result
       return (
         <SuggestionItem
           key={recipe.id}
+          archived={recipe.archived_at != null}
           to={`/recipes/${recipe.id}`}
           firstItem={index === 0}>
-          <b>{recipe.name}</b> by {recipe.author}
+          <NameAuthorContainer>
+            <RecipeName bold={match?.kind === "name"}>
+              {recipe.name}{" "}
+            </RecipeName>
+            <SuggestionAuthorContainer>
+              by{" "}
+              <SuggestionAuthor bold={match?.kind === "author"}>
+                {recipe.author}
+              </SuggestionAuthor>
+            </SuggestionAuthorContainer>
+          </NameAuthorContainer>
+          {match?.kind === "ingredient" ? (
+            <RecipeMatchPiece>{match.value}</RecipeMatchPiece>
+          ) : null}
         </SuggestionItem>
       )
     })
@@ -284,12 +338,12 @@ const UserHome = () => {
   const handleSearchKeydown = React.useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       const key = e.key
-      const suggestion = filteredRecipes[0]
+      const suggestion = filteredRecipes.recipes[0]
       if (!suggestion) {
         return
       }
       if (key === "Enter") {
-        dispatch(push(`/recipes/${suggestion.id}`))
+        dispatch(push(`/recipes/${suggestion.recipe.id}`))
       }
     },
     [dispatch, filteredRecipes],
@@ -316,13 +370,20 @@ const UserHome = () => {
                       <SuggestionInfo>No Results Found</SuggestionInfo>
                     )}
                     {suggestions}
-                    <BrowseRecipes
-                      to={{
-                        pathname: "/recipes",
-                        search: `search=${encodeURIComponent(searchQuery)}`,
-                      }}>
-                      Browse Recipes
-                    </BrowseRecipes>
+                    <BrowseRecipesContainer>
+                      <MatchType>
+                        match: {filteredRecipes.matchOn.join(" or ")} (
+                        {filteredRecipes.recipes.length})
+                      </MatchType>
+
+                      <BrowseRecipes
+                        to={{
+                          pathname: "/recipes",
+                          search: `search=${encodeURIComponent(searchQuery)}`,
+                        }}>
+                        Browse
+                      </BrowseRecipes>
+                    </BrowseRecipesContainer>
                   </>
                 ) : (
                   <SuggestionInfo>Loading...</SuggestionInfo>

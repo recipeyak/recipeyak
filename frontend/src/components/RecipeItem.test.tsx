@@ -10,6 +10,7 @@ describe("RecipeItem", () => {
       <TestProvider>
         <RecipeItem
           id={123}
+          match={{ kind: "author", value: "" }}
           author="some recipe title"
           url="/someurl"
           name="foo"

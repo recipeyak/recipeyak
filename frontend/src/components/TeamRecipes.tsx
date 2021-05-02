@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import Loader from "@/components/Loader"
 
 import { TextInput } from "@/components/Forms"
-import { matchesQuery } from "@/search"
+import { searchRecipes } from "@/search"
 
 import { RecipeItem as Recipe } from "@/components/RecipeItem"
 import { IRecipe } from "@/store/reducers/recipes"
@@ -29,8 +29,7 @@ export default class TeamRecipes extends React.Component<
 
   render() {
     const { loading, recipes } = this.props
-    const results = recipes.filter(x => matchesQuery(x, this.state.query))
-
+    const results = searchRecipes({ recipes, query: this.state.query })
     return (
       <div>
         <section className="d-flex justify-space-between align-items-center mb-4">
@@ -62,8 +61,10 @@ export default class TeamRecipes extends React.Component<
           </section>
         ) : (
           <section className="recipe-grid">
-            {results.length > 0 ? (
-              results.map(x => <Recipe {...x} key={x.id} />)
+            {results.recipes.length > 0 ? (
+              results.recipes.map(x => (
+                <Recipe {...x.recipe} match={x.match} key={x.recipe.id} />
+              ))
             ) : (
               <p className="grid-entire-row justify-center fs-6 break-word">
                 No recipes found matching <strong>{this.state.query}</strong>

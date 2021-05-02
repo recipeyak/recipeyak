@@ -5,6 +5,8 @@ import { classNames } from "@/classnames"
 import { recipeURL } from "@/urls"
 import { DragDrop } from "@/dragDrop"
 import { DragIcon } from "@/components/icons"
+import { Match } from "@/search"
+import { styled } from "@/theme"
 
 interface IRecipeTitleProps {
   readonly url: string
@@ -25,15 +27,26 @@ function RecipeTitle({ url, name, dragable }: IRecipeTitleProps) {
 
 interface IMetaProps {
   readonly author: string
+  readonly bold: boolean
 }
 
-function Meta({ author }: IMetaProps) {
+function Meta({ author, bold }: IMetaProps) {
   return (
-    <div className={classNames("content", "d-flex", "align-items-center")}>
+    <div
+      className={classNames("content", "d-flex", "align-items-center", {
+        "fw-bold": bold,
+      })}>
       {author !== "" ? <small>{author}</small> : null}
     </div>
   )
 }
+
+const Ingredient = styled.small`
+  font-weight: bold;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`
 
 interface IRecipeItemProps {
   readonly name: string
@@ -41,9 +54,16 @@ interface IRecipeItemProps {
   readonly id: number
   readonly url?: string
   readonly drag?: boolean
+  readonly match: Match | null
 }
 
-export function RecipeItem({ name, author, id, ...props }: IRecipeItemProps) {
+export function RecipeItem({
+  name,
+  author,
+  id,
+  match,
+  ...props
+}: IRecipeItemProps) {
   const url = props.url || recipeURL(id, name)
 
   const item: IRecipeItemDrag = { type: DragDrop.RECIPE, recipeID: id }
@@ -64,7 +84,10 @@ export function RecipeItem({ name, author, id, ...props }: IRecipeItemProps) {
   const recipeContent = (
     <div className="card-content h-100 d-flex flex-column">
       <RecipeTitle name={name} url={url} dragable={!!props.drag} />
-      <Meta author={author} />
+      {match?.kind === "ingredient" ? (
+        <Ingredient>{match.value}</Ingredient>
+      ) : null}
+      <Meta bold={match?.kind === "author"} author={author} />
     </div>
   )
 

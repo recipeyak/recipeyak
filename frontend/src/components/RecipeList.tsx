@@ -14,6 +14,7 @@ import { parseIntOrNull } from "@/parseIntOrNull"
 import { Link } from "react-router-dom"
 import { useDispatch } from "@/hooks"
 import { replace } from "connected-react-router"
+import { styled } from "@/theme"
 
 interface IResultsProps {
   readonly recipes: JSX.Element[]
@@ -49,6 +50,11 @@ function NoMatchingRecipe({ query }: { readonly query: string }) {
   )
 }
 
+const MatchOn = styled.div`
+  margin-bottom: 0.5rem;
+  color: ${props => props.theme.color.muted};
+`
+
 interface IRecipeList {
   readonly recipes: WebData<IRecipe[]>
   readonly query: string
@@ -67,21 +73,36 @@ function RecipeList(props: IRecipeList) {
     includeArchived: true,
   })
 
-  const normalResults = results
-    .filter(recipe => !recipe.archived_at)
-    .map(recipe => <RecipeItem {...recipe} drag={props.drag} key={recipe.id} />)
-  const archivedResults = results
-    .filter(recipe => recipe.archived_at)
-    .map(recipe => <RecipeItem {...recipe} drag={props.drag} key={recipe.id} />)
+  const normalResults = results.recipes
+    .filter(result => !result.recipe.archived_at)
+    .map(result => (
+      <RecipeItem
+        {...result.recipe}
+        match={result.match}
+        drag={props.drag}
+        key={result.recipe.id}
+      />
+    ))
+  const archivedResults = results.recipes
+    .filter(result => result.recipe.archived_at)
+    .map(result => (
+      <RecipeItem
+        {...result.recipe}
+        match={result.match}
+        drag={props.drag}
+        key={result.recipe.id}
+      />
+    ))
 
   const scrollClass = props.scroll ? "recipe-scroll" : ""
 
-  if (results.length === 0 && props.query === "") {
+  if (results.recipes.length === 0 && props.query === "") {
     return <AddRecipeCallToAction />
   }
 
   return (
     <div className={scrollClass}>
+      <MatchOn>matching on: {results.matchOn.join(" or ")}</MatchOn>
       <div className="recipe-grid">
         <Results recipes={normalResults} query={props.query} />
       </div>
@@ -153,7 +174,7 @@ function RecipesListSearch({
     <>
       <TextInput
         value={query}
-        className={noPadding ? "" : "mb-4"}
+        className={noPadding ? "" : "mb-1"}
         onChange={handleQueryChange}
         placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:"
       />
