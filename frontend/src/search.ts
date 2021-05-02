@@ -1,3 +1,4 @@
+import { byNameAlphabetical } from "@/sorters"
 import { IRecipe } from "@/store/reducers/recipes"
 import { notUndefined } from "@/utils/general"
 
@@ -95,6 +96,7 @@ export function searchRecipes(params: {
       return { recipe, match }
     })
     .filter(notUndefined)
+    .sort((a, b) => byNameAlphabetical(a.recipe, b.recipe))
 
   return { matchOn: matchType, recipes: matchingRecipes }
 }
