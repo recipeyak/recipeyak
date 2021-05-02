@@ -1,7 +1,5 @@
 import { IRecipe } from "@/store/reducers/recipes"
-import { parseIntOrNull } from "@/parseIntOrNull"
-import nth from "lodash/nth"
-import { byNameAlphabetical } from "@/sorters"
+import { notUndefined } from "@/utils/general"
 
 // https://stackoverflow.com/a/37511463/3720597
 const removeAccents = (x: string) =>
@@ -12,55 +10,91 @@ const normalize = (x: string = "") =>
     .replace(/\W/g, "")
     .toLowerCase()
 
-// get the actual query value from search_space:query_here
-const normalizeQuery = (x: string) => {
-  const z = x.split(":")
-  return z.length > 0 ? normalize(z[1]) : normalize(x)
+export type Match = {
+  readonly kind: "author" | "recipeId" | "ingredient" | "name"
+  readonly value: string
 }
 
-export function matchesQuery(recipe: IRecipe, query: string) {
+export function getMatchType(rawQuery: string): Match["kind"][] {
+  const query = rawQuery.trim()
+  if (query.indexOf("author:") === 0) {
+    return ["author"]
+  }
+  if (query.indexOf("recipeId:") === 0) {
+    return ["recipeId"]
+  }
+  if (query.indexOf("ingredient:") === 0) {
+    return ["ingredient"]
+  }
+  if (query.indexOf("name:") === 0) {
+    return ["name"]
+  }
+  return ["name", "author"]
+}
+
+export function matchesQuery(
+  recipe: IRecipe,
+  query: string,
+  matchType: Match["kind"][],
+): Match | "no-match" | "empty-query" {
   // basic search with ability to prepend a tag to query and only search for
   // things relevent to that tag
-
   const name = normalize(recipe.name)
   const author = normalize(recipe.author)
+  const recipeId = String(recipe.id)
 
-  if (query.indexOf("author:") === 0) {
-    return author.includes(normalizeQuery(query))
+  const normalizedQuery = normalize(
+    query.replace(/^(ingredient|name|author|recipeId):/, ""),
+  )
+  if (!normalizedQuery) {
+    return "empty-query"
   }
-
-  if (query.indexOf("recipeId:") === 0) {
-    const id = parseIntOrNull(nth(query.split(":"), 1))
-    return recipe.id === id
+  for (const field of matchType) {
+    if (field === "name" && name.includes(normalizedQuery)) {
+      return { kind: "name", value: name }
+    }
+    if (field === "author" && author.includes(normalizedQuery)) {
+      return { kind: "author", value: author }
+    }
+    if (field === "recipeId" && recipeId.includes(normalizedQuery)) {
+      return { kind: "recipeId", value: recipeId }
+    }
+    if (field === "ingredient") {
+      for (const ingredient of recipe.ingredients) {
+        const normalizedIngredientName = normalize(ingredient.name)
+        if (normalizedIngredientName.includes(normalizedQuery)) {
+          return {
+            kind: "ingredient",
+            value: `${ingredient.quantity} ${ingredient.name}`,
+          }
+        }
+      }
+    }
   }
-
-  if (query.indexOf("ingredient:") === 0) {
-    return recipe.ingredients
-      .map(x => normalize(x.name))
-      .some(x => x.includes(normalizeQuery(query)))
-  }
-
-  if (query.indexOf("name:") === 0) {
-    return name.includes(normalizeQuery(query))
-  }
-
-  query = normalize(query)
-
-  query = ["author", "name", "ingredient"]
-    .map(x => x + ":")
-    .some(x => x.includes(query))
-    ? ""
-    : query
-
-  return name.includes(query) || author.includes(query)
+  return "no-match"
 }
 
 export function searchRecipes(params: {
   readonly recipes: IRecipe[]
   readonly query: string
   readonly includeArchived?: boolean
-}): readonly IRecipe[] {
-  return params.recipes
-    .filter(recipe => matchesQuery(recipe, params.query))
-    .sort(byNameAlphabetical)
+}): {
+  readonly matchOn: Match["kind"][]
+  readonly recipes: { readonly recipe: IRecipe; readonly match: Match | null }[]
+} {
+  const matchType = getMatchType(params.query)
+  const matchingRecipes = params.recipes
+    .map(recipe => {
+      const match = matchesQuery(recipe, params.query, matchType) ?? undefined
+      if (typeof match === "string") {
+        if (match === "no-match") {
+          return undefined
+        }
+        return { recipe, match: null }
+      }
+      return { recipe, match }
+    })
+    .filter(notUndefined)
+
+  return { matchOn: matchType, recipes: matchingRecipes }
 }

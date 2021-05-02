@@ -1,4 +1,4 @@
-import { matchesQuery } from "@/search"
+import { getMatchType, matchesQuery } from "@/search"
 import { IRecipe } from "@/store/reducers/recipes"
 
 describe("search", () => {
@@ -23,16 +23,15 @@ describe("search", () => {
       archived_at: null,
     }
 
-    const testCases = [
-      ["recipeid:150", false],
-      ["id:150", false],
-      ["recipeId:75", false],
-      ["recipeId:", false],
-      ["recipeId:150", true],
-    ] as const
+    function search(query: string) {
+      return matchesQuery(recipe, query, getMatchType(query))
+    }
 
-    testCases.forEach(([query, expected]) => {
-      expect(matchesQuery(recipe, query)).toEqual(expected)
-    })
+    expect(search("recipeid:150")).toEqual("no-match")
+    expect(search("id:150")).toEqual("no-match")
+    expect(search("recipeId:75")).toEqual("no-match")
+    expect(search("recipeId:")).toEqual("empty-query")
+    expect(search("")).toEqual("empty-query")
+    expect(search("recipeId:150")).toEqual({ kind: "recipeId", value: "150" })
   })
 })
