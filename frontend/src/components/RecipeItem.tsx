@@ -16,7 +16,7 @@ interface IRecipeTitleProps {
 
 function RecipeTitle({ url, name, dragable }: IRecipeTitleProps) {
   return (
-    <div className={classNames("flex-grow d-flex justify-between")}>
+    <div className="flex-grow d-flex justify-between">
       <Link tabIndex={0} to={url} className="align-self-start mb-1">
         {name}
       </Link>
