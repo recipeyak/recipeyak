@@ -75,6 +75,17 @@ export function matchesQuery(
   return "no-match"
 }
 
+/** Sort archived recipes last, then sort alphabetically */
+function sortArchivedName(a: IRecipe, b: IRecipe) {
+  if (a.archived_at && !b.archived_at) {
+    return 1
+  }
+  if (!a.archived_at && b.archived_at) {
+    return -1
+  }
+  return byNameAlphabetical(a, b)
+}
+
 export function searchRecipes(params: {
   readonly recipes: IRecipe[]
   readonly query: string
@@ -96,7 +107,7 @@ export function searchRecipes(params: {
       return { recipe, match }
     })
     .filter(notUndefined)
-    .sort((a, b) => byNameAlphabetical(a.recipe, b.recipe))
+    .sort((a, b) => sortArchivedName(a.recipe, b.recipe))
 
   return { matchOn: matchType, recipes: matchingRecipes }
 }
