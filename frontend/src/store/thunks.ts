@@ -1004,8 +1004,8 @@ export const fetchCalendarAsync = (dispatch: Dispatch) => async (
 ) => {
   dispatch(fetchCalendarRecipes.request())
   // we fetch current month plus and minus 1 week
-  const start = toISODateString(startOfWeek(subWeeks(currentDayTs, 1)))
-  const end = toISODateString(endOfWeek(addWeeks(currentDayTs, 1)))
+  const start = toISODateString(startOfWeek(subWeeks(currentDayTs, 3)))
+  const end = toISODateString(endOfWeek(addWeeks(currentDayTs, 3)))
   const res = await api.getCalendarRecipeList({ teamID, start, end })
   if (isRight(res)) {
     dispatch(
