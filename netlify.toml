@@ -1,0 +1,16 @@
+# see: https://docs.netlify.com/configure-builds/file-based-configuration/
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/api/*"
+  to = "https://recipeyak.com/api/:splat"
+  status = 200
+  force = true
+[[redirects]]
+  from = "/avatar/*"
+  to = "https://recipeyak.com/avatar/:splat"
+  status = 200
+  force = true
