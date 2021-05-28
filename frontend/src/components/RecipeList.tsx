@@ -15,6 +15,7 @@ import { Link } from "react-router-dom"
 import { useDispatch } from "@/hooks"
 import { replace } from "connected-react-router"
 import { styled } from "@/theme"
+import { updateQueryString } from "@/utils/querystring"
 
 interface IResultsProps {
   readonly recipes: JSX.Element[]
@@ -158,7 +159,15 @@ function RecipesListSearch({
   const dispatch = useDispatch()
   const [query, setQuery] = useState(() => {
     const urlQuery = getSearch(window.location.search)
-    dispatch(replace({ search: "" }))
+    // remove search and recipeId from query string on load.
+    dispatch(
+      replace({
+        search: updateQueryString(
+          { search: undefined, recipeId: undefined },
+          window.location.search,
+        ),
+      }),
+    )
     return urlQuery
   })
 
