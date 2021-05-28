@@ -8,6 +8,10 @@ import StepContainer from "@/components/StepContainer"
 import { Ingredient } from "@/components/Ingredient"
 import RecipeTitle from "@/components/RecipeTitle"
 import { RouteComponentProps } from "react-router"
+import { useLocation, Link } from "react-router-dom"
+import { recipeURL } from "@/urls"
+import { replace } from "connected-react-router"
+
 import {
   IRecipe,
   getRecipeById,
@@ -17,10 +21,10 @@ import {
   IIngredient,
   updateSectionForRecipe,
 } from "@/store/reducers/recipes"
-import { isInitial, isLoading, isFailure } from "@/webdata"
+import { isInitial, isLoading, isFailure, isSuccessLike } from "@/webdata"
 import { SectionTitle } from "@/components/RecipeHelpers"
 import { styled } from "@/theme"
-import { Link } from "react-router-dom"
+
 import queryString from "query-string"
 import { RecipeTimeline } from "@/components/RecipeTimeline"
 import { useDispatch, useSelector } from "@/hooks"
@@ -319,12 +323,37 @@ function ArchiveBanner({ date }: { readonly date: Date }) {
   )
 }
 
+/** On load, update the recipe URL to include the slugified recipe name */
+function useRecipeUrlUpdate(recipe: { id: number; name: string } | null) {
+  const dispatch = useDispatch()
+  const location = useLocation()
+
+  const { id: recipeId, name: recipeName } = recipe || {}
+
+  React.useEffect(() => {
+    if (recipeId == null || recipeName == null) {
+      return
+    }
+    const pathname = recipeURL(recipeId, recipeName)
+    if (location.pathname === pathname) {
+      return
+    }
+    dispatch(replace({ pathname }))
+  }, [dispatch, location, recipeId, recipeName])
+}
+
 type IRecipeProps = RouteComponentProps<{ id: string }>
 
 export function Recipe(props: IRecipeProps) {
   const recipeId = parseInt(props.match.params.id, 10)
 
   const maybeRecipe = useRecipe(recipeId)
+
+  useRecipeUrlUpdate(
+    isSuccessLike(maybeRecipe)
+      ? { id: maybeRecipe.data.id, name: maybeRecipe.data.name }
+      : null,
+  )
 
   if (isInitial(maybeRecipe) || isLoading(maybeRecipe)) {
     return (
