@@ -5,6 +5,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.http import http_date
+from django.utils.text import slugify
 from django.views.decorators.http import require_http_methods
 
 from core.ical.utils import create_calendar, create_event
@@ -39,13 +40,14 @@ def get_ical_view(request: HttpRequest, team_id: int, ical_id: str) -> HttpRespo
     for scheduled_recipe in scheduled_recipes:
         recipe = scheduled_recipe.recipe
         description = f"Takes about {recipe.time}" if recipe.time else ""
+        slug_name = slugify(recipe.name)
         events.append(
             create_event(
                 # prefix with table name to ensure uniqueness of the primary key
                 id=f"core_scheduledrecipe:{scheduled_recipe.id}",
                 name=recipe.name,
                 description=description,
-                url=f"https://recipeyak.com/recipes/{recipe.id}",
+                url=f"https://recipeyak.com/recipes/{recipe.id}-{slug_name}",
                 start_date=scheduled_recipe.on,
                 end_date=scheduled_recipe.on + timedelta(days=1),
                 created=scheduled_recipe.created,
