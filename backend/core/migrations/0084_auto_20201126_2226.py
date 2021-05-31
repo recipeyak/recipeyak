@@ -10,10 +10,10 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RenameField(
-            model_name="myuser", old_name="selected_team", new_name="recipe_team"
+            model_name="user", old_name="selected_team", new_name="recipe_team"
         ),
         migrations.AddField(
-            model_name="myuser",
+            model_name="user",
             name="schedule_team",
             field=models.ForeignKey(
                 blank=True,

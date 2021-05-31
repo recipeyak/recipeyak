@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RemoveField(model_name="invite", name="user"),
-        migrations.RemoveField(model_name="myuser", name="membership"),
+        migrations.RemoveField(model_name="user", name="membership"),
         migrations.AddField(
             model_name="membership",
             name="user",

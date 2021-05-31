@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name="myuser",
+            model_name="user",
             name="groups",
             field=models.ManyToManyField(
                 blank=True,
@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddField(
-            model_name="myuser",
+            model_name="user",
             name="is_superuser",
             field=models.BooleanField(
                 default=False,
@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddField(
-            model_name="myuser",
+            model_name="user",
             name="user_permissions",
             field=models.ManyToManyField(
                 blank=True,

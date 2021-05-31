@@ -9,4 +9,4 @@ class Migration(migrations.Migration):
 
     dependencies = [("core", "0001_initial")]
 
-    operations = [migrations.RemoveField(model_name="myuser", name="is_superuser")]
+    operations = [migrations.RemoveField(model_name="user", name="is_superuser")]

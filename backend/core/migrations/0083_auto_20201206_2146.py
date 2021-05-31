@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
             field=models.AutoField(primary_key=True, serialize=False),
         ),
         migrations.AlterField(
-            model_name="myuser",
+            model_name="user",
             name="id",
             field=models.AutoField(primary_key=True, serialize=False),
         ),
