@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework.test import APIClient
 from user_sessions.models import Session
 
-from core.models import MyUser
+from core.models import User
 
 
 @pytest.mark.django_db
@@ -88,7 +88,7 @@ def login_info() -> Dict[str, str]:
 
 @pytest.fixture
 def logged_in_user(client: APIClient, login_info) -> None:
-    MyUser.objects.create_user(**login_info)
+    User.objects.create_user(**login_info)
     res = client.post(reverse("rest_login"), login_info)
     assert res.status_code == status.HTTP_200_OK
 

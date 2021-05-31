@@ -5,7 +5,7 @@ from django.urls import reverse
 from rest_framework import status
 from user_sessions.models import Session
 
-from core.models import MyUser
+from core.models import User
 from core.users.serializers import UserSerializer
 
 pytestmark = pytest.mark.django_db
@@ -31,7 +31,7 @@ def test_signup(client):
     res = client.post(reverse("rest_register"), data)
     assert res.status_code == status.HTTP_201_CREATED
 
-    user = MyUser.objects.first()
+    user = User.objects.first()
     assert (
         res.json().get("user") == UserSerializer(user).data
     ), "response didn't return user data"
@@ -50,7 +50,7 @@ def test_login(client):
     """
     email = "john@doe.org"
     password = "testing123"
-    user = MyUser.objects.create(email=email)
+    user = User.objects.create(email=email)
     user.set_password(password)
     user.save()
 
@@ -91,7 +91,7 @@ def test_logout(client):
     """
     email = "john@doe.org"
     password = "testing123"
-    user = MyUser.objects.create(email=email)
+    user = User.objects.create(email=email)
     user.set_password(password)
     user.save()
 
@@ -121,7 +121,7 @@ def test_login_in_two_places_and_logout_from_one(client, client_b):
     """
     email = "john@doe.org"
     password = "testing123"
-    user = MyUser.objects.create(email=email)
+    user = User.objects.create(email=email)
     user.set_password(password)
     user.save()
 
@@ -170,7 +170,7 @@ def test_signup_case_insensitive(client):
     res = client.post(reverse("rest_register"), data)
     assert res.status_code == status.HTTP_201_CREATED
 
-    user = MyUser.objects.first()
+    user = User.objects.first()
     assert (
         res.json().get("user") == UserSerializer(user).data
     ), "response didn't return user data"

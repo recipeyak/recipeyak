@@ -1,6 +1,6 @@
 import pytest
 
-from core.models import MyUser
+from core.models import User
 
 pytestmark = pytest.mark.django_db
 
@@ -11,7 +11,7 @@ def test_create_user():
     """
     email = "john@doe.org"
     password = "testing123"
-    user = MyUser.objects.create(email=email)
+    user = User.objects.create(email=email)
     user.set_password(password)
     user.save()
     assert user.password != password

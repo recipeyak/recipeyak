@@ -1,6 +1,6 @@
 import pytest
 
-from core.models import Ingredient, MyUser, Recipe, Step, Team
+from core.models import Ingredient, User, Recipe, Step, Team
 
 pytestmark = pytest.mark.django_db
 
@@ -83,7 +83,7 @@ def test_recipe_move_to(client, team, user, recipe):
     assert recipe.owner == team
 
 
-def test_recipe_copy_to(client, team: Team, user: MyUser, recipe: Recipe) -> None:
+def test_recipe_copy_to(client, team: Team, user: User, recipe: Recipe) -> None:
     """
     Copy recipe to team from user or another team
     """

@@ -9,7 +9,7 @@ from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from core.models import MyUser
+from core.models import User
 from core.request import AuthedRequest
 from core.users.serializers import SessionSerializer
 from core.users.serializers import UserSerializer as UserDetailsSerializer
@@ -30,8 +30,8 @@ class UserDetailsView(RetrieveUpdateAPIView):
     serializer_class = UserDetailsSerializer
     permission_classes = (IsAuthenticated,)
 
-    def get_object(self) -> MyUser:
-        return cast(MyUser, self.request.user)
+    def get_object(self) -> User:
+        return cast(User, self.request.user)
 
     def delete(self, request: AuthedRequest) -> Response:
         if request.user.has_team():

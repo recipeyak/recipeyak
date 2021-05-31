@@ -6,7 +6,7 @@ from django.db import migrations, models
 
 def copy_user_to_generic_forwards(apps, schema_editor):
     """
-    Set all recipes content type to MyUser ContentType and object_id to the users field value
+    Set all recipes content type to User ContentType and object_id to the users field value
     """
     db_alias = schema_editor.connection.alias
 

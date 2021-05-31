@@ -6,7 +6,7 @@ from rest_framework.test import APIClient
 
 from core.models import (
     Ingredient,
-    MyUser,
+    User,
     Note,
     Recipe,
     ScheduledRecipe,
@@ -24,7 +24,7 @@ def user():
     Connected to `team`. Has 5 recipes. Member of `team`.
     """
     email = "john@doe.org"
-    return MyUser.objects.create_user(email=email)
+    return User.objects.create_user(email=email)
 
 
 @pytest.fixture
@@ -36,13 +36,13 @@ def user_with_recipes(recipes):
 @pytest.fixture
 def user2():
     email = "james@smith.org"
-    return MyUser.objects.create_user(email=email)
+    return User.objects.create_user(email=email)
 
 
 @pytest.fixture
 def user3():
     email = "john.doe@example.org"
-    return MyUser.objects.create_user(email=email)
+    return User.objects.create_user(email=email)
 
 
 @pytest.fixture
