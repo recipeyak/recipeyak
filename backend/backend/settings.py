@@ -47,12 +47,10 @@ GIT_SHA = "<%=GIT_SHA=%>"
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "user_sessions",
-    "django.contrib.staticfiles",
-    "core.apps.CoreConfig",
+    "core",
     "rest_framework",
     "django.contrib.sites",
     "django.contrib.postgres",
