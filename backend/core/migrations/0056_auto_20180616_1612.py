@@ -15,7 +15,14 @@ class Migration(migrations.Migration):
             DROP TABLE IF EXISTS knox_authtoken;
             DROP TABLE IF EXISTS authtoken_token;
             DELETE FROM auth_permission WHERE content_type_id IN (SELECT id FROM django_content_type WHERE app_label = '{app_label}');
-            DELETE FROM django_admin_log WHERE content_type_id IN (SELECT id FROM django_content_type WHERE app_label = '{app_label}');
+            DO
+            $do$
+            BEGIN
+            IF EXISTS (SELECT FROM pg_tables WHERE tablename = 'django_admin_log') THEN
+                DELETE FROM django_admin_log WHERE content_type_id IN (SELECT id FROM django_content_type WHERE app_label = '{app_label}');
+            END IF;
+            END
+            $do$;
             DELETE FROM django_content_type WHERE app_label = '{app_label}';
             DELETE FROM django_migrations WHERE APP='{app_label}';
         """
