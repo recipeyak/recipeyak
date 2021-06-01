@@ -7,7 +7,7 @@ import sentry_sdk
 from django.conf import global_settings
 from sentry_sdk.integrations.django import DjangoIntegration
 
-from backend.patches import patch_django
+from core.patches import patch_django
 
 patch_django()
 
@@ -76,7 +76,7 @@ sentry_sdk.init(
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("core.auth.permissions.DisallowAny",),
     "DEFAULT_RENDERER_CLASSES": ("core.renderers.JSONRenderer",),
-    "DEFAULT_AUTHENTICATION_CLASSES": ("backend.authentication.SessionAuthentication",),
+    "DEFAULT_AUTHENTICATION_CLASSES": ("core.authentication.SessionAuthentication",),
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
 }
 
@@ -138,11 +138,11 @@ if not DEBUG:
 OLD_PASSWORD_FIELD_ENABLED = True
 
 MIDDLEWARE = [
-    "backend.middleware.HealthCheckMiddleware",
-    "backend.middleware.CurrentRequestMiddleware",
+    "core.middleware.HealthCheckMiddleware",
+    "core.middleware.CurrentRequestMiddleware",
     "django.middleware.security.SecurityMiddleware",
-    "backend.middleware.XForwardedForMiddleware",
-    "backend.middleware.SessionMiddleware",
+    "core.middleware.XForwardedForMiddleware",
+    "core.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -155,15 +155,15 @@ SESSION_ENGINE = "user_sessions.backends.db"
 
 if DEBUG and not TESTING:
     MIDDLEWARE += (
-        "backend.middleware.ServerTimingMiddleware",
-        "backend.middleware.APIDelayMiddleware",
+        "core.middleware.ServerTimingMiddleware",
+        "core.middleware.APIDelayMiddleware",
     )
 
 API_DELAY_MS = 200
 
 AUTH_USER_MODEL = "core.User"
 
-ROOT_URLCONF = "backend.urls"
+ROOT_URLCONF = "core.urls"
 
 TEMPLATES = [
     {
@@ -181,7 +181,7 @@ TEMPLATES = [
     }
 ]
 
-WSGI_APPLICATION = "backend.wsgi.application"
+WSGI_APPLICATION = "core.wsgi.application"
 
 
 if DEBUG or DOCKERBUILD:
@@ -268,9 +268,9 @@ LOGGING = {
         }
     },
     "filters": {
-        "no_testing": {"()": "backend.logging.TestingDisableFilter"},
-        "request_id": {"()": "backend.logging.RequestIDFilter"},
-        "user_id": {"()": "backend.logging.CurrentUserFilter"},
+        "no_testing": {"()": "core.logging.TestingDisableFilter"},
+        "request_id": {"()": "core.logging.RequestIDFilter"},
+        "user_id": {"()": "core.logging.CurrentUserFilter"},
     },
     "loggers": {
         "": {"level": "INFO", "handlers": ["console"]},
