@@ -2,12 +2,12 @@ import pytest
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import MyUser, Recipe, RecipeChange, Section, Team
+from core.models import Recipe, RecipeChange, Section, Team, User
 
 pytestmark = pytest.mark.django_db
 
 
-def test_creating_section(client: APIClient, user: MyUser, recipe: Recipe) -> None:
+def test_creating_section(client: APIClient, user: User, recipe: Recipe) -> None:
     client.force_authenticate(user)
 
     before_section_count = Section.objects.count()
@@ -34,7 +34,7 @@ def test_creating_section(client: APIClient, user: MyUser, recipe: Recipe) -> No
 
 
 def test_creating_section_without_position(
-    client: APIClient, user: MyUser, recipe: Recipe
+    client: APIClient, user: User, recipe: Recipe
 ) -> None:
     client.force_authenticate(user)
 
@@ -69,7 +69,7 @@ def test_creating_section_without_position(
 
 
 def test_fetching_sections_for_recipe(
-    client: APIClient, user: MyUser, recipe: Recipe, team: Team
+    client: APIClient, user: User, recipe: Recipe, team: Team
 ) -> None:
     """
     check both team list view and list view
@@ -110,7 +110,7 @@ def test_fetching_sections_for_recipe(
             assert isinstance(s["position"], float)
 
 
-def test_updating_section(client: APIClient, user: MyUser, recipe: Recipe) -> None:
+def test_updating_section(client: APIClient, user: User, recipe: Recipe) -> None:
     client.force_authenticate(user)
 
     section = Section.objects.create(
@@ -133,7 +133,7 @@ def test_updating_section(client: APIClient, user: MyUser, recipe: Recipe) -> No
     assert recipe_change.recipe.id == recipe.id
 
 
-def test_deleting_section(client: APIClient, user: MyUser, recipe: Recipe) -> None:
+def test_deleting_section(client: APIClient, user: User, recipe: Recipe) -> None:
     client.force_authenticate(user)
 
     section = Section.objects.create(

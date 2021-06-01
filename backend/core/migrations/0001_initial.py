@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="MyUser",
+            name="User",
             fields=[
                 (
                     "id",
@@ -40,6 +40,6 @@ class Migration(migrations.Migration):
                 ("created", models.DateField(auto_now_add=True)),
                 ("last_updated", models.DateField(auto_now=True)),
             ],
-            options={"abstract": False},
+            options={"abstract": False, "db_table": "core_myuser"},
         )
     ]

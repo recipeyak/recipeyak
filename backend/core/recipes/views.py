@@ -20,7 +20,6 @@ from core.auth.permissions import (
 from core.models import (
     ChangeType,
     Ingredient,
-    MyUser,
     Note,
     Recipe,
     RecipeChange,
@@ -28,6 +27,7 @@ from core.models import (
     Section,
     Step,
     Team,
+    User,
     user_and_team_recipes,
 )
 from core.recipes.serializers import (
@@ -156,7 +156,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 raise PermissionDenied(detail="user must have write permissions")
             recipe.move_to(team)
         elif serializer.validated_data["type"] == "user":
-            user = MyUser.objects.get(id=serializer.validated_data["id"])
+            user = User.objects.get(id=serializer.validated_data["id"])
             if user != request.user:
                 raise PermissionDenied(detail="user must be the same as requester")
             recipe.move_to(user)
@@ -183,7 +183,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user: MyUser = request.user
+        user: User = request.user
 
         if serializer.validated_data["type"] == "team":
             team = Team.objects.get(id=serializer.validated_data["id"])
@@ -191,7 +191,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 raise PermissionDenied(detail="user must have write permissions")
             new_recipe = recipe.copy_to(account=team, actor=user)
         elif serializer.validated_data["type"] == "user":
-            user = MyUser.objects.get(id=serializer.validated_data["id"])
+            user = User.objects.get(id=serializer.validated_data["id"])
             if user != request.user:
                 raise PermissionDenied(detail="user must be the same as requester")
             new_recipe = recipe.copy_to(account=user, actor=user)
@@ -215,7 +215,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_classes=[IsAuthenticated, HasRecipeAccess],
     )
     def duplicate(self, request: AuthedRequest, pk: str) -> Response:
-        user: MyUser = request.user
+        user: User = request.user
         recipe: Recipe = self.get_object()
         return Response(
             RecipeSerializer(
@@ -234,7 +234,7 @@ def parse_int(val: str) -> Optional[int]:
 @api_view(["GET"])
 @permission_classes((IsAuthenticated,))
 def get_recipe_timeline(request: AuthedRequest, recipe_pk: int) -> Response:
-    user: MyUser = request.user
+    user: User = request.user
     team = user.recipe_team
 
     recipe = get_object_or_404(Recipe, pk=recipe_pk)

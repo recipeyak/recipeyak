@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import permissions
 
-from core.models import Membership, MyUser, Recipe, Team
+from core.models import Membership, Recipe, Team, User
 
 
 class DisallowAny:
@@ -77,11 +77,11 @@ class NonSafeIfMemberOrAdmin(IsTeamMember):
         )
 
 
-def has_recipe_access(*, user: MyUser, recipe: Recipe) -> bool:
-    recipe_owner = cast(Union[MyUser, Team], recipe.owner)
+def has_recipe_access(*, user: User, recipe: Recipe) -> bool:
+    recipe_owner = cast(Union[User, Team], recipe.owner)
     return (
         cast(bool, recipe.owner == user)
-        if isinstance(recipe_owner, MyUser)
+        if isinstance(recipe_owner, User)
         else recipe_owner.is_member(user)
     )
 

@@ -161,7 +161,7 @@ if DEBUG and not TESTING:
 
 API_DELAY_MS = 200
 
-AUTH_USER_MODEL = "core.MyUser"
+AUTH_USER_MODEL = "core.User"
 
 ROOT_URLCONF = "backend.urls"
 

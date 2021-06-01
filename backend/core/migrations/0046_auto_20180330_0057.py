@@ -26,7 +26,7 @@ END $do$""",
             reverse_sql="",
         ),
         migrations.AlterField(
-            model_name="myuser",
+            model_name="user",
             name="email",
             field=django.contrib.postgres.fields.citext.CIEmailField(
                 max_length=254, unique=True

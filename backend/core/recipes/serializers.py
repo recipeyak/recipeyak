@@ -2,13 +2,13 @@ from rest_framework import serializers
 
 from core.models import (
     Ingredient,
-    MyUser,
     Note,
     Recipe,
     ScheduledRecipe,
     Section,
     Step,
     Team,
+    User,
 )
 from core.serialization import BaseModelSerializer, BaseRelatedField, BaseSerializer
 from core.teams.serializers import PublicUserSerializer
@@ -24,7 +24,7 @@ class OwnerRelatedField(BaseRelatedField):
             if self.export:
                 return {"team": value.name}
             return {"id": value.id, "type": "team", "name": value.name}
-        if isinstance(value, MyUser):
+        if isinstance(value, User):
             if self.export:
                 return {"user": value.email}
             return {"id": value.id, "type": "user"}
@@ -213,7 +213,7 @@ class RecipeMoveCopySerializer(BaseSerializer):
     def validate(self, data):
         if data["type"] == "team" and not Team.objects.filter(id=data["id"]).exists():
             raise serializers.ValidationError("team must exist")
-        if data["type"] == "user" and not MyUser.objects.filter(id=data["id"]).exists():
+        if data["type"] == "user" and not User.objects.filter(id=data["id"]).exists():
             raise serializers.ValidationError("user must exist")
         return data
 

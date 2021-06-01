@@ -8,7 +8,7 @@ from core.models.base import CommonInfo
 from core.models.recipe import Recipe
 
 if TYPE_CHECKING:
-    from core.models import MyUser  # noqa: F401
+    from core.models import User  # noqa: F401
 
 
 @enum.unique
@@ -45,8 +45,8 @@ class RecipeChange(CommonInfo):
         null=True,
     )
 
-    actor = models.ForeignKey["MyUser"](
-        "MyUser", on_delete=models.CASCADE, help_text="User who made the change."
+    actor = models.ForeignKey["User"](
+        "User", on_delete=models.CASCADE, help_text="User who made the change."
     )
 
     before = models.TextField(

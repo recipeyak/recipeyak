@@ -5,7 +5,7 @@ import yaml
 from django.test import Client
 from django.urls import reverse
 
-from core.models import MyUser, Recipe
+from core.models import Recipe, User
 
 pytestmark = pytest.mark.django_db
 
@@ -44,7 +44,7 @@ def test_fields_in(dict_: Dict[str, object], expected: bool) -> None:
 
 
 def test_bulk_export_json(
-    c: Client, user: MyUser, user2: MyUser, recipe: Recipe, recipe2: Recipe
+    c: Client, user: User, user2: User, recipe: Recipe, recipe2: Recipe
 ) -> None:
     url = reverse("export-recipes", kwargs={"filetype": "json"})
     res = c.get(url)
@@ -60,7 +60,7 @@ def test_bulk_export_json(
 
 
 def test_export_fields(
-    c: Client, user: MyUser, user2: MyUser, recipe: Recipe, recipe2: Recipe
+    c: Client, user: User, user2: User, recipe: Recipe, recipe2: Recipe
 ) -> None:
     """
     we don't want to return extraneous fields like position and id
@@ -75,12 +75,7 @@ def test_export_fields(
 
 @pytest.mark.parametrize("filetype", ["yaml", "yml"])
 def test_bulk_export_yaml(
-    c: Client,
-    filetype: str,
-    user: MyUser,
-    user2: MyUser,
-    recipe: Recipe,
-    recipe2: Recipe,
+    c: Client, filetype: str, user: User, user2: User, recipe: Recipe, recipe2: Recipe,
 ) -> None:
     recipe2.move_to(user)
     url = reverse("export-recipes", kwargs={"filetype": filetype})
@@ -101,7 +96,7 @@ def test_bulk_export_yaml(
     ), "user should only have their recipes"
 
 
-def test_single_export_json(c: Client, user: MyUser, recipe: Recipe) -> None:
+def test_single_export_json(c: Client, user: User, recipe: Recipe) -> None:
     url = reverse("export-recipe", kwargs={"pk": recipe.id, "filetype": "json"})
     res = c.get(url)
     assert res.status_code == 302
@@ -113,7 +108,7 @@ def test_single_export_json(c: Client, user: MyUser, recipe: Recipe) -> None:
 
 @pytest.mark.parametrize("filetype", ["yaml", "yml"])
 def test_single_export_yaml(
-    c: Client, filetype: str, user: MyUser, recipe: Recipe
+    c: Client, filetype: str, user: User, recipe: Recipe
 ) -> None:
     url = reverse("export-recipe", kwargs={"pk": recipe.id, "filetype": filetype})
     res = c.get(url)

@@ -4,13 +4,13 @@ import pytest
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import MyUser, Recipe, ScheduledRecipe, Team
+from core.models import Recipe, ScheduledRecipe, Team, User
 
 pytestmark = pytest.mark.django_db
 
 
 def test_get_recipe_timeline(
-    user: MyUser, user2: MyUser, client: APIClient, recipe: Recipe, empty_team: Team
+    user: User, user2: User, client: APIClient, recipe: Recipe, empty_team: Team
 ) -> None:
     """
     Ensure our timeline endpoint returns the correct data shape. We could
@@ -81,7 +81,7 @@ def test_get_recipe_timeline(
 
 
 def test_get_recipe_timeline_ordering(
-    user: MyUser, client: APIClient, recipe: Recipe
+    user: User, client: APIClient, recipe: Recipe
 ) -> None:
     """
     ensure we return the timeline items in the correct ordering

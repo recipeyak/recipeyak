@@ -2,13 +2,13 @@ from typing import List
 
 from rest_framework import serializers
 
-from core.models import Invite, Membership, MyUser, Team
+from core.models import Invite, Membership, Team, User
 from core.serialization import BaseModelSerializer, BaseSerializer
 
 
 class PublicUserSerializer(BaseModelSerializer):
     class Meta:
-        model = MyUser
+        model = User
         editable = False
         fields = ("id", "email", "avatar_url")
 

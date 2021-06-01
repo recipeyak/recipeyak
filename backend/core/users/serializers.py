@@ -5,7 +5,7 @@ from rest_framework import serializers
 from user_sessions.models import Session
 
 from core import user_agent
-from core.models import MyUser, Team
+from core.models import Team, User
 from core.serialization import BaseModelSerializer
 
 
@@ -17,7 +17,7 @@ class UserSerializer(BaseModelSerializer):
     )
 
     class Meta:
-        model = MyUser
+        model = User
         editable = False
         fields = (
             "id",

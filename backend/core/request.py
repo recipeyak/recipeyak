@@ -1,7 +1,7 @@
 from rest_framework.request import Request
 
-from core.models import MyUser
+from core.models import User
 
 
 class AuthedRequest(Request):
-    user: MyUser
+    user: User
