@@ -23,8 +23,8 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-class MyUserManager(BaseUserManager["MyUser"]):
-    def create_user(self, email: str, password: Optional[str] = None) -> "MyUser":
+class UserManager(BaseUserManager["User"]):
+    def create_user(self, email: str, password: Optional[str] = None) -> "User":
         """
         Creates and saves a user with given email and password.
         """
@@ -38,7 +38,7 @@ class MyUserManager(BaseUserManager["MyUser"]):
             logger.info("Created new user: %s", user)
             return user
 
-    def create_superuser(self, email: str, password: str) -> "MyUser":
+    def create_superuser(self, email: str, password: str) -> "User":
         """
         Creates and saves a superuser with the given email and password.
         """
@@ -49,7 +49,7 @@ class MyUserManager(BaseUserManager["MyUser"]):
         return user
 
 
-class MyUser(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin):
     """Custom user model that only requires an email and password"""
 
     id = models.AutoField(primary_key=True)
@@ -91,7 +91,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS: List[str] = []
 
-    objects = MyUserManager()
+    objects = UserManager()
 
     class Meta:
         db_table = "core_myuser"

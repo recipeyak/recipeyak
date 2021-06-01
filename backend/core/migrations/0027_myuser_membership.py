@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name="myuser",
+            model_name="user",
             name="membership",
             field=models.ForeignKey(
                 blank=True,

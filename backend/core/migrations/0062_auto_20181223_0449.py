@@ -10,14 +10,14 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name="myuser",
+            model_name="user",
             name="dark_mode_enabled",
             field=models.BooleanField(
                 default=False, help_text="frontend darkmode setting"
             ),
         ),
         migrations.AddField(
-            model_name="myuser",
+            model_name="user",
             name="selected_team",
             field=models.ForeignKey(
                 blank=True,

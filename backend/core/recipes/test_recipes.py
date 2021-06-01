@@ -7,7 +7,7 @@ from django.utils.dateparse import parse_datetime
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Ingredient, Membership, MyUser, Note, Recipe, Step, Team
+from core.models import Ingredient, Membership, User, Note, Recipe, Step, Team
 
 pytestmark = pytest.mark.django_db
 
@@ -528,7 +528,7 @@ def test_move_recipe(client, user_with_recipes, empty_team, user3):
 
 
 def test_duplicate_recipe_view(
-    client: APIClient, user: MyUser, recipe: Recipe, user2: MyUser
+    client: APIClient, user: User, recipe: Recipe, user2: User
 ) -> None:
     """
     Duplicating a recipe should return the response type of recipe detail

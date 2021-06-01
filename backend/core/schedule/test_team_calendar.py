@@ -5,7 +5,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import MyUser, Recipe, ScheduledRecipe, Team
+from core.models import User, Recipe, ScheduledRecipe, Team
 from core.models.membership import Membership
 
 pytestmark = pytest.mark.django_db
@@ -47,7 +47,7 @@ def test_updating_team_schedule_recipe(client, user, team, recipe):
 
 
 def test_fetching_team_calendar(
-    client: APIClient, user: MyUser, team: Team, recipe: Recipe
+    client: APIClient, user: User, team: Team, recipe: Recipe
 ) -> None:
     url = reverse("calendar-list", kwargs={"team_pk": team.pk})
 
@@ -65,7 +65,7 @@ def test_fetching_team_calendar(
 
 
 def test_fetching_team_calendar_v2(
-    client: APIClient, user: MyUser, team: Team, recipe: Recipe
+    client: APIClient, user: User, team: Team, recipe: Recipe
 ) -> None:
     """
     Updated response type to include config options for the icalendar
@@ -88,7 +88,7 @@ def test_fetching_team_calendar_v2(
 
 
 def test_fetching_team_cal_v2_content(
-    client: APIClient, user: MyUser, team: Team, recipe: Recipe
+    client: APIClient, user: User, team: Team, recipe: Recipe
 ) -> None:
     """
     Ensure changing the rows updates the response.
@@ -121,7 +121,7 @@ def test_fetching_team_cal_v2_content(
 
 
 def test_cal_updating_settings_view(
-    client: APIClient, user: MyUser, team: Team, recipe: Recipe
+    client: APIClient, user: User, team: Team, recipe: Recipe
 ) -> None:
     """
     Ensure we can update the `syncEnabled` setting for the UI to work.
@@ -140,7 +140,7 @@ def test_cal_updating_settings_view(
 
 
 def test_cal_generate_link_view(
-    client: APIClient, user: MyUser, team: Team, recipe: Recipe
+    client: APIClient, user: User, team: Team, recipe: Recipe
 ) -> None:
     """
     Get the current link and ensure it changes after regen.

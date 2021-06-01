@@ -2,7 +2,7 @@ import pytest
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import ChangeType, Ingredient, MyUser, Recipe, RecipeChange, Step
+from core.models import ChangeType, Ingredient, User, Recipe, RecipeChange, Step
 
 pytestmark = pytest.mark.django_db
 
@@ -21,7 +21,7 @@ def ingredient(recipe: Recipe):
     )
 
 
-def test_step_create(client: APIClient, recipe: Recipe, user: MyUser) -> None:
+def test_step_create(client: APIClient, recipe: Recipe, user: User) -> None:
     assert (
         RecipeChange.objects.count() == 0
     ), "We shouldn't have any changes recorded yet."
@@ -41,9 +41,7 @@ def test_step_create(client: APIClient, recipe: Recipe, user: MyUser) -> None:
     assert change.recipe.id == recipe.id
 
 
-def test_step_update(
-    client: APIClient, recipe: Recipe, user: MyUser, step: Step
-) -> None:
+def test_step_update(client: APIClient, recipe: Recipe, user: User, step: Step) -> None:
     assert (
         RecipeChange.objects.count() == 0
     ), "We shouldn't have any changes recorded yet."
@@ -64,9 +62,7 @@ def test_step_update(
     assert change.recipe.id == recipe.id
 
 
-def test_step_delete(
-    client: APIClient, recipe: Recipe, user: MyUser, step: Step
-) -> None:
+def test_step_delete(client: APIClient, recipe: Recipe, user: User, step: Step) -> None:
     assert (
         RecipeChange.objects.count() == 0
     ), "We shouldn't have any changes recorded yet."
@@ -84,7 +80,7 @@ def test_step_delete(
     assert change.recipe.id == recipe.id
 
 
-def test_recipe_name_update(client: APIClient, recipe: Recipe, user: MyUser) -> None:
+def test_recipe_name_update(client: APIClient, recipe: Recipe, user: User) -> None:
     assert (
         RecipeChange.objects.count() == 0
     ), "We shouldn't have any changes recorded yet."
@@ -105,7 +101,7 @@ def test_recipe_name_update(client: APIClient, recipe: Recipe, user: MyUser) -> 
     assert change.recipe.id == recipe.id
 
 
-def test_recipe_source_update(client: APIClient, recipe: Recipe, user: MyUser) -> None:
+def test_recipe_source_update(client: APIClient, recipe: Recipe, user: User) -> None:
     assert (
         RecipeChange.objects.count() == 0
     ), "We shouldn't have any changes recorded yet."
@@ -126,9 +122,7 @@ def test_recipe_source_update(client: APIClient, recipe: Recipe, user: MyUser) -
     assert change.recipe.id == recipe.id
 
 
-def test_recipe_servings_update(
-    client: APIClient, recipe: Recipe, user: MyUser
-) -> None:
+def test_recipe_servings_update(client: APIClient, recipe: Recipe, user: User) -> None:
     assert (
         RecipeChange.objects.count() == 0
     ), "We shouldn't have any changes recorded yet."
@@ -149,7 +143,7 @@ def test_recipe_servings_update(
     assert change.recipe.id == recipe.id
 
 
-def test_recipe_time_update(client: APIClient, recipe: Recipe, user: MyUser) -> None:
+def test_recipe_time_update(client: APIClient, recipe: Recipe, user: User) -> None:
     assert (
         RecipeChange.objects.count() == 0
     ), "We shouldn't have any changes recorded yet."
@@ -170,7 +164,7 @@ def test_recipe_time_update(client: APIClient, recipe: Recipe, user: MyUser) -> 
     assert change.recipe.id == recipe.id
 
 
-def test_ingredient_create(client: APIClient, recipe: Recipe, user: MyUser) -> None:
+def test_ingredient_create(client: APIClient, recipe: Recipe, user: User) -> None:
     assert (
         RecipeChange.objects.count() == 0
     ), "We shouldn't have any changes recorded yet."
@@ -194,7 +188,7 @@ def test_ingredient_create(client: APIClient, recipe: Recipe, user: MyUser) -> N
 
 
 def test_ingredient_update(
-    client: APIClient, recipe: Recipe, user: MyUser, ingredient: Ingredient
+    client: APIClient, recipe: Recipe, user: User, ingredient: Ingredient
 ) -> None:
     assert (
         RecipeChange.objects.count() == 0
@@ -218,7 +212,7 @@ def test_ingredient_update(
 
 
 def test_ingredient_delete(
-    client: APIClient, recipe: Recipe, user: MyUser, ingredient: Ingredient
+    client: APIClient, recipe: Recipe, user: User, ingredient: Ingredient
 ) -> None:
     assert (
         RecipeChange.objects.count() == 0

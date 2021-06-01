@@ -6,18 +6,18 @@ from softdelete.models import SoftDeleteManager, SoftDeleteObject
 from core.models.base import CommonInfo
 
 if TYPE_CHECKING:
-    from core.models import MyUser, Recipe, Step  # noqa: F401
+    from core.models import User, Recipe, Step  # noqa: F401
 
 
 class Note(CommonInfo, SoftDeleteObject):
     """Helpful information for a recipe"""
 
     text = models.TextField()
-    created_by = models.ForeignKey["MyUser"](
-        "MyUser", related_name="notes_created_by", on_delete=models.CASCADE
+    created_by = models.ForeignKey["User"](
+        "User", related_name="notes_created_by", on_delete=models.CASCADE
     )
-    last_modified_by = models.ForeignKey["MyUser"](
-        "MyUser",
+    last_modified_by = models.ForeignKey["User"](
+        "User",
         null=True,
         related_name="notes_last_modified_by",
         on_delete=models.CASCADE,

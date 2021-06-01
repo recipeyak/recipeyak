@@ -11,7 +11,7 @@ from core.models.base import CommonInfo
 if TYPE_CHECKING:
     from core.models.recipe import Recipe
     from core.models.team import Team
-    from core.models.my_user import MyUser
+    from core.models.my_user import User
 
 
 class ScheduledRecipeManager(models.Manager["ScheduledRecipe"]):
@@ -21,7 +21,7 @@ class ScheduledRecipeManager(models.Manager["ScheduledRecipe"]):
         on: date,
         team: Optional[Team],
         count: int,
-        user: Optional[MyUser],
+        user: Optional[User],
     ) -> "ScheduledRecipe":
         """
         add to existing scheduled recipe count for dupes
@@ -50,8 +50,8 @@ class ScheduledRecipe(CommonInfo):
     on = models.DateField(help_text="day when recipe is scheduled")
     count = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     # TODO(sbdchd): add restriction so that only one of these is set
-    user = models.ForeignKey["MyUser"](
-        "MyUser", on_delete=models.CASCADE, blank=True, null=True
+    user = models.ForeignKey["User"](
+        "User", on_delete=models.CASCADE, blank=True, null=True
     )
     team = models.ForeignKey["Team"](
         "Team", on_delete=models.CASCADE, blank=True, null=True

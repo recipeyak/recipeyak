@@ -14,7 +14,7 @@ from core.models.membership import Membership, get_random_ical_id
 from core.models.scheduled_recipe import ScheduledRecipe
 
 if TYPE_CHECKING:
-    from core.models.my_user import MyUser
+    from core.models.my_user import User
 
 
 class Team(CommonInfo):
@@ -35,7 +35,7 @@ class Team(CommonInfo):
 
     def force_join(
         self,
-        user: MyUser,
+        user: User,
         level: Literal["admin", "contributor", "read"] = "contributor",
     ) -> Membership:
         with transaction.atomic():
@@ -54,7 +54,7 @@ class Team(CommonInfo):
                 ).exclude(invite=None).get(team=self).invite.delete()
             return m
 
-    def force_join_admin(self, user: MyUser) -> Membership:
+    def force_join_admin(self, user: User) -> Membership:
         return self.force_join(user, level=Membership.ADMIN)
 
     def invite_user(self, user, creator, level=None) -> Invite:
@@ -103,7 +103,7 @@ class Team(CommonInfo):
             team=self, user=user, is_active=True, level=Membership.ADMIN
         ).exists()
 
-    def invite_exists(self, email: Union[MyUser, str]) -> bool:
+    def invite_exists(self, email: Union[User, str]) -> bool:
         return Membership.objects.filter(team=self, user__email=email).exists()
 
     @property

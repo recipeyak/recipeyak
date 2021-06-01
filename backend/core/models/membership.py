@@ -9,7 +9,7 @@ from core.models.base import CommonInfo
 
 if TYPE_CHECKING:
     from core.models.team import Team  # noqa: F401
-    from core.models.my_user import MyUser  # noqa: F401
+    from core.models.my_user import User  # noqa: F401
 
 
 def get_random_ical_id() -> str:
@@ -32,7 +32,7 @@ class Membership(CommonInfo):
     )
 
     team = models.ForeignKey["Team"]("Team", on_delete=models.CASCADE)
-    user = models.ForeignKey["MyUser"]("MyUser", on_delete=models.CASCADE)
+    user = models.ForeignKey["User"]("User", on_delete=models.CASCADE)
 
     calendar_sync_enabled = models.BooleanField(
         default=False,

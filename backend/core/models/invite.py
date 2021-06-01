@@ -2,14 +2,14 @@ from django.db import models
 
 from core.models.base import CommonInfo
 from core.models.membership import Membership
-from core.models.my_user import MyUser
+from core.models.my_user import User
 
 
 class InviteManager(models.Manager["Invite"]):
     def create_invite(self, email, team, level, creator) -> "Invite":
-        user = MyUser.objects.filter(email=email).first()
+        user = User.objects.filter(email=email).first()
         if not user:
-            user = MyUser.objects.create_user(email=email)
+            user = User.objects.create_user(email=email)
         m = Membership.objects.create(
             user=user, team=team, level=level, is_active=False
         )
@@ -18,7 +18,7 @@ class InviteManager(models.Manager["Invite"]):
 
 class Invite(CommonInfo):
     membership = models.OneToOneField(Membership, on_delete=models.CASCADE)
-    creator = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE)
 
     OPEN = "open"
     DECLINED = "declined"

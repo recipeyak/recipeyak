@@ -16,7 +16,7 @@ from core.cumin import (
     Unit,
     combine_ingredients,
 )
-from core.models import Ingredient, MyUser, Recipe, ShoppingList
+from core.models import Ingredient, User, Recipe, ShoppingList
 
 pytestmark = pytest.mark.django_db
 
@@ -100,7 +100,7 @@ def test_fetching_shoppinglist_with_invalid_dates(user, client):
 
 @pytest.mark.parametrize("quantity", ["sprinkle", "some"])
 def test_scheduling_multiple_times_some_ingredient(
-    quantity: str, user: MyUser, client: APIClient
+    quantity: str, user: User, client: APIClient
 ) -> None:
     """
     with an ingredient of quantity sprinkle that we add to the cart multiple

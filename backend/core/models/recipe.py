@@ -18,7 +18,7 @@ from core.models.section import Section
 from core.models.step import Step
 
 if TYPE_CHECKING:
-    from core.models.my_user import MyUser
+    from core.models.my_user import User
     from core.models.team import Team
 
 
@@ -44,8 +44,8 @@ class Recipe(CommonInfo, SoftDeleteObject):
         default=None,
         help_text="If a clone, when the Recipe was cloned from a parent. Otherwise null.",
     )
-    cloned_by = models.ForeignKey["MyUser"](
-        "MyUser",
+    cloned_by = models.ForeignKey["User"](
+        "User",
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
@@ -63,7 +63,7 @@ class Recipe(CommonInfo, SoftDeleteObject):
 
     objects = SoftDeleteManager["Recipe"]()
 
-    def move_to(self, account: Union[MyUser, Team]) -> "Recipe":
+    def move_to(self, account: Union[User, Team]) -> "Recipe":
         """
         Move recipe from current owner to another team or user
 
@@ -75,7 +75,7 @@ class Recipe(CommonInfo, SoftDeleteObject):
             self.save()
             return self
 
-    def copy_to(self, *, actor: MyUser, account: Union[MyUser, Team]) -> "Recipe":
+    def copy_to(self, *, actor: User, account: Union[User, Team]) -> "Recipe":
         """
         Copy recipe to another team or user
         """
@@ -84,9 +84,9 @@ class Recipe(CommonInfo, SoftDeleteObject):
     def duplicate(
         self,
         *,
-        actor: MyUser,
+        actor: User,
         update_title: bool = True,
-        account: Union[MyUser, Team, None] = None,
+        account: Union[User, Team, None] = None,
     ) -> "Recipe":
         """
         Duplicate / clone a recipe to its current owner
@@ -121,7 +121,7 @@ class Recipe(CommonInfo, SoftDeleteObject):
         self,
         *,
         on: date,
-        user: Optional["MyUser"] = None,
+        user: Optional["User"] = None,
         team: Optional["Team"] = None,
         count: int = 1,
     ):
