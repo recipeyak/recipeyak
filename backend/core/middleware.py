@@ -11,7 +11,7 @@ from django.contrib.sessions.middleware import (
 from django.db import connection
 from django.http import HttpRequest, HttpResponse, HttpResponseServerError
 
-from backend.request_state import State
+from core.request_state import State
 
 log = logging.getLogger(__name__)
 
