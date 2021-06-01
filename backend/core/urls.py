@@ -1,5 +1,6 @@
-from django.conf.urls import include
+from django.conf.urls import include, url
 from django.urls import path
+from django.views.generic import TemplateView
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers
 
@@ -22,9 +23,6 @@ from core.teams.views import (
     TeamViewSet,
     UserInvitesViewSet,
 )
-from django.conf.urls import include, url
-from django.views.generic import TemplateView
-
 
 router = DefaultRouter()
 router.register(r"recipes", RecipeViewSet, basename="recipes")
