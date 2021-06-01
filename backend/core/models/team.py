@@ -14,7 +14,7 @@ from core.models.membership import Membership, get_random_ical_id
 from core.models.scheduled_recipe import ScheduledRecipe
 
 if TYPE_CHECKING:
-    from core.models.my_user import User
+    from core.models.user import User
 
 
 class Team(CommonInfo):

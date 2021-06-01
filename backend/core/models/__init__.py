@@ -3,7 +3,7 @@ from django.db.models import Q
 from core.models.ingredient import Ingredient  # noqa: F401
 from core.models.invite import Invite  # noqa: F401
 from core.models.membership import Membership, get_random_ical_id  # noqa: F401
-from core.models.my_user import User  # noqa: F401
+from core.models.user import User  # noqa: F401
 from core.models.note import Note  # noqa: F401
 from core.models.recipe import Recipe  # noqa: F401
 from core.models.recipe_change import ChangeType, RecipeChange  # noqa: F401

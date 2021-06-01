@@ -2,7 +2,7 @@ from django.db import models
 
 from core.models.base import CommonInfo
 from core.models.membership import Membership
-from core.models.my_user import User
+from core.models.user import User
 
 
 class InviteManager(models.Manager["Invite"]):

@@ -18,7 +18,7 @@ from core.models.section import Section
 from core.models.step import Step
 
 if TYPE_CHECKING:
-    from core.models.my_user import User
+    from core.models.user import User
     from core.models.team import Team
 
 

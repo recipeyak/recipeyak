@@ -11,7 +11,7 @@ from core.models.base import CommonInfo
 if TYPE_CHECKING:
     from core.models.recipe import Recipe
     from core.models.team import Team
-    from core.models.my_user import User
+    from core.models.user import User
 
 
 class ScheduledRecipeManager(models.Manager["ScheduledRecipe"]):

@@ -9,7 +9,7 @@ from core.models.base import CommonInfo
 
 if TYPE_CHECKING:
     from core.models.team import Team  # noqa: F401
-    from core.models.my_user import User  # noqa: F401
+    from core.models.user import User  # noqa: F401
 
 
 def get_random_ical_id() -> str:
