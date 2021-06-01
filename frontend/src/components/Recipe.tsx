@@ -10,6 +10,7 @@ import RecipeTitle from "@/components/RecipeTitle"
 import { RouteComponentProps } from "react-router"
 import { useLocation, Link } from "react-router-dom"
 import { recipeURL } from "@/urls"
+import { pathNamesEqual } from "@/utils/url"
 import { replace } from "connected-react-router"
 
 import {
@@ -335,7 +336,7 @@ function useRecipeUrlUpdate(recipe: { id: number; name: string } | null) {
       return
     }
     const pathname = recipeURL(recipeId, recipeName)
-    if (location.pathname === pathname) {
+    if (pathNamesEqual(location.pathname, pathname)) {
       return
     }
     dispatch(replace({ pathname }))

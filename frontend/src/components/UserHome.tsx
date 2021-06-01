@@ -320,12 +320,14 @@ const UserHome = () => {
             <RecipeName bold={match?.kind === "name"}>
               {recipe.name}{" "}
             </RecipeName>
-            <SuggestionAuthorContainer>
-              by{" "}
-              <SuggestionAuthor bold={match?.kind === "author"}>
-                {recipe.author}
-              </SuggestionAuthor>
-            </SuggestionAuthorContainer>
+            {recipe.author && (
+              <SuggestionAuthorContainer>
+                by{" "}
+                <SuggestionAuthor bold={match?.kind === "author"}>
+                  {recipe.author}
+                </SuggestionAuthor>
+              </SuggestionAuthorContainer>
+            )}
           </NameAuthorContainer>
           {match?.kind === "ingredient" ? (
             <RecipeMatchPiece>{match.value}</RecipeMatchPiece>
