@@ -2,7 +2,7 @@ import pytest
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import ChangeType, Ingredient, User, Recipe, RecipeChange, Step
+from core.models import ChangeType, Ingredient, Recipe, RecipeChange, Step, User
 
 pytestmark = pytest.mark.django_db
 

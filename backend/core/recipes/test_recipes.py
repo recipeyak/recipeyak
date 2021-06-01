@@ -7,7 +7,7 @@ from django.utils.dateparse import parse_datetime
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Ingredient, Membership, User, Note, Recipe, Step, Team
+from core.models import Ingredient, Membership, Note, Recipe, Step, Team, User
 
 pytestmark = pytest.mark.django_db
 

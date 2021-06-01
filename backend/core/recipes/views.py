@@ -20,7 +20,6 @@ from core.auth.permissions import (
 from core.models import (
     ChangeType,
     Ingredient,
-    User,
     Note,
     Recipe,
     RecipeChange,
@@ -28,6 +27,7 @@ from core.models import (
     Section,
     Step,
     Team,
+    User,
     user_and_team_recipes,
 )
 from core.recipes.serializers import (

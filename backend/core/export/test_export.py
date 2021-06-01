@@ -5,7 +5,7 @@ import yaml
 from django.test import Client
 from django.urls import reverse
 
-from core.models import User, Recipe
+from core.models import Recipe, User
 
 pytestmark = pytest.mark.django_db
 

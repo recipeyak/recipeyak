@@ -5,7 +5,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import User, Recipe, ScheduledRecipe, Team
+from core.models import Recipe, ScheduledRecipe, Team, User
 from core.models.membership import Membership
 
 pytestmark = pytest.mark.django_db

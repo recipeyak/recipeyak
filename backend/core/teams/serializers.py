@@ -2,7 +2,7 @@ from typing import List
 
 from rest_framework import serializers
 
-from core.models import Invite, Membership, User, Team
+from core.models import Invite, Membership, Team, User
 from core.serialization import BaseModelSerializer, BaseSerializer
 
 

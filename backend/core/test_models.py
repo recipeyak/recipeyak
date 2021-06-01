@@ -1,6 +1,6 @@
 import pytest
 
-from core.models import Ingredient, User, Recipe, Step, Team
+from core.models import Ingredient, Recipe, Step, Team, User
 
 pytestmark = pytest.mark.django_db
 

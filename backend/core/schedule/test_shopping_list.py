@@ -16,7 +16,7 @@ from core.cumin import (
     Unit,
     combine_ingredients,
 )
-from core.models import Ingredient, User, Recipe, ShoppingList
+from core.models import Ingredient, Recipe, ShoppingList, User
 
 pytestmark = pytest.mark.django_db
 

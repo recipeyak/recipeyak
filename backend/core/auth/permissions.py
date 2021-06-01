@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import permissions
 
-from core.models import Membership, User, Recipe, Team
+from core.models import Membership, Recipe, Team, User
 
 
 class DisallowAny:

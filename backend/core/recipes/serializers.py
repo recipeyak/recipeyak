@@ -2,13 +2,13 @@ from rest_framework import serializers
 
 from core.models import (
     Ingredient,
-    User,
     Note,
     Recipe,
     ScheduledRecipe,
     Section,
     Step,
     Team,
+    User,
 )
 from core.serialization import BaseModelSerializer, BaseRelatedField, BaseSerializer
 from core.teams.serializers import PublicUserSerializer

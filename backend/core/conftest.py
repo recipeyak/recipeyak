@@ -6,13 +6,13 @@ from rest_framework.test import APIClient
 
 from core.models import (
     Ingredient,
-    User,
     Note,
     Recipe,
     ScheduledRecipe,
     Section,
     Step,
     Team,
+    User,
 )
 
 getLogger("flake8").propagate = False
