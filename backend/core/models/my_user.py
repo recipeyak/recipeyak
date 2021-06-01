@@ -93,6 +93,9 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
     objects = MyUserManager()
 
+    class Meta:
+        db_table = "core_myuser"
+
     def get_full_name(self):
         return self.email
 
