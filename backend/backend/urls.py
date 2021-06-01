@@ -14,11 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import include, url
-from django.contrib import admin
 from django.views.generic import TemplateView
 
 urlpatterns = [
-    url(r"^admin/", admin.site.urls),
     url(r"", include("core.urls")),
     url(r"^api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     # we don't actually use this view. This serves as the url for the reset email
