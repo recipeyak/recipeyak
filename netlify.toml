@@ -12,6 +12,54 @@
   force = true
 
 [[redirects]]
+  from = "/recipes.json"
+  to = "https://recipeyak.com/recipes.json"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/recipes.yaml"
+  to = "https://recipeyak.com/recipes.yaml"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/recipes.yml"
+  to = "https://recipeyak.com/recipes.yml"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/recipes.ics"
+  to = "https://recipeyak.com/recipes.ics"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/recipes/:id.json"
+  to = "https://recipeyak.com/recipes/:id.json"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/recipes/:id.yaml"
+  to = "https://recipeyak.com/recipes/:id.yaml"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/recipes/:id.yml"
+  to = "https://recipeyak.com/recipes/:id.yml"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/recipes/:id.ics"
+  to = "https://recipeyak.com/recipes/:id.ics"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
