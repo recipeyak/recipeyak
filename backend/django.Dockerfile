@@ -20,7 +20,7 @@ RUN poetry install
 COPY backend /var/app
 # Inject GIT SHA into settings file to track releases via Sentry
 ARG GIT_SHA
-RUN sh -c 'sed -i s/\<%=GIT_SHA=%\>/"$GIT_SHA"/ backend/settings.py && grep GIT_SHA backend/settings.py'
+RUN sh -c 'sed -i s/\<%=GIT_SHA=%\>/"$GIT_SHA"/ core/settings.py && grep GIT_SHA core/settings.py'
 
 HEALTHCHECK CMD curl --fail http://localhost:8000/healthz
 
