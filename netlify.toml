@@ -12,26 +12,50 @@
   force = true
 
 [[redirects]]
-  from = "*.json"
+  from = "/recipes.json"
   to = "https://recipeyak.com/:splat.json"
   status = 200
   force = true
 
 [[redirects]]
-  from = "*.yaml"
+  from = "/recipes.yaml"
   to = "https://recipeyak.com/:splat.yaml"
   status = 200
   force = true
 
 [[redirects]]
-  from = "*.yml"
+  from = "/recipes.yml"
   to = "https://recipeyak.com/:splat.yml"
   status = 200
   force = true
 
 [[redirects]]
-  from = "*.ics"
+  from = "/recipes.ics"
   to = "https://recipeyak.com/:splat.ics"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/recipes/:id.json"
+  to = "https://recipeyak.com/:id.json"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/recipes/:id.yaml"
+  to = "https://recipeyak.com/:id.yaml"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/recipes/:id.yml"
+  to = "https://recipeyak.com/:id.yml"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/recipes/:id.ics"
+  to = "https://recipeyak.com/:id.ics"
   status = 200
   force = true
 
