@@ -93,8 +93,6 @@
       docker_container:
         name: django
         image: "recipeyak/django:{{ release_sha }}"
-        volumes:
-          - recipemanager_django-static-files:/var/app/static-files
         env_file: .env-production
         restart_policy: always
         log_driver: journald
@@ -113,7 +111,6 @@
           - "80:80"
         volumes:
           - recipemanager_react-static-files:/var/app/dist
-          - recipemanager_django-static-files:/var/app/django/static
         restart_policy: always
         log_driver: journald
         log_options:
