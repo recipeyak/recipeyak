@@ -12,6 +12,30 @@
   force = true
 
 [[redirects]]
+  from = "/*.json"
+  to = "https://recipeyak.com/:splat.json"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*.yaml"
+  to = "https://recipeyak.com/:splat.yaml"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*.yml"
+  to = "https://recipeyak.com/:splat.yml"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*.ics"
+  to = "https://recipeyak.com/:splat.ics"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
