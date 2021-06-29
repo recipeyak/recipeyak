@@ -17,6 +17,8 @@ To have a centralized location where multiple people can organize a meal plan.
 - <https://www.prepear.com>
 - <https://www.mysaffronapp.com>
 - <https://whisk.com>
+- <https://grocy.info>
+- <https://www.cooklist.co/>
 
 ## Dev
 
