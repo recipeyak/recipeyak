@@ -1,9 +1,6 @@
 #!/usr/bin/env sh
 set -eux
 
-# copy static files to mounted volume (app/static => app/static-files)
-cp -af static/* static-files
-
 # wait for databases
 /var/app/wait-for-it.sh postgres:5432 -- echo 'Database available'
 

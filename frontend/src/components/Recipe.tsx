@@ -28,7 +28,7 @@ import { styled } from "@/theme"
 
 import queryString from "query-string"
 import { RecipeTimeline } from "@/components/RecipeTimeline"
-import { useDispatch, useSelector } from "@/hooks"
+import { useDispatch, useSelector, useOnWindowFocusChange } from "@/hooks"
 import { NoteContainer } from "@/components/Notes"
 import { getNewPosIngredients } from "@/position"
 import sortBy from "lodash/sortBy"
@@ -297,9 +297,13 @@ const NavItem = styled(Link)<INavItemProps>`
 
 export function useRecipe(recipeId: number) {
   const dispatch = useDispatch()
-  React.useEffect(() => {
+  const fetch = React.useCallback(() => {
     dispatch(fetchRecipe.request(recipeId))
   }, [dispatch, recipeId])
+  React.useEffect(() => {
+    fetch()
+  }, [fetch])
+  useOnWindowFocusChange(fetch)
   return useSelector(state => getRecipeById(state, recipeId))
 }
 
