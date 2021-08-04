@@ -772,11 +772,18 @@ export const recipes = (
       )
     }
     case getType(fetchRecipe.success):
+      const originalRecipe = state.byId[action.payload.id]
+
       return {
         ...state,
         byId: {
           ...state.byId,
-          [action.payload.id]: Success(action.payload),
+          [action.payload.id]: Success({
+            ...(isSuccessOrRefetching(originalRecipe)
+              ? originalRecipe.data
+              : {}),
+            ...action.payload,
+          }),
         },
       }
     case getType(fetchRecipe.failure): {
