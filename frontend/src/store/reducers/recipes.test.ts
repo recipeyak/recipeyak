@@ -631,33 +631,6 @@ describe("Recipes", () => {
     )
   })
 
-  it("overwrites the recipe correctly", () => {
-    const beforeState: IRecipesState = recipeStoreWith([
-      {
-        ...baseRecipe,
-        name: "Initial recipe name",
-        updating: true,
-      },
-    ])
-
-    const newRecipe = {
-      ...baseRecipe,
-      name: "new recipe name",
-    }
-
-    const afterState: IRecipesState = {
-      ...recipeStoreWith({
-        ...baseRecipe,
-        name: "new recipe name",
-      }),
-      personalIDs: Success([baseRecipe.id]),
-    }
-
-    expect(recipes(beforeState, fetchRecipe.success(newRecipe))).toEqual(
-      afterState,
-    )
-  })
-
   it("sets recipe owner for recipe move", () => {
     const beforeState: IRecipesState = recipeStoreWith([
       {
