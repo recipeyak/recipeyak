@@ -3,6 +3,8 @@ import { isSameDay } from "date-fns"
 import { second } from "@/date"
 import { IState } from "@/store/store"
 import { Dispatch } from "@/store/thunks"
+import { scheduleURLFromTeamID } from "@/store/mapState"
+
 import {
   TypedUseSelectorHook,
   useDispatch as useDispatchRedux,
@@ -136,3 +138,5 @@ export function useOnWindowFocusChange(cb: () => void) {
 export function useScheduleTeamID() {
   return useSelector(s => s.user.scheduleTeamID) || "personal"
 }
+
+export const useScheduleURL = () => useSelector(scheduleURLFromTeamID)

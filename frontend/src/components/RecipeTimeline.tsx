@@ -9,10 +9,12 @@ import {
   isFailure,
   isInitial,
 } from "@/webdata"
+import { Link } from "react-router-dom"
 import { IRecipe } from "@/store/reducers/recipes"
 import { getRecipeTimeline, IRecipeTimelineEvent } from "@/api"
 import { resultToWebdata } from "@/result"
 import { SectionTitle } from "@/components/RecipeHelpers"
+import { useScheduleURL } from "@/hooks"
 
 interface ITimelineItemProps {
   readonly type: "comment" | "scheduled" | "created"
@@ -76,7 +78,7 @@ interface ICommentEvent {
 interface IScheduledRecipeEvent {
   readonly id: number
   readonly type: "scheduled"
-  readonly date: Date
+  readonly date: string
 }
 
 interface IRecipeTimelineProps {
@@ -90,7 +92,7 @@ function toTimelineEvent(event: IRecipeTimelineEvent): ITimelineEvent {
   return {
     type: "scheduled",
     id: event.id,
-    date: new Date(event.on),
+    date: event.on,
   }
 }
 
@@ -108,7 +110,7 @@ function useRecipeTimeline(recipeId: IRecipe["id"]): IRecipeTimelineState {
 
 export function RecipeTimeline({ createdAt, recipeId }: IRecipeTimelineProps) {
   const events = useRecipeTimeline(recipeId)
-
+  const scheduleURL = useScheduleURL()
   return (
     <TimelineContainer>
       <SectionTitle>Timeline</SectionTitle>
@@ -124,8 +126,8 @@ export function RecipeTimeline({ createdAt, recipeId }: IRecipeTimelineProps) {
                 )
               case "scheduled":
                 return (
-                  <TimelineItem key={e.id} type={e.type}>
-                    📅 Scheduled for <Time dateTime={e.date} />
+                  <TimelineItem key={e.id} type={e.type} realDate={e.date}>
+                    📅 Scheduled for <Link to={scheduleURL + `?week=${e.date}`}>{e.date}</Link>
                   </TimelineItem>
                 )
               default:
