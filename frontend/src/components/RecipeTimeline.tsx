@@ -127,7 +127,8 @@ export function RecipeTimeline({ createdAt, recipeId }: IRecipeTimelineProps) {
               case "scheduled":
                 return (
                   <TimelineItem key={e.id} type={e.type} realDate={e.date}>
-                    📅 Scheduled for <Link to={scheduleURL + `?week=${e.date}`}>{e.date}</Link>
+                    📅 Scheduled for{" "}
+                    <Link to={scheduleURL + `?week=${e.date}`}>{e.date}</Link>
                   </TimelineItem>
                 )
               default:
