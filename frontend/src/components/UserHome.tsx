@@ -303,7 +303,7 @@ const UserHome = () => {
   const filteredRecipes =
     recipes?.kind === "Success"
       ? searchRecipes({ recipes: recipes.data, query: searchQuery })
-      : { recipes: [], matchOn: [],options: [] }
+      : { recipes: [], matchOn: [], options: [] }
 
   const loadingSuggestions = recipes?.kind !== "Success"
 

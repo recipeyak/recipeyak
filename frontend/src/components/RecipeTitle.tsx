@@ -99,7 +99,6 @@ class RecipeTitle extends React.Component<
   }
 
   handleNewTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log({ e, key: e.key })
     if (e.key !== "Enter") {
       return
     }

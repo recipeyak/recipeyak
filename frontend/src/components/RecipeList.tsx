@@ -17,45 +17,6 @@ import { replace } from "connected-react-router"
 import { styled } from "@/theme"
 import { updateQueryString } from "@/utils/querystring"
 
-const SearchOptionsContainer = styled.div`
-  max-width: 400px;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  position: relative;
-`
-
-const SearchOptionBox = styled.div`
-  position: absolute;
-  z-index: 10;
-  top: -40px;
-  left: 40px;
-  background: white;
-  max-width: 100px;
-  width: 100%;
-  border-style: solid;
-  border-width: 1px;
-  border-color: #dddd;
-  border-radius: 5px;
-  box-shadow: 0px 4px 5px 0px hsl(0 0% 90% / 1);
-  padding: 0.25rem;
-  display: inline-grid;
-  max-height: 200px;
-  overflow-y: auto;
-
-`
-
-const SearchOptionContainer = styled.div`
-display: flex;
-overflow-x: hidden;
-
-`
-const SearchOptionName = styled.span`
-overflow: hidden;
-text-overflow: ellipsis;
-margin-right: auto;
-`
-
 interface IResultsProps {
   readonly recipes: JSX.Element[]
   readonly query: string
@@ -100,7 +61,6 @@ interface IRecipeList {
   readonly query: string
   readonly drag?: boolean
   readonly scroll?: boolean
-  readonly focus: boolean
 }
 
 function RecipeList(props: IRecipeList) {
@@ -144,18 +104,6 @@ function RecipeList(props: IRecipeList) {
   return (
     <div className={scrollClass}>
       <MatchOn>matching on: {results.matchOn.join(" or ")}</MatchOn>
-      {props.focus && results.options.length > 0 && (
-        <SearchOptionsContainer>
-          <SearchOptionBox>
-            {results.options.map(x => (
-              <SearchOptionContainer key={x.name}>
-                <SearchOptionName>{x.name}</SearchOptionName>
-                <span className="ml-1">{x.count}</span>
-              </SearchOptionContainer>
-            ))}
-          </SearchOptionBox>
-        </SearchOptionsContainer>
-      )}
       <div className="recipe-grid">
         <Results recipes={normalResults} query={props.query} />
       </div>
@@ -213,7 +161,6 @@ function RecipesListSearch({
   teamID,
 }: IRecipesProps) {
   const dispatch = useDispatch()
-  const [focus, setFocus] = React.useState(false)
   const [query, setQuery] = useState(() => {
     const urlQuery = getSearch(window.location.search)
     // remove search and recipeId from query string on load.
@@ -240,13 +187,11 @@ function RecipesListSearch({
     <>
       <TextInput
         value={query}
-        onFocus={() => setFocus(true)}
-        onBlur={() => setFocus(false)}
         className={noPadding ? "" : "mb-1"}
         onChange={handleQueryChange}
         placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:"
       />
-      <RecipeList recipes={recipes} focus={focus} query={query} drag={drag} scroll={scroll} />
+      <RecipeList recipes={recipes} query={query} drag={drag} scroll={scroll} />
     </>
   )
 }

@@ -7,13 +7,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0086_recipechange_recipe'),
+        ("core", "0086_recipechange_recipe"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='recipe',
-            name='tags',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.TextField(), default=list, help_text='If a clone, the parent this Recipe was cloned from.', null=True, size=None),
+            model_name="recipe",
+            name="tags",
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.TextField(),
+                default=list,
+                help_text="If a clone, the parent this Recipe was cloned from.",
+                null=True,
+                size=None,
+            ),
         ),
     ]

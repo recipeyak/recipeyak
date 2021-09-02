@@ -39,11 +39,7 @@ export function getMatchType(rawQuery: string): Match["kind"][] {
 }
 
 function normalizeQuery(query: string): string {
-  return normalize(
-    query.replace(/^(ingredient|name|author|recipeId|tag):/, ""),
-  )
-
-
+  return normalize(query.replace(/^(ingredient|name|author|recipeId|tag):/, ""))
 }
 
 export function matchesQuery(
@@ -105,12 +101,11 @@ function sortArchivedName(a: IRecipe, b: IRecipe) {
   return byNameAlphabetical(a, b)
 }
 
-function groupCountSortByName(x: string[]): [string,number][] {
-
-  const groups: Map<string,number>  = new Map()
+function groupCountSortByName(x: string[]): [string, number][] {
+  const groups: Map<string, number> = new Map()
   x.forEach(item => {
     const currentValue = groups.get(item) || 0
-    groups.set(item,currentValue + 1)
+    groups.set(item, currentValue + 1)
   })
   return Array.from(groups.entries())
 }
@@ -122,7 +117,7 @@ export function searchRecipes(params: {
 }): {
   readonly matchOn: Match["kind"][]
   readonly recipes: { readonly recipe: IRecipe; readonly match: Match | null }[]
-  readonly options: {name: string, count: number}[]
+  readonly options: { name: string; count: number }[]
 } {
   const matchType = getMatchType(params.query)
   const matchingRecipes = params.recipes
@@ -138,10 +133,16 @@ export function searchRecipes(params: {
     })
     .filter(notUndefined)
     .sort((a, b) => sortArchivedName(a.recipe, b.recipe))
-    const allTags = matchType.includes("tag") ? flatMap(params.recipes, x => x.tags || []) : []
-    const normalizedQuery = normalizeQuery(params.query)
-  const options = groupCountSortByName(allTags).filter(x => {
-    return !normalizedQuery || x[0].includes(normalizedQuery)}).map(x => ({name: x[0], count:x[1]})).sort((a,b) => ingredientByNameAlphabetical(a.name,b.name))
+  const allTags = matchType.includes("tag")
+    ? flatMap(params.recipes, x => x.tags || [])
+    : []
+  const normalizedQuery = normalizeQuery(params.query)
+  const options = groupCountSortByName(allTags)
+    .filter(x => {
+      return !normalizedQuery || x[0].includes(normalizedQuery)
+    })
+    .map(x => ({ name: x[0], count: x[1] }))
+    .sort((a, b) => ingredientByNameAlphabetical(a.name, b.name))
   // console.log({ matchType, options, count: groupCountSortByName(allTags) })
 
   return { matchOn: matchType, recipes: matchingRecipes, options }

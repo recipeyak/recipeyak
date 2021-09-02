@@ -6,9 +6,9 @@ from typing import TYPE_CHECKING, Any, Optional, Union
 
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.postgres.fields import ArrayField
 from django.db import models, transaction
 from django.db.models import QuerySet
-from django.contrib.postgres.fields import ArrayField
 from django.utils import timezone
 from softdelete.models import SoftDeleteManager, SoftDeleteObject
 

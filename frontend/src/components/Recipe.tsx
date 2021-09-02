@@ -73,9 +73,6 @@ function TagManager({ recipeId, tags }: { recipeId: number; tags: string[] }) {
 
   React.useEffect(() => {
     if (editing) {
-      console.log("focus", {
-        ref: document.getElementById("tag-manager-input"),
-      })
       document.getElementById("tag-manager-input")?.focus()
     } else {
       setNewTag("")
