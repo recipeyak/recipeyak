@@ -656,6 +656,7 @@ export interface IRecipe {
   readonly modified: string
   readonly last_scheduled: string
   readonly team: ITeam["id"]
+  readonly tags?: string[]
   readonly owner: IRecipeOwner
   readonly ingredients: ReadonlyArray<IIngredient>
   readonly sections: ReadonlyArray<{
@@ -1344,6 +1345,10 @@ export const recipes = (
       return loop(
         mapRecipeSuccessById(state, action.payload.id, recipe => ({
           ...recipe,
+          tags:
+            action.payload.data.tags !== undefined
+              ? action.payload.data.tags
+              : recipe.tags,
           updating: true,
         })),
         Cmd.run(updatingRecipeAsync, {

@@ -10,6 +10,7 @@ interface IMetaDataProps extends React.HTMLAttributes<HTMLDivElement> {
   readonly time: string
   readonly owner: IRecipe["owner"]
   readonly recipeId: IRecipe["id"]
+  readonly tags: IRecipe["tags"]
 }
 
 const isValid = (x?: string) => x !== "" && x != null
@@ -62,6 +63,7 @@ const MetaData = ({
   owner,
   onClick,
   recipeId,
+  tags,
 }: IMetaDataProps) => {
   const _author = isValid(author) ? (
     <MetaPiece>
@@ -90,16 +92,23 @@ const MetaData = ({
   const ownerName = owner.type === "team" ? owner.name : "you"
 
   return (
-    <div className="break-word">
-      <span>
-        {_author}
-        {_source}
-        {_servings}
-        {_time}
-      </span>
+    <>
+      <div className="break-word">
+        <span>
+          {_author}
+          {_source}
+          {_servings}
+          {_time}
+        </span>
 
-      <Owner id={owner.id} name={ownerName} recipeId={recipeId} />
-    </div>
+        <Owner id={owner.id} name={ownerName} recipeId={recipeId} />
+      </div>
+      <div>
+        {tags?.map(x => (
+          <span className="tag">{x}</span>
+        ))}
+      </div>
+    </>
   )
 }
 

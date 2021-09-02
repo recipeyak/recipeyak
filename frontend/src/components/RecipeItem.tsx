@@ -87,6 +87,11 @@ export function RecipeItem({
       {match?.kind === "ingredient" ? (
         <Ingredient>{match.value}</Ingredient>
       ) : null}
+      <div>
+        {match?.kind === "tag" ? (
+          <span className="tag">{match.value}</span>
+        ) : null}
+      </div>
       <Meta bold={match?.kind === "author"} author={author} />
     </div>
   )

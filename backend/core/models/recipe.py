@@ -8,6 +8,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models, transaction
 from django.db.models import QuerySet
+from django.contrib.postgres.fields import ArrayField
 from django.utils import timezone
 from softdelete.models import SoftDeleteManager, SoftDeleteObject
 
@@ -58,6 +59,12 @@ class Recipe(CommonInfo, SoftDeleteObject):
         blank=True,
         null=True,
         default=None,
+        help_text="If a clone, the parent this Recipe was cloned from.",
+    )
+    tags = ArrayField(
+        base_field=models.TextField(),
+        null=True,
+        default=list,
         help_text="If a clone, the parent this Recipe was cloned from.",
     )
 

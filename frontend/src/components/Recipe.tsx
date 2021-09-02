@@ -21,6 +21,7 @@ import {
   updateIngredient,
   IIngredient,
   updateSectionForRecipe,
+  updateRecipe,
 } from "@/store/reducers/recipes"
 import { isInitial, isLoading, isFailure, isSuccessLike } from "@/webdata"
 import { SectionTitle } from "@/components/RecipeHelpers"
@@ -32,9 +33,95 @@ import { useDispatch, useSelector, useOnWindowFocusChange } from "@/hooks"
 import { NoteContainer } from "@/components/Notes"
 import { getNewPosIngredients } from "@/position"
 import sortBy from "lodash/sortBy"
+import uniq from "lodash/uniq"
 import { Section } from "@/components/Section"
 import * as api from "@/api"
 import { isOk } from "@/result"
+import { TextInput } from "@/components/Forms"
+
+function TagManager({ recipeId, tags }: { recipeId: number; tags: string[] }) {
+  const [editing, setEditing] = React.useState(false)
+  const [newTag, setNewTag] = React.useState("")
+  const ref = React.useRef<HTMLInputElement>(null)
+  const dispatch = useDispatch()
+
+  function handleNewTag(e: React.KeyboardEvent) {
+    if (e.key === "Escape") {
+      setEditing(false)
+      setNewTag("")
+      return
+    }
+    if (e.key !== "Enter") {
+      return
+    }
+    dispatch(
+      updateRecipe.request({
+        id: recipeId,
+        data: { tags: uniq([...tags, newTag]) },
+      }),
+    )
+  }
+
+  function removeTag(tag: string) {
+    dispatch(
+      updateRecipe.request({
+        id: recipeId,
+        data: { tags: tags.filter(x => x !== tag) },
+      }),
+    )
+  }
+
+  React.useEffect(() => {
+    if (editing) {
+      console.log("focus", {
+        ref: document.getElementById("tag-manager-input"),
+      })
+      document.getElementById("tag-manager-input")?.focus()
+    } else {
+      setNewTag("")
+    }
+  }, [editing])
+  React.useEffect(() => {
+    setNewTag("")
+  }, [tags.length])
+  return (
+    <>
+      <div>
+        {tags.map(x => (
+          <span key={x} className="tag mr-1 mb-1">
+            {x}{" "}
+            {editing && (
+              <button
+                className="delete is-small"
+                onClick={() => removeTag(x)}
+              />
+            )}
+          </span>
+        ))}
+      </div>
+      <div className="d-flex align-center">
+        {editing && (
+          <TextInput
+            ref={ref}
+            id="tag-manager-input"
+            className="max-width-200px mt-2 mr-2"
+            placeholder="new tag"
+            value={newTag}
+            onChange={e => setNewTag(e.target.value)}
+            onKeyDown={handleNewTag}
+          />
+        )}
+        <a
+          className="text-muted"
+          onClick={() => {
+            setEditing(s => !s)
+          }}>
+          {editing ? "cancel" : "edit"}
+        </a>
+      </div>
+    </>
+  )
+}
 
 type SectionsAndIngredients = ReadonlyArray<
   | {
@@ -395,6 +482,7 @@ export function Recipe(props: IRecipeProps) {
         owner={recipe.owner}
         updating={recipe.updating}
         editing={recipe.editing}
+        tags={recipe.tags}
       />
 
       <Nav>
