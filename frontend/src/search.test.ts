@@ -1,4 +1,4 @@
-import { getMatchType, matchesQuery, searchRecipes } from "@/search"
+import { getMatchType, matchesQuery, searchRecipes, parseQuery } from "@/search"
 import { IRecipe } from "@/store/reducers/recipes"
 
 function createRecipe(properties?: Partial<IRecipe>): IRecipe {
@@ -53,5 +53,29 @@ describe("search", () => {
       query: "rhubarb",
     }).recipes.map(x => x.recipe.name)
     expect(resultNames).toEqual(["Apple Rhubarb Bars", "Rhubarb Bars"])
+  })
+})
+
+describe("parseQuery", () => {
+  test("simple", () => {
+    expect(parseQuery("tag:chris")).toEqual([{ field: "tag", value: "chris" }])
+  })
+  test("simple", () => {
+    expect(parseQuery("tag:chris")).toEqual([{ field: "tag", value: "chris" }])
+  })
+  test("single quotes", () => {
+    expect(parseQuery("name:'mark bittman'")).toEqual([{ field: "name", value: "mark bittman" }])
+  })
+  test("double quotes", () => {
+    expect(parseQuery(`name:"mark bittman"`)).toEqual([{ field: "name", value: "mark bittman" }])
+  })
+  test("negative", () => {
+    expect(parseQuery("-tag:chris")).toEqual([{ field: "tag", value: "chris", negative: true }])
+  })
+  test("escape", () => {
+    expect(parseQuery(`-tag:'chri\\'s'`)).toEqual([{ field: "tag", value: "chri's", negative: true }])
+  })
+  test("complex", () => {
+    expect(parseQuery(`tag:chris -tag:dessert name:pie author:"Christopher Dignam"`)).toEqual([{ field: "tag", value: "chris" }, {field: "tag", value: "dessert", negative: true}, {field: "name", value: "pie"}])
   })
 })

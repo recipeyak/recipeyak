@@ -145,3 +145,77 @@ export function searchRecipes(params: {
 
   return { matchOn: matchType, recipes: matchingRecipes, options }
 }
+
+function parseValue(x: string): {newPosition: number, value: string} {
+  const terminator = x.startsWith(`"`) ? `"` : x.startsWith(`'`) ? `'` : null
+  let value = ""
+
+  if (terminator) {
+    for (let i = 1; i < x.length; i++) {
+      const chr = x[i]
+      if (chr == terminator && x[i-1] === "\\") {
+        value = value.slice(0,value.length -1 )
+        value += chr
+      } else
+      if (chr == terminator || chr == null) {
+        return {value, newPosition: i}
+      } else {
+
+      value += chr
+      }
+    }
+  } else {
+    for (let i = 0; i < x.length; i++) {
+      const chr = x[i]
+      if (chr == " " || chr == null) {
+        return {value, newPosition: i}
+      }
+      value += chr
+    }
+  }
+  return {value, newPosition: x.length}
+}
+
+type QueryNode = {
+  field: 'name' | 'author' | 'tag'
+  value: string
+  negative?: boolean
+}
+
+export function parseQuery(query: string): QueryNode[] {
+  let mode: 'normal' | 'tag' = "normal"
+  const parsed = []
+  for (let i = 0; i < query.length; ) {
+    let chr = query[i]
+    let remainder = query.slice(i)
+
+    if (remainder.startsWith("-tag:")) {
+      i += "-tag:".length;
+      const {newPosition, value} = parseValue(query.slice(i))
+      i += newPosition
+      parsed.push({field: 'tag', value,negative: true})
+    } else
+    if (remainder.startsWith("-name:")) {
+      i += "-name:".length;
+      const {newPosition, value} = parseValue(query.slice(i))
+      i += newPosition
+      parsed.push({field: 'name', value, negative: true})
+    }
+      else
+    if (remainder.startsWith("tag:")) {
+      i += "tag:".length;
+      const {newPosition, value} = parseValue(query.slice(i))
+      i += newPosition
+      parsed.push({field: 'tag', value})
+    } else
+    if (remainder.startsWith("name:")) {
+      i += "name:".length;
+      const {newPosition, value} = parseValue(query.slice(i))
+      i += newPosition
+      parsed.push({field: 'name', value})
+    } else {
+      i += 1
+    }
+  }
+  return parsed
+}
