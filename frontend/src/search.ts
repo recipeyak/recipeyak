@@ -2,7 +2,6 @@ import { byNameAlphabetical, ingredientByNameAlphabetical } from "@/sorters"
 import { IRecipe } from "@/store/reducers/recipes"
 import { notUndefined } from "@/utils/general"
 import flatMap from "lodash/flatMap"
-import uniq from "lodash/uniq"
 
 // https://stackoverflow.com/a/37511463/3720597
 const removeAccents = (x: string) =>

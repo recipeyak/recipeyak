@@ -7,7 +7,7 @@ import {
   toggleEditingRecipe,
 } from "@/store/reducers/recipes"
 import GlobalEvent from "@/components/GlobalEvent"
-import { TextInput, Select } from "@/components/Forms"
+import { TextInput } from "@/components/Forms"
 import { hasSelection } from "@/utils/general"
 import { connect } from "react-redux"
 import { Dropdown } from "@/components/RecipeTitleDropdown"
