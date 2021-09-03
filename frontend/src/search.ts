@@ -153,10 +153,10 @@ function parseValue(x: string): { newPosition: number; value: string } {
   if (terminator) {
     for (let i = 1; i < x.length; i++) {
       const chr = x[i]
-      if (chr == terminator && x[i - 1] === "\\") {
+      if (chr === terminator && x[i - 1] === "\\") {
         value = value.slice(0, value.length - 1)
         value += chr
-      } else if (chr == terminator || chr == null) {
+      } else if (chr === terminator || chr === null) {
         return { value, newPosition: i + 1 }
       } else {
         value += chr
@@ -165,7 +165,7 @@ function parseValue(x: string): { newPosition: number; value: string } {
   } else {
     for (let i = 0; i < x.length; i++) {
       const chr = x[i]
-      if (chr == " " || chr == null) {
+      if (chr === " " || chr === null) {
         return { value, newPosition: i }
       }
       value += chr
@@ -181,77 +181,64 @@ type QueryNode = {
 }
 
 export function parseQuery(query: string): QueryNode[] {
-  let parsed = []
+  const parsed = []
   let untagged = ""
   for (let i = 0; i < query.length; ) {
     let remainder = query.slice(i)
 
     if (remainder.startsWith("-tag:")) {
-      parsed.push({field: null, value: untagged})
+      parsed.push({ field: null, value: untagged })
       untagged = ""
       i += "-tag:".length
       const { newPosition, value } = parseValue(query.slice(i))
       i += newPosition
       parsed.push({ field: "tag", value, negative: true })
     } else if (remainder.startsWith("-name:")) {
-      parsed.push({field: null, value: untagged})
+      parsed.push({ field: null, value: untagged })
       untagged = ""
       i += "-name:".length
       const { newPosition, value } = parseValue(query.slice(i))
       i += newPosition
       parsed.push({ field: "name", value, negative: true })
     } else if (remainder.startsWith("-author:")) {
-      parsed.push({field: null, value: untagged})
+      parsed.push({ field: null, value: untagged })
       untagged = ""
       i += "-author:".length
       const { newPosition, value } = parseValue(query.slice(i))
       i += newPosition
       parsed.push({ field: "author", value, negative: true })
     } else if (remainder.startsWith("tag:")) {
-      parsed.push({field: null, value: untagged})
+      parsed.push({ field: null, value: untagged })
       untagged = ""
       i += "tag:".length
       const { newPosition, value } = parseValue(query.slice(i))
       i += newPosition
       parsed.push({ field: "tag", value })
     } else if (remainder.startsWith("author:")) {
-      parsed.push({field: null, value: untagged})
+      parsed.push({ field: null, value: untagged })
       untagged = ""
       i += "author:".length
       const { newPosition, value } = parseValue(query.slice(i))
       i += newPosition
       parsed.push({ field: "author", value })
     } else if (remainder.startsWith("name:")) {
-      parsed.push({field: null, value: untagged})
+      parsed.push({ field: null, value: untagged })
       untagged = ""
       i += "name:".length
       const { newPosition, value } = parseValue(query.slice(i))
       i += newPosition
       parsed.push({ field: "name", value })
-    } else
-
-    if (query[i] == "'" || query[i] == '"') {
+    } else if (query[i] === "'" || query[i] === '"') {
       const { newPosition, value } = parseValue(query.slice(i))
       i += newPosition
       parsed.push({ field: null, value })
-    }else
-
-    if (query[i] === " ") {
-      if (untagged) {
-        parsed.push({field: null, value: untagged})
-        untagged = ""
-      }
+    } else if (query[i] === " ") {
       i += 1
-    } else
-     {
-      untagged += query[i]
-      i += 1
+    } else {
+      const { newPosition, value } = parseValue(query.slice(i))
+      i += newPosition
+      parsed.push({ field: null, value })
     }
   }
-  // remove empty strings
-  if (untagged) {
-    parsed.push({field: null, value: untagged})
-  }
-  parsed = parsed.filter(x => x.value && !(/^\s+$/.test(x.value))).map(x => ({...x, value: x.value.trim()}))
-  return parsed
+  return parsed.filter(x => x.value)
 }
