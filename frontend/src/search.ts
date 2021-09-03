@@ -183,10 +183,8 @@ type QueryNode = {
 }
 
 export function parseQuery(query: string): QueryNode[] {
-  let mode: 'normal' | 'tag' = "normal"
   const parsed = []
   for (let i = 0; i < query.length; ) {
-    let chr = query[i]
     let remainder = query.slice(i)
 
     if (remainder.startsWith("-tag:")) {
