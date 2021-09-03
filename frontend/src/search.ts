@@ -176,11 +176,32 @@ function parseValue(
   return { value, newPosition: x.length }
 }
 
+type QueryField = "name" | "author" | "tag"
 type QueryNode = {
-  field: "name" | "author" | "tag" | null
+  field: QueryField | null
   value: string
   negative?: boolean
   quoted?: boolean
+}
+
+const fieldNames: QueryField[] = ["name", "author", "tag"]
+
+function renderField(field: { field: QueryField; negative?: boolean }): string {
+  return (field.negative ? "-" : "") + field.field + ":"
+}
+
+function generateFields() {
+  const fields = []
+  for (const negative of [true, false]) {
+    for (const field of fieldNames) {
+      if (negative) {
+        fields.push({ field, negative })
+      } else {
+        fields.push({ field })
+      }
+    }
+  }
+  return fields
 }
 
 export function parseQuery(query: string): QueryNode[] {
@@ -189,36 +210,20 @@ export function parseQuery(query: string): QueryNode[] {
   for (let i = 0; i < query.length; ) {
     let remainder = query.slice(i)
 
-    if (remainder.startsWith("-tag:")) {
-      i += "-tag:".length
+    const matchingField = generateFields().find(field => {
+      return remainder.startsWith(renderField(field))
+    })
+
+    if (matchingField) {
+      i += renderField(matchingField).length
       const { newPosition, value, quoted } = parseValue(query.slice(i))
       i += newPosition
-      parsed.push({ field: "tag", value, quoted, negative: true })
-    } else if (remainder.startsWith("-name:")) {
-      i += "-name:".length
-      const { newPosition, value, quoted } = parseValue(query.slice(i))
-      i += newPosition
-      parsed.push({ field: "name", value, quoted, negative: true })
-    } else if (remainder.startsWith("-author:")) {
-      i += "-author:".length
-      const { newPosition, value, quoted } = parseValue(query.slice(i))
-      i += newPosition
-      parsed.push({ field: "author", value, quoted, negative: true })
-    } else if (remainder.startsWith("tag:")) {
-      i += "tag:".length
-      const { newPosition, value, quoted } = parseValue(query.slice(i))
-      i += newPosition
-      parsed.push({ field: "tag", value, quoted })
-    } else if (remainder.startsWith("author:")) {
-      i += "author:".length
-      const { newPosition, value, quoted } = parseValue(query.slice(i))
-      i += newPosition
-      parsed.push({ field: "author", value, quoted })
-    } else if (remainder.startsWith("name:")) {
-      i += "name:".length
-      const { newPosition, value, quoted } = parseValue(query.slice(i))
-      i += newPosition
-      parsed.push({ field: "name", value, quoted })
+      parsed.push({
+        field: matchingField.field,
+        value,
+        quoted,
+        negative: matchingField.negative,
+      })
     } else if (query[i] === " ") {
       i += 1
     } else {
