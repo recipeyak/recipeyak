@@ -146,7 +146,9 @@ export function searchRecipes(params: {
   return { matchOn: matchType, recipes: matchingRecipes, options }
 }
 
-function parseValue(x: string): { newPosition: number; value: string } {
+function parseValue(
+  x: string,
+): { newPosition: number; value: string; quoted?: boolean } {
   const terminator = x.startsWith(`"`) ? `"` : x.startsWith(`'`) ? `'` : null
   let value = ""
 
@@ -191,17 +193,17 @@ export function parseQuery(query: string): QueryNode[] {
       i += "-tag:".length
       const { newPosition, value, quoted } = parseValue(query.slice(i))
       i += newPosition
-      parsed.push({ field: "tag", value, negative: true })
+      parsed.push({ field: "tag", value, quoted, negative: true })
     } else if (remainder.startsWith("-name:")) {
       i += "-name:".length
       const { newPosition, value, quoted } = parseValue(query.slice(i))
       i += newPosition
-      parsed.push({ field: "name", value, negative: true })
+      parsed.push({ field: "name", value, quoted, negative: true })
     } else if (remainder.startsWith("-author:")) {
       i += "-author:".length
       const { newPosition, value, quoted } = parseValue(query.slice(i))
       i += newPosition
-      parsed.push({ field: "author", value, negative: true })
+      parsed.push({ field: "author", value, quoted, negative: true })
     } else if (remainder.startsWith("tag:")) {
       i += "tag:".length
       const { newPosition, value, quoted } = parseValue(query.slice(i))
@@ -217,10 +219,6 @@ export function parseQuery(query: string): QueryNode[] {
       const { newPosition, value, quoted } = parseValue(query.slice(i))
       i += newPosition
       parsed.push({ field: "name", value, quoted })
-    } else if (query[i] === "'" || query[i] === '"') {
-      const { newPosition, value, quoted } = parseValue(query.slice(i))
-      i += newPosition
-      parsed.push({ field: null, value, quoted })
     } else if (query[i] === " ") {
       i += 1
     } else {

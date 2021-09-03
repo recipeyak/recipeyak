@@ -80,12 +80,12 @@ describe("parseQuery", () => {
   })
   test("escape single quote", () => {
     expect(parseQuery(`-tag:'chri\\'s'`)).toEqual([
-      { field: "tag", value: "chri's", negative: true },
+      { field: "tag", value: "chri's", quoted: true, negative: true },
     ])
   })
   test("escape double quote", () => {
     expect(parseQuery(`-tag:"chri\\"\\"s"`)).toEqual([
-      { field: "tag", value: `chri""s`, negative: true },
+      { field: "tag", value: `chri""s`, quoted: true, negative: true },
     ])
   })
   test("complex", () => {
