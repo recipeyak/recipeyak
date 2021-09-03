@@ -95,7 +95,7 @@ class RecipeTitle extends React.Component<
 
   handleNewTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.persist()
-    this.setState(() => ({ newTag: e.target.value }))
+    this.setState({ newTag: e.target.value })
   }
 
   handleNewTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
