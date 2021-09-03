@@ -64,18 +64,40 @@ describe("parseQuery", () => {
     expect(parseQuery("tag:chris")).toEqual([{ field: "tag", value: "chris" }])
   })
   test("single quotes", () => {
-    expect(parseQuery("name:'mark bittman'")).toEqual([{ field: "name", value: "mark bittman" }])
+    expect(parseQuery("name:'mark bittman'")).toEqual([
+      { field: "name", value: "mark bittman" },
+    ])
   })
   test("double quotes", () => {
-    expect(parseQuery(`name:"mark bittman"`)).toEqual([{ field: "name", value: "mark bittman" }])
+    expect(parseQuery(`name:"mark bittman"`)).toEqual([
+      { field: "name", value: "mark bittman" },
+    ])
   })
   test("negative", () => {
-    expect(parseQuery("-tag:chris")).toEqual([{ field: "tag", value: "chris", negative: true }])
+    expect(parseQuery("-tag:chris")).toEqual([
+      { field: "tag", value: "chris", negative: true },
+    ])
   })
-  test("escape", () => {
-    expect(parseQuery(`-tag:'chri\\'s'`)).toEqual([{ field: "tag", value: "chri's", negative: true }])
+  test("escape single quote", () => {
+    expect(parseQuery(`-tag:'chri\\'s'`)).toEqual([
+      { field: "tag", value: "chri's", negative: true },
+    ])
+  })
+  test("escape double quote", () => {
+    expect(parseQuery(`-tag:"chri\\"\\"s"`)).toEqual([
+      { field: "tag", value: `chri""s`, negative: true },
+    ])
   })
   test("complex", () => {
-    expect(parseQuery(`tag:chris -tag:dessert name:pie author:"Christopher Dignam"`)).toEqual([{ field: "tag", value: "chris" }, {field: "tag", value: "dessert", negative: true}, {field: "name", value: "pie"}])
+    expect(
+      parseQuery(
+        `  tag:chris -tag:dessert   name:pie   author:"Christopher Dignam" testing`,
+      ),
+    ).toEqual([
+      { field: "tag", value: "chris" },
+      { field: "tag", value: "dessert", negative: true },
+      { field: "name", value: "pie" },
+      { field: "author", value: "Christopher Dignam" },
+    ])
   })
 })
