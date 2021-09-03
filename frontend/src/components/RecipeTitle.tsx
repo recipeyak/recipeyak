@@ -111,6 +111,15 @@ class RecipeTitle extends React.Component<
       newTag: "",
     }))
   }
+  removeTag = (tag: string) => {
+    this.setState(prevState => ({
+      ...prevState,
+      recipe: {
+        ...prevState.recipe,
+        tags: prevState.recipe.tags?.filter(x => x !== tag),
+      },
+    }))
+  }
 
   render() {
     const {
@@ -213,7 +222,11 @@ class RecipeTitle extends React.Component<
               <div className="ml-2 d-flex align-center">
                 {this.state.recipe.tags?.map(x => (
                   <span className="tag">
-                    {x} <button className="delete is-small" />
+                    {x}{" "}
+                    <button
+                      className="delete is-small"
+                      onClick={() => this.removeTag(x)}
+                    />
                   </span>
                 ))}
               </div>
