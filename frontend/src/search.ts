@@ -175,55 +175,43 @@ function parseValue(x: string): { newPosition: number; value: string } {
 }
 
 type QueryNode = {
-  field: "name" | "author" | "tag"
+  field: "name" | "author" | "tag" | null
   value: string
   negative?: boolean
 }
 
 export function parseQuery(query: string): QueryNode[] {
   const parsed = []
-  let untagged = ""
+
   for (let i = 0; i < query.length; ) {
     let remainder = query.slice(i)
 
     if (remainder.startsWith("-tag:")) {
-      parsed.push({ field: null, value: untagged })
-      untagged = ""
       i += "-tag:".length
       const { newPosition, value } = parseValue(query.slice(i))
       i += newPosition
       parsed.push({ field: "tag", value, negative: true })
     } else if (remainder.startsWith("-name:")) {
-      parsed.push({ field: null, value: untagged })
-      untagged = ""
       i += "-name:".length
       const { newPosition, value } = parseValue(query.slice(i))
       i += newPosition
       parsed.push({ field: "name", value, negative: true })
     } else if (remainder.startsWith("-author:")) {
-      parsed.push({ field: null, value: untagged })
-      untagged = ""
       i += "-author:".length
       const { newPosition, value } = parseValue(query.slice(i))
       i += newPosition
       parsed.push({ field: "author", value, negative: true })
     } else if (remainder.startsWith("tag:")) {
-      parsed.push({ field: null, value: untagged })
-      untagged = ""
       i += "tag:".length
       const { newPosition, value } = parseValue(query.slice(i))
       i += newPosition
       parsed.push({ field: "tag", value })
     } else if (remainder.startsWith("author:")) {
-      parsed.push({ field: null, value: untagged })
-      untagged = ""
       i += "author:".length
       const { newPosition, value } = parseValue(query.slice(i))
       i += newPosition
       parsed.push({ field: "author", value })
     } else if (remainder.startsWith("name:")) {
-      parsed.push({ field: null, value: untagged })
-      untagged = ""
       i += "name:".length
       const { newPosition, value } = parseValue(query.slice(i))
       i += newPosition
