@@ -1,5 +1,5 @@
 import React from "react"
-import uniq from 'lodash/uniq'
+import uniq from "lodash/uniq"
 import { Button } from "@/components/Buttons"
 import MetaData from "@/components/MetaData"
 import {

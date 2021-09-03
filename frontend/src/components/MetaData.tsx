@@ -1,4 +1,5 @@
 import React from "react"
+import { Link } from "react-router-dom"
 
 import Owner from "@/components/Owner"
 import { IRecipe } from "@/store/reducers/recipes"
@@ -105,7 +106,14 @@ const MetaData = ({
       </div>
       <div>
         {tags?.map(x => (
-          <span className="tag">{x}</span>
+          <Link
+            to={{
+              pathname: "/recipes",
+              search: `search=${encodeURIComponent(`tag:${x}`)}`,
+            }}
+            className="tag">
+            {x}
+          </Link>
         ))}
       </div>
     </>
