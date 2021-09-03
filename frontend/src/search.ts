@@ -157,7 +157,7 @@ function parseValue(x: string): { newPosition: number; value: string } {
         value = value.slice(0, value.length - 1)
         value += chr
       } else if (chr === terminator || chr === null) {
-        return { value, newPosition: i + 1 }
+        return { value, newPosition: i + 1, quoted: true }
       } else {
         value += chr
       }
@@ -178,6 +178,7 @@ type QueryNode = {
   field: "name" | "author" | "tag" | null
   value: string
   negative?: boolean
+  quoted?: boolean
 }
 
 export function parseQuery(query: string): QueryNode[] {
@@ -188,44 +189,44 @@ export function parseQuery(query: string): QueryNode[] {
 
     if (remainder.startsWith("-tag:")) {
       i += "-tag:".length
-      const { newPosition, value } = parseValue(query.slice(i))
+      const { newPosition, value, quoted } = parseValue(query.slice(i))
       i += newPosition
       parsed.push({ field: "tag", value, negative: true })
     } else if (remainder.startsWith("-name:")) {
       i += "-name:".length
-      const { newPosition, value } = parseValue(query.slice(i))
+      const { newPosition, value, quoted } = parseValue(query.slice(i))
       i += newPosition
       parsed.push({ field: "name", value, negative: true })
     } else if (remainder.startsWith("-author:")) {
       i += "-author:".length
-      const { newPosition, value } = parseValue(query.slice(i))
+      const { newPosition, value, quoted } = parseValue(query.slice(i))
       i += newPosition
       parsed.push({ field: "author", value, negative: true })
     } else if (remainder.startsWith("tag:")) {
       i += "tag:".length
-      const { newPosition, value } = parseValue(query.slice(i))
+      const { newPosition, value, quoted } = parseValue(query.slice(i))
       i += newPosition
-      parsed.push({ field: "tag", value })
+      parsed.push({ field: "tag", value, quoted })
     } else if (remainder.startsWith("author:")) {
       i += "author:".length
-      const { newPosition, value } = parseValue(query.slice(i))
+      const { newPosition, value, quoted } = parseValue(query.slice(i))
       i += newPosition
-      parsed.push({ field: "author", value })
+      parsed.push({ field: "author", value, quoted })
     } else if (remainder.startsWith("name:")) {
       i += "name:".length
-      const { newPosition, value } = parseValue(query.slice(i))
+      const { newPosition, value, quoted } = parseValue(query.slice(i))
       i += newPosition
-      parsed.push({ field: "name", value })
+      parsed.push({ field: "name", value, quoted })
     } else if (query[i] === "'" || query[i] === '"') {
-      const { newPosition, value } = parseValue(query.slice(i))
+      const { newPosition, value, quoted } = parseValue(query.slice(i))
       i += newPosition
-      parsed.push({ field: null, value })
+      parsed.push({ field: null, value, quoted })
     } else if (query[i] === " ") {
       i += 1
     } else {
-      const { newPosition, value } = parseValue(query.slice(i))
+      const { newPosition, value, quoted } = parseValue(query.slice(i))
       i += newPosition
-      parsed.push({ field: null, value })
+      parsed.push({ field: null, value, quoted })
     }
   }
   return parsed.filter(x => x.value)

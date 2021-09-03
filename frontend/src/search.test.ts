@@ -65,12 +65,12 @@ describe("parseQuery", () => {
   })
   test("single quotes", () => {
     expect(parseQuery("name:'mark bittman'")).toEqual([
-      { field: "name", value: "mark bittman" },
+      { field: "name", value: "mark bittman", quoted: true },
     ])
   })
   test("double quotes", () => {
     expect(parseQuery(`name:"mark bittman"`)).toEqual([
-      { field: "name", value: "mark bittman" },
+      { field: "name", value: "mark bittman", quoted: true },
     ])
   })
   test("negative", () => {
@@ -98,10 +98,10 @@ describe("parseQuery", () => {
       { field: null, value: "hello" },
       { field: "tag", value: "dessert", negative: true },
       { field: "name", value: "pie" },
-      { field: "author", value: "Christopher Dignam" },
+      { field: "author", value: "Christopher Dignam", quoted: true },
       { field: null, value: "testing" },
       { field: null, value: "abc" },
-      { field: null, value: "multi word" },
+      { field: null, value: "multi word", quoted: true },
     ])
   })
 })
