@@ -142,7 +142,6 @@ export function searchRecipes(params: {
     })
     .map(x => ({ name: x[0], count: x[1] }))
     .sort((a, b) => ingredientByNameAlphabetical(a.name, b.name))
-  // console.log({ matchType, options, count: groupCountSortByName(allTags) })
 
   return { matchOn: matchType, recipes: matchingRecipes, options }
 }
