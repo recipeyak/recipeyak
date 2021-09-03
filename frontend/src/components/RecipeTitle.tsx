@@ -1,4 +1,5 @@
 import React from "react"
+import uniq from 'lodash/uniq'
 import { Button } from "@/components/Buttons"
 import MetaData from "@/components/MetaData"
 import {
@@ -105,7 +106,7 @@ class RecipeTitle extends React.Component<
     this.setState(prevState => ({
       recipe: {
         ...prevState.recipe,
-        tags: [...(prevState.recipe.tags ?? []), prevState.newTag],
+        tags: uniq([...(prevState.recipe.tags ?? []), prevState.newTag]),
       },
       newTag: "",
     }))
