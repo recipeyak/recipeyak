@@ -1,6 +1,5 @@
 import { parseQuery } from "@/query-parser"
 
-
 describe("parseQuery", () => {
   test("simple", () => {
     expect(parseQuery("tag:chris")).toEqual([{ field: "tag", value: "chris" }])

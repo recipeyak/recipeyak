@@ -28,15 +28,15 @@ function parseValue(
   return { value, newPosition: x.length }
 }
 
-type QueryField = "name" | "author" | "tag"
-type QueryNode = {
+type QueryField = typeof fieldNames[number]
+export type QueryNode = {
   field: QueryField | null
   value: string
   negative?: boolean
   quoted?: boolean
 }
 
-const fieldNames: QueryField[] = ["name", "author", "tag"]
+const fieldNames = ["author", "recipeId", "ingredient", "name", "tag"] as const
 
 function renderField(field: { field: QueryField; negative?: boolean }): string {
   return (field.negative ? "-" : "") + field.field + ":"
