@@ -65,7 +65,7 @@ class Recipe(CommonInfo, SoftDeleteObject):
         base_field=models.TextField(),
         null=True,
         default=list,
-        help_text="If a clone, the parent this Recipe was cloned from.",
+        help_text="Tags for organization recipes.",
     )
 
     objects = SoftDeleteManager["Recipe"]()

@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             field=django.contrib.postgres.fields.ArrayField(
                 base_field=models.TextField(),
                 default=list,
-                help_text="If a clone, the parent this Recipe was cloned from.",
+                help_text="Tags for organization recipes.",
                 null=True,
                 size=None,
             ),
