@@ -407,6 +407,7 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
           </div>
         </span>
       </div>
+      <div />
     </div>
   </div>
   <div
@@ -844,6 +845,7 @@ exports[`<Recipe/> snaps recipe all states 2`] = `
           </div>
         </span>
       </div>
+      <div />
     </div>
   </div>
   <div

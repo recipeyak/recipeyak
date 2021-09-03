@@ -150,6 +150,7 @@ class RecipeSerializer(BaseModelSerializer):
             "last_scheduled",
             "created",
             "archived_at",
+            "tags",
         )
         read_only_fields = ("owner", "last_scheduled")
 

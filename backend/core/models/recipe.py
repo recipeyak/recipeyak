@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any, Optional, Union
 
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.postgres.fields import ArrayField
 from django.db import models, transaction
 from django.db.models import QuerySet
 from django.utils import timezone
@@ -59,6 +60,12 @@ class Recipe(CommonInfo, SoftDeleteObject):
         null=True,
         default=None,
         help_text="If a clone, the parent this Recipe was cloned from.",
+    )
+    tags = ArrayField(
+        base_field=models.TextField(),
+        null=True,
+        default=list,
+        help_text="Tags for organization recipes.",
     )
 
     objects = SoftDeleteManager["Recipe"]()

@@ -395,6 +395,7 @@ export function Recipe(props: IRecipeProps) {
         owner={recipe.owner}
         updating={recipe.updating}
         editing={recipe.editing}
+        tags={recipe.tags}
       />
 
       <Nav>

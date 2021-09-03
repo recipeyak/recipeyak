@@ -1,4 +1,5 @@
 import React from "react"
+import uniq from "lodash/uniq"
 import { Button } from "@/components/Buttons"
 import MetaData from "@/components/MetaData"
 import {
@@ -20,6 +21,7 @@ interface IRecipeTitleProps {
   readonly servings: IRecipe["servings"]
   readonly time: IRecipe["time"]
   readonly owner: IRecipe["owner"]
+  readonly tags: IRecipe["tags"]
   readonly update: (args: { id: IRecipe["id"]; data: IRecipeBasic }) => void
   readonly updating?: boolean
   readonly editing?: boolean
@@ -32,11 +34,13 @@ export interface IRecipeBasic {
   readonly source?: string
   readonly servings?: string
   readonly time?: string
+  readonly tags?: string[]
 }
 
 interface IRecipeTitleState {
   readonly show: boolean
   readonly recipe: IRecipeBasic
+  readonly newTag: string
 }
 
 class RecipeTitle extends React.Component<
@@ -46,6 +50,11 @@ class RecipeTitle extends React.Component<
   state: IRecipeTitleState = {
     show: false,
     recipe: {},
+    newTag: "",
+  }
+
+  componentDidMount() {
+    this.setState({ recipe: { tags: this.props.tags } })
   }
 
   toggleEdit = () => this.props.toggleEditing(this.props.id)
@@ -85,6 +94,24 @@ class RecipeTitle extends React.Component<
     this.toggleEdit()
   }
 
+  handleNewTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newTag: e.target.value })
+  }
+
+  handleNewTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== "Enter") {
+      return
+    }
+    e.persist()
+    this.setState(prevState => ({
+      recipe: {
+        ...prevState.recipe,
+        tags: uniq([...(prevState.recipe.tags ?? []), prevState.newTag]),
+      },
+      newTag: "",
+    }))
+  }
+
   render() {
     const {
       id,
@@ -92,6 +119,7 @@ class RecipeTitle extends React.Component<
       author,
       source,
       servings,
+      tags,
       time,
       owner,
       updating,
@@ -133,10 +161,11 @@ class RecipeTitle extends React.Component<
               servings={servings}
               recipeId={id}
               time={time}
+              tags={tags}
             />
           </div>
         ) : (
-          <div className="d-grid grid-entire-row align-items-center meta-data-grid">
+          <div className="">
             <div className="d-grid grid-entire-row align-items-center meta-data-grid">
               <label className="d-flex align-center">
                 By
@@ -179,6 +208,24 @@ class RecipeTitle extends React.Component<
                 />
               </label>
             </div>
+            <div className="d-flex mt-2">
+              <label className="d-flex align-center">tags</label>
+              <div className="ml-2 d-flex align-center">
+                {this.state.recipe.tags?.map(x => (
+                  <span className="tag">
+                    {x} <button className="delete is-small" />
+                  </span>
+                ))}
+              </div>
+              <TextInput
+                className="ml-2 max-width-200px"
+                placeholder="new tag"
+                value={this.state.newTag}
+                onChange={this.handleNewTagChange}
+                onKeyDown={this.handleNewTag}
+              />
+            </div>
+
             <div className="d-flex grid-entire-row align-items-end justify-content-end">
               <Button
                 size="small"

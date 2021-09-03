@@ -138,6 +138,10 @@ function getSearch(qs: string): string {
   if (searchQuery != null && typeof searchQuery === "string") {
     return decodeURIComponent(searchQuery)
   }
+  const tagParam = params.tag
+  if (typeof tagParam === "string") {
+    return `tag:${tagParam}`
+  }
   const recipeIdParam = params.recipeId
   if (recipeIdParam == null || Array.isArray(recipeIdParam)) {
     return ""
@@ -163,7 +167,7 @@ function RecipesListSearch({
     dispatch(
       replace({
         search: updateQueryString(
-          { search: undefined, recipeId: undefined },
+          { search: undefined, recipeId: undefined, tag: undefined },
           window.location.search,
         ),
       }),

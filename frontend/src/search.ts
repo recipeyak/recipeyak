@@ -1,6 +1,7 @@
-import { byNameAlphabetical } from "@/sorters"
+import { byNameAlphabetical, ingredientByNameAlphabetical } from "@/sorters"
 import { IRecipe } from "@/store/reducers/recipes"
 import { notUndefined } from "@/utils/general"
+import flatMap from "lodash/flatMap"
 
 // https://stackoverflow.com/a/37511463/3720597
 const removeAccents = (x: string) =>
@@ -12,7 +13,7 @@ const normalize = (x: string = "") =>
     .toLowerCase()
 
 export type Match = {
-  readonly kind: "author" | "recipeId" | "ingredient" | "name"
+  readonly kind: "author" | "recipeId" | "ingredient" | "name" | "tag"
   readonly value: string
 }
 
@@ -30,7 +31,14 @@ export function getMatchType(rawQuery: string): Match["kind"][] {
   if (query.indexOf("name:") === 0) {
     return ["name"]
   }
+  if (query.indexOf("tag:") === 0) {
+    return ["tag"]
+  }
   return ["name", "author"]
+}
+
+function normalizeQuery(query: string): string {
+  return normalize(query.replace(/^(ingredient|name|author|recipeId|tag):/, ""))
 }
 
 export function matchesQuery(
@@ -44,9 +52,7 @@ export function matchesQuery(
   const author = normalize(recipe.author)
   const recipeId = String(recipe.id)
 
-  const normalizedQuery = normalize(
-    query.replace(/^(ingredient|name|author|recipeId):/, ""),
-  )
+  const normalizedQuery = normalizeQuery(query)
   if (!normalizedQuery) {
     return "empty-query"
   }
@@ -59,6 +65,14 @@ export function matchesQuery(
     }
     if (field === "recipeId" && recipeId.includes(normalizedQuery)) {
       return { kind: "recipeId", value: recipeId }
+    }
+    if (field === "tag") {
+      const matchingTag = recipe.tags?.find(tag =>
+        normalize(tag).includes(normalizedQuery),
+      )
+      if (matchingTag != null) {
+        return { kind: "tag", value: matchingTag }
+      }
     }
     if (field === "ingredient") {
       for (const ingredient of recipe.ingredients) {
@@ -86,6 +100,15 @@ function sortArchivedName(a: IRecipe, b: IRecipe) {
   return byNameAlphabetical(a, b)
 }
 
+function groupCountSortByName(x: string[]): [string, number][] {
+  const groups: Map<string, number> = new Map()
+  x.forEach(item => {
+    const currentValue = groups.get(item) || 0
+    groups.set(item, currentValue + 1)
+  })
+  return Array.from(groups.entries())
+}
+
 export function searchRecipes(params: {
   readonly recipes: IRecipe[]
   readonly query: string
@@ -93,6 +116,7 @@ export function searchRecipes(params: {
 }): {
   readonly matchOn: Match["kind"][]
   readonly recipes: { readonly recipe: IRecipe; readonly match: Match | null }[]
+  readonly options: { name: string; count: number }[]
 } {
   const matchType = getMatchType(params.query)
   const matchingRecipes = params.recipes
@@ -108,6 +132,16 @@ export function searchRecipes(params: {
     })
     .filter(notUndefined)
     .sort((a, b) => sortArchivedName(a.recipe, b.recipe))
+  const allTags = matchType.includes("tag")
+    ? flatMap(params.recipes, x => x.tags || [])
+    : []
+  const normalizedQuery = normalizeQuery(params.query)
+  const options = groupCountSortByName(allTags)
+    .filter(x => {
+      return !normalizedQuery || x[0].includes(normalizedQuery)
+    })
+    .map(x => ({ name: x[0], count: x[1] }))
+    .sort((a, b) => ingredientByNameAlphabetical(a.name, b.name))
 
-  return { matchOn: matchType, recipes: matchingRecipes }
+  return { matchOn: matchType, recipes: matchingRecipes, options }
 }

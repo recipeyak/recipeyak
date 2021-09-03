@@ -303,7 +303,7 @@ const UserHome = () => {
   const filteredRecipes =
     recipes?.kind === "Success"
       ? searchRecipes({ recipes: recipes.data, query: searchQuery })
-      : { recipes: [], matchOn: [] }
+      : { recipes: [], matchOn: [], options: [] }
 
   const loadingSuggestions = recipes?.kind !== "Success"
 
@@ -331,6 +331,9 @@ const UserHome = () => {
           </NameAuthorContainer>
           {match?.kind === "ingredient" ? (
             <RecipeMatchPiece>{match.value}</RecipeMatchPiece>
+          ) : null}
+          {match?.kind === "tag" ? (
+            <span className="tag">{match.value}</span>
           ) : null}
         </SuggestionItem>
       )
