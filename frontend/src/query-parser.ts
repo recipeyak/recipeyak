@@ -63,7 +63,9 @@ export function parseQuery(query: string): QueryNode[] {
     let remainder = query.slice(i)
 
     const matchingField = generateFields().find(field => {
-      return remainder.startsWith(renderField(field))
+      // if we just have "tag:", we want to list all results. But if we have
+      // "tag: ", we treat that as a normal string, not a field.
+      return remainder.startsWith(renderField(field)) && !remainder.startsWith(renderField(field) + " ")
     })
 
     if (matchingField) {
