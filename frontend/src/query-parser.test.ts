@@ -1,4 +1,4 @@
-import { parseQuery } from "@/query-parser"
+import { parseQuery, formatQuery } from "@/query-parser"
 
 describe("parseQuery", () => {
   test("simple", () => {
@@ -47,5 +47,27 @@ describe("parseQuery", () => {
       { field: null, value: "abc" },
       { field: null, value: "multi word", quoted: true },
     ])
+  })
+})
+
+describe("formatQuery", () => {
+  test("simple", () => {
+    expect(formatQuery([{ field: "author", value: "Mark Bittman" }])).toEqual(
+      `author:"Mark Bittman"`,
+    )
+  })
+  test("complex", () => {
+    expect(
+      formatQuery([
+        { field: "tag", value: "chris" },
+        { field: null, value: "hello" },
+        { field: "tag", value: "dessert", negative: true },
+        { field: "name", value: "pie" },
+        { field: "author", value: "Christopher Dignam", quoted: true },
+        { field: null, value: "testing" },
+        { field: null, value: "abc" },
+        { field: null, value: "multi word", quoted: true },
+      ]),
+    ).toEqual(`tag:chris`)
   })
 })

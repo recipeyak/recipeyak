@@ -1,8 +1,6 @@
-import { byNameAlphabetical, ingredientByNameAlphabetical } from "@/sorters"
+import { byNameAlphabetical } from "@/sorters"
 import { IRecipe } from "@/store/reducers/recipes"
-import { notUndefined } from "@/utils/general"
 import { parseQuery, QueryNode } from "@/query-parser"
-import flatMap from "lodash/flatMap"
 
 // https://stackoverflow.com/a/37511463/3720597
 const removeAccents = (x: string) =>
@@ -22,13 +20,6 @@ export type Match = {
   readonly value: string
 }
 
-
-
-function normalizeQuery(query: string): string {
-  return normalize(query.replace(/^(ingredient|name|author|recipeId|tag):/, ""))
-}
-
-
 /** Sort archived recipes last, then sort alphabetically */
 function sortArchivedName(a: IRecipe, b: IRecipe) {
   if (a.archived_at && !b.archived_at) {
@@ -40,74 +31,64 @@ function sortArchivedName(a: IRecipe, b: IRecipe) {
   return byNameAlphabetical(a, b)
 }
 
+export function assertNever(x: never): never {
+  return x
+}
 
+function assertNotNull<T>(param: T | null | undefined): asserts param is T {
+  if (param == null) {
+    throw Error("found null")
+  }
+}
 
-type MatchReason = {
-  matched: boolean
-  matchOn: {
-    field: QueryNode["field"]
-    value: string
-  }[]
+function evalField(node: QueryNode, recipe: IRecipe): boolean {
+  switch (node.field) {
+    case "author": {
+      return normalizedIncludes(recipe.author, node.value)
+    }
+    case "name": {
+      return normalizedIncludes(recipe.name, node.value)
+    }
+    case "recipeId": {
+      return normalizedIncludes(String(recipe.id), node.value)
+    }
+    case "tag": {
+      return (
+        recipe.tags?.find(tag => normalizedIncludes(tag, node.value)) !=
+        undefined
+      )
+    }
+    case "ingredient": {
+      return (
+        recipe.ingredients.find(ingredient =>
+          normalizedIncludes(ingredient.name, node.value),
+        ) != undefined
+      )
+    }
+    case null: {
+      const matchAuthor = evalField({ ...node, field: "author" }, recipe)
+      const matchName = evalField({ ...node, field: "name" }, recipe)
+
+      return matchAuthor || matchName
+    }
+    default: {
+      assertNever(node.field)
+    }
+  }
 }
 
 export function queryMatchesRecipe(query: QueryNode[], recipe: IRecipe) {
-  let match = true
   for (const node of query) {
-    switch (node.field) {
-      case "author": {
-        const matches = normalizedIncludes(recipe.author, node.value)
-        if ((matches && node.negative) || !matches) {
-          return false
-        }
-        break
+    const match = evalField(node, recipe)
+    if (node.negative) {
+      if (match) {
+        return false
       }
-      case "name": {
-        const matches = normalizedIncludes(recipe.name, node.value)
-        if ((matches && node.negative) || !matches) {
-          return false
-        }
-        break
+    } else if (!match) {
+        return false
       }
-      case "recipeId": {
-        const matches = normalizedIncludes(String(recipe.id), node.value)
-        if ((matches && node.negative) || !matches) {
-          return false
-        }
-        break
-      }
-      case "tag": {
-        const matches = recipe.tags?.find(tag =>
-          normalizedIncludes(tag, node.value),
-        )
-        if (node.negative) {
-          if (matches) {
-            return false
-          }
-        } else if (!matches) {
-            return false
-          }
-        break
-      }
-      case "ingredient": {
-        const matches = recipe.ingredients.find(ingredient =>
-          normalizedIncludes(ingredient, node.value),
-        )
-        if ((matches && node.negative) || !matches) {
-          return false
-        }
-        break
-      }
-      case null: {
-        const matchesName = normalizedIncludes(recipe.name, node.value)
-        const matchesAuthor = normalizedIncludes(recipe.author, node.value)
-        if (!(matchesName || matchesAuthor)) {
-          return false
-        }
-        break
-      }
-    }
   }
-  return match
+  return true
 }
 
 function evalQuery(query: QueryNode[], recipes: IRecipe[]) {

@@ -86,3 +86,15 @@ export function parseQuery(query: string): QueryNode[] {
   }
   return parsed.filter(x => x.value)
 }
+
+export function formatQuery(query: QueryNode[]): string | null {
+  const messages = []
+  for (const node of query) {
+    switch (node.field) {
+      case "author": {
+        messages.push(`author:"${node.value}"`)
+      }
+    }
+  }
+  return messages.join(" ")
+}
