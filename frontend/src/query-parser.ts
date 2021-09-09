@@ -60,7 +60,7 @@ export function parseQuery(query: string): QueryNode[] {
   const parsed = []
 
   for (let i = 0; i < query.length; ) {
-    let remainder = query.slice(i)
+    const remainder = query.slice(i)
 
     const matchingField = generateFields().find(field => {
       // if we just have "tag:", we want to list all results. But if we have

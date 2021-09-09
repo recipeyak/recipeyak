@@ -31,14 +31,8 @@ function sortArchivedName(a: IRecipe, b: IRecipe) {
   return byNameAlphabetical(a, b)
 }
 
-export function assertNever(x: never): never {
+function assertNever(x: never): never {
   return x
-}
-
-function assertNotNull<T>(param: T | null | undefined): asserts param is T {
-  if (param == null) {
-    throw Error("found null")
-  }
 }
 
 function evalField(node: QueryNode, recipe: IRecipe): boolean {
