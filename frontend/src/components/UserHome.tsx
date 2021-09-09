@@ -303,7 +303,7 @@ const UserHome = () => {
   const filteredRecipes =
     recipes?.kind === "Success"
       ? searchRecipes({ recipes: recipes.data, query: searchQuery })
-      : { recipes: [], matchOn: [], options: [] }
+      : { recipes: [] }
 
   const loadingSuggestions = recipes?.kind !== "Success"
 
@@ -377,8 +377,7 @@ const UserHome = () => {
                     {suggestions}
                     <BrowseRecipesContainer>
                       <MatchType>
-                        match: {filteredRecipes.matchOn.join(" or ")} (
-                        {filteredRecipes.recipes.length})
+                        matches: {filteredRecipes.recipes.length}
                       </MatchType>
 
                       <BrowseRecipes

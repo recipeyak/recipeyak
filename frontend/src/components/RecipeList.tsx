@@ -14,7 +14,6 @@ import { parseIntOrNull } from "@/parseIntOrNull"
 import { Link } from "react-router-dom"
 import { useDispatch } from "@/hooks"
 import { replace } from "connected-react-router"
-import { styled } from "@/theme"
 import { updateQueryString } from "@/utils/querystring"
 
 interface IResultsProps {
@@ -50,11 +49,6 @@ function NoMatchingRecipe({ query }: { readonly query: string }) {
     </p>
   )
 }
-
-const MatchOn = styled.div`
-  margin-bottom: 0.5rem;
-  color: ${props => props.theme.color.muted};
-`
 
 interface IRecipeList {
   readonly recipes: WebData<IRecipe[]>
@@ -103,7 +97,6 @@ function RecipeList(props: IRecipeList) {
 
   return (
     <div className={scrollClass}>
-      <MatchOn>matching on: {results.matchOn.join(" or ")}</MatchOn>
       <div className="recipe-grid">
         <Results recipes={normalResults} query={props.query} />
       </div>
@@ -187,7 +180,7 @@ function RecipesListSearch({
     <>
       <TextInput
         value={query}
-        className={noPadding ? "" : "mb-1"}
+        className={noPadding ? "" : "mb-4"}
         onChange={handleQueryChange}
         placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:"
       />
