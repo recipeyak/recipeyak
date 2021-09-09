@@ -310,7 +310,12 @@ const UserHome = () => {
   const suggestions = filteredRecipes?.recipes
     .map((result, index) => {
       const { recipe, match: matches } = result
-      const match = matches.length > 0 ? matches[0] : null
+
+      const nameMatch = matches.find(x => x.kind === 'name')
+      const ingredientMatch = matches.find(x => x.kind === 'ingredient')
+      const tagMatch = matches.find(x => x.kind === 'tag')
+      const authorMatch = matches.find(x => x.kind === 'author')
+
       return (
         <SuggestionItem
           key={recipe.id}
@@ -318,23 +323,23 @@ const UserHome = () => {
           to={`/recipes/${recipe.id}`}
           firstItem={index === 0}>
           <NameAuthorContainer>
-            <RecipeName bold={match?.kind === "name"}>
+            <RecipeName bold={nameMatch != null}>
               {recipe.name}{" "}
             </RecipeName>
             {recipe.author && (
               <SuggestionAuthorContainer>
                 by{" "}
-                <SuggestionAuthor bold={match?.kind === "author"}>
+                <SuggestionAuthor bold={authorMatch != null}>
                   {recipe.author}
                 </SuggestionAuthor>
               </SuggestionAuthorContainer>
             )}
           </NameAuthorContainer>
-          {match?.kind === "ingredient" ? (
-            <RecipeMatchPiece>{match.value}</RecipeMatchPiece>
+          {ingredientMatch != null ? (
+            <RecipeMatchPiece>{ingredientMatch.value}</RecipeMatchPiece>
           ) : null}
-          {match?.kind === "tag" ? (
-            <span className="tag">{match.value}</span>
+          {tagMatch != null ? (
+            <span className="tag">{tagMatch.value}</span>
           ) : null}
         </SuggestionItem>
       )

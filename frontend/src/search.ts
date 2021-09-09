@@ -70,7 +70,7 @@ function evalField(node: QueryNode, recipe: IRecipe): string | null {
           normalizedIncludes(ingredient.name, node.value),
         )
       if (matchingIngredient != null) {
-        return matchingIngredient.name
+        return `${matchingIngredient.quantity} ${matchingIngredient.name}`
       }
       return null
     }
