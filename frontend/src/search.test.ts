@@ -267,7 +267,7 @@ describe("queryMatchesRecipe", () => {
     const recipe = createRecipe({
       author: "Amanda Hesser",
       name: "Thomas Keller's Butternut Squash Soup With Brown Butter",
-      tags: ["chris"]
+      tags: ["chris"],
     })
     expect(
       queryMatchesRecipe(
@@ -277,10 +277,16 @@ describe("queryMatchesRecipe", () => {
         ],
         recipe,
       ),
-    ).toEqual({match: true, fields: [{kind: "tag", value: "chris"}, {
-      kind: 'name',
-      value: recipe.name
-    }]})
+    ).toEqual({
+      match: true,
+      fields: [
+        { kind: "tag", value: "chris" },
+        {
+          kind: "name",
+          value: recipe.name,
+        },
+      ],
+    })
   })
   test("match name and author", () => {
     const recipe = createRecipe({
@@ -288,21 +294,19 @@ describe("queryMatchesRecipe", () => {
       name: "Bob Baker",
     })
     expect(
-      queryMatchesRecipe(
-        [
-          { field: null, value: "baker" },
-        ],
-        recipe,
-      ),
-    ).toEqual({match: true, fields: [
-     {
-      kind: 'name',
-      value: recipe.name
-    },
-     {
-      kind: 'author',
-      value: recipe.author
-    },
-    ]})
+      queryMatchesRecipe([{ field: null, value: "baker" }], recipe),
+    ).toEqual({
+      match: true,
+      fields: [
+        {
+          kind: "name",
+          value: recipe.name,
+        },
+        {
+          kind: "author",
+          value: recipe.author,
+        },
+      ],
+    })
   })
 })

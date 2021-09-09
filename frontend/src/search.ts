@@ -35,26 +35,26 @@ function assertNever(x: never): never {
   return x
 }
 
-function evalField(node: QueryNode, recipe: IRecipe): Match | null {
+function evalField(node: QueryNode, recipe: IRecipe): Match[] | null {
   switch (node.field) {
     case "author": {
       const res = normalizedIncludes(recipe.author, node.value)
       if (res) {
-        return {kind: 'author', value: recipe.author}
+        return [{ kind: "author", value: recipe.author }]
       }
       return null
     }
     case "name": {
       const res = normalizedIncludes(recipe.name, node.value)
       if (res) {
-        return {kind: "name", value: recipe.name}
+        return [{ kind: "name", value: recipe.name }]
       }
       return null
     }
     case "recipeId": {
       const res = normalizedIncludes(String(recipe.id), node.value)
       if (res) {
-        return {kind: "recipeId", value: String(recipe.id)}
+        return [{ kind: "recipeId", value: String(recipe.id) }]
       }
       return null
     }
@@ -63,7 +63,7 @@ function evalField(node: QueryNode, recipe: IRecipe): Match | null {
         normalizedIncludes(tag, node.value),
       )
       if (matchingTag != null) {
-        return {kind: "tag", value: matchingTag}
+        return [{ kind: "tag", value: matchingTag }]
       }
       return null
     }
@@ -72,21 +72,23 @@ function evalField(node: QueryNode, recipe: IRecipe): Match | null {
         normalizedIncludes(ingredient.name, node.value),
       )
       if (matchingIngredient != null) {
-        return {kind: 'ingredient', value: `${matchingIngredient.quantity} ${matchingIngredient.name}`}
+        return [
+          {
+            kind: "ingredient",
+            value: `${matchingIngredient.quantity} ${matchingIngredient.name}`,
+          },
+        ]
       }
       return null
     }
     case null: {
       const matchAuthor = evalField({ ...node, field: "author" }, recipe)
       const matchName = evalField({ ...node, field: "name" }, recipe)
+      if (matchName == null && matchAuthor == null) {
+        return null
+      }
 
-      if (matchName) {
-        return matchName
-      }
-      if (matchAuthor) {
-        return matchAuthor
-      }
-      return null
+      return (matchName || []).concat(matchAuthor || [])
     }
     default: {
       assertNever(node.field)
@@ -98,20 +100,20 @@ export function queryMatchesRecipe(
   query: QueryNode[],
   recipe: IRecipe,
 ): { match: boolean; fields: Match[] } {
-  const matches: Match[] = []
+  let allMatches: Match[] = []
   for (const node of query) {
-    const match = evalField(node, recipe)
+    const matches = evalField(node, recipe)
     if (node.negative) {
-      if (match != null) {
+      if (matches != null) {
         return { match: false, fields: [] }
       }
-    } else if (match == null) {
+    } else if (matches == null) {
       return { match: false, fields: [] }
     } else {
-      matches.push(match)
+      allMatches = [...allMatches, ...matches]
     }
   }
-  return { match: true, fields: matches }
+  return { match: true, fields: allMatches }
 }
 
 function evalQuery(query: QueryNode[], recipes: IRecipe[]) {
