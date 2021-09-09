@@ -111,7 +111,6 @@ export function queryMatchesRecipe(
       matches.push({ kind: node.field || "author", value: match })
     }
   }
-  console.log({ matches })
   return { match: true, fields: matches }
 }
 
