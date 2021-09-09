@@ -95,11 +95,10 @@ export function searchRecipes(params: {
   readonly includeArchived?: boolean
 }): {
   readonly recipes: { readonly recipe: IRecipe; readonly match: Match | null }[]
-  readonly options: { name: string; count: number }[]
 } {
   const query = parseQuery(params.query)
   const matchingRecipes = evalQuery(query, params.recipes)
     .map(recipe => ({ recipe, match: null }))
     .sort((a, b) => sortArchivedName(a.recipe, b.recipe))
-  return { recipes: matchingRecipes, options: [] }
+  return { recipes: matchingRecipes }
 }

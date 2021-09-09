@@ -14,7 +14,6 @@ import { parseIntOrNull } from "@/parseIntOrNull"
 import { Link } from "react-router-dom"
 import { useDispatch } from "@/hooks"
 import { replace } from "connected-react-router"
-import { styled } from "@/theme"
 import { updateQueryString } from "@/utils/querystring"
 
 interface IResultsProps {
