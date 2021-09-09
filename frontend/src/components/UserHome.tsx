@@ -309,7 +309,8 @@ const UserHome = () => {
 
   const suggestions = filteredRecipes?.recipes
     .map((result, index) => {
-      const { recipe, match } = result
+      const { recipe, match: matches } = result
+      const match = matches.length > 0 ? matches[0] : null
       return (
         <SuggestionItem
           key={recipe.id}

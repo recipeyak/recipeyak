@@ -54,14 +54,14 @@ interface IRecipeItemProps {
   readonly id: number
   readonly url?: string
   readonly drag?: boolean
-  readonly match: Match | null
+  readonly match: Match[]
 }
 
 export function RecipeItem({
   name,
   author,
   id,
-  match,
+  match: matches,
   ...props
 }: IRecipeItemProps) {
   const url = props.url || recipeURL(id, name)
@@ -80,6 +80,8 @@ export function RecipeItem({
       }
     },
   })
+
+  const match = matches.length > 0 ? matches[0] : null
 
   const recipeContent = (
     <div className="card-content h-100 d-flex flex-column">
