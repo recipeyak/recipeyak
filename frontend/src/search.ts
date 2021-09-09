@@ -35,35 +35,60 @@ function assertNever(x: never): never {
   return x
 }
 
-function evalField(node: QueryNode, recipe: IRecipe): boolean {
+function evalField(node: QueryNode, recipe: IRecipe): Match[] | null {
   switch (node.field) {
     case "author": {
-      return normalizedIncludes(recipe.author, node.value)
+      const res = normalizedIncludes(recipe.author, node.value)
+      if (res) {
+        return [{ kind: "author", value: recipe.author }]
+      }
+      return null
     }
     case "name": {
-      return normalizedIncludes(recipe.name, node.value)
+      const res = normalizedIncludes(recipe.name, node.value)
+      if (res) {
+        return [{ kind: "name", value: recipe.name }]
+      }
+      return null
     }
     case "recipeId": {
-      return normalizedIncludes(String(recipe.id), node.value)
+      const res = normalizedIncludes(String(recipe.id), node.value)
+      if (res) {
+        return [{ kind: "recipeId", value: String(recipe.id) }]
+      }
+      return null
     }
     case "tag": {
-      return (
-        recipe.tags?.find(tag => normalizedIncludes(tag, node.value)) !==
-        undefined
+      const matchingTag = recipe.tags?.find(tag =>
+        normalizedIncludes(tag, node.value),
       )
+      if (matchingTag != null) {
+        return [{ kind: "tag", value: matchingTag }]
+      }
+      return null
     }
     case "ingredient": {
-      return (
-        recipe.ingredients.find(ingredient =>
-          normalizedIncludes(ingredient.name, node.value),
-        ) !== undefined
+      const matchingIngredient = recipe.ingredients.find(ingredient =>
+        normalizedIncludes(ingredient.name, node.value),
       )
+      if (matchingIngredient != null) {
+        return [
+          {
+            kind: "ingredient",
+            value: `${matchingIngredient.quantity} ${matchingIngredient.name}`,
+          },
+        ]
+      }
+      return null
     }
     case null: {
       const matchAuthor = evalField({ ...node, field: "author" }, recipe)
       const matchName = evalField({ ...node, field: "name" }, recipe)
+      if (matchName == null && matchAuthor == null) {
+        return null
+      }
 
-      return matchAuthor || matchName
+      return (matchName || []).concat(matchAuthor || [])
     }
     default: {
       assertNever(node.field)
@@ -71,22 +96,32 @@ function evalField(node: QueryNode, recipe: IRecipe): boolean {
   }
 }
 
-export function queryMatchesRecipe(query: QueryNode[], recipe: IRecipe) {
+export function queryMatchesRecipe(
+  query: QueryNode[],
+  recipe: IRecipe,
+): { match: boolean; fields: Match[] } {
+  let allMatches: Match[] = []
   for (const node of query) {
-    const match = evalField(node, recipe)
+    const matches = evalField(node, recipe)
     if (node.negative) {
-      if (match) {
-        return false
+      if (matches != null) {
+        return { match: false, fields: [] }
       }
-    } else if (!match) {
-      return false
+    } else if (matches == null) {
+      return { match: false, fields: [] }
+    } else {
+      allMatches = [...allMatches, ...matches]
     }
   }
-  return true
+  return { match: true, fields: allMatches }
 }
 
 function evalQuery(query: QueryNode[], recipes: IRecipe[]) {
-  return recipes.filter(recipe => queryMatchesRecipe(query, recipe))
+  return recipes
+    .map(recipe => {
+      return { match: queryMatchesRecipe(query, recipe), recipe }
+    })
+    .filter(x => x.match.match)
 }
 
 export function searchRecipes(params: {
@@ -94,11 +129,11 @@ export function searchRecipes(params: {
   readonly query: string
   readonly includeArchived?: boolean
 }): {
-  readonly recipes: { readonly recipe: IRecipe; readonly match: Match | null }[]
+  readonly recipes: { readonly recipe: IRecipe; readonly match: Match[] }[]
 } {
   const query = parseQuery(params.query)
   const matchingRecipes = evalQuery(query, params.recipes)
-    .map(recipe => ({ recipe, match: null }))
+    .map(x => ({ recipe: x.recipe, match: x.match.fields }))
     .sort((a, b) => sortArchivedName(a.recipe, b.recipe))
   return { recipes: matchingRecipes }
 }

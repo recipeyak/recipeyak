@@ -54,14 +54,14 @@ interface IRecipeItemProps {
   readonly id: number
   readonly url?: string
   readonly drag?: boolean
-  readonly match: Match | null
+  readonly match: Match[]
 }
 
 export function RecipeItem({
   name,
   author,
   id,
-  match,
+  match: matches,
   ...props
 }: IRecipeItemProps) {
   const url = props.url || recipeURL(id, name)
@@ -81,18 +81,22 @@ export function RecipeItem({
     },
   })
 
+  const ingredientMatch = matches.find(x => x.kind === "ingredient")
+  const tagMatch = matches.find(x => x.kind === "tag")
+  const authorMatch = matches.find(x => x.kind === "author")
+
   const recipeContent = (
     <div className="card-content h-100 d-flex flex-column">
       <RecipeTitle name={name} url={url} dragable={!!props.drag} />
-      {match?.kind === "ingredient" ? (
-        <Ingredient>{match.value}</Ingredient>
+      {ingredientMatch != null ? (
+        <Ingredient>{ingredientMatch.value}</Ingredient>
       ) : null}
       <div>
-        {match?.kind === "tag" ? (
-          <span className="tag">{match.value}</span>
+        {tagMatch != null ? (
+          <span className="tag">{tagMatch.value}</span>
         ) : null}
       </div>
-      <Meta bold={match?.kind === "author"} author={author} />
+      <Meta bold={authorMatch != null} author={author} />
     </div>
   )
 
