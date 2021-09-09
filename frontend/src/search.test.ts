@@ -44,7 +44,7 @@ describe("queryMatchesRecipe", () => {
   test("author", () => {
     const recipe = createRecipe({ author: "Mark Bittman" })
     expect(
-      queryMatchesRecipe([{ field: "author", value: "bittman" }], recipe).match
+      queryMatchesRecipe([{ field: "author", value: "bittman" }], recipe).match,
     ).toEqual(true)
   })
   test("author negative", () => {
@@ -53,7 +53,7 @@ describe("queryMatchesRecipe", () => {
       queryMatchesRecipe(
         [{ field: "author", value: "bittman", negative: true }],
         recipe,
-      ).match
+      ).match,
     ).toEqual(false)
   })
   test("author negative non-matching", () => {
@@ -62,13 +62,13 @@ describe("queryMatchesRecipe", () => {
       queryMatchesRecipe(
         [{ field: "author", value: "sam", negative: true }],
         recipe,
-      ).match
+      ).match,
     ).toEqual(true)
   })
   test("name", () => {
     const recipe = createRecipe({ name: "Crème brûlée" })
     expect(
-      queryMatchesRecipe([{ field: "name", value: "brulee" }], recipe).match
+      queryMatchesRecipe([{ field: "name", value: "brulee" }], recipe).match,
     ).toEqual(true)
   })
   test("name negative", () => {
@@ -77,7 +77,7 @@ describe("queryMatchesRecipe", () => {
       queryMatchesRecipe(
         [{ field: "name", value: "brulee", negative: true }],
         recipe,
-      ).match
+      ).match,
     ).toEqual(false)
   })
   test("name negative non-matching", () => {
@@ -86,13 +86,13 @@ describe("queryMatchesRecipe", () => {
       queryMatchesRecipe(
         [{ field: "name", value: "pizza", negative: true }],
         recipe,
-      ).match
+      ).match,
     ).toEqual(true)
   })
   test("recipeId", () => {
     const recipe = createRecipe({ id: 5432 })
     expect(
-      queryMatchesRecipe([{ field: "recipeId", value: "5432" }], recipe).match
+      queryMatchesRecipe([{ field: "recipeId", value: "5432" }], recipe).match,
     ).toEqual(true)
   })
   test("recipeId negative", () => {
@@ -101,7 +101,7 @@ describe("queryMatchesRecipe", () => {
       queryMatchesRecipe(
         [{ field: "recipeId", value: "5432", negative: true }],
         recipe,
-      ).match
+      ).match,
     ).toEqual(false)
   })
   test("ingredient", () => {
@@ -109,7 +109,8 @@ describe("queryMatchesRecipe", () => {
       ingredients: [createIngredient({ name: "cream" })],
     })
     expect(
-      queryMatchesRecipe([{ field: "ingredient", value: "cream" }], recipe).match
+      queryMatchesRecipe([{ field: "ingredient", value: "cream" }], recipe)
+        .match,
     ).toEqual(true)
   })
   test("ingredient negative", () => {
@@ -120,13 +121,13 @@ describe("queryMatchesRecipe", () => {
       queryMatchesRecipe(
         [{ field: "ingredient", value: "cream", negative: true }],
         recipe,
-      ).match
+      ).match,
     ).toEqual(false)
   })
   test("tag", () => {
     const recipe = createRecipe({ tags: ["dessert"] })
     expect(
-      queryMatchesRecipe([{ field: "tag", value: "dessert" }], recipe).match
+      queryMatchesRecipe([{ field: "tag", value: "dessert" }], recipe).match,
     ).toEqual(true)
   })
   test("tag negative", () => {
@@ -135,7 +136,7 @@ describe("queryMatchesRecipe", () => {
       queryMatchesRecipe(
         [{ field: "tag", value: "dessert", negative: true }],
         recipe,
-      ).match
+      ).match,
     ).toEqual(false)
   })
   test("general — no match", () => {
@@ -144,14 +145,14 @@ describe("queryMatchesRecipe", () => {
       name: "Crème brûlée",
     })
     expect(
-      queryMatchesRecipe([{ field: null, value: "chris" }], recipe).match
+      queryMatchesRecipe([{ field: null, value: "chris" }], recipe).match,
     ).toEqual(false)
   })
   test("complex — match", () => {
     const recipe = createRecipe({
       author: "Mark Bittman",
       name: "Crème brûlée",
-      tags: ["dessert"]
+      tags: ["dessert"],
     })
     expect(
       queryMatchesRecipe(
@@ -161,8 +162,15 @@ describe("queryMatchesRecipe", () => {
           { field: "tag", value: "des" },
         ],
         recipe,
-      )
-    ).toMatchInlineSnapshot()
+      ),
+    ).toEqual({
+      match: true,
+      fields: [
+        { kind: "author", value: "Mark Bittman" },
+        { kind: "name", value: "Crème brûlée" },
+        { kind: "tag", value: "dessert" },
+      ],
+    })
   })
   test("complex — no match", () => {
     const recipe = createRecipe({
@@ -177,7 +185,7 @@ describe("queryMatchesRecipe", () => {
           { field: "tag", value: "blah" },
         ],
         recipe,
-      ).match
+      ).match,
     ).toEqual(false)
   })
   test("complex, negative — match", () => {
@@ -193,7 +201,7 @@ describe("queryMatchesRecipe", () => {
           { field: "tag", value: "blah", negative: true },
         ],
         recipe,
-      ).match
+      ).match,
     ).toEqual(true)
   })
   test("complex, negative — no match", () => {
@@ -210,13 +218,14 @@ describe("queryMatchesRecipe", () => {
           { field: "tag", value: "blah", negative: true },
         ],
         recipe,
-      ).match
+      ).match,
     ).toEqual(false)
   })
   test("ingredients missing tag", () => {
     const recipe = createRecipe({ ingredients: [] })
     expect(
-      queryMatchesRecipe([{ field: "ingredient", value: "blah" }], recipe).match
+      queryMatchesRecipe([{ field: "ingredient", value: "blah" }], recipe)
+        .match,
     ).toEqual(false)
   })
   test("ingredients negative, has tag", () => {
@@ -227,7 +236,7 @@ describe("queryMatchesRecipe", () => {
       queryMatchesRecipe(
         [{ field: "ingredient", value: "blah", negative: true }],
         recipe,
-      ).match
+      ).match,
     ).toEqual(false)
   })
   test("null field", () => {
@@ -236,7 +245,7 @@ describe("queryMatchesRecipe", () => {
       name: "Crème brûlée",
     })
     expect(
-      queryMatchesRecipe([{ field: null, value: "bittman" }], recipe).match
+      queryMatchesRecipe([{ field: null, value: "bittman" }], recipe).match,
     ).toEqual(true)
   })
   test("null field with tag", () => {
@@ -251,7 +260,7 @@ describe("queryMatchesRecipe", () => {
           { field: "tag", value: "dessert" },
         ],
         recipe,
-      ).match
+      ).match,
     ).toEqual(false)
   })
 })
