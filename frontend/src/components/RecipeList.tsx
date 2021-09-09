@@ -51,11 +51,6 @@ function NoMatchingRecipe({ query }: { readonly query: string }) {
   )
 }
 
-const MatchOn = styled.div`
-  margin-bottom: 0.5rem;
-  color: ${props => props.theme.color.muted};
-`
-
 interface IRecipeList {
   readonly recipes: WebData<IRecipe[]>
   readonly query: string
@@ -103,7 +98,6 @@ function RecipeList(props: IRecipeList) {
 
   return (
     <div className={scrollClass}>
-      <MatchOn>matching on: {results.matchOn.join(" or ")}</MatchOn>
       <div className="recipe-grid">
         <Results recipes={normalResults} query={props.query} />
       </div>
@@ -187,7 +181,7 @@ function RecipesListSearch({
     <>
       <TextInput
         value={query}
-        className={noPadding ? "" : "mb-1"}
+        className={noPadding ? "" : "mb-4"}
         onChange={handleQueryChange}
         placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:"
       />
