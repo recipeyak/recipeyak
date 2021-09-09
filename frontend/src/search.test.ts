@@ -263,4 +263,46 @@ describe("queryMatchesRecipe", () => {
       ).match,
     ).toEqual(false)
   })
+  test("regression test match name", () => {
+    const recipe = createRecipe({
+      author: "Amanda Hesser",
+      name: "Thomas Keller's Butternut Squash Soup With Brown Butter",
+      tags: ["chris"]
+    })
+    expect(
+      queryMatchesRecipe(
+        [
+          { field: "tag", value: "chris" },
+          { field: null, value: "bro" },
+        ],
+        recipe,
+      ),
+    ).toEqual({match: true, fields: [{kind: "tag", value: "chris"}, {
+      kind: 'name',
+      value: recipe.name
+    }]})
+  })
+  test("match name and author", () => {
+    const recipe = createRecipe({
+      author: "Baker's Pie",
+      name: "Bob Baker",
+    })
+    expect(
+      queryMatchesRecipe(
+        [
+          { field: null, value: "baker" },
+        ],
+        recipe,
+      ),
+    ).toEqual({match: true, fields: [
+     {
+      kind: 'name',
+      value: recipe.name
+    },
+     {
+      kind: 'author',
+      value: recipe.author
+    },
+    ]})
+  })
 })

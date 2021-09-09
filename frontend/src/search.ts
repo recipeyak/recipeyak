@@ -35,26 +35,26 @@ function assertNever(x: never): never {
   return x
 }
 
-function evalField(node: QueryNode, recipe: IRecipe): string | null {
+function evalField(node: QueryNode, recipe: IRecipe): Match | null {
   switch (node.field) {
     case "author": {
       const res = normalizedIncludes(recipe.author, node.value)
       if (res) {
-        return recipe.author
+        return {kind: 'author', value: recipe.author}
       }
       return null
     }
     case "name": {
       const res = normalizedIncludes(recipe.name, node.value)
       if (res) {
-        return recipe.name
+        return {kind: "name", value: recipe.name}
       }
       return null
     }
     case "recipeId": {
       const res = normalizedIncludes(String(recipe.id), node.value)
       if (res) {
-        return String(recipe.id)
+        return {kind: "recipeId", value: String(recipe.id)}
       }
       return null
     }
@@ -63,7 +63,7 @@ function evalField(node: QueryNode, recipe: IRecipe): string | null {
         normalizedIncludes(tag, node.value),
       )
       if (matchingTag != null) {
-        return matchingTag
+        return {kind: "tag", value: matchingTag}
       }
       return null
     }
@@ -72,7 +72,7 @@ function evalField(node: QueryNode, recipe: IRecipe): string | null {
         normalizedIncludes(ingredient.name, node.value),
       )
       if (matchingIngredient != null) {
-        return `${matchingIngredient.quantity} ${matchingIngredient.name}`
+        return {kind: 'ingredient', value: `${matchingIngredient.quantity} ${matchingIngredient.name}`}
       }
       return null
     }
@@ -108,7 +108,7 @@ export function queryMatchesRecipe(
     } else if (match == null) {
       return { match: false, fields: [] }
     } else {
-      matches.push({ kind: node.field || "author", value: match })
+      matches.push(match)
     }
   }
   return { match: true, fields: matches }
