@@ -54,7 +54,7 @@ function evalField(node: QueryNode, recipe: IRecipe): boolean {
     }
     case "tag": {
       return (
-        recipe.tags?.find(tag => normalizedIncludes(tag, node.value)) !=
+        recipe.tags?.find(tag => normalizedIncludes(tag, node.value)) !==
         undefined
       )
     }
@@ -62,7 +62,7 @@ function evalField(node: QueryNode, recipe: IRecipe): boolean {
       return (
         recipe.ingredients.find(ingredient =>
           normalizedIncludes(ingredient.name, node.value),
-        ) != undefined
+        ) !== undefined
       )
     }
     case null: {
@@ -85,8 +85,8 @@ export function queryMatchesRecipe(query: QueryNode[], recipe: IRecipe) {
         return false
       }
     } else if (!match) {
-        return false
-      }
+      return false
+    }
   }
   return true
 }
