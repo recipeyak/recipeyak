@@ -81,9 +81,9 @@ export function RecipeItem({
     },
   })
 
-  const ingredientMatch = matches.find(x => x.kind === 'ingredient')
-  const tagMatch = matches.find(x => x.kind === 'tag')
-  const authorMatch = matches.find(x => x.kind === 'author')
+  const ingredientMatch = matches.find(x => x.kind === "ingredient")
+  const tagMatch = matches.find(x => x.kind === "tag")
+  const authorMatch = matches.find(x => x.kind === "author")
 
   const recipeContent = (
     <div className="card-content h-100 d-flex flex-column">

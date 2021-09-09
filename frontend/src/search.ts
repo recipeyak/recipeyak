@@ -59,7 +59,9 @@ function evalField(node: QueryNode, recipe: IRecipe): string | null {
       return null
     }
     case "tag": {
-      const matchingTag = recipe.tags?.find(tag => normalizedIncludes(tag, node.value))
+      const matchingTag = recipe.tags?.find(tag =>
+        normalizedIncludes(tag, node.value),
+      )
       if (matchingTag != null) {
         return matchingTag
       }
@@ -67,8 +69,8 @@ function evalField(node: QueryNode, recipe: IRecipe): string | null {
     }
     case "ingredient": {
       const matchingIngredient = recipe.ingredients.find(ingredient =>
-          normalizedIncludes(ingredient.name, node.value),
-        )
+        normalizedIncludes(ingredient.name, node.value),
+      )
       if (matchingIngredient != null) {
         return `${matchingIngredient.quantity} ${matchingIngredient.name}`
       }
@@ -92,30 +94,34 @@ function evalField(node: QueryNode, recipe: IRecipe): string | null {
   }
 }
 
-export function queryMatchesRecipe(query: QueryNode[], recipe: IRecipe): {match: boolean, fields: Match[]} {
+export function queryMatchesRecipe(
+  query: QueryNode[],
+  recipe: IRecipe,
+): { match: boolean; fields: Match[] } {
   const matches: Match[] = []
   for (const node of query) {
     const match = evalField(node, recipe)
     if (node.negative) {
       if (match != null) {
-        return {match: false, fields: []}
+        return { match: false, fields: [] }
       }
     } else if (match == null) {
-      return {match: false, fields: []}
+      return { match: false, fields: [] }
     } else {
-      matches.push({kind: node.field || "author", value: match})
+      matches.push({ kind: node.field || "author", value: match })
     }
   }
-  console.log({matches})
-  return {match: true, fields: matches}
+  console.log({ matches })
+  return { match: true, fields: matches }
 }
 
 function evalQuery(query: QueryNode[], recipes: IRecipe[]) {
-  return recipes.map(recipe => {
-    return ({match: queryMatchesRecipe(query, recipe), recipe})
-  }).filter(x => x.match.match)
+  return recipes
+    .map(recipe => {
+      return { match: queryMatchesRecipe(query, recipe), recipe }
+    })
+    .filter(x => x.match.match)
 }
-
 
 export function searchRecipes(params: {
   readonly recipes: IRecipe[]

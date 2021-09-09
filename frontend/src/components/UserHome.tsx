@@ -311,10 +311,10 @@ const UserHome = () => {
     .map((result, index) => {
       const { recipe, match: matches } = result
 
-      const nameMatch = matches.find(x => x.kind === 'name')
-      const ingredientMatch = matches.find(x => x.kind === 'ingredient')
-      const tagMatch = matches.find(x => x.kind === 'tag')
-      const authorMatch = matches.find(x => x.kind === 'author')
+      const nameMatch = matches.find(x => x.kind === "name")
+      const ingredientMatch = matches.find(x => x.kind === "ingredient")
+      const tagMatch = matches.find(x => x.kind === "tag")
+      const authorMatch = matches.find(x => x.kind === "author")
 
       return (
         <SuggestionItem
@@ -323,9 +323,7 @@ const UserHome = () => {
           to={`/recipes/${recipe.id}`}
           firstItem={index === 0}>
           <NameAuthorContainer>
-            <RecipeName bold={nameMatch != null}>
-              {recipe.name}{" "}
-            </RecipeName>
+            <RecipeName bold={nameMatch != null}>{recipe.name} </RecipeName>
             {recipe.author && (
               <SuggestionAuthorContainer>
                 by{" "}
