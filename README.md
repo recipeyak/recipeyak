@@ -20,6 +20,7 @@ To have a centralized location where multiple people can organize a meal plan.
 - <https://grocy.info>
 - <https://www.cooklist.co/>
 - <https://recipekeeperonline.com>
+- <https://github.com/KDE/kookbook>
 
 ## Dev
 
