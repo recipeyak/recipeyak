@@ -237,17 +237,20 @@ function buildSchedule(
   )
 }
 
-function SchedulePreview() {
+const scheduleCache: Record<string | number, any> = {}
+
+function useSchedulePreview(): WebData<readonly RecipeSchedule[]> {
   const teamID = useScheduleTeamID()
   const [scheduledRecipes, setScheduledRecipes] = React.useState<
     WebData<readonly RecipeSchedule[]>
-  >(undefined)
+  >(scheduleCache[teamID] ?? undefined)
   React.useEffect(() => {
-    const today = startOfToday()
-    const start = today
-    const end = addDays(today, 6)
+    const start = startOfToday()
+    const end = addDays(start, 6)
 
-    setScheduledRecipes(Loading())
+    if (!scheduleCache[teamID]) {
+      setScheduledRecipes(Loading())
+    }
     api
       .getCalendarRecipeList({
         teamID,
@@ -263,11 +266,20 @@ function SchedulePreview() {
           setScheduledRecipes(
             Success(buildSchedule(formattedSchedule, start, end)),
           )
+          scheduleCache[teamID] = Success(
+            buildSchedule(formattedSchedule, start, end),
+          )
         } else {
           setScheduledRecipes(Failure(undefined))
+          scheduleCache[teamID] = Failure(undefined)
         }
       })
   }, [teamID])
+  return scheduledRecipes
+}
+
+function SchedulePreview() {
+  const scheduledRecipes = useSchedulePreview()
 
   return (
     <ScheduleContainer>
