@@ -328,6 +328,10 @@ function ArchiveBanner({ date }: { readonly date: Date }) {
   )
 }
 
+function isRecipeyakHostname(x: string): boolean {
+  return x.includes("recipeyak.com") || x.includes("localhost")
+}
+
 /** On load, update the recipe URL to include the slugified recipe name */
 function useRecipeUrlUpdate(recipe: { id: number; name: string } | null) {
   const dispatch = useDispatch()
@@ -340,6 +344,13 @@ function useRecipeUrlUpdate(recipe: { id: number; name: string } | null) {
       return
     }
     const pathname = recipeURL(recipeId, recipeName)
+
+    // don't rewrite URL if we're on a different domain.
+    //
+    // this prevents glitchy 404 behavior when navigating to a different domain.
+    if (!isRecipeyakHostname(window.location.hostname)) {
+      return
+    }
     if (pathNamesEqual(location.pathname, pathname)) {
       return
     }
