@@ -11,6 +11,7 @@ import { setUserLoggedIn } from "@/store/reducers/user"
 import { Result, Ok, Err } from "@/result"
 import * as t from "io-ts"
 import { Either, left } from "fp-ts/lib/Either"
+import queryString from "query-string"
 
 export const baseHttp = axios.create()
 
@@ -117,6 +118,19 @@ type HttpResult<T> = Promise<Result<T, AxiosError>>
 const toOk = <T>(res: AxiosResponse<T>) => Ok(res.data)
 const toErr = Err
 
+type RequestOptions<A, O, T> = {
+  readonly shape: t.Type<A, O>
+  readonly params?: Params
+  readonly method: Method
+  readonly url: string
+  readonly data?: T
+}
+
+export type HttpRequestObjResult<A, O, T> = RequestOptions<A, O, T> & {
+  request: () => Promise<Either<t.Errors | AxiosError | Error, A>>
+  getCacheKey: () => string
+}
+
 /**
  * Result<T> based HTTP client
  */
@@ -172,6 +186,16 @@ export const http = {
     readonly data?: T
   }): Promise<Either<t.Errors | AxiosError | Error, A>> => {
     return http3(options)
+  },
+  obj: <A, O, T>(
+    options: RequestOptions<A, O, T>,
+  ): HttpRequestObjResult<A, O, T> => {
+    return {
+      ...options,
+      getCacheKey: () =>
+        options.url + "." + queryString.stringify(options.params ?? {}),
+      request: () => http.request(options),
+    }
   },
 }
 // tslint:enable:no-promise-catch

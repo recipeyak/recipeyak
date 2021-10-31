@@ -22,11 +22,13 @@ import { isRight } from "fp-ts/lib/Either"
 import {
   Failure,
   isFailure,
+  isLoading,
   isSuccess,
   Loading,
   Success,
   WebData,
 } from "@/webdata"
+import { HttpRequestObjResult } from "@/http"
 
 const SearchInput = styled(TextInput)`
   font-size: 1.5rem !important;
@@ -239,47 +241,46 @@ function buildSchedule(
 
 const scheduleCache: Record<string | number, any> = {}
 
-function useSchedulePreview(): WebData<readonly RecipeSchedule[]> {
-  const teamID = useScheduleTeamID()
-  const [scheduledRecipes, setScheduledRecipes] = React.useState<
-    WebData<readonly RecipeSchedule[]>
-  >(scheduleCache[teamID] ?? undefined)
+function useApi<A, O, T>(request: HttpRequestObjResult<A, O, T>): WebData<A> {
+  const [Data, setData] = React.useState<WebData<A>>(undefined)
+  if (Data == null) {
+    setData(Loading())
+  }
   React.useEffect(() => {
-    const start = startOfToday()
-    const end = addDays(start, 6)
+    request.request().then(res => {
+      if (isRight(res)) {
+        return setData(Success(res.right))
+      }
+      return setData(Failure())
+    })
+  },[request.getCacheKey()])
 
-    if (!scheduleCache[teamID]) {
-      setScheduledRecipes(Loading())
-    }
-    api
-      .getCalendarRecipeList({
-        teamID,
-        start: toISODateString(start),
-        end: toISODateString(end),
-      })
-      .then(res => {
-        if (isRight(res)) {
-          const formattedSchedule = res.right.scheduledRecipes.map(x => ({
-            on: x.on,
-            recipe: { id: x.recipe.id.toString(), name: x.recipe.name },
-          }))
-          setScheduledRecipes(
-            Success(buildSchedule(formattedSchedule, start, end)),
-          )
-          scheduleCache[teamID] = Success(
-            buildSchedule(formattedSchedule, start, end),
-          )
-        } else {
-          setScheduledRecipes(Failure(undefined))
-          scheduleCache[teamID] = Failure(undefined)
-        }
-      })
-  }, [teamID])
-  return scheduledRecipes
+  return Data
+}
+
+function useSChedulePreviewV2() {
+  const teamID = useScheduleTeamID()
+  const start = startOfToday()
+  const end = addDays(start, 6)
+  const res = useApi(
+    api.getCalendarRecipeListRequestBuilder({
+      teamID,
+      start,
+      end,
+    }),
+  )
+  if (isLoading(res) || isFailure(res) || res == null) {
+    return res
+  }
+  const formattedSchedule = res.data.scheduledRecipes.map(x => ({
+    on: x.on,
+    recipe: { id: x.recipe.id.toString(), name: x.recipe.name },
+  }))
+  return Success(buildSchedule(formattedSchedule, start, end))
 }
 
 function SchedulePreview() {
-  const scheduledRecipes = useSchedulePreview()
+  const scheduledRecipes = useSChedulePreviewV2()
 
   return (
     <ScheduleContainer>

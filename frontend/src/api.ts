@@ -380,6 +380,47 @@ export function getCalendarRecipeList({
   })
 }
 
+export function getCalendarRecipeListRequestBuilder({
+  teamID,
+  start,
+  end,
+}: {
+  readonly teamID: TeamID
+  readonly start: Date
+  readonly end: Date
+}) {
+  const id = teamID === "personal" ? "me" : teamID
+  return http.obj({
+    method: "GET",
+    url: `/api/v1/t/${id}/calendar/`,
+    shape: t.type({
+      scheduledRecipes: t.array(
+        t.type({
+          id: t.number,
+          count: t.number,
+          on: t.string,
+          created: t.string,
+          team: t.union([t.number, t.null]),
+          user: t.union([t.number, t.null]),
+          recipe: t.type({
+            id: t.number,
+            name: t.string,
+          }),
+        }),
+      ),
+      settings: t.type({
+        syncEnabled: t.boolean,
+        calendarLink: t.string,
+      }),
+    }),
+    params: {
+      v2: 1,
+      start: toISODateString(start),
+      end: toISODateString(end),
+    },
+  })
+}
+
 export function updateCalendarSettings({
   teamID,
   data,
