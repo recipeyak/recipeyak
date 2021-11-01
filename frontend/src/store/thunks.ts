@@ -1004,15 +1004,15 @@ export const fetchCalendarAsync = (dispatch: Dispatch) => async (
 ) => {
   dispatch(fetchCalendarRecipes.request())
   // we fetch current month plus and minus 1 week
-  const start = toISODateString(startOfWeek(subWeeks(currentDayTs, 3)))
-  const end = toISODateString(endOfWeek(addWeeks(currentDayTs, 3)))
+  const start = startOfWeek(subWeeks(currentDayTs, 3))
+  const end = endOfWeek(addWeeks(currentDayTs, 3))
   const res = await api.getCalendarRecipeList({ teamID, start, end })
   if (isRight(res)) {
     dispatch(
       fetchCalendarRecipes.success({
         scheduledRecipes: res.right.scheduledRecipes,
-        start,
-        end,
+        start: toISODateString(start),
+        end: toISODateString(end),
         settings: res.right.settings,
       }),
     )
