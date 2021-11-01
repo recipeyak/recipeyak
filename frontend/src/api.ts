@@ -348,7 +348,7 @@ export function getCalendarRecipeList({
   readonly start: Date
   readonly end: Date
 }) {
-  return getCalendarRecipeListRequestBuilder({teamID, start, end}).send()
+  return getCalendarRecipeListRequestBuilder({ teamID, start, end }).send()
 }
 
 export function getCalendarRecipeListRequestBuilder({
