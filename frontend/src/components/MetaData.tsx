@@ -16,6 +16,8 @@ interface IMetaDataProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const isValid = (x?: string) => x !== "" && x != null
 
+const isURL = (x: string): boolean => !x.includes(" ") && x.includes(".")
+
 /**
  * Extract a hostname from a URL
  *
@@ -74,9 +76,13 @@ const MetaData = ({
   const _source = isValid(source) ? (
     <MetaPiece>
       from{" "}
-      <MetaBold>
-        <SourceLink>{source}</SourceLink>
-      </MetaBold>{" "}
+      {isURL(source) ? (
+        <MetaBold>
+          <SourceLink>{source}</SourceLink>
+        </MetaBold>
+      ) : (
+        <MetaBold onClick={onClick}>{source}</MetaBold>
+      )}{" "}
     </MetaPiece>
   ) : null
   const _servings = isValid(servings) ? (
