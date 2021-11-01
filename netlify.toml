@@ -1,61 +1,61 @@
 # see: https://docs.netlify.com/configure-builds/file-based-configuration/
 [[redirects]]
   from = "/api/*"
-  to = "https://recipeyak.com/api/:splat"
+  to = "https://api.recipeyak.com/api/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/avatar/*"
-  to = "https://recipeyak.com/avatar/:splat"
+  to = "https://api.recipeyak.com/avatar/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/recipes.json"
-  to = "https://recipeyak.com/recipes.json"
+  to = "https://api.recipeyak.com/recipes.json"
   status = 200
   force = true
 
 [[redirects]]
   from = "/recipes.yaml"
-  to = "https://recipeyak.com/recipes.yaml"
+  to = "https://api.recipeyak.com/recipes.yaml"
   status = 200
   force = true
 
 [[redirects]]
   from = "/recipes.yml"
-  to = "https://recipeyak.com/recipes.yml"
+  to = "https://api.recipeyak.com/recipes.yml"
   status = 200
   force = true
 
 [[redirects]]
   from = "/recipes.ics"
-  to = "https://recipeyak.com/recipes.ics"
+  to = "https://api.recipeyak.com/recipes.ics"
   status = 200
   force = true
 
 [[redirects]]
   from = "/recipes/:id.json"
-  to = "https://recipeyak.com/recipes/:id.json"
+  to = "https://api.recipeyak.com/recipes/:id.json"
   status = 200
   force = true
 
 [[redirects]]
   from = "/recipes/:id.yaml"
-  to = "https://recipeyak.com/recipes/:id.yaml"
+  to = "https://api.recipeyak.com/recipes/:id.yaml"
   status = 200
   force = true
 
 [[redirects]]
   from = "/recipes/:id.yml"
-  to = "https://recipeyak.com/recipes/:id.yml"
+  to = "https://api.recipeyak.com/recipes/:id.yml"
   status = 200
   force = true
 
 [[redirects]]
   from = "/recipes/:id.ics"
-  to = "https://recipeyak.com/recipes/:id.ics"
+  to = "https://api.recipeyak.com/recipes/:id.ics"
   status = 200
   force = true
 
