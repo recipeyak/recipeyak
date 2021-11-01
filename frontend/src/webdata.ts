@@ -19,9 +19,7 @@ interface IFailure<E> {
 
 export function Failure(): IFailure<undefined>
 export function Failure<T>(failure: T): IFailure<T>
-export function Failure<T>(
-  failure: T | undefined = undefined,
-): IFailure<T | undefined> {
+export function Failure<T>(failure?: T): IFailure<T | undefined> {
   return {
     kind: RDK.Failure,
     failure,

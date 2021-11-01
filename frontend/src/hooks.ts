@@ -145,6 +145,7 @@ export function useScheduleTeamID() {
 export const useScheduleURL = () => useSelector(scheduleURLFromTeamID)
 
 // global, module level cache.
+// tslint:disable-next-line:no-any
 const USE_STATE_CACHE: Record<string, any> = new Map()
 
 function useStateCached<T>(key: string): [T | undefined, (x: T) => void] {
@@ -155,6 +156,7 @@ function useStateCached<T>(key: string): [T | undefined, (x: T) => void] {
     [key],
   )
 
+  // tslint:disable-next-line:no-any
   return [USE_STATE_CACHE[key], setState]
 }
 

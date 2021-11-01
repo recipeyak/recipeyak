@@ -241,9 +241,12 @@ function useSchedulePreview() {
   )
   return mapSuccessLike(res, x =>
     buildSchedule(
-      x.scheduledRecipes.map(x => ({
-        on: x.on,
-        recipe: { id: x.recipe.id.toString(), name: x.recipe.name },
+      x.scheduledRecipes.map(scheduledRecipe => ({
+        on: scheduledRecipe.on,
+        recipe: {
+          id: scheduledRecipe.recipe.id.toString(),
+          name: scheduledRecipe.recipe.name,
+        },
       })),
       start,
       end,
