@@ -127,7 +127,7 @@ type RequestOptions<A, O, T> = {
 }
 
 export type HttpRequestObjResult<A, O, T> = RequestOptions<A, O, T> & {
-  request: () => Promise<Either<t.Errors | AxiosError | Error, A>>
+  send: () => Promise<Either<t.Errors | AxiosError | Error, A>>
   getCacheKey: () => string
 }
 
@@ -194,7 +194,7 @@ export const http = {
       ...options,
       getCacheKey: () =>
         options.url + "." + queryString.stringify(options.params ?? {}),
-      request: () => http.request(options),
+      send: () => http.request(options),
     }
   },
 }

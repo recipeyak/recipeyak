@@ -4,13 +4,12 @@ import { Link } from "react-router-dom"
 import Footer from "@/components/Footer"
 import { TextInput } from "@/components/Forms"
 import { css, styled } from "@/theme"
-import { useDispatch, useSelector, useScheduleTeamID } from "@/hooks"
+import { useDispatch, useSelector, useScheduleTeamID, useApi } from "@/hooks"
 import { push } from "connected-react-router"
 import { fetchingRecipeListAsync } from "@/store/thunks"
 import { getTeamRecipes } from "@/store/reducers/recipes"
 import { searchRecipes } from "@/search"
 import * as api from "@/api"
-import { toISODateString } from "@/date"
 import {
   addDays,
   eachDayOfInterval,
@@ -18,17 +17,7 @@ import {
   parseISO,
   startOfToday,
 } from "date-fns"
-import { isRight } from "fp-ts/lib/Either"
-import {
-  Failure,
-  isFailure,
-  isLoading,
-  isSuccess,
-  Loading,
-  Success,
-  WebData,
-} from "@/webdata"
-import { HttpRequestObjResult } from "@/http"
+import { isFailure, isSuccess, mapSuccessLike } from "@/webdata"
 
 const SearchInput = styled(TextInput)`
   font-size: 1.5rem !important;
@@ -239,26 +228,7 @@ function buildSchedule(
   )
 }
 
-const scheduleCache: Record<string | number, any> = {}
-
-function useApi<A, O, T>(request: HttpRequestObjResult<A, O, T>): WebData<A> {
-  const [Data, setData] = React.useState<WebData<A>>(undefined)
-  if (Data == null) {
-    setData(Loading())
-  }
-  React.useEffect(() => {
-    request.request().then(res => {
-      if (isRight(res)) {
-        return setData(Success(res.right))
-      }
-      return setData(Failure())
-    })
-  },[request.getCacheKey()])
-
-  return Data
-}
-
-function useSChedulePreviewV2() {
+function useSchedulePreview() {
   const teamID = useScheduleTeamID()
   const start = startOfToday()
   const end = addDays(start, 6)
@@ -269,18 +239,20 @@ function useSChedulePreviewV2() {
       end,
     }),
   )
-  if (isLoading(res) || isFailure(res) || res == null) {
-    return res
-  }
-  const formattedSchedule = res.data.scheduledRecipes.map(x => ({
-    on: x.on,
-    recipe: { id: x.recipe.id.toString(), name: x.recipe.name },
-  }))
-  return Success(buildSchedule(formattedSchedule, start, end))
+  return mapSuccessLike(res, x =>
+    buildSchedule(
+      x.scheduledRecipes.map(x => ({
+        on: x.on,
+        recipe: { id: x.recipe.id.toString(), name: x.recipe.name },
+      })),
+      start,
+      end,
+    ),
+  )
 }
 
 function SchedulePreview() {
-  const scheduledRecipes = useSChedulePreviewV2()
+  const scheduledRecipes = useSchedulePreview()
 
   return (
     <ScheduleContainer>
