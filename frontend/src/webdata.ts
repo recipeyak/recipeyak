@@ -17,7 +17,9 @@ interface IFailure<E> {
   readonly failure: E
 }
 
-export function Failure<T>(failure: T): IFailure<T> {
+export function Failure(): IFailure<undefined>
+export function Failure<T>(failure: T): IFailure<T>
+export function Failure<T>(failure?: T): IFailure<T | undefined> {
   return {
     kind: RDK.Failure,
     failure,

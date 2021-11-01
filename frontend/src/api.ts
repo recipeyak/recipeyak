@@ -345,11 +345,23 @@ export function getCalendarRecipeList({
   end,
 }: {
   readonly teamID: TeamID
-  readonly start: string
-  readonly end: string
+  readonly start: Date
+  readonly end: Date
+}) {
+  return getCalendarRecipeListRequestBuilder({ teamID, start, end }).send()
+}
+
+export function getCalendarRecipeListRequestBuilder({
+  teamID,
+  start,
+  end,
+}: {
+  readonly teamID: TeamID
+  readonly start: Date
+  readonly end: Date
 }) {
   const id = teamID === "personal" ? "me" : teamID
-  return http.request({
+  return http.obj({
     method: "GET",
     url: `/api/v1/t/${id}/calendar/`,
     shape: t.type({
@@ -374,8 +386,8 @@ export function getCalendarRecipeList({
     }),
     params: {
       v2: 1,
-      start,
-      end,
+      start: toISODateString(start),
+      end: toISODateString(end),
     },
   })
 }

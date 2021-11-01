@@ -4,13 +4,12 @@ import { Link } from "react-router-dom"
 import Footer from "@/components/Footer"
 import { TextInput } from "@/components/Forms"
 import { css, styled } from "@/theme"
-import { useDispatch, useSelector, useScheduleTeamID } from "@/hooks"
+import { useDispatch, useSelector, useScheduleTeamID, useApi } from "@/hooks"
 import { push } from "connected-react-router"
 import { fetchingRecipeListAsync } from "@/store/thunks"
 import { getTeamRecipes } from "@/store/reducers/recipes"
 import { searchRecipes } from "@/search"
 import * as api from "@/api"
-import { toISODateString } from "@/date"
 import {
   addDays,
   eachDayOfInterval,
@@ -18,15 +17,7 @@ import {
   parseISO,
   startOfToday,
 } from "date-fns"
-import { isRight } from "fp-ts/lib/Either"
-import {
-  Failure,
-  isFailure,
-  isSuccess,
-  Loading,
-  Success,
-  WebData,
-} from "@/webdata"
+import { isFailure, isSuccess, mapSuccessLike } from "@/webdata"
 
 const SearchInput = styled(TextInput)`
   font-size: 1.5rem !important;
@@ -237,37 +228,34 @@ function buildSchedule(
   )
 }
 
-function SchedulePreview() {
+function useSchedulePreview() {
   const teamID = useScheduleTeamID()
-  const [scheduledRecipes, setScheduledRecipes] = React.useState<
-    WebData<readonly RecipeSchedule[]>
-  >(undefined)
-  React.useEffect(() => {
-    const today = startOfToday()
-    const start = today
-    const end = addDays(today, 6)
+  const start = startOfToday()
+  const end = addDays(start, 6)
+  const res = useApi(
+    api.getCalendarRecipeListRequestBuilder({
+      teamID,
+      start,
+      end,
+    }),
+  )
+  return mapSuccessLike(res, x =>
+    buildSchedule(
+      x.scheduledRecipes.map(scheduledRecipe => ({
+        on: scheduledRecipe.on,
+        recipe: {
+          id: scheduledRecipe.recipe.id.toString(),
+          name: scheduledRecipe.recipe.name,
+        },
+      })),
+      start,
+      end,
+    ),
+  )
+}
 
-    setScheduledRecipes(Loading())
-    api
-      .getCalendarRecipeList({
-        teamID,
-        start: toISODateString(start),
-        end: toISODateString(end),
-      })
-      .then(res => {
-        if (isRight(res)) {
-          const formattedSchedule = res.right.scheduledRecipes.map(x => ({
-            on: x.on,
-            recipe: { id: x.recipe.id.toString(), name: x.recipe.name },
-          }))
-          setScheduledRecipes(
-            Success(buildSchedule(formattedSchedule, start, end)),
-          )
-        } else {
-          setScheduledRecipes(Failure(undefined))
-        }
-      })
-  }, [teamID])
+function SchedulePreview() {
+  const scheduledRecipes = useSchedulePreview()
 
   return (
     <ScheduleContainer>

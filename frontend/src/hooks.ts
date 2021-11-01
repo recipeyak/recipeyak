@@ -11,6 +11,9 @@ import {
   useSelector as useSelectorRedux,
 } from "react-redux"
 import debounce from "lodash/debounce"
+import { HttpRequestObjResult } from "@/http"
+import { Failure, Loading, Success, WebData } from "@/webdata"
+import { isRight } from "fp-ts/lib/Either"
 
 export function useCurrentDay() {
   const [date, setDate] = React.useState(new Date())
@@ -140,3 +143,38 @@ export function useScheduleTeamID() {
 }
 
 export const useScheduleURL = () => useSelector(scheduleURLFromTeamID)
+
+// global, module level cache.
+// tslint:disable-next-line:no-any
+const USE_STATE_CACHE: Record<string, any> = new Map()
+
+function useStateCached<T>(key: string): [T | undefined, (x: T) => void] {
+  const setState = React.useCallback(
+    (newState: T) => {
+      USE_STATE_CACHE[key] = newState
+    },
+    [key],
+  )
+
+  // tslint:disable-next-line:no-unsafe-any
+  return [USE_STATE_CACHE[key], setState]
+}
+
+export function useApi<A, O, T>(
+  request: HttpRequestObjResult<A, O, T>,
+): WebData<A> {
+  const [data, setData] = useStateCached<WebData<A>>(request.getCacheKey())
+  React.useEffect(() => {
+    if (data == null) {
+      setData(Loading())
+    }
+    request.send().then(res => {
+      if (isRight(res)) {
+        return setData(Success(res.right))
+      }
+      return setData(Failure())
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [request.getCacheKey()])
+  return data
+}
