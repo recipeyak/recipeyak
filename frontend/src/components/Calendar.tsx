@@ -362,7 +362,7 @@ function useTeamSelect(currentDateTs: number, type: "shopping" | "recipes") {
     // navTo is async so we can't count on the URL to have changed by the time we refetch the data
     dispatch(push(urlWithEnding))
     fetchCalendarAsync(dispatch)(teamID, currentDateTs)
-    fetchingRecipeListAsync(dispatch)(teamID)
+    fetchingRecipeListAsync(dispatch)()
     fetchingShoppingListAsync(dispatch)(teamID)
   }
 

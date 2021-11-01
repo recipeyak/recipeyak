@@ -189,12 +189,9 @@ function RecipesListSearch({
   )
 }
 
-function mapStateToProps(
-  state: IState,
-  ownProps: Pick<IRecipesProps, "teamID">,
-): Pick<IRecipesProps, "recipes"> {
+function mapStateToProps(state: IState): Pick<IRecipesProps, "recipes"> {
   return {
-    recipes: getTeamRecipes(state, ownProps.teamID || "personal"),
+    recipes: getTeamRecipes(state, "personal"),
   }
 }
 

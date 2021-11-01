@@ -81,11 +81,7 @@ export const fetchRecipeList = createAsyncAction(
   "FETCH_RECIPE_LIST_START",
   "FETCH_RECIPE_LIST_SUCCESS",
   "FETCH_RECIPE_LIST_FAILURE",
-)<
-  { teamID: TeamID },
-  { recipes: IRecipe[]; teamID: TeamID },
-  { teamID: TeamID }
->()
+)<void, { recipes: IRecipe[] }, void>()
 
 export interface IAddRecipeError {
   readonly errorWithName?: boolean
@@ -812,19 +808,9 @@ export const recipes = (
       }))
 
     case getType(fetchRecipeList.request): {
-      if (action.payload.teamID === "personal") {
-        return {
-          ...state,
-          personalIDs: toLoading(state.personalIDs),
-        }
-      }
-      const teamIdsState = state.teamIDs[action.payload.teamID]
       return {
         ...state,
-        teamIDs: {
-          ...state.teamIDs,
-          [action.payload.teamID]: toLoading(teamIdsState),
-        },
+        personalIDs: toLoading(state.personalIDs),
       }
     }
     case getType(fetchRecipeList.success): {
@@ -841,31 +827,12 @@ export const recipes = (
         ),
       }
 
-      if (action.payload.teamID === "personal") {
-        return { ...newState, personalIDs: Success(newIds) }
-      }
-
-      return {
-        ...newState,
-        teamIDs: {
-          ...state.teamIDs,
-          [action.payload.teamID]: Success(newIds),
-        },
-      }
+      return { ...newState, personalIDs: Success(newIds) }
     }
     case getType(fetchRecipeList.failure): {
-      if (action.payload.teamID === "personal") {
-        return {
-          ...state,
-          personalIDs: Failure(HttpErrorKind.other),
-        }
-      }
       return {
         ...state,
-        teamIDs: {
-          ...state.teamIDs,
-          [action.payload.teamID]: Failure(HttpErrorKind.other),
-        },
+        personalIDs: Failure(HttpErrorKind.other),
       }
     }
     case getType(fetchRecentRecipes.request): {

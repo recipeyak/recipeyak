@@ -377,15 +377,13 @@ export const fetchingRecentRecipesAsync = (dispatch: Dispatch) => async () => {
   }
 }
 
-export const fetchingRecipeListAsync = (dispatch: Dispatch) => async (
-  teamID: TeamID,
-) => {
-  dispatch(fetchRecipeList.request({ teamID }))
-  const res = await api.getRecipeList(teamID)
+export const fetchingRecipeListAsync = (dispatch: Dispatch) => async () => {
+  dispatch(fetchRecipeList.request())
+  const res = await api.getRecipeList()
   if (isOk(res)) {
-    dispatch(fetchRecipeList.success({ recipes: res.data, teamID }))
+    dispatch(fetchRecipeList.success({ recipes: res.data }))
   } else {
-    dispatch(fetchRecipeList.failure({ teamID }))
+    dispatch(fetchRecipeList.failure())
   }
 }
 
@@ -690,7 +688,7 @@ export const fetchingTeamRecipesAsync = (dispatch: Dispatch) => async (
   const res = await api.getTeamRecipes(id)
   if (isOk(res)) {
     // TODO(sbdchd): kind of hacky
-    dispatch(fetchRecipeList.success({ recipes: res.data, teamID: id }))
+    dispatch(fetchRecipeList.success({ recipes: res.data }))
     dispatch(fetchTeamRecipes.success({ id, recipes: res.data }))
   } else {
     dispatch(fetchTeamRecipes.failure(id))

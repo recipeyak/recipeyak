@@ -173,11 +173,8 @@ export const duplicateRecipe = (id: IRecipe["id"]) =>
 export const getRecentRecipes = () =>
   http.get<IRecipe[]>("/api/v1/recipes/?recent")
 
-export const getRecipeList = (teamID: TeamID) => {
-  if (teamID === "personal") {
-    return http.get<IRecipe[]>("/api/v1/recipes/")
-  }
-  return getTeamRecipes(teamID)
+export const getRecipeList = () => {
+  return http.get<IRecipe[]>("/api/v1/recipes/")
 }
 
 export const addIngredientToRecipe = (
