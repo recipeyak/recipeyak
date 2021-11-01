@@ -156,7 +156,7 @@ function useStateCached<T>(key: string): [T | undefined, (x: T) => void] {
     [key],
   )
 
-  // tslint:disable-next-line:no-any
+  // tslint:disable-next-line:no-unsafe-any
   return [USE_STATE_CACHE[key], setState]
 }
 
