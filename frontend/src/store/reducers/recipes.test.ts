@@ -69,10 +69,7 @@ export const baseStep: IStep = {
 function recipeStoreWith(recipe: IRecipe | IRecipe[]): IRecipesState {
   if (Array.isArray(recipe)) {
     return getModel(
-      recipes(
-        undefined,
-        fetchRecipeList.success({ recipes: recipe, teamID: "personal" }),
-      ),
+      recipes(undefined, fetchRecipeList.success({ recipes: recipe })),
     )
   }
   return getModel(recipes(undefined, fetchRecipe.success(recipe)))

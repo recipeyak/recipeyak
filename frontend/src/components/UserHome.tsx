@@ -279,7 +279,7 @@ const UserHome = () => {
   const recipes = useSelector(s => getTeamRecipes(s, "personal"))
   const dispatch = useDispatch()
   useEffect(() => {
-    fetchingRecipeListAsync(dispatch)("personal")
+    fetchingRecipeListAsync(dispatch)()
   }, [dispatch])
   const setQuery = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
