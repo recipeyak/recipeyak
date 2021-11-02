@@ -149,15 +149,17 @@ export const useScheduleURL = () => useSelector(scheduleURLFromTeamID)
 const USE_STATE_CACHE: Record<string, any> = new Map()
 
 function useStateCached<T>(key: string): [T | undefined, (x: T) => void] {
+  // tslint:disable-next-line:no-unsafe-any
+  const [localState, setLocalState] = React.useState<T>(USE_STATE_CACHE[key])
   const setState = React.useCallback(
     (newState: T) => {
+      setLocalState(newState)
       USE_STATE_CACHE[key] = newState
     },
-    [key],
+    [key, setLocalState],
   )
 
-  // tslint:disable-next-line:no-unsafe-any
-  return [USE_STATE_CACHE[key], setState]
+  return [localState, setState]
 }
 
 export function useApi<A, O, T>(
