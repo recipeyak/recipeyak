@@ -58,8 +58,3 @@
   to = "https://api.recipeyak.com/recipes/:id.ics"
   status = 200
   force = true
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
