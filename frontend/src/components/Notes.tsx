@@ -95,7 +95,7 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
 function NoteTimeStamp({ created }: { readonly created: string }) {
   const date = new Date(created)
   const dateFormat = format(date, "yyyy-M-d")
-  const prettyDate = format(date, "MMM d, yyyy")
+  const prettyDate = format(date, "MMM d, yyyy 'at' h:m aaa")
   const humanizedDate = formatDistanceToNow(date)
   return (
     <time title={prettyDate} dateTime={dateFormat}>
