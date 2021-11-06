@@ -67,6 +67,11 @@ async function fetchingRecipeAsync(
   if (isOk(res)) {
     dispatch(fetchRecipe.success(res.data))
   } else {
+    // HACK: edge case where inflight network request is cancelled as we start
+    // navigating to a new site.
+    if (res.error.message === "Network Error") {
+      return
+    }
     const error404 = !!(res.error.response && res.error.response.status === 404)
     dispatch(
       fetchRecipe.failure({
