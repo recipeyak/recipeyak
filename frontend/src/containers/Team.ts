@@ -41,9 +41,6 @@ const mapStateToProps = (state: IState, props: RouteProps) => {
   const loadingMembers = team
     ? !!team.loadingMembers && teamMembers.length === 0
     : false
-  const loadingRecipes = team
-    ? !!team.loadingRecipes && successfulRecipes.length === 0
-    : false
 
   return {
     id,
@@ -53,7 +50,6 @@ const mapStateToProps = (state: IState, props: RouteProps) => {
     loadingTeam,
     name: team ? team.name : "",
     loadingMembers,
-    loadingRecipes,
     recipes: successfulRecipes,
   }
 }

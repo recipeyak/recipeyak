@@ -196,7 +196,6 @@ interface ITeamProps {
   readonly name: string
   readonly isSettings: boolean
   readonly loadingMembers: boolean
-  readonly loadingRecipes: boolean
   readonly recipes: IRecipe[]
 }
 

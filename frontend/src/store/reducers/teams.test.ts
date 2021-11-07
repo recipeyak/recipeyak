@@ -198,7 +198,6 @@ describe("Teams", () => {
     const afterState = teamStateWith({
       id: 1,
       name: "team name",
-      loadingRecipes: true,
       members: [],
     })
 
@@ -325,7 +324,6 @@ describe("Teams", () => {
         name: "team name",
         members: [],
         recipes: [1],
-        loadingRecipes: false,
       },
       {
         id: 2,

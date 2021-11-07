@@ -19,7 +19,6 @@ describe("<Team/>", () => {
           recipes={[]}
           name="foo"
           loadingMembers={false}
-          loadingRecipes={false}
         />
       </TestProvider>,
     )

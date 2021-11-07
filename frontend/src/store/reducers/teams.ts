@@ -109,7 +109,6 @@ export interface ITeam {
   readonly id: number
   readonly name: string
   readonly updating?: boolean
-  readonly loadingRecipes?: boolean
   readonly sendingTeamInvites?: boolean
   readonly loadingTeam?: boolean
   readonly loadingMembers?: boolean
@@ -212,22 +211,6 @@ export const teams = (
       return mapById(state, action.payload, team => ({
         ...team,
         loadingMembers: false,
-      }))
-    case getType(fetchTeamRecipes.request):
-      return mapById(state, action.payload, team => ({
-        ...team,
-        loadingRecipes: true,
-      }))
-    case getType(fetchTeamRecipes.success):
-      return mapById(state, action.payload.id, team => ({
-        ...team,
-        recipes: action.payload.recipes.map(r => r.id),
-        loadingRecipes: false,
-      }))
-    case getType(fetchTeamRecipes.failure):
-      return mapById(state, action.payload, team => ({
-        ...team,
-        loadingRecipes: false,
       }))
     case getType(setUpdatingUserTeamLevel):
       return mapById(state, action.payload.id, team => ({
