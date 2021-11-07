@@ -3,7 +3,6 @@ import {
   IUser,
   ISocialConnection,
   SocialProvider,
-  IUserStats,
   ISession,
 } from "@/store/reducers/user"
 import { ITeam, IMember } from "@/store/reducers/teams"
