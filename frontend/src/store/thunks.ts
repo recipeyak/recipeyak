@@ -681,20 +681,6 @@ export const fetchingTeamMembersAsync = (dispatch: Dispatch) => async (
   }
 }
 
-export const fetchingTeamRecipesAsync = (dispatch: Dispatch) => async (
-  id: ITeam["id"],
-) => {
-  dispatch(fetchTeamRecipes.request(id))
-  const res = await api.getTeamRecipes(id)
-  if (isOk(res)) {
-    // TODO(sbdchd): kind of hacky
-    dispatch(fetchRecipeList.success({ recipes: res.data }))
-    dispatch(fetchTeamRecipes.success({ id, recipes: res.data }))
-  } else {
-    dispatch(fetchTeamRecipes.failure(id))
-  }
-}
-
 // tslint:disable:no-unsafe-any
 const attemptedDeleteLastAdmin = (res: AxiosResponse) =>
   res.status === 400 &&

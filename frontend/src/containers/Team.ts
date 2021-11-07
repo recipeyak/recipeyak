@@ -3,7 +3,6 @@ import { connect } from "react-redux"
 import {
   fetchingTeamAsync,
   fetchingTeamMembersAsync,
-  fetchingTeamRecipesAsync,
   deletingTeamAsync,
   updatingTeamAsync,
   Dispatch,
@@ -49,7 +48,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
       Promise.all([
         fetchingTeamAsync(dispatch)(id),
         fetchingTeamMembersAsync(dispatch)(id),
-        fetchingTeamRecipesAsync(dispatch)(id),
       ]),
     deleteTeam: deletingTeamAsync(dispatch),
     updatingTeam: updatingTeamAsync(dispatch),

@@ -28,19 +28,6 @@ export const fetchTeamMembers = createAsyncAction(
   ITeam["id"]
 >()
 
-export const fetchTeamRecipes = createAsyncAction(
-  "FETCH_TEAM_RECIPES_REQUEST",
-  "FETCH_TEAM_RECIPES_SUCCESS",
-  "FETCH_TEAM_RECIPES_FAILURE",
-)<
-  ITeam["id"],
-  {
-    id: ITeam["id"]
-    recipes: IRecipe[]
-  },
-  ITeam["id"]
->()
-
 export const setUpdatingUserTeamLevel = createStandardAction(
   "SET_UPDATING_USER_TEAM_LEVEL",
 )<{ id: ITeam["id"]; updating: boolean }>()
@@ -83,7 +70,6 @@ export const fetchTeams = createAsyncAction(
 export type TeamsActions =
   | ReturnType<typeof deleteTeam>
   | ActionType<typeof fetchTeamMembers>
-  | ActionType<typeof fetchTeamRecipes>
   | ReturnType<typeof setUpdatingUserTeamLevel>
   | ReturnType<typeof setDeletingMembership>
   | ReturnType<typeof setUserTeamLevel>
