@@ -5,7 +5,6 @@ import {
   ActionType,
   getType,
 } from "typesafe-actions"
-import { IRecipe } from "@/store/reducers/recipes"
 import {
   WebData,
   Success,
@@ -16,12 +15,6 @@ import {
   Loading,
 } from "@/webdata"
 import { login, AuthActions } from "@/store/reducers/auth"
-
-export const fetchUserStats = createAsyncAction(
-  "FETCH_USER_STATS_START",
-  "FETCH_USER_STATS_SUCCESS",
-  "FETCH_USER_STATS_FAILURE",
-)<void, IUserStats, void>()
 
 // TODO(chdsbd): Replace usage with fetchUser#success. Update user reducer.
 export const logOut = createAsyncAction(
@@ -83,7 +76,6 @@ export type UserActions =
   | ActionType<typeof socialConnections>
   | ActionType<typeof fetchUser>
   | ActionType<typeof updateEmail>
-  | ActionType<typeof fetchUserStats>
   | ActionType<typeof fetchSessions>
   | ActionType<typeof logoutSessionById>
   | ActionType<typeof logoutAllSessions>
@@ -116,16 +108,6 @@ export interface ISocialAccountsState {
   readonly google: number | null
 }
 
-export interface IUserStats {
-  readonly most_added_recipe: IRecipe | null
-  readonly new_recipes_last_week: number
-  readonly total_recipe_edits: number
-  readonly date_joined?: string
-  readonly total_user_recipes: number
-  readonly recipes_added_by_month: IRecipe[]
-  readonly total_recipes_added_last_month_by_all_users: number
-}
-
 export interface ISession {
   readonly id: string
   readonly device: {
@@ -152,7 +134,6 @@ export interface IUserState {
   readonly email: string
   readonly loading: boolean
   readonly error: boolean
-  readonly stats: WebData<IUserStats>
   readonly loggingOut: boolean
   readonly darkMode: boolean
   readonly hasUsablePassword: boolean
@@ -172,7 +153,6 @@ const initialState: IUserState = {
   email: "",
   loading: false,
   error: false,
-  stats: undefined,
   loggingOut: false,
   darkMode: false,
   hasUsablePassword: false,
@@ -189,16 +169,6 @@ export const user = (
   action: UserActions | AuthActions,
 ): IUserState => {
   switch (action.type) {
-    case getType(fetchUserStats.success):
-      return { ...state, stats: Success(action.payload) }
-    case getType(fetchUserStats.request): {
-      return {
-        ...state,
-        stats: toLoading(state.stats),
-      }
-    }
-    case getType(fetchUserStats.failure):
-      return { ...state, stats: Failure(HttpErrorKind.other) }
     case getType(logOut.request):
       raven.setUserContext()
       return { ...state, loggingOut: true }

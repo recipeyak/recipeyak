@@ -60,7 +60,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         We restrict access via this queryset filtering.
         """
         # get all recipes user has access to
-        recipes = user_and_team_recipes(self.request.user).prefetch_related(
+        return user_and_team_recipes(self.request.user).prefetch_related(
             "owner",
             "step_set",
             "ingredient_set",
@@ -70,12 +70,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             "note_set__last_modified_by",
             "section_set",
         )
-
-        # filtering for homepage
-        if self.request.query_params.get("recent") is not None:
-            return recipes.order_by("-modified")[:3]
-
-        return recipes
 
     def create(self, request: AuthedRequest) -> Response:  # type: ignore [override]
         serializer = self.get_serializer(data=request.data, dangerously_allow_db=True)

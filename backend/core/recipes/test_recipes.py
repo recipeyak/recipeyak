@@ -386,26 +386,6 @@ def test_deleting_ingredient_from_recipe(client, user, recipe):
     ), "ingredient was still in the recipe after being deleted"
 
 
-def test_filtering_recipes_by_recent(client, user, recipes):
-    """
-    make sure we can filter recipes by last modified and limit them by a
-    certain amount for /homepage recent recipes
-    """
-
-    client.force_authenticate(user)
-
-    res = client.get("/api/v1/recipes/?recent")
-    assert res.status_code == status.HTTP_200_OK
-
-    recipes_reversed = recipes[::-1]
-    expected_first_recipe = recipes_reversed[0].id
-    actual_first_recipe = res.json()[0].get("id")
-
-    assert (
-        expected_first_recipe == actual_first_recipe
-    ), "recipes weren't sorted by the backend"
-
-
 def test_display_all_accessable_recipes(
     client, user, recipes, team_with_recipes_no_members
 ):
