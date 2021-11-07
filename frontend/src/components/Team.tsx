@@ -12,7 +12,6 @@ import { ButtonPrimary, ButtonLink } from "@/components/Buttons"
 
 import { inviteURL, teamURL, teamSettingsURL } from "@/urls"
 import { IMember, ITeam } from "@/store/reducers/teams"
-import { IRecipe } from "@/store/reducers/recipes"
 import { Tab, Tabs } from "@/components/Tabs"
 import { TextInput } from "@/components/Forms"
 
@@ -196,7 +195,6 @@ interface ITeamProps {
   readonly name: string
   readonly isSettings: boolean
   readonly loadingMembers: boolean
-  readonly recipes: IRecipe[]
 }
 
 class Team extends React.Component<ITeamProps> {

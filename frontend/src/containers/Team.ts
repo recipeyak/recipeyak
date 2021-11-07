@@ -12,7 +12,6 @@ import Team from "@/components/Team"
 import { IState } from "@/store/store"
 import { RouteComponentProps } from "react-router"
 import { ITeam } from "@/store/reducers/teams"
-import { isSuccess } from "@/webdata"
 import { notUndefined } from "@/utils/general"
 
 type RouteProps = RouteComponentProps<{ id: string }>
@@ -25,17 +24,9 @@ const mapStateToProps = (state: IState, props: RouteProps) => {
 
   const isSettings = props.match.url.endsWith("settings")
 
-  const recipes = team == null || team.recipes == null ? [] : team.recipes
-
   const members = team == null || team.members == null ? [] : team.members
 
   const teamMembers = Object.values(members).filter(notUndefined)
-
-  // TODO(sbdchd): this should be using a getter
-  const successfulRecipes = recipes
-    .map(recipeID => state.recipes.byId[recipeID])
-    .filter(isSuccess)
-    .map(r => r.data)
 
   const loadingTeam = team ? !!team.loadingTeam && !team.name : false
   const loadingMembers = team
@@ -50,7 +41,6 @@ const mapStateToProps = (state: IState, props: RouteProps) => {
     loadingTeam,
     name: team ? team.name : "",
     loadingMembers,
-    recipes: successfulRecipes,
   }
 }
 const mapDispatchToProps = (dispatch: Dispatch) => {
