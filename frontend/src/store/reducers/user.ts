@@ -1,5 +1,3 @@
-import { setDarkModeClass } from "@/sideEffects"
-
 import raven from "raven-js"
 import {
   createAsyncAction,

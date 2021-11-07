@@ -16,7 +16,6 @@ describe("<Team/>", () => {
           updatingTeam={(_id: number) => Promise.resolve()}
           isSettings={false}
           members={[]}
-          recipes={[]}
           name="foo"
           loadingMembers={false}
         />

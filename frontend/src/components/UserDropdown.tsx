@@ -2,7 +2,6 @@ import React from "react"
 import { Link } from "react-router-dom"
 
 import { Button } from "@/components/Buttons"
-import { CheckBox } from "@/components/Forms"
 import { useSelector, useDispatch } from "@/hooks"
 import { loggingOutAsync } from "@/store/thunks"
 import {
