@@ -96,7 +96,7 @@ function NoteTimeStamp({ created }: { readonly created: string }) {
   const prettyDate = formatAbsoluteDate(date, { includeYear: true })
   const humanizedDate = formatHumanDate(date)
   return (
-    <time title={prettyDate} dateTime={date}>
+    <time title={prettyDate} dateTime={created}>
       {humanizedDate}
     </time>
   )
