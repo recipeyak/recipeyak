@@ -45,7 +45,7 @@ export const baseRecipe: IRecipe = {
     type: "user",
   },
   ingredients: [],
-  notes: [],
+  timelineItems: [],
   sections: [],
   created: "1776-1-1",
   archived_at: null,
