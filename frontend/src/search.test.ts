@@ -17,7 +17,7 @@ function createRecipe(properties?: Partial<IRecipe>): IRecipe {
     owner: { type: "user", id: 5 },
     ingredients: [],
     sections: [],
-    notes: [],
+    timelineItems: [],
     created: "",
     archived_at: null,
     ...properties,

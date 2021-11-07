@@ -2,23 +2,23 @@ import React, { useState, useEffect } from "react"
 import { Avatar } from "@/components/Avatar"
 import {
   IRecipe,
-  addNoteToRecipe,
-  toggleCreatingNewNote,
-  setDraftNote,
-  updateNote,
-  toggleEditingNoteById,
-  deleteNote,
   INote,
+  RecipeTimelineItem,
+  patchRecipe,
 } from "@/store/reducers/recipes"
 import { ButtonPrimary, ButtonSecondary } from "@/components/Buttons"
 import { classNames } from "@/classnames"
-import { useDispatch, useSelector } from "@/hooks"
-import { isSuccessLike } from "@/webdata"
+
 import orderBy from "lodash/orderBy"
 import Textarea from "react-textarea-autosize"
 import { Markdown } from "@/components/Markdown"
 import { useLocation } from "react-router-dom"
 import { formatAbsoluteDate, formatHumanDate } from "@/date"
+import { styled } from "@/theme"
+import * as api from "@/api"
+
+import { isOk } from "@/result"
+import { useDispatch } from "@/hooks"
 
 interface IUseNoteEditHandlers {
   readonly note: INote
@@ -30,33 +30,57 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
   useEffect(() => {
     setNewText(note.text)
   }, [note])
-  const isEditing = useSelector(s => {
-    const noteData = s.recipes.notesById[note.id]
-    if (!noteData) {
-      return false
-    }
-    return Boolean(noteData.openForEditing)
-  })
-  const isUpdating = useSelector(s => {
-    const noteData = s.recipes.notesById[note.id]
-    if (!noteData) {
-      return false
-    }
-    return Boolean(noteData.saving)
-  })
+  const [isEditing, setIsEditing] = React.useState(false)
+  const [isUpdating, setIsUpdating] = React.useState(false)
 
   const onSave = () => {
-    dispatch(updateNote.request({ recipeId, noteId: note.id, text: draftText }))
+    setIsUpdating(true)
+    api.updateNote({ noteId: note.id, note: draftText }).then(res => {
+      if (isOk(res)) {
+        dispatch(
+          patchRecipe({
+            recipeId,
+            updateFn: recipe => {
+              return {
+                ...recipe,
+                timelineItems: [
+                  ...recipe.timelineItems.filter(x => x.id !== note.id),
+                  res.data,
+                ],
+              }
+            },
+          }),
+        )
+        setIsEditing(false)
+      }
+      setIsUpdating(false)
+    })
   }
   const setEditing = (value: boolean) => {
-    dispatch(toggleEditingNoteById({ noteId: note.id, value }))
+    setIsEditing(value)
   }
   const onCancel = () => {
     setEditing(false)
   }
   const onDelete = () => {
     if (confirm("Are you sure you want to delete this note?")) {
-      dispatch(deleteNote.request({ noteId: note.id, recipeId }))
+      api.deleteNote({ noteId: note.id }).then(res => {
+        if (isOk(res)) {
+          dispatch(
+            patchRecipe({
+              recipeId,
+              updateFn: recipe => {
+                return {
+                  ...recipe,
+                  timelineItems: recipe.timelineItems.filter(
+                    x => x.id !== note.id,
+                  ),
+                }
+              },
+            }),
+          )
+        }
+      })
     }
   }
   const onEditorKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -91,14 +115,18 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
   }
 }
 
+const SmallTime = styled.time`
+  font-size: 0.85rem;
+`
+
 function NoteTimeStamp({ created }: { readonly created: string }) {
   const date = new Date(created)
   const prettyDate = formatAbsoluteDate(date, { includeYear: true })
   const humanizedDate = formatHumanDate(date)
   return (
-    <time title={prettyDate} dateTime={created}>
+    <SmallTime title={prettyDate} dateTime={created} className="text-muted">
       {humanizedDate}
-    </time>
+    </SmallTime>
   )
 }
 
@@ -107,7 +135,7 @@ interface INoteProps {
   readonly recipeId: IRecipe["id"]
   readonly className?: string
 }
-export function Note({ recipeId, note, className }: INoteProps) {
+export function Note({ note, recipeId, className }: INoteProps) {
   const {
     draftText,
     isEditing,
@@ -144,7 +172,7 @@ export function Note({ recipeId, note, className }: INoteProps) {
       <Avatar avatarURL={note.created_by.avatar_url} className="mr-2" />
       <div className="w-100">
         <p>
-          {note.created_by.email} |{" "}
+          <b>{note.created_by.email}</b>{" "}
           <a href={`#${noteId}`}>
             <NoteTimeStamp created={note.created} />
           </a>
@@ -193,43 +221,82 @@ export function Note({ recipeId, note, className }: INoteProps) {
   )
 }
 
+function TimelineEvent({ event }: { readonly event: RecipeTimelineItem }) {
+  return (
+    <div className={classNames("d-flex align-items-center mb-4 py-4")}>
+      <Avatar avatarURL={event.created_by.avatar_url} className="mr-2" />
+      <div className="d-flex flex-column">
+        <div>
+          <b>{event.created_by.email}</b>{" "}
+          <span>{event.action} this recipe </span>
+        </div>
+        <NoteTimeStamp created={event.created} />
+      </div>
+    </div>
+  )
+}
+
+export const blurNoteTextArea = () => {
+  const el = document.getElementById("new_note_textarea")
+  if (el) {
+    el.blur()
+  }
+}
+
 interface IUseNoteCreatorHandlers {
   readonly recipeId: IRecipe["id"]
 }
 function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
   const dispatch = useDispatch()
-  const recipe = useSelector(state => {
-    const maybeRecipe = state.recipes.byId[recipeId]
-    if (!isSuccessLike(maybeRecipe)) {
-      return null
-    }
-    return maybeRecipe.data
-  })
+  const [draftText, setDraftText] = React.useState("")
+  const [isEditing, setIsEditing] = React.useState(false)
+  const [isLoading, setIsLoading] = React.useState(false)
+
+  const cancelEditingNote = () => {
+    setIsEditing(false)
+    setDraftText("")
+    blurNoteTextArea()
+  }
 
   const onCreate = () => {
-    dispatch(addNoteToRecipe.request({ id: recipeId }))
+    setIsLoading(true)
+    api.addNoteToRecipe({ recipeId, note: draftText }).then(res => {
+      if (isOk(res)) {
+        dispatch(
+          patchRecipe({
+            recipeId,
+            updateFn: recipe => {
+              return {
+                ...recipe,
+                timelineItems: [...recipe.timelineItems, res.data],
+              }
+            },
+          }),
+        )
+        cancelEditingNote()
+      }
+      setIsLoading(false)
+    })
   }
   const onCancel = () => {
-    dispatch(toggleCreatingNewNote({ recipeId, value: false }))
+    cancelEditingNote()
   }
   const onEditorKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Escape") {
-      dispatch(toggleCreatingNewNote({ recipeId, value: false }))
+      cancelEditingNote()
     }
     if (e.key === "Enter" && e.metaKey) {
       onCreate()
     }
   }
   const onEditorFocus = () => {
-    dispatch(toggleCreatingNewNote({ recipeId, value: true }))
+    setIsEditing(true)
   }
   const onEditorChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    dispatch(setDraftNote({ recipeId, text: e.target.value }))
+    setDraftText(e.target.value)
   }
 
-  const isEditing = recipe?.creatingNewNote ?? false
-  const isLoading = recipe?.addingNoteToRecipe ?? false
-  const editorText = (isEditing && recipe?.draftNote) || ""
+  const editorText = isEditing ? draftText : ""
   const editorRowCount = !isEditing ? 1 : undefined
   const editorMinRowCount = isEditing ? 5 : 0
   const editorClassNames = classNames({
@@ -254,8 +321,9 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
 
 interface INoteCreatorProps {
   readonly recipeId: IRecipe["id"]
+  readonly className?: string
 }
-function NoteCreator({ recipeId }: INoteCreatorProps) {
+function NoteCreator({ recipeId, className }: INoteCreatorProps) {
   const {
     isEditing,
     onEditorKeyDown,
@@ -272,7 +340,7 @@ function NoteCreator({ recipeId }: INoteCreatorProps) {
     recipeId,
   })
   return (
-    <div>
+    <div className={className}>
       <Textarea
         id="new_note_textarea"
         className={editorClassNames}
@@ -300,21 +368,34 @@ function NoteCreator({ recipeId }: INoteCreatorProps) {
 
 interface INoteContainerProps {
   readonly recipeId: IRecipe["id"]
-  readonly notes: IRecipe["notes"]
+  readonly timelineItems: IRecipe["timelineItems"]
 }
 export function NoteContainer(props: INoteContainerProps) {
   return (
     <>
-      <NoteCreator recipeId={props.recipeId} />
       <hr />
-      {orderBy(props.notes, "created", "desc").map(note => (
-        <Note
-          key={note.id}
-          recipeId={props.recipeId}
-          note={note}
-          className="pb-4"
-        />
-      ))}
+      <NoteCreator recipeId={props.recipeId} className="pb-4" />
+      {orderBy(props.timelineItems, "created", "desc").map(timelineItem => {
+        switch (timelineItem.type) {
+          case "note": {
+            return (
+              <Note
+                key={"recipe" + timelineItem.id}
+                note={timelineItem}
+                recipeId={props.recipeId}
+                className="pb-2"
+              />
+            )
+          }
+          case "recipe":
+            return (
+              <TimelineEvent
+                key={"recipe" + timelineItem.id}
+                event={timelineItem}
+              />
+            )
+        }
+      })}
     </>
   )
 }

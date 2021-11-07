@@ -303,7 +303,7 @@ exports[`<Nav/> render when logged in 1`] = `
       className="c2"
     >
       <img
-        alt=""
+        alt="avatar"
         className="user-profile-image better-nav-item p-0"
         onClick={[Function]}
         src=""

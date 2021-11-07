@@ -85,6 +85,10 @@ class StepSerializer(BaseModelSerializer):
 class NoteSerializer(BaseModelSerializer):
     created_by = PublicUserSerializer(read_only=True)
     last_modified_by = PublicUserSerializer(read_only=True)
+    type = serializers.SerializerMethodField()
+
+    def get_type(self, obj: object) -> str:
+        return "note"
 
     class Meta:
         model = Note
@@ -94,6 +98,7 @@ class NoteSerializer(BaseModelSerializer):
             "last_modified_by",
             "created",
             "modified",
+            "type",
         )
         fields = (*read_only_fields, "text")
 
@@ -124,7 +129,7 @@ class RecipeSerializer(BaseModelSerializer):
     steps = StepSerializer(many=True, source="step_set")
     last_scheduled = serializers.DateField(source="get_last_scheduled", read_only=True)
     ingredients = IngredientSerializer(many=True, source="ingredient_set")
-    notes = NoteSerializer(many=True, source="note_set", read_only=True)
+    timelineItems = NoteSerializer(many=True, source="note_set", read_only=True)
     sections = SectionSerializer(many=True, source="section_set", read_only=True)
     owner = OwnerRelatedField(read_only=True)
     # specify default None so we can use this as an optional field
@@ -140,7 +145,7 @@ class RecipeSerializer(BaseModelSerializer):
             "time",
             "ingredients",
             "steps",
-            "notes",
+            "timelineItems",
             "sections",
             "servings",
             "edits",
