@@ -270,9 +270,6 @@ export const getTeam = (id: ITeam["id"]) => http.get<ITeam>(`/api/v1/t/${id}/`)
 export const getTeamMembers = (id: ITeam["id"]) =>
   http.get<IMember[]>(`/api/v1/t/${id}/members/`)
 
-export const getTeamRecipes = (id: ITeam["id"]) =>
-  http.get<IRecipe[]>(`/api/v1/t/${id}/recipes/`)
-
 export const updateTeamMemberLevel = (
   teamID: ITeam["id"],
   membershipID: IMember["id"],

@@ -15,10 +15,8 @@ import {
   setDeletingMembership,
   setUserTeamLevel,
   setUpdatingUserTeamLevel,
-  fetchTeamRecipes,
   fetchTeamMembers,
 } from "@/store/reducers/teams"
-import { baseRecipe } from "@/store/reducers/recipes.test"
 
 function teamStateWith(team: ITeam | ITeam[]): ITeamsState {
   if (Array.isArray(team)) {
@@ -188,23 +186,6 @@ describe("Teams", () => {
     expect(teams(beforeState, fetchTeamMembers.request(1))).toEqual(afterState)
   })
 
-  it("Sets loading team recipes", () => {
-    const beforeState = teamStateWith({
-      id: 1,
-      name: "team name",
-      members: [],
-    })
-
-    const afterState = teamStateWith({
-      id: 1,
-      name: "team name",
-      loadingRecipes: true,
-      members: [],
-    })
-
-    expect(teams(beforeState, fetchTeamRecipes.request(1))).toEqual(afterState)
-  })
-
   it("Sets team to 404", () => {
     const beforeState = teamStateWith([
       {
@@ -287,55 +268,6 @@ describe("Teams", () => {
 
     expect(
       teams(beforeState, fetchTeamMembers.success({ id: 1, members })),
-    ).toEqual(afterState)
-  })
-
-  it("Sets team recipes", () => {
-    const beforeState = teamStateWith([
-      {
-        id: 1,
-        name: "team name",
-        members: [],
-      },
-      {
-        id: 2,
-        name: "another team name",
-        members: [],
-      },
-    ])
-
-    const recipes = [
-      {
-        ...baseRecipe,
-        id: 1,
-        user: {
-          id: 2,
-          email: "blah@blah.com",
-          avatar_url: "http://lksjdflsjdf",
-          dark_mode_enabled: false,
-          schedule_team: null,
-          selected_team: null,
-        },
-      },
-    ]
-
-    const afterState = teamStateWith([
-      {
-        id: 1,
-        name: "team name",
-        members: [],
-        recipes: [1],
-        loadingRecipes: false,
-      },
-      {
-        id: 2,
-        name: "another team name",
-        members: [],
-      },
-    ])
-
-    expect(
-      teams(beforeState, fetchTeamRecipes.success({ id: 1, recipes })),
     ).toEqual(afterState)
   })
 

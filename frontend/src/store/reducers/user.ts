@@ -1,5 +1,3 @@
-import { setDarkModeClass } from "@/sideEffects"
-
 import raven from "raven-js"
 import {
   createAsyncAction,
@@ -46,7 +44,6 @@ export const fetchUser = createAsyncAction(
   "FETCH_USER_SUCCESS",
   "FETCH_USER_FAILURE",
 )<void, IUser, void>()
-export const toggleDarkMode = createStandardAction("TOGGLE_DARK_MODE")()
 export const updateEmail = createAsyncAction(
   "UPDATE_EMAIL_START",
   "UPDATE_EMAIL_SUCCESS",
@@ -78,7 +75,6 @@ export type UserActions =
   | ReturnType<typeof updateScheduleTeamID>
   | ActionType<typeof socialConnections>
   | ActionType<typeof fetchUser>
-  | ReturnType<typeof toggleDarkMode>
   | ActionType<typeof updateEmail>
   | ActionType<typeof fetchSessions>
   | ActionType<typeof logoutSessionById>
@@ -277,10 +273,6 @@ export const user = (
       return { ...state, scheduleTeamID: action.payload }
     case getType(setUserLoggedIn):
       return { ...state, loggedIn: action.payload }
-    case getType(toggleDarkMode):
-      const newDarkMode = !state.darkMode
-      setDarkModeClass(newDarkMode)
-      return { ...state, darkMode: newDarkMode }
     case getType(updateEmail.request):
       return { ...state, updatingEmail: true }
     case getType(updateEmail.failure):

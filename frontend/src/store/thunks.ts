@@ -59,7 +59,6 @@ import {
   fetchTeam,
   setTeam,
   fetchTeamMembers,
-  fetchTeamRecipes,
 } from "@/store/reducers/teams"
 import {
   IRecipe,
@@ -655,20 +654,6 @@ export const fetchingTeamMembersAsync = (dispatch: Dispatch) => async (
     dispatch(fetchTeamMembers.success({ id, members: res.data }))
   } else {
     dispatch(fetchTeamMembers.failure(id))
-  }
-}
-
-export const fetchingTeamRecipesAsync = (dispatch: Dispatch) => async (
-  id: ITeam["id"],
-) => {
-  dispatch(fetchTeamRecipes.request(id))
-  const res = await api.getTeamRecipes(id)
-  if (isOk(res)) {
-    // TODO(sbdchd): kind of hacky
-    dispatch(fetchRecipeList.success({ recipes: res.data }))
-    dispatch(fetchTeamRecipes.success({ id, recipes: res.data }))
-  } else {
-    dispatch(fetchTeamRecipes.failure(id))
   }
 }
 

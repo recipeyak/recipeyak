@@ -6,7 +6,6 @@ import {
   ActionType,
   createStandardAction,
 } from "typesafe-actions"
-import { IRecipe } from "@/store/reducers/recipes"
 
 export const deleteTeam = createStandardAction("DELETE_TEAM")<ITeam["id"]>()
 
@@ -24,19 +23,6 @@ export const fetchTeamMembers = createAsyncAction(
   {
     id: ITeam["id"]
     members: IMember[]
-  },
-  ITeam["id"]
->()
-
-export const fetchTeamRecipes = createAsyncAction(
-  "FETCH_TEAM_RECIPES_REQUEST",
-  "FETCH_TEAM_RECIPES_SUCCESS",
-  "FETCH_TEAM_RECIPES_FAILURE",
-)<
-  ITeam["id"],
-  {
-    id: ITeam["id"]
-    recipes: IRecipe[]
   },
   ITeam["id"]
 >()
@@ -83,7 +69,6 @@ export const fetchTeams = createAsyncAction(
 export type TeamsActions =
   | ReturnType<typeof deleteTeam>
   | ActionType<typeof fetchTeamMembers>
-  | ActionType<typeof fetchTeamRecipes>
   | ReturnType<typeof setUpdatingUserTeamLevel>
   | ReturnType<typeof setDeletingMembership>
   | ReturnType<typeof setUserTeamLevel>
@@ -109,7 +94,6 @@ export interface ITeam {
   readonly id: number
   readonly name: string
   readonly updating?: boolean
-  readonly loadingRecipes?: boolean
   readonly sendingTeamInvites?: boolean
   readonly loadingTeam?: boolean
   readonly loadingMembers?: boolean
@@ -212,22 +196,6 @@ export const teams = (
       return mapById(state, action.payload, team => ({
         ...team,
         loadingMembers: false,
-      }))
-    case getType(fetchTeamRecipes.request):
-      return mapById(state, action.payload, team => ({
-        ...team,
-        loadingRecipes: true,
-      }))
-    case getType(fetchTeamRecipes.success):
-      return mapById(state, action.payload.id, team => ({
-        ...team,
-        recipes: action.payload.recipes.map(r => r.id),
-        loadingRecipes: false,
-      }))
-    case getType(fetchTeamRecipes.failure):
-      return mapById(state, action.payload, team => ({
-        ...team,
-        loadingRecipes: false,
       }))
     case getType(setUpdatingUserTeamLevel):
       return mapById(state, action.payload.id, team => ({
