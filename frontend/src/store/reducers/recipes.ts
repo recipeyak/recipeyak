@@ -57,16 +57,24 @@ export const fetchRecipe = createAsyncAction(
   "FETCH_RECIPE_START",
   "FETCH_RECIPE_SUCCESS",
   "FETCH_RECIPE_FAILURE",
-)<IRecipe["id"], IRecipe, { id: IRecipe["id"]; error404: boolean }>()
+)<
+  { recipeId: IRecipe["id"]; refresh?: boolean },
+  IRecipe,
+  { id: IRecipe["id"]; error404: boolean }
+>()
 
 async function fetchingRecipeAsync(
-  recipeID: IRecipe["id"],
+  args: { recipeId: IRecipe["id"]; refresh?: boolean },
   dispatch: Dispatch,
 ) {
-  const res = await api.getRecipe(recipeID)
+  const res = await api.getRecipe(args.recipeId)
   if (isOk(res)) {
     dispatch(fetchRecipe.success(res.data))
   } else {
+    // If we have an error when refreshing, we shouldn't raise an error.
+    if (args.refresh) {
+      return
+    }
     // HACK: edge case where inflight network request is cancelled as we start
     // navigating to a new site.
     if (res.error.message === "Network Error") {
@@ -75,7 +83,7 @@ async function fetchingRecipeAsync(
     const error404 = !!(res.error.response && res.error.response.status === 404)
     dispatch(
       fetchRecipe.failure({
-        id: recipeID,
+        id: args.recipeId,
         error404,
       }),
     )
@@ -594,13 +602,15 @@ export const recipes = (
 ): IRecipesState | Loop<IRecipesState, RecipeActions> => {
   switch (action.type) {
     case getType(fetchRecipe.request): {
-      const r = state.byId[action.payload]
+      const r = state.byId[action.payload.recipeId]
       return loop(
         {
           ...state,
           byId: {
             ...state.byId,
-            [action.payload]: toLoading(r),
+            [action.payload.recipeId]: !action.payload.refresh
+              ? toLoading(r)
+              : r,
           },
         },
         Cmd.run(fetchingRecipeAsync, {

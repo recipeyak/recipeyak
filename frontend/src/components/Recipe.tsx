@@ -299,9 +299,12 @@ const NavItem = styled(Link)<INavItemProps>`
 
 export function useRecipe(recipeId: number) {
   const dispatch = useDispatch()
-  const fetch = React.useCallback(() => {
-    dispatch(fetchRecipe.request(recipeId))
-  }, [dispatch, recipeId])
+  const fetch = React.useCallback(
+    (refresh?: boolean) => {
+      dispatch(fetchRecipe.request({ recipeId, refresh }))
+    },
+    [dispatch, recipeId],
+  )
   React.useEffect(() => {
     fetch()
   }, [fetch])
