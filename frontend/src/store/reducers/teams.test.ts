@@ -323,7 +323,6 @@ describe("Teams", () => {
         id: 1,
         name: "team name",
         members: [],
-        recipes: [1],
       },
       {
         id: 2,

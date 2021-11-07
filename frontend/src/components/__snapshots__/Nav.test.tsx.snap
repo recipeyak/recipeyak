@@ -317,21 +317,6 @@ exports[`<Nav/> render when logged in 1`] = `
         >
           
         </p>
-        <div
-          className="d-flex align-center p-1-0"
-        >
-          <label
-            className="d-flex align-items-center cursor-pointer"
-          >
-            <input
-              checked={false}
-              className="mr-2"
-              onChange={[Function]}
-              type="checkbox"
-            />
-            Dark Mode
-          </label>
-        </div>
         <p>
           <a
             className="p-1-0"
