@@ -334,11 +334,6 @@ export const setSchedulingRecipe = createStandardAction(
   recipeID: IRecipe["id"]
   scheduling: boolean
 }>()
-export const fetchRecentRecipes = createAsyncAction(
-  "FETCH_RECENT_RECIPES_START",
-  "FETCH_RECENT_RECIPES_SUCCESS",
-  "FETCH_RECENT_RECIPES_FAILURE",
-)<void, IRecipe[], void>()
 
 export const toggleEditingRecipe = createStandardAction(
   "TOGGLE_RECIPE_EDITING",
@@ -421,7 +416,6 @@ export type RecipeActions =
   | ActionType<typeof fetchRecipe>
   | ActionType<typeof fetchRecipeList>
   | ActionType<typeof createRecipe>
-  | ActionType<typeof fetchRecentRecipes>
   | ActionType<typeof resetAddRecipeErrors>
   | ActionType<typeof toggleEditingRecipe>
   | ActionType<typeof setRecipeStepDraft>
@@ -457,9 +451,6 @@ export const getRecipeById = (
   state: Pick<IState, "recipes">,
   id: IRecipe["id"],
 ): WebData<IRecipe> => state.recipes.byId[id]
-
-export const getRecentRecipes = (state: IState): WebData<IRecipe[]> =>
-  mapSuccessLikeById(state.recipes.recentIds, state)
 
 export interface IIngredient {
   readonly id: number
@@ -586,7 +577,6 @@ export interface IRecipesState {
   readonly duplicatingById: {
     readonly [key: number]: boolean | undefined
   }
-  readonly recentIds: WebData<IRecipe["id"][]>
 }
 
 export const initialState: IRecipesState = {
@@ -596,7 +586,6 @@ export const initialState: IRecipesState = {
   duplicatingById: {},
   personalIDs: undefined,
   teamIDs: {},
-  recentIds: undefined,
 }
 
 export const recipes = (
@@ -691,29 +680,6 @@ export const recipes = (
         personalIDs: Failure(HttpErrorKind.other),
       }
     }
-    case getType(fetchRecentRecipes.request): {
-      return {
-        ...state,
-        recentIds: toLoading(state.recentIds),
-      }
-    }
-    case getType(fetchRecentRecipes.success):
-      return {
-        ...state,
-        byId: action.payload.reduce(
-          (a, b) => ({
-            ...a,
-            [b.id]: Success(b),
-          }),
-          state.byId,
-        ),
-        recentIds: Success(action.payload.map(r => r.id)),
-      }
-    case getType(fetchRecentRecipes.failure):
-      return {
-        ...state,
-        recentIds: Failure(HttpErrorKind.other),
-      }
     case getType(createRecipe.request):
       return {
         ...state,

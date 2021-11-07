@@ -14,7 +14,6 @@ import {
   fetchUser,
   setUserLoggedIn,
   IUser,
-  fetchUserStats,
   IUserState,
   logOut,
   fetchSessions,
@@ -74,7 +73,6 @@ import {
   fetchRecipeList,
   createRecipe,
   IStep,
-  fetchRecentRecipes,
 } from "@/store/reducers/recipes"
 import * as api from "@/api"
 import { clearAddRecipeForm } from "@/store/reducers/addrecipe"
@@ -274,16 +272,6 @@ export const disconnectSocialAccountAsync = (dispatch: Dispatch) => async (
   return res
 }
 
-export const fetchingUserStatsAsync = (dispatch: Dispatch) => async () => {
-  dispatch(fetchUserStats.request())
-  const res = await api.getUserStats()
-  if (isOk(res)) {
-    dispatch(fetchUserStats.success(res.data))
-  } else {
-    dispatch(fetchUserStats.failure())
-  }
-}
-
 interface IUpdatePassword {
   password1: string
   password2: string
@@ -363,17 +351,6 @@ export const postNewRecipeAsync = (dispatch: Dispatch) => async (
       level: "danger",
       delay: 5 * second,
     })
-  }
-}
-
-export const fetchingRecentRecipesAsync = (dispatch: Dispatch) => async () => {
-  // TODO(sbdchd): these should have their own id array in the reduce and their own actions
-  dispatch(fetchRecentRecipes.request())
-  const res = await api.getRecentRecipes()
-  if (isOk(res)) {
-    dispatch(fetchRecentRecipes.success(res.data))
-  } else {
-    dispatch(fetchRecentRecipes.failure())
   }
 }
 
