@@ -34,19 +34,6 @@ body {
   flex-direction: column;
 }
 
-.dark-mode {
-  background-color: rgb(25, 25, 25);
-
-  body {
-    filter: invert(90%);
-  }
-
-  // inverted images look weird
-  img {
-    filter: invert(90%);
-  }
-}
-
 kbd {
   padding: 0.1rem 0.2rem;
   background-color: whitesmoke;

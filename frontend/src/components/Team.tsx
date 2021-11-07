@@ -7,7 +7,6 @@ import MemberRow from "@/components/MemberRow"
 import NoMatch from "@/components/NoMatch"
 
 import Loader from "@/components/Loader"
-import TeamRecipes from "@/components/TeamRecipes"
 
 import { ButtonPrimary, ButtonLink } from "@/components/Buttons"
 
@@ -241,19 +240,12 @@ class Team extends React.Component<ITeamProps> {
             loading={this.props.loadingTeam}
           />
         ) : (
-          <>
-            <TeamMembers
-              id={this.props.id}
-              name={this.props.name}
-              loading={this.props.loadingMembers}
-              members={this.props.members}
-            />
-
-            <TeamRecipes
-              loading={this.props.loadingRecipes}
-              recipes={this.props.recipes}
-            />
-          </>
+          <TeamMembers
+            id={this.props.id}
+            name={this.props.name}
+            loading={this.props.loadingMembers}
+            members={this.props.members}
+          />
         )}
       </div>
     )
