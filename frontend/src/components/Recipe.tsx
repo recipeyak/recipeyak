@@ -269,10 +269,8 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
           </a>
         )}
       </div>
-      {/* extra div to push notes to the right side of the grid */}
-      <div />
+      <div/>
       <div>
-        <SectionTitle>Notes</SectionTitle>
         <NoteContainer notes={recipe.notes} recipeId={recipe.id} />
       </div>
     </section>

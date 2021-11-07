@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react"
-import { format } from "date-fns"
 import { Avatar } from "@/components/Avatar"
 import {
   IRecipe,
@@ -11,6 +10,8 @@ import {
   deleteNote,
   INote,
 } from "@/store/reducers/recipes"
+import { styled } from "@/theme"
+
 import { ButtonPrimary, ButtonSecondary } from "@/components/Buttons"
 import { classNames } from "@/classnames"
 import { useDispatch, useSelector } from "@/hooks"
@@ -19,7 +20,7 @@ import orderBy from "lodash/orderBy"
 import Textarea from "react-textarea-autosize"
 import { Markdown } from "@/components/Markdown"
 import { useLocation } from "react-router-dom"
-import { formatDistanceToNow } from "@/date"
+import { formatAbsoluteDate, formatHumanDate } from "@/date"
 
 interface IUseNoteEditHandlers {
   readonly note: INote
@@ -94,9 +95,8 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
 
 function NoteTimeStamp({ created }: { readonly created: string }) {
   const date = new Date(created)
-  const dateFormat = format(date, "yyyy-M-d")
-  const prettyDate = format(date, "MMM d, yyyy")
-  const humanizedDate = formatDistanceToNow(date)
+  const prettyDate = formatAbsoluteDate(date, { includeYear: true })
+  const humanizedDate = formatHumanDate(date)
   return (
     <time title={prettyDate} dateTime={dateFormat}>
       {humanizedDate}
@@ -146,7 +146,7 @@ export function Note({ recipeId, note, className }: INoteProps) {
       <Avatar avatarURL={note.created_by.avatar_url} className="mr-2" />
       <div className="w-100">
         <p>
-          {note.created_by.email} |{" "}
+          {note.created_by.email} commented {" "}
           <a href={`#${noteId}`}>
             <NoteTimeStamp created={note.created} />
           </a>
@@ -193,6 +193,30 @@ export function Note({ recipeId, note, className }: INoteProps) {
       </div>
     </div>
   )
+}
+
+const TimelineEventContainer = styled.div`
+
+`
+
+const DESCRIPTION_MAP: Record<ITimelineEvent['type'], string> = {
+recipe_archived: 'archived',
+recipe_created: 'created',
+}
+
+function TimelineEvent({event}: {readonly event: {
+  actor: Actor, created: string, type: ITimelineEvent['type']}}) {
+  const description = DESCRIPTION_MAP[event.type]
+  return <TimelineEventContainer
+
+      className={classNames(
+        "d-flex align-items-center mb-4 py-4",
+
+      )}
+>
+      <Avatar avatarURL={event.actor.avatar_url} className="mr-2" />
+      <div>{event.actor.email} {description} this <NoteTimeStamp created={event.created} /></div>
+    </TimelineEventContainer>
 }
 
 interface IUseNoteCreatorHandlers {
@@ -274,7 +298,7 @@ function NoteCreator({ recipeId }: INoteCreatorProps) {
     recipeId,
   })
   return (
-    <div>
+    <div className="mb-4">
       <Textarea
         id="new_note_textarea"
         className={editorClassNames}
@@ -300,23 +324,93 @@ function NoteCreator({ recipeId }: INoteCreatorProps) {
   )
 }
 
+type Actor = {
+  id: string
+    email: string
+    avatar_url: string}
+
+type ITimelineEvent = {
+  type: 'note_created'
+  id: string
+  text: string
+  modified: string
+  created: string
+  last_modified_by: Actor
+  created_by: Actor
+} | {
+  type: 'recipe_created'
+  actor: Actor
+  created: string
+}| {
+  type: 'recipe_archived'
+  actor: Actor
+  created: string
+}| {
+  type: 'recipe_deleted'
+  actor: Actor
+  created: string
+}| {
+  type: 'recipe_scheduled'
+  actor: Actor
+  created: string
+}
+
 interface INoteContainerProps {
   readonly recipeId: IRecipe["id"]
   readonly notes: IRecipe["notes"]
 }
 export function NoteContainer(props: INoteContainerProps) {
+  const notes: ITimelineEvent[] = [{
+    type: 'note_created',
+  id: '123123',
+  text: ` With origins in Japan's yukone (or yudane), tangzhong is a yeast bread technique popularized across Asia by Taiwanese cookbook author Yvonne Chen. Tangzhong involves cooking some of a bread recipe’s flour in liquid prior to adding it to the remaining dough ingredients. Bringing the temperature of the flour and liquid to 65°C (149°F) pre-gelatinizes the flour’s starches, which makes them more able to retain liquid — thus enhancing the resulting bread's softness and shelf life.`,
+  modified: "2020",
+  created: "2020",
+  last_modified_by: {
+    id: '12939012390',
+    email: 'chris@dignam.xyz',
+    avatar_url: 'http://localhost:3000/avatar/e086c1676bf9905147bb4908f6600f4a?d=identicon&r=g'
+  },
+  created_by: {
+    id: '12939012390',
+    email: 'chris@dignam.xyz',
+    avatar_url: 'http://localhost:3000/avatar/e086c1676bf9905147bb4908f6600f4a?d=identicon&r=g'
+  },
+  }, {
+    type: 'recipe_archived',
+    actor: {id: '12391239012903', email: "chris@dignam.xyz",     avatar_url: 'http://localhost:3000/avatar/e086c1676bf9905147bb4908f6600f4a?d=identicon&r=g'},
+    created: "2021"
+  },
+  {
+    type: 'recipe_created',
+    actor: {id: '12391239012903', email: "chris@dignam.xyz",     avatar_url: 'http://localhost:3000/avatar/e086c1676bf9905147bb4908f6600f4a?d=identicon&r=g'},
+    created: "2019"
+  }]
   return (
     <>
-      <NoteCreator recipeId={props.recipeId} />
       <hr />
-      {orderBy(props.notes, "created", "desc").map(note => (
-        <Note
+      <NoteCreator recipeId={props.recipeId} />
+      {orderBy(notes, "created", "desc").map(note =>
+  {
+
+switch (note.type) {
+  case 'note_created': {
+    return <Note
           key={note.id}
           recipeId={props.recipeId}
           note={note}
           className="pb-4"
         />
-      ))}
+  }
+  case 'recipe_archived':
+  case 'recipe_created': {
+    return <TimelineEvent event={note}/>
+  }
+}
+
+
+
+      })}
     </>
   )
 }
