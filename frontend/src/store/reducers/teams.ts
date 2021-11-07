@@ -6,7 +6,6 @@ import {
   ActionType,
   createStandardAction,
 } from "typesafe-actions"
-import { IRecipe } from "@/store/reducers/recipes"
 
 export const deleteTeam = createStandardAction("DELETE_TEAM")<ITeam["id"]>()
 
