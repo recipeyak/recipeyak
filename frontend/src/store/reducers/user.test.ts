@@ -3,7 +3,6 @@ import user, {
   IUser,
   fetchUser,
   logOut,
-  toggleDarkMode,
   setUserLoggedIn,
 } from "@/store/reducers/user"
 import { login } from "@/store/reducers/auth"
@@ -77,20 +76,6 @@ describe("User", () => {
     }
 
     expect(user(beforeState as IUserState, logOut.request())).toEqual(
-      afterState,
-    )
-  })
-
-  it("toggles darkmode", () => {
-    const beforeState = {
-      darkMode: false,
-    }
-
-    const afterState = {
-      darkMode: true,
-    }
-
-    expect(user(beforeState as IUserState, toggleDarkMode())).toEqual(
       afterState,
     )
   })
