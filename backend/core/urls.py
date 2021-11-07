@@ -16,7 +16,6 @@ from core.recipes.views import (
     get_recipe_timeline,
 )
 from core.schedule.views import CalendarViewSet, ReportBadMerge, get_shopping_list_view
-from core.stats.views import UserStats
 from core.teams.views import (
     MembershipViewSet,
     TeamInviteViewSet,
