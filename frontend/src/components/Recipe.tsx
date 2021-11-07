@@ -308,7 +308,10 @@ export function useRecipe(recipeId: number) {
   React.useEffect(() => {
     fetch()
   }, [fetch])
-  useOnWindowFocusChange(fetch)
+  const refresh = React.useCallback(() => {
+    fetch(true)
+  }, [fetch])
+  useOnWindowFocusChange(refresh)
   return useSelector(state => getRecipeById(state, recipeId))
 }
 
