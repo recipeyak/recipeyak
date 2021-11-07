@@ -12,6 +12,7 @@ import {
   DropdownMenu,
   useDropdown,
 } from "@/components/Dropdown"
+import { Avatar } from "@/components/Avatar"
 
 function useDarkMode(): [boolean, () => void] {
   const dispatch = useDispatch()
@@ -28,12 +29,11 @@ interface IUserAvatarProps {
 function UserAvatar({ onClick }: IUserAvatarProps) {
   const avatarURL = useSelector(s => s.user.avatarURL)
   return (
-    <img
+    <Avatar
       onClick={onClick}
-      alt=""
       tabIndex={0}
-      className="user-profile-image better-nav-item p-0"
-      src={avatarURL}
+      className="better-nav-item p-0"
+      avatarURL={avatarURL}
     />
   )
 }
