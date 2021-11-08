@@ -70,6 +70,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             "note_set",
             "note_set__created_by",
             "note_set__last_modified_by",
+            "timelineevent_set",
+            "timelineevent_set__created_by",
             "section_set",
         )
 
@@ -89,9 +91,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         new_recipe = serializer.save()
 
-        TimelineEvent.objects.create(
-            TimelineEvent(action="created", created_by=request.user, recipe=new_recipe,)
-        )
+        TimelineEvent(
+            action="created", created_by=request.user, recipe=new_recipe,
+        ).save()
 
         logger.info("Recipe created by %s", self.request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -132,18 +134,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
             and getattr(instance, "archived_at")
             != serializer.validated_data["archived_at"]
         ):
-
-            TimelineEvent.objects.create(
-                TimelineEvent(
-                    action=(
-                        TimelineEventKind.archived
-                        if serializer.validated_data["archived_at"]
-                        else TimelineEventKind.unarchived
-                    ),
-                    created_by=request.user,
-                    recipe=instance,
-                )
-            )
+            TimelineEvent(
+                action=(
+                    "archived"
+                    if serializer.validated_data["archived_at"]
+                    else "unarchived"
+                ),
+                created_by=request.user,
+                recipe=instance,
+            ).save()
 
         self.perform_update(serializer)
 
