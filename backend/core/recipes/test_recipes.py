@@ -7,7 +7,16 @@ from django.utils.dateparse import parse_datetime
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Ingredient, Membership, Note, Recipe, Step, Team, User
+from core.models import (
+    Ingredient,
+    Membership,
+    Note,
+    Recipe,
+    Step,
+    Team,
+    User,
+    TimelineEvent,
+)
 
 pytestmark = pytest.mark.django_db
 
@@ -168,6 +177,8 @@ def test_recipe_archived_at(client, user, recipe):
     assert res.status_code == status.HTTP_200_OK
     assert res.json()["archived_at"] is None, "archived_at should be on detail view"
 
+    assert TimelineEvent.objects.count() == 0
+
     data = {"archived_at": datetime.now()}
     res = client.patch(f"/api/v1/recipes/{recipe.id}/", data)
     assert res.status_code == status.HTTP_200_OK
@@ -177,6 +188,20 @@ def test_recipe_archived_at(client, user, recipe):
     assert res.status_code == status.HTTP_200_OK
     assert len(res.json()) == 1
     assert isinstance(res.json()[0]["archived_at"], str), "should be a date string"
+
+    assert (
+        TimelineEvent.objects.count()
+        == TimelineEvent.objects.filter(action="archived").count()
+        == 1
+    )
+
+    res = client.patch(f"/api/v1/recipes/{recipe.id}/", {"archived_at": None})
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json()["archived_at"] is None
+
+    assert TimelineEvent.objects.count() == 2
+    assert TimelineEvent.objects.filter(action="archived").count() == 1
+    assert TimelineEvent.objects.filter(action="unarchived").count() == 1
 
 
 def test_updating_step_of_recipe(client, user, recipe):

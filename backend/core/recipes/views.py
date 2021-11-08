@@ -28,8 +28,10 @@ from core.models import (
     Step,
     Team,
     User,
+    TimelineEvent,
     user_and_team_recipes,
 )
+from core.models.timeline_event import TimelineEventKind
 from core.recipes.serializers import (
     IngredientSerializer,
     NoteSerializer,
@@ -120,6 +122,24 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 )
 
         RecipeChange.objects.bulk_create(changes)
+
+        if (
+            "archived_at" in serializer.validated_data
+            and getattr(instance, "archived_at")
+            != serializer.validated_data["archived_at"]
+        ):
+
+            TimelineEvent.objects.create(
+                TimelineEvent(
+                    action=(
+                        TimelineEventKind.archived
+                        if serializer.validated_data["archived_at"]
+                        else TimelineEventKind.unarchived
+                    ),
+                    created_by=request.user,
+                    recipe=instance,
+                )
+            )
 
         self.perform_update(serializer)
 
