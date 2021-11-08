@@ -45,7 +45,7 @@ export const baseRecipe: IRecipe = {
     type: "user",
   },
   ingredients: [],
-  notes: [],
+  timelineItems: [],
   sections: [],
   created: "1776-1-1",
   archived_at: null,
@@ -571,7 +571,7 @@ describe("Recipes", () => {
       personalIDs: undefined,
     }
     const fetchingActual = getModel(
-      recipes(beforeState, fetchRecipe.request(baseRecipe.id)),
+      recipes(beforeState, fetchRecipe.request({ recipeId: baseRecipe.id })),
     )
     expect(fetchingActual.byId).toEqual(fetchingState.byId)
     expect(fetchingActual.personalIDs).toEqual(fetchingState.personalIDs)

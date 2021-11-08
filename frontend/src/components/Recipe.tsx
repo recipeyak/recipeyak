@@ -272,8 +272,10 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
       {/* extra div to push notes to the right side of the grid */}
       <div />
       <div>
-        <SectionTitle>Notes</SectionTitle>
-        <NoteContainer notes={recipe.notes} recipeId={recipe.id} />
+        <NoteContainer
+          timelineItems={recipe.timelineItems}
+          recipeId={recipe.id}
+        />
       </div>
     </section>
   )
@@ -297,13 +299,19 @@ const NavItem = styled(Link)<INavItemProps>`
 
 export function useRecipe(recipeId: number) {
   const dispatch = useDispatch()
-  const fetch = React.useCallback(() => {
-    dispatch(fetchRecipe.request(recipeId))
-  }, [dispatch, recipeId])
+  const fetch = React.useCallback(
+    (refresh?: boolean) => {
+      dispatch(fetchRecipe.request({ recipeId, refresh }))
+    },
+    [dispatch, recipeId],
+  )
   React.useEffect(() => {
     fetch()
   }, [fetch])
-  useOnWindowFocusChange(fetch)
+  const refreshData = React.useCallback(() => {
+    fetch(true)
+  }, [fetch])
+  useOnWindowFocusChange(refreshData)
   return useSelector(state => getRecipeById(state, recipeId))
 }
 
@@ -328,10 +336,6 @@ function ArchiveBanner({ date }: { readonly date: Date }) {
   )
 }
 
-function isRecipeyakHostname(x: string): boolean {
-  return x.includes("recipeyak.com") || x.includes("localhost")
-}
-
 /** On load, update the recipe URL to include the slugified recipe name */
 function useRecipeUrlUpdate(recipe: { id: number; name: string } | null) {
   const dispatch = useDispatch()
@@ -344,13 +348,6 @@ function useRecipeUrlUpdate(recipe: { id: number; name: string } | null) {
       return
     }
     const pathname = recipeURL(recipeId, recipeName)
-
-    // don't rewrite URL if we're on a different domain.
-    //
-    // this prevents glitchy 404 behavior when navigating to a different domain.
-    if (!isRecipeyakHostname(window.location.hostname)) {
-      return
-    }
     if (pathNamesEqual(location.pathname, pathname)) {
       return
     }

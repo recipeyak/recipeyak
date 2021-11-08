@@ -14,7 +14,6 @@ import {
   fetchUser,
   setUserLoggedIn,
   IUser,
-  fetchUserStats,
   IUserState,
   logOut,
   fetchSessions,
@@ -60,7 +59,6 @@ import {
   fetchTeam,
   setTeam,
   fetchTeamMembers,
-  fetchTeamRecipes,
 } from "@/store/reducers/teams"
 import {
   IRecipe,
@@ -74,7 +72,6 @@ import {
   fetchRecipeList,
   createRecipe,
   IStep,
-  fetchRecentRecipes,
 } from "@/store/reducers/recipes"
 import * as api from "@/api"
 import { clearAddRecipeForm } from "@/store/reducers/addrecipe"
@@ -274,16 +271,6 @@ export const disconnectSocialAccountAsync = (dispatch: Dispatch) => async (
   return res
 }
 
-export const fetchingUserStatsAsync = (dispatch: Dispatch) => async () => {
-  dispatch(fetchUserStats.request())
-  const res = await api.getUserStats()
-  if (isOk(res)) {
-    dispatch(fetchUserStats.success(res.data))
-  } else {
-    dispatch(fetchUserStats.failure())
-  }
-}
-
 interface IUpdatePassword {
   password1: string
   password2: string
@@ -363,17 +350,6 @@ export const postNewRecipeAsync = (dispatch: Dispatch) => async (
       level: "danger",
       delay: 5 * second,
     })
-  }
-}
-
-export const fetchingRecentRecipesAsync = (dispatch: Dispatch) => async () => {
-  // TODO(sbdchd): these should have their own id array in the reduce and their own actions
-  dispatch(fetchRecentRecipes.request())
-  const res = await api.getRecentRecipes()
-  if (isOk(res)) {
-    dispatch(fetchRecentRecipes.success(res.data))
-  } else {
-    dispatch(fetchRecentRecipes.failure())
   }
 }
 
@@ -678,20 +654,6 @@ export const fetchingTeamMembersAsync = (dispatch: Dispatch) => async (
     dispatch(fetchTeamMembers.success({ id, members: res.data }))
   } else {
     dispatch(fetchTeamMembers.failure(id))
-  }
-}
-
-export const fetchingTeamRecipesAsync = (dispatch: Dispatch) => async (
-  id: ITeam["id"],
-) => {
-  dispatch(fetchTeamRecipes.request(id))
-  const res = await api.getTeamRecipes(id)
-  if (isOk(res)) {
-    // TODO(sbdchd): kind of hacky
-    dispatch(fetchRecipeList.success({ recipes: res.data }))
-    dispatch(fetchTeamRecipes.success({ id, recipes: res.data }))
-  } else {
-    dispatch(fetchTeamRecipes.failure(id))
   }
 }
 

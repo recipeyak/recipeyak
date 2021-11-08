@@ -7,6 +7,7 @@ import isAfter from "date-fns/isAfter"
 import subDays from "date-fns/subDays"
 import formatDistance from "date-fns/formatDistance"
 import min from "date-fns/min"
+import { isSameDay, isSameYear, differenceInMonths } from "date-fns"
 
 export function toISODateString(date: Date | string): string {
   // Note(sbdchd): parseISO("2019-11-09") !== new Date("2019-11-09")
@@ -38,4 +39,31 @@ export function formatDistanceToNow(date: Date): string {
   // Avoid clock skew, otherwise the distance can say "in a few seconds"
   // sometimes, which doesn't make sense.
   return formatDistance(min([date, now]), now, { addSuffix: true })
+}
+
+export function formatAbsoluteDate(
+  date: Date,
+  options?: { readonly includeYear?: boolean },
+): string {
+  if (options?.includeYear) {
+    return format(date, "MMM d, yyyy 'at' h:mm aaa")
+  }
+  return format(date, "MMM d 'at' h:mm aaa")
+}
+
+export function formatHumanDateRaw(date: Date, now: Date): string {
+  if (!isSameYear(date, now)) {
+    return formatAbsoluteDate(date, { includeYear: true })
+  }
+  if (isSameDay(date, now)) {
+    return formatDistance(date, now, { addSuffix: true })
+  }
+  const withinNineMonths = Math.abs(differenceInMonths(date, now)) < 9
+  if (withinNineMonths) {
+    return formatAbsoluteDate(date)
+  }
+  return formatAbsoluteDate(date, { includeYear: true })
+}
+export function formatHumanDate(date: Date): string {
+  return formatHumanDateRaw(date, new Date())
 }

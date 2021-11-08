@@ -7,13 +7,11 @@ import MemberRow from "@/components/MemberRow"
 import NoMatch from "@/components/NoMatch"
 
 import Loader from "@/components/Loader"
-import TeamRecipes from "@/components/TeamRecipes"
 
 import { ButtonPrimary, ButtonLink } from "@/components/Buttons"
 
 import { inviteURL, teamURL, teamSettingsURL } from "@/urls"
 import { IMember, ITeam } from "@/store/reducers/teams"
-import { IRecipe } from "@/store/reducers/recipes"
 import { Tab, Tabs } from "@/components/Tabs"
 import { TextInput } from "@/components/Forms"
 
@@ -197,8 +195,6 @@ interface ITeamProps {
   readonly name: string
   readonly isSettings: boolean
   readonly loadingMembers: boolean
-  readonly loadingRecipes: boolean
-  readonly recipes: IRecipe[]
 }
 
 class Team extends React.Component<ITeamProps> {
@@ -241,19 +237,12 @@ class Team extends React.Component<ITeamProps> {
             loading={this.props.loadingTeam}
           />
         ) : (
-          <>
-            <TeamMembers
-              id={this.props.id}
-              name={this.props.name}
-              loading={this.props.loadingMembers}
-              members={this.props.members}
-            />
-
-            <TeamRecipes
-              loading={this.props.loadingRecipes}
-              recipes={this.props.recipes}
-            />
-          </>
+          <TeamMembers
+            id={this.props.id}
+            name={this.props.name}
+            loading={this.props.loadingMembers}
+            members={this.props.members}
+          />
         )}
       </div>
     )

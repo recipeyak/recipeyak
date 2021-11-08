@@ -3,7 +3,6 @@ import {
   IUser,
   ISocialConnection,
   SocialProvider,
-  IUserStats,
   ISession,
 } from "@/store/reducers/user"
 import { ITeam, IMember } from "@/store/reducers/teams"
@@ -86,8 +85,6 @@ export const resetPasswordConfirm = (
     new_password2: newPassword2,
   })
 
-export const getUserStats = () => http.get<IUserStats>("api/v1/user_stats/")
-
 export const changePassword = (
   password1: string,
   password2: string,
@@ -169,9 +166,6 @@ export const deleteRecipe = (id: IRecipe["id"]) =>
 
 export const duplicateRecipe = (id: IRecipe["id"]) =>
   http.post<IRecipe>(`/api/v1/recipes/${id}/duplicate/`)
-
-export const getRecentRecipes = () =>
-  http.get<IRecipe[]>("/api/v1/recipes/?recent")
 
 export const getRecipeList = () => {
   return http.get<IRecipe[]>("/api/v1/recipes/")
@@ -275,9 +269,6 @@ export const getTeam = (id: ITeam["id"]) => http.get<ITeam>(`/api/v1/t/${id}/`)
 
 export const getTeamMembers = (id: ITeam["id"]) =>
   http.get<IMember[]>(`/api/v1/t/${id}/members/`)
-
-export const getTeamRecipes = (id: ITeam["id"]) =>
-  http.get<IRecipe[]>(`/api/v1/t/${id}/recipes/`)
 
 export const updateTeamMemberLevel = (
   teamID: ITeam["id"],

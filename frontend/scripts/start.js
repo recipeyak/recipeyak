@@ -325,6 +325,7 @@ function runDevServer(host, port, protocol) {
     },
     // Enable HTTPS if the HTTPS environment variable is set to 'true'
     https: protocol === "https",
+    disableHostCheck: process.env.DISABLE_HOST_CHECK === "1",
     host,
   })
 

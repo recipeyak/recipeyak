@@ -964,12 +964,10 @@ exports[`<Recipe/> snaps recipe all states 2`] = `
     </div>
     <div />
     <div>
-      <h2
-        className="bold fs-6 mb-0"
+      <hr />
+      <div
+        className="pb-4"
       >
-        Notes
-      </h2>
-      <div>
         <textarea
           className="textarea"
           id="new_note_textarea"
@@ -986,7 +984,6 @@ exports[`<Recipe/> snaps recipe all states 2`] = `
           value=""
         />
       </div>
-      <hr />
     </div>
   </section>
 </div>
@@ -1072,7 +1069,6 @@ Object {
     "last_scheduled": "1779",
     "modified": "1778",
     "name": "Apple Crisp",
-    "notes": Array [],
     "owner": Object {
       "id": 1,
       "type": "user",
@@ -1089,6 +1085,7 @@ Object {
     ],
     "team": 1,
     "time": "1776",
+    "timelineItems": Array [],
   },
   "kind": "Refetching",
 }
