@@ -27,8 +27,8 @@ from core.models import (
     Section,
     Step,
     Team,
-    User,
     TimelineEvent,
+    User,
     user_and_team_recipes,
 )
 from core.recipes.serializers import (

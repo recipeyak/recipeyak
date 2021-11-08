@@ -14,8 +14,8 @@ from core.models import (
     Recipe,
     Step,
     Team,
-    User,
     TimelineEvent,
+    User,
 )
 
 pytestmark = pytest.mark.django_db

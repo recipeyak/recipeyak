@@ -27,4 +27,3 @@ class TimelineEvent(CommonInfo, SoftDeleteObject):
     class Meta:
         db_table = "timeline_event"
         ordering = ["-created"]
-
