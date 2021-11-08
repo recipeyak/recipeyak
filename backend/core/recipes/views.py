@@ -220,6 +220,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             "ingredient_set",
             "scheduledrecipe_set",
             "note_set",
+            "timelineevent_set",
             "section_set",
         ).get(id=new_recipe.id)
         return Response(
