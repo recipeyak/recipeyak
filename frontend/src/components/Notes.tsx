@@ -130,6 +130,39 @@ function NoteTimeStamp({ created }: { readonly created: string }) {
   )
 }
 
+function SharedEntry({
+  id,
+  children,
+  className,
+}: {
+  readonly id: string
+  readonly children: React.ReactNode
+  readonly className?: string
+}) {
+  const location = useLocation()
+  const isSharedNote = location.hash === `#${id}`
+  const ref = React.useRef<HTMLDivElement>(null)
+
+  React.useEffect(() => {
+    if (isSharedNote) {
+      ref.current?.scrollIntoView()
+    }
+  }, [isSharedNote])
+  return (
+    <div
+      ref={ref}
+      className={classNames(
+        {
+          "bg-highlight": isSharedNote,
+        },
+        className,
+      )}
+      id={id}>
+      {children}
+    </div>
+  )
+}
+
 interface INoteProps {
   readonly note: INote
   readonly recipeId: IRecipe["id"]
@@ -148,26 +181,11 @@ export function Note({ note, recipeId, className }: INoteProps) {
     onSave,
   } = useNoteEditHandlers({ note, recipeId })
 
-  const ref = React.useRef<HTMLDivElement>(null)
   const noteId = `note-${note.id}`
-  const location = useLocation()
-  const isSharedNote = location.hash === `#${noteId}`
 
-  React.useEffect(() => {
-    if (isSharedNote) {
-      ref.current?.scrollIntoView()
-    }
-  }, [isSharedNote])
   return (
-    <div
-      ref={ref}
-      className={classNames(
-        "d-flex align-items-start",
-        {
-          "bg-highlight": isSharedNote,
-        },
-        className,
-      )}
+    <SharedEntry
+      className={classNames("d-flex align-items-start", className)}
       id={noteId}>
       <Avatar avatarURL={note.created_by.avatar_url} className="mr-2" />
       <div className="w-100">
@@ -217,22 +235,30 @@ export function Note({ note, recipeId, className }: INoteProps) {
           </>
         )}
       </div>
-    </div>
+    </SharedEntry>
   )
 }
 
 function TimelineEvent({ event }: { readonly event: RecipeTimelineItem }) {
+  const eventId = `event-${event.id}`
   return (
-    <div className={classNames("d-flex align-items-center mb-4 py-4")}>
-      <Avatar avatarURL={event.created_by.avatar_url} className="mr-2" />
+    <SharedEntry
+      id={eventId}
+      className={classNames("d-flex align-items-center mb-4 py-4")}>
+      <Avatar
+        avatarURL={event.created_by?.avatar_url ?? null}
+        className="mr-2"
+      />
       <div className="d-flex flex-column">
         <div>
-          <b>{event.created_by.email}</b>{" "}
+          <b>{event.created_by?.email ?? "User"}</b>{" "}
           <span>{event.action} this recipe </span>
         </div>
-        <NoteTimeStamp created={event.created} />
+        <a href={`#${eventId}`}>
+          <NoteTimeStamp created={event.created} />
+        </a>
       </div>
-    </div>
+    </SharedEntry>
   )
 }
 
