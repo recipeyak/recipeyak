@@ -145,6 +145,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             ).save()
 
         self.perform_update(serializer)
+        serializer = self.get_serializer(self.get_object())
 
         return Response(serializer.data)
 
