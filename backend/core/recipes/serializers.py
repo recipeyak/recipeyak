@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import cast, Any
 from rest_framework import serializers
 
 from core.models import (
@@ -136,8 +137,12 @@ class RecipeSerializer(BaseModelSerializer):
     # specify default None so we can use this as an optional field
     team = serializers.IntegerField(write_only=True, default=None)
 
-    def get_timelineItems(self, obj: Recipe) -> list[dict]:
-        items: list[dict] = [NoteSerializer(x).data for x in obj.note_set.all()] + [
+    def get_timelineItems(self, obj: Recipe) -> list[dict[str, Any]]:
+        items: list[dict[str, Any]] = [
+            NoteSerializer(x).data for x in cast(Any, obj).note_set.all()
+        ]
+
+        items += [
             dict(
                 type="recipe",
                 id=0,
