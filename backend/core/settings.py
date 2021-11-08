@@ -63,14 +63,11 @@ INSTALLED_APPS = [
     "softdelete",
 ]
 
-configure_sentry = PRODUCTION and not DOCKERBUILD
-DSN = (
-    "https://3b11e5eed068478390e1e8f01e2190a9@sentry.io/250295"
-    if configure_sentry
-    else ""
-)
 sentry_sdk.init(
-    dsn=DSN, integrations=[DjangoIntegration()], release=GIT_SHA, send_default_pii=True
+    integrations=[DjangoIntegration()],
+    release=GIT_SHA,
+    send_default_pii=True,
+    traces_sample_rate=1.0,
 )
 
 REST_FRAMEWORK = {
