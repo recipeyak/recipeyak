@@ -27,6 +27,7 @@ from core.models import (
     Section,
     Step,
     Team,
+    TimelineEvent,
     User,
     user_and_team_recipes,
 )
@@ -68,6 +69,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             "note_set",
             "note_set__created_by",
             "note_set__last_modified_by",
+            "timelineevent_set",
+            "timelineevent_set__created_by",
             "section_set",
         )
 
@@ -85,7 +88,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         serializer.is_valid(raise_exception=True)
 
-        serializer.save()
+        new_recipe = serializer.save()
+
+        TimelineEvent(
+            action="created", created_by=request.user, recipe=new_recipe,
+        ).save()
 
         logger.info("Recipe created by %s", self.request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -121,7 +128,23 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         RecipeChange.objects.bulk_create(changes)
 
+        if (
+            "archived_at" in serializer.validated_data
+            and getattr(instance, "archived_at")
+            != serializer.validated_data["archived_at"]
+        ):
+            TimelineEvent(
+                action=(
+                    "archived"
+                    if serializer.validated_data["archived_at"]
+                    else "unarchived"
+                ),
+                created_by=request.user,
+                recipe=instance,
+            ).save()
+
         self.perform_update(serializer)
+        serializer = self.get_serializer(self.get_object())
 
         return Response(serializer.data)
 
@@ -197,6 +220,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             "ingredient_set",
             "scheduledrecipe_set",
             "note_set",
+            "timelineevent_set",
             "section_set",
         ).get(id=new_recipe.id)
         return Response(
@@ -354,6 +378,8 @@ class TeamRecipesViewSet(APIView):
             "note_set",
             "note_set__created_by",
             "note_set__last_modified_by",
+            "timelineevent_set",
+            "timelineevent_set__created_by",
             "section_set",
         )
         serializer = RecipeSerializer(

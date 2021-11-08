@@ -147,22 +147,16 @@ class RecipeSerializer(BaseModelSerializer):
         items += [
             dict(
                 type="recipe",
-                id=0,
-                action="created",
-                created_by=None,
-                created=obj.created,
+                id=x.id,
+                action=x.action,
+                created_by=PublicUserSerializer(x.created_by).data
+                if x.created_by
+                else None,
+                created=x.created,
             )
+            for x in cast(Any, obj).timelineevent_set.all()
         ]
-        if obj.archived_at is not None:
-            items.append(
-                dict(
-                    type="recipe",
-                    id=int(obj.archived_at.timestamp()),
-                    action="archived",
-                    created_by=None,
-                    created=obj.archived_at,
-                )
-            )
+
         return items
 
     class Meta:
