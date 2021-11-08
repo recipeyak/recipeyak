@@ -25,9 +25,11 @@ class YamlResponse(HttpResponse):
     def __init__(self, data, **kwargs):
         kwargs.setdefault("content_type", "text/x-yaml")
         if isinstance(data, list):
-            data = yaml.dump_all(data, default_flow_style=False)
+            data = yaml.dump_all(data, default_flow_style=False, allow_unicode=True)
         else:
             # we wrap in an OrderedDict since PyYaml sorts dict keys for some odd reason!
-            data = yaml.dump(OrderedDict(data), default_flow_style=False)
+            data = yaml.dump(
+                OrderedDict(data), default_flow_style=False, allow_unicode=True
+            )
 
         super().__init__(content=data, **kwargs)

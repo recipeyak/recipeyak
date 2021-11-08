@@ -120,3 +120,37 @@ def test_single_export_yaml(
     ), "we don't want python objects to be serialized"
     assert res.status_code == 200
     assert next(yaml.safe_load_all(res.content)).get("name") == recipe.name
+
+
+def test_unicode_issues(c: Client, user: User, recipe: Recipe) -> None:
+    """
+    regression to prevent unicode encoding issues with pyyaml
+    """
+    recipe.name = "foo 🦠"
+    recipe.save()
+    url = reverse("export-recipe", kwargs={"pk": recipe.id, "filetype": "yaml"})
+    c.force_login(user)
+    res = c.get(url)
+    assert (
+        res.content.decode()
+        == """\
+name: foo 🦠
+author: Recipe author
+time: 1 hour
+source: www.exmple.com
+servings: null
+ingredients:
+- quantity: 1 lbs
+  name: egg
+  description: scrambled
+  optional: false
+- quantity: 2 tbs
+  name: soy sauce
+  description: ''
+  optional: false
+steps:
+- Place egg in boiling water and cook for ten minutes
+owner:
+  user: john@doe.org
+"""
+    )
