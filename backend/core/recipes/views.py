@@ -377,6 +377,8 @@ class TeamRecipesViewSet(APIView):
             "note_set",
             "note_set__created_by",
             "note_set__last_modified_by",
+            "timelineevent_set",
+            "timelineevent_set__created_by",
             "section_set",
         )
         serializer = RecipeSerializer(
