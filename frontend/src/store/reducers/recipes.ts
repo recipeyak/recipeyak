@@ -510,7 +510,7 @@ export type RecipeTimelineItem = {
   type: "recipe"
   id: number
   action: "created" | "archived" | "unarchived" | "deleted"
-  created_by: IPublicUser
+  created_by: IPublicUser | null
   created: string
 }
 

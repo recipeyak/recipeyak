@@ -1,3 +1,4 @@
+from __future__ import annotations
 from rest_framework import serializers
 
 from core.models import (
@@ -129,11 +130,33 @@ class RecipeSerializer(BaseModelSerializer):
     steps = StepSerializer(many=True, source="step_set")
     last_scheduled = serializers.DateField(source="get_last_scheduled", read_only=True)
     ingredients = IngredientSerializer(many=True, source="ingredient_set")
-    timelineItems = NoteSerializer(many=True, source="note_set", read_only=True)
+    timelineItems = serializers.SerializerMethodField(read_only=True)
     sections = SectionSerializer(many=True, source="section_set", read_only=True)
     owner = OwnerRelatedField(read_only=True)
     # specify default None so we can use this as an optional field
     team = serializers.IntegerField(write_only=True, default=None)
+
+    def get_timelineItems(self, obj: Recipe) -> list[dict]:
+        items: list[dict] = [NoteSerializer(x).data for x in obj.note_set.all()] + [
+            dict(
+                type="recipe",
+                id=0,
+                action="created",
+                created_by=None,
+                created=obj.created,
+            )
+        ]
+        if obj.archived_at is not None:
+            items.append(
+                dict(
+                    type="recipe",
+                    id=int(obj.archived_at.timestamp()),
+                    action="archived",
+                    created_by=None,
+                    created=obj.archived_at,
+                )
+            )
+        return items
 
     class Meta:
         model = Recipe
