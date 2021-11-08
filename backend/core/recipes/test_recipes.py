@@ -104,6 +104,8 @@ def test_recipe_creation_for_a_team(client, team, user):
 
     client.force_authenticate(user)
 
+    assert TimelineEvent.objects.count() == 0
+
     data = {
         "name": "Recipe name",
         "ingredients": [
@@ -122,6 +124,12 @@ def test_recipe_creation_for_a_team(client, team, user):
 
     res = client.post(url, data)
     assert res.status_code == status.HTTP_201_CREATED
+
+    assert (
+        TimelineEvent.objects.count()
+        == TimelineEvent.objects.filter(action="created").count()
+        == 1
+    )
 
     recipe_id = res.json()["id"]
 

@@ -87,7 +87,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         serializer.is_valid(raise_exception=True)
 
-        serializer.save()
+        new_recipe = serializer.save()
+
+        TimelineEvent.objects.create(
+            TimelineEvent(action="created", created_by=request.user, recipe=new_recipe,)
+        )
 
         logger.info("Recipe created by %s", self.request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
