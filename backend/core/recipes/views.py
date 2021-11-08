@@ -31,7 +31,6 @@ from core.models import (
     TimelineEvent,
     user_and_team_recipes,
 )
-from core.models.timeline_event import TimelineEventKind
 from core.recipes.serializers import (
     IngredientSerializer,
     NoteSerializer,
