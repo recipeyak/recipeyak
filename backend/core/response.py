@@ -28,6 +28,8 @@ class YamlResponse(HttpResponse):
             data = yaml.dump_all(data, default_flow_style=False, allow_unicode=True)
         else:
             # we wrap in an OrderedDict since PyYaml sorts dict keys for some odd reason!
-            data = yaml.dump(OrderedDict(data), default_flow_style=False, allow_unicode=True)
+            data = yaml.dump(
+                OrderedDict(data), default_flow_style=False, allow_unicode=True
+            )
 
         super().__init__(content=data, **kwargs)
