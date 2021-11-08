@@ -29,7 +29,7 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
   const [draftText, setNewText] = useState(note.text)
   useEffect(() => {
     setNewText(note.text)
-  }, [note])
+  }, [note.text])
   const [isEditing, setIsEditing] = React.useState(false)
   const [isUpdating, setIsUpdating] = React.useState(false)
 
