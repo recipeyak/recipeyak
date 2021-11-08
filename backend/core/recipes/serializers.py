@@ -1,5 +1,7 @@
 from __future__ import annotations
-from typing import cast, Any
+
+from typing import Any, cast
+
 from rest_framework import serializers
 
 from core.models import (
