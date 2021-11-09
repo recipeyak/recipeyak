@@ -42,14 +42,10 @@ const StyledLink = styled(Link)`
   line-height: 1.3;
   font-size: ${props => props.theme.text.small};
   word-break: break-word;
-  background-color: ${props => props.theme.color.primary};
+  background-color: ${props => props.theme.color.background};
   border-radius: 5px;
   padding: 0.35rem;
-  color: ${props => props.theme.color.white};
   font-weight: 600;
-  :hover {
-    color: ${props => props.theme.color.white};
-  }
 `
 
 function RecipeLink({ name, id }: IRecipeLink) {
