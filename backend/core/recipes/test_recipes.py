@@ -103,7 +103,7 @@ def test_cache_headers(client: APIClient, user: User, recipe: Recipe) -> None:
 
     res = client.get(f"/api/v1/recipes/{recipe.id}/")
     assert res.status_code == status.HTTP_200_OK
-    assert res['Cache-Control'] == 'no-store, no-cache, must-revalidate'
+    assert res["Cache-Control"] == "no-store, no-cache, must-revalidate"
 
 
 def test_recipe_creation_for_a_team(client, team, user):
