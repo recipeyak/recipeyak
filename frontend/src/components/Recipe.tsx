@@ -8,7 +8,7 @@ import StepContainer from "@/components/StepContainer"
 import { Ingredient } from "@/components/Ingredient"
 import RecipeTitle from "@/components/RecipeTitle"
 import { RouteComponentProps } from "react-router"
-import { useLocation, Link } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import { recipeURL } from "@/urls"
 import { pathNamesEqual } from "@/utils/url"
 import { replace } from "connected-react-router"
@@ -281,22 +281,6 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
   )
 }
 
-const Nav = styled.div``
-
-interface INavItemProps {
-  readonly isActive: boolean
-}
-
-const NavItem = styled(Link)<INavItemProps>`
-  font-weight: bold;
-  margin-right: 0.5rem;
-  ${props => props.isActive && "border-bottom: 2px solid;"}
-  &:hover {
-    border-bottom: 2px solid;
-    text-decoration: none;
-  }
-`
-
 export function useRecipe(recipeId: number) {
   const dispatch = useDispatch()
   const fetch = React.useCallback(
@@ -405,17 +389,6 @@ export function Recipe(props: IRecipeProps) {
         editing={recipe.editing}
         tags={recipe.tags}
       />
-
-      <Nav>
-        <NavItem isActive={!isTimeline} to={props.location.pathname}>
-          Detail
-        </NavItem>
-        <NavItem
-          isActive={isTimeline}
-          to={props.location.pathname + "?timeline=1"}>
-          Timeline
-        </NavItem>
-      </Nav>
 
       {isTimeline ? (
         <RecipeTimeline recipeId={recipe.id} createdAt={recipe.created} />
