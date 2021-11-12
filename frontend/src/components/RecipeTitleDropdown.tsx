@@ -20,6 +20,7 @@ import {
   DropdownMenu,
   useDropdown,
 } from "@/components/Dropdown"
+import { useLocation } from "react-router-dom"
 
 function useScheduleUrl(recipeId: number) {
   return useSelector(scheduleURLFromTeamID) + `?recipeId=${recipeId}`
@@ -69,6 +70,7 @@ interface IDropdownProps {
 export function Dropdown({ recipeId }: IDropdownProps) {
   const { ref, isOpen, toggle, close } = useDropdown()
 
+  const location = useLocation()
   const dispatch = useDispatch()
   const ingredients = useIngredientString(recipeId)
   const [isArchived, isDeleting] = useSelector(s => {
@@ -157,6 +159,11 @@ export function Dropdown({ recipeId }: IDropdownProps) {
             Unarchive Recipe
           </DropdownItemButton>
         )}
+        <DropdownItemLink
+          to={location.pathname + "?timeline=1"}
+          onClick={close}>
+          Timeline
+        </DropdownItemLink>
         <DropdownItemButton onClick={handleDeleteRecipe}>
           {!isDeleting ? "Delete Recipe" : "Deleting Recipe.."}
         </DropdownItemButton>
