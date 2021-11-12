@@ -125,7 +125,7 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
   display: none;
 }
 
-.c9 {
+.c7 {
   font-weight: 500;
   padding: 0.5rem;
   margin-bottom: 0.5rem;
@@ -133,11 +133,11 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
   border: 1px solid lightgray;
 }
 
-.c6 {
+.c4 {
   max-width: 600px;
 }
 
-.c7 {
+.c5 {
   list-style: none;
   margin-left: 0.5rem;
   padding-left: 0.5rem;
@@ -146,32 +146,9 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
   padding-bottom: 0.5rem;
 }
 
-.c8 {
+.c6 {
   margin-bottom: 0.5rem;
   margin-top: 0.5rem;
-}
-
-.c4 {
-  font-weight: bold;
-  margin-right: 0.5rem;
-}
-
-.c4:hover {
-  border-bottom: 2px solid;
-  -webkit-text-decoration: none;
-  text-decoration: none;
-}
-
-.c5 {
-  font-weight: bold;
-  margin-right: 0.5rem;
-  border-bottom: 2px solid;
-}
-
-.c5:hover {
-  border-bottom: 2px solid;
-  -webkit-text-decoration: none;
-  text-decoration: none;
 }
 
 <div
@@ -262,6 +239,13 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
           >
             Archive Recipe
           </button>
+          <a
+            className="c2"
+            href="/?timeline=1"
+            onClick={[Function]}
+          >
+            Timeline
+          </a>
           <button
             className="c3"
             onClick={[Function]}
@@ -411,27 +395,7 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
     </div>
   </div>
   <div
-    className=""
-  >
-    <a
-      className="c4"
-      href="/recipes/98-apple-crisp"
-      isActive={false}
-      onClick={[Function]}
-    >
-      Detail
-    </a>
-    <a
-      className="c5"
-      href="/recipes/98-apple-crisp?timeline=1"
-      isActive={true}
-      onClick={[Function]}
-    >
-      Timeline
-    </a>
-  </div>
-  <div
-    className="c6"
+    className="c4"
   >
     <h2
       className="bold fs-6 mb-0"
@@ -439,15 +403,15 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
       Timeline
     </h2>
     <ol
-      className="c7"
+      className="c5"
     >
       <div
-        className="c8"
+        className="c6"
       >
         Loading timeline..
       </div>
       <li
-        className="c9"
+        className="c7"
         type="created"
       >
         🎉 Recipe created on 
@@ -464,43 +428,43 @@ exports[`<Recipe/> snaps recipe all states 1`] = `
 `;
 
 exports[`<Recipe/> snaps recipe all states 2`] = `
-.c6 {
+.c4 {
   word-break: break-word;
 }
 
-.c6 a {
+.c4 a {
   -webkit-text-decoration: underline;
   text-decoration: underline;
 }
 
-.c6 a:hover {
+.c4 a:hover {
   -webkit-text-decoration: none;
   text-decoration: none;
 }
 
-.c6 ul {
+.c4 ul {
   list-style-type: disc;
   padding-left: 1.5rem;
 }
 
-.c6 ol {
+.c4 ol {
   padding-left: 1.5rem;
 }
 
-.c6 blockquote {
+.c4 blockquote {
   padding-left: 0.25rem;
   border-left: 5px solid lightgray;
 }
 
-.c6 blockquote > p {
+.c4 blockquote > p {
   margin-bottom: 0rem;
 }
 
-.c6 blockquote:last-of-type > p {
+.c4 blockquote:last-of-type > p {
   margin-bottom: 0.5rem;
 }
 
-.c6 p {
+.c4 p {
   margin-bottom: 0.5rem;
 }
 
@@ -589,29 +553,6 @@ exports[`<Recipe/> snaps recipe all states 2`] = `
   display: none;
 }
 
-.c5 {
-  font-weight: bold;
-  margin-right: 0.5rem;
-}
-
-.c5:hover {
-  border-bottom: 2px solid;
-  -webkit-text-decoration: none;
-  text-decoration: none;
-}
-
-.c4 {
-  font-weight: bold;
-  margin-right: 0.5rem;
-  border-bottom: 2px solid;
-}
-
-.c4:hover {
-  border-bottom: 2px solid;
-  -webkit-text-decoration: none;
-  text-decoration: none;
-}
-
 <div
   className="d-grid grid-gap-2"
 >
@@ -700,6 +641,13 @@ exports[`<Recipe/> snaps recipe all states 2`] = `
           >
             Archive Recipe
           </button>
+          <a
+            className="c2"
+            href="/?timeline=1"
+            onClick={[Function]}
+          >
+            Timeline
+          </a>
           <button
             className="c3"
             onClick={[Function]}
@@ -848,26 +796,6 @@ exports[`<Recipe/> snaps recipe all states 2`] = `
       <div />
     </div>
   </div>
-  <div
-    className=""
-  >
-    <a
-      className="c4"
-      href="/recipes/98-apple-crisp"
-      isActive={true}
-      onClick={[Function]}
-    >
-      Detail
-    </a>
-    <a
-      className="c5"
-      href="/recipes/98-apple-crisp?timeline=1"
-      isActive={false}
-      onClick={[Function]}
-    >
-      Timeline
-    </a>
-  </div>
   <section
     className="ingredients-preparation-grid"
   >
@@ -944,7 +872,7 @@ exports[`<Recipe/> snaps recipe all states 2`] = `
             title="click to edit"
           >
             <div
-              className="c6"
+              className="c4"
               onClick={undefined}
               title={undefined}
             >
