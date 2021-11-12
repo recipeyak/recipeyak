@@ -95,6 +95,17 @@ def test_creating_recipe_with_empty_ingredients_and_steps(client, user):
     assert res.data["steps"] is not None
 
 
+def test_cache_headers(client: APIClient, user: User, recipe: Recipe) -> None:
+    """
+    check that we actually disable caching
+    """
+    client.force_authenticate(user)
+
+    res = client.get(f"/api/v1/recipes/{recipe.id}/")
+    assert res.status_code == status.HTTP_200_OK
+    assert res["Cache-Control"] == "no-store, no-cache, must-revalidate"
+
+
 def test_recipe_creation_for_a_team(client, team, user):
     """
     ensure that the user can create recipe for a team
