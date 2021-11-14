@@ -40,10 +40,16 @@ function DayOfWeek({ date }: { date: Date }) {
   )
 }
 
-const Title = ({ date }: { date: Date }) => {
+const Title = ({
+  date,
+  isSelectedDay,
+}: {
+  readonly date: Date
+  readonly isSelectedDay: boolean
+}) => {
   const dateFmtText = isFirstDayOfMonth(date) ? "MMM d" : "d"
   return (
-    <div className="d-flex">
+    <div className={"d-flex " + isSelectedDay ? "color-white" : ""}>
       <DayOfWeek date={date} />
       <span>{format(date, dateFmtText)}</span>
     </div>
@@ -56,11 +62,6 @@ const isTodayStyle = css`
 
 const isSelectedDayStyle = css`
   background-color: ${p => p.theme.color.primaryShadow};
-  color: white;
-  a,
-  a:hover {
-    color: white;
-  }
 `
 
 const isDroppableStyle = css`
@@ -158,13 +159,15 @@ function CalendarDay({
 
   const isDroppable = isOver && canDrop
 
+  const isSelectedDay = isSelected || isDroppable
+
   return (
     <CalendarDayContainer
       ref={drop}
       isDroppable={isDroppable}
       isToday={isToday}
-      isSelectedDay={isSelected || isDroppable}>
-      <Title date={date} />
+      isSelectedDay={isSelectedDay}>
+      <Title date={date} isSelectedDay={isSelectedDay} />
       <ul>
         {scheduled.map(x => (
           <CalendarItem
