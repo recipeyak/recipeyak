@@ -31,3 +31,5 @@ export function classNames(
 
   return uniq(classes).join(" ")
 }
+
+export default classNames

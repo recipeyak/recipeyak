@@ -63,6 +63,7 @@ module.exports = {
     "@typescript-eslint/no-for-in-array": "error",
     "@typescript-eslint/prefer-as-const": "error",
     "@typescript-eslint/prefer-reduce-type-parameter": "error",
+    "@typescript-eslint/restrict-plus-operands": "error",
     "init-declarations": ["error", "always"],
     "react/jsx-fragments": "error",
     "no-lonely-if": "error",

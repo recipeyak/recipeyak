@@ -29,6 +29,7 @@ import { Result } from "@/result"
 import { useCurrentDay } from "@/hooks"
 import { isSameDay } from "date-fns"
 import { styled, css } from "@/theme"
+import cls from "@/classnames"
 
 function DayOfWeek({ date }: { date: Date }) {
   const dayOfWeek = format(date, "E")
@@ -49,7 +50,7 @@ const Title = ({
 }) => {
   const dateFmtText = isFirstDayOfMonth(date) ? "MMM d" : "d"
   return (
-    <div className={"d-flex " + isSelectedDay ? "color-white" : ""}>
+    <div className={cls("d-flex ", { "color-white": isSelectedDay })}>
       <DayOfWeek date={date} />
       <span>{format(date, dateFmtText)}</span>
     </div>
