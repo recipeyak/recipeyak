@@ -94,9 +94,7 @@ function setupCompiler(host, port, protocol) {
         console.log()
         console.log("The app is running at:")
         console.log()
-        console.log(
-          "  " + chalk.cyan(protocol + "://" + host + ":" + port + "/"),
-        )
+        console.log("  " + chalk.cyan(`${protocol}://${host}:${port}/`))
         console.log()
         console.log("Note that the development build is not optimized.")
         console.log(
@@ -177,15 +175,7 @@ function onProxyError(proxy) {
       res.writeHead(500)
     }
     res.end(
-      "Proxy error: Could not proxy request " +
-        req.url +
-        " from " +
-        host +
-        " to " +
-        proxy +
-        " (" +
-        err.code +
-        ").",
+      `Proxy error: Could not proxy request ${req.url} from ${host} to ${proxy} (${err.code}).`,
     )
   }
 }
@@ -204,7 +194,7 @@ function addMiddleware(devServer) {
         {
           from: /.*\.(json|yaml|yml)\/?$/,
           to(ctx) {
-            return proxy + ctx.parsedUrl.pathname
+            return String(proxy) + String(ctx.parsedUrl.pathname)
           },
         },
       ],
@@ -346,7 +336,7 @@ function runDevServer(host, port, protocol) {
       console.log(chalk.cyan("Starting the development server..."))
       console.log()
 
-      openBrowser(protocol + "://" + host + ":" + port + "/")
+      openBrowser(`${protocol}://${host}:${port}/`)
     },
   )
 }
@@ -388,7 +378,7 @@ detect(DEFAULT_PORT).then(port => {
     })
   } else {
     console.log(
-      chalk.red("Something is already running on port " + DEFAULT_PORT + "."),
+      chalk.red(`Something is already running on port ${DEFAULT_PORT}.`),
     )
   }
 })

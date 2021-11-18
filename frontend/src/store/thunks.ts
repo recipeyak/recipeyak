@@ -608,9 +608,10 @@ export const resetConfirmationAsync = (dispatch: Dispatch) => async (
       const data = err.response && err.response.data
 
       const tokenData =
-        data["token"] && data["token"].map((x: unknown) => "token: " + x)
+        data["token"] &&
+        data["token"].map((x: unknown) => "token: " + String(x))
       const uidData =
-        data["uid"] && data["uid"].map((x: unknown) => "uid: " + x)
+        data["uid"] && data["uid"].map((x: unknown) => "uid: " + String(x))
       const nonFieldErrors = []
         .concat(data["non_field_errors"])
         .concat(tokenData)
