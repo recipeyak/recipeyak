@@ -1,4 +1,4 @@
-from django.contrib.postgres.fields import JSONField
+from django.db.models import JSONField
 from django.db.models.manager import Manager
 
 from core.models.base import CommonInfo

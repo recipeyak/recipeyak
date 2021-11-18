@@ -93,6 +93,8 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_VERIFICATION = None
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
 
 def get_oauth_url(env_var: str, default: str) -> str:
     return os.getenv(env_var, default) if DEBUG else os.environ[env_var]
