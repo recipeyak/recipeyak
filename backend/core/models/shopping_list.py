@@ -1,4 +1,6 @@
-from django.contrib.postgres.fields import JSONField
+from typing import Any
+
+from django.db.models import JSONField
 from django.db.models.manager import Manager
 
 from core.models.base import CommonInfo
@@ -11,6 +13,6 @@ class ShoppingList(CommonInfo):
     Useful for looking back at bad combines and similar parsing issues.
     """
 
-    ingredients = JSONField()
+    ingredients = JSONField[Any]()
 
     objects = Manager["ShoppingList"]()
