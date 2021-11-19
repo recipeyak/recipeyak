@@ -259,7 +259,7 @@ export default class AddRecipe extends React.Component<
             <ul>
               {this.props.ingredients.map((x, i) => (
                 <Ingredient
-                  key={x.name + i}
+                  key={x.name + String(i)}
                   recipeID={-1}
                   index={i}
                   id={i}
@@ -293,7 +293,7 @@ export default class AddRecipe extends React.Component<
             <SectionTitle>Preparation</SectionTitle>
             <ul>
               {this.props.steps.map((s, i) => (
-                <div key={s.text + i}>
+                <div key={s.text + String(i)}>
                   <label className="better-label">Step {i + 1}</label>
                   <ListItem
                     id={i}

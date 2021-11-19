@@ -37,12 +37,12 @@ function getTeamUserKeys(
         return
       }
       return {
-        id: id + "-team",
+        id: String(id) + "-team",
         name: team.name,
       }
     })
     .filter(notUndefined)
-    .concat({ id: userId + "-user", name: "personal" })
+    .concat({ id: String(userId) + "-user", name: "personal" })
 }
 
 const mapStateToProps = (state: IState) => ({

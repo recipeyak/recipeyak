@@ -2,19 +2,28 @@ import * as React from "react"
 import { classNames } from "@/classnames"
 
 export const ButtonLink = (props: IButtonProps) => (
-  <ButtonPlain {...props} className={props.className + " is-link"} />
+  <ButtonPlain {...props} className={classNames(props.className, "is-link")} />
 )
 
 export const ButtonPrimary = (props: IButtonProps) => (
-  <ButtonPlain {...props} className={props.className + " is-primary"} />
+  <ButtonPlain
+    {...props}
+    className={classNames(props.className, "is-primary")}
+  />
 )
 
 export const ButtonDanger = (props: IButtonProps) => (
-  <ButtonPlain {...props} className={props.className + " is-danger"} />
+  <ButtonPlain
+    {...props}
+    className={classNames(props.className, "is-danger")}
+  />
 )
 
 export const ButtonSecondary = (props: IButtonProps) => (
-  <ButtonPlain {...props} className={props.className + " is-secondary"} />
+  <ButtonPlain
+    {...props}
+    className={classNames(props.className, "is-secondary")}
+  />
 )
 
 interface IButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {

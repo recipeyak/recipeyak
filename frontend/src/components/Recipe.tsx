@@ -204,7 +204,7 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
               const ingre = item.item
               return (
                 <Ingredient
-                  key={"ingredient" + ingre.id}
+                  key={"ingredient" + String(ingre.id)}
                   index={i}
                   recipeID={recipe.id}
                   id={ingre.id}
@@ -225,7 +225,7 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
               const sec = item.item
               return (
                 <Section
-                  key={"section" + sec.id}
+                  key={"section" + String(sec.id)}
                   recipeId={recipe.id}
                   sectionId={sec.id}
                   title={sec.title}

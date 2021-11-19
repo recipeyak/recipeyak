@@ -31,7 +31,7 @@ import {
 function createRedirectURI(uri: string) {
   const url = new URL(uri)
   const REDIRECT_URI = "redirect_uri"
-  const newRedirectURI = url.searchParams.get(REDIRECT_URI) + "/connect"
+  const newRedirectURI = String(url.searchParams.get(REDIRECT_URI)) + "/connect"
   url.searchParams.delete(REDIRECT_URI)
   url.searchParams.append(REDIRECT_URI, newRedirectURI || "")
   return url
