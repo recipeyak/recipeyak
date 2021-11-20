@@ -49,6 +49,14 @@ class UserManager(BaseUserManager["User"]):
         return user
 
 
+def get_avatar_url(email: str) -> str:
+    md5_email = hashlib.md5(email.encode("utf-8")).hexdigest()
+    # indenticons by default `d=identicon`
+    # Avatars with ratings of G only `r=g`
+    # https://secure.gravatar.com/site/implement/images/
+    return f"/avatar/{md5_email}?d=identicon&r=g"
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     """Custom user model that only requires an email and password"""
 
