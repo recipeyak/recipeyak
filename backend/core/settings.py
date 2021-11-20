@@ -155,8 +155,8 @@ SESSION_ENGINE = "user_sessions.backends.db"
 
 if DEBUG and not TESTING:
     MIDDLEWARE += (
-        # "core.middleware.ServerTimingMiddleware",
-        # "core.middleware.APIDelayMiddleware",
+        "core.middleware.ServerTimingMiddleware",
+        "core.middleware.APIDelayMiddleware",
     )
 
 API_DELAY_MS = 200
