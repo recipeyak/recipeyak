@@ -142,11 +142,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     @property
     def avatar_url(self):
-        md5_email = hashlib.md5(self.email.encode("utf-8")).hexdigest()
-        # indenticons by default `d=identicon`
-        # Avatars with ratings of G only `r=g`
-        # https://secure.gravatar.com/site/implement/images/
-        return f"/avatar/{md5_email}?d=identicon&r=g"
+        return get_avatar_url(self.email)
 
     @property
     def scheduled_recipes(self):
