@@ -155,7 +155,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             "section_set",
         )
 
-    def list(self, request: AuthedRequest) -> Response:
+    def list(self, request: AuthedRequest) -> Response:  # type: ignore [override]
         queryset = self.filter_queryset(self.get_queryset())
         return Response(serialize(queryset))
 
