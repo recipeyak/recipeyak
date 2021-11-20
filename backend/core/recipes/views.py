@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Optional
+from typing import Any, Iterable, Optional, cast
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
@@ -46,6 +46,86 @@ from core.request import AuthedRequest
 logger = logging.getLogger(__name__)
 
 
+def serialize(recipes: Iterable[Recipe]) -> Iterable[dict[str, Any]]:
+    for recipe in recipes:
+        recipe_dict = dict(
+            id=recipe.id,
+            name=recipe.name,
+            source=recipe.source,
+            time=recipe.time,
+            ingredients=[
+                dict(
+                    id=x.id,
+                    quantity=x.quantity,
+                    name=x.name,
+                    description=x.description,
+                    position=x.position,
+                    optional=x.optional,
+                )
+                for x in recipe.ingredient_set.all()
+            ],
+            steps=[
+                dict(id=x.id, text=x.text, position=x.position,)
+                for x in recipe.step_set.all()
+            ],
+            timelineItems=[
+                dict(
+                    id=x.id,
+                    type="note",
+                    text=x.text,
+                    modified=x.modified,
+                    created=x.created,
+                    last_modified_by=dict(
+                        id=x.last_modified_by.id,
+                        email=x.last_modified_by.email,
+                        avatar_url=x.last_modified_by.avatar_url,
+                    )
+                    if x.last_modified_by
+                    else None,
+                    created_by=dict(
+                        id=x.created_by.id,
+                        email=x.created_by.email,
+                        avatar_url=x.created_by.avatar_url,
+                    )
+                    if x.created_by
+                    else None,
+                )
+                for x in cast(Any, recipe).note_set.all()
+            ]
+            + [
+                dict(
+                    type="recipe",
+                    id=x.id,
+                    action=x.action,
+                    created_by=dict(
+                        id=x.created_by.id,
+                        email=x.created_by.email,
+                        avatar_url=x.created_by.avatar_url,
+                    )
+                    if x.created_by
+                    else None,
+                    created=x.created,
+                )
+                for x in cast(Any, recipe).timelineevent_set.all()
+            ],
+            sections=[
+                dict(id=x.id, title=x.title, position=x.position,)
+                for x in cast(Any, recipe).section_set.all()
+            ],
+            servings=recipe.servings,
+            edits=recipe.edits,
+            modified=recipe.modified,
+            owner=dict(id=recipe.owner.id, type="team", name=recipe.owner.name)
+            if isinstance(recipe.owner, Team)
+            else dict(id=recipe.owner.id, type="user"),  # type: ignore [union-attr]
+            last_scheduled=recipe.get_last_scheduled(),
+            created=recipe.created,
+            archived_at=recipe.archived_at,
+            tags=recipe.tags,
+        )
+        yield recipe_dict
+
+
 class RecipeViewSet(viewsets.ModelViewSet):
 
     serializer_class = RecipeSerializer
@@ -73,6 +153,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
             "timelineevent_set__created_by",
             "section_set",
         )
+
+    def list(self, request: AuthedRequest) -> Response:
+        queryset = self.filter_queryset(self.get_queryset())
+        return Response(serialize(queryset))
 
     def create(self, request: AuthedRequest) -> Response:  # type: ignore [override]
         serializer = self.get_serializer(data=request.data, dangerously_allow_db=True)
