@@ -75,7 +75,9 @@ def get_shopping_list_view(request: AuthedRequest, team_pk: str) -> Response:
 
     ingredient_mapping = combine_ingredients(ingredients)
 
-    ShoppingList.objects.create(ingredients=JSONRenderer().render(ingredient_mapping))
+    ShoppingList.objects.create(
+        ingredients=JSONRenderer().render(ingredient_mapping).decode()
+    )
 
     return Response(ingredient_mapping, status=status.HTTP_200_OK)
 
