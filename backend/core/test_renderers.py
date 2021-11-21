@@ -1,7 +1,7 @@
 import json
 from decimal import Decimal
 
-from core.renderers import JSONEncoder
+from core.renderers import JSONRenderer
 
 
 def test_decimal_encoding() -> None:
@@ -16,7 +16,7 @@ def test_decimal_encoding() -> None:
         rounding_errors=Decimal("6.500000000000000000000000002"),
     )
 
-    assert json.loads(json.dumps(data, cls=JSONEncoder)) == dict(
+    assert json.loads(JSONRenderer().render(data)) == dict(
         whole_number="750",
         trailing_zeros="4",
         decimal="0.125",

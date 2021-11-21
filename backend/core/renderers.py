@@ -1,9 +1,7 @@
-import dataclasses
 from decimal import Decimal
 
 import orjson
 from rest_framework.renderers import JSONRenderer as DRFJSONRenderer
-from rest_framework.utils.encoders import JSONEncoder as DRFEncoder
 
 MAX_DECIMAL_PLACES = 8
 
@@ -20,15 +18,6 @@ def fmt_decimal(d: Decimal) -> str:
     return str(d.normalize())
 
 
-class JSONEncoder(DRFEncoder):
-    def default(self, o):
-        if dataclasses.is_dataclass(o):
-            return dataclasses.asdict(o)
-        if isinstance(o, Decimal):
-            return fmt_decimal(o)
-        return super().default(o)
-
-
 def default(o):
     if isinstance(o, Decimal):
         return fmt_decimal(o)
@@ -42,8 +31,6 @@ class JSONRenderer(DRFJSONRenderer):
     but converts them to floats. Normalizing Decimals gives a more human readable
     output.
     """
-
-    encoder_class = JSONEncoder
 
     def render(self, data, accepted_media_type=None, renderer_context=None) -> bytes:
         """
