@@ -19,10 +19,7 @@
     "tox.ini"
   ],
   "python.linting.flake8Enabled": true,
-  "python.linting.flake8Args": [
-    "--config",
-    "tox.ini"
-  ],
+  "python.linting.flake8Args": ["--config", "tox.ini"],
   "python.testing.pytestArgs": ["backend"],
   "python.testing.unittestEnabled": false,
   "python.testing.nosetestsEnabled": false,
