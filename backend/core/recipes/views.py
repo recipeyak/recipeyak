@@ -196,7 +196,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 timeline_events.get(recipe_id) or []
             )
 
-        return Response(recipes.values())
+        return Response(list(recipes.values()))
 
     def create(self, request: AuthedRequest) -> Response:  # type: ignore [override]
         serializer = self.get_serializer(data=request.data, dangerously_allow_db=True)

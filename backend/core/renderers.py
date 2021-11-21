@@ -3,6 +3,7 @@ from decimal import Decimal
 
 from rest_framework.renderers import JSONRenderer as DRFJSONRenderer
 from rest_framework.utils.encoders import JSONEncoder as DRFEncoder
+import orjson
 
 MAX_DECIMAL_PLACES = 8
 
@@ -28,6 +29,12 @@ class JSONEncoder(DRFEncoder):
         return super().default(o)
 
 
+def default(o):
+    if isinstance(o, Decimal):
+        return fmt_decimal(o)
+    return o
+
+
 class JSONRenderer(DRFJSONRenderer):
     """
     We define our own renderer so we can return dataclasses and decimals in
@@ -37,3 +44,13 @@ class JSONRenderer(DRFJSONRenderer):
     """
 
     encoder_class = JSONEncoder
+
+    def render(self, data, accepted_media_type=None, renderer_context=None) -> bytes:
+        """
+        Render `data` into JSON, returning a bytestring.
+        """
+        if data is None:
+            return b""
+
+        return orjson.dumps(data, default=default, option=orjson.OPT_NON_STR_KEYS)
+
