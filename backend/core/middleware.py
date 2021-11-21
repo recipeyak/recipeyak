@@ -90,7 +90,12 @@ class APIDelayMiddleware:
         self.API_DELAY_MS = getattr(settings, "API_DELAY_MS", 200)
 
     def __call__(self, request):
-        time.sleep(self.API_DELAY_MS / 1000)
+        with sentry_sdk.start_span(
+            op="recipeyak.middleware", description="api delay"
+        ) as span:
+            delay = self.API_DELAY_MS / 1000
+            span.set_data("delay", delay)
+            time.sleep(delay)
         return self.get_response(request)
 
 
