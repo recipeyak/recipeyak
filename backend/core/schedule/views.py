@@ -1,4 +1,3 @@
-import json
 import logging
 from typing import List, Optional, cast
 
@@ -22,7 +21,7 @@ from core.models import (
     Team,
     get_random_ical_id,
 )
-from core.renderers import JSONEncoder
+from core.renderers import JSONRenderer
 from core.request import AuthedRequest
 from core.schedule.serializers import (
     ScheduledRecipeSerializer,
@@ -76,7 +75,7 @@ def get_shopping_list_view(request: AuthedRequest, team_pk: str) -> Response:
     ingredient_mapping = combine_ingredients(ingredients)
 
     ShoppingList.objects.create(
-        ingredients=json.dumps(ingredient_mapping, cls=JSONEncoder)
+        ingredients=JSONRenderer().render(ingredient_mapping).decode()
     )
 
     return Response(ingredient_mapping, status=status.HTTP_200_OK)

@@ -15,7 +15,7 @@ from core.cumin import (
     fraction_to_decimal,
     parse_quantity,
 )
-from core.renderers import JSONEncoder
+from core.renderers import JSONRenderer
 
 
 @pytest.mark.parametrize(
@@ -217,9 +217,7 @@ def test_combining_ingredients_to_json() -> None:
         Ingredient(quantity="some", name="Soy Sauce"),
     ]
 
-    assert json.loads(
-        json.dumps(combine_ingredients(ingredients), cls=JSONEncoder)
-    ) == {
+    assert json.loads(JSONRenderer().render(combine_ingredients(ingredients))) == {
         "soy sauce": {
             "quantities": [
                 {"quantity": "4", "unit": "TEASPOON", "unknown_unit": None},

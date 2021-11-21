@@ -3,7 +3,6 @@ from typing import Any, cast
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.http import HttpRequest
-from django.utils.translation import ugettext_lazy as _
 from requests.exceptions import HTTPError
 from rest_framework import serializers
 
@@ -60,12 +59,12 @@ class SocialLoginSerializer(BaseSerializer):
 
         if not view:
             raise serializers.ValidationError(
-                _("View is not defined, pass it as a context variable")
+                "View is not defined, pass it as a context variable"
             )
 
         adapter_class = getattr(view, "adapter_class", None)
         if not adapter_class:
-            raise serializers.ValidationError(_("Define adapter_class in view"))
+            raise serializers.ValidationError("Define adapter_class in view")
 
         adapter = adapter_class(request)
         app = adapter.get_provider().get_app(request)
@@ -83,9 +82,9 @@ class SocialLoginSerializer(BaseSerializer):
             self.client_class = getattr(view, "client_class", None)
 
             if not self.callback_url:
-                raise serializers.ValidationError(_("Define callback_url in view"))
+                raise serializers.ValidationError("Define callback_url in view")
             if not self.client_class:
-                raise serializers.ValidationError(_("Define client_class in view"))
+                raise serializers.ValidationError("Define client_class in view")
 
             code = attrs.get("code")
 
@@ -105,7 +104,7 @@ class SocialLoginSerializer(BaseSerializer):
 
         else:
             raise serializers.ValidationError(
-                _("Incorrect input. access_token or code is required.")
+                "Incorrect input. access_token or code is required."
             )
 
         social_token = adapter.parse_token({"access_token": access_token})
@@ -115,7 +114,7 @@ class SocialLoginSerializer(BaseSerializer):
             login = self.get_social_login(adapter, app, social_token, access_token)
             complete_social_login(request, login)
         except HTTPError:
-            raise serializers.ValidationError(_("Incorrect value"))
+            raise serializers.ValidationError("Incorrect value")
 
         if not login.is_existing:
             # We have an account already signed up in a different flow
@@ -132,7 +131,7 @@ class SocialLoginSerializer(BaseSerializer):
                         msg = f"A { social_account.provider.capitalize()} account is already associated with { user_account.email }. Login with that account instead and connect your {login.account.provider.capitalize() } account to enable your new login method."
                     else:
                         msg = f"An email/password account is already associated with { user_account.email }. Login with that account and connect your { login.account.provider.capitalize() } account to enable your new login method."
-                    raise serializers.ValidationError(_(msg))
+                    raise serializers.ValidationError(msg)
 
             login.lookup()
             login.save(request, connect=True)
@@ -172,7 +171,7 @@ class RegisterSerializer(BaseSerializer):
                     msg = f"A {social_account.provider.capitalize()} account is already associated with { email }. Login with that account instead and add a password to enable email/password login."
                 else:
                     msg = f"An email/password account is already associated with { user_account.email }."
-                raise serializers.ValidationError(_(msg))
+                raise serializers.ValidationError(msg)
         return email
 
     def validate_password1(self, password):
@@ -180,9 +179,7 @@ class RegisterSerializer(BaseSerializer):
 
     def validate(self, data):
         if data["password1"] != data["password2"]:
-            raise serializers.ValidationError(
-                _("The two password fields didn't match.")
-            )
+            raise serializers.ValidationError("The two password fields didn't match.")
         return data
 
     def custom_signup(self, request, user):
