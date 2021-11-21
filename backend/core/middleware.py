@@ -95,7 +95,7 @@ class APIDelayMiddleware:
         ) as span:
             delay = self.API_DELAY_MS / 1000
             span.set_data("delay", delay)
-            time.sleep(self.API_DELAY_MS / 1000)
+            time.sleep(delay)
         return self.get_response(request)
 
 
