@@ -32,7 +32,7 @@ class JSONEncoder(DRFEncoder):
 def default(o):
     if isinstance(o, Decimal):
         return fmt_decimal(o)
-    return o
+    raise TypeError
 
 
 class JSONRenderer(DRFJSONRenderer):
