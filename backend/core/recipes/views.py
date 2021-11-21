@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+import collections
 import logging
-from typing import Any, Iterable, Optional, cast
+from typing import Any, Iterable, Optional
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
@@ -33,6 +34,7 @@ from core.models import (
     User,
     user_and_team_recipes,
 )
+from core.models.user import get_avatar_url
 from core.recipes.serializers import (
     IngredientSerializer,
     NoteSerializer,
@@ -48,84 +50,11 @@ from core.request import AuthedRequest
 logger = logging.getLogger(__name__)
 
 
-def serialize(recipes: Iterable[Recipe]) -> Iterable[dict[str, Any]]:
-    for recipe in recipes:
-        recipe_dict = dict(
-            id=recipe.id,
-            name=recipe.name,
-            source=recipe.source,
-            time=recipe.time,
-            ingredients=[
-                dict(
-                    id=x.id,
-                    quantity=x.quantity,
-                    name=x.name,
-                    description=x.description,
-                    position=x.position,
-                    optional=x.optional,
-                )
-                for x in recipe.ingredient_set.all()
-            ],
-            steps=[
-                dict(id=x.id, text=x.text, position=x.position,)
-                for x in recipe.step_set.all()
-            ],
-            timelineItems=[
-                dict(
-                    id=x.id,
-                    type="note",
-                    text=x.text,
-                    modified=x.modified,
-                    created=x.created,
-                    last_modified_by=dict(
-                        id=x.last_modified_by.id,
-                        email=x.last_modified_by.email,
-                        avatar_url=x.last_modified_by.avatar_url,
-                    )
-                    if x.last_modified_by
-                    else None,
-                    created_by=dict(
-                        id=x.created_by.id,
-                        email=x.created_by.email,
-                        avatar_url=x.created_by.avatar_url,
-                    )
-                    if x.created_by
-                    else None,
-                )
-                for x in cast(Any, recipe).note_set.all()
-            ]
-            + [
-                dict(
-                    type="recipe",
-                    id=x.id,
-                    action=x.action,
-                    created_by=dict(
-                        id=x.created_by.id,
-                        email=x.created_by.email,
-                        avatar_url=x.created_by.avatar_url,
-                    )
-                    if x.created_by
-                    else None,
-                    created=x.created,
-                )
-                for x in cast(Any, recipe).timelineevent_set.all()
-            ],
-            sections=[
-                dict(id=x.id, title=x.title, position=x.position,)
-                for x in cast(Any, recipe).section_set.all()
-            ],
-            servings=recipe.servings,
-            edits=recipe.edits,
-            modified=recipe.modified,
-            owner=dict(id=recipe.owner.id, type="team", name=recipe.owner.name)
-            if isinstance(recipe.owner, Team)
-            else dict(id=recipe.owner.id, type="user"),  # type: ignore [union-attr]
-            last_scheduled=recipe.get_last_scheduled(),
-            created=recipe.created,
-            archived_at=recipe.archived_at,
-            tags=recipe.tags,
-        )
-        yield recipe_dict
+def group_by_recipe_id(x: Iterable[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    map = collections.defaultdict(list)
+    for item in x:
+        map[item["recipe_id"]].append(item)
+    return map
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -157,8 +86,117 @@ class RecipeViewSet(viewsets.ModelViewSet):
         )
 
     def list(self, request: AuthedRequest) -> Response:  # type: ignore [override]
-        queryset = self.filter_queryset(self.get_queryset())
-        return Response(serialize(queryset))
+        recipes = {
+            x["id"]: x
+            for x in user_and_team_recipes(self.request.user).values(
+                "id",
+                "name",
+                "author",
+                "source",
+                "time",
+                "servings",
+                "edits",
+                "modified",
+                "owner_team",
+                "owner_team__name",
+                "owner_user",
+                "created",
+                "archived_at",
+                "tags",
+            )
+        }
+
+        ingredients = group_by_recipe_id(
+            Ingredient.objects.filter(recipe_id__in=recipes.keys()).values(
+                "id", "quantity", "name", "description", "position", "recipe_id",
+            )
+        )
+
+        schedule_recipe = dict()
+        for schedule in (
+            ScheduledRecipe.objects.filter(recipe_id__in=recipes.keys())
+            .distinct("recipe_id")
+            .order_by("-recipe_id", "-on")
+            .values("recipe_id", "on")
+        ):
+            schedule_recipe[schedule["recipe_id"]] = schedule["on"]
+
+        steps = group_by_recipe_id(
+            Step.objects.filter(recipe_id__in=recipes.keys()).values(
+                "id", "text", "position", "recipe_id",
+            )
+        )
+
+        sections = group_by_recipe_id(
+            Section.objects.filter(recipe_id__in=recipes.keys()).values(
+                "id", "title", "position", "recipe_id",
+            )
+        )
+
+        notes = collections.defaultdict(list)
+
+        for note in Note.objects.filter(recipe_id__in=recipes.keys()).values(
+            "id",
+            "text",
+            "modified",
+            "created",
+            "recipe_id",
+            "last_modified_by",
+            "last_modified_by__email",
+            "created_by",
+            "created_by__email",
+        ):
+
+            for name in ("last_modified_by", "created_by"):
+                if note[name] is not None:
+                    email = note[f"{name}__email"]
+                    note[name] = dict(
+                        id=note[name], email=email, avatar_url=get_avatar_url(email),
+                    )
+                note.pop(name, None)
+                note.pop(f"{name}__email", None)
+            notes[note["recipe_id"]].append(note)
+
+        timeline_events = collections.defaultdict(list)
+
+        for event in TimelineEvent.objects.filter(recipe_id__in=recipes.keys()).values(
+            "id", "action", "created", "created_by", "created_by__email", "recipe_id",
+        ):
+            if event["created_by"] is not None:
+                email = event["created_by__email"]
+                event["created_by"] = dict(
+                    id=event["created_by"],
+                    email=email,
+                    avatar_url=get_avatar_url(email),
+                )
+            event.pop("created_by", None)
+            event.pop("created_by__email", None)
+            timeline_events[event["recipe_id"]].append(event)
+
+        for recipe_id, recipe in recipes.items():
+            if recipe["owner_team"]:
+                recipe["owner"] = dict(
+                    type="team",
+                    id=recipe["owner_team"],
+                    name=recipe["owner_team__name"],
+                )
+            else:
+                recipe["owner"] = dict(type="user", id=recipe["owner_team"])
+
+            recipe.pop("owner_user", None)
+            recipe.pop("owner_user", None)
+            recipe.pop("owner_team__name", None)
+
+            recipe["last_scheduled_at"] = schedule_recipe.get(recipe_id)
+
+            recipe["ingredients"] = ingredients.get(recipe_id) or []
+            recipe["steps"] = steps.get(recipe_id) or []
+            recipe["sections"] = sections.get(recipe_id) or []
+            recipe["timelineItems"] = (notes.get(recipe_id) or []) + (
+                timeline_events.get(recipe_id) or []
+            )
+
+        return Response(recipes.values())
 
     def create(self, request: AuthedRequest) -> Response:  # type: ignore [override]
         serializer = self.get_serializer(data=request.data, dangerously_allow_db=True)
