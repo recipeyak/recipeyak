@@ -1,9 +1,9 @@
 import dataclasses
 from decimal import Decimal
 
+import orjson
 from rest_framework.renderers import JSONRenderer as DRFJSONRenderer
 from rest_framework.utils.encoders import JSONEncoder as DRFEncoder
-import orjson
 
 MAX_DECIMAL_PLACES = 8
 
@@ -53,4 +53,3 @@ class JSONRenderer(DRFJSONRenderer):
             return b""
 
         return orjson.dumps(data, default=default, option=orjson.OPT_NON_STR_KEYS)
-
