@@ -10,9 +10,6 @@
 
   "python.pythonPath": ".venv/bin/python",
   "python.envFile": "${workspaceFolder}/.vscode/.env",
-  // Use jedi instead of Microsoft's C# Python language server (MLS). I think
-  // MLS has introduced too many regressions to be depended on.
-  "python.jediEnabled": true,
   "python.linting.mypyEnabled": true,
   "python.linting.mypyArgs": [
     "--ignore-missing-imports",
@@ -22,8 +19,10 @@
     "tox.ini"
   ],
   "python.linting.flake8Enabled": true,
-  "python.linting.flake8Args": ["--config", "tox.ini"],
-  "python.linting.pylintEnabled": true,
+  "python.linting.flake8Args": [
+    "--config",
+    "tox.ini"
+  ],
   "python.testing.pytestArgs": ["backend"],
   "python.testing.unittestEnabled": false,
   "python.testing.nosetestsEnabled": false,
@@ -57,5 +56,5 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "python.languageServer": "Jedi"
+  "python.languageServer": "Pylance"
 }
