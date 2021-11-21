@@ -10,7 +10,6 @@ from allauth.socialaccount.models import SocialAccount
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.debug import sensitive_post_parameters
 from rest_framework import status
 from rest_framework.exceptions import PermissionDenied
@@ -55,7 +54,7 @@ class RegisterView(CreateAPIView):
             allauth_settings.EMAIL_VERIFICATION
             == allauth_settings.EmailVerificationMethod.MANDATORY
         ):
-            data: Dict[str, Any] = {"detail": _("Verification e-mail sent.")}
+            data: Dict[str, Any] = {"detail": "Verification e-mail sent."}
         else:
             data = {"user": UserDetailsSerializer(user).data}
 
@@ -79,7 +78,7 @@ class VerifyEmailView(APIView, ConfirmEmailView):
         confirmation = self.get_object()
         confirmation.confirm(self.request)
         logger.info("Email verified: %s", confirmation.email_address.email)
-        return Response({"detail": _("ok")}, status=status.HTTP_200_OK)
+        return Response({"detail": "ok"}, status=status.HTTP_200_OK)
 
 
 class SocialAccountListView(ListAPIView):

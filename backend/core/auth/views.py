@@ -11,7 +11,6 @@ from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from django.conf import settings
 from django.contrib.auth import login, logout
 from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.debug import sensitive_post_parameters
 from rest_framework import status
 from rest_framework.decorators import action
@@ -88,7 +87,7 @@ class LogoutView(APIView):
         logout(request)
 
         return Response(
-            {"detail": _("Successfully logged out.")}, status=status.HTTP_200_OK
+            {"detail": "Successfully logged out."}, status=status.HTTP_200_OK
         )
 
 
@@ -112,7 +111,7 @@ class PasswordResetView(GenericAPIView):
         logger.info("Password reset request by %s", request.user)
         # Return the success message with OK HTTP status
         return Response(
-            {"detail": _("Password reset e-mail has been sent.")},
+            {"detail": "Password reset e-mail has been sent."},
             status=status.HTTP_200_OK,
         )
 
@@ -143,7 +142,7 @@ class PasswordResetConfirmView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         logger.info("Password reset completed by %s", request.user)
-        return Response({"detail": _("Password has been reset with the new password.")})
+        return Response({"detail": "Password has been reset with the new password."})
 
 
 class PasswordChangeView(GenericAPIView):
@@ -170,7 +169,7 @@ class PasswordChangeView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         logger.info("Password changed by %s", request.user)
-        return Response({"detail": _("New password has been saved.")})
+        return Response({"detail": "New password has been saved."})
 
 
 class SocialLoginView(LoginView):
