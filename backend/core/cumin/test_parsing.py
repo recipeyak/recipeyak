@@ -1,4 +1,3 @@
-import json
 from decimal import Decimal
 from typing import Optional, Sequence, Tuple
 
@@ -217,9 +216,7 @@ def test_combining_ingredients_to_json() -> None:
         Ingredient(quantity="some", name="Soy Sauce"),
     ]
 
-    assert json.loads(
-        JSONRenderer().render(combine_ingredients(ingredients))
-    ) == {
+    assert json.loads(JSONRenderer().render(combine_ingredients(ingredients))) == {
         "soy sauce": {
             "quantities": [
                 {"quantity": "4", "unit": "TEASPOON", "unknown_unit": None},
