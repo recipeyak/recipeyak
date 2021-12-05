@@ -479,6 +479,15 @@ def test_updating_edit_recipe_via_api(client, user, recipe):
 
     assert Recipe.objects.get(pk=recipe.id).edits == 1
 
+def test_updating_edit_recipe_via_api_empty_tags(client, user, recipe):
+    """
+    regression test to allow empty lists for tags
+    """
+    client.force_authenticate(user)
+
+    res = client.patch(f"/api/v1/recipes/{recipe.id}/", {"tags": []})
+    assert res.status_code == status.HTTP_200_OK
+
 
 def test_copy_recipe(client, user_with_recipes, empty_team, user3):
     """
