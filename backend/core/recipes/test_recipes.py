@@ -479,6 +479,7 @@ def test_updating_edit_recipe_via_api(client, user, recipe):
 
     assert Recipe.objects.get(pk=recipe.id).edits == 1
 
+
 def test_updating_edit_recipe_via_api_empty_tags(client, user, recipe):
     """
     regression test to allow empty lists for tags
