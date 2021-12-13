@@ -65,6 +65,7 @@ class Recipe(CommonInfo, SoftDeleteObject):
         base_field=models.TextField(),
         null=True,
         default=list,
+        blank=True,
         help_text="Tags for organization recipes.",
     )
 
