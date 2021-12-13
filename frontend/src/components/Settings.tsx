@@ -89,14 +89,6 @@ function EmailEditForm(props: IEmailEditForm) {
       )}
       {props.editing ? (
         <div className="d-flex">
-          <ButtonPrimary
-            className="ml-2"
-            name="email"
-            type="submit"
-            loading={props.updatingEmail}
-            value="save email">
-            Save
-          </ButtonPrimary>
           <Button
             className="ml-2"
             disabled={props.updatingEmail}
@@ -105,6 +97,14 @@ function EmailEditForm(props: IEmailEditForm) {
             value="save email">
             Cancel
           </Button>
+          <ButtonPrimary
+            className="ml-2"
+            name="email"
+            type="submit"
+            loading={props.updatingEmail}
+            value="save email">
+            Save
+          </ButtonPrimary>
         </div>
       ) : (
         <a className="ml-2 has-text-primary" onClick={props.edit}>

@@ -3,7 +3,7 @@ import Textarea from "react-textarea-autosize"
 import { IRecipe } from "@/store/reducers/recipes"
 import GlobalEvent from "@/components/GlobalEvent"
 import { Markdown } from "@/components/Markdown"
-import { Button, ButtonLink } from "@/components/Buttons"
+import { Button, ButtonLink, ButtonPrimary } from "@/components/Buttons"
 import { hasSelection } from "@/utils/general"
 import { normalizeUnitsFracs } from "@/text"
 
@@ -175,13 +175,16 @@ export default class ListItem extends React.Component<
           <div className="field is-grouped">
             <p className="control">
               <Button
+                onClick={this.delete}
                 size="small"
-                onClick={this.update}
-                loading={updating}
-                name="save">
-                Save
+                loading={removing}
+                type="button"
+                name="delete">
+                Delete
               </Button>
             </p>
+          </div>
+          <div className="field is-grouped">
             <p className="control">
               <Button
                 size="small"
@@ -190,17 +193,14 @@ export default class ListItem extends React.Component<
                 Cancel
               </Button>
             </p>
-          </div>
-          <div className="field is-grouped">
             <p className="control">
-              <Button
-                onClick={this.delete}
+              <ButtonPrimary
                 size="small"
-                loading={removing}
-                type="button"
-                name="delete">
-                Delete
-              </Button>
+                onClick={this.update}
+                loading={updating}
+                name="save">
+                Save
+              </ButtonPrimary>
             </p>
           </div>
         </section>

@@ -94,7 +94,6 @@ const CalendarDayContainer = styled.div<ICalendarDayContainerProps>`
   }
   @media (max-width: ${p => p.theme.medium}) {
     width: 100%;
-    min-height: 75px;
   }
 `
 

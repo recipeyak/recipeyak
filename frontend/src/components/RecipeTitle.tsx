@@ -1,6 +1,6 @@
 import React from "react"
 import uniq from "lodash/uniq"
-import { Button } from "@/components/Buttons"
+import { Button, ButtonPrimary } from "@/components/Buttons"
 import MetaData from "@/components/MetaData"
 import {
   IRecipe,
@@ -12,6 +12,45 @@ import { TextInput } from "@/components/Forms"
 import { hasSelection } from "@/utils/general"
 import { connect } from "react-redux"
 import { Dropdown } from "@/components/RecipeTitleDropdown"
+import Owner from "@/components/Owner"
+import cls from "@/classnames"
+
+function TagEditor({
+  tags,
+  onRemove,
+  onChange,
+  onCreate,
+  newTag,
+  className,
+}: {
+  readonly tags: string[] | undefined
+  readonly newTag: string
+  readonly onRemove: (_: string) => void
+  readonly onChange: (_: React.ChangeEvent<HTMLInputElement>) => void
+  readonly onCreate: (_: React.KeyboardEvent<HTMLInputElement>) => void
+  readonly className?: string
+}) {
+  return (
+    <div className={cls("d-flex mt-2", className)}>
+      <label className="d-flex align-center">tags</label>
+      <div className="ml-2 d-flex align-center">
+        {tags?.map(x => (
+          <span className="tag">
+            {x}{" "}
+            <button className="delete is-small" onClick={() => onRemove(x)} />
+          </span>
+        ))}
+      </div>
+      <TextInput
+        className="ml-2 max-width-200px"
+        placeholder="new tag"
+        value={newTag}
+        onChange={onChange}
+        onKeyDown={onCreate}
+      />
+    </div>
+  )
+}
 
 interface IRecipeTitleProps {
   readonly id: IRecipe["id"]
@@ -133,6 +172,8 @@ class RecipeTitle extends React.Component<
       owner,
       updating,
     } = this.props
+
+    const ownerName = owner.type === "team" ? owner.name : "you"
     return (
       <div>
         <div className="grid-entire-row d-flex justify-space-between p-rel">
@@ -164,11 +205,9 @@ class RecipeTitle extends React.Component<
             <MetaData
               title="click to edit"
               onClick={this.handleEnableEdit}
-              owner={owner}
               author={author}
               source={source}
               servings={servings}
-              recipeId={id}
               time={time}
               tags={tags}
             />
@@ -217,45 +256,37 @@ class RecipeTitle extends React.Component<
                 />
               </label>
             </div>
-            <div className="d-flex mt-2">
-              <label className="d-flex align-center">tags</label>
-              <div className="ml-2 d-flex align-center">
-                {this.state.recipe.tags?.map(x => (
-                  <span className="tag">
-                    {x}{" "}
-                    <button
-                      className="delete is-small"
-                      onClick={() => this.removeTag(x)}
-                    />
-                  </span>
-                ))}
-              </div>
-              <TextInput
-                className="ml-2 max-width-200px"
-                placeholder="new tag"
-                value={this.state.newTag}
-                onChange={this.handleNewTagChange}
-                onKeyDown={this.handleNewTag}
+
+            <div className="d-flex align-center">
+              <TagEditor
+                tags={this.state.recipe.tags}
+                newTag={this.state.newTag}
+                onChange={this.handleInputChange}
+                onCreate={this.handleNewTag}
+                onRemove={this.removeTag}
+                className="mr-2"
               />
+
+              <Owner id={owner.id} name={ownerName} recipeId={id} />
             </div>
 
             <div className="d-flex grid-entire-row align-items-end justify-content-end">
               <Button
+                size="small"
+                className="mr-3"
+                type="button"
+                name="cancel recipe update"
+                onClick={this.toggleEdit}>
+                Cancel
+              </Button>
+              <ButtonPrimary
                 size="small"
                 type="submit"
                 loading={updating}
                 onClick={this.handleSave}
                 name="save recipe">
                 Save
-              </Button>
-              <Button
-                size="small"
-                className="ml-2"
-                type="button"
-                name="cancel recipe update"
-                onClick={this.toggleEdit}>
-                Cancel
-              </Button>
+              </ButtonPrimary>
             </div>
           </div>
         )}
