@@ -215,21 +215,26 @@ export function Note({ note, recipeId, className }: INoteProps) {
             />
             {isEditing && (
               <div className="d-flex justify-between align-center">
+                <ButtonSecondary
+                  size="small"
+                  onClick={onDelete}
+                  className="mr-2">
+                  delete
+                </ButtonSecondary>
                 <div className="d-flex justify-between align-center">
+                  <ButtonSecondary
+                    size="small"
+                    onClick={onCancel}
+                    className="mr-3">
+                    cancel
+                  </ButtonSecondary>
                   <ButtonPrimary
                     size="small"
                     onClick={onSave}
-                    loading={isUpdating}
-                    className="mr-2">
+                    loading={isUpdating}>
                     save
                   </ButtonPrimary>
-                  <ButtonSecondary size="small" onClick={onCancel}>
-                    cancel
-                  </ButtonSecondary>
                 </div>
-                <ButtonSecondary size="small" onClick={onDelete}>
-                  delete
-                </ButtonSecondary>
               </div>
             )}
           </>
@@ -330,6 +335,8 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     textarea: !isEditing,
   })
 
+  const isDisabled = draftText === ""
+
   return {
     isEditing,
     onEditorKeyDown,
@@ -342,6 +349,7 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     onCreate,
     isLoading,
     onCancel,
+    isDisabled,
   }
 }
 
@@ -362,9 +370,11 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
     onCreate,
     isLoading,
     onCancel,
+    isDisabled,
   } = useNoteCreatorHandlers({
     recipeId,
   })
+
   return (
     <div className={className}>
       <Textarea
@@ -379,13 +389,17 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
         placeholder="Add a note..."
       />
       {isEditing && (
-        <div className="d-flex justify-between align-center">
-          <ButtonPrimary size="small" onClick={onCreate} loading={isLoading}>
-            add
-          </ButtonPrimary>
-          <ButtonSecondary size="small" onClick={onCancel}>
+        <div className="d-flex justify-end align-center">
+          <ButtonSecondary size="small" className="mr-3" onClick={onCancel}>
             cancel
           </ButtonSecondary>
+          <ButtonPrimary
+            size="small"
+            onClick={onCreate}
+            loading={isLoading}
+            disabled={isDisabled}>
+            add
+          </ButtonPrimary>
         </div>
       )}
     </div>

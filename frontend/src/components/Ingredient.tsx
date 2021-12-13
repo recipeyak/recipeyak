@@ -2,7 +2,7 @@ import React from "react"
 
 import IngredientView from "@/components/IngredientView"
 import GlobalEvent from "@/components/GlobalEvent"
-import { Button, ButtonLink } from "@/components/Buttons"
+import { Button, ButtonLink, ButtonPrimary } from "@/components/Buttons"
 import { TextInput, selectTarget, CheckBox } from "@/components/Forms"
 import { hasSelection } from "@/utils/general"
 import { useDrop, useDrag } from "react-dnd"
@@ -281,13 +281,15 @@ export function Ingredient(props: {
         <div className="field is-grouped">
           <p className="control">
             <Button
+              onClick={remove}
               size="small"
-              type="submit"
-              name="update"
-              loading={props.updating}>
-              Update
+              loading={props.removing}
+              name="remove">
+              Remove
             </Button>
           </p>
+        </div>
+        <div className="field is-grouped">
           <p className="control">
             <Button
               onClick={handleCancelButton}
@@ -297,16 +299,14 @@ export function Ingredient(props: {
               Cancel
             </Button>
           </p>
-        </div>
-        <div className="field is-grouped">
           <p className="control">
-            <Button
-              onClick={remove}
+            <ButtonPrimary
               size="small"
-              loading={props.removing}
-              name="remove">
-              Remove
-            </Button>
+              type="submit"
+              name="update"
+              loading={props.updating}>
+              Update
+            </ButtonPrimary>
           </p>
         </div>
       </section>

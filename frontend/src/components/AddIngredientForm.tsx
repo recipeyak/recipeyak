@@ -144,6 +144,26 @@ function AddIngredientForm({
         error={error}
       />
       <div className="field is-grouped">
+        {toggleShowAddSection ? (
+          <div className="flex-grow">
+            <Button
+              size="small"
+              type="button"
+              name="toggle add section"
+              onClick={toggleShowAddSection}>
+              Add Section
+            </Button>
+          </div>
+        ) : null}
+        <p className="control">
+          <Button
+            onClick={cancelAddIngredient}
+            size="small"
+            type="button"
+            name="cancel add ingredient">
+            Cancel
+          </Button>
+        </p>
         <p className="control">
           <ButtonPrimary
             disabled={addDisabled}
@@ -154,27 +174,6 @@ function AddIngredientForm({
             Add
           </ButtonPrimary>
         </p>
-        <p className="control">
-          <Button
-            onClick={cancelAddIngredient}
-            size="small"
-            type="button"
-            name="cancel add ingredient">
-            Cancel
-          </Button>
-        </p>
-        {toggleShowAddSection ? (
-          <div>
-            <span className="mr-3">or</span>
-            <Button
-              size="small"
-              type="button"
-              name="toggle add section"
-              onClick={toggleShowAddSection}>
-              Add Section
-            </Button>
-          </div>
-        ) : null}
       </div>
     </form>
   )

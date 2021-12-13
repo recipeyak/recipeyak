@@ -51,13 +51,22 @@ const AddStepForm = ({
           }}
           value={text}
           className={"my-textarea" + (error ? " is-danger" : "")}
-          placeholder="Add your step here"
+          placeholder="Add a step..."
           name="step"
         />
         {error ? <p className="fs-4 c-danger">A step is required</p> : null}
       </div>
     </div>
-    <div className="field is-grouped">
+    <div className="field is-grouped justify-end">
+      <p className="control">
+        <Button
+          onClick={cancelAddStep}
+          size="small"
+          type="button"
+          name="cancel step">
+          Cancel
+        </Button>
+      </p>
       <p className="control">
         <ButtonPrimary
           size="small"
@@ -67,15 +76,6 @@ const AddStepForm = ({
           loading={loading}>
           Add
         </ButtonPrimary>
-      </p>
-      <p className="control">
-        <Button
-          onClick={cancelAddStep}
-          size="small"
-          type="button"
-          name="cancel step">
-          Cancel
-        </Button>
       </p>
     </div>
   </form>

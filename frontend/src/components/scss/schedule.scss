@@ -4,12 +4,6 @@
   color: hsl(0, 0%, 71%);
 }
 
-.schedule-height {
-  @media (min-width: $small) {
-    height: calc(100vh - #{$nav-height});
-  }
-}
-
 .d-medium-block {
   @media (max-width: $medium) {
     display: block !important;

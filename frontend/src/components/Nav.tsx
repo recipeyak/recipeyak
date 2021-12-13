@@ -153,7 +153,7 @@ function DropDownButton({ onClick }: IDropDownButtonProps) {
 
 function AuthButtons() {
   return (
-    <div className="d-flex hide-sm">
+    <div className="d-flex">
       <NavLink to="/login" className="better-nav-item">
         Login
       </NavLink>

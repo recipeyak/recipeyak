@@ -1,7 +1,6 @@
 import React from "react"
 import { Link } from "react-router-dom"
 
-import Owner from "@/components/Owner"
 import { IRecipe } from "@/store/reducers/recipes"
 
 interface IMetaDataProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -9,8 +8,6 @@ interface IMetaDataProps extends React.HTMLAttributes<HTMLDivElement> {
   readonly source: string
   readonly servings: string
   readonly time: string
-  readonly owner: IRecipe["owner"]
-  readonly recipeId: IRecipe["id"]
   readonly tags: IRecipe["tags"]
 }
 
@@ -47,12 +44,15 @@ function SourceLink({ children }: { children: string }) {
 }
 
 function MetaPiece({ children }: React.HTMLAttributes<HTMLDivElement>) {
-  return <>{children}</>
+  return <span>{children}</span>
 }
 
 function MetaBold({ children, onClick }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <b title="click  to edit" className="cursor-pointer" onClick={onClick}>
+    <b
+      title="click  to edit"
+      className="cursor-pointer white-space-nowrap"
+      onClick={onClick}>
       {children}
     </b>
   )
@@ -63,19 +63,17 @@ const MetaData = ({
   source = "",
   servings = "",
   time = "",
-  owner,
   onClick,
-  recipeId,
   tags,
 }: IMetaDataProps) => {
   const _author = isValid(author) ? (
     <MetaPiece>
-      By <MetaBold onClick={onClick}>{author}</MetaBold>{" "}
+      By&nbsp;<MetaBold onClick={onClick}>{author}</MetaBold>{" "}
     </MetaPiece>
   ) : null
   const _source = isValid(source) ? (
     <MetaPiece>
-      from{" "}
+      from&nbsp;
       {isURL(source) ? (
         <MetaBold>
           <SourceLink>{source}</SourceLink>
@@ -87,28 +85,24 @@ const MetaData = ({
   ) : null
   const _servings = isValid(servings) ? (
     <MetaPiece>
-      creating <MetaBold onClick={onClick}>{servings}</MetaBold>{" "}
+      creating&nbsp;<MetaBold onClick={onClick}>{servings}</MetaBold>{" "}
     </MetaPiece>
   ) : null
   const _time = isValid(time) ? (
     <MetaPiece>
-      in <MetaBold onClick={onClick}>{time}</MetaBold>{" "}
+      in&nbsp;<MetaBold onClick={onClick}>{time}</MetaBold>{" "}
     </MetaPiece>
   ) : null
-
-  const ownerName = owner.type === "team" ? owner.name : "you"
 
   return (
     <>
       <div className="break-word">
-        <span>
+        <div>
           {_author}
           {_source}
           {_servings}
           {_time}
-        </span>
-
-        <Owner id={owner.id} name={ownerName} recipeId={recipeId} />
+        </div>
       </div>
       <div>
         {tags?.map(x => (

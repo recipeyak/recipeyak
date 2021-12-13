@@ -50,15 +50,27 @@ export function AddSectionFormInner({
         />
       </div>
       <div className="field is-grouped">
-        <p className="control">
-          <ButtonPrimary
-            disabled={addDisabled}
-            size="small"
-            type="submit"
-            loading={status === "loading"}>
-            Save
-          </ButtonPrimary>
-        </p>
+        {onRemove ? (
+          <p className="control flex-grow">
+            <Button
+              size="small"
+              type="button"
+              onClick={onRemove}
+              loading={removing === "loading"}>
+              Remove
+            </Button>
+          </p>
+        ) : toggleShowAddSection ? (
+          <p className="control flex-grow">
+            <Button
+              size="small"
+              type="button"
+              name="toggle add section"
+              onClick={toggleShowAddSection}>
+              Add Ingredient
+            </Button>
+          </p>
+        ) : null}
         <p className="control">
           <Button
             onClick={onCancel}
@@ -68,28 +80,15 @@ export function AddSectionFormInner({
             Cancel
           </Button>
         </p>
-        {onRemove ? (
-          <div className="d-flex justify-content-end flex-grow-1">
-            <Button
-              size="small"
-              type="button"
-              onClick={onRemove}
-              loading={removing === "loading"}>
-              Remove
-            </Button>
-          </div>
-        ) : toggleShowAddSection ? (
-          <div>
-            <span className="mr-3">or</span>
-            <Button
-              size="small"
-              type="button"
-              name="toggle add section"
-              onClick={toggleShowAddSection}>
-              Add Ingredient
-            </Button>
-          </div>
-        ) : null}
+        <p className="control">
+          <ButtonPrimary
+            disabled={addDisabled}
+            size="small"
+            type="submit"
+            loading={status === "loading"}>
+            Save
+          </ButtonPrimary>
+        </p>
       </div>
       {status === "failure" && <p>error adding ingredient</p>}
     </form>

@@ -192,7 +192,7 @@ function Nav({ dayTs, teamID, onPrev, onNext, onCurrent, type }: INavProps) {
   } = useCalendarSettings(teamID)
 
   return (
-    <section className="d-flex justify-space-between align-items-center">
+    <section className="d-flex justify-space-between align-items-center flex-shrink-0">
       <div className="d-flex">
         <CalTitle dayTs={dayTs} />
         <TeamSelect teams={teams} value={teamID} onChange={handleOwnerChange} />
@@ -229,9 +229,6 @@ const CalContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  @media (max-width: ${p => p.theme.small}) {
-    height: 100%;
-  }
 `
 
 // pull the week from the URL otherwise default to the current time.
