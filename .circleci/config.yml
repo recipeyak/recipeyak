@@ -239,6 +239,17 @@ jobs:
               --tag recipeyak/nginx:$CIRCLE_SHA1 .
             docker push recipeyak/nginx:$CIRCLE_SHA1
 
+  deploy:
+    docker:
+      - image: quay.io/ansible/ansible-runner:stable-2.11-latest@sha256:a028ad1b34a94c8eb3302d765bcbe4ac88dcbbf30f0af0185a32dad003d14b10
+    steps:
+      - run:
+          name: deploy recipeyak
+          working_directory: infrastructure/playbooks
+          command: |
+            echo $RECIPEYAK_ANSIBLE_HOSTS > hosts.yml
+            ansible-playbook deploy.yml -i hosts.yml -e "release_sha=$CIRCLE_SHA1"
+
   build_postgres_container:
     docker:
       - image: docker:18.05.0-ce
@@ -313,3 +324,14 @@ workflows:
           filters:
             branches:
               only: master
+      - hold:
+          type: approval
+          requires:
+           - build_api_container
+           - build_ui_container
+           - build_proxy_container
+           - build_postgres_container
+           - build_pgdump_container
+      - deploy:
+          requires:
+            - hold
