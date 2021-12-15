@@ -196,16 +196,6 @@ class RecipeSerializer(BaseModelSerializer):
             for field_name in existing - allowed:
                 self.fields.pop(field_name)
 
-    def validate_steps(self, value):
-        if value == []:
-            raise serializers.ValidationError("steps are required")
-        return value
-
-    def validate_ingredients(self, value):
-        if value == []:
-            raise serializers.ValidationError("ingredients are required")
-        return value
-
     def validate_team(self, value):
         if value is None:
             return None

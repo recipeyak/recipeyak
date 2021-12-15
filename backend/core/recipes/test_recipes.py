@@ -81,7 +81,7 @@ def test_recipe_creation(client, user):
 
 def test_creating_recipe_with_empty_ingredients_and_steps(client, user):
     """
-    ensure that when creating a recipe without ingredients or steps, that the api will through an error
+    ensure we can create a recipe without ingredients or steps
     """
 
     client.force_authenticate(user)
@@ -89,11 +89,7 @@ def test_creating_recipe_with_empty_ingredients_and_steps(client, user):
     data = {"name": "", "ingredients": [], "steps": []}
 
     res = client.post("/api/v1/recipes/", data)
-    assert res.status_code == status.HTTP_400_BAD_REQUEST
-    assert res.data["name"] is not None
-    assert res.data["ingredients"] is not None
-    assert res.data["steps"] is not None
-
+    assert res.status_code == 200
 
 def test_cache_headers(client: APIClient, user: User, recipe: Recipe) -> None:
     """
