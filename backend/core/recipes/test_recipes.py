@@ -86,10 +86,10 @@ def test_creating_recipe_with_empty_ingredients_and_steps(client, user):
 
     client.force_authenticate(user)
 
-    data = {"name": "", "ingredients": [], "steps": []}
+    data = {"name": "some recipe", "ingredients": [], "steps": []}
 
     res = client.post("/api/v1/recipes/", data)
-    assert res.status_code == 200
+    assert res.status_code == 201
 
 
 def test_cache_headers(client: APIClient, user: User, recipe: Recipe) -> None:
