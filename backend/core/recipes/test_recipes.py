@@ -91,6 +91,7 @@ def test_creating_recipe_with_empty_ingredients_and_steps(client, user):
     res = client.post("/api/v1/recipes/", data)
     assert res.status_code == 200
 
+
 def test_cache_headers(client: APIClient, user: User, recipe: Recipe) -> None:
     """
     check that we actually disable caching
