@@ -332,11 +332,11 @@ workflows:
       - hold:
           type: approval
           requires:
-           - build_api_container
-           - build_ui_container
-           - build_proxy_container
-           - build_postgres_container
-           - build_pgdump_container
+            - build_api_container
+            - build_ui_container
+            - build_proxy_container
+            - build_postgres_container
+            - build_pgdump_container
       - deploy:
           requires:
             - hold
