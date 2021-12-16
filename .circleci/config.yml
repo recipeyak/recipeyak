@@ -17,6 +17,10 @@ jobs:
           ]
     steps:
       - checkout
+      - run:
+          name: skip build if no changes
+          command: |
+            ./s/stop_ci_if_no_changes backend/
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
@@ -48,6 +52,10 @@ jobs:
       - image: circleci/postgres:9.5-alpine-ram
     steps:
       - checkout
+      - run:
+          name: skip build if no changes
+          command: |
+            ./s/stop_ci_if_no_changes backend/
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
@@ -79,6 +87,10 @@ jobs:
       - image: circleci/postgres:9.5-alpine-ram
     steps:
       - checkout
+      - run:
+          name: skip build if no changes
+          command: |
+            ./s/stop_ci_if_no_changes backend/core/migrations/
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
@@ -106,6 +118,10 @@ jobs:
       - image: circleci/node:12.4.0
     steps:
       - checkout
+      - run:
+          name: skip build if no changes
+          command: |
+            ./s/stop_ci_if_no_changes frontend/
       - restore_cache:
           keys:
             - frontend-v9-dependencies-{{ checksum "yarn.lock" }}
@@ -126,6 +142,10 @@ jobs:
       - image: circleci/node:12.4.0
     steps:
       - checkout
+      - run:
+          name: skip build if no changes
+          command: |
+            ./s/stop_ci_if_no_changes frontend/
       - restore_cache:
           keys:
             - frontend-v9-dependencies-{{ checksum "yarn.lock" }}
@@ -298,32 +318,17 @@ workflows:
           requires:
             - backend_test
             - backend_lint
-          filters:
-            branches:
-              only: master
       - build_ui_container:
           context: DockerHub
           requires:
             - frontend_test
             - frontend_lint
-          filters:
-            branches:
-              only: master
       - build_proxy_container:
           context: DockerHub
-          filters:
-            branches:
-              only: master
       - build_postgres_container:
           context: DockerHub
-          filters:
-            branches:
-              only: master
       - build_pgdump_container:
           context: DockerHub
-          filters:
-            branches:
-              only: master
       - hold:
           type: approval
           requires:
