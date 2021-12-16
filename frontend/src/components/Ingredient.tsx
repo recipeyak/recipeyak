@@ -281,6 +281,7 @@ export function Ingredient(props: {
         <div className="field is-grouped">
           <p className="control">
             <Button
+              type="button"
               onClick={remove}
               size="small"
               loading={props.removing}

@@ -98,8 +98,6 @@ export const fetchRecipeList = createAsyncAction(
 
 export interface IAddRecipeError {
   readonly errorWithName?: boolean
-  readonly errorWithIngredients?: boolean
-  readonly errorWithSteps?: boolean
 }
 
 export const createRecipe = createAsyncAction(
