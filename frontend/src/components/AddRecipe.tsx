@@ -178,11 +178,7 @@ export default class AddRecipe extends React.Component<
       handleIngredientChange,
     } = this
 
-    const {
-      errorWithName,
-      errorWithIngredients,
-      errorWithSteps,
-    } = this.props.error
+    const { errorWithName } = this.props.error
 
     const {
       quantity = "",
@@ -284,7 +280,6 @@ export default class AddRecipe extends React.Component<
               name={name}
               description={description}
               optional={optional}
-              error={errorWithIngredients}
               loading={this.state.loading}
             />
           </div>
@@ -310,7 +305,6 @@ export default class AddRecipe extends React.Component<
               cancelAddStep={cancelAddStep}
               stepNumber={this.props.steps.length + 1}
               text={step}
-              error={errorWithSteps}
             />
           </div>
         </section>
