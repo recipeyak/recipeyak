@@ -18,7 +18,9 @@ export default function IngredientView({
   optional,
   dragRef,
 }: IIngredientVIewProps) {
-  const fmtDescription = description ? ", " + description : ""
+  const fmtDescription = description
+    ? ", " + normalizeUnitsFracs(description)
+    : ""
 
   return (
     <p className="listitem-text justify-space-between" ref={dragRef}>
