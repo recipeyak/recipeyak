@@ -153,8 +153,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     note[name] = dict(
                         id=note[name], email=email, avatar_url=get_avatar_url(email),
                     )
-                note.pop(name, None)
+                else:
+                    note.pop(name, None)
                 note.pop(f"{name}__email", None)
+            note["type"] = "note"
             notes[note["recipe_id"]].append(note)
 
         timeline_events = collections.defaultdict(list)
@@ -171,6 +173,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 )
             event.pop("created_by", None)
             event.pop("created_by__email", None)
+            event["type"] = "recipe"
             timeline_events[event["recipe_id"]].append(event)
 
         for recipe_id, recipe in recipes.items():
