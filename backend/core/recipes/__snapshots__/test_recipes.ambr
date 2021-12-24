@@ -1,0 +1,35 @@
+# name: test_recipe_list
+  <class 'list'> [
+    <class 'dict'> {
+      'created': <class 'str'>,
+      'created_by': <class 'dict'> {
+        'avatar_url': '/avatar/bc6a715808d9aae0ddeefb1e47e482a6?d=identicon&r=g',
+        'email': 'john@doe.org',
+        'id': <class 'int'>,
+      },
+      'id': <class 'int'>,
+      'last_modified_by': <class 'dict'> {
+        'avatar_url': '/avatar/bc6a715808d9aae0ddeefb1e47e482a6?d=identicon&r=g',
+        'email': 'john@doe.org',
+        'id': <class 'int'>,
+      },
+      'modified': <class 'str'>,
+      'recipe_id': <class 'int'>,
+      'text': "I'd say we should use an even smaller pot next time.",
+      'type': 'note',
+    },
+    <class 'dict'> {
+      'created': <class 'str'>,
+      'created_by': <class 'dict'> {
+        'avatar_url': '/avatar/bc6a715808d9aae0ddeefb1e47e482a6?d=identicon&r=g',
+        'email': 'john@doe.org',
+        'id': <class 'int'>,
+      },
+      'id': <class 'int'>,
+      'modified': <class 'str'>,
+      'recipe_id': <class 'int'>,
+      'text': 'Use a small pot.',
+      'type': 'note',
+    },
+  ]
+---

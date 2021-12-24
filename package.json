@@ -207,5 +207,8 @@
       "babel-plugin-styled-components",
       "transform-class-properties"
     ]
+  },
+  "volta": {
+    "node": "12.22.8"
   }
 }
