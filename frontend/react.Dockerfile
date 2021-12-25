@@ -52,7 +52,7 @@ RUN apt-get update -yq && \
     rm -rf /var/lib/apt/lists/*
 
 # Install Application into container
-RUN set -ex && mkdir -p /var/app/frontend
+RUN set -ex && mkdir -p /var/app/
 
 WORKDIR /var/app
 
@@ -60,8 +60,7 @@ COPY package.json yarn.lock /var/app/
 
 RUN yarn install
 
-COPY . /var/app/frontend
-COPY tsconfig.json /var/app/
+COPY . /var/app/
 
 ARG OAUTH_BITBUCKET_CLIENT_ID
 ARG OAUTH_FACEBOOK_CLIENT_ID
@@ -71,13 +70,13 @@ ARG OAUTH_GOOGLE_CLIENT_ID
 ARG FRONTEND_SENTRY_DSN
 ARG GIT_SHA
 
-RUN node /var/app/frontend/scripts/build.js && \
-    bash /var/app/frontend/scripts/crawl.sh
+RUN node /var/app/scripts/build.js && \
+    bash /var/app/scripts/crawl.sh
 
 FROM alpine:3.7@sha256:8421d9a84432575381bfabd248f1eb56f3aa21d9d7cd2511583c68c9b7511d10
 RUN mkdir -p /var/app/build
-COPY --from=builder /var/app/frontend/build /var/app/build
-COPY --from=builder /var/app/frontend/entrypoint.sh /var/app/
+COPY --from=builder /var/app/build /var/app/build
+COPY --from=builder /var/app/entrypoint.sh /var/app/
 WORKDIR /var/app
 
 CMD ["/var/app/entrypoint.sh"]
