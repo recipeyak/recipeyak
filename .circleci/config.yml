@@ -15,7 +15,6 @@ jobs:
             "-c",
             "pg_stat_statements.track=all",
           ]
-    working_directory: backend
     steps:
       - checkout
       # https://circleci.com/docs/2.0/caching/
@@ -198,13 +197,13 @@ jobs:
   build_api_container:
     docker:
       - image: docker:18.05.0-ce
-    working_directory: backend
     steps:
       - checkout
       - setup_remote_docker
       # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
       - run:
           name: build container
+          working_directory: backend
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
             docker build -f django.Dockerfile \
@@ -216,13 +215,13 @@ jobs:
   build_ui_container:
     docker:
       - image: docker:18.05.0-ce
-    working_directory: frontend
     steps:
       - checkout
       - setup_remote_docker
       # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
       - run:
           name: build container
+          working_directory: frontend
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
             docker build -f react.Dockerfile \
@@ -239,13 +238,13 @@ jobs:
   build_proxy_container:
     docker:
       - image: docker:18.05.0-ce
-    working_directory: nginx
     steps:
       - checkout
       - setup_remote_docker
       # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
       - run:
           name: build container
+          working_directory: nginx
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
             docker build -f nginx.Dockerfile \
@@ -255,13 +254,13 @@ jobs:
   build_postgres_container:
     docker:
       - image: docker:18.05.0-ce
-    working_directory: postgres
     steps:
       - checkout
       - setup_remote_docker
       # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
       - run:
           name: build container
+          working_directory: postgres
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
             docker build -f postgres.Dockerfile \
@@ -271,13 +270,13 @@ jobs:
   build_pgdump_container:
     docker:
       - image: docker:18.05.0-ce
-    working_directory: pgdump
     steps:
       - checkout
       - setup_remote_docker
       # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
       - run:
           name: build container
+          working_directory: pgdump
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
             docker build -f pgdump.Dockerfile \
