@@ -107,22 +107,23 @@ jobs:
   frontend_test:
     docker:
       - image: circleci/node:12.4.0
-    working_directory: frontend
     steps:
       - checkout
       - restore_cache:
           keys:
-            - frontend-v11-dependencies-{{ checksum "yarn.lock" }}
+            - frontend-v11-dependencies-{{ checksum "frontend/yarn.lock" }}
       - run:
           name: install dependencies
+          working_directory: frontend
           command: |
             yarn install --frozen-lockfile --non-interactive
       - save_cache:
           paths:
             - ./node_modules
-          key: frontend-v11-dependencies-{{ checksum "yarn.lock" }}
+          key: frontend-v11-dependencies-{{ checksum "frontend/yarn.lock" }}
       - run:
           name: run tests
+          working_directory: frontend
           command: ./s/test
 
   frontend_lint:
