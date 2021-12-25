@@ -60,7 +60,7 @@ COPY package.json yarn.lock /var/app/
 
 RUN yarn install
 
-COPY ./frontend /var/app/frontend
+COPY . /var/app/frontend
 COPY tsconfig.json /var/app/
 
 ARG OAUTH_BITBUCKET_CLIENT_ID
