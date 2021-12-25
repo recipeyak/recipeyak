@@ -15,7 +15,6 @@ jobs:
             "-c",
             "pg_stat_statements.track=all",
           ]
-    working_directory: backend
     steps:
       - checkout
       # https://circleci.com/docs/2.0/caching/
@@ -245,9 +244,10 @@ jobs:
       # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
       - run:
           name: build container
+          working_directory: nginx
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            docker build -f nginx/nginx.Dockerfile \
+            docker build -f nginx.Dockerfile \
               --tag recipeyak/nginx:$CIRCLE_SHA1 .
             docker push recipeyak/nginx:$CIRCLE_SHA1
 
@@ -260,9 +260,10 @@ jobs:
       # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
       - run:
           name: build container
+          working_directory: postgres
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            docker build -f postgres/postgres.Dockerfile \
+            docker build -f postgres.Dockerfile \
               --tag recipeyak/postgres:$CIRCLE_SHA1 .
             docker push recipeyak/postgres:$CIRCLE_SHA1
 
@@ -275,9 +276,10 @@ jobs:
       # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
       - run:
           name: build container
+          working_directory: pgdump
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            docker build -f pgdump/pgdump.Dockerfile \
+            docker build -f pgdump.Dockerfile \
               --tag recipeyak/pgdump:$CIRCLE_SHA1 .
             docker push recipeyak/pgdump:$CIRCLE_SHA1
 
