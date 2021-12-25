@@ -155,6 +155,7 @@ jobs:
             ./s/build
       - run:
           name: move artifacts
+          working_directory: frontend
           # copy bundle analyzer report
           command: |
             mkdir -p /tmp/frontend-artifacts
