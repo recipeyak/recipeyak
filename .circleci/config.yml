@@ -15,6 +15,7 @@ jobs:
             "-c",
             "pg_stat_statements.track=all",
           ]
+    working_directory: backend
     steps:
       - checkout
       # https://circleci.com/docs/2.0/caching/
