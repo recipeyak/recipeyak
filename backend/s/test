@@ -13,10 +13,10 @@ main() {
   if [[ "${ARGS}" == *'--watch'* ]]; then
     ARGS="${ARGS/'--watch'/}"
     # shellcheck disable=SC2086
-    ../.venv/bin/ptw -- $ARGS
+    ./.venv/bin/ptw -- $ARGS
   else
     # shellcheck disable=SC2086
-    ../.venv/bin/pytest $ARGS
+    ./.venv/bin/pytest $ARGS
   fi
 }
 
