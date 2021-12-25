@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.utils.dateparse import parse_datetime
 from rest_framework import status
 from rest_framework.test import APIClient
+from syrupy.matchers import path_type
 
 from core.models import (
     Ingredient,
@@ -218,6 +219,31 @@ def test_recipe_archived_at(client, user, recipe):
     assert TimelineEvent.objects.count() == 2
     assert TimelineEvent.objects.filter(action="archived").count() == 1
     assert TimelineEvent.objects.filter(action="unarchived").count() == 1
+
+
+def test_recipe_list_timeline_items(client, user, recipe, snapshot):
+    """
+    Verify we list timeline items with the correct keys.
+    """
+    client.force_authenticate(user)
+
+    res = client.get("/api/v1/recipes/")
+    assert res.status_code == status.HTTP_200_OK
+    assert len(res.json()) == 1
+    timeline_items = res.json()[0]["timelineItems"]
+    assert sorted(timeline_items, key=lambda x: str(x["text"])) == snapshot(
+        matcher=path_type(
+            {
+                r".*\.recipe_id": (int,),
+                r".*\.created": (str,),
+                r".*\.modified": (str,),
+                r".*\.id": (int,),
+                r".*\.last_modified_by\.id": (int,),
+                r".*\.created_by\.id": (int,),
+            },
+            regex=True,
+        )
+    )
 
 
 def test_updating_step_of_recipe(client, user, recipe):

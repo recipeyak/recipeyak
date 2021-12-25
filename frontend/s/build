@@ -2,8 +2,8 @@
 set -ex
 
 main() {
-  node frontend/scripts/build.js
-  bash frontend/scripts/crawl.sh
+  node scripts/build.js
+  bash scripts/crawl.sh
 }
 
 main "$@"

@@ -15,14 +15,16 @@ jobs:
             "-c",
             "pg_stat_statements.track=all",
           ]
+    working_directory: backend
     steps:
       - checkout
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
-            - backend-v10-{{ checksum "poetry.lock" }}
+            - backend-v11-{{ checksum "backend/poetry.lock" }}
       - run:
           name: install dependencies
+          working_directory: backend
           command: |
             # Use our new PATH so we can call poetry from bash
             echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
@@ -32,14 +34,15 @@ jobs:
             poetry install
       - save_cache:
           paths:
-            - ./backend/.mypy_cache
+            - ./.mypy_cache
             - /root/.cache/
-          key: backend-v9-{{ checksum "poetry.lock" }}
+          key: backend-v11-{{ checksum "backend/poetry.lock" }}
       - run:
           name: run tests
-          command: ./backend/s/test
+          working_directory: backend
+          command: ./s/test
       - store_test_results:
-          path: backend/reports
+          path: reports
 
   backend_lint:
     docker:
@@ -51,9 +54,10 @@ jobs:
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
-            - backend-v10-{{ checksum "poetry.lock" }}
+            - backend-v11-{{ checksum "backend/poetry.lock" }}
       - run:
           name: install dependencies
+          working_directory: backend
           command: |
             # Use our new PATH so we can call poetry from bash
             echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
@@ -63,14 +67,15 @@ jobs:
             poetry install
       - save_cache:
           paths:
-            - ./backend/.mypy_cache
+            - ./.mypy_cache
             - /root/.cache/
-          key: backend-v9-{{ checksum "poetry.lock" }}
+          key: backend-v11-{{ checksum "backend/poetry.lock" }}
       - run:
           name: run lints
-          command: ./backend/s/lint
+          working_directory: backend
+          command: ./s/lint
       - store_test_results:
-          path: backend/reports
+          path: reports
 
   squawk:
     docker:
@@ -82,7 +87,7 @@ jobs:
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
-            - backend-v10-{{ checksum "poetry.lock" }}
+            - backend-v11-{{ checksum "backend/poetry.lock" }}
       - run:
           name: install npm
           command: |
@@ -90,6 +95,7 @@ jobs:
             apt-get install -y npm
       - run:
           name: install python dependencies
+          working_directory: backend
           command: |
             # Use our new PATH so we can call poetry from bash
             echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
@@ -99,6 +105,7 @@ jobs:
             poetry install
       - run:
           name: run lints
+          working_directory: backend
           command: ./s/squawk.py
 
   frontend_test:
@@ -108,18 +115,20 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - frontend-v9-dependencies-{{ checksum "yarn.lock" }}
+            - frontend-v11-dependencies-{{ checksum "frontend/yarn.lock" }}
       - run:
           name: install dependencies
+          working_directory: frontend
           command: |
             yarn install --frozen-lockfile --non-interactive
       - save_cache:
           paths:
             - ./node_modules
-          key: frontend-v9-dependencies-{{ checksum "yarn.lock" }}
+          key: frontend-v11-dependencies-{{ checksum "frontend/yarn.lock" }}
       - run:
           name: run tests
-          command: ./frontend/s/test
+          working_directory: frontend
+          command: ./s/test
 
   frontend_lint:
     docker:
@@ -128,20 +137,22 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - frontend-v9-dependencies-{{ checksum "yarn.lock" }}
+            - frontend-v11-dependencies-{{ checksum "frontend/yarn.lock" }}
       - run:
           name: install dependencies
+          working_directory: frontend
           command: |
             yarn install --frozen-lockfile --non-interactive
       - save_cache:
           paths:
             - ./node_modules
-          key: frontend-v9-dependencies-{{ checksum "yarn.lock" }}
+          key: frontend-v11-dependencies-{{ checksum "frontend/yarn.lock" }}
       - run:
           name: run linter
+          working_directory: frontend
           command: |
-            ./frontend/s/lint
-            ./frontend/s/build
+            ./s/lint
+            ./s/build
       - run:
           name: move artifacts
           working_directory: frontend
@@ -187,6 +198,7 @@ jobs:
   build_api_container:
     docker:
       - image: docker:18.05.0-ce
+    working_directory: backend
     steps:
       - checkout
       - setup_remote_docker
@@ -195,7 +207,7 @@ jobs:
           name: build container
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            docker build -f backend/django.Dockerfile \
+            docker build -f django.Dockerfile \
               --tag recipeyak/django:$CIRCLE_SHA1 \
               --build-arg GIT_SHA=$CIRCLE_SHA1 .
             docker push recipeyak/django:$CIRCLE_SHA1
@@ -204,6 +216,7 @@ jobs:
   build_ui_container:
     docker:
       - image: docker:18.05.0-ce
+    working_directory: frontend
     steps:
       - checkout
       - setup_remote_docker
@@ -212,7 +225,7 @@ jobs:
           name: build container
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            docker build -f frontend/react.Dockerfile \
+            docker build -f react.Dockerfile \
               --tag recipeyak/react:$CIRCLE_SHA1 \
               --build-arg OAUTH_BITBUCKET_CLIENT_ID=${OAUTH_BITBUCKET_CLIENT_ID-""} \
               --build-arg OAUTH_FACEBOOK_CLIENT_ID=${OAUTH_FACEBOOK_CLIENT_ID-""} \
@@ -226,13 +239,13 @@ jobs:
   build_proxy_container:
     docker:
       - image: docker:18.05.0-ce
+    working_directory: nginx
     steps:
       - checkout
       - setup_remote_docker
       # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
       - run:
           name: build container
-          working_directory: nginx
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
             docker build -f nginx.Dockerfile \
@@ -242,13 +255,13 @@ jobs:
   build_postgres_container:
     docker:
       - image: docker:18.05.0-ce
+    working_directory: postgres
     steps:
       - checkout
       - setup_remote_docker
       # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
       - run:
           name: build container
-          working_directory: postgres
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
             docker build -f postgres.Dockerfile \
@@ -258,13 +271,13 @@ jobs:
   build_pgdump_container:
     docker:
       - image: docker:18.05.0-ce
+    working_directory: pgdump
     steps:
       - checkout
       - setup_remote_docker
       # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
       - run:
           name: build container
-          working_directory: pgdump
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
             docker build -f pgdump.Dockerfile \

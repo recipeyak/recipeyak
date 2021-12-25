@@ -140,28 +140,28 @@
   },
   "proxy": "http://localhost:8000",
   "jest": {
-    "setupTestFrameworkScriptFile": "<rootDir>/frontend/config/jestSetup.ts",
+    "setupTestFrameworkScriptFile": "<rootDir>/config/jestSetup.ts",
     "collectCoverageFrom": [
       "src/**/*.{js,jsx,ts,tsx}"
     ],
     "setupFiles": [
-      "<rootDir>/frontend/config/jest/localStorage.js",
+      "<rootDir>/config/jest/localStorage.js",
       "raf/polyfill"
     ],
     "testMatch": [
-      "<rootDir>/frontend/src/**/__tests__/**/*.{js,jsx,mjs,ts,tsx}",
-      "<rootDir>/frontend/src/**/?(*.)(spec|test).{js,jsx,mjs,ts,tsx}"
+      "<rootDir>/src/**/__tests__/**/*.{js,jsx,mjs,ts,tsx}",
+      "<rootDir>/src/**/?(*.)(spec|test).{js,jsx,mjs,ts,tsx}"
     ],
     "testPathIgnorePatterns": [
-      "<rootDir>/frontend[/\\\\](build|docs|node_modules|scripts)[/\\\\]"
+      "<rootDir>[/\\\\](build|docs|node_modules|scripts)[/\\\\]"
     ],
     "testEnvironment": "node",
     "testURL": "http://localhost",
     "transform": {
       "^.+\\.(js|jsx)$": "babel-jest",
       "^.+\\.(ts|tsx)$": "ts-jest",
-      "^.+\\.css$": "<rootDir>/frontend/config/jest/cssTransform.js",
-      "^(?!.*\\.(js|jsx|ts|tsx|css|json)$)": "<rootDir>/frontend/config/jest/fileTransform.js"
+      "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
+      "^(?!.*\\.(js|jsx|ts|tsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
     },
     "globals": {
       "ts-jest": {
@@ -184,7 +184,7 @@
       "src"
     ],
     "moduleNameMapper": {
-      "^@/(.*)": "<rootDir>/frontend/src/$1",
+      "^@/(.*)": "<rootDir>/src/$1",
       "^dnd-core$": "dnd-core/dist/cjs",
       "^react-dnd$": "react-dnd/dist/cjs",
       "^react-dnd-html5-backend$": "react-dnd-html5-backend/dist/cjs",
@@ -207,5 +207,9 @@
       "babel-plugin-styled-components",
       "transform-class-properties"
     ]
+  },
+  "volta": {
+    "node": "12.22.8",
+    "yarn": "1.22.17"
   }
 }
