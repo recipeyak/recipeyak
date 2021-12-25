@@ -41,7 +41,7 @@ export function formatDistanceToNow(date: Date): string {
   return formatDistance(min([date, now]), now, { addSuffix: true })
 }
 
-export function formatAbsoluteDate(
+export function formatAbsoluteDateTime(
   date: Date,
   options?: { readonly includeYear?: boolean },
 ): string {
@@ -51,19 +51,20 @@ export function formatAbsoluteDate(
   return format(date, "MMM d 'at' h:mm aaa")
 }
 
-export function formatHumanDateRaw(date: Date, now: Date): string {
+export function formatHumanDateTimeRaw(date: Date, now: Date): string {
   if (!isSameYear(date, now)) {
-    return formatAbsoluteDate(date, { includeYear: true })
+    return formatAbsoluteDateTime(date, { includeYear: true })
   }
   if (isSameDay(date, now)) {
     return formatDistance(date, now, { addSuffix: true })
   }
   const withinNineMonths = Math.abs(differenceInMonths(date, now)) < 9
   if (withinNineMonths) {
-    return formatAbsoluteDate(date)
+    return formatAbsoluteDateTime(date)
   }
-  return formatAbsoluteDate(date, { includeYear: true })
+  return formatAbsoluteDateTime(date, { includeYear: true })
 }
-export function formatHumanDate(date: Date): string {
-  return formatHumanDateRaw(date, new Date())
+
+export function formatHumanDateTime(date: Date): string {
+  return formatHumanDateTimeRaw(date, new Date())
 }

@@ -13,7 +13,7 @@ import orderBy from "lodash/orderBy"
 import Textarea from "react-textarea-autosize"
 import { Markdown } from "@/components/Markdown"
 import { useLocation } from "react-router-dom"
-import { formatAbsoluteDate, formatHumanDate } from "@/date"
+import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
 import { styled } from "@/theme"
 import * as api from "@/api"
 
@@ -121,8 +121,8 @@ const SmallTime = styled.time`
 
 function NoteTimeStamp({ created }: { readonly created: string }) {
   const date = new Date(created)
-  const prettyDate = formatAbsoluteDate(date, { includeYear: true })
-  const humanizedDate = formatHumanDate(date)
+  const prettyDate = formatAbsoluteDateTime(date, { includeYear: true })
+  const humanizedDate = formatHumanDateTime(date)
   return (
     <SmallTime title={prettyDate} dateTime={created} className="text-muted">
       {humanizedDate}

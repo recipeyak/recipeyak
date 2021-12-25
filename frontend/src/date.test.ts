@@ -1,4 +1,4 @@
-import { toISODateString, formatHumanDateRaw } from "@/date"
+import { toISODateString, formatHumanDateTimeRaw } from "@/date"
 import { mockTimezone } from "@/testUtils"
 import { addDays, subDays, subHours, subMinutes } from "date-fns"
 
@@ -22,17 +22,19 @@ test("timezone set to UTC", () => {
   expect(new Date().getTimezoneOffset()).toBe(0)
 })
 
-describe("formatHumanDateRaw", () => {
+describe("formatHumanDateTimeRaw", () => {
   test("two hours before", () => {
     const now = new Date("2021-01-06T22:10:10.000Z")
     const twoHoursBefore = subMinutes(now, 120)
-    expect(formatHumanDateRaw(twoHoursBefore, now)).toEqual("about 2 hours ago")
+    expect(formatHumanDateTimeRaw(twoHoursBefore, now)).toEqual(
+      "about 2 hours ago",
+    )
   })
   // if a date is under one day prior, use relative dates
   test("under 1 day before within same day", () => {
     const now = new Date("2021-01-06T22:10:10.000Z")
     const twoHoursBefore = subHours(now, 20)
-    expect(formatHumanDateRaw(twoHoursBefore, now)).toEqual(
+    expect(formatHumanDateTimeRaw(twoHoursBefore, now)).toEqual(
       "about 20 hours ago",
     )
   })
@@ -40,13 +42,15 @@ describe("formatHumanDateRaw", () => {
   test("1 day before, outside of current day", () => {
     const now = new Date("2021-01-06T22:10:10.000Z")
     const twoHoursBefore = subHours(now, 25)
-    expect(formatHumanDateRaw(twoHoursBefore, now)).toEqual("Jan 5 at 9:10 PM")
+    expect(formatHumanDateTimeRaw(twoHoursBefore, now)).toEqual(
+      "Jan 5 at 9:10 PM",
+    )
   })
   // if a date is in the previous year, we should have the year
   test("five days before in previous year", () => {
     const now = new Date("2021-01-01T22:10:10.000Z")
     const fiveDaysBefore = subDays(now, 5)
-    expect(formatHumanDateRaw(fiveDaysBefore, now)).toEqual(
+    expect(formatHumanDateTimeRaw(fiveDaysBefore, now)).toEqual(
       "Dec 27, 2020 at 10:10 PM",
     )
   })
@@ -55,14 +59,14 @@ describe("formatHumanDateRaw", () => {
   test("over nine months before in same year", () => {
     const now = new Date("2021-11-01T22:10:10.000Z")
     const nineMonthsBefore = subDays(now, 30 * 9 + 7)
-    expect(formatHumanDateRaw(nineMonthsBefore, now)).toEqual(
+    expect(formatHumanDateTimeRaw(nineMonthsBefore, now)).toEqual(
       "Jan 28, 2021 at 10:10 PM",
     )
   })
   test("over nine months after in same year", () => {
     const now = new Date("2021-01-01T22:10:10.000Z")
     const nineMonthsLater = addDays(now, 30 * 9 + 7)
-    expect(formatHumanDateRaw(nineMonthsLater, now)).toEqual(
+    expect(formatHumanDateTimeRaw(nineMonthsLater, now)).toEqual(
       "Oct 5, 2021 at 10:10 PM",
     )
   })
