@@ -21,7 +21,7 @@ jobs:
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
-            - backend-v10-{{ checksum "poetry.lock" }}
+            - backend-v11-{{ checksum "poetry.lock" }}
       - run:
           name: install dependencies
           command: |
@@ -53,7 +53,7 @@ jobs:
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
-            - backend-v10-{{ checksum "poetry.lock" }}
+            - backend-v11-{{ checksum "poetry.lock" }}
       - run:
           name: install dependencies
           command: |
@@ -85,7 +85,7 @@ jobs:
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
-            - backend-v10-{{ checksum "poetry.lock" }}
+            - backend-v11-{{ checksum "poetry.lock" }}
       - run:
           name: install npm
           command: |
@@ -112,7 +112,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - frontend-v9-dependencies-{{ checksum "yarn.lock" }}
+            - frontend-v11-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: install dependencies
           command: |
@@ -120,7 +120,7 @@ jobs:
       - save_cache:
           paths:
             - ./node_modules
-          key: frontend-v9-dependencies-{{ checksum "yarn.lock" }}
+          key: frontend-v11-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: run tests
           command: ./s/test
@@ -133,7 +133,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - frontend-v9-dependencies-{{ checksum "yarn.lock" }}
+            - frontend-v11-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: install dependencies
           command: |
@@ -141,12 +141,12 @@ jobs:
       - save_cache:
           paths:
             - ./node_modules
-          key: frontend-v9-dependencies-{{ checksum "yarn.lock" }}
+          key: frontend-v11-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: run linter
           command: |
-            ./frontend/s/lint
-            ./frontend/s/build
+            ./s/lint
+            ./s/build
       - run:
           name: move artifacts
           # copy bundle analyzer report
