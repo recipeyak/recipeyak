@@ -9,7 +9,7 @@ from typing import Mapping, Optional
 
 APP_LABEL = "core"
 
-MIGRATIONS_DIRECTORY = "./backend/core/migrations"
+MIGRATIONS_DIRECTORY = "./core/migrations"
 
 
 logging.basicConfig(level=logging.INFO)
@@ -68,7 +68,7 @@ def main() -> None:
     os.environ.setdefault("DEBUG", "1")
     os.environ.setdefault("DATABASE_URL", "postgres://postgres@127.0.0.1:5432/postgres")
 
-    subprocess.run(["./.venv/bin/python", "./backend/manage.py", "migrate"], check=True)
+    subprocess.run(["./.venv/bin/python", "./manage.py", "migrate"], check=True)
 
     output_files = []
 
@@ -78,7 +78,7 @@ def main() -> None:
         subprocess.run(
             [
                 "./.venv/bin/python",
-                "./backend/manage.py",
+                "./manage.py",
                 "sqlmigrate",
                 APP_LABEL,
                 migration_id,

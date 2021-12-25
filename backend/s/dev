@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -e
 
-./.venv/bin/python ./backend/manage.py runserver
+./.venv/bin/python ./manage.py runserver

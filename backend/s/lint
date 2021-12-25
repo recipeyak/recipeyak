@@ -3,9 +3,9 @@ set -e
 
 main() {
   if [ "$CI" ]; then
-    ./backend/s/check_migrations
+    ./s/check_migrations
   fi
-  ./backend/s/typecheck
+  ./s/typecheck
   ./.venv/bin/flake8 .
 
   if [ "$CI" ]; then
