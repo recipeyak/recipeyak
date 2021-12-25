@@ -21,9 +21,10 @@ jobs:
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
-            - backend-v11-{{ checksum "poetry.lock" }}
+            - backend-v11-{{ checksum "backend/poetry.lock" }}
       - run:
           name: install dependencies
+          working_directory: backend
           command: |
             # Use our new PATH so we can call poetry from bash
             echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
@@ -35,9 +36,10 @@ jobs:
           paths:
             - ./.mypy_cache
             - /root/.cache/
-          key: backend-v9-{{ checksum "poetry.lock" }}
+          key: backend-v11-{{ checksum "backend/poetry.lock" }}
       - run:
           name: run tests
+          working_directory: backend
           command: ./s/test
       - store_test_results:
           path: reports
@@ -47,15 +49,15 @@ jobs:
       - image: python:3.7@sha256:d8718f4c8f28360c88d2d8b53681edb3c95e6a7bacedabd32eb5b1d120a75dc5
       # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
       - image: circleci/postgres:9.5-alpine-ram
-    working_directory: backend
     steps:
       - checkout
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
-            - backend-v11-{{ checksum "poetry.lock" }}
+            - backend-v11-{{ checksum "backend/poetry.lock" }}
       - run:
           name: install dependencies
+          working_directory: backend
           command: |
             # Use our new PATH so we can call poetry from bash
             echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
@@ -67,9 +69,10 @@ jobs:
           paths:
             - ./.mypy_cache
             - /root/.cache/
-          key: backend-v9-{{ checksum "poetry.lock" }}
+          key: backend-v11-{{ checksum "backend/poetry.lock" }}
       - run:
           name: run lints
+          working_directory: backend
           command: ./s/lint
       - store_test_results:
           path: reports
@@ -79,13 +82,12 @@ jobs:
       - image: python:3.7@sha256:d8718f4c8f28360c88d2d8b53681edb3c95e6a7bacedabd32eb5b1d120a75dc5
       # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
       - image: circleci/postgres:9.5-alpine-ram
-    working_directory: backend
     steps:
       - checkout
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
-            - backend-v11-{{ checksum "poetry.lock" }}
+            - backend-v11-{{ checksum "backend/poetry.lock" }}
       - run:
           name: install npm
           command: |
