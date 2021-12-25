@@ -371,7 +371,7 @@ export function Recipe(props: IRecipeProps) {
   const isTimeline = !!parsed.timeline
 
   return (
-    <div className="d-grid grid-gap-2">
+    <div className="d-grid grid-gap-2 mx-auto mw-1000px">
       <Helmet title={recipe.name} />
       {recipe.archived_at != null && (
         <ArchiveBanner date={new Date(recipe.archived_at)} />

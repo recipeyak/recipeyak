@@ -211,6 +211,10 @@
   max-width: 400px;
 }
 
+.mw-1000px {
+  max-width: 1000px !important;
+}
+
 @for $i from 0 through 16 {
   .max-width-#{$i} {
     max-width: #{$i/4}rem;
