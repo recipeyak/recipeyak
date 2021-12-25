@@ -95,6 +95,7 @@ jobs:
             apt-get install -y npm
       - run:
           name: install python dependencies
+          working_directory: backend
           command: |
             # Use our new PATH so we can call poetry from bash
             echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
@@ -104,6 +105,7 @@ jobs:
             poetry install
       - run:
           name: run lints
+          working_directory: backend
           command: ./s/squawk.py
 
   frontend_test:
