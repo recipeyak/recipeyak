@@ -68,3 +68,31 @@ export function formatHumanDateTimeRaw(date: Date, now: Date): string {
 export function formatHumanDateTime(date: Date): string {
   return formatHumanDateTimeRaw(date, new Date())
 }
+
+export function formatAbsoluteDate(
+  date: Date,
+  options?: { readonly includeYear?: boolean },
+): string {
+  if (options?.includeYear) {
+    return format(date, "MMM d, yyyy")
+  }
+  return format(date, "MMM d")
+}
+
+function formatHumanDateRaw(date: Date, now: Date): string {
+  if (!isSameYear(date, now)) {
+    return formatAbsoluteDate(date, { includeYear: true })
+  }
+  if (isSameDay(date, now)) {
+    return "Today"
+  }
+  const withinNineMonths = Math.abs(differenceInMonths(date, now)) < 9
+  if (withinNineMonths) {
+    return formatAbsoluteDate(date)
+  }
+  return formatAbsoluteDate(date, { includeYear: true })
+}
+
+export function formatHumanDate(date: Date): string {
+  return formatHumanDateRaw(date, new Date())
+}
