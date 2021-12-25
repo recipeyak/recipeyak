@@ -311,7 +311,7 @@ const ArchiveMessage = styled.div`
 `
 
 function ArchiveBanner({ date }: { readonly date: Date }) {
-  const formattedDate = formatHumanDate(date, false)
+  const formattedDate = formatHumanDate(date)
   return (
     <div className="d-flex align-items-center">
       <hr className="flex-grow mb-0 mt-0" />
