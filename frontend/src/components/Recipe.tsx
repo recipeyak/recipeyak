@@ -11,6 +11,7 @@ import { RouteComponentProps } from "react-router"
 import { useLocation } from "react-router-dom"
 import { recipeURL } from "@/urls"
 import { pathNamesEqual } from "@/utils/url"
+import { formatHumanDate } from "@/date"
 import { replace } from "connected-react-router"
 
 import {
@@ -310,11 +311,11 @@ const ArchiveMessage = styled.div`
 `
 
 function ArchiveBanner({ date }: { readonly date: Date }) {
-  const formattedDate = date.toLocaleDateString()
+  const formattedDate = formatHumanDate(date, false)
   return (
     <div className="d-flex align-items-center">
       <hr className="flex-grow mb-0 mt-0" />
-      <ArchiveMessage>Recipe Archived on {formattedDate}</ArchiveMessage>
+      <ArchiveMessage>Archived {formattedDate}</ArchiveMessage>
       <hr className="flex-grow mb-0 mt-0" />
     </div>
   )
