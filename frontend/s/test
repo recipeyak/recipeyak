@@ -4,9 +4,9 @@ set -ex
 main() {
   export TZ=UTC
   if [ "$CI" ]; then
-    node ./frontend/scripts/test.js --env=jsdom --coverage --runInBand
+    node ./scripts/test.js --env=jsdom --coverage --runInBand
   else
-    node ./frontend/scripts/test.js --env=jsdom --watch "$@"
+    node ./scripts/test.js --env=jsdom --watch "$@"
   fi
 }
 
