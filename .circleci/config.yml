@@ -32,20 +32,21 @@ jobs:
             poetry install
       - save_cache:
           paths:
-            - ./backend/.mypy_cache
+            - ./.mypy_cache
             - /root/.cache/
           key: backend-v9-{{ checksum "poetry.lock" }}
       - run:
           name: run tests
-          command: ./backend/s/test
+          command: ./s/test
       - store_test_results:
-          path: backend/reports
+          path: reports
 
   backend_lint:
     docker:
       - image: python:3.7@sha256:d8718f4c8f28360c88d2d8b53681edb3c95e6a7bacedabd32eb5b1d120a75dc5
       # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
       - image: circleci/postgres:9.5-alpine-ram
+    working_directory: backend
     steps:
       - checkout
       # https://circleci.com/docs/2.0/caching/
@@ -63,20 +64,21 @@ jobs:
             poetry install
       - save_cache:
           paths:
-            - ./backend/.mypy_cache
+            - ./.mypy_cache
             - /root/.cache/
           key: backend-v9-{{ checksum "poetry.lock" }}
       - run:
           name: run lints
-          command: ./backend/s/lint
+          command: ./s/lint
       - store_test_results:
-          path: backend/reports
+          path: reports
 
   squawk:
     docker:
       - image: python:3.7@sha256:d8718f4c8f28360c88d2d8b53681edb3c95e6a7bacedabd32eb5b1d120a75dc5
       # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
       - image: circleci/postgres:9.5-alpine-ram
+    working_directory: backend
     steps:
       - checkout
       # https://circleci.com/docs/2.0/caching/
@@ -104,6 +106,7 @@ jobs:
   frontend_test:
     docker:
       - image: circleci/node:12.4.0
+    working_directory: frontend
     steps:
       - checkout
       - restore_cache:
@@ -119,11 +122,12 @@ jobs:
           key: frontend-v9-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: run tests
-          command: ./frontend/s/test
+          command: ./s/test
 
   frontend_lint:
     docker:
       - image: circleci/node:12.4.0
+    working_directory: frontend
     steps:
       - checkout
       - restore_cache:
@@ -144,7 +148,6 @@ jobs:
             ./frontend/s/build
       - run:
           name: move artifacts
-          working_directory: frontend
           # copy bundle analyzer report
           command: |
             mkdir -p /tmp/frontend-artifacts
@@ -187,6 +190,7 @@ jobs:
   build_api_container:
     docker:
       - image: docker:18.05.0-ce
+    working_directory: backend
     steps:
       - checkout
       - setup_remote_docker
@@ -195,7 +199,7 @@ jobs:
           name: build container
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            docker build -f backend/django.Dockerfile \
+            docker build -f django.Dockerfile \
               --tag recipeyak/django:$CIRCLE_SHA1 \
               --build-arg GIT_SHA=$CIRCLE_SHA1 .
             docker push recipeyak/django:$CIRCLE_SHA1
@@ -204,6 +208,7 @@ jobs:
   build_ui_container:
     docker:
       - image: docker:18.05.0-ce
+    working_directory: frontend
     steps:
       - checkout
       - setup_remote_docker
@@ -212,7 +217,7 @@ jobs:
           name: build container
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            docker build -f frontend/react.Dockerfile \
+            docker build -f react.Dockerfile \
               --tag recipeyak/react:$CIRCLE_SHA1 \
               --build-arg OAUTH_BITBUCKET_CLIENT_ID=${OAUTH_BITBUCKET_CLIENT_ID-""} \
               --build-arg OAUTH_FACEBOOK_CLIENT_ID=${OAUTH_FACEBOOK_CLIENT_ID-""} \
@@ -226,13 +231,13 @@ jobs:
   build_proxy_container:
     docker:
       - image: docker:18.05.0-ce
+    working_directory: nginx
     steps:
       - checkout
       - setup_remote_docker
       # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
       - run:
           name: build container
-          working_directory: nginx
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
             docker build -f nginx.Dockerfile \
@@ -242,13 +247,13 @@ jobs:
   build_postgres_container:
     docker:
       - image: docker:18.05.0-ce
+    working_directory: postgres
     steps:
       - checkout
       - setup_remote_docker
       # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
       - run:
           name: build container
-          working_directory: postgres
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
             docker build -f postgres.Dockerfile \
@@ -258,13 +263,13 @@ jobs:
   build_pgdump_container:
     docker:
       - image: docker:18.05.0-ce
+    working_directory: pgdump
     steps:
       - checkout
       - setup_remote_docker
       # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
       - run:
           name: build container
-          working_directory: pgdump
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
             docker build -f pgdump.Dockerfile \
