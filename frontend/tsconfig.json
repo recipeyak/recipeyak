@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "./frontend/build/",
+    "outDir": "./build/",
     "sourceMap": true,
     "allowJs": true,
     "checkJs": true,
@@ -19,10 +19,10 @@
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./frontend/src/*"],
-      "*": ["./frontend/types/*", "./node_modules/@types/*"]
+      "@/*": ["./src/*"],
+      "*": ["./types/*", "./node_modules/@types/*"]
     }
   },
   "include": ["**/*", "*"],
-  "exclude": ["frontend/build", "node_modules", "frontend/coverage"]
+  "exclude": ["build", "node_modules", "coverage"]
 }
