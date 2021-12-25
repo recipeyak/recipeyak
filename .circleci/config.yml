@@ -198,7 +198,6 @@ jobs:
   build_api_container:
     docker:
       - image: docker:18.05.0-ce
-    working_directory: backend
     steps:
       - checkout
       - setup_remote_docker
@@ -207,7 +206,7 @@ jobs:
           name: build container
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            docker build -f django.Dockerfile \
+            docker build -f backend/django.Dockerfile \
               --tag recipeyak/django:$CIRCLE_SHA1 \
               --build-arg GIT_SHA=$CIRCLE_SHA1 .
             docker push recipeyak/django:$CIRCLE_SHA1
@@ -216,7 +215,6 @@ jobs:
   build_ui_container:
     docker:
       - image: docker:18.05.0-ce
-    working_directory: frontend
     steps:
       - checkout
       - setup_remote_docker
@@ -225,7 +223,7 @@ jobs:
           name: build container
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            docker build -f react.Dockerfile \
+            docker build -f frontend/react.Dockerfile \
               --tag recipeyak/react:$CIRCLE_SHA1 \
               --build-arg OAUTH_BITBUCKET_CLIENT_ID=${OAUTH_BITBUCKET_CLIENT_ID-""} \
               --build-arg OAUTH_FACEBOOK_CLIENT_ID=${OAUTH_FACEBOOK_CLIENT_ID-""} \
@@ -239,7 +237,6 @@ jobs:
   build_proxy_container:
     docker:
       - image: docker:18.05.0-ce
-    working_directory: nginx
     steps:
       - checkout
       - setup_remote_docker
@@ -248,14 +245,13 @@ jobs:
           name: build container
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            docker build -f nginx.Dockerfile \
+            docker build -f backend/nginx.Dockerfile \
               --tag recipeyak/nginx:$CIRCLE_SHA1 .
             docker push recipeyak/nginx:$CIRCLE_SHA1
 
   build_postgres_container:
     docker:
       - image: docker:18.05.0-ce
-    working_directory: postgres
     steps:
       - checkout
       - setup_remote_docker
@@ -264,14 +260,13 @@ jobs:
           name: build container
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            docker build -f postgres.Dockerfile \
+            docker build -f backend/postgres.Dockerfile \
               --tag recipeyak/postgres:$CIRCLE_SHA1 .
             docker push recipeyak/postgres:$CIRCLE_SHA1
 
   build_pgdump_container:
     docker:
       - image: docker:18.05.0-ce
-    working_directory: pgdump
     steps:
       - checkout
       - setup_remote_docker
@@ -280,7 +275,7 @@ jobs:
           name: build container
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            docker build -f pgdump.Dockerfile \
+            docker build -f backend/pgdump.Dockerfile \
               --tag recipeyak/pgdump:$CIRCLE_SHA1 .
             docker push recipeyak/pgdump:$CIRCLE_SHA1
 
