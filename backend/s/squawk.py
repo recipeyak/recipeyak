@@ -9,7 +9,7 @@ from typing import Mapping, Optional
 
 APP_LABEL = "core"
 
-MIGRATIONS_DIRECTORY = "./backend/core/migrations"
+MIGRATIONS_DIRECTORY = "./core/migrations"
 
 
 logging.basicConfig(level=logging.INFO)
