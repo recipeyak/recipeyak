@@ -7,6 +7,7 @@ import { TextInput, selectTarget, CheckBox } from "@/components/Forms"
 import { hasSelection } from "@/utils/general"
 import { useDrop, useDrag } from "react-dnd"
 import { DragDrop, handleDndHover } from "@/dragDrop"
+import { isMobile } from "@/browser"
 
 const emptyField = ({
   quantity,
@@ -222,7 +223,8 @@ export function Ingredient(props: {
     }),
   })
 
-  const dragAndDropEnabled = props.completeMove != null && props.move != null
+  const dragAndDropEnabled =
+    props.completeMove != null && props.move != null && !isMobile()
 
   const style = {
     opacity: isDragging ? 0 : 1,
