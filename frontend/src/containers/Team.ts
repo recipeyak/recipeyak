@@ -28,9 +28,7 @@ const mapStateToProps = (state: IState, props: RouteProps) => {
   const teamMembers = Object.values(members).filter(notUndefined)
 
   const loadingTeam = team ? !!team.loadingTeam && !team.name : false
-  const loadingMembers = team
-    ? !!team.loadingMembers && teamMembers.length === 0
-    : false
+  const loadingMembers = team?.loadingMembers ?? true
 
   return {
     id,

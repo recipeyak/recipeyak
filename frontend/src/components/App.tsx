@@ -16,6 +16,7 @@ import Recipe from "@/components/Recipe"
 import PasswordReset from "@/containers/PasswordReset"
 import Settings from "@/containers/Settings"
 import Team from "@/containers/Team"
+import Teams from "@/components/Teams"
 import TeamInvite from "@/components/TeamInvite"
 import TeamCreate from "@/components/TeamCreate"
 import AddRecipe from "@/containers/AddRecipe"
@@ -183,6 +184,7 @@ function Base() {
                       component={Team}
                     />
                     <Route exact path="/t/:id(\d+)(.*)" component={Team} />
+                    <Route exact path="/t/" component={Teams} />
                     <Route component={NoMatch} />
                   </Switch>
                 </Container>
