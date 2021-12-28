@@ -5,7 +5,7 @@ const StyledFooter = styled.footer`
   font-weight: bold;
   padding: 1rem 1.5rem;
   display: flex;
-  justify-content: space-between;
+  align-items: center;
   margin-top: auto;
 `
 
@@ -14,7 +14,6 @@ const Footer = () => (
     <span>
       Recipe Yak • <a href="https://github.com/recipeyak/recipeyak">src</a>
     </span>
-    <span>Est. 2017</span>
   </StyledFooter>
 )
 
