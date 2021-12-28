@@ -10,12 +10,6 @@ import {
 
 import { teamURL } from "@/urls"
 import { getInvites, IInvite } from "@/store/reducers/invites"
-import {
-  DropdownContainer,
-  useDropdown,
-  DropdownMenu,
-} from "@/components/Dropdown"
-import { Chevron } from "@/components/icons"
 import { useDispatch, useSelector } from "@/hooks"
 import { isLoading, isFailure, isInitial } from "@/webdata"
 import { ITeam } from "@/store/reducers/teams"
@@ -80,7 +74,7 @@ function TeamName({ teamId, name, active }: ITeamNameProps) {
   }
   return <b>{name}</b>
 }
-function Invites() {
+export function Invites() {
   const { invites } = useNotifications()
   if (isLoading(invites) || isInitial(invites)) {
     return <p className="text-muted text-small align-self-center">Loading...</p>
@@ -117,21 +111,5 @@ function Invites() {
         )
       })}
     </div>
-  )
-}
-
-export function NotificationsDropdown() {
-  const { ref, toggle, isOpen } = useDropdown()
-  return (
-    <DropdownContainer ref={ref}>
-      <a onClick={toggle} tabIndex={0} className="better-nav-item">
-        <span>Notifications</span>
-        <Chevron />
-      </a>
-
-      <DropdownMenu isOpen={isOpen}>
-        <Invites />
-      </DropdownMenu>
-    </DropdownContainer>
   )
 }
