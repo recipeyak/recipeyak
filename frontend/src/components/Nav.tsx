@@ -3,22 +3,19 @@ import { Link } from "react-router-dom"
 
 import NavLink from "@/containers/NavLink"
 import Logo from "@/components/Logo"
-import { NotificationsDropdown } from "@/components/NotificationsDropdown"
 import { UserDropdown } from "@/components/UserDropdown"
 
-import { teamURL } from "@/urls"
 import { styled } from "@/theme"
 import {
   DropdownContainer,
-  useDropdown,
   DropdownMenu,
+  useDropdown,
 } from "@/components/Dropdown"
 import { Chevron } from "@/components/icons"
 import { lighten } from "polished"
 import { useSelector, useDispatch } from "@/hooks"
-import { scheduleURLFromTeamID, teamsFrom } from "@/store/mapState"
-import { fetchingTeamsAsync, fetchingUserAsync } from "@/store/thunks"
-import { Loading, Success, isLoading, isFailure, isInitial } from "@/webdata"
+import { scheduleURLFromTeamID } from "@/store/mapState"
+import { fetchingUserAsync } from "@/store/thunks"
 
 const WordMarkContainer = styled.span`
   font-size: 1.5rem;
@@ -29,48 +26,6 @@ const WordMarkContainer = styled.span`
 
 function WordMark() {
   return <WordMarkContainer>Recipe Yak</WordMarkContainer>
-}
-
-function useTeams() {
-  const dispatch = useDispatch()
-  React.useEffect(() => {
-    fetchingTeamsAsync(dispatch)()
-  }, [dispatch])
-  const loading = useSelector(
-    s => s.teams.status === "loading" || s.teams.status === "initial",
-  )
-  const teams = useSelector(teamsFrom)
-  if (loading) {
-    return Loading()
-  }
-  return Success(teams)
-}
-
-function Teams() {
-  const teams = useTeams()
-  if (isLoading(teams) || isInitial(teams)) {
-    return <p>Loading...</p>
-  }
-
-  if (isFailure(teams)) {
-    return <p>failure loading</p>
-  }
-
-  if (teams.data.length === 0) {
-    return <p className="text-muted text-small align-self-center">No teams.</p>
-  }
-
-  return (
-    <div className="text-left">
-      {teams.data.map(({ id, name }) => (
-        <p key={id}>
-          <NavLink to={teamURL(id, name)} activeClassName="fw-500">
-            {name}
-          </NavLink>
-        </p>
-      ))}
-    </div>
-  )
 }
 
 interface INavButtonContainerProps {
@@ -122,24 +77,6 @@ const DropDownButtonContainer = styled.a`
   }
 `
 
-function TeamsDropdown() {
-  const { ref, toggle, isOpen } = useDropdown()
-  return (
-    <DropdownContainer ref={ref}>
-      <a onClick={toggle} tabIndex={0} className="better-nav-item">
-        <span>Teams</span>
-        <Chevron />
-      </a>
-      <DropdownMenu isOpen={isOpen}>
-        <Teams />
-        <Link to="/t/create" className="mt-1 ">
-          Create a Team
-        </Link>
-      </DropdownMenu>
-    </DropdownContainer>
-  )
-}
-
 interface IDropDownButtonProps {
   readonly onClick: () => void
 }
@@ -164,6 +101,39 @@ function AuthButtons() {
   )
 }
 
+function IconThreeDots() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      fill="currentColor"
+      viewBox="0 0 16 16">
+      <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
+    </svg>
+  )
+}
+
+function MoreDropdown() {
+  const { ref, toggle, isOpen, close } = useDropdown()
+  return (
+    <DropdownContainer ref={ref} className="d-flex justify-content-center">
+      <a onClick={toggle} tabIndex={0} className="better-nav-item">
+        <IconThreeDots />
+      </a>
+      <DropdownMenu isOpen={isOpen} style={{ top: 30 }}>
+        <NavLink
+          to="/t/"
+          onClick={close}
+          activeClassName="active"
+          className="better-nav-item">
+          Teams
+        </NavLink>
+      </DropdownMenu>
+    </DropdownContainer>
+  )
+}
+
 function NavButtons() {
   const scheduleURL = useSelector(scheduleURLFromTeamID)
   const { ref, isOpen, close, toggle } = useDropdown()
@@ -172,6 +142,8 @@ function NavButtons() {
       <DropdownContainer ref={ref}>
         <DropDownButton onClick={toggle} />
         <NavButtonContainer show={isOpen}>
+          <MoreDropdown />
+
           <NavLink
             to="/recipes/add"
             onClick={close}
@@ -179,8 +151,6 @@ function NavButtons() {
             className="better-nav-item">
             Add
           </NavLink>
-          <TeamsDropdown />
-          <NotificationsDropdown />
           <NavLink
             to="/recipes"
             onClick={close}
