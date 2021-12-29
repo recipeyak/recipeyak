@@ -172,19 +172,19 @@ function Base() {
                       path="/password/set"
                       component={PasswordSet}
                     />
-                    <Route exact path="/t/create" component={TeamCreate} />
-                    <Route
+                    <PrivateRoute exact path="/t/create" component={TeamCreate} />
+                    <PrivateRoute
                       exact
                       path="/t/:id(\d+)(.*)/invite"
                       component={TeamInvite}
                     />
-                    <Route
+                    <PrivateRoute
                       exact
                       path="/t/:id(\d+)(.*)/settings"
                       component={Team}
                     />
-                    <Route exact path="/t/:id(\d+)(.*)" component={Team} />
-                    <Route exact path="/t/" component={Teams} />
+                    <PrivateRoute exact path="/t/:id(\d+)(.*)" component={Team} />
+                    <PrivateRoute exact path="/t/" component={Teams} />
                     <Route component={NoMatch} />
                   </Switch>
                 </Container>
