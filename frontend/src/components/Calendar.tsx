@@ -2,11 +2,9 @@ import React, { useEffect } from "react"
 import eachDayOfInterval from "date-fns/eachDayOfInterval"
 import format from "date-fns/format"
 import first from "lodash/first"
-import { history } from "@/store/store"
 import queryString from "query-string"
 import parseISO from "date-fns/parseISO"
 import isValid from "date-fns/isValid"
-import { useLocation } from "react-router-dom"
 
 import {
   fetchCalendarAsync,
@@ -245,7 +243,6 @@ function getToday(search: string): Date {
 }
 
 function useCurrentWeek() {
-  const location = useLocation()
   const today = getToday(location.search)
   const weekStartDate = startOfWeek(today)
 

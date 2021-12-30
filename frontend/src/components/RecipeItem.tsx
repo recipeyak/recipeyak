@@ -1,6 +1,6 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import { useDrag } from "react-dnd"
+import { useDrag } from "react-dnd-cjs"
 import { classNames } from "@/classnames"
 import { recipeURL } from "@/urls"
 import { DragDrop } from "@/dragDrop"

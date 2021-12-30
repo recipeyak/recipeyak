@@ -9,10 +9,10 @@ import {
 import { ButtonPrimary, ButtonSecondary } from "@/components/Buttons"
 import { classNames } from "@/classnames"
 
+import { useRouter } from "next/router"
 import orderBy from "lodash/orderBy"
 import Textarea from "react-textarea-autosize"
 import { Markdown } from "@/components/Markdown"
-import { useLocation } from "react-router-dom"
 import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
 import { styled } from "@/theme"
 import * as api from "@/api"
@@ -139,8 +139,8 @@ function SharedEntry({
   readonly children: React.ReactNode
   readonly className?: string
 }) {
-  const location = useLocation()
-  const isSharedNote = location.hash === `#${id}`
+  const isSharedNote =
+    typeof window !== "undefined" && location.hash === `#${id}`
   const ref = React.useRef<HTMLDivElement>(null)
 
   React.useEffect(() => {

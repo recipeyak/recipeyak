@@ -5,7 +5,7 @@ import GlobalEvent from "@/components/GlobalEvent"
 import { Button, ButtonLink, ButtonPrimary } from "@/components/Buttons"
 import { TextInput, selectTarget, CheckBox } from "@/components/Forms"
 import { hasSelection } from "@/utils/general"
-import { useDrop, useDrag } from "react-dnd"
+import { useDrop, useDrag } from "react-dnd-cjs"
 import { DragDrop, handleDndHover } from "@/dragDrop"
 import { isMobile } from "@/browser"
 

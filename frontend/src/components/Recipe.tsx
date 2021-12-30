@@ -8,11 +8,12 @@ import StepContainer from "@/components/StepContainer"
 import { Ingredient } from "@/components/Ingredient"
 import RecipeTitle from "@/components/RecipeTitle"
 import { RouteComponentProps } from "react-router"
-import { useLocation } from "react-router-dom"
 import { recipeURL } from "@/urls"
 import { pathNamesEqual } from "@/utils/url"
 import { formatHumanDate } from "@/date"
 import { replace } from "connected-react-router"
+
+import { useRouter } from "next/router"
 
 import {
   IRecipe,
@@ -324,7 +325,7 @@ function ArchiveBanner({ date }: { readonly date: Date }) {
 /** On load, update the recipe URL to include the slugified recipe name */
 function useRecipeUrlUpdate(recipe: { id: number; name: string } | null) {
   const dispatch = useDispatch()
-  const location = useLocation()
+  const router = useRouter()
 
   const { id: recipeId, name: recipeName } = recipe || {}
 
@@ -333,43 +334,47 @@ function useRecipeUrlUpdate(recipe: { id: number; name: string } | null) {
       return
     }
     const pathname = recipeURL(recipeId, recipeName)
-    if (pathNamesEqual(location.pathname, pathname)) {
+    if (pathNamesEqual(router.pathname, pathname)) {
       return
     }
     dispatch(replace({ pathname }))
-  }, [dispatch, location, recipeId, recipeName])
+  }, [dispatch, router, recipeId, recipeName])
 }
 
-type IRecipeProps = RouteComponentProps<{ id: string }>
+export function Recipe({
+  recipeId,
+  recipe,
+}: {
+  recipeId: number
+  recipe: IRecipe
+}) {
+  const router = useRouter()
 
-export function Recipe(props: IRecipeProps) {
-  const recipeId = parseInt(props.match.params.id, 10)
+  // const maybeRecipe = useRecipe(recipeId)
 
-  const maybeRecipe = useRecipe(recipeId)
+  // useRecipeUrlUpdate(
+  //   isSuccessLike(maybeRecipe)
+  //     ? { id: maybeRecipe.data.id, name: maybeRecipe.data.name }
+  //     : null,
+  // )
 
-  useRecipeUrlUpdate(
-    isSuccessLike(maybeRecipe)
-      ? { id: maybeRecipe.data.id, name: maybeRecipe.data.name }
-      : null,
-  )
+  // if (isInitial(maybeRecipe) || isLoading(maybeRecipe)) {
+  //   return (
+  //     <section className="d-flex justify-content-center">
+  //       <Loader />
+  //     </section>
+  //   )
+  // }
 
-  if (isInitial(maybeRecipe) || isLoading(maybeRecipe)) {
-    return (
-      <section className="d-flex justify-content-center">
-        <Loader />
-      </section>
-    )
-  }
+  // if (isFailure(maybeRecipe)) {
+  //   return <NoMatch />
+  // }
 
-  if (isFailure(maybeRecipe)) {
-    return <NoMatch />
-  }
+  // const recipe = maybeRecipe.data
 
-  const recipe = maybeRecipe.data
+  const isTimeline = !!router.query.timeline
 
-  const parsed = queryString.parse(props.location.search)
-
-  const isTimeline = !!parsed.timeline
+  // return <pre>{JSON.stringify({ recipe }, null, 2)}</pre>
 
   return (
     <div className="d-grid grid-gap-2 mx-auto mw-1000px">

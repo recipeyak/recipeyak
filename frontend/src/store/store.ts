@@ -18,14 +18,6 @@ import {
 import pickBy from "lodash/pickBy"
 import throttle from "lodash/throttle"
 
-import createHistory from "history/createBrowserHistory"
-import {
-  RouterState,
-  RouterAction,
-  connectRouter,
-  routerMiddleware,
-} from "connected-react-router"
-
 import recipes, { IRecipesState, RecipeActions } from "@/store/reducers/recipes"
 import user, { IUserState, UserActions } from "@/store/reducers/user"
 import notification, {
@@ -63,7 +55,6 @@ export interface IState {
   readonly user: IUserState
   readonly recipes: IRecipesState
   readonly invites: IInvitesState
-  readonly router: Omit<RouterState, "action">
   readonly notification: INotificationState
   readonly passwordChange: IPasswordChangeState
   readonly shoppinglist: IShoppingListState
@@ -78,7 +69,6 @@ export type Action =
   | RecipeActions
   | InviteActions
   | NotificationsActions
-  | RouterAction
   | PasswordChangeActions
   | ShoppingListActions
   | AddRecipeActions
@@ -97,18 +87,12 @@ function omitUndefined(obj: ReducerMapObj): ReducerMapObj {
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   return pickBy(obj, x => x != null) as ReducerMapObj
 }
-export const history = createHistory()
 
 const recipeApp: LoopReducer<IState, Action> = combineReducers(
   omitUndefined({
     user,
     recipes,
     invites,
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    router: (connectRouter(history) as unknown) as LoopReducer<
-      Pick<RouterState, "location">,
-      Action
-    >,
     notification,
     passwordChange,
     shoppinglist,
@@ -134,18 +118,16 @@ export function rootReducer(
       // so we can redirect users to where they were attempting to
       // visit before being asked for authentication
       auth: state.auth,
-      router: state.router,
     }
   }
   return recipeApp(state, action)
 }
 
-const router = routerMiddleware(history)
 
 const compose: typeof reduxCompose =
   /* eslint-disable @typescript-eslint/consistent-type-assertions */
   // tslint:disable-next-line no-any no-unsafe-any
-  (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || reduxCompose
+  reduxCompose
 /* eslint-enable @typescript-eslint/consistent-type-assertions */
 
 // NOTE(sbdchd): this is hacky, we should validate the local storage state before using it
@@ -173,7 +155,7 @@ const defaultData = (): IState => {
   }
 }
 
-const middleware = [router]
+const middleware = []
 if (DEBUG) {
   middleware.push(createLogger({ collapsed: true }))
 }

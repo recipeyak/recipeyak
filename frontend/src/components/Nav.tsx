@@ -1,5 +1,5 @@
 import React from "react"
-import { Link } from "react-router-dom"
+import Link from "next/link"
 
 import NavLink from "@/containers/NavLink"
 import Logo from "@/components/Logo"
@@ -192,12 +192,14 @@ const NavContainer = styled.nav`
 `
 
 export function Navbar() {
-  const isLoggedIn = useIsLoggedIn()
+  const isLoggedIn = useIsLoggedIn() || true
   return (
     <NavContainer>
-      <Link to="/" className="better-nav-item pb-1 pt-1 pl-0 pr-0 fw-normal">
-        <Logo width="40px" />
-        <WordMark />
+      <Link href="/">
+        <a className="better-nav-item pb-1 pt-1 pl-0 pr-0 fw-normal">
+          <Logo width="40px" />
+          <WordMark />
+        </a>
       </Link>
       {isLoggedIn ? <NavButtons /> : <AuthButtons />}
     </NavContainer>

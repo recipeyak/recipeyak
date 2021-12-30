@@ -1,15 +1,26 @@
 import React from "react"
-import { Link, NavLinkProps } from "react-router-dom"
+import { useRouter } from "next/router"
+
+import Link from "next/link"
 
 export const NavLink = ({
   to,
-  pathname,
   className = "",
   activeClassName = "active",
-  ...props
-}: NavLinkProps & { pathname: string }) => {
-  const activeClass = pathname === to ? activeClassName : ""
-  return <Link to={to} className={className + " " + activeClass} {...props} />
+  children,
+}: {
+  to: string
+  className: string
+  activeClassName?: string
+  children: React.ReactNode
+}) => {
+  const router = useRouter()
+  const activeClass = router.pathname === to ? activeClassName : ""
+  return (
+    <Link href={to}>
+      <a className={className + " " + activeClass} children={children} />
+    </Link>
+  )
 }
 
 export default NavLink

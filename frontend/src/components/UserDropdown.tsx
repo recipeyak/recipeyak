@@ -1,5 +1,5 @@
 import React from "react"
-import { Link } from "react-router-dom"
+import Link from "next/link"
 
 import { Button } from "@/components/Buttons"
 import { useSelector, useDispatch } from "@/hooks"
@@ -52,7 +52,7 @@ export function UserDropdown() {
       <DropdownMenu isOpen={isOpen}>
         <UserEmail />
         <p>
-          <Link to="/settings" className="p-1-0">
+          <Link href="/settings" className="p-1-0">
             Settings
           </Link>
         </p>

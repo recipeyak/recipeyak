@@ -1,7 +1,7 @@
 import React from "react"
 import { styled } from "@/theme"
 import { Link } from "react-router-dom"
-import { useDrag } from "react-dnd"
+import { useDrag } from "react-dnd-cjs"
 import { isInsideChangeWindow } from "@/date"
 import { recipeURL } from "@/urls"
 import { DragDrop } from "@/dragDrop"

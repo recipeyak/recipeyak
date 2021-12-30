@@ -1,4 +1,4 @@
-import { DragObjectWithType, DropTargetMonitor } from "react-dnd"
+import { DragObjectWithType, DropTargetMonitor } from "react-dnd-cjs"
 
 export const enum DragDrop {
   RECIPE = "RECIPE",

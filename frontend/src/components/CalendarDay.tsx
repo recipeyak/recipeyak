@@ -1,7 +1,7 @@
 import React from "react"
 import { connect } from "react-redux"
 import format from "date-fns/format"
-import { useDrop } from "react-dnd"
+import { useDrop } from "react-dnd-cjs"
 import isWithinInterval from "date-fns/isWithinInterval"
 import startOfDay from "date-fns/startOfDay"
 import endOfDay from "date-fns/endOfDay"
@@ -191,10 +191,8 @@ function mapStateToProps(
   state: IState,
   props: Pick<ICalendarDayProps, "date">,
 ) {
-  const isShopping =
-    state.router.location != null
-      ? state.router.location.pathname.includes("shopping")
-      : false
+  const isShopping = false // XXX
+
   return {
     isSelected:
       isWithinInterval(props.date, {

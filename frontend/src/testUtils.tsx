@@ -1,6 +1,6 @@
 import React from "react"
 import { Provider as ReduxProvider } from "react-redux"
-import { DndProvider } from "react-dnd"
+import { DndProvider } from "react-dnd-cjs"
 import { MemoryRouter } from "react-router"
 import HTML5Backend from "react-dnd-html5-backend"
 import MockDate from "mockdate"

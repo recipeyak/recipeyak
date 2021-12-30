@@ -1,5 +1,5 @@
 import React from "react"
-import { useDrop, useDrag } from "react-dnd"
+import { useDrop, useDrag } from "react-dnd-cjs"
 import { DragDrop, handleDndHover } from "@/dragDrop"
 import { AddSectionFormInner } from "@/components/AddSectionForm"
 import { Status } from "@/webdata"

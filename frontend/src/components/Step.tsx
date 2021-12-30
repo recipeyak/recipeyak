@@ -31,7 +31,7 @@
 
 import React, { useRef } from "react"
 import { connect } from "react-redux"
-import { useDrop, useDrag } from "react-dnd"
+import { useDrop, useDrag } from "react-dnd-cjs"
 import { DragDrop, handleDndHover } from "@/dragDrop"
 import ListItem from "@/components/ListItem"
 

@@ -20,7 +20,8 @@ import {
   DropdownMenu,
   useDropdown,
 } from "@/components/Dropdown"
-import { useLocation } from "react-router-dom"
+
+import { useRouter } from "next/router"
 
 function useScheduleUrl(recipeId: number) {
   return useSelector(scheduleURLFromTeamID) + `?recipeId=${recipeId}`
@@ -70,7 +71,7 @@ interface IDropdownProps {
 export function Dropdown({ recipeId }: IDropdownProps) {
   const { ref, isOpen, toggle, close } = useDropdown()
 
-  const location = useLocation()
+  const router = useRouter()
   const dispatch = useDispatch()
   const ingredients = useIngredientString(recipeId)
   const [isArchived, isDeleting] = useSelector(s => {
@@ -159,9 +160,7 @@ export function Dropdown({ recipeId }: IDropdownProps) {
             Unarchive Recipe
           </DropdownItemButton>
         )}
-        <DropdownItemLink
-          to={location.pathname + "?timeline=1"}
-          onClick={close}>
+        <DropdownItemLink to={router.pathname + "?timeline=1"} onClick={close}>
           Timeline
         </DropdownItemLink>
         <DropdownItemButton onClick={handleDeleteRecipe}>
