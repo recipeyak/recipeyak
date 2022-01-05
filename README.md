@@ -22,6 +22,8 @@ To have a centralized location where multiple people can organize a meal plan.
 - <https://recipekeeperonline.com>
 - <https://github.com/KDE/kookbook>
 - <https://mela.recipes>
+- <https://www.copymethat.com>
+- <https://github.com/TandoorRecipes/recipes>
 
 ## Dev
 
