@@ -205,6 +205,9 @@ def test_recipe_archived_at(client, user, recipe):
     assert res.status_code == status.HTTP_200_OK
     assert len(res.json()) == 1
     assert isinstance(res.json()[0]["archived_at"], str), "should be a date string"
+    assert all(
+        item["created_by"]["email"] == user.email for item in res.json()[0]["timelineItems"]
+    ), "should have user email"
 
     assert (
         TimelineEvent.objects.count()
