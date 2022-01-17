@@ -171,7 +171,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     email=email,
                     avatar_url=get_avatar_url(email),
                 )
-            event.pop("created_by", None)
             event.pop("created_by__email", None)
             event["type"] = "recipe"
             timeline_events[event["recipe_id"]].append(event)
