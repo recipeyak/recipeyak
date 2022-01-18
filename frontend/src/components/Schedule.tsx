@@ -17,14 +17,6 @@ interface ISidebarProps {
 }
 
 function Sidebar({ teamID, isRecipes }: ISidebarProps) {
-  const [closed, setClosed] = React.useState(false)
-
-  const arrow = closed ? "→" : "←"
-
-  const sideBarStyle = {
-    display: closed ? "none" : "",
-  }
-
   const recipesURL =
     teamID === "personal"
       ? "/schedule/recipes"
@@ -35,36 +27,23 @@ function Sidebar({ teamID, isRecipes }: ISidebarProps) {
       ? "/schedule/shopping"
       : `/t/${teamID}/schedule/shopping`
 
-  const toggleClose = React.useCallback(() => {
-    setClosed(prev => !prev)
-  }, [])
-
   return (
-    <>
-      <div
-        className="d-grid grid-gap-2 grid-auto-rows-min-content w-300px flex-shrink-0 hide-sm"
-        style={sideBarStyle}>
-        <Tabs small className="mb-0 no-print">
-          <Tab isActive={!isRecipes}>
-            <Link to={shoppingURL}>Shopping</Link>
-          </Tab>
-          <Tab isActive={isRecipes}>
-            <Link to={recipesURL}>Recipes</Link>
-          </Tab>
-        </Tabs>
+    <div className="d-grid grid-gap-2 grid-auto-rows-min-content w-300px flex-shrink-0 hide-sm pr-2">
+      <Tabs small className="mb-0 no-print">
+        <Tab isActive={!isRecipes}>
+          <Link to={shoppingURL}>Shopping</Link>
+        </Tab>
+        <Tab isActive={isRecipes}>
+          <Link to={recipesURL}>Recipes</Link>
+        </Tab>
+      </Tabs>
 
-        {isRecipes ? (
-          <Recipes teamID={teamID} scroll drag noPadding />
-        ) : (
-          <ShoppingList teamID={teamID} />
-        )}
-      </div>
-      <a
-        className="select-none closer text-decoration-none no-print hide-sm"
-        onClick={toggleClose}>
-        {arrow}
-      </a>
-    </>
+      {isRecipes ? (
+        <Recipes teamID={teamID} scroll drag noPadding />
+      ) : (
+        <ShoppingList teamID={teamID} />
+      )}
+    </div>
   )
 }
 
