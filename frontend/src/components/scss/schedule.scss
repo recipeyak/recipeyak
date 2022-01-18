@@ -10,14 +10,6 @@
   }
 }
 
-.closer {
-  color: white;
-  transition: color 0.2s;
-  &:hover {
-    color: lighten($text-color, 30%);
-  }
-}
-
 // hide native chrome pickers
 
 input::-webkit-calendar-picker-indicator {
