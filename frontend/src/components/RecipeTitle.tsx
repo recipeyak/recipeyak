@@ -27,14 +27,14 @@ function TagEditor({
   readonly onCreate: (_: string) => void
   readonly className?: string
 }) {
-  const [newTag, setNewTag] = React.useState('')
-  function handleNewTag(e: React.KeyboardEvent<HTMLInputElement>)  {
+  const [newTag, setNewTag] = React.useState("")
+  function handleNewTag(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key !== "Enter") {
       return
     }
 
     onCreate(newTag)
-    setNewTag('')
+    setNewTag("")
   }
   return (
     <div className={cls("d-flex mt-2", className)}>
