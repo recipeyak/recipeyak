@@ -18,18 +18,24 @@ import cls from "@/classnames"
 function TagEditor({
   tags,
   onRemove,
-  onChange,
   onCreate,
-  newTag,
+
   className,
 }: {
   readonly tags: string[] | undefined
-  readonly newTag: string
   readonly onRemove: (_: string) => void
-  readonly onChange: (_: React.ChangeEvent<HTMLInputElement>) => void
-  readonly onCreate: (_: React.KeyboardEvent<HTMLInputElement>) => void
+  readonly onCreate: (_: string) => void
   readonly className?: string
 }) {
+  const [newTag, setNewTag] = React.useState('')
+  function handleNewTag(e: React.KeyboardEvent<HTMLInputElement>)  {
+    if (e.key !== "Enter") {
+      return
+    }
+
+    onCreate(newTag)
+    setNewTag('')
+  }
   return (
     <div className={cls("d-flex mt-2", className)}>
       <label className="d-flex align-center">tags</label>
@@ -45,8 +51,8 @@ function TagEditor({
         className="ml-2 max-width-200px"
         placeholder="new tag"
         value={newTag}
-        onChange={onChange}
-        onKeyDown={onCreate}
+        onChange={e => setNewTag(e.target.value)}
+        onKeyDown={handleNewTag}
       />
     </div>
   )
@@ -79,7 +85,6 @@ export interface IRecipeBasic {
 interface IRecipeTitleState {
   readonly show: boolean
   readonly recipe: IRecipeBasic
-  readonly newTag: string
 }
 
 class RecipeTitle extends React.Component<
@@ -89,7 +94,6 @@ class RecipeTitle extends React.Component<
   state: IRecipeTitleState = {
     show: false,
     recipe: {},
-    newTag: "",
   }
 
   componentDidMount() {
@@ -133,21 +137,12 @@ class RecipeTitle extends React.Component<
     this.toggleEdit()
   }
 
-  handleNewTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newTag: e.target.value })
-  }
-
-  handleNewTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key !== "Enter") {
-      return
-    }
-    e.persist()
+  handleNewTag = (tag: string) => {
     this.setState(prevState => ({
       recipe: {
         ...prevState.recipe,
-        tags: uniq([...(prevState.recipe.tags ?? []), prevState.newTag]),
+        tags: uniq([...(prevState.recipe.tags ?? []), tag]),
       },
-      newTag: "",
     }))
   }
   removeTag = (tag: string) => {
@@ -260,8 +255,6 @@ class RecipeTitle extends React.Component<
             <div className="d-flex align-center">
               <TagEditor
                 tags={this.state.recipe.tags}
-                newTag={this.state.newTag}
-                onChange={this.handleInputChange}
                 onCreate={this.handleNewTag}
                 onRemove={this.removeTag}
                 className="mr-2"
