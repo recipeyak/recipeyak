@@ -12,9 +12,6 @@ import { WebData, isSuccessOrRefetching } from "@/webdata"
 import queryString from "query-string"
 import { parseIntOrNull } from "@/parseIntOrNull"
 import { Link } from "react-router-dom"
-import { useDispatch } from "@/hooks"
-import { replace } from "connected-react-router"
-import { updateQueryString } from "@/utils/querystring"
 
 interface IResultsProps {
   readonly recipes: JSX.Element[]
@@ -153,20 +150,19 @@ function RecipesListSearch({
   scroll,
   teamID,
 }: IRecipesProps) {
-  const dispatch = useDispatch()
-  const [query, setQuery] = useState(() => {
-    const urlQuery = getSearch(window.location.search)
-    // remove search and recipeId from query string on load.
-    dispatch(
-      replace({
-        search: updateQueryString(
-          { search: undefined, recipeId: undefined, tag: undefined },
-          window.location.search,
-        ),
-      }),
+  const [query, setQuery] = useState(() => getSearch(window.location.search))
+
+  useEffect(() => {
+    const queryParams = queryString.parse(window.location.search)
+
+    Promise.resolve().then(() =>
+      history.replaceState(
+        null,
+        "",
+        "?" + queryString.stringify({ ...queryParams, search: query }),
+      ),
     )
-    return urlQuery
-  })
+  }, [query])
 
   useEffect(() => {
     const teamID_ = teamID == null ? "personal" : teamID
