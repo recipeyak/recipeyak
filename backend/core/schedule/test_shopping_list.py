@@ -42,12 +42,14 @@ def test_fetching_shoppinglist(client, user, recipe):
     assert res.status_code == status.HTTP_200_OK
     assert res.json() == {
         "egg": {
-            "quantities": [{"quantity": "2", "unit": "POUND", "unknown_unit": None}]
+            "category": "dairy",
+            "quantities": [{"quantity": "2", "unit": "POUND", "unknown_unit": None}],
         },
         "soy sauce": {
+            "category": "condiments",
             "quantities": [
                 {"quantity": "4", "unit": "TABLESPOON", "unknown_unit": None}
-            ]
+            ],
         },
     }
 
@@ -81,12 +83,14 @@ def test_fetching_shoppinglist_with_team_recipe(client, team, user, recipe):
 
     assert res.json() == {
         "egg": {
-            "quantities": [{"quantity": "2", "unit": "POUND", "unknown_unit": None}]
+            "category": "dairy",
+            "quantities": [{"quantity": "2", "unit": "POUND", "unknown_unit": None}],
         },
         "soy sauce": {
+            "category": "condiments",
             "quantities": [
                 {"quantity": "4", "unit": "TABLESPOON", "unknown_unit": None}
-            ]
+            ],
         },
     }
 
@@ -125,7 +129,8 @@ def test_scheduling_multiple_times_some_ingredient(
     assert res.status_code == status.HTTP_200_OK
     assert res.json() == {
         "black pepper": {
-            "quantities": [{"quantity": "3", "unit": "SOME", "unknown_unit": None}]
+            "category": "spices",
+            "quantities": [{"quantity": "3", "unit": "SOME", "unknown_unit": None}],
         }
     }
 
@@ -356,26 +361,32 @@ def test_combining_feta(user, client, empty_recipe):
 
     assert res.json() == {
         "all purpose flour": {
-            "quantities": [{"quantity": "1.25", "unit": "CUP", "unknown_unit": None}]
+            "category": "baking",
+            "quantities": [{"quantity": "1.25", "unit": "CUP", "unknown_unit": None}],
         },
         "feta": {
-            "quantities": [{"quantity": "1", "unit": "SOME", "unknown_unit": None}]
+            "category": "cheese",
+            "quantities": [{"quantity": "1", "unit": "SOME", "unknown_unit": None}],
         },
         "katamata olives": {
-            "quantities": [{"quantity": "1", "unit": "SOME", "unknown_unit": None}]
+            "category": "condiments",
+            "quantities": [{"quantity": "1", "unit": "SOME", "unknown_unit": None}],
         },
         "molasses": {
+            "category": "baking",
             "quantities": [
                 {"quantity": "2", "unit": "TABLESPOON", "unknown_unit": None}
-            ]
+            ],
         },
         "red pepper flakes": {
-            "quantities": [{"quantity": "1", "unit": "SOME", "unknown_unit": None}]
+            "category": "spices",
+            "quantities": [{"quantity": "1", "unit": "SOME", "unknown_unit": None}],
         },
         "tortilla chips": {
+            "category": "dry goods",
             "quantities": [
                 {"quantity": "2", "unit": "UNKNOWN", "unknown_unit": "bag"},
                 {"quantity": "1", "unit": "UNKNOWN", "unknown_unit": "container"},
-            ]
+            ],
         },
     }
