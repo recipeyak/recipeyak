@@ -9,6 +9,8 @@ import isBefore from "date-fns/isBefore"
 import isAfter from "date-fns/isAfter"
 import isValid from "date-fns/isValid"
 
+import groupBy from "lodash/groupBy"
+
 import {
   reportBadMergeAsync,
   showNotificationWithTimeoutAsync,
@@ -144,6 +146,8 @@ class ShoppingListList extends React.Component<IShoppingListContainerProps> {
       ? Object.entries(this.props.items.data)
       : []
 
+    const groups = Object.entries(groupBy(items, x => x[1] && x[1].category))
+
     return (
       <div className={`box p-rel min-height-75px mb-0 p-3 ${loadingClass}`}>
         <Button
@@ -153,20 +157,31 @@ class ShoppingListList extends React.Component<IShoppingListContainerProps> {
           Copy
         </Button>
         <section ref={this.shoppingList}>
-          {items
-            .sort((x, y) => ingredientByNameAlphabetical(x[0], y[0]))
-            .map(([name, quantities], i) => {
-              if (quantities == null) {
-                return null
-              }
-              return (
-                <ShoppingListItem
-                  key={name}
-                  item={[name, quantities]}
-                  isFirst={i === 0}
-                />
-              )
-            })}
+          {groups.map(([groupName, values], groupIndex) => {
+            values.sort((x, y) => ingredientByNameAlphabetical(x[0], y[0]))
+            return (
+              <div key={groupName}>
+                {groupIndex > 0 && (
+                  // ensure copying the list has a new line between categories
+                  <section style={{ maxHeight: "0.5rem" }}>
+                    <br />
+                  </section>
+                )}
+                {values.map(([name, quantities], i) => {
+                  if (quantities == null) {
+                    return null
+                  }
+                  return (
+                    <ShoppingListItem
+                      key={name}
+                      item={[name, quantities]}
+                      isFirst={i === 0}
+                    />
+                  )
+                })}
+              </div>
+            )
+          })}
         </section>
       </div>
     )

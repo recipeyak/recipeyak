@@ -14,6 +14,7 @@ from typing_extensions import TypedDict
 from core import viewsets
 from core.auth.permissions import IsTeamMember
 from core.cumin import Ingredient, combine_ingredients
+from core.cumin.cat import category
 from core.models import (
     Membership,
     ScheduledRecipe,
@@ -73,6 +74,9 @@ def get_shopping_list_view(request: AuthedRequest, team_pk: str) -> Response:
     ]
 
     ingredient_mapping = combine_ingredients(ingredients)
+
+    for ingredient in ingredient_mapping:
+        ingredient_mapping[ingredient].category = category(ingredient)
 
     ShoppingList.objects.create(
         ingredients=JSONRenderer().render(ingredient_mapping).decode()

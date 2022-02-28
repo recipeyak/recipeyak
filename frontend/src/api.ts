@@ -122,6 +122,7 @@ export interface IQuantity {
 }
 
 export interface IIngredientItem {
+  readonly category?: string
   readonly quantities: ReadonlyArray<IQuantity>
 }
 

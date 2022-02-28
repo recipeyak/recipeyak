@@ -319,6 +319,7 @@ def normalize_ingredient_name(*, name: str) -> str:
 @dataclass
 class IngredientItem:
     quantities: List[Quantity] = field(default_factory=list)
+    category: Optional[str] = None
 
 
 IngredientList = Dict[str, IngredientItem]
