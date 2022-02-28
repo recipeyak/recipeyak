@@ -219,6 +219,7 @@ def test_combining_ingredients_to_json() -> None:
 
     assert json.loads(JSONRenderer().render(combine_ingredients(ingredients))) == {
         "soy sauce": {
+            "category": None,
             "quantities": [
                 {"quantity": "4", "unit": "TEASPOON", "unknown_unit": None},
                 {"quantity": "1", "unit": "SOME", "unknown_unit": None},
