@@ -1,4 +1,5 @@
 from collections import defaultdict
+from typing import Any, Dict, Mapping, Set
 
 from core.schedule.inflect import singularize
 
@@ -432,8 +433,8 @@ DEPARTMENT_MAPPING = {
 }
 
 
-def create_trie(mapping):
-    trie = {}
+def create_trie(mapping: Mapping[str, Set[str]]) -> Dict[str, Any]:
+    trie: Dict[str, Any] = {}
     for category, ingredients in mapping.items():
         for ingredient in ingredients:
             tree = trie
@@ -453,7 +454,7 @@ def create_trie(mapping):
 trie = create_trie(DEPARTMENT_MAPPING)
 
 
-def search(item: str, trie=trie) -> "dict[str, int]":
+def search(item: str, trie: Dict[str, Any] = trie) -> Dict[str, Set[int]]:
     items = [singularize(x) for x in item.split()]
     counts = defaultdict(set)
     for start in range(len(items)):
@@ -480,8 +481,3 @@ def category(ingredient: str) -> str:
         return "unknown"
 
     return sorted(res.items(), key=lambda x: -max(x[1]))[0][0]
-    for cat, keywords in DEPARTMENT_MAPPING.items():
-        for k in keywords:
-            if k in ingredient.lower():
-                return cat
-    return "unknown"

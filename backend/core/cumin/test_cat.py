@@ -3,8 +3,6 @@ from collections import defaultdict
 from pathlib import Path
 from textwrap import dedent
 
-import pytest
-
 from core.cumin.cat import category, create_trie, search
 
 
@@ -106,7 +104,7 @@ def test_categorize_ingredient_test_cases(snapshot) -> None:
     """
     ).splitlines()
 
-    assert sorted([(w, category(w)) for w in cases]) == snapshot()
+    assert sorted((w, category(w)) for w in cases) == snapshot()
 
 
 def test_trie() -> None:
