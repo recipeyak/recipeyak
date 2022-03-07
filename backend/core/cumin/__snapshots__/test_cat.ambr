@@ -1,0 +1,288 @@
+# name: test_categorize_ingredient_test_cases
+  <class 'list'> [
+    <class 'tuple'> (
+      '',
+      'unknown',
+    ),
+    <class 'tuple'> (
+      '(13-ounce) can unsweetened coconut milk',
+      'produce',
+    ),
+    <class 'tuple'> (
+      '(14.5-ounce) can whole or crushed tomatoes',
+      'canned & packaged',
+    ),
+    <class 'tuple'> (
+      '(15-ounce) cans chickpeas',
+      'canned & packaged',
+    ),
+    <class 'tuple'> (
+      '(6-inch) corn tortillas',
+      'bread',
+    ),
+    <class 'tuple'> (
+      '1 lime',
+      'produce',
+    ),
+    <class 'tuple'> (
+      '1-inch piece ginger',
+      'produce',
+    ),
+    <class 'tuple'> (
+      '1/4 ounce active dry yeast',
+      'dry goods',
+    ),
+    <class 'tuple'> (
+      '14 oz cans of diced tomatoes',
+      'canned & packaged',
+    ),
+    <class 'tuple'> (
+      '14.5-ounce can whole peeled tomatoes',
+      'canned & packaged',
+    ),
+    <class 'tuple'> (
+      '15-ounce can chickpeas',
+      'canned & packaged',
+    ),
+    <class 'tuple'> (
+      '15-ounce container ricotta cheese',
+      'dairy',
+    ),
+    <class 'tuple'> (
+      '28 ounce can San Marzano tomatoes',
+      'produce',
+    ),
+    <class 'tuple'> (
+      '28-ounce can whole tomatoes',
+      'canned & packaged',
+    ),
+    <class 'tuple'> (
+      '3-to-3.5-pound butternut squash',
+      'produce',
+    ),
+    <class 'tuple'> (
+      '4-ounce milk chocolate bar',
+      'baking',
+    ),
+    <class 'tuple'> (
+      'Asian fish sauce',
+      'condiments',
+    ),
+    <class 'tuple'> (
+      'Chinese rice wine',
+      'dry goods',
+    ),
+    <class 'tuple'> (
+      'Grated Parmigiano-Reggiano',
+      'cheese',
+    ),
+    <class 'tuple'> (
+      'all-butter puff pastry',
+      'frozen',
+    ),
+    <class 'tuple'> (
+      'almond butter',
+      'condiments',
+    ),
+    <class 'tuple'> (
+      'almond paste',
+      'condiments',
+    ),
+    <class 'tuple'> (
+      'apple cider vinegar',
+      'condiments',
+    ),
+    <class 'tuple'> (
+      'baby bok choy',
+      'produce',
+    ),
+    <class 'tuple'> (
+      'beef broth',
+      'meat',
+    ),
+    <class 'tuple'> (
+      'beef or chicken broth',
+      'meat',
+    ),
+    <class 'tuple'> (
+      'beef stock',
+      'canned & packaged',
+    ),
+    <class 'tuple'> (
+      'best-quality apricot jam or orange marmalade',
+      'produce',
+    ),
+    <class 'tuple'> (
+      'bulk hot or sweet breakfast sausage or Italian sausage',
+      'meat',
+    ),
+    <class 'tuple'> (
+      'butternut squash',
+      'produce',
+    ),
+    <class 'tuple'> (
+      'butternut squash (1 small squash)',
+      'produce',
+    ),
+    <class 'tuple'> (
+      'chicken stock',
+      'canned & packaged',
+    ),
+    <class 'tuple'> (
+      'chinese egg noodles',
+      'dry goods',
+    ),
+    <class 'tuple'> (
+      'coconut extract',
+      'produce',
+    ),
+    <class 'tuple'> (
+      'coconut oil',
+      'produce',
+    ),
+    <class 'tuple'> (
+      'coconut rum or dark rum',
+      'produce',
+    ),
+    <class 'tuple'> (
+      'coconut sugar or substitute brown sugar',
+      'produce',
+    ),
+    <class 'tuple'> (
+      'corn torillas',
+      'produce',
+    ),
+    <class 'tuple'> (
+      'corn tortilla chips',
+      'dry goods',
+    ),
+    <class 'tuple'> (
+      'corn tortillas',
+      'bread',
+    ),
+    <class 'tuple'> (
+      'cornmeal',
+      'dry goods',
+    ),
+    <class 'tuple'> (
+      'cornstarch',
+      'dry goods',
+    ),
+    <class 'tuple'> (
+      'cream of coconut',
+      'canned & packaged',
+    ),
+    <class 'tuple'> (
+      'cream of tartar',
+      'spices',
+    ),
+    <class 'tuple'> (
+      'creamy unsweetened peanut butter',
+      'condiments',
+    ),
+    <class 'tuple'> (
+      'crystallized ginger',
+      'produce',
+    ),
+    <class 'tuple'> (
+      'cubanelle peppers',
+      'produce',
+    ),
+    <class 'tuple'> (
+      'dark corn syrup',
+      'produce',
+    ),
+    <class 'tuple'> (
+      'diced canned tomatoes',
+      'canned & packaged',
+    ),
+    <class 'tuple'> (
+      'dill pickle chips',
+      'condiments',
+    ),
+    <class 'tuple'> (
+      'doubanjiang (Sichuanese fermented chile bean paste; see Note)',
+      'condiments',
+    ),
+    <class 'tuple'> (
+      'dried green split peas',
+      'dry goods',
+    ),
+    <class 'tuple'> (
+      'dry mustard powder',
+      'condiments',
+    ),
+    <class 'tuple'> (
+      'eggplant',
+      'produce',
+    ),
+    <class 'tuple'> (
+      'finely chopped cornichons or small kosher dill pickles',
+      'condiments',
+    ),
+    <class 'tuple'> (
+      'finely grated ginger',
+      'produce',
+    ),
+    <class 'tuple'> (
+      'fish sauce',
+      'condiments',
+    ),
+    <class 'tuple'> (
+      'graham cracker crumbs',
+      'dry goods',
+    ),
+    <class 'tuple'> (
+      'ground ginger',
+      'produce',
+    ),
+    <class 'tuple'> (
+      'hamburger buns',
+      'bread',
+    ),
+    <class 'tuple'> (
+      'haricot vert fins or green beans',
+      'produce',
+    ),
+    <class 'tuple'> (
+      'harissa or tomato paste',
+      'produce',
+    ),
+    <class 'tuple'> (
+      'hot italian sausage',
+      'meat',
+    ),
+    <class 'tuple'> (
+      'large poblano pepper',
+      'spices',
+    ),
+    <class 'tuple'> (
+      'lemon extract',
+      'produce',
+    ),
+    <class 'tuple'> (
+      'light corn syrup',
+      'produce',
+    ),
+    <class 'tuple'> (
+      'loaf sweet egg bread like challah or brioche',
+      'bread',
+    ),
+    <class 'tuple'> (
+      'low sodium chicken stock',
+      'canned & packaged',
+    ),
+    <class 'tuple'> (
+      'low-sodium chicken broth',
+      'meat',
+    ),
+    <class 'tuple'> (
+      'malted milk powder',
+      'dairy',
+    ),
+    <class 'tuple'> (
+      'medium-coarse yellow cornmeal',
+      'dry goods',
+    ),
+  ]
+---

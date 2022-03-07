@@ -1,7 +1,20 @@
+from collections import defaultdict
+from typing import Any, Dict, Mapping, Set
+
+from core.schedule.inflect import singularize
+
 DEPARTMENT_MAPPING = {
     "produce": {
         "basil",
         "coconut",
+        "blueberries",
+        "blackberries",
+        "raspberries",
+        "chile",
+        "chili",
+        "lemongrass",
+        "eggplant",
+        "cubanelle peppers",
         "plum",
         "apricots",
         "sage",
@@ -21,6 +34,7 @@ DEPARTMENT_MAPPING = {
         "passion fruit",
         "mushroom",
         "herbs",
+        "butternut squash",
         "pasilla chilies",
         "mulato chiles",
         "haricot verts",
@@ -105,6 +119,7 @@ DEPARTMENT_MAPPING = {
     "meat": {
         "chicken",
         "beef",
+        "pepperoni",
         "pork",
         "bacon",
         "sausage",
@@ -136,6 +151,7 @@ DEPARTMENT_MAPPING = {
         "colby jack",
         "provolone",
         "queso fresco",
+        "parmigiano",
         "mascarpone",
         "fontina",
         "pecorino",
@@ -148,6 +164,7 @@ DEPARTMENT_MAPPING = {
     "dairy": {
         "egg",
         "milk",
+        "buttermilk",
         "cream",
         "ricotta",
         "yogurt",
@@ -160,6 +177,7 @@ DEPARTMENT_MAPPING = {
     },
     "baking": {
         "sugar",
+        "granulated",
         "flour",
         "chocolate",
         "choclate",
@@ -188,8 +206,13 @@ DEPARTMENT_MAPPING = {
     "bread": {
         "bread",
         "panettone",
+        "pita",
         "naan",
+        "bun",
         "burger bun",
+        "buns",
+        "challah",
+        "brioche",
         "pita",
         "rolls",
         "brioche",
@@ -201,24 +224,40 @@ DEPARTMENT_MAPPING = {
         "hot dog buns",
         "pizza dough",
     },
-    "canned": {
+    "canned & packaged": {
         "anchovy",
         "fruit preserves",
         "chickpeas",
         "beans",
         "sardines",
         "pumpkin puree",
+        "canned tomatoes",
+        "crushed tomatoes",
+        "can whole tomatoes",
+        "can whole peeled tomatoes",
+        "cans of diced tomatoes",
+        "can San Marzano tomatoes",
         "pumpkin purée",
         "marinara sauce",
         "tuna",
         "anchovies",
         "adobo",
         "stock",
+        "cream of coconut",
+        "chicken stock",
+        "beef stock",
+        "fish stock",
+        "vegetable stock",
     },
     # kind of the misc category
     "condiments": {
         "tamari",
         "pesto",
+        "horseradish",
+        "peanut butter",
+        "almond butter",
+        "doubanjiang",
+        "fish sauce",
         "gochujang",
         "salsa",
         "pickle",
@@ -230,6 +269,7 @@ DEPARTMENT_MAPPING = {
         "ketchup",
         "ketcup",
         "oil",
+        "olive oil",
         "honey",
         "dulce de leche",
         "hot sauce",
@@ -258,12 +298,18 @@ DEPARTMENT_MAPPING = {
         "olives",
     },
     "dry goods": {
+        "gingersnaps",
+        "pepitas",
+        "currants",
         "powdered msg",
+        "graham cracker",
         "tortilla chips",
+        "breadcrumbs",
         "quinoa",
         "raisins",
         "masa harina",
         "polenta",
+        "cornmeal",
         "panko",
         "orzo",
         "oatmeal",
@@ -296,10 +342,12 @@ DEPARTMENT_MAPPING = {
         "yeast",
         "rice",
         "pasta",
+        "lasagna noodles",
         "tapioca",
         "cornstarch",
         "noodles",
         "spaghetti",
+        "split peas",
     },
     "alcohol": {
         "wine",
@@ -323,6 +371,7 @@ DEPARTMENT_MAPPING = {
         "cinnamon",
         "curry powder",
         "sumac",
+        "peppercorns",
         "paprika",
         "salt",
         "caraway seeds",
@@ -384,9 +433,51 @@ DEPARTMENT_MAPPING = {
 }
 
 
+def create_trie(mapping: Mapping[str, Set[str]]) -> Dict[str, Any]:
+    trie: Dict[str, Any] = {}
+    for category, ingredients in mapping.items():
+        for ingredient in ingredients:
+            tree = trie
+            words = [singularize(x) for x in ingredient.replace("-", " ").split()]
+            for idx, word in enumerate(words):
+                if word in tree:
+                    tree = tree[word]
+                else:
+                    tree[word] = {}
+                    tree = tree[word]
+                is_last = idx == len(words) - 1
+                if is_last and "$" not in tree:
+                    tree["$"] = (category, len(ingredient))
+    return trie
+
+
+trie = create_trie(DEPARTMENT_MAPPING)
+
+
+def search(item: str, trie: Dict[str, Any] = trie) -> Dict[str, Set[int]]:
+    items = [singularize(x) for x in item.split()]
+    counts = defaultdict(set)
+    for start in range(len(items)):
+        tree = trie
+        for word in items[start:]:
+            if word not in tree:
+                break
+            tree = tree[word]
+            if "$" in tree:
+                cat, cnt = tree["$"]
+                counts[cat].add(cnt)
+    return counts
+
+
 def category(ingredient: str) -> str:
-    for cat, keywords in DEPARTMENT_MAPPING.items():
-        for k in keywords:
-            if k in ingredient:
-                return cat
-    return "unknown"
+    res = search(
+        ingredient.lower()
+        .replace("-", " ")
+        .replace(",", "")
+        .replace(")", "")
+        .replace("(", "")
+    )
+    if not res:
+        return "unknown"
+
+    return sorted(res.items(), key=lambda x: -max(x[1]))[0][0]
