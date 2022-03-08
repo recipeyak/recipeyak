@@ -14,6 +14,7 @@ To have a centralized location where multiple people can organize a meal plan.
 - <http://krecipes.sourceforge.net>
 - <https://cinc.kitchen>
 - <https://cookpad.com>
+- [meal-master](https://web.archive.org/web/20090327150531/http://episoft.home.comcast.net/~episoft/mmdesc.htm)
 - <https://www.prepear.com>
 - <https://www.mysaffronapp.com>
 - <https://whisk.com>
