@@ -8,25 +8,28 @@ To have a centralized location where multiple people can organize a meal plan.
 
 ## Prior Art / Alternatives
 
-- <https://www.paprikaapp.com>
-- <https://www.anylist.com>
-- <http://thinkle.github.io/gourmet/>
-- <http://krecipes.sourceforge.net>
-- <https://cinc.kitchen>
-- <https://cookpad.com>
-- [meal-master](https://web.archive.org/web/20090327150531/http://episoft.home.comcast.net/~episoft/mmdesc.htm)
-- <https://www.prepear.com>
-- <https://www.mysaffronapp.com>
-- <https://whisk.com>
-- <https://grocy.info>
-- <https://www.cooklist.co/>
-- <https://recipekeeperonline.com>
-- <https://github.com/KDE/kookbook>
-- <https://mela.recipes>
-- <https://www.copymethat.com>
-- <https://github.com/TandoorRecipes/recipes>
-- <https://github.com/hay-kot/mealie/>
-- <https://github.com/julianpoy/RecipeSage>
+| name                                                                                                          | created                                                                                                                                                                    | open source? |
+| ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| [Meal Master](https://web.archive.org/web/20090327150531/http://episoft.home.comcast.net/~episoft/mmdesc.htm) | [1986-01-01](https://outpostbbs.net/mealmaster.html)                                                                                                                       | ❌           |
+| [Cookpad](https://cookpad.com/)                                                                               | [1998-03-01](https://en.wikipedia.org/wiki/Cookpad)                                                                                                                        | ❌           |
+| [Krecipes](http://krecipes.sourceforge.net)                                                                   | [2003-05-01](https://sourceforge.net/projects/krecipes/)                                                                                                                   | ✅           |
+| [Gourmet](http://thinkle.github.io/gourmet/)                                                                  | [2004-06-14](https://github.com/thinkle/gourmet/commit/76974abe13839ef3077456238fd163325cbb09da#diff-aac07aefec754086f5c344e2c233862f6a611c739b5647fd456c1b77d3577c79R247) | ✅           |
+| [Paprika](https://www.paprikaapp.com)                                                                         | [2010-08-16](https://www.whois.com/whois/paprikaapp.com)                                                                                                                   | ❌           |
+| [Copy Me That](https://www.copymethat.com)                                                                    | [2011-03-19](https://www.whois.com/whois/copymethat.com)                                                                                                                   | ❌           |
+| [Anylist](https://www.anylist.com)                                                                            | [2012-04-04](https://twitter.com/AnyListApp)                                                                                                                               | ❌           |
+| [Whisk](https://whisk.com)                                                                                    | [2013-01-01](https://whisk.com/about/)                                                                                                                                     | ❌           |
+| [Recipe Keeper](https://recipekeeperonline.com)                                                               | [2015-06-24](https://www.whois.com/whois/recipekeeperonline.com)                                                                                                           | ❌           |
+| [Cinc](https://cinc.kitchen)                                                                                  | [2016-03-31](https://www.whois.com/whois/cinc.kitchen)                                                                                                                     | ❌           |
+| [Grocy](https://grocy.info)                                                                                   | [2017-04-15](https://github.com/grocy/grocy/commit/d414c8702ef5fb4037a7f147a2fdda7e47989125)                                                                               | ✅           |
+| [Cooklist](https://www.cooklist.co/)                                                                          | [2017-05-26](https://www.whois.com/whois/cooklist.co)                                                                                                                      | ❌           |
+| [Prepear](https://www.prepear.com)                                                                            | [2017-11-09](https://web.archive.org/web/20171204225008/https://prepear.com/)                                                                                              | ❌           |
+| [Saffron](https://www.mysaffronapp.com)                                                                       | [2017-12-04](https://www.whois.com/whois/mysaffronapp.com)                                                                                                                 | ❌           |
+| [Tandoor](https://github.com/TandoorRecipes/recipes)                                                          | [2018-01-31](https://github.com/TandoorRecipes/recipes/commit/598e0b1c698d14ca5ed75674b6ce92edaba3d6e4)                                                                    | ✅           |
+| [Recipe Sage](https://github.com/julianpoy/RecipeSage)                                                        | [2018-02-18](https://github.com/julianpoy/RecipeSage/commit/b89e3575f839a20b849f40b5ca0208619524bb57)                                                                      | ✅           |
+| [KookBook](https://github.com/KDE/kookbook)                                                                   | [2018-04-24](https://github.com/KDE/kookbook/commit/94f6b8bb07e248b6bb01d694c7ea673c161006bf)                                                                              | ✅           |
+| [AnyMeal](https://github.com/wedesoft/anymeal)                                                                | [2020-05-07](https://github.com/wedesoft/anymeal/commit/74ac6865b7b9364f0e68e15c96962221b8f2dc0d)                                                                          | ✅           |
+| [Mealie](https://github.com/hay-kot/mealie/)                                                                  | [2020-12-24](https://github.com/hay-kot/mealie/commit/beed8576c2d0499f8db443d39a8e89a37590a126)                                                                            | ✅           |
+| [Mela](https://mela.recipes)                                                                                  | [2021-03-15](https://www.whois.com/whois/mela.recipes)                                                                                                                     | ❌           |
 
 ## Dev
 
