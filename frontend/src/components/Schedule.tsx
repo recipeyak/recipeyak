@@ -68,7 +68,7 @@ function Schedule({ updateTeamID, teamID, type }: IScheduleProps) {
   const isRecipes = type === "recipes"
 
   return (
-    <div className="d-flex pl-2 pr-2 flex-grow height-100vh">
+    <div className="d-flex pl-2 pr-2 flex-grow h-100vh">
       <Helmet title="Schedule" />
       <Sidebar teamID={teamID_} isRecipes={isRecipes} />
       <Calendar type={type} teamID={teamID_} />
