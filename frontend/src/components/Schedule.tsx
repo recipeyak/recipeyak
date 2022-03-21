@@ -10,6 +10,7 @@ import ShoppingList from "@/components/ShoppingList"
 import { Dispatch, updatingDefaultScheduleTeamIDAsync } from "@/store/thunks"
 import { Tabs, Tab } from "@/components/Tabs"
 import { ITeam } from "@/store/reducers/teams"
+import { styled } from "@/theme"
 
 interface ISidebarProps {
   readonly isRecipes: boolean
@@ -58,6 +59,10 @@ interface IScheduleProps {
   readonly type: "shopping" | "recipes"
 }
 
+const ScheduleContainer = styled.div`
+  height: calc(100vh - 3rem);
+`
+
 function Schedule({ updateTeamID, teamID, type }: IScheduleProps) {
   useEffect(() => {
     updateTeamID(teamID)
@@ -68,11 +73,11 @@ function Schedule({ updateTeamID, teamID, type }: IScheduleProps) {
   const isRecipes = type === "recipes"
 
   return (
-    <div className="d-flex pl-2 pr-2 flex-grow h-100vh">
+    <ScheduleContainer className="d-flex pl-2 pr-2 flex-grow h-100vh">
       <Helmet title="Schedule" />
       <Sidebar teamID={teamID_} isRecipes={isRecipes} />
       <Calendar type={type} teamID={teamID_} />
-    </div>
+    </ScheduleContainer>
   )
 }
 
