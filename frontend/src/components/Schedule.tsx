@@ -28,7 +28,7 @@ function Sidebar({ teamID, isRecipes }: ISidebarProps) {
       : `/t/${teamID}/schedule/shopping`
 
   return (
-    <div className="d-grid grid-gap-2 grid-auto-rows-min-content w-300px flex-shrink-0 hide-sm pr-2">
+    <div className="d-grid grid-gap-2 grid-auto-rows-min-content w-300px flex-shrink-0 hide-sm mr-2">
       <Tabs small className="mb-0 no-print">
         <Tab isActive={!isRecipes}>
           <Link to={shoppingURL}>Shopping</Link>
