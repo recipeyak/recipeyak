@@ -189,6 +189,7 @@ const NavContainer = styled.nav`
   display: flex;
   justify-content: space-between;
   flex-shrink: 0;
+  height: 3rem;
 `
 
 export function Navbar() {
