@@ -34,6 +34,7 @@ jobs:
             source $BASH_ENV
             command -v poetry || python -m pip install --user poetry==1.1.9
             poetry config virtualenvs.in-project true
+            poetry run pip install setuptools==61.1.1
             poetry install
       - save_cache:
           paths:
@@ -71,6 +72,7 @@ jobs:
             source $BASH_ENV
             command -v poetry || python -m pip install --user poetry==1.1.9
             poetry config virtualenvs.in-project true
+            poetry run pip install setuptools==61.1.1
             poetry install
       - save_cache:
           paths:
@@ -114,6 +116,7 @@ jobs:
             command -v poetry || python -m pip install --user poetry==1.1.9
             poetry config virtualenvs.in-project true
             poetry install
+            ./.venv/bin/pip install setuptools==61.1.1
       - run:
           name: run lints
           working_directory: backend
