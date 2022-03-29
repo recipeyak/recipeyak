@@ -4,7 +4,7 @@ FROM python:3.7@sha256:d8718f4c8f28360c88d2d8b53681edb3c95e6a7bacedabd32eb5b1d12
 # update circleci jobs if you change this version
 RUN set -ex && python3 -m pip install poetry==1.1.9 && \
     poetry config virtualenvs.in-project true && \
-    ./.venv/bin/pip install setuptools==61.1.1
+    poetry run pip install setuptools==61.1.1
 
 # Install Application into container
 RUN set -ex && mkdir -p /var/app
