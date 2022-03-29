@@ -1,220 +1,220 @@
 version: 2
 
 jobs:
-  backend_test:
-    docker:
-      - image: python:3.7@sha256:d8718f4c8f28360c88d2d8b53681edb3c95e6a7bacedabd32eb5b1d120a75dc5
-      # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
-      - image: circleci/postgres:9.5-alpine-ram
-        command:
-          [
-            "-c",
-            'shared_preload_libraries="pg_stat_statements"',
-            "-c",
-            "pg_stat_statements.max=10000",
-            "-c",
-            "pg_stat_statements.track=all",
-          ]
-    steps:
-      - checkout
-      - run:
-           name: skip build if no changes
-           command: |
-             ./s/stop_ci_if_no_changes backend/
-      # https://circleci.com/docs/2.0/caching/
-      - restore_cache:
-          keys:
-            - backend-v11-{{ checksum "backend/poetry.lock" }}
-      - run:
-          name: install dependencies
-          working_directory: backend
-          command: |
-            # Use our new PATH so we can call poetry from bash
-            echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
-            source $BASH_ENV
-            command -v poetry || python -m pip install --user poetry==1.1.9
-            poetry config virtualenvs.in-project true
-            poetry run pip install setuptools==61.1.1
-            poetry install
-      - save_cache:
-          paths:
-            - ./.mypy_cache
-            - /root/.cache/
-          key: backend-v11-{{ checksum "backend/poetry.lock" }}
-      - run:
-          name: run tests
-          working_directory: backend
-          command: ./s/test
-      - store_test_results:
-          path: reports
+  # backend_test:
+  #   docker:
+  #     - image: python:3.7@sha256:d8718f4c8f28360c88d2d8b53681edb3c95e6a7bacedabd32eb5b1d120a75dc5
+  #     # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
+  #     - image: circleci/postgres:9.5-alpine-ram
+  #       command:
+  #         [
+  #           "-c",
+  #           'shared_preload_libraries="pg_stat_statements"',
+  #           "-c",
+  #           "pg_stat_statements.max=10000",
+  #           "-c",
+  #           "pg_stat_statements.track=all",
+  #         ]
+  #   steps:
+  #     - checkout
+  #     - run:
+  #          name: skip build if no changes
+  #          command: |
+  #            ./s/stop_ci_if_no_changes backend/
+  #     # https://circleci.com/docs/2.0/caching/
+  #     - restore_cache:
+  #         keys:
+  #           - backend-v11-{{ checksum "backend/poetry.lock" }}
+  #     - run:
+  #         name: install dependencies
+  #         working_directory: backend
+  #         command: |
+  #           # Use our new PATH so we can call poetry from bash
+  #           echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
+  #           source $BASH_ENV
+  #           command -v poetry || python -m pip install --user poetry==1.1.9
+  #           poetry config virtualenvs.in-project true
+  #           poetry run pip install setuptools==61.1.1
+  #           poetry install
+  #     - save_cache:
+  #         paths:
+  #           - ./.mypy_cache
+  #           - /root/.cache/
+  #         key: backend-v11-{{ checksum "backend/poetry.lock" }}
+  #     - run:
+  #         name: run tests
+  #         working_directory: backend
+  #         command: ./s/test
+  #     - store_test_results:
+  #         path: reports
 
-  backend_lint:
-    docker:
-      - image: python:3.7@sha256:d8718f4c8f28360c88d2d8b53681edb3c95e6a7bacedabd32eb5b1d120a75dc5
-      # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
-      - image: circleci/postgres:9.5-alpine-ram
-    steps:
-      - checkout
-      - run:
-           name: skip build if no changes
-           command: |
-             ./s/stop_ci_if_no_changes backend/
-      # https://circleci.com/docs/2.0/caching/
-      - restore_cache:
-          keys:
-            - backend-v11-{{ checksum "backend/poetry.lock" }}
-      - run:
-          name: install dependencies
-          working_directory: backend
-          command: |
-            # Use our new PATH so we can call poetry from bash
-            echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
-            source $BASH_ENV
-            command -v poetry || python -m pip install --user poetry==1.1.9
-            poetry config virtualenvs.in-project true
-            poetry run pip install setuptools==61.1.1
-            poetry install
-      - save_cache:
-          paths:
-            - ./.mypy_cache
-            - /root/.cache/
-          key: backend-v11-{{ checksum "backend/poetry.lock" }}
-      - run:
-          name: run lints
-          working_directory: backend
-          command: ./s/lint
-      - store_test_results:
-          path: reports
+  # backend_lint:
+  #   docker:
+  #     - image: python:3.7@sha256:d8718f4c8f28360c88d2d8b53681edb3c95e6a7bacedabd32eb5b1d120a75dc5
+  #     # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
+  #     - image: circleci/postgres:9.5-alpine-ram
+  #   steps:
+  #     - checkout
+  #     - run:
+  #          name: skip build if no changes
+  #          command: |
+  #            ./s/stop_ci_if_no_changes backend/
+  #     # https://circleci.com/docs/2.0/caching/
+  #     - restore_cache:
+  #         keys:
+  #           - backend-v11-{{ checksum "backend/poetry.lock" }}
+  #     - run:
+  #         name: install dependencies
+  #         working_directory: backend
+  #         command: |
+  #           # Use our new PATH so we can call poetry from bash
+  #           echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
+  #           source $BASH_ENV
+  #           command -v poetry || python -m pip install --user poetry==1.1.9
+  #           poetry config virtualenvs.in-project true
+  #           poetry run pip install setuptools==61.1.1
+  #           poetry install
+  #     - save_cache:
+  #         paths:
+  #           - ./.mypy_cache
+  #           - /root/.cache/
+  #         key: backend-v11-{{ checksum "backend/poetry.lock" }}
+  #     - run:
+  #         name: run lints
+  #         working_directory: backend
+  #         command: ./s/lint
+  #     - store_test_results:
+  #         path: reports
 
-  squawk:
-    docker:
-      - image: python:3.7@sha256:d8718f4c8f28360c88d2d8b53681edb3c95e6a7bacedabd32eb5b1d120a75dc5
-      # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
-      - image: circleci/postgres:9.5-alpine-ram
-    steps:
-      - checkout
-      - run:
-           name: skip build if no changes
-           command: |
-             ./s/stop_ci_if_no_changes backend/
-      # https://circleci.com/docs/2.0/caching/
-      - restore_cache:
-          keys:
-            - backend-v11-{{ checksum "backend/poetry.lock" }}
-      - run:
-          name: install npm
-          command: |
-            apt-get update -yq && \
-            apt-get install -y npm
-      - run:
-          name: install python dependencies
-          working_directory: backend
-          command: |
-            # Use our new PATH so we can call poetry from bash
-            echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
-            source $BASH_ENV
-            command -v poetry || python -m pip install --user poetry==1.1.9
-            poetry config virtualenvs.in-project true
-            ./.venv/bin/pip install setuptools==61.1.1
-            poetry install
-      - run:
-          name: run lints
-          working_directory: backend
-          command: ./s/squawk.py
+  # squawk:
+  #   docker:
+  #     - image: python:3.7@sha256:d8718f4c8f28360c88d2d8b53681edb3c95e6a7bacedabd32eb5b1d120a75dc5
+  #     # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
+  #     - image: circleci/postgres:9.5-alpine-ram
+  #   steps:
+  #     - checkout
+  #     - run:
+  #          name: skip build if no changes
+  #          command: |
+  #            ./s/stop_ci_if_no_changes backend/
+  #     # https://circleci.com/docs/2.0/caching/
+  #     - restore_cache:
+  #         keys:
+  #           - backend-v11-{{ checksum "backend/poetry.lock" }}
+  #     - run:
+  #         name: install npm
+  #         command: |
+  #           apt-get update -yq && \
+  #           apt-get install -y npm
+  #     - run:
+  #         name: install python dependencies
+  #         working_directory: backend
+  #         command: |
+  #           # Use our new PATH so we can call poetry from bash
+  #           echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
+  #           source $BASH_ENV
+  #           command -v poetry || python -m pip install --user poetry==1.1.9
+  #           poetry config virtualenvs.in-project true
+  #           ./.venv/bin/pip install setuptools==61.1.1
+  #           poetry install
+  #     - run:
+  #         name: run lints
+  #         working_directory: backend
+  #         command: ./s/squawk.py
 
-  frontend_test:
-    docker:
-      - image: circleci/node:12.4.0
-    steps:
-      - checkout
-      - run:
-           name: skip build if no changes
-           command: |
-             ./s/stop_ci_if_no_changes frontend/
-      - restore_cache:
-          keys:
-            - frontend-v11-dependencies-{{ checksum "frontend/yarn.lock" }}
-      - run:
-          name: install dependencies
-          working_directory: frontend
-          command: |
-            yarn install --frozen-lockfile --non-interactive
-      - save_cache:
-          paths:
-            - ./node_modules
-          key: frontend-v11-dependencies-{{ checksum "frontend/yarn.lock" }}
-      - run:
-          name: run tests
-          working_directory: frontend
-          command: ./s/test
+  # frontend_test:
+  #   docker:
+  #     - image: circleci/node:12.4.0
+  #   steps:
+  #     - checkout
+  #     - run:
+  #          name: skip build if no changes
+  #          command: |
+  #            ./s/stop_ci_if_no_changes frontend/
+  #     - restore_cache:
+  #         keys:
+  #           - frontend-v11-dependencies-{{ checksum "frontend/yarn.lock" }}
+  #     - run:
+  #         name: install dependencies
+  #         working_directory: frontend
+  #         command: |
+  #           yarn install --frozen-lockfile --non-interactive
+  #     - save_cache:
+  #         paths:
+  #           - ./node_modules
+  #         key: frontend-v11-dependencies-{{ checksum "frontend/yarn.lock" }}
+  #     - run:
+  #         name: run tests
+  #         working_directory: frontend
+  #         command: ./s/test
 
-  frontend_lint:
-    docker:
-      - image: circleci/node:12.4.0
-    steps:
-      - checkout
-      - run:
-           name: skip build if no changes
-           command: |
-             ./s/stop_ci_if_no_changes frontend/
-      - restore_cache:
-          keys:
-            - frontend-v11-dependencies-{{ checksum "frontend/yarn.lock" }}
-      - run:
-          name: install dependencies
-          working_directory: frontend
-          command: |
-            yarn install --frozen-lockfile --non-interactive
-      - save_cache:
-          paths:
-            - ./node_modules
-          key: frontend-v11-dependencies-{{ checksum "frontend/yarn.lock" }}
-      - run:
-          name: run linter
-          working_directory: frontend
-          command: |
-            ./s/lint
-            ./s/build
-      - run:
-          name: move artifacts
-          working_directory: frontend
-          # copy bundle analyzer report
-          command: |
-            mkdir -p /tmp/frontend-artifacts
-            cp -R build/report.html build/webpack-stats.json /tmp/frontend-artifacts
-      - store_artifacts:
-          path: /tmp/frontend-artifacts
+  # frontend_lint:
+  #   docker:
+  #     - image: circleci/node:12.4.0
+  #   steps:
+  #     - checkout
+  #     - run:
+  #          name: skip build if no changes
+  #          command: |
+  #            ./s/stop_ci_if_no_changes frontend/
+  #     - restore_cache:
+  #         keys:
+  #           - frontend-v11-dependencies-{{ checksum "frontend/yarn.lock" }}
+  #     - run:
+  #         name: install dependencies
+  #         working_directory: frontend
+  #         command: |
+  #           yarn install --frozen-lockfile --non-interactive
+  #     - save_cache:
+  #         paths:
+  #           - ./node_modules
+  #         key: frontend-v11-dependencies-{{ checksum "frontend/yarn.lock" }}
+  #     - run:
+  #         name: run linter
+  #         working_directory: frontend
+  #         command: |
+  #           ./s/lint
+  #           ./s/build
+  #     - run:
+  #         name: move artifacts
+  #         working_directory: frontend
+  #         # copy bundle analyzer report
+  #         command: |
+  #           mkdir -p /tmp/frontend-artifacts
+  #           cp -R build/report.html build/webpack-stats.json /tmp/frontend-artifacts
+  #     - store_artifacts:
+  #         path: /tmp/frontend-artifacts
 
-  docker_lint:
-    docker:
-      - image: node:14
-    steps:
-      - checkout
-      - run:
-          name: install dependencies
-          command: |
-            curl -L https://github.com/hadolint/hadolint/releases/download/v1.17.1/hadolint-Linux-x86_64 -o hadolint
-            chmod +x hadolint
-            mv hadolint /bin/
-      - run:
-          name: run linter
-          command: |
-            find . -name '*.Dockerfile' | xargs hadolint
+  # docker_lint:
+  #   docker:
+  #     - image: node:14
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: install dependencies
+  #         command: |
+  #           curl -L https://github.com/hadolint/hadolint/releases/download/v1.17.1/hadolint-Linux-x86_64 -o hadolint
+  #           chmod +x hadolint
+  #           mv hadolint /bin/
+  #     - run:
+  #         name: run linter
+  #         command: |
+  #           find . -name '*.Dockerfile' | xargs hadolint
 
-  shellcheck:
-    docker:
-      - image: python:3.7@sha256:d8718f4c8f28360c88d2d8b53681edb3c95e6a7bacedabd32eb5b1d120a75dc5
-    steps:
-      - checkout
-      - run:
-          name: install dependencies
-          command: |
-            apt-get update -yq && \
-            apt-get install -y git shellcheck
-      - run:
-          name: run shellcheck
-          command: |
-            ./s/shellcheck
+  # shellcheck:
+  #   docker:
+  #     - image: python:3.7@sha256:d8718f4c8f28360c88d2d8b53681edb3c95e6a7bacedabd32eb5b1d120a75dc5
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: install dependencies
+  #         command: |
+  #           apt-get update -yq && \
+  #           apt-get install -y git shellcheck
+  #     - run:
+  #         name: run shellcheck
+  #         command: |
+  #           ./s/shellcheck
 
   # https://circleci.com/docs/2.0/building-docker-images/
   build_api_container:
@@ -234,117 +234,117 @@ jobs:
               --build-arg GIT_SHA=$CIRCLE_SHA1 .
             docker push recipeyak/django:$CIRCLE_SHA1
 
-  # https://circleci.com/docs/2.0/building-docker-images/
-  build_ui_container:
-    docker:
-      - image: docker:18.05.0-ce
-    steps:
-      - checkout
-      - setup_remote_docker
-      # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
-      - run:
-          name: build container
-          working_directory: frontend
-          command: |
-            docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            docker build -f react.Dockerfile \
-              --tag recipeyak/react:$CIRCLE_SHA1 \
-              --build-arg OAUTH_BITBUCKET_CLIENT_ID=${OAUTH_BITBUCKET_CLIENT_ID-""} \
-              --build-arg OAUTH_FACEBOOK_CLIENT_ID=${OAUTH_FACEBOOK_CLIENT_ID-""} \
-              --build-arg OAUTH_GITHUB_CLIENT_ID=${OAUTH_GITHUB_CLIENT_ID-""} \
-              --build-arg OAUTH_GITLAB_CLIENT_ID=${OAUTH_GITLAB_CLIENT_ID-""} \
-              --build-arg OAUTH_GOOGLE_CLIENT_ID=${OAUTH_GOOGLE_CLIENT_ID-""} \
-              --build-arg GIT_SHA=$CIRCLE_SHA1 \
-              --build-arg FRONTEND_SENTRY_DSN=$FRONTEND_SENTRY_DSN .
-            docker push recipeyak/react:$CIRCLE_SHA1
+#   # https://circleci.com/docs/2.0/building-docker-images/
+#   build_ui_container:
+#     docker:
+#       - image: docker:18.05.0-ce
+#     steps:
+#       - checkout
+#       - setup_remote_docker
+#       # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
+#       - run:
+#           name: build container
+#           working_directory: frontend
+#           command: |
+#             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
+#             docker build -f react.Dockerfile \
+#               --tag recipeyak/react:$CIRCLE_SHA1 \
+#               --build-arg OAUTH_BITBUCKET_CLIENT_ID=${OAUTH_BITBUCKET_CLIENT_ID-""} \
+#               --build-arg OAUTH_FACEBOOK_CLIENT_ID=${OAUTH_FACEBOOK_CLIENT_ID-""} \
+#               --build-arg OAUTH_GITHUB_CLIENT_ID=${OAUTH_GITHUB_CLIENT_ID-""} \
+#               --build-arg OAUTH_GITLAB_CLIENT_ID=${OAUTH_GITLAB_CLIENT_ID-""} \
+#               --build-arg OAUTH_GOOGLE_CLIENT_ID=${OAUTH_GOOGLE_CLIENT_ID-""} \
+#               --build-arg GIT_SHA=$CIRCLE_SHA1 \
+#               --build-arg FRONTEND_SENTRY_DSN=$FRONTEND_SENTRY_DSN .
+#             docker push recipeyak/react:$CIRCLE_SHA1
 
-  build_proxy_container:
-    docker:
-      - image: docker:18.05.0-ce
-    steps:
-      - checkout
-      - setup_remote_docker
-      # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
-      - run:
-          name: build container
-          working_directory: nginx
-          command: |
-            docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            docker build -f nginx.Dockerfile \
-              --tag recipeyak/nginx:$CIRCLE_SHA1 .
-            docker push recipeyak/nginx:$CIRCLE_SHA1
+#   build_proxy_container:
+#     docker:
+#       - image: docker:18.05.0-ce
+#     steps:
+#       - checkout
+#       - setup_remote_docker
+#       # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
+#       - run:
+#           name: build container
+#           working_directory: nginx
+#           command: |
+#             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
+#             docker build -f nginx.Dockerfile \
+#               --tag recipeyak/nginx:$CIRCLE_SHA1 .
+#             docker push recipeyak/nginx:$CIRCLE_SHA1
 
-  build_postgres_container:
-    docker:
-      - image: docker:18.05.0-ce
-    steps:
-      - checkout
-      - setup_remote_docker
-      # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
-      - run:
-          name: build container
-          working_directory: postgres
-          command: |
-            docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            docker build -f postgres.Dockerfile \
-              --tag recipeyak/postgres:$CIRCLE_SHA1 .
-            docker push recipeyak/postgres:$CIRCLE_SHA1
+#   build_postgres_container:
+#     docker:
+#       - image: docker:18.05.0-ce
+#     steps:
+#       - checkout
+#       - setup_remote_docker
+#       # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
+#       - run:
+#           name: build container
+#           working_directory: postgres
+#           command: |
+#             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
+#             docker build -f postgres.Dockerfile \
+#               --tag recipeyak/postgres:$CIRCLE_SHA1 .
+#             docker push recipeyak/postgres:$CIRCLE_SHA1
 
-  build_pgdump_container:
-    docker:
-      - image: docker:18.05.0-ce
-    steps:
-      - checkout
-      - setup_remote_docker
-      # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
-      - run:
-          name: build container
-          working_directory: pgdump
-          command: |
-            docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            docker build -f pgdump.Dockerfile \
-              --tag recipeyak/pgdump:$CIRCLE_SHA1 .
-            docker push recipeyak/pgdump:$CIRCLE_SHA1
+#   build_pgdump_container:
+#     docker:
+#       - image: docker:18.05.0-ce
+#     steps:
+#       - checkout
+#       - setup_remote_docker
+#       # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
+#       - run:
+#           name: build container
+#           working_directory: pgdump
+#           command: |
+#             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
+#             docker build -f pgdump.Dockerfile \
+#               --tag recipeyak/pgdump:$CIRCLE_SHA1 .
+#             docker push recipeyak/pgdump:$CIRCLE_SHA1
 
 workflows:
   version: 2
   test:
     jobs:
-      - squawk
-      - backend_test
-      - backend_lint
-      - frontend_test
-      - frontend_lint
-      - docker_lint
-      - shellcheck
+      # - squawk
+      # - backend_test
+      # - backend_lint
+      # - frontend_test
+      # - frontend_lint
+      # - docker_lint
+      # - shellcheck
       - build_api_container:
           context: DockerHub
-          requires:
-            - backend_test
-            - backend_lint
-          filters:
-            branches:
-              only: master
-      - build_ui_container:
-          context: DockerHub
-          requires:
-            - frontend_test
-            - frontend_lint
-          filters:
-            branches:
-              only: master
-      - build_proxy_container:
-          context: DockerHub
-          filters:
-            branches:
-              only: master
-      - build_postgres_container:
-          context: DockerHub
-          filters:
-            branches:
-              only: master
-      - build_pgdump_container:
-          context: DockerHub
-          filters:
-            branches:
-              only: master
+          # requires:
+          #   - backend_test
+          #   - backend_lint
+          # filters:
+          #   branches:
+          #     only: master
+      # - build_ui_container:
+      #     context: DockerHub
+      #     requires:
+      #       - frontend_test
+      #       - frontend_lint
+      #     filters:
+      #       branches:
+      #         only: master
+      # - build_proxy_container:
+      #     context: DockerHub
+      #     filters:
+      #       branches:
+      #         only: master
+      # - build_postgres_container:
+      #     context: DockerHub
+      #     filters:
+      #       branches:
+      #         only: master
+      # - build_pgdump_container:
+      #     context: DockerHub
+      #     filters:
+      #       branches:
+      #         only: master
