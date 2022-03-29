@@ -270,6 +270,7 @@ DEPARTMENT_MAPPING = {
         "ketcup",
         "oil",
         "olive oil",
+        "coconut oil",
         "honey",
         "dulce de leche",
         "hot sauce",
