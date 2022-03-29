@@ -23,6 +23,7 @@ typing_extensions = "^3.7"
 icalendar = "^4.0"
 djangorestframework-types = "^0.2.0"
 orjson = "^3.6.4"
+setuptools = "60"
 
 [tool.poetry.dev-dependencies]
 pytest = "6.0.1"
