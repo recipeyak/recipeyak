@@ -10,6 +10,7 @@ import { ICalRecipe } from "@/store/reducers/calendar"
 import { TextInput } from "@/components/Forms"
 import { Result, isOk } from "@/result"
 import { useGlobalEvent } from "@/hooks"
+import { CalendarDayItemModal } from "@/components/CalendarDayItemModal"
 
 const COUNT_THRESHOLD = 1
 
@@ -36,6 +37,7 @@ function Count({ value: count, onChange }: ICountProps) {
 interface IRecipeLink {
   readonly id: IRecipe["id"] | string
   readonly name: IRecipe["name"]
+  readonly onClick: (e: React.MouseEvent) => void
 }
 
 const StyledLink = styled(Link)`
@@ -48,9 +50,13 @@ const StyledLink = styled(Link)`
   font-weight: 600;
 `
 
-function RecipeLink({ name, id }: IRecipeLink) {
+function RecipeLink({ name, id, onClick }: IRecipeLink) {
   const to = recipeURL(id, name)
-  return <StyledLink to={to}>{name}</StyledLink>
+  return (
+    <StyledLink to={to} onClick={onClick}>
+      {name}
+    </StyledLink>
+  )
 }
 
 interface ICalendarListItemProps {
@@ -76,6 +82,7 @@ export interface ICalendarItemProps {
   readonly recipeID: IRecipe["id"] | string
   readonly recipeName: IRecipe["name"]
   readonly id: ICalRecipe["id"]
+  readonly teamID: TeamID
 }
 
 export function CalendarItem({
@@ -86,10 +93,12 @@ export function CalendarItem({
   remove,
   recipeName,
   recipeID,
+  teamID,
   id,
 }: ICalendarItemProps) {
   const [count, setCount] = React.useState(propsCount)
   const ref = React.useRef<HTMLLIElement>(null)
+  const [show, setShow] = React.useState(false)
 
   React.useEffect(() => {
     setCount(propsCount)
@@ -165,10 +174,28 @@ export function CalendarItem({
   drag(ref)
 
   return (
-    <CalendarListItem ref={ref} visibility={visibility}>
-      <RecipeLink name={recipeName} id={recipeID} />
-      <Count value={count} onChange={handleChange} />
-    </CalendarListItem>
+    <>
+      <CalendarListItem ref={ref} visibility={visibility}>
+        <RecipeLink
+          name={recipeName}
+          id={recipeID}
+          onClick={e => {
+            e.preventDefault()
+            setShow(true)
+          }}
+        />
+        <Count value={count} onChange={handleChange} />
+      </CalendarListItem>
+      {show ? (
+        <CalendarDayItemModal
+          id={id}
+          teamID={teamID}
+          recipeName={recipeName}
+          date={date}
+          onClose={() => setShow(false)}
+        />
+      ) : null}
+    </>
   )
 }
 

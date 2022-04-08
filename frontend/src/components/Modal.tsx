@@ -7,6 +7,7 @@ interface IModalProps {
   readonly onClose: () => void
   readonly className?: string
   readonly show: boolean
+  readonly style: React.CSSProperties
 }
 
 export default class Modal extends React.Component<IModalProps> {
@@ -35,7 +36,8 @@ export default class Modal extends React.Component<IModalProps> {
         <GlobalEvent keyUp={this.handleKeyUp} />
         <div className="modal-background" onClick={close} />
         <div
-          className={`modal-content overflow-y-auto ${this.props.className}`}>
+          className={`modal-content overflow-y-auto ${this.props.className}`}
+          style={this.props.style}>
           <div className="box">{children}</div>
         </div>
         <button

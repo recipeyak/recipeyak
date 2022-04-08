@@ -442,3 +442,23 @@ export const updateScheduleRecipe = (
   const id = teamID === "personal" ? "me" : teamID
   return http.patch<ICalRecipe>(`/api/v1/t/${id}/calendar/${calId}/`, recipe)
 }
+
+export const findNextOpen = ({
+  teamID,
+  day,
+  now,
+}: {
+  readonly teamID: TeamID
+  readonly day: string
+  readonly now: string
+}) => {
+  return http.get<{ readonly date: string }>(
+    `/api/v1/t/${teamID}/calendar/next_open/`,
+    {
+      params: {
+        day,
+        now,
+      },
+    },
+  )
+}

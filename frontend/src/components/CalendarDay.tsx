@@ -176,6 +176,7 @@ function CalendarDay({
             date={date}
             recipeName={x.recipe.name}
             recipeID={x.recipe.id}
+            teamID={teamID}
             remove={() => remove(x.id, teamID)}
             updateCount={count => updateCount(x.id, teamID, count)}
             refetchShoppingList={() => refetchShoppingList(teamID)}

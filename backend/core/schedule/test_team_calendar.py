@@ -157,3 +157,17 @@ def test_cal_generate_link_view(
     assert res.status_code == status.HTTP_200_OK
     assert isinstance(res.json()["calendarLink"], str)
     assert res.json()["calendarLink"] != initial_link, "ensure we changed the link"
+
+
+def test_cal_next_open(client: APIClient, user: User, team: Team) -> None:
+    """
+    Check finding the next open day / weekend
+    """
+    client.force_authenticate(user)
+    res = client.get(
+        f"/api/v1/t/{team.pk}/calendar/next_open/",
+        data={"day": "Wednesday", "now": "2022-04-15"},
+    )
+    assert res.status_code == status.HTTP_200_OK
+    assert isinstance(res.json()["date"], str)
+
