@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional, cast, TypeVar
+from typing import List, Optional, TypeVar, cast
 
 from django.core.exceptions import ValidationError
 from django.db import connection
