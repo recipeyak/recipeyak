@@ -2,6 +2,7 @@ import logging
 from typing import List, Optional, cast
 
 from django.core.exceptions import ValidationError
+from django.db import connection
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers, status
@@ -10,7 +11,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from typing_extensions import TypedDict
-from django.db import connection
 
 from core import viewsets
 from core.auth.permissions import IsTeamMember
@@ -212,7 +212,7 @@ LIMIT 1;
 """,
                 {"day_number": day_number, "team_id": team_pk, "now": now},
             )
-            date, = cursor.fetchone()
+            (date,) = cursor.fetchone()
             return Response({"date": date})
 
     def list(  # type: ignore [override]

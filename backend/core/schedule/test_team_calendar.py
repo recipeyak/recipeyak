@@ -170,4 +170,3 @@ def test_cal_next_open(client: APIClient, user: User, team: Team) -> None:
     )
     assert res.status_code == status.HTTP_200_OK
     assert isinstance(res.json()["date"], str)
-
