@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional, cast
+from typing import List, Optional, cast, TypeVar
 
 from django.core.exceptions import ValidationError
 from django.db import connection
@@ -31,6 +31,13 @@ from core.schedule.serializers import (
 )
 
 logger = logging.getLogger(__name__)
+
+T = TypeVar("T")
+
+
+def unwrap(arg: Optional[T]) -> T:
+    assert arg is not None
+    return arg
 
 
 def get_scheduled_recipes(
@@ -212,7 +219,7 @@ LIMIT 1;
 """,
                 {"day_number": day_number, "team_id": team_pk, "now": now},
             )
-            (date,) = cursor.fetchone()
+            (date,) = unwrap(cursor.fetchone())
             return Response({"date": date})
 
     def list(  # type: ignore [override]

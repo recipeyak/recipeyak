@@ -7,7 +7,7 @@ interface IModalProps {
   readonly onClose: () => void
   readonly className?: string
   readonly show: boolean
-  readonly style: React.CSSProperties
+  readonly style?: React.CSSProperties
 }
 
 export default class Modal extends React.Component<IModalProps> {
