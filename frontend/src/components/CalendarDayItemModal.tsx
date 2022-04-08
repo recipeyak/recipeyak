@@ -48,8 +48,6 @@ export function CalendarDayItemModal({
     setFindingNextOpen(true)
     api.findNextOpen({ teamID, day, now: localDate }).then(res => {
       if (isOk(res)) {
-        console.log(res.data)
-        console.log(res.data.date, localDate)
         setLocalDate(res.data.date)
       }
       setFindingNextOpen(false)
