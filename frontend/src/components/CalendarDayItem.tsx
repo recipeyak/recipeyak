@@ -201,6 +201,9 @@ export function CalendarItem({
 }
 
 export interface ICalendarDragItem
-  extends Pick<ICalendarItemProps, "recipeID" | "count" | "scheduledId" | "date"> {
+  extends Pick<
+    ICalendarItemProps,
+    "recipeID" | "count" | "scheduledId" | "date"
+  > {
   readonly type: DragDrop.CAL_RECIPE
 }
