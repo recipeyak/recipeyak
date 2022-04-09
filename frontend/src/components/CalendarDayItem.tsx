@@ -81,7 +81,7 @@ export interface ICalendarItemProps {
   readonly date: Date
   readonly recipeID: IRecipe["id"] | string
   readonly recipeName: IRecipe["name"]
-  readonly id: ICalRecipe["id"]
+  readonly scheduledId: ICalRecipe["id"]
   readonly teamID: TeamID
 }
 
@@ -94,7 +94,7 @@ export function CalendarItem({
   recipeName,
   recipeID,
   teamID,
-  id,
+  scheduledId,
 }: ICalendarItemProps) {
   const [count, setCount] = React.useState(propsCount)
   const ref = React.useRef<HTMLLIElement>(null)
@@ -146,7 +146,7 @@ export function CalendarItem({
     type: DragDrop.CAL_RECIPE,
     recipeID,
     count,
-    id,
+    scheduledId,
     date,
   }
 
@@ -188,9 +188,10 @@ export function CalendarItem({
       </CalendarListItem>
       {show ? (
         <CalendarDayItemModal
-          id={id}
+          scheduledId={scheduledId}
           teamID={teamID}
           recipeName={recipeName}
+          recipeId={recipeID}
           date={date}
           onClose={() => setShow(false)}
         />
@@ -200,6 +201,9 @@ export function CalendarItem({
 }
 
 export interface ICalendarDragItem
-  extends Pick<ICalendarItemProps, "recipeID" | "count" | "id" | "date"> {
+  extends Pick<
+    ICalendarItemProps,
+    "recipeID" | "count" | "scheduledId" | "date"
+  > {
   readonly type: DragDrop.CAL_RECIPE
 }
