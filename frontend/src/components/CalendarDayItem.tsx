@@ -188,9 +188,10 @@ export function CalendarItem({
       </CalendarListItem>
       {show ? (
         <CalendarDayItemModal
-          id={id}
+          scheduledId={id}
           teamID={teamID}
           recipeName={recipeName}
+          recipeId={recipeID}
           date={date}
           onClose={() => setShow(false)}
         />

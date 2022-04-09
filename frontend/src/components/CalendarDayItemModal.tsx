@@ -22,13 +22,15 @@ const options = [
 ] as const
 
 export function CalendarDayItemModal({
-  id,
+  scheduledId,
   recipeName,
+  recipeId,
   teamID,
   date,
   onClose,
 }: {
-  readonly id: number
+  readonly scheduledId: number
+  readonly recipeId: number | string
   readonly teamID: TeamID
   readonly recipeName: string
   readonly date: Date
@@ -59,7 +61,7 @@ export function CalendarDayItemModal({
   const handleDelete = () => {
     if (confirm(`Are you sure you want to delete '${recipeName}'?`)) {
       setDeleting(true)
-      api.deleteScheduledRecipe(id, teamID).then(() => {
+      api.deleteScheduledRecipe(scheduledId, teamID).then(() => {
         setDeleting(false)
         onClose()
       })
@@ -68,10 +70,17 @@ export function CalendarDayItemModal({
   const handleSave = () => {
     setSaving(true)
     api
-      .updateScheduleRecipe(id, teamID, { on: toISODateString(localDate) })
+      .updateScheduleRecipe(scheduledId, teamID, {
+        on: toISODateString(localDate),
+      })
       .then(res => {
         if (isOk(res)) {
-          dispatch(moveCalendarRecipe({ id, to: toISODateString(res.data.on) }))
+          dispatch(
+            moveCalendarRecipe({
+              id: scheduledId,
+              to: toISODateString(res.data.on),
+            }),
+          )
           setSaving(false)
           onClose()
         }
@@ -79,7 +88,7 @@ export function CalendarDayItemModal({
       })
   }
 
-  const to = recipeURL(id, recipeName)
+  const to = recipeURL(recipeId, recipeName)
 
   return (
     <Modal show onClose={onClose} style={{ maxWidth: 400 }}>

@@ -172,7 +172,7 @@ function CalendarDay({
         {scheduled.map(x => (
           <CalendarItem
             key={x.id}
-            id={x.id}
+            scheduledId={x.id}
             date={date}
             recipeName={x.recipe.name}
             recipeID={x.recipe.id}
