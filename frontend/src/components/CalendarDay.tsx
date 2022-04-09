@@ -142,7 +142,7 @@ function CalendarDay({
       const item = dropped as ICalendarDragItem | IRecipeItemDrag
       // TOOD(sbdchd): We should move this logic into the calendar reducer
       if (item.type === DragDrop.CAL_RECIPE) {
-        move({ id: item.id, teamID, to: date })
+        move({ id: item.scheduledId, teamID, to: date })
       } else if (item.type === DragDrop.RECIPE) {
         create({ recipeID: item.recipeID, teamID, on: date, count: 1 })
       }
