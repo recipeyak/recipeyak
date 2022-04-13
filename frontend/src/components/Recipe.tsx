@@ -13,6 +13,7 @@ import { recipeURL } from "@/urls"
 import { pathNamesEqual } from "@/utils/url"
 import { formatHumanDate } from "@/date"
 import { replace } from "connected-react-router"
+import {useDisableIdleTimer} from '@/idle'
 
 import {
   IRecipe,
@@ -346,6 +347,12 @@ export function Recipe(props: IRecipeProps) {
   const recipeId = parseInt(props.match.params.id, 10)
 
   const maybeRecipe = useRecipe(recipeId)
+
+
+  useDisableIdleTimer()
+
+
+
 
   useRecipeUrlUpdate(
     isSuccessLike(maybeRecipe)
