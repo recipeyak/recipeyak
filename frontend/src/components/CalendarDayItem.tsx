@@ -180,6 +180,9 @@ export function CalendarItem({
           name={recipeName}
           id={recipeID}
           onClick={e => {
+            if (e.shiftKey || e.metaKey) {
+              return
+            }
             e.preventDefault()
             setShow(true)
           }}
