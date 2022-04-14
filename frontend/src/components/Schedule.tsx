@@ -10,6 +10,7 @@ import ShoppingList from "@/components/ShoppingList"
 import { Dispatch, updatingDefaultScheduleTeamIDAsync } from "@/store/thunks"
 import { Tabs, Tab } from "@/components/Tabs"
 import { ITeam } from "@/store/reducers/teams"
+import { styled } from "@/theme"
 
 interface ISidebarProps {
   readonly isRecipes: boolean
@@ -28,7 +29,7 @@ function Sidebar({ teamID, isRecipes }: ISidebarProps) {
       : `/t/${teamID}/schedule/shopping`
 
   return (
-    <div className="d-grid grid-gap-2 grid-auto-rows-min-content w-300px flex-shrink-0 hide-sm pr-2">
+    <div className="d-grid grid-gap-2 grid-auto-rows-min-content w-300px flex-shrink-0 hide-sm mr-2">
       <Tabs small className="mb-0 no-print">
         <Tab isActive={!isRecipes}>
           <Link to={shoppingURL}>Shopping</Link>
@@ -58,6 +59,10 @@ interface IScheduleProps {
   readonly type: "shopping" | "recipes"
 }
 
+const ScheduleContainer = styled.div`
+  height: calc(100vh - 3rem);
+`
+
 function Schedule({ updateTeamID, teamID, type }: IScheduleProps) {
   useEffect(() => {
     updateTeamID(teamID)
@@ -68,11 +73,11 @@ function Schedule({ updateTeamID, teamID, type }: IScheduleProps) {
   const isRecipes = type === "recipes"
 
   return (
-    <div className="d-flex pl-2 pr-2 flex-grow">
+    <ScheduleContainer className="d-flex pl-2 pr-2 flex-grow h-100vh">
       <Helmet title="Schedule" />
       <Sidebar teamID={teamID_} isRecipes={isRecipes} />
       <Calendar type={type} teamID={teamID_} />
-    </div>
+    </ScheduleContainer>
   )
 }
 
