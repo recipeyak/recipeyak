@@ -15,7 +15,8 @@ COPY pyproject.toml pyproject.toml
 COPY poetry.lock poetry.lock
 
 # Install our dev dependencies
-RUN poetry install
+RUN poetry run pip install setuptools==61.1.1 && \
+    poetry install
 
 COPY . /var/app
 # Inject GIT SHA into settings file to track releases via Sentry

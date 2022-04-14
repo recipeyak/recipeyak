@@ -9,7 +9,7 @@ import formatDistance from "date-fns/formatDistance"
 import min from "date-fns/min"
 import { isSameDay, isSameYear, differenceInMonths } from "date-fns"
 
-export function toISODateString(date: Date | string): string {
+export function toISODateString(date: Date | string | number): string {
   // Note(sbdchd): parseISO("2019-11-09") !== new Date("2019-11-09")
   const dateObj = typeof date === "string" ? parseISO(date) : date
   return format(dateObj, "yyyy-MM-dd")
