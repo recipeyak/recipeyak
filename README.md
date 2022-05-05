@@ -41,6 +41,7 @@ To have a centralized location where multiple people can organize a meal plan.
 | [AnyMeal](https://github.com/wedesoft/anymeal)                                                                | [2020-05-07](https://github.com/wedesoft/anymeal/commit/74ac6865b7b9364f0e68e15c96962221b8f2dc0d)                                                                          | ✅           |
 | [Mealie](https://github.com/hay-kot/mealie/)                                                                  | [2020-12-24](https://github.com/hay-kot/mealie/commit/beed8576c2d0499f8db443d39a8e89a37590a126)                                                                            | ✅           |
 | [Mela](https://mela.recipes)                                                                                  | [2021-03-15](https://www.whois.com/whois/mela.recipes)                                                                                                                     | ❌           |
+| [CookTime](https://letscooktime.com)                                                                          | [2022-04-10](https://www.whois.com/whois/letscooktime.com)                                                                                                                 | ❌           |
 
 ## Dev
 
