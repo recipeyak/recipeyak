@@ -98,14 +98,14 @@ export function CalendarDayItemModal({
         <h1 className="fs-6">{recipeName}</h1>
         <button className="delete" onClick={onClose} />
       </section>
-      {reschedulerOpen && <div style={{display: "flex", justifyContent: "space-between", marginTop: "2rem"}}>
+      <div style={{display: "flex", justifyContent: "space-between", marginTop: "2rem"}}>
           <button className={cls("button", {"is-active": reschedulerOpen})} onClick={() => setReschedulerOpen(val => !val)}>Reschedule</button>
            <Link to={to} className="button is-primary">
           View Recipe
         </Link>
-      </div>}
+      </div>
 
-{<div style={{opacity: reschedulerOpen ? "1" : "0"}}>
+{reschedulerOpen && <div>
     <hr style={{marginTop: "1.5rem"}}/>
      <div className="mr-2" style={{ display: "grid", gridGap: "0.25rem"}}>
 
@@ -154,12 +154,6 @@ export function CalendarDayItemModal({
           </button>
         </div>
       </div>
-      </div>}
-       {!reschedulerOpen && <div style={{display: "flex", justifyContent: "space-between", marginTop: "2rem"}}>
-          <button className={cls("button", {"is-active": reschedulerOpen})} onClick={() => setReschedulerOpen(val => !val)}>Reschedule</button>
-           <Link to={to} className="button is-primary">
-          View Recipe
-        </Link>
       </div>}
     </Modal>
   )
