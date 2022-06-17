@@ -8,6 +8,7 @@ import * as api from "@/api"
 import { isOk } from "@/result"
 import { useDispatch } from "@/hooks"
 import { moveCalendarRecipe } from "@/store/reducers/calendar"
+import cls from "@/classnames"
 
 const options = [
   "Sunday",
@@ -89,18 +90,25 @@ export function CalendarDayItemModal({
   }
 
   const to = recipeURL(recipeId, recipeName)
+  const [reschedulerOpen, setReschedulerOpen] = React.useState(false)
 
   return (
     <Modal show onClose={onClose} style={{ maxWidth: 400 }}>
       <section className="d-flex space-between">
-        <h1 className="fs-4 bold">Edit Scheduled Recipe</h1>
+        <h1 className="fs-6">{recipeName}</h1>
         <button className="delete" onClick={onClose} />
       </section>
-
-      <div className="mr-2" style={{ display: "grid", gridGap: "0.25rem" }}>
-        <Link to={to} className="text-underline">
-          {recipeName}
+      {reschedulerOpen && <div style={{display: "flex", justifyContent: "space-between", marginTop: "2rem"}}>
+          <button className={cls("button", {"is-active": reschedulerOpen})} onClick={() => setReschedulerOpen(val => !val)}>Reschedule</button>
+           <Link to={to} className="button is-primary">
+          View Recipe
         </Link>
+      </div>}
+
+{<div style={{opacity: reschedulerOpen ? "1" : "0"}}>
+    <hr style={{marginTop: "1.5rem"}}/>
+     <div className="mr-2" style={{ display: "grid", gridGap: "0.25rem"}}>
+
         <input
           value={toISODateString(localDate)}
           onChange={handleDateChange}
@@ -109,7 +117,7 @@ export function CalendarDayItemModal({
           style={{
             border: "1px solid lightgray",
             borderRadius: 5,
-            padding: "0.25rem",
+                padding: "0.25rem",
           }}
         />
         <div>
@@ -146,6 +154,13 @@ export function CalendarDayItemModal({
           </button>
         </div>
       </div>
+      </div>}
+       {!reschedulerOpen && <div style={{display: "flex", justifyContent: "space-between", marginTop: "2rem"}}>
+          <button className={cls("button", {"is-active": reschedulerOpen})} onClick={() => setReschedulerOpen(val => !val)}>Reschedule</button>
+           <Link to={to} className="button is-primary">
+          View Recipe
+        </Link>
+      </div>}
     </Modal>
   )
 }
