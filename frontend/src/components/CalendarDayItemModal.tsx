@@ -8,6 +8,7 @@ import * as api from "@/api"
 import { isOk } from "@/result"
 import { useDispatch } from "@/hooks"
 import { moveCalendarRecipe } from "@/store/reducers/calendar"
+import cls from "@/classnames"
 
 const options = [
   "Sunday",
@@ -89,63 +90,81 @@ export function CalendarDayItemModal({
   }
 
   const to = recipeURL(recipeId, recipeName)
+  const [reschedulerOpen, setReschedulerOpen] = React.useState(false)
 
   return (
     <Modal show onClose={onClose} style={{ maxWidth: 400 }}>
       <section className="d-flex space-between">
-        <h1 className="fs-4 bold">Edit Scheduled Recipe</h1>
+        <h1 className="fs-6">{recipeName}</h1>
         <button className="delete" onClick={onClose} />
       </section>
-
-      <div className="mr-2" style={{ display: "grid", gridGap: "0.25rem" }}>
-        <Link to={to} className="text-underline">
-          {recipeName}
-        </Link>
-        <input
-          value={toISODateString(localDate)}
-          onChange={handleDateChange}
-          type="date"
-          className="mr-4 my-2"
-          style={{
-            border: "1px solid lightgray",
-            borderRadius: 5,
-            padding: "0.25rem",
-          }}
-        />
-        <div>
-          <span className="mr-1">next open</span>
-          <select
-            value={day}
-            onChange={handleSelectChange}
-            className="mr-2"
-            disabled={findingNextOpen}>
-            {options.map(opt => {
-              return (
-                <option value={opt} key={opt}>
-                  {opt}
-                </option>
-              )
-            })}
-          </select>
-          <button onClick={handleFindNextOpen} disabled={findingNextOpen}>
-            {!findingNextOpen ? "find" : "finding..."}
-          </button>
-        </div>
-      </div>
-
-      <div className="d-flex space-between align-items-center mt-2">
-        <button onClick={handleDelete} disabled={deleting}>
-          {!deleting ? "delete" : "deleting..."}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginTop: "2rem",
+        }}>
+        <button
+          className={cls("button", { "is-active": reschedulerOpen })}
+          onClick={() => setReschedulerOpen(val => !val)}>
+          Reschedule
         </button>
-        <div>
-          <button className="mr-2" onClick={onClose}>
-            cancel
-          </button>
-          <button onClick={handleSave} disabled={saving}>
-            {!saving ? "save" : "saving..."}
-          </button>
-        </div>
+        <Link to={to} className="button is-primary">
+          View Recipe
+        </Link>
       </div>
+
+      {reschedulerOpen && (
+        <div>
+          <hr style={{ marginTop: "1.5rem" }} />
+          <div className="mr-2" style={{ display: "grid", gridGap: "0.25rem" }}>
+            <input
+              value={toISODateString(localDate)}
+              onChange={handleDateChange}
+              type="date"
+              className="mr-4 my-2"
+              style={{
+                border: "1px solid lightgray",
+                borderRadius: 5,
+                padding: "0.25rem",
+              }}
+            />
+            <div>
+              <span className="mr-1">next open</span>
+              <select
+                value={day}
+                onChange={handleSelectChange}
+                className="mr-2"
+                disabled={findingNextOpen}>
+                {options.map(opt => {
+                  return (
+                    <option value={opt} key={opt}>
+                      {opt}
+                    </option>
+                  )
+                })}
+              </select>
+              <button onClick={handleFindNextOpen} disabled={findingNextOpen}>
+                {!findingNextOpen ? "find" : "finding..."}
+              </button>
+            </div>
+          </div>
+
+          <div className="d-flex space-between align-items-center mt-2">
+            <button onClick={handleDelete} disabled={deleting}>
+              {!deleting ? "delete" : "deleting..."}
+            </button>
+            <div>
+              <button className="mr-2" onClick={onClose}>
+                cancel
+              </button>
+              <button onClick={handleSave} disabled={saving}>
+                {!saving ? "save" : "saving..."}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </Modal>
   )
 }
