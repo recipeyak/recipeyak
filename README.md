@@ -54,16 +54,21 @@ To have a centralized location where multiple people can organize a meal plan.
 cp .env-example .env
 echo "DEBUG=1" >> .env
 
-# initial cli setup (only need to do this once)
+cd frontend
+yarn install
+s/dev
+s/test
+s/lint
+cd -
+
+cd backend
+brew install postgres # necessary for binary pyscopg2
+poetry config virtualenvs.in-project true
 poetry install
-
-frontend/s/dev
-frontend/s/test
-frontend/s/lint
-
-backend/s/dev
-backend/s/test
-backend/s/lint
+# start postgres (DBngin.app is nice on Mac)
+s/dev
+s/test
+s/lint
 
 # use `yarn` and `poetry` to add and upgrade dependencies
 yarn add $FOO

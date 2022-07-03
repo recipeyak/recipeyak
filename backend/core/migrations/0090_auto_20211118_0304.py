@@ -39,7 +39,9 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="shoppinglist", name="ingredients", field=models.JSONField(),
+            model_name="shoppinglist",
+            name="ingredients",
+            field=models.JSONField(),
         ),
         migrations.AlterField(
             model_name="step",

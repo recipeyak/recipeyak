@@ -108,7 +108,12 @@ def test_categorize_ingredient_test_cases(snapshot) -> None:
 
 
 def test_trie() -> None:
-    mapping = {"spices": {"red chile flakes", "chile powder",}}
+    mapping = {
+        "spices": {
+            "red chile flakes",
+            "chile powder",
+        }
+    }
 
     trie = create_trie(mapping)
     assert search("red chile flakes", trie=trie)

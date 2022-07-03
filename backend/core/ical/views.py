@@ -59,9 +59,9 @@ def get_ical_view(request: HttpRequest, team_id: int, ical_id: str) -> HttpRespo
         events=events,
     )
 
-    last_modified_scheduled: Optional[ScheduledRecipe] = ScheduledRecipe.objects.filter(
-        team=team
-    ).order_by("-modified").first()
+    last_modified_scheduled: Optional[ScheduledRecipe] = (
+        ScheduledRecipe.objects.filter(team=team).order_by("-modified").first()
+    )
 
     response = HttpResponse()
     response["Content-Type"] = "text/calendar"

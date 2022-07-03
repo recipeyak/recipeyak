@@ -18,6 +18,7 @@ class Session(models.Model):
     session_data: models.TextField[str]
     expire_date: models.DateTimeField[datetime]
     objects: SessionManager
+
     class Meta:
         verbose_name = "session"
         verbose_name_plural = "sessions"
