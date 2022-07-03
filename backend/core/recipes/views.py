@@ -108,7 +108,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         ingredients = group_by_recipe_id(
             Ingredient.objects.filter(recipe_id__in=recipes.keys()).values(
-                "id", "quantity", "name", "description", "position", "recipe_id",
+                "id",
+                "quantity",
+                "name",
+                "description",
+                "position",
+                "recipe_id",
             )
         )
 
@@ -123,13 +128,19 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         steps = group_by_recipe_id(
             Step.objects.filter(recipe_id__in=recipes.keys()).values(
-                "id", "text", "position", "recipe_id",
+                "id",
+                "text",
+                "position",
+                "recipe_id",
             )
         )
 
         sections = group_by_recipe_id(
             Section.objects.filter(recipe_id__in=recipes.keys()).values(
-                "id", "title", "position", "recipe_id",
+                "id",
+                "title",
+                "position",
+                "recipe_id",
             )
         )
 
@@ -151,7 +162,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 if note[name] is not None:
                     email = note[f"{name}__email"]
                     note[name] = dict(
-                        id=note[name], email=email, avatar_url=get_avatar_url(email),
+                        id=note[name],
+                        email=email,
+                        avatar_url=get_avatar_url(email),
                     )
                 else:
                     note.pop(name, None)
@@ -162,7 +175,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
         timeline_events = collections.defaultdict(list)
 
         for event in TimelineEvent.objects.filter(recipe_id__in=recipes.keys()).values(
-            "id", "action", "created", "created_by", "created_by__email", "recipe_id",
+            "id",
+            "action",
+            "created",
+            "created_by",
+            "created_by__email",
+            "recipe_id",
         ):
             if event["created_by"] is not None:
                 email = event["created_by__email"]
@@ -217,7 +235,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         new_recipe = serializer.save()
 
         TimelineEvent(
-            action="created", created_by=request.user, recipe=new_recipe,
+            action="created",
+            created_by=request.user,
+            recipe=new_recipe,
         ).save()
 
         logger.info("Recipe created by %s", self.request.user)

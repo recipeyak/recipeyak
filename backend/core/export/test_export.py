@@ -75,7 +75,12 @@ def test_export_fields(
 
 @pytest.mark.parametrize("filetype", ["yaml", "yml"])
 def test_bulk_export_yaml(
-    c: Client, filetype: str, user: User, user2: User, recipe: Recipe, recipe2: Recipe,
+    c: Client,
+    filetype: str,
+    user: User,
+    user2: User,
+    recipe: Recipe,
+    recipe2: Recipe,
 ) -> None:
     recipe2.move_to(user)
     url = reverse("export-recipes", kwargs={"filetype": filetype})

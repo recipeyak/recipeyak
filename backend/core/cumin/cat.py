@@ -430,7 +430,13 @@ DEPARTMENT_MAPPING = {
         "cashews",
         "pistachios",
     },
-    "other": {"cedar shakes", "water", "ice", "gloves", "skewers",},
+    "other": {
+        "cedar shakes",
+        "water",
+        "ice",
+        "gloves",
+        "skewers",
+    },
 }
 
 

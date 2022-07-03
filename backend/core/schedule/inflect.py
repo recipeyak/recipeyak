@@ -556,10 +556,10 @@ def pluralize(
     custom: Optional[Dict[str, str]] = None,
     classical: bool = True,
 ) -> str:
-    """ Returns the plural of a given word, e.g., child => children.
-        Handles nouns and adjectives, using classical inflection by default
-        (i.e., where "matrix" pluralizes to "matrices" and not "matrixes").
-        The custom dictionary is for user-defined replacements.
+    """Returns the plural of a given word, e.g., child => children.
+    Handles nouns and adjectives, using classical inflection by default
+    (i.e., where "matrix" pluralizes to "matrices" and not "matrixes").
+    The custom dictionary is for user-defined replacements.
     """
     if custom is None:
         custom = {}
@@ -832,8 +832,7 @@ singular_irregular = {
 def singularize(
     word: str, pos: str = NOUN, custom: Optional[Dict[str, str]] = None
 ) -> str:
-    """ Returns the singular of a given word.
-    """
+    """Returns the singular of a given word."""
     if custom is None:
         custom = {}
     if word in custom:

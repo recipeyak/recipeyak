@@ -102,6 +102,9 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"db_table": "timeline_event", "ordering": ["-created"],},
+            options={
+                "db_table": "timeline_event",
+                "ordering": ["-created"],
+            },
         ),
     ]
