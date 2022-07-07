@@ -10,9 +10,6 @@ export const setFromUrl = createStandardAction("SET_FROM_URL")<
   IAuthState["fromUrl"]
 >()
 
-export const setErrorSocialLogin = createStandardAction(
-  "SET_ERROR_SOCIAL_LOGIN",
-)<ISocialError>()
 export const setErrorSignup = createStandardAction("SET_ERROR_SIGNUP")<
   ISignupErrors
 >()
@@ -43,7 +40,6 @@ export const setLoadingResetConfirmation = createStandardAction(
 
 export type AuthActions =
   | ReturnType<typeof setFromUrl>
-  | ReturnType<typeof setErrorSocialLogin>
   | ReturnType<typeof setErrorSignup>
   | ReturnType<typeof setErrorReset>
   | ReturnType<typeof setErrorResetConfirmation>
@@ -77,15 +73,9 @@ export interface IPasswordResetError {
   readonly email?: string[]
 }
 
-export interface ISocialError {
-  readonly emailSocial?: string[]
-  readonly nonFieldErrorsSocial?: string[]
-}
-
 export interface IAuthState {
   readonly fromUrl: string
   readonly errorLogin: ILoginError
-  readonly errorSocialLogin: ISocialError
   readonly errorSignup: ISignupErrors
   readonly errorReset: IPasswordResetError
   readonly errorResetConfirmation: IPasswordResetConfirmError
@@ -98,7 +88,6 @@ export interface IAuthState {
 export const initialState: IAuthState = {
   fromUrl: "",
   errorLogin: {},
-  errorSocialLogin: {},
   errorSignup: {},
   errorReset: {},
   errorResetConfirmation: {},
@@ -123,8 +112,6 @@ const auth = (
       return { ...state, errorLogin: action.payload || {}, loadingLogin: false }
     case getType(cleareLoginErrors):
       return { ...state, errorLogin: {} }
-    case getType(setErrorSocialLogin):
-      return { ...state, errorSocialLogin: action.payload }
     case getType(setErrorSignup):
       return { ...state, errorSignup: action.payload }
     case getType(setErrorReset):

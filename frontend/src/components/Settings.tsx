@@ -5,7 +5,6 @@ import Loader from "@/components/Loader"
 import { ButtonPrimary, Button } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
 import Sessions from "@/components/Sessions"
-import SocialAccountSettings from "@/components/SocialAccountSettings"
 
 function Export() {
   return (
@@ -221,8 +220,6 @@ export default class Settings extends React.Component<
             <ChangePassword hasPassword={hasPassword} />
           </div>
         </div>
-
-        <SocialAccountSettings />
 
         <Export />
         <Sessions />

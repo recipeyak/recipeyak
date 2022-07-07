@@ -1,14 +1,13 @@
 import pickBy from "lodash/pickBy"
 import { random32Id } from "@/uuid"
 import { toISODateString, second, isInsideChangeWindow } from "@/date"
-import { push, replace } from "connected-react-router"
+import { push } from "connected-react-router"
 // eslint-disable-next-line no-restricted-imports
 import { Dispatch as ReduxDispatch } from "redux"
 import { AxiosError, AxiosResponse } from "axios"
 import raven from "raven-js"
 import { store, Action, IState } from "@/store/store"
 import {
-  SocialProvider,
   updateEmail,
   updateRecipeTeamID,
   fetchUser,
@@ -20,7 +19,6 @@ import {
   ISession,
   logoutSessionById,
   logoutAllSessions,
-  socialConnections,
   updateScheduleTeamID,
 } from "@/store/reducers/user"
 import {
@@ -79,7 +77,6 @@ import { fetchShoppingList } from "@/store/reducers/shoppinglist"
 import { passwordUpdate } from "@/store/reducers/passwordChange"
 import { IRecipeBasic } from "@/components/RecipeTitle"
 import {
-  setErrorSocialLogin,
   setErrorSignup,
   setErrorReset,
   setErrorResetConfirmation,
@@ -248,27 +245,6 @@ export const loggingOutAllSessionsAsync = (dispatch: Dispatch) => async () => {
   } else {
     dispatch(logoutAllSessions.failure())
   }
-}
-
-export const fetchSocialConnectionsAsync = (dispatch: Dispatch) => async () => {
-  dispatch(socialConnections.request())
-  const res = await api.getSocialConnections()
-  if (isOk(res)) {
-    dispatch(socialConnections.success(res.data))
-  } else {
-    dispatch(socialConnections.failure())
-  }
-}
-
-export const disconnectSocialAccountAsync = (dispatch: Dispatch) => async (
-  provider: SocialProvider,
-) => {
-  const res = await api.disconnectSocialAccount(provider)
-  if (isOk(res)) {
-    dispatch(socialConnections.success(res.data))
-    return Ok(undefined)
-  }
-  return res
 }
 
 interface IUpdatePassword {
@@ -456,42 +432,6 @@ export const logUserInAsync = (dispatch: Dispatch) => async (
     }
     dispatch(login.failure())
   }
-}
-
-export const socialLoginAsync = (dispatch: Dispatch) => async (
-  service: SocialProvider,
-  token: string,
-  redirectUrl: string = "",
-) => {
-  const res = await api.loginUserWithSocial(service, token)
-
-  if (isOk(res)) {
-    dispatch(login.success(res.data.user))
-    dispatch(replace(redirectUrl))
-  } else {
-    const err = res.error
-    const badRequest = err.response && err.response.status === 400
-    if (err.response && badRequest) {
-      const data = err.response.data
-      // tslint:disable:no-unsafe-any
-      dispatch(
-        setErrorSocialLogin({
-          emailSocial: data["email"],
-          nonFieldErrorsSocial: data["non_field_errors"],
-        }),
-      )
-      // tslint:enable:no-unsafe-any
-    }
-    dispatch(replace("/login"))
-  }
-}
-
-export const socialConnectAsync = (dispatch: Dispatch) => async (
-  service: SocialProvider,
-  code: unknown,
-) => {
-  await api.connectSocial(service, code)
-  dispatch(replace("/settings"))
 }
 
 export const signupAsync = (dispatch: Dispatch) => async (

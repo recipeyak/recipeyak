@@ -1,17 +1,11 @@
-import { http, detailOrDefault } from "@/http"
-import {
-  IUser,
-  ISocialConnection,
-  SocialProvider,
-  ISession,
-} from "@/store/reducers/user"
+import { http } from "@/http"
+import { IUser, ISession } from "@/store/reducers/user"
 import { ITeam, IMember } from "@/store/reducers/teams"
 import { toISODateString } from "@/date"
 import { IRecipeBasic } from "@/components/RecipeTitle"
 import { IRecipe, IIngredient, IStep, INote } from "@/store/reducers/recipes"
 import { IInvite } from "@/store/reducers/invites"
 import { ICalRecipe } from "@/store/reducers/calendar"
-import { isOk, Err } from "@/result"
 import * as t from "io-ts"
 
 export const updateUser = (data: Partial<IUser>) =>
@@ -26,16 +20,6 @@ interface IUserResponse {
   readonly user: IUser
 }
 
-export const loginUserWithSocial = (service: SocialProvider, token: string) =>
-  http.post<IUserResponse>(`/api/v1/auth/${service}/`, {
-    code: token,
-  })
-
-export const connectSocial = (service: SocialProvider, code: unknown) =>
-  http.post<void>(`/api/v1/auth/${service}/connect/`, {
-    code,
-  })
-
 export const signup = (email: string, password1: string, password2: string) =>
   http.post<IUserResponse>("/api/v1/auth/registration/", {
     email,
@@ -48,20 +32,6 @@ export const loginUser = (email: string, password: string) =>
     email,
     password,
   })
-
-export const getSocialConnections = () =>
-  http.get<ISocialConnection[]>("/api/v1/auth/socialaccounts/")
-
-export const disconnectSocialAccount = async (providerName: SocialProvider) => {
-  const res = await http.post<ISocialConnection[]>(
-    `/api/v1/auth/socialaccounts/${providerName}/disconnect/`,
-  )
-  if (isOk(res)) {
-    return res
-  }
-  const DEFAULT_ERROR = "This social account could not be disconnected."
-  return Err(detailOrDefault(res.error, DEFAULT_ERROR))
-}
 
 interface IDetailResponse {
   readonly detail: string

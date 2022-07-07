@@ -56,10 +56,6 @@ INSTALLED_APPS = [
     "django.contrib.postgres",
     "allauth",
     "allauth.account",
-    "allauth.socialaccount",
-    "allauth.socialaccount.providers.github",
-    "allauth.socialaccount.providers.google",
-    "allauth.socialaccount.providers.gitlab",
     "softdelete",
 ]
 
@@ -94,36 +90,6 @@ ACCOUNT_EMAIL_VERIFICATION = None
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
-
-
-def get_oauth_url(env_var: str, default: str) -> str:
-    return os.getenv(env_var, default) if DEBUG else os.environ[env_var]
-
-
-# https://django-allauth.readthedocs.io/en/latest/providers.html#django-configuration
-# Add at least a key for each provider you add to INSTALLED_APPS here
-if not DOCKERBUILD:
-    SOCIALACCOUNT_PROVIDERS = {
-        "google": {
-            "SCOPE": ["profile", "email"],
-            "AUTH_PARAMS": {"access_type": "online"},
-            "URL": get_oauth_url(
-                "OAUTH_GOOGLE_REDIRECT_URI", "http://localhost:3000/accounts/google"
-            ),
-        },
-        "github": {
-            "SCOPE": ["user:email"],
-            "URL": get_oauth_url(
-                "OAUTH_GITHUB_REDIRECT_URI", "http://localhost:3000/accounts/github"
-            ),
-        },
-        "gitlab": {
-            "SCOPE": ["read_user"],
-            "URL": get_oauth_url(
-                "OAUTH_GITLAB_REDIRECT_URI", "http://localhost:3000/accounts/gitlab"
-            ),
-        },
-    }
 
 SESSION_COOKIE_AGE = 365 * 24 * 60 * 60  # sessions expire in one year
 
