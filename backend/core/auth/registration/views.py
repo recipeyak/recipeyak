@@ -14,10 +14,7 @@ from rest_framework.views import APIView
 
 from core.users.serializers import UserSerializer as UserDetailsSerializer
 
-from .serializers import (
-    RegisterSerializer,
-    VerifyEmailSerializer,
-)
+from .serializers import RegisterSerializer, VerifyEmailSerializer
 
 logger = logging.getLogger(__name__)
 
