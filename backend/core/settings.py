@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "django.contrib.postgres",
     "allauth",
     "allauth.account",
+    "allauth.socialaccount",
     "softdelete",
 ]
 
