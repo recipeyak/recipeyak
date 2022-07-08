@@ -1,13 +1,7 @@
 // Grab white-listed environment variables and prepare them to be
 // injected into the application via DefinePlugin in Webpack configuration.
 
-const WHITELIST = [
-  "NODE_ENV",
-
-  "GIT_SHA",
-
-  "FRONTEND_SENTRY_DSN",
-]
+const WHITELIST = ["NODE_ENV", "GIT_SHA", "FRONTEND_SENTRY_DSN"]
 
 /** @typedef IClientEnv
  * @property {{ "process.env": {[key: string]: string} }} stringified
