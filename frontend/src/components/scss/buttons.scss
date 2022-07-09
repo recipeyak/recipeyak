@@ -1,59 +1,6 @@
 @import "./variables.scss";
 @import "~bulma/sass/elements/button.sass";
 
-.github-button {
-  @extend .button;
-  background-color: $github;
-  border-color: $github;
-  color: white;
-  &:hover,
-  &:focus,
-  &:active {
-    background-color: darken($github, 5);
-    color: darken(white, 10);
-    text-decoration: none;
-    border-color: $github;
-  }
-  &:active {
-    transform: translateY(1px);
-  }
-}
-
-.gitlab-button {
-  @extend .button;
-  background-color: $gitlab;
-  color: white;
-  border-color: $gitlab;
-  &:hover,
-  &:focus,
-  &:active {
-    background-color: darken($gitlab, 5);
-    color: darken(white, 10);
-    text-decoration: none;
-    border-color: $gitlab;
-  }
-  &:active {
-    transform: translateY(1px);
-  }
-}
-
-.google-button {
-  @extend .button;
-  background-color: white;
-  color: white;
-  border-color: $gray;
-  &:hover,
-  &:focus,
-  &:active {
-    text-decoration: none;
-    background-color: darken(white, 1);
-    border-color: darken($gray, 5);
-  }
-  &:active {
-    transform: translateY(1px);
-  }
-}
-
 .my-box {
   display: block;
   background-color: white;

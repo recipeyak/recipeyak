@@ -2,7 +2,6 @@ import React from "react"
 import { Helmet } from "@/components/Helmet"
 import { Link } from "react-router-dom"
 
-import SocialButtons from "@/components/SocialButtons"
 import { FormErrorHandler, EmailInput, PasswordInput } from "@/components/Forms"
 import { ButtonPrimary } from "@/components/Buttons"
 import AuthContainer from "@/components/AuthContainer"
@@ -119,7 +118,6 @@ class Signup extends React.Component<ISignupProps, ISignupState> {
               <Link to="/password-reset">Forgot Password?</Link>
             </div>
           </form>
-          <SocialButtons />
         </div>
       </AuthContainer>
     )

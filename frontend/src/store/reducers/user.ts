@@ -12,7 +12,6 @@ import {
   HttpErrorKind,
   toLoading,
   mapSuccessLike,
-  Loading,
 } from "@/webdata"
 import { login, AuthActions } from "@/store/reducers/auth"
 
@@ -29,12 +28,6 @@ export const updateRecipeTeamID = createStandardAction("SET_TEAM_ID")<
 export const updateScheduleTeamID = createStandardAction("SET_TEAM_ID")<
   IUserState["scheduleTeamID"]
 >()
-
-export const socialConnections = createAsyncAction(
-  "REQUEST_SOCIAL_ACCOUNT_CONNECTIONS",
-  "SUCCESS_SOCIAL_ACCOUNT_CONNECTIONS",
-  "FAILURE_SOCIAL_ACCOUNT_CONNECTIONS",
-)<void, ISocialConnection[], void>()
 
 export const setUserLoggedIn = createStandardAction("SET_USER_LOGGED_IN")<
   IUserState["loggedIn"]
@@ -73,7 +66,6 @@ export type UserActions =
   | ReturnType<typeof setUserLoggedIn>
   | ReturnType<typeof updateRecipeTeamID>
   | ReturnType<typeof updateScheduleTeamID>
-  | ActionType<typeof socialConnections>
   | ActionType<typeof fetchUser>
   | ActionType<typeof updateEmail>
   | ActionType<typeof fetchSessions>
@@ -89,23 +81,6 @@ export interface IUser {
   readonly dark_mode_enabled: boolean
   readonly selected_team: number | null
   readonly schedule_team: number | null
-}
-
-export type SocialProvider = keyof ISocialAccountsState
-
-// API response
-export interface ISocialConnection {
-  readonly id: number | null
-  readonly provider: SocialProvider
-  readonly uid?: string
-  readonly last_login?: string
-  readonly date_joined?: string
-}
-
-export interface ISocialAccountsState {
-  readonly github: number | null
-  readonly gitlab: number | null
-  readonly google: number | null
 }
 
 export interface ISession {
@@ -137,7 +112,6 @@ export interface IUserState {
   readonly loggingOut: boolean
   readonly darkMode: boolean
   readonly hasUsablePassword: boolean
-  readonly socialAccountConnections: WebData<ISocialAccountsState, void>
   // ID of currently focused team. null if using personal team.
   readonly recipeTeamID: number | null
   readonly scheduleTeamID: number | null
@@ -156,7 +130,6 @@ const initialState: IUserState = {
   loggingOut: false,
   darkMode: false,
   hasUsablePassword: false,
-  socialAccountConnections: undefined,
   recipeTeamID: null,
   scheduleTeamID: null,
   updatingEmail: false,
@@ -177,31 +150,6 @@ export const user = (
     case getType(logOut.failure):
       return { ...state, loggingOut: false }
 
-    case getType(socialConnections.request):
-      return {
-        ...state,
-        socialAccountConnections: Loading(),
-      }
-    case getType(socialConnections.success): {
-      const socialAccountConnections: ISocialAccountsState = action.payload.reduce<
-        Mutable<ISocialAccountsState>
-      >(
-        (acc, cur) => {
-          acc[cur.provider] = cur.id
-          return acc
-        },
-        { github: null, gitlab: null, google: null },
-      )
-      return {
-        ...state,
-        socialAccountConnections: Success(socialAccountConnections),
-      }
-    }
-    case getType(socialConnections.failure):
-      return {
-        ...state,
-        socialAccountConnections: Failure(undefined),
-      }
     case getType(fetchSessions.request):
       return {
         ...state,

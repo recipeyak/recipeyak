@@ -17,7 +17,6 @@ const mapStateToProps = (state: IState) => {
   return {
     loading: state.auth.loadingLogin,
     error: state.auth.errorLogin,
-    errorSocial: state.auth.errorSocialLogin,
     fromUrl: state.auth.fromUrl,
   }
 }

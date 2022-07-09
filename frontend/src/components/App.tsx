@@ -25,8 +25,6 @@ import { Container, ContainerBase } from "@/components/Base"
 import PasswordChange from "@/containers/PasswordChange"
 import PasswordSet from "@/containers/PasswordSet"
 import PasswordResetConfirmation from "@/components/PasswordResetConfirmation"
-import OAuth from "@/containers/OAuth"
-import OAuthConnect from "@/containers/OAuthConnect"
 import Schedule from "@/components/Schedule"
 import HelpMenuModal from "@/components/HelpMenuModal"
 import Recipes from "@/components/RecipeList"
@@ -124,7 +122,6 @@ function Base() {
             <PublicOnlyRoute exact path="/login" component={Login} />
             <PublicOnlyRoute exact path="/signup" component={Signup} />
             <Route exact path="/password-reset" component={PasswordReset} />
-            <Route exact path="/accounts/:service" component={OAuth} />
             <ContainerBase>
               <Switch>
                 <Route exact path="/" component={Home} />
@@ -140,11 +137,6 @@ function Base() {
                 />
                 <Container>
                   <Switch>
-                    <Route
-                      exact
-                      path="/accounts/:service/connect"
-                      component={OAuthConnect}
-                    />
                     <Route
                       exact
                       path="/password-reset/confirm/:uid([0-9A-Za-z_\-]+).:token([0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})"

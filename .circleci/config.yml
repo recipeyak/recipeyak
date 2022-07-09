@@ -249,11 +249,6 @@ jobs:
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
             docker build -f react.Dockerfile \
               --tag recipeyak/react:$CIRCLE_SHA1 \
-              --build-arg OAUTH_BITBUCKET_CLIENT_ID=${OAUTH_BITBUCKET_CLIENT_ID-""} \
-              --build-arg OAUTH_FACEBOOK_CLIENT_ID=${OAUTH_FACEBOOK_CLIENT_ID-""} \
-              --build-arg OAUTH_GITHUB_CLIENT_ID=${OAUTH_GITHUB_CLIENT_ID-""} \
-              --build-arg OAUTH_GITLAB_CLIENT_ID=${OAUTH_GITLAB_CLIENT_ID-""} \
-              --build-arg OAUTH_GOOGLE_CLIENT_ID=${OAUTH_GOOGLE_CLIENT_ID-""} \
               --build-arg GIT_SHA=$CIRCLE_SHA1 \
               --build-arg FRONTEND_SENTRY_DSN=$FRONTEND_SENTRY_DSN .
             docker push recipeyak/react:$CIRCLE_SHA1

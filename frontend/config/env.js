@@ -1,23 +1,7 @@
 // Grab white-listed environment variables and prepare them to be
 // injected into the application via DefinePlugin in Webpack configuration.
 
-const WHITELIST = [
-  "NODE_ENV",
-
-  "GIT_SHA",
-
-  "OAUTH_BITBUCKET_CLIENT_ID",
-
-  "OAUTH_FACEBOOK_CLIENT_ID",
-
-  "OAUTH_GITHUB_CLIENT_ID",
-
-  "OAUTH_GITLAB_CLIENT_ID",
-
-  "OAUTH_GOOGLE_CLIENT_ID",
-
-  "FRONTEND_SENTRY_DSN",
-]
+const WHITELIST = ["NODE_ENV", "GIT_SHA", "FRONTEND_SENTRY_DSN"]
 
 /** @typedef IClientEnv
  * @property {{ "process.env": {[key: string]: string} }} stringified

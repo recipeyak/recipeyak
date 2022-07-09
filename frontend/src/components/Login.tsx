@@ -2,13 +2,12 @@ import React from "react"
 import { Link } from "react-router-dom"
 import { Helmet } from "@/components/Helmet"
 
-import SocialButtons from "@/components/SocialButtons"
 import { FormErrorHandler, TextInput, PasswordInput } from "@/components/Forms"
 import { ButtonPrimary } from "@/components/Buttons"
 
 import AuthContainer from "@/components/AuthContainer"
 import { Location } from "history"
-import { ILoginError, ISocialError } from "@/store/reducers/auth"
+import { ILoginError } from "@/store/reducers/auth"
 
 const redirectURL = ({ pathname = "", search = "", hash = "" }) =>
   `${pathname}${search}${hash}`
@@ -20,7 +19,6 @@ interface ILoginProps {
   readonly fromUrl: string
   readonly loading: boolean
   readonly error: ILoginError
-  readonly errorSocial: ISocialError
   readonly location: Location<{ from: string } | undefined>
 }
 
@@ -58,7 +56,6 @@ class Login extends React.Component<ILoginProps, ILoginState> {
   render() {
     const { loading } = this.props
     const { password1, nonFieldErrors, email } = this.props.error
-    const { emailSocial, nonFieldErrorsSocial } = this.props.errorSocial
 
     return (
       <AuthContainer>
@@ -111,10 +108,6 @@ class Login extends React.Component<ILoginProps, ILoginState> {
               <Link to="/password-reset">Forgot Password?</Link>
             </div>
           </form>
-          <SocialButtons
-            nonFieldErrors={nonFieldErrorsSocial}
-            emailError={emailSocial}
-          />
         </div>
       </AuthContainer>
     )
