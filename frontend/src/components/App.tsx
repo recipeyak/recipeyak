@@ -9,8 +9,8 @@ import { DndProvider } from "react-dnd"
 import { connect } from "react-redux"
 import { history, IState } from "@/store/store"
 import Home from "@/containers/Home"
-import Login from "@/containers/Login"
 import Signup from "@/containers/Signup"
+import Login from "@/containers/Login"
 import NoMatch from "@/components/NoMatch"
 import Recipe from "@/components/Recipe"
 import PasswordReset from "@/containers/PasswordReset"
@@ -29,6 +29,7 @@ import Schedule from "@/components/Schedule"
 import HelpMenuModal from "@/components/HelpMenuModal"
 import Recipes from "@/components/RecipeList"
 import ErrorBoundary from "@/components/ErrorBoundary"
+import { useHistory } from "react-router-dom"
 
 import "@/components/scss/main.scss"
 import { CurrentKeys } from "@/components/CurrentKeys"
@@ -111,6 +112,17 @@ const PublicOnlyRoute = connect(mapAuthenticated)(
   ),
 )
 
+function ScrollRestore() {
+  const history = useHistory()
+  React.useEffect(() => {
+    // using browser back/forward buttons results in a POP type
+    if (history.action !== "POP") {
+      window.scroll(0, 0)
+    }
+  }, [history.action])
+  return null
+}
+
 function Base() {
   return (
     <DndProvider backend={HTML5Backend}>
@@ -118,6 +130,7 @@ function Base() {
         <Helmet defaultTitle="Recipe Yak" titleTemplate="%s | Recipe Yak" />
         <CurrentKeys />
         <ConnectedRouter history={history}>
+          <ScrollRestore />
           <Switch>
             <PublicOnlyRoute exact path="/login" component={Login} />
             <PublicOnlyRoute exact path="/signup" component={Signup} />
