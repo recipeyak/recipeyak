@@ -10,7 +10,7 @@
   "jsRules": {
     "no-console": false,
     "object-literal-sort-keys": false,
-    "no-shadowed-variable": true,
+    "no-shadowed-variable": false,
     "member-ordering": false,
     "prefer-const": true,
     "no-var-keyword": true,

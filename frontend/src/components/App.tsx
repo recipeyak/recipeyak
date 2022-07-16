@@ -1,5 +1,11 @@
 import React from "react"
-import { Route, Switch, Redirect, RouteProps } from "react-router-dom"
+import {
+  Route,
+  Switch,
+  Redirect,
+  RouteProps,
+  useHistory,
+} from "react-router-dom"
 import { ConnectedRouter } from "connected-react-router"
 import { Helmet } from "@/components/Helmet"
 import { hot } from "react-hot-loader/root"
@@ -29,7 +35,6 @@ import Schedule from "@/components/Schedule"
 import HelpMenuModal from "@/components/HelpMenuModal"
 import Recipes from "@/components/RecipeList"
 import ErrorBoundary from "@/components/ErrorBoundary"
-import { useHistory } from "react-router-dom"
 
 import "@/components/scss/main.scss"
 import { CurrentKeys } from "@/components/CurrentKeys"
