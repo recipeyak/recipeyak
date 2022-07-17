@@ -10,7 +10,7 @@
   "jsRules": {
     "no-console": false,
     "object-literal-sort-keys": false,
-    "no-shadowed-variable": true,
+    "no-shadowed-variable": false,
     "member-ordering": false,
     "prefer-const": true,
     "no-var-keyword": true,
@@ -27,6 +27,7 @@
   "rules": {
     "react-anchor-blank-noopener": true,
     "interface-over-type-literal": false,
+    "no-shadowed-variable": false,
     "object-index-must-return-possibly-undefined": true,
     "unnecessary-else": false,
     "no-implicit-to-string": false,
