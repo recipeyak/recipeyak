@@ -60,7 +60,8 @@ async function http3<T, A, O>({
     })
     return shape.decode(r.data)
   } catch (e) {
-    return left(e)
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    return left(e as AxiosError | Error | t.Errors)
   }
 }
 

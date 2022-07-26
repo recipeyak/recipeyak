@@ -14,7 +14,7 @@ function writeFile(filename, content) {
       if (err) {
         reject(err)
       }
-      resolve()
+      resolve(undefined)
     })
   })
 }
