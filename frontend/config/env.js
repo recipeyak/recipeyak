@@ -3,13 +3,7 @@
 
 const WHITELIST = ["NODE_ENV", "GIT_SHA", "FRONTEND_SENTRY_DSN"]
 
-/** @typedef IClientEnv
- * @property {{ "process.env": {[key: string]: string} }} stringified
- * @property {{[key: string | undefined]: string}} raw
- */
-
 /** @param {string} publicUrl
- * @returns {IClientEnv}
  */
 function getClientEnvironment(publicUrl) {
   const raw = Object.keys(process.env)
@@ -33,11 +27,13 @@ function getClientEnvironment(publicUrl) {
     )
   // Stringify all values so we can feed into Webpack DefinePlugin
   const stringified = {
-    "process.env": Object.keys(raw).reduce((env, key) => {
-      // @ts-ignore
-      env[key] = JSON.stringify(raw[key])
-      return env
-    }, {}),
+    "process.env": Object.keys(raw).reduce(
+      (env, key) => {
+        env[key] = JSON.stringify(raw[key])
+        return env
+      },
+      /** @type {Record<string, string>} */ ({}),
+    ),
   }
 
   return { raw, stringified }
