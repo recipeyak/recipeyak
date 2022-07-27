@@ -420,7 +420,7 @@ export function NoteContainer(props: INoteContainerProps) {
           case "note": {
             return (
               <Note
-                key={"recipe" + String(timelineItem.id)}
+                key={"recipe-note" + String(timelineItem.id)}
                 note={timelineItem}
                 recipeId={props.recipeId}
                 className="pb-2"
@@ -430,7 +430,7 @@ export function NoteContainer(props: INoteContainerProps) {
           case "recipe":
             return (
               <TimelineEvent
-                key={"recipe" + String(timelineItem.id)}
+                key={"recipe-recipe" + String(timelineItem.id)}
                 event={timelineItem}
               />
             )

@@ -10,7 +10,6 @@ main() {
     node_modules/.bin/eslint '**/*.{ts,tsx,js,jsx}' --fix
   fi
 
-  node_modules/.bin/tslint --project tsconfig.json --format 'codeFrame'
   node_modules/.bin/tsc --noEmit
 }
 

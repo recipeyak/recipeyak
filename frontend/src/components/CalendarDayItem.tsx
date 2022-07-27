@@ -151,6 +151,7 @@ export function CalendarItem({
   }
 
   const [{ isDragging }, drag] = useDrag({
+    type: DragDrop.CAL_RECIPE,
     item: dragItem,
     end: (_dropResult, monitor) => {
       // when dragged onto something that isn't a target, we remove it

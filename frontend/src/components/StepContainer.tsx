@@ -69,15 +69,14 @@ function StepContainer(props: IStepContainerProps) {
       return newSteps
     })
 
-  const completeMove = (stepID: number, arrIndex: number) => {
-    const newPosition = getNewPos(steps, arrIndex)
+  const completeMove = ({ to, id: stepID }: { id: number; to: number }) => {
+    const newPosition = getNewPos(steps, to)
     if (newPosition == null) {
       return
     }
-
     setSteps(prevSteps =>
-      prevSteps.map((c, index) => {
-        if (index === arrIndex) {
+      prevSteps.map(c => {
+        if (c.id === stepID) {
           return {
             ...c,
             position: newPosition,

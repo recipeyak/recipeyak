@@ -14,7 +14,7 @@ export function copyToClipboard(text: string) {
       : false
   el.select()
   document.execCommand("copy")
-  // tslint:disable-next-line no-try
+
   try {
     document.body.removeChild(el)
   } catch (e) {

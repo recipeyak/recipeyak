@@ -1,3 +1,4 @@
+import { expect, test, it, describe } from "vitest"
 import { queryMatchesRecipe } from "@/search"
 import { IRecipe, IIngredient } from "@/store/reducers/recipes"
 

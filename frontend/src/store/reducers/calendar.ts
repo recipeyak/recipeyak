@@ -6,7 +6,6 @@ import {
   getType,
   createStandardAction,
 } from "typesafe-actions"
-import { isUndefined } from "util"
 import { notUndefined } from "@/utils/general"
 import { ITeam } from "@/store/reducers/teams"
 import { IUser } from "@/store/reducers/user"
@@ -166,7 +165,6 @@ export const initialState: ICalendarState = {
   settings: undefined,
 }
 
-// tslint:disable-next-line object-index-must-return-possibly-undefined
 function byId<T extends { id: number }>(a: { [_: number]: T }, b: T) {
   return { ...a, [b.id]: b }
 }
@@ -258,7 +256,7 @@ export const calendar = (
       const moving = state.byId[action.payload.id]
 
       const isSameTeamAndDay = (r: ICalRecipe | undefined): r is ICalRecipe => {
-        if (isUndefined(moving) || isUndefined(r)) {
+        if (moving == null || r == null) {
           return false
         }
         return (

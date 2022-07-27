@@ -36,7 +36,7 @@ type Minus<T, U> = { [P in Diff<keyof T, keyof U>]: T[P] }
  *
  * This is based on ReturnType
  */
-// tslint:disable-next-line:no-any
+
 type ArgumentsType<T> = T extends (...args: infer A) => any ? A : never
 
 // from https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-8.html#improved-control-over-mapped-type-modifiers

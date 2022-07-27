@@ -1,3 +1,4 @@
+import { expect, test, it, describe } from "vitest"
 import { pathNamesEqual } from "@/utils/url"
 
 test("pathNamesEqual", () => {

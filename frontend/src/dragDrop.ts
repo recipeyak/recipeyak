@@ -1,4 +1,4 @@
-import { DragObjectWithType, DropTargetMonitor } from "react-dnd"
+import { DropTargetMonitor } from "react-dnd"
 
 export const enum DragDrop {
   RECIPE = "RECIPE",
@@ -22,13 +22,12 @@ export const handleDndHover = ({
     readonly from: number
     readonly to: number
   }) => void
-}) => (_item: DragObjectWithType, monitor: DropTargetMonitor) => {
+}) => (item: unknown, monitor: DropTargetMonitor) => {
   if (!ref.current) {
     return
   }
 
-  // tslint:disable-next-line:no-unsafe-any
-  const dragIndex: number = monitor.getItem().index
+  const dragIndex: number = item.index
   const hoverIndex = index
 
   // Don't replace items with themselves
@@ -73,6 +72,5 @@ export const handleDndHover = ({
   // Generally it's better to avoid mutations,
   // but it's good here for the sake of performance
   // to avoid expensive index searches.
-  // tslint:disable-next-line:no-unsafe-any
-  monitor.getItem().index = hoverIndex
+  item.index = hoverIndex
 }

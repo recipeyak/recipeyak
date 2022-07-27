@@ -2,8 +2,7 @@
 set -ex
 
 main() {
-  node scripts/build.js
-  bash scripts/crawl.sh
+  yarn vite build
 }
 
 main "$@"

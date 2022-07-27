@@ -145,11 +145,9 @@ export const loggingOutAsync = (dispatch: Dispatch) => async () => {
 }
 
 const emailExists = (err: AxiosError) =>
-  // tslint:disable:no-unsafe-any
   err.response &&
   err.response.data.email != null &&
   err.response.data.email[0].includes("email already exists")
-// tslint:enable:no-unsafe-any
 
 export const updatingEmailAsync = (dispatch: Dispatch) => async (
   email: IUser["email"],
@@ -271,7 +269,7 @@ export const updatingPasswordAsync = (dispatch: Dispatch) => async ({
     const badRequest = err.response && err.response.status === 400
     if (err.response && badRequest) {
       const data = err.response.data
-      // tslint:disable:no-unsafe-any
+
       dispatch(
         passwordUpdate.failure({
           newPasswordAgain: data["new_password2"],
@@ -280,7 +278,6 @@ export const updatingPasswordAsync = (dispatch: Dispatch) => async ({
         }),
       )
       return
-      // tslint:ebale:no-unsafe-any
     }
     dispatch(passwordUpdate.failure())
   }
@@ -311,7 +308,7 @@ export const postNewRecipeAsync = (dispatch: Dispatch) => async (
     dispatch(clearAddRecipeForm())
   } else {
     const err = res.error
-    // tslint:disable:no-unsafe-any
+
     const errors =
       (err.response && {
         errorWithName: err.response.data.name != null,
@@ -319,7 +316,7 @@ export const postNewRecipeAsync = (dispatch: Dispatch) => async (
         errorWithSteps: err.response.data.steps != null,
       }) ||
       {}
-    // tslint:enable:no-unsafe-any
+
     dispatch(createRecipe.failure(errors))
     showNotificationWithTimeoutAsync(dispatch)({
       message: "problem creating new recipe",
@@ -419,7 +416,7 @@ export const logUserInAsync = (dispatch: Dispatch) => async (
     const badRequest = err.response && err.response.status === 400
     if (err.response && badRequest) {
       const data = err.response.data
-      // tslint:disable:no-unsafe-any
+
       dispatch(
         login.failure({
           email: data["email"],
@@ -427,7 +424,7 @@ export const logUserInAsync = (dispatch: Dispatch) => async (
           nonFieldErrors: data["non_field_errors"],
         }),
       )
-      // tslint:enable:no-unsafe-any
+
       return
     }
     dispatch(login.failure())
@@ -454,7 +451,6 @@ export const signupAsync = (dispatch: Dispatch) => async (
   } else {
     const err = res.error
     if (isbadRequest(err)) {
-      // tslint:disable:no-unsafe-any
       const data = err.response && err.response.data
       dispatch(
         setErrorSignup({
@@ -464,7 +460,6 @@ export const signupAsync = (dispatch: Dispatch) => async (
           nonFieldErrors: data["non_field_errors"],
         }),
       )
-      // tslint:enable:no-unsafe-any
     }
     dispatch(setLoadingSignup(false))
   }
@@ -492,7 +487,6 @@ export const resetAsync = (dispatch: Dispatch) => async (email: string) => {
       sticky: true,
     })
     if (isbadRequest(err)) {
-      // tslint:disable:no-unsafe-any
       const data = err.response && err.response.data
       dispatch(
         setErrorReset({
@@ -500,7 +494,6 @@ export const resetAsync = (dispatch: Dispatch) => async (email: string) => {
           nonFieldErrors: data["non_field_errors"],
         }),
       )
-      // tslint:enable:no-unsafe-any
     }
     showNotificationWithTimeoutAsync(dispatch)({
       message: "problem resetting password",
@@ -544,7 +537,6 @@ export const resetConfirmationAsync = (dispatch: Dispatch) => async (
       sticky: true,
     })
     if (isbadRequest(err)) {
-      // tslint:disable:no-unsafe-any
       const data = err.response && err.response.data
 
       const tokenData =
@@ -564,7 +556,6 @@ export const resetConfirmationAsync = (dispatch: Dispatch) => async (
           nonFieldErrors,
         }),
       )
-      // tslint:enable:no-unsafe-any
     }
   }
 }
@@ -598,12 +589,10 @@ export const fetchingTeamMembersAsync = (dispatch: Dispatch) => async (
   }
 }
 
-// tslint:disable:no-unsafe-any
 const attemptedDeleteLastAdmin = (res: AxiosResponse) =>
   res.status === 400 &&
   res.data.level &&
   res.data.level[0].includes("cannot demote")
-// tslint:enable:no-unsafe-any
 
 export const settingUserTeamLevelAsync = (dispatch: Dispatch) => async (
   teamID: ITeam["id"],
@@ -619,14 +608,12 @@ export const settingUserTeamLevelAsync = (dispatch: Dispatch) => async (
   } else {
     const err = res.error
     if (err.response && attemptedDeleteLastAdmin(err.response)) {
-      // tslint:disable:no-unsafe-any
       const message = err.response.data.level[0]
       showNotificationWithTimeoutAsync(dispatch)({
         message,
         level: "danger",
         delay: 3 * second,
       })
-      // tslint:enable:no-unsafe-any
     }
     dispatch(setUpdatingUserTeamLevel({ id: teamID, updating: false }))
   }
@@ -657,7 +644,6 @@ export const deletingMembershipAsync = (dispatch: Dispatch) => async (
     const err = res.error
     const message = err.response && err.response.data
     showNotificationWithTimeoutAsync(dispatch)({
-      // tslint:disable-next-line:no-unsafe-any
       message,
       level: "danger",
       delay: 3 * second,
@@ -683,7 +669,7 @@ export const deletingTeamAsync = (dispatch: Dispatch) => async (
   } else {
     const err = res.error
     let message = "Uh Oh! Something went wrong."
-    // tslint:disable:no-unsafe-any
+
     if (err.response && err.response.status === 403) {
       message =
         err.response.data && err.response.data.detail
@@ -697,7 +683,7 @@ export const deletingTeamAsync = (dispatch: Dispatch) => async (
     } else {
       raven.captureException(err)
     }
-    // tslint:enable:no-unsafe-any
+
     showNotificationWithTimeoutAsync(dispatch)({
       message,
       level: "danger",
@@ -773,7 +759,7 @@ export const updatingTeamAsync = (dispatch: Dispatch) => async (
   } else {
     const err = res.error
     let message = "Problem updating team."
-    // tslint:disable-next-line:no-unsafe-any
+
     if (err.response && err.response.status === 403) {
       message = "You are not authorized to perform that action"
     }
@@ -812,7 +798,7 @@ export const copyRecipeToAsync = (dispatch: Dispatch) => async (
   } else {
     dispatch(setCopyingTeam(false))
     // TODO(chdsbd): Improve api usage and remove this throw
-    // tslint:disable-next-line:no-throw
+
     showNotificationWithTimeoutAsync(dispatch)({
       message: `Problem copying recipe: ${res.error}`,
       level: "danger",
@@ -862,7 +848,7 @@ export const deleteUserAccountAsync = (dispatch: Dispatch) => async () => {
     showNotificationWithTimeoutAsync(dispatch)({ message: "Account deleted" })
   } else {
     const error = res.error
-    // tslint:disable:no-unsafe-any
+
     if (
       error.response &&
       error.response.status === 403 &&
@@ -872,7 +858,6 @@ export const deleteUserAccountAsync = (dispatch: Dispatch) => async () => {
         message: error.response.data.detail,
         level: "danger",
       })
-      // tslint:enable:no-unsafe-any
     } else {
       showNotificationWithTimeoutAsync(dispatch)({
         message: "failed to delete account",

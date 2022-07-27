@@ -109,8 +109,8 @@ export function Section({
   })
 
   const [{ isDragging }, drag, preview] = useDrag({
+    type: DragDrop.SECTION,
     item: {
-      type: DragDrop.SECTION,
       index,
     },
     end: () => {

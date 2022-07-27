@@ -2,14 +2,12 @@ import React from "react"
 import { Link } from "react-router-dom"
 import Footer from "@/components/Footer"
 
-// tslint:disable:no-var-requires
-const addRecipeImg = require("@/static/images/pages/add-recipe.png")
-const landingImg = require("@/static/images/pages/schedule.png")
-const teamImg = require("@/static/images/pages/team.png")
-const searchImg = require("@/static/images/pages/search.png")
-const shopImg = require("@/static/images/pages/shop.png")
-const copyShoppingList = require("@/static/images/pages/copy-shopping-list.png")
-// tslint:enable:no-var-requires
+import addRecipeImg from "@/static/images/pages/add-recipe.png"
+import landingImg from "@/static/images/pages/schedule.png"
+import teamImg from "@/static/images/pages/team.png"
+import searchImg from "@/static/images/pages/search.png"
+import shopImg from "@/static/images/pages/shop.png"
+import copyShoppingList from "@/static/images/pages/copy-shopping-list.png"
 
 const isOdd = (i: number) => i % 2 !== 0
 
@@ -70,7 +68,6 @@ interface IHowToProps {
 }
 
 function HowTo({ content, index, imageURL }: IHowToProps) {
-  // tslint:disable-next-line:no-unsafe-any
   return (
     <li className="feature-grid" key={imageURL}>
       <p className="align-self-center">
@@ -177,14 +174,12 @@ const LandingPage = () => (
 
     <FeaturesContainer>
       {features.map(({ text, imgURL }, i) => (
-        // tslint:disable-next-line:no-unsafe-any
         <Feature key={imgURL} text={text} imageURL={imgURL} index={i} />
       ))}
     </FeaturesContainer>
 
     <HowItWorksContainer>
       {howToSteps.map(({ text, imgURL }, i) => (
-        // tslint:disable-next-line:no-unsafe-any
         <HowTo key={imgURL} content={text} imageURL={imgURL} index={i} />
       ))}
 

@@ -48,7 +48,7 @@ interface IStepProps {
   readonly recipeID: IRecipe["id"]
   readonly text: string
   readonly move: (_: { from: number; to: number }) => void
-  readonly completeMove: (dragIndex: number, hoverIndex: number) => void
+  readonly completeMove: (_: { id: number; to: number }) => void
   readonly updating?: boolean
   readonly removing?: boolean
   readonly position?: number
@@ -62,12 +62,12 @@ function Step({ text, index, ...props }: IStepProps) {
   })
 
   const [{ isDragging }, drag, preview] = useDrag({
+    type: DragDrop.STEP,
     item: {
-      type: DragDrop.STEP,
       index,
     },
-    end: () => {
-      props.completeMove(props.id, index)
+    end: draggedItem => {
+      props.completeMove({ id: props.id, to: draggedItem.index })
     },
     collect: monitor => ({
       isDragging: monitor.isDragging(),

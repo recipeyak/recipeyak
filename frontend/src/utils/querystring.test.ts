@@ -1,3 +1,4 @@
+import { expect, test, it, describe } from "vitest"
 import { updateQueryString } from "@/utils/querystring"
 
 test("updateQueryString removes undefined params", () => {

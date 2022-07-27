@@ -206,16 +206,16 @@ export function Ingredient(props: {
     }),
   })
 
-  const [{ isDragging }, drag, preview] = useDrag({
+  const [{ isDragging }, drag] = useDrag({
+    type: DragDrop.INGREDIENT,
     item: {
-      type: DragDrop.INGREDIENT,
       index: props.index,
     },
-    end: () => {
+    end: draggedItem => {
       props.completeMove?.({
         kind: "ingredient",
         id: props.id,
-        to: props.index,
+        to: draggedItem.index,
       })
     },
     collect: monitor => ({
@@ -231,7 +231,7 @@ export function Ingredient(props: {
   }
 
   if (dragAndDropEnabled) {
-    preview(drop(ref))
+    drop(ref)
   }
 
   const inner = state.editing ? (

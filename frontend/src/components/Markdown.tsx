@@ -1,5 +1,5 @@
 import React from "react"
-import ReactMarkdown, { NodeType } from "react-markdown"
+import ReactMarkdown, { Components } from "react-markdown"
 import { styled } from "@/theme"
 import * as settings from "@/settings"
 import { Link } from "@/components/Routing"
@@ -38,18 +38,18 @@ const MarkdownWrapper = styled.div`
   }
 `
 
-const ALLOWED_MARKDOWN_TYPES: NodeType[] = [
-  "root",
+const ALLOWED_MARKDOWN_TYPES: (keyof Components)[] = [
   "text",
-  "delete",
+  "s",
   "blockquote",
-  "paragraph",
+  "p",
   "strong",
-  "emphasis",
-  "list",
-  "linkReference",
+  "em",
+  "li",
+  "a",
   "link",
-  "listItem",
+  "ol",
+  "ul",
 ]
 
 function renderLink({
@@ -67,8 +67,7 @@ function renderLink({
 }
 
 const renderers = {
-  link: renderLink,
-  linkReference: renderLink,
+  a: renderLink,
 }
 
 interface IMarkdownProps {
@@ -87,9 +86,9 @@ export function Markdown({
   return (
     <MarkdownWrapper className={className} title={title} onClick={onClick}>
       <ReactMarkdown
-        allowedTypes={ALLOWED_MARKDOWN_TYPES}
-        source={text}
-        renderers={renderers}
+        allowedElements={ALLOWED_MARKDOWN_TYPES}
+        children={text}
+        components={renderers}
         unwrapDisallowed
       />
     </MarkdownWrapper>

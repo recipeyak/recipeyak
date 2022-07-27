@@ -144,7 +144,7 @@ const router = routerMiddleware(history)
 
 const compose: typeof reduxCompose =
   /* eslint-disable @typescript-eslint/consistent-type-assertions */
-  // tslint:disable-next-line no-any no-unsafe-any
+
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || reduxCompose
 /* eslint-enable @typescript-eslint/consistent-type-assertions */
 
@@ -212,7 +212,6 @@ store.subscribe(
       auth: {
         fromUrl: store.getState().auth.fromUrl,
       },
-      // tslint:disable-next-line:no-any
     } as any) as IState)
   }, second),
 )
