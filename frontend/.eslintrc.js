@@ -8,7 +8,7 @@ module.exports = {
       jsx: true,
     },
   },
-  plugins: ["html", "react", "react-hooks", "@typescript-eslint", "import"],
+  plugins: ["react", "react-hooks", "@typescript-eslint", "import"],
   extends: ["prettier"],
   settings: {
     react: {
