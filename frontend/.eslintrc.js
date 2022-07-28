@@ -10,6 +10,11 @@ module.exports = {
   },
   plugins: ["html", "react", "react-hooks", "@typescript-eslint", "import"],
   extends: ["prettier"],
+  settings: {
+    react: {
+      version: "detect",
+    },
+  },
   env: {
     browser: true,
   },

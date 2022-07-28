@@ -24,4 +24,7 @@ export default defineConfig({
       "/avatar": "https://www.gravatar.com",
     },
   },
+  build: {
+    sourcemap: true,
+  },
 })
