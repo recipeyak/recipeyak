@@ -22,6 +22,7 @@ class UserSerializer(BaseModelSerializer):
         fields = (
             "id",
             "email",
+            "name",
             "avatar_url",
             "has_usable_password",
             "dark_mode_enabled",
