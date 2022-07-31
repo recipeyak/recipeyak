@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0091_alter_recipe_tags'),
+        ("core", "0091_alter_recipe_tags"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='name',
+            model_name="user",
+            name="name",
             field=models.TextField(null=True),
         ),
     ]
