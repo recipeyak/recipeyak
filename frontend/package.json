@@ -63,7 +63,7 @@
     "typesafe-actions": "^2.0.4"
   },
   "volta": {
-    "node": "12.22.8",
+    "node": "18.7.0",
     "yarn": "1.22.17"
   }
 }
