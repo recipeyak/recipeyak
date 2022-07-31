@@ -16,7 +16,7 @@ export const deleteLoggedInUser = () => http.delete("/api/v1/user/")
 
 export const logoutUser = () => http.post<void>("/api/v1/auth/logout/", {})
 
-interface IUserResponse {
+export interface IUserResponse {
   readonly user: IUser
 }
 

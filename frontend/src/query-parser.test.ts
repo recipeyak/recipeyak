@@ -1,4 +1,3 @@
-import { expect, test, describe } from "vitest"
 import { parseQuery } from "@/query-parser"
 
 describe("parseQuery", () => {

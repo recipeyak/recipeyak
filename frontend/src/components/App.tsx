@@ -15,7 +15,7 @@ import { connect } from "react-redux"
 import { history, IState } from "@/store/store"
 import Home from "@/containers/Home"
 import Signup from "@/containers/Signup"
-import Login from "@/containers/Login"
+import Login from "@/components/Login"
 import NoMatch from "@/components/NoMatch"
 import Recipe from "@/components/Recipe"
 import PasswordReset from "@/containers/PasswordReset"
@@ -34,6 +34,9 @@ import Schedule from "@/components/Schedule"
 import HelpMenuModal from "@/components/HelpMenuModal"
 import Recipes from "@/components/RecipeList"
 import ErrorBoundary from "@/components/ErrorBoundary"
+import { Provider } from "react-redux"
+import store from "@/store/store"
+import { ThemeProvider, theme } from "@/theme"
 
 import "@/components/scss/main.scss"
 import { CurrentKeys } from "@/components/CurrentKeys"
@@ -129,100 +132,108 @@ function ScrollRestore() {
 
 function Base() {
   return (
-    <HelmetProvider>
-      <DndProvider backend={HTML5Backend}>
-        <ErrorBoundary>
-          <Helmet />
-          <CurrentKeys />
-          <ConnectedRouter history={history}>
-            <ScrollRestore />
-            <Switch>
-              <PublicOnlyRoute exact path="/login" component={Login} />
-              <PublicOnlyRoute exact path="/signup" component={Signup} />
-              <Route exact path="/password-reset" component={PasswordReset} />
-              <ContainerBase>
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <HelmetProvider>
+          <DndProvider backend={HTML5Backend}>
+            <ErrorBoundary>
+              <Helmet />
+              <CurrentKeys />
+              <ConnectedRouter history={history}>
+                <ScrollRestore />
                 <Switch>
-                  <Route exact path="/" component={Home} />
-                  <PrivateRoute
+                  <PublicOnlyRoute exact path="/login" component={Login} />
+                  <PublicOnlyRoute exact path="/signup" component={Signup} />
+                  <Route
                     exact
-                    path="/schedule/:type(shopping|recipes)?"
-                    component={Schedule}
+                    path="/password-reset"
+                    component={PasswordReset}
                   />
-                  <PrivateRoute
-                    exact
-                    path="/t/:id(\d+)(.*)/schedule/:type(shopping|recipes)?"
-                    component={Schedule}
-                  />
-                  <Container>
+                  <ContainerBase>
                     <Switch>
-                      <Route
+                      <Route exact path="/" component={Home} />
+                      <PrivateRoute
                         exact
-                        path="/password-reset/confirm/:uid([0-9A-Za-z_\-]+).:token([0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})"
-                        component={PasswordResetConfirmation}
+                        path="/schedule/:type(shopping|recipes)?"
+                        component={Schedule}
                       />
                       <PrivateRoute
                         exact
-                        path="/recipes/add"
-                        component={AddRecipe}
+                        path="/t/:id(\d+)(.*)/schedule/:type(shopping|recipes)?"
+                        component={Schedule}
                       />
-                      <PrivateRoute
-                        exact
-                        path="/recipes/"
-                        component={Recipes}
-                      />
-                      <PrivateRoute
-                        exact
-                        path="/recipes/:id(\d+)(.*)"
-                        component={Recipe}
-                      />
-                      <PrivateRoute
-                        exact
-                        path="/settings"
-                        component={Settings}
-                      />
-                      <PrivateRoute
-                        exact
-                        path="/password"
-                        component={PasswordChange}
-                      />
-                      <PrivateRoute
-                        exact
-                        path="/password/set"
-                        component={PasswordSet}
-                      />
-                      <PrivateRoute
-                        exact
-                        path="/t/create"
-                        component={TeamCreate}
-                      />
-                      <PrivateRoute
-                        exact
-                        path="/t/:id(\d+)(.*)/invite"
-                        component={TeamInvite}
-                      />
-                      <PrivateRoute
-                        exact
-                        path="/t/:id(\d+)(.*)/settings"
-                        component={Team}
-                      />
-                      <PrivateRoute
-                        exact
-                        path="/t/:id(\d+)(.*)"
-                        component={Team}
-                      />
-                      <PrivateRoute exact path="/t/" component={Teams} />
-                      <Route component={NoMatch} />
+                      <Container>
+                        <Switch>
+                          <Route
+                            exact
+                            path="/password-reset/confirm/:uid([0-9A-Za-z_\-]+).:token([0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})"
+                            component={PasswordResetConfirmation}
+                          />
+                          <PrivateRoute
+                            exact
+                            path="/recipes/add"
+                            component={AddRecipe}
+                          />
+                          <PrivateRoute
+                            exact
+                            path="/recipes/"
+                            component={Recipes}
+                          />
+                          <PrivateRoute
+                            exact
+                            path="/recipes/:id(\d+)(.*)"
+                            component={Recipe}
+                          />
+                          <PrivateRoute
+                            exact
+                            path="/settings"
+                            component={Settings}
+                          />
+                          <PrivateRoute
+                            exact
+                            path="/password"
+                            component={PasswordChange}
+                          />
+                          <PrivateRoute
+                            exact
+                            path="/password/set"
+                            component={PasswordSet}
+                          />
+                          <PrivateRoute
+                            exact
+                            path="/t/create"
+                            component={TeamCreate}
+                          />
+                          <PrivateRoute
+                            exact
+                            path="/t/:id(\d+)(.*)/invite"
+                            component={TeamInvite}
+                          />
+                          <PrivateRoute
+                            exact
+                            path="/t/:id(\d+)(.*)/settings"
+                            component={Team}
+                          />
+                          <PrivateRoute
+                            exact
+                            path="/t/:id(\d+)(.*)"
+                            component={Team}
+                          />
+                          <PrivateRoute exact path="/t/" component={Teams} />
+                          <Route component={NoMatch} />
+                        </Switch>
+                      </Container>
                     </Switch>
-                  </Container>
+                  </ContainerBase>
                 </Switch>
-              </ContainerBase>
-            </Switch>
-          </ConnectedRouter>
-          <Notification />
-          <HelpMenuModal />
-        </ErrorBoundary>
-      </DndProvider>
-    </HelmetProvider>
+              </ConnectedRouter>
+              <Notification />
+              <HelpMenuModal />
+            </ErrorBoundary>
+          </DndProvider>
+        </HelmetProvider>
+      </Provider>
+    </ThemeProvider>
   )
 }
 

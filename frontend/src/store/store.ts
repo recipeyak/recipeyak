@@ -18,7 +18,7 @@ import {
 import pickBy from "lodash/pickBy"
 import throttle from "lodash/throttle"
 
-import createHistory from "history/createBrowserHistory"
+import { createBrowserHistory as createHistory } from "history"
 import {
   RouterState,
   RouterAction,
@@ -53,8 +53,6 @@ import calendar, {
 } from "@/store/reducers/calendar"
 import { loadState, saveState } from "@/store/localStorage"
 import { getType } from "typesafe-actions"
-import { createLogger } from "redux-logger"
-import { DEBUG } from "@/settings"
 import { second } from "@/date"
 
 const createStore: StoreCreator = basicCreateStore
@@ -85,6 +83,7 @@ export type Action =
   | AuthActions
   | TeamsActions
   | CalendarActions
+  | { type: "@@RESET" }
 
 /**
  * A hack to prevent errors in testing. Jest does some weird sourcing of
@@ -124,7 +123,7 @@ export function rootReducer(
   state: IState | undefined,
   action: Action,
 ): IState | Loop<IState, Action> {
-  if (state == null) {
+  if (state == null || action.type === "@@RESET") {
     return recipeApp(undefined, action)
   }
   if (action.type === getType(login.success) && !action.payload) {
@@ -173,14 +172,9 @@ const defaultData = (): IState => {
   }
 }
 
-const middleware = [router]
-if (DEBUG) {
-  middleware.push(createLogger({ collapsed: true }))
-}
-
 export const enhancer: StoreEnhancer<IState, Action> = compose(
   install(),
-  applyMiddleware(...middleware),
+  applyMiddleware(router),
 )
 
 // We need an empty store for the unit tests & hydrating from localstorage
