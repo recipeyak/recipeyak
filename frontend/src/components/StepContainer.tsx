@@ -61,7 +61,7 @@ function StepContainer(props: IStepContainerProps) {
   }, [props.steps])
 
   const move = ({ from, to }: { readonly to: number; readonly from: number }) =>
-    setSteps(prev => {
+    setSteps((prev) => {
       const newSteps = [...prev]
       const item = newSteps[from]
       newSteps.splice(from, 1)
@@ -74,8 +74,8 @@ function StepContainer(props: IStepContainerProps) {
     if (newPosition == null) {
       return
     }
-    setSteps(prevSteps =>
-      prevSteps.map(c => {
+    setSteps((prevSteps) =>
+      prevSteps.map((c) => {
         if (c.id === stepID) {
           return {
             ...c,

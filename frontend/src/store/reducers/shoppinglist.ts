@@ -14,9 +14,9 @@ export const fetchShoppingList = createAsyncAction(
   "FETCH_SHOPPING_LIST_FAILURE",
 )<void, IGetShoppingListResponse, void>()
 
-export const setSelectingStart = createStandardAction("SET_SELECTING_START")<
-  Date
->()
+export const setSelectingStart = createStandardAction(
+  "SET_SELECTING_START",
+)<Date>()
 export const setSelectingEnd = createStandardAction("SET_SELECTING_END")<Date>()
 
 export type ShoppingListActions =

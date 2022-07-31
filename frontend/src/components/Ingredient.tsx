@@ -99,7 +99,7 @@ export function Ingredient(props: {
     if (clickedInComponent) {
       return
     }
-    setState(prevState => {
+    setState((prevState) => {
       const contentChanged =
         prevState.quantity !== props.quantity ||
         prevState.name !== props.name ||
@@ -122,21 +122,21 @@ export function Ingredient(props: {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.name
     const value = e.target.value
-    setState(s => ({
+    setState((s) => ({
       ...s,
       [name]: value,
     }))
   }
 
   const toggleOptional = () =>
-    setState(prev => ({ ...prev, optional: !prev.optional }))
+    setState((prev) => ({ ...prev, optional: !prev.optional }))
 
   const enableEditing = () => {
     if (hasSelection()) {
       return
     }
     // FIXME(chdsbd): This is identical to the method in ListItem
-    setState(s => ({
+    setState((s) => ({
       ...s,
       editing: true,
       unsavedChanges: false,
@@ -144,7 +144,7 @@ export function Ingredient(props: {
   }
 
   const discardChanges = () =>
-    setState(s => ({
+    setState((s) => ({
       ...s,
       editing: false,
       unsavedChanges: false,
@@ -155,7 +155,7 @@ export function Ingredient(props: {
 
   const cancel = () =>
     // Restore state to match props
-    setState(s => ({
+    setState((s) => ({
       ...s,
       editing: false,
       quantity: props.quantity,
@@ -188,7 +188,7 @@ export function Ingredient(props: {
       optional: state.optional,
     })
 
-    setState(s => ({
+    setState((s) => ({
       ...s,
       editing: false,
       unsavedChanges: false,
@@ -211,14 +211,14 @@ export function Ingredient(props: {
     item: {
       index: props.index,
     },
-    end: draggedItem => {
+    end: (draggedItem) => {
       props.completeMove?.({
         kind: "ingredient",
         id: props.id,
         to: draggedItem.index,
       })
     },
-    collect: monitor => ({
+    collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
   })
@@ -287,7 +287,8 @@ export function Ingredient(props: {
               onClick={remove}
               size="small"
               loading={props.removing}
-              name="remove">
+              name="remove"
+            >
               Remove
             </Button>
           </p>
@@ -298,7 +299,8 @@ export function Ingredient(props: {
               onClick={handleCancelButton}
               size="small"
               type="reset"
-              name="cancel edit">
+              name="cancel edit"
+            >
               Cancel
             </Button>
           </p>
@@ -307,7 +309,8 @@ export function Ingredient(props: {
               size="small"
               type="submit"
               name="update"
-              loading={props.updating}>
+              loading={props.updating}
+            >
               Update
             </ButtonPrimary>
           </p>
@@ -328,11 +331,13 @@ export function Ingredient(props: {
     <li
       ref={dragAndDropEnabled ? ref : undefined}
       style={style}
-      className="bg-white">
+      className="bg-white"
+    >
       <section
         title="click to edit"
         className="cursor-pointer"
-        onClick={enableEditing}>
+        onClick={enableEditing}
+      >
         {inner}
       </section>
       {state.unsavedChanges && (

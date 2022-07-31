@@ -1,4 +1,3 @@
-import React from "react"
 import { Link } from "react-router-dom"
 import { useDrag } from "react-dnd"
 import { classNames } from "@/classnames"
@@ -35,7 +34,8 @@ function Meta({ author, bold }: IMetaProps) {
     <div
       className={classNames("content", "d-flex", "align-items-center", {
         "fw-bold": bold,
-      })}>
+      })}
+    >
       {author !== "" ? <small>{author}</small> : null}
     </div>
   )
@@ -75,16 +75,16 @@ export function RecipeItem({
     canDrag: () => {
       return !!props.drag
     },
-    collect: monitor => {
+    collect: (monitor) => {
       return {
         isDragging: monitor.isDragging(),
       }
     },
   })
 
-  const ingredientMatch = matches.find(x => x.kind === "ingredient")
-  const tagMatch = matches.find(x => x.kind === "tag")
-  const authorMatch = matches.find(x => x.kind === "author")
+  const ingredientMatch = matches.find((x) => x.kind === "ingredient")
+  const tagMatch = matches.find((x) => x.kind === "tag")
+  const authorMatch = matches.find((x) => x.kind === "author")
 
   const recipeContent = (
     <div className="card-content h-100 d-flex flex-column">
@@ -106,7 +106,8 @@ export function RecipeItem({
       <section
         ref={drag}
         className="card cursor-move"
-        style={{ opacity: isDragging ? 0.5 : 1 }}>
+        style={{ opacity: isDragging ? 0.5 : 1 }}
+      >
         {recipeContent}
       </section>
     )

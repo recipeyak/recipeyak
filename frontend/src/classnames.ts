@@ -11,7 +11,7 @@ export function classNames(
 ) {
   const classes: string[] = []
 
-  args.forEach(arg => {
+  args.forEach((arg) => {
     if (!arg) {
       return
     }
@@ -21,7 +21,7 @@ export function classNames(
     } else if (Array.isArray(arg)) {
       classes.push(...arg)
     } else if (typeof arg === "object") {
-      Object.keys(arg).forEach(key => {
+      Object.keys(arg).forEach((key) => {
         if (arg[key]) {
           classes.push(key)
         }

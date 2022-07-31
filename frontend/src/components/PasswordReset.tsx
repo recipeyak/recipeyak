@@ -28,9 +28,9 @@ class PasswordReset extends React.Component<
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     /* eslint-disable @typescript-eslint/consistent-type-assertions */
-    this.setState(({
+    this.setState({
       [e.target.name]: e.target.value,
-    } as unknown) as IPasswordResetState)
+    } as unknown as IPasswordResetState)
     /* eslint-enable @typescript-eslint/consistent-type-assertions */
   }
 
@@ -50,7 +50,7 @@ class PasswordReset extends React.Component<
     return (
       <AuthContainer>
         <Helmet title="Password Reset" />
-        <form className="box p-3" onSubmit={e => this.handleReset(e)}>
+        <form className="box p-3" onSubmit={(e) => this.handleReset(e)}>
           <h1 className="title is-5 mb-2 fw-500">Password Reset</h1>
 
           <FormErrorHandler error={nonFieldErrors} />

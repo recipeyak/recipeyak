@@ -66,14 +66,15 @@ function EmailEditForm(props: IEmailEditForm) {
   return (
     <form
       className="d-flex align-center"
-      onSubmit={e => {
+      onSubmit={(e) => {
         e.preventDefault()
         props.updateEmail()
-      }}>
+      }}
+    >
       <label className="better-label">Email</label>
       {props.editing ? (
         <TextInput
-          onKeyDown={e => {
+          onKeyDown={(e) => {
             if (e.key === "Escape") {
               props.cancelEdit()
             }
@@ -93,7 +94,8 @@ function EmailEditForm(props: IEmailEditForm) {
             disabled={props.updatingEmail}
             name="email"
             onClick={props.cancelEdit}
-            value="save email">
+            value="save email"
+          >
             Cancel
           </Button>
           <ButtonPrimary
@@ -101,7 +103,8 @@ function EmailEditForm(props: IEmailEditForm) {
             name="email"
             type="submit"
             loading={props.updatingEmail}
-            value="save email">
+            value="save email"
+          >
             Save
           </ButtonPrimary>
         </div>
@@ -168,9 +171,9 @@ export default class Settings extends React.Component<
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     /* eslint-disable @typescript-eslint/consistent-type-assertions */
-    this.setState(({
+    this.setState({
       [e.target.name]: e.target.value,
-    } as unknown) as ISettingsState)
+    } as unknown as ISettingsState)
     /* eslint-enable @typescript-eslint/consistent-type-assertions */
   }
 
@@ -179,7 +182,7 @@ export default class Settings extends React.Component<
   edit = () => this.setState({ editing: true })
 
   updateEmail = () => {
-    this.props.updateEmail(this.state.email).then(() => {
+    void this.props.updateEmail(this.state.email).then(() => {
       this.setState({ editing: false })
     })
   }

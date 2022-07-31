@@ -49,6 +49,8 @@ const mapAuthenticated = (state: IState) => ({
   authenticated: state.user.loggedIn,
 })
 
+type ArgumentsType<T> = T extends (...args: infer A) => any ? A : never
+
 type ComponentProps = ArgumentsType<RouteProps["render"]>[0]
 
 /** Return a ReactNode when provided a component or render function
@@ -78,7 +80,7 @@ const PrivateRoute = connect(mapAuthenticated)(
   }: IAuthRouteProps) => (
     <Route
       {...rest}
-      render={props => {
+      render={(props) => {
         return authenticated ? (
           renderComponent(props, Component, render)
         ) : (
@@ -103,7 +105,7 @@ const PublicOnlyRoute = connect(mapAuthenticated)(
   }: IAuthRouteProps) => (
     <Route
       {...rest}
-      render={props => {
+      render={(props) => {
         return !authenticated ? (
           renderComponent(props, Component, render)
         ) : (

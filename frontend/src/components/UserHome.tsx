@@ -41,7 +41,7 @@ const SearchInputContainer = styled.div`
 
 const SearchOptions = styled.div`
   font-size: 0.85rem;
-  color: ${props => props.theme.color.muted};
+  color: ${(props) => props.theme.color.muted};
 `
 
 const Code = styled.code`
@@ -90,7 +90,7 @@ function ScheduledRecipe(props: {
         {props.recipes.length === 0 ? (
           <div className="text-muted">—</div>
         ) : null}
-        {props.recipes.map(x => (
+        {props.recipes.map((x) => (
           <Recipe key={x.id} to={`/recipes/${x.id}`}>
             {x.name}
           </Recipe>
@@ -130,7 +130,7 @@ const suggestionStyle = css`
 const SuggestionInfo = styled.div`
   ${suggestionStyle}
   text-align: center;
-  color: ${props => props.theme.color.muted};
+  color: ${(props) => props.theme.color.muted};
 `
 
 const SuggestionItem = styled(Link)<{
@@ -139,12 +139,12 @@ const SuggestionItem = styled(Link)<{
 }>`
   ${suggestionStyle}
   // Underline the first item because we navigate to it on "Enter".
-  ${props =>
+  ${(props) =>
     props.firstItem &&
     css`
       text-decoration: underline;
     `}
-  ${props =>
+  ${(props) =>
     props.archived &&
     css`
       color: ${props.theme.color.muted};
@@ -158,17 +158,17 @@ const SuggestionAuthorContainer = styled.span`
   flex-grow: 1;
 `
 const SuggestionAuthor = styled.span<{ readonly bold: boolean }>`
-  font-weight: ${props => (props.bold ? "bold" : "normal")};
+  font-weight: ${(props) => (props.bold ? "bold" : "normal")};
 `
 const RecipeName = styled.span<{ readonly bold: boolean }>`
-  font-weight: ${props => (props.bold ? "bold" : "normal")};
+  font-weight: ${(props) => (props.bold ? "bold" : "normal")};
   flex-grow: 0;
   overflow-x: hidden;
   text-overflow: ellipsis;
   white-space: pre;
 `
 const MatchType = styled.span`
-  color: ${props => props.theme.color.muted};
+  color: ${(props) => props.theme.color.muted};
 `
 
 const BrowseRecipes = styled(Link)``
@@ -207,10 +207,10 @@ function buildSchedule(
   eachDayOfInterval({
     start,
     end,
-  }).forEach(day => {
+  }).forEach((day) => {
     newSchedule[day.toISOString()] = []
   })
-  schedule.forEach(x => {
+  schedule.forEach((x) => {
     const date = parseISO(x.on)
     const s = newSchedule[date.toISOString()]
     if (s == null) {
@@ -221,11 +221,9 @@ function buildSchedule(
       name: x.recipe.name,
     })
   })
-  return Object.entries(newSchedule).map(
-    ([key, value]): RecipeSchedule => {
-      return { day: format(parseISO(key), "E"), recipes: value || [] }
-    },
-  )
+  return Object.entries(newSchedule).map(([key, value]): RecipeSchedule => {
+    return { day: format(parseISO(key), "E"), recipes: value || [] }
+  })
 }
 
 function useSchedulePreview() {
@@ -239,9 +237,9 @@ function useSchedulePreview() {
       end,
     }),
   )
-  return mapSuccessLike(res, x =>
+  return mapSuccessLike(res, (x) =>
     buildSchedule(
-      x.scheduledRecipes.map(scheduledRecipe => ({
+      x.scheduledRecipes.map((scheduledRecipe) => ({
         on: scheduledRecipe.on,
         recipe: {
           id: scheduledRecipe.recipe.id.toString(),
@@ -262,7 +260,7 @@ function SchedulePreview() {
       <SectionTitle>Schedule</SectionTitle>
       <div>
         {isSuccess(scheduledRecipes) ? (
-          scheduledRecipes.data.map(x => (
+          scheduledRecipes.data.map((x) => (
             <ScheduledRecipe key={x.day} day={x.day} recipes={x.recipes} />
           ))
         ) : isFailure(scheduledRecipes) ? (
@@ -276,10 +274,10 @@ function SchedulePreview() {
 }
 const UserHome = () => {
   const [searchQuery, setSearchQuery] = React.useState("")
-  const recipes = useSelector(s => getTeamRecipes(s, "personal"))
+  const recipes = useSelector((s) => getTeamRecipes(s, "personal"))
   const dispatch = useDispatch()
   useEffect(() => {
-    fetchingRecipeListAsync(dispatch)()
+    void fetchingRecipeListAsync(dispatch)()
   }, [dispatch])
   const setQuery = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -299,17 +297,18 @@ const UserHome = () => {
     .map((result, index) => {
       const { recipe, match: matches } = result
 
-      const nameMatch = matches.find(x => x.kind === "name")
-      const ingredientMatch = matches.find(x => x.kind === "ingredient")
-      const tagMatch = matches.find(x => x.kind === "tag")
-      const authorMatch = matches.find(x => x.kind === "author")
+      const nameMatch = matches.find((x) => x.kind === "name")
+      const ingredientMatch = matches.find((x) => x.kind === "ingredient")
+      const tagMatch = matches.find((x) => x.kind === "tag")
+      const authorMatch = matches.find((x) => x.kind === "author")
 
       return (
         <SuggestionItem
           key={recipe.id}
           archived={recipe.archived_at != null}
           to={`/recipes/${recipe.id}`}
-          firstItem={index === 0}>
+          firstItem={index === 0}
+        >
           <NameAuthorContainer>
             <RecipeName bold={nameMatch != null}>{recipe.name} </RecipeName>
             {recipe.author && (
@@ -332,19 +331,16 @@ const UserHome = () => {
     })
     .slice(0, 7)
 
-  const handleSearchKeydown = React.useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      const key = e.key
-      const suggestion = filteredRecipes.recipes[0]
-      if (!suggestion) {
-        return
-      }
-      if (key === "Enter") {
-        dispatch(push(`/recipes/${suggestion.recipe.id}`))
-      }
-    },
-    [dispatch, filteredRecipes],
-  )
+  const handleSearchKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const key = e.key
+    const suggestion = filteredRecipes.recipes[0]
+    if (!suggestion) {
+      return
+    }
+    if (key === "Enter") {
+      dispatch(push(`/recipes/${suggestion.recipe.id}`))
+    }
+  }
 
   return (
     <>
@@ -376,7 +372,8 @@ const UserHome = () => {
                         to={{
                           pathname: "/recipes",
                           search: `search=${encodeURIComponent(searchQuery)}`,
-                        }}>
+                        }}
+                      >
                         Browse
                       </BrowseRecipes>
                     </BrowseRecipesContainer>

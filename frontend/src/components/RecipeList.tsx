@@ -66,8 +66,8 @@ function RecipeList(props: IRecipeList) {
   })
 
   const normalResults = results.recipes
-    .filter(result => !result.recipe.archived_at)
-    .map(result => (
+    .filter((result) => !result.recipe.archived_at)
+    .map((result) => (
       <RecipeItem
         {...result.recipe}
         match={result.match}
@@ -76,8 +76,8 @@ function RecipeList(props: IRecipeList) {
       />
     ))
   const archivedResults = results.recipes
-    .filter(result => result.recipe.archived_at)
-    .map(result => (
+    .filter((result) => result.recipe.archived_at)
+    .map((result) => (
       <RecipeItem
         {...result.recipe}
         match={result.match}
@@ -114,7 +114,7 @@ function RecipeList(props: IRecipeList) {
 }
 
 interface IRecipesProps {
-  readonly fetchData: (teamID: TeamID) => void
+  readonly fetchData: (teamID: number | "personal") => void
   readonly recipes: WebData<IRecipe[]>
   readonly scroll?: boolean
   readonly drag?: boolean
@@ -155,7 +155,7 @@ function RecipesListSearch({
   useEffect(() => {
     const queryParams = queryString.parse(window.location.search)
 
-    Promise.resolve().then(() =>
+    void Promise.resolve().then(() =>
       history.replaceState(
         null,
         "",

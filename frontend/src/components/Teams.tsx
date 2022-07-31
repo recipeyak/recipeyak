@@ -11,10 +11,10 @@ import { Invites } from "@/components/Invites"
 function useTeams() {
   const dispatch = useDispatch()
   React.useEffect(() => {
-    fetchingTeamsAsync(dispatch)()
+    void fetchingTeamsAsync(dispatch)()
   }, [dispatch])
   const loading = useSelector(
-    s => s.teams.status === "loading" || s.teams.status === "initial",
+    (s) => s.teams.status === "loading" || s.teams.status === "initial",
   )
   const teams = useSelector(teamsFrom)
   if (loading) {

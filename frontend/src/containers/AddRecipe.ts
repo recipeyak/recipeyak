@@ -61,7 +61,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   setServings: (e: React.ChangeEvent<HTMLInputElement>) =>
     dispatch(setAddRecipeFormServings(e.target.value)),
   setTeamID: (id: ITeam["id"] | null) => {
-    updatingDefaultRecipeTeamID(dispatch)(id)
+    void updatingDefaultRecipeTeamID(dispatch)(id)
   },
 
   addIngredient: (x: IIngredientBasic) =>

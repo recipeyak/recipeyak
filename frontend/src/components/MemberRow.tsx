@@ -1,5 +1,3 @@
-import React from "react"
-
 import { connect } from "react-redux"
 
 import { ButtonPlain, ButtonDanger } from "@/components/Buttons"
@@ -72,14 +70,15 @@ const MemberRow = ({
         <Select
           size="small"
           value={level}
-          onChange={e =>
+          onChange={(e) =>
             handleUserLevelChange(
               teamID,
               membershipID,
               /* eslint-disable-next-line @typescript-eslint/consistent-type-assertions */
               e.target.value as "admin" | "contributor" | "read",
             )
-          }>
+          }
+        >
           <option value="admin">Admin</option>
           <option value="contributor">Contributor</option>
           <option value="read">Read</option>
@@ -95,7 +94,8 @@ const MemberRow = ({
         <ButtonDanger
           size="small"
           onClick={() => deleteMembership(teamID, membershipID, isUser)}
-          loading={deleting}>
+          loading={deleting}
+        >
           {isUser ? "leave" : "remove"}
         </ButtonDanger>
       ) : null}
@@ -120,7 +120,7 @@ const mapStateToProps = (
     deleting,
     userIsTeamAdmin: Object.values(members)
       .filter(notUndefined)
-      .filter(x => x.level === "admin")
+      .filter((x) => x.level === "admin")
       .some(({ user }) => user.id === state.user.id),
   }
 }

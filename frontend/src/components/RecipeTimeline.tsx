@@ -99,9 +99,9 @@ function toTimelineEvent(event: IRecipeTimelineEvent): ITimelineEvent {
 function useRecipeTimeline(recipeId: IRecipe["id"]): IRecipeTimelineState {
   const [state, setState] = React.useState<IRecipeTimelineState>(undefined)
   React.useEffect(() => {
-    getRecipeTimeline(recipeId).then(res => {
+    void getRecipeTimeline(recipeId).then((res) => {
       setState(
-        mapSuccessLike(resultToWebdata(res), d => d.map(toTimelineEvent)),
+        mapSuccessLike(resultToWebdata(res), (d) => d.map(toTimelineEvent)),
       )
     })
   }, [recipeId])
@@ -116,7 +116,7 @@ export function RecipeTimeline({ createdAt, recipeId }: IRecipeTimelineProps) {
       <SectionTitle>Timeline</SectionTitle>
       <TimelineList>
         {isSuccessLike(events) ? (
-          events.data.map(e => {
+          events.data.map((e) => {
             switch (e.type) {
               case "comment":
                 return (

@@ -15,7 +15,7 @@ interface IUserAvatarProps {
   readonly onClick?: () => void
 }
 function UserAvatar({ onClick }: IUserAvatarProps) {
-  const avatarURL = useSelector(s => s.user.avatarURL)
+  const avatarURL = useSelector((s) => s.user.avatarURL)
   return (
     <Avatar
       onClick={onClick}
@@ -27,10 +27,10 @@ function UserAvatar({ onClick }: IUserAvatarProps) {
 }
 
 function LogoutButton() {
-  const loggingOut = useSelector(s => s.user.loggingOut)
+  const loggingOut = useSelector((s) => s.user.loggingOut)
   const dispatch = useDispatch()
   const logout = React.useCallback(() => {
-    loggingOutAsync(dispatch)()
+    void loggingOutAsync(dispatch)()
   }, [dispatch])
   return (
     <Button onClick={logout} loading={loggingOut} className="w-100">
@@ -40,7 +40,7 @@ function LogoutButton() {
 }
 
 function UserEmail() {
-  const email = useSelector(s => s.user.email)
+  const email = useSelector((s) => s.user.email)
   return <p className="bold">{email}</p>
 }
 

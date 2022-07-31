@@ -44,7 +44,8 @@ export const ButtonPlain = ({
       disabled={loading}
       className={classNames("my-button", className, buttonSize, {
         "is-loading": loading,
-      })}>
+      })}
+    >
       {children}
     </button>
   )

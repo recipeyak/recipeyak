@@ -31,7 +31,7 @@ function getTeamUserKeys(
   userId: IUser["id"] | null,
 ): ReadonlyArray<{ id: string; name: string }> {
   return teams.allIds
-    .map(id => {
+    .map((id) => {
       const team = teams.byId[id]
       if (team == null) {
         return
@@ -118,12 +118,14 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
   }
 
   handleChange = (ev: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedOptions = [...ev.target.selectedOptions].map(opt => opt.value)
+    const selectedOptions = [...ev.target.selectedOptions].map(
+      (opt) => opt.value,
+    )
     this.setState({ values: selectedOptions })
   }
 
   toggle = () => {
-    this.setState(prev => {
+    this.setState((prev) => {
       if (prev.show) {
         // clear values when closing dropdown
         return { ...prev, show: !prev.show, values: [] }
@@ -140,7 +142,7 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
     if (type !== "team" && type !== "user") {
       return new TypeError("type can only either be a team or a user")
     }
-    this.props
+    void this.props
       .copyRecipeTo(this.props.recipeId, parseInt(id, 10), type)
       .then(() => this.setState({ show: false, values: [] }))
   }
@@ -154,9 +156,9 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
       return new TypeError("type can only either be a team or a user")
     }
 
-    this.props
+    void this.props
       .moveRecipeTo(this.props.recipeId, parseInt(id, 10), type)
-      .then(res => {
+      .then((res) => {
         if (isOk(res)) {
           this.setState({ show: false, values: [] })
         } else {
@@ -191,7 +193,8 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
         <span
           className="cursor-pointer"
           title="click to edit"
-          onClick={this.toggle}>
+          onClick={this.toggle}
+        >
           via
         </span>{" "}
         <Link to={url}>{name}</Link>
@@ -205,12 +208,14 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
                 noBorder
                 value={this.state.values}
                 onChange={this.handleChange}
-                className="max-height-25vh overflow-y-scroll w-100">
-                {teamUserKeys.map(opt => (
+                className="max-height-25vh overflow-y-scroll w-100"
+              >
+                {teamUserKeys.map((opt) => (
                   <option
                     className="text-small fw-500"
                     key={opt.id}
-                    value={opt.id}>
+                    value={opt.id}
+                  >
                     {opt.name}
                   </option>
                 ))}
@@ -226,14 +231,16 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
                     loading={moving}
                     className="mr-1"
                     onClick={() => this.move()}
-                    disabled={this.disableMove()}>
+                    disabled={this.disableMove()}
+                  >
                     move
                   </ButtonSecondary>
                   <ButtonPrimary
                     size="small"
                     loading={copying}
                     onClick={() => this.copy()}
-                    disabled={this.disableCopy()}>
+                    disabled={this.disableCopy()}
+                  >
                     copy
                   </ButtonPrimary>
                 </div>

@@ -51,9 +51,9 @@ class PasswordChange extends React.Component<
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     /* eslint-disable @typescript-eslint/consistent-type-assertions */
-    this.setState(({
+    this.setState({
       [e.target.name]: e.target.value,
-    } as unknown) as IPasswordChangestate)
+    } as unknown as IPasswordChangestate)
     /* eslint-enable @typescript-eslint/consistent-type-assertions */
   }
 
@@ -75,7 +75,8 @@ class PasswordChange extends React.Component<
     return (
       <form
         onSubmit={this.handleSubmit}
-        className="max-width-400px margin-0-auto">
+        className="max-width-400px margin-0-auto"
+      >
         <Helmet title={pageTitle} />
 
         <h2 className="title is-3">{pageTitle}</h2>

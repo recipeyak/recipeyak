@@ -1,4 +1,3 @@
-import React from "react"
 import GlobalEvent from "@/components/GlobalEvent"
 export const heldKeys = new Set<string>()
 

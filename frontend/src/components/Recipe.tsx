@@ -51,6 +51,8 @@ type SectionsAndIngredients = ReadonlyArray<
       }
     }
 >
+// from https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-8.html#improved-control-over-mapped-type-modifiers
+type Mutable<T> = { -readonly [P in keyof T]-?: T[P] }
 
 function getInitialIngredients({
   sections,
@@ -69,16 +71,15 @@ function getInitialIngredients({
       item: i,
     })
   }
-  return sortBy(out, x => x.item.position)
+  return sortBy(out, (x) => x.item.position)
 }
 
 function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
   const [addIngredient, setAddIngredient] = React.useState(false)
   const [addStep, setAddStep] = React.useState(false)
   const dispatch = useDispatch()
-  const [sectionsAndIngredients, setSectionsAndIngredients] = React.useState<
-    SectionsAndIngredients
-  >(() => getInitialIngredients(recipe))
+  const [sectionsAndIngredients, setSectionsAndIngredients] =
+    React.useState<SectionsAndIngredients>(() => getInitialIngredients(recipe))
   React.useEffect(() => {
     setSectionsAndIngredients(
       getInitialIngredients({
@@ -95,7 +96,7 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
     readonly from: number
     readonly to: number
   }) => {
-    setSectionsAndIngredients(prev => {
+    setSectionsAndIngredients((prev) => {
       const newIngredients = [...prev]
       const item = newIngredients[from]
       newIngredients.splice(from, 1)
@@ -113,7 +114,7 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
     if (newPosition == null) {
       return
     }
-    setSectionsAndIngredients(prev => {
+    setSectionsAndIngredients((prev) => {
       const out: Mutable<SectionsAndIngredients> = []
       for (const item of prev) {
         if (item.item.id === args.id) {
@@ -150,9 +151,9 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
         }),
       )
     } else {
-      api
+      void api
         .updateSection({ sectionId: args.id, position: newPosition })
-        .then(res => {
+        .then((res) => {
           if (isOk(res)) {
             dispatch(
               updateSectionForRecipe({
@@ -297,7 +298,7 @@ export function useRecipe(recipeId: number) {
     fetch(true)
   }, [fetch])
   useOnWindowFocusChange(refreshData)
-  return useSelector(state => getRecipeById(state, recipeId))
+  return useSelector((state) => getRecipeById(state, recipeId))
 }
 
 const ArchiveMessage = styled.div`

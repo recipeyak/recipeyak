@@ -1,4 +1,3 @@
-import React from "react"
 import {
   useDropdown,
   DropdownContainer,
@@ -31,7 +30,8 @@ export function CalendarMoreDropdown({
         size="small"
         className="ml-1"
         onClick={toggle}
-        disabled={!isSuccessLike(settings)}>
+        disabled={!isSuccessLike(settings)}
+      >
         more
       </ButtonPlain>
       <DropdownMenu isOpen={isOpen} className="white-space-initial w-300px">
@@ -60,7 +60,8 @@ export function CalendarMoreDropdown({
                   />
                   <ButtonSecondary
                     size="small"
-                    onClick={regenerateCalendarLink}>
+                    onClick={regenerateCalendarLink}
+                  >
                     Reset
                   </ButtonSecondary>
                 </div>
@@ -68,7 +69,8 @@ export function CalendarMoreDropdown({
             ) : null}
             <ButtonLink
               className="d-block mx-auto text-underline box-shadow-none "
-              onClick={() => setSyncEnabled(!settings.data.syncEnabled)}>
+              onClick={() => setSyncEnabled(!settings.data.syncEnabled)}
+            >
               {settings.data.syncEnabled ? "Disable Sync" : "Enable Sync"}
             </ButtonLink>
           </>

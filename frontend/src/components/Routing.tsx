@@ -1,4 +1,3 @@
-import React from "react"
 import { LinkProps as RRLinkProps, Link as RRLink } from "react-router-dom"
 
 interface ILinkProps extends RRLinkProps {

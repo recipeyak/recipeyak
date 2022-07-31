@@ -29,8 +29,7 @@ export default function Login() {
     dispatch(clearNotification())
     setLoading(true)
     setErrors(undefined)
-    api.loginUser(email, password).then(res => {
-      debugger
+    void api.loginUser(email, password).then((res) => {
       if (isOk(res)) {
         dispatch(login.success(res.data.user))
         setLoading(false)
@@ -77,7 +76,7 @@ export default function Login() {
           <div className="field">
             <label className="label">Email</label>
             <TextInput
-              onChange={e => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               value={email}
               error={errors?.email != null}
               autoFocus
@@ -92,7 +91,7 @@ export default function Login() {
               Password
             </label>
             <PasswordInput
-              onChange={e => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               value={password}
               error={errors?.password != null}
               name="password"

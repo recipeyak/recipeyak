@@ -29,7 +29,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import React, { useRef } from "react"
+import { useRef } from "react"
 import { connect } from "react-redux"
 import { useDrop, useDrag } from "react-dnd"
 import { DragDrop, handleDndHover } from "@/dragDrop"
@@ -66,10 +66,10 @@ function Step({ text, index, ...props }: IStepProps) {
     item: {
       index,
     },
-    end: draggedItem => {
+    end: (draggedItem) => {
       props.completeMove({ id: props.id, to: draggedItem.index })
     },
-    collect: monitor => ({
+    collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
   })

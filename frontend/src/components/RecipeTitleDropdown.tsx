@@ -35,7 +35,7 @@ function ingredientToString(ingre: IIngredient) {
 }
 
 function useIngredientString(recipeId: number) {
-  return useSelector(s => {
+  return useSelector((s) => {
     const r = s.recipes.byId[recipeId]
     if (isSuccessLike(r)) {
       return r.data.ingredients.map(ingredientToString).join("\n")
@@ -59,7 +59,9 @@ function useDuplicateRecipe({
     dispatch(duplicateRecipe.request({ recipeId, onComplete }))
   }, [dispatch, onComplete, recipeId])
 
-  const isDuplicating = useSelector(s => !!s.recipes.duplicatingById[recipeId])
+  const isDuplicating = useSelector(
+    (s) => !!s.recipes.duplicatingById[recipeId],
+  )
 
   return [isDuplicating, onDuplicate]
 }
@@ -73,7 +75,7 @@ export function Dropdown({ recipeId }: IDropdownProps) {
   const location = useLocation()
   const dispatch = useDispatch()
   const ingredients = useIngredientString(recipeId)
-  const [isArchived, isDeleting] = useSelector(s => {
+  const [isArchived, isDeleting] = useSelector((s) => {
     const maybeRecipe = s.recipes.byId[recipeId]
     if (maybeRecipe?.kind === "Success") {
       return [!!maybeRecipe.data.archived_at, !!maybeRecipe.data.deleting]
@@ -161,7 +163,8 @@ export function Dropdown({ recipeId }: IDropdownProps) {
         )}
         <DropdownItemLink
           to={location.pathname + "?timeline=1"}
-          onClick={close}>
+          onClick={close}
+        >
           Timeline
         </DropdownItemLink>
         <DropdownItemButton onClick={handleDeleteRecipe}>

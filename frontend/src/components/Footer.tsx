@@ -1,5 +1,4 @@
 import { styled } from "@/theme"
-import * as React from "react"
 
 const StyledFooter = styled.footer`
   font-weight: bold;

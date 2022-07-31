@@ -83,14 +83,14 @@ class TeamInvite extends React.Component<ITeamInviteProps, ITeamInviteState> {
   }
 
   componentWillMount() {
-    this.props.fetchData(this.props.id)
+    void this.props.fetchData(this.props.id)
   }
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     /* eslint-disable @typescript-eslint/consistent-type-assertions */
-    this.setState(({
+    this.setState({
       [e.target.name]: e.target.value,
-    } as unknown) as ITeamInviteState)
+    } as unknown as ITeamInviteState)
   /* eslint-enable @typescript-eslint/consistent-type-assertions */
 
   render() {
@@ -117,9 +117,9 @@ class TeamInvite extends React.Component<ITeamInviteProps, ITeamInviteState> {
         <form
           action=""
           className=""
-          onSubmit={async e => {
+          onSubmit={async (e) => {
             e.preventDefault()
-            const emails = this.state.emails.split(",").filter(x => x !== "")
+            const emails = this.state.emails.split(",").filter((x) => x !== "")
             const result = await this.props.sendInvites(
               id,
               emails,
@@ -130,7 +130,8 @@ class TeamInvite extends React.Component<ITeamInviteProps, ITeamInviteState> {
               return
             }
             this.setState({ emails: "" })
-          }}>
+          }}
+        >
           <TextInput
             className="mb-4"
             value={this.state.emails}
@@ -160,7 +161,8 @@ class TeamInvite extends React.Component<ITeamInviteProps, ITeamInviteState> {
           <ButtonPrimary
             type="submit"
             loading={this.props.sendingTeamInvites}
-            className="justify-self-left">
+            className="justify-self-left"
+          >
             Send Invite
           </ButtonPrimary>
         </form>

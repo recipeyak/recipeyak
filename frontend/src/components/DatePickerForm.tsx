@@ -23,7 +23,7 @@ function mapDispatchToProps(dispatch: Dispatch) {
   return {
     create: (
       recipeID: IRecipe["id"],
-      teamID: TeamID,
+      teamID: number | "personal",
       on: Date,
       count: number,
     ) => dispatch(createCalendarRecipe({ recipeID, teamID, on, count })),
@@ -38,11 +38,11 @@ function mapStateToProps(state: IState) {
 
 interface IDatePickerProps {
   readonly recipeID: IRecipe["id"]
-  readonly teamID: TeamID
+  readonly teamID: number | "personal"
   readonly show: boolean
   readonly create: (
     recipeID: IRecipe["id"],
-    teamID: TeamID,
+    teamID: number | "personal",
     date: Date,
     count: number,
   ) => void
@@ -114,7 +114,8 @@ class DatePickerForm extends React.Component<
           "z-index-100",
           "bg-whitesmoke",
           "p-2",
-        )}>
+        )}
+      >
         <Month
           showLeft
           showRight
@@ -140,7 +141,8 @@ class DatePickerForm extends React.Component<
           <ButtonPrimary
             size="small"
             type="submit"
-            loading={this.props.scheduling}>
+            loading={this.props.scheduling}
+          >
             Schedule
           </ButtonPrimary>
         </form>

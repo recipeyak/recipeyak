@@ -38,7 +38,8 @@ function Feature({ text, imageURL, index }: IFeatureProps) {
       <p
         className={`align-self-center ${
           isOdd(index) ? "grid-column-2 grid-row-1" : ""
-        }`}>
+        }`}
+      >
         {text}
       </p>
       <div className="fact-img align-self-center ">
@@ -87,18 +88,15 @@ function HowTo({ content, index, imageURL }: IHowToProps) {
 
 const features = [
   {
-    text:
-      "Full text recipe search. Easily find recipes by ingredient, author, and name.",
+    text: "Full text recipe search. Easily find recipes by ingredient, author, and name.",
     imgURL: searchImg,
   },
   {
-    text:
-      "Collaborate using Recipe Yak Teams to create a shared recipe schedule and shopping list.",
+    text: "Collaborate using Recipe Yak Teams to create a shared recipe schedule and shopping list.",
     imgURL: teamImg,
   },
   {
-    text:
-      "Automatically generate a condensed shopping list when selecting days to shop.",
+    text: "Automatically generate a condensed shopping list when selecting days to shop.",
     imgURL: copyShoppingList,
   },
 ]
@@ -161,7 +159,8 @@ const LandingPage = () => (
 
       <Link
         to="/signup"
-        className="my-button is-primary is-large justify-self-center">
+        className="my-button is-primary is-large justify-self-center"
+      >
         Create Account
       </Link>
     </section>
@@ -185,7 +184,8 @@ const LandingPage = () => (
 
       <Link
         to="/signup"
-        className="my-button is-primary is-large justify-self-center mt-4 mb-2">
+        className="my-button is-primary is-large justify-self-center mt-4 mb-2"
+      >
         Create Account
       </Link>
     </HowItWorksContainer>

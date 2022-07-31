@@ -94,7 +94,7 @@ export type Action =
 type ReducerMapObj = ReducerMapObject<IState, Action>
 function omitUndefined(obj: ReducerMapObj): ReducerMapObj {
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  return pickBy(obj, x => x != null) as ReducerMapObj
+  return pickBy(obj, (x) => x != null) as ReducerMapObj
 }
 export const history = createHistory()
 
@@ -104,7 +104,7 @@ const recipeApp: LoopReducer<IState, Action> = combineReducers(
     recipes,
     invites,
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    router: (connectRouter(history) as unknown) as LoopReducer<
+    router: connectRouter(history) as unknown as LoopReducer<
       Pick<RouterState, "location">,
       Action
     >,
@@ -192,7 +192,7 @@ export const store: Store = createStore(rootReducer, defaultData(), enhancer)
 store.subscribe(
   throttle(() => {
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    saveState(({
+    saveState({
       user: {
         // We assume this is true and if the session expires we have axios interceptors
         // to set this to false. In that _rare_ case, there will be a slight flash, but
@@ -206,7 +206,7 @@ store.subscribe(
       auth: {
         fromUrl: store.getState().auth.fromUrl,
       },
-    } as any) as IState)
+    } as any as IState)
   }, second),
 )
 

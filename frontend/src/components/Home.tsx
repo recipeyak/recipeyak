@@ -1,5 +1,3 @@
-import * as React from "react"
-
 import LandingPage from "@/components/LandingPage"
 import UserHome from "@/components/UserHome"
 

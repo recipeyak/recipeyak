@@ -48,20 +48,20 @@ const inprogress = new Map<string, Deferred<MockedRequest<DefaultBodyType>>>()
 // Two options, either a request is mocked or it's not.
 // If it's mocked we'll hit the request:match, otherwise we'll hit
 // request:unhandled.
-server.events.on("request:start", req => {
+server.events.on("request:start", (req) => {
   inprogress.set(req.id, deferred(req))
 })
-server.events.on("request:match", req => {
+server.events.on("request:match", (req) => {
   inprogress.get(req.id)?.done()
 })
-server.events.on("request:unhandled", req => {
+server.events.on("request:unhandled", (req) => {
   inprogress.get(req.id)?.error()
 })
 
 // check if we had any unhandled requests
 afterEach(async () => {
   const errors = (
-    await Promise.allSettled([...inprogress.values()].map(x => x.promise))
+    await Promise.allSettled([...inprogress.values()].map((x) => x.promise))
   )
     .filter((x): x is PromiseRejectedResult => x.status === "rejected")
     .map((x): MockedRequest<DefaultBodyType> => x.reason)
@@ -71,7 +71,8 @@ afterEach(async () => {
     const err = Error(
       errors
         .map(
-          req => `found an unhandled ${req.method} request to ${req.url.href}`,
+          (req) =>
+            `found an unhandled ${req.method} request to ${req.url.href}`,
         )
         .join("\n\n"),
     )

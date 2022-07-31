@@ -89,9 +89,9 @@ export default class AddRecipe extends React.Component<
 
   handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     /* eslint-disable @typescript-eslint/consistent-type-assertions */
-    this.setState(({
+    this.setState({
       [e.target.name]: e.target.value,
-    } as unknown) as IAddRecipeState)
+    } as unknown as IAddRecipeState)
     /* eslint-enable @typescript-eslint/consistent-type-assertions */
   }
 
@@ -132,7 +132,7 @@ export default class AddRecipe extends React.Component<
   handleIngredientChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.persist()
     if (e.target.type === "checkbox") {
-      this.setState(prev => ({
+      this.setState((prev) => ({
         ingredient: {
           ...prev.ingredient,
           [e.target.name]: !prev.ingredient[e.target.name],
@@ -140,7 +140,7 @@ export default class AddRecipe extends React.Component<
       }))
       return
     }
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       ingredient: {
         ...prevState.ingredient,
         [e.target.name]: e.target.value,
@@ -321,9 +321,10 @@ export default class AddRecipe extends React.Component<
                 className="ml-2"
                 disabled={this.props.loadingTeams}
                 value={this.props.teamID || "personal"}
-                onChange={this.handleTeamChange}>
+                onChange={this.handleTeamChange}
+              >
                 <option value="personal">Personal</option>
-                {this.props.teams.map(t => (
+                {this.props.teams.map((t) => (
                   <option key={t.id} value={t.id}>
                     Team: {t.name}
                   </option>
@@ -335,7 +336,8 @@ export default class AddRecipe extends React.Component<
               type="submit"
               onClick={handleSubmit}
               name="create recipe"
-              loading={this.props.loading}>
+              loading={this.props.loading}
+            >
               Create Recipe
             </ButtonPrimary>
           </div>

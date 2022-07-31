@@ -96,19 +96,19 @@ const handleResponseError = (error: AxiosError) => {
 }
 
 baseHttp.interceptors.response.use(
-  response => response,
+  (response) => response,
 
-  error => handleResponseError(error),
+  (error) => handleResponseError(error),
 )
 
 baseHttp.interceptors.request.use(
-  cfg => {
+  (cfg) => {
     cfg.headers["X-Request-ID"] = uuid4()
 
     return cfg
   },
 
-  error => Promise.reject(error),
+  (error) => Promise.reject(error),
 )
 
 type HttpResult<T> = Promise<Result<T, AxiosError>>
@@ -135,47 +135,29 @@ export type HttpRequestObjResult<A, O, T> = RequestOptions<A, O, T> & {
 
 export const http = {
   get: <T>(url: string, config?: AxiosRequestConfig): HttpResult<T> =>
-    baseHttp
-      .get<T>(url, config)
-      .then(toOk)
-      .catch(toErr),
+    baseHttp.get<T>(url, config).then(toOk).catch(toErr),
   delete: (url: string, config?: AxiosRequestConfig): HttpResult<void> =>
-    baseHttp
-      .delete(url, config)
-      .then(toOk)
-      .catch(toErr),
+    baseHttp.delete(url, config).then(toOk).catch(toErr),
   head: (url: string, config?: AxiosRequestConfig): HttpResult<void> =>
-    baseHttp
-      .head(url, config)
-      .then(toOk)
-      .catch(toErr),
+    baseHttp.head(url, config).then(toOk).catch(toErr),
   patch: <T>(
     url: string,
     data?: {} | unknown,
     config?: AxiosRequestConfig,
   ): HttpResult<T> =>
-    baseHttp
-      .patch<T>(url, data, config)
-      .then(toOk)
-      .catch(toErr),
+    baseHttp.patch<T>(url, data, config).then(toOk).catch(toErr),
   put: <T>(
     url: string,
     data?: {} | unknown,
     config?: AxiosRequestConfig,
   ): HttpResult<T> =>
-    baseHttp
-      .put<T>(url, data, config)
-      .then(toOk)
-      .catch(toErr),
+    baseHttp.put<T>(url, data, config).then(toOk).catch(toErr),
   post: <T>(
     url: string,
     data?: {} | unknown,
     config?: AxiosRequestConfig,
   ): HttpResult<T> =>
-    baseHttp
-      .post<T>(url, data, config)
-      .then(toOk)
-      .catch(toErr),
+    baseHttp.post<T>(url, data, config).then(toOk).catch(toErr),
   request: <T, A, O>(options: {
     readonly shape: t.Type<A, O>
     readonly params?: Params

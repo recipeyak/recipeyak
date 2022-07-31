@@ -8,6 +8,7 @@ import { HelmetProvider } from "react-helmet-async"
 
 import { IUserResponse } from "@/api"
 import { server, rest } from "@/testUtils"
+import userEvent from "@testing-library/user-event"
 
 function Foo() {
   return <div>foo</div>
@@ -77,11 +78,17 @@ test("login success", async () => {
 })
 
 test("login failure", async () => {
+  let foo = {}
   server.use(
     rest.post(
       "http://localhost:3000/api/v1/auth/login",
       async (req, res, ctx) => {
         const requestJson = await req.json()
+        foo = {
+          url: req.url.toString(),
+          body: requestJson,
+          method: req.method,
+        }
         if (
           typeof requestJson["email"] === "string" &&
           typeof requestJson["password"] === "string"
@@ -99,6 +106,7 @@ test("login failure", async () => {
       },
     ),
   )
+  const user = userEvent.setup()
 
   render(
     <Provider store={store}>
@@ -110,9 +118,10 @@ test("login failure", async () => {
     </Provider>,
   )
   // 1. fill out form
-  fireEvent.change(screen.getByPlaceholderText("rick.sanchez@me.com"), {
-    target: { value: "foo@example.com" },
-  })
+  await user.type(
+    screen.getByPlaceholderText("rick.sanchez@me.com"),
+    "foo@example.com",
+  )
   fireEvent.change(screen.getByPlaceholderText("Super secret password."), {
     target: { value: "password123" },
   })
@@ -129,4 +138,6 @@ test("login failure", async () => {
     expect(screen.getByText("invalid email")).toBeInTheDocument()
   })
   expect(store.getState().user.email).toEqual("")
+
+  expect(foo).toEqual("")
 })

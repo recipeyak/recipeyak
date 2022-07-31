@@ -39,9 +39,9 @@ export const fetchCalendarRecipes = createAsyncAction(
   },
   void
 >()
-export const setCalendarRecipe = createStandardAction("SET_CALENDAR_RECIPE")<
-  ICalRecipe
->()
+export const setCalendarRecipe = createStandardAction(
+  "SET_CALENDAR_RECIPE",
+)<ICalRecipe>()
 export const deleteCalendarRecipe = createStandardAction(
   "DELETE_CALENDAR_RECIPE",
 )<number>()
@@ -66,7 +66,7 @@ export const updateCalendarSettings = createAsyncAction(
   "UPDATE_CALENDAR_SETTINGS_SUCCESS",
   "UPDATE_CALENDAR_SETTINGS_FAILURE",
 )<
-  { readonly teamID: TeamID; readonly syncEnabled: boolean },
+  { readonly teamID: number | "personal"; readonly syncEnabled: boolean },
   {
     readonly syncEnabled: boolean
     readonly calendarLink: string
@@ -81,7 +81,7 @@ export async function updateCalendarSettingsAsync(
     teamID,
     syncEnabled,
   }: {
-    readonly teamID: TeamID
+    readonly teamID: number | "personal"
     readonly syncEnabled: boolean
   },
   dispatch: Dispatch,
@@ -102,7 +102,7 @@ export const regenerateCalendarLink = createAsyncAction(
   "REGENERATE_CALENDAR_LINK_SUCCESS",
   "REGENERATE_CALENDAR_LINK_FAILURE",
 )<
-  { readonly teamID: TeamID },
+  { readonly teamID: number | "personal" },
   {
     readonly calendarLink: string
   },
@@ -110,7 +110,7 @@ export const regenerateCalendarLink = createAsyncAction(
 >()
 
 export async function regenerateCalendarLinkAsync(
-  teamID: TeamID,
+  teamID: number | "personal",
   dispatch: Dispatch,
 ) {
   const res = await api.generateCalendarLink({
@@ -178,7 +178,7 @@ export const calendar = (
       const byIdState = Object.values(state.byId)
         .filter(notUndefined)
         .filter(
-          value =>
+          (value) =>
             isAfter(parseISO(value.on), parseISO(action.payload.end)) ||
             isBefore(parseISO(value.on), parseISO(action.payload.start)),
         )
@@ -271,7 +271,7 @@ export const calendar = (
         notUndefined(moving) &&
         Object.values(state.byId)
           .filter(isSameTeamAndDay)
-          .find(r => r.recipe.id === moving.recipe.id)
+          .find((r) => r.recipe.id === moving.recipe.id)
 
       if (existing && notUndefined(moving)) {
         return {
@@ -305,7 +305,7 @@ export const calendar = (
       return loop(
         {
           ...state,
-          settings: mapSuccessLike(state.settings, s => ({
+          settings: mapSuccessLike(state.settings, (s) => ({
             ...s,
             ...action.payload,
           })),
@@ -322,7 +322,7 @@ export const calendar = (
     case getType(updateCalendarSettings.failure):
       return {
         ...state,
-        settings: mapSuccessLike(state.settings, s => ({
+        settings: mapSuccessLike(state.settings, (s) => ({
           ...s,
           ...action.payload,
         })),
@@ -337,7 +337,7 @@ export const calendar = (
     case getType(regenerateCalendarLink.success):
       return {
         ...state,
-        settings: mapSuccessLike(state.settings, s => ({
+        settings: mapSuccessLike(state.settings, (s) => ({
           ...s,
           ...action.payload,
         })),
@@ -377,10 +377,10 @@ export const getAllCalRecipes = (state: ICalendarState): ICalRecipe[] =>
   Object.values(state.byId).filter(notUndefined)
 
 export const getTeamRecipes = (state: ICalendarState): ICalRecipe[] =>
-  getAllCalRecipes(state).filter(recipe => recipe.team != null)
+  getAllCalRecipes(state).filter((recipe) => recipe.team != null)
 
 export const getPersonalRecipes = (state: ICalendarState): ICalRecipe[] =>
-  getAllCalRecipes(state).filter(recipe => recipe.team == null)
+  getAllCalRecipes(state).filter((recipe) => recipe.team == null)
 
 function haveSameTeam(a: ICalRecipe, b: ICalRecipe): boolean {
   return a.team === b.team && a.user === b.user
@@ -399,7 +399,7 @@ export const getExistingRecipe = ({
   from,
 }: IGetExistingRecipeProps) =>
   getAllCalRecipes(state).find(
-    x =>
+    (x) =>
       isSameDay(new Date(x.on), new Date(on)) &&
       haveSameTeam(x, from) &&
       x.id !== from.id &&

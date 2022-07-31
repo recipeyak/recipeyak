@@ -14,7 +14,7 @@ class MonthWeekTitles extends React.Component {
   render() {
     return (
       <div className="grid-entire-row d-grid grid-week">
-        {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map(x => (
+        {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((x) => (
           <div key={x} className="day-of-week">
             {x}
           </div>
@@ -48,7 +48,8 @@ class Month extends React.Component<IMonthProps> {
             <ButtonPlain
               onClick={this.props.prevMonth}
               size="small"
-              className="grid-row-1 grid-column-1 justify-self-left">
+              className="grid-row-1 grid-column-1 justify-self-left"
+            >
               {"←"}
             </ButtonPlain>
           ) : null}
@@ -59,7 +60,8 @@ class Month extends React.Component<IMonthProps> {
             <ButtonPlain
               size="small"
               onClick={this.props.nextMonth}
-              className="grid-row-1 grid-column-1 justify-self-end">
+              className="grid-row-1 grid-column-1 justify-self-end"
+            >
               {"→"}
             </ButtonPlain>
           ) : null}
@@ -73,7 +75,7 @@ class Month extends React.Component<IMonthProps> {
               <div key={i} />
             ))}
 
-          {daysOfMonth(this.props.date).map(date => (
+          {daysOfMonth(this.props.date).map((date) => (
             <Day
               key={date.toString()}
               handleClick={this.props.handleClick}

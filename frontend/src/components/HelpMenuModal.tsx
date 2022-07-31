@@ -51,7 +51,7 @@ export default function HelpMenuModal() {
       return
     }
     if (e.key === "?") {
-      setShow(prev => !prev)
+      setShow((prev) => !prev)
     }
   }
 
@@ -66,14 +66,14 @@ export default function HelpMenuModal() {
       </section>
       <section className="d-flex">
         <div className="mr-4">
-          {keybinds.map(b => (
+          {keybinds.map((b) => (
             <div className="mb-1" key={b.description}>
               {b.description}
             </div>
           ))}
         </div>
         <div>
-          {keybinds.map(b => (
+          {keybinds.map((b) => (
             <KeyBind bind={b.key} key={b.description} />
           ))}
         </div>

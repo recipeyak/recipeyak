@@ -8,7 +8,7 @@ module.exports = {
       jsx: true,
     },
   },
-  plugins: ["react", "react-hooks", "@typescript-eslint", "import"],
+  plugins: ["react", "react-hooks", "@typescript-eslint"],
   extends: ["prettier"],
   settings: {
     react: {
@@ -21,7 +21,6 @@ module.exports = {
   rules: {
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "error",
-    "import/no-duplicates": "error",
     "no-restricted-globals": [
       "error",
       "close",
@@ -65,11 +64,11 @@ module.exports = {
     "no-unneeded-ternary": ["error", { defaultAssignment: false }],
     "@typescript-eslint/no-non-null-assertion": "error",
     "@typescript-eslint/await-thenable": "error",
+    "@typescript-eslint/no-floating-promises": "error",
     "@typescript-eslint/no-for-in-array": "error",
     "@typescript-eslint/prefer-as-const": "error",
     "@typescript-eslint/prefer-reduce-type-parameter": "error",
     "@typescript-eslint/restrict-plus-operands": "error",
-    "init-declarations": ["error", "always"],
     "react/jsx-fragments": "error",
     "no-lonely-if": "error",
     "object-shorthand": ["error", "always"],

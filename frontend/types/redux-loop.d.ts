@@ -1,11 +1,10 @@
-/* eslint-disable init-declarations*/
-// eslint-disable-next-line no-restricted-imports
 import {
   Action,
   ActionCreator,
   AnyAction,
   StoreEnhancer,
   Store,
+  // eslint-disable-next-line no-restricted-imports
   Dispatch,
 } from "redux"
 

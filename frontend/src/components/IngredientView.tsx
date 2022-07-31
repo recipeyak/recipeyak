@@ -1,4 +1,3 @@
-import React from "react"
 import { IIngredient } from "@/store/reducers/recipes"
 import { normalizeUnitsFracs } from "@/text"
 import { DragElementWrapper, DragSourceOptions } from "react-dnd"

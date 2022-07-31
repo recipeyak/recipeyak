@@ -150,7 +150,8 @@ function AddIngredientForm({
               size="small"
               type="button"
               name="toggle add section"
-              onClick={toggleShowAddSection}>
+              onClick={toggleShowAddSection}
+            >
               Add Section
             </Button>
           </div>
@@ -160,7 +161,8 @@ function AddIngredientForm({
             onClick={cancelAddIngredient}
             size="small"
             type="button"
-            name="cancel add ingredient">
+            name="cancel add ingredient"
+          >
             Cancel
           </Button>
         </p>
@@ -170,7 +172,8 @@ function AddIngredientForm({
             size="small"
             type="submit"
             name="add item"
-            loading={loading}>
+            loading={loading}
+          >
             Add
           </ButtonPrimary>
         </p>

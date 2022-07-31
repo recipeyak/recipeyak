@@ -139,7 +139,7 @@ export function useOnWindowFocusChange(cb: () => void) {
 }
 
 export function useScheduleTeamID() {
-  return useSelector(s => s.user.scheduleTeamID) || "personal"
+  return useSelector((s) => s.user.scheduleTeamID) || "personal"
 }
 
 export const useScheduleURL = () => useSelector(scheduleURLFromTeamID)
@@ -169,7 +169,7 @@ export function useApi<A, O, T>(
     if (data == null) {
       setData(Loading())
     }
-    request.send().then(res => {
+    void request.send().then((res) => {
       if (isRight(res)) {
         return setData(Success(res.right))
       }
