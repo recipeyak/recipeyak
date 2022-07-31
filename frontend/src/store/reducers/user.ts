@@ -76,6 +76,7 @@ export type UserActions =
 export interface IUser {
   readonly avatar_url: string
   readonly email: string
+  readonly name: string
   readonly id: number
   readonly has_usable_password?: boolean
   readonly dark_mode_enabled: boolean
@@ -107,6 +108,7 @@ export interface IUserState {
   readonly loggedIn: boolean
   readonly avatarURL: string
   readonly email: string
+  readonly name: string
   readonly loading: boolean
   readonly error: boolean
   readonly loggingOut: boolean
@@ -125,6 +127,7 @@ const initialState: IUserState = {
   loggedIn: false,
   avatarURL: "",
   email: "",
+  name: "",
   loading: false,
   error: false,
   loggingOut: false,
@@ -246,6 +249,7 @@ export const user = (
         loggedIn: true,
         hasUsablePassword: !!action.payload.has_usable_password,
         email: action.payload.email,
+        name: action.payload.name,
         avatarURL: action.payload.avatar_url,
         id: action.payload.id,
         darkMode: action.payload.dark_mode_enabled,

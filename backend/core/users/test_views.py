@@ -31,7 +31,7 @@ def test_detail(client, user, empty_team):
     assert expected.issubset(keys), "sanity test to ensure we have what we expect"
     original_data = res.json()
 
-    assert original_data["name"] is None
+    assert original_data["name"] == original_data["email"]
 
     res = client.patch("/api/v1/user/", {"avatar_url": "example.com"})
     assert res.json() == original_data, "user shouldn't be able to update avatar url"

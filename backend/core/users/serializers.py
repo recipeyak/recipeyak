@@ -1,3 +1,4 @@
+from __future__ import annotations
 import dataclasses
 from typing import Any, Dict, cast
 
@@ -15,6 +16,12 @@ class UserSerializer(BaseModelSerializer):
     selected_team = serializers.PrimaryKeyRelatedField(
         source="recipe_team", queryset=Team.objects.all(), allow_null=True
     )
+    name = serializers.CharField(allow_blank=True, allow_null=True)
+
+    def to_representation(self, instance: User) -> dict[str, Any]:
+        data = super().to_representation(instance)
+        data["name"] = data.get("name") or data["email"]
+        return data
 
     class Meta:
         model = User
