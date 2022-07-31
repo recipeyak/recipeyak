@@ -11,7 +11,7 @@ class PublicUserSerializer(BaseModelSerializer):
     def to_representation(self, instance: User) -> dict[str, Any]:
         data = super().to_representation(instance)
         data["name"] = data.get("name") or data["email"]
-        return data
+        return data  # type: ignore [no-any-return]
 
     class Meta:
         model = User
