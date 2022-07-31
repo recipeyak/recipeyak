@@ -78,17 +78,11 @@ test("login success", async () => {
 })
 
 test("login failure", async () => {
-  let foo = {}
   server.use(
     rest.post(
       "http://localhost:3000/api/v1/auth/login",
       async (req, res, ctx) => {
         const requestJson = await req.json()
-        foo = {
-          url: req.url.toString(),
-          body: requestJson,
-          method: req.method,
-        }
         if (
           typeof requestJson["email"] === "string" &&
           typeof requestJson["password"] === "string"
@@ -138,6 +132,4 @@ test("login failure", async () => {
     expect(screen.getByText("invalid email")).toBeInTheDocument()
   })
   expect(store.getState().user.email).toEqual("")
-
-  expect(foo).toEqual("")
 })
