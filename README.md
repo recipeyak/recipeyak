@@ -75,19 +75,13 @@ yarn add $FOO
 poetry add $BAR
 ```
 
-### Testing with OAuth
-
-After dev setup, configure the identity provider to enable redirecting to
-`http://localhost:3000/accounts/$providerName`.
-
 ## Prod
 
 ### Deploy a new release
 
 1. Copy `.env-example` to `.env` and add in the proper configuration variables
-2. Configure OAuth with identity providers (leaving CLIENT_ID variables undefined will disable a provider)
-3. [Install Ansible](https://docs.ansible.com/ansible/latest/index.html)
-4. Setup [Ansible Inventory](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html)
+2. [Install Ansible](https://docs.ansible.com/ansible/latest/index.html)
+3. Setup [Ansible Inventory](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html)
 
    ```yml
    ---
@@ -98,7 +92,7 @@ After dev setup, configure the identity provider to enable redirecting to
          ansible_user: root
    ```
 
-5. Run the playbook
+4. Run the playbook
 
    ```shell
    ansible-playbook ./infrastructure/playbooks/deploy.yml
@@ -126,10 +120,6 @@ Environment variables are used for configuration. Unless otherwise stated, a val
   - ex: `server@example.com`
 - `EMAIL_HOST_PASSWORD` — SMTP password for authenticating
   - ex: `SomeUnguessablePassword`
-- [`OAUTH_xxxxx_CLIENT_ID`][github-oauth] — Client ID from OAuth provider for use on server and client.
-  - ex: `094809fsdf098123040`
-- [`OAUTH_xxxxx_SECRET`][github-oauth] — Client secret from OAuth provider for use on server.
-  - ex: `09482409fa234fsdf098d12d23d43d040`
 - [`SENTRY_DSN`][sentry-dsn] — Sentry secret configuration for backend.
   - ex: `https://<key>:<secret>@sentry.io/<project>`
 - [`FRONTEND_SENTRY_DSN`][sentry-dsn] — Sentry configuration for frontend.
@@ -137,6 +127,4 @@ Environment variables are used for configuration. Unless otherwise stated, a val
 
 [django-secret]: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-SECRET_KEY
 [sentry-dsn]: https://docs.sentry.io/quickstart/#about-the-dsn
-[github-redirect-uri]: https://developer.github.com/apps/building-oauth-apps/authorization-options-for-oauth-apps/#redirect-urls
-[github-oauth]: https://developer.github.com/apps/building-oauth-apps/authorization-options-for-oauth-apps/#web-application-flow
 [drknox]: https://github.com/James1345/django-rest-knox
