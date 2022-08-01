@@ -136,9 +136,9 @@ function NameForm(props: { initialValue: string }) {
   return (
     <form
       className="d-flex align-center"
-      onSubmit={e => {
+      onSubmit={(e) => {
         e.preventDefault()
-        api.updateUser({ name }).then(res => {
+        void api.updateUser({ name }).then((res) => {
           if (isOk(res)) {
             dispatch(fetchUser.success(res.data))
             setName(res.data.name)
@@ -150,18 +150,19 @@ function NameForm(props: { initialValue: string }) {
             })
           }
         })
-      }}>
+      }}
+    >
       <label className="better-label">Name</label>
       {editing ? (
         <TextInput
-          onKeyDown={e => {
+          onKeyDown={(e) => {
             if (e.key === "Escape") {
               cancelEdit()
             }
           }}
           autoFocus
           defaultValue={name}
-          onChange={val => setName(val.target.value)}
+          onChange={(val) => setName(val.target.value)}
         />
       ) : (
         <span>{name}</span>
@@ -178,7 +179,8 @@ function NameForm(props: { initialValue: string }) {
       ) : (
         <a
           className="ml-2 has-text-primary"
-          onClick={() => setEditing(s => !s)}>
+          onClick={() => setEditing((s) => !s)}
+        >
           Edit
         </a>
       )}
