@@ -192,7 +192,7 @@ export function Note({ note, recipeId, className }: INoteProps) {
       <Avatar avatarURL={note.created_by.avatar_url} className="mr-2" />
       <div className="w-100">
         <p>
-          <b>{note.created_by.email}</b>{" "}
+          <b>{note.created_by.name}</b>{" "}
           <a href={`#${noteId}`}>
             <NoteTimeStamp created={note.created} />
           </a>
@@ -263,7 +263,7 @@ function TimelineEvent({ event }: { readonly event: RecipeTimelineItem }) {
       />
       <div className="d-flex flex-column">
         <div>
-          <b>{event.created_by?.email ?? "User"}</b>{" "}
+          <b>{event.created_by?.name ?? "User"}</b>{" "}
           <span>{event.action} this recipe </span>
         </div>
         <a href={`#${eventId}`}>

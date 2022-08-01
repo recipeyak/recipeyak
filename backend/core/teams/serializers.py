@@ -1,4 +1,6 @@
-from typing import List
+from __future__ import annotations
+
+from typing import Any, List
 
 from rest_framework import serializers
 
@@ -7,10 +9,15 @@ from core.serialization import BaseModelSerializer, BaseSerializer
 
 
 class PublicUserSerializer(BaseModelSerializer):
+    def to_representation(self, instance: User) -> dict[str, Any]:
+        data = super().to_representation(instance)
+        data["name"] = data.get("name") or data["email"]
+        return data  # type: ignore [no-any-return]
+
     class Meta:
         model = User
         editable = False
-        fields = ("id", "email", "avatar_url")
+        fields = ("id", "name", "email", "avatar_url")
 
 
 class TeamSerializer(BaseModelSerializer):

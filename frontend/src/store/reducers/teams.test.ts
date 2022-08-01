@@ -30,6 +30,7 @@ const baseMember: IMember = {
   user: {
     id: 2,
     email: "bar",
+    name: "bar@example.com",
     avatar_url: "bar.com",
     dark_mode_enabled: false,
     schedule_team: null,
@@ -241,6 +242,7 @@ describe("Teams", () => {
         user: {
           id: 2,
           email: "blah@blah.com",
+          name: "bar@example.com",
           avatar_url: "http://lksjdflsjdf",
           has_usable_password: false,
           dark_mode_enabled: false,
@@ -302,6 +304,7 @@ describe("Teams", () => {
           user: {
             id: 1,
             email: "foo",
+            name: "bar@example.com",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
             schedule_team: null,
@@ -315,6 +318,7 @@ describe("Teams", () => {
           user: {
             id: 2,
             email: "bar",
+            name: "bar@example.com",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
             schedule_team: null,
@@ -335,6 +339,7 @@ describe("Teams", () => {
           user: {
             id: 1,
             email: "foo",
+            name: "bar@example.com",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
             schedule_team: null,
@@ -348,6 +353,7 @@ describe("Teams", () => {
           user: {
             id: 2,
             email: "bar",
+            name: "bar@example.com",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
             schedule_team: null,
@@ -377,6 +383,7 @@ describe("Teams", () => {
           user: {
             id: 1,
             email: "foo",
+            name: "bar@example.com",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
             schedule_team: null,
@@ -390,6 +397,7 @@ describe("Teams", () => {
           user: {
             id: 2,
             email: "bar",
+            name: "bar@example.com",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
             schedule_team: null,
@@ -410,6 +418,7 @@ describe("Teams", () => {
           user: {
             id: 1,
             email: "foo",
+            name: "bar@example.com",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
             schedule_team: null,
@@ -424,6 +433,7 @@ describe("Teams", () => {
           user: {
             id: 2,
             email: "bar",
+            name: "bar@example.com",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
             schedule_team: null,
@@ -453,6 +463,7 @@ describe("Teams", () => {
           user: {
             id: 1,
             email: "foo",
+            name: "bar@example.com",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
             schedule_team: null,
@@ -467,6 +478,7 @@ describe("Teams", () => {
           user: {
             id: 2,
             email: "bar",
+            name: "bar@example.com",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
             schedule_team: null,
@@ -487,6 +499,7 @@ describe("Teams", () => {
           user: {
             id: 1,
             email: "foo",
+            name: "bar@example.com",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
             schedule_team: null,
@@ -513,6 +526,7 @@ describe("Teams", () => {
           user: {
             id: 1,
             email: "foo",
+            name: "bar@example.com",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
             schedule_team: null,
@@ -526,6 +540,7 @@ describe("Teams", () => {
           user: {
             id: 2,
             email: "bar",
+            name: "bar@example.com",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
             schedule_team: null,
@@ -547,6 +562,7 @@ describe("Teams", () => {
           user: {
             id: 1,
             email: "foo",
+            name: "bar@example.com",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
             schedule_team: null,
@@ -560,6 +576,7 @@ describe("Teams", () => {
           user: {
             id: 2,
             email: "bar",
+            name: "bar@example.com",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
             schedule_team: null,
@@ -586,6 +603,7 @@ describe("Teams", () => {
           user: {
             id: 1,
             email: "foo",
+            name: "bar@example.com",
             avatar_url: "foo.com",
             dark_mode_enabled: false,
             schedule_team: null,
@@ -599,6 +617,7 @@ describe("Teams", () => {
           user: {
             id: 2,
             email: "bar",
+            name: "bar@example.com",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
             schedule_team: null,
@@ -620,6 +639,7 @@ describe("Teams", () => {
             user: {
               id: 1,
               email: "foo",
+              name: "bar@example.com",
               avatar_url: "foo.com",
               dark_mode_enabled: false,
               schedule_team: null,
@@ -633,6 +653,7 @@ describe("Teams", () => {
             user: {
               id: 2,
               email: "bar",
+              name: "bar@example.com",
               avatar_url: "bar.com",
               dark_mode_enabled: false,
               schedule_team: null,
@@ -659,6 +680,7 @@ describe("Teams", () => {
           user: {
             id: 1,
             email: "foo",
+            name: "bar@example.com",
             avatar_url: "foo.com",
 
             dark_mode_enabled: false,
@@ -673,6 +695,7 @@ describe("Teams", () => {
           user: {
             id: 2,
             email: "bar",
+            name: "bar@example.com",
             avatar_url: "bar.com",
             dark_mode_enabled: false,
             schedule_team: null,
@@ -697,6 +720,7 @@ describe("Teams", () => {
               user: {
                 id: 1,
                 email: "foo",
+                name: "bar@example.com",
                 avatar_url: "foo.com",
                 dark_mode_enabled: false,
                 schedule_team: null,
@@ -710,6 +734,7 @@ describe("Teams", () => {
               user: {
                 id: 2,
                 email: "bar",
+                name: "bar@example.com",
                 avatar_url: "bar.com",
                 dark_mode_enabled: false,
                 schedule_team: null,

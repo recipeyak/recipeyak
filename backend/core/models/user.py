@@ -63,6 +63,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     id = models.AutoField(primary_key=True)
 
     email = CIEmailField(unique=True)
+    name = models.TextField(null=True)
 
     # required for admin
     is_active = models.BooleanField(default=True)

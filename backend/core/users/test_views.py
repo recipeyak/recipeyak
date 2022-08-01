@@ -13,16 +13,16 @@ from core.models import User
 
 @pytest.mark.django_db
 def test_detail(client, user, empty_team):
-    url = reverse("rest_user_details")
-    res = client.get(url)
+    res = client.get("/api/v1/user/")
     assert res.status_code == status.HTTP_403_FORBIDDEN, "authentication required"
 
     client.force_authenticate(user)
-    res = client.get(url)
+    res = client.get("/api/v1/user/")
     keys = set(res.json().keys())
     expected = {
         "id",
         "email",
+        "name",
         "avatar_url",
         "has_usable_password",
         "dark_mode_enabled",
@@ -31,17 +31,20 @@ def test_detail(client, user, empty_team):
     assert expected.issubset(keys), "sanity test to ensure we have what we expect"
     original_data = res.json()
 
-    res = client.patch(url, {"avatar_url": "example.com"})
+    assert original_data["name"] == original_data["email"]
+
+    res = client.patch("/api/v1/user/", {"avatar_url": "example.com"})
     assert res.json() == original_data, "user shouldn't be able to update avatar url"
 
     data = {
         "email": "testing123@example.com",
         "dark_mode_enabled": True,
         "selected_team": empty_team.id,
+        "name": "John",
     }
     for key in data.keys():
         assert original_data[key] != data[key], "we want different fields to test with"
-    res = client.patch(url, data)
+    res = client.patch("/api/v1/user/", data)
     assert res.status_code == status.HTTP_200_OK
     for key in data.keys():
         assert res.json()[key] == data[key], "fields should be updated"
