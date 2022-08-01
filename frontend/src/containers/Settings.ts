@@ -17,6 +17,7 @@ const DELETION_RESPONSE = "delete my account"
 const mapStateToProps = (state: IState) => ({
   avatarURL: state.user.avatarURL,
   email: state.user.email,
+  name: state.user.name,
   updatingEmail: state.user.updatingEmail,
   hasPassword: state.user.hasUsablePassword,
   loading: state.user.loading,

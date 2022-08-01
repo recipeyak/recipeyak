@@ -5,6 +5,11 @@ import Loader from "@/components/Loader"
 import { ButtonPrimary, Button } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
 import Sessions from "@/components/Sessions"
+import * as api from "@/api"
+import { isOk } from "@/result"
+import { useDispatch } from "@/hooks"
+import { fetchUser } from "@/store/reducers/user"
+import { showNotificationWithTimeoutAsync } from "@/store/thunks"
 
 function Export() {
   return (
@@ -114,6 +119,70 @@ function EmailEditForm(props: IEmailEditForm) {
   )
 }
 
+function NameForm(props: { initialValue: string }) {
+  const [editing, setEditing] = React.useState(false)
+  const dispatch = useDispatch()
+  const [name, setName] = React.useState(props.initialValue)
+  function cancelEdit() {
+    setEditing(false)
+    setName(props.initialValue)
+  }
+  React.useEffect(() => {
+    setName(props.initialValue)
+  }, [props.initialValue])
+  return (
+    <form
+      className="d-flex align-center"
+      onSubmit={e => {
+        e.preventDefault()
+        api.updateUser({ name }).then(res => {
+          if (isOk(res)) {
+            dispatch(fetchUser.success(res.data))
+            setName(res.data.name)
+            setEditing(false)
+          } else {
+            showNotificationWithTimeoutAsync(dispatch)({
+              message: "failed to update name",
+              level: "danger",
+            })
+          }
+        })
+      }}>
+      <label className="better-label">Name</label>
+      {editing ? (
+        <TextInput
+          onKeyDown={e => {
+            if (e.key === "Escape") {
+              cancelEdit()
+            }
+          }}
+          autoFocus
+          defaultValue={name}
+          onChange={val => setName(val.target.value)}
+        />
+      ) : (
+        <span>{name}</span>
+      )}
+      {editing ? (
+        <div className="d-flex">
+          <Button className="ml-2" type="button" onClick={cancelEdit}>
+            Cancel
+          </Button>
+          <ButtonPrimary className="ml-2" type="submit">
+            Save
+          </ButtonPrimary>
+        </div>
+      ) : (
+        <a
+          className="ml-2 has-text-primary"
+          onClick={() => setEditing(s => !s)}>
+          Edit
+        </a>
+      )}
+    </form>
+  )
+}
+
 interface IChangePasswordProps {
   readonly hasPassword: boolean
 }
@@ -139,6 +208,7 @@ export interface ISettingsProps {
   readonly fetchData: () => void
   readonly deleteUserAccount: () => void
   readonly email: string
+  readonly name: string
   readonly updateEmail: (email: string) => Promise<void>
   readonly avatarURL: string
   readonly updatingEmail: boolean
@@ -188,7 +258,7 @@ export default class Settings extends React.Component<
     const { email, editing } = this.state
     const { handleInputChange } = this
 
-    const { avatarURL, updatingEmail, loading, hasPassword } = this.props
+    const { avatarURL, name, updatingEmail, loading, hasPassword } = this.props
 
     if (loading) {
       return (
@@ -217,6 +287,7 @@ export default class Settings extends React.Component<
               handleInputChange={handleInputChange}
               updateEmail={this.updateEmail}
             />
+            <NameForm initialValue={name} />
             <ChangePassword hasPassword={hasPassword} />
           </div>
         </div>
