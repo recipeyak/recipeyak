@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import { useEffect } from "react"
 import { connect } from "react-redux"
 import { Helmet } from "@/components/Helmet"
 import { Link, RouteComponentProps } from "react-router-dom"
@@ -14,7 +14,7 @@ import { styled } from "@/theme"
 
 interface ISidebarProps {
   readonly isRecipes: boolean
-  readonly teamID: TeamID
+  readonly teamID: number | "personal"
 }
 
 function Sidebar({ teamID, isRecipes }: ISidebarProps) {

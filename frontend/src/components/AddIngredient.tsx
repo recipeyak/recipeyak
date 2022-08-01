@@ -91,7 +91,7 @@ export default function AddIngredient({
   readonly autoFocus: boolean
 }) {
   const [showAddSection, setShowAddSection] = React.useState(false)
-  const toggleShowAddSection = () => setShowAddSection(p => !p)
+  const toggleShowAddSection = () => setShowAddSection((p) => !p)
 
   if (showAddSection) {
     return (

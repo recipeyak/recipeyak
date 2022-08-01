@@ -42,9 +42,9 @@ interface IRecipeLink {
 
 const StyledLink = styled(Link)`
   line-height: 1.3;
-  font-size: ${props => props.theme.text.small};
+  font-size: ${(props) => props.theme.text.small};
   word-break: break-word;
-  background-color: ${props => props.theme.color.background};
+  background-color: ${(props) => props.theme.color.background};
   border-radius: 5px;
   padding: 0.35rem;
   font-weight: 600;
@@ -68,7 +68,7 @@ const CalendarListItem = styled.li<ICalendarListItemProps>`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 0.5rem;
-  visibility: ${props => props.visibility};
+  visibility: ${(props) => props.visibility};
 `
 
 export interface ICalendarItemProps {
@@ -82,7 +82,7 @@ export interface ICalendarItemProps {
   readonly recipeID: IRecipe["id"] | string
   readonly recipeName: IRecipe["name"]
   readonly scheduledId: ICalRecipe["id"]
-  readonly teamID: TeamID
+  readonly teamID: number | "personal"
 }
 
 export function CalendarItem({
@@ -110,7 +110,7 @@ export function CalendarItem({
     }
     const oldCount = count
     setCount(newCount)
-    propsUpdateCount(newCount).then(res => {
+    void propsUpdateCount(newCount).then((res) => {
       if (isOk(res)) {
         refetchShoppingList()
       } else {
@@ -151,6 +151,7 @@ export function CalendarItem({
   }
 
   const [{ isDragging }, drag] = useDrag({
+    type: DragDrop.CAL_RECIPE,
     item: dragItem,
     end: (_dropResult, monitor) => {
       // when dragged onto something that isn't a target, we remove it
@@ -159,7 +160,7 @@ export function CalendarItem({
         remove()
       }
     },
-    collect: monitor => {
+    collect: (monitor) => {
       return {
         isDragging: monitor.isDragging(),
       }
@@ -179,7 +180,7 @@ export function CalendarItem({
         <RecipeLink
           name={recipeName}
           id={recipeID}
-          onClick={e => {
+          onClick={(e) => {
             if (e.shiftKey || e.metaKey) {
               return
             }

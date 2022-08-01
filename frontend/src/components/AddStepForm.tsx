@@ -27,20 +27,21 @@ const AddStepForm = ({
   autoFocus = false,
 }: IAddStepFormProps) => (
   <form
-    onSubmit={e => {
+    onSubmit={(e) => {
       e.preventDefault()
       if (text === "") {
         return
       }
       addStep()
-    }}>
+    }}
+  >
     <div className="field">
       <label className="better-label">Step {stepNumber}</label>
       <div className="control mt-2">
         <Textarea
           onChange={handleInputChange}
           autoFocus={autoFocus}
-          onKeyPress={e => {
+          onKeyPress={(e) => {
             if (text === "") {
               return
             }
@@ -63,7 +64,8 @@ const AddStepForm = ({
           onClick={cancelAddStep}
           size="small"
           type="button"
-          name="cancel step">
+          name="cancel step"
+        >
           Cancel
         </Button>
       </p>
@@ -73,7 +75,8 @@ const AddStepForm = ({
           disabled={text === ""}
           type="submit"
           name="save step"
-          loading={loading}>
+          loading={loading}
+        >
           Add
         </ButtonPrimary>
       </p>

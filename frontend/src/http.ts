@@ -49,7 +49,6 @@ async function http3<T, A, O>({
   readonly params?: Params
   readonly cancelToken?: CancelToken
 }): Promise<Either<t.Errors | AxiosError | Error, A>> {
-  // tslint:disable-next-line: no-try
   try {
     const r = await baseHttp.request<unknown>({
       url,
@@ -69,10 +68,9 @@ async function http3<T, A, O>({
  * the session expires
  */
 const invalidToken = (res: AxiosResponse) =>
-  // tslint:disable:no-unsafe-any
   res != null &&
   res.data.detail === "Authentication credentials were not provided."
-// tslint:enable:no-unsafe-any
+
 const handleResponseError = (error: AxiosError) => {
   // 503 means we are in maintenance mode. Reload to show maintenance page.
   const maintenanceMode = error.response && error.response.status === 503
@@ -93,25 +91,24 @@ const handleResponseError = (error: AxiosError) => {
     // status to Sentry.
     raven.captureException(error, { level: "info" })
   }
-  // tslint:disable-next-line:no-throw
+
   return Promise.reject(error)
 }
 
 baseHttp.interceptors.response.use(
-  response => response,
-  // tslint:disable-next-line:no-unsafe-any
-  error => handleResponseError(error),
+  (response) => response,
+
+  (error) => handleResponseError(error),
 )
 
 baseHttp.interceptors.request.use(
-  cfg => {
-    // tslint:disable:no-unsafe-any
+  (cfg) => {
     cfg.headers["X-Request-ID"] = uuid4()
-    // tslint:disable:no-unsafe-any
+
     return cfg
   },
-  // tslint:disable-next-line:no-throw
-  error => Promise.reject(error),
+
+  (error) => Promise.reject(error),
 )
 
 type HttpResult<T> = Promise<Result<T, AxiosError>>
@@ -135,50 +132,32 @@ export type HttpRequestObjResult<A, O, T> = RequestOptions<A, O, T> & {
 /**
  * Result<T> based HTTP client
  */
-// tslint:disable:no-promise-catch
+
 export const http = {
   get: <T>(url: string, config?: AxiosRequestConfig): HttpResult<T> =>
-    baseHttp
-      .get<T>(url, config)
-      .then(toOk)
-      .catch(toErr),
+    baseHttp.get<T>(url, config).then(toOk).catch(toErr),
   delete: (url: string, config?: AxiosRequestConfig): HttpResult<void> =>
-    baseHttp
-      .delete(url, config)
-      .then(toOk)
-      .catch(toErr),
+    baseHttp.delete(url, config).then(toOk).catch(toErr),
   head: (url: string, config?: AxiosRequestConfig): HttpResult<void> =>
-    baseHttp
-      .head(url, config)
-      .then(toOk)
-      .catch(toErr),
+    baseHttp.head(url, config).then(toOk).catch(toErr),
   patch: <T>(
     url: string,
     data?: {} | unknown,
     config?: AxiosRequestConfig,
   ): HttpResult<T> =>
-    baseHttp
-      .patch<T>(url, data, config)
-      .then(toOk)
-      .catch(toErr),
+    baseHttp.patch<T>(url, data, config).then(toOk).catch(toErr),
   put: <T>(
     url: string,
     data?: {} | unknown,
     config?: AxiosRequestConfig,
   ): HttpResult<T> =>
-    baseHttp
-      .put<T>(url, data, config)
-      .then(toOk)
-      .catch(toErr),
+    baseHttp.put<T>(url, data, config).then(toOk).catch(toErr),
   post: <T>(
     url: string,
     data?: {} | unknown,
     config?: AxiosRequestConfig,
   ): HttpResult<T> =>
-    baseHttp
-      .post<T>(url, data, config)
-      .then(toOk)
-      .catch(toErr),
+    baseHttp.post<T>(url, data, config).then(toOk).catch(toErr),
   request: <T, A, O>(options: {
     readonly shape: t.Type<A, O>
     readonly params?: Params
@@ -199,7 +178,6 @@ export const http = {
     }
   },
 }
-// tslint:enable:no-promise-catch
 
 /** Get the detail string from a response, if available, otherwise return the default */
 export function detailOrDefault(err: AxiosError, def: string): string {

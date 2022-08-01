@@ -29,7 +29,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import React, { useRef } from "react"
+import { useRef } from "react"
 import { connect } from "react-redux"
 import { useDrop, useDrag } from "react-dnd"
 import { DragDrop, handleDndHover } from "@/dragDrop"
@@ -48,7 +48,7 @@ interface IStepProps {
   readonly recipeID: IRecipe["id"]
   readonly text: string
   readonly move: (_: { from: number; to: number }) => void
-  readonly completeMove: (dragIndex: number, hoverIndex: number) => void
+  readonly completeMove: (_: { id: number; to: number }) => void
   readonly updating?: boolean
   readonly removing?: boolean
   readonly position?: number
@@ -62,14 +62,14 @@ function Step({ text, index, ...props }: IStepProps) {
   })
 
   const [{ isDragging }, drag, preview] = useDrag({
+    type: DragDrop.STEP,
     item: {
-      type: DragDrop.STEP,
       index,
     },
-    end: () => {
-      props.completeMove(props.id, index)
+    end: (draggedItem) => {
+      props.completeMove({ id: props.id, to: draggedItem.index })
     },
-    collect: monitor => ({
+    collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
   })

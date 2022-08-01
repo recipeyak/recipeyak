@@ -124,7 +124,7 @@ jobs:
 
   frontend_test:
     docker:
-      - image: circleci/node:12.4.0
+      - image: cimg/node:18.7.0
     steps:
       - checkout
       - run:
@@ -150,7 +150,7 @@ jobs:
 
   frontend_lint:
     docker:
-      - image: circleci/node:12.4.0
+      - image: cimg/node:18.7.0
     steps:
       - checkout
       - run:
@@ -181,7 +181,7 @@ jobs:
           # copy bundle analyzer report
           command: |
             mkdir -p /tmp/frontend-artifacts
-            cp -R build/report.html build/webpack-stats.json /tmp/frontend-artifacts
+            cp -R stats.html /tmp/frontend-artifacts
       - store_artifacts:
           path: /tmp/frontend-artifacts
 

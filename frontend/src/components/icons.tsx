@@ -1,5 +1,3 @@
-import React from "react"
-
 export function DragIcon() {
   const size = 18
   return (
@@ -13,7 +11,8 @@ export function DragIcon() {
       stroke="#4a4a4a"
       strokeWidth="1.5"
       strokeLinecap="round"
-      strokeLinejoin="round">
+      strokeLinejoin="round"
+    >
       <circle cx="8" cy="5" r="1" />
       <circle cx="8" cy="12" r="1" />
       <circle cx="8" cy="19" r="1" />
@@ -30,7 +29,8 @@ export const Chevron = () => (
     style={{ width: "1.5em" }}
     className="fill-text-color"
     viewBox="0 0 20 20"
-    xmlns="http://www.w3.org/2000/svg">
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <g>
       <path
         fill="inherit"

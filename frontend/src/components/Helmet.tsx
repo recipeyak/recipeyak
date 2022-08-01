@@ -1,6 +1,13 @@
 import * as React from "react"
-import { Helmet as ReactHelm, HelmetProps } from "react-helmet"
+import { Helmet as ReactHelm } from "react-helmet-async"
 
-export const Helmet = (props: HelmetProps) => {
-  return <ReactHelm {...props} defer={false} />
+export const Helmet = (props: React.ComponentProps<typeof ReactHelm>) => {
+  return (
+    <ReactHelm
+      {...props}
+      defer={false}
+      defaultTitle="Recipe Yak"
+      titleTemplate="%s | Recipe Yak"
+    />
+  )
 }

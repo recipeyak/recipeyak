@@ -16,7 +16,7 @@ export const deleteLoggedInUser = () => http.delete("/api/v1/user/")
 
 export const logoutUser = () => http.post<void>("/api/v1/auth/logout/", {})
 
-interface IUserResponse {
+export interface IUserResponse {
   readonly user: IUser
 }
 
@@ -100,7 +100,11 @@ export interface IGetShoppingListResponse {
   readonly [_: string]: IIngredientItem | undefined
 }
 
-export const getShoppingList = (teamID: TeamID, start: Date, end: Date) => {
+export const getShoppingList = (
+  teamID: number | "personal",
+  start: Date,
+  end: Date,
+) => {
   const id = teamID === "personal" ? "me" : teamID
   return http.get<IGetShoppingListResponse>(`/api/v1/t/${id}/shoppinglist/`, {
     params: {
@@ -303,7 +307,7 @@ export function getCalendarRecipeList({
   start,
   end,
 }: {
-  readonly teamID: TeamID
+  readonly teamID: number | "personal"
   readonly start: Date
   readonly end: Date
 }) {
@@ -315,7 +319,7 @@ export function getCalendarRecipeListRequestBuilder({
   start,
   end,
 }: {
-  readonly teamID: TeamID
+  readonly teamID: number | "personal"
   readonly start: Date
   readonly end: Date
 }) {
@@ -355,7 +359,7 @@ export function updateCalendarSettings({
   teamID,
   data,
 }: {
-  readonly teamID: TeamID
+  readonly teamID: number | "personal"
   readonly data: {
     readonly syncEnabled: boolean
   }
@@ -371,7 +375,11 @@ export function updateCalendarSettings({
   })
 }
 
-export function generateCalendarLink({ teamID }: { readonly teamID: TeamID }) {
+export function generateCalendarLink({
+  teamID,
+}: {
+  readonly teamID: number | "personal"
+}) {
   return http.request({
     method: "POST",
     url: `/api/v1/t/${teamID}/calendar/generate_link/`,
@@ -382,7 +390,7 @@ export function generateCalendarLink({ teamID }: { readonly teamID: TeamID }) {
 }
 export const scheduleRecipe = (
   recipeID: IRecipe["id"],
-  teamID: TeamID,
+  teamID: number | "personal",
   on: Date,
   count: string | number,
 ) => {
@@ -397,7 +405,7 @@ export const scheduleRecipe = (
 // TODO(sbdchd): we shouldn't need teamID here
 export const deleteScheduledRecipe = (
   calId: ICalRecipe["id"],
-  teamID: TeamID,
+  teamID: number | "personal",
 ) => {
   const id = teamID === "personal" ? "me" : teamID
   return http.delete(`/api/v1/t/${id}/calendar/${calId}/`)
@@ -406,7 +414,7 @@ export const deleteScheduledRecipe = (
 // TODO(sbdchd): we shouldn't need teamID here
 export const updateScheduleRecipe = (
   calId: ICalRecipe["id"],
-  teamID: TeamID,
+  teamID: number | "personal",
   recipe: Partial<ICalRecipe>,
 ) => {
   const id = teamID === "personal" ? "me" : teamID
@@ -418,7 +426,7 @@ export const findNextOpen = ({
   day,
   now,
 }: {
-  readonly teamID: TeamID
+  readonly teamID: number | "personal"
   readonly day: string
   readonly now: string
 }) => {

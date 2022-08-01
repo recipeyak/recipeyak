@@ -11,13 +11,14 @@ const ErrorReportButton = () => (
   <ButtonPrimary
     size="small"
     className="ml-1"
-    onClick={() => Raven.showReportDialog()}>
+    onClick={() => Raven.showReportDialog()}
+  >
     Submit error report
   </ButtonPrimary>
 )
 
 export default class ErrorBoundary extends React.Component<
-  {},
+  { children: React.ReactNode },
   IErrorBoundaryState
 > {
   state = {

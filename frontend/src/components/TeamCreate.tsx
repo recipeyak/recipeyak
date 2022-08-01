@@ -41,14 +41,14 @@ class TeamCreate extends React.Component<ITeamCreateProps, ITeamCreateState> {
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     /* eslint-disable @typescript-eslint/consistent-type-assertions */
-    this.setState(({
+    this.setState({
       [e.target.name]: e.target.value,
-    } as unknown) as ITeamCreateState)
+    } as unknown as ITeamCreateState)
   /* eslint-enable @typescript-eslint/consistent-type-assertions */
 
   handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const emails = this.state.emails.split(",").filter(x => x !== "")
+    const emails = this.state.emails.split(",").filter((x) => x !== "")
     const { name, level } = this.state
     this.props.createTeam(name, emails, level)
   }
@@ -103,7 +103,8 @@ class TeamCreate extends React.Component<ITeamCreateProps, ITeamCreateState> {
           <ButtonPrimary
             type="submit"
             loading={this.props.loading}
-            className="justify-self-left">
+            className="justify-self-left"
+          >
             Create Team
           </ButtonPrimary>
         </form>

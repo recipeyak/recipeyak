@@ -139,17 +139,16 @@ export function useOnWindowFocusChange(cb: () => void) {
 }
 
 export function useScheduleTeamID() {
-  return useSelector(s => s.user.scheduleTeamID) || "personal"
+  return useSelector((s) => s.user.scheduleTeamID) || "personal"
 }
 
 export const useScheduleURL = () => useSelector(scheduleURLFromTeamID)
 
 // global, module level cache.
-// tslint:disable-next-line:no-any
+
 const USE_STATE_CACHE: Record<string, any> = new Map()
 
 function useStateCached<T>(key: string): [T | undefined, (x: T) => void] {
-  // tslint:disable-next-line:no-unsafe-any
   const [localState, setLocalState] = React.useState<T>(USE_STATE_CACHE[key])
   const setState = React.useCallback(
     (newState: T) => {
@@ -170,7 +169,7 @@ export function useApi<A, O, T>(
     if (data == null) {
       setData(Loading())
     }
-    request.send().then(res => {
+    void request.send().then((res) => {
       if (isRight(res)) {
         return setData(Success(res.right))
       }

@@ -35,16 +35,16 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
 
   const onSave = () => {
     setIsUpdating(true)
-    api.updateNote({ noteId: note.id, note: draftText }).then(res => {
+    void api.updateNote({ noteId: note.id, note: draftText }).then((res) => {
       if (isOk(res)) {
         dispatch(
           patchRecipe({
             recipeId,
-            updateFn: recipe => {
+            updateFn: (recipe) => {
               return {
                 ...recipe,
                 timelineItems: [
-                  ...recipe.timelineItems.filter(x => x.id !== note.id),
+                  ...recipe.timelineItems.filter((x) => x.id !== note.id),
                   res.data,
                 ],
               }
@@ -64,16 +64,16 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
   }
   const onDelete = () => {
     if (confirm("Are you sure you want to delete this note?")) {
-      api.deleteNote({ noteId: note.id }).then(res => {
+      void api.deleteNote({ noteId: note.id }).then((res) => {
         if (isOk(res)) {
           dispatch(
             patchRecipe({
               recipeId,
-              updateFn: recipe => {
+              updateFn: (recipe) => {
                 return {
                   ...recipe,
                   timelineItems: recipe.timelineItems.filter(
-                    x => x.id !== note.id,
+                    (x) => x.id !== note.id,
                   ),
                 }
               },
@@ -157,7 +157,8 @@ function SharedEntry({
         },
         className,
       )}
-      id={id}>
+      id={id}
+    >
       {children}
     </div>
   )
@@ -186,7 +187,8 @@ export function Note({ note, recipeId, className }: INoteProps) {
   return (
     <SharedEntry
       className={classNames("d-flex align-items-start", className)}
-      id={noteId}>
+      id={noteId}
+    >
       <Avatar avatarURL={note.created_by.avatar_url} className="mr-2" />
       <div className="w-100">
         <p>
@@ -199,7 +201,8 @@ export function Note({ note, recipeId, className }: INoteProps) {
           <Markdown
             className="cursor-pointer"
             title="click to edit"
-            onClick={onNoteClick}>
+            onClick={onNoteClick}
+          >
             {note.text}
           </Markdown>
         ) : (
@@ -218,20 +221,23 @@ export function Note({ note, recipeId, className }: INoteProps) {
                 <ButtonSecondary
                   size="small"
                   onClick={onDelete}
-                  className="mr-2">
+                  className="mr-2"
+                >
                   delete
                 </ButtonSecondary>
                 <div className="d-flex justify-between align-center">
                   <ButtonSecondary
                     size="small"
                     onClick={onCancel}
-                    className="mr-3">
+                    className="mr-3"
+                  >
                     cancel
                   </ButtonSecondary>
                   <ButtonPrimary
                     size="small"
                     onClick={onSave}
-                    loading={isUpdating}>
+                    loading={isUpdating}
+                  >
                     save
                   </ButtonPrimary>
                 </div>
@@ -249,7 +255,8 @@ function TimelineEvent({ event }: { readonly event: RecipeTimelineItem }) {
   return (
     <SharedEntry
       id={eventId}
-      className={classNames("d-flex align-items-center mb-4 py-4")}>
+      className={classNames("d-flex align-items-center mb-4 py-4")}
+    >
       <Avatar
         avatarURL={event.created_by?.avatar_url ?? null}
         className="mr-2"
@@ -291,12 +298,12 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
 
   const onCreate = () => {
     setIsLoading(true)
-    api.addNoteToRecipe({ recipeId, note: draftText }).then(res => {
+    void api.addNoteToRecipe({ recipeId, note: draftText }).then((res) => {
       if (isOk(res)) {
         dispatch(
           patchRecipe({
             recipeId,
-            updateFn: recipe => {
+            updateFn: (recipe) => {
               return {
                 ...recipe,
                 timelineItems: [...recipe.timelineItems, res.data],
@@ -397,7 +404,8 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
             size="small"
             onClick={onCreate}
             loading={isLoading}
-            disabled={isDisabled}>
+            disabled={isDisabled}
+          >
             add
           </ButtonPrimary>
         </div>
@@ -415,12 +423,12 @@ export function NoteContainer(props: INoteContainerProps) {
     <>
       <hr />
       <NoteCreator recipeId={props.recipeId} className="pb-4" />
-      {orderBy(props.timelineItems, "created", "desc").map(timelineItem => {
+      {orderBy(props.timelineItems, "created", "desc").map((timelineItem) => {
         switch (timelineItem.type) {
           case "note": {
             return (
               <Note
-                key={"recipe" + String(timelineItem.id)}
+                key={"recipe-note" + String(timelineItem.id)}
                 note={timelineItem}
                 recipeId={props.recipeId}
                 className="pb-2"
@@ -430,7 +438,7 @@ export function NoteContainer(props: INoteContainerProps) {
           case "recipe":
             return (
               <TimelineEvent
-                key={"recipe" + String(timelineItem.id)}
+                key={"recipe-recipe" + String(timelineItem.id)}
                 event={timelineItem}
               />
             )

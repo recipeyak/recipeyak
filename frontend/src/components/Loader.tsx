@@ -1,5 +1,3 @@
-import * as React from "react"
-
 function Loader({ className = "" }) {
   return (
     <div className={"d-flex justify-content-center " + className}>

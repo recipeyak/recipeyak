@@ -56,9 +56,9 @@ class PasswordResetConfirmation extends React.Component<
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     /* eslint-disable @typescript-eslint/consistent-type-assertions */
-    this.setState(({
+    this.setState({
       [e.target.name]: e.target.value,
-    } as unknown) as IPasswordResetConfirmationState)
+    } as unknown as IPasswordResetConfirmationState)
     /* eslint-enable @typescript-eslint/consistent-type-assertions */
   }
 

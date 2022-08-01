@@ -146,14 +146,15 @@ class ShoppingListList extends React.Component<IShoppingListContainerProps> {
       ? Object.entries(this.props.items.data)
       : []
 
-    const groups = Object.entries(groupBy(items, x => x[1] && x[1].category))
+    const groups = Object.entries(groupBy(items, (x) => x[1] && x[1].category))
 
     return (
       <div className={`box p-rel min-height-75px mb-0 p-3 ${loadingClass}`}>
         <Button
           onClick={this.handleSelectList}
           size="small"
-          className="r-3 p-abs">
+          className="r-3 p-abs"
+        >
           Copy
         </Button>
         <section ref={this.shoppingList}>
@@ -189,8 +190,12 @@ class ShoppingListList extends React.Component<IShoppingListContainerProps> {
 }
 
 interface IShoppingListProps {
-  readonly fetchData: (teamID: TeamID, startDay: Date, endDay: Date) => void
-  readonly teamID: TeamID
+  readonly fetchData: (
+    teamID: number | "personal",
+    startDay: Date,
+    endDay: Date,
+  ) => void
+  readonly teamID: number | "personal"
   readonly startDay: Date
   readonly endDay: Date
   readonly shoppinglist: WebData<IGetShoppingListResponse>
@@ -264,8 +269,8 @@ function ShoppingList({
   const handleStartPickerClick = () => setSelecting(Selecting.Start)
   const handleEndPickerClick = () => setSelecting(Selecting.End)
 
-  const incrMonth = () => setMonth(m => addMonths(m, 1))
-  const decrMonth = () => setMonth(m => subMonths(m, 1))
+  const incrMonth = () => setMonth((m) => addMonths(m, 1))
+  const decrMonth = () => setMonth((m) => subMonths(m, 1))
 
   return (
     <div className="d-grid grid-gap-2">

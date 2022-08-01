@@ -1,6 +1,8 @@
-function parseValue(
-  x: string,
-): { newPosition: number; value: string; quoted?: boolean } {
+function parseValue(x: string): {
+  newPosition: number
+  value: string
+  quoted?: boolean
+} {
   const terminator = x.startsWith(`"`) ? `"` : x.startsWith(`'`) ? `'` : null
   let value = ""
 
@@ -62,7 +64,7 @@ export function parseQuery(query: string): QueryNode[] {
   for (let i = 0; i < query.length; ) {
     const remainder = query.slice(i)
 
-    const matchingField = generateFields().find(field => {
+    const matchingField = generateFields().find((field) => {
       // if we just have "tag:", we want to list all results. But if we have
       // "tag: ", we treat that as a normal string, not a field.
       return (
@@ -89,5 +91,5 @@ export function parseQuery(query: string): QueryNode[] {
       parsed.push({ field: null, value, quoted })
     }
   }
-  return parsed.filter(x => x.value)
+  return parsed.filter((x) => x.value)
 }

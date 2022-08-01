@@ -41,8 +41,6 @@ const {
   keyframes,
   ThemeProvider,
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-} = (styledComponents as unknown) as styledComponents.ThemedStyledComponentsModule<
-  ITheme
->
+} = styledComponents as unknown as styledComponents.ThemedStyledComponentsModule<ITheme>
 
 export { styled, css, keyframes, ThemeProvider }

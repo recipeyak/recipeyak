@@ -33,9 +33,9 @@ class Signup extends React.Component<ISignupProps, ISignupState> {
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     /* eslint-disable @typescript-eslint/consistent-type-assertions */
-    this.setState(({
+    this.setState({
       [e.target.name]: e.target.value,
-    } as unknown) as ISignupState)
+    } as unknown as ISignupState)
     /* eslint-enable @typescript-eslint/consistent-type-assertions */
   }
 

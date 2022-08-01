@@ -6,9 +6,8 @@ interface ISetNotification {
   readonly level?: INotificationState["level"]
 }
 
-export const setNotification = createStandardAction("SET_NOTIFICATION")<
-  ISetNotification
->()
+export const setNotification =
+  createStandardAction("SET_NOTIFICATION")<ISetNotification>()
 export const clearNotification = createStandardAction("CLEAR_NOTIFICATION")()
 
 export type NotificationsActions =

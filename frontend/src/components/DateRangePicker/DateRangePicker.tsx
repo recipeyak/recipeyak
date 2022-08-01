@@ -21,9 +21,7 @@ interface IDateRangePickerProps {
   readonly onClose: () => void
 }
 
-export default class DateRangePicker extends React.Component<
-  IDateRangePickerProps
-> {
+export default class DateRangePicker extends React.Component<IDateRangePickerProps> {
   handleClick = (date: Date) => {
     if (isPast(endOfDay(date))) {
       return
@@ -50,7 +48,8 @@ export default class DateRangePicker extends React.Component<
           "z-index-100",
           "grid-2-months",
           this.props.selecting !== Selecting.None ? "d-grid" : "d-none",
-        )}>
+        )}
+      >
         <Month
           showLeft
           date={this.props.month}

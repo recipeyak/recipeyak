@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import { useEffect } from "react"
 import { ISession, LoggingOutStatus } from "@/store/reducers/user"
 import { WebData, isLoading, isInitial, isFailure } from "@/webdata"
 import { Button } from "@/components/Buttons"
@@ -77,7 +77,8 @@ function Session(props: ISessionProps) {
         <Button
           size="small"
           onClick={() => props.logout(props.id)}
-          loading={props.loggingOut === LoggingOutStatus.Loading}>
+          loading={props.loggingOut === LoggingOutStatus.Loading}
+        >
           Logout
         </Button>
       </section>
@@ -117,7 +118,7 @@ function SessionListBasic({
   return (
     <>
       <ul>
-        {sessions.data.map(s => (
+        {sessions.data.map((s) => (
           <Session key={s.id} logout={logoutById} {...s} />
         ))}
       </ul>
@@ -125,7 +126,8 @@ function SessionListBasic({
         size="small"
         className="mb-2"
         onClick={logoutAll}
-        loading={loggingOutAll === LoggingOutStatus.Loading}>
+        loading={loggingOutAll === LoggingOutStatus.Loading}
+      >
         Logout Other Sessions
       </Button>
     </>

@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -ex
 
-node scripts/start.js
+yarn vite

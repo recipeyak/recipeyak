@@ -3,11 +3,7 @@ set -ex
 
 main() {
   export TZ=UTC
-  if [ "$CI" ]; then
-    node ./scripts/test.js --env=jsdom --coverage --runInBand
-  else
-    node ./scripts/test.js --env=jsdom --watch "$@"
-  fi
+  yarn vitest "$@"
 }
 
 main "$@"

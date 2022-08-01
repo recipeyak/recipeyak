@@ -30,7 +30,7 @@ function Members({ teamID, loading, members }: IMembersProps) {
       <div className="table-responsive">
         <table className="table-spacing">
           <tbody>
-            {members.map(x => (
+            {members.map((x) => (
               <MemberRow
                 key={x.id}
                 teamID={teamID}
@@ -122,7 +122,7 @@ class TeamSettings extends React.Component<
   handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     this.setState({ loadingSaveChanges: true })
-    this.props
+    void this.props
       .updatingTeam(this.props.id, { name: this.state.name })
       .then(() => this.setState({ loadingSaveChanges: false }))
   }
@@ -132,7 +132,7 @@ class TeamSettings extends React.Component<
       confirm(`Are you sure you want to delete this team "${this.props.name}"?`)
     ) {
       this.setState({ loadingDeleteTeam: true })
-      this.props
+      void this.props
         .deleteTeam(this.props.id)
         .then(() => this.setState({ loadingDeleteTeam: false }))
     }
@@ -157,7 +157,8 @@ class TeamSettings extends React.Component<
           </ButtonPrimary>
           <ButtonLink
             onClick={() => this.deleteTeam()}
-            loading={this.state.loadingDeleteTeam}>
+            loading={this.state.loadingDeleteTeam}
+          >
             Delete Team
           </ButtonLink>
         </div>

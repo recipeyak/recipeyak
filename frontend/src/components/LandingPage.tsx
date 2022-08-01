@@ -2,14 +2,12 @@ import React from "react"
 import { Link } from "react-router-dom"
 import Footer from "@/components/Footer"
 
-// tslint:disable:no-var-requires
-const addRecipeImg = require("@/static/images/pages/add-recipe.png")
-const landingImg = require("@/static/images/pages/schedule.png")
-const teamImg = require("@/static/images/pages/team.png")
-const searchImg = require("@/static/images/pages/search.png")
-const shopImg = require("@/static/images/pages/shop.png")
-const copyShoppingList = require("@/static/images/pages/copy-shopping-list.png")
-// tslint:enable:no-var-requires
+import addRecipeImg from "@/static/images/pages/add-recipe.png"
+import landingImg from "@/static/images/pages/schedule.png"
+import teamImg from "@/static/images/pages/team.png"
+import searchImg from "@/static/images/pages/search.png"
+import shopImg from "@/static/images/pages/shop.png"
+import copyShoppingList from "@/static/images/pages/copy-shopping-list.png"
 
 const isOdd = (i: number) => i % 2 !== 0
 
@@ -40,7 +38,8 @@ function Feature({ text, imageURL, index }: IFeatureProps) {
       <p
         className={`align-self-center ${
           isOdd(index) ? "grid-column-2 grid-row-1" : ""
-        }`}>
+        }`}
+      >
         {text}
       </p>
       <div className="fact-img align-self-center ">
@@ -70,7 +69,6 @@ interface IHowToProps {
 }
 
 function HowTo({ content, index, imageURL }: IHowToProps) {
-  // tslint:disable-next-line:no-unsafe-any
   return (
     <li className="feature-grid" key={imageURL}>
       <p className="align-self-center">
@@ -90,18 +88,15 @@ function HowTo({ content, index, imageURL }: IHowToProps) {
 
 const features = [
   {
-    text:
-      "Full text recipe search. Easily find recipes by ingredient, author, and name.",
+    text: "Full text recipe search. Easily find recipes by ingredient, author, and name.",
     imgURL: searchImg,
   },
   {
-    text:
-      "Collaborate using Recipe Yak Teams to create a shared recipe schedule and shopping list.",
+    text: "Collaborate using Recipe Yak Teams to create a shared recipe schedule and shopping list.",
     imgURL: teamImg,
   },
   {
-    text:
-      "Automatically generate a condensed shopping list when selecting days to shop.",
+    text: "Automatically generate a condensed shopping list when selecting days to shop.",
     imgURL: copyShoppingList,
   },
 ]
@@ -164,7 +159,8 @@ const LandingPage = () => (
 
       <Link
         to="/signup"
-        className="my-button is-primary is-large justify-self-center">
+        className="my-button is-primary is-large justify-self-center"
+      >
         Create Account
       </Link>
     </section>
@@ -177,20 +173,19 @@ const LandingPage = () => (
 
     <FeaturesContainer>
       {features.map(({ text, imgURL }, i) => (
-        // tslint:disable-next-line:no-unsafe-any
         <Feature key={imgURL} text={text} imageURL={imgURL} index={i} />
       ))}
     </FeaturesContainer>
 
     <HowItWorksContainer>
       {howToSteps.map(({ text, imgURL }, i) => (
-        // tslint:disable-next-line:no-unsafe-any
         <HowTo key={imgURL} content={text} imageURL={imgURL} index={i} />
       ))}
 
       <Link
         to="/signup"
-        className="my-button is-primary is-large justify-self-center mt-4 mb-2">
+        className="my-button is-primary is-large justify-self-center mt-4 mb-2"
+      >
         Create Account
       </Link>
     </HowItWorksContainer>

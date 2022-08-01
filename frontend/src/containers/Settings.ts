@@ -25,12 +25,12 @@ const mapStateToProps = (state: IState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchData: () => {
-    fetchingUserAsync(dispatch)()
+    void fetchingUserAsync(dispatch)()
   },
   deleteUserAccount: () => {
     const response = prompt(ACCOUNT_DELETION_PROMPT)
     if (response != null && response.toLowerCase() === DELETION_RESPONSE) {
-      deleteUserAccountAsync(dispatch)()
+      void deleteUserAccountAsync(dispatch)()
     }
   },
   updateEmail: updatingEmailAsync(dispatch),

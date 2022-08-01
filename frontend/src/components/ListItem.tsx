@@ -77,9 +77,9 @@ export default class ListItem extends React.Component<
 
   handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     /* eslint-disable @typescript-eslint/consistent-type-assertions */
-    this.setState(({
+    this.setState({
       [e.target.name]: e.target.value,
-    } as unknown) as IListItemState)
+    } as unknown as IListItemState)
     /* eslint-enable @typescript-eslint/consistent-type-assertions */
   }
 
@@ -155,13 +155,13 @@ export default class ListItem extends React.Component<
               autoFocus
               onFocus={this.handleFocus}
               onChange={this.handleInputChange}
-              onKeyPress={e => {
+              onKeyPress={(e) => {
                 if (this.state.text === "") {
                   return
                 }
                 if (e.shiftKey && e.key === "Enter") {
                   e.preventDefault()
-                  this.update(e)
+                  void this.update(e)
                 }
               }}
               defaultValue={this.state.text}
@@ -179,7 +179,8 @@ export default class ListItem extends React.Component<
                 size="small"
                 loading={removing}
                 type="button"
-                name="delete">
+                name="delete"
+              >
                 Delete
               </Button>
             </p>
@@ -189,7 +190,8 @@ export default class ListItem extends React.Component<
               <Button
                 size="small"
                 name="cancel edit"
-                onClick={this.handleButtonClick}>
+                onClick={this.handleButtonClick}
+              >
                 Cancel
               </Button>
             </p>
@@ -198,7 +200,8 @@ export default class ListItem extends React.Component<
                 size="small"
                 onClick={this.update}
                 loading={updating}
-                name="save">
+                name="save"
+              >
                 Save
               </ButtonPrimary>
             </p>
@@ -214,7 +217,8 @@ export default class ListItem extends React.Component<
         <section
           className="cursor-pointer"
           title="click to edit"
-          onClick={this.enableEditing}>
+          onClick={this.enableEditing}
+        >
           {inner}
         </section>
         {this.state.unsavedChanges && (

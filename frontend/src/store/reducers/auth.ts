@@ -6,16 +6,13 @@ import {
 } from "typesafe-actions"
 import { IUser } from "@/store/reducers/user"
 
-export const setFromUrl = createStandardAction("SET_FROM_URL")<
-  IAuthState["fromUrl"]
->()
+export const setFromUrl =
+  createStandardAction("SET_FROM_URL")<IAuthState["fromUrl"]>()
 
-export const setErrorSignup = createStandardAction("SET_ERROR_SIGNUP")<
-  ISignupErrors
->()
-export const setErrorReset = createStandardAction("SET_ERROR_RESET")<
-  IPasswordResetError
->()
+export const setErrorSignup =
+  createStandardAction("SET_ERROR_SIGNUP")<ISignupErrors>()
+export const setErrorReset =
+  createStandardAction("SET_ERROR_RESET")<IPasswordResetError>()
 export const setErrorResetConfirmation = createStandardAction(
   "SET_ERROR_RESET_CONFIRMATION",
 )<IPasswordResetConfirmError>()
@@ -28,12 +25,10 @@ export const login = createAsyncAction(
 
 export const cleareLoginErrors = createStandardAction("CLEAR_LOGIN_ERRORS")()
 
-export const setLoadingSignup = createStandardAction("SET_LOADING_SIGNUP")<
-  IAuthState["loadingSignup"]
->()
-export const setLoadingReset = createStandardAction("SET_LOADING_RESET")<
-  IAuthState["loadingReset"]
->()
+export const setLoadingSignup =
+  createStandardAction("SET_LOADING_SIGNUP")<IAuthState["loadingSignup"]>()
+export const setLoadingReset =
+  createStandardAction("SET_LOADING_RESET")<IAuthState["loadingReset"]>()
 export const setLoadingResetConfirmation = createStandardAction(
   "SET_LOADING_RESET_CONFIRMATION",
 )<IAuthState["loadingResetConfirmation"]>()

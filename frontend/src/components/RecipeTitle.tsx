@@ -40,8 +40,8 @@ function TagEditor({
     <div className={cls("d-flex mt-2", className)}>
       <label className="d-flex align-center">tags</label>
       <div className="ml-2 d-flex align-center">
-        {tags?.map(x => (
-          <span className="tag">
+        {tags?.map((x) => (
+          <span className="tag" key={x}>
             {x}{" "}
             <button className="delete is-small" onClick={() => onRemove(x)} />
           </span>
@@ -51,7 +51,7 @@ function TagEditor({
         className="ml-2 max-width-200px"
         placeholder="new tag"
         value={newTag}
-        onChange={e => setNewTag(e.target.value)}
+        onChange={(e) => setNewTag(e.target.value)}
         onKeyDown={handleNewTag}
       />
     </div>
@@ -112,7 +112,7 @@ class RecipeTitle extends React.Component<
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.persist()
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       recipe: {
         ...prevState.recipe,
         [e.target.name]: e.target.value,
@@ -138,7 +138,7 @@ class RecipeTitle extends React.Component<
   }
 
   handleNewTag = (tag: string) => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       recipe: {
         ...prevState.recipe,
         tags: uniq([...(prevState.recipe.tags ?? []), tag]),
@@ -146,27 +146,18 @@ class RecipeTitle extends React.Component<
     }))
   }
   removeTag = (tag: string) => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       ...prevState,
       recipe: {
         ...prevState.recipe,
-        tags: prevState.recipe.tags?.filter(x => x !== tag),
+        tags: prevState.recipe.tags?.filter((x) => x !== tag),
       },
     }))
   }
 
   render() {
-    const {
-      id,
-      name,
-      author,
-      source,
-      servings,
-      tags,
-      time,
-      owner,
-      updating,
-    } = this.props
+    const { id, name, author, source, servings, tags, time, owner, updating } =
+      this.props
 
     const ownerName = owner.type === "team" ? owner.name : "you"
     return (
@@ -178,7 +169,8 @@ class RecipeTitle extends React.Component<
               <h1
                 className="title fs-2rem mb-0 mb-1 cursor-pointer"
                 title="click to edit"
-                onClick={this.handleEnableEdit}>
+                onClick={this.handleEnableEdit}
+              >
                 {name}
               </h1>
             </div>
@@ -269,7 +261,8 @@ class RecipeTitle extends React.Component<
                 className="mr-3"
                 type="button"
                 name="cancel recipe update"
-                onClick={this.toggleEdit}>
+                onClick={this.toggleEdit}
+              >
                 Cancel
               </Button>
               <ButtonPrimary
@@ -277,7 +270,8 @@ class RecipeTitle extends React.Component<
                 type="submit"
                 loading={updating}
                 onClick={this.handleSave}
-                name="save recipe">
+                name="save recipe"
+              >
                 Save
               </ButtonPrimary>
             </div>

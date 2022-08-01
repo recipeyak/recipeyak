@@ -102,34 +102,34 @@ const invites = (
     case getType(fetchInvites.failure):
       return { ...state, loading: false }
     case getType(acceptInvite.request):
-      return mapById(state, action.payload, invite => ({
+      return mapById(state, action.payload, (invite) => ({
         ...invite,
         accepting: true,
       }))
     case getType(acceptInvite.success):
-      return mapById(state, action.payload, invite => ({
+      return mapById(state, action.payload, (invite) => ({
         ...invite,
         accepting: false,
         status: "accepted",
       }))
     case getType(acceptInvite.failure):
-      return mapById(state, action.payload, invite => ({
+      return mapById(state, action.payload, (invite) => ({
         ...invite,
         accepting: false,
       }))
     case getType(declineInvite.request):
-      return mapById(state, action.payload, invite => ({
+      return mapById(state, action.payload, (invite) => ({
         ...invite,
         declining: true,
       }))
     case getType(declineInvite.success):
-      return mapById(state, action.payload, invite => ({
+      return mapById(state, action.payload, (invite) => ({
         ...invite,
         status: "declined",
         declining: false,
       }))
     case getType(declineInvite.failure):
-      return mapById(state, action.payload, invite => ({
+      return mapById(state, action.payload, (invite) => ({
         ...invite,
         status: "declined",
         declining: false,
