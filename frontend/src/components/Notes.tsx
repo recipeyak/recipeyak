@@ -7,7 +7,7 @@ import {
   patchRecipe,
 } from "@/store/reducers/recipes"
 import { ButtonPrimary, ButtonSecondary } from "@/components/Buttons"
-import { classNames } from "@/classnames"
+import { classNames as cls } from "@/classnames"
 
 import orderBy from "lodash/orderBy"
 import Textarea from "react-textarea-autosize"
@@ -19,6 +19,7 @@ import * as api from "@/api"
 
 import { isOk } from "@/result"
 import { useDispatch } from "@/hooks"
+import { useDropzone } from "react-dropzone"
 
 interface IUseNoteEditHandlers {
   readonly note: INote
@@ -151,7 +152,7 @@ function SharedEntry({
   return (
     <div
       ref={ref}
-      className={classNames(
+      className={cls(
         {
           "bg-highlight": isSharedNote,
         },
@@ -185,7 +186,7 @@ export function Note({ note, recipeId, className }: INoteProps) {
 
   return (
     <SharedEntry
-      className={classNames("d-flex align-items-start", className)}
+      className={cls("d-flex align-items-start", className)}
       id={noteId}>
       <Avatar avatarURL={note.created_by.avatar_url} className="mr-2" />
       <div className="w-100">
@@ -249,7 +250,7 @@ function TimelineEvent({ event }: { readonly event: RecipeTimelineItem }) {
   return (
     <SharedEntry
       id={eventId}
-      className={classNames("d-flex align-items-center mb-4 py-4")}>
+      className={cls("d-flex align-items-center mb-4 py-4")}>
       <Avatar
         avatarURL={event.created_by?.avatar_url ?? null}
         className="mr-2"
@@ -330,8 +331,8 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
   const editorText = isEditing ? draftText : ""
   const editorRowCount = !isEditing ? 1 : undefined
   const editorMinRowCount = isEditing ? 5 : 0
-  const editorClassNames = classNames({
-    "my-textarea mb-2": isEditing,
+  const editorClassNames = cls({
+    "my-textarea": isEditing,
     textarea: !isEditing,
   })
 
@@ -357,7 +358,49 @@ interface INoteCreatorProps {
   readonly recipeId: IRecipe["id"]
   readonly className?: string
 }
+
+const DragDropLabel = styled.label`
+  font-size: 0.85rem;
+  cursor: pointer;
+  border-style: solid;
+  border-top-style: none;
+  border-width: thin;
+  border-color: #dbdbdb;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
+  font-weight: 500;
+`
+
+const NoteWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+const ImageUploadContainer = styled.div`
+  border-style: solid;
+  border-top-style: none;
+  border-width: thin;
+  border-color: #dbdbdb;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
+`
+
 function NoteCreator({ recipeId, className }: INoteCreatorProps) {
+  const { acceptedFiles, getRootProps, getInputProps } = useDropzone()
+  const examples = [
+    {
+      path:
+        "Fisherman's Cottage on the Cliffs at Varengeville — Cloude Monet (1882) copy.jpg",
+    },
+  ]
+  const files = examples.map(file => <span key={file.path}>{file.path}</span>)
+
   const {
     isEditing,
     onEditorKeyDown,
@@ -377,17 +420,29 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
 
   return (
     <div className={className}>
-      <Textarea
-        id="new_note_textarea"
-        className={editorClassNames}
-        onKeyDown={onEditorKeyDown}
-        minRows={editorMinRowCount}
-        rows={editorRowCount}
-        value={editorText}
-        onFocus={onEditorFocus}
-        onChange={onEditorChange}
-        placeholder="Add a note..."
-      />
+      <NoteWrapper {...getRootProps({ className: "dropzone" })}>
+        <Textarea
+          id="new_note_textarea"
+          className={editorClassNames}
+          onKeyDown={onEditorKeyDown}
+          minRows={editorMinRowCount}
+          rows={editorRowCount}
+          value={editorText}
+          onFocus={onEditorFocus}
+          onChange={onEditorChange}
+          placeholder="Add a note..."
+        />
+        {isEditing && (
+          <>
+            <ImageUploadContainer>{files}</ImageUploadContainer>
+            <DragDropLabel className="text-muted mb-2">
+              <input type="file" style={{ display: "none" }} />
+              Attach files by dragging & dropping, selecting or pasting them.
+            </DragDropLabel>
+          </>
+        )}
+      </NoteWrapper>
+
       {isEditing && (
         <div className="d-flex justify-end align-center">
           <ButtonSecondary size="small" className="mr-3" onClick={onCancel}>
