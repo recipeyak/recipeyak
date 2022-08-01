@@ -3,6 +3,7 @@ import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react"
 import path from "path"
 import faviconsPlugin from "@darkobits/vite-plugin-favicons"
+import { visualizer } from "rollup-plugin-visualizer"
 
 const logoSrc = {
   source: "./src/static/images/logo/recipeyak-logo.svg",
@@ -19,6 +20,9 @@ export default defineConfig({
         appleStartup: logoSrc,
       },
     }),
+    // This isn't super accurate size wise, but gives a rough idea
+    // see: https://github.com/btd/rollup-plugin-visualizer/issues/96
+    visualizer(),
   ],
   resolve: {
     alias: [
@@ -45,7 +49,7 @@ export default defineConfig({
   test: {
     // automatically inject describe/it/test into tests
     globals: true,
-    // TODO(sbdchd): move to happy-dom? https://github.com/capricorn86/happy-dom
+    // happy-dom is supposed to be faster, but the tests failed when using it.
     environment: "jsdom",
     setupFiles: ["./vitest-setup.ts"],
   },

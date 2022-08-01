@@ -181,7 +181,7 @@ jobs:
           # copy bundle analyzer report
           command: |
             mkdir -p /tmp/frontend-artifacts
-            cp -R build/report.html build/webpack-stats.json /tmp/frontend-artifacts
+            cp -R stats.html /tmp/frontend-artifacts
       - store_artifacts:
           path: /tmp/frontend-artifacts
 

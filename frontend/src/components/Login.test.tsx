@@ -45,6 +45,7 @@ test("login success", async () => {
       },
     ),
   )
+  const user = userEvent.setup()
 
   render(
     <Provider store={store}>
@@ -56,21 +57,18 @@ test("login success", async () => {
     </Provider>,
   )
   // 1. fill out form
-  fireEvent.change(screen.getByPlaceholderText("rick.sanchez@me.com"), {
-    target: { value: "foo@example.com" },
-  })
-  fireEvent.change(screen.getByPlaceholderText("Super secret password."), {
-    target: { value: "password123" },
-  })
+  await user.type(
+    screen.getByPlaceholderText("rick.sanchez@me.com"),
+    "foo@example.com",
+  )
+  await user.type(
+    screen.getByPlaceholderText("Super secret password."),
+    "password123",
+  )
   // 2. submit form
-  fireEvent.click(screen.getByText("Submit"))
+  await user.click(screen.getByText("Submit"))
 
-  // 3. check api is called
-  await waitFor(() => {
-    expect(screen.getByText("Submit")).toBeDisabled()
-  })
-
-  // 4. updated store with info aka success!
+  // 3. check updated store with info aka success!
   expect(store.getState().router.location.pathname).toEqual("/")
   await waitFor(() => {
     expect(store.getState().user.email).toEqual("foo@example.com")
@@ -116,20 +114,18 @@ test("login failure", async () => {
     screen.getByPlaceholderText("rick.sanchez@me.com"),
     "foo@example.com",
   )
-  fireEvent.change(screen.getByPlaceholderText("Super secret password."), {
-    target: { value: "password123" },
-  })
+  await user.type(
+    screen.getByPlaceholderText("Super secret password."),
+    "password123",
+  )
   // 2. submit form
-  fireEvent.click(screen.getByText("Submit"))
+  await user.click(screen.getByText("Submit"))
 
-  // 3. check api is called
-  await waitFor(() => {
-    expect(screen.getByText("Submit")).toBeDisabled()
-  })
-
-  // 4. show error message
+  // 3. check error message
   await waitFor(() => {
     expect(screen.getByText("invalid email")).toBeInTheDocument()
   })
+
+  // 4. ensure state wasn't updated
   expect(store.getState().user.email).toEqual("")
 })

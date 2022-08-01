@@ -19,3 +19,4 @@ docker-compose-shipit.yml
 pip-wheel-metadata
 .testmondata
 .eslintcache
+stats.html
