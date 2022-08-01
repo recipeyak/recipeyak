@@ -1,4 +1,4 @@
-import { render, fireEvent, screen, waitFor } from "@testing-library/react"
+import { render, screen, waitFor } from "@testing-library/react"
 import Login from "@/components/Login"
 import { ConnectedRouter } from "connected-react-router"
 import { history } from "@/store/store"
@@ -9,15 +9,6 @@ import { HelmetProvider } from "react-helmet-async"
 import { IUserResponse } from "@/api"
 import { server, rest } from "@/testUtils"
 import userEvent from "@testing-library/user-event"
-
-function Foo() {
-  return <div>foo</div>
-}
-
-test("it works", () => {
-  render(<Foo />)
-  screen.getByText("foo")
-})
 
 test("login success", async () => {
   server.use(
