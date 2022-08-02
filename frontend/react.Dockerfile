@@ -7,14 +7,14 @@ WORKDIR /var/app
 
 COPY package.json yarn.lock /var/app/
 
-RUN yarn install
+RUN sudo yarn install
 
 COPY . /var/app/
 
 ARG FRONTEND_SENTRY_DSN
 ARG GIT_SHA
 
-RUN yarn build
+RUN s/build
 
 FROM alpine:3.7@sha256:8421d9a84432575381bfabd248f1eb56f3aa21d9d7cd2511583c68c9b7511d10
 RUN mkdir -p /var/app/build
