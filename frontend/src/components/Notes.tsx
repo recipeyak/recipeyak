@@ -330,6 +330,14 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     setDraftText(e.target.value)
   }
 
+  const addFiles = (files: FileList) => {
+    setFiles(existingFiles => [...files, ...existingFiles])
+  }
+
+  const removeFile = (f: File) => {
+    setFiles(files => files.filter(x => x !== f))
+  }
+
   const editorText = isEditing ? draftText : ""
   const editorRowCount = !isEditing ? 1 : undefined
   const editorMinRowCount = isEditing ? 5 : 0
@@ -354,7 +362,8 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     onCancel,
     isDisabled,
     files,
-    setFiles,
+    addFiles,
+    removeFile,
   }
 }
 
@@ -447,11 +456,13 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
     onCancel,
     isDisabled,
     files,
-    setFiles,
+    addFiles,
+    removeFile,
   } = useNoteCreatorHandlers({
     recipeId,
   })
 
+  const loadingImage = false
   return (
     <div className={className}>
       <NoteWrapper
@@ -463,7 +474,7 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
           // debugger
           if (event.dataTransfer?.files) {
             const newFiles = event.dataTransfer.files
-            setFiles(files => [...newFiles, ...files])
+            addFiles(newFiles)
           }
         }}>
         <Textarea
@@ -484,15 +495,20 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
                 {files.map(f => (
                   <ImagePreviewParent key={f.name}>
                     <a href={URL.createObjectURL(f)} target="_blank">
-                      <ImagePreview gray src={URL.createObjectURL(f)} />
+                      <ImagePreview
+                        gray={loadingImage}
+                        src={URL.createObjectURL(f)}
+                      />
                     </a>
-                    <LoaderContainer>
-                      <OverlayLoader />
-                    </LoaderContainer>
+                    {loadingImage && (
+                      <LoaderContainer>
+                        <OverlayLoader />
+                      </LoaderContainer>
+                    )}
                     <CloseButton
                       onClick={() => {
                         if (confirm("Remove image?")) {
-                          setFiles(files => files.filter(x => x !== f))
+                          removeFile(f)
                         }
                       }}>
                       &times;
@@ -508,7 +524,7 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
                 onChange={e => {
                   const newFiles = e.target.files
                   if (newFiles != null) {
-                    setFiles(files => [...newFiles, ...files])
+                    addFiles(newFiles)
                   }
                 }}
               />
