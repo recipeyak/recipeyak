@@ -385,10 +385,16 @@ const ImageUploadContainer = styled.div`
   border-top-style: none;
   border-width: thin;
   border-color: #dbdbdb;
-  padding-left: 0.25rem;
-  padding-right: 0.25rem;
-  padding-top: 0.1rem;
-  padding-bottom: 0.1rem;
+  padding: 0.25rem;
+  display: flex;
+`
+
+const ImagePreview = styled.img`
+  max-height: 100px;
+  max-width: 100px;
+  border-radius: 3px;
+  margin-right: 0.25rem;
+  cursor: pointer;
 `
 
 function NoteCreator({ recipeId, className }: INoteCreatorProps) {
@@ -399,7 +405,8 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
         "Fisherman's Cottage on the Cliffs at Varengeville — Cloude Monet (1882) copy.jpg",
     },
   ]
-  const files = examples.map(file => <span key={file.path}>{file.path}</span>)
+  const [files, setFiles] = React.useState<File[]>([])
+  // const files = examples.map(file => <span key={file.path}>{file.path}</span>)
 
   const {
     isEditing,
@@ -420,7 +427,18 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
 
   return (
     <div className={className}>
-      <NoteWrapper {...getRootProps({ className: "dropzone" })}>
+      <NoteWrapper
+        // {...getRootProps({ className: "dropzone" })}
+        onDragOver={event => {
+          event.dataTransfer.dropEffect = "copy"
+        }}
+        onDrop={event => {
+          // debugger
+          if (event.dataTransfer?.files) {
+            const newFiles = event.dataTransfer.files
+            setFiles(files => [...newFiles, ...files])
+          }
+        }}>
         <Textarea
           id="new_note_textarea"
           className={editorClassNames}
@@ -434,10 +452,34 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
         />
         {isEditing && (
           <>
-            <ImageUploadContainer>{files}</ImageUploadContainer>
+            {files.length > 0 && (
+              <ImageUploadContainer>
+                {files.map(f => (
+                  <ImagePreview
+                    title="click to modify"
+                    onClick={() => {
+                      if (confirm("Remove image?")) {
+                        setFiles(files => files.filter(x => x !== f))
+                      }
+                    }}
+                    key={f.name}
+                    src={URL.createObjectURL(f)}
+                  />
+                ))}
+              </ImageUploadContainer>
+            )}
             <DragDropLabel className="text-muted mb-2">
-              <input type="file" style={{ display: "none" }} />
-              Attach files by dragging & dropping, selecting or pasting them.
+              <input
+                type="file"
+                style={{ display: "none" }}
+                onChange={e => {
+                  const newFiles = e.target.files
+                  if (newFiles != null) {
+                    setFiles(files => [...newFiles, ...files])
+                  }
+                }}
+              />
+              Attach images by dragging & dropping, selecting or pasting them.
             </DragDropLabel>
           </>
         )}
