@@ -20,6 +20,7 @@ import * as api from "@/api"
 import { isOk } from "@/result"
 import { useDispatch } from "@/hooks"
 import { useDropzone } from "react-dropzone"
+import Loader from "./Loader"
 
 interface IUseNoteEditHandlers {
   readonly note: INote
@@ -283,6 +284,7 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
   const [draftText, setDraftText] = React.useState("")
   const [isEditing, setIsEditing] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)
+  const [files, setFiles] = React.useState<File[]>([])
 
   const cancelEditingNote = () => {
     setIsEditing(false)
@@ -351,6 +353,8 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     isLoading,
     onCancel,
     isDisabled,
+    files,
+    setFiles,
   }
 }
 
@@ -385,29 +389,50 @@ const ImageUploadContainer = styled.div`
   border-top-style: none;
   border-width: thin;
   border-color: #dbdbdb;
-  padding: 0.25rem;
+  padding: 0.5rem;
   display: flex;
 `
 
-const ImagePreview = styled.img`
+const ImagePreviewParent = styled.div`
+  position: relative;
+`
+const CloseButton = styled.button`
+  position: absolute;
+  right: 0;
+  padding: 0.3rem;
+  cursor: pointer;
+  top: -4px;
+  border-radius: 100%;
+  aspect-ratio: 1;
+  line-height: 0;
+  border-width: 0;
+  background-color: #4a4a4a;
+  color: #dbdbdb;
+  font-weight: 700;
+`
+
+const ImagePreview = styled.img<{ readonly gray: boolean }>`
   max-height: 100px;
   max-width: 100px;
   border-radius: 3px;
   margin-right: 0.25rem;
-  cursor: pointer;
+  filter: ${props => (props.gray ? "grayscale(100%)" : "unset")};
+`
+
+const OverlayLoader = styled(Loader)`
+  margin: auto;
+`
+
+const LoaderContainer = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  display: flex;
 `
 
 function NoteCreator({ recipeId, className }: INoteCreatorProps) {
-  const { acceptedFiles, getRootProps, getInputProps } = useDropzone()
-  const examples = [
-    {
-      path:
-        "Fisherman's Cottage on the Cliffs at Varengeville — Cloude Monet (1882) copy.jpg",
-    },
-  ]
-  const [files, setFiles] = React.useState<File[]>([])
-  // const files = examples.map(file => <span key={file.path}>{file.path}</span>)
-
   const {
     isEditing,
     onEditorKeyDown,
@@ -421,6 +446,8 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
     isLoading,
     onCancel,
     isDisabled,
+    files,
+    setFiles,
   } = useNoteCreatorHandlers({
     recipeId,
   })
@@ -455,16 +482,22 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
             {files.length > 0 && (
               <ImageUploadContainer>
                 {files.map(f => (
-                  <ImagePreview
-                    title="click to modify"
-                    onClick={() => {
-                      if (confirm("Remove image?")) {
-                        setFiles(files => files.filter(x => x !== f))
-                      }
-                    }}
-                    key={f.name}
-                    src={URL.createObjectURL(f)}
-                  />
+                  <ImagePreviewParent key={f.name}>
+                    <a href={URL.createObjectURL(f)} target="_blank">
+                      <ImagePreview gray src={URL.createObjectURL(f)} />
+                    </a>
+                    <LoaderContainer>
+                      <OverlayLoader />
+                    </LoaderContainer>
+                    <CloseButton
+                      onClick={() => {
+                        if (confirm("Remove image?")) {
+                          setFiles(files => files.filter(x => x !== f))
+                        }
+                      }}>
+                      &times;
+                    </CloseButton>
+                  </ImagePreviewParent>
                 ))}
               </ImageUploadContainer>
             )}
