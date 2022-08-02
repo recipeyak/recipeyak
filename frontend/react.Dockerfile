@@ -1,7 +1,7 @@
 FROM cimg/node:18.7.0@sha256:63c53c9c0fa343ea85eb3dbf6840a0bb213b5e49b96c8dedea759744173cd48d as builder
 
 # Install Application into container
-RUN set -ex && mkdir -p /var/app/
+RUN set -ex && sudo mkdir -p /var/app/
 
 WORKDIR /var/app
 
