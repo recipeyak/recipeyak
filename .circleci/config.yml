@@ -124,7 +124,7 @@ jobs:
 
   frontend_test:
     docker:
-      - image: cimg/node:18.7.0
+      - image: cimg/node:18.7.0@sha256:63c53c9c0fa343ea85eb3dbf6840a0bb213b5e49b96c8dedea759744173cd48d
     steps:
       - checkout
       - run:
@@ -150,7 +150,7 @@ jobs:
 
   frontend_lint:
     docker:
-      - image: cimg/node:18.7.0
+      - image: cimg/node:18.7.0@sha256:63c53c9c0fa343ea85eb3dbf6840a0bb213b5e49b96c8dedea759744173cd48d
     steps:
       - checkout
       - run:

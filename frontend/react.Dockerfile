@@ -1,4 +1,4 @@
-FROM node:14@sha256:a33ccec42e036118e7c797a7251387f8c4fb3486905d587b0453725a84e4d3e3 as builder
+FROM cimg/node:18.7.0@sha256:63c53c9c0fa343ea85eb3dbf6840a0bb213b5e49b96c8dedea759744173cd48d as builder
 
 # Install Application into container
 RUN set -ex && mkdir -p /var/app/
