@@ -1,4 +1,5 @@
 import { classNames } from "@/classnames"
+
 interface IAvatarProps {
   readonly avatarURL: string | null
   readonly className?: string

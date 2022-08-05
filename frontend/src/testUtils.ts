@@ -2,6 +2,7 @@ import { DefaultBodyType, MockedRequest, rest } from "msw"
 import { setupServer } from "msw/node"
 
 import store from "@/store/store"
+
 export { rest }
 
 type Deferred<T> = {
