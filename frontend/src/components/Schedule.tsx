@@ -1,15 +1,14 @@
 import { useEffect } from "react"
 import { connect } from "react-redux"
-import { Helmet } from "@/components/Helmet"
 import { Link, RouteComponentProps } from "react-router-dom"
 
 import Calendar from "@/components/Calendar"
+import { Helmet } from "@/components/Helmet"
 import Recipes from "@/components/RecipeList"
 import ShoppingList from "@/components/ShoppingList"
-
-import { Dispatch, updatingDefaultScheduleTeamIDAsync } from "@/store/thunks"
-import { Tabs, Tab } from "@/components/Tabs"
+import { Tab, Tabs } from "@/components/Tabs"
 import { ITeam } from "@/store/reducers/teams"
+import { Dispatch, updatingDefaultScheduleTeamIDAsync } from "@/store/thunks"
 import { styled } from "@/theme"
 
 interface ISidebarProps {

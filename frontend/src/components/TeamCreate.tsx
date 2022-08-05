@@ -1,14 +1,12 @@
 import React from "react"
 import { connect } from "react-redux"
 
-import { roles } from "@/components/TeamInvite"
-
 import { ButtonPrimary } from "@/components/Buttons"
-
-import { creatingTeamAsync, Dispatch } from "@/store/thunks"
+import { RadioButton, TextInput } from "@/components/Forms"
+import { roles } from "@/components/TeamInvite"
 import { IMember } from "@/store/reducers/teams"
 import { IState } from "@/store/store"
-import { TextInput, RadioButton } from "@/components/Forms"
+import { creatingTeamAsync, Dispatch } from "@/store/thunks"
 
 const mapStateToProps = (state: IState) => ({
   loading: !!state.teams.creating,
@@ -41,9 +39,11 @@ class TeamCreate extends React.Component<ITeamCreateProps, ITeamCreateState> {
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     /* eslint-disable @typescript-eslint/consistent-type-assertions */
-    this.setState({
-      [e.target.name]: e.target.value,
-    } as unknown as ITeamCreateState)
+    {
+      this.setState({
+        [e.target.name]: e.target.value,
+      } as unknown as ITeamCreateState)
+    }
   /* eslint-enable @typescript-eslint/consistent-type-assertions */
 
   handleSubmit = async (e: React.FormEvent) => {

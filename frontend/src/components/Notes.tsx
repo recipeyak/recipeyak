@@ -1,24 +1,23 @@
-import React, { useState, useEffect } from "react"
-import { Avatar } from "@/components/Avatar"
-import {
-  IRecipe,
-  INote,
-  RecipeTimelineItem,
-  patchRecipe,
-} from "@/store/reducers/recipes"
-import { ButtonPrimary, ButtonSecondary } from "@/components/Buttons"
-import { classNames } from "@/classnames"
-
 import orderBy from "lodash/orderBy"
-import Textarea from "react-textarea-autosize"
-import { Markdown } from "@/components/Markdown"
+import React, { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
-import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
-import { styled } from "@/theme"
-import * as api from "@/api"
+import Textarea from "react-textarea-autosize"
 
-import { isOk } from "@/result"
+import * as api from "@/api"
+import { classNames } from "@/classnames"
+import { Avatar } from "@/components/Avatar"
+import { ButtonPrimary, ButtonSecondary } from "@/components/Buttons"
+import { Markdown } from "@/components/Markdown"
+import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
 import { useDispatch } from "@/hooks"
+import { isOk } from "@/result"
+import {
+  INote,
+  IRecipe,
+  patchRecipe,
+  RecipeTimelineItem,
+} from "@/store/reducers/recipes"
+import { styled } from "@/theme"
 
 interface IUseNoteEditHandlers {
   readonly note: INote

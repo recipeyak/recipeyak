@@ -1,8 +1,8 @@
 import Raven from "raven-js"
 import ReactDOM from "react-dom/client"
 
-import { SENTRY_DSN, GIT_SHA } from "@/settings"
 import App from "@/components/App"
+import { GIT_SHA, SENTRY_DSN } from "@/settings"
 
 if (process.env.NODE_ENV === "production" && SENTRY_DSN) {
   Raven.config(SENTRY_DSN, {

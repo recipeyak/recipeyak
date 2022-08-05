@@ -1,7 +1,7 @@
 import notification, {
+  clearNotification,
   initialState,
   setNotification,
-  clearNotification,
 } from "@/store/reducers/notification"
 
 describe("Notification", () => {

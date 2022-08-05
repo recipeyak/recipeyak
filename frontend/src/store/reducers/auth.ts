@@ -1,9 +1,10 @@
 import {
+  ActionType,
+  createAsyncAction,
   createStandardAction,
   getType,
-  createAsyncAction,
-  ActionType,
 } from "typesafe-actions"
+
 import { IUser } from "@/store/reducers/user"
 
 export const setFromUrl =

@@ -1,4 +1,4 @@
-import { WebData, Success, Failure } from "@/webdata"
+import { Failure, Success, WebData } from "@/webdata"
 
 const enum IResultKind {
   Ok,

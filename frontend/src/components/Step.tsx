@@ -30,16 +30,16 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import { useRef } from "react"
+import { useDrag, useDrop } from "react-dnd"
 import { connect } from "react-redux"
-import { useDrop, useDrag } from "react-dnd"
-import { DragDrop, handleDndHover } from "@/dragDrop"
-import ListItem from "@/components/ListItem"
 
+import ListItem from "@/components/ListItem"
+import { DragDrop, handleDndHover } from "@/dragDrop"
 import {
-  IStep,
-  IRecipe,
-  updateStep,
   deleteStep,
+  IRecipe,
+  IStep,
+  updateStep,
 } from "@/store/reducers/recipes"
 
 interface IStepProps {
@@ -119,8 +119,9 @@ function StepBodyBasic({
   updating,
   removing,
 }: IStepBodyBasic) {
-  const listItemUpdate = (rID: number, sID: number, data: { text: string }) =>
+  const listItemUpdate = (rID: number, sID: number, data: { text: string }) => {
     update({ recipeID: rID, stepID: sID, ...data })
+  }
 
   return (
     <ListItem
@@ -130,7 +131,9 @@ function StepBodyBasic({
       update={listItemUpdate}
       updating={updating}
       removing={removing}
-      delete={() => remove({ recipeID, stepID: id })}
+      delete={() => {
+        remove({ recipeID, stepID: id })
+      }}
     />
   )
 }

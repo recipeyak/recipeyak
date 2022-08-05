@@ -1,21 +1,20 @@
+import { lighten } from "polished"
 import React from "react"
 import { Link } from "react-router-dom"
 
-import NavLink from "@/containers/NavLink"
-import Logo from "@/components/Logo"
-import { UserDropdown } from "@/components/UserDropdown"
-
-import { styled } from "@/theme"
 import {
   DropdownContainer,
   DropdownMenu,
   useDropdown,
 } from "@/components/Dropdown"
 import { Chevron } from "@/components/icons"
-import { lighten } from "polished"
-import { useSelector, useDispatch } from "@/hooks"
+import Logo from "@/components/Logo"
+import { UserDropdown } from "@/components/UserDropdown"
+import NavLink from "@/containers/NavLink"
+import { useDispatch, useSelector } from "@/hooks"
 import { scheduleURLFromTeamID } from "@/store/mapState"
 import { fetchingUserAsync } from "@/store/thunks"
+import { styled } from "@/theme"
 
 const WordMarkContainer = styled.span`
   font-size: 1.5rem;

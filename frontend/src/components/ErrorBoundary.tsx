@@ -1,7 +1,8 @@
-import * as React from "react"
 import Raven from "raven-js"
-import Logo from "@/components/Logo"
+import * as React from "react"
+
 import { ButtonPrimary } from "@/components/Buttons"
+import Logo from "@/components/Logo"
 
 interface IErrorBoundaryState {
   readonly error: null | Error
@@ -11,7 +12,9 @@ const ErrorReportButton = () => (
   <ButtonPrimary
     size="small"
     className="ml-1"
-    onClick={() => Raven.showReportDialog()}
+    onClick={() => {
+      Raven.showReportDialog()
+    }}
   >
     Submit error report
   </ButtonPrimary>

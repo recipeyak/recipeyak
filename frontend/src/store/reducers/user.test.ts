@@ -1,11 +1,11 @@
+import { login } from "@/store/reducers/auth"
 import user, {
-  IUserState,
-  IUser,
   fetchUser,
+  IUser,
+  IUserState,
   logOut,
   setUserLoggedIn,
 } from "@/store/reducers/user"
-import { login } from "@/store/reducers/auth"
 
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
 describe("fetchingUser", () => {

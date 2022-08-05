@@ -1,10 +1,10 @@
+import { ButtonLink, ButtonPlain, ButtonSecondary } from "@/components/Buttons"
 import {
-  useDropdown,
   DropdownContainer,
   DropdownMenu,
+  useDropdown,
 } from "@/components/Dropdown"
-import { ButtonPlain, ButtonLink, ButtonSecondary } from "@/components/Buttons"
-import { TextInput, selectTarget } from "@/components/Forms"
+import { selectTarget, TextInput } from "@/components/Forms"
 import { isSuccessLike, WebData } from "@/webdata"
 
 function Hr() {
@@ -69,7 +69,9 @@ export function CalendarMoreDropdown({
             ) : null}
             <ButtonLink
               className="d-block mx-auto text-underline box-shadow-none "
-              onClick={() => setSyncEnabled(!settings.data.syncEnabled)}
+              onClick={() => {
+                setSyncEnabled(!settings.data.syncEnabled)
+              }}
             >
               {settings.data.syncEnabled ? "Disable Sync" : "Enable Sync"}
             </ButtonLink>

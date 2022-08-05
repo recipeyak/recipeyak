@@ -1,17 +1,18 @@
 import axios, {
   AxiosError,
-  CancelToken,
   AxiosRequestConfig,
   AxiosResponse,
+  CancelToken,
 } from "axios"
-import { uuid4 } from "@/uuid"
-import { store } from "@/store/store"
-import raven from "raven-js"
-import { setUserLoggedIn } from "@/store/reducers/user"
-import { Result, Ok, Err } from "@/result"
-import * as t from "io-ts"
 import { Either, left } from "fp-ts/lib/Either"
+import * as t from "io-ts"
 import queryString from "query-string"
+import raven from "raven-js"
+
+import { Err, Ok, Result } from "@/result"
+import { setUserLoggedIn } from "@/store/reducers/user"
+import { store } from "@/store/store"
+import { uuid4 } from "@/uuid"
 
 export const baseHttp = axios.create()
 
@@ -69,6 +70,7 @@ async function http3<T, A, O>({
  */
 const invalidToken = (res: AxiosResponse) =>
   res != null &&
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   res.data.detail === "Authentication credentials were not provided."
 
 const handleResponseError = (error: AxiosError) => {
@@ -98,11 +100,13 @@ const handleResponseError = (error: AxiosError) => {
 baseHttp.interceptors.response.use(
   (response) => response,
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   (error) => handleResponseError(error),
 )
 
 baseHttp.interceptors.request.use(
   (cfg) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     cfg.headers["X-Request-ID"] = uuid4()
 
     return cfg
@@ -142,19 +146,19 @@ export const http = {
     baseHttp.head(url, config).then(toOk).catch(toErr),
   patch: <T>(
     url: string,
-    data?: {} | unknown,
+    data?: unknown,
     config?: AxiosRequestConfig,
   ): HttpResult<T> =>
     baseHttp.patch<T>(url, data, config).then(toOk).catch(toErr),
   put: <T>(
     url: string,
-    data?: {} | unknown,
+    data?: unknown,
     config?: AxiosRequestConfig,
   ): HttpResult<T> =>
     baseHttp.put<T>(url, data, config).then(toOk).catch(toErr),
   post: <T>(
     url: string,
-    data?: {} | unknown,
+    data?: unknown,
     config?: AxiosRequestConfig,
   ): HttpResult<T> =>
     baseHttp.post<T>(url, data, config).then(toOk).catch(toErr),
@@ -181,11 +185,15 @@ export const http = {
 
 /** Get the detail string from a response, if available, otherwise return the default */
 export function detailOrDefault(err: AxiosError, def: string): string {
-  if (err.response && err.response.data) {
+  if (err.response?.data) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (typeof err.response.data.detail === "string") {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
       return err.response.data.detail
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (Array.isArray(err.response.data.detail)) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
       return err.response.data.detail.join(" ")
     }
   }

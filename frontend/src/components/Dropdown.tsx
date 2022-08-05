@@ -1,7 +1,8 @@
 import React from "react"
-import { css, styled } from "@/theme"
+
 import { Link } from "@/components/Routing"
 import { useOnClickOutside } from "@/hooks"
+import { css, styled } from "@/theme"
 
 export const DropdownContainer = styled.div`
   position: relative;
@@ -71,8 +72,12 @@ export const DropdownMenu = styled.div<IDropdownMenuProps>`
 `
 export function useDropdown() {
   const [isOpen, setIsOpen] = React.useState(false)
-  const closeDropdown = React.useCallback(() => setIsOpen(false), [])
-  const toggle = React.useCallback(() => setIsOpen((p) => !p), [])
+  const closeDropdown = React.useCallback(() => {
+    setIsOpen(false)
+  }, [])
+  const toggle = React.useCallback(() => {
+    setIsOpen((p) => !p)
+  }, [])
   const ref = useOnClickOutside<HTMLDivElement>(closeDropdown)
   return { ref, toggle, close: closeDropdown, isOpen, setIsOpen }
 }

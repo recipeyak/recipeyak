@@ -1,7 +1,7 @@
 import React from "react"
 import Textarea from "react-textarea-autosize"
 
-import { ButtonPrimary, Button } from "@/components/Buttons"
+import { Button, ButtonPrimary } from "@/components/Buttons"
 
 interface IAddStepFormProps {
   readonly handleInputChange: (

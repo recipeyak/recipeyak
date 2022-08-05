@@ -1,13 +1,13 @@
 import React from "react"
+import { useDrag, useDrop } from "react-dnd"
 
-import IngredientView from "@/components/IngredientView"
-import GlobalEvent from "@/components/GlobalEvent"
-import { Button, ButtonLink, ButtonPrimary } from "@/components/Buttons"
-import { TextInput, selectTarget, CheckBox } from "@/components/Forms"
-import { hasSelection } from "@/utils/general"
-import { useDrop, useDrag } from "react-dnd"
-import { DragDrop, handleDndHover } from "@/dragDrop"
 import { isMobile } from "@/browser"
+import { Button, ButtonLink, ButtonPrimary } from "@/components/Buttons"
+import { CheckBox, selectTarget, TextInput } from "@/components/Forms"
+import GlobalEvent from "@/components/GlobalEvent"
+import IngredientView from "@/components/IngredientView"
+import { DragDrop, handleDndHover } from "@/dragDrop"
+import { hasSelection } from "@/utils/general"
 
 const emptyField = ({
   quantity,
@@ -128,8 +128,9 @@ export function Ingredient(props: {
     }))
   }
 
-  const toggleOptional = () =>
+  const toggleOptional = () => {
     setState((prev) => ({ ...prev, optional: !prev.optional }))
+  }
 
   const enableEditing = () => {
     if (hasSelection()) {
@@ -143,7 +144,7 @@ export function Ingredient(props: {
     }))
   }
 
-  const discardChanges = () =>
+  const discardChanges = () => {
     setState((s) => ({
       ...s,
       editing: false,
@@ -152,16 +153,19 @@ export function Ingredient(props: {
       name: props.quantity,
       description: props.description,
     }))
+  }
 
   const cancel = () =>
     // Restore state to match props
-    setState((s) => ({
-      ...s,
-      editing: false,
-      quantity: props.quantity,
-      name: props.name,
-      description: props.description,
-    }))
+    {
+      setState((s) => ({
+        ...s,
+        editing: false,
+        quantity: props.quantity,
+        name: props.name,
+        description: props.description,
+      }))
+    }
 
   const handleCancelButton = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -177,7 +181,8 @@ export function Ingredient(props: {
     e.stopPropagation()
 
     if (allEmptyFields(state)) {
-      return remove()
+      remove()
+      return
     }
 
     props.update({
@@ -195,7 +200,9 @@ export function Ingredient(props: {
     }))
   }
 
-  const remove = () => props.remove({ ingredientId: props.id })
+  const remove = () => {
+    props.remove({ ingredientId: props.id })
+  }
 
   const [, drop] = useDrop({
     accept: [DragDrop.SECTION, DragDrop.INGREDIENT],

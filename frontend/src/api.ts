@@ -1,12 +1,13 @@
-import { http } from "@/http"
-import { IUser, ISession } from "@/store/reducers/user"
-import { ITeam, IMember } from "@/store/reducers/teams"
-import { toISODateString } from "@/date"
-import { IRecipeBasic } from "@/components/RecipeTitle"
-import { IRecipe, IIngredient, IStep, INote } from "@/store/reducers/recipes"
-import { IInvite } from "@/store/reducers/invites"
-import { ICalRecipe } from "@/store/reducers/calendar"
 import * as t from "io-ts"
+
+import { IRecipeBasic } from "@/components/RecipeTitle"
+import { toISODateString } from "@/date"
+import { http } from "@/http"
+import { ICalRecipe } from "@/store/reducers/calendar"
+import { IInvite } from "@/store/reducers/invites"
+import { IIngredient, INote, IRecipe, IStep } from "@/store/reducers/recipes"
+import { IMember, ITeam } from "@/store/reducers/teams"
+import { ISession, IUser } from "@/store/reducers/user"
 
 export const updateUser = (data: Partial<IUser>) =>
   http.patch<IUser>("/api/v1/user/", data)

@@ -1,8 +1,8 @@
 import React from "react"
 
+import ErrorBoundary from "@/components/ErrorBoundary"
 import Footer from "@/components/Footer"
 import { Navbar } from "@/components/Nav"
-import ErrorBoundary from "@/components/ErrorBoundary"
 
 export const ContainerBase = ({ children }: { children: React.ReactNode }) => (
   <>

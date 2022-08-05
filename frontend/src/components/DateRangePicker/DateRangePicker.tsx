@@ -1,12 +1,12 @@
-import * as React from "react"
+import "@/components/DateRangePicker/date-range-picker.scss"
+
 import addMonths from "date-fns/addMonths"
-import isPast from "date-fns/isPast"
 import endOfDay from "date-fns/endOfDay"
+import isPast from "date-fns/isPast"
+import * as React from "react"
 
 import { classNames } from "@/classnames"
 import Month from "@/components/DateRangePicker/Month"
-
-import "@/components/DateRangePicker/date-range-picker.scss"
 import { Selecting } from "@/components/ShoppingList"
 
 interface IDateRangePickerProps {

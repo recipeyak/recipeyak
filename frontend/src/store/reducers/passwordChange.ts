@@ -1,8 +1,8 @@
 import {
-  getType,
-  createAsyncAction,
   ActionType,
+  createAsyncAction,
   createStandardAction,
+  getType,
 } from "typesafe-actions"
 
 export const passwordUpdate = createAsyncAction(

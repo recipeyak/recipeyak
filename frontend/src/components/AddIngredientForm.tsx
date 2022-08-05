@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 
-import { ButtonPrimary, Button } from "@/components/Buttons"
-import { TextInput, CheckBox, selectTarget } from "@/components/Forms"
+import { Button, ButtonPrimary } from "@/components/Buttons"
+import { CheckBox, selectTarget, TextInput } from "@/components/Forms"
 import GlobalEvent from "@/components/GlobalEvent"
 
 function focusFirstInput() {

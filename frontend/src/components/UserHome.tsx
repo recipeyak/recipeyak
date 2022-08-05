@@ -1,15 +1,4 @@
-import React, { useEffect } from "react"
-import { Helmet } from "@/components/Helmet"
-import { Link } from "react-router-dom"
-import Footer from "@/components/Footer"
-import { TextInput } from "@/components/Forms"
-import { css, styled } from "@/theme"
-import { useDispatch, useSelector, useScheduleTeamID, useApi } from "@/hooks"
 import { push } from "connected-react-router"
-import { fetchingRecipeListAsync } from "@/store/thunks"
-import { getTeamRecipes } from "@/store/reducers/recipes"
-import { searchRecipes } from "@/search"
-import * as api from "@/api"
 import {
   addDays,
   eachDayOfInterval,
@@ -17,6 +6,18 @@ import {
   parseISO,
   startOfToday,
 } from "date-fns"
+import React, { useEffect } from "react"
+import { Link } from "react-router-dom"
+
+import * as api from "@/api"
+import Footer from "@/components/Footer"
+import { TextInput } from "@/components/Forms"
+import { Helmet } from "@/components/Helmet"
+import { useApi, useDispatch, useScheduleTeamID, useSelector } from "@/hooks"
+import { searchRecipes } from "@/search"
+import { getTeamRecipes } from "@/store/reducers/recipes"
+import { fetchingRecipeListAsync } from "@/store/thunks"
+import { css, styled } from "@/theme"
 import { isFailure, isSuccess, mapSuccessLike } from "@/webdata"
 
 const SearchInput = styled(TextInput)`
@@ -293,7 +294,7 @@ const UserHome = () => {
 
   const loadingSuggestions = recipes?.kind !== "Success"
 
-  const suggestions = filteredRecipes?.recipes
+  const suggestions = filteredRecipes.recipes
     .map((result, index) => {
       const { recipe, match: matches } = result
 

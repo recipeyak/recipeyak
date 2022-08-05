@@ -1,11 +1,12 @@
-import { Link } from "react-router-dom"
 import { useDrag } from "react-dnd"
+import { Link } from "react-router-dom"
+
 import { classNames } from "@/classnames"
-import { recipeURL } from "@/urls"
-import { DragDrop } from "@/dragDrop"
 import { DragIcon } from "@/components/icons"
+import { DragDrop } from "@/dragDrop"
 import { Match } from "@/search"
 import { styled } from "@/theme"
+import { recipeURL } from "@/urls"
 
 interface IRecipeTitleProps {
   readonly url: string

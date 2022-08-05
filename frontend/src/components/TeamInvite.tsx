@@ -1,24 +1,21 @@
 import React from "react"
-import { Helmet } from "@/components/Helmet"
-import { Link, RouteComponentProps } from "react-router-dom"
 import { connect } from "react-redux"
+import { Link, RouteComponentProps } from "react-router-dom"
 
 import { ButtonPrimary } from "@/components/Buttons"
-
-import NoMatch from "@/components/NoMatch"
+import { RadioButton, TextInput } from "@/components/Forms"
+import { Helmet } from "@/components/Helmet"
 import Loader from "@/components/Loader"
-
-import { teamURL } from "@/urls"
-
+import NoMatch from "@/components/NoMatch"
+import { isErr, Result } from "@/result"
+import { IMember, ITeam } from "@/store/reducers/teams"
+import { IState } from "@/store/store"
 import {
+  Dispatch,
   fetchingTeamAsync,
   sendingTeamInvitesAsync,
-  Dispatch,
 } from "@/store/thunks"
-import { IState } from "@/store/store"
-import { IMember, ITeam } from "@/store/reducers/teams"
-import { TextInput, RadioButton } from "@/components/Forms"
-import { Result, isErr } from "@/result"
+import { teamURL } from "@/urls"
 
 const mapStateToProps = (state: IState, props: ITeamInviteProps) => {
   const id = parseInt(props.match.params.id, 10)
@@ -88,9 +85,11 @@ class TeamInvite extends React.Component<ITeamInviteProps, ITeamInviteState> {
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     /* eslint-disable @typescript-eslint/consistent-type-assertions */
-    this.setState({
-      [e.target.name]: e.target.value,
-    } as unknown as ITeamInviteState)
+    {
+      this.setState({
+        [e.target.name]: e.target.value,
+      } as unknown as ITeamInviteState)
+    }
   /* eslint-enable @typescript-eslint/consistent-type-assertions */
 
   render() {

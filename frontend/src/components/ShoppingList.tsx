@@ -1,49 +1,44 @@
-import React, { useState, useEffect, useRef } from "react"
-
+import addMonths from "date-fns/addMonths"
+import format from "date-fns/format"
+import isAfter from "date-fns/isAfter"
+import isBefore from "date-fns/isBefore"
+import isValid from "date-fns/isValid"
+import subMonths from "date-fns/subMonths"
+import groupBy from "lodash/groupBy"
+import React, { useEffect, useRef, useState } from "react"
 import { connect } from "react-redux"
 
-import format from "date-fns/format"
-import addMonths from "date-fns/addMonths"
-import subMonths from "date-fns/subMonths"
-import isBefore from "date-fns/isBefore"
-import isAfter from "date-fns/isAfter"
-import isValid from "date-fns/isValid"
-
-import groupBy from "lodash/groupBy"
-
-import {
-  reportBadMergeAsync,
-  showNotificationWithTimeoutAsync,
-  Dispatch,
-  fetchingShoppingListAsync,
-} from "@/store/thunks"
-
-import { ingredientByNameAlphabetical } from "@/sorters"
-
-import DateRangePicker from "@/components/DateRangePicker/DateRangePicker"
-import { IState } from "@/store/store"
-import {
-  setSelectingStart,
-  setSelectingEnd,
-} from "@/store/reducers/shoppinglist"
-import GlobalEvent from "@/components/GlobalEvent"
-import { Button } from "@/components/Buttons"
-import { DateInput } from "@/components/Forms"
-import {
-  WebData,
-  isFailure,
-  isLoading,
-  isSuccessOrRefetching,
-  isRefetching,
-} from "@/webdata"
-import { classNames } from "@/classnames"
 import {
   IGetShoppingListResponse,
   IIngredientItem,
   IQuantity,
   Unit,
 } from "@/api"
+import { classNames } from "@/classnames"
+import { Button } from "@/components/Buttons"
+import DateRangePicker from "@/components/DateRangePicker/DateRangePicker"
+import { DateInput } from "@/components/Forms"
+import GlobalEvent from "@/components/GlobalEvent"
+import { ingredientByNameAlphabetical } from "@/sorters"
+import {
+  setSelectingEnd,
+  setSelectingStart,
+} from "@/store/reducers/shoppinglist"
+import { IState } from "@/store/store"
+import {
+  Dispatch,
+  fetchingShoppingListAsync,
+  reportBadMergeAsync,
+  showNotificationWithTimeoutAsync,
+} from "@/store/thunks"
 import { normalizeUnitsFracs } from "@/text"
+import {
+  isFailure,
+  isLoading,
+  isRefetching,
+  isSuccessOrRefetching,
+  WebData,
+} from "@/webdata"
 
 const selectElementText = (el: Element) => {
   const sel = window.getSelection()
@@ -146,7 +141,7 @@ class ShoppingListList extends React.Component<IShoppingListContainerProps> {
       ? Object.entries(this.props.items.data)
       : []
 
-    const groups = Object.entries(groupBy(items, (x) => x[1] && x[1].category))
+    const groups = Object.entries(groupBy(items, (x) => x[1]?.category))
 
     return (
       <div className={`box p-rel min-height-75px mb-0 p-3 ${loadingClass}`}>
@@ -233,7 +228,9 @@ function ShoppingList({
     }
   }, [fetchData, teamID, startDay, endDay, selecting])
 
-  const closeInputs = () => setSelecting(Selecting.None)
+  const closeInputs = () => {
+    setSelecting(Selecting.None)
+  }
 
   const setStartDay = (date: Date) => {
     if (!isValid(date)) {
@@ -266,11 +263,19 @@ function ShoppingList({
     }
   }
 
-  const handleStartPickerClick = () => setSelecting(Selecting.Start)
-  const handleEndPickerClick = () => setSelecting(Selecting.End)
+  const handleStartPickerClick = () => {
+    setSelecting(Selecting.Start)
+  }
+  const handleEndPickerClick = () => {
+    setSelecting(Selecting.End)
+  }
 
-  const incrMonth = () => setMonth((m) => addMonths(m, 1))
-  const decrMonth = () => setMonth((m) => subMonths(m, 1))
+  const incrMonth = () => {
+    setMonth((m) => addMonths(m, 1))
+  }
+  const decrMonth = () => {
+    setMonth((m) => subMonths(m, 1))
+  }
 
   return (
     <div className="d-grid grid-gap-2">
@@ -329,8 +334,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   setStartDay: (date: Date) => dispatch(setSelectingStart(date)),
   setEndDay: (date: Date) => dispatch(setSelectingEnd(date)),
   reportBadMerge: reportBadMergeAsync(dispatch),
-  sendToast: (message: string) =>
-    showNotificationWithTimeoutAsync(dispatch)({ message, level: "info" }),
+  sendToast: (message: string) => {
+    showNotificationWithTimeoutAsync(dispatch)({ message, level: "info" })
+  },
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShoppingList)

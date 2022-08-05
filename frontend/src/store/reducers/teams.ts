@@ -1,11 +1,12 @@
-import { uniq, omit } from "lodash"
-import { IUser } from "@/store/reducers/user"
+import { omit, uniq } from "lodash"
 import {
-  createAsyncAction,
-  getType,
   ActionType,
+  createAsyncAction,
   createStandardAction,
+  getType,
 } from "typesafe-actions"
+
+import { IUser } from "@/store/reducers/user"
 
 export const deleteTeam = createStandardAction("DELETE_TEAM")<ITeam["id"]>()
 

@@ -1,8 +1,9 @@
 import React from "react"
 import ReactMarkdown, { Components } from "react-markdown"
-import { styled } from "@/theme"
-import * as settings from "@/settings"
+
 import { Link } from "@/components/Routing"
+import * as settings from "@/settings"
+import { styled } from "@/theme"
 
 const MarkdownWrapper = styled.div`
   word-break: break-word;
@@ -59,7 +60,7 @@ function renderLink({
   React.AnchorHTMLAttributes<HTMLAnchorElement>,
   HTMLAnchorElement
 >) {
-  if (href && href.startsWith(settings.DOMAIN)) {
+  if (href?.startsWith(settings.DOMAIN)) {
     const to = new URL(href).pathname
     return <Link {...props} to={to} children={to.substring(1)} />
   }

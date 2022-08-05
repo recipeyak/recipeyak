@@ -1,41 +1,40 @@
+import { replace } from "connected-react-router"
+import sortBy from "lodash/sortBy"
+import queryString from "query-string"
 import React from "react"
-import { Helmet } from "@/components/Helmet"
-import NoMatch from "@/components/NoMatch"
-import Loader from "@/components/Loader"
-import AddStep from "@/components/AddStep"
-import AddIngredientOrSection from "@/components/AddIngredient"
-import StepContainer from "@/components/StepContainer"
-import { Ingredient } from "@/components/Ingredient"
-import RecipeTitle from "@/components/RecipeTitle"
 import { RouteComponentProps } from "react-router"
 import { useLocation } from "react-router-dom"
-import { recipeURL } from "@/urls"
-import { pathNamesEqual } from "@/utils/url"
-import { formatHumanDate } from "@/date"
-import { replace } from "connected-react-router"
 
+import * as api from "@/api"
+import AddIngredientOrSection from "@/components/AddIngredient"
+import AddStep from "@/components/AddStep"
+import { Helmet } from "@/components/Helmet"
+import { Ingredient } from "@/components/Ingredient"
+import Loader from "@/components/Loader"
+import NoMatch from "@/components/NoMatch"
+import { NoteContainer } from "@/components/Notes"
+import { SectionTitle } from "@/components/RecipeHelpers"
+import { RecipeTimeline } from "@/components/RecipeTimeline"
+import RecipeTitle from "@/components/RecipeTitle"
+import { Section } from "@/components/Section"
+import StepContainer from "@/components/StepContainer"
+import { formatHumanDate } from "@/date"
+import { useDispatch, useOnWindowFocusChange, useSelector } from "@/hooks"
+import { getNewPosIngredients } from "@/position"
+import { isOk } from "@/result"
 import {
-  IRecipe,
-  getRecipeById,
-  fetchRecipe,
   deleteIngredient,
-  updateIngredient,
+  fetchRecipe,
+  getRecipeById,
   IIngredient,
+  IRecipe,
+  updateIngredient,
   updateSectionForRecipe,
 } from "@/store/reducers/recipes"
-import { isInitial, isLoading, isFailure, isSuccessLike } from "@/webdata"
-import { SectionTitle } from "@/components/RecipeHelpers"
 import { styled } from "@/theme"
-
-import queryString from "query-string"
-import { RecipeTimeline } from "@/components/RecipeTimeline"
-import { useDispatch, useSelector, useOnWindowFocusChange } from "@/hooks"
-import { NoteContainer } from "@/components/Notes"
-import { getNewPosIngredients } from "@/position"
-import sortBy from "lodash/sortBy"
-import { Section } from "@/components/Section"
-import * as api from "@/api"
-import { isOk } from "@/result"
+import { recipeURL } from "@/urls"
+import { pathNamesEqual } from "@/utils/url"
+import { isFailure, isInitial, isLoading, isSuccessLike } from "@/webdata"
 
 type SectionsAndIngredients = ReadonlyArray<
   | {
@@ -167,8 +166,12 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
     }
   }
 
-  const handleHideAddIngredient = () => setAddIngredient(false)
-  const handleShowAddIngredient = () => setAddIngredient(true)
+  const handleHideAddIngredient = () => {
+    setAddIngredient(false)
+  }
+  const handleShowAddIngredient = () => {
+    setAddIngredient(true)
+  }
 
   const handleRemove = ({ ingredientId }: { readonly ingredientId: number }) =>
     dispatch(
@@ -262,11 +265,18 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
             index={recipe.steps.length + 1}
             step={recipe.draftStep}
             autoFocus
-            onCancel={() => setAddStep(false)}
+            onCancel={() => {
+              setAddStep(false)
+            }}
             loading={recipe.addingStepToRecipe}
           />
         ) : (
-          <a className="text-muted" onClick={() => setAddStep(true)}>
+          <a
+            className="text-muted"
+            onClick={() => {
+              setAddStep(true)
+            }}
+          >
             add
           </a>
         )}

@@ -1,14 +1,14 @@
-import * as React from "react"
-import isWithinInterval from "date-fns/isWithinInterval"
+import endOfDay from "date-fns/endOfDay"
 import format from "date-fns/format"
 import isPast from "date-fns/isPast"
 import isSameDay from "date-fns/isSameDay"
+import isWithinInterval from "date-fns/isWithinInterval"
 import startOfDay from "date-fns/startOfDay"
-import endOfDay from "date-fns/endOfDay"
+import * as React from "react"
 
 import { ButtonPlain } from "@/components/Buttons"
 import Day from "@/components/DateRangePicker/Day"
-import { daysOfMonth, daysFromSunday } from "@/date"
+import { daysFromSunday, daysOfMonth } from "@/date"
 
 class MonthWeekTitles extends React.Component {
   render() {

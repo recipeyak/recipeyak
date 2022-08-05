@@ -1,6 +1,7 @@
+import { assertNever } from "@/assert"
+import { parseQuery, QueryNode } from "@/query-parser"
 import { byNameAlphabetical } from "@/sorters"
 import { IRecipe } from "@/store/reducers/recipes"
-import { parseQuery, QueryNode } from "@/query-parser"
 
 // https://stackoverflow.com/a/37511463/3720597
 const removeAccents = (x: string) =>
@@ -27,10 +28,6 @@ function sortArchivedName(a: IRecipe, b: IRecipe) {
     return -1
   }
   return byNameAlphabetical(a, b)
-}
-
-function assertNever(x: never): never {
-  return x
 }
 
 function evalField(node: QueryNode, recipe: IRecipe): Match[] | null {
