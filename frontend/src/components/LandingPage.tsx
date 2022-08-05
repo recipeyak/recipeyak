@@ -1,13 +1,13 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import Footer from "@/components/Footer"
 
+import Footer from "@/components/Footer"
 import addRecipeImg from "@/static/images/pages/add-recipe.png"
+import copyShoppingList from "@/static/images/pages/copy-shopping-list.png"
 import landingImg from "@/static/images/pages/schedule.png"
-import teamImg from "@/static/images/pages/team.png"
 import searchImg from "@/static/images/pages/search.png"
 import shopImg from "@/static/images/pages/shop.png"
-import copyShoppingList from "@/static/images/pages/copy-shopping-list.png"
+import teamImg from "@/static/images/pages/team.png"
 
 const isOdd = (i: number) => i % 2 !== 0
 

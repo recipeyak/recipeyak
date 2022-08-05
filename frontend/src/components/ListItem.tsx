@@ -1,11 +1,12 @@
 import React from "react"
 import Textarea from "react-textarea-autosize"
-import { IRecipe } from "@/store/reducers/recipes"
+
+import { Button, ButtonLink, ButtonPrimary } from "@/components/Buttons"
 import GlobalEvent from "@/components/GlobalEvent"
 import { Markdown } from "@/components/Markdown"
-import { Button, ButtonLink, ButtonPrimary } from "@/components/Buttons"
-import { hasSelection } from "@/utils/general"
+import { IRecipe } from "@/store/reducers/recipes"
 import { normalizeUnitsFracs } from "@/text"
+import { hasSelection } from "@/utils/general"
 
 interface IListItemProps {
   readonly id: number
@@ -138,7 +139,9 @@ export default class ListItem extends React.Component<
     })
   }
 
-  delete = () => this.props.delete(this.props.id)
+  delete = () => {
+    this.props.delete(this.props.id)
+  }
 
   render() {
     const { updating, removing } = this.props

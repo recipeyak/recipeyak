@@ -1,13 +1,14 @@
 import React from "react"
-import { Helmet } from "@/components/Helmet"
 import { Link } from "react-router-dom"
-import Loader from "@/components/Loader"
-import { ButtonPrimary, Button } from "@/components/Buttons"
-import { TextInput } from "@/components/Forms"
-import Sessions from "@/components/Sessions"
+
 import * as api from "@/api"
-import { isOk } from "@/result"
+import { Button, ButtonPrimary } from "@/components/Buttons"
+import { TextInput } from "@/components/Forms"
+import { Helmet } from "@/components/Helmet"
+import Loader from "@/components/Loader"
+import Sessions from "@/components/Sessions"
 import { useDispatch } from "@/hooks"
+import { isOk } from "@/result"
 import { fetchUser } from "@/store/reducers/user"
 import { showNotificationWithTimeoutAsync } from "@/store/thunks"
 
@@ -162,7 +163,9 @@ function NameForm(props: { initialValue: string }) {
           }}
           autoFocus
           defaultValue={name}
-          onChange={(val) => setName(val.target.value)}
+          onChange={(val) => {
+            setName(val.target.value)
+          }}
         />
       ) : (
         <span>{name}</span>
@@ -179,7 +182,9 @@ function NameForm(props: { initialValue: string }) {
       ) : (
         <a
           className="ml-2 has-text-primary"
-          onClick={() => setEditing((s) => !s)}
+          onClick={() => {
+            setEditing((s) => !s)
+          }}
         >
           Edit
         </a>
@@ -249,9 +254,13 @@ export default class Settings extends React.Component<
     /* eslint-enable @typescript-eslint/consistent-type-assertions */
   }
 
-  cancelEdit = () => this.setState({ editing: false })
+  cancelEdit = () => {
+    this.setState({ editing: false })
+  }
 
-  edit = () => this.setState({ editing: true })
+  edit = () => {
+    this.setState({ editing: true })
+  }
 
   updateEmail = () => {
     void this.props.updateEmail(this.state.email).then(() => {

@@ -1,14 +1,15 @@
+import { format } from "date-fns"
 import React from "react"
 import { Link } from "react-router-dom"
-import { toISODateString } from "@/date"
-import { recipeURL } from "@/urls"
-import Modal from "@/components/Modal"
-import { format } from "date-fns"
+
 import * as api from "@/api"
-import { isOk } from "@/result"
-import { useDispatch } from "@/hooks"
-import { moveCalendarRecipe } from "@/store/reducers/calendar"
 import cls from "@/classnames"
+import Modal from "@/components/Modal"
+import { toISODateString } from "@/date"
+import { useDispatch } from "@/hooks"
+import { isOk } from "@/result"
+import { moveCalendarRecipe } from "@/store/reducers/calendar"
+import { recipeURL } from "@/urls"
 
 const options = [
   "Sunday",
@@ -107,7 +108,9 @@ export function CalendarDayItemModal({
       >
         <button
           className={cls("button", { "is-active": reschedulerOpen })}
-          onClick={() => setReschedulerOpen((val) => !val)}
+          onClick={() => {
+            setReschedulerOpen((val) => !val)
+          }}
         >
           Reschedule
         </button>

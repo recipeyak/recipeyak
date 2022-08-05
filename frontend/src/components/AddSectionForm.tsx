@@ -1,11 +1,12 @@
 import React from "react"
+
+import * as api from "@/api"
+import { Button, ButtonPrimary } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
 import GlobalEvent from "@/components/GlobalEvent"
-import { ButtonPrimary, Button } from "@/components/Buttons"
-import * as api from "@/api"
 import { useDispatch } from "@/hooks"
-import { addSectionToRecipe } from "@/store/reducers/recipes"
 import { isOk } from "@/result"
+import { addSectionToRecipe } from "@/store/reducers/recipes"
 import { Status } from "@/webdata"
 
 export function AddSectionFormInner({

@@ -1,18 +1,17 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import { ButtonPrimary } from "@/components/Buttons"
 
+import { ButtonPrimary } from "@/components/Buttons"
+import { useDispatch, useSelector } from "@/hooks"
+import { getInvites, IInvite } from "@/store/reducers/invites"
+import { ITeam } from "@/store/reducers/teams"
 import {
   acceptingInviteAsync,
-  fetchingInvitesAsync,
   decliningInviteAsync,
+  fetchingInvitesAsync,
 } from "@/store/thunks"
-
 import { teamURL } from "@/urls"
-import { getInvites, IInvite } from "@/store/reducers/invites"
-import { useDispatch, useSelector } from "@/hooks"
-import { isLoading, isFailure, isInitial } from "@/webdata"
-import { ITeam } from "@/store/reducers/teams"
+import { isFailure, isInitial, isLoading } from "@/webdata"
 
 function useNotifications() {
   const dispatch = useDispatch()

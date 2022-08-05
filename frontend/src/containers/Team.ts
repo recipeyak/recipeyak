@@ -1,16 +1,16 @@
 import { connect } from "react-redux"
+import { RouteComponentProps } from "react-router"
 
+import Team from "@/components/Team"
+import { ITeam } from "@/store/reducers/teams"
+import { IState } from "@/store/store"
 import {
+  deletingTeamAsync,
+  Dispatch,
   fetchingTeamAsync,
   fetchingTeamMembersAsync,
-  deletingTeamAsync,
   updatingTeamAsync,
-  Dispatch,
 } from "@/store/thunks"
-import Team from "@/components/Team"
-import { IState } from "@/store/store"
-import { RouteComponentProps } from "react-router"
-import { ITeam } from "@/store/reducers/teams"
 import { notUndefined } from "@/utils/general"
 
 type RouteProps = RouteComponentProps<{ id: string }>

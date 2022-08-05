@@ -1,9 +1,8 @@
 import { connect } from "react-redux"
 
 import Home from "@/components/Home"
-
-import { Dispatch, fetchingUserAsync } from "@/store/thunks"
 import { IState } from "@/store/store"
+import { Dispatch, fetchingUserAsync } from "@/store/thunks"
 
 const mapStateToProps = (state: IState) => ({
   loggedIn: state.user.loggedIn,

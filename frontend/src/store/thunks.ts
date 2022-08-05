@@ -1,96 +1,97 @@
-import pickBy from "lodash/pickBy"
-import { random32Id } from "@/uuid"
-import { toISODateString, second, isInsideChangeWindow } from "@/date"
+import { AxiosError, AxiosResponse } from "axios"
 import { push } from "connected-react-router"
+import { addWeeks, endOfWeek, parseISO, startOfWeek, subWeeks } from "date-fns"
+import { isRight } from "fp-ts/lib/Either"
+import pickBy from "lodash/pickBy"
+import raven from "raven-js"
 // eslint-disable-next-line no-restricted-imports
 import { Dispatch as ReduxDispatch } from "redux"
-import { AxiosError, AxiosResponse } from "axios"
-import raven from "raven-js"
-import { store, Action, IState } from "@/store/store"
+
+import * as api from "@/api"
+import { heldKeys } from "@/components/CurrentKeys"
+import { IRecipeBasic } from "@/components/RecipeTitle"
+import { isInsideChangeWindow, second, toISODateString } from "@/date"
+import { Err, isErr, isOk, Ok, Result } from "@/result"
+import { clearAddRecipeForm } from "@/store/reducers/addrecipe"
 import {
-  updateEmail,
-  updateRecipeTeamID,
+  login,
+  setErrorReset,
+  setErrorResetConfirmation,
+  setErrorSignup,
+  setLoadingReset,
+  setLoadingResetConfirmation,
+  setLoadingSignup,
+} from "@/store/reducers/auth"
+import {
+  deleteCalendarRecipe,
+  fetchCalendarRecipes,
+  getExistingRecipe,
+  ICalRecipe,
+  moveCalendarRecipe,
+  replaceCalendarRecipe,
+  setCalendarRecipe,
+} from "@/store/reducers/calendar"
+import {
+  acceptInvite,
+  declineInvite,
+  fetchInvites,
+  IInvite,
+} from "@/store/reducers/invites"
+import {
+  clearNotification,
+  INotificationState,
+  setNotification,
+} from "@/store/reducers/notification"
+import { passwordUpdate } from "@/store/reducers/passwordChange"
+import {
+  createRecipe,
+  deleteIngredient,
+  deleteStep,
+  fetchRecipe,
+  fetchRecipeList,
+  IIngredient,
+  IRecipe,
+  IStep,
+  setSchedulingRecipe,
+  updateRecipeOwner,
+  updateStep,
+} from "@/store/reducers/recipes"
+import { fetchShoppingList } from "@/store/reducers/shoppinglist"
+import {
+  deleteMembership,
+  deleteTeam,
+  fetchTeam,
+  fetchTeamMembers,
+  fetchTeams,
+  IMember,
+  ITeam,
+  setCopyingTeam,
+  setCreatingTeam,
+  setDeletingMembership,
+  setSendingTeamInvites,
+  setTeam,
+  setUpdatingUserTeamLevel,
+  setUserTeamLevel,
+  updateTeamById,
+} from "@/store/reducers/teams"
+import {
+  fetchSessions,
   fetchUser,
-  setUserLoggedIn,
+  ISession,
   IUser,
   IUserState,
   logOut,
-  fetchSessions,
-  ISession,
-  logoutSessionById,
   logoutAllSessions,
+  logoutSessionById,
+  setUserLoggedIn,
+  updateEmail,
+  updateRecipeTeamID,
   updateScheduleTeamID,
 } from "@/store/reducers/user"
-import {
-  ICalRecipe,
-  setCalendarRecipe,
-  replaceCalendarRecipe,
-  deleteCalendarRecipe,
-  moveCalendarRecipe,
-  fetchCalendarRecipes,
-  getExistingRecipe,
-} from "@/store/reducers/calendar"
-import {
-  IInvite,
-  fetchInvites,
-  declineInvite,
-  acceptInvite,
-} from "@/store/reducers/invites"
-import {
-  INotificationState,
-  setNotification,
-  clearNotification,
-} from "@/store/reducers/notification"
-import {
-  ITeam,
-  deleteTeam,
-  setUpdatingUserTeamLevel,
-  setUserTeamLevel,
-  setDeletingMembership,
-  setSendingTeamInvites,
-  deleteMembership,
-  setCreatingTeam,
-  updateTeamById,
-  setCopyingTeam,
-  IMember,
-  fetchTeams,
-  fetchTeam,
-  setTeam,
-  fetchTeamMembers,
-} from "@/store/reducers/teams"
-import {
-  IRecipe,
-  setSchedulingRecipe,
-  updateRecipeOwner,
-  deleteStep,
-  updateStep,
-  deleteIngredient,
-  IIngredient,
-  fetchRecipe,
-  fetchRecipeList,
-  createRecipe,
-  IStep,
-} from "@/store/reducers/recipes"
-import * as api from "@/api"
-import { clearAddRecipeForm } from "@/store/reducers/addrecipe"
-import { fetchShoppingList } from "@/store/reducers/shoppinglist"
-import { passwordUpdate } from "@/store/reducers/passwordChange"
-import { IRecipeBasic } from "@/components/RecipeTitle"
-import {
-  setErrorSignup,
-  setErrorReset,
-  setErrorResetConfirmation,
-  setLoadingSignup,
-  setLoadingReset,
-  setLoadingResetConfirmation,
-  login,
-} from "@/store/reducers/auth"
+import { Action, IState, store } from "@/store/store"
 import { recipeURL } from "@/urls"
+import { random32Id } from "@/uuid"
 import { isSuccessOrRefetching } from "@/webdata"
-import { parseISO, startOfWeek, subWeeks, addWeeks, endOfWeek } from "date-fns"
-import { isOk, isErr, Ok, Err, Result } from "@/result"
-import { heldKeys } from "@/components/CurrentKeys"
-import { isRight } from "fp-ts/lib/Either"
 
 // TODO(sbdchd): move to @/store/store
 export type Dispatch = ReduxDispatch<Action>
@@ -147,9 +148,8 @@ export const loggingOutAsync = (dispatch: Dispatch) => async () => {
 }
 
 const emailExists = (err: AxiosError) =>
-  err.response &&
-  err.response.data.email != null &&
-  err.response.data.email[0].includes("email already exists")
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+  err.response?.data.email?.[0].includes("email already exists")
 
 export const updatingEmailAsync =
   (dispatch: Dispatch) => async (email: IUser["email"]) => {
@@ -266,7 +266,12 @@ export const updatingPasswordAsync =
       const err = res.error
       const badRequest = err.response && err.response.status === 400
       if (err.response && badRequest) {
-        const data = err.response.data
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const data: {
+          new_password2?: string[]
+          new_password1?: string[]
+          old_password?: string[]
+        } = err.response.data
 
         dispatch(
           passwordUpdate.failure({
@@ -307,8 +312,11 @@ export const postNewRecipeAsync =
 
       const errors =
         (err.response && {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           errorWithName: err.response.data.name != null,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           errorWithIngredients: err.response.data.ingredients != null,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           errorWithSteps: err.response.data.steps != null,
         }) ||
         {}
@@ -409,7 +417,12 @@ export const logUserInAsync =
       const err = res.error
       const badRequest = err.response && err.response.status === 400
       if (err.response && badRequest) {
-        const data = err.response.data
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const data: {
+          email?: string[]
+          password1?: string[]
+          non_field_errors?: string[]
+        } = err.response.data
 
         dispatch(
           login.failure({
@@ -443,7 +456,13 @@ export const signupAsync =
     } else {
       const err = res.error
       if (isbadRequest(err)) {
-        const data = err.response && err.response.data
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const data: {
+          email?: string[]
+          password1?: string[]
+          password2?: string[]
+          non_field_errors?: string[]
+        } = err.response?.data
         dispatch(
           setErrorSignup({
             email: data["email"],
@@ -465,7 +484,7 @@ export const resetAsync = (dispatch: Dispatch) => async (email: string) => {
   const res = await api.resetPassword(email)
   if (isOk(res)) {
     dispatch(setLoadingReset(false))
-    const message = res && res.data && res.data.detail
+    const message = res?.data?.detail
     showNotificationWithTimeoutAsync(dispatch)({
       message,
       level: "success",
@@ -479,7 +498,9 @@ export const resetAsync = (dispatch: Dispatch) => async (email: string) => {
       sticky: true,
     })
     if (isbadRequest(err)) {
-      const data = err.response && err.response.data
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const data: { email: string[]; non_field_errors?: string[] } =
+        err.response?.data
       dispatch(
         setErrorReset({
           email: data["email"],
@@ -516,7 +537,7 @@ export const resetConfirmationAsync =
     )
     if (isOk(res)) {
       dispatch(setLoadingResetConfirmation(false))
-      const message = res && res.data && res.data.detail
+      const message = res?.data?.detail
       showNotificationWithTimeoutAsync(dispatch)({
         message,
         level: "success",
@@ -531,15 +552,20 @@ export const resetConfirmationAsync =
         sticky: true,
       })
       if (isbadRequest(err)) {
-        const data = err.response && err.response.data
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const data: {
+          token?: string[]
+          new_password1?: string[]
+          new_password2?: string[]
+          uid?: string[]
+          non_field_errors?: string[]
+        } = err.response?.data
 
         const tokenData =
-          data["token"] &&
-          data["token"].map((x: unknown) => "token: " + String(x))
+          data["token"]?.map((x: unknown) => "token: " + String(x)) ?? []
         const uidData =
-          data["uid"] && data["uid"].map((x: unknown) => "uid: " + String(x))
-        const nonFieldErrors = []
-          .concat(data["non_field_errors"])
+          data["uid"]?.map((x: unknown) => "uid: " + String(x)) ?? []
+        const nonFieldErrors = (data["non_field_errors"] ?? [])
           .concat(tokenData)
           .concat(uidData)
 
@@ -582,9 +608,10 @@ export const fetchingTeamMembersAsync =
   }
 
 const attemptedDeleteLastAdmin = (res: AxiosResponse) =>
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   res.status === 400 &&
-  res.data.level &&
-  res.data.level[0].includes("cannot demote")
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+  res.data.level?.[0].includes("cannot demote")
 
 export const settingUserTeamLevelAsync =
   (dispatch: Dispatch) =>
@@ -604,7 +631,8 @@ export const settingUserTeamLevelAsync =
     } else {
       const err = res.error
       if (err.response && attemptedDeleteLastAdmin(err.response)) {
-        const message = err.response.data.level[0]
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        const message: string = err.response.data.level[0]
         showNotificationWithTimeoutAsync(dispatch)({
           message,
           level: "danger",
@@ -636,7 +664,8 @@ export const deletingMembershipAsync =
       }
     } else {
       const err = res.error
-      const message = err.response && err.response.data
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const message: string = err.response?.data
       showNotificationWithTimeoutAsync(dispatch)({
         message,
         level: "danger",
@@ -663,16 +692,18 @@ export const deletingTeamAsync =
       const err = res.error
       let message = "Uh Oh! Something went wrong."
 
-      if (err.response && err.response.status === 403) {
-        message =
-          err.response.data && err.response.data.detail
-            ? err.response.data.detail
-            : "You are not authorized to delete this team"
-      } else if (err.response && err.response.status === 404) {
-        message =
-          err.response.data && err.response.data.detail
-            ? err.response.data.detail
-            : "The team you are attempting to delete doesn't exist"
+      if (err.response?.status === 403) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        message = err.response.data?.detail
+          ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            err.response.data.detail
+          : "You are not authorized to delete this team"
+      } else if (err.response?.status === 404) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        message = err.response.data?.detail
+          ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            err.response.data.detail
+          : "The team you are attempting to delete doesn't exist"
       } else {
         raven.captureException(err)
       }
@@ -841,9 +872,11 @@ export const deleteUserAccountAsync = (dispatch: Dispatch) => async () => {
     if (
       error.response &&
       error.response.status === 403 &&
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       error.response.data.detail
     ) {
       showNotificationWithTimeoutAsync(dispatch)({
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         message: error.response.data.detail,
         level: "danger",
       })

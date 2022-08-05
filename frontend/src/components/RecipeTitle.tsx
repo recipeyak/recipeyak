@@ -1,19 +1,20 @@
-import React from "react"
 import uniq from "lodash/uniq"
+import React from "react"
+import { connect } from "react-redux"
+
+import cls from "@/classnames"
 import { Button, ButtonPrimary } from "@/components/Buttons"
+import { TextInput } from "@/components/Forms"
+import GlobalEvent from "@/components/GlobalEvent"
 import MetaData from "@/components/MetaData"
+import Owner from "@/components/Owner"
+import { Dropdown } from "@/components/RecipeTitleDropdown"
 import {
   IRecipe,
-  updateRecipe,
   toggleEditingRecipe,
+  updateRecipe,
 } from "@/store/reducers/recipes"
-import GlobalEvent from "@/components/GlobalEvent"
-import { TextInput } from "@/components/Forms"
 import { hasSelection } from "@/utils/general"
-import { connect } from "react-redux"
-import { Dropdown } from "@/components/RecipeTitleDropdown"
-import Owner from "@/components/Owner"
-import cls from "@/classnames"
 
 function TagEditor({
   tags,
@@ -43,7 +44,12 @@ function TagEditor({
         {tags?.map((x) => (
           <span className="tag" key={x}>
             {x}{" "}
-            <button className="delete is-small" onClick={() => onRemove(x)} />
+            <button
+              className="delete is-small"
+              onClick={() => {
+                onRemove(x)
+              }}
+            />
           </span>
         ))}
       </div>
@@ -51,7 +57,9 @@ function TagEditor({
         className="ml-2 max-width-200px"
         placeholder="new tag"
         value={newTag}
-        onChange={(e) => setNewTag(e.target.value)}
+        onChange={(e) => {
+          setNewTag(e.target.value)
+        }}
         onKeyDown={handleNewTag}
       />
     </div>
@@ -100,7 +108,9 @@ class RecipeTitle extends React.Component<
     this.setState({ recipe: { tags: this.props.tags } })
   }
 
-  toggleEdit = () => this.props.toggleEditing(this.props.id)
+  toggleEdit = () => {
+    this.props.toggleEditing(this.props.id)
+  }
 
   handleSave = () => {
     const data = this.state.recipe

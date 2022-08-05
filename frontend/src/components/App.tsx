@@ -1,45 +1,46 @@
+import "@/components/scss/main.scss"
+
+import { ConnectedRouter } from "connected-react-router"
 import React from "react"
+import { DndProvider } from "react-dnd"
+import { HTML5Backend } from "react-dnd-html5-backend"
+import { HelmetProvider } from "react-helmet-async"
+import { connect, Provider } from "react-redux"
+import { StaticContext } from "react-router"
 import {
-  Route,
-  Switch,
   Redirect,
+  Route,
+  RouteComponentProps,
   RouteProps,
+  Switch,
   useHistory,
 } from "react-router-dom"
-import { ConnectedRouter } from "connected-react-router"
+
+import { Container, ContainerBase } from "@/components/Base"
+import { CurrentKeys } from "@/components/CurrentKeys"
+import ErrorBoundary from "@/components/ErrorBoundary"
 import { Helmet } from "@/components/Helmet"
-import { HelmetProvider } from "react-helmet-async"
-import { HTML5Backend } from "react-dnd-html5-backend"
-import { DndProvider } from "react-dnd"
-import { connect } from "react-redux"
-import { history, IState } from "@/store/store"
-import Home from "@/containers/Home"
-import Signup from "@/containers/Signup"
+import HelpMenuModal from "@/components/HelpMenuModal"
 import Login from "@/components/Login"
 import NoMatch from "@/components/NoMatch"
-import Recipe from "@/components/Recipe"
-import PasswordReset from "@/containers/PasswordReset"
-import Settings from "@/containers/Settings"
-import Team from "@/containers/Team"
-import Teams from "@/components/Teams"
-import TeamInvite from "@/components/TeamInvite"
-import TeamCreate from "@/components/TeamCreate"
-import AddRecipe from "@/containers/AddRecipe"
-import Notification from "@/containers/Notification"
-import { Container, ContainerBase } from "@/components/Base"
-import PasswordChange from "@/containers/PasswordChange"
-import PasswordSet from "@/containers/PasswordSet"
 import PasswordResetConfirmation from "@/components/PasswordResetConfirmation"
-import Schedule from "@/components/Schedule"
-import HelpMenuModal from "@/components/HelpMenuModal"
+import Recipe from "@/components/Recipe"
 import Recipes from "@/components/RecipeList"
-import ErrorBoundary from "@/components/ErrorBoundary"
-import { Provider } from "react-redux"
-import store from "@/store/store"
-import { ThemeProvider, theme } from "@/theme"
-
-import "@/components/scss/main.scss"
-import { CurrentKeys } from "@/components/CurrentKeys"
+import Schedule from "@/components/Schedule"
+import TeamCreate from "@/components/TeamCreate"
+import TeamInvite from "@/components/TeamInvite"
+import Teams from "@/components/Teams"
+import AddRecipe from "@/containers/AddRecipe"
+import Home from "@/containers/Home"
+import Notification from "@/containers/Notification"
+import PasswordChange from "@/containers/PasswordChange"
+import PasswordReset from "@/containers/PasswordReset"
+import PasswordSet from "@/containers/PasswordSet"
+import Settings from "@/containers/Settings"
+import Signup from "@/containers/Signup"
+import Team from "@/containers/Team"
+import store, { history, IState } from "@/store/store"
+import { theme, ThemeProvider } from "@/theme"
 
 interface IAuthRouteProps extends RouteProps {
   readonly authenticated: boolean
@@ -49,9 +50,13 @@ const mapAuthenticated = (state: IState) => ({
   authenticated: state.user.loggedIn,
 })
 
-type ArgumentsType<T> = T extends (...args: infer A) => any ? A : never
-
-type ComponentProps = ArgumentsType<RouteProps["render"]>[0]
+type ComponentProps = RouteComponentProps<
+  {
+    [x: string]: string | undefined
+  },
+  StaticContext,
+  unknown
+>
 
 /** Return a ReactNode when provided a component or render function
  *

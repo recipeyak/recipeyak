@@ -1,9 +1,9 @@
 import { connect } from "react-redux"
 
-import { signupAsync, Dispatch } from "@/store/thunks"
 import Signup from "@/components/Signup"
-import { IState } from "@/store/store"
 import { setErrorSignup } from "@/store/reducers/auth"
+import { IState } from "@/store/store"
+import { Dispatch, signupAsync } from "@/store/thunks"
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {

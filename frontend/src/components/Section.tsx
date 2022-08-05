@@ -1,15 +1,16 @@
 import React from "react"
-import { useDrop, useDrag } from "react-dnd"
-import { DragDrop, handleDndHover } from "@/dragDrop"
-import { AddSectionFormInner } from "@/components/AddSectionForm"
-import { Status } from "@/webdata"
+import { useDrag, useDrop } from "react-dnd"
+
 import * as api from "@/api"
-import { isOk } from "@/result"
+import { AddSectionFormInner } from "@/components/AddSectionForm"
+import { DragDrop, handleDndHover } from "@/dragDrop"
 import { useDispatch } from "@/hooks"
+import { isOk } from "@/result"
 import {
   removeSectionFromRecipe,
   updateSectionForRecipe,
 } from "@/store/reducers/recipes"
+import { Status } from "@/webdata"
 
 type State = {
   readonly updating: Status
@@ -63,10 +64,13 @@ export function Section({
     setState((prev) => ({ ...prev, localTitle: title }))
   }, [title])
 
-  const handleEnableEditing = () =>
+  const handleEnableEditing = () => {
     setState((prev) => ({ ...prev, editing: true }))
+  }
 
-  const handleCancel = () => setState(getInitialState(title))
+  const handleCancel = () => {
+    setState(getInitialState(title))
+  }
   const handleRemove = () => {
     setState((prev) => ({ ...prev, removing: "loading" }))
     void api.deleteSection({ sectionId }).then((res) => {

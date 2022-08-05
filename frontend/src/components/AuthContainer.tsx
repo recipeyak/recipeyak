@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
-import { Helmet } from "@/components/Helmet"
 import { Link } from "react-router-dom"
 
+import { Helmet } from "@/components/Helmet"
 import Logo from "@/components/Logo"
 
 interface IAuthContainerProps {

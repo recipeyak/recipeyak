@@ -1,5 +1,6 @@
-import { setupServer } from "msw/node"
 import { DefaultBodyType, MockedRequest, rest } from "msw"
+import { setupServer } from "msw/node"
+
 import store from "@/store/store"
 export { rest }
 
@@ -34,11 +35,17 @@ beforeEach(() => {
 
 export const server = setupServer()
 // Start server before all tests
-beforeAll(() => server.listen())
+beforeAll(() => {
+  server.listen()
+})
 // Close server after all tests
-afterAll(() => server.close())
+afterAll(() => {
+  server.close()
+})
 // Reset handlers after each test `important for test isolation`
-afterEach(() => server.resetHandlers())
+afterEach(() => {
+  server.resetHandlers()
+})
 
 // We setup all this stuff below to get test failures when we forget to mock an
 // endpoint.
@@ -64,6 +71,7 @@ afterEach(async () => {
     await Promise.allSettled([...inprogress.values()].map((x) => x.promise))
   )
     .filter((x): x is PromiseRejectedResult => x.status === "rejected")
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     .map((x): MockedRequest<DefaultBodyType> => x.reason)
   inprogress.clear()
   if (errors.length) {

@@ -1,14 +1,13 @@
 import { connect } from "react-redux"
 
+import Settings from "@/components/Settings"
+import { IState } from "@/store/store"
 import {
-  updatingEmailAsync,
   deleteUserAccountAsync,
   Dispatch,
   fetchingUserAsync,
+  updatingEmailAsync,
 } from "@/store/thunks"
-
-import Settings from "@/components/Settings"
-import { IState } from "@/store/store"
 
 const ACCOUNT_DELETION_PROMPT =
   "Are you sure you want to permanently delete your account? \nPlease type, 'delete my account', to irrevocably delete your account"

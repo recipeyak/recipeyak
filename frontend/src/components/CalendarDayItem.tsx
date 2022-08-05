@@ -1,16 +1,17 @@
 import React from "react"
-import { styled } from "@/theme"
-import { Link } from "react-router-dom"
 import { useDrag } from "react-dnd"
-import { isInsideChangeWindow } from "@/date"
-import { recipeURL } from "@/urls"
-import { DragDrop } from "@/dragDrop"
-import { IRecipe } from "@/store/reducers/recipes"
-import { ICalRecipe } from "@/store/reducers/calendar"
-import { TextInput } from "@/components/Forms"
-import { Result, isOk } from "@/result"
-import { useGlobalEvent } from "@/hooks"
+import { Link } from "react-router-dom"
+
 import { CalendarDayItemModal } from "@/components/CalendarDayItemModal"
+import { TextInput } from "@/components/Forms"
+import { isInsideChangeWindow } from "@/date"
+import { DragDrop } from "@/dragDrop"
+import { useGlobalEvent } from "@/hooks"
+import { isOk, Result } from "@/result"
+import { ICalRecipe } from "@/store/reducers/calendar"
+import { IRecipe } from "@/store/reducers/recipes"
+import { styled } from "@/theme"
+import { recipeURL } from "@/urls"
 
 const COUNT_THRESHOLD = 1
 
@@ -139,8 +140,9 @@ export function CalendarItem({
     }
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateCount(parseInt(e.target.value, 10))
+  }
 
   const dragItem: ICalendarDragItem = {
     type: DragDrop.CAL_RECIPE,
@@ -197,7 +199,9 @@ export function CalendarItem({
           recipeName={recipeName}
           recipeId={recipeID}
           date={date}
-          onClose={() => setShow(false)}
+          onClose={() => {
+            setShow(false)
+          }}
         />
       ) : null}
     </>

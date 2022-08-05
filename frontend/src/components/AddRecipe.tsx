@@ -1,20 +1,20 @@
 import React from "react"
-import { Helmet } from "@/components/Helmet"
 
-import ListItem from "@/components/ListItem"
 import AddIngredientForm from "@/components/AddIngredientForm"
 import AddStepForm from "@/components/AddStepForm"
+import { Button, ButtonPrimary } from "@/components/Buttons"
+import { Select, TextInput } from "@/components/Forms"
+import { Helmet } from "@/components/Helmet"
 import { Ingredient } from "@/components/Ingredient"
-import { ButtonPrimary, Button } from "@/components/Buttons"
+import ListItem from "@/components/ListItem"
+import { SectionTitle } from "@/components/RecipeHelpers"
 import {
-  IStepBasic,
-  IRecipeBasic,
-  IIngredientBasic,
   IAddRecipeError,
+  IIngredientBasic,
+  IRecipeBasic,
+  IStepBasic,
 } from "@/store/reducers/recipes"
 import { ITeam } from "@/store/reducers/teams"
-import { Select, TextInput } from "@/components/Forms"
-import { SectionTitle } from "@/components/RecipeHelpers"
 
 const unfinishedIngredient = ({ quantity = "", name = "" }) =>
   quantity === "" || name === ""
@@ -148,18 +148,23 @@ export default class AddRecipe extends React.Component<
     }))
   }
 
-  cancelAddIngredient = () => this.setState({ ingredient: emptyIngredient })
+  cancelAddIngredient = () => {
+    this.setState({ ingredient: emptyIngredient })
+  }
 
   addStep = () => {
     this.props.addStep({ text: this.state.step })
     this.setState({ step: "" })
   }
 
-  cancelAddStep = () => this.setState({ step: "" })
+  cancelAddStep = () => {
+    this.setState({ step: "" })
+  }
 
   handleTeamChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (e.target.value === "personal") {
-      return this.props.setTeamID(null)
+      this.props.setTeamID(null)
+      return
     }
     const id = parseInt(e.target.value, 10)
     this.props.setTeamID(id)
@@ -259,10 +264,12 @@ export default class AddRecipe extends React.Component<
                   recipeID={-1}
                   index={i}
                   id={i}
-                  update={(ingre: IIngredientBasic) =>
+                  update={(ingre: IIngredientBasic) => {
                     this.props.updateIngredient(i, ingre)
-                  }
-                  remove={() => this.props.removeIngredient(i)}
+                  }}
+                  remove={() => {
+                    this.props.removeIngredient(i)
+                  }}
                   quantity={x.quantity}
                   optional={x.optional}
                   name={x.name}

@@ -1,15 +1,16 @@
+import { Location } from "history"
 import React from "react"
+import { useDispatch } from "react-redux"
 import { Link, useHistory, useLocation } from "react-router-dom"
-import { Helmet } from "@/components/Helmet"
-import { FormErrorHandler, TextInput, PasswordInput } from "@/components/Forms"
-import { ButtonPrimary } from "@/components/Buttons"
+
 import * as api from "@/api"
 import AuthContainer from "@/components/AuthContainer"
-import { login } from "@/store/reducers/auth"
+import { ButtonPrimary } from "@/components/Buttons"
+import { FormErrorHandler, PasswordInput, TextInput } from "@/components/Forms"
+import { Helmet } from "@/components/Helmet"
 import { isOk } from "@/result"
-import { useDispatch } from "react-redux"
+import { login } from "@/store/reducers/auth"
 import { clearNotification } from "@/store/reducers/notification"
-import { Location } from "history"
 
 export default function Login() {
   const [loading, setLoading] = React.useState(false)
@@ -36,7 +37,8 @@ export default function Login() {
         history.push(location.state?.from ?? {})
       } else {
         const err = res.error
-        if (err?.response?.status === 400) {
+        if (err.response?.status === 400) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           const data: {
             email?: string[]
             password1?: string[]
@@ -76,7 +78,9 @@ export default function Login() {
           <div className="field">
             <label className="label">Email</label>
             <TextInput
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value)
+              }}
               value={email}
               error={errors?.email != null}
               autoFocus
@@ -91,7 +95,9 @@ export default function Login() {
               Password
             </label>
             <PasswordInput
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value)
+              }}
               value={password}
               error={errors?.password != null}
               name="password"

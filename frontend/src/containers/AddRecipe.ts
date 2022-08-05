@@ -1,36 +1,34 @@
 import { connect } from "react-redux"
 
-import {
-  postNewRecipeAsync,
-  Dispatch,
-  fetchingTeamsAsync,
-  updatingDefaultRecipeTeamID,
-} from "@/store/thunks"
-
 import AddRecipe from "@/components/AddRecipe"
-
 import { teamsFrom } from "@/store/mapState"
-import { IState } from "@/store/store"
 import {
-  setAddRecipeFormName,
+  addAddRecipeFormIngredient,
+  addAddRecipeFormStep,
+  clearAddRecipeForm,
+  removeAddRecipeFormIngredient,
+  removeAddRecipeFormStep,
   setAddRecipeFormAuthor,
+  setAddRecipeFormName,
+  setAddRecipeFormServings,
   setAddRecipeFormSource,
   setAddRecipeFormTime,
-  setAddRecipeFormServings,
-  addAddRecipeFormIngredient,
-  removeAddRecipeFormIngredient,
   updateAddRecipeFormIngredient,
-  addAddRecipeFormStep,
-  removeAddRecipeFormStep,
   updateAddRecipeFormStep,
-  clearAddRecipeForm,
 } from "@/store/reducers/addrecipe"
-import { ITeam } from "@/store/reducers/teams"
 import {
   IIngredientBasic,
   IStepBasic,
   resetAddRecipeErrors,
 } from "@/store/reducers/recipes"
+import { ITeam } from "@/store/reducers/teams"
+import { IState } from "@/store/store"
+import {
+  Dispatch,
+  fetchingTeamsAsync,
+  postNewRecipeAsync,
+  updatingDefaultRecipeTeamID,
+} from "@/store/thunks"
 
 const mapStateToProps = (state: IState) => ({
   name: state.addrecipe.name,

@@ -1,49 +1,45 @@
-import React, { useEffect } from "react"
+import { push } from "connected-react-router"
+import { addWeeks, endOfWeek, startOfWeek, subWeeks } from "date-fns"
 import eachDayOfInterval from "date-fns/eachDayOfInterval"
 import format from "date-fns/format"
-import first from "lodash/first"
-import { history } from "@/store/store"
-import queryString from "query-string"
-import parseISO from "date-fns/parseISO"
 import isValid from "date-fns/isValid"
+import parseISO from "date-fns/parseISO"
+import chunk from "lodash/chunk"
+import first from "lodash/first"
+import queryString from "query-string"
+import React, { useEffect } from "react"
 import { useLocation } from "react-router-dom"
-
-import {
-  fetchCalendarAsync,
-  fetchingRecipeListAsync,
-  fetchingTeamsAsync,
-  fetchingShoppingListAsync,
-} from "@/store/thunks"
-
-import { toISODateString } from "@/date"
-
-import { teamsFrom } from "@/store/mapState"
-
-import { push } from "connected-react-router"
 
 import { ButtonPlain } from "@/components/Buttons"
 import CalendarDay from "@/components/CalendarDay"
 import { CalendarMoreDropdown } from "@/components/CalendarMoreDropdown"
-import { ITeam } from "@/store/reducers/teams"
-import {
-  ICalRecipe,
-  getTeamRecipes,
-  getPersonalRecipes,
-  updateCalendarSettings,
-  regenerateCalendarLink as regenerateCalendarLinkAction,
-} from "@/store/reducers/calendar"
-import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
 import { Select } from "@/components/Forms"
-import chunk from "lodash/chunk"
-import { styled } from "@/theme"
-import { useSelector, useDispatch, useOnWindowFocusChange } from "@/hooks"
+import { toISODateString } from "@/date"
+import { useDispatch, useOnWindowFocusChange, useSelector } from "@/hooks"
+import { teamsFrom } from "@/store/mapState"
 import {
-  isFailure,
-  Success,
-  Loading,
-  WebData,
-  isSuccessLike,
+  getPersonalRecipes,
+  getTeamRecipes,
+  ICalRecipe,
+  regenerateCalendarLink as regenerateCalendarLinkAction,
+  updateCalendarSettings,
+} from "@/store/reducers/calendar"
+import { ITeam } from "@/store/reducers/teams"
+import { history } from "@/store/store"
+import {
+  fetchCalendarAsync,
+  fetchingRecipeListAsync,
+  fetchingShoppingListAsync,
+  fetchingTeamsAsync,
+} from "@/store/thunks"
+import { styled } from "@/theme"
+import {
   Failure,
+  isFailure,
+  isSuccessLike,
+  Loading,
+  Success,
+  WebData,
 } from "@/webdata"
 
 function CalTitle({ dayTs }: { readonly dayTs: number }) {

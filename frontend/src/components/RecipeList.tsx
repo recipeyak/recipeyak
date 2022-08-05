@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from "react"
+import queryString from "query-string"
+import React, { useEffect, useState } from "react"
 import { connect } from "react-redux"
-import RecipeItem from "@/components/RecipeItem"
-import Loader from "@/components/Loader"
+import { Link } from "react-router-dom"
+
 import { TextInput } from "@/components/Forms"
+import Loader from "@/components/Loader"
+import RecipeItem from "@/components/RecipeItem"
+import { parseIntOrNull } from "@/parseIntOrNull"
 import { searchRecipes } from "@/search"
-import { Dispatch, fetchingRecipeListAsync } from "@/store/thunks"
-import { IRecipe, getTeamRecipes } from "@/store/reducers/recipes"
+import { getTeamRecipes, IRecipe } from "@/store/reducers/recipes"
 import { ITeam } from "@/store/reducers/teams"
 import { IState } from "@/store/store"
-import { WebData, isSuccessOrRefetching } from "@/webdata"
-import queryString from "query-string"
-import { parseIntOrNull } from "@/parseIntOrNull"
-import { Link } from "react-router-dom"
+import { Dispatch, fetchingRecipeListAsync } from "@/store/thunks"
+import { isSuccessOrRefetching, WebData } from "@/webdata"
 
 interface IResultsProps {
   readonly recipes: JSX.Element[]
@@ -155,13 +156,13 @@ function RecipesListSearch({
   useEffect(() => {
     const queryParams = queryString.parse(window.location.search)
 
-    void Promise.resolve().then(() =>
+    void Promise.resolve().then(() => {
       history.replaceState(
         null,
         "",
         "?" + queryString.stringify({ ...queryParams, search: query }),
-      ),
-    )
+      )
+    })
   }, [query])
 
   useEffect(() => {
@@ -169,8 +170,9 @@ function RecipesListSearch({
     fetchData(teamID_)
   }, [fetchData, teamID])
 
-  const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+  const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value)
+  }
 
   return (
     <>

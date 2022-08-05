@@ -1,29 +1,28 @@
 import React from "react"
-
 import { connect } from "react-redux"
 import { Link } from "react-router-dom"
-import {
-  ButtonLink,
-  ButtonSecondary,
-  ButtonPrimary,
-} from "@/components/Buttons"
 
 import {
-  moveRecipeToAsync,
-  copyRecipeToAsync,
-  showNotificationWithTimeoutAsync,
-  Dispatch,
-  INotificationWithTimeout,
-  fetchingTeamsAsync,
-} from "@/store/thunks"
-import { IState } from "@/store/store"
+  ButtonLink,
+  ButtonPrimary,
+  ButtonSecondary,
+} from "@/components/Buttons"
+import { Select } from "@/components/Forms"
+import GlobalEvent from "@/components/GlobalEvent"
+import { isOk, Result } from "@/result"
 import { IRecipe } from "@/store/reducers/recipes"
 import { ITeamsState } from "@/store/reducers/teams"
-import { IUserState, IUser } from "@/store/reducers/user"
+import { IUser, IUserState } from "@/store/reducers/user"
+import { IState } from "@/store/store"
+import {
+  copyRecipeToAsync,
+  Dispatch,
+  fetchingTeamsAsync,
+  INotificationWithTimeout,
+  moveRecipeToAsync,
+  showNotificationWithTimeoutAsync,
+} from "@/store/thunks"
 import { teamURL } from "@/urls"
-import GlobalEvent from "@/components/GlobalEvent"
-import { Select } from "@/components/Forms"
-import { isOk, Result } from "@/result"
 import { notUndefined } from "@/utils/general"
 
 function getTeamUserKeys(
@@ -144,7 +143,9 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
     }
     void this.props
       .copyRecipeTo(this.props.recipeId, parseInt(id, 10), type)
-      .then(() => this.setState({ show: false, values: [] }))
+      .then(() => {
+        this.setState({ show: false, values: [] })
+      })
   }
 
   move() {

@@ -1,5 +1,5 @@
 import { queryMatchesRecipe } from "@/search"
-import { IRecipe, IIngredient } from "@/store/reducers/recipes"
+import { IIngredient, IRecipe } from "@/store/reducers/recipes"
 
 function createRecipe(properties?: Partial<IRecipe>): IRecipe {
   return {

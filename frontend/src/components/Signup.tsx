@@ -1,10 +1,10 @@
 import React from "react"
-import { Helmet } from "@/components/Helmet"
 import { Link } from "react-router-dom"
 
-import { FormErrorHandler, EmailInput, PasswordInput } from "@/components/Forms"
-import { ButtonPrimary } from "@/components/Buttons"
 import AuthContainer from "@/components/AuthContainer"
+import { ButtonPrimary } from "@/components/Buttons"
+import { EmailInput, FormErrorHandler, PasswordInput } from "@/components/Forms"
+import { Helmet } from "@/components/Helmet"
 import { ISignupErrors } from "@/store/reducers/auth"
 
 interface ISignupProps {

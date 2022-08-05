@@ -1,34 +1,36 @@
-import { connect } from "react-redux"
+import { isSameDay } from "date-fns"
+import endOfDay from "date-fns/endOfDay"
 import format from "date-fns/format"
-import { useDrop } from "react-dnd"
+import isFirstDayOfMonth from "date-fns/isFirstDayOfMonth"
 import isWithinInterval from "date-fns/isWithinInterval"
 import startOfDay from "date-fns/startOfDay"
-import endOfDay from "date-fns/endOfDay"
-import isFirstDayOfMonth from "date-fns/isFirstDayOfMonth"
 import sortBy from "lodash/sortBy"
-import { isInsideChangeWindow } from "@/date"
+import { useDrop } from "react-dnd"
+import { connect } from "react-redux"
+
+import { assertNever } from "@/assert"
+import cls from "@/classnames"
 import { CalendarItem, ICalendarDragItem } from "@/components/CalendarDayItem"
+import { IRecipeItemDrag } from "@/components/RecipeItem"
+import { isInsideChangeWindow } from "@/date"
+import { DragDrop } from "@/dragDrop"
+import { useCurrentDay } from "@/hooks"
+import { Result } from "@/result"
 import {
-  updatingScheduledRecipeAsync,
+  createCalendarRecipe,
+  ICalRecipe,
+  moveOrCreateCalendarRecipe,
+} from "@/store/reducers/calendar"
+import { IState } from "@/store/store"
+import {
   deletingScheduledRecipeAsync,
   Dispatch,
   fetchingShoppingListAsync,
   IAddingScheduledRecipeProps,
   IMoveScheduledRecipeProps,
+  updatingScheduledRecipeAsync,
 } from "@/store/thunks"
-import { DragDrop } from "@/dragDrop"
-import { IState } from "@/store/store"
-import {
-  ICalRecipe,
-  moveOrCreateCalendarRecipe,
-  createCalendarRecipe,
-} from "@/store/reducers/calendar"
-import { IRecipeItemDrag } from "@/components/RecipeItem"
-import { Result } from "@/result"
-import { useCurrentDay } from "@/hooks"
-import { isSameDay } from "date-fns"
-import { styled, css } from "@/theme"
-import cls from "@/classnames"
+import { css, styled } from "@/theme"
 
 function DayOfWeek({ date }: { date: Date }) {
   const dayOfWeek = format(date, "E")
@@ -144,6 +146,8 @@ function CalendarDay({
         move({ id: item.scheduledId, teamID, to: date })
       } else if (item.type === DragDrop.RECIPE) {
         create({ recipeID: item.recipeID, teamID, on: date, count: 1 })
+      } else {
+        assertNever(item)
       }
     },
     collect: (monitor) => {
@@ -177,9 +181,13 @@ function CalendarDay({
             recipeName={x.recipe.name}
             recipeID={x.recipe.id}
             teamID={teamID}
-            remove={() => remove(x.id, teamID)}
+            remove={() => {
+              remove(x.id, teamID)
+            }}
             updateCount={(count) => updateCount(x.id, teamID, count)}
-            refetchShoppingList={() => refetchShoppingList(teamID)}
+            refetchShoppingList={() => {
+              refetchShoppingList(teamID)
+            }}
             count={x.count}
           />
         ))}

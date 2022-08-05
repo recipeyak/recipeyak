@@ -1,19 +1,20 @@
 import raven from "raven-js"
 import {
+  ActionType,
   createAsyncAction,
   createStandardAction,
-  ActionType,
   getType,
 } from "typesafe-actions"
+
+import { AuthActions, login } from "@/store/reducers/auth"
 import {
-  WebData,
-  Success,
   Failure,
   HttpErrorKind,
-  toLoading,
   mapSuccessLike,
+  Success,
+  toLoading,
+  WebData,
 } from "@/webdata"
-import { login, AuthActions } from "@/store/reducers/auth"
 
 // TODO(chdsbd): Replace usage with fetchUser#success. Update user reducer.
 export const logOut = createAsyncAction(

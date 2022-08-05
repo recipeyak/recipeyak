@@ -1,21 +1,23 @@
 import { render, screen, waitFor } from "@testing-library/react"
-import Login from "@/components/Login"
+import userEvent from "@testing-library/user-event"
 import { ConnectedRouter } from "connected-react-router"
-import { history } from "@/store/store"
-import store from "@/store/store"
-import { Provider } from "react-redux"
 import { HelmetProvider } from "react-helmet-async"
+import { Provider } from "react-redux"
 
 import { IUserResponse } from "@/api"
-import { server, rest } from "@/testUtils"
-import userEvent from "@testing-library/user-event"
+import Login from "@/components/Login"
+import store, { history } from "@/store/store"
+import { rest, server } from "@/testUtils"
 
 test("login success", async () => {
   server.use(
     rest.post(
       "http://localhost:3000/api/v1/auth/login",
       async (req, res, ctx) => {
-        const requestJson = await req.json()
+        const requestJson = await req.json<{
+          email?: string
+          password?: string
+        }>()
         if (
           typeof requestJson["email"] === "string" &&
           typeof requestJson["password"] === "string"
@@ -72,7 +74,10 @@ test("login failure", async () => {
     rest.post(
       "http://localhost:3000/api/v1/auth/login",
       async (req, res, ctx) => {
-        const requestJson = await req.json()
+        const requestJson = await req.json<{
+          email?: string
+          password?: string
+        }>()
         if (
           typeof requestJson["email"] === "string" &&
           typeof requestJson["password"] === "string"

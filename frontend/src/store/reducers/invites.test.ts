@@ -1,10 +1,10 @@
 import invites, {
-  initialState,
-  IInvitesState,
-  IInvite,
-  fetchInvites,
   acceptInvite,
   declineInvite,
+  fetchInvites,
+  IInvite,
+  IInvitesState,
+  initialState,
 } from "@/store/reducers/invites"
 
 const basicInvite: IInvite = {

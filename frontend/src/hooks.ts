@@ -1,19 +1,19 @@
-import React from "react"
 import { isSameDay } from "date-fns"
-import { second } from "@/date"
-import { IState } from "@/store/store"
-import { Dispatch } from "@/store/thunks"
-import { scheduleURLFromTeamID } from "@/store/mapState"
-
+import { isRight } from "fp-ts/lib/Either"
+import debounce from "lodash/debounce"
+import React from "react"
 import {
   TypedUseSelectorHook,
   useDispatch as useDispatchRedux,
   useSelector as useSelectorRedux,
 } from "react-redux"
-import debounce from "lodash/debounce"
+
+import { second } from "@/date"
 import { HttpRequestObjResult } from "@/http"
+import { scheduleURLFromTeamID } from "@/store/mapState"
+import { IState } from "@/store/store"
+import { Dispatch } from "@/store/thunks"
 import { Failure, Loading, Success, WebData } from "@/webdata"
-import { isRight } from "fp-ts/lib/Either"
 
 export function useCurrentDay() {
   const [date, setDate] = React.useState(new Date())
@@ -146,9 +146,11 @@ export const useScheduleURL = () => useSelector(scheduleURLFromTeamID)
 
 // global, module level cache.
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const USE_STATE_CACHE: Record<string, any> = new Map()
 
 function useStateCached<T>(key: string): [T | undefined, (x: T) => void] {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const [localState, setLocalState] = React.useState<T>(USE_STATE_CACHE[key])
   const setState = React.useCallback(
     (newState: T) => {
@@ -171,9 +173,10 @@ export function useApi<A, O, T>(
     }
     void request.send().then((res) => {
       if (isRight(res)) {
-        return setData(Success(res.right))
+        setData(Success(res.right))
+        return
       }
-      return setData(Failure())
+      setData(Failure())
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [request.getCacheKey()])

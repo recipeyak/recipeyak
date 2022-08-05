@@ -1,11 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Action,
   ActionCreator,
   AnyAction,
-  StoreEnhancer,
-  Store,
   // eslint-disable-next-line no-restricted-imports
   Dispatch,
+  Store,
+  StoreEnhancer,
 } from "redux"
 
 export interface StoreCreator {

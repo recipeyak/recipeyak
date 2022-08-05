@@ -1,6 +1,7 @@
 import React from "react"
-import Modal from "@/components/Modal"
+
 import GlobalEvent from "@/components/GlobalEvent"
+import Modal from "@/components/Modal"
 
 const keybinds = [
   {
@@ -55,7 +56,9 @@ export default function HelpMenuModal() {
     }
   }
 
-  const close = () => setShow(false)
+  const close = () => {
+    setShow(false)
+  }
 
   return (
     <Modal show={show} onClose={close}>

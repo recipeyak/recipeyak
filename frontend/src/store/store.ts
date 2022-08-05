@@ -1,33 +1,41 @@
 import {
-  createStore as basicCreateStore,
+  connectRouter,
+  RouterAction,
+  routerMiddleware,
+  RouterState,
+} from "connected-react-router"
+import { createBrowserHistory as createHistory } from "history"
+import pickBy from "lodash/pickBy"
+import throttle from "lodash/throttle"
+import {
   applyMiddleware,
   compose as reduxCompose,
+  createStore as basicCreateStore,
   Store as ReduxStore,
   StoreEnhancer,
 } from "redux"
-
 import {
   combineReducers,
-  LoopReducer,
-  Loop,
-  StoreCreator,
   install,
+  Loop,
+  LoopReducer,
   ReducerMapObject,
+  StoreCreator,
 } from "redux-loop"
+import { getType } from "typesafe-actions"
 
-import pickBy from "lodash/pickBy"
-import throttle from "lodash/throttle"
-
-import { createBrowserHistory as createHistory } from "history"
-import {
-  RouterState,
-  RouterAction,
-  connectRouter,
-  routerMiddleware,
-} from "connected-react-router"
-
-import recipes, { IRecipesState, RecipeActions } from "@/store/reducers/recipes"
-import user, { IUserState, UserActions } from "@/store/reducers/user"
+import { second } from "@/date"
+import { loadState, saveState } from "@/store/localStorage"
+import addrecipe, {
+  AddRecipeActions,
+  IAddRecipeState,
+} from "@/store/reducers/addrecipe"
+import auth, { AuthActions, IAuthState, login } from "@/store/reducers/auth"
+import calendar, {
+  CalendarActions,
+  ICalendarState,
+} from "@/store/reducers/calendar"
+import invites, { IInvitesState, InviteActions } from "@/store/reducers/invites"
 import notification, {
   INotificationState,
   NotificationsActions,
@@ -36,24 +44,13 @@ import passwordChange, {
   IPasswordChangeState,
   PasswordChangeActions,
 } from "@/store/reducers/passwordChange"
+import recipes, { IRecipesState, RecipeActions } from "@/store/reducers/recipes"
 import shoppinglist, {
   IShoppingListState,
   ShoppingListActions,
 } from "@/store/reducers/shoppinglist"
-import addrecipe, {
-  IAddRecipeState,
-  AddRecipeActions,
-} from "@/store/reducers/addrecipe"
-import auth, { IAuthState, AuthActions, login } from "@/store/reducers/auth"
 import teams, { ITeamsState, TeamsActions } from "@/store/reducers/teams"
-import invites, { InviteActions, IInvitesState } from "@/store/reducers/invites"
-import calendar, {
-  ICalendarState,
-  CalendarActions,
-} from "@/store/reducers/calendar"
-import { loadState, saveState } from "@/store/localStorage"
-import { getType } from "typesafe-actions"
-import { second } from "@/date"
+import user, { IUserState, UserActions } from "@/store/reducers/user"
 
 const createStore: StoreCreator = basicCreateStore
 
@@ -141,9 +138,11 @@ export function rootReducer(
 
 const router = routerMiddleware(history)
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const compose: typeof reduxCompose =
   /* eslint-disable @typescript-eslint/consistent-type-assertions */
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || reduxCompose
 /* eslint-enable @typescript-eslint/consistent-type-assertions */
 
@@ -206,7 +205,7 @@ store.subscribe(
       auth: {
         fromUrl: store.getState().auth.fromUrl,
       },
-    } as any as IState)
+    } as unknown as IState)
   }, second),
 )
 
