@@ -199,15 +199,3 @@ class ExceptionMiddleware(MiddlewareMixin):
         ):
             return JsonResponse(dict(message=exception.errors()), status=400)
         return None
-
-
-class PydanticResponseMiddleware:
-    def __init__(self, get_response):
-        self.get_response = get_response
-
-    def __call__(self, request):
-        response = self.get_response(request)
-
-        breakpoint()
-
-        return response
