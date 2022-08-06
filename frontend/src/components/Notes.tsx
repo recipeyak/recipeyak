@@ -181,6 +181,11 @@ function SharedEntry({
   )
 }
 
+const AttachmentContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`
+
 interface INoteProps {
   readonly note: INote
   readonly recipeId: IRecipe["id"]
@@ -227,18 +232,21 @@ export function Note({ note, recipeId, className }: INoteProps) {
             <Markdown className="cursor-pointer" title="click to edit">
               {note.text}
             </Markdown>
-            <div>
+            <AttachmentContainer>
               {note.attachments.map((attachment) => (
                 <a
                   key={attachment.id}
                   target="_blank"
                   rel="noreferrer"
                   href={attachment.url}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                  }}
                 >
                   <ImagePreview src={attachment.url} />
                 </a>
               ))}
-            </div>
+            </AttachmentContainer>
           </div>
         ) : (
           <>
@@ -468,6 +476,7 @@ const ImageUploadContainer = styled.div`
   border-color: #dbdbdb;
   padding: 0.5rem;
   display: flex;
+  flex-wrap: wrap;
 `
 
 const ImagePreviewParent = styled.div`
@@ -488,11 +497,14 @@ const CloseButton = styled.button`
   font-weight: 700;
 `
 
-const ImagePreview = styled.img<{
+const ImagePreview = styled.div<{
   readonly isLoading?: boolean
+  readonly src: string
 }>`
-  max-height: 100px;
-  max-width: 100px;
+  height: 100px;
+  width: 100px;
+  background-image: url(${(props) => props.src});
+  background-size: cover;
   border-radius: 3px;
   margin-right: 0.25rem;
   filter: ${(props) => (props.isLoading ? "grayscale(100%)" : "unset")};
@@ -576,7 +588,14 @@ function Image({
 }) {
   return (
     <>
-      <a href={url} target="_blank" rel="noreferrer">
+      <a
+        href={url}
+        target="_blank"
+        rel="noreferrer"
+        onClick={(e) => {
+          e.stopPropagation()
+        }}
+      >
         <ImagePreview isLoading={state === "loading"} src={url} />
       </a>
       {state === "failed" && (
