@@ -497,18 +497,33 @@ const CloseButton = styled.button`
   font-weight: 700;
 `
 
-const ImagePreview = styled.div<{
+function formatUrlImgix100(url: string): string {
+  const u = new URL(url)
+  u.searchParams.set("w", "100")
+  u.searchParams.set("h", "100")
+  u.searchParams.set("dpr", "100")
+  return u.href
+}
+
+const Image100Px = styled.img<{
   readonly isLoading?: boolean
   readonly src: string
 }>`
   height: 100px;
   width: 100px;
-  background-image: url(${(props) => props.src});
-  background-size: cover;
   border-radius: 3px;
   margin-right: 0.25rem;
   filter: ${(props) => (props.isLoading ? "grayscale(100%)" : "unset")};
 `
+function ImagePreview({
+  src,
+  isLoading,
+}: {
+  src: string
+  isLoading?: boolean
+}) {
+  return <Image100Px src={formatUrlImgix100(src)} isLoading={isLoading} />
+}
 
 const OverlayLoader = styled(Loader)`
   margin: auto;
