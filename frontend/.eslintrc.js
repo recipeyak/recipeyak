@@ -4,6 +4,10 @@ module.exports = {
   parserOptions: {
     sourceType: "module",
     project: "./tsconfig.json",
+    // Ensure VSCode doesn't try to look for tsconfig.json in the directory of
+    // the component you're viewing.
+    // from: https://stackoverflow.com/a/66088074/3720597
+    tsconfigRootDir: __dirname,
     ecmaFeatures: {
       jsx: true,
     },
