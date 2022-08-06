@@ -135,6 +135,37 @@ Environment variables are used for configuration. Unless otherwise stated, a val
   - ex: `https://<key>:<secret>@sentry.io/<project>`
 - [`FRONTEND_SENTRY_DSN`][sentry-dsn] — Sentry configuration for frontend.
   - ex: `https://<key>@sentry.io/<project>`
+- `AWS_ACCESS_KEY_ID` — AWS access key for backups and image upload.
+  - ex: `someAWSKey`
+- `AWS_SECRET_ACCESS_KEY` — AWS secret key for backups and image upload.
+  - ex: `someSecretKey`
+- `STORAGE_BUCKET_NAME` — Bucket for image upload.
+  - ex: `recipeyak-production`
+
+
+### AWS configuration
+
+1. Create an S3 bucket and configure a CORS policy that allows the website to upload resources.
+
+	```json
+	[
+	    {
+	        "AllowedHeaders": [
+	            "*"
+	        ],
+	        "AllowedMethods": [
+	            "PUT",
+	            "POST"
+	        ],
+	        "AllowedOrigins": [
+	            "http://localhost:*",
+	            "https://recipeyak.com"
+	        ],
+	        "ExposeHeaders": []
+	    }
+	]
+	```
+2. Create an IAM policy to give your AWS ID access to `get_object` and `put_object` for your bucket.
 
 [django-secret]: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-SECRET_KEY
 [sentry-dsn]: https://docs.sentry.io/quickstart/#about-the-dsn
