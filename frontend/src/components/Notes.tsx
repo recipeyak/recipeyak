@@ -532,10 +532,6 @@ function ImageUploader({
   removeFile,
   addFiles,
 }: {
-  existingFiles: {
-    id: string
-    url: string
-  }[]
   files: {
     file: File
     upload?: UploadState | undefined
