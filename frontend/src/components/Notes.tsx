@@ -504,7 +504,7 @@ function formatUrlImgix100(url: string): string {
   const u = new URL(url)
   u.searchParams.set("w", "100")
   u.searchParams.set("h", "100")
-  u.searchParams.set("dpr", "100")
+  u.searchParams.set("dpr", "2")
   return u.href
 }
 
