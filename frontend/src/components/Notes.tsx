@@ -498,6 +498,9 @@ const CloseButton = styled.button`
 `
 
 function formatUrlImgix100(url: string): string {
+  if (url.startsWith("blob:")) {
+    return url
+  }
   const u = new URL(url)
   u.searchParams.set("w", "100")
   u.searchParams.set("h", "100")
@@ -513,6 +516,7 @@ const Image100Px = styled.img<{
   width: 100px;
   border-radius: 3px;
   margin-right: 0.25rem;
+  object-fit: cover;
   filter: ${(props) => (props.isLoading ? "grayscale(100%)" : "unset")};
 `
 function ImagePreview({
