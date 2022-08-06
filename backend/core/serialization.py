@@ -75,4 +75,7 @@ class BaseRelatedField(DBBlockerSerializerMixin, serializers.RelatedField):
 
 
 class RequestParams(pydantic.BaseModel):
-    ...
+    """
+    ValidationErrors raised by subclasses of this model will be converted into
+    400 errors.
+    """
