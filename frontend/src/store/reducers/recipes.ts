@@ -483,12 +483,15 @@ export interface IPublicUser {
   readonly avatar_url: string
 }
 
+export type Upload = { id: string; url: string; type: "upload" }
+
 export interface INote {
   readonly id: number
   readonly type: "note"
   readonly text: string
   readonly modified: string
   readonly created: string
+  readonly attachments: Upload[]
   readonly last_modified_by: IPublicUser
   readonly created_by: IPublicUser
 }

@@ -1,17 +1,21 @@
 import enum
 import logging
 import time
+from typing import Optional
 from uuid import uuid4
 
+import pydantic
 import sentry_sdk
 from django.conf import settings
 from django.contrib.sessions.middleware import (
     SessionMiddleware as DjangoSessionMiddleware,
 )
 from django.db import connection
-from django.http import HttpRequest, HttpResponse, HttpResponseServerError
+from django.http import HttpRequest, HttpResponse, HttpResponseServerError, JsonResponse
+from django.utils.deprecation import MiddlewareMixin
 
 from core.request_state import State
+from core.serialization import RequestParams
 
 log = logging.getLogger(__name__)
 
@@ -184,3 +188,15 @@ class SessionMiddleware(DjangoSessionMiddleware):
             user_agent=request.META.get("HTTP_USER_AGENT", ""),
             session_key=session_key,
         )
+
+
+class ExceptionMiddleware(MiddlewareMixin):
+    def process_exception(
+        self, request: HttpRequest, exception: Exception
+    ) -> Optional[HttpResponse]:
+        # return a 400 response if we encounter a pydantic validation error.
+        if isinstance(exception, pydantic.ValidationError) and issubclass(
+            exception.model, RequestParams
+        ):
+            return JsonResponse(dict(message=exception.errors()), status=400)
+        return None

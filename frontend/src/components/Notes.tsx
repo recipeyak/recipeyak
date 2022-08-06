@@ -1,12 +1,13 @@
-import { orderBy } from "lodash-es"
+import { omit, orderBy } from "lodash"
 import React, { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 import Textarea from "react-textarea-autosize"
 
 import * as api from "@/api"
-import { classNames } from "@/classnames"
+import { classNames as cls } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
 import { ButtonPrimary, ButtonSecondary } from "@/components/Buttons"
+import Loader from "@/components/Loader"
 import { Markdown } from "@/components/Markdown"
 import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
 import { useDispatch } from "@/hooks"
@@ -16,8 +17,11 @@ import {
   IRecipe,
   patchRecipe,
   RecipeTimelineItem,
+  Upload,
 } from "@/store/reducers/recipes"
 import { styled } from "@/theme"
+import { notUndefined } from "@/utils/general"
+import { uuid4 } from "@/uuid"
 
 interface IUseNoteEditHandlers {
   readonly note: INote
@@ -31,29 +35,36 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
   }, [note.text])
   const [isEditing, setIsEditing] = React.useState(false)
   const [isUpdating, setIsUpdating] = React.useState(false)
+  const [uploads, setUploads] = React.useState<Upload[]>(note.attachments)
 
   const onSave = () => {
     setIsUpdating(true)
-    void api.updateNote({ noteId: note.id, note: draftText }).then((res) => {
-      if (isOk(res)) {
-        dispatch(
-          patchRecipe({
-            recipeId,
-            updateFn: (recipe) => {
-              return {
-                ...recipe,
-                timelineItems: [
-                  ...recipe.timelineItems.filter((x) => x.id !== note.id),
-                  res.data,
-                ],
-              }
-            },
-          }),
-        )
-        setIsEditing(false)
-      }
-      setIsUpdating(false)
-    })
+    void api
+      .updateNote({
+        noteId: note.id,
+        note: draftText,
+        attachmentUploadIds: uploads.map((x) => x.id),
+      })
+      .then((res) => {
+        if (isOk(res)) {
+          dispatch(
+            patchRecipe({
+              recipeId,
+              updateFn: (recipe) => {
+                return {
+                  ...recipe,
+                  timelineItems: [
+                    ...recipe.timelineItems.filter((x) => x.id !== note.id),
+                    res.data,
+                  ],
+                }
+              },
+            }),
+          )
+          setIsEditing(false)
+        }
+        setIsUpdating(false)
+      })
   }
   const setEditing = (value: boolean) => {
     setIsEditing(value)
@@ -111,6 +122,13 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
     onEditorKeyDown,
     onNoteClick,
     onSave,
+    uploads,
+    addUploads: (uploadIds: Upload[]) => {
+      setUploads((s) => [...s, ...uploadIds])
+    },
+    removeUploads: (uploadIds: string[]) => {
+      setUploads((s) => s.filter((x) => !uploadIds.includes(x.id)))
+    },
   }
 }
 
@@ -150,7 +168,7 @@ function SharedEntry({
   return (
     <div
       ref={ref}
-      className={classNames(
+      className={cls(
         {
           "bg-highlight": isSharedNote,
         },
@@ -179,13 +197,21 @@ export function Note({ note, recipeId, className }: INoteProps) {
     onEditorKeyDown,
     onNoteClick,
     onSave,
+    addUploads,
+    removeUploads,
+    uploads,
   } = useNoteEditHandlers({ note, recipeId })
 
   const noteId = `note-${note.id}`
 
+  const { addFiles, removeFile, files } = useImageUpload(
+    addUploads,
+    removeUploads,
+  )
+
   return (
     <SharedEntry
-      className={classNames("d-flex align-items-start", className)}
+      className={cls("d-flex align-items-start", className)}
       id={noteId}
     >
       <Avatar avatarURL={note.created_by.avatar_url} className="mr-2" />
@@ -197,24 +223,57 @@ export function Note({ note, recipeId, className }: INoteProps) {
           </a>
         </p>
         {!isEditing ? (
-          <Markdown
-            className="cursor-pointer"
-            title="click to edit"
-            onClick={onNoteClick}
-          >
-            {note.text}
-          </Markdown>
+          <div className="cursor-pointer" onClick={onNoteClick}>
+            <Markdown className="cursor-pointer" title="click to edit">
+              {note.text}
+            </Markdown>
+            <div>
+              {note.attachments.map((attachment) => (
+                <a
+                  key={attachment.id}
+                  target="_blank"
+                  rel="noreferrer"
+                  href={attachment.url}
+                >
+                  <ImagePreview src={attachment.url} />
+                </a>
+              ))}
+            </div>
+          </div>
         ) : (
           <>
-            <Textarea
-              autoFocus
-              className="my-textarea mb-2"
-              onKeyDown={onEditorKeyDown}
-              minRows={5}
-              value={draftText}
-              onChange={onEditorChange}
-              placeholder="Add a note..."
-            />
+            <UploadContainer addFiles={addFiles}>
+              <Textarea
+                autoFocus
+                className="my-textarea"
+                onKeyDown={onEditorKeyDown}
+                minRows={5}
+                value={draftText}
+                onChange={onEditorChange}
+                placeholder="Add a note..."
+              />
+              {isEditing ? (
+                <ImageUploader
+                  addFiles={addFiles}
+                  removeFile={removeFile}
+                  files={[...files.filter(notUndefined), ...uploads]}
+                />
+              ) : (
+                <div>
+                  {note.attachments.map((attachment) => (
+                    <a
+                      key={attachment.id}
+                      target="_blank"
+                      rel="noreferrer"
+                      href={attachment.url}
+                    >
+                      <ImagePreview src={attachment.url} />
+                    </a>
+                  ))}
+                </div>
+              )}
+            </UploadContainer>
+
             {isEditing && (
               <div className="d-flex justify-between align-center">
                 <ButtonSecondary
@@ -254,7 +313,7 @@ function TimelineEvent({ event }: { readonly event: RecipeTimelineItem }) {
   return (
     <SharedEntry
       id={eventId}
-      className={classNames("d-flex align-items-center mb-4 py-4")}
+      className={cls("d-flex align-items-center mb-4 py-4")}
     >
       <Avatar
         avatarURL={event.created_by?.avatar_url ?? null}
@@ -283,37 +342,47 @@ export const blurNoteTextArea = () => {
 interface IUseNoteCreatorHandlers {
   readonly recipeId: IRecipe["id"]
 }
+
 function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
   const dispatch = useDispatch()
   const [draftText, setDraftText] = React.useState("")
   const [isEditing, setIsEditing] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)
+  const [uploads, setUploads] = React.useState<Upload[]>([])
 
   const cancelEditingNote = () => {
     setIsEditing(false)
     setDraftText("")
+    setUploads([])
     blurNoteTextArea()
   }
 
   const onCreate = () => {
     setIsLoading(true)
-    void api.addNoteToRecipe({ recipeId, note: draftText }).then((res) => {
-      if (isOk(res)) {
-        dispatch(
-          patchRecipe({
-            recipeId,
-            updateFn: (recipe) => {
-              return {
-                ...recipe,
-                timelineItems: [...recipe.timelineItems, res.data],
-              }
-            },
-          }),
-        )
-        cancelEditingNote()
-      }
-      setIsLoading(false)
-    })
+
+    void api
+      .addNoteToRecipe({
+        recipeId,
+        note: draftText,
+        attachmentUploadIds: uploads.map((x) => x.id),
+      })
+      .then((res) => {
+        if (isOk(res)) {
+          dispatch(
+            patchRecipe({
+              recipeId,
+              updateFn: (recipe) => {
+                return {
+                  ...recipe,
+                  timelineItems: [...recipe.timelineItems, res.data],
+                }
+              },
+            }),
+          )
+          cancelEditingNote()
+        }
+        setIsLoading(false)
+      })
   }
   const onCancel = () => {
     cancelEditingNote()
@@ -336,8 +405,8 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
   const editorText = isEditing ? draftText : ""
   const editorRowCount = !isEditing ? 1 : undefined
   const editorMinRowCount = isEditing ? 5 : 0
-  const editorClassNames = classNames({
-    "my-textarea mb-2": isEditing,
+  const editorClassNames = cls({
+    "my-textarea": isEditing,
     textarea: !isEditing,
   })
 
@@ -356,6 +425,13 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     isLoading,
     onCancel,
     isDisabled,
+    addUploads: (uploadIds: Upload[]) => {
+      setUploads((s) => [...s, ...uploadIds])
+    },
+    removeUploads: (uploadIds: string[]) => {
+      setUploads((s) => s.filter((x) => !uploadIds.includes(x.id)))
+    },
+    uploads,
   }
 }
 
@@ -363,6 +439,247 @@ interface INoteCreatorProps {
   readonly recipeId: IRecipe["id"]
   readonly className?: string
 }
+
+const DragDropLabel = styled.label`
+  font-size: 0.85rem;
+  cursor: pointer;
+  border-style: solid;
+  border-top-style: none;
+  border-width: thin;
+  border-color: #dbdbdb;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
+  font-weight: 500;
+`
+
+const NoteWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+const ImageUploadContainer = styled.div`
+  border-style: solid;
+  border-top-style: none;
+  border-width: thin;
+  border-color: #dbdbdb;
+  padding: 0.5rem;
+  display: flex;
+`
+
+const ImagePreviewParent = styled.div`
+  position: relative;
+`
+const CloseButton = styled.button`
+  position: absolute;
+  right: 0;
+  padding: 0.3rem;
+  cursor: pointer;
+  top: -4px;
+  border-radius: 100%;
+  aspect-ratio: 1;
+  line-height: 0;
+  border-width: 0;
+  background-color: #4a4a4a;
+  color: #dbdbdb;
+  font-weight: 700;
+`
+
+const ImagePreview = styled.img<{
+  readonly isLoading?: boolean
+}>`
+  max-height: 100px;
+  max-width: 100px;
+  border-radius: 3px;
+  margin-right: 0.25rem;
+  filter: ${(props) => (props.isLoading ? "grayscale(100%)" : "unset")};
+`
+
+const OverlayLoader = styled(Loader)`
+  margin: auto;
+`
+
+const LoaderContainer = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  display: flex;
+`
+
+const BrokenImageContainer = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  display: flex;
+`
+
+const BrokenImage = styled.div`
+  margin: auto;
+  font-size: 2rem;
+`
+
+function useImageUpload(
+  addUploads: (uploadIds: Upload[]) => void,
+  removeUploads: (uploadIds: string[]) => void,
+) {
+  const [inProgressUploads, setInprogressUploads] = React.useState<{
+    [_: string]: InProgressUpload | undefined
+  }>({})
+
+  const addFiles = (files: FileList) => {
+    ;[...files].forEach((file) => {
+      const fileId = uuid4()
+      setInprogressUploads((s) => {
+        return {
+          ...s,
+          [fileId]: {
+            id: fileId,
+            file,
+            state: "uploading",
+            type: "in-progress",
+          },
+        }
+      })
+      void api.uploadImage({ image: file }).then((res) => {
+        if (isOk(res)) {
+          addUploads([{ ...res.data, type: "upload" }])
+          setInprogressUploads((s) => {
+            return omit(s, fileId)
+          })
+        }
+      })
+    })
+  }
+
+  const removeFile = (fileId: string) => {
+    setInprogressUploads((s) => omit(s, fileId))
+    removeUploads([fileId])
+  }
+
+  const files = Object.values(inProgressUploads)
+  return { addFiles, removeFile, files } as const
+}
+
+function Image({
+  url,
+  state,
+}: {
+  url: string
+  state: "loading" | "failed" | "uploaded"
+}) {
+  return (
+    <>
+      <a href={url} target="_blank" rel="noreferrer">
+        <ImagePreview isLoading={state === "loading"} src={url} />
+      </a>
+      {state === "failed" && (
+        <BrokenImageContainer title="Image upload failed">
+          <BrokenImage>❌</BrokenImage>
+        </BrokenImageContainer>
+      )}
+      {state === "loading" && (
+        <LoaderContainer title="Image uploading...">
+          <OverlayLoader />
+        </LoaderContainer>
+      )}
+    </>
+  )
+}
+
+type InProgressUpload = {
+  type: "in-progress"
+  id: string
+  file: File
+  state: "uploading" | "failed"
+}
+
+function ImageUploader({
+  addFiles,
+  removeFile,
+  files,
+}: {
+  addFiles: (files: FileList) => void
+  removeFile: (fileId: string) => void
+  files: (InProgressUpload | Upload)[]
+}) {
+  return (
+    <>
+      {files.length > 0 && (
+        <ImageUploadContainer>
+          {orderBy(files, (x) => x.id, "desc").map((f) => (
+            <ImagePreviewParent key={f.id}>
+              {f.type === "upload" ? (
+                <Image url={f.url} state={"uploaded"} />
+              ) : (
+                <Image
+                  url={URL.createObjectURL(f.file)}
+                  state={f.state === "failed" ? "failed" : "loading"}
+                />
+              )}
+
+              <CloseButton
+                onClick={() => {
+                  if (confirm("Remove image?")) {
+                    removeFile(f.id)
+                  }
+                }}
+              >
+                &times;
+              </CloseButton>
+            </ImagePreviewParent>
+          ))}
+        </ImageUploadContainer>
+      )}
+      <DragDropLabel className="text-muted mb-2">
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          style={{ display: "none" }}
+          onChange={(e) => {
+            const newFiles = e.target.files
+            if (newFiles != null) {
+              addFiles(newFiles)
+            }
+          }}
+        />
+        Attach images by dragging & dropping, selecting or pasting them.
+      </DragDropLabel>
+    </>
+  )
+}
+
+function UploadContainer({
+  addFiles,
+  children,
+}: {
+  children: React.ReactNode
+  addFiles: (files: FileList) => void
+}) {
+  return (
+    <NoteWrapper
+      onDragOver={(event) => {
+        event.dataTransfer.dropEffect = "copy"
+      }}
+      onDrop={(event) => {
+        if (event.dataTransfer?.files) {
+          const newFiles = event.dataTransfer.files
+          addFiles(newFiles)
+        }
+      }}
+    >
+      {children}
+    </NoteWrapper>
+  )
+}
+
 function NoteCreator({ recipeId, className }: INoteCreatorProps) {
   const {
     isEditing,
@@ -377,23 +694,41 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
     isLoading,
     onCancel,
     isDisabled,
+    addUploads,
+    removeUploads,
+    uploads,
   } = useNoteCreatorHandlers({
     recipeId,
   })
 
+  const { addFiles, removeFile, files } = useImageUpload(
+    addUploads,
+    removeUploads,
+  )
+
   return (
     <div className={className}>
-      <Textarea
-        id="new_note_textarea"
-        className={editorClassNames}
-        onKeyDown={onEditorKeyDown}
-        minRows={editorMinRowCount}
-        rows={editorRowCount}
-        value={editorText}
-        onFocus={onEditorFocus}
-        onChange={onEditorChange}
-        placeholder="Add a note..."
-      />
+      <UploadContainer addFiles={addFiles}>
+        <Textarea
+          id="new_note_textarea"
+          className={editorClassNames}
+          onKeyDown={onEditorKeyDown}
+          minRows={editorMinRowCount}
+          rows={editorRowCount}
+          value={editorText}
+          onFocus={onEditorFocus}
+          onChange={onEditorChange}
+          placeholder="Add a note..."
+        />
+        {isEditing && (
+          <ImageUploader
+            addFiles={addFiles}
+            removeFile={removeFile}
+            files={[...files.filter(notUndefined), ...uploads]}
+          />
+        )}
+      </UploadContainer>
+
       {isEditing && (
         <div className="d-flex justify-end align-center">
           <ButtonSecondary size="small" className="mr-3" onClick={onCancel}>

@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -e
 
 main() {
   # https://docs.djangoproject.com/en/2.0/ref/django-admin/#cmdoption-makemigrations-check

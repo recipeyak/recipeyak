@@ -48,17 +48,13 @@ class Recipe(CommonInfo, SoftDeleteObject):
     cloned_by = models.ForeignKey["User"](
         "User",
         on_delete=models.SET_NULL,
-        blank=True,
         null=True,
-        default=None,
         help_text="If a clone, User who cloned the recipe.",
     )
     cloned_from = models.ForeignKey["Recipe"](
         "Recipe",
         on_delete=models.SET_NULL,
-        blank=True,
         null=True,
-        default=None,
         help_text="If a clone, the parent this Recipe was cloned from.",
     )
     tags = ArrayField(
