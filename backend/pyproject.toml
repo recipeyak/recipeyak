@@ -24,6 +24,7 @@ djangorestframework-types = "^0.2.0"
 orjson = "^3.6.4"
 psycopg2-binary = "^2.9.3"
 boto3 = "^1.24.44"
+pydantic = "^1.9.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "6.0.1"
