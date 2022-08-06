@@ -141,11 +141,13 @@ Environment variables are used for configuration. Unless otherwise stated, a val
   - ex: `someSecretKey`
 - `STORAGE_BUCKET_NAME` — Bucket for image upload.
   - ex: `recipeyak-production`
+- `STORAGE_HOSTNAME` — Hostname to use to access image bucket. An s3 hostname or cloudfront distribution hostname.
+  - ex: `594f11c618d1.cloudfront.net`
 
 
 ### AWS configuration
 
-1. Create an S3 bucket and configure a CORS policy that allows the website to upload resources.
+1. Create an S3 bucket with all objects public and configure a CORS policy that allows the website to upload resources.
 
 	```json
 	[
