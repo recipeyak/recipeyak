@@ -22,7 +22,7 @@ import { useDispatch } from "@/hooks"
 import { useDropzone } from "react-dropzone"
 import Loader from "./Loader"
 import { random32Id, uuid4 } from "@/uuid"
-import _, { omit } from "lodash"
+import _, { omit, omitBy } from "lodash"
 import { notUndefined } from "@/utils/general"
 
 interface IUseNoteEditHandlers {
@@ -302,51 +302,29 @@ interface IUseNoteCreatorHandlers {
   readonly recipeId: IRecipe["id"]
 }
 
-type UploadState =
-  | {
-      type: "success"
-      id: string
-      url: string
-    }
-  | {
-      type: "failed"
-    }
+type Upload = { id: string; url: string; type: "upload" }
 function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
   const dispatch = useDispatch()
   const [draftText, setDraftText] = React.useState("")
   const [isEditing, setIsEditing] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)
-  const [fileStates, setFileStates] = React.useState<{
-    [_: string]: {
-      file: File
-      upload?: UploadState
-    }
-  }>({})
+  const [uploads, setUploads] = React.useState<Upload[]>([])
 
   const cancelEditingNote = () => {
     setIsEditing(false)
     setDraftText("")
-    setFileStates({})
+    setUploads([])
     blurNoteTextArea()
   }
 
   const onCreate = () => {
     setIsLoading(true)
-    debugger
-    const fileIds = Object.values(fileStates)
-      .map(f => {
-        if (f.upload?.type === "success") {
-          return f.upload.id
-        }
-        return undefined
-      })
-      .filter(notUndefined)
 
     api
       .addNoteToRecipe({
         recipeId,
         note: draftText,
-        attachmentUploadIds: fileIds,
+        attachmentUploadIds: uploads.map(x => x.id),
       })
       .then(res => {
         if (isOk(res)) {
@@ -384,27 +362,6 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     setDraftText(e.target.value)
   }
 
-  const addFiles = (files: FileList) => {
-    ;[...files].forEach(file => {
-      const fileId = uuid4()
-      setFileStates(s => {
-        return { ...s, [fileId]: { file } }
-      })
-      api.uploadImage({ image: file }).then(res => {
-        setFileStates(s => {
-          s[fileId].upload = isOk(res)
-            ? { type: "success", ...res.data }
-            : { type: "failed" }
-          return { ...s }
-        })
-      })
-    })
-  }
-
-  const removeFile = (fileId: string) => {
-    setFileStates(s => omit(s, fileId))
-  }
-
   const editorText = isEditing ? draftText : ""
   const editorRowCount = !isEditing ? 1 : undefined
   const editorMinRowCount = isEditing ? 5 : 0
@@ -428,12 +385,13 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     isLoading,
     onCancel,
     isDisabled,
-    files: Object.entries(fileStates).map(([id, content]) => ({
-      id,
-      ...content,
-    })),
-    addFiles,
-    removeFile,
+    addUploads: (uploadIds: Upload[]) => {
+      setUploads(s => [...s, ...uploadIds])
+    },
+    removeUploads: (uploadIds: string[]) => {
+      setUploads(s => s.filter(x => !uploadIds.includes(x.id)))
+    },
+    uploads,
   }
 }
 
@@ -527,18 +485,88 @@ const BrokenImage = styled.div`
   font-size: 2rem;
 `
 
-function ImageUploader({
-  files,
-  removeFile,
-  addFiles,
+function useImageUpload(
+  addUploads: (uploadIds: Upload[]) => void,
+  removeUploads: (uploadIds: string[]) => void,
+) {
+  const [inProgressUploads, setInprogressUploads] = React.useState<{
+    [_: string]: InProgressUpload
+  }>({})
+
+  const addFiles = (files: FileList) => {
+    ;[...files].forEach(file => {
+      const fileId = uuid4()
+      setInprogressUploads(s => {
+        return {
+          ...s,
+          [fileId]: {
+            id: fileId,
+            file,
+            state: "uploading",
+            type: "in-progress",
+          },
+        }
+      })
+      api.uploadImage({ image: file }).then(res => {
+        if (isOk(res)) {
+          addUploads([{ ...res.data, type: "upload" }])
+          setInprogressUploads(s => {
+            return omit(s, fileId)
+          })
+        }
+      })
+    })
+  }
+
+  const removeFile = (fileId: string) => {
+    setInprogressUploads(s => omit(s, fileId))
+  }
+
+  const files = Object.values(inProgressUploads)
+  return { addFiles, removeFile, files } as const
+}
+
+function Image({
+  url,
+  state,
 }: {
-  files: {
-    file: File
-    upload?: UploadState | undefined
-    id: string
-  }[]
-  removeFile: (fileId: string) => void
+  url: string
+  state: "loading" | "failed" | "uploaded"
+}) {
+  return (
+    <>
+      <a href={url} target="_blank">
+        <ImagePreview loading={state === "loading"} src={url} />
+      </a>
+      {state === "failed" && (
+        <BrokenImageContainer title="Image upload failed">
+          <BrokenImage>❌</BrokenImage>
+        </BrokenImageContainer>
+      )}
+      {state === "loading" && (
+        <LoaderContainer title="Image uploading...">
+          <OverlayLoader />
+        </LoaderContainer>
+      )}
+    </>
+  )
+}
+
+type InProgressUpload = {
+  type: "in-progress"
+  id: string
+  file: File
+  state: "uploading" | "failed"
+}
+
+function ImageUploader({
+  addFiles,
+  removeFile,
+  files,
+}: {
   addFiles: (files: FileList) => void
+  removeFile: (fileId: string) => void
+  files: (InProgressUpload | Upload)[]
 }) {
   return (
     <>
@@ -546,22 +574,15 @@ function ImageUploader({
         <ImageUploadContainer>
           {files.map(f => (
             <ImagePreviewParent key={f.id}>
-              <a href={URL.createObjectURL(f.file)} target="_blank">
-                <ImagePreview
-                  loading={f.upload == null || f.upload.type === "failed"}
-                  src={URL.createObjectURL(f.file)}
+              {f.type === "upload" ? (
+                <Image url={f.url} state={"uploaded"} />
+              ) : (
+                <Image
+                  url={URL.createObjectURL(f.file)}
+                  state={f.state === "failed" ? "failed" : "loading"}
                 />
-              </a>
-              {f.upload?.type === "failed" && (
-                <BrokenImageContainer title="Image upload failed">
-                  <BrokenImage>❌</BrokenImage>
-                </BrokenImageContainer>
               )}
-              {f.upload == null && (
-                <LoaderContainer title="Image uploading...">
-                  <OverlayLoader />
-                </LoaderContainer>
-              )}
+
               <CloseButton
                 onClick={() => {
                   if (confirm("Remove image?")) {
@@ -577,6 +598,8 @@ function ImageUploader({
       <DragDropLabel className="text-muted mb-2">
         <input
           type="file"
+          multiple
+          accept="image/*"
           style={{ display: "none" }}
           onChange={e => {
             const newFiles = e.target.files
@@ -588,6 +611,29 @@ function ImageUploader({
         Attach images by dragging & dropping, selecting or pasting them.
       </DragDropLabel>
     </>
+  )
+}
+
+function UploadContainer({
+  addFiles,
+  children,
+}: {
+  children: React.ReactNode
+  addFiles: (files: FileList) => void
+}) {
+  return (
+    <NoteWrapper
+      onDragOver={event => {
+        event.dataTransfer.dropEffect = "copy"
+      }}
+      onDrop={event => {
+        if (event.dataTransfer?.files) {
+          const newFiles = event.dataTransfer.files
+          addFiles(newFiles)
+        }
+      }}>
+      {children}
+    </NoteWrapper>
   )
 }
 
@@ -605,26 +651,21 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
     isLoading,
     onCancel,
     isDisabled,
-    files,
-    addFiles,
-    removeFile,
+    addUploads,
+    removeUploads,
+    uploads,
   } = useNoteCreatorHandlers({
     recipeId,
   })
 
+  const { addFiles, removeFile, files } = useImageUpload(
+    addUploads,
+    removeUploads,
+  )
+
   return (
     <div className={className}>
-      <NoteWrapper
-        onDragOver={event => {
-          event.dataTransfer.dropEffect = "copy"
-        }}
-        onDrop={event => {
-          // debugger
-          if (event.dataTransfer?.files) {
-            const newFiles = event.dataTransfer.files
-            addFiles(newFiles)
-          }
-        }}>
+      <UploadContainer addFiles={addFiles}>
         <Textarea
           id="new_note_textarea"
           className={editorClassNames}
@@ -638,12 +679,12 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
         />
         {isEditing && (
           <ImageUploader
-            files={files}
-            removeFile={removeFile}
             addFiles={addFiles}
+            removeFile={removeFile}
+            files={[...files, ...uploads]}
           />
         )}
-      </NoteWrapper>
+      </UploadContainer>
 
       {isEditing && (
         <div className="d-flex justify-end align-center">
