@@ -12,9 +12,10 @@ from rest_framework.response import Response
 from core import config
 from core.models.upload import Upload, s3
 from core.request import AuthedRequest
+from core.serialization import RequestParams
 
 
-class StartUploadParams(pydantic.BaseModel):
+class StartUploadParams(RequestParams):
     file_name: str
     content_type: str
     content_length: int
@@ -58,7 +59,7 @@ def start_upload(request: AuthedRequest) -> Response:
             id=upload.pk,
             upload_url=upload_url,
             upload_headers={"x-amz-meta-db_id": upload.pk},
-        ).dict()
+        )
     )
 
 
@@ -84,5 +85,5 @@ def complete_upload(request: AuthedRequest, upload_pk: int) -> Response:
         CompleteUploadResponse(
             id=upload.pk,
             url=upload.public_url(),
-        ).dict()
+        )
     )
