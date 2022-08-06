@@ -7,7 +7,6 @@ import * as api from "@/api"
 import { classNames as cls } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
 import { ButtonPrimary, ButtonSecondary } from "@/components/Buttons"
-import Loader from "@/components/Loader"
 import { Markdown } from "@/components/Markdown"
 import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
 import { useDispatch } from "@/hooks"
@@ -22,6 +21,7 @@ import {
 import { styled } from "@/theme"
 import { notUndefined } from "@/utils/general"
 import { uuid4 } from "@/uuid"
+import { RotatingLoader } from "@/components/RoatingLoader"
 
 interface IUseNoteEditHandlers {
   readonly note: INote
@@ -529,10 +529,6 @@ function ImagePreview({
   return <Image100Px src={formatUrlImgix100(src)} isLoading={isLoading} />
 }
 
-const OverlayLoader = styled(Loader)`
-  margin: auto;
-`
-
 const LoaderContainer = styled.div`
   position: absolute;
   top: 0;
@@ -624,7 +620,7 @@ function Image({
       )}
       {state === "loading" && (
         <LoaderContainer title="Image uploading...">
-          <OverlayLoader />
+          <RotatingLoader />
         </LoaderContainer>
       )}
     </>
