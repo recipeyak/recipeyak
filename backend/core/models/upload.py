@@ -3,10 +3,10 @@ from typing import TYPE_CHECKING
 import boto3
 from botocore.client import Config
 from django.db import models
+from yarl import URL
 
 from core import config
 from core.models.base import CommonInfo
-from yarl import URL
 
 if TYPE_CHECKING:
     from core.models import User, Note  # noqa: F401
