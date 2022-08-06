@@ -592,7 +592,9 @@ function Image({
         href={url}
         target="_blank"
         rel="noreferrer"
-        onClick={(e) => { e.stopPropagation(); }}
+        onClick={(e) => {
+          e.stopPropagation()
+        }}
       >
         <ImagePreview isLoading={state === "loading"} src={url} />
       </a>
