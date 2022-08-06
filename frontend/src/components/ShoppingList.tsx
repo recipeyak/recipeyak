@@ -4,7 +4,7 @@ import isAfter from "date-fns/isAfter"
 import isBefore from "date-fns/isBefore"
 import isValid from "date-fns/isValid"
 import subMonths from "date-fns/subMonths"
-import groupBy from "lodash/groupBy"
+import { groupBy } from "lodash-es"
 import React, { useEffect, useRef, useState } from "react"
 import { connect } from "react-redux"
 

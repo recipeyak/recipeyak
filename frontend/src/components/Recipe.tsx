@@ -1,5 +1,5 @@
 import { replace } from "connected-react-router"
-import sortBy from "lodash/sortBy"
+import { sortBy } from "lodash-es"
 import queryString from "query-string"
 import React from "react"
 import { RouteComponentProps } from "react-router"

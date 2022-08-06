@@ -1,6 +1,5 @@
 import { push } from "connected-react-router"
-import omit from "lodash/omit"
-import omitBy from "lodash/omitBy"
+import { omit, omitBy } from "lodash-es"
 import { Cmd, Loop, loop } from "redux-loop"
 import {
   ActionType,

@@ -1,4 +1,4 @@
-import orderBy from "lodash/orderBy"
+import { orderBy } from "lodash-es"
 import React, { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 import Textarea from "react-textarea-autosize"

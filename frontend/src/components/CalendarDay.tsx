@@ -4,7 +4,7 @@ import format from "date-fns/format"
 import isFirstDayOfMonth from "date-fns/isFirstDayOfMonth"
 import isWithinInterval from "date-fns/isWithinInterval"
 import startOfDay from "date-fns/startOfDay"
-import sortBy from "lodash/sortBy"
+import { sortBy } from "lodash-es"
 import { useDrop } from "react-dnd"
 import { connect } from "react-redux"
 
