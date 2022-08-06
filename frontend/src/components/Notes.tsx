@@ -244,7 +244,7 @@ export function Note({ note, recipeId, className }: INoteProps) {
             <UploadContainer addFiles={addFiles}>
               <Textarea
                 autoFocus
-                className="my-textarea mb-2"
+                className="my-textarea"
                 onKeyDown={onEditorKeyDown}
                 minRows={5}
                 value={draftText}
