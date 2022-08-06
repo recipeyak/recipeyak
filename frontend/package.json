@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@types/dotenv": "^6.1.0",
-    "@types/lodash": "^4.14.119",
+    "@types/lodash-es": "^4.17.6",
     "@types/react-redux": "7.1.24",
     "@types/react-router": "^5.1.7",
     "@types/react-router-dom": "^5.1.5",
@@ -45,7 +45,7 @@
     "fp-ts": "^2.8.1",
     "history": "^4.7.2",
     "io-ts": "^2.2.9",
-    "lodash": "^4.17.4",
+    "lodash-es": "^4.17.21",
     "polished": "^3.4.1",
     "query-string": "^7.1.1",
     "raven-js": "^3.20.1",

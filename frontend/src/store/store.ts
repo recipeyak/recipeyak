@@ -5,8 +5,7 @@ import {
   RouterState,
 } from "connected-react-router"
 import { createBrowserHistory as createHistory } from "history"
-import pickBy from "lodash/pickBy"
-import throttle from "lodash/throttle"
+import { pickBy, throttle } from "lodash-es"
 import {
   applyMiddleware,
   compose as reduxCompose,

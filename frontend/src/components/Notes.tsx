@@ -1,5 +1,4 @@
-import { omit } from "lodash"
-import orderBy from "lodash/orderBy"
+import { omit, orderBy } from "lodash"
 import React, { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 import Textarea from "react-textarea-autosize"
