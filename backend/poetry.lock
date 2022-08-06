@@ -885,6 +885,14 @@ optional = false
 python-versions = ">=3.4"
 
 [[package]]
+name = "multidict"
+version = "6.0.2"
+description = "multidict implementation"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[[package]]
 name = "mypy"
 version = "0.910"
 description = "Optional static typing for Python"
@@ -1480,6 +1488,19 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "yarl"
+version = "1.8.1"
+description = "Yet another URL library"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+idna = ">=2.0"
+multidict = ">=4.0"
+typing-extensions = {version = ">=3.7.4", markers = "python_version < \"3.8\""}
+
+[[package]]
 name = "zipp"
 version = "3.1.0"
 description = "Backport of pathlib-compatible object wrapper for zip files"
@@ -1494,7 +1515,7 @@ testing = ["jaraco.itertools", "func-timeout"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "8980ee982a87a0d5eb38471ba38d81474da55baaf48b8a2a6c804ec13972b572"
+content-hash = "8c55e79118285e10ada845932347acd81c399dda89a48adddf236f7a5e2ba5a0"
 
 [metadata.files]
 appnope = []
@@ -1567,6 +1588,7 @@ mccabe = [
     {file = "mccabe-0.6.1.tar.gz", hash = "sha256:dd8d182285a0fe56bace7f45b5e7d1a6ebcbf524e8f3bd87eb0f125271b8831f"},
 ]
 more-itertools = []
+multidict = []
 mypy = []
 mypy-boto3-s3 = []
 mypy-extensions = [
@@ -1722,4 +1744,5 @@ typing-extensions = []
 urllib3 = []
 watchdog = []
 wcwidth = []
+yarl = []
 zipp = []
