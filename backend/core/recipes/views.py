@@ -160,21 +160,26 @@ class RecipeViewSet(viewsets.ModelViewSet):
             "recipe_id",
             "last_modified_by",
             "last_modified_by__email",
+            "last_modified_by__name",
             "created_by",
             "created_by__email",
+            "created_by__name",
         ):
 
             for name in ("last_modified_by", "created_by"):
                 if note[name] is not None:
+                    display_name = note.get(f"{name}__name") or note[f"{name}__email"]
                     email = note[f"{name}__email"]
                     note[name] = dict(
                         id=note[name],
                         email=email,
+                        name=display_name,
                         avatar_url=get_avatar_url(email),
                     )
                 else:
                     note.pop(name, None)
                 note.pop(f"{name}__email", None)
+                note.pop(f"{name}__name", None)
             note["type"] = "note"
             note["attachments"] = []
             notes[note["recipe_id"]].append(note)
