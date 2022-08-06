@@ -21,6 +21,9 @@ import { isOk } from "@/result"
 import { useDispatch } from "@/hooks"
 import { useDropzone } from "react-dropzone"
 import Loader from "./Loader"
+import { random32Id, uuid4 } from "@/uuid"
+import _, { omit } from "lodash"
+import { notUndefined } from "@/utils/general"
 
 interface IUseNoteEditHandlers {
   readonly note: INote
@@ -165,6 +168,11 @@ function SharedEntry({
   )
 }
 
+const DisplayImage = styled.img`
+  max-height: 100px;
+  min-height: 100px;
+`
+
 interface INoteProps {
   readonly note: INote
   readonly recipeId: IRecipe["id"]
@@ -198,12 +206,18 @@ export function Note({ note, recipeId, className }: INoteProps) {
           </a>
         </p>
         {!isEditing ? (
-          <Markdown
-            className="cursor-pointer"
-            title="click to edit"
-            onClick={onNoteClick}>
-            {note.text}
-          </Markdown>
+          <div className="cursor-pointer" onClick={onNoteClick}>
+            <Markdown className="cursor-pointer" title="click to edit">
+              {note.text}
+            </Markdown>
+            <div>
+              {note.attachments.map(attachment => (
+                <a key={attachment.id} target="_blank" href={attachment.url}>
+                  <ImagePreview src={attachment.url} />
+                </a>
+              ))}
+            </div>
+          </div>
         ) : (
           <>
             <Textarea
@@ -215,6 +229,14 @@ export function Note({ note, recipeId, className }: INoteProps) {
               onChange={onEditorChange}
               placeholder="Add a note..."
             />
+            <div>
+              {note.attachments.map(attachment => (
+                <a key={attachment.id} target="_blank" href={attachment.url}>
+                  <ImagePreview src={attachment.url} />
+                </a>
+              ))}
+            </div>
+
             {isEditing && (
               <div className="d-flex justify-between align-center">
                 <ButtonSecondary
@@ -279,38 +301,70 @@ export const blurNoteTextArea = () => {
 interface IUseNoteCreatorHandlers {
   readonly recipeId: IRecipe["id"]
 }
+
+type UploadState =
+  | {
+      type: "success"
+      id: string
+      url: string
+    }
+  | {
+      type: "failed"
+    }
 function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
   const dispatch = useDispatch()
   const [draftText, setDraftText] = React.useState("")
   const [isEditing, setIsEditing] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)
-  const [files, setFiles] = React.useState<File[]>([])
+  const [fileStates, setFileStates] = React.useState<{
+    [_: string]: {
+      file: File
+      upload?: UploadState
+    }
+  }>({})
 
   const cancelEditingNote = () => {
     setIsEditing(false)
     setDraftText("")
+    setFileStates({})
     blurNoteTextArea()
   }
 
   const onCreate = () => {
     setIsLoading(true)
-    api.addNoteToRecipe({ recipeId, note: draftText }).then(res => {
-      if (isOk(res)) {
-        dispatch(
-          patchRecipe({
-            recipeId,
-            updateFn: recipe => {
-              return {
-                ...recipe,
-                timelineItems: [...recipe.timelineItems, res.data],
-              }
-            },
-          }),
-        )
-        cancelEditingNote()
-      }
-      setIsLoading(false)
-    })
+    debugger
+    const fileIds = Object.values(fileStates)
+      .map(f => {
+        if (f.upload?.type === "success") {
+          return f.upload.id
+        }
+        return undefined
+      })
+      .filter(notUndefined)
+
+    api
+      .addNoteToRecipe({
+        recipeId,
+        note: draftText,
+        attachmentUploadIds: fileIds,
+      })
+      .then(res => {
+        if (isOk(res)) {
+          dispatch(
+            patchRecipe({
+              recipeId,
+              updateFn: recipe => {
+                return {
+                  ...recipe,
+                  timelineItems: [...recipe.timelineItems, res.data],
+                }
+              },
+            }),
+          )
+          cancelEditingNote()
+        }
+        setIsLoading(false)
+      })
   }
   const onCancel = () => {
     cancelEditingNote()
@@ -331,11 +385,24 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
   }
 
   const addFiles = (files: FileList) => {
-    setFiles(existingFiles => [...files, ...existingFiles])
+    ;[...files].forEach(file => {
+      const fileId = uuid4()
+      setFileStates(s => {
+        return { ...s, [fileId]: { file } }
+      })
+      api.uploadImage({ image: file }).then(res => {
+        setFileStates(s => {
+          s[fileId].upload = isOk(res)
+            ? { type: "success", ...res.data }
+            : { type: "failed" }
+          return { ...s }
+        })
+      })
+    })
   }
 
-  const removeFile = (f: File) => {
-    setFiles(files => files.filter(x => x !== f))
+  const removeFile = (fileId: string) => {
+    setFileStates(s => omit(s, fileId))
   }
 
   const editorText = isEditing ? draftText : ""
@@ -361,7 +428,10 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     isLoading,
     onCancel,
     isDisabled,
-    files,
+    files: Object.entries(fileStates).map(([id, content]) => ({
+      id,
+      ...content,
+    })),
     addFiles,
     removeFile,
   }
@@ -420,12 +490,14 @@ const CloseButton = styled.button`
   font-weight: 700;
 `
 
-const ImagePreview = styled.img<{ readonly gray: boolean }>`
+const ImagePreview = styled.img<{
+  readonly loading?: boolean
+}>`
   max-height: 100px;
   max-width: 100px;
   border-radius: 3px;
   margin-right: 0.25rem;
-  filter: ${props => (props.gray ? "grayscale(100%)" : "unset")};
+  filter: ${props => (props.loading ? "grayscale(100%)" : "unset")};
 `
 
 const OverlayLoader = styled(Loader)`
@@ -440,6 +512,88 @@ const LoaderContainer = styled.div`
   bottom: 0;
   display: flex;
 `
+
+const BrokenImageContainer = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  display: flex;
+`
+
+const BrokenImage = styled.div`
+  margin: auto;
+  font-size: 2rem;
+`
+
+function ImageUploader({
+  files,
+  removeFile,
+  addFiles,
+}: {
+  existingFiles: {
+    id: string
+    url: string
+  }[]
+  files: {
+    file: File
+    upload?: UploadState | undefined
+    id: string
+  }[]
+  removeFile: (fileId: string) => void
+  addFiles: (files: FileList) => void
+}) {
+  return (
+    <>
+      {files.length > 0 && (
+        <ImageUploadContainer>
+          {files.map(f => (
+            <ImagePreviewParent key={f.id}>
+              <a href={URL.createObjectURL(f.file)} target="_blank">
+                <ImagePreview
+                  loading={f.upload == null || f.upload.type === "failed"}
+                  src={URL.createObjectURL(f.file)}
+                />
+              </a>
+              {f.upload?.type === "failed" && (
+                <BrokenImageContainer title="Image upload failed">
+                  <BrokenImage>❌</BrokenImage>
+                </BrokenImageContainer>
+              )}
+              {f.upload == null && (
+                <LoaderContainer title="Image uploading...">
+                  <OverlayLoader />
+                </LoaderContainer>
+              )}
+              <CloseButton
+                onClick={() => {
+                  if (confirm("Remove image?")) {
+                    removeFile(f.id)
+                  }
+                }}>
+                &times;
+              </CloseButton>
+            </ImagePreviewParent>
+          ))}
+        </ImageUploadContainer>
+      )}
+      <DragDropLabel className="text-muted mb-2">
+        <input
+          type="file"
+          style={{ display: "none" }}
+          onChange={e => {
+            const newFiles = e.target.files
+            if (newFiles != null) {
+              addFiles(newFiles)
+            }
+          }}
+        />
+        Attach images by dragging & dropping, selecting or pasting them.
+      </DragDropLabel>
+    </>
+  )
+}
 
 function NoteCreator({ recipeId, className }: INoteCreatorProps) {
   const {
@@ -462,11 +616,9 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
     recipeId,
   })
 
-  const loadingImage = false
   return (
     <div className={className}>
       <NoteWrapper
-        // {...getRootProps({ className: "dropzone" })}
         onDragOver={event => {
           event.dataTransfer.dropEffect = "copy"
         }}
@@ -489,48 +641,11 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
           placeholder="Add a note..."
         />
         {isEditing && (
-          <>
-            {files.length > 0 && (
-              <ImageUploadContainer>
-                {files.map(f => (
-                  <ImagePreviewParent key={f.name}>
-                    <a href={URL.createObjectURL(f)} target="_blank">
-                      <ImagePreview
-                        gray={loadingImage}
-                        src={URL.createObjectURL(f)}
-                      />
-                    </a>
-                    {loadingImage && (
-                      <LoaderContainer>
-                        <OverlayLoader />
-                      </LoaderContainer>
-                    )}
-                    <CloseButton
-                      onClick={() => {
-                        if (confirm("Remove image?")) {
-                          removeFile(f)
-                        }
-                      }}>
-                      &times;
-                    </CloseButton>
-                  </ImagePreviewParent>
-                ))}
-              </ImageUploadContainer>
-            )}
-            <DragDropLabel className="text-muted mb-2">
-              <input
-                type="file"
-                style={{ display: "none" }}
-                onChange={e => {
-                  const newFiles = e.target.files
-                  if (newFiles != null) {
-                    addFiles(newFiles)
-                  }
-                }}
-              />
-              Attach images by dragging & dropping, selecting or pasting them.
-            </DragDropLabel>
-          </>
+          <ImageUploader
+            files={files}
+            removeFile={removeFile}
+            addFiles={addFiles}
+          />
         )}
       </NoteWrapper>
 

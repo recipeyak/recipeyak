@@ -489,6 +489,7 @@ export interface INote {
   readonly text: string
   readonly modified: string
   readonly created: string
+  readonly attachments: { id: string; url: string }[]
   readonly last_modified_by: IPublicUser
   readonly created_by: IPublicUser
 }

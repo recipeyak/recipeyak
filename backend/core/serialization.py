@@ -4,6 +4,7 @@ from typing import Any, cast
 from django.conf import settings
 from django.db import connection
 from rest_framework import serializers
+import pydantic
 
 log = getLogger(__name__)
 
@@ -71,3 +72,7 @@ class BaseRelatedField(DBBlockerSerializerMixin, serializers.RelatedField):
     """
     Serializer with `DBBlockerSerializerMixin` to disable DB access.
     """
+
+
+class RequestParams(pydantic.BaseModel):
+    ...

@@ -1,17 +1,21 @@
 from __future__ import annotations
 
 import collections
+from datetime import datetime
 import logging
-from typing import Any, Iterable, Optional
+from typing import Any, Iterable, List, Optional
+from typing_extensions import Literal
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from django.db import transaction
 from rest_framework import status
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.exceptions import MethodNotAllowed, PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+import pydantic
 
 from core import viewsets
 from core.auth.permissions import (
@@ -32,6 +36,7 @@ from core.models import (
     Team,
     TimelineEvent,
     User,
+    Upload,
     user_and_team_recipes,
 )
 from core.models.user import get_avatar_url
@@ -43,6 +48,7 @@ from core.recipes.serializers import (
     RecipeTimelineSerializer,
     SectionSerializer,
     StepSerializer,
+    serialize_note,
 )
 from core.recipes.utils import add_positions
 from core.request import AuthedRequest
@@ -80,6 +86,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             "note_set",
             "note_set__created_by",
             "note_set__last_modified_by",
+            "note_set__uploads",
             "timelineevent_set",
             "timelineevent_set__created_by",
             "section_set",
@@ -366,6 +373,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             "ingredient_set",
             "scheduledrecipe_set",
             "note_set",
+            "note_set__uploads",
             "timelineevent_set",
             "section_set",
         ).get(id=new_recipe.id)
@@ -524,6 +532,7 @@ class TeamRecipesViewSet(APIView):
             "note_set",
             "note_set__created_by",
             "note_set__last_modified_by",
+            "note_set__uploads_set",
             "timelineevent_set",
             "timelineevent_set__created_by",
             "section_set",
@@ -684,6 +693,16 @@ class IngredientViewSet(viewsets.ModelViewSet):
         super().perform_destroy(instance)
 
 
+class CreateNoteParams(pydantic.BaseModel):
+    text: str
+    attachment_upload_ids: List[str]
+
+
+class EditNoteParams(pydantic.BaseModel):
+    text: Optional[str] = None
+    attachment_upload_ids: Optional[List[str]] = None
+
+
 class NoteViewSet(viewsets.ModelViewSet):
 
     queryset = Note.objects.all()
@@ -695,11 +714,34 @@ class NoteViewSet(viewsets.ModelViewSet):
     def create(  # type: ignore [override]
         self, request: AuthedRequest, recipe_pk: str
     ) -> Response:
-        serializer = self.get_serializer(data=request.data)
         recipe = get_object_or_404(Recipe, pk=recipe_pk)
-        serializer.is_valid(raise_exception=True)
-        serializer.save(recipe=recipe, created_by=request.user)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        params = CreateNoteParams.parse_obj(request.data)
 
-    def perform_update(self, serializer):
-        serializer.save(last_modified_by=self.request.user)
+        note = Note.objects.create(
+            text=params.text,
+            created_by=request.user,
+            last_modified_by=request.user,
+            recipe=recipe,
+        )
+        Upload.objects.filter(
+            id__in=params.attachment_upload_ids, created_by=request.user
+        ).update(note=note)
+
+        return Response(serialize_note(note), status=status.HTTP_201_CREATED)
+
+    def update(  # type: ignore [override]
+        self, request: AuthedRequest, partial: bool, pk: str
+    ) -> Response:
+        params = EditNoteParams.parse_obj(self.request.data)
+        note = get_object_or_404(Note, pk=pk)
+        if params.text is not None:
+            note.text = params.text
+            note.save()
+        if params.attachment_upload_ids is not None:
+            with transaction.atomic():
+                Upload.objects.filter(note=note).delete()
+                Upload.objects.filter(
+                    id__in=params.attachment_upload_ids, created_by=request.user
+                ).update(note=note)
+
+        return Response(serialize_note(note), status=status.HTTP_200_OK)

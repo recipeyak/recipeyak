@@ -2,6 +2,7 @@ from decimal import Decimal
 
 import orjson
 from rest_framework.renderers import JSONRenderer as DRFJSONRenderer
+import pydantic
 
 MAX_DECIMAL_PLACES = 8
 
@@ -21,6 +22,8 @@ def fmt_decimal(d: Decimal) -> str:
 def default(o):
     if isinstance(o, Decimal):
         return fmt_decimal(o)
+    if isinstance(o, pydantic.BaseModel):
+        return o.dict()
     raise TypeError
 
 

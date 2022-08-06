@@ -7,6 +7,7 @@ import { IRecipe, IIngredient, IStep, INote } from "@/store/reducers/recipes"
 import { IInvite } from "@/store/reducers/invites"
 import { ICalRecipe } from "@/store/reducers/calendar"
 import * as t from "io-ts"
+import { isOk, Ok } from "./result"
 
 export const updateUser = (data: Partial<IUser>) =>
   http.patch<IUser>("/api/v1/user/", data)
@@ -202,9 +203,49 @@ export const deleteIngredient = (
 interface IAddNoteToRecipe {
   readonly recipeId: IRecipe["id"]
   readonly note: string
+  readonly attachmentUploadIds: string[]
 }
-export const addNoteToRecipe = ({ recipeId, note }: IAddNoteToRecipe) =>
-  http.post<INote>(`/api/v1/recipes/${recipeId}/notes/`, { text: note })
+export const addNoteToRecipe = ({
+  recipeId,
+  note,
+  attachmentUploadIds,
+}: IAddNoteToRecipe) =>
+  http.post<INote>(`/api/v1/recipes/${recipeId}/notes/`, {
+    text: note,
+    attachment_upload_ids: attachmentUploadIds,
+  })
+export const uploadImage = async ({ image }: { image: File }) => {
+  const res = await http.post<{
+    id: string
+    upload_url: string
+    upload_headers: Record<string, string>
+  }>(`/api/v1/upload/`, {
+    file_name: image.name,
+    content_type: image.type,
+    content_length: image.size,
+  })
+  if (!isOk(res)) {
+    return res
+  }
+  const uploadRes = await http.put(res.data.upload_url, image, {
+    headers: {
+      ...res.data.upload_headers,
+      "Content-Type": image.type,
+    },
+  })
+  if (!isOk(uploadRes)) {
+    return uploadRes
+  }
+
+  const uploadFinished = await http.post<{ id: string; url: string }>(
+    `/api/v1/upload/${res.data.id}/complete`,
+  )
+  if (!isOk(uploadFinished)) {
+    return uploadFinished
+  }
+  return Ok(uploadFinished.data)
+}
+
 interface IUpdateNote {
   readonly noteId: INote["id"]
   readonly note: string
