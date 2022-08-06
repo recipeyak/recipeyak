@@ -30,6 +30,9 @@ class Upload(CommonInfo):
         "Note", related_name="uploads", null=True, on_delete=models.SET_NULL
     )
 
+    if TYPE_CHECKING:
+        note_id: int | None
+
     def public_url(self) -> str:
         return s3.generate_presigned_url(
             ClientMethod="get_object",

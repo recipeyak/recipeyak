@@ -45,6 +45,7 @@ from core.recipes.serializers import (
     RecipeTimelineSerializer,
     SectionSerializer,
     StepSerializer,
+    serialize_attachments,
     serialize_note,
 )
 from core.recipes.utils import add_positions
@@ -150,7 +151,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         )
 
         notes = collections.defaultdict(list)
-
+        note_map = dict()
         for note in Note.objects.filter(recipe_id__in=recipes.keys()).values(
             "id",
             "text",
@@ -175,7 +176,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     note.pop(name, None)
                 note.pop(f"{name}__email", None)
             note["type"] = "note"
+            note["attachments"] = []
             notes[note["recipe_id"]].append(note)
+            note_map[note["id"]] = note
+
+        for upload in Upload.objects.filter(note__recipe_id__in=recipes.keys()):
+            note_map[upload.note_id]["attachments"].append(
+                list(serialize_attachments([upload]))[0].dict()
+            )
 
         timeline_events = collections.defaultdict(list)
 
