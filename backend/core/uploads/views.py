@@ -1,18 +1,17 @@
 from __future__ import annotations
-from typing import Dict
 
+from typing import Dict
 from uuid import uuid4
 
-
-from core.models.upload import Upload, s3
+import pydantic
+from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
-import pydantic
 
-from core.request import AuthedRequest
 from core import config
+from core.models.upload import Upload, s3
+from core.request import AuthedRequest
 
 
 class StartUploadParams(pydantic.BaseModel):

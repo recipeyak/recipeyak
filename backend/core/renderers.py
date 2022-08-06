@@ -1,8 +1,8 @@
 from decimal import Decimal
 
 import orjson
-from rest_framework.renderers import JSONRenderer as DRFJSONRenderer
 import pydantic
+from rest_framework.renderers import JSONRenderer as DRFJSONRenderer
 
 MAX_DECIMAL_PLACES = 8
 

@@ -4,6 +4,7 @@ import time
 from typing import Optional
 from uuid import uuid4
 
+import pydantic
 import sentry_sdk
 from django.conf import settings
 from django.contrib.sessions.middleware import (
@@ -12,7 +13,7 @@ from django.contrib.sessions.middleware import (
 from django.db import connection
 from django.http import HttpRequest, HttpResponse, HttpResponseServerError, JsonResponse
 from django.utils.deprecation import MiddlewareMixin
-import pydantic
+
 from core.request_state import State
 from core.serialization import RequestParams
 

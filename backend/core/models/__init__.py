@@ -12,8 +12,8 @@ from core.models.shopping_list import ShoppingList  # noqa: F401
 from core.models.step import Step  # noqa: F401
 from core.models.team import Team  # noqa: F401
 from core.models.timeline_event import TimelineEvent  # noqa: F401
-from core.models.user import User  # noqa: F401
 from core.models.upload import Upload  # noqa: F401
+from core.models.user import User  # noqa: F401
 
 
 def user_active_team_ids(user):

@@ -1,10 +1,11 @@
 from __future__ import annotations
+
 from datetime import datetime
-
 from typing import Any, Iterable, List, Optional, cast
-from typing_extensions import Literal
 
+import pydantic
 from rest_framework import serializers
+from typing_extensions import Literal
 
 from core.models import (
     Ingredient,
@@ -16,7 +17,6 @@ from core.models import (
     Team,
     User,
 )
-import pydantic
 from core.models.upload import Upload
 from core.serialization import BaseModelSerializer, BaseRelatedField, BaseSerializer
 from core.teams.serializers import PublicUserSerializer

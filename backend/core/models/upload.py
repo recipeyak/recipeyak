@@ -1,14 +1,14 @@
 from typing import TYPE_CHECKING
 
+import boto3
+from botocore.client import Config
 from django.db import models
 
+from core import config
 from core.models.base import CommonInfo
 
 if TYPE_CHECKING:
     from core.models import User, Note  # noqa: F401
-import boto3
-from botocore.client import Config
-from core import config
 
 s3 = boto3.client(
     "s3",

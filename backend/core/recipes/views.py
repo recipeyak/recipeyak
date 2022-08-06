@@ -1,21 +1,21 @@
 from __future__ import annotations
 
 import collections
-from datetime import datetime
 import logging
+from datetime import datetime
 from typing import Any, Iterable, List, Optional
-from typing_extensions import Literal
 
+import pydantic
+from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from django.db import transaction
 from rest_framework import status
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.exceptions import MethodNotAllowed, PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-import pydantic
+from typing_extensions import Literal
 
 from core import viewsets
 from core.auth.permissions import (
@@ -35,8 +35,8 @@ from core.models import (
     Step,
     Team,
     TimelineEvent,
-    User,
     Upload,
+    User,
     user_and_team_recipes,
 )
 from core.models.user import get_avatar_url

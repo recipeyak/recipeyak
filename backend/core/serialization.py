@@ -1,10 +1,10 @@
 from logging import getLogger
 from typing import Any, cast
 
+import pydantic
 from django.conf import settings
 from django.db import connection
 from rest_framework import serializers
-import pydantic
 
 log = getLogger(__name__)
 
