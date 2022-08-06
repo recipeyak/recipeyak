@@ -20,9 +20,10 @@ import * as api from "@/api"
 
 import { isOk } from "@/result"
 import { useDispatch } from "@/hooks"
-import Loader from "./Loader"
+import Loader from "@/components/Loader"
 import { uuid4 } from "@/uuid"
 import _, { omit } from "lodash"
+import { notUndefined } from "@/utils/general"
 
 interface IUseNoteEditHandlers {
   readonly note: INote
@@ -228,7 +229,11 @@ export function Note({ note, recipeId, className }: INoteProps) {
             </Markdown>
             <div>
               {note.attachments.map(attachment => (
-                <a key={attachment.id} target="_blank" href={attachment.url}>
+                <a
+                  key={attachment.id}
+                  target="_blank"
+                  rel="noreferrer"
+                  href={attachment.url}>
                   <ImagePreview src={attachment.url} />
                 </a>
               ))}
@@ -250,7 +255,7 @@ export function Note({ note, recipeId, className }: INoteProps) {
                 <ImageUploader
                   addFiles={addFiles}
                   removeFile={removeFile}
-                  files={[...files, ...uploads]}
+                  files={[...files.filter(notUndefined), ...uploads]}
                 />
               ) : (
                 <div>
@@ -258,6 +263,7 @@ export function Note({ note, recipeId, className }: INoteProps) {
                     <a
                       key={attachment.id}
                       target="_blank"
+                      rel="noreferrer"
                       href={attachment.url}>
                       <ImagePreview src={attachment.url} />
                     </a>
@@ -518,7 +524,7 @@ function useImageUpload(
   removeUploads: (uploadIds: string[]) => void,
 ) {
   const [inProgressUploads, setInprogressUploads] = React.useState<{
-    [_: string]: InProgressUpload
+    [_: string]: InProgressUpload | undefined
   }>({})
 
   const addFiles = (files: FileList) => {
@@ -710,7 +716,7 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
           <ImageUploader
             addFiles={addFiles}
             removeFile={removeFile}
-            files={[...files, ...uploads]}
+            files={[...files.filter(notUndefined), ...uploads]}
           />
         )}
       </UploadContainer>

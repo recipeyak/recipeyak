@@ -7,7 +7,7 @@ import { IRecipe, IIngredient, IStep, INote } from "@/store/reducers/recipes"
 import { IInvite } from "@/store/reducers/invites"
 import { ICalRecipe } from "@/store/reducers/calendar"
 import * as t from "io-ts"
-import { isOk, Ok } from "./result"
+import { isOk, Ok } from "@/result"
 
 export const updateUser = (data: Partial<IUser>) =>
   http.patch<IUser>("/api/v1/user/", data)
