@@ -50,8 +50,6 @@ const ALLOWED_MARKDOWN_TYPES: NodeType[] = [
   "linkReference",
   "link",
   "listItem",
-  "imageReference",
-  "image",
 ]
 
 function renderLink({
