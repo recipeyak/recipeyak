@@ -4,7 +4,6 @@ import collections
 import logging
 from typing import Any, Iterable, List, Optional
 
-import pydantic
 from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
@@ -50,6 +49,7 @@ from core.recipes.serializers import (
 )
 from core.recipes.utils import add_positions
 from core.request import AuthedRequest
+from core.serialization import RequestParams
 
 logger = logging.getLogger(__name__)
 
@@ -691,12 +691,12 @@ class IngredientViewSet(viewsets.ModelViewSet):
         super().perform_destroy(instance)
 
 
-class CreateNoteParams(pydantic.BaseModel):
+class CreateNoteParams(RequestParams):
     text: str
     attachment_upload_ids: List[str]
 
 
-class EditNoteParams(pydantic.BaseModel):
+class EditNoteParams(RequestParams):
     text: Optional[str] = None
     attachment_upload_ids: Optional[List[str]] = None
 
@@ -732,14 +732,15 @@ class NoteViewSet(viewsets.ModelViewSet):
     ) -> Response:
         params = EditNoteParams.parse_obj(self.request.data)
         note = get_object_or_404(Note, pk=pk)
+        note.last_modified_by = request.user
         if params.text is not None:
             note.text = params.text
-            note.save()
         if params.attachment_upload_ids is not None:
             with transaction.atomic():
                 Upload.objects.filter(note=note).update(note=None)
                 Upload.objects.filter(
                     id__in=params.attachment_upload_ids, created_by=request.user
                 ).update(note=note)
+        note.save()
 
         return Response(serialize_note(note), status=status.HTTP_200_OK)

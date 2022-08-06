@@ -333,7 +333,7 @@ def test_position_step_ingredient(client, user, recipe, data, base_name, model):
 def test_adding_note_to_recipe(client, user, recipe):
     Note.objects.all().delete()
     client.force_authenticate(user)
-    data = {"text": "use a mixer to speed things along."}
+    data = {"text": "use a mixer to speed things along.", "attachment_upload_ids": []}
     res = client.post(f"/api/v1/recipes/{recipe.id}/notes/", data)
     assert status.is_success(res.status_code)
     assert res.json()["created_by"]["id"] == user.id
@@ -344,7 +344,7 @@ def test_modifying_note_of_recipe(client, user, user2, recipe):
     note = recipe.note_set.first()
     client.force_authenticate(user2)
     data = {"text": "preheat the oven!!"}
-    res = client.patch(f"/api/v1/recipes/{recipe.id}/notes/{note.id}/", data)
+    res = client.patch(f"/api/v1/notes/{note.id}/", data)
     assert status.is_success(res.status_code)
     assert res.json()["last_modified_by"]["id"] == user2.id
     assert res.json()["created_by"]["id"] == user.id
@@ -355,7 +355,7 @@ def test_delete_note_of_recipe(client, user, user2, recipe):
     client.force_authenticate(user2)
     before_count = recipe.note_set.count()
     assert before_count > 0
-    res = client.delete(f"/api/v1/recipes/{recipe.id}/notes/{note.id}/")
+    res = client.delete(f"/api/v1/notes/{note.id}/")
     assert status.is_success(res.status_code)
     assert recipe.note_set.count() == before_count - 1
 
