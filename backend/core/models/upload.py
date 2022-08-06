@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 import boto3
 from botocore.client import Config
 from django.db import models
+from yarl import URL
 
 from core import config
 from core.models.base import CommonInfo
@@ -34,7 +35,4 @@ class Upload(CommonInfo):
         note_id: int | None
 
     def public_url(self) -> str:
-        return s3.generate_presigned_url(
-            ClientMethod="get_object",
-            Params={"Bucket": self.bucket, "Key": self.key},
-        )
+        return str(URL(f"https://{config.STORAGE_HOSTNAME}").with_path(self.key))

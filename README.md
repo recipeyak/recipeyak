@@ -141,6 +141,8 @@ Environment variables are used for configuration. Unless otherwise stated, a val
   - ex: `someSecretKey`
 - `STORAGE_BUCKET_NAME` — Bucket for image upload.
   - ex: `recipeyak-production`
+- `STORAGE_HOSTNAME` — Hostname to use to access image bucket. An s3 hostname or cloudfront distribution hostname.
+  - ex: `594f11c618d1.cloudfront.net`
 
 
 ### AWS configuration
@@ -166,6 +168,7 @@ Environment variables are used for configuration. Unless otherwise stated, a val
 	]
 	```
 2. Create an IAM policy to give your AWS ID access to `get_object` and `put_object` for your bucket.
+3. Configure imgix to pull from the bucket.
 
 [django-secret]: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-SECRET_KEY
 [sentry-dsn]: https://docs.sentry.io/quickstart/#about-the-dsn
