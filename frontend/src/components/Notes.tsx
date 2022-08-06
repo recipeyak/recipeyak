@@ -8,6 +8,7 @@ import { classNames as cls } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
 import { ButtonPrimary, ButtonSecondary } from "@/components/Buttons"
 import { Markdown } from "@/components/Markdown"
+import { RotatingLoader } from "@/components/RoatingLoader"
 import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
 import { useDispatch } from "@/hooks"
 import { isOk } from "@/result"
@@ -21,7 +22,6 @@ import {
 import { styled } from "@/theme"
 import { notUndefined } from "@/utils/general"
 import { uuid4 } from "@/uuid"
-import { RotatingLoader } from "@/components/RoatingLoader"
 
 interface IUseNoteEditHandlers {
   readonly note: INote
