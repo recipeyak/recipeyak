@@ -288,7 +288,7 @@ def serialize_public_user(user: User) -> PublicUser:
 
 def serialize_note(note: Note) -> NoteResponse:
     return NoteResponse(
-        id=note.id,
+        id=note.pk,
         text=note.text,
         created_by=serialize_public_user(note.created_by),
         last_modified_by=serialize_public_user(note.last_modified_by)

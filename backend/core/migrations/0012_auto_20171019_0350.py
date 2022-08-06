@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="ingredient",
             name="unit",
-            field=models.CharField(default=1, max_length=255),
+            field=models.CharField(default=1, max_length=255),  # type: ignore [call-overload]
             preserve_default=False,
         ),
         migrations.AlterField(
