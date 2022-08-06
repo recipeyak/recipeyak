@@ -27,7 +27,7 @@ class Note(CommonInfo, SoftDeleteObject):
     if TYPE_CHECKING:
         uploads: models.QuerySet[Upload]
 
-    objects = SoftDeleteManager["Step"]()
+    objects = SoftDeleteManager["Note"]()
 
     class Meta:
         ordering = ["-created"]
