@@ -6,7 +6,7 @@ from softdelete.models import SoftDeleteManager, SoftDeleteObject
 from core.models.base import CommonInfo
 
 if TYPE_CHECKING:
-    from core.models import User, Recipe, Step  # noqa: F401
+    from core.models import User, Recipe, Upload, Step  # noqa: F401
 
 
 class Note(CommonInfo, SoftDeleteObject):
@@ -24,7 +24,10 @@ class Note(CommonInfo, SoftDeleteObject):
     )
     recipe = models.ForeignKey["Recipe"]("Recipe", on_delete=models.CASCADE)
 
-    objects = SoftDeleteManager["Step"]()
+    if TYPE_CHECKING:
+        uploads: models.QuerySet[Upload]
+
+    objects = SoftDeleteManager["Note"]()
 
     class Meta:
         ordering = ["-created"]

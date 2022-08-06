@@ -1,6 +1,7 @@
 from logging import getLogger
 from typing import Any, cast
 
+import pydantic
 from django.conf import settings
 from django.db import connection
 from rest_framework import serializers
@@ -70,4 +71,11 @@ class BaseModelSerializer(DBBlockerSerializerMixin, serializers.ModelSerializer)
 class BaseRelatedField(DBBlockerSerializerMixin, serializers.RelatedField):
     """
     Serializer with `DBBlockerSerializerMixin` to disable DB access.
+    """
+
+
+class RequestParams(pydantic.BaseModel):
+    """
+    ValidationErrors raised by subclasses of this model will be converted into
+    400 errors.
     """

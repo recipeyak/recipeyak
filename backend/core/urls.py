@@ -22,6 +22,7 @@ from core.teams.views import (
     TeamViewSet,
     UserInvitesViewSet,
 )
+from core.uploads import views as upload
 
 router = DefaultRouter()
 router.register(r"recipes", RecipeViewSet, basename="recipes")
@@ -53,6 +54,8 @@ urlpatterns = [
     path("api/v1/", include(teams_router.urls)),
     path("api/v1/t/<team_pk>/shoppinglist/", get_shopping_list_view),
     path("api/v1/report-bad-merge", ReportBadMerge.as_view(), name="report-bad-merge"),
+    path("api/v1/upload/", upload.start_upload),
+    path("api/v1/upload/<int:upload_pk>/complete", upload.complete_upload),
     path(
         "api/v1/t/<int:team_pk>/recipes/",
         TeamRecipesViewSet.as_view(),

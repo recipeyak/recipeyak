@@ -115,6 +115,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.middleware.http.ConditionalGetMiddleware",
     "core.middleware.NoCacheMiddleware",
+    "core.middleware.ExceptionMiddleware",
 ]
 
 

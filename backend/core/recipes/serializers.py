@@ -1,8 +1,11 @@
 from __future__ import annotations
 
-from typing import Any, cast
+from datetime import datetime
+from typing import Any, Iterable, List, Optional, cast
 
+import pydantic
 from rest_framework import serializers
+from typing_extensions import Literal
 
 from core.models import (
     Ingredient,
@@ -14,6 +17,7 @@ from core.models import (
     Team,
     User,
 )
+from core.models.upload import Upload
 from core.serialization import BaseModelSerializer, BaseRelatedField, BaseSerializer
 from core.teams.serializers import PublicUserSerializer
 
@@ -141,7 +145,7 @@ class RecipeSerializer(BaseModelSerializer):
 
     def get_timelineItems(self, obj: Recipe) -> list[dict[str, Any]]:
         items: list[dict[str, Any]] = [
-            NoteSerializer(x).data for x in cast(Any, obj).note_set.all()
+            serialize_note(x).dict() for x in cast(Any, obj).note_set.all()
         ]
 
         items += [
@@ -242,3 +246,55 @@ class RecipeTimelineSerializer(BaseModelSerializer):
     class Meta:
         model = ScheduledRecipe
         fields = ("id", "on")
+
+
+class PublicUser(pydantic.BaseModel):
+    id: int
+    name: str
+    email: str
+    avatar_url: str
+
+
+class NoteAttachment(pydantic.BaseModel):
+    id: str
+    url: str
+    type: Literal["upload"] = "upload"
+
+
+def serialize_attachments(attachments: Iterable[Upload]) -> Iterable[NoteAttachment]:
+    for attachment in attachments:
+        yield NoteAttachment(id=attachment.pk, url=attachment.public_url())
+
+
+class NoteResponse(pydantic.BaseModel):
+    id: int
+    text: str
+    created_by: PublicUser
+    last_modified_by: Optional[PublicUser]
+    created: datetime
+    modified: datetime
+    attachments: List[NoteAttachment]
+    type: Literal["note"] = "note"
+
+
+def serialize_public_user(user: User) -> PublicUser:
+    return PublicUser(
+        id=user.id,
+        name=user.name or user.email,
+        email=user.email,
+        avatar_url=user.avatar_url,
+    )
+
+
+def serialize_note(note: Note) -> NoteResponse:
+    return NoteResponse(
+        id=note.pk,
+        text=note.text,
+        created_by=serialize_public_user(note.created_by),
+        last_modified_by=serialize_public_user(note.last_modified_by)
+        if note.last_modified_by
+        else None,
+        created=note.created,
+        attachments=serialize_attachments(note.uploads.all()),
+        modified=note.modified,
+    )
