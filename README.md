@@ -147,7 +147,7 @@ Environment variables are used for configuration. Unless otherwise stated, a val
 
 ### AWS configuration
 
-1. Create an S3 bucket with all objects public and configure a CORS policy that allows the website to upload resources.
+1. Create an S3 bucket and configure a CORS policy that allows the website to upload resources.
 
 	```json
 	[
@@ -168,6 +168,7 @@ Environment variables are used for configuration. Unless otherwise stated, a val
 	]
 	```
 2. Create an IAM policy to give your AWS ID access to `get_object` and `put_object` for your bucket.
+3. Configure imgix to pull from the bucket.
 
 [django-secret]: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-SECRET_KEY
 [sentry-dsn]: https://docs.sentry.io/quickstart/#about-the-dsn
