@@ -249,9 +249,17 @@ export const uploadImage = async ({ image }: { image: File }) => {
 interface IUpdateNote {
   readonly noteId: INote["id"]
   readonly note: string
+  readonly attachmentUploadIds: string[]
 }
-export const updateNote = ({ noteId, note }: IUpdateNote) =>
-  http.patch<INote>(`/api/v1/notes/${noteId}/`, { text: note })
+export const updateNote = ({
+  noteId,
+  note,
+  attachmentUploadIds,
+}: IUpdateNote) =>
+  http.patch<INote>(`/api/v1/notes/${noteId}/`, {
+    text: note,
+    attachment_upload_ids: attachmentUploadIds,
+  })
 interface IDeleteNote {
   readonly noteId: INote["id"]
 }

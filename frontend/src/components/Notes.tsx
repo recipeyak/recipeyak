@@ -37,29 +37,36 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
   }, [note.text])
   const [isEditing, setIsEditing] = React.useState(false)
   const [isUpdating, setIsUpdating] = React.useState(false)
+  const [uploads, setUploads] = React.useState<Upload[]>(note.attachments)
 
   const onSave = () => {
     setIsUpdating(true)
-    api.updateNote({ noteId: note.id, note: draftText }).then(res => {
-      if (isOk(res)) {
-        dispatch(
-          patchRecipe({
-            recipeId,
-            updateFn: recipe => {
-              return {
-                ...recipe,
-                timelineItems: [
-                  ...recipe.timelineItems.filter(x => x.id !== note.id),
-                  res.data,
-                ],
-              }
-            },
-          }),
-        )
-        setIsEditing(false)
-      }
-      setIsUpdating(false)
-    })
+    api
+      .updateNote({
+        noteId: note.id,
+        note: draftText,
+        attachmentUploadIds: uploads.map(x => x.id),
+      })
+      .then(res => {
+        if (isOk(res)) {
+          dispatch(
+            patchRecipe({
+              recipeId,
+              updateFn: recipe => {
+                return {
+                  ...recipe,
+                  timelineItems: [
+                    ...recipe.timelineItems.filter(x => x.id !== note.id),
+                    res.data,
+                  ],
+                }
+              },
+            }),
+          )
+          setIsEditing(false)
+        }
+        setIsUpdating(false)
+      })
   }
   const setEditing = (value: boolean) => {
     setIsEditing(value)
@@ -117,6 +124,13 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
     onEditorKeyDown,
     onNoteClick,
     onSave,
+    uploads,
+    addUploads: (uploadIds: Upload[]) => {
+      setUploads(s => [...s, ...uploadIds])
+    },
+    removeUploads: (uploadIds: string[]) => {
+      setUploads(s => s.filter(x => !uploadIds.includes(x.id)))
+    },
   }
 }
 
@@ -189,9 +203,17 @@ export function Note({ note, recipeId, className }: INoteProps) {
     onEditorKeyDown,
     onNoteClick,
     onSave,
+    addUploads,
+    removeUploads,
+    uploads,
   } = useNoteEditHandlers({ note, recipeId })
 
   const noteId = `note-${note.id}`
+
+  const { addFiles, removeFile, files } = useImageUpload(
+    addUploads,
+    removeUploads,
+  )
 
   return (
     <SharedEntry
@@ -220,22 +242,35 @@ export function Note({ note, recipeId, className }: INoteProps) {
           </div>
         ) : (
           <>
-            <Textarea
-              autoFocus
-              className="my-textarea mb-2"
-              onKeyDown={onEditorKeyDown}
-              minRows={5}
-              value={draftText}
-              onChange={onEditorChange}
-              placeholder="Add a note..."
-            />
-            <div>
-              {note.attachments.map(attachment => (
-                <a key={attachment.id} target="_blank" href={attachment.url}>
-                  <ImagePreview src={attachment.url} />
-                </a>
-              ))}
-            </div>
+            <UploadContainer addFiles={addFiles}>
+              <Textarea
+                autoFocus
+                className="my-textarea mb-2"
+                onKeyDown={onEditorKeyDown}
+                minRows={5}
+                value={draftText}
+                onChange={onEditorChange}
+                placeholder="Add a note..."
+              />
+              {isEditing ? (
+                <ImageUploader
+                  addFiles={addFiles}
+                  removeFile={removeFile}
+                  files={[...files, ...uploads]}
+                />
+              ) : (
+                <div>
+                  {note.attachments.map(attachment => (
+                    <a
+                      key={attachment.id}
+                      target="_blank"
+                      href={attachment.url}>
+                      <ImagePreview src={attachment.url} />
+                    </a>
+                  ))}
+                </div>
+              )}
+            </UploadContainer>
 
             {isEditing && (
               <div className="d-flex justify-between align-center">
@@ -520,7 +555,7 @@ function useImageUpload(
 
   const removeFile = (fileId: string) => {
     setInprogressUploads(s => omit(s, fileId))
-    removeUploads(fileId)
+    removeUploads([fileId])
   }
 
   const files = Object.values(inProgressUploads)
@@ -573,7 +608,7 @@ function ImageUploader({
     <>
       {files.length > 0 && (
         <ImageUploadContainer>
-          {files.map(f => (
+          {orderBy(files, x => x.id, "desc").map(f => (
             <ImagePreviewParent key={f.id}>
               {f.type === "upload" ? (
                 <Image url={f.url} state={"uploaded"} />

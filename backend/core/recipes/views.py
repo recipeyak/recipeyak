@@ -739,7 +739,7 @@ class NoteViewSet(viewsets.ModelViewSet):
             note.save()
         if params.attachment_upload_ids is not None:
             with transaction.atomic():
-                Upload.objects.filter(note=note).delete()
+                Upload.objects.filter(note=note).update(note=None)
                 Upload.objects.filter(
                     id__in=params.attachment_upload_ids, created_by=request.user
                 ).update(note=note)
