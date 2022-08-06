@@ -570,7 +570,7 @@ function Image({
 }) {
   return (
     <>
-      <a href={url} target="_blank">
+      <a href={url} target="_blank" rel="noreferrer">
         <ImagePreview loading={state === "loading"} src={url} />
       </a>
       {state === "failed" && (

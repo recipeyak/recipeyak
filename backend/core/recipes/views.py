@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import collections
 import logging
-from datetime import datetime
 from typing import Any, Iterable, List, Optional
 
 import pydantic
@@ -15,7 +14,6 @@ from rest_framework.exceptions import MethodNotAllowed, PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from typing_extensions import Literal
 
 from core import viewsets
 from core.auth.permissions import (
