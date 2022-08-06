@@ -1,9 +1,9 @@
 import { connect } from "react-redux"
 
-import { Dispatch } from "@/store/thunks"
 import Notification from "@/components/Notification"
-import { IState } from "@/store/store"
 import { clearNotification } from "@/store/reducers/notification"
+import { IState } from "@/store/store"
+import { Dispatch } from "@/store/thunks"
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {

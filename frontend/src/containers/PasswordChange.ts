@@ -1,10 +1,9 @@
 import { connect } from "react-redux"
 
-import { updatingPasswordAsync, Dispatch } from "@/store/thunks"
-
 import PasswordChange from "@/components/PasswordChange"
-import { IState } from "@/store/store"
 import { clearPasswordUpdateError } from "@/store/reducers/passwordChange"
+import { IState } from "@/store/store"
+import { Dispatch, updatingPasswordAsync } from "@/store/thunks"
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   update: updatingPasswordAsync(dispatch),

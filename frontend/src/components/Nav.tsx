@@ -1,25 +1,24 @@
+import { lighten } from "polished"
 import React from "react"
 import { Link } from "react-router-dom"
 
-import NavLink from "@/containers/NavLink"
-import Logo from "@/components/Logo"
-import { UserDropdown } from "@/components/UserDropdown"
-
-import { styled } from "@/theme"
 import {
   DropdownContainer,
   DropdownMenu,
   useDropdown,
 } from "@/components/Dropdown"
 import { Chevron } from "@/components/icons"
-import { lighten } from "polished"
-import { useSelector, useDispatch } from "@/hooks"
+import Logo from "@/components/Logo"
+import { UserDropdown } from "@/components/UserDropdown"
+import NavLink from "@/containers/NavLink"
+import { useDispatch, useSelector } from "@/hooks"
 import { scheduleURLFromTeamID } from "@/store/mapState"
 import { fetchingUserAsync } from "@/store/thunks"
+import { styled } from "@/theme"
 
 const WordMarkContainer = styled.span`
   font-size: 1.5rem;
-  @media (max-width: ${p => p.theme.small}) {
+  @media (max-width: ${(p) => p.theme.small}) {
     display: none;
   }
 `
@@ -34,9 +33,9 @@ interface INavButtonContainerProps {
 
 const NavButtonContainer = styled.div<INavButtonContainerProps>`
   display: flex;
-  @media (max-width: ${p => p.theme.small}) {
+  @media (max-width: ${(p) => p.theme.small}) {
     z-index: 1000;
-    display: ${p => (p.show ? "block" : "none")};
+    display: ${(p) => (p.show ? "block" : "none")};
     position: absolute;
     background-color: white;
     border: 1px solid lightgray;
@@ -72,7 +71,7 @@ const DropDownButtonContainer = styled.a`
   }
 
   display: none;
-  @media (max-width: ${p => p.theme.small}) {
+  @media (max-width: ${(p) => p.theme.small}) {
     display: flex;
   }
 `
@@ -108,7 +107,8 @@ function IconThreeDots() {
       width="16"
       height="16"
       fill="currentColor"
-      viewBox="0 0 16 16">
+      viewBox="0 0 16 16"
+    >
       <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
     </svg>
   )
@@ -126,7 +126,8 @@ function MoreDropdown() {
           to="/t/"
           onClick={close}
           activeClassName="active"
-          className="better-nav-item">
+          className="better-nav-item"
+        >
           Teams
         </NavLink>
       </DropdownMenu>
@@ -148,21 +149,24 @@ function NavButtons() {
             to="/recipes/add"
             onClick={close}
             activeClassName="active"
-            className="better-nav-item">
+            className="better-nav-item"
+          >
             Add
           </NavLink>
           <NavLink
             to="/recipes"
             onClick={close}
             activeClassName="active"
-            className="better-nav-item">
+            className="better-nav-item"
+          >
             Browse
           </NavLink>
           <NavLink
             to={scheduleURL}
             onClick={close}
             activeClassName="active"
-            className="better-nav-item">
+            className="better-nav-item"
+          >
             Schedule
           </NavLink>
         </NavButtonContainer>
@@ -176,9 +180,9 @@ function NavButtons() {
 function useIsLoggedIn(): boolean {
   const dispatch = useDispatch()
   React.useEffect(() => {
-    fetchingUserAsync(dispatch)()
+    void fetchingUserAsync(dispatch)()
   }, [dispatch])
-  return useSelector(s => s.user.loggedIn)
+  return useSelector((s) => s.user.loggedIn)
 }
 
 const NavContainer = styled.nav`

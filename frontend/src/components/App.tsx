@@ -1,43 +1,46 @@
+import "@/components/scss/main.scss"
+
+import { ConnectedRouter } from "connected-react-router"
 import React from "react"
+import { DndProvider } from "react-dnd"
+import { HTML5Backend } from "react-dnd-html5-backend"
+import { HelmetProvider } from "react-helmet-async"
+import { connect, Provider } from "react-redux"
+import { StaticContext } from "react-router"
 import {
-  Route,
-  Switch,
   Redirect,
+  Route,
+  RouteComponentProps,
   RouteProps,
+  Switch,
   useHistory,
 } from "react-router-dom"
-import { ConnectedRouter } from "connected-react-router"
-import { Helmet } from "@/components/Helmet"
-import { hot } from "react-hot-loader/root"
-import { setConfig } from "react-hot-loader"
-import HTML5Backend from "react-dnd-html5-backend"
-import { DndProvider } from "react-dnd"
-import { connect } from "react-redux"
-import { history, IState } from "@/store/store"
-import Home from "@/containers/Home"
-import Signup from "@/containers/Signup"
-import Login from "@/containers/Login"
-import NoMatch from "@/components/NoMatch"
-import Recipe from "@/components/Recipe"
-import PasswordReset from "@/containers/PasswordReset"
-import Settings from "@/containers/Settings"
-import Team from "@/containers/Team"
-import Teams from "@/components/Teams"
-import TeamInvite from "@/components/TeamInvite"
-import TeamCreate from "@/components/TeamCreate"
-import AddRecipe from "@/containers/AddRecipe"
-import Notification from "@/containers/Notification"
-import { Container, ContainerBase } from "@/components/Base"
-import PasswordChange from "@/containers/PasswordChange"
-import PasswordSet from "@/containers/PasswordSet"
-import PasswordResetConfirmation from "@/components/PasswordResetConfirmation"
-import Schedule from "@/components/Schedule"
-import HelpMenuModal from "@/components/HelpMenuModal"
-import Recipes from "@/components/RecipeList"
-import ErrorBoundary from "@/components/ErrorBoundary"
 
-import "@/components/scss/main.scss"
+import { Container, ContainerBase } from "@/components/Base"
 import { CurrentKeys } from "@/components/CurrentKeys"
+import ErrorBoundary from "@/components/ErrorBoundary"
+import { Helmet } from "@/components/Helmet"
+import HelpMenuModal from "@/components/HelpMenuModal"
+import Login from "@/components/Login"
+import NoMatch from "@/components/NoMatch"
+import PasswordResetConfirmation from "@/components/PasswordResetConfirmation"
+import Recipe from "@/components/Recipe"
+import Recipes from "@/components/RecipeList"
+import Schedule from "@/components/Schedule"
+import TeamCreate from "@/components/TeamCreate"
+import TeamInvite from "@/components/TeamInvite"
+import Teams from "@/components/Teams"
+import AddRecipe from "@/containers/AddRecipe"
+import Home from "@/containers/Home"
+import Notification from "@/containers/Notification"
+import PasswordChange from "@/containers/PasswordChange"
+import PasswordReset from "@/containers/PasswordReset"
+import PasswordSet from "@/containers/PasswordSet"
+import Settings from "@/containers/Settings"
+import Signup from "@/containers/Signup"
+import Team from "@/containers/Team"
+import store, { history, IState } from "@/store/store"
+import { theme, ThemeProvider } from "@/theme"
 
 interface IAuthRouteProps extends RouteProps {
   readonly authenticated: boolean
@@ -47,7 +50,13 @@ const mapAuthenticated = (state: IState) => ({
   authenticated: state.user.loggedIn,
 })
 
-type ComponentProps = ArgumentsType<RouteProps["render"]>[0]
+type ComponentProps = RouteComponentProps<
+  {
+    [x: string]: string | undefined
+  },
+  StaticContext,
+  unknown
+>
 
 /** Return a ReactNode when provided a component or render function
  *
@@ -76,7 +85,7 @@ const PrivateRoute = connect(mapAuthenticated)(
   }: IAuthRouteProps) => (
     <Route
       {...rest}
-      render={props => {
+      render={(props) => {
         return authenticated ? (
           renderComponent(props, Component, render)
         ) : (
@@ -101,7 +110,7 @@ const PublicOnlyRoute = connect(mapAuthenticated)(
   }: IAuthRouteProps) => (
     <Route
       {...rest}
-      render={props => {
+      render={(props) => {
         return !authenticated ? (
           renderComponent(props, Component, render)
         ) : (
@@ -130,98 +139,109 @@ function ScrollRestore() {
 
 function Base() {
   return (
-    <DndProvider backend={HTML5Backend}>
-      <ErrorBoundary>
-        <Helmet defaultTitle="Recipe Yak" titleTemplate="%s | Recipe Yak" />
-        <CurrentKeys />
-        <ConnectedRouter history={history}>
-          <ScrollRestore />
-          <Switch>
-            <PublicOnlyRoute exact path="/login" component={Login} />
-            <PublicOnlyRoute exact path="/signup" component={Signup} />
-            <Route exact path="/password-reset" component={PasswordReset} />
-            <ContainerBase>
-              <Switch>
-                <Route exact path="/" component={Home} />
-                <PrivateRoute
-                  exact
-                  path="/schedule/:type(shopping|recipes)?"
-                  component={Schedule}
-                />
-                <PrivateRoute
-                  exact
-                  path="/t/:id(\d+)(.*)/schedule/:type(shopping|recipes)?"
-                  component={Schedule}
-                />
-                <Container>
-                  <Switch>
-                    <Route
-                      exact
-                      path="/password-reset/confirm/:uid([0-9A-Za-z_\-]+).:token([0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})"
-                      component={PasswordResetConfirmation}
-                    />
-                    <PrivateRoute
-                      exact
-                      path="/recipes/add"
-                      component={AddRecipe}
-                    />
-                    <PrivateRoute exact path="/recipes/" component={Recipes} />
-                    <PrivateRoute
-                      exact
-                      path="/recipes/:id(\d+)(.*)"
-                      component={Recipe}
-                    />
-                    <PrivateRoute exact path="/settings" component={Settings} />
-                    <PrivateRoute
-                      exact
-                      path="/password"
-                      component={PasswordChange}
-                    />
-                    <PrivateRoute
-                      exact
-                      path="/password/set"
-                      component={PasswordSet}
-                    />
-                    <PrivateRoute
-                      exact
-                      path="/t/create"
-                      component={TeamCreate}
-                    />
-                    <PrivateRoute
-                      exact
-                      path="/t/:id(\d+)(.*)/invite"
-                      component={TeamInvite}
-                    />
-                    <PrivateRoute
-                      exact
-                      path="/t/:id(\d+)(.*)/settings"
-                      component={Team}
-                    />
-                    <PrivateRoute
-                      exact
-                      path="/t/:id(\d+)(.*)"
-                      component={Team}
-                    />
-                    <PrivateRoute exact path="/t/" component={Teams} />
-                    <Route component={NoMatch} />
-                  </Switch>
-                </Container>
-              </Switch>
-            </ContainerBase>
-          </Switch>
-        </ConnectedRouter>
-        <Notification />
-        <HelpMenuModal />
-      </ErrorBoundary>
-    </DndProvider>
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <HelmetProvider>
+          <DndProvider backend={HTML5Backend}>
+            <ErrorBoundary>
+              <Helmet />
+              <CurrentKeys />
+              <ConnectedRouter history={history}>
+                <ScrollRestore />
+                <Switch>
+                  <PublicOnlyRoute exact path="/login" component={Login} />
+                  <PublicOnlyRoute exact path="/signup" component={Signup} />
+                  <Route
+                    exact
+                    path="/password-reset"
+                    component={PasswordReset}
+                  />
+                  <ContainerBase>
+                    <Switch>
+                      <Route exact path="/" component={Home} />
+                      <PrivateRoute
+                        exact
+                        path="/schedule/:type(shopping|recipes)?"
+                        component={Schedule}
+                      />
+                      <PrivateRoute
+                        exact
+                        path="/t/:id(\d+)(.*)/schedule/:type(shopping|recipes)?"
+                        component={Schedule}
+                      />
+                      <Container>
+                        <Switch>
+                          <Route
+                            exact
+                            path="/password-reset/confirm/:uid([0-9A-Za-z_\-]+).:token([0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})"
+                            component={PasswordResetConfirmation}
+                          />
+                          <PrivateRoute
+                            exact
+                            path="/recipes/add"
+                            component={AddRecipe}
+                          />
+                          <PrivateRoute
+                            exact
+                            path="/recipes/"
+                            component={Recipes}
+                          />
+                          <PrivateRoute
+                            exact
+                            path="/recipes/:id(\d+)(.*)"
+                            component={Recipe}
+                          />
+                          <PrivateRoute
+                            exact
+                            path="/settings"
+                            component={Settings}
+                          />
+                          <PrivateRoute
+                            exact
+                            path="/password"
+                            component={PasswordChange}
+                          />
+                          <PrivateRoute
+                            exact
+                            path="/password/set"
+                            component={PasswordSet}
+                          />
+                          <PrivateRoute
+                            exact
+                            path="/t/create"
+                            component={TeamCreate}
+                          />
+                          <PrivateRoute
+                            exact
+                            path="/t/:id(\d+)(.*)/invite"
+                            component={TeamInvite}
+                          />
+                          <PrivateRoute
+                            exact
+                            path="/t/:id(\d+)(.*)/settings"
+                            component={Team}
+                          />
+                          <PrivateRoute
+                            exact
+                            path="/t/:id(\d+)(.*)"
+                            component={Team}
+                          />
+                          <PrivateRoute exact path="/t/" component={Teams} />
+                          <Route component={NoMatch} />
+                        </Switch>
+                      </Container>
+                    </Switch>
+                  </ContainerBase>
+                </Switch>
+              </ConnectedRouter>
+              <Notification />
+              <HelpMenuModal />
+            </ErrorBoundary>
+          </DndProvider>
+        </HelmetProvider>
+      </Provider>
+    </ThemeProvider>
   )
 }
 
-// The following is necessary to make hooks work
-// see: https://github.com/gaearon/react-hot-loader
-setConfig({
-  ignoreSFC: true,
-  pureRender: true,
-})
-
-export default hot(Base)
+export default Base

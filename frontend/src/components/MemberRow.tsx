@@ -1,20 +1,17 @@
-import React from "react"
-
 import { connect } from "react-redux"
 
-import { ButtonPlain, ButtonDanger } from "@/components/Buttons"
-
+import { Avatar } from "@/components/Avatar"
+import { ButtonDanger, ButtonPlain } from "@/components/Buttons"
+import { Select } from "@/components/Forms"
+import { IMember, ITeam } from "@/store/reducers/teams"
+import { IUser } from "@/store/reducers/user"
+import { IState } from "@/store/store"
 import {
-  settingUserTeamLevelAsync,
   deletingMembershipAsync,
   Dispatch,
+  settingUserTeamLevelAsync,
 } from "@/store/thunks"
-import { ITeam, IMember } from "@/store/reducers/teams"
-import { IState } from "@/store/store"
-import { IUser } from "@/store/reducers/user"
-import { Select } from "@/components/Forms"
 import { notUndefined } from "@/utils/general"
-import { Avatar } from "@/components/Avatar"
 
 interface IMemberRowProps {
   readonly userID: IUser["id"]
@@ -72,14 +69,15 @@ const MemberRow = ({
         <Select
           size="small"
           value={level}
-          onChange={e =>
+          onChange={(e) => {
             handleUserLevelChange(
               teamID,
               membershipID,
               /* eslint-disable-next-line @typescript-eslint/consistent-type-assertions */
               e.target.value as "admin" | "contributor" | "read",
             )
-          }>
+          }}
+        >
           <option value="admin">Admin</option>
           <option value="contributor">Contributor</option>
           <option value="read">Read</option>
@@ -94,8 +92,11 @@ const MemberRow = ({
       {isUser || userIsTeamAdmin ? (
         <ButtonDanger
           size="small"
-          onClick={() => deleteMembership(teamID, membershipID, isUser)}
-          loading={deleting}>
+          onClick={() => {
+            deleteMembership(teamID, membershipID, isUser)
+          }}
+          loading={deleting}
+        >
           {isUser ? "leave" : "remove"}
         </ButtonDanger>
       ) : null}
@@ -120,7 +121,7 @@ const mapStateToProps = (
     deleting,
     userIsTeamAdmin: Object.values(members)
       .filter(notUndefined)
-      .filter(x => x.level === "admin")
+      .filter((x) => x.level === "admin")
       .some(({ user }) => user.id === state.user.id),
   }
 }

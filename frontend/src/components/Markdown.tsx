@@ -1,8 +1,9 @@
 import React from "react"
-import ReactMarkdown, { NodeType } from "react-markdown"
-import { styled } from "@/theme"
-import * as settings from "@/settings"
+import ReactMarkdown, { Components } from "react-markdown"
+
 import { Link } from "@/components/Routing"
+import * as settings from "@/settings"
+import { styled } from "@/theme"
 
 const MarkdownWrapper = styled.div`
   word-break: break-word;
@@ -38,18 +39,18 @@ const MarkdownWrapper = styled.div`
   }
 `
 
-const ALLOWED_MARKDOWN_TYPES: NodeType[] = [
-  "root",
+const ALLOWED_MARKDOWN_TYPES: (keyof Components)[] = [
   "text",
-  "delete",
+  "s",
   "blockquote",
-  "paragraph",
+  "p",
   "strong",
-  "emphasis",
-  "list",
-  "linkReference",
+  "em",
+  "li",
+  "a",
   "link",
-  "listItem",
+  "ol",
+  "ul",
 ]
 
 function renderLink({
@@ -59,7 +60,7 @@ function renderLink({
   React.AnchorHTMLAttributes<HTMLAnchorElement>,
   HTMLAnchorElement
 >) {
-  if (href && href.startsWith(settings.DOMAIN)) {
+  if (href?.startsWith(settings.DOMAIN)) {
     const to = new URL(href).pathname
     return <Link {...props} to={to} children={to.substring(1)} />
   }
@@ -67,8 +68,7 @@ function renderLink({
 }
 
 const renderers = {
-  link: renderLink,
-  linkReference: renderLink,
+  a: renderLink,
 }
 
 interface IMarkdownProps {
@@ -87,9 +87,9 @@ export function Markdown({
   return (
     <MarkdownWrapper className={className} title={title} onClick={onClick}>
       <ReactMarkdown
-        allowedTypes={ALLOWED_MARKDOWN_TYPES}
-        source={text}
-        renderers={renderers}
+        allowedElements={ALLOWED_MARKDOWN_TYPES}
+        children={text}
+        components={renderers}
         unwrapDisallowed
       />
     </MarkdownWrapper>

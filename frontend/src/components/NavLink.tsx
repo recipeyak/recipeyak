@@ -1,4 +1,3 @@
-import React from "react"
 import { Link, NavLinkProps } from "react-router-dom"
 
 export const NavLink = ({
@@ -6,10 +5,25 @@ export const NavLink = ({
   pathname,
   className = "",
   activeClassName = "active",
-  ...props
-}: NavLinkProps & { pathname: string }) => {
+  onClick,
+  children,
+}: {
+  pathname: string
+  className: string
+  activeClassName?: string
+  to: NavLinkProps["to"]
+  onClick?: () => void
+  children?: React.ReactNode
+}) => {
   const activeClass = pathname === to ? activeClassName : ""
-  return <Link to={to} className={className + " " + activeClass} {...props} />
+  return (
+    <Link
+      to={to}
+      className={className + " " + activeClass}
+      onClick={onClick}
+      children={children}
+    />
+  )
 }
 
 export default NavLink

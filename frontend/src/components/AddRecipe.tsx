@@ -1,20 +1,20 @@
 import React from "react"
-import { Helmet } from "@/components/Helmet"
 
-import ListItem from "@/components/ListItem"
 import AddIngredientForm from "@/components/AddIngredientForm"
 import AddStepForm from "@/components/AddStepForm"
+import { Button, ButtonPrimary } from "@/components/Buttons"
+import { Select, TextInput } from "@/components/Forms"
+import { Helmet } from "@/components/Helmet"
 import { Ingredient } from "@/components/Ingredient"
-import { ButtonPrimary, Button } from "@/components/Buttons"
+import ListItem from "@/components/ListItem"
+import { SectionTitle } from "@/components/RecipeHelpers"
 import {
-  IStepBasic,
-  IRecipeBasic,
-  IIngredientBasic,
   IAddRecipeError,
+  IIngredientBasic,
+  IRecipeBasic,
+  IStepBasic,
 } from "@/store/reducers/recipes"
 import { ITeam } from "@/store/reducers/teams"
-import { Select, TextInput } from "@/components/Forms"
-import { SectionTitle } from "@/components/RecipeHelpers"
 
 const unfinishedIngredient = ({ quantity = "", name = "" }) =>
   quantity === "" || name === ""
@@ -89,9 +89,9 @@ export default class AddRecipe extends React.Component<
 
   handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     /* eslint-disable @typescript-eslint/consistent-type-assertions */
-    this.setState(({
+    this.setState({
       [e.target.name]: e.target.value,
-    } as unknown) as IAddRecipeState)
+    } as unknown as IAddRecipeState)
     /* eslint-enable @typescript-eslint/consistent-type-assertions */
   }
 
@@ -132,7 +132,7 @@ export default class AddRecipe extends React.Component<
   handleIngredientChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.persist()
     if (e.target.type === "checkbox") {
-      this.setState(prev => ({
+      this.setState((prev) => ({
         ingredient: {
           ...prev.ingredient,
           [e.target.name]: !prev.ingredient[e.target.name],
@@ -140,7 +140,7 @@ export default class AddRecipe extends React.Component<
       }))
       return
     }
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       ingredient: {
         ...prevState.ingredient,
         [e.target.name]: e.target.value,
@@ -148,18 +148,23 @@ export default class AddRecipe extends React.Component<
     }))
   }
 
-  cancelAddIngredient = () => this.setState({ ingredient: emptyIngredient })
+  cancelAddIngredient = () => {
+    this.setState({ ingredient: emptyIngredient })
+  }
 
   addStep = () => {
     this.props.addStep({ text: this.state.step })
     this.setState({ step: "" })
   }
 
-  cancelAddStep = () => this.setState({ step: "" })
+  cancelAddStep = () => {
+    this.setState({ step: "" })
+  }
 
   handleTeamChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (e.target.value === "personal") {
-      return this.props.setTeamID(null)
+      this.props.setTeamID(null)
+      return
     }
     const id = parseInt(e.target.value, 10)
     this.props.setTeamID(id)
@@ -259,10 +264,12 @@ export default class AddRecipe extends React.Component<
                   recipeID={-1}
                   index={i}
                   id={i}
-                  update={(ingre: IIngredientBasic) =>
+                  update={(ingre: IIngredientBasic) => {
                     this.props.updateIngredient(i, ingre)
-                  }
-                  remove={() => this.props.removeIngredient(i)}
+                  }}
+                  remove={() => {
+                    this.props.removeIngredient(i)
+                  }}
                   quantity={x.quantity}
                   optional={x.optional}
                   name={x.name}
@@ -321,9 +328,10 @@ export default class AddRecipe extends React.Component<
                 className="ml-2"
                 disabled={this.props.loadingTeams}
                 value={this.props.teamID || "personal"}
-                onChange={this.handleTeamChange}>
+                onChange={this.handleTeamChange}
+              >
                 <option value="personal">Personal</option>
-                {this.props.teams.map(t => (
+                {this.props.teams.map((t) => (
                   <option key={t.id} value={t.id}>
                     Team: {t.name}
                   </option>
@@ -335,7 +343,8 @@ export default class AddRecipe extends React.Component<
               type="submit"
               onClick={handleSubmit}
               name="create recipe"
-              loading={this.props.loading}>
+              loading={this.props.loading}
+            >
               Create Recipe
             </ButtonPrimary>
           </div>

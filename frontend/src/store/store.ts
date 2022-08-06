@@ -1,33 +1,41 @@
 import {
-  createStore as basicCreateStore,
+  connectRouter,
+  RouterAction,
+  routerMiddleware,
+  RouterState,
+} from "connected-react-router"
+import { createBrowserHistory as createHistory } from "history"
+import pickBy from "lodash/pickBy"
+import throttle from "lodash/throttle"
+import {
   applyMiddleware,
   compose as reduxCompose,
+  createStore as basicCreateStore,
   Store as ReduxStore,
   StoreEnhancer,
 } from "redux"
-
 import {
   combineReducers,
-  LoopReducer,
-  Loop,
-  StoreCreator,
   install,
+  Loop,
+  LoopReducer,
   ReducerMapObject,
+  StoreCreator,
 } from "redux-loop"
+import { getType } from "typesafe-actions"
 
-import pickBy from "lodash/pickBy"
-import throttle from "lodash/throttle"
-
-import createHistory from "history/createBrowserHistory"
-import {
-  RouterState,
-  RouterAction,
-  connectRouter,
-  routerMiddleware,
-} from "connected-react-router"
-
-import recipes, { IRecipesState, RecipeActions } from "@/store/reducers/recipes"
-import user, { IUserState, UserActions } from "@/store/reducers/user"
+import { second } from "@/date"
+import { loadState, saveState } from "@/store/localStorage"
+import addrecipe, {
+  AddRecipeActions,
+  IAddRecipeState,
+} from "@/store/reducers/addrecipe"
+import auth, { AuthActions, IAuthState, login } from "@/store/reducers/auth"
+import calendar, {
+  CalendarActions,
+  ICalendarState,
+} from "@/store/reducers/calendar"
+import invites, { IInvitesState, InviteActions } from "@/store/reducers/invites"
 import notification, {
   INotificationState,
   NotificationsActions,
@@ -36,26 +44,13 @@ import passwordChange, {
   IPasswordChangeState,
   PasswordChangeActions,
 } from "@/store/reducers/passwordChange"
+import recipes, { IRecipesState, RecipeActions } from "@/store/reducers/recipes"
 import shoppinglist, {
   IShoppingListState,
   ShoppingListActions,
 } from "@/store/reducers/shoppinglist"
-import addrecipe, {
-  IAddRecipeState,
-  AddRecipeActions,
-} from "@/store/reducers/addrecipe"
-import auth, { IAuthState, AuthActions, login } from "@/store/reducers/auth"
 import teams, { ITeamsState, TeamsActions } from "@/store/reducers/teams"
-import invites, { InviteActions, IInvitesState } from "@/store/reducers/invites"
-import calendar, {
-  ICalendarState,
-  CalendarActions,
-} from "@/store/reducers/calendar"
-import { loadState, saveState } from "@/store/localStorage"
-import { getType } from "typesafe-actions"
-import { createLogger } from "redux-logger"
-import { DEBUG } from "@/settings"
-import { second } from "@/date"
+import user, { IUserState, UserActions } from "@/store/reducers/user"
 
 const createStore: StoreCreator = basicCreateStore
 
@@ -85,6 +80,7 @@ export type Action =
   | AuthActions
   | TeamsActions
   | CalendarActions
+  | { type: "@@RESET" }
 
 /**
  * A hack to prevent errors in testing. Jest does some weird sourcing of
@@ -95,7 +91,7 @@ export type Action =
 type ReducerMapObj = ReducerMapObject<IState, Action>
 function omitUndefined(obj: ReducerMapObj): ReducerMapObj {
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  return pickBy(obj, x => x != null) as ReducerMapObj
+  return pickBy(obj, (x) => x != null) as ReducerMapObj
 }
 export const history = createHistory()
 
@@ -105,7 +101,7 @@ const recipeApp: LoopReducer<IState, Action> = combineReducers(
     recipes,
     invites,
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    router: (connectRouter(history) as unknown) as LoopReducer<
+    router: connectRouter(history) as unknown as LoopReducer<
       Pick<RouterState, "location">,
       Action
     >,
@@ -124,7 +120,7 @@ export function rootReducer(
   state: IState | undefined,
   action: Action,
 ): IState | Loop<IState, Action> {
-  if (state == null) {
+  if (state == null || action.type === "@@RESET") {
     return recipeApp(undefined, action)
   }
   if (action.type === getType(login.success) && !action.payload) {
@@ -142,9 +138,11 @@ export function rootReducer(
 
 const router = routerMiddleware(history)
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const compose: typeof reduxCompose =
   /* eslint-disable @typescript-eslint/consistent-type-assertions */
-  // tslint:disable-next-line no-any no-unsafe-any
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || reduxCompose
 /* eslint-enable @typescript-eslint/consistent-type-assertions */
 
@@ -173,14 +171,9 @@ const defaultData = (): IState => {
   }
 }
 
-const middleware = [router]
-if (DEBUG) {
-  middleware.push(createLogger({ collapsed: true }))
-}
-
 export const enhancer: StoreEnhancer<IState, Action> = compose(
   install(),
-  applyMiddleware(...middleware),
+  applyMiddleware(router),
 )
 
 // We need an empty store for the unit tests & hydrating from localstorage
@@ -198,7 +191,7 @@ export const store: Store = createStore(rootReducer, defaultData(), enhancer)
 store.subscribe(
   throttle(() => {
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    saveState(({
+    saveState({
       user: {
         // We assume this is true and if the session expires we have axios interceptors
         // to set this to false. In that _rare_ case, there will be a slight flash, but
@@ -212,8 +205,7 @@ store.subscribe(
       auth: {
         fromUrl: store.getState().auth.fromUrl,
       },
-      // tslint:disable-next-line:no-any
-    } as any) as IState)
+    } as unknown as IState)
   }, second),
 )
 

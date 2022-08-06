@@ -1,14 +1,15 @@
+import { format } from "date-fns"
 import React from "react"
 import { Link } from "react-router-dom"
-import { toISODateString } from "@/date"
-import { recipeURL } from "@/urls"
-import Modal from "@/components/Modal"
-import { format } from "date-fns"
+
 import * as api from "@/api"
-import { isOk } from "@/result"
-import { useDispatch } from "@/hooks"
-import { moveCalendarRecipe } from "@/store/reducers/calendar"
 import cls from "@/classnames"
+import Modal from "@/components/Modal"
+import { toISODateString } from "@/date"
+import { useDispatch } from "@/hooks"
+import { isOk } from "@/result"
+import { moveCalendarRecipe } from "@/store/reducers/calendar"
+import { recipeURL } from "@/urls"
 
 const options = [
   "Sunday",
@@ -32,7 +33,7 @@ export function CalendarDayItemModal({
 }: {
   readonly scheduledId: number
   readonly recipeId: number | string
-  readonly teamID: TeamID
+  readonly teamID: number | "personal"
   readonly recipeName: string
   readonly date: Date
   readonly onClose: () => void
@@ -49,7 +50,7 @@ export function CalendarDayItemModal({
   }
   const handleFindNextOpen = () => {
     setFindingNextOpen(true)
-    api.findNextOpen({ teamID, day, now: localDate }).then(res => {
+    void api.findNextOpen({ teamID, day, now: localDate }).then((res) => {
       if (isOk(res)) {
         setLocalDate(res.data.date)
       }
@@ -62,7 +63,7 @@ export function CalendarDayItemModal({
   const handleDelete = () => {
     if (confirm(`Are you sure you want to delete '${recipeName}'?`)) {
       setDeleting(true)
-      api.deleteScheduledRecipe(scheduledId, teamID).then(() => {
+      void api.deleteScheduledRecipe(scheduledId, teamID).then(() => {
         setDeleting(false)
         onClose()
       })
@@ -70,11 +71,11 @@ export function CalendarDayItemModal({
   }
   const handleSave = () => {
     setSaving(true)
-    api
+    void api
       .updateScheduleRecipe(scheduledId, teamID, {
         on: toISODateString(localDate),
       })
-      .then(res => {
+      .then((res) => {
         if (isOk(res)) {
           dispatch(
             moveCalendarRecipe({
@@ -103,10 +104,14 @@ export function CalendarDayItemModal({
           display: "flex",
           justifyContent: "space-between",
           marginTop: "2rem",
-        }}>
+        }}
+      >
         <button
           className={cls("button", { "is-active": reschedulerOpen })}
-          onClick={() => setReschedulerOpen(val => !val)}>
+          onClick={() => {
+            setReschedulerOpen((val) => !val)
+          }}
+        >
           Reschedule
         </button>
         <Link to={to} className="button is-primary">
@@ -135,8 +140,9 @@ export function CalendarDayItemModal({
                 value={day}
                 onChange={handleSelectChange}
                 className="mr-2"
-                disabled={findingNextOpen}>
-                {options.map(opt => {
+                disabled={findingNextOpen}
+              >
+                {options.map((opt) => {
                   return (
                     <option value={opt} key={opt}>
                       {opt}

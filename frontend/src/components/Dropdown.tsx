@@ -1,7 +1,8 @@
 import React from "react"
-import { css, styled } from "@/theme"
+
 import { Link } from "@/components/Routing"
 import { useOnClickOutside } from "@/hooks"
+import { css, styled } from "@/theme"
 
 export const DropdownContainer = styled.div`
   position: relative;
@@ -23,7 +24,7 @@ const dropdownItemStyle = css`
   }
 
   :active {
-    background-color: ${p => p.theme.color.primaryShadow};
+    background-color: ${(p) => p.theme.color.primaryShadow};
   }
 
   cursor: pointer;
@@ -62,17 +63,21 @@ export const DropdownMenu = styled.div<IDropdownMenuProps>`
   font-size: 1rem;
   white-space: nowrap;
 
-  background-color: ${p => p.theme.color.white};
+  background-color: ${(p) => p.theme.color.white};
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 0.25rem;
   display: none;
 
-  ${p => p.isOpen && isOpenStyle}
+  ${(p) => p.isOpen && isOpenStyle}
 `
 export function useDropdown() {
   const [isOpen, setIsOpen] = React.useState(false)
-  const closeDropdown = React.useCallback(() => setIsOpen(false), [])
-  const toggle = React.useCallback(() => setIsOpen(p => !p), [])
+  const closeDropdown = React.useCallback(() => {
+    setIsOpen(false)
+  }, [])
+  const toggle = React.useCallback(() => {
+    setIsOpen((p) => !p)
+  }, [])
   const ref = useOnClickOutside<HTMLDivElement>(closeDropdown)
   return { ref, toggle, close: closeDropdown, isOpen, setIsOpen }
 }

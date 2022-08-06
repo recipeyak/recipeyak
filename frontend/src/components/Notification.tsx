@@ -1,4 +1,3 @@
-import React from "react"
 import { INotificationState } from "@/store/reducers/notification"
 
 interface INotificationProps extends INotificationState {
@@ -16,7 +15,8 @@ const notification = ({
     return (
       <section className="note-container container">
         <div
-          className={"note d-flex justify-space-between align-center " + level}>
+          className={"note d-flex justify-space-between align-center " + level}
+        >
           <p className="mb-0 fs-5">{message}</p>
           {closeable && close && (
             <a className="close" onClick={close}>

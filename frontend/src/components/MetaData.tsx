@@ -52,7 +52,8 @@ function MetaBold({ children, onClick }: React.HTMLAttributes<HTMLDivElement>) {
     <b
       title="click  to edit"
       className="cursor-pointer white-space-nowrap"
-      onClick={onClick}>
+      onClick={onClick}
+    >
       {children}
     </b>
   )
@@ -105,13 +106,15 @@ const MetaData = ({
         </div>
       </div>
       <div>
-        {tags?.map(x => (
+        {tags?.map((x) => (
           <Link
+            key={x}
             to={{
               pathname: "/recipes",
               search: `search=${encodeURIComponent(`tag:${x}`)}`,
             }}
-            className="tag">
+            className="tag"
+          >
             {x}
           </Link>
         ))}

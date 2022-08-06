@@ -1,4 +1,5 @@
 import * as React from "react"
+
 import { classNames } from "@/classnames"
 
 export const ButtonLink = (props: IButtonProps) => (
@@ -41,9 +42,11 @@ export const ButtonPlain = ({
   return (
     <button
       {...props}
+      disabled={loading}
       className={classNames("my-button", className, buttonSize, {
         "is-loading": loading,
-      })}>
+      })}
+    >
       {children}
     </button>
   )

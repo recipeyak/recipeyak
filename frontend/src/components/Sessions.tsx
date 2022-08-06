@@ -1,17 +1,18 @@
-import React, { useEffect } from "react"
-import { ISession, LoggingOutStatus } from "@/store/reducers/user"
-import { WebData, isLoading, isInitial, isFailure } from "@/webdata"
+import { useEffect } from "react"
+import { connect } from "react-redux"
+
 import { Button } from "@/components/Buttons"
 import Loader from "@/components/Loader"
-import { connect } from "react-redux"
+import { formatDistanceToNow } from "@/date"
+import { ISession, LoggingOutStatus } from "@/store/reducers/user"
 import { IState } from "@/store/store"
 import {
   Dispatch,
   fetchingSessionsAsync,
-  loggingOutSessionByIdAsync,
   loggingOutAllSessionsAsync,
+  loggingOutSessionByIdAsync,
 } from "@/store/thunks"
-import { formatDistanceToNow } from "@/date"
+import { isFailure, isInitial, isLoading, WebData } from "@/webdata"
 
 function getDeviceEmoji(kind: ISession["device"]["kind"]): string | null {
   switch (kind) {
@@ -76,8 +77,11 @@ function Session(props: ISessionProps) {
         <strong className="mr-2">{props.ip}</strong>
         <Button
           size="small"
-          onClick={() => props.logout(props.id)}
-          loading={props.loggingOut === LoggingOutStatus.Loading}>
+          onClick={() => {
+            props.logout(props.id)
+          }}
+          loading={props.loggingOut === LoggingOutStatus.Loading}
+        >
           Logout
         </Button>
       </section>
@@ -117,7 +121,7 @@ function SessionListBasic({
   return (
     <>
       <ul>
-        {sessions.data.map(s => (
+        {sessions.data.map((s) => (
           <Session key={s.id} logout={logoutById} {...s} />
         ))}
       </ul>
@@ -125,7 +129,8 @@ function SessionListBasic({
         size="small"
         className="mb-2"
         onClick={logoutAll}
-        loading={loggingOutAll === LoggingOutStatus.Loading}>
+        loading={loggingOutAll === LoggingOutStatus.Loading}
+      >
         Logout Other Sessions
       </Button>
     </>

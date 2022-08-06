@@ -1,6 +1,6 @@
+import { transparentize } from "polished"
 // eslint-disable-next-line no-restricted-imports
 import * as styledComponents from "styled-components"
-import { transparentize } from "polished"
 
 export interface ITheme {
   readonly color: {
@@ -41,8 +41,6 @@ const {
   keyframes,
   ThemeProvider,
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-} = (styledComponents as unknown) as styledComponents.ThemedStyledComponentsModule<
-  ITheme
->
+} = styledComponents as unknown as styledComponents.ThemedStyledComponentsModule<ITheme>
 
-export { styled, css, keyframes, ThemeProvider }
+export { css, keyframes, styled, ThemeProvider }

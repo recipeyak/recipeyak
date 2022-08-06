@@ -1,14 +1,14 @@
 import React from "react"
+import { connect } from "react-redux"
 
 import AddStepForm from "@/components/AddStepForm"
 import GlobalEvent from "@/components/GlobalEvent"
 import {
-  IStep,
   addStepToRecipe,
-  setRecipeStepDraft,
   IRecipe,
+  IStep,
+  setRecipeStepDraft,
 } from "@/store/reducers/recipes"
-import { connect } from "react-redux"
 
 interface IAddStepProps {
   readonly addStep: (args: {
@@ -28,12 +28,17 @@ interface IAddStepProps {
 }
 
 function AddStep(props: IAddStepProps) {
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     props.setStep({ id: props.id, draftStep: e.target.value })
+  }
 
-  const clearStep = () => props.onCancel()
+  const clearStep = () => {
+    props.onCancel()
+  }
 
-  const addStep = () => props.addStep({ id: props.id, step: props.step })
+  const addStep = () => {
+    props.addStep({ id: props.id, step: props.step })
+  }
 
   const handleKeyUp = (e: KeyboardEvent) => {
     if (e.key === "Escape") {

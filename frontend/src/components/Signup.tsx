@@ -1,10 +1,10 @@
 import React from "react"
-import { Helmet } from "@/components/Helmet"
 import { Link } from "react-router-dom"
 
-import { FormErrorHandler, EmailInput, PasswordInput } from "@/components/Forms"
-import { ButtonPrimary } from "@/components/Buttons"
 import AuthContainer from "@/components/AuthContainer"
+import { ButtonPrimary } from "@/components/Buttons"
+import { EmailInput, FormErrorHandler, PasswordInput } from "@/components/Forms"
+import { Helmet } from "@/components/Helmet"
 import { ISignupErrors } from "@/store/reducers/auth"
 
 interface ISignupProps {
@@ -33,9 +33,9 @@ class Signup extends React.Component<ISignupProps, ISignupState> {
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     /* eslint-disable @typescript-eslint/consistent-type-assertions */
-    this.setState(({
+    this.setState({
       [e.target.name]: e.target.value,
-    } as unknown) as ISignupState)
+    } as unknown as ISignupState)
     /* eslint-enable @typescript-eslint/consistent-type-assertions */
   }
 

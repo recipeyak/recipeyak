@@ -1,7 +1,7 @@
-import React from "react"
+import { DragElementWrapper, DragSourceOptions } from "react-dnd"
+
 import { IIngredient } from "@/store/reducers/recipes"
 import { normalizeUnitsFracs } from "@/text"
-import { DragElementWrapper, DragSourceOptions } from "react-dnd"
 
 interface IIngredientVIewProps {
   readonly quantity: IIngredient["quantity"]

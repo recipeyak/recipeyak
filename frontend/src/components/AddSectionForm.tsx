@@ -1,11 +1,12 @@
 import React from "react"
+
+import * as api from "@/api"
+import { Button, ButtonPrimary } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
 import GlobalEvent from "@/components/GlobalEvent"
-import { ButtonPrimary, Button } from "@/components/Buttons"
-import * as api from "@/api"
 import { useDispatch } from "@/hooks"
-import { addSectionToRecipe } from "@/store/reducers/recipes"
 import { isOk } from "@/result"
+import { addSectionToRecipe } from "@/store/reducers/recipes"
 import { Status } from "@/webdata"
 
 export function AddSectionFormInner({
@@ -56,7 +57,8 @@ export function AddSectionFormInner({
               size="small"
               type="button"
               onClick={onRemove}
-              loading={removing === "loading"}>
+              loading={removing === "loading"}
+            >
               Remove
             </Button>
           </p>
@@ -66,7 +68,8 @@ export function AddSectionFormInner({
               size="small"
               type="button"
               name="toggle add section"
-              onClick={toggleShowAddSection}>
+              onClick={toggleShowAddSection}
+            >
               Add Ingredient
             </Button>
           </p>
@@ -76,7 +79,8 @@ export function AddSectionFormInner({
             onClick={onCancel}
             size="small"
             type="button"
-            name="cancel add ingredient">
+            name="cancel add ingredient"
+          >
             Cancel
           </Button>
         </p>
@@ -85,7 +89,8 @@ export function AddSectionFormInner({
             disabled={addDisabled}
             size="small"
             type="submit"
-            loading={status === "loading"}>
+            loading={status === "loading"}
+          >
             Save
           </ButtonPrimary>
         </p>
@@ -116,13 +121,13 @@ export function AddSectionForm({
   })
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const sectionTitle = e.target.value
-    setState(prev => ({ ...prev, sectionTitle }))
+    setState((prev) => ({ ...prev, sectionTitle }))
   }
   function onSave() {
-    setState(prev => ({ ...prev, status: "loading" }))
-    api
+    setState((prev) => ({ ...prev, status: "loading" }))
+    void api
       .addSectionToRecipe({ recipeId, section: state.sectionTitle })
-      .then(res => {
+      .then((res) => {
         if (isOk(res)) {
           dispatch(
             addSectionToRecipe({
@@ -130,9 +135,9 @@ export function AddSectionForm({
               section: res.data,
             }),
           )
-          setState(prev => ({ ...prev, status: "success", sectionTitle: "" }))
+          setState((prev) => ({ ...prev, status: "success", sectionTitle: "" }))
         } else {
-          setState(prev => ({ ...prev, status: "failure" }))
+          setState((prev) => ({ ...prev, status: "failure" }))
         }
       })
   }

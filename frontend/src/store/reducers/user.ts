@@ -1,19 +1,20 @@
 import raven from "raven-js"
 import {
+  ActionType,
   createAsyncAction,
   createStandardAction,
-  ActionType,
   getType,
 } from "typesafe-actions"
+
+import { AuthActions, login } from "@/store/reducers/auth"
 import {
-  WebData,
-  Success,
   Failure,
   HttpErrorKind,
-  toLoading,
   mapSuccessLike,
+  Success,
+  toLoading,
+  WebData,
 } from "@/webdata"
-import { login, AuthActions } from "@/store/reducers/auth"
 
 // TODO(chdsbd): Replace usage with fetchUser#success. Update user reducer.
 export const logOut = createAsyncAction(
@@ -22,16 +23,13 @@ export const logOut = createAsyncAction(
   "LOGOUT_FAILURE",
 )<void, void, void>()
 
-export const updateRecipeTeamID = createStandardAction("SET_TEAM_ID")<
-  IUserState["recipeTeamID"]
->()
-export const updateScheduleTeamID = createStandardAction("SET_TEAM_ID")<
-  IUserState["scheduleTeamID"]
->()
+export const updateRecipeTeamID =
+  createStandardAction("SET_TEAM_ID")<IUserState["recipeTeamID"]>()
+export const updateScheduleTeamID =
+  createStandardAction("SET_TEAM_ID")<IUserState["scheduleTeamID"]>()
 
-export const setUserLoggedIn = createStandardAction("SET_USER_LOGGED_IN")<
-  IUserState["loggedIn"]
->()
+export const setUserLoggedIn =
+  createStandardAction("SET_USER_LOGGED_IN")<IUserState["loggedIn"]>()
 export const fetchUser = createAsyncAction(
   "FETCH_USER_START",
   "FETCH_USER_SUCCESS",
@@ -171,8 +169,8 @@ export const user = (
     case getType(logoutSessionById.request):
       return {
         ...state,
-        sessions: mapSuccessLike(state.sessions, data =>
-          data.map(s => {
+        sessions: mapSuccessLike(state.sessions, (data) =>
+          data.map((s) => {
             if (s.id === action.payload) {
               return { ...s, loggingOut: LoggingOutStatus.Loading }
             }
@@ -183,15 +181,15 @@ export const user = (
     case getType(logoutSessionById.success):
       return {
         ...state,
-        sessions: mapSuccessLike(state.sessions, data =>
-          data.filter(s => s.id !== action.payload),
+        sessions: mapSuccessLike(state.sessions, (data) =>
+          data.filter((s) => s.id !== action.payload),
         ),
       }
     case getType(logoutSessionById.failure):
       return {
         ...state,
-        sessions: mapSuccessLike(state.sessions, data =>
-          data.map(s => {
+        sessions: mapSuccessLike(state.sessions, (data) =>
+          data.map((s) => {
             if (s.id === action.payload) {
               return { ...s, loggingOut: LoggingOutStatus.Failure }
             }
@@ -208,8 +206,8 @@ export const user = (
     case getType(logoutAllSessions.success):
       return {
         ...state,
-        sessions: mapSuccessLike(state.sessions, data =>
-          data.filter(s => s.current),
+        sessions: mapSuccessLike(state.sessions, (data) =>
+          data.filter((s) => s.current),
         ),
         loggingOutAllSessionsStatus: LoggingOutStatus.Initial,
       }

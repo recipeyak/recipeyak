@@ -1,4 +1,5 @@
 import * as React from "react"
+
 import { classNames } from "@/classnames"
 
 type Target = { select: () => void }
@@ -21,7 +22,7 @@ export const FormErrorHandler = ({ error }: IFormErrorHandlerProps) => {
   return (
     <div className="help is-danger">
       <ul>
-        {error.map(e => (
+        {error.map((e) => (
           <li key={e}>{e}</li>
         ))}
       </ul>
@@ -73,11 +74,10 @@ const BaseInput = ({
   return <input className={cls} {...props} />
 }
 
-const createInput = (
-  type: React.InputHTMLAttributes<HTMLInputElement>["type"],
-) => (props: Omit<IBaseInputProps, "type">) => (
-  <BaseInput {...props} type={type} />
-)
+const createInput =
+  (type: React.InputHTMLAttributes<HTMLInputElement>["type"]) =>
+  (props: Omit<IBaseInputProps, "type">) =>
+    <BaseInput {...props} type={type} />
 
 export const TextInput = createInput("text")
 export const PasswordInput = createInput("password")

@@ -7,7 +7,7 @@ import { IState } from "@/store/store"
  */
 const jsonParse = <T>(text: string) => {
   // We need to use a try here to allow us to return an error
-  // tslint:disable-next-line: no-try
+
   try {
     /* eslint-disable @typescript-eslint/consistent-type-assertions */
     return JSON.parse(text) as T

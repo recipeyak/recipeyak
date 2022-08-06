@@ -1,10 +1,10 @@
 import React from "react"
-import { Helmet } from "@/components/Helmet"
 import { Link } from "react-router-dom"
 
-import { FormErrorHandler, EmailInput } from "@/components/Forms"
-import { ButtonPrimary } from "@/components/Buttons"
 import AuthContainer from "@/components/AuthContainer"
+import { ButtonPrimary } from "@/components/Buttons"
+import { EmailInput, FormErrorHandler } from "@/components/Forms"
+import { Helmet } from "@/components/Helmet"
 import { IPasswordResetError } from "@/store/reducers/auth"
 
 interface IPasswordResetProps {
@@ -28,9 +28,9 @@ class PasswordReset extends React.Component<
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     /* eslint-disable @typescript-eslint/consistent-type-assertions */
-    this.setState(({
+    this.setState({
       [e.target.name]: e.target.value,
-    } as unknown) as IPasswordResetState)
+    } as unknown as IPasswordResetState)
     /* eslint-enable @typescript-eslint/consistent-type-assertions */
   }
 
@@ -50,7 +50,7 @@ class PasswordReset extends React.Component<
     return (
       <AuthContainer>
         <Helmet title="Password Reset" />
-        <form className="box p-3" onSubmit={e => this.handleReset(e)}>
+        <form className="box p-3" onSubmit={(e) => this.handleReset(e)}>
           <h1 className="title is-5 mb-2 fw-500">Password Reset</h1>
 
           <FormErrorHandler error={nonFieldErrors} />

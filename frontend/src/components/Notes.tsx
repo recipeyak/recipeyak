@@ -1,9 +1,19 @@
-import React, { useState, useEffect } from "react"
+import orderBy from "lodash/orderBy"
+import React, { useEffect, useState } from "react"
+import { useLocation } from "react-router-dom"
+import Textarea from "react-textarea-autosize"
+
+import * as api from "@/api"
+import { classNames } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
+import { ButtonPrimary, ButtonSecondary } from "@/components/Buttons"
+import { Markdown } from "@/components/Markdown"
+import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
+import { useDispatch } from "@/hooks"
+import { isOk } from "@/result"
 import {
-  IRecipe,
   INote,
-  RecipeTimelineItem,
+  IRecipe,
   patchRecipe,
   Upload,
 } from "@/store/reducers/recipes"
@@ -24,6 +34,10 @@ import Loader from "@/components/Loader"
 import { uuid4 } from "@/uuid"
 import _, { omit } from "lodash"
 import { notUndefined } from "@/utils/general"
+import {
+  RecipeTimelineItem,
+} from "@/store/reducers/recipes"
+import { styled } from "@/theme"
 
 interface IUseNoteEditHandlers {
   readonly note: INote
@@ -76,16 +90,16 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
   }
   const onDelete = () => {
     if (confirm("Are you sure you want to delete this note?")) {
-      api.deleteNote({ noteId: note.id }).then(res => {
+      void api.deleteNote({ noteId: note.id }).then((res) => {
         if (isOk(res)) {
           dispatch(
             patchRecipe({
               recipeId,
-              updateFn: recipe => {
+              updateFn: (recipe) => {
                 return {
                   ...recipe,
                   timelineItems: recipe.timelineItems.filter(
-                    x => x.id !== note.id,
+                    (x) => x.id !== note.id,
                   ),
                 }
               },
@@ -176,7 +190,8 @@ function SharedEntry({
         },
         className,
       )}
-      id={id}>
+      id={id}
+    >
       {children}
     </div>
   )
@@ -277,20 +292,23 @@ export function Note({ note, recipeId, className }: INoteProps) {
                 <ButtonSecondary
                   size="small"
                   onClick={onDelete}
-                  className="mr-2">
+                  className="mr-2"
+                >
                   delete
                 </ButtonSecondary>
                 <div className="d-flex justify-between align-center">
                   <ButtonSecondary
                     size="small"
                     onClick={onCancel}
-                    className="mr-3">
+                    className="mr-3"
+                  >
                     cancel
                   </ButtonSecondary>
                   <ButtonPrimary
                     size="small"
                     onClick={onSave}
-                    loading={isUpdating}>
+                    loading={isUpdating}
+                  >
                     save
                   </ButtonPrimary>
                 </div>
@@ -730,7 +748,8 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
             size="small"
             onClick={onCreate}
             loading={isLoading}
-            disabled={isDisabled}>
+            disabled={isDisabled}
+          >
             add
           </ButtonPrimary>
         </div>
@@ -748,12 +767,12 @@ export function NoteContainer(props: INoteContainerProps) {
     <>
       <hr />
       <NoteCreator recipeId={props.recipeId} className="pb-4" />
-      {orderBy(props.timelineItems, "created", "desc").map(timelineItem => {
+      {orderBy(props.timelineItems, "created", "desc").map((timelineItem) => {
         switch (timelineItem.type) {
           case "note": {
             return (
               <Note
-                key={"recipe" + String(timelineItem.id)}
+                key={"recipe-note" + String(timelineItem.id)}
                 note={timelineItem}
                 recipeId={props.recipeId}
                 className="pb-2"
@@ -763,7 +782,7 @@ export function NoteContainer(props: INoteContainerProps) {
           case "recipe":
             return (
               <TimelineEvent
-                key={"recipe" + String(timelineItem.id)}
+                key={"recipe-recipe" + String(timelineItem.id)}
                 event={timelineItem}
               />
             )

@@ -1,11 +1,12 @@
-import { uniq, omit } from "lodash"
-import { IUser } from "@/store/reducers/user"
+import { omit, uniq } from "lodash"
 import {
-  createAsyncAction,
-  getType,
   ActionType,
+  createAsyncAction,
   createStandardAction,
+  getType,
 } from "typesafe-actions"
+
+import { IUser } from "@/store/reducers/user"
 
 export const deleteTeam = createStandardAction("DELETE_TEAM")<ITeam["id"]>()
 
@@ -50,12 +51,10 @@ export const setTeam = createStandardAction("SET_TEAM")<{
   id: ITeam["id"]
   team: ITeam
 }>()
-export const setCreatingTeam = createStandardAction("SET_CREATING_TEAM")<
-  boolean
->()
-export const setCopyingTeam = createStandardAction("SET_COPYING_TEAM")<
-  boolean
->()
+export const setCreatingTeam =
+  createStandardAction("SET_CREATING_TEAM")<boolean>()
+export const setCopyingTeam =
+  createStandardAction("SET_COPYING_TEAM")<boolean>()
 export const updateTeamById = createStandardAction("UPDATE_TEAM")<{
   id: ITeam["id"]
   teamKeys: ITeam
@@ -146,7 +145,7 @@ export const teams = (
 ): ITeamsState => {
   switch (action.type) {
     case getType(fetchTeam.request):
-      return mapById(state, action.payload, team => ({
+      return mapById(state, action.payload, (team) => ({
         ...team,
         loadingTeam: true,
       }))
@@ -164,7 +163,7 @@ export const teams = (
         allIds: uniq([...state.allIds, action.payload.id]),
       }
     case getType(fetchTeam.failure):
-      return mapById(state, action.payload.id, team => ({
+      return mapById(state, action.payload.id, (team) => ({
         ...team,
         loadingTeam: false,
         error404: action.payload.error404 || false,
@@ -173,15 +172,15 @@ export const teams = (
       return {
         ...state,
         byId: omit(state.byId, action.payload),
-        allIds: state.allIds.filter(id => id !== action.payload),
+        allIds: state.allIds.filter((id) => id !== action.payload),
       }
     case getType(fetchTeamMembers.request):
-      return mapById(state, action.payload, team => ({
+      return mapById(state, action.payload, (team) => ({
         ...team,
         loadingMembers: true,
       }))
     case getType(fetchTeamMembers.success):
-      return mapById(state, action.payload.id, team => ({
+      return mapById(state, action.payload.id, (team) => ({
         ...team,
         members: action.payload.members.reduce(
           (a, b) => ({
@@ -193,17 +192,17 @@ export const teams = (
         loadingMembers: false,
       }))
     case getType(fetchTeamMembers.failure):
-      return mapById(state, action.payload, team => ({
+      return mapById(state, action.payload, (team) => ({
         ...team,
         loadingMembers: false,
       }))
     case getType(setUpdatingUserTeamLevel):
-      return mapById(state, action.payload.id, team => ({
+      return mapById(state, action.payload.id, (team) => ({
         ...team,
         updating: action.payload.updating,
       }))
     case getType(setDeletingMembership):
-      return mapById(state, action.payload.teamID, team => {
+      return mapById(state, action.payload.teamID, (team) => {
         const member = team.members[action.payload.membershipID]
         if (member == null) {
           return team
@@ -222,7 +221,7 @@ export const teams = (
         }
       })
     case getType(setUserTeamLevel):
-      return mapById(state, action.payload.teamID, team => {
+      return mapById(state, action.payload.teamID, (team) => {
         const member = team.members[action.payload.membershipID]
         if (member == null) {
           return team
@@ -240,12 +239,12 @@ export const teams = (
         }
       })
     case getType(setSendingTeamInvites):
-      return mapById(state, action.payload.teamID, team => ({
+      return mapById(state, action.payload.teamID, (team) => ({
         ...team,
         sendingTeamInvites: action.payload.val,
       }))
     case getType(deleteMembership):
-      return mapById(state, action.payload.teamID, team => ({
+      return mapById(state, action.payload.teamID, (team) => ({
         ...team,
         // TODO: refactor membership into it's own reducer
         members: omit(team.members, action.payload.membershipID),
@@ -264,7 +263,7 @@ export const teams = (
           }),
           state.byId,
         ),
-        allIds: uniq(state.allIds.concat(action.payload.map(x => x.id))),
+        allIds: uniq(state.allIds.concat(action.payload.map((x) => x.id))),
       }
     case getType(fetchTeams.request):
       return {

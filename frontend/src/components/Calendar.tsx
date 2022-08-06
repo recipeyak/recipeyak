@@ -1,49 +1,45 @@
-import React, { useEffect } from "react"
+import { push } from "connected-react-router"
+import { addWeeks, endOfWeek, startOfWeek, subWeeks } from "date-fns"
 import eachDayOfInterval from "date-fns/eachDayOfInterval"
 import format from "date-fns/format"
-import first from "lodash/first"
-import { history } from "@/store/store"
-import queryString from "query-string"
-import parseISO from "date-fns/parseISO"
 import isValid from "date-fns/isValid"
+import parseISO from "date-fns/parseISO"
+import chunk from "lodash/chunk"
+import first from "lodash/first"
+import queryString from "query-string"
+import React, { useEffect } from "react"
 import { useLocation } from "react-router-dom"
-
-import {
-  fetchCalendarAsync,
-  fetchingRecipeListAsync,
-  fetchingTeamsAsync,
-  fetchingShoppingListAsync,
-} from "@/store/thunks"
-
-import { toISODateString } from "@/date"
-
-import { teamsFrom } from "@/store/mapState"
-
-import { push } from "connected-react-router"
 
 import { ButtonPlain } from "@/components/Buttons"
 import CalendarDay from "@/components/CalendarDay"
 import { CalendarMoreDropdown } from "@/components/CalendarMoreDropdown"
-import { ITeam } from "@/store/reducers/teams"
-import {
-  ICalRecipe,
-  getTeamRecipes,
-  getPersonalRecipes,
-  updateCalendarSettings,
-  regenerateCalendarLink as regenerateCalendarLinkAction,
-} from "@/store/reducers/calendar"
-import { subWeeks, addWeeks, startOfWeek, endOfWeek } from "date-fns"
 import { Select } from "@/components/Forms"
-import chunk from "lodash/chunk"
-import { styled } from "@/theme"
-import { useSelector, useDispatch, useOnWindowFocusChange } from "@/hooks"
+import { toISODateString } from "@/date"
+import { useDispatch, useOnWindowFocusChange, useSelector } from "@/hooks"
+import { teamsFrom } from "@/store/mapState"
 import {
-  isFailure,
-  Success,
-  Loading,
-  WebData,
-  isSuccessLike,
+  getPersonalRecipes,
+  getTeamRecipes,
+  ICalRecipe,
+  regenerateCalendarLink as regenerateCalendarLinkAction,
+  updateCalendarSettings,
+} from "@/store/reducers/calendar"
+import { ITeam } from "@/store/reducers/teams"
+import { history } from "@/store/store"
+import {
+  fetchCalendarAsync,
+  fetchingRecipeListAsync,
+  fetchingShoppingListAsync,
+  fetchingTeamsAsync,
+} from "@/store/thunks"
+import { styled } from "@/theme"
+import {
   Failure,
+  isFailure,
+  isSuccessLike,
+  Loading,
+  Success,
+  WebData,
 } from "@/webdata"
 
 function CalTitle({ dayTs }: { readonly dayTs: number }) {
@@ -60,7 +56,7 @@ export interface IDays {
 }
 
 const WeekdaysContainer = styled.div`
-  @media (max-width: ${p => p.theme.medium}) {
+  @media (max-width: ${(p) => p.theme.medium}) {
     display: none;
   }
   display: flex;
@@ -77,7 +73,7 @@ function Weekdays() {
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
   return (
     <WeekdaysContainer>
-      {weekDays.map(x => (
+      {weekDays.map((x) => (
         <b key={x}>{x}</b>
       ))}
     </WeekdaysContainer>
@@ -86,7 +82,7 @@ function Weekdays() {
 
 const CalendarWeekContainer = styled.div`
   display: flex;
-  @media (max-width: ${p => p.theme.medium}) {
+  @media (max-width: ${(p) => p.theme.medium}) {
     height: 100%;
     flex-direction: column;
     margin-top: 0.5rem;
@@ -113,7 +109,7 @@ interface IDaysProps {
   readonly start: Date
   readonly end: Date
   readonly days: WebData<IDays>
-  readonly teamID: TeamID
+  readonly teamID: number | "personal"
 }
 
 function Days({ start, end, days, teamID }: IDaysProps) {
@@ -125,7 +121,7 @@ function Days({ start, end, days, teamID }: IDaysProps) {
 
   return (
     <DaysContainer>
-      {chunk(eachDayOfInterval({ start, end }), WEEK_DAYS).map(dates => {
+      {chunk(eachDayOfInterval({ start, end }), WEEK_DAYS).map((dates) => {
         const firstDay = first(dates)
         if (firstDay == null) {
           return <CalendarWeekContainer />
@@ -133,7 +129,7 @@ function Days({ start, end, days, teamID }: IDaysProps) {
         const week = String(startOfWeek(firstDay))
         return (
           <CalendarWeekContainer key={week}>
-            {dates.map(date => {
+            {dates.map((date) => {
               const scheduledRecipes = daysData[toISODateString(date)] || []
               return (
                 <CalendarDay
@@ -154,7 +150,7 @@ function Days({ start, end, days, teamID }: IDaysProps) {
 interface ITeamSelectProps {
   readonly onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
   readonly teams: WebData<ReadonlyArray<ITeam>>
-  readonly value: TeamID
+  readonly value: number | "personal"
 }
 
 function TeamSelect({ onChange, value, teams }: ITeamSelectProps) {
@@ -163,7 +159,7 @@ function TeamSelect({ onChange, value, teams }: ITeamSelectProps) {
     <Select onChange={onChange} value={value} size="small" disabled={disabled}>
       <option value="personal">Personal</option>
       {isSuccessLike(teams)
-        ? teams.data.map(t => (
+        ? teams.data.map((t) => (
             <option key={t.id} value={t.id}>
               {t.name}
             </option>
@@ -178,18 +174,15 @@ interface INavProps {
   readonly onPrev: () => void
   readonly onNext: () => void
   readonly onCurrent: () => void
-  readonly teamID: TeamID
+  readonly teamID: number | "personal"
   readonly type: "shopping" | "recipes"
 }
 
 function Nav({ dayTs, teamID, onPrev, onNext, onCurrent, type }: INavProps) {
   const { handleOwnerChange, teams } = useTeamSelect(dayTs, type)
 
-  const {
-    settings,
-    setSyncEnabled,
-    regenerateCalendarLink,
-  } = useCalendarSettings(teamID)
+  const { settings, setSyncEnabled, regenerateCalendarLink } =
+    useCalendarSettings(teamID)
 
   return (
     <section className="d-flex justify-space-between align-items-center flex-shrink-0">
@@ -284,10 +277,10 @@ function useTeams(): WebData<ReadonlyArray<ITeam>> {
   const dispatch = useDispatch()
   const teams = useSelector(teamsFrom)
   useEffect(() => {
-    fetchingTeamsAsync(dispatch)()
+    void fetchingTeamsAsync(dispatch)()
   }, [dispatch])
 
-  const status = useSelector(s => s.teams.status)
+  const status = useSelector((s) => s.teams.status)
 
   if (status === "initial") {
     return undefined
@@ -302,11 +295,14 @@ function useTeams(): WebData<ReadonlyArray<ITeam>> {
   return Success(teams)
 }
 
-function useDays(teamID: TeamID, currentDateTs: number): WebData<IDays> {
+function useDays(
+  teamID: number | "personal",
+  currentDateTs: number,
+): WebData<IDays> {
   const dispatch = useDispatch()
 
   const fetchData = React.useCallback(() => {
-    fetchCalendarAsync(dispatch)(teamID, currentDateTs)
+    void fetchCalendarAsync(dispatch)(teamID, currentDateTs)
   }, [currentDateTs, dispatch, teamID])
 
   useEffect(() => {
@@ -316,14 +312,14 @@ function useDays(teamID: TeamID, currentDateTs: number): WebData<IDays> {
   useOnWindowFocusChange(fetchData)
 
   const isTeam = teamID !== "personal"
-  const days = useSelector(s => {
+  const days = useSelector((s) => {
     if (isTeam) {
       return getTeamRecipes(s.calendar)
     }
     return getPersonalRecipes(s.calendar)
   })
 
-  const status = useSelector(s => s.calendar.status)
+  const status = useSelector((s) => s.calendar.status)
 
   if (status === "loading") {
     return Loading()
@@ -358,16 +354,16 @@ function useTeamSelect(currentDateTs: number, type: "shopping" | "recipes") {
 
     // navTo is async so we can't count on the URL to have changed by the time we refetch the data
     dispatch(push(urlWithEnding))
-    fetchCalendarAsync(dispatch)(teamID, currentDateTs)
-    fetchingRecipeListAsync(dispatch)()
-    fetchingShoppingListAsync(dispatch)(teamID)
+    void fetchCalendarAsync(dispatch)(teamID, currentDateTs)
+    void fetchingRecipeListAsync(dispatch)()
+    void fetchingShoppingListAsync(dispatch)(teamID)
   }
 
   return { handleOwnerChange, teams }
 }
 
-function useCalendarSettings(teamID: TeamID) {
-  const settings = useSelector(s => s.calendar.settings)
+function useCalendarSettings(teamID: number | "personal") {
+  const settings = useSelector((s) => s.calendar.settings)
   const dispatch = useDispatch()
   const setSyncEnabled = (syncEnabled: boolean) => {
     dispatch(
@@ -388,19 +384,13 @@ function useCalendarSettings(teamID: TeamID) {
 }
 
 interface ICalendarProps {
-  readonly teamID: TeamID
+  readonly teamID: number | "personal"
   readonly type: "shopping" | "recipes"
 }
 
 export function Calendar({ teamID, type }: ICalendarProps) {
-  const {
-    currentDateTs,
-    startDate,
-    endDate,
-    navNext,
-    navCurrent,
-    navPrev,
-  } = useCurrentWeek()
+  const { currentDateTs, startDate, endDate, navNext, navCurrent, navPrev } =
+    useCurrentWeek()
 
   const days = useDays(teamID, currentDateTs)
 

@@ -124,7 +124,7 @@ jobs:
 
   frontend_test:
     docker:
-      - image: circleci/node:12.4.0
+      - image: cimg/node:18.7.0@sha256:63c53c9c0fa343ea85eb3dbf6840a0bb213b5e49b96c8dedea759744173cd48d
     steps:
       - checkout
       - run:
@@ -150,7 +150,7 @@ jobs:
 
   frontend_lint:
     docker:
-      - image: circleci/node:12.4.0
+      - image: cimg/node:18.7.0@sha256:63c53c9c0fa343ea85eb3dbf6840a0bb213b5e49b96c8dedea759744173cd48d
     steps:
       - checkout
       - run:
@@ -181,7 +181,7 @@ jobs:
           # copy bundle analyzer report
           command: |
             mkdir -p /tmp/frontend-artifacts
-            cp -R build/report.html build/webpack-stats.json /tmp/frontend-artifacts
+            cp -R stats.html /tmp/frontend-artifacts
       - store_artifacts:
           path: /tmp/frontend-artifacts
 
@@ -240,7 +240,8 @@ jobs:
       - image: docker:18.05.0-ce
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 20.10.14
       # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
       - run:
           name: build container

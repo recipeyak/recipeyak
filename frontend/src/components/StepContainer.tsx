@@ -29,13 +29,13 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import sortBy from "lodash/sortBy"
 import React, { useEffect } from "react"
 import { connect } from "react-redux"
 
 import Step from "@/components/Step"
-import { IRecipe, IStep, updateStep } from "@/store/reducers/recipes"
-import sortBy from "lodash/sortBy"
 import { getNewPos } from "@/position"
+import { IRecipe, IStep, updateStep } from "@/store/reducers/recipes"
 
 interface IStepContainerProps {
   readonly steps: ReadonlyArray<IStep>
@@ -60,24 +60,30 @@ function StepContainer(props: IStepContainerProps) {
     setSteps(sortBy(props.steps, "position"))
   }, [props.steps])
 
-  const move = ({ from, to }: { readonly to: number; readonly from: number }) =>
-    setSteps(prev => {
+  const move = ({
+    from,
+    to,
+  }: {
+    readonly to: number
+    readonly from: number
+  }) => {
+    setSteps((prev) => {
       const newSteps = [...prev]
       const item = newSteps[from]
       newSteps.splice(from, 1)
       newSteps.splice(to, 0, item)
       return newSteps
     })
+  }
 
-  const completeMove = (stepID: number, arrIndex: number) => {
-    const newPosition = getNewPos(steps, arrIndex)
+  const completeMove = ({ to, id: stepID }: { id: number; to: number }) => {
+    const newPosition = getNewPos(steps, to)
     if (newPosition == null) {
       return
     }
-
-    setSteps(prevSteps =>
-      prevSteps.map((c, index) => {
-        if (index === arrIndex) {
+    setSteps((prevSteps) =>
+      prevSteps.map((c) => {
+        if (c.id === stepID) {
           return {
             ...c,
             position: newPosition,

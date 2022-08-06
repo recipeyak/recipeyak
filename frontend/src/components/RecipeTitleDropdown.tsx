@@ -1,26 +1,27 @@
 import React from "react"
-import { useSelector, useDispatch } from "@/hooks"
-import { scheduleURLFromTeamID } from "@/store/mapState"
+import { useLocation } from "react-router-dom"
+
 import { copyToClipboard } from "@/clipboard"
-import { isSuccessLike } from "@/webdata"
-import { showNotificationWithTimeoutAsync } from "@/store/thunks"
-import { Chevron } from "@/components/icons"
-import {
-  IIngredient,
-  duplicateRecipe,
-  IRecipe,
-  updateRecipe,
-  deleteRecipe,
-} from "@/store/reducers/recipes"
 import { Button } from "@/components/Buttons"
 import {
   DropdownContainer,
-  DropdownItemLink,
   DropdownItemButton,
+  DropdownItemLink,
   DropdownMenu,
   useDropdown,
 } from "@/components/Dropdown"
-import { useLocation } from "react-router-dom"
+import { Chevron } from "@/components/icons"
+import { useDispatch, useSelector } from "@/hooks"
+import { scheduleURLFromTeamID } from "@/store/mapState"
+import {
+  deleteRecipe,
+  duplicateRecipe,
+  IIngredient,
+  IRecipe,
+  updateRecipe,
+} from "@/store/reducers/recipes"
+import { showNotificationWithTimeoutAsync } from "@/store/thunks"
+import { isSuccessLike } from "@/webdata"
 
 function useScheduleUrl(recipeId: number) {
   return useSelector(scheduleURLFromTeamID) + `?recipeId=${recipeId}`
@@ -35,7 +36,7 @@ function ingredientToString(ingre: IIngredient) {
 }
 
 function useIngredientString(recipeId: number) {
-  return useSelector(s => {
+  return useSelector((s) => {
     const r = s.recipes.byId[recipeId]
     if (isSuccessLike(r)) {
       return r.data.ingredients.map(ingredientToString).join("\n")
@@ -59,7 +60,9 @@ function useDuplicateRecipe({
     dispatch(duplicateRecipe.request({ recipeId, onComplete }))
   }, [dispatch, onComplete, recipeId])
 
-  const isDuplicating = useSelector(s => !!s.recipes.duplicatingById[recipeId])
+  const isDuplicating = useSelector(
+    (s) => !!s.recipes.duplicatingById[recipeId],
+  )
 
   return [isDuplicating, onDuplicate]
 }
@@ -73,7 +76,7 @@ export function Dropdown({ recipeId }: IDropdownProps) {
   const location = useLocation()
   const dispatch = useDispatch()
   const ingredients = useIngredientString(recipeId)
-  const [isArchived, isDeleting] = useSelector(s => {
+  const [isArchived, isDeleting] = useSelector((s) => {
     const maybeRecipe = s.recipes.byId[recipeId]
     if (maybeRecipe?.kind === "Success") {
       return [!!maybeRecipe.data.archived_at, !!maybeRecipe.data.deleting]
@@ -161,7 +164,8 @@ export function Dropdown({ recipeId }: IDropdownProps) {
         )}
         <DropdownItemLink
           to={location.pathname + "?timeline=1"}
-          onClick={close}>
+          onClick={close}
+        >
           Timeline
         </DropdownItemLink>
         <DropdownItemButton onClick={handleDeleteRecipe}>

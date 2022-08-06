@@ -29,17 +29,17 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import React, { useRef } from "react"
+import { useRef } from "react"
+import { useDrag, useDrop } from "react-dnd"
 import { connect } from "react-redux"
-import { useDrop, useDrag } from "react-dnd"
-import { DragDrop, handleDndHover } from "@/dragDrop"
-import ListItem from "@/components/ListItem"
 
+import ListItem from "@/components/ListItem"
+import { DragDrop, handleDndHover } from "@/dragDrop"
 import {
-  IStep,
-  IRecipe,
-  updateStep,
   deleteStep,
+  IRecipe,
+  IStep,
+  updateStep,
 } from "@/store/reducers/recipes"
 
 interface IStepProps {
@@ -48,7 +48,7 @@ interface IStepProps {
   readonly recipeID: IRecipe["id"]
   readonly text: string
   readonly move: (_: { from: number; to: number }) => void
-  readonly completeMove: (dragIndex: number, hoverIndex: number) => void
+  readonly completeMove: (_: { id: number; to: number }) => void
   readonly updating?: boolean
   readonly removing?: boolean
   readonly position?: number
@@ -62,14 +62,14 @@ function Step({ text, index, ...props }: IStepProps) {
   })
 
   const [{ isDragging }, drag, preview] = useDrag({
+    type: DragDrop.STEP,
     item: {
-      type: DragDrop.STEP,
       index,
     },
-    end: () => {
-      props.completeMove(props.id, index)
+    end: (draggedItem) => {
+      props.completeMove({ id: props.id, to: draggedItem.index })
     },
-    collect: monitor => ({
+    collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
   })
@@ -119,8 +119,9 @@ function StepBodyBasic({
   updating,
   removing,
 }: IStepBodyBasic) {
-  const listItemUpdate = (rID: number, sID: number, data: { text: string }) =>
+  const listItemUpdate = (rID: number, sID: number, data: { text: string }) => {
     update({ recipeID: rID, stepID: sID, ...data })
+  }
 
   return (
     <ListItem
@@ -130,7 +131,9 @@ function StepBodyBasic({
       update={listItemUpdate}
       updating={updating}
       removing={removing}
-      delete={() => remove({ recipeID, stepID: id })}
+      delete={() => {
+        remove({ recipeID, stepID: id })
+      }}
     />
   )
 }

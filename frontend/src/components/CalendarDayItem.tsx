@@ -1,16 +1,17 @@
 import React from "react"
-import { styled } from "@/theme"
-import { Link } from "react-router-dom"
 import { useDrag } from "react-dnd"
-import { isInsideChangeWindow } from "@/date"
-import { recipeURL } from "@/urls"
-import { DragDrop } from "@/dragDrop"
-import { IRecipe } from "@/store/reducers/recipes"
-import { ICalRecipe } from "@/store/reducers/calendar"
-import { TextInput } from "@/components/Forms"
-import { Result, isOk } from "@/result"
-import { useGlobalEvent } from "@/hooks"
+import { Link } from "react-router-dom"
+
 import { CalendarDayItemModal } from "@/components/CalendarDayItemModal"
+import { TextInput } from "@/components/Forms"
+import { isInsideChangeWindow } from "@/date"
+import { DragDrop } from "@/dragDrop"
+import { useGlobalEvent } from "@/hooks"
+import { isOk, Result } from "@/result"
+import { ICalRecipe } from "@/store/reducers/calendar"
+import { IRecipe } from "@/store/reducers/recipes"
+import { styled } from "@/theme"
+import { recipeURL } from "@/urls"
 
 const COUNT_THRESHOLD = 1
 
@@ -42,9 +43,9 @@ interface IRecipeLink {
 
 const StyledLink = styled(Link)`
   line-height: 1.3;
-  font-size: ${props => props.theme.text.small};
+  font-size: ${(props) => props.theme.text.small};
   word-break: break-word;
-  background-color: ${props => props.theme.color.background};
+  background-color: ${(props) => props.theme.color.background};
   border-radius: 5px;
   padding: 0.35rem;
   font-weight: 600;
@@ -68,7 +69,7 @@ const CalendarListItem = styled.li<ICalendarListItemProps>`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 0.5rem;
-  visibility: ${props => props.visibility};
+  visibility: ${(props) => props.visibility};
 `
 
 export interface ICalendarItemProps {
@@ -82,7 +83,7 @@ export interface ICalendarItemProps {
   readonly recipeID: IRecipe["id"] | string
   readonly recipeName: IRecipe["name"]
   readonly scheduledId: ICalRecipe["id"]
-  readonly teamID: TeamID
+  readonly teamID: number | "personal"
 }
 
 export function CalendarItem({
@@ -110,7 +111,7 @@ export function CalendarItem({
     }
     const oldCount = count
     setCount(newCount)
-    propsUpdateCount(newCount).then(res => {
+    void propsUpdateCount(newCount).then((res) => {
       if (isOk(res)) {
         refetchShoppingList()
       } else {
@@ -139,8 +140,9 @@ export function CalendarItem({
     }
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateCount(parseInt(e.target.value, 10))
+  }
 
   const dragItem: ICalendarDragItem = {
     type: DragDrop.CAL_RECIPE,
@@ -151,6 +153,7 @@ export function CalendarItem({
   }
 
   const [{ isDragging }, drag] = useDrag({
+    type: DragDrop.CAL_RECIPE,
     item: dragItem,
     end: (_dropResult, monitor) => {
       // when dragged onto something that isn't a target, we remove it
@@ -159,7 +162,7 @@ export function CalendarItem({
         remove()
       }
     },
-    collect: monitor => {
+    collect: (monitor) => {
       return {
         isDragging: monitor.isDragging(),
       }
@@ -179,7 +182,7 @@ export function CalendarItem({
         <RecipeLink
           name={recipeName}
           id={recipeID}
-          onClick={e => {
+          onClick={(e) => {
             if (e.shiftKey || e.metaKey) {
               return
             }
@@ -196,7 +199,9 @@ export function CalendarItem({
           recipeName={recipeName}
           recipeId={recipeID}
           date={date}
-          onClose={() => setShow(false)}
+          onClose={() => {
+            setShow(false)
+          }}
         />
       ) : null}
     </>

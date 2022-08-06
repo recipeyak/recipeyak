@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react"
+import React, { useEffect, useState } from "react"
 
 import AddIngredientForm from "@/components/AddIngredientForm"
+import { AddSectionForm } from "@/components/AddSectionForm"
 import { useDispatch } from "@/hooks"
 import { addIngredientToRecipe } from "@/store/reducers/recipes"
-import { AddSectionForm } from "@/components/AddSectionForm"
 
 function AddIngredientSubForm({
   recipeId,
@@ -44,14 +44,22 @@ function AddIngredientSubForm({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     switch (e.target.name) {
-      case "quantity":
-        return setQuantity(e.target.value)
-      case "name":
-        return setName(e.target.value)
-      case "description":
-        return setDescription(e.target.value)
-      case "optional":
-        return setOptional(e.target.value === "on")
+      case "quantity": {
+        setQuantity(e.target.value)
+        return
+      }
+      case "name": {
+        setName(e.target.value)
+        return
+      }
+      case "description": {
+        setDescription(e.target.value)
+        return
+      }
+      case "optional": {
+        setOptional(e.target.value === "on")
+        return
+      }
     }
   }
 
@@ -91,7 +99,9 @@ export default function AddIngredient({
   readonly autoFocus: boolean
 }) {
   const [showAddSection, setShowAddSection] = React.useState(false)
-  const toggleShowAddSection = () => setShowAddSection(p => !p)
+  const toggleShowAddSection = () => {
+    setShowAddSection((p) => !p)
+  }
 
   if (showAddSection) {
     return (

@@ -1,35 +1,36 @@
-import React from "react"
-import { connect } from "react-redux"
+import { isSameDay } from "date-fns"
+import endOfDay from "date-fns/endOfDay"
 import format from "date-fns/format"
-import { useDrop } from "react-dnd"
+import isFirstDayOfMonth from "date-fns/isFirstDayOfMonth"
 import isWithinInterval from "date-fns/isWithinInterval"
 import startOfDay from "date-fns/startOfDay"
-import endOfDay from "date-fns/endOfDay"
-import isFirstDayOfMonth from "date-fns/isFirstDayOfMonth"
 import sortBy from "lodash/sortBy"
-import { isInsideChangeWindow } from "@/date"
+import { useDrop } from "react-dnd"
+import { connect } from "react-redux"
+
+import { assertNever } from "@/assert"
+import cls from "@/classnames"
 import { CalendarItem, ICalendarDragItem } from "@/components/CalendarDayItem"
+import { IRecipeItemDrag } from "@/components/RecipeItem"
+import { isInsideChangeWindow } from "@/date"
+import { DragDrop } from "@/dragDrop"
+import { useCurrentDay } from "@/hooks"
+import { Result } from "@/result"
 import {
-  updatingScheduledRecipeAsync,
+  createCalendarRecipe,
+  ICalRecipe,
+  moveOrCreateCalendarRecipe,
+} from "@/store/reducers/calendar"
+import { IState } from "@/store/store"
+import {
   deletingScheduledRecipeAsync,
   Dispatch,
   fetchingShoppingListAsync,
   IAddingScheduledRecipeProps,
   IMoveScheduledRecipeProps,
+  updatingScheduledRecipeAsync,
 } from "@/store/thunks"
-import { DragDrop } from "@/dragDrop"
-import { IState } from "@/store/store"
-import {
-  ICalRecipe,
-  moveOrCreateCalendarRecipe,
-  createCalendarRecipe,
-} from "@/store/reducers/calendar"
-import { IRecipeItemDrag } from "@/components/RecipeItem"
-import { Result } from "@/result"
-import { useCurrentDay } from "@/hooks"
-import { isSameDay } from "date-fns"
-import { styled, css } from "@/theme"
-import cls from "@/classnames"
+import { css, styled } from "@/theme"
 
 function DayOfWeek({ date }: { date: Date }) {
   const dayOfWeek = format(date, "E")
@@ -58,11 +59,11 @@ const Title = ({
 }
 
 const isTodayStyle = css`
-  border-bottom: 2px solid ${p => p.theme.color.primary};
+  border-bottom: 2px solid ${(p) => p.theme.color.primary};
 `
 
 const isSelectedDayStyle = css`
-  background-color: ${p => p.theme.color.primaryShadow};
+  background-color: ${(p) => p.theme.color.primaryShadow};
 `
 
 const isDroppableStyle = css`
@@ -81,18 +82,18 @@ const CalendarDayContainer = styled.div<ICalendarDayContainerProps>`
   background-color: whitesmoke;
   transition: background-color 0.2s;
 
-  ${p => p.isToday && isTodayStyle}
-  ${p => p.isSelectedDay && isSelectedDayStyle}
-  ${p => p.isDroppable && isDroppableStyle}
+  ${(p) => p.isToday && isTodayStyle}
+  ${(p) => p.isSelectedDay && isSelectedDayStyle}
+  ${(p) => p.isDroppable && isDroppableStyle}
 
   &:not(:last-child) {
     margin-right: 0.25rem;
-    @media (max-width: ${p => p.theme.medium}) {
+    @media (max-width: ${(p) => p.theme.medium}) {
       margin-right: 0;
       margin-bottom: 0.25rem;
     }
   }
-  @media (max-width: ${p => p.theme.medium}) {
+  @media (max-width: ${(p) => p.theme.medium}) {
     width: 100%;
   }
 `
@@ -102,11 +103,11 @@ interface ICalendarDayProps {
   readonly scheduledRecipes: ICalRecipe[]
   readonly updateCount: (
     id: ICalRecipe["id"],
-    teamID: TeamID,
+    teamID: number | "personal",
     count: ICalRecipe["count"],
   ) => Promise<Result<void, void>>
-  readonly refetchShoppingList: (teamID: TeamID) => void
-  readonly remove: (id: ICalRecipe["id"], teamID: TeamID) => void
+  readonly refetchShoppingList: (teamID: number | "personal") => void
+  readonly remove: (id: ICalRecipe["id"], teamID: number | "personal") => void
   readonly move: ({ id, teamID, to }: IMoveScheduledRecipeProps) => void
   readonly create: ({
     recipeID,
@@ -114,7 +115,7 @@ interface ICalendarDayProps {
     on,
     count,
   }: IAddingScheduledRecipeProps) => void
-  readonly teamID: TeamID
+  readonly teamID: number | "personal"
   readonly isSelected: boolean
 }
 
@@ -137,7 +138,7 @@ function CalendarDay({
     canDrop: () => {
       return isInsideChangeWindow(date)
     },
-    drop: dropped => {
+    drop: (dropped) => {
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       const item = dropped as ICalendarDragItem | IRecipeItemDrag
       // TOOD(sbdchd): We should move this logic into the calendar reducer
@@ -145,9 +146,11 @@ function CalendarDay({
         move({ id: item.scheduledId, teamID, to: date })
       } else if (item.type === DragDrop.RECIPE) {
         create({ recipeID: item.recipeID, teamID, on: date, count: 1 })
+      } else {
+        assertNever(item)
       }
     },
-    collect: monitor => {
+    collect: (monitor) => {
       return {
         isOver: monitor.isOver(),
         canDrop: monitor.canDrop(),
@@ -155,7 +158,7 @@ function CalendarDay({
     },
   })
 
-  const scheduled = sortBy(scheduledRecipes, x => new Date(x.created))
+  const scheduled = sortBy(scheduledRecipes, (x) => new Date(x.created))
 
   const isDroppable = isOver && canDrop
 
@@ -166,10 +169,11 @@ function CalendarDay({
       ref={drop}
       isDroppable={isDroppable}
       isToday={isToday}
-      isSelectedDay={isSelectedDay}>
+      isSelectedDay={isSelectedDay}
+    >
       <Title date={date} isSelectedDay={isSelectedDay} />
       <ul>
-        {scheduled.map(x => (
+        {scheduled.map((x) => (
           <CalendarItem
             key={x.id}
             scheduledId={x.id}
@@ -177,9 +181,13 @@ function CalendarDay({
             recipeName={x.recipe.name}
             recipeID={x.recipe.id}
             teamID={teamID}
-            remove={() => remove(x.id, teamID)}
-            updateCount={count => updateCount(x.id, teamID, count)}
-            refetchShoppingList={() => refetchShoppingList(teamID)}
+            remove={() => {
+              remove(x.id, teamID)
+            }}
+            updateCount={(count) => updateCount(x.id, teamID, count)}
+            refetchShoppingList={() => {
+              refetchShoppingList(teamID)
+            }}
             count={x.count}
           />
         ))}

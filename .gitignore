@@ -18,3 +18,5 @@ docker-compose-shipit.yml
 *.egg*
 pip-wheel-metadata
 .testmondata
+.eslintcache
+stats.html

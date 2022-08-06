@@ -1,15 +1,16 @@
 import React from "react"
-import { useDrop, useDrag } from "react-dnd"
-import { DragDrop, handleDndHover } from "@/dragDrop"
-import { AddSectionFormInner } from "@/components/AddSectionForm"
-import { Status } from "@/webdata"
+import { useDrag, useDrop } from "react-dnd"
+
 import * as api from "@/api"
-import { isOk } from "@/result"
+import { AddSectionFormInner } from "@/components/AddSectionForm"
+import { DragDrop, handleDndHover } from "@/dragDrop"
 import { useDispatch } from "@/hooks"
+import { isOk } from "@/result"
 import {
   removeSectionFromRecipe,
   updateSectionForRecipe,
 } from "@/store/reducers/recipes"
+import { Status } from "@/webdata"
 
 type State = {
   readonly updating: Status
@@ -60,44 +61,49 @@ export function Section({
   const ref = React.useRef<HTMLLIElement>(null)
   const [state, setState] = React.useState<State>(getInitialState(title))
   React.useEffect(() => {
-    setState(prev => ({ ...prev, localTitle: title }))
+    setState((prev) => ({ ...prev, localTitle: title }))
   }, [title])
 
-  const handleEnableEditing = () =>
-    setState(prev => ({ ...prev, editing: true }))
+  const handleEnableEditing = () => {
+    setState((prev) => ({ ...prev, editing: true }))
+  }
 
-  const handleCancel = () => setState(getInitialState(title))
+  const handleCancel = () => {
+    setState(getInitialState(title))
+  }
   const handleRemove = () => {
-    setState(prev => ({ ...prev, removing: "loading" }))
-    api.deleteSection({ sectionId }).then(res => {
+    setState((prev) => ({ ...prev, removing: "loading" }))
+    void api.deleteSection({ sectionId }).then((res) => {
       if (isOk(res)) {
         dispatch(removeSectionFromRecipe({ recipeId, sectionId }))
       } else {
-        setState(prev => ({ ...prev, removing: "failure" }))
+        setState((prev) => ({ ...prev, removing: "failure" }))
       }
     })
   }
   const handleSave = () => {
-    setState(prev => ({ ...prev, updating: "loading" }))
-    api.updateSection({ sectionId, title: state.localTitle }).then(res => {
-      if (isOk(res)) {
-        dispatch(
-          updateSectionForRecipe({
-            recipeId,
-            sectionId,
-            title: res.data.title,
-            position: res.data.position,
-          }),
-        )
-        setState(prev => ({ ...prev, updating: "success", editing: false }))
-      } else {
-        setState(prev => ({ ...prev, updating: "failure" }))
-      }
-    })
+    setState((prev) => ({ ...prev, updating: "loading" }))
+    void api
+      .updateSection({ sectionId, title: state.localTitle })
+      .then((res) => {
+        if (isOk(res)) {
+          dispatch(
+            updateSectionForRecipe({
+              recipeId,
+              sectionId,
+              title: res.data.title,
+              position: res.data.position,
+            }),
+          )
+          setState((prev) => ({ ...prev, updating: "success", editing: false }))
+        } else {
+          setState((prev) => ({ ...prev, updating: "failure" }))
+        }
+      })
   }
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const localTitle = e.target.value
-    setState(prev => ({ ...prev, localTitle }))
+    setState((prev) => ({ ...prev, localTitle }))
   }
   const [, drop] = useDrop({
     accept: [DragDrop.SECTION, DragDrop.INGREDIENT],
@@ -109,14 +115,14 @@ export function Section({
   })
 
   const [{ isDragging }, drag, preview] = useDrag({
+    type: DragDrop.SECTION,
     item: {
-      type: DragDrop.SECTION,
       index,
     },
     end: () => {
       completeMove({ kind: "section", id: sectionId, to: index })
     },
-    collect: monitor => ({
+    collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
   })
@@ -150,7 +156,8 @@ export function Section({
       style={style}
       className="bg-white mt-1 bold text-small"
       title="click to edit"
-      onClick={handleEnableEditing}>
+      onClick={handleEnableEditing}
+    >
       {title}
     </li>
   )

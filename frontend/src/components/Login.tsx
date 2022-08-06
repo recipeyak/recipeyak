@@ -1,117 +1,120 @@
-import React from "react"
-import { Link } from "react-router-dom"
-import { Helmet } from "@/components/Helmet"
-
-import { FormErrorHandler, TextInput, PasswordInput } from "@/components/Forms"
-import { ButtonPrimary } from "@/components/Buttons"
-
-import AuthContainer from "@/components/AuthContainer"
 import { Location } from "history"
-import { ILoginError } from "@/store/reducers/auth"
+import React from "react"
+import { useDispatch } from "react-redux"
+import { Link, useHistory, useLocation } from "react-router-dom"
 
-const redirectURL = ({ pathname = "", search = "", hash = "" }) =>
-  `${pathname}${search}${hash}`
+import * as api from "@/api"
+import AuthContainer from "@/components/AuthContainer"
+import { ButtonPrimary } from "@/components/Buttons"
+import { FormErrorHandler, PasswordInput, TextInput } from "@/components/Forms"
+import { Helmet } from "@/components/Helmet"
+import { isOk } from "@/result"
+import { login } from "@/store/reducers/auth"
+import { clearNotification } from "@/store/reducers/notification"
 
-interface ILoginProps {
-  readonly setFromUrl: (url: string) => void
-  readonly clearErrors: () => void
-  readonly login: (email: string, password: string, fromUrl: string) => void
-  readonly fromUrl: string
-  readonly loading: boolean
-  readonly error: ILoginError
-  readonly location: Location<{ from: string } | undefined>
-}
+export default function Login() {
+  const [loading, setLoading] = React.useState(false)
+  const [email, setEmail] = React.useState("")
+  const [password, setPassword] = React.useState("")
+  const [errors, setErrors] = React.useState<{
+    email?: string[]
+    password?: string[]
+    nonFieldErrors?: string[]
+  }>()
+  const history = useHistory()
+  const location = useLocation<{ from: Location } | undefined>()
+  const dispatch = useDispatch()
 
-interface ILoginState {
-  readonly email: string
-  readonly password: string
-}
-
-class Login extends React.Component<ILoginProps, ILoginState> {
-  state = {
-    email: "",
-    password: "",
-  }
-
-  componentWillMount = () => {
-    this.props.clearErrors()
-    const fromUrl =
-      this.props.location.state != null ? this.props.location.state.from : {}
-    this.props.setFromUrl(redirectURL(fromUrl))
-  }
-
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    /* eslint-disable @typescript-eslint/consistent-type-assertions */
-    this.setState(({
-      [e.target.name]: e.target.value,
-    } as unknown) as ILoginState)
-    /* eslint-enable @typescript-eslint/consistent-type-assertions */
-  }
-
-  handleLogin = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    this.props.login(this.state.email, this.state.password, this.props.fromUrl)
+    dispatch(clearNotification())
+    setLoading(true)
+    setErrors(undefined)
+    void api.loginUser(email, password).then((res) => {
+      if (isOk(res)) {
+        dispatch(login.success(res.data.user))
+        setLoading(false)
+        history.push(location.state?.from ?? {})
+      } else {
+        const err = res.error
+        if (err.response?.status === 400) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          const data: {
+            email?: string[]
+            password1?: string[]
+            non_field_errors?: string[]
+          } = err.response.data
+          setErrors({
+            email: data.email,
+            password: data.password1,
+            nonFieldErrors: data.non_field_errors,
+          })
+        } else {
+          setErrors({
+            nonFieldErrors: ["Something went wrong with the server."],
+          })
+        }
+        setLoading(false)
+      }
+    })
   }
 
-  render() {
-    const { loading } = this.props
-    const { password1, nonFieldErrors, email } = this.props.error
+  return (
+    <AuthContainer>
+      <div className="box p-3">
+        <Helmet title="Login" />
+        <div className="tabs is-boxed mb-2">
+          <ul>
+            <li className="is-active">
+              <Link to="/login">Login</Link>
+            </li>
+            <li>
+              <Link to="/signup">Sign Up</Link>
+            </li>
+          </ul>
+        </div>
 
-    return (
-      <AuthContainer>
-        <div className="box p-3">
-          <Helmet title="Login" />
-          <div className="tabs is-boxed mb-2">
-            <ul>
-              <li className="is-active">
-                <Link to="/login">Login</Link>
-              </li>
-              <li>
-                <Link to="/signup">Sign Up</Link>
-              </li>
-            </ul>
+        <form onSubmit={handleSubmit}>
+          <div className="field">
+            <label className="label">Email</label>
+            <TextInput
+              onChange={(e) => {
+                setEmail(e.target.value)
+              }}
+              value={email}
+              error={errors?.email != null}
+              autoFocus
+              name="email"
+              placeholder="rick.sanchez@me.com"
+            />
+            <FormErrorHandler error={errors?.email} />
           </div>
 
-          <form onSubmit={e => this.handleLogin(e)}>
-            <div className="field">
-              <label className="label">Email</label>
-              <TextInput
-                onChange={this.handleInputChange}
-                value={this.state.email}
-                error={email != null}
-                autoFocus
-                name="email"
-                placeholder="rick.sanchez@me.com"
-              />
-              <FormErrorHandler error={email} />
-            </div>
+          <div className="field">
+            <label htmlFor="password" className="label">
+              Password
+            </label>
+            <PasswordInput
+              onChange={(e) => {
+                setPassword(e.target.value)
+              }}
+              value={password}
+              error={errors?.password != null}
+              name="password"
+              placeholder="Super secret password."
+            />
+            <FormErrorHandler error={errors?.password} />
+            <FormErrorHandler error={errors?.nonFieldErrors} />
+          </div>
 
-            <div className="field">
-              <label htmlFor="password" className="label">
-                Password
-              </label>
-              <PasswordInput
-                onChange={this.handleInputChange}
-                value={this.state.password}
-                error={password1 != null}
-                name="password"
-                placeholder="Super secret password."
-              />
-              <FormErrorHandler error={password1} />
-              <FormErrorHandler error={nonFieldErrors} />
-            </div>
-
-            <div className="field d-flex flex-space-between align-items-center">
-              <ButtonPrimary type="submit" loading={loading}>
-                Submit
-              </ButtonPrimary>
-              <Link to="/password-reset">Forgot Password?</Link>
-            </div>
-          </form>
-        </div>
-      </AuthContainer>
-    )
-  }
+          <div className="field d-flex flex-space-between align-items-center">
+            <ButtonPrimary type="submit" loading={loading}>
+              Submit
+            </ButtonPrimary>
+            <Link to="/password-reset">Forgot Password?</Link>
+          </div>
+        </form>
+      </div>
+    </AuthContainer>
+  )
 }
-
-export default Login

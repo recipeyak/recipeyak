@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
-import { Helmet } from "@/components/Helmet"
 import { Link } from "react-router-dom"
 
+import { Helmet } from "@/components/Helmet"
 import Logo from "@/components/Logo"
 
 interface IAuthContainerProps {
@@ -31,7 +31,8 @@ function AuthContainer(props: IAuthContainerProps) {
           <div className="column is-half-tablet is-offset-one-quarter-tablet is-one-third-desktop is-offset-one-third-desktop">
             <Link
               to="/"
-              className="pl-0 pr-0 fs-2rem fw-normal d-flex align-center justify-content-center pb-3 text-decoration-none has-text-white">
+              className="pl-0 pr-0 fs-2rem fw-normal d-flex align-center justify-content-center pb-3 text-decoration-none has-text-white"
+            >
               <Logo light />
               <span className="fw-500">Recipe Yak</span>
             </Link>

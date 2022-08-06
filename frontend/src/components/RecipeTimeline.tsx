@@ -1,20 +1,21 @@
-import React from "react"
 import format from "date-fns/format"
-import { styled } from "@/theme"
-import {
-  WebData,
-  mapSuccessLike,
-  isSuccessLike,
-  isLoading,
-  isFailure,
-  isInitial,
-} from "@/webdata"
+import React from "react"
 import { Link } from "react-router-dom"
-import { IRecipe } from "@/store/reducers/recipes"
+
 import { getRecipeTimeline, IRecipeTimelineEvent } from "@/api"
-import { resultToWebdata } from "@/result"
 import { SectionTitle } from "@/components/RecipeHelpers"
 import { useScheduleURL } from "@/hooks"
+import { resultToWebdata } from "@/result"
+import { IRecipe } from "@/store/reducers/recipes"
+import { styled } from "@/theme"
+import {
+  isFailure,
+  isInitial,
+  isLoading,
+  isSuccessLike,
+  mapSuccessLike,
+  WebData,
+} from "@/webdata"
 
 interface ITimelineItemProps {
   readonly type: "comment" | "scheduled" | "created"
@@ -99,9 +100,9 @@ function toTimelineEvent(event: IRecipeTimelineEvent): ITimelineEvent {
 function useRecipeTimeline(recipeId: IRecipe["id"]): IRecipeTimelineState {
   const [state, setState] = React.useState<IRecipeTimelineState>(undefined)
   React.useEffect(() => {
-    getRecipeTimeline(recipeId).then(res => {
+    void getRecipeTimeline(recipeId).then((res) => {
       setState(
-        mapSuccessLike(resultToWebdata(res), d => d.map(toTimelineEvent)),
+        mapSuccessLike(resultToWebdata(res), (d) => d.map(toTimelineEvent)),
       )
     })
   }, [recipeId])
@@ -116,7 +117,7 @@ export function RecipeTimeline({ createdAt, recipeId }: IRecipeTimelineProps) {
       <SectionTitle>Timeline</SectionTitle>
       <TimelineList>
         {isSuccessLike(events) ? (
-          events.data.map(e => {
+          events.data.map((e) => {
             switch (e.type) {
               case "comment":
                 return (

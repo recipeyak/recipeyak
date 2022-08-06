@@ -1,19 +1,15 @@
 import React from "react"
-import { Helmet } from "@/components/Helmet"
 import { Link } from "react-router-dom"
 
-import MemberRow from "@/components/MemberRow"
-
-import NoMatch from "@/components/NoMatch"
-
-import Loader from "@/components/Loader"
-
-import { ButtonPrimary, ButtonLink } from "@/components/Buttons"
-
-import { inviteURL, teamURL, teamSettingsURL } from "@/urls"
-import { IMember, ITeam } from "@/store/reducers/teams"
-import { Tab, Tabs } from "@/components/Tabs"
+import { ButtonLink, ButtonPrimary } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
+import { Helmet } from "@/components/Helmet"
+import Loader from "@/components/Loader"
+import MemberRow from "@/components/MemberRow"
+import NoMatch from "@/components/NoMatch"
+import { Tab, Tabs } from "@/components/Tabs"
+import { IMember, ITeam } from "@/store/reducers/teams"
+import { inviteURL, teamSettingsURL, teamURL } from "@/urls"
 
 interface IMembersProps {
   readonly teamID: ITeam["id"]
@@ -30,7 +26,7 @@ function Members({ teamID, loading, members }: IMembersProps) {
       <div className="table-responsive">
         <table className="table-spacing">
           <tbody>
-            {members.map(x => (
+            {members.map((x) => (
               <MemberRow
                 key={x.id}
                 teamID={teamID}
@@ -122,9 +118,11 @@ class TeamSettings extends React.Component<
   handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     this.setState({ loadingSaveChanges: true })
-    this.props
+    void this.props
       .updatingTeam(this.props.id, { name: this.state.name })
-      .then(() => this.setState({ loadingSaveChanges: false }))
+      .then(() => {
+        this.setState({ loadingSaveChanges: false })
+      })
   }
 
   deleteTeam = () => {
@@ -132,9 +130,9 @@ class TeamSettings extends React.Component<
       confirm(`Are you sure you want to delete this team "${this.props.name}"?`)
     ) {
       this.setState({ loadingDeleteTeam: true })
-      this.props
-        .deleteTeam(this.props.id)
-        .then(() => this.setState({ loadingDeleteTeam: false }))
+      void this.props.deleteTeam(this.props.id).then(() => {
+        this.setState({ loadingDeleteTeam: false })
+      })
     }
   }
 
@@ -156,8 +154,11 @@ class TeamSettings extends React.Component<
             Save Changes
           </ButtonPrimary>
           <ButtonLink
-            onClick={() => this.deleteTeam()}
-            loading={this.state.loadingDeleteTeam}>
+            onClick={() => {
+              this.deleteTeam()
+            }}
+            loading={this.state.loadingDeleteTeam}
+          >
             Delete Team
           </ButtonLink>
         </div>

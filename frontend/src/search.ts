@@ -1,15 +1,14 @@
+import { assertNever } from "@/assert"
+import { parseQuery, QueryNode } from "@/query-parser"
 import { byNameAlphabetical } from "@/sorters"
 import { IRecipe } from "@/store/reducers/recipes"
-import { parseQuery, QueryNode } from "@/query-parser"
 
 // https://stackoverflow.com/a/37511463/3720597
 const removeAccents = (x: string) =>
   x.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
 
 const normalize = (x: string = "") =>
-  removeAccents(x)
-    .replace(/\W/g, "")
-    .toLowerCase()
+  removeAccents(x).replace(/\W/g, "").toLowerCase()
 
 function normalizedIncludes(a: string, b: string): boolean {
   return normalize(a).includes(normalize(b))
@@ -29,10 +28,6 @@ function sortArchivedName(a: IRecipe, b: IRecipe) {
     return -1
   }
   return byNameAlphabetical(a, b)
-}
-
-function assertNever(x: never): never {
-  return x
 }
 
 function evalField(node: QueryNode, recipe: IRecipe): Match[] | null {
@@ -59,7 +54,7 @@ function evalField(node: QueryNode, recipe: IRecipe): Match[] | null {
       return null
     }
     case "tag": {
-      const matchingTag = recipe.tags?.find(tag =>
+      const matchingTag = recipe.tags?.find((tag) =>
         normalizedIncludes(tag, node.value),
       )
       if (matchingTag != null) {
@@ -68,7 +63,7 @@ function evalField(node: QueryNode, recipe: IRecipe): Match[] | null {
       return null
     }
     case "ingredient": {
-      const matchingIngredient = recipe.ingredients.find(ingredient =>
+      const matchingIngredient = recipe.ingredients.find((ingredient) =>
         normalizedIncludes(ingredient.name, node.value),
       )
       if (matchingIngredient != null) {
@@ -118,10 +113,10 @@ export function queryMatchesRecipe(
 
 function evalQuery(query: QueryNode[], recipes: IRecipe[]) {
   return recipes
-    .map(recipe => {
+    .map((recipe) => {
       return { match: queryMatchesRecipe(query, recipe), recipe }
     })
-    .filter(x => x.match.match)
+    .filter((x) => x.match.match)
 }
 
 export function searchRecipes(params: {
@@ -133,7 +128,7 @@ export function searchRecipes(params: {
 } {
   const query = parseQuery(params.query)
   const matchingRecipes = evalQuery(query, params.recipes)
-    .map(x => ({ recipe: x.recipe, match: x.match.fields }))
+    .map((x) => ({ recipe: x.recipe, match: x.match.fields }))
     .sort((a, b) => sortArchivedName(a.recipe, b.recipe))
   return { recipes: matchingRecipes }
 }

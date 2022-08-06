@@ -1,13 +1,14 @@
 import React from "react"
-import { Helmet } from "@/components/Helmet"
 import { Link } from "react-router-dom"
-import Loader from "@/components/Loader"
-import { ButtonPrimary, Button } from "@/components/Buttons"
-import { TextInput } from "@/components/Forms"
-import Sessions from "@/components/Sessions"
+
 import * as api from "@/api"
-import { isOk } from "@/result"
+import { Button, ButtonPrimary } from "@/components/Buttons"
+import { TextInput } from "@/components/Forms"
+import { Helmet } from "@/components/Helmet"
+import Loader from "@/components/Loader"
+import Sessions from "@/components/Sessions"
 import { useDispatch } from "@/hooks"
+import { isOk } from "@/result"
 import { fetchUser } from "@/store/reducers/user"
 import { showNotificationWithTimeoutAsync } from "@/store/thunks"
 
@@ -71,14 +72,15 @@ function EmailEditForm(props: IEmailEditForm) {
   return (
     <form
       className="d-flex align-center"
-      onSubmit={e => {
+      onSubmit={(e) => {
         e.preventDefault()
         props.updateEmail()
-      }}>
+      }}
+    >
       <label className="better-label">Email</label>
       {props.editing ? (
         <TextInput
-          onKeyDown={e => {
+          onKeyDown={(e) => {
             if (e.key === "Escape") {
               props.cancelEdit()
             }
@@ -98,7 +100,8 @@ function EmailEditForm(props: IEmailEditForm) {
             disabled={props.updatingEmail}
             name="email"
             onClick={props.cancelEdit}
-            value="save email">
+            value="save email"
+          >
             Cancel
           </Button>
           <ButtonPrimary
@@ -106,7 +109,8 @@ function EmailEditForm(props: IEmailEditForm) {
             name="email"
             type="submit"
             loading={props.updatingEmail}
-            value="save email">
+            value="save email"
+          >
             Save
           </ButtonPrimary>
         </div>
@@ -133,9 +137,9 @@ function NameForm(props: { initialValue: string }) {
   return (
     <form
       className="d-flex align-center"
-      onSubmit={e => {
+      onSubmit={(e) => {
         e.preventDefault()
-        api.updateUser({ name }).then(res => {
+        void api.updateUser({ name }).then((res) => {
           if (isOk(res)) {
             dispatch(fetchUser.success(res.data))
             setName(res.data.name)
@@ -147,18 +151,21 @@ function NameForm(props: { initialValue: string }) {
             })
           }
         })
-      }}>
+      }}
+    >
       <label className="better-label">Name</label>
       {editing ? (
         <TextInput
-          onKeyDown={e => {
+          onKeyDown={(e) => {
             if (e.key === "Escape") {
               cancelEdit()
             }
           }}
           autoFocus
           defaultValue={name}
-          onChange={val => setName(val.target.value)}
+          onChange={(val) => {
+            setName(val.target.value)
+          }}
         />
       ) : (
         <span>{name}</span>
@@ -175,7 +182,10 @@ function NameForm(props: { initialValue: string }) {
       ) : (
         <a
           className="ml-2 has-text-primary"
-          onClick={() => setEditing(s => !s)}>
+          onClick={() => {
+            setEditing((s) => !s)
+          }}
+        >
           Edit
         </a>
       )}
@@ -238,18 +248,22 @@ export default class Settings extends React.Component<
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     /* eslint-disable @typescript-eslint/consistent-type-assertions */
-    this.setState(({
+    this.setState({
       [e.target.name]: e.target.value,
-    } as unknown) as ISettingsState)
+    } as unknown as ISettingsState)
     /* eslint-enable @typescript-eslint/consistent-type-assertions */
   }
 
-  cancelEdit = () => this.setState({ editing: false })
+  cancelEdit = () => {
+    this.setState({ editing: false })
+  }
 
-  edit = () => this.setState({ editing: true })
+  edit = () => {
+    this.setState({ editing: true })
+  }
 
   updateEmail = () => {
-    this.props.updateEmail(this.state.email).then(() => {
+    void this.props.updateEmail(this.state.email).then(() => {
       this.setState({ editing: false })
     })
   }

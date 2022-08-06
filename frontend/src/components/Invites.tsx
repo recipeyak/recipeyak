@@ -1,23 +1,22 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import { ButtonPrimary } from "@/components/Buttons"
 
+import { ButtonPrimary } from "@/components/Buttons"
+import { useDispatch, useSelector } from "@/hooks"
+import { getInvites, IInvite } from "@/store/reducers/invites"
+import { ITeam } from "@/store/reducers/teams"
 import {
   acceptingInviteAsync,
-  fetchingInvitesAsync,
   decliningInviteAsync,
+  fetchingInvitesAsync,
 } from "@/store/thunks"
-
 import { teamURL } from "@/urls"
-import { getInvites, IInvite } from "@/store/reducers/invites"
-import { useDispatch, useSelector } from "@/hooks"
-import { isLoading, isFailure, isInitial } from "@/webdata"
-import { ITeam } from "@/store/reducers/teams"
+import { isFailure, isInitial, isLoading } from "@/webdata"
 
 function useNotifications() {
   const dispatch = useDispatch()
   React.useEffect(() => {
-    fetchingInvitesAsync(dispatch)()
+    void fetchingInvitesAsync(dispatch)()
   }, [dispatch])
   const invites = useSelector(getInvites)
   return { invites }
@@ -26,13 +25,13 @@ function useNotifications() {
 function useInviteUpdate(inviteId: IInvite["id"]) {
   const dispatch = useDispatch()
   const decline = React.useCallback(() => {
-    decliningInviteAsync(dispatch)(inviteId)
+    void decliningInviteAsync(dispatch)(inviteId)
   }, [dispatch, inviteId])
   const accept = React.useCallback(() => {
-    acceptingInviteAsync(dispatch)(inviteId)
+    void acceptingInviteAsync(dispatch)(inviteId)
   }, [dispatch, inviteId])
-  const accepting = useSelector(s => !!s.invites.byId[inviteId]?.accepting)
-  const status = useSelector(s => s.invites.byId[inviteId]?.status)
+  const accepting = useSelector((s) => !!s.invites.byId[inviteId]?.accepting)
+  const status = useSelector((s) => s.invites.byId[inviteId]?.status)
   return { decline, accept, accepting, status }
 }
 
@@ -94,7 +93,7 @@ export function Invites() {
 
   return (
     <div>
-      {invites.data.map(invite => {
+      {invites.data.map((invite) => {
         return (
           <div key={invite.id} className="mb-2">
             <p className="mb-1 text-left break-word">

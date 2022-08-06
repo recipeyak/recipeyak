@@ -6,11 +6,10 @@ main() {
     node_modules/.bin/prettier '**/*.{js,jsx,scss,css,ts,tsx,json,yaml,yml,md}' --list-different
     node_modules/.bin/eslint '**/*.{ts,tsx,js,jsx}'
   else
-    node_modules/.bin/prettier '**/*.{js,jsx,scss,css,ts,tsx,json,yaml,yml,md}' --write
-    node_modules/.bin/eslint '**/*.{ts,tsx,js,jsx}' --fix
+    node_modules/.bin/prettier '**/*.{js,jsx,scss,css,ts,tsx,json,yaml,yml,md}' --write --cache
+    node_modules/.bin/eslint '**/*.{ts,tsx,js,jsx}' --fix --cache
   fi
 
-  node_modules/.bin/tslint --project tsconfig.json --format 'codeFrame'
   node_modules/.bin/tsc --noEmit
 }
 
