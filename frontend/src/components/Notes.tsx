@@ -681,6 +681,11 @@ function ImageUploader({
             const newFiles = e.target.files
             if (newFiles != null) {
               addFiles(newFiles)
+              // we want to clear the file input so we can repeatedly upload the
+              // same file.
+              //
+              // @ts-expect-error types don't allow this, but it works
+              e.target.value = null
             }
           }}
         />
