@@ -3,13 +3,12 @@ import * as t from "io-ts"
 import { IRecipeBasic } from "@/components/RecipeTitle"
 import { toISODateString } from "@/date"
 import { http } from "@/http"
+import { isOk, Ok } from "@/result"
 import { ICalRecipe } from "@/store/reducers/calendar"
 import { IInvite } from "@/store/reducers/invites"
 import { IIngredient, INote, IRecipe, IStep } from "@/store/reducers/recipes"
 import { IMember, ITeam } from "@/store/reducers/teams"
 import { ISession, IUser } from "@/store/reducers/user"
-import * as t from "io-ts"
-import { isOk, Ok } from "@/result"
 
 export const updateUser = (data: Partial<IUser>) =>
   http.patch<IUser>("/api/v1/user/", data)

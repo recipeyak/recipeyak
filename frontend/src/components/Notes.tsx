@@ -1,12 +1,14 @@
+import { omit } from "lodash"
 import orderBy from "lodash/orderBy"
 import React, { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 import Textarea from "react-textarea-autosize"
 
 import * as api from "@/api"
-import { classNames } from "@/classnames"
+import { classNames as cls } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
 import { ButtonPrimary, ButtonSecondary } from "@/components/Buttons"
+import Loader from "@/components/Loader"
 import { Markdown } from "@/components/Markdown"
 import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
 import { useDispatch } from "@/hooks"
@@ -15,29 +17,12 @@ import {
   INote,
   IRecipe,
   patchRecipe,
+  RecipeTimelineItem,
   Upload,
 } from "@/store/reducers/recipes"
-import { ButtonPrimary, ButtonSecondary } from "@/components/Buttons"
-import { classNames as cls } from "@/classnames"
-
-import orderBy from "lodash/orderBy"
-import Textarea from "react-textarea-autosize"
-import { Markdown } from "@/components/Markdown"
-import { useLocation } from "react-router-dom"
-import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
 import { styled } from "@/theme"
-import * as api from "@/api"
-
-import { isOk } from "@/result"
-import { useDispatch } from "@/hooks"
-import Loader from "@/components/Loader"
-import { uuid4 } from "@/uuid"
-import _, { omit } from "lodash"
 import { notUndefined } from "@/utils/general"
-import {
-  RecipeTimelineItem,
-} from "@/store/reducers/recipes"
-import { styled } from "@/theme"
+import { uuid4 } from "@/uuid"
 
 interface IUseNoteEditHandlers {
   readonly note: INote
@@ -55,22 +40,22 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
 
   const onSave = () => {
     setIsUpdating(true)
-    api
+    void api
       .updateNote({
         noteId: note.id,
         note: draftText,
-        attachmentUploadIds: uploads.map(x => x.id),
+        attachmentUploadIds: uploads.map((x) => x.id),
       })
-      .then(res => {
+      .then((res) => {
         if (isOk(res)) {
           dispatch(
             patchRecipe({
               recipeId,
-              updateFn: recipe => {
+              updateFn: (recipe) => {
                 return {
                   ...recipe,
                   timelineItems: [
-                    ...recipe.timelineItems.filter(x => x.id !== note.id),
+                    ...recipe.timelineItems.filter((x) => x.id !== note.id),
                     res.data,
                   ],
                 }
@@ -140,10 +125,10 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
     onSave,
     uploads,
     addUploads: (uploadIds: Upload[]) => {
-      setUploads(s => [...s, ...uploadIds])
+      setUploads((s) => [...s, ...uploadIds])
     },
     removeUploads: (uploadIds: string[]) => {
-      setUploads(s => s.filter(x => !uploadIds.includes(x.id)))
+      setUploads((s) => s.filter((x) => !uploadIds.includes(x.id)))
     },
   }
 }
@@ -228,7 +213,8 @@ export function Note({ note, recipeId, className }: INoteProps) {
   return (
     <SharedEntry
       className={cls("d-flex align-items-start", className)}
-      id={noteId}>
+      id={noteId}
+    >
       <Avatar avatarURL={note.created_by.avatar_url} className="mr-2" />
       <div className="w-100">
         <p>
@@ -243,12 +229,13 @@ export function Note({ note, recipeId, className }: INoteProps) {
               {note.text}
             </Markdown>
             <div>
-              {note.attachments.map(attachment => (
+              {note.attachments.map((attachment) => (
                 <a
                   key={attachment.id}
                   target="_blank"
                   rel="noreferrer"
-                  href={attachment.url}>
+                  href={attachment.url}
+                >
                   <ImagePreview src={attachment.url} />
                 </a>
               ))}
@@ -274,12 +261,13 @@ export function Note({ note, recipeId, className }: INoteProps) {
                 />
               ) : (
                 <div>
-                  {note.attachments.map(attachment => (
+                  {note.attachments.map((attachment) => (
                     <a
                       key={attachment.id}
                       target="_blank"
                       rel="noreferrer"
-                      href={attachment.url}>
+                      href={attachment.url}
+                    >
                       <ImagePreview src={attachment.url} />
                     </a>
                   ))}
@@ -326,7 +314,8 @@ function TimelineEvent({ event }: { readonly event: RecipeTimelineItem }) {
   return (
     <SharedEntry
       id={eventId}
-      className={cls("d-flex align-items-center mb-4 py-4")}>
+      className={cls("d-flex align-items-center mb-4 py-4")}
+    >
       <Avatar
         avatarURL={event.created_by?.avatar_url ?? null}
         className="mr-2"
@@ -372,18 +361,18 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
   const onCreate = () => {
     setIsLoading(true)
 
-    api
+    void api
       .addNoteToRecipe({
         recipeId,
         note: draftText,
-        attachmentUploadIds: uploads.map(x => x.id),
+        attachmentUploadIds: uploads.map((x) => x.id),
       })
-      .then(res => {
+      .then((res) => {
         if (isOk(res)) {
           dispatch(
             patchRecipe({
               recipeId,
-              updateFn: recipe => {
+              updateFn: (recipe) => {
                 return {
                   ...recipe,
                   timelineItems: [...recipe.timelineItems, res.data],
@@ -438,10 +427,10 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     onCancel,
     isDisabled,
     addUploads: (uploadIds: Upload[]) => {
-      setUploads(s => [...s, ...uploadIds])
+      setUploads((s) => [...s, ...uploadIds])
     },
     removeUploads: (uploadIds: string[]) => {
-      setUploads(s => s.filter(x => !uploadIds.includes(x.id)))
+      setUploads((s) => s.filter((x) => !uploadIds.includes(x.id)))
     },
     uploads,
   }
@@ -501,13 +490,13 @@ const CloseButton = styled.button`
 `
 
 const ImagePreview = styled.img<{
-  readonly loading?: boolean
+  readonly isLoading?: boolean
 }>`
   max-height: 100px;
   max-width: 100px;
   border-radius: 3px;
   margin-right: 0.25rem;
-  filter: ${props => (props.loading ? "grayscale(100%)" : "unset")};
+  filter: ${(props) => (props.isLoading ? "grayscale(100%)" : "unset")};
 `
 
 const OverlayLoader = styled(Loader)`
@@ -546,9 +535,9 @@ function useImageUpload(
   }>({})
 
   const addFiles = (files: FileList) => {
-    ;[...files].forEach(file => {
+    ;[...files].forEach((file) => {
       const fileId = uuid4()
-      setInprogressUploads(s => {
+      setInprogressUploads((s) => {
         return {
           ...s,
           [fileId]: {
@@ -559,10 +548,10 @@ function useImageUpload(
           },
         }
       })
-      api.uploadImage({ image: file }).then(res => {
+      void api.uploadImage({ image: file }).then((res) => {
         if (isOk(res)) {
           addUploads([{ ...res.data, type: "upload" }])
-          setInprogressUploads(s => {
+          setInprogressUploads((s) => {
             return omit(s, fileId)
           })
         }
@@ -571,7 +560,7 @@ function useImageUpload(
   }
 
   const removeFile = (fileId: string) => {
-    setInprogressUploads(s => omit(s, fileId))
+    setInprogressUploads((s) => omit(s, fileId))
     removeUploads([fileId])
   }
 
@@ -589,7 +578,7 @@ function Image({
   return (
     <>
       <a href={url} target="_blank" rel="noreferrer">
-        <ImagePreview loading={state === "loading"} src={url} />
+        <ImagePreview isLoading={state === "loading"} src={url} />
       </a>
       {state === "failed" && (
         <BrokenImageContainer title="Image upload failed">
@@ -625,7 +614,7 @@ function ImageUploader({
     <>
       {files.length > 0 && (
         <ImageUploadContainer>
-          {orderBy(files, x => x.id, "desc").map(f => (
+          {orderBy(files, (x) => x.id, "desc").map((f) => (
             <ImagePreviewParent key={f.id}>
               {f.type === "upload" ? (
                 <Image url={f.url} state={"uploaded"} />
@@ -641,7 +630,8 @@ function ImageUploader({
                   if (confirm("Remove image?")) {
                     removeFile(f.id)
                   }
-                }}>
+                }}
+              >
                 &times;
               </CloseButton>
             </ImagePreviewParent>
@@ -654,7 +644,7 @@ function ImageUploader({
           multiple
           accept="image/*"
           style={{ display: "none" }}
-          onChange={e => {
+          onChange={(e) => {
             const newFiles = e.target.files
             if (newFiles != null) {
               addFiles(newFiles)
@@ -676,15 +666,16 @@ function UploadContainer({
 }) {
   return (
     <NoteWrapper
-      onDragOver={event => {
+      onDragOver={(event) => {
         event.dataTransfer.dropEffect = "copy"
       }}
-      onDrop={event => {
+      onDrop={(event) => {
         if (event.dataTransfer?.files) {
           const newFiles = event.dataTransfer.files
           addFiles(newFiles)
         }
-      }}>
+      }}
+    >
       {children}
     </NoteWrapper>
   )
