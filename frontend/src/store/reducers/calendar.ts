@@ -1,7 +1,7 @@
 import { isAfter, isBefore, parseISO } from "date-fns"
 import isSameDay from "date-fns/isSameDay"
 import { isRight } from "fp-ts/lib/Either"
-import { omit } from "lodash"
+import { omit } from "lodash-es"
 import { Cmd, Loop, loop } from "redux-loop"
 import {
   ActionType,

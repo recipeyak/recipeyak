@@ -1,4 +1,4 @@
-import uniq from "lodash/uniq"
+import { uniq } from "lodash-es"
 import React from "react"
 import { connect } from "react-redux"
 

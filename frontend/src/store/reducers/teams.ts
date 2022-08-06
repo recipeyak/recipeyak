@@ -1,4 +1,4 @@
-import { omit, uniq } from "lodash"
+import { omit, uniq } from "lodash-es"
 import {
   ActionType,
   createAsyncAction,

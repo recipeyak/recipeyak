@@ -1,6 +1,6 @@
 import { isSameDay } from "date-fns"
 import { isRight } from "fp-ts/lib/Either"
-import debounce from "lodash/debounce"
+import { debounce } from "lodash-es"
 import React from "react"
 import {
   TypedUseSelectorHook,

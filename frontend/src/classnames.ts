@@ -1,4 +1,4 @@
-import uniq from "lodash/uniq"
+import { uniq } from "lodash-es"
 
 export function classNames(
   ...args: (
@@ -8,7 +8,7 @@ export function classNames(
     | string[]
     | { [key: string]: boolean | undefined }
   )[]
-) {
+): string {
   const classes: string[] = []
 
   args.forEach((arg) => {

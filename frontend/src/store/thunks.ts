@@ -2,7 +2,7 @@ import { AxiosError, AxiosResponse } from "axios"
 import { push } from "connected-react-router"
 import { addWeeks, endOfWeek, parseISO, startOfWeek, subWeeks } from "date-fns"
 import { isRight } from "fp-ts/lib/Either"
-import pickBy from "lodash/pickBy"
+import { pickBy } from "lodash-es"
 import raven from "raven-js"
 // eslint-disable-next-line no-restricted-imports
 import { Dispatch as ReduxDispatch } from "redux"

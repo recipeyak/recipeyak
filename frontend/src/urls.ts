@@ -1,4 +1,4 @@
-import kebabCase from "lodash/kebabCase"
+import { kebabCase } from "lodash-es"
 
 // we use `encodeURIComponent` for good measure
 export const toURL = (x = ""): string => encodeURIComponent(kebabCase(x))

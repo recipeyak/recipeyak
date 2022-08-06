@@ -134,7 +134,7 @@ export function Dropdown({ recipeId }: IDropdownProps) {
   return (
     <DropdownContainer ref={ref}>
       <Button size="small" onClick={toggle}>
-        Options <Chevron />
+        Actions <Chevron />
       </Button>
       <DropdownMenu isOpen={isOpen}>
         <DropdownItemLink to={scheduleUrl} onClick={close}>
