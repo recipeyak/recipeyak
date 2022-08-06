@@ -5,6 +5,7 @@ import {
   INote,
   RecipeTimelineItem,
   patchRecipe,
+  Upload,
 } from "@/store/reducers/recipes"
 import { ButtonPrimary, ButtonSecondary } from "@/components/Buttons"
 import { classNames as cls } from "@/classnames"
@@ -19,11 +20,9 @@ import * as api from "@/api"
 
 import { isOk } from "@/result"
 import { useDispatch } from "@/hooks"
-import { useDropzone } from "react-dropzone"
 import Loader from "./Loader"
-import { random32Id, uuid4 } from "@/uuid"
-import _, { omit, omitBy } from "lodash"
-import { notUndefined } from "@/utils/general"
+import { uuid4 } from "@/uuid"
+import _, { omit } from "lodash"
 
 interface IUseNoteEditHandlers {
   readonly note: INote
@@ -182,11 +181,6 @@ function SharedEntry({
   )
 }
 
-const DisplayImage = styled.img`
-  max-height: 100px;
-  min-height: 100px;
-`
-
 interface INoteProps {
   readonly note: INote
   readonly recipeId: IRecipe["id"]
@@ -337,7 +331,6 @@ interface IUseNoteCreatorHandlers {
   readonly recipeId: IRecipe["id"]
 }
 
-type Upload = { id: string; url: string; type: "upload" }
 function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
   const dispatch = useDispatch()
   const [draftText, setDraftText] = React.useState("")
