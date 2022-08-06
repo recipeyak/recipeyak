@@ -520,6 +520,7 @@ function useImageUpload(
 
   const removeFile = (fileId: string) => {
     setInprogressUploads(s => omit(s, fileId))
+    removeUploads(fileId)
   }
 
   const files = Object.values(inProgressUploads)
