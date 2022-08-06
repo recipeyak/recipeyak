@@ -1,6 +1,8 @@
 # name: test_recipe_list_timeline_items
   <class 'list'> [
     <class 'dict'> {
+      'attachments': <class 'list'> [
+      ],
       'created': <class 'str'>,
       'created_by': <class 'dict'> {
         'avatar_url': '/avatar/bc6a715808d9aae0ddeefb1e47e482a6?d=identicon&r=g',
@@ -19,6 +21,8 @@
       'type': 'note',
     },
     <class 'dict'> {
+      'attachments': <class 'list'> [
+      ],
       'created': <class 'str'>,
       'created_by': <class 'dict'> {
         'avatar_url': '/avatar/bc6a715808d9aae0ddeefb1e47e482a6?d=identicon&r=g',
