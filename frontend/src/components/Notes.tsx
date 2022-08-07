@@ -125,8 +125,8 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
     onNoteClick,
     onSave,
     uploads,
-    addUploads: (uploadIds: UploadSuccess[]) => {
-      setUploads((s) => [...s, ...uploadIds])
+    addUploads: (upload: UploadSuccess) => {
+      setUploads((s) => [upload, ...s])
     },
     removeUploads: (uploadIds: string[]) => {
       setUploads((s) => s.filter((x) => !uploadIds.includes(x.id)))
@@ -435,8 +435,8 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     isLoading,
     onCancel,
     isDisabled,
-    addUploads: (uploadIds: UploadSuccess[]) => {
-      setUploads((s) => [...s, ...uploadIds])
+    addUploads: (upload: UploadSuccess) => {
+      setUploads((s) => [upload, ...s])
     },
     removeUploads: (uploadIds: string[]) => {
       setUploads((s) => s.filter((x) => !uploadIds.includes(x.id)))
@@ -555,47 +555,42 @@ const BrokenImage = styled.div`
 `
 
 function useImageUpload(
-  addUploads: (uploadIds: UploadSuccess[]) => void,
+  addUploads: (upload: UploadSuccess) => void,
   removeUploads: (uploadIds: string[]) => void,
 ) {
-  const [inProgressUploads, setInprogressUploads] = React.useState<{
-    [_: string]: InProgressUpload | undefined
-  }>({})
+  const [inProgressUploads, setInprogressUploads] = React.useState<
+    InProgressUpload[]
+  >([])
 
   const addFiles = (files: FileList) => {
     for (const file of files) {
       const fileId = uuid4()
       setInprogressUploads((s) => {
-        return {
-          ...s,
-          [fileId]: {
+        return [
+          {
             id: fileId,
             localId: fileId,
             file,
             state: "uploading",
             type: "in-progress",
           },
-        }
+          ...s,
+        ]
       })
       void api.uploadImage({ image: file }).then((res) => {
         if (isOk(res)) {
-          addUploads([{ ...res.data, type: "upload", localId: fileId }])
+          addUploads({ ...res.data, type: "upload", localId: fileId })
           setInprogressUploads((s) => {
-            return omit(s, fileId)
+            return s.filter((x) => x.localId !== fileId)
           })
         } else {
           setInprogressUploads((s) => {
-            const existingUpload = s[fileId]
+            const existingUpload = s.find((x) => x.localId === fileId)
             if (existingUpload == null) {
               return s
             }
-            return {
-              ...s,
-              [fileId]: {
-                ...existingUpload,
-                state: "failed",
-              },
-            }
+            existingUpload.state = "failed"
+            return s
           })
         }
       })
@@ -603,7 +598,7 @@ function useImageUpload(
   }
 
   const removeFile = (fileId: string) => {
-    setInprogressUploads((s) => omit(s, fileId))
+    setInprogressUploads((s) => s.filter((x) => x.localId !== fileId))
     removeUploads([fileId])
   }
 
@@ -667,7 +662,7 @@ function ImageUploader({
     <>
       {files.length > 0 && (
         <ImageUploadContainer>
-          {orderBy(files, (x) => x.id, "desc").map((f) => (
+          {files.map((f) => (
             // NOTE(sbdchd): it's important that the `localId` is consistent
             // throughout the upload content, otherwise we'll wipe out the DOM
             // node and there will be a flash as the image changes.
