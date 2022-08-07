@@ -35,7 +35,9 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
   }, [note.text])
   const [isEditing, setIsEditing] = React.useState(false)
   const [isUpdating, setIsUpdating] = React.useState(false)
-  const [uploads, setUploads] = React.useState<Upload[]>(note.attachments)
+  const [uploads, setUploads] = React.useState<UploadSuccess[]>(
+    note.attachments.map((x) => ({ ...x, localId: x.id })),
+  )
 
   const onSave = () => {
     setIsUpdating(true)
@@ -123,7 +125,7 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
     onNoteClick,
     onSave,
     uploads,
-    addUploads: (uploadIds: Upload[]) => {
+    addUploads: (uploadIds: UploadSuccess[]) => {
       setUploads((s) => [...s, ...uploadIds])
     },
     removeUploads: (uploadIds: string[]) => {
@@ -356,7 +358,7 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
   const [draftText, setDraftText] = React.useState("")
   const [isEditing, setIsEditing] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)
-  const [uploads, setUploads] = React.useState<Upload[]>([])
+  const [uploads, setUploads] = React.useState<UploadSuccess[]>([])
 
   const cancelEditingNote = () => {
     setIsEditing(false)
@@ -433,7 +435,7 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     isLoading,
     onCancel,
     isDisabled,
-    addUploads: (uploadIds: Upload[]) => {
+    addUploads: (uploadIds: UploadSuccess[]) => {
       setUploads((s) => [...s, ...uploadIds])
     },
     removeUploads: (uploadIds: string[]) => {
@@ -553,7 +555,7 @@ const BrokenImage = styled.div`
 `
 
 function useImageUpload(
-  addUploads: (uploadIds: Upload[]) => void,
+  addUploads: (uploadIds: UploadSuccess[]) => void,
   removeUploads: (uploadIds: string[]) => void,
 ) {
   const [inProgressUploads, setInprogressUploads] = React.useState<{
@@ -561,13 +563,14 @@ function useImageUpload(
   }>({})
 
   const addFiles = (files: FileList) => {
-    ;[...files].forEach((file) => {
+    for (const file of files) {
       const fileId = uuid4()
       setInprogressUploads((s) => {
         return {
           ...s,
           [fileId]: {
             id: fileId,
+            localId: fileId,
             file,
             state: "uploading",
             type: "in-progress",
@@ -576,13 +579,27 @@ function useImageUpload(
       })
       void api.uploadImage({ image: file }).then((res) => {
         if (isOk(res)) {
-          addUploads([{ ...res.data, type: "upload" }])
+          addUploads([{ ...res.data, type: "upload", localId: fileId }])
           setInprogressUploads((s) => {
             return omit(s, fileId)
           })
+        } else {
+          setInprogressUploads((s) => {
+            const existingUpload = s[fileId]
+            if (existingUpload == null) {
+              return s
+            }
+            return {
+              ...s,
+              [fileId]: {
+                ...existingUpload,
+                state: "failed",
+              },
+            }
+          })
         }
       })
-    })
+    }
   }
 
   const removeFile = (fileId: string) => {
@@ -594,7 +611,7 @@ function useImageUpload(
   return { addFiles, removeFile, files } as const
 }
 
-function Image({
+function ImageWithStatus({
   url,
   state,
 }: {
@@ -630,9 +647,12 @@ function Image({
 type InProgressUpload = {
   type: "in-progress"
   id: string
+  localId: string
   file: File
   state: "uploading" | "failed"
 }
+
+type UploadSuccess = Upload & { localId: string }
 
 function ImageUploader({
   addFiles,
@@ -641,18 +661,21 @@ function ImageUploader({
 }: {
   addFiles: (files: FileList) => void
   removeFile: (fileId: string) => void
-  files: (InProgressUpload | Upload)[]
+  files: (InProgressUpload | UploadSuccess)[]
 }) {
   return (
     <>
       {files.length > 0 && (
         <ImageUploadContainer>
           {orderBy(files, (x) => x.id, "desc").map((f) => (
-            <ImagePreviewParent key={f.id}>
+            // NOTE(sbdchd): it's important that the `localId` is consistent
+            // throughout the upload content, otherwise we'll wipe out the DOM
+            // node and there will be a flash as the image changes.
+            <ImagePreviewParent key={f.localId}>
               {f.type === "upload" ? (
-                <Image url={f.url} state={"uploaded"} />
+                <ImageWithStatus url={f.url} state={"uploaded"} />
               ) : (
-                <Image
+                <ImageWithStatus
                   url={URL.createObjectURL(f.file)}
                   state={f.state === "failed" ? "failed" : "loading"}
                 />
