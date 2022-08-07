@@ -670,7 +670,7 @@ function ImageUploader({
           {orderBy(files, (x) => x.id, "desc").map((f) => (
             // NOTE(sbdchd): it's important that the `localId` is consistent
             // throughout the upload content, otherwise we'll wipe out the DOM
-            // node and there will be a false as the image changes.
+            // node and there will be a flash as the image changes.
             <ImagePreviewParent key={f.localId}>
               {f.type === "upload" ? (
                 <ImageWithStatus url={f.url} state={"uploaded"} />
