@@ -72,7 +72,6 @@ export function RecipeItem({
   const [{ isDragging }, drag] = useDrag({
     type: DragDrop.RECIPE,
     item,
-    options: { dropEffect: "copy" },
     canDrag: () => {
       return !!props.drag
     },
