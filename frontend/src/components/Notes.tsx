@@ -1,4 +1,4 @@
-import { omit, orderBy } from "lodash"
+import { orderBy } from "lodash"
 import React, { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 import Textarea from "react-textarea-autosize"
@@ -35,7 +35,7 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
   }, [note.text])
   const [isEditing, setIsEditing] = React.useState(false)
   const [isUpdating, setIsUpdating] = React.useState(false)
-  const [uploads, setUploads] = React.useState<UploadSuccess[]>(
+  const [uploadedImages, setUploads] = React.useState<UploadSuccess[]>(
     note.attachments.map((x) => ({ ...x, localId: x.id })),
   )
 
@@ -45,7 +45,7 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
       .updateNote({
         noteId: note.id,
         note: draftText,
-        attachmentUploadIds: uploads.map((x) => x.id),
+        attachmentUploadIds: uploadedImages.map((x) => x.id),
       })
       .then((res) => {
         if (isOk(res)) {
@@ -124,12 +124,15 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
     onEditorKeyDown,
     onNoteClick,
     onSave,
-    uploads,
-    addUploads: (uploadIds: UploadSuccess[]) => {
-      setUploads((s) => [...s, ...uploadIds])
+    uploadedImages,
+    addUploads: (upload: UploadSuccess) => {
+      setUploads((s) => [upload, ...s])
     },
     removeUploads: (uploadIds: string[]) => {
       setUploads((s) => s.filter((x) => !uploadIds.includes(x.id)))
+    },
+    resetUploads: () => {
+      setUploads(note.attachments)
     },
   }
 }
@@ -206,14 +209,17 @@ export function Note({ note, recipeId, className }: INoteProps) {
     onSave,
     addUploads,
     removeUploads,
-    uploads,
+    uploadedImages,
+    resetUploads,
   } = useNoteEditHandlers({ note, recipeId })
 
   const noteId = `note-${note.id}`
 
-  const { addFiles, removeFile, files } = useImageUpload(
+  const { addFiles, removeFile, files, reset } = useImageUpload(
     addUploads,
     removeUploads,
+    uploadedImages,
+    resetUploads,
   )
 
   return (
@@ -266,7 +272,7 @@ export function Note({ note, recipeId, className }: INoteProps) {
                 <ImageUploader
                   addFiles={addFiles}
                   removeFile={removeFile}
-                  files={[...files.filter(notUndefined), ...uploads]}
+                  files={files}
                 />
               ) : (
                 <div>
@@ -296,7 +302,10 @@ export function Note({ note, recipeId, className }: INoteProps) {
                 <div className="d-flex justify-between align-center">
                   <ButtonSecondary
                     size="small"
-                    onClick={onCancel}
+                    onClick={() => {
+                      onCancel()
+                      reset()
+                    }}
                     className="mr-3"
                   >
                     cancel
@@ -358,7 +367,7 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
   const [draftText, setDraftText] = React.useState("")
   const [isEditing, setIsEditing] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)
-  const [uploads, setUploads] = React.useState<UploadSuccess[]>([])
+  const [uploadedImages, setUploads] = React.useState<UploadSuccess[]>([])
 
   const cancelEditingNote = () => {
     setIsEditing(false)
@@ -374,7 +383,7 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
       .addNoteToRecipe({
         recipeId,
         note: draftText,
-        attachmentUploadIds: uploads.map((x) => x.id),
+        attachmentUploadIds: uploadedImages.map((x) => x.id),
       })
       .then((res) => {
         if (isOk(res)) {
@@ -435,13 +444,16 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     isLoading,
     onCancel,
     isDisabled,
-    addUploads: (uploadIds: UploadSuccess[]) => {
-      setUploads((s) => [...s, ...uploadIds])
+    addUploads: (upload: UploadSuccess) => {
+      setUploads((s) => [upload, ...s])
     },
     removeUploads: (uploadIds: string[]) => {
       setUploads((s) => s.filter((x) => !uploadIds.includes(x.id)))
     },
-    uploads,
+    uploadedImages,
+    resetUploads: () => {
+      setUploads([])
+    },
   }
 }
 
@@ -554,48 +566,48 @@ const BrokenImage = styled.div`
   font-size: 2rem;
 `
 
+// todo: clear changes on cancellation
 function useImageUpload(
-  addUploads: (uploadIds: UploadSuccess[]) => void,
+  addUploads: (upload: UploadSuccess) => void,
   removeUploads: (uploadIds: string[]) => void,
+  remoteImages: Upload[],
+  resetUploads: () => void,
 ) {
-  const [inProgressUploads, setInprogressUploads] = React.useState<{
-    [_: string]: InProgressUpload | undefined
-  }>({})
+  const [localImages, setLocalImages] = React.useState<InProgressUpload[]>([])
 
   const addFiles = (files: FileList) => {
     for (const file of files) {
       const fileId = uuid4()
-      setInprogressUploads((s) => {
-        return {
-          ...s,
-          [fileId]: {
+      setLocalImages((s) => {
+        return [
+          {
             id: fileId,
-            localId: fileId,
             file,
-            state: "uploading",
+            url: URL.createObjectURL(file),
+            state: "loading",
             type: "in-progress",
-          },
-        }
+          } as const,
+          ...s,
+        ]
       })
       void api.uploadImage({ image: file }).then((res) => {
         if (isOk(res)) {
-          addUploads([{ ...res.data, type: "upload", localId: fileId }])
-          setInprogressUploads((s) => {
-            return omit(s, fileId)
+          addUploads({ ...res.data, type: "upload" })
+          setLocalImages((s) => {
+            const f = s.find((x) => x.id === fileId)
+            if (f) {
+              f.dbId = res.data.id
+              f.state = "success"
+            }
+            return s
           })
         } else {
-          setInprogressUploads((s) => {
-            const existingUpload = s[fileId]
-            if (existingUpload == null) {
-              return s
+          setLocalImages((s) => {
+            const existingUpload = s.find((x) => x.id === fileId)
+            if (existingUpload) {
+              existingUpload.state = "failed"
             }
-            return {
-              ...s,
-              [fileId]: {
-                ...existingUpload,
-                state: "failed",
-              },
-            }
+            return s
           })
         }
       })
@@ -603,12 +615,34 @@ function useImageUpload(
   }
 
   const removeFile = (fileId: string) => {
-    setInprogressUploads((s) => omit(s, fileId))
+    setLocalImages((s) => s.filter((x) => x.id !== fileId))
     removeUploads([fileId])
   }
 
-  const files = Object.values(inProgressUploads)
-  return { addFiles, removeFile, files } as const
+  const orderedImages: ImageUpload[] = [
+    ...localImages,
+    ...remoteImages
+      .filter(
+        (i) =>
+          !localImages
+            .map((x) => x.dbId)
+            .filter(notUndefined)
+            .includes(i.id),
+      )
+      .map((x) => ({ id: x.id, url: x.url, state: "success" } as const)),
+  ]
+
+  const reset = () => {
+    setLocalImages([])
+    resetUploads()
+  }
+
+  return {
+    addFiles,
+    removeFile,
+    files: orderedImages,
+    reset,
+  } as const
 }
 
 function ImageWithStatus({
@@ -616,7 +650,7 @@ function ImageWithStatus({
   state,
 }: {
   url: string
-  state: "loading" | "failed" | "uploaded"
+  state: ImageUpload["state"]
 }) {
   return (
     <>
@@ -647,12 +681,19 @@ function ImageWithStatus({
 type InProgressUpload = {
   type: "in-progress"
   id: string
-  localId: string
+  url: string
+  dbId?: string
   file: File
-  state: "uploading" | "failed"
+  state: ImageUpload["state"]
 }
 
-type UploadSuccess = Upload & { localId: string }
+type UploadSuccess = Upload
+
+type ImageUpload = {
+  id: string
+  url: string
+  state: "loading" | "failed" | "success"
+}
 
 function ImageUploader({
   addFiles,
@@ -661,26 +702,18 @@ function ImageUploader({
 }: {
   addFiles: (files: FileList) => void
   removeFile: (fileId: string) => void
-  files: (InProgressUpload | UploadSuccess)[]
+  files: ImageUpload[]
 }) {
   return (
     <>
       {files.length > 0 && (
         <ImageUploadContainer>
-          {orderBy(files, (x) => x.id, "desc").map((f) => (
+          {files.map((f) => (
             // NOTE(sbdchd): it's important that the `localId` is consistent
             // throughout the upload content, otherwise we'll wipe out the DOM
             // node and there will be a flash as the image changes.
-            <ImagePreviewParent key={f.localId}>
-              {f.type === "upload" ? (
-                <ImageWithStatus url={f.url} state={"uploaded"} />
-              ) : (
-                <ImageWithStatus
-                  url={URL.createObjectURL(f.file)}
-                  state={f.state === "failed" ? "failed" : "loading"}
-                />
-              )}
-
+            <ImagePreviewParent key={f.id}>
+              <ImageWithStatus url={f.url} state={f.state} />
               <CloseButton
                 onClick={() => {
                   if (confirm("Remove image?")) {
@@ -758,14 +791,17 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
     isDisabled,
     addUploads,
     removeUploads,
-    uploads,
+    uploadedImages,
+    resetUploads,
   } = useNoteCreatorHandlers({
     recipeId,
   })
 
-  const { addFiles, removeFile, files } = useImageUpload(
+  const { addFiles, removeFile, files, reset } = useImageUpload(
     addUploads,
     removeUploads,
+    uploadedImages,
+    resetUploads,
   )
 
   return (
@@ -786,14 +822,21 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
           <ImageUploader
             addFiles={addFiles}
             removeFile={removeFile}
-            files={[...files.filter(notUndefined), ...uploads]}
+            files={files}
           />
         )}
       </UploadContainer>
 
       {isEditing && (
         <div className="d-flex justify-end align-center">
-          <ButtonSecondary size="small" className="mr-3" onClick={onCancel}>
+          <ButtonSecondary
+            size="small"
+            className="mr-3"
+            onClick={() => {
+              onCancel()
+              reset()
+            }}
+          >
             cancel
           </ButtonSecondary>
           <ButtonPrimary
