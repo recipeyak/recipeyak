@@ -131,6 +131,9 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
     removeUploads: (uploadIds: string[]) => {
       setUploads((s) => s.filter((x) => !uploadIds.includes(x.id)))
     },
+    resetUploads: () => {
+      setUploads(note.attachments)
+    },
   }
 }
 
@@ -207,14 +210,16 @@ export function Note({ note, recipeId, className }: INoteProps) {
     addUploads,
     removeUploads,
     uploadedImages,
+    resetUploads,
   } = useNoteEditHandlers({ note, recipeId })
 
   const noteId = `note-${note.id}`
 
-  const { addFiles, removeFile, files } = useImageUpload(
+  const { addFiles, removeFile, files, reset } = useImageUpload(
     addUploads,
     removeUploads,
     uploadedImages,
+    resetUploads,
   )
 
   return (
@@ -297,7 +302,10 @@ export function Note({ note, recipeId, className }: INoteProps) {
                 <div className="d-flex justify-between align-center">
                   <ButtonSecondary
                     size="small"
-                    onClick={onCancel}
+                    onClick={() => {
+                      onCancel()
+                      reset()
+                    }}
                     className="mr-3"
                   >
                     cancel
@@ -443,6 +451,9 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
       setUploads((s) => s.filter((x) => !uploadIds.includes(x.id)))
     },
     uploadedImages,
+    resetUploads: () => {
+      setUploads([])
+    },
   }
 }
 
@@ -555,10 +566,12 @@ const BrokenImage = styled.div`
   font-size: 2rem;
 `
 
+// todo: clear changes on cancellation
 function useImageUpload(
   addUploads: (upload: UploadSuccess) => void,
   removeUploads: (uploadIds: string[]) => void,
   remoteImages: Upload[],
+  resetUploads: () => void,
 ) {
   const [localImages, setLocalImages] = React.useState<InProgressUpload[]>([])
 
@@ -619,10 +632,16 @@ function useImageUpload(
       .map((x) => ({ id: x.id, url: x.url, state: "success" } as const)),
   ]
 
+  const reset = () => {
+    setLocalImages([])
+    resetUploads()
+  }
+
   return {
     addFiles,
     removeFile,
     files: orderedImages,
+    reset,
   } as const
 }
 
@@ -773,14 +792,16 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
     addUploads,
     removeUploads,
     uploadedImages,
+    resetUploads,
   } = useNoteCreatorHandlers({
     recipeId,
   })
 
-  const { addFiles, removeFile, files } = useImageUpload(
+  const { addFiles, removeFile, files, reset } = useImageUpload(
     addUploads,
     removeUploads,
     uploadedImages,
+    resetUploads,
   )
 
   return (
@@ -808,7 +829,14 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
 
       {isEditing && (
         <div className="d-flex justify-end align-center">
-          <ButtonSecondary size="small" className="mr-3" onClick={onCancel}>
+          <ButtonSecondary
+            size="small"
+            className="mr-3"
+            onClick={() => {
+              onCancel()
+              reset()
+            }}
+          >
             cancel
           </ButtonSecondary>
           <ButtonPrimary
