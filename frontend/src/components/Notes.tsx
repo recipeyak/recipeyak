@@ -711,35 +711,6 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     blurNoteTextArea()
   }
 
-  const onNoteClick = () => {
-    setIsEditing(true)
-  }
-
-  const onDelete = () => {
-    if (note == null) {
-      return
-    }
-    if (confirm("Are you sure you want to delete this note?")) {
-      void api.deleteNote({ noteId: note.id }).then((res) => {
-        if (isOk(res)) {
-          dispatch(
-            patchRecipe({
-              recipeId,
-              updateFn: (recipe) => {
-                return {
-                  ...recipe,
-                  timelineItems: recipe.timelineItems.filter(
-                    (x) => x.id !== note.id,
-                  ),
-                }
-              },
-            }),
-          )
-        }
-      })
-    }
-  }
-
   const onCreate = () => {
     setIsLoading(true)
 
