@@ -156,6 +156,10 @@ function NoteTimeStamp({ created }: { readonly created: string }) {
   )
 }
 
+const SmallLink = styled.a`
+  font-size: 0.85rem;
+`
+
 function SharedEntry({
   id,
   children,
@@ -256,7 +260,7 @@ const UpvoteReaction = styled.div`
   margin-right: 0.5rem;
   text-align: center;
   &:hover {
-    border-color: #575757;
+    border-color: hsl(0deg, 0%, 71%);
   }
 `
 
@@ -305,44 +309,9 @@ type ReactionGroup = {
   firstCreated: string
 }[]
 
-const exampleReactionGroup: ReactionGroup = [
-  {
-    type: "😆",
-    firstCreated: new Date().toISOString(),
-    reactions: [
-      {
-        id: uuid4(),
-        type: "😆",
-        user: {
-          id: uuid4(),
-          name: "chris",
-        },
-      },
-      {
-        id: uuid4(),
-        type: "😆",
-        user: {
-          id: uuid4(),
-          name: "steve",
-        },
-      },
-    ],
-  },
-  {
-    type: "❤️",
-    firstCreated: new Date().toISOString(),
-    reactions: [
-      {
-        id: uuid4(),
-        type: "❤️",
-        user: {
-          id: uuid4(),
-          name: "natasha",
-        },
-      },
-    ],
-  },
-]
+const SmallAnchor = styled.a`
+  font-size: 0.825rem;
+`
 
 const ReactionCount = styled.div`
   margin-left: 0.2rem;
@@ -426,11 +395,89 @@ export function Note({ note, recipeId, className }: INoteProps) {
     >
       <Avatar avatarURL={note.created_by.avatar_url} className="mr-2" />
       <div className="w-100">
-        <p>
+        <p className="d-flex align-items-center">
           <b>{note.created_by.name}</b>{" "}
-          <a href={`#${noteId}`}>
+          <a href={`#${noteId}`} className="ml-2">
             <NoteTimeStamp created={note.created} />
           </a>
+          <Tippy
+            visible={visible}
+            onClickOutside={() => {
+              setVisible(false)
+            }}
+            animation={false}
+            interactive
+            content={
+              <ReactionContainer className="box-shadow-normal">
+                {REACTION_EMOJIS.map((emoji, index) => {
+                  return (
+                    <ReactionButton
+                      key={emoji}
+                      onClick={() => {
+                        setReactions((s) => {
+                          const existingReactions = s.find(
+                            (x) => x.type === emoji,
+                          )
+                          if (existingReactions == null) {
+                            return [
+                              ...s,
+                              {
+                                type: emoji,
+                                firstCreated: new Date().toISOString(),
+                                reactions: [
+                                  {
+                                    id: uuid4(),
+                                    type: emoji,
+                                    user: {
+                                      id: myUserId,
+                                      name: "chris",
+                                    },
+                                  },
+                                ],
+                              },
+                            ]
+                          }
+                          existingReactions.reactions = [
+                            ...existingReactions.reactions,
+                            {
+                              id: uuid4(),
+                              type: emoji,
+                              user: {
+                                id: myUserId,
+                                name: "chris",
+                              },
+                            },
+                          ]
+                          return [
+                            ...s.filter((x) => x.type !== emoji),
+                            existingReactions,
+                          ]
+                        })
+
+                        setVisible(false)
+                      }}
+                      className={cls({ "ml-1": index > 0 })}
+                    >
+                      {emoji}
+                    </ReactionButton>
+                  )
+                })}
+              </ReactionContainer>
+            }
+          >
+            <OpenReactions
+              className="cursor-pointer ml-auto"
+              onClick={() => {
+                setVisible((s) => !s)
+              }}
+            />
+          </Tippy>
+          <SmallAnchor
+            className="ml-2 text-muted cursor-pointer"
+            onClick={onNoteClick}
+          >
+            edit
+          </SmallAnchor>
         </p>
         {!isEditing ? (
           <div>
@@ -508,88 +555,6 @@ export function Note({ note, recipeId, className }: INoteProps) {
                     )}
                   </UpvoteReaction>
                 ))}
-
-              {/* <UpvoteReaction className="cursor-pointer text-muted">
-                <StyledSmile size={14} />
-              </UpvoteReaction> */}
-
-              <Tippy
-                visible={visible}
-                onClickOutside={() => {
-                  setVisible(false)
-                }}
-                animation={false}
-                interactive
-                content={
-                  <ReactionContainer className="box-shadow-normal">
-                    {REACTION_EMOJIS.map((emoji, index) => {
-                      return (
-                        <ReactionButton
-                          key={emoji}
-                          onClick={() => {
-                            setReactions((s) => {
-                              const existingReactions = s.find(
-                                (x) => x.type === emoji,
-                              )
-                              if (existingReactions == null) {
-                                return [
-                                  ...s,
-                                  {
-                                    type: emoji,
-                                    firstCreated: new Date().toISOString(),
-                                    reactions: [
-                                      {
-                                        id: uuid4(),
-                                        type: emoji,
-                                        user: {
-                                          id: myUserId,
-                                          name: "chris",
-                                        },
-                                      },
-                                    ],
-                                  },
-                                ]
-                              }
-                              existingReactions.reactions = [
-                                ...existingReactions.reactions,
-                                {
-                                  id: uuid4(),
-                                  type: emoji,
-                                  user: {
-                                    id: myUserId,
-                                    name: "chris",
-                                  },
-                                },
-                              ]
-                              return [
-                                ...s.filter((x) => x.type !== emoji),
-                                existingReactions,
-                              ]
-                            })
-
-                            setVisible(false)
-                          }}
-                          className={cls({ "ml-1": index > 0 })}
-                        >
-                          {emoji}
-                        </ReactionButton>
-                      )
-                    })}
-                  </ReactionContainer>
-                }
-              >
-                <OpenReactions
-                  className="cursor-pointer"
-                  onClick={() => {
-                    setVisible((s) => !s)
-                  }}
-                />
-              </Tippy>
-
-              {/* </ReactionParent> */}
-              <a className="ml-2 text-muted" onClick={onNoteClick}>
-                edit
-              </a>
             </NoteActionsContainer>
           </div>
         ) : (

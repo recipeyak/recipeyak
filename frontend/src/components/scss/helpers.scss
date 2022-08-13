@@ -91,6 +91,10 @@
   }
 }
 
+.ml-auto {
+  margin-left: auto !important;
+}
+
 @for $i from 0 through 32 {
   .fs-#{$i} {
     font-size: #{$i/4}rem !important;
