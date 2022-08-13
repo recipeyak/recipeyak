@@ -1,5 +1,6 @@
 import { orderBy } from "lodash"
 import React, { useEffect, useState } from "react"
+import { Smile } from "react-feather"
 import { useLocation } from "react-router-dom"
 import Textarea from "react-textarea-autosize"
 
@@ -22,6 +23,8 @@ import {
 import { styled } from "@/theme"
 import { notUndefined } from "@/utils/general"
 import { uuid4 } from "@/uuid"
+import Tippy from "@tippyjs/react"
+import slice from "lodash-es/slice"
 
 interface IUseNoteEditHandlers {
   readonly note: INote
@@ -106,12 +109,7 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
   const onEditorChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNewText(e.target.value)
   }
-  const onNoteClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Opening edit when a user clicks links results in weird looking UI as edit
-    // opens right as they are navigating away navigation.
-    if (e.target instanceof Element && e.target.tagName === "A") {
-      return
-    }
+  const onNoteClick = () => {
     setEditing(true)
   }
   return {
@@ -139,6 +137,12 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
 
 const SmallTime = styled.time`
   font-size: 0.85rem;
+`
+
+const NoteActionsContainer = styled.div`
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
 `
 
 function NoteTimeStamp({ created }: { readonly created: string }) {
@@ -191,6 +195,195 @@ const AttachmentContainer = styled.div`
   flex-wrap: wrap;
 `
 
+const ReactionContainer = styled.div`
+  display: flex;
+  background: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 3px;
+`
+
+const StyledSmile = styled(Smile)`
+  color: #7a7a7a;
+  &:hover {
+    color: #575757;
+  }
+`
+
+const ReactionButtonContainer = styled.div`
+  background-color: white;
+  color: #172b4d;
+
+  /* border: 1px solid #ebecf0; */
+  border-radius: 12px;
+  line-height: 0;
+  display: inline-block;
+`
+
+const OpenReactions = React.forwardRef(
+  (
+    props: {
+      className?: string
+      onClick: () => void
+      children?: React.ReactNode
+    },
+
+    ref: React.ForwardedRef<HTMLDivElement>,
+  ) => {
+    return (
+      <ReactionButtonContainer
+        ref={ref}
+        className={props.className}
+        onClick={props.onClick}
+      >
+        {props.children ? props.children : <StyledSmile size={14} />}
+      </ReactionButtonContainer>
+    )
+  },
+)
+
+const UpvoteReaction = styled.div`
+  padding: 0 0.3rem;
+  padding-right: 0.5rem;
+  border-style: solid;
+  background-color: white;
+  display: inline-flex;
+  /* color: #172b4d; */
+
+  border-radius: 15px;
+
+  border-width: 1px;
+  border-color: #d2dff0;
+  margin-right: 0.5rem;
+  text-align: center;
+  &:hover {
+    border-color: #575757;
+  }
+`
+
+const ReactionButton = styled.div`
+  padding: 4px;
+  height: 32px;
+  width: 32px;
+  font-size: 16px;
+  text-align: center;
+  /* border-style: solid; */
+  /* border-width: 1px; */
+  border-radius: 3px;
+  border-color: hsl(0deg, 0%, 86%);
+  cursor: pointer;
+
+  &:hover {
+    /* border-color: #4a4a4a; */
+    background-color: hsla(0, 0%, 0%, 0.06);
+  }
+`
+
+const REACTION_EMOJIS = ["❤️", "😆", "🤮"] as const
+
+type ReactionType = typeof REACTION_EMOJIS[number]
+
+function reactionTypeToName(x: ReactionType): string {
+  return {
+    "❤️": "heart",
+    "😆": "laughter",
+    "🤮": "vomit",
+  }[x]
+}
+
+type Reaction = {
+  id: string
+  type: ReactionType
+  user: {
+    id: string
+    name: string
+  }
+}
+
+type ReactionGroup = {
+  type: ReactionType
+  reactions: Reaction[]
+  firstCreated: string
+}[]
+
+const exampleReactionGroup: ReactionGroup = [
+  {
+    type: "😆",
+    firstCreated: new Date().toISOString(),
+    reactions: [
+      {
+        id: uuid4(),
+        type: "😆",
+        user: {
+          id: uuid4(),
+          name: "chris",
+        },
+      },
+      {
+        id: uuid4(),
+        type: "😆",
+        user: {
+          id: uuid4(),
+          name: "steve",
+        },
+      },
+    ],
+  },
+  {
+    type: "❤️",
+    firstCreated: new Date().toISOString(),
+    reactions: [
+      {
+        id: uuid4(),
+        type: "❤️",
+        user: {
+          id: uuid4(),
+          name: "natasha",
+        },
+      },
+    ],
+  },
+]
+
+const ReactionCount = styled.div`
+  margin-left: 0.2rem;
+  height: 24px;
+  display: flex;
+  align-items: center;
+`
+
+function reactionTitle(reactions: Reaction[]): string {
+  if (reactions.length === 0) {
+    return ""
+  }
+  if (reactions.length === 1) {
+    const reaction = reactions[0]
+    return `${reaction.user.name} reacted with ${reactionTypeToName(
+      reaction.type,
+    )}`
+  }
+  const initialNames = slice(
+    reactions.map((x) => x.user.name),
+    reactions.length - 1,
+  )
+  const lastReaction = reactions[reactions.length - 1]
+  return (
+    initialNames.join(", ") +
+    ", and " +
+    lastReaction.user.name +
+    ` reacted with ${reactionTypeToName(lastReaction.type)}`
+  )
+}
+
+const EmojiContainer = styled.div`
+  height: 24px;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
+const myUserId = uuid4()
+
 interface INoteProps {
   readonly note: INote
   readonly recipeId: IRecipe["id"]
@@ -222,6 +415,10 @@ export function Note({ note, recipeId, className }: INoteProps) {
     resetUploads,
   )
 
+  const [visible, setVisible] = useState(false)
+
+  const [reactions, setReactions] = useState<ReactionGroup>([])
+
   return (
     <SharedEntry
       className={cls("d-flex align-items-start", className)}
@@ -236,10 +433,8 @@ export function Note({ note, recipeId, className }: INoteProps) {
           </a>
         </p>
         {!isEditing ? (
-          <div className="cursor-pointer" onClick={onNoteClick}>
-            <Markdown className="cursor-pointer" title="click to edit">
-              {note.text}
-            </Markdown>
+          <div>
+            <Markdown>{note.text}</Markdown>
             <AttachmentContainer>
               {note.attachments.map((attachment) => (
                 <a
@@ -255,12 +450,152 @@ export function Note({ note, recipeId, className }: INoteProps) {
                 </a>
               ))}
             </AttachmentContainer>
+            <NoteActionsContainer className="text-muted">
+              {orderBy(reactions, (x) => x.firstCreated)
+                .filter((reaction) => reaction.reactions.length > 0)
+                .map((reaction) => (
+                  // <div
+                  //   key={reaction.type}
+                  //   title={"chris, natasha, and steve reacted"}
+                  // >
+                  //   {reaction.type}
+                  // </div>
+                  <UpvoteReaction
+                    key={reaction.type}
+                    title={reactionTitle(reaction.reactions)}
+                    onClick={() => {
+                      setReactions((s) => {
+                        const existingReactions = s.find(
+                          (x) => x.type === reaction.type,
+                        )
+                        if (existingReactions == null) {
+                          return s
+                        }
+                        if (
+                          existingReactions.reactions.find(
+                            (x) => x.user.id === myUserId,
+                          ) != null
+                        ) {
+                          existingReactions.reactions =
+                            existingReactions.reactions.filter(
+                              (x) => x.user.id !== myUserId,
+                            )
+                        } else {
+                          existingReactions.reactions = [
+                            ...existingReactions.reactions,
+                            {
+                              id: uuid4(),
+                              type: reaction.type,
+                              user: {
+                                id: myUserId,
+                                name: "chris",
+                              },
+                            },
+                          ]
+                        }
+
+                        return [
+                          ...s.filter((x) => x.type !== reaction.type),
+                          existingReactions,
+                        ]
+                      })
+                    }}
+                    className="cursor-pointer text-muted"
+                  >
+                    <EmojiContainer>{reaction.type}</EmojiContainer>
+                    {reaction.reactions.length > 0 && (
+                      <ReactionCount>{reaction.reactions.length}</ReactionCount>
+                    )}
+                  </UpvoteReaction>
+                ))}
+
+              {/* <UpvoteReaction className="cursor-pointer text-muted">
+                <StyledSmile size={14} />
+              </UpvoteReaction> */}
+
+              <Tippy
+                visible={visible}
+                onClickOutside={() => {
+                  setVisible(false)
+                }}
+                animation={false}
+                interactive
+                content={
+                  <ReactionContainer className="box-shadow-normal">
+                    {REACTION_EMOJIS.map((emoji, index) => {
+                      return (
+                        <ReactionButton
+                          key={emoji}
+                          onClick={() => {
+                            setReactions((s) => {
+                              const existingReactions = s.find(
+                                (x) => x.type === emoji,
+                              )
+                              if (existingReactions == null) {
+                                return [
+                                  ...s,
+                                  {
+                                    type: emoji,
+                                    firstCreated: new Date().toISOString(),
+                                    reactions: [
+                                      {
+                                        id: uuid4(),
+                                        type: emoji,
+                                        user: {
+                                          id: myUserId,
+                                          name: "chris",
+                                        },
+                                      },
+                                    ],
+                                  },
+                                ]
+                              }
+                              existingReactions.reactions = [
+                                ...existingReactions.reactions,
+                                {
+                                  id: uuid4(),
+                                  type: emoji,
+                                  user: {
+                                    id: myUserId,
+                                    name: "chris",
+                                  },
+                                },
+                              ]
+                              return [
+                                ...s.filter((x) => x.type !== emoji),
+                                existingReactions,
+                              ]
+                            })
+
+                            setVisible(false)
+                          }}
+                          className={cls({ "ml-1": index > 0 })}
+                        >
+                          {emoji}
+                        </ReactionButton>
+                      )
+                    })}
+                  </ReactionContainer>
+                }
+              >
+                <OpenReactions
+                  className="cursor-pointer"
+                  onClick={() => {
+                    setVisible((s) => !s)
+                  }}
+                />
+              </Tippy>
+
+              {/* </ReactionParent> */}
+              <a className="ml-2 text-muted" onClick={onNoteClick}>
+                edit
+              </a>
+            </NoteActionsContainer>
           </div>
         ) : (
           <>
             <UploadContainer addFiles={addFiles}>
               <Textarea
-                autoFocus
                 className="my-textarea"
                 onKeyDown={onEditorKeyDown}
                 minRows={5}
@@ -374,6 +709,35 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     setDraftText("")
     setUploads([])
     blurNoteTextArea()
+  }
+
+  const onNoteClick = () => {
+    setIsEditing(true)
+  }
+
+  const onDelete = () => {
+    if (note == null) {
+      return
+    }
+    if (confirm("Are you sure you want to delete this note?")) {
+      void api.deleteNote({ noteId: note.id }).then((res) => {
+        if (isOk(res)) {
+          dispatch(
+            patchRecipe({
+              recipeId,
+              updateFn: (recipe) => {
+                return {
+                  ...recipe,
+                  timelineItems: recipe.timelineItems.filter(
+                    (x) => x.id !== note.id,
+                  ),
+                }
+              },
+            }),
+          )
+        }
+      })
+    }
   }
 
   const onCreate = () => {

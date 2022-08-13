@@ -33,10 +33,6 @@ const MarkdownWrapper = styled.div`
       margin-bottom: 0.5rem;
     }
   }
-
-  p {
-    margin-bottom: 0.5rem;
-  }
 `
 
 const ALLOWED_MARKDOWN_TYPES: (keyof Components)[] = [
