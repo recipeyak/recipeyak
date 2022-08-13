@@ -1,4 +1,6 @@
+import Tippy from "@tippyjs/react"
 import { orderBy } from "lodash"
+import slice from "lodash-es/slice"
 import React, { useEffect, useState } from "react"
 import { Smile } from "react-feather"
 import { useLocation } from "react-router-dom"
@@ -23,8 +25,6 @@ import {
 import { styled } from "@/theme"
 import { notUndefined } from "@/utils/general"
 import { uuid4 } from "@/uuid"
-import Tippy from "@tippyjs/react"
-import slice from "lodash-es/slice"
 
 interface IUseNoteEditHandlers {
   readonly note: INote
@@ -501,12 +501,6 @@ export function Note({ note, recipeId, className }: INoteProps) {
               {orderBy(reactions, (x) => x.firstCreated)
                 .filter((reaction) => reaction.reactions.length > 0)
                 .map((reaction) => (
-                  // <div
-                  //   key={reaction.type}
-                  //   title={"chris, natasha, and steve reacted"}
-                  // >
-                  //   {reaction.type}
-                  // </div>
                   <UpvoteReaction
                     key={reaction.type}
                     title={reactionTitle(reaction.reactions)}
