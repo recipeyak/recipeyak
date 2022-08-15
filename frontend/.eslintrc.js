@@ -51,6 +51,10 @@ module.exports = {
       {
         paths: [
           {
+            name: "lodash",
+            message: "Please importfrom 'lodash-es' instead.",
+          },
+          {
             name: "redux",
             importNames: ["Dispatch", "useDispatch"],
             message: "Please import 'Dispatch' from '@/store/thunks' instead.",
