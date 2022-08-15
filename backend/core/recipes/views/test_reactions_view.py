@@ -1,8 +1,8 @@
-from rest_framework.test import APIClient
-from core.models import User, Recipe
-
-from rest_framework import status
 import pytest
+from rest_framework import status
+from rest_framework.test import APIClient
+
+from core.models import Recipe, User
 
 
 @pytest.mark.django_db(transaction=True)

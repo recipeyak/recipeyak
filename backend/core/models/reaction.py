@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING
 
 from django.db import models
 
-
 from core.models.base import CommonInfo
 
 if TYPE_CHECKING:

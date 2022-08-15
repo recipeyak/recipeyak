@@ -1,21 +1,18 @@
 from __future__ import annotations
-import datetime
 
 import logging
-from typing_extensions import Literal
 
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
+from psycopg2.errors import UniqueViolation
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from psycopg2.errors import UniqueViolation
-from core.models import (
-    user_and_team_notes,
-    user_reactions,
-)
+from typing_extensions import Literal
+
+from core.models import user_and_team_notes, user_reactions
 from core.models.reaction import Reaction
 from core.recipes.serializers import serialize_reactions
 from core.request import AuthedRequest

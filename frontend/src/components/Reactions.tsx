@@ -151,6 +151,16 @@ const EmojiContainer = styled.div`
   justify-content: center;
 `
 
+export function findReaction(
+  reactions: Reaction[],
+  type: ReactionType,
+  userId: number,
+) {
+  return reactions.find(
+    (reaction) => reaction.type === type && reaction.user.id === userId,
+  )
+}
+
 export function ReactionPopover(props: {
   onPick: (_: ReactionType) => void
   reactions: Reaction[]
@@ -176,11 +186,7 @@ export function ReactionPopover(props: {
                   setVisible(false)
                 }}
                 pressed={
-                  props.reactions.find(
-                    (reaction) =>
-                      reaction.type === emoji &&
-                      reaction.user.id === user.id?.toString(),
-                  ) != null
+                  findReaction(props.reactions, emoji, user.id ?? 0) != null
                 }
                 className={cls({ "ml-1": index > 0 })}
               >

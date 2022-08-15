@@ -25,6 +25,7 @@ from core.models import (
     ChangeType,
     Ingredient,
     Note,
+    Reaction,
     Recipe,
     RecipeChange,
     ScheduledRecipe,
@@ -33,7 +34,6 @@ from core.models import (
     Team,
     TimelineEvent,
     Upload,
-    Reaction,
     User,
     user_and_team_recipes,
 )

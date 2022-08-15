@@ -9,6 +9,7 @@ import { Avatar } from "@/components/Avatar"
 import { ButtonPrimary, ButtonSecondary } from "@/components/Buttons"
 import { Markdown } from "@/components/Markdown"
 import {
+  findReaction,
   Reaction,
   ReactionPopover,
   ReactionsFooter,
@@ -231,9 +232,7 @@ export function Note({ note, recipeId, className }: INoteProps) {
   const [reactions, setReactions] = useState<Reaction[]>(note.reactions)
 
   const addOrRemoveReaction = async (emoji: ReactionType) => {
-    const existingReaction = reactions.find(
-      (reaction) => reaction.type === emoji && reaction.user.id === user.id,
-    )
+    const existingReaction = findReaction(reactions, emoji, user.id ?? 0)
 
     setReactions((s) =>
       s.filter((reaction) => reaction.id !== existingReaction?.id),
