@@ -33,6 +33,7 @@ from core.models import (
     Team,
     TimelineEvent,
     Upload,
+    Reaction,
     User,
     user_and_team_recipes,
 )
@@ -46,6 +47,7 @@ from core.recipes.serializers import (
     StepSerializer,
     serialize_attachments,
     serialize_note,
+    serialize_reactions,
 )
 from core.recipes.utils import add_positions
 from core.request import AuthedRequest
@@ -183,12 +185,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 note.pop(f"{name}__name", None)
             note["type"] = "note"
             note["attachments"] = []
+            note["reactions"] = []
             notes[note["recipe_id"]].append(note)
             note_map[note["id"]] = note
 
         for upload in Upload.objects.filter(note__recipe_id__in=recipes.keys()):
             note_map[upload.note_id]["attachments"].append(
                 list(serialize_attachments([upload]))[0].dict()
+            )
+        for reaction in Reaction.objects.filter(note__recipe_id__in=recipes.keys()):
+            note_map[reaction.note_id]["reactions"].append(
+                list(serialize_reactions([reaction]))[0].dict()
             )
 
         timeline_events = collections.defaultdict(list)
