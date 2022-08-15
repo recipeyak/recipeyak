@@ -341,7 +341,7 @@ def test_adding_note_to_recipe(client, user, recipe):
 
 
 def test_modifying_note_of_recipe(client, user, user2, recipe):
-    note = recipe.note_set.first()
+    note = recipe.notes.first()
     client.force_authenticate(user2)
     data = {"text": "preheat the oven!!"}
     res = client.patch(f"/api/v1/notes/{note.id}/", data)
@@ -351,23 +351,23 @@ def test_modifying_note_of_recipe(client, user, user2, recipe):
 
 
 def test_delete_note_of_recipe(client, user, user2, recipe):
-    note = recipe.note_set.first()
+    note = recipe.notes.first()
     client.force_authenticate(user2)
-    before_count = recipe.note_set.count()
+    before_count = recipe.notes.count()
     assert before_count > 0
     res = client.delete(f"/api/v1/notes/{note.id}/")
     assert status.is_success(res.status_code)
-    assert recipe.note_set.count() == before_count - 1
+    assert recipe.notes.count() == before_count - 1
 
 
 def test_delete_note(client, user, user2, recipe):
-    note = recipe.note_set.first()
+    note = recipe.notes.first()
     client.force_authenticate(user2)
-    before_count = recipe.note_set.count()
+    before_count = recipe.notes.count()
     assert before_count > 0
     res = client.delete(f"/api/v1/notes/{note.id}/")
     assert status.is_success(res.status_code)
-    assert recipe.note_set.count() == before_count - 1
+    assert recipe.notes.count() == before_count - 1
 
 
 def test_adding_ingredient_to_recipe(client, user, recipe):

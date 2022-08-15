@@ -1,8 +1,5 @@
-import Tippy from "@tippyjs/react"
-import { orderBy } from "lodash"
-import slice from "lodash-es/slice"
+import orderBy from "lodash-es/orderBy"
 import React, { useEffect, useState } from "react"
-import { Smile } from "react-feather"
 import { useLocation } from "react-router-dom"
 import Textarea from "react-textarea-autosize"
 
@@ -11,9 +8,15 @@ import { classNames as cls } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
 import { ButtonPrimary, ButtonSecondary } from "@/components/Buttons"
 import { Markdown } from "@/components/Markdown"
+import {
+  Reaction,
+  ReactionPopover,
+  ReactionsFooter,
+  ReactionType,
+} from "@/components/Reactions"
 import { RotatingLoader } from "@/components/RoatingLoader"
 import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
-import { useDispatch } from "@/hooks"
+import { useCurrentUser, useDispatch } from "@/hooks"
 import { isOk } from "@/result"
 import {
   INote,
@@ -139,12 +142,6 @@ const SmallTime = styled.time`
   font-size: 0.85rem;
 `
 
-const NoteActionsContainer = styled.div`
-  font-size: 0.85rem;
-  display: flex;
-  align-items: center;
-`
-
 function NoteTimeStamp({ created }: { readonly created: string }) {
   const date = new Date(created)
   const prettyDate = formatAbsoluteDateTime(date, { includeYear: true })
@@ -155,10 +152,6 @@ function NoteTimeStamp({ created }: { readonly created: string }) {
     </SmallTime>
   )
 }
-
-const SmallLink = styled.a`
-  font-size: 0.85rem;
-`
 
 function SharedEntry({
   id,
@@ -198,160 +191,9 @@ const AttachmentContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
 `
-
-const ReactionContainer = styled.div`
-  display: flex;
-  background: white;
-  padding: 0.25rem 0.5rem;
-  border-radius: 3px;
-`
-
-const StyledSmile = styled(Smile)`
-  color: #7a7a7a;
-  &:hover {
-    color: #575757;
-  }
-`
-
-const ReactionButtonContainer = styled.div`
-  background-color: white;
-  color: #172b4d;
-
-  /* border: 1px solid #ebecf0; */
-  border-radius: 12px;
-  line-height: 0;
-  display: inline-block;
-`
-
-const OpenReactions = React.forwardRef(
-  (
-    props: {
-      className?: string
-      onClick: () => void
-      children?: React.ReactNode
-    },
-
-    ref: React.ForwardedRef<HTMLDivElement>,
-  ) => {
-    return (
-      <ReactionButtonContainer
-        ref={ref}
-        className={props.className}
-        onClick={props.onClick}
-      >
-        {props.children ? props.children : <StyledSmile size={14} />}
-      </ReactionButtonContainer>
-    )
-  },
-)
-
-const UpvoteReaction = styled.div`
-  padding: 0 0.3rem;
-  padding-right: 0.5rem;
-  border-style: solid;
-  background-color: white;
-  display: inline-flex;
-  /* color: #172b4d; */
-
-  border-radius: 15px;
-
-  border-width: 1px;
-  border-color: #d2dff0;
-  margin-right: 0.5rem;
-  text-align: center;
-  &:hover {
-    border-color: hsl(0deg, 0%, 71%);
-  }
-`
-
-const ReactionButton = styled.div`
-  padding: 4px;
-  height: 32px;
-  width: 32px;
-  font-size: 16px;
-  text-align: center;
-  /* border-style: solid; */
-  /* border-width: 1px; */
-  border-radius: 3px;
-  border-color: hsl(0deg, 0%, 86%);
-  cursor: pointer;
-
-  &:hover {
-    /* border-color: #4a4a4a; */
-    background-color: hsla(0, 0%, 0%, 0.06);
-  }
-`
-
-const REACTION_EMOJIS = ["❤️", "😆", "🤮"] as const
-
-type ReactionType = typeof REACTION_EMOJIS[number]
-
-function reactionTypeToName(x: ReactionType): string {
-  return {
-    "❤️": "heart",
-    "😆": "laughter",
-    "🤮": "vomit",
-  }[x]
-}
-
-type Reaction = {
-  id: string
-  type: ReactionType
-  user: {
-    id: string
-    name: string
-  }
-}
-
-type ReactionGroup = {
-  type: ReactionType
-  reactions: Reaction[]
-  firstCreated: string
-}[]
-
 const SmallAnchor = styled.a`
   font-size: 0.825rem;
 `
-
-const ReactionCount = styled.div`
-  margin-left: 0.2rem;
-  height: 24px;
-  display: flex;
-  align-items: center;
-`
-
-function reactionTitle(reactions: Reaction[]): string {
-  if (reactions.length === 0) {
-    return ""
-  }
-  if (reactions.length === 1) {
-    const reaction = reactions[0]
-    return `${reaction.user.name} reacted with ${reactionTypeToName(
-      reaction.type,
-    )}`
-  }
-  const initialNames = slice(
-    reactions.map((x) => x.user.name),
-    reactions.length - 1,
-  )
-  const lastReaction = reactions[reactions.length - 1]
-  return (
-    initialNames.join(", ") +
-    ", and " +
-    lastReaction.user.name +
-    ` reacted with ${reactionTypeToName(lastReaction.type)}`
-  )
-}
-
-const EmojiContainer = styled.div`
-  height: 24px;
-  width: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`
-
-const myUserId = uuid4()
 
 interface INoteProps {
   readonly note: INote
@@ -375,6 +217,8 @@ export function Note({ note, recipeId, className }: INoteProps) {
     resetUploads,
   } = useNoteEditHandlers({ note, recipeId })
 
+  const user = useCurrentUser()
+
   const noteId = `note-${note.id}`
 
   const { addFiles, removeFile, files, reset } = useImageUpload(
@@ -384,9 +228,54 @@ export function Note({ note, recipeId, className }: INoteProps) {
     resetUploads,
   )
 
-  const [visible, setVisible] = useState(false)
+  const [reactions, setReactions] = useState<Reaction[]>(note.reactions)
 
-  const [reactions, setReactions] = useState<ReactionGroup>([])
+  const addOrRemoveReaction = async (emoji: ReactionType) => {
+    const existingReaction = reactions.find(
+      (reaction) => reaction.type === emoji && reaction.user.id === user.id,
+    )
+
+    setReactions((s) =>
+      s.filter((reaction) => reaction.id !== existingReaction?.id),
+    )
+    if (existingReaction != null) {
+      // remove reaction
+      const res = await api.deleteReaction({ reactionId: existingReaction.id })
+      if (!isOk(res)) {
+        // add back reaction if we fail
+        setReactions((s) => [...s, existingReaction])
+      }
+    } else {
+      // add reaction
+      const tempId = uuid4()
+      setReactions((s) => [
+        ...s,
+        {
+          id: tempId,
+          created: new Date().toISOString(),
+          type: emoji,
+          user: {
+            id: user.id || 0,
+            name: user.name,
+          },
+        },
+      ])
+      const res = await api.createReaction({
+        noteId: note.id.toString(),
+        type: emoji,
+      })
+      if (isOk(res)) {
+        setReactions((s) => {
+          const newReactions = s.filter((reaction) => reaction.id !== tempId)
+          return [...newReactions, res.data]
+        })
+      } else {
+        setReactions((s) => {
+          return s.filter((reaction) => reaction.id !== tempId)
+        })
+      }
+    }
+  }
 
   return (
     <SharedEntry
@@ -400,78 +289,10 @@ export function Note({ note, recipeId, className }: INoteProps) {
           <a href={`#${noteId}`} className="ml-2">
             <NoteTimeStamp created={note.created} />
           </a>
-          <Tippy
-            visible={visible}
-            onClickOutside={() => {
-              setVisible(false)
-            }}
-            animation={false}
-            interactive
-            content={
-              <ReactionContainer className="box-shadow-normal">
-                {REACTION_EMOJIS.map((emoji, index) => {
-                  return (
-                    <ReactionButton
-                      key={emoji}
-                      onClick={() => {
-                        setReactions((s) => {
-                          const existingReactions = s.find(
-                            (x) => x.type === emoji,
-                          )
-                          if (existingReactions == null) {
-                            return [
-                              ...s,
-                              {
-                                type: emoji,
-                                firstCreated: new Date().toISOString(),
-                                reactions: [
-                                  {
-                                    id: uuid4(),
-                                    type: emoji,
-                                    user: {
-                                      id: myUserId,
-                                      name: "chris",
-                                    },
-                                  },
-                                ],
-                              },
-                            ]
-                          }
-                          existingReactions.reactions = [
-                            ...existingReactions.reactions,
-                            {
-                              id: uuid4(),
-                              type: emoji,
-                              user: {
-                                id: myUserId,
-                                name: "chris",
-                              },
-                            },
-                          ]
-                          return [
-                            ...s.filter((x) => x.type !== emoji),
-                            existingReactions,
-                          ]
-                        })
-
-                        setVisible(false)
-                      }}
-                      className={cls({ "ml-1": index > 0 })}
-                    >
-                      {emoji}
-                    </ReactionButton>
-                  )
-                })}
-              </ReactionContainer>
-            }
-          >
-            <OpenReactions
-              className="cursor-pointer ml-auto"
-              onClick={() => {
-                setVisible((s) => !s)
-              }}
-            />
-          </Tippy>
+          <ReactionPopover
+            onPick={async (emoji) => addOrRemoveReaction(emoji)}
+            reactions={reactions}
+          />
           <SmallAnchor
             className="ml-2 text-muted cursor-pointer"
             onClick={onNoteClick}
@@ -497,59 +318,10 @@ export function Note({ note, recipeId, className }: INoteProps) {
                 </a>
               ))}
             </AttachmentContainer>
-            <NoteActionsContainer className="text-muted">
-              {orderBy(reactions, (x) => x.firstCreated)
-                .filter((reaction) => reaction.reactions.length > 0)
-                .map((reaction) => (
-                  <UpvoteReaction
-                    key={reaction.type}
-                    title={reactionTitle(reaction.reactions)}
-                    onClick={() => {
-                      setReactions((s) => {
-                        const existingReactions = s.find(
-                          (x) => x.type === reaction.type,
-                        )
-                        if (existingReactions == null) {
-                          return s
-                        }
-                        if (
-                          existingReactions.reactions.find(
-                            (x) => x.user.id === myUserId,
-                          ) != null
-                        ) {
-                          existingReactions.reactions =
-                            existingReactions.reactions.filter(
-                              (x) => x.user.id !== myUserId,
-                            )
-                        } else {
-                          existingReactions.reactions = [
-                            ...existingReactions.reactions,
-                            {
-                              id: uuid4(),
-                              type: reaction.type,
-                              user: {
-                                id: myUserId,
-                                name: "chris",
-                              },
-                            },
-                          ]
-                        }
-
-                        return [
-                          ...s.filter((x) => x.type !== reaction.type),
-                          existingReactions,
-                        ]
-                      })
-                    }}
-                    className="cursor-pointer text-muted"
-                  >
-                    <EmojiContainer>{reaction.type}</EmojiContainer>
-                    {reaction.reactions.length > 0 && (
-                      <ReactionCount>{reaction.reactions.length}</ReactionCount>
-                    )}
-                  </UpvoteReaction>
-                ))}
-            </NoteActionsContainer>
+            <ReactionsFooter
+              reactions={reactions}
+              onClick={async (emoji) => addOrRemoveReaction(emoji)}
+            />
           </div>
         ) : (
           <>

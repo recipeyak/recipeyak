@@ -9,6 +9,7 @@ import {
 } from "typesafe-actions"
 
 import * as api from "@/api"
+import { Reaction } from "@/components/Reactions"
 import { isOk } from "@/result"
 import { ITeam } from "@/store/reducers/teams"
 import { IState } from "@/store/store"
@@ -492,6 +493,7 @@ export interface INote {
   readonly modified: string
   readonly created: string
   readonly attachments: Upload[]
+  readonly reactions: Reaction[]
   readonly last_modified_by: IPublicUser
   readonly created_by: IPublicUser
 }

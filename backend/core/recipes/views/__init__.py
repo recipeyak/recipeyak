@@ -39,7 +39,6 @@ from core.models import (
 from core.models.user import get_avatar_url
 from core.recipes.serializers import (
     IngredientSerializer,
-    NoteSerializer,
     RecipeMoveCopySerializer,
     RecipeSerializer,
     RecipeTimelineSerializer,
@@ -82,10 +81,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
             "step_set",
             "ingredient_set",
             "scheduledrecipe_set",
-            "note_set",
-            "note_set__created_by",
-            "note_set__last_modified_by",
-            "note_set__uploads",
+            "notes",
+            "notes__created_by",
+            "notes__last_modified_by",
+            "notes__uploads",
+            "notes__reactions",
+            "notes__reactions__created_by",
             "timelineevent_set",
             "timelineevent_set__created_by",
             "section_set",
@@ -383,8 +384,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
             "step_set",
             "ingredient_set",
             "scheduledrecipe_set",
-            "note_set",
-            "note_set__uploads",
+            "notes",
+            "notes__uploads",
+            "notes__reactions",
+            "notes__reactions__created_by",
             "timelineevent_set",
             "section_set",
         ).get(id=new_recipe.id)
@@ -540,10 +543,12 @@ class TeamRecipesViewSet(APIView):
             "step_set",
             "ingredient_set",
             "scheduledrecipe_set",
-            "note_set",
-            "note_set__created_by",
-            "note_set__last_modified_by",
-            "note_set__uploads",
+            "notes",
+            "notes__created_by",
+            "notes__last_modified_by",
+            "notes__uploads",
+            "notes__reactions",
+            "notes__reactions__created_by",
             "timelineevent_set",
             "timelineevent_set__created_by",
             "section_set",
@@ -718,9 +723,6 @@ class NoteViewSet(viewsets.ModelViewSet):
 
     queryset = Note.objects.all()
     permission_classes = (IsAuthenticated,)
-
-    def get_serializer(self, *args, **kwargs):
-        return NoteSerializer(*args, dangerously_allow_db=True, **kwargs)
 
     def create(  # type: ignore [override]
         self, request: AuthedRequest, recipe_pk: str
