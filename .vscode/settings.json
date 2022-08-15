@@ -15,7 +15,7 @@
     "--follow-imports=silent",
     "--show-column-numbers",
     "--config-file",
-    "tox.ini"
+    "${workspaceFolder}/backend/tox.ini"
   ],
   "python.linting.flake8Enabled": true,
   "python.linting.flake8Args": [
