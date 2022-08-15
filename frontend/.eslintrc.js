@@ -52,7 +52,7 @@ module.exports = {
         paths: [
           {
             name: "lodash",
-            message: "Please importfrom 'lodash-es' instead.",
+            message: "Please impor from 'lodash-es' instead.",
           },
           {
             name: "redux",

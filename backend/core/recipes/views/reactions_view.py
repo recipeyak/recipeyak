@@ -7,7 +7,6 @@ from django.shortcuts import get_object_or_404
 from psycopg2.errors import UniqueViolation
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from typing_extensions import Literal
@@ -30,10 +29,6 @@ class ReactToNoteViewParams(RequestParams):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def note_reaction_create_view(request: AuthedRequest, note_pk: int) -> Response:
-    if request.method != "POST":
-        assert request.method is not None
-        raise MethodNotAllowed(method=request.method)
-
     params = ReactToNoteViewParams.parse_obj(request.data)
 
     note = get_object_or_404(user_and_team_notes(request.user), pk=note_pk)
@@ -54,9 +49,5 @@ def note_reaction_create_view(request: AuthedRequest, note_pk: int) -> Response:
 @api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
 def note_reaction_delete_view(request: AuthedRequest, reaction_pk: str) -> Response:
-    if request.method != "DELETE":
-        assert request.method is not None
-        raise MethodNotAllowed(method=request.method)
-
     user_reactions(request.user).filter(pk=reaction_pk).delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
