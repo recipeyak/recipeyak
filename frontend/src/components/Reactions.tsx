@@ -32,8 +32,6 @@ const StyledSmile = styled(Smile)`
 const ReactionButtonContainer = styled.div`
   background-color: white;
   color: #172b4d;
-
-  /* border: 1px solid #ebecf0; */
   border-radius: 12px;
   line-height: 0;
   display: inline-block;
@@ -67,10 +65,7 @@ const UpvoteReaction = styled.div`
   border-style: solid;
   background-color: white;
   display: inline-flex;
-  /* color: #172b4d; */
-
   border-radius: 15px;
-
   border-width: 1px;
   border-color: #d2dff0;
   margin-right: 0.5rem;
@@ -86,18 +81,14 @@ const ReactionButton = styled.div<{ pressed: boolean }>`
   width: 32px;
   font-size: 16px;
   text-align: center;
-  /* border-style: solid; */
-  /* border-width: 1px; */
   border-radius: 3px;
   border-color: hsl(0deg, 0%, 86%);
   cursor: pointer;
-
-  &:hover {
-    /* border-color: #4a4a4a; */
-    background-color: hsla(0, 0%, 0%, 0.06);
-  }
   background-color: ${(props) =>
     props.pressed ? "hsla(0, 0%, 0%, 0.04)" : "initial"};
+  &:hover {
+    background-color: hsla(0, 0%, 0%, 0.06);
+  }
 `
 
 const REACTION_EMOJIS = ["❤️", "😆", "🤮"] as const
