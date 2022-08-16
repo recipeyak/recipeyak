@@ -376,6 +376,10 @@ const UserHome = () => {
           <SearchInputContainer ref={ref}>
             <SearchInput
               autoFocus
+              autoCorrect="false"
+              autoComplete="false"
+              autoCapitalize="false"
+              spellCheck="false"
               value={searchQuery}
               onChange={setQuery}
               onKeyDown={handleSearchKeydown}
