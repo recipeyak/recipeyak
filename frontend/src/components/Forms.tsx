@@ -80,6 +80,7 @@ const createInput =
     <BaseInput {...props} type={type} />
 
 export const TextInput = createInput("text")
+export const SearchInput = createInput("search")
 export const PasswordInput = createInput("password")
 export const EmailInput = createInput("email")
 export const DateInput = createInput("date")

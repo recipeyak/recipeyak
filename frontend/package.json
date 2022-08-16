@@ -65,7 +65,8 @@
     "redux-loop": "^4.5.4",
     "sass": "^1.54.0",
     "styled-components": "^4.4.0",
-    "typesafe-actions": "^2.0.4"
+    "typesafe-actions": "^2.0.4",
+    "use-onclickoutside": "^0.4.1"
   },
   "volta": {
     "node": "18.7.0",
