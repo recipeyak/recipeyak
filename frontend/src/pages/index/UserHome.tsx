@@ -6,21 +6,24 @@ import {
   parseISO,
   startOfToday,
 } from "date-fns"
+import queryString from "query-string"
 import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
+import useOnClickOutside from "use-onclickoutside"
 
 import * as api from "@/api"
 import Footer from "@/components/Footer"
-import { TextInput } from "@/components/Forms"
+import * as forms from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { useApi, useDispatch, useScheduleTeamID, useSelector } from "@/hooks"
 import { searchRecipes } from "@/search"
 import { getTeamRecipes } from "@/store/reducers/recipes"
 import { fetchingRecipeListAsync } from "@/store/thunks"
 import { css, styled } from "@/theme"
+import { updateQueryParamsAsync } from "@/utils/querystring"
 import { isFailure, isSuccess, mapSuccessLike } from "@/webdata"
 
-const SearchInput = styled(TextInput)`
+const SearchInput = styled(forms.SearchInput)`
   font-size: 1.5rem !important;
   margin-bottom: 0.25rem;
 `
@@ -273,8 +276,19 @@ function SchedulePreview() {
     </ScheduleContainer>
   )
 }
+
+function searchQueryFromUrl() {
+  const qs = queryString.parse(window.location.search)
+  const search = qs["search"]
+  if (typeof search == "string") {
+    return search
+  }
+  return ""
+}
+
 const UserHome = () => {
-  const [searchQuery, setSearchQuery] = React.useState("")
+  const [searchQuery, setSearchQuery] =
+    React.useState<string>(searchQueryFromUrl)
   const recipes = useSelector((s) => getTeamRecipes(s, "personal"))
   const dispatch = useDispatch()
   useEffect(() => {
@@ -286,6 +300,17 @@ const UserHome = () => {
     },
     [],
   )
+
+  const ref = React.useRef(null)
+  // close our search panel and clear our search query when we click outside our
+  // dropdown.
+  useOnClickOutside(ref, () => {
+    setSearchQuery("")
+  })
+
+  useEffect(() => {
+    updateQueryParamsAsync({ search: searchQuery || "" })
+  }, [searchQuery])
 
   const filteredRecipes =
     recipes?.kind === "Success"
@@ -348,9 +373,13 @@ const UserHome = () => {
       <div className="container pr-2 pl-2 pb-2">
         <Helmet title="Home" />
         <SearchInputAligner>
-          <SearchInputContainer>
+          <SearchInputContainer ref={ref}>
             <SearchInput
               autoFocus
+              autoCorrect="false"
+              autoComplete="false"
+              autoCapitalize="false"
+              spellCheck="false"
               value={searchQuery}
               onChange={setQuery}
               onKeyDown={handleSearchKeydown}
