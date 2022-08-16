@@ -1424,14 +1424,6 @@ optional = false
 python-versions = ">=3.7,<4.0"
 
 [[package]]
-name = "types-psycopg2"
-version = "2.9.19"
-description = "Typing stubs for psycopg2"
-category = "dev"
-optional = false
-python-versions = "*"
-
-[[package]]
 name = "types-pyyaml"
 version = "6.0.0"
 description = "Typing stubs for PyYAML"
@@ -1525,7 +1517,7 @@ testing = ["jaraco.itertools", "func-timeout"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "3fd911c1400445373e89277a4c48ba909ce292040f5c043cd4fe9bb3ab644db8"
+content-hash = "8c55e79118285e10ada845932347acd81c399dda89a48adddf236f7a5e2ba5a0"
 
 [metadata.files]
 appnope = []
@@ -1747,7 +1739,6 @@ typed-ast = [
     {file = "typed_ast-1.4.3.tar.gz", hash = "sha256:fb1bbeac803adea29cedd70781399c99138358c26d05fcbd23c13016b7f5ec65"},
 ]
 types-awscrt = []
-types-psycopg2 = []
 types-pyyaml = []
 types-requests = []
 types-s3transfer = []
