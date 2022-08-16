@@ -164,6 +164,7 @@ export function findReaction(
 export function ReactionPopover(props: {
   onPick: (_: ReactionType) => void
   reactions: Reaction[]
+  className?: string
 }) {
   const [visible, setVisible] = useState(false)
   const user = useCurrentUser()
@@ -198,7 +199,7 @@ export function ReactionPopover(props: {
       }
     >
       <OpenReactions
-        className="cursor-pointer ml-auto"
+        className={cls("cursor-pointer", props.className)}
         onClick={() => {
           setVisible((s) => !s)
         }}
@@ -210,6 +211,7 @@ export function ReactionPopover(props: {
 export function ReactionsFooter(props: {
   reactions: Reaction[]
   onClick: (_: ReactionType) => void
+  onPick: (_: ReactionType) => void
 }) {
   const reactionsGroup = groupBy(props.reactions, (x) => x.type)
   const groupedReactions: { emoji: ReactionType; reactions: Reaction[] }[] =
@@ -235,6 +237,9 @@ export function ReactionsFooter(props: {
           <ReactionCount>{reactions.length}</ReactionCount>
         </UpvoteReaction>
       ))}
+      {groupedReactions.length > 0 && (
+        <ReactionPopover onPick={props.onPick} reactions={props.reactions} />
+      )}
     </NoteActionsContainer>
   )
 }
