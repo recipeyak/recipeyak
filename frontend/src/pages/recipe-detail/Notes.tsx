@@ -664,7 +664,10 @@ function useImageUpload(
           ...s,
         ]
       })
-      void api.uploadImage({ image: file, onProgress(progress) {
+      void api
+        .uploadImage({
+          image: file,
+          onProgress(progress) {
             setLocalImages((s) => {
               const f = s.find((x) => x.localId === fileId)
               if (f) {
@@ -672,26 +675,28 @@ function useImageUpload(
               }
               return s
             })
-          }, }).then((res) => {
-        if (isOk(res)) {
-          addUploads({ ...res.data, type: "upload", localId: fileId })
-          setLocalImages((s) => {
-            const f = s.find((x) => x.localId === fileId)
-            if (f) {
-              f.state = "success"
-            }
-            return s
-          })
-        } else {
-          setLocalImages((s) => {
-            const existingUpload = s.find((x) => x.localId === fileId)
-            if (existingUpload) {
-              existingUpload.state = "failed"
-            }
-            return s
-          })
-        }
-      })
+          },
+        })
+        .then((res) => {
+          if (isOk(res)) {
+            addUploads({ ...res.data, type: "upload", localId: fileId })
+            setLocalImages((s) => {
+              const f = s.find((x) => x.localId === fileId)
+              if (f) {
+                f.state = "success"
+              }
+              return s
+            })
+          } else {
+            setLocalImages((s) => {
+              const existingUpload = s.find((x) => x.localId === fileId)
+              if (existingUpload) {
+                existingUpload.state = "failed"
+              }
+              return s
+            })
+          }
+        })
     }
   }
 
