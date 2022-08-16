@@ -8,8 +8,9 @@ import { useLocation } from "react-router-dom"
 import * as api from "@/api"
 import { Helmet } from "@/components/Helmet"
 import Loader from "@/components/Loader"
+import { useRecipe } from "@/components/queries"
 import { formatHumanDate } from "@/date"
-import { useDispatch, useOnWindowFocusChange, useSelector } from "@/hooks"
+import { useDispatch } from "@/hooks"
 import AddIngredientOrSection from "@/pages/recipe-detail/AddIngredient"
 import AddStep from "@/pages/recipe-detail/AddStep"
 import { Ingredient } from "@/pages/recipe-detail/Ingredient"
@@ -23,8 +24,6 @@ import { getNewPosIngredients } from "@/position"
 import { isOk } from "@/result"
 import {
   deleteIngredient,
-  fetchRecipe,
-  getRecipeById,
   IIngredient,
   IRecipe,
   updateIngredient,
@@ -33,7 +32,6 @@ import {
 import { styled } from "@/theme"
 import { recipeURL } from "@/urls"
 import { pathNamesEqual } from "@/utils/url"
-import { isFailure, isInitial, isLoading, isSuccessLike } from "@/webdata"
 
 type SectionsAndIngredients = ReadonlyArray<
   | {
@@ -292,24 +290,6 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
   )
 }
 
-export function useRecipe(recipeId: number) {
-  const dispatch = useDispatch()
-  const fetch = React.useCallback(
-    (refresh?: boolean) => {
-      dispatch(fetchRecipe.request({ recipeId, refresh }))
-    },
-    [dispatch, recipeId],
-  )
-  React.useEffect(() => {
-    fetch()
-  }, [fetch])
-  const refreshData = React.useCallback(() => {
-    fetch(true)
-  }, [fetch])
-  useOnWindowFocusChange(refreshData)
-  return useSelector((state) => getRecipeById(state, recipeId))
-}
-
 const ArchiveMessage = styled.div`
   background: whitesmoke;
   font-weight: bold;
@@ -358,12 +338,12 @@ export function Recipe(props: IRecipeProps) {
   const maybeRecipe = useRecipe(recipeId)
 
   useRecipeUrlUpdate(
-    isSuccessLike(maybeRecipe)
+    maybeRecipe.isSuccess
       ? { id: maybeRecipe.data.id, name: maybeRecipe.data.name }
       : null,
   )
 
-  if (isInitial(maybeRecipe) || isLoading(maybeRecipe)) {
+  if (maybeRecipe.isLoading) {
     return (
       <section className="d-flex justify-content-center">
         <Loader />
@@ -371,7 +351,7 @@ export function Recipe(props: IRecipeProps) {
     )
   }
 
-  if (isFailure(maybeRecipe)) {
+  if (maybeRecipe.data == null) {
     return <p>recipe not found</p>
   }
 

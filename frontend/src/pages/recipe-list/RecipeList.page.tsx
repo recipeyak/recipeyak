@@ -1,19 +1,22 @@
 import queryString from "query-string"
 import React, { useEffect, useState } from "react"
-import { connect } from "react-redux"
 import { Link } from "react-router-dom"
 
 import { TextInput } from "@/components/Forms"
 import Loader from "@/components/Loader"
+import { useRecipes } from "@/components/queries"
 import RecipeItem from "@/pages/recipe-list/RecipeItem"
 import { parseIntOrNull } from "@/parseIntOrNull"
 import { searchRecipes } from "@/search"
-import { getTeamRecipes, IRecipe } from "@/store/reducers/recipes"
-import { ITeam } from "@/store/reducers/teams"
-import { IState } from "@/store/store"
-import { Dispatch, fetchingRecipeListAsync } from "@/store/thunks"
+import { IRecipe } from "@/store/reducers/recipes"
 import { updateQueryParamsAsync } from "@/utils/querystring"
-import { isSuccessOrRefetching, WebData } from "@/webdata"
+import {
+  Failure,
+  isSuccessOrRefetching,
+  Loading,
+  Success,
+  WebData,
+} from "@/webdata"
 
 interface IResultsProps {
   readonly recipes: JSX.Element[]
@@ -116,12 +119,9 @@ function RecipeList(props: IRecipeList) {
 }
 
 interface IRecipesProps {
-  readonly fetchData: (teamID: number | "personal") => void
-  readonly recipes: WebData<IRecipe[]>
   readonly scroll?: boolean
   readonly drag?: boolean
   readonly noPadding?: boolean
-  readonly teamID?: ITeam["id"] | "personal" | null
 }
 
 function getSearch(qs: string): string {
@@ -145,24 +145,14 @@ function getSearch(qs: string): string {
   return `recipeId:${recipeId}`
 }
 
-function RecipesListSearch({
-  fetchData,
-  noPadding,
-  recipes,
-  drag,
-  scroll,
-  teamID,
-}: IRecipesProps) {
+function RecipesListSearch({ noPadding, drag, scroll }: IRecipesProps) {
   const [query, setQuery] = useState(() => getSearch(window.location.search))
 
   useEffect(() => {
     updateQueryParamsAsync({ search: query })
   }, [query])
 
-  useEffect(() => {
-    const teamID_ = teamID == null ? "personal" : teamID
-    fetchData(teamID_)
-  }, [fetchData, teamID])
+  const recipes = useRecipes()
 
   const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value)
@@ -176,21 +166,20 @@ function RecipesListSearch({
         onChange={handleQueryChange}
         placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:"
       />
-      <RecipeList recipes={recipes} query={query} drag={drag} scroll={scroll} />
+      <RecipeList
+        recipes={
+          recipes.isLoading
+            ? Loading()
+            : recipes.isError
+            ? Failure()
+            : Success(recipes.data)
+        }
+        query={query}
+        drag={drag}
+        scroll={scroll}
+      />
     </>
   )
 }
 
-function mapStateToProps(state: IState): Pick<IRecipesProps, "recipes"> {
-  return {
-    recipes: getTeamRecipes(state, "personal"),
-  }
-}
-
-const mapDispatchToProps = (
-  dispatch: Dispatch,
-): Pick<IRecipesProps, "fetchData"> => ({
-  fetchData: fetchingRecipeListAsync(dispatch),
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(RecipesListSearch)
+export default RecipesListSearch

@@ -1,27 +1,18 @@
 import { push } from "connected-react-router"
-import {
-  addDays,
-  eachDayOfInterval,
-  format,
-  parseISO,
-  startOfToday,
-} from "date-fns"
 import queryString from "query-string"
 import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
 import useOnClickOutside from "use-onclickoutside"
 
-import * as api from "@/api"
 import Footer from "@/components/Footer"
 import * as forms from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
-import { useApi, useDispatch, useScheduleTeamID, useSelector } from "@/hooks"
+import { useRecipes, useSchedulePreview } from "@/components/queries"
+import { useDispatch } from "@/hooks"
 import { searchRecipes } from "@/search"
-import { getTeamRecipes } from "@/store/reducers/recipes"
-import { fetchingRecipeListAsync } from "@/store/thunks"
 import { css, styled } from "@/theme"
 import { updateQueryParamsAsync } from "@/utils/querystring"
-import { isFailure, isSuccess, mapSuccessLike } from "@/webdata"
+import { isFailure, isSuccess } from "@/webdata"
 
 const SearchInput = styled(forms.SearchInput)`
   font-size: 1.5rem !important;
@@ -191,71 +182,6 @@ const NameAuthorContainer = styled.div`
   display: flex;
 `
 
-type Recipe = { readonly id: string; readonly name: string }
-type RecipeSchedule = { readonly day: string; readonly recipes: Recipe[] }
-
-function buildSchedule(
-  schedule: readonly {
-    readonly on: string
-    readonly recipe: {
-      readonly id: string
-      readonly name: string
-    }
-  }[],
-  start: Date,
-  end: Date,
-): readonly RecipeSchedule[] {
-  const newSchedule: {
-    [key: string]: { id: string; name: string }[] | undefined
-  } = {}
-  eachDayOfInterval({
-    start,
-    end,
-  }).forEach((day) => {
-    newSchedule[day.toISOString()] = []
-  })
-  schedule.forEach((x) => {
-    const date = parseISO(x.on)
-    const s = newSchedule[date.toISOString()]
-    if (s == null) {
-      newSchedule[date.toISOString()] = []
-    }
-    newSchedule[date.toISOString()]?.push({
-      id: x.recipe.id,
-      name: x.recipe.name,
-    })
-  })
-  return Object.entries(newSchedule).map(([key, value]): RecipeSchedule => {
-    return { day: format(parseISO(key), "E"), recipes: value || [] }
-  })
-}
-
-function useSchedulePreview() {
-  const teamID = useScheduleTeamID()
-  const start = startOfToday()
-  const end = addDays(start, 6)
-  const res = useApi(
-    api.getCalendarRecipeListRequestBuilder({
-      teamID,
-      start,
-      end,
-    }),
-  )
-  return mapSuccessLike(res, (x) =>
-    buildSchedule(
-      x.scheduledRecipes.map((scheduledRecipe) => ({
-        on: scheduledRecipe.on,
-        recipe: {
-          id: scheduledRecipe.recipe.id.toString(),
-          name: scheduledRecipe.recipe.name,
-        },
-      })),
-      start,
-      end,
-    ),
-  )
-}
-
 function SchedulePreview() {
   const scheduledRecipes = useSchedulePreview()
 
@@ -289,17 +215,16 @@ function searchQueryFromUrl() {
 const UserHome = () => {
   const [searchQuery, setSearchQuery] =
     React.useState<string>(searchQueryFromUrl)
-  const recipes = useSelector((s) => getTeamRecipes(s, "personal"))
   const dispatch = useDispatch()
-  useEffect(() => {
-    void fetchingRecipeListAsync(dispatch)()
-  }, [dispatch])
+
   const setQuery = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setSearchQuery(event.target.value)
     },
     [],
   )
+
+  const recipes = useRecipes()
 
   const ref = React.useRef(null)
   // close our search panel and clear our search query when we click outside our
@@ -312,12 +237,11 @@ const UserHome = () => {
     updateQueryParamsAsync({ search: searchQuery || "" })
   }, [searchQuery])
 
-  const filteredRecipes =
-    recipes?.kind === "Success"
-      ? searchRecipes({ recipes: recipes.data, query: searchQuery })
-      : { recipes: [] }
+  const filteredRecipes = recipes.isSuccess
+    ? searchRecipes({ recipes: recipes.data, query: searchQuery })
+    : { recipes: [] }
 
-  const loadingSuggestions = recipes?.kind !== "Success"
+  const loadingSuggestions = !recipes.isSuccess
 
   const suggestions = filteredRecipes.recipes
     .map((result, index) => {

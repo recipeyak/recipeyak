@@ -1,3 +1,4 @@
+import { isRight } from "fp-ts/lib/Either"
 import * as t from "io-ts"
 
 import { toISODateString } from "@/date"
@@ -392,6 +393,24 @@ export function getCalendarRecipeList({
   readonly end: Date
 }) {
   return getCalendarRecipeListRequestBuilder({ teamID, start, end }).send()
+}
+export function getCal({
+  teamID,
+  start,
+  end,
+}: {
+  readonly teamID: number | "personal"
+  readonly start: Date
+  readonly end: Date
+}) {
+  return getCalendarRecipeListRequestBuilder({ teamID, start, end })
+    .send()
+    .then((res) => {
+      if (isRight(res)) {
+        return res.right
+      }
+      throw res.left
+    })
 }
 
 export function getCalendarRecipeListRequestBuilder({
