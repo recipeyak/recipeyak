@@ -19,7 +19,7 @@ import {
 import { Container, ContainerBase } from "@/components/Base"
 import ErrorBoundary from "@/components/ErrorBoundary"
 import { Helmet } from "@/components/Helmet"
-import Notification from "@/containers/Notification"
+import Notification from "@/components/Notification"
 import NotFound from "@/pages/404/404.page"
 import Home from "@/pages/index/Index.page"
 import Login from "@/pages/login/Login.page"
