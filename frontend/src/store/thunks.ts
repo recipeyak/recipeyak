@@ -9,8 +9,8 @@ import { Dispatch as ReduxDispatch } from "redux"
 
 import * as api from "@/api"
 import { heldKeys } from "@/components/CurrentKeys"
-import { IRecipeBasic } from "@/components/RecipeTitle"
 import { isInsideChangeWindow, second, toISODateString } from "@/date"
+import { IRecipeBasic } from "@/pages/recipe-detail/RecipeTitle"
 import { Err, isErr, isOk, Ok, Result } from "@/result"
 import { clearAddRecipeForm } from "@/store/reducers/addrecipe"
 import {
