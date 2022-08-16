@@ -289,6 +289,7 @@ export function Note({ note, recipeId, className }: INoteProps) {
             <NoteTimeStamp created={note.created} />
           </a>
           <ReactionPopover
+            className="ml-auto"
             onPick={async (emoji) => addOrRemoveReaction(emoji)}
             reactions={reactions}
           />
@@ -319,6 +320,7 @@ export function Note({ note, recipeId, className }: INoteProps) {
             </AttachmentContainer>
             <ReactionsFooter
               reactions={reactions}
+              onPick={async (emoji) => addOrRemoveReaction(emoji)}
               onClick={async (emoji) => addOrRemoveReaction(emoji)}
             />
           </div>
