@@ -1,14 +1,14 @@
 import React from "react"
 import { connect } from "react-redux"
 
-import AddIngredientForm from "@/components/AddIngredientForm"
-import AddStepForm from "@/components/AddStepForm"
 import { Button, ButtonPrimary } from "@/components/Buttons"
 import { Select, TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
-import { Ingredient } from "@/components/Ingredient"
-import ListItem from "@/components/ListItem"
-import { SectionTitle } from "@/components/RecipeHelpers"
+import AddIngredientForm from "@/pages/recipe-detail/AddIngredientForm"
+import AddStepForm from "@/pages/recipe-detail/AddStepForm"
+import { Ingredient } from "@/pages/recipe-detail/Ingredient"
+import ListItem from "@/pages/recipe-detail/ListItem"
+import { SectionTitle } from "@/pages/recipe-detail/RecipeHelpers"
 import { teamsFrom } from "@/store/mapState"
 import {
   addAddRecipeFormIngredient,

@@ -1,8 +1,8 @@
 import React from "react"
 import { connect } from "react-redux"
 
-import AddStepForm from "@/components/AddStepForm"
 import GlobalEvent from "@/components/GlobalEvent"
+import AddStepForm from "@/pages/recipe-detail/AddStepForm"
 import {
   addStepToRecipe,
   IRecipe,

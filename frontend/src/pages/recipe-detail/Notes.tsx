@@ -8,16 +8,16 @@ import { classNames as cls } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
 import { ButtonPrimary, ButtonSecondary } from "@/components/Buttons"
 import { Markdown } from "@/components/Markdown"
+import { RotatingLoader } from "@/components/RoatingLoader"
+import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
+import { useCurrentUser, useDispatch } from "@/hooks"
 import {
   findReaction,
   Reaction,
   ReactionPopover,
   ReactionsFooter,
   ReactionType,
-} from "@/components/Reactions"
-import { RotatingLoader } from "@/components/RoatingLoader"
-import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
-import { useCurrentUser, useDispatch } from "@/hooks"
+} from "@/pages/recipe-detail/Reactions"
 import { isOk } from "@/result"
 import {
   INote,

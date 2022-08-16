@@ -9,7 +9,7 @@ import {
 } from "typesafe-actions"
 
 import * as api from "@/api"
-import { Reaction } from "@/components/Reactions"
+import { Reaction } from "@/pages/recipe-detail/Reactions"
 import { isOk } from "@/result"
 import { ITeam } from "@/store/reducers/teams"
 import { IState } from "@/store/store"
