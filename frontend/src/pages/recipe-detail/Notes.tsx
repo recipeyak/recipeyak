@@ -515,8 +515,10 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     addUploads: (upload: UploadSuccess) => {
       setUploads((s) => [upload, ...s])
     },
-    removeUploads: (uploadIds: string[]) => {
-      setUploads((s) => s.filter((x) => !uploadIds.includes(x.id)))
+    removeUploads: (localids: string[]) => {
+      setUploads((s) => {
+        return s.filter((u) => !localids.includes(u.localId))
+      })
     },
     uploadedImages,
     resetUploads: () => {
@@ -651,6 +653,7 @@ function useImageUpload(
           {
             id: fileId,
             file,
+            localId: fileId,
             url: URL.createObjectURL(file),
             state: "loading",
             type: "in-progress",
@@ -660,18 +663,17 @@ function useImageUpload(
       })
       void api.uploadImage({ image: file }).then((res) => {
         if (isOk(res)) {
-          addUploads({ ...res.data, type: "upload" })
+          addUploads({ ...res.data, type: "upload", localId: fileId })
           setLocalImages((s) => {
-            const f = s.find((x) => x.id === fileId)
+            const f = s.find((x) => x.localId === fileId)
             if (f) {
-              f.dbId = res.data.id
               f.state = "success"
             }
             return s
           })
         } else {
           setLocalImages((s) => {
-            const existingUpload = s.find((x) => x.id === fileId)
+            const existingUpload = s.find((x) => x.localId === fileId)
             if (existingUpload) {
               existingUpload.state = "failed"
             }
@@ -682,9 +684,9 @@ function useImageUpload(
     }
   }
 
-  const removeFile = (fileId: string) => {
-    setLocalImages((s) => s.filter((x) => x.id !== fileId))
-    removeUploads([fileId])
+  const removeFile = (localId: string) => {
+    setLocalImages((s) => s.filter((x) => x.localId !== localId))
+    removeUploads([localId])
   }
 
   const orderedImages: ImageUpload[] = [
@@ -693,11 +695,13 @@ function useImageUpload(
       .filter(
         (i) =>
           !localImages
-            .map((x) => x.dbId)
+            .map((x) => x.localId)
             .filter(notUndefined)
-            .includes(i.id),
+            .includes(i.localId),
       )
-      .map((x) => ({ id: x.id, url: x.url, state: "success" } as const)),
+      .map(
+        (x) => ({ localId: x.localId, url: x.url, state: "success" } as const),
+      ),
   ]
 
   const reset = () => {
@@ -748,17 +752,16 @@ function ImageWithStatus({
 
 type InProgressUpload = {
   type: "in-progress"
-  id: string
   url: string
-  dbId?: string
   file: File
+  localId: string
   state: ImageUpload["state"]
 }
 
 type UploadSuccess = Upload
 
 type ImageUpload = {
-  id: string
+  localId: string
   url: string
   state: "loading" | "failed" | "success"
 }
@@ -780,12 +783,12 @@ function ImageUploader({
             // NOTE(sbdchd): it's important that the `localId` is consistent
             // throughout the upload content, otherwise we'll wipe out the DOM
             // node and there will be a flash as the image changes.
-            <ImagePreviewParent key={f.id}>
+            <ImagePreviewParent key={f.localId}>
               <ImageWithStatus url={f.url} state={f.state} />
               <CloseButton
                 onClick={() => {
                   if (confirm("Remove image?")) {
-                    removeFile(f.id)
+                    removeFile(f.localId)
                   }
                 }}
               >
