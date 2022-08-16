@@ -130,8 +130,10 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
     addUploads: (upload: UploadSuccess) => {
       setUploads((s) => [upload, ...s])
     },
-    removeUploads: (uploadIds: string[]) => {
-      setUploads((s) => s.filter((x) => !uploadIds.includes(x.id)))
+    removeUploads: (localIds: string[]) => {
+      setUploads((s) => {
+        return s.filter((u) => !localIds.includes(u.localId))
+      })
     },
     resetUploads: () => {
       setUploads(note.attachments)
@@ -515,9 +517,9 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     addUploads: (upload: UploadSuccess) => {
       setUploads((s) => [upload, ...s])
     },
-    removeUploads: (localids: string[]) => {
+    removeUploads: (localIds: string[]) => {
       setUploads((s) => {
-        return s.filter((u) => !localids.includes(u.localId))
+        return s.filter((u) => !localIds.includes(u.localId))
       })
     },
     uploadedImages,
