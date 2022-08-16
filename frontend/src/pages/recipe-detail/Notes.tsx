@@ -1,3 +1,4 @@
+import produce from "immer"
 import orderBy from "lodash-es/orderBy"
 import React, { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
@@ -668,33 +669,36 @@ function useImageUpload(
         .uploadImage({
           image: file,
           onProgress(progress) {
-            setLocalImages((s) => {
-              const f = s.find((x) => x.localId === fileId)
-              if (f) {
-                f.progress = progress
-              }
-              return s
-            })
+            setLocalImages(
+              produce((s) => {
+                const f = s.find((x) => x.localId === fileId)
+                if (f) {
+                  f.progress = progress
+                }
+              }),
+            )
           },
         })
         .then((res) => {
           if (isOk(res)) {
             addUploads({ ...res.data, type: "upload", localId: fileId })
-            setLocalImages((s) => {
-              const f = s.find((x) => x.localId === fileId)
-              if (f) {
-                f.state = "success"
-              }
-              return s
-            })
+            setLocalImages(
+              produce((s) => {
+                const f = s.find((x) => x.localId === fileId)
+                if (f) {
+                  f.state = "success"
+                }
+              }),
+            )
           } else {
-            setLocalImages((s) => {
-              const existingUpload = s.find((x) => x.localId === fileId)
-              if (existingUpload) {
-                existingUpload.state = "failed"
-              }
-              return s
-            })
+            setLocalImages(
+              produce((s) => {
+                const existingUpload = s.find((x) => x.localId === fileId)
+                if (existingUpload) {
+                  existingUpload.state = "failed"
+                }
+              }),
+            )
           }
         })
     }
@@ -799,12 +803,12 @@ function ImageWithStatus({
 }
 
 type InProgressUpload = {
-  type: "in-progress"
-  url: string
-  file: File
-  localId: string
-  progress: number
-  state: ImageUpload["state"]
+  readonly type: "in-progress"
+  readonly url: string
+  readonly file: File
+  readonly localId: string
+  readonly progress: number
+  readonly state: ImageUpload["state"]
 }
 
 type UploadSuccess = Upload
