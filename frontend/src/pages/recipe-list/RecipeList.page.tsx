@@ -12,6 +12,7 @@ import { getTeamRecipes, IRecipe } from "@/store/reducers/recipes"
 import { ITeam } from "@/store/reducers/teams"
 import { IState } from "@/store/store"
 import { Dispatch, fetchingRecipeListAsync } from "@/store/thunks"
+import { updateQueryParamsAsync } from "@/utils/querystring"
 import { isSuccessOrRefetching, WebData } from "@/webdata"
 
 interface IResultsProps {
@@ -143,6 +144,7 @@ function getSearch(qs: string): string {
   }
   return `recipeId:${recipeId}`
 }
+
 function RecipesListSearch({
   fetchData,
   noPadding,
@@ -154,15 +156,7 @@ function RecipesListSearch({
   const [query, setQuery] = useState(() => getSearch(window.location.search))
 
   useEffect(() => {
-    const queryParams = queryString.parse(window.location.search)
-
-    void Promise.resolve().then(() => {
-      history.replaceState(
-        null,
-        "",
-        "?" + queryString.stringify({ ...queryParams, search: query }),
-      )
-    })
+    updateQueryParamsAsync({ search: query })
   }, [query])
 
   useEffect(() => {
