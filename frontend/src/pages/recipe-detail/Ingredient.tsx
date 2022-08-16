@@ -5,8 +5,8 @@ import { isMobile } from "@/browser"
 import { Button, ButtonLink, ButtonPrimary } from "@/components/Buttons"
 import { CheckBox, selectTarget, TextInput } from "@/components/Forms"
 import GlobalEvent from "@/components/GlobalEvent"
-import IngredientView from "@/components/IngredientView"
 import { DragDrop, handleDndHover } from "@/dragDrop"
+import IngredientView from "@/pages/recipe-detail/IngredientView"
 import { hasSelection } from "@/utils/general"
 
 const emptyField = ({

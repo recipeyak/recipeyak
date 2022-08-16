@@ -9,7 +9,7 @@ import {
 } from "typesafe-actions"
 
 import * as api from "@/api"
-import { Reaction } from "@/components/Reactions"
+import { Reaction } from "@/pages/recipe-detail/Reactions"
 import { isOk } from "@/result"
 import { ITeam } from "@/store/reducers/teams"
 import { IState } from "@/store/store"
@@ -484,7 +484,12 @@ export interface IPublicUser {
   readonly avatar_url: string
 }
 
-export type Upload = { id: string; url: string; type: "upload" }
+export type Upload = {
+  id: string
+  url: string
+  type: "upload"
+  localId: string
+}
 
 export interface INote {
   readonly id: number

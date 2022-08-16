@@ -33,8 +33,8 @@ import { useRef } from "react"
 import { useDrag, useDrop } from "react-dnd"
 import { connect } from "react-redux"
 
-import ListItem from "@/components/ListItem"
 import { DragDrop, handleDndHover } from "@/dragDrop"
+import ListItem from "@/pages/recipe-detail/ListItem"
 import {
   deleteStep,
   IRecipe,

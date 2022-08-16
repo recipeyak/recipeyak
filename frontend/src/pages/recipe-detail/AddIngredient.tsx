@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 
-import AddIngredientForm from "@/components/AddIngredientForm"
 import { useDispatch } from "@/hooks"
+import AddIngredientForm from "@/pages/recipe-detail/AddIngredientForm"
 import { AddSectionForm } from "@/pages/recipe-detail/AddSectionForm"
 import { addIngredientToRecipe } from "@/store/reducers/recipes"
 

@@ -6,9 +6,9 @@ import cls from "@/classnames"
 import { Button, ButtonPrimary } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
 import GlobalEvent from "@/components/GlobalEvent"
-import MetaData from "@/components/MetaData"
-import Owner from "@/components/Owner"
-import { Dropdown } from "@/components/RecipeTitleDropdown"
+import MetaData from "@/pages/recipe-detail/MetaData"
+import Owner from "@/pages/recipe-detail/Owner"
+import { Dropdown } from "@/pages/recipe-detail/RecipeTitleDropdown"
 import {
   IRecipe,
   toggleEditingRecipe,

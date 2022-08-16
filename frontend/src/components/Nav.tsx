@@ -2,6 +2,8 @@ import { lighten } from "polished"
 import React from "react"
 import { Link } from "react-router-dom"
 
+import { Avatar } from "@/components/Avatar"
+import { Button } from "@/components/Buttons"
 import {
   DropdownContainer,
   DropdownMenu,
@@ -9,12 +11,62 @@ import {
 } from "@/components/Dropdown"
 import { Chevron } from "@/components/icons"
 import Logo from "@/components/Logo"
-import { UserDropdown } from "@/components/UserDropdown"
-import NavLink from "@/containers/NavLink"
+import { NavLink } from "@/components/Routing"
 import { useDispatch, useSelector } from "@/hooks"
 import { scheduleURLFromTeamID } from "@/store/mapState"
-import { fetchingUserAsync } from "@/store/thunks"
+import { fetchingUserAsync, loggingOutAsync } from "@/store/thunks"
 import { styled } from "@/theme"
+
+interface IUserAvatarProps {
+  readonly onClick?: () => void
+}
+function UserAvatar({ onClick }: IUserAvatarProps) {
+  const avatarURL = useSelector((s) => s.user.avatarURL)
+  return (
+    <Avatar
+      onClick={onClick}
+      tabIndex={0}
+      className="better-nav-item p-0"
+      avatarURL={avatarURL}
+    />
+  )
+}
+
+function LogoutButton() {
+  const loggingOut = useSelector((s) => s.user.loggingOut)
+  const dispatch = useDispatch()
+  const logout = React.useCallback(() => {
+    void loggingOutAsync(dispatch)()
+  }, [dispatch])
+  return (
+    <Button onClick={logout} loading={loggingOut} className="w-100">
+      Logout
+    </Button>
+  )
+}
+
+function UserEmail() {
+  const email = useSelector((s) => s.user.email)
+  return <p className="bold">{email}</p>
+}
+
+function UserDropdown() {
+  const { ref, toggle, isOpen } = useDropdown()
+  return (
+    <DropdownContainer ref={ref}>
+      <UserAvatar onClick={toggle} />
+      <DropdownMenu isOpen={isOpen}>
+        <UserEmail />
+        <p>
+          <Link to="/settings" className="p-1-0">
+            Settings
+          </Link>
+        </p>
+        <LogoutButton />
+      </DropdownMenu>
+    </DropdownContainer>
+  )
+}
 
 const WordMarkContainer = styled.span`
   font-size: 1.5rem;
