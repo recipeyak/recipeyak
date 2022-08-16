@@ -1,8 +1,8 @@
 import * as t from "io-ts"
 
-import { IRecipeBasic } from "@/components/RecipeTitle"
 import { toISODateString } from "@/date"
 import { http } from "@/http"
+import { IRecipeBasic } from "@/pages/recipe-detail/RecipeTitle"
 import { isOk, Ok } from "@/result"
 import { ICalRecipe } from "@/store/reducers/calendar"
 import { IInvite } from "@/store/reducers/invites"

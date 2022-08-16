@@ -7,7 +7,7 @@ import * as React from "react"
 
 import { classNames } from "@/classnames"
 import Month from "@/components/DateRangePicker/Month"
-import { Selecting } from "@/components/ShoppingList"
+import { Selecting } from "@/pages/schedule/ShoppingList"
 
 interface IDateRangePickerProps {
   readonly selecting: Selecting
