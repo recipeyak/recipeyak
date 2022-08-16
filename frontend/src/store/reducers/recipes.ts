@@ -485,10 +485,10 @@ export interface IPublicUser {
 }
 
 export type Upload = {
-  id: string
-  url: string
-  type: "upload"
-  localId: string
+  readonly id: string
+  readonly url: string
+  readonly type: "upload"
+  readonly localId: string
 }
 
 export interface INote {
