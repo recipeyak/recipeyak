@@ -21,6 +21,7 @@ from core.models.step import Step
 if TYPE_CHECKING:
     from core.models.user import User
     from core.models.team import Team
+    from core.models.note import Note
 
 
 class Recipe(CommonInfo, SoftDeleteObject):
@@ -66,6 +67,9 @@ class Recipe(CommonInfo, SoftDeleteObject):
     )
 
     objects = SoftDeleteManager["Recipe"]()
+
+    if TYPE_CHECKING:
+        notes: QuerySet["Note"]
 
     def move_to(self, account: Union[User, Team]) -> "Recipe":
         """

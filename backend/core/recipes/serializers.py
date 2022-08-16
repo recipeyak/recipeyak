@@ -17,6 +17,7 @@ from core.models import (
     Team,
     User,
 )
+from core.models.reaction import Reaction
 from core.models.upload import Upload
 from core.serialization import BaseModelSerializer, BaseRelatedField, BaseSerializer
 from core.teams.serializers import PublicUserSerializer
@@ -90,40 +91,6 @@ class StepSerializer(BaseModelSerializer):
                 self.fields.pop(field_name)
 
 
-class NoteSerializer(BaseModelSerializer):
-    created_by = PublicUserSerializer(read_only=True)
-    last_modified_by = PublicUserSerializer(read_only=True)
-    type = serializers.SerializerMethodField()
-
-    def get_type(self, obj: object) -> str:
-        return "note"
-
-    class Meta:
-        model = Note
-        read_only_fields = (
-            "id",
-            "created_by",
-            "last_modified_by",
-            "created",
-            "modified",
-            "type",
-        )
-        fields = (*read_only_fields, "text")
-
-    def __init__(self, *args, **kwargs):
-        # Don't pass the 'fields' arg up to the superclass
-        fields = kwargs.pop("fields", None)
-
-        super().__init__(*args, **kwargs)
-
-        if fields is not None:
-            # Drop any fields that are not specified in the `fields` argument.
-            allowed = set(fields)
-            existing = set(self.fields)
-            for field_name in existing - allowed:
-                self.fields.pop(field_name)
-
-
 class SectionSerializer(BaseModelSerializer):
     position = serializers.FloatField(required=False)
 
@@ -145,7 +112,7 @@ class RecipeSerializer(BaseModelSerializer):
 
     def get_timelineItems(self, obj: Recipe) -> list[dict[str, Any]]:
         items: list[dict[str, Any]] = [
-            serialize_note(x).dict() for x in cast(Any, obj).note_set.all()
+            serialize_note(x).dict() for x in cast(Any, obj).notes.all()
         ]
 
         items += [
@@ -266,6 +233,14 @@ def serialize_attachments(attachments: Iterable[Upload]) -> Iterable[NoteAttachm
         yield NoteAttachment(id=attachment.pk, url=attachment.public_url())
 
 
+class ReactionResponse(pydantic.BaseModel):
+    id: str
+    type: Literal["❤️", "😆", "🤮"]
+    note_id: str
+    user: PublicUser
+    created: datetime
+
+
 class NoteResponse(pydantic.BaseModel):
     id: int
     text: str
@@ -274,6 +249,7 @@ class NoteResponse(pydantic.BaseModel):
     created: datetime
     modified: datetime
     attachments: List[NoteAttachment]
+    reactions: List[ReactionResponse]
     type: Literal["note"] = "note"
 
 
@@ -286,6 +262,19 @@ def serialize_public_user(user: User) -> PublicUser:
     )
 
 
+def serialize_reactions(reactions: Iterable[Reaction]) -> List[ReactionResponse]:
+    return [
+        ReactionResponse(
+            id=reaction.pk,
+            type=reaction.emoji,
+            note_id=reaction.note_id,
+            user=serialize_public_user(reaction.created_by),
+            created=reaction.created,
+        )
+        for reaction in reactions
+    ]
+
+
 def serialize_note(note: Note) -> NoteResponse:
     return NoteResponse(
         id=note.pk,
@@ -295,6 +284,7 @@ def serialize_note(note: Note) -> NoteResponse:
         if note.last_modified_by
         else None,
         created=note.created,
+        reactions=serialize_reactions(note.reactions.all()),
         attachments=serialize_attachments(note.uploads.all()),
         modified=note.modified,
     )

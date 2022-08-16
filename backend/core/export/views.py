@@ -21,7 +21,7 @@ def export_recipes(request: AuthedRequest, filetype: str, pk: Optional[str] = No
     )
 
     if pk is not None:
-        queryset = get_object_or_404(queryset, pk=pk)
+        queryset = get_object_or_404(queryset, pk=pk)  # type: ignore[assignment]
 
     many = pk is None
 

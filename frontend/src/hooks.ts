@@ -182,3 +182,7 @@ export function useApi<A, O, T>(
   }, [request.getCacheKey()])
   return data
 }
+
+export function useCurrentUser() {
+  return useSelector((s) => s.user)
+}
