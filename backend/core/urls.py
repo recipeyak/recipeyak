@@ -15,6 +15,10 @@ from core.recipes.views import (
     delete_or_update_section_view,
     get_recipe_timeline,
 )
+from core.recipes.views.reactions_view import (
+    note_reaction_create_view,
+    note_reaction_delete_view,
+)
 from core.schedule.views import CalendarViewSet, ReportBadMerge, get_shopping_list_view
 from core.teams.views import (
     MembershipViewSet,
@@ -51,6 +55,8 @@ urlpatterns = [
     path("api/v1/recipes/<int:recipe_pk>/timeline", get_recipe_timeline),
     path("api/v1/recipes/<int:recipe_pk>/sections", create_section_view),
     path("api/v1/sections/<int:section_pk>/", delete_or_update_section_view),
+    path("api/v1/notes/<int:note_pk>/reactions/", note_reaction_create_view),
+    path("api/v1/reactions/<str:reaction_pk>/", note_reaction_delete_view),
     path("api/v1/", include(teams_router.urls)),
     path("api/v1/t/<team_pk>/shoppinglist/", get_shopping_list_view),
     path("api/v1/report-bad-merge", ReportBadMerge.as_view(), name="report-bad-merge"),

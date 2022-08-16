@@ -1,4 +1,4 @@
-import { orderBy } from "lodash"
+import orderBy from "lodash-es/orderBy"
 import React, { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 import Textarea from "react-textarea-autosize"
@@ -8,9 +8,16 @@ import { classNames as cls } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
 import { ButtonPrimary, ButtonSecondary } from "@/components/Buttons"
 import { Markdown } from "@/components/Markdown"
+import {
+  findReaction,
+  Reaction,
+  ReactionPopover,
+  ReactionsFooter,
+  ReactionType,
+} from "@/components/Reactions"
 import { RotatingLoader } from "@/components/RoatingLoader"
 import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
-import { useDispatch } from "@/hooks"
+import { useCurrentUser, useDispatch } from "@/hooks"
 import { isOk } from "@/result"
 import {
   INote,
@@ -106,12 +113,7 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
   const onEditorChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNewText(e.target.value)
   }
-  const onNoteClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Opening edit when a user clicks links results in weird looking UI as edit
-    // opens right as they are navigating away navigation.
-    if (e.target instanceof Element && e.target.tagName === "A") {
-      return
-    }
+  const onNoteClick = () => {
     setEditing(true)
   }
   return {
@@ -190,6 +192,9 @@ const AttachmentContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
 `
+const SmallAnchor = styled.a`
+  font-size: 0.825rem;
+`
 
 interface INoteProps {
   readonly note: INote
@@ -213,6 +218,8 @@ export function Note({ note, recipeId, className }: INoteProps) {
     resetUploads,
   } = useNoteEditHandlers({ note, recipeId })
 
+  const user = useCurrentUser()
+
   const noteId = `note-${note.id}`
 
   const { addFiles, removeFile, files, reset } = useImageUpload(
@@ -222,6 +229,53 @@ export function Note({ note, recipeId, className }: INoteProps) {
     resetUploads,
   )
 
+  const [reactions, setReactions] = useState<Reaction[]>(note.reactions)
+
+  const addOrRemoveReaction = async (emoji: ReactionType) => {
+    const existingReaction = findReaction(reactions, emoji, user.id ?? 0)
+
+    setReactions((s) =>
+      s.filter((reaction) => reaction.id !== existingReaction?.id),
+    )
+    if (existingReaction != null) {
+      // remove reaction
+      const res = await api.deleteReaction({ reactionId: existingReaction.id })
+      if (!isOk(res)) {
+        // add back reaction if we fail
+        setReactions((s) => [...s, existingReaction])
+      }
+    } else {
+      // add reaction
+      const tempId = uuid4()
+      setReactions((s) => [
+        ...s,
+        {
+          id: tempId,
+          created: new Date().toISOString(),
+          type: emoji,
+          user: {
+            id: user.id || 0,
+            name: user.name,
+          },
+        },
+      ])
+      const res = await api.createReaction({
+        noteId: note.id.toString(),
+        type: emoji,
+      })
+      if (isOk(res)) {
+        setReactions((s) => {
+          const newReactions = s.filter((reaction) => reaction.id !== tempId)
+          return [...newReactions, res.data]
+        })
+      } else {
+        setReactions((s) => {
+          return s.filter((reaction) => reaction.id !== tempId)
+        })
+      }
+    }
+  }
+
   return (
     <SharedEntry
       className={cls("d-flex align-items-start", className)}
@@ -229,17 +283,26 @@ export function Note({ note, recipeId, className }: INoteProps) {
     >
       <Avatar avatarURL={note.created_by.avatar_url} className="mr-2" />
       <div className="w-100">
-        <p>
+        <p className="d-flex align-items-center">
           <b>{note.created_by.name}</b>{" "}
-          <a href={`#${noteId}`}>
+          <a href={`#${noteId}`} className="ml-2">
             <NoteTimeStamp created={note.created} />
           </a>
+          <ReactionPopover
+            className="ml-auto"
+            onPick={async (emoji) => addOrRemoveReaction(emoji)}
+            reactions={reactions}
+          />
+          <SmallAnchor
+            className="ml-2 text-muted cursor-pointer"
+            onClick={onNoteClick}
+          >
+            edit
+          </SmallAnchor>
         </p>
         {!isEditing ? (
-          <div className="cursor-pointer" onClick={onNoteClick}>
-            <Markdown className="cursor-pointer" title="click to edit">
-              {note.text}
-            </Markdown>
+          <div>
+            <Markdown>{note.text}</Markdown>
             <AttachmentContainer>
               {note.attachments.map((attachment) => (
                 <a
@@ -255,6 +318,11 @@ export function Note({ note, recipeId, className }: INoteProps) {
                 </a>
               ))}
             </AttachmentContainer>
+            <ReactionsFooter
+              reactions={reactions}
+              onPick={async (emoji) => addOrRemoveReaction(emoji)}
+              onClick={async (emoji) => addOrRemoveReaction(emoji)}
+            />
           </div>
         ) : (
           <>

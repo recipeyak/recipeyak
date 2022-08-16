@@ -7,8 +7,7 @@
 
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "typescript.updateImportsOnFileMove.enabled": "always",
-
-  "python.pythonPath": ".venv/bin/python",
+  "python.defaultInterpreterPath": "${workspaceFolder}/backenv/.venv/bin/python",
   "python.envFile": "${workspaceFolder}/.vscode/.env",
   "python.linting.mypyEnabled": true,
   "python.linting.mypyArgs": [
@@ -16,7 +15,7 @@
     "--follow-imports=silent",
     "--show-column-numbers",
     "--config-file",
-    "tox.ini"
+    "${workspaceFolder}/backend/tox.ini"
   ],
   "python.linting.flake8Enabled": true,
   "python.linting.flake8Args": [
@@ -25,36 +24,24 @@
   ],
   "python.testing.pytestArgs": ["backend"],
   "python.testing.unittestEnabled": false,
-  "python.testing.nosetestsEnabled": false,
   "python.testing.pytestEnabled": true,
   "typescript.tsdk": "node_modules/typescript/lib",
   "eslint.alwaysShowStatus": true,
-  "eslint.autoFixOnSave": true,
   "eslint.lintTask.enable": true,
   "eslint.validate": [
-    {
-      "language": "javascriptreact",
-      "autoFix": true
-    },
-    {
-      "language": "javascript",
-      "autoFix": true
-    },
-    {
-      "language": "html",
-      "autoFix": true
-    },
-    {
-      "language": "typescript",
-      "autoFix": true
-    },
-    {
-      "language": "typescriptreact",
-      "autoFix": true
-    }
+       "javascriptreact",
+       "javascript",
+       "html",
+       "typescript",
+       "typescriptreact",
   ],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "python.languageServer": "Pylance"
+  "python.languageServer": "Pylance",
+  "editor.tabSize": 4,
+  "editor.insertSpaces": true,
+  "[python]": {
+      "editor.tabSize": 4
+  }
 }

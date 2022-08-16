@@ -219,6 +219,27 @@ export const addNoteToRecipe = ({
     text: note,
     attachment_upload_ids: attachmentUploadIds,
   })
+export const createReaction = ({
+  noteId,
+  type,
+}: {
+  noteId: string
+  type: "❤️" | "😆" | "🤮"
+}) =>
+  http.post<{
+    id: string
+    type: "❤️" | "😆" | "🤮"
+    note_id: string
+    user: {
+      id: number
+      name: string
+    }
+    created: string
+  }>(`/api/v1/notes/${noteId}/reactions/`, {
+    type,
+  })
+export const deleteReaction = ({ reactionId }: { reactionId: string }) =>
+  http.delete(`/api/v1/reactions/${reactionId}/`)
 export const uploadImage = async ({ image }: { image: File }) => {
   const res = await http.post<{
     id: string

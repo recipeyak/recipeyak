@@ -25,6 +25,7 @@ from core.models import (
     ChangeType,
     Ingredient,
     Note,
+    Reaction,
     Recipe,
     RecipeChange,
     ScheduledRecipe,
@@ -39,7 +40,6 @@ from core.models import (
 from core.models.user import get_avatar_url
 from core.recipes.serializers import (
     IngredientSerializer,
-    NoteSerializer,
     RecipeMoveCopySerializer,
     RecipeSerializer,
     RecipeTimelineSerializer,
@@ -47,6 +47,7 @@ from core.recipes.serializers import (
     StepSerializer,
     serialize_attachments,
     serialize_note,
+    serialize_reactions,
 )
 from core.recipes.utils import add_positions
 from core.request import AuthedRequest
@@ -82,10 +83,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
             "step_set",
             "ingredient_set",
             "scheduledrecipe_set",
-            "note_set",
-            "note_set__created_by",
-            "note_set__last_modified_by",
-            "note_set__uploads",
+            "notes",
+            "notes__created_by",
+            "notes__last_modified_by",
+            "notes__uploads",
+            "notes__reactions",
+            "notes__reactions__created_by",
             "timelineevent_set",
             "timelineevent_set__created_by",
             "section_set",
@@ -182,12 +185,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 note.pop(f"{name}__name", None)
             note["type"] = "note"
             note["attachments"] = []
+            note["reactions"] = []
             notes[note["recipe_id"]].append(note)
             note_map[note["id"]] = note
 
         for upload in Upload.objects.filter(note__recipe_id__in=recipes.keys()):
             note_map[upload.note_id]["attachments"].append(
                 list(serialize_attachments([upload]))[0].dict()
+            )
+        for reaction in Reaction.objects.filter(note__recipe_id__in=recipes.keys()):
+            note_map[reaction.note_id]["reactions"].append(
+                list(serialize_reactions([reaction]))[0].dict()
             )
 
         timeline_events = collections.defaultdict(list)
@@ -383,8 +391,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
             "step_set",
             "ingredient_set",
             "scheduledrecipe_set",
-            "note_set",
-            "note_set__uploads",
+            "notes",
+            "notes__uploads",
+            "notes__reactions",
+            "notes__reactions__created_by",
             "timelineevent_set",
             "section_set",
         ).get(id=new_recipe.id)
@@ -540,10 +550,12 @@ class TeamRecipesViewSet(APIView):
             "step_set",
             "ingredient_set",
             "scheduledrecipe_set",
-            "note_set",
-            "note_set__created_by",
-            "note_set__last_modified_by",
-            "note_set__uploads",
+            "notes",
+            "notes__created_by",
+            "notes__last_modified_by",
+            "notes__uploads",
+            "notes__reactions",
+            "notes__reactions__created_by",
             "timelineevent_set",
             "timelineevent_set__created_by",
             "section_set",
@@ -718,9 +730,6 @@ class NoteViewSet(viewsets.ModelViewSet):
 
     queryset = Note.objects.all()
     permission_classes = (IsAuthenticated,)
-
-    def get_serializer(self, *args, **kwargs):
-        return NoteSerializer(*args, dangerously_allow_db=True, **kwargs)
 
     def create(  # type: ignore [override]
         self, request: AuthedRequest, recipe_pk: str
