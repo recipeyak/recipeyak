@@ -653,36 +653,51 @@ function useImageUpload(
             file,
             url: URL.createObjectURL(file),
             state: "loading",
+            progress: 0,
             type: "in-progress",
           } as const,
           ...s,
         ]
       })
-      void api.uploadImage({ image: file }).then((res) => {
-        if (isOk(res)) {
-          addUploads({ ...res.data, type: "upload" })
-          setLocalImages((s) => {
-            const f = s.find((x) => x.id === fileId)
-            if (f) {
-              f.dbId = res.data.id
-              f.state = "success"
-            }
-            return s
-          })
-        } else {
-          setLocalImages((s) => {
-            const existingUpload = s.find((x) => x.id === fileId)
-            if (existingUpload) {
-              existingUpload.state = "failed"
-            }
-            return s
-          })
-        }
-      })
+      void api
+        .uploadImage({
+          image: file,
+          onProgress(progress) {
+            setLocalImages((s) => {
+              const f = s.find((x) => x.id === fileId)
+              if (f) {
+                f.progress = progress
+              }
+              return s
+            })
+          },
+        })
+        .then((res) => {
+          if (isOk(res)) {
+            addUploads({ ...res.data, type: "upload" })
+            setLocalImages((s) => {
+              const f = s.find((x) => x.id === fileId)
+              if (f) {
+                f.dbId = res.data.id
+                f.state = "success"
+              }
+              return s
+            })
+          } else {
+            setLocalImages((s) => {
+              const existingUpload = s.find((x) => x.id === fileId)
+              if (existingUpload) {
+                existingUpload.state = "failed"
+              }
+              return s
+            })
+          }
+        })
     }
   }
 
   const removeFile = (fileId: string) => {
+    console.log({ localImages, remoteImages })
     setLocalImages((s) => s.filter((x) => x.id !== fileId))
     removeUploads([fileId])
   }
@@ -713,16 +728,39 @@ function useImageUpload(
   } as const
 }
 
+const ImageAnchor = styled.a`
+  position: relative;
+`
+
+const ProgressBarContainer = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100px;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+`
+
+const StyledProgress = styled.progress`
+  height: 0.4rem;
+  border-radius: 0;
+`
+
 function ImageWithStatus({
   url,
   state,
+  progress,
 }: {
   url: string
   state: ImageUpload["state"]
+  progress?: number
 }) {
   return (
     <>
-      <a
+      <ImageAnchor
         href={url}
         target="_blank"
         rel="noreferrer"
@@ -731,7 +769,16 @@ function ImageWithStatus({
         }}
       >
         <ImagePreview isLoading={state === "loading"} src={url} />
-      </a>
+        {progress != null && (
+          <ProgressBarContainer>
+            <StyledProgress
+              value={progress}
+              max="100"
+              className="progress is-primary"
+            />
+          </ProgressBarContainer>
+        )}
+      </ImageAnchor>
       {state === "failed" && (
         <BrokenImageContainer title="Image upload failed">
           <BrokenImage>❌</BrokenImage>
@@ -752,6 +799,7 @@ type InProgressUpload = {
   url: string
   dbId?: string
   file: File
+  progress: number
   state: ImageUpload["state"]
 }
 
@@ -760,6 +808,7 @@ type UploadSuccess = Upload
 type ImageUpload = {
   id: string
   url: string
+  progress?: number
   state: "loading" | "failed" | "success"
 }
 
@@ -781,7 +830,11 @@ function ImageUploader({
             // throughout the upload content, otherwise we'll wipe out the DOM
             // node and there will be a flash as the image changes.
             <ImagePreviewParent key={f.id}>
-              <ImageWithStatus url={f.url} state={f.state} />
+              <ImageWithStatus
+                progress={f.progress}
+                url={f.url}
+                state={f.state}
+              />
               <CloseButton
                 onClick={() => {
                   if (confirm("Remove image?")) {

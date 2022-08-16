@@ -240,7 +240,13 @@ export const createReaction = ({
   })
 export const deleteReaction = ({ reactionId }: { reactionId: string }) =>
   http.delete(`/api/v1/reactions/${reactionId}/`)
-export const uploadImage = async ({ image }: { image: File }) => {
+export const uploadImage = async ({
+  image,
+  onProgress,
+}: {
+  image: File
+  onProgress: (_: number) => void
+}) => {
   const res = await http.post<{
     id: string
     upload_url: string
@@ -257,6 +263,9 @@ export const uploadImage = async ({ image }: { image: File }) => {
     headers: {
       ...res.data.upload_headers,
       "Content-Type": image.type,
+    },
+    onUploadProgress(progressEvent: { loaded: number; total: number }) {
+      onProgress((progressEvent.loaded / progressEvent.total) * 100)
     },
   })
   if (!isOk(uploadRes)) {
