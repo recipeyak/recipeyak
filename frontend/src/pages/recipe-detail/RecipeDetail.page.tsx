@@ -72,6 +72,12 @@ function getInitialIngredients({
   return sortBy(out, (x) => x.item.position)
 }
 
+const TitleContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+`
+
 function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
   const [addIngredient, setAddIngredient] = React.useState(false)
   const [addStep, setAddStep] = React.useState(false)
@@ -198,6 +204,14 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
       }),
     )
 
+  const [editing, setEditing] = React.useState(false)
+
+  React.useEffect(() => {
+    if (!editing) {
+      setAddStep(false)
+    }
+  }, [editing])
+
   return (
     <section className="ingredients-preparation-grid">
       <div>
@@ -256,8 +270,22 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
       </div>
 
       <div>
-        <SectionTitle>Preparation</SectionTitle>
-        <StepContainer steps={recipe.steps} recipeID={recipe.id} />
+        <TitleContainer>
+          <SectionTitle>Preparation</SectionTitle>
+          <a
+            className="text-muted"
+            onClick={() => {
+              setEditing((s) => !s)
+            }}
+          >
+            {editing ? "disable editing" : "edit"}
+          </a>
+        </TitleContainer>
+        <StepContainer
+          steps={recipe.steps}
+          isEditing={editing}
+          recipeID={recipe.id}
+        />
         {addStep ? (
           <AddStep
             id={recipe.id}
@@ -270,14 +298,16 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
             loading={recipe.addingStepToRecipe}
           />
         ) : (
-          <a
-            className="text-muted"
-            onClick={() => {
-              setAddStep(true)
-            }}
-          >
-            add
-          </a>
+          editing && (
+            <a
+              className="text-muted"
+              onClick={() => {
+                setAddStep(true)
+              }}
+            >
+              add
+            </a>
+          )
         )}
       </div>
       {/* extra div to push notes to the right side of the grid */}

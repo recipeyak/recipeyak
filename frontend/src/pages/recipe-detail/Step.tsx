@@ -52,6 +52,7 @@ interface IStepProps {
   readonly updating?: boolean
   readonly removing?: boolean
   readonly position?: number
+  readonly isEditing: boolean
 }
 
 function Step({ text, index, ...props }: IStepProps) {
@@ -65,6 +66,9 @@ function Step({ text, index, ...props }: IStepProps) {
     type: DragDrop.STEP,
     item: {
       index,
+    },
+    canDrag() {
+      return props.isEditing
     },
     end: (draggedItem) => {
       props.completeMove({ id: props.id, to: draggedItem.index })
@@ -82,11 +86,16 @@ function Step({ text, index, ...props }: IStepProps) {
   preview(drop(ref))
   return (
     <div style={style} ref={ref} className="mb-2">
-      <label className="better-label" ref={drag} style={{ cursor: "move" }}>
+      <label
+        className="better-label"
+        ref={drag}
+        style={{ cursor: props.isEditing ? "move" : "" }}
+      >
         Step {index + 1}
       </label>
       <StepBody
         id={props.id}
+        isEditing={props.isEditing}
         recipeID={props.recipeID}
         updating={props.updating}
         removing={props.removing}
@@ -102,6 +111,7 @@ interface IStepBodyBasic {
   readonly text: IStep["text"]
   readonly updating?: boolean
   readonly removing?: boolean
+  readonly isEditing: boolean
   readonly update: (data: {
     recipeID: number
     stepID: number
@@ -117,6 +127,7 @@ function StepBodyBasic({
   update,
   remove,
   updating,
+  isEditing,
   removing,
 }: IStepBodyBasic) {
   const listItemUpdate = (rID: number, sID: number, data: { text: string }) => {
@@ -128,6 +139,7 @@ function StepBodyBasic({
       id={id}
       recipeID={recipeID}
       text={text}
+      isEditing={isEditing}
       update={listItemUpdate}
       updating={updating}
       removing={removing}
