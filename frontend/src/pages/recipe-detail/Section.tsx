@@ -34,12 +34,14 @@ export function Section({
   recipeId,
   title,
   move,
+  isEditing,
   completeMove,
 }: {
   readonly index: number
   readonly recipeId: number
   readonly sectionId: number
   readonly title: string
+  readonly isEditing: boolean
   readonly move: ({
     from,
     to,
@@ -116,6 +118,9 @@ export function Section({
 
   const [{ isDragging }, drag, preview] = useDrag({
     type: DragDrop.SECTION,
+    canDrag() {
+      return isEditing
+    },
     item: {
       index,
     },
@@ -155,8 +160,12 @@ export function Section({
       ref={ref}
       style={style}
       className="bg-white mt-1 bold text-small"
-      title="click to edit"
-      onClick={handleEnableEditing}
+      title={isEditing ? "click to edit" : undefined}
+      onClick={() => {
+        if (isEditing) {
+          handleEnableEditing()
+        }
+      }}
     >
       {title}
     </li>

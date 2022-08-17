@@ -209,13 +209,24 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
   React.useEffect(() => {
     if (!editing) {
       setAddStep(false)
+      setAddIngredient(false)
     }
   }, [editing])
 
   return (
     <section className="ingredients-preparation-grid">
       <div>
-        <SectionTitle>Ingredients</SectionTitle>
+        <TitleContainer>
+          <SectionTitle>Ingredients</SectionTitle>
+          <a
+            className="text-muted"
+            onClick={() => {
+              setEditing((s) => !s)
+            }}
+          >
+            {editing ? "disable editing" : "edit"}
+          </a>
+        </TitleContainer>
         <ul>
           {sectionsAndIngredients.map((item, i) => {
             if (item.kind === "ingredient") {
@@ -231,6 +242,7 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
                   update={handleUpdate}
                   remove={handleRemove}
                   updating={ingre.updating}
+                  isEditing={editing}
                   removing={ingre.removing}
                   description={ingre.description}
                   optional={ingre.optional}
@@ -247,6 +259,7 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
                   recipeId={recipe.id}
                   sectionId={sec.id}
                   title={sec.title}
+                  isEditing={editing}
                   index={i}
                   move={handleMove}
                   completeMove={handleCompleteMove}
@@ -263,9 +276,11 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
             onCancel={handleHideAddIngredient}
           />
         ) : (
-          <a className="text-muted" onClick={handleShowAddIngredient}>
-            add
-          </a>
+          editing && (
+            <a className="text-muted" onClick={handleShowAddIngredient}>
+              add
+            </a>
+          )
         )}
       </div>
 
