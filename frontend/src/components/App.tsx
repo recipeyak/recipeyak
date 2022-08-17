@@ -1,6 +1,7 @@
 import "@/components/scss/main.scss"
 
 import { QueryClientProvider } from "@tanstack/react-query"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { ConnectedRouter } from "connected-react-router"
 import React from "react"
 import { DndProvider } from "react-dnd"
@@ -247,6 +248,7 @@ function Base() {
           </HelmetProvider>
         </Provider>
       </ThemeProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   )
 }

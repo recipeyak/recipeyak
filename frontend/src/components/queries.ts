@@ -29,6 +29,9 @@ export const queryClient = new QueryClient({
 
 const localStoragePersister = createSyncStoragePersister({
   storage: window.localStorage,
+  retry: (props) => {
+    throw props.error
+  },
 })
 // const sessionStoragePersister = createSyncStoragePersister({ storage: window.sessionStorage })
 
@@ -126,12 +129,15 @@ export function useSchedulePreview() {
   const teamID = useScheduleTeamID()
   const start = startOfToday()
   const end = startOfDay(addDays(start, 6))
-  const res = useQuery(["schedule-preview", teamID, start, end], () =>
-    api.getCalendarRecipeList({
-      teamID,
-      start,
-      end,
-    }),
+  console.log({ teamID, start: start.toISOString(), end: end.toISOString() })
+  const res = useQuery(
+    ["schedule-preview", teamID, start.toISOString(), end.toISOString()],
+    () =>
+      api.getCalendarRecipeList({
+        teamID,
+        start,
+        end,
+      }),
   )
   if (res.isSuccess) {
     if (isRight(res.data)) {
