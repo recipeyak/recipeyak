@@ -8,12 +8,12 @@ import { groupBy } from "lodash-es"
 import React, { useEffect, useRef, useState } from "react"
 import { connect } from "react-redux"
 
-import {
+import type {
   IGetShoppingListResponse,
   IIngredientItem,
   IQuantity,
-  Unit,
 } from "@/api"
+import { Unit } from "@/api"
 import { classNames } from "@/classnames"
 import { Button } from "@/components/Buttons"
 import DateRangePicker from "@/components/DateRangePicker/DateRangePicker"
@@ -24,20 +24,20 @@ import {
   setSelectingEnd,
   setSelectingStart,
 } from "@/store/reducers/shoppinglist"
-import { IState } from "@/store/store"
+import type { IState } from "@/store/store"
+import type { Dispatch } from "@/store/thunks"
 import {
-  Dispatch,
   fetchingShoppingListAsync,
   reportBadMergeAsync,
   showNotificationWithTimeoutAsync,
 } from "@/store/thunks"
 import { normalizeUnitsFracs } from "@/text"
+import type { WebData } from "@/webdata"
 import {
   isFailure,
   isLoading,
   isRefetching,
   isSuccessOrRefetching,
-  WebData,
 } from "@/webdata"
 
 const selectElementText = (el: Element) => {

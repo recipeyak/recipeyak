@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 import { classNames } from "@/classnames"
 import { DragIcon } from "@/components/icons"
 import { DragDrop } from "@/dragDrop"
-import { Match } from "@/search"
+import type { Match } from "@/search"
 import { styled } from "@/theme"
 import { recipeURL } from "@/urls"
 

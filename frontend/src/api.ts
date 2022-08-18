@@ -2,13 +2,18 @@ import * as t from "io-ts"
 
 import { toISODateString } from "@/date"
 import { http } from "@/http"
-import { IRecipeBasic } from "@/pages/recipe-detail/RecipeTitle"
+import type { IRecipeBasic } from "@/pages/recipe-detail/RecipeTitle"
 import { isOk, Ok } from "@/result"
-import { ICalRecipe } from "@/store/reducers/calendar"
-import { IInvite } from "@/store/reducers/invites"
-import { IIngredient, INote, IRecipe, IStep } from "@/store/reducers/recipes"
-import { IMember, ITeam } from "@/store/reducers/teams"
-import { ISession, IUser } from "@/store/reducers/user"
+import type { ICalRecipe } from "@/store/reducers/calendar"
+import type { IInvite } from "@/store/reducers/invites"
+import type {
+  IIngredient,
+  INote,
+  IRecipe,
+  IStep,
+} from "@/store/reducers/recipes"
+import type { IMember, ITeam } from "@/store/reducers/teams"
+import type { ISession, IUser } from "@/store/reducers/user"
 
 export const updateUser = (data: Partial<IUser>) =>
   http.patch<IUser>("/api/v1/user/", data)

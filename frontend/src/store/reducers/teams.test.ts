@@ -1,12 +1,10 @@
+import type { IMember, ITeam, ITeamsState } from "@/store/reducers/teams"
 import {
   deleteMembership,
   deleteTeam,
   fetchTeam,
   fetchTeamMembers,
   fetchTeams,
-  IMember,
-  ITeam,
-  ITeamsState,
   setCopyingTeam,
   setCreatingTeam,
   setDeletingMembership,

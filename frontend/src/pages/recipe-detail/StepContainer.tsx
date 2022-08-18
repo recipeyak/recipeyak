@@ -35,7 +35,8 @@ import { connect } from "react-redux"
 
 import Step from "@/pages/recipe-detail/Step"
 import { getNewPos } from "@/position"
-import { IRecipe, IStep, updateStep } from "@/store/reducers/recipes"
+import type { IRecipe, IStep } from "@/store/reducers/recipes"
+import { updateStep } from "@/store/reducers/recipes"
 
 interface IStepContainerProps {
   readonly steps: ReadonlyArray<IStep>

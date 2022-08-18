@@ -16,14 +16,14 @@ import { useDispatch, useOnWindowFocusChange, useSelector } from "@/hooks"
 import CalendarDay from "@/pages/schedule/CalendarDay"
 import { CalendarMoreDropdown } from "@/pages/schedule/CalendarMoreDropdown"
 import { teamsFrom } from "@/store/mapState"
+import type { ICalRecipe } from "@/store/reducers/calendar"
 import {
   getPersonalRecipes,
   getTeamRecipes,
-  ICalRecipe,
   regenerateCalendarLink as regenerateCalendarLinkAction,
   updateCalendarSettings,
 } from "@/store/reducers/calendar"
-import { ITeam } from "@/store/reducers/teams"
+import type { ITeam } from "@/store/reducers/teams"
 import { history } from "@/store/store"
 import {
   fetchCalendarAsync,
@@ -32,14 +32,8 @@ import {
   fetchingTeamsAsync,
 } from "@/store/thunks"
 import { styled } from "@/theme"
-import {
-  Failure,
-  isFailure,
-  isSuccessLike,
-  Loading,
-  Success,
-  WebData,
-} from "@/webdata"
+import type { WebData } from "@/webdata"
+import { Failure, isFailure, isSuccessLike, Loading, Success } from "@/webdata"
 
 function CalTitle({ dayTs }: { readonly dayTs: number }) {
   return (

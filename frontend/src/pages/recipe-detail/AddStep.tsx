@@ -3,12 +3,8 @@ import { connect } from "react-redux"
 
 import GlobalEvent from "@/components/GlobalEvent"
 import AddStepForm from "@/pages/recipe-detail/AddStepForm"
-import {
-  addStepToRecipe,
-  IRecipe,
-  IStep,
-  setRecipeStepDraft,
-} from "@/store/reducers/recipes"
+import type { IRecipe, IStep } from "@/store/reducers/recipes"
+import { addStepToRecipe, setRecipeStepDraft } from "@/store/reducers/recipes"
 
 interface IAddStepProps {
   readonly addStep: (args: {

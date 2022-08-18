@@ -2,18 +2,19 @@ import { isSameDay } from "date-fns"
 import { isRight } from "fp-ts/lib/Either"
 import { debounce } from "lodash-es"
 import React from "react"
+import type { TypedUseSelectorHook } from "react-redux"
 import {
-  TypedUseSelectorHook,
   useDispatch as useDispatchRedux,
   useSelector as useSelectorRedux,
 } from "react-redux"
 
 import { second } from "@/date"
-import { HttpRequestObjResult } from "@/http"
+import type { HttpRequestObjResult } from "@/http"
 import { scheduleURLFromTeamID } from "@/store/mapState"
-import { IState } from "@/store/store"
-import { Dispatch } from "@/store/thunks"
-import { Failure, Loading, Success, WebData } from "@/webdata"
+import type { IState } from "@/store/store"
+import type { Dispatch } from "@/store/thunks"
+import type { WebData } from "@/webdata"
+import { Failure, Loading, Success } from "@/webdata"
 
 export function useCurrentDay() {
   const [date, setDate] = React.useState(new Date())

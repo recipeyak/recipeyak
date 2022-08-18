@@ -101,6 +101,7 @@ module.exports = {
     "@typescript-eslint/no-redundant-type-constituents": "error",
     "@typescript-eslint/prefer-reduce-type-parameter": "error",
     "@typescript-eslint/restrict-plus-operands": "error",
+    "@typescript-eslint/consistent-type-imports": "error",
     "react/jsx-fragments": "error",
     "no-lonely-if": "error",
     "object-shorthand": ["error", "always"],

@@ -1,12 +1,12 @@
 import { omit, uniq } from "lodash-es"
+import type { ActionType } from "typesafe-actions"
 import {
-  ActionType,
   createAsyncAction,
   createStandardAction,
   getType,
 } from "typesafe-actions"
 
-import { IUser } from "@/store/reducers/user"
+import type { IUser } from "@/store/reducers/user"
 
 export const deleteTeam = createStandardAction("DELETE_TEAM")<ITeam["id"]>()
 

@@ -1,6 +1,6 @@
 import React from "react"
 import { connect } from "react-redux"
-import { RouteComponentProps } from "react-router"
+import type { RouteComponentProps } from "react-router"
 import { Link } from "react-router-dom"
 
 import { ButtonLink, ButtonPrimary } from "@/components/Buttons"
@@ -9,11 +9,11 @@ import { Helmet } from "@/components/Helmet"
 import Loader from "@/components/Loader"
 import { Tab, Tabs } from "@/components/Tabs"
 import MemberRow from "@/pages/team-detail/MemberRow"
-import { IMember, ITeam } from "@/store/reducers/teams"
-import { IState } from "@/store/store"
+import type { IMember, ITeam } from "@/store/reducers/teams"
+import type { IState } from "@/store/store"
+import type { Dispatch } from "@/store/thunks"
 import {
   deletingTeamAsync,
-  Dispatch,
   fetchingTeamAsync,
   fetchingTeamMembersAsync,
   updatingTeamAsync,

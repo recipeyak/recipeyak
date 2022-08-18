@@ -6,9 +6,10 @@ import AuthContainer from "@/components/AuthContainer"
 import { ButtonPrimary } from "@/components/Buttons"
 import { EmailInput, FormErrorHandler } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
-import { IPasswordResetError } from "@/store/reducers/auth"
-import { IState } from "@/store/store"
-import { Dispatch, resetAsync } from "@/store/thunks"
+import type { IPasswordResetError } from "@/store/reducers/auth"
+import type { IState } from "@/store/store"
+import type { Dispatch } from "@/store/thunks"
+import { resetAsync } from "@/store/thunks"
 
 interface IPasswordResetProps {
   readonly reset: (email: string) => Promise<void>

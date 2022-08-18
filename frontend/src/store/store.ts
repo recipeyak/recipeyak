@@ -1,55 +1,56 @@
-import {
-  connectRouter,
-  RouterAction,
-  routerMiddleware,
-  RouterState,
-} from "connected-react-router"
+import type { RouterAction, RouterState } from "connected-react-router"
+import { connectRouter, routerMiddleware } from "connected-react-router"
 import { createBrowserHistory as createHistory } from "history"
 import { pickBy, throttle } from "lodash-es"
+import type { Store as ReduxStore, StoreEnhancer } from "redux"
 import {
   applyMiddleware,
   compose as reduxCompose,
   createStore as basicCreateStore,
-  Store as ReduxStore,
-  StoreEnhancer,
 } from "redux"
-import {
-  combineReducers,
-  install,
+import type {
   Loop,
   LoopReducer,
   ReducerMapObject,
   StoreCreator,
 } from "redux-loop"
+import { combineReducers, install } from "redux-loop"
 import { getType } from "typesafe-actions"
 
 import { second } from "@/date"
 import { loadState, saveState } from "@/store/localStorage"
-import addrecipe, {
+import type {
   AddRecipeActions,
   IAddRecipeState,
 } from "@/store/reducers/addrecipe"
-import auth, { AuthActions, IAuthState, login } from "@/store/reducers/auth"
-import calendar, {
-  CalendarActions,
-  ICalendarState,
-} from "@/store/reducers/calendar"
-import invites, { IInvitesState, InviteActions } from "@/store/reducers/invites"
-import notification, {
+import addrecipe from "@/store/reducers/addrecipe"
+import type { AuthActions, IAuthState } from "@/store/reducers/auth"
+import auth, { login } from "@/store/reducers/auth"
+import type { CalendarActions, ICalendarState } from "@/store/reducers/calendar"
+import calendar from "@/store/reducers/calendar"
+import type { IInvitesState, InviteActions } from "@/store/reducers/invites"
+import invites from "@/store/reducers/invites"
+import type {
   INotificationState,
   NotificationsActions,
 } from "@/store/reducers/notification"
-import passwordChange, {
+import notification from "@/store/reducers/notification"
+import type {
   IPasswordChangeState,
   PasswordChangeActions,
 } from "@/store/reducers/passwordChange"
-import recipes, { IRecipesState, RecipeActions } from "@/store/reducers/recipes"
-import shoppinglist, {
+import passwordChange from "@/store/reducers/passwordChange"
+import type { IRecipesState, RecipeActions } from "@/store/reducers/recipes"
+import recipes from "@/store/reducers/recipes"
+import type {
   IShoppingListState,
   ShoppingListActions,
 } from "@/store/reducers/shoppinglist"
-import teams, { ITeamsState, TeamsActions } from "@/store/reducers/teams"
-import user, { IUserState, UserActions } from "@/store/reducers/user"
+import shoppinglist from "@/store/reducers/shoppinglist"
+import type { ITeamsState, TeamsActions } from "@/store/reducers/teams"
+import teams from "@/store/reducers/teams"
+import type { IUserState, UserActions } from "@/store/reducers/user"
+import user from "@/store/reducers/user"
 
 const createStore: StoreCreator = basicCreateStore
 

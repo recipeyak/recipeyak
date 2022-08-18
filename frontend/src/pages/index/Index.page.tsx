@@ -2,8 +2,9 @@ import { connect } from "react-redux"
 
 import LandingPage from "@/pages/index/LandingPage"
 import UserHome from "@/pages/index/UserHome"
-import { IState } from "@/store/store"
-import { Dispatch, fetchingUserAsync } from "@/store/thunks"
+import type { IState } from "@/store/store"
+import type { Dispatch } from "@/store/thunks"
+import { fetchingUserAsync } from "@/store/thunks"
 
 const Home = ({ loggedIn }: { loggedIn: boolean }) =>
   loggedIn ? <UserHome /> : <LandingPage />

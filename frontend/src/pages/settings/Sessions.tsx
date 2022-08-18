@@ -4,15 +4,17 @@ import { connect } from "react-redux"
 import { Button } from "@/components/Buttons"
 import Loader from "@/components/Loader"
 import { formatDistanceToNow } from "@/date"
-import { ISession, LoggingOutStatus } from "@/store/reducers/user"
-import { IState } from "@/store/store"
+import type { ISession } from "@/store/reducers/user"
+import { LoggingOutStatus } from "@/store/reducers/user"
+import type { IState } from "@/store/store"
+import type { Dispatch } from "@/store/thunks"
 import {
-  Dispatch,
   fetchingSessionsAsync,
   loggingOutAllSessionsAsync,
   loggingOutSessionByIdAsync,
 } from "@/store/thunks"
-import { isFailure, isInitial, isLoading, WebData } from "@/webdata"
+import type { WebData } from "@/webdata"
+import { isFailure, isInitial, isLoading } from "@/webdata"
 
 function getDeviceEmoji(kind: ISession["device"]["kind"]): string | null {
   switch (kind) {

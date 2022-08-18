@@ -1,9 +1,8 @@
+import type { IInvite, IInvitesState } from "@/store/reducers/invites"
 import invites, {
   acceptInvite,
   declineInvite,
   fetchInvites,
-  IInvite,
-  IInvitesState,
   initialState,
 } from "@/store/reducers/invites"
 

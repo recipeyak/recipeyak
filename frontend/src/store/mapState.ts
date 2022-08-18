@@ -1,5 +1,5 @@
-import { ITeam } from "@/store/reducers/teams"
-import { IState } from "@/store/store"
+import type { ITeam } from "@/store/reducers/teams"
+import type { IState } from "@/store/store"
 import { notUndefined } from "@/utils/general"
 
 // TODO(sbdchd): move to respective folder

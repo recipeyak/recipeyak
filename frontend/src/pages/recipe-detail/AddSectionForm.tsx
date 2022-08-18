@@ -7,7 +7,7 @@ import GlobalEvent from "@/components/GlobalEvent"
 import { useDispatch } from "@/hooks"
 import { isOk } from "@/result"
 import { addSectionToRecipe } from "@/store/reducers/recipes"
-import { Status } from "@/webdata"
+import type { Status } from "@/webdata"
 
 export function AddSectionFormInner({
   onSave,

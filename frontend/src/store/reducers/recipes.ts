@@ -1,25 +1,27 @@
 import { push } from "connected-react-router"
 import { omit, omitBy } from "lodash-es"
-import { Cmd, Loop, loop } from "redux-loop"
+import type { Loop } from "redux-loop"
+import { Cmd, loop } from "redux-loop"
+import type { ActionType } from "typesafe-actions"
 import {
-  ActionType,
   createAsyncAction,
   createStandardAction,
   getType,
 } from "typesafe-actions"
 
 import * as api from "@/api"
-import { Reaction } from "@/pages/recipe-detail/Reactions"
+import type { Reaction } from "@/pages/recipe-detail/Reactions"
 import { isOk } from "@/result"
-import { ITeam } from "@/store/reducers/teams"
-import { IState } from "@/store/store"
+import type { ITeam } from "@/store/reducers/teams"
+import type { IState } from "@/store/store"
+import type { Dispatch } from "@/store/thunks"
 import {
   deletingIngredientAsync,
   deletingStepAsync,
-  Dispatch,
   updatingStepAsync,
 } from "@/store/thunks"
 import { recipeURL } from "@/urls"
+import type { WebData } from "@/webdata"
 import {
   Failure,
   HttpErrorKind,
@@ -27,7 +29,6 @@ import {
   mapSuccessLike,
   Success,
   toLoading,
-  WebData,
 } from "@/webdata"
 
 export const updateRecipeOwner = createStandardAction("UPDATE_RECIPE_OWNER")<{

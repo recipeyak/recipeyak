@@ -1,19 +1,18 @@
 import React from "react"
 import { connect } from "react-redux"
-import { Link, RouteComponentProps } from "react-router-dom"
+import type { RouteComponentProps } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 import { ButtonPrimary } from "@/components/Buttons"
 import { RadioButton, TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import Loader from "@/components/Loader"
-import { isErr, Result } from "@/result"
-import { IMember, ITeam } from "@/store/reducers/teams"
-import { IState } from "@/store/store"
-import {
-  Dispatch,
-  fetchingTeamAsync,
-  sendingTeamInvitesAsync,
-} from "@/store/thunks"
+import type { Result } from "@/result"
+import { isErr } from "@/result"
+import type { IMember, ITeam } from "@/store/reducers/teams"
+import type { IState } from "@/store/store"
+import type { Dispatch } from "@/store/thunks"
+import { fetchingTeamAsync, sendingTeamInvitesAsync } from "@/store/thunks"
 import { teamURL } from "@/urls"
 
 const mapStateToProps = (state: IState, props: ITeamInviteProps) => {

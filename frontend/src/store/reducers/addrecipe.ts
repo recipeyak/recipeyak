@@ -1,6 +1,7 @@
-import { ActionType, createStandardAction, getType } from "typesafe-actions"
+import type { ActionType } from "typesafe-actions"
+import { createStandardAction, getType } from "typesafe-actions"
 
-import { IIngredientBasic, IStepBasic } from "@/store/reducers/recipes"
+import type { IIngredientBasic, IStepBasic } from "@/store/reducers/recipes"
 
 export const setAddRecipeFormName = createStandardAction(
   "SET_ADD_RECIPE_FORM_NAME",

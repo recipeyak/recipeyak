@@ -4,9 +4,10 @@ import { connect } from "react-redux"
 import { ButtonPrimary } from "@/components/Buttons"
 import { RadioButton, TextInput } from "@/components/Forms"
 import { roles } from "@/pages/team-invite/TeamInvite.page"
-import { IMember } from "@/store/reducers/teams"
-import { IState } from "@/store/store"
-import { creatingTeamAsync, Dispatch } from "@/store/thunks"
+import type { IMember } from "@/store/reducers/teams"
+import type { IState } from "@/store/store"
+import type { Dispatch } from "@/store/thunks"
+import { creatingTeamAsync } from "@/store/thunks"
 
 const mapStateToProps = (state: IState) => ({
   loading: !!state.teams.creating,

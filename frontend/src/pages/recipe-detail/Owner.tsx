@@ -9,16 +9,16 @@ import {
 } from "@/components/Buttons"
 import { Select } from "@/components/Forms"
 import GlobalEvent from "@/components/GlobalEvent"
-import { isOk, Result } from "@/result"
-import { IRecipe } from "@/store/reducers/recipes"
-import { ITeamsState } from "@/store/reducers/teams"
-import { IUser, IUserState } from "@/store/reducers/user"
-import { IState } from "@/store/store"
+import type { Result } from "@/result"
+import { isOk } from "@/result"
+import type { IRecipe } from "@/store/reducers/recipes"
+import type { ITeamsState } from "@/store/reducers/teams"
+import type { IUser, IUserState } from "@/store/reducers/user"
+import type { IState } from "@/store/store"
+import type { Dispatch, INotificationWithTimeout } from "@/store/thunks"
 import {
   copyRecipeToAsync,
-  Dispatch,
   fetchingTeamsAsync,
-  INotificationWithTimeout,
   moveRecipeToAsync,
   showNotificationWithTimeoutAsync,
 } from "@/store/thunks"

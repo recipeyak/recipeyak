@@ -24,17 +24,17 @@ import {
   updateAddRecipeFormIngredient,
   updateAddRecipeFormStep,
 } from "@/store/reducers/addrecipe"
-import {
+import type {
   IAddRecipeError,
   IIngredientBasic,
   IRecipeBasic,
   IStepBasic,
-  resetAddRecipeErrors,
 } from "@/store/reducers/recipes"
-import { ITeam } from "@/store/reducers/teams"
-import { IState } from "@/store/store"
+import { resetAddRecipeErrors } from "@/store/reducers/recipes"
+import type { ITeam } from "@/store/reducers/teams"
+import type { IState } from "@/store/store"
+import type { Dispatch } from "@/store/thunks"
 import {
-  Dispatch,
   fetchingTeamsAsync,
   postNewRecipeAsync,
   updatingDefaultRecipeTeamID,

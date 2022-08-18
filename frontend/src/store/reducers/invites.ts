@@ -1,6 +1,7 @@
-import { ActionType, createAsyncAction, getType } from "typesafe-actions"
+import type { ActionType } from "typesafe-actions"
+import { createAsyncAction, getType } from "typesafe-actions"
 
-import { IState } from "@/store/store"
+import type { IState } from "@/store/store"
 import { notUndefined } from "@/utils/general"
 import { Loading, Success } from "@/webdata"
 

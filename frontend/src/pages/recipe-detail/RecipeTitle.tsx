@@ -9,11 +9,8 @@ import GlobalEvent from "@/components/GlobalEvent"
 import MetaData from "@/pages/recipe-detail/MetaData"
 import Owner from "@/pages/recipe-detail/Owner"
 import { Dropdown } from "@/pages/recipe-detail/RecipeTitleDropdown"
-import {
-  IRecipe,
-  toggleEditingRecipe,
-  updateRecipe,
-} from "@/store/reducers/recipes"
+import type { IRecipe } from "@/store/reducers/recipes"
+import { toggleEditingRecipe, updateRecipe } from "@/store/reducers/recipes"
 import { hasSelection } from "@/utils/general"
 
 function TagEditor({

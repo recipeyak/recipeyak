@@ -1,5 +1,6 @@
 import React from "react"
-import ReactMarkdown, { Components } from "react-markdown"
+import type { Components } from "react-markdown"
+import ReactMarkdown from "react-markdown"
 
 import { Link } from "@/components/Routing"
 import * as settings from "@/settings"
