@@ -51,7 +51,7 @@ urlpatterns = [
     path("api/v1/", include(router.urls)),
     path("api/v1/", include(recipes_router.urls)),
     path("api/v1/recipes/<int:recipe_pk>/timeline", get_recipe_timeline),
-    path("api/v1/recipes/<int:recipe_pk>/timeline", get_recipe_timeline),
+    path("api/v1/recipes/<int:recipe_pk>/sections", create_section_view),
     path("api/v1/recipes/<int:recipe_pk>/notes/", note_create_view),
     path("api/v1/sections/<int:section_pk>/", delete_or_update_section_view),
     path("api/v1/notes/<int:note_pk>/reactions/", note_reaction_create_view),
