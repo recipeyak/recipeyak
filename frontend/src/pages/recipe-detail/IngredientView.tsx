@@ -1,6 +1,6 @@
-import type { DragElementWrapper, DragSourceOptions } from "react-dnd"
+import { DragElementWrapper, DragSourceOptions } from "react-dnd"
 
-import type { IIngredient } from "@/store/reducers/recipes"
+import { IIngredient } from "@/store/reducers/recipes"
 import { normalizeUnitsFracs } from "@/text"
 
 interface IIngredientVIewProps {

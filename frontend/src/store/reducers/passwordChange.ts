@@ -1,5 +1,5 @@
-import type { ActionType } from "typesafe-actions"
 import {
+  ActionType,
   createAsyncAction,
   createStandardAction,
   getType,

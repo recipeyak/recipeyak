@@ -12,20 +12,21 @@ import { Markdown } from "@/components/Markdown"
 import { RotatingLoader } from "@/components/RoatingLoader"
 import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
 import { useCurrentUser, useDispatch } from "@/hooks"
-import type { Reaction, ReactionType } from "@/pages/recipe-detail/Reactions"
 import {
   findReaction,
+  Reaction,
   ReactionPopover,
   ReactionsFooter,
+  ReactionType,
 } from "@/pages/recipe-detail/Reactions"
 import { isOk } from "@/result"
-import type {
+import {
   INote,
   IRecipe,
+  patchRecipe,
   RecipeTimelineItem,
   Upload,
 } from "@/store/reducers/recipes"
-import { patchRecipe } from "@/store/reducers/recipes"
 import { styled } from "@/theme"
 import { notUndefined } from "@/utils/general"
 import { uuid4 } from "@/uuid"

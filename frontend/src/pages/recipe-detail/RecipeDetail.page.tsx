@@ -2,7 +2,7 @@ import { replace } from "connected-react-router"
 import { sortBy } from "lodash-es"
 import queryString from "query-string"
 import React from "react"
-import type { RouteComponentProps } from "react-router"
+import { RouteComponentProps } from "react-router"
 import { useLocation } from "react-router-dom"
 
 import * as api from "@/api"
@@ -21,11 +21,12 @@ import { Section } from "@/pages/recipe-detail/Section"
 import StepContainer from "@/pages/recipe-detail/StepContainer"
 import { getNewPosIngredients } from "@/position"
 import { isOk } from "@/result"
-import type { IIngredient, IRecipe } from "@/store/reducers/recipes"
 import {
   deleteIngredient,
   fetchRecipe,
   getRecipeById,
+  IIngredient,
+  IRecipe,
   updateIngredient,
   updateSectionForRecipe,
 } from "@/store/reducers/recipes"

@@ -1,11 +1,11 @@
-import type { ActionType } from "typesafe-actions"
 import {
+  ActionType,
   createAsyncAction,
   createStandardAction,
   getType,
 } from "typesafe-actions"
 
-import type { IUser } from "@/store/reducers/user"
+import { IUser } from "@/store/reducers/user"
 
 export const setFromUrl =
   createStandardAction("SET_FROM_URL")<IAuthState["fromUrl"]>()

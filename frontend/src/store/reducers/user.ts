@@ -1,20 +1,19 @@
 import raven from "raven-js"
-import type { ActionType } from "typesafe-actions"
 import {
+  ActionType,
   createAsyncAction,
   createStandardAction,
   getType,
 } from "typesafe-actions"
 
-import type { AuthActions } from "@/store/reducers/auth"
-import { login } from "@/store/reducers/auth"
-import type { WebData } from "@/webdata"
+import { AuthActions, login } from "@/store/reducers/auth"
 import {
   Failure,
   HttpErrorKind,
   mapSuccessLike,
   Success,
   toLoading,
+  WebData,
 } from "@/webdata"
 
 // TODO(chdsbd): Replace usage with fetchUser#success. Update user reducer.

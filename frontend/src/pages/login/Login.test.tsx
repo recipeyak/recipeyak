@@ -4,7 +4,7 @@ import { ConnectedRouter } from "connected-react-router"
 import { HelmetProvider } from "react-helmet-async"
 import { Provider } from "react-redux"
 
-import type { IUserResponse } from "@/api"
+import { IUserResponse } from "@/api"
 import Login from "@/pages/login/Login.page"
 import store, { history } from "@/store/store"
 import { rest, server } from "@/testUtils"

@@ -35,8 +35,12 @@ import { connect } from "react-redux"
 
 import { DragDrop, handleDndHover } from "@/dragDrop"
 import ListItem from "@/pages/recipe-detail/ListItem"
-import type { IRecipe, IStep } from "@/store/reducers/recipes"
-import { deleteStep, updateStep } from "@/store/reducers/recipes"
+import {
+  deleteStep,
+  IRecipe,
+  IStep,
+  updateStep,
+} from "@/store/reducers/recipes"
 
 interface IStepProps {
   readonly index: number

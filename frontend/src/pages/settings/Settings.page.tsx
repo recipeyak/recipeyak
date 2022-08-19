@@ -11,10 +11,10 @@ import { useDispatch } from "@/hooks"
 import Sessions from "@/pages/settings/Sessions"
 import { isOk } from "@/result"
 import { fetchUser } from "@/store/reducers/user"
-import type { IState } from "@/store/store"
-import type { Dispatch } from "@/store/thunks"
+import { IState } from "@/store/store"
 import {
   deleteUserAccountAsync,
+  Dispatch,
   fetchingUserAsync,
   showNotificationWithTimeoutAsync,
   updatingEmailAsync,

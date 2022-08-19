@@ -6,11 +6,9 @@ import AuthContainer from "@/components/AuthContainer"
 import { ButtonPrimary } from "@/components/Buttons"
 import { EmailInput, FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
-import type { ISignupErrors } from "@/store/reducers/auth"
-import { setErrorSignup } from "@/store/reducers/auth"
-import type { IState } from "@/store/store"
-import type { Dispatch } from "@/store/thunks"
-import { signupAsync } from "@/store/thunks"
+import { ISignupErrors, setErrorSignup } from "@/store/reducers/auth"
+import { IState } from "@/store/store"
+import { Dispatch, signupAsync } from "@/store/thunks"
 
 interface ISignupProps {
   readonly clearErrors: () => void

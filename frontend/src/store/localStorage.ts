@@ -1,4 +1,4 @@
-import type { IState } from "@/store/store"
+import { IState } from "@/store/store"
 
 /** JSONParse that doesn't throw
  *

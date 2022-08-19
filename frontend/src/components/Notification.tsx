@@ -1,9 +1,11 @@
 import { connect } from "react-redux"
 
-import type { INotificationState } from "@/store/reducers/notification"
-import { clearNotification } from "@/store/reducers/notification"
-import type { IState } from "@/store/store"
-import type { Dispatch } from "@/store/thunks"
+import {
+  clearNotification,
+  INotificationState,
+} from "@/store/reducers/notification"
+import { IState } from "@/store/store"
+import { Dispatch } from "@/store/thunks"
 
 interface INotificationProps extends INotificationState {
   readonly close: () => void

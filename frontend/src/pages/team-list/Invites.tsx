@@ -3,9 +3,8 @@ import { Link } from "react-router-dom"
 
 import { ButtonPrimary } from "@/components/Buttons"
 import { useDispatch, useSelector } from "@/hooks"
-import type { IInvite } from "@/store/reducers/invites"
-import { getInvites } from "@/store/reducers/invites"
-import type { ITeam } from "@/store/reducers/teams"
+import { getInvites, IInvite } from "@/store/reducers/invites"
+import { ITeam } from "@/store/reducers/teams"
 import {
   acceptingInviteAsync,
   decliningInviteAsync,

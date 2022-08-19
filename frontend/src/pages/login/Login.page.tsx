@@ -1,4 +1,4 @@
-import type { Location } from "history"
+import { Location } from "history"
 import React from "react"
 import { useDispatch } from "react-redux"
 import { Link, useHistory, useLocation } from "react-router-dom"

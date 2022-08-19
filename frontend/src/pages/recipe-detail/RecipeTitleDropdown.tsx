@@ -13,10 +13,11 @@ import {
 import { Chevron } from "@/components/icons"
 import { useDispatch, useSelector } from "@/hooks"
 import { scheduleURLFromTeamID } from "@/store/mapState"
-import type { IIngredient, IRecipe } from "@/store/reducers/recipes"
 import {
   deleteRecipe,
   duplicateRecipe,
+  IIngredient,
+  IRecipe,
   updateRecipe,
 } from "@/store/reducers/recipes"
 import { showNotificationWithTimeoutAsync } from "@/store/thunks"

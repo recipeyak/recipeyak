@@ -4,7 +4,7 @@ import Textarea from "react-textarea-autosize"
 import { Button, ButtonLink, ButtonPrimary } from "@/components/Buttons"
 import GlobalEvent from "@/components/GlobalEvent"
 import { Markdown } from "@/components/Markdown"
-import type { IRecipe } from "@/store/reducers/recipes"
+import { IRecipe } from "@/store/reducers/recipes"
 import { normalizeUnitsFracs } from "@/text"
 import { hasSelection } from "@/utils/general"
 

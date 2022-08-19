@@ -3,12 +3,12 @@ import { connect } from "react-redux"
 import { Avatar } from "@/components/Avatar"
 import { ButtonDanger, ButtonPlain } from "@/components/Buttons"
 import { Select } from "@/components/Forms"
-import type { IMember, ITeam } from "@/store/reducers/teams"
-import type { IUser } from "@/store/reducers/user"
-import type { IState } from "@/store/store"
-import type { Dispatch } from "@/store/thunks"
+import { IMember, ITeam } from "@/store/reducers/teams"
+import { IUser } from "@/store/reducers/user"
+import { IState } from "@/store/store"
 import {
   deletingMembershipAsync,
+  Dispatch,
   settingUserTeamLevelAsync,
 } from "@/store/thunks"
 import { notUndefined } from "@/utils/general"

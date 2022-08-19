@@ -2,20 +2,19 @@ import format from "date-fns/format"
 import React from "react"
 import { Link } from "react-router-dom"
 
-import type { IRecipeTimelineEvent } from "@/api"
-import { getRecipeTimeline } from "@/api"
+import { getRecipeTimeline, IRecipeTimelineEvent } from "@/api"
 import { useScheduleURL } from "@/hooks"
 import { SectionTitle } from "@/pages/recipe-detail/RecipeHelpers"
 import { resultToWebdata } from "@/result"
-import type { IRecipe } from "@/store/reducers/recipes"
+import { IRecipe } from "@/store/reducers/recipes"
 import { styled } from "@/theme"
-import type { WebData } from "@/webdata"
 import {
   isFailure,
   isInitial,
   isLoading,
   isSuccessLike,
   mapSuccessLike,
+  WebData,
 } from "@/webdata"
 
 interface ITimelineItemProps {

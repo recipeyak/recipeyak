@@ -1,5 +1,4 @@
-import type { DefaultBodyType, MockedRequest } from "msw"
-import { rest } from "msw"
+import { DefaultBodyType, MockedRequest, rest } from "msw"
 import { setupServer } from "msw/node"
 
 import store from "@/store/store"

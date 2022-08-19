@@ -1,6 +1,11 @@
 import { login } from "@/store/reducers/auth"
-import type { IUser, IUserState } from "@/store/reducers/user"
-import user, { fetchUser, logOut, setUserLoggedIn } from "@/store/reducers/user"
+import user, {
+  fetchUser,
+  IUser,
+  IUserState,
+  logOut,
+  setUserLoggedIn,
+} from "@/store/reducers/user"
 
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
 describe("fetchingUser", () => {

@@ -5,8 +5,7 @@ import {
   useDropdown,
 } from "@/components/Dropdown"
 import { selectTarget, TextInput } from "@/components/Forms"
-import type { WebData } from "@/webdata"
-import { isSuccessLike } from "@/webdata"
+import { isSuccessLike, WebData } from "@/webdata"
 
 function Hr() {
   return <hr className="my-2" />

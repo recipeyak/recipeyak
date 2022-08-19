@@ -5,9 +5,8 @@ import { ButtonPrimary } from "@/components/Buttons"
 import { FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { clearPasswordUpdateError } from "@/store/reducers/passwordChange"
-import type { IState } from "@/store/store"
-import type { Dispatch } from "@/store/thunks"
-import { updatingPasswordAsync } from "@/store/thunks"
+import { IState } from "@/store/store"
+import { Dispatch, updatingPasswordAsync } from "@/store/thunks"
 
 interface IPasswordChangeError {
   readonly oldPassword?: string[]

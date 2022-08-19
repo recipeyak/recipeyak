@@ -1,5 +1,8 @@
-import type { IAuthState } from "@/store/reducers/auth"
-import auth, { initialState, setFromUrl } from "@/store/reducers/auth"
+import auth, {
+  IAuthState,
+  initialState,
+  setFromUrl,
+} from "@/store/reducers/auth"
 
 describe("auth", () => {
   it("sets redirect url", () => {

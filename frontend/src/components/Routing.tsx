@@ -1,5 +1,9 @@
-import type { LinkProps as RRLinkProps, NavLinkProps } from "react-router-dom"
-import { Link as RRLink, useLocation } from "react-router-dom"
+import {
+  Link as RRLink,
+  LinkProps as RRLinkProps,
+  NavLinkProps,
+  useLocation,
+} from "react-router-dom"
 
 interface ILinkProps extends RRLinkProps {
   readonly isRaw?: boolean

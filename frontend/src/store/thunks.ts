@@ -1,18 +1,17 @@
-import type { AxiosError, AxiosResponse } from "axios"
+import { AxiosError, AxiosResponse } from "axios"
 import { push } from "connected-react-router"
 import { addWeeks, endOfWeek, parseISO, startOfWeek, subWeeks } from "date-fns"
 import { isRight } from "fp-ts/lib/Either"
 import { pickBy } from "lodash-es"
 import raven from "raven-js"
 // eslint-disable-next-line no-restricted-imports
-import type { Dispatch as ReduxDispatch } from "redux"
+import { Dispatch as ReduxDispatch } from "redux"
 
 import * as api from "@/api"
 import { heldKeys } from "@/components/CurrentKeys"
 import { isInsideChangeWindow, second, toISODateString } from "@/date"
-import type { IRecipeBasic } from "@/pages/recipe-detail/RecipeTitle"
-import type { Result } from "@/result"
-import { Err, isErr, isOk, Ok } from "@/result"
+import { IRecipeBasic } from "@/pages/recipe-detail/RecipeTitle"
+import { Err, isErr, isOk, Ok, Result } from "@/result"
 import { clearAddRecipeForm } from "@/store/reducers/addrecipe"
 import {
   login,
@@ -23,46 +22,49 @@ import {
   setLoadingResetConfirmation,
   setLoadingSignup,
 } from "@/store/reducers/auth"
-import type { ICalRecipe } from "@/store/reducers/calendar"
 import {
   deleteCalendarRecipe,
   fetchCalendarRecipes,
   getExistingRecipe,
+  ICalRecipe,
   moveCalendarRecipe,
   replaceCalendarRecipe,
   setCalendarRecipe,
 } from "@/store/reducers/calendar"
-import type { IInvite } from "@/store/reducers/invites"
 import {
   acceptInvite,
   declineInvite,
   fetchInvites,
+  IInvite,
 } from "@/store/reducers/invites"
-import type { INotificationState } from "@/store/reducers/notification"
 import {
   clearNotification,
+  INotificationState,
   setNotification,
 } from "@/store/reducers/notification"
 import { passwordUpdate } from "@/store/reducers/passwordChange"
-import type { IIngredient, IRecipe, IStep } from "@/store/reducers/recipes"
 import {
   createRecipe,
   deleteIngredient,
   deleteStep,
   fetchRecipe,
   fetchRecipeList,
+  IIngredient,
+  IRecipe,
+  IStep,
   setSchedulingRecipe,
   updateRecipeOwner,
   updateStep,
 } from "@/store/reducers/recipes"
 import { fetchShoppingList } from "@/store/reducers/shoppinglist"
-import type { IMember, ITeam } from "@/store/reducers/teams"
 import {
   deleteMembership,
   deleteTeam,
   fetchTeam,
   fetchTeamMembers,
   fetchTeams,
+  IMember,
+  ITeam,
   setCopyingTeam,
   setCreatingTeam,
   setDeletingMembership,
@@ -72,10 +74,12 @@ import {
   setUserTeamLevel,
   updateTeamById,
 } from "@/store/reducers/teams"
-import type { ISession, IUser, IUserState } from "@/store/reducers/user"
 import {
   fetchSessions,
   fetchUser,
+  ISession,
+  IUser,
+  IUserState,
   logOut,
   logoutAllSessions,
   logoutSessionById,
@@ -84,8 +88,7 @@ import {
   updateRecipeTeamID,
   updateScheduleTeamID,
 } from "@/store/reducers/user"
-import type { Action, IState } from "@/store/store"
-import { store } from "@/store/store"
+import { Action, IState, store } from "@/store/store"
 import { recipeURL } from "@/urls"
 import { random32Id } from "@/uuid"
 import { isSuccessOrRefetching } from "@/webdata"

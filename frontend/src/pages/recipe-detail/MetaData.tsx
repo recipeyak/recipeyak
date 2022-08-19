@@ -1,7 +1,7 @@
 import React from "react"
 import { Link } from "react-router-dom"
 
-import type { IRecipe } from "@/store/reducers/recipes"
+import { IRecipe } from "@/store/reducers/recipes"
 
 interface IMetaDataProps extends React.HTMLAttributes<HTMLDivElement> {
   readonly author: string

@@ -6,9 +6,15 @@ import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import { HelmetProvider } from "react-helmet-async"
 import { connect, Provider } from "react-redux"
-import type { StaticContext } from "react-router"
-import type { RouteComponentProps, RouteProps } from "react-router-dom"
-import { Redirect, Route, Switch, useHistory } from "react-router-dom"
+import { StaticContext } from "react-router"
+import {
+  Redirect,
+  Route,
+  RouteComponentProps,
+  RouteProps,
+  Switch,
+  useHistory,
+} from "react-router-dom"
 
 import { Container, ContainerBase } from "@/components/Base"
 import ErrorBoundary from "@/components/ErrorBoundary"
@@ -31,8 +37,7 @@ import TeamCreatePage from "@/pages/team-create/TeamCreate.page"
 import TeamDetailPage from "@/pages/team-detail/TeamDetail.page"
 import TeamInvitePage from "@/pages/team-invite/TeamInvite.page"
 import TeamsListPage from "@/pages/team-list/TeamList.page"
-import type { IState } from "@/store/store"
-import store, { history } from "@/store/store"
+import store, { history, IState } from "@/store/store"
 import { theme, ThemeProvider } from "@/theme"
 
 interface IAuthRouteProps extends RouteProps {

@@ -1,18 +1,15 @@
-import type {
+import axios, {
   AxiosError,
   AxiosRequestConfig,
   AxiosResponse,
   CancelToken,
 } from "axios"
-import axios from "axios"
-import type { Either } from "fp-ts/lib/Either"
-import { left } from "fp-ts/lib/Either"
-import type * as t from "io-ts"
+import { Either, left } from "fp-ts/lib/Either"
+import * as t from "io-ts"
 import queryString from "query-string"
 import raven from "raven-js"
 
-import type { Result } from "@/result"
-import { Err, Ok } from "@/result"
+import { Err, Ok, Result } from "@/result"
 import { setUserLoggedIn } from "@/store/reducers/user"
 import { store } from "@/store/store"
 import { uuid4 } from "@/uuid"

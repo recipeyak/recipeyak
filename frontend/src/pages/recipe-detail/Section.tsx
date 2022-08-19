@@ -10,7 +10,7 @@ import {
   removeSectionFromRecipe,
   updateSectionForRecipe,
 } from "@/store/reducers/recipes"
-import type { Status } from "@/webdata"
+import { Status } from "@/webdata"
 
 type State = {
   readonly updating: Status

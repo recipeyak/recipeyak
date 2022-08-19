@@ -1,7 +1,6 @@
 import { useEffect } from "react"
 import { connect } from "react-redux"
-import type { RouteComponentProps } from "react-router-dom"
-import { Link } from "react-router-dom"
+import { Link, RouteComponentProps } from "react-router-dom"
 
 import { CurrentKeys } from "@/components/CurrentKeys"
 import { Helmet } from "@/components/Helmet"
@@ -10,9 +9,8 @@ import Recipes from "@/pages/recipe-list/RecipeList.page"
 import Calendar from "@/pages/schedule/Calendar"
 import HelpMenuModal from "@/pages/schedule/HelpMenuModal"
 import ShoppingList from "@/pages/schedule/ShoppingList"
-import type { ITeam } from "@/store/reducers/teams"
-import type { Dispatch } from "@/store/thunks"
-import { updatingDefaultScheduleTeamIDAsync } from "@/store/thunks"
+import { ITeam } from "@/store/reducers/teams"
+import { Dispatch, updatingDefaultScheduleTeamIDAsync } from "@/store/thunks"
 import { styled } from "@/theme"
 
 interface ISidebarProps {

@@ -1,15 +1,13 @@
 import React from "react"
 import { connect } from "react-redux"
-import type { RouteComponentProps } from "react-router-dom"
-import { Link } from "react-router-dom"
+import { Link, RouteComponentProps } from "react-router-dom"
 
 import { ButtonPrimary } from "@/components/Buttons"
 import { FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
-import type { IPasswordResetConfirmError } from "@/store/reducers/auth"
-import type { IState } from "@/store/store"
-import type { Dispatch } from "@/store/thunks"
-import { resetConfirmationAsync as reset } from "@/store/thunks"
+import { IPasswordResetConfirmError } from "@/store/reducers/auth"
+import { IState } from "@/store/store"
+import { Dispatch, resetConfirmationAsync as reset } from "@/store/thunks"
 
 type RouteProps = RouteComponentProps<{ uid: string; token: string }>
 
