@@ -45,8 +45,14 @@ function useIngredientString(recipeId: number) {
 
 interface IDropdownProps {
   readonly recipeId: number
+  readonly toggleEditing: () => void
+  readonly editingEnabled: boolean
 }
-export function Dropdown({ recipeId }: IDropdownProps) {
+export function Dropdown({
+  recipeId,
+  toggleEditing,
+  editingEnabled,
+}: IDropdownProps) {
   const { ref, isOpen, toggle, close } = useDropdown()
 
   const location = useLocation()
@@ -117,12 +123,14 @@ export function Dropdown({ recipeId }: IDropdownProps) {
         >
           View Timeline
         </DropdownItemLink>
-        <DropdownItemLink
-          to={location.pathname + "?timeline=1"}
-          onClick={close}
+        <DropdownItemButton
+          onClick={() => {
+            toggleEditing()
+            close()
+          }}
         >
-          Edit
-        </DropdownItemLink>
+          {editingEnabled ? "Disable Editing" : "Enable Editing"}
+        </DropdownItemButton>
         {!isArchived ? (
           <DropdownItemButton onClick={archiveRecipe}>
             Archive
