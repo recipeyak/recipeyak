@@ -44,9 +44,9 @@ jobs:
       - run:
           name: run tests
           working_directory: backend
-          command: ./s/test --junitxml=test-results/backend_tests.xml
+          command: ./s/test --junitxml=~/test-results/backend_tests.xml
       - store_test_results:
-          path: test-results
+          path: ~/test-results
 
   backend_lint:
     docker:
@@ -146,9 +146,9 @@ jobs:
       - run:
           name: run tests
           working_directory: frontend
-          command: ./s/test --no-watch --reporter junit --outputFile test-results/frontend_tests.xml
+          command: ./s/test --no-watch --reporter junit --outputFile ~/test-results/frontend_tests.xml
       - store_test_results:
-          path: test-results
+          path: ~/test-results
 
   frontend_lint:
     docker:
