@@ -79,6 +79,8 @@ interface IRecipeTitleProps {
   readonly updating?: boolean
   readonly editing?: boolean
   readonly toggleEditing: (recipeID: IRecipe["id"]) => void
+  readonly toggleEditMode: () => void
+  readonly editingModeEnabled: boolean
 }
 
 export interface IRecipeBasic {
@@ -194,7 +196,11 @@ class RecipeTitle extends React.Component<
               name="name"
             />
           )}
-          <Dropdown recipeId={id} />
+          <Dropdown
+            recipeId={id}
+            editingEnabled={this.props.editingModeEnabled}
+            toggleEditing={this.props.toggleEditMode}
+          />
         </div>
 
         {!this.props.editing ? (

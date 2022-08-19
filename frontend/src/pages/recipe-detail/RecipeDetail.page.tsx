@@ -72,7 +72,13 @@ function getInitialIngredients({
   return sortBy(out, (x) => x.item.position)
 }
 
-function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
+function RecipeDetails({
+  recipe,
+  editingEnabled,
+}: {
+  readonly recipe: IRecipe
+  editingEnabled: boolean
+}) {
   const [addIngredient, setAddIngredient] = React.useState(false)
   const [addStep, setAddStep] = React.useState(false)
   const dispatch = useDispatch()
@@ -198,6 +204,13 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
       }),
     )
 
+  React.useEffect(() => {
+    if (!editingEnabled) {
+      setAddStep(false)
+      setAddIngredient(false)
+    }
+  }, [editingEnabled])
+
   return (
     <section className="ingredients-preparation-grid">
       <div>
@@ -217,6 +230,7 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
                   update={handleUpdate}
                   remove={handleRemove}
                   updating={ingre.updating}
+                  isEditing={editingEnabled}
                   removing={ingre.removing}
                   description={ingre.description}
                   optional={ingre.optional}
@@ -233,6 +247,7 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
                   recipeId={recipe.id}
                   sectionId={sec.id}
                   title={sec.title}
+                  isEditing={editingEnabled}
                   index={i}
                   move={handleMove}
                   completeMove={handleCompleteMove}
@@ -249,15 +264,21 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
             onCancel={handleHideAddIngredient}
           />
         ) : (
-          <a className="text-muted" onClick={handleShowAddIngredient}>
-            add
-          </a>
+          editingEnabled && (
+            <a className="text-muted" onClick={handleShowAddIngredient}>
+              add
+            </a>
+          )
         )}
       </div>
 
       <div>
         <SectionTitle>Preparation</SectionTitle>
-        <StepContainer steps={recipe.steps} recipeID={recipe.id} />
+        <StepContainer
+          steps={recipe.steps}
+          isEditing={editingEnabled}
+          recipeID={recipe.id}
+        />
         {addStep ? (
           <AddStep
             id={recipe.id}
@@ -270,14 +291,16 @@ function RecipeDetails({ recipe }: { readonly recipe: IRecipe }) {
             loading={recipe.addingStepToRecipe}
           />
         ) : (
-          <a
-            className="text-muted"
-            onClick={() => {
-              setAddStep(true)
-            }}
-          >
-            add
-          </a>
+          editingEnabled && (
+            <a
+              className="text-muted"
+              onClick={() => {
+                setAddStep(true)
+              }}
+            >
+              add
+            </a>
+          )
         )}
       </div>
       {/* extra div to push notes to the right side of the grid */}
@@ -320,12 +343,11 @@ const ArchiveMessage = styled.div`
   margin-right: 0.5rem;
 `
 
-function ArchiveBanner({ date }: { readonly date: Date }) {
-  const formattedDate = formatHumanDate(date)
+function RecipeBanner({ children }: { readonly children: React.ReactNode }) {
   return (
     <div className="d-flex align-items-center">
       <hr className="flex-grow mb-0 mt-0" />
-      <ArchiveMessage>Archived {formattedDate}</ArchiveMessage>
+      <ArchiveMessage>{children}</ArchiveMessage>
       <hr className="flex-grow mb-0 mt-0" />
     </div>
   )
@@ -356,6 +378,7 @@ export function Recipe(props: IRecipeProps) {
   const recipeId = parseInt(props.match.params.id, 10)
 
   const maybeRecipe = useRecipe(recipeId)
+  const [editingEnabled, setEditingEnabled] = React.useState(false)
 
   useRecipeUrlUpdate(
     isSuccessLike(maybeRecipe)
@@ -380,13 +403,15 @@ export function Recipe(props: IRecipeProps) {
   const parsed = queryString.parse(props.location.search)
 
   const isTimeline = !!parsed.timeline
+  const archivedAt = recipe.archived_at
+    ? formatHumanDate(new Date(recipe.archived_at))
+    : null
 
   return (
     <div className="d-grid grid-gap-2 mx-auto mw-1000px">
       <Helmet title={recipe.name} />
-      {recipe.archived_at != null && (
-        <ArchiveBanner date={new Date(recipe.archived_at)} />
-      )}
+      {archivedAt != null && <RecipeBanner>Archived {archivedAt}</RecipeBanner>}
+      {editingEnabled && <RecipeBanner>Editing</RecipeBanner>}
 
       <RecipeTitle
         id={recipe.id}
@@ -398,13 +423,17 @@ export function Recipe(props: IRecipeProps) {
         owner={recipe.owner}
         updating={recipe.updating}
         editing={recipe.editing}
+        editingModeEnabled={editingEnabled}
+        toggleEditMode={() => {
+          setEditingEnabled((s) => !s)
+        }}
         tags={recipe.tags}
       />
 
       {isTimeline ? (
         <RecipeTimeline recipeId={recipe.id} createdAt={recipe.created} />
       ) : (
-        <RecipeDetails recipe={recipe} />
+        <RecipeDetails recipe={recipe} editingEnabled={editingEnabled} />
       )}
     </div>
   )

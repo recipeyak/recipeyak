@@ -1,6 +1,7 @@
 import React from "react"
 import Textarea from "react-textarea-autosize"
 
+import cls from "@/classnames"
 import { Button, ButtonLink, ButtonPrimary } from "@/components/Buttons"
 import GlobalEvent from "@/components/GlobalEvent"
 import { Markdown } from "@/components/Markdown"
@@ -20,6 +21,7 @@ interface IListItemProps {
   ) => void
   readonly removing?: boolean
   readonly updating?: boolean
+  readonly isEditing: boolean
 }
 
 interface IListItemState {
@@ -218,9 +220,14 @@ export default class ListItem extends React.Component<
     return (
       <div ref={this.element}>
         <section
-          className="cursor-pointer"
+          className={cls({ "cursor-pointer": this.props.isEditing })}
           title="click to edit"
-          onClick={this.enableEditing}
+          onClick={() => {
+            if (!this.props.isEditing) {
+              return
+            }
+            this.enableEditing()
+          }}
         >
           {inner}
         </section>

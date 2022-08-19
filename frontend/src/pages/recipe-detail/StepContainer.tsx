@@ -51,6 +51,7 @@ interface IStepContainerProps {
     recipeID: number
     stepID: number
   }) => void
+  readonly isEditing: boolean
 }
 
 function StepContainer(props: IStepContainerProps) {
@@ -109,6 +110,7 @@ function StepContainer(props: IStepContainerProps) {
           recipeID={props.recipeID}
           text={card.text}
           move={move}
+          isEditing={props.isEditing}
           position={card.position}
           updating={card.updating}
           removing={card.removing}

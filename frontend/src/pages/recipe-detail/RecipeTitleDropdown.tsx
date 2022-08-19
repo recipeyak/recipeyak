@@ -15,9 +15,7 @@ import { useDispatch, useSelector } from "@/hooks"
 import { scheduleURLFromTeamID } from "@/store/mapState"
 import {
   deleteRecipe,
-  duplicateRecipe,
   IIngredient,
-  IRecipe,
   updateRecipe,
 } from "@/store/reducers/recipes"
 import { showNotificationWithTimeoutAsync } from "@/store/thunks"
@@ -45,32 +43,16 @@ function useIngredientString(recipeId: number) {
   })
 }
 
-interface IUseDuplicateRecipe {
-  readonly recipeId: IRecipe["id"]
-  readonly onComplete?: () => void
-}
-
-function useDuplicateRecipe({
-  recipeId,
-  onComplete,
-}: IUseDuplicateRecipe): [boolean, () => void] {
-  const dispatch = useDispatch()
-
-  const onDuplicate = React.useCallback(() => {
-    dispatch(duplicateRecipe.request({ recipeId, onComplete }))
-  }, [dispatch, onComplete, recipeId])
-
-  const isDuplicating = useSelector(
-    (s) => !!s.recipes.duplicatingById[recipeId],
-  )
-
-  return [isDuplicating, onDuplicate]
-}
-
 interface IDropdownProps {
   readonly recipeId: number
+  readonly toggleEditing: () => void
+  readonly editingEnabled: boolean
 }
-export function Dropdown({ recipeId }: IDropdownProps) {
+export function Dropdown({
+  recipeId,
+  toggleEditing,
+  editingEnabled,
+}: IDropdownProps) {
   const { ref, isOpen, toggle, close } = useDropdown()
 
   const location = useLocation()
@@ -82,11 +64,6 @@ export function Dropdown({ recipeId }: IDropdownProps) {
       return [!!maybeRecipe.data.archived_at, !!maybeRecipe.data.deleting]
     }
     return [false, false]
-  })
-
-  const [creatingDuplicate, onDuplicate] = useDuplicateRecipe({
-    recipeId,
-    onComplete: close,
   })
 
   const handleCopyIngredients = React.useCallback(() => {
@@ -128,9 +105,6 @@ export function Dropdown({ recipeId }: IDropdownProps) {
 
   const scheduleUrl = useScheduleUrl(recipeId)
 
-  const exportYamlUrl = `/recipes/${recipeId}.yaml`
-  const exportJsonUrl = `/recipes/${recipeId}.json`
-
   return (
     <DropdownContainer ref={ref}>
       <Button size="small" onClick={toggle}>
@@ -140,36 +114,35 @@ export function Dropdown({ recipeId }: IDropdownProps) {
         <DropdownItemLink to={scheduleUrl} onClick={close}>
           Schedule
         </DropdownItemLink>
-        <DropdownItemButton onClick={onDuplicate}>
-          <span>Duplicate</span>
-          {creatingDuplicate && <span>(creating...)</span>}
-        </DropdownItemButton>
         <DropdownItemButton onClick={handleCopyIngredients}>
-          Copy Ingredients to Clipboard
+          Copy Ingredients
         </DropdownItemButton>
-        <DropdownItemLink isRaw to={exportYamlUrl} onClick={close}>
-          Export as YAML
-        </DropdownItemLink>
-        <DropdownItemLink isRaw to={exportJsonUrl} onClick={close}>
-          Export as JSON
-        </DropdownItemLink>
-        {!isArchived ? (
-          <DropdownItemButton onClick={archiveRecipe}>
-            Archive Recipe
-          </DropdownItemButton>
-        ) : (
-          <DropdownItemButton onClick={unArchiveRecipe}>
-            Unarchive Recipe
-          </DropdownItemButton>
-        )}
         <DropdownItemLink
           to={location.pathname + "?timeline=1"}
           onClick={close}
         >
-          Timeline
+          View Timeline
         </DropdownItemLink>
+        <DropdownItemButton
+          onClick={() => {
+            toggleEditing()
+            close()
+          }}
+        >
+          {editingEnabled ? "Disable Editing" : "Enable Editing"}
+        </DropdownItemButton>
+        {!isArchived ? (
+          <DropdownItemButton onClick={archiveRecipe}>
+            Archive
+          </DropdownItemButton>
+        ) : (
+          <DropdownItemButton onClick={unArchiveRecipe}>
+            Unarchive
+          </DropdownItemButton>
+        )}
+
         <DropdownItemButton onClick={handleDeleteRecipe}>
-          {!isDeleting ? "Delete Recipe" : "Deleting Recipe.."}
+          {!isDeleting ? "Delete" : "Deleting..."}
         </DropdownItemButton>
       </DropdownMenu>
     </DropdownContainer>

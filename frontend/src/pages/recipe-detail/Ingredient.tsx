@@ -2,6 +2,7 @@ import React from "react"
 import { useDrag, useDrop } from "react-dnd"
 
 import { isMobile } from "@/browser"
+import cls from "@/classnames"
 import { Button, ButtonLink, ButtonPrimary } from "@/components/Buttons"
 import { CheckBox, selectTarget, TextInput } from "@/components/Forms"
 import GlobalEvent from "@/components/GlobalEvent"
@@ -46,6 +47,7 @@ export function Ingredient(props: {
   readonly updating?: boolean
   readonly removing?: boolean
   readonly index: number
+  readonly isEditing: boolean
   readonly remove: ({ ingredientId }: { readonly ingredientId: number }) => void
   readonly update: ({
     ingredientId,
@@ -218,6 +220,9 @@ export function Ingredient(props: {
     item: {
       index: props.index,
     },
+    canDrag() {
+      return props.isEditing
+    },
     end: (draggedItem) => {
       props.completeMove?.({
         kind: "ingredient",
@@ -341,9 +346,13 @@ export function Ingredient(props: {
       className="bg-white"
     >
       <section
-        title="click to edit"
-        className="cursor-pointer"
-        onClick={enableEditing}
+        title={props.isEditing ? "click to edit" : undefined}
+        className={cls({ "cursor-pointer": props.isEditing })}
+        onClick={() => {
+          if (props.isEditing) {
+            enableEditing()
+          }
+        }}
       >
         {inner}
       </section>

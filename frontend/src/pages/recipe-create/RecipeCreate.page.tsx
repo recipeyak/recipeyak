@@ -291,6 +291,7 @@ class AddRecipe extends React.Component<IAddRecipeProps, IAddRecipeState> {
                   remove={() => {
                     this.props.removeIngredient(i)
                   }}
+                  isEditing
                   quantity={x.quantity}
                   optional={x.optional}
                   name={x.name}
@@ -320,6 +321,7 @@ class AddRecipe extends React.Component<IAddRecipeProps, IAddRecipeState> {
                   <label className="better-label">Step {i + 1}</label>
                   <ListItem
                     id={i}
+                    isEditing
                     text={s.text}
                     update={this.props.updateStep}
                     delete={this.props.removeStep}
