@@ -72,20 +72,12 @@ function getInitialIngredients({
   return sortBy(out, (x) => x.item.position)
 }
 
-const TitleContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-`
-
 function RecipeDetails({
   recipe,
   editingEnabled,
-  toggleEditing,
 }: {
   readonly recipe: IRecipe
   editingEnabled: boolean
-  toggleEditing: () => void
 }) {
   const [addIngredient, setAddIngredient] = React.useState(false)
   const [addStep, setAddStep] = React.useState(false)
@@ -441,13 +433,7 @@ export function Recipe(props: IRecipeProps) {
       {isTimeline ? (
         <RecipeTimeline recipeId={recipe.id} createdAt={recipe.created} />
       ) : (
-        <RecipeDetails
-          recipe={recipe}
-          toggleEditing={() => {
-            setEditingEnabled((s) => !s)
-          }}
-          editingEnabled={editingEnabled}
-        />
+        <RecipeDetails recipe={recipe} editingEnabled={editingEnabled} />
       )}
     </div>
   )
