@@ -146,7 +146,9 @@ jobs:
       - run:
           name: run tests
           working_directory: frontend
-          command: ./s/test
+          command: ./s/test --no-watch --reporter junit --outputFile ~/test-results/frontend_test.xml
+      - store_test_results:
+          path: ~/test-results
 
   frontend_lint:
     docker:
