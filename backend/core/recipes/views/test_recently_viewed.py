@@ -2,7 +2,7 @@ import pytest
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Recipe, User, RecipeView
+from core.models import Recipe, RecipeView, User
 
 
 @pytest.mark.django_db
