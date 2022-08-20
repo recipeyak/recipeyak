@@ -1,14 +1,17 @@
 import React from "react"
 import { Link } from "react-router-dom"
 
+import cls from "@/classnames"
 import { IRecipe } from "@/store/reducers/recipes"
 
-interface IMetaDataProps extends React.HTMLAttributes<HTMLDivElement> {
+type MetaDataProps = {
   readonly author: string
   readonly source: string
   readonly servings: string
   readonly time: string
+  readonly title: string | undefined
   readonly tags: IRecipe["tags"]
+  readonly onClick: () => void
 }
 
 const isValid = (x?: string) => x !== "" && x != null
@@ -47,11 +50,19 @@ function MetaPiece({ children }: React.HTMLAttributes<HTMLDivElement>) {
   return <span>{children}</span>
 }
 
-function MetaBold({ children, onClick }: React.HTMLAttributes<HTMLDivElement>) {
+function MetaBold({
+  title,
+  children,
+  onClick,
+}: {
+  title: string | undefined
+  children: React.ReactNode
+  onClick: () => void
+}) {
   return (
     <b
-      title="click  to edit"
-      className="cursor-pointer white-space-nowrap"
+      title={title}
+      className={cls({ "cursor-pointer": title != null }, "white-space-nowrap")}
       onClick={onClick}
     >
       {children}
@@ -65,33 +76,45 @@ const MetaData = ({
   servings = "",
   time = "",
   onClick,
+  title,
   tags,
-}: IMetaDataProps) => {
+}: MetaDataProps) => {
   const _author = isValid(author) ? (
     <MetaPiece>
-      By&nbsp;<MetaBold onClick={onClick}>{author}</MetaBold>{" "}
+      By&nbsp;
+      <MetaBold title={title} onClick={onClick}>
+        {author}
+      </MetaBold>{" "}
     </MetaPiece>
   ) : null
   const _source = isValid(source) ? (
     <MetaPiece>
       from&nbsp;
       {isURL(source) ? (
-        <MetaBold>
+        <b className="white-space-nowrap">
           <SourceLink>{source}</SourceLink>
-        </MetaBold>
+        </b>
       ) : (
-        <MetaBold onClick={onClick}>{source}</MetaBold>
+        <MetaBold title={title} onClick={onClick}>
+          {source}
+        </MetaBold>
       )}{" "}
     </MetaPiece>
   ) : null
   const _servings = isValid(servings) ? (
     <MetaPiece>
-      creating&nbsp;<MetaBold onClick={onClick}>{servings}</MetaBold>{" "}
+      creating&nbsp;
+      <MetaBold title={title} onClick={onClick}>
+        {servings}
+      </MetaBold>{" "}
     </MetaPiece>
   ) : null
   const _time = isValid(time) ? (
     <MetaPiece>
-      in&nbsp;<MetaBold onClick={onClick}>{time}</MetaBold>{" "}
+      in&nbsp;
+      <MetaBold title={title} onClick={onClick}>
+        {time}
+      </MetaBold>{" "}
     </MetaPiece>
   ) : null
 

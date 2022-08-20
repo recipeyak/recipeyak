@@ -143,7 +143,7 @@ class RecipeTitle extends React.Component<
   }
 
   handleEnableEdit = () => {
-    if (hasSelection()) {
+    if (hasSelection() || !this.props.editingModeEnabled) {
       return
     }
     this.toggleEdit()
@@ -179,8 +179,12 @@ class RecipeTitle extends React.Component<
           {!this.props.editing ? (
             <div className="d-flex align-items-center">
               <h1
-                className="title fs-2rem mb-0 mb-1 cursor-pointer"
-                title="click to edit"
+                className={cls("title fs-2rem mb-0 mb-1", {
+                  "cursor-pointer": this.props.editingModeEnabled,
+                })}
+                title={
+                  this.props.editingModeEnabled ? "click to edit" : undefined
+                }
                 onClick={this.handleEnableEdit}
               >
                 {name}
@@ -206,7 +210,9 @@ class RecipeTitle extends React.Component<
         {!this.props.editing ? (
           <div className="grid-entire-row">
             <MetaData
-              title="click to edit"
+              title={
+                this.props.editingModeEnabled ? "click to edit" : undefined
+              }
               onClick={this.handleEnableEdit}
               author={author}
               source={source}
@@ -216,7 +222,7 @@ class RecipeTitle extends React.Component<
             />
           </div>
         ) : (
-          <div className="">
+          <div>
             <div className="d-grid grid-entire-row align-items-center meta-data-grid">
               <label className="d-flex align-center">
                 By
