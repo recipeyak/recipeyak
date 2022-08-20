@@ -98,7 +98,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def retrieve(self, request: AuthedRequest, *args: Any, **kwargs: Any) -> Response:
         instance: Recipe = self.get_object()
         serializer = self.get_serializer(instance)
-        # unique on (recipe, user)
         with connection.cursor() as cursor:
             cursor.execute(
                 """
@@ -122,9 +121,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 """,
                 {"user_id": request.user.id, "recipe_id": instance.id},
             )
-        # https://www.peterbe.com/plog/simple-or-fancy-upsert-in-postgresql-with-django
-        # https://planetscale.com/blog/the-slotted-counter-pattern
-        # https://stackoverflow.com/questions/63427955/how-to-perform-ternary-operation-in-an-sql-insert-statement
         return Response(serializer.data)
 
     def list(self, request: AuthedRequest) -> Response:  # type: ignore [override]
