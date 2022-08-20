@@ -29,14 +29,6 @@
   padding: 0 10px;
 }
 
-.home-page-grid {
-  grid-template-columns: repeat(2, 1fr);
-  grid-gap: 1rem;
-  @media (min-width: 730px) {
-    display: grid;
-  }
-}
-
 .stat {
   font-size: 1.5rem;
 

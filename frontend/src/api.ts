@@ -455,6 +455,21 @@ export function updateCalendarSettings({
   })
 }
 
+export function recentlyViewedRecipes() {
+  return http.request({
+    method: "GET",
+    url: "api/v1/recipes/recently_viewed",
+    shape: t.type({
+      recipes: t.array(
+        t.type({
+          id: t.number,
+          name: t.string,
+        }),
+      ),
+    }),
+  })
+}
+
 export function generateCalendarLink({
   teamID,
 }: {
