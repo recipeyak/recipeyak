@@ -456,20 +456,13 @@ def parse_int(val: str) -> Optional[int]:
 @api_view(["GET"])
 @permission_classes((IsAuthenticated,))
 def get_recently_viewed_recipes(request: AuthedRequest) -> Response:
-    user: User = request.user
-
-    max_results = 6
-
-    recipe_ids = [
-        recipe_view["recipe_id"]
-        for recipe_view in RecipeView.objects.filter(user=user)
-        .order_by("-last_visited_at")[:max_results]
-        .values("recipe_id")
+    recipes = [
+        {"id": rv.recipe.id, "name": rv.recipe.name}
+        for rv in RecipeView.objects.select_related("recipe")
+        .filter(user=request.user)
+        .order_by("-last_visited_at")[:6]
     ]
-
-    recipes = Recipe.objects.filter(id__in=recipe_ids)
-
-    return Response({"recipes": [{"id": r.id, "name": r.name} for r in recipes]})
+    return Response(recipes)
 
 
 @api_view(["GET"])

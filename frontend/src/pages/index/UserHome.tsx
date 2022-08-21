@@ -286,7 +286,7 @@ function RecentlyViewed() {
   React.useEffect(() => {
     void api.recentlyViewedRecipes().then((res) => {
       if (isRight(res)) {
-        setRecipes(res.right.recipes)
+        setRecipes(res.right)
       } else {
         setRecipes([])
       }

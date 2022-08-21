@@ -17,5 +17,5 @@ def test_recently_viewed(client: APIClient, user: User, recipe: Recipe) -> None:
     assert RecipeView.objects.count() == 1
 
     res = client.get("/api/v1/recipes/recently_viewed")
-    assert len(res.json()["recipes"]) == 1
-    assert res.json()["recipes"][0]["id"] == recipe.pk
+    assert len(res.json()) == 1
+    assert res.json()[0]["id"] == recipe.pk
