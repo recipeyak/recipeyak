@@ -106,12 +106,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 ON CONFLICT
                 ON CONSTRAINT one_user_view_row_per_recipe
                 DO UPDATE SET
-                    last_visited_at =
-                        CASE WHEN recipe_view.last_visited_at < now() - '1 hour'::interval THEN
-                            now()
-                        ELSE
-                            recipe_view.last_visited_at
-                        END,
+                    last_visited_at = now(),
                     count =
                         CASE WHEN recipe_view.last_visited_at < now() - '1 hour'::interval THEN
                             recipe_view.count + 1
