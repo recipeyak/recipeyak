@@ -13,6 +13,7 @@ from core.recipes.views import (
     TeamRecipesViewSet,
     create_section_view,
     delete_or_update_section_view,
+    get_recently_viewed_recipes,
     get_recipe_timeline,
 )
 from core.recipes.views.reactions_view import (
@@ -52,6 +53,7 @@ urlpatterns = [
     path("t/<int:team_id>/ical/<str:ical_id>/schedule.ics", get_ical_view),
     path("api/v1/", include(router.urls)),
     path("api/v1/", include(recipes_router.urls)),
+    path("api/v1/recipes/recently_viewed", get_recently_viewed_recipes),
     path("api/v1/recipes/<int:recipe_pk>/timeline", get_recipe_timeline),
     path("api/v1/recipes/<int:recipe_pk>/sections", create_section_view),
     path("api/v1/sections/<int:section_pk>/", delete_or_update_section_view),

@@ -68,6 +68,14 @@
   }
 }
 
+.column-gap-2rem {
+  column-gap: 2rem;
+}
+
+.row-gap-1rem {
+  row-gap: 1rem;
+}
+
 @for $i from 0 through 16 {
   .ml-#{$i} {
     margin-left: #{$i/4}rem !important;
