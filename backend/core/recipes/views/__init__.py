@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import collections
 import logging
-from typing import Any, Iterable, List, Optional
+from typing import Any, Iterable, Optional
 
-from django.db import connection, transaction
+from django.db import connection
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import status
@@ -47,12 +47,10 @@ from core.recipes.serializers import (
     SectionSerializer,
     StepSerializer,
     serialize_attachments,
-    serialize_note,
     serialize_reactions,
 )
 from core.recipes.utils import add_positions
 from core.request import AuthedRequest
-from core.serialization import RequestParams
 
 logger = logging.getLogger(__name__)
 
@@ -755,55 +753,3 @@ class IngredientViewSet(viewsets.ModelViewSet):
             change_type=ChangeType.INGREDIENT_DELETE,
         )
         super().perform_destroy(instance)
-
-
-class CreateNoteParams(RequestParams):
-    text: str
-    attachment_upload_ids: List[str]
-
-
-class EditNoteParams(RequestParams):
-    text: Optional[str] = None
-    attachment_upload_ids: Optional[List[str]] = None
-
-
-class NoteViewSet(viewsets.ModelViewSet):
-
-    queryset = Note.objects.all()
-    permission_classes = (IsAuthenticated,)
-
-    def create(  # type: ignore [override]
-        self, request: AuthedRequest, recipe_pk: str
-    ) -> Response:
-        recipe = get_object_or_404(Recipe, pk=recipe_pk)
-        params = CreateNoteParams.parse_obj(request.data)
-
-        note = Note.objects.create(
-            text=params.text,
-            created_by=request.user,
-            last_modified_by=request.user,
-            recipe=recipe,
-        )
-        Upload.objects.filter(
-            id__in=params.attachment_upload_ids, created_by=request.user
-        ).update(note=note)
-
-        return Response(serialize_note(note), status=status.HTTP_201_CREATED)
-
-    def update(  # type: ignore [override]
-        self, request: AuthedRequest, partial: bool, pk: str
-    ) -> Response:
-        params = EditNoteParams.parse_obj(self.request.data)
-        note = get_object_or_404(Note, pk=pk)
-        note.last_modified_by = request.user
-        if params.text is not None:
-            note.text = params.text
-        if params.attachment_upload_ids is not None:
-            with transaction.atomic():
-                Upload.objects.filter(note=note).update(note=None)
-                Upload.objects.filter(
-                    id__in=params.attachment_upload_ids, created_by=request.user
-                ).update(note=note)
-        note.save()
-
-        return Response(serialize_note(note), status=status.HTTP_200_OK)
