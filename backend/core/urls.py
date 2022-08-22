@@ -10,15 +10,17 @@ from core.recipes.views import (
     RecipeViewSet,
     StepViewSet,
     TeamRecipesViewSet,
-    create_section_view,
-    delete_or_update_section_view,
-    get_recently_viewed_recipes,
-    get_recipe_timeline,
 )
 from core.recipes.views.reactions_view import (
     note_reaction_create_view,
     note_reaction_delete_view,
 )
+from core.recipes.views.recently_view_recipes_view import get_recently_viewed_recipes
+from core.recipes.views.sections_view import (
+    create_section_view,
+    delete_or_update_section_view,
+)
+from core.recipes.views.timeline_view import get_recipe_timeline
 from core.schedule.views import CalendarViewSet, ReportBadMerge, get_shopping_list_view
 from core.teams.views import (
     MembershipViewSet,
@@ -55,8 +57,8 @@ urlpatterns = [
     path("api/v1/recipes/recently_viewed", get_recently_viewed_recipes),
     path("api/v1/recipes/<int:recipe_pk>/timeline", get_recipe_timeline),
     path("api/v1/recipes/<int:recipe_pk>/sections", create_section_view),
-    path("api/v1/recipes/<int:recipe_pk>/notes/", note_create_view),
     path("api/v1/sections/<int:section_pk>/", delete_or_update_section_view),
+    path("api/v1/recipes/<int:recipe_pk>/notes/", note_create_view),
     path("api/v1/notes/<int:note_pk>/reactions/", note_reaction_create_view),
     path("api/v1/notes/<int:note_pk>/", note_detail_view),
     path("api/v1/reactions/<str:reaction_pk>/", note_reaction_delete_view),
