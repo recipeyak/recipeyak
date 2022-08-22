@@ -6,6 +6,7 @@ import {
   parseISO,
   startOfToday,
 } from "date-fns"
+import { isRight } from "fp-ts/lib/Either"
 import queryString from "query-string"
 import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
@@ -105,6 +106,7 @@ function ScheduledRecipe(props: {
 }
 const ScheduleContainer = styled.div`
   max-width: 300px;
+  width: 300px;
 `
 
 const SuggestionBox = styled.div`
@@ -277,6 +279,40 @@ function SchedulePreview() {
   )
 }
 
+function RecentlyViewed() {
+  // TODO(sbdchd): replace with react-query or similar
+  const [recipes, setRecipes] =
+    React.useState<ReadonlyArray<{ id: number; name: string }>>()
+  React.useEffect(() => {
+    void api.recentlyViewedRecipes().then((res) => {
+      if (isRight(res)) {
+        setRecipes(res.right)
+      } else {
+        setRecipes([])
+      }
+    })
+  }, [])
+
+  return (
+    <ScheduleContainer>
+      <SectionTitle>Recently Viewed</SectionTitle>
+      <div className="d-flex flex-direction-column">
+        {recipes == null ? (
+          <p>loading...</p>
+        ) : recipes.length === 0 ? (
+          <p>no recipes viewed</p>
+        ) : (
+          recipes.map((r) => (
+            <Recipe key={r.id} to={`/recipes/${r.id}`}>
+              {r.name}
+            </Recipe>
+          ))
+        )}
+      </div>
+    </ScheduleContainer>
+  )
+}
+
 function searchQueryFromUrl() {
   const qs = queryString.parse(window.location.search)
   const search = qs["search"]
@@ -419,8 +455,9 @@ const UserHome = () => {
             </SearchOptions>
           </SearchInputContainer>
         </SearchInputAligner>
-        <div className="home-page-grid">
+        <div className="d-flex flex-wrap justify-content-center column-gap-2rem row-gap-1rem">
           <SchedulePreview />
+          <RecentlyViewed />
         </div>
       </div>
 

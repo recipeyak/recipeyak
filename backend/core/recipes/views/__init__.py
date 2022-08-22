@@ -4,6 +4,7 @@ import collections
 import logging
 from typing import Any, Iterable, Optional
 
+from django.db import connection, transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import status
@@ -27,6 +28,7 @@ from core.models import (
     Reaction,
     Recipe,
     RecipeChange,
+    RecipeView,
     ScheduledRecipe,
     Section,
     Step,
@@ -90,6 +92,34 @@ class RecipeViewSet(viewsets.ModelViewSet):
             "timelineevent_set__created_by",
             "section_set",
         )
+
+    def retrieve(self, request: AuthedRequest, *args: Any, **kwargs: Any) -> Response:
+        instance: Recipe = self.get_object()
+        serializer = self.get_serializer(instance)
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                INSERT INTO recipe_view (recipe_id, user_id, last_visited_at, count, created, modified)
+                VALUES (%(recipe_id)s, %(user_id)s, now(), 1, now(), now())
+                ON CONFLICT
+                ON CONSTRAINT one_user_view_row_per_recipe
+                DO UPDATE SET
+                    last_visited_at =
+                        CASE WHEN recipe_view.last_visited_at < now() - '1 hour'::interval THEN
+                            now()
+                        ELSE
+                            recipe_view.last_visited_at
+                        END,
+                    count =
+                        CASE WHEN recipe_view.last_visited_at < now() - '1 hour'::interval THEN
+                            recipe_view.count + 1
+                        ELSE
+                            recipe_view.count
+                        END
+                """,
+                {"user_id": request.user.id, "recipe_id": instance.id},
+            )
+        return Response(serializer.data)
 
     def list(self, request: AuthedRequest) -> Response:  # type: ignore [override]
         recipes = {
@@ -419,6 +449,18 @@ def parse_int(val: str) -> Optional[int]:
         return int(val)
     except ValueError:
         return None
+
+
+@api_view(["GET"])
+@permission_classes((IsAuthenticated,))
+def get_recently_viewed_recipes(request: AuthedRequest) -> Response:
+    recipes = [
+        {"id": rv.recipe.id, "name": rv.recipe.name}
+        for rv in RecipeView.objects.select_related("recipe")
+        .filter(user=request.user)
+        .order_by("-last_visited_at")[:6]
+    ]
+    return Response(recipes)
 
 
 @api_view(["GET"])

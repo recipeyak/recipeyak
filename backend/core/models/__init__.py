@@ -7,6 +7,7 @@ from core.models.note import Note
 from core.models.reaction import Reaction  # noqa: F401
 from core.models.recipe import Recipe  # noqa: F401
 from core.models.recipe_change import ChangeType, RecipeChange  # noqa: F401
+from core.models.recipe_view import RecipeView  # noqa: F401
 from core.models.scheduled_recipe import ScheduledRecipe  # noqa: F401
 from core.models.section import Section  # noqa: F401
 from core.models.shopping_list import ShoppingList  # noqa: F401
