@@ -14,7 +14,6 @@ from core.recipes.views import (
     delete_or_update_section_view,
     get_recipe_timeline,
 )
-from .recipes.views.notes_view import note_create_view, note_detail_view
 from core.recipes.views.reactions_view import (
     note_reaction_create_view,
     note_reaction_delete_view,
@@ -27,6 +26,8 @@ from core.teams.views import (
     UserInvitesViewSet,
 )
 from core.uploads import views as upload
+
+from .recipes.views.notes_view import note_create_view, note_detail_view
 
 router = DefaultRouter()
 router.register(r"recipes", RecipeViewSet, basename="recipes")

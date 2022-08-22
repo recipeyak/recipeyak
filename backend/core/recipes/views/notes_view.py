@@ -10,15 +10,8 @@ from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from core.models import (
-    Note,
-    Upload,
-    user_and_team_notes,
-    user_and_team_recipes,
-)
-from core.recipes.serializers import (
-    serialize_note,
-)
+from core.models import Note, Upload, user_and_team_notes, user_and_team_recipes
+from core.recipes.serializers import serialize_note
 from core.request import AuthedRequest
 from core.serialization import RequestParams
 
