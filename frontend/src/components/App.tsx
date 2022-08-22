@@ -6,10 +6,9 @@ import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import { HelmetProvider } from "react-helmet-async"
 import { connect, Provider } from "react-redux"
-import { StaticContext } from "react-router"
 import {
   Redirect,
-  Route,
+  Route as BaseRoute,
   RouteComponentProps,
   RouteProps,
   Switch,
@@ -40,52 +39,28 @@ import TeamsListPage from "@/pages/team-list/TeamList.page"
 import store, { history, IState } from "@/store/store"
 import { theme, ThemeProvider } from "@/theme"
 
-interface IAuthRouteProps extends RouteProps {
+interface IAuthRouteProps extends Pick<RouteProps, "exact" | "path"> {
   readonly authenticated: boolean
+  readonly component: // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  | React.ComponentType<RouteComponentProps<any>>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    | React.ComponentType<any>
 }
 
 const mapAuthenticated = (state: IState) => ({
   authenticated: state.user.loggedIn,
 })
 
-type ComponentProps = RouteComponentProps<
-  {
-    [x: string]: string | undefined
-  },
-  StaticContext,
-  unknown
->
-
-/** Return a ReactNode when provided a component or render function
- *
- * This utility function supports component and render props for React Router.
- */
-const renderComponent = (
-  props: ComponentProps,
-  component: RouteProps["component"],
-  render: RouteProps["render"],
-): React.ReactNode => {
-  if (component) {
-    return React.createElement(component, props)
-  }
-  if (render) {
-    return render(props)
-  }
-  return null
-}
-
 const PrivateRoute = connect(mapAuthenticated)(
-  ({
-    component: Component,
-    render,
-    authenticated,
-    ...rest
-  }: IAuthRouteProps) => (
-    <Route
+  ({ component: Component, authenticated, ...rest }: IAuthRouteProps) => (
+    <BaseRoute
       {...rest}
       render={(props) => {
         return authenticated ? (
-          renderComponent(props, Component, render)
+          <>
+            <ScrollRestore />
+            <Component {...props} />
+          </>
         ) : (
           <Redirect
             to={{
@@ -100,17 +75,15 @@ const PrivateRoute = connect(mapAuthenticated)(
 )
 
 const PublicOnlyRoute = connect(mapAuthenticated)(
-  ({
-    component: Component,
-    render,
-    authenticated,
-    ...rest
-  }: IAuthRouteProps) => (
-    <Route
+  ({ component: Component, authenticated, ...rest }: IAuthRouteProps) => (
+    <BaseRoute
       {...rest}
       render={(props) => {
         return !authenticated ? (
-          renderComponent(props, Component, render)
+          <>
+            <ScrollRestore />
+            <Component {...props} />
+          </>
         ) : (
           <Redirect
             to={{
@@ -118,6 +91,25 @@ const PublicOnlyRoute = connect(mapAuthenticated)(
               state: { from: props.location },
             }}
           />
+        )
+      }}
+    />
+  ),
+)
+
+const Route = connect(mapAuthenticated)(
+  ({
+    component: Component,
+    ...rest
+  }: Omit<IAuthRouteProps, "authenticated">) => (
+    <BaseRoute
+      {...rest}
+      render={(props) => {
+        return (
+          <>
+            <ScrollRestore />
+            <Component {...props} />
+          </>
         )
       }}
     />
@@ -144,7 +136,6 @@ function Base() {
             <ErrorBoundary>
               <Helmet />
               <ConnectedRouter history={history}>
-                <ScrollRestore />
                 <Switch>
                   <PublicOnlyRoute exact path="/login" component={Login} />
                   <PublicOnlyRoute
