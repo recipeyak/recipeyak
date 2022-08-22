@@ -4,7 +4,7 @@ import collections
 import logging
 from typing import Any, Iterable, Optional
 
-from django.db import connection, transaction
+from django.db import connection
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import status
