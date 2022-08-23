@@ -36,10 +36,10 @@ def test_adding_step_to_recipe(step, client, user, recipe):
     """
     client.force_authenticate(user)
 
-    res = client.post(reverse("recipe-step-list", args=[recipe.id]), step)
+    res = client.post(f"/api/v1/recipes/{recipe.id}/steps/", step)
     assert res.status_code == status.HTTP_201_CREATED
 
-    res = client.get(reverse("recipes-detail", args=[recipe.id]))
+    res = client.get(f"/api/v1/recipes/{recipe.id}/")
     assert res.status_code == status.HTTP_200_OK
 
     assert step.get("text") in (

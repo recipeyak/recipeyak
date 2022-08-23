@@ -39,7 +39,6 @@ from core.models.user import get_avatar_url
 from core.recipes.serializers import (
     RecipeMoveCopySerializer,
     RecipeSerializer,
-    StepSerializer,
     serialize_attachments,
     serialize_reactions,
 )
@@ -469,69 +468,3 @@ class TeamRecipesViewSet(APIView):
         )
 
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class StepViewSet(viewsets.ModelViewSet):
-
-    queryset = Step.objects.all()
-    serializer_class = StepSerializer
-    permission_classes = (IsAuthenticated,)
-
-    def create(  # type: ignore [override]
-        self, request: AuthedRequest, recipe_pk: str
-    ) -> Response:
-        """
-        create the step and attach it to the correct recipe
-        """
-        serializer = self.serializer_class(data=request.data)
-        recipe = get_object_or_404(Recipe, pk=recipe_pk)
-
-        # set a position if not provided. We must included deleted because they
-        # still take up a position.
-        last_step = recipe.step_set.all_with_deleted().last()
-        if serializer.initial_data.get("position") is None:
-            if last_step is not None:
-                serializer.initial_data["position"] = last_step.position + 10.0
-            else:
-                serializer.initial_data["position"] = 10.0
-
-        if serializer.is_valid():
-            serializer.save(recipe=recipe)
-            logger.info("Step created by %s", request.user)
-            RecipeChange.objects.create(
-                recipe=recipe,
-                actor=request.user,
-                before="",
-                after=serializer.validated_data["text"],
-                change_type=ChangeType.STEP_CREATE,
-            )
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop("partial", False)
-        instance: Step = self.get_object()
-        before_text = instance.text
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-
-        RecipeChange.objects.create(
-            recipe=instance.recipe,
-            actor=request.user,
-            before=before_text,
-            after=instance.text,
-            change_type=ChangeType.STEP_UPDATE,
-        )
-
-        return Response(serializer.data)
-
-    def perform_destroy(self, instance: Step) -> None:
-        RecipeChange.objects.create(
-            recipe=instance.recipe,
-            actor=self.request.user,
-            before=instance.text,
-            after="",
-            change_type=ChangeType.STEP_DELETE,
-        )
-        super().perform_destroy(instance)
