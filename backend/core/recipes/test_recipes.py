@@ -260,18 +260,19 @@ def test_updating_step_of_recipe(client, user, recipe):
 
     step_data = {"text": "An updated step", "position": step.position + 10.0}
 
-    url = reverse("recipe-step-detail", args=[recipe.id, step.id])
+    url = f"/api/v1/recipes/{recipe.id}/steps/{step.id}/"
 
     res = client.patch(url, step_data)
     assert res.status_code == status.HTTP_200_OK
 
-    res = client.get(url)
+    res = client.get(f"/api/v1/recipes/{recipe.id}/")
     assert res.status_code == status.HTTP_200_OK
+    updated_step = next((x for x in res.json()["steps"] if x["id"] == step.pk))
 
-    assert res.json().get("id") is not None
+    assert updated_step.get("id") is not None
 
     for key, value in step_data.items():
-        assert res.json().get(key) == value
+        assert updated_step.get(key) == value
 
 
 def test_deleting_step_from_recipe(client, user, recipe):
@@ -286,9 +287,6 @@ def test_deleting_step_from_recipe(client, user, recipe):
 
     res = client.delete(f"/api/v1/recipes/{recipe.id}/steps/{step_id}/")
     assert res.status_code == status.HTTP_204_NO_CONTENT
-
-    res = client.get(f"/api/v1/recipes/{recipe.id}/steps/{step_id}/")
-    assert res.status_code == status.HTTP_404_NOT_FOUND
 
     res = client.get(f"/api/v1/recipes/{recipe.id}/")
     assert res.status_code == status.HTTP_200_OK

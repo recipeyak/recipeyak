@@ -320,3 +320,17 @@ def serialize_ingredient(ingredient: Ingredient) -> IngredientResponse:
         position=ingredient.position,
         optional=ingredient.optional,
     )
+
+
+class StepResponse(pydantic.BaseModel):
+    id: int
+    text: str
+    position: int
+
+
+def serialize_step(step: Step) -> StepResponse:
+    return StepResponse(
+        id=step.pk,
+        text=step.text,
+        position=step.position,
+    )
