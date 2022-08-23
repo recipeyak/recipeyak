@@ -5,12 +5,8 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers
 
 from core.ical.views import get_ical_view
-from core.recipes.views import (
-    IngredientViewSet,
-    RecipeViewSet,
-    StepViewSet,
-    TeamRecipesViewSet,
-)
+from core.recipes.views import RecipeViewSet, StepViewSet, TeamRecipesViewSet
+from core.recipes.views.ingredients_list_view import ingredients_list_view
 from core.recipes.views.reactions_view import (
     note_reaction_create_view,
     note_reaction_delete_view,
@@ -30,6 +26,7 @@ from core.teams.views import (
 )
 from core.uploads import views as upload
 
+from .recipes.views.ingredients_detail_view import ingredients_detail_view
 from .recipes.views.notes_view import note_create_view, note_detail_view
 
 router = DefaultRouter()
@@ -39,7 +36,6 @@ router.register(r"invites", UserInvitesViewSet, basename="user-invites")
 
 recipes_router = routers.NestedSimpleRouter(router, r"recipes", lookup="recipe")
 recipes_router.register(r"steps", StepViewSet, basename="recipe-step")
-recipes_router.register(r"ingredients", IngredientViewSet, basename="recipe-ingredient")
 
 teams_router = routers.NestedSimpleRouter(router, r"t", lookup="team")
 teams_router.register(r"members", MembershipViewSet, basename="team-member")
@@ -57,6 +53,11 @@ urlpatterns = [
     path("api/v1/recipes/recently_viewed", get_recently_viewed_recipes),
     path("api/v1/recipes/<int:recipe_pk>/timeline", get_recipe_timeline),
     path("api/v1/recipes/<int:recipe_pk>/sections", create_section_view),
+    path(
+        "api/v1/recipes/<int:recipe_pk>/ingredients/<int:ingredient_pk>/",
+        ingredients_detail_view,
+    ),
+    path("api/v1/recipes/<int:recipe_pk>/ingredients/", ingredients_list_view),
     path("api/v1/sections/<int:section_pk>/", delete_or_update_section_view),
     path("api/v1/recipes/<int:recipe_pk>/notes/", note_create_view),
     path("api/v1/notes/<int:note_pk>/reactions/", note_reaction_create_view),

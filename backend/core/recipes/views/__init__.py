@@ -37,7 +37,6 @@ from core.models import (
 )
 from core.models.user import get_avatar_url
 from core.recipes.serializers import (
-    IngredientSerializer,
     RecipeMoveCopySerializer,
     RecipeSerializer,
     StepSerializer,
@@ -534,88 +533,5 @@ class StepViewSet(viewsets.ModelViewSet):
             before=instance.text,
             after="",
             change_type=ChangeType.STEP_DELETE,
-        )
-        super().perform_destroy(instance)
-
-
-def ingredient_to_text(ingredient: Ingredient) -> str:
-    text = f"{ingredient.quantity} {ingredient.name}"
-
-    if ingredient.description:
-        text += f", {ingredient.description}"
-
-    if ingredient.optional:
-        text += " [optional]"
-
-    return text
-
-
-class IngredientViewSet(viewsets.ModelViewSet):
-
-    queryset = Ingredient.objects.all()
-    serializer_class = IngredientSerializer
-    permission_classes = (IsAuthenticated,)
-
-    def create(  # type: ignore [override]
-        self, request: AuthedRequest, recipe_pk: str
-    ) -> Response:
-        """
-        create the ingredient and attach it to the correct recipe
-        """
-        serializer = self.serializer_class(data=request.data)
-        recipe = get_object_or_404(Recipe, pk=recipe_pk)
-
-        # set a position if not provided. We must included deleted because they
-        # still take up a position.
-        last_ingredient = recipe.ingredient_set.all_with_deleted().last()
-        if serializer.initial_data.get("position") is None:
-            if last_ingredient is not None:
-                serializer.initial_data["position"] = last_ingredient.position + 10.0
-            else:
-                serializer.initial_data["position"] = 10.0
-
-        if serializer.is_valid():
-            recipe = Recipe.objects.get(pk=recipe_pk)
-            instance: Ingredient = serializer.save(recipe=recipe)
-            logger.info("Ingredient created by %s", self.request.user)
-            RecipeChange.objects.create(
-                recipe=recipe,
-                actor=request.user,
-                before="",
-                after=ingredient_to_text(instance),
-                change_type=ChangeType.INGREDIENT_CREATE,
-            )
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def update(self, request: AuthedRequest, *args: Any, **kwargs: Any) -> Response:
-        partial = kwargs.pop("partial", False)
-        instance: Ingredient = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-
-        before = ingredient_to_text(instance)
-
-        self.perform_update(serializer)
-
-        after = ingredient_to_text(instance)
-
-        RecipeChange.objects.create(
-            recipe=instance.recipe,
-            actor=request.user,
-            before=before,
-            after=after,
-            change_type=ChangeType.INGREDIENT_UPDATE,
-        )
-
-        return Response(serializer.data)
-
-    def perform_destroy(self, instance: Ingredient) -> None:
-        RecipeChange.objects.create(
-            recipe=instance.recipe,
-            actor=self.request.user,
-            before=ingredient_to_text(instance),
-            after="",
-            change_type=ChangeType.INGREDIENT_DELETE,
         )
         super().perform_destroy(instance)
