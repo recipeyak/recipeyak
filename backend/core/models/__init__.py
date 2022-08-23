@@ -28,6 +28,10 @@ def user_and_team_recipes(user: User) -> QuerySet[Recipe]:
     )
 
 
+def user_and_team_ingredients(user: User) -> QuerySet[Ingredient]:
+    return Ingredient.objects.filter(recipe__in=user_and_team_recipes(user))
+
+
 def user_and_team_notes(user: User) -> QuerySet[Note]:
     return Note.objects.filter(recipe__in=user_and_team_recipes(user))
 

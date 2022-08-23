@@ -288,3 +288,35 @@ def serialize_note(note: Note) -> NoteResponse:
         attachments=serialize_attachments(note.uploads.all()),
         modified=note.modified,
     )
+
+
+class IngredientResponse(pydantic.BaseModel):
+    id: int
+    quantity: str
+    name: str
+    description: str
+    position: int
+    optional: bool
+
+
+def ingredient_to_text(ingredient: Ingredient) -> str:
+    text = f"{ingredient.quantity} {ingredient.name}"
+
+    if ingredient.description:
+        text += f", {ingredient.description}"
+
+    if ingredient.optional:
+        text += " [optional]"
+
+    return text
+
+
+def serialize_ingredient(ingredient: Ingredient) -> IngredientResponse:
+    return IngredientResponse(
+        id=ingredient.pk,
+        quantity=ingredient.quantity,
+        name=ingredient.name,
+        description=ingredient.description,
+        position=ingredient.position,
+        optional=ingredient.optional,
+    )
