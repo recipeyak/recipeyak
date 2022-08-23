@@ -535,15 +535,3 @@ class StepViewSet(viewsets.ModelViewSet):
             change_type=ChangeType.STEP_DELETE,
         )
         super().perform_destroy(instance)
-
-
-def ingredient_to_text(ingredient: Ingredient) -> str:
-    text = f"{ingredient.quantity} {ingredient.name}"
-
-    if ingredient.description:
-        text += f", {ingredient.description}"
-
-    if ingredient.optional:
-        text += " [optional]"
-
-    return text
