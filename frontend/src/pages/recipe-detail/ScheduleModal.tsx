@@ -1,6 +1,7 @@
 import React from "react"
 import { Link } from "react-router-dom"
 
+import { isMobile } from "@/browser"
 import Modal from "@/components/Modal"
 import { toISODateString } from "@/date"
 import { useSelector } from "@/hooks"
@@ -53,9 +54,13 @@ export function ScheduleModal({
         </div>
 
         <div className="d-flex justify-space-between align-items-center mt-2">
-          <Link to={scheduleUrl} className="text-small">
-            open in schedule
-          </Link>
+          {!isMobile() ? (
+            <Link to={scheduleUrl} className="text-small">
+              open in schedule
+            </Link>
+          ) : (
+            <div />
+          )}
           <div className="align-items-center d-flex">
             <button className="mr-2" onClick={onClose}>
               cancel
