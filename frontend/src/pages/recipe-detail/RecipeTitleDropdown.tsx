@@ -12,7 +12,6 @@ import {
 } from "@/components/Dropdown"
 import { Chevron } from "@/components/icons"
 import { useDispatch, useSelector } from "@/hooks"
-import { scheduleURLFromTeamID } from "@/store/mapState"
 import {
   deleteRecipe,
   duplicateRecipe,
@@ -22,10 +21,6 @@ import {
 } from "@/store/reducers/recipes"
 import { showNotificationWithTimeoutAsync } from "@/store/thunks"
 import { isSuccessLike } from "@/webdata"
-
-function useScheduleUrl(recipeId: number) {
-  return useSelector(scheduleURLFromTeamID) + `?recipeId=${recipeId}`
-}
 
 function ingredientToString(ingre: IIngredient) {
   const s = ingre.quantity + " " + ingre.name
@@ -71,11 +66,13 @@ interface IDropdownProps {
   readonly recipeId: number
   readonly toggleEditing: () => void
   readonly editingEnabled: boolean
+  readonly toggleScheduling: () => void
 }
 export function Dropdown({
   recipeId,
   toggleEditing,
   editingEnabled,
+  toggleScheduling,
 }: IDropdownProps) {
   const { ref, isOpen, toggle, close } = useDropdown()
 
@@ -132,7 +129,10 @@ export function Dropdown({
     }
   }, [dispatch, recipeId])
 
-  const scheduleUrl = useScheduleUrl(recipeId)
+  const handleSchedule = () => {
+    toggleScheduling()
+    close()
+  }
 
   return (
     <DropdownContainer ref={ref}>
@@ -140,9 +140,9 @@ export function Dropdown({
         Actions <Chevron />
       </Button>
       <DropdownMenu isOpen={isOpen}>
-        <DropdownItemLink to={scheduleUrl} onClick={close}>
+        <DropdownItemButton onClick={handleSchedule}>
           Schedule
-        </DropdownItemLink>
+        </DropdownItemButton>
         <DropdownItemButton onClick={handleCopyIngredients}>
           Copy Ingredients
         </DropdownItemButton>
