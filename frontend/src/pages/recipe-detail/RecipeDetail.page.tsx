@@ -13,7 +13,6 @@ import { useDispatch, useOnWindowFocusChange, useSelector } from "@/hooks"
 import AddIngredientOrSection from "@/pages/recipe-detail/AddIngredient"
 import AddStep from "@/pages/recipe-detail/AddStep"
 import { Ingredient } from "@/pages/recipe-detail/Ingredient"
-import IngredientView from "@/pages/recipe-detail/IngredientView"
 import { NoteContainer } from "@/pages/recipe-detail/Notes"
 import { SectionTitle } from "@/pages/recipe-detail/RecipeHelpers"
 import { RecipeTimeline } from "@/pages/recipe-detail/RecipeTimeline"
@@ -220,17 +219,6 @@ function RecipeDetails({
           {sectionsAndIngredients.map((item, i) => {
             if (item.kind === "ingredient") {
               const ingre = item.item
-              if (!editingEnabled) {
-                return (
-                  <IngredientView
-                    dragRef={undefined}
-                    quantity={ingre.quantity}
-                    name={ingre.name}
-                    description={ingre.description}
-                    optional={ingre.optional}
-                  />
-                )
-              }
               return (
                 <Ingredient
                   key={"ingredient" + String(ingre.id)}
