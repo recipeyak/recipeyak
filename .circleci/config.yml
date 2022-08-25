@@ -252,7 +252,7 @@ jobs:
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
             docker build -f react.Dockerfile \
               --tag recipeyak/react:$CIRCLE_SHA1 \
-              --build-arg GIT_SHA=$CIRCLE_SHA1 \
+              --build-arg FRONTEND_GIT_SHA=$CIRCLE_SHA1 \
               --build-arg FRONTEND_SENTRY_DSN=$FRONTEND_SENTRY_DSN .
             docker push recipeyak/react:$CIRCLE_SHA1
 
