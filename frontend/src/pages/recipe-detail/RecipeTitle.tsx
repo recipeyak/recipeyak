@@ -9,6 +9,7 @@ import GlobalEvent from "@/components/GlobalEvent"
 import MetaData from "@/pages/recipe-detail/MetaData"
 import Owner from "@/pages/recipe-detail/Owner"
 import { Dropdown } from "@/pages/recipe-detail/RecipeTitleDropdown"
+import { ScheduleModal } from "@/pages/recipe-detail/ScheduleModal"
 import {
   IRecipe,
   toggleEditingRecipe,
@@ -95,6 +96,7 @@ export interface IRecipeBasic {
 interface IRecipeTitleState {
   readonly show: boolean
   readonly recipe: IRecipeBasic
+  readonly showScheduleModal: boolean
 }
 
 class RecipeTitle extends React.Component<
@@ -104,6 +106,7 @@ class RecipeTitle extends React.Component<
   state: IRecipeTitleState = {
     show: false,
     recipe: {},
+    showScheduleModal: false,
   }
 
   componentDidMount() {
@@ -167,15 +170,27 @@ class RecipeTitle extends React.Component<
     }))
   }
 
+  handleScheduleToggle = () => {
+    this.setState((s) => ({ ...s, showScheduleModal: !s.showScheduleModal }))
+  }
+
   render() {
     const { id, name, author, source, servings, tags, time, owner, updating } =
       this.props
 
     const ownerName = owner.type === "team" ? owner.name : "you"
+
     return (
       <div>
         <div className="grid-entire-row d-flex justify-space-between p-rel">
           <GlobalEvent keyUp={this.handleGlobalKeyUp} />
+          {this.state.showScheduleModal && (
+            <ScheduleModal
+              recipeId={id}
+              recipeName={name}
+              onClose={this.handleScheduleToggle}
+            />
+          )}
           {!this.props.editing ? (
             <div className="d-flex align-items-center">
               <h1
@@ -204,6 +219,7 @@ class RecipeTitle extends React.Component<
             recipeId={id}
             editingEnabled={this.props.editingModeEnabled}
             toggleEditing={this.props.toggleEditMode}
+            toggleScheduling={this.handleScheduleToggle}
           />
         </div>
 

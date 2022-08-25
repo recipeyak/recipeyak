@@ -186,3 +186,7 @@ export function useApi<A, O, T>(
 export function useCurrentUser() {
   return useSelector((s) => s.user)
 }
+
+export function useTeamId(): number | "personal" {
+  return useSelector((state) => state.user.recipeTeamID) ?? "personal"
+}
