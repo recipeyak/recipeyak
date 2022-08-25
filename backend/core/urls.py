@@ -5,20 +5,18 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers
 
 from core.ical.views import get_ical_view
-from core.recipes.views import (
-    IngredientViewSet,
-    RecipeViewSet,
-    StepViewSet,
-    TeamRecipesViewSet,
-    create_section_view,
-    delete_or_update_section_view,
-    get_recently_viewed_recipes,
-    get_recipe_timeline,
-)
+from core.recipes.views import RecipeViewSet, TeamRecipesViewSet
+from core.recipes.views.ingredients_list_view import ingredients_list_view
 from core.recipes.views.reactions_view import (
     note_reaction_create_view,
     note_reaction_delete_view,
 )
+from core.recipes.views.recently_view_recipes_view import get_recently_viewed_recipes
+from core.recipes.views.sections_view import (
+    create_section_view,
+    delete_or_update_section_view,
+)
+from core.recipes.views.timeline_view import get_recipe_timeline
 from core.schedule.views import CalendarViewSet, ReportBadMerge, get_shopping_list_view
 from core.teams.views import (
     MembershipViewSet,
@@ -28,7 +26,10 @@ from core.teams.views import (
 )
 from core.uploads import views as upload
 
+from .recipes.views.ingredients_detail_view import ingredients_detail_view
 from .recipes.views.notes_view import note_create_view, note_detail_view
+from .recipes.views.steps_detail_view import steps_detail_view
+from .recipes.views.steps_list_view import steps_list_view
 
 router = DefaultRouter()
 router.register(r"recipes", RecipeViewSet, basename="recipes")
@@ -36,8 +37,6 @@ router.register(r"t", TeamViewSet, basename="teams")
 router.register(r"invites", UserInvitesViewSet, basename="user-invites")
 
 recipes_router = routers.NestedSimpleRouter(router, r"recipes", lookup="recipe")
-recipes_router.register(r"steps", StepViewSet, basename="recipe-step")
-recipes_router.register(r"ingredients", IngredientViewSet, basename="recipe-ingredient")
 
 teams_router = routers.NestedSimpleRouter(router, r"t", lookup="team")
 teams_router.register(r"members", MembershipViewSet, basename="team-member")
@@ -55,8 +54,15 @@ urlpatterns = [
     path("api/v1/recipes/recently_viewed", get_recently_viewed_recipes),
     path("api/v1/recipes/<int:recipe_pk>/timeline", get_recipe_timeline),
     path("api/v1/recipes/<int:recipe_pk>/sections", create_section_view),
-    path("api/v1/recipes/<int:recipe_pk>/notes/", note_create_view),
+    path(
+        "api/v1/recipes/<int:recipe_pk>/ingredients/<int:ingredient_pk>/",
+        ingredients_detail_view,
+    ),
+    path("api/v1/recipes/<int:recipe_pk>/ingredients/", ingredients_list_view),
+    path("api/v1/recipes/<int:recipe_pk>/steps/", steps_list_view),
+    path("api/v1/recipes/<int:recipe_pk>/steps/<int:step_pk>/", steps_detail_view),
     path("api/v1/sections/<int:section_pk>/", delete_or_update_section_view),
+    path("api/v1/recipes/<int:recipe_pk>/notes/", note_create_view),
     path("api/v1/notes/<int:note_pk>/reactions/", note_reaction_create_view),
     path("api/v1/notes/<int:note_pk>/", note_detail_view),
     path("api/v1/reactions/<str:reaction_pk>/", note_reaction_delete_view),

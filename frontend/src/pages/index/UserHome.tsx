@@ -13,6 +13,7 @@ import { Link } from "react-router-dom"
 import useOnClickOutside from "use-onclickoutside"
 
 import * as api from "@/api"
+import { isMobile } from "@/browser"
 import Footer from "@/components/Footer"
 import * as forms from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
@@ -411,7 +412,7 @@ const UserHome = () => {
         <SearchInputAligner>
           <SearchInputContainer ref={ref}>
             <SearchInput
-              autoFocus
+              autoFocus={!isMobile()}
               autoCorrect="false"
               autoComplete="false"
               autoCapitalize="false"

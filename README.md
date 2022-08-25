@@ -51,6 +51,7 @@ To have a centralized location where multiple people can organize a meal plan.
 | [Mela](https://mela.recipes)                                                                                  | [2021-03-15](https://www.whois.com/whois/mela.recipes)                                                                                                                     | ❌                                      |
 | [Reciped](https://www.reciped.io)                                                                             | [2021-05-19](https://www.whois.com/whois/reciped.io)                                                                                                                       | ❌                                      |
 | [Famnom](https://www.famnom.com)                                                                              | [2021-08-27](http://famnom.com)                                                                                                                                            | [✅](https://github.com/umangsh/famnom) |
+| [Homechart](https://homechart.app)                                                                            | [2021-11-22](https://github.com/candiddev/homechart/commit/644c28870c8a0e7f86adc95438332cbec891de3e)                                                                       | ❌                                      |
 | [Meal DJ](https://mealdj.com)                                                                                 | [2021-12-29](https://apps.apple.com/us/app/appname/id1580876268)                                                                                                           | ❌                                      |
 | [CookTime](https://letscooktime.com)                                                                          | [2022-04-10](https://www.whois.com/whois/letscooktime.com)                                                                                                                 | ❌                                      |
 | [Lollipop](https://www.lollipopai.com)                                                                        | [2022-06-29](https://techcrunch.com/2021/06/29/lollipop-ai-launches-online-grocery-marketplace-where-you-can-build-your-own-recipes/)                                      | ❌                                      |
@@ -145,29 +146,21 @@ Environment variables are used for configuration. Unless otherwise stated, a val
 - `STORAGE_HOSTNAME` — Hostname to use to access image bucket. An s3 hostname or cloudfront distribution hostname.
   - ex: `594f11c618d1.cloudfront.net`
 
-
 ### AWS configuration
 
 1. Create an S3 bucket and configure a CORS policy that allows the website to upload resources.
 
-	```json
-	[
-	    {
-	        "AllowedHeaders": [
-	            "*"
-	        ],
-	        "AllowedMethods": [
-	            "PUT",
-	            "POST"
-	        ],
-	        "AllowedOrigins": [
-	            "http://localhost:*",
-	            "https://recipeyak.com"
-	        ],
-	        "ExposeHeaders": []
-	    }
-	]
-	```
+   ```json
+   [
+     {
+       "AllowedHeaders": ["*"],
+       "AllowedMethods": ["PUT", "POST"],
+       "AllowedOrigins": ["http://localhost:*", "https://recipeyak.com"],
+       "ExposeHeaders": []
+     }
+   ]
+   ```
+
 2. Create an IAM policy to give your AWS ID access to `get_object` and `put_object` for your bucket.
 3. Configure imgix to pull from the bucket.
 

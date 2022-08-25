@@ -260,18 +260,19 @@ def test_updating_step_of_recipe(client, user, recipe):
 
     step_data = {"text": "An updated step", "position": step.position + 10.0}
 
-    url = reverse("recipe-step-detail", args=[recipe.id, step.id])
+    url = f"/api/v1/recipes/{recipe.id}/steps/{step.id}/"
 
     res = client.patch(url, step_data)
     assert res.status_code == status.HTTP_200_OK
 
-    res = client.get(url)
+    res = client.get(f"/api/v1/recipes/{recipe.id}/")
     assert res.status_code == status.HTTP_200_OK
+    updated_step = next((x for x in res.json()["steps"] if x["id"] == step.pk))
 
-    assert res.json().get("id") is not None
+    assert updated_step.get("id") is not None
 
     for key, value in step_data.items():
-        assert res.json().get(key) == value
+        assert updated_step.get(key) == value
 
 
 def test_deleting_step_from_recipe(client, user, recipe):
@@ -286,9 +287,6 @@ def test_deleting_step_from_recipe(client, user, recipe):
 
     res = client.delete(f"/api/v1/recipes/{recipe.id}/steps/{step_id}/")
     assert res.status_code == status.HTTP_204_NO_CONTENT
-
-    res = client.get(f"/api/v1/recipes/{recipe.id}/steps/{step_id}/")
-    assert res.status_code == status.HTTP_404_NOT_FOUND
 
     res = client.get(f"/api/v1/recipes/{recipe.id}/")
     assert res.status_code == status.HTTP_200_OK
@@ -308,20 +306,20 @@ step = {"text": "place fish in salt"}
 
 
 @pytest.mark.parametrize(
-    "data,base_name,model",
+    "data,url_template,model",
     [
-        (ingredient, "recipe-ingredient-list", Ingredient),
-        (step, "recipe-step-list", Step),
+        (ingredient, "/api/v1/recipes/{recipe_id}/ingredients/", Ingredient),
+        (step, "/api/v1/recipes/{recipe_id}/steps/", Step),
     ],
 )
-def test_position_step_ingredient(client, user, recipe, data, base_name, model):
+def test_position_step_ingredient(client, user, recipe, data, url_template, model):
     """
     Catch bug in positioning code where soft deletion would hide already taken
     position from application code. This triggered an integrity error at the
     database level.
     """
     client.force_authenticate(user)
-    url = reverse(base_name, kwargs=dict(recipe_pk=recipe.id))
+    url = url_template.format(recipe_id=recipe.id)
 
     res = client.post(url, data)
     assert res.status_code == status.HTTP_201_CREATED
@@ -400,10 +398,16 @@ def test_updating_ingredient_of_recipe(client, user, recipe):
     )
     assert res.status_code == status.HTTP_200_OK
 
-    res = client.get(f"/api/v1/recipes/{recipe.id}/ingredients/{ingredient_id}/")
+    res = client.get(f"/api/v1/recipes/{recipe.id}/")
     assert res.status_code == status.HTTP_200_OK
 
-    assert res.json().get("name") == ingredient.get("name"), "ingredient didn't update"
+    updated_ingredient = next(
+        (x for x in res.json()["ingredients"] if x["id"] == ingredient_id)
+    )
+
+    assert updated_ingredient.get("name") == ingredient.get(
+        "name"
+    ), "ingredient didn't update"
 
 
 def test_updating_ingredient_position(client, user, recipe):
@@ -435,9 +439,6 @@ def test_deleting_ingredient_from_recipe(client, user, recipe):
 
     res = client.delete(f"/api/v1/recipes/{recipe.id}/ingredients/{ingredient_id}/")
     assert res.status_code == status.HTTP_204_NO_CONTENT
-
-    res = client.get(f"/api/v1/recipes/{recipe.id}/ingredients/{ingredient_id}/")
-    assert res.status_code == status.HTTP_404_NOT_FOUND
 
     res = client.get(f"/api/v1/recipes/{recipe.id}/")
     assert res.status_code == status.HTTP_200_OK
