@@ -13,6 +13,12 @@
   display: none;
 }
 
+.sm\:d-none {
+  @media (max-width: 630px) {
+    display: none;
+  }
+}
+
 .d-grid {
   display: grid;
 }
