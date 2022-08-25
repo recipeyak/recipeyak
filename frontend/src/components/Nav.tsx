@@ -68,6 +68,17 @@ function UserDropdown() {
   )
 }
 
+const WordMarkContainer = styled.span`
+  font-size: 1.5rem;
+  @media (max-width: ${(p) => p.theme.small}) {
+    display: none;
+  }
+`
+
+function WordMark() {
+  return <WordMarkContainer>Recipe Yak</WordMarkContainer>
+}
+
 interface INavButtonContainerProps {
   readonly show: boolean
 }
@@ -243,7 +254,7 @@ export function Navbar() {
     <NavContainer>
       <Link to="/" className="better-nav-item pb-1 pt-1 pl-0 pr-0 fw-normal">
         <Logo width="40px" />
-        <span className="fw-500 pl-2 sm:d-none">Home</span>
+        <WordMark />
       </Link>
       {isLoggedIn ? <NavButtons /> : <AuthButtons />}
     </NavContainer>
