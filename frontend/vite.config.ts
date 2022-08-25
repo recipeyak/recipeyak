@@ -24,6 +24,7 @@ export default defineConfig({
     // see: https://github.com/btd/rollup-plugin-visualizer/issues/96
     visualizer(),
   ],
+  envPrefix: "FRONTEND_",
   resolve: {
     alias: [
       {

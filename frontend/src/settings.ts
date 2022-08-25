@@ -3,7 +3,9 @@
 export const DEBUG = import.meta.env.DEV
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-export const GIT_SHA: string = DEBUG ? "development" : import.meta.env.GIT_SHA
+export const GIT_SHA: string = DEBUG
+  ? "development"
+  : import.meta.env.FRONTEND_GIT_SHA
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 export const SENTRY_DSN: string = import.meta.env.FRONTEND_SENTRY_DSN
