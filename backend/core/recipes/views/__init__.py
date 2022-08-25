@@ -422,20 +422,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             RecipeSerializer(prefetched_recipe).data, status=status.HTTP_200_OK
         )
 
-    @action(
-        detail=True,
-        methods=["post"],
-        permission_classes=[IsAuthenticated, HasRecipeAccess],
-    )
-    def duplicate(self, request: AuthedRequest, pk: str) -> Response:
-        user: User = request.user
-        recipe: Recipe = self.get_object()
-        return Response(
-            RecipeSerializer(
-                recipe.duplicate(actor=user), dangerously_allow_db=True
-            ).data
-        )
-
 
 class TeamRecipesViewSet(APIView):
     permission_classes = (
