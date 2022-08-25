@@ -331,7 +331,7 @@ export function Ingredient(props: {
     </form>
   ) : (
     <IngredientView
-      dragRef={dragAndDropEnabled ? drag : undefined}
+      dragRef={drag}
       quantity={state.quantity}
       name={state.name}
       description={state.description}
@@ -340,11 +340,7 @@ export function Ingredient(props: {
   )
 
   return (
-    <li
-      ref={dragAndDropEnabled ? ref : undefined}
-      style={style}
-      className="bg-white"
-    >
+    <li ref={ref} style={style} className="bg-white">
       <section
         title={props.isEditing ? "click to edit" : undefined}
         className={cls({ "cursor-pointer": props.isEditing })}
