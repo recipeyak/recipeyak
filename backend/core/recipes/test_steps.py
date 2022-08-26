@@ -1,6 +1,5 @@
 import pytest
 from django.db.utils import IntegrityError
-from django.urls import reverse
 from rest_framework import status
 
 from core.models import Recipe, Step
