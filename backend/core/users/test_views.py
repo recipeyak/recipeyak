@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Type, Union
 
 import pytest
-from django.urls import reverse
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.test import APIClient
@@ -92,13 +91,13 @@ def login_info() -> Dict[str, str]:
 @pytest.fixture
 def logged_in_user(client: APIClient, login_info) -> None:
     User.objects.create_user(**login_info)
-    res = client.post(reverse("rest_login"), login_info)
+    res = client.post("/api/v1/auth/login/", login_info)
     assert res.status_code == status.HTTP_200_OK
 
 
 @pytest.mark.django_db
 def test_session_list(client: APIClient, logged_in_user) -> None:
-    res = client.get(reverse("sessions-list"))
+    res = client.get("/api/v1/sessions/")
 
     assert isinstance(res.json(), list)
 
@@ -121,9 +120,9 @@ def test_session_delete_all(
     client: APIClient, logged_in_user, login_info: Dict[str, Any]
 ) -> None:
     # login a second time with a different client to create multiple sessions
-    APIClient().post(reverse("rest_login"), login_info)
+    APIClient().post("/api/v1/auth/login/", login_info)
     assert Session.objects.count() == 2
-    res = client.delete(reverse("sessions-list"))
+    res = client.delete("/api/v1/sessions/")
     assert res.status_code == status.HTTP_204_NO_CONTENT
     assert (
         Session.objects.count() == 1
@@ -135,7 +134,6 @@ def test_session_delete_by_id(client: APIClient, logged_in_user) -> None:
     assert Session.objects.count() == 1
     session = Session.objects.first()
     assert session is not None
-    pk = session.pk
-    res = client.delete(reverse("sessions-detail", kwargs=dict(pk=pk)))
+    res = client.delete(f"/api/v1/sessions/{session.pk}/")
     assert res.status_code == status.HTTP_204_NO_CONTENT
     assert Session.objects.count() == 0

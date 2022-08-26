@@ -15,7 +15,7 @@ def test_signup(client):
     """
     ensure a user can signup
     """
-    url = reverse("rest_user_details")
+    url = "/api/v1/user/"
     res = client.get(url)
     assert res.status_code == status.HTTP_403_FORBIDDEN
     assert (
@@ -63,7 +63,7 @@ def test_login(client):
         "HTTP_USER_AGENT": "j person's cool bot",
     }
 
-    res = client.post(reverse("rest_login"), data, **headers)
+    res = client.post("/api/v1/auth/login/", data, **headers)
     assert res.status_code == status.HTTP_200_OK
 
     assert Session.objects.count() == 1
@@ -81,7 +81,7 @@ def test_login(client):
         res.json().get("user") == UserSerializer(user).data
     ), "response didn't return user data"
 
-    res = client.get(reverse("rest_user_details"))
+    res = client.get("/api/v1/user/")
     assert res.status_code == status.HTTP_200_OK
 
 
@@ -97,13 +97,13 @@ def test_logout(client):
 
     data = {"email": email, "password": password}
 
-    res = client.post(reverse("rest_login"), data)
+    res = client.post("/api/v1/auth/login/", data)
     assert res.status_code == status.HTTP_200_OK
 
-    res = client.post(reverse("rest_logout"))
+    res = client.post("/api/v1/auth/logout/")
     assert res.status_code == status.HTTP_200_OK
 
-    res = client.get(reverse("rest_user_details"))
+    res = client.get("/api/v1/user/")
     assert (
         res.status_code == status.HTTP_403_FORBIDDEN
     ), "logged out user was able to access login required info"
@@ -128,27 +128,27 @@ def test_login_in_two_places_and_logout_from_one(client, client_b):
     data = {"email": email, "password": password}
 
     # 1. log in once
-    res = client.post(reverse("rest_login"), data)
+    res = client.post("/api/v1/auth/login/", data)
     assert res.status_code == status.HTTP_200_OK
 
     assert res.json().get("user") == UserSerializer(user).data
 
     # 2. log in a second time
-    res = client_b.post(reverse("rest_login"), data)
+    res = client_b.post("/api/v1/auth/login/", data)
     assert res.status_code == status.HTTP_200_OK
 
     assert res.json().get("user") == UserSerializer(user).data
 
     # 3. logout first login session
-    res = client.post(reverse("rest_logout"))
+    res = client.post("/api/v1/auth/logout/")
     assert res.status_code == status.HTTP_200_OK
 
     # 4. ensure first login key doesn't work
-    res = client.get(reverse("rest_user_details"))
+    res = client.get("/api/v1/user/")
     assert res.status_code == status.HTTP_403_FORBIDDEN
 
     # 4. ensure second login key still works
-    res = client_b.get(reverse("rest_user_details"))
+    res = client_b.get("/api/v1/user/")
     assert res.status_code == status.HTTP_200_OK
 
 
@@ -157,7 +157,7 @@ def test_signup_case_insensitive(client):
     Emails should be treated as case insensitive. A user should not be able to
     signup with the same email and different case.
     """
-    url = reverse("rest_user_details")
+    url = "/api/v1/user/"
     res = client.get(url)
     assert res.status_code == status.HTTP_403_FORBIDDEN
 

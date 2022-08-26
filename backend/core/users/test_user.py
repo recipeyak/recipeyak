@@ -2,7 +2,6 @@ from typing import Any, cast
 
 import pytest
 from django.contrib.auth import get_user_model
-from django.urls import reverse
 from rest_framework import status
 
 pytestmark = pytest.mark.django_db
@@ -15,7 +14,7 @@ def test_user_delete(client, user, team):
     """
 
     client.force_authenticate(user)
-    url = reverse("rest_user_details")
+    url = "/api/v1/user/"
     assert team.is_member(user)
     assert user.has_team()
 

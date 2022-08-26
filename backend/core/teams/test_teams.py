@@ -2,7 +2,7 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 
-from core.models import Invite, Membership, Note, Recipe, Team
+from core.models import Invite, Membership, Team
 
 pytestmark = pytest.mark.django_db
 
@@ -731,73 +731,6 @@ def test_decline_team_invite(client, team, user, user2):
     url = reverse("team-member-list", kwargs={"team_pk": team.id})
     res = client.get(url)
     assert res.status_code == status.HTTP_403_FORBIDDEN, "Non member cannot view team"
-
-
-def test_list_team_recipe(client, team, recipe, user, user2):
-    """
-    Team member should be able to list team recipes.
-    For public teams, recipes should be viewable to authenticated users.
-    """
-    # NOTE: this is copied from the test below
-
-    team.recipes.add(recipe)
-
-    url = f"/api/v1/t/{team.id}/recipes/"
-
-    assert not team.is_member(user2)
-    assert not team.is_public
-
-    for u, s in [
-        (None, status.HTTP_403_FORBIDDEN),
-        (user, status.HTTP_200_OK),
-        (user2, status.HTTP_403_FORBIDDEN),
-    ]:
-        client.force_authenticate(u)
-        assert client.get(url).status_code == s
-
-    team.is_public = True
-    team.save()
-    assert team.is_public
-
-    for u, s in [
-        (None, status.HTTP_403_FORBIDDEN),
-        (user, status.HTTP_200_OK),
-        (user2, status.HTTP_200_OK),
-    ]:
-        client.force_authenticate(u)
-        assert client.get(url).status_code == s
-
-
-def test_fetching_team_recipes(client, team_with_recipes, user, user2):
-    url = f"/api/v1/t/{team_with_recipes.id}/recipes/"
-
-    client.force_authenticate(user2)
-    res = client.get(url)
-    assert res.status_code == status.HTTP_403_FORBIDDEN
-
-    assert Note.objects.exists() is True
-
-    client.force_authenticate(user)
-    res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK
-
-
-def test_removing_recipe_from_team(client, team_with_recipes, user):
-    client.force_authenticate(user)
-    url = f"/api/v1/t/{team_with_recipes.id}/recipes/"
-    res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK
-    recipe_id = res.json()[0].get("id")
-
-    url = f"/api/v1/recipes/{recipe_id}/"
-
-    res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK
-
-    res = client.delete(url)
-    assert res.status_code == status.HTTP_204_NO_CONTENT
-
-    assert not Recipe.objects.filter(id=recipe_id).exists()
 
 
 def test_creating_team_with_name_and_emails(client, user, user2, user3):
