@@ -5,7 +5,6 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers
 
 from core.ical.views import get_ical_view
-from core.recipes.views import RecipeViewSet
 from core.recipes.views.ingredients_list_view import ingredients_list_view
 from core.recipes.views.reactions_view import (
     note_reaction_create_view,
@@ -29,6 +28,7 @@ from core.teams.views import (
 )
 from core.uploads import views as upload
 from core.views.recipe_detail_view import receipe_detail_view
+from core.views.recipe_list_view import recipe_list_view
 
 from .recipes.views.ingredients_detail_view import ingredients_detail_view
 from .recipes.views.notes_view import note_create_view, note_detail_view
@@ -36,11 +36,9 @@ from .recipes.views.steps_detail_view import steps_detail_view
 from .recipes.views.steps_list_view import steps_list_view
 
 router = DefaultRouter()
-router.register(r"recipes", RecipeViewSet, basename="recipes")
 router.register(r"t", TeamViewSet, basename="teams")
 router.register(r"invites", UserInvitesViewSet, basename="user-invites")
 
-recipes_router = routers.NestedSimpleRouter(router, r"recipes", lookup="recipe")
 
 teams_router = routers.NestedSimpleRouter(router, r"t", lookup="team")
 teams_router.register(r"members", MembershipViewSet, basename="team-member")
@@ -54,7 +52,7 @@ urlpatterns = [
     path("", include("core.export.urls")),
     path("t/<int:team_id>/ical/<str:ical_id>/schedule.ics", get_ical_view),
     path("api/v1/", include(router.urls)),
-    path("api/v1/", include(recipes_router.urls)),
+    path("api/v1/recipes/", recipe_list_view),
     path("api/v1/recipes/recently_viewed", get_recently_viewed_recipes),
     path("api/v1/recipes/<int:recipe_pk>/", receipe_detail_view),
     path("api/v1/recipes/<int:recipe_pk>/timeline", get_recipe_timeline),

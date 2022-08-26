@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import Any, Dict, List
 
 import pytest
-from django.urls import reverse
 from django.utils.dateparse import parse_datetime
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -129,7 +128,7 @@ def test_recipe_creation_for_a_team(client, team, user):
         "team": team.id,
     }
 
-    url = reverse("recipes-list")
+    url = "/api/v1/recipes/"
 
     res = client.post(url, data)
     assert res.status_code == status.HTTP_201_CREATED
@@ -459,12 +458,12 @@ def test_display_all_accessable_recipes(
 
     client.force_authenticate(user)
     team_with_recipes_no_members.invite_user(user, creator=user)
-    res = client.get(reverse("recipes-list"))
+    res = client.get("/api/v1/recipes/")
     assert res.status_code == status.HTTP_200_OK
     assert len(res.json()) == len(user.recipes.all())
 
     team_with_recipes_no_members.force_join(user)
-    res = client.get(reverse("recipes-list"))
+    res = client.get("/api/v1/recipes/")
     assert res.status_code == status.HTTP_200_OK
     assert len(res.json()) == len(user.recipes.all()) + len(
         team_with_recipes_no_members.recipes.all()
