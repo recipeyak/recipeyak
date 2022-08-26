@@ -12,7 +12,9 @@ from core.recipes.views.reactions_view import (
     note_reaction_delete_view,
 )
 from core.recipes.views.recently_view_recipes_view import get_recently_viewed_recipes
+from core.recipes.views.recipe_copy_view import recipe_copy_view
 from core.recipes.views.recipe_duplicate_view import recipe_duplicate_view
+from core.recipes.views.recipe_move_view import recipe_move_view
 from core.recipes.views.sections_view import (
     create_section_view,
     delete_or_update_section_view,
@@ -56,6 +58,8 @@ urlpatterns = [
     path("api/v1/recipes/<int:recipe_pk>/timeline", get_recipe_timeline),
     path("api/v1/recipes/<int:recipe_pk>/sections", create_section_view),
     path("api/v1/recipes/<int:recipe_pk>/duplicate/", recipe_duplicate_view),
+    path("api/v1/recipes/<int:recipe_pk>/move/", recipe_move_view),
+    path("api/v1/recipes/<int:recipe_pk>/copy/", recipe_copy_view),
     path(
         "api/v1/recipes/<int:recipe_pk>/ingredients/<int:ingredient_pk>/",
         ingredients_detail_view,

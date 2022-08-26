@@ -513,7 +513,7 @@ def test_copy_recipe(client, user_with_recipes, empty_team, user3):
     Users can copy recipe to team if they have write access.
     """
     recipe = user_with_recipes.recipes.first()
-    url = reverse("recipes-copy", kwargs={"pk": recipe.id})
+    url = f"/api/v1/recipes/{recipe.id}/copy/"
 
     # user must own recipe to copy it
     client.force_authenticate(user3)
@@ -551,7 +551,7 @@ def test_move_recipe(client, user_with_recipes, empty_team, user3):
     Users can move recipe to team if they have write access.
     """
     recipe = user_with_recipes.recipes.first()
-    url = reverse("recipes-move", kwargs={"pk": recipe.id})
+    url = f"/api/v1/recipes/{recipe.id}/move/"
 
     # user must own recipe to copy it
     client.force_authenticate(user3)
