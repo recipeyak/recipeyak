@@ -144,8 +144,7 @@ def test_recipe_creation_for_a_team(client, team, user):
 
     assert isinstance(Recipe.objects.get(id=recipe_id).owner, Team)
 
-    url = reverse("recipes-detail", kwargs={"pk": recipe_id})
-    assert client.get(url).status_code == status.HTTP_200_OK
+    assert client.get(f"/api/v1/recipes/{recipe_id}/").status_code == status.HTTP_200_OK
 
     assert Team.objects.get(id=team.id).recipes.first().id == recipe_id
 

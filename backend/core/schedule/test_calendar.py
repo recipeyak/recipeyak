@@ -25,11 +25,11 @@ def test_recipe_returns_last_scheduled_date(client, scheduled_recipe, recipe2):
     recipe = scheduled_recipe.recipe
     user = scheduled_recipe.user
     client.force_authenticate(user)
-    res = client.get(reverse("recipes-detail", args=[recipe.id]))
+    res = client.get(f"/api/v1/recipes/{recipe.id}/")
     assert res.status_code == status.HTTP_200_OK
     assert res.json()["last_scheduled"] == str(scheduled_recipe.on)
 
-    res = client.get(reverse("recipes-detail", args=[recipe2.id]))
+    res = client.get(f"/api/v1/recipes/{recipe2.id}/")
     assert res.status_code == status.HTTP_200_OK
     assert (
         res.json()["last_scheduled"] is None

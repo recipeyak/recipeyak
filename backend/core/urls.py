@@ -28,6 +28,7 @@ from core.teams.views import (
     UserInvitesViewSet,
 )
 from core.uploads import views as upload
+from core.views.recipe_detail_view import receipe_detail_view
 
 from .recipes.views.ingredients_detail_view import ingredients_detail_view
 from .recipes.views.notes_view import note_create_view, note_detail_view
@@ -55,6 +56,7 @@ urlpatterns = [
     path("api/v1/", include(router.urls)),
     path("api/v1/", include(recipes_router.urls)),
     path("api/v1/recipes/recently_viewed", get_recently_viewed_recipes),
+    path("api/v1/recipes/<int:recipe_pk>/", receipe_detail_view),
     path("api/v1/recipes/<int:recipe_pk>/timeline", get_recipe_timeline),
     path("api/v1/recipes/<int:recipe_pk>/sections", create_section_view),
     path("api/v1/recipes/<int:recipe_pk>/duplicate/", recipe_duplicate_view),
