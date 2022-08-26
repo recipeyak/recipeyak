@@ -28,6 +28,7 @@ from core.teams.views import (
     UserInvitesViewSet,
 )
 from core.uploads import views as upload
+from core.users.views import UserDetailsView, sessions, sessions_detail
 from core.views.recipe_detail_view import receipe_detail_view
 from core.views.recipe_list_view import recipe_list_view
 
@@ -47,12 +48,14 @@ teams_router.register(r"invites", TeamInviteViewSet, basename="team-invites")
 teams_router.register(r"calendar", CalendarViewSet, basename="calendar")
 
 urlpatterns = [
-    path("api/v1/", include("core.users.urls")),
     path("api/v1/auth/password/reset/", PasswordResetView.as_view()),
     path("api/v1/auth/password/reset/confirm/", PasswordResetConfirmView.as_view()),
     path("api/v1/auth/login/", LoginView.as_view()),
     path("api/v1/auth/logout/", LogoutView.as_view()),
     path("api/v1/auth/password/change/", PasswordChangeView.as_view()),
+    path("api/v1/user/", UserDetailsView.as_view()),
+    path("api/v1/sessions/", sessions),
+    path("api/v1/sessions/<str:pk>/", sessions_detail),
     path("api/v1/auth/registration/", include("core.auth.registration.urls")),
     path("", include("core.export.urls")),
     path("t/<int:team_id>/ical/<str:ical_id>/schedule.ics", get_ical_view),
