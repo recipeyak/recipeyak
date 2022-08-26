@@ -92,7 +92,7 @@ def login_info() -> Dict[str, str]:
 @pytest.fixture
 def logged_in_user(client: APIClient, login_info) -> None:
     User.objects.create_user(**login_info)
-    res = client.post(reverse("rest_login"), login_info)
+    res = client.post("/api/v1/auth/login/", login_info)
     assert res.status_code == status.HTTP_200_OK
 
 
@@ -121,7 +121,7 @@ def test_session_delete_all(
     client: APIClient, logged_in_user, login_info: Dict[str, Any]
 ) -> None:
     # login a second time with a different client to create multiple sessions
-    APIClient().post(reverse("rest_login"), login_info)
+    APIClient().post("/api/v1/auth/login/", login_info)
     assert Session.objects.count() == 2
     res = client.delete(reverse("sessions-list"))
     assert res.status_code == status.HTTP_204_NO_CONTENT
