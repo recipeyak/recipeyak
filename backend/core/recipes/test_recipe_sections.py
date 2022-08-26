@@ -87,16 +87,6 @@ def test_fetching_sections_for_recipe(
         assert isinstance(s["position"], float)
 
     team.recipes.add(recipe)
-    # team list view
-    res = client.get(f"/api/v1/t/{team.id}/recipes/")
-    assert res.status_code == status.HTTP_200_OK
-    assert isinstance(res.json(), list)
-    assert res.json()
-    for r in res.json():
-        for s in r["sections"]:
-            assert isinstance(s["id"], int)
-            assert isinstance(s["title"], str)
-            assert isinstance(s["position"], float)
 
     # list view
     res = client.get("/api/v1/recipes/")

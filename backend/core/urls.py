@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers
 
 from core.ical.views import get_ical_view
-from core.recipes.views import RecipeViewSet, TeamRecipesViewSet
+from core.recipes.views import RecipeViewSet
 from core.recipes.views.ingredients_list_view import ingredients_list_view
 from core.recipes.views.reactions_view import (
     note_reaction_create_view,
@@ -77,11 +77,6 @@ urlpatterns = [
     path("api/v1/report-bad-merge", ReportBadMerge.as_view(), name="report-bad-merge"),
     path("api/v1/upload/", upload.start_upload),
     path("api/v1/upload/<int:upload_pk>/complete", upload.complete_upload),
-    path(
-        "api/v1/t/<int:team_pk>/recipes/",
-        TeamRecipesViewSet.as_view(),
-        name="team-recipes",
-    ),
     url(r"^api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     # we don't actually use this view. This serves as the url for the reset email
     url(

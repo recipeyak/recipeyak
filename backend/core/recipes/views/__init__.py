@@ -333,34 +333,3 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-class TeamRecipesViewSet(APIView):
-    permission_classes = (
-        IsAuthenticated,
-        IsTeamMemberIfPrivate,
-        NonSafeIfMemberOrAdmin,
-    )
-
-    def get(self, request: AuthedRequest, team_pk: str) -> Response:
-        # TODO(sbdchd): combine with the normal recipe viewset and just pass an
-        # extra query param for filtering
-        team = get_object_or_404(Team, pk=self.kwargs["team_pk"])
-        queryset = Recipe.objects.filter(owner_team=team).prefetch_related(
-            "owner",
-            "step_set",
-            "ingredient_set",
-            "scheduledrecipe_set",
-            "notes",
-            "notes__created_by",
-            "notes__last_modified_by",
-            "notes__uploads",
-            "notes__reactions",
-            "notes__reactions__created_by",
-            "timelineevent_set",
-            "timelineevent_set__created_by",
-            "section_set",
-        )
-        serializer = RecipeSerializer(
-            queryset, many=True, context={"request": self.request}
-        )
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
