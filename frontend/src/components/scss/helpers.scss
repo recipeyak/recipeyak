@@ -549,3 +549,7 @@
 .white-space-initial {
   white-space: initial !important;
 }
+
+[draggable="true"] {
+  user-select: auto !important;
+}
