@@ -63,7 +63,7 @@ def test_login(client):
         "HTTP_USER_AGENT": "j person's cool bot",
     }
 
-    res = client.post(reverse("rest_login"), data, **headers)
+    res = client.post("/api/v1/auth/login/", data, **headers)
     assert res.status_code == status.HTTP_200_OK
 
     assert Session.objects.count() == 1
@@ -97,10 +97,10 @@ def test_logout(client):
 
     data = {"email": email, "password": password}
 
-    res = client.post(reverse("rest_login"), data)
+    res = client.post("/api/v1/auth/login/", data)
     assert res.status_code == status.HTTP_200_OK
 
-    res = client.post(reverse("rest_logout"))
+    res = client.post("/api/v1/auth/logout/")
     assert res.status_code == status.HTTP_200_OK
 
     res = client.get(reverse("rest_user_details"))
@@ -128,19 +128,19 @@ def test_login_in_two_places_and_logout_from_one(client, client_b):
     data = {"email": email, "password": password}
 
     # 1. log in once
-    res = client.post(reverse("rest_login"), data)
+    res = client.post("/api/v1/auth/login/", data)
     assert res.status_code == status.HTTP_200_OK
 
     assert res.json().get("user") == UserSerializer(user).data
 
     # 2. log in a second time
-    res = client_b.post(reverse("rest_login"), data)
+    res = client_b.post("/api/v1/auth/login/", data)
     assert res.status_code == status.HTTP_200_OK
 
     assert res.json().get("user") == UserSerializer(user).data
 
     # 3. logout first login session
-    res = client.post(reverse("rest_logout"))
+    res = client.post("/api/v1/auth/logout/")
     assert res.status_code == status.HTTP_200_OK
 
     # 4. ensure first login key doesn't work

@@ -3,6 +3,7 @@ from django.urls import path
 from django.views.generic import TemplateView
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers
+from core.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordResetConfirmView, PasswordResetView
 
 from core.ical.views import get_ical_view
 from core.recipes.views.ingredients_list_view import ingredients_list_view
@@ -46,8 +47,12 @@ teams_router.register(r"invites", TeamInviteViewSet, basename="team-invites")
 teams_router.register(r"calendar", CalendarViewSet, basename="calendar")
 
 urlpatterns = [
-    path("api/v1/auth/", include("core.auth.urls")),
     path("api/v1/", include("core.users.urls")),
+    path("api/v1/auth/password/reset/", PasswordResetView.as_view()),
+    path("api/v1/auth/password/reset/confirm/", PasswordResetConfirmView.as_view()),
+    path("api/v1/auth/login/", LoginView.as_view()),
+    path("api/v1/auth/logout/", LogoutView.as_view()),
+    path("api/v1/auth/password/change/", PasswordChangeView.as_view()),
     path("api/v1/auth/registration/", include("core.auth.registration.urls")),
     path("", include("core.export.urls")),
     path("t/<int:team_id>/ical/<str:ical_id>/schedule.ics", get_ical_view),
