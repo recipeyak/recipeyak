@@ -1,4 +1,5 @@
 from django.db.models import Q, QuerySet
+from django.shortcuts import get_object_or_404
 
 from core.models.ingredient import Ingredient  # noqa: F401
 from core.models.invite import Invite  # noqa: F401
@@ -25,7 +26,25 @@ def user_active_team_ids(user):
 def user_and_team_recipes(user: User) -> QuerySet[Recipe]:
     return Recipe.objects.filter(
         Q(owner_user=user) | Q(owner_team__in=user_active_team_ids(user))
-    )
+    ).prefetch_related(
+            "owner",
+            "step_set",
+            "ingredient_set",
+            "scheduledrecipe_set",
+            "notes",
+            "notes__created_by",
+            "notes__last_modified_by",
+            "notes__uploads",
+            "notes__reactions",
+            "notes__reactions__created_by",
+            "timelineevent_set",
+            "timelineevent_set__created_by",
+            "section_set",
+        )
+
+
+def user_and_team_recipe_or_404(user: User, recipe_pk: str) -> Recipe:
+    return get_object_or_404(user_and_team_recipes(user), pk=recipe_pk)
 
 
 def user_and_team_ingredients(user: User) -> QuerySet[Ingredient]:

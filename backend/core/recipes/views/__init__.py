@@ -7,18 +7,12 @@ from typing import Any, Iterable
 from django.db import connection
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core import viewsets
-from core.auth.permissions import (
-    HasRecipeAccess,
-    IsTeamMemberIfPrivate,
-    NonSafeIfMemberOrAdmin,
-)
+from core.auth.permissions import IsTeamMemberIfPrivate, NonSafeIfMemberOrAdmin
 from core.models import (
     ChangeType,
     Ingredient,
@@ -32,12 +26,10 @@ from core.models import (
     Team,
     TimelineEvent,
     Upload,
-    User,
     user_and_team_recipes,
 )
 from core.models.user import get_avatar_url
 from core.recipes.serializers import (
-    RecipeMoveCopySerializer,
     RecipeSerializer,
     serialize_attachments,
     serialize_reactions,
@@ -339,88 +331,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(self.get_object())
 
         return Response(serializer.data)
-
-    @action(
-        detail=True,
-        methods=["post"],
-        url_name="move",
-        serializer_class=RecipeMoveCopySerializer,
-        permission_classes=[IsAuthenticated, HasRecipeAccess],
-    )
-    def move(self, request: AuthedRequest, pk: str) -> Response:
-        """
-        Move recipe from user to another team.
-        User should have write access to team to move recipe
-
-        /recipes/<recipe_id>/move
-            {'id':<team_id>, type:'team'}
-        """
-        recipe = self.get_object()
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        if serializer.validated_data["type"] == "team":
-            team = Team.objects.get(id=serializer.validated_data["id"])
-            if not (team.is_contributor(request.user) or team.is_admin(request.user)):
-                raise PermissionDenied(detail="user must have write permissions")
-            recipe.move_to(team)
-        elif serializer.validated_data["type"] == "user":
-            user = User.objects.get(id=serializer.validated_data["id"])
-            if user != request.user:
-                raise PermissionDenied(detail="user must be the same as requester")
-            recipe.move_to(user)
-
-        return Response(
-            RecipeSerializer(recipe, context={"request": request}).data,
-            status=status.HTTP_200_OK,
-        )
-
-    @action(
-        detail=True,
-        methods=["post"],
-        url_name="copy",
-        serializer_class=RecipeMoveCopySerializer,
-        permission_classes=[IsAuthenticated, HasRecipeAccess],
-    )
-    def copy(self, request: AuthedRequest, pk: str) -> Response:
-        """
-        Copy recipe from user to team.
-        Any team member should be able to copy a recipe from the team.
-        User should have write access to team to copy recipe
-        """
-        recipe: Recipe = self.get_object()
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        user: User = request.user
-
-        if serializer.validated_data["type"] == "team":
-            team = Team.objects.get(id=serializer.validated_data["id"])
-            if not (team.is_contributor(request.user) or team.is_admin(request.user)):
-                raise PermissionDenied(detail="user must have write permissions")
-            new_recipe = recipe.copy_to(account=team, actor=user)
-        elif serializer.validated_data["type"] == "user":
-            user = User.objects.get(id=serializer.validated_data["id"])
-            if user != request.user:
-                raise PermissionDenied(detail="user must be the same as requester")
-            new_recipe = recipe.copy_to(account=user, actor=user)
-
-        # refetch all relations before serialization
-        prefetched_recipe: Recipe = Recipe.objects.prefetch_related(
-            "owner",
-            "step_set",
-            "ingredient_set",
-            "scheduledrecipe_set",
-            "notes",
-            "notes__uploads",
-            "notes__reactions",
-            "notes__reactions__created_by",
-            "timelineevent_set",
-            "section_set",
-        ).get(id=new_recipe.id)
-        return Response(
-            RecipeSerializer(prefetched_recipe).data, status=status.HTTP_200_OK
-        )
 
 
 class TeamRecipesViewSet(APIView):
