@@ -3,8 +3,14 @@ from django.urls import path
 from django.views.generic import TemplateView
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers
-from core.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordResetConfirmView, PasswordResetView
 
+from core.auth.views import (
+    LoginView,
+    LogoutView,
+    PasswordChangeView,
+    PasswordResetConfirmView,
+    PasswordResetView,
+)
 from core.ical.views import get_ical_view
 from core.recipes.views.ingredients_list_view import ingredients_list_view
 from core.recipes.views.reactions_view import (
