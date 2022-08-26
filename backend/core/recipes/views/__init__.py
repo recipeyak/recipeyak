@@ -4,26 +4,18 @@ import collections
 import logging
 from typing import Any, Iterable
 
-from django.db import connection
-from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from core import viewsets
-from core.auth.permissions import IsTeamMemberIfPrivate, NonSafeIfMemberOrAdmin
 from core.models import (
-    ChangeType,
     Ingredient,
     Note,
     Reaction,
-    Recipe,
-    RecipeChange,
     ScheduledRecipe,
     Section,
     Step,
-    Team,
     TimelineEvent,
     Upload,
     user_and_team_recipes,
@@ -47,7 +39,7 @@ def group_by_recipe_id(x: Iterable[dict[str, Any]]) -> dict[str, list[dict[str, 
     return map
 
 
-class RecipeViewSet(viewsets.ModelViewSet):
+class RecipeViewSet(viewsets.ListModelViewSet):
 
     serializer_class = RecipeSerializer
     permission_classes = (IsAuthenticated,)
@@ -77,34 +69,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             "timelineevent_set__created_by",
             "section_set",
         )
-
-    def retrieve(self, request: AuthedRequest, *args: Any, **kwargs: Any) -> Response:
-        instance: Recipe = self.get_object()
-        serializer = self.get_serializer(instance)
-        with connection.cursor() as cursor:
-            cursor.execute(
-                """
-                INSERT INTO recipe_view (recipe_id, user_id, last_visited_at, count, created, modified)
-                VALUES (%(recipe_id)s, %(user_id)s, now(), 1, now(), now())
-                ON CONFLICT
-                ON CONSTRAINT one_user_view_row_per_recipe
-                DO UPDATE SET
-                    last_visited_at =
-                        CASE WHEN recipe_view.last_visited_at < now() - '1 hour'::interval THEN
-                            now()
-                        ELSE
-                            recipe_view.last_visited_at
-                        END,
-                    count =
-                        CASE WHEN recipe_view.last_visited_at < now() - '1 hour'::interval THEN
-                            recipe_view.count + 1
-                        ELSE
-                            recipe_view.count
-                        END
-                """,
-                {"user_id": request.user.id, "recipe_id": instance.id},
-            )
-        return Response(serializer.data)
 
     def list(self, request: AuthedRequest) -> Response:  # type: ignore [override]
         recipes = {
@@ -280,56 +244,3 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         logger.info("Recipe created by %s", self.request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop("partial", False)
-        instance: Recipe = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-
-        changes = []
-        fields = [
-            ("name", ChangeType.NAME),
-            ("author", ChangeType.AUTHOR),
-            ("source", ChangeType.SOURCE),
-            ("servings", ChangeType.SERVINGS),
-            ("time", ChangeType.TIME),
-        ]
-        for field, change_type in fields:
-            if (
-                field in serializer.validated_data
-                and getattr(instance, field) != serializer.validated_data[field]
-            ):
-                changes.append(
-                    RecipeChange(
-                        recipe=instance,
-                        actor=request.user,
-                        before=getattr(instance, field) or "",
-                        after=serializer.validated_data[field],
-                        change_type=change_type,
-                    )
-                )
-
-        RecipeChange.objects.bulk_create(changes)
-
-        if (
-            "archived_at" in serializer.validated_data
-            and getattr(instance, "archived_at")
-            != serializer.validated_data["archived_at"]
-        ):
-            TimelineEvent(
-                action=(
-                    "archived"
-                    if serializer.validated_data["archived_at"]
-                    else "unarchived"
-                ),
-                created_by=request.user,
-                recipe=instance,
-            ).save()
-
-        self.perform_update(serializer)
-        serializer = self.get_serializer(self.get_object())
-
-        return Response(serializer.data)
-
-
