@@ -5,14 +5,11 @@ import logging
 from typing import Any, Iterable
 
 from django.db import connection
-from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from core import viewsets
-from core.auth.permissions import IsTeamMemberIfPrivate, NonSafeIfMemberOrAdmin
 from core.models import (
     ChangeType,
     Ingredient,
@@ -23,7 +20,6 @@ from core.models import (
     ScheduledRecipe,
     Section,
     Step,
-    Team,
     TimelineEvent,
     Upload,
     user_and_team_recipes,
@@ -331,5 +327,3 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(self.get_object())
 
         return Response(serializer.data)
-
-

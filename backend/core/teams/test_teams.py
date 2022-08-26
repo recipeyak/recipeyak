@@ -2,7 +2,7 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 
-from core.models import Invite, Membership, Note, Recipe, Team
+from core.models import Invite, Membership, Team
 
 pytestmark = pytest.mark.django_db
 
