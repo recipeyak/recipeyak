@@ -15,7 +15,7 @@ def test_signup(client):
     """
     ensure a user can signup
     """
-    url = reverse("rest_user_details")
+    url = "/api/v1/user/"
     res = client.get(url)
     assert res.status_code == status.HTTP_403_FORBIDDEN
     assert (
@@ -81,7 +81,7 @@ def test_login(client):
         res.json().get("user") == UserSerializer(user).data
     ), "response didn't return user data"
 
-    res = client.get(reverse("rest_user_details"))
+    res = client.get("/api/v1/user/")
     assert res.status_code == status.HTTP_200_OK
 
 
@@ -103,7 +103,7 @@ def test_logout(client):
     res = client.post("/api/v1/auth/logout/")
     assert res.status_code == status.HTTP_200_OK
 
-    res = client.get(reverse("rest_user_details"))
+    res = client.get("/api/v1/user/")
     assert (
         res.status_code == status.HTTP_403_FORBIDDEN
     ), "logged out user was able to access login required info"
@@ -144,11 +144,11 @@ def test_login_in_two_places_and_logout_from_one(client, client_b):
     assert res.status_code == status.HTTP_200_OK
 
     # 4. ensure first login key doesn't work
-    res = client.get(reverse("rest_user_details"))
+    res = client.get("/api/v1/user/")
     assert res.status_code == status.HTTP_403_FORBIDDEN
 
     # 4. ensure second login key still works
-    res = client_b.get(reverse("rest_user_details"))
+    res = client_b.get("/api/v1/user/")
     assert res.status_code == status.HTTP_200_OK
 
 
@@ -157,7 +157,7 @@ def test_signup_case_insensitive(client):
     Emails should be treated as case insensitive. A user should not be able to
     signup with the same email and different case.
     """
-    url = reverse("rest_user_details")
+    url = "/api/v1/user/"
     res = client.get(url)
     assert res.status_code == status.HTTP_403_FORBIDDEN
 
