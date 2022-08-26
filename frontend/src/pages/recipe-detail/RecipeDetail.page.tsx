@@ -302,10 +302,6 @@ function RecipeDetails({
             </a>
           )
         )}
-      </div>
-      {/* extra div to push notes to the right side of the grid */}
-      <div />
-      <div>
         <NoteContainer
           timelineItems={recipe.timelineItems}
           recipeId={recipe.id}
