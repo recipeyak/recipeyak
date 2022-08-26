@@ -27,20 +27,20 @@ def user_and_team_recipes(user: User) -> QuerySet[Recipe]:
     return Recipe.objects.filter(
         Q(owner_user=user) | Q(owner_team__in=user_active_team_ids(user))
     ).prefetch_related(
-            "owner",
-            "step_set",
-            "ingredient_set",
-            "scheduledrecipe_set",
-            "notes",
-            "notes__created_by",
-            "notes__last_modified_by",
-            "notes__uploads",
-            "notes__reactions",
-            "notes__reactions__created_by",
-            "timelineevent_set",
-            "timelineevent_set__created_by",
-            "section_set",
-        )
+        "owner",
+        "step_set",
+        "ingredient_set",
+        "scheduledrecipe_set",
+        "notes",
+        "notes__created_by",
+        "notes__last_modified_by",
+        "notes__uploads",
+        "notes__reactions",
+        "notes__reactions__created_by",
+        "timelineevent_set",
+        "timelineevent_set__created_by",
+        "section_set",
+    )
 
 
 def user_and_team_recipe_or_404(user: User, recipe_pk: str) -> Recipe:
