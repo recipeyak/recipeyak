@@ -2,8 +2,8 @@ from django.conf.urls import include, url
 from django.urls import path
 from django.views.generic import TemplateView
 from rest_framework.routers import DefaultRouter
-from core.auth.registration.views import RegisterView, VerifyEmailView
 
+from core.auth.registration.views import RegisterView, VerifyEmailView
 from core.auth.views import (
     LoginView,
     LogoutView,
