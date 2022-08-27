@@ -11,6 +11,7 @@ from core.auth.views import (
     PasswordResetConfirmView,
     PasswordResetView,
 )
+from core.export.views import export_recipes
 from core.ical.views import get_ical_view
 from core.recipes.views.ingredients_list_view import ingredients_list_view
 from core.recipes.views.reactions_view import (
@@ -63,7 +64,11 @@ urlpatterns = [
     path("api/v1/sessions/", sessions),
     path("api/v1/sessions/<str:pk>/", sessions_detail),
     path("api/v1/auth/registration/", include("core.auth.registration.urls")),
-    path("", include("core.export.urls")),
+    url(r"^recipes.(?P<filetype>json|yaml|yml)$", export_recipes),
+    url(
+        r"^recipes/(?P<pk>[0-9]+).*\.(?P<filetype>json|yaml|yml)$",
+        export_recipes,
+    ),
     path("t/<int:team_id>/ical/<str:ical_id>/schedule.ics", get_ical_view),
     path("api/v1/", include(router.urls)),
     path("api/v1/recipes/", recipe_list_view),
