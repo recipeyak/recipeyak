@@ -308,7 +308,12 @@ jobs:
     docker:
         - image: python:3.7@sha256:d8718f4c8f28360c88d2d8b53681edb3c95e6a7bacedabd32eb5b1d120a75dc5
     steps:
-      - run: echo "deploying..."
+        - run:
+            name: Deploy Over SSH
+            command: |
+              ssh $SSH_USER@$SSH_HOST "./deploy $CIRCLE_SHA1"
+              # ssh recipeyak "./deploy $CIRCLE_SHA1"
+
 
 workflows:
   version: 2
@@ -352,10 +357,16 @@ workflows:
       #     filters:
       #       branches:
       #         only: master
-      - hold:
+      - 'ship it?':
           type: approval
           requires:
             - shellcheck
+          # filters:
+          #   branches:
+          #     only: master
       - deploy:
           requires:
-            - hold
+            - 'ship it?'
+          # filters:
+          #   branches:
+          #     only: master
