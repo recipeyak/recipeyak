@@ -357,6 +357,5 @@ workflows:
           requires:
             - shellcheck
       - deploy:
-          type: approval
           requires:
             - hold
