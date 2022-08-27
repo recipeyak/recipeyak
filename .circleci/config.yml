@@ -308,12 +308,14 @@ jobs:
     docker:
         - image: python:3.7@sha256:d8718f4c8f28360c88d2d8b53681edb3c95e6a7bacedabd32eb5b1d120a75dc5
     steps:
+        # https://circleci.com/docs/deploy-over-ssh
+        # 1. create an ssh key on the deploy box: `ssh-keygen -t ed25519 -C "your_email@example.com"`
+        # 2. add to .ssh/authorized_keys via `~/.ssh/id_ed25519.pub >> ~/.ssh/authorized_keys`
+        # 3. copy private key into circle ci following https://circleci.com/docs/add-ssh-key
         - add_ssh_keys:
             fingerprints:
-              # https://circleci.com/docs/add-ssh-key
-              # found in https://app.circleci.com/settings/project/github/recipeyak/recipeyak/ssh
+              # 4. get the fingerprint found in https://app.circleci.com/settings/project/github/recipeyak/recipeyak/ssh
               - "a9:32:7a:6a:ae:dd:17:c3:12:b0:b0:0a:fb:e0:ec:02"
-        # https://circleci.com/docs/deploy-over-ssh
         - run:
             name: Deploy Over SSH
             command: |
