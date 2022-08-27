@@ -3,7 +3,6 @@ from typing import Dict, Iterable
 import pytest
 import yaml
 from django.test import Client
-from django.urls import reverse
 
 from core.models import Recipe, User
 
@@ -46,7 +45,7 @@ def test_fields_in(dict_: Dict[str, object], expected: bool) -> None:
 def test_bulk_export_json(
     c: Client, user: User, user2: User, recipe: Recipe, recipe2: Recipe
 ) -> None:
-    url = reverse("export-recipes", kwargs={"filetype": "json"})
+    url = "/recipes.json"
     res = c.get(url)
     assert res.status_code == 302
     c.force_login(user)
@@ -65,7 +64,7 @@ def test_export_fields(
     """
     we don't want to return extraneous fields like position and id
     """
-    url = reverse("export-recipes", kwargs={"filetype": "json"})
+    url = "/recipes.json"
     c.force_login(user)
     res = c.get(url)
     assert res.status_code == 200
@@ -83,7 +82,7 @@ def test_bulk_export_yaml(
     recipe2: Recipe,
 ) -> None:
     recipe2.move_to(user)
-    url = reverse("export-recipes", kwargs={"filetype": filetype})
+    url = f"/recipes.{filetype}"
     res = c.get(url)
     assert res.status_code == 302
     c.force_login(user)
@@ -102,7 +101,7 @@ def test_bulk_export_yaml(
 
 
 def test_single_export_json(c: Client, user: User, recipe: Recipe) -> None:
-    url = reverse("export-recipe", kwargs={"pk": recipe.id, "filetype": "json"})
+    url = f"/recipes/{recipe.id}.json"
     res = c.get(url)
     assert res.status_code == 302
     c.force_login(user)
@@ -115,7 +114,7 @@ def test_single_export_json(c: Client, user: User, recipe: Recipe) -> None:
 def test_single_export_yaml(
     c: Client, filetype: str, user: User, recipe: Recipe
 ) -> None:
-    url = reverse("export-recipe", kwargs={"pk": recipe.id, "filetype": filetype})
+    url = f"/recipes/{recipe.id}.{filetype}"
     res = c.get(url)
     assert res.status_code == 302
     c.force_login(user)
@@ -133,7 +132,7 @@ def test_unicode_issues(c: Client, user: User, recipe: Recipe) -> None:
     """
     recipe.name = "foo 🦠"
     recipe.save()
-    url = reverse("export-recipe", kwargs={"pk": recipe.id, "filetype": "yaml"})
+    url = f"/recipes/{recipe.id}.yaml"
     c.force_login(user)
     res = c.get(url)
     assert (
