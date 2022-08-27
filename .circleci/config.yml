@@ -304,45 +304,56 @@ jobs:
               --tag recipeyak/pgdump:$CIRCLE_SHA1 .
             docker push recipeyak/pgdump:$CIRCLE_SHA1
 
+  deploy:
+    docker:
+        - image: python:3.7@sha256:d8718f4c8f28360c88d2d8b53681edb3c95e6a7bacedabd32eb5b1d120a75dc5
+    steps:
+      - run: echo "deploying..."
+
 workflows:
   version: 2
   test:
     jobs:
-      - squawk
+      # - squawk
       - backend_test
-      - backend_lint
-      - frontend_test
-      - frontend_lint
-      - docker_lint
-      - shellcheck
-      - build_api_container:
-          context: DockerHub
+      # - backend_lint
+      # - frontend_test
+      # - frontend_lint
+      # - docker_lint
+      # - shellcheck
+      # - build_api_container:
+      #     context: DockerHub
+      #     requires:
+      #       - backend_test
+      #       - backend_lint
+      #     filters:
+      #       branches:
+      #         only: master
+      # - build_ui_container:
+      #     context: DockerHub
+      #     requires:
+      #       - frontend_test
+      #       - frontend_lint
+      #     filters:
+      #       branches:
+      #         only: master
+      # - build_proxy_container:
+      #     context: DockerHub
+      #     filters:
+      #       branches:
+      #         only: master
+      # - build_postgres_container:
+      #     context: DockerHub
+      #     filters:
+      #       branches:
+      #         only: master
+      # - build_pgdump_container:
+      #     context: DockerHub
+      #     filters:
+      #       branches:
+      #         only: master
+      - hold:
+          type: approval
+      - deploy:
           requires:
-            - backend_test
-            - backend_lint
-          filters:
-            branches:
-              only: master
-      - build_ui_container:
-          context: DockerHub
-          requires:
-            - frontend_test
-            - frontend_lint
-          filters:
-            branches:
-              only: master
-      - build_proxy_container:
-          context: DockerHub
-          filters:
-            branches:
-              only: master
-      - build_postgres_container:
-          context: DockerHub
-          filters:
-            branches:
-              only: master
-      - build_pgdump_container:
-          context: DockerHub
-          filters:
-            branches:
-              only: master
+            - hold
