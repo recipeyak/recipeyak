@@ -91,7 +91,6 @@ urlpatterns = [
     path("api/v1/report-bad-merge", ReportBadMerge.as_view(), name="report-bad-merge"),
     path("api/v1/upload/", upload.start_upload),
     path("api/v1/upload/<int:upload_pk>/complete", upload.complete_upload),
-    url(r"^api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     # we don't actually use this view. This serves as the url for the reset email
     url(
         r"^password-reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)\.(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$",
