@@ -308,10 +308,16 @@ jobs:
     docker:
         - image: python:3.7@sha256:d8718f4c8f28360c88d2d8b53681edb3c95e6a7bacedabd32eb5b1d120a75dc5
     steps:
+        - add_ssh_keys:
+            fingerprints:
+              # https://circleci.com/docs/add-ssh-key
+              # found in https://app.circleci.com/settings/project/github/recipeyak/recipeyak/ssh
+              - "a9:32:7a:6a:ae:dd:17:c3:12:b0:b0:0a:fb:e0:ec:02"
+        # https://circleci.com/docs/deploy-over-ssh
         - run:
             name: Deploy Over SSH
             command: |
-              ssh $SSH_USER@$SSH_HOST "./deploy $CIRCLE_SHA1"
+              ssh $SSH_USER@$SSH_HOST "./deploy-test $CIRCLE_SHA1"
               # ssh recipeyak "./deploy $CIRCLE_SHA1"
 
 
