@@ -5,6 +5,7 @@ import {
   useDropdown,
 } from "@/components/Dropdown"
 import { selectTarget, TextInput } from "@/components/Forms"
+import { Loader } from "@/components/Loader"
 import { isSuccessLike, WebData } from "@/webdata"
 
 function Hr() {
