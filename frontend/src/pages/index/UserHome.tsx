@@ -20,6 +20,7 @@ import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
 import { useApi, useDispatch, useScheduleTeamID, useSelector } from "@/hooks"
 import { searchRecipes } from "@/search"
+import { scheduleURLFromTeamID } from "@/store/mapState"
 import { getTeamRecipes } from "@/store/reducers/recipes"
 import { fetchingRecipeListAsync } from "@/store/thunks"
 import { css, styled } from "@/theme"
@@ -262,10 +263,12 @@ function useSchedulePreview() {
 
 function SchedulePreview() {
   const scheduledRecipes = useSchedulePreview()
-
+  const scheduleURL = useSelector(scheduleURLFromTeamID)
   return (
     <ScheduleContainer>
-      <SectionTitle>Schedule</SectionTitle>
+      <Link to={scheduleURL}>
+        <SectionTitle>Schedule</SectionTitle>
+      </Link>
       <div>
         {isSuccess(scheduledRecipes) ? (
           scheduledRecipes.data.map((x) => (
