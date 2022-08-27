@@ -4,7 +4,7 @@ import { connect } from "react-redux"
 import { Link } from "react-router-dom"
 
 import { TextInput } from "@/components/Forms"
-import Loader from "@/components/Loader"
+import { Loader } from "@/components/Loader"
 import RecipeItem from "@/pages/recipe-list/RecipeItem"
 import { parseIntOrNull } from "@/parseIntOrNull"
 import { searchRecipes } from "@/search"
@@ -58,7 +58,7 @@ interface IRecipeList {
 
 function RecipeList(props: IRecipeList) {
   if (!isSuccessOrRefetching(props.recipes)) {
-    return <Loader className="pt-4" />
+    return <Loader />
   }
 
   const results = searchRecipes({

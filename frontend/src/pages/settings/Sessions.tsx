@@ -2,7 +2,7 @@ import { useEffect } from "react"
 import { connect } from "react-redux"
 
 import { Button } from "@/components/Buttons"
-import Loader from "@/components/Loader"
+import { Loader } from "@/components/Loader"
 import { formatDistanceToNow } from "@/date"
 import { ISession, LoggingOutStatus } from "@/store/reducers/user"
 import { IState } from "@/store/store"

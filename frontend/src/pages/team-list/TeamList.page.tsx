@@ -1,6 +1,7 @@
 import React from "react"
 import { NavLink } from "react-router-dom"
 
+import { Loader } from "@/components/Loader"
 import { Link } from "@/components/Routing"
 import { useDispatch, useSelector } from "@/hooks"
 import { Invites } from "@/pages/team-list/Invites"
@@ -27,7 +28,7 @@ function useTeams() {
 function TeamsList() {
   const teams = useTeams()
   if (isLoading(teams) || isInitial(teams)) {
-    return <p>Loading...</p>
+    return <Loader />
   }
 
   if (isFailure(teams)) {

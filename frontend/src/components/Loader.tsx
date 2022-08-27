@@ -1,19 +1,15 @@
-function Loader({ className = "" }) {
+import clx from "@/classnames"
+
+export function Loader({ align = "center" }: { align?: "center" | "left" }) {
   return (
-    <div className={"d-flex justify-content-center " + className}>
-      <div className="ball-grid-pulse grid-entire-row justify-self-center">
-        <div />
-        <div />
-        <div />
-        <div />
-        <div />
-        <div />
-        <div />
-        <div />
-        <div />
-      </div>
-    </div>
+    <p
+      className={clx(
+        "text-muted text-small",
+        align === "center" && "text-center",
+        align === "left" && "text-left",
+      )}
+    >
+      loading...
+    </p>
   )
 }
-
-export default Loader
