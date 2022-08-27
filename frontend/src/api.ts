@@ -484,8 +484,8 @@ export function generateCalendarLink({
 export const scheduleRecipe = (
   recipeID: IRecipe["id"],
   teamID: number | "personal",
-  on: Date,
-  count: string | number,
+  on: Date | string,
+  count: string | number = 1,
 ) => {
   const id = teamID === "personal" ? "me" : teamID
   return http.post<ICalRecipe>(`/api/v1/t/${id}/calendar/`, {

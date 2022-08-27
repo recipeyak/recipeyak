@@ -928,7 +928,7 @@ export const fetchCalendarAsync =
     }
   }
 
-function toCalRecipe(
+export function toCalRecipe(
   recipe: IRecipe,
   tempId: ICalRecipe["id"],
   on: ICalRecipe["on"],

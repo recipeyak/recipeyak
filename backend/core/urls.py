@@ -2,7 +2,6 @@ from django.conf.urls import include, url
 from django.urls import path
 from django.views.generic import TemplateView
 from rest_framework.routers import DefaultRouter
-from rest_framework_nested import routers
 
 from core.auth.views import (
     LoginView,
@@ -49,7 +48,7 @@ router.register(r"t", TeamViewSet, basename="teams")
 router.register(r"invites", UserInvitesViewSet, basename="user-invites")
 
 
-teams_router = routers.NestedSimpleRouter(router, r"t", lookup="team")
+teams_router = DefaultRouter()
 teams_router.register(r"members", MembershipViewSet, basename="team-member")
 teams_router.register(r"invites", TeamInviteViewSet, basename="team-invites")
 teams_router.register(r"calendar", CalendarViewSet, basename="calendar")
@@ -91,12 +90,11 @@ urlpatterns = [
     path("api/v1/notes/<int:note_pk>/reactions/", note_reaction_create_view),
     path("api/v1/notes/<int:note_pk>/", note_detail_view),
     path("api/v1/reactions/<str:reaction_pk>/", note_reaction_delete_view),
-    path("api/v1/", include(teams_router.urls)),
+    path("api/v1/t/<team_pk>/", include(teams_router.urls)),
     path("api/v1/t/<team_pk>/shoppinglist/", get_shopping_list_view),
     path("api/v1/report-bad-merge", ReportBadMerge.as_view(), name="report-bad-merge"),
     path("api/v1/upload/", upload.start_upload),
     path("api/v1/upload/<int:upload_pk>/complete", upload.complete_upload),
-    url(r"^api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     # we don't actually use this view. This serves as the url for the reset email
     url(
         r"^password-reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)\.(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$",
