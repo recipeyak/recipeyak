@@ -315,12 +315,12 @@ workflows:
   test:
     jobs:
       # - squawk
-      - backend_test
+      # - backend_test
       # - backend_lint
       # - frontend_test
       # - frontend_lint
       # - docker_lint
-      # - shellcheck
+      - shellcheck
       # - build_api_container:
       #     context: DockerHub
       #     requires:
@@ -352,8 +352,11 @@ workflows:
       #     filters:
       #       branches:
       #         only: master
-      # - hold:
-      - deploy:
+      - hold:
           type: approval
           requires:
             - backend_test
+      - deploy:
+          type: approval
+          requires:
+            - hold
