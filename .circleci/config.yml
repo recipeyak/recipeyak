@@ -319,6 +319,7 @@ jobs:
         - run:
             name: Deploy Over SSH
             command: |
+              ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
               ssh $SSH_USER@$SSH_HOST "./deploy-test $CIRCLE_SHA1"
               # ssh recipeyak "./deploy $CIRCLE_SHA1"
 
