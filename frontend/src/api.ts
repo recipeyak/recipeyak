@@ -50,7 +50,7 @@ export const resetPasswordConfirm = (
   newPassword1: string,
   newPassword2: string,
 ) =>
-  http.post<IDetailResponse>("/api/v1/auth/password/reset/confirm/", {
+  http.post<IUserResponse["user"]>("/api/v1/auth/password/reset/confirm/", {
     uid,
     token,
     new_password1: newPassword1,

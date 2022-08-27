@@ -76,7 +76,3 @@ class RegisterSerializer(BaseSerializer):
         self.custom_signup(request, user)
         setup_user_email(request, user, [])
         return user
-
-
-class VerifyEmailSerializer(BaseSerializer):
-    key = serializers.CharField()
