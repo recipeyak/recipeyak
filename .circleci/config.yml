@@ -355,7 +355,7 @@ workflows:
       - hold:
           type: approval
           requires:
-            - backend_test
+            - shellcheck
       - deploy:
           type: approval
           requires:
