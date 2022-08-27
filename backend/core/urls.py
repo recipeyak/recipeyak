@@ -3,6 +3,7 @@ from django.urls import path
 from django.views.generic import TemplateView
 from rest_framework.routers import DefaultRouter
 
+from core.auth.registration.views import RegisterView, VerifyEmailView
 from core.auth.views import (
     LoginView,
     LogoutView,
@@ -10,6 +11,7 @@ from core.auth.views import (
     PasswordResetConfirmView,
     PasswordResetView,
 )
+from core.export.views import export_recipes
 from core.ical.views import get_ical_view
 from core.recipes.views.ingredients_list_view import ingredients_list_view
 from core.recipes.views.reactions_view import (
@@ -61,8 +63,32 @@ urlpatterns = [
     path("api/v1/user/", UserDetailsView.as_view()),
     path("api/v1/sessions/", sessions),
     path("api/v1/sessions/<str:pk>/", sessions_detail),
-    path("api/v1/auth/registration/", include("core.auth.registration.urls")),
-    path("", include("core.export.urls")),
+    path("api/v1/auth/registration/", RegisterView.as_view(), name="rest_register"),
+    path(
+        "api/v1/auth/registration/verify-email/",
+        VerifyEmailView.as_view(),
+        name="rest_verify_email",
+    ),
+    # This url is used by django-allauth and empty TemplateView is
+    # defined just to allow reverse() call inside app, for example when email
+    # with verification link is being sent, then it's required to render email
+    # content.
+    # account_confirm_email - You should override this view to handle it in
+    # your API client somehow and then, send post to /verify-email/ endpoint
+    # with proper key.
+    # If you don't want to use API on that step, then just use ConfirmEmailView
+    # view from:
+    # django-allauth https://github.com/pennersr/django-allauth/blob/master/allauth/account/views.py
+    url(
+        r"api/v1/auth/registration/account-confirm-email/(?P<key>[-:\w]+)/$",
+        TemplateView.as_view(),
+        name="account_confirm_email",
+    ),
+    url(r"^recipes.(?P<filetype>json|yaml|yml)$", export_recipes),
+    url(
+        r"^recipes/(?P<pk>[0-9]+).*\.(?P<filetype>json|yaml|yml)$",
+        export_recipes,
+    ),
     path("t/<int:team_id>/ical/<str:ical_id>/schedule.ics", get_ical_view),
     path("api/v1/", include(router.urls)),
     path("api/v1/recipes/", recipe_list_view),
