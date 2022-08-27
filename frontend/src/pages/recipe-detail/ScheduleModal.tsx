@@ -1,11 +1,14 @@
 import React from "react"
 import { Link } from "react-router-dom"
 
+import * as api from "@/api"
 import { isMobile } from "@/browser"
 import Modal from "@/components/Modal"
 import { toISODateString } from "@/date"
-import { useSelector } from "@/hooks"
+import { useDispatch, useSelector, useTeamId } from "@/hooks"
+import { isOk } from "@/result"
 import { scheduleURLFromTeamID } from "@/store/mapState"
+import { setCalendarRecipe } from "@/store/reducers/calendar"
 
 function useScheduleUrl(recipeId: number) {
   return useSelector(scheduleURLFromTeamID) + `?recipeId=${recipeId}`
@@ -20,13 +23,23 @@ export function ScheduleModal({
   readonly recipeName: string
   readonly onClose: () => void
 }) {
-  const [localDate, setLocalDate] = React.useState(toISODateString(new Date()))
+  const [isoDate, setIsoDate] = React.useState(toISODateString(new Date()))
   const [saving, setSaving] = React.useState(false)
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocalDate(e.target.value)
+    setIsoDate(e.target.value)
   }
+  const dispatch = useDispatch()
+  const teamId = useTeamId()
   const handleSave = () => {
     setSaving(true)
+    void api.scheduleRecipe(recipeId, teamId, isoDate).then((res) => {
+      if (isOk(res)) {
+        dispatch(setCalendarRecipe(res.data))
+        setSaving(false)
+        onClose()
+      }
+      setSaving(false)
+    })
   }
 
   const scheduleUrl = useScheduleUrl(recipeId)
@@ -41,7 +54,7 @@ export function ScheduleModal({
       <div>
         <div className="mr-2" style={{ display: "grid", gridGap: "0.25rem" }}>
           <input
-            value={toISODateString(localDate)}
+            value={toISODateString(isoDate)}
             onChange={handleDateChange}
             type="date"
             className="mr-4 mt-2"
