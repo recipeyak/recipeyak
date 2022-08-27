@@ -1,16 +1,9 @@
 from django.conf.urls import include, url
 from django.urls import path
-from django.views.generic import TemplateView
 from rest_framework.routers import DefaultRouter
 
-from core.auth.registration.views import RegisterView, VerifyEmailView
-from core.auth.views import (
-    LoginView,
-    LogoutView,
-    PasswordChangeView,
-    PasswordResetConfirmView,
-    PasswordResetView,
-)
+from core.auth.registration.views import RegisterView
+from core.auth.views import LoginView, LogoutView, PasswordChangeView
 from core.export.views import export_recipes
 from core.ical.views import get_ical_view
 from core.recipes.views.ingredients_list_view import ingredients_list_view
@@ -36,6 +29,8 @@ from core.teams.views import (
 )
 from core.uploads import views as upload
 from core.users.views import UserDetailsView, sessions, sessions_detail
+from core.views.password_reset_confirm_view import password_reset_confirm_view
+from core.views.password_reset_view import password_reset_view
 from core.views.recipe_detail_view import receipe_detail_view
 from core.views.recipe_list_view import recipe_list_view
 
@@ -55,8 +50,8 @@ teams_router.register(r"invites", TeamInviteViewSet, basename="team-invites")
 teams_router.register(r"calendar", CalendarViewSet, basename="calendar")
 
 urlpatterns = [
-    path("api/v1/auth/password/reset/", PasswordResetView.as_view()),
-    path("api/v1/auth/password/reset/confirm/", PasswordResetConfirmView.as_view()),
+    path("api/v1/auth/password/reset/", password_reset_view),
+    path("api/v1/auth/password/reset/confirm/", password_reset_confirm_view),
     path("api/v1/auth/login/", LoginView.as_view()),
     path("api/v1/auth/logout/", LogoutView.as_view()),
     path("api/v1/auth/password/change/", PasswordChangeView.as_view()),
@@ -64,26 +59,6 @@ urlpatterns = [
     path("api/v1/sessions/", sessions),
     path("api/v1/sessions/<str:pk>/", sessions_detail),
     path("api/v1/auth/registration/", RegisterView.as_view(), name="rest_register"),
-    path(
-        "api/v1/auth/registration/verify-email/",
-        VerifyEmailView.as_view(),
-        name="rest_verify_email",
-    ),
-    # This url is used by django-allauth and empty TemplateView is
-    # defined just to allow reverse() call inside app, for example when email
-    # with verification link is being sent, then it's required to render email
-    # content.
-    # account_confirm_email - You should override this view to handle it in
-    # your API client somehow and then, send post to /verify-email/ endpoint
-    # with proper key.
-    # If you don't want to use API on that step, then just use ConfirmEmailView
-    # view from:
-    # django-allauth https://github.com/pennersr/django-allauth/blob/master/allauth/account/views.py
-    url(
-        r"api/v1/auth/registration/account-confirm-email/(?P<key>[-:\w]+)/$",
-        TemplateView.as_view(),
-        name="account_confirm_email",
-    ),
     url(r"^recipes.(?P<filetype>json|yaml|yml)$", export_recipes),
     url(
         r"^recipes/(?P<pk>[0-9]+).*\.(?P<filetype>json|yaml|yml)$",
@@ -116,20 +91,4 @@ urlpatterns = [
     path("api/v1/report-bad-merge", ReportBadMerge.as_view(), name="report-bad-merge"),
     path("api/v1/upload/", upload.start_upload),
     path("api/v1/upload/<int:upload_pk>/complete", upload.complete_upload),
-    # we don't actually use this view. This serves as the url for the reset email
-    url(
-        r"^password-reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)\.(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$",
-        TemplateView.as_view(template_name="password_reset_confirm.html"),
-        name="password_reset_confirm",
-    ),
-    url(
-        r"^signup/$",
-        TemplateView.as_view(template_name="socialccount_signup.html"),
-        name="socialaccount_signup",
-    ),
-    url(
-        r"^settings/$",
-        TemplateView.as_view(template_name="socialaccount_connections.html"),
-        name="socialaccount_connections",
-    ),
 ]

@@ -537,12 +537,8 @@ export const resetConfirmationAsync =
     )
     if (isOk(res)) {
       dispatch(setLoadingResetConfirmation(false))
-      const message = res?.data?.detail
-      showNotificationWithTimeoutAsync(dispatch)({
-        message,
-        level: "success",
-      })
-      dispatch(push("/login"))
+      dispatch(login.success(res.data))
+      dispatch(push("/"))
     } else {
       const err = res.error
       dispatch(setLoadingResetConfirmation(false))
