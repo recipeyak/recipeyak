@@ -6,7 +6,7 @@ import * as api from "@/api"
 import { Button, ButtonPrimary } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
-import Loader from "@/components/Loader"
+import { Loader } from "@/components/Loader"
 import { useDispatch } from "@/hooks"
 import Sessions from "@/pages/settings/Sessions"
 import { isOk } from "@/result"
@@ -280,11 +280,7 @@ class Settings extends React.Component<ISettingsProps, ISettingsState> {
     const { avatarURL, name, updatingEmail, loading, hasPassword } = this.props
 
     if (loading) {
-      return (
-        <section className="d-flex justify-content-center">
-          <Loader />
-        </section>
-      )
+      return <Loader />
     }
 
     return (

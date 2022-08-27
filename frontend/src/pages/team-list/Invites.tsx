@@ -2,6 +2,7 @@ import React from "react"
 import { Link } from "react-router-dom"
 
 import { ButtonPrimary } from "@/components/Buttons"
+import { Loader } from "@/components/Loader"
 import { useDispatch, useSelector } from "@/hooks"
 import { getInvites, IInvite } from "@/store/reducers/invites"
 import { ITeam } from "@/store/reducers/teams"
@@ -76,7 +77,7 @@ function TeamName({ teamId, name, active }: ITeamNameProps) {
 export function Invites() {
   const { invites } = useNotifications()
   if (isLoading(invites) || isInitial(invites)) {
-    return <p className="text-muted text-small align-self-center">Loading...</p>
+    return <Loader />
   }
 
   if (isFailure(invites)) {

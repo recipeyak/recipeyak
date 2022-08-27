@@ -77,7 +77,7 @@ export function CalendarMoreDropdown({
             </ButtonLink>
           </>
         ) : (
-          <p className="text-center">loading...</p>
+          <Loader />
         )}
       </DropdownMenu>
     </DropdownContainer>

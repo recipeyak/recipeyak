@@ -17,6 +17,7 @@ import { isMobile } from "@/browser"
 import Footer from "@/components/Footer"
 import * as forms from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
+import { Loader } from "@/components/Loader"
 import { useApi, useDispatch, useScheduleTeamID, useSelector } from "@/hooks"
 import { searchRecipes } from "@/search"
 import { getTeamRecipes } from "@/store/reducers/recipes"
@@ -299,7 +300,7 @@ function RecentlyViewed() {
       <SectionTitle>Recently Viewed</SectionTitle>
       <div className="d-flex flex-direction-column">
         {recipes == null ? (
-          <p>loading...</p>
+          <Loader />
         ) : recipes.length === 0 ? (
           <p>no recipes viewed</p>
         ) : (

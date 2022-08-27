@@ -27,7 +27,7 @@ function useTeams() {
 function TeamsList() {
   const teams = useTeams()
   if (isLoading(teams) || isInitial(teams)) {
-    return <p>Loading...</p>
+    return <Loader />
   }
 
   if (isFailure(teams)) {

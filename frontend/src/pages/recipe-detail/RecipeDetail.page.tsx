@@ -7,7 +7,7 @@ import { useLocation } from "react-router-dom"
 
 import * as api from "@/api"
 import { Helmet } from "@/components/Helmet"
-import Loader from "@/components/Loader"
+import { Loader } from "@/components/Loader"
 import { formatHumanDate } from "@/date"
 import { useDispatch, useOnWindowFocusChange, useSelector } from "@/hooks"
 import AddIngredientOrSection from "@/pages/recipe-detail/AddIngredient"
@@ -383,11 +383,7 @@ export function Recipe(props: IRecipeProps) {
   )
 
   if (isInitial(maybeRecipe) || isLoading(maybeRecipe)) {
-    return (
-      <section className="d-flex justify-content-center">
-        <Loader />
-      </section>
-    )
+    return <Loader />
   }
 
   if (isFailure(maybeRecipe)) {
