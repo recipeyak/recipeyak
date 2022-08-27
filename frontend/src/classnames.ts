@@ -5,6 +5,7 @@ export function classNames(
     | string
     | undefined
     | number
+    | false
     | string[]
     | { [key: string]: boolean | undefined }
   )[]

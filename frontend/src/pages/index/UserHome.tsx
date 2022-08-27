@@ -300,7 +300,7 @@ function RecentlyViewed() {
       <SectionTitle>Recently Viewed</SectionTitle>
       <div className="d-flex flex-direction-column">
         {recipes == null ? (
-          <Loader />
+          <Loader align="left" />
         ) : recipes.length === 0 ? (
           <p>no recipes viewed</p>
         ) : (
