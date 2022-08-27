@@ -29,11 +29,11 @@
   "eslint.alwaysShowStatus": true,
   "eslint.lintTask.enable": true,
   "eslint.validate": [
-       "javascriptreact",
-       "javascript",
-       "html",
-       "typescript",
-       "typescriptreact",
+    "javascriptreact",
+    "javascript",
+    "html",
+    "typescript",
+    "typescriptreact"
   ],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
@@ -41,7 +41,11 @@
   "python.languageServer": "Pylance",
   "editor.tabSize": 4,
   "editor.insertSpaces": true,
+  "[scss]": {
+    "editor.tabSize": 2
+  },
   "[python]": {
-      "editor.tabSize": 4
-  }
+    "editor.tabSize": 4
+  },
+  "scss.format.enable": true
 }
