@@ -34,10 +34,10 @@ from core.views.password_reset_view import password_reset_view
 from core.views.recipe_detail_view import receipe_detail_view
 from core.views.recipe_list_view import recipe_list_view
 
-from .recipes.views.ingredients_detail_view import ingredients_detail_view
-from .recipes.views.notes_view import note_create_view, note_detail_view
-from .recipes.views.steps_detail_view import steps_detail_view
-from .recipes.views.steps_list_view import steps_list_view
+from core.recipes.views.ingredients_detail_view import ingredients_detail_view
+from core.recipes.views.notes_view import note_create_view, note_detail_view
+from core.recipes.views.steps_detail_view import steps_detail_view
+from core.recipes.views.steps_list_view import steps_list_view
 
 router = DefaultRouter()
 router.register(r"t", TeamViewSet, basename="teams")

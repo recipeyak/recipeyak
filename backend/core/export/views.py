@@ -9,7 +9,7 @@ from core.models import user_and_team_recipes
 from core.request import AuthedRequest
 from core.response import YamlResponse
 
-from .serializers import RecipeExportSerializer
+from core.export.serializers import RecipeExportSerializer
 
 
 @require_http_methods(["GET"])

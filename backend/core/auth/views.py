@@ -11,7 +11,7 @@ from rest_framework.views import APIView
 
 from core.users.serializers import UserSerializer as UserDetailsSerializer
 
-from .serializers import LoginSerializer, PasswordChangeSerializer
+from core.auth.serializers import LoginSerializer, PasswordChangeSerializer
 
 logger = logging.getLogger(__name__)
 

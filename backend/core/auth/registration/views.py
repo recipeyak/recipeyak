@@ -12,7 +12,7 @@ from rest_framework.response import Response
 
 from core.users.serializers import UserSerializer as UserDetailsSerializer
 
-from .serializers import RegisterSerializer
+from core.auth.registration.serializers import RegisterSerializer
 
 logger = logging.getLogger(__name__)
 
