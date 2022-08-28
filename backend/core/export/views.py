@@ -5,11 +5,10 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_http_methods
 
+from core.export.serializers import RecipeExportSerializer
 from core.models import user_and_team_recipes
 from core.request import AuthedRequest
 from core.response import YamlResponse
-
-from .serializers import RecipeExportSerializer
 
 
 @require_http_methods(["GET"])

@@ -45,6 +45,7 @@ types-requests = "^2.25.11"
 syrupy = "^1.5.0"
 black = "^22.6.0"
 boto3-stubs = {extras = ["s3"], version = "^1.24.44"}
+flake8-tidy-imports = "^4.8.0"
 
 [tool.black]
 exclude = '''

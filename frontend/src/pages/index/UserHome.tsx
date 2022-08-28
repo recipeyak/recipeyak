@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query"
 import { push } from "connected-react-router"
 import {
   addDays,
@@ -6,7 +7,7 @@ import {
   parseISO,
   startOfToday,
 } from "date-fns"
-import { isRight } from "fp-ts/lib/Either"
+import { Either, isRight } from "fp-ts/lib/Either"
 import queryString from "query-string"
 import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
@@ -18,14 +19,13 @@ import Footer from "@/components/Footer"
 import * as forms from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
-import { useApi, useDispatch, useScheduleTeamID, useSelector } from "@/hooks"
+import { useDispatch, useScheduleTeamID, useSelector } from "@/hooks"
 import { searchRecipes } from "@/search"
 import { scheduleURLFromTeamID } from "@/store/mapState"
 import { getTeamRecipes } from "@/store/reducers/recipes"
 import { fetchingRecipeListAsync } from "@/store/thunks"
 import { css, styled } from "@/theme"
 import { updateQueryParamsAsync } from "@/utils/querystring"
-import { isFailure, isSuccess, mapSuccessLike } from "@/webdata"
 
 const SearchInput = styled(forms.SearchInput)`
   font-size: 1.5rem !important;
@@ -235,29 +235,40 @@ function buildSchedule(
   })
 }
 
+function unwrapEither<T>(x: Either<unknown, T>): T {
+  if (isRight(x)) {
+    return x.right
+  }
+  throw x.left
+}
+
 function useSchedulePreview() {
   const teamID = useScheduleTeamID()
   const start = startOfToday()
   const end = addDays(start, 6)
-  const res = useApi(
-    api.getCalendarRecipeListRequestBuilder({
-      teamID,
-      start,
-      end,
-    }),
+  const res = useQuery(["schedule"], () =>
+    api
+      .getCalendarRecipeListRequestBuilder({
+        teamID,
+        start,
+        end,
+      })
+      .send()
+      .then(unwrapEither),
   )
-  return mapSuccessLike(res, (x) =>
-    buildSchedule(
-      x.scheduledRecipes.map((scheduledRecipe) => ({
-        on: scheduledRecipe.on,
-        recipe: {
-          id: scheduledRecipe.recipe.id.toString(),
-          name: scheduledRecipe.recipe.name,
-        },
-      })),
-      start,
-      end,
-    ),
+  if (res.data == null) {
+    return null
+  }
+  return buildSchedule(
+    res.data.scheduledRecipes.map((scheduledRecipe) => ({
+      on: scheduledRecipe.on,
+      recipe: {
+        id: scheduledRecipe.recipe.id.toString(),
+        name: scheduledRecipe.recipe.name,
+      },
+    })),
+    start,
+    end,
   )
 }
 
@@ -270,33 +281,18 @@ function SchedulePreview() {
         <SectionTitle>Schedule</SectionTitle>
       </Link>
       <div>
-        {isSuccess(scheduledRecipes) ? (
-          scheduledRecipes.data.map((x) => (
-            <ScheduledRecipe key={x.day} day={x.day} recipes={x.recipes} />
-          ))
-        ) : isFailure(scheduledRecipes) ? (
-          <p>Failed to Load Schedule</p>
-        ) : (
-          <p>Loading schedule...</p>
-        )}
+        {scheduledRecipes?.map((x) => (
+          <ScheduledRecipe key={x.day} day={x.day} recipes={x.recipes} />
+        ))}
       </div>
     </ScheduleContainer>
   )
 }
 
 function RecentlyViewed() {
-  // TODO(sbdchd): replace with react-query or similar
-  const [recipes, setRecipes] =
-    React.useState<ReadonlyArray<{ id: number; name: string }>>()
-  React.useEffect(() => {
-    void api.recentlyViewedRecipes().then((res) => {
-      if (isRight(res)) {
-        setRecipes(res.right)
-      } else {
-        setRecipes([])
-      }
-    })
-  }, [])
+  const recipes = useQuery(["recently-viewed-recipes"], () =>
+    api.recentlyViewedRecipes().then(unwrapEither),
+  ).data
 
   return (
     <ScheduleContainer>
