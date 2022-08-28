@@ -1,8 +1,7 @@
-import { replace } from "connected-react-router"
 import { sortBy } from "lodash-es"
 import queryString from "query-string"
 import React from "react"
-import { RouteComponentProps } from "react-router"
+import { RouteComponentProps, useHistory } from "react-router"
 import { useLocation } from "react-router-dom"
 
 import * as api from "@/api"
@@ -79,8 +78,10 @@ function RecipeDetails({
   readonly recipe: IRecipe
   editingEnabled: boolean
 }) {
-  const [addIngredient, setAddIngredient] = React.useState(false)
-  const [addStep, setAddStep] = React.useState(false)
+  // default to open when in edit mode
+  const [addIngredient, setAddIngredient] = React.useState(editingEnabled)
+  // default to open when in edit mode
+  const [addStep, setAddStep] = React.useState(editingEnabled)
   const dispatch = useDispatch()
   const [sectionsAndIngredients, setSectionsAndIngredients] =
     React.useState<SectionsAndIngredients>(() => getInitialIngredients(recipe))
@@ -351,8 +352,8 @@ function RecipeBanner({ children }: { readonly children: React.ReactNode }) {
 
 /** On load, update the recipe URL to include the slugified recipe name */
 function useRecipeUrlUpdate(recipe: { id: number; name: string } | null) {
-  const dispatch = useDispatch()
   const location = useLocation()
+  const history = useHistory()
 
   const { id: recipeId, name: recipeName } = recipe || {}
 
@@ -364,8 +365,8 @@ function useRecipeUrlUpdate(recipe: { id: number; name: string } | null) {
     if (pathNamesEqual(location.pathname, pathname)) {
       return
     }
-    dispatch(replace({ pathname }))
-  }, [dispatch, location, recipeId, recipeName])
+    history.replace({ pathname, search: location.search })
+  }, [history, history.replace, location, recipeId, recipeName])
 }
 
 type IRecipeProps = RouteComponentProps<{ id: string }>
@@ -374,7 +375,12 @@ export function Recipe(props: IRecipeProps) {
   const recipeId = parseInt(props.match.params.id, 10)
 
   const maybeRecipe = useRecipe(recipeId)
-  const [editingEnabled, setEditingEnabled] = React.useState(false)
+  const history = useHistory()
+  const parsed = queryString.parse(props.location.search)
+  const editingEnabled = parsed.edit === "1"
+
+  // default to metadata being in edit mode when the page is naved to with edit=1
+  const [editingMetadata, setEditingMetadata] = React.useState(editingEnabled)
 
   useRecipeUrlUpdate(
     isSuccessLike(maybeRecipe)
@@ -391,8 +397,6 @@ export function Recipe(props: IRecipeProps) {
   }
 
   const recipe = maybeRecipe.data
-
-  const parsed = queryString.parse(props.location.search)
 
   const isTimeline = !!parsed.timeline
   const archivedAt = recipe.archived_at
@@ -414,10 +418,19 @@ export function Recipe(props: IRecipeProps) {
         time={recipe.time}
         owner={recipe.owner}
         updating={recipe.updating}
-        editing={recipe.editing}
+        editing={editingMetadata}
         editingModeEnabled={editingEnabled}
+        toggleEditing={() => {
+          setEditingMetadata((s) => !s)
+        }}
         toggleEditMode={() => {
-          setEditingEnabled((s) => !s)
+          const params = new URLSearchParams(props.location.search)
+          if (params.get("edit")) {
+            params.delete("edit")
+          } else {
+            params.set("edit", "1")
+          }
+          history.push({ search: "?" + params.toString() })
         }}
         tags={recipe.tags}
       />

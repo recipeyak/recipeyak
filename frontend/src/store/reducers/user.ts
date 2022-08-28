@@ -23,8 +23,6 @@ export const logOut = createAsyncAction(
   "LOGOUT_FAILURE",
 )<void, void, void>()
 
-export const updateRecipeTeamID =
-  createStandardAction("SET_TEAM_ID")<IUserState["recipeTeamID"]>()
 export const updateScheduleTeamID =
   createStandardAction("SET_TEAM_ID")<IUserState["scheduleTeamID"]>()
 
@@ -62,7 +60,6 @@ export const logoutAllSessions = createAsyncAction(
 export type UserActions =
   | ActionType<typeof logOut>
   | ReturnType<typeof setUserLoggedIn>
-  | ReturnType<typeof updateRecipeTeamID>
   | ReturnType<typeof updateScheduleTeamID>
   | ActionType<typeof fetchUser>
   | ActionType<typeof updateEmail>
@@ -78,7 +75,6 @@ export interface IUser {
   readonly id: number
   readonly has_usable_password?: boolean
   readonly dark_mode_enabled: boolean
-  readonly selected_team: number | null
   readonly schedule_team: number | null
 }
 
@@ -112,8 +108,6 @@ export interface IUserState {
   readonly loggingOut: boolean
   readonly darkMode: boolean
   readonly hasUsablePassword: boolean
-  // ID of currently focused team. null if using personal team.
-  readonly recipeTeamID: number | null
   readonly scheduleTeamID: number | null
   readonly updatingEmail: boolean
   readonly sessions: WebData<ReadonlyArray<ISession>>
@@ -131,7 +125,6 @@ const initialState: IUserState = {
   loggingOut: false,
   darkMode: false,
   hasUsablePassword: false,
-  recipeTeamID: null,
   scheduleTeamID: null,
   updatingEmail: false,
   sessions: undefined,
@@ -216,8 +209,6 @@ export const user = (
         ...state,
         loggingOutAllSessionsStatus: LoggingOutStatus.Failure,
       }
-    case getType(updateRecipeTeamID):
-      return { ...state, recipeTeamID: action.payload }
     case getType(updateScheduleTeamID):
       return { ...state, scheduleTeamID: action.payload }
     case getType(setUserLoggedIn):
@@ -251,7 +242,6 @@ export const user = (
         avatarURL: action.payload.avatar_url,
         id: action.payload.id,
         darkMode: action.payload.dark_mode_enabled,
-        recipeTeamID: action.payload.selected_team,
         scheduleTeamID: action.payload.schedule_team,
         updatingEmail: false,
       }

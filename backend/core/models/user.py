@@ -78,6 +78,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     dark_mode_enabled = models.BooleanField(
         default=False, help_text="frontend darkmode setting"
     )
+    # TODO(sbdchd): this doesn't seem necessary
     recipe_team = models.ForeignKey["Team"](
         "Team",
         null=True,

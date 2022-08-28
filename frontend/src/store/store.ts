@@ -25,10 +25,6 @@ import { getType } from "typesafe-actions"
 
 import { second } from "@/date"
 import { loadState, saveState } from "@/store/localStorage"
-import addrecipe, {
-  AddRecipeActions,
-  IAddRecipeState,
-} from "@/store/reducers/addrecipe"
 import auth, { AuthActions, IAuthState, login } from "@/store/reducers/auth"
 import calendar, {
   CalendarActions,
@@ -61,7 +57,6 @@ export interface IState {
   readonly notification: INotificationState
   readonly passwordChange: IPasswordChangeState
   readonly shoppinglist: IShoppingListState
-  readonly addrecipe: IAddRecipeState
   readonly auth: IAuthState
   readonly teams: ITeamsState
   readonly calendar: ICalendarState
@@ -75,7 +70,6 @@ export type Action =
   | RouterAction
   | PasswordChangeActions
   | ShoppingListActions
-  | AddRecipeActions
   | AuthActions
   | TeamsActions
   | CalendarActions
@@ -107,7 +101,6 @@ const recipeApp: LoopReducer<IState, Action> = combineReducers(
     notification,
     passwordChange,
     shoppinglist,
-    addrecipe,
     auth,
     teams,
     calendar,
@@ -197,10 +190,8 @@ store.subscribe(
         // this is acceptable for us for the added performance
         loggedIn: store.getState().user.loggedIn,
         darkMode: store.getState().user.darkMode,
-        recipeTeamID: store.getState().user.recipeTeamID,
         scheduleTeamID: store.getState().user.scheduleTeamID,
       },
-      addrecipe: store.getState().addrecipe,
       auth: {
         fromUrl: store.getState().auth.fromUrl,
       },

@@ -10,9 +10,7 @@ import { Dispatch as ReduxDispatch } from "redux"
 import * as api from "@/api"
 import { heldKeys } from "@/components/CurrentKeys"
 import { isInsideChangeWindow, second, toISODateString } from "@/date"
-import { IRecipeBasic } from "@/pages/recipe-detail/RecipeTitle"
 import { Err, isErr, isOk, Ok, Result } from "@/result"
-import { clearAddRecipeForm } from "@/store/reducers/addrecipe"
 import {
   login,
   setErrorReset,
@@ -44,7 +42,6 @@ import {
 } from "@/store/reducers/notification"
 import { passwordUpdate } from "@/store/reducers/passwordChange"
 import {
-  createRecipe,
   deleteIngredient,
   deleteStep,
   fetchRecipe,
@@ -85,11 +82,9 @@ import {
   logoutSessionById,
   setUserLoggedIn,
   updateEmail,
-  updateRecipeTeamID,
   updateScheduleTeamID,
 } from "@/store/reducers/user"
 import { Action, IState, store } from "@/store/store"
-import { recipeURL } from "@/urls"
 import { random32Id } from "@/uuid"
 import { isSuccessOrRefetching } from "@/webdata"
 
@@ -175,19 +170,6 @@ export const updatingEmailAsync =
           level: "danger",
         }),
       )
-    }
-  }
-
-export const updatingDefaultRecipeTeamID =
-  (dispatch: Dispatch) => async (id: IUserState["recipeTeamID"]) => {
-    // store old id so we can undo
-    const oldID = store.getState().user.recipeTeamID
-    dispatch(updateRecipeTeamID(id))
-    const res = await api.updateUser({ selected_team: id })
-    if (isOk(res)) {
-      dispatch(fetchUser.success(res.data))
-    } else {
-      dispatch(updateRecipeTeamID(oldID))
     }
   }
 
@@ -296,37 +278,6 @@ export const fetchingShoppingListAsync =
       dispatch(fetchShoppingList.success(res.data))
     } else {
       dispatch(fetchShoppingList.failure())
-    }
-  }
-
-export const postNewRecipeAsync =
-  (dispatch: Dispatch) => async (recipe: IRecipeBasic) => {
-    dispatch(createRecipe.request())
-    const res = await api.createRecipe(recipe)
-    if (isOk(res)) {
-      dispatch(createRecipe.success(res.data))
-      dispatch(push(recipeURL(res.data.id)))
-      dispatch(clearAddRecipeForm())
-    } else {
-      const err = res.error
-
-      const errors =
-        (err.response && {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          errorWithName: err.response.data.name != null,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          errorWithIngredients: err.response.data.ingredients != null,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          errorWithSteps: err.response.data.steps != null,
-        }) ||
-        {}
-
-      dispatch(createRecipe.failure(errors))
-      showNotificationWithTimeoutAsync(dispatch)({
-        message: "problem creating new recipe",
-        level: "danger",
-        delay: 5 * second,
-      })
     }
   }
 

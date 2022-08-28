@@ -29,7 +29,6 @@ test("login success", async () => {
               name: "",
               id: 123,
               dark_mode_enabled: false,
-              selected_team: null,
               schedule_team: null,
             },
           }

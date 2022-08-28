@@ -2,7 +2,6 @@ import * as t from "io-ts"
 
 import { toISODateString } from "@/date"
 import { http } from "@/http"
-import { IRecipeBasic } from "@/pages/recipe-detail/RecipeTitle"
 import { isOk, Ok } from "@/result"
 import { ICalRecipe } from "@/store/reducers/calendar"
 import { IInvite } from "@/store/reducers/invites"
@@ -122,8 +121,19 @@ export const deleteAllSessions = () => http.delete("/api/v1/sessions/")
 export const deleteSessionById = (id: ISession["id"]) =>
   http.delete(`/api/v1/sessions/${id}`)
 
-export const createRecipe = (recipe: IRecipeBasic) =>
-  http.post<IRecipe>("/api/v1/recipes/", recipe)
+export const createRecipe = (
+  recipe:
+    | {
+        readonly team: number | undefined
+        readonly author?: string
+        readonly name?: string
+        readonly source?: string
+        readonly servings?: string
+        readonly time?: string
+        readonly tags?: string[]
+      }
+    | { readonly team: number | undefined; readonly from_url: string },
+) => http.post<IRecipe>("/api/v1/recipes/", recipe)
 
 export const getRecipe = (id: IRecipe["id"]) =>
   http.get<IRecipe>(`/api/v1/recipes/${id}/`)
