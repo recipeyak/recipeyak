@@ -14,7 +14,6 @@ from core.auth.permissions import (
 )
 from core.models import Invite, Team
 from core.request import AuthedRequest
-
 from core.teams.serializers import (
     CreateInviteSerializer,
     InviteSerializer,
