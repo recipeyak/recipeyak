@@ -2,14 +2,13 @@ from __future__ import annotations
 
 import collections
 import logging
-from typing import Any, Iterable, Optional
+from typing import Any, Iterable
 
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from core.serialization import RequestParams
 
 from core.models import (
     Ingredient,

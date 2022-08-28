@@ -3,7 +3,6 @@ import user, {
   fetchUser,
   IUser,
   IUserState,
-  LoggingOutStatus,
   logOut,
   setUserLoggedIn,
 } from "@/store/reducers/user"
