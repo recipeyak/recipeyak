@@ -6,7 +6,9 @@ from core.auth.registration.views import RegisterView
 from core.auth.views import LoginView, LogoutView, PasswordChangeView
 from core.export.views import export_recipes
 from core.ical.views import get_ical_view
+from core.recipes.views.ingredients_detail_view import ingredients_detail_view
 from core.recipes.views.ingredients_list_view import ingredients_list_view
+from core.recipes.views.notes_view import note_create_view, note_detail_view
 from core.recipes.views.reactions_view import (
     note_reaction_create_view,
     note_reaction_delete_view,
@@ -19,6 +21,8 @@ from core.recipes.views.sections_view import (
     create_section_view,
     delete_or_update_section_view,
 )
+from core.recipes.views.steps_detail_view import steps_detail_view
+from core.recipes.views.steps_list_view import steps_list_view
 from core.recipes.views.timeline_view import get_recipe_timeline
 from core.schedule.views import CalendarViewSet, ReportBadMerge, get_shopping_list_view
 from core.teams.views import (
@@ -33,11 +37,6 @@ from core.views.password_reset_confirm_view import password_reset_confirm_view
 from core.views.password_reset_view import password_reset_view
 from core.views.recipe_detail_view import receipe_detail_view
 from core.views.recipe_list_view import recipe_list_view
-
-from .recipes.views.ingredients_detail_view import ingredients_detail_view
-from .recipes.views.notes_view import note_create_view, note_detail_view
-from .recipes.views.steps_detail_view import steps_detail_view
-from .recipes.views.steps_list_view import steps_list_view
 
 router = DefaultRouter()
 router.register(r"t", TeamViewSet, basename="teams")
