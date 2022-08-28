@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { useHistory } from "react-router"
+import { useHistory, useLocation } from "react-router"
 
 import * as api from "@/api"
 import { ButtonPrimary } from "@/components/Buttons"
@@ -11,9 +11,34 @@ import { createRecipe } from "@/store/reducers/recipes"
 
 function CreateFromURLForm() {
   const [url, setUrl] = useState("")
+  const [status, setStatus] = useState<
+    { type: "creating" } | { type: "error"; err: Error } | { type: "idle" }
+  >({ type: "idle" })
+
+  const dispatch = useDispatch()
+
+  const history = useHistory()
+  const teamId = useTeamId()
+
   const handleImport = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log(`importing from url: ${url}`)
+    setStatus({ type: "creating" })
+    const team = teamId === "personal" ? undefined : teamId
+    void api
+      .createRecipe({
+        team,
+        from_url: url,
+      })
+      .then((res) => {
+        if (isOk(res)) {
+          // store in cache
+          dispatch(createRecipe.success(res.data))
+          history.push(`/recipes/${res.data.id}?edit=1`)
+          setStatus({ type: "idle" })
+        } else {
+          setStatus({ type: "error", err: res.error })
+        }
+      })
   }
   return (
     <form onSubmit={handleImport}>
@@ -28,8 +53,16 @@ function CreateFromURLForm() {
             setUrl(e.target.value)
           }}
         />
-        <ButtonPrimary type="submit">Import</ButtonPrimary>
+
+        <ButtonPrimary type="submit" loading={status.type === "creating"}>
+          Import
+        </ButtonPrimary>
       </div>
+      {status.type === "error" ? (
+        <div className="c-danger text-left mb-1">
+          Error: {status.err.message ?? "something went wrong."}
+        </div>
+      ) : null}
     </form>
   )
 }
@@ -48,7 +81,6 @@ function CreateManuallyForm() {
   const handleManualAdd = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setStatus({ type: "creating" })
-    console.log(`creating manually with title: ${title}`)
     const team = teamId === "personal" ? undefined : teamId
     void api
       .createRecipe({
@@ -91,12 +123,19 @@ function CreateManuallyForm() {
 }
 
 export default function RecipeCreate() {
+  const location = useLocation()
+  // TODO(sbdchd): remove once url based imports are complete.
+  const enableFromUrl = new URLSearchParams(location.search).get("url") === "1"
   return (
     <div style={{ maxWidth: 500 }} className="mx-auto text-center">
       <Helmet title="Add Recipe" />
       <h1 className="fs-2rem mb-2">Add Recipe</h1>
-      <CreateFromURLForm />
-      <div className="text-center mt-4">or</div>
+      {enableFromUrl && (
+        <>
+          <CreateFromURLForm />
+          <div className="text-center mt-4">or</div>
+        </>
+      )}
       <CreateManuallyForm />
     </div>
   )
