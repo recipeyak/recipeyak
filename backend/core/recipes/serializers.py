@@ -170,6 +170,7 @@ class RecipeSerializer(BaseModelSerializer):
     def validate_team(self, value):
         if value is None:
             return None
+        # TODO(sbdchd): pretty sure this is filtering incorrectly
         team = Team.objects.filter(id=value).first()
         if team is None:
             raise serializers.ValidationError("invalid team id provided")

@@ -188,5 +188,5 @@ export function useCurrentUser() {
 }
 
 export function useTeamId(): number | "personal" {
-  return useSelector((state) => state.user.recipeTeamID) ?? "personal"
+  return useSelector((state) => state.user.scheduleTeamID) ?? "personal"
 }

@@ -97,19 +97,11 @@ export const fetchRecipeList = createAsyncAction(
   "FETCH_RECIPE_LIST_FAILURE",
 )<void, { recipes: IRecipe[] }, void>()
 
-export interface IAddRecipeError {
-  readonly errorWithName?: boolean
-}
-
 export const createRecipe = createAsyncAction(
   "CREATE_RECIPE_START",
   "CREATE_RECIPE_SUCCESS",
   "CREATE_RECIPE_FAILURE",
-)<void, IRecipe, IAddRecipeError>()
-
-export const resetAddRecipeErrors = createStandardAction(
-  "RESET_CREATE_RECIPE_ERRORS",
-)()
+)<void, IRecipe, void>()
 
 export const deleteStep = createAsyncAction(
   "DELETE_STEP_REQUEST",
@@ -342,10 +334,6 @@ export const setSchedulingRecipe = createStandardAction(
   scheduling: boolean
 }>()
 
-export const toggleEditingRecipe = createStandardAction(
-  "TOGGLE_RECIPE_EDITING",
-)<IRecipe["id"]>()
-
 export const setRecipeStepDraft = createStandardAction(
   "SET_RECIPE_STEP_DRAFT",
 )<{ id: IRecipe["id"]; draftStep: IRecipe["draftStep"] }>()
@@ -423,8 +411,6 @@ export type RecipeActions =
   | ActionType<typeof fetchRecipe>
   | ActionType<typeof fetchRecipeList>
   | ActionType<typeof createRecipe>
-  | ActionType<typeof resetAddRecipeErrors>
-  | ActionType<typeof toggleEditingRecipe>
   | ActionType<typeof setRecipeStepDraft>
   | ActionType<typeof duplicateRecipe>
   | ActionType<typeof patchRecipe>
@@ -548,7 +534,6 @@ export interface IRecipe {
   readonly created: string
   readonly archived_at: string | null
 
-  readonly editing?: boolean
   readonly deleting?: boolean
   readonly addingStepToRecipe?: boolean
   readonly addingIngredient?: boolean
@@ -580,9 +565,6 @@ function mapRecipeSuccessById(
 
 export interface IRecipesState {
   // add recipe page
-  readonly creatingRecipe: boolean
-  readonly errorCreatingRecipe: IAddRecipeError
-
   readonly byId: {
     readonly [key: number]: WebData<IRecipe>
   }
@@ -596,8 +578,6 @@ export interface IRecipesState {
 }
 
 export const initialState: IRecipesState = {
-  creatingRecipe: false,
-  errorCreatingRecipe: {},
   byId: {},
   duplicatingById: {},
   personalIDs: undefined,
@@ -658,12 +638,6 @@ export const recipes = (
         action.payload.updateFn(recipe),
       )
     }
-    case getType(toggleEditingRecipe):
-      return mapRecipeSuccessById(state, action.payload, (recipe) => ({
-        ...recipe,
-        editing: !recipe.editing,
-      }))
-
     case getType(setRecipeStepDraft):
       return mapRecipeSuccessById(state, action.payload.id, (recipe) => ({
         ...recipe,
@@ -698,32 +672,13 @@ export const recipes = (
         personalIDs: Failure(HttpErrorKind.other),
       }
     }
-    case getType(createRecipe.request):
-      return {
-        ...state,
-        creatingRecipe: true,
-        errorCreatingRecipe: {},
-      }
     case getType(createRecipe.success):
       return {
         ...state,
-        creatingRecipe: false,
-        errorCreatingRecipe: {},
         byId: {
           ...state.byId,
           [action.payload.id]: Success(action.payload),
         },
-      }
-    case getType(createRecipe.failure):
-      return {
-        ...state,
-        creatingRecipe: false,
-        errorCreatingRecipe: action.payload,
-      }
-    case getType(resetAddRecipeErrors):
-      return {
-        ...state,
-        errorCreatingRecipe: {},
       }
     case getType(deleteRecipe.request):
       return loop(

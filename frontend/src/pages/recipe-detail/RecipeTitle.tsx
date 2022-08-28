@@ -10,11 +10,7 @@ import MetaData from "@/pages/recipe-detail/MetaData"
 import Owner from "@/pages/recipe-detail/Owner"
 import { Dropdown } from "@/pages/recipe-detail/RecipeTitleDropdown"
 import { ScheduleModal } from "@/pages/recipe-detail/ScheduleModal"
-import {
-  IRecipe,
-  toggleEditingRecipe,
-  updateRecipe,
-} from "@/store/reducers/recipes"
+import { IRecipe, updateRecipe } from "@/store/reducers/recipes"
 import { hasSelection } from "@/utils/general"
 
 function TagEditor({
@@ -322,7 +318,6 @@ class RecipeTitle extends React.Component<
 
 const mapDispatchToProps = {
   update: updateRecipe.request,
-  toggleEditing: toggleEditingRecipe,
 }
 
 export default connect(null, mapDispatchToProps)(RecipeTitle)

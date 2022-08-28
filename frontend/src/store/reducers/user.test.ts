@@ -3,6 +3,7 @@ import user, {
   fetchUser,
   IUser,
   IUserState,
+  LoggingOutStatus,
   logOut,
   setUserLoggedIn,
 } from "@/store/reducers/user"
@@ -27,14 +28,15 @@ describe("fetchingUser", () => {
       updatingEmail: false,
     } as IUserState
 
-    const userPayload = {
+    const userPayload: IUser = {
       avatar_url: "example.com",
       email: "j.doe@example.com",
       id: 123,
       has_usable_password: true,
       dark_mode_enabled: true,
-      selected_team: 456,
-    } as IUser
+      name: "",
+      schedule_team: null,
+    }
 
     const expected = {
       id: userPayload.id,
@@ -46,8 +48,8 @@ describe("fetchingUser", () => {
       error: false,
       darkMode: true,
       hasUsablePassword: true,
-      recipeTeamID: userPayload.selected_team,
-      scheduleTeamID: undefined,
+      scheduleTeamID: null,
+      name: "",
     }
     expect(user(beforeState, fetchUser.success(userPayload))).toEqual(expected)
     expect(user(beforeState, login.success(userPayload))).toEqual(expected)

@@ -1,4 +1,9 @@
-def add_positions(recipe_steps):
+from __future__ import annotations
+
+from typing import Any
+
+
+def add_positions(recipe_steps: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Add `position` to step data if missing."""
     missing_position = any(s.get("position") is None for s in recipe_steps)
     if missing_position:

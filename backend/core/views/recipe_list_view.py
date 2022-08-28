@@ -198,9 +198,11 @@ def recipe_post_view(request: AuthedRequest) -> Response:
 
     # If the client doesn't set the position on one of the objects we need
     # to renumber them all.
-    serializer.initial_data["steps"] = add_positions(serializer.initial_data["steps"])
+    serializer.initial_data["steps"] = add_positions(
+        serializer.initial_data.get("steps", [])
+    )
     serializer.initial_data["ingredients"] = add_positions(
-        serializer.initial_data["ingredients"]
+        serializer.initial_data.get("ingredients", [])
     )
 
     serializer.is_valid(raise_exception=True)
