@@ -1,10 +1,4 @@
-import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister"
-import {
-  QueryClient,
-  QueryClientProvider,
-  useQuery,
-} from "@tanstack/react-query"
-import { persistQueryClient } from "@tanstack/react-query-persist-client"
+import { useQuery } from "@tanstack/react-query"
 import { push } from "connected-react-router"
 import {
   addDays,
@@ -13,7 +7,7 @@ import {
   parseISO,
   startOfToday,
 } from "date-fns"
-import { isRight } from "fp-ts/lib/Either"
+import { Either, isRight } from "fp-ts/lib/Either"
 import queryString from "query-string"
 import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
@@ -32,23 +26,6 @@ import { getTeamRecipes } from "@/store/reducers/recipes"
 import { fetchingRecipeListAsync } from "@/store/thunks"
 import { css, styled } from "@/theme"
 import { updateQueryParamsAsync } from "@/utils/querystring"
-
-const queryClientPersistent = new QueryClient({
-  defaultOptions: {
-    queries: {
-      cacheTime: 1000 * 60 * 60 * 24 * 7, // 7 days
-    },
-  },
-})
-
-const localStoragePersister = createSyncStoragePersister({
-  storage: window.localStorage,
-})
-
-persistQueryClient({
-  queryClient: queryClientPersistent,
-  persister: localStoragePersister,
-})
 
 const SearchInput = styled(forms.SearchInput)`
   font-size: 1.5rem !important;
@@ -258,25 +235,27 @@ function buildSchedule(
   })
 }
 
+function unwrapEither<T>(x: Either<unknown, T>): T {
+  if (isRight(x)) {
+    return x.right
+  }
+  throw x.left
+}
+
 function useSchedulePreview() {
   const teamID = useScheduleTeamID()
   const start = startOfToday()
   const end = addDays(start, 6)
-  const res = useQuery(["schedule"], () => {
-    return api
+  const res = useQuery(["schedule"], () =>
+    api
       .getCalendarRecipeListRequestBuilder({
         teamID,
         start,
         end,
       })
       .send()
-      .then((res) => {
-        if (isRight(res)) {
-          return res.right
-        }
-        throw res.left
-      })
-  })
+      .then(unwrapEither),
+  )
   if (res.data == null) {
     return null
   }
@@ -311,14 +290,9 @@ function SchedulePreview() {
 }
 
 function RecentlyViewed() {
-  const recipes = useQuery(["recently-viewed-recipes"], () => {
-    return api.recentlyViewedRecipes().then((res) => {
-      if (isRight(res)) {
-        return res.right
-      }
-      throw res.left
-    })
-  }).data
+  const recipes = useQuery(["recently-viewed-recipes"], () =>
+    api.recentlyViewedRecipes().then(unwrapEither),
+  ).data
 
   return (
     <ScheduleContainer>
@@ -482,12 +456,10 @@ const UserHome = () => {
             </SearchOptions>
           </SearchInputContainer>
         </SearchInputAligner>
-        <QueryClientProvider client={queryClientPersistent}>
-          <div className="d-flex flex-wrap justify-content-center column-gap-2rem row-gap-1rem">
-            <SchedulePreview />
-            <RecentlyViewed />
-          </div>
-        </QueryClientProvider>
+        <div className="d-flex flex-wrap justify-content-center column-gap-2rem row-gap-1rem">
+          <SchedulePreview />
+          <RecentlyViewed />
+        </div>
       </div>
 
       <Footer />
