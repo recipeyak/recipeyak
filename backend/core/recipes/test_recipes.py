@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Any, Dict, List
 
 import pytest
 from django.utils.dateparse import parse_datetime
@@ -21,33 +20,15 @@ from core.models import (
 pytestmark = pytest.mark.django_db
 
 
-def test_recipe_creation(client, user):
+def test_recipe_creation(client, user, team):
     """
     ensure that the user can create recipes
     """
     client.force_authenticate(user)
 
-    data: Dict[str, Any] = {
+    data = {
+        "team": team.id,
         "name": "Recipe name",
-        "author": "Recipe author",
-        "source": "www.exmple.com",
-        "servings": "4-6 servings",
-        "time": "1 hour",
-        "ingredients": [
-            {
-                "quantity": "1",
-                "unit": "tablespoon",
-                "name": "black pepper",
-                "description": "",
-            },
-            {"quantity": "1", "unit": "pound", "name": "salt", "description": ""},
-            {"quantity": "1", "unit": "pound", "name": "fish", "description": ""},
-        ],
-        "steps": [
-            {"text": "place fish in salt"},
-            {"text": "cover with pepper"},
-            {"text": "let rest for 1 year"},
-        ],
     }
 
     res = client.post("/api/v1/recipes/", data)
@@ -57,36 +38,19 @@ def test_recipe_creation(client, user):
     res = client.get(f"/api/v1/recipes/{recipe_id}/")
     assert res.status_code == status.HTTP_200_OK
 
-    # ensure our schema doesn't change
-    for key in ["name", "author", "source", "time", "servings"]:
-        assert data[key] == res.json()[key]
     assert isinstance(
         parse_datetime(res.json()["created"]), datetime
     ), "return a valid date time string"
 
-    # compare the nested items and ignore the ids as they don't exist them in the
-    # initial data.
-    steps_data: List[Dict[str, str]] = data["steps"]
-    steps_return: List[Dict[str, str]] = res.json()["steps"]
-    for step_data, step_return in zip(steps_data, steps_return):
-        assert step_data.get("text") == step_return.get("text"), "Order should be right"
 
-    ingredients_data: List[Dict[str, str]] = data["ingredients"]
-    ingredients_return: List[Dict[str, str]] = res.json()["ingredients"]
-    for ingredient_data, ingredient_return in zip(ingredients_data, ingredients_return):
-        assert (
-            ingredient_data["name"] == ingredient_return["name"]
-        ), "Order should be right"
-
-
-def test_creating_recipe_with_empty_ingredients_and_steps(client, user):
+def test_creating_recipe_with_empty_ingredients_and_steps(client, user, team):
     """
     ensure we can create a recipe without ingredients or steps
     """
 
     client.force_authenticate(user)
 
-    data = {"name": "some recipe", "ingredients": [], "steps": []}
+    data = {"name": "some recipe", "team": team.id}
 
     res = client.post("/api/v1/recipes/", data)
     assert res.status_code == 201

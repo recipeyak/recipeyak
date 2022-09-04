@@ -85,10 +85,10 @@ function Step({ text, index, ...props }: IStepProps) {
 
   preview(drop(ref))
   return (
-    <div style={style} ref={ref} className="mb-2">
+    <div style={style} ref={props.isEditing ? ref : undefined} className="mb-2">
       <label
         className="better-label"
-        ref={drag}
+        ref={props.isEditing ? drag : undefined}
         style={{ cursor: props.isEditing ? "move" : "" }}
       >
         Step {index + 1}

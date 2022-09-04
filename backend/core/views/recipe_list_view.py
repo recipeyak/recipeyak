@@ -2,14 +2,17 @@ from __future__ import annotations
 
 import collections
 import logging
-from typing import Any, Iterable
+from typing import Any, Iterable, Optional
 
+import advocate
+from django.core.exceptions import ValidationError
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from core.cumin.quantity import parse_ingredient
 from core.models import (
     Ingredient,
     Note,
@@ -21,14 +24,17 @@ from core.models import (
     Upload,
     user_and_team_recipes,
 )
+from core.models.recipe import Recipe
+from core.models.team import Team
 from core.models.user import get_avatar_url
+from core.recipes.scraper import scrape_recipe
 from core.recipes.serializers import (
     RecipeSerializer,
     serialize_attachments,
     serialize_reactions,
 )
-from core.recipes.utils import add_positions
 from core.request import AuthedRequest
+from core.serialization import RequestParams
 
 logger = logging.getLogger(__name__)
 
@@ -191,31 +197,76 @@ def recipe_get_view(request: AuthedRequest) -> Response:
     return Response(list(recipes.values()))
 
 
+class RecipePostParams(RequestParams):
+    team: str
+    from_url: Optional[str] = None
+    name: Optional[str] = None
+
+
 def recipe_post_view(request: AuthedRequest) -> Response:
-    serializer = RecipeSerializer(
-        data=request.data, dangerously_allow_db=True, context={"request": request}
-    )
+    params = RecipePostParams.parse_obj(request.data)
 
-    # If the client doesn't set the position on one of the objects we need
-    # to renumber them all.
-    serializer.initial_data["steps"] = add_positions(
-        serializer.initial_data.get("steps", [])
-    )
-    serializer.initial_data["ingredients"] = add_positions(
-        serializer.initial_data.get("ingredients", [])
-    )
+    # validate params
+    team = Team.objects.filter(id=params.team, membership__user=request.user).first()
+    if team is None:
+        return Response(
+            # TODO(sbdchd): figure out error format
+            {"error": True, "message": "Unknown Team"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
-    serializer.is_valid(raise_exception=True)
+    if params.from_url is not None:
+        try:
+            scrape_result = scrape_recipe(url=params.from_url)
+        except (advocate.exceptions.UnacceptableAddressException, ValidationError):
+            return Response(
+                {"error": True, "message": "invalid url"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-    new_recipe = serializer.save()
+        recipe = Recipe.objects.create(
+            scrape_id=scrape_result.id,
+            owner=team,
+            name=scrape_result.title,
+            author=scrape_result.author,
+            servings=scrape_result.yields,
+            time=scrape_result.total_time,
+            source=scrape_result.canonical_url,
+        )
+
+        ingredients: list[Ingredient] = []
+        for idx, ingredient in enumerate(scrape_result.ingredients):
+            parsed_ingredient = parse_ingredient(ingredient)
+            ingredients.append(
+                Ingredient(
+                    position=idx,
+                    recipe=recipe,
+                    quantity=parsed_ingredient.quantity,
+                    name=parsed_ingredient.name,
+                    description=parsed_ingredient.description,
+                    optional=parsed_ingredient.optional,
+                )
+            )
+        Ingredient.objects.bulk_create(ingredients)
+
+        steps = [
+            Step(text=step, position=idx, recipe=recipe)
+            for idx, step in enumerate(scrape_result.instructions)
+        ]
+        Step.objects.bulk_create(steps)
+    else:
+        recipe = Recipe.objects.create(owner=team, name=params.name)
 
     TimelineEvent(
         action="created",
         created_by=request.user,
-        recipe=new_recipe,
+        recipe=recipe,
     ).save()
 
-    return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(
+        RecipeSerializer(recipe, dangerously_allow_db=True).data,
+        status=status.HTTP_201_CREATED,
+    )
 
 
 @api_view(["GET", "POST"])

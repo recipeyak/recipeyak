@@ -27,8 +27,7 @@ class Ingredient(CommonInfo, SoftDeleteObject):
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255, blank=True)
     recipe = models.ForeignKey["Recipe"]("Recipe", on_delete=models.CASCADE)
-    if TYPE_CHECKING:
-        recipe_id: int
+    recipe_id: int
     position = models.FloatField()
     optional = models.BooleanField(default=False)
 

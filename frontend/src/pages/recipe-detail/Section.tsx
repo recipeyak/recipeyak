@@ -157,7 +157,7 @@ export function Section({
 
   return (
     <li
-      ref={ref}
+      ref={isEditing ? ref : undefined}
       style={style}
       className="bg-white mt-1 bold text-small"
       title={isEditing ? "click to edit" : undefined}

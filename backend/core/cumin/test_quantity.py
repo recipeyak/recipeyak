@@ -1,21 +1,19 @@
-import json
+from __future__ import annotations
+
 from decimal import Decimal
-from typing import Optional, Sequence, Tuple
 
 import pytest
 
-from core.cumin import (
+from core.cumin.combine import Quantity
+from core.cumin.quantity import (
     IncompatibleUnit,
-    Ingredient,
-    IngredientItem,
-    IngredientList,
-    Quantity,
+    IngredientResult,
     Unit,
-    combine_ingredients,
     fraction_to_decimal,
+    parse_ingredient,
     parse_quantity,
+    parse_quantity_name,
 )
-from core.renderers import JSONRenderer
 
 
 @pytest.mark.parametrize(
@@ -54,7 +52,7 @@ from core.renderers import JSONRenderer
         ("1", Quantity(quantity=Decimal(1), unit=Unit.NONE)),
     ],
 )
-def test_parsing_quantities(quantity: str, expected: Optional[Quantity]) -> None:
+def test_parsing_quantities(quantity: str, expected: Quantity | None) -> None:
     assert parse_quantity(quantity) == expected
 
 
@@ -62,7 +60,7 @@ def test_parsing_quantities(quantity: str, expected: Optional[Quantity]) -> None
     "fraction,expected",
     [("1/2", Decimal(0.5)), ("11/2", Decimal(5.5)), ("1 1/2", Decimal(1.5))],
 )
-def test_fraction_to_decimal(fraction: str, expected: Optional[Decimal]) -> None:
+def test_fraction_to_decimal(fraction: str, expected: Decimal | None) -> None:
     assert fraction_to_decimal(fraction) == expected
 
 
@@ -137,7 +135,7 @@ def test_fraction_to_decimal(fraction: str, expected: Optional[Decimal]) -> None
     ],
 )
 def test_quantity_addition(
-    quantities: Tuple[Quantity, Quantity], expected: Quantity
+    quantities: tuple[Quantity, Quantity], expected: Quantity
 ) -> None:
     a, b = quantities
     assert a + b == expected
@@ -167,62 +165,109 @@ def test_adding_incompatible_units() -> None:
 
 
 @pytest.mark.parametrize(
-    "ingredients,expected",
+    "ingredient,expected",
     [
         (
-            [
-                Ingredient(quantity="1 teaspoon", name="Soy Sauce"),
-                Ingredient(quantity="1 tablespoon", name="soy sauce"),
-                Ingredient(quantity="some", name="Soy Sauce"),
-            ],
-            {
-                "soy sauce": IngredientItem(
-                    quantities=[
-                        Quantity(quantity=Decimal(4), unit=Unit.TEASPOON),
-                        Quantity(quantity=Decimal(1), unit=Unit.SOME),
-                    ]
-                )
-            },
+            "1 cup plain whole-milk yogurt",
+            (
+                "1 cup",
+                "plain whole-milk yogurt",
+            ),
         ),
         (
-            [
-                Ingredient(quantity="1 cup", name="flour"),
-                Ingredient(quantity="some", name="flour"),
-                Ingredient(quantity="250 gram", name="flour"),
-                Ingredient(quantity="2 cup", name="flour"),
-            ],
-            {
-                "flour": IngredientItem(
-                    quantities=[
-                        # mass != volume so we get two separate quantities
-                        Quantity(quantity=Decimal(3), unit=Unit.CUP),
-                        Quantity(quantity=Decimal(1), unit=Unit.SOME),
-                        Quantity(quantity=Decimal(250), unit=Unit.GRAM),
-                    ]
-                )
-            },
+            "fine sea salt",
+            (
+                "",
+                "fine sea salt",
+            ),
+        ),
+        ("2 garlic cloves, grated", ("2", "garlic cloves, grated")),
+        (
+            "1 tablespoon chopped fresh oregano (or 1 teaspoon dried oregano)",
+            ("1 tablespoon", "chopped fresh oregano (or 1 teaspoon dried oregano)"),
+        ),
+        (
+            "1 1/2 teaspoons minced fresh thyme (or 1/2 teaspoon dried thyme)",
+            ("1 1/2 teaspoons", "minced fresh thyme (or 1/2 teaspoon dried thyme)"),
+        ),
+        (
+            "1 tablespoon olive oil, plus more for the grill or pan",
+            ("1 tablespoon", "olive oil, plus more for the grill or pan"),
+        ),
+        (
+            "1 teaspoon kosher salt (Diamond Crystal), plus more for serving",
+            ("1 teaspoon", "kosher salt (Diamond Crystal), plus more for serving"),
+        ),
+        (
+            "1/4 teaspoon black pepper, plus more for serving",
+            ("1/4 teaspoon", "black pepper, plus more for serving"),
+        ),
+        (
+            "1 lemon",
+            ("1", "lemon"),
+        ),
+        (
+            "1 cup flour",
+            ("1 cup", "flour"),
+        ),
+        (
+            "1 kg cheese",
+            ("1 kg", "cheese"),
+        ),
+        (
+            "1g water",
+            ("1g", "water"),
+        ),
+        (
+            # TODO(sbdchd): more of range test cases
+            "1-3 lbs ground turkey breast",
+            ("1-3 lbs", "ground turkey breast"),
+        ),
+        (
+            "2 pounds boneless skinless chicken thighs",
+            ("2 pounds", "boneless skinless chicken thighs"),
+        ),
+        (
+            "Chopped fresh parsley, for serving (optional)",
+            ("", "Chopped fresh parsley, for serving (optional)"),
         ),
     ],
 )
-def test_combining_ingredients(
-    ingredients: Sequence[Ingredient], expected: IngredientList
-) -> None:
-    assert combine_ingredients(ingredients) == expected
+def test_parse_quantity_name(ingredient: str, expected: tuple[str, str]) -> None:
+    assert parse_quantity_name(ingredient) == expected
 
 
-def test_combining_ingredients_to_json() -> None:
-    ingredients = [
-        Ingredient(quantity="1 teaspoon", name="Soy Sauce"),
-        Ingredient(quantity="1 tablespoon", name="soy sauce"),
-        Ingredient(quantity="some", name="Soy Sauce"),
-    ]
-
-    assert json.loads(JSONRenderer().render(combine_ingredients(ingredients))) == {
-        "soy sauce": {
-            "category": None,
-            "quantities": [
-                {"quantity": "4", "unit": "TEASPOON", "unknown_unit": None},
-                {"quantity": "1", "unit": "SOME", "unknown_unit": None},
-            ],
-        }
-    }
+@pytest.mark.parametrize(
+    "ingredient,expected",
+    [
+        (
+            "1 cup plain whole-milk yogurt",
+            IngredientResult(
+                quantity="1 cup",
+                name="plain whole-milk yogurt",
+            ),
+        ),
+        (
+            "fine sea salt",
+            IngredientResult(
+                quantity="some",
+                name="fine sea salt",
+            ),
+        ),
+        (
+            "2 garlic cloves, grated",
+            IngredientResult(quantity="2", name="garlic cloves", description="grated"),
+        ),
+        (
+            "Chopped fresh parsley, for serving (optional)",
+            IngredientResult(
+                quantity="some",
+                name="Chopped fresh parsley",
+                description="for serving",
+                optional=True,
+            ),
+        ),
+    ],
+)
+def test_parse_ingredient(ingredient: str, expected: IngredientResult) -> None:
+    assert parse_ingredient(ingredient) == expected

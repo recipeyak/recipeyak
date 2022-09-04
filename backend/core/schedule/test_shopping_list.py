@@ -8,14 +8,14 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.cumin import Ingredient as IngredientCumin
-from core.cumin import (
+from core.cumin.combine import Ingredient as IngredientCumin
+from core.cumin.combine import (
     IngredientItem,
     IngredientList,
     Quantity,
-    Unit,
     combine_ingredients,
 )
+from core.cumin.quantity import Unit
 from core.models import Ingredient, Recipe, ShoppingList, User
 
 pytestmark = pytest.mark.django_db

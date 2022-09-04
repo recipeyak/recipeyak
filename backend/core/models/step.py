@@ -15,8 +15,7 @@ class Step(CommonInfo, SoftDeleteObject):
     id = models.AutoField(primary_key=True)
     text = models.TextField()
     recipe = models.ForeignKey["Recipe"]("Recipe", on_delete=models.CASCADE)
-    if TYPE_CHECKING:
-        recipe_id: int
+    recipe_id: int
     position = models.FloatField()
 
     objects = SoftDeleteManager["Step"]()
