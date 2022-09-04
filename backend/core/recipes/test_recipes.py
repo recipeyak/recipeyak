@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Any, Dict, List
 
 import pytest
 from django.utils.dateparse import parse_datetime
