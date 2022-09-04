@@ -67,7 +67,7 @@ def human_time_duration(seconds: int) -> str:
     return ", ".join(parts)
 
 
-def validate_url(url: str) -> bool:
+def validate_url(url: str) -> None:
     URLValidator(schemes=["https", "http"])(url)
 
 
@@ -81,10 +81,6 @@ def scrape_recipe(*, url: str) -> ScrapeResult:
 
     if not url.startswith("http"):
         url = "https://" + url
-
-    # TODO:
-    # basic url validation for things like "http://foobarbuzz"
-    # https://docs.djangoproject.com/en/4.0/ref/validators/
 
     validate_url(url)
 
