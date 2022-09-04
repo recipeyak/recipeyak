@@ -10,6 +10,7 @@ import time
 from dataclasses import asdict, dataclass
 from io import BytesIO
 
+from django.core.validators import URLValidator
 from recipe_scrapers import scrape_html
 from typing_extensions import TypedDict
 from urllib3.util.retry import Retry
@@ -17,7 +18,6 @@ from yarl import URL
 
 from core.http import SafeSession
 from core.models import Scrape
-from django.core.validators import URLValidator
 
 
 class Review(TypedDict):

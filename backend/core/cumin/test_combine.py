@@ -11,10 +11,7 @@ from core.cumin.combine import (
     Quantity,
     combine_ingredients,
 )
-from core.cumin.quantity import (
-    Unit,
-)
-
+from core.cumin.quantity import Unit
 from core.renderers import JSONRenderer
 
 

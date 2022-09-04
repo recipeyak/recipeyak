@@ -1,9 +1,10 @@
 from __future__ import annotations
+
 from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Dict, Sequence
-from core.cumin.quantity import Quantity, parse_quantity, BaseUnit
 
+from core.cumin.quantity import BaseUnit, Quantity, parse_quantity
 from core.schedule.inflect import singularize
 
 

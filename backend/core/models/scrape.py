@@ -1,9 +1,9 @@
 from typing import Any
 
 from django.db import models
+from django.db.models.manager import Manager
 
 from core.models.base import CommonInfo
-from django.db.models.manager import Manager
 
 
 class Scrape(CommonInfo):

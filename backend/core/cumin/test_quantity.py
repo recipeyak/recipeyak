@@ -1,11 +1,10 @@
 from __future__ import annotations
+
 from decimal import Decimal
 
 import pytest
 
-from core.cumin.combine import (
-    Quantity,
-)
+from core.cumin.combine import Quantity
 from core.cumin.quantity import (
     IncompatibleUnit,
     IngredientResult,

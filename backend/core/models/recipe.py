@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     from core.models.user import User
     from core.models.team import Team
     from core.models.note import Note
-    from core.models.scrape import Scrape
+    from core.models.scrape import Scrape  # noqa: F401
 
 
 class Recipe(CommonInfo, SoftDeleteObject):

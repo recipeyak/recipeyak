@@ -1,12 +1,12 @@
 from __future__ import annotations
+
 import decimal
 import enum
+import itertools
 from dataclasses import dataclass
 from decimal import Decimal
 from enum import Enum
-import itertools
 from typing import Tuple
-
 
 MALFORMED_UNITS = {"large", "medium", "small", "fresh"}
 

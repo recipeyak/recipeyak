@@ -14,8 +14,8 @@ from typing_extensions import TypedDict
 
 from core import viewsets
 from core.auth.permissions import IsTeamMember
-from core.cumin.combine import Ingredient, combine_ingredients
 from core.cumin.cat import category
+from core.cumin.combine import Ingredient, combine_ingredients
 from core.models import (
     Membership,
     ScheduledRecipe,
