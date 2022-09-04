@@ -17,6 +17,7 @@ from yarl import URL
 
 from core.http import SafeSession
 from core.models import Scrape
+from django.core.validators import URLValidator
 
 
 class Review(TypedDict):
@@ -66,6 +67,10 @@ def human_time_duration(seconds: int) -> str:
     return ", ".join(parts)
 
 
+def validate_url(url: str) -> bool:
+    URLValidator(schemes=["https", "http"])(url)
+
+
 def scrape_recipe(*, url: str) -> ScrapeResult:
     """
     fetch a recipe and avoid:
@@ -80,6 +85,8 @@ def scrape_recipe(*, url: str) -> ScrapeResult:
     # TODO:
     # basic url validation for things like "http://foobarbuzz"
     # https://docs.djangoproject.com/en/4.0/ref/validators/
+
+    validate_url(url)
 
     start = time.monotonic()
 

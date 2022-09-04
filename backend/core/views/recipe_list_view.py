@@ -34,6 +34,7 @@ from core.recipes.serializers import (
 )
 from core.request import AuthedRequest
 from core.serialization import RequestParams
+from django.core.exceptions import ValidationError
 
 logger = logging.getLogger(__name__)
 
@@ -217,11 +218,12 @@ def recipe_post_view(request: AuthedRequest) -> Response:
     if params.from_url is not None:
         try:
             scrape_result = scrape_recipe(url=params.from_url)
-        except advocate.exceptions.UnacceptableAddressException:
+        except (advocate.exceptions.UnacceptableAddressException, ValidationError):
             return Response(
                 {"error": True, "message": "invalid url"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
         recipe = Recipe.objects.create(
             scrape_id=scrape_result.id,
             owner=team,
