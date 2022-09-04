@@ -15,8 +15,7 @@ class Reaction(CommonInfo):
         "Note", related_name="reactions", on_delete=models.CASCADE
     )
 
-    if TYPE_CHECKING:
-        note_id: int
+    note_id: int
 
     class Meta:
         ordering = ["-created"]

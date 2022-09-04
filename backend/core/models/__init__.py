@@ -10,6 +10,7 @@ from core.models.recipe import Recipe  # noqa: F401
 from core.models.recipe_change import ChangeType, RecipeChange  # noqa: F401
 from core.models.recipe_view import RecipeView  # noqa: F401
 from core.models.scheduled_recipe import ScheduledRecipe  # noqa: F401
+from core.models.scrape import Scrape  # noqa: F401
 from core.models.section import Section  # noqa: F401
 from core.models.shopping_list import ShoppingList  # noqa: F401
 from core.models.step import Step  # noqa: F401

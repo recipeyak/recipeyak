@@ -331,7 +331,7 @@ export function Ingredient(props: {
     </form>
   ) : (
     <IngredientView
-      dragRef={dragAndDropEnabled ? drag : undefined}
+      dragRef={props.isEditing && dragAndDropEnabled ? drag : undefined}
       quantity={state.quantity}
       name={state.name}
       description={state.description}
@@ -341,7 +341,7 @@ export function Ingredient(props: {
 
   return (
     <li
-      ref={dragAndDropEnabled ? ref : undefined}
+      ref={props.isEditing && dragAndDropEnabled ? ref : undefined}
       style={style}
       className="bg-white"
     >

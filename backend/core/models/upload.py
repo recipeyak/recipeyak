@@ -33,8 +33,7 @@ class Upload(CommonInfo):
         "Note", related_name="uploads", null=True, on_delete=models.SET_NULL
     )
 
-    if TYPE_CHECKING:
-        note_id: int | None
+    note_id: int | None
 
     def public_url(self) -> str:
         return str(URL(f"https://{config.STORAGE_HOSTNAME}").with_path(self.key))

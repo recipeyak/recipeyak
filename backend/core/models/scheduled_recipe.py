@@ -44,8 +44,7 @@ class ScheduledRecipe(CommonInfo):
     id = models.AutoField(primary_key=True)
 
     recipe = models.ForeignKey["Recipe"]("Recipe", on_delete=models.CASCADE)
-    if TYPE_CHECKING:
-        recipe_id: int
+    recipe_id: int
 
     on = models.DateField(help_text="day when recipe is scheduled")
     count = models.PositiveIntegerField(validators=[MinValueValidator(1)])

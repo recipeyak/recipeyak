@@ -26,9 +26,8 @@ class Note(CommonInfo, SoftDeleteObject):
         "Recipe", related_name="notes", on_delete=models.CASCADE
     )
 
-    if TYPE_CHECKING:
-        uploads: models.QuerySet[Upload]
-        reactions: models.QuerySet[Reaction]
+    uploads: "models.QuerySet[Upload]"
+    reactions: "models.QuerySet[Reaction]"
 
     objects = SoftDeleteManager["Note"]()
 

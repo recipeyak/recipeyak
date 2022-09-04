@@ -167,36 +167,6 @@ class RecipeSerializer(BaseModelSerializer):
             for field_name in existing - allowed:
                 self.fields.pop(field_name)
 
-    def validate_team(self, value):
-        if value is None:
-            return None
-        # TODO(sbdchd): pretty sure this is filtering incorrectly
-        team = Team.objects.filter(id=value).first()
-        if team is None:
-            raise serializers.ValidationError("invalid team id provided")
-        return team
-
-    def create(self, validated_data) -> Recipe:
-        """
-        Since this a nested serializer, we need to write a custom create method.
-        """
-        ingredients = validated_data.pop("ingredient_set")
-        steps = validated_data.pop("step_set")
-
-        # essentially an optional field
-        team = validated_data.pop("team")
-
-        validated_data["owner"] = (
-            team if team is not None else self.context["request"].user
-        )
-
-        recipe: Recipe = Recipe.objects.create(**validated_data)
-        for ingredient in ingredients:
-            Ingredient.objects.create(recipe=recipe, **ingredient)
-        for step in steps:
-            Step.objects.create(recipe=recipe, **step)
-        return recipe
-
 
 class RecipeMoveCopySerializer(BaseSerializer):
     id = serializers.IntegerField(max_value=None, min_value=0, write_only=True)

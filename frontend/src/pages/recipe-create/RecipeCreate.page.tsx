@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { useHistory, useLocation } from "react-router"
+import { useHistory } from "react-router"
 
 import * as api from "@/api"
 import { ButtonPrimary } from "@/components/Buttons"
@@ -123,19 +123,12 @@ function CreateManuallyForm() {
 }
 
 export default function RecipeCreate() {
-  const location = useLocation()
-  // TODO(sbdchd): remove once url based imports are complete.
-  const enableFromUrl = new URLSearchParams(location.search).get("url") === "1"
   return (
     <div style={{ maxWidth: 500 }} className="mx-auto text-center">
       <Helmet title="Add Recipe" />
       <h1 className="fs-2rem mb-2">Add Recipe</h1>
-      {enableFromUrl && (
-        <>
-          <CreateFromURLForm />
-          <div className="text-center mt-4">or</div>
-        </>
-      )}
+      <CreateFromURLForm />
+      <div className="text-center mt-4">or</div>
       <CreateManuallyForm />
     </div>
   )

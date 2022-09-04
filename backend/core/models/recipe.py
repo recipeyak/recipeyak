@@ -22,6 +22,7 @@ if TYPE_CHECKING:
     from core.models.user import User
     from core.models.team import Team
     from core.models.note import Note
+    from core.models.scrape import Scrape
 
 
 class Recipe(CommonInfo, SoftDeleteObject):
@@ -65,11 +66,11 @@ class Recipe(CommonInfo, SoftDeleteObject):
         blank=True,
         help_text="Tags for organization recipes.",
     )
+    scrape = models.ForeignKey["Scrape"]("Scrape", on_delete=models.SET_NULL, null=True)
 
     objects = SoftDeleteManager["Recipe"]()
 
-    if TYPE_CHECKING:
-        notes: QuerySet["Note"]
+    notes: QuerySet["Note"]
 
     def move_to(self, account: Union[User, Team]) -> "Recipe":
         """
