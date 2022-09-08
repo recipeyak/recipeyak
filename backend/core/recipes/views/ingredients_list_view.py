@@ -18,7 +18,7 @@ class IngredientCreateParams(RequestParams):
     quantity: str
     name: str
     description: str
-    position: Optional[float] = None
+    position: Optional[str] = None
     optional: Optional[bool] = None
 
 
@@ -33,6 +33,7 @@ def ingredients_list_view(request: AuthedRequest, recipe_pk: int) -> Response:
     last_ingredient = recipe.ingredient_set.all_with_deleted().last()
     if params.position is None:
         if last_ingredient is not None:
+            # FIXME
             params.position = last_ingredient.position + 10.0
         else:
             params.position = 10.0

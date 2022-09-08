@@ -18,6 +18,7 @@ POSITION_INCREMENT = 10
 
 
 def get_next_max_pos(*, recipe: Recipe) -> float:
+    # FIXME
     cur_max: float = max(
         # need to convert to list due to some weirdness with how the soft
         # delete mixin overrides the `.values_list()` method

@@ -312,7 +312,7 @@ interface IUpdatingStepPayload {
   readonly recipeID: IRecipe["id"]
   readonly stepID: IStep["id"]
   readonly text?: string
-  readonly position?: number
+  readonly position?: string
 }
 
 export const updatingStepAsync = async (

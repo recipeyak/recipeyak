@@ -51,7 +51,7 @@ interface IStepProps {
   readonly completeMove: (_: { id: number; to: number }) => void
   readonly updating?: boolean
   readonly removing?: boolean
-  readonly position?: number
+  readonly position?: string
   readonly isEditing: boolean
 }
 

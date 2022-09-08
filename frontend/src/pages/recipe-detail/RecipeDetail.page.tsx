@@ -44,7 +44,7 @@ type SectionsAndIngredients = ReadonlyArray<
       readonly item: {
         readonly id: number
         readonly title: string
-        readonly position: number
+        readonly position: string
       }
     }
 >

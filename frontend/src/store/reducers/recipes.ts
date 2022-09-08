@@ -307,7 +307,7 @@ export const addSectionToRecipe = createStandardAction(
   readonly recipeId: number
   readonly section: {
     readonly title: string
-    readonly position: number
+    readonly position: string
     readonly id: number
   }
 }>()
@@ -324,7 +324,7 @@ export const updateSectionForRecipe = createStandardAction(
   readonly recipeId: number
   readonly sectionId: number
   readonly title?: string
-  readonly position?: number
+  readonly position?: string
 }>()
 
 export const setSchedulingRecipe = createStandardAction(
@@ -450,7 +450,7 @@ export interface IIngredient {
   readonly quantity: string
   readonly name: string
   readonly description: string
-  readonly position: number
+  readonly position: string
   readonly optional: boolean
   readonly updating?: boolean
   readonly removing?: boolean
@@ -459,7 +459,7 @@ export interface IIngredient {
 export interface IStep {
   readonly id: number
   readonly text: string
-  readonly position: number
+  readonly position: string
   readonly updating?: boolean
   readonly removing?: boolean
 }
@@ -529,7 +529,7 @@ export interface IRecipe {
   readonly sections: ReadonlyArray<{
     readonly id: number
     readonly title: string
-    readonly position: number
+    readonly position: string
   }>
   readonly created: string
   readonly archived_at: string | null

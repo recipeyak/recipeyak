@@ -16,7 +16,7 @@ from core.serialization import RequestParams
 
 class StepCreateParams(RequestParams):
     text: str
-    position: Optional[float] = None
+    position: Optional[str] = None
 
 
 @api_view(["POST"])

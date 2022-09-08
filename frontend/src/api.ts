@@ -171,7 +171,7 @@ export const addSectionToRecipe = ({
   readonly recipeId: number
   readonly section: string
 }) =>
-  http.post<{ title: string; position: number; id: number }>(
+  http.post<{ title: string; position: string; id: number }>(
     `/api/v1/recipes/${recipeId}/sections`,
     { title: section },
   )
@@ -182,10 +182,10 @@ export const updateSection = ({
   title,
 }: {
   readonly sectionId: number
-  readonly position?: number
+  readonly position?: string
   readonly title?: string
 }) =>
-  http.patch<{ title: string; position: number; id: number }>(
+  http.patch<{ title: string; position: string; id: number }>(
     `/api/v1/sections/${sectionId}/`,
     { title, position },
   )
@@ -316,7 +316,7 @@ export const updateRecipe = (id: IRecipe["id"], data: unknown) =>
 
 interface IUpdateStepPayload {
   readonly text?: string
-  readonly position?: number
+  readonly position?: string
 }
 
 // TODO(sbdchd): this shouldn't require recipeID
