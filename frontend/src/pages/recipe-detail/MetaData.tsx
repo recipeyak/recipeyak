@@ -82,9 +82,12 @@ const MetaData = ({
   const _author = isValid(author) ? (
     <MetaPiece>
       By&nbsp;
-      <MetaBold title={title} onClick={onClick}>
+      <Link
+        to={`/recipes?search=author:${encodeURIComponent(author)}`}
+        className="fw-bold white-space-nowrap"
+      >
         {author}
-      </MetaBold>{" "}
+      </Link>{" "}
     </MetaPiece>
   ) : null
   const _source = isValid(source) ? (

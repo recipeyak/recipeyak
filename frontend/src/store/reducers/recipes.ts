@@ -513,10 +513,10 @@ export type TimelineItem = INote | RecipeTimelineItem
 export interface IRecipe {
   readonly id: number
   readonly name: string
-  readonly author: string
-  readonly source: string
+  readonly author: string | null
+  readonly source: string | null
   readonly time: string
-  readonly servings: string
+  readonly servings: string | null
   readonly steps: ReadonlyArray<IStep>
   readonly edits: ReadonlyArray<unknown>
   readonly timelineItems: readonly TimelineItem[]
