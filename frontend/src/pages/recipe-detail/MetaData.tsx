@@ -5,16 +5,16 @@ import cls from "@/classnames"
 import { IRecipe } from "@/store/reducers/recipes"
 
 type MetaDataProps = {
-  readonly author: string
-  readonly source: string
-  readonly servings: string
+  readonly author: string | null
+  readonly source: string | null
+  readonly servings: string | null
   readonly time: string
   readonly title: string | undefined
   readonly tags: IRecipe["tags"]
   readonly onClick: () => void
 }
 
-const isValid = (x?: string) => x !== "" && x != null
+const isValid = (x?: string | null): x is string => x !== "" && x != null
 
 const isURL = (x: string): boolean => !x.includes(" ") && x.includes(".")
 
