@@ -241,7 +241,7 @@ class RecipeTitle extends React.Component<
                 <TextInput
                   className="ml-2"
                   placeholder="Author"
-                  defaultValue={author}
+                  defaultValue={author ?? ""}
                   onChange={this.handleInputChange}
                   name="author"
                 />
@@ -251,7 +251,7 @@ class RecipeTitle extends React.Component<
                 <TextInput
                   className="ml-2"
                   placeholder="http://example.com/dumpling-soup"
-                  defaultValue={source}
+                  defaultValue={source ?? ""}
                   onChange={this.handleInputChange}
                   name="source"
                 />
@@ -261,7 +261,7 @@ class RecipeTitle extends React.Component<
                 <TextInput
                   className="ml-2"
                   placeholder="4 to 6 servings"
-                  defaultValue={servings}
+                  defaultValue={servings ?? ""}
                   onChange={this.handleInputChange}
                   name="servings"
                 />
