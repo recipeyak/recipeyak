@@ -59,6 +59,7 @@ const WeekdaysContainer = styled.div`
     display: none;
   }
   display: flex;
+  font-size: 14px;
   flex-shrink: 0;
   & > b {
     width: ${(1 / 7) * 100}%;
