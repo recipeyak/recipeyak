@@ -100,7 +100,7 @@ const DropDownButtonContainer = styled.a`
   align-items: center;
   flex-grow: 0;
   flex-shrink: 0;
-  font-size: 1rem;
+  font-size: 14px;
   justify-content: center;
   line-height: 1.5;
   padding: 0.5rem 0.75rem;
