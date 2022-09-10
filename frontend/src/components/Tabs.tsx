@@ -9,7 +9,7 @@ interface ITabsProps {
 export function Tabs({ children, small = false, className = "" }: ITabsProps) {
   const cls = !small ? "is-normal" : ""
   return (
-    <div className={`tabs is-boxed ${cls} ${className}`}>
+    <div className={`tabs fs-14px is-boxed ${cls} ${className}`}>
       <ul>{children}</ul>
     </div>
   )

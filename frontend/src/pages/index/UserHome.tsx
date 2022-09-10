@@ -72,6 +72,7 @@ const ScheduledRecipeContainer = styled.div`
 const Day = styled.div`
   font-weight: bold;
   text-align: right;
+  font-size: 14px;
   min-width: 2.5rem;
   margin-right: 0.5rem;
   color: hsl(0 0% 40% / 1);
