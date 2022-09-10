@@ -63,7 +63,9 @@ const Code = styled.code`
 `
 
 const SectionTitle = styled.div`
-  font-size: 1.25rem;
+  font-size: 1rem;
+  padding-bottom: 0.25rem;
+  font-weight: 500;
 `
 
 const ScheduledRecipeContainer = styled.div`
@@ -82,7 +84,6 @@ const Recipes = styled.div`
 `
 
 const Recipe = styled(Link)`
-  font-weight: bold;
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -111,6 +112,9 @@ function ScheduledRecipe(props: {
 const ScheduleContainer = styled.div`
   max-width: 300px;
   width: 300px;
+  border-radius: 6px;
+  padding: 0.75rem;
+  border: 1px solid lightgray;
 `
 
 const SuggestionBox = styled.div`
@@ -293,18 +297,47 @@ function SchedulePreview() {
 function RecentlyViewed() {
   const recipes = useQuery(["recently-viewed-recipes"], () =>
     api.recentlyViewedRecipes().then(unwrapEither),
-  ).data
+  )
 
   return (
     <ScheduleContainer>
       <SectionTitle>Recently Viewed</SectionTitle>
       <div className="d-flex flex-direction-column">
-        {recipes == null ? (
+        {recipes.isError ? (
+          <div>error loading</div>
+        ) : recipes.data == null ? (
           <Loader align="left" />
-        ) : recipes.length === 0 ? (
+        ) : recipes.data.length === 0 ? (
           <p>no recipes viewed</p>
         ) : (
-          recipes.map((r) => (
+          recipes.data.map((r) => (
+            <Recipe key={r.id} to={`/recipes/${r.id}`}>
+              {r.name}
+            </Recipe>
+          ))
+        )}
+      </div>
+    </ScheduleContainer>
+  )
+}
+
+function RecentlyCreated() {
+  const recipes = useQuery(["recently-created-recipes"], () =>
+    api.recentlyCreatedRecipes().then(unwrapEither),
+  )
+
+  return (
+    <ScheduleContainer>
+      <SectionTitle>Recently Created</SectionTitle>
+      <div className="d-flex flex-direction-column">
+        {recipes.isError ? (
+          <div>error loading</div>
+        ) : recipes.data == null ? (
+          <Loader align="left" />
+        ) : recipes.data.length === 0 ? (
+          <p>no recipes viewed</p>
+        ) : (
+          recipes.data.map((r) => (
             <Recipe key={r.id} to={`/recipes/${r.id}`}>
               {r.name}
             </Recipe>
@@ -460,6 +493,7 @@ const UserHome = () => {
         <div className="d-flex flex-wrap justify-content-center column-gap-2rem row-gap-1rem">
           <SchedulePreview />
           <RecentlyViewed />
+          <RecentlyCreated />
         </div>
       </div>
 
