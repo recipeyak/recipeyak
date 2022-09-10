@@ -219,7 +219,7 @@ function NavButtons() {
             activeClassName="active"
             className="better-nav-item"
           >
-            Schedule
+            Calendar
           </NavLink>
         </NavButtonContainer>
       </DropdownContainer>
