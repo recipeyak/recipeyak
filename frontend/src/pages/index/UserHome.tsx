@@ -63,7 +63,9 @@ const Code = styled.code`
 `
 
 const SectionTitle = styled.div`
-  font-size: 1.25rem;
+  font-size: 1rem;
+  padding-bottom: 0.25rem;
+  font-weight: 500;
 `
 
 const ScheduledRecipeContainer = styled.div`
@@ -82,7 +84,6 @@ const Recipes = styled.div`
 `
 
 const Recipe = styled(Link)`
-  font-weight: bold;
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -112,9 +113,7 @@ const ScheduleContainer = styled.div`
   max-width: 300px;
   width: 300px;
   border-radius: 6px;
-  padding: 1rem;
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
+  padding: 0.75rem;
   border: 1px solid lightgray;
 `
 
