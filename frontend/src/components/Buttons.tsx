@@ -51,7 +51,6 @@ export const ButtonPlain = ({
       disabled={loading}
       className={classNames("my-button", "br-6", className, buttonSize, {
         "is-loading": loading,
-        "fs-14px": size === "small",
       })}
     >
       {children}
