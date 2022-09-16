@@ -24,7 +24,7 @@ export default function IngredientView({
 
   return (
     <p className="listitem-text justify-space-between" ref={dragRef}>
-      {normalizeUnitsFracs(quantity)} {name}
+      <span className="fw-500">{normalizeUnitsFracs(quantity)}</span> {name}
       {fmtDescription}{" "}
       {optional ? <span className="text-muted">[optional]</span> : ""}
     </p>

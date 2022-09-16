@@ -69,7 +69,7 @@ export function ScheduleModal({
         <div className="d-flex justify-space-between align-items-center mt-2">
           {!isMobile() ? (
             <Link to={scheduleUrl} className="text-small">
-              open in schedule
+              open in calendar
             </Link>
           ) : (
             <div />
