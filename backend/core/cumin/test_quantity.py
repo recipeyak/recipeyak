@@ -228,6 +228,13 @@ def test_adding_incompatible_units() -> None:
             ("2 pounds", "boneless skinless chicken thighs"),
         ),
         (
+            "1 pound rigatoni or another ridged dried pasta, or fresh pappardelle or tagliatelle",
+            (
+                "1 pound",
+                "rigatoni or another ridged dried pasta, or fresh pappardelle or tagliatelle",
+            ),
+        ),
+        (
             "Chopped fresh parsley, for serving (optional)",
             ("", "Chopped fresh parsley, for serving (optional)"),
         ),
