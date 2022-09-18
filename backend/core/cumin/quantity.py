@@ -382,7 +382,8 @@ def parse_quantity_name(text: str) -> tuple[str, str]:
                 name += c
             idx += 1
             continue
-        # ensure 7 to 8 cups all is added to the quantity
+        # ensure w/ '7 to 8 cups', the 'to 8` is added to the quantity portion
+        # of the result
         elif in_quantity and c == "t" and value[idx - 1 : idx + 3] == " to ":
             letters = "to "
             quantity += letters
