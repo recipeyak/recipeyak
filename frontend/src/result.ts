@@ -1,3 +1,5 @@
+import { Either, left, right } from "fp-ts/lib/Either"
+
 import { Failure, Success, WebData } from "@/webdata"
 
 const enum IResultKind {
@@ -43,4 +45,10 @@ export function resultToWebdata<T, E>(
     return Success(result.data)
   }
   return Failure(undefined)
+}
+export function resultToEither<T, E>(result: Result<T, E>): Either<E, T> {
+  if (isOk(result)) {
+    return right(result.data)
+  }
+  return left(result.error)
 }
