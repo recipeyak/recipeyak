@@ -6,7 +6,7 @@ import itertools
 from dataclasses import dataclass
 from decimal import Decimal
 from enum import Enum
-from typing import Tuple, Union
+from typing import Tuple
 
 MALFORMED_UNITS = {"large", "medium", "small", "fresh"}
 
@@ -357,7 +357,7 @@ units_ws = tuple(
 larger_to_smaller_units_ws = sorted(units_ws, key=lambda x: -len(x))
 
 
-def starts_with(string: str, prefixes: Union[tuple[str, ...], str]) -> bool:
+def starts_with(string: str, prefixes: tuple[str, ...] | str) -> bool:
     """
     case insensitive str.starts_with
     """
