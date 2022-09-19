@@ -2,7 +2,6 @@ import { AxiosError, AxiosResponse } from "axios"
 import { push } from "connected-react-router"
 import { addWeeks, endOfWeek, parseISO, startOfWeek, subWeeks } from "date-fns"
 import { isRight } from "fp-ts/lib/Either"
-import { pickBy } from "lodash-es"
 import raven from "raven-js"
 // eslint-disable-next-line no-restricted-imports
 import { Dispatch as ReduxDispatch } from "redux"
@@ -319,11 +318,7 @@ export const updatingStepAsync = async (
   { recipeID, stepID, ...data }: IUpdatingStepPayload,
   dispatch: Dispatch,
 ) => {
-  const res = await api.updateStep(
-    recipeID,
-    stepID,
-    pickBy(data, (x) => x != null),
-  )
+  const res = await api.updateStep(recipeID, stepID, data)
   if (isOk(res)) {
     dispatch(
       updateStep.success({

@@ -323,7 +323,7 @@ export const updateRecipe = (id: IRecipe["id"], data: unknown) =>
 
 interface IUpdateStepPayload {
   readonly text?: string
-  readonly position: string
+  readonly position?: string
 }
 
 // TODO(sbdchd): this shouldn't require recipeID

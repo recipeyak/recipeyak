@@ -47,7 +47,7 @@ interface IStepContainerProps {
     position,
   }: {
     text?: string
-    position?: string
+    position: string
     recipeID: number
     stepID: number
   }) => void
