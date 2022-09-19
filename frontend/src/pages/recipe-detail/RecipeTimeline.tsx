@@ -1,21 +1,15 @@
+import { useQuery } from "@tanstack/react-query"
 import format from "date-fns/format"
-import React from "react"
 import { Link } from "react-router-dom"
 
 import { getRecipeTimeline, IRecipeTimelineEvent } from "@/api"
+import { formatHumanDate } from "@/date"
 import { useScheduleURL } from "@/hooks"
 import { SectionTitle } from "@/pages/recipe-detail/RecipeHelpers"
-import { resultToWebdata } from "@/result"
+import { unwrapEither } from "@/query"
+import { resultToEither } from "@/result"
 import { IRecipe } from "@/store/reducers/recipes"
 import { styled } from "@/theme"
-import {
-  isFailure,
-  isInitial,
-  isLoading,
-  isSuccessLike,
-  mapSuccessLike,
-  WebData,
-} from "@/webdata"
 
 interface ITimelineItemProps {
   readonly type: "comment" | "scheduled" | "created"
@@ -27,7 +21,7 @@ interface ITimeProps {
 function Time({ dateTime }: ITimeProps) {
   const date = new Date(dateTime)
   const dateFormat = format(date, "yyyy-M-d")
-  const prettyDate = format(date, "MMM d, yyyy")
+  const prettyDate = formatHumanDate(date)
   return (
     <time title={prettyDate} dateTime={dateFormat}>
       {prettyDate}
@@ -56,19 +50,6 @@ const TimelineList = styled.ol`
   padding-bottom: 0.5rem;
 `
 
-const LoadingContainer = styled.div`
-  margin-bottom: 0.5rem;
-  margin-top: 0.5rem;
-`
-
-function LoadingTimeline() {
-  return <LoadingContainer>Loading timeline..</LoadingContainer>
-}
-
-function FailureLoadingTimeline() {
-  return <LoadingContainer>Failure loading timeline..</LoadingContainer>
-}
-
 type ITimelineEvent = ICommentEvent | IScheduledRecipeEvent
 
 interface ICommentEvent {
@@ -87,8 +68,6 @@ interface IRecipeTimelineProps {
   readonly createdAt: string
 }
 
-type IRecipeTimelineState = WebData<ReadonlyArray<ITimelineEvent>>
-
 function toTimelineEvent(event: IRecipeTimelineEvent): ITimelineEvent {
   return {
     type: "scheduled",
@@ -97,50 +76,45 @@ function toTimelineEvent(event: IRecipeTimelineEvent): ITimelineEvent {
   }
 }
 
-function useRecipeTimeline(recipeId: IRecipe["id"]): IRecipeTimelineState {
-  const [state, setState] = React.useState<IRecipeTimelineState>(undefined)
-  React.useEffect(() => {
-    void getRecipeTimeline(recipeId).then((res) => {
-      setState(
-        mapSuccessLike(resultToWebdata(res), (d) => d.map(toTimelineEvent)),
-      )
-    })
-  }, [recipeId])
-  return state
+function useRecipeTimeline(recipeId: IRecipe["id"]) {
+  return useQuery(["timeline"], () =>
+    getRecipeTimeline(recipeId)
+      .then(resultToEither)
+      .then(unwrapEither)
+      .then((res) => res.map(toTimelineEvent)),
+  )
 }
 
 export function RecipeTimeline({ createdAt, recipeId }: IRecipeTimelineProps) {
-  const events = useRecipeTimeline(recipeId)
+  const res = useRecipeTimeline(recipeId)
   const scheduleURL = useScheduleURL()
+  if (res.data == null) {
+    return null
+  }
+  console.log(res, res.data)
   return (
     <TimelineContainer>
       <SectionTitle>Timeline</SectionTitle>
       <TimelineList>
-        {isSuccessLike(events) ? (
-          events.data.map((e) => {
-            switch (e.type) {
-              case "comment":
-                return (
-                  <TimelineItem key={e.id} type={e.type}>
-                    <p>💬 {e.author} commented</p>
-                  </TimelineItem>
-                )
-              case "scheduled":
-                return (
-                  <TimelineItem key={e.id} type={e.type}>
-                    📅 Scheduled for{" "}
-                    <Link to={scheduleURL + `?week=${e.date}`}>{e.date}</Link>
-                  </TimelineItem>
-                )
-              default:
-                return null
-            }
-          })
-        ) : isLoading(events) || isInitial(events) ? (
-          <LoadingTimeline />
-        ) : isFailure(events) ? (
-          <FailureLoadingTimeline />
-        ) : null}
+        {res.data.map((e) => {
+          switch (e.type) {
+            case "comment":
+              return (
+                <TimelineItem key={e.id} type={e.type}>
+                  <p>💬 {e.author} commented</p>
+                </TimelineItem>
+              )
+            case "scheduled":
+              return (
+                <TimelineItem key={e.id} type={e.type}>
+                  📅 Scheduled for{" "}
+                  <Link to={scheduleURL + `?week=${e.date}`}>{e.date}</Link>
+                </TimelineItem>
+              )
+            default:
+              return null
+          }
+        })}
         <TimelineItem type="created">
           🎉 Recipe created on <Time dateTime={new Date(createdAt)} />
         </TimelineItem>
