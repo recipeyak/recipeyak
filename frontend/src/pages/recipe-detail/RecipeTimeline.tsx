@@ -91,7 +91,6 @@ export function RecipeTimeline({ createdAt, recipeId }: IRecipeTimelineProps) {
   if (res.data == null) {
     return null
   }
-  console.log(res, res.data)
   return (
     <TimelineContainer>
       <SectionTitle>Timeline</SectionTitle>
