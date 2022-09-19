@@ -246,6 +246,7 @@ def test_adding_incompatible_units() -> None:
             "Chopped fresh parsley, for serving (optional)",
             ("", "Chopped fresh parsley, for serving (optional)"),
         ),
+        ("Pinch of ground cardamom", ("Pinch of", "ground cardamom")),
     ],
 )
 def test_parse_quantity_name(ingredient: str, expected: tuple[str, str]) -> None:
@@ -279,6 +280,15 @@ def test_parse_quantity_name(ingredient: str, expected: tuple[str, str]) -> None
                 quantity="some",
                 name="Chopped fresh parsley",
                 description="for serving",
+                optional=True,
+            ),
+        ),
+        (
+            "Pinch of ground cardamom (optional)",
+            IngredientResult(
+                quantity="Pinch of",
+                name="ground cardamom",
+                description="",
                 optional=True,
             ),
         ),
