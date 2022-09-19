@@ -77,7 +77,7 @@ function toTimelineEvent(event: IRecipeTimelineEvent): ITimelineEvent {
 }
 
 function useRecipeTimeline(recipeId: IRecipe["id"]) {
-  return useQuery(["timeline"], () =>
+  return useQuery(["timeline", recipeId], () =>
     getRecipeTimeline(recipeId)
       .then(resultToEither)
       .then(unwrapEither)
