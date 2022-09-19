@@ -295,6 +295,9 @@ function RecipeDetails({
               setAddStep(false)
             }}
             loading={recipe.addingStepToRecipe}
+            position={ordering.positionAfter(
+              last(recipe.steps)?.position ?? ordering.FIRST_POSITION,
+            )}
           />
         ) : (
           editingEnabled && (

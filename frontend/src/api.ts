@@ -195,9 +195,14 @@ export const updateSection = ({
 export const deleteSection = ({ sectionId }: { readonly sectionId: number }) =>
   http.delete(`/api/v1/sections/${sectionId}/`)
 
-export const addStepToRecipe = (recipeID: IRecipe["id"], step: unknown) =>
+export const addStepToRecipe = (
+  recipeID: IRecipe["id"],
+  step: unknown,
+  position: string,
+) =>
   http.post<IStep>(`/api/v1/recipes/${recipeID}/steps/`, {
     text: step,
+    position,
   })
 
 // TODO(sbdchd): this shouldn't require recipeID
@@ -318,7 +323,7 @@ export const updateRecipe = (id: IRecipe["id"], data: unknown) =>
 
 interface IUpdateStepPayload {
   readonly text?: string
-  readonly position?: string
+  readonly position: string
 }
 
 // TODO(sbdchd): this shouldn't require recipeID

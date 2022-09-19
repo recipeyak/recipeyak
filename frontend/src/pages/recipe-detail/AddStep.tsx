@@ -14,6 +14,7 @@ interface IAddStepProps {
   readonly addStep: (args: {
     id: IStep["id"]
     step: IRecipe["draftStep"]
+    position: string
   }) => void
   readonly step?: string
   readonly setStep: (args: {
@@ -25,6 +26,7 @@ interface IAddStepProps {
   readonly autoFocus?: boolean
   readonly id: number
   readonly index: number
+  readonly position: string
 }
 
 function AddStep(props: IAddStepProps) {
@@ -37,7 +39,7 @@ function AddStep(props: IAddStepProps) {
   }
 
   const addStep = () => {
-    props.addStep({ id: props.id, step: props.step })
+    props.addStep({ id: props.id, step: props.step, position: props.position })
   }
 
   const handleKeyUp = (e: KeyboardEvent) => {

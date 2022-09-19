@@ -229,6 +229,7 @@ export async function updatingRecipeAsync(
 interface IAddStepToRecipeArg {
   readonly id: IRecipe["id"]
   readonly step: IStep["text"] | undefined
+  readonly position: IStep["position"]
 }
 
 export const addStepToRecipe = createAsyncAction(
@@ -248,7 +249,11 @@ async function addingStepToRecipeAsync(
   payload: IAddStepToRecipeArg,
   dispatch: Dispatch,
 ) {
-  const res = await api.addStepToRecipe(payload.id, payload.step)
+  const res = await api.addStepToRecipe(
+    payload.id,
+    payload.step,
+    payload.position,
+  )
   if (isOk(res)) {
     dispatch(
       addStepToRecipe.success({
