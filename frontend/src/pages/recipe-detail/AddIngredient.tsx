@@ -11,12 +11,14 @@ function AddIngredientSubForm({
   onCancel,
   autoFocus,
   onChangeSection,
+  newPosition,
 }: {
   readonly onCancel: () => void
   readonly recipeId: number
   readonly loading: boolean
   readonly autoFocus: boolean
   readonly onChangeSection: () => void
+  readonly newPosition: string
 }) {
   const dispatch = useDispatch()
   const [quantity, setQuantity] = useState("")
@@ -67,7 +69,7 @@ function AddIngredientSubForm({
     dispatch(
       addIngredientToRecipe.request({
         recipeID: recipeId,
-        ingredient: { quantity, name, description },
+        ingredient: { quantity, name, description, position: newPosition },
       }),
     )
 
@@ -92,11 +94,13 @@ export default function AddIngredient({
   addingIngredient,
   onCancel,
   autoFocus,
+  newPosition,
 }: {
   readonly onCancel: () => void
   readonly recipeId: number
   readonly addingIngredient: boolean
   readonly autoFocus: boolean
+  readonly newPosition: string
 }) {
   const [showAddSection, setShowAddSection] = React.useState(false)
   const toggleShowAddSection = () => {
@@ -109,6 +113,7 @@ export default function AddIngredient({
         recipeId={recipeId}
         toggleShowAddSection={toggleShowAddSection}
         onCancel={onCancel}
+        newPosition={newPosition}
       />
     )
   }
@@ -119,6 +124,7 @@ export default function AddIngredient({
       onCancel={onCancel}
       autoFocus={autoFocus}
       onChangeSection={toggleShowAddSection}
+      newPosition={newPosition}
     />
   )
 }

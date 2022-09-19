@@ -167,13 +167,15 @@ export const addIngredientToRecipe = (
 export const addSectionToRecipe = ({
   recipeId,
   section,
+  position,
 }: {
   readonly recipeId: number
   readonly section: string
+  readonly position: string
 }) =>
   http.post<{ title: string; position: string; id: number }>(
     `/api/v1/recipes/${recipeId}/sections`,
-    { title: section },
+    { title: section, position },
   )
 
 export const updateSection = ({

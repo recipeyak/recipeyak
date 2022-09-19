@@ -109,10 +109,12 @@ export function AddSectionForm({
   toggleShowAddSection,
   onCancel,
   recipeId,
+  newPosition,
 }: {
   readonly toggleShowAddSection: () => void
   readonly onCancel: () => void
   readonly recipeId: number
+  readonly newPosition: string
 }) {
   const dispatch = useDispatch()
   const [state, setState] = React.useState<StateType>({
@@ -126,7 +128,11 @@ export function AddSectionForm({
   function onSave() {
     setState((prev) => ({ ...prev, status: "loading" }))
     void api
-      .addSectionToRecipe({ recipeId, section: state.sectionTitle })
+      .addSectionToRecipe({
+        recipeId,
+        section: state.sectionTitle,
+        position: newPosition,
+      })
       .then((res) => {
         if (isOk(res)) {
           dispatch(

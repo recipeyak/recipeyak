@@ -1,4 +1,4 @@
-import { sortBy } from "lodash-es"
+import { last, sortBy } from "lodash-es"
 import queryString from "query-string"
 import React from "react"
 import { RouteComponentProps, useHistory } from "react-router"
@@ -9,6 +9,7 @@ import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
 import { formatHumanDate } from "@/date"
 import { useDispatch, useOnWindowFocusChange, useSelector } from "@/hooks"
+import * as ordering from "@/ordering"
 import AddIngredientOrSection from "@/pages/recipe-detail/AddIngredient"
 import AddStep from "@/pages/recipe-detail/AddStep"
 import { Ingredient } from "@/pages/recipe-detail/Ingredient"
@@ -212,6 +213,15 @@ function RecipeDetails({
     }
   }, [editingEnabled])
 
+  const lastPosition =
+    last(sectionsAndIngredients)?.item.position ?? ordering.FIRST_POSITION
+
+  console.log(
+    lastPosition,
+    sectionsAndIngredients,
+    ordering.positionAfter(lastPosition),
+  )
+
   return (
     <section className="ingredients-preparation-grid">
       <div>
@@ -263,6 +273,10 @@ function RecipeDetails({
             autoFocus
             addingIngredient={!!recipe.addingIngredient}
             onCancel={handleHideAddIngredient}
+            newPosition={ordering.positionAfter(
+              last(sectionsAndIngredients)?.item.position ??
+                ordering.FIRST_POSITION,
+            )}
           />
         ) : (
           editingEnabled && (
