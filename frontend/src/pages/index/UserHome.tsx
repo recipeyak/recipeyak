@@ -7,7 +7,6 @@ import {
   parseISO,
   startOfToday,
 } from "date-fns"
-import { Either, isRight } from "fp-ts/lib/Either"
 import queryString from "query-string"
 import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
