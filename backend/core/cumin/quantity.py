@@ -6,7 +6,7 @@ import itertools
 from dataclasses import dataclass
 from decimal import Decimal
 from enum import Enum
-from typing import Tuple
+from typing import Tuple, Union
 
 MALFORMED_UNITS = {"large", "medium", "small", "fresh"}
 
@@ -333,6 +333,7 @@ UNIT_TO_ALIASES: dict[Unit, list[str]] = {
     ],
     Unit.SOME: [
         "pinch",
+        "pinch of",
         "some",
         "sprinkle",
         "dash",
@@ -354,6 +355,18 @@ units_ws = tuple(
 )
 
 larger_to_smaller_units_ws = sorted(units_ws, key=lambda x: -len(x))
+
+
+def starts_with(string: str, prefixes: Union[tuple[str, ...], str]) -> bool:
+    """
+    case insensitive str.starts_with
+    """
+    if isinstance(prefixes, str):
+        prefixes = (prefixes,)
+    for prefix in prefixes:
+        if string[: len(prefix)].casefold() == prefix.casefold():
+            return True
+    return False
 
 
 def parse_quantity_name(text: str) -> tuple[str, str]:
@@ -397,11 +410,11 @@ def parse_quantity_name(text: str) -> tuple[str, str]:
             idx += 1
             continue
         else:
-            if value[idx:].startswith(units_ws) and in_quantity:
+            if starts_with(value[idx:], units_ws) and in_quantity:
                 in_quantity = False
                 eat_count = 0
                 for unit in larger_to_smaller_units_ws:
-                    if value[idx:].startswith(unit):
+                    if starts_with(value[idx:], unit):
                         eat_count = len(unit)
                         break
                 for _ in range(eat_count):
@@ -434,6 +447,10 @@ def parse_ingredient(text: str) -> IngredientResult:
             if description.endswith(suffix):
                 description = description[: -len(suffix)]
                 break
+            elif name.endswith(suffix):
+                name = name[: -len(suffix)]
+                break
+
     return IngredientResult(
         # Some seems like a good default instead of empty string. Empty string
         # looks a little weird in the UI.
