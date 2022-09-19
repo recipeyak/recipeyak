@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import Optional
 
 from django.shortcuts import get_object_or_404
 from rest_framework import status
@@ -11,21 +12,12 @@ from core.auth.permissions import has_recipe_access
 from core.models import ChangeType, Recipe, RecipeChange, Section
 from core.recipes.serializers import SectionSerializer
 from core.request import AuthedRequest
-
-# arbitrary value to increment the max position value for when we add a new
-# section
-POSITION_INCREMENT = 10
+from core.serialization import RequestParams
 
 
-def get_next_max_pos(*, recipe: Recipe) -> float:
-    # FIXME
-    cur_max: float = max(
-        # need to convert to list due to some weirdness with how the soft
-        # delete mixin overrides the `.values_list()` method
-        list(recipe.ingredients.values_list("position", flat=True))
-        + list(recipe.section_set.values_list("position", flat=True))
-    )
-    return cur_max + POSITION_INCREMENT
+class SectionCreateParams(RequestParams):
+    position: str
+    title: str
 
 
 @api_view(["POST"])
@@ -35,24 +27,21 @@ def create_section_view(request: AuthedRequest, recipe_pk: int) -> Response:
     if not has_recipe_access(recipe=recipe, user=request.user):
         return Response(status=status.HTTP_403_FORBIDDEN)
 
-    serializer = SectionSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
+    params = SectionCreateParams.parse_obj(request.data)
 
     RecipeChange.objects.create(
         recipe=recipe,
         actor=request.user,
         before="",
-        after=serializer.validated_data["title"],
+        after=params.title,
         change_type=ChangeType.SECTION_CREATE,
     )
 
-    position = serializer.validated_data.get(
-        "position", get_next_max_pos(recipe=recipe)
+    section = Section.objects.create(
+        title=params.title, position=params.position, recipe=recipe
     )
 
-    serializer.save(recipe=recipe, position=position)
-
-    return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(SectionSerializer(section).data, status=status.HTTP_201_CREATED)
 
 
 def delete_section_view(request: AuthedRequest, section_pk: int) -> Response:
@@ -74,24 +63,32 @@ def delete_section_view(request: AuthedRequest, section_pk: int) -> Response:
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class SectionUpdateParams(RequestParams):
+    position: Optional[str] = None
+    title: Optional[str] = None
+
+
 def update_section_view(request: AuthedRequest, section_pk: int) -> Response:
     section = get_object_or_404(Section, pk=section_pk)
     recipe = section.recipe
     if not has_recipe_access(recipe=section.recipe, user=request.user):
         return Response(status=status.HTTP_403_FORBIDDEN)
 
-    serializer = SectionSerializer(section, data=request.data, partial=True)
-    serializer.is_valid(raise_exception=True)
+    params = SectionCreateParams.parse_obj(request.data)
+    if params.title is not None:
+        section.title = params.title
+    if params.position is not None:
+        section.position = params.position
     RecipeChange.objects.create(
         recipe=recipe,
         actor=request.user,
         before=section.title,
-        after=serializer.validated_data.get("title", ""),
+        after=params.title or "",
         change_type=ChangeType.SECTION_UPDATE,
     )
-    serializer.save(recipe=section.recipe)
+    section.save()
 
-    return Response(serializer.data)
+    return Response(SectionSerializer(section).data)
 
 
 @api_view(["PATCH", "DELETE"])
