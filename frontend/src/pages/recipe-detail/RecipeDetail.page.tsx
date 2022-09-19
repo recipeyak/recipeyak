@@ -213,15 +213,6 @@ function RecipeDetails({
     }
   }, [editingEnabled])
 
-  const lastPosition =
-    last(sectionsAndIngredients)?.item.position ?? ordering.FIRST_POSITION
-
-  console.log(
-    lastPosition,
-    sectionsAndIngredients,
-    ordering.positionAfter(lastPosition),
-  )
-
   return (
     <section className="ingredients-preparation-grid">
       <div>
