@@ -54,7 +54,7 @@ const Title = ({
 }) => {
   const dateFmtText = isFirstDayOfMonth(date) ? "MMM d" : "d"
   return (
-    <div className={cls("d-flex ", { "color-white": isSelectedDay })}>
+    <div className={cls("d-flex fs-14px", { "color-white": isSelectedDay })}>
       <DayOfWeek date={date} />
       <span>{format(date, dateFmtText)}</span>
     </div>

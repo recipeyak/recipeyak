@@ -136,7 +136,7 @@ export function Dropdown({
 
   return (
     <DropdownContainer ref={ref}>
-      <Button size="small" onClick={toggle}>
+      <Button size="small" className="fs-14px" onClick={toggle}>
         Actions <Chevron />
       </Button>
       <DropdownMenu isOpen={isOpen}>

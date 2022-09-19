@@ -478,6 +478,19 @@ export function recentlyViewedRecipes() {
   })
 }
 
+export function recentlyCreatedRecipes() {
+  return http.request({
+    method: "GET",
+    url: "/api/v1/recipes/recently_created",
+    shape: t.array(
+      t.type({
+        id: t.number,
+        name: t.string,
+      }),
+    ),
+  })
+}
+
 export function generateCalendarLink({
   teamID,
 }: {

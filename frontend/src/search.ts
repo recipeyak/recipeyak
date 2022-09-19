@@ -33,9 +33,9 @@ function sortArchivedName(a: IRecipe, b: IRecipe) {
 function evalField(node: QueryNode, recipe: IRecipe): Match[] | null {
   switch (node.field) {
     case "author": {
-      const res = normalizedIncludes(recipe.author, node.value)
+      const res = normalizedIncludes(recipe.author ?? "", node.value)
       if (res) {
-        return [{ kind: "author", value: recipe.author }]
+        return [{ kind: "author", value: recipe.author ?? "" }]
       }
       return null
     }

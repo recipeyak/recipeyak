@@ -51,7 +51,7 @@ const Ingredient = styled.small`
 
 interface IRecipeItemProps {
   readonly name: string
-  readonly author: string
+  readonly author: string | null
   readonly id: number
   readonly url?: string
   readonly drag?: boolean
@@ -97,7 +97,7 @@ export function RecipeItem({
           <span className="tag">{tagMatch.value}</span>
         ) : null}
       </div>
-      <Meta bold={authorMatch != null} author={author} />
+      <Meta bold={authorMatch != null} author={author ?? ""} />
     </div>
   )
 

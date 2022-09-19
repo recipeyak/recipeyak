@@ -317,17 +317,17 @@ class IngredientResult:
 
 # TODO(sbdchd): these should be all the units available!!!
 UNIT_TO_ALIASES: dict[Unit, list[str]] = {
-    Unit.CUP: ["cup"],
-    Unit.KILOGRAM: ["kg", "kilogram"],
-    Unit.GRAM: ["gram", "g"],
-    Unit.GALLON: ["gal", "gallon"],
-    Unit.OUNCE: ["oz", "ounce"],
+    Unit.CUP: ["cup", "cups"],
+    Unit.KILOGRAM: ["kg", "kgs", "kilogram", "kilograms"],
+    Unit.GRAM: ["gram", "grams", "g"],
+    Unit.GALLON: ["gal", "gallon", "gallons"],
+    Unit.OUNCE: ["oz", "ounce", "ounces"],
     Unit.MILLILITER: ["millilter", "ml"],
     Unit.TEASPOON: ["tsp", "teaspoon", "teaspoons", "t"],
     Unit.TABLESPOON: ["tablespoon", "tablespoons", "tbs", "T"],
     Unit.POUND: [
+        "pound",
         "pounds",
-        "lbs",
         "lbs",
         "lb",
     ],
@@ -339,9 +339,11 @@ UNIT_TO_ALIASES: dict[Unit, list[str]] = {
     ],
     Unit.QUART: [
         "quart",
+        "quarts",
     ],
     Unit.LITER: [
         "liter",
+        "liters",
         "l",
     ],
 }
@@ -379,6 +381,13 @@ def parse_quantity_name(text: str) -> tuple[str, str]:
             else:
                 name += c
             idx += 1
+            continue
+        # ensure w/ '7 to 8 cups', the 'to 8` is added to the quantity portion
+        # of the result
+        elif in_quantity and c == "t" and value[idx - 1 : idx + 3] == " to ":
+            letters = "to "
+            quantity += letters
+            idx += len(letters)
             continue
         elif c.isspace():
             if in_quantity:

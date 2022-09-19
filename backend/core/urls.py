@@ -13,6 +13,9 @@ from core.recipes.views.reactions_view import (
     note_reaction_create_view,
     note_reaction_delete_view,
 )
+from core.recipes.views.recently_created_recipes_view import (
+    get_recently_created_recipes,
+)
 from core.recipes.views.recently_view_recipes_view import get_recently_viewed_recipes
 from core.recipes.views.recipe_copy_view import recipe_copy_view
 from core.recipes.views.recipe_duplicate_view import recipe_duplicate_view
@@ -75,6 +78,7 @@ urlpatterns = [
     path("api/v1/recipes/<int:recipe_pk>/steps/<int:step_pk>/", steps_detail_view),
     path("api/v1/recipes/<int:recipe_pk>/timeline", get_recipe_timeline),
     path("api/v1/recipes/recently_viewed", get_recently_viewed_recipes),
+    path("api/v1/recipes/recently_created", get_recently_created_recipes),
     path("api/v1/report-bad-merge", ReportBadMerge.as_view(), name="report-bad-merge"),
     path("api/v1/sections/<int:section_pk>/", delete_or_update_section_view),
     path("api/v1/sessions/", sessions),

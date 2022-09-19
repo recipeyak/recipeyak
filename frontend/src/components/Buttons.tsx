@@ -1,5 +1,6 @@
 import * as React from "react"
 
+import { assertNever } from "@/assert"
 import { classNames } from "@/classnames"
 
 export const ButtonLink = (props: IButtonProps) => (
@@ -29,7 +30,7 @@ export const ButtonSecondary = (props: IButtonProps) => (
 
 interface IButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   readonly loading?: boolean
-  readonly size?: "small" | "normal" | "medium" | "large"
+  readonly size?: "small" | "normal"
 }
 export const ButtonPlain = ({
   loading = false,
@@ -38,12 +39,17 @@ export const ButtonPlain = ({
   children,
   ...props
 }: IButtonProps) => {
-  const buttonSize = "is-" + size
+  const buttonSize =
+    size === "small"
+      ? "is-small"
+      : size === "normal"
+      ? "is-normal"
+      : assertNever(size)
   return (
     <button
       {...props}
       disabled={loading}
-      className={classNames("my-button", className, buttonSize, {
+      className={classNames("my-button", "br-6", className, buttonSize, {
         "is-loading": loading,
       })}
     >

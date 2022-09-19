@@ -100,7 +100,7 @@ export function Select({
 }: ISelectProps) {
   const inputSize = "is-" + size
   const multipleClass = multiple ? "is-multiple" : ""
-  const selectClass = noBorder ? "my-select" : ""
+  const selectClass = noBorder ? "my-select" : "br-6"
   return (
     <div className={`select ${inputSize} ${multipleClass} ${className}`}>
       <select className={selectClass} multiple={multiple} {...props} />

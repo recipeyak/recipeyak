@@ -224,8 +224,23 @@ def test_adding_incompatible_units() -> None:
             ("1-3 lbs", "ground turkey breast"),
         ),
         (
+            "7 to 8 cups poison",
+            ("7 to 8 cups", "poison"),
+        ),
+        (
+            "3 1/2 cups water",
+            ("3 1/2 cups", "water"),
+        ),
+        (
             "2 pounds boneless skinless chicken thighs",
             ("2 pounds", "boneless skinless chicken thighs"),
+        ),
+        (
+            "1 pound rigatoni or another ridged dried pasta, or fresh pappardelle or tagliatelle",
+            (
+                "1 pound",
+                "rigatoni or another ridged dried pasta, or fresh pappardelle or tagliatelle",
+            ),
         ),
         (
             "Chopped fresh parsley, for serving (optional)",
