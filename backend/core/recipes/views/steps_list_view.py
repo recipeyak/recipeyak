@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -16,7 +14,7 @@ from core.serialization import RequestParams
 
 class StepCreateParams(RequestParams):
     text: str
-    position: Optional[str] = None
+    position: str
 
 
 @api_view(["POST"])
@@ -25,21 +23,7 @@ def steps_list_view(request: AuthedRequest, recipe_pk: int) -> Response:
     params = StepCreateParams.parse_obj(request.data)
     recipe = get_object_or_404(user_and_team_recipes(request.user), pk=recipe_pk)
 
-    # set a position if not provided. We must included deleted because they
-    # still take up a position.
-    last_ingredient = recipe.step_set.all_with_deleted().last()
-    if params.position is None:
-        if last_ingredient is not None:
-            params.position = last_ingredient.position + 10.0
-        else:
-            params.position = 10.0
-
-    step = Step(
-        text=params.text,
-        recipe=recipe,
-    )
-    if params.position is not None:
-        step.position = params.position
+    step = Step(text=params.text, recipe=recipe, position=params.position)
     step.save()
 
     RecipeChange.objects.create(
