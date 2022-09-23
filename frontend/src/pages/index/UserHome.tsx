@@ -7,7 +7,6 @@ import {
   parseISO,
   startOfToday,
 } from "date-fns"
-import { Either, isRight } from "fp-ts/lib/Either"
 import queryString from "query-string"
 import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
@@ -20,6 +19,7 @@ import * as forms from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
 import { useDispatch, useScheduleTeamID, useSelector } from "@/hooks"
+import { unwrapEither } from "@/query"
 import { searchRecipes } from "@/search"
 import { scheduleURLFromTeamID } from "@/store/mapState"
 import { getTeamRecipes } from "@/store/reducers/recipes"
@@ -238,13 +238,6 @@ function buildSchedule(
   return Object.entries(newSchedule).map(([key, value]): RecipeSchedule => {
     return { day: format(parseISO(key), "E"), recipes: value || [] }
   })
-}
-
-function unwrapEither<T>(x: Either<unknown, T>): T {
-  if (isRight(x)) {
-    return x.right
-  }
-  throw x.left
 }
 
 function useSchedulePreview() {
