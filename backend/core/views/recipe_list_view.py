@@ -3,9 +3,9 @@ from __future__ import annotations
 import collections
 import logging
 from typing import Any, Iterable, Optional
-import sentry_sdk
 
 import advocate
+import sentry_sdk
 from django.core.exceptions import ValidationError
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
