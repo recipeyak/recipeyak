@@ -29,4 +29,5 @@ class RecipeExportSerializer(BaseModelSerializer):
             "ingredients",
             "steps",
             "owner",
+            "tags",
         )

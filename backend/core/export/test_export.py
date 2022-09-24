@@ -131,6 +131,7 @@ def test_unicode_issues(c: Client, user: User, recipe: Recipe) -> None:
     regression to prevent unicode encoding issues with pyyaml
     """
     recipe.name = "foo 🦠"
+    recipe.tags = ["foo", "bar"]
     recipe.save()
     url = f"/recipes/{recipe.id}.yaml"
     c.force_login(user)
@@ -156,5 +157,8 @@ steps:
 - Place egg in boiling water and cook for ten minutes
 owner:
   user: john@doe.org
+tags:
+- foo
+- bar
 """
     )
