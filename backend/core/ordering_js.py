@@ -1,4 +1,5 @@
 import math
+from typing import Iterable
 
 START_CHAR_CODE = 32
 END_CHAR_CODE = 126
@@ -14,6 +15,11 @@ def avg(a: float, b: float) -> int:
     return math.trunc((a + b) / 2)
 
 
+def iter_char_codes(x: str) -> Iterable[int]:
+    for char in x:
+        yield ord(char)
+
+
 def compare_positions(first_pos: str, second_pos: str) -> int:
     return (first_pos < second_pos) - ((first_pos > second_pos))
 
@@ -21,12 +27,9 @@ def compare_positions(first_pos: str, second_pos: str) -> int:
 def is_valid_position(pos: str) -> bool:
     if pos == "" or ord(pos[-1]) == START_CHAR_CODE:
         return False
-    i = 0
-    while i < len(pos):
-        t = ord(pos[i])
-        if t < START_CHAR_CODE or t > END_CHAR_CODE:
+    for char_code in iter_char_codes(pos):
+        if char_code < START_CHAR_CODE or char_code > END_CHAR_CODE:
             return False
-        i += 1
     return True
 
 
@@ -34,9 +37,9 @@ def position_before(pos: str) -> str:
     assert_dev(0 != len(pos))
     i = len(pos) - 1
     while i >= 0:
-        curCharCode = ord(pos[i])
-        if curCharCode > START_CHAR_CODE + 1:
-            position = pos[0:i] + chr(curCharCode - 1)
+        cur_char_Code = ord(pos[i])
+        if cur_char_Code > START_CHAR_CODE + 1:
+            position = pos[0:i] + chr(cur_char_Code - 1)
             assert_dev(is_valid_position(position))
             return position
         i -= 1
