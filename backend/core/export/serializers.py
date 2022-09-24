@@ -21,6 +21,7 @@ class RecipeExportSerializer(BaseModelSerializer):
         model = Recipe
         read_only = True
         fields = (
+            "id",
             "name",
             "author",
             "time",
