@@ -8,6 +8,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from core import ordering
 
 from core.auth.permissions import has_recipe_access
 from core.models import ChangeType, Recipe, RecipeChange, Section
@@ -17,7 +18,7 @@ from core.serialization import RequestParams
 
 
 class SectionCreateParams(RequestParams):
-    position: str
+    position: Optional[str] = None
     title: str
 
 
@@ -38,9 +39,17 @@ def create_section_view(request: AuthedRequest, recipe_pk: int) -> Response:
         change_type=ChangeType.SECTION_CREATE,
     )
 
-    section = Section.objects.create(
-        title=params.title, position=params.position, recipe=recipe
-    )
+    section = Section(title=params.title, recipe=recipe)
+    if params.position is not None:
+        section.position = params.position
+    else:
+        last_section = recipe.section_set.last()
+        if last_section is not None:
+            section.position = last_section.position
+        else:
+            section.position = ordering.FIRST_POSITION
+
+    section.save()
 
     return Response(SectionSerializer(section).data, status=status.HTTP_201_CREATED)
 

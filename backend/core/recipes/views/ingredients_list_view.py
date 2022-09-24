@@ -12,13 +12,14 @@ from core.models import ChangeType, Ingredient, RecipeChange, user_and_team_reci
 from core.recipes.serializers import ingredient_to_text, serialize_ingredient
 from core.request import AuthedRequest
 from core.serialization import RequestParams
+from core import ordering
 
 
 class IngredientCreateParams(RequestParams):
     quantity: str
     name: str
     description: str
-    position: str
+    position: Optional[str] = None
     optional: Optional[bool] = None
 
 
@@ -33,10 +34,17 @@ def ingredients_list_view(request: AuthedRequest, recipe_pk: int) -> Response:
         name=params.name,
         description=params.description,
         recipe=recipe,
-        position=params.position,
     )
     if params.optional is not None:
         ingredient.optional = params.optional
+    if params.position is not None:
+        ingredient.position = params.position
+    else:
+        last_ingredient = recipe.ingredient_set.last()
+        if last_ingredient is not None:
+            ingredient.position = ordering.position_after(last_ingredient.position)
+        else:
+            ingredient.position = ordering.FIRST_POSITION
     ingredient.save()
 
     RecipeChange.objects.create(

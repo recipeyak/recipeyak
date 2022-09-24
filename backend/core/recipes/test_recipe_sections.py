@@ -11,7 +11,7 @@ def test_creating_section(client: APIClient, user: User, recipe: Recipe) -> None
     client.force_authenticate(user)
 
     before_section_count = Section.objects.count()
-    data = {"title": "a section title", "position": 17.76}
+    data = {"title": "a section title", "position": "17.76"}
 
     assert RecipeChange.objects.count() == 0
 
@@ -20,7 +20,7 @@ def test_creating_section(client: APIClient, user: User, recipe: Recipe) -> None
     assert res.status_code == status.HTTP_201_CREATED
     assert isinstance(res.json()["id"], int)
     assert isinstance(res.json()["title"], str)
-    assert isinstance(res.json()["position"], float)
+    assert isinstance(res.json()["position"], str)
     assert res.json()["title"] == data["title"]
     assert res.json()["position"] == data["position"]
 
@@ -48,7 +48,7 @@ def test_creating_section_without_position(
     assert res.status_code == status.HTTP_201_CREATED
     assert isinstance(res.json()["id"], int)
     assert isinstance(res.json()["title"], str)
-    assert isinstance(res.json()["position"], float)
+    assert isinstance(res.json()["position"], str)
     assert res.json()["title"] == data["title"]
 
     after_section_count = Section.objects.count()
@@ -84,7 +84,7 @@ def test_fetching_sections_for_recipe(
     for s in res.json()["sections"]:
         assert isinstance(s["id"], int)
         assert isinstance(s["title"], str)
-        assert isinstance(s["position"], float)
+        assert isinstance(s["position"], str)
 
     team.recipes.add(recipe)
 
@@ -97,17 +97,17 @@ def test_fetching_sections_for_recipe(
         for s in r["sections"]:
             assert isinstance(s["id"], int)
             assert isinstance(s["title"], str)
-            assert isinstance(s["position"], float)
+            assert isinstance(s["position"], str)
 
 
 def test_updating_section(client: APIClient, user: User, recipe: Recipe) -> None:
     client.force_authenticate(user)
 
     section = Section.objects.create(
-        recipe=recipe, title="a new section", position=88.0
+        recipe=recipe, title="a new section", position="88.0"
     )
 
-    data = {"title": "different section title", "position": 123.0}
+    data = {"title": "different section title", "position": "123.0"}
     assert data["title"] != section.title
     assert data["position"] != section.position
     assert RecipeChange.objects.count() == 0
@@ -127,7 +127,7 @@ def test_deleting_section(client: APIClient, user: User, recipe: Recipe) -> None
     client.force_authenticate(user)
 
     section = Section.objects.create(
-        recipe=recipe, title="a new section", position=88.0
+        recipe=recipe, title="a new section", position="88.0"
     )
     before_count = recipe.section_set.count()
     assert RecipeChange.objects.count() == 0

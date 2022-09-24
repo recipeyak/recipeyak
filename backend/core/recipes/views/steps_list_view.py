@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import Optional
 
 from django.shortcuts import get_object_or_404
 from rest_framework import status
@@ -10,11 +11,12 @@ from core.models import ChangeType, RecipeChange, Step, user_and_team_recipes
 from core.recipes.serializers import serialize_step
 from core.request import AuthedRequest
 from core.serialization import RequestParams
+from core import ordering
 
 
 class StepCreateParams(RequestParams):
     text: str
-    position: str
+    position: Optional[str] = None
 
 
 @api_view(["POST"])
@@ -23,7 +25,15 @@ def steps_list_view(request: AuthedRequest, recipe_pk: int) -> Response:
     params = StepCreateParams.parse_obj(request.data)
     recipe = get_object_or_404(user_and_team_recipes(request.user), pk=recipe_pk)
 
-    step = Step(text=params.text, recipe=recipe, position=params.position)
+    step = Step(text=params.text, recipe=recipe)
+    if params.position is not None:
+        step.position = params.position
+    else:
+        last_step = recipe.step_set.last()
+        if last_step is not None:
+            step.position = ordering.position_after(last_step.position)
+        else:
+            step.position = ordering.FIRST_POSITION
     step.save()
 
     RecipeChange.objects.create(
