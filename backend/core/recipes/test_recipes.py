@@ -223,7 +223,7 @@ def test_updating_step_of_recipe(client, user, recipe):
 
     step_data = {
         "text": "An updated step",
-        "position": step.position + chr(ordering.END_CHAR_CODE),
+        "position": ordering.position_after(step.position),
     }
 
     url = f"/api/v1/recipes/{recipe.id}/steps/{step.id}/"
