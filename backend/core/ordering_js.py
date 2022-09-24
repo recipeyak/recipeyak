@@ -36,13 +36,12 @@ def is_valid_position(pos: str) -> bool:
 def position_before(pos: str) -> str:
     assert_dev(0 != len(pos))
     i = len(pos) - 1
-    while i >= 0:
-        cur_char_Code = ord(pos[i])
-        if cur_char_Code > START_CHAR_CODE + 1:
-            position = pos[0:i] + chr(cur_char_Code - 1)
+    for i in reversed(range(len(pos))):
+        cur_char_code = ord(pos[i])
+        if cur_char_code > START_CHAR_CODE + 1:
+            position = pos[0:i] + chr(cur_char_code - 1)
             assert_dev(is_valid_position(position))
             return position
-        i -= 1
     position = pos[0 : len(pos) - 1] + chr(START_CHAR_CODE) + chr(END_CHAR_CODE)
     assert_dev(is_valid_position(position))
     return position
@@ -50,14 +49,12 @@ def position_before(pos: str) -> str:
 
 def position_after(pos: str) -> str:
     assert_dev(0 != len(pos))
-    i = len(pos) - 1
-    while i >= 0:
-        curCharCode = ord(pos[i])
-        if curCharCode < END_CHAR_CODE:
-            position = pos[0:i] + chr(curCharCode + 1)
+    for i in reversed(range(len(pos))):
+        cur_char_code = ord(pos[i])
+        if cur_char_code < END_CHAR_CODE:
+            position = pos[0:i] + chr(cur_char_code + 1)
             assert_dev(is_valid_position(position))
             return position
-        i -= 1
     position = pos + chr(START_CHAR_CODE + 1)
     assert_dev(is_valid_position(position))
     return position
@@ -67,9 +64,8 @@ def position_between(first_pos: str, second_pos: str) -> str:
     assert_dev(first_pos < second_pos)
     flag = False
     position = ""
-    maxLength = max(len(first_pos), len(second_pos))
-    i = 0
-    while i < maxLength:
+    max_length = max(len(first_pos), len(second_pos))
+    for i in range(max_length):
         lower = ord(first_pos[i]) if i < len(first_pos) else START_CHAR_CODE
         upper = (
             ord(second_pos[i]) if i < len(second_pos) and not flag else END_CHAR_CODE
@@ -83,7 +79,6 @@ def position_between(first_pos: str, second_pos: str) -> str:
         else:
             position += chr(lower)
             flag = True
-        i += 1
     if flag:
         position += chr(avg(START_CHAR_CODE, END_CHAR_CODE))
     assert_dev(first_pos < position)
