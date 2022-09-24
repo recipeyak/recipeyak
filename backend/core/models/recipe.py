@@ -163,7 +163,7 @@ class Recipe(CommonInfo, SoftDeleteObject):
         return self.steps
 
     @property
-    def section_set(self) -> QuerySet[Section]:
+    def section_set(self) -> SoftDeleteManager[Section]:
         return Section.objects.filter(recipe=self)
 
     def get_last_scheduled(self) -> Optional[date]:
