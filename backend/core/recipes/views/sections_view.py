@@ -8,8 +8,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from core import ordering
 
+from core import ordering
 from core.auth.permissions import has_recipe_access
 from core.models import ChangeType, Recipe, RecipeChange, Section
 from core.recipes.serializers import SectionSerializer

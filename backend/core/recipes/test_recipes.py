@@ -5,8 +5,8 @@ from django.utils.dateparse import parse_datetime
 from rest_framework import status
 from rest_framework.test import APIClient
 from syrupy.matchers import path_type
-from core import ordering
 
+from core import ordering
 from core.models import (
     Ingredient,
     Membership,

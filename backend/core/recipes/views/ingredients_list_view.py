@@ -8,11 +8,11 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from core import ordering
 from core.models import ChangeType, Ingredient, RecipeChange, user_and_team_recipes
 from core.recipes.serializers import ingredient_to_text, serialize_ingredient
 from core.request import AuthedRequest
 from core.serialization import RequestParams
-from core import ordering
 
 
 class IngredientCreateParams(RequestParams):
