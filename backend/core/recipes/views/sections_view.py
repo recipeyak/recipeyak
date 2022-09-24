@@ -43,9 +43,11 @@ def create_section_view(request: AuthedRequest, recipe_pk: int) -> Response:
     if params.position is not None:
         section.position = params.position
     else:
-        last_section = recipe.section_set.last()
-        if last_section is not None:
-            section.position = ordering.position_after(last_section.position)
+        last_section = recipe.section_set.all_with_deleted().last()
+        last_ingredient = recipe.ingredient_set.all_with_deleted().last()
+        last_item = last_section or last_ingredient
+        if last_item is not None:
+            section.position = ordering.position_after(last_item.position)
         else:
             section.position = ordering.FIRST_POSITION
 
