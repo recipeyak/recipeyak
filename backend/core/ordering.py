@@ -1,3 +1,10 @@
+"""
+Ordering code taken from Figma's app bundle.
+
+https://www.figma.com/blog/realtime-editing-of-ordered-sequences/#fractional-indexing/
+https://web.archive.org/web/20200326040431/https://www.figma.com/figbuild/symlinks/figma_app.0380b72e2bc066b109c64b66ba865baa.min.js
+https://steve.dignam.xyz/2020/03/31/practical-ordering/
+"""
 import math
 from typing import Iterable
 
