@@ -6,32 +6,32 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0100_auto_20220925_0137'),
+        ("core", "0100_auto_20220925_0137"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='ingredient',
-            name='deleted_at',
+            model_name="ingredient",
+            name="deleted_at",
         ),
         migrations.RemoveField(
-            model_name='note',
-            name='deleted_at',
+            model_name="note",
+            name="deleted_at",
         ),
         migrations.RemoveField(
-            model_name='recipe',
-            name='deleted_at',
+            model_name="recipe",
+            name="deleted_at",
         ),
         migrations.RemoveField(
-            model_name='section',
-            name='deleted_at',
+            model_name="section",
+            name="deleted_at",
         ),
         migrations.RemoveField(
-            model_name='step',
-            name='deleted_at',
+            model_name="step",
+            name="deleted_at",
         ),
         migrations.RemoveField(
-            model_name='timelineevent',
-            name='deleted_at',
+            model_name="timelineevent",
+            name="deleted_at",
         ),
     ]

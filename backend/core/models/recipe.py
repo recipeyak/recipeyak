@@ -9,8 +9,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import ArrayField
 from django.db import models, transaction
 from django.db.models import QuerySet
+from django.db.models.manager import BaseManager, Manager
 from django.utils import timezone
-from django.db.models.manager import Manager, BaseManager
 
 from core.models.base import CommonInfo
 from core.models.ingredient import Ingredient
@@ -139,13 +139,13 @@ class Recipe(CommonInfo):
         )
 
     @property
-    def ingredients(self) -> Manager[Ingredient]:
+    def ingredients(self) -> QuerySet[Ingredient]:
         """Return recipe ingredients ordered by creation date"""
         # TODO(sbdchd): can use reverse relation instead
         return Ingredient.objects.filter(recipe=self).order_by("created")
 
     @property
-    def ingredient_set(self) -> Manager[Ingredient]:
+    def ingredient_set(self) -> QuerySet[Ingredient]:
         return self.ingredients
 
     @property
