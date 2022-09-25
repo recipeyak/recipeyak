@@ -8,6 +8,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from core import ordering
 from core.models import ChangeType, Ingredient, RecipeChange, user_and_team_recipes
 from core.recipes.serializers import ingredient_to_text, serialize_ingredient
 from core.request import AuthedRequest
@@ -18,7 +19,7 @@ class IngredientCreateParams(RequestParams):
     quantity: str
     name: str
     description: str
-    position: Optional[float] = None
+    position: Optional[str] = None
     optional: Optional[bool] = None
 
 
@@ -28,25 +29,24 @@ def ingredients_list_view(request: AuthedRequest, recipe_pk: int) -> Response:
     params = IngredientCreateParams.parse_obj(request.data)
     recipe = get_object_or_404(user_and_team_recipes(request.user), pk=recipe_pk)
 
-    # set a position if not provided. We must included deleted because they
-    # still take up a position.
-    last_ingredient = recipe.ingredient_set.all_with_deleted().last()
-    if params.position is None:
-        if last_ingredient is not None:
-            params.position = last_ingredient.position + 10.0
-        else:
-            params.position = 10.0
-
     ingredient = Ingredient(
         quantity=params.quantity,
         name=params.name,
         description=params.description,
         recipe=recipe,
     )
-    if params.position is not None:
-        ingredient.position = params.position
     if params.optional is not None:
         ingredient.optional = params.optional
+    if params.position is not None:
+        ingredient.position = params.position
+    else:
+        last_section = recipe.section_set.all_with_deleted().last()
+        last_ingredient = recipe.ingredient_set.all_with_deleted().last()
+        last_item = last_section or last_ingredient
+        if last_item is not None:
+            ingredient.position = ordering.position_after(last_item.position)
+        else:
+            ingredient.position = ordering.FIRST_POSITION
     ingredient.save()
 
     RecipeChange.objects.create(

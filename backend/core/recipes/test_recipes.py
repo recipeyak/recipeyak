@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 from syrupy.matchers import path_type
 
+from core import ordering
 from core.models import (
     Ingredient,
     Membership,
@@ -220,7 +221,10 @@ def test_updating_step_of_recipe(client, user, recipe):
 
     step = recipe.steps[0]
 
-    step_data = {"text": "An updated step", "position": step.position + 10.0}
+    step_data = {
+        "text": "An updated step",
+        "position": ordering.position_after(step.position),
+    }
 
     url = f"/api/v1/recipes/{recipe.id}/steps/{step.id}/"
 
@@ -380,7 +384,7 @@ def test_updating_ingredient_position(client, user, recipe):
 
     ingredient = recipe.ingredients[0]
 
-    data = {"position": 15}
+    data = {"position": "15"}
     assert data["position"] != ingredient.position
 
     res = client.patch(

@@ -30,7 +30,7 @@ function createIngredient(properties?: Partial<IIngredient>): IIngredient {
     quantity: "1 pound",
     name: "tomatoes",
     description: "chopped",
-    position: 0,
+    position: "0",
     optional: false,
     ...properties,
   }

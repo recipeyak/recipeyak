@@ -1,4 +1,4 @@
-import { sortBy } from "lodash-es"
+import { last, sortBy } from "lodash-es"
 import queryString from "query-string"
 import React from "react"
 import { RouteComponentProps, useHistory } from "react-router"
@@ -9,6 +9,7 @@ import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
 import { formatHumanDate } from "@/date"
 import { useDispatch, useOnWindowFocusChange, useSelector } from "@/hooks"
+import * as ordering from "@/ordering"
 import AddIngredientOrSection from "@/pages/recipe-detail/AddIngredient"
 import AddStep from "@/pages/recipe-detail/AddStep"
 import { Ingredient } from "@/pages/recipe-detail/Ingredient"
@@ -44,7 +45,7 @@ type SectionsAndIngredients = ReadonlyArray<
       readonly item: {
         readonly id: number
         readonly title: string
-        readonly position: number
+        readonly position: string
       }
     }
 >
@@ -263,6 +264,10 @@ function RecipeDetails({
             autoFocus
             addingIngredient={!!recipe.addingIngredient}
             onCancel={handleHideAddIngredient}
+            newPosition={ordering.positionAfter(
+              last(sectionsAndIngredients)?.item.position ??
+                ordering.FIRST_POSITION,
+            )}
           />
         ) : (
           editingEnabled && (
@@ -290,6 +295,9 @@ function RecipeDetails({
               setAddStep(false)
             }}
             loading={recipe.addingStepToRecipe}
+            position={ordering.positionAfter(
+              last(recipe.steps)?.position ?? ordering.FIRST_POSITION,
+            )}
           />
         ) : (
           editingEnabled && (

@@ -1,29 +1,32 @@
+import * as ordering from "@/ordering"
+
 export function getNewPos(
-  list: ReadonlyArray<{ readonly position: number }>,
+  list: ReadonlyArray<{ readonly position: string }>,
   index: number,
-): number | null {
+): string | null {
   const nextCard = list[index + 1]
   const prevCard = list[index - 1]
   if (nextCard == null && prevCard == null) {
     // there is only one card in the list, so we don't make any change
     return null
   }
+
   if (nextCard == null && prevCard != null) {
-    return prevCard.position + 10.0
+    return ordering.positionAfter(prevCard.position)
   }
   if (nextCard != null && prevCard == null) {
-    return nextCard.position / 2
+    return ordering.positionBefore(nextCard.position)
   }
   if (nextCard != null && prevCard != null) {
-    return (nextCard.position - prevCard.position) / 2 + prevCard.position
+    return ordering.positionBetween(prevCard.position, nextCard.position)
   }
   return null
 }
 
 export function getNewPosIngredients(
-  list: ReadonlyArray<{ readonly item: { readonly position: number } }>,
+  list: ReadonlyArray<{ readonly item: { readonly position: string } }>,
   index: number,
-): number | null {
+): string | null {
   const nextCard = list[index + 1]
   const prevCard = list[index - 1]
   if (nextCard == null && prevCard == null) {
@@ -31,15 +34,15 @@ export function getNewPosIngredients(
     return null
   }
   if (nextCard == null && prevCard != null) {
-    return prevCard.item.position + 10.0
+    return ordering.positionAfter(prevCard.item.position)
   }
   if (nextCard != null && prevCard == null) {
-    return nextCard.item.position / 2
+    return ordering.positionBefore(nextCard.item.position)
   }
   if (nextCard != null && prevCard != null) {
-    return (
-      (nextCard.item.position - prevCard.item.position) / 2 +
-      prevCard.item.position
+    return ordering.positionBetween(
+      prevCard.item.position,
+      nextCard.item.position,
     )
   }
   return null

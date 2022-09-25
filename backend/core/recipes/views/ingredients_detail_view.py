@@ -19,7 +19,7 @@ class IngredientsPatchParams(RequestParams):
     quantity: Optional[str] = None
     name: Optional[str] = None
     description: Optional[str] = None
-    position: Optional[int] = None
+    position: Optional[str] = None
     optional: Optional[bool] = None
 
 

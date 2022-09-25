@@ -17,7 +17,7 @@ from core.serialization import RequestParams
 
 class StepPatchParams(RequestParams):
     text: Optional[str] = None
-    position: Optional[float] = None
+    position: Optional[str] = None
 
 
 @api_view(["PATCH", "DELETE"])

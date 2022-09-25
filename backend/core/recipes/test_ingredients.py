@@ -21,6 +21,7 @@ def test_position_constraint_with_deleted_ingredient(recipe: Recipe) -> None:
     first_step.save()
 
 
+@pytest.mark.xfail(reason="we don't support a constrain on this yet in the API.")
 def test_position_constraint(recipe: Recipe) -> None:
     """
     Ensure that with undeleted steps we enforce the unique constraint on

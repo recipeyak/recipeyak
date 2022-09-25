@@ -28,7 +28,10 @@ class Ingredient(CommonInfo, SoftDeleteObject):
     description = models.CharField(max_length=255, blank=True)
     recipe = models.ForeignKey["Recipe"]("Recipe", on_delete=models.CASCADE)
     recipe_id: int
-    position = models.FloatField()
+    _deprecated_position = models.FloatField(
+        null=True, db_column="_deprecated_position"
+    )
+    position = models.TextField(db_column="position")
     optional = models.BooleanField(default=False)
 
     objects = SoftDeleteManager["Ingredient"]()

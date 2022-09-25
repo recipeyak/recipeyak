@@ -16,7 +16,10 @@ class Step(CommonInfo, SoftDeleteObject):
     text = models.TextField()
     recipe = models.ForeignKey["Recipe"]("Recipe", on_delete=models.CASCADE)
     recipe_id: int
-    position = models.FloatField()
+    _deprecated_position = models.FloatField(
+        null=True, db_column="_deprecated_position"
+    )
+    position = models.TextField(db_column="position")
 
     objects = SoftDeleteManager["Step"]()
 

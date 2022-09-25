@@ -92,7 +92,7 @@ class StepSerializer(BaseModelSerializer):
 
 
 class SectionSerializer(BaseModelSerializer):
-    position = serializers.FloatField(required=False)
+    position = serializers.CharField(required=False)
 
     class Meta:
         model = Section
@@ -266,7 +266,7 @@ class IngredientResponse(pydantic.BaseModel):
     quantity: str
     name: str
     description: str
-    position: int
+    position: str
     optional: bool
 
 
@@ -296,7 +296,7 @@ def serialize_ingredient(ingredient: Ingredient) -> IngredientResponse:
 class StepResponse(pydantic.BaseModel):
     id: int
     text: str
-    position: int
+    position: str
 
 
 def serialize_step(step: Step) -> StepResponse:

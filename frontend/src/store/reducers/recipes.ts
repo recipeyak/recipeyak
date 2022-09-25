@@ -229,6 +229,7 @@ export async function updatingRecipeAsync(
 interface IAddStepToRecipeArg {
   readonly id: IRecipe["id"]
   readonly step: IStep["text"] | undefined
+  readonly position: IStep["position"]
 }
 
 export const addStepToRecipe = createAsyncAction(
@@ -248,7 +249,11 @@ async function addingStepToRecipeAsync(
   payload: IAddStepToRecipeArg,
   dispatch: Dispatch,
 ) {
-  const res = await api.addStepToRecipe(payload.id, payload.step)
+  const res = await api.addStepToRecipe(
+    payload.id,
+    payload.step,
+    payload.position,
+  )
   if (isOk(res)) {
     dispatch(
       addStepToRecipe.success({
@@ -307,7 +312,7 @@ export const addSectionToRecipe = createStandardAction(
   readonly recipeId: number
   readonly section: {
     readonly title: string
-    readonly position: number
+    readonly position: string
     readonly id: number
   }
 }>()
@@ -324,7 +329,7 @@ export const updateSectionForRecipe = createStandardAction(
   readonly recipeId: number
   readonly sectionId: number
   readonly title?: string
-  readonly position?: number
+  readonly position?: string
 }>()
 
 export const setSchedulingRecipe = createStandardAction(
@@ -450,7 +455,7 @@ export interface IIngredient {
   readonly quantity: string
   readonly name: string
   readonly description: string
-  readonly position: number
+  readonly position: string
   readonly optional: boolean
   readonly updating?: boolean
   readonly removing?: boolean
@@ -459,7 +464,7 @@ export interface IIngredient {
 export interface IStep {
   readonly id: number
   readonly text: string
-  readonly position: number
+  readonly position: string
   readonly updating?: boolean
   readonly removing?: boolean
 }
@@ -529,7 +534,7 @@ export interface IRecipe {
   readonly sections: ReadonlyArray<{
     readonly id: number
     readonly title: string
-    readonly position: number
+    readonly position: string
   }>
   readonly created: string
   readonly archived_at: string | null
