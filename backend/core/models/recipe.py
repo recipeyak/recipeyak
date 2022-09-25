@@ -9,8 +9,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import ArrayField
 from django.db import models, transaction
 from django.db.models import QuerySet
+from django.db.models.manager import BaseManager, Manager
 from django.utils import timezone
-from softdelete.models import SoftDeleteManager, SoftDeleteObject
 
 from core.models.base import CommonInfo
 from core.models.ingredient import Ingredient
@@ -25,7 +25,7 @@ if TYPE_CHECKING:
     from core.models.scrape import Scrape  # noqa: F401
 
 
-class Recipe(CommonInfo, SoftDeleteObject):
+class Recipe(CommonInfo):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     author = models.CharField(max_length=255, blank=True, null=True)
@@ -68,7 +68,7 @@ class Recipe(CommonInfo, SoftDeleteObject):
     )
     scrape = models.ForeignKey["Scrape"]("Scrape", on_delete=models.SET_NULL, null=True)
 
-    objects = SoftDeleteManager["Recipe"]()
+    objects = Manager["Recipe"]()
 
     notes: QuerySet["Note"]
 
@@ -139,17 +139,17 @@ class Recipe(CommonInfo, SoftDeleteObject):
         )
 
     @property
-    def ingredients(self) -> SoftDeleteManager[Ingredient]:
+    def ingredients(self) -> QuerySet[Ingredient]:
         """Return recipe ingredients ordered by creation date"""
         # TODO(sbdchd): can use reverse relation instead
         return Ingredient.objects.filter(recipe=self).order_by("created")
 
     @property
-    def ingredient_set(self) -> SoftDeleteManager[Ingredient]:
+    def ingredient_set(self) -> QuerySet[Ingredient]:
         return self.ingredients
 
     @property
-    def steps(self) -> SoftDeleteManager["Step"]:
+    def steps(self) -> BaseManager["Step"]:
         """Return recipe steps ordered by creation date"""
         # TODO(sbdchd): can use reverse relation instead
         return Step.objects.filter(recipe=self).order_by("position", "created")
@@ -159,11 +159,11 @@ class Recipe(CommonInfo, SoftDeleteObject):
         return ScheduledRecipe.objects.filter(recipe=self)
 
     @property
-    def step_set(self) -> SoftDeleteManager[Step]:
+    def step_set(self) -> BaseManager[Step]:
         return self.steps
 
     @property
-    def section_set(self) -> SoftDeleteManager[Section]:
+    def section_set(self) -> BaseManager[Section]:
         return Section.objects.filter(recipe=self)
 
     def get_last_scheduled(self) -> Optional[date]:

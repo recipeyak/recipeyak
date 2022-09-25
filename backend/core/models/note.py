@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
 
 from django.db import models
-from softdelete.models import SoftDeleteManager, SoftDeleteObject
 
 from core.models.base import CommonInfo
 
@@ -9,7 +8,7 @@ if TYPE_CHECKING:
     from core.models import User, Recipe, Upload, Reaction  # noqa: F401
 
 
-class Note(CommonInfo, SoftDeleteObject):
+class Note(CommonInfo):
     """Helpful information for a recipe"""
 
     text = models.TextField()
@@ -28,8 +27,6 @@ class Note(CommonInfo, SoftDeleteObject):
 
     uploads: "models.QuerySet[Upload]"
     reactions: "models.QuerySet[Reaction]"
-
-    objects = SoftDeleteManager["Note"]()
 
     class Meta:
         ordering = ["-created"]

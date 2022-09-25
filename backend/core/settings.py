@@ -57,7 +57,6 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    "softdelete",
 ]
 
 sentry_sdk.init(
