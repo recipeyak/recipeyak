@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
 
 from django.db import models
-from softdelete.models import SoftDeleteManager, SoftDeleteObject
 
 from core.models.base import CommonInfo
 
@@ -9,7 +8,7 @@ if TYPE_CHECKING:
     from core.models import Recipe  # noqa: F401
 
 
-class Ingredient(CommonInfo, SoftDeleteObject):
+class Ingredient(CommonInfo):
     """
     Recipe ingredient
 
@@ -33,8 +32,6 @@ class Ingredient(CommonInfo, SoftDeleteObject):
     )
     position = models.TextField(db_column="position")
     optional = models.BooleanField(default=False)
-
-    objects = SoftDeleteManager["Ingredient"]()
 
     class Meta:
         ordering = ["position"]

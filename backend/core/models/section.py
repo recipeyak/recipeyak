@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
 
 from django.db import models
-from softdelete.models import SoftDeleteManager, SoftDeleteObject
 
 from core.models.base import CommonInfo
 
@@ -9,7 +8,7 @@ if TYPE_CHECKING:
     from core.models.recipe import Recipe  # noqa: F401
 
 
-class Section(CommonInfo, SoftDeleteObject):
+class Section(CommonInfo):
     """
     Recipe ingredient section. Used to divide the ingredients into groups for
     the UI.
@@ -27,8 +26,6 @@ class Section(CommonInfo, SoftDeleteObject):
         null=True, db_column="_deprecated_position"
     )
     position = models.TextField(db_column="position")
-
-    objects = SoftDeleteManager["Section"]()
 
     class Meta:
         ordering = ["position"]
