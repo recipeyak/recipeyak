@@ -23,8 +23,10 @@ class Section(CommonInfo, SoftDeleteObject):
     title = models.CharField(
         max_length=255, help_text="name of the ingredient section group"
     )
-    position = models.FloatField()
-    position_str = models.TextField(null=True)
+    _deprecated_position = models.FloatField(
+        null=True, db_column="_deprecated_position"
+    )
+    position = models.TextField(db_column="position")
 
     objects = SoftDeleteManager["Section"]()
 
