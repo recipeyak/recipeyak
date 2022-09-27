@@ -103,7 +103,9 @@ function RecipeList(props: IRecipeList) {
         <>
           <div className="d-flex align-items-center">
             <hr className="flex-grow-1" />
-            <b className="mx-4 my-4">Archived Recipes</b>
+            <b className="mx-4 my-4">
+              Archived Recipes: {archivedResults.length} {"(show)"}
+            </b>
             <hr className="flex-grow-1" />
           </div>
           <div className="recipe-grid">

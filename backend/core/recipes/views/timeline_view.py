@@ -17,7 +17,7 @@ from core.request import AuthedRequest
 @permission_classes((IsAuthenticated,))
 def get_recipe_timeline(request: AuthedRequest, recipe_pk: int) -> Response:
     user: User = request.user
-    team = user.recipe_team
+    team = user.schedule_team
 
     recipe = get_object_or_404(Recipe, pk=recipe_pk)
 
@@ -25,7 +25,7 @@ def get_recipe_timeline(request: AuthedRequest, recipe_pk: int) -> Response:
         return Response(status=status.HTTP_403_FORBIDDEN)
 
     scheduled_recipes = ScheduledRecipe.objects.filter(
-        (Q(team=team)) | Q(user=user)
+        Q(team=team) | Q(user=user)
     ).filter(recipe=recipe_pk)
 
     return Response(RecipeTimelineSerializer(scheduled_recipes, many=True).data)

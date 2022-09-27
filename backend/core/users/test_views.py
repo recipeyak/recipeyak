@@ -11,7 +11,7 @@ from core.models import User
 
 
 @pytest.mark.django_db
-def test_detail(client, user, empty_team):
+def test_detail(client, user):
     res = client.get("/api/v1/user/")
     assert res.status_code == status.HTTP_403_FORBIDDEN, "authentication required"
 
@@ -25,7 +25,6 @@ def test_detail(client, user, empty_team):
         "avatar_url",
         "has_usable_password",
         "dark_mode_enabled",
-        "selected_team",
     }
     assert expected.issubset(keys), "sanity test to ensure we have what we expect"
     original_data = res.json()
@@ -38,7 +37,6 @@ def test_detail(client, user, empty_team):
     data = {
         "email": "testing123@example.com",
         "dark_mode_enabled": True,
-        "selected_team": empty_team.id,
         "name": "John",
     }
     for key in data.keys():
