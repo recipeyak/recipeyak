@@ -56,7 +56,6 @@ def recipe_get_view(request: AuthedRequest) -> Response:
             "source",
             "time",
             "servings",
-            "edits",
             "modified",
             "owner_team",
             "owner_team__name",
