@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react"
 import { connect } from "react-redux"
 import { Link } from "react-router-dom"
 
-import { TextInput } from "@/components/Forms"
+import cls from "@/classnames"
+import { CheckBox, TextInput } from "@/components/Forms"
 import { Loader } from "@/components/Loader"
 import RecipeItem from "@/pages/recipe-list/RecipeItem"
 import { parseIntOrNull } from "@/parseIntOrNull"
@@ -57,6 +58,7 @@ interface IRecipeList {
 }
 
 function RecipeList(props: IRecipeList) {
+  const [showArchived, setShowArchived] = useState(false)
   if (!isSuccessOrRefetching(props.recipes)) {
     return <Loader />
   }
@@ -96,10 +98,29 @@ function RecipeList(props: IRecipeList) {
 
   return (
     <div className={scrollClass}>
+      <div className="mb-2 d-flex justify-space-between flex-wrap">
+        <div className="fs-14px mr-2">
+          results: {normalResults.length + archivedResults.length}{" "}
+          {archivedResults.length > 0 && (
+            <>({archivedResults.length} archived)</>
+          )}
+        </div>
+        <div className="fs-14px">
+          <span>show all: </span>{" "}
+          <CheckBox
+            onChange={() => {
+              setShowArchived((s) => !s)
+            }}
+            checked={showArchived}
+            name="optional"
+            className="mr-2"
+          />
+        </div>
+      </div>
       <div className="recipe-grid">
         <Results recipes={normalResults} query={props.query} />
       </div>
-      {archivedResults.length > 0 && (
+      {archivedResults.length > 0 && showArchived ? (
         <>
           <div className="d-flex align-items-center">
             <hr className="flex-grow-1" />
@@ -110,7 +131,7 @@ function RecipeList(props: IRecipeList) {
             <Results recipes={archivedResults} query={props.query} />
           </div>
         </>
-      )}
+      ) : null}
     </div>
   )
 }
@@ -145,6 +166,7 @@ function getSearch(qs: string): string {
   return `recipeId:${recipeId}`
 }
 
+// TODO(sbdchd): this really shouldn't be shared like it is
 function RecipesListSearch({
   fetchData,
   noPadding,
@@ -169,15 +191,15 @@ function RecipesListSearch({
   }
 
   return (
-    <>
+    <div className={cls(noPadding ? "" : "mw-900px ml-auto mr-auto")}>
       <TextInput
         value={query}
-        className={noPadding ? "" : "mb-4"}
+        className={cls("fs-14px", noPadding ? "" : "mb-2")}
         onChange={handleQueryChange}
         placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:"
       />
       <RecipeList recipes={recipes} query={query} drag={drag} scroll={scroll} />
-    </>
+    </div>
   )
 }
 
