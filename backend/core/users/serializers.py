@@ -7,16 +7,11 @@ from rest_framework import serializers
 from user_sessions.models import Session
 
 from core import user_agent
-from core.models import Team, User
+from core.models import User
 from core.serialization import BaseModelSerializer
 
 
 class UserSerializer(BaseModelSerializer):
-    # we've renamed `recipe_team` in the backend, but to prevent breaking the
-    # API we're preserving the API facing name.
-    selected_team = serializers.PrimaryKeyRelatedField(
-        source="recipe_team", queryset=Team.objects.all(), allow_null=True
-    )
     name = serializers.CharField(allow_blank=True, allow_null=True)
 
     def to_representation(self, instance: User) -> dict[str, Any]:
@@ -34,7 +29,6 @@ class UserSerializer(BaseModelSerializer):
             "avatar_url",
             "has_usable_password",
             "dark_mode_enabled",
-            "selected_team",
             "schedule_team",
         )
 
