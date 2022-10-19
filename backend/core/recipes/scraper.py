@@ -98,7 +98,6 @@ def scrape_recipe(*, url: str) -> ScrapeResult:
             stream=True,
             headers={
                 # naive attempt to look like a browser
-                "Accept-Encoding": "gzip, deflate, br",
                 "Host": URL(url).host,
                 "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Safari/605.1.15",
                 "Accept-Language": "en-US,en;q=0.9",
