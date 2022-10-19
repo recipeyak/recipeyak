@@ -384,7 +384,6 @@ export interface IRecipeBasic
   extends Omit<
     IRecipe,
     | "id"
-    | "edits"
     | "modified"
     | "last_scheduled"
     | "owner"
@@ -523,7 +522,6 @@ export interface IRecipe {
   readonly time: string
   readonly servings: string | null
   readonly steps: ReadonlyArray<IStep>
-  readonly edits: ReadonlyArray<unknown>
   readonly timelineItems: readonly TimelineItem[]
   readonly modified: string
   readonly last_scheduled: string

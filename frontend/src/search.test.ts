@@ -12,7 +12,6 @@ function createRecipe(properties?: Partial<IRecipe>): IRecipe {
     steps: [],
     modified: "",
     last_scheduled: "",
-    edits: [],
     team: 10,
     owner: { type: "user", id: 5 },
     ingredients: [],

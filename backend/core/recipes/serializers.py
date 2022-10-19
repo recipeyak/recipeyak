@@ -143,7 +143,6 @@ class RecipeSerializer(BaseModelSerializer):
             "timelineItems",
             "sections",
             "servings",
-            "edits",
             "modified",
             "owner",
             "team",

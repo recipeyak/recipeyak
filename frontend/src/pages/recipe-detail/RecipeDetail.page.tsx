@@ -213,6 +213,8 @@ function RecipeDetails({
     }
   }, [editingEnabled])
 
+  const steps = sortBy(recipe.steps, (x) => x.position)
+
   return (
     <section className="ingredients-preparation-grid">
       <div>
@@ -281,14 +283,14 @@ function RecipeDetails({
       <div>
         <SectionTitle>Preparation</SectionTitle>
         <StepContainer
-          steps={recipe.steps}
+          steps={steps}
           isEditing={editingEnabled}
           recipeID={recipe.id}
         />
         {addStep ? (
           <AddStep
             id={recipe.id}
-            index={recipe.steps.length + 1}
+            index={steps.length + 1}
             step={recipe.draftStep}
             autoFocus
             onCancel={() => {
@@ -296,7 +298,7 @@ function RecipeDetails({
             }}
             loading={recipe.addingStepToRecipe}
             position={ordering.positionAfter(
-              last(recipe.steps)?.position ?? ordering.FIRST_POSITION,
+              last(steps)?.position ?? ordering.FIRST_POSITION,
             )}
           />
         ) : (
