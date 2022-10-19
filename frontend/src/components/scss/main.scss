@@ -121,7 +121,8 @@ a {
 .recipe-grid,
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  // basically (1000px - (4 * grid-gap)) / 4 rows  -> 225px
+  grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
   grid-gap: 1rem;
 }
 
