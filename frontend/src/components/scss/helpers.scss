@@ -229,7 +229,7 @@
   grid-row: 1;
 }
 
-@each $i in (200px, 400px, 800px, 900px, 1000px) {
+@each $i in (200px, 400px, 800px, 1000px) {
   .mw-#{$i},
   .max-width-#{$i} {
     max-width: $i !important;

@@ -191,7 +191,7 @@ function RecipesListSearch({
   }
 
   return (
-    <div className={cls(noPadding ? "" : "mw-900px ml-auto mr-auto")}>
+    <div className={cls(noPadding ? "" : "mw-1000px ml-auto mr-auto")}>
       <TextInput
         value={query}
         className={cls("fs-14px", noPadding ? "" : "mb-2")}
