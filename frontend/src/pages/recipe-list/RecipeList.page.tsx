@@ -194,7 +194,7 @@ function RecipesListSearch({
     <div className={cls(noPadding ? "" : "mw-1000px ml-auto mr-auto")}>
       <TextInput
         value={query}
-        className={cls("fs-14px", noPadding ? "" : "mb-2")}
+        className={cls(noPadding ? "" : "mb-2")}
         onChange={handleQueryChange}
         placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:"
       />
