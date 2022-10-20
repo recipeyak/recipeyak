@@ -10,10 +10,10 @@ main() {
 
   if [ "$CI" ]; then
     ./.venv/bin/black . --check
-    ./.venv/bin/isort --check-only
+    ./.venv/bin/isort --check-only .
   else
     ./.venv/bin/black .
-    ./.venv/bin/isort -y
+    ./.venv/bin/isort .
   fi
 }
 

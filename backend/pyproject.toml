@@ -38,7 +38,6 @@ pytest-watch = "^4.2"
 mypy_extensions = "^0.4.1"
 flake8-pie = "^0.4.0"
 flake8-print = "^3.1"
-isort = "4.3.21"
 flake8-comprehensions = "^2.1"
 django-types = "^0.16.0"
 types-PyYAML = "^6.0.0"
@@ -48,6 +47,7 @@ black = "^22.6.0"
 boto3-stubs = {extras = ["s3"], version = "^1.24.44"}
 flake8-tidy-imports = "^4.8.0"
 types-urllib3 = "^1.26.23"
+isort = "5.10.1"
 
 [tool.black]
 exclude = '''
@@ -56,3 +56,7 @@ exclude = '''
   | node_modules
 )/
 '''
+
+[tool.isort]
+profile = "black"
+skip_gitignore = true

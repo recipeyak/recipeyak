@@ -6,7 +6,7 @@ from django.db import models
 from core.models.base import CommonInfo
 
 if TYPE_CHECKING:
-    from core.models import User, Recipe  # noqa: F401
+    from core.models import Recipe, User  # noqa: F401
 
 
 class TimelineEventKind(Enum):
