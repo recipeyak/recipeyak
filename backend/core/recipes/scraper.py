@@ -140,11 +140,13 @@ def scrape_recipe(*, url: str) -> ScrapeResult:
         instructions=r.instructions_list(),
         author=r.author(),
     )
+    parsed = asdict(scrape_result)
+    del parsed["id"]
     scrape = Scrape.objects.create(
         html=page_data,
         url=url,
         duration_sec=end - start,
-        parsed=asdict(scrape_result),
+        parsed=parsed,
     )
     scrape_result.id = scrape.id
 

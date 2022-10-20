@@ -12,6 +12,7 @@ from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from core import ordering
 from core.cumin.quantity import parse_ingredient
 from core.models import (
     Ingredient,
@@ -234,11 +235,12 @@ def recipe_post_view(request: AuthedRequest) -> Response:
         )
 
         ingredients: list[Ingredient] = []
-        for idx, ingredient in enumerate(scrape_result.ingredients):
+        position = ordering.FIRST_POSITION
+        for ingredient in scrape_result.ingredients:
             parsed_ingredient = parse_ingredient(ingredient)
             ingredients.append(
                 Ingredient(
-                    position=idx,
+                    position=position,
                     recipe=recipe,
                     quantity=parsed_ingredient.quantity,
                     name=parsed_ingredient.name,
@@ -246,12 +248,14 @@ def recipe_post_view(request: AuthedRequest) -> Response:
                     optional=parsed_ingredient.optional,
                 )
             )
+            position = ordering.position_after(position)
         Ingredient.objects.bulk_create(ingredients)
 
-        steps = [
-            Step(text=step, position=idx, recipe=recipe)
-            for idx, step in enumerate(scrape_result.instructions)
-        ]
+        steps: list[Step] = []
+        position = ordering.FIRST_POSITION
+        for step in scrape_result.instructions:
+            steps.append(Step(text=step, position=position, recipe=recipe))
+            position = ordering.position_after(position)
         Step.objects.bulk_create(steps)
     else:
         recipe = Recipe.objects.create(owner=team, name=params.name)
