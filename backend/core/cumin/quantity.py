@@ -324,7 +324,7 @@ UNIT_TO_ALIASES: dict[Unit, list[str]] = {
     Unit.OUNCE: ["oz", "ounce", "ounces"],
     Unit.MILLILITER: ["millilter", "ml"],
     Unit.TEASPOON: ["tsp", "teaspoon", "teaspoons", "t"],
-    Unit.TABLESPOON: ["tablespoon", "tablespoons", "tbs", "T"],
+    Unit.TABLESPOON: ["tablespoon", "tablespoons", "tbsp", "tbs", "T"],
     Unit.POUND: [
         "pound",
         "pounds",

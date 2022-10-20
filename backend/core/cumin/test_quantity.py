@@ -232,6 +232,10 @@ def test_adding_incompatible_units() -> None:
             ("3 1/2 cups", "water"),
         ),
         (
+            "1 tbsp light soy sauce",
+            ("1 tbsp", "light soy sauce"),
+        ),
+        (
             "2 pounds boneless skinless chicken thighs",
             ("2 pounds", "boneless skinless chicken thighs"),
         ),
