@@ -506,7 +506,7 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     textarea: !isEditing,
   })
 
-  const isDisabled = editorText === ""
+  const isDisabled = editorText === "" && uploadedImages.length === 0
 
   return {
     isEditing,

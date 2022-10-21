@@ -4,7 +4,7 @@ from typing import List, Optional
 
 from django.db import transaction
 from django.shortcuts import get_object_or_404
-from pydantic import validator
+from pydantic import root_validator
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import MethodNotAllowed
@@ -21,11 +21,13 @@ class CreateNoteParams(RequestParams):
     text: str
     attachment_upload_ids: List[str]
 
-    @validator("text")
-    def validate_text(cls, v: str) -> str:
-        if len(v) < 1:
+    @root_validator
+    def validate_text(
+        cls, values: dict[str, str | list[str]]
+    ) -> dict[str, str | list[str]]:
+        if len(values["text"]) < 0 and len(values["attachment_upload_ids"]) < 0:
             raise ValueError("non-empty text required")
-        return v
+        return values
 
 
 class EditNoteParams(RequestParams):

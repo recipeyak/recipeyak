@@ -34,12 +34,6 @@ class Note(CommonInfo):
 
     class Meta:
         ordering = ["-created"]
-        constraints = [
-            models.CheckConstraint(
-                check=models.Q(text__length__gt=0),
-                name="minimum_length_required",
-            )
-        ]
 
     def __str__(self):
         return self.text
