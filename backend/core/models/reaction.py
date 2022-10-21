@@ -5,7 +5,7 @@ from django.db import models
 from core.models.base import CommonInfo
 
 if TYPE_CHECKING:
-    from core.models import User, Note, Upload, Step  # noqa: F401
+    from core.models import Note, Step, Upload, User  # noqa: F401
 
 
 class Reaction(CommonInfo):

@@ -45,7 +45,10 @@
     "editor.tabSize": 2
   },
   "[python]": {
-    "editor.tabSize": 4
+    "editor.tabSize": 4,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
   },
   "scss.format.enable": true
 }

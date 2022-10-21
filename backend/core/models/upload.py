@@ -11,7 +11,7 @@ from core import config
 from core.models.base import CommonInfo
 
 if TYPE_CHECKING:
-    from core.models import User, Note  # noqa: F401
+    from core.models import Note, User  # noqa: F401
 
 s3 = boto3.client(
     "s3",

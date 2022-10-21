@@ -5,7 +5,7 @@ from django.db import models
 from core.models.base import CommonInfo
 
 if TYPE_CHECKING:
-    from core.models import User, Recipe, Upload, Reaction  # noqa: F401
+    from core.models import Reaction, Recipe, Upload, User  # noqa: F401
 
 
 class Note(CommonInfo):
