@@ -26,7 +26,7 @@ class CreateNoteParams(RequestParams):
         cls, values: dict[str, str | list[str]]
     ) -> dict[str, str | list[str]]:
         if len(values["text"]) < 0 and len(values["attachment_upload_ids"]) < 0:
-            raise ValueError("non-empty text required")
+            raise ValueError("non-empty note required")
         return values
 
 
