@@ -19,10 +19,10 @@ from core.models.section import Section
 from core.models.step import Step
 
 if TYPE_CHECKING:
-    from core.models.user import User
-    from core.models.team import Team
     from core.models.note import Note
     from core.models.scrape import Scrape  # noqa: F401
+    from core.models.team import Team
+    from core.models.user import User
 
 
 class Recipe(CommonInfo):
