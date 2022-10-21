@@ -48,7 +48,7 @@ export const ButtonPlain = ({
   return (
     <button
       {...props}
-      disabled={loading}
+      disabled={loading || props.disabled}
       className={classNames("my-button", "br-6", className, buttonSize, {
         "is-loading": loading,
       })}

@@ -27,6 +27,7 @@ import {
   RecipeTimelineItem,
   Upload,
 } from "@/store/reducers/recipes"
+import { showNotificationWithTimeoutAsync } from "@/store/thunks"
 import { styled } from "@/theme"
 import { notUndefined } from "@/utils/general"
 import { uuid4 } from "@/uuid"
@@ -286,7 +287,7 @@ export function Note({ note, recipeId, className }: INoteProps) {
     >
       <Avatar avatarURL={note.created_by.avatar_url} className="mr-2" />
       <div className="w-100">
-        <p className="d-flex align-items-center">
+        <div className="d-flex align-items-center">
           <b>{note.created_by.name}</b>{" "}
           <a href={`#${noteId}`} className="ml-2">
             <NoteTimeStamp created={note.created} />
@@ -302,7 +303,7 @@ export function Note({ note, recipeId, className }: INoteProps) {
           >
             edit
           </SmallAnchor>
-        </p>
+        </div>
         {!isEditing ? (
           <div>
             <Markdown>{note.text}</Markdown>
@@ -470,6 +471,11 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
             }),
           )
           cancelEditingNote()
+        } else {
+          showNotificationWithTimeoutAsync(dispatch)({
+            message: "problem saving note",
+            level: "danger",
+          })
         }
         setIsLoading(false)
       })
@@ -500,7 +506,7 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     textarea: !isEditing,
   })
 
-  const isDisabled = draftText === ""
+  const isDisabled = editorText === ""
 
   return {
     isEditing,

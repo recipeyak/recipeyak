@@ -2,23 +2,29 @@ from __future__ import annotations
 
 from typing import List, Optional
 
+from core.models import Note, Upload, user_and_team_notes, user_and_team_recipes
+from core.recipes.serializers import serialize_note
+from core.request import AuthedRequest
+from core.serialization import RequestParams
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+from pydantic import validator
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from core.models import Note, Upload, user_and_team_notes, user_and_team_recipes
-from core.recipes.serializers import serialize_note
-from core.request import AuthedRequest
-from core.serialization import RequestParams
-
 
 class CreateNoteParams(RequestParams):
     text: str
     attachment_upload_ids: List[str]
+
+    @validator("text")
+    def validate_text(cls, v: str) -> str:
+        if len(v) < 1:
+            raise ValueError("non-empty text required")
+        return v
 
 
 class EditNoteParams(RequestParams):
