@@ -4,6 +4,7 @@ from typing import List, Optional
 
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+from pydantic import root_validator
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import MethodNotAllowed
@@ -19,6 +20,14 @@ from core.serialization import RequestParams
 class CreateNoteParams(RequestParams):
     text: str
     attachment_upload_ids: List[str]
+
+    @root_validator
+    def validate_text(
+        cls, values: dict[str, str | list[str]]
+    ) -> dict[str, str | list[str]]:
+        if len(values["text"]) < 0 and len(values["attachment_upload_ids"]) < 0:
+            raise ValueError("non-empty note required")
+        return values
 
 
 class EditNoteParams(RequestParams):
