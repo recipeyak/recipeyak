@@ -1,15 +1,11 @@
 from typing import TYPE_CHECKING
 
 from django.db import models
-from django.db.models.functions import Length
 
 from core.models.base import CommonInfo
 
 if TYPE_CHECKING:
     from core.models import User, Recipe, Upload, Reaction  # noqa: F401
-
-
-models.TextField.register_lookup(Length)
 
 
 class Note(CommonInfo):
