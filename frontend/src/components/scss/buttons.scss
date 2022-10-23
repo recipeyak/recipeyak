@@ -108,6 +108,9 @@
     background-color: $danger;
     border-color: transparent !important;
     color: #fff;
+    &[disabled] {
+      background-color: darken($danger, 20%);
+    }
   }
 
   &.is-primary {
@@ -133,10 +136,12 @@
       border-right-color: transparent;
       border-top-color: transparent;
     }
+    &[disabled] {
+      background-color: darken($primary-color, 20%);
+    }
   }
 
   &[disabled] {
-    background-color: darken($primary-color, 20%);
     color: darken(#fff, 15%);
     cursor: default;
   }

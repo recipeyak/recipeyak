@@ -221,7 +221,7 @@ export default class ListItem extends React.Component<
       <div ref={this.element}>
         <section
           className={cls({ "cursor-pointer": this.props.isEditing })}
-          title="click to edit"
+          title={this.props.isEditing ? "click to edit" : undefined}
           onClick={() => {
             if (!this.props.isEditing) {
               return
