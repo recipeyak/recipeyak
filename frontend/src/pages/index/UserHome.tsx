@@ -28,15 +28,15 @@ import { css, styled } from "@/theme"
 import { updateQueryParamsAsync } from "@/utils/querystring"
 
 const SearchInput = styled(forms.SearchInput)`
-  font-size: 1.5rem !important;
   margin-bottom: 0.25rem;
+  font-size: 18px;
 `
 
 const SearchInputAligner = styled.div`
   display: flex;
   justify-content: center;
   padding-top: 1rem;
-  padding-bottom: 4rem;
+  padding-bottom: 1rem;
 `
 
 const SearchInputContainer = styled.div`
@@ -483,7 +483,7 @@ const UserHome = () => {
             </SearchOptions>
           </SearchInputContainer>
         </SearchInputAligner>
-        <div className="d-flex flex-wrap justify-content-center column-gap-2rem row-gap-1rem">
+        <div className="d-flex flex-wrap justify-content-center column-gap-1rem row-gap-1rem">
           <SchedulePreview />
           <RecentlyViewed />
           <RecentlyCreated />
