@@ -8,6 +8,7 @@ We use the `circleci` CLI to stop the job early.
 import os
 import subprocess
 import sys
+import shutil
 
 MAIN_BRANCH = "master"
 
@@ -17,9 +18,10 @@ def main(path: str) -> int:
     # following to make it not point to the current ref.
     # https://discuss.circleci.com/t/git-checkout-of-a-branch-destroys-local-reference-to-master/23781/7
     if os.getenv("CIRCLECI") and os.getenv("CIRCLE_BRANCH") != MAIN_BRANCH:
-        # slim version of image is missing git
-        subprocess.run(["apt-get", "update"], check=True)
-        subprocess.run(["apt-get", "install", "-y", "git"], check=True)
+        if not shutil.which("git"):
+            # slim version of image is missing git
+            subprocess.run(["apt-get", "update"], check=True)
+            subprocess.run(["apt-get", "install", "-y", "git"], check=True)
         subprocess.run(
             [
                 "git",
