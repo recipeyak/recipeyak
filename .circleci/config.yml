@@ -3,7 +3,7 @@ version: 2
 jobs:
   backend_test:
     docker:
-      - image: python:3.11-slim-bullseye
+      - image: python:3.11-slim-bullseye@sha256:f8cc89f5e47347703ec0c2b755464d7db2fa16f255ab860c4b24ba6ef2402020
       # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
       - image: circleci/postgres:9.5-alpine-ram
         command:
