@@ -44,6 +44,7 @@ jobs:
             command -v poetry || python -m pip install --user poetry==1.1.9
             poetry config virtualenvs.in-project true
             poetry run pip install setuptools==61.1.1
+            poetry install
       - save_cache:
           paths:
             - ./.mypy_cache
