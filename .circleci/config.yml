@@ -3,7 +3,7 @@ version: 2
 jobs:
   backend_test:
     docker:
-      - image: python:3.11-slim-bullseye@sha256:f3e7606b523893f1e6d8dab18a2e7b40d33f04b24d027b2b859f264ea822966e
+      - image: python:3.11-slim-bullseye
       # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
       - image: circleci/postgres:9.5-alpine-ram
         command:
@@ -44,7 +44,6 @@ jobs:
             command -v poetry || python -m pip install --user poetry==1.1.9
             poetry config virtualenvs.in-project true
             poetry run pip install setuptools==61.1.1
-            poetry install
       - save_cache:
           paths:
             - ./.mypy_cache
