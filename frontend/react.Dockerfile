@@ -1,4 +1,4 @@
-FROM node:18.7.0@sha256:ebd1096a66c724af78abb11e6c81eb05b85fcbe8920af2c24d42b6df6aab2687 as builder
+FROM node:18.7.0-bullseye-slim:sha256:445d804cd6c47fc5c1f49aa38565dbb4672f4262d375ae4d14b938d5a3074207  as builder
 
 # Install Application into container
 RUN set -ex && mkdir -p /var/app/
