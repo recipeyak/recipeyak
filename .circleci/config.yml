@@ -28,7 +28,7 @@ jobs:
       - run:
           name: uninstall git
           command: |
-            apt-get uninstall -y git
+            apt-get remove -y git
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
@@ -75,7 +75,7 @@ jobs:
       - run:
           name: uninstall git
           command: |
-            apt-get uninstall -y git
+            apt-get remove -y git
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
@@ -122,7 +122,7 @@ jobs:
       - run:
           name: uninstall git
           command: |
-            apt-get uninstall -y git
+            apt-get remove -y git
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
