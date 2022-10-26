@@ -30,7 +30,7 @@ advocate = "^1.0.0"
 [tool.poetry.dev-dependencies]
 pytest = "7.2.0"
 pytest-cov = "^2.5.1"
-pytest-django = "^3.1.2"
+pytest-django = "4.5.2"
 ipdb = "^0.13.9"
 mypy = "^0.910"
 flake8 = "3.8.4"
