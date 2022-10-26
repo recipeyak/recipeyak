@@ -3,7 +3,7 @@ version: 2
 jobs:
   backend_test:
     docker:
-      - image: python:3.7@sha256:d8718f4c8f28360c88d2d8b53681edb3c95e6a7bacedabd32eb5b1d120a75dc5
+      - image: python:3.11-slim-bullseye@sha256:f3e7606b523893f1e6d8dab18a2e7b40d33f04b24d027b2b859f264ea822966e
       # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
       - image: circleci/postgres:9.5-alpine-ram
         command:
@@ -51,7 +51,7 @@ jobs:
 
   backend_lint:
     docker:
-      - image: python:3.7@sha256:d8718f4c8f28360c88d2d8b53681edb3c95e6a7bacedabd32eb5b1d120a75dc5
+      - image: python:3.11-slim-bullseye@sha256:f3e7606b523893f1e6d8dab18a2e7b40d33f04b24d027b2b859f264ea822966e
       # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
       - image: circleci/postgres:9.5-alpine-ram
     steps:
@@ -90,7 +90,7 @@ jobs:
 
   squawk:
     docker:
-      - image: python:3.7@sha256:d8718f4c8f28360c88d2d8b53681edb3c95e6a7bacedabd32eb5b1d120a75dc5
+      - image: python:3.11-slim-bullseye@sha256:f3e7606b523893f1e6d8dab18a2e7b40d33f04b24d027b2b859f264ea822966e
       # https://circleci.com/docs/2.0/postgres-config/#optimizing-postgres-images
       - image: circleci/postgres:9.5-alpine-ram
     steps:
@@ -208,7 +208,7 @@ jobs:
 
   shellcheck:
     docker:
-      - image: python:3.7@sha256:d8718f4c8f28360c88d2d8b53681edb3c95e6a7bacedabd32eb5b1d120a75dc5
+      - image: python:3.11-slim-bullseye@sha256:f3e7606b523893f1e6d8dab18a2e7b40d33f04b24d027b2b859f264ea822966e
     steps:
       - checkout
       - run:
@@ -309,7 +309,7 @@ jobs:
 
   deploy:
     docker:
-        - image: python:3.7@sha256:d8718f4c8f28360c88d2d8b53681edb3c95e6a7bacedabd32eb5b1d120a75dc5
+        - image: python:3.11-slim-bullseye@sha256:f3e7606b523893f1e6d8dab18a2e7b40d33f04b24d027b2b859f264ea822966e
     steps:
         # https://circleci.com/docs/deploy-over-ssh
         # 1. create an ssh key on the deploy box: `ssh-keygen -t ed25519 -C "your_email@example.com"`
