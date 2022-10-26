@@ -1,4 +1,4 @@
-FROM python:3.11-slim-bullseye@sha256:sha256:6286a3059285256b485fa617640d0fe2f1df6e7b6248f75199cd815e4c4a1c41
+FROM python:3.11-slim-bullseye@sha256:6286a3059285256b485fa617640d0fe2f1df6e7b6248f75199cd815e4c4a1c41
 
 # Install Poetry
 # update circleci jobs if you change this version
