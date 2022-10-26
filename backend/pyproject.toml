@@ -26,7 +26,6 @@ pydantic = "^1.9.1"
 yarl = "^1.8.1"
 recipe-scrapers = "^14.13.0"
 advocate = "^1.0.0"
-cryptography = "38.0.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "6.0.1"
