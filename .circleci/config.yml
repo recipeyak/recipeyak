@@ -18,9 +18,17 @@ jobs:
     steps:
       - checkout
       - run:
+          name: install git
+          command: |
+            apt-get update && apt-get install -y git
+      - run:
            name: skip build if no changes
            command: |
              ./s/stop_ci_if_no_changes backend/
+      - run:
+          name: uninstall git
+          command: |
+            apt-get uninstall -y git
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
@@ -57,9 +65,17 @@ jobs:
     steps:
       - checkout
       - run:
+          name: install git
+          command: |
+            apt-get update && apt-get install -y git
+      - run:
            name: skip build if no changes
            command: |
              ./s/stop_ci_if_no_changes backend/
+      - run:
+          name: uninstall git
+          command: |
+            apt-get uninstall -y git
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
@@ -96,9 +112,17 @@ jobs:
     steps:
       - checkout
       - run:
+          name: install git
+          command: |
+            apt-get update && apt-get install -y git
+      - run:
            name: skip build if no changes
            command: |
              ./s/stop_ci_if_no_changes backend/
+      - run:
+          name: uninstall git
+          command: |
+            apt-get uninstall -y git
       # https://circleci.com/docs/2.0/caching/
       - restore_cache:
           keys:
