@@ -123,8 +123,8 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "boto3-stubs"
-version = "1.25.1"
-description = "Type annotations for boto3 1.25.1 generated with mypy-boto3-builder 7.11.10"
+version = "1.25.2"
+description = "Type annotations for boto3 1.25.2 generated with mypy-boto3-builder 7.11.10"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
@@ -772,11 +772,17 @@ importlib-metadata = {version = "*", markers = "python_version < \"3.8\""}
 
 [[package]]
 name = "gunicorn"
-version = "19.7.1"
+version = "20.1.0"
 description = "WSGI HTTP Server for UNIX"
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=3.5"
+
+[package.extras]
+eventlet = ["eventlet (>=0.24.1)"]
+gevent = ["gevent (>=1.4.0)"]
+setproctitle = ["setproctitle"]
+tornado = ["tornado (>=0.2)"]
 
 [[package]]
 name = "html-text"
@@ -1753,7 +1759,7 @@ testing = ["jaraco.itertools", "func-timeout"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "ddea8acb09569b5de6bcbf68fcc7b39af07179831cced087ff9781ea46a8e1b0"
+content-hash = "d5ea24fb92d7beb1a2afd6402991d166a1c424a0909b494a9cdea030ff6f3e94"
 
 [metadata.files]
 advocate = []
@@ -1994,10 +2000,7 @@ flake8-print = [
     {file = "flake8-print-3.1.0.tar.gz", hash = "sha256:5010e6c138b63b62400da4b06afa33becc5e08bd1fcce9af3752445cf3342f54"},
 ]
 flake8-tidy-imports = []
-gunicorn = [
-    {file = "gunicorn-19.7.1-py2.py3-none-any.whl", hash = "sha256:75af03c99389535f218cc596c7de74df4763803f7b63eb09d77e92b3956b36c6"},
-    {file = "gunicorn-19.7.1.tar.gz", hash = "sha256:eee1169f0ca667be05db3351a0960765620dad53f53434262ff8901b68a1b622"},
-]
+gunicorn = []
 html-text = []
 html5lib = []
 icalendar = [
