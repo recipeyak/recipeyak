@@ -293,12 +293,12 @@ export function Note({ note, recipeId, className }: INoteProps) {
             <NoteTimeStamp created={note.created} />
           </a>
           <ReactionPopover
-            className="ml-auto"
+            className="ml-auto no-print"
             onPick={async (emoji) => addOrRemoveReaction(emoji)}
             reactions={reactions}
           />
           <SmallAnchor
-            className="ml-2 text-muted cursor-pointer"
+            className="ml-2 text-muted cursor-pointer no-print"
             onClick={onNoteClick}
           >
             edit
@@ -996,7 +996,7 @@ export function NoteContainer(props: INoteContainerProps) {
   return (
     <>
       <hr />
-      <NoteCreator recipeId={props.recipeId} className="pb-4" />
+      <NoteCreator recipeId={props.recipeId} className="pb-4 no-print" />
       {orderBy(props.timelineItems, "created", "desc").map((timelineItem) => {
         switch (timelineItem.type) {
           case "note": {
