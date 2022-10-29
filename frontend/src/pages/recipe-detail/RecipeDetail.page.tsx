@@ -5,6 +5,7 @@ import { RouteComponentProps, useHistory } from "react-router"
 import { useLocation } from "react-router-dom"
 
 import * as api from "@/api"
+import { Button } from "@/components/Buttons"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
 import { formatHumanDate } from "@/date"
@@ -343,8 +344,10 @@ export function useRecipe(recipeId: number) {
 const ArchiveMessage = styled.div`
   background: whitesmoke;
   font-weight: bold;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
   border-radius: 5px;
   margin-left: 0.5rem;
   margin-right: 0.5rem;
@@ -413,11 +416,34 @@ export function Recipe(props: IRecipeProps) {
     ? formatHumanDate(new Date(recipe.archived_at))
     : null
 
+  const toggleEditMode = () => {
+    const params = new URLSearchParams(props.location.search)
+    if (params.get("edit")) {
+      params.delete("edit")
+    } else {
+      params.set("edit", "1")
+    }
+    history.push({ search: "?" + params.toString() })
+  }
+
   return (
     <div className="d-grid grid-gap-2 mx-auto mw-1000px">
       <Helmet title={recipe.name} />
       {archivedAt != null && <RecipeBanner>Archived {archivedAt}</RecipeBanner>}
-      {editingEnabled && <RecipeBanner>Editing</RecipeBanner>}
+      {editingEnabled && (
+        <RecipeBanner>
+          Editing
+          <Button
+            size="small"
+            type="button"
+            name="toggle add section"
+            className="ml-3"
+            onClick={toggleEditMode}
+          >
+            Exit
+          </Button>
+        </RecipeBanner>
+      )}
 
       <RecipeTitle
         id={recipe.id}
@@ -433,15 +459,7 @@ export function Recipe(props: IRecipeProps) {
         toggleEditing={() => {
           setEditingMetadata((s) => !s)
         }}
-        toggleEditMode={() => {
-          const params = new URLSearchParams(props.location.search)
-          if (params.get("edit")) {
-            params.delete("edit")
-          } else {
-            params.set("edit", "1")
-          }
-          history.push({ search: "?" + params.toString() })
-        }}
+        toggleEditMode={toggleEditMode}
         tags={recipe.tags}
       />
 

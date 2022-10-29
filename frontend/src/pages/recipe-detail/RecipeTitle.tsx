@@ -175,6 +175,7 @@ class RecipeTitle extends React.Component<
       this.props
 
     const ownerName = owner.type === "team" ? owner.name : "you"
+    const canEdit = !(this.props.editing && this.props.editingModeEnabled)
 
     return (
       <div>
@@ -187,7 +188,7 @@ class RecipeTitle extends React.Component<
               onClose={this.handleScheduleToggle}
             />
           )}
-          {!this.props.editing ? (
+          {canEdit ? (
             <div className="d-flex align-items-center">
               <h1
                 className={cls("title fs-2rem mb-0 mb-1", {
@@ -203,7 +204,7 @@ class RecipeTitle extends React.Component<
             </div>
           ) : (
             <TextInput
-              className="fs-2rem mb-4"
+              className="fs-2rem mb-4 mr-4"
               autoFocus
               placeholder="new recipe title"
               onChange={this.handleInputChange}
@@ -219,7 +220,7 @@ class RecipeTitle extends React.Component<
           />
         </div>
 
-        {!this.props.editing ? (
+        {canEdit ? (
           <div className="grid-entire-row">
             <MetaData
               title={
