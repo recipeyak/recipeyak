@@ -143,12 +143,18 @@ a {
   .card,
   .my-button,
   .my-input,
+  img,
   nav {
     display: none !important;
   }
 
+  .text-muted {
+    color: black !important;
+  }
+
   body {
     border-top: none !important;
+    color: black !important;
   }
 
   html {
