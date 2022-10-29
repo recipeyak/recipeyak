@@ -204,9 +204,8 @@ class RecipeTitle extends React.Component<
             </div>
           ) : (
             <TextInput
-              className="fs-2rem mb-4"
-              autoFocus
               className="fs-2rem mb-4 mr-4"
+              autoFocus
               placeholder="new recipe title"
               onChange={this.handleInputChange}
               defaultValue={name}
