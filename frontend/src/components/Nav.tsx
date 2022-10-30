@@ -1,4 +1,3 @@
-import { lighten } from "polished"
 import React from "react"
 import { Link } from "react-router-dom"
 
@@ -9,7 +8,6 @@ import {
   DropdownMenu,
   useDropdown,
 } from "@/components/Dropdown"
-import { Chevron } from "@/components/icons"
 import Logo from "@/components/Logo"
 import { NavLink } from "@/components/Routing"
 import { useDispatch, useSelector } from "@/hooks"
@@ -62,6 +60,12 @@ function UserDropdown() {
             Settings
           </Link>
         </p>
+        <p>
+          <Link to="/t" className="p-1-0">
+            Teams
+          </Link>
+        </p>
+
         <LogoutButton />
       </DropdownMenu>
     </DropdownContainer>
@@ -79,66 +83,6 @@ function WordMark() {
   return <WordMarkContainer>Recipe Yak</WordMarkContainer>
 }
 
-interface INavButtonContainerProps {
-  readonly show: boolean
-}
-
-const NavButtonContainer = styled.div<INavButtonContainerProps>`
-  display: flex;
-  @media (max-width: ${(p) => p.theme.small}) {
-    z-index: 1000;
-    display: ${(p) => (p.show ? "block" : "none")};
-    position: absolute;
-    background-color: white;
-    border: 1px solid lightgray;
-    top: 100%;
-    right: 0;
-  }
-`
-
-const DropDownButtonContainer = styled.a`
-  align-items: center;
-  flex-grow: 0;
-  flex-shrink: 0;
-  font-size: 14px;
-  justify-content: center;
-  line-height: 1.5;
-  padding: 0.5rem 0.75rem;
-  font-weight: 500;
-  color: #4a4a4a;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.1s;
-  &:hover {
-    color: ${lighten(0.15)("#4a4a4a")};
-    text-decoration: underline;
-  }
-
-  &:active {
-    transform: translateY(1px);
-  }
-
-  &.active {
-    text-decoration: underline;
-  }
-
-  display: none;
-  @media (max-width: ${(p) => p.theme.small}) {
-    display: flex;
-  }
-`
-
-interface IDropDownButtonProps {
-  readonly onClick: () => void
-}
-function DropDownButton({ onClick }: IDropDownButtonProps) {
-  return (
-    <DropDownButtonContainer onClick={onClick}>
-      Menu <Chevron />
-    </DropDownButtonContainer>
-  )
-}
-
 function AuthButtons() {
   return (
     <div className="d-flex">
@@ -152,54 +96,14 @@ function AuthButtons() {
   )
 }
 
-function IconThreeDots() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="16"
-      height="16"
-      fill="currentColor"
-      viewBox="0 0 16 16"
-    >
-      <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
-    </svg>
-  )
-}
-
-function MoreDropdown() {
-  const { ref, toggle, isOpen, close } = useDropdown()
-  return (
-    <DropdownContainer ref={ref} className="d-flex justify-content-center">
-      <a onClick={toggle} tabIndex={0} className="better-nav-item">
-        <IconThreeDots />
-      </a>
-      <DropdownMenu isOpen={isOpen} style={{ top: 30 }}>
-        <NavLink
-          to="/t/"
-          onClick={close}
-          activeClassName="active"
-          className="better-nav-item"
-        >
-          Teams
-        </NavLink>
-      </DropdownMenu>
-    </DropdownContainer>
-  )
-}
-
 function NavButtons() {
   const scheduleURL = useSelector(scheduleURLFromTeamID)
-  const { ref, isOpen, close, toggle } = useDropdown()
   return (
     <div className="d-flex align-center p-relative justify-content-center flex-wrap">
-      <DropdownContainer ref={ref}>
-        <DropDownButton onClick={toggle} />
-        <NavButtonContainer show={isOpen}>
-          <MoreDropdown />
-
+      <DropdownContainer>
+        <div className="d-flex">
           <NavLink
             to="/recipes/add"
-            onClick={close}
             activeClassName="active"
             className="better-nav-item"
           >
@@ -207,7 +111,6 @@ function NavButtons() {
           </NavLink>
           <NavLink
             to="/recipes"
-            onClick={close}
             activeClassName="active"
             className="better-nav-item"
           >
@@ -215,13 +118,12 @@ function NavButtons() {
           </NavLink>
           <NavLink
             to={scheduleURL}
-            onClick={close}
             activeClassName="active"
             className="better-nav-item"
           >
             Calendar
           </NavLink>
-        </NavButtonContainer>
+        </div>
       </DropdownContainer>
 
       <UserDropdown />
