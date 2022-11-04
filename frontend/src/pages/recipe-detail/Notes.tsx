@@ -601,15 +601,6 @@ function formatUrlImgix100(url: string): string {
   return u.href
 }
 
-function formatUrlImgixExternal(url: string): string {
-  if (url.startsWith("blob:")) {
-    return url
-  }
-  const u = new URL(url)
-  u.searchParams.set("auto", "fmt")
-  return u.href
-}
-
 const Image100Px = styled.img<{
   readonly isLoading?: boolean
   readonly src: string
@@ -785,7 +776,7 @@ function ImageWithStatus({
   return (
     <>
       <ImageAnchor
-        href={formatUrlImgixExternal(url)}
+        href={url}
         target="_blank"
         rel="noreferrer"
         onClick={(e) => {
