@@ -866,7 +866,7 @@ function ImageUploader({
         <input
           type="file"
           multiple
-          accept="image/*"
+          accept="image/jpeg, image/png"
           style={{ display: "none" }}
           onChange={(e) => {
             const newFiles = e.target.files
