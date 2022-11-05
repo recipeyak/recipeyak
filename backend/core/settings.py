@@ -150,7 +150,7 @@ TEMPLATES = [
     }
 ]
 
-WSGI_APPLICATION = "core.wsgi.application"
+WSGI_APPLICATION = "core.api.wsgi.application"
 
 
 if DEBUG or DOCKERBUILD:
