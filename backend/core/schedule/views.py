@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from typing_extensions import TypedDict
 
-from core import viewsets
+from core.api import viewsets
 from core.api.permissions import IsTeamMember
 from core.cumin.cat import category
 from core.cumin.combine import Ingredient, combine_ingredients

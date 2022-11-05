@@ -132,7 +132,7 @@ API_DELAY_MS = 200
 
 AUTH_USER_MODEL = "core.User"
 
-ROOT_URLCONF = "core.urls"
+ROOT_URLCONF = "core.api.urls"
 
 TEMPLATES = [
     {
