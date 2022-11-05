@@ -105,18 +105,18 @@ if not DEBUG:
 OLD_PASSWORD_FIELD_ENABLED = True
 
 MIDDLEWARE = [
-    "core.middleware.HealthCheckMiddleware",
-    "core.middleware.CurrentRequestMiddleware",
+    "core.api.middleware.HealthCheckMiddleware",
+    "core.api.middleware.CurrentRequestMiddleware",
     "django.middleware.security.SecurityMiddleware",
-    "core.middleware.XForwardedForMiddleware",
-    "core.middleware.SessionMiddleware",
+    "core.api.middleware.XForwardedForMiddleware",
+    "core.api.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.middleware.http.ConditionalGetMiddleware",
-    "core.middleware.NoCacheMiddleware",
-    "core.middleware.ExceptionMiddleware",
+    "core.api.middleware.NoCacheMiddleware",
+    "core.api.middleware.ExceptionMiddleware",
 ]
 
 
@@ -124,8 +124,8 @@ SESSION_ENGINE = "user_sessions.backends.db"
 
 if DEBUG and not TESTING:
     MIDDLEWARE += (
-        "core.middleware.ServerTimingMiddleware",
-        "core.middleware.APIDelayMiddleware",
+        "core.api.middleware.ServerTimingMiddleware",
+        "core.api.middleware.APIDelayMiddleware",
     )
 
 API_DELAY_MS = 200
