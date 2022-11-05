@@ -8,8 +8,8 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_http_methods
 from rest_framework import serializers
 
-from core.api.request import AuthedRequest
-from core.api.serialization import BaseModelSerializer
+from core.api.base.request import AuthedRequest
+from core.api.base.serialization import BaseModelSerializer
 from core.models import Recipe, user_and_team_recipes
 from core.recipes.serializers import IngredientSerializer, OwnerRelatedField
 

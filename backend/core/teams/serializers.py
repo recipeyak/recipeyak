@@ -4,7 +4,7 @@ from typing import Any, List
 
 from rest_framework import serializers
 
-from core.api.serialization import BaseModelSerializer, BaseSerializer
+from core.api.base.serialization import BaseModelSerializer, BaseSerializer
 from core.models import Invite, Membership, Team, User
 
 

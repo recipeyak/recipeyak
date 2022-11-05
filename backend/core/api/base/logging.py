@@ -1,6 +1,6 @@
 from django.conf import settings
 
-from core.api.request_state import State
+from core.api.base.request_state import State
 
 
 class TestingDisableFilter:

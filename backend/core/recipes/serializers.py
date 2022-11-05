@@ -7,7 +7,11 @@ import pydantic
 from rest_framework import serializers
 from typing_extensions import Literal
 
-from core.api.serialization import BaseModelSerializer, BaseRelatedField, BaseSerializer
+from core.api.base.serialization import (
+    BaseModelSerializer,
+    BaseRelatedField,
+    BaseSerializer,
+)
 from core.models import (
     Ingredient,
     Note,

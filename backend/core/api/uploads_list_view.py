@@ -9,8 +9,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from core import config
-from core.api.request import AuthedRequest
-from core.api.serialization import RequestParams
+from core.api.base.request import AuthedRequest
+from core.api.base.serialization import RequestParams
 from core.models.upload import Upload, s3
 
 

@@ -11,8 +11,8 @@ from rest_framework.response import Response
 from user_sessions.models import Session
 
 from core import user_agent
-from core.api.request import AuthedRequest
-from core.api.serialization import BaseModelSerializer
+from core.api.base.request import AuthedRequest
+from core.api.base.serialization import BaseModelSerializer
 
 
 class SessionSerializer(BaseModelSerializer):

@@ -67,10 +67,10 @@ sentry_sdk.init(
 )
 
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": ("core.api.permissions.DisallowAny",),
+    "DEFAULT_PERMISSION_CLASSES": ("core.api.base.permissions.DisallowAny",),
     "DEFAULT_RENDERER_CLASSES": ("core.json.JSONRenderer",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "core.api.authentication.SessionAuthentication",
+        "core.api.base.authentication.SessionAuthentication",
     ),
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
 }
@@ -105,18 +105,18 @@ if not DEBUG:
 OLD_PASSWORD_FIELD_ENABLED = True
 
 MIDDLEWARE = [
-    "core.api.middleware.HealthCheckMiddleware",
-    "core.api.middleware.CurrentRequestMiddleware",
+    "core.api.base.middleware.HealthCheckMiddleware",
+    "core.api.base.middleware.CurrentRequestMiddleware",
     "django.middleware.security.SecurityMiddleware",
-    "core.api.middleware.XForwardedForMiddleware",
-    "core.api.middleware.SessionMiddleware",
+    "core.api.base.middleware.XForwardedForMiddleware",
+    "core.api.base.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.middleware.http.ConditionalGetMiddleware",
-    "core.api.middleware.NoCacheMiddleware",
-    "core.api.middleware.ExceptionMiddleware",
+    "core.api.base.middleware.NoCacheMiddleware",
+    "core.api.base.middleware.ExceptionMiddleware",
 ]
 
 
@@ -124,8 +124,8 @@ SESSION_ENGINE = "user_sessions.backends.db"
 
 if DEBUG and not TESTING:
     MIDDLEWARE += (
-        "core.api.middleware.ServerTimingMiddleware",
-        "core.api.middleware.APIDelayMiddleware",
+        "core.api.base.middleware.ServerTimingMiddleware",
+        "core.api.base.middleware.APIDelayMiddleware",
     )
 
 API_DELAY_MS = 200
@@ -150,7 +150,7 @@ TEMPLATES = [
     }
 ]
 
-WSGI_APPLICATION = "core.api.wsgi.application"
+WSGI_APPLICATION = "core.api.base.wsgi.application"
 
 
 if DEBUG or DOCKERBUILD:
@@ -237,9 +237,9 @@ LOGGING = {
         }
     },
     "filters": {
-        "no_testing": {"()": "core.api.logging.TestingDisableFilter"},
-        "request_id": {"()": "core.api.logging.RequestIDFilter"},
-        "user_id": {"()": "core.api.logging.CurrentUserFilter"},
+        "no_testing": {"()": "core.api.base.logging.TestingDisableFilter"},
+        "request_id": {"()": "core.api.base.logging.RequestIDFilter"},
+        "user_id": {"()": "core.api.base.logging.CurrentUserFilter"},
     },
     "loggers": {
         "": {"level": "INFO", "handlers": ["console"]},

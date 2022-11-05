@@ -1,6 +1,6 @@
 from rest_framework import mixins, viewsets
 
-from core.api.request import AuthedRequest
+from core.api.base.request import AuthedRequest
 
 
 class ModelViewSet(viewsets.ModelViewSet):

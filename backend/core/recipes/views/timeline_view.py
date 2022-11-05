@@ -7,8 +7,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from core.api.permissions import has_recipe_access
-from core.api.request import AuthedRequest
+from core.api.base.permissions import has_recipe_access
+from core.api.base.request import AuthedRequest
 from core.models import Recipe, ScheduledRecipe, User
 from core.recipes.serializers import RecipeTimelineSerializer
 

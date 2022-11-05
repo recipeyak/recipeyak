@@ -4,7 +4,7 @@ from typing import Any
 
 from rest_framework import serializers
 
-from core.api.serialization import BaseModelSerializer
+from core.api.base.serialization import BaseModelSerializer
 from core.models import User
 
 

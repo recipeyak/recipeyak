@@ -9,8 +9,8 @@ from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from core.api.request import AuthedRequest
-from core.api.serialization import RequestParams
+from core.api.base.request import AuthedRequest
+from core.api.base.serialization import RequestParams
 from core.models import ChangeType, RecipeChange, user_and_team_ingredients
 from core.recipes.serializers import ingredient_to_text, serialize_ingredient
 

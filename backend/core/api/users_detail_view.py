@@ -6,7 +6,7 @@ from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from core.api.request import AuthedRequest
+from core.api.base.request import AuthedRequest
 from core.api.serializers.user import UserSerializer as UserDetailsSerializer
 from core.models import User
 

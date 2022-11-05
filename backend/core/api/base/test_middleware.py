@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.api.middleware import ServerTimingMiddleware
+from core.api.base.middleware import ServerTimingMiddleware
 
 pytestmark = pytest.mark.django_db
 

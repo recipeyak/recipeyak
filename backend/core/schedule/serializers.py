@@ -1,4 +1,4 @@
-from core.api.serialization import BaseModelSerializer
+from core.api.base.serialization import BaseModelSerializer
 from core.models import ScheduledRecipe
 from core.recipes.serializers import RecipeSerializer
 

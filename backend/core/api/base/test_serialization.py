@@ -1,6 +1,6 @@
 import pytest
 
-from core.api.serialization import UnexpectedDatabaseAccess
+from core.api.base.serialization import UnexpectedDatabaseAccess
 from core.models import Recipe
 from core.recipes.serializers import RecipeSerializer
 
