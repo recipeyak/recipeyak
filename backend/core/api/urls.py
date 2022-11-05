@@ -37,12 +37,10 @@ from core.recipes.views.steps_detail_view import steps_detail_view
 from core.recipes.views.steps_list_view import steps_list_view
 from core.recipes.views.timeline_view import get_recipe_timeline
 from core.schedule.views import CalendarViewSet, ReportBadMerge, get_shopping_list_view
-from core.teams.views import (
-    MembershipViewSet,
-    TeamInviteViewSet,
-    TeamViewSet,
-    UserInvitesViewSet,
-)
+from core.api.team_invite_generic_view import TeamInviteViewSet
+from core.api.team_generic_view import TeamViewSet
+from core.api.team_members_generic_view import MembershipViewSet
+from core.api.user_invites_generic_view import UserInvitesViewSet
 
 router = DefaultRouter()
 router.register(r"t", TeamViewSet, basename="teams")
