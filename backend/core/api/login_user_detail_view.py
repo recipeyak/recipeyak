@@ -11,9 +11,9 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from core.api.serializers.user import UserSerializer as UserDetailsSerializer
 from core.models import User
 from core.serialization import BaseSerializer
-from core.views.serializers.user import UserSerializer as UserDetailsSerializer
 
 logger = logging.getLogger(__name__)
 

@@ -5,8 +5,8 @@ from django.urls import reverse
 from rest_framework import status
 from user_sessions.models import Session
 
+from core.api.serializers.user import UserSerializer
 from core.models import User
-from core.views.serializers.user import UserSerializer
 
 pytestmark = pytest.mark.django_db
 
