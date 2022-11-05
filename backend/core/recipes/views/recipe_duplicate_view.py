@@ -5,9 +5,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from core.api.request import AuthedRequest
 from core.models import user_and_team_recipes
 from core.recipes.serializers import RecipeSerializer
-from core.request import AuthedRequest
 
 
 @api_view(["POST"])

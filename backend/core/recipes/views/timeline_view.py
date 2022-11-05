@@ -8,9 +8,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from core.api.permissions import has_recipe_access
+from core.api.request import AuthedRequest
 from core.models import Recipe, ScheduledRecipe, User
 from core.recipes.serializers import RecipeTimelineSerializer
-from core.request import AuthedRequest
 
 
 @api_view(["GET"])

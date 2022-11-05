@@ -4,8 +4,8 @@ from typing import Any
 
 from rest_framework import serializers
 
+from core.api.serialization import BaseModelSerializer
 from core.models import User
-from core.serialization import BaseModelSerializer
 
 
 class UserSerializer(BaseModelSerializer):

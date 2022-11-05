@@ -8,8 +8,8 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from core.api.permissions import IsTeamAdmin, IsTeamAdminOrMembershipOwner, IsTeamMember
+from core.api.request import AuthedRequest
 from core.models import Invite, Team
-from core.request import AuthedRequest
 from core.teams.serializers import (
     CreateInviteSerializer,
     InviteSerializer,

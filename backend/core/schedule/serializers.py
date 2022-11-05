@@ -1,6 +1,6 @@
+from core.api.serialization import BaseModelSerializer
 from core.models import ScheduledRecipe
 from core.recipes.serializers import RecipeSerializer
-from core.serialization import BaseModelSerializer
 
 
 class ScheduledRecipeSerializer(BaseModelSerializer):

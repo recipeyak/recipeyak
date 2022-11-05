@@ -14,8 +14,8 @@ from django.db import connection
 from django.http import HttpRequest, HttpResponse, HttpResponseServerError, JsonResponse
 from django.utils.deprecation import MiddlewareMixin
 
-from core.request_state import State
-from core.serialization import RequestParams
+from core.api.request_state import State
+from core.api.serialization import RequestParams
 
 log = logging.getLogger(__name__)
 

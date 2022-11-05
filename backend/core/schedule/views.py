@@ -14,6 +14,7 @@ from typing_extensions import TypedDict
 
 from core.api import viewsets
 from core.api.permissions import IsTeamMember
+from core.api.request import AuthedRequest
 from core.cumin.cat import category
 from core.cumin.combine import Ingredient, combine_ingredients
 from core.json import JSONRenderer
@@ -24,7 +25,6 @@ from core.models import (
     Team,
     get_random_ical_id,
 )
-from core.request import AuthedRequest
 from core.schedule.serializers import (
     ScheduledRecipeSerializer,
     ScheduledRecipeSerializerCreate,

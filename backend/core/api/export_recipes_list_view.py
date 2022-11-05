@@ -1,16 +1,48 @@
+from collections import OrderedDict
 from typing import Optional
 
+import yaml
 from django.contrib.auth.decorators import login_required
-from django.http import Http404, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_http_methods
 from rest_framework import serializers
 
+from core.api.request import AuthedRequest
+from core.api.serialization import BaseModelSerializer
 from core.models import Recipe, user_and_team_recipes
 from core.recipes.serializers import IngredientSerializer, OwnerRelatedField
-from core.request import AuthedRequest
-from core.response import YamlResponse
-from core.serialization import BaseModelSerializer
+
+
+def represent_ordereddict(dumper, data):
+    value = []
+    for item_key, item_value in data.items():
+        node_key = dumper.represent_data(item_key)
+        node_value = dumper.represent_data(item_value)
+        value.append((node_key, node_value))
+    return yaml.nodes.MappingNode("tag:yaml.org,2002:map", value)
+
+
+yaml.add_representer(OrderedDict, represent_ordereddict)
+
+
+class YamlResponse(HttpResponse):
+    """
+    An HTTP response class that consumes data to be serialized to YAML.
+    :param data: Data to be dumped into yaml.
+    """
+
+    def __init__(self, data, **kwargs):
+        kwargs.setdefault("content_type", "text/x-yaml")
+        if isinstance(data, list):
+            data = yaml.dump_all(data, default_flow_style=False, allow_unicode=True)
+        else:
+            # we wrap in an OrderedDict since PyYaml sorts dict keys for some odd reason!
+            data = yaml.dump(
+                OrderedDict(data), default_flow_style=False, allow_unicode=True
+            )
+
+        super().__init__(content=data, **kwargs)
 
 
 class RecipeExportSerializer(BaseModelSerializer):

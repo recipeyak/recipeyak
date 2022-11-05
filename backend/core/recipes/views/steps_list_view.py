@@ -9,10 +9,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from core import ordering
+from core.api.request import AuthedRequest
+from core.api.serialization import RequestParams
 from core.models import ChangeType, RecipeChange, Step, user_and_team_recipes
 from core.recipes.serializers import serialize_step
-from core.request import AuthedRequest
-from core.serialization import RequestParams
 
 
 class StepCreateParams(RequestParams):

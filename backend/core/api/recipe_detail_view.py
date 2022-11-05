@@ -7,6 +7,7 @@ from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from core.api.request import AuthedRequest
 from core.models import (
     ChangeType,
     RecipeChange,
@@ -14,7 +15,6 @@ from core.models import (
     user_and_team_recipe_or_404,
 )
 from core.recipes.serializers import RecipeSerializer
-from core.request import AuthedRequest
 
 
 def recipe_get_view(request: AuthedRequest, recipe_pk: str) -> Response:

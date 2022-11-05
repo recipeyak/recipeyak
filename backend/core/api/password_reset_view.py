@@ -10,9 +10,9 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
+from core.api.request import AnonymousRequest
+from core.api.serialization import RequestParams
 from core.models.user import User
-from core.request import AnonymousRequest
-from core.serialization import RequestParams
 
 if TYPE_CHECKING:
 

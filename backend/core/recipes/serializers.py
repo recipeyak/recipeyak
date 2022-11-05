@@ -7,6 +7,7 @@ import pydantic
 from rest_framework import serializers
 from typing_extensions import Literal
 
+from core.api.serialization import BaseModelSerializer, BaseRelatedField, BaseSerializer
 from core.models import (
     Ingredient,
     Note,
@@ -19,7 +20,6 @@ from core.models import (
 )
 from core.models.reaction import Reaction
 from core.models.upload import Upload
-from core.serialization import BaseModelSerializer, BaseRelatedField, BaseSerializer
 from core.teams.serializers import PublicUserSerializer
 
 

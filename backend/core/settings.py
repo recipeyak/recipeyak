@@ -237,9 +237,9 @@ LOGGING = {
         }
     },
     "filters": {
-        "no_testing": {"()": "core.logging.TestingDisableFilter"},
-        "request_id": {"()": "core.logging.RequestIDFilter"},
-        "user_id": {"()": "core.logging.CurrentUserFilter"},
+        "no_testing": {"()": "core.api.logging.TestingDisableFilter"},
+        "request_id": {"()": "core.api.logging.RequestIDFilter"},
+        "user_id": {"()": "core.api.logging.CurrentUserFilter"},
     },
     "loggers": {
         "": {"level": "INFO", "handlers": ["console"]},

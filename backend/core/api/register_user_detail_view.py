@@ -16,8 +16,8 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
+from core.api.serialization import BaseSerializer
 from core.api.serializers.user import UserSerializer as UserDetailsSerializer
-from core.serialization import BaseSerializer
 
 logger = logging.getLogger(__name__)
 

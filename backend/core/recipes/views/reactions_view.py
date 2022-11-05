@@ -11,11 +11,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from typing_extensions import Literal
 
+from core.api.request import AuthedRequest
+from core.api.serialization import RequestParams
 from core.models import user_and_team_notes, user_reactions
 from core.models.reaction import Reaction
 from core.recipes.serializers import serialize_reactions
-from core.request import AuthedRequest
-from core.serialization import RequestParams
 
 logger = logging.getLogger(__name__)
 
