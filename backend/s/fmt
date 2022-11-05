@@ -3,7 +3,7 @@ set -e
 
 main() {
   ./.venv/bin/black .
-  ./.venv/bin/isort -y
+  ./.venv/bin/isort .
 }
 
 main "$@"

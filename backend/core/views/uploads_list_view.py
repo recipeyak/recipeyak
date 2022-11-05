@@ -33,7 +33,7 @@ class StartUploadResponse(pydantic.BaseModel):
         IsAuthenticated,
     ]
 )
-def start_upload(request: AuthedRequest) -> Response:
+def start_upload_view(request: AuthedRequest) -> Response:
     params = StartUploadParams.parse_obj(request.data)
     key = f"{request.user.id}/{uuid4().hex}/{params.file_name}"
     upload = Upload(
@@ -59,31 +59,5 @@ def start_upload(request: AuthedRequest) -> Response:
             id=upload.pk,
             upload_url=upload_url,
             upload_headers={"x-amz-meta-db_id": upload.pk},
-        )
-    )
-
-
-class CompleteUploadResponse(pydantic.BaseModel):
-    id: str
-    url: str
-
-
-@api_view(["POST"])
-@permission_classes(
-    [
-        IsAuthenticated,
-    ]
-)
-def complete_upload(request: AuthedRequest, upload_pk: int) -> Response:
-    upload = get_object_or_404(
-        Upload.objects.filter(created_by=request.user), pk=upload_pk
-    )
-    upload.completed = True
-    upload.save()
-
-    return Response(
-        CompleteUploadResponse(
-            id=upload.pk,
-            url=upload.public_url(),
         )
     )
