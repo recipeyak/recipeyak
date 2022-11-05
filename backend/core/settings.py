@@ -67,7 +67,7 @@ sentry_sdk.init(
 )
 
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": ("core.auth.permissions.DisallowAny",),
+    "DEFAULT_PERMISSION_CLASSES": ("core.views.permissions.DisallowAny",),
     "DEFAULT_RENDERER_CLASSES": ("core.renderers.JSONRenderer",),
     "DEFAULT_AUTHENTICATION_CLASSES": ("core.authentication.SessionAuthentication",),
     "TEST_REQUEST_DEFAULT_FORMAT": "json",

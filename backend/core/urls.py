@@ -2,8 +2,6 @@ from django.conf.urls import include, url
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
-from core.auth.registration.views import RegisterView
-from core.auth.views import LoginView, LogoutView, PasswordChangeView
 from core.ical.views import get_ical_view
 from core.recipes.views.ingredients_detail_view import ingredients_detail_view
 from core.recipes.views.ingredients_list_view import ingredients_list_view
@@ -34,10 +32,12 @@ from core.teams.views import (
     UserInvitesViewSet,
 )
 from core.views.export_recipes_list_view import export_recipes_list_view
+from core.views.login_user_detail_view import LoginView, LogoutView, PasswordChangeView
 from core.views.password_reset_confirm_view import password_reset_confirm_view
 from core.views.password_reset_view import password_reset_view
 from core.views.recipe_detail_view import receipe_detail_view
 from core.views.recipe_list_view import recipe_list_view
+from core.views.register_user_detail_view import RegisterView
 from core.views.sessions_detail_view import sessions_detail_view
 from core.views.sessions_list_view import sessions_list_view
 from core.views.uploads_detail_view import complete_upload_view

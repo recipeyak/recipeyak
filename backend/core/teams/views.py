@@ -7,11 +7,6 @@ from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from core.auth.permissions import (
-    IsTeamAdmin,
-    IsTeamAdminOrMembershipOwner,
-    IsTeamMember,
-)
 from core.models import Invite, Team
 from core.request import AuthedRequest
 from core.teams.serializers import (
@@ -19,6 +14,11 @@ from core.teams.serializers import (
     InviteSerializer,
     MembershipSerializer,
     TeamSerializer,
+)
+from core.views.permissions import (
+    IsTeamAdmin,
+    IsTeamAdminOrMembershipOwner,
+    IsTeamMember,
 )
 
 

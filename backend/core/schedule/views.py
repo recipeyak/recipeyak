@@ -13,7 +13,6 @@ from rest_framework.views import APIView
 from typing_extensions import TypedDict
 
 from core import viewsets
-from core.auth.permissions import IsTeamMember
 from core.cumin.cat import category
 from core.cumin.combine import Ingredient, combine_ingredients
 from core.models import (
@@ -29,6 +28,7 @@ from core.schedule.serializers import (
     ScheduledRecipeSerializer,
     ScheduledRecipeSerializerCreate,
 )
+from core.views.permissions import IsTeamMember
 
 logger = logging.getLogger(__name__)
 

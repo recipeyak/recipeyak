@@ -1,20 +1,25 @@
-from typing import Any, cast
+import logging
+from typing import Any, Dict, cast
 
+from allauth.account import app_settings as allauth_settings
+from allauth.account.adapter import get_adapter
+from allauth.account.utils import complete_signup, setup_user_email
+
+# Social Login
+from allauth.socialaccount.models import EmailAddress
+from allauth.utils import email_address_exists, get_username_max_length
 from django.contrib.auth import get_user_model
-from rest_framework import serializers
+from django.utils.decorators import method_decorator
+from django.views.decorators.debug import sensitive_post_parameters
+from rest_framework import serializers, status
+from rest_framework.generics import CreateAPIView
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
 
 from core.serialization import BaseSerializer
+from core.views.serializers.user import UserSerializer as UserDetailsSerializer
 
-try:
-    from allauth.account import app_settings as allauth_settings
-    from allauth.account.adapter import get_adapter
-    from allauth.account.utils import setup_user_email
-
-    # Social Login
-    from allauth.socialaccount.models import EmailAddress
-    from allauth.utils import email_address_exists, get_username_max_length
-except ImportError:
-    raise ImportError("allauth needs to be added to INSTALLED_APPS.")
+logger = logging.getLogger(__name__)
 
 
 class RegisterSerializer(BaseSerializer):
@@ -76,3 +81,35 @@ class RegisterSerializer(BaseSerializer):
         self.custom_signup(request, user)
         setup_user_email(request, user, [])
         return user
+
+
+class RegisterView(CreateAPIView):
+    serializer_class = RegisterSerializer
+    permission_classes = (AllowAny,)
+
+    @method_decorator(sensitive_post_parameters("password1", "password2"))
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = serializer.save(request=self.request)
+
+        complete_signup(
+            self.request._request, user, allauth_settings.EMAIL_VERIFICATION, None
+        )
+
+        if (
+            allauth_settings.EMAIL_VERIFICATION
+            == allauth_settings.EmailVerificationMethod.MANDATORY
+        ):
+            data: Dict[str, Any] = {"detail": "Verification e-mail sent."}
+        else:
+            data = {"user": UserDetailsSerializer(user).data}
+
+        headers = self.get_success_headers(serializer.data)
+        logger.info("User registration: %s", user)
+
+        return Response(data, status=status.HTTP_201_CREATED, headers=headers)
