@@ -1,0 +1,16 @@
+from __future__ import annotations
+
+from django.shortcuts import get_object_or_404
+from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+from core.request import AuthedRequest
+
+
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def sessions_detail_view(request: AuthedRequest, pk: str) -> Response:
+    get_object_or_404(request.user.session_set, pk=pk).delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)

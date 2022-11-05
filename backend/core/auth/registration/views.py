@@ -11,7 +11,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from core.auth.registration.serializers import RegisterSerializer
-from core.users.serializers import UserSerializer as UserDetailsSerializer
+from core.views.serializers.user import UserSerializer as UserDetailsSerializer
 
 logger = logging.getLogger(__name__)
 

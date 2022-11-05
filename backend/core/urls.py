@@ -33,14 +33,16 @@ from core.teams.views import (
     TeamViewSet,
     UserInvitesViewSet,
 )
-from core.users.views import UserDetailsView, sessions, sessions_detail
 from core.views.export_recipes_list_view import export_recipes_list_view
 from core.views.password_reset_confirm_view import password_reset_confirm_view
 from core.views.password_reset_view import password_reset_view
 from core.views.recipe_detail_view import receipe_detail_view
 from core.views.recipe_list_view import recipe_list_view
+from core.views.sessions_detail_view import sessions_detail_view
+from core.views.sessions_list_view import sessions_list_view
 from core.views.uploads_detail_view import complete_upload_view
 from core.views.uploads_list_view import start_upload_view
+from core.views.users_detail_view import UserDetailsView
 
 router = DefaultRouter()
 router.register(r"t", TeamViewSet, basename="teams")
@@ -82,8 +84,8 @@ urlpatterns = [
     path("api/v1/recipes/recently_created", get_recently_created_recipes),
     path("api/v1/report-bad-merge", ReportBadMerge.as_view(), name="report-bad-merge"),
     path("api/v1/sections/<int:section_pk>/", delete_or_update_section_view),
-    path("api/v1/sessions/", sessions),
-    path("api/v1/sessions/<str:pk>/", sessions_detail),
+    path("api/v1/sessions/", sessions_list_view),
+    path("api/v1/sessions/<str:pk>/", sessions_detail_view),
     path("api/v1/t/<team_pk>/", include(teams_router.urls)),
     path("api/v1/t/<team_pk>/shoppinglist/", get_shopping_list_view),
     path("api/v1/upload/", start_upload_view),

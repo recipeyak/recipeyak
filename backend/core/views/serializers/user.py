@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-import dataclasses
-from typing import Any, Dict, cast
+from typing import Any
 
 from rest_framework import serializers
-from user_sessions.models import Session
 
-from core import user_agent
 from core.models import User
 from core.serialization import BaseModelSerializer
 
@@ -31,22 +28,3 @@ class UserSerializer(BaseModelSerializer):
             "dark_mode_enabled",
             "schedule_team",
         )
-
-
-class SessionSerializer(BaseModelSerializer):
-    id = serializers.CharField(source="pk")
-    device = serializers.SerializerMethodField()
-    current = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Session
-        editable = False
-        fields = ("id", "device", "current", "last_activity", "ip")
-
-    def get_device(self, obj: Session) -> Dict[str, Any]:
-        ua = obj.user_agent
-        assert ua is not None
-        return dataclasses.asdict(user_agent.parse(ua))
-
-    def get_current(self, obj: Session) -> bool:
-        return cast(bool, obj.pk == self.context["request"].session.session_key)

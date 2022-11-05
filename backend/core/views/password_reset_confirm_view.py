@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from core.models.user import User
 from core.request import AnonymousRequest
 from core.serialization import RequestParams
-from core.users.serializers import UserSerializer
+from core.views.serializers.user import UserSerializer
 
 if TYPE_CHECKING:
 

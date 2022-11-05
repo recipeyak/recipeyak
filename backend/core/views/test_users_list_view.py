@@ -1,7 +1,8 @@
 from dataclasses import dataclass
-from typing import Any, Dict, List, Type, Union
+from typing import Any, Dict, List, Type, Union, cast
 
 import pytest
+from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.test import APIClient
@@ -9,8 +10,36 @@ from user_sessions.models import Session
 
 from core.models import User
 
+pytestmark = pytest.mark.django_db
 
-@pytest.mark.django_db
+
+def test_user_delete(client, user, team):
+    """
+    User should only be able to delete their account if they are not a member
+    of any team (excluding invites).
+    """
+
+    client.force_authenticate(user)
+    url = "/api/v1/user/"
+    assert team.is_member(user)
+    assert user.has_team()
+
+    # user must leave team before deleting account
+    res = client.delete(url)
+    assert res.status_code == status.HTTP_403_FORBIDDEN
+    assert res.json()["detail"] is not None
+
+    # leave team
+    team.delete()
+    assert not user.has_team()
+
+    # user can delete account once they have left their teams
+    res = client.delete(url)
+    assert res.status_code == status.HTTP_204_NO_CONTENT
+
+    assert not cast(Any, get_user_model()).objects.filter(id=user.id).exists()
+
+
 def test_detail(client, user):
     res = client.get("/api/v1/user/")
     assert res.status_code == status.HTTP_403_FORBIDDEN, "authentication required"
@@ -93,7 +122,6 @@ def logged_in_user(client: APIClient, login_info) -> None:
     assert res.status_code == status.HTTP_200_OK
 
 
-@pytest.mark.django_db
 def test_session_list(client: APIClient, logged_in_user) -> None:
     res = client.get("/api/v1/sessions/")
 
@@ -113,7 +141,6 @@ def test_session_list(client: APIClient, logged_in_user) -> None:
     )
 
 
-@pytest.mark.django_db
 def test_session_delete_all(
     client: APIClient, logged_in_user, login_info: Dict[str, Any]
 ) -> None:
@@ -127,7 +154,6 @@ def test_session_delete_all(
     ), "we delete other sessions, not the session being used"
 
 
-@pytest.mark.django_db
 def test_session_delete_by_id(client: APIClient, logged_in_user) -> None:
     assert Session.objects.count() == 1
     session = Session.objects.first()

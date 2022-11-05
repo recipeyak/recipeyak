@@ -6,7 +6,7 @@ from rest_framework import status
 from user_sessions.models import Session
 
 from core.models import User
-from core.users.serializers import UserSerializer
+from core.views.serializers.user import UserSerializer
 
 pytestmark = pytest.mark.django_db
 
