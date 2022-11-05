@@ -15,6 +15,7 @@ from typing_extensions import TypedDict
 from core import viewsets
 from core.cumin.cat import category
 from core.cumin.combine import Ingredient, combine_ingredients
+from core.json import JSONRenderer
 from core.models import (
     Membership,
     ScheduledRecipe,
@@ -22,7 +23,6 @@ from core.models import (
     Team,
     get_random_ical_id,
 )
-from core.renderers import JSONRenderer
 from core.request import AuthedRequest
 from core.schedule.serializers import (
     ScheduledRecipeSerializer,

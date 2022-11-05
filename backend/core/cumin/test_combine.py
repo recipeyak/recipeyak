@@ -12,7 +12,7 @@ from core.cumin.combine import (
     combine_ingredients,
 )
 from core.cumin.quantity import Unit
-from core.renderers import JSONRenderer
+from core.json import JSONRenderer
 
 
 @pytest.mark.parametrize(

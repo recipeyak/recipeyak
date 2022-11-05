@@ -1,7 +1,7 @@
 import json
 from decimal import Decimal
 
-from core.renderers import JSONRenderer
+from core.json import JSONRenderer
 
 
 def test_decimal_encoding() -> None:
