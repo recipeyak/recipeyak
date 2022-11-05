@@ -6,7 +6,7 @@ import pytest
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.ical.utils import to_ical_time
+from core.api.ical_detail_view import to_ical_time
 from core.models import Recipe, ScheduledRecipe, Team, User, get_random_ical_id
 from core.models.membership import Membership
 
