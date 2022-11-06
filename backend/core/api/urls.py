@@ -5,43 +5,35 @@ from rest_framework.routers import DefaultRouter
 from core.api.calendar_generic_views import CalendarViewSet, ReportBadMerge
 from core.api.export_recipes_list_view import export_recipes_list_view
 from core.api.ical_detail_view import get_ical_view
+from core.api.ingredients_detail_view import ingredients_detail_view
+from core.api.ingredients_list_view import ingredients_list_view
 from core.api.login_user_detail_view import LoginView, LogoutView, PasswordChangeView
+from core.api.notes_view import note_create_view, note_detail_view
 from core.api.password_reset_confirm_view import password_reset_confirm_view
 from core.api.password_reset_view import password_reset_view
+from core.api.reactions_view import note_reaction_create_view, note_reaction_delete_view
+from core.api.recently_created_recipes_view import get_recently_created_recipes
+from core.api.recently_view_recipes_view import get_recently_viewed_recipes
+from core.api.recipe_copy_view import recipe_copy_view
 from core.api.recipe_detail_view import receipe_detail_view
+from core.api.recipe_duplicate_view import recipe_duplicate_view
 from core.api.recipe_list_view import recipe_list_view
+from core.api.recipe_move_view import recipe_move_view
 from core.api.register_user_detail_view import RegisterView
+from core.api.sections_view import create_section_view, delete_or_update_section_view
 from core.api.sessions_detail_view import sessions_detail_view
 from core.api.sessions_list_view import sessions_list_view
+from core.api.steps_detail_view import steps_detail_view
+from core.api.steps_list_view import steps_list_view
 from core.api.team_generic_view import TeamViewSet
 from core.api.team_invite_generic_view import TeamInviteViewSet
 from core.api.team_members_generic_view import MembershipViewSet
 from core.api.team_shopping_list_detail_view import get_shopping_list_view
+from core.api.timeline_view import get_recipe_timeline
 from core.api.uploads_detail_view import complete_upload_view
 from core.api.uploads_list_view import start_upload_view
 from core.api.user_invites_generic_view import UserInvitesViewSet
 from core.api.users_detail_view import UserDetailsView
-from core.api.ingredients_detail_view import ingredients_detail_view
-from core.api.ingredients_list_view import ingredients_list_view
-from core.api.notes_view import note_create_view, note_detail_view
-from core.api.reactions_view import (
-    note_reaction_create_view,
-    note_reaction_delete_view,
-)
-from core.api.recently_created_recipes_view import (
-    get_recently_created_recipes,
-)
-from core.api.recently_view_recipes_view import get_recently_viewed_recipes
-from core.api.recipe_copy_view import recipe_copy_view
-from core.api.recipe_duplicate_view import recipe_duplicate_view
-from core.api.recipe_move_view import recipe_move_view
-from core.api.sections_view import (
-    create_section_view,
-    delete_or_update_section_view,
-)
-from core.api.steps_detail_view import steps_detail_view
-from core.api.steps_list_view import steps_list_view
-from core.api.timeline_view import get_recipe_timeline
 
 router = DefaultRouter()
 router.register(r"t", TeamViewSet, basename="teams")

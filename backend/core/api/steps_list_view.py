@@ -11,8 +11,8 @@ from rest_framework.response import Response
 from core import ordering
 from core.api.base.request import AuthedRequest
 from core.api.base.serialization import RequestParams
-from core.models import ChangeType, RecipeChange, Step, user_and_team_recipes
 from core.api.serializers.recipe import serialize_step
+from core.models import ChangeType, RecipeChange, Step, user_and_team_recipes
 
 
 class StepCreateParams(RequestParams):

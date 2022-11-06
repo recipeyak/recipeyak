@@ -8,13 +8,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from core.api.base.request import AuthedRequest
+from core.api.serializers.recipe import RecipeSerializer
 from core.models import (
     ChangeType,
     RecipeChange,
     TimelineEvent,
     user_and_team_recipe_or_404,
 )
-from core.api.serializers.recipe import RecipeSerializer
 
 
 def recipe_get_view(request: AuthedRequest, recipe_pk: str) -> Response:

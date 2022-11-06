@@ -10,8 +10,8 @@ from rest_framework import serializers
 
 from core.api.base.request import AuthedRequest
 from core.api.base.serialization import BaseModelSerializer
-from core.models import Recipe, user_and_team_recipes
 from core.api.serializers.recipe import IngredientSerializer, OwnerRelatedField
+from core.models import Recipe, user_and_team_recipes
 
 
 def represent_ordereddict(dumper, data):

@@ -13,8 +13,8 @@ from core import ordering
 from core.api.base.permissions import has_recipe_access
 from core.api.base.request import AuthedRequest
 from core.api.base.serialization import RequestParams
-from core.models import ChangeType, Recipe, RecipeChange, Section
 from core.api.serializers.recipe import SectionSerializer
+from core.models import ChangeType, Recipe, RecipeChange, Section
 
 
 class SectionCreateParams(RequestParams):

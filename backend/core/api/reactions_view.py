@@ -13,9 +13,9 @@ from typing_extensions import Literal
 
 from core.api.base.request import AuthedRequest
 from core.api.base.serialization import RequestParams
+from core.api.serializers.recipe import serialize_reactions
 from core.models import user_and_team_notes, user_reactions
 from core.models.reaction import Reaction
-from core.api.serializers.recipe import serialize_reactions
 
 logger = logging.getLogger(__name__)
 

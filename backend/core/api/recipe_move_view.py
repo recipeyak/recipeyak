@@ -10,8 +10,8 @@ from typing_extensions import Literal
 
 from core.api.base.request import AuthedRequest
 from core.api.base.serialization import RequestParams
-from core.models import Team, User, user_and_team_recipe_or_404
 from core.api.serializers.recipe import RecipeSerializer
+from core.models import Team, User, user_and_team_recipe_or_404
 
 
 class RecipeMoveParams(RequestParams):
