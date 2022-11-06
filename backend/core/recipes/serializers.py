@@ -12,6 +12,7 @@ from core.api.base.serialization import (
     BaseRelatedField,
     BaseSerializer,
 )
+from core.api.serializers.team import PublicUserSerializer
 from core.models import (
     Ingredient,
     Note,
@@ -24,7 +25,6 @@ from core.models import (
 )
 from core.models.reaction import Reaction
 from core.models.upload import Upload
-from core.teams.serializers import PublicUserSerializer
 
 
 class OwnerRelatedField(BaseRelatedField):

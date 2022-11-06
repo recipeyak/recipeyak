@@ -4,6 +4,7 @@ from typing import Sequence
 
 import pytest
 
+from core.api.base.drf_json_renderer import JSONRenderer
 from core.cumin.combine import (
     Ingredient,
     IngredientItem,
@@ -12,7 +13,6 @@ from core.cumin.combine import (
     combine_ingredients,
 )
 from core.cumin.quantity import Unit
-from core.json import JSONRenderer
 
 
 @pytest.mark.parametrize(

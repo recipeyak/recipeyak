@@ -3,7 +3,6 @@ from typing import Any, Tuple
 from django.shortcuts import get_object_or_404
 from rest_framework import mixins, status, viewsets
 from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
-
 from rest_framework.response import Response
 
 from core.api.base.permissions import (
@@ -11,11 +10,8 @@ from core.api.base.permissions import (
     IsTeamAdminOrMembershipOwner,
     IsTeamMember,
 )
-
+from core.api.serializers.team import MembershipSerializer
 from core.models import Team
-from core.teams.serializers import (
-    MembershipSerializer,
-)
 
 
 class MembershipViewSet(

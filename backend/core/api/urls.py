@@ -2,6 +2,7 @@ from django.conf.urls import include, url
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
+from core.api.calendar_generic_views import CalendarViewSet, ReportBadMerge
 from core.api.export_recipes_list_view import export_recipes_list_view
 from core.api.ical_detail_view import get_ical_view
 from core.api.login_user_detail_view import LoginView, LogoutView, PasswordChangeView
@@ -12,8 +13,13 @@ from core.api.recipe_list_view import recipe_list_view
 from core.api.register_user_detail_view import RegisterView
 from core.api.sessions_detail_view import sessions_detail_view
 from core.api.sessions_list_view import sessions_list_view
+from core.api.team_generic_view import TeamViewSet
+from core.api.team_invite_generic_view import TeamInviteViewSet
+from core.api.team_members_generic_view import MembershipViewSet
+from core.api.team_shopping_list_detail_view import get_shopping_list_view
 from core.api.uploads_detail_view import complete_upload_view
 from core.api.uploads_list_view import start_upload_view
+from core.api.user_invites_generic_view import UserInvitesViewSet
 from core.api.users_detail_view import UserDetailsView
 from core.recipes.views.ingredients_detail_view import ingredients_detail_view
 from core.recipes.views.ingredients_list_view import ingredients_list_view
@@ -36,11 +42,6 @@ from core.recipes.views.sections_view import (
 from core.recipes.views.steps_detail_view import steps_detail_view
 from core.recipes.views.steps_list_view import steps_list_view
 from core.recipes.views.timeline_view import get_recipe_timeline
-from core.schedule.views import CalendarViewSet, ReportBadMerge, get_shopping_list_view
-from core.api.team_invite_generic_view import TeamInviteViewSet
-from core.api.team_generic_view import TeamViewSet
-from core.api.team_members_generic_view import MembershipViewSet
-from core.api.user_invites_generic_view import UserInvitesViewSet
 
 router = DefaultRouter()
 router.register(r"t", TeamViewSet, basename="teams")

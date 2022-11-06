@@ -1,12 +1,10 @@
 import logging
-from typing import List, Optional, TypeVar, cast
+from typing import Optional, TypeVar
 
-from django.core.exceptions import ValidationError
 from django.db import connection
-from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers, status
-from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -15,20 +13,9 @@ from typing_extensions import TypedDict
 from core.api.base import viewsets
 from core.api.base.permissions import IsTeamMember
 from core.api.base.request import AuthedRequest
-from core.cumin.cat import category
-from core.cumin.combine import Ingredient, combine_ingredients
-from core.json import JSONRenderer
-from core.models import (
-    Membership,
-    ScheduledRecipe,
-    ShoppingList,
-    Team,
-    get_random_ical_id,
-)
-from core.schedule.serializers import (
-    ScheduledRecipeSerializer,
-    ScheduledRecipeSerializerCreate,
-)
+from core.api.base.serialization import BaseModelSerializer
+from core.models import Membership, ScheduledRecipe, Team, get_random_ical_id
+from core.recipes.serializers import RecipeSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -40,57 +27,22 @@ def unwrap(arg: Optional[T]) -> T:
     return arg
 
 
-def get_scheduled_recipes(
-    *, request: AuthedRequest, team_pk: str
-) -> Optional[QuerySet[ScheduledRecipe]]:
-    start = request.query_params.get("start")
-    end = request.query_params.get("end")
+class ScheduledRecipeSerializer(BaseModelSerializer):
+    recipe = RecipeSerializer(fields=("id", "name"))
 
-    if team_pk in {"personal", "me"}:
-        scheduled_recipes = cast(
-            QuerySet[ScheduledRecipe], request.user.scheduled_recipes
-        )
-    else:
-        team = Team.objects.filter(pk=team_pk).first()
-        if team is None:
-            return None
-        scheduled_recipes = team.scheduled_recipes
-
-    try:
-        return scheduled_recipes.filter(on__gte=start).filter(on__lte=end)
-    except (ValueError, ValidationError):
-        return None
+    class Meta:
+        model = ScheduledRecipe
+        fields = ("id", "recipe", "created", "on", "count", "team", "user")
 
 
-@api_view(["GET"])
-@permission_classes([IsAuthenticated, IsTeamMember])
-def get_shopping_list_view(request: AuthedRequest, team_pk: str) -> Response:
-    scheduled_recipes = get_scheduled_recipes(request=request, team_pk=team_pk)
-    if scheduled_recipes is None:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+class ScheduledRecipeSerializerCreate(BaseModelSerializer):
+    class Meta:
+        model = ScheduledRecipe
+        fields = ("id", "recipe", "created", "on", "count")
 
-    ingredients: List[Ingredient] = []
-    for scheduled_recipe in scheduled_recipes:
-        for _ in range(scheduled_recipe.count):
-            ingredients += (
-                scheduled_recipe.recipe.ingredients  # type: ignore [arg-type]
-            )
-
-    ingredients = [
-        Ingredient(quantity=i.quantity, name=i.name, description=i.description)
-        for i in ingredients
-    ]
-
-    ingredient_mapping = combine_ingredients(ingredients)
-
-    for ingredient in ingredient_mapping:
-        ingredient_mapping[ingredient].category = category(ingredient)
-
-    ShoppingList.objects.create(
-        ingredients=JSONRenderer().render(ingredient_mapping).decode()
-    )
-
-    return Response(ingredient_mapping, status=status.HTTP_200_OK)
+    def create(self, validated_data):
+        recipe = validated_data.pop("recipe")
+        return recipe.schedule(**validated_data)
 
 
 class ReportBadMerge(APIView):

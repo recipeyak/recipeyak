@@ -16,8 +16,8 @@ from typing_extensions import TypedDict
 from urllib3.util.retry import Retry
 from yarl import URL
 
-from core.http import SafeSession
 from core.models import Scrape
+from core.scraper.safe_session import SafeSession
 
 
 class Review(TypedDict):

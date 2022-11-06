@@ -30,12 +30,12 @@ from core.models import (
 from core.models.recipe import Recipe
 from core.models.team import Team
 from core.models.user import get_avatar_url
-from core.recipes.scraper import scrape_recipe
 from core.recipes.serializers import (
     RecipeSerializer,
     serialize_attachments,
     serialize_reactions,
 )
+from core.scraper import scrape_recipe
 
 logger = logging.getLogger(__name__)
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import Any, Mapping
 
-from core.schedule.inflect import singularize
+from core.cumin.inflect import singularize
 
 DEPARTMENT_MAPPING = {
     "produce": {

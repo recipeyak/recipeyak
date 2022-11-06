@@ -1,19 +1,13 @@
 from typing import Any, Tuple, cast
 
-
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
-
 from rest_framework.response import Response
 
-from core.api.base.permissions import (
-    IsTeamAdmin,
-)
+from core.api.base.permissions import IsTeamAdmin
 from core.api.base.request import AuthedRequest
+from core.api.serializers.team import TeamSerializer
 from core.models import Team
-from core.teams.serializers import (
-    TeamSerializer,
-)
 
 
 class TeamViewSet(viewsets.ModelViewSet):

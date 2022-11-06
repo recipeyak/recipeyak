@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "user_sessions",
-    "core.apps.CoreConfig",
+    "core.django_app.CoreConfig",
     "rest_framework",
     "django.contrib.sites",
     "django.contrib.postgres",
@@ -68,7 +68,7 @@ sentry_sdk.init(
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("core.api.base.permissions.DisallowAny",),
-    "DEFAULT_RENDERER_CLASSES": ("core.json.JSONRenderer",),
+    "DEFAULT_RENDERER_CLASSES": ("core.api.base.drf_json_renderer.JSONRenderer",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "core.api.base.authentication.SessionAuthentication",
     ),

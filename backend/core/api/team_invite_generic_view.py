@@ -3,15 +3,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from core.api.base.permissions import (
-    IsTeamMember,
-)
-
+from core.api.base.permissions import IsTeamMember
+from core.api.serializers.team import CreateInviteSerializer, InviteSerializer
 from core.models import Invite, Team
-from core.teams.serializers import (
-    CreateInviteSerializer,
-    InviteSerializer,
-)
 
 
 class TeamInviteViewSet(
