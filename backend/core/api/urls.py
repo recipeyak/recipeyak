@@ -21,27 +21,27 @@ from core.api.uploads_detail_view import complete_upload_view
 from core.api.uploads_list_view import start_upload_view
 from core.api.user_invites_generic_view import UserInvitesViewSet
 from core.api.users_detail_view import UserDetailsView
-from core.recipes.views.ingredients_detail_view import ingredients_detail_view
-from core.recipes.views.ingredients_list_view import ingredients_list_view
-from core.recipes.views.notes_view import note_create_view, note_detail_view
-from core.recipes.views.reactions_view import (
+from core.api.ingredients_detail_view import ingredients_detail_view
+from core.api.ingredients_list_view import ingredients_list_view
+from core.api.notes_view import note_create_view, note_detail_view
+from core.api.reactions_view import (
     note_reaction_create_view,
     note_reaction_delete_view,
 )
-from core.recipes.views.recently_created_recipes_view import (
+from core.api.recently_created_recipes_view import (
     get_recently_created_recipes,
 )
-from core.recipes.views.recently_view_recipes_view import get_recently_viewed_recipes
-from core.recipes.views.recipe_copy_view import recipe_copy_view
-from core.recipes.views.recipe_duplicate_view import recipe_duplicate_view
-from core.recipes.views.recipe_move_view import recipe_move_view
-from core.recipes.views.sections_view import (
+from core.api.recently_view_recipes_view import get_recently_viewed_recipes
+from core.api.recipe_copy_view import recipe_copy_view
+from core.api.recipe_duplicate_view import recipe_duplicate_view
+from core.api.recipe_move_view import recipe_move_view
+from core.api.sections_view import (
     create_section_view,
     delete_or_update_section_view,
 )
-from core.recipes.views.steps_detail_view import steps_detail_view
-from core.recipes.views.steps_list_view import steps_list_view
-from core.recipes.views.timeline_view import get_recipe_timeline
+from core.api.steps_detail_view import steps_detail_view
+from core.api.steps_list_view import steps_list_view
+from core.api.timeline_view import get_recipe_timeline
 
 router = DefaultRouter()
 router.register(r"t", TeamViewSet, basename="teams")

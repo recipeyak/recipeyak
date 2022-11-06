@@ -7,7 +7,7 @@ from rest_framework.response import Response
 
 from core.api.base.request import AuthedRequest
 from core.models import user_and_team_recipes
-from core.recipes.serializers import RecipeSerializer
+from core.api.serializers.recipe import RecipeSerializer
 
 
 @api_view(["POST"])

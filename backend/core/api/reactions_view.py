@@ -15,7 +15,7 @@ from core.api.base.request import AuthedRequest
 from core.api.base.serialization import RequestParams
 from core.models import user_and_team_notes, user_reactions
 from core.models.reaction import Reaction
-from core.recipes.serializers import serialize_reactions
+from core.api.serializers.recipe import serialize_reactions
 
 logger = logging.getLogger(__name__)
 

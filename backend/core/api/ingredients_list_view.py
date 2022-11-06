@@ -12,7 +12,7 @@ from core import ordering
 from core.api.base.request import AuthedRequest
 from core.api.base.serialization import RequestParams
 from core.models import ChangeType, Ingredient, RecipeChange, user_and_team_recipes
-from core.recipes.serializers import ingredient_to_text, serialize_ingredient
+from core.api.serializers.recipe import ingredient_to_text, serialize_ingredient
 
 
 class IngredientCreateParams(RequestParams):

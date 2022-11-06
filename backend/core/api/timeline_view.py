@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from core.api.base.permissions import has_recipe_access
 from core.api.base.request import AuthedRequest
 from core.models import Recipe, ScheduledRecipe, User
-from core.recipes.serializers import RecipeTimelineSerializer
+from core.api.serializers.recipe import RecipeTimelineSerializer
 
 
 @api_view(["GET"])

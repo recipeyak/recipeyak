@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "user_sessions",
-    "core.django_app.CoreConfig",
+    "core.django.app.CoreConfig",
     "rest_framework",
     "django.contrib.sites",
     "django.contrib.postgres",

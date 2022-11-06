@@ -15,7 +15,7 @@ from core.api.base.permissions import IsTeamMember
 from core.api.base.request import AuthedRequest
 from core.api.base.serialization import BaseModelSerializer
 from core.models import Membership, ScheduledRecipe, Team, get_random_ical_id
-from core.recipes.serializers import RecipeSerializer
+from core.api.serializers.recipe import RecipeSerializer
 
 logger = logging.getLogger(__name__)
 

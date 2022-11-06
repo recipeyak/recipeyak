@@ -30,7 +30,7 @@ from core.models import (
 from core.models.recipe import Recipe
 from core.models.team import Team
 from core.models.user import get_avatar_url
-from core.recipes.serializers import (
+from core.api.serializers.recipe import (
     RecipeSerializer,
     serialize_attachments,
     serialize_reactions,

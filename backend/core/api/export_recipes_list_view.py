@@ -11,7 +11,7 @@ from rest_framework import serializers
 from core.api.base.request import AuthedRequest
 from core.api.base.serialization import BaseModelSerializer
 from core.models import Recipe, user_and_team_recipes
-from core.recipes.serializers import IngredientSerializer, OwnerRelatedField
+from core.api.serializers.recipe import IngredientSerializer, OwnerRelatedField
 
 
 def represent_ordereddict(dumper, data):

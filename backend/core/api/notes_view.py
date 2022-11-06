@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from core.api.base.request import AuthedRequest
 from core.api.base.serialization import RequestParams
 from core.models import Note, Upload, user_and_team_notes, user_and_team_recipes
-from core.recipes.serializers import serialize_note
+from core.api.serializers.recipe import serialize_note
 
 
 class CreateNoteParams(RequestParams):
