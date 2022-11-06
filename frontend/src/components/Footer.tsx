@@ -3,6 +3,7 @@ import { styled } from "@/theme"
 const StyledFooter = styled.footer`
   font-weight: bold;
   padding: 1rem 1.5rem;
+  font-size: 14px;
   display: flex;
   align-items: center;
   margin-top: auto;
