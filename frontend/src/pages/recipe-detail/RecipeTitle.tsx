@@ -119,6 +119,7 @@ class RecipeTitle extends React.Component<
       return
     }
     this.props.update({ id: this.props.id, data })
+    this.props.toggleEditing(this.props.id)
   }
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
