@@ -86,7 +86,7 @@ def update_section_view(request: AuthedRequest, section_pk: int) -> Response:
     if not has_recipe_access(recipe=section.recipe, user=request.user):
         return Response(status=status.HTTP_403_FORBIDDEN)
 
-    params = SectionCreateParams.parse_obj(request.data)
+    params = SectionUpdateParams.parse_obj(request.data)
     if params.title is not None:
         section.title = params.title
     if params.position is not None:
