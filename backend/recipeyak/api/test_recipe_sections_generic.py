@@ -122,6 +122,10 @@ def test_updating_section(client: APIClient, user: User, recipe: Recipe) -> None
     assert recipe_change.recipe is not None
     assert recipe_change.recipe.id == recipe.id
 
+    res = client.patch(f"/api/v1/sections/{section.id}/", {"position": "124.0"})
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json()["position"] == "124.0"
+
 
 def test_deleting_section(client: APIClient, user: User, recipe: Recipe) -> None:
     client.force_authenticate(user)
