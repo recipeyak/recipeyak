@@ -1,7 +1,6 @@
 import pytest
 from allauth.socialaccount.models import EmailAddress
 from django.conf import settings
-from django.urls import reverse
 from rest_framework import status
 from user_sessions.models import Session
 
@@ -28,7 +27,7 @@ def test_signup(client):
 
     data = {"email": email, "password1": password, "password2": password}
 
-    res = client.post(reverse("rest_register"), data)
+    res = client.post("/api/v1/auth/registration/", data)
     assert res.status_code == status.HTTP_201_CREATED
 
     user = User.objects.first()
@@ -167,7 +166,7 @@ def test_signup_case_insensitive(client):
 
     data = {"email": email, "password1": password, "password2": password}
 
-    res = client.post(reverse("rest_register"), data)
+    res = client.post("/api/v1/auth/registration/", data)
     assert res.status_code == status.HTTP_201_CREATED
 
     user = User.objects.first()
@@ -181,7 +180,7 @@ def test_signup_case_insensitive(client):
     client.force_authenticate(user=None)
     email2 = "TESTing@gmail.com"
     assert email2.lower() == email
-    res = client.post(reverse("rest_register"), data)
+    res = client.post("/api/v1/auth/registration/", data)
     assert res.status_code in (
         status.HTTP_401_UNAUTHORIZED,
         status.HTTP_400_BAD_REQUEST,
@@ -205,5 +204,5 @@ def test_signup_user_has_email(client, user):
     password = "password123"
     data = {"email": email2, "password1": password, "password2": password}
 
-    res = client.post(reverse("rest_register"), data)
+    res = client.post("/api/v1/auth/registration/", data)
     assert res.status_code == status.HTTP_400_BAD_REQUEST

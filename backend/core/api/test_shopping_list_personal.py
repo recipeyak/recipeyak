@@ -4,7 +4,6 @@ from decimal import Decimal
 from typing import List, Tuple
 
 import pytest
-from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -316,7 +315,7 @@ def test_combine_ingredients(
 
 
 def test_report_bad_merge(user, client, recipe):
-    url = reverse("report-bad-merge")
+    url = "/api/v1/report-bad-merge"
     assert client.post(url).status_code == status.HTTP_403_FORBIDDEN
 
     client.force_authenticate(user)
