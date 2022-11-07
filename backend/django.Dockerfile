@@ -22,7 +22,7 @@ RUN poetry run pip install setuptools==61.1.1 && \
 COPY . /var/app
 # Inject GIT SHA into settings file to track releases via Sentry
 ARG GIT_SHA
-RUN sh -c 'sed -i s/\<%=GIT_SHA=%\>/"$GIT_SHA"/ core/settings.py && grep GIT_SHA core/settings.py'
+RUN sh -c 'sed -i s/\<%=GIT_SHA=%\>/"$GIT_SHA"/ recipeyak/django/settings.py && grep GIT_SHA recipeyak/django/settings.py'
 
 HEALTHCHECK CMD curl --fail http://localhost:8000/healthz
 

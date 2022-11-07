@@ -59,4 +59,5 @@ exclude = '''
 
 [tool.isort]
 profile = "black"
+src_paths = ["recipeyak"]
 skip_gitignore = true
