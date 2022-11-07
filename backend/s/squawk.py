@@ -7,9 +7,9 @@ from pathlib import Path
 from shutil import which
 from typing import Mapping, Optional
 
-APP_LABEL = "core"
+APP_LABEL = "recipeyak"
 
-MIGRATIONS_DIRECTORY = "./core/migrations"
+MIGRATIONS_DIRECTORY = "./recipeyak/migrations"
 
 
 logging.basicConfig(level=logging.INFO)
