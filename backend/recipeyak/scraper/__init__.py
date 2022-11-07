@@ -10,12 +10,12 @@ import time
 from dataclasses import asdict, dataclass
 from io import BytesIO
 
-from django.core.validators import URLValidator
 from recipe_scrapers import scrape_html
 from typing_extensions import TypedDict
 from urllib3.util.retry import Retry
 from yarl import URL
 
+from django.core.validators import URLValidator
 from recipeyak.models import Scrape
 from recipeyak.scraper.safe_session import SafeSession
 

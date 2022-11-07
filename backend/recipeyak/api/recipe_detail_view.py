@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from django.db import connection
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from django.db import connection
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.serializers.recipe import RecipeSerializer
 from recipeyak.models import (

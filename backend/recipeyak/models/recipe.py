@@ -11,7 +11,6 @@ from django.db import models, transaction
 from django.db.models import QuerySet
 from django.db.models.manager import BaseManager, Manager
 from django.utils import timezone
-
 from recipeyak.models.base import CommonInfo
 from recipeyak.models.ingredient import Ingredient
 from recipeyak.models.scheduled_recipe import ScheduledRecipe

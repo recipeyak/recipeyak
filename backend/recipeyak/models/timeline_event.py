@@ -2,7 +2,6 @@ from enum import Enum
 from typing import TYPE_CHECKING
 
 from django.db import models
-
 from recipeyak.models.base import CommonInfo
 
 if TYPE_CHECKING:

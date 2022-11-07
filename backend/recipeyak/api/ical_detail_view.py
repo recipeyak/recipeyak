@@ -1,14 +1,14 @@
 from datetime import date, datetime, timedelta
 from typing import Optional, Sequence, cast
 
+from icalendar import Calendar, Event, vDate, vDatetime
+
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.http import http_date
 from django.utils.text import slugify
 from django.views.decorators.http import require_http_methods
-from icalendar import Calendar, Event, vDate, vDatetime
-
 from recipeyak.models import Membership, ScheduledRecipe, Team
 
 

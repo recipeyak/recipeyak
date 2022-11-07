@@ -4,9 +4,9 @@ from typing import TYPE_CHECKING
 
 import boto3
 from botocore.client import Config
-from django.db import models
 from yarl import URL
 
+from django.db import models
 from recipeyak import config
 from recipeyak.models.base import CommonInfo
 

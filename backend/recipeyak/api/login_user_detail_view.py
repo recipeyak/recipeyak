@@ -1,16 +1,16 @@
 import logging
 
-from django.conf import settings
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import SetPasswordForm
-from django.utils.decorators import method_decorator
-from django.views.decorators.debug import sensitive_post_parameters
 from rest_framework import exceptions, serializers, status
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from django.conf import settings
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import SetPasswordForm
+from django.utils.decorators import method_decorator
+from django.views.decorators.debug import sensitive_post_parameters
 from recipeyak.api.base.serialization import BaseSerializer
 from recipeyak.api.serializers.user import UserSerializer as UserDetailsSerializer
 from recipeyak.models import User

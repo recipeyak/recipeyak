@@ -2,7 +2,6 @@ from typing import Any
 
 from django.db import models
 from django.db.models.manager import Manager
-
 from recipeyak.models.base import CommonInfo
 
 

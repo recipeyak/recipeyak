@@ -1,8 +1,8 @@
 import pytest
-from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from django.http import HttpResponse
 from recipeyak.api.base.middleware import ServerTimingMiddleware
 
 pytestmark = pytest.mark.django_db

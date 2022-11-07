@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from django.contrib.auth import login
-from django.utils.http import urlsafe_base64_decode
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
+from django.contrib.auth import login
+from django.utils.http import urlsafe_base64_decode
 from recipeyak.api.base.request import AnonymousRequest
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.user import UserSerializer

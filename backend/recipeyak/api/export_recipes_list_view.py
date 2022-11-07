@@ -2,12 +2,12 @@ from collections import OrderedDict
 from typing import Optional
 
 import yaml
+from rest_framework import serializers
+
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_http_methods
-from rest_framework import serializers
-
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import BaseModelSerializer
 from recipeyak.api.serializers.recipe import IngredientSerializer, OwnerRelatedField

@@ -6,6 +6,7 @@ from uuid import uuid4
 
 import pydantic
 import sentry_sdk
+
 from django.conf import settings
 from django.contrib.sessions.middleware import (
     SessionMiddleware as DjangoSessionMiddleware,
@@ -13,7 +14,6 @@ from django.contrib.sessions.middleware import (
 from django.db import connection
 from django.http import HttpRequest, HttpResponse, HttpResponseServerError, JsonResponse
 from django.utils.deprecation import MiddlewareMixin
-
 from recipeyak.api.base.request_state import State
 from recipeyak.api.base.serialization import RequestParams
 

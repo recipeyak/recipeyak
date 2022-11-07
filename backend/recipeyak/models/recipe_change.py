@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING
 
 from django.db import models
 from django.db.models.manager import Manager
-
 from recipeyak.models.base import CommonInfo
 from recipeyak.models.recipe import Recipe
 

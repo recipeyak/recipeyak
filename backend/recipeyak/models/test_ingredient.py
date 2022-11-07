@@ -1,6 +1,6 @@
 import pytest
-from django.db.utils import IntegrityError
 
+from django.db.utils import IntegrityError
 from recipeyak.models import Ingredient, Recipe
 
 pytestmark = pytest.mark.django_db

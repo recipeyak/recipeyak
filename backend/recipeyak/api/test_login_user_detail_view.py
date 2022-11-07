@@ -1,9 +1,9 @@
 import pytest
 from allauth.socialaccount.models import EmailAddress
-from django.conf import settings
 from rest_framework import status
 from user_sessions.models import Session
 
+from django.conf import settings
 from recipeyak.api.serializers.user import UserSerializer
 from recipeyak.models import User
 

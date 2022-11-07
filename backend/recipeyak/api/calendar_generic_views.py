@@ -1,8 +1,6 @@
 import logging
 from typing import Optional, TypeVar
 
-from django.db import connection
-from django.shortcuts import get_object_or_404
 from rest_framework import serializers, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -10,6 +8,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from typing_extensions import TypedDict
 
+from django.db import connection
+from django.shortcuts import get_object_or_404
 from recipeyak.api.base import viewsets
 from recipeyak.api.base.permissions import IsTeamMember
 from recipeyak.api.base.request import AuthedRequest
