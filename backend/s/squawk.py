@@ -74,7 +74,11 @@ def main() -> None:
 
     for migration_id, filename in changed_migrations_ids:
         log.info("getting sql for %s", filename)
-        output_sql_file = (Path(".") / filename).with_suffix(".sql").open(mode="w")
+        output_sql_file = (
+            (Path(".").parent / filename.removeprefix("backend/"))
+            .with_suffix(".sql")
+            .open(mode="w")
+        )
         subprocess.run(
             [
                 "./.venv/bin/python",
