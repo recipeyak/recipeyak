@@ -86,7 +86,7 @@ export interface ICalendarItemProps {
   readonly teamID: number | "personal"
   readonly createdAt: string
   readonly createdBy: {
-    readonly id: string
+    readonly id: number
     readonly name: string
     readonly avatar_url: string
   } | null
