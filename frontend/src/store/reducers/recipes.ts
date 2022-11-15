@@ -469,7 +469,7 @@ export interface IStep {
 }
 
 export interface IPublicUser {
-  readonly id: string
+  readonly id: string | number
   readonly name: string | null
   readonly avatar_url: string
 }

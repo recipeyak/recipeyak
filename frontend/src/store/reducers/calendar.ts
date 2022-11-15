@@ -142,7 +142,7 @@ export interface ICalRecipe {
   readonly on: string
   readonly created: string
   readonly createdBy: {
-    readonly id: number
+    readonly id: number | string
     readonly name: string
     readonly avatar_url: string
   } | null

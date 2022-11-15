@@ -42,7 +42,7 @@ export function CalendarDayItemModal({
   readonly onClose: () => void
   readonly createdAt: string
   readonly createdBy: {
-    readonly id: number
+    readonly id: number | string
     readonly name: string
     readonly avatar_url: string
   } | null
