@@ -84,6 +84,12 @@ export interface ICalendarItemProps {
   readonly recipeName: IRecipe["name"]
   readonly scheduledId: ICalRecipe["id"]
   readonly teamID: number | "personal"
+  readonly createdAt: string
+  readonly createdBy: {
+    readonly id: string
+    readonly name: string
+    readonly avatar_url: string
+  } | null
 }
 
 export function CalendarItem({
@@ -96,6 +102,8 @@ export function CalendarItem({
   recipeID,
   teamID,
   scheduledId,
+  createdAt,
+  createdBy,
 }: ICalendarItemProps) {
   const [count, setCount] = React.useState(propsCount)
   const ref = React.useRef<HTMLLIElement>(null)
@@ -195,6 +203,8 @@ export function CalendarItem({
       {show ? (
         <CalendarDayItemModal
           scheduledId={scheduledId}
+          createdAt={createdAt}
+          createdBy={createdBy}
           teamID={teamID}
           recipeName={recipeName}
           recipeId={recipeID}

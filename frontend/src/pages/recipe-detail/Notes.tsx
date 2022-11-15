@@ -399,8 +399,18 @@ export function Note({ note, recipeId, className }: INoteProps) {
   )
 }
 
-function TimelineEvent({ event }: { readonly event: RecipeTimelineItem }) {
+export function TimelineEvent({
+  event,
+  enableLinking = true,
+}: {
+  readonly event: Pick<
+    RecipeTimelineItem,
+    "id" | "created_by" | "action" | "created"
+  >
+  readonly enableLinking?: boolean
+}) {
   const eventId = `event-${event.id}`
+  const timestamp = <NoteTimeStamp created={event.created} />
   return (
     <SharedEntry
       id={eventId}
@@ -415,9 +425,7 @@ function TimelineEvent({ event }: { readonly event: RecipeTimelineItem }) {
           <b>{event.created_by?.name ?? "User"}</b>{" "}
           <span>{event.action} this recipe </span>
         </div>
-        <a href={`#${eventId}`}>
-          <NoteTimeStamp created={event.created} />
-        </a>
+        {enableLinking ? <a href={`#${eventId}`}>{timestamp}</a> : timestamp}
       </div>
     </SharedEntry>
   )

@@ -397,8 +397,6 @@ export const acceptInvite = (id: IInvite["id"]) =>
 export const declineInvite = (id: IInvite["id"]) =>
   http.post<void>(`/api/v1/invites/${id}/decline/`, {})
 
-export const reportBadMerge = () => http.post("/api/v1/report-bad-merge", {})
-
 export function getCalendarRecipeList({
   teamID,
   start,
@@ -431,6 +429,14 @@ export function getCalendarRecipeListRequestBuilder({
           count: t.number,
           on: t.string,
           created: t.string,
+          createdBy: t.union([
+            t.type({
+              id: t.number,
+              name: t.string,
+              avatar_url: t.string,
+            }),
+            t.null,
+          ]),
           team: t.union([t.number, t.null]),
           user: t.union([t.number, t.null]),
           recipe: t.type({

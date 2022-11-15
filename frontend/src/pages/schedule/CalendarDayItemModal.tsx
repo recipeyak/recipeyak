@@ -5,8 +5,9 @@ import { Link } from "react-router-dom"
 import * as api from "@/api"
 import cls from "@/classnames"
 import Modal from "@/components/Modal"
-import { toISODateString } from "@/date"
+import { formatAbsoluteDate, toISODateString } from "@/date"
 import { useDispatch } from "@/hooks"
+import { TimelineEvent } from "@/pages/recipe-detail/Notes"
 import { isOk } from "@/result"
 import { moveCalendarRecipe } from "@/store/reducers/calendar"
 import { recipeURL } from "@/urls"
@@ -30,6 +31,8 @@ export function CalendarDayItemModal({
   teamID,
   date,
   onClose,
+  createdAt,
+  createdBy,
 }: {
   readonly scheduledId: number
   readonly recipeId: number | string
@@ -37,6 +40,12 @@ export function CalendarDayItemModal({
   readonly recipeName: string
   readonly date: Date
   readonly onClose: () => void
+  readonly createdAt: string
+  readonly createdBy: {
+    readonly id: string
+    readonly name: string
+    readonly avatar_url: string
+  } | null
 }) {
   const [day, setDay] = React.useState(format(date, "EEEE"))
   const [localDate, setLocalDate] = React.useState(toISODateString(date))
@@ -93,30 +102,43 @@ export function CalendarDayItemModal({
   const to = recipeURL(recipeId, recipeName)
   const [reschedulerOpen, setReschedulerOpen] = React.useState(false)
 
+  const prettyDate = formatAbsoluteDate(date, { includeYear: true })
   return (
-    <Modal show onClose={onClose} style={{ maxWidth: 400 }}>
-      <section className="d-flex space-between">
-        <Link to={to} className="fs-4 flex-grow-1">
-          {recipeName}
-        </Link>
+    <Modal show onClose={onClose} style={{ maxWidth: 400 }} className="fs-14px">
+      <section className="d-flex space-between mb-1">
+        <div>{prettyDate}</div>
         <button className="delete" onClick={onClose} />
       </section>
+      <Link to={to} className="fs-4 flex-grow-1">
+        {recipeName}
+      </Link>
+      <hr className="my-2" />
+
+      <TimelineEvent
+        enableLinking={false}
+        event={{
+          id: scheduledId,
+          action: "scheduled",
+          created_by: createdBy,
+          created: createdAt,
+        }}
+      />
+
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
-          marginTop: "2rem",
         }}
       >
         <button
-          className={cls("button fs-14px", { "is-active": reschedulerOpen })}
+          className={cls("button is-small", { "is-active": reschedulerOpen })}
           onClick={() => {
             setReschedulerOpen((val) => !val)
           }}
         >
           Reschedule
         </button>
-        <Link to={to} className="button is-primary fs-14px">
+        <Link to={to} className="button is-primary is-small">
           View Recipe
         </Link>
       </div>

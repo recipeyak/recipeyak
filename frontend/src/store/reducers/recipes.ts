@@ -507,7 +507,7 @@ type IRecipeOwner =
 export type RecipeTimelineItem = {
   type: "recipe"
   id: number
-  action: "created" | "archived" | "unarchived" | "deleted"
+  action: "created" | "archived" | "unarchived" | "deleted" | "scheduled"
   created_by: IPublicUser | null
   created: string
 }
