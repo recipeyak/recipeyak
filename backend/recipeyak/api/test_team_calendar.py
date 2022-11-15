@@ -56,7 +56,7 @@ def test_fetching_team_calendar(
         res.status_code == status.HTTP_400_BAD_REQUEST
     ), "not providing start and end should result in a bad request"
 
-    recipe.schedule(on=date(1976, 1, 2), team=team)
+    recipe.schedule(on=date(1976, 1, 2), team=team, user=user)
 
     res = client.get(url, {"start": date(1976, 1, 1), "end": date(1977, 1, 1)})
     assert res.status_code == status.HTTP_200_OK
@@ -72,7 +72,7 @@ def test_fetching_team_calendar_v2(
     """
     url = url = f"/api/v1/t/{team.pk}/calendar/"
     client.force_authenticate(user)
-    recipe.schedule(on=date(1976, 1, 2), team=team)
+    recipe.schedule(on=date(1976, 1, 2), team=team, user=user)
 
     res = client.get(url, {"start": date(1976, 1, 1), "end": date(1977, 1, 1), "v2": 1})
     assert res.status_code == status.HTTP_200_OK
