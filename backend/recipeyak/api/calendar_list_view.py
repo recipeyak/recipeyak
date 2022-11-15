@@ -3,6 +3,13 @@ from __future__ import annotations
 from datetime import date
 from typing import Any
 
+from rest_framework import serializers, status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.exceptions import MethodNotAllowed
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from typing_extensions import TypedDict
+
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 from recipeyak.api.base.permissions import IsTeamMember
@@ -10,12 +17,6 @@ from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import BaseModelSerializer, RequestParams
 from recipeyak.api.serializers.recipe import RecipeSerializer
 from recipeyak.models import Membership, ScheduledRecipe, Team
-from rest_framework import serializers, status
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.exceptions import MethodNotAllowed
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from typing_extensions import TypedDict
 
 
 class CalSettings(TypedDict):
