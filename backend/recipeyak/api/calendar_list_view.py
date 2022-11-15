@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import date
+from typing import Any
 
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
@@ -43,8 +44,9 @@ class ScheduledRecipeSerializerCreate(BaseModelSerializer):
         model = ScheduledRecipe
         fields = ("id", "recipe", "created", "on", "count")
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict[str, Any]):
         recipe = validated_data.pop("recipe")
+        validated_data.pop("user", None)
         return recipe.schedule(**validated_data, user=self.context["request"].user)
 
 
