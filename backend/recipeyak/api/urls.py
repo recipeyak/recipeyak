@@ -1,7 +1,7 @@
-from rest_framework.routers import DefaultRouter
-
 from django.conf.urls import include, url
 from django.urls import path
+from rest_framework.routers import DefaultRouter
+
 from recipeyak.api.calendar_generic_views import CalendarViewSet
 from recipeyak.api.calendar_list_view import calendar_list_view
 from recipeyak.api.export_recipes_list_view import export_recipes_list_view

@@ -1,9 +1,9 @@
 from typing import Union, cast
 
-from rest_framework import permissions
-
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from rest_framework import permissions
+
 from recipeyak.models import Membership, Recipe, Team, User
 
 

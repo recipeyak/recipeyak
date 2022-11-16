@@ -1,11 +1,11 @@
 from datetime import datetime
 
 import pytest
+from django.utils.dateparse import parse_datetime
 from rest_framework import status
 from rest_framework.test import APIClient
 from syrupy.matchers import path_type
 
-from django.utils.dateparse import parse_datetime
 from recipeyak import ordering
 from recipeyak.models import (
     Ingredient,

@@ -3,13 +3,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pydantic
+from django.core.mail import send_mail
+from django.utils.http import urlsafe_base64_encode
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from django.core.mail import send_mail
-from django.utils.http import urlsafe_base64_encode
 from recipeyak.api.base.request import AnonymousRequest
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.models.user import User

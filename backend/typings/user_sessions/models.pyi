@@ -3,9 +3,8 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any, Optional
 
-from user_sessions.backends.db import SessionStore
-
 from django.db import models
+from user_sessions.backends.db import SessionStore
 
 class SessionManager(models.Manager["Session"]):
     use_in_migrations = True

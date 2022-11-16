@@ -1,5 +1,6 @@
 from django.db.models import Q, QuerySet
 from django.shortcuts import get_object_or_404
+
 from recipeyak.models.ingredient import Ingredient  # noqa: F401
 from recipeyak.models.invite import Invite  # noqa: F401
 from recipeyak.models.membership import Membership, get_random_ical_id  # noqa: F401

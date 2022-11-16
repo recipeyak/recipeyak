@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Optional
 
 from django.core.validators import MinValueValidator
 from django.db import models, transaction
+
 from recipeyak.models.base import CommonInfo
 
 if TYPE_CHECKING:

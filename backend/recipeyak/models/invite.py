@@ -1,4 +1,5 @@
 from django.db import models
+
 from recipeyak.models.base import CommonInfo
 from recipeyak.models.membership import Membership
 from recipeyak.models.user import User
