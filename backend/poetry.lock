@@ -1526,36 +1526,39 @@ crt = ["botocore[crt] (>=1.20.29,<2.0a.0)"]
 
 [[package]]
 name = "sentry-sdk"
-version = "1.11.0"
-description = "Python client for Sentry (https://sentry.io)"
+version = "1.5.0"
+description = ""
 category = "main"
 optional = false
 python-versions = "*"
+develop = false
 
 [package.dependencies]
 certifi = "*"
-urllib3 = {version = ">=1.26.11", markers = "python_version >= \"3.6\""}
+urllib3 = ">=1.10.0"
 
 [package.extras]
-aiohttp = ["aiohttp (>=3.5)"]
-beam = ["apache-beam (>=2.12)"]
-bottle = ["bottle (>=0.12.13)"]
-celery = ["celery (>=3)"]
-chalice = ["chalice (>=1.16.0)"]
-django = ["django (>=1.8)"]
-falcon = ["falcon (>=1.4)"]
-fastapi = ["fastapi (>=0.79.0)"]
 flask = ["flask (>=0.11)", "blinker (>=1.1)"]
-httpx = ["httpx (>=0.16.0)"]
-pure_eval = ["pure-eval", "executing", "asttokens"]
-pymongo = ["pymongo (>=3.1)"]
-pyspark = ["pyspark (>=2.4.4)"]
-quart = ["quart (>=0.16.1)", "blinker (>=1.1)"]
-rq = ["rq (>=0.6)"]
+bottle = ["bottle (>=0.12.13)"]
+falcon = ["falcon (>=1.4)"]
+django = ["django (>=1.8)"]
 sanic = ["sanic (>=0.8)"]
-sqlalchemy = ["sqlalchemy (>=1.2)"]
-starlette = ["starlette (>=0.19.1)"]
+celery = ["celery (>=3)"]
+beam = ["apache-beam (>=2.12)"]
+rq = ["rq (>=0.6)"]
+aiohttp = ["aiohttp (>=3.5)"]
 tornado = ["tornado (>=5)"]
+sqlalchemy = ["sqlalchemy (>=1.2)"]
+pyspark = ["pyspark (>=2.4.4)"]
+pure_eval = ["pure-eval", "executing", "asttokens"]
+chalice = ["chalice (>=1.16.0)"]
+httpx = ["httpx (>=0.16.0)"]
+
+[package.source]
+type = "git"
+url = "https://github.com/chdsbd/sentry-python.git"
+reference = "chris/trace-response-render"
+resolved_reference = "ab3ddc201bbac0208650626b7f60ed0ff1e66a27"
 
 [[package]]
 name = "six"
@@ -1768,7 +1771,7 @@ testing = ["jaraco.itertools", "func-timeout"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "5345c2e7417130d377367a51831e0c6997ab206ee6d10665e1f029006127006f"
+content-hash = "b51ec3c732e3fb42d7affce1d2b9213e2e02e4eca56516b3ed84379ce3ef2a34"
 
 [metadata.files]
 advocate = []
