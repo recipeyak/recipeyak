@@ -132,7 +132,7 @@ class Recipe(CommonInfo):
         self,
         *,
         on: date,
-        user: Optional["User"] = None,
+        user: "User",
         team: Optional["Team"] = None,
         count: int = 1,
     ):

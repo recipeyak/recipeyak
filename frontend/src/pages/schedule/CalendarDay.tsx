@@ -180,6 +180,8 @@ function CalendarDay({
           <CalendarItem
             key={x.id}
             scheduledId={x.id}
+            createdAt={x.created}
+            createdBy={x.createdBy}
             date={date}
             recipeName={x.recipe.name}
             recipeID={x.recipe.id}

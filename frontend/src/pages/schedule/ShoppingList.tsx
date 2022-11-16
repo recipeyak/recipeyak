@@ -28,7 +28,6 @@ import { IState } from "@/store/store"
 import {
   Dispatch,
   fetchingShoppingListAsync,
-  reportBadMergeAsync,
   showNotificationWithTimeoutAsync,
 } from "@/store/thunks"
 import { normalizeUnitsFracs } from "@/text"
@@ -196,7 +195,6 @@ interface IShoppingListProps {
   readonly shoppinglist: WebData<IGetShoppingListResponse>
   readonly setStartDay: (date: Date) => void
   readonly setEndDay: (date: Date) => void
-  readonly reportBadMerge: () => void
   readonly sendToast: (message: string) => void
 }
 
@@ -215,7 +213,6 @@ function ShoppingList({
   setEndDay: propsSetEndDay,
   shoppinglist,
   sendToast,
-  reportBadMerge,
 }: IShoppingListProps) {
   const element = useRef<HTMLDivElement>(null)
   const [month, setMonth] = useState(new Date())
@@ -311,11 +308,6 @@ function ShoppingList({
 
       <div>
         <ShoppingListList items={shoppinglist} sendToast={sendToast} />
-        <div className="d-flex justify-content-end no-print">
-          <a onClick={reportBadMerge} className="text-muted italic text-small">
-            report bad merge
-          </a>
-        </div>
       </div>
     </div>
   )
@@ -333,7 +325,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchData: fetchingShoppingListAsync(dispatch),
   setStartDay: (date: Date) => dispatch(setSelectingStart(date)),
   setEndDay: (date: Date) => dispatch(setSelectingEnd(date)),
-  reportBadMerge: reportBadMergeAsync(dispatch),
   sendToast: (message: string) => {
     showNotificationWithTimeoutAsync(dispatch)({ message, level: "info" })
   },

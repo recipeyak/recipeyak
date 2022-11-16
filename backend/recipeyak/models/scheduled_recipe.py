@@ -20,7 +20,7 @@ class ScheduledRecipeManager(models.Manager["ScheduledRecipe"]):
         on: date,
         team: Optional[Team],
         count: int,
-        user: Optional[User],
+        user: User,
     ) -> "ScheduledRecipe":
         """
         add to existing scheduled recipe count for dupes
@@ -35,7 +35,7 @@ class ScheduledRecipeManager(models.Manager["ScheduledRecipe"]):
                 existing.save()
                 return existing
             return ScheduledRecipe.objects.create(
-                recipe=recipe, on=on, count=count, team=team, user=user
+                recipe=recipe, on=on, count=count, team=team, user=user, created_by=user
             )
 
 
@@ -53,6 +53,9 @@ class ScheduledRecipe(CommonInfo):
     )
     team = models.ForeignKey["Team"](
         "Team", on_delete=models.CASCADE, blank=True, null=True
+    )
+    created_by = models.ForeignKey["User"](
+        "User", on_delete=models.CASCADE, null=True, related_name="+"
     )
 
     objects = ScheduledRecipeManager()

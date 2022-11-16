@@ -831,23 +831,6 @@ export const deleteUserAccountAsync = (dispatch: Dispatch) => async () => {
   }
 }
 
-export const reportBadMergeAsync = (dispatch: Dispatch) => async () => {
-  const res = await api.reportBadMerge()
-  if (isOk(res)) {
-    showNotificationWithTimeoutAsync(dispatch)({
-      message: "reported bad merge",
-      level: "success",
-      delay: 3 * second,
-    })
-  } else {
-    showNotificationWithTimeoutAsync(dispatch)({
-      message: "error reporting bad merge",
-      level: "danger",
-      delay: 3 * second,
-    })
-  }
-}
-
 export const fetchCalendarAsync =
   (dispatch: Dispatch) =>
   async (teamID: number | "personal", currentDayTs: number) => {
@@ -875,6 +858,11 @@ export function toCalRecipe(
   tempId: ICalRecipe["id"],
   on: ICalRecipe["on"],
   count: ICalRecipe["count"],
+  user: {
+    id: number | null
+    name: string
+    avatarURL: string
+  } | null,
 ): ICalRecipe {
   return {
     id: tempId,
@@ -887,6 +875,14 @@ export function toCalRecipe(
     count,
     user: recipe.owner.type === "user" ? recipe.owner.id : null,
     team: recipe.owner.type === "team" ? recipe.owner.id : null,
+    createdBy:
+      user != null
+        ? {
+            id: String(user.id),
+            name: user.name,
+            avatar_url: user.avatarURL,
+          }
+        : null,
   }
 }
 
@@ -923,9 +919,11 @@ export const addingScheduledRecipeAsync = async (
   // 2. if succeeded, then we replace the preemptively added one
   //    if failed, then we remove the preemptively added one, and display an error
 
+  const user = getState().user
+
   dispatch(
     setCalendarRecipe(
-      toCalRecipe(recipe.data, tempId, toISODateString(on), count),
+      toCalRecipe(recipe.data, tempId, toISODateString(on), count, user),
     ),
   )
   const res = await api.scheduleRecipe(recipeID, teamID, on, count)

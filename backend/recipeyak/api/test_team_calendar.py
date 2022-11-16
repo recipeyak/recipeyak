@@ -10,7 +10,9 @@ from recipeyak.models.membership import Membership
 pytestmark = pytest.mark.django_db
 
 
-def test_adding_to_team_calendar(client, user, team, recipe):
+def test_adding_to_team_calendar(
+    client: APIClient, user: User, team: Team, recipe: Recipe
+):
     url = f"/api/v1/t/{team.pk}/calendar/"
     data = {"recipe": recipe.id, "on": date(1976, 7, 6), "count": 1}
     assert team.is_member(user)
@@ -25,8 +27,10 @@ def test_adding_to_team_calendar(client, user, team, recipe):
     assert scheduled.team is not None and scheduled.team.pk == team.pk
 
 
-def test_removing_from_team_calendar(client, user, team, recipe):
-    scheduled = recipe.schedule(on=date(1976, 1, 2), team=team)
+def test_removing_from_team_calendar(
+    client: APIClient, user: User, team: Team, recipe: Recipe
+):
+    scheduled = recipe.schedule(on=date(1976, 1, 2), team=team, user=user)
     url = f"/api/v1/t/{team.pk}/calendar/{scheduled.id}/"
     client.force_authenticate(user)
     res = client.delete(url)
@@ -34,8 +38,10 @@ def test_removing_from_team_calendar(client, user, team, recipe):
     assert not ScheduledRecipe.objects.filter(id=scheduled.id).exists()
 
 
-def test_updating_team_schedule_recipe(client, user, team, recipe):
-    scheduled = recipe.schedule(on=date(1976, 1, 2), team=team)
+def test_updating_team_schedule_recipe(
+    client: APIClient, user: User, team: Team, recipe: Recipe
+):
+    scheduled = recipe.schedule(on=date(1976, 1, 2), team=team, user=user)
     assert scheduled.count == 1
     url = f"/api/v1/t/{team.pk}/calendar/{scheduled.id}/"
     data = {"count": 2}
@@ -56,7 +62,7 @@ def test_fetching_team_calendar(
         res.status_code == status.HTTP_400_BAD_REQUEST
     ), "not providing start and end should result in a bad request"
 
-    recipe.schedule(on=date(1976, 1, 2), team=team)
+    recipe.schedule(on=date(1976, 1, 2), team=team, user=user)
 
     res = client.get(url, {"start": date(1976, 1, 1), "end": date(1977, 1, 1)})
     assert res.status_code == status.HTTP_200_OK
@@ -72,7 +78,7 @@ def test_fetching_team_calendar_v2(
     """
     url = url = f"/api/v1/t/{team.pk}/calendar/"
     client.force_authenticate(user)
-    recipe.schedule(on=date(1976, 1, 2), team=team)
+    recipe.schedule(on=date(1976, 1, 2), team=team, user=user)
 
     res = client.get(url, {"start": date(1976, 1, 1), "end": date(1977, 1, 1), "v2": 1})
     assert res.status_code == status.HTTP_200_OK

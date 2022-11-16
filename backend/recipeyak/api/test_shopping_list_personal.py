@@ -314,14 +314,6 @@ def test_combine_ingredients(
     assert combine_ingredients(ingres) == expected
 
 
-def test_report_bad_merge(user, client, recipe):
-    url = "/api/v1/report-bad-merge"
-    assert client.post(url).status_code == status.HTTP_403_FORBIDDEN
-
-    client.force_authenticate(user)
-    assert client.post(url).status_code == status.HTTP_201_CREATED
-
-
 def test_combining_feta(user, client, empty_recipe):
     """
     ensure the singularize function doesn't result in feta becoming fetum along

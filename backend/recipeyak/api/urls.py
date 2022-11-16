@@ -2,7 +2,8 @@ from rest_framework.routers import DefaultRouter
 
 from django.conf.urls import include, url
 from django.urls import path
-from recipeyak.api.calendar_generic_views import CalendarViewSet, ReportBadMerge
+from recipeyak.api.calendar_generic_views import CalendarViewSet
+from recipeyak.api.calendar_list_view import calendar_list_view
 from recipeyak.api.export_recipes_list_view import export_recipes_list_view
 from recipeyak.api.ical_detail_view import get_ical_view
 from recipeyak.api.ingredients_detail_view import ingredients_detail_view
@@ -83,10 +84,10 @@ urlpatterns = [
     path("api/v1/recipes/<int:recipe_pk>/timeline", get_recipe_timeline),
     path("api/v1/recipes/recently_viewed", get_recently_viewed_recipes),
     path("api/v1/recipes/recently_created", get_recently_created_recipes),
-    path("api/v1/report-bad-merge", ReportBadMerge.as_view(), name="report-bad-merge"),
     path("api/v1/sections/<int:section_pk>/", delete_or_update_section_view),
     path("api/v1/sessions/", sessions_list_view),
     path("api/v1/sessions/<str:pk>/", sessions_detail_view),
+    path("api/v1/t/<team_pk>/calendar/", calendar_list_view),
     path("api/v1/t/<team_pk>/", include(teams_router.urls)),
     path("api/v1/t/<team_pk>/shoppinglist/", get_shopping_list_view),
     path("api/v1/upload/", start_upload_view),

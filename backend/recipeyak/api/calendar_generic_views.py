@@ -1,21 +1,24 @@
+from __future__ import annotations
+
 import logging
 from typing import Optional, TypeVar
 
-from rest_framework import serializers, status
+from rest_framework import serializers
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from typing_extensions import TypedDict
 
 from django.db import connection
 from django.shortcuts import get_object_or_404
 from recipeyak.api.base import viewsets
 from recipeyak.api.base.permissions import IsTeamMember
 from recipeyak.api.base.request import AuthedRequest
-from recipeyak.api.base.serialization import BaseModelSerializer
-from recipeyak.api.serializers.recipe import RecipeSerializer
-from recipeyak.models import Membership, ScheduledRecipe, Team, get_random_ical_id
+from recipeyak.api.calendar_list_view import (
+    ScheduledRecipeSerializer,
+    get_cal_settings,
+    get_scheduled_recipes,
+)
+from recipeyak.models import Membership, get_random_ical_id
 
 logger = logging.getLogger(__name__)
 
@@ -27,95 +30,17 @@ def unwrap(arg: Optional[T]) -> T:
     return arg
 
 
-class ScheduledRecipeSerializer(BaseModelSerializer):
-    recipe = RecipeSerializer(fields=("id", "name"))
-
-    class Meta:
-        model = ScheduledRecipe
-        fields = ("id", "recipe", "created", "on", "count", "team", "user")
-
-
-class ScheduledRecipeSerializerCreate(BaseModelSerializer):
-    class Meta:
-        model = ScheduledRecipe
-        fields = ("id", "recipe", "created", "on", "count")
-
-    def create(self, validated_data):
-        recipe = validated_data.pop("recipe")
-        return recipe.schedule(**validated_data)
-
-
-class ReportBadMerge(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def post(self, request: AuthedRequest) -> Response:
-        user = request.user
-        logger.warning(
-            "bad combine for user: %s with recipes: %s", user, user.scheduled_recipes
-        )
-        return Response(status=status.HTTP_201_CREATED)
-
-
-class CalSettings(TypedDict):
-    syncEnabled: bool
-    calendarLink: str
-
-
-def get_cal_settings(*, team_pk: str, request: AuthedRequest) -> CalSettings:
-    membership = Membership.objects.get(team=team_pk, user=request.user)
-
-    method = "https" if request.is_secure() else "http"
-    calendar_link = (
-        method
-        + "://"
-        + request.get_host()
-        + f"/t/{team_pk}/ical/{membership.calendar_secret_key}/schedule.ics"
-    )
-    return {
-        "syncEnabled": membership.calendar_sync_enabled,
-        "calendarLink": calendar_link,
-    }
-
-
 class CalSettingsSerializer(serializers.Serializer):
     syncEnabled = serializers.BooleanField()
-
-
-class StartEndDateSerializer(serializers.Serializer):
-    start = serializers.DateField()
-    end = serializers.DateField()
 
 
 class CalendarViewSet(viewsets.ModelViewSet):
     serializer_class = ScheduledRecipeSerializer
     permission_classes = (IsAuthenticated, IsTeamMember)
 
+    # patch method to update the `on` date uses this
     def get_queryset(self):
-        pk = self.kwargs["team_pk"]
-        if pk == "me":
-            return ScheduledRecipe.objects.filter(
-                user=self.request.user
-            ).select_related("recipe")
-        team = get_object_or_404(Team, pk=pk)
-        return ScheduledRecipe.objects.filter(team=team).select_related("recipe")
-
-    def create(  # type: ignore [override]
-        self, request: AuthedRequest, team_pk: str
-    ) -> Response:
-        # use different create serializer since we create via primary key, and
-        # return an objects
-        serializer = ScheduledRecipeSerializerCreate(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        if team_pk == "me":
-            data = serializer.save(user=request.user)
-        else:
-            team = get_object_or_404(Team, pk=team_pk)
-            data = serializer.save(team=team)
-        return Response(
-            self.get_serializer(data, dangerously_allow_db=True).data,
-            status=status.HTTP_201_CREATED,
-        )
+        return get_scheduled_recipes(self.request, self.kwargs["team_pk"])
 
     @action(detail=False, methods=["PATCH"], url_path="settings")
     def update_settings(self, request: AuthedRequest, team_pk: str) -> Response:
@@ -173,33 +98,3 @@ LIMIT 1;
             )
             (date,) = unwrap(cursor.fetchone())
             return Response({"date": date})
-
-    def list(  # type: ignore [override]
-        self, request: AuthedRequest, team_pk: str
-    ) -> Response:
-        serializer = StartEndDateSerializer(data=request.query_params)
-        serializer.is_valid(raise_exception=True)
-        start = serializer.validated_data["start"]
-        end = serializer.validated_data["end"]
-
-        queryset = self.get_queryset().filter(on__gte=start).filter(on__lte=end)
-        scheduled_recipes = self.get_serializer(queryset, many=True).data
-
-        if "v2" in request.query_params:
-            # HACK(sbdchd): we don't support the calendar stuff for personal
-            # schedules due to us storing info on the team membership.
-            if team_pk == "me":
-                return Response(
-                    {
-                        "scheduledRecipes": scheduled_recipes,
-                        "settings": {"syncEnabled": False, "calendarLink": ""},
-                    }
-                )
-
-            settings = get_cal_settings(request=request, team_pk=team_pk)
-
-            return Response(
-                {"scheduledRecipes": scheduled_recipes, "settings": settings}
-            )
-
-        return Response(scheduled_recipes, status=status.HTTP_200_OK)
