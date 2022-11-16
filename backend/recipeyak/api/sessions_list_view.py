@@ -3,13 +3,13 @@ from __future__ import annotations
 import dataclasses
 from typing import Any, Dict, cast
 
+from django.utils import timezone
 from rest_framework import serializers, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from user_sessions.models import Session
 
-from django.utils import timezone
 from recipeyak import user_agent
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import BaseModelSerializer

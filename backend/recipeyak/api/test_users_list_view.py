@@ -2,12 +2,12 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Type, Union, cast
 
 import pytest
+from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.test import APIClient
 from user_sessions.models import Session
 
-from django.contrib.auth import get_user_model
 from recipeyak.models import User
 
 pytestmark = pytest.mark.django_db

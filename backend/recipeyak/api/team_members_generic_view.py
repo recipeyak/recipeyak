@@ -1,10 +1,10 @@
 from typing import Any, Tuple
 
+from django.shortcuts import get_object_or_404
 from rest_framework import mixins, status, viewsets
 from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
 from rest_framework.response import Response
 
-from django.shortcuts import get_object_or_404
 from recipeyak.api.base.permissions import (
     IsTeamAdmin,
     IsTeamAdminOrMembershipOwner,

@@ -2,6 +2,7 @@ from typing import Any
 
 from django.db.models import JSONField
 from django.db.models.manager import Manager
+
 from recipeyak.models.base import CommonInfo
 
 

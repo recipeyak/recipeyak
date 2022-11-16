@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 import yaml
-
 from django.test import Client
+
 from recipeyak.models import Recipe, User
 
 pytestmark = pytest.mark.django_db

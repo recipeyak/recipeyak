@@ -50,5 +50,7 @@
       "source.organizeImports": true
     }
   },
-  "scss.format.enable": true
+  "scss.format.enable": true,
+  "isort.importStrategy": "fromEnvironment",
+  "isort.args": ["--sp", "./backend/pyproject.toml"]
 }

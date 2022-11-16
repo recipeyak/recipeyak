@@ -3,6 +3,7 @@
 import itertools
 
 from django.db import migrations, models
+
 from recipeyak import ordering
 
 

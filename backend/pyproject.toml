@@ -60,4 +60,6 @@ exclude = '''
 [tool.isort]
 profile = "black"
 src_paths = ["recipeyak"]
+known_third_party = ["django"]
+known_first_party = ["recipeyak"]
 skip_gitignore = true

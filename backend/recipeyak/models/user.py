@@ -3,8 +3,6 @@ import logging
 from typing import TYPE_CHECKING, List, Optional
 
 from allauth.socialaccount.models import EmailAddress
-from user_sessions.models import Session
-
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
@@ -14,6 +12,8 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.postgres.fields import CIEmailField
 from django.db import models, transaction
 from django.db.models.query import QuerySet
+from user_sessions.models import Session
+
 from recipeyak.models.membership import Membership
 from recipeyak.models.scheduled_recipe import ScheduledRecipe
 
