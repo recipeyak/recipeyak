@@ -14,8 +14,8 @@ gunicorn = "20.1.0"
 pyyaml = "^5.1"
 django-user-sessions = "^1.6"
 dataclasses = "^0.6.0"
-sentry-sdk = {git = "https://github.com/chdsbd/sentry-python", rev = "chris/trace-response-render"}
-python-dotenv = "^0.10.1"
+sentry-sdk = "1.11.0"
+python-dotenv = "0.21.0"
 typing_extensions = "*"
 icalendar = "^4.0"
 djangorestframework-types = "^0.2.0"
@@ -24,7 +24,7 @@ psycopg2-binary = "^2.9.3"
 boto3 = "^1.24.44"
 pydantic = "^1.9.1"
 yarl = "^1.8.1"
-recipe-scrapers = "^14.13.0"
+recipe-scrapers = "14.23.0"
 advocate = "^1.0.0"
 
 [tool.poetry.dev-dependencies]
@@ -48,6 +48,7 @@ boto3-stubs = {extras = ["s3"], version = "^1.24.44"}
 flake8-tidy-imports = "^4.8.0"
 types-urllib3 = "^1.26.23"
 isort = "5.10.1"
+types-dj-database-url = "^1.0.0"
 
 [tool.black]
 exclude = '''
@@ -61,3 +62,51 @@ exclude = '''
 profile = "black"
 src_paths = ["recipeyak"]
 skip_gitignore = true
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "recipeyak.django.settings"
+python_files = "tests.py test_*.py *_tests.py"
+addopts = "-s --pdbcls IPython.terminal.debugger:TerminalPdb --reuse-db -p no:warnings"
+
+[tool.mypy]
+mypy_path = "./backend/typings"
+
+show_column_numbers = true
+show_error_codes = true
+
+disallow_any_unimported=false
+disallow_any_expr=false
+disallow_any_decorated=false
+disallow_any_explicit=false
+disallow_any_generics=true
+disallow_subclassing_any=false
+
+disallow_untyped_calls=false
+disallow_untyped_defs=false
+disallow_incomplete_defs=false
+check_untyped_defs=true
+# @pytest.mark.django_db is untyped
+disallow_untyped_decorators=false
+
+no_implicit_optional=true
+strict_optional=true
+
+warn_redundant_casts=true
+warn_unused_ignores=true
+warn_no_return=true
+warn_return_any=true
+# doesn't consider how methods can change the value of properties
+warn_unreachable=false
+
+strict_equality=true
+
+ignore_missing_imports=false
+
+[[tool.mypy.overrides]]
+module = [
+    'allauth.*',
+    'icalendar.*',
+    'advocate.*',
+    'user_sessions.*',
+]
+ignore_missing_imports = true

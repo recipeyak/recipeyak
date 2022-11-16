@@ -128,7 +128,7 @@ def scrape_recipe(*, url: str) -> ScrapeResult:
 
     page_data = buf.getvalue()
 
-    r = scrape_html(html=page_data, org_url=url)
+    r = scrape_html(html=page_data, org_url=url)  # type: ignore[arg-type]
 
     scrape_result = ScrapeResult(
         canonical_url=r.canonical_url(),
