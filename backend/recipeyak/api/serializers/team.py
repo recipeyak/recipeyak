@@ -34,7 +34,7 @@ class TeamSerializer(BaseModelSerializer):
         model = Team
         fields = ("id", "name", "emails", "level")
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         # Don't pass the 'fields' arg up to the superclass
         fields = kwargs.pop("fields", None)
 
@@ -47,7 +47,7 @@ class TeamSerializer(BaseModelSerializer):
             for field_name in existing - allowed:
                 self.fields.pop(field_name)
 
-    def create(self, validated_data) -> Team:
+    def create(self, validated_data: dict[str, Any]) -> Team:
         emails = validated_data.pop("emails")
         level = validated_data.pop("level")
         team: Team = Team.objects.create(**validated_data)
@@ -67,7 +67,7 @@ class MembershipSerializer(BaseModelSerializer):
         editable = False
         fields = ("id", "user", "level", "is_active")
 
-    def validate_level(self, level):
+    def validate_level(self, level: str) -> str:
         team = self.instance.team
         user = self.instance.user
         demoting_last_admin = (
@@ -100,11 +100,11 @@ class CreateInviteSerializer(BaseSerializer):
         child=serializers.EmailField(write_only=True), write_only=True
     )
 
-    def validate_emails(self, emails):
+    def validate_emails(self, emails: list[str]) -> list[str]:
         team = self.initial_data["team"]
         return [email for email in emails if not team.invite_exists(email)]
 
-    def create(self, validated_data) -> List[Invite]:
+    def create(self, validated_data: dict[str, Any]) -> List[Invite]:
         emails = validated_data.pop("emails")
         # TODO(sbdchd): bulk create
         return [

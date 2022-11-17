@@ -1,3 +1,4 @@
+from django.db.models import QuerySet
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -25,7 +26,7 @@ class UserInvitesViewSet(
     serializer_class = InviteSerializer
     permission_classes = (IsAuthenticated,)
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Invite]:
         return (
             Invite.objects.filter(membership__user=self.request.user)
             .select_related("membership", "creator")

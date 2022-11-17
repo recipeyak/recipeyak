@@ -24,5 +24,5 @@ class Step(CommonInfo):
         db_table = "core_step"
         ordering = ["position"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.text

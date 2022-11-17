@@ -5,7 +5,7 @@ from django.db import migrations
 
 
 class PgStatStatements(CreateExtension):
-    def __init__(self):
+    def __init__(self) -> None:
         self.name = "pg_stat_statements"
 
 

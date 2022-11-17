@@ -32,7 +32,7 @@ class OwnerRelatedField(BaseRelatedField):
     A custom field to use for the `owner` generic relationship.
     """
 
-    def to_representation(self, value):
+    def to_representation(self, value: Any) -> dict[str, Any]:
         if isinstance(value, Team):
             if self.export:
                 return {"team": value.name}
@@ -43,7 +43,7 @@ class OwnerRelatedField(BaseRelatedField):
             return {"id": value.id, "type": "user"}
         raise Exception("Unexpected type of owner object")
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         export = kwargs.pop("export", None)
         super().__init__(*args, **kwargs)
         self.export = export
@@ -58,7 +58,7 @@ class IngredientSerializer(BaseModelSerializer):
         model = Ingredient
         fields = ("id", "quantity", "name", "description", "position", "optional")
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         # Don't pass the 'fields' arg up to the superclass
         fields = kwargs.pop("fields", None)
 
@@ -81,7 +81,7 @@ class StepSerializer(BaseModelSerializer):
         model = Step
         fields = ("id", "text", "position")
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         # Don't pass the 'fields' arg up to the superclass
         fields = kwargs.pop("fields", None)
 
@@ -157,7 +157,7 @@ class RecipeSerializer(BaseModelSerializer):
         )
         read_only_fields = ("owner", "last_scheduled")
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         # Don't pass the 'fields' arg up to the superclass
         fields = kwargs.pop("fields", None)
 
@@ -175,7 +175,7 @@ class RecipeMoveCopySerializer(BaseSerializer):
     id = serializers.IntegerField(max_value=None, min_value=0, write_only=True)
     type = serializers.ChoiceField(choices=["user", "team"], write_only=True)
 
-    def validate(self, data):
+    def validate(self, data: dict[str, Any]) -> dict[str, Any]:
         if data["type"] == "team" and not Team.objects.filter(id=data["id"]).exists():
             raise serializers.ValidationError("team must exist")
         if data["type"] == "user" and not User.objects.filter(id=data["id"]).exists():

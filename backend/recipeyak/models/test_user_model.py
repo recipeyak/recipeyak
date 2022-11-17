@@ -5,7 +5,7 @@ from recipeyak.models import User
 pytestmark = pytest.mark.django_db
 
 
-def test_create_user():
+def test_create_user() -> None:
     """
     Ensure that password is hashed and email is set
     """
@@ -18,7 +18,7 @@ def test_create_user():
     assert user.email == email
 
 
-def test_avatar_url(user):
+def test_avatar_url(user: User) -> None:
     """
     User's avatar url should not change
     """

@@ -37,9 +37,9 @@ class Ingredient(CommonInfo):
         ordering = ["position"]
         db_table = "core_ingredient"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.quantity} {self.name} {self.description}"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         optional = "[optional]" if self.optional else ""
         return f"<quantity={self.quantity} {self.name} description={self.description} recipe={self.recipe} {optional}>"

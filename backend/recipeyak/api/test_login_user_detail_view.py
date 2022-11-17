@@ -2,6 +2,7 @@ import pytest
 from allauth.socialaccount.models import EmailAddress
 from django.conf import settings
 from rest_framework import status
+from rest_framework.test import APIClient
 from user_sessions.models import Session
 
 from recipeyak.api.serializers.user import UserSerializer
@@ -10,7 +11,7 @@ from recipeyak.models import User
 pytestmark = pytest.mark.django_db
 
 
-def test_signup(client):
+def test_signup(client: APIClient) -> None:
     """
     ensure a user can signup
     """
@@ -43,7 +44,7 @@ def test_signup(client):
     ).exists(), "signup should create email object"
 
 
-def test_login(client):
+def test_login(client: APIClient) -> None:
     """
     make sure we can login with a user
     """
@@ -62,7 +63,7 @@ def test_login(client):
         "HTTP_USER_AGENT": "j person's cool bot",
     }
 
-    res = client.post("/api/v1/auth/login/", data, **headers)
+    res = client.post("/api/v1/auth/login/", data, **headers)  # type: ignore[arg-type]
     assert res.status_code == status.HTTP_200_OK
 
     assert Session.objects.count() == 1
@@ -84,7 +85,7 @@ def test_login(client):
     assert res.status_code == status.HTTP_200_OK
 
 
-def test_logout(client):
+def test_logout(client: APIClient) -> None:
     """
     make sure a user can logout
     """
@@ -112,7 +113,9 @@ def test_logout(client):
     ), "error response message not provided"
 
 
-def test_login_in_two_places_and_logout_from_one(client, client_b):
+def test_login_in_two_places_and_logout_from_one(
+    client: APIClient, client_b: APIClient
+) -> None:
     """
     ensure when logged into one place, logging out doesn't result in logging out of both places.
 
@@ -151,7 +154,7 @@ def test_login_in_two_places_and_logout_from_one(client, client_b):
     assert res.status_code == status.HTTP_200_OK
 
 
-def test_signup_case_insensitive(client):
+def test_signup_case_insensitive(client: APIClient) -> None:
     """
     Emails should be treated as case insensitive. A user should not be able to
     signup with the same email and different case.
@@ -187,7 +190,7 @@ def test_signup_case_insensitive(client):
     )
 
 
-def test_signup_user_has_email(client, user):
+def test_signup_user_has_email(client: APIClient, user: User) -> None:
     """
     With social providers, a user can signup with an email account and connect
     a social account that has a different email. We want to prevent an email signup with that same email address.
@@ -196,7 +199,7 @@ def test_signup_user_has_email(client, user):
     email2 = "john@example.com"
 
     new_email_object = EmailAddress.objects.create(email=email2, user=user)
-    user.emailaddress_set.add(new_email_object)
+    user.emailaddress_set.add(new_email_object)  # type: ignore[attr-defined]
     user.save()
 
     assert EmailAddress.objects.filter(email=email2).exists()

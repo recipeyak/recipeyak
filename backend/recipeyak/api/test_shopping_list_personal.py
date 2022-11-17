@@ -15,14 +15,14 @@ from recipeyak.cumin.combine import (
     combine_ingredients,
 )
 from recipeyak.cumin.quantity import Unit
-from recipeyak.models import Ingredient, Recipe, ShoppingList, User
+from recipeyak.models import Ingredient, Recipe, ShoppingList, Team, User
 
 pytestmark = pytest.mark.django_db
 
 url = "/api/v1/t/me/shoppinglist/"
 
 
-def test_fetching_shoppinglist(client, user, recipe):
+def test_fetching_shoppinglist(client: APIClient, user: User, recipe: Recipe) -> None:
     assert ShoppingList.objects.count() == 0
 
     client.force_authenticate(user)
@@ -58,7 +58,9 @@ def test_fetching_shoppinglist(client, user, recipe):
     assert json.loads(shopping_list.ingredients) == res.json()
 
 
-def test_fetching_shoppinglist_with_team_recipe(client, team, user, recipe):
+def test_fetching_shoppinglist_with_team_recipe(
+    client: APIClient, team: Team, user: User, recipe: Recipe
+) -> None:
 
     client.force_authenticate(user)
 
@@ -94,7 +96,9 @@ def test_fetching_shoppinglist_with_team_recipe(client, team, user, recipe):
     }
 
 
-def test_fetching_shoppinglist_with_invalid_dates(user, client):
+def test_fetching_shoppinglist_with_invalid_dates(
+    user: User, client: APIClient
+) -> None:
     params = {"start": "", "end": "invalid date"}
     client.force_authenticate(user)
     res = client.get(url, params)
@@ -314,7 +318,7 @@ def test_combine_ingredients(
     assert combine_ingredients(ingres) == expected
 
 
-def test_combining_feta(user, client, empty_recipe):
+def test_combining_feta(user: User, client: APIClient, empty_recipe: Recipe) -> None:
     """
     ensure the singularize function doesn't result in feta becoming fetum along
     with some other troublesome examples

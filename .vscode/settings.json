@@ -15,7 +15,7 @@
     "--follow-imports=silent",
     "--show-column-numbers",
     "--config-file",
-    "${workspaceFolder}/backend/tox.ini"
+    "${workspaceFolder}/backend/pyproject.toml"
   ],
   "python.linting.flake8Enabled": true,
   "python.linting.flake8Args": [
@@ -52,5 +52,7 @@
   },
   "scss.format.enable": true,
   "isort.importStrategy": "fromEnvironment",
-  "isort.args": ["--sp", "./backend/pyproject.toml"]
+  "isort.args": ["--sp", "./backend/pyproject.toml"],
+  "python.testing.autoTestDiscoverOnSaveEnabled": false,
+  "python.testing.promptToConfigure": false
 }

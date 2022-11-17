@@ -1,7 +1,7 @@
 import enum
 import logging
 import time
-from typing import Optional
+from typing import Callable, Optional
 from uuid import uuid4
 
 import pydantic
@@ -24,10 +24,10 @@ MSEC_CONVERT_FACTOR = 1000
 
 
 class NoCacheMiddleware:
-    def __init__(self, get_response):
+    def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]) -> None:
         self.get_response = get_response
 
-    def __call__(self, request):
+    def __call__(self, request: HttpRequest) -> HttpResponse:
         response = self.get_response(request)
         response["Cache-Control"] = "no-store, no-cache, must-revalidate"
         response["Pragma"] = "no-cache"
@@ -35,7 +35,7 @@ class NoCacheMiddleware:
         return response
 
 
-def total_query_time():
+def total_query_time() -> float:
     return (
         sum(float(query["time"]) for query in connection.queries) * MSEC_CONVERT_FACTOR
     )
@@ -47,10 +47,10 @@ class ServerTimingMiddleware:
     see: https://w3c.github.io/server-timing/#the-server-timing-header-field
     """
 
-    def __init__(self, get_response):
+    def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]) -> None:
         self.get_response = get_response
 
-    def __call__(self, request):
+    def __call__(self, request: HttpRequest) -> HttpResponse:
         start = time.perf_counter()
 
         response = self.get_response(request)
@@ -73,10 +73,10 @@ class XForwardedForMiddleware:
     Point REMOTE_ADDR to X-Forwarded-For so django-user-session logs the correct IP.
     """
 
-    def __init__(self, get_response):
+    def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]) -> None:
         self.get_response = get_response
 
-    def __call__(self, request):
+    def __call__(self, request: HttpRequest) -> HttpResponse:
         if "HTTP_X_FORWARDED_FOR" in request.META:
             request.META["REMOTE_ADDR"] = (
                 request.META["HTTP_X_FORWARDED_FOR"].split(",")[0].strip()
@@ -89,11 +89,11 @@ class APIDelayMiddleware:
     Add artificial delay to request. Useful for development.
     """
 
-    def __init__(self, get_response):
+    def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]) -> None:
         self.get_response = get_response
         self.API_DELAY_MS = getattr(settings, "API_DELAY_MS", 200)
 
-    def __call__(self, request):
+    def __call__(self, request: HttpRequest) -> HttpResponse:
         with sentry_sdk.start_span(
             op="recipeyak.middleware", description="api delay"
         ) as span:
@@ -104,14 +104,14 @@ class APIDelayMiddleware:
 
 
 class CurrentRequestMiddleware:
-    def __init__(self, get_response):
+    def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]):
         self.get_response = get_response
 
     @staticmethod
-    def generate_request_id():
+    def generate_request_id() -> str:
         return uuid4().hex
 
-    def __call__(self, request: HttpRequest):
+    def __call__(self, request: HttpRequest) -> HttpResponse:
         request_id = request.META.get("HTTP_X_REQUEST_ID")
         if request_id is None:
             request_id = self.generate_request_id()
@@ -135,10 +135,10 @@ class HealthCheckMiddleware:
     from: https://www.ianlewis.org/en/kubernetes-health-checks-django
     """
 
-    def __init__(self, get_response):
+    def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]) -> None:
         self.get_response = get_response
 
-    def __call__(self, request: HttpRequest):
+    def __call__(self, request: HttpRequest) -> HttpResponse:
         if request.method == "GET":
             if request.path == "/readiness":
                 return self.readiness(request)
@@ -181,7 +181,7 @@ class SessionMiddleware(DjangoSessionMiddleware):
     so we can record ip and user_agent via the `user_sessions` package.
     """
 
-    def process_request(self, request):
+    def process_request(self, request: HttpRequest) -> None:
         session_key = request.COOKIES.get(settings.SESSION_COOKIE_NAME, None)
         request.session = self.SessionStore(
             ip=request.META.get("REMOTE_ADDR", ""),

@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import logging
+from typing import Any
 
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
@@ -8,6 +11,7 @@ from django.views.decorators.debug import sensitive_post_parameters
 from rest_framework import exceptions, serializers, status
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -23,7 +27,7 @@ class LoginSerializer(BaseSerializer):
     email = serializers.EmailField(required=False, allow_blank=True)
     password = serializers.CharField(style={"input_type": "password"})
 
-    def _validate_email(self, email, password):
+    def _validate_email(self, email: str | None, password: str | None) -> Any:
         user = None
 
         if email and password:
@@ -34,7 +38,7 @@ class LoginSerializer(BaseSerializer):
 
         return user
 
-    def _validate_username(self, username, password):
+    def _validate_username(self, username: str | None, password: str | None) -> Any:
         user = None
 
         if username and password:
@@ -45,7 +49,9 @@ class LoginSerializer(BaseSerializer):
 
         return user
 
-    def _validate_username_email(self, username, email, password):
+    def _validate_username_email(
+        self, username: str | None, email: str | None, password: str | None
+    ) -> Any:
         user = None
 
         if email and password:
@@ -58,7 +64,7 @@ class LoginSerializer(BaseSerializer):
 
         return user
 
-    def validate(self, attrs):
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         username = attrs.get("username")
         email = attrs.get("email")
         password = attrs.get("password")
@@ -127,7 +133,7 @@ class PasswordChangeSerializer(BaseSerializer):
 
     set_password_form_class = SetPasswordForm
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         self.old_password_field_enabled = getattr(
             settings, "OLD_PASSWORD_FIELD_ENABLED", False
         )
@@ -143,7 +149,7 @@ class PasswordChangeSerializer(BaseSerializer):
         if not self.old_password_field_enabled or not self.user.has_usable_password():
             self.fields.pop("old_password")
 
-    def validate_old_password(self, value):
+    def validate_old_password(self, value: str) -> str:
         invalid_password_conditions = (
             self.old_password_field_enabled,
             self.user,
@@ -154,7 +160,7 @@ class PasswordChangeSerializer(BaseSerializer):
             raise serializers.ValidationError("Invalid password")
         return value
 
-    def validate(self, attrs):
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         self.set_password_form = self.set_password_form_class(
             user=self.user, data=attrs
         )
@@ -163,7 +169,7 @@ class PasswordChangeSerializer(BaseSerializer):
             raise serializers.ValidationError(self.set_password_form.errors)
         return attrs
 
-    def save(self):
+    def save(self) -> None:  # type: ignore[override]
         self.set_password_form.save()
         if not self.logout_on_password_change:
             from django.contrib.auth import update_session_auth_hash
@@ -188,10 +194,10 @@ class LoginView(GenericAPIView):
             "password", "old_password", "new_password1", "new_password2"
         )
     )
-    def dispatch(self, *args, **kwargs):
+    def dispatch(self, *args: Any, **kwargs: Any) -> Any:
         return super().dispatch(*args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         serializer = self.get_serializer(
             data=request.data, context={"request": request}
         )
@@ -217,7 +223,7 @@ class LogoutView(APIView):
 
     permission_classes = (IsAuthenticated,)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         logger.info("Logout by %s", request.user)
         logout(request)
 
@@ -242,10 +248,10 @@ class PasswordChangeView(GenericAPIView):
             "password", "old_password", "new_password1", "new_password2"
         )
     )
-    def dispatch(self, *args, **kwargs):
+    def dispatch(self, *args: Any, **kwargs: Any) -> Any:
         return super().dispatch(*args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()

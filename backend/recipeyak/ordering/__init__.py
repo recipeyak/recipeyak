@@ -13,7 +13,7 @@ END_CHAR_CODE = 126
 FIRST_POSITION = chr(START_CHAR_CODE + 1)
 
 
-def assert_dev(expr):
+def assert_dev(expr: bool) -> None:
     if not expr:
         raise Exception("Assertion Error")
 

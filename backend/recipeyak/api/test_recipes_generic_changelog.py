@@ -8,14 +8,14 @@ pytestmark = pytest.mark.django_db
 
 
 @pytest.fixture
-def step(recipe: Recipe):
+def step(recipe: Recipe) -> Step:
     return Step.objects.create(
         text="Garnish with chives and serve.", recipe=recipe, position=15
     )
 
 
 @pytest.fixture
-def ingredient(recipe: Recipe):
+def ingredient(recipe: Recipe) -> Ingredient:
     return Ingredient.objects.create(
         quantity="1 cup", name="flour", description="sifted", position=15, recipe=recipe
     )

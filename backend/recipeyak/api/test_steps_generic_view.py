@@ -1,13 +1,18 @@
+from __future__ import annotations
+
+from typing import Any
+
 import pytest
 from django.db.utils import IntegrityError
 from rest_framework import status
+from rest_framework.test import APIClient
 
-from recipeyak.models import Recipe, Step
+from recipeyak.models import Recipe, Step, User
 
 pytestmark = pytest.mark.django_db
 
 
-def test_step_position_order(client, user, recipe):
+def test_step_position_order(client: APIClient, user: User, recipe: Recipe) -> None:
     """
     steps should be returned in order based on position
     """
@@ -29,7 +34,9 @@ def test_step_position_order(client, user, recipe):
 @pytest.mark.parametrize(
     "step", [{"text": "A new step"}, {"text": "Another new step", "position": 23.0}]
 )
-def test_adding_step_to_recipe(step, client, user, recipe):
+def test_adding_step_to_recipe(
+    step: dict[str, Any], client: APIClient, user: User, recipe: Recipe
+) -> None:
     """
     ensure a user can add a step to a recipe
     """

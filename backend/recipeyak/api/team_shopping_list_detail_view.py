@@ -1,4 +1,4 @@
-from typing import List, Optional, cast
+from typing import List, Optional
 
 from django.core.exceptions import ValidationError
 from django.db.models import QuerySet
@@ -22,9 +22,7 @@ def get_scheduled_recipes(
     end = request.query_params.get("end")
 
     if team_pk in {"personal", "me"}:
-        scheduled_recipes = cast(
-            QuerySet[ScheduledRecipe], request.user.scheduled_recipes
-        )
+        scheduled_recipes = request.user.scheduled_recipes
     else:
         team = Team.objects.filter(pk=team_pk).first()
         if team is None:

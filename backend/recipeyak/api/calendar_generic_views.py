@@ -4,6 +4,7 @@ import logging
 from typing import Optional, TypeVar
 
 from django.db import connection
+from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.decorators import action
@@ -18,7 +19,7 @@ from recipeyak.api.calendar_list_view import (
     get_cal_settings,
     get_scheduled_recipes,
 )
-from recipeyak.models import Membership, get_random_ical_id
+from recipeyak.models import Membership, ScheduledRecipe, get_random_ical_id
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +40,7 @@ class CalendarViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, IsTeamMember)
 
     # patch method to update the `on` date uses this
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[ScheduledRecipe]:
         return get_scheduled_recipes(self.request, self.kwargs["team_pk"])
 
     @action(detail=False, methods=["PATCH"], url_path="settings")

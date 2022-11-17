@@ -105,20 +105,20 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         db_table = "core_myuser"
 
-    def get_full_name(self):
+    def get_full_name(self) -> str:
         return self.email
 
-    def get_short_name(self):
+    def get_short_name(self) -> str:
         return self.email
 
     # required for admin
-    def has_perm(self, perm, obj=None):
+    def has_perm(self, perm: object, obj: object = None) -> bool:
         """Does the user have a specific permission?"""
         # TODO: Add permissions
         return True
 
     # required for admin
-    def has_module_perms(self, app_label):
+    def has_module_perms(self, app_label: object) -> bool:
         """Does the user have permissions to view the app `app_label`?"""
         # TODO: Add permissions
         return True
@@ -138,15 +138,15 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     # required for admin
     @property
-    def is_staff(self):
+    def is_staff(self) -> bool:
         return self.is_admin
 
     @property
-    def avatar_url(self):
+    def avatar_url(self) -> str:
         return get_avatar_url(self.email)
 
     @property
-    def scheduled_recipes(self):
+    def scheduled_recipes(self) -> QuerySet[ScheduledRecipe]:
         # TODO(sbdchd): this can probably be user.scheduled_recipes_set
         return ScheduledRecipe.objects.filter(user=self)
 
@@ -158,5 +158,5 @@ class User(AbstractBaseUser, PermissionsMixin):
     def session_set(self) -> QuerySet["Session"]:
         return Session.objects.filter(user=self)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.email

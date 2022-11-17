@@ -73,6 +73,6 @@ class ScheduledRecipe(CommonInfo):
             )
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         owner = self.user if not self.team else self.team
         return f"ScheduledRecipe:: {self.count} of {self.recipe.name} on {self.on} for {owner}"

@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections import OrderedDict
-from typing import Optional
+from typing import Any, Optional
 
 import yaml
 from django.contrib.auth.decorators import login_required
@@ -14,7 +16,7 @@ from recipeyak.api.serializers.recipe import IngredientSerializer, OwnerRelatedF
 from recipeyak.models import Recipe, user_and_team_recipes
 
 
-def represent_ordereddict(dumper, data):
+def represent_ordereddict(dumper: yaml.Dumper, data: dict[str, Any]) -> yaml.Node:
     value = []
     for item_key, item_value in data.items():
         node_key = dumper.represent_data(item_key)
@@ -32,7 +34,7 @@ class YamlResponse(HttpResponse):
     :param data: Data to be dumped into yaml.
     """
 
-    def __init__(self, data, **kwargs):
+    def __init__(self, data: Any, **kwargs: Any) -> None:
         kwargs.setdefault("content_type", "text/x-yaml")
         if isinstance(data, list):
             data = yaml.dump_all(data, default_flow_style=False, allow_unicode=True)
@@ -78,7 +80,7 @@ class RecipeExportSerializer(BaseModelSerializer):
 @login_required(login_url="/login/")
 def export_recipes_list_view(
     request: AuthedRequest, filetype: str, pk: Optional[str] = None
-):
+) -> HttpResponse:
 
     queryset = user_and_team_recipes(request.user).prefetch_related(
         "owner", "step_set", "ingredient_set", "scheduledrecipe_set"

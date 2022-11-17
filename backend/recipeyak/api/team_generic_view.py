@@ -1,7 +1,11 @@
+from __future__ import annotations
+
 from typing import Any, Tuple, cast
 
+from django.db.models import QuerySet
 from rest_framework import status, viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import BasePermission, IsAuthenticated
+from rest_framework.request import Request
 from rest_framework.response import Response
 
 from recipeyak.api.base.permissions import IsTeamAdmin
@@ -22,12 +26,12 @@ class TeamViewSet(viewsets.ModelViewSet):
 
     serializer_class = TeamSerializer
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Team]:
         return Team.objects.filter(
             membership__user_id=cast(AuthedRequest, self.request).user.id
         ) | Team.objects.filter(is_public=True)
 
-    def get_permissions(self):
+    def get_permissions(self) -> list[BasePermission]:  # type: ignore[override]
         permission_classes: Tuple[Any, ...]
         if self.action in ("retrieve", "list", "create"):
             permission_classes = (IsAuthenticated,)
@@ -35,7 +39,7 @@ class TeamViewSet(viewsets.ModelViewSet):
             permission_classes = (IsAuthenticated, IsTeamAdmin)
         return [permission() for permission in permission_classes]
 
-    def create(self, request):
+    def create(self, request: Request) -> Response:  # type: ignore[override]
         serializer = self.serializer_class(
             data=request.data, context={"request": request}
         )

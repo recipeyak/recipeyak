@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 class Note(CommonInfo):
     """Helpful information for a recipe"""
 
+    id: int
     text = models.TextField()
     created_by = models.ForeignKey["User"](
         "User", related_name="notes_created_by", on_delete=models.CASCADE
@@ -32,5 +33,5 @@ class Note(CommonInfo):
         ordering = ["-created"]
         db_table = "core_note"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.text
