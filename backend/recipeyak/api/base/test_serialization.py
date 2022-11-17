@@ -1,3 +1,5 @@
+from typing import Any
+
 import pytest
 
 from recipeyak.api.base.serialization import UnexpectedDatabaseAccess
@@ -6,7 +8,7 @@ from recipeyak.models import Recipe
 
 
 @pytest.mark.django_db
-def test_db_blocker_warn_still_calls_db(settings, recipe) -> None:
+def test_db_blocker_warn_still_calls_db(settings: Any, recipe: Recipe) -> None:
     """
     Shouldn't fail, but still fetch from database with a warning logged
     """
@@ -17,7 +19,7 @@ def test_db_blocker_warn_still_calls_db(settings, recipe) -> None:
 
 
 @pytest.mark.django_db
-def test_db_blocker_fails_with_proper_settings(settings, recipe) -> None:
+def test_db_blocker_fails_with_proper_settings(settings: Any, recipe: Recipe) -> None:
     """
     When the proper config setting is specified, database access should raise
     an exception inside a serializer.

@@ -1,8 +1,9 @@
-from typing import Union, cast
+from typing import Any, Union, cast
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import permissions
+from rest_framework.request import Request
 
 from recipeyak.models import Membership, Recipe, Team, User
 
@@ -12,15 +13,15 @@ class DisallowAny:
     want to disallow access by default, then explicitly open endpoints
     """
 
-    def has_permission(self, request, view):
+    def has_permission(self, request: Request, view: Any) -> bool:
         return False
 
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request: Request, view: Any, obj: Any) -> bool:
         return False
 
 
 class IsTeamMember(permissions.BasePermission):
-    def has_permission(self, request, view) -> bool:
+    def has_permission(self, request: Any, view: Any) -> bool:
         team_pk = view.kwargs["team_pk"]
         if team_pk == "me":
             return True
@@ -29,14 +30,14 @@ class IsTeamMember(permissions.BasePermission):
 
 
 class IsTeamMemberIfPrivate(permissions.BasePermission):
-    def has_permission(self, request, view) -> bool:
+    def has_permission(self, request: Any, view: Any) -> Any:
         team_pk = view.kwargs["team_pk"]
         team: Team = get_object_or_404(Team, pk=team_pk)
         return team.is_member(request.user) or (team.is_public and request.user)
 
 
 class IsTeamAdmin(permissions.BasePermission):
-    def has_permission(self, request, view) -> bool:
+    def has_permission(self, request: Request, view: Any) -> bool:
         if view.basename == "teams":
             team_pk = view.kwargs["pk"]
         else:
@@ -54,7 +55,9 @@ class IsTeamAdminOrMembershipOwner(permissions.BasePermission):
     Request is Admin the team or the membership object owner
     """
 
-    def has_object_permission(self, request, view, membership: Membership) -> bool:
+    def has_object_permission(
+        self, request: Any, view: Any, membership: Membership
+    ) -> bool:
         if not isinstance(membership, Membership):
             raise TypeError("This permission only works for membership objects")
         object_owner: bool = membership.user == request.user
@@ -63,7 +66,7 @@ class IsTeamAdminOrMembershipOwner(permissions.BasePermission):
 
 
 class NonSafeIfMemberOrAdmin(IsTeamMember):
-    def has_permission(self, request, view) -> bool:
+    def has_permission(self, request: Request, view: Any) -> bool:
         if request.method in permissions.SAFE_METHODS:
             return True
         team_pk = view.kwargs["team_pk"]
@@ -91,5 +94,5 @@ class HasRecipeAccess(permissions.BasePermission):
     User is recipe owner or is a member of team with Recipe
     """
 
-    def has_object_permission(self, request, view, recipe: Recipe) -> bool:
+    def has_object_permission(self, request: Any, view: Any, recipe: Recipe) -> bool:
         return has_recipe_access(user=request.user, recipe=recipe)

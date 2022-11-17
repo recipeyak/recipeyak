@@ -1,3 +1,4 @@
+from django.db.models import QuerySet
 from rest_framework import mixins, status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -23,7 +24,7 @@ class TeamInviteViewSet(
     serializer_class = InviteSerializer
     permission_classes = (IsAuthenticated, IsTeamMember)
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Invite]:
         team_pk = self.kwargs["team_pk"]
         return Invite.objects.filter(membership__team__id=team_pk)
 

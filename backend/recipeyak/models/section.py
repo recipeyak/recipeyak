@@ -31,5 +31,5 @@ class Section(CommonInfo):
         db_table = "core_section"
         ordering = ["position"]
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<Section id={self.id} title='{self.title}' position='{self.position}'>"

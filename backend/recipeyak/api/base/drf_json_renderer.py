@@ -1,4 +1,5 @@
 from decimal import Decimal
+from typing import Any
 
 import orjson
 import pydantic
@@ -19,7 +20,7 @@ def fmt_decimal(d: Decimal) -> str:
     return str(d.normalize())
 
 
-def default(o):
+def default(o: object) -> Any:
     if isinstance(o, Decimal):
         return fmt_decimal(o)
     if isinstance(o, pydantic.BaseModel):
@@ -35,7 +36,9 @@ class JSONRenderer(DRFJSONRenderer):
     output.
     """
 
-    def render(self, data, accepted_media_type=None, renderer_context=None) -> bytes:
+    def render(
+        self, data: Any, accepted_media_type: Any = None, renderer_context: Any = None
+    ) -> bytes:
         """
         Render `data` into JSON, returning a bytestring.
         """

@@ -84,11 +84,10 @@ disallow_any_generics=true
 disallow_subclassing_any=false
 
 disallow_untyped_calls=false
-disallow_untyped_defs=false
-disallow_incomplete_defs=false
+disallow_untyped_defs=true
+disallow_incomplete_defs=true
 check_untyped_defs=true
-# @pytest.mark.django_db is untyped
-disallow_untyped_decorators=false
+disallow_untyped_decorators=true
 
 no_implicit_optional=true
 strict_optional=true

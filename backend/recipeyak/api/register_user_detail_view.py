@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from typing import Any, Dict, cast
 
@@ -14,6 +16,7 @@ from django.views.decorators.debug import sensitive_post_parameters
 from rest_framework import serializers, status
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny
+from rest_framework.request import Request
 from rest_framework.response import Response
 
 from recipeyak.api.base.serialization import BaseSerializer
@@ -32,10 +35,10 @@ class RegisterSerializer(BaseSerializer):
     password1 = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
 
-    def validate_username(self, username):
+    def validate_username(self, username: str) -> Any:
         return get_adapter().clean_username(username)
 
-    def validate_email(self, email):
+    def validate_email(self, email: str) -> Any:
         email = get_adapter().clean_email(email)
         if allauth_settings.UNIQUE_EMAIL:
             if email and email_address_exists(email):
@@ -55,25 +58,25 @@ class RegisterSerializer(BaseSerializer):
                 raise serializers.ValidationError(msg)
         return email
 
-    def validate_password1(self, password):
+    def validate_password1(self, password: str) -> Any:
         return get_adapter().clean_password(password)
 
-    def validate(self, data):
+    def validate(self, data: dict[str, Any]) -> dict[str, Any]:
         if data["password1"] != data["password2"]:
             raise serializers.ValidationError("The two password fields didn't match.")
         return data
 
-    def custom_signup(self, request, user):
+    def custom_signup(self, request: Request, user: Any) -> None:
         pass
 
-    def get_cleaned_data(self):
+    def get_cleaned_data(self) -> dict[str, Any]:
         return {
             "username": self.validated_data.get("username", ""),
             "password1": self.validated_data.get("password1", ""),
             "email": self.validated_data.get("email", ""),
         }
 
-    def save(self, request):
+    def save(self, request: Request) -> Any:  # type: ignore[override]
         adapter = get_adapter()
         user = adapter.new_user(request)
         self.cleaned_data = self.get_cleaned_data()
@@ -88,10 +91,10 @@ class RegisterView(CreateAPIView):
     permission_classes = (AllowAny,)
 
     @method_decorator(sensitive_post_parameters("password1", "password2"))
-    def dispatch(self, *args, **kwargs):
+    def dispatch(self, *args: Any, **kwargs: Any) -> Any:
         return super().dispatch(*args, **kwargs)
 
-    def create(self, request, *args, **kwargs):
+    def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 

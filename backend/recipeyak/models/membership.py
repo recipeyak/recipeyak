@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from django.db import models
 from django.db.models.manager import Manager
@@ -20,6 +20,7 @@ class Membership(CommonInfo):
     ADMIN: Literal["admin"] = "admin"
     CONTRIBUTOR: Literal["contributor"] = "contributor"
     READ_ONLY: Literal["read"] = "read"
+    id: int
 
     MEMBERSHIP_CHOICES = (
         (ADMIN, ADMIN),
@@ -52,11 +53,11 @@ class Membership(CommonInfo):
     # A user is activated once they accept their invite
     is_active = models.BooleanField(default=False)
 
-    def set_active(self):
+    def set_active(self) -> None:
         self.is_active = True
         self.save()
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         is_new = self.pk is None
         if not is_new:
             # NOTE: although we check inside the serializer to prevent demoting the
@@ -68,11 +69,11 @@ class Membership(CommonInfo):
                 raise ValueError("cannot demote self as last admin")
         super().save(*args, **kwargs)
 
-    def delete(self):
+    def delete(self) -> None:  # type: ignore[override]
         last_member = self.team.membership_set.count() == 1
         if last_member:
             raise ValueError("cannot delete last member of team")
         super().delete()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"<Membership • user_email: {self.user.email}, team: {self.team.id} level: {self.level}>"

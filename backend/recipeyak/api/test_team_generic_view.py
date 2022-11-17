@@ -1,12 +1,13 @@
 import pytest
 from rest_framework import status
+from rest_framework.test import APIClient
 
-from recipeyak.models import Invite, Membership, Team
+from recipeyak.models import Invite, Membership, Team, User
 
 pytestmark = pytest.mark.django_db
 
 
-def test_creating_team(client, user, user2):
+def test_creating_team(client: APIClient, user: User, user2: User) -> None:
     """
     Any authenticated user should be able to create a new team.
 
@@ -43,7 +44,9 @@ def test_creating_team(client, user, user2):
     ), "user2 cannnot access team since they aren't members"
 
 
-def test_updating_team_name(client, team, user, user2, user3):
+def test_updating_team_name(
+    client: APIClient, team: Team, user: User, user2: User, user3: User
+) -> None:
     client.force_authenticate(user)
     data = {"name": "new Recipe Yak Team"}
     url = f"/api/v1/t/{team.pk}/"
@@ -82,7 +85,14 @@ def test_updating_team_name(client, team, user, user2, user3):
     ), "Admins should not modify teams they do not administer"
 
 
-def test_deleting_team(client, team, user, user2, empty_team, user3):
+def test_deleting_team(
+    client: APIClient,
+    team: Team,
+    user: User,
+    user2: User,
+    empty_team: Team,
+    user3: User,
+) -> None:
     """
     Team admins can delete team only
     """
@@ -116,7 +126,9 @@ def test_deleting_team(client, team, user, user2, empty_team, user3):
     ), "team should be deleted"
 
 
-def test_list_team(client, team, user, user2, user3):
+def test_list_team(
+    client: APIClient, team: Team, user: User, user2: User, user3: User
+) -> None:
     url = "/api/v1/t/"
     client.force_authenticate(user2)
 
@@ -161,7 +173,7 @@ def test_list_team(client, team, user, user2, user3):
     ), "unauthenticated users should not be able to list teams"
 
 
-def test_retrieve_team(client, team, user, user2):
+def test_retrieve_team(client: APIClient, team: Team, user: User, user2: User) -> None:
     url = f"/api/v1/t/{team.pk}/"
     client.force_authenticate(user2)
 
@@ -192,7 +204,9 @@ def test_retrieve_team(client, team, user, user2):
     assert res.json()["id"] == team.id
 
 
-def test_create_team_member(client, team, user, user2):
+def test_create_team_member(
+    client: APIClient, team: Team, user: User, user2: User
+) -> None:
     """
     Adding members shouldn't be accessible via the api.
     We only want to add users by invite
@@ -207,7 +221,9 @@ def test_create_team_member(client, team, user, user2):
         )
 
 
-def test_list_team_members(client, team, user, user2, user3):
+def test_list_team_members(
+    client: APIClient, team: Team, user: User, user2: User, user3: User
+) -> None:
     """
     Only team members should be able to retrieve team membership information.
     """
@@ -246,7 +262,14 @@ def test_list_team_members(client, team, user, user2, user3):
     ), "We have three members (user, user2 [inactive], user3)."
 
 
-def test_destory_team_member(client, team, user, user2, user3, empty_team):
+def test_destory_team_member(
+    client: APIClient,
+    team: Team,
+    user: User,
+    user2: User,
+    user3: User,
+    empty_team: Team,
+) -> None:
     user_membership = user.membership_set.get(team=team)
     url = f"/api/v1/t/{team.pk}/members/{user_membership.id}/"
     # non-members cannot delete team memberships
@@ -308,7 +331,9 @@ def test_destory_team_member(client, team, user, user2, user3, empty_team):
     assert client.delete(url).status_code == status.HTTP_204_NO_CONTENT
 
 
-def test_retrieve_team_member(client, team, user, user2, user3):
+def test_retrieve_team_member(
+    client: APIClient, team: Team, user: User, user2: User, user3: User
+) -> None:
     """
     Only team members should be able to retrieve team membership information.
     A member must be an admin to destroy or update a member
@@ -349,7 +374,14 @@ def test_retrieve_team_member(client, team, user, user2, user3):
     assert res.json()["user"]["id"] == user.id
 
 
-def test_update_team_member(client, team, user, user2, user3, empty_team):
+def test_update_team_member(
+    client: APIClient,
+    team: Team,
+    user: User,
+    user2: User,
+    user3: User,
+    empty_team: Team,
+) -> None:
     """
     Only admins should be able to update the membership of team members
     """
@@ -387,7 +419,14 @@ def test_update_team_member(client, team, user, user2, user3, empty_team):
     assert client.patch(url, data).status_code == status.HTTP_403_FORBIDDEN
 
 
-def test_create_team_invite(client, team, user, user2, user3, empty_team):
+def test_create_team_invite(
+    client: APIClient,
+    team: Team,
+    user: User,
+    user2: User,
+    user3: User,
+    empty_team: Team,
+) -> None:
     """
     TeamAdmins can create team invites
     """
@@ -422,7 +461,9 @@ def test_create_team_invite(client, team, user, user2, user3, empty_team):
         assert res.status_code == s, description
 
 
-def test_creating_invites_by_non_members(client, team, user2, user3, empty_team):
+def test_creating_invites_by_non_members(
+    client: APIClient, team: Team, user2: User, user3: User, empty_team: Team
+) -> None:
     # non-admins cannot create invite
     team.force_join(user2, Membership.CONTRIBUTOR)
     assert team.is_member(user2) and not team.is_admin(user2)
@@ -439,7 +480,9 @@ def test_creating_invites_by_non_members(client, team, user2, user3, empty_team)
     assert res.status_code == status.HTTP_403_FORBIDDEN
 
 
-def test_destroy_team_invite(client, team, user, user2, user3):
+def test_destroy_team_invite(
+    client: APIClient, team: Team, user: User, user2: User, user3: User
+) -> None:
     """
     TeamAdmins owner can destroy team invites
     The recipient of the invite cannot destroy it, they can only decline it
@@ -461,7 +504,9 @@ def test_destroy_team_invite(client, team, user, user2, user3):
         assert client.delete(url).status_code == s
 
 
-def test_create_user_invite(client, team, user, user2):
+def test_create_user_invite(
+    client: APIClient, team: Team, user: User, user2: User
+) -> None:
     """
     Create method not allowed. Invite must be created via team endpoint.
     """
@@ -477,7 +522,9 @@ def test_create_user_invite(client, team, user, user2):
         assert res.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
 
-def test_update_user_invite(client, team, user, user2):
+def test_update_user_invite(
+    client: APIClient, team: Team, user: User, user2: User
+) -> None:
     """
     Update/Partial Update not allowed.
     """
@@ -509,7 +556,9 @@ def test_update_user_invite(client, team, user, user2):
             assert client.patch(url, {"membership": 2}).status_code == s
 
 
-def test_destroy_user_invite(client, team, user, user2):
+def test_destroy_user_invite(
+    client: APIClient, team: Team, user: User, user2: User
+) -> None:
     """
     User should not be allowed to destroy invite.
     Use detail-decline instead.
@@ -541,7 +590,9 @@ def test_destroy_user_invite(client, team, user, user2):
             assert client.delete(url).status_code == s
 
 
-def test_list_user_invites(client, team, user, user2):
+def test_list_user_invites(
+    client: APIClient, team: Team, user: User, user2: User
+) -> None:
     """
     User should be allowed to list their invites
     """
@@ -564,7 +615,9 @@ def test_list_user_invites(client, team, user, user2):
     assert res.json()[0].get("id") == invite.id, "user 2 should get their own invite"
 
 
-def test_retrieve_user_invite(client, team, user, user2):
+def test_retrieve_user_invite(
+    client: APIClient, team: Team, user: User, user2: User
+) -> None:
     """
     User should be allowed to retrieve a specific invite
     """
@@ -585,7 +638,9 @@ def test_retrieve_user_invite(client, team, user, user2):
         assert client.get(url).status_code == s
 
 
-def test_user_invites(client, team, user, user2, user3):
+def test_user_invites(
+    client: APIClient, team: Team, user: User, user2: User, user3: User
+) -> None:
     # invite user2 to team
     client.force_authenticate(user)
     url = f"/api/v1/t/{team.id}/invites/"
@@ -635,7 +690,9 @@ def test_user_invites(client, team, user, user2, user3):
     assert res.status_code == status.HTTP_403_FORBIDDEN
 
 
-def test_accept_team_invite(client, team, user, user2, user3):
+def test_accept_team_invite(
+    client: APIClient, team: Team, user: User, user2: User, user3: User
+) -> None:
     """
     User should be able to activate their membership by
     POSTing to detail-accept
@@ -663,7 +720,9 @@ def test_accept_team_invite(client, team, user, user2, user3):
     assert res.status_code == status.HTTP_200_OK
 
 
-def test_decline_team_invite(client, team, user, user2):
+def test_decline_team_invite(
+    client: APIClient, team: Team, user: User, user2: User
+) -> None:
     """
     User should be able to decline their invite by
     POSTing to detail-decline.
@@ -693,7 +752,9 @@ def test_decline_team_invite(client, team, user, user2):
     assert res.status_code == status.HTTP_403_FORBIDDEN, "Non member cannot view team"
 
 
-def test_creating_team_with_name_and_emails(client, user, user2, user3):
+def test_creating_team_with_name_and_emails(
+    client: APIClient, user: User, user2: User, user3: User
+) -> None:
     """
     ensure we can create a team with a name, and emails that we want to invite
     """
@@ -721,7 +782,9 @@ def test_creating_team_with_name_and_emails(client, user, user2, user3):
     assert not team.is_member(user3)
 
 
-def test_demoting_self_in_team_from_admin(client, team, user):
+def test_demoting_self_in_team_from_admin(
+    client: APIClient, team: Team, user: User
+) -> None:
     """
     prevent a user from demoting themselves if they are the last team member
     """
@@ -740,7 +803,9 @@ def test_demoting_self_in_team_from_admin(client, team, user):
     assert team.is_member(user)
 
 
-def test_deleting_last_membership_of_team(client, team, user):
+def test_deleting_last_membership_of_team(
+    client: APIClient, team: Team, user: User
+) -> None:
     assert team.is_member(user)
     assert team.membership_set.count() == 1
     user_membership = user.membership_set.get(team=team)

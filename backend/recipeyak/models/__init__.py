@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.db.models import Q, QuerySet
 from django.shortcuts import get_object_or_404
 
@@ -20,7 +22,7 @@ from recipeyak.models.upload import Upload  # noqa: F401
 from recipeyak.models.user import User  # noqa: F401
 
 
-def user_active_team_ids(user):
+def user_active_team_ids(user: User) -> Any:
     return user.membership_set.filter(is_active=True).values_list("team")
 
 

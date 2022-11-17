@@ -4,7 +4,7 @@ from rest_framework.authentication import (
 
 
 class SessionAuthentication(DRFSessionAuthentication):
-    def enforce_csrf(self, request):
+    def enforce_csrf(self, request: object) -> None:
         """
         We don't use CSRF tokens to prevent CSRF attacks. Instead we use
         SameSite: Lax in our cookies.

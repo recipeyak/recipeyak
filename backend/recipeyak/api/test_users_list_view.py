@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import Any, Dict, List, Type, Union, cast
 
@@ -8,12 +10,12 @@ from rest_framework.response import Response
 from rest_framework.test import APIClient
 from user_sessions.models import Session
 
-from recipeyak.models import User
+from recipeyak.models import Team, User
 
 pytestmark = pytest.mark.django_db
 
 
-def test_user_delete(client, user, team):
+def test_user_delete(client: APIClient, user: User, team: Team) -> None:
     """
     User should only be able to delete their account if they are not a member
     of any team (excluding invites).
@@ -40,7 +42,7 @@ def test_user_delete(client, user, team):
     assert not cast(Any, get_user_model()).objects.filter(id=user.id).exists()
 
 
-def test_detail(client, user):
+def test_detail(client: APIClient, user: User) -> None:
     res = client.get("/api/v1/user/")
     assert res.status_code == status.HTTP_403_FORBIDDEN, "authentication required"
 
@@ -116,13 +118,13 @@ def login_info() -> Dict[str, str]:
 
 
 @pytest.fixture
-def logged_in_user(client: APIClient, login_info) -> None:
+def logged_in_user(client: APIClient, login_info: dict[str, Any]) -> None:
     User.objects.create_user(**login_info)
     res = client.post("/api/v1/auth/login/", login_info)
     assert res.status_code == status.HTTP_200_OK
 
 
-def test_session_list(client: APIClient, logged_in_user) -> None:
+def test_session_list(client: APIClient, logged_in_user: User) -> None:
     res = client.get("/api/v1/sessions/")
 
     assert isinstance(res.json(), list)
@@ -142,7 +144,7 @@ def test_session_list(client: APIClient, logged_in_user) -> None:
 
 
 def test_session_delete_all(
-    client: APIClient, logged_in_user, login_info: Dict[str, Any]
+    client: APIClient, logged_in_user: User, login_info: Dict[str, Any]
 ) -> None:
     # login a second time with a different client to create multiple sessions
     APIClient().post("/api/v1/auth/login/", login_info)
@@ -154,7 +156,7 @@ def test_session_delete_all(
     ), "we delete other sessions, not the session being used"
 
 
-def test_session_delete_by_id(client: APIClient, logged_in_user) -> None:
+def test_session_delete_by_id(client: APIClient, logged_in_user: User) -> None:
     assert Session.objects.count() == 1
     session = Session.objects.first()
     assert session is not None

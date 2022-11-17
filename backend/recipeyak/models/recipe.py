@@ -136,7 +136,7 @@ class Recipe(CommonInfo):
         user: "User",
         team: Optional["Team"] = None,
         count: int = 1,
-    ):
+    ) -> ScheduledRecipe:
         return ScheduledRecipe.objects.create_scheduled(
             recipe=self, on=on, count=count, user=user, team=team
         )

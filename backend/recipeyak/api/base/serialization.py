@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import Any, cast
+from typing import Any, NoReturn, cast
 
 import pydantic
 from django.conf import settings
@@ -13,11 +13,13 @@ class UnexpectedDatabaseAccess(Exception):
     pass
 
 
-def blocker(*args):
+def blocker(*args: object) -> NoReturn:
     raise UnexpectedDatabaseAccess
 
 
-def warning_blocker(execute, sql, params, many, context):
+def warning_blocker(
+    execute: Any, sql: Any, params: Any, many: Any, context: Any
+) -> Any:
     """
     expected to call `execute` and return the call's result:
     https://docs.djangoproject.com/en/dev/topics/db/instrumentation/#connection-execute-wrapper
@@ -37,7 +39,7 @@ class DBBlockerSerializerMixin:
     before calling the parent.
     """
 
-    def to_representation(self, instance):
+    def to_representation(self, instance: Any) -> Any:
         if self.dangerously_allow_db:
             return super().to_representation(instance)  # type: ignore [misc]
 
@@ -51,7 +53,7 @@ class DBBlockerSerializerMixin:
         with connection.execute_wrapper(warning_blocker):
             return super().to_representation(instance)  # type: ignore [misc]
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         self.dangerously_allow_db = kwargs.pop("dangerously_allow_db", None)
         cast(Any, super()).__init__(*args, **kwargs)
 

@@ -16,7 +16,7 @@ from recipeyak.api.base.permissions import IsTeamMember
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import BaseModelSerializer, RequestParams
 from recipeyak.api.serializers.recipe import RecipeSerializer
-from recipeyak.models import Membership, ScheduledRecipe, Team
+from recipeyak.models import Membership, Recipe, ScheduledRecipe, Team
 
 
 class CalSettings(TypedDict):
@@ -45,8 +45,8 @@ class ScheduledRecipeSerializerCreate(BaseModelSerializer):
         model = ScheduledRecipe
         fields = ("id", "recipe", "created", "on", "count")
 
-    def create(self, validated_data: dict[str, Any]):
-        recipe = validated_data.pop("recipe")
+    def create(self, validated_data: dict[str, Any]) -> ScheduledRecipe:
+        recipe: Recipe = validated_data.pop("recipe")
         validated_data.pop("user", None)
         return recipe.schedule(**validated_data, user=self.context["request"].user)
 

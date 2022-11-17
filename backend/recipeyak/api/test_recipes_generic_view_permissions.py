@@ -1,12 +1,15 @@
 import pytest
 from rest_framework import status
+from rest_framework.test import APIClient
 
-from recipeyak.models import Step
+from recipeyak.models import Recipe, Step, User
 
 pytestmark = pytest.mark.django_db
 
 
-def test_accessing_recipes(client, user, recipe, user2):
+def test_accessing_recipes(
+    client: APIClient, user: User, recipe: Recipe, user2: User
+) -> None:
     """
     ensure a user can only access their own recipes
     """
@@ -26,7 +29,9 @@ def test_accessing_recipes(client, user, recipe, user2):
     assert res.status_code == status.HTTP_403_FORBIDDEN
 
 
-def test_accessing_step_of_other_user(client, recipe, user2):
+def test_accessing_step_of_other_user(
+    client: APIClient, recipe: Recipe, user2: User
+) -> None:
     """
     ensure 404 when access other user's step
     """

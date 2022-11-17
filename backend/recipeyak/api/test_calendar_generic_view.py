@@ -2,13 +2,16 @@ from datetime import date
 
 import pytest
 from rest_framework import status
+from rest_framework.test import APIClient
 
-from recipeyak.models import Recipe, ScheduledRecipe
+from recipeyak.models import Recipe, ScheduledRecipe, User
 
 pytestmark = pytest.mark.django_db
 
 
-def test_creating_scheduled_recipe(client, recipe, user):
+def test_creating_scheduled_recipe(
+    client: APIClient, recipe: Recipe, user: User
+) -> None:
     url = "/api/v1/t/me/calendar/"
     data = {"recipe": recipe.id, "on": date(1976, 7, 6), "count": 1}
     client.force_authenticate(user)
@@ -20,7 +23,9 @@ def test_creating_scheduled_recipe(client, recipe, user):
     ], "ensure we have the created at property for sorting on the frontend"
 
 
-def test_recipe_returns_last_scheduled_date(client, scheduled_recipe, recipe2):
+def test_recipe_returns_last_scheduled_date(
+    client: APIClient, scheduled_recipe: ScheduledRecipe, recipe2: Recipe
+) -> None:
     recipe = scheduled_recipe.recipe
     user = scheduled_recipe.user
     client.force_authenticate(user)
@@ -35,7 +40,9 @@ def test_recipe_returns_last_scheduled_date(client, scheduled_recipe, recipe2):
     ), "We return None if the recipe has not been scheduled"
 
 
-def test_updating_scheduled_recipe(client, user, scheduled_recipe):
+def test_updating_scheduled_recipe(
+    client: APIClient, user: User, scheduled_recipe: ScheduledRecipe
+) -> None:
     url = f"/api/v1/t/me/calendar/{scheduled_recipe.id}/"
     assert scheduled_recipe.count == 1
     data = {"count": 2}
@@ -45,7 +52,9 @@ def test_updating_scheduled_recipe(client, user, scheduled_recipe):
     assert ScheduledRecipe.objects.get(id=scheduled_recipe.id).count == 2
 
 
-def test_deleting_scheduled_recipe(client, user, scheduled_recipe):
+def test_deleting_scheduled_recipe(
+    client: APIClient, user: User, scheduled_recipe: ScheduledRecipe
+) -> None:
     url = f"/api/v1/t/me/calendar/{scheduled_recipe.id}/"
     client.force_authenticate(user)
     res = client.delete(url)
@@ -53,7 +62,9 @@ def test_deleting_scheduled_recipe(client, user, scheduled_recipe):
     assert not ScheduledRecipe.objects.filter(id=scheduled_recipe.id).exists()
 
 
-def test_fetching_scheduled_recipes(client, user, scheduled_recipe):
+def test_fetching_scheduled_recipes(
+    client: APIClient, user: User, scheduled_recipe: ScheduledRecipe
+) -> None:
     url = "/api/v1/t/me/calendar/"
     client.force_authenticate(user)
     res = client.get(url)
@@ -69,7 +80,9 @@ def test_fetching_scheduled_recipes(client, user, scheduled_recipe):
     ], "ensure we have the created at property for sorting on the frontend"
 
 
-def test_deleting_recipe_deletes_scheduled_recipes(recipe, scheduled_recipe, user):
+def test_deleting_recipe_deletes_scheduled_recipes(
+    recipe: Recipe, scheduled_recipe: ScheduledRecipe, user: User
+) -> None:
     """
     doesn't work when soft-delete was enabled...
     """
@@ -79,19 +92,21 @@ def test_deleting_recipe_deletes_scheduled_recipes(recipe, scheduled_recipe, use
     assert not ScheduledRecipe.objects.filter(id=scheduled_recipe.id).exists()
 
 
-def test_schedule_for_recipe_method(recipe, user):
+def test_schedule_for_recipe_method(recipe: Recipe, user: User) -> None:
     s = recipe.schedule(user=user, on=date(1976, 1, 1), count=2)
     assert ScheduledRecipe.objects.get(id=s.id) == s
 
 
-def test_scheduling_the_same_recipe_twice_on_a_day(recipe, user):
+def test_scheduling_the_same_recipe_twice_on_a_day(recipe: Recipe, user: User) -> None:
     on = date(1976, 1, 1)
     recipe.schedule(user=user, on=on, count=2)
     recipe.schedule(user=user, on=on, count=1)
     assert ScheduledRecipe.objects.get(recipe=recipe, on=on, user=user).count == 3
 
 
-def test_dupe_scheduling_with_http(client, recipe, user):
+def test_dupe_scheduling_with_http(
+    client: APIClient, recipe: Recipe, user: User
+) -> None:
     client.force_authenticate(user)
     url = "/api/v1/t/me/calendar/"
     data = {"recipe": recipe.id, "on": date(1976, 7, 6), "count": 1}

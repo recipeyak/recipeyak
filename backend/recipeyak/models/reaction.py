@@ -27,5 +27,5 @@ class Reaction(CommonInfo):
         ]
         db_table = "core_reaction"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.emoji

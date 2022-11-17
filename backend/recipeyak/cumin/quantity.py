@@ -103,7 +103,7 @@ class Unit(str, Enum):
             return BaseUnit.UNKNOWN
         raise UnhandledCase(case=self)
 
-    def __lt__(self, other) -> bool:
+    def __lt__(self, other: Unit) -> bool:  # type: ignore[override]
         if self in VOLUME:
             return VOLUME[self] < VOLUME[other]
         if self in MASS:

@@ -2,6 +2,7 @@ import csv
 from collections import defaultdict
 from pathlib import Path
 from textwrap import dedent
+from typing import Any
 
 from recipeyak.cumin.cat import category, create_trie, search
 
@@ -28,7 +29,7 @@ def test_categorize_ingredients() -> None:
     assert not out["unknown"], f'remaining {len(out["unknown"])}'
 
 
-def test_categorize_ingredient_test_cases(snapshot) -> None:
+def test_categorize_ingredient_test_cases(snapshot: Any) -> None:
     cases = dedent(
         """
     (13-ounce) can unsweetened coconut milk

@@ -9,11 +9,11 @@ from django.db.models.manager import Manager
 from typing_extensions import Literal
 
 from recipeyak.models.base import CommonInfo
-from recipeyak.models.invite import Invite
 from recipeyak.models.membership import Membership, get_random_ical_id
 from recipeyak.models.scheduled_recipe import ScheduledRecipe
 
 if TYPE_CHECKING:
+    from recipeyak.models.invite import Invite
     from recipeyak.models.user import User
 
 
@@ -33,7 +33,7 @@ class Team(CommonInfo):
     class Meta:
         db_table = "core_team"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"<Team • name: {self.name}, is_public: {self.is_public}>"
 
     def force_join(
@@ -60,7 +60,9 @@ class Team(CommonInfo):
     def force_join_admin(self, user: User) -> Membership:
         return self.force_join(user, level=Membership.ADMIN)
 
-    def invite_user(self, user, creator, level=None) -> Invite:
+    def invite_user(
+        self, user: User, creator: User, level: str | None = None
+    ) -> Invite:
         """
         Invite user to team
 
@@ -72,7 +74,7 @@ class Team(CommonInfo):
             email=user.email, team=self, level=level, creator=creator
         )
 
-    def kick_user(self, user):
+    def kick_user(self, user: User) -> None:
         """
         Remove user from team. If they have an invite, remove it as well.
         """
@@ -80,28 +82,28 @@ class Team(CommonInfo):
         # delete membership. By deleting, associated invites will be deleted.
         membership.delete()
 
-    def set_public(self):
+    def set_public(self) -> None:
         self.is_public = True
         self.save()
 
-    def set_private(self):
+    def set_private(self) -> None:
         self.is_public = False
         self.save()
 
-    def admins(self):
+    def admins(self) -> QuerySet[Membership]:
         return Membership.objects.filter(team=self).filter(
             is_active=True, level=Membership.ADMIN
         )
 
-    def is_member(self, user) -> bool:
+    def is_member(self, user: User) -> bool:
         return Membership.objects.filter(team=self, user=user, is_active=True).exists()
 
-    def is_contributor(self, user) -> bool:
+    def is_contributor(self, user: User) -> bool:
         return Membership.objects.filter(
             team=self, user=user, is_active=True, level=Membership.CONTRIBUTOR
         ).exists()
 
-    def is_admin(self, user) -> bool:
+    def is_admin(self, user: User) -> bool:
         return Membership.objects.filter(
             team=self, user=user, is_active=True, level=Membership.ADMIN
         ).exists()
@@ -114,6 +116,6 @@ class Team(CommonInfo):
         return Membership.objects.filter(team=self)
 
     @property
-    def scheduled_recipes(self):
+    def scheduled_recipes(self) -> QuerySet[ScheduledRecipe]:
         # TODO(sbdchd): this can probably be team.scheduled_recipes_set
         return ScheduledRecipe.objects.filter(team=self)
