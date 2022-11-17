@@ -1,9 +1,15 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from django.db import models
 
 from recipeyak.models.base import CommonInfo
 from recipeyak.models.membership import Membership
-from recipeyak.models.team import Team
 from recipeyak.models.user import User
+
+if TYPE_CHECKING:
+    from recipeyak.models.team import Team
 
 
 class InviteManager(models.Manager["Invite"]):

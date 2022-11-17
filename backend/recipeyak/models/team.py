@@ -9,11 +9,11 @@ from django.db.models.manager import Manager
 from typing_extensions import Literal
 
 from recipeyak.models.base import CommonInfo
+from recipeyak.models.invite import Invite
 from recipeyak.models.membership import Membership, get_random_ical_id
 from recipeyak.models.scheduled_recipe import ScheduledRecipe
 
 if TYPE_CHECKING:
-    from recipeyak.models.invite import Invite
     from recipeyak.models.user import User
 
 
