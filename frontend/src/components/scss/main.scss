@@ -20,6 +20,9 @@ $primary: $primary-color;
 html {
   height: 100%;
   font-size: $base-font-size;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
 }
 
 body {

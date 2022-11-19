@@ -192,7 +192,7 @@ class RecipeTitle extends React.Component<
           {canEdit ? (
             <div className="d-flex align-items-center">
               <h1
-                className={cls("title fs-2rem mb-0 mb-1", {
+                className={cls("title fs-2rem mb-0 mb-1 selectable", {
                   "cursor-pointer": this.props.editingModeEnabled,
                 })}
                 title={

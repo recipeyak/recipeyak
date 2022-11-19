@@ -561,3 +561,9 @@
 [draggable="true"] {
   user-select: auto !important;
 }
+
+.selectable {
+  user-select: initial !important;
+  -webkit-user-select: initial !important;
+  cursor: auto !important;
+}
