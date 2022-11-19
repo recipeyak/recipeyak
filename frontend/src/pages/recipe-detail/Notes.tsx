@@ -306,7 +306,7 @@ export function Note({ note, recipeId, className }: INoteProps) {
         </div>
         {!isEditing ? (
           <div>
-            <Markdown>{note.text}</Markdown>
+            <Markdown className="selectable">{note.text}</Markdown>
             <AttachmentContainer>
               {note.attachments.map((attachment) => (
                 <a

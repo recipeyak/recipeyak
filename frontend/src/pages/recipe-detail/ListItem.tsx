@@ -214,7 +214,9 @@ export default class ListItem extends React.Component<
         </section>
       </form>
     ) : (
-      <Markdown>{normalizeUnitsFracs(this.state.text)}</Markdown>
+      <Markdown className="selectable">
+        {normalizeUnitsFracs(this.state.text)}
+      </Markdown>
     )
 
     return (

@@ -84,7 +84,7 @@ const MetaData = ({
       By&nbsp;
       <Link
         to={`/recipes?search=author:${encodeURIComponent(author)}`}
-        className="fw-bold white-space-nowrap"
+        className="fw-bold white-space-nowrap selectable"
       >
         {author}
       </Link>{" "}
