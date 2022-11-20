@@ -402,19 +402,21 @@ export function Note({ note, recipeId, className }: INoteProps) {
 export function TimelineEvent({
   event,
   enableLinking = true,
+  className,
 }: {
   readonly event: Pick<
     RecipeTimelineItem,
     "id" | "created_by" | "action" | "created"
   >
   readonly enableLinking?: boolean
+  readonly className?: string
 }) {
   const eventId = `event-${event.id}`
   const timestamp = <NoteTimeStamp created={event.created} />
   return (
     <SharedEntry
       id={eventId}
-      className={cls("d-flex align-items-center mb-4 py-4")}
+      className={cls("d-flex align-items-center", className)}
     >
       <Avatar
         avatarURL={event.created_by?.avatar_url ?? null}
@@ -1022,6 +1024,7 @@ export function NoteContainer(props: INoteContainerProps) {
               <TimelineEvent
                 key={"recipe-recipe" + String(timelineItem.id)}
                 event={timelineItem}
+                className="mb-4 py-4"
               />
             )
         }

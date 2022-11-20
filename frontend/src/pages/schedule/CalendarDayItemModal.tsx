@@ -105,30 +105,20 @@ export function CalendarDayItemModal({
   const prettyDate = formatAbsoluteDate(date, { includeYear: true })
   return (
     <Modal show onClose={onClose} style={{ maxWidth: 400 }} className="fs-14px">
-      <section className="d-flex space-between mb-1">
+      <section className="d-flex space-between mb-4">
         <div>{prettyDate}</div>
         <button className="delete" onClick={onClose} />
       </section>
-      <Link to={to} className="fs-4 flex-grow-1">
+      <Link to={to} className="fs-4 flex-grow-1 line-height-0">
         {recipeName}
       </Link>
-      <hr className="my-2" />
-
-      <TimelineEvent
-        enableLinking={false}
-        event={{
-          id: scheduledId,
-          action: "scheduled",
-          created_by: createdBy,
-          created: createdAt,
-        }}
-      />
 
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
         }}
+        className="mt-4"
       >
         <button
           className={cls("button is-small", { "is-active": reschedulerOpen })}
@@ -195,6 +185,18 @@ export function CalendarDayItemModal({
           </div>
         </div>
       )}
+
+      <hr className="mb-2 mt-4" />
+
+      <TimelineEvent
+        enableLinking={false}
+        event={{
+          id: scheduledId,
+          action: "scheduled",
+          created_by: createdBy,
+          created: createdAt,
+        }}
+      />
     </Modal>
   )
 }
