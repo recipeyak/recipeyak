@@ -151,7 +151,7 @@ class ShoppingListList extends React.Component<IShoppingListContainerProps> {
         >
           Copy
         </Button>
-        <section ref={this.shoppingList}>
+        <section ref={this.shoppingList} className="selectable">
           {groups.map(([groupName, values], groupIndex) => {
             values.sort((x, y) => ingredientByNameAlphabetical(x[0], y[0]))
             return (
