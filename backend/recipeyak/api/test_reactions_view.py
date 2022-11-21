@@ -14,7 +14,7 @@ def test_reactions(client: APIClient, user: User, recipe: Recipe) -> None:
 
     res = client.post(f"/api/v1/notes/{note.pk}/reactions/", dict(type="❤️"))
     assert res.status_code == status.HTTP_200_OK
-    assert res.json()["note_id"] == str(note.pk)
+    assert res.json()["note_id"] == note.pk
     assert res.json()["user"]["id"] == user.pk
     reaction_id = res.json()["id"]
 
