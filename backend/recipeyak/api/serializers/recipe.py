@@ -202,15 +202,17 @@ class NoteAttachment(pydantic.BaseModel):
     type: Literal["upload"] = "upload"
 
 
-def serialize_attachments(attachments: Iterable[Upload]) -> Iterable[NoteAttachment]:
-    for attachment in attachments:
-        yield NoteAttachment(id=attachment.pk, url=attachment.public_url())
+def serialize_attachments(attachments: Iterable[Upload]) -> List[NoteAttachment]:
+    return [
+        NoteAttachment(id=attachment.pk, url=attachment.public_url())
+        for attachment in attachments
+    ]
 
 
 class ReactionResponse(pydantic.BaseModel):
     id: str
     type: Literal["❤️", "😆", "🤮"]
-    note_id: str
+    note_id: int
     user: PublicUser
     created: datetime
 
@@ -240,7 +242,7 @@ def serialize_reactions(reactions: Iterable[Reaction]) -> List[ReactionResponse]
     return [
         ReactionResponse(
             id=reaction.pk,
-            type=reaction.emoji,
+            type=cast(Literal["❤️", "😆", "🤮"], reaction.emoji),
             note_id=reaction.note_id,
             user=serialize_public_user(reaction.created_by),
             created=reaction.created,
@@ -251,7 +253,7 @@ def serialize_reactions(reactions: Iterable[Reaction]) -> List[ReactionResponse]
 
 def serialize_note(note: Note) -> NoteResponse:
     return NoteResponse(
-        id=note.pk,
+        id=note.id,
         text=note.text,
         created_by=serialize_public_user(note.created_by),
         last_modified_by=serialize_public_user(note.last_modified_by)
