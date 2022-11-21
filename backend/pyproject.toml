@@ -103,6 +103,10 @@ strict_equality=true
 
 ignore_missing_imports=false
 
+plugins = [
+  "pydantic.mypy"
+]
+
 [[tool.mypy.overrides]]
 module = [
     'allauth.*',
@@ -111,3 +115,9 @@ module = [
     'user_sessions.*',
 ]
 ignore_missing_imports = true
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+warn_untyped_fields = true
