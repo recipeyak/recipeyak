@@ -1,5 +1,0 @@
-# source env vars for cron
-SHELL=/bin/bash
-BASH_ENV=/var/container.env
-# Note: we copy over the pgdump cron entry at container run time so that the
-# cron interval can be configured via the env.
