@@ -43,7 +43,11 @@ def unicode_fractions_to_ascii(s: str) -> str:
 
     output = ""
     for char in s:
-        output += UNICODE_FRACTION_MAPPING.get(char, char)
+        expanded = UNICODE_FRACTION_MAPPING.get(char, char)
+        # ensure 1¾ becomes 1 3/4, not 13/4
+        if output and output[-1].isdigit() and expanded != char:
+            output += " "
+        output += expanded
 
     return output
 
