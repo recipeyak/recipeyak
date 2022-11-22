@@ -1,9 +1,9 @@
 from django.conf.urls import include, url
 from django.urls import path
 from rest_framework.routers import DefaultRouter
+
 from recipeyak.api.calendar_detail_view import calendar_detail_view
 from recipeyak.api.calendar_generate_link_view import generate_link
-
 from recipeyak.api.calendar_list_view import calendar_list_view
 from recipeyak.api.calendar_next_open_view import next_open
 from recipeyak.api.calendar_update_settings_view import update_settings

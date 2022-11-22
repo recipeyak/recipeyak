@@ -1,16 +1,12 @@
-from recipeyak.api.base.request import AuthedRequest
+from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from django.shortcuts import get_object_or_404
-
 from recipeyak.api.base.permissions import IsTeamMember
-from recipeyak.models import get_random_ical_id
-
-from recipeyak.models import Membership
-
+from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.calendar_list_view import get_cal_settings
+from recipeyak.models import Membership, get_random_ical_id
 
 
 @api_view(["POST"])
