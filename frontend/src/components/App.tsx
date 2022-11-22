@@ -65,6 +65,7 @@ const localStoragePersister = createSyncStoragePersister({
 persistQueryClient({
   queryClient: queryClientPersistent,
   persister: localStoragePersister,
+  maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
 })
 
 const mapAuthenticated = (state: IState) => ({
