@@ -45,6 +45,10 @@ from recipeyak.cumin.quantity import (
         ("1 pound", Quantity(quantity=Decimal(1), unit=Unit.POUND)),
         ("1 bag", Quantity(quantity=Decimal(1), unit=Unit.UNKNOWN, unknown_unit="bag")),
         (
+            "1¾ cups",
+            Quantity(quantity=Decimal(1.75), unit=Unit.CUP),
+        ),
+        (
             "1 Tablespoon + 1 teaspoon",
             Quantity(quantity=Decimal(4), unit=Unit.TEASPOON),
         ),
@@ -251,6 +255,14 @@ def test_adding_incompatible_units() -> None:
             ("", "Chopped fresh parsley, for serving (optional)"),
         ),
         ("Pinch of ground cardamom", ("Pinch of", "ground cardamom")),
+        (
+            "8 ounces frozen (no need to thaw) or fresh green peas (about 1¾ cups)",
+            # NOTE: parser limitation
+            (
+                "8 ounces",
+                "frozen (no need to thaw) or fresh green peas (about 1 3/4 cups)",
+            ),
+        ),
     ],
 )
 def test_parse_quantity_name(ingredient: str, expected: tuple[str, str]) -> None:
