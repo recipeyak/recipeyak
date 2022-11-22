@@ -2,8 +2,11 @@ from django.conf.urls import include, url
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
-from recipeyak.api.calendar_generic_views import CalendarViewSet
+from recipeyak.api.calendar_detail_view import calendar_detail_view
+from recipeyak.api.calendar_generate_link_view import generate_link
 from recipeyak.api.calendar_list_view import calendar_list_view
+from recipeyak.api.calendar_next_open_view import next_open
+from recipeyak.api.calendar_update_settings_view import update_settings
 from recipeyak.api.export_recipes_list_view import export_recipes_list_view
 from recipeyak.api.ical_detail_view import get_ical_view
 from recipeyak.api.ingredients_detail_view import ingredients_detail_view
@@ -54,7 +57,6 @@ router.register(r"invites", UserInvitesViewSet, basename="user-invites")
 teams_router = DefaultRouter()
 teams_router.register(r"members", MembershipViewSet, basename="team-member")
 teams_router.register(r"invites", TeamInviteViewSet, basename="team-invites")
-teams_router.register(r"calendar", CalendarViewSet, basename="calendar")
 
 urlpatterns = [
     path("api/v1/", include(router.urls)),
@@ -88,6 +90,10 @@ urlpatterns = [
     path("api/v1/sessions/", sessions_list_view),
     path("api/v1/sessions/<str:pk>/", sessions_detail_view),
     path("api/v1/t/<team_pk>/calendar/", calendar_list_view),
+    path("api/v1/t/<team_pk>/calendar/settings/", update_settings),
+    path("api/v1/t/<team_pk>/calendar/next_open/", next_open),
+    path("api/v1/t/<team_pk>/calendar/generate_link/", generate_link),
+    path("api/v1/t/<team_pk>/calendar/<pk>/", calendar_detail_view),
     path("api/v1/t/<team_pk>/", include(teams_router.urls)),
     path("api/v1/t/<team_pk>/shoppinglist/", get_shopping_list_view),
     path("api/v1/upload/", start_upload_view),
