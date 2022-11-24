@@ -632,7 +632,6 @@ def test_user_invites(
 
     res = client.post(url, {"emails": [user2.email], "level": Membership.ADMIN})
     assert res.status_code == status.HTTP_201_CREATED
-    invite_pk = res.json()[0]["id"]
     assert user2.membership_set.filter(
         team=team
     ).exists(), "user should be a member of the team"
