@@ -1,9 +1,9 @@
 from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
-from recipeyak.api.base.request import AuthedRequest
 
+from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.user_invites_list_view import get_invites
 
 

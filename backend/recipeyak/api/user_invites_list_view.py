@@ -1,11 +1,11 @@
 from django.db.models import QuerySet
-
-from recipeyak.models import Invite, User
-from rest_framework.response import Response
-from recipeyak.api.base.request import AuthedRequest
-from recipeyak.api.serializers.team import InviteSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.serializers.team import InviteSerializer
+from recipeyak.models import Invite, User
 
 
 def get_invites(user: User) -> QuerySet[Invite]:
