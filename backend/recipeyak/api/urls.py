@@ -46,12 +46,13 @@ from recipeyak.api.team_shopping_list_detail_view import get_shopping_list_view
 from recipeyak.api.timeline_view import get_recipe_timeline
 from recipeyak.api.uploads_detail_view import complete_upload_view
 from recipeyak.api.uploads_list_view import start_upload_view
-from recipeyak.api.user_invites_generic_view import UserInvitesViewSet
+from recipeyak.api.user_invites_accept_view import user_invites_accept_view
+from recipeyak.api.user_invites_decline_view import user_invites_decline_view
+from recipeyak.api.user_invites_list_view import user_invites_list_view
 from recipeyak.api.users_detail_view import UserDetailsView
 
 router = DefaultRouter()
 router.register(r"t", TeamViewSet, basename="teams")
-router.register(r"invites", UserInvitesViewSet, basename="user-invites")
 
 
 teams_router = DefaultRouter()
@@ -66,6 +67,9 @@ urlpatterns = [
     path("api/v1/auth/password/reset/", password_reset_view),
     path("api/v1/auth/password/reset/confirm/", password_reset_confirm_view),
     path("api/v1/auth/registration/", RegisterView.as_view(), name="rest_register"),
+    path("api/v1/invites/", user_invites_list_view),
+    path("api/v1/invites/<pk>/accept/", user_invites_accept_view),
+    path("api/v1/invites/<pk>/decline/", user_invites_decline_view),
     path("api/v1/notes/<int:note_pk>/", note_detail_view),
     path("api/v1/notes/<int:note_pk>/reactions/", note_reaction_create_view),
     path("api/v1/reactions/<str:reaction_pk>/", note_reaction_delete_view),
