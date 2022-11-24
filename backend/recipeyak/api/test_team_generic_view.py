@@ -533,16 +533,8 @@ def test_update_user_invite(
     assert not team.is_member(user2)
 
     invite = team.invite_user(user2, creator=user)
-    user_invite_url = f"/api/v1/invites/{invite.pk}/"
     team_invite_url = f"/api/v1/t/{team.id}/invites/{invite.pk}/"
     for url, users in [
-        (
-            user_invite_url,
-            [
-                (user, status.HTTP_405_METHOD_NOT_ALLOWED),
-                (user2, status.HTTP_405_METHOD_NOT_ALLOWED),
-            ],
-        ),
         (
             team_invite_url,
             [
@@ -569,17 +561,9 @@ def test_destroy_user_invite(
 
     invite = team.invite_user(user2, creator=user)
 
-    user_invite_url = f"/api/v1/invites/{invite.pk}/"
     team_invite_url = f"/api/v1/t/{team.id}/invites/{invite.pk}/"
 
     for url, users in [
-        (
-            user_invite_url,
-            [
-                (user, status.HTTP_405_METHOD_NOT_ALLOWED),
-                (user2, status.HTTP_405_METHOD_NOT_ALLOWED),
-            ],
-        ),
         (
             team_invite_url,
             [(user, status.HTTP_204_NO_CONTENT), (user2, status.HTTP_403_FORBIDDEN)],
@@ -630,13 +614,6 @@ def test_retrieve_user_invite(
     res = client.post(url, {"emails": [user2.email], "level": Membership.ADMIN})
     assert res.status_code == status.HTTP_201_CREATED
 
-    pk = res.json()[0].get("id")
-
-    url = f"/api/v1/invites/{pk}/"
-    for u, s in [(user, status.HTTP_404_NOT_FOUND), (user2, status.HTTP_200_OK)]:
-        client.force_authenticate(u)
-        assert client.get(url).status_code == s
-
 
 def test_user_invites(
     client: APIClient, team: Team, user: User, user2: User, user3: User
@@ -676,13 +653,6 @@ def test_user_invites(
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK
     assert len(res.json()) == 1
-
-    # retrieve individual invite for user2
-    url = f"/api/v1/invites/{invite_pk}/"
-    res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK
-    assert res.json()["id"] == invite_pk
-    assert res.json()["user"]["id"] == user2.id
 
     # verify user cannot view team
     url = f"/api/v1/t/{team.id}/members/"
