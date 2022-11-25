@@ -43,6 +43,7 @@ class ScheduleRecipeSerializer(pydantic.BaseModel):
     team: Optional[str]
     user: Optional[str]
     recipe: RecipeMetadataSerializer
+    on: date
 
 
 def calendar_detail_patch_view(
@@ -68,6 +69,7 @@ def calendar_detail_patch_view(
             count=scheduled_recipe.count,
             created=scheduled_recipe.created,
             recipe=recipe,
+            on=scheduled_recipe.on,
         )
     )
 
