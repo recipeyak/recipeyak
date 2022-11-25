@@ -2,6 +2,7 @@ from django.conf.urls import include, url
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
+from recipeyak.api import recipe_bot_detail_view
 from recipeyak.api.calendar_detail_view import calendar_detail_view
 from recipeyak.api.calendar_generate_link_view import generate_link
 from recipeyak.api.calendar_list_view import calendar_list_view
@@ -75,6 +76,10 @@ urlpatterns = [
     path("api/v1/reactions/<str:reaction_pk>/", note_reaction_delete_view),
     path("api/v1/recipes/", recipe_list_view),
     path("api/v1/recipes/<int:recipe_pk>/", receipe_detail_view),
+    path(
+        "api/v1/bot/recipes/<int:recipe_pk>/",
+        recipe_bot_detail_view.receipe_detail_view,
+    ),
     path("api/v1/recipes/<int:recipe_pk>/copy/", recipe_copy_view),
     path("api/v1/recipes/<int:recipe_pk>/duplicate/", recipe_duplicate_view),
     path("api/v1/recipes/<int:recipe_pk>/ingredients/", ingredients_list_view),
