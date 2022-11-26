@@ -67,7 +67,7 @@ skip_gitignore = true
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "recipeyak.django.settings"
-python_files = "tests.py test_*.py *_test.py *_tests.py"
+python_files = "*_test.py *_tests.py"
 addopts = "-s --pdbcls IPython.terminal.debugger:TerminalPdb --reuse-db -p no:warnings"
 
 [tool.mypy]
