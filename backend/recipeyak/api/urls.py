@@ -1,6 +1,5 @@
-from django.conf.urls import include, url
+from django.conf.urls import url
 from django.urls import path
-from rest_framework.routers import DefaultRouter
 
 from recipeyak.api import recipe_bot_detail_view
 from recipeyak.api.calendar_detail_view import calendar_detail_view
@@ -40,9 +39,11 @@ from recipeyak.api.sessions_detail_view import sessions_detail_view
 from recipeyak.api.sessions_list_view import sessions_list_view
 from recipeyak.api.steps_detail_view import steps_detail_view
 from recipeyak.api.steps_list_view import steps_list_view
-from recipeyak.api.team_generic_view import TeamViewSet
-from recipeyak.api.team_invite_generic_view import TeamInviteViewSet
-from recipeyak.api.team_members_generic_view import MembershipViewSet
+from recipeyak.api.team_detail_view import team_detail_view
+from recipeyak.api.team_invite_list_view import team_invite_list_view
+from recipeyak.api.team_list_view import team_list_view
+from recipeyak.api.team_members_detail_view import team_members_detail_view
+from recipeyak.api.team_members_list_view import team_members_list_view
 from recipeyak.api.team_shopping_list_detail_view import get_shopping_list_view
 from recipeyak.api.timeline_view import get_recipe_timeline
 from recipeyak.api.uploads_detail_view import complete_upload_view
@@ -52,16 +53,9 @@ from recipeyak.api.user_invites_decline_view import user_invites_decline_view
 from recipeyak.api.user_invites_list_view import user_invites_list_view
 from recipeyak.api.users_detail_view import UserDetailsView
 
-router = DefaultRouter()
-router.register(r"t", TeamViewSet, basename="teams")
-
-
-teams_router = DefaultRouter()
-teams_router.register(r"members", MembershipViewSet, basename="team-member")
-teams_router.register(r"invites", TeamInviteViewSet, basename="team-invites")
-
 urlpatterns = [
-    path("api/v1/", include(router.urls)),
+    path("api/v1/t/<team_pk>/members/", team_members_list_view),
+    path("api/v1/t/<team_pk>/members/<pk>/", team_members_detail_view),
     path("api/v1/auth/login/", LoginView.as_view()),
     path("api/v1/auth/logout/", LogoutView.as_view()),
     path("api/v1/auth/password/change/", PasswordChangeView.as_view()),
@@ -71,6 +65,9 @@ urlpatterns = [
     path("api/v1/invites/", user_invites_list_view),
     path("api/v1/invites/<pk>/accept/", user_invites_accept_view),
     path("api/v1/invites/<pk>/decline/", user_invites_decline_view),
+    path("api/v1/t/<team_pk>/invites/", team_invite_list_view),
+    path("api/v1/t/<team_pk>/", team_detail_view),
+    path("api/v1/t/", team_list_view),
     path("api/v1/notes/<int:note_pk>/", note_detail_view),
     path("api/v1/notes/<int:note_pk>/reactions/", note_reaction_create_view),
     path("api/v1/reactions/<str:reaction_pk>/", note_reaction_delete_view),
@@ -99,7 +96,6 @@ urlpatterns = [
     path("api/v1/t/<team_pk>/calendar/next_open/", next_open),
     path("api/v1/t/<team_pk>/calendar/generate_link/", generate_link),
     path("api/v1/t/<team_pk>/calendar/<pk>/", calendar_detail_view),
-    path("api/v1/t/<team_pk>/", include(teams_router.urls)),
     path("api/v1/t/<team_pk>/shoppinglist/", get_shopping_list_view),
     path("api/v1/upload/", start_upload_view),
     path("api/v1/upload/<int:upload_pk>/complete", complete_upload_view),

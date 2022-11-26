@@ -48,6 +48,7 @@ def test_updating_team_name(
     client: APIClient, team: Team, user: User, user2: User, user3: User
 ) -> None:
     client.force_authenticate(user)
+    team.force_join_admin(user=user)
     data = {"name": "new Recipe Yak Team"}
     url = f"/api/v1/t/{team.pk}/"
     res = client.patch(url, data)
@@ -56,7 +57,7 @@ def test_updating_team_name(
 
     client.force_authenticate(user2)
     res = client.patch(url, data)
-    assert res.status_code == status.HTTP_403_FORBIDDEN, "non-member cannot update team"
+    assert res.status_code == 404
 
     team.force_join(user2, level=Membership.CONTRIBUTOR)
     res = client.patch(url, data)
@@ -81,7 +82,7 @@ def test_updating_team_name(
 
     res = client.patch(url, data)
     assert (
-        res.status_code == status.HTTP_403_FORBIDDEN
+        res.status_code == 404
     ), "Admins should not modify teams they do not administer"
 
 
@@ -101,7 +102,7 @@ def test_deleting_team(
     # non-member cannot delete team
     client.force_authenticate(user2)
     res = client.delete(url)
-    assert res.status_code == status.HTTP_403_FORBIDDEN, "non-member cannot delete team"
+    assert res.status_code == status.HTTP_404_NOT_FOUND, "non-member cannot delete team"
 
     # join user2 to team as non-admin
     team.force_join(user2, level=Membership.CONTRIBUTOR)
@@ -114,7 +115,7 @@ def test_deleting_team(
     assert empty_team.is_admin(user3)
     client.force_authenticate(user3)
     assert (
-        client.delete(url).status_code == status.HTTP_403_FORBIDDEN
+        client.delete(url).status_code == status.HTTP_404_NOT_FOUND
     ), "admin of another team cannot delete this team"
 
     client.force_authenticate(user)
@@ -271,12 +272,12 @@ def test_destory_team_member(
     empty_team: Team,
 ) -> None:
     user_membership = user.membership_set.get(team=team)
-    url = f"/api/v1/t/{team.pk}/members/{user_membership.id}/"
     # non-members cannot delete team memberships
     assert not team.is_member(user2)
     client.force_authenticate(user2)
     assert (
-        client.delete(url).status_code == status.HTTP_403_FORBIDDEN
+        client.delete(f"/api/v1/t/{team.pk}/members/{user_membership.id}/").status_code
+        == status.HTTP_403_FORBIDDEN
     ), "non-member should not be able to delete member"
 
     # non-admins cannot delete team members
@@ -285,14 +286,14 @@ def test_destory_team_member(
     assert team.is_member(user3)
     client.force_authenticate(user3)
     assert (
-        client.delete(url).status_code == status.HTTP_403_FORBIDDEN
+        client.delete(f"/api/v1/t/{team.pk}/members/{user_membership.id}/").status_code
+        == status.HTTP_403_FORBIDDEN
     ), "non-admin member should not be able to revoke admin user's membership"
 
     user3_membership = user3.membership_set.get(team=team)
-    url = f"/api/v1/t/{team.pk}/members/{user3_membership.id}/"
     # admins can remove memberships of members
     client.force_authenticate(user)
-    res = client.delete(url)
+    res = client.delete(f"/api/v1/t/{team.pk}/members/{user3_membership.id}/")
     assert res.status_code == status.HTTP_204_NO_CONTENT
     assert not Membership.objects.filter(
         id=user3_membership.id
@@ -300,15 +301,17 @@ def test_destory_team_member(
 
     client.force_authenticate(user3)
     assert (
-        client.get(url).status_code == status.HTTP_403_FORBIDDEN
+        client.get(f"/api/v1/t/{team.pk}/members/{user3_membership.id}/").status_code
+        == status.HTTP_403_FORBIDDEN
     ), "removed user should not be able to access team"
 
     # admins can remove other admins
     team.force_join_admin(user3)
     assert team.is_admin(user3)
-    url = f"/api/v1/t/{team.pk}/members/{user.membership_set.get(team=team).id}/"
     client.force_authenticate(user3)
-    res = client.delete(url)
+    res = client.delete(
+        f"/api/v1/t/{team.pk}/members/{user.membership_set.get(team=team).id}/"
+    )
     assert (
         res.status_code == status.HTTP_204_NO_CONTENT
     ), "Team admins can remove other admins"
@@ -318,60 +321,23 @@ def test_destory_team_member(
     assert empty_team.is_member(user)
     assert team.is_admin(user3)
     client.force_authenticate(user3)
-    url = f"/api/v1/t/{empty_team.pk}/members/{user.membership_set.get(team=empty_team).id}/"
     assert (
-        client.delete(url).status_code == status.HTTP_403_FORBIDDEN
+        client.delete(
+            f"/api/v1/t/{empty_team.pk}/members/{user.membership_set.get(team=empty_team).id}/"
+        ).status_code
+        == status.HTTP_403_FORBIDDEN
     ), "Admin users cannot remove member of another team"
 
     # members can remove their own membership
     empty_team.force_join(user2)
     assert empty_team.is_member(user2) and not empty_team.is_admin(user2)
     client.force_authenticate(user2)
-    url = f"/api/v1/t/{empty_team.pk}/members/{user2.membership_set.get(team=empty_team).id}/"
-    assert client.delete(url).status_code == status.HTTP_204_NO_CONTENT
-
-
-def test_retrieve_team_member(
-    client: APIClient, team: Team, user: User, user2: User, user3: User
-) -> None:
-    """
-    Only team members should be able to retrieve team membership information.
-    A member must be an admin to destroy or update a member
-
-    NOTE: This is basically all copied and pasted from test_list_team_members
-    """
-    user1_membership = user.membership_set.get(team=team)
-    url = f"/api/v1/t/{team.pk}/members/{user1_membership.id}/"
-
-    # non-members cannot view member
-    assert not team.is_member(user2)
-    client.force_authenticate(user2)
-    assert client.get(url).status_code == status.HTTP_403_FORBIDDEN
-
-    # admins can view member
-    client.force_authenticate(user)
-    assert team.is_admin(user)
-    res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK, "Team admins can view members"
-    assert res.json()["user"]["id"] == user.id
-
-    # invite user2 to team
-    team.invite_user(user2, creator=user)
-    # inactive members cannot view member
-    client.force_authenticate(user2)
-    res = client.get(url)
     assert (
-        res.status_code == status.HTTP_403_FORBIDDEN
-    ), "Only active users can view members"
-
-    # team viewer can see members
-    team.force_join(user3, level=Membership.READ_ONLY)
-    client.force_authenticate(user3)
-    res = client.get(url)
-    assert (
-        res.status_code == status.HTTP_200_OK
-    ), "Viewer members can retrieve team members"
-    assert res.json()["user"]["id"] == user.id
+        client.delete(
+            f"/api/v1/t/{empty_team.pk}/members/{user2.membership_set.get(team=empty_team).id}/"
+        ).status_code
+        == status.HTTP_204_NO_CONTENT
+    )
 
 
 def test_update_team_member(
@@ -480,30 +446,6 @@ def test_creating_invites_by_non_members(
     assert res.status_code == status.HTTP_403_FORBIDDEN
 
 
-def test_destroy_team_invite(
-    client: APIClient, team: Team, user: User, user2: User, user3: User
-) -> None:
-    """
-    TeamAdmins owner can destroy team invites
-    The recipient of the invite cannot destroy it, they can only decline it
-    """
-
-    assert team.is_member(user)
-    assert not team.is_member(user2)
-    assert not team.is_member(user3)
-
-    invite = team.invite_user(user2, creator=user)
-
-    url = f"/api/v1/t/{team.pk}/invites/{invite.pk}/"
-    for u, s in [
-        (user, status.HTTP_204_NO_CONTENT),
-        (user2, status.HTTP_403_FORBIDDEN),
-        (user3, status.HTTP_403_FORBIDDEN),
-    ]:
-        client.force_authenticate(u)
-        assert client.delete(url).status_code == s
-
-
 def test_create_user_invite(
     client: APIClient, team: Team, user: User, user2: User
 ) -> None:
@@ -520,58 +462,6 @@ def test_create_user_invite(
         client.force_authenticate(u)
         res = client.post(url, {"emails": [u.email], "level": Membership.ADMIN})
         assert res.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-
-
-def test_update_user_invite(
-    client: APIClient, team: Team, user: User, user2: User
-) -> None:
-    """
-    Update/Partial Update not allowed.
-    """
-
-    assert team.is_member(user)
-    assert not team.is_member(user2)
-
-    invite = team.invite_user(user2, creator=user)
-    team_invite_url = f"/api/v1/t/{team.id}/invites/{invite.pk}/"
-    for url, users in [
-        (
-            team_invite_url,
-            [
-                (user, status.HTTP_405_METHOD_NOT_ALLOWED),
-                (user2, status.HTTP_403_FORBIDDEN),
-            ],
-        ),
-    ]:
-        for u, s in users:
-            client.force_authenticate(u)
-            assert client.patch(url, {"membership": 2}).status_code == s
-
-
-def test_destroy_user_invite(
-    client: APIClient, team: Team, user: User, user2: User
-) -> None:
-    """
-    User should not be allowed to destroy invite.
-    Use detail-decline instead.
-    """
-
-    assert team.is_member(user)
-    assert not team.is_member(user2)
-
-    invite = team.invite_user(user2, creator=user)
-
-    team_invite_url = f"/api/v1/t/{team.id}/invites/{invite.pk}/"
-
-    for url, users in [
-        (
-            team_invite_url,
-            [(user, status.HTTP_204_NO_CONTENT), (user2, status.HTTP_403_FORBIDDEN)],
-        ),
-    ]:
-        for u, s in users:
-            client.force_authenticate(u)
-            assert client.delete(url).status_code == s
 
 
 def test_list_user_invites(
