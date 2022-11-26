@@ -384,6 +384,36 @@ function useRecipeUrlUpdate(recipe: { id: number; name: string } | null) {
 
 type IRecipeProps = RouteComponentProps<{ id: string }>
 
+function Meta({ title }: { title: string }) {
+  React.useEffect(() => {
+    const metaTags = document.querySelectorAll<HTMLMetaElement>(
+      `meta[property="og:title"]`,
+    )
+    if (metaTags.length > 0) {
+      if (metaTags[0].content !== title) {
+        metaTags[0].content = title
+      }
+      // clear out any dupe tags
+      if (metaTags.length > 1) {
+        metaTags.forEach((x, i) => {
+          // we only want one metatag
+          if (i > 0) {
+            x.remove()
+          }
+        })
+      }
+    } else {
+      // setup the missing metatag
+      const metaTag = document.createElement("meta")
+      // NOTE: property is missing from the type
+      metaTag.setAttribute("property", "og:title")
+      metaTag.content = title
+      document.head.appendChild(metaTag)
+    }
+  }, [title])
+  return null
+}
+
 export function Recipe(props: IRecipeProps) {
   const recipeId = parseInt(props.match.params.id, 10)
 
@@ -429,6 +459,7 @@ export function Recipe(props: IRecipeProps) {
   return (
     <div className="d-grid grid-gap-2 mx-auto mw-1000px">
       <Helmet title={recipe.name} />
+      <Meta title={recipe.name} />
       {archivedAt != null && <RecipeBanner>Archived {archivedAt}</RecipeBanner>}
       {editingEnabled && (
         <RecipeBanner>
