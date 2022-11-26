@@ -106,12 +106,12 @@ urlpatterns = [
     path("api/v1/user/", UserDetailsView.as_view()),
     path("t/<int:team_id>/ical/<str:ical_id>/schedule.ics", get_ical_view),
     url(
-        r"^recipes/(?P<recipe_pk>[0-9]+)(-.*)?",
+        r"^recipes/(?P<recipe_pk>[0-9]+)(-.*)?$",
         recipe_bot_detail_view.receipe_detail_view,
     ),
     url(r"^recipes.(?P<filetype>json|yaml|yml)$", export_recipes_list_view),
     url(
-        r"^recipes/(?P<pk>[0-9]+).*\.(?P<filetype>json|yaml|yml)$",
+        r"^recipes/(?P<pk>[0-9]+)\.(?P<filetype>json|yaml|yml)$",
         export_recipes_list_view,
     ),
 ]
