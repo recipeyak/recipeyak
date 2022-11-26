@@ -76,10 +76,6 @@ urlpatterns = [
     path("api/v1/reactions/<str:reaction_pk>/", note_reaction_delete_view),
     path("api/v1/recipes/", recipe_list_view),
     path("api/v1/recipes/<int:recipe_pk>/", receipe_detail_view),
-    path(
-        "api/v1/bot/recipes/<int:recipe_pk>/",
-        recipe_bot_detail_view.receipe_detail_view,
-    ),
     path("api/v1/recipes/<int:recipe_pk>/copy/", recipe_copy_view),
     path("api/v1/recipes/<int:recipe_pk>/duplicate/", recipe_duplicate_view),
     path("api/v1/recipes/<int:recipe_pk>/ingredients/", ingredients_list_view),
@@ -109,6 +105,10 @@ urlpatterns = [
     path("api/v1/upload/<int:upload_pk>/complete", complete_upload_view),
     path("api/v1/user/", UserDetailsView.as_view()),
     path("t/<int:team_id>/ical/<str:ical_id>/schedule.ics", get_ical_view),
+    url(
+        r"^recipes/(?P<recipe_pk>[0-9]+)(-.*)?",
+        recipe_bot_detail_view.receipe_detail_view,
+    ),
     url(r"^recipes.(?P<filetype>json|yaml|yml)$", export_recipes_list_view),
     url(
         r"^recipes/(?P<pk>[0-9]+).*\.(?P<filetype>json|yaml|yml)$",
