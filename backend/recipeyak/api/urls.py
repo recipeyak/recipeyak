@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from django.urls import path
 
+from recipeyak.api import recipe_bot_detail_view
 from recipeyak.api.calendar_detail_view import calendar_detail_view
 from recipeyak.api.calendar_generate_link_view import generate_link
 from recipeyak.api.calendar_list_view import calendar_list_view
@@ -100,9 +101,13 @@ urlpatterns = [
     path("api/v1/upload/<int:upload_pk>/complete", complete_upload_view),
     path("api/v1/user/", UserDetailsView.as_view()),
     path("t/<int:team_id>/ical/<str:ical_id>/schedule.ics", get_ical_view),
+    url(
+        r"^recipes/(?P<recipe_pk>[0-9]+)(-.*)?$",
+        recipe_bot_detail_view.receipe_detail_view,
+    ),
     url(r"^recipes.(?P<filetype>json|yaml|yml)$", export_recipes_list_view),
     url(
-        r"^recipes/(?P<pk>[0-9]+).*\.(?P<filetype>json|yaml|yml)$",
+        r"^recipes/(?P<pk>[0-9]+)\.(?P<filetype>json|yaml|yml)$",
         export_recipes_list_view,
     ),
 ]
