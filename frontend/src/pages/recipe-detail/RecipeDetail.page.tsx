@@ -456,10 +456,14 @@ export function Recipe(props: IRecipeProps) {
     history.push({ search: "?" + params.toString() })
   }
 
+  let recipeTitle = recipe.name
+  if (recipe.author) {
+    recipeTitle = recipeTitle + ` by ${recipe.author}`
+  }
   return (
     <div className="d-grid grid-gap-2 mx-auto mw-1000px">
       <Helmet title={recipe.name} />
-      <Meta title={recipe.name} />
+      <Meta title={recipeTitle} />
       {archivedAt != null && <RecipeBanner>Archived {archivedAt}</RecipeBanner>}
       {editingEnabled && (
         <RecipeBanner>
