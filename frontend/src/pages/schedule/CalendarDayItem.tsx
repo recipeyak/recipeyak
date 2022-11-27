@@ -163,13 +163,8 @@ export function CalendarItem({
   const [{ isDragging }, drag] = useDrag({
     type: DragDrop.CAL_RECIPE,
     item: dragItem,
-    end: (_dropResult, monitor) => {
-      // when dragged onto something that isn't a target, we remove it
-      // but we don't remove when in past as we only copy from the past
-      if (!monitor.didDrop() && isInsideChangeWindow(date)) {
-        remove()
-      }
-    },
+    // don't do anything when on drop
+    end: () => {},
     collect: (monitor) => {
       return {
         isDragging: monitor.isDragging(),
