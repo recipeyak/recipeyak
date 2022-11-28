@@ -190,3 +190,11 @@ export function useCurrentUser() {
 export function useTeamId(): number | "personal" {
   return useSelector((state) => state.user.scheduleTeamID) ?? "personal"
 }
+
+export function useToggle(): [boolean, () => void] {
+  const [state, setState] = React.useState(false)
+  const toggle = React.useCallback(() => {
+    setState((s) => !s)
+  }, [])
+  return [state, toggle]
+}

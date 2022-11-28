@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 import { TextInput } from "@/components/Forms"
 import { isInsideChangeWindow } from "@/date"
 import { DragDrop } from "@/dragDrop"
-import { useGlobalEvent } from "@/hooks"
+import { useGlobalEvent, useToggle } from "@/hooks"
 import { CalendarDayItemModal } from "@/pages/schedule/CalendarDayItemModal"
 import { isOk, Result } from "@/result"
 import { ICalRecipe } from "@/store/reducers/calendar"
@@ -107,7 +107,7 @@ export function CalendarItem({
 }: ICalendarItemProps) {
   const [count, setCount] = React.useState(propsCount)
   const ref = React.useRef<HTMLLIElement>(null)
-  const [show, setShow] = React.useState(false)
+  const [show, toggleShow] = useToggle()
 
   React.useEffect(() => {
     setCount(propsCount)
@@ -190,7 +190,7 @@ export function CalendarItem({
               return
             }
             e.preventDefault()
-            setShow(true)
+            toggleShow()
           }}
         />
         <Count value={count} onChange={handleChange} />
@@ -204,9 +204,7 @@ export function CalendarItem({
           recipeName={recipeName}
           recipeId={recipeID}
           date={date}
-          onClose={() => {
-            setShow(false)
-          }}
+          onClose={toggleShow}
         />
       ) : null}
     </>

@@ -52,7 +52,6 @@ import {
   updateRecipeOwner,
   updateStep,
 } from "@/store/reducers/recipes"
-import { fetchShoppingList } from "@/store/reducers/shoppinglist"
 import {
   deleteMembership,
   deleteTeam,
@@ -264,19 +263,6 @@ export const updatingPasswordAsync =
         return
       }
       dispatch(passwordUpdate.failure())
-    }
-  }
-
-export const fetchingShoppingListAsync =
-  (dispatch: Dispatch) => async (teamID: number | "personal") => {
-    const startDay = store.getState().shoppinglist.startDay
-    const endDay = store.getState().shoppinglist.endDay
-    dispatch(fetchShoppingList.request())
-    const res = await api.getShoppingList(teamID, startDay, endDay)
-    if (isOk(res)) {
-      dispatch(fetchShoppingList.success(res.data))
-    } else {
-      dispatch(fetchShoppingList.failure())
     }
   }
 

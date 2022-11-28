@@ -1,12 +1,9 @@
 import { differenceInMonths, isSameDay, isSameYear } from "date-fns"
-import eachDayOfInterval from "date-fns/eachDayOfInterval"
 import format from "date-fns/format"
 import formatDistance from "date-fns/formatDistance"
 import isAfter from "date-fns/isAfter"
-import lastDayOfMonth from "date-fns/lastDayOfMonth"
 import min from "date-fns/min"
 import parseISO from "date-fns/parseISO"
-import startOfMonth from "date-fns/startOfMonth"
 import subDays from "date-fns/subDays"
 
 export function toISODateString(date: Date | string | number): string {
@@ -14,18 +11,6 @@ export function toISODateString(date: Date | string | number): string {
   const dateObj = typeof date === "string" ? parseISO(date) : date
   return format(dateObj, "yyyy-MM-dd")
 }
-
-export function daysOfMonth(date: Date) {
-  return eachDayOfInterval({
-    start: startOfMonth(date),
-    end: lastDayOfMonth(date),
-  })
-}
-
-export function daysFromSunday(date: Date) {
-  return startOfMonth(date).getDay()
-}
-
 export const second = 1000
 
 const DELETION_WINDOW_DAYS = 5

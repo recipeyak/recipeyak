@@ -109,7 +109,7 @@ export function CalendarDayItemModal({
         <div>{prettyDate}</div>
         <button className="delete" onClick={onClose} />
       </section>
-      <Link to={to} className="fs-4 flex-grow-1 line-height-0">
+      <Link to={to} className="fs-4 flex-grow-1">
         {recipeName}
       </Link>
 
