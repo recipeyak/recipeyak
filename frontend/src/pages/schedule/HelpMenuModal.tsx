@@ -1,7 +1,7 @@
 import React from "react"
 
-import GlobalEvent from "@/components/GlobalEvent"
 import Modal from "@/components/Modal"
+import { useGlobalEvent, useToggle } from "@/hooks"
 
 const keybinds = [
   {
@@ -44,28 +44,29 @@ function KeyBind({ bind }: IKeyBindProps) {
 }
 
 export default function HelpMenuModal() {
-  const [show, setShow] = React.useState(false)
+  const [show, toggleShow] = useToggle()
 
-  function handleKeyPress(e: KeyboardEvent) {
-    const el = document.activeElement
-    if (el == null || el.tagName !== "BODY") {
-      return
-    }
-    if (e.key === "?") {
-      setShow((prev) => !prev)
-    }
-  }
-
-  const close = () => {
-    setShow(false)
-  }
-
+  useGlobalEvent({
+    keyUp: (e: KeyboardEvent) => {
+      const el = document.activeElement
+      if (el == null || el.tagName !== "BODY") {
+        return
+      }
+      if (e.key === "?") {
+        toggleShow()
+      }
+    },
+  })
   return (
-    <Modal show={show} onClose={close}>
-      <GlobalEvent keyUp={handleKeyPress} />
+    <Modal
+      show={show}
+      onClose={toggleShow}
+      style={{ maxWidth: 400 }}
+      className="fs-14px"
+    >
       <section className="d-flex space-between">
         <h1 className="fs-4 bold">Keybinds</h1>
-        <button className="delete" aria-label="close" onClick={close} />
+        <button className="delete" aria-label="close" onClick={toggleShow} />
       </section>
       <section className="d-flex">
         <div className="mr-4">

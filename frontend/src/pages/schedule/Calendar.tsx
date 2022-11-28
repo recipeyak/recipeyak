@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query"
 import { push } from "connected-react-router"
 import { addWeeks, endOfWeek, startOfWeek, subWeeks } from "date-fns"
 import eachDayOfInterval from "date-fns/eachDayOfInterval"
@@ -12,9 +13,18 @@ import { useLocation } from "react-router-dom"
 import { ButtonPlain } from "@/components/Buttons"
 import { Select } from "@/components/Forms"
 import { toISODateString } from "@/date"
-import { useDispatch, useOnWindowFocusChange, useSelector } from "@/hooks"
+import {
+  useDispatch,
+  useOnWindowFocusChange,
+  useSelector,
+  useToggle,
+} from "@/hooks"
 import CalendarDay from "@/pages/schedule/CalendarDay"
-import { CalendarMoreDropdown } from "@/pages/schedule/CalendarMoreDropdown"
+import { ICalConfig } from "@/pages/schedule/CalendarMoreDropdown"
+import { CalendarSettingsModal } from "@/pages/schedule/CalendarSettingsModal"
+import { IconSettings } from "@/pages/schedule/IconSettings"
+import ShoppingList from "@/pages/schedule/ShoppingList"
+import { ShoppingListModal } from "@/pages/schedule/ShoppingListModal"
 import { teamsFrom } from "@/store/mapState"
 import {
   getPersonalRecipes,
@@ -28,7 +38,6 @@ import { history } from "@/store/store"
 import {
   fetchCalendarAsync,
   fetchingRecipeListAsync,
-  fetchingShoppingListAsync,
   fetchingTeamsAsync,
 } from "@/store/thunks"
 import { styled } from "@/theme"
@@ -175,38 +184,66 @@ interface INavProps {
   readonly onNext: () => void
   readonly onCurrent: () => void
   readonly teamID: number | "personal"
-  readonly type: "shopping" | "recipes"
 }
 
-function Nav({ dayTs, teamID, onPrev, onNext, onCurrent, type }: INavProps) {
-  const { handleOwnerChange, teams } = useTeamSelect(dayTs, type)
+function Nav({ dayTs, teamID, onPrev, onNext, onCurrent }: INavProps) {
+  const { handleOwnerChange, teams } = useTeamSelect(dayTs)
+  const [showSettings, toggleShowSetting] = useToggle()
+  const [showShopping, toggleShopping] = useToggle()
 
   const { settings, setSyncEnabled, regenerateCalendarLink } =
     useCalendarSettings(teamID)
 
   return (
-    <section className="d-flex justify-space-between align-items-center flex-shrink-0">
-      <div className="d-flex">
-        <CalTitle dayTs={dayTs} />
-        <TeamSelect teams={teams} value={teamID} onChange={handleOwnerChange} />
-        <CalendarMoreDropdown
+    <div className="d-flex justify-space-between align-items-center flex-shrink-0">
+      <CalendarSettingsModal
+        show={showSettings}
+        onClose={toggleShowSetting}
+        className="d-flex flex-direction-column fs-14px grid-gap-2"
+      >
+        <div className="d-flex flex-direction-column align-items-start grid-gap-1">
+          <label className="fw-500">Team</label>
+          <TeamSelect
+            teams={teams}
+            value={teamID}
+            onChange={handleOwnerChange}
+          />
+        </div>
+        <ICalConfig
           settings={settings}
           setSyncEnabled={setSyncEnabled}
           regenerateCalendarLink={regenerateCalendarLink}
         />
+      </CalendarSettingsModal>
+
+      <ShoppingListModal show={showShopping} onClose={toggleShopping}>
+        <ShoppingList teamID={teamID} />
+      </ShoppingListModal>
+      <div className="d-flex">
+        <CalTitle dayTs={dayTs} />
+        <div>
+          <ButtonPlain size="small" className="p-1" onClick={toggleShowSetting}>
+            <IconSettings />
+          </ButtonPlain>
+        </div>
+        <div className="ml-1">
+          <ButtonPlain size="small" onClick={toggleShopping}>
+            Shopping
+          </ButtonPlain>
+        </div>
       </div>
-      <section>
+      <div className="grid-gap-1 d-flex">
         <ButtonPlain size="small" onClick={onPrev}>
           {"←"}
         </ButtonPlain>
-        <ButtonPlain size="small" className="ml-1 mr-1" onClick={onCurrent}>
+        <ButtonPlain size="small" onClick={onCurrent}>
           Today
         </ButtonPlain>
         <ButtonPlain size="small" onClick={onNext}>
           {"→"}
         </ButtonPlain>
-      </section>
-    </section>
+      </div>
+    </div>
   )
 }
 
@@ -337,18 +374,17 @@ function useDays(
   )
 }
 
-function useTeamSelect(currentDateTs: number, type: "shopping" | "recipes") {
+function useTeamSelect(currentDateTs: number) {
   const teams = useTeams()
   const dispatch = useDispatch()
+  const queryClient = useQueryClient()
 
   const handleOwnerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const teamID =
       e.target.value === "personal" ? "personal" : parseInt(e.target.value, 10)
     const url = teamID === "personal" ? "/schedule/" : `/t/${teamID}/schedule/`
 
-    const isRecipes = type === "recipes"
-
-    const ending = isRecipes ? "recipes" : "shopping"
+    const ending = "recipes"
 
     const urlWithEnding = url + ending
 
@@ -356,7 +392,7 @@ function useTeamSelect(currentDateTs: number, type: "shopping" | "recipes") {
     dispatch(push(urlWithEnding))
     void fetchCalendarAsync(dispatch)(teamID, currentDateTs)
     void fetchingRecipeListAsync(dispatch)()
-    void fetchingShoppingListAsync(dispatch)(teamID)
+    void queryClient.invalidateQueries([teamID])
   }
 
   return { handleOwnerChange, teams }
@@ -385,10 +421,9 @@ function useCalendarSettings(teamID: number | "personal") {
 
 interface ICalendarProps {
   readonly teamID: number | "personal"
-  readonly type: "shopping" | "recipes"
 }
 
-export function Calendar({ teamID, type }: ICalendarProps) {
+export function Calendar({ teamID }: ICalendarProps) {
   const { currentDateTs, startDate, endDate, navNext, navCurrent, navPrev } =
     useCurrentWeek()
 
@@ -402,7 +437,6 @@ export function Calendar({ teamID, type }: ICalendarProps) {
         onNext={navNext}
         onPrev={navPrev}
         onCurrent={navCurrent}
-        type={type}
       />
       <Weekdays />
       <Days start={startDate} end={endDate} days={days} teamID={teamID} />

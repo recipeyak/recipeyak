@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query"
 import { isSameDay } from "date-fns"
 import endOfDay from "date-fns/endOfDay"
 import format from "date-fns/format"
@@ -28,7 +29,6 @@ import { IState } from "@/store/store"
 import {
   deletingScheduledRecipeAsync,
   Dispatch,
-  fetchingShoppingListAsync,
   IAddingScheduledRecipeProps,
   IMoveScheduledRecipeProps,
   updatingScheduledRecipeAsync,
@@ -109,7 +109,6 @@ interface ICalendarDayProps {
     teamID: number | "personal",
     count: ICalRecipe["count"],
   ) => Promise<Result<void, void>>
-  readonly refetchShoppingList: (teamID: number | "personal") => void
   readonly remove: (id: ICalRecipe["id"], teamID: number | "personal") => void
   readonly move: ({ id, teamID, to }: IMoveScheduledRecipeProps) => void
   readonly create: ({
@@ -126,7 +125,6 @@ function CalendarDay({
   date,
   scheduledRecipes,
   updateCount,
-  refetchShoppingList,
   remove,
   teamID,
   isSelected,
@@ -135,6 +133,8 @@ function CalendarDay({
 }: ICalendarDayProps) {
   const today = useCurrentDay()
   const isToday = isSameDay(date, today)
+
+  const queryClient = useQueryClient()
 
   const [{ isOver, canDrop }, drop] = useDrop({
     accept: [DragDrop.RECIPE, DragDrop.CAL_RECIPE],
@@ -191,7 +191,7 @@ function CalendarDay({
             }}
             updateCount={(count) => updateCount(x.id, teamID, count)}
             refetchShoppingList={() => {
-              refetchShoppingList(teamID)
+              void queryClient.invalidateQueries([teamID])
             }}
             count={x.count}
           />
@@ -205,29 +205,22 @@ function mapStateToProps(
   state: IState,
   props: Pick<ICalendarDayProps, "date">,
 ) {
-  const isShopping =
-    state.router.location != null
-      ? state.router.location.pathname.includes("shopping")
-      : false
   return {
     isSelected:
+      state.shoppinglist.isShopping &&
       isWithinInterval(props.date, {
         start: startOfDay(state.shoppinglist.startDay),
         end: endOfDay(state.shoppinglist.endDay),
-      }) && isShopping,
+      }),
   }
 }
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
-): Pick<
-  ICalendarDayProps,
-  "create" | "updateCount" | "refetchShoppingList" | "move" | "remove"
-> => ({
+): Pick<ICalendarDayProps, "create" | "updateCount" | "move" | "remove"> => ({
   create: (props: IAddingScheduledRecipeProps) =>
     dispatch(createCalendarRecipe(props)),
   updateCount: updatingScheduledRecipeAsync(dispatch),
-  refetchShoppingList: fetchingShoppingListAsync(dispatch),
   move: (props: IMoveScheduledRecipeProps) =>
     dispatch(moveOrCreateCalendarRecipe(props)),
   remove: deletingScheduledRecipeAsync(dispatch),

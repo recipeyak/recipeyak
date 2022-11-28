@@ -1,40 +1,27 @@
 import { addWeeks, startOfToday } from "date-fns"
-import {
-  ActionType,
-  createAsyncAction,
-  createStandardAction,
-  getType,
-} from "typesafe-actions"
-
-import { IGetShoppingListResponse } from "@/api"
-import { Failure, HttpErrorKind, Success, toLoading, WebData } from "@/webdata"
-
-export const fetchShoppingList = createAsyncAction(
-  "FETCH_SHOPPING_LIST_START",
-  "FETCH_SHOPPING_LIST_SUCCESS",
-  "FETCH_SHOPPING_LIST_FAILURE",
-)<void, IGetShoppingListResponse, void>()
+import { ActionType, createStandardAction, getType } from "typesafe-actions"
 
 export const setSelectingStart = createStandardAction(
   "SET_SELECTING_START",
 )<Date>()
 export const setSelectingEnd = createStandardAction("SET_SELECTING_END")<Date>()
+export const setShopping = createStandardAction("SET_SHOPPING")<boolean>()
 
 export type ShoppingListActions =
   | ReturnType<typeof setSelectingStart>
   | ReturnType<typeof setSelectingEnd>
-  | ActionType<typeof fetchShoppingList>
+  | ActionType<typeof setShopping>
 
 export interface IShoppingListState {
-  readonly shoppinglist: WebData<IGetShoppingListResponse>
   readonly startDay: Date
   readonly endDay: Date
+  readonly isShopping: boolean
 }
 
 const initialState: IShoppingListState = {
-  shoppinglist: undefined,
   startDay: startOfToday(),
   endDay: addWeeks(startOfToday(), 1),
+  isShopping: false,
 }
 
 const shoppinglist = (
@@ -42,16 +29,12 @@ const shoppinglist = (
   action: ShoppingListActions,
 ): IShoppingListState => {
   switch (action.type) {
-    case getType(fetchShoppingList.success):
-      return { ...state, shoppinglist: Success(action.payload) }
-    case getType(fetchShoppingList.request):
-      return { ...state, shoppinglist: toLoading(state.shoppinglist) }
-    case getType(fetchShoppingList.failure):
-      return { ...state, shoppinglist: Failure(HttpErrorKind.other) }
     case getType(setSelectingStart):
       return { ...state, startDay: action.payload }
     case getType(setSelectingEnd):
       return { ...state, endDay: action.payload }
+    case getType(setShopping):
+      return { ...state, isShopping: action.payload }
     default:
       return state
   }

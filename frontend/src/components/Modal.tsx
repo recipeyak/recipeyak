@@ -30,6 +30,9 @@ export default class Modal extends React.Component<IModalProps> {
 
   render() {
     const { show, children, onClose: close } = this.props
+    if (!show) {
+      return null
+    }
     return (
       <div
         ref={this.element}
@@ -41,7 +44,9 @@ export default class Modal extends React.Component<IModalProps> {
           className={`modal-content overflow-y-auto ${this.props.className}`}
           style={this.props.style}
         >
-          <div className="box">{children}</div>
+          <div className="box d-flex flex-direction-column grid-gap-1">
+            {children}
+          </div>
         </div>
         <button
           className="modal-close is-large"

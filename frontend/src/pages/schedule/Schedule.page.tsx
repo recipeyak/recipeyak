@@ -1,50 +1,25 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { connect } from "react-redux"
 import { Link, RouteComponentProps } from "react-router-dom"
 
 import { CurrentKeys } from "@/components/CurrentKeys"
 import { Helmet } from "@/components/Helmet"
-import { Tab, Tabs } from "@/components/Tabs"
 import Recipes from "@/pages/recipe-list/RecipeList.page"
 import Calendar from "@/pages/schedule/Calendar"
+import { CalendarSettingsModal } from "@/pages/schedule/CalendarSettingsModal"
 import HelpMenuModal from "@/pages/schedule/HelpMenuModal"
-import ShoppingList from "@/pages/schedule/ShoppingList"
 import { ITeam } from "@/store/reducers/teams"
 import { Dispatch, updatingDefaultScheduleTeamIDAsync } from "@/store/thunks"
 import { styled } from "@/theme"
 
 interface ISidebarProps {
-  readonly isRecipes: boolean
   readonly teamID: number | "personal"
 }
 
-function Sidebar({ teamID, isRecipes }: ISidebarProps) {
-  const recipesURL =
-    teamID === "personal"
-      ? "/schedule/recipes"
-      : `/t/${teamID}/schedule/recipes`
-
-  const shoppingURL =
-    teamID === "personal"
-      ? "/schedule/shopping"
-      : `/t/${teamID}/schedule/shopping`
-
+function Sidebar({ teamID }: ISidebarProps) {
   return (
     <div className="d-grid grid-gap-2 grid-auto-rows-min-content w-300px flex-shrink-0 hide-sm mr-2">
-      <Tabs small className="mb-0 no-print">
-        <Tab isActive={!isRecipes}>
-          <Link to={shoppingURL}>Shopping</Link>
-        </Tab>
-        <Tab isActive={isRecipes}>
-          <Link to={recipesURL}>Recipes</Link>
-        </Tab>
-      </Tabs>
-
-      {isRecipes ? (
-        <Recipes teamID={teamID} scroll drag noPadding />
-      ) : (
-        <ShoppingList teamID={teamID} />
-      )}
+      <Recipes teamID={teamID} scroll drag noPadding />
     </div>
   )
 }
@@ -57,27 +32,24 @@ export type ScheduleRouteParams = RouteComponentProps<{
 interface IScheduleProps {
   readonly updateTeamID: (id: ITeam["id"] | null) => void
   readonly teamID: ITeam["id"] | null
-  readonly type: "shopping" | "recipes"
 }
 
 const ScheduleContainer = styled.div`
   height: calc(100vh - 3rem);
 `
 
-function Schedule({ updateTeamID, teamID, type }: IScheduleProps) {
+function Schedule({ updateTeamID, teamID }: IScheduleProps) {
   useEffect(() => {
     updateTeamID(teamID)
   }, [updateTeamID, teamID])
 
   const teamID_ = teamID || "personal"
 
-  const isRecipes = type === "recipes"
-
   return (
     <ScheduleContainer className="d-flex pl-2 pr-2 flex-grow h-100vh">
       <Helmet title="Schedule" />
-      <Sidebar teamID={teamID_} isRecipes={isRecipes} />
-      <Calendar type={type} teamID={teamID_} />
+      <Sidebar teamID={teamID_} />
+      <Calendar teamID={teamID_} />
       <CurrentKeys />
       <HelpMenuModal />
     </ScheduleContainer>
