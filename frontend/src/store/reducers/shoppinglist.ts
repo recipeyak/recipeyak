@@ -1,5 +1,7 @@
 import { addWeeks, startOfToday } from "date-fns"
-import { ActionType, createStandardAction, getType } from "typesafe-actions"
+import { createStandardAction, getType } from "typesafe-actions"
+
+import { Action } from "@/store/store"
 
 export const setSelectingStart = createStandardAction(
   "SET_SELECTING_START",
@@ -10,7 +12,7 @@ export const setShopping = createStandardAction("SET_SHOPPING")<boolean>()
 export type ShoppingListActions =
   | ReturnType<typeof setSelectingStart>
   | ReturnType<typeof setSelectingEnd>
-  | ActionType<typeof setShopping>
+  | ReturnType<typeof setShopping>
 
 export interface IShoppingListState {
   readonly startDay: Date
@@ -26,7 +28,7 @@ const initialState: IShoppingListState = {
 
 const shoppinglist = (
   state: IShoppingListState = initialState,
-  action: ShoppingListActions,
+  action: Action,
 ): IShoppingListState => {
   switch (action.type) {
     case getType(setSelectingStart):
