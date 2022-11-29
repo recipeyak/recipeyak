@@ -10,8 +10,10 @@ import queryString from "query-string"
 import React, { useEffect } from "react"
 import { useLocation } from "react-router-dom"
 
+import { Box } from "@/components/Box"
 import { ButtonPlain } from "@/components/Buttons"
 import { Select } from "@/components/Forms"
+import { Modal } from "@/components/Modal"
 import { toISODateString } from "@/date"
 import {
   useDispatch,
@@ -21,10 +23,8 @@ import {
 } from "@/hooks"
 import CalendarDay from "@/pages/schedule/CalendarDay"
 import { ICalConfig } from "@/pages/schedule/CalendarMoreDropdown"
-import { CalendarSettingsModal } from "@/pages/schedule/CalendarSettingsModal"
 import { IconSettings } from "@/pages/schedule/IconSettings"
 import ShoppingList from "@/pages/schedule/ShoppingList"
-import { ShoppingListModal } from "@/pages/schedule/ShoppingListModal"
 import { teamsFrom } from "@/store/mapState"
 import {
   getPersonalRecipes,
@@ -52,10 +52,10 @@ import {
 
 function CalTitle({ dayTs }: { readonly dayTs: number }) {
   return (
-    <p className="mr-2">
+    <div>
       <span>{format(dayTs, "MMM d")}</span>
       <span className="hide-sm"> | {format(dayTs, "yyyy")}</span>
-    </p>
+    </div>
   )
 }
 
@@ -195,44 +195,50 @@ function Nav({ dayTs, teamID, onPrev, onNext, onCurrent }: INavProps) {
     useCalendarSettings(teamID)
 
   return (
-    <div className="d-flex justify-space-between align-items-center flex-shrink-0">
-      <CalendarSettingsModal
+    <Box space="between" align="center" shrink={0}>
+      <Modal
         show={showSettings}
         onClose={toggleShowSetting}
-        className="d-flex flex-direction-column fs-14px grid-gap-2"
-      >
-        <div className="d-flex flex-direction-column align-items-start grid-gap-1">
-          <label className="fw-500">Team</label>
-          <TeamSelect
-            teams={teams}
-            value={teamID}
-            onChange={handleOwnerChange}
-          />
-        </div>
-        <ICalConfig
-          settings={settings}
-          setSyncEnabled={setSyncEnabled}
-          regenerateCalendarLink={regenerateCalendarLink}
-        />
-      </CalendarSettingsModal>
+        title="Calendar Settings"
+        content={
+          <Box gap={2} dir="col">
+            <Box dir="col" align="start" gap={1}>
+              <label className="fw-500">Team</label>
+              <TeamSelect
+                teams={teams}
+                value={teamID}
+                onChange={handleOwnerChange}
+              />
+            </Box>
+            <ICalConfig
+              settings={settings}
+              setSyncEnabled={setSyncEnabled}
+              regenerateCalendarLink={regenerateCalendarLink}
+            />
+          </Box>
+        }
+      />
+      <Modal
+        show={showShopping}
+        onClose={toggleShopping}
+        title="Shopping List"
+        content={
+          <div className="d-flex">
+            <ShoppingList teamID={teamID} />
+          </div>
+        }
+      />
 
-      <ShoppingListModal show={showShopping} onClose={toggleShopping}>
-        <ShoppingList teamID={teamID} />
-      </ShoppingListModal>
-      <div className="d-flex">
+      <Box gap={1}>
         <CalTitle dayTs={dayTs} />
-        <div>
-          <ButtonPlain size="small" className="p-1" onClick={toggleShowSetting}>
-            <IconSettings />
-          </ButtonPlain>
-        </div>
-        <div className="ml-1">
-          <ButtonPlain size="small" onClick={toggleShopping}>
-            Shopping
-          </ButtonPlain>
-        </div>
-      </div>
-      <div className="grid-gap-1 d-flex">
+        <ButtonPlain size="small" className="p-1" onClick={toggleShowSetting}>
+          <IconSettings />
+        </ButtonPlain>
+        <ButtonPlain size="small" onClick={toggleShopping}>
+          Shopping
+        </ButtonPlain>
+      </Box>
+      <Box gap={1}>
         <ButtonPlain size="small" onClick={onPrev}>
           {"←"}
         </ButtonPlain>
@@ -242,8 +248,8 @@ function Nav({ dayTs, teamID, onPrev, onNext, onCurrent }: INavProps) {
         <ButtonPlain size="small" onClick={onNext}>
           {"→"}
         </ButtonPlain>
-      </div>
-    </div>
+      </Box>
+    </Box>
   )
 }
 
@@ -254,12 +260,6 @@ function HelpPrompt() {
     </p>
   )
 }
-
-const CalContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-`
 
 // pull the week from the URL otherwise default to the current time.
 function getToday(search: string): Date {
@@ -430,7 +430,7 @@ export function Calendar({ teamID }: ICalendarProps) {
   const days = useDays(teamID, currentDateTs)
 
   return (
-    <CalContainer>
+    <Box dir="col" grow={1}>
       <Nav
         dayTs={currentDateTs}
         teamID={teamID}
@@ -441,7 +441,7 @@ export function Calendar({ teamID }: ICalendarProps) {
       <Weekdays />
       <Days start={startDate} end={endDate} days={days} teamID={teamID} />
       <HelpPrompt />
-    </CalContainer>
+    </Box>
   )
 }
 

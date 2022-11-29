@@ -1,6 +1,7 @@
 import React from "react"
 
-import Modal from "@/components/Modal"
+import { Box } from "@/components/Box"
+import { Modal } from "@/components/Modal"
 import { useGlobalEvent, useToggle } from "@/hooks"
 
 const keybinds = [
@@ -61,27 +62,23 @@ export default function HelpMenuModal() {
     <Modal
       show={show}
       onClose={toggleShow}
-      style={{ maxWidth: 400 }}
-      className="fs-14px"
-    >
-      <section className="d-flex space-between">
-        <h1 className="fs-4 bold">Keybinds</h1>
-        <button className="delete" aria-label="close" onClick={toggleShow} />
-      </section>
-      <section className="d-flex">
-        <div className="mr-4">
-          {keybinds.map((b) => (
-            <div className="mb-1" key={b.description}>
-              {b.description}
-            </div>
-          ))}
-        </div>
-        <div>
-          {keybinds.map((b) => (
-            <KeyBind bind={b.key} key={b.description} />
-          ))}
-        </div>
-      </section>
-    </Modal>
+      title="Keybinds"
+      content={
+        <Box>
+          <div className="mr-4">
+            {keybinds.map((b) => (
+              <div className="mb-1" key={b.description}>
+                {b.description}
+              </div>
+            ))}
+          </div>
+          <div>
+            {keybinds.map((b) => (
+              <KeyBind bind={b.key} key={b.description} />
+            ))}
+          </div>
+        </Box>
+      }
+    />
   )
 }

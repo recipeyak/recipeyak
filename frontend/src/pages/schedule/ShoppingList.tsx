@@ -16,6 +16,7 @@ import {
   Unit,
 } from "@/api"
 import { classNames } from "@/classnames"
+import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { DateInput } from "@/components/Forms"
 import { unwrapResult } from "@/query"
@@ -123,11 +124,10 @@ const ShoppingListList = React.forwardRef<
 
   return (
     <div
-      className={`box p-rel min-height-75px mb-0 p-2 ${loadingClass}`}
+      className={`box p-2 min-height-75px ${loadingClass}`}
       style={{
-        maxHeight: "calc(100vh - 200px)",
-        height: "calc(100vh - 200px)",
         overflowY: "auto",
+        maxHeight: 425, // looks good on mobile & desktop
       }}
     >
       {props.items.isLoading ? (
@@ -246,9 +246,9 @@ function ShoppingList({
   }
 
   return (
-    <div className="d-flex flex-column grid-gap-2 w-100">
-      <div className="d-flex flex-column grid-gap-2 w-100">
-        <div className="d-flex align-items-center no-print grid-gap-2">
+    <Box dir="col" gap={2} w={100}>
+      <Box dir="col" gap={2} w={100}>
+        <Box gap={2} w={100} align="center">
           <DateInput
             onChange={handleSetStartDay}
             placeholder="from"
@@ -260,13 +260,13 @@ function ShoppingList({
             placeholder="to"
             value={formatMonth(endDay)}
           />
-        </div>
+        </Box>
         <Button size="small" onClick={handleCopyToClipboard}>
           Copy to Clipboard
         </Button>
-      </div>
+      </Box>
       <ShoppingListList items={shoppinglist2} ref={ref} />
-    </div>
+    </Box>
   )
 }
 

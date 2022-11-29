@@ -4,7 +4,8 @@ import { Link } from "react-router-dom"
 
 import * as api from "@/api"
 import cls from "@/classnames"
-import Modal from "@/components/Modal"
+import { Box } from "@/components/Box"
+import { Modal } from "@/components/Modal"
 import { formatAbsoluteDate, toISODateString } from "@/date"
 import { useDispatch } from "@/hooks"
 import { TimelineEvent } from "@/pages/recipe-detail/Notes"
@@ -104,99 +105,101 @@ export function CalendarDayItemModal({
 
   const prettyDate = formatAbsoluteDate(date, { includeYear: true })
   return (
-    <Modal show onClose={onClose} style={{ maxWidth: 400 }} className="fs-14px">
-      <section className="d-flex space-between mb-4">
-        <div>{prettyDate}</div>
-        <button className="delete" onClick={onClose} />
-      </section>
-      <Link to={to} className="fs-4 flex-grow-1">
-        {recipeName}
-      </Link>
+    <Modal
+      show
+      onClose={onClose}
+      title={prettyDate}
+      content={
+        <>
+          <Box dir="col" gap={2}>
+            <Link to={to} className="fs-4">
+              {recipeName}
+            </Link>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-        className="mt-4"
-      >
-        <button
-          className={cls("button is-small", { "is-active": reschedulerOpen })}
-          onClick={() => {
-            setReschedulerOpen((val) => !val)
-          }}
-        >
-          Reschedule
-        </button>
-        <Link to={to} className="button is-primary is-small">
-          View Recipe
-        </Link>
-      </div>
-
-      {reschedulerOpen && (
-        <div>
-          <hr style={{ marginTop: "1.5rem" }} />
-          <div className="mr-2" style={{ display: "grid", gridGap: "0.25rem" }}>
-            <input
-              value={toISODateString(localDate)}
-              onChange={handleDateChange}
-              type="date"
-              className="mr-4 my-2"
-              style={{
-                border: "1px solid lightgray",
-                borderRadius: 5,
-                padding: "0.25rem",
-              }}
-            />
-            <div>
-              <span className="mr-1 fs-14px">next open</span>
-              <select
-                value={day}
-                onChange={handleSelectChange}
-                className="mr-2"
-                disabled={findingNextOpen}
-              >
-                {options.map((opt) => {
-                  return (
-                    <option value={opt} key={opt}>
-                      {opt}
-                    </option>
-                  )
+            <Box space="between">
+              <button
+                className={cls("button is-small", {
+                  "is-active": reschedulerOpen,
                 })}
-              </select>
-              <button onClick={handleFindNextOpen} disabled={findingNextOpen}>
-                {!findingNextOpen ? "find" : "finding..."}
+                onClick={() => {
+                  setReschedulerOpen((val) => !val)
+                }}
+              >
+                Reschedule
               </button>
-            </div>
-          </div>
+              <Link to={to} className="button is-primary is-small">
+                View Recipe
+              </Link>
+            </Box>
+          </Box>
 
-          <div className="d-flex space-between align-items-center mt-2">
-            <button onClick={handleDelete} disabled={deleting}>
-              {!deleting ? "delete" : "deleting..."}
-            </button>
-            <div>
-              <button className="mr-2" onClick={onClose}>
-                cancel
-              </button>
-              <button onClick={handleSave} disabled={saving}>
-                {!saving ? "save" : "saving..."}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+          {reschedulerOpen && (
+            <>
+              <hr className="my-3" />
+              <Box dir="col" gap={2}>
+                <input
+                  value={toISODateString(localDate)}
+                  onChange={handleDateChange}
+                  type="date"
+                  style={{
+                    border: "1px solid lightgray",
+                    borderRadius: 5,
+                    padding: "0.25rem",
+                  }}
+                />
+                <Box gap={2} align="center">
+                  <div className="fs-14px">next open</div>
+                  <select
+                    value={day}
+                    onChange={handleSelectChange}
+                    disabled={findingNextOpen}
+                  >
+                    {options.map((opt) => {
+                      return (
+                        <option value={opt} key={opt}>
+                          {opt}
+                        </option>
+                      )
+                    })}
+                  </select>
+                  <button
+                    onClick={handleFindNextOpen}
+                    disabled={findingNextOpen}
+                  >
+                    {!findingNextOpen ? "find" : "finding..."}
+                  </button>
+                </Box>
+              </Box>
 
-      <hr className="mb-2 mt-4" />
+              <Box space="between" align="center">
+                <button onClick={handleDelete} disabled={deleting}>
+                  {!deleting ? "delete" : "deleting..."}
+                </button>
+                <div>
+                  <button className="mr-2" onClick={onClose}>
+                    cancel
+                  </button>
+                  <button onClick={handleSave} disabled={saving}>
+                    {!saving ? "save" : "saving..."}
+                  </button>
+                </div>
+              </Box>
+            </>
+          )}
 
-      <TimelineEvent
-        enableLinking={false}
-        event={{
-          id: scheduledId,
-          action: "scheduled",
-          created_by: createdBy,
-          created: createdAt,
-        }}
-      />
-    </Modal>
+          <hr className="my-2" />
+
+          <TimelineEvent
+            enableLinking={false}
+            event={{
+              id: scheduledId,
+              action: "scheduled",
+              created_by: createdBy,
+              created: createdAt,
+            }}
+          />
+        </>
+      }
+    />
   )
 }
