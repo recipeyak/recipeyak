@@ -1,59 +1,63 @@
-import React from "react"
+import React, { useRef } from "react"
 
 import { classNames } from "@/classnames"
+import { Box } from "@/components/Box"
 import GlobalEvent from "@/components/GlobalEvent"
 
 interface IModalProps {
   readonly onClose: () => void
-  readonly className?: string
   readonly show: boolean
-  readonly style?: React.CSSProperties
-  readonly children?: React.ReactNode
+  readonly content: React.ReactNode
+  readonly title: string
 }
 
-export default class Modal extends React.Component<IModalProps> {
-  element = React.createRef<HTMLDivElement>()
-
-  handleKeyUp = (e: KeyboardEvent) => {
+export function Modal({
+  show,
+  content,
+  onClose: close,
+  title,
+  onClose,
+}: IModalProps) {
+  const ref = useRef<HTMLDivElement>(null)
+  const handleKeyUp = (e: KeyboardEvent) => {
     if (e.key === "Escape") {
-      this.props.onClose()
+      onClose()
     }
   }
-
-  handleClick = (e: MouseEvent) => {
-    const el = this.element.current
-    /* eslint-disable-next-line @typescript-eslint/consistent-type-assertions */
-    if (el && e.target && !el.contains(e.target as Node)) {
-      this.props.onClose()
-    }
+  if (!show) {
+    return null
   }
-
-  render() {
-    const { show, children, onClose: close } = this.props
-    if (!show) {
-      return null
-    }
-    return (
+  return (
+    <div
+      ref={ref}
+      className={classNames("modal", { "is-active": show })}
+      style={{ alignItems: "flex-start" }}
+    >
+      <GlobalEvent keyUp={handleKeyUp} />
+      <div className="modal-background" onClick={close} />
       <div
-        ref={this.element}
-        className={classNames("modal", { "is-active": show })}
+        className="modal-content overflow-y-auto fs-14px"
+        style={{
+          maxWidth: 400,
+          width: 400,
+          overflowY: "hidden",
+          margin: 20,
+          marginTop: "8vh",
+        }}
       >
-        <GlobalEvent keyUp={this.handleKeyUp} />
-        <div className="modal-background" onClick={close} />
-        <div
-          className={`modal-content overflow-y-auto ${this.props.className}`}
-          style={this.props.style}
-        >
-          <div className="box d-flex flex-direction-column grid-gap-1">
-            {children}
-          </div>
+        <div className="box d-flex flex-direction-column h-100">
+          <Box space="between" mb={1}>
+            <h1 className="fs-14px fw-500">{title}</h1>
+            <button className="delete" aria-label="close" onClick={onClose} />
+          </Box>
+          {content}
         </div>
-        <button
-          className="modal-close is-large"
-          aria-label="close"
-          onClick={close}
-        />
       </div>
-    )
-  }
+      <button
+        className="modal-close is-large"
+        aria-label="close"
+        onClick={close}
+      />
+    </div>
+  )
 }
