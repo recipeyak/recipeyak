@@ -27,11 +27,7 @@ class StartUploadResponse(pydantic.BaseModel):
 
 
 @api_view(["POST"])
-@permission_classes(
-    [
-        IsAuthenticated,
-    ]
-)
+@permission_classes([IsAuthenticated])
 def start_upload_view(request: AuthedRequest) -> Response:
     params = StartUploadParams.parse_obj(request.data)
     key = f"{request.user.id}/{uuid4().hex}/{params.file_name}"

@@ -9,8 +9,9 @@ import { IIngredient, INote, IRecipe, IStep } from "@/store/reducers/recipes"
 import { IMember, ITeam } from "@/store/reducers/teams"
 import { ISession, IUser } from "@/store/reducers/user"
 
-export const updateUser = (data: Partial<IUser>) =>
-  http.patch<IUser>("/api/v1/user/", data)
+export const updateUser = (
+  data: Pick<Partial<IUser>, "name" | "email" | "schedule_team">,
+) => http.patch<IUser>("/api/v1/user/", data)
 export const getUser = () => http.get<IUser>("/api/v1/user/")
 
 export const deleteLoggedInUser = () => http.delete("/api/v1/user/")

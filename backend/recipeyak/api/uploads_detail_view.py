@@ -16,11 +16,7 @@ class CompleteUploadResponse(pydantic.BaseModel):
 
 
 @api_view(["POST"])
-@permission_classes(
-    [
-        IsAuthenticated,
-    ]
-)
+@permission_classes([IsAuthenticated])
 def complete_upload_view(request: AuthedRequest, upload_pk: int) -> Response:
     upload = get_object_or_404(
         Upload.objects.filter(created_by=request.user), pk=upload_pk
