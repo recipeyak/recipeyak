@@ -86,8 +86,8 @@ export function Markdown({
       <ReactMarkdown
         allowedElements={ALLOWED_MARKDOWN_TYPES}
         remarkPlugins={[
-            // enable auto-linking of urls & other github flavored markdown features
-            remarkGfm
+          // enable auto-linking of urls & other github flavored markdown features
+          remarkGfm,
         ]}
         children={text}
         components={renderers}
