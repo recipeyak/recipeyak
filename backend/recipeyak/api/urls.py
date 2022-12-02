@@ -1,10 +1,6 @@
 from django.conf.urls import url
 from django.urls import path
 
-from recipeyak.api.recipe_bot_detail_view import (
-    receipe_detail_view as recipe_bot_detail_view,
-)
-from recipeyak.api.user_detail_view import user_detail_view
 from recipeyak.api.calendar_detail_view import calendar_detail_view
 from recipeyak.api.calendar_generate_link_view import generate_link
 from recipeyak.api.calendar_list_view import calendar_list_view
@@ -28,6 +24,9 @@ from recipeyak.api.reactions_view import (
 )
 from recipeyak.api.recently_created_recipes_view import get_recently_created_recipes
 from recipeyak.api.recently_view_recipes_view import get_recently_viewed_recipes
+from recipeyak.api.recipe_bot_detail_view import (
+    receipe_detail_view as recipe_bot_detail_view,
+)
 from recipeyak.api.recipe_copy_view import recipe_copy_view
 from recipeyak.api.recipe_detail_view import receipe_detail_view
 from recipeyak.api.recipe_duplicate_view import recipe_duplicate_view
@@ -51,6 +50,7 @@ from recipeyak.api.team_shopping_list_detail_view import get_shopping_list_view
 from recipeyak.api.timeline_view import get_recipe_timeline
 from recipeyak.api.uploads_detail_view import complete_upload_view
 from recipeyak.api.uploads_list_view import start_upload_view
+from recipeyak.api.user_detail_view import user_detail_view
 from recipeyak.api.user_invites_accept_view import user_invites_accept_view
 from recipeyak.api.user_invites_decline_view import user_invites_decline_view
 from recipeyak.api.user_invites_list_view import user_invites_list_view
