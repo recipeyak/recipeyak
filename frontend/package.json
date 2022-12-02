@@ -67,6 +67,7 @@
     "react-textarea-autosize": "^8.3.4",
     "redux": "^4.0.1",
     "redux-loop": "^4.5.4",
+    "remark-gfm": "^3.0.1",
     "sass": "^1.54.0",
     "styled-components": "^4.4.0",
     "typesafe-actions": "^2.0.4",
