@@ -1,5 +1,6 @@
 import React from "react"
 import ReactMarkdown, { Components } from "react-markdown"
+import remarkGfm from "remark-gfm"
 
 import { Link } from "@/components/Routing"
 import * as settings from "@/settings"
@@ -84,6 +85,10 @@ export function Markdown({
     <MarkdownWrapper className={className} title={title} onClick={onClick}>
       <ReactMarkdown
         allowedElements={ALLOWED_MARKDOWN_TYPES}
+        remarkPlugins={[
+            // enable auto-linking of urls & other github flavored markdown features
+            remarkGfm
+        ]}
         children={text}
         components={renderers}
         unwrapDisallowed
