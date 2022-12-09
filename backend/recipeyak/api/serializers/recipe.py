@@ -199,12 +199,17 @@ class PublicUser(pydantic.BaseModel):
 class NoteAttachment(pydantic.BaseModel):
     id: str
     url: str
+    backgroundUrl: str | None
     type: Literal["upload"] = "upload"
 
 
 def serialize_attachments(attachments: Iterable[Upload]) -> List[NoteAttachment]:
     return [
-        NoteAttachment(id=attachment.pk, url=attachment.public_url())
+        NoteAttachment(
+            id=attachment.pk,
+            url=attachment.public_url(),
+            backgroundUrl=attachment.background_url,
+        )
         for attachment in attachments
     ]
 
