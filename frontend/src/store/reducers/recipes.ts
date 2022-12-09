@@ -477,6 +477,7 @@ export interface IPublicUser {
 export type Upload = {
   readonly id: string
   readonly url: string
+  readonly backgroundUrl: string | null
   readonly type: "upload"
   readonly localId: string
 }

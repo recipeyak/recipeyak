@@ -195,6 +195,7 @@ function SharedEntry({
 const AttachmentContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
+  grid-gap: 0.25rem;
 `
 const SmallAnchor = styled.a`
   font-size: 0.825rem;
@@ -318,7 +319,10 @@ export function Note({ note, recipeId, className }: INoteProps) {
                     e.stopPropagation()
                   }}
                 >
-                  <ImagePreview src={attachment.url} />
+                  <ImagePreview
+                    src={attachment.url}
+                    backgroundUrl={attachment.backgroundUrl}
+                  />
                 </a>
               ))}
             </AttachmentContainer>
@@ -347,7 +351,7 @@ export function Note({ note, recipeId, className }: INoteProps) {
                   files={files}
                 />
               ) : (
-                <div>
+                <AttachmentContainer>
                   {note.attachments.map((attachment) => (
                     <a
                       key={attachment.id}
@@ -355,10 +359,13 @@ export function Note({ note, recipeId, className }: INoteProps) {
                       rel="noreferrer"
                       href={attachment.url}
                     >
-                      <ImagePreview src={attachment.url} />
+                      <ImagePreview
+                        src={attachment.url}
+                        backgroundUrl={attachment.backgroundUrl}
+                      />
                     </a>
                   ))}
-                </div>
+                </AttachmentContainer>
               )}
             </UploadContainer>
 
@@ -580,12 +587,14 @@ const ImageUploadContainer = styled.div`
   padding: 0.5rem;
   display: flex;
   flex-wrap: wrap;
+  grid-gap: 0.25rem;
 `
 
 const ImagePreviewParent = styled.div`
   position: relative;
 `
 const CloseButton = styled.button`
+  z-index: 10;
   position: absolute;
   right: 0;
   padding: 0.3rem;
@@ -618,18 +627,39 @@ const Image100Px = styled.img<{
   height: 100px;
   width: 100px;
   border-radius: 3px;
-  margin-right: 0.25rem;
   object-fit: cover;
   filter: ${(props) => (props.isLoading ? "grayscale(100%)" : "unset")};
 `
 function ImagePreview({
   src,
   isLoading,
+  backgroundUrl,
 }: {
   src: string
   isLoading?: boolean
+  backgroundUrl: string | null
 }) {
-  return <Image100Px src={formatUrlImgix100(src)} isLoading={isLoading} />
+  return (
+    <div className="d-grid">
+      <Image100Px
+        src={formatUrlImgix100(src)}
+        isLoading={isLoading}
+        style={{
+          gridArea: "1 / 1",
+          zIndex: 10,
+        }}
+      />
+      {backgroundUrl != null && (
+        <div
+          style={{
+            gridArea: "1 / 1",
+            backgroundImage: `url(${backgroundUrl})`,
+          }}
+          className="blurred-filter"
+        />
+      )}
+    </div>
+  )
 }
 
 const LoaderContainer = styled.div`
@@ -697,7 +727,12 @@ function useImageUpload(
         })
         .then((res) => {
           if (isOk(res)) {
-            addUploads({ ...res.data, type: "upload", localId: fileId })
+            addUploads({
+              ...res.data,
+              type: "upload",
+              localId: fileId,
+              backgroundUrl: null,
+            })
             setLocalImages(
               produce((s) => {
                 const f = s.find((x) => x.localId === fileId)
@@ -758,6 +793,7 @@ const ImageAnchor = styled.a`
 `
 
 const ProgressBarContainer = styled.div`
+  z-index: 10;
   position: absolute;
   top: 0;
   bottom: 0;
@@ -770,16 +806,18 @@ const ProgressBarContainer = styled.div`
 `
 
 const StyledProgress = styled.progress`
-  height: 0.4rem;
+  height: 0.2rem;
   border-radius: 0;
 `
 
 function ImageWithStatus({
   url,
+  backgroundUrl,
   state,
   progress,
 }: {
   url: string
+  backgroundUrl: string | null
   state: ImageUpload["state"]
   progress?: number
 }) {
@@ -793,7 +831,11 @@ function ImageWithStatus({
           e.stopPropagation()
         }}
       >
-        <ImagePreview isLoading={state === "loading"} src={url} />
+        <ImagePreview
+          isLoading={state === "loading"}
+          src={url}
+          backgroundUrl={backgroundUrl}
+        />
         {progress != null && (
           <ProgressBarContainer>
             <StyledProgress
@@ -858,6 +900,7 @@ function ImageUploader({
                 progress={f.progress}
                 url={f.url}
                 state={f.state}
+                backgroundUrl={null}
               />
               <CloseButton
                 onClick={() => {

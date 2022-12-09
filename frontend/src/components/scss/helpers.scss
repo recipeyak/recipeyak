@@ -273,6 +273,27 @@
   color: $danger;
 }
 
+.blurred-filter::after {
+  content: "";
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  border-radius: 3px;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+}
+
+.blurred-filter {
+  height: 100px;
+  width: 100px;
+  border-radius: 3px;
+  object-fit: cover;
+  position: relative;
+  background: no-repeat center center;
+  background-size: cover;
+}
+
 @for $i from 1 through 10 {
   .fs-#{$i}rem {
     font-size: #{$i}rem !important;

@@ -28,6 +28,7 @@ class Upload(CommonInfo):
     bucket = models.TextField()
     key = models.TextField()
     completed = models.BooleanField(default=False)
+    background_url = models.TextField(null=True)
 
     note = models.ForeignKey["Note"](
         "Note", related_name="uploads", null=True, on_delete=models.SET_NULL
