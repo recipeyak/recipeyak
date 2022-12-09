@@ -297,12 +297,14 @@ export function Note({ note, recipeId, className }: INoteProps) {
             onPick={async (emoji) => addOrRemoveReaction(emoji)}
             reactions={reactions}
           />
-          <SmallAnchor
-            className="ml-2 text-muted cursor-pointer no-print"
-            onClick={onNoteClick}
-          >
-            edit
-          </SmallAnchor>
+          {note.created_by.id === user.id ? (
+            <SmallAnchor
+              className="ml-2 text-muted cursor-pointer no-print"
+              onClick={onNoteClick}
+            >
+              edit
+            </SmallAnchor>
+          ) : null}
         </div>
         {!isEditing ? (
           <div>
