@@ -67,6 +67,9 @@ def note_detail_view(request: AuthedRequest, note_pk: str) -> Response:
 def note_patch_view(request: AuthedRequest, note_pk: str) -> Response:
     params = EditNoteParams.parse_obj(request.data)
     note = get_object_or_404(user_and_team_notes(request.user), pk=note_pk)
+    # only allow the note's author to update the note
+    if note.created_by.id != request.user.id:
+        return Response(status=status.HTTP_403_FORBIDDEN)
     note.last_modified_by = request.user
     if params.text is not None:
         note.text = params.text
