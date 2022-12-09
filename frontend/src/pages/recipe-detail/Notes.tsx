@@ -1,4 +1,5 @@
 import produce from "immer"
+import flatten from "lodash/flatten"
 import orderBy from "lodash-es/orderBy"
 import React, { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
@@ -12,6 +13,7 @@ import { Markdown } from "@/components/Markdown"
 import { RotatingLoader } from "@/components/RoatingLoader"
 import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
 import { useCurrentUser, useDispatch } from "@/hooks"
+import { Gallery } from "@/pages/recipe-detail/ImageGallery"
 import {
   findReaction,
   Reaction,
@@ -1048,9 +1050,12 @@ interface INoteContainerProps {
   readonly timelineItems: IRecipe["timelineItems"]
 }
 export function NoteContainer(props: INoteContainerProps) {
+  const notes: INote[] = props.timelineItems.filter((x) => x.type === "note")
+  const urls = flatten(notes.map((x) => x.attachments.map((a) => a.url)))
   return (
     <>
       <hr />
+      <DisableScroll />
       <NoteCreator recipeId={props.recipeId} className="pb-4 no-print" />
       {orderBy(props.timelineItems, "created", "desc").map((timelineItem) => {
         switch (timelineItem.type) {
@@ -1075,5 +1080,28 @@ export function NoteContainer(props: INoteContainerProps) {
         }
       })}
     </>
+  )
+}
+
+function DisableScroll() {
+  const [show, setShow] = React.useState(false)
+
+  return (
+    <div>
+      <button
+        onClick={() => {
+          setShow(true)
+        }}
+      >
+        open my special modal
+      </button>
+      {show && (
+        <Gallery
+          onClose={() => {
+            setShow(false)
+          }}
+        />
+      )}
+    </div>
   )
 }
