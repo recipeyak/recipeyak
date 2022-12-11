@@ -1,288 +1,288 @@
 # name: test_categorize_ingredient_test_cases
-  <class 'list'> [
-    <class 'tuple'> (
+  list([
+    tuple(
       '',
       'unknown',
     ),
-    <class 'tuple'> (
+    tuple(
       '(13-ounce) can unsweetened coconut milk',
       'produce',
     ),
-    <class 'tuple'> (
+    tuple(
       '(14.5-ounce) can whole or crushed tomatoes',
       'canned & packaged',
     ),
-    <class 'tuple'> (
+    tuple(
       '(15-ounce) cans chickpeas',
       'canned & packaged',
     ),
-    <class 'tuple'> (
+    tuple(
       '(6-inch) corn tortillas',
       'bread',
     ),
-    <class 'tuple'> (
+    tuple(
       '1 lime',
       'produce',
     ),
-    <class 'tuple'> (
+    tuple(
       '1-inch piece ginger',
       'produce',
     ),
-    <class 'tuple'> (
+    tuple(
       '1/4 ounce active dry yeast',
       'dry goods',
     ),
-    <class 'tuple'> (
+    tuple(
       '14 oz cans of diced tomatoes',
       'canned & packaged',
     ),
-    <class 'tuple'> (
+    tuple(
       '14.5-ounce can whole peeled tomatoes',
       'canned & packaged',
     ),
-    <class 'tuple'> (
+    tuple(
       '15-ounce can chickpeas',
       'canned & packaged',
     ),
-    <class 'tuple'> (
+    tuple(
       '15-ounce container ricotta cheese',
       'dairy',
     ),
-    <class 'tuple'> (
+    tuple(
       '28 ounce can San Marzano tomatoes',
       'produce',
     ),
-    <class 'tuple'> (
+    tuple(
       '28-ounce can whole tomatoes',
       'canned & packaged',
     ),
-    <class 'tuple'> (
+    tuple(
       '3-to-3.5-pound butternut squash',
       'produce',
     ),
-    <class 'tuple'> (
+    tuple(
       '4-ounce milk chocolate bar',
       'baking',
     ),
-    <class 'tuple'> (
+    tuple(
       'Asian fish sauce',
       'condiments',
     ),
-    <class 'tuple'> (
+    tuple(
       'Chinese rice wine',
       'dry goods',
     ),
-    <class 'tuple'> (
+    tuple(
       'Grated Parmigiano-Reggiano',
       'cheese',
     ),
-    <class 'tuple'> (
+    tuple(
       'all-butter puff pastry',
       'frozen',
     ),
-    <class 'tuple'> (
+    tuple(
       'almond butter',
       'condiments',
     ),
-    <class 'tuple'> (
+    tuple(
       'almond paste',
       'condiments',
     ),
-    <class 'tuple'> (
+    tuple(
       'apple cider vinegar',
       'condiments',
     ),
-    <class 'tuple'> (
+    tuple(
       'baby bok choy',
       'produce',
     ),
-    <class 'tuple'> (
+    tuple(
       'beef broth',
       'meat',
     ),
-    <class 'tuple'> (
+    tuple(
       'beef or chicken broth',
       'meat',
     ),
-    <class 'tuple'> (
+    tuple(
       'beef stock',
       'canned & packaged',
     ),
-    <class 'tuple'> (
+    tuple(
       'best-quality apricot jam or orange marmalade',
       'produce',
     ),
-    <class 'tuple'> (
+    tuple(
       'bulk hot or sweet breakfast sausage or Italian sausage',
       'meat',
     ),
-    <class 'tuple'> (
+    tuple(
       'butternut squash',
       'produce',
     ),
-    <class 'tuple'> (
+    tuple(
       'butternut squash (1 small squash)',
       'produce',
     ),
-    <class 'tuple'> (
+    tuple(
       'chicken stock',
       'canned & packaged',
     ),
-    <class 'tuple'> (
+    tuple(
       'chinese egg noodles',
       'dry goods',
     ),
-    <class 'tuple'> (
+    tuple(
       'coconut extract',
       'produce',
     ),
-    <class 'tuple'> (
+    tuple(
       'coconut oil',
       'condiments',
     ),
-    <class 'tuple'> (
+    tuple(
       'coconut rum or dark rum',
       'produce',
     ),
-    <class 'tuple'> (
+    tuple(
       'coconut sugar or substitute brown sugar',
       'produce',
     ),
-    <class 'tuple'> (
+    tuple(
       'corn torillas',
       'produce',
     ),
-    <class 'tuple'> (
+    tuple(
       'corn tortilla chips',
       'dry goods',
     ),
-    <class 'tuple'> (
+    tuple(
       'corn tortillas',
       'bread',
     ),
-    <class 'tuple'> (
+    tuple(
       'cornmeal',
       'dry goods',
     ),
-    <class 'tuple'> (
+    tuple(
       'cornstarch',
       'dry goods',
     ),
-    <class 'tuple'> (
+    tuple(
       'cream of coconut',
       'canned & packaged',
     ),
-    <class 'tuple'> (
+    tuple(
       'cream of tartar',
       'spices',
     ),
-    <class 'tuple'> (
+    tuple(
       'creamy unsweetened peanut butter',
       'condiments',
     ),
-    <class 'tuple'> (
+    tuple(
       'crystallized ginger',
       'produce',
     ),
-    <class 'tuple'> (
+    tuple(
       'cubanelle peppers',
       'produce',
     ),
-    <class 'tuple'> (
+    tuple(
       'dark corn syrup',
       'produce',
     ),
-    <class 'tuple'> (
+    tuple(
       'diced canned tomatoes',
       'canned & packaged',
     ),
-    <class 'tuple'> (
+    tuple(
       'dill pickle chips',
       'condiments',
     ),
-    <class 'tuple'> (
+    tuple(
       'doubanjiang (Sichuanese fermented chile bean paste; see Note)',
       'condiments',
     ),
-    <class 'tuple'> (
+    tuple(
       'dried green split peas',
       'dry goods',
     ),
-    <class 'tuple'> (
+    tuple(
       'dry mustard powder',
       'condiments',
     ),
-    <class 'tuple'> (
+    tuple(
       'eggplant',
       'produce',
     ),
-    <class 'tuple'> (
+    tuple(
       'finely chopped cornichons or small kosher dill pickles',
       'condiments',
     ),
-    <class 'tuple'> (
+    tuple(
       'finely grated ginger',
       'produce',
     ),
-    <class 'tuple'> (
+    tuple(
       'fish sauce',
       'condiments',
     ),
-    <class 'tuple'> (
+    tuple(
       'graham cracker crumbs',
       'dry goods',
     ),
-    <class 'tuple'> (
+    tuple(
       'ground ginger',
       'produce',
     ),
-    <class 'tuple'> (
+    tuple(
       'hamburger buns',
       'bread',
     ),
-    <class 'tuple'> (
+    tuple(
       'haricot vert fins or green beans',
       'produce',
     ),
-    <class 'tuple'> (
+    tuple(
       'harissa or tomato paste',
       'produce',
     ),
-    <class 'tuple'> (
+    tuple(
       'hot italian sausage',
       'meat',
     ),
-    <class 'tuple'> (
+    tuple(
       'large poblano pepper',
       'spices',
     ),
-    <class 'tuple'> (
+    tuple(
       'lemon extract',
       'produce',
     ),
-    <class 'tuple'> (
+    tuple(
       'light corn syrup',
       'produce',
     ),
-    <class 'tuple'> (
+    tuple(
       'loaf sweet egg bread like challah or brioche',
       'bread',
     ),
-    <class 'tuple'> (
+    tuple(
       'low sodium chicken stock',
       'canned & packaged',
     ),
-    <class 'tuple'> (
+    tuple(
       'low-sodium chicken broth',
       'meat',
     ),
-    <class 'tuple'> (
+    tuple(
       'malted milk powder',
       'dairy',
     ),
-    <class 'tuple'> (
+    tuple(
       'medium-coarse yellow cornmeal',
       'dry goods',
     ),
-  ]
----
+  ])
+# ---
