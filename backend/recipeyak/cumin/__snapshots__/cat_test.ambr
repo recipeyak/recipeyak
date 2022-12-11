@@ -246,7 +246,7 @@
     ),
     <class 'tuple'> (
       'harissa or tomato paste',
-      'produce',
+      'canned & packaged',
     ),
     <class 'tuple'> (
       'hot italian sausage',
@@ -283,6 +283,10 @@
     <class 'tuple'> (
       'medium-coarse yellow cornmeal',
       'dry goods',
+    ),
+    <class 'tuple'> (
+      'tomato paste',
+      'canned & packaged',
     ),
   ]
 ---
