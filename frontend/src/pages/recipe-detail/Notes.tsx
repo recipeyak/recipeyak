@@ -27,6 +27,7 @@ import {
   IRecipe,
   patchRecipe,
   RecipeTimelineItem,
+  TimelineItem,
   Upload,
 } from "@/store/reducers/recipes"
 import { showNotificationWithTimeoutAsync } from "@/store/thunks"
@@ -1084,12 +1085,16 @@ function useGallery(uploads: Upload[]) {
   }
 }
 
+function isNote(x: TimelineItem): x is INote {
+  return x.type === "note"
+}
+
 interface INoteContainerProps {
   readonly recipeId: IRecipe["id"]
   readonly timelineItems: IRecipe["timelineItems"]
 }
 export function NoteContainer(props: INoteContainerProps) {
-  const notes: INote[] = props.timelineItems.filter((x) => x.type === "note")
+  const notes: INote[] = props.timelineItems.filter(isNote)
   const attachments = flatten(notes.map((x) => x.attachments))
   const { openImage, hasNext, hasPrevious, onClose, onNext, onPrevious, url } =
     useGallery(attachments)
