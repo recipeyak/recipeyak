@@ -638,7 +638,7 @@ function ImagePreview({
   src: string
   isLoading?: boolean
   backgroundUrl: string | null
-  onClick: () => void
+  onClick?: () => void
 }) {
   return (
     <div className="d-grid" onClick={onClick}>
@@ -1042,20 +1042,12 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
   )
 }
 
-interface INoteContainerProps {
-  readonly recipeId: IRecipe["id"]
-  readonly timelineItems: IRecipe["timelineItems"]
-}
-export function NoteContainer(props: INoteContainerProps) {
-  const notes: INote[] = props.timelineItems.filter((x) => x.type === "note")
-  const attachments = flatten(notes.map((x) => x.attachments))
+function useGallery(uploads: Upload[]) {
   const [showGalleryImage, setGalleryImage] = React.useState<{
     id: string
   } | null>(null)
-  const image = attachments.find((x) => x.id === showGalleryImage?.id)
-  const imagePosition = attachments.findIndex(
-    (x) => x.id === showGalleryImage?.id,
-  )
+  const image = uploads.find((x) => x.id === showGalleryImage?.id)
+  const imagePosition = uploads.findIndex((x) => x.id === showGalleryImage?.id)
 
   useGlobalEvent({
     keyDown: (e) => {
@@ -1063,10 +1055,10 @@ export function NoteContainer(props: INoteContainerProps) {
         setGalleryImage(null)
       }
       if (e.key === "ArrowLeft") {
-        setGalleryImage({ id: attachments[imagePosition - 1].id })
+        setGalleryImage({ id: uploads[imagePosition - 1].id })
       }
       if (e.key === "ArrowRight") {
-        setGalleryImage({ id: attachments[imagePosition + 1].id })
+        setGalleryImage({ id: uploads[imagePosition + 1].id })
       }
     },
   })
@@ -1074,23 +1066,45 @@ export function NoteContainer(props: INoteContainerProps) {
   const openImage = React.useCallback((imageId: string) => {
     setGalleryImage({ id: imageId })
   }, [])
+
+  const hasPrevious = imagePosition > 0
+  const hasNext = imagePosition < uploads.length - 1
+
+  const onPrevious = React.useCallback(() => {}, [])
+  const onNext = React.useCallback(() => {}, [])
+  const onClose = React.useCallback(() => {}, [])
+  return {
+    openImage,
+    onPrevious,
+    onNext,
+    hasPrevious,
+    hasNext,
+    onClose,
+    url: image?.url,
+  }
+}
+
+interface INoteContainerProps {
+  readonly recipeId: IRecipe["id"]
+  readonly timelineItems: IRecipe["timelineItems"]
+}
+export function NoteContainer(props: INoteContainerProps) {
+  const notes: INote[] = props.timelineItems.filter((x) => x.type === "note")
+  const attachments = flatten(notes.map((x) => x.attachments))
+  const { openImage, hasNext, hasPrevious, onClose, onNext, onPrevious, url } =
+    useGallery(attachments)
+
   return (
     <>
       <hr />
-      {image != null && (
+      {url != null && (
         <Gallery
-          imageUrl={image.url}
-          hasPrevious={imagePosition > 0}
-          hasNext={imagePosition < attachments.length - 1}
-          onPrevious={() => {
-            setGalleryImage({ id: attachments[imagePosition - 1].id })
-          }}
-          onNext={() => {
-            setGalleryImage({ id: attachments[imagePosition + 1].id })
-          }}
-          onClose={() => {
-            setGalleryImage(null)
-          }}
+          imageUrl={url}
+          hasPrevious={hasPrevious}
+          hasNext={hasNext}
+          onPrevious={onPrevious}
+          onNext={onNext}
+          onClose={onClose}
         />
       )}
       <NoteCreator recipeId={props.recipeId} className="pb-4 no-print" />
