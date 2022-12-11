@@ -246,7 +246,7 @@
     ),
     tuple(
       'harissa or tomato paste',
-      'produce',
+      'canned & packaged',
     ),
     tuple(
       'hot italian sausage',
@@ -283,6 +283,10 @@
     tuple(
       'medium-coarse yellow cornmeal',
       'dry goods',
+    ),
+    tuple(
+      'tomato paste',
+      'canned & packaged',
     ),
   ])
 # ---
