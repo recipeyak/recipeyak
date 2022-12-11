@@ -5,6 +5,7 @@ import { styled } from "@/theme"
 
 const MyGalleryContainer = styled.div`
   opacity: 1 !important;
+  z-index: 30;
   position: fixed;
   top: 0;
   left: 0;
@@ -41,7 +42,7 @@ const MyGalleryBackground = styled.div`
   height: 100%;
 `
 
-const MyNextButton = styled(ButtonSecondary)`
+const MyGalleryButton = styled(ButtonSecondary)`
   background: rgba(0, 0, 0, 0.46);
   color: white;
   border-style: none;
@@ -78,37 +79,38 @@ const TopRow = styled.div`
   grid-area: 1/1;
 `
 
-const PageCount = styled.div`
-  padding: 0 1rem;
-  background: rgba(0, 0, 0, 0.46);
-  padding: 0.2rem 0.5rem;
-  color: white;
-  height: fit-content;
-  backdrop-filter: blur(2px);
-`
-
-export const Gallery = (props: { onClose: () => void }) => {
+export const Gallery = (props: {
+  onClose: () => void
+  imageUrl: string
+  onNext: () => void
+  onPrevious: () => void
+  hasNext: boolean
+  hasPrevious: boolean
+}) => {
   return (
     <MyGalleryContainer>
       <MyGalleryBackground />
       <MyGalleryScrollWrap>
         <MyGalleryImgContainer>
-          <MyGalleryImg src="https://images-cdn.recipeyak.com/57/ef4260f8c8754d6ea88f009c2cc404e4/05194136-A046-4155-94F0-29C00EB3D7E5.jpeg" />
+          <MyGalleryImg src={props.imageUrl} />
         </MyGalleryImgContainer>
         <MyGalleryControlOverlay>
           <TopRow>
-            <PageCount className="br-6">1 / 8</PageCount>
-            <MyNextButton onClick={props.onClose}>
+            <MyGalleryButton className="ml-auto" onClick={props.onClose}>
               <X />
-            </MyNextButton>
+            </MyGalleryButton>
           </TopRow>
           <NavButtonRow>
-            <MyNextButton>
-              <ChevronLeft />
-            </MyNextButton>
-            <MyNextButton>
-              <ChevronRight />
-            </MyNextButton>
+            {props.hasPrevious && (
+              <MyGalleryButton onClick={props.onPrevious} className="mr-auto">
+                <ChevronLeft />
+              </MyGalleryButton>
+            )}
+            {props.hasNext && (
+              <MyGalleryButton onClick={props.onNext} className="ml-auto">
+                <ChevronRight />
+              </MyGalleryButton>
+            )}
           </NavButtonRow>
         </MyGalleryControlOverlay>
       </MyGalleryScrollWrap>
