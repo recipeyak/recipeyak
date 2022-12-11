@@ -1,5 +1,3 @@
-import { clearAllBodyScrollLocks, disableBodyScroll } from "body-scroll-lock"
-import React from "react"
 import { ChevronLeft, ChevronRight, X } from "react-feather"
 
 import { ButtonSecondary } from "@/components/Buttons"
@@ -90,16 +88,8 @@ const PageCount = styled.div`
 `
 
 export const Gallery = (props: { onClose: () => void }) => {
-  const ref = React.useRef<HTMLDivElement>(null)
-  React.useLayoutEffect(() => {
-    console.log(ref.current)
-    disableBodyScroll(ref.current)
-    return () => {
-      clearAllBodyScrollLocks(ref.current)
-    }
-  }, [])
   return (
-    <MyGalleryContainer ref={ref} tabIndex={-1} role="dialog">
+    <MyGalleryContainer>
       <MyGalleryBackground />
       <MyGalleryScrollWrap>
         <MyGalleryImgContainer>
