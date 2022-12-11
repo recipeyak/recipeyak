@@ -47,6 +47,7 @@ const MyGalleryButton = styled(ButtonSecondary)`
   color: white;
   border-style: none;
   backdrop-filter: blur(10px);
+  pointer-events: initial;
 `
 
 const MyGalleryControlOverlay = styled.div`
@@ -58,6 +59,7 @@ const MyGalleryControlOverlay = styled.div`
   display: grid;
   flex-direction: column;
   padding: 0.5rem;
+  pointer-events: none;
 `
 
 const NavButtonRow = styled.div`
@@ -92,7 +94,19 @@ export const Gallery = (props: {
       <MyGalleryBackground />
       <MyGalleryScrollWrap>
         <MyGalleryImgContainer>
-          <MyGalleryImg src={props.imageUrl} />
+          <MyGalleryImg
+            src={props.imageUrl}
+            onClick={(e) => {
+              const isRight = e.screenX / window.screen.width > 0.5
+              const isLeft = !isRight
+              if (props.hasNext && isRight) {
+                props.onNext()
+              }
+              if (props.hasPrevious && isLeft) {
+                props.onPrevious()
+              }
+            }}
+          />
         </MyGalleryImgContainer>
         <MyGalleryControlOverlay>
           <TopRow>
