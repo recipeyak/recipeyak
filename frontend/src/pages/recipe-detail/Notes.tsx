@@ -1072,7 +1072,7 @@ function useGallery(uploads: Upload[]) {
   const hasNext = imagePosition < uploads.length - 1
 
   const onPrevious = React.useCallback(() => {
-    setGalleryImage({ id: uploads[imagePosition + 1].id })
+    setGalleryImage({ id: uploads[imagePosition - 1].id })
   }, [imagePosition, uploads])
   const onNext = React.useCallback(() => {
     setGalleryImage({ id: uploads[imagePosition + 1].id })
