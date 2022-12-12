@@ -1,46 +1,46 @@
 # name: test_recipe_list_timeline_items
-  <class 'list'> [
-    <class 'dict'> {
-      'attachments': <class 'list'> [
-      ],
-      'created': <class 'str'>,
-      'created_by': <class 'dict'> {
+  list([
+    dict({
+      'attachments': list([
+      ]),
+      'created': str,
+      'created_by': dict({
         'avatar_url': '/avatar/bc6a715808d9aae0ddeefb1e47e482a6?d=identicon&r=g',
         'email': 'john@doe.org',
-        'id': <class 'int'>,
+        'id': int,
         'name': 'john@doe.org',
-      },
-      'id': <class 'int'>,
-      'last_modified_by': <class 'dict'> {
+      }),
+      'id': int,
+      'last_modified_by': dict({
         'avatar_url': '/avatar/bc6a715808d9aae0ddeefb1e47e482a6?d=identicon&r=g',
         'email': 'john@doe.org',
-        'id': <class 'int'>,
+        'id': int,
         'name': 'john@doe.org',
-      },
-      'modified': <class 'str'>,
-      'reactions': <class 'list'> [
-      ],
-      'recipe_id': <class 'int'>,
+      }),
+      'modified': str,
+      'reactions': list([
+      ]),
+      'recipe_id': int,
       'text': "I'd say we should use an even smaller pot next time.",
       'type': 'note',
-    },
-    <class 'dict'> {
-      'attachments': <class 'list'> [
-      ],
-      'created': <class 'str'>,
-      'created_by': <class 'dict'> {
+    }),
+    dict({
+      'attachments': list([
+      ]),
+      'created': str,
+      'created_by': dict({
         'avatar_url': '/avatar/bc6a715808d9aae0ddeefb1e47e482a6?d=identicon&r=g',
         'email': 'john@doe.org',
-        'id': <class 'int'>,
+        'id': int,
         'name': 'john@doe.org',
-      },
-      'id': <class 'int'>,
-      'modified': <class 'str'>,
-      'reactions': <class 'list'> [
-      ],
-      'recipe_id': <class 'int'>,
+      }),
+      'id': int,
+      'modified': str,
+      'reactions': list([
+      ]),
+      'recipe_id': int,
       'text': 'Use a small pot.',
       'type': 'note',
-    },
-  ]
----
+    }),
+  ])
+# ---

@@ -241,6 +241,7 @@ DEPARTMENT_MAPPING = {
         "can San Marzano tomatoes",
         "pumpkin purée",
         "marinara sauce",
+        "tomato paste",
         "tuna",
         "anchovies",
         "adobo",
