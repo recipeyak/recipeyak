@@ -1830,6 +1830,14 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "types-pillow"
+version = "9.3.0.4"
+description = "Typing stubs for Pillow"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "types-pyyaml"
 version = "6.0.0"
 description = "Typing stubs for PyYAML"
@@ -1947,7 +1955,7 @@ testing = ["jaraco.itertools", "func-timeout"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "2e9c619447c5c4edc7dd2b5f1d0e78ccdcdeac3434732428aea84a3537d1a2a6"
+content-hash = "1d0c4790488aa2c1e97de9b52c5966eb86606aca4f11bbc9e788c3dc33ea18be"
 
 [metadata.files]
 advocate = []
@@ -2549,6 +2557,7 @@ typed-ast = [
 typer = []
 types-awscrt = []
 types-dj-database-url = []
+types-pillow = []
 types-pyyaml = [
     {file = "types-PyYAML-6.0.0.tar.gz", hash = "sha256:3d3591ddfc488fc30be3c506a0c0fe54da968fe98d8b76ab12e59d455330ffca"},
     {file = "types_PyYAML-6.0.0-py3-none-any.whl", hash = "sha256:746f23d351245d176d7bc89eef79e2ee94b4e7306f7d23bfefb3dc946c0fb58d"},
