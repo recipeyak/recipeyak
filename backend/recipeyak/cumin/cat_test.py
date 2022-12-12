@@ -102,6 +102,7 @@ def test_categorize_ingredient_test_cases(snapshot: Any) -> None:
     low-sodium chicken broth
     malted milk powder
     medium-coarse yellow cornmeal
+    tomato paste
     """
     ).splitlines()
 
