@@ -17,7 +17,7 @@ interface ISidebarProps {
 
 function Sidebar({ teamID }: ISidebarProps) {
   return (
-    <div className="d-grid grid-gap-2 grid-auto-rows-min-content w-300px flex-shrink-0 hide-sm mr-2">
+    <div className="d-grid gap-2 grid-auto-rows-min-content w-300px flex-shrink-0 hide-sm mr-2">
       <Recipes teamID={teamID} scroll drag noPadding />
     </div>
   )
