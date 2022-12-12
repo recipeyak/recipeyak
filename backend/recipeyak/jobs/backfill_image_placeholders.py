@@ -94,7 +94,6 @@ def main(
     storage_hostname: str = typer.Argument(..., envvar="STORAGE_HOSTNAME"),
 ) -> None:
     log.info("initiate")
-    # TODO: setup systemd service and timer for this, run every minute or so?
     sentry_sdk.init(
         send_default_pii=True,
         traces_sample_rate=1.0,
