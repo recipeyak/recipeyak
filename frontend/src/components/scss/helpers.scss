@@ -208,12 +208,12 @@
 }
 
 @for $i from 0 through 4 {
-  .grid-gap-#{$i} {
-    grid-gap: #{$i/4}rem;
+  .gap-#{$i} {
+    gap: #{$i/4}rem;
   }
 
-  .grid-gap-#{$i}rem {
-    grid-gap: #{$i}rem;
+  .gap-#{$i}rem {
+    gap: #{$i}rem;
   }
 }
 

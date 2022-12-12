@@ -198,7 +198,7 @@ function SharedEntry({
 const AttachmentContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  grid-gap: 0.25rem;
+  gap: 0.25rem;
 `
 const SmallAnchor = styled.a`
   font-size: 0.825rem;
@@ -587,7 +587,7 @@ const ImageUploadContainer = styled.div`
   padding: 0.5rem;
   display: flex;
   flex-wrap: wrap;
-  grid-gap: 0.25rem;
+  gap: 0.25rem;
 `
 
 const ImagePreviewParent = styled.div`
