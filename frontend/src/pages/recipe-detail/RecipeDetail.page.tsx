@@ -461,7 +461,7 @@ export function Recipe(props: IRecipeProps) {
     recipeTitle = recipeTitle + ` by ${recipe.author}`
   }
   return (
-    <div className="d-grid grid-gap-2 mx-auto mw-1000px">
+    <div className="d-grid gap-2 mx-auto mw-1000px">
       <Helmet title={recipe.name} />
       <Meta title={recipeTitle} />
       {archivedAt != null && <RecipeBanner>Archived {archivedAt}</RecipeBanner>}

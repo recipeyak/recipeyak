@@ -20,7 +20,7 @@ function FeaturesContainer({ children }: IFeaturesContainerProps) {
     <section className="bg-primary color-white pt-4 pb-4 pr-4 pl-4">
       <section className="home-container">
         <h2 className="home-subtitle bold">Features</h2>
-        <ul className="d-grid grid-gap-1rem">{children}</ul>
+        <ul className="d-grid gap-1rem">{children}</ul>
       </section>
     </section>
   )
@@ -57,7 +57,7 @@ function HowItWorksContainer({ children }: IHowItWorksContainerProps) {
     <section className="pt-4 pr-4 pl-4">
       <section className="home-container d-grid">
         <h2 className="home-subtitle bold">How it works</h2>
-        <ol className="d-grid grid-gap-2rem">{children}</ol>
+        <ol className="d-grid gap-2rem">{children}</ol>
       </section>
     </section>
   )
@@ -150,7 +150,7 @@ const howToSteps = [
 
 const LandingPage = () => (
   <>
-    <section className="home-container d-grid grid-gap-1rem pb-4 pr-4 pl-4">
+    <section className="home-container d-grid gap-1rem pb-4 pr-4 pl-4">
       <section className="d-flex justify-content-center mb-2">
         <h1 className="home-hero-text">
           A place to store, share, and create recipes
