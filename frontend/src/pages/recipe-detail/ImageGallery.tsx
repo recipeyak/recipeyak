@@ -1,3 +1,4 @@
+import React from "react"
 import { ChevronLeft, ChevronRight, X } from "react-feather"
 
 import { ButtonSecondary } from "@/components/Buttons"
@@ -89,24 +90,23 @@ export const Gallery = (props: {
   hasNext: boolean
   hasPrevious: boolean
 }) => {
+  // navigate forward and back depending on horizontal click position.
+  const onClick = (e: React.MouseEvent) => {
+    const isRight = e.screenX / window.screen.width > 0.5
+    const isLeft = !isRight
+    if (props.hasNext && isRight) {
+      props.onNext()
+    }
+    if (props.hasPrevious && isLeft) {
+      props.onPrevious()
+    }
+  }
   return (
     <MyGalleryContainer>
       <MyGalleryBackground />
       <MyGalleryScrollWrap>
-        <MyGalleryImgContainer>
-          <MyGalleryImg
-            src={props.imageUrl}
-            onClick={(e) => {
-              const isRight = e.screenX / window.screen.width > 0.5
-              const isLeft = !isRight
-              if (props.hasNext && isRight) {
-                props.onNext()
-              }
-              if (props.hasPrevious && isLeft) {
-                props.onPrevious()
-              }
-            }}
-          />
+        <MyGalleryImgContainer onClick={onClick}>
+          <MyGalleryImg src={props.imageUrl} onClick={onClick} />
         </MyGalleryImgContainer>
         <MyGalleryControlOverlay>
           <TopRow>
