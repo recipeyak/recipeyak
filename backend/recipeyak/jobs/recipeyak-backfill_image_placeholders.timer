@@ -1,0 +1,8 @@
+[Unit]
+Description=Run backfill_image_placeholders on cron every minute
+[Timer]
+Unit=recipeyak-backfill_image_placeholders.service
+OnBootSec=1min
+OnUnitActiveSec=1min
+[Install]
+WantedBy=timers.target

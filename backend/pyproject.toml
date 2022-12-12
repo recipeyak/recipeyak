@@ -26,6 +26,13 @@ yarl = "^1.8.1"
 recipe-scrapers = "14.23.0"
 advocate = "^1.0.0"
 sentry-sdk = {git = "https://github.com/chdsbd/sentry-python.git", rev = "chris/trace-response-render"}
+Pillow = "^9.3.0"
+httpx = "^0.23.1"
+asyncpg = "^0.27.0"
+asyncpg-stubs = "^0.27.0"
+typer = "^0.7.0"
+structlog = "^22.3.0"
+types-Pillow = "^9.3.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "7.2.0"
