@@ -47,7 +47,9 @@ async def job(*, dry_run: bool, pg_dsn: str, storage_hostname: str) -> None:
     rows = await pg.fetch(
         """
     select id, key from core_upload
-    where completed=true and background_url is null
+    where completed = true
+      and background_url is null
+      and note_id is not null
     limit 50;
     """
     )
