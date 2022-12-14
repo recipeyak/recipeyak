@@ -1039,20 +1039,6 @@ function useGallery(uploads: Upload[]) {
   const image = uploads.find((x) => x.id === showGalleryImage?.id)
   const imagePosition = uploads.findIndex((x) => x.id === showGalleryImage?.id)
 
-  useGlobalEvent({
-    keyDown: (e) => {
-      if (e.key === "Escape") {
-        setGalleryImage(null)
-      }
-      if (e.key === "ArrowLeft") {
-        setGalleryImage({ id: uploads[imagePosition - 1].id })
-      }
-      if (e.key === "ArrowRight") {
-        setGalleryImage({ id: uploads[imagePosition + 1].id })
-      }
-    },
-  })
-
   const openImage = React.useCallback((imageId: string) => {
     setGalleryImage({ id: imageId })
   }, [])
@@ -1069,6 +1055,24 @@ function useGallery(uploads: Upload[]) {
   const onClose = React.useCallback(() => {
     setGalleryImage(null)
   }, [])
+
+  useGlobalEvent({
+    keyDown: (e) => {
+      if (showGalleryImage == null) {
+        return
+      }
+      if (e.key === "Escape") {
+        onClose()
+      }
+      if (e.key === "ArrowLeft") {
+        onPrevious()
+      }
+      if (e.key === "ArrowRight") {
+        onNext()
+      }
+    },
+  })
+
   return {
     openImage,
     onPrevious,
