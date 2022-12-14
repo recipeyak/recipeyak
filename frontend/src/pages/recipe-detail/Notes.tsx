@@ -609,17 +609,6 @@ const CloseButton = styled.button`
   font-weight: 700;
 `
 
-function formatUrlImgix100(url: string): string {
-  if (url.startsWith("blob:")) {
-    return url
-  }
-  const u = new URL(url)
-  u.searchParams.set("w", "100")
-  u.searchParams.set("h", "100")
-  u.searchParams.set("dpr", "2")
-  return u.href
-}
-
 const Image100Px = styled.img<{
   readonly isLoading?: boolean
   readonly src: string
@@ -644,7 +633,7 @@ function ImagePreview({
   return (
     <div className="d-grid" onClick={onClick}>
       <Image100Px
-        src={formatUrlImgix100(src)}
+        src={src}
         isLoading={isLoading}
         style={{
           gridArea: "1 / 1",
