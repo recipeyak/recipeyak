@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 from PIL import Image
 from yarl import URL
 
-log = structlog.stdlib.get_logger()
+logger = structlog.stdlib.get_logger()
 
 load_dotenv()
 
@@ -41,6 +41,7 @@ def public_url(*, key: str, storage_hostname: str) -> str:
 
 
 async def job(*, dry_run: bool, pg_dsn: str, storage_hostname: str) -> None:
+    log = logger.bind(dry_run=dry_run)
     log.info("starting up", dry_run=dry_run)
     pg = await asyncpg.connect(dsn=pg_dsn)
     log.info("fetching upload data")
@@ -53,7 +54,9 @@ async def job(*, dry_run: bool, pg_dsn: str, storage_hostname: str) -> None:
     limit 50;
     """
     )
+    log = log.bind(row_count=len(rows))
     log.info("downloading images")
+
     async with httpx.AsyncClient(timeout=None) as http:
         results = await asyncio.gather(
             *[
@@ -71,11 +74,13 @@ async def job(*, dry_run: bool, pg_dsn: str, storage_hostname: str) -> None:
         log.info("generating placeholder", url=url, upload_id=upload_id)
         id_to_placeholder[upload_id] = get_placeholder_image(BytesIO(image_bytes))
 
+    log = log.bind(placeholder_count=len(id_to_placeholder))
+
     if dry_run:
-        log.info("would update", count=len(id_to_placeholder))
+        log.info("would update")
         return
 
-    log.info("updated uploads")
+    log.info("updating uploads")
     await pg.executemany(
         """
     update core_upload
@@ -95,7 +100,7 @@ def main(
     pg_dsn: str = typer.Argument(..., envvar="DATABASE_URL"),
     storage_hostname: str = typer.Argument(..., envvar="STORAGE_HOSTNAME"),
 ) -> None:
-    log.info("initiate")
+    logger.info("initiate")
     sentry_sdk.init(
         send_default_pii=True,
         traces_sample_rate=1.0,
