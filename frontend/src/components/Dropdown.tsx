@@ -18,9 +18,11 @@ const dropdownItemStyle = css`
   white-space: nowrap;
   text-align: left;
 
-  :hover {
-    color: #16181b;
-    text-decoration: none;
+  @media (hover: hover) {
+    :hover {
+      color: #16181b;
+      text-decoration: none;
+    }
   }
 
   :active {

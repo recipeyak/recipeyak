@@ -24,8 +24,10 @@ const ReactionContainer = styled.div`
 
 const StyledSmile = styled(Smile)`
   color: #7a7a7a;
-  &:hover {
-    color: #575757;
+  @media (hover: hover) {
+    &:hover {
+      color: #575757;
+    }
   }
 `
 
@@ -70,8 +72,10 @@ const UpvoteReaction = styled.div`
   border-color: #d2dff0;
   margin-right: 0.5rem;
   text-align: center;
-  &:hover {
-    border-color: hsl(0deg, 0%, 71%);
+  @media (hover: hover) {
+    &:hover {
+      border-color: hsl(0deg, 0%, 71%);
+    }
   }
 `
 
@@ -86,8 +90,10 @@ const ReactionButton = styled.div<{ pressed: boolean }>`
   cursor: pointer;
   background-color: ${(props) =>
     props.pressed ? "hsla(0, 0%, 0%, 0.04)" : "initial"};
-  &:hover {
-    background-color: hsla(0, 0%, 0%, 0.06);
+  @media (hover: hover) {
+    &:hover {
+      background-color: hsla(0, 0%, 0%, 0.06);
+    }
   }
 `
 

@@ -65,9 +65,11 @@ a {
   color: $link-color;
   transition: color 0.2s;
 
-  &:hover {
-    color: lighten($link-color, 5%);
-    text-decoration: underline;
+  @media (hover: hover) {
+    &:hover {
+      color: lighten($link-color, 5%);
+      text-decoration: underline;
+    }
   }
 }
 
@@ -77,9 +79,11 @@ a {
   .is-active > a {
     color: inherit !important;
 
-    &:hover {
-      color: darken($text-color, 20%) !important;
-      transition: color 0.2s;
+    @media (hover: hover) {
+      &:hover {
+        color: darken($text-color, 20%) !important;
+        transition: color 0.2s;
+      }
     }
   }
 

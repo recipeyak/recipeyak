@@ -19,9 +19,11 @@
 $option-color: #106cd6;
 
 option {
-  &:hover {
-    background-color: lighten($option-color, 20%);
-    color: white;
+  @media (hover: hover) {
+    &:hover {
+      background-color: lighten($option-color, 20%);
+      color: white;
+    }
   }
 }
 

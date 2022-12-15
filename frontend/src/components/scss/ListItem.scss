@@ -10,9 +10,12 @@
   .on-hover {
     display: none;
   }
-  &:hover {
-    .on-hover {
-      display: block;
+
+  @media (hover: hover) {
+    &:hover {
+      .on-hover {
+        display: block;
+      }
     }
   }
 }
