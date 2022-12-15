@@ -8,7 +8,7 @@ import sentry_sdk
 import structlog
 import typer
 from dotenv import load_dotenv
-from PIL import Image
+from PIL import Image, ImageOps
 from yarl import URL
 
 logger = structlog.stdlib.get_logger()
@@ -21,6 +21,8 @@ def get_placeholder_image(image: BytesIO) -> str:
         # remove transparency which isn't support by jpeg
         if im.mode == "RGBA":
             im = im.convert("RGB")
+        # ensure thumbnail is oriented according EXIF orientation.
+        im = ImageOps.exif_transpose(im)
         im.thumbnail((42, 42))
         buf = BytesIO()
         im.save(buf, optimize=True, format="jpeg")
