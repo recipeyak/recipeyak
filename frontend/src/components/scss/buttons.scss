@@ -52,9 +52,11 @@
     box-shadow: 0 0 5px 0px $primary-color-shadow;
   }
 
-  &:hover:not([disabled]) {
-    border-color: $primary-color-dark;
-    text-decoration: none;
+  @media (hover: hover) {
+    &:hover:not([disabled]) {
+      border-color: $primary-color-dark;
+      text-decoration: none;
+    }
   }
 
   &.is-small {
