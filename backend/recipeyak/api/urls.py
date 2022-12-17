@@ -10,12 +10,10 @@ from recipeyak.api.export_recipes_list_view import export_recipes_list_view
 from recipeyak.api.ical_detail_view import get_ical_view
 from recipeyak.api.ingredients_detail_view import ingredients_detail_view
 from recipeyak.api.ingredients_list_view import ingredients_list_view
-from recipeyak.api.login_user_detail_view import (
-    LoginView,
-    LogoutView,
-    PasswordChangeView,
-)
+from recipeyak.api.login_user_detail_view import login_user_detail_view
+from recipeyak.api.logout_user_detail_view import logout_user_detail_view
 from recipeyak.api.notes_view import note_create_view, note_detail_view
+from recipeyak.api.password_change_detail_view import password_change_detail_view
 from recipeyak.api.password_reset_confirm_view import password_reset_confirm_view
 from recipeyak.api.password_reset_view import password_reset_view
 from recipeyak.api.reactions_view import (
@@ -32,7 +30,7 @@ from recipeyak.api.recipe_detail_view import receipe_detail_view
 from recipeyak.api.recipe_duplicate_view import recipe_duplicate_view
 from recipeyak.api.recipe_list_view import recipe_list_view
 from recipeyak.api.recipe_move_view import recipe_move_view
-from recipeyak.api.register_user_detail_view import RegisterView
+from recipeyak.api.register_user_detail_view import register_user_detail_view
 from recipeyak.api.sections_view import (
     create_section_view,
     delete_or_update_section_view,
@@ -58,12 +56,12 @@ from recipeyak.api.user_invites_list_view import user_invites_list_view
 urlpatterns = [
     path("api/v1/t/<team_pk>/members/", team_members_list_view),
     path("api/v1/t/<team_pk>/members/<pk>/", team_members_detail_view),
-    path("api/v1/auth/login/", LoginView.as_view()),
-    path("api/v1/auth/logout/", LogoutView.as_view()),
-    path("api/v1/auth/password/change/", PasswordChangeView.as_view()),
+    path("api/v1/auth/login/", login_user_detail_view),
+    path("api/v1/auth/logout/", logout_user_detail_view),
+    path("api/v1/auth/password/change/", password_change_detail_view),
     path("api/v1/auth/password/reset/", password_reset_view),
     path("api/v1/auth/password/reset/confirm/", password_reset_confirm_view),
-    path("api/v1/auth/registration/", RegisterView.as_view(), name="rest_register"),
+    path("api/v1/auth/registration/", register_user_detail_view),
     path("api/v1/invites/", user_invites_list_view),
     path("api/v1/invites/<pk>/accept/", user_invites_accept_view),
     path("api/v1/invites/<pk>/decline/", user_invites_decline_view),

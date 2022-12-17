@@ -1,5 +1,4 @@
 import pytest
-from allauth.socialaccount.models import EmailAddress
 from django.conf import settings
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -38,10 +37,6 @@ def test_signup(client: APIClient) -> None:
 
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK
-
-    assert EmailAddress.objects.filter(
-        email=email
-    ).exists(), "signup should create email object"
 
 
 def test_login(client: APIClient) -> None:
@@ -188,24 +183,3 @@ def test_signup_case_insensitive(client: APIClient) -> None:
         status.HTTP_401_UNAUTHORIZED,
         status.HTTP_400_BAD_REQUEST,
     )
-
-
-def test_signup_user_has_email(client: APIClient, user: User) -> None:
-    """
-    With social providers, a user can signup with an email account and connect
-    a social account that has a different email. We want to prevent an email signup with that same email address.
-    """
-    assert EmailAddress.objects.filter(email=user.email).exists()
-    email2 = "john@example.com"
-
-    new_email_object = EmailAddress.objects.create(email=email2, user=user)
-    user.emailaddress_set.add(new_email_object)  # type: ignore[attr-defined]
-    user.save()
-
-    assert EmailAddress.objects.filter(email=email2).exists()
-
-    password = "password123"
-    data = {"email": email2, "password1": password, "password2": password}
-
-    res = client.post("/api/v1/auth/registration/", data)
-    assert res.status_code == status.HTTP_400_BAD_REQUEST

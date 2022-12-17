@@ -10,6 +10,7 @@ from django.conf import settings
 from django.contrib.sessions.middleware import (
     SessionMiddleware as DjangoSessionMiddleware,
 )
+from django.core.exceptions import ValidationError
 from django.db import connection
 from django.http import HttpRequest, HttpResponse, HttpResponseServerError, JsonResponse
 from django.utils.deprecation import MiddlewareMixin
@@ -199,4 +200,9 @@ class ExceptionMiddleware(MiddlewareMixin):
             exception.model, RequestParams
         ):
             return JsonResponse(dict(message=exception.errors()), status=400)
+        if isinstance(exception, ValidationError):
+            return JsonResponse(
+                dict(message=exception.messages, non_field_errors=exception.messages),
+                status=400,
+            )
         return None
