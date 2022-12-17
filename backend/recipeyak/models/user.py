@@ -1,6 +1,6 @@
 import hashlib
 import logging
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 
 from django.contrib.auth.models import (
     AbstractBaseUser,
@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 class UserManager(BaseUserManager["User"]):
-    def create_user(self, email: str, password: Optional[str] = None) -> "User":
+    def create_user(self, email: str, password: str | None = None) -> "User":
         """
         Creates and saves a user with given email and password.
         """
@@ -96,7 +96,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS: List[str] = []
+    REQUIRED_FIELDS: list[str] = []
 
     objects = UserManager()
 

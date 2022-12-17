@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import OrderedDict
-from typing import Any, Optional
+from typing import Any
 
 import yaml
 from django.contrib.auth.decorators import login_required
@@ -79,7 +79,7 @@ class RecipeExportSerializer(BaseModelSerializer):
 @require_http_methods(["GET"])
 @login_required(login_url="/login/")
 def export_recipes_list_view(
-    request: AuthedRequest, filetype: str, pk: Optional[str] = None
+    request: AuthedRequest, filetype: str, pk: str | None = None
 ) -> HttpResponse:
 
     queryset = user_and_team_recipes(request.user).prefetch_related(

@@ -2,7 +2,7 @@ import re
 from dataclasses import dataclass
 from enum import Enum
 from itertools import chain
-from typing import List, Optional, Pattern, Tuple, Union
+from typing import Pattern
 
 
 class DeviceKind(str, Enum):
@@ -41,9 +41,9 @@ class OS(str, Enum):
 
 @dataclass
 class Device:
-    kind: Optional[DeviceKind]
-    os: Optional[OS]
-    browser: Optional[Browser]
+    kind: DeviceKind | None
+    os: OS | None
+    browser: Browser | None
 
 
 BROWSERS = [
@@ -56,7 +56,7 @@ BROWSERS = [
 
 MOBILE_DEVICES = [("Android", OS.Android), ("iPhone", OS.IPhone), ("iPad", OS.IPad)]
 
-DESKTOP_DEVICES: List[Tuple[Union[str, Pattern[str]], OS]] = [
+DESKTOP_DEVICES: list[tuple[str | Pattern[str], OS]] = [
     ("Linux", OS.Linux),
     (re.compile("Mac OS X 10[._]9"), OS.OSX_Mavericks),
     (re.compile("Mac OS X 10[._]10"), OS.OSX_Yosemite),
@@ -75,7 +75,7 @@ DESKTOP_DEVICES: List[Tuple[Union[str, Pattern[str]], OS]] = [
 ]
 
 
-def get_os(user_agent: str) -> Optional[OS]:
+def get_os(user_agent: str) -> OS | None:
     for substr_name, name in chain(MOBILE_DEVICES, DESKTOP_DEVICES):
         if isinstance(substr_name, str):
             if substr_name in user_agent:
@@ -86,14 +86,14 @@ def get_os(user_agent: str) -> Optional[OS]:
     return None
 
 
-def get_browser(user_agent: str) -> Optional[Browser]:
+def get_browser(user_agent: str) -> Browser | None:
     for browser, name in BROWSERS:
         if browser in user_agent:
             return name
     return None
 
 
-def get_kind(user_agent: str) -> Optional[DeviceKind]:
+def get_kind(user_agent: str) -> DeviceKind | None:
     for name, _ in MOBILE_DEVICES:
         if name in user_agent:
             return DeviceKind.mobile

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Iterable, List, Optional, cast
+from typing import Any, Iterable, cast
 
 import pydantic
 from rest_framework import serializers
@@ -203,7 +203,7 @@ class NoteAttachment(pydantic.BaseModel):
     type: Literal["upload"] = "upload"
 
 
-def serialize_attachments(attachments: Iterable[Upload]) -> List[NoteAttachment]:
+def serialize_attachments(attachments: Iterable[Upload]) -> list[NoteAttachment]:
     return [
         NoteAttachment(
             id=attachment.pk,
@@ -226,11 +226,11 @@ class NoteResponse(pydantic.BaseModel):
     id: int
     text: str
     created_by: PublicUser
-    last_modified_by: Optional[PublicUser]
+    last_modified_by: PublicUser | None
     created: datetime
     modified: datetime
-    attachments: List[NoteAttachment]
-    reactions: List[ReactionResponse]
+    attachments: list[NoteAttachment]
+    reactions: list[ReactionResponse]
     type: Literal["note"] = "note"
 
 
@@ -243,7 +243,7 @@ def serialize_public_user(user: User) -> PublicUser:
     )
 
 
-def serialize_reactions(reactions: Iterable[Reaction]) -> List[ReactionResponse]:
+def serialize_reactions(reactions: Iterable[Reaction]) -> list[ReactionResponse]:
     return [
         ReactionResponse(
             id=reaction.pk,

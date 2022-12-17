@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 
 from django.db import models
 from user_sessions.backends.db import SessionStore
@@ -24,6 +24,6 @@ class Session(models.Model):
         verbose_name_plural = "sessions"
     def get_decoded(self) -> SessionStore: ...
     user: models.ForeignKey[Any]
-    user_agent: models.CharField[Optional[str]]
+    user_agent: models.CharField[str | None]
     last_activity: models.DateTimeField[datetime]
-    ip: models.GenericIPAddressField[Optional[str]]
+    ip: models.GenericIPAddressField[str | None]

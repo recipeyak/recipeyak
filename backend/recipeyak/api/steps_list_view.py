@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -17,7 +15,7 @@ from recipeyak.models import ChangeType, RecipeChange, Step, user_and_team_recip
 
 class StepCreateParams(RequestParams):
     text: str
-    position: Optional[str] = None
+    position: str | None = None
 
 
 @api_view(["POST"])

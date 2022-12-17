@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Type, Union, cast
+from typing import Any, cast
 
 import pytest
 from django.contrib.auth import get_user_model
@@ -78,19 +78,16 @@ def test_detail(client: APIClient, user: User) -> None:
         assert res.json()[key] == data[key], "fields should be updated"
 
 
-KindType = Union[Type[str], Type[int], Type[bool], Type[list], Type[dict]]
-
-
 @dataclass
 class Key:
     name: str
-    kind: KindType
+    kind: type[str] | type[int] | type[bool] | type[list[Any]] | type[dict[Any, Any]]
 
 
 @dataclass
 class Shape:
     url: str
-    keys: List[Key]
+    keys: list[Key]
 
 
 def matches_shape(res: Response, shape: Shape) -> bool:
@@ -113,7 +110,7 @@ def matches_shape(res: Response, shape: Shape) -> bool:
 
 
 @pytest.fixture
-def login_info() -> Dict[str, str]:
+def login_info() -> dict[str, str]:
     return dict(email="john@doe.org", password="testing123")
 
 
@@ -144,7 +141,7 @@ def test_session_list(client: APIClient, logged_in_user: User) -> None:
 
 
 def test_session_delete_all(
-    client: APIClient, logged_in_user: User, login_info: Dict[str, Any]
+    client: APIClient, logged_in_user: User, login_info: dict[str, Any]
 ) -> None:
     # login a second time with a different client to create multiple sessions
     APIClient().post("/api/v1/auth/login/", login_info)

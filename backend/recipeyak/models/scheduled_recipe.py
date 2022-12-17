@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import date
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from django.core.validators import MinValueValidator
 from django.db import models, transaction
@@ -19,7 +19,7 @@ class ScheduledRecipeManager(models.Manager["ScheduledRecipe"]):
         self,
         recipe: Recipe,
         on: date,
-        team: Optional[Team],
+        team: Team | None,
         count: int,
         user: User,
     ) -> "ScheduledRecipe":

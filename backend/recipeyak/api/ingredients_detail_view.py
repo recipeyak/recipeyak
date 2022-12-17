@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -16,11 +14,11 @@ from recipeyak.models import ChangeType, RecipeChange, user_and_team_ingredients
 
 
 class IngredientsPatchParams(RequestParams):
-    quantity: Optional[str] = None
-    name: Optional[str] = None
-    description: Optional[str] = None
-    position: Optional[str] = None
-    optional: Optional[bool] = None
+    quantity: str | None = None
+    name: str | None = None
+    description: str | None = None
+    position: str | None = None
+    optional: bool | None = None
 
 
 @api_view(["PATCH", "DELETE"])

@@ -1,7 +1,6 @@
 import json
 from datetime import date, timedelta
 from decimal import Decimal
-from typing import List, Tuple
 
 import pytest
 from rest_framework import status
@@ -307,7 +306,7 @@ def test_scheduling_multiple_times_some_ingredient(
     ],
 )
 def test_combine_ingredients(
-    ingredients: List[Tuple[str, str]], expected: IngredientList
+    ingredients: list[tuple[str, str]], expected: IngredientList
 ) -> None:
     ingres = []
     position = 1

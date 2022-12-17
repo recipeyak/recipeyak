@@ -1,6 +1,5 @@
 import logging
 import os
-from typing import List
 
 import dj_database_url
 import sentry_sdk
@@ -36,7 +35,7 @@ if DEBUG or DOCKERBUILD:
 else:
     SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
-ALLOWED_HOSTS: List[str] = [".recipeyak.com"]
+ALLOWED_HOSTS: list[str] = [".recipeyak.com"]
 
 if DEBUG:
     ALLOWED_HOSTS = ["*"]

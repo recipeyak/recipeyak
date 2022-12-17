@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -19,8 +17,8 @@ class IngredientCreateParams(RequestParams):
     quantity: str
     name: str
     description: str
-    position: Optional[str] = None
-    optional: Optional[bool] = None
+    position: str | None = None
+    optional: bool | None = None
 
 
 @api_view(["POST"])

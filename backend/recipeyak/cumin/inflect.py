@@ -18,7 +18,6 @@ Accuracy (measured on CELEX English morphology word forms):
 https://github.com/clips/pattern/blob/ec95f97b2e34c2232e7c43ef1e34e3f0dea6654b/pattern/text/en/inflect.py
 """
 import re
-from typing import Dict, List, Optional, Tuple
 
 VERB, NOUN, ADJECTIVE, ADVERB = "VB", "NN", "JJ", "RB"
 
@@ -75,7 +74,7 @@ plural_prepositions = {
 # - apply to a certain category of words only in classical mode,
 # - apply only in classical mode.
 # Each rule is a (suffix, inflection, category, classic)-tuple.
-plural_rules: List[List[Tuple[str, str, Optional[str], bool]]] = [
+plural_rules: list[list[tuple[str, str, str | None, bool]]] = [
     # 0) Indefinite articles and demonstratives.
     [
         (r"^a$|^an$", "some", None, False),
@@ -553,7 +552,7 @@ plural_categories = {
 def pluralize(
     word: str,
     pos: str = NOUN,
-    custom: Optional[Dict[str, str]] = None,
+    custom: dict[str, str] | None = None,
     classical: bool = True,
 ) -> str:
     """Returns the plural of a given word, e.g., child => children.
@@ -830,7 +829,7 @@ singular_irregular = {
 
 
 def singularize(
-    word: str, pos: str = NOUN, custom: Optional[Dict[str, str]] = None
+    word: str, pos: str = NOUN, custom: dict[str, str] | None = None
 ) -> str:
     """Returns the singular of a given word."""
     if custom is None:

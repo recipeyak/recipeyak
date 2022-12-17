@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List
+from typing import Any
 
 from rest_framework import serializers
 
@@ -104,7 +104,7 @@ class CreateInviteSerializer(BaseSerializer):
         team = self.initial_data["team"]
         return [email for email in emails if not team.invite_exists(email)]
 
-    def create(self, validated_data: dict[str, Any]) -> List[Invite]:
+    def create(self, validated_data: dict[str, Any]) -> list[Invite]:
         emails = validated_data.pop("emails")
         # TODO(sbdchd): bulk create
         return [

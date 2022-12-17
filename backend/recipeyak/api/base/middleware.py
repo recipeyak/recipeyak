@@ -1,7 +1,7 @@
 import enum
 import logging
 import time
-from typing import Callable, Optional
+from typing import Callable
 from uuid import uuid4
 
 import pydantic
@@ -194,7 +194,7 @@ class SessionMiddleware(DjangoSessionMiddleware):
 class ExceptionMiddleware(MiddlewareMixin):
     def process_exception(
         self, request: HttpRequest, exception: Exception
-    ) -> Optional[HttpResponse]:
+    ) -> HttpResponse | None:
         # return a 400 response if we encounter a pydantic validation error.
         if isinstance(exception, pydantic.ValidationError) and issubclass(
             exception.model, RequestParams

@@ -1,5 +1,5 @@
 from datetime import date, datetime, timedelta
-from typing import Optional, Sequence, cast
+from typing import Sequence, cast
 
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
@@ -101,7 +101,7 @@ def get_ical_view(request: HttpRequest, team_id: int, ical_id: str) -> HttpRespo
         events=events,
     )
 
-    last_modified_scheduled: Optional[ScheduledRecipe] = (
+    last_modified_scheduled = (
         ScheduledRecipe.objects.filter(team=team).order_by("-modified").first()
     )
 
