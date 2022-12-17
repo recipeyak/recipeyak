@@ -54,9 +54,6 @@ INSTALLED_APPS = [
     "rest_framework",
     "django.contrib.sites",
     "django.contrib.postgres",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
 ]
 
 sentry_sdk.init(
@@ -83,14 +80,6 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # https://stackoverflow.com/questions/25468676/django-sites-model-what-is-and-why-is-site-id-1#25468782
 SITE_ID = 1
 
-# Required for using email and on username. http://django-allauth.readthedocs.io/en/latest/advanced.html
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_AUTHENTICATION_METHOD = "email"  # (="username" | "email" | "username_email)
-ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_EMAIL_VERIFICATION = None
-ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 SESSION_COOKIE_AGE = 365 * 24 * 60 * 60  # sessions expire in one year
@@ -99,10 +88,6 @@ if not DEBUG:
     # make the cookie HTTPS only
     # https://docs.djangoproject.com/en/2.2/ref/settings/#session-cookie-secure
     SESSION_COOKIE_SECURE = True
-
-# http://django-rest-auth.readthedocs.io/en/latest/api_endpoints.html#basic
-# Require the old password be provided to change a your password
-OLD_PASSWORD_FIELD_ENABLED = True
 
 MIDDLEWARE = [
     "recipeyak.api.base.middleware.HealthCheckMiddleware",
