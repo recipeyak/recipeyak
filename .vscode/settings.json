@@ -54,5 +54,6 @@
   "isort.importStrategy": "fromEnvironment",
   "isort.args": ["--sp", "./backend/pyproject.toml"],
   "python.testing.autoTestDiscoverOnSaveEnabled": false,
-  "python.testing.promptToConfigure": false
+  "python.testing.promptToConfigure": false,
+  "explorer.excludeGitIgnore": true
 }
