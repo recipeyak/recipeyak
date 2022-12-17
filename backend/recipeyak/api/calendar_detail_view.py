@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import logging
 from datetime import date, datetime
-from typing import Optional
 
 import pydantic
 from rest_framework import status
@@ -20,8 +19,8 @@ logger = logging.getLogger(__name__)
 
 
 class ScheduledRecipeUpdateParams(RequestParams):
-    on: Optional[date]
-    count: Optional[int]
+    on: date | None
+    count: int | None
 
 
 class CreatedBySerializer(pydantic.BaseModel):
@@ -39,9 +38,9 @@ class ScheduleRecipeSerializer(pydantic.BaseModel):
     id: int
     count: int
     created: datetime
-    createdBy: Optional[CreatedBySerializer]
-    team: Optional[str]
-    user: Optional[str]
+    createdBy: CreatedBySerializer | None
+    team: str | None
+    user: str | None
     recipe: RecipeMetadataSerializer
     on: date
 

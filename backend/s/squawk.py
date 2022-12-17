@@ -5,7 +5,7 @@ import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 from shutil import which
-from typing import Mapping, Optional
+from typing import Mapping
 
 APP_LABEL = "recipeyak"
 
@@ -31,7 +31,7 @@ class PRInfo:
     pr_number: str
 
 
-def get_pr_info(env: Mapping[str, str]) -> Optional[PRInfo]:
+def get_pr_info(env: Mapping[str, str]) -> PRInfo | None:
     circle_pr = env.get("CIRCLE_PULL_REQUEST")
     if circle_pr is None:
         return None

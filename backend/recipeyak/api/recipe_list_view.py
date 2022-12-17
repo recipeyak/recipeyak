@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import collections
 import logging
-from typing import Any, Iterable, Optional
+from typing import Any, Iterable
 
 import advocate
 from django.core.exceptions import ValidationError
@@ -199,8 +199,8 @@ def recipe_get_view(request: AuthedRequest) -> Response:
 
 class RecipePostParams(RequestParams):
     team: str
-    from_url: Optional[str] = None
-    name: Optional[str] = None
+    from_url: str | None = None
+    name: str | None = None
 
 
 def recipe_post_view(request: AuthedRequest) -> Response:

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Dict, Sequence
+from typing import Sequence
 
 from recipeyak.cumin.inflect import singularize
 from recipeyak.cumin.quantity import BaseUnit, Quantity, parse_quantity
@@ -25,7 +25,7 @@ class IngredientItem:
     category: str | None = None
 
 
-IngredientList = Dict[str, IngredientItem]
+IngredientList = dict[str, IngredientItem]
 
 
 def combine_ingredients(ingredients: Sequence[Ingredient]) -> IngredientList:

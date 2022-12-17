@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -16,8 +14,8 @@ from recipeyak.models import ChangeType, RecipeChange, user_and_team_steps
 
 
 class StepPatchParams(RequestParams):
-    text: Optional[str] = None
-    position: Optional[str] = None
+    text: str | None = None
+    position: str | None = None
 
 
 @api_view(["PATCH", "DELETE"])

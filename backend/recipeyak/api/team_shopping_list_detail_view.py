@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 from django.core.exceptions import ValidationError
 from django.db.models import QuerySet
 from rest_framework import status
@@ -17,7 +15,7 @@ from recipeyak.models import ScheduledRecipe, ShoppingList, Team
 
 def get_scheduled_recipes(
     *, request: AuthedRequest, team_pk: str
-) -> Optional[QuerySet[ScheduledRecipe]]:
+) -> QuerySet[ScheduledRecipe] | None:
     start = request.query_params.get("start")
     end = request.query_params.get("end")
 
@@ -42,7 +40,7 @@ def get_shopping_list_view(request: AuthedRequest, team_pk: str) -> Response:
     if scheduled_recipes is None:
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    ingredients: List[Ingredient] = []
+    ingredients: list[Ingredient] = []
     for scheduled_recipe in scheduled_recipes:
         for _ in range(scheduled_recipe.count):
             ingredients += (

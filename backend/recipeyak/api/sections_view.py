@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -18,7 +16,7 @@ from recipeyak.models import ChangeType, Recipe, RecipeChange, Section
 
 
 class SectionCreateParams(RequestParams):
-    position: Optional[str] = None
+    position: str | None = None
     title: str
 
 
@@ -76,8 +74,8 @@ def delete_section_view(request: AuthedRequest, section_pk: int) -> Response:
 
 
 class SectionUpdateParams(RequestParams):
-    position: Optional[str] = None
-    title: Optional[str] = None
+    position: str | None = None
+    title: str | None = None
 
 
 def update_section_view(request: AuthedRequest, section_pk: int) -> Response:

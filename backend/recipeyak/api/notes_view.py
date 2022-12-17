@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import List, Optional
-
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from pydantic import root_validator
@@ -19,7 +17,7 @@ from recipeyak.models import Note, Upload, user_and_team_notes, user_and_team_re
 
 class CreateNoteParams(RequestParams):
     text: str
-    attachment_upload_ids: List[str]
+    attachment_upload_ids: list[str]
 
     @root_validator
     def validate_text(
@@ -31,8 +29,8 @@ class CreateNoteParams(RequestParams):
 
 
 class EditNoteParams(RequestParams):
-    text: Optional[str] = None
-    attachment_upload_ids: Optional[List[str]] = None
+    text: str | None = None
+    attachment_upload_ids: list[str] | None = None
 
 
 @api_view(["POST"])

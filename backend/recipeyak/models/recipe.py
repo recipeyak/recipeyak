@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import itertools
 from datetime import date
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -75,7 +75,7 @@ class Recipe(CommonInfo):
     class Meta:
         db_table = "core_recipe"
 
-    def move_to(self, account: Union[User, Team]) -> "Recipe":
+    def move_to(self, account: User | Team) -> "Recipe":
         """
         Move recipe from current owner to another team or user
 
@@ -87,7 +87,7 @@ class Recipe(CommonInfo):
             self.save()
             return self
 
-    def copy_to(self, *, actor: User, account: Union[User, Team]) -> "Recipe":
+    def copy_to(self, *, actor: User, account: User | Team) -> "Recipe":
         """
         Copy recipe to another team or user
         """
@@ -98,7 +98,7 @@ class Recipe(CommonInfo):
         *,
         actor: User,
         update_title: bool = True,
-        account: Union[User, Team, None] = None,
+        account: User | Team | None = None,
     ) -> "Recipe":
         """
         Duplicate / clone a recipe to its current owner
@@ -134,7 +134,7 @@ class Recipe(CommonInfo):
         *,
         on: date,
         user: "User",
-        team: Optional["Team"] = None,
+        team: "Team" | None = None,
         count: int = 1,
     ) -> ScheduledRecipe:
         return ScheduledRecipe.objects.create_scheduled(
@@ -169,7 +169,7 @@ class Recipe(CommonInfo):
     def section_set(self) -> BaseManager[Section]:
         return Section.objects.filter(recipe=self)
 
-    def get_last_scheduled(self) -> Optional[date]:
+    def get_last_scheduled(self) -> date | None:
         """Return the most recent date this recipe was scheduled for"""
         scheduled_recipe = self.scheduledrecipe_set.first()
         if scheduled_recipe is not None:

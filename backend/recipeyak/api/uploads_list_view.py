@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import Dict
 from uuid import uuid4
 
 import pydantic
@@ -23,7 +22,7 @@ class StartUploadParams(RequestParams):
 class StartUploadResponse(pydantic.BaseModel):
     id: str
     upload_url: str
-    upload_headers: Dict[str, str]
+    upload_headers: dict[str, str]
 
 
 @api_view(["POST"])
