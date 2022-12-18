@@ -3,17 +3,13 @@ import * as React from "react"
 import { assertNever } from "@/assert"
 import { classNames } from "@/classnames"
 
-export const ButtonLink = (props: IButtonProps) => (
-  <Button {...props} className={classNames(props.className, "is-link")} />
-)
-
 interface IButtonProps {
   readonly loading?: boolean
   readonly size?: "small" | "normal"
   readonly active?: boolean
   readonly className?: string
   readonly children: React.ReactNode
-  readonly color?: "primary" | "danger" | "secondary"
+  readonly color?: "primary" | "danger" | "secondary" | "link"
   readonly type?: "submit" | "reset" | "button" | undefined
   readonly name?: string | undefined
   readonly disabled?: boolean
@@ -43,6 +39,7 @@ export const Button = ({
         "is-primary": color === "primary",
         "is-danger": color === "danger",
         "is-secondary": color === "secondary",
+        "is-link": color === "link",
         "is-loading": loading,
         "is-active": active,
       })}

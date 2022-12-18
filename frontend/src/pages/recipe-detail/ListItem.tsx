@@ -2,7 +2,7 @@ import React from "react"
 import Textarea from "react-textarea-autosize"
 
 import cls from "@/classnames"
-import { Button, ButtonLink } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import GlobalEvent from "@/components/GlobalEvent"
 import { Markdown } from "@/components/Markdown"
 import { IRecipe } from "@/store/reducers/recipes"
@@ -238,12 +238,12 @@ export default class ListItem extends React.Component<
           <section className="d-flex justify-space-between align-center">
             <span className="is-italic">Unsaved Changes</span>
             <section>
-              <ButtonLink size="small" onClick={this.enableEditing}>
+              <Button color="link" size="small" onClick={this.enableEditing}>
                 View Edits
-              </ButtonLink>
-              <ButtonLink size="small" onClick={this.discardChanges}>
+              </Button>
+              <Button color="link" size="small" onClick={this.discardChanges}>
                 Discard
-              </ButtonLink>
+              </Button>
             </section>
           </section>
         )}

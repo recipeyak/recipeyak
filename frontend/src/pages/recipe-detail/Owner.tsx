@@ -2,7 +2,7 @@ import React from "react"
 import { connect } from "react-redux"
 import { Link } from "react-router-dom"
 
-import { Button, ButtonLink } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import { Select } from "@/components/Forms"
 import GlobalEvent from "@/components/GlobalEvent"
 import { isOk, Result } from "@/result"
@@ -219,9 +219,9 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
               </Select>
               <hr className="dropdown-divider" />
               <div className="d-flex justify-space-between ml-2 mr-2">
-                <ButtonLink size="small" onClick={this.toggle}>
+                <Button color="link" size="small" onClick={this.toggle}>
                   cancel
-                </ButtonLink>
+                </Button>
                 <div className="d-flex justify-space-between">
                   <Button
                     color="secondary"

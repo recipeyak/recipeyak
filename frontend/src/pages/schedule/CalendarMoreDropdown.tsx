@@ -1,4 +1,4 @@
-import { Button, ButtonLink } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import { selectTarget, TextInput } from "@/components/Forms"
 import { Loader } from "@/components/Loader"
 import { isSuccessLike, WebData } from "@/webdata"
@@ -41,7 +41,8 @@ export function ICalConfig({
           </div>
         </>
       ) : null}
-      <ButtonLink
+      <Button
+        color="link"
         className="d-block mx-auto text-underline box-shadow-none "
         size="small"
         onClick={() => {
@@ -49,7 +50,7 @@ export function ICalConfig({
         }}
       >
         {settings.data.syncEnabled ? "Disable Sync" : "Enable Sync"}
-      </ButtonLink>
+      </Button>
     </div>
   )
 }

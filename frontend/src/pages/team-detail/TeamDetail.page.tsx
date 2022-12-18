@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import { RouteComponentProps } from "react-router"
 import { Link } from "react-router-dom"
 
-import { Button, ButtonLink } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
@@ -167,14 +167,15 @@ class TeamSettings extends React.Component<
           >
             Save Changes
           </Button>
-          <ButtonLink
+          <Button
+            color="danger"
             onClick={() => {
               this.deleteTeam()
             }}
             loading={this.state.loadingDeleteTeam}
           >
             Delete Team
-          </ButtonLink>
+          </Button>
         </div>
       </form>
     )
