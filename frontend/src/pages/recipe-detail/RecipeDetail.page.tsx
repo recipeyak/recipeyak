@@ -18,6 +18,7 @@ import { NoteContainer } from "@/pages/recipe-detail/Notes"
 import { SectionTitle } from "@/pages/recipe-detail/RecipeHelpers"
 import { RecipeTimeline } from "@/pages/recipe-detail/RecipeTimeline"
 import RecipeTitle from "@/pages/recipe-detail/RecipeTitle"
+import { Dropdown } from "@/pages/recipe-detail/RecipeTitleDropdown"
 import { Section } from "@/pages/recipe-detail/Section"
 import StepContainer from "@/pages/recipe-detail/StepContainer"
 import { getNewPosIngredients } from "@/position"
@@ -521,10 +522,10 @@ export function Recipe(props: IRecipeProps) {
             </div>
             <MyRecipeMeta>
               {[
-                { title: "From", content: "cooking.nytimes.com" },
-                { title: "Servings", content: "6 to 8 servings" },
                 { title: "Time", content: "45 minutes" },
+                { title: "Servings", content: "6 to 8 servings" },
                 { title: "Tags", content: "chris, natasha" },
+                { title: "From", content: "cooking.nytimes.com" },
               ].map((x) => (
                 <RecipeMetaContainer key={x.title}>
                   <RecipeMetaTitle>{x.title}</RecipeMetaTitle>
@@ -536,24 +537,6 @@ export function Recipe(props: IRecipeProps) {
         </RecipeDetailsContainer>
         <HeaderImg src="https://images-cdn.recipeyak.com/1/10c9c2a1e18d4809a215047d67bd201a/9B0360A4-B35D-4DC4-80B1-2FED8BD28287.jpeg" />
       </div>
-
-      {/* <RecipeTitle
-        id={recipe.id}
-        name={recipe.name}
-        author={recipe.author}
-        source={recipe.source}
-        servings={recipe.servings}
-        time={recipe.time}
-        owner={recipe.owner}
-        updating={recipe.updating}
-        editing={editingMetadata}
-        editingModeEnabled={editingEnabled}
-        toggleEditing={() => {
-          setEditingMetadata((s) => !s)
-        }}
-        toggleEditMode={toggleEditMode}
-        tags={recipe.tags}
-      /> */}
 
       {isTimeline ? (
         <RecipeTimeline recipeId={recipe.id} createdAt={recipe.created} />
