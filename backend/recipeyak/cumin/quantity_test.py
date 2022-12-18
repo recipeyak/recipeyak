@@ -191,6 +191,10 @@ def test_adding_incompatible_units() -> None:
             ("1 tablespoon", "chopped fresh oregano (or 1 teaspoon dried oregano)"),
         ),
         (
+            "12 ounces (about 4 to 5) skinless, boneless chicken thighs",
+            ("12 ounces (about 4 to 5)", "skinless, boneless chicken thighs"),
+        ),
+        (
             "1 1/2 teaspoons minced fresh thyme (or 1/2 teaspoon dried thyme)",
             ("1 1/2 teaspoons", "minced fresh thyme (or 1/2 teaspoon dried thyme)"),
         ),

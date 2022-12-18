@@ -133,6 +133,10 @@
       'dry goods',
     ),
     tuple(
+      'cloves garlic',
+      'produce',
+    ),
+    tuple(
       'coconut extract',
       'produce',
     ),
@@ -227,6 +231,10 @@
     tuple(
       'fish sauce',
       'condiments',
+    ),
+    tuple(
+      'garlic cloves',
+      'produce',
     ),
     tuple(
       'graham cracker crumbs',
