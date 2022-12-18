@@ -2,11 +2,7 @@ import React from "react"
 import { connect } from "react-redux"
 import { Link } from "react-router-dom"
 
-import {
-  ButtonLink,
-  ButtonPrimary,
-  ButtonSecondary,
-} from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import { Select } from "@/components/Forms"
 import GlobalEvent from "@/components/GlobalEvent"
 import { isOk, Result } from "@/result"
@@ -223,11 +219,12 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
               </Select>
               <hr className="dropdown-divider" />
               <div className="d-flex justify-space-between ml-2 mr-2">
-                <ButtonLink size="small" onClick={this.toggle}>
+                <Button variant="link" size="small" onClick={this.toggle}>
                   cancel
-                </ButtonLink>
+                </Button>
                 <div className="d-flex justify-space-between">
-                  <ButtonSecondary
+                  <Button
+                    variant="secondary"
                     size="small"
                     loading={moving}
                     className="mr-1"
@@ -235,15 +232,16 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
                     disabled={this.disableMove()}
                   >
                     move
-                  </ButtonSecondary>
-                  <ButtonPrimary
+                  </Button>
+                  <Button
+                    variant="primary"
                     size="small"
                     loading={copying}
                     onClick={() => this.copy()}
                     disabled={this.disableCopy()}
                   >
                     copy
-                  </ButtonPrimary>
+                  </Button>
                 </div>
               </div>
             </div>

@@ -3,7 +3,7 @@ import React from "react"
 import { connect } from "react-redux"
 
 import cls from "@/classnames"
-import { Button, ButtonPrimary } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
 import GlobalEvent from "@/components/GlobalEvent"
 import MetaData from "@/pages/recipe-detail/MetaData"
@@ -301,15 +301,16 @@ class RecipeTitle extends React.Component<
               >
                 Cancel
               </Button>
-              <ButtonPrimary
+              <Button
                 size="small"
                 type="submit"
+                variant="primary"
                 loading={updating}
                 onClick={this.handleSave}
                 name="save recipe"
               >
                 Save
-              </ButtonPrimary>
+              </Button>
             </div>
           </div>
         )}

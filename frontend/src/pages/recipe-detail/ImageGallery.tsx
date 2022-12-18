@@ -1,7 +1,7 @@
 import React from "react"
 import { ChevronLeft, ChevronRight, X } from "react-feather"
 
-import { ButtonSecondary } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import { styled } from "@/theme"
 
 const MyGalleryContainer = styled.div`
@@ -42,6 +42,10 @@ const MyGalleryBackground = styled.div`
   width: 100%;
   height: 100%;
 `
+
+const ButtonSecondary = (props: React.ComponentProps<typeof Button>) => (
+  <Button variant="secondary" {...props} />
+)
 
 const MyGalleryButton = styled(ButtonSecondary)`
   background: rgba(0, 0, 0, 0.46);

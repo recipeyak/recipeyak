@@ -1,7 +1,7 @@
 import Raven from "raven-js"
 import * as React from "react"
 
-import { ButtonPrimary } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import Logo from "@/components/Logo"
 
 interface IErrorBoundaryState {
@@ -9,15 +9,16 @@ interface IErrorBoundaryState {
 }
 
 const ErrorReportButton = () => (
-  <ButtonPrimary
+  <Button
     size="small"
+    variant="primary"
     className="ml-1"
     onClick={() => {
       Raven.showReportDialog()
     }}
   >
     Submit error report
-  </ButtonPrimary>
+  </Button>
 )
 
 export default class ErrorBoundary extends React.Component<

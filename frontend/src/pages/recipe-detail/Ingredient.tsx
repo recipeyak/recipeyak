@@ -3,7 +3,7 @@ import { useDrag, useDrop } from "react-dnd"
 
 import { isMobile } from "@/browser"
 import cls from "@/classnames"
-import { Button, ButtonLink, ButtonPrimary } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import { CheckBox, selectTarget, TextInput } from "@/components/Forms"
 import GlobalEvent from "@/components/GlobalEvent"
 import { DragDrop, handleDndHover } from "@/dragDrop"
@@ -317,14 +317,15 @@ export function Ingredient(props: {
             </Button>
           </p>
           <p className="control">
-            <ButtonPrimary
+            <Button
+              variant="primary"
               size="small"
               type="submit"
               name="update"
               loading={props.updating}
             >
               Update
-            </ButtonPrimary>
+            </Button>
           </p>
         </div>
       </section>
@@ -360,12 +361,12 @@ export function Ingredient(props: {
         <section className="d-flex justify-space-between align-center">
           <span className="is-italic fs-4">Unsaved Changes</span>
           <section>
-            <ButtonLink size="small" onClick={enableEditing}>
+            <Button variant="link" size="small" onClick={enableEditing}>
               View Edits
-            </ButtonLink>
-            <ButtonLink size="small" onClick={discardChanges}>
+            </Button>
+            <Button variant="link" size="small" onClick={discardChanges}>
               Discard
-            </ButtonLink>
+            </Button>
           </section>
         </section>
       )}

@@ -11,7 +11,7 @@ import React, { useEffect } from "react"
 import { useLocation } from "react-router-dom"
 
 import { Box } from "@/components/Box"
-import { ButtonPlain } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import { Select } from "@/components/Forms"
 import { Modal } from "@/components/Modal"
 import { toISODateString } from "@/date"
@@ -231,23 +231,23 @@ function Nav({ dayTs, teamID, onPrev, onNext, onCurrent }: INavProps) {
 
       <Box gap={1}>
         <CalTitle dayTs={dayTs} />
-        <ButtonPlain size="small" className="p-1" onClick={toggleShowSetting}>
+        <Button size="small" className="p-1" onClick={toggleShowSetting}>
           <IconSettings />
-        </ButtonPlain>
-        <ButtonPlain size="small" onClick={toggleShopping}>
+        </Button>
+        <Button size="small" onClick={toggleShopping}>
           Shopping
-        </ButtonPlain>
+        </Button>
       </Box>
       <Box gap={1}>
-        <ButtonPlain size="small" onClick={onPrev}>
+        <Button size="small" onClick={onPrev}>
           {"←"}
-        </ButtonPlain>
-        <ButtonPlain size="small" onClick={onCurrent}>
+        </Button>
+        <Button size="small" onClick={onCurrent}>
           Today
-        </ButtonPlain>
-        <ButtonPlain size="small" onClick={onNext}>
+        </Button>
+        <Button size="small" onClick={onNext}>
           {"→"}
-        </ButtonPlain>
+        </Button>
       </Box>
     </Box>
   )

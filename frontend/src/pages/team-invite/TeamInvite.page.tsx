@@ -2,7 +2,7 @@ import React from "react"
 import { connect } from "react-redux"
 import { Link, RouteComponentProps } from "react-router-dom"
 
-import { ButtonPrimary } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import { RadioButton, TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
@@ -156,13 +156,14 @@ class TeamInvite extends React.Component<ITeamInviteProps, ITeamInviteState> {
             <b>Note:</b> Users without an account will be sent an email asking
             to create one.
           </p>
-          <ButtonPrimary
+          <Button
             type="submit"
+            variant="primary"
             loading={this.props.sendingTeamInvites}
             className="justify-self-left"
           >
             Send Invite
-          </ButtonPrimary>
+          </Button>
         </form>
       </div>
     )

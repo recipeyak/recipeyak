@@ -1,7 +1,7 @@
 import React from "react"
 import { connect } from "react-redux"
 
-import { ButtonPrimary } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import { FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { clearPasswordUpdateError } from "@/store/reducers/passwordChange"
@@ -126,9 +126,14 @@ class PasswordChange extends React.Component<
         </div>
 
         <p className="control">
-          <ButtonPrimary type="submit" className="w-100" loading={loading}>
+          <Button
+            variant="primary"
+            type="submit"
+            className="w-100"
+            loading={loading}
+          >
             Update
-          </ButtonPrimary>
+          </Button>
         </p>
       </form>
     )

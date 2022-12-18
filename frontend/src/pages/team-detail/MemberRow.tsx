@@ -1,7 +1,7 @@
 import { connect } from "react-redux"
 
 import { Avatar } from "@/components/Avatar"
-import { ButtonDanger, ButtonPlain } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import { Select } from "@/components/Forms"
 import { IMember, ITeam } from "@/store/reducers/teams"
 import { IUser } from "@/store/reducers/user"
@@ -60,7 +60,7 @@ const MemberRow = ({
       {!isActive ? (
         <section className="d-flex align-items-start direction-column">
           <p className="bold">invite sent</p>
-          <ButtonPlain size="small">Resend Invite</ButtonPlain>
+          <Button size="small">Resend Invite</Button>
         </section>
       ) : null}
     </td>
@@ -90,7 +90,8 @@ const MemberRow = ({
     </td>
     <td className="vertical-align-middle text-right">
       {isUser || userIsTeamAdmin ? (
-        <ButtonDanger
+        <Button
+          variant="danger"
           size="small"
           onClick={() => {
             deleteMembership(teamID, membershipID, isUser)
@@ -98,7 +99,7 @@ const MemberRow = ({
           loading={deleting}
         >
           {isUser ? "leave" : "remove"}
-        </ButtonDanger>
+        </Button>
       ) : null}
     </td>
   </tr>

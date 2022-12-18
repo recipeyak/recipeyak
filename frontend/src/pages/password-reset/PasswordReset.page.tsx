@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import { Link } from "react-router-dom"
 
 import AuthContainer from "@/components/AuthContainer"
-import { ButtonPrimary } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import { EmailInput, FormErrorHandler } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { IPasswordResetError } from "@/store/reducers/auth"
@@ -73,9 +73,9 @@ class PasswordReset extends React.Component<
           </div>
 
           <div className="field d-flex flex-space-between align-items-center">
-            <ButtonPrimary loading={this.props.loading} type="submit">
+            <Button loading={this.props.loading} type="submit">
               Send Reset Email
-            </ButtonPrimary>
+            </Button>
 
             <Link to={redirect.route}>{redirect.name} →</Link>
           </div>
