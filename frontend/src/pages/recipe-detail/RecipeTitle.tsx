@@ -13,7 +13,7 @@ import { ScheduleModal } from "@/pages/recipe-detail/ScheduleModal"
 import { IRecipe, updateRecipe } from "@/store/reducers/recipes"
 import { hasSelection } from "@/utils/general"
 
-function TagEditor({
+export function TagEditor({
   tags,
   onRemove,
   onCreate,
@@ -35,9 +35,8 @@ function TagEditor({
     setNewTag("")
   }
   return (
-    <div className={cls("d-flex mt-2", className)}>
-      <label className="d-flex align-center">tags</label>
-      <div className="ml-2 d-flex align-center">
+    <div className={cls("d-flex", className)}>
+      <div className="d-flex align-center">
         {tags?.map((x) => (
           <span className="tag" key={x}>
             {x}{" "}

@@ -1,11 +1,12 @@
 import { last, sortBy } from "lodash-es"
 import queryString from "query-string"
-import React from "react"
+import React, { useState } from "react"
 import { RouteComponentProps, useHistory } from "react-router"
 import { useLocation } from "react-router-dom"
 
 import * as api from "@/api"
-import { Button } from "@/components/Buttons"
+import { Button, ButtonPrimary } from "@/components/Buttons"
+import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
 import { formatHumanDate } from "@/date"
@@ -17,7 +18,7 @@ import { Ingredient } from "@/pages/recipe-detail/Ingredient"
 import { NoteContainer } from "@/pages/recipe-detail/Notes"
 import { SectionTitle } from "@/pages/recipe-detail/RecipeHelpers"
 import { RecipeTimeline } from "@/pages/recipe-detail/RecipeTimeline"
-import RecipeTitle from "@/pages/recipe-detail/RecipeTitle"
+import RecipeTitle, { TagEditor } from "@/pages/recipe-detail/RecipeTitle"
 import { Dropdown } from "@/pages/recipe-detail/RecipeTitleDropdown"
 import { Section } from "@/pages/recipe-detail/Section"
 import StepContainer from "@/pages/recipe-detail/StepContainer"
@@ -31,6 +32,7 @@ import {
   IRecipe,
   updateIngredient,
   updateSectionForRecipe,
+  updatingRecipeAsync,
 } from "@/store/reducers/recipes"
 import { styled } from "@/theme"
 import { recipeURL } from "@/urls"
@@ -440,12 +442,139 @@ const RecipeDetailsContainer = styled.div`
 `
 
 const MyRecipeMeta = styled.div`
-  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: end;
   grid-row-gap: 4px;
 `
+
+function RecipeInfo(props: {
+  recipe: IRecipe
+  editingEnabled: boolean
+  toggleEditMode: () => void
+}) {
+  const dispatch = useDispatch()
+  const [formState, setFormState] = useState<Partial<IRecipe>>(props.recipe)
+  const onSave = () => {
+    void updatingRecipeAsync({ data: {}, id: props.recipe.id }, dispatch)
+  }
+
+  const handleChange =
+    (attr: keyof Partial<IRecipe>) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const val = e.target.value
+      setFormState((s) => ({ ...s, [attr]: val }))
+    }
+  return (
+    <div className="d-grid ingredients-preparation-grid">
+      <RecipeDetailsContainer>
+        <Dropdown
+          recipeId={props.recipe.id}
+          editingEnabled={props.editingEnabled}
+          toggleEditing={props.toggleEditMode}
+          toggleScheduling={() => {}}
+        />
+        {props.editingEnabled ? (
+          <div>
+            <label className="bold">
+              Title
+              <TextInput
+                autoFocus
+                placeholder="new recipe title"
+                onChange={handleChange("name")}
+                defaultValue={formState.name}
+              />
+            </label>
+            <label className="bold">
+              Author
+              <TextInput
+                placeholder="Author"
+                defaultValue={formState.author ?? ""}
+                onChange={handleChange("author")}
+              />
+            </label>
+            <label className="bold">
+              Time
+              <TextInput
+                placeholder="1 hour"
+                defaultValue={formState.time ?? ""}
+                onChange={handleChange("time")}
+              />
+            </label>
+            <label className="bold">
+              Servings
+              <TextInput
+                placeholder="4 to 6 servings"
+                defaultValue={formState.servings ?? ""}
+                onChange={handleChange("servings")}
+                name="servings"
+              />
+            </label>
+            <label className="bold">
+              Tags
+              <TagEditor
+                tags={formState.tags}
+                onCreate={() => {}}
+                onRemove={() => {}}
+                className="mr-2"
+              />
+            </label>
+            <label className="bold">
+              From
+              <TextInput
+                placeholder="http://example.com/dumpling-soup"
+                defaultValue={formState.source ?? ""}
+                onChange={handleChange("source")}
+                name="source"
+              />
+            </label>
+            <div className="d-flex grid-entire-row align-items-end justify-content-end mt-4">
+              <Button
+                size="small"
+                className="mr-3"
+                type="button"
+                name="cancel recipe update"
+                onClick={() => {}}
+              >
+                Cancel
+              </Button>
+              <ButtonPrimary
+                size="small"
+                type="submit"
+                loading={false}
+                onClick={() => {}}
+                name="save recipe"
+              >
+                Save
+              </ButtonPrimary>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div>
+              <MyRecipeTitle>{props.recipe.name}</MyRecipeTitle>
+              <div>By {props.recipe.author}</div>
+            </div>
+            <MyRecipeMeta>
+              {[
+                { title: "Time", content: "45 minutes" },
+                { title: "Servings", content: "6 to 8 servings" },
+                { title: "Tags", content: "chris, natasha" },
+                { title: "From", content: "cooking.nytimes.com" },
+              ].map((x) => (
+                <RecipeMetaContainer key={x.title}>
+                  <RecipeMetaTitle>{x.title}</RecipeMetaTitle>
+                  <RecipeMetaContent>{x.content}</RecipeMetaContent>
+                </RecipeMetaContainer>
+              ))}
+            </MyRecipeMeta>
+          </>
+        )}
+      </RecipeDetailsContainer>
+      <HeaderImg src="https://images-cdn.recipeyak.com/1/10c9c2a1e18d4809a215047d67bd201a/9B0360A4-B35D-4DC4-80B1-2FED8BD28287.jpeg" />
+    </div>
+  )
+}
 
 export function Recipe(props: IRecipeProps) {
   const recipeId = parseInt(props.match.params.id, 10)
@@ -513,30 +642,11 @@ export function Recipe(props: IRecipeProps) {
         </RecipeBanner>
       )}
 
-      <div className="d-grid ingredients-preparation-grid">
-        <RecipeDetailsContainer>
-          <div>
-            <div>
-              <MyRecipeTitle>{recipe.name}</MyRecipeTitle>
-              <div>By {recipe.author}</div>
-            </div>
-            <MyRecipeMeta>
-              {[
-                { title: "Time", content: "45 minutes" },
-                { title: "Servings", content: "6 to 8 servings" },
-                { title: "Tags", content: "chris, natasha" },
-                { title: "From", content: "cooking.nytimes.com" },
-              ].map((x) => (
-                <RecipeMetaContainer key={x.title}>
-                  <RecipeMetaTitle>{x.title}</RecipeMetaTitle>
-                  <RecipeMetaContent>{x.content}</RecipeMetaContent>
-                </RecipeMetaContainer>
-              ))}
-            </MyRecipeMeta>
-          </div>
-        </RecipeDetailsContainer>
-        <HeaderImg src="https://images-cdn.recipeyak.com/1/10c9c2a1e18d4809a215047d67bd201a/9B0360A4-B35D-4DC4-80B1-2FED8BD28287.jpeg" />
-      </div>
+      <RecipeInfo
+        recipe={recipe}
+        editingEnabled={editingEnabled}
+        toggleEditMode={toggleEditMode}
+      />
 
       {isTimeline ? (
         <RecipeTimeline recipeId={recipe.id} createdAt={recipe.created} />
