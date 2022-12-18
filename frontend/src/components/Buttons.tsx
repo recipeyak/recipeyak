@@ -2,6 +2,7 @@ import * as React from "react"
 
 import { assertNever } from "@/assert"
 import { classNames } from "@/classnames"
+import { Link } from "@/components/Routing"
 
 interface IButtonProps {
   readonly loading?: boolean
@@ -15,6 +16,7 @@ interface IButtonProps {
   readonly disabled?: boolean
   readonly value?: string | ReadonlyArray<string> | number | undefined
   readonly onClick?: (e: React.MouseEvent) => void
+  readonly to?: string
 }
 export const Button = ({
   loading = false,
@@ -23,6 +25,8 @@ export const Button = ({
   children,
   active,
   variant,
+  disabled,
+  to,
   ...props
 }: IButtonProps) => {
   const buttonSize =
@@ -31,10 +35,30 @@ export const Button = ({
       : size === "normal"
       ? "is-normal"
       : assertNever(size)
+
+  if (to != null) {
+    return (
+      <Link
+        {...props}
+        to={to}
+        className={classNames("my-button", "br-6", className, buttonSize, {
+          "is-primary": variant === "primary",
+          "is-danger": variant === "danger",
+          "is-secondary": variant === "secondary",
+          "is-link": variant === "link",
+          "is-loading": loading,
+          "is-active": active,
+        })}
+      >
+        {children}
+      </Link>
+    )
+  }
+
   return (
     <button
       {...props}
-      disabled={loading || props.disabled}
+      disabled={loading || disabled}
       className={classNames("my-button", "br-6", className, buttonSize, {
         "is-primary": variant === "primary",
         "is-danger": variant === "danger",
