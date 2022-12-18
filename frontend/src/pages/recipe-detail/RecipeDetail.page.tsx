@@ -414,6 +414,38 @@ function Meta({ title }: { title: string }) {
   return null
 }
 
+const HeaderImg = styled.img`
+  border-radius: 3px;
+`
+
+const MyRecipeTitle = styled.div`
+  font-size: 2.8rem;
+  font-family: Georgia, serif;
+`
+
+const RecipeMetaTitle = styled.dt`
+  font-weight: bold;
+`
+const RecipeMetaContent = styled.dd``
+const RecipeMetaContainer = styled.dl`
+  display: grid;
+  grid-template-columns: 90px 1fr;
+`
+
+const RecipeDetailsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+`
+
+const MyRecipeMeta = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  grid-row-gap: 4px;
+`
+
 export function Recipe(props: IRecipeProps) {
   const recipeId = parseInt(props.match.params.id, 10)
 
@@ -480,7 +512,32 @@ export function Recipe(props: IRecipeProps) {
         </RecipeBanner>
       )}
 
-      <RecipeTitle
+      <div className="d-grid ingredients-preparation-grid">
+        <RecipeDetailsContainer>
+          <div>
+            <div>
+              <MyRecipeTitle>{recipe.name}</MyRecipeTitle>
+              <div>By {recipe.author}</div>
+            </div>
+            <MyRecipeMeta>
+              {[
+                { title: "From", content: "cooking.nytimes.com" },
+                { title: "Servings", content: "6 to 8 servings" },
+                { title: "Time", content: "45 minutes" },
+                { title: "Tags", content: "chris, natasha" },
+              ].map((x) => (
+                <RecipeMetaContainer key={x.title}>
+                  <RecipeMetaTitle>{x.title}</RecipeMetaTitle>
+                  <RecipeMetaContent>{x.content}</RecipeMetaContent>
+                </RecipeMetaContainer>
+              ))}
+            </MyRecipeMeta>
+          </div>
+        </RecipeDetailsContainer>
+        <HeaderImg src="https://images-cdn.recipeyak.com/1/10c9c2a1e18d4809a215047d67bd201a/9B0360A4-B35D-4DC4-80B1-2FED8BD28287.jpeg" />
+      </div>
+
+      {/* <RecipeTitle
         id={recipe.id}
         name={recipe.name}
         author={recipe.author}
@@ -496,7 +553,7 @@ export function Recipe(props: IRecipeProps) {
         }}
         toggleEditMode={toggleEditMode}
         tags={recipe.tags}
-      />
+      /> */}
 
       {isTimeline ? (
         <RecipeTimeline recipeId={recipe.id} createdAt={recipe.created} />
