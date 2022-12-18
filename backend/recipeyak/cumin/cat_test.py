@@ -88,6 +88,8 @@ def test_categorize_ingredient_test_cases(snapshot: Any) -> None:
     finely chopped cornichons or small kosher dill pickles
     finely grated ginger
     fish sauce
+    cloves garlic
+    garlic cloves
     graham cracker crumbs
     ground ginger
     hamburger buns
