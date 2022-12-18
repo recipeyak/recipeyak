@@ -1,7 +1,7 @@
 import React from "react"
 import { connect } from "react-redux"
 
-import { ButtonPrimary } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import { RadioButton, TextInput } from "@/components/Forms"
 import { roles } from "@/pages/team-invite/TeamInvite.page"
 import { IMember } from "@/store/reducers/teams"
@@ -100,13 +100,14 @@ class TeamCreate extends React.Component<ITeamCreateProps, ITeamCreateState> {
             </p>
           </div>
 
-          <ButtonPrimary
+          <Button
             type="submit"
+            color="primary"
             loading={this.props.loading}
             className="justify-self-left"
           >
             Create Team
-          </ButtonPrimary>
+          </Button>
         </form>
       </div>
     )

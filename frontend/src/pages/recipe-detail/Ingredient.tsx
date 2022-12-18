@@ -3,7 +3,7 @@ import { useDrag, useDrop } from "react-dnd"
 
 import { isMobile } from "@/browser"
 import cls from "@/classnames"
-import { Button, ButtonLink, ButtonPrimary } from "@/components/Buttons"
+import { Button, ButtonLink } from "@/components/Buttons"
 import { CheckBox, selectTarget, TextInput } from "@/components/Forms"
 import GlobalEvent from "@/components/GlobalEvent"
 import { DragDrop, handleDndHover } from "@/dragDrop"
@@ -317,14 +317,15 @@ export function Ingredient(props: {
             </Button>
           </p>
           <p className="control">
-            <ButtonPrimary
+            <Button
+              color="primary"
               size="small"
               type="submit"
               name="update"
               loading={props.updating}
             >
               Update
-            </ButtonPrimary>
+            </Button>
           </p>
         </div>
       </section>

@@ -2,11 +2,7 @@ import React from "react"
 import { connect } from "react-redux"
 import { Link } from "react-router-dom"
 
-import {
-  ButtonLink,
-  ButtonPrimary,
-  ButtonSecondary,
-} from "@/components/Buttons"
+import { Button, ButtonLink } from "@/components/Buttons"
 import { Select } from "@/components/Forms"
 import GlobalEvent from "@/components/GlobalEvent"
 import { isOk, Result } from "@/result"
@@ -227,7 +223,8 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
                   cancel
                 </ButtonLink>
                 <div className="d-flex justify-space-between">
-                  <ButtonSecondary
+                  <Button
+                    color="secondary"
                     size="small"
                     loading={moving}
                     className="mr-1"
@@ -235,15 +232,16 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
                     disabled={this.disableMove()}
                   >
                     move
-                  </ButtonSecondary>
-                  <ButtonPrimary
+                  </Button>
+                  <Button
+                    color="primary"
                     size="small"
                     loading={copying}
                     onClick={() => this.copy()}
                     disabled={this.disableCopy()}
                   >
                     copy
-                  </ButtonPrimary>
+                  </Button>
                 </div>
               </div>
             </div>

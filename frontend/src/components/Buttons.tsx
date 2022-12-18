@@ -4,39 +4,29 @@ import { assertNever } from "@/assert"
 import { classNames } from "@/classnames"
 
 export const ButtonLink = (props: IButtonProps) => (
-  <ButtonPlain {...props} className={classNames(props.className, "is-link")} />
+  <Button {...props} className={classNames(props.className, "is-link")} />
 )
 
-export const ButtonPrimary = (props: IButtonProps) => (
-  <ButtonPlain
-    {...props}
-    className={classNames(props.className, "is-primary")}
-  />
-)
-
-export const ButtonDanger = (props: IButtonProps) => (
-  <ButtonPlain
-    {...props}
-    className={classNames(props.className, "is-danger")}
-  />
-)
-
-export const ButtonSecondary = (props: IButtonProps) => (
-  <ButtonPlain
-    {...props}
-    className={classNames(props.className, "is-secondary")}
-  />
-)
-
-interface IButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface IButtonProps {
   readonly loading?: boolean
   readonly size?: "small" | "normal"
+  readonly active?: boolean
+  readonly className?: string
+  readonly children: React.ReactNode
+  readonly color?: "primary" | "danger" | "secondary"
+  readonly type?: "submit" | "reset" | "button" | undefined
+  readonly name?: string | undefined
+  readonly disabled?: boolean
+  readonly value?: string | ReadonlyArray<string> | number | undefined
+  readonly onClick?: (e: React.MouseEvent) => void
 }
-export const ButtonPlain = ({
+export const Button = ({
   loading = false,
   className = "",
   size = "normal",
   children,
+  active,
+  color,
   ...props
 }: IButtonProps) => {
   const buttonSize =
@@ -50,12 +40,14 @@ export const ButtonPlain = ({
       {...props}
       disabled={loading || props.disabled}
       className={classNames("my-button", "br-6", className, buttonSize, {
+        "is-primary": color === "primary",
+        "is-danger": color === "danger",
+        "is-secondary": color === "secondary",
         "is-loading": loading,
+        "is-active": active,
       })}
     >
       {children}
     </button>
   )
 }
-
-export const Button = ButtonPlain

@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import { RouteComponentProps } from "react-router"
 import { Link } from "react-router-dom"
 
-import { ButtonLink, ButtonPrimary } from "@/components/Buttons"
+import { Button, ButtonLink } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
@@ -160,9 +160,13 @@ class TeamSettings extends React.Component<
           />
         </div>
         <div className="d-flex justify-space-between align-items-center">
-          <ButtonPrimary type="submit" loading={this.state.loadingSaveChanges}>
+          <Button
+            color="primary"
+            type="submit"
+            loading={this.state.loadingSaveChanges}
+          >
             Save Changes
-          </ButtonPrimary>
+          </Button>
           <ButtonLink
             onClick={() => {
               this.deleteTeam()

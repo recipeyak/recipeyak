@@ -1,7 +1,7 @@
 import React from "react"
 import { Link } from "react-router-dom"
 
-import { ButtonPrimary } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import { Loader } from "@/components/Loader"
 import { useDispatch, useSelector } from "@/hooks"
 import { getInvites, IInvite } from "@/store/reducers/invites"
@@ -56,9 +56,9 @@ function InviteButtons({ inviteId }: IInviteButtonsProps) {
       <a onClick={decline} className="text-muted">
         Decline
       </a>
-      <ButtonPrimary loading={accepting} onClick={accept} size="small">
+      <Button color="primary" loading={accepting} onClick={accept} size="small">
         Accept
-      </ButtonPrimary>
+      </Button>
     </div>
   )
 }

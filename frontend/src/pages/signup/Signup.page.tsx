@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import { Link } from "react-router-dom"
 
 import AuthContainer from "@/components/AuthContainer"
-import { ButtonPrimary } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import { EmailInput, FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { ISignupErrors, setErrorSignup } from "@/store/reducers/auth"
@@ -114,9 +114,9 @@ class Signup extends React.Component<ISignupProps, ISignupState> {
             </div>
 
             <div className="field d-flex flex-space-between align-items-center">
-              <ButtonPrimary type="submit" loading={loading}>
+              <Button color="primary" type="submit" loading={loading}>
                 Submit
-              </ButtonPrimary>
+              </Button>
 
               <Link to="/password-reset">Forgot Password?</Link>
             </div>

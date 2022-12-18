@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import { Link } from "react-router-dom"
 
 import * as api from "@/api"
-import { Button, ButtonPrimary } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
@@ -112,7 +112,8 @@ function EmailEditForm(props: IEmailEditForm) {
           >
             Cancel
           </Button>
-          <ButtonPrimary
+          <Button
+            color="primary"
             className="ml-2"
             name="email"
             type="submit"
@@ -120,7 +121,7 @@ function EmailEditForm(props: IEmailEditForm) {
             value="save email"
           >
             Save
-          </ButtonPrimary>
+          </Button>
         </div>
       ) : (
         <a className="ml-2 has-text-primary" onClick={props.edit}>
@@ -183,9 +184,9 @@ function NameForm(props: { initialValue: string }) {
           <Button className="ml-2" type="button" onClick={cancelEdit}>
             Cancel
           </Button>
-          <ButtonPrimary className="ml-2" type="submit">
+          <Button color="primary" className="ml-2" type="submit">
             Save
-          </ButtonPrimary>
+          </Button>
         </div>
       ) : (
         <a

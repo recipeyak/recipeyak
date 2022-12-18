@@ -1,7 +1,7 @@
 import React from "react"
 
 import * as api from "@/api"
-import { Button, ButtonPrimary } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
 import GlobalEvent from "@/components/GlobalEvent"
 import { useDispatch } from "@/hooks"
@@ -85,14 +85,15 @@ export function AddSectionFormInner({
           </Button>
         </p>
         <p className="control">
-          <ButtonPrimary
+          <Button
+            color="primary"
             disabled={addDisabled}
             size="small"
             type="submit"
             loading={status === "loading"}
           >
             Save
-          </ButtonPrimary>
+          </Button>
         </p>
       </div>
       {status === "failure" && <p>error adding ingredient</p>}

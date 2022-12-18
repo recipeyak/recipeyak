@@ -5,7 +5,7 @@ import { Link, useHistory, useLocation } from "react-router-dom"
 
 import * as api from "@/api"
 import AuthContainer from "@/components/AuthContainer"
-import { ButtonPrimary } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import { FormErrorHandler, PasswordInput, TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { isOk } from "@/result"
@@ -108,9 +108,9 @@ export default function Login() {
           </div>
 
           <div className="field d-flex flex-space-between align-items-center">
-            <ButtonPrimary type="submit" loading={loading}>
+            <Button color="primary" type="submit" loading={loading}>
               Submit
-            </ButtonPrimary>
+            </Button>
             <Link to="/password-reset">Forgot Password?</Link>
           </div>
         </form>

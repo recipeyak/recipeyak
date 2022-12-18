@@ -3,8 +3,8 @@ import React from "react"
 import { Link } from "react-router-dom"
 
 import * as api from "@/api"
-import cls from "@/classnames"
 import { Box } from "@/components/Box"
+import { Button } from "@/components/Buttons"
 import { Modal } from "@/components/Modal"
 import { formatAbsoluteDate, toISODateString } from "@/date"
 import { useDispatch } from "@/hooks"
@@ -117,25 +117,23 @@ export function CalendarDayItemModal({
             </Link>
 
             <Box space="between">
-              <button
-                className={cls("button is-small", {
-                  "is-active": reschedulerOpen,
-                })}
+              <Button
+                size="small"
+                active={reschedulerOpen}
                 onClick={() => {
                   setReschedulerOpen((val) => !val)
                 }}
               >
                 Reschedule
-              </button>
-              <Link to={to} className="button is-primary is-small">
+              </Button>
+              <Link to={to} className="my-button br-6 is-primary is-small">
                 View Recipe
               </Link>
             </Box>
           </Box>
 
           {reschedulerOpen && (
-            <>
-              <hr className="my-3" />
+            <Box dir="col" gap={2} mt={2}>
               <Box dir="col" gap={2}>
                 <input
                   value={toISODateString(localDate)}
@@ -147,44 +145,50 @@ export function CalendarDayItemModal({
                     padding: "0.25rem",
                   }}
                 />
-                <Box gap={2} align="center">
-                  <div className="fs-14px">next open</div>
-                  <select
-                    value={day}
-                    onChange={handleSelectChange}
-                    disabled={findingNextOpen}
-                  >
-                    {options.map((opt) => {
-                      return (
-                        <option value={opt} key={opt}>
-                          {opt}
-                        </option>
-                      )
-                    })}
-                  </select>
-                  <button
-                    onClick={handleFindNextOpen}
-                    disabled={findingNextOpen}
-                  >
-                    {!findingNextOpen ? "find" : "finding..."}
-                  </button>
-                </Box>
+                <details>
+                  <summary>shortcuts</summary>
+                  <Box gap={2} align="center">
+                    <div className="fs-14px">next open</div>
+                    <select
+                      value={day}
+                      onChange={handleSelectChange}
+                      disabled={findingNextOpen}
+                    >
+                      {options.map((opt) => {
+                        return (
+                          <option value={opt} key={opt}>
+                            {opt}
+                          </option>
+                        )
+                      })}
+                    </select>
+                    <div>
+                      <Button
+                        size="small"
+                        onClick={handleFindNextOpen}
+                        disabled={findingNextOpen}
+                      >
+                        {!findingNextOpen ? "find" : "finding..."}
+                      </Button>
+                    </div>
+                  </Box>
+                </details>
               </Box>
 
               <Box space="between" align="center">
-                <button onClick={handleDelete} disabled={deleting}>
+                <Button size="small" onClick={handleDelete} disabled={deleting}>
                   {!deleting ? "delete" : "deleting..."}
-                </button>
-                <div>
-                  <button className="mr-2" onClick={onClose}>
+                </Button>
+                <Box gap={2}>
+                  <Button size="small" onClick={onClose}>
                     cancel
-                  </button>
-                  <button onClick={handleSave} disabled={saving}>
+                  </Button>
+                  <Button size="small" onClick={handleSave} disabled={saving}>
                     {!saving ? "save" : "saving..."}
-                  </button>
-                </div>
+                  </Button>
+                </Box>
               </Box>
-            </>
+            </Box>
           )}
 
           <hr className="my-2" />

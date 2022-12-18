@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { useHistory } from "react-router"
 
 import * as api from "@/api"
-import { ButtonPrimary } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { useDispatch, useTeamId } from "@/hooks"
@@ -54,9 +54,13 @@ function CreateFromURLForm() {
           }}
         />
 
-        <ButtonPrimary type="submit" loading={status.type === "creating"}>
+        <Button
+          color="primary"
+          type="submit"
+          loading={status.type === "creating"}
+        >
           Import
-        </ButtonPrimary>
+        </Button>
       </div>
       {status.type === "error" ? (
         <div className="c-danger text-left mb-1">
@@ -115,9 +119,13 @@ function CreateManuallyForm() {
           Error: {status.err.message ?? "something went wrong."}
         </div>
       ) : null}
-      <ButtonPrimary type="submit" loading={status.type === "creating"}>
+      <Button
+        color="primary"
+        type="submit"
+        loading={status.type === "creating"}
+      >
         Add Manually
-      </ButtonPrimary>
+      </Button>
     </form>
   )
 }

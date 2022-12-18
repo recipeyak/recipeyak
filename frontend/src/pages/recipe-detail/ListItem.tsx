@@ -2,7 +2,7 @@ import React from "react"
 import Textarea from "react-textarea-autosize"
 
 import cls from "@/classnames"
-import { Button, ButtonLink, ButtonPrimary } from "@/components/Buttons"
+import { Button, ButtonLink } from "@/components/Buttons"
 import GlobalEvent from "@/components/GlobalEvent"
 import { Markdown } from "@/components/Markdown"
 import { IRecipe } from "@/store/reducers/recipes"
@@ -201,14 +201,15 @@ export default class ListItem extends React.Component<
               </Button>
             </p>
             <p className="control">
-              <ButtonPrimary
+              <Button
+                color="primary"
                 size="small"
                 onClick={this.update}
                 loading={updating}
                 name="save"
               >
                 Save
-              </ButtonPrimary>
+              </Button>
             </p>
           </div>
         </section>

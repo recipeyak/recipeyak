@@ -1,4 +1,4 @@
-import { ButtonLink, ButtonSecondary } from "@/components/Buttons"
+import { Button, ButtonLink } from "@/components/Buttons"
 import { selectTarget, TextInput } from "@/components/Forms"
 import { Loader } from "@/components/Loader"
 import { isSuccessLike, WebData } from "@/webdata"
@@ -31,9 +31,13 @@ export function ICalConfig({
               onClick={selectTarget}
               className="mr-3 min-width-0 flex-grow-1"
             />
-            <ButtonSecondary size="small" onClick={regenerateCalendarLink}>
+            <Button
+              color="secondary"
+              size="small"
+              onClick={regenerateCalendarLink}
+            >
               Reset
-            </ButtonSecondary>
+            </Button>
           </div>
         </>
       ) : null}

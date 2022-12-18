@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 
-import { Button, ButtonPrimary } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import { CheckBox, selectTarget, TextInput } from "@/components/Forms"
 import GlobalEvent from "@/components/GlobalEvent"
 
@@ -167,7 +167,8 @@ function AddIngredientForm({
           </Button>
         </p>
         <p className="control">
-          <ButtonPrimary
+          <Button
+            color="primary"
             disabled={addDisabled}
             size="small"
             type="submit"
@@ -175,7 +176,7 @@ function AddIngredientForm({
             loading={loading}
           >
             Add
-          </ButtonPrimary>
+          </Button>
         </p>
       </div>
     </form>
