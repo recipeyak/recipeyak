@@ -1,9 +1,9 @@
 import queryString from "query-string"
 import React, { useEffect, useState } from "react"
 import { connect } from "react-redux"
-import { Link } from "react-router-dom"
 
 import cls from "@/classnames"
+import { Button } from "@/components/Buttons"
 import { CheckBox, TextInput } from "@/components/Forms"
 import { Loader } from "@/components/Loader"
 import RecipeItem from "@/pages/recipe-list/RecipeItem"
@@ -34,9 +34,9 @@ function AddRecipeCallToAction() {
       <section className="d-flex mx-auto">
         <p className="fs-6 mr-2">No recipes here.</p>
 
-        <Link to="/recipes/add" className="my-button is-primary">
+        <Button variant="primary" to="/recipes/add">
           Add a Recipe
-        </Link>
+        </Button>
       </section>
     </div>
   )

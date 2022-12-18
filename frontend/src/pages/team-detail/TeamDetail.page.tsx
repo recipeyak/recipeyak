@@ -73,9 +73,9 @@ const TeamMembers = ({ id, name, members, loading }: ITeamMembers) => (
   <>
     <section className="d-flex justify-space-between align-items-center">
       <h2 className="fs-6">Members</h2>
-      <Link className="button is-primary" to={inviteURL(id, name)}>
+      <Button variant="primary" to={inviteURL(id, name)}>
         Invite
-      </Link>
+      </Button>
     </section>
     <Members teamID={id} loading={loading} members={members} />
   </>
