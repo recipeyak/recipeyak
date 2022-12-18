@@ -32,7 +32,7 @@ export function ICalConfig({
               className="mr-3 min-width-0 flex-grow-1"
             />
             <Button
-              color="secondary"
+              variant="secondary"
               size="small"
               onClick={regenerateCalendarLink}
             >
@@ -42,7 +42,7 @@ export function ICalConfig({
         </>
       ) : null}
       <Button
-        color="link"
+        variant="link"
         className="d-block mx-auto text-underline box-shadow-none "
         size="small"
         onClick={() => {

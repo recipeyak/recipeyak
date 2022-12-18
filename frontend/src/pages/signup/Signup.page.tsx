@@ -114,7 +114,7 @@ class Signup extends React.Component<ISignupProps, ISignupState> {
             </div>
 
             <div className="field d-flex flex-space-between align-items-center">
-              <Button color="primary" type="submit" loading={loading}>
+              <Button variant="primary" type="submit" loading={loading}>
                 Submit
               </Button>
 

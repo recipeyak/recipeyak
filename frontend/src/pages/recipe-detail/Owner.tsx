@@ -219,12 +219,12 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
               </Select>
               <hr className="dropdown-divider" />
               <div className="d-flex justify-space-between ml-2 mr-2">
-                <Button color="link" size="small" onClick={this.toggle}>
+                <Button variant="link" size="small" onClick={this.toggle}>
                   cancel
                 </Button>
                 <div className="d-flex justify-space-between">
                   <Button
-                    color="secondary"
+                    variant="secondary"
                     size="small"
                     loading={moving}
                     className="mr-1"
@@ -234,7 +234,7 @@ class Owner extends React.Component<IOwnerProps, IOwnerState> {
                     move
                   </Button>
                   <Button
-                    color="primary"
+                    variant="primary"
                     size="small"
                     loading={copying}
                     onClick={() => this.copy()}

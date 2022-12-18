@@ -108,7 +108,7 @@ export default function Login() {
           </div>
 
           <div className="field d-flex flex-space-between align-items-center">
-            <Button color="primary" type="submit" loading={loading}>
+            <Button variant="primary" type="submit" loading={loading}>
               Submit
             </Button>
             <Link to="/password-reset">Forgot Password?</Link>

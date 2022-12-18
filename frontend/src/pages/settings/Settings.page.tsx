@@ -113,7 +113,7 @@ function EmailEditForm(props: IEmailEditForm) {
             Cancel
           </Button>
           <Button
-            color="primary"
+            variant="primary"
             className="ml-2"
             name="email"
             type="submit"
@@ -184,7 +184,7 @@ function NameForm(props: { initialValue: string }) {
           <Button className="ml-2" type="button" onClick={cancelEdit}>
             Cancel
           </Button>
-          <Button color="primary" className="ml-2" type="submit">
+          <Button variant="primary" className="ml-2" type="submit">
             Save
           </Button>
         </div>

@@ -202,7 +202,7 @@ export default class ListItem extends React.Component<
             </p>
             <p className="control">
               <Button
-                color="primary"
+                variant="primary"
                 size="small"
                 onClick={this.update}
                 loading={updating}
@@ -238,10 +238,10 @@ export default class ListItem extends React.Component<
           <section className="d-flex justify-space-between align-center">
             <span className="is-italic">Unsaved Changes</span>
             <section>
-              <Button color="link" size="small" onClick={this.enableEditing}>
+              <Button variant="link" size="small" onClick={this.enableEditing}>
                 View Edits
               </Button>
-              <Button color="link" size="small" onClick={this.discardChanges}>
+              <Button variant="link" size="small" onClick={this.discardChanges}>
                 Discard
               </Button>
             </section>

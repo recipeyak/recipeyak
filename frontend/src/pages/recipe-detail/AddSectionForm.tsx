@@ -86,7 +86,7 @@ export function AddSectionFormInner({
         </p>
         <p className="control">
           <Button
-            color="primary"
+            variant="primary"
             disabled={addDisabled}
             size="small"
             type="submit"

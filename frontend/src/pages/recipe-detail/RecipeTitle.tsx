@@ -304,7 +304,7 @@ class RecipeTitle extends React.Component<
               <Button
                 size="small"
                 type="submit"
-                color="primary"
+                variant="primary"
                 loading={updating}
                 onClick={this.handleSave}
                 name="save recipe"

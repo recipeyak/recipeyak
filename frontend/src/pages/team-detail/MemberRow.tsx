@@ -91,7 +91,7 @@ const MemberRow = ({
     <td className="vertical-align-middle text-right">
       {isUser || userIsTeamAdmin ? (
         <Button
-          color="danger"
+          variant="danger"
           size="small"
           onClick={() => {
             deleteMembership(teamID, membershipID, isUser)

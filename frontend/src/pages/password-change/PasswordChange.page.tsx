@@ -127,7 +127,7 @@ class PasswordChange extends React.Component<
 
         <p className="control">
           <Button
-            color="primary"
+            variant="primary"
             type="submit"
             className="w-100"
             loading={loading}

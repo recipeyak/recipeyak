@@ -119,7 +119,7 @@ class PasswordResetConfirmation extends React.Component<
                 <div className="field d-flex flex-space-between">
                   <p className="control">
                     <Button
-                      color="primary"
+                      variant="primary"
                       loading={this.props.loading}
                       type="submit"
                     >

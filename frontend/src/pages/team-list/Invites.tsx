@@ -56,7 +56,12 @@ function InviteButtons({ inviteId }: IInviteButtonsProps) {
       <a onClick={decline} className="text-muted">
         Decline
       </a>
-      <Button color="primary" loading={accepting} onClick={accept} size="small">
+      <Button
+        variant="primary"
+        loading={accepting}
+        onClick={accept}
+        size="small"
+      >
         Accept
       </Button>
     </div>

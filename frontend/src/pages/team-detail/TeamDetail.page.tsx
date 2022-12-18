@@ -161,14 +161,14 @@ class TeamSettings extends React.Component<
         </div>
         <div className="d-flex justify-space-between align-items-center">
           <Button
-            color="primary"
+            variant="primary"
             type="submit"
             loading={this.state.loadingSaveChanges}
           >
             Save Changes
           </Button>
           <Button
-            color="danger"
+            variant="danger"
             onClick={() => {
               this.deleteTeam()
             }}

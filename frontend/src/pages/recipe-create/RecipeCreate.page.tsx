@@ -55,7 +55,7 @@ function CreateFromURLForm() {
         />
 
         <Button
-          color="primary"
+          variant="primary"
           type="submit"
           loading={status.type === "creating"}
         >
@@ -120,7 +120,7 @@ function CreateManuallyForm() {
         </div>
       ) : null}
       <Button
-        color="primary"
+        variant="primary"
         type="submit"
         loading={status.type === "creating"}
       >

@@ -102,7 +102,7 @@ class TeamCreate extends React.Component<ITeamCreateProps, ITeamCreateState> {
 
           <Button
             type="submit"
-            color="primary"
+            variant="primary"
             loading={this.props.loading}
             className="justify-self-left"
           >

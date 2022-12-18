@@ -318,7 +318,7 @@ export function Ingredient(props: {
           </p>
           <p className="control">
             <Button
-              color="primary"
+              variant="primary"
               size="small"
               type="submit"
               name="update"
@@ -361,10 +361,10 @@ export function Ingredient(props: {
         <section className="d-flex justify-space-between align-center">
           <span className="is-italic fs-4">Unsaved Changes</span>
           <section>
-            <Button color="link" size="small" onClick={enableEditing}>
+            <Button variant="link" size="small" onClick={enableEditing}>
               View Edits
             </Button>
-            <Button color="link" size="small" onClick={discardChanges}>
+            <Button variant="link" size="small" onClick={discardChanges}>
               Discard
             </Button>
           </section>

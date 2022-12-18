@@ -158,7 +158,7 @@ class TeamInvite extends React.Component<ITeamInviteProps, ITeamInviteState> {
           </p>
           <Button
             type="submit"
-            color="primary"
+            variant="primary"
             loading={this.props.sendingTeamInvites}
             className="justify-self-left"
           >

@@ -9,7 +9,7 @@ interface IButtonProps {
   readonly active?: boolean
   readonly className?: string
   readonly children: React.ReactNode
-  readonly color?: "primary" | "danger" | "secondary" | "link"
+  readonly variant?: "primary" | "danger" | "secondary" | "link"
   readonly type?: "submit" | "reset" | "button" | undefined
   readonly name?: string | undefined
   readonly disabled?: boolean
@@ -22,7 +22,7 @@ export const Button = ({
   size = "normal",
   children,
   active,
-  color,
+  variant,
   ...props
 }: IButtonProps) => {
   const buttonSize =
@@ -36,10 +36,10 @@ export const Button = ({
       {...props}
       disabled={loading || props.disabled}
       className={classNames("my-button", "br-6", className, buttonSize, {
-        "is-primary": color === "primary",
-        "is-danger": color === "danger",
-        "is-secondary": color === "secondary",
-        "is-link": color === "link",
+        "is-primary": variant === "primary",
+        "is-danger": variant === "danger",
+        "is-secondary": variant === "secondary",
+        "is-link": variant === "link",
         "is-loading": loading,
         "is-active": active,
       })}

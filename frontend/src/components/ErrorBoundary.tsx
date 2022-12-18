@@ -11,7 +11,7 @@ interface IErrorBoundaryState {
 const ErrorReportButton = () => (
   <Button
     size="small"
-    color="primary"
+    variant="primary"
     className="ml-1"
     onClick={() => {
       Raven.showReportDialog()

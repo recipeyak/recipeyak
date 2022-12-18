@@ -372,7 +372,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
             {isEditing && (
               <div className="d-flex justify-between align-center">
                 <Button
-                  color="secondary"
+                  variant="secondary"
                   size="small"
                   onClick={onDelete}
                   className="mr-2"
@@ -381,7 +381,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
                 </Button>
                 <div className="d-flex justify-between align-center">
                   <Button
-                    color="secondary"
+                    variant="secondary"
                     size="small"
                     onClick={() => {
                       onCancel()
@@ -392,7 +392,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
                     cancel
                   </Button>
                   <Button
-                    color="primary"
+                    variant="primary"
                     size="small"
                     onClick={onSave}
                     loading={isUpdating}
@@ -1012,7 +1012,7 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
       {isEditing && (
         <div className="d-flex justify-end align-center">
           <Button
-            color="secondary"
+            variant="secondary"
             size="small"
             className="mr-3"
             onClick={() => {
@@ -1023,7 +1023,7 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
             cancel
           </Button>
           <Button
-            color="primary"
+            variant="primary"
             size="small"
             onClick={onCreate}
             loading={isLoading}

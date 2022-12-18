@@ -71,7 +71,7 @@ const AddStepForm = ({
       </p>
       <p className="control">
         <Button
-          color="primary"
+          variant="primary"
           size="small"
           disabled={text === ""}
           type="submit"

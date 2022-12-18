@@ -44,7 +44,7 @@ const MyGalleryBackground = styled.div`
 `
 
 const ButtonSecondary = (props: React.ComponentProps<typeof Button>) => (
-  <Button color="secondary" {...props} />
+  <Button variant="secondary" {...props} />
 )
 
 const MyGalleryButton = styled(ButtonSecondary)`
