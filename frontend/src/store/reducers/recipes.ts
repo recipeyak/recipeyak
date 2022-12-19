@@ -514,6 +514,7 @@ export interface IRecipe {
     readonly title: string
     readonly position: string
   }>
+  readonly headerImgUrl?: string | null
   readonly created: string
   readonly archived_at: string | null
 

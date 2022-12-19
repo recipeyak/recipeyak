@@ -422,29 +422,39 @@ const HeaderImg = styled.img`
   height: 100%;
   object-fit: cover;
   width: 100%;
+  grid-area: 1 / 1;
 `
 
 const MyRecipeTitle = styled.div`
-  font-size: 2.8rem;
+  font-size: 2.5rem;
+  line-height: 1em;
   font-family: Georgia, serif;
 `
 
-const RecipeMetaContainer = styled.div`
+const RecipeMetaItem = styled.div<{ inline?: boolean }>`
+  ${(props) => (props.inline ? `` : ``)}
   display: grid;
   grid-template-columns: 90px 1fr;
 `
 
-const RecipeDetailsContainer = styled.div`
+const RecipeDetailsContainer = styled.div<{ spanColumns?: boolean }>`
   display: flex;
+  gap: 0.5rem;
   flex-direction: column;
   justify-content: space-around;
+  ${(props) => (props.spanColumns ? "grid-area: 1 / span 2;" : "")}
 `
 
-const MyRecipeMeta = styled.div`
+const RecipeMetaContainer = styled.div<{ inline?: boolean }>`
   display: flex;
-  flex-direction: column;
-  justify-content: end;
+
+  flex-wrap: wrap;
   grid-row-gap: 4px;
+  ${(props) =>
+    props.inline
+      ? `column-gap: 3rem;`
+      : `flex-direction: column;
+  justify-content: end;`}
 `
 
 const allowedKeys = [
@@ -600,6 +610,39 @@ function SourceLink({ children }: { children: string }) {
   )
 }
 
+const HeaderImgContainer = styled.div`
+  display: grid;
+`
+
+const HeaderBgOverlay = styled.div`
+  opacity: 0.8;
+  background: #000;
+  grid-area: 1 / 1;
+`
+const HeaderImgOverlay = styled.div`
+  grid-area: 1 / 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+`
+
+const HeaderImgUploader = styled.div`
+  background: white;
+  opacity: 1 !important;
+  padding: 0.5rem;
+  border-radius: 3px;
+  font-size: 14px;
+`
+
+const UploadImageCta = styled.div``
+const UploadImageCtaContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
 function RecipeInfo(props: {
   recipe: IRecipe
   editingEnabled: boolean
@@ -607,11 +650,13 @@ function RecipeInfo(props: {
 }) {
   const [showEditor, setShowEditor] = useState(false)
 
+  // const recipeImgUrl = 'https://images-cdn.recipeyak.com/1/10c9c2a1e18d4809a215047d67bd201a/9B0360A4-B35D-4DC4-80B1-2FED8BD28287.jpeg'
+
   return (
     <>
-      <RecipeDetailsContainer>
+      <RecipeDetailsContainer spanColumns={!props.recipe.headerImgUrl}>
         <Dropdown
-          className="mb-auto"
+          className="mr-auto"
           recipeId={props.recipe.id}
           editingEnabled={props.editingEnabled}
           toggleEditing={props.toggleEditMode}
@@ -628,20 +673,22 @@ function RecipeInfo(props: {
           <>
             <RecipeTitleCenter>
               <div>
-                <MyRecipeTitle>{props.recipe.name}</MyRecipeTitle>
+                <MyRecipeTitle className="mb-2">
+                  {props.recipe.name}
+                </MyRecipeTitle>
                 <div>By {props.recipe.author}</div>
               </div>
             </RecipeTitleCenter>
-            <MyRecipeMeta>
-              <RecipeMetaContainer>
+            <RecipeMetaContainer inline={!props.recipe.headerImgUrl}>
+              <RecipeMetaItem>
                 <div className="bold">Time</div>
                 <div>{props.recipe.time}</div>
-              </RecipeMetaContainer>
-              <RecipeMetaContainer>
+              </RecipeMetaItem>
+              <RecipeMetaItem>
                 <div className="bold">Servings</div>
                 <div>{props.recipe.servings}</div>
-              </RecipeMetaContainer>
-              <RecipeMetaContainer>
+              </RecipeMetaItem>
+              <RecipeMetaItem>
                 <div className="bold">From</div>
                 <div>
                   {props.recipe.source != null && isURL(props.recipe.source) ? (
@@ -650,8 +697,8 @@ function RecipeInfo(props: {
                     props.recipe.source
                   )}
                 </div>
-              </RecipeMetaContainer>
-              <RecipeMetaContainer>
+              </RecipeMetaItem>
+              <RecipeMetaItem>
                 <div className="bold">Tags</div>
                 <div>
                   {props.recipe.tags?.map((x) => (
@@ -667,7 +714,7 @@ function RecipeInfo(props: {
                     </Link>
                   ))}
                 </div>
-              </RecipeMetaContainer>
+              </RecipeMetaItem>
 
               {props.editingEnabled && (
                 <Button
@@ -680,16 +727,31 @@ function RecipeInfo(props: {
                   Edit
                 </Button>
               )}
-            </MyRecipeMeta>
+            </RecipeMetaContainer>
           </>
         )}
       </RecipeDetailsContainer>
-      <HeaderImg src="https://images-cdn.recipeyak.com/1/10c9c2a1e18d4809a215047d67bd201a/9B0360A4-B35D-4DC4-80B1-2FED8BD28287.jpeg" />
+      {(props.recipe.headerImgUrl || props.editingEnabled) && (
+        <HeaderImgContainer>
+          <HeaderImg src={props.recipe.headerImgUrl} />
+          {props.editingEnabled && (
+            <>
+              <HeaderBgOverlay />
+              <HeaderImgOverlay>
+                <HeaderImgUploader>
+                  <div>Upload a title image</div>
+                  <input type="file" accept="image/jpeg, image/png" />
+                </HeaderImgUploader>
+              </HeaderImgOverlay>
+            </>
+          )}
+        </HeaderImgContainer>
+      )}
     </>
   )
 }
 
-const RecipeDetailGrid = styled.div`
+const RecipeDetailGrid = styled.div<{ enableLargeImageRow: boolean }>`
   max-width: 1000px;
   margin-left: auto;
   margin-right: auto;
@@ -697,7 +759,8 @@ const RecipeDetailGrid = styled.div`
   display: grid;
   gap: 0.5rem;
   @media (min-width: 800px) {
-    grid-template-rows: 470px auto auto;
+    grid-template-rows: ${(props) =>
+      props.enableLargeImageRow ? "470px auto auto" : "auto"};
     grid-template-columns: minmax(350px, 3fr) 5fr;
   }
 `
@@ -746,6 +809,8 @@ export function Recipe(props: IRecipeProps) {
   if (recipe.author) {
     recipeTitle = recipeTitle + ` by ${recipe.author}`
   }
+  // recipe.headerImgUrl =
+  //   "https://images-cdn.recipeyak.com/1/10c9c2a1e18d4809a215047d67bd201a/9B0360A4-B35D-4DC4-80B1-2FED8BD28287.jpeg"
   return (
     <div className="d-grid gap-2 mx-auto mw-1000px">
       <Helmet title={recipe.name} />
@@ -766,7 +831,7 @@ export function Recipe(props: IRecipeProps) {
         </RecipeBanner>
       )}
 
-      <RecipeDetailGrid>
+      <RecipeDetailGrid enableLargeImageRow={!!recipe.headerImgUrl}>
         <RecipeInfo
           recipe={recipe}
           editingEnabled={editingEnabled}
