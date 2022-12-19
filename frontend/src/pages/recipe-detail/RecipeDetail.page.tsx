@@ -2,7 +2,7 @@ import { last, pick, sortBy } from "lodash-es"
 import queryString from "query-string"
 import React, { useState } from "react"
 import { RouteComponentProps, useHistory } from "react-router"
-import { useLocation } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 
 import * as api from "@/api"
 import { Button, ButtonPrimary } from "@/components/Buttons"
@@ -18,10 +18,10 @@ import { Ingredient } from "@/pages/recipe-detail/Ingredient"
 import { NoteContainer } from "@/pages/recipe-detail/Notes"
 import { SectionTitle } from "@/pages/recipe-detail/RecipeHelpers"
 import { RecipeTimeline } from "@/pages/recipe-detail/RecipeTimeline"
-import RecipeTitle, { TagEditor } from "@/pages/recipe-detail/RecipeTitle"
 import { Dropdown } from "@/pages/recipe-detail/RecipeTitleDropdown"
 import { Section } from "@/pages/recipe-detail/Section"
 import StepContainer from "@/pages/recipe-detail/StepContainer"
+import { TagEditor } from "@/pages/recipe-detail/TagEditor"
 import { getNewPosIngredients } from "@/position"
 import { isOk } from "@/result"
 import {
@@ -429,11 +429,7 @@ const MyRecipeTitle = styled.div`
   font-family: Georgia, serif;
 `
 
-const RecipeMetaTitle = styled.dt`
-  font-weight: bold;
-`
-const RecipeMetaContent = styled.dd``
-const RecipeMetaContainer = styled.dl`
+const RecipeMetaContainer = styled.div`
   display: grid;
   grid-template-columns: 90px 1fr;
 `
@@ -526,15 +522,6 @@ function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
           name="servings"
         />
       </label>
-      <div className="bold">
-        Tags
-        <TagEditor
-          tags={formState.tags ?? []}
-          onChange={(tags) => {
-            setAttr("tags", tags)
-          }}
-        />
-      </div>
       <label className="bold">
         From
         <TextInput
@@ -544,6 +531,15 @@ function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
           name="source"
         />
       </label>
+      <div className="bold">
+        Tags
+        <TagEditor
+          tags={formState.tags ?? []}
+          onChange={(tags) => {
+            setAttr("tags", tags)
+          }}
+        />
+      </div>
       <div className="d-flex grid-entire-row align-items-end justify-content-end mt-4">
         <Button
           size="small"
@@ -557,9 +553,8 @@ function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
         <ButtonPrimary
           size="small"
           type="submit"
-          loading={false}
-          onClick={onSave}
           loading={isSaving}
+          onClick={onSave}
           name="save recipe"
         >
           Save
@@ -574,6 +569,36 @@ const RecipeTitleCenter = styled.div`
   display: flex;
   align-items: center;
 `
+
+const isURL = (x: string): boolean => !x.includes(" ") && x.includes(".")
+
+/**
+ * Extract a hostname from a URL
+ *
+ * Example:
+ *  https://cooking.nytimes.com/recipes/112390-some-example => cooking.nytimes.com
+ */
+function URLToDomain({ children: url }: { children: string }) {
+  // Extract cooking.nytimes.com from https://cooking.nytimes.com/recipes/112390-some-example
+  const regex = /^(https?:\/\/)?([a-zA-z-.]+)/gm
+  const x = regex.exec(url)
+  if (x) {
+    // Our match is in the second capture group
+    const secondGroup: string | undefined = x[2]
+    if (secondGroup) {
+      return <>{secondGroup}</>
+    }
+  }
+  return <>{url}</>
+}
+
+function SourceLink({ children }: { children: string }) {
+  return (
+    <a href={children}>
+      <URLToDomain>{children}</URLToDomain>
+    </a>
+  )
+}
 
 function RecipeInfo(props: {
   recipe: IRecipe
@@ -608,17 +633,42 @@ function RecipeInfo(props: {
               </div>
             </RecipeTitleCenter>
             <MyRecipeMeta>
-              {[
-                { title: "Time", content: "45 minutes" },
-                { title: "Servings", content: "6 to 8 servings" },
-                { title: "Tags", content: "chris, natasha" },
-                { title: "From", content: "cooking.nytimes.com" },
-              ].map((x) => (
-                <RecipeMetaContainer key={x.title}>
-                  <RecipeMetaTitle>{x.title}</RecipeMetaTitle>
-                  <RecipeMetaContent>{x.content}</RecipeMetaContent>
-                </RecipeMetaContainer>
-              ))}
+              <RecipeMetaContainer>
+                <div className="bold">Time</div>
+                <div>{props.recipe.time}</div>
+              </RecipeMetaContainer>
+              <RecipeMetaContainer>
+                <div className="bold">Servings</div>
+                <div>{props.recipe.servings}</div>
+              </RecipeMetaContainer>
+              <RecipeMetaContainer>
+                <div className="bold">From</div>
+                <div>
+                  {props.recipe.source != null && isURL(props.recipe.source) ? (
+                    <SourceLink>{props.recipe.source}</SourceLink>
+                  ) : (
+                    props.recipe.source
+                  )}
+                </div>
+              </RecipeMetaContainer>
+              <RecipeMetaContainer>
+                <div className="bold">Tags</div>
+                <div>
+                  {props.recipe.tags?.map((x) => (
+                    <Link
+                      key={x}
+                      to={{
+                        pathname: "/recipes",
+                        search: `search=${encodeURIComponent(`tag:${x}`)}`,
+                      }}
+                      className="tag mr-2"
+                    >
+                      {x}
+                    </Link>
+                  ))}
+                </div>
+              </RecipeMetaContainer>
+
               {props.editingEnabled && (
                 <Button
                   size="small"

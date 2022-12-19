@@ -380,27 +380,6 @@ export async function duplicateRecipeAsync(
   cb?.()
 }
 
-export interface IRecipeBasic
-  extends Omit<
-    IRecipe,
-    | "id"
-    | "modified"
-    | "last_scheduled"
-    | "owner"
-    | "team"
-    | "ingredients"
-    | "steps"
-    | "created"
-    | "archived_at"
-  > {
-  readonly ingredients: IIngredientBasic[]
-  readonly steps: IStepBasic[]
-  readonly team?: ITeam["id"]
-}
-export type IIngredientBasic = Omit<IIngredient, "id" | "position">
-
-export type IStepBasic = Pick<IStep, "text">
-
 export type RecipeActions =
   | ReturnType<typeof updateRecipeOwner>
   | ActionType<typeof deleteStep>
