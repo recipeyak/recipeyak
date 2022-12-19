@@ -432,9 +432,16 @@ const MyRecipeTitle = styled.div`
 `
 
 const RecipeMetaItem = styled.div<{ inline?: boolean }>`
-  ${(props) => (props.inline ? `` : ``)}
+  ${(props) =>
+    props.inline
+      ? `
+  display: flex;
+  gap: 0.5rem;
+  `
+      : `
   display: grid;
   grid-template-columns: 90px 1fr;
+`}
 `
 
 const RecipeDetailsContainer = styled.div<{ spanColumns?: boolean }>`
@@ -636,11 +643,12 @@ const HeaderImgUploader = styled.div`
   font-size: 14px;
 `
 
-const UploadImageCta = styled.div``
-const UploadImageCtaContainer = styled.div`
+const notEmpty = (x?: string | null): x is string => x !== "" && x != null
+
+const RecipeTitleContainer = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  gap: 0.5rem;
 `
 
 function RecipeInfo(props: {
@@ -649,8 +657,6 @@ function RecipeInfo(props: {
   toggleEditMode: () => void
 }) {
   const [showEditor, setShowEditor] = useState(false)
-
-  // const recipeImgUrl = 'https://images-cdn.recipeyak.com/1/10c9c2a1e18d4809a215047d67bd201a/9B0360A4-B35D-4DC4-80B1-2FED8BD28287.jpeg'
 
   return (
     <>
@@ -672,49 +678,67 @@ function RecipeInfo(props: {
         ) : (
           <>
             <RecipeTitleCenter>
-              <div>
-                <MyRecipeTitle className="mb-2">
-                  {props.recipe.name}
-                </MyRecipeTitle>
-                <div>By {props.recipe.author}</div>
-              </div>
+              <RecipeTitleContainer>
+                <MyRecipeTitle>{props.recipe.name}</MyRecipeTitle>
+                {notEmpty(props.recipe.author) && (
+                  <div className="selectable">
+                    By{" "}
+                    <Link
+                      className="fw-bold"
+                      to={`/recipes?search=author:'${encodeURIComponent(
+                        props.recipe.author,
+                      )}'`}
+                    >
+                      {props.recipe.author}
+                    </Link>
+                  </div>
+                )}
+              </RecipeTitleContainer>
             </RecipeTitleCenter>
             <RecipeMetaContainer inline={!props.recipe.headerImgUrl}>
-              <RecipeMetaItem>
-                <div className="bold">Time</div>
-                <div>{props.recipe.time}</div>
-              </RecipeMetaItem>
-              <RecipeMetaItem>
-                <div className="bold">Servings</div>
-                <div>{props.recipe.servings}</div>
-              </RecipeMetaItem>
-              <RecipeMetaItem>
-                <div className="bold">From</div>
-                <div>
-                  {props.recipe.source != null && isURL(props.recipe.source) ? (
-                    <SourceLink>{props.recipe.source}</SourceLink>
-                  ) : (
-                    props.recipe.source
-                  )}
-                </div>
-              </RecipeMetaItem>
-              <RecipeMetaItem>
-                <div className="bold">Tags</div>
-                <div>
-                  {props.recipe.tags?.map((x) => (
-                    <Link
-                      key={x}
-                      to={{
-                        pathname: "/recipes",
-                        search: `search=${encodeURIComponent(`tag:${x}`)}`,
-                      }}
-                      className="tag mr-2"
-                    >
-                      {x}
-                    </Link>
-                  ))}
-                </div>
-              </RecipeMetaItem>
+              {notEmpty(props.recipe.time) && (
+                <RecipeMetaItem inline={!props.recipe.headerImgUrl}>
+                  <div className="bold">Time</div>
+                  <div>{props.recipe.time}</div>
+                </RecipeMetaItem>
+              )}
+              {notEmpty(props.recipe.servings) && (
+                <RecipeMetaItem inline={!props.recipe.headerImgUrl}>
+                  <div className="bold">Servings</div>
+                  <div>{props.recipe.servings}</div>
+                </RecipeMetaItem>
+              )}
+              {notEmpty(props.recipe.source) && (
+                <RecipeMetaItem inline={!props.recipe.headerImgUrl}>
+                  <div className="bold">From</div>
+                  <div>
+                    {isURL(props.recipe.source) ? (
+                      <SourceLink>{props.recipe.source}</SourceLink>
+                    ) : (
+                      props.recipe.source
+                    )}
+                  </div>
+                </RecipeMetaItem>
+              )}
+              {(props.recipe.tags?.length ?? 0) > 0 && (
+                <RecipeMetaItem inline={!props.recipe.headerImgUrl}>
+                  <div className="bold">Tags</div>
+                  <div>
+                    {props.recipe.tags?.map((x) => (
+                      <Link
+                        key={x}
+                        to={{
+                          pathname: "/recipes",
+                          search: `search=${encodeURIComponent(`tag:${x}`)}`,
+                        }}
+                        className="tag mr-2"
+                      >
+                        {x}
+                      </Link>
+                    ))}
+                  </div>
+                </RecipeMetaItem>
+              )}
 
               {props.editingEnabled && (
                 <Button
