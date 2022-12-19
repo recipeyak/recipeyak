@@ -13,7 +13,6 @@ interface IAddStepFormProps {
   readonly text: string
   readonly loading?: boolean
   readonly error?: boolean
-  readonly autoFocus?: boolean
 }
 
 const AddStepForm = ({
@@ -24,7 +23,6 @@ const AddStepForm = ({
   text,
   loading = false,
   error = false,
-  autoFocus = false,
 }: IAddStepFormProps) => (
   <form
     onSubmit={(e) => {
@@ -40,7 +38,6 @@ const AddStepForm = ({
       <div className="control mt-2">
         <Textarea
           onChange={handleInputChange}
-          autoFocus={autoFocus}
           onKeyPress={(e) => {
             if (text === "") {
               return

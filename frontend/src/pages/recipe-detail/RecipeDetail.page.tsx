@@ -419,6 +419,9 @@ function Meta({ title }: { title: string }) {
 
 const HeaderImg = styled.img`
   border-radius: 3px;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
 `
 
 const MyRecipeTitle = styled.div`
