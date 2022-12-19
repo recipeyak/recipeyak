@@ -1,10 +1,10 @@
-from datetime import date
+from datetime import date, datetime
 
 import pytest
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from recipeyak.models import Recipe, ScheduledRecipe, User
+from recipeyak.models import Recipe, ScheduledRecipe, ScheduleEvent, User
 
 pytestmark = pytest.mark.django_db
 
@@ -50,6 +50,30 @@ def test_updating_scheduled_recipe(
     res = client.patch(url, data)
     assert res.status_code == status.HTTP_200_OK
     assert ScheduledRecipe.objects.get(id=scheduled_recipe.id).count == 2
+
+
+def test_updating_scheduled_recipe_on_date(
+    client: APIClient, user: User, scheduled_recipe: ScheduledRecipe
+) -> None:
+    """
+    ensure updating schedule `on` date records a change event
+    """
+    assert scheduled_recipe.count == 1
+    assert (
+        ScheduleEvent.objects.filter(scheduled_recipe_id=scheduled_recipe.id).count()
+        == 0
+    )
+    client.force_authenticate(user)
+    res = client.patch(
+        f"/api/v1/t/me/calendar/{scheduled_recipe.id}/", {"on": datetime.now().date()}
+    )
+    assert res.status_code == status.HTTP_200_OK
+    assert ScheduledRecipe.objects.get(id=scheduled_recipe.id).count == 1
+
+    assert (
+        ScheduleEvent.objects.filter(scheduled_recipe_id=scheduled_recipe.id).count()
+        == 1
+    )
 
 
 def test_deleting_scheduled_recipe(
