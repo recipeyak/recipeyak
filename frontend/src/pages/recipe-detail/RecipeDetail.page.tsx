@@ -220,7 +220,7 @@ function RecipeDetails({
   const steps = sortBy(recipe.steps, (x) => x.position)
 
   return (
-    <section className="ingredients-preparation-grid">
+    <>
       <div>
         <SectionTitle>Ingredients</SectionTitle>
         <ul>
@@ -322,7 +322,7 @@ function RecipeDetails({
           recipeId={recipe.id}
         />
       </div>
-    </section>
+    </>
   )
 }
 
@@ -583,7 +583,7 @@ function RecipeInfo(props: {
   const [showEditor, setShowEditor] = useState(false)
 
   return (
-    <div className="d-grid ingredients-preparation-grid">
+    <>
       <RecipeDetailsContainer>
         <Dropdown
           className="mb-auto"
@@ -635,9 +635,22 @@ function RecipeInfo(props: {
         )}
       </RecipeDetailsContainer>
       <HeaderImg src="https://images-cdn.recipeyak.com/1/10c9c2a1e18d4809a215047d67bd201a/9B0360A4-B35D-4DC4-80B1-2FED8BD28287.jpeg" />
-    </div>
+    </>
   )
 }
+
+const RecipeDetailGrid = styled.div`
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+
+  display: grid;
+  gap: 0.5rem;
+  @media (min-width: 800px) {
+    grid-template-rows: 470px auto auto;
+    grid-template-columns: minmax(350px, 3fr) 5fr;
+  }
+`
 
 export function Recipe(props: IRecipeProps) {
   const recipeId = parseInt(props.match.params.id, 10)
@@ -703,17 +716,19 @@ export function Recipe(props: IRecipeProps) {
         </RecipeBanner>
       )}
 
-      <RecipeInfo
-        recipe={recipe}
-        editingEnabled={editingEnabled}
-        toggleEditMode={toggleEditMode}
-      />
+      <RecipeDetailGrid>
+        <RecipeInfo
+          recipe={recipe}
+          editingEnabled={editingEnabled}
+          toggleEditMode={toggleEditMode}
+        />
 
-      {isTimeline ? (
-        <RecipeTimeline recipeId={recipe.id} createdAt={recipe.created} />
-      ) : (
-        <RecipeDetails recipe={recipe} editingEnabled={editingEnabled} />
-      )}
+        {isTimeline ? (
+          <RecipeTimeline recipeId={recipe.id} createdAt={recipe.created} />
+        ) : (
+          <RecipeDetails recipe={recipe} editingEnabled={editingEnabled} />
+        )}
+      </RecipeDetailGrid>
     </div>
   )
 }
