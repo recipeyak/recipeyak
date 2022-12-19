@@ -685,7 +685,6 @@ function RecipeInfo(props: {
                   <div className="selectable">
                     By{" "}
                     <Link
-                      className="fw-bold"
                       to={`/recipes?search=author:'${encodeURIComponent(
                         props.recipe.author,
                       )}'`}
