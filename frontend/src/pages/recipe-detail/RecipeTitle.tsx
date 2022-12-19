@@ -15,14 +15,11 @@ import { hasSelection } from "@/utils/general"
 
 export function TagEditor({
   tags,
-  onRemove,
-  onCreate,
-
+  onChange,
   className,
 }: {
-  readonly tags: string[] | undefined
-  readonly onRemove: (_: string) => void
-  readonly onCreate: (_: string) => void
+  readonly tags: string[]
+  readonly onChange: (_: string[]) => void
   readonly className?: string
 }) {
   const [newTag, setNewTag] = React.useState("")
@@ -31,19 +28,19 @@ export function TagEditor({
       return
     }
 
-    onCreate(newTag)
+    onChange([...tags, newTag])
     setNewTag("")
   }
   return (
     <div className={cls("d-flex", className)}>
       <div className="d-flex align-center">
-        {tags?.map((x) => (
-          <span className="tag" key={x}>
-            {x}{" "}
+        {tags?.map((tag) => (
+          <span className="tag fw-normal" key={tag}>
+            {tag}{" "}
             <button
               className="delete is-small"
               onClick={() => {
-                onRemove(x)
+                onChange(tags.filter((x) => x !== tag))
               }}
             />
           </span>

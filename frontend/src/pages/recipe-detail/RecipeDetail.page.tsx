@@ -1,4 +1,4 @@
-import { last, sortBy } from "lodash-es"
+import { last, pick, sortBy } from "lodash-es"
 import queryString from "query-string"
 import React, { useState } from "react"
 import { RouteComponentProps, useHistory } from "react-router"
@@ -448,113 +448,162 @@ const MyRecipeMeta = styled.div`
   grid-row-gap: 4px;
 `
 
-function RecipeInfo(props: {
-  recipe: IRecipe
-  editingEnabled: boolean
-  toggleEditMode: () => void
-}) {
+const allowedKeys = [
+  "name",
+  "author",
+  "time",
+  "tags",
+  "servings",
+  "source",
+] as const
+
+function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
   const dispatch = useDispatch()
   const [formState, setFormState] = useState<Partial<IRecipe>>(props.recipe)
-  const onSave = () => {
-    void updatingRecipeAsync({ data: {}, id: props.recipe.id }, dispatch)
+  const [isSaving, setIsSaving] = useState(false)
+  const onSave = async () => {
+    setIsSaving(true)
+    await updatingRecipeAsync(
+      {
+        data: pick(formState, allowedKeys),
+        id: props.recipe.id,
+      },
+      dispatch,
+    )
+    setIsSaving(false)
+    props.onClose()
+  }
+
+  const setAttr = <T extends keyof Partial<IRecipe>>(
+    attr: T,
+    val: IRecipe[T],
+  ) => {
+    setFormState((s) => ({ ...s, [attr]: val }))
   }
 
   const handleChange =
     (attr: keyof Partial<IRecipe>) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const val = e.target.value
-      setFormState((s) => ({ ...s, [attr]: val }))
+      setAttr(attr, val)
     }
+  return (
+    <div>
+      <label className="bold">
+        Title
+        <TextInput
+          autoFocus
+          placeholder="new recipe title"
+          onChange={handleChange("name")}
+          defaultValue={formState.name}
+        />
+      </label>
+      <label className="bold">
+        Author
+        <TextInput
+          placeholder="Author"
+          defaultValue={formState.author ?? ""}
+          onChange={handleChange("author")}
+        />
+      </label>
+      <label className="bold">
+        Time
+        <TextInput
+          placeholder="1 hour"
+          defaultValue={formState.time ?? ""}
+          onChange={handleChange("time")}
+        />
+      </label>
+      <label className="bold">
+        Servings
+        <TextInput
+          placeholder="4 to 6 servings"
+          defaultValue={formState.servings ?? ""}
+          onChange={handleChange("servings")}
+          name="servings"
+        />
+      </label>
+      <div className="bold">
+        Tags
+        <TagEditor
+          tags={formState.tags ?? []}
+          onChange={(tags) => {
+            setAttr("tags", tags)
+          }}
+        />
+      </div>
+      <label className="bold">
+        From
+        <TextInput
+          placeholder="http://example.com/dumpling-soup"
+          defaultValue={formState.source ?? ""}
+          onChange={handleChange("source")}
+          name="source"
+        />
+      </label>
+      <div className="d-flex grid-entire-row align-items-end justify-content-end mt-4">
+        <Button
+          size="small"
+          className="mr-3"
+          type="button"
+          name="cancel recipe update"
+          onClick={props.onClose}
+        >
+          Cancel
+        </Button>
+        <ButtonPrimary
+          size="small"
+          type="submit"
+          loading={false}
+          onClick={onSave}
+          loading={isSaving}
+          name="save recipe"
+        >
+          Save
+        </ButtonPrimary>
+      </div>
+    </div>
+  )
+}
+
+const RecipeTitleCenter = styled.div`
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+`
+
+function RecipeInfo(props: {
+  recipe: IRecipe
+  editingEnabled: boolean
+  toggleEditMode: () => void
+}) {
+  const [showEditor, setShowEditor] = useState(false)
+
   return (
     <div className="d-grid ingredients-preparation-grid">
       <RecipeDetailsContainer>
         <Dropdown
+          className="mb-auto"
           recipeId={props.recipe.id}
           editingEnabled={props.editingEnabled}
           toggleEditing={props.toggleEditMode}
           toggleScheduling={() => {}}
         />
-        {props.editingEnabled ? (
-          <div>
-            <label className="bold">
-              Title
-              <TextInput
-                autoFocus
-                placeholder="new recipe title"
-                onChange={handleChange("name")}
-                defaultValue={formState.name}
-              />
-            </label>
-            <label className="bold">
-              Author
-              <TextInput
-                placeholder="Author"
-                defaultValue={formState.author ?? ""}
-                onChange={handleChange("author")}
-              />
-            </label>
-            <label className="bold">
-              Time
-              <TextInput
-                placeholder="1 hour"
-                defaultValue={formState.time ?? ""}
-                onChange={handleChange("time")}
-              />
-            </label>
-            <label className="bold">
-              Servings
-              <TextInput
-                placeholder="4 to 6 servings"
-                defaultValue={formState.servings ?? ""}
-                onChange={handleChange("servings")}
-                name="servings"
-              />
-            </label>
-            <label className="bold">
-              Tags
-              <TagEditor
-                tags={formState.tags}
-                onCreate={() => {}}
-                onRemove={() => {}}
-                className="mr-2"
-              />
-            </label>
-            <label className="bold">
-              From
-              <TextInput
-                placeholder="http://example.com/dumpling-soup"
-                defaultValue={formState.source ?? ""}
-                onChange={handleChange("source")}
-                name="source"
-              />
-            </label>
-            <div className="d-flex grid-entire-row align-items-end justify-content-end mt-4">
-              <Button
-                size="small"
-                className="mr-3"
-                type="button"
-                name="cancel recipe update"
-                onClick={() => {}}
-              >
-                Cancel
-              </Button>
-              <ButtonPrimary
-                size="small"
-                type="submit"
-                loading={false}
-                onClick={() => {}}
-                name="save recipe"
-              >
-                Save
-              </ButtonPrimary>
-            </div>
-          </div>
+        {showEditor ? (
+          <RecipeEditor
+            recipe={props.recipe}
+            onClose={() => {
+              setShowEditor(false)
+            }}
+          />
         ) : (
           <>
-            <div>
-              <MyRecipeTitle>{props.recipe.name}</MyRecipeTitle>
-              <div>By {props.recipe.author}</div>
-            </div>
+            <RecipeTitleCenter>
+              <div>
+                <MyRecipeTitle>{props.recipe.name}</MyRecipeTitle>
+                <div>By {props.recipe.author}</div>
+              </div>
+            </RecipeTitleCenter>
             <MyRecipeMeta>
               {[
                 { title: "Time", content: "45 minutes" },
@@ -567,6 +616,17 @@ function RecipeInfo(props: {
                   <RecipeMetaContent>{x.content}</RecipeMetaContent>
                 </RecipeMetaContainer>
               ))}
+              {props.editingEnabled && (
+                <Button
+                  size="small"
+                  type="button"
+                  onClick={() => {
+                    setShowEditor(true)
+                  }}
+                >
+                  Edit
+                </Button>
+              )}
             </MyRecipeMeta>
           </>
         )}
@@ -585,8 +645,6 @@ export function Recipe(props: IRecipeProps) {
   const editingEnabled = parsed.edit === "1"
 
   // default to metadata being in edit mode when the page is naved to with edit=1
-  const [editingMetadata, setEditingMetadata] = React.useState(editingEnabled)
-
   useRecipeUrlUpdate(
     isSuccessLike(maybeRecipe)
       ? { id: maybeRecipe.data.id, name: maybeRecipe.data.name }

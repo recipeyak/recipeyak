@@ -67,12 +67,14 @@ interface IDropdownProps {
   readonly toggleEditing: () => void
   readonly editingEnabled: boolean
   readonly toggleScheduling: () => void
+  readonly className: string
 }
 export function Dropdown({
   recipeId,
   toggleEditing,
   editingEnabled,
   toggleScheduling,
+  className,
 }: IDropdownProps) {
   const { ref, isOpen, toggle, close } = useDropdown()
 
@@ -135,7 +137,7 @@ export function Dropdown({
   }
 
   return (
-    <DropdownContainer ref={ref}>
+    <DropdownContainer ref={ref} className={className}>
       <Button size="small" className="fs-14px" onClick={toggle}>
         Actions <Chevron />
       </Button>
