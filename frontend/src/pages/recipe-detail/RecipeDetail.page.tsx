@@ -657,10 +657,11 @@ function RecipeInfo(props: {
   toggleEditMode: () => void
 }) {
   const [showEditor, setShowEditor] = useState(false)
+  const inlineLayout = !props.recipe.headerImgUrl && !props.editingEnabled
 
   return (
     <>
-      <RecipeDetailsContainer spanColumns={!props.recipe.headerImgUrl}>
+      <RecipeDetailsContainer spanColumns={inlineLayout}>
         <Dropdown
           className="mr-auto"
           recipeId={props.recipe.id}
@@ -695,21 +696,21 @@ function RecipeInfo(props: {
                 )}
               </RecipeTitleContainer>
             </RecipeTitleCenter>
-            <RecipeMetaContainer inline={!props.recipe.headerImgUrl}>
+            <RecipeMetaContainer inline={inlineLayout}>
               {notEmpty(props.recipe.time) && (
-                <RecipeMetaItem inline={!props.recipe.headerImgUrl}>
+                <RecipeMetaItem inline={inlineLayout}>
                   <div className="bold">Time</div>
                   <div>{props.recipe.time}</div>
                 </RecipeMetaItem>
               )}
               {notEmpty(props.recipe.servings) && (
-                <RecipeMetaItem inline={!props.recipe.headerImgUrl}>
+                <RecipeMetaItem inline={inlineLayout}>
                   <div className="bold">Servings</div>
                   <div>{props.recipe.servings}</div>
                 </RecipeMetaItem>
               )}
               {notEmpty(props.recipe.source) && (
-                <RecipeMetaItem inline={!props.recipe.headerImgUrl}>
+                <RecipeMetaItem inline={inlineLayout}>
                   <div className="bold">From</div>
                   <div>
                     {isURL(props.recipe.source) ? (
@@ -721,7 +722,7 @@ function RecipeInfo(props: {
                 </RecipeMetaItem>
               )}
               {(props.recipe.tags?.length ?? 0) > 0 && (
-                <RecipeMetaItem inline={!props.recipe.headerImgUrl}>
+                <RecipeMetaItem inline={inlineLayout}>
                   <div className="bold">Tags</div>
                   <div>
                     {props.recipe.tags?.map((x) => (
@@ -757,7 +758,7 @@ function RecipeInfo(props: {
       </RecipeDetailsContainer>
       {(props.recipe.headerImgUrl || props.editingEnabled) && (
         <HeaderImgContainer>
-          <HeaderImg src={props.recipe.headerImgUrl} />
+          <HeaderImg src={props.recipe.headerImgUrl ?? ""} />
           {props.editingEnabled && (
             <>
               <HeaderBgOverlay />
