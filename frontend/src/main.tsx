@@ -1,3 +1,6 @@
+// add the beginning of your app entry
+import "vite/modulepreload-polyfill"
+
 import Raven from "raven-js"
 import ReactDOM from "react-dom/client"
 

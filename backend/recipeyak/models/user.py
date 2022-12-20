@@ -52,7 +52,7 @@ def get_avatar_url(email: str) -> str:
     # indenticons by default `d=identicon`
     # Avatars with ratings of G only `r=g`
     # https://secure.gravatar.com/site/implement/images/
-    return f"/avatar/{md5_email}?d=identicon&r=g"
+    return f"https://www.gravatar.com/avatar/{md5_email}?d=identicon&r=g"
 
 
 class User(AbstractBaseUser, PermissionsMixin):

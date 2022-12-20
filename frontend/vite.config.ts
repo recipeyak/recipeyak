@@ -45,7 +45,12 @@ export default defineConfig({
     },
   },
   build: {
+    manifest: true,
     sourcemap: true,
+    rollupOptions: {
+      // overwrite default .html entry
+      input: "./src/main.tsx",
+    },
   },
   test: {
     // automatically inject describe/it/test into tests

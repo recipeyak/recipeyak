@@ -4,18 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Recipe Yak</title>
-    <meta property="og:title" content="RecipeYak" />
     <meta
       property="og:description"
       content="A place to save, create, and share recipes."
     />
+    <meta property="og:title" content="{{ recipe_title }}" />
+    <link
+      rel="apple-touch-icon"
+      href="https://recipeyak.imgix.net/recipeyak-logo-3x-white.png"
+    />
+
+    <meta content="{{ recipe_title }}" />
+    <script data-initial="{{ initial }}"></script>
     <!-- if development -->
     <script type="module">
-      import RefreshRuntime from "http://localhost:5173/@react-refresh"
-      RefreshRuntime.injectIntoGlobalHook(window)
-      window.$RefreshReg$ = () => {}
-      window.$RefreshSig$ = () => (type) => type
-      window.__vite_plugin_react_preamble_installed__ = true
+      import RefreshRuntime from "http://localhost:5173/@react-refresh";
+      RefreshRuntime.injectIntoGlobalHook(window);
+      window.$RefreshReg$ = () => {};
+      window.$RefreshSig$ = () => (type) => type;
+      window.__vite_plugin_react_preamble_installed__ = true;
     </script>
     <script type="module" src="http://localhost:5173/@vite/client"></script>
     <script type="module" src="http://localhost:5173/src/main.tsx"></script>
