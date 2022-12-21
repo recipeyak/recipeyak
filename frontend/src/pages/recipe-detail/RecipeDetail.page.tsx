@@ -959,7 +959,8 @@ const RecipeDetailGrid = styled.div<{ enableLargeImageRow: boolean }>`
   gap: 0.5rem;
 
   @media (max-width: 799px) {
-    grid-template-rows: auto 470px auto;
+    grid-template-rows: ${(props) =>
+      props.enableLargeImageRow ? " auto 470px auto" : "auto"};
     grid-template-columns: 1fr;
   }
 
@@ -1063,7 +1064,9 @@ export function Recipe(props: IRecipeProps) {
         />
       )}
 
-      <RecipeDetailGrid enableLargeImageRow={!!recipe.primaryImage?.url}>
+      <RecipeDetailGrid
+        enableLargeImageRow={!!recipe.primaryImage?.url || editingEnabled}
+      >
         <RecipeInfo
           recipe={recipe}
           editingEnabled={editingEnabled}
