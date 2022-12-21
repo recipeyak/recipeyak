@@ -6,9 +6,6 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipeyak', '0105_auto_20221219_2036'),
-        ('recipeyak', '0105_scheduleevent'),
-    ]
-
-    operations = [
+        ("recipeyak", "0105_auto_20221219_2036"),
+        ("recipeyak", "0105_scheduleevent"),
     ]

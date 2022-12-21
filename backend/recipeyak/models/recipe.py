@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     from recipeyak.models.note import Note
     from recipeyak.models.scrape import Scrape  # noqa: F401
     from recipeyak.models.team import Team
-    from recipeyak.models.upload import Upload
+    from recipeyak.models.upload import Upload  # noqa: F401
     from recipeyak.models.user import User
 
 

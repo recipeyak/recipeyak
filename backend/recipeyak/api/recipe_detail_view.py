@@ -79,14 +79,14 @@ def recipe_patch_view(request: AuthedRequest, recipe_pk: str) -> Response:
     ]
     for field, change_type in fields:
         if field in provided_fields and getattr(recipe, field) != getattr(
-            recipe, field
+            params, field
         ):
             changes.append(
                 RecipeChange(
                     recipe=recipe,
                     actor=request.user,
                     before=getattr(recipe, field) or "",
-                    after=getattr(recipe, field),
+                    after=getattr(params, field) or "",
                     change_type=change_type,
                 )
             )
