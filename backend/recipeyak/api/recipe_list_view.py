@@ -34,6 +34,7 @@ from recipeyak.models import (
 )
 from recipeyak.models.recipe import Recipe
 from recipeyak.models.team import Team
+from recipeyak.models.upload import public_url
 from recipeyak.models.user import get_avatar_url
 from recipeyak.scraper import scrape_recipe
 
@@ -63,9 +64,18 @@ def recipe_get_view(request: AuthedRequest) -> Response:
             "owner_user",
             "created",
             "archived_at",
+            "primary_image__id",
+            "primary_image__key",
             "tags",
         )
     }
+
+    for recipe in recipes.values():
+        image_id = recipe.pop("primary_image__id", None)
+        image_key = recipe.pop("primary_image__key", None)
+        if image_id is None or image_key is None:
+            continue
+        recipe["primaryImage"] = dict(id=image_id, url=public_url(key=image_key))
 
     ingredients = group_by_recipe_id(
         Ingredient.objects.filter(recipe_id__in=recipes.keys()).values(
@@ -142,8 +152,14 @@ def recipe_get_view(request: AuthedRequest) -> Response:
         note_map[note["id"]] = note
 
     for upload in Upload.objects.filter(note__recipe_id__in=recipes.keys()):
+        primary_image = recipes[upload.recipe_id].get("primary_image")
         note_map[upload.note_id]["attachments"].append(
-            list(serialize_attachments([upload]))[0].dict()
+            list(
+                serialize_attachments(
+                    [upload],
+                    primary_image_id=primary_image["id"] if primary_image else None,
+                )
+            )[0].dict()
         )
     for reaction in Reaction.objects.filter(note__recipe_id__in=recipes.keys()):
         note_map[reaction.note_id]["reactions"].append(

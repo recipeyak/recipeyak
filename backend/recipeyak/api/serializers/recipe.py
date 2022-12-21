@@ -217,7 +217,7 @@ class NoteAttachment(pydantic.BaseModel):
 
 
 def serialize_attachments(
-    attachments: Iterable[Upload], primary_image_id: int
+    attachments: Iterable[Upload], primary_image_id: int | None
 ) -> list[NoteAttachment]:
     return [
         NoteAttachment(

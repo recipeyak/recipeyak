@@ -21,6 +21,10 @@ s3 = boto3.client(
 )
 
 
+def public_url(key: str) -> str:
+    return str(URL(f"https://{config.STORAGE_HOSTNAME}").with_path(key))
+
+
 class Upload(CommonInfo):
     created_by = models.ForeignKey["User"](
         "User", related_name="uploads", on_delete=models.PROTECT
@@ -44,4 +48,4 @@ class Upload(CommonInfo):
         db_table = "core_upload"
 
     def public_url(self) -> str:
-        return str(URL(f"https://{config.STORAGE_HOSTNAME}").with_path(self.key))
+        return public_url(key=self.key)
