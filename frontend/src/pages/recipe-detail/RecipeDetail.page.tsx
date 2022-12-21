@@ -1,4 +1,3 @@
-import produce from "immer"
 import { last, pick, sortBy } from "lodash-es"
 import queryString from "query-string"
 import React, { useState } from "react"
@@ -31,7 +30,6 @@ import {
   getRecipeById,
   IIngredient,
   IRecipe,
-  patchRecipe,
   updateIngredient,
   updateSectionForRecipe,
   updatingRecipeAsync,
@@ -269,7 +267,6 @@ function RecipeDetails({
         {addIngredient ? (
           <AddIngredientOrSection
             recipeId={recipe.id}
-            autoFocus
             addingIngredient={!!recipe.addingIngredient}
             onCancel={handleHideAddIngredient}
             newPosition={ordering.positionAfter(
@@ -298,7 +295,6 @@ function RecipeDetails({
             id={recipe.id}
             index={steps.length + 1}
             step={recipe.draftStep}
-            autoFocus
             onCancel={() => {
               setAddStep(false)
             }}
@@ -658,6 +654,9 @@ function RecipeInfo(props: {
   const [uploadProgress, setUploadProgress] = useState(0)
   const inlineLayout = !props.recipe.primaryImage && !props.editingEnabled
   const dispatch = useDispatch()
+  React.useEffect(() => {
+    setUploadProgress(0)
+  }, [props.editingEnabled])
   return (
     <>
       <RecipeDetailsContainer spanColumns={inlineLayout}>

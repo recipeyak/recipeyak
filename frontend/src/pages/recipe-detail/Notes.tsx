@@ -727,6 +727,7 @@ function useImageUpload(
               type: "upload",
               localId: fileId,
               backgroundUrl: null,
+              isPrimary: false,
             })
             setLocalImages(
               produce((s) => {

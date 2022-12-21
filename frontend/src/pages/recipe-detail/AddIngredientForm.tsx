@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React from "react"
 
 import { Button, ButtonPrimary } from "@/components/Buttons"
 import { CheckBox, selectTarget, TextInput } from "@/components/Forms"
