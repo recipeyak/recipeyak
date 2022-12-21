@@ -440,7 +440,6 @@ function Meta({ title, image }: { title: string; image: string }) {
       `meta[property^="og:"]`,
     )
     const groupedMetatags = groupBy(metaTags, (x) => x.getAttribute("property"))
-    console.log(groupedMetatags)
 
     updateOrCreateTag(groupedMetatags["og:title"] || [], "og:title", title)
     updateOrCreateTag(groupedMetatags["og:image"] || [], "og:image", image)
@@ -908,7 +907,7 @@ function RecipeInfo(props: {
           <HeaderImg
             src={props.recipe.primaryImage?.url ?? ""}
             onClick={() => {
-              props.openImage(PRIMARY_IMAGE_GALLERY_ID)
+              props.openImage(props.recipe.primaryImage?.id ?? "")
             }}
           />
           {props.editingEnabled && (
@@ -990,8 +989,6 @@ const RecipeDetailGrid = styled.div<{ enableLargeImageRow: boolean }>`
   }
 `
 
-const PRIMARY_IMAGE_GALLERY_ID = "0"
-
 export function Recipe(props: IRecipeProps) {
   const recipeId = parseInt(props.match.params.id, 10)
 
@@ -1012,7 +1009,7 @@ export function Recipe(props: IRecipeProps) {
   const primaryImageUpload: Upload | undefined =
     myRecipe?.primaryImage != null
       ? {
-          id: PRIMARY_IMAGE_GALLERY_ID,
+          id: myRecipe.primaryImage.id,
           backgroundUrl: myRecipe.primaryImage.url,
           isPrimary: true,
           localId: myRecipe.primaryImage.id,
@@ -1092,7 +1089,7 @@ export function Recipe(props: IRecipeProps) {
           onPrevious={onPrevious}
           onNext={onNext}
           onStar={onStar}
-          enableStarButton={image.id !== PRIMARY_IMAGE_GALLERY_ID}
+          enableStarButton={true}
           onClose={onClose}
         />
       )}

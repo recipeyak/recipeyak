@@ -76,7 +76,7 @@ def recipe_get_view(request: AuthedRequest) -> Response:
         image_key = recipe.pop("primary_image__key", None)
         if image_id is None or image_key is None:
             continue
-        recipe["primaryImage"] = dict(id=image_id, url=public_url(key=image_key))
+        recipe["primaryImage"] = dict(id=str(image_id), url=public_url(key=image_key))
 
     ingredients = group_by_recipe_id(
         Ingredient.objects.filter(recipe_id__in=recipes.keys()).values(

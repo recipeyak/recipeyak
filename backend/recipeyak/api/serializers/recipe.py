@@ -105,6 +105,7 @@ class SectionSerializer(BaseModelSerializer):
 
 
 class UploadSerializer(BaseModelSerializer):
+    id = serializers.CharField()
     url = serializers.CharField(source="public_url")
 
     class Meta:
