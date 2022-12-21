@@ -859,6 +859,7 @@ const RecipeDetailGrid = styled.div<{ enableLargeImageRow: boolean }>`
   max-width: 1000px;
   margin-left: auto;
   margin-right: auto;
+  margin-top: 1rem;
 
   display: grid;
   gap: 0.5rem;
