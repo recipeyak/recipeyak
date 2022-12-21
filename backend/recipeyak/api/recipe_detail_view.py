@@ -59,7 +59,7 @@ class RecipePatchParams(RequestParams):
     source: str | None = None
     archived_at: datetime | None = None
 
-    #
+    # attributes requiring custom handling.
     primaryImageId: str | None = None
 
 
