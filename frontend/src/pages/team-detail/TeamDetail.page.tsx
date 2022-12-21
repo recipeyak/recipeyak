@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import { RouteComponentProps } from "react-router"
 import { Link } from "react-router-dom"
 
-import { ButtonLink, ButtonPrimary } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
@@ -73,9 +73,9 @@ const TeamMembers = ({ id, name, members, loading }: ITeamMembers) => (
   <>
     <section className="d-flex justify-space-between align-items-center">
       <h2 className="fs-6">Members</h2>
-      <Link className="button is-primary" to={inviteURL(id, name)}>
+      <Button variant="primary" to={inviteURL(id, name)}>
         Invite
-      </Link>
+      </Button>
     </section>
     <Members teamID={id} loading={loading} members={members} />
   </>
@@ -160,17 +160,22 @@ class TeamSettings extends React.Component<
           />
         </div>
         <div className="d-flex justify-space-between align-items-center">
-          <ButtonPrimary type="submit" loading={this.state.loadingSaveChanges}>
+          <Button
+            variant="primary"
+            type="submit"
+            loading={this.state.loadingSaveChanges}
+          >
             Save Changes
-          </ButtonPrimary>
-          <ButtonLink
+          </Button>
+          <Button
+            variant="danger"
             onClick={() => {
               this.deleteTeam()
             }}
             loading={this.state.loadingDeleteTeam}
           >
             Delete Team
-          </ButtonLink>
+          </Button>
         </div>
       </form>
     )

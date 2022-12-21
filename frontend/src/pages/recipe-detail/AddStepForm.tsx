@@ -1,7 +1,7 @@
 import React from "react"
 import Textarea from "react-textarea-autosize"
 
-import { Button, ButtonPrimary } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 
 interface IAddStepFormProps {
   readonly handleInputChange: (
@@ -67,7 +67,8 @@ const AddStepForm = ({
         </Button>
       </p>
       <p className="control">
-        <ButtonPrimary
+        <Button
+          variant="primary"
           size="small"
           disabled={text === ""}
           type="submit"
@@ -75,7 +76,7 @@ const AddStepForm = ({
           loading={loading}
         >
           Add
-        </ButtonPrimary>
+        </Button>
       </p>
     </div>
   </form>

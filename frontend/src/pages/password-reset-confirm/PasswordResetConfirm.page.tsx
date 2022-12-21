@@ -2,7 +2,7 @@ import React from "react"
 import { connect } from "react-redux"
 import { Link, RouteComponentProps } from "react-router-dom"
 
-import { ButtonPrimary } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import { FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { IPasswordResetConfirmError } from "@/store/reducers/auth"
@@ -118,9 +118,13 @@ class PasswordResetConfirmation extends React.Component<
 
                 <div className="field d-flex flex-space-between">
                   <p className="control">
-                    <ButtonPrimary loading={this.props.loading} type="submit">
+                    <Button
+                      variant="primary"
+                      loading={this.props.loading}
+                      type="submit"
+                    >
                       Change Password
-                    </ButtonPrimary>
+                    </Button>
                   </p>
 
                   <Link to="/login" className="my-button is-link">

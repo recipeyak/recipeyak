@@ -1,4 +1,4 @@
-import { ButtonLink, ButtonSecondary } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import { selectTarget, TextInput } from "@/components/Forms"
 import { Loader } from "@/components/Loader"
 import { isSuccessLike, WebData } from "@/webdata"
@@ -31,13 +31,18 @@ export function ICalConfig({
               onClick={selectTarget}
               className="mr-3 min-width-0 flex-grow-1"
             />
-            <ButtonSecondary size="small" onClick={regenerateCalendarLink}>
+            <Button
+              variant="secondary"
+              size="small"
+              onClick={regenerateCalendarLink}
+            >
               Reset
-            </ButtonSecondary>
+            </Button>
           </div>
         </>
       ) : null}
-      <ButtonLink
+      <Button
+        variant="link"
         className="d-block mx-auto text-underline box-shadow-none "
         size="small"
         onClick={() => {
@@ -45,7 +50,7 @@ export function ICalConfig({
         }}
       >
         {settings.data.syncEnabled ? "Disable Sync" : "Enable Sync"}
-      </ButtonLink>
+      </Button>
     </div>
   )
 }

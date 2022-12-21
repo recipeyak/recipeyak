@@ -391,6 +391,7 @@ def parse_quantity_name(text: str) -> tuple[str, str]:
 
     while idx < len(value):
         c = value[idx]
+        # parse digit like characters into a quantity or name
         if c.isdigit() or c in {"/", ".", "-"}:
             if in_quantity:
                 quantity += c
@@ -421,6 +422,14 @@ def parse_quantity_name(text: str) -> tuple[str, str]:
                         eat_count = len(unit)
                         break
                 for _ in range(eat_count):
+                    quantity += value[idx]
+                    idx += 1
+                # parse the parens that can occur after quantities, like:
+                #   12 ounces (about 4 to 6 thighs)
+                if value[idx] == "(":
+                    while value[idx] != ")":
+                        quantity += value[idx]
+                        idx += 1
                     quantity += value[idx]
                     idx += 1
                 continue

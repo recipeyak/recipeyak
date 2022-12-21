@@ -11,6 +11,7 @@ from recipeyak.models.reaction import Reaction  # noqa: F401
 from recipeyak.models.recipe import Recipe  # noqa: F401
 from recipeyak.models.recipe_change import ChangeType, RecipeChange  # noqa: F401
 from recipeyak.models.recipe_view import RecipeView  # noqa: F401
+from recipeyak.models.schedule_event import ScheduleEvent  # noqa: F401
 from recipeyak.models.scheduled_recipe import ScheduledRecipe  # noqa: F401
 from recipeyak.models.scrape import Scrape  # noqa: F401
 from recipeyak.models.section import Section  # noqa: F401

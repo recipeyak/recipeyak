@@ -8,7 +8,7 @@ import Textarea from "react-textarea-autosize"
 import * as api from "@/api"
 import { classNames as cls } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
-import { ButtonPrimary, ButtonSecondary } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import { Markdown } from "@/components/Markdown"
 import { RotatingLoader } from "@/components/RoatingLoader"
 import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
@@ -373,15 +373,17 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
 
             {isEditing && (
               <div className="d-flex justify-between align-center">
-                <ButtonSecondary
+                <Button
+                  variant="secondary"
                   size="small"
                   onClick={onDelete}
                   className="mr-2"
                 >
                   delete
-                </ButtonSecondary>
+                </Button>
                 <div className="d-flex justify-between align-center">
-                  <ButtonSecondary
+                  <Button
+                    variant="secondary"
                     size="small"
                     onClick={() => {
                       onCancel()
@@ -390,14 +392,15 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
                     className="mr-3"
                   >
                     cancel
-                  </ButtonSecondary>
-                  <ButtonPrimary
+                  </Button>
+                  <Button
+                    variant="primary"
                     size="small"
                     onClick={onSave}
                     loading={isUpdating}
                   >
                     save
-                  </ButtonPrimary>
+                  </Button>
                 </div>
               </div>
             )}
@@ -1014,7 +1017,8 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
 
       {isEditing && (
         <div className="d-flex justify-end align-center">
-          <ButtonSecondary
+          <Button
+            variant="secondary"
             size="small"
             className="mr-3"
             onClick={() => {
@@ -1023,15 +1027,16 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
             }}
           >
             cancel
-          </ButtonSecondary>
-          <ButtonPrimary
+          </Button>
+          <Button
+            variant="primary"
             size="small"
             onClick={onCreate}
             loading={isLoading}
             disabled={isDisabled}
           >
             add
-          </ButtonPrimary>
+          </Button>
         </div>
       )}
     </div>

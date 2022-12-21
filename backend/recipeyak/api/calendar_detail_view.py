@@ -14,6 +14,7 @@ from recipeyak.api.base.permissions import IsTeamMember
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.calendar_list_view import get_scheduled_recipes
+from recipeyak.models import ScheduleEvent
 
 logger = logging.getLogger(__name__)
 
@@ -57,6 +58,14 @@ def calendar_detail_patch_view(
     if params.count is not None:
         scheduled_recipe.count = params.count
     scheduled_recipe.save()
+
+    if params.on is not None:
+        ScheduleEvent.objects.create(
+            scheduled_recipe_id=scheduled_recipe_id,
+            before_on=scheduled_recipe.on,
+            after_on=params.on,
+            actor=request.user,
+        )
 
     recipe = RecipeMetadataSerializer(
         id=scheduled_recipe.recipe_id, name=scheduled_recipe.recipe.name
