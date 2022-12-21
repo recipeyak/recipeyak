@@ -5,7 +5,7 @@ import { RouteComponentProps, useHistory } from "react-router"
 import { Link, useLocation } from "react-router-dom"
 
 import * as api from "@/api"
-import { Button, ButtonPrimary } from "@/components/Buttons"
+import { Button } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
@@ -565,15 +565,16 @@ function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
         >
           Cancel
         </Button>
-        <ButtonPrimary
+        <Button
           size="small"
           type="submit"
+          variant="primary"
           loading={isSaving}
           onClick={onSave}
           name="save recipe"
         >
           Save
-        </ButtonPrimary>
+        </Button>
       </div>
     </div>
   )
