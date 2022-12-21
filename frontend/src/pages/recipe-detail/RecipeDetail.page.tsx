@@ -1,4 +1,5 @@
-import { groupBy, last, pick, sortBy } from "lodash-es"
+import produce from "immer"
+import { flatten, groupBy, last, pick, sortBy } from "lodash-es"
 import queryString from "query-string"
 import React, { useState } from "react"
 import { RouteComponentProps, useHistory } from "react-router"
@@ -10,10 +11,16 @@ import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
 import { formatHumanDate } from "@/date"
-import { useDispatch, useOnWindowFocusChange, useSelector } from "@/hooks"
+import {
+  useDispatch,
+  useGlobalEvent,
+  useOnWindowFocusChange,
+  useSelector,
+} from "@/hooks"
 import * as ordering from "@/ordering"
 import AddIngredientOrSection from "@/pages/recipe-detail/AddIngredient"
 import AddStep from "@/pages/recipe-detail/AddStep"
+import { Gallery } from "@/pages/recipe-detail/ImageGallery"
 import { Ingredient } from "@/pages/recipe-detail/Ingredient"
 import { NoteContainer } from "@/pages/recipe-detail/Notes"
 import { SectionTitle } from "@/pages/recipe-detail/RecipeHelpers"
@@ -29,13 +36,18 @@ import {
   fetchRecipe,
   getRecipeById,
   IIngredient,
+  INote,
   IRecipe,
+  patchRecipe,
+  TimelineItem,
   updateIngredient,
   updateSectionForRecipe,
   updatingRecipeAsync,
+  Upload,
 } from "@/store/reducers/recipes"
 import { styled } from "@/theme"
 import { recipeURL } from "@/urls"
+import { notUndefined } from "@/utils/general"
 import { pathNamesEqual } from "@/utils/url"
 import { isFailure, isInitial, isLoading, isSuccessLike } from "@/webdata"
 
@@ -79,9 +91,11 @@ function getInitialIngredients({
 function RecipeDetails({
   recipe,
   editingEnabled,
+  openImage,
 }: {
   readonly recipe: IRecipe
   editingEnabled: boolean
+  openImage: (_: string) => void
 }) {
   // default to open when in edit mode
   const [addIngredient, setAddIngredient] = React.useState(editingEnabled)
@@ -318,6 +332,7 @@ function RecipeDetails({
         <NoteContainer
           timelineItems={recipe.timelineItems}
           recipeId={recipe.id}
+          openImage={openImage}
         />
       </div>
     </>
@@ -685,10 +700,103 @@ const RecipeTitleContainer = styled.div`
   flex-direction: column;
   gap: 0.5rem;
 `
+function toggleImageStar(recipeId: number, imageId: string) {
+  return patchRecipe({
+    recipeId,
+    updateFn: produce((recipe) => {
+      recipe.timelineItems.forEach((timelineItem) => {
+        if (timelineItem.type === "note") {
+          timelineItem.attachments.forEach((attachment) => {
+            if (attachment.id === imageId) {
+              attachment.isPrimary = !attachment.isPrimary
+            }
+          })
+        }
+      })
+      return recipe
+    }),
+  })
+}
+
+function useGallery(uploads: Upload[], recipeId: number | null) {
+  const [showGalleryImage, setGalleryImage] = React.useState<{
+    id: string
+  } | null>(null)
+  const dispatch = useDispatch()
+  const image = uploads.find((x) => x.id === showGalleryImage?.id)
+  const imagePosition = uploads.findIndex((x) => x.id === showGalleryImage?.id)
+
+  const openImage = React.useCallback((imageId: string) => {
+    setGalleryImage({ id: imageId })
+  }, [])
+
+  const hasPrevious = imagePosition > 0
+  const hasNext = imagePosition < uploads.length - 1
+
+  const onPrevious = React.useCallback(() => {
+    setGalleryImage({ id: uploads[imagePosition - 1].id })
+  }, [imagePosition, uploads])
+  const onNext = React.useCallback(() => {
+    setGalleryImage({ id: uploads[imagePosition + 1].id })
+  }, [imagePosition, uploads])
+  const onClose = React.useCallback(() => {
+    setGalleryImage(null)
+  }, [])
+  const onStar = React.useCallback(async () => {
+    if (image?.id == null || recipeId == null) {
+      return
+    }
+
+    dispatch(toggleImageStar(recipeId, image.id))
+
+    const res = await updatingRecipeAsync(
+      {
+        id: recipeId,
+        data: { primaryImageId: image.isPrimary ? null : image.id },
+      },
+      dispatch,
+    )
+    if (!isOk(res)) {
+      dispatch(toggleImageStar(recipeId, image.id))
+    }
+  }, [recipeId, image?.isPrimary, image?.id, dispatch])
+
+  useGlobalEvent({
+    keyDown: (e) => {
+      if (showGalleryImage == null) {
+        return
+      }
+      if (e.key === "Escape") {
+        onClose()
+      }
+      if (e.key === "ArrowLeft") {
+        onPrevious()
+      }
+      if (e.key === "ArrowRight") {
+        onNext()
+      }
+    },
+  })
+
+  return {
+    openImage,
+    onPrevious,
+    onNext,
+    hasPrevious,
+    hasNext,
+    onClose,
+    onStar,
+    image,
+  }
+}
+function isNote(x: TimelineItem): x is INote {
+  return x.type === "note"
+}
 
 function RecipeInfo(props: {
   recipe: IRecipe
   editingEnabled: boolean
+  openImage: (_: string) => void
   toggleEditMode: () => void
 }) {
   const [showEditor, setShowEditor] = useState(false)
@@ -698,6 +806,7 @@ function RecipeInfo(props: {
   React.useEffect(() => {
     setUploadProgress(0)
   }, [props.editingEnabled])
+
   return (
     <>
       <RecipeDetailsContainer spanColumns={inlineLayout}>
@@ -796,7 +905,12 @@ function RecipeInfo(props: {
       </RecipeDetailsContainer>
       {(props.recipe.primaryImage || props.editingEnabled) && (
         <>
-          <HeaderImg src={props.recipe.primaryImage?.url ?? ""} />
+          <HeaderImg
+            src={props.recipe.primaryImage?.url ?? ""}
+            onClick={() => {
+              props.openImage("0")
+            }}
+          />
           {props.editingEnabled && (
             <>
               <HeaderBgOverlay />
@@ -890,6 +1004,33 @@ export function Recipe(props: IRecipeProps) {
       ? { id: maybeRecipe.data.id, name: maybeRecipe.data.name }
       : null,
   )
+  const myRecipe = isSuccessLike(maybeRecipe) ? maybeRecipe.data : null
+  const notes = myRecipe?.timelineItems.filter(isNote) ?? []
+  const uploads = flatten(notes.map((x) => x.attachments))
+  const primaryImageUpload: Upload | undefined =
+    myRecipe?.primaryImage != null
+      ? {
+          id: "0",
+          backgroundUrl: myRecipe.primaryImage.url,
+          isPrimary: true,
+          localId: myRecipe.primaryImage.id,
+          type: "upload",
+          url: myRecipe.primaryImage.url,
+        }
+      : undefined
+  const {
+    openImage,
+    hasNext,
+    hasPrevious,
+    onStar,
+    onClose,
+    onNext,
+    onPrevious,
+    image,
+  } = useGallery(
+    [primaryImageUpload, ...uploads].filter(notUndefined),
+    myRecipe?.id ?? null,
+  )
 
   if (isInitial(maybeRecipe) || isLoading(maybeRecipe)) {
     return <Loader />
@@ -920,6 +1061,7 @@ export function Recipe(props: IRecipeProps) {
   if (recipe.author) {
     recipeTitle = recipeTitle + ` by ${recipe.author}`
   }
+
   return (
     <div className="gap-2 mx-auto mw-1000px">
       <Helmet title={recipe.name} />
@@ -939,18 +1081,36 @@ export function Recipe(props: IRecipeProps) {
           </Button>
         </RecipeBanner>
       )}
+      {image != null && (
+        <Gallery
+          imageUrl={image.url}
+          isPrimary={image.isPrimary}
+          hasPrevious={hasPrevious}
+          hasNext={hasNext}
+          onPrevious={onPrevious}
+          onNext={onNext}
+          onStar={onStar}
+          enableStarButton={image.id !== "0"}
+          onClose={onClose}
+        />
+      )}
 
       <RecipeDetailGrid enableLargeImageRow={!!recipe.primaryImage?.url}>
         <RecipeInfo
           recipe={recipe}
           editingEnabled={editingEnabled}
           toggleEditMode={toggleEditMode}
+          openImage={openImage}
         />
 
         {isTimeline ? (
           <RecipeTimeline recipeId={recipe.id} createdAt={recipe.created} />
         ) : (
-          <RecipeDetails recipe={recipe} editingEnabled={editingEnabled} />
+          <RecipeDetails
+            recipe={recipe}
+            editingEnabled={editingEnabled}
+            openImage={openImage}
+          />
         )}
       </RecipeDetailGrid>
     </div>

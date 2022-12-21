@@ -95,6 +95,7 @@ export const Gallery = (props: {
   onPrevious: () => void
   onStar: () => void
   hasNext: boolean
+  enableStarButton: boolean
   hasPrevious: boolean
 }) => {
   // navigate forward and back depending on horizontal click position.
@@ -118,9 +119,11 @@ export const Gallery = (props: {
         </MyGalleryImgContainer>
         <MyGalleryControlOverlay>
           <TopRow>
-            <MyGalleryButton className="mr-auto" onClick={props.onStar}>
-              <Star color={starColor} fill={starColor} />
-            </MyGalleryButton>
+            {props.enableStarButton && (
+              <MyGalleryButton className="mr-auto" onClick={props.onStar}>
+                <Star color={starColor} fill={starColor} />
+              </MyGalleryButton>
+            )}
             <MyGalleryButton className="ml-auto" onClick={props.onClose}>
               <X />
             </MyGalleryButton>

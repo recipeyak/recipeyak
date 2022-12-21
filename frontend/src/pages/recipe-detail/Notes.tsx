@@ -1,5 +1,4 @@
 import produce from "immer"
-import flatten from "lodash/flatten"
 import orderBy from "lodash-es/orderBy"
 import React, { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
@@ -12,8 +11,7 @@ import { Button } from "@/components/Buttons"
 import { Markdown } from "@/components/Markdown"
 import { RotatingLoader } from "@/components/RoatingLoader"
 import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
-import { useCurrentUser, useDispatch, useGlobalEvent } from "@/hooks"
-import { Gallery } from "@/pages/recipe-detail/ImageGallery"
+import { useCurrentUser, useDispatch } from "@/hooks"
 import {
   findReaction,
   Reaction,
@@ -27,8 +25,6 @@ import {
   IRecipe,
   patchRecipe,
   RecipeTimelineItem,
-  TimelineItem,
-  updatingRecipeAsync,
   Upload,
 } from "@/store/reducers/recipes"
 import { showNotificationWithTimeoutAsync } from "@/store/thunks"
@@ -1043,133 +1039,15 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
   )
 }
 
-function toggleImageStar(recipeId: number, imageId: string) {
-  return patchRecipe({
-    recipeId,
-    updateFn: produce((recipe) => {
-      recipe.timelineItems.forEach((timelineItem) => {
-        if (timelineItem.type === "note") {
-          timelineItem.attachments.forEach((attachment) => {
-            if (attachment.id === imageId) {
-              attachment.isPrimary = !attachment.isPrimary
-            }
-          })
-        }
-      })
-      return recipe
-    }),
-  })
-}
-
-function useGallery(uploads: Upload[], recipeId: number) {
-  const [showGalleryImage, setGalleryImage] = React.useState<{
-    id: string
-  } | null>(null)
-  const dispatch = useDispatch()
-  const image = uploads.find((x) => x.id === showGalleryImage?.id)
-  const imagePosition = uploads.findIndex((x) => x.id === showGalleryImage?.id)
-
-  const openImage = React.useCallback((imageId: string) => {
-    setGalleryImage({ id: imageId })
-  }, [])
-
-  const hasPrevious = imagePosition > 0
-  const hasNext = imagePosition < uploads.length - 1
-
-  const onPrevious = React.useCallback(() => {
-    setGalleryImage({ id: uploads[imagePosition - 1].id })
-  }, [imagePosition, uploads])
-  const onNext = React.useCallback(() => {
-    setGalleryImage({ id: uploads[imagePosition + 1].id })
-  }, [imagePosition, uploads])
-  const onClose = React.useCallback(() => {
-    setGalleryImage(null)
-  }, [])
-  const onStar = React.useCallback(async () => {
-    if (image?.id == null) {
-      return
-    }
-
-    dispatch(toggleImageStar(recipeId, image.id))
-
-    const res = await updatingRecipeAsync(
-      {
-        id: recipeId,
-        data: { primaryImageId: image.isPrimary ? null : image.id },
-      },
-      dispatch,
-    )
-    if (!isOk(res)) {
-      dispatch(toggleImageStar(recipeId, image.id))
-    }
-  }, [recipeId, image?.isPrimary, image?.id, dispatch])
-
-  useGlobalEvent({
-    keyDown: (e) => {
-      if (showGalleryImage == null) {
-        return
-      }
-      if (e.key === "Escape") {
-        onClose()
-      }
-      if (e.key === "ArrowLeft") {
-        onPrevious()
-      }
-      if (e.key === "ArrowRight") {
-        onNext()
-      }
-    },
-  })
-
-  return {
-    openImage,
-    onPrevious,
-    onNext,
-    hasPrevious,
-    hasNext,
-    onClose,
-    onStar,
-    image,
-  }
-}
-
-function isNote(x: TimelineItem): x is INote {
-  return x.type === "note"
-}
-
 interface INoteContainerProps {
   readonly recipeId: IRecipe["id"]
   readonly timelineItems: IRecipe["timelineItems"]
+  readonly openImage: (_: string) => void
 }
 export function NoteContainer(props: INoteContainerProps) {
-  const notes: INote[] = props.timelineItems.filter(isNote)
-  const attachments = flatten(notes.map((x) => x.attachments))
-  const {
-    openImage,
-    hasNext,
-    hasPrevious,
-    onStar,
-    onClose,
-    onNext,
-    onPrevious,
-    image,
-  } = useGallery(attachments, props.recipeId)
-
   return (
     <>
       <hr />
-      {image != null && (
-        <Gallery
-          imageUrl={image.url}
-          isPrimary={image.isPrimary}
-          hasPrevious={hasPrevious}
-          hasNext={hasNext}
-          onPrevious={onPrevious}
-          onNext={onNext}
-          onStar={onStar}
-          onClose={onClose}
-        />
-      )}
       <NoteCreator recipeId={props.recipeId} className="pb-4 no-print" />
       {orderBy(props.timelineItems, "created", "desc").map((timelineItem) => {
         switch (timelineItem.type) {
@@ -1178,7 +1056,7 @@ export function NoteContainer(props: INoteContainerProps) {
               <Note
                 key={"recipe-note" + String(timelineItem.id)}
                 note={timelineItem}
-                openImage={openImage}
+                openImage={props.openImage}
                 recipeId={props.recipeId}
                 className="pb-2"
               />
