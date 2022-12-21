@@ -1,5 +1,5 @@
 import produce from "immer"
-import { flatten, groupBy, last, pick, sortBy, toUpper } from "lodash-es"
+import { flatten, groupBy, last, pick, sortBy } from "lodash-es"
 import queryString from "query-string"
 import React, { useMemo, useState } from "react"
 import { RouteComponentProps, useHistory } from "react-router"
@@ -47,7 +47,6 @@ import {
 } from "@/store/reducers/recipes"
 import { styled } from "@/theme"
 import { recipeURL } from "@/urls"
-import { notUndefined } from "@/utils/general"
 import { pathNamesEqual } from "@/utils/url"
 import { isFailure, isInitial, isLoading, isSuccessLike } from "@/webdata"
 
