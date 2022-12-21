@@ -908,7 +908,7 @@ function RecipeInfo(props: {
           <HeaderImg
             src={props.recipe.primaryImage?.url ?? ""}
             onClick={() => {
-              props.openImage("0")
+              props.openImage(PRIMARY_IMAGE_GALLERY_ID)
             }}
           />
           {props.editingEnabled && (
@@ -990,6 +990,8 @@ const RecipeDetailGrid = styled.div<{ enableLargeImageRow: boolean }>`
   }
 `
 
+const PRIMARY_IMAGE_GALLERY_ID = "0"
+
 export function Recipe(props: IRecipeProps) {
   const recipeId = parseInt(props.match.params.id, 10)
 
@@ -1010,7 +1012,7 @@ export function Recipe(props: IRecipeProps) {
   const primaryImageUpload: Upload | undefined =
     myRecipe?.primaryImage != null
       ? {
-          id: "0",
+          id: PRIMARY_IMAGE_GALLERY_ID,
           backgroundUrl: myRecipe.primaryImage.url,
           isPrimary: true,
           localId: myRecipe.primaryImage.id,
@@ -1090,7 +1092,7 @@ export function Recipe(props: IRecipeProps) {
           onPrevious={onPrevious}
           onNext={onNext}
           onStar={onStar}
-          enableStarButton={image.id !== "0"}
+          enableStarButton={image.id !== PRIMARY_IMAGE_GALLERY_ID}
           onClose={onClose}
         />
       )}
