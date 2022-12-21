@@ -260,9 +260,11 @@ export const deleteReaction = ({ reactionId }: { reactionId: string }) =>
   http.delete(`/api/v1/reactions/${reactionId}/`)
 export const uploadImage = async ({
   image,
+  recipeId,
   onProgress,
 }: {
   image: File
+  recipeId: number
   onProgress: (_: number) => void
 }) => {
   const res = await http.post<{
@@ -273,6 +275,7 @@ export const uploadImage = async ({
     file_name: image.name,
     content_type: image.type,
     content_length: image.size,
+    recipe_id: recipeId,
   })
   if (!isOk(res)) {
     return res

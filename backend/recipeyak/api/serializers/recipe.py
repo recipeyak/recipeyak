@@ -104,19 +104,34 @@ class SectionSerializer(BaseModelSerializer):
         fields = (*read_only_fields, "position", "title")
 
 
+class UploadSerializer(BaseModelSerializer):
+    id = serializers.CharField()
+    url = serializers.CharField(source="public_url")
+
+    class Meta:
+        model = Upload
+        read_only_fields = ("id", "url")
+        fields = read_only_fields
+
+
+IGNORED_TIMELINE_EVENTS = {"set_primary_image", "remove_primary_image"}
+
+
 class RecipeSerializer(BaseModelSerializer):
     steps = StepSerializer(many=True, source="step_set")
     last_scheduled = serializers.DateField(source="get_last_scheduled", read_only=True)
     ingredients = IngredientSerializer(many=True, source="ingredient_set")
     timelineItems = serializers.SerializerMethodField(read_only=True)
     sections = SectionSerializer(many=True, source="section_set", read_only=True)
+    primaryImage = UploadSerializer(read_only=True, source="primary_image")
     owner = OwnerRelatedField(read_only=True)
     # specify default None so we can use this as an optional field
     team = serializers.IntegerField(write_only=True, default=None)
 
     def get_timelineItems(self, obj: Recipe) -> list[dict[str, Any]]:
         items: list[dict[str, Any]] = [
-            serialize_note(x).dict() for x in cast(Any, obj).notes.all()
+            serialize_note(x, primary_image_id=obj.primary_image_id).dict()
+            for x in cast(Any, obj).notes.all()
         ]
 
         items += [
@@ -130,6 +145,7 @@ class RecipeSerializer(BaseModelSerializer):
                 created=x.created,
             )
             for x in cast(Any, obj).timelineevent_set.all()
+            if x.action not in IGNORED_TIMELINE_EVENTS
         ]
 
         return items
@@ -154,8 +170,9 @@ class RecipeSerializer(BaseModelSerializer):
             "created",
             "archived_at",
             "tags",
+            "primaryImage",
         )
-        read_only_fields = ("owner", "last_scheduled")
+        read_only_fields = ("owner", "last_scheduled", "primaryImage")
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         # Don't pass the 'fields' arg up to the superclass
@@ -200,15 +217,19 @@ class NoteAttachment(pydantic.BaseModel):
     id: str
     url: str
     backgroundUrl: str | None
+    isPrimary: bool
     type: Literal["upload"] = "upload"
 
 
-def serialize_attachments(attachments: Iterable[Upload]) -> list[NoteAttachment]:
+def serialize_attachments(
+    attachments: Iterable[Upload], primary_image_id: int | None
+) -> list[NoteAttachment]:
     return [
         NoteAttachment(
             id=attachment.pk,
             url=attachment.public_url(),
             backgroundUrl=attachment.background_url,
+            isPrimary=attachment.pk == primary_image_id,
         )
         for attachment in attachments
     ]
@@ -256,7 +277,7 @@ def serialize_reactions(reactions: Iterable[Reaction]) -> list[ReactionResponse]
     ]
 
 
-def serialize_note(note: Note) -> NoteResponse:
+def serialize_note(note: Note, primary_image_id: int) -> NoteResponse:
     return NoteResponse(
         id=note.id,
         text=note.text,
@@ -266,7 +287,9 @@ def serialize_note(note: Note) -> NoteResponse:
         else None,
         created=note.created,
         reactions=serialize_reactions(note.reactions.all()),
-        attachments=serialize_attachments(note.uploads.all()),
+        attachments=serialize_attachments(
+            note.uploads.all(), primary_image_id=primary_image_id
+        ),
         modified=note.modified,
     )
 

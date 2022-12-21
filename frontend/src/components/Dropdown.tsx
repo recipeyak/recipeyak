@@ -57,8 +57,8 @@ interface IDropdownMenuProps {
 
 export const DropdownMenu = styled.div<IDropdownMenuProps>`
   position: absolute;
-  left: auto;
-  right: 0;
+  right: auto;
+  left: 0;
   z-index: 1000;
   padding: 0.5rem;
   margin: 0.125rem 0 0;

@@ -1,5 +1,4 @@
 import produce from "immer"
-import flatten from "lodash/flatten"
 import orderBy from "lodash-es/orderBy"
 import React, { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
@@ -12,8 +11,7 @@ import { Button } from "@/components/Buttons"
 import { Markdown } from "@/components/Markdown"
 import { RotatingLoader } from "@/components/RoatingLoader"
 import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
-import { useCurrentUser, useDispatch, useGlobalEvent } from "@/hooks"
-import { Gallery } from "@/pages/recipe-detail/ImageGallery"
+import { useCurrentUser, useDispatch } from "@/hooks"
 import {
   findReaction,
   Reaction,
@@ -27,7 +25,6 @@ import {
   IRecipe,
   patchRecipe,
   RecipeTimelineItem,
-  TimelineItem,
   Upload,
 } from "@/store/reducers/recipes"
 import { showNotificationWithTimeoutAsync } from "@/store/thunks"
@@ -236,6 +233,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
     removeUploads,
     uploadedImages,
     resetUploads,
+    recipeId,
   )
 
   const [reactions, setReactions] = useState<Reaction[]>(note.reactions)
@@ -618,7 +616,7 @@ const Image100Px = styled.img<{
 }>`
   height: 100px;
   width: 100px;
-  border-radius: 3px;
+  border-radius: 6px;
   object-fit: cover;
   filter: ${(props) => (props.isLoading ? "grayscale(100%)" : "unset")};
 `
@@ -685,6 +683,7 @@ function useImageUpload(
   removeUploads: (uploadIds: string[]) => void,
   remoteImages: Upload[],
   resetUploads: () => void,
+  recipeId: number,
 ) {
   const [localImages, setLocalImages] = React.useState<InProgressUpload[]>([])
 
@@ -708,6 +707,7 @@ function useImageUpload(
       void api
         .uploadImage({
           image: file,
+          recipeId,
           onProgress(progress) {
             setLocalImages(
               produce((s) => {
@@ -726,6 +726,7 @@ function useImageUpload(
               type: "upload",
               localId: fileId,
               backgroundUrl: null,
+              isPrimary: false,
             })
             setLocalImages(
               produce((s) => {
@@ -984,6 +985,7 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
     removeUploads,
     uploadedImages,
     resetUploads,
+    recipeId,
   )
 
   return (
@@ -1037,85 +1039,15 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
   )
 }
 
-function useGallery(uploads: Upload[]) {
-  const [showGalleryImage, setGalleryImage] = React.useState<{
-    id: string
-  } | null>(null)
-  const image = uploads.find((x) => x.id === showGalleryImage?.id)
-  const imagePosition = uploads.findIndex((x) => x.id === showGalleryImage?.id)
-
-  const openImage = React.useCallback((imageId: string) => {
-    setGalleryImage({ id: imageId })
-  }, [])
-
-  const hasPrevious = imagePosition > 0
-  const hasNext = imagePosition < uploads.length - 1
-
-  const onPrevious = React.useCallback(() => {
-    setGalleryImage({ id: uploads[imagePosition - 1].id })
-  }, [imagePosition, uploads])
-  const onNext = React.useCallback(() => {
-    setGalleryImage({ id: uploads[imagePosition + 1].id })
-  }, [imagePosition, uploads])
-  const onClose = React.useCallback(() => {
-    setGalleryImage(null)
-  }, [])
-
-  useGlobalEvent({
-    keyDown: (e) => {
-      if (showGalleryImage == null) {
-        return
-      }
-      if (e.key === "Escape") {
-        onClose()
-      }
-      if (e.key === "ArrowLeft") {
-        onPrevious()
-      }
-      if (e.key === "ArrowRight") {
-        onNext()
-      }
-    },
-  })
-
-  return {
-    openImage,
-    onPrevious,
-    onNext,
-    hasPrevious,
-    hasNext,
-    onClose,
-    url: image?.url,
-  }
-}
-
-function isNote(x: TimelineItem): x is INote {
-  return x.type === "note"
-}
-
 interface INoteContainerProps {
   readonly recipeId: IRecipe["id"]
   readonly timelineItems: IRecipe["timelineItems"]
+  readonly openImage: (_: string) => void
 }
 export function NoteContainer(props: INoteContainerProps) {
-  const notes: INote[] = props.timelineItems.filter(isNote)
-  const attachments = flatten(notes.map((x) => x.attachments))
-  const { openImage, hasNext, hasPrevious, onClose, onNext, onPrevious, url } =
-    useGallery(attachments)
-
   return (
     <>
       <hr />
-      {url != null && (
-        <Gallery
-          imageUrl={url}
-          hasPrevious={hasPrevious}
-          hasNext={hasNext}
-          onPrevious={onPrevious}
-          onNext={onNext}
-          onClose={onClose}
-        />
-      )}
       <NoteCreator recipeId={props.recipeId} className="pb-4 no-print" />
       {orderBy(props.timelineItems, "created", "desc").map((timelineItem) => {
         switch (timelineItem.type) {
@@ -1124,7 +1056,7 @@ export function NoteContainer(props: INoteContainerProps) {
               <Note
                 key={"recipe-note" + String(timelineItem.id)}
                 note={timelineItem}
-                openImage={openImage}
+                openImage={props.openImage}
                 recipeId={props.recipeId}
                 className="pb-2"
               />

@@ -1,5 +1,5 @@
 import React from "react"
-import { ChevronLeft, ChevronRight, X } from "react-feather"
+import { ChevronLeft, ChevronRight, Star, X } from "react-feather"
 
 import { Button } from "@/components/Buttons"
 import { styled } from "@/theme"
@@ -50,7 +50,8 @@ const ButtonSecondary = (props: React.ComponentProps<typeof Button>) => (
 const MyGalleryButton = styled(ButtonSecondary)`
   background: rgba(0, 0, 0, 0.46);
   color: white;
-  border-style: none;
+  border-style: none !important;
+  box-shadow: none !important;
   backdrop-filter: blur(10px);
   pointer-events: initial;
 `
@@ -89,9 +90,12 @@ const TopRow = styled.div`
 export const Gallery = (props: {
   onClose: () => void
   imageUrl: string
+  readonly isPrimary: boolean
   onNext: () => void
   onPrevious: () => void
+  onStar: () => void
   hasNext: boolean
+  enableStarButton: boolean
   hasPrevious: boolean
 }) => {
   // navigate forward and back depending on horizontal click position.
@@ -105,6 +109,7 @@ export const Gallery = (props: {
       props.onPrevious()
     }
   }
+  const starColor = props.isPrimary ? "#ffbf00" : undefined
   return (
     <MyGalleryContainer>
       <MyGalleryBackground />
@@ -114,6 +119,11 @@ export const Gallery = (props: {
         </MyGalleryImgContainer>
         <MyGalleryControlOverlay>
           <TopRow>
+            {props.enableStarButton && (
+              <MyGalleryButton className="mr-auto" onClick={props.onStar}>
+                <Star color={starColor} fill={starColor} />
+              </MyGalleryButton>
+            )}
             <MyGalleryButton className="ml-auto" onClick={props.onClose}>
               <X />
             </MyGalleryButton>

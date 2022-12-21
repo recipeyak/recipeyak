@@ -205,7 +205,9 @@ async function updatingIngredientAsync(
 
 interface IUpdateRecipeRequestArg {
   readonly id: IRecipe["id"]
-  readonly data: Partial<Omit<IRecipe, "id">>
+  readonly data: Partial<
+    Omit<IRecipe, "id"> & { primaryImageId: string | null }
+  >
 }
 
 export const updateRecipe = createAsyncAction(
@@ -224,6 +226,7 @@ export async function updatingRecipeAsync(
   } else {
     dispatch(updateRecipe.failure(payload.id))
   }
+  return res
 }
 
 interface IAddStepToRecipeArg {
@@ -380,27 +383,6 @@ export async function duplicateRecipeAsync(
   cb?.()
 }
 
-export interface IRecipeBasic
-  extends Omit<
-    IRecipe,
-    | "id"
-    | "modified"
-    | "last_scheduled"
-    | "owner"
-    | "team"
-    | "ingredients"
-    | "steps"
-    | "created"
-    | "archived_at"
-  > {
-  readonly ingredients: IIngredientBasic[]
-  readonly steps: IStepBasic[]
-  readonly team?: ITeam["id"]
-}
-export type IIngredientBasic = Omit<IIngredient, "id" | "position">
-
-export type IStepBasic = Pick<IStep, "text">
-
 export type RecipeActions =
   | ReturnType<typeof updateRecipeOwner>
   | ActionType<typeof deleteStep>
@@ -479,6 +461,7 @@ export type Upload = {
   readonly url: string
   readonly backgroundUrl: string | null
   readonly type: "upload"
+  readonly isPrimary: boolean
   readonly localId: string
 }
 
@@ -508,7 +491,14 @@ type IRecipeOwner =
 export type RecipeTimelineItem = {
   type: "recipe"
   id: number
-  action: "created" | "archived" | "unarchived" | "deleted" | "scheduled"
+  action:
+    | "created"
+    | "archived"
+    | "unarchived"
+    | "deleted"
+    | "scheduled"
+    | "remove_primary_image"
+    | "set_primary_image"
   created_by: IPublicUser | null
   created: string
 }
@@ -535,6 +525,10 @@ export interface IRecipe {
     readonly title: string
     readonly position: string
   }>
+  readonly primaryImage?: {
+    id: string
+    url: string
+  }
   readonly created: string
   readonly archived_at: string | null
 

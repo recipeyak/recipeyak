@@ -23,7 +23,6 @@ interface IAddStepProps {
   }) => void
   readonly onCancel: () => void
   readonly loading?: boolean
-  readonly autoFocus?: boolean
   readonly id: number
   readonly index: number
   readonly position: string
@@ -58,7 +57,6 @@ function AddStep(props: IAddStepProps) {
         stepNumber={props.index}
         text={props.step || ""}
         loading={props.loading}
-        autoFocus={props.autoFocus}
       />
     </>
   )
