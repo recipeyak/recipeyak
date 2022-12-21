@@ -438,7 +438,14 @@ const HeaderImg = styled.img`
   height: 100%;
   object-fit: cover;
   width: 100%;
-  grid-area: 1 / 2;
+  @media (min-width: 800px) {
+    height: 100%;
+    grid-area: 1 / 2;
+  }
+  @media (max-width: 799px) {
+    height: 100%;
+    grid-area: 2 / 1;
+  }
 `
 
 const MyRecipeTitle = styled.div`
@@ -465,7 +472,10 @@ const RecipeDetailsContainer = styled.div<{ spanColumns?: boolean }>`
   gap: 0.5rem;
   flex-direction: column;
   justify-content: space-around;
-  ${(props) => (props.spanColumns ? "grid-area: 1 / span 2;" : "")}
+
+  @media (min-width: 800px) {
+    ${(props) => (props.spanColumns ? "grid-area: 1 / span 2;" : "")}
+  }
 `
 
 const RecipeMetaContainer = styled.div<{ inline?: boolean }>`
@@ -636,11 +646,23 @@ function SourceLink({ children }: { children: string }) {
 
 const HeaderBgOverlay = styled.div`
   opacity: 0.8;
+  border-radius: 6px;
   background: #000;
-  grid-area: 1 / 2;
+
+  @media (min-width: 800px) {
+    grid-area: 1 / 2;
+  }
+  @media (max-width: 799px) {
+    grid-area: 2 / 1;
+  }
 `
 const HeaderImgOverlay = styled.div`
-  grid-area: 1 / 2;
+  @media (max-width: 799px) {
+    grid-area: 2 / 1;
+  }
+  @media (min-width: 800px) {
+    grid-area: 1 / 2;
+  }
 
   display: flex;
   align-items: center;
@@ -840,6 +862,12 @@ const RecipeDetailGrid = styled.div<{ enableLargeImageRow: boolean }>`
 
   display: grid;
   gap: 0.5rem;
+
+  @media (max-width: 799px) {
+    grid-template-rows: auto 470px auto;
+    grid-template-columns: 1fr;
+  }
+
   @media (min-width: 800px) {
     grid-template-rows: ${(props) =>
       props.enableLargeImageRow ? "470px auto auto" : "auto"};
@@ -892,7 +920,7 @@ export function Recipe(props: IRecipeProps) {
     recipeTitle = recipeTitle + ` by ${recipe.author}`
   }
   return (
-    <div className="d-grid gap-2 mx-auto mw-1000px">
+    <div className="gap-2 mx-auto mw-1000px">
       <Helmet title={recipe.name} />
       <Meta title={recipeTitle} image={recipe.primaryImage?.url ?? ""} />
       {archivedAt != null && <RecipeBanner>Archived {archivedAt}</RecipeBanner>}
