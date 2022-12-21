@@ -616,7 +616,7 @@ const Image100Px = styled.img<{
 }>`
   height: 100px;
   width: 100px;
-  border-radius: 3px;
+  border-radius: 6px;
   object-fit: cover;
   filter: ${(props) => (props.isLoading ? "grayscale(100%)" : "unset")};
 `
