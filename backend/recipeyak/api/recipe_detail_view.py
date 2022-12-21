@@ -115,17 +115,30 @@ def recipe_patch_view(request: AuthedRequest, recipe_pk: str) -> Response:
         setattr(recipe, field, getattr(params, field))
 
     if "primaryImageId" in provided_fields:
-        if params.primaryImageId is None:
-            recipe.primary_image = None
-        else:
-            upload = Upload.objects.filter(
-                recipe=recipe, id=params.primaryImageId
-            ).first()
-            if upload is None:
-                raise ValidationError(
-                    "Could not find upload with provided Id",
-                )
-            recipe.primary_image = upload
+        existing_primary_image_id = (
+            recipe.primary_image.pk if recipe.primary_image else None
+        )
+        if params.primaryImageId != existing_primary_image_id:
+            if params.primaryImageId is None:
+                recipe.primary_image = None
+                timeline_action = "remove_primary_image"
+                upload = None
+            else:
+                upload = Upload.objects.filter(
+                    recipe=recipe, id=params.primaryImageId
+                ).first()
+                if upload is None:
+                    raise ValidationError(
+                        "Could not find upload with provided Id",
+                    )
+                recipe.primary_image = upload
+                timeline_action = "set_primary_image"
+            TimelineEvent(
+                action=timeline_action,
+                created_by=request.user,
+                recipe=recipe,
+                upload=upload,
+            ).save()
     recipe.save()
 
     recipe = user_and_team_recipe_or_404(user=request.user, recipe_pk=recipe_pk)
