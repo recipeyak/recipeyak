@@ -799,12 +799,7 @@ function RecipeInfo(props: {
   toggleEditMode: () => void
 }) {
   const [showEditor, setShowEditor] = useState(false)
-  const [uploadProgress, setUploadProgress] = useState(0)
   const inlineLayout = !props.recipe.primaryImage && !props.editingEnabled
-  const dispatch = useDispatch()
-  React.useEffect(() => {
-    setUploadProgress(0)
-  }, [props.editingEnabled])
 
   return (
     <>
@@ -915,49 +910,7 @@ function RecipeInfo(props: {
               <HeaderBgOverlay />
               <HeaderImgOverlay>
                 <HeaderImgUploader>
-                  <div>
-                    Select a primary image from note attachments, or upload
-                    directly
-                  </div>
-
-                  <input
-                    type="file"
-                    accept="image/jpeg, image/png"
-                    onChange={async (e) => {
-                      const newFiles = e.target.files
-                      if (newFiles != null) {
-                        for (const file of newFiles) {
-                          const uploadRes = await api.uploadImage({
-                            image: file,
-                            recipeId: props.recipe.id,
-                            onProgress(progress) {
-                              setUploadProgress(Math.min(progress, 80))
-                            },
-                          })
-                          if (!isOk(uploadRes)) {
-                            // we want to clear the file input
-                            //
-                            // @ts-expect-error types don't allow this, but it works
-                            e.target.value = null
-                            return
-                          }
-                          await updatingRecipeAsync(
-                            {
-                              id: props.recipe.id,
-                              data: {
-                                primaryImageId: uploadRes.data.id,
-                              },
-                            },
-                            dispatch,
-                          )
-                          setUploadProgress(100)
-                        }
-                      }
-                    }}
-                  />
-                  {uploadProgress > 0 && (
-                    <progress value={uploadProgress} max="100" />
-                  )}
+                  <div>Select a primary image from note uploads.</div>
                 </HeaderImgUploader>
               </HeaderImgOverlay>
             </>
