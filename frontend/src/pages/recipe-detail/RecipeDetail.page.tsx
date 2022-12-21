@@ -960,7 +960,7 @@ const RecipeDetailGrid = styled.div<{ enableLargeImageRow: boolean }>`
 
   @media (max-width: 799px) {
     grid-template-rows: ${(props) =>
-      props.enableLargeImageRow ? " auto 470px auto" : "auto"};
+      props.enableLargeImageRow ? " auto 300px auto" : "auto"};
     grid-template-columns: 1fr;
   }
 
