@@ -1,7 +1,7 @@
 import produce from "immer"
-import { flatten, groupBy, last, pick, sortBy } from "lodash-es"
+import { flatten, groupBy, last, pick, sortBy, toUpper } from "lodash-es"
 import queryString from "query-string"
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 import { RouteComponentProps, useHistory } from "react-router"
 import { Link, useLocation } from "react-router-dom"
 
@@ -717,7 +717,29 @@ function toggleImageStar(recipeId: number, imageId: string) {
   })
 }
 
-function useGallery(uploads: Upload[], recipeId: number | null) {
+function useGallery(
+  noteUploads: Upload[],
+  recipeId: number | null,
+  primaryImage: { id: string; url: string } | null,
+) {
+  const isPrimaryImageInUploads =
+    noteUploads.find((x) => x.id === primaryImage?.id) != null
+  const uploads: Upload[] = useMemo(() => {
+    return isPrimaryImageInUploads || primaryImage == null
+      ? noteUploads
+      : [
+          {
+            url: primaryImage.url,
+            id: primaryImage.id,
+            backgroundUrl: null,
+            isPrimary: true,
+            localId: primaryImage.id,
+            type: "upload",
+          },
+          ...noteUploads,
+        ]
+  }, [isPrimaryImageInUploads, primaryImage, noteUploads])
+
   const [showGalleryImage, setGalleryImage] = React.useState<{
     id: string
   } | null>(null)
@@ -760,6 +782,12 @@ function useGallery(uploads: Upload[], recipeId: number | null) {
     }
   }, [recipeId, image?.isPrimary, image?.id, dispatch])
 
+  const openPrimaryImage = React.useCallback(() => {
+    if (primaryImage?.id != null) {
+      openImage(primaryImage.id)
+    }
+  }, [primaryImage?.id, openImage])
+
   useGlobalEvent({
     keyDown: (e) => {
       if (showGalleryImage == null) {
@@ -785,6 +813,7 @@ function useGallery(uploads: Upload[], recipeId: number | null) {
     hasNext,
     onClose,
     onStar,
+    openPrimaryImage,
     image,
   }
 }
@@ -795,7 +824,7 @@ function isNote(x: TimelineItem): x is INote {
 function RecipeInfo(props: {
   recipe: IRecipe
   editingEnabled: boolean
-  openImage: (_: string) => void
+  openImage: () => void
   toggleEditMode: () => void
 }) {
   const [showEditor, setShowEditor] = useState(false)
@@ -902,7 +931,7 @@ function RecipeInfo(props: {
           <HeaderImg
             src={props.recipe.primaryImage?.url ?? ""}
             onClick={() => {
-              props.openImage(props.recipe.primaryImage?.id ?? "")
+              props.openImage()
             }}
           />
           {props.editingEnabled && (
@@ -959,17 +988,7 @@ export function Recipe(props: IRecipeProps) {
   const myRecipe = isSuccessLike(maybeRecipe) ? maybeRecipe.data : null
   const notes = myRecipe?.timelineItems.filter(isNote) ?? []
   const uploads = flatten(notes.map((x) => x.attachments))
-  const primaryImageUpload: Upload | undefined =
-    myRecipe?.primaryImage != null
-      ? {
-          id: myRecipe.primaryImage.id,
-          backgroundUrl: myRecipe.primaryImage.url,
-          isPrimary: true,
-          localId: myRecipe.primaryImage.id,
-          type: "upload",
-          url: myRecipe.primaryImage.url,
-        }
-      : undefined
+
   const {
     openImage,
     hasNext,
@@ -979,10 +998,8 @@ export function Recipe(props: IRecipeProps) {
     onNext,
     onPrevious,
     image,
-  } = useGallery(
-    [primaryImageUpload, ...uploads].filter(notUndefined),
-    myRecipe?.id ?? null,
-  )
+    openPrimaryImage,
+  } = useGallery(uploads, myRecipe?.id ?? null, myRecipe?.primaryImage ?? null)
 
   if (isInitial(maybeRecipe) || isLoading(maybeRecipe)) {
     return <Loader />
@@ -1052,7 +1069,7 @@ export function Recipe(props: IRecipeProps) {
           recipe={recipe}
           editingEnabled={editingEnabled}
           toggleEditMode={toggleEditMode}
-          openImage={openImage}
+          openImage={openPrimaryImage}
         />
 
         {isTimeline ? (
