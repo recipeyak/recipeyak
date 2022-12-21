@@ -959,7 +959,8 @@ const RecipeDetailGrid = styled.div<{ enableLargeImageRow: boolean }>`
   gap: 0.5rem;
 
   @media (max-width: 799px) {
-    grid-template-rows: auto 470px auto;
+    grid-template-rows: ${(props) =>
+      props.enableLargeImageRow ? " auto 300px auto" : "auto"};
     grid-template-columns: 1fr;
   }
 
@@ -969,6 +970,20 @@ const RecipeDetailGrid = styled.div<{ enableLargeImageRow: boolean }>`
     grid-template-columns: minmax(350px, 3fr) 5fr;
   }
 `
+
+/**
+ *  Open graph images are recommended to be 1200x630, so we use Imgix to crop.
+ */
+function formatImgOpenGraph(x: string): string {
+  if (!x) {
+    return x
+  }
+  const u = new URL(x)
+  u.searchParams.set("w", "1200")
+  u.searchParams.set("h", "630")
+  u.searchParams.set("fit", "crop")
+  return u.toString()
+}
 
 export function Recipe(props: IRecipeProps) {
   const recipeId = parseInt(props.match.params.id, 10)
@@ -1033,7 +1048,10 @@ export function Recipe(props: IRecipeProps) {
   return (
     <div className="gap-2 mx-auto mw-1000px">
       <Helmet title={recipe.name} />
-      <Meta title={recipeTitle} image={recipe.primaryImage?.url ?? ""} />
+      <Meta
+        title={recipeTitle}
+        image={formatImgOpenGraph(recipe.primaryImage?.url ?? "")}
+      />
       {archivedAt != null && <RecipeBanner>Archived {archivedAt}</RecipeBanner>}
       {editingEnabled && (
         <RecipeBanner>
@@ -1063,7 +1081,9 @@ export function Recipe(props: IRecipeProps) {
         />
       )}
 
-      <RecipeDetailGrid enableLargeImageRow={!!recipe.primaryImage?.url}>
+      <RecipeDetailGrid
+        enableLargeImageRow={!!recipe.primaryImage?.url || editingEnabled}
+      >
         <RecipeInfo
           recipe={recipe}
           editingEnabled={editingEnabled}
