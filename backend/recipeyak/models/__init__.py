@@ -43,6 +43,7 @@ def user_and_team_recipes(user: User) -> QuerySet[Recipe]:
         "timelineevent_set",
         "timelineevent_set__created_by",
         "section_set",
+        "primary_image",
     )
 
 

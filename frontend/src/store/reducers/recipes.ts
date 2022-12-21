@@ -205,7 +205,9 @@ async function updatingIngredientAsync(
 
 interface IUpdateRecipeRequestArg {
   readonly id: IRecipe["id"]
-  readonly data: Partial<Omit<IRecipe, "id">>
+  readonly data: Partial<
+    Omit<IRecipe, "id"> & { primaryImageId: string | null }
+  >
 }
 
 export const updateRecipe = createAsyncAction(
@@ -224,6 +226,7 @@ export async function updatingRecipeAsync(
   } else {
     dispatch(updateRecipe.failure(payload.id))
   }
+  return res
 }
 
 interface IAddStepToRecipeArg {
@@ -458,6 +461,7 @@ export type Upload = {
   readonly url: string
   readonly backgroundUrl: string | null
   readonly type: "upload"
+  readonly isPrimary: boolean
   readonly localId: string
 }
 
@@ -514,7 +518,10 @@ export interface IRecipe {
     readonly title: string
     readonly position: string
   }>
-  readonly headerImgUrl?: string | null
+  readonly primaryImage?: {
+    id: string
+    url: string
+  }
   readonly created: string
   readonly archived_at: string | null
 

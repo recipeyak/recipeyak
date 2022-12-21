@@ -11,7 +11,7 @@ from recipeyak import config
 from recipeyak.models.base import CommonInfo
 
 if TYPE_CHECKING:
-    from recipeyak.models import Note, User  # noqa: F401
+    from recipeyak.models import Note, Recipe, User  # noqa: F401
 
 s3 = boto3.client(
     "s3",
@@ -33,8 +33,12 @@ class Upload(CommonInfo):
     note = models.ForeignKey["Note"](
         "Note", related_name="uploads", null=True, on_delete=models.SET_NULL
     )
+    recipe = models.ForeignKey["Recipe"](
+        "Recipe", related_name="uploads", null=True, on_delete=models.SET_NULL
+    )
 
     note_id: int | None
+    recipe_id: int | None
 
     class Meta:
         db_table = "core_upload"

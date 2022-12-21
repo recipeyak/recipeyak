@@ -28,6 +28,7 @@ import {
   patchRecipe,
   RecipeTimelineItem,
   TimelineItem,
+  updatingRecipeAsync,
   Upload,
 } from "@/store/reducers/recipes"
 import { showNotificationWithTimeoutAsync } from "@/store/thunks"
@@ -236,6 +237,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
     removeUploads,
     uploadedImages,
     resetUploads,
+    recipeId,
   )
 
   const [reactions, setReactions] = useState<Reaction[]>(note.reactions)
@@ -682,6 +684,7 @@ function useImageUpload(
   removeUploads: (uploadIds: string[]) => void,
   remoteImages: Upload[],
   resetUploads: () => void,
+  recipeId: number,
 ) {
   const [localImages, setLocalImages] = React.useState<InProgressUpload[]>([])
 
@@ -705,6 +708,7 @@ function useImageUpload(
       void api
         .uploadImage({
           image: file,
+          recipeId,
           onProgress(progress) {
             setLocalImages(
               produce((s) => {
@@ -981,6 +985,7 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
     removeUploads,
     uploadedImages,
     resetUploads,
+    recipeId,
   )
 
   return (
@@ -1032,10 +1037,29 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
   )
 }
 
-function useGallery(uploads: Upload[]) {
+function toggleImageStar(recipeId: number, imageId: string) {
+  return patchRecipe({
+    recipeId,
+    updateFn: produce((recipe) => {
+      recipe.timelineItems.forEach((timelineItem) => {
+        if (timelineItem.type === "note") {
+          timelineItem.attachments.forEach((attachment) => {
+            if (attachment.id === imageId) {
+              attachment.isPrimary = !attachment.isPrimary
+            }
+          })
+        }
+      })
+      return recipe
+    }),
+  })
+}
+
+function useGallery(uploads: Upload[], recipeId: number) {
   const [showGalleryImage, setGalleryImage] = React.useState<{
     id: string
   } | null>(null)
+  const dispatch = useDispatch()
   const image = uploads.find((x) => x.id === showGalleryImage?.id)
   const imagePosition = uploads.findIndex((x) => x.id === showGalleryImage?.id)
 
@@ -1055,6 +1079,24 @@ function useGallery(uploads: Upload[]) {
   const onClose = React.useCallback(() => {
     setGalleryImage(null)
   }, [])
+  const onStar = React.useCallback(async () => {
+    if (image?.id == null) {
+      return
+    }
+
+    dispatch(toggleImageStar(recipeId, image.id))
+
+    const res = await updatingRecipeAsync(
+      {
+        id: recipeId,
+        data: { primaryImageId: image.isPrimary ? null : image.id },
+      },
+      dispatch,
+    )
+    if (!isOk(res)) {
+      dispatch(toggleImageStar(recipeId, image.id))
+    }
+  }, [recipeId, image?.isPrimary, image?.id, dispatch])
 
   useGlobalEvent({
     keyDown: (e) => {
@@ -1080,7 +1122,8 @@ function useGallery(uploads: Upload[]) {
     hasPrevious,
     hasNext,
     onClose,
-    url: image?.url,
+    onStar,
+    image,
   }
 }
 
@@ -1095,19 +1138,29 @@ interface INoteContainerProps {
 export function NoteContainer(props: INoteContainerProps) {
   const notes: INote[] = props.timelineItems.filter(isNote)
   const attachments = flatten(notes.map((x) => x.attachments))
-  const { openImage, hasNext, hasPrevious, onClose, onNext, onPrevious, url } =
-    useGallery(attachments)
+  const {
+    openImage,
+    hasNext,
+    hasPrevious,
+    onStar,
+    onClose,
+    onNext,
+    onPrevious,
+    image,
+  } = useGallery(attachments, props.recipeId)
 
   return (
     <>
       <hr />
-      {url != null && (
+      {image != null && (
         <Gallery
-          imageUrl={url}
+          imageUrl={image.url}
+          isPrimary={image.isPrimary}
           hasPrevious={hasPrevious}
           hasNext={hasNext}
           onPrevious={onPrevious}
           onNext={onNext}
+          onStar={onStar}
           onClose={onClose}
         />
       )}

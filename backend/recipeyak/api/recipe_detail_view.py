@@ -1,13 +1,16 @@
 from __future__ import annotations
 
+from datetime import datetime
+
 from django.db import connection
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.exceptions import MethodNotAllowed
+from rest_framework.exceptions import MethodNotAllowed, ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import RecipeSerializer
 from recipeyak.models import (
     ChangeType,
@@ -15,6 +18,7 @@ from recipeyak.models import (
     TimelineEvent,
     user_and_team_recipe_or_404,
 )
+from recipeyak.models.upload import Upload
 
 
 def recipe_get_view(request: AuthedRequest, recipe_pk: str) -> Response:
@@ -46,10 +50,24 @@ def recipe_get_view(request: AuthedRequest, recipe_pk: str) -> Response:
     return Response(RecipeSerializer(recipe).data)
 
 
+class RecipePatchParams(RequestParams):
+    name: str | None = None
+    author: str | None = None
+    time: str | None = None
+    tags: list[str] | None = None
+    servings: str | None = None
+    source: str | None = None
+    archived_at: datetime | None = None
+
+    #
+    primaryImageId: str | None = None
+
+
 def recipe_patch_view(request: AuthedRequest, recipe_pk: str) -> Response:
     recipe = user_and_team_recipe_or_404(user=request.user, recipe_pk=recipe_pk)
-    serializer = RecipeSerializer(recipe, data=request.data, partial=True)
-    serializer.is_valid(raise_exception=True)
+
+    params = RecipePatchParams.parse_obj(request.data)
+    provided_fields = set(params.dict(exclude_unset=True))
 
     changes = []
     fields = [
@@ -60,16 +78,15 @@ def recipe_patch_view(request: AuthedRequest, recipe_pk: str) -> Response:
         ("time", ChangeType.TIME),
     ]
     for field, change_type in fields:
-        if (
-            field in serializer.validated_data
-            and getattr(recipe, field) != serializer.validated_data[field]
+        if field in provided_fields and getattr(recipe, field) != getattr(
+            recipe, field
         ):
             changes.append(
                 RecipeChange(
                     recipe=recipe,
                     actor=request.user,
                     before=getattr(recipe, field) or "",
-                    after=serializer.validated_data[field],
+                    after=getattr(recipe, field),
                     change_type=change_type,
                 )
             )
@@ -77,19 +94,41 @@ def recipe_patch_view(request: AuthedRequest, recipe_pk: str) -> Response:
     RecipeChange.objects.bulk_create(changes)
 
     if (
-        "archived_at" in serializer.validated_data
-        and getattr(recipe, "archived_at") != serializer.validated_data["archived_at"]
+        "archived_at" in provided_fields
+        and getattr(recipe, "archived_at") != params.archived_at
     ):
         TimelineEvent(
-            action=(
-                "archived" if serializer.validated_data["archived_at"] else "unarchived"
-            ),
+            action=("archived" if params.archived_at else "unarchived"),
             created_by=request.user,
             recipe=recipe,
         ).save()
 
-    serializer.save()
+    for field in provided_fields & {
+        "name",
+        "author",
+        "time",
+        "tags",
+        "servings",
+        "source",
+        "archived_at",
+    }:
+        setattr(recipe, field, getattr(params, field))
 
+    if "primaryImageId" in provided_fields:
+        if params.primaryImageId is None:
+            recipe.primary_image = None
+        else:
+            upload = Upload.objects.filter(
+                recipe=recipe, id=params.primaryImageId
+            ).first()
+            if upload is None:
+                raise ValidationError(
+                    "Could not find upload with provided Id",
+                )
+            recipe.primary_image = upload
+    recipe.save()
+
+    recipe = user_and_team_recipe_or_404(user=request.user, recipe_pk=recipe_pk)
     return Response(RecipeSerializer(recipe).data)
 
 

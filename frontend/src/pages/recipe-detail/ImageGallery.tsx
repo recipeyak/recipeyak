@@ -1,5 +1,5 @@
 import React from "react"
-import { ChevronLeft, ChevronRight, X } from "react-feather"
+import { ChevronLeft, ChevronRight, Star, X } from "react-feather"
 
 import { ButtonSecondary } from "@/components/Buttons"
 import { styled } from "@/theme"
@@ -46,7 +46,8 @@ const MyGalleryBackground = styled.div`
 const MyGalleryButton = styled(ButtonSecondary)`
   background: rgba(0, 0, 0, 0.46);
   color: white;
-  border-style: none;
+  border-style: none !important;
+  box-shadow: none !important;
   backdrop-filter: blur(10px);
   pointer-events: initial;
 `
@@ -85,8 +86,10 @@ const TopRow = styled.div`
 export const Gallery = (props: {
   onClose: () => void
   imageUrl: string
+  readonly isPrimary: boolean
   onNext: () => void
   onPrevious: () => void
+  onStar: () => void
   hasNext: boolean
   hasPrevious: boolean
 }) => {
@@ -101,6 +104,7 @@ export const Gallery = (props: {
       props.onPrevious()
     }
   }
+  const starColor = props.isPrimary ? "#ffbf00" : undefined
   return (
     <MyGalleryContainer>
       <MyGalleryBackground />
@@ -110,6 +114,9 @@ export const Gallery = (props: {
         </MyGalleryImgContainer>
         <MyGalleryControlOverlay>
           <TopRow>
+            <MyGalleryButton className="mr-auto" onClick={props.onStar}>
+              <Star color={starColor} fill={starColor} />
+            </MyGalleryButton>
             <MyGalleryButton className="ml-auto" onClick={props.onClose}>
               <X />
             </MyGalleryButton>

@@ -1,3 +1,4 @@
+import produce from "immer"
 import { last, pick, sortBy } from "lodash-es"
 import queryString from "query-string"
 import React, { useState } from "react"
@@ -30,6 +31,7 @@ import {
   getRecipeById,
   IIngredient,
   IRecipe,
+  patchRecipe,
   updateIngredient,
   updateSectionForRecipe,
   updatingRecipeAsync,
@@ -418,11 +420,11 @@ function Meta({ title }: { title: string }) {
 }
 
 const HeaderImg = styled.img`
-  border-radius: 3px;
+  border-radius: 6px;
   height: 100%;
   object-fit: cover;
   width: 100%;
-  grid-area: 1 / 1;
+  grid-area: 1 / 2;
 `
 
 const MyRecipeTitle = styled.div`
@@ -436,7 +438,7 @@ const RecipeMetaItem = styled.div<{ inline?: boolean }>`
     props.inline
       ? `
   display: flex;
-  gap: 0.5rem;
+  gap: 0.25rem;
   `
       : `
   display: grid;
@@ -459,7 +461,7 @@ const RecipeMetaContainer = styled.div<{ inline?: boolean }>`
   grid-row-gap: 4px;
   ${(props) =>
     props.inline
-      ? `column-gap: 3rem;`
+      ? `column-gap: 0.75rem;`
       : `flex-direction: column;
   justify-content: end;`}
 `
@@ -617,17 +619,13 @@ function SourceLink({ children }: { children: string }) {
   )
 }
 
-const HeaderImgContainer = styled.div`
-  display: grid;
-`
-
 const HeaderBgOverlay = styled.div`
   opacity: 0.8;
   background: #000;
-  grid-area: 1 / 1;
+  grid-area: 1 / 2;
 `
 const HeaderImgOverlay = styled.div`
-  grid-area: 1 / 1;
+  grid-area: 1 / 2;
 
   display: flex;
   align-items: center;
@@ -657,8 +655,9 @@ function RecipeInfo(props: {
   toggleEditMode: () => void
 }) {
   const [showEditor, setShowEditor] = useState(false)
-  const inlineLayout = !props.recipe.headerImgUrl && !props.editingEnabled
-
+  const [uploadProgress, setUploadProgress] = useState(0)
+  const inlineLayout = !props.recipe.primaryImage && !props.editingEnabled
+  const dispatch = useDispatch()
   return (
     <>
       <RecipeDetailsContainer spanColumns={inlineLayout}>
@@ -755,21 +754,62 @@ function RecipeInfo(props: {
           </>
         )}
       </RecipeDetailsContainer>
-      {(props.recipe.headerImgUrl || props.editingEnabled) && (
-        <HeaderImgContainer>
-          <HeaderImg src={props.recipe.headerImgUrl ?? ""} />
+      {(props.recipe.primaryImage || props.editingEnabled) && (
+        <>
+          <HeaderImg src={props.recipe.primaryImage?.url ?? ""} />
           {props.editingEnabled && (
             <>
               <HeaderBgOverlay />
               <HeaderImgOverlay>
                 <HeaderImgUploader>
-                  <div>Upload a title image</div>
-                  <input type="file" accept="image/jpeg, image/png" />
+                  <div>
+                    Select a primary image from note attachments, or upload
+                    directly
+                  </div>
+
+                  <input
+                    type="file"
+                    accept="image/jpeg, image/png"
+                    onChange={async (e) => {
+                      const newFiles = e.target.files
+                      if (newFiles != null) {
+                        for (const file of newFiles) {
+                          const uploadRes = await api.uploadImage({
+                            image: file,
+                            recipeId: props.recipe.id,
+                            onProgress(progress) {
+                              setUploadProgress(Math.min(progress, 80))
+                            },
+                          })
+                          if (!isOk(uploadRes)) {
+                            // we want to clear the file input
+                            //
+                            // @ts-expect-error types don't allow this, but it works
+                            e.target.value = null
+                            return
+                          }
+                          await updatingRecipeAsync(
+                            {
+                              id: props.recipe.id,
+                              data: {
+                                primaryImageId: uploadRes.data.id,
+                              },
+                            },
+                            dispatch,
+                          )
+                          setUploadProgress(100)
+                        }
+                      }
+                    }}
+                  />
+                  {uploadProgress > 0 && (
+                    <progress value={uploadProgress} max="100" />
+                  )}
                 </HeaderImgUploader>
               </HeaderImgOverlay>
             </>
           )}
-        </HeaderImgContainer>
+        </>
       )}
     </>
   )
@@ -833,8 +873,6 @@ export function Recipe(props: IRecipeProps) {
   if (recipe.author) {
     recipeTitle = recipeTitle + ` by ${recipe.author}`
   }
-  // recipe.headerImgUrl =
-  //   "https://images-cdn.recipeyak.com/1/10c9c2a1e18d4809a215047d67bd201a/9B0360A4-B35D-4DC4-80B1-2FED8BD28287.jpeg"
   return (
     <div className="d-grid gap-2 mx-auto mw-1000px">
       <Helmet title={recipe.name} />
@@ -855,7 +893,7 @@ export function Recipe(props: IRecipeProps) {
         </RecipeBanner>
       )}
 
-      <RecipeDetailGrid enableLargeImageRow={!!recipe.headerImgUrl}>
+      <RecipeDetailGrid enableLargeImageRow={!!recipe.primaryImage?.url}>
         <RecipeInfo
           recipe={recipe}
           editingEnabled={editingEnabled}
