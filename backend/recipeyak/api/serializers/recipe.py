@@ -113,6 +113,9 @@ class UploadSerializer(BaseModelSerializer):
         fields = read_only_fields
 
 
+IGNORED_TIMELINE_EVENTS = {"set_primary_image", "remove_primary_image"}
+
+
 class RecipeSerializer(BaseModelSerializer):
     steps = StepSerializer(many=True, source="step_set")
     last_scheduled = serializers.DateField(source="get_last_scheduled", read_only=True)
@@ -141,6 +144,7 @@ class RecipeSerializer(BaseModelSerializer):
                 created=x.created,
             )
             for x in cast(Any, obj).timelineevent_set.all()
+            if x.action not in IGNORED_TIMELINE_EVENTS
         ]
 
         return items

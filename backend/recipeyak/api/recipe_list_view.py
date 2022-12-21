@@ -16,6 +16,7 @@ from recipeyak import ordering
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import (
+    IGNORED_TIMELINE_EVENTS,
     RecipeSerializer,
     serialize_attachments,
     serialize_reactions,
@@ -176,6 +177,8 @@ def recipe_get_view(request: AuthedRequest) -> Response:
         "created_by__email",
         "recipe_id",
     ):
+        if event["action"] in IGNORED_TIMELINE_EVENTS:
+            continue
         if event["created_by"] is not None:
             email = event["created_by__email"]
             event["created_by"] = dict(
