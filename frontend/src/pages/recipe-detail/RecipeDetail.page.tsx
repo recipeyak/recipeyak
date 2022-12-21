@@ -1,4 +1,4 @@
-import { last, pick, sortBy } from "lodash-es"
+import { groupBy, last, pick, sortBy } from "lodash-es"
 import queryString from "query-string"
 import React, { useState } from "react"
 import { RouteComponentProps, useHistory } from "react-router"
@@ -385,33 +385,51 @@ function useRecipeUrlUpdate(recipe: { id: number; name: string } | null) {
 
 type IRecipeProps = RouteComponentProps<{ id: string }>
 
-function Meta({ title }: { title: string }) {
+function updateOrCreateTag(
+  metaTags: HTMLMetaElement[],
+  property: string,
+  value: string,
+) {
+  if (!value) {
+    metaTags.forEach((x) => {
+      x.remove()
+    })
+    return
+  }
+  if (metaTags.length > 0) {
+    if (metaTags[0].content !== value) {
+      metaTags[0].content = value
+    }
+    // clear out any dupe tags
+    if (metaTags.length > 1) {
+      metaTags.forEach((x, i) => {
+        // we only want one metatag
+        if (i > 0) {
+          x.remove()
+        }
+      })
+    }
+  } else {
+    // setup the missing metatag
+    const metaTag = document.createElement("meta")
+    // NOTE: property is missing from the type
+    metaTag.setAttribute("property", property)
+    metaTag.content = value
+    document.head.appendChild(metaTag)
+  }
+}
+
+function Meta({ title, image }: { title: string; image: string }) {
   React.useEffect(() => {
     const metaTags = document.querySelectorAll<HTMLMetaElement>(
-      `meta[property="og:title"]`,
+      `meta[property^="og:"]`,
     )
-    if (metaTags.length > 0) {
-      if (metaTags[0].content !== title) {
-        metaTags[0].content = title
-      }
-      // clear out any dupe tags
-      if (metaTags.length > 1) {
-        metaTags.forEach((x, i) => {
-          // we only want one metatag
-          if (i > 0) {
-            x.remove()
-          }
-        })
-      }
-    } else {
-      // setup the missing metatag
-      const metaTag = document.createElement("meta")
-      // NOTE: property is missing from the type
-      metaTag.setAttribute("property", "og:title")
-      metaTag.content = title
-      document.head.appendChild(metaTag)
-    }
-  }, [title])
+    const groupedMetatags = groupBy(metaTags, (x) => x.getAttribute("property"))
+    console.log(groupedMetatags)
+
+    updateOrCreateTag(groupedMetatags["og:title"] || [], "og:title", title)
+    updateOrCreateTag(groupedMetatags["og:image"] || [], "og:image", image)
+  }, [title, image])
   return null
 }
 
@@ -876,7 +894,7 @@ export function Recipe(props: IRecipeProps) {
   return (
     <div className="d-grid gap-2 mx-auto mw-1000px">
       <Helmet title={recipe.name} />
-      <Meta title={recipeTitle} />
+      <Meta title={recipeTitle} image={recipe.primaryImage?.url ?? ""} />
       {archivedAt != null && <RecipeBanner>Archived {archivedAt}</RecipeBanner>}
       {editingEnabled && (
         <RecipeBanner>

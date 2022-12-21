@@ -15,6 +15,9 @@ template = Template(
 <html>
 <head>
 <meta property="og:title" content="{{ recipe_title }}" />
+{% if recipe_image_url %}
+<meta property="og:image" content="{{ recipe_image_url }}" />
+{% endif %}
 <link rel="apple-touch-icon" href="https://recipeyak.imgix.net/recipeyak-logo-3x-white.png">
 <meta http-equiv="refresh" content="0; url=https://recipeyak.com/recipes/{{ recipe_pk }}/">
 </head>
@@ -34,6 +37,9 @@ def recipe_get_view(request: AuthedRequest, recipe_pk: str) -> Response:
                 {
                     "recipe_title": recipe_title,
                     "recipe_pk": recipe.pk,
+                    "recipe_image_url": recipe.primary_image.public_url
+                    if recipe.primary_image
+                    else None,
                 }
             )
         )
