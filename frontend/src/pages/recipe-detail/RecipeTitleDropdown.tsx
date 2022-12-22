@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { useLocation } from "react-router-dom"
 
 import { copyToClipboard } from "@/clipboard"
@@ -12,6 +12,7 @@ import {
 } from "@/components/Dropdown"
 import { Chevron } from "@/components/icons"
 import { useDispatch, useSelector } from "@/hooks"
+import { ScheduleModal } from "@/pages/recipe-detail/ScheduleModal"
 import {
   deleteRecipe,
   duplicateRecipe,
@@ -64,19 +65,21 @@ function useDuplicateRecipe({
 
 interface IDropdownProps {
   readonly recipeId: number
+  readonly recipeName: string
   readonly toggleEditing: () => void
   readonly editingEnabled: boolean
-  readonly toggleScheduling: () => void
   readonly className: string
 }
 export function Dropdown({
   recipeId,
+  recipeName,
   toggleEditing,
   editingEnabled,
-  toggleScheduling,
   className,
 }: IDropdownProps) {
   const { ref, isOpen, toggle, close } = useDropdown()
+
+  const [showScheduleModal, setShowScheduleModal] = useState(false)
 
   const location = useLocation()
   const dispatch = useDispatch()
@@ -132,7 +135,7 @@ export function Dropdown({
   }, [dispatch, recipeId])
 
   const handleSchedule = () => {
-    toggleScheduling()
+    setShowScheduleModal(true)
     close()
   }
 
@@ -180,6 +183,15 @@ export function Dropdown({
           {!isDeleting ? "Delete" : "Deleting..."}
         </DropdownItemButton>
       </DropdownMenu>
+      {showScheduleModal && (
+        <ScheduleModal
+          recipeId={recipeId}
+          recipeName={recipeName}
+          onClose={() => {
+            setShowScheduleModal((s) => !s)
+          }}
+        />
+      )}
     </DropdownContainer>
   )
 }
