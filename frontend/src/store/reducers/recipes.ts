@@ -528,6 +528,7 @@ export interface IRecipe {
   readonly primaryImage?: {
     id: string
     url: string
+    backgroundUrl: string | null
   }
   readonly created: string
   readonly archived_at: string | null

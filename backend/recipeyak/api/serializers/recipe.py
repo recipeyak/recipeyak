@@ -107,10 +107,11 @@ class SectionSerializer(BaseModelSerializer):
 class UploadSerializer(BaseModelSerializer):
     id = serializers.CharField()
     url = serializers.CharField(source="public_url")
+    backgroundUrl = serializers.CharField(source="background_url")
 
     class Meta:
         model = Upload
-        read_only_fields = ("id", "url")
+        read_only_fields = ("id", "url", "backgroundUrl")
         fields = read_only_fields
 
 

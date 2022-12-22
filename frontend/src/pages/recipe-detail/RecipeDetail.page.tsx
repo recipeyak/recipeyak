@@ -459,6 +459,23 @@ const HeaderImg = styled.img`
     height: 100%;
     grid-area: 2 / 1;
   }
+  z-index: 10;
+`
+
+const HeaderImgThumbnail = styled.div<{ backgroundImage: string }>`
+  border-radius: 6px;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+  background-image: url(${(props) => props.backgroundImage});
+  @media (min-width: 800px) {
+    height: 100%;
+    grid-area: 1 / 2;
+  }
+  @media (max-width: 799px) {
+    height: 100%;
+    grid-area: 2 / 1;
+  }
 `
 
 const MyRecipeTitle = styled.div`
@@ -932,6 +949,10 @@ function RecipeInfo(props: {
             onClick={() => {
               props.openImage()
             }}
+          />
+          <HeaderImgThumbnail
+            className="blurred-filter"
+            backgroundImage={props.recipe.primaryImage?.backgroundUrl ?? ""}
           />
           {props.editingEnabled && (
             <>
