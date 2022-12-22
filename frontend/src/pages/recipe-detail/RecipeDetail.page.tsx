@@ -835,9 +835,9 @@ function RecipeInfo(props: {
         <Dropdown
           className="mr-auto"
           recipeId={props.recipe.id}
+          recipeName={props.recipe.name}
           editingEnabled={props.editingEnabled}
           toggleEditing={props.toggleEditMode}
-          toggleScheduling={() => {}}
         />
         {showEditor ? (
           <RecipeEditor
