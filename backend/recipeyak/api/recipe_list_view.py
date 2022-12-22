@@ -67,6 +67,7 @@ def recipe_get_view(request: AuthedRequest) -> Response:
             "archived_at",
             "primary_image__id",
             "primary_image__key",
+            "primary_image__background_url",
             "tags",
         )
     }
@@ -74,9 +75,14 @@ def recipe_get_view(request: AuthedRequest) -> Response:
     for recipe in recipes.values():
         image_id = recipe.pop("primary_image__id", None)
         image_key = recipe.pop("primary_image__key", None)
+        background_url = recipe.pop("primary_image__background_url", None)
         if image_id is None or image_key is None:
             continue
-        recipe["primaryImage"] = dict(id=str(image_id), url=public_url(key=image_key))
+        recipe["primaryImage"] = dict(
+            id=str(image_id),
+            url=public_url(key=image_key),
+            backgroundUrl=background_url,
+        )
 
     ingredients = group_by_recipe_id(
         Ingredient.objects.filter(recipe_id__in=recipes.keys()).values(
