@@ -678,6 +678,7 @@ const HeaderBgOverlay = styled.div`
   opacity: 0.8;
   border-radius: 6px;
   background: #000;
+  z-index: 35;
 
   @media (min-width: 800px) {
     grid-area: 1 / 2;
