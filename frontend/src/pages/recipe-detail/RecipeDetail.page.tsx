@@ -452,11 +452,9 @@ const HeaderImg = styled.img`
   object-fit: cover;
   width: 100%;
   @media (min-width: 800px) {
-    height: 100%;
     grid-area: 1 / 2;
   }
   @media (max-width: 799px) {
-    height: 100%;
     grid-area: 2 / 1;
   }
   z-index: 10;
@@ -465,16 +463,26 @@ const HeaderImg = styled.img`
 const HeaderImgThumbnail = styled.div<{ backgroundImage: string }>`
   border-radius: 6px;
   height: 100%;
-  object-fit: cover;
   width: 100%;
   background-image: url(${(props) => props.backgroundImage});
   @media (min-width: 800px) {
-    height: 100%;
     grid-area: 1 / 2;
   }
   @media (max-width: 799px) {
-    height: 100%;
     grid-area: 2 / 1;
+  }
+
+  background-size: cover;
+  position: relative;
+
+  &:after {
+    position: absolute;
+    content: "";
+    height: 100%;
+    width: 100%;
+    border-radius: 6px;
+    backdrop-filter: blur(10px);
+    pointer-events: none;
   }
 `
 
@@ -952,7 +960,6 @@ function RecipeInfo(props: {
             }}
           />
           <HeaderImgThumbnail
-            className="blurred-filter"
             backgroundImage={props.recipe.primaryImage?.backgroundUrl ?? ""}
           />
           {props.editingEnabled && (
