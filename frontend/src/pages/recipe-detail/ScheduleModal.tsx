@@ -1,14 +1,15 @@
+import { parseISO } from "date-fns"
 import React from "react"
 import { Link } from "react-router-dom"
 
-import * as api from "@/api"
 import { isMobile } from "@/browser"
+import { Box } from "@/components/Box"
+import { Button } from "@/components/Buttons"
 import { Modal } from "@/components/Modal"
 import { toISODateString } from "@/date"
-import { useDispatch, useSelector, useTeamId } from "@/hooks"
-import { isOk } from "@/result"
+import { useSelector, useTeamId } from "@/hooks"
+import { useScheduleRecipeCreate } from "@/queries/scheduledRecipeCreate"
 import { scheduleURLFromTeamID } from "@/store/mapState"
-import { setCalendarRecipe } from "@/store/reducers/calendar"
 
 function useScheduleUrl(recipeId: number) {
   return useSelector(scheduleURLFromTeamID) + `?recipeId=${recipeId}`
@@ -24,22 +25,26 @@ export function ScheduleModal({
   readonly onClose: () => void
 }) {
   const [isoDate, setIsoDate] = React.useState(toISODateString(new Date()))
-  const [saving, setSaving] = React.useState(false)
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsoDate(e.target.value)
   }
-  const dispatch = useDispatch()
   const teamId = useTeamId()
+
+  const scheduledRecipeCreate = useScheduleRecipeCreate()
   const handleSave = () => {
-    setSaving(true)
-    void api.scheduleRecipe(recipeId, teamId, isoDate).then((res) => {
-      if (isOk(res)) {
-        dispatch(setCalendarRecipe(res.data))
-        setSaving(false)
-        onClose()
-      }
-      setSaving(false)
-    })
+    scheduledRecipeCreate.mutate(
+      {
+        recipeID: recipeId,
+        teamID: teamId,
+        count: 1,
+        on: parseISO(isoDate),
+      },
+      {
+        onSuccess: () => {
+          onClose()
+        },
+      },
+    )
   }
 
   const scheduleUrl = useScheduleUrl(recipeId)
@@ -50,22 +55,20 @@ export function ScheduleModal({
       onClose={onClose}
       title={`Schedule: ${recipeName}`}
       content={
-        <div>
-          <div className="mr-2" style={{ display: "grid", gridGap: "0.25rem" }}>
-            <input
-              value={toISODateString(isoDate)}
-              onChange={handleDateChange}
-              type="date"
-              className="mr-4 mt-2"
-              style={{
-                border: "1px solid lightgray",
-                borderRadius: 5,
-                padding: "0.25rem",
-              }}
-            />
-          </div>
+        <Box gap={2} dir="col">
+          <input
+            value={toISODateString(isoDate)}
+            onChange={handleDateChange}
+            type="date"
+            className="mt-2"
+            style={{
+              border: "1px solid lightgray",
+              borderRadius: 5,
+              padding: "0.25rem",
+            }}
+          />
 
-          <div className="d-flex justify-space-between align-items-center mt-2">
+          <Box space="between" align="center">
             {!isMobile() ? (
               <Link to={scheduleUrl} className="text-small">
                 open in calendar
@@ -73,16 +76,23 @@ export function ScheduleModal({
             ) : (
               <div />
             )}
-            <div className="align-items-center d-flex">
-              <button className="mr-2" onClick={onClose}>
+            <Box align="center" gap={2}>
+              <Button size="small" onClick={onClose}>
                 cancel
-              </button>
-              <button onClick={handleSave} disabled={saving}>
-                {!saving ? "schedule" : "scheduling..."}
-              </button>
-            </div>
-          </div>
-        </div>
+              </Button>
+              <Button
+                size="small"
+                variant="primary"
+                onClick={handleSave}
+                disabled={scheduledRecipeCreate.isLoading}
+              >
+                {!scheduledRecipeCreate.isLoading
+                  ? "schedule"
+                  : "scheduling..."}
+              </Button>
+            </Box>
+          </Box>
+        </Box>
       }
     />
   )

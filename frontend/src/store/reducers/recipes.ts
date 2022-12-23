@@ -335,13 +335,6 @@ export const updateSectionForRecipe = createStandardAction(
   readonly position?: string
 }>()
 
-export const setSchedulingRecipe = createStandardAction(
-  "SET_SCHEDULING_RECIPE",
-)<{
-  recipeID: IRecipe["id"]
-  scheduling: boolean
-}>()
-
 export const setRecipeStepDraft = createStandardAction(
   "SET_RECIPE_STEP_DRAFT",
 )<{ id: IRecipe["id"]; draftStep: IRecipe["draftStep"] }>()
@@ -391,7 +384,6 @@ export type RecipeActions =
   | ActionType<typeof updateRecipe>
   | ActionType<typeof addStepToRecipe>
   | ActionType<typeof addIngredientToRecipe>
-  | ReturnType<typeof setSchedulingRecipe>
   | ActionType<typeof updateIngredient>
   | ActionType<typeof deleteRecipe>
   | ActionType<typeof fetchRecipe>
@@ -536,7 +528,6 @@ export interface IRecipe {
   readonly deleting?: boolean
   readonly addingStepToRecipe?: boolean
   readonly addingIngredient?: boolean
-  readonly scheduling?: boolean
   readonly updating?: boolean
   readonly draftStep?: string
 }
@@ -989,11 +980,6 @@ export const recipes = (
         ...recipe,
 
         owner: action.payload.owner,
-      }))
-    case getType(setSchedulingRecipe):
-      return mapRecipeSuccessById(state, action.payload.recipeID, (recipe) => ({
-        ...recipe,
-        scheduling: action.payload.scheduling,
       }))
     case getType(duplicateRecipe.request): {
       const { recipeId, onComplete } = action.payload

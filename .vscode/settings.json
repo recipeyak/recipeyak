@@ -50,10 +50,23 @@
       "source.organizeImports": true
     }
   },
+  "[typescript]": {
+    "editor.tabSize": 2
+  },
+  "[typescriptreact]": {
+    "editor.tabSize": 2
+  },
+  "[javascript]": {
+    "editor.tabSize": 2
+  },
+  "[javascriptreact]": {
+    "editor.tabSize": 2
+  },
   "scss.format.enable": true,
   "isort.importStrategy": "fromEnvironment",
   "isort.args": ["--sp", "./backend/pyproject.toml"],
   "python.testing.autoTestDiscoverOnSaveEnabled": false,
   "python.testing.promptToConfigure": false,
-  "explorer.excludeGitIgnore": true
+  "explorer.excludeGitIgnore": true,
+  "editor.detectIndentation": false
 }

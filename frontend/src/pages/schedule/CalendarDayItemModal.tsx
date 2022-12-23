@@ -2,15 +2,14 @@ import { format } from "date-fns"
 import React from "react"
 import { Link } from "react-router-dom"
 
-import * as api from "@/api"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Modal } from "@/components/Modal"
 import { formatAbsoluteDate, toISODateString } from "@/date"
-import { useDispatch } from "@/hooks"
 import { TimelineEvent } from "@/pages/recipe-detail/Notes"
-import { isOk } from "@/result"
-import { moveCalendarRecipe } from "@/store/reducers/calendar"
+import { useScheduledRecipeDelete } from "@/queries/scheduledRecipeDelete"
+import { useScheduledRecipeFindNextOpen } from "@/queries/scheduledRecipeFindNextOpen"
+import { useScheduledRecipeUpdate } from "@/queries/scheduledRecipeUpdate"
 import { recipeURL } from "@/urls"
 
 const options = [
@@ -50,54 +49,60 @@ export function CalendarDayItemModal({
 }) {
   const [day, setDay] = React.useState(format(date, "EEEE"))
   const [localDate, setLocalDate] = React.useState(toISODateString(date))
-  const [findingNextOpen, setFindingNextOpen] = React.useState(false)
-  const [saving, setSaving] = React.useState(false)
-  const [deleting, setDeleting] = React.useState(false)
-  const dispatch = useDispatch()
+  const scheduledRecipeDelete = useScheduledRecipeDelete()
+  const scheduldRecipeUpdate = useScheduledRecipeUpdate()
+  const findNextOpen = useScheduledRecipeFindNextOpen()
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLocalDate(e.target.value)
   }
   const handleFindNextOpen = () => {
-    setFindingNextOpen(true)
-    void api.findNextOpen({ teamID, day, now: localDate }).then((res) => {
-      if (isOk(res)) {
-        setLocalDate(res.data.date)
-      }
-      setFindingNextOpen(false)
-    })
+    findNextOpen.mutate(
+      {
+        teamID,
+        day,
+        now: localDate,
+      },
+      {
+        onSuccess: (data) => {
+          setLocalDate(data.date)
+        },
+      },
+    )
   }
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setDay(e.target.value)
   }
   const handleDelete = () => {
     if (confirm(`Are you sure you want to delete '${recipeName}'?`)) {
-      setDeleting(true)
-      void api.deleteScheduledRecipe(scheduledId, teamID).then(() => {
-        setDeleting(false)
-        onClose()
-      })
+      scheduledRecipeDelete.mutate(
+        {
+          scheduledRecipeId: scheduledId,
+          teamId: teamID,
+        },
+        {
+          onSuccess: () => {
+            onClose()
+          },
+        },
+      )
     }
   }
   const handleSave = () => {
-    setSaving(true)
-    void api
-      .updateScheduleRecipe(scheduledId, teamID, {
-        on: toISODateString(localDate),
-      })
-      .then((res) => {
-        if (isOk(res)) {
-          dispatch(
-            moveCalendarRecipe({
-              id: scheduledId,
-              to: toISODateString(res.data.on),
-            }),
-          )
-          setSaving(false)
+    scheduldRecipeUpdate.mutate(
+      {
+        scheduledRecipeId: scheduledId,
+        teamID,
+        update: {
+          on: toISODateString(localDate),
+        },
+      },
+      {
+        onSuccess: () => {
           onClose()
-        }
-        setSaving(false)
-      })
+        },
+      },
+    )
   }
 
   const to = recipeURL(recipeId, recipeName)
@@ -152,7 +157,7 @@ export function CalendarDayItemModal({
                     <select
                       value={day}
                       onChange={handleSelectChange}
-                      disabled={findingNextOpen}
+                      disabled={findNextOpen.isLoading}
                     >
                       {options.map((opt) => {
                         return (
@@ -166,9 +171,9 @@ export function CalendarDayItemModal({
                       <Button
                         size="small"
                         onClick={handleFindNextOpen}
-                        disabled={findingNextOpen}
+                        disabled={findNextOpen.isLoading}
                       >
-                        {!findingNextOpen ? "find" : "finding..."}
+                        {!findNextOpen.isLoading ? "find" : "finding..."}
                       </Button>
                     </div>
                   </Box>
@@ -176,15 +181,24 @@ export function CalendarDayItemModal({
               </Box>
 
               <Box space="between" align="center">
-                <Button size="small" onClick={handleDelete} disabled={deleting}>
-                  {!deleting ? "delete" : "deleting..."}
+                <Button
+                  size="small"
+                  variant="danger"
+                  onClick={handleDelete}
+                  disabled={scheduledRecipeDelete.isLoading}
+                >
+                  {!scheduledRecipeDelete.isLoading ? "delete" : "deleting..."}
                 </Button>
                 <Box gap={2}>
                   <Button size="small" onClick={onClose}>
                     cancel
                   </Button>
-                  <Button size="small" onClick={handleSave} disabled={saving}>
-                    {!saving ? "save" : "saving..."}
+                  <Button
+                    size="small"
+                    onClick={handleSave}
+                    disabled={scheduldRecipeUpdate.isLoading}
+                  >
+                    {!scheduldRecipeUpdate.isLoading ? "save" : "saving..."}
                   </Button>
                 </Box>
               </Box>

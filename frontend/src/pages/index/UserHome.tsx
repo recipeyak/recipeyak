@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query"
 import { push } from "connected-react-router"
 import {
   addDays,
@@ -12,14 +11,15 @@ import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
 import useOnClickOutside from "use-onclickoutside"
 
-import * as api from "@/api"
 import { isMobile } from "@/browser"
 import Footer from "@/components/Footer"
 import * as forms from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
 import { useDispatch, useScheduleTeamID, useSelector } from "@/hooks"
-import { unwrapEither } from "@/query"
+import { useRecentlyCreatedRecipesList } from "@/queries/recentlyCreatedRecipesList"
+import { useRecentlyViewedRecipesList } from "@/queries/recentlyViewedRecipesList"
+import { useSchedulePreviewList } from "@/queries/schedulePreviewList"
 import { searchRecipes } from "@/search"
 import { scheduleURLFromTeamID } from "@/store/mapState"
 import { getTeamRecipes } from "@/store/reducers/recipes"
@@ -244,16 +244,8 @@ function useSchedulePreview() {
   const teamID = useScheduleTeamID()
   const start = startOfToday()
   const end = addDays(start, 6)
-  const res = useQuery(["schedule"], () =>
-    api
-      .getCalendarRecipeListRequestBuilder({
-        teamID,
-        start,
-        end,
-      })
-      .send()
-      .then(unwrapEither),
-  )
+  const res = useSchedulePreviewList({ teamID, start, end })
+
   if (res.data == null) {
     return null
   }
@@ -288,9 +280,7 @@ function SchedulePreview() {
 }
 
 function RecentlyViewed() {
-  const recipes = useQuery(["recently-viewed-recipes"], () =>
-    api.recentlyViewedRecipes().then(unwrapEither),
-  )
+  const recipes = useRecentlyViewedRecipesList()
 
   return (
     <ScheduleContainer>
@@ -315,9 +305,7 @@ function RecentlyViewed() {
 }
 
 function RecentlyCreated() {
-  const recipes = useQuery(["recently-created-recipes"], () =>
-    api.recentlyCreatedRecipes().then(unwrapEither),
-  )
+  const recipes = useRecentlyCreatedRecipesList()
 
   return (
     <ScheduleContainer>
