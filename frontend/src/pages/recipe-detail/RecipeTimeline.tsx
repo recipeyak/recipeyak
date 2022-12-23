@@ -73,7 +73,9 @@ export function RecipeTimeline({ createdAt, recipeId }: IRecipeTimelineProps) {
               return (
                 <TimelineItem key={e.id} type={e.type}>
                   📅 Scheduled for{" "}
-                  <Link to={scheduleURL + `?week=${e.date}`}>{e.date}</Link>
+                  <Link to={scheduleURL + `?week=${e.date}`}>
+                    <Time dateTime={new Date(e.date)} />
+                  </Link>
                 </TimelineItem>
               )
             default:

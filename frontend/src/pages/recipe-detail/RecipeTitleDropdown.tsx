@@ -144,7 +144,7 @@ export function Dropdown({
       <Button size="small" className="fs-14px" onClick={toggle}>
         Actions <Chevron />
       </Button>
-      <DropdownMenu isOpen={isOpen}>
+      <DropdownMenu isOpen={isOpen} position="left">
         <DropdownItemButton onClick={handleSchedule}>
           Schedule
         </DropdownItemButton>

@@ -51,14 +51,21 @@ const isOpenStyle = css`
   display: block;
 `
 
-interface IDropdownMenuProps {
+export const DropdownMenu = styled.div<{
   readonly isOpen: boolean
-}
-
-export const DropdownMenu = styled.div<IDropdownMenuProps>`
+  readonly position: "right" | "left"
+}>`
   position: absolute;
-  right: auto;
-  left: 0;
+  ${(props) =>
+    props.position === "left"
+      ? css`
+          right: auto;
+          left: 0;
+        `
+      : css`
+          right: 0;
+          left: auto;
+        `}
   z-index: 1000;
   padding: 0.5rem;
   margin: 0.125rem 0 0;
