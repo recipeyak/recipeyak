@@ -464,6 +464,7 @@ const HeaderImgThumbnail = styled.div<{ backgroundImage: string }>`
   border-radius: 6px;
   height: 100%;
   width: 100%;
+  background-position: center;
   background-image: url(${(props) => props.backgroundImage});
   @media (min-width: 800px) {
     grid-area: 1 / 2;
