@@ -11,7 +11,7 @@ from recipeyak import config
 from recipeyak.models.base import CommonInfo
 
 if TYPE_CHECKING:
-    from recipeyak.models import Note, User  # noqa: F401
+    from recipeyak.models import Note, Recipe, User  # noqa: F401
 
 s3 = boto3.client(
     "s3",
@@ -19,6 +19,10 @@ s3 = boto3.client(
     aws_access_key_id=config.AWS_ACCESS_KEY_ID,
     aws_secret_access_key=config.AWS_SECRET_ACCESS_KEY,
 )
+
+
+def public_url(key: str) -> str:
+    return str(URL(f"https://{config.STORAGE_HOSTNAME}").with_path(key))
 
 
 class Upload(CommonInfo):
@@ -33,11 +37,15 @@ class Upload(CommonInfo):
     note = models.ForeignKey["Note"](
         "Note", related_name="uploads", null=True, on_delete=models.SET_NULL
     )
+    recipe = models.ForeignKey["Recipe"](
+        "Recipe", related_name="uploads", null=True, on_delete=models.SET_NULL
+    )
 
     note_id: int | None
+    recipe_id: int | None
 
     class Meta:
         db_table = "core_upload"
 
     def public_url(self) -> str:
-        return str(URL(f"https://{config.STORAGE_HOSTNAME}").with_path(self.key))
+        return public_url(key=self.key)

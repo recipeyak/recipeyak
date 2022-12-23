@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React from "react"
 
 import { Button } from "@/components/Buttons"
 import { CheckBox, selectTarget, TextInput } from "@/components/Forms"
@@ -96,7 +96,6 @@ function AddIngredientForm({
   optional,
   loading,
   error,
-  autoFocus = false,
 }: {
   readonly handleAddIngredient: () => void
   readonly cancelAddIngredient: () => void
@@ -107,15 +106,8 @@ function AddIngredientForm({
   readonly optional: boolean
   readonly loading: boolean
   readonly error?: boolean
-  readonly autoFocus?: boolean
   readonly toggleShowAddSection: (() => void) | undefined
 }) {
-  useEffect(() => {
-    if (!loading && autoFocus) {
-      focusFirstInput()
-    }
-  }, [autoFocus, loading])
-
   const handleKeyUp = (e: KeyboardEvent) => {
     if (e.key === "Escape") {
       cancelAddIngredient()

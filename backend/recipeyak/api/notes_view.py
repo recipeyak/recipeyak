@@ -49,7 +49,10 @@ def note_create_view(request: AuthedRequest, recipe_pk: int) -> Response:
         id__in=params.attachment_upload_ids, created_by=request.user
     ).update(note=note)
 
-    return Response(serialize_note(note), status=status.HTTP_201_CREATED)
+    return Response(
+        serialize_note(note, primary_image_id=recipe.primary_image_id),
+        status=status.HTTP_201_CREATED,
+    )
 
 
 @api_view(["DELETE", "PATCH"])
@@ -79,7 +82,7 @@ def note_patch_view(request: AuthedRequest, note_pk: str) -> Response:
             ).update(note=note)
     note.save()
 
-    return Response(serialize_note(note))
+    return Response(serialize_note(note, primary_image_id=note.recipe.primary_image_id))
 
 
 def note_delete_view(request: AuthedRequest, note_pk: str) -> Response:

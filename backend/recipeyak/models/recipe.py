@@ -22,6 +22,7 @@ if TYPE_CHECKING:
     from recipeyak.models.note import Note
     from recipeyak.models.scrape import Scrape  # noqa: F401
     from recipeyak.models.team import Team
+    from recipeyak.models.upload import Upload  # noqa: F401
     from recipeyak.models.user import User
 
 
@@ -67,7 +68,10 @@ class Recipe(CommonInfo):
         help_text="Tags for organization recipes.",
     )
     scrape = models.ForeignKey["Scrape"]("Scrape", on_delete=models.SET_NULL, null=True)
-
+    primary_image = models.ForeignKey["Upload"](
+        "Upload", related_name="+", on_delete=models.SET_NULL, null=True
+    )
+    primary_image_id: int
     objects = Manager["Recipe"]()
 
     notes: QuerySet["Note"]
