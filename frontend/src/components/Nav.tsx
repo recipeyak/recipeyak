@@ -53,7 +53,7 @@ function UserDropdown() {
   return (
     <DropdownContainer ref={ref}>
       <UserAvatar onClick={toggle} />
-      <DropdownMenu isOpen={isOpen}>
+      <DropdownMenu isOpen={isOpen} position="right">
         <UserEmail />
         <p>
           <Link to="/settings" className="p-1-0">
