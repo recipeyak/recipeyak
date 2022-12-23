@@ -6,15 +6,11 @@ import { getCalendarRecipeList } from "@/api"
 import { useTeamId } from "@/hooks"
 import { unwrapEither } from "@/query"
 
-// TODO: describe higher level
-//   [1, "calendar", 1671339600000]
-
-// [teamId, "calendar"]
-
-// teamId, calendar, dates
-
-// scan([teamId, calendar, dates > 12323 < fsldjfsldf])
-// scan([teamId, calendar, 12323])
+// NOTE: At a high level we want the UI to be able to subscribe to a range of
+// data, like, all the calendar items with date > X && date < Y. We also want to
+// prefetch a bit in the past and future. But react-query doesn't really support
+// this sort of range of selection, it likes specific items with it's keys so we
+// do some hacky cache munging down below.
 
 export function useScheduledRecipeList({
   startOfWeekMs,

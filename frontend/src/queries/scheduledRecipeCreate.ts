@@ -45,23 +45,7 @@ export function useScheduleRecipeCreate() {
         1,
         /* user */ null,
       )
-      console.warn("optimistic update!!!!!!!!!!!!!")
-      //   queryClient.getQueryData([
-      //     teamID,
-      //     "calendar",
-      //     startOfWeek(vars.on).getTime(),
-      //   ])
-
-      //   queryClient.
-      // startOfWeek(), startOfWeek() - 1 week, startOfWeek() - 2 week, startOfWeek() + 1 week, startOfWeek() + 2 week
-
       const weekId = startOfWeek(vars.on)
-
-      // const weekId
-
-      // TODO: maybe we could fetch a given month, or 2 and only have 1 to 2 months to deal with
-
-      // TODO: explain
 
       const weekIds = [
         subWeeks(weekId, 2),
