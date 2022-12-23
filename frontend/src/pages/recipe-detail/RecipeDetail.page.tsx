@@ -876,7 +876,9 @@ function RecipeInfo(props: {
           <>
             <RecipeTitleCenter>
               <RecipeTitleContainer>
-                <MyRecipeTitle>{props.recipe.name}</MyRecipeTitle>
+                <MyRecipeTitle className="selectable">
+                  {props.recipe.name}
+                </MyRecipeTitle>
                 {notEmpty(props.recipe.author) && (
                   <div className="selectable">
                     By{" "}
