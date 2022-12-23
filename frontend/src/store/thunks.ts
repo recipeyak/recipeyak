@@ -1,15 +1,12 @@
 import { AxiosError, AxiosResponse } from "axios"
 import { push } from "connected-react-router"
-import { addWeeks, endOfWeek, parseISO, startOfWeek, subWeeks } from "date-fns"
-import { isRight } from "fp-ts/lib/Either"
 import raven from "raven-js"
 // eslint-disable-next-line no-restricted-imports
 import { Dispatch as ReduxDispatch } from "redux"
 
 import * as api from "@/api"
-import { heldKeys } from "@/components/CurrentKeys"
-import { isInsideChangeWindow, second, toISODateString } from "@/date"
-import { Err, isErr, isOk, Ok, Result } from "@/result"
+import { second, toISODateString } from "@/date"
+import { Err, isOk, Ok } from "@/result"
 import {
   login,
   setErrorReset,
@@ -19,15 +16,7 @@ import {
   setLoadingResetConfirmation,
   setLoadingSignup,
 } from "@/store/reducers/auth"
-import {
-  deleteCalendarRecipe,
-  fetchCalendarRecipes,
-  getExistingRecipe,
-  ICalRecipe,
-  moveCalendarRecipe,
-  replaceCalendarRecipe,
-  setCalendarRecipe,
-} from "@/store/reducers/calendar"
+import { ICalRecipe } from "@/store/reducers/calendar"
 import {
   acceptInvite,
   declineInvite,
@@ -48,7 +37,6 @@ import {
   IIngredient,
   IRecipe,
   IStep,
-  setSchedulingRecipe,
   updateRecipeOwner,
   updateStep,
 } from "@/store/reducers/recipes"
@@ -82,9 +70,7 @@ import {
   updateEmail,
   updateScheduleTeamID,
 } from "@/store/reducers/user"
-import { Action, IState, store } from "@/store/store"
-import { random32Id } from "@/uuid"
-import { isSuccessOrRefetching } from "@/webdata"
+import { Action, store } from "@/store/store"
 
 // TODO(sbdchd): move to @/store/store
 export type Dispatch = ReduxDispatch<Action>
@@ -817,33 +803,11 @@ export const deleteUserAccountAsync = (dispatch: Dispatch) => async () => {
   }
 }
 
-export const fetchCalendarAsync =
-  (dispatch: Dispatch) =>
-  async (teamID: number | "personal", currentDayTs: number) => {
-    dispatch(fetchCalendarRecipes.request())
-    // we fetch current month plus and minus 1 week
-    const start = startOfWeek(subWeeks(currentDayTs, 3))
-    const end = endOfWeek(addWeeks(currentDayTs, 3))
-    const res = await api.getCalendarRecipeList({ teamID, start, end })
-    if (isRight(res)) {
-      dispatch(
-        fetchCalendarRecipes.success({
-          scheduledRecipes: res.right.scheduledRecipes,
-          start: toISODateString(start),
-          end: toISODateString(end),
-          settings: res.right.settings,
-        }),
-      )
-    } else {
-      dispatch(fetchCalendarRecipes.failure())
-    }
-  }
-
 export function toCalRecipe(
-  recipe: IRecipe,
-  tempId: ICalRecipe["id"],
-  on: ICalRecipe["on"],
-  count: ICalRecipe["count"],
+  recipe: Pick<IRecipe, "id" | "name" | "owner">,
+  tempId: number,
+  on: string | Date,
+  count: number,
   user: {
     id: number | null
     name: string
@@ -871,164 +835,3 @@ export function toCalRecipe(
         : null,
   }
 }
-
-export interface IAddingScheduledRecipeProps {
-  readonly recipeID: IRecipe["id"]
-  readonly teamID: number | "personal"
-  readonly on: Date
-  readonly count: number
-  readonly showNotification?: boolean
-}
-
-export const addingScheduledRecipeAsync = async (
-  dispatch: Dispatch,
-  getState: () => IState,
-  {
-    recipeID,
-    teamID,
-    on,
-    count,
-    showNotification,
-  }: IAddingScheduledRecipeProps,
-) => {
-  // TODO(sbdchd): we should split this into one function for creating a new
-  // scheduled recipe and one function for moving a scheduled recipe.
-  const recipe = getState().recipes.byId[recipeID]
-  dispatch(setSchedulingRecipe({ recipeID, scheduling: true }))
-  const tempId = random32Id()
-
-  if (!isSuccessOrRefetching(recipe)) {
-    return Promise.resolve()
-  }
-
-  // 1. preemptively add recipe
-  // 2. if succeeded, then we replace the preemptively added one
-  //    if failed, then we remove the preemptively added one, and display an error
-
-  const user = getState().user
-
-  dispatch(
-    setCalendarRecipe(
-      toCalRecipe(recipe.data, tempId, toISODateString(on), count, user),
-    ),
-  )
-  const res = await api.scheduleRecipe(recipeID, teamID, on, count)
-
-  if (isOk(res)) {
-    dispatch(replaceCalendarRecipe({ id: tempId, recipe: res.data }))
-    dispatch(setSchedulingRecipe({ recipeID, scheduling: false }))
-    const scheduledDate = new Date(res.data.on).toLocaleDateString()
-    const recipeName = res.data.recipe.name
-    if (showNotification) {
-      const message = `${recipeName} scheduled on ${scheduledDate}`
-      showNotificationWithTimeoutAsync(dispatch)({
-        message,
-        level: "success",
-        delay: 3 * second,
-      })
-    }
-  } else {
-    dispatch(deleteCalendarRecipe(tempId))
-    showNotificationWithTimeoutAsync(dispatch)({
-      message: "error scheduling recipe",
-      level: "danger",
-      delay: 3 * second,
-    })
-    dispatch(setSchedulingRecipe({ recipeID, scheduling: false }))
-  }
-}
-export const deletingScheduledRecipeAsync =
-  (dispatch: Dispatch) =>
-  async (id: ICalRecipe["id"], teamID: number | "personal") => {
-    // HACK(sbdchd): we should have these in byId object / Map
-    // TODO(sbdchd): we can just have a marker for deleted recipes and just remove
-    // that marker if this fails. Or we could put them in their own id list
-    const recipe = store.getState().calendar.byId[id]
-    if (recipe == null) {
-      return Err(undefined)
-    }
-    dispatch(deleteCalendarRecipe(id))
-    const res = await api.deleteScheduledRecipe(id, teamID)
-    if (isErr(res)) {
-      dispatch(setCalendarRecipe(recipe))
-    }
-    return Ok(undefined)
-  }
-
-export interface IMoveScheduledRecipeProps {
-  readonly id: ICalRecipe["id"]
-  readonly teamID: number | "personal"
-  readonly to: Date
-}
-
-export const moveScheduledRecipe = async (
-  dispatch: Dispatch,
-  getState: () => IState,
-  { id, teamID, to }: IMoveScheduledRecipeProps,
-) => {
-  // HACK(sbdchd): With an endpoint we can eliminate this
-  const state = getState()
-  const from = state.calendar.byId[id]
-
-  if (from == null) {
-    return
-  }
-
-  // copy recipe if
-  // - recipe from the past
-  // - user is holding shift
-  const holdingShift = heldKeys.size === 1 && heldKeys.has("Shift")
-  const copyRecipe = !isInsideChangeWindow(parseISO(from.on)) || holdingShift
-  if (copyRecipe) {
-    return addingScheduledRecipeAsync(dispatch, getState, {
-      recipeID: from.recipe.id,
-      teamID,
-      on: to,
-      count: from.count,
-    })
-  }
-  const existing = getExistingRecipe({ state: state.calendar, on: to, from })
-
-  // Note(sbdchd): we need move to be after the checking of the store so we
-  // don't delete the `from` recipe and update the `existing`
-  dispatch(moveCalendarRecipe({ id, to: toISODateString(to) }))
-
-  if (existing) {
-    // HACK(sbdchd): this should be an endpoint so we can have this be in a transaction
-    const resp = await api.deleteScheduledRecipe(from.id, teamID)
-    if (isOk(resp)) {
-      void api.updateScheduleRecipe(existing.id, teamID, {
-        count: existing.count + from.count,
-      })
-    } else {
-      dispatch(moveCalendarRecipe({ id, to: toISODateString(from.on) }))
-    }
-  }
-
-  const res = await api.updateScheduleRecipe(id, teamID, {
-    on: toISODateString(to),
-  })
-  if (isErr(res)) {
-    // on error we want to move it back to the old position
-    dispatch(moveCalendarRecipe({ id, to: toISODateString(from.on) }))
-  }
-}
-
-export const updatingScheduledRecipeAsync =
-  (dispatch: Dispatch) =>
-  async (
-    id: ICalRecipe["id"],
-    teamID: number | "personal",
-    count: ICalRecipe["count"],
-  ): Promise<Result<undefined, undefined>> => {
-    if (count <= 0) {
-      return deletingScheduledRecipeAsync(dispatch)(id, teamID)
-    }
-
-    const res = await api.updateScheduleRecipe(id, teamID, { count })
-    if (isOk(res)) {
-      dispatch(setCalendarRecipe(res.data))
-      return Ok(undefined)
-    }
-    return Err(undefined)
-  }

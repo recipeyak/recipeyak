@@ -1,4 +1,4 @@
-import { useQuery, UseQueryResult } from "@tanstack/react-query"
+import { UseQueryResult } from "@tanstack/react-query"
 import { parseISO } from "date-fns"
 import format from "date-fns/format"
 import isAfter from "date-fns/isAfter"
@@ -9,7 +9,6 @@ import React, { useEffect, useRef } from "react"
 import { connect } from "react-redux"
 
 import {
-  getShoppingList,
   IGetShoppingListResponse,
   IIngredientItem,
   IQuantity,
@@ -19,7 +18,7 @@ import { classNames } from "@/classnames"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { DateInput } from "@/components/Forms"
-import { unwrapResult } from "@/query"
+import { useShoppingListFetch } from "@/queries/shoppingListFetch"
 import { ingredientByNameAlphabetical } from "@/sorters"
 import {
   setSelectingEnd,
@@ -175,24 +174,6 @@ interface IShoppingListProps {
   readonly setShopping: (bool: boolean) => void
 }
 
-function useShoppingList({
-  teamID,
-  startDay,
-  endDay,
-}: {
-  teamID: number | "personal"
-  startDay: Date
-  endDay: Date
-}) {
-  return useQuery(
-    [teamID, "shopping-list", startDay, endDay],
-    () => getShoppingList(teamID, startDay, endDay).then(unwrapResult),
-    {
-      keepPreviousData: true,
-    },
-  )
-}
-
 function ShoppingList({
   teamID,
   startDay,
@@ -203,7 +184,7 @@ function ShoppingList({
   sendToast,
 }: IShoppingListProps) {
   const ref = useRef<HTMLDivElement>(null)
-  const shoppinglist2 = useShoppingList({ startDay, endDay, teamID })
+  const shoppingList = useShoppingListFetch({ startDay, endDay, teamID })
 
   useEffect(() => {
     setShopping(true)
@@ -265,7 +246,7 @@ function ShoppingList({
           Copy to Clipboard
         </Button>
       </Box>
-      <ShoppingListList items={shoppinglist2} ref={ref} />
+      <ShoppingListList items={shoppingList} ref={ref} />
     </Box>
   )
 }

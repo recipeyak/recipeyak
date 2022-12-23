@@ -1,14 +1,10 @@
-import { useQuery } from "@tanstack/react-query"
 import format from "date-fns/format"
 import { Link } from "react-router-dom"
 
-import { getRecipeTimeline, IRecipeTimelineEvent } from "@/api"
 import { formatHumanDate } from "@/date"
 import { useScheduleURL } from "@/hooks"
 import { SectionTitle } from "@/pages/recipe-detail/RecipeHelpers"
-import { unwrapEither } from "@/query"
-import { resultToEither } from "@/result"
-import { IRecipe } from "@/store/reducers/recipes"
+import { useTimelineList } from "@/queries/timelineList"
 import { styled } from "@/theme"
 
 interface ITimelineItemProps {
@@ -50,43 +46,13 @@ const TimelineList = styled.ol`
   padding-bottom: 0.5rem;
 `
 
-type ITimelineEvent = ICommentEvent | IScheduledRecipeEvent
-
-interface ICommentEvent {
-  readonly id: number
-  readonly type: "comment"
-  readonly author: string
-}
-interface IScheduledRecipeEvent {
-  readonly id: number
-  readonly type: "scheduled"
-  readonly date: string
-}
-
 interface IRecipeTimelineProps {
   readonly recipeId: number
   readonly createdAt: string
 }
 
-function toTimelineEvent(event: IRecipeTimelineEvent): ITimelineEvent {
-  return {
-    type: "scheduled",
-    id: event.id,
-    date: event.on,
-  }
-}
-
-function useRecipeTimeline(recipeId: IRecipe["id"]) {
-  return useQuery(["timeline", recipeId], () =>
-    getRecipeTimeline(recipeId)
-      .then(resultToEither)
-      .then(unwrapEither)
-      .then((res) => res.map(toTimelineEvent)),
-  )
-}
-
 export function RecipeTimeline({ createdAt, recipeId }: IRecipeTimelineProps) {
-  const res = useRecipeTimeline(recipeId)
+  const res = useTimelineList(recipeId)
   const scheduleURL = useScheduleURL()
   if (res.data == null) {
     return null

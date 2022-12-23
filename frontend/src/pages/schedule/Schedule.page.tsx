@@ -2,7 +2,6 @@ import { useEffect } from "react"
 import { connect } from "react-redux"
 import { RouteComponentProps } from "react-router-dom"
 
-import { CurrentKeys } from "@/components/CurrentKeys"
 import { Helmet } from "@/components/Helmet"
 import Recipes from "@/pages/recipe-list/RecipeList.page"
 import Calendar from "@/pages/schedule/Calendar"
@@ -49,7 +48,6 @@ function Schedule({ updateTeamID, teamID }: IScheduleProps) {
       <Helmet title="Schedule" />
       <Sidebar teamID={teamID_} />
       <Calendar teamID={teamID_} />
-      <CurrentKeys />
       <HelpMenuModal />
     </ScheduleContainer>
   )

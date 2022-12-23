@@ -410,6 +410,14 @@ export function getCalendarRecipeList({
   return getCalendarRecipeListRequestBuilder({ teamID, start, end }).send()
 }
 
+export type CalendarResponse = {
+  scheduledRecipes: ICalRecipe[]
+  settings: {
+    syncEnabled: boolean
+    calendarLink: string
+  }
+}
+
 export function getCalendarRecipeListRequestBuilder({
   teamID,
   start,
