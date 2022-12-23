@@ -2,38 +2,14 @@ import React from "react"
 import { useDrag } from "react-dnd"
 import { Link } from "react-router-dom"
 
-import { TextInput } from "@/components/Forms"
 import { isInsideChangeWindow } from "@/date"
 import { DragDrop } from "@/dragDrop"
 import { useGlobalEvent, useToggle } from "@/hooks"
 import { CalendarDayItemModal } from "@/pages/schedule/CalendarDayItemModal"
-import { isOk, Result } from "@/result"
 import { ICalRecipe } from "@/store/reducers/calendar"
 import { IRecipe } from "@/store/reducers/recipes"
 import { styled } from "@/theme"
 import { recipeURL } from "@/urls"
-
-const COUNT_THRESHOLD = 1
-
-interface ICountProps {
-  readonly value: number
-  readonly onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-}
-function Count({ value: count, onChange }: ICountProps) {
-  if (count > COUNT_THRESHOLD) {
-    return (
-      <div className="d-flex">
-        <TextInput
-          className="text-small text-right w-2rem"
-          name="calendar-item-count"
-          onChange={onChange}
-          value={count}
-        />
-      </div>
-    )
-  }
-  return null
-}
 
 interface IRecipeLink {
   readonly id: IRecipe["id"] | string
@@ -75,10 +51,6 @@ const CalendarListItem = styled.li<ICalendarListItemProps>`
 export interface ICalendarItemProps {
   readonly count: ICalRecipe["count"]
   readonly remove: () => void
-  readonly updateCount: (
-    count: ICalRecipe["count"],
-  ) => Promise<Result<void, void>>
-  readonly refetchShoppingList: () => void
   readonly date: Date
   readonly recipeID: IRecipe["id"] | string
   readonly recipeName: IRecipe["name"]
@@ -93,10 +65,8 @@ export interface ICalendarItemProps {
 }
 
 export function CalendarItem({
-  count: propsCount,
-  updateCount: propsUpdateCount,
+  count,
   date,
-  refetchShoppingList,
   remove,
   recipeName,
   recipeID,
@@ -105,28 +75,8 @@ export function CalendarItem({
   createdAt,
   createdBy,
 }: ICalendarItemProps) {
-  const [count, setCount] = React.useState(propsCount)
   const ref = React.useRef<HTMLLIElement>(null)
   const [show, toggleShow] = useToggle()
-
-  React.useEffect(() => {
-    setCount(propsCount)
-  }, [propsCount])
-
-  const updateCount = (newCount: number) => {
-    if (!isInsideChangeWindow(date)) {
-      return
-    }
-    const oldCount = count
-    setCount(newCount)
-    void propsUpdateCount(newCount).then((res) => {
-      if (isOk(res)) {
-        refetchShoppingList()
-      } else {
-        setCount(oldCount)
-      }
-    })
-  }
 
   const handleKeyPress = (e: KeyboardEvent) => {
     if (!ref.current?.matches(":hover")) {
@@ -140,16 +90,6 @@ export function CalendarItem({
     if (e.key === "#" || e.key === "Delete") {
       remove()
     }
-    if (e.key === "A" || e.key === "+") {
-      updateCount(count + 1)
-    }
-    if (e.key === "X" || e.key === "-") {
-      updateCount(count - 1)
-    }
-  }
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    updateCount(parseInt(e.target.value, 10))
   }
 
   const dragItem: ICalendarDragItem = {
@@ -193,7 +133,6 @@ export function CalendarItem({
             toggleShow()
           }}
         />
-        <Count value={count} onChange={handleChange} />
       </CalendarListItem>
       {show ? (
         <CalendarDayItemModal

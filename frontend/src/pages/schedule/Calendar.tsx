@@ -15,40 +15,23 @@ import { Button } from "@/components/Buttons"
 import { Select } from "@/components/Forms"
 import { Modal } from "@/components/Modal"
 import { toISODateString } from "@/date"
-import {
-  useDispatch,
-  useOnWindowFocusChange,
-  useSelector,
-  useToggle,
-} from "@/hooks"
+import { useDispatch, useSelector, useToggle } from "@/hooks"
 import CalendarDay from "@/pages/schedule/CalendarDay"
 import { ICalConfig } from "@/pages/schedule/CalendarMoreDropdown"
 import { IconSettings } from "@/pages/schedule/IconSettings"
 import ShoppingList from "@/pages/schedule/ShoppingList"
+import { useScheduledRecipeList } from "@/queries/scheduledRecipeList"
 import { teamsFrom } from "@/store/mapState"
 import {
-  getPersonalRecipes,
-  getTeamRecipes,
   ICalRecipe,
   regenerateCalendarLink as regenerateCalendarLinkAction,
   updateCalendarSettings,
 } from "@/store/reducers/calendar"
 import { ITeam } from "@/store/reducers/teams"
 import { history } from "@/store/store"
-import {
-  fetchCalendarAsync,
-  fetchingRecipeListAsync,
-  fetchingTeamsAsync,
-} from "@/store/thunks"
+import { fetchingRecipeListAsync, fetchingTeamsAsync } from "@/store/thunks"
 import { styled } from "@/theme"
-import {
-  Failure,
-  isFailure,
-  isSuccessLike,
-  Loading,
-  Success,
-  WebData,
-} from "@/webdata"
+import { Failure, isSuccessLike, Loading, Success, WebData } from "@/webdata"
 
 function CalTitle({ dayTs }: { readonly dayTs: number }) {
   return (
@@ -59,9 +42,7 @@ function CalTitle({ dayTs }: { readonly dayTs: number }) {
   )
 }
 
-export interface IDays {
-  [onDate: string]: ICalRecipe[] | undefined
-}
+export type IDays = Record<string, ICalRecipe[] | undefined>
 
 const WeekdaysContainer = styled.div`
   @media (max-width: ${(p) => p.theme.medium}) {
@@ -117,16 +98,15 @@ const WEEK_DAYS = 7
 interface IDaysProps {
   readonly start: Date
   readonly end: Date
-  readonly days: WebData<IDays>
   readonly teamID: number | "personal"
+  readonly days: IDays
+  readonly isError: boolean
 }
 
-function Days({ start, end, days, teamID }: IDaysProps) {
-  if (isFailure(days)) {
+function Days({ start, end, isError, teamID, days }: IDaysProps) {
+  if (isError) {
     return <p className="m-auto">error fetching calendar</p>
   }
-
-  const daysData = isSuccessLike(days) ? days.data : {}
 
   return (
     <DaysContainer>
@@ -139,7 +119,7 @@ function Days({ start, end, days, teamID }: IDaysProps) {
         return (
           <CalendarWeekContainer key={week}>
             {dates.map((date) => {
-              const scheduledRecipes = daysData[toISODateString(date)] || []
+              const scheduledRecipes = days[toISODateString(date)] || []
               return (
                 <CalendarDay
                   scheduledRecipes={scheduledRecipes}
@@ -187,7 +167,7 @@ interface INavProps {
 }
 
 function Nav({ dayTs, teamID, onPrev, onNext, onCurrent }: INavProps) {
-  const { handleOwnerChange, teams } = useTeamSelect(dayTs)
+  const { handleOwnerChange, teams } = useTeamSelect()
   const [showSettings, toggleShowSetting] = useToggle()
   const [showShopping, toggleShopping] = useToggle()
 
@@ -274,42 +254,6 @@ function getToday(search: string): Date {
   return new Date()
 }
 
-function useCurrentWeek() {
-  const location = useLocation()
-  const today = getToday(location.search)
-  const weekStartDate = startOfWeek(today)
-
-  const currentDateTs = startOfWeek(weekStartDate).getTime()
-  const startDate = startOfWeek(subWeeks(currentDateTs, 1))
-  const endDate = endOfWeek(addWeeks(currentDateTs, 1))
-
-  const navPrev = () => {
-    history.push({
-      search: queryString.stringify({
-        week: toISODateString(subWeeks(weekStartDate, 1)),
-      }),
-    })
-  }
-
-  const navNext = () => {
-    history.push({
-      search: queryString.stringify({
-        week: toISODateString(addWeeks(weekStartDate, 1)),
-      }),
-    })
-  }
-
-  const navCurrent = () => {
-    // navigating to the current page when we're already on the current page
-    // shouldn't cause another item to be added to the history
-    if (location.search !== "") {
-      history.push({ search: "" })
-    }
-  }
-
-  return { currentDateTs, startDate, endDate, navNext, navPrev, navCurrent }
-}
-
 function useTeams(): WebData<ReadonlyArray<ITeam>> {
   const dispatch = useDispatch()
   const teams = useSelector(teamsFrom)
@@ -332,49 +276,7 @@ function useTeams(): WebData<ReadonlyArray<ITeam>> {
   return Success(teams)
 }
 
-function useDays(
-  teamID: number | "personal",
-  currentDateTs: number,
-): WebData<IDays> {
-  const dispatch = useDispatch()
-
-  const fetchData = React.useCallback(() => {
-    void fetchCalendarAsync(dispatch)(teamID, currentDateTs)
-  }, [currentDateTs, dispatch, teamID])
-
-  useEffect(() => {
-    fetchData()
-  }, [fetchData])
-
-  useOnWindowFocusChange(fetchData)
-
-  const isTeam = teamID !== "personal"
-  const days = useSelector((s) => {
-    if (isTeam) {
-      return getTeamRecipes(s.calendar)
-    }
-    return getPersonalRecipes(s.calendar)
-  })
-
-  const status = useSelector((s) => s.calendar.status)
-
-  if (status === "loading") {
-    return Loading()
-  }
-
-  if (status === "failure") {
-    return Failure(undefined)
-  }
-
-  return Success(
-    days.reduce<IDays>((a, b) => {
-      a[b.on] = (a[b.on] || []).concat(b)
-      return a
-    }, {}),
-  )
-}
-
-function useTeamSelect(currentDateTs: number) {
+function useTeamSelect() {
   const teams = useTeams()
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
@@ -390,8 +292,8 @@ function useTeamSelect(currentDateTs: number) {
 
     // navTo is async so we can't count on the URL to have changed by the time we refetch the data
     dispatch(push(urlWithEnding))
-    void fetchCalendarAsync(dispatch)(teamID, currentDateTs)
     void fetchingRecipeListAsync(dispatch)()
+    // TODO: we should abstract this
     void queryClient.invalidateQueries([teamID])
   }
 
@@ -424,22 +326,65 @@ interface ICalendarProps {
 }
 
 export function Calendar({ teamID }: ICalendarProps) {
-  const { currentDateTs, startDate, endDate, navNext, navCurrent, navPrev } =
-    useCurrentWeek()
+  const location = useLocation()
+  const today = getToday(location.search)
+  const weekStartDate = startOfWeek(today)
+  const startOfWeekMs = startOfWeek(weekStartDate).getTime()
+  const startDate = startOfWeek(subWeeks(startOfWeekMs, 1))
+  const endDate = endOfWeek(addWeeks(startOfWeekMs, 1))
 
-  const days = useDays(teamID, currentDateTs)
+  const scheduledRecipesResult = useScheduledRecipeList({ startOfWeekMs })
+
+  const scheduledRecipes: ICalRecipe[] =
+    scheduledRecipesResult.data?.scheduledRecipes ?? []
+
+  function nextPage() {
+    history.push({
+      search: queryString.stringify({
+        week: toISODateString(addWeeks(weekStartDate, 1)),
+      }),
+    })
+  }
+  function prevPage() {
+    history.push({
+      search: queryString.stringify({
+        week: toISODateString(subWeeks(weekStartDate, 1)),
+      }),
+    })
+  }
+
+  const navCurrent = () => {
+    // navigating to the current page when we're already on the current page
+    // shouldn't cause another item to be added to the history
+    if (location.search !== "") {
+      history.push({ search: "" })
+    }
+  }
+
+  const scheduledById: IDays = {}
+  scheduledRecipes.forEach((calRecipe) => {
+    scheduledById[calRecipe.on] = (scheduledById[calRecipe.on] ?? []).concat(
+      calRecipe,
+    )
+  })
 
   return (
     <Box dir="col" grow={1}>
       <Nav
-        dayTs={currentDateTs}
+        dayTs={startOfWeekMs}
         teamID={teamID}
-        onNext={navNext}
-        onPrev={navPrev}
+        onNext={nextPage}
+        onPrev={prevPage}
         onCurrent={navCurrent}
       />
       <Weekdays />
-      <Days start={startDate} end={endDate} days={days} teamID={teamID} />
+      <Days
+        start={startDate}
+        end={endDate}
+        days={scheduledById}
+        isError={scheduledRecipesResult.isError}
+        teamID={teamID}
+      />
       <HelpPrompt />
     </Box>
   )

@@ -1,4 +1,3 @@
-import { useQueryClient } from "@tanstack/react-query"
 import { isSameDay } from "date-fns"
 import endOfDay from "date-fns/endOfDay"
 import format from "date-fns/format"
@@ -7,32 +6,21 @@ import isWithinInterval from "date-fns/isWithinInterval"
 import startOfDay from "date-fns/startOfDay"
 import { sortBy } from "lodash-es"
 import { useDrop } from "react-dnd"
-import { connect } from "react-redux"
 
 import { assertNever } from "@/assert"
 import cls from "@/classnames"
-import { isInsideChangeWindow } from "@/date"
+import { isInsideChangeWindow, toISODateString } from "@/date"
 import { DragDrop } from "@/dragDrop"
-import { useCurrentDay } from "@/hooks"
+import { useCurrentDay, useSelector } from "@/hooks"
 import { IRecipeItemDrag } from "@/pages/recipe-list/RecipeItem"
 import {
   CalendarItem,
   ICalendarDragItem,
 } from "@/pages/schedule/CalendarDayItem"
-import { Result } from "@/result"
-import {
-  createCalendarRecipe,
-  ICalRecipe,
-  moveOrCreateCalendarRecipe,
-} from "@/store/reducers/calendar"
-import { IState } from "@/store/store"
-import {
-  deletingScheduledRecipeAsync,
-  Dispatch,
-  IAddingScheduledRecipeProps,
-  IMoveScheduledRecipeProps,
-  updatingScheduledRecipeAsync,
-} from "@/store/thunks"
+import { useScheduleRecipeCreate } from "@/queries/scheduledRecipeCreate"
+import { useScheduledRecipeDelete } from "@/queries/scheduledRecipeDelete"
+import { useScheduledRecipeUpdate } from "@/queries/scheduledRecipeUpdate"
+import { ICalRecipe } from "@/store/reducers/calendar"
 import { css, styled } from "@/theme"
 
 function DayOfWeek({ date }: { date: Date }) {
@@ -104,37 +92,25 @@ const CalendarDayContainer = styled.div<ICalendarDayContainerProps>`
 interface ICalendarDayProps {
   readonly date: Date
   readonly scheduledRecipes: ICalRecipe[]
-  readonly updateCount: (
-    id: ICalRecipe["id"],
-    teamID: number | "personal",
-    count: ICalRecipe["count"],
-  ) => Promise<Result<void, void>>
-  readonly remove: (id: ICalRecipe["id"], teamID: number | "personal") => void
-  readonly move: ({ id, teamID, to }: IMoveScheduledRecipeProps) => void
-  readonly create: ({
-    recipeID,
-    teamID,
-    on,
-    count,
-  }: IAddingScheduledRecipeProps) => void
   readonly teamID: number | "personal"
-  readonly isSelected: boolean
 }
 
-function CalendarDay({
-  date,
-  scheduledRecipes,
-  updateCount,
-  remove,
-  teamID,
-  isSelected,
-  move,
-  create,
-}: ICalendarDayProps) {
+function CalendarDay({ date, scheduledRecipes, teamID }: ICalendarDayProps) {
   const today = useCurrentDay()
   const isToday = isSameDay(date, today)
 
-  const queryClient = useQueryClient()
+  const isSelected = useSelector(
+    (state) =>
+      state.shoppinglist.isShopping &&
+      isWithinInterval(date, {
+        start: startOfDay(state.shoppinglist.startDay),
+        end: endOfDay(state.shoppinglist.endDay),
+      }),
+  )
+
+  const scheduledRecipeCreate = useScheduleRecipeCreate()
+  const scheduledRecipeDelete = useScheduledRecipeDelete()
+  const scheduledRecipeUpdate = useScheduledRecipeUpdate()
 
   const [{ isOver, canDrop }, drop] = useDrop({
     accept: [DragDrop.RECIPE, DragDrop.CAL_RECIPE],
@@ -144,11 +120,21 @@ function CalendarDay({
     drop: (dropped) => {
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       const item = dropped as ICalendarDragItem | IRecipeItemDrag
-      // TOOD(sbdchd): We should move this logic into the calendar reducer
       if (item.type === DragDrop.CAL_RECIPE) {
-        move({ id: item.scheduledId, teamID, to: date })
+        scheduledRecipeUpdate.mutate({
+          scheduledRecipeId: item.scheduledId,
+          teamID,
+          update: {
+            on: toISODateString(date),
+          },
+        })
       } else if (item.type === DragDrop.RECIPE) {
-        create({ recipeID: item.recipeID, teamID, on: date, count: 1 })
+        scheduledRecipeCreate.mutate({
+          recipeID: item.recipeID,
+          teamID,
+          on: date,
+          count: 1,
+        })
       } else {
         assertNever(item)
       }
@@ -187,11 +173,10 @@ function CalendarDay({
             recipeID={x.recipe.id}
             teamID={teamID}
             remove={() => {
-              remove(x.id, teamID)
-            }}
-            updateCount={(count) => updateCount(x.id, teamID, count)}
-            refetchShoppingList={() => {
-              void queryClient.invalidateQueries([teamID])
+              scheduledRecipeDelete.mutate({
+                scheduledRecipeId: x.id,
+                teamId: teamID,
+              })
             }}
             count={x.count}
           />
@@ -201,29 +186,4 @@ function CalendarDay({
   )
 }
 
-function mapStateToProps(
-  state: IState,
-  props: Pick<ICalendarDayProps, "date">,
-) {
-  return {
-    isSelected:
-      state.shoppinglist.isShopping &&
-      isWithinInterval(props.date, {
-        start: startOfDay(state.shoppinglist.startDay),
-        end: endOfDay(state.shoppinglist.endDay),
-      }),
-  }
-}
-
-const mapDispatchToProps = (
-  dispatch: Dispatch,
-): Pick<ICalendarDayProps, "create" | "updateCount" | "move" | "remove"> => ({
-  create: (props: IAddingScheduledRecipeProps) =>
-    dispatch(createCalendarRecipe(props)),
-  updateCount: updatingScheduledRecipeAsync(dispatch),
-  move: (props: IMoveScheduledRecipeProps) =>
-    dispatch(moveOrCreateCalendarRecipe(props)),
-  remove: deletingScheduledRecipeAsync(dispatch),
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(CalendarDay)
+export default CalendarDay
