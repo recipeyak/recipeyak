@@ -2,13 +2,48 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { addWeeks, startOfWeek, subWeeks } from "date-fns"
 
 import { CalendarResponse, scheduleRecipe } from "@/api"
+import { toISODateString } from "@/date"
 import { useDispatch, useTeamId } from "@/hooks"
 import { unwrapResult } from "@/query"
 import { ICalRecipe } from "@/store/reducers/calendar"
+import { IRecipe } from "@/store/reducers/recipes"
 import store from "@/store/store"
-import { showNotificationWithTimeoutAsync, toCalRecipe } from "@/store/thunks"
+import { showNotificationWithTimeoutAsync } from "@/store/thunks"
 import { random32Id } from "@/uuid"
 import { isSuccessOrRefetching } from "@/webdata"
+
+function toCalRecipe(
+  recipe: Pick<IRecipe, "id" | "name" | "owner">,
+  tempId: number,
+  on: string | Date,
+  count: number,
+  user: {
+    id: number | null
+    name: string
+    avatarURL: string
+  } | null,
+): ICalRecipe {
+  return {
+    id: tempId,
+    created: String(new Date()),
+    recipe: {
+      id: recipe.id,
+      name: recipe.name,
+    },
+    on: toISODateString(on),
+    count,
+    user: recipe.owner.type === "user" ? recipe.owner.id : null,
+    team: recipe.owner.type === "team" ? recipe.owner.id : null,
+    createdBy:
+      user != null
+        ? {
+            id: String(user.id),
+            name: user.name,
+            avatar_url: user.avatarURL,
+          }
+        : null,
+  }
+}
 
 function scheduleRecipeV2({
   recipeID,

@@ -5,7 +5,7 @@ import raven from "raven-js"
 import { Dispatch as ReduxDispatch } from "redux"
 
 import * as api from "@/api"
-import { second, toISODateString } from "@/date"
+import { second } from "@/date"
 import { Err, isOk, Ok } from "@/result"
 import {
   login,
@@ -16,7 +16,6 @@ import {
   setLoadingResetConfirmation,
   setLoadingSignup,
 } from "@/store/reducers/auth"
-import { ICalRecipe } from "@/store/reducers/calendar"
 import {
   acceptInvite,
   declineInvite,
@@ -800,38 +799,5 @@ export const deleteUserAccountAsync = (dispatch: Dispatch) => async () => {
         level: "danger",
       })
     }
-  }
-}
-
-export function toCalRecipe(
-  recipe: Pick<IRecipe, "id" | "name" | "owner">,
-  tempId: number,
-  on: string | Date,
-  count: number,
-  user: {
-    id: number | null
-    name: string
-    avatarURL: string
-  } | null,
-): ICalRecipe {
-  return {
-    id: tempId,
-    created: String(new Date()),
-    recipe: {
-      id: recipe.id,
-      name: recipe.name,
-    },
-    on: toISODateString(on),
-    count,
-    user: recipe.owner.type === "user" ? recipe.owner.id : null,
-    team: recipe.owner.type === "team" ? recipe.owner.id : null,
-    createdBy:
-      user != null
-        ? {
-            id: String(user.id),
-            name: user.name,
-            avatar_url: user.avatarURL,
-          }
-        : null,
   }
 }
