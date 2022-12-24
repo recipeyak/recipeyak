@@ -10,7 +10,7 @@ error() {
 }
 
 main() {
-	SHA="$@"
+	SHA="$*"
         step "starting deploy version sha:$SHA"
 	if [ -e "deploy:in-progress" ]; then
             error "error: deploy already in progress"
@@ -23,14 +23,13 @@ main() {
 	docker pull recipeyak/react:"$SHA"
 	docker pull recipeyak/nginx:"$SHA"
 
-	
 	# update background jobs
 	step "updating background jobs"
 	sed -i "s/:\(.*\) /:$SHA /g" /etc/systemd/system/recipeyak-backfill_image_placeholders.service
 	systemctl daemon-reload
 	# no need to restart anything since they're running on timers, which
 	# will get the new version on restart
-	
+
 	# migrations
 	step "running migrations"
 	docker run --network recipeyak --log-driver=journald --env-file=.env-production recipeyak/django:"$SHA" /var/app/.venv/bin/python ./manage.py migrate
@@ -38,7 +37,7 @@ main() {
 	step "updating api"
 	docker stop django
 	docker rm django
-	docker run --detach --restart unless-stopped --name django --network recipeyak --log-driver=journald -p "7777:8000" --env-file=.env-production recipeyak/django:"$SHA" 
+	docker run --detach --restart unless-stopped --name django --network recipeyak --log-driver=journald -p "7777:8000" --env-file=.env-production recipeyak/django:"$SHA"
 
 	step "updating ui"
 	docker stop react
