@@ -6,6 +6,7 @@ import { RouteComponentProps, useHistory } from "react-router"
 import { Link, useLocation } from "react-router-dom"
 
 import * as api from "@/api"
+import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
@@ -898,19 +899,19 @@ function RecipeInfo(props: {
               {notEmpty(props.recipe.time) && (
                 <RecipeMetaItem inline={inlineLayout}>
                   <div className="bold">Time</div>
-                  <div>{props.recipe.time}</div>
+                  <div className="selectable">{props.recipe.time}</div>
                 </RecipeMetaItem>
               )}
               {notEmpty(props.recipe.servings) && (
                 <RecipeMetaItem inline={inlineLayout}>
                   <div className="bold">Servings</div>
-                  <div>{props.recipe.servings}</div>
+                  <div className="selectable">{props.recipe.servings}</div>
                 </RecipeMetaItem>
               )}
               {notEmpty(props.recipe.source) && (
                 <RecipeMetaItem inline={inlineLayout}>
                   <div className="bold">From</div>
-                  <div>
+                  <div className="selectable">
                     {isURL(props.recipe.source) ? (
                       <SourceLink>{props.recipe.source}</SourceLink>
                     ) : (
@@ -922,7 +923,7 @@ function RecipeInfo(props: {
               {(props.recipe.tags?.length ?? 0) > 0 && (
                 <RecipeMetaItem inline={inlineLayout}>
                   <div className="bold">Tags</div>
-                  <div>
+                  <Box gap={2}>
                     {props.recipe.tags?.map((x) => (
                       <Link
                         key={x}
@@ -930,12 +931,12 @@ function RecipeInfo(props: {
                           pathname: "/recipes",
                           search: `search=${encodeURIComponent(`tag:${x}`)}`,
                         }}
-                        className="tag mr-2"
+                        className="tag selectable"
                       >
                         {x}
                       </Link>
                     ))}
-                  </div>
+                  </Box>
                 </RecipeMetaItem>
               )}
 

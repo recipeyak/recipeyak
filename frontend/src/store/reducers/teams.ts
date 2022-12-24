@@ -53,8 +53,6 @@ export const setTeam = createStandardAction("SET_TEAM")<{
 }>()
 export const setCreatingTeam =
   createStandardAction("SET_CREATING_TEAM")<boolean>()
-export const setCopyingTeam =
-  createStandardAction("SET_COPYING_TEAM")<boolean>()
 export const updateTeamById = createStandardAction("UPDATE_TEAM")<{
   id: ITeam["id"]
   teamKeys: ITeam
@@ -76,7 +74,6 @@ export type TeamsActions =
   | ActionType<typeof fetchTeam>
   | ActionType<typeof setTeam>
   | ReturnType<typeof setCreatingTeam>
-  | ReturnType<typeof setCopyingTeam>
   | ReturnType<typeof updateTeamById>
   | ActionType<typeof fetchTeams>
 
@@ -285,11 +282,6 @@ export const teams = (
       return {
         ...state,
         creating: action.payload,
-      }
-    case getType(setCopyingTeam):
-      return {
-        ...state,
-        copying: action.payload,
       }
     case getType(updateTeamById):
       return mapById(state, action.payload.id, () => action.payload.teamKeys)

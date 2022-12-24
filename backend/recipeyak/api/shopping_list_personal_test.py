@@ -65,8 +65,6 @@ def test_fetching_shoppinglist_with_team_recipe(
 
     assert team.is_member(user)
 
-    recipe = recipe.move_to(team)
-
     start = date(1976, 7, 6)
     end = start + timedelta(days=1)
     params = dict(start=start, end=end)
