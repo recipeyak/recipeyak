@@ -13,7 +13,7 @@ def test_creating_scheduled_recipe(
     client: APIClient, recipe: Recipe, user: User
 ) -> None:
     url = "/api/v1/t/me/calendar/"
-    data = {"recipe": recipe.id, "on": date(1976, 7, 6), "count": 1}
+    data = {"recipe": recipe.id, "on": date(1976, 7, 6)}
     client.force_authenticate(user)
     res = client.post(url, data)
     assert res.status_code == status.HTTP_201_CREATED
@@ -44,7 +44,6 @@ def test_updating_scheduled_recipe(
     client: APIClient, user: User, scheduled_recipe: ScheduledRecipe
 ) -> None:
     url = f"/api/v1/t/me/calendar/{scheduled_recipe.id}/"
-    assert scheduled_recipe.count == 1
     data = {"on": date(1976, 1, 3)}
     client.force_authenticate(user)
     res = client.patch(url, data)
@@ -58,7 +57,6 @@ def test_updating_scheduled_recipe_on_date(
     """
     ensure updating schedule `on` date records a change event
     """
-    assert scheduled_recipe.count == 1
     assert (
         ScheduleEvent.objects.filter(scheduled_recipe_id=scheduled_recipe.id).count()
         == 0
@@ -68,8 +66,6 @@ def test_updating_scheduled_recipe_on_date(
         f"/api/v1/t/me/calendar/{scheduled_recipe.id}/", {"on": datetime.now().date()}
     )
     assert res.status_code == status.HTTP_200_OK
-    assert ScheduledRecipe.objects.get(id=scheduled_recipe.id).count == 1
-
     assert (
         ScheduleEvent.objects.filter(scheduled_recipe_id=scheduled_recipe.id).count()
         == 1
@@ -117,27 +113,5 @@ def test_deleting_recipe_deletes_scheduled_recipes(
 
 
 def test_schedule_for_recipe_method(recipe: Recipe, user: User) -> None:
-    s = recipe.schedule(user=user, on=date(1976, 1, 1), count=2)
+    s = recipe.schedule(user=user, on=date(1976, 1, 1))
     assert ScheduledRecipe.objects.get(id=s.id) == s
-
-
-def test_scheduling_the_same_recipe_twice_on_a_day(recipe: Recipe, user: User) -> None:
-    on = date(1976, 1, 1)
-    recipe.schedule(user=user, on=on, count=2)
-    recipe.schedule(user=user, on=on, count=1)
-    assert ScheduledRecipe.objects.get(recipe=recipe, on=on, user=user).count == 3
-
-
-def test_dupe_scheduling_with_http(
-    client: APIClient, recipe: Recipe, user: User
-) -> None:
-    client.force_authenticate(user)
-    url = "/api/v1/t/me/calendar/"
-    data = {"recipe": recipe.id, "on": date(1976, 7, 6), "count": 1}
-    client.force_authenticate(user)
-    assert client.post(url, data).status_code == status.HTTP_201_CREATED
-    res = client.post(url, data)
-    assert res.status_code == status.HTTP_201_CREATED
-
-    assert res.json().get("count") == 2
-    assert ScheduledRecipe.objects.get(id=res.json().get("id")).count == 2

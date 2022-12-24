@@ -42,10 +42,7 @@ def get_shopping_list_view(request: AuthedRequest, team_pk: str) -> Response:
 
     ingredients: list[Ingredient] = []
     for scheduled_recipe in scheduled_recipes:
-        for _ in range(scheduled_recipe.count):
-            ingredients += (
-                scheduled_recipe.recipe.ingredients  # type: ignore [arg-type]
-            )
+        ingredients += scheduled_recipe.recipe.ingredients  # type: ignore [arg-type]
 
     ingredients = [
         Ingredient(quantity=i.quantity, name=i.name, description=i.description)

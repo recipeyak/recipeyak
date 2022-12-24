@@ -85,10 +85,9 @@ class Recipe(CommonInfo):
         on: date,
         user: "User",
         team: "Team" | None = None,
-        count: int = 1,
     ) -> ScheduledRecipe:
         return ScheduledRecipe.objects.create_scheduled(
-            recipe=self, on=on, count=count, user=user, team=team
+            recipe=self, on=on, user=user, team=team
         )
 
     @property
