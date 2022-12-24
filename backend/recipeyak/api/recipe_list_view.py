@@ -228,6 +228,12 @@ class RecipePostParams(RequestParams):
     name: str | None = None
 
 
+def normalize_title(title: str | None) -> str | None:
+    if title is None:
+        return None
+    return title.removesuffix("Recipe").removesuffix("recipe")
+
+
 def recipe_post_view(request: AuthedRequest) -> Response:
     params = RecipePostParams.parse_obj(request.data)
 
@@ -252,7 +258,7 @@ def recipe_post_view(request: AuthedRequest) -> Response:
         recipe = Recipe.objects.create(
             scrape_id=scrape_result.id,
             owner=team,
-            name=scrape_result.title,
+            name=normalize_title(scrape_result.title),
             author=scrape_result.author,
             servings=scrape_result.yields,
             time=scrape_result.total_time,
