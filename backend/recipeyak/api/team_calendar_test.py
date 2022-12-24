@@ -44,11 +44,11 @@ def test_updating_team_schedule_recipe(
     scheduled = recipe.schedule(on=date(1976, 1, 2), team=team, user=user)
     assert scheduled.count == 1
     url = f"/api/v1/t/{team.pk}/calendar/{scheduled.id}/"
-    data = {"count": 2}
+    data = {"on": date(1976, 1, 3)}
     client.force_authenticate(user)
     res = client.patch(url, data)
     assert res.status_code == status.HTTP_200_OK
-    assert ScheduledRecipe.objects.get(id=scheduled.id).count == 2
+    assert ScheduledRecipe.objects.get(id=scheduled.id).on == date(1976, 1, 3)
 
 
 def test_fetching_team_calendar(

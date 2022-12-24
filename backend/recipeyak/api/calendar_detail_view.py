@@ -21,7 +21,6 @@ logger = logging.getLogger(__name__)
 
 class ScheduledRecipeUpdateParams(RequestParams):
     on: date | None
-    count: int | None
 
 
 class CreatedBySerializer(pydantic.BaseModel):
@@ -37,6 +36,7 @@ class RecipeMetadataSerializer(pydantic.BaseModel):
 
 class ScheduleRecipeSerializer(pydantic.BaseModel):
     id: int
+    # TODO: remove
     count: int
     created: datetime
     createdBy: CreatedBySerializer | None
@@ -55,8 +55,6 @@ def calendar_detail_patch_view(
     )
     if params.on is not None:
         scheduled_recipe.on = params.on
-    if params.count is not None:
-        scheduled_recipe.count = params.count
     scheduled_recipe.save()
 
     if params.on is not None:

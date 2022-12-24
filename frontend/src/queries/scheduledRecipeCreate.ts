@@ -16,7 +16,6 @@ function toCalRecipe(
   recipe: Pick<IRecipe, "id" | "name" | "owner">,
   tempId: number,
   on: string | Date,
-  count: number,
   user: {
     id: number | null
     name: string
@@ -31,7 +30,6 @@ function toCalRecipe(
       name: recipe.name,
     },
     on: toISODateString(on),
-    count,
     user: recipe.owner.type === "user" ? recipe.owner.id : null,
     team: recipe.owner.type === "team" ? recipe.owner.id : null,
     createdBy:
@@ -49,14 +47,12 @@ function scheduleRecipeV2({
   recipeID,
   teamID,
   on,
-  count,
 }: {
   recipeID: number
   teamID: number | "personal"
   on: Date
-  count?: string | number
 }): Promise<ICalRecipe> {
-  return scheduleRecipe(recipeID, teamID, on, count).then(unwrapResult)
+  return scheduleRecipe(recipeID, teamID, on).then(unwrapResult)
 }
 
 export function useScheduleRecipeCreate() {
@@ -77,7 +73,6 @@ export function useScheduleRecipeCreate() {
         recipe.data,
         tempId,
         vars.on,
-        1,
         /* user */ null,
       )
       const weekId = startOfWeek(vars.on)

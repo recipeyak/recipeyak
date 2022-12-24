@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from datetime import date
-from typing import Any
 
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
@@ -16,7 +15,8 @@ from recipeyak.api.base.permissions import IsTeamMember
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import BaseModelSerializer, RequestParams
 from recipeyak.api.serializers.recipe import RecipeSerializer
-from recipeyak.models import Membership, Recipe, ScheduledRecipe, Team
+from recipeyak.api.team_detail_view import get_teams
+from recipeyak.models import Membership, ScheduledRecipe, Team, user_and_team_recipes
 
 
 class CalSettings(TypedDict):
@@ -40,15 +40,9 @@ def get_cal_settings(*, team_pk: str, request: AuthedRequest) -> CalSettings:
     }
 
 
-class ScheduledRecipeSerializerCreate(BaseModelSerializer):
-    class Meta:
-        model = ScheduledRecipe
-        fields = ("id", "recipe", "created", "on", "count")
-
-    def create(self, validated_data: dict[str, Any]) -> ScheduledRecipe:
-        recipe: Recipe = validated_data.pop("recipe")
-        validated_data.pop("user", None)
-        return recipe.schedule(**validated_data, user=self.context["request"].user)
+class ScheduledRecipeCreateParams(RequestParams):
+    recipe: int
+    on: date
 
 
 def get_scheduled_recipes(
@@ -84,20 +78,20 @@ class ScheduledRecipeSerializer(BaseModelSerializer):
 
 
 def calendar_list_post_view(request: AuthedRequest, team_pk: str) -> Response:
-    # use different create serializer since we create via primary key, and
-    # return an objects
-    serializer = ScheduledRecipeSerializerCreate(
-        data=request.data, context={"request": request}
-    )
-    serializer.is_valid(raise_exception=True)
+    params = ScheduledRecipeCreateParams.parse_obj(request.data)
 
-    if team_pk == "me":
-        data = serializer.save(user=request.user)
-    else:
-        team = get_object_or_404(Team, pk=team_pk)
-        data = serializer.save(team=team)
+    recipe = get_object_or_404(user_and_team_recipes(request.user), id=params.recipe)
+
+    scheduled_recipe = recipe.schedule(
+        on=params.on,
+        user=request.user,
+        # TODO: remove this weird team thing we have where "personal" is a special case
+        team=get_object_or_404(get_teams(request.user), pk=team_pk)
+        if team_pk != "me"
+        else None,
+    )
     return Response(
-        ScheduledRecipeSerializer(data, dangerously_allow_db=True).data,
+        ScheduledRecipeSerializer(scheduled_recipe, dangerously_allow_db=True).data,
         status=status.HTTP_201_CREATED,
     )
 

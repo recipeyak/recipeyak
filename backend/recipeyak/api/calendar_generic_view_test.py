@@ -45,11 +45,11 @@ def test_updating_scheduled_recipe(
 ) -> None:
     url = f"/api/v1/t/me/calendar/{scheduled_recipe.id}/"
     assert scheduled_recipe.count == 1
-    data = {"count": 2}
+    data = {"on": date(1976, 1, 3)}
     client.force_authenticate(user)
     res = client.patch(url, data)
     assert res.status_code == status.HTTP_200_OK
-    assert ScheduledRecipe.objects.get(id=scheduled_recipe.id).count == 2
+    assert ScheduledRecipe.objects.get(id=scheduled_recipe.id).on == date(1976, 1, 3)
 
 
 def test_updating_scheduled_recipe_on_date(

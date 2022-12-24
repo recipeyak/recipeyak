@@ -438,7 +438,6 @@ export function getCalendarRecipeListRequestBuilder({
       scheduledRecipes: t.array(
         t.type({
           id: t.number,
-          count: t.number,
           on: t.string,
           created: t.string,
           createdBy: t.union([
@@ -533,13 +532,11 @@ export const scheduleRecipe = (
   recipeID: IRecipe["id"],
   teamID: number | "personal",
   on: Date | string,
-  count: string | number = 1,
 ) => {
   const id = teamID === "personal" ? "me" : teamID
   return http.post<ICalRecipe>(`/api/v1/t/${id}/calendar/`, {
     recipe: recipeID,
     on: toISODateString(on),
-    count,
   })
 }
 

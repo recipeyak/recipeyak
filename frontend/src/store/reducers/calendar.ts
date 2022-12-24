@@ -78,7 +78,6 @@ export type CalendarActions =
 // TODO(sbdchd): this should be imported from the recipes reducer
 export interface ICalRecipe {
   readonly id: number
-  readonly count: number
   readonly on: string
   readonly created: string
   readonly createdBy: {
