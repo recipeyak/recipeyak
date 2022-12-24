@@ -43,15 +43,9 @@ def test_ical_ids_consistent(
     Regression test to ensure the ids for the items aren't changing on each
     request.
     """
-    ScheduledRecipe.objects.create(
-        recipe=recipe, team=team, on=date(1976, 7, 6), count=1
-    )
-    ScheduledRecipe.objects.create(
-        recipe=recipe, team=team, on=date(1976, 7, 7), count=2
-    )
-    ScheduledRecipe.objects.create(
-        recipe=recipe, team=team, on=date(1976, 7, 10), count=2
-    )
+    ScheduledRecipe.objects.create(recipe=recipe, team=team, on=date(1976, 7, 6))
+    ScheduledRecipe.objects.create(recipe=recipe, team=team, on=date(1976, 7, 7))
+    ScheduledRecipe.objects.create(recipe=recipe, team=team, on=date(1976, 7, 10))
     url = f"/t/{team.id}/ical/{team.ical_id}/schedule.ics"
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK
@@ -74,13 +68,19 @@ def test_ical_view_with_correct_id(
     """
 
     scheduled_a = ScheduledRecipe.objects.create(
-        recipe=recipe, team=team, on=date(1976, 7, 6), count=1
+        recipe=recipe,
+        team=team,
+        on=date(1976, 7, 6),
     )
     scheduled_b = ScheduledRecipe.objects.create(
-        recipe=recipe, team=team, on=date(1976, 7, 7), count=2
+        recipe=recipe,
+        team=team,
+        on=date(1976, 7, 7),
     )
     scheduled_c = ScheduledRecipe.objects.create(
-        recipe=recipe, team=team, on=date(1976, 7, 10), count=2
+        recipe=recipe,
+        team=team,
+        on=date(1976, 7, 10),
     )
 
     url = f"/t/{team.id}/ical/{team.ical_id}/schedule.ics"

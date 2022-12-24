@@ -3,8 +3,7 @@ from __future__ import annotations
 from datetime import date
 from typing import TYPE_CHECKING
 
-from django.core.validators import MinValueValidator
-from django.db import models, transaction
+from django.db import models
 
 from recipeyak.models.base import CommonInfo
 
@@ -20,24 +19,14 @@ class ScheduledRecipeManager(models.Manager["ScheduledRecipe"]):
         recipe: Recipe,
         on: date,
         team: Team | None,
-        count: int,
         user: User,
     ) -> "ScheduledRecipe":
         """
         add to existing scheduled recipe count for dupes
         """
-        with transaction.atomic():
-            # TODO(sbdchd): revist this and consider if it does what we want
-            existing = ScheduledRecipe.objects.filter(
-                recipe=recipe, on=on, team=team, user=user
-            ).first()
-            if existing:
-                existing.count += count
-                existing.save()
-                return existing
-            return ScheduledRecipe.objects.create(
-                recipe=recipe, on=on, count=count, team=team, user=user, created_by=user
-            )
+        return ScheduledRecipe.objects.create(
+            recipe=recipe, on=on, team=team, user=user, created_by=user
+        )
 
 
 class ScheduledRecipe(CommonInfo):
@@ -47,8 +36,6 @@ class ScheduledRecipe(CommonInfo):
     recipe_id: int
 
     on = models.DateField(help_text="day when recipe is scheduled")
-    # TODO: remove this field
-    count = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     # TODO(sbdchd): add restriction so that only one of these is set
     user = models.ForeignKey["User"](
         "User", on_delete=models.CASCADE, blank=True, null=True
@@ -76,4 +63,4 @@ class ScheduledRecipe(CommonInfo):
 
     def __str__(self) -> str:
         owner = self.user if not self.team else self.team
-        return f"ScheduledRecipe:: {self.count} of {self.recipe.name} on {self.on} for {owner}"
+        return f"ScheduledRecipe:: {self.recipe.name} on {self.on} for {owner}"

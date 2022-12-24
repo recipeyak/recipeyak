@@ -14,13 +14,9 @@ def test_adding_to_team_calendar(
     client: APIClient, user: User, team: Team, recipe: Recipe
 ) -> None:
     url = f"/api/v1/t/{team.pk}/calendar/"
-    data = {"recipe": recipe.id, "on": date(1976, 7, 6), "count": 1}
+    data = {"recipe": recipe.id, "on": date(1976, 7, 6)}
     assert team.is_member(user)
     client.force_authenticate(user)
-    # Making two requests triggers a different case of merging two scheduled
-    # recipes, which caused a DB query at one point.
-    res = client.post(url, data)
-    assert res.status_code == status.HTTP_201_CREATED
     res = client.post(url, data)
     assert res.status_code == status.HTTP_201_CREATED
     scheduled = ScheduledRecipe.objects.get(id=res.json().get("id"))
@@ -42,7 +38,6 @@ def test_updating_team_schedule_recipe(
     client: APIClient, user: User, team: Team, recipe: Recipe
 ) -> None:
     scheduled = recipe.schedule(on=date(1976, 1, 2), team=team, user=user)
-    assert scheduled.count == 1
     url = f"/api/v1/t/{team.pk}/calendar/{scheduled.id}/"
     data = {"on": date(1976, 1, 3)}
     client.force_authenticate(user)
