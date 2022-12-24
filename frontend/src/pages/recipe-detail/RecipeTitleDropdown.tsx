@@ -15,9 +15,7 @@ import { useDispatch, useSelector } from "@/hooks"
 import { ScheduleModal } from "@/pages/recipe-detail/ScheduleModal"
 import {
   deleteRecipe,
-  duplicateRecipe,
   IIngredient,
-  IRecipe,
   updateRecipe,
 } from "@/store/reducers/recipes"
 import { showNotificationWithTimeoutAsync } from "@/store/thunks"
@@ -39,28 +37,6 @@ function useIngredientString(recipeId: number) {
     }
     return ""
   })
-}
-
-interface IUseDuplicateRecipe {
-  readonly recipeId: IRecipe["id"]
-  readonly onComplete?: () => void
-}
-
-function useDuplicateRecipe({
-  recipeId,
-  onComplete,
-}: IUseDuplicateRecipe): [boolean, () => void] {
-  const dispatch = useDispatch()
-
-  const onDuplicate = React.useCallback(() => {
-    dispatch(duplicateRecipe.request({ recipeId, onComplete }))
-  }, [dispatch, onComplete, recipeId])
-
-  const isDuplicating = useSelector(
-    (s) => !!s.recipes.duplicatingById[recipeId],
-  )
-
-  return [isDuplicating, onDuplicate]
 }
 
 interface IDropdownProps {
@@ -90,11 +66,6 @@ export function Dropdown({
       return [!!maybeRecipe.data.archived_at, !!maybeRecipe.data.deleting]
     }
     return [false, false]
-  })
-
-  const [creatingDuplicate, onDuplicate] = useDuplicateRecipe({
-    recipeId,
-    onComplete: close,
   })
 
   const handleCopyIngredients = React.useCallback(() => {
@@ -164,10 +135,6 @@ export function Dropdown({
           }}
         >
           {editingEnabled ? "Disable Editing" : "Enable Editing"}
-        </DropdownItemButton>
-        <DropdownItemButton onClick={onDuplicate}>
-          <span>Duplicate</span>
-          {creatingDuplicate && <span>(creating...)</span>}
         </DropdownItemButton>
         {!isArchived ? (
           <DropdownItemButton onClick={archiveRecipe}>

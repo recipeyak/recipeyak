@@ -7,7 +7,6 @@ import {
   IMember,
   ITeam,
   ITeamsState,
-  setCopyingTeam,
   setCreatingTeam,
   setDeletingMembership,
   setSendingTeamInvites,
@@ -795,21 +794,6 @@ describe("Teams", () => {
     ])
 
     expect(teams(beforeState, deleteTeam(2))).toEqual(afterState)
-  })
-
-  it("sets copying team status", () => {
-    const beforeState: ITeamsState = {
-      status: "initial",
-      byId: {},
-      allIds: [],
-    }
-    const afterState: ITeamsState = {
-      status: "initial",
-      copying: true,
-      byId: {},
-      allIds: [],
-    }
-    expect(teams(beforeState, setCopyingTeam(true))).toEqual(afterState)
   })
 
   it("updates team partially", () => {

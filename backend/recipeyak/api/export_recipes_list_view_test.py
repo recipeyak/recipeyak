@@ -25,37 +25,6 @@ def test_bulk_export_json(
     assert res.status_code == 200
     recipes = res.json()
     assert len(recipes) == 2, "user should have two recipes"
-    recipe2.move_to(user2)
-    res = c.get(url)
-    assert len(res.json()) == 1, "user should only have their recipes"
-
-
-@pytest.mark.parametrize("filetype", ["yaml", "yml"])
-def test_bulk_export_yaml(
-    c: Client,
-    filetype: str,
-    user: User,
-    user2: User,
-    recipe: Recipe,
-    recipe2: Recipe,
-) -> None:
-    recipe2.move_to(user)
-    url = f"/recipes.{filetype}"
-    res = c.get(url)
-    assert res.status_code == 302
-    c.force_login(user)
-    res = c.get(url)
-    assert res.status_code == 200
-    assert "!!python/" not in res.content.decode(
-        "utf-8"
-    ), "we don't want python objects to be serialized"
-    recipes = list(yaml.safe_load_all(res.content))
-    assert len(recipes) == 2, "user should have two recipes"
-    recipe2.move_to(user2)
-    res = c.get(url)
-    assert (
-        len(list(yaml.safe_load_all(res.content))) == 1
-    ), "user should only have their recipes"
 
 
 def test_single_export_json(c: Client, user: User, recipe: Recipe) -> None:

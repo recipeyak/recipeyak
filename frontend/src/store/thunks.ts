@@ -31,12 +31,10 @@ import { passwordUpdate } from "@/store/reducers/passwordChange"
 import {
   deleteIngredient,
   deleteStep,
-  fetchRecipe,
   fetchRecipeList,
   IIngredient,
   IRecipe,
   IStep,
-  updateRecipeOwner,
   updateStep,
 } from "@/store/reducers/recipes"
 import {
@@ -47,7 +45,6 @@ import {
   fetchTeams,
   IMember,
   ITeam,
-  setCopyingTeam,
   setCreatingTeam,
   setDeletingMembership,
   setSendingTeamInvites,
@@ -698,46 +695,6 @@ export const updatingTeamAsync =
         message,
         level: "danger",
         delay: 3 * second,
-      })
-    }
-  }
-
-export const moveRecipeToAsync =
-  (dispatch: Dispatch) =>
-  async (
-    recipeId: IRecipe["id"],
-    ownerId: IUser["id"],
-    type: IRecipe["owner"]["type"],
-  ) => {
-    const res = await api.moveRecipe(recipeId, ownerId, type)
-    if (isOk(res)) {
-      dispatch(updateRecipeOwner({ id: res.data.id, owner: res.data.owner }))
-      return Ok(undefined)
-    }
-    return Err(undefined)
-  }
-
-export const copyRecipeToAsync =
-  (dispatch: Dispatch) =>
-  async (
-    recipeId: IRecipe["id"],
-    ownerId: IUser["id"],
-    type: IRecipe["owner"]["type"],
-  ) => {
-    // TODO(sbdchd): refactor to use createActionAsync
-    dispatch(setCopyingTeam(true))
-    const res = await api.copyRecipe(recipeId, ownerId, type)
-    if (isOk(res)) {
-      dispatch(fetchRecipe.success(res.data))
-      dispatch(setCopyingTeam(false))
-    } else {
-      dispatch(setCopyingTeam(false))
-      // TODO(chdsbd): Improve api usage and remove this throw
-
-      showNotificationWithTimeoutAsync(dispatch)({
-        message: `Problem copying recipe: ${res.error}`,
-        level: "danger",
-        sticky: true,
       })
     }
   }

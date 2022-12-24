@@ -7,6 +7,7 @@ import Textarea from "react-textarea-autosize"
 import * as api from "@/api"
 import { classNames as cls } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
+import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Markdown } from "@/components/Markdown"
 import { RotatingLoader } from "@/components/RoatingLoader"
@@ -290,7 +291,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
     >
       <Avatar avatarURL={note.created_by.avatar_url} className="mr-2" />
       <div className="w-100">
-        <div className="d-flex align-items-center">
+        <Box align="center">
           <b>{note.created_by.name}</b>{" "}
           <a href={`#${noteId}`} className="ml-2">
             <NoteTimeStamp created={note.created} />
@@ -308,7 +309,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
               edit
             </SmallAnchor>
           ) : null}
-        </div>
+        </Box>
         {!isEditing ? (
           <div>
             <Markdown className="selectable">{note.text}</Markdown>
@@ -368,16 +369,11 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
             </UploadContainer>
 
             {isEditing && (
-              <div className="d-flex justify-between align-center">
-                <Button
-                  variant="secondary"
-                  size="small"
-                  onClick={onDelete}
-                  className="mr-2"
-                >
+              <Box space="between" align="center">
+                <Button variant="danger" size="small" onClick={onDelete}>
                   delete
                 </Button>
-                <div className="d-flex justify-between align-center">
+                <Box gap={3} space="between" align="center">
                   <Button
                     variant="secondary"
                     size="small"
@@ -385,7 +381,6 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
                       onCancel()
                       reset()
                     }}
-                    className="mr-3"
                   >
                     cancel
                   </Button>
@@ -397,8 +392,8 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
                   >
                     save
                   </Button>
-                </div>
-              </div>
+                </Box>
+              </Box>
             )}
           </>
         )}
