@@ -193,11 +193,6 @@ function SharedEntry({
   )
 }
 
-const AttachmentContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem;
-`
 const SmallAnchor = styled.a`
   font-size: 0.825rem;
 `
@@ -311,26 +306,28 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
           ) : null}
         </Box>
         {!isEditing ? (
-          <div>
+          <Box dir="col">
             <Markdown className="selectable">{note.text}</Markdown>
-            <AttachmentContainer>
-              {note.attachments.map((attachment) => (
-                <ImagePreview
-                  key={attachment.id}
-                  onClick={() => {
-                    openImage(attachment.id)
-                  }}
-                  src={attachment.url}
-                  backgroundUrl={attachment.backgroundUrl}
-                />
-              ))}
-            </AttachmentContainer>
-            <ReactionsFooter
-              reactions={reactions}
-              onPick={async (emoji) => addOrRemoveReaction(emoji)}
-              onClick={async (emoji) => addOrRemoveReaction(emoji)}
-            />
-          </div>
+            <Box gap={1} dir="col">
+              <Box wrap gap={1}>
+                {note.attachments.map((attachment) => (
+                  <ImagePreview
+                    key={attachment.id}
+                    onClick={() => {
+                      openImage(attachment.id)
+                    }}
+                    src={attachment.url}
+                    backgroundUrl={attachment.backgroundUrl}
+                  />
+                ))}
+              </Box>
+              <ReactionsFooter
+                reactions={reactions}
+                onPick={async (emoji) => addOrRemoveReaction(emoji)}
+                onClick={async (emoji) => addOrRemoveReaction(emoji)}
+              />
+            </Box>
+          </Box>
         ) : (
           <>
             <UploadContainer addFiles={addFiles}>
@@ -350,7 +347,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
                   files={files}
                 />
               ) : (
-                <AttachmentContainer>
+                <Box wrap gap={1}>
                   {note.attachments.map((attachment) => (
                     <a
                       key={attachment.id}
@@ -364,7 +361,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
                       />
                     </a>
                   ))}
-                </AttachmentContainer>
+                </Box>
               )}
             </UploadContainer>
 
