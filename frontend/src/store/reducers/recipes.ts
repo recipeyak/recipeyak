@@ -19,7 +19,6 @@ import {
   Dispatch,
   updatingStepAsync,
 } from "@/store/thunks"
-import { recipeURL } from "@/urls"
 import {
   Failure,
   HttpErrorKind,
@@ -29,11 +28,6 @@ import {
   toLoading,
   WebData,
 } from "@/webdata"
-
-export const updateRecipeOwner = createStandardAction("UPDATE_RECIPE_OWNER")<{
-  id: IRecipe["id"]
-  owner: IRecipe["owner"]
-}>()
 
 export const deleteRecipe = createAsyncAction(
   "DELETE_RECIPE_START",
@@ -339,45 +333,12 @@ export const setRecipeStepDraft = createStandardAction(
   "SET_RECIPE_STEP_DRAFT",
 )<{ id: IRecipe["id"]; draftStep: IRecipe["draftStep"] }>()
 
-export const duplicateRecipe = createAsyncAction(
-  "DUPLICATE_RECIPE/REQUEST",
-  "DUPLICATE_RECIPE/SUCCESS",
-  "DUPLICATE_RECIPE/FAILURE",
-)<
-  { readonly recipeId: IRecipe["id"]; readonly onComplete?: () => void },
-  { readonly recipe: IRecipe; readonly originalRecipeId: IRecipe["id"] },
-  number
->()
-
 export const patchRecipe = createStandardAction("PATCH_RECIPE")<{
   recipeId: IRecipe["id"]
   updateFn: (x: IRecipe) => IRecipe
 }>()
 
-interface IDuplicateRecipeAsync {
-  readonly recipeId: number
-}
-
-export async function duplicateRecipeAsync(
-  { recipeId }: IDuplicateRecipeAsync,
-  dispatch: Dispatch,
-  cb?: () => void,
-) {
-  const res = await api.duplicateRecipe(recipeId)
-
-  if (isOk(res)) {
-    dispatch(
-      duplicateRecipe.success({ recipe: res.data, originalRecipeId: recipeId }),
-    )
-    dispatch(push(recipeURL(res.data.id)))
-  } else {
-    dispatch(duplicateRecipe.failure(recipeId))
-  }
-  cb?.()
-}
-
 export type RecipeActions =
-  | ReturnType<typeof updateRecipeOwner>
   | ActionType<typeof deleteStep>
   | ActionType<typeof updateStep>
   | ActionType<typeof deleteIngredient>
@@ -390,7 +351,6 @@ export type RecipeActions =
   | ActionType<typeof fetchRecipeList>
   | ActionType<typeof createRecipe>
   | ActionType<typeof setRecipeStepDraft>
-  | ActionType<typeof duplicateRecipe>
   | ActionType<typeof patchRecipe>
   | ActionType<typeof addSectionToRecipe>
   | ActionType<typeof removeSectionFromRecipe>
@@ -975,48 +935,6 @@ export const recipes = (
         ...recipe,
         updating: false,
       }))
-    case getType(updateRecipeOwner):
-      return mapRecipeSuccessById(state, action.payload.id, (recipe) => ({
-        ...recipe,
-
-        owner: action.payload.owner,
-      }))
-    case getType(duplicateRecipe.request): {
-      const { recipeId, onComplete } = action.payload
-      return loop(
-        {
-          ...state,
-          duplicatingById: {
-            ...state.duplicatingById,
-            [recipeId]: true,
-          },
-        },
-        Cmd.run(duplicateRecipeAsync, {
-          args: [{ recipeId }, Cmd.dispatch, onComplete],
-        }),
-      )
-    }
-    case getType(duplicateRecipe.success):
-      return {
-        ...state,
-        duplicatingById: {
-          ...state.duplicatingById,
-          [action.payload.originalRecipeId]: false,
-        },
-        byId: {
-          ...state.byId,
-          [action.payload.recipe.id]: Success(action.payload.recipe),
-        },
-      }
-
-    case getType(duplicateRecipe.failure):
-      return {
-        ...state,
-        duplicatingById: {
-          ...state.duplicatingById,
-          [action.payload]: false,
-        },
-      }
     default:
       return state
   }

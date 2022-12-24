@@ -1,7 +1,7 @@
 import pytest
 from rest_framework.test import APIClient
 
-from recipeyak.models import Recipe, Team, User
+from recipeyak.models import Team, User
 
 pytestmark = pytest.mark.django_db
 
@@ -76,48 +76,3 @@ def test_user_has_invite(client: APIClient, empty_team: Team, user: User) -> Non
     assert user.has_invite(empty_team)
     empty_team.force_join(user)
     assert not user.has_invite(empty_team)
-
-
-def test_recipe_move_to(
-    client: APIClient, team: Team, user: User, recipe: Recipe
-) -> None:
-    """
-    Move recipe to team from user or another team by changing owner.
-    """
-    assert recipe.owner == user
-
-    a = (recipe.steps.values(), recipe.steps.values())
-    recipe = recipe.move_to(team)
-    b = (recipe.steps.values(), recipe.steps.values())
-
-    for x, y in zip(a, b):
-        assert list(x) == list(y)
-    assert recipe.owner == team
-
-
-def test_recipe_copy_to(
-    client: APIClient, team: Team, user: User, recipe: Recipe
-) -> None:
-    """
-    Copy recipe to team from user or another team
-    """
-    assert recipe.owner == user
-
-    team_recipe = recipe.copy_to(account=team, actor=user)
-
-    assert recipe != team_recipe
-    assert team_recipe.owner == team and recipe.owner == user
-
-    for a, b in [
-        (recipe.steps.values(), team_recipe.steps.values()),
-        (recipe.ingredients.values(), team_recipe.ingredients.values()),
-    ]:
-        assert len(a) == len(b)  # type: ignore [arg-type]
-        for x, y in zip(a, b):  # type: ignore [call-overload]
-            assert x["id"] != y["id"]
-            assert x["recipe_id"] != y["recipe_id"]
-            # ignore keys that will change
-            for key in ["id", "created", "modified", "recipe_id"]:
-                x.pop(key)
-                y.pop(key)
-            assert x == y

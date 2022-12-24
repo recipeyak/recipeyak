@@ -152,9 +152,6 @@ export const getRecipeTimeline = (id: IRecipe["id"]) =>
 export const deleteRecipe = (id: IRecipe["id"]) =>
   http.delete(`/api/v1/recipes/${id}/`)
 
-export const duplicateRecipe = (id: IRecipe["id"]) =>
-  http.post<IRecipe>(`/api/v1/recipes/${id}/duplicate/`)
-
 export const getRecipeList = () => {
   return http.get<IRecipe[]>("/api/v1/recipes/")
 }
@@ -377,21 +374,6 @@ export const createTeam = (
 
 export const updateTeam = (teamId: ITeam["id"], data: unknown) =>
   http.patch<ITeam>(`/api/v1/t/${teamId}/`, data)
-
-// TODO(sbdchd): should owner be a userID?
-export const moveRecipe = (
-  recipeId: IRecipe["id"],
-  ownerId: IUser["id"],
-  type: unknown,
-) =>
-  http.post<IRecipe>(`/api/v1/recipes/${recipeId}/move/`, { id: ownerId, type })
-
-export const copyRecipe = (
-  recipeId: IRecipe["id"],
-  ownerId: IUser["id"],
-  type: unknown,
-) =>
-  http.post<IRecipe>(`/api/v1/recipes/${recipeId}/copy/`, { id: ownerId, type })
 
 export const getInviteList = () => http.get<IInvite[]>("/api/v1/invites/")
 

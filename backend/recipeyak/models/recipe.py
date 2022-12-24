@@ -1,16 +1,14 @@
 from __future__ import annotations
 
-import itertools
 from datetime import date
 from typing import TYPE_CHECKING, Any
 
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import ArrayField
-from django.db import models, transaction
+from django.db import models
 from django.db.models import QuerySet
 from django.db.models.manager import BaseManager, Manager
-from django.utils import timezone
 
 from recipeyak.models.base import CommonInfo
 from recipeyak.models.ingredient import Ingredient
@@ -78,58 +76,6 @@ class Recipe(CommonInfo):
 
     class Meta:
         db_table = "core_recipe"
-
-    def move_to(self, account: User | Team) -> "Recipe":
-        """
-        Move recipe from current owner to another team or user
-
-        All we need to do is change the owner for this one.
-            - Steps and Ingredients will be fine since we aren't changing pk's
-        """
-        with transaction.atomic():
-            self.owner = account
-            self.save()
-            return self
-
-    def copy_to(self, *, actor: User, account: User | Team) -> "Recipe":
-        """
-        Copy recipe to another team or user
-        """
-        return self.duplicate(actor=actor, account=account, update_title=False)
-
-    def duplicate(
-        self,
-        *,
-        actor: User,
-        update_title: bool = True,
-        account: User | Team | None = None,
-    ) -> "Recipe":
-        """
-        Duplicate / clone a recipe to its current owner
-        """
-        with transaction.atomic():
-            # clone top level recipe object
-            original = self
-            recipe_copy = Recipe.objects.get(pk=original.pk)
-            recipe_copy.pk = None
-            recipe_copy.name += " (copy)"
-            if account is not None:
-                recipe_copy.owner = account
-            recipe_copy.cloned_from = original
-            recipe_copy.cloned_by = actor
-            recipe_copy.cloned_at = timezone.now()
-            recipe_copy.save()
-
-            for recipe_component in itertools.chain(self.steps, self.ingredients):
-                recipe_component.pk = None
-                # alternative to recipe_copy.steps_set.add(step)
-                # this is required due to the db constraint on recipe, position
-                recipe_component.recipe_id = (  # type: ignore [attr-defined]
-                    recipe_copy.pk
-                )
-                recipe_component.save()
-            recipe_copy.save()
-            return recipe_copy
 
     # TODO(sbdchd): this needs an `@overload` for the user case an the team
     # case since they can't occur at the same time.
