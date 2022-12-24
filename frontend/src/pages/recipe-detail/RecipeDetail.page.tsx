@@ -464,6 +464,7 @@ const HeaderImgThumbnail = styled.div<{ backgroundImage: string }>`
   border-radius: 6px;
   height: 100%;
   width: 100%;
+  background-position: center;
   background-image: url(${(props) => props.backgroundImage});
   @media (min-width: 800px) {
     grid-area: 1 / 2;
@@ -957,6 +958,10 @@ function RecipeInfo(props: {
         <>
           <HeaderImg
             src={props.recipe.primaryImage?.url ?? ""}
+            // NOTE: not entirely sure if we want async or sync
+            // see: https://stackoverflow.com/a/66967317/3720597
+            // and: https://css-tricks.com/newsletter/249-decoding-async-tree-rings-and-flexbox-gap/
+            decoding="async"
             onClick={() => {
               props.openImage()
             }}
