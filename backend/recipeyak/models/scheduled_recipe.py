@@ -3,7 +3,6 @@ from __future__ import annotations
 from datetime import date
 from typing import TYPE_CHECKING
 
-from django.core.validators import MinValueValidator
 from django.db import models
 
 from recipeyak.models.base import CommonInfo
