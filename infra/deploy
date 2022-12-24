@@ -1,0 +1,63 @@
+#!/bin/bash
+set -eu
+
+step() {
+	echo -e "\n--> $1"
+}
+
+error() {
+	echo -e "\nerror: $1">&2
+}
+
+main() {
+	SHA="$@"
+        step "starting deploy version sha:$SHA"
+	if [ -e "deploy:in-progress" ]; then
+            error "error: deploy already in progress"
+            exit 1
+	fi
+    	echo "$SHA" > "deploy:in-progress"
+
+	step "pulling latest container images"
+	docker pull recipeyak/django:"$SHA"
+	docker pull recipeyak/react:"$SHA"
+	docker pull recipeyak/nginx:"$SHA"
+
+	
+	# update background jobs
+	step "updating background jobs"
+	sed -i "s/:\(.*\) /:$SHA /g" /etc/systemd/system/recipeyak-backfill_image_placeholders.service
+	systemctl daemon-reload
+	# no need to restart anything since they're running on timers, which
+	# will get the new version on restart
+	
+	# migrations
+	step "running migrations"
+	docker run --network recipeyak --log-driver=journald --env-file=.env-production recipeyak/django:"$SHA" /var/app/.venv/bin/python ./manage.py migrate
+
+	step "updating api"
+	docker stop django
+	docker rm django
+	docker run --detach --restart unless-stopped --name django --network recipeyak --log-driver=journald -p "7777:8000" --env-file=.env-production recipeyak/django:"$SHA" 
+
+	step "updating ui"
+	docker stop react
+	docker rm react
+	docker run --detach --restart unless-stopped --name react --network recipeyak --log-driver=journald -v recipemanager_react-static-files:/var/app/dist --env-file=.env-production recipeyak/react:"$SHA"
+
+	step "updating reverse proxy"
+	docker stop nginx
+	docker rm nginx
+	docker run --detach --restart unless-stopped --name nginx -p "8000:80" --network recipeyak --log-driver=journald -v recipemanager_react-static-files:/var/app/dist --env-file=.env-production recipeyak/nginx:"$SHA"
+
+	step "prunning old docker containers"
+	# we could do something like "keep the 3 most recent versions per container name" but this is easy enough
+	# docker system prune --all --force --volumes --filter "until=720h"
+	docker system prune --all --force --volumes
+
+	mv "deploy:in-progress" "deploy:complete"
+	step "deployed version sha:$SHA"
+}
+
+
+main "$@"
