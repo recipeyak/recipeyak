@@ -15,13 +15,8 @@ from recipeyak.api.base.permissions import IsTeamMember
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import BaseModelSerializer, RequestParams
 from recipeyak.api.serializers.recipe import RecipeSerializer
-from recipeyak.models import (
-    Membership,
-    ScheduledRecipe,
-    Team,
-    user_and_team_recipes,
-)
 from recipeyak.api.team_detail_view import get_teams
+from recipeyak.models import Membership, ScheduledRecipe, Team, user_and_team_recipes
 
 
 class CalSettings(TypedDict):
