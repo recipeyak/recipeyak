@@ -41,12 +41,12 @@ def test_fetching_shoppinglist(client: APIClient, user: User, recipe: Recipe) ->
     assert res.json() == {
         "egg": {
             "category": "dairy",
-            "quantities": [{"quantity": "2", "unit": "POUND", "unknown_unit": None}],
+            "quantities": [{"quantity": "1", "unit": "POUND", "unknown_unit": None}],
         },
         "soy sauce": {
             "category": "condiments",
             "quantities": [
-                {"quantity": "4", "unit": "TABLESPOON", "unknown_unit": None}
+                {"quantity": "2", "unit": "TABLESPOON", "unknown_unit": None}
             ],
         },
     }
@@ -84,12 +84,12 @@ def test_fetching_shoppinglist_with_team_recipe(
     assert res.json() == {
         "egg": {
             "category": "dairy",
-            "quantities": [{"quantity": "2", "unit": "POUND", "unknown_unit": None}],
+            "quantities": [{"quantity": "1", "unit": "POUND", "unknown_unit": None}],
         },
         "soy sauce": {
             "category": "condiments",
             "quantities": [
-                {"quantity": "4", "unit": "TABLESPOON", "unknown_unit": None}
+                {"quantity": "2", "unit": "TABLESPOON", "unknown_unit": None}
             ],
         },
     }
@@ -132,7 +132,7 @@ def test_scheduling_multiple_times_some_ingredient(
     assert res.json() == {
         "black pepper": {
             "category": "spices",
-            "quantities": [{"quantity": "3", "unit": "SOME", "unknown_unit": None}],
+            "quantities": [{"quantity": "1", "unit": "SOME", "unknown_unit": None}],
         }
     }
 
