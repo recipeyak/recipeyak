@@ -34,19 +34,19 @@ def test_fetching_shoppinglist(client: APIClient, user: User, recipe: Recipe) ->
     assert res.json() == {}
     assert ShoppingList.objects.count() == 1
 
-    recipe.schedule(user=user, on=start, count=2)
+    recipe.schedule(user=user, on=start)
 
     res = client.get(url, params)
     assert res.status_code == status.HTTP_200_OK
     assert res.json() == {
         "egg": {
             "category": "dairy",
-            "quantities": [{"quantity": "2", "unit": "POUND", "unknown_unit": None}],
+            "quantities": [{"quantity": "1", "unit": "POUND", "unknown_unit": None}],
         },
         "soy sauce": {
             "category": "condiments",
             "quantities": [
-                {"quantity": "4", "unit": "TABLESPOON", "unknown_unit": None}
+                {"quantity": "2", "unit": "TABLESPOON", "unknown_unit": None}
             ],
         },
     }
@@ -73,7 +73,7 @@ def test_fetching_shoppinglist_with_team_recipe(
     assert res.status_code == status.HTTP_200_OK
     assert res.json() == {}
 
-    recipe.schedule(user=user, on=start, count=2)
+    recipe.schedule(user=user, on=start)
 
     res = client.get(url, params)
     assert res.status_code == status.HTTP_200_OK
@@ -82,12 +82,12 @@ def test_fetching_shoppinglist_with_team_recipe(
     assert res.json() == {
         "egg": {
             "category": "dairy",
-            "quantities": [{"quantity": "2", "unit": "POUND", "unknown_unit": None}],
+            "quantities": [{"quantity": "1", "unit": "POUND", "unknown_unit": None}],
         },
         "soy sauce": {
             "category": "condiments",
             "quantities": [
-                {"quantity": "4", "unit": "TABLESPOON", "unknown_unit": None}
+                {"quantity": "2", "unit": "TABLESPOON", "unknown_unit": None}
             ],
         },
     }
@@ -120,7 +120,7 @@ def test_scheduling_multiple_times_some_ingredient(
     )
 
     start = date(1976, 7, 6)
-    recipe.schedule(user=user, on=start, count=3)
+    recipe.schedule(user=user, on=start)
 
     end = start + timedelta(days=1)
     params = dict(start=start, end=end)
@@ -130,7 +130,7 @@ def test_scheduling_multiple_times_some_ingredient(
     assert res.json() == {
         "black pepper": {
             "category": "spices",
-            "quantities": [{"quantity": "3", "unit": "SOME", "unknown_unit": None}],
+            "quantities": [{"quantity": "1", "unit": "SOME", "unknown_unit": None}],
         }
     }
 
@@ -343,7 +343,7 @@ def test_combining_feta(user: User, client: APIClient, empty_recipe: Recipe) -> 
         position += 10
 
     start = date(1976, 7, 6)
-    empty_recipe.schedule(user=user, on=start, count=1)
+    empty_recipe.schedule(user=user, on=start)
 
     end = start + timedelta(days=1)
     params = dict(start=start, end=end)

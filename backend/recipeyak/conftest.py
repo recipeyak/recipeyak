@@ -202,6 +202,4 @@ def team_with_recipes_no_members(recipe: Recipe, recipe_pie: Recipe) -> Team:
 
 @pytest.fixture
 def scheduled_recipe(recipe: Recipe, user: User) -> ScheduledRecipe:
-    return ScheduledRecipe.objects.create(
-        recipe=recipe, user=user, on=date(1976, 7, 6), count=1
-    )
+    return ScheduledRecipe.objects.create(recipe=recipe, user=user, on=date(1976, 7, 6))

@@ -65,7 +65,7 @@ class ScheduledRecipeSerializer(BaseModelSerializer):
 
     class Meta:
         model = ScheduledRecipe
-        fields = ("id", "recipe", "created", "on", "count", "team", "user", "createdBy")
+        fields = ("id", "recipe", "created", "on", "team", "user", "createdBy")
 
     def get_createdBy(self, obj: ScheduledRecipe) -> dict[str, str | int | None] | None:
         if obj.created_by is None:
