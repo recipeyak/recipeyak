@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from datetime import date
-from typing import Any
 
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
@@ -18,7 +17,6 @@ from recipeyak.api.base.serialization import BaseModelSerializer, RequestParams
 from recipeyak.api.serializers.recipe import RecipeSerializer
 from recipeyak.models import (
     Membership,
-    Recipe,
     ScheduledRecipe,
     Team,
     user_and_team_recipes,
