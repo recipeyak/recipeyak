@@ -1,6 +1,5 @@
 import asyncio
 import base64
-import signal
 import time
 from io import BytesIO
 
