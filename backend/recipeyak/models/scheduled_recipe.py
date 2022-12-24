@@ -37,9 +37,6 @@ class ScheduledRecipe(CommonInfo):
     recipe_id: int
 
     on = models.DateField(help_text="day when recipe is scheduled")
-    _deprecated_count = models.PositiveIntegerField(
-        validators=[MinValueValidator(1)], db_column="count", null=True
-    )
     # TODO(sbdchd): add restriction so that only one of these is set
     user = models.ForeignKey["User"](
         "User", on_delete=models.CASCADE, blank=True, null=True
