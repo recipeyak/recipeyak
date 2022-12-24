@@ -36,8 +36,6 @@ class RecipeMetadataSerializer(pydantic.BaseModel):
 
 class ScheduleRecipeSerializer(pydantic.BaseModel):
     id: int
-    # TODO: remove
-    count: int
     created: datetime
     createdBy: CreatedBySerializer | None
     team: str | None
@@ -72,7 +70,6 @@ def calendar_detail_patch_view(
     return Response(
         ScheduleRecipeSerializer(
             id=scheduled_recipe.id,
-            count=scheduled_recipe.count,
             created=scheduled_recipe.created,
             recipe=recipe,
             on=scheduled_recipe.on,

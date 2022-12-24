@@ -14,7 +14,7 @@ def test_adding_to_team_calendar(
     client: APIClient, user: User, team: Team, recipe: Recipe
 ) -> None:
     url = f"/api/v1/t/{team.pk}/calendar/"
-    data = {"recipe": recipe.id, "on": date(1976, 7, 6), "count": 1}
+    data = {"recipe": recipe.id, "on": date(1976, 7, 6)}
     assert team.is_member(user)
     client.force_authenticate(user)
     # Making two requests triggers a different case of merging two scheduled

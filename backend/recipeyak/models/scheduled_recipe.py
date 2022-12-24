@@ -20,24 +20,14 @@ class ScheduledRecipeManager(models.Manager["ScheduledRecipe"]):
         recipe: Recipe,
         on: date,
         team: Team | None,
-        count: int,
         user: User,
     ) -> "ScheduledRecipe":
         """
         add to existing scheduled recipe count for dupes
         """
-        with transaction.atomic():
-            # TODO(sbdchd): revist this and consider if it does what we want
-            existing = ScheduledRecipe.objects.filter(
-                recipe=recipe, on=on, team=team, user=user
-            ).first()
-            if existing:
-                existing.count += count
-                existing.save()
-                return existing
-            return ScheduledRecipe.objects.create(
-                recipe=recipe, on=on, count=count, team=team, user=user, created_by=user
-            )
+        return ScheduledRecipe.objects.create(
+            recipe=recipe, on=on, team=team, user=user, created_by=user
+        )
 
 
 class ScheduledRecipe(CommonInfo):
@@ -47,8 +37,9 @@ class ScheduledRecipe(CommonInfo):
     recipe_id: int
 
     on = models.DateField(help_text="day when recipe is scheduled")
-    # TODO: remove this field
-    count = models.PositiveIntegerField(validators=[MinValueValidator(1)])
+    _deprecated_count = models.PositiveIntegerField(
+        validators=[MinValueValidator(1)], db_column="count", null=True
+    )
     # TODO(sbdchd): add restriction so that only one of these is set
     user = models.ForeignKey["User"](
         "User", on_delete=models.CASCADE, blank=True, null=True
