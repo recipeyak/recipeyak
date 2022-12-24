@@ -133,7 +133,6 @@ function CalendarDay({ date, scheduledRecipes, teamID }: ICalendarDayProps) {
           recipeID: item.recipeID,
           teamID,
           on: date,
-          count: 1,
         })
       } else {
         assertNever(item)

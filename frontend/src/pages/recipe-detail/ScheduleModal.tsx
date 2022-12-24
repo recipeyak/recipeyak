@@ -36,7 +36,6 @@ export function ScheduleModal({
       {
         recipeID: recipeId,
         teamID: teamId,
-        count: 1,
         on: parseISO(isoDate),
       },
       {

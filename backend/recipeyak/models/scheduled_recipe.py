@@ -47,6 +47,7 @@ class ScheduledRecipe(CommonInfo):
     recipe_id: int
 
     on = models.DateField(help_text="day when recipe is scheduled")
+    # TODO: remove this field
     count = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     # TODO(sbdchd): add restriction so that only one of these is set
     user = models.ForeignKey["User"](

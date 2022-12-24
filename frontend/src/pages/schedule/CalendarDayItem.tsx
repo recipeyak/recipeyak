@@ -49,7 +49,6 @@ const CalendarListItem = styled.li<ICalendarListItemProps>`
 `
 
 export interface ICalendarItemProps {
-  readonly count: ICalRecipe["count"]
   readonly remove: () => void
   readonly date: Date
   readonly recipeID: IRecipe["id"] | string
@@ -65,7 +64,6 @@ export interface ICalendarItemProps {
 }
 
 export function CalendarItem({
-  count,
   date,
   remove,
   recipeName,
@@ -95,7 +93,6 @@ export function CalendarItem({
   const dragItem: ICalendarDragItem = {
     type: DragDrop.CAL_RECIPE,
     recipeID,
-    count,
     scheduledId,
     date,
   }
@@ -151,9 +148,6 @@ export function CalendarItem({
 }
 
 export interface ICalendarDragItem
-  extends Pick<
-    ICalendarItemProps,
-    "recipeID" | "count" | "scheduledId" | "date"
-  > {
+  extends Pick<ICalendarItemProps, "recipeID" | "scheduledId" | "date"> {
   readonly type: DragDrop.CAL_RECIPE
 }
