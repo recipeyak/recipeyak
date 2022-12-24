@@ -177,7 +177,6 @@ function CalendarDay({ date, scheduledRecipes, teamID }: ICalendarDayProps) {
                 teamId: teamID,
               })
             }}
-            count={x.count}
           />
         ))}
       </ul>
