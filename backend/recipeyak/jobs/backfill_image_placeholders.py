@@ -1,5 +1,6 @@
 import asyncio
 import base64
+import time
 from io import BytesIO
 
 import asyncpg
@@ -94,7 +95,6 @@ async def job(*, dry_run: bool, pg_dsn: str, storage_hostname: str) -> None:
             for (upload_id, background_url) in id_to_placeholder.items()
         ],
     )
-    log.info("done!")
 
 
 def main(
@@ -103,11 +103,13 @@ def main(
     storage_hostname: str = typer.Argument(..., envvar="STORAGE_HOSTNAME"),
 ) -> None:
     logger.info("initiate")
+    start = time.monotonic()
     sentry_sdk.init(
         send_default_pii=True,
         traces_sample_rate=1.0,
     )
     asyncio.run(job(dry_run=dry_run, pg_dsn=pg_dsn, storage_hostname=storage_hostname))
+    logger.info("done!", total_time_sec=time.monotonic() - start)
 
 
 if __name__ == "__main__":
