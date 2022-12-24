@@ -42,7 +42,6 @@ def test_updating_team_schedule_recipe(
     client: APIClient, user: User, team: Team, recipe: Recipe
 ) -> None:
     scheduled = recipe.schedule(on=date(1976, 1, 2), team=team, user=user)
-    assert scheduled.count == 1
     url = f"/api/v1/t/{team.pk}/calendar/{scheduled.id}/"
     data = {"on": date(1976, 1, 3)}
     client.force_authenticate(user)
