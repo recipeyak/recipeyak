@@ -4,7 +4,6 @@ import { toISODateString } from "@/date"
 import { http } from "@/http"
 import { isOk, Ok } from "@/result"
 import { ICalRecipe } from "@/store/reducers/calendar"
-import { IInvite } from "@/store/reducers/invites"
 import { IIngredient, INote, IRecipe, IStep } from "@/store/reducers/recipes"
 import { IMember, ITeam } from "@/store/reducers/teams"
 import { ISession, IUser } from "@/store/reducers/user"
@@ -68,6 +67,7 @@ export const changePassword = (
     old_password: oldPassword,
   })
 
+// eslint-disable-next-line no-restricted-syntax
 export const enum Unit {
   POUND = "POUND",
   OUNCE = "OUNCE",
@@ -375,6 +375,22 @@ export const createTeam = (
 export const updateTeam = (teamId: ITeam["id"], data: unknown) =>
   http.patch<ITeam>(`/api/v1/t/${teamId}/`, data)
 
+export interface IInvite {
+  readonly id: number
+  readonly accepting?: boolean
+  readonly declining?: boolean
+  readonly status: "accepted" | "declined" | "open"
+  readonly active: boolean
+  readonly team: {
+    readonly id: number
+    readonly name: string
+  }
+  readonly creator: {
+    readonly id: number
+    readonly email: string
+    readonly avatar_url: string
+  }
+}
 export const getInviteList = () => http.get<IInvite[]>("/api/v1/invites/")
 
 export const acceptInvite = (id: IInvite["id"]) =>

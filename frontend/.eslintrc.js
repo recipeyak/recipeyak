@@ -36,6 +36,13 @@ module.exports = {
     "simple-import-sort/exports": "error",
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "error",
+    "no-restricted-syntax": [
+      "error",
+      {
+        selector: "TSEnumDeclaration",
+        message: "Don't declare enums. Use a union of literals instead.",
+      },
+    ],
     "no-restricted-globals": [
       "error",
       "close",

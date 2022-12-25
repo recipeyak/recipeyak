@@ -1,10 +1,4 @@
-import { ITeam } from "@/store/reducers/teams"
 import { IState } from "@/store/store"
-import { notUndefined } from "@/utils/general"
-
-// TODO(sbdchd): move to respective folder
-export const teamsFrom = (state: IState): ITeam[] =>
-  state.teams.allIds.map((id) => state.teams.byId[id]).filter(notUndefined)
 
 export const scheduleURLFromTeamID = (state: IState): string => {
   const id = state.user.scheduleTeamID

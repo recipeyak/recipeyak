@@ -1,18 +1,10 @@
-import { useEffect } from "react"
-import { connect } from "react-redux"
-
 import { Button } from "@/components/Buttons"
 import { Loader } from "@/components/Loader"
 import { formatDistanceToNow } from "@/date"
-import { ISession, LoggingOutStatus } from "@/store/reducers/user"
-import { IState } from "@/store/store"
-import {
-  Dispatch,
-  fetchingSessionsAsync,
-  loggingOutAllSessionsAsync,
-  loggingOutSessionByIdAsync,
-} from "@/store/thunks"
-import { isFailure, isInitial, isLoading, WebData } from "@/webdata"
+import { useSessionDelete } from "@/queries/sessionDelete"
+import { useSessionDeleteAll } from "@/queries/sessionDeleteAll"
+import { useSessionList } from "@/queries/sessionList"
+import { ISession } from "@/store/reducers/user"
 
 function getDeviceEmoji(kind: ISession["device"]["kind"]): string | null {
   switch (kind) {
@@ -65,12 +57,9 @@ function DeviceName({ device }: IDeviceNameProps) {
   return <p>{getDeviceName(device)}</p>
 }
 
-interface ISessionProps extends ISession {
-  readonly logout: (id: ISession["id"]) => void
-}
-
-function Session(props: ISessionProps) {
+function Session(props: ISession) {
   const lastActivity = formatDistanceToNow(new Date(props.last_activity))
+  const sessionDelete = useSessionDelete()
   return (
     <li className="mb-2">
       <section className="d-flex">
@@ -78,9 +67,9 @@ function Session(props: ISessionProps) {
         <Button
           size="small"
           onClick={() => {
-            props.logout(props.id)
+            sessionDelete.mutate({ sessionId: props.id })
           }}
-          loading={props.loggingOut === LoggingOutStatus.Loading}
+          loading={sessionDelete.isLoading}
         >
           Logout
         </Button>
@@ -92,66 +81,37 @@ function Session(props: ISessionProps) {
   )
 }
 
-interface ISessionListProps {
-  readonly sessions: WebData<ReadonlyArray<ISession>>
-  readonly fetchData: () => void
-  readonly logoutAll: () => void
-  readonly logoutById: (id: ISession["id"]) => void
-  readonly loggingOutAll: LoggingOutStatus
-}
+function SessionList() {
+  const sessions = useSessionList()
+  const sessonsDeleteAll = useSessionDeleteAll()
 
-function SessionListBasic({
-  sessions,
-  logoutAll,
-  logoutById,
-  loggingOutAll,
-  fetchData,
-}: ISessionListProps) {
-  useEffect(() => {
-    fetchData()
-  }, [fetchData])
-
-  if (isLoading(sessions) || isInitial(sessions)) {
+  if (sessions.isLoading) {
     return <Loader />
   }
 
-  if (isFailure(sessions)) {
+  if (sessions.isError) {
     return <p className="text-muted">Failure fetching sessions</p>
   }
   return (
     <>
       <ul>
         {sessions.data.map((s) => (
-          <Session key={s.id} logout={logoutById} {...s} />
+          <Session key={s.id} {...s} />
         ))}
       </ul>
       <Button
         size="small"
         className="mb-2"
-        onClick={logoutAll}
-        loading={loggingOutAll === LoggingOutStatus.Loading}
+        onClick={() => {
+          sessonsDeleteAll.mutate()
+        }}
+        loading={sessonsDeleteAll.isLoading}
       >
         Logout Other Sessions
       </Button>
     </>
   )
 }
-
-const mapStateToProps = (state: IState) => ({
-  sessions: state.user.sessions,
-  loggingOutAll: state.user.loggingOutAllSessionsStatus,
-})
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: fetchingSessionsAsync(dispatch),
-  logoutById: loggingOutSessionByIdAsync(dispatch),
-  logoutAll: loggingOutAllSessionsAsync(dispatch),
-})
-
-const SessionList = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(SessionListBasic)
 
 export default function Sessions() {
   return (

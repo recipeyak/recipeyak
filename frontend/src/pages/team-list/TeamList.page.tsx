@@ -1,37 +1,18 @@
-import React from "react"
 import { NavLink } from "react-router-dom"
 
 import { Loader } from "@/components/Loader"
 import { Link } from "@/components/Routing"
-import { useDispatch, useSelector } from "@/hooks"
 import { Invites } from "@/pages/team-list/Invites"
-import { teamsFrom } from "@/store/mapState"
-import { fetchingTeamsAsync } from "@/store/thunks"
+import { useTeamList } from "@/queries/teamList"
 import { teamURL } from "@/urls"
-import { isFailure, isInitial, isLoading, Loading, Success } from "@/webdata"
-
-function useTeams() {
-  const dispatch = useDispatch()
-  React.useEffect(() => {
-    void fetchingTeamsAsync(dispatch)()
-  }, [dispatch])
-  const loading = useSelector(
-    (s) => s.teams.status === "loading" || s.teams.status === "initial",
-  )
-  const teams = useSelector(teamsFrom)
-  if (loading) {
-    return Loading()
-  }
-  return Success(teams)
-}
 
 function TeamsList() {
-  const teams = useTeams()
-  if (isLoading(teams) || isInitial(teams)) {
+  const teams = useTeamList()
+  if (teams.isLoading) {
     return <Loader />
   }
 
-  if (isFailure(teams)) {
+  if (teams.isError) {
     return <p>failure loading</p>
   }
 

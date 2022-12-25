@@ -2,6 +2,7 @@ import { Either, left, right } from "fp-ts/lib/Either"
 
 import { Failure, Success, WebData } from "@/webdata"
 
+// eslint-disable-next-line no-restricted-syntax
 const enum IResultKind {
   Ok,
   Err,
