@@ -67,6 +67,10 @@ module.exports = {
             message: "Please import 'Dispatch' from '@/store/thunks' instead.",
           },
           {
+            name: "react-hot-toast",
+            message: "Please import from '@/toast' instead.",
+          },
+          {
             name: "styled-components",
             message:
               "Please import from '@/theme' for type safe versions of 'styled-components' instead.",

@@ -16,9 +16,9 @@ import {
   deleteUserAccountAsync,
   Dispatch,
   fetchingUserAsync,
-  showNotificationWithTimeoutAsync,
   updatingEmailAsync,
 } from "@/store/thunks"
+import { toast } from "@/toast"
 
 function Export() {
   return (
@@ -154,10 +154,7 @@ function NameForm(props: { initialValue: string }) {
             setName(res.data.name)
             setEditing(false)
           } else {
-            showNotificationWithTimeoutAsync(dispatch)({
-              message: "failed to update name",
-              level: "danger",
-            })
+            toast.error("failed to update name")
           }
         })
       }}

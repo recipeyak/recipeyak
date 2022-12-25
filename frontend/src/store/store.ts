@@ -23,17 +23,12 @@ import {
 } from "redux-loop"
 import { getType } from "typesafe-actions"
 
-import { second } from "@/date"
 import { loadState, saveState } from "@/store/localStorage"
 import auth, { AuthActions, IAuthState, login } from "@/store/reducers/auth"
 import calendar, {
   CalendarActions,
   ICalendarState,
 } from "@/store/reducers/calendar"
-import notification, {
-  INotificationState,
-  NotificationsActions,
-} from "@/store/reducers/notification"
 import passwordChange, {
   IPasswordChangeState,
   PasswordChangeActions,
@@ -52,7 +47,6 @@ export interface IState {
   readonly user: IUserState
   readonly recipes: IRecipesState
   readonly router: Omit<RouterState, "action">
-  readonly notification: INotificationState
   readonly passwordChange: IPasswordChangeState
   readonly shoppinglist: IShoppingListState
   readonly auth: IAuthState
@@ -63,7 +57,6 @@ export interface IState {
 export type Action =
   | UserActions
   | RecipeActions
-  | NotificationsActions
   | RouterAction
   | PasswordChangeActions
   | ShoppingListActions
@@ -94,7 +87,6 @@ const recipeApp: LoopReducer<IState, Action> = combineReducers(
       Pick<RouterState, "location">,
       Action
     >,
-    notification,
     passwordChange,
     shoppinglist,
     auth,
@@ -192,7 +184,7 @@ store.subscribe(
         fromUrl: store.getState().auth.fromUrl,
       },
     } as unknown as IState)
-  }, second),
+  }, 1000),
 )
 
 export default store

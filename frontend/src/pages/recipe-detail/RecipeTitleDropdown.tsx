@@ -18,7 +18,7 @@ import {
   IIngredient,
   updateRecipe,
 } from "@/store/reducers/recipes"
-import { showNotificationWithTimeoutAsync } from "@/store/thunks"
+import { toast } from "@/toast"
 import { isSuccessLike } from "@/webdata"
 
 function ingredientToString(ingre: IIngredient) {
@@ -70,12 +70,9 @@ export function Dropdown({
 
   const handleCopyIngredients = React.useCallback(() => {
     copyToClipboard(ingredients)
-    showNotificationWithTimeoutAsync(dispatch)({
-      message: "Copied ingredients to clipboard!",
-      level: "info",
-    })
+    toast("Copied ingredients to clipboard!")
     close()
-  }, [close, dispatch, ingredients])
+  }, [close, ingredients])
 
   const archiveRecipe = React.useCallback(() => {
     if (confirm("Are you sure you want to archive this recipe?")) {

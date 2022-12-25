@@ -26,8 +26,9 @@ import {
   setShopping,
 } from "@/store/reducers/shoppinglist"
 import { IState } from "@/store/store"
-import { Dispatch, showNotificationWithTimeoutAsync } from "@/store/thunks"
+import { Dispatch } from "@/store/thunks"
 import { normalizeUnitsFracs } from "@/text"
+import { toast } from "@/toast"
 
 const selectElementText = (el: Element) => {
   const sel = window.getSelection()
@@ -170,7 +171,6 @@ interface IShoppingListProps {
   readonly endDay: Date
   readonly setStartDay: (date: Date) => void
   readonly setEndDay: (date: Date) => void
-  readonly sendToast: (message: string) => void
   readonly setShopping: (bool: boolean) => void
 }
 
@@ -181,7 +181,6 @@ function ShoppingList({
   setStartDay: propsSetStartDay,
   setEndDay: propsSetEndDay,
   setShopping,
-  sendToast,
 }: IShoppingListProps) {
   const ref = useRef<HTMLDivElement>(null)
   const shoppingList = useShoppingListFetch({ startDay, endDay, teamID })
@@ -223,7 +222,7 @@ function ShoppingList({
     selectElementText(el)
     document.execCommand("copy")
     removeSelection()
-    sendToast("Shopping list copied to clipboard!")
+    toast("Shopping list copied to clipboard!")
   }
 
   return (
@@ -261,9 +260,6 @@ function mapStateToProps(state: IState) {
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   setStartDay: (date: Date) => dispatch(setSelectingStart(date)),
   setEndDay: (date: Date) => dispatch(setSelectingEnd(date)),
-  sendToast: (message: string) => {
-    showNotificationWithTimeoutAsync(dispatch)({ message, level: "info" })
-  },
   setShopping: (value: boolean) => dispatch(setShopping(value)),
 })
 

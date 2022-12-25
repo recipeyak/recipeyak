@@ -22,7 +22,6 @@ import {
 import { Container, ContainerBase } from "@/components/Base"
 import ErrorBoundary from "@/components/ErrorBoundary"
 import { Helmet } from "@/components/Helmet"
-import Notification from "@/components/Notification"
 import NotFound from "@/pages/404/404.page"
 import Home from "@/pages/index/Index.page"
 import Login from "@/pages/login/Login.page"
@@ -42,6 +41,7 @@ import TeamInvitePage from "@/pages/team-invite/TeamInvite.page"
 import TeamsListPage from "@/pages/team-list/TeamList.page"
 import store, { history, IState } from "@/store/store"
 import { theme, ThemeProvider } from "@/theme"
+import { Toaster } from "@/toast"
 
 interface IAuthRouteProps extends Pick<RouteProps, "exact" | "path"> {
   readonly authenticated: boolean
@@ -159,6 +159,7 @@ function Base() {
             <DndProvider backend={HTML5Backend}>
               <ErrorBoundary>
                 <Helmet />
+                <Toaster toastOptions={{ position: "bottom-center" }} />
                 <ConnectedRouter history={history}>
                   <Switch>
                     <PublicOnlyRoute exact path="/login" component={Login} />
@@ -254,7 +255,6 @@ function Base() {
                     </ContainerBase>
                   </Switch>
                 </ConnectedRouter>
-                <Notification />
               </ErrorBoundary>
             </DndProvider>
           </HelmetProvider>

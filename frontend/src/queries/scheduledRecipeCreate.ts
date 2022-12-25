@@ -3,12 +3,12 @@ import { addWeeks, startOfWeek, subWeeks } from "date-fns"
 
 import { CalendarResponse, scheduleRecipe } from "@/api"
 import { toISODateString } from "@/date"
-import { useDispatch, useTeamId } from "@/hooks"
+import { useTeamId } from "@/hooks"
 import { unwrapResult } from "@/query"
 import { ICalRecipe } from "@/store/reducers/calendar"
 import { IRecipe } from "@/store/reducers/recipes"
 import store from "@/store/store"
-import { showNotificationWithTimeoutAsync } from "@/store/thunks"
+import { toast } from "@/toast"
 import { random32Id } from "@/uuid"
 import { isSuccessOrRefetching } from "@/webdata"
 
@@ -58,7 +58,6 @@ function scheduleRecipeV2({
 export function useScheduleRecipeCreate() {
   const teamID = useTeamId()
   const queryClient = useQueryClient()
-  const dispatch = useDispatch()
   return useMutation({
     mutationFn: scheduleRecipeV2,
     onMutate: (vars) => {
@@ -156,11 +155,7 @@ export function useScheduleRecipeCreate() {
           },
         )
       })
-      showNotificationWithTimeoutAsync(dispatch)({
-        message: "error scheduling recipe",
-        level: "danger",
-        delay: 3000,
-      })
+      toast.error("error scheduling recipe")
     },
   })
 }

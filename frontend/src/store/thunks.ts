@@ -5,7 +5,6 @@ import raven from "raven-js"
 import { Dispatch as ReduxDispatch } from "redux"
 
 import * as api from "@/api"
-import { second } from "@/date"
 import { Err, isOk, Ok } from "@/result"
 import {
   login,
@@ -16,11 +15,6 @@ import {
   setLoadingResetConfirmation,
   setLoadingSignup,
 } from "@/store/reducers/auth"
-import {
-  clearNotification,
-  INotificationState,
-  setNotification,
-} from "@/store/reducers/notification"
 import { passwordUpdate } from "@/store/reducers/passwordChange"
 import {
   deleteIngredient,
@@ -56,6 +50,7 @@ import {
   updateScheduleTeamID,
 } from "@/store/reducers/user"
 import { Action, store } from "@/store/store"
+import { toast } from "@/toast"
 
 // TODO(sbdchd): move to @/store/store
 export type Dispatch = ReduxDispatch<Action>
@@ -64,41 +59,6 @@ const isbadRequest = (err: AxiosError) =>
   err.response && err.response.status === 400
 
 const is404 = (err: AxiosError) => err.response && err.response.status === 404
-
-export interface INotificationWithTimeout {
-  readonly delay?: number
-  readonly sticky?: boolean
-  readonly message: string
-  readonly closeable?: boolean
-  readonly level?: INotificationState["level"]
-}
-
-// https://stackoverflow.com/a/38574266/3555105
-let notificationTimeout: number | NodeJS.Timer = 0
-export const showNotificationWithTimeoutAsync =
-  (dispatch: Dispatch) =>
-  ({
-    message,
-    level = "info",
-    closeable = true,
-    delay = 2000,
-    sticky = false,
-  }: INotificationWithTimeout) => {
-    clearTimeout(notificationTimeout)
-    dispatch(
-      setNotification({
-        message,
-        level,
-        closeable,
-      }),
-    )
-
-    if (!sticky) {
-      notificationTimeout = setTimeout(() => {
-        dispatch(clearNotification())
-      }, delay)
-    }
-  }
 
 export const loggingOutAsync = (dispatch: Dispatch) => async () => {
   dispatch(logOut.request())
@@ -122,23 +82,13 @@ export const updatingEmailAsync =
 
     if (isOk(res)) {
       dispatch(updateEmail.success(res.data))
-
-      showNotificationWithTimeoutAsync(dispatch)({
-        message: "updated email",
-        level: "success",
-        delay: 3 * second,
-      })
+      toast.success("updated email")
     } else {
       dispatch(updateEmail.failure())
       const messageExtra = emailExists(res.error)
         ? "- email already in use"
         : ""
-      dispatch(
-        setNotification({
-          message: `problem updating email ${messageExtra}`,
-          level: "danger",
-        }),
-      )
+      toast.error(`problem updating email ${messageExtra}`)
     }
   }
 
@@ -177,10 +127,7 @@ export const updatingPasswordAsync =
     if (isOk(res)) {
       dispatch(passwordUpdate.success())
       dispatch(push("/"))
-      showNotificationWithTimeoutAsync(dispatch)({
-        message: "Successfully updated password",
-        level: "success",
-      })
+      toast.success("Successfully updated password")
     } else {
       const err = res.error
       const badRequest = err.response && err.response.status === 400
@@ -277,7 +224,7 @@ export const deletingStepAsync = async (
 export const logUserInAsync =
   (dispatch: Dispatch) =>
   async (email: string, password: string, redirectUrl: string = "") => {
-    dispatch(clearNotification())
+    toast.dismiss()
     dispatch(login.request())
     const res = await api.loginUser(email, password)
 
@@ -316,7 +263,7 @@ export const signupAsync =
     dispatch(setLoadingSignup(true))
     // clear previous signup errors
     dispatch(setErrorSignup({}))
-    dispatch(clearNotification())
+    toast.dismiss()
 
     const res = await api.signup(email, password1, password2)
 
@@ -351,23 +298,15 @@ export const resetAsync = (dispatch: Dispatch) => async (email: string) => {
   // TODO(sbdchd): refactor to use createActionAsync
   dispatch(setLoadingReset(true))
   dispatch(setErrorReset({}))
-  dispatch(clearNotification())
+  toast.dismiss()
   const res = await api.resetPassword(email)
   if (isOk(res)) {
     dispatch(setLoadingReset(false))
     const message = res?.data?.detail
-    showNotificationWithTimeoutAsync(dispatch)({
-      message,
-      level: "success",
-    })
+    toast.success(message)
   } else {
     const err = res.error
     dispatch(setLoadingReset(false))
-    showNotificationWithTimeoutAsync(dispatch)({
-      message: "uh oh! problem resetting password",
-      level: "danger",
-      sticky: true,
-    })
     if (isbadRequest(err)) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const data: { email: string[]; non_field_errors?: string[] } =
@@ -379,11 +318,7 @@ export const resetAsync = (dispatch: Dispatch) => async (email: string) => {
         }),
       )
     }
-    showNotificationWithTimeoutAsync(dispatch)({
-      message: "problem resetting password",
-      level: "danger",
-      sticky: true,
-    })
+    toast.error("problem resetting password")
   }
 }
 
@@ -398,7 +333,7 @@ export const resetConfirmationAsync =
     // TODO(sbdchd): refactor to use createActionAsync
     dispatch(setLoadingResetConfirmation(true))
     dispatch(setErrorResetConfirmation({}))
-    dispatch(clearNotification())
+    toast.dismiss()
 
     const res = await api.resetPasswordConfirm(
       uid,
@@ -413,11 +348,7 @@ export const resetConfirmationAsync =
     } else {
       const err = res.error
       dispatch(setLoadingResetConfirmation(false))
-      showNotificationWithTimeoutAsync(dispatch)({
-        message: "uh oh! problem resetting password",
-        level: "danger",
-        sticky: true,
-      })
+      toast.error("uh oh! problem resetting password")
       if (isbadRequest(err)) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const data: {
@@ -500,11 +431,7 @@ export const settingUserTeamLevelAsync =
       if (err.response && attemptedDeleteLastAdmin(err.response)) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         const message: string = err.response.data.level[0]
-        showNotificationWithTimeoutAsync(dispatch)({
-          message,
-          level: "danger",
-          delay: 3 * second,
-        })
+        toast.error(message)
       }
       dispatch(setUpdatingUserTeamLevel({ id: teamID, updating: false }))
     }
@@ -522,22 +449,14 @@ export const deletingMembershipAsync =
       dispatch(deleteMembership({ teamID, membershipID: id }))
       if (leaving) {
         dispatch(push("/"))
-        showNotificationWithTimeoutAsync(dispatch)({
-          message,
-          level: "success",
-          delay: 3 * second,
-        })
+        toast.success(message)
         dispatch(deleteTeam(teamID))
       }
     } else {
       const err = res.error
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const message: string = err.response?.data
-      showNotificationWithTimeoutAsync(dispatch)({
-        message,
-        level: "danger",
-        delay: 3 * second,
-      })
+      toast.error(message)
       dispatch(setDeletingMembership({ teamID, membershipID: id, val: false }))
     }
   }
@@ -549,11 +468,7 @@ export const deletingTeamAsync =
       dispatch(push("/"))
       const team = store.getState().teams.byId[teamID]
       const teamName = team ? team.name : "unknown"
-      showNotificationWithTimeoutAsync(dispatch)({
-        message: `Team deleted (${teamName})`,
-        level: "success",
-        delay: 3 * second,
-      })
+      toast.success(`Team deleted (${teamName})`)
       dispatch(deleteTeam(teamID))
     } else {
       const err = res.error
@@ -575,11 +490,7 @@ export const deletingTeamAsync =
         raven.captureException(err)
       }
 
-      showNotificationWithTimeoutAsync(dispatch)({
-        message,
-        level: "danger",
-        delay: 3 * second,
-      })
+      toast.error(message)
     }
   }
 
@@ -589,19 +500,11 @@ export const sendingTeamInvitesAsync =
     dispatch(setSendingTeamInvites({ teamID, val: true }))
     const res = await api.sendTeamInvites(teamID, emails, level)
     if (isOk(res)) {
-      showNotificationWithTimeoutAsync(dispatch)({
-        message: "invites sent!",
-        level: "success",
-        delay: 3 * second,
-      })
+      toast.success("invites sent!")
       dispatch(setSendingTeamInvites({ teamID, val: false }))
       return Ok(undefined)
     }
-    showNotificationWithTimeoutAsync(dispatch)({
-      message: "error sending team invite",
-      level: "danger",
-      delay: 3 * second,
-    })
+    toast.error("error sending team invite")
     dispatch(setSendingTeamInvites({ teamID, val: false }))
     return Err(undefined)
   }
@@ -625,11 +528,7 @@ export const updatingTeamAsync =
   (dispatch: Dispatch) => async (teamId: ITeam["id"], teamKVs: unknown) => {
     const res = await api.updateTeam(teamId, teamKVs)
     if (isOk(res)) {
-      showNotificationWithTimeoutAsync(dispatch)({
-        message: "Team updated",
-        level: "success",
-        delay: 3 * second,
-      })
+      toast.success("Team updated")
       dispatch(updateTeamById({ id: res.data.id, teamKeys: res.data }))
     } else {
       const err = res.error
@@ -638,11 +537,7 @@ export const updatingTeamAsync =
       if (err.response && err.response.status === 403) {
         message = "You are not authorized to perform that action"
       }
-      showNotificationWithTimeoutAsync(dispatch)({
-        message,
-        level: "danger",
-        delay: 3 * second,
-      })
+      toast.error(message)
     }
   }
 
@@ -651,7 +546,7 @@ export const deleteUserAccountAsync = (dispatch: Dispatch) => async () => {
   if (isOk(res)) {
     dispatch(setUserLoggedIn(false))
     dispatch(push("/login"))
-    showNotificationWithTimeoutAsync(dispatch)({ message: "Account deleted" })
+    toast("Account deleted")
   } else {
     const error = res.error
 
@@ -661,16 +556,10 @@ export const deleteUserAccountAsync = (dispatch: Dispatch) => async () => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       error.response.data.detail
     ) {
-      showNotificationWithTimeoutAsync(dispatch)({
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-        message: error.response.data.detail,
-        level: "danger",
-      })
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+      toast.error(error.response.data.detail)
     } else {
-      showNotificationWithTimeoutAsync(dispatch)({
-        message: "failed to delete account",
-        level: "danger",
-      })
+      toast.error("failed to delete account")
     }
   }
 }
