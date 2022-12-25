@@ -23,6 +23,10 @@ const MarkdownWrapper = styled.div`
     padding-left: 1.5rem;
   }
 
+  p:not(:last-child) {
+    margin-bottom: 1em;
+  }
+
   blockquote {
     padding-left: 0.25rem;
     border-left: 5px solid lightgray;
