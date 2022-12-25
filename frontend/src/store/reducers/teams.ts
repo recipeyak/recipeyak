@@ -57,12 +57,6 @@ export const updateTeamById = createStandardAction("UPDATE_TEAM")<{
   id: ITeam["id"]
   teamKeys: ITeam
 }>()
-export const fetchTeams = createAsyncAction(
-  "FETCH_TEAMS_START",
-  "FETCH_TEAMS_SUCCESS",
-  "FETCH_TEAMS_FAILURE",
-)<void, ITeam[], void>()
-
 export type TeamsActions =
   | ReturnType<typeof deleteTeam>
   | ActionType<typeof fetchTeamMembers>
@@ -75,7 +69,6 @@ export type TeamsActions =
   | ActionType<typeof setTeam>
   | ReturnType<typeof setCreatingTeam>
   | ReturnType<typeof updateTeamById>
-  | ActionType<typeof fetchTeams>
 
 // TODO(sbdchd): check if these optional fields are always used (aka, required)
 export interface IMember {
@@ -246,29 +239,6 @@ export const teams = (
         // TODO: refactor membership into it's own reducer
         members: omit(team.members, action.payload.membershipID),
       }))
-    case getType(fetchTeams.success):
-      return {
-        ...state,
-        status: "success",
-        byId: action.payload.reduce(
-          (a, b) => ({
-            ...a,
-            [b.id]: {
-              ...state.byId[b.id],
-              ...b,
-            },
-          }),
-          state.byId,
-        ),
-        allIds: uniq(state.allIds.concat(action.payload.map((x) => x.id))),
-      }
-    case getType(fetchTeams.request):
-      return {
-        ...state,
-        status: state.status === "initial" ? "loading" : "refetching",
-      }
-    case getType(fetchTeams.failure):
-      return { ...state, status: "failure" }
     case getType(setTeam):
       return {
         ...state,

@@ -7,14 +7,7 @@ import {
 } from "typesafe-actions"
 
 import { AuthActions, login } from "@/store/reducers/auth"
-import {
-  Failure,
-  HttpErrorKind,
-  mapSuccessLike,
-  Success,
-  toLoading,
-  WebData,
-} from "@/webdata"
+import { WebData } from "@/webdata"
 
 // TODO(chdsbd): Replace usage with fetchUser#success. Update user reducer.
 export const logOut = createAsyncAction(
@@ -39,23 +32,11 @@ export const updateEmail = createAsyncAction(
   "UPDATE_EMAIL_FAILURE",
 )<void, IUser, void>()
 
-export const fetchSessions = createAsyncAction(
-  "FETCH_SESSIONS_REQUEST",
-  "FETCH_SESSIONS_SUCCESS",
-  "FETCH_SESSIONS_FAILURE",
-)<void, ReadonlyArray<ISession>, void>()
-
 export const logoutSessionById = createAsyncAction(
   "LOGOUT_SESSION_BY_ID_REQUEST",
   "LOGOUT_SESSION_BY_ID_SUCCESS",
   "LOGOUT_SESSION_BY_ID_FAILURE",
 )<ISession["id"], ISession["id"], ISession["id"]>()
-
-export const logoutAllSessions = createAsyncAction(
-  "LOGOUT_ALL_SESSIONS_REQUEST",
-  "LOGOUT_ALL_SESSIONS_SUCCESS",
-  "LOGOUT_ALL_SESSIONS_FAILURE",
-)<void, void, void>()
 
 export type UserActions =
   | ActionType<typeof logOut>
@@ -63,9 +44,7 @@ export type UserActions =
   | ReturnType<typeof updateScheduleTeamID>
   | ActionType<typeof fetchUser>
   | ActionType<typeof updateEmail>
-  | ActionType<typeof fetchSessions>
   | ActionType<typeof logoutSessionById>
-  | ActionType<typeof logoutAllSessions>
 
 // User state from API
 export interface IUser {
@@ -88,9 +67,9 @@ export interface ISession {
   readonly last_activity: string
   readonly ip: string
   readonly current: boolean
-  readonly loggingOut?: LoggingOutStatus
 }
 
+// eslint-disable-next-line no-restricted-syntax
 export const enum LoggingOutStatus {
   Initial,
   Loading,
@@ -143,72 +122,6 @@ export const user = (
       return { ...state, loggingOut: false, loggedIn: false }
     case getType(logOut.failure):
       return { ...state, loggingOut: false }
-
-    case getType(fetchSessions.request):
-      return {
-        ...state,
-        sessions: toLoading(state.sessions),
-      }
-    case getType(fetchSessions.success):
-      return {
-        ...state,
-        sessions: Success(action.payload),
-      }
-    case getType(fetchSessions.failure):
-      return {
-        ...state,
-        sessions: Failure(HttpErrorKind.other),
-      }
-    case getType(logoutSessionById.request):
-      return {
-        ...state,
-        sessions: mapSuccessLike(state.sessions, (data) =>
-          data.map((s) => {
-            if (s.id === action.payload) {
-              return { ...s, loggingOut: LoggingOutStatus.Loading }
-            }
-            return s
-          }),
-        ),
-      }
-    case getType(logoutSessionById.success):
-      return {
-        ...state,
-        sessions: mapSuccessLike(state.sessions, (data) =>
-          data.filter((s) => s.id !== action.payload),
-        ),
-      }
-    case getType(logoutSessionById.failure):
-      return {
-        ...state,
-        sessions: mapSuccessLike(state.sessions, (data) =>
-          data.map((s) => {
-            if (s.id === action.payload) {
-              return { ...s, loggingOut: LoggingOutStatus.Failure }
-            }
-            return s
-          }),
-        ),
-      }
-
-    case getType(logoutAllSessions.request):
-      return {
-        ...state,
-        loggingOutAllSessionsStatus: LoggingOutStatus.Loading,
-      }
-    case getType(logoutAllSessions.success):
-      return {
-        ...state,
-        sessions: mapSuccessLike(state.sessions, (data) =>
-          data.filter((s) => s.current),
-        ),
-        loggingOutAllSessionsStatus: LoggingOutStatus.Initial,
-      }
-    case getType(logoutAllSessions.failure):
-      return {
-        ...state,
-        loggingOutAllSessionsStatus: LoggingOutStatus.Failure,
-      }
     case getType(updateScheduleTeamID):
       return { ...state, scheduleTeamID: action.payload }
     case getType(setUserLoggedIn):

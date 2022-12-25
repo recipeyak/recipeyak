@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-syntax
 const enum RDK {
   Loading = "Loading",
   Failure = "Failure",
@@ -60,6 +61,7 @@ type RemoteData<E, T> =
 // TODO(chdsbd): Make the default error type void
 export type WebData<T = void, E = HttpErrorKind | undefined> = RemoteData<E, T>
 
+// eslint-disable-next-line no-restricted-syntax
 export const enum HttpErrorKind {
   error404,
   other,

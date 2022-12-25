@@ -30,7 +30,6 @@ import calendar, {
   CalendarActions,
   ICalendarState,
 } from "@/store/reducers/calendar"
-import invites, { IInvitesState, InviteActions } from "@/store/reducers/invites"
 import notification, {
   INotificationState,
   NotificationsActions,
@@ -52,7 +51,6 @@ const createStore: StoreCreator = basicCreateStore
 export interface IState {
   readonly user: IUserState
   readonly recipes: IRecipesState
-  readonly invites: IInvitesState
   readonly router: Omit<RouterState, "action">
   readonly notification: INotificationState
   readonly passwordChange: IPasswordChangeState
@@ -65,7 +63,6 @@ export interface IState {
 export type Action =
   | UserActions
   | RecipeActions
-  | InviteActions
   | NotificationsActions
   | RouterAction
   | PasswordChangeActions
@@ -92,7 +89,6 @@ const recipeApp: LoopReducer<IState, Action> = combineReducers(
   omitUndefined({
     user,
     recipes,
-    invites,
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     router: connectRouter(history) as unknown as LoopReducer<
       Pick<RouterState, "location">,

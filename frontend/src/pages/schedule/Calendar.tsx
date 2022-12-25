@@ -7,7 +7,7 @@ import isValid from "date-fns/isValid"
 import parseISO from "date-fns/parseISO"
 import { chunk, first } from "lodash-es"
 import queryString from "query-string"
-import React, { useEffect } from "react"
+import React from "react"
 import { useLocation } from "react-router-dom"
 
 import { Box } from "@/components/Box"
@@ -21,17 +21,15 @@ import { ICalConfig } from "@/pages/schedule/CalendarMoreDropdown"
 import { IconSettings } from "@/pages/schedule/IconSettings"
 import ShoppingList from "@/pages/schedule/ShoppingList"
 import { useScheduledRecipeList } from "@/queries/scheduledRecipeList"
-import { teamsFrom } from "@/store/mapState"
+import { useTeamList } from "@/queries/teamList"
 import {
   ICalRecipe,
   regenerateCalendarLink as regenerateCalendarLinkAction,
   updateCalendarSettings,
 } from "@/store/reducers/calendar"
-import { ITeam } from "@/store/reducers/teams"
 import { history } from "@/store/store"
-import { fetchingRecipeListAsync, fetchingTeamsAsync } from "@/store/thunks"
+import { fetchingRecipeListAsync } from "@/store/thunks"
 import { styled } from "@/theme"
-import { Failure, isSuccessLike, Loading, Success, WebData } from "@/webdata"
 
 function CalTitle({ dayTs }: { readonly dayTs: number }) {
   return (
@@ -138,16 +136,20 @@ function Days({ start, end, isError, teamID, days }: IDaysProps) {
 
 interface ITeamSelectProps {
   readonly onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
-  readonly teams: WebData<ReadonlyArray<ITeam>>
   readonly value: number | "personal"
 }
 
-function TeamSelect({ onChange, value, teams }: ITeamSelectProps) {
-  const disabled = !isSuccessLike(teams)
+function TeamSelect({ onChange, value }: ITeamSelectProps) {
+  const teams = useTeamList()
   return (
-    <Select onChange={onChange} value={value} size="small" disabled={disabled}>
+    <Select
+      onChange={onChange}
+      value={value}
+      size="small"
+      disabled={teams.isLoading}
+    >
       <option value="personal">Personal</option>
-      {isSuccessLike(teams)
+      {teams.isSuccess
         ? teams.data.map((t) => (
             <option key={t.id} value={t.id}>
               {t.name}
@@ -167,7 +169,7 @@ interface INavProps {
 }
 
 function Nav({ dayTs, teamID, onPrev, onNext, onCurrent }: INavProps) {
-  const { handleOwnerChange, teams } = useTeamSelect()
+  const { handleOwnerChange } = useTeamSelect()
   const [showSettings, toggleShowSetting] = useToggle()
   const [showShopping, toggleShopping] = useToggle()
 
@@ -184,11 +186,7 @@ function Nav({ dayTs, teamID, onPrev, onNext, onCurrent }: INavProps) {
           <Box gap={2} dir="col">
             <Box dir="col" align="start" gap={1}>
               <label className="fw-500">Team</label>
-              <TeamSelect
-                teams={teams}
-                value={teamID}
-                onChange={handleOwnerChange}
-              />
+              <TeamSelect value={teamID} onChange={handleOwnerChange} />
             </Box>
             <ICalConfig
               settings={settings}
@@ -254,30 +252,7 @@ function getToday(search: string): Date {
   return new Date()
 }
 
-function useTeams(): WebData<ReadonlyArray<ITeam>> {
-  const dispatch = useDispatch()
-  const teams = useSelector(teamsFrom)
-  useEffect(() => {
-    void fetchingTeamsAsync(dispatch)()
-  }, [dispatch])
-
-  const status = useSelector((s) => s.teams.status)
-
-  if (status === "initial") {
-    return undefined
-  }
-  if (status === "failure") {
-    return Failure(undefined)
-  }
-  if (status === "loading") {
-    return Loading()
-  }
-
-  return Success(teams)
-}
-
 function useTeamSelect() {
-  const teams = useTeams()
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
 
@@ -297,7 +272,7 @@ function useTeamSelect() {
     void queryClient.invalidateQueries([teamID])
   }
 
-  return { handleOwnerChange, teams }
+  return { handleOwnerChange }
 }
 
 function useCalendarSettings(teamID: number | "personal") {

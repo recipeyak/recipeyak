@@ -17,12 +17,6 @@ import {
   setLoadingSignup,
 } from "@/store/reducers/auth"
 import {
-  acceptInvite,
-  declineInvite,
-  fetchInvites,
-  IInvite,
-} from "@/store/reducers/invites"
-import {
   clearNotification,
   INotificationState,
   setNotification,
@@ -42,7 +36,6 @@ import {
   deleteTeam,
   fetchTeam,
   fetchTeamMembers,
-  fetchTeams,
   IMember,
   ITeam,
   setCreatingTeam,
@@ -54,14 +47,10 @@ import {
   updateTeamById,
 } from "@/store/reducers/teams"
 import {
-  fetchSessions,
   fetchUser,
-  ISession,
   IUser,
   IUserState,
   logOut,
-  logoutAllSessions,
-  logoutSessionById,
   setUserLoggedIn,
   updateEmail,
   updateScheduleTeamID,
@@ -175,38 +164,6 @@ export const fetchingUserAsync = (dispatch: Dispatch) => async () => {
     dispatch(fetchUser.failure())
   }
 }
-
-export const fetchingSessionsAsync = (dispatch: Dispatch) => async () => {
-  dispatch(fetchSessions.request())
-  const res = await api.getSessions()
-  if (isOk(res)) {
-    dispatch(fetchSessions.success(res.data))
-  } else {
-    dispatch(fetchSessions.failure())
-  }
-}
-
-export const loggingOutSessionByIdAsync =
-  (dispatch: Dispatch) => async (id: ISession["id"]) => {
-    dispatch(logoutSessionById.request(id))
-    const res = await api.deleteSessionById(id)
-    if (isOk(res)) {
-      dispatch(logoutSessionById.success(id))
-    } else {
-      dispatch(logoutSessionById.failure(id))
-    }
-  }
-
-export const loggingOutAllSessionsAsync = (dispatch: Dispatch) => async () => {
-  dispatch(logoutAllSessions.request())
-  const res = await api.deleteAllSessions()
-  if (isOk(res)) {
-    dispatch(logoutAllSessions.success())
-  } else {
-    dispatch(logoutAllSessions.failure())
-  }
-}
-
 interface IUpdatePassword {
   password1: string
   password2: string
@@ -649,16 +606,6 @@ export const sendingTeamInvitesAsync =
     return Err(undefined)
   }
 
-export const fetchingTeamsAsync = (dispatch: Dispatch) => async () => {
-  dispatch(fetchTeams.request())
-  const res = await api.getTeamList()
-  if (isOk(res)) {
-    dispatch(fetchTeams.success(res.data))
-  } else {
-    dispatch(fetchTeams.failure())
-  }
-}
-
 export const creatingTeamAsync =
   (dispatch: Dispatch) =>
   async (name: ITeam["name"], emails: string[], level: IMember["level"]) => {
@@ -696,37 +643,6 @@ export const updatingTeamAsync =
         level: "danger",
         delay: 3 * second,
       })
-    }
-  }
-
-export const fetchingInvitesAsync = (dispatch: Dispatch) => async () => {
-  dispatch(fetchInvites.request())
-  const res = await api.getInviteList()
-  if (isOk(res)) {
-    dispatch(fetchInvites.success(res.data))
-  } else {
-    dispatch(fetchInvites.failure())
-  }
-}
-
-export const acceptingInviteAsync =
-  (dispatch: Dispatch) => async (id: IInvite["id"]) => {
-    dispatch(acceptInvite.request(id))
-    const res = await api.acceptInvite(id)
-    if (isOk(res)) {
-      dispatch(acceptInvite.success(id))
-    } else {
-      dispatch(acceptInvite.failure(id))
-    }
-  }
-export const decliningInviteAsync =
-  (dispatch: Dispatch) => async (id: IInvite["id"]) => {
-    dispatch(declineInvite.request(id))
-    const res = await api.declineInvite(id)
-    if (isOk(res)) {
-      dispatch(declineInvite.success(id))
-    } else {
-      dispatch(declineInvite.failure(id))
     }
   }
 
