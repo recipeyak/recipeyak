@@ -14,6 +14,7 @@ export function Box({
   align,
   shrink,
   grow,
+  wrap,
 }: {
   dir?: "col" | "row"
   children: React.ReactNode
@@ -26,6 +27,7 @@ export function Box({
   align?: "center" | "start" | "end"
   shrink?: 0
   grow?: 1
+  wrap?: true
 }) {
   return (
     <div
@@ -60,6 +62,7 @@ export function Box({
         w === 100 && "w-100",
         shrink === 0 && "flex-shrink-0",
         grow === 1 && "flex-grow-1",
+        wrap && "flex-wrap",
       )}
       children={children}
     />
