@@ -7,6 +7,7 @@ import {
 } from "typesafe-actions"
 
 import { IUser } from "@/store/reducers/user"
+import { Action } from "@/store/store"
 
 export const deleteTeam = createStandardAction("DELETE_TEAM")<ITeam["id"]>()
 
@@ -131,7 +132,7 @@ const initialState: ITeamsState = {
 
 export const teams = (
   state: ITeamsState = initialState,
-  action: TeamsActions,
+  action: Action,
 ): ITeamsState => {
   switch (action.type) {
     case getType(fetchTeam.request):
