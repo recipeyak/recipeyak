@@ -28,8 +28,8 @@ import {
   RecipeTimelineItem,
   Upload,
 } from "@/store/reducers/recipes"
-import { showNotificationWithTimeoutAsync } from "@/store/thunks"
 import { styled } from "@/theme"
+import { toast } from "@/toast"
 import { notUndefined } from "@/utils/general"
 import { uuid4 } from "@/uuid"
 
@@ -482,10 +482,7 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
           )
           cancelEditingNote()
         } else {
-          showNotificationWithTimeoutAsync(dispatch)({
-            message: "problem saving note",
-            level: "danger",
-          })
+          toast.error("Shopping list copied to clipboard!")
         }
         setIsLoading(false)
       })

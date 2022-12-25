@@ -8,7 +8,6 @@ import {
   useSelector as useSelectorRedux,
 } from "react-redux"
 
-import { second } from "@/date"
 import { HttpRequestObjResult } from "@/http"
 import { scheduleURLFromTeamID } from "@/store/mapState"
 import { IState } from "@/store/store"
@@ -24,7 +23,7 @@ export function useCurrentDay() {
       if (!isSameDay(date, newDate)) {
         setDate(newDate)
       }
-    }, 5 * second)
+    }, 5 * 1000)
     return () => {
       clearInterval(timerID)
     }

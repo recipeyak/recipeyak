@@ -10,7 +10,7 @@ import { FormErrorHandler, PasswordInput, TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { isOk } from "@/result"
 import { login } from "@/store/reducers/auth"
-import { clearNotification } from "@/store/reducers/notification"
+import { toast } from "@/toast"
 
 export default function Login() {
   const [loading, setLoading] = React.useState(false)
@@ -27,7 +27,7 @@ export default function Login() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    dispatch(clearNotification())
+    toast.dismiss()
     setLoading(true)
     setErrors(undefined)
     void api.loginUser(email, password).then((res) => {

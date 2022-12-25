@@ -11,7 +11,6 @@ export function toISODateString(date: Date | string | number): string {
   const dateObj = typeof date === "string" ? parseISO(date) : date
   return format(dateObj, "yyyy-MM-dd")
 }
-export const second = 1000
 
 const DELETION_WINDOW_DAYS = 5
 
