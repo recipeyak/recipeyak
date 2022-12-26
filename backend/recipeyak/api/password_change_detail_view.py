@@ -4,10 +4,10 @@ from typing import Annotated
 
 from django.contrib.auth import password_validation, update_session_auth_hash
 from pydantic import Field
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status
 
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams

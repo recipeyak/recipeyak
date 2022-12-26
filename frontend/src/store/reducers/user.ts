@@ -74,7 +74,6 @@ export interface IUserState {
   readonly name: string
   readonly loading: boolean
   readonly error: boolean
-  readonly hasUsablePassword: boolean
   readonly scheduleTeamID: number | null
   readonly updatingEmail: boolean
   readonly sessions: WebData<ReadonlyArray<ISession>>
@@ -89,7 +88,6 @@ const initialState: IUserState = {
   name: "",
   loading: false,
   error: false,
-  hasUsablePassword: false,
   scheduleTeamID: null,
   updatingEmail: false,
   sessions: undefined,

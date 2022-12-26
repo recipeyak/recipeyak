@@ -42,7 +42,6 @@ describe("fetchingUser", () => {
       loading: false,
       updatingEmail: false,
       error: false,
-      hasUsablePassword: true,
       scheduleTeamID: null,
       name: "",
     }
