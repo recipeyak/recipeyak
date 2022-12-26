@@ -31,8 +31,8 @@ import {
 import { styled } from "@/theme"
 import { toast } from "@/toast"
 import { notUndefined } from "@/utils/general"
-import { uuid4 } from "@/uuid"
 import { imgixFmt } from "@/utils/url"
+import { uuid4 } from "@/uuid"
 
 interface IUseNoteEditHandlers {
   readonly note: INote
