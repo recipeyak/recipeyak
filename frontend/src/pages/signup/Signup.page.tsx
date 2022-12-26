@@ -1,144 +1,145 @@
-import React from "react"
-import { connect } from "react-redux"
-import { Link } from "react-router-dom"
+import { AxiosError } from "axios"
+import React, { useState } from "react"
+import { Link, useHistory } from "react-router-dom"
 
 import AuthContainer from "@/components/AuthContainer"
 import { Button } from "@/components/Buttons"
 import { EmailInput, FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
-import { ISignupErrors, setErrorSignup } from "@/store/reducers/auth"
-import { IState } from "@/store/store"
-import { Dispatch, signupAsync } from "@/store/thunks"
+import { useDispatch } from "@/hooks"
+import { useAuthSignup } from "@/queries/authSignup"
+import { fetchUser } from "@/store/reducers/user"
 
-interface ISignupProps {
-  readonly clearErrors: () => void
-  readonly signup: (email: string, password1: string, password2: string) => void
-  readonly error: ISignupErrors
-  readonly loading: boolean
+function formatError(error: unknown) {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  const err = error as AxiosError | undefined
+  if (err == null) {
+    return {}
+  }
+  if (err.response?.status === 400) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const data: {
+      email?: string[]
+      password1?: string[]
+      password2?: string[]
+      non_field_errors?: string[]
+    } = err.response?.data
+    return {
+      email: data["email"],
+      password1: data["password1"],
+      password2: data["password2"],
+      nonFieldErrors: data["non_field_errors"],
+    }
+  } else {
+    return {
+      nonFieldErrors: ["Something went wrong with the server."],
+    }
+  }
 }
 
-interface ISignupState {
-  readonly email: string
-  readonly password1: string
-  readonly password2: string
-}
+function Signup() {
+  const [email, setEmail] = useState("")
+  const [password1, setPassword1] = useState("")
+  const [password2, setPassword2] = useState("")
 
-class Signup extends React.Component<ISignupProps, ISignupState> {
-  state = {
-    email: "",
-    password1: "",
-    password2: "",
-  }
+  const signup = useAuthSignup()
+  const history = useHistory()
+  const dispatch = useDispatch()
 
-  componentWillMount = () => {
-    this.props.clearErrors()
-  }
-
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    /* eslint-disable @typescript-eslint/consistent-type-assertions */
-    this.setState({
-      [e.target.name]: e.target.value,
-    } as unknown as ISignupState)
-    /* eslint-enable @typescript-eslint/consistent-type-assertions */
-  }
-
-  handleSignup = (e: React.FormEvent) => {
+  const handleSignup = (e: React.FormEvent) => {
     e.preventDefault()
-    this.props.signup(
-      this.state.email,
-      this.state.password1,
-      this.state.password2,
+    signup.mutate(
+      {
+        email,
+        password1,
+        password2,
+      },
+      {
+        onSuccess: (res) => {
+          dispatch(fetchUser.success(res.user))
+          history.push("/recipes/add")
+        },
+      },
     )
   }
 
-  render() {
-    const { loading } = this.props
-    const { password1, password2, nonFieldErrors, email } = this.props.error
+  const errors = formatError(signup.error)
 
-    return (
-      <AuthContainer>
-        <div className="box p-3">
-          <Helmet title="Sign Up" />
-          <div className="tabs is-boxed mb-2">
-            <ul>
-              <li>
-                <Link to="/login">Login</Link>
-              </li>
-              <li className="is-active">
-                <Link to="/signup">Sign Up</Link>
-              </li>
-            </ul>
+  return (
+    <AuthContainer>
+      <div className="box p-3">
+        <Helmet title="Sign Up" />
+        <div className="tabs is-boxed mb-2">
+          <ul>
+            <li>
+              <Link to="/login">Login</Link>
+            </li>
+            <li className="is-active">
+              <Link to="/signup">Sign Up</Link>
+            </li>
+          </ul>
+        </div>
+
+        <FormErrorHandler error={errors.nonFieldErrors} />
+
+        <form onSubmit={handleSignup}>
+          <div className="field">
+            <label className="label">Email</label>
+            <EmailInput
+              onChange={(e) => {
+                setEmail(e.target.value)
+              }}
+              error={errors.email != null}
+              autoFocus
+              name="email"
+              placeholder="rick.sanchez@me.com"
+            />
+            <FormErrorHandler error={errors.email} />
           </div>
 
-          <FormErrorHandler error={nonFieldErrors} />
+          <div className="field">
+            <label htmlFor="password1" className="label">
+              Password
+            </label>
+            <PasswordInput
+              onChange={(e) => {
+                setPassword1(e.target.value)
+              }}
+              error={errors.password1 != null}
+              name="password1"
+              id="password1"
+              placeholder="Super secret password."
+            />
+            <FormErrorHandler error={errors.password1} />
+          </div>
 
-          <form onSubmit={this.handleSignup}>
-            <div className="field">
-              <label className="label">Email</label>
-              <EmailInput
-                onChange={this.handleInputChange}
-                error={email != null}
-                autoFocus
-                name="email"
-                placeholder="rick.sanchez@me.com"
-              />
-              <FormErrorHandler error={email} />
-            </div>
+          <div className="field">
+            <label htmlFor="password2" className="label">
+              Password Again
+            </label>
+            <PasswordInput
+              onChange={(e) => {
+                setPassword2(e.target.value)
+              }}
+              error={errors.password2 != null}
+              name="password2"
+              id="password2"
+              placeholder="Enter your password again."
+            />
+            <FormErrorHandler error={errors.password2} />
+          </div>
 
-            <div className="field">
-              <label htmlFor="password1" className="label">
-                Password
-              </label>
-              <PasswordInput
-                onChange={this.handleInputChange}
-                error={password1 != null}
-                name="password1"
-                id="password1"
-                placeholder="Super secret password."
-              />
-              <FormErrorHandler error={password1} />
-            </div>
+          <div className="field d-flex flex-space-between align-items-center">
+            <Button variant="primary" type="submit" loading={signup.isLoading}>
+              Submit
+            </Button>
 
-            <div className="field">
-              <label htmlFor="password2" className="label">
-                Password Again
-              </label>
-              <PasswordInput
-                onChange={this.handleInputChange}
-                error={password2 != null}
-                name="password2"
-                id="password2"
-                placeholder="Enter your password again."
-              />
-              <FormErrorHandler error={password2} />
-            </div>
-
-            <div className="field d-flex flex-space-between align-items-center">
-              <Button variant="primary" type="submit" loading={loading}>
-                Submit
-              </Button>
-
-              <Link to="/password-reset">Forgot Password?</Link>
-            </div>
-          </form>
-        </div>
-      </AuthContainer>
-    )
-  }
+            <Link to="/password-reset">Forgot Password?</Link>
+          </div>
+        </form>
+      </div>
+    </AuthContainer>
+  )
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) => {
-  return {
-    signup: signupAsync(dispatch),
-    clearErrors: () => dispatch(setErrorSignup({})),
-  }
-}
-
-const mapStateToProps = (state: IState) => {
-  return {
-    loading: state.auth.loadingSignup,
-    error: state.auth.errorSignup,
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Signup)
+export default Signup

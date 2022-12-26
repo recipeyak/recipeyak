@@ -7,15 +7,6 @@ import { Dispatch as ReduxDispatch } from "redux"
 import * as api from "@/api"
 import { Err, isOk, Ok } from "@/result"
 import {
-  setErrorReset,
-  setErrorResetConfirmation,
-  setErrorSignup,
-  setLoadingReset,
-  setLoadingResetConfirmation,
-  setLoadingSignup,
-} from "@/store/reducers/auth"
-import { passwordUpdate } from "@/store/reducers/passwordChange"
-import {
   deleteIngredient,
   deleteStep,
   fetchRecipeList,
@@ -52,9 +43,6 @@ import { toast } from "@/toast"
 
 // TODO(sbdchd): move to @/store/store
 export type Dispatch = ReduxDispatch<Action>
-
-const isbadRequest = (err: AxiosError) =>
-  err.response && err.response.status === 400
 
 const is404 = (err: AxiosError) => err.response && err.response.status === 404
 
@@ -101,43 +89,6 @@ export const fetchingUserAsync = (dispatch: Dispatch) => async () => {
     dispatch(fetchUser.failure())
   }
 }
-interface IUpdatePassword {
-  password1: string
-  password2: string
-  oldPassword: string
-}
-export const updatingPasswordAsync =
-  (dispatch: Dispatch) =>
-  async ({ password1, password2, oldPassword }: IUpdatePassword) => {
-    dispatch(passwordUpdate.request())
-    const res = await api.changePassword(password1, password2, oldPassword)
-    if (isOk(res)) {
-      dispatch(passwordUpdate.success())
-      dispatch(push("/"))
-      toast.success("Successfully updated password")
-    } else {
-      const err = res.error
-      const badRequest = err.response && err.response.status === 400
-      if (err.response && badRequest) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const data: {
-          new_password2?: string[]
-          new_password1?: string[]
-          old_password?: string[]
-        } = err.response.data
-
-        dispatch(
-          passwordUpdate.failure({
-            newPasswordAgain: data["new_password2"],
-            newPassword: data["new_password1"],
-            oldPassword: data["old_password"],
-          }),
-        )
-        return
-      }
-      dispatch(passwordUpdate.failure())
-    }
-  }
 
 export const fetchingRecipeListAsync = (dispatch: Dispatch) => async () => {
   dispatch(fetchRecipeList.request())
@@ -207,128 +158,6 @@ export const deletingStepAsync = async (
     dispatch(deleteStep.failure({ recipeID, stepID }))
   }
 }
-
-export const signupAsync =
-  (dispatch: Dispatch) =>
-  async (email: string, password1: string, password2: string) => {
-    // TODO(sbdchd): refactor to use createActionAsync
-    dispatch(setLoadingSignup(true))
-    // clear previous signup errors
-    dispatch(setErrorSignup({}))
-    toast.dismiss()
-
-    const res = await api.signup(email, password1, password2)
-
-    if (isOk(res)) {
-      dispatch(fetchUser.success(res.data.user))
-      dispatch(setLoadingSignup(false))
-      dispatch(push("/recipes/add"))
-    } else {
-      const err = res.error
-      if (isbadRequest(err)) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const data: {
-          email?: string[]
-          password1?: string[]
-          password2?: string[]
-          non_field_errors?: string[]
-        } = err.response?.data
-        dispatch(
-          setErrorSignup({
-            email: data["email"],
-            password1: data["password1"],
-            password2: data["password2"],
-            nonFieldErrors: data["non_field_errors"],
-          }),
-        )
-      }
-      dispatch(setLoadingSignup(false))
-    }
-  }
-
-export const resetAsync = (dispatch: Dispatch) => async (email: string) => {
-  // TODO(sbdchd): refactor to use createActionAsync
-  dispatch(setLoadingReset(true))
-  dispatch(setErrorReset({}))
-  toast.dismiss()
-  const res = await api.resetPassword(email)
-  if (isOk(res)) {
-    dispatch(setLoadingReset(false))
-    const message = res?.data?.detail
-    toast.success(message)
-  } else {
-    const err = res.error
-    dispatch(setLoadingReset(false))
-    if (isbadRequest(err)) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const data: { email: string[]; non_field_errors?: string[] } =
-        err.response?.data
-      dispatch(
-        setErrorReset({
-          email: data["email"],
-          nonFieldErrors: data["non_field_errors"],
-        }),
-      )
-    }
-    toast.error("problem resetting password")
-  }
-}
-
-export const resetConfirmationAsync =
-  (dispatch: Dispatch) =>
-  async (
-    uid: string,
-    token: string,
-    newPassword1: string,
-    newPassword2: string,
-  ) => {
-    // TODO(sbdchd): refactor to use createActionAsync
-    dispatch(setLoadingResetConfirmation(true))
-    dispatch(setErrorResetConfirmation({}))
-    toast.dismiss()
-
-    const res = await api.resetPasswordConfirm(
-      uid,
-      token,
-      newPassword1,
-      newPassword2,
-    )
-    if (isOk(res)) {
-      dispatch(setLoadingResetConfirmation(false))
-      dispatch(fetchUser.success(res.data))
-      dispatch(push("/"))
-    } else {
-      const err = res.error
-      dispatch(setLoadingResetConfirmation(false))
-      toast.error("uh oh! problem resetting password")
-      if (isbadRequest(err)) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const data: {
-          token?: string[]
-          new_password1?: string[]
-          new_password2?: string[]
-          uid?: string[]
-          non_field_errors?: string[]
-        } = err.response?.data
-
-        const tokenData =
-          data["token"]?.map((x: unknown) => "token: " + String(x)) ?? []
-        const uidData =
-          data["uid"]?.map((x: unknown) => "uid: " + String(x)) ?? []
-        const nonFieldErrors = (data["non_field_errors"] ?? [])
-          .concat(tokenData)
-          .concat(uidData)
-
-        dispatch(
-          setErrorResetConfirmation({
-            newPassword1: data["new_password1"],
-            newPassword2: data["new_password2"],
-            nonFieldErrors,
-          }),
-        )
-      }
-    }
-  }
 
 export const fetchingTeamAsync =
   (dispatch: Dispatch) => async (id: ITeam["id"]) => {
