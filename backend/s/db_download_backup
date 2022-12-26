@@ -1,19 +1,28 @@
 #!/usr/bin/env python
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
 
 def main() -> None:
+    # no --output json from s3 commands sadly
+    # https://github.com/aws/aws-cli/issues/709
     res = subprocess.run(
-        ("aws", "s3", "ls", "s3://recipeyak-backups/"), check=True, capture_output=True
+        ("aws", "s3", "ls", "s3://recipeyak-backups/"), capture_output=True
     )
-    # breakpoint()
+    if res.returncode != 0:
+        if res.stderr:
+            print("Problem calling `s3 ls`.", file=sys.stderr)  # noqa: T001
+            print(res.stderr.decode(), file=sys.stderr)  # noqa: T001
+        exit(1)
     latest = next(reversed([x for x in res.stdout.decode().split("\n") if x]), None)
     if not latest:
         print("could not find backup")  # noqa: T001
         exit(1)
 
+    # example line output:
+    # 2022-12-26 16:40:06    2824636 2022-12-26T21:40:01Z-db.sql.gz
     backup_name = latest.split(" ")[-1]
     backup_date = backup_name.split("T")[0]
     database_name = f"recipeyak_{backup_date}"
@@ -72,6 +81,9 @@ def main() -> None:
             capture_output=True,
         )
     print(f"Database created: {database_name}")  # noqa: T001
+    print(  # noqa: T001
+        f"example connection string: postgres://postgres@localhost:5432/{database_name}"
+    )
 
 
 if __name__ == "__main__":
