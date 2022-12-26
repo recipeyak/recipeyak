@@ -16,12 +16,12 @@ import {
   RouteComponentProps,
   RouteProps,
   Switch,
-  useHistory,
 } from "react-router-dom"
 
 import { Container, ContainerBase } from "@/components/Base"
 import ErrorBoundary from "@/components/ErrorBoundary"
 import { Helmet } from "@/components/Helmet"
+import { ScrollRestore } from "@/components/ScrollRestore"
 import NotFound from "@/pages/404/404.page"
 import Home from "@/pages/index/Index.page"
 import Login from "@/pages/login/Login.page"
@@ -136,17 +136,6 @@ const Route = connect(mapAuthenticated)(
     />
   ),
 )
-
-function ScrollRestore() {
-  const history = useHistory()
-  React.useEffect(() => {
-    // using browser back/forward buttons results in a POP type
-    if (history.action !== "POP") {
-      window.scroll(0, 0)
-    }
-  }, [history.action])
-  return null
-}
 
 function Base() {
   return (
