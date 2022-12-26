@@ -38,11 +38,31 @@ const CardImg = styled.img`
   height: 100%;
   width: 100%;
   object-fit: cover;
+  grid-area: 1/1;
+`
+const CardImgBg = styled.div<{ backgroundImage: string }>`
+  height: 100%;
+  width: 100%;
+  grid-area: 1 / 1;
+  position: relative;
+  background-image: url(${(props) => props.backgroundImage});
+  background-position: center;
+  background-size: cover;
+  &:after {
+    position: absolute;
+    content: "";
+    height: 100%;
+    width: 100%;
+    border-radius: 6px;
+    backdrop-filter: blur(6px);
+    pointer-events: none;
+  }
 `
 const CardImgContainer = styled.div`
   min-height: 160px;
   max-height: 160px;
   background-color: rgb(237, 237, 237);
+  display: grid;
 `
 
 type IRecipeItemProps = {
@@ -99,7 +119,12 @@ function RecipeListItem({
     <Link tabIndex={0} to={url} className="card">
       <CardImgContainer>
         {props.primaryImage != null && (
-          <CardImg src={imgixFmt(props.primaryImage?.url ?? "")} />
+          <>
+            <CardImg src={imgixFmt(props.primaryImage?.url ?? "")} />
+            <CardImgBg
+              backgroundImage={props.primaryImage.backgroundUrl ?? ""}
+            />
+          </>
         )}
       </CardImgContainer>
       {recipeContent}
