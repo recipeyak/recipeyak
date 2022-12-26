@@ -10,11 +10,15 @@ import structlog
 import typer
 from dotenv import load_dotenv
 from PIL import Image, ImageOps
+from pillow_heif import register_heif_opener
 from yarl import URL
 
 logger = structlog.stdlib.get_logger()
 
 load_dotenv()
+
+
+register_heif_opener()
 
 
 def get_placeholder_image(image: BytesIO) -> str:
