@@ -8,6 +8,7 @@ from rest_framework import serializers
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework import status
 
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
@@ -31,9 +32,25 @@ def password_change_detail_view(request: AuthedRequest) -> Response:
     params = PasswordChangeParams.parse_obj(request.data)
     user = request.user
     if not user.check_password(params.old_password):
-        raise serializers.ValidationError("Invalid password")
+        return Response(
+            {
+                "error": {
+                    "code": "invalid_password",
+                    "message": "incorrect current password provided",
+                }
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
     if params.new_password1 != params.new_password2:
-        raise serializers.ValidationError("password mismatch")
+        return Response(
+            {
+                "error": {
+                    "code": "mismatched_passwords",
+                    "message": "passwords do not match",
+                }
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
     password_validation.validate_password(params.new_password2, user)
 
     user.set_password(params.new_password1)

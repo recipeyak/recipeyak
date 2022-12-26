@@ -54,7 +54,6 @@ def test_detail(client: APIClient, user: User) -> None:
         "email",
         "name",
         "avatar_url",
-        "has_usable_password",
         "dark_mode_enabled",
     }
     assert expected.issubset(keys), "sanity test to ensure we have what we expect"

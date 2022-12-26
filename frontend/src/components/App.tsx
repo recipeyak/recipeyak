@@ -28,7 +28,6 @@ import Login from "@/pages/login/Login.page"
 import PasswordChangePage from "@/pages/password-change/PasswordChange.page"
 import PasswordResetPage from "@/pages/password-reset/PasswordReset.page"
 import PasswordResetConfirmPage from "@/pages/password-reset-confirm/PasswordResetConfirm.page"
-import PasswordSet from "@/pages/password-set/PasswordSet.page"
 import RecipeCreatePage from "@/pages/recipe-create/RecipeCreate.page"
 import RecipeDetailPage from "@/pages/recipe-detail/RecipeDetail.page"
 import RecipeListPage from "@/pages/recipe-list/RecipeList.page"
@@ -217,11 +216,6 @@ function Base() {
                               exact
                               path="/password"
                               component={PasswordChangePage}
-                            />
-                            <PrivateRoute
-                              exact
-                              path="/password/set"
-                              component={PasswordSet}
                             />
                             <PrivateRoute
                               exact

@@ -24,11 +24,6 @@ import {
 import { getType } from "typesafe-actions"
 
 import { loadState, saveState } from "@/store/localStorage"
-import auth, { AuthActions, IAuthState } from "@/store/reducers/auth"
-import passwordChange, {
-  IPasswordChangeState,
-  PasswordChangeActions,
-} from "@/store/reducers/passwordChange"
 import recipes, { IRecipesState, RecipeActions } from "@/store/reducers/recipes"
 import shoppinglist, {
   IShoppingListState,
@@ -43,9 +38,7 @@ export interface IState {
   readonly user: IUserState
   readonly recipes: IRecipesState
   readonly router: Omit<RouterState, "action">
-  readonly passwordChange: IPasswordChangeState
   readonly shoppinglist: IShoppingListState
-  readonly auth: IAuthState
   readonly teams: ITeamsState
 }
 
@@ -53,9 +46,7 @@ export type Action =
   | UserActions
   | RecipeActions
   | RouterAction
-  | PasswordChangeActions
   | ShoppingListActions
-  | AuthActions
   | TeamsActions
   | { type: "@@RESET" }
 
@@ -81,9 +72,7 @@ const recipeApp: LoopReducer<IState, Action> = combineReducers(
       Pick<RouterState, "location">,
       Action
     >,
-    passwordChange,
     shoppinglist,
-    auth,
     teams,
   }),
 )
@@ -99,10 +88,6 @@ export function rootReducer(
   if (action.type === getType(fetchUser.success) && !action.payload) {
     return {
       ...recipeApp(undefined, action),
-      // We need to save this auth state (fromUrl) through logout
-      // so we can redirect users to where they were attempting to
-      // visit before being asked for authentication
-      auth: state.auth,
       router: state.router,
     }
   }
@@ -135,12 +120,6 @@ const defaultData = (): IState => {
       ...empty.user,
       ...saved.user,
     },
-    // Note(sbdchd): we must spread the initial state for all of these as `undefined` is not
-    // passed into the reducers, resulting in a bad state.
-    auth: {
-      ...empty.auth,
-      ...saved.auth,
-    },
   }
 }
 
@@ -166,15 +145,13 @@ store.subscribe(
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     saveState({
       user: {
+        // TODO: this could probably be avoided by using a preload of data
+
         // We assume this is true and if the session expires we have axios interceptors
         // to set this to false. In that _rare_ case, there will be a slight flash, but
         // this is acceptable for us for the added performance
         loggedIn: store.getState().user.loggedIn,
-        darkMode: store.getState().user.darkMode,
         scheduleTeamID: store.getState().user.scheduleTeamID,
-      },
-      auth: {
-        fromUrl: store.getState().auth.fromUrl,
       },
     } as unknown as IState)
   }, 1000),

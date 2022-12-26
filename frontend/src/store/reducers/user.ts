@@ -6,7 +6,6 @@ import {
   getType,
 } from "typesafe-actions"
 
-import { AuthActions } from "@/store/reducers/auth"
 import { WebData } from "@/webdata"
 
 export const updateScheduleTeamID =
@@ -44,7 +43,6 @@ export interface IUser {
   readonly email: string
   readonly name: string
   readonly id: number
-  readonly has_usable_password?: boolean
   readonly dark_mode_enabled: boolean
   readonly schedule_team: number | null
 }
@@ -76,7 +74,6 @@ export interface IUserState {
   readonly name: string
   readonly loading: boolean
   readonly error: boolean
-  readonly darkMode: boolean
   readonly hasUsablePassword: boolean
   readonly scheduleTeamID: number | null
   readonly updatingEmail: boolean
@@ -92,7 +89,6 @@ const initialState: IUserState = {
   name: "",
   loading: false,
   error: false,
-  darkMode: false,
   hasUsablePassword: false,
   scheduleTeamID: null,
   updatingEmail: false,
@@ -102,7 +98,7 @@ const initialState: IUserState = {
 
 export const user = (
   state: IUserState = initialState,
-  action: UserActions | AuthActions,
+  action: UserActions,
 ): IUserState => {
   switch (action.type) {
     case getType(updateScheduleTeamID):
@@ -131,12 +127,10 @@ export const user = (
         ...state,
         loading: false,
         loggedIn: true,
-        hasUsablePassword: !!action.payload.has_usable_password,
         email: action.payload.email,
         name: action.payload.name,
         avatarURL: action.payload.avatar_url,
         id: action.payload.id,
-        darkMode: action.payload.dark_mode_enabled,
         scheduleTeamID: action.payload.schedule_team,
         updatingEmail: false,
       }
