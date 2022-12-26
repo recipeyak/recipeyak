@@ -11,7 +11,7 @@ export function pathNamesEqual(a: string, b: string): boolean {
  * 1152x864 for gallery
  */
 export function imgixFmt(url: string) {
-  if (url === "") {
+  if (url === "" || !url.startsWith("http")) {
     return url
   }
   const u = new URL(url)
