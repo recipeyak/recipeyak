@@ -25,7 +25,7 @@
   "python.testing.pytestArgs": ["backend"],
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
-  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.tsdk": "frontend/node_modules/typescript/lib",
   "eslint.alwaysShowStatus": true,
   "eslint.lintTask.enable": true,
   "eslint.validate": [
