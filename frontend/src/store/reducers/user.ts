@@ -6,15 +6,8 @@ import {
   getType,
 } from "typesafe-actions"
 
-import { AuthActions, login } from "@/store/reducers/auth"
+import { AuthActions } from "@/store/reducers/auth"
 import { WebData } from "@/webdata"
-
-// TODO(chdsbd): Replace usage with fetchUser#success. Update user reducer.
-export const logOut = createAsyncAction(
-  "LOGOUT_START",
-  "LOGOUT_SUCCESS",
-  "LOGOUT_FAILURE",
-)<void, void, void>()
 
 export const updateScheduleTeamID =
   createStandardAction("SET_TEAM_ID")<IUserState["scheduleTeamID"]>()
@@ -39,7 +32,6 @@ export const logoutSessionById = createAsyncAction(
 )<ISession["id"], ISession["id"], ISession["id"]>()
 
 export type UserActions =
-  | ActionType<typeof logOut>
   | ReturnType<typeof setUserLoggedIn>
   | ReturnType<typeof updateScheduleTeamID>
   | ActionType<typeof fetchUser>
@@ -84,7 +76,6 @@ export interface IUserState {
   readonly name: string
   readonly loading: boolean
   readonly error: boolean
-  readonly loggingOut: boolean
   readonly darkMode: boolean
   readonly hasUsablePassword: boolean
   readonly scheduleTeamID: number | null
@@ -101,7 +92,6 @@ const initialState: IUserState = {
   name: "",
   loading: false,
   error: false,
-  loggingOut: false,
   darkMode: false,
   hasUsablePassword: false,
   scheduleTeamID: null,
@@ -115,13 +105,6 @@ export const user = (
   action: UserActions | AuthActions,
 ): IUserState => {
   switch (action.type) {
-    case getType(logOut.request):
-      raven.setUserContext()
-      return { ...state, loggingOut: true }
-    case getType(logOut.success):
-      return { ...state, loggingOut: false, loggedIn: false }
-    case getType(logOut.failure):
-      return { ...state, loggingOut: false }
     case getType(updateScheduleTeamID):
       return { ...state, scheduleTeamID: action.payload }
     case getType(setUserLoggedIn):
@@ -134,7 +117,6 @@ export const user = (
       return { ...state, loading: true, error: false }
     case getType(fetchUser.failure):
       return { ...state, loading: false, error: true }
-    case getType(login.success):
     case getType(updateEmail.success):
     case getType(fetchUser.success):
       raven.setUserContext({

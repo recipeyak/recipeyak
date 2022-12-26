@@ -11,8 +11,9 @@ import {
 import Logo from "@/components/Logo"
 import { NavLink } from "@/components/Routing"
 import { useDispatch, useSelector } from "@/hooks"
+import { useAuthLogout } from "@/queries/authLogout"
 import { scheduleURLFromTeamID } from "@/store/mapState"
-import { fetchingUserAsync, loggingOutAsync } from "@/store/thunks"
+import { fetchingUserAsync } from "@/store/thunks"
 import { styled } from "@/theme"
 
 interface IUserAvatarProps {
@@ -31,13 +32,15 @@ function UserAvatar({ onClick }: IUserAvatarProps) {
 }
 
 function LogoutButton() {
-  const loggingOut = useSelector((s) => s.user.loggingOut)
-  const dispatch = useDispatch()
-  const logout = React.useCallback(() => {
-    void loggingOutAsync(dispatch)()
-  }, [dispatch])
+  const logoutUser = useAuthLogout()
   return (
-    <Button onClick={logout} loading={loggingOut} className="w-100">
+    <Button
+      onClick={() => {
+        logoutUser.mutate()
+      }}
+      loading={logoutUser.isLoading}
+      className="w-100"
+    >
       Logout
     </Button>
   )

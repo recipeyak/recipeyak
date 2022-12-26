@@ -1,4 +1,3 @@
-import { push } from "connected-react-router"
 import {
   addDays,
   eachDayOfInterval,
@@ -8,7 +7,7 @@ import {
 } from "date-fns"
 import queryString from "query-string"
 import React, { useEffect } from "react"
-import { Link } from "react-router-dom"
+import { Link, useHistory } from "react-router-dom"
 import useOnClickOutside from "use-onclickoutside"
 
 import { isMobile } from "@/browser"
@@ -339,6 +338,7 @@ function searchQueryFromUrl() {
 }
 
 const UserHome = () => {
+  const history = useHistory()
   const [searchQuery, setSearchQuery] =
     React.useState<string>(searchQueryFromUrl)
   const recipes = useSelector((s) => getTeamRecipes(s, "personal"))
@@ -416,7 +416,7 @@ const UserHome = () => {
       return
     }
     if (key === "Enter") {
-      dispatch(push(`/recipes/${suggestion.recipe.id}`))
+      history.push(`/recipes/${suggestion.recipe.id}`)
     }
   }
 

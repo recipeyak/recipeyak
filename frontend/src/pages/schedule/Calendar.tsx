@@ -1,5 +1,4 @@
 import { useQueryClient } from "@tanstack/react-query"
-import { push } from "connected-react-router"
 import { addWeeks, endOfWeek, startOfWeek, subWeeks } from "date-fns"
 import eachDayOfInterval from "date-fns/eachDayOfInterval"
 import format from "date-fns/format"
@@ -8,25 +7,22 @@ import parseISO from "date-fns/parseISO"
 import { chunk, first } from "lodash-es"
 import queryString from "query-string"
 import React from "react"
-import { useLocation } from "react-router-dom"
+import { useHistory, useLocation } from "react-router-dom"
 
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Select } from "@/components/Forms"
 import { Modal } from "@/components/Modal"
 import { toISODateString } from "@/date"
-import { useDispatch, useSelector, useToggle } from "@/hooks"
+import { useDispatch, useToggle } from "@/hooks"
 import CalendarDay from "@/pages/schedule/CalendarDay"
 import { ICalConfig } from "@/pages/schedule/CalendarMoreDropdown"
 import { IconSettings } from "@/pages/schedule/IconSettings"
 import ShoppingList from "@/pages/schedule/ShoppingList"
 import { useScheduledRecipeList } from "@/queries/scheduledRecipeList"
+import { useScheduledRecipeSettingsFetch } from "@/queries/scheduledRecipeSettingsFetch"
 import { useTeamList } from "@/queries/teamList"
-import {
-  ICalRecipe,
-  regenerateCalendarLink as regenerateCalendarLinkAction,
-  updateCalendarSettings,
-} from "@/store/reducers/calendar"
+import { ICalRecipe } from "@/store/reducers/calendar"
 import { history } from "@/store/store"
 import { fetchingRecipeListAsync } from "@/store/thunks"
 import { styled } from "@/theme"
@@ -173,8 +169,7 @@ function Nav({ dayTs, teamID, onPrev, onNext, onCurrent }: INavProps) {
   const [showSettings, toggleShowSetting] = useToggle()
   const [showShopping, toggleShopping] = useToggle()
 
-  const { settings, setSyncEnabled, regenerateCalendarLink } =
-    useCalendarSettings(teamID)
+  const settings = useScheduledRecipeSettingsFetch()
 
   return (
     <Box space="between" align="center" shrink={0}>
@@ -188,11 +183,7 @@ function Nav({ dayTs, teamID, onPrev, onNext, onCurrent }: INavProps) {
               <label className="fw-500">Team</label>
               <TeamSelect value={teamID} onChange={handleOwnerChange} />
             </Box>
-            <ICalConfig
-              settings={settings}
-              setSyncEnabled={setSyncEnabled}
-              regenerateCalendarLink={regenerateCalendarLink}
-            />
+            <ICalConfig settings={settings} />
           </Box>
         }
       />
@@ -255,6 +246,7 @@ function getToday(search: string): Date {
 function useTeamSelect() {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
+  const history = useHistory()
 
   const handleOwnerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const teamID =
@@ -266,34 +258,13 @@ function useTeamSelect() {
     const urlWithEnding = url + ending
 
     // navTo is async so we can't count on the URL to have changed by the time we refetch the data
-    dispatch(push(urlWithEnding))
+    history.push(urlWithEnding)
     void fetchingRecipeListAsync(dispatch)()
     // TODO: we should abstract this
     void queryClient.invalidateQueries([teamID])
   }
 
   return { handleOwnerChange }
-}
-
-function useCalendarSettings(teamID: number | "personal") {
-  const settings = useSelector((s) => s.calendar.settings)
-  const dispatch = useDispatch()
-  const setSyncEnabled = (syncEnabled: boolean) => {
-    dispatch(
-      updateCalendarSettings.request({
-        teamID,
-        syncEnabled,
-      }),
-    )
-  }
-  const regenerateCalendarLink = () => {
-    dispatch(
-      regenerateCalendarLinkAction.request({
-        teamID,
-      }),
-    )
-  }
-  return { settings, setSyncEnabled, regenerateCalendarLink }
 }
 
 interface ICalendarProps {
