@@ -48,7 +48,7 @@ import {
 } from "@/store/reducers/recipes"
 import { styled } from "@/theme"
 import { recipeURL } from "@/urls"
-import { pathNamesEqual } from "@/utils/url"
+import { imgixFmt, pathNamesEqual } from "@/utils/url"
 import { isFailure, isInitial, isLoading, isSuccessLike } from "@/webdata"
 
 type SectionsAndIngredients = ReadonlyArray<
@@ -958,7 +958,7 @@ function RecipeInfo(props: {
       {(props.recipe.primaryImage || props.editingEnabled) && (
         <>
           <HeaderImg
-            src={props.recipe.primaryImage?.url ?? ""}
+            src={imgixFmt(props.recipe.primaryImage?.url ?? "")}
             // NOTE: not entirely sure if we want async or sync
             // see: https://stackoverflow.com/a/66967317/3720597
             // and: https://css-tricks.com/newsletter/249-decoding-async-tree-rings-and-flexbox-gap/
