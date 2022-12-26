@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Star, X } from "react-feather"
 
 import { Button } from "@/components/Buttons"
 import { styled } from "@/theme"
+import { imgixFmt } from "@/utils/url"
 
 const MyGalleryContainer = styled.div`
   opacity: 1 !important;
@@ -115,7 +116,7 @@ export const Gallery = (props: {
       <MyGalleryBackground />
       <MyGalleryScrollWrap>
         <MyGalleryImgContainer onClick={onClick}>
-          <MyGalleryImg src={props.imageUrl} onClick={onClick} />
+          <MyGalleryImg src={imgixFmt(props.imageUrl)} onClick={onClick} />
         </MyGalleryImgContainer>
         <MyGalleryControlOverlay>
           <TopRow>

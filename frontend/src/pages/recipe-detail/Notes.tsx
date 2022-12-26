@@ -31,6 +31,7 @@ import {
 import { styled } from "@/theme"
 import { toast } from "@/toast"
 import { notUndefined } from "@/utils/general"
+import { imgixFmt } from "@/utils/url"
 import { uuid4 } from "@/uuid"
 
 interface IUseNoteEditHandlers {
@@ -623,7 +624,7 @@ function ImagePreview({
   return (
     <div className="d-grid" onClick={onClick}>
       <Image100Px
-        src={src}
+        src={imgixFmt(src)}
         isLoading={isLoading}
         style={{
           gridArea: "1 / 1",
