@@ -600,7 +600,7 @@ const CloseButton = styled.button`
   font-weight: 700;
 `
 
-const Image100Px = styled.img<{
+const Image100Px = styled.img.attrs({ loading: 'lazy' })<{
   readonly isLoading?: boolean
   readonly src: string
 }>`
