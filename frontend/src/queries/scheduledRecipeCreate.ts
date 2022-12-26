@@ -1,11 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { addWeeks, startOfWeek, subWeeks } from "date-fns"
 
-import { CalendarResponse, scheduleRecipe } from "@/api"
+import { CalendarResponse, ICalRecipe, scheduleRecipe } from "@/api"
 import { toISODateString } from "@/date"
 import { useTeamId } from "@/hooks"
 import { unwrapResult } from "@/query"
-import { ICalRecipe } from "@/store/reducers/calendar"
 import { IRecipe } from "@/store/reducers/recipes"
 import store from "@/store/store"
 import { toast } from "@/toast"

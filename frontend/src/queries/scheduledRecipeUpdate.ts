@@ -1,8 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { CalendarResponse, updateScheduleRecipe } from "@/api"
+import { CalendarResponse, ICalRecipe, updateScheduleRecipe } from "@/api"
 import { unwrapResult } from "@/query"
-import { ICalRecipe } from "@/store/reducers/calendar"
 
 function scheduledRecipeUpdate({
   scheduledRecipeId,

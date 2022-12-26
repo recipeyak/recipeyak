@@ -45,12 +45,6 @@ export interface ISignupErrors {
   readonly email?: string[]
 }
 
-export interface ILoginError {
-  readonly password1?: string[]
-  readonly nonFieldErrors?: string[]
-  readonly email?: string[]
-}
-
 export interface IPasswordResetError {
   readonly nonFieldErrors?: string[]
   readonly email?: string[]

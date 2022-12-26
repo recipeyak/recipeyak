@@ -1,10 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { addWeeks, parseISO, startOfWeek, subWeeks } from "date-fns"
 
-import { CalendarResponse, deleteScheduledRecipe } from "@/api"
+import { CalendarResponse, deleteScheduledRecipe, ICalRecipe } from "@/api"
 import { useTeamId } from "@/hooks"
 import { unwrapResult } from "@/query"
-import { ICalRecipe } from "@/store/reducers/calendar"
 
 function deleteScheduledRecipeV2(params: {
   scheduledRecipeId: number

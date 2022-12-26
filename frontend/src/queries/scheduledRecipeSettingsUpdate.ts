@@ -1,15 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { updateCalendarSettings } from "@/api"
+import { CalendarResponse, updateCalendarSettings } from "@/api"
 import { useTeamId } from "@/hooks"
 import { unwrapEither } from "@/query"
-
-type CalendarResponse = {
-  settings: {
-    syncEnabled: boolean
-    calendarLink: string
-  }
-}
 
 export function useScheduledRecipeSettingsUpdate() {
   const teamID = useTeamId()
