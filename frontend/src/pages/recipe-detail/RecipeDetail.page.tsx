@@ -1079,7 +1079,7 @@ export function Recipe(props: IRecipeProps) {
   }
 
   return (
-    <div className="gap-2 mx-auto mw-1000px">
+    <div>
       <Helmet title={recipe.name} />
       <Meta
         title={recipeTitle}

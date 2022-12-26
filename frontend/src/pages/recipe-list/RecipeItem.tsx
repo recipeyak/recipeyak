@@ -5,8 +5,10 @@ import { classNames } from "@/classnames"
 import { DragIcon } from "@/components/icons"
 import { DragDrop } from "@/dragDrop"
 import { Match } from "@/search"
+import { IRecipe } from "@/store/reducers/recipes"
 import { styled } from "@/theme"
 import { recipeURL } from "@/urls"
+import { imgixFmt } from "@/utils/url"
 
 interface IRecipeTitleProps {
   readonly url: string
@@ -25,6 +27,85 @@ function RecipeTitle({ url, name, dragable }: IRecipeTitleProps) {
   )
 }
 
+const Ingredient = styled.small`
+  font-weight: bold;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`
+
+const CardImg = styled.img`
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+`
+const CardImgContainer = styled.div`
+  min-height: 160px;
+  max-height: 160px;
+  background-color: rgb(237, 237, 237);
+`
+
+type IRecipeItemProps = {
+  readonly name: string
+  readonly author: string | null
+  readonly id: number
+  readonly url?: string
+  readonly drag?: boolean
+  readonly match: Match[]
+} & IRecipe
+
+function RecipeListItem({
+  name,
+  author,
+  id,
+  match: matches,
+  ...props
+}: {
+  readonly url?: string
+  readonly match: Match[]
+} & IRecipe) {
+  const url = props.url || recipeURL(id, name)
+
+  const ingredientMatch = matches.find((x) => x.kind === "ingredient")
+  const tagMatch = matches.find((x) => x.kind === "tag")
+  const authorMatch = matches.find((x) => x.kind === "author")
+
+  const recipeContent = (
+    <div className="h-100 p-2 pt-0">
+      <Link tabIndex={0} to={url} className="mb-1">
+        {name}
+      </Link>
+
+      {ingredientMatch != null ? (
+        <Ingredient>{ingredientMatch.value}</Ingredient>
+      ) : null}
+      {author !== "" && (
+        <small
+          className={classNames("d-block", { "fw-bold": authorMatch != null })}
+        >
+          {author}
+        </small>
+      )}
+
+      <div>
+        {tagMatch != null ? (
+          <span className="tag">{tagMatch.value}</span>
+        ) : null}
+      </div>
+    </div>
+  )
+
+  return (
+    <Link tabIndex={0} to={url} className="card">
+      <CardImgContainer>
+        {props.primaryImage != null && (
+          <CardImg src={imgixFmt(props.primaryImage?.url ?? "")} />
+        )}
+      </CardImgContainer>
+      {recipeContent}
+    </Link>
+  )
+}
 interface IMetaProps {
   readonly author: string
   readonly bold: boolean
@@ -42,22 +123,6 @@ function Meta({ author, bold }: IMetaProps) {
   )
 }
 
-const Ingredient = styled.small`
-  font-weight: bold;
-  overflow-x: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-`
-
-interface IRecipeItemProps {
-  readonly name: string
-  readonly author: string | null
-  readonly id: number
-  readonly url?: string
-  readonly drag?: boolean
-  readonly match: Match[]
-}
-
 export function RecipeItem({
   name,
   author,
@@ -65,10 +130,24 @@ export function RecipeItem({
   match: matches,
   ...props
 }: IRecipeItemProps) {
+  if (!props.drag) {
+    return (
+      <RecipeListItem
+        name={name}
+        author={author}
+        id={id}
+        match={matches}
+        {...props}
+      />
+    )
+  }
+
   const url = props.url || recipeURL(id, name)
 
   const item: IRecipeItemDrag = { type: DragDrop.RECIPE, recipeID: id }
 
+  // We don't actually run this conditionally in production.
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [{ isDragging }, drag] = useDrag({
     type: DragDrop.RECIPE,
     item,
@@ -101,22 +180,14 @@ export function RecipeItem({
     </div>
   )
 
-  if (props.drag) {
-    return (
-      <section
-        ref={drag}
-        className="card cursor-move"
-        style={{ opacity: isDragging ? 0.5 : 1 }}
-      >
-        {recipeContent}
-      </section>
-    )
-  }
-
   return (
-    <Link tabIndex={0} to={url} className="card">
+    <section
+      ref={drag}
+      className="card cursor-move"
+      style={{ opacity: isDragging ? 0.5 : 1 }}
+    >
       {recipeContent}
-    </Link>
+    </section>
   )
 }
 
