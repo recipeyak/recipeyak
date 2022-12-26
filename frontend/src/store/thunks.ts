@@ -7,7 +7,6 @@ import { Dispatch as ReduxDispatch } from "redux"
 import * as api from "@/api"
 import { Err, isOk, Ok } from "@/result"
 import {
-  login,
   setErrorReset,
   setErrorResetConfirmation,
   setErrorSignup,
@@ -44,7 +43,6 @@ import {
   fetchUser,
   IUser,
   IUserState,
-  logOut,
   setUserLoggedIn,
   updateEmail,
   updateScheduleTeamID,
@@ -59,17 +57,6 @@ const isbadRequest = (err: AxiosError) =>
   err.response && err.response.status === 400
 
 const is404 = (err: AxiosError) => err.response && err.response.status === 404
-
-export const loggingOutAsync = (dispatch: Dispatch) => async () => {
-  dispatch(logOut.request())
-  const res = await api.logoutUser()
-  if (isOk(res)) {
-    dispatch(logOut.success())
-    dispatch(push("/login"))
-  } else {
-    dispatch(logOut.failure())
-  }
-}
 
 const emailExists = (err: AxiosError) =>
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
@@ -221,41 +208,6 @@ export const deletingStepAsync = async (
   }
 }
 
-export const logUserInAsync =
-  (dispatch: Dispatch) =>
-  async (email: string, password: string, redirectUrl: string = "") => {
-    toast.dismiss()
-    dispatch(login.request())
-    const res = await api.loginUser(email, password)
-
-    if (isOk(res)) {
-      dispatch(login.success(res.data.user))
-      dispatch(push(redirectUrl))
-    } else {
-      const err = res.error
-      const badRequest = err.response && err.response.status === 400
-      if (err.response && badRequest) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const data: {
-          email?: string[]
-          password1?: string[]
-          non_field_errors?: string[]
-        } = err.response.data
-
-        dispatch(
-          login.failure({
-            email: data["email"],
-            password1: data["password1"],
-            nonFieldErrors: data["non_field_errors"],
-          }),
-        )
-
-        return
-      }
-      dispatch(login.failure())
-    }
-  }
-
 export const signupAsync =
   (dispatch: Dispatch) =>
   async (email: string, password1: string, password2: string) => {
@@ -268,7 +220,7 @@ export const signupAsync =
     const res = await api.signup(email, password1, password2)
 
     if (isOk(res)) {
-      dispatch(login.success(res.data.user))
+      dispatch(fetchUser.success(res.data.user))
       dispatch(setLoadingSignup(false))
       dispatch(push("/recipes/add"))
     } else {
@@ -343,7 +295,7 @@ export const resetConfirmationAsync =
     )
     if (isOk(res)) {
       dispatch(setLoadingResetConfirmation(false))
-      dispatch(login.success(res.data))
+      dispatch(fetchUser.success(res.data))
       dispatch(push("/"))
     } else {
       const err = res.error

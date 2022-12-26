@@ -1,3 +1,6 @@
+import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { persistQueryClient } from "@tanstack/react-query-persist-client"
 import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { ConnectedRouter } from "connected-react-router"
@@ -8,6 +11,22 @@ import { IUserResponse } from "@/api"
 import Login from "@/pages/login/Login.page"
 import store, { history } from "@/store/store"
 import { rest, server } from "@/testUtils"
+
+const queryClientPersistent = new QueryClient({
+  defaultOptions: {
+    queries: {
+      cacheTime: 1000 * 60 * 60 * 24 * 7, // 7 days
+    },
+  },
+})
+const localStoragePersister = createSyncStoragePersister({
+  storage: window.localStorage,
+})
+persistQueryClient({
+  queryClient: queryClientPersistent,
+  persister: localStoragePersister,
+  maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+})
 
 test("login success", async () => {
   server.use(
@@ -41,13 +60,15 @@ test("login success", async () => {
   const user = userEvent.setup()
 
   render(
-    <Provider store={store}>
-      <ConnectedRouter history={history}>
-        <HelmetProvider>
-          <Login />
-        </HelmetProvider>
-      </ConnectedRouter>
-    </Provider>,
+    <QueryClientProvider client={queryClientPersistent}>
+      <Provider store={store}>
+        <ConnectedRouter history={history}>
+          <HelmetProvider>
+            <Login />
+          </HelmetProvider>
+        </ConnectedRouter>
+      </Provider>
+    </QueryClientProvider>,
   )
   // 1. fill out form
   await user.type(
@@ -97,13 +118,15 @@ test("login failure", async () => {
   const user = userEvent.setup()
 
   render(
-    <Provider store={store}>
-      <ConnectedRouter history={history}>
-        <HelmetProvider>
-          <Login />
-        </HelmetProvider>
-      </ConnectedRouter>
-    </Provider>,
+    <QueryClientProvider client={queryClientPersistent}>
+      <Provider store={store}>
+        <ConnectedRouter history={history}>
+          <HelmetProvider>
+            <Login />
+          </HelmetProvider>
+        </ConnectedRouter>
+      </Provider>
+    </QueryClientProvider>,
   )
   // 1. fill out form
   await user.type(

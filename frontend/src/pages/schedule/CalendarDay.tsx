@@ -7,6 +7,7 @@ import startOfDay from "date-fns/startOfDay"
 import { sortBy } from "lodash-es"
 import { useDrop } from "react-dnd"
 
+import { ICalRecipe } from "@/api"
 import { assertNever } from "@/assert"
 import cls from "@/classnames"
 import { isInsideChangeWindow, toISODateString } from "@/date"
@@ -20,7 +21,6 @@ import {
 import { useScheduleRecipeCreate } from "@/queries/scheduledRecipeCreate"
 import { useScheduledRecipeDelete } from "@/queries/scheduledRecipeDelete"
 import { useScheduledRecipeUpdate } from "@/queries/scheduledRecipeUpdate"
-import { ICalRecipe } from "@/store/reducers/calendar"
 import { css, styled } from "@/theme"
 
 function DayOfWeek({ date }: { date: Date }) {

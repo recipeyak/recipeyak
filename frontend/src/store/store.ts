@@ -24,11 +24,7 @@ import {
 import { getType } from "typesafe-actions"
 
 import { loadState, saveState } from "@/store/localStorage"
-import auth, { AuthActions, IAuthState, login } from "@/store/reducers/auth"
-import calendar, {
-  CalendarActions,
-  ICalendarState,
-} from "@/store/reducers/calendar"
+import auth, { AuthActions, IAuthState } from "@/store/reducers/auth"
 import passwordChange, {
   IPasswordChangeState,
   PasswordChangeActions,
@@ -39,7 +35,7 @@ import shoppinglist, {
   ShoppingListActions,
 } from "@/store/reducers/shoppinglist"
 import teams, { ITeamsState, TeamsActions } from "@/store/reducers/teams"
-import user, { IUserState, UserActions } from "@/store/reducers/user"
+import user, { fetchUser, IUserState, UserActions } from "@/store/reducers/user"
 
 const createStore: StoreCreator = basicCreateStore
 
@@ -51,7 +47,6 @@ export interface IState {
   readonly shoppinglist: IShoppingListState
   readonly auth: IAuthState
   readonly teams: ITeamsState
-  readonly calendar: ICalendarState
 }
 
 export type Action =
@@ -62,7 +57,6 @@ export type Action =
   | ShoppingListActions
   | AuthActions
   | TeamsActions
-  | CalendarActions
   | { type: "@@RESET" }
 
 /**
@@ -91,7 +85,6 @@ const recipeApp: LoopReducer<IState, Action> = combineReducers(
     shoppinglist,
     auth,
     teams,
-    calendar,
   }),
 )
 
@@ -103,7 +96,7 @@ export function rootReducer(
   if (state == null || action.type === "@@RESET") {
     return recipeApp(undefined, action)
   }
-  if (action.type === getType(login.success) && !action.payload) {
+  if (action.type === getType(fetchUser.success) && !action.payload) {
     return {
       ...recipeApp(undefined, action),
       // We need to save this auth state (fromUrl) through logout

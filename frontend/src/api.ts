@@ -3,7 +3,6 @@ import * as t from "io-ts"
 import { toISODateString } from "@/date"
 import { http } from "@/http"
 import { isOk, Ok } from "@/result"
-import { ICalRecipe } from "@/store/reducers/calendar"
 import { IIngredient, INote, IRecipe, IStep } from "@/store/reducers/recipes"
 import { IMember, ITeam } from "@/store/reducers/teams"
 import { ISession, IUser } from "@/store/reducers/user"
@@ -511,6 +510,23 @@ export function recentlyCreatedRecipes() {
       }),
     ),
   })
+}
+
+export interface ICalRecipe {
+  readonly id: number
+  readonly on: string
+  readonly created: string
+  readonly createdBy: {
+    readonly id: number | string
+    readonly name: string
+    readonly avatar_url: string
+  } | null
+  readonly team: ITeam["id"] | null
+  readonly user: IUser["id"] | null
+  readonly recipe: {
+    readonly id: number
+    readonly name: string
+  }
 }
 
 export function generateCalendarLink({

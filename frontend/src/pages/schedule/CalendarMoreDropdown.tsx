@@ -1,21 +1,27 @@
+import { UseQueryResult } from "@tanstack/react-query"
+
 import { Button } from "@/components/Buttons"
 import { selectTarget, TextInput } from "@/components/Forms"
 import { Loader } from "@/components/Loader"
-import { isSuccessLike, WebData } from "@/webdata"
+import { useTeamId } from "@/hooks"
+import { useScheduledRecipeSettingsRegenerateLink } from "@/queries/scheduledRecipeSettingsRegenerateLink"
+import { useScheduledRecipeSettingsUpdate } from "@/queries/scheduledRecipeSettingsUpdate"
 
 export function ICalConfig({
   settings,
-  setSyncEnabled,
-  regenerateCalendarLink,
 }: {
-  readonly settings: WebData<{
-    readonly syncEnabled: boolean
-    readonly calendarLink: string
-  }>
-  readonly setSyncEnabled: (_: boolean) => void
-  readonly regenerateCalendarLink: () => void
+  readonly settings: UseQueryResult<
+    {
+      readonly syncEnabled: boolean
+      readonly calendarLink: string
+    },
+    unknown
+  >
 }) {
-  if (!isSuccessLike(settings)) {
+  const teamID = useTeamId()
+  const regenLink = useScheduledRecipeSettingsRegenerateLink()
+  const scheduleSettingsUpdate = useScheduledRecipeSettingsUpdate()
+  if (!settings.isSuccess) {
     return <Loader />
   }
   return (
@@ -34,7 +40,10 @@ export function ICalConfig({
             <Button
               variant="secondary"
               size="small"
-              onClick={regenerateCalendarLink}
+              loading={regenLink.isLoading}
+              onClick={() => {
+                regenLink.mutate()
+              }}
             >
               Reset
             </Button>
@@ -46,7 +55,11 @@ export function ICalConfig({
         className="d-block mx-auto text-underline box-shadow-none "
         size="small"
         onClick={() => {
-          setSyncEnabled(!settings.data.syncEnabled)
+          const syncEnabled = !settings.data.syncEnabled
+          scheduleSettingsUpdate.mutate({
+            teamID,
+            update: { syncEnabled },
+          })
         }}
       >
         {settings.data.syncEnabled ? "Disable Sync" : "Enable Sync"}

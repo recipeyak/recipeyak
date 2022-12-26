@@ -6,7 +6,6 @@ import { isInsideChangeWindow } from "@/date"
 import { DragDrop } from "@/dragDrop"
 import { useGlobalEvent, useToggle } from "@/hooks"
 import { CalendarDayItemModal } from "@/pages/schedule/CalendarDayItemModal"
-import { ICalRecipe } from "@/store/reducers/calendar"
 import { IRecipe } from "@/store/reducers/recipes"
 import { styled } from "@/theme"
 import { recipeURL } from "@/urls"
@@ -51,9 +50,9 @@ const CalendarListItem = styled.li<ICalendarListItemProps>`
 export interface ICalendarItemProps {
   readonly remove: () => void
   readonly date: Date
-  readonly recipeID: IRecipe["id"] | string
-  readonly recipeName: IRecipe["name"]
-  readonly scheduledId: ICalRecipe["id"]
+  readonly recipeID: number | string
+  readonly recipeName: string
+  readonly scheduledId: number
   readonly teamID: number | "personal"
   readonly createdAt: string
   readonly createdBy: {

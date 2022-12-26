@@ -1,9 +1,7 @@
-import { login } from "@/store/reducers/auth"
 import user, {
   fetchUser,
   IUser,
   IUserState,
-  logOut,
   setUserLoggedIn,
 } from "@/store/reducers/user"
 
@@ -51,7 +49,6 @@ describe("fetchingUser", () => {
       name: "",
     }
     expect(user(beforeState, fetchUser.success(userPayload))).toEqual(expected)
-    expect(user(beforeState, login.success(userPayload))).toEqual(expected)
   })
   it("#failure: sets loading, sets error", () => {
     const beforeState = {
@@ -67,20 +64,6 @@ describe("fetchingUser", () => {
 })
 
 describe("User", () => {
-  it("sets user to logging out", () => {
-    const beforeState = {
-      loggingOut: false,
-    }
-
-    const afterState = {
-      loggingOut: true,
-    }
-
-    expect(user(beforeState as IUserState, logOut.request())).toEqual(
-      afterState,
-    )
-  })
-
   it("should set user logged in", () => {
     const beforeState = {
       loggedIn: true,
