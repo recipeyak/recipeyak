@@ -38,12 +38,12 @@ const CardImg = styled.img`
   height: 100%;
   width: 100%;
   object-fit: cover;
-  grid-area: 1/1;
+  position: absolute;
+  z-index: 1;
 `
 const CardImgBg = styled.div<{ backgroundImage: string }>`
   height: 100%;
   width: 100%;
-  grid-area: 1 / 1;
   position: relative;
   background-image: url(${(props) => props.backgroundImage});
   background-position: center;
@@ -62,7 +62,7 @@ const CardImgContainer = styled.div`
   min-height: 160px;
   max-height: 160px;
   background-color: rgb(237, 237, 237);
-  display: grid;
+  position: relative;
 `
 
 type IRecipeItemProps = {
