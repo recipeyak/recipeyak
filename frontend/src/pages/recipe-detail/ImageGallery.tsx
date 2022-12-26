@@ -15,7 +15,7 @@ const MyGalleryContainer = styled.div`
   height: 100%;
 `
 
-const MyGalleryImg = styled.img`
+const MyGalleryImg = styled.img.attrs({ loading: "eager" })`
   max-height: 100%;
   max-width: 100%;
   margin: auto;

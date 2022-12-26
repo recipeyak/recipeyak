@@ -447,7 +447,7 @@ function Meta({ title, image }: { title: string; image: string }) {
   return null
 }
 
-const HeaderImg = styled.img`
+const HeaderImg = styled.img.attrs({ loading: "eager" })`
   border-radius: 6px;
   height: 100%;
   object-fit: cover;
@@ -959,10 +959,6 @@ function RecipeInfo(props: {
         <>
           <HeaderImg
             src={imgixFmt(props.recipe.primaryImage?.url ?? "")}
-            // NOTE: not entirely sure if we want async or sync
-            // see: https://stackoverflow.com/a/66967317/3720597
-            // and: https://css-tricks.com/newsletter/249-decoding-async-tree-rings-and-flexbox-gap/
-            decoding="async"
             onClick={() => {
               props.openImage()
             }}
