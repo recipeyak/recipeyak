@@ -17,7 +17,7 @@ template = Template(
 <head>
 <meta property="og:title" content="{{ recipe_title }}" />
 {% if recipe_image_url %}
-<meta property="og:image" content="{{ recipe_image_url }}" />
+<meta property="og:image" content="{{ recipe_image_url | safe }}" />
 {% endif %}
 <link rel="apple-touch-icon" href="https://recipeyak.imgix.net/recipeyak-logo-3x-white.png">
 <meta http-equiv="refresh" content="0; url=https://recipeyak.com/recipes/{{ recipe_pk }}/">
@@ -30,7 +30,16 @@ def format_img_open_graph(x: str) -> str:
     """
     Open graph images are recommended to be 1200x630, so we use Imgix to crop.
     """
-    return str(URL(x).with_query({"w": "1200", "h": "630", "fit": "crop"}))
+    return str(
+        URL(x).with_query(
+            {
+                "w": "1200",
+                "h": "630",
+                "fit": "crop",
+                "q": "30",
+            }
+        )
+    )
 
 
 def recipe_get_view(request: AuthedRequest, recipe_pk: str) -> Response:
