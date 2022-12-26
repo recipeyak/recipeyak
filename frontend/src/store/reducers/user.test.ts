@@ -29,7 +29,6 @@ describe("fetchingUser", () => {
       avatar_url: "example.com",
       email: "j.doe@example.com",
       id: 123,
-      has_usable_password: true,
       dark_mode_enabled: true,
       name: "",
       schedule_team: null,
@@ -43,8 +42,6 @@ describe("fetchingUser", () => {
       loading: false,
       updatingEmail: false,
       error: false,
-      darkMode: true,
-      hasUsablePassword: true,
       scheduleTeamID: null,
       name: "",
     }

@@ -1,98 +1,100 @@
-import React from "react"
-import { connect } from "react-redux"
+import { AxiosError } from "axios"
+import React, { useState } from "react"
 import { Link } from "react-router-dom"
 
 import AuthContainer from "@/components/AuthContainer"
 import { Button } from "@/components/Buttons"
 import { EmailInput, FormErrorHandler } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
-import { IPasswordResetError } from "@/store/reducers/auth"
-import { IState } from "@/store/store"
-import { Dispatch, resetAsync } from "@/store/thunks"
+import { useSelector } from "@/hooks"
+import { useAuthPasswordReset } from "@/queries/authPasswordReset"
+import { toast } from "@/toast"
 
-interface IPasswordResetProps {
-  readonly reset: (email: string) => Promise<void>
-  readonly loggedIn: boolean
-  readonly loading: boolean
-  readonly error: IPasswordResetError
+function formatError(error: unknown) {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  const err = error as AxiosError | undefined
+  if (err == null) {
+    return {}
+  }
+  if (err.response?.status === 400) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const data: { email: string[]; non_field_errors?: string[] } =
+      err.response?.data
+    return {
+      email: data["email"],
+      nonFieldErrors: data["non_field_errors"],
+    }
+  }
+  return {}
 }
 
-interface IPasswordResetState {
-  readonly email: string
-}
+function PasswordReset() {
+  const [email, setEmail] = useState("")
 
-class PasswordReset extends React.Component<
-  IPasswordResetProps,
-  IPasswordResetState
-> {
-  state: IPasswordResetState = {
-    email: "",
-  }
+  const resetPassword = useAuthPasswordReset()
 
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    /* eslint-disable @typescript-eslint/consistent-type-assertions */
-    this.setState({
-      [e.target.name]: e.target.value,
-    } as unknown as IPasswordResetState)
-    /* eslint-enable @typescript-eslint/consistent-type-assertions */
-  }
-
-  async handleReset(e: React.FormEvent) {
+  async function handleReset(e: React.FormEvent) {
     e.preventDefault()
-    await this.props.reset(this.state.email)
-    this.setState({ email: "" })
-  }
-
-  render() {
-    const { nonFieldErrors, email } = this.props.error
-
-    const redirect = this.props.loggedIn
-      ? { name: "Home", route: "/" }
-      : { name: "Login", route: "/login" }
-
-    return (
-      <AuthContainer>
-        <Helmet title="Password Reset" />
-        <form className="box p-3" onSubmit={(e) => this.handleReset(e)}>
-          <h1 className="title is-5 mb-2 fw-500">Password Reset</h1>
-
-          <FormErrorHandler error={nonFieldErrors} />
-
-          <div className="field">
-            <label className="label">Email</label>
-            <EmailInput
-              autoFocus
-              onChange={this.handleInputChange}
-              error={email != null}
-              name="email"
-              value={this.state.email}
-              required
-              placeholder="a.person@me.com"
-            />
-            <FormErrorHandler error={email} />
-          </div>
-
-          <div className="field d-flex flex-space-between align-items-center">
-            <Button loading={this.props.loading} type="submit">
-              Send Reset Email
-            </Button>
-
-            <Link to={redirect.route}>{redirect.name} →</Link>
-          </div>
-        </form>
-      </AuthContainer>
+    toast.dismiss()
+    resetPassword.mutate(
+      { email },
+      {
+        onSuccess: (res) => {
+          const message = res?.detail
+          toast.success(message)
+        },
+        onSettled: () => {
+          setEmail("")
+        },
+        onError: () => {
+          toast.error("problem resetting password")
+        },
+      },
     )
   }
+
+  const errors = formatError(resetPassword.error)
+
+  const isLoggedIn = useSelector((state) => state.user.loggedIn)
+
+  const redirect = isLoggedIn
+    ? { name: "Home", route: "/" }
+    : { name: "Login", route: "/login" }
+
+  return (
+    <AuthContainer>
+      <Helmet title="Password Reset" />
+      <form className="box p-3" onSubmit={handleReset}>
+        <h1 className="title is-5 mb-2 fw-500">Password Reset</h1>
+
+        <FormErrorHandler error={errors.nonFieldErrors} />
+
+        <div className="field">
+          <label className="label">Email</label>
+          <EmailInput
+            autoFocus
+            onChange={(e) => {
+              setEmail(e.target.value)
+            }}
+            error={email != null}
+            name="email"
+            value={email}
+            required
+            placeholder="a.person@me.com"
+          />
+          <FormErrorHandler error={errors.email} />
+        </div>
+
+        <div className="field d-flex flex-space-between align-items-center">
+          <Button loading={resetPassword.isLoading} type="submit">
+            Send Reset Email
+          </Button>
+
+          <Link to={redirect.route}>{redirect.name} →</Link>
+        </div>
+      </form>
+    </AuthContainer>
+  )
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  reset: resetAsync(dispatch),
-})
-
-const mapStateToProps = (state: IState) => ({
-  loading: state.auth.loadingReset,
-  error: state.auth.errorReset,
-  loggedIn: state.user.loggedIn,
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(PasswordReset)
+export default PasswordReset

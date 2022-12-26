@@ -199,23 +199,13 @@ function NameForm(props: { initialValue: string }) {
   )
 }
 
-interface IChangePasswordProps {
-  readonly hasPassword: boolean
-}
-
-function ChangePassword({ hasPassword }: IChangePasswordProps) {
+function ChangePassword() {
   return (
     <div className="d-flex justify-space-between">
       <label className="better-label">Password</label>
-      {hasPassword ? (
-        <Link to="/password" className="has-text-primary">
-          Change Password
-        </Link>
-      ) : (
-        <Link to="/password/set" className="has-text-primary">
-          Set Password
-        </Link>
-      )}
+      <Link to="/password" className="has-text-primary">
+        Change Password
+      </Link>
     </div>
   )
 }
@@ -275,7 +265,7 @@ class Settings extends React.Component<ISettingsProps, ISettingsState> {
     const { email, editing } = this.state
     const { handleInputChange } = this
 
-    const { avatarURL, name, updatingEmail, loading, hasPassword } = this.props
+    const { avatarURL, name, updatingEmail, loading } = this.props
 
     if (loading) {
       return <Loader />
@@ -301,7 +291,7 @@ class Settings extends React.Component<ISettingsProps, ISettingsState> {
               updateEmail={this.updateEmail}
             />
             <NameForm initialValue={name} />
-            <ChangePassword hasPassword={hasPassword} />
+            <ChangePassword />
           </div>
         </div>
 
@@ -322,7 +312,6 @@ const mapStateToProps = (state: IState) => ({
   email: state.user.email,
   name: state.user.name,
   updatingEmail: state.user.updatingEmail,
-  hasPassword: state.user.hasUsablePassword,
   loading: state.user.loading,
 })
 
