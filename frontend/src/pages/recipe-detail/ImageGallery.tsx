@@ -25,6 +25,22 @@ const MyGalleryImgContainer = styled.div`
   display: flex;
   height: 100%;
 `
+const MyGalleryCacheImgContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  height: 100%;
+`
+
+const MyGalleryCacheImg = styled.img.attrs({ loading: "eager" })`
+  height: 100%;
+  width: 100%;
+  margin: auto;
+  object-fit: contain;
+`
 
 const MyGalleryScrollWrap = styled.div`
   position: absolute;
@@ -88,6 +104,21 @@ const TopRow = styled.div`
   grid-area: 1/1;
 `
 
+function buildSrcSetUrls(u: string): string {
+  const t = new URL(u)
+  let srcSet = u
+  for (const [width, quality] of [
+    ["3000", "30"],
+    ["2000", "40"],
+  ]) {
+    t.searchParams.set("w", width)
+    t.searchParams.set("q", quality)
+    srcSet = t.toString() + ` ${width}w, ` + srcSet
+  }
+  srcSet = imgixFmt(u) + ` 1200w, ` + srcSet
+  return srcSet
+}
+
 export const Gallery = (props: {
   onClose: () => void
   imageUrl: string
@@ -110,13 +141,21 @@ export const Gallery = (props: {
       props.onPrevious()
     }
   }
+
   const starColor = props.isPrimary ? "#ffbf00" : undefined
   return (
     <MyGalleryContainer>
       <MyGalleryBackground />
+      <MyGalleryCacheImgContainer>
+        <MyGalleryCacheImg src={imgixFmt(props.imageUrl)} />
+      </MyGalleryCacheImgContainer>
       <MyGalleryScrollWrap>
         <MyGalleryImgContainer onClick={onClick}>
-          <MyGalleryImg src={imgixFmt(props.imageUrl)} onClick={onClick} />
+          <MyGalleryImg
+            src={imgixFmt(props.imageUrl)}
+            srcSet={buildSrcSetUrls(props.imageUrl)}
+            onClick={onClick}
+          />
         </MyGalleryImgContainer>
         <MyGalleryControlOverlay>
           <TopRow>
