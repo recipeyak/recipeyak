@@ -41,6 +41,13 @@ const CardImg = styled.img`
   position: absolute;
   z-index: 1;
 `
+
+// TODO: add back background image with backdrop-filter: blur /
+// filter: blur when it isn't super slow in safari or when we add
+// windowing / virtualized lists or maybe an intersection observer?
+// rel: https://discourse.webflow.com/t/my-site-is-extremely-slow-in-safari-practically-unusable/167272/9
+// rel: https://graffino.com/til/CjT2jrcLHP-how-to-fix-filter-blur-performance-issue-in-safari
+// rel: https://stackoverflow.com/questions/31713468/css-blur-filter-performance
 const CardImgBg = styled.div<{ backgroundImage: string }>`
   height: 100%;
   width: 100%;
@@ -48,15 +55,6 @@ const CardImgBg = styled.div<{ backgroundImage: string }>`
   background-image: url(${(props) => props.backgroundImage});
   background-position: center;
   background-size: cover;
-  &:after {
-    position: absolute;
-    content: "";
-    height: 100%;
-    width: 100%;
-    border-radius: 6px;
-    backdrop-filter: blur(6px);
-    pointer-events: none;
-  }
 `
 const CardImgContainer = styled.div`
   min-height: 160px;
