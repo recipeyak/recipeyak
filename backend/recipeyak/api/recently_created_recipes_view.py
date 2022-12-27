@@ -12,7 +12,18 @@ from recipeyak.models import user_and_team_recipes
 @permission_classes((IsAuthenticated,))
 def get_recently_created_recipes(request: AuthedRequest) -> Response:
     recipes = [
-        {"id": r.id, "name": r.name}
+        {
+            "id": r.id,
+            "name": r.name,
+            "author": r.author,
+            "primaryImage": {
+                "id": r.primary_image.id,
+                "url": r.primary_image.public_url(),
+                "backgroundUrl": r.primary_image.background_url,
+            }
+            if r.primary_image is not None
+            else None,
+        }
         for r in user_and_team_recipes(user=request.user).order_by("-created")[:6]
     ]
     return Response(recipes)

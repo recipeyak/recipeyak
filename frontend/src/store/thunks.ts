@@ -34,7 +34,6 @@ import {
   fetchUser,
   IUser,
   IUserState,
-  setUserLoggedIn,
   updateEmail,
   updateScheduleTeamID,
 } from "@/store/reducers/user"
@@ -321,26 +320,3 @@ export const updatingTeamAsync =
       toast.error(message)
     }
   }
-
-export const deleteUserAccountAsync = (dispatch: Dispatch) => async () => {
-  const res = await api.deleteLoggedInUser()
-  if (isOk(res)) {
-    dispatch(setUserLoggedIn(false))
-    dispatch(push("/login"))
-    toast("Account deleted")
-  } else {
-    const error = res.error
-
-    if (
-      error.response &&
-      error.response.status === 403 &&
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      error.response.data.detail
-    ) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-      toast.error(error.response.data.detail)
-    } else {
-      toast.error("failed to delete account")
-    }
-  }
-}

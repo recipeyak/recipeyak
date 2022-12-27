@@ -82,24 +82,6 @@ def test_deleting_scheduled_recipe(
     assert not ScheduledRecipe.objects.filter(id=scheduled_recipe.id).exists()
 
 
-def test_fetching_scheduled_recipes(
-    client: APIClient, user: User, scheduled_recipe: ScheduledRecipe
-) -> None:
-    url = "/api/v1/t/me/calendar/"
-    client.force_authenticate(user)
-    res = client.get(url)
-    assert (
-        res.status_code == status.HTTP_400_BAD_REQUEST
-    ), "not providing start and end should result in a bad request"
-
-    res = client.get(url, {"start": date(1976, 1, 1), "end": date(1977, 1, 1)})
-    assert res.status_code == status.HTTP_200_OK
-    assert any(x["id"] == scheduled_recipe.id for x in res.json())
-    assert res.json()[0][
-        "created"
-    ], "ensure we have the created at property for sorting on the frontend"
-
-
 def test_deleting_recipe_deletes_scheduled_recipes(
     recipe: Recipe, scheduled_recipe: ScheduledRecipe, user: User
 ) -> None:

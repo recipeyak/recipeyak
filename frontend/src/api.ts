@@ -450,6 +450,15 @@ export function getCalendarRecipeListRequestBuilder({
           recipe: t.type({
             id: t.number,
             name: t.string,
+            author: t.union([t.string, t.null]),
+            primaryImage: t.union([
+              t.type({
+                id: t.string,
+                url: t.string,
+                backgroundUrl: t.union([t.string, t.null]),
+              }),
+              t.null,
+            ]),
           }),
         }),
       ),
@@ -459,7 +468,6 @@ export function getCalendarRecipeListRequestBuilder({
       }),
     }),
     params: {
-      v2: 1,
       start: toISODateString(start),
       end: toISODateString(end),
     },
@@ -494,6 +502,15 @@ export function recentlyViewedRecipes() {
       t.type({
         id: t.number,
         name: t.string,
+        author: t.union([t.string, t.null]),
+        primaryImage: t.union([
+          t.type({
+            id: t.number,
+            url: t.string,
+            backgroundUrl: t.union([t.string, t.null]),
+          }),
+          t.null,
+        ]),
       }),
     ),
   })
@@ -507,6 +524,15 @@ export function recentlyCreatedRecipes() {
       t.type({
         id: t.number,
         name: t.string,
+        author: t.union([t.string, t.null]),
+        primaryImage: t.union([
+          t.type({
+            id: t.number,
+            url: t.string,
+            backgroundUrl: t.union([t.string, t.null]),
+          }),
+          t.null,
+        ]),
       }),
     ),
   })

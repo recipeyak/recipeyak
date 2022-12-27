@@ -51,16 +51,16 @@ def get_scheduled_recipes(
     pk = team_pk
     if pk == "me":
         return ScheduledRecipe.objects.filter(user=request.user).select_related(
-            "recipe", "created_by"
+            "recipe", "created_by", "recipe__primary_image"
         )
     team = get_object_or_404(Team, pk=pk)
     return ScheduledRecipe.objects.filter(team=team).select_related(
-        "recipe", "created_by"
+        "recipe", "created_by", "recipe__primary_image"
     )
 
 
 class ScheduledRecipeSerializer(BaseModelSerializer):
-    recipe = RecipeSerializer(fields=("id", "name"))
+    recipe = RecipeSerializer(fields=("id", "name", "author", "primaryImage"))
     createdBy = serializers.SerializerMethodField()
 
     class Meta:
@@ -116,22 +116,19 @@ def calendar_list_get_view(request: AuthedRequest, team_pk: str) -> Response:
         queryset, many=True, context={"created_by"}
     ).data
 
-    if "v2" in request.query_params:
-        # HACK(sbdchd): we don't support the calendar stuff for personal
-        # schedules due to us storing info on the team membership.
-        if team_pk == "me":
-            return Response(
-                {
-                    "scheduledRecipes": scheduled_recipes,
-                    "settings": {"syncEnabled": False, "calendarLink": ""},
-                }
-            )
+    # HACK(sbdchd): we don't support the calendar stuff for personal
+    # schedules due to us storing info on the team membership.
+    if team_pk == "me":
+        return Response(
+            {
+                "scheduledRecipes": scheduled_recipes,
+                "settings": {"syncEnabled": False, "calendarLink": ""},
+            }
+        )
 
-        settings = get_cal_settings(request=request, team_pk=team_pk)
+    settings = get_cal_settings(request=request, team_pk=team_pk)
 
-        return Response({"scheduledRecipes": scheduled_recipes, "settings": settings})
-
-    return Response(scheduled_recipes, status=status.HTTP_200_OK)
+    return Response({"scheduledRecipes": scheduled_recipes, "settings": settings})
 
 
 @api_view(["GET", "POST"])

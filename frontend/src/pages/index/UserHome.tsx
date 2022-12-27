@@ -11,9 +11,11 @@ import { Link, useHistory } from "react-router-dom"
 import useOnClickOutside from "use-onclickoutside"
 
 import { isMobile } from "@/browser"
+import { Box } from "@/components/Box"
 import Footer from "@/components/Footer"
 import * as forms from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
+import { Image } from "@/components/Image"
 import { Loader } from "@/components/Loader"
 import { useDispatch, useScheduleTeamID, useSelector } from "@/hooks"
 import { useRecentlyCreatedRecipesList } from "@/queries/recentlyCreatedRecipesList"
@@ -25,6 +27,7 @@ import { getTeamRecipes } from "@/store/reducers/recipes"
 import { fetchingRecipeListAsync } from "@/store/thunks"
 import { css, styled } from "@/theme"
 import { updateQueryParamsAsync } from "@/utils/querystring"
+import { imgixFmt } from "@/utils/url"
 
 const SearchInput = styled(forms.SearchInput)`
   margin-bottom: 0.25rem;
@@ -67,9 +70,6 @@ const SectionTitle = styled.div`
   font-weight: 500;
 `
 
-const ScheduledRecipeContainer = styled.div`
-  display: flex;
-`
 const Day = styled.div`
   font-weight: bold;
   text-align: right;
@@ -78,42 +78,37 @@ const Day = styled.div`
   margin-right: 0.5rem;
   color: hsl(0 0% 40% / 1);
 `
-const Recipes = styled.div`
-  display: inline-grid;
-`
-
-const Recipe = styled(Link)`
-  overflow-x: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-`
 
 function ScheduledRecipe(props: {
   readonly day: string
-  readonly recipes: { readonly id: string; readonly name: string }[]
+  readonly recipes: Recipe[]
 }) {
   return (
-    <ScheduledRecipeContainer>
+    <Box>
       <Day>{props.day}</Day>
-      <Recipes>
+      <Box gap={1} dir="col" grow={1}>
         {props.recipes.length === 0 ? (
           <div className="text-muted">—</div>
         ) : null}
         {props.recipes.map((x) => (
-          <Recipe key={x.id} to={`/recipes/${x.id}`}>
-            {x.name}
-          </Recipe>
+          <RecipeSlide key={x.id} recipe={x} />
         ))}
-      </Recipes>
-    </ScheduledRecipeContainer>
+      </Box>
+    </Box>
   )
 }
+
+// TODO: make this take up the full width on mobile
 const ScheduleContainer = styled.div`
-  max-width: 300px;
-  width: 300px;
+  width: 100%;
+  @media (min-width: 530px) {
+    max-width: 350px;
+    width: 350px;
+  }
   border-radius: 6px;
   padding: 0.75rem;
   border: 1px solid lightgray;
+  font-size: 14px;
 `
 
 const SuggestionBox = styled.div`
@@ -184,8 +179,6 @@ const MatchType = styled.span`
   color: ${(props) => props.theme.color.muted};
 `
 
-const BrowseRecipes = styled(Link)``
-
 const BrowseRecipesContainer = styled.div`
   ${suggestionStyle}
   border-top-style: solid;
@@ -200,22 +193,28 @@ const NameAuthorContainer = styled.div`
   display: flex;
 `
 
-type Recipe = { readonly id: string; readonly name: string }
+type Recipe = {
+  readonly id: number | string
+  readonly name: string
+  readonly author: string | null
+  readonly primaryImage: {
+    id: number | string
+    url: string
+    backgroundUrl: string | null
+  } | null
+}
 type RecipeSchedule = { readonly day: string; readonly recipes: Recipe[] }
 
 function buildSchedule(
   schedule: readonly {
     readonly on: string
-    readonly recipe: {
-      readonly id: string
-      readonly name: string
-    }
+    readonly recipe: Recipe
   }[],
   start: Date,
   end: Date,
 ): readonly RecipeSchedule[] {
   const newSchedule: {
-    [key: string]: { id: string; name: string }[] | undefined
+    [key: string]: Recipe[] | undefined
   } = {}
   eachDayOfInterval({
     start,
@@ -232,6 +231,8 @@ function buildSchedule(
     newSchedule[date.toISOString()]?.push({
       id: x.recipe.id,
       name: x.recipe.name,
+      author: x.recipe.author,
+      primaryImage: x.recipe.primaryImage,
     })
   })
   return Object.entries(newSchedule).map(([key, value]): RecipeSchedule => {
@@ -254,6 +255,8 @@ function useSchedulePreview() {
       recipe: {
         id: scheduledRecipe.recipe.id.toString(),
         name: scheduledRecipe.recipe.name,
+        author: scheduledRecipe.recipe.author,
+        primaryImage: scheduledRecipe.recipe.primaryImage,
       },
     })),
     start,
@@ -269,12 +272,35 @@ function SchedulePreview() {
       <Link to={scheduleURL}>
         <SectionTitle>Schedule</SectionTitle>
       </Link>
-      <div>
+      <Box gap={2} dir="col">
         {scheduledRecipes?.map((x) => (
           <ScheduledRecipe key={x.day} day={x.day} recipes={x.recipes} />
         ))}
-      </div>
+      </Box>
     </ScheduleContainer>
+  )
+}
+
+function RecipeSlide({ recipe: r }: { recipe: Recipe }) {
+  return (
+    <Link key={r.id} to={`/recipes/${r.id}`}>
+      <Box key={r.id} gap={2}>
+        <Image
+          width={48}
+          height={48}
+          sources={
+            r.primaryImage && {
+              url: imgixFmt(r.primaryImage.url),
+              backgroundUrl: r.primaryImage.backgroundUrl,
+            }
+          }
+        />
+        <Box dir="col" w={100}>
+          <div className="text-truncate">{r.name}</div>
+          <small className="text-truncate">{r.author}</small>
+        </Box>
+      </Box>
+    </Link>
   )
 }
 
@@ -284,21 +310,17 @@ function RecentlyViewed() {
   return (
     <ScheduleContainer>
       <SectionTitle>Recently Viewed</SectionTitle>
-      <div className="d-flex flex-direction-column">
+      <Box dir="col" gap={2}>
         {recipes.isError ? (
           <div>error loading</div>
         ) : recipes.data == null ? (
           <Loader align="left" />
         ) : recipes.data.length === 0 ? (
-          <p>no recipes viewed</p>
+          <div>no recipes viewed</div>
         ) : (
-          recipes.data.map((r) => (
-            <Recipe key={r.id} to={`/recipes/${r.id}`}>
-              {r.name}
-            </Recipe>
-          ))
+          recipes.data.map((r) => <RecipeSlide key={r.id} recipe={r} />)
         )}
-      </div>
+      </Box>
     </ScheduleContainer>
   )
 }
@@ -309,7 +331,7 @@ function RecentlyCreated() {
   return (
     <ScheduleContainer>
       <SectionTitle>Recently Created</SectionTitle>
-      <div className="d-flex flex-direction-column">
+      <Box dir="col" gap={2}>
         {recipes.isError ? (
           <div>error loading</div>
         ) : recipes.data == null ? (
@@ -317,13 +339,9 @@ function RecentlyCreated() {
         ) : recipes.data.length === 0 ? (
           <p>no recipes viewed</p>
         ) : (
-          recipes.data.map((r) => (
-            <Recipe key={r.id} to={`/recipes/${r.id}`}>
-              {r.name}
-            </Recipe>
-          ))
+          recipes.data.map((r) => <RecipeSlide key={r.id} recipe={r} />)
         )}
-      </div>
+      </Box>
     </ScheduleContainer>
   )
 }
@@ -450,14 +468,14 @@ const UserHome = () => {
                         matches: {filteredRecipes.recipes.length}
                       </MatchType>
 
-                      <BrowseRecipes
+                      <Link
                         to={{
                           pathname: "/recipes",
                           search: `search=${encodeURIComponent(searchQuery)}`,
                         }}
                       >
                         Browse
-                      </BrowseRecipes>
+                      </Link>
                     </BrowseRecipesContainer>
                   </>
                 ) : (
