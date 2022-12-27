@@ -128,9 +128,9 @@ a {
 .recipe-grid,
 .grid-container {
   display: grid;
-  // basically (1000px - (4 * gap)) / 4 rows  -> 225px
-  grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
-  gap: 1rem;
+  // support two columns on iOS.
+  grid-template-columns: repeat(auto-fit, 160px);
+  gap: 0.5rem;
 }
 
 .card {
