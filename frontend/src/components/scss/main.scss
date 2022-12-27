@@ -130,7 +130,6 @@ a {
   display: grid;
   // support two columns on iOS.
 
-
   @media (max-width: 449px) {
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 0.5rem;
