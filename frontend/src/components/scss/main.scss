@@ -129,8 +129,16 @@ a {
 .grid-container {
   display: grid;
   // support two columns on iOS.
-  grid-template-columns: repeat(auto-fit, 160px);
-  gap: 0.5rem;
+
+
+  @media (max-width: 449px) {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.5rem;
+  }
+  @media (min-width: 450px) {
+    grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
+    gap: 1rem;
+  }
 }
 
 .card {
