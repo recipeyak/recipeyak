@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 
 import { classNames } from "@/classnames"
 import { DragIcon } from "@/components/icons"
+import { Image } from "@/components/Image"
 import { DragDrop } from "@/dragDrop"
 import { Match } from "@/search"
 import { IRecipe } from "@/store/reducers/recipes"
@@ -34,28 +35,6 @@ const Ingredient = styled.small`
   text-overflow: ellipsis;
 `
 
-const CardImg = styled.img`
-  height: 100%;
-  width: 100%;
-  object-fit: cover;
-  position: absolute;
-  z-index: 1;
-`
-
-// TODO: add back background image with backdrop-filter: blur /
-// filter: blur when it isn't super slow in safari or when we add
-// windowing / virtualized lists or maybe an intersection observer?
-// rel: https://discourse.webflow.com/t/my-site-is-extremely-slow-in-safari-practically-unusable/167272/9
-// rel: https://graffino.com/til/CjT2jrcLHP-how-to-fix-filter-blur-performance-issue-in-safari
-// rel: https://stackoverflow.com/questions/31713468/css-blur-filter-performance
-const CardImgBg = styled.div<{ backgroundImage: string }>`
-  height: 100%;
-  width: 100%;
-  position: relative;
-  background-image: url(${(props) => props.backgroundImage});
-  background-position: center;
-  background-size: cover;
-`
 const CardImgContainer = styled.div`
   @media (max-width: 449px) {
     min-height: 128px;
@@ -65,8 +44,6 @@ const CardImgContainer = styled.div`
     min-height: 180px;
     max-height: 180px;
   }
-  background-color: rgb(237, 237, 237);
-  position: relative;
 `
 
 type IRecipeItemProps = {
@@ -122,14 +99,21 @@ function RecipeListItem({
   return (
     <Link tabIndex={0} to={url} className="card">
       <CardImgContainer>
-        {props.primaryImage != null && (
-          <>
-            <CardImg src={imgixFmt(props.primaryImage?.url ?? "")} />
-            <CardImgBg
-              backgroundImage={props.primaryImage.backgroundUrl ?? ""}
-            />
-          </>
-        )}
+        <Image
+          sources={
+            props.primaryImage && {
+              url: imgixFmt(props.primaryImage.url ?? ""),
+              backgroundUrl: props.primaryImage.backgroundUrl ?? "",
+            }
+          }
+          // TODO: add back background image with backdrop-filter: blur /
+          // filter: blur when it isn't super slow in safari or when we add
+          // windowing / virtualized lists or maybe an intersection observer?
+          // rel: https://discourse.webflow.com/t/my-site-is-extremely-slow-in-safari-practically-unusable/167272/9
+          // rel: https://graffino.com/til/CjT2jrcLHP-how-to-fix-filter-blur-performance-issue-in-safari
+          // rel: https://stackoverflow.com/questions/31713468/css-blur-filter-performance
+          blur="none"
+        />
       </CardImgContainer>
       {recipeContent}
     </Link>
