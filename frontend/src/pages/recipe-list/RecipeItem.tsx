@@ -57,8 +57,8 @@ const CardImgBg = styled.div<{ backgroundImage: string }>`
   background-size: cover;
 `
 const CardImgContainer = styled.div`
-  min-height: 120px;
-  max-height: 120px;
+  min-height: 180px;
+  max-height: 180px;
   background-color: rgb(237, 237, 237);
   position: relative;
 `
