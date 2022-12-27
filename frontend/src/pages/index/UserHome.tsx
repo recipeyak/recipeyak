@@ -27,6 +27,7 @@ import { getTeamRecipes } from "@/store/reducers/recipes"
 import { fetchingRecipeListAsync } from "@/store/thunks"
 import { css, styled } from "@/theme"
 import { updateQueryParamsAsync } from "@/utils/querystring"
+import { imgixFmt } from "@/utils/url"
 
 const SearchInput = styled(forms.SearchInput)`
   margin-bottom: 0.25rem;
@@ -289,7 +290,7 @@ function RecipeSlide({ recipe: r }: { recipe: Recipe }) {
           height={48}
           sources={
             r.primaryImage && {
-              url: r.primaryImage.url,
+              url: imgixFmt(r.primaryImage.url),
               backgroundUrl: r.primaryImage.backgroundUrl,
             }
           }
