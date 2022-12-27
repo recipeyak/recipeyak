@@ -1,9 +1,8 @@
 import { AxiosError } from "axios"
-import React from "react"
-import { connect } from "react-redux"
+import React, { useState } from "react"
 import { Link, useHistory } from "react-router-dom"
 
-import * as api from "@/api"
+import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
@@ -11,10 +10,9 @@ import { Loader } from "@/components/Loader"
 import { useDispatch } from "@/hooks"
 import Sessions from "@/pages/settings/Sessions"
 import { useUserDelete } from "@/queries/userDelete"
-import { isOk } from "@/result"
-import { fetchUser, setUserLoggedIn } from "@/store/reducers/user"
-import { IState } from "@/store/store"
-import { Dispatch, fetchingUserAsync, updatingEmailAsync } from "@/store/thunks"
+import { useUserFetch } from "@/queries/userFetch"
+import { useUserUpdate } from "@/queries/userUpdate"
+import { setUserLoggedIn } from "@/store/reducers/user"
 import { toast } from "@/toast"
 
 function Export() {
@@ -36,8 +34,10 @@ function DangerZone() {
   const history = useHistory()
   const dispatch = useDispatch()
   const deleteUserAccount = () => {
-    const response = prompt(ACCOUNT_DELETION_PROMPT)
-    if (response != null && response.toLowerCase() === DELETION_RESPONSE) {
+    const response = prompt(
+      "Are you sure you want to permanently delete your account? \nPlease type, 'delete my account', to irrevocably delete your account",
+    )
+    if (response != null && response.toLowerCase() === "delete my account") {
       deleteUser.mutate(undefined, {
         onSuccess: () => {
           // TODO: we should have a general "delete all the data thing" that clears the caches as well.
@@ -93,75 +93,111 @@ function ProfileImg({ avatarURL }: IProfileImgProps) {
 }
 
 interface IEmailEditForm {
-  readonly updateEmail: () => void
   readonly email: string
-  readonly editing: boolean
-  readonly updatingEmail: boolean
-  readonly handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-  readonly cancelEdit: () => void
-  readonly edit: () => void
 }
 
 function EmailEditForm(props: IEmailEditForm) {
+  const updateEmail = useUserUpdate()
+  const [email, setEmail] = useState("")
+  const [isEditing, setIsEditing] = useState(false)
+  const cancelEdit = () => {
+    setEmail(props.email)
+    setIsEditing(false)
+  }
   return (
     <form
-      className="d-flex align-center"
+      className="d-flex flex-column"
       onSubmit={(e) => {
         e.preventDefault()
-        props.updateEmail()
+        updateEmail.mutate(
+          {
+            email,
+          },
+          {
+            onSuccess: () => {
+              setIsEditing(false)
+              toast.success("updated email")
+            },
+            onError: (error) => {
+              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+              const err = error as AxiosError | undefined
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+              const messageExtra = err?.response?.data.email?.[0].includes(
+                "email already exists",
+              )
+                ? "- email already in use"
+                : ""
+              toast.error(`problem updating email ${messageExtra}`)
+            },
+          },
+        )
       }}
     >
-      <label className="better-label">Email</label>
-      {props.editing ? (
-        <TextInput
-          onKeyDown={(e) => {
-            if (e.key === "Escape") {
-              props.cancelEdit()
-            }
-          }}
-          autoFocus
-          defaultValue={props.email}
-          onChange={props.handleInputChange}
-          name="email"
-        />
-      ) : (
-        <span>{props.email}</span>
-      )}
-      {props.editing ? (
-        <div className="d-flex">
-          <Button
-            className="ml-2"
-            disabled={props.updatingEmail}
-            name="email"
-            onClick={props.cancelEdit}
-            value="save email"
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="primary"
-            className="ml-2"
-            name="email"
-            type="submit"
-            loading={props.updatingEmail}
-            value="save email"
-          >
-            Save
-          </Button>
-        </div>
-      ) : (
-        <a className="ml-2 has-text-primary" onClick={props.edit}>
-          Edit
-        </a>
-      )}
+      <Box dir="col">
+        <label className="better-label">Email</label>
+        <Box gap={2}>
+          {isEditing ? (
+            <TextInput
+              onKeyDown={(e) => {
+                if (e.key === "Escape") {
+                  cancelEdit()
+                }
+              }}
+              autoFocus
+              defaultValue={props.email}
+              onChange={(e) => {
+                setEmail(e.target.value)
+              }}
+              name="email"
+            />
+          ) : (
+            <span>{props.email}</span>
+          )}
+          {isEditing ? (
+            <Box gap={2}>
+              <Button
+                disabled={updateEmail.isLoading}
+                name="email"
+                size="small"
+                onClick={() => {
+                  cancelEdit()
+                }}
+                value="save email"
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="primary"
+                size="small"
+                name="email"
+                type="submit"
+                loading={updateEmail.isLoading}
+                value="save email"
+              >
+                Save
+              </Button>
+            </Box>
+          ) : (
+            <Button
+              size="small"
+              variant="secondary"
+              onClick={() => {
+                setIsEditing(true)
+              }}
+            >
+              Edit
+            </Button>
+          )}
+        </Box>
+      </Box>
     </form>
   )
 }
 
 function NameForm(props: { initialValue: string }) {
   const [editing, setEditing] = React.useState(false)
-  const dispatch = useDispatch()
   const [name, setName] = React.useState(props.initialValue)
+  const updateUser = useUserUpdate()
   function cancelEdit() {
     setEditing(false)
     setName(props.initialValue)
@@ -174,178 +210,103 @@ function NameForm(props: { initialValue: string }) {
       className="d-flex align-center"
       onSubmit={(e) => {
         e.preventDefault()
-        void api.updateUser({ name }).then((res) => {
-          if (isOk(res)) {
-            dispatch(fetchUser.success(res.data))
-            setName(res.data.name)
-            setEditing(false)
-          } else {
-            toast.error("failed to update name")
-          }
-        })
+        updateUser.mutate(
+          { name },
+          {
+            onSuccess: () => {
+              setEditing(false)
+            },
+            onError: () => {
+              toast.error("failed to update name")
+            },
+          },
+        )
       }}
     >
-      <label className="better-label">Name</label>
-      {editing ? (
-        <TextInput
-          onKeyDown={(e) => {
-            if (e.key === "Escape") {
-              cancelEdit()
-            }
-          }}
-          autoFocus
-          defaultValue={name}
-          onChange={(val) => {
-            setName(val.target.value)
-          }}
-        />
-      ) : (
-        <span>{name}</span>
-      )}
-      {editing ? (
-        <div className="d-flex">
-          <Button className="ml-2" type="button" onClick={cancelEdit}>
-            Cancel
-          </Button>
-          <Button variant="primary" className="ml-2" type="submit">
-            Save
-          </Button>
-        </div>
-      ) : (
-        <a
-          className="ml-2 has-text-primary"
-          onClick={() => {
-            setEditing((s) => !s)
-          }}
-        >
-          Edit
-        </a>
-      )}
+      <Box dir="col">
+        <label className="better-label">Name</label>
+        <Box gap={2}>
+          {editing ? (
+            <TextInput
+              onKeyDown={(e) => {
+                if (e.key === "Escape") {
+                  cancelEdit()
+                }
+              }}
+              autoFocus
+              defaultValue={name}
+              onChange={(val) => {
+                setName(val.target.value)
+              }}
+            />
+          ) : (
+            <span>{name}</span>
+          )}
+          {editing ? (
+            <Box gap={2}>
+              <Button type="button" size="small" onClick={cancelEdit}>
+                Cancel
+              </Button>
+              <Button variant="primary" size="small" type="submit">
+                Save
+              </Button>
+            </Box>
+          ) : (
+            <Button
+              size="small"
+              variant="secondary"
+              onClick={() => {
+                setEditing((s) => !s)
+              }}
+            >
+              Edit
+            </Button>
+          )}
+        </Box>
+      </Box>
     </form>
   )
 }
 
 function ChangePassword() {
   return (
-    <div className="d-flex justify-space-between">
+    <Box dir="col">
       <label className="better-label">Password</label>
       <Link to="/password" className="has-text-primary">
         Change Password
       </Link>
+    </Box>
+  )
+}
+
+function Settings() {
+  const userInfo = useUserFetch()
+
+  if (!userInfo.isSuccess) {
+    return <Loader />
+  }
+
+  return (
+    <div>
+      <Helmet title="Settings" />
+
+      <h1 className="fs-8">User settings</h1>
+
+      <Box dir="col">
+        <ProfileImg avatarURL={userInfo.data.avatar_url} />
+
+        <Box dir="col" style={{ maxWidth: 400 }}>
+          <EmailEditForm email={userInfo.data.email} />
+          <NameForm initialValue={userInfo.data.name} />
+          <ChangePassword />
+        </Box>
+      </Box>
+
+      <Export />
+      <Sessions />
+      <DangerZone />
     </div>
   )
 }
 
-export interface ISettingsProps {
-  readonly fetchData: () => void
-  readonly deleteUserAccount: () => void
-  readonly email: string
-  readonly name: string
-  readonly updateEmail: (email: string) => Promise<void>
-  readonly avatarURL: string
-  readonly updatingEmail: boolean
-  readonly loading: boolean
-  readonly hasPassword: boolean
-}
-interface ISettingsState {
-  readonly email: string
-  readonly editing: boolean
-}
-class Settings extends React.Component<ISettingsProps, ISettingsState> {
-  state: ISettingsState = {
-    email: this.props.email,
-    editing: false,
-  }
-
-  componentWillReceiveProps = (nextProps: ISettingsProps) => {
-    this.setState({ email: nextProps.email })
-  }
-
-  componentWillMount = () => {
-    this.props.fetchData()
-  }
-
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    /* eslint-disable @typescript-eslint/consistent-type-assertions */
-    this.setState({
-      [e.target.name]: e.target.value,
-    } as unknown as ISettingsState)
-    /* eslint-enable @typescript-eslint/consistent-type-assertions */
-  }
-
-  cancelEdit = () => {
-    this.setState({ editing: false })
-  }
-
-  edit = () => {
-    this.setState({ editing: true })
-  }
-
-  updateEmail = () => {
-    void this.props.updateEmail(this.state.email).then(() => {
-      this.setState({ editing: false })
-    })
-  }
-
-  render() {
-    const { email, editing } = this.state
-    const { handleInputChange } = this
-
-    const { avatarURL, name, updatingEmail, loading } = this.props
-
-    if (loading) {
-      return <Loader />
-    }
-
-    return (
-      <>
-        <Helmet title="Settings" />
-
-        <h1 className="fs-8">User settings</h1>
-
-        <div className="d-flex">
-          <ProfileImg avatarURL={avatarURL} />
-
-          <div className="align-self-center d-flex flex-direction-column">
-            <EmailEditForm
-              email={email}
-              editing={editing}
-              cancelEdit={this.cancelEdit}
-              edit={this.edit}
-              updatingEmail={updatingEmail}
-              handleInputChange={handleInputChange}
-              updateEmail={this.updateEmail}
-            />
-            <NameForm initialValue={name} />
-            <ChangePassword />
-          </div>
-        </div>
-
-        <Export />
-        <Sessions />
-        <DangerZone />
-      </>
-    )
-  }
-}
-
-const ACCOUNT_DELETION_PROMPT =
-  "Are you sure you want to permanently delete your account? \nPlease type, 'delete my account', to irrevocably delete your account"
-const DELETION_RESPONSE = "delete my account"
-
-const mapStateToProps = (state: IState) => ({
-  avatarURL: state.user.avatarURL,
-  email: state.user.email,
-  name: state.user.name,
-  updatingEmail: state.user.updatingEmail,
-  loading: state.user.loading,
-})
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchData: () => {
-    void fetchingUserAsync(dispatch)()
-  },
-  updateEmail: updatingEmailAsync(dispatch),
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Settings)
+export default Settings

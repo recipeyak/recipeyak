@@ -7,7 +7,7 @@ import { FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { useDispatch } from "@/hooks"
 import { useAuthPasswordResetConfirm } from "@/queries/authPasswordResetConfirm"
-import { fetchUser } from "@/store/reducers/user"
+import { cacheUserInfo } from "@/store/reducers/user"
 import { toast } from "@/toast"
 
 type RouteProps = RouteComponentProps<{ uid: string; token: string }>
@@ -64,7 +64,7 @@ function PasswordResetConfirmation(props: RouteProps) {
       },
       {
         onSuccess: (res) => {
-          dispatch(fetchUser.success(res))
+          dispatch(cacheUserInfo(res))
           history.push("/")
         },
         onSettled: () => {

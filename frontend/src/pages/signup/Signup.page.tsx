@@ -8,7 +8,7 @@ import { EmailInput, FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { useDispatch } from "@/hooks"
 import { useAuthSignup } from "@/queries/authSignup"
-import { fetchUser } from "@/store/reducers/user"
+import { cacheUserInfo } from "@/store/reducers/user"
 
 function formatError(error: unknown) {
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -56,7 +56,7 @@ function Signup() {
       },
       {
         onSuccess: (res) => {
-          dispatch(fetchUser.success(res.user))
+          dispatch(cacheUserInfo(res.user))
           history.push("/recipes/add")
         },
       },

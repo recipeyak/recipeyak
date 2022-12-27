@@ -30,7 +30,11 @@ import shoppinglist, {
   ShoppingListActions,
 } from "@/store/reducers/shoppinglist"
 import teams, { ITeamsState, TeamsActions } from "@/store/reducers/teams"
-import user, { fetchUser, IUserState, UserActions } from "@/store/reducers/user"
+import user, {
+  cacheUserInfo,
+  IUserState,
+  UserActions,
+} from "@/store/reducers/user"
 
 const createStore: StoreCreator = basicCreateStore
 
@@ -85,7 +89,7 @@ export function rootReducer(
   if (state == null || action.type === "@@RESET") {
     return recipeApp(undefined, action)
   }
-  if (action.type === getType(fetchUser.success) && !action.payload) {
+  if (action.type === getType(cacheUserInfo) && !action.payload) {
     return {
       ...recipeApp(undefined, action),
       router: state.router,
