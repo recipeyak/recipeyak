@@ -113,6 +113,7 @@ function RecipeListItem({
           // rel: https://graffino.com/til/CjT2jrcLHP-how-to-fix-filter-blur-performance-issue-in-safari
           // rel: https://stackoverflow.com/questions/31713468/css-blur-filter-performance
           blur="none"
+          rounded={false}
         />
       </CardImgContainer>
       {recipeContent}
