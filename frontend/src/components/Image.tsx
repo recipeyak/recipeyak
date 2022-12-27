@@ -1,4 +1,4 @@
-import { css, styled } from "@/theme"
+import { styled } from "@/theme"
 import { imgixFmt } from "@/utils/url"
 
 const CardImgContainer = styled.div<{
