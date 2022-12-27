@@ -9,7 +9,7 @@ import { Button } from "@/components/Buttons"
 import { FormErrorHandler, PasswordInput, TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { useAuthLogin } from "@/queries/authLogin"
-import { fetchUser } from "@/store/reducers/user"
+import { cacheUserInfo } from "@/store/reducers/user"
 
 function formatError(error: unknown) {
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -51,7 +51,7 @@ export default function Login() {
       {
         onSuccess: (res) => {
           // TODO: move this stuff into react-query or something
-          dispatch(fetchUser.success(res.user))
+          dispatch(cacheUserInfo(res.user))
           history.push(location.state?.from ?? {})
         },
       },

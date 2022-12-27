@@ -16,6 +16,7 @@ export function Box({
   grow,
   wrap,
   lineHeight,
+  style,
 }: {
   dir?: "col" | "row"
   children: React.ReactNode
@@ -30,6 +31,7 @@ export function Box({
   grow?: 1
   wrap?: true
   lineHeight?: "tight"
+  style?: React.CSSProperties
 }) {
   return (
     <div
@@ -68,6 +70,7 @@ export function Box({
         lineHeight === "tight" && "line-height-tight",
       )}
       children={children}
+      style={style}
     />
   )
 }

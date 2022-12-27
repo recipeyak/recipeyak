@@ -1,5 +1,4 @@
 import { isSameDay } from "date-fns"
-import { isRight } from "fp-ts/lib/Either"
 import { debounce } from "lodash-es"
 import React from "react"
 import {
@@ -8,11 +7,9 @@ import {
   useSelector as useSelectorRedux,
 } from "react-redux"
 
-import { HttpRequestObjResult } from "@/http"
 import { scheduleURLFromTeamID } from "@/store/mapState"
 import { IState } from "@/store/store"
 import { Dispatch } from "@/store/thunks"
-import { Failure, Loading, Success, WebData } from "@/webdata"
 
 export function useCurrentDay() {
   const [date, setDate] = React.useState(new Date())
@@ -142,45 +139,6 @@ export function useScheduleTeamID() {
 }
 
 export const useScheduleURL = () => useSelector(scheduleURLFromTeamID)
-
-// global, module level cache.
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const USE_STATE_CACHE: Record<string, any> = new Map()
-
-function useStateCached<T>(key: string): [T | undefined, (x: T) => void] {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  const [localState, setLocalState] = React.useState<T>(USE_STATE_CACHE[key])
-  const setState = React.useCallback(
-    (newState: T) => {
-      setLocalState(newState)
-      USE_STATE_CACHE[key] = newState
-    },
-    [key, setLocalState],
-  )
-
-  return [localState, setState]
-}
-
-export function useApi<A, O, T>(
-  request: HttpRequestObjResult<A, O, T>,
-): WebData<A> {
-  const [data, setData] = useStateCached<WebData<A>>(request.getCacheKey())
-  React.useEffect(() => {
-    if (data == null) {
-      setData(Loading())
-    }
-    void request.send().then((res) => {
-      if (isRight(res)) {
-        setData(Success(res.right))
-        return
-      }
-      setData(Failure())
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [request.getCacheKey()])
-  return data
-}
 
 export function useCurrentUser() {
   return useSelector((s) => s.user)
