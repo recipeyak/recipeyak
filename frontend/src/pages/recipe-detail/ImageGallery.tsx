@@ -25,7 +25,7 @@ const MyGalleryImgContainer = styled.div`
   display: flex;
   height: 100%;
 `
-const MyGalleryCacheImgContainer = styled.div`
+const GalleryImgThumbnailContainer = styled.div`
   position: absolute;
   top: 0;
   left: 0;
@@ -35,9 +35,8 @@ const MyGalleryCacheImgContainer = styled.div`
   height: 100%;
 `
 
-const MyGalleryCacheImg = styled.img.attrs({ loading: "eager" })`
+const GalleryImgThumbail = styled.img.attrs({ loading: "eager" })`
   height: 100%;
-  width: 100%;
   margin: auto;
   object-fit: contain;
 `
@@ -60,11 +59,7 @@ const MyGalleryBackground = styled.div`
   height: 100%;
 `
 
-const ButtonSecondary = (props: React.ComponentProps<typeof Button>) => (
-  <Button variant="secondary" {...props} />
-)
-
-const MyGalleryButton = styled(ButtonSecondary)`
+const MyGalleryButton = styled(Button).attrs({ variant: "secondary" })`
   background: rgba(0, 0, 0, 0.46);
   color: white;
   border-style: none !important;
@@ -146,12 +141,19 @@ export const Gallery = (props: {
   return (
     <MyGalleryContainer>
       <MyGalleryBackground />
-      <MyGalleryCacheImgContainer>
-        <MyGalleryCacheImg src={imgixFmt(props.imageUrl)} />
-      </MyGalleryCacheImgContainer>
+      {/** we reuse the common imgix URL in the background and overlay a higher resolution image.
+       * This way we'll have an image immediately and can load a higher resolution image gradually.
+       */}
+      <GalleryImgThumbnailContainer>
+        <GalleryImgThumbail
+          key={imgixFmt(props.imageUrl)}
+          src={imgixFmt(props.imageUrl)}
+        />
+      </GalleryImgThumbnailContainer>
       <MyGalleryScrollWrap>
         <MyGalleryImgContainer onClick={onClick}>
           <MyGalleryImg
+            key={imgixFmt(props.imageUrl)}
             src={imgixFmt(props.imageUrl)}
             srcSet={buildSrcSetUrls(props.imageUrl)}
             onClick={onClick}
