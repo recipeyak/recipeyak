@@ -517,6 +517,20 @@
   word-break: break-word;
 }
 
+.line-height-tight {
+  line-height: 1.3rem;
+}
+
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  white-space: normal;
+}
+
 @for $i from 0 through 10 {
   .br-#{$i}p {
     border-radius: $i * 10%;

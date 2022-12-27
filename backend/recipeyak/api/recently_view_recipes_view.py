@@ -12,8 +12,19 @@ from recipeyak.models import RecipeView
 @permission_classes((IsAuthenticated,))
 def get_recently_viewed_recipes(request: AuthedRequest) -> Response:
     recipes = [
-        {"id": rv.recipe.id, "name": rv.recipe.name}
-        for rv in RecipeView.objects.select_related("recipe")
+        {
+            "id": rv.recipe.id,
+            "name": rv.recipe.name,
+            "author": rv.recipe.author,
+            "primaryImage": {
+                "id": rv.recipe.primary_image.id,
+                "url": rv.recipe.primary_image.public_url(),
+                "backgroundUrl": rv.recipe.primary_image.background_url,
+            }
+            if rv.recipe.primary_image is not None
+            else None,
+        }
+        for rv in RecipeView.objects.select_related("recipe__primary_image")
         .filter(user=request.user)
         .order_by("-last_visited_at")[:6]
     ]

@@ -26,6 +26,7 @@ def public_url(key: str) -> str:
 
 
 class Upload(CommonInfo):
+    id: int
     created_by = models.ForeignKey["User"](
         "User", related_name="uploads", on_delete=models.PROTECT
     )

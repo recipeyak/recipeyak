@@ -204,7 +204,7 @@ function Nav({ dayTs, teamID, onPrev, onNext, onCurrent }: INavProps) {
           <IconSettings />
         </Button>
         <Button size="small" onClick={toggleShopping}>
-          Shopping
+          Shop
         </Button>
       </Box>
       <Box gap={1}>

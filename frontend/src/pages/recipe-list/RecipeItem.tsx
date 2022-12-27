@@ -96,9 +96,9 @@ function RecipeListItem({
 
   const recipeContent = (
     <div className="h-100 p-2 pt-0">
-      <Link tabIndex={0} to={url} className="mb-1">
+      <div tabIndex={0} className="mb-1">
         {name}
-      </Link>
+      </div>
 
       {ingredientMatch != null ? (
         <Ingredient>{ingredientMatch.value}</Ingredient>

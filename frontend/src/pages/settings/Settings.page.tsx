@@ -1,6 +1,7 @@
+import { AxiosError } from "axios"
 import React from "react"
 import { connect } from "react-redux"
-import { Link } from "react-router-dom"
+import { Link, useHistory } from "react-router-dom"
 
 import * as api from "@/api"
 import { Button } from "@/components/Buttons"
@@ -9,15 +10,11 @@ import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
 import { useDispatch } from "@/hooks"
 import Sessions from "@/pages/settings/Sessions"
+import { useUserDelete } from "@/queries/userDelete"
 import { isOk } from "@/result"
-import { fetchUser } from "@/store/reducers/user"
+import { fetchUser, setUserLoggedIn } from "@/store/reducers/user"
 import { IState } from "@/store/store"
-import {
-  deleteUserAccountAsync,
-  Dispatch,
-  fetchingUserAsync,
-  updatingEmailAsync,
-} from "@/store/thunks"
+import { Dispatch, fetchingUserAsync, updatingEmailAsync } from "@/store/thunks"
 import { toast } from "@/toast"
 
 function Export() {
@@ -34,15 +31,44 @@ function Export() {
   )
 }
 
-interface IDangerZoneProps {
-  readonly deleteAccount: () => void
-}
-
-function DangerZone(props: IDangerZoneProps) {
+function DangerZone() {
+  const deleteUser = useUserDelete()
+  const history = useHistory()
+  const dispatch = useDispatch()
+  const deleteUserAccount = () => {
+    const response = prompt(ACCOUNT_DELETION_PROMPT)
+    if (response != null && response.toLowerCase() === DELETION_RESPONSE) {
+      deleteUser.mutate(undefined, {
+        onSuccess: () => {
+          // TODO: we should have a general "delete all the data thing" that clears the caches as well.
+          dispatch(setUserLoggedIn(false))
+          history.push("/login")
+          toast("Account deleted")
+        },
+        onError: (error: unknown) => {
+          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+          const err = error as AxiosError | undefined
+          if (err == null) {
+            return
+          }
+          if (
+            err.response?.status === 403 &&
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            err.response.data.detail
+          ) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+            toast.error(err.response.data.detail)
+          } else {
+            toast.error("failed to delete account")
+          }
+        },
+      })
+    }
+  }
   return (
     <>
       <h1 className="fs-6">Danger Zone</h1>
-      <a onClick={props.deleteAccount} className="has-text-danger">
+      <a onClick={deleteUserAccount} className="has-text-danger">
         permanently delete my account
       </a>
     </>
@@ -297,7 +323,7 @@ class Settings extends React.Component<ISettingsProps, ISettingsState> {
 
         <Export />
         <Sessions />
-        <DangerZone deleteAccount={this.props.deleteUserAccount} />
+        <DangerZone />
       </>
     )
   }
@@ -318,12 +344,6 @@ const mapStateToProps = (state: IState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchData: () => {
     void fetchingUserAsync(dispatch)()
-  },
-  deleteUserAccount: () => {
-    const response = prompt(ACCOUNT_DELETION_PROMPT)
-    if (response != null && response.toLowerCase() === DELETION_RESPONSE) {
-      void deleteUserAccountAsync(dispatch)()
-    }
   },
   updateEmail: updatingEmailAsync(dispatch),
 })
