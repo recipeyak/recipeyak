@@ -128,7 +128,7 @@ type RequestOptions<A, O, T> = {
   readonly data?: T
 }
 
-export type HttpRequestObjResult<A, O, T> = RequestOptions<A, O, T> & {
+type HttpRequestObjResult<A, O, T> = RequestOptions<A, O, T> & {
   send: () => Promise<Either<t.Errors | AxiosError | Error, A>>
   getCacheKey: () => string
 }

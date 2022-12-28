@@ -1,4 +1,3 @@
-import React from "react"
 import { Link } from "react-router-dom"
 
 import { Avatar } from "@/components/Avatar"
@@ -10,10 +9,10 @@ import {
 } from "@/components/Dropdown"
 import Logo from "@/components/Logo"
 import { NavLink } from "@/components/Routing"
-import { useDispatch, useSelector } from "@/hooks"
+import { useSelector } from "@/hooks"
 import { useAuthLogout } from "@/queries/authLogout"
+import { useUserFetch } from "@/queries/userFetch"
 import { scheduleURLFromTeamID } from "@/store/mapState"
-import { fetchingUserAsync } from "@/store/thunks"
 import { styled } from "@/theme"
 
 interface IUserAvatarProps {
@@ -134,14 +133,6 @@ function NavButtons() {
   )
 }
 
-function useIsLoggedIn(): boolean {
-  const dispatch = useDispatch()
-  React.useEffect(() => {
-    void fetchingUserAsync(dispatch)()
-  }, [dispatch])
-  return useSelector((s) => s.user.loggedIn)
-}
-
 const NavContainer = styled.nav`
   flex-wrap: 1;
   margin-bottom: 0.25rem;
@@ -154,7 +145,8 @@ const NavContainer = styled.nav`
 `
 
 export function Navbar() {
-  const isLoggedIn = useIsLoggedIn()
+  useUserFetch()
+  const isLoggedIn = useSelector((s) => s.user.loggedIn)
   return (
     <NavContainer>
       <Link to="/" className="better-nav-item pb-1 pt-1 pl-0 pr-0 fw-normal">

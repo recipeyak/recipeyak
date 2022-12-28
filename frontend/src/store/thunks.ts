@@ -31,10 +31,8 @@ import {
   updateTeamById,
 } from "@/store/reducers/teams"
 import {
-  fetchUser,
-  IUser,
+  cacheUserInfo,
   IUserState,
-  updateEmail,
   updateScheduleTeamID,
 } from "@/store/reducers/user"
 import { Action, store } from "@/store/store"
@@ -45,27 +43,6 @@ export type Dispatch = ReduxDispatch<Action>
 
 const is404 = (err: AxiosError) => err.response && err.response.status === 404
 
-const emailExists = (err: AxiosError) =>
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-  err.response?.data.email?.[0].includes("email already exists")
-
-export const updatingEmailAsync =
-  (dispatch: Dispatch) => async (email: IUser["email"]) => {
-    dispatch(updateEmail.request())
-    const res = await api.updateUser({ email })
-
-    if (isOk(res)) {
-      dispatch(updateEmail.success(res.data))
-      toast.success("updated email")
-    } else {
-      dispatch(updateEmail.failure())
-      const messageExtra = emailExists(res.error)
-        ? "- email already in use"
-        : ""
-      toast.error(`problem updating email ${messageExtra}`)
-    }
-  }
-
 export const updatingDefaultScheduleTeamIDAsync =
   (dispatch: Dispatch) => async (id: IUserState["scheduleTeamID"]) => {
     // store old id so we can undo
@@ -73,21 +50,11 @@ export const updatingDefaultScheduleTeamIDAsync =
     dispatch(updateScheduleTeamID(id))
     const res = await api.updateUser({ schedule_team: id })
     if (isOk(res)) {
-      dispatch(fetchUser.success(res.data))
+      dispatch(cacheUserInfo(res.data))
     } else {
       dispatch(updateScheduleTeamID(oldID))
     }
   }
-
-export const fetchingUserAsync = (dispatch: Dispatch) => async () => {
-  dispatch(fetchUser.request())
-  const res = await api.getUser()
-  if (isOk(res)) {
-    dispatch(fetchUser.success(res.data))
-  } else {
-    dispatch(fetchUser.failure())
-  }
-}
 
 export const fetchingRecipeListAsync = (dispatch: Dispatch) => async () => {
   dispatch(fetchRecipeList.request())
