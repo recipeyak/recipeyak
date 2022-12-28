@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom"
 
-import { IInvite } from "@/api"
+import { IInvite, ITeam } from "@/api"
 import { Button } from "@/components/Buttons"
 import { Loader } from "@/components/Loader"
 import { useInviteAccept } from "@/queries/inviteAccept"
 import { useInviteDecline } from "@/queries/inviteDecline"
 import { useInviteList } from "@/queries/inviteList"
-import { ITeam } from "@/store/reducers/teams"
 import { teamURL } from "@/urls"
 
 function InviteButtons({ invite }: { invite: IInvite }) {

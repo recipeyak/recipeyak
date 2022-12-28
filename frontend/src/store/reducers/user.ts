@@ -3,9 +3,6 @@ import { ActionType, createStandardAction, getType } from "typesafe-actions"
 
 import { Action } from "@/store/store"
 
-export const updateScheduleTeamID =
-  createStandardAction("SET_TEAM_ID")<IUserState["scheduleTeamID"]>()
-
 export const setUserLoggedIn =
   createStandardAction("SET_USER_LOGGED_IN")<IUserState["loggedIn"]>()
 
@@ -13,7 +10,6 @@ export const cacheUserInfo = createStandardAction("FETCH_USER_SUCCESS")<IUser>()
 
 export type UserActions =
   | ReturnType<typeof setUserLoggedIn>
-  | ReturnType<typeof updateScheduleTeamID>
   | ActionType<typeof cacheUserInfo>
 
 // User state from API
@@ -68,8 +64,6 @@ export const user = (
   action: Action,
 ): IUserState => {
   switch (action.type) {
-    case getType(updateScheduleTeamID):
-      return { ...state, scheduleTeamID: action.payload }
     case getType(setUserLoggedIn):
       return { ...state, loggedIn: action.payload }
     case getType(cacheUserInfo):

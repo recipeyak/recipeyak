@@ -9,8 +9,11 @@ export function useUserUpdate() {
   const queryClient = useQueryClient()
   const dispatch = useDispatch()
   return useMutation({
-    mutationFn: (payload: { email?: string; name?: string }) =>
-      updateUser(payload).then(unwrapResult),
+    mutationFn: (payload: {
+      email?: string
+      name?: string
+      schedule_team?: number | null
+    }) => updateUser(payload).then(unwrapResult),
     onSuccess: (res) => {
       dispatch(cacheUserInfo(res))
       queryClient.setQueryData(["user-detail"], (): IUser | undefined => {

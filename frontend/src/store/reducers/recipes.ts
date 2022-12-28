@@ -9,9 +9,9 @@ import {
 } from "typesafe-actions"
 
 import * as api from "@/api"
+import { ITeam } from "@/api"
 import { Reaction } from "@/pages/recipe-detail/Reactions"
 import { isOk } from "@/result"
-import { ITeam } from "@/store/reducers/teams"
 import { IState } from "@/store/store"
 import {
   deletingIngredientAsync,
