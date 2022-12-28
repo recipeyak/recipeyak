@@ -29,7 +29,6 @@ import shoppinglist, {
   IShoppingListState,
   ShoppingListActions,
 } from "@/store/reducers/shoppinglist"
-import teams, { ITeamsState, TeamsActions } from "@/store/reducers/teams"
 import user, {
   cacheUserInfo,
   IUserState,
@@ -43,7 +42,6 @@ export interface IState {
   readonly recipes: IRecipesState
   readonly router: Omit<RouterState, "action">
   readonly shoppinglist: IShoppingListState
-  readonly teams: ITeamsState
 }
 
 export type Action =
@@ -51,7 +49,6 @@ export type Action =
   | RecipeActions
   | RouterAction
   | ShoppingListActions
-  | TeamsActions
   | { type: "@@RESET" }
 
 /**
@@ -77,7 +74,6 @@ const recipeApp: LoopReducer<IState, Action> = combineReducers(
       Action
     >,
     shoppinglist,
-    teams,
   }),
 )
 

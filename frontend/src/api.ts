@@ -4,7 +4,6 @@ import { toISODateString } from "@/date"
 import { http } from "@/http"
 import { isOk, Ok } from "@/result"
 import { IIngredient, INote, IRecipe, IStep } from "@/store/reducers/recipes"
-import { IMember, ITeam } from "@/store/reducers/teams"
 import { ISession, IUser } from "@/store/reducers/user"
 
 export const updateUser = (
@@ -337,6 +336,28 @@ export const updateStep = (
 export const deleteStep = (recipeID: IRecipe["id"], stepID: IStep["id"]) =>
   http.delete(`/api/v1/recipes/${recipeID}/steps/${stepID}/`)
 
+export interface IMember {
+  readonly id: number
+  readonly user: IUser
+  readonly level: "admin" | "contributor" | "read"
+  readonly deleting?: boolean
+  readonly is_active: boolean
+}
+
+export interface ITeam {
+  readonly id: number
+  readonly name: string
+  readonly updating?: boolean
+  readonly sendingTeamInvites?: boolean
+  readonly loadingTeam?: boolean
+  readonly loadingMembers?: boolean
+  readonly error404?: boolean
+  readonly recipes?: number[]
+  readonly members: {
+    readonly [key: number]: IMember | undefined
+  }
+}
+
 export const getTeam = (id: ITeam["id"]) => http.get<ITeam>(`/api/v1/t/${id}/`)
 
 export const getTeamMembers = (id: ITeam["id"]) =>
@@ -371,7 +392,7 @@ export const createTeam = (
   level: IMember["level"],
 ) => http.post<ITeam>("/api/v1/t/", { name, emails, level })
 
-export const updateTeam = (teamId: ITeam["id"], data: unknown) =>
+export const updateTeam = (teamId: ITeam["id"], data: { name: string }) =>
   http.patch<ITeam>(`/api/v1/t/${teamId}/`, data)
 
 export interface IInvite {

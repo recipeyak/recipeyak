@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom"
 
+import { Button } from "@/components/Buttons"
 import { Loader } from "@/components/Loader"
-import { Link } from "@/components/Routing"
 import { Invites } from "@/pages/team-list/Invites"
 import { useTeamList } from "@/queries/teamList"
 import { teamURL } from "@/urls"
@@ -38,9 +38,7 @@ export default function TeamsPage() {
     <div style={{ maxWidth: 800 }} className="mx-auto mw-800">
       <section className="d-flex justify-space-between align-items-center">
         <h2 className="fs-6">Teams</h2>
-        <Link to="/t/create" className="mt-1 ">
-          Create a Team
-        </Link>
+        <Button to="/t/create">Create a Team</Button>
       </section>
 
       <TeamsList />

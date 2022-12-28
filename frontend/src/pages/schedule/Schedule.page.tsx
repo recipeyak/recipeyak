@@ -1,13 +1,12 @@
 import { useEffect } from "react"
-import { connect } from "react-redux"
 import { RouteComponentProps } from "react-router-dom"
 
+import { ITeam } from "@/api"
 import { Helmet } from "@/components/Helmet"
 import Recipes from "@/pages/recipe-list/RecipeList.page"
 import Calendar from "@/pages/schedule/Calendar"
 import HelpMenuModal from "@/pages/schedule/HelpMenuModal"
-import { ITeam } from "@/store/reducers/teams"
-import { Dispatch, updatingDefaultScheduleTeamIDAsync } from "@/store/thunks"
+import { useUserUpdate } from "@/queries/userUpdate"
 import { styled } from "@/theme"
 
 interface ISidebarProps {
@@ -22,12 +21,11 @@ function Sidebar({ teamID }: ISidebarProps) {
   )
 }
 
-export type ScheduleRouteParams = RouteComponentProps<{
-  id?: string
-  type: "shopping" | "recipes"
-}>
-
-interface IScheduleProps {
+interface IScheduleProps
+  extends RouteComponentProps<{
+    id?: string
+    type: "shopping" | "recipes"
+  }> {
   readonly updateTeamID: (id: ITeam["id"] | null) => void
   readonly teamID: ITeam["id"] | null
 }
@@ -36,10 +34,16 @@ const ScheduleContainer = styled.div`
   height: calc(100vh - 3rem);
 `
 
-function Schedule({ updateTeamID, teamID }: IScheduleProps) {
+function Schedule(props: IScheduleProps) {
+  const teamID = getTeamID(props.match.params)
+
+  const updateUser = useUserUpdate()
+
   useEffect(() => {
-    updateTeamID(teamID)
-  }, [updateTeamID, teamID])
+    updateUser.mutate({
+      schedule_team: teamID,
+    })
+  }, [updateUser, teamID])
 
   const teamID_ = teamID || "personal"
 
@@ -53,7 +57,7 @@ function Schedule({ updateTeamID, teamID }: IScheduleProps) {
   )
 }
 
-const getTeamID = (params: ScheduleRouteParams["match"]["params"]) => {
+const getTeamID = (params: IScheduleProps["match"]["params"]) => {
   if (params.id == null) {
     return null
   }
@@ -64,14 +68,4 @@ const getTeamID = (params: ScheduleRouteParams["match"]["params"]) => {
   return teamID
 }
 
-export default connect(
-  null,
-  (dispatch: Dispatch, ownProps: ScheduleRouteParams) => {
-    const teamID = getTeamID(ownProps.match.params)
-    return {
-      updateTeamID: updatingDefaultScheduleTeamIDAsync(dispatch),
-      teamID,
-      type: ownProps.match.params["type"],
-    }
-  },
-)(Schedule)
+export default Schedule

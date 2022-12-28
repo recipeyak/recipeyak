@@ -11,7 +11,7 @@ import {
 import * as api from "@/api"
 import { Reaction } from "@/pages/recipe-detail/Reactions"
 import { isOk } from "@/result"
-import { ITeam } from "@/store/reducers/teams"
+import { ITeam } from "@/api"
 import { IState } from "@/store/store"
 import {
   deletingIngredientAsync,

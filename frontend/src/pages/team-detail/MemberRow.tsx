@@ -1,135 +1,94 @@
-import { connect } from "react-redux"
-
+import { IMember, ITeam } from "@/api"
 import { Avatar } from "@/components/Avatar"
 import { Button } from "@/components/Buttons"
 import { Select } from "@/components/Forms"
-import { IMember, ITeam } from "@/store/reducers/teams"
+import { useCurrentUser } from "@/hooks"
+import { useTeamMemberDelete } from "@/queries/teamMemberDelete"
+import { useTeamMemberUpdate } from "@/queries/teamMemberUpdate"
 import { IUser } from "@/store/reducers/user"
-import { IState } from "@/store/store"
-import {
-  deletingMembershipAsync,
-  Dispatch,
-  settingUserTeamLevelAsync,
-} from "@/store/thunks"
-import { notUndefined } from "@/utils/general"
-
-interface IMemberRowProps {
-  readonly userID: IUser["id"]
-  readonly teamID: ITeam["id"]
-  readonly userIsTeamAdmin?: boolean
-  readonly membershipID: IMember["id"]
-  readonly avatarURL: string
-  readonly email: string
-  readonly level: IMember["level"]
-  readonly handleUserLevelChange: (
-    teamID: ITeam["id"],
-    membershipID: IMember["id"],
-    level: IMember["level"],
-  ) => void
-  readonly deleteMembership: (
-    teamID: ITeam["id"],
-    membershipID: IMember["id"],
-    leaving?: boolean,
-  ) => void
-  readonly isUser?: boolean
-  readonly isActive?: IMember["is_active"]
-  readonly deleting?: IMember["deleting"]
-}
 
 const MemberRow = ({
+  userID,
   teamID,
-  userIsTeamAdmin,
+  isTeamAdmin,
   membershipID,
   avatarURL,
   email,
   level,
-  handleUserLevelChange,
-  deleteMembership,
-  isUser,
   isActive,
-  deleting,
-}: IMemberRowProps) => (
-  <tr key={membershipID}>
-    <td className="d-flex align-items-center pr-4">
-      <Avatar avatarURL={avatarURL} className="mr-2" />
-      <div className="d-flex direction-column">
-        <b>{email}</b>
-      </div>
-    </td>
-    <td className="vertical-align-middle pr-4">
-      {!isActive ? (
-        <section className="d-flex align-items-start direction-column">
-          <p className="bold">invite sent</p>
-          <Button size="small">Resend Invite</Button>
-        </section>
-      ) : null}
-    </td>
-    <td className="vertical-align-middle pr-4">
-      {userIsTeamAdmin ? (
-        <Select
-          size="small"
-          value={level}
-          onChange={(e) => {
-            handleUserLevelChange(
-              teamID,
-              membershipID,
-              /* eslint-disable-next-line @typescript-eslint/consistent-type-assertions */
-              e.target.value as "admin" | "contributor" | "read",
-            )
-          }}
-        >
-          <option value="admin">Admin</option>
-          <option value="contributor">Contributor</option>
-          <option value="read">Read</option>
-        </Select>
-      ) : (
-        <p>
-          <b>{level}</b>
-        </p>
-      )}
-    </td>
-    <td className="vertical-align-middle text-right">
-      {isUser || userIsTeamAdmin ? (
-        <Button
-          variant="danger"
-          size="small"
-          onClick={() => {
-            deleteMembership(teamID, membershipID, isUser)
-          }}
-          loading={deleting}
-        >
-          {isUser ? "leave" : "remove"}
-        </Button>
-      ) : null}
-    </td>
-  </tr>
-)
-
-const mapStateToProps = (
-  state: IState,
-  {
-    userID,
-    teamID,
-    membershipID,
-  }: Pick<IMemberRowProps, "userID" | "teamID" | "membershipID">,
-) => {
-  const team = state.teams.byId[teamID]
-  const members = team?.members ?? {}
-  const member = members[membershipID]
-  const deleting = member?.deleting ?? false
-  return {
-    isUser: state.user.id === userID,
-    deleting,
-    userIsTeamAdmin: Object.values(members)
-      .filter(notUndefined)
-      .filter((x) => x.level === "admin")
-      .some(({ user }) => user.id === state.user.id),
-  }
+}: {
+  readonly userID: IUser["id"]
+  readonly teamID: ITeam["id"]
+  readonly isTeamAdmin: boolean
+  readonly membershipID: IMember["id"]
+  readonly avatarURL: string
+  readonly email: string
+  readonly level: IMember["level"]
+  readonly isActive?: IMember["is_active"]
+}) => {
+  const deleteTeamMember = useTeamMemberDelete()
+  const updateTeamMember = useTeamMemberUpdate()
+  const user = useCurrentUser()
+  const isUser = user.id === userID
+  return (
+    <tr key={membershipID}>
+      <td className="d-flex align-items-center pr-4">
+        <Avatar avatarURL={avatarURL} className="mr-2" />
+        <div className="d-flex direction-column">
+          <b>{email}</b>
+        </div>
+      </td>
+      <td className="vertical-align-middle pr-4">
+        {!isActive ? (
+          <section className="d-flex align-items-start direction-column">
+            <p className="bold">invite sent</p>
+            <Button size="small">Resend Invite</Button>
+          </section>
+        ) : null}
+      </td>
+      <td className="vertical-align-middle pr-4">
+        {isTeamAdmin ? (
+          <Select
+            size="small"
+            value={level}
+            onChange={(e) => {
+              updateTeamMember.mutate({
+                teamId: teamID,
+                memberId: membershipID,
+                // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+                level: e.target.value as "admin" | "contributor" | "read",
+              })
+            }}
+          >
+            <option value="admin">Admin</option>
+            <option value="contributor">Contributor</option>
+            <option value="read">Read</option>
+          </Select>
+        ) : (
+          <p>
+            <b>{level}</b>
+          </p>
+        )}
+      </td>
+      <td className="vertical-align-middle text-right">
+        {isUser || isTeamAdmin ? (
+          <Button
+            variant="danger"
+            size="small"
+            onClick={() => {
+              deleteTeamMember.mutate({
+                teamId: teamID,
+                memberId: membershipID,
+              })
+            }}
+            loading={deleteTeamMember.isLoading}
+          >
+            {isUser ? "leave" : "remove"}
+          </Button>
+        ) : null}
+      </td>
+    </tr>
+  )
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  handleUserLevelChange: settingUserTeamLevelAsync(dispatch),
-  deleteMembership: deletingMembershipAsync(dispatch),
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(MemberRow)
+export default MemberRow
