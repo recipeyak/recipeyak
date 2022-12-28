@@ -15,10 +15,8 @@ export function imgixFmt(url: string) {
     return url
   }
   const u = new URL(url)
-  u.searchParams.set("max-w", "1200")
-  u.searchParams.set("max-h", "900")
+  u.searchParams.set("w", "1200")
   u.searchParams.set("q", "30")
-  u.searchParams.set("dpr", "2")
-  u.searchParams.set("fit", "crop")
+  u.searchParams.set("fit", "clip")
   return u.toString()
 }

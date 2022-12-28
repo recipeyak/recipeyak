@@ -25,6 +25,21 @@ const MyGalleryImgContainer = styled.div`
   display: flex;
   height: 100%;
 `
+const GalleryImgThumbnailContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  height: 100%;
+`
+
+const GalleryImgThumbail = styled.img.attrs({ loading: "eager" })`
+  height: 100%;
+  margin: auto;
+  object-fit: contain;
+`
 
 const MyGalleryScrollWrap = styled.div`
   position: absolute;
@@ -44,11 +59,7 @@ const MyGalleryBackground = styled.div`
   height: 100%;
 `
 
-const ButtonSecondary = (props: React.ComponentProps<typeof Button>) => (
-  <Button variant="secondary" {...props} />
-)
-
-const MyGalleryButton = styled(ButtonSecondary)`
+const MyGalleryButton = styled(Button).attrs({ variant: "secondary" })`
   background: rgba(0, 0, 0, 0.46);
   color: white;
   border-style: none !important;
@@ -88,6 +99,21 @@ const TopRow = styled.div`
   grid-area: 1/1;
 `
 
+function buildSrcSetUrls(u: string): string {
+  const t = new URL(u)
+  let srcSet = u
+  for (const [width, quality] of [
+    ["3000", "30"],
+    ["2000", "40"],
+  ]) {
+    t.searchParams.set("w", width)
+    t.searchParams.set("q", quality)
+    srcSet = t.toString() + ` ${width}w, ` + srcSet
+  }
+  srcSet = imgixFmt(u) + ` 1200w, ` + srcSet
+  return srcSet
+}
+
 export const Gallery = (props: {
   onClose: () => void
   imageUrl: string
@@ -110,13 +136,28 @@ export const Gallery = (props: {
       props.onPrevious()
     }
   }
+
   const starColor = props.isPrimary ? "#ffbf00" : undefined
   return (
     <MyGalleryContainer>
       <MyGalleryBackground />
+      {/** we reuse the common imgix URL in the background and overlay a higher resolution image.
+       * This way we'll have an image immediately and can load a higher resolution image gradually.
+       */}
+      <GalleryImgThumbnailContainer>
+        <GalleryImgThumbail
+          key={imgixFmt(props.imageUrl)}
+          src={imgixFmt(props.imageUrl)}
+        />
+      </GalleryImgThumbnailContainer>
       <MyGalleryScrollWrap>
         <MyGalleryImgContainer onClick={onClick}>
-          <MyGalleryImg src={imgixFmt(props.imageUrl)} onClick={onClick} />
+          <MyGalleryImg
+            key={imgixFmt(props.imageUrl)}
+            src={imgixFmt(props.imageUrl)}
+            srcSet={buildSrcSetUrls(props.imageUrl)}
+            onClick={onClick}
+          />
         </MyGalleryImgContainer>
         <MyGalleryControlOverlay>
           <TopRow>
