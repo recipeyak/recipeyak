@@ -1,10 +1,10 @@
+import { ISession } from "@/api"
 import { Button } from "@/components/Buttons"
 import { Loader } from "@/components/Loader"
 import { formatDistanceToNow } from "@/date"
 import { useSessionDelete } from "@/queries/sessionDelete"
 import { useSessionDeleteAll } from "@/queries/sessionDeleteAll"
 import { useSessionList } from "@/queries/sessionList"
-import { ISession } from "@/api"
 
 function getDeviceEmoji(kind: ISession["device"]["kind"]): string | null {
   switch (kind) {
