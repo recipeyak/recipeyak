@@ -1,44 +1,28 @@
 import React, { useState } from "react"
 import { useHistory } from "react-router"
 
-import * as api from "@/api"
 import { Button } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
-import { useDispatch, useTeamId } from "@/hooks"
-import { isOk } from "@/result"
-import { createRecipe } from "@/store/reducers/recipes"
+import { useRecipeCreate } from "@/queries/recipeCreate"
 
 function CreateFromURLForm() {
   const [url, setUrl] = useState("")
-  const [status, setStatus] = useState<
-    { type: "creating" } | { type: "error"; err: Error } | { type: "idle" }
-  >({ type: "idle" })
-
-  const dispatch = useDispatch()
-
   const history = useHistory()
-  const teamId = useTeamId()
+  const recipeCreate = useRecipeCreate()
 
   const handleImport = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setStatus({ type: "creating" })
-    const team = teamId === "personal" ? undefined : teamId
-    void api
-      .createRecipe({
-        team,
+    recipeCreate.mutate(
+      {
         from_url: url,
-      })
-      .then((res) => {
-        if (isOk(res)) {
-          // store in cache
-          dispatch(createRecipe.success(res.data))
-          history.push(`/recipes/${res.data.id}?edit=1`)
-          setStatus({ type: "idle" })
-        } else {
-          setStatus({ type: "error", err: res.error })
-        }
-      })
+      },
+      {
+        onSuccess: (res) => {
+          history.push(`/recipes/${res.id}?edit=1`)
+        },
+      },
+    )
   }
   return (
     <form onSubmit={handleImport}>
@@ -57,14 +41,18 @@ function CreateFromURLForm() {
         <Button
           variant="primary"
           type="submit"
-          loading={status.type === "creating"}
+          loading={recipeCreate.isLoading}
         >
           Import
         </Button>
       </div>
-      {status.type === "error" ? (
+      {recipeCreate.isError ? (
         <div className="c-danger text-left mb-1">
-          Error: {status.err.message ?? "something went wrong."}
+          Error:{" "}
+          {
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+            (recipeCreate.error as Error).message ?? "something went wrong."
+          }
         </div>
       ) : null}
     </form>
@@ -73,34 +61,21 @@ function CreateFromURLForm() {
 
 function CreateManuallyForm() {
   const [title, setTitle] = useState("")
-  const [status, setStatus] = useState<
-    { type: "creating" } | { type: "error"; err: Error } | { type: "idle" }
-  >({ type: "idle" })
-
-  const dispatch = useDispatch()
-
+  const recipeCreate = useRecipeCreate()
   const history = useHistory()
-  const teamId = useTeamId()
 
   const handleManualAdd = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setStatus({ type: "creating" })
-    const team = teamId === "personal" ? undefined : teamId
-    void api
-      .createRecipe({
-        team,
+    recipeCreate.mutate(
+      {
         name: title,
-      })
-      .then((res) => {
-        if (isOk(res)) {
-          // store in cache
-          dispatch(createRecipe.success(res.data))
-          history.push(`/recipes/${res.data.id}?edit=1`)
-          setStatus({ type: "idle" })
-        } else {
-          setStatus({ type: "error", err: res.error })
-        }
-      })
+      },
+      {
+        onSuccess: (res) => {
+          history.push(`/recipes/${res.id}?edit=1`)
+        },
+      },
+    )
   }
   return (
     <form onSubmit={handleManualAdd}>
@@ -114,16 +89,16 @@ function CreateManuallyForm() {
           setTitle(e.target.value)
         }}
       />
-      {status.type === "error" ? (
+      {recipeCreate.isError ? (
         <div className="c-danger text-left mb-1">
-          Error: {status.err.message ?? "something went wrong."}
+          Error:
+          {
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+            (recipeCreate.error as Error).message ?? "something went wrong."
+          }
         </div>
       ) : null}
-      <Button
-        variant="primary"
-        type="submit"
-        loading={status.type === "creating"}
-      >
+      <Button variant="primary" type="submit" loading={recipeCreate.isLoading}>
         Add Manually
       </Button>
     </form>

@@ -1,7 +1,3 @@
-import { Either, left, right } from "fp-ts/lib/Either"
-
-import { Failure, Success, WebData } from "@/webdata"
-
 // eslint-disable-next-line no-restricted-syntax
 const enum IResultKind {
   Ok,
@@ -38,18 +34,3 @@ export const isOk = <T, E>(x: Result<T, E>): x is IOk<T> =>
   x.kind === IResultKind.Ok
 export const isErr = <T, E>(x: Result<T, E>): x is IErr<E> =>
   x.kind === IResultKind.Err
-
-export function resultToWebdata<T, E>(
-  result: Result<T, E>,
-): WebData<T, undefined> {
-  if (isOk(result)) {
-    return Success(result.data)
-  }
-  return Failure(undefined)
-}
-export function resultToEither<T, E>(result: Result<T, E>): Either<E, T> {
-  if (isOk(result)) {
-    return right(result.data)
-  }
-  return left(result.error)
-}

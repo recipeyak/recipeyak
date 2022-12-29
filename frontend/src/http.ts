@@ -10,7 +10,7 @@ import queryString from "query-string"
 import raven from "raven-js"
 
 import { Err, Ok, Result } from "@/result"
-import { setUserLoggedIn } from "@/store/reducers/user"
+import { cacheUserInfo } from "@/store/reducers/user"
 import { store } from "@/store/store"
 import { uuid4 } from "@/uuid"
 
@@ -87,7 +87,7 @@ const handleResponseError = (error: AxiosError) => {
   } else if (serverError || requestTimeout) {
     raven.captureException(error)
   } else if (unAuthenticated) {
-    store.dispatch(setUserLoggedIn(false))
+    store.dispatch(cacheUserInfo(null))
   } else {
     // NOTE(chdsbd): I think it's a good idea just to report any other bad
     // status to Sentry.

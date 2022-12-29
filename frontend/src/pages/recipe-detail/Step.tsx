@@ -29,37 +29,43 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import { useRef } from "react"
+import React, { useRef, useState } from "react"
 import { useDrag, useDrop } from "react-dnd"
-import { connect } from "react-redux"
+import Textarea from "react-textarea-autosize"
 
+import { IRecipe } from "@/api"
+import cls from "@/classnames"
+import { Button } from "@/components/Buttons"
+import { Markdown } from "@/components/Markdown"
 import { DragDrop, handleDndHover } from "@/dragDrop"
-import ListItem from "@/pages/recipe-detail/ListItem"
-import {
-  deleteStep,
-  IRecipe,
-  IStep,
-  updateStep,
-} from "@/store/reducers/recipes"
+import { useStepDelete } from "@/queries/stepDelete"
+import { useStepUpdate } from "@/queries/stepUpdate"
+import { normalizeUnitsFracs } from "@/text"
 
 interface IStepProps {
   readonly index: number
-  readonly id: number
+  readonly stepId: number
   readonly recipeID: IRecipe["id"]
   readonly text: string
   readonly move: (_: { from: number; to: number }) => void
   readonly completeMove: (_: { id: number; to: number }) => void
-  readonly updating?: boolean
-  readonly removing?: boolean
-  readonly position?: string
+  readonly position: string
   readonly isEditing: boolean
 }
 
-function Step({ text, index, ...props }: IStepProps) {
+function Step({
+  stepId,
+  recipeID,
+  text,
+  index,
+  move,
+  isEditing,
+  completeMove,
+}: IStepProps) {
   const ref = useRef<HTMLDivElement>(null)
   const [, drop] = useDrop({
     accept: DragDrop.STEP,
-    hover: handleDndHover({ ref, index, move: props.move }),
+    hover: handleDndHover({ ref, index, move }),
   })
 
   const [{ isDragging }, drag, preview] = useDrag({
@@ -68,10 +74,10 @@ function Step({ text, index, ...props }: IStepProps) {
       index,
     },
     canDrag() {
-      return props.isEditing
+      return isEditing
     },
     end: (draggedItem) => {
-      props.completeMove({ id: props.id, to: draggedItem.index })
+      completeMove({ id: stepId, to: draggedItem.index })
     },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
@@ -79,80 +85,160 @@ function Step({ text, index, ...props }: IStepProps) {
   })
 
   const style = {
-    backgroundColor: "white",
     opacity: isDragging ? 0 : 1,
   }
 
   preview(drop(ref))
   return (
-    <div style={style} ref={props.isEditing ? ref : undefined} className="mb-2">
+    <div
+      style={style}
+      ref={isEditing ? ref : undefined}
+      className="bg-white mb-2"
+    >
       <label
         className="better-label"
-        ref={props.isEditing ? drag : undefined}
-        style={{ cursor: props.isEditing ? "move" : "" }}
+        ref={isEditing ? drag : undefined}
+        style={{ cursor: isEditing ? "move" : "" }}
       >
         Step {index + 1}
       </label>
       <StepBody
-        id={props.id}
-        isEditing={props.isEditing}
-        recipeID={props.recipeID}
-        updating={props.updating}
-        removing={props.removing}
+        stepId={stepId}
+        isEditing={isEditing}
+        recipeID={recipeID}
         text={text}
       />
     </div>
   )
 }
 
-interface IStepBodyBasic {
-  readonly id: IStep["id"]
-  readonly recipeID: IRecipe["id"]
-  readonly text: IStep["text"]
-  readonly updating?: boolean
-  readonly removing?: boolean
-  readonly isEditing: boolean
-  readonly update: (data: {
-    recipeID: number
-    stepID: number
-    text?: string
-  }) => void
-  readonly remove: (data: { recipeID: IRecipe["id"]; stepID: number }) => void
-}
-
-function StepBodyBasic({
+function StepBody({
   recipeID,
-  id,
-  text,
-  update,
-  remove,
-  updating,
-  isEditing,
-  removing,
-}: IStepBodyBasic) {
-  const listItemUpdate = (rID: number, sID: number, data: { text: string }) => {
-    update({ recipeID: rID, stepID: sID, ...data })
+  text: propText,
+  stepId,
+  isEditing: editingEnabled,
+}: {
+  readonly stepId: number
+  readonly text: string
+  readonly recipeID: IRecipe["id"]
+  readonly isEditing: boolean
+}) {
+  const [text, setText] = useState(propText)
+  const [isEditing, setIsEditing] = useState(false)
+  const remove = useStepDelete()
+  const update = useStepUpdate()
+
+  const handleCancel = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setIsEditing(false)
+    setText(propText)
   }
 
+  const updateStep = (e: React.KeyboardEvent | React.MouseEvent) => {
+    e.preventDefault()
+    // if the text is empty, we should just delete the item instead of updating
+    if (text === "") {
+      removeStep()
+    } else {
+      update.mutate(
+        {
+          recipeId: recipeID,
+          stepId,
+          update: {
+            text,
+          },
+        },
+        {
+          onSuccess: () => {
+            setIsEditing(false)
+          },
+        },
+      )
+    }
+  }
+
+  const removeStep = () => {
+    remove.mutate({ recipeId: recipeID, stepId })
+  }
+
+  const inner = isEditing ? (
+    <form>
+      <div className="field">
+        <div className="control">
+          <Textarea
+            autoFocus
+            onChange={(e) => {
+              setText(e.target.value)
+            }}
+            onKeyPress={(e) => {
+              if (text === "") {
+                return
+              }
+              if (e.metaKey && e.key === "Enter") {
+                updateStep(e)
+              }
+            }}
+            defaultValue={text}
+            className="my-textarea"
+            placeholder="Add you text here"
+            name="text"
+          />
+        </div>
+      </div>
+      <section className="listitem-button-container">
+        <div className="field is-grouped">
+          <p className="control">
+            <Button
+              onClick={removeStep}
+              size="small"
+              loading={remove.isLoading}
+              type="button"
+              name="delete"
+            >
+              Delete
+            </Button>
+          </p>
+        </div>
+        <div className="field is-grouped">
+          <p className="control">
+            <Button size="small" name="cancel edit" onClick={handleCancel}>
+              Cancel
+            </Button>
+          </p>
+          <p className="control">
+            <Button
+              variant="primary"
+              size="small"
+              onClick={updateStep}
+              loading={update.isLoading}
+              name="save"
+            >
+              Save
+            </Button>
+          </p>
+        </div>
+      </section>
+    </form>
+  ) : (
+    <Markdown className="selectable">{normalizeUnitsFracs(text)}</Markdown>
+  )
+
   return (
-    <ListItem
-      id={id}
-      recipeID={recipeID}
-      text={text}
-      isEditing={isEditing}
-      update={listItemUpdate}
-      updating={updating}
-      removing={removing}
-      delete={() => {
-        remove({ recipeID, stepID: id })
-      }}
-    />
+    <div>
+      <section
+        className={cls({ "cursor-pointer": editingEnabled })}
+        title={editingEnabled ? "click to edit" : undefined}
+        onClick={() => {
+          if (!editingEnabled) {
+            return
+          }
+          setIsEditing(true)
+        }}
+      >
+        {inner}
+      </section>
+    </div>
   )
 }
-
-const StepBody = connect(null, {
-  update: updateStep.request,
-  remove: deleteStep.request,
-})(StepBodyBasic)
 
 export default Step

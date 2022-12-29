@@ -25,8 +25,7 @@ import {
   setSelectingStart,
   setShopping,
 } from "@/store/reducers/shoppinglist"
-import { IState } from "@/store/store"
-import { Dispatch } from "@/store/thunks"
+import { Dispatch, IState } from "@/store/store"
 import { normalizeUnitsFracs } from "@/text"
 import { toast } from "@/toast"
 

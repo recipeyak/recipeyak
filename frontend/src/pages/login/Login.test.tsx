@@ -3,13 +3,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { persistQueryClient } from "@tanstack/react-query-persist-client"
 import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { ConnectedRouter } from "connected-react-router"
 import { HelmetProvider } from "react-helmet-async"
 import { Provider } from "react-redux"
+import { BrowserRouter, useLocation } from "react-router-dom"
 
 import { IUserResponse } from "@/api"
 import Login from "@/pages/login/Login.page"
-import store, { history } from "@/store/store"
+import store from "@/store/store"
 import { rest, server } from "@/testUtils"
 
 const queryClientPersistent = new QueryClient({
@@ -27,6 +27,12 @@ persistQueryClient({
   persister: localStoragePersister,
   maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
 })
+
+// from: https://testing-library.com/docs/example-react-router/#testing-library-and-react-router-v5
+export const LocationDisplay = () => {
+  const location = useLocation()
+  return <div data-testid="location-display">{location.pathname}</div>
+}
 
 test("login success", async () => {
   server.use(
@@ -62,11 +68,12 @@ test("login success", async () => {
   render(
     <QueryClientProvider client={queryClientPersistent}>
       <Provider store={store}>
-        <ConnectedRouter history={history}>
+        <BrowserRouter>
           <HelmetProvider>
+            <LocationDisplay />
             <Login />
           </HelmetProvider>
-        </ConnectedRouter>
+        </BrowserRouter>
       </Provider>
     </QueryClientProvider>,
   )
@@ -83,7 +90,7 @@ test("login success", async () => {
   await user.click(screen.getByText("Submit"))
 
   // 3. check updated store with info aka success!
-  expect(store.getState().router.location.pathname).toEqual("/")
+  expect(screen.getByTestId("location-display")).toHaveTextContent("/")
   await waitFor(() => {
     expect(store.getState().user.email).toEqual("foo@example.com")
   })
@@ -120,11 +127,11 @@ test("login failure", async () => {
   render(
     <QueryClientProvider client={queryClientPersistent}>
       <Provider store={store}>
-        <ConnectedRouter history={history}>
+        <BrowserRouter>
           <HelmetProvider>
             <Login />
           </HelmetProvider>
-        </ConnectedRouter>
+        </BrowserRouter>
       </Provider>
     </QueryClientProvider>,
   )

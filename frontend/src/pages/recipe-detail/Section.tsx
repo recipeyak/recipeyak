@@ -1,32 +1,11 @@
-import React from "react"
+import React, { useState } from "react"
 import { useDrag, useDrop } from "react-dnd"
 
-import * as api from "@/api"
+import { Button } from "@/components/Buttons"
+import { TextInput } from "@/components/Forms"
 import { DragDrop, handleDndHover } from "@/dragDrop"
-import { useDispatch } from "@/hooks"
-import { AddSectionFormInner } from "@/pages/recipe-detail/AddSectionForm"
-import { isOk } from "@/result"
-import {
-  removeSectionFromRecipe,
-  updateSectionForRecipe,
-} from "@/store/reducers/recipes"
-import { Status } from "@/webdata"
-
-type State = {
-  readonly updating: Status
-  readonly removing: Status
-  readonly editing: boolean
-  readonly localTitle: string
-}
-
-function getInitialState(title: string) {
-  return {
-    updating: "initial",
-    removing: "initial",
-    editing: false,
-    localTitle: title,
-  } as const
-}
+import { useSectionDelete } from "@/queries/sectionDelete"
+import { useSectionUpdate } from "@/queries/sectionUpdate"
 
 export function Section({
   index,
@@ -34,7 +13,7 @@ export function Section({
   recipeId,
   title,
   move,
-  isEditing,
+  isEditing: editingEnabled,
   completeMove,
 }: {
   readonly index: number
@@ -59,53 +38,15 @@ export function Section({
     readonly to: number
   }) => void
 }) {
-  const dispatch = useDispatch()
+  const deleteSection = useSectionDelete()
+  const updateSection = useSectionUpdate()
   const ref = React.useRef<HTMLLIElement>(null)
-  const [state, setState] = React.useState<State>(getInitialState(title))
-  React.useEffect(() => {
-    setState((prev) => ({ ...prev, localTitle: title }))
-  }, [title])
-
-  const handleEnableEditing = () => {
-    setState((prev) => ({ ...prev, editing: true }))
-  }
+  const [localTitle, setLocalTitle] = useState(title)
+  const [isEditing, setIsEditing] = useState(false)
 
   const handleCancel = () => {
-    setState(getInitialState(title))
-  }
-  const handleRemove = () => {
-    setState((prev) => ({ ...prev, removing: "loading" }))
-    void api.deleteSection({ sectionId }).then((res) => {
-      if (isOk(res)) {
-        dispatch(removeSectionFromRecipe({ recipeId, sectionId }))
-      } else {
-        setState((prev) => ({ ...prev, removing: "failure" }))
-      }
-    })
-  }
-  const handleSave = () => {
-    setState((prev) => ({ ...prev, updating: "loading" }))
-    void api
-      .updateSection({ sectionId, title: state.localTitle })
-      .then((res) => {
-        if (isOk(res)) {
-          dispatch(
-            updateSectionForRecipe({
-              recipeId,
-              sectionId,
-              title: res.data.title,
-              position: res.data.position,
-            }),
-          )
-          setState((prev) => ({ ...prev, updating: "success", editing: false }))
-        } else {
-          setState((prev) => ({ ...prev, updating: "failure" }))
-        }
-      })
-  }
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const localTitle = e.target.value
-    setState((prev) => ({ ...prev, localTitle }))
+    setLocalTitle(title)
+    setIsEditing(false)
   }
   const [, drop] = useDrop({
     accept: [DragDrop.SECTION, DragDrop.INGREDIENT],
@@ -119,7 +60,7 @@ export function Section({
   const [{ isDragging }, drag, preview] = useDrag({
     type: DragDrop.SECTION,
     canDrag() {
-      return isEditing
+      return editingEnabled
     },
     item: {
       index,
@@ -138,32 +79,87 @@ export function Section({
 
   preview(drag(drop(ref)))
 
-  if (state.editing) {
+  const addDisabled = localTitle === ""
+
+  if (isEditing) {
     return (
       <li ref={ref} style={style}>
-        <AddSectionFormInner
-          onSave={handleSave}
-          onCancel={handleCancel}
-          onRemove={handleRemove}
-          status={state.updating}
-          value={state.localTitle}
-          onChange={handleInputChange}
-          toggleShowAddSection={null}
-          removing={state.removing}
-        />
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            updateSection.mutate({
+              recipeId,
+              sectionId,
+              update: {
+                title: localTitle,
+              },
+            })
+          }}
+        >
+          <div className="mb-2 mt-2">
+            <TextInput
+              onChange={(e) => {
+                setLocalTitle(e.target.value)
+              }}
+              autoFocus
+              value={localTitle}
+              placeholder="for the sauce"
+              name="section title"
+            />
+          </div>
+          <div className="field is-grouped">
+            <p className="control flex-grow">
+              <Button
+                size="small"
+                type="button"
+                onClick={() => {
+                  deleteSection.mutate({
+                    recipeId,
+                    sectionId,
+                  })
+                }}
+                loading={deleteSection.isLoading}
+              >
+                Remove
+              </Button>
+            </p>
+            <p className="control">
+              <Button
+                onClick={handleCancel}
+                size="small"
+                type="button"
+                name="cancel add ingredient"
+              >
+                Cancel
+              </Button>
+            </p>
+            <p className="control">
+              <Button
+                variant="primary"
+                disabled={addDisabled}
+                size="small"
+                type="submit"
+                loading={updateSection.isLoading}
+              >
+                Save
+              </Button>
+            </p>
+          </div>
+          {updateSection.isError && <p>error adding ingredient</p>}
+        </form>
       </li>
     )
   }
 
   return (
     <li
-      ref={isEditing ? ref : undefined}
+      ref={editingEnabled ? ref : undefined}
       style={style}
       className="bg-white mt-1 bold text-small"
-      title={isEditing ? "click to edit" : undefined}
+      title={editingEnabled ? "click to edit" : undefined}
       onClick={() => {
-        if (isEditing) {
-          handleEnableEditing()
+        if (editingEnabled) {
+          setIsEditing(true)
         }
       }}
     >

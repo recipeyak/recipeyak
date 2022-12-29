@@ -9,17 +9,18 @@ import {
 } from "@/components/Dropdown"
 import Logo from "@/components/Logo"
 import { NavLink } from "@/components/Routing"
-import { useSelector } from "@/hooks"
+import { useCurrentUser } from "@/hooks"
 import { useAuthLogout } from "@/queries/authLogout"
 import { useUserFetch } from "@/queries/userFetch"
-import { scheduleURLFromTeamID } from "@/store/mapState"
 import { styled } from "@/theme"
+import { scheduleURLFromTeamID } from "@/urls"
 
 interface IUserAvatarProps {
   readonly onClick?: () => void
 }
 function UserAvatar({ onClick }: IUserAvatarProps) {
-  const avatarURL = useSelector((s) => s.user.avatarURL)
+  const user = useCurrentUser()
+  const avatarURL = user.avatarURL
   return (
     <Avatar
       onClick={onClick}
@@ -46,8 +47,8 @@ function LogoutButton() {
 }
 
 function UserEmail() {
-  const email = useSelector((s) => s.user.email)
-  return <p className="bold">{email}</p>
+  const user = useCurrentUser()
+  return <p className="bold">{user.email}</p>
 }
 
 function UserDropdown() {
@@ -99,7 +100,8 @@ function AuthButtons() {
 }
 
 function NavButtons() {
-  const scheduleURL = useSelector(scheduleURLFromTeamID)
+  const user = useCurrentUser()
+  const scheduleURL = scheduleURLFromTeamID(user.scheduleTeamID)
   return (
     <div className="d-flex align-center p-relative justify-content-center flex-wrap">
       <DropdownContainer>
@@ -146,7 +148,8 @@ const NavContainer = styled.nav`
 
 export function Navbar() {
   useUserFetch()
-  const isLoggedIn = useSelector((s) => s.user.loggedIn)
+  const user = useCurrentUser()
+  const isLoggedIn = user.loggedIn
   return (
     <NavContainer>
       <Link to="/" className="better-nav-item pb-1 pt-1 pl-0 pr-0 fw-normal">

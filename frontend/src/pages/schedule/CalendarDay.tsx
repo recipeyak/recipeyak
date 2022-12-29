@@ -70,7 +70,7 @@ interface ICalendarDayContainerProps {
 const CalendarDayContainer = styled.div<ICalendarDayContainerProps>`
   flex: 1 1 0%;
   padding: 0.25rem;
-  background-color: whitesmoke;
+  background-color: var(--bg-calendar-day, aliceblue);
   transition: background-color 0.2s;
 
   ${(p) => p.isToday && isTodayStyle}
@@ -99,6 +99,7 @@ function CalendarDay({ date, scheduledRecipes, teamID }: ICalendarDayProps) {
   const today = useCurrentDay()
   const isToday = isSameDay(date, today)
 
+  // TODO: use query params for this
   const isSelected = useSelector(
     (state) =>
       state.shoppinglist.isShopping &&

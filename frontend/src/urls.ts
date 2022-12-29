@@ -23,3 +23,10 @@ export const inviteURL = (teamID: number, name: string): string =>
   teamURL(teamID, name) + "/invite"
 export const teamSettingsURL = (id: number, name: string): string =>
   teamURL(id, name) + "/settings"
+
+export const scheduleURLFromTeamID = (teamId: number | null): string => {
+  if (teamId == null) {
+    return "/schedule/recipes"
+  }
+  return `/t/${teamId}/schedule/recipes`
+}

@@ -12,7 +12,7 @@ import Sessions from "@/pages/settings/Sessions"
 import { useUserDelete } from "@/queries/userDelete"
 import { useUserFetch } from "@/queries/userFetch"
 import { useUserUpdate } from "@/queries/userUpdate"
-import { setUserLoggedIn } from "@/store/reducers/user"
+import { cacheUserInfo } from "@/store/reducers/user"
 import { toast } from "@/toast"
 
 function Export() {
@@ -41,7 +41,7 @@ function DangerZone() {
       deleteUser.mutate(undefined, {
         onSuccess: () => {
           // TODO: we should have a general "delete all the data thing" that clears the caches as well.
-          dispatch(setUserLoggedIn(false))
+          dispatch(cacheUserInfo(null))
           history.push("/login")
           toast("Account deleted")
         },

@@ -1,25 +1,21 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 
-import { useDispatch } from "@/hooks"
-import AddIngredientForm from "@/pages/recipe-detail/AddIngredientForm"
+import { Button } from "@/components/Buttons"
+import { CheckBox, TextInput } from "@/components/Forms"
 import { AddSectionForm } from "@/pages/recipe-detail/AddSectionForm"
-import { addIngredientToRecipe } from "@/store/reducers/recipes"
+import { useIngredientCreate } from "@/queries/ingredientCreate"
 
-function AddIngredientSubForm({
+function AddIngredientForm({
   recipeId,
-  loading,
   onCancel,
-
   onChangeSection,
   newPosition,
 }: {
   readonly onCancel: () => void
   readonly recipeId: number
-  readonly loading: boolean
   readonly onChangeSection: () => void
   readonly newPosition: string
 }) {
-  const dispatch = useDispatch()
   const [quantity, setQuantity] = useState("")
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
@@ -32,70 +28,118 @@ function AddIngredientSubForm({
     setOptional(false)
   }
 
-  useEffect(() => {
-    if (!loading) {
-      setEmptyState()
-    }
-  }, [loading])
-
   const cancelAddIngredient = () => {
     onCancel()
     setEmptyState()
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    switch (e.target.name) {
-      case "quantity": {
-        setQuantity(e.target.value)
-        return
-      }
-      case "name": {
-        setName(e.target.value)
-        return
-      }
-      case "description": {
-        setDescription(e.target.value)
-        return
-      }
-      case "optional": {
-        setOptional(e.target.value === "on")
-        return
-      }
-    }
+  const createIngredient = useIngredientCreate()
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    createIngredient.mutate(
+      {
+        recipeId,
+        payload: { quantity, name, description, position: newPosition },
+      },
+      {
+        onSuccess: () => {
+          setEmptyState()
+          focusFirstInput()
+        },
+      },
+    )
   }
 
-  const handleAddIngredient = () =>
-    dispatch(
-      addIngredientToRecipe.request({
-        recipeID: recipeId,
-        ingredient: { quantity, name, description, position: newPosition },
-      }),
-    )
+  const addDisabled = quantity === "" && name === ""
 
   return (
-    <AddIngredientForm
-      handleAddIngredient={handleAddIngredient}
-      loading={loading}
-      cancelAddIngredient={cancelAddIngredient}
-      handleInputChange={handleInputChange}
-      quantity={quantity}
-      name={name}
-      description={description}
-      optional={optional}
-      toggleShowAddSection={onChangeSection}
-    />
+    <form onSubmit={handleSubmit}>
+      <div className="add-ingredient-grid mb-2 mt-2">
+        <div>
+          <TextInput
+            id="firstinput"
+            onChange={(e) => {
+              setQuantity(e.target.value)
+            }}
+            value={quantity}
+            error={createIngredient.isError}
+            placeholder="3 lbs"
+          />
+        </div>
+
+        <div>
+          <TextInput
+            onChange={(e) => {
+              setName(e.target.value)
+            }}
+            value={name}
+            error={createIngredient.isError}
+            placeholder="tomato"
+          />
+        </div>
+
+        <div className="grid-entire-row">
+          <TextInput
+            onChange={(e) => {
+              setDescription(e.target.value)
+            }}
+            value={description}
+            error={createIngredient.isError}
+            placeholder="diced at 3cm"
+          />
+          {createIngredient.isError ? (
+            <p className="fs-4 c-danger">
+              A recipe needs at least one ingredient
+            </p>
+          ) : null}
+        </div>
+      </div>
+
+      <label className="d-flex align-items-center cursor-pointer mb-2">
+        <CheckBox
+          onChange={(e) => {
+            setOptional(e.target.value === "on")
+          }}
+          checked={optional}
+          className="mr-2"
+        />
+        Optional
+      </label>
+      <div className="field is-grouped">
+        <div className="flex-grow">
+          <Button size="small" type="button" onClick={onChangeSection}>
+            Add Section
+          </Button>
+        </div>
+        <p className="control">
+          <Button onClick={cancelAddIngredient} size="small" type="button">
+            Cancel
+          </Button>
+        </p>
+        <p className="control">
+          <Button
+            variant="primary"
+            disabled={addDisabled}
+            size="small"
+            type="submit"
+            loading={createIngredient.isLoading}
+          >
+            Add
+          </Button>
+        </p>
+      </div>
+    </form>
   )
 }
 
 export default function AddIngredient({
   recipeId,
-  addingIngredient,
   onCancel,
   newPosition,
 }: {
   readonly onCancel: () => void
   readonly recipeId: number
-  readonly addingIngredient: boolean
   readonly newPosition: string
 }) {
   const [showAddSection, setShowAddSection] = React.useState(false)
@@ -114,12 +158,16 @@ export default function AddIngredient({
     )
   }
   return (
-    <AddIngredientSubForm
+    <AddIngredientForm
       recipeId={recipeId}
-      loading={addingIngredient}
       onCancel={onCancel}
       onChangeSection={toggleShowAddSection}
       newPosition={newPosition}
     />
   )
+}
+
+function focusFirstInput() {
+  const el = document.getElementById("firstinput")
+  el?.focus()
 }

@@ -2,7 +2,7 @@ import React, { useRef } from "react"
 
 import { classNames } from "@/classnames"
 import { Box } from "@/components/Box"
-import GlobalEvent from "@/components/GlobalEvent"
+import { useGlobalEvent } from "@/hooks"
 
 interface IModalProps {
   readonly onClose: () => void
@@ -19,11 +19,13 @@ export function Modal({
   onClose,
 }: IModalProps) {
   const ref = useRef<HTMLDivElement>(null)
-  const handleKeyUp = (e: KeyboardEvent) => {
-    if (e.key === "Escape") {
-      onClose()
-    }
-  }
+  useGlobalEvent({
+    keyUp: (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose()
+      }
+    },
+  })
   if (!show) {
     return null
   }
@@ -33,7 +35,6 @@ export function Modal({
       className={classNames("modal", { "is-active": show })}
       style={{ alignItems: "flex-start" }}
     >
-      <GlobalEvent keyUp={handleKeyUp} />
       <div className="modal-background" onClick={close} />
       <div
         className="modal-content overflow-y-auto fs-14px"

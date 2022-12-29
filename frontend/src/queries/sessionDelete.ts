@@ -1,8 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { deleteSessionById } from "@/api"
+import { deleteSessionById, ISession } from "@/api"
 import { unwrapResult } from "@/query"
-import { ISession } from "@/store/reducers/user"
 
 function deleteByIdV2({ sessionId }: { sessionId: string }): Promise<void> {
   return deleteSessionById(sessionId).then(unwrapResult)

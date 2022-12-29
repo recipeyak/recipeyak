@@ -4,13 +4,13 @@ import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persist
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { persistQueryClient } from "@tanstack/react-query-persist-client"
-import { ConnectedRouter } from "connected-react-router"
 import React from "react"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import { HelmetProvider } from "react-helmet-async"
 import { connect, Provider } from "react-redux"
 import {
+  BrowserRouter as Router,
   Redirect,
   Route as BaseRoute,
   RouteComponentProps,
@@ -38,7 +38,7 @@ import TeamCreatePage from "@/pages/team-create/TeamCreate.page"
 import TeamDetailPage from "@/pages/team-detail/TeamDetail.page"
 import TeamInvitePage from "@/pages/team-invite/TeamInvite.page"
 import TeamsListPage from "@/pages/team-list/TeamList.page"
-import store, { history, IState } from "@/store/store"
+import store, { IState } from "@/store/store"
 import { theme, ThemeProvider } from "@/theme"
 import { Toaster } from "@/toast"
 
@@ -148,7 +148,7 @@ function Base() {
               <ErrorBoundary>
                 <Helmet />
                 <Toaster toastOptions={{ position: "bottom-center" }} />
-                <ConnectedRouter history={history}>
+                <Router>
                   <Switch>
                     <PublicOnlyRoute exact path="/login" component={Login} />
                     <PublicOnlyRoute
@@ -237,7 +237,7 @@ function Base() {
                       </Switch>
                     </ContainerBase>
                   </Switch>
-                </ConnectedRouter>
+                </Router>
               </ErrorBoundary>
             </DndProvider>
           </HelmetProvider>

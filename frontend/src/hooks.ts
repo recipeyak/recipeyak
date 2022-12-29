@@ -1,5 +1,4 @@
 import { isSameDay } from "date-fns"
-import { debounce } from "lodash-es"
 import React from "react"
 import {
   TypedUseSelectorHook,
@@ -7,9 +6,8 @@ import {
   useSelector as useSelectorRedux,
 } from "react-redux"
 
-import { scheduleURLFromTeamID } from "@/store/mapState"
-import { IState } from "@/store/store"
-import { Dispatch } from "@/store/thunks"
+import { Dispatch, IState } from "@/store/store"
+import { scheduleURLFromTeamID } from "@/urls"
 
 export function useCurrentDay() {
   const [date, setDate] = React.useState(new Date())
@@ -118,34 +116,23 @@ export function useOnClickOutside<T extends HTMLElement>(
   return ref
 }
 
-export function useOnWindowFocusChange(cb: () => void) {
-  React.useEffect(() => {
-    // Sometimes Safari triggers multiple focus events for window focus change
-    // instead of 1. We avoid this by debouncing.
-    // webkit bug: https://bugs.webkit.org/show_bug.cgi?id=179990
-    const handleEvent = debounce(cb, 400, {
-      leading: true,
-      trailing: false,
-    })
-    window.addEventListener("focus", handleEvent)
-    return () => {
-      window.removeEventListener("focus", handleEvent)
-    }
-  }, [cb])
-}
-
 export function useScheduleTeamID() {
-  return useSelector((s) => s.user.scheduleTeamID) || "personal"
+  const user = useCurrentUser()
+  return user.scheduleTeamID || "personal"
 }
 
-export const useScheduleURL = () => useSelector(scheduleURLFromTeamID)
+export const useScheduleURL = () => {
+  const user = useCurrentUser()
+  return scheduleURLFromTeamID(user.scheduleTeamID)
+}
 
 export function useCurrentUser() {
   return useSelector((s) => s.user)
 }
 
 export function useTeamId(): number | "personal" {
-  return useSelector((state) => state.user.scheduleTeamID) ?? "personal"
+  const user = useCurrentUser()
+  return user.scheduleTeamID ?? "personal"
 }
 
 export function useToggle(): [boolean, () => void] {

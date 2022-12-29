@@ -1,8 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 
 import { getRecipeTimeline, IRecipeTimelineEvent } from "@/api"
-import { unwrapEither } from "@/query"
-import { resultToEither } from "@/result"
+import { unwrapResult } from "@/query"
 
 type ITimelineEvent = ICommentEvent | IScheduledRecipeEvent
 
@@ -28,8 +27,7 @@ function toTimelineEvent(event: IRecipeTimelineEvent): ITimelineEvent {
 export function useTimelineList(recipeId: number) {
   return useQuery(["timeline", recipeId], () =>
     getRecipeTimeline(recipeId)
-      .then(resultToEither)
-      .then(unwrapEither)
+      .then(unwrapResult)
       .then((res) => res.map(toTimelineEvent)),
   )
 }

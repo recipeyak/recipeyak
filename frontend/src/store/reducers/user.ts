@@ -1,45 +1,14 @@
 import raven from "raven-js"
 import { ActionType, createStandardAction, getType } from "typesafe-actions"
 
+import { IUser } from "@/api"
 import { Action } from "@/store/store"
 
-export const setUserLoggedIn =
-  createStandardAction("SET_USER_LOGGED_IN")<IUserState["loggedIn"]>()
+export const cacheUserInfo = createStandardAction(
+  "FETCH_USER_SUCCESS",
+)<IUser | null>()
 
-export const cacheUserInfo = createStandardAction("FETCH_USER_SUCCESS")<IUser>()
-
-export type UserActions =
-  | ReturnType<typeof setUserLoggedIn>
-  | ActionType<typeof cacheUserInfo>
-
-// User state from API
-export interface IUser {
-  readonly avatar_url: string
-  readonly email: string
-  readonly name: string
-  readonly id: number
-  readonly dark_mode_enabled: boolean
-  readonly schedule_team: number | null
-}
-
-export interface ISession {
-  readonly id: string
-  readonly device: {
-    readonly kind: "mobile" | "desktop" | null
-    readonly os: string | null
-    readonly browser: string | null
-  }
-  readonly last_activity: string
-  readonly ip: string
-  readonly current: boolean
-}
-
-// eslint-disable-next-line no-restricted-syntax
-export const enum LoggingOutStatus {
-  Initial,
-  Loading,
-  Failure,
-}
+export type UserActions = ActionType<typeof cacheUserInfo>
 
 export interface IUserState {
   readonly id: null | number
@@ -59,14 +28,17 @@ const initialState: IUserState = {
   scheduleTeamID: null,
 }
 
+// TODO: move this to react-query
 export const user = (
   state: IUserState = initialState,
   action: Action,
 ): IUserState => {
   switch (action.type) {
-    case getType(setUserLoggedIn):
-      return { ...state, loggedIn: action.payload }
     case getType(cacheUserInfo):
+      if (action.payload == null) {
+        raven.setUserContext()
+        return initialState
+      }
       raven.setUserContext({
         ...{
           email: state.email,
