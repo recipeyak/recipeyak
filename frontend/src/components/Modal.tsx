@@ -46,7 +46,7 @@ export function Modal({
           marginTop: "8vh",
         }}
       >
-        <div className="my-box d-flex flex-direction-column h-100">
+        <div className="box d-flex flex-direction-column h-100">
           <Box space="between" mb={1}>
             <h1 className="fs-14px fw-500">{title}</h1>
             <button className="delete" aria-label="close" onClick={onClose} />
