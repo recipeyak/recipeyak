@@ -38,12 +38,14 @@ function Schedule(props: IScheduleProps) {
   const teamID = getTeamID(props.match.params)
 
   const updateUser = useUserUpdate()
+  const updateUserMutate = updateUser.mutate
 
+  // TODO: this is sketchy and resulted in a infinite loop before
   useEffect(() => {
-    updateUser.mutate({
+    updateUserMutate({
       schedule_team: teamID,
     })
-  }, [updateUser, teamID])
+  }, [updateUserMutate, teamID])
 
   const teamID_ = teamID || "personal"
 
