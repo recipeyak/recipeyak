@@ -18,9 +18,9 @@ import { useRecipeUpdate } from "@/queries/recipeUpdate"
 import { toast } from "@/toast"
 
 function ingredientToString(ingre: IIngredient) {
-  const s = ingre.quantity + " " + ingre.name
+  const s = ingre.quantity.trim() + " " + ingre.name.trim()
   if (ingre.description) {
-    return s + ", " + ingre.description
+    return s + ", " + ingre.description.trim()
   }
   return s
 }
