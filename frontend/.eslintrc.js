@@ -62,11 +62,6 @@ module.exports = {
             message: "Please impor from 'lodash-es' instead.",
           },
           {
-            name: "redux",
-            importNames: ["Dispatch", "useDispatch"],
-            message: "Please import 'Dispatch' from '@/store/thunks' instead.",
-          },
-          {
             name: "react-hot-toast",
             message: "Please import from '@/toast' instead.",
           },
@@ -74,12 +69,6 @@ module.exports = {
             name: "styled-components",
             message:
               "Please import from '@/theme' for type safe versions of 'styled-components' instead.",
-          },
-          {
-            name: "typesafe-actions",
-            importNames: ["action"],
-            message:
-              "Please use 'createStandardAction' or 'createAsyncAction' instead as they allow for easy discrimination with 'getType()'. see: https://github.com/piotrwitek/typesafe-actions#action",
           },
         ],
       },
@@ -92,6 +81,7 @@ module.exports = {
       },
     ],
     "no-unneeded-ternary": ["error", { defaultAssignment: false }],
+    "no-console": "error",
     "no-constant-binary-expression": "error",
     "@typescript-eslint/no-non-null-assertion": "error",
     "@typescript-eslint/no-unsafe-assignment": "error",

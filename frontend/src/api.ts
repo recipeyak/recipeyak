@@ -224,8 +224,8 @@ export interface IGetShoppingListResponse {
 
 export const getShoppingList = (
   teamID: number | "personal",
-  start: Date,
-  end: Date,
+  start: Date | number,
+  end: Date | number,
 ) => {
   const id = teamID === "personal" ? "me" : teamID
   return http.get<IGetShoppingListResponse>(`/api/v1/t/${id}/shoppinglist/`, {

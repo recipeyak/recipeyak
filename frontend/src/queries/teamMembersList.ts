@@ -4,8 +4,7 @@ import { getTeamMembers } from "@/api"
 import { unwrapResult } from "@/query"
 
 export function useTeamMembersList({ teamId }: { teamId: number }) {
-  // TODO: this key should probably be refactored
-  return useQuery(["team-members-list", teamId], () =>
+  return useQuery([teamId, "team-members-list"], () =>
     getTeamMembers(teamId).then(unwrapResult),
   )
 }

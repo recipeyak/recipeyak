@@ -30,6 +30,7 @@ export default class ErrorBoundary extends React.Component<
   }
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     this.setState({ error })
+    console.error("error found")
     Raven.captureException(error, { extra: errorInfo })
   }
   render() {

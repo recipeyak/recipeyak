@@ -7,7 +7,7 @@ import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Modal } from "@/components/Modal"
 import { toISODateString } from "@/date"
-import { useCurrentUser, useTeamId } from "@/hooks"
+import { useTeamId } from "@/hooks"
 import { useScheduleRecipeCreate } from "@/queries/scheduledRecipeCreate"
 import { scheduleURLFromTeamID } from "@/urls"
 
@@ -24,8 +24,6 @@ export function ScheduleModal({
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsoDate(e.target.value)
   }
-  const teamId = useTeamId()
-  const user = useCurrentUser()
 
   const scheduledRecipeCreate = useScheduleRecipeCreate()
   const handleSave = () => {
@@ -43,7 +41,8 @@ export function ScheduleModal({
     )
   }
 
-  const scheduleUrl = scheduleURLFromTeamID(user.scheduleTeamID)
+  const teamId = useTeamId()
+  const scheduleUrl = scheduleURLFromTeamID(teamId)
 
   return (
     <Modal

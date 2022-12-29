@@ -6,7 +6,7 @@ import React, { useState } from "react"
 import { Smile } from "react-feather"
 
 import { classNames as cls } from "@/classnames"
-import { useCurrentUser } from "@/hooks"
+import { useUserId } from "@/hooks"
 import { styled } from "@/theme"
 
 const NoteActionsContainer = styled.div`
@@ -173,7 +173,7 @@ export function ReactionPopover(props: {
   className?: string
 }) {
   const [visible, setVisible] = useState(false)
-  const user = useCurrentUser()
+  const userId = useUserId()
   return (
     <Tippy
       visible={visible}
@@ -193,7 +193,7 @@ export function ReactionPopover(props: {
                   setVisible(false)
                 }}
                 pressed={
-                  findReaction(props.reactions, emoji, user.id ?? 0) != null
+                  findReaction(props.reactions, emoji, userId ?? 0) != null
                 }
                 className={cls({ "ml-1": index > 0 })}
               >

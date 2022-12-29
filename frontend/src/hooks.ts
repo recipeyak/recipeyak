@@ -1,13 +1,7 @@
 import { isSameDay } from "date-fns"
 import React from "react"
-import {
-  TypedUseSelectorHook,
-  useDispatch as useDispatchRedux,
-  useSelector as useSelectorRedux,
-} from "react-redux"
 
-import { Dispatch, IState } from "@/store/store"
-import { scheduleURLFromTeamID } from "@/urls"
+import { useUserFetch } from "@/queries/userFetch"
 
 export function useCurrentDay() {
   const [date, setDate] = React.useState(new Date())
@@ -82,11 +76,6 @@ export function useGlobalEvent({
   }, [mouseDown])
 }
 
-// Type useDispatch for our actions
-export const useDispatch = () => useDispatchRedux<Dispatch>()
-// Type useSelector for our root state
-export const useSelector: TypedUseSelectorHook<IState> = useSelectorRedux
-
 export function useOnClickOutside<T extends HTMLElement>(
   handler: (e: MouseEvent | TouchEvent) => void,
 ): React.MutableRefObject<T | null> {
@@ -116,23 +105,30 @@ export function useOnClickOutside<T extends HTMLElement>(
   return ref
 }
 
-export function useScheduleTeamID() {
-  const user = useCurrentUser()
-  return user.scheduleTeamID || "personal"
+export function useUserId(): number | null {
+  const res = useUserFetch()
+  return res.data?.id ?? null
 }
 
-export const useScheduleURL = () => {
-  const user = useCurrentUser()
-  return scheduleURLFromTeamID(user.scheduleTeamID)
+export function useUser() {
+  const res = useUserFetch()
+  return {
+    id: res.data?.id ?? null,
+    avatarURL: res.data?.avatar_url ?? "",
+    email: res.data?.email ?? "",
+    name: res.data?.name ?? "",
+    scheduleTeamID: res.data?.schedule_team ?? null,
+  }
 }
 
-export function useCurrentUser() {
-  return useSelector((s) => s.user)
+export function useIsLoggedIn(): boolean {
+  const userId = useUserId()
+  return userId != null
 }
 
 export function useTeamId(): number | "personal" {
-  const user = useCurrentUser()
-  return user.scheduleTeamID ?? "personal"
+  const res = useUserFetch()
+  return res.data?.schedule_team ?? "personal"
 }
 
 export function useToggle(): [boolean, () => void] {

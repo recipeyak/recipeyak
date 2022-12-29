@@ -5,7 +5,6 @@ import format from "date-fns/format"
 import isValid from "date-fns/isValid"
 import parseISO from "date-fns/parseISO"
 import { chunk, first } from "lodash-es"
-import queryString from "query-string"
 import React from "react"
 import { useHistory, useLocation } from "react-router-dom"
 
@@ -24,6 +23,7 @@ import { useScheduledRecipeList } from "@/queries/scheduledRecipeList"
 import { useScheduledRecipeSettingsFetch } from "@/queries/scheduledRecipeSettingsFetch"
 import { useTeamList } from "@/queries/teamList"
 import { styled } from "@/theme"
+import { removeQueryParams, setQueryParams } from "@/utils/querystring"
 
 function CalTitle({ dayTs }: { readonly dayTs: number }) {
   return (
@@ -191,7 +191,7 @@ function Nav({ dayTs, teamID, onPrev, onNext, onCurrent }: INavProps) {
         title="Shopping List"
         content={
           <div className="d-flex">
-            <ShoppingList teamID={teamID} />
+            <ShoppingList />
           </div>
         }
       />
@@ -230,7 +230,7 @@ function HelpPrompt() {
 
 // pull the week from the URL otherwise default to the current time.
 function getToday(search: string): Date {
-  const week = queryString.parse(search).week
+  const week = new URLSearchParams(search).get("week")
   if (week == null || Array.isArray(week)) {
     return new Date()
   }
@@ -282,17 +282,13 @@ export function Calendar({ teamID }: ICalendarProps) {
     scheduledRecipesResult.data?.scheduledRecipes ?? []
 
   function nextPage() {
-    history.push({
-      search: queryString.stringify({
-        week: toISODateString(addWeeks(weekStartDate, 1)),
-      }),
+    setQueryParams(history, {
+      week: toISODateString(addWeeks(weekStartDate, 1)),
     })
   }
   function prevPage() {
-    history.push({
-      search: queryString.stringify({
-        week: toISODateString(subWeeks(weekStartDate, 1)),
-      }),
+    setQueryParams(history, {
+      week: toISODateString(subWeeks(weekStartDate, 1)),
     })
   }
 
@@ -300,7 +296,7 @@ export function Calendar({ teamID }: ICalendarProps) {
     // navigating to the current page when we're already on the current page
     // shouldn't cause another item to be added to the history
     if (location.search !== "") {
-      history.push({ search: "" })
+      removeQueryParams(history, ["week"])
     }
   }
 

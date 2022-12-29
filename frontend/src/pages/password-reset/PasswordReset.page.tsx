@@ -6,7 +6,7 @@ import AuthContainer from "@/components/AuthContainer"
 import { Button } from "@/components/Buttons"
 import { EmailInput, FormErrorHandler } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
-import { useCurrentUser } from "@/hooks"
+import { useIsLoggedIn } from "@/hooks"
 import { useAuthPasswordReset } from "@/queries/authPasswordReset"
 import { toast } from "@/toast"
 
@@ -55,9 +55,7 @@ function PasswordReset() {
 
   const errors = formatError(resetPassword.error)
 
-  const user = useCurrentUser()
-
-  const isLoggedIn = user.loggedIn
+  const isLoggedIn = useIsLoggedIn()
 
   const redirect = isLoggedIn
     ? { name: "Home", route: "/" }

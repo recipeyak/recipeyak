@@ -1,12 +1,12 @@
 import { UseQueryResult } from "@tanstack/react-query"
-import { parseISO } from "date-fns"
+import { addWeeks, parseISO, startOfToday } from "date-fns"
 import format from "date-fns/format"
 import isAfter from "date-fns/isAfter"
 import isBefore from "date-fns/isBefore"
 import isValid from "date-fns/isValid"
 import { groupBy } from "lodash-es"
-import React, { useEffect, useRef } from "react"
-import { connect } from "react-redux"
+import React, { useEffect, useRef, useState } from "react"
+import { useHistory } from "react-router"
 
 import {
   IGetShoppingListResponse,
@@ -18,16 +18,12 @@ import { classNames } from "@/classnames"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { DateInput } from "@/components/Forms"
+import { toISODateString } from "@/date"
 import { useShoppingListFetch } from "@/queries/shoppingListFetch"
 import { ingredientByNameAlphabetical } from "@/sorters"
-import {
-  setSelectingEnd,
-  setSelectingStart,
-  setShopping,
-} from "@/store/reducers/shoppinglist"
-import { Dispatch, IState } from "@/store/store"
 import { normalizeUnitsFracs } from "@/text"
 import { toast } from "@/toast"
+import { removeQueryParams, setQueryParams } from "@/utils/querystring"
 
 const selectElementText = (el: Element) => {
   const sel = window.getSelection()
@@ -48,7 +44,7 @@ const removeSelection = () => {
   sel.removeAllRanges()
 }
 
-function formatMonth(date: Date | null) {
+function formatMonth(date: number | Date | null) {
   if (date == null) {
     return ""
   }
@@ -164,41 +160,32 @@ const ShoppingListList = React.forwardRef<
   )
 })
 
-interface IShoppingListProps {
-  readonly teamID: number | "personal"
-  readonly startDay: Date
-  readonly endDay: Date
-  readonly setStartDay: (date: Date) => void
-  readonly setEndDay: (date: Date) => void
-  readonly setShopping: (bool: boolean) => void
-}
-
-function ShoppingList({
-  teamID,
-  startDay,
-  endDay,
-  setStartDay: propsSetStartDay,
-  setEndDay: propsSetEndDay,
-  setShopping,
-}: IShoppingListProps) {
+function ShoppingList() {
   const ref = useRef<HTMLDivElement>(null)
-  const shoppingList = useShoppingListFetch({ startDay, endDay, teamID })
+  const [startDay, setStartDay] = useState(+startOfToday())
+  const [endDay, setEndDay] = useState(+addWeeks(startOfToday(), 1))
+
+  const shoppingList = useShoppingListFetch({ startDay, endDay })
+  const history = useHistory()
 
   useEffect(() => {
-    setShopping(true)
+    setQueryParams(history, {
+      shoppingStartDay: toISODateString(startDay),
+      shoppingEndDay: toISODateString(endDay),
+    })
     return () => {
-      setShopping(false)
+      removeQueryParams(history, ["shoppingStartDay", "shoppingEndDay"])
     }
-  }, [setShopping])
+  }, [history, startDay, endDay])
 
   const handleSetStartDay = (e: React.ChangeEvent<HTMLInputElement>) => {
     const date = parseISO(e.target.value)
     if (!isValid(date)) {
       return
     }
-    propsSetStartDay(date)
+    setStartDay(+date)
     if (isAfter(date, endDay)) {
-      propsSetEndDay(date)
+      setEndDay(+date)
     }
   }
 
@@ -207,9 +194,9 @@ function ShoppingList({
     if (!isValid(date)) {
       return
     }
-    propsSetEndDay(date)
+    setEndDay(+date)
     if (isBefore(date, startDay)) {
-      propsSetStartDay(date)
+      setStartDay(+date)
     }
   }
 
@@ -249,17 +236,4 @@ function ShoppingList({
   )
 }
 
-function mapStateToProps(state: IState) {
-  return {
-    startDay: state.shoppinglist.startDay,
-    endDay: state.shoppinglist.endDay,
-  }
-}
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  setStartDay: (date: Date) => dispatch(setSelectingStart(date)),
-  setEndDay: (date: Date) => dispatch(setSelectingEnd(date)),
-  setShopping: (value: boolean) => dispatch(setShopping(value)),
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(ShoppingList)
+export default ShoppingList

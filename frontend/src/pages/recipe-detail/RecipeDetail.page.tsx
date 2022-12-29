@@ -1,5 +1,4 @@
 import { flatten, groupBy, last, sortBy } from "lodash-es"
-import queryString from "query-string"
 import React, { useMemo, useState } from "react"
 import { RouteComponentProps, useHistory } from "react-router"
 import { Link, useLocation } from "react-router-dom"
@@ -88,7 +87,6 @@ function RecipeDetails({
   const updateIngredient = useIngredientUpdate()
   const updateSection = useSectionUpdate()
   React.useEffect(() => {
-    console.log("ingredinets or sections changed")
     setSectionsAndIngredients(
       getInitialIngredients({
         sections: recipe.sections,
@@ -193,7 +191,6 @@ function RecipeDetails({
           {sectionsAndIngredients.map((item, i) => {
             if (item.kind === "ingredient") {
               const ingre = item.item
-              console.log(ingre.id)
               return (
                 <Ingredient
                   key={"ingredient" + String(ingre.id)}
@@ -323,7 +320,7 @@ function useRecipeUrlUpdate(recipe: { id: number; name: string } | null) {
       return
     }
     history.replace({ pathname, search: location.search })
-  }, [history, history.replace, location, recipeId, recipeName])
+  }, [history, location, recipeId, recipeName])
 }
 
 type IRecipeProps = RouteComponentProps<{ id: string }>
@@ -928,8 +925,8 @@ export function Recipe(props: IRecipeProps) {
 
   const maybeRecipe = useRecipeFetch({ recipeId })
   const history = useHistory()
-  const parsed = queryString.parse(props.location.search)
-  const editingEnabled = parsed.edit === "1"
+  const parsed = new URLSearchParams(props.location.search)
+  const editingEnabled = parsed.get("edit") === "1"
 
   // TODO: maybe move to userRecipeFetch
   // default to metadata being in edit mode when the page is naved to with edit=1
@@ -964,7 +961,7 @@ export function Recipe(props: IRecipeProps) {
 
   const recipe = maybeRecipe.data
 
-  const isTimeline = !!parsed.timeline
+  const isTimeline = !!parsed.get("timeline")
   const archivedAt = recipe.archived_at
     ? formatHumanDate(new Date(recipe.archived_at))
     : null

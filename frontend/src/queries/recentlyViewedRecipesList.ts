@@ -1,10 +1,12 @@
 import { useQuery } from "@tanstack/react-query"
 
 import { recentlyViewedRecipes } from "@/api"
+import { useTeamId } from "@/hooks"
 import { unwrapEither } from "@/query"
 
 export function useRecentlyViewedRecipesList() {
-  return useQuery(["recently-viewed-recipes"], () =>
+  const teamId = useTeamId()
+  return useQuery([teamId, "recently-viewed-recipes"], () =>
     recentlyViewedRecipes().then(unwrapEither),
   )
 }
