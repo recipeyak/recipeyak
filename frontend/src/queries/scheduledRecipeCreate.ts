@@ -65,8 +65,8 @@ export function useScheduleRecipeCreate() {
         "recipes",
         vars.recipeID,
       ]) as Pick<IRecipe, "id" | "name" | "owner"> | null | undefined
-      // TODO: move recipes data to react-query
       if (!recipe) {
+        // eslint-disable-next-line no-console
         console.warn("no optimistic update")
         return
       }
