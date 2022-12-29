@@ -23,16 +23,10 @@ html {
   user-select: none;
   -webkit-user-select: none;
   cursor: default;
-  background-color: var(--bg-color, lavender);
 }
-
-// --bg-color
-// --bg-calendar-day
-// --bg-image-placeholder rgb(201, 192, 223)
 
 body {
   height: 100%;
-  // TODO: font color
 }
 
 #root {
