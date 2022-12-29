@@ -6,8 +6,8 @@ import {
   useSelector as useSelectorRedux,
 } from "react-redux"
 
-import { scheduleURLFromTeamID } from "@/store/mapState"
 import { Dispatch, IState } from "@/store/store"
+import { scheduleURLFromTeamID } from "@/urls"
 
 export function useCurrentDay() {
   const [date, setDate] = React.useState(new Date())
@@ -117,17 +117,22 @@ export function useOnClickOutside<T extends HTMLElement>(
 }
 
 export function useScheduleTeamID() {
-  return useSelector((s) => s.user.scheduleTeamID) || "personal"
+  const user = useCurrentUser()
+  return user.scheduleTeamID || "personal"
 }
 
-export const useScheduleURL = () => useSelector(scheduleURLFromTeamID)
+export const useScheduleURL = () => {
+  const user = useCurrentUser()
+  return scheduleURLFromTeamID(user.scheduleTeamID)
+}
 
 export function useCurrentUser() {
   return useSelector((s) => s.user)
 }
 
 export function useTeamId(): number | "personal" {
-  return useSelector((state) => state.user.scheduleTeamID) ?? "personal"
+  const user = useCurrentUser()
+  return user.scheduleTeamID ?? "personal"
 }
 
 export function useToggle(): [boolean, () => void] {

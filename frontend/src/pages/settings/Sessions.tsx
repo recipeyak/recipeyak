@@ -4,7 +4,7 @@ import { formatDistanceToNow } from "@/date"
 import { useSessionDelete } from "@/queries/sessionDelete"
 import { useSessionDeleteAll } from "@/queries/sessionDeleteAll"
 import { useSessionList } from "@/queries/sessionList"
-import { ISession } from "@/store/reducers/user"
+import { ISession } from "@/api"
 
 function getDeviceEmoji(kind: ISession["device"]["kind"]): string | null {
   switch (kind) {

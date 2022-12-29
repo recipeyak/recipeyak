@@ -4,7 +4,28 @@ import { toISODateString } from "@/date"
 import { http } from "@/http"
 import { Reaction } from "@/pages/recipe-detail/Reactions"
 import { isOk, Ok } from "@/result"
-import { ISession, IUser } from "@/store/reducers/user"
+
+// User state from API
+export interface IUser {
+  readonly avatar_url: string
+  readonly email: string
+  readonly name: string
+  readonly id: number
+  readonly dark_mode_enabled: boolean
+  readonly schedule_team: number | null
+}
+
+export interface ISession {
+  readonly id: string
+  readonly device: {
+    readonly kind: "mobile" | "desktop" | null
+    readonly os: string | null
+    readonly browser: string | null
+  }
+  readonly last_activity: string
+  readonly ip: string
+  readonly current: boolean
+}
 
 export interface IIngredient {
   readonly id: number

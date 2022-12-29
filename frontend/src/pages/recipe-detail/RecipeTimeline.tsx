@@ -2,10 +2,11 @@ import format from "date-fns/format"
 import { Link } from "react-router-dom"
 
 import { formatHumanDate } from "@/date"
-import { useScheduleURL } from "@/hooks"
+import { useCurrentUser } from "@/hooks"
 import { SectionTitle } from "@/pages/recipe-detail/RecipeHelpers"
 import { useTimelineList } from "@/queries/timelineList"
 import { styled } from "@/theme"
+import { scheduleURLFromTeamID } from "@/urls"
 
 interface ITimelineItemProps {
   readonly type: "comment" | "scheduled" | "created"
@@ -53,7 +54,8 @@ interface IRecipeTimelineProps {
 
 export function RecipeTimeline({ createdAt, recipeId }: IRecipeTimelineProps) {
   const res = useTimelineList(recipeId)
-  const scheduleURL = useScheduleURL()
+  const user = useCurrentUser()
+  const scheduleURL = scheduleURLFromTeamID(user.scheduleTeamID)
   if (res.data == null) {
     return null
   }

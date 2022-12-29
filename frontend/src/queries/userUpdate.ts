@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { updateUser } from "@/api"
+import { IUser, updateUser } from "@/api"
 import { useDispatch } from "@/hooks"
 import { unwrapResult } from "@/query"
-import { cacheUserInfo, IUser } from "@/store/reducers/user"
+import { cacheUserInfo } from "@/store/reducers/user"
 
 export function useUserUpdate() {
   const queryClient = useQueryClient()

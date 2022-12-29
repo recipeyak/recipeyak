@@ -17,14 +17,14 @@ import * as forms from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Image } from "@/components/Image"
 import { Loader } from "@/components/Loader"
-import { useScheduleTeamID, useSelector } from "@/hooks"
+import { useCurrentUser, useScheduleTeamID } from "@/hooks"
 import { useRecentlyCreatedRecipesList } from "@/queries/recentlyCreatedRecipesList"
 import { useRecentlyViewedRecipesList } from "@/queries/recentlyViewedRecipesList"
 import { useRecipeList } from "@/queries/recipeList"
 import { useSchedulePreviewList } from "@/queries/schedulePreviewList"
 import { searchRecipes } from "@/search"
-import { scheduleURLFromTeamID } from "@/store/mapState"
 import { css, styled } from "@/theme"
+import { scheduleURLFromTeamID } from "@/urls"
 import { updateQueryParamsAsync } from "@/utils/querystring"
 import { imgixFmt } from "@/utils/url"
 
@@ -265,7 +265,8 @@ function useSchedulePreview() {
 
 function SchedulePreview() {
   const scheduledRecipes = useSchedulePreview()
-  const scheduleURL = useSelector(scheduleURLFromTeamID)
+  const user = useCurrentUser()
+  const scheduleURL = scheduleURLFromTeamID(user.scheduleTeamID)
   return (
     <ScheduleContainer>
       <Link to={scheduleURL}>
