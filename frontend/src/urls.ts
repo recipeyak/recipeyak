@@ -24,7 +24,9 @@ export const inviteURL = (teamID: number, name: string): string =>
 export const teamSettingsURL = (id: number, name: string): string =>
   teamURL(id, name) + "/settings"
 
-export const scheduleURLFromTeamID = (teamId: number | null): string => {
+export const scheduleURLFromTeamID = (
+  teamId: number | "personal" | null,
+): string => {
   if (teamId == null) {
     return "/schedule/recipes"
   }

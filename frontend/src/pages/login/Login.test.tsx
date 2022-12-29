@@ -4,12 +4,10 @@ import { persistQueryClient } from "@tanstack/react-query-persist-client"
 import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { HelmetProvider } from "react-helmet-async"
-import { Provider } from "react-redux"
 import { BrowserRouter, useLocation } from "react-router-dom"
 
 import { IUserResponse } from "@/api"
 import Login from "@/pages/login/Login.page"
-import store from "@/store/store"
 import { rest, server } from "@/testUtils"
 
 const queryClientPersistent = new QueryClient({
@@ -67,14 +65,12 @@ test("login success", async () => {
 
   render(
     <QueryClientProvider client={queryClientPersistent}>
-      <Provider store={store}>
-        <BrowserRouter>
-          <HelmetProvider>
-            <LocationDisplay />
-            <Login />
-          </HelmetProvider>
-        </BrowserRouter>
-      </Provider>
+      <BrowserRouter>
+        <HelmetProvider>
+          <LocationDisplay />
+          <Login />
+        </HelmetProvider>
+      </BrowserRouter>
     </QueryClientProvider>,
   )
   // 1. fill out form
@@ -91,9 +87,6 @@ test("login success", async () => {
 
   // 3. check updated store with info aka success!
   expect(screen.getByTestId("location-display")).toHaveTextContent("/")
-  await waitFor(() => {
-    expect(store.getState().user.email).toEqual("foo@example.com")
-  })
 })
 
 test("login failure", async () => {
@@ -126,13 +119,11 @@ test("login failure", async () => {
 
   render(
     <QueryClientProvider client={queryClientPersistent}>
-      <Provider store={store}>
-        <BrowserRouter>
-          <HelmetProvider>
-            <Login />
-          </HelmetProvider>
-        </BrowserRouter>
-      </Provider>
+      <BrowserRouter>
+        <HelmetProvider>
+          <Login />
+        </HelmetProvider>
+      </BrowserRouter>
     </QueryClientProvider>,
   )
   // 1. fill out form
@@ -151,7 +142,4 @@ test("login failure", async () => {
   await waitFor(() => {
     expect(screen.getByText("invalid email")).toBeInTheDocument()
   })
-
-  // 4. ensure state wasn't updated
-  expect(store.getState().user.email).toEqual("")
 })

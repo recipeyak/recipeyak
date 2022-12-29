@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
 import { createReaction, IRecipe } from "@/api"
-import { useCurrentUser, useTeamId } from "@/hooks"
+import { useTeamId, useUser } from "@/hooks"
 import { Reaction } from "@/pages/recipe-detail/Reactions"
 import { unwrapResult } from "@/query"
 import { uuid4 } from "@/uuid"
@@ -10,7 +10,7 @@ import { uuid4 } from "@/uuid"
 export function useReactionCreate() {
   const queryClient = useQueryClient()
   const teamId = useTeamId()
-  const user = useCurrentUser()
+  const user = useUser()
   return useMutation({
     mutationFn: ({
       noteId,

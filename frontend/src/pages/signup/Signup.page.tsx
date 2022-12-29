@@ -1,14 +1,14 @@
+import { useQueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 import React, { useState } from "react"
 import { Link, useHistory } from "react-router-dom"
 
+import { login } from "@/auth"
 import AuthContainer from "@/components/AuthContainer"
 import { Button } from "@/components/Buttons"
 import { EmailInput, FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
-import { useDispatch } from "@/hooks"
 import { useAuthSignup } from "@/queries/authSignup"
-import { cacheUserInfo } from "@/store/reducers/user"
 
 function formatError(error: unknown) {
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -44,7 +44,7 @@ function Signup() {
 
   const signup = useAuthSignup()
   const history = useHistory()
-  const dispatch = useDispatch()
+  const queryClient = useQueryClient()
 
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault()
@@ -56,7 +56,7 @@ function Signup() {
       },
       {
         onSuccess: (res) => {
-          dispatch(cacheUserInfo(res.user))
+          login(res.user, queryClient)
           history.push("/recipes/add")
         },
       },

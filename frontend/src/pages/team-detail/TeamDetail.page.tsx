@@ -9,7 +9,7 @@ import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
 import { Tab, Tabs } from "@/components/Tabs"
-import { useCurrentUser } from "@/hooks"
+import { useUserId } from "@/hooks"
 import MemberRow from "@/pages/team-detail/MemberRow"
 import { useTeamDelete } from "@/queries/teamDelete"
 import { useTeam } from "@/queries/teamFetch"
@@ -24,13 +24,13 @@ interface IMembersProps {
 }
 
 function Members({ teamID, loading, members }: IMembersProps) {
-  const user = useCurrentUser()
+  const userId = useUserId()
   if (loading) {
     return <Loader />
   }
   if (members.length > 0) {
     const isTeamAdmin = members.some(
-      (x) => x.level === "admin" && x.user.id === user.id,
+      (x) => x.level === "admin" && x.user.id === userId,
     )
     return (
       <div className="table-responsive">

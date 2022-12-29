@@ -1,20 +1,20 @@
 import { useQuery } from "@tanstack/react-query"
 
 import { getShoppingList } from "@/api"
+import { useTeamId } from "@/hooks"
 import { unwrapResult } from "@/query"
 
 export function useShoppingListFetch({
-  teamID,
   startDay,
   endDay,
 }: {
-  teamID: number | "personal"
-  startDay: Date
-  endDay: Date
+  startDay: Date | number
+  endDay: Date | number
 }) {
+  const teamId = useTeamId()
   return useQuery(
-    [teamID, "shopping-list", startDay, endDay],
-    () => getShoppingList(teamID, startDay, endDay).then(unwrapResult),
+    [teamId, "shopping-list", startDay, endDay],
+    () => getShoppingList(teamId, startDay, endDay).then(unwrapResult),
     {
       keepPreviousData: true,
     },

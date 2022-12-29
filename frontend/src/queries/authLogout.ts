@@ -1,18 +1,17 @@
-import { useMutation } from "@tanstack/react-query"
-import { useDispatch } from "react-redux"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useHistory } from "react-router-dom"
 
 import { logoutUser } from "@/api"
+import { logout } from "@/auth"
 import { unwrapResult } from "@/query"
-import { cacheUserInfo } from "@/store/reducers/user"
 
 export function useAuthLogout() {
   const history = useHistory()
-  const dispatch = useDispatch()
+  const queryClient = useQueryClient()
   return useMutation({
     mutationFn: () => logoutUser().then(unwrapResult),
     onSuccess: () => {
-      dispatch(cacheUserInfo(null))
+      logout(queryClient)
       history.push("/login")
     },
   })

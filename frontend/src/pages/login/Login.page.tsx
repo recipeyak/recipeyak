@@ -1,15 +1,15 @@
+import { useQueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 import { Location } from "history"
 import React from "react"
-import { useDispatch } from "react-redux"
 import { Link, useHistory, useLocation } from "react-router-dom"
 
+import { login } from "@/auth"
 import AuthContainer from "@/components/AuthContainer"
 import { Button } from "@/components/Buttons"
 import { FormErrorHandler, PasswordInput, TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { useAuthLogin } from "@/queries/authLogin"
-import { cacheUserInfo } from "@/store/reducers/user"
 
 function formatError(error: unknown) {
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -41,8 +41,8 @@ export default function Login() {
   const [password, setPassword] = React.useState("")
   const history = useHistory()
   const location = useLocation<{ from: Location } | undefined>()
-  const dispatch = useDispatch()
   const authLogin = useAuthLogin()
+  const queryClient = useQueryClient()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -50,8 +50,7 @@ export default function Login() {
       { email, password },
       {
         onSuccess: (res) => {
-          // TODO: move this stuff into react-query or something
-          dispatch(cacheUserInfo(res.user))
+          login(res.user, queryClient)
           history.push(location.state?.from ?? {})
         },
       },

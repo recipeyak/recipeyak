@@ -1,18 +1,18 @@
+import { useQueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 import React, { useState } from "react"
 import { Link, useHistory } from "react-router-dom"
 
+import { logout } from "@/auth"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
-import { useDispatch } from "@/hooks"
 import Sessions from "@/pages/settings/Sessions"
 import { useUserDelete } from "@/queries/userDelete"
 import { useUserFetch } from "@/queries/userFetch"
 import { useUserUpdate } from "@/queries/userUpdate"
-import { cacheUserInfo } from "@/store/reducers/user"
 import { toast } from "@/toast"
 
 function Export() {
@@ -32,7 +32,7 @@ function Export() {
 function DangerZone() {
   const deleteUser = useUserDelete()
   const history = useHistory()
-  const dispatch = useDispatch()
+  const queryClient = useQueryClient()
   const deleteUserAccount = () => {
     const response = prompt(
       "Are you sure you want to permanently delete your account? \nPlease type, 'delete my account', to irrevocably delete your account",
@@ -40,8 +40,7 @@ function DangerZone() {
     if (response != null && response.toLowerCase() === "delete my account") {
       deleteUser.mutate(undefined, {
         onSuccess: () => {
-          // TODO: we should have a general "delete all the data thing" that clears the caches as well.
-          dispatch(cacheUserInfo(null))
+          logout(queryClient)
           history.push("/login")
           toast("Account deleted")
         },
@@ -292,7 +291,7 @@ function Settings() {
 
       <h1 className="fs-8">User settings</h1>
 
-      <Box dir="col">
+      <Box dir="col" align="start">
         <ProfileImg avatarURL={userInfo.data.avatar_url} />
 
         <Box dir="col" style={{ maxWidth: 400 }}>

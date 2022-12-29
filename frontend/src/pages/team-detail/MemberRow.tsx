@@ -2,7 +2,7 @@ import { IMember, ITeam, IUser } from "@/api"
 import { Avatar } from "@/components/Avatar"
 import { Button } from "@/components/Buttons"
 import { Select } from "@/components/Forms"
-import { useCurrentUser } from "@/hooks"
+import { useUser } from "@/hooks"
 import { useTeamMemberDelete } from "@/queries/teamMemberDelete"
 import { useTeamMemberUpdate } from "@/queries/teamMemberUpdate"
 
@@ -27,7 +27,7 @@ const MemberRow = ({
 }) => {
   const deleteTeamMember = useTeamMemberDelete()
   const updateTeamMember = useTeamMemberUpdate()
-  const user = useCurrentUser()
+  const user = useUser()
   const isUser = user.id === userID
   return (
     <tr key={membershipID}>

@@ -1,4 +1,4 @@
-import { isSameDay } from "date-fns"
+import { isSameDay, parseISO } from "date-fns"
 import endOfDay from "date-fns/endOfDay"
 import format from "date-fns/format"
 import isFirstDayOfMonth from "date-fns/isFirstDayOfMonth"
@@ -6,13 +6,14 @@ import isWithinInterval from "date-fns/isWithinInterval"
 import startOfDay from "date-fns/startOfDay"
 import { sortBy } from "lodash-es"
 import { useDrop } from "react-dnd"
+import { useLocation } from "react-router"
 
 import { ICalRecipe } from "@/api"
 import { assertNever } from "@/assert"
 import cls from "@/classnames"
 import { isInsideChangeWindow, toISODateString } from "@/date"
 import { DragDrop } from "@/dragDrop"
-import { useCurrentDay, useSelector } from "@/hooks"
+import { useCurrentDay } from "@/hooks"
 import { IRecipeItemDrag } from "@/pages/recipe-list/RecipeItem"
 import {
   CalendarItem,
@@ -99,15 +100,19 @@ function CalendarDay({ date, scheduledRecipes, teamID }: ICalendarDayProps) {
   const today = useCurrentDay()
   const isToday = isSameDay(date, today)
 
-  // TODO: use query params for this
-  const isSelected = useSelector(
-    (state) =>
-      state.shoppinglist.isShopping &&
-      isWithinInterval(date, {
-        start: startOfDay(state.shoppinglist.startDay),
-        end: endOfDay(state.shoppinglist.endDay),
-      }),
-  )
+  const location = useLocation()
+  const params = new URLSearchParams(location.search)
+  const start = params.get("shoppingStartDay")
+  const startParsed = start != null ? parseISO(start) : null
+  const end = params.get("shoppingEndDay")
+  const endParsed = end != null ? parseISO(end) : null
+  const isSelected =
+    startParsed != null &&
+    endParsed != null &&
+    isWithinInterval(date, {
+      start: startOfDay(startParsed),
+      end: endOfDay(endParsed),
+    })
 
   const scheduledRecipeCreate = useScheduleRecipeCreate()
   const scheduledRecipeDelete = useScheduledRecipeDelete()

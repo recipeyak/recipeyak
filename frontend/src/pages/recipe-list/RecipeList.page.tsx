@@ -1,5 +1,5 @@
-import queryString from "query-string"
 import React, { useEffect, useState } from "react"
+import { useHistory } from "react-router"
 
 import { ITeam } from "@/api"
 import cls from "@/classnames"
@@ -10,7 +10,7 @@ import RecipeItem from "@/pages/recipe-list/RecipeItem"
 import { parseIntOrNull } from "@/parseIntOrNull"
 import { useRecipeList } from "@/queries/recipeList"
 import { searchRecipes } from "@/search"
-import { updateQueryParamsAsync } from "@/utils/querystring"
+import { setQueryParams } from "@/utils/querystring"
 
 interface IResultsProps {
   readonly recipes: JSX.Element[]
@@ -135,16 +135,16 @@ function RecipeList(props: IRecipeList) {
 }
 
 function getSearch(qs: string): string {
-  const params = queryString.parse(qs)
-  const searchQuery = params.search
+  const params = new URLSearchParams(qs)
+  const searchQuery = params.get("search")
   if (searchQuery != null && typeof searchQuery === "string") {
     return decodeURIComponent(searchQuery)
   }
-  const tagParam = params.tag
+  const tagParam = params.get("tag")
   if (typeof tagParam === "string") {
     return `tag:${tagParam}`
   }
-  const recipeIdParam = params.recipeId
+  const recipeIdParam = params.get("recipeId")
   if (recipeIdParam == null || Array.isArray(recipeIdParam)) {
     return ""
   }
@@ -167,10 +167,11 @@ function RecipesListSearch({
   readonly teamID?: ITeam["id"] | "personal" | null
 }) {
   const [query, setQuery] = useState(() => getSearch(window.location.search))
+  const history = useHistory()
 
   useEffect(() => {
-    updateQueryParamsAsync({ search: query })
-  }, [query])
+    setQueryParams(history, { search: query })
+  }, [query, history])
 
   const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value)

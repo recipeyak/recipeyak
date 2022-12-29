@@ -13,7 +13,7 @@ import { Button } from "@/components/Buttons"
 import { Markdown } from "@/components/Markdown"
 import { RotatingLoader } from "@/components/RoatingLoader"
 import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
-import { useCurrentUser } from "@/hooks"
+import { useUserId } from "@/hooks"
 import {
   findReaction,
   ReactionPopover,
@@ -193,7 +193,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
     resetUploads,
   } = useNoteEditHandlers({ note, recipeId })
 
-  const user = useCurrentUser()
+  const userId = useUserId()
 
   const noteHtmlId = `note-${note.id}`
 
@@ -209,7 +209,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
   const deleteReaction = useReactionDelete()
 
   const addOrRemoveReaction = async (emoji: ReactionType) => {
-    const existingReaction = findReaction(note.reactions, emoji, user.id ?? 0)
+    const existingReaction = findReaction(note.reactions, emoji, userId ?? 0)
     if (existingReaction != null) {
       // remove reaction
       deleteReaction.mutate({
@@ -243,7 +243,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
             onPick={async (emoji) => addOrRemoveReaction(emoji)}
             reactions={note.reactions}
           />
-          {note.created_by.id === user.id ? (
+          {note.created_by.id === userId ? (
             <SmallAnchor
               className="ml-2 text-muted cursor-pointer no-print"
               onClick={onNoteClick}

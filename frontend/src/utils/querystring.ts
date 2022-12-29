@@ -1,20 +1,36 @@
-import queryString from "query-string"
+import { History } from "history"
 
-export function updateQueryString(
-  params: { [key: string]: string | undefined },
-  querystring: string,
-): string {
-  const parsed = queryString.parse(querystring)
-  return queryString.stringify({ ...parsed, ...params })
-}
-export function updateQueryParamsAsync(params: Record<string, string>) {
-  const queryParams = queryString.parse(window.location.search)
-
+export function setQueryParams(
+  history: History<unknown>,
+  paramUpdates: Record<string, string>,
+) {
+  const params = new URLSearchParams(window.location.search)
+  Object.entries(paramUpdates).forEach(([key, value]) => {
+    params.set(key, value)
+  })
   void Promise.resolve().then(() => {
-    history.replaceState(
-      null,
-      "",
-      "?" + queryString.stringify({ ...queryParams, ...params }),
-    )
+    // NOTE: we need to use react router history, otherwise the react version of
+    // location won't update
+    history.replace({
+      search: "?" + params.toString(),
+    })
+  })
+}
+
+export function removeQueryParams(
+  history: History<unknown>,
+
+  keys: ReadonlyArray<string>,
+) {
+  const params = new URLSearchParams(window.location.search)
+  keys.forEach((key) => {
+    params.delete(key)
+  })
+  void Promise.resolve().then(() => {
+    // NOTE: we need to use react router history, otherwise the react version of
+    // location won't update
+    history.replace({
+      search: "?" + params.toString(),
+    })
   })
 }

@@ -12,6 +12,9 @@ export function useRecipeList() {
     () => getRecipeList().then(unwrapResult),
     {
       onSuccess: (res) => {
+        // TODO: this is kind of slow, it takes ~100ms w/ ~400 recipes
+        // we either need to prioritize non-recipe list items to save or skip
+        // doing this
         res.forEach((recipe) => {
           queryClient.setQueryData([teamID, "recipes", recipe.id], recipe)
         })

@@ -6,12 +6,11 @@ import axios, {
 } from "axios"
 import { Either, left } from "fp-ts/lib/Either"
 import * as t from "io-ts"
-import queryString from "query-string"
 import raven from "raven-js"
 
+import { logout } from "@/auth"
+import { queryClient } from "@/components/App"
 import { Err, Ok, Result } from "@/result"
-import { cacheUserInfo } from "@/store/reducers/user"
-import { store } from "@/store/store"
 import { uuid4 } from "@/uuid"
 
 export const baseHttp = axios.create()
@@ -87,7 +86,7 @@ const handleResponseError = (error: AxiosError) => {
   } else if (serverError || requestTimeout) {
     raven.captureException(error)
   } else if (unAuthenticated) {
-    store.dispatch(cacheUserInfo(null))
+    logout(queryClient)
   } else {
     // NOTE(chdsbd): I think it's a good idea just to report any other bad
     // status to Sentry.
@@ -130,7 +129,6 @@ type RequestOptions<A, O, T> = {
 
 type HttpRequestObjResult<A, O, T> = RequestOptions<A, O, T> & {
   send: () => Promise<Either<t.Errors | AxiosError | Error, A>>
-  getCacheKey: () => string
 }
 
 /**
@@ -176,26 +174,7 @@ export const http = {
   ): HttpRequestObjResult<A, O, T> => {
     return {
       ...options,
-      getCacheKey: () =>
-        options.url + "." + queryString.stringify(options.params ?? {}),
       send: () => http.request(options),
     }
   },
-}
-
-/** Get the detail string from a response, if available, otherwise return the default */
-export function detailOrDefault(err: AxiosError, def: string): string {
-  if (err.response?.data) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (typeof err.response.data.detail === "string") {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
-      return err.response.data.detail
-    }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (Array.isArray(err.response.data.detail)) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-      return err.response.data.detail.join(" ")
-    }
-  }
-  return def
 }

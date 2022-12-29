@@ -9,24 +9,22 @@ import {
 } from "@/components/Dropdown"
 import Logo from "@/components/Logo"
 import { NavLink } from "@/components/Routing"
-import { useCurrentUser } from "@/hooks"
+import { useIsLoggedIn, useTeamId, useUser } from "@/hooks"
 import { useAuthLogout } from "@/queries/authLogout"
-import { useUserFetch } from "@/queries/userFetch"
 import { styled } from "@/theme"
 import { scheduleURLFromTeamID } from "@/urls"
 
 interface IUserAvatarProps {
-  readonly onClick?: () => void
+  readonly onClick: () => void
+  readonly url: string
 }
-function UserAvatar({ onClick }: IUserAvatarProps) {
-  const user = useCurrentUser()
-  const avatarURL = user.avatarURL
+function UserAvatar({ onClick, url }: IUserAvatarProps) {
   return (
     <Avatar
       onClick={onClick}
       tabIndex={0}
       className="better-nav-item p-0"
-      avatarURL={avatarURL}
+      avatarURL={url}
     />
   )
 }
@@ -46,18 +44,18 @@ function LogoutButton() {
   )
 }
 
-function UserEmail() {
-  const user = useCurrentUser()
-  return <p className="bold">{user.email}</p>
+function UserEmail({ email }: { email: string }) {
+  return <p className="bold">{email}</p>
 }
 
 function UserDropdown() {
   const { ref, toggle, isOpen } = useDropdown()
+  const user = useUser()
   return (
     <DropdownContainer ref={ref}>
-      <UserAvatar onClick={toggle} />
+      <UserAvatar onClick={toggle} url={user.avatarURL} />
       <DropdownMenu isOpen={isOpen} position="right">
-        <UserEmail />
+        <UserEmail email={user.email} />
         <p>
           <Link to="/settings" className="p-1-0">
             Settings
@@ -100,8 +98,8 @@ function AuthButtons() {
 }
 
 function NavButtons() {
-  const user = useCurrentUser()
-  const scheduleURL = scheduleURLFromTeamID(user.scheduleTeamID)
+  const teamId = useTeamId()
+  const scheduleURL = scheduleURLFromTeamID(teamId)
   return (
     <div className="d-flex align-center p-relative justify-content-center flex-wrap">
       <DropdownContainer>
@@ -147,9 +145,7 @@ const NavContainer = styled.nav`
 `
 
 export function Navbar() {
-  useUserFetch()
-  const user = useCurrentUser()
-  const isLoggedIn = user.loggedIn
+  const isLoggedIn = useIsLoggedIn()
   return (
     <NavContainer>
       <Link to="/" className="better-nav-item pb-1 pt-1 pl-0 pr-0 fw-normal">

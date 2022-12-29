@@ -5,7 +5,6 @@ import {
   parseISO,
   startOfToday,
 } from "date-fns"
-import queryString from "query-string"
 import React, { useEffect } from "react"
 import { Link, useHistory } from "react-router-dom"
 import useOnClickOutside from "use-onclickoutside"
@@ -17,7 +16,7 @@ import * as forms from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Image } from "@/components/Image"
 import { Loader } from "@/components/Loader"
-import { useCurrentUser, useScheduleTeamID } from "@/hooks"
+import { useTeamId } from "@/hooks"
 import { useRecentlyCreatedRecipesList } from "@/queries/recentlyCreatedRecipesList"
 import { useRecentlyViewedRecipesList } from "@/queries/recentlyViewedRecipesList"
 import { useRecipeList } from "@/queries/recipeList"
@@ -25,7 +24,7 @@ import { useSchedulePreviewList } from "@/queries/schedulePreviewList"
 import { searchRecipes } from "@/search"
 import { css, styled } from "@/theme"
 import { scheduleURLFromTeamID } from "@/urls"
-import { updateQueryParamsAsync } from "@/utils/querystring"
+import { setQueryParams } from "@/utils/querystring"
 import { imgixFmt } from "@/utils/url"
 
 const SearchInput = styled(forms.SearchInput)`
@@ -240,7 +239,7 @@ function buildSchedule(
 }
 
 function useSchedulePreview() {
-  const teamID = useScheduleTeamID()
+  const teamID = useTeamId()
   const start = startOfToday()
   const end = addDays(start, 6)
   const res = useSchedulePreviewList({ teamID, start, end })
@@ -265,8 +264,8 @@ function useSchedulePreview() {
 
 function SchedulePreview() {
   const scheduledRecipes = useSchedulePreview()
-  const user = useCurrentUser()
-  const scheduleURL = scheduleURLFromTeamID(user.scheduleTeamID)
+  const teamId = useTeamId()
+  const scheduleURL = scheduleURLFromTeamID(teamId)
   return (
     <ScheduleContainer>
       <Link to={scheduleURL}>
@@ -347,12 +346,7 @@ function RecentlyCreated() {
 }
 
 function searchQueryFromUrl() {
-  const qs = queryString.parse(window.location.search)
-  const search = qs["search"]
-  if (typeof search == "string") {
-    return search
-  }
-  return ""
+  return new URLSearchParams(window.location.search).get("search") ?? ""
 }
 
 const UserHome = () => {
@@ -375,8 +369,8 @@ const UserHome = () => {
   })
 
   useEffect(() => {
-    updateQueryParamsAsync({ search: searchQuery || "" })
-  }, [searchQuery])
+    setQueryParams(history, { search: searchQuery || "" })
+  }, [searchQuery, history])
 
   const filteredRecipes = recipes.isSuccess
     ? searchRecipes({ recipes: recipes.data, query: searchQuery })

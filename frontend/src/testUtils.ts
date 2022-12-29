@@ -1,8 +1,6 @@
 import { DefaultBodyType, MockedRequest, rest } from "msw"
 import { setupServer } from "msw/node"
 
-import store from "@/store/store"
-
 export { rest }
 
 type Deferred<T> = {
@@ -29,10 +27,6 @@ function deferred<T>(data: T): Deferred<T> {
     },
   }
 }
-
-beforeEach(() => {
-  store.dispatch({ type: "@@RESET" })
-})
 
 export const server = setupServer()
 // Start server before all tests

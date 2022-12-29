@@ -1,13 +1,13 @@
+import { useQueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 import React, { useState } from "react"
 import { Link, RouteComponentProps, useHistory } from "react-router-dom"
 
+import { login } from "@/auth"
 import { Button } from "@/components/Buttons"
 import { FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
-import { useDispatch } from "@/hooks"
 import { useAuthPasswordResetConfirm } from "@/queries/authPasswordResetConfirm"
-import { cacheUserInfo } from "@/store/reducers/user"
 import { toast } from "@/toast"
 
 type RouteProps = RouteComponentProps<{ uid: string; token: string }>
@@ -50,8 +50,8 @@ function PasswordResetConfirmation(props: RouteProps) {
   const resetPassword = useAuthPasswordResetConfirm()
   const uid = props.match.params.uid
   const token = props.match.params.token
-  const dispatch = useDispatch()
   const history = useHistory()
+  const queryClient = useQueryClient()
 
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -64,7 +64,7 @@ function PasswordResetConfirmation(props: RouteProps) {
       },
       {
         onSuccess: (res) => {
-          dispatch(cacheUserInfo(res))
+          login(res, queryClient)
           history.push("/")
         },
         onSettled: () => {
