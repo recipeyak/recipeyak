@@ -70,7 +70,7 @@ interface ICalendarDayContainerProps {
 const CalendarDayContainer = styled.div<ICalendarDayContainerProps>`
   flex: 1 1 0%;
   padding: 0.25rem;
-  background-color: var(--bg-calendar-day, aliceblue);
+  background-color: whitesmoke;
   transition: background-color 0.2s;
 
   ${(p) => p.isToday && isTodayStyle}
