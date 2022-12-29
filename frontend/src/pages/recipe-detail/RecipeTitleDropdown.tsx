@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { useLocation } from "react-router-dom"
 
+import { IIngredient } from "@/api"
 import { copyToClipboard } from "@/clipboard"
 import { Button } from "@/components/Buttons"
 import {
@@ -11,15 +12,10 @@ import {
   useDropdown,
 } from "@/components/Dropdown"
 import { Chevron } from "@/components/icons"
-import { useDispatch, useSelector } from "@/hooks"
 import { ScheduleModal } from "@/pages/recipe-detail/ScheduleModal"
-import {
-  deleteRecipe,
-  IIngredient,
-  updateRecipe,
-} from "@/store/reducers/recipes"
+import { useRecipeDelete } from "@/queries/recipeDelete"
+import { useRecipeUpdate } from "@/queries/recipeUpdate"
 import { toast } from "@/toast"
-import { isSuccessLike } from "@/webdata"
 
 function ingredientToString(ingre: IIngredient) {
   const s = ingre.quantity + " " + ingre.name
@@ -29,19 +25,11 @@ function ingredientToString(ingre: IIngredient) {
   return s
 }
 
-function useIngredientString(recipeId: number) {
-  return useSelector((s) => {
-    const r = s.recipes.byId[recipeId]
-    if (isSuccessLike(r)) {
-      return r.data.ingredients.map(ingredientToString).join("\n")
-    }
-    return ""
-  })
-}
-
 interface IDropdownProps {
   readonly recipeId: number
   readonly recipeName: string
+  readonly recipeIsArchived: boolean
+  readonly recipeIngredients: readonly IIngredient[]
   readonly toggleEditing: () => void
   readonly editingEnabled: boolean
   readonly className: string
@@ -49,6 +37,8 @@ interface IDropdownProps {
 export function Dropdown({
   recipeId,
   recipeName,
+  recipeIsArchived: isArchived,
+  recipeIngredients,
   toggleEditing,
   editingEnabled,
   className,
@@ -58,15 +48,12 @@ export function Dropdown({
   const [showScheduleModal, setShowScheduleModal] = useState(false)
 
   const location = useLocation()
-  const dispatch = useDispatch()
-  const ingredients = useIngredientString(recipeId)
-  const [isArchived, isDeleting] = useSelector((s) => {
-    const maybeRecipe = s.recipes.byId[recipeId]
-    if (maybeRecipe?.kind === "Success") {
-      return [!!maybeRecipe.data.archived_at, !!maybeRecipe.data.deleting]
-    }
-    return [false, false]
-  })
+  const ingredients = recipeIngredients.map(ingredientToString).join("\n")
+
+  const updateRecipe = useRecipeUpdate()
+  const deleteRecipe = useRecipeDelete()
+
+  const isDeleting = deleteRecipe.isLoading
 
   const handleCopyIngredients = React.useCallback(() => {
     copyToClipboard(ingredients)
@@ -76,31 +63,44 @@ export function Dropdown({
 
   const archiveRecipe = React.useCallback(() => {
     if (confirm("Are you sure you want to archive this recipe?")) {
-      dispatch(
-        updateRecipe.request({
-          id: recipeId,
-          data: { archived_at: new Date().toISOString() },
-        }),
+      updateRecipe.mutate(
+        {
+          recipeId,
+          update: {
+            // TODO: this api should support something like 'now'
+            archived_at: new Date().toISOString(),
+          },
+        },
+        {
+          onSuccess: () => {
+            close()
+          },
+        },
       )
-      close()
     }
-  }, [close, dispatch, recipeId])
+  }, [close, recipeId, updateRecipe])
 
   const unArchiveRecipe = React.useCallback(() => {
-    dispatch(
-      updateRecipe.request({
-        id: recipeId,
-        data: { archived_at: null },
-      }),
+    updateRecipe.mutate(
+      {
+        recipeId,
+        update: {
+          archived_at: null,
+        },
+      },
+      {
+        onSuccess: () => {
+          close()
+        },
+      },
     )
-    close()
-  }, [close, dispatch, recipeId])
+  }, [close, updateRecipe, recipeId])
 
   const handleDeleteRecipe = React.useCallback(() => {
     if (confirm("Are you sure you want to delete this recipe?")) {
-      dispatch(deleteRecipe.request(recipeId))
+      deleteRecipe.mutate({ recipeId })
     }
-  }, [dispatch, recipeId])
+  }, [deleteRecipe, recipeId])
 
   const handleSchedule = () => {
     setShowScheduleModal(true)

@@ -15,7 +15,7 @@ import { Button } from "@/components/Buttons"
 import { Select } from "@/components/Forms"
 import { Modal } from "@/components/Modal"
 import { toISODateString } from "@/date"
-import { useDispatch, useToggle } from "@/hooks"
+import { useToggle } from "@/hooks"
 import CalendarDay from "@/pages/schedule/CalendarDay"
 import { ICalConfig } from "@/pages/schedule/CalendarMoreDropdown"
 import { IconSettings } from "@/pages/schedule/IconSettings"
@@ -24,7 +24,6 @@ import { useScheduledRecipeList } from "@/queries/scheduledRecipeList"
 import { useScheduledRecipeSettingsFetch } from "@/queries/scheduledRecipeSettingsFetch"
 import { useTeamList } from "@/queries/teamList"
 import { history } from "@/store/store"
-import { fetchingRecipeListAsync } from "@/store/thunks"
 import { styled } from "@/theme"
 
 function CalTitle({ dayTs }: { readonly dayTs: number }) {
@@ -244,7 +243,6 @@ function getToday(search: string): Date {
 }
 
 function useTeamSelect() {
-  const dispatch = useDispatch()
   const queryClient = useQueryClient()
   const history = useHistory()
 
@@ -259,7 +257,6 @@ function useTeamSelect() {
 
     // navTo is async so we can't count on the URL to have changed by the time we refetch the data
     history.push(urlWithEnding)
-    void fetchingRecipeListAsync(dispatch)()
     // TODO: we should abstract this
     void queryClient.invalidateQueries([teamID])
   }

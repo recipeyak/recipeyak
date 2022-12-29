@@ -1,79 +1,57 @@
-import React from "react"
+import React, { useState } from "react"
 
-import * as api from "@/api"
 import { Button } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
-import GlobalEvent from "@/components/GlobalEvent"
-import { useDispatch } from "@/hooks"
-import { isOk } from "@/result"
-import { addSectionToRecipe } from "@/store/reducers/recipes"
-import { Status } from "@/webdata"
+import { useSectionCreate } from "@/queries/sectionCreate"
 
-export function AddSectionFormInner({
-  onSave,
-  onCancel,
-  onRemove,
-  status,
-  value,
-  removing,
-  onChange,
+export function AddSectionForm({
   toggleShowAddSection,
+  onCancel,
+  recipeId,
+  newPosition,
 }: {
-  readonly onSave: () => void
+  readonly toggleShowAddSection: () => void
   readonly onCancel: () => void
-  readonly onRemove: (() => void) | null
-  readonly onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-  readonly value: string
-  readonly status: Status
-  readonly removing: Status | null
-  readonly toggleShowAddSection: (() => void) | null
+  readonly recipeId: number
+  readonly newPosition: string
 }) {
-  function handleKeyUp(e: KeyboardEvent) {
-    if (e.key === "Escape") {
-      onCancel()
-    }
-  }
+  const [section, setSection] = useState("")
+  const createSection = useSectionCreate()
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    onSave()
+    createSection.mutate({
+      recipeId,
+      payload: {
+        title: section,
+        position: newPosition,
+      },
+    })
   }
-  const addDisabled = value === ""
+  const addDisabled = section === ""
   return (
     <form onSubmit={handleSubmit}>
-      <GlobalEvent keyUp={handleKeyUp} />
       <div className="mb-2 mt-2">
         <TextInput
-          onChange={onChange}
+          onChange={(e) => {
+            setSection(e.target.value)
+          }}
           autoFocus
-          value={value}
+          value={section}
           placeholder="for the sauce"
           name="section title"
         />
       </div>
       <div className="field is-grouped">
-        {onRemove ? (
-          <p className="control flex-grow">
-            <Button
-              size="small"
-              type="button"
-              onClick={onRemove}
-              loading={removing === "loading"}
-            >
-              Remove
-            </Button>
-          </p>
-        ) : toggleShowAddSection ? (
-          <p className="control flex-grow">
-            <Button
-              size="small"
-              type="button"
-              name="toggle add section"
-              onClick={toggleShowAddSection}
-            >
-              Add Ingredient
-            </Button>
-          </p>
-        ) : null}
+        <p className="control flex-grow">
+          <Button
+            size="small"
+            type="button"
+            name="toggle add section"
+            onClick={toggleShowAddSection}
+          >
+            Add Ingredient
+          </Button>
+        </p>
         <p className="control">
           <Button
             onClick={onCancel}
@@ -90,74 +68,13 @@ export function AddSectionFormInner({
             disabled={addDisabled}
             size="small"
             type="submit"
-            loading={status === "loading"}
+            loading={createSection.isLoading}
           >
             Save
           </Button>
         </p>
       </div>
-      {status === "failure" && <p>error adding ingredient</p>}
+      {createSection.isError && <p>error adding ingredient</p>}
     </form>
-  )
-}
-
-type StateType = {
-  readonly sectionTitle: string
-  readonly status: Status
-}
-
-export function AddSectionForm({
-  toggleShowAddSection,
-  onCancel,
-  recipeId,
-  newPosition,
-}: {
-  readonly toggleShowAddSection: () => void
-  readonly onCancel: () => void
-  readonly recipeId: number
-  readonly newPosition: string
-}) {
-  const dispatch = useDispatch()
-  const [state, setState] = React.useState<StateType>({
-    sectionTitle: "",
-    status: "initial",
-  })
-  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const sectionTitle = e.target.value
-    setState((prev) => ({ ...prev, sectionTitle }))
-  }
-  function onSave() {
-    setState((prev) => ({ ...prev, status: "loading" }))
-    void api
-      .addSectionToRecipe({
-        recipeId,
-        section: state.sectionTitle,
-        position: newPosition,
-      })
-      .then((res) => {
-        if (isOk(res)) {
-          dispatch(
-            addSectionToRecipe({
-              recipeId,
-              section: res.data,
-            }),
-          )
-          setState((prev) => ({ ...prev, status: "success", sectionTitle: "" }))
-        } else {
-          setState((prev) => ({ ...prev, status: "failure" }))
-        }
-      })
-  }
-  return (
-    <AddSectionFormInner
-      onSave={onSave}
-      onChange={handleInputChange}
-      value={state.sectionTitle}
-      toggleShowAddSection={toggleShowAddSection}
-      onCancel={onCancel}
-      status={state.status}
-      onRemove={null}
-      removing={null}
-    />
   )
 }

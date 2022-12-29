@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom"
 import Textarea from "react-textarea-autosize"
 
 import * as api from "@/api"
+import { INote, IRecipe, RecipeTimelineItem, Upload } from "@/api"
 import { classNames as cls } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
 import { Box } from "@/components/Box"
@@ -12,22 +13,19 @@ import { Button } from "@/components/Buttons"
 import { Markdown } from "@/components/Markdown"
 import { RotatingLoader } from "@/components/RoatingLoader"
 import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
-import { useCurrentUser, useDispatch } from "@/hooks"
+import { useCurrentUser } from "@/hooks"
 import {
   findReaction,
-  Reaction,
   ReactionPopover,
   ReactionsFooter,
   ReactionType,
 } from "@/pages/recipe-detail/Reactions"
+import { useNoteCreate } from "@/queries/noteCreate"
+import { useNoteDelete } from "@/queries/noteDelete"
+import { useNoteUpdate } from "@/queries/noteUpdate"
+import { useReactionCreate } from "@/queries/reactionCreate"
+import { useReactionDelete } from "@/queries/reactionDelete"
 import { isOk } from "@/result"
-import {
-  INote,
-  IRecipe,
-  patchRecipe,
-  RecipeTimelineItem,
-  Upload,
-} from "@/store/reducers/recipes"
 import { styled } from "@/theme"
 import { toast } from "@/toast"
 import { notUndefined } from "@/utils/general"
@@ -39,45 +37,32 @@ interface IUseNoteEditHandlers {
   readonly recipeId: IRecipe["id"]
 }
 function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
-  const dispatch = useDispatch()
   const [draftText, setNewText] = useState(note.text)
   useEffect(() => {
     setNewText(note.text)
   }, [note.text])
   const [isEditing, setIsEditing] = React.useState(false)
-  const [isUpdating, setIsUpdating] = React.useState(false)
   const [uploadedImages, setUploads] = React.useState<UploadSuccess[]>(
     note.attachments.map((x) => ({ ...x, localId: x.id })),
   )
 
+  const deleteNote = useNoteDelete()
+  const updateNote = useNoteUpdate()
+
   const onSave = () => {
-    setIsUpdating(true)
-    void api
-      .updateNote({
+    updateNote.mutate(
+      {
+        recipeId,
         noteId: note.id,
         note: draftText,
         attachmentUploadIds: uploadedImages.map((x) => x.id),
-      })
-      .then((res) => {
-        if (isOk(res)) {
-          dispatch(
-            patchRecipe({
-              recipeId,
-              updateFn: (recipe) => {
-                return {
-                  ...recipe,
-                  timelineItems: [
-                    ...recipe.timelineItems.filter((x) => x.id !== note.id),
-                    res.data,
-                  ],
-                }
-              },
-            }),
-          )
+      },
+      {
+        onSuccess: () => {
           setIsEditing(false)
-        }
-        setIsUpdating(false)
-      })
+        },
+      },
+    )
   }
   const setEditing = (value: boolean) => {
     setIsEditing(value)
@@ -87,22 +72,9 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
   }
   const onDelete = () => {
     if (confirm("Are you sure you want to delete this note?")) {
-      void api.deleteNote({ noteId: note.id }).then((res) => {
-        if (isOk(res)) {
-          dispatch(
-            patchRecipe({
-              recipeId,
-              updateFn: (recipe) => {
-                return {
-                  ...recipe,
-                  timelineItems: recipe.timelineItems.filter(
-                    (x) => x.id !== note.id,
-                  ),
-                }
-              },
-            }),
-          )
-        }
+      deleteNote.mutate({
+        recipeId,
+        noteId: note.id,
       })
     }
   }
@@ -123,7 +95,7 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
   return {
     draftText,
     isEditing,
-    isUpdating,
+    isUpdating: updateNote.isLoading,
     onCancel,
     onDelete,
     onEditorChange,
@@ -223,7 +195,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
 
   const user = useCurrentUser()
 
-  const noteId = `note-${note.id}`
+  const noteHtmlId = `note-${note.id}`
 
   const { addFiles, removeFile, files, reset } = useImageUpload(
     addUploads,
@@ -233,69 +205,43 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
     recipeId,
   )
 
-  const [reactions, setReactions] = useState<Reaction[]>(note.reactions)
+  const createReaction = useReactionCreate()
+  const deleteReaction = useReactionDelete()
 
   const addOrRemoveReaction = async (emoji: ReactionType) => {
-    const existingReaction = findReaction(reactions, emoji, user.id ?? 0)
-
-    setReactions((s) =>
-      s.filter((reaction) => reaction.id !== existingReaction?.id),
-    )
+    const existingReaction = findReaction(note.reactions, emoji, user.id ?? 0)
     if (existingReaction != null) {
       // remove reaction
-      const res = await api.deleteReaction({ reactionId: existingReaction.id })
-      if (!isOk(res)) {
-        // add back reaction if we fail
-        setReactions((s) => [...s, existingReaction])
-      }
+      deleteReaction.mutate({
+        recipeId,
+        noteId: note.id,
+        reactionId: existingReaction.id,
+      })
     } else {
-      // add reaction
-      const tempId = uuid4()
-      setReactions((s) => [
-        ...s,
-        {
-          id: tempId,
-          created: new Date().toISOString(),
-          type: emoji,
-          user: {
-            id: user.id || 0,
-            name: user.name,
-          },
-        },
-      ])
-      const res = await api.createReaction({
-        noteId: note.id.toString(),
+      createReaction.mutate({
+        recipeId,
+        noteId: note.id,
         type: emoji,
       })
-      if (isOk(res)) {
-        setReactions((s) => {
-          const newReactions = s.filter((reaction) => reaction.id !== tempId)
-          return [...newReactions, res.data]
-        })
-      } else {
-        setReactions((s) => {
-          return s.filter((reaction) => reaction.id !== tempId)
-        })
-      }
     }
   }
 
   return (
     <SharedEntry
       className={cls("d-flex align-items-start", className)}
-      id={noteId}
+      id={noteHtmlId}
     >
       <Avatar avatarURL={note.created_by.avatar_url} className="mr-2" />
       <div className="w-100">
         <Box align="center">
           <b>{note.created_by.name}</b>{" "}
-          <a href={`#${noteId}`} className="ml-2">
+          <a href={`#${noteHtmlId}`} className="ml-2">
             <NoteTimeStamp created={note.created} />
           </a>
           <ReactionPopover
             className="ml-auto no-print"
             onPick={async (emoji) => addOrRemoveReaction(emoji)}
-            reactions={reactions}
+            reactions={note.reactions}
           />
           {note.created_by.id === user.id ? (
             <SmallAnchor
@@ -323,7 +269,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
                 ))}
               </Box>
               <ReactionsFooter
-                reactions={reactions}
+                reactions={note.reactions}
                 onPick={async (emoji) => addOrRemoveReaction(emoji)}
                 onClick={async (emoji) => addOrRemoveReaction(emoji)}
               />
@@ -445,11 +391,10 @@ interface IUseNoteCreatorHandlers {
   readonly recipeId: IRecipe["id"]
 }
 
+// TODO: inline this function instead of having a hook
 function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
-  const dispatch = useDispatch()
   const [draftText, setDraftText] = React.useState("")
   const [isEditing, setIsEditing] = React.useState(false)
-  const [isLoading, setIsLoading] = React.useState(false)
   const [uploadedImages, setUploads] = React.useState<UploadSuccess[]>([])
 
   const cancelEditingNote = () => {
@@ -459,34 +404,24 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     blurNoteTextArea()
   }
 
-  const onCreate = () => {
-    setIsLoading(true)
+  const createNote = useNoteCreate()
 
-    void api
-      .addNoteToRecipe({
+  const onCreate = () => {
+    createNote.mutate(
+      {
         recipeId,
         note: draftText,
-        attachmentUploadIds: uploadedImages.map((x) => x.id),
-      })
-      .then((res) => {
-        if (isOk(res)) {
-          dispatch(
-            patchRecipe({
-              recipeId,
-              updateFn: (recipe) => {
-                return {
-                  ...recipe,
-                  timelineItems: [...recipe.timelineItems, res.data],
-                }
-              },
-            }),
-          )
+        uploadIds: uploadedImages.map((x) => x.id),
+      },
+      {
+        onSuccess: () => {
           cancelEditingNote()
-        } else {
-          toast.error("Shopping list copied to clipboard!")
-        }
-        setIsLoading(false)
-      })
+        },
+        onError: () => {
+          toast.error("Problem adding note to recipe")
+        },
+      },
+    )
   }
   const onCancel = () => {
     cancelEditingNote()
@@ -526,7 +461,7 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     editorText,
     onEditorFocus,
     onCreate,
-    isLoading,
+    isLoading: createNote.isLoading,
     onCancel,
     isDisabled,
     addUploads: (upload: UploadSuccess) => {

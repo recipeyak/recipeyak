@@ -17,14 +17,13 @@ import * as forms from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Image } from "@/components/Image"
 import { Loader } from "@/components/Loader"
-import { useDispatch, useScheduleTeamID, useSelector } from "@/hooks"
+import { useScheduleTeamID, useSelector } from "@/hooks"
 import { useRecentlyCreatedRecipesList } from "@/queries/recentlyCreatedRecipesList"
 import { useRecentlyViewedRecipesList } from "@/queries/recentlyViewedRecipesList"
+import { useRecipeList } from "@/queries/recipeList"
 import { useSchedulePreviewList } from "@/queries/schedulePreviewList"
 import { searchRecipes } from "@/search"
 import { scheduleURLFromTeamID } from "@/store/mapState"
-import { getTeamRecipes } from "@/store/reducers/recipes"
-import { fetchingRecipeListAsync } from "@/store/thunks"
 import { css, styled } from "@/theme"
 import { updateQueryParamsAsync } from "@/utils/querystring"
 import { imgixFmt } from "@/utils/url"
@@ -359,11 +358,7 @@ const UserHome = () => {
   const history = useHistory()
   const [searchQuery, setSearchQuery] =
     React.useState<string>(searchQueryFromUrl)
-  const recipes = useSelector((s) => getTeamRecipes(s, "personal"))
-  const dispatch = useDispatch()
-  useEffect(() => {
-    void fetchingRecipeListAsync(dispatch)()
-  }, [dispatch])
+  const recipes = useRecipeList()
   const setQuery = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setSearchQuery(event.target.value)
@@ -382,12 +377,9 @@ const UserHome = () => {
     updateQueryParamsAsync({ search: searchQuery || "" })
   }, [searchQuery])
 
-  const filteredRecipes =
-    recipes?.kind === "Success"
-      ? searchRecipes({ recipes: recipes.data, query: searchQuery })
-      : { recipes: [] }
-
-  const loadingSuggestions = recipes?.kind !== "Success"
+  const filteredRecipes = recipes.isSuccess
+    ? searchRecipes({ recipes: recipes.data, query: searchQuery })
+    : { recipes: [] }
 
   const suggestions = filteredRecipes.recipes
     .map((result, index) => {
@@ -457,7 +449,7 @@ const UserHome = () => {
             />
             {searchQuery && (
               <SuggestionBox>
-                {!loadingSuggestions ? (
+                {recipes.isSuccess ? (
                   <>
                     {suggestions.length === 0 && (
                       <SuggestionInfo>No Results Found</SuggestionInfo>

@@ -1,12 +1,12 @@
 import { useDrag } from "react-dnd"
 import { Link } from "react-router-dom"
 
+import { IRecipe } from "@/api"
 import { classNames } from "@/classnames"
 import { DragIcon } from "@/components/icons"
 import { Image } from "@/components/Image"
 import { DragDrop } from "@/dragDrop"
 import { Match } from "@/search"
-import { IRecipe } from "@/store/reducers/recipes"
 import { styled } from "@/theme"
 import { recipeURL } from "@/urls"
 import { imgixFmt } from "@/utils/url"

@@ -1,70 +1,96 @@
-import React from "react"
-import { connect } from "react-redux"
+import { useState } from "react"
+import Textarea from "react-textarea-autosize"
 
-import GlobalEvent from "@/components/GlobalEvent"
-import AddStepForm from "@/pages/recipe-detail/AddStepForm"
-import {
-  addStepToRecipe,
-  IRecipe,
-  IStep,
-  setRecipeStepDraft,
-} from "@/store/reducers/recipes"
+import { Button } from "@/components/Buttons"
+import { useStepCreate } from "@/queries/stepCreate"
 
 interface IAddStepProps {
-  readonly addStep: (args: {
-    id: IStep["id"]
-    step: IRecipe["draftStep"]
-    position: string
-  }) => void
-  readonly step?: string
-  readonly setStep: (args: {
-    id: IRecipe["id"]
-    draftStep: IRecipe["draftStep"]
-  }) => void
-  readonly onCancel: () => void
-  readonly loading?: boolean
-  readonly id: number
+  readonly recipeId: number
   readonly index: number
   readonly position: string
+  readonly onCancel: () => void
 }
 
-function AddStep(props: IAddStepProps) {
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    props.setStep({ id: props.id, draftStep: e.target.value })
-  }
-
-  const clearStep = () => {
-    props.onCancel()
-  }
-
-  const addStep = () => {
-    props.addStep({ id: props.id, step: props.step, position: props.position })
-  }
-
-  const handleKeyUp = (e: KeyboardEvent) => {
-    if (e.key === "Escape") {
-      clearStep()
-    }
+function AddStep({ recipeId, onCancel, index, position }: IAddStepProps) {
+  const [step, setStep] = useState("")
+  const addStep = useStepCreate()
+  const addStepToRecipe = () => {
+    addStep.mutate(
+      {
+        recipeId,
+        step,
+        position,
+      },
+      {
+        onSuccess: () => {
+          setStep("")
+        },
+      },
+    )
   }
 
   return (
-    <>
-      <GlobalEvent keyUp={handleKeyUp} />
-      <AddStepForm
-        handleInputChange={handleInputChange}
-        addStep={addStep}
-        cancelAddStep={clearStep}
-        stepNumber={props.index}
-        text={props.step || ""}
-        loading={props.loading}
-      />
-    </>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        if (step === "") {
+          return
+        }
+        addStepToRecipe()
+      }}
+    >
+      <div className="field">
+        <label className="better-label">Step {index}</label>
+        <div className="control mt-2">
+          <Textarea
+            onChange={(e) => {
+              setStep(e.target.value)
+            }}
+            onKeyPress={(e) => {
+              if (step === "") {
+                return
+              }
+              if (e.metaKey && e.key === "Enter") {
+                e.preventDefault()
+                addStepToRecipe()
+              }
+            }}
+            value={step}
+            className={"my-textarea" + (addStep.error ? " is-danger" : "")}
+            placeholder="Add a step..."
+            name="step"
+          />
+          {addStep.error ? (
+            <p className="fs-4 c-danger">A step is required</p>
+          ) : null}
+        </div>
+      </div>
+      <div className="field is-grouped justify-end">
+        <p className="control">
+          <Button
+            onClick={onCancel}
+            size="small"
+            type="button"
+            name="cancel step"
+          >
+            Cancel
+          </Button>
+        </p>
+        <p className="control">
+          <Button
+            variant="primary"
+            size="small"
+            disabled={step === ""}
+            type="submit"
+            name="save step"
+            loading={addStep.isLoading}
+          >
+            Add
+          </Button>
+        </p>
+      </div>
+    </form>
   )
 }
 
-const mapDispatchToProps = {
-  addStep: addStepToRecipe.request,
-  setStep: setRecipeStepDraft,
-}
-
-export default connect(null, mapDispatchToProps)(AddStep)
+export default AddStep

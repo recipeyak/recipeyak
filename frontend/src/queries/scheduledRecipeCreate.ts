@@ -1,15 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { addWeeks, startOfWeek, subWeeks } from "date-fns"
 
-import { CalendarResponse, ICalRecipe, scheduleRecipe } from "@/api"
+import { CalendarResponse, ICalRecipe, IRecipe, scheduleRecipe } from "@/api"
 import { toISODateString } from "@/date"
 import { useTeamId } from "@/hooks"
 import { unwrapResult } from "@/query"
-import { IRecipe } from "@/store/reducers/recipes"
-import store from "@/store/store"
 import { toast } from "@/toast"
 import { random32Id } from "@/uuid"
-import { isSuccessOrRefetching } from "@/webdata"
 
 function toCalRecipe(
   recipe: Pick<IRecipe, "id" | "name" | "owner">,
@@ -61,14 +58,20 @@ export function useScheduleRecipeCreate() {
     mutationFn: scheduleRecipeV2,
     onMutate: (vars) => {
       const tempId = random32Id()
+      // TODO: this is hacky, we could probably pass it in as props or somethign
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      const recipe = queryClient.getQueryData([
+        teamID,
+        "recipes",
+        vars.recipeID,
+      ]) as Pick<IRecipe, "id" | "name" | "owner"> | null | undefined
       // TODO: move recipes data to react-query
-      const recipe = store.getState().recipes.byId[vars.recipeID]
-      if (!isSuccessOrRefetching(recipe)) {
+      if (!recipe) {
         console.warn("no optimistic update")
         return
       }
       const tempScheduledRecipe = toCalRecipe(
-        recipe.data,
+        recipe,
         tempId,
         vars.on,
         /* user */ null,

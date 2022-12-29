@@ -1,23 +1,17 @@
-import produce from "immer"
-import { flatten, groupBy, last, pick, sortBy } from "lodash-es"
+import { flatten, groupBy, last, sortBy } from "lodash-es"
 import queryString from "query-string"
 import React, { useMemo, useState } from "react"
 import { RouteComponentProps, useHistory } from "react-router"
 import { Link, useLocation } from "react-router-dom"
 
-import * as api from "@/api"
+import { IIngredient, INote, IRecipe, TimelineItem, Upload } from "@/api"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
 import { formatHumanDate } from "@/date"
-import {
-  useDispatch,
-  useGlobalEvent,
-  useOnWindowFocusChange,
-  useSelector,
-} from "@/hooks"
+import { useGlobalEvent } from "@/hooks"
 import * as ordering from "@/ordering"
 import AddIngredientOrSection from "@/pages/recipe-detail/AddIngredient"
 import AddStep from "@/pages/recipe-detail/AddStep"
@@ -31,25 +25,13 @@ import { Section } from "@/pages/recipe-detail/Section"
 import StepContainer from "@/pages/recipe-detail/StepContainer"
 import { TagEditor } from "@/pages/recipe-detail/TagEditor"
 import { getNewPosIngredients } from "@/position"
-import { isOk } from "@/result"
-import {
-  deleteIngredient,
-  fetchRecipe,
-  getRecipeById,
-  IIngredient,
-  INote,
-  IRecipe,
-  patchRecipe,
-  TimelineItem,
-  updateIngredient,
-  updateSectionForRecipe,
-  updatingRecipeAsync,
-  Upload,
-} from "@/store/reducers/recipes"
+import { useIngredientUpdate } from "@/queries/ingredientUpdate"
+import { useRecipeFetch } from "@/queries/recipeFetch"
+import { useRecipeUpdate } from "@/queries/recipeUpdate"
+import { useSectionUpdate } from "@/queries/sectionUpdate"
 import { styled } from "@/theme"
 import { recipeURL } from "@/urls"
 import { imgixFmt, pathNamesEqual } from "@/utils/url"
-import { isFailure, isInitial, isLoading, isSuccessLike } from "@/webdata"
 
 type SectionsAndIngredients = ReadonlyArray<
   | {
@@ -101,10 +83,12 @@ function RecipeDetails({
   const [addIngredient, setAddIngredient] = React.useState(editingEnabled)
   // default to open when in edit mode
   const [addStep, setAddStep] = React.useState(editingEnabled)
-  const dispatch = useDispatch()
   const [sectionsAndIngredients, setSectionsAndIngredients] =
     React.useState<SectionsAndIngredients>(() => getInitialIngredients(recipe))
+  const updateIngredient = useIngredientUpdate()
+  const updateSection = useSectionUpdate()
   React.useEffect(() => {
+    console.log("ingredinets or sections changed")
     setSectionsAndIngredients(
       getInitialIngredients({
         sections: recipe.sections,
@@ -167,27 +151,21 @@ function RecipeDetails({
       return out
     })
     if (args.kind === "ingredient") {
-      dispatch(
-        updateIngredient.request({
-          recipeID: recipe.id,
-          ingredientID: args.id,
-          content: { position: newPosition },
-        }),
-      )
+      updateIngredient.mutate({
+        recipeId: recipe.id,
+        ingredientId: args.id,
+        update: {
+          position: newPosition,
+        },
+      })
     } else {
-      void api
-        .updateSection({ sectionId: args.id, position: newPosition })
-        .then((res) => {
-          if (isOk(res)) {
-            dispatch(
-              updateSectionForRecipe({
-                recipeId: recipe.id,
-                sectionId: args.id,
-                position: newPosition,
-              }),
-            )
-          }
-        })
+      updateSection.mutate({
+        recipeId: recipe.id,
+        sectionId: args.id,
+        update: {
+          position: newPosition,
+        },
+      })
     }
   }
 
@@ -197,32 +175,6 @@ function RecipeDetails({
   const handleShowAddIngredient = () => {
     setAddIngredient(true)
   }
-
-  const handleRemove = ({ ingredientId }: { readonly ingredientId: number }) =>
-    dispatch(
-      deleteIngredient.request({
-        recipeID: recipe.id,
-        ingredientID: ingredientId,
-      }),
-    )
-
-  const handleUpdate = ({
-    ingredientId,
-    ...ingredient
-  }: {
-    readonly ingredientId: number
-    readonly quantity: string
-    readonly name: string
-    readonly description: string
-    readonly optional: boolean
-  }) =>
-    dispatch(
-      updateIngredient.request({
-        recipeID: recipe.id,
-        ingredientID: ingredientId,
-        content: ingredient,
-      }),
-    )
 
   React.useEffect(() => {
     if (!editingEnabled) {
@@ -241,19 +193,16 @@ function RecipeDetails({
           {sectionsAndIngredients.map((item, i) => {
             if (item.kind === "ingredient") {
               const ingre = item.item
+              console.log(ingre.id)
               return (
                 <Ingredient
                   key={"ingredient" + String(ingre.id)}
                   index={i}
                   recipeID={recipe.id}
-                  id={ingre.id}
+                  ingredientId={ingre.id}
                   quantity={ingre.quantity}
                   name={ingre.name}
-                  update={handleUpdate}
-                  remove={handleRemove}
-                  updating={ingre.updating}
                   isEditing={editingEnabled}
-                  removing={ingre.removing}
                   description={ingre.description}
                   optional={ingre.optional}
                   completeMove={handleCompleteMove}
@@ -281,7 +230,6 @@ function RecipeDetails({
         {addIngredient ? (
           <AddIngredientOrSection
             recipeId={recipe.id}
-            addingIngredient={!!recipe.addingIngredient}
             onCancel={handleHideAddIngredient}
             newPosition={ordering.positionAfter(
               last(sectionsAndIngredients)?.item.position ??
@@ -290,9 +238,9 @@ function RecipeDetails({
           />
         ) : (
           editingEnabled && (
-            <a className="text-muted" onClick={handleShowAddIngredient}>
-              add
-            </a>
+            <Button size="small" onClick={handleShowAddIngredient}>
+              Add
+            </Button>
           )
         )}
       </div>
@@ -306,27 +254,25 @@ function RecipeDetails({
         />
         {addStep ? (
           <AddStep
-            id={recipe.id}
+            recipeId={recipe.id}
             index={steps.length + 1}
-            step={recipe.draftStep}
             onCancel={() => {
               setAddStep(false)
             }}
-            loading={recipe.addingStepToRecipe}
             position={ordering.positionAfter(
               last(steps)?.position ?? ordering.FIRST_POSITION,
             )}
           />
         ) : (
           editingEnabled && (
-            <a
-              className="text-muted"
+            <Button
+              size="small"
               onClick={() => {
                 setAddStep(true)
               }}
             >
-              add
-            </a>
+              Add
+            </Button>
           )
         )}
         <NoteContainer
@@ -337,24 +283,6 @@ function RecipeDetails({
       </div>
     </>
   )
-}
-
-export function useRecipe(recipeId: number) {
-  const dispatch = useDispatch()
-  const fetch = React.useCallback(
-    (refresh?: boolean) => {
-      dispatch(fetchRecipe.request({ recipeId, refresh }))
-    },
-    [dispatch, recipeId],
-  )
-  React.useEffect(() => {
-    fetch()
-  }, [fetch])
-  const refreshData = React.useCallback(() => {
-    fetch(true)
-  }, [fetch])
-  useOnWindowFocusChange(refreshData)
-  return useSelector((state) => getRecipeById(state, recipeId))
 }
 
 const ArchiveMessage = styled.div`
@@ -530,30 +458,28 @@ const RecipeMetaContainer = styled.div<{ inline?: boolean }>`
   justify-content: end;`}
 `
 
-const allowedKeys = [
-  "name",
-  "author",
-  "time",
-  "tags",
-  "servings",
-  "source",
-] as const
-
 function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
-  const dispatch = useDispatch()
   const [formState, setFormState] = useState<Partial<IRecipe>>(props.recipe)
-  const [isSaving, setIsSaving] = useState(false)
+  const updateRecipe = useRecipeUpdate()
   const onSave = async () => {
-    setIsSaving(true)
-    await updatingRecipeAsync(
+    updateRecipe.mutate(
       {
-        data: pick(formState, allowedKeys),
-        id: props.recipe.id,
+        recipeId: props.recipe.id,
+        update: {
+          name: formState.name,
+          author: formState.author,
+          time: formState.time,
+          tags: formState.tags,
+          servings: formState.servings,
+          source: formState.source,
+        },
       },
-      dispatch,
+      {
+        onSuccess: () => {
+          props.onClose()
+        },
+      },
     )
-    setIsSaving(false)
-    props.onClose()
   }
 
   const setAttr = <T extends keyof Partial<IRecipe>>(
@@ -637,7 +563,7 @@ function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
           size="small"
           type="submit"
           variant="primary"
-          loading={isSaving}
+          loading={updateRecipe.isLoading}
           onClick={onSave}
           name="save recipe"
         >
@@ -726,23 +652,6 @@ const RecipeTitleContainer = styled.div`
   flex-direction: column;
   gap: 0.5rem;
 `
-function toggleImageStar(recipeId: number, imageId: string) {
-  return patchRecipe({
-    recipeId,
-    updateFn: produce((recipe) => {
-      recipe.timelineItems.forEach((timelineItem) => {
-        if (timelineItem.type === "note") {
-          timelineItem.attachments.forEach((attachment) => {
-            if (attachment.id === imageId) {
-              attachment.isPrimary = !attachment.isPrimary
-            }
-          })
-        }
-      })
-      return recipe
-    }),
-  })
-}
 
 function useGallery(
   noteUploads: Upload[],
@@ -770,7 +679,6 @@ function useGallery(
   const [showGalleryImage, setGalleryImage] = React.useState<{
     id: string
   } | null>(null)
-  const dispatch = useDispatch()
   const image = uploads.find((x) => x.id === showGalleryImage?.id)
   const imagePosition = uploads.findIndex((x) => x.id === showGalleryImage?.id)
 
@@ -780,6 +688,8 @@ function useGallery(
 
   const hasPrevious = imagePosition > 0
   const hasNext = imagePosition < uploads.length - 1
+
+  const updateRecipe = useRecipeUpdate()
 
   const onPrevious = React.useCallback(() => {
     setGalleryImage({ id: uploads[imagePosition - 1].id })
@@ -794,20 +704,13 @@ function useGallery(
     if (image?.id == null || recipeId == null) {
       return
     }
-
-    dispatch(toggleImageStar(recipeId, image.id))
-
-    const res = await updatingRecipeAsync(
-      {
-        id: recipeId,
-        data: { primaryImageId: image.isPrimary ? null : image.id },
+    updateRecipe.mutate({
+      recipeId,
+      update: {
+        primaryImageId: image.isPrimary ? null : image.id,
       },
-      dispatch,
-    )
-    if (!isOk(res)) {
-      dispatch(toggleImageStar(recipeId, image.id))
-    }
-  }, [recipeId, image?.isPrimary, image?.id, dispatch])
+    })
+  }, [recipeId, image?.isPrimary, image?.id, updateRecipe])
 
   const openPrimaryImage = React.useCallback(() => {
     if (primaryImage?.id != null) {
@@ -862,8 +765,10 @@ function RecipeInfo(props: {
       <RecipeDetailsContainer spanColumns={inlineLayout}>
         <Dropdown
           className="mr-auto"
+          recipeIsArchived={props.recipe.archived_at != null}
           recipeId={props.recipe.id}
           recipeName={props.recipe.name}
+          recipeIngredients={props.recipe.ingredients}
           editingEnabled={props.editingEnabled}
           toggleEditing={props.toggleEditMode}
         />
@@ -1021,18 +926,19 @@ function formatImgOpenGraph(x: string): string {
 export function Recipe(props: IRecipeProps) {
   const recipeId = parseInt(props.match.params.id, 10)
 
-  const maybeRecipe = useRecipe(recipeId)
+  const maybeRecipe = useRecipeFetch({ recipeId })
   const history = useHistory()
   const parsed = queryString.parse(props.location.search)
   const editingEnabled = parsed.edit === "1"
 
+  // TODO: maybe move to userRecipeFetch
   // default to metadata being in edit mode when the page is naved to with edit=1
   useRecipeUrlUpdate(
-    isSuccessLike(maybeRecipe)
+    maybeRecipe.isSuccess
       ? { id: maybeRecipe.data.id, name: maybeRecipe.data.name }
       : null,
   )
-  const myRecipe = isSuccessLike(maybeRecipe) ? maybeRecipe.data : null
+  const myRecipe = maybeRecipe.isSuccess ? maybeRecipe.data : null
   const notes = myRecipe?.timelineItems.filter(isNote) ?? []
   const uploads = flatten(notes.map((x) => x.attachments))
 
@@ -1048,11 +954,11 @@ export function Recipe(props: IRecipeProps) {
     openPrimaryImage,
   } = useGallery(uploads, myRecipe?.id ?? null, myRecipe?.primaryImage ?? null)
 
-  if (isInitial(maybeRecipe) || isLoading(maybeRecipe)) {
+  if (maybeRecipe.isLoading) {
     return <Loader />
   }
 
-  if (isFailure(maybeRecipe)) {
+  if (maybeRecipe.isError) {
     return <p>recipe not found</p>
   }
 

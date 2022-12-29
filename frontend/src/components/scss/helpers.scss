@@ -419,12 +419,8 @@
   cursor: default;
 }
 
-.bg-whitesmoke {
-  background-color: whitesmoke;
-}
-
 .bg-white {
-  background-color: white;
+  background-color: var(--bg-color, lavender);
 }
 
 .bg-highlight {
@@ -434,7 +430,7 @@
 
 @keyframes bg-highlighted-fade {
   0% {
-    background-color: rgba(251, 242, 212, 1);
+    background-color: var(--bg-color, lavender);
   }
 
   100% {

@@ -1,7 +1,7 @@
+import { IRecipe } from "@/api"
 import { assertNever } from "@/assert"
 import { parseQuery, QueryNode } from "@/query-parser"
 import { byNameAlphabetical } from "@/sorters"
-import { IRecipe } from "@/store/reducers/recipes"
 
 // https://stackoverflow.com/a/37511463/3720597
 const removeAccents = (x: string) =>

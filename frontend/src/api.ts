@@ -2,9 +2,110 @@ import * as t from "io-ts"
 
 import { toISODateString } from "@/date"
 import { http } from "@/http"
+import { Reaction } from "@/pages/recipe-detail/Reactions"
 import { isOk, Ok } from "@/result"
-import { IIngredient, INote, IRecipe, IStep } from "@/store/reducers/recipes"
 import { ISession, IUser } from "@/store/reducers/user"
+
+export interface IIngredient {
+  readonly id: number
+  readonly quantity: string
+  readonly name: string
+  readonly description: string
+  readonly position: string
+  readonly optional: boolean
+  readonly updating?: boolean
+  readonly removing?: boolean
+}
+
+export interface IStep {
+  readonly id: number
+  readonly text: string
+  readonly position: string
+}
+
+export interface IPublicUser {
+  readonly id: string | number
+  readonly name: string | null
+  readonly avatar_url: string
+}
+
+export type Upload = {
+  readonly id: string
+  readonly url: string
+  readonly backgroundUrl: string | null
+  readonly type: "upload"
+  readonly isPrimary: boolean
+  readonly localId: string
+}
+
+export interface INote {
+  readonly id: number
+  readonly type: "note"
+  readonly text: string
+  readonly modified: string
+  readonly created: string
+  readonly attachments: Upload[]
+  readonly reactions: Reaction[]
+  readonly last_modified_by: IPublicUser
+  readonly created_by: IPublicUser
+}
+
+type IRecipeOwner =
+  | {
+      type: "team"
+      id: number
+      name: string
+    }
+  | {
+      type: "user"
+      id: number
+    }
+
+export type RecipeTimelineItem = {
+  type: "recipe"
+  id: number
+  action:
+    | "created"
+    | "archived"
+    | "unarchived"
+    | "deleted"
+    | "scheduled"
+    | "remove_primary_image"
+    | "set_primary_image"
+  created_by: IPublicUser | null
+  created: string
+}
+
+export type TimelineItem = INote | RecipeTimelineItem
+
+export interface IRecipe {
+  readonly id: number
+  readonly name: string
+  readonly author: string | null
+  readonly source: string | null
+  readonly time: string
+  readonly servings: string | null
+  readonly steps: ReadonlyArray<IStep>
+  readonly timelineItems: readonly TimelineItem[]
+  readonly modified: string
+  readonly last_scheduled: string
+  readonly team: ITeam["id"]
+  readonly tags?: string[]
+  readonly owner: IRecipeOwner
+  readonly ingredients: ReadonlyArray<IIngredient>
+  readonly sections: ReadonlyArray<{
+    readonly id: number
+    readonly title: string
+    readonly position: string
+  }>
+  readonly primaryImage?: {
+    id: string
+    url: string
+    backgroundUrl: string | null
+  }
+  readonly created: string
+  readonly archived_at: string | null
+}
 
 export const updateUser = (
   data: Pick<Partial<IUser>, "name" | "email" | "schedule_team">,
@@ -124,12 +225,7 @@ export const createRecipe = (
   recipe:
     | {
         readonly team: number | undefined
-        readonly author?: string
-        readonly name?: string
-        readonly source?: string
-        readonly servings?: string
-        readonly time?: string
-        readonly tags?: string[]
+        readonly name: string
       }
     | { readonly team: number | undefined; readonly from_url: string },
 ) => http.post<IRecipe>("/api/v1/recipes/", recipe)
@@ -205,7 +301,13 @@ export const addStepToRecipe = (
 export const updateIngredient = (
   recipeID: IRecipe["id"],
   ingredientID: IIngredient["id"],
-  content: unknown,
+  content: {
+    quantity?: string
+    name?: string
+    description?: string
+    optional?: boolean
+    position?: string
+  },
 ) =>
   http.patch<IIngredient>(
     `/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`,
@@ -236,7 +338,7 @@ export const createReaction = ({
   noteId,
   type,
 }: {
-  noteId: string
+  noteId: string | number
   type: "❤️" | "😆" | "🤮"
 }) =>
   http.post<{
@@ -251,8 +353,11 @@ export const createReaction = ({
   }>(`/api/v1/notes/${noteId}/reactions/`, {
     type,
   })
-export const deleteReaction = ({ reactionId }: { reactionId: string }) =>
-  http.delete(`/api/v1/reactions/${reactionId}/`)
+export const deleteReaction = ({
+  reactionId,
+}: {
+  reactionId: number | string
+}) => http.delete(`/api/v1/reactions/${reactionId}/`)
 export const uploadImage = async ({
   image,
   recipeId,

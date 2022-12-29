@@ -31,31 +31,22 @@
 
 import { sortBy } from "lodash-es"
 import React, { useEffect } from "react"
-import { connect } from "react-redux"
 
+import { IRecipe, IStep } from "@/api"
 import Step from "@/pages/recipe-detail/Step"
 import { getNewPos } from "@/position"
-import { IRecipe, IStep, updateStep } from "@/store/reducers/recipes"
+import { useStepUpdate } from "@/queries/stepUpdate"
 
 interface IStepContainerProps {
   readonly steps: ReadonlyArray<IStep>
   readonly recipeID: IRecipe["id"]
-  readonly updatingStep: ({
-    recipeID,
-    stepID,
-    text,
-    position,
-  }: {
-    text?: string
-    position: string
-    recipeID: number
-    stepID: number
-  }) => void
   readonly isEditing: boolean
 }
 
 function StepContainer(props: IStepContainerProps) {
   const [steps, setSteps] = React.useState(props.steps)
+
+  const updateStep = useStepUpdate()
 
   useEffect(() => {
     setSteps(sortBy(props.steps, "position"))
@@ -93,27 +84,27 @@ function StepContainer(props: IStepContainerProps) {
         return c
       }),
     )
-    props.updatingStep({
-      recipeID: props.recipeID,
-      stepID,
-      position: newPosition,
+    updateStep.mutate({
+      recipeId: props.recipeID,
+      stepId: stepID,
+      update: {
+        position: newPosition,
+      },
     })
   }
 
   return (
     <>
-      {steps.map((card, i) => (
+      {steps.map((step, i) => (
         <Step
-          key={card.id}
+          key={step.id}
           index={i}
-          id={card.id}
+          stepId={step.id}
           recipeID={props.recipeID}
-          text={card.text}
+          text={step.text}
           move={move}
           isEditing={props.isEditing}
-          position={card.position}
-          updating={card.updating}
-          removing={card.removing}
+          position={step.position}
           completeMove={completeMove}
         />
       ))}
@@ -121,8 +112,4 @@ function StepContainer(props: IStepContainerProps) {
   )
 }
 
-const mapDispatchToProps = {
-  updatingStep: updateStep.request,
-}
-
-export default connect(null, mapDispatchToProps)(StepContainer)
+export default StepContainer
