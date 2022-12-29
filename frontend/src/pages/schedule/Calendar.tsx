@@ -23,7 +23,6 @@ import ShoppingList from "@/pages/schedule/ShoppingList"
 import { useScheduledRecipeList } from "@/queries/scheduledRecipeList"
 import { useScheduledRecipeSettingsFetch } from "@/queries/scheduledRecipeSettingsFetch"
 import { useTeamList } from "@/queries/teamList"
-import { history } from "@/store/store"
 import { styled } from "@/theme"
 
 function CalTitle({ dayTs }: { readonly dayTs: number }) {
@@ -275,6 +274,7 @@ export function Calendar({ teamID }: ICalendarProps) {
   const startOfWeekMs = startOfWeek(weekStartDate).getTime()
   const startDate = startOfWeek(subWeeks(startOfWeekMs, 1))
   const endDate = endOfWeek(addWeeks(startOfWeekMs, 1))
+  const history = useHistory()
 
   const scheduledRecipesResult = useScheduledRecipeList({ startOfWeekMs })
 

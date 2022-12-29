@@ -22,7 +22,7 @@
     "types": ["vitest/globals", "vite/client"],
     "paths": {
       "@/*": ["./src/*"],
-      "*": ["./types/*", "./node_modules/@types/*"]
+      "*": ["./node_modules/@types/*"]
     }
   },
   "include": ["src"],

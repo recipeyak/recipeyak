@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { deleteAllSessions , ISession } from "@/api"
+import { deleteAllSessions, ISession } from "@/api"
 import { unwrapResult } from "@/query"
 
 export function useSessionDeleteAll() {

@@ -99,6 +99,7 @@ function CalendarDay({ date, scheduledRecipes, teamID }: ICalendarDayProps) {
   const today = useCurrentDay()
   const isToday = isSameDay(date, today)
 
+  // TODO: use query params for this
   const isSelected = useSelector(
     (state) =>
       state.shoppinglist.isShopping &&
