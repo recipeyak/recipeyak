@@ -1,9 +1,9 @@
 import "@/components/scss/main.scss"
 
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { QueryClient, useIsRestoring } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
-import { persistQueryClient } from "@tanstack/react-query-persist-client"
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client"
 import React from "react"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
@@ -51,26 +51,6 @@ export const queryClient = new QueryClient({
 
 const localStoragePersister = createSyncStoragePersister({
   storage: window.localStorage,
-})
-
-persistQueryClient({
-  queryClient,
-  persister: localStoragePersister,
-  maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-  dehydrateOptions: {
-    // see: https://github.com/TanStack/query/discussions/3735#discussioncomment-3007804
-    shouldDehydrateQuery: (query) => {
-      // NOTE: list endpoint for recipes is huge, like 2MB for 400ish recipes
-      // we manually cache each recipe but don't include the list itself as that
-      // doubles the total storage and there's only 5MB of localStorage to work
-      // with.
-      if (query.queryKey.includes("recipes-list")) {
-        return false
-      }
-      // default implementation
-      return query.state.status === "success"
-    },
-  },
 })
 
 interface IAuthRouteProps extends Pick<RouteProps, "exact" | "path"> {
@@ -148,9 +128,116 @@ const Route = ({
   />
 )
 
+function AppContent() {
+  const isRestoring = useIsRestoring()
+  if (isRestoring) {
+    // NOTE: we don't render the site until react-query finishes hydrating from cache
+    // some sites like linear show a loader, but they must guarentee it shows
+    // for $N milliseconds or something because when it's really quick, < $N
+    // milliseconds it looks like a glitchy flash
+    return null
+  }
+  return (
+    <Router>
+      <Switch>
+        <PublicOnlyRoute exact path="/login" component={Login} />
+        <PublicOnlyRoute exact path="/signup" component={SignupPage} />
+        <Route exact path="/password-reset" component={PasswordResetPage} />
+        <ContainerBase>
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <PrivateRoute
+              exact
+              path="/schedule/:type(shopping|recipes)?"
+              component={SchedulePage}
+            />
+            <PrivateRoute
+              exact
+              path="/t/:id(\d+)(.*)/schedule/:type(shopping|recipes)?"
+              component={SchedulePage}
+            />
+            <Container>
+              <Switch>
+                <Route
+                  exact
+                  path="/password-reset/confirm/:uid/:token"
+                  component={PasswordResetConfirmPage}
+                />
+                <PrivateRoute
+                  exact
+                  path="/recipes/add"
+                  component={RecipeCreatePage}
+                />
+                <PrivateRoute
+                  exact
+                  path="/recipes/"
+                  component={RecipeListPage}
+                />
+                <PrivateRoute
+                  exact
+                  path="/recipes/:id(\d+)(.*)"
+                  component={RecipeDetailPage}
+                />
+                <PrivateRoute exact path="/settings" component={SettingsPage} />
+                <PrivateRoute
+                  exact
+                  path="/password"
+                  component={PasswordChangePage}
+                />
+                <PrivateRoute
+                  exact
+                  path="/t/create"
+                  component={TeamCreatePage}
+                />
+                <PrivateRoute
+                  exact
+                  path="/t/:id(\d+)(.*)/invite"
+                  component={TeamInvitePage}
+                />
+                <PrivateRoute
+                  exact
+                  path="/t/:id(\d+)(.*)/settings"
+                  component={TeamDetailPage}
+                />
+                <PrivateRoute
+                  exact
+                  path="/t/:id(\d+)(.*)"
+                  component={TeamDetailPage}
+                />
+                <PrivateRoute exact path="/t/" component={TeamsListPage} />
+                <Route component={NotFound} />
+              </Switch>
+            </Container>
+          </Switch>
+        </ContainerBase>
+      </Switch>
+    </Router>
+  )
+}
+
 function Base() {
   return (
-    <QueryClientProvider client={queryClient}>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{
+        persister: localStoragePersister,
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+        dehydrateOptions: {
+          // see: https://github.com/TanStack/query/discussions/3735#discussioncomment-3007804
+          shouldDehydrateQuery: (query) => {
+            // NOTE: list endpoint for recipes is huge, like 2MB for 400ish recipes
+            // we manually cache each recipe but don't include the list itself as that
+            // doubles the total storage and there's only 5MB of localStorage to work
+            // with.
+            if (query.queryKey.includes("recipes-list")) {
+              return false
+            }
+            // default implementation
+            return query.state.status === "success"
+          },
+        },
+      }}
+    >
       <ReactQueryDevtools initialIsOpen={false} />
       <ThemeProvider theme={theme}>
         <HelmetProvider>
@@ -158,101 +245,12 @@ function Base() {
             <ErrorBoundary>
               <Helmet />
               <Toaster toastOptions={{ position: "bottom-center" }} />
-              <Router>
-                <Switch>
-                  <PublicOnlyRoute exact path="/login" component={Login} />
-                  <PublicOnlyRoute
-                    exact
-                    path="/signup"
-                    component={SignupPage}
-                  />
-                  <Route
-                    exact
-                    path="/password-reset"
-                    component={PasswordResetPage}
-                  />
-                  <ContainerBase>
-                    <Switch>
-                      <Route exact path="/" component={Home} />
-                      <PrivateRoute
-                        exact
-                        path="/schedule/:type(shopping|recipes)?"
-                        component={SchedulePage}
-                      />
-                      <PrivateRoute
-                        exact
-                        path="/t/:id(\d+)(.*)/schedule/:type(shopping|recipes)?"
-                        component={SchedulePage}
-                      />
-                      <Container>
-                        <Switch>
-                          <Route
-                            exact
-                            path="/password-reset/confirm/:uid/:token"
-                            component={PasswordResetConfirmPage}
-                          />
-                          <PrivateRoute
-                            exact
-                            path="/recipes/add"
-                            component={RecipeCreatePage}
-                          />
-                          <PrivateRoute
-                            exact
-                            path="/recipes/"
-                            component={RecipeListPage}
-                          />
-                          <PrivateRoute
-                            exact
-                            path="/recipes/:id(\d+)(.*)"
-                            component={RecipeDetailPage}
-                          />
-                          <PrivateRoute
-                            exact
-                            path="/settings"
-                            component={SettingsPage}
-                          />
-                          <PrivateRoute
-                            exact
-                            path="/password"
-                            component={PasswordChangePage}
-                          />
-                          <PrivateRoute
-                            exact
-                            path="/t/create"
-                            component={TeamCreatePage}
-                          />
-                          <PrivateRoute
-                            exact
-                            path="/t/:id(\d+)(.*)/invite"
-                            component={TeamInvitePage}
-                          />
-                          <PrivateRoute
-                            exact
-                            path="/t/:id(\d+)(.*)/settings"
-                            component={TeamDetailPage}
-                          />
-                          <PrivateRoute
-                            exact
-                            path="/t/:id(\d+)(.*)"
-                            component={TeamDetailPage}
-                          />
-                          <PrivateRoute
-                            exact
-                            path="/t/"
-                            component={TeamsListPage}
-                          />
-                          <Route component={NotFound} />
-                        </Switch>
-                      </Container>
-                    </Switch>
-                  </ContainerBase>
-                </Switch>
-              </Router>
+              <AppContent />
             </ErrorBoundary>
           </DndProvider>
         </HelmetProvider>
       </ThemeProvider>
-    </QueryClientProvider>
+    </PersistQueryClientProvider>
   )
 }
 
