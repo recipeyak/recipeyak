@@ -293,6 +293,7 @@ function RecipeSlide({ recipe: r }: { recipe: Recipe }) {
               backgroundUrl: r.primaryImage.backgroundUrl,
             }
           }
+          rounded
         />
         <Box dir="col" w={100}>
           <div className="text-truncate">{r.name}</div>
