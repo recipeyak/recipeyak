@@ -197,13 +197,14 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
 
   const noteHtmlId = `note-${note.id}`
 
-  const { addFiles, removeFile, files, reset } = useImageUpload(
-    addUploads,
-    removeUploads,
-    uploadedImages,
-    resetUploads,
-    recipeId,
-  )
+  const { addFiles, removeFile, files, hasUnsavedImages, reset } =
+    useImageUpload(
+      addUploads,
+      removeUploads,
+      uploadedImages,
+      resetUploads,
+      recipeId,
+    )
 
   const createReaction = useReactionCreate()
   const deleteReaction = useReactionDelete()
@@ -333,6 +334,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
                     size="small"
                     onClick={onSave}
                     loading={isUpdating}
+                    disabled={hasUnsavedImages}
                   >
                     save
                   </Button>
@@ -705,6 +707,7 @@ function useImageUpload(
     removeFile,
     files: orderedImages,
     reset,
+    hasUnsavedImages: !!localImages.find((x) => x.state === "loading"),
   } as const
 }
 
@@ -905,13 +908,14 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
     recipeId,
   })
 
-  const { addFiles, removeFile, files, reset } = useImageUpload(
-    addUploads,
-    removeUploads,
-    uploadedImages,
-    resetUploads,
-    recipeId,
-  )
+  const { addFiles, removeFile, files, hasUnsavedImages, reset } =
+    useImageUpload(
+      addUploads,
+      removeUploads,
+      uploadedImages,
+      resetUploads,
+      recipeId,
+    )
 
   return (
     <div className={className}>
@@ -954,7 +958,7 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
             size="small"
             onClick={onCreate}
             loading={isLoading}
-            disabled={isDisabled}
+            disabled={isDisabled || hasUnsavedImages}
           >
             add
           </Button>
