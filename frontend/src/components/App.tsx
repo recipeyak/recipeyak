@@ -4,6 +4,7 @@ import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persist
 import { QueryClient, useIsRestoring } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client"
+import raven from "raven-js"
 import React from "react"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
@@ -49,8 +50,46 @@ export const queryClient = new QueryClient({
   },
 })
 
-const localStoragePersister = createSyncStoragePersister({
-  storage: window.localStorage,
+const persister = createSyncStoragePersister({
+  storage: {
+    getItem: (key: string): string | null => {
+      return localStorage.getItem(key)
+    },
+    setItem: (key: string, value: string): void => {
+      try {
+        localStorage.setItem(key, value)
+      } catch (e) {
+        raven.captureException(e, {
+          extra: { key },
+        })
+        throw e
+      }
+    },
+    removeItem: (key: string): void => {
+      localStorage.removeItem(key)
+    },
+  },
+  serialize: (client) => {
+    try {
+      return JSON.stringify(client)
+    } catch (e) {
+      raven.captureException(e, {
+        extra: { serializationFailed: true },
+      })
+      throw e
+    }
+  },
+  deserialize: (client) => {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return JSON.parse(client)
+    } catch (e) {
+      raven.captureException(e, {
+        extra: { deserializingFailed: true },
+      })
+      throw e
+    }
+  },
 })
 
 interface IAuthRouteProps extends Pick<RouteProps, "exact" | "path"> {
@@ -220,7 +259,7 @@ function Base() {
     <PersistQueryClientProvider
       client={queryClient}
       persistOptions={{
-        persister: localStoragePersister,
+        persister,
         maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
         dehydrateOptions: {
           // see: https://github.com/TanStack/query/discussions/3735#discussioncomment-3007804

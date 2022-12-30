@@ -166,7 +166,13 @@ export function Ingredient(props: {
       </div>
 
       <label className="d-flex align-items-center cursor-pointer mb-2">
-        <CheckBox onChange={() => {}} checked={optional} className="mr-2" />
+        <CheckBox
+          onChange={() => {
+            setOptional((prev) => !prev)
+          }}
+          checked={optional}
+          className="mr-2"
+        />
         Optional
       </label>
 
@@ -184,7 +190,7 @@ export function Ingredient(props: {
               size="small"
               loading={removeIngredient.isLoading}
             >
-              Remove
+              Delete
             </Button>
           </p>
         </div>

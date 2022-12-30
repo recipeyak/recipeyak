@@ -19,6 +19,7 @@ export function useIngredientCreate() {
         name: string
         description: string
         position: string
+        optional: boolean
       }
     }) => addIngredientToRecipe(recipeId, payload).then(unwrapResult),
     onSuccess: (res, vars) => {

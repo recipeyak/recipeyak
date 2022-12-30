@@ -827,7 +827,7 @@ function ImageUploader({
               />
               <CloseButton
                 onClick={() => {
-                  if (confirm("Remove image?")) {
+                  if (confirm("Delete image?")) {
                     removeFile(f.localId)
                   }
                 }}
