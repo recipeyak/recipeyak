@@ -268,7 +268,7 @@ jobs:
       # https://circleci.com/docs/2.0/env-vars/#circleci-built-in-environment-variables
       - run:
           name: build container
-          working_directory: nginx
+          working_directory: infra/nginx
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
             docker build -f nginx.Dockerfile \
