@@ -130,11 +130,3 @@ export function useTeamId(): number | "personal" {
   const res = useUserFetch()
   return res.data?.schedule_team ?? "personal"
 }
-
-export function useToggle(): [boolean, () => void] {
-  const [state, setState] = React.useState(false)
-  const toggle = React.useCallback(() => {
-    setState((s) => !s)
-  }, [])
-  return [state, toggle]
-}
