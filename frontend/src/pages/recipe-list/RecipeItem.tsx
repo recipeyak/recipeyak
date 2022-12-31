@@ -158,7 +158,11 @@ export function RecipeItem({
 
   const url = props.url || recipeURL(id, name)
 
-  const item: IRecipeItemDrag = { type: DragDrop.RECIPE, recipeID: id }
+  const item: IRecipeItemDrag = {
+    type: DragDrop.RECIPE,
+    recipeID: id,
+    recipeName: name,
+  }
 
   // We don't actually run this conditionally in production.
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -206,7 +210,8 @@ export function RecipeItem({
 }
 
 export interface IRecipeItemDrag {
-  readonly recipeID: IRecipeItemProps["id"]
+  readonly recipeID: number
+  readonly recipeName: string
   readonly type: DragDrop.RECIPE
 }
 

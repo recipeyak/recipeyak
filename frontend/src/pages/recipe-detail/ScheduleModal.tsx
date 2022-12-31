@@ -30,6 +30,7 @@ export function ScheduleModal({
     scheduledRecipeCreate.mutate(
       {
         recipeID: recipeId,
+        recipeName,
         teamID: teamId,
         on: parseISO(isoDate),
       },
