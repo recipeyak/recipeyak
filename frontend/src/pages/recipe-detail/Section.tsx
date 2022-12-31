@@ -120,7 +120,7 @@ export function Section({
                 }}
                 loading={deleteSection.isLoading}
               >
-                Remove
+                Delete
               </Button>
             </p>
             <p className="control">

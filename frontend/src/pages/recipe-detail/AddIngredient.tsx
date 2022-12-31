@@ -40,7 +40,13 @@ function AddIngredientForm({
     createIngredient.mutate(
       {
         recipeId,
-        payload: { quantity, name, description, position: newPosition },
+        payload: {
+          quantity,
+          name,
+          description,
+          position: newPosition,
+          optional,
+        },
       },
       {
         onSuccess: () => {
@@ -98,8 +104,8 @@ function AddIngredientForm({
 
       <label className="d-flex align-items-center cursor-pointer mb-2">
         <CheckBox
-          onChange={(e) => {
-            setOptional(e.target.value === "on")
+          onChange={() => {
+            setOptional((prev) => !prev)
           }}
           checked={optional}
           className="mr-2"
