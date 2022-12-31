@@ -1,22 +1,25 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { addWeeks, startOfWeek, subWeeks } from "date-fns"
 
-import { CalendarResponse, ICalRecipe, IRecipe, scheduleRecipe } from "@/api"
+import { CalendarResponse, ICalRecipe, scheduleRecipe } from "@/api"
 import { toISODateString } from "@/date"
-import { useTeamId } from "@/hooks"
+import { useTeamId, useUser } from "@/hooks"
 import { unwrapResult } from "@/query"
 import { toast } from "@/toast"
 import { random32Id } from "@/uuid"
 
 function toCalRecipe(
-  recipe: Pick<IRecipe, "id" | "name" | "owner">,
+  recipe: {
+    id: number
+    name: string
+  },
   tempId: number,
   on: string | Date,
   user: {
     id: number | null
     name: string
     avatarURL: string
-  } | null,
+  },
 ): ICalRecipe {
   return {
     id: tempId,
@@ -26,16 +29,12 @@ function toCalRecipe(
       name: recipe.name,
     },
     on: toISODateString(on),
-    user: recipe.owner.type === "user" ? recipe.owner.id : null,
-    team: recipe.owner.type === "team" ? recipe.owner.id : null,
-    createdBy:
-      user != null
-        ? {
-            id: String(user.id),
-            name: user.name,
-            avatar_url: user.avatarURL,
-          }
-        : null,
+    createdBy: {
+      // TODO: we should preload user so it isn't possible for it to be null
+      id: user.id ?? -1,
+      name: user.name,
+      avatar_url: user.avatarURL,
+    },
   }
 }
 
@@ -45,6 +44,7 @@ function scheduleRecipeV2({
   on,
 }: {
   recipeID: number
+  recipeName: string
   teamID: number | "personal"
   on: Date
 }): Promise<ICalRecipe> {
@@ -54,27 +54,19 @@ function scheduleRecipeV2({
 export function useScheduleRecipeCreate() {
   const teamID = useTeamId()
   const queryClient = useQueryClient()
+  const user = useUser()
   return useMutation({
     mutationFn: scheduleRecipeV2,
     onMutate: (vars) => {
       const tempId = random32Id()
-      // TODO: this is hacky, we could probably pass it in as props or somethign
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      const recipe = queryClient.getQueryData([
-        teamID,
-        "recipes",
-        vars.recipeID,
-      ]) as Pick<IRecipe, "id" | "name" | "owner"> | null | undefined
-      if (!recipe) {
-        // eslint-disable-next-line no-console
-        console.warn("no optimistic update")
-        return
-      }
       const tempScheduledRecipe = toCalRecipe(
-        recipe,
+        {
+          id: vars.recipeID,
+          name: vars.recipeName,
+        },
         tempId,
         vars.on,
-        /* user */ null,
+        user,
       )
       const weekId = startOfWeek(vars.on)
 

@@ -137,6 +137,7 @@ function CalendarDay({ date, scheduledRecipes, teamID }: ICalendarDayProps) {
       } else if (item.type === DragDrop.RECIPE) {
         scheduledRecipeCreate.mutate({
           recipeID: item.recipeID,
+          recipeName: item.recipeName,
           teamID,
           on: date,
         })

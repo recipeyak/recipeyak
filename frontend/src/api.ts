@@ -694,8 +694,6 @@ export interface ICalRecipe {
     readonly name: string
     readonly avatar_url: string
   } | null
-  readonly team: ITeam["id"] | null
-  readonly user: IUser["id"] | null
   readonly recipe: {
     readonly id: number
     readonly name: string
