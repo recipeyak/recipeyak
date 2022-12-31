@@ -1,11 +1,11 @@
-import React from "react"
+import React, { useState } from "react"
 import { useDrag } from "react-dnd"
 import { Link } from "react-router-dom"
 
 import { IRecipe } from "@/api"
 import { isInsideChangeWindow } from "@/date"
 import { DragDrop } from "@/dragDrop"
-import { useGlobalEvent, useToggle } from "@/hooks"
+import { useGlobalEvent } from "@/hooks"
 import { CalendarDayItemModal } from "@/pages/schedule/CalendarDayItemModal"
 import { styled } from "@/theme"
 import { recipeURL } from "@/urls"
@@ -73,7 +73,7 @@ export function CalendarItem({
   createdBy,
 }: ICalendarItemProps) {
   const ref = React.useRef<HTMLLIElement>(null)
-  const [show, toggleShow] = useToggle()
+  const [show, setShow] = useState(false)
 
   const handleKeyPress = (e: KeyboardEvent) => {
     if (!ref.current?.matches(":hover")) {
@@ -126,7 +126,7 @@ export function CalendarItem({
               return
             }
             e.preventDefault()
-            toggleShow()
+            setShow(true)
           }}
         />
       </CalendarListItem>
@@ -139,7 +139,9 @@ export function CalendarItem({
           recipeName={recipeName}
           recipeId={recipeID}
           date={date}
-          onClose={toggleShow}
+          onClose={() => {
+            setShow(false)
+          }}
         />
       ) : null}
     </>

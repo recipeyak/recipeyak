@@ -1,8 +1,8 @@
-import React from "react"
+import React, { useState } from "react"
 
 import { Box } from "@/components/Box"
 import { Modal } from "@/components/Modal"
-import { useGlobalEvent, useToggle } from "@/hooks"
+import { useGlobalEvent } from "@/hooks"
 
 const keybinds = [
   {
@@ -45,7 +45,7 @@ function KeyBind({ bind }: IKeyBindProps) {
 }
 
 export default function HelpMenuModal() {
-  const [show, toggleShow] = useToggle()
+  const [show, setShow] = useState(false)
 
   useGlobalEvent({
     keyUp: (e: KeyboardEvent) => {
@@ -54,14 +54,16 @@ export default function HelpMenuModal() {
         return
       }
       if (e.key === "?") {
-        toggleShow()
+        setShow(true)
       }
     },
   })
   return (
     <Modal
       show={show}
-      onClose={toggleShow}
+      onClose={() => {
+        setShow(false)
+      }}
       title="Keybinds"
       content={
         <Box>

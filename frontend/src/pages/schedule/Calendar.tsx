@@ -5,7 +5,7 @@ import format from "date-fns/format"
 import isValid from "date-fns/isValid"
 import parseISO from "date-fns/parseISO"
 import { chunk, first } from "lodash-es"
-import React from "react"
+import React, { useState } from "react"
 import { useHistory, useLocation } from "react-router-dom"
 
 import { ICalRecipe } from "@/api"
@@ -14,7 +14,6 @@ import { Button } from "@/components/Buttons"
 import { Select } from "@/components/Forms"
 import { Modal } from "@/components/Modal"
 import { toISODateString } from "@/date"
-import { useToggle } from "@/hooks"
 import CalendarDay from "@/pages/schedule/CalendarDay"
 import { ICalConfig } from "@/pages/schedule/CalendarMoreDropdown"
 import { IconSettings } from "@/pages/schedule/IconSettings"
@@ -164,8 +163,8 @@ interface INavProps {
 
 function Nav({ dayTs, teamID, onPrev, onNext, onCurrent }: INavProps) {
   const { handleOwnerChange } = useTeamSelect()
-  const [showSettings, toggleShowSetting] = useToggle()
-  const [showShopping, toggleShopping] = useToggle()
+  const [showSettings, setShowSettings] = useState(false)
+  const [showShopping, setShowShopping] = useState(false)
 
   const settings = useScheduledRecipeSettingsFetch()
 
@@ -173,7 +172,9 @@ function Nav({ dayTs, teamID, onPrev, onNext, onCurrent }: INavProps) {
     <Box space="between" align="center" shrink={0}>
       <Modal
         show={showSettings}
-        onClose={toggleShowSetting}
+        onClose={() => {
+          setShowSettings(true)
+        }}
         title="Calendar Settings"
         content={
           <Box gap={2} dir="col">
@@ -187,7 +188,9 @@ function Nav({ dayTs, teamID, onPrev, onNext, onCurrent }: INavProps) {
       />
       <Modal
         show={showShopping}
-        onClose={toggleShopping}
+        onClose={() => {
+          setShowShopping(false)
+        }}
         title="Shopping List"
         content={
           <div className="d-flex">
@@ -198,10 +201,21 @@ function Nav({ dayTs, teamID, onPrev, onNext, onCurrent }: INavProps) {
 
       <Box gap={1}>
         <CalTitle dayTs={dayTs} />
-        <Button size="small" className="p-1" onClick={toggleShowSetting}>
+        <Button
+          size="small"
+          className="p-1"
+          onClick={() => {
+            setShowSettings(true)
+          }}
+        >
           <IconSettings />
         </Button>
-        <Button size="small" onClick={toggleShopping}>
+        <Button
+          size="small"
+          onClick={() => {
+            setShowShopping(true)
+          }}
+        >
           Shop
         </Button>
       </Box>
