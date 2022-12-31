@@ -11,9 +11,9 @@ export function useTeamMemberDelete() {
     mutationFn: ({ teamId, memberId }: { teamId: number; memberId: number }) =>
       deleteTeamMember(teamId, memberId).then(unwrapResult),
     onSuccess: (_res, vars) => {
-      queryClient.setQueryData(
+      queryClient.setQueryData<IMember[]>(
         ["team-members-list", vars.teamId],
-        (prev: IMember[] | undefined): IMember[] | undefined => {
+        (prev) => {
           return prev?.filter((x) => x.id !== vars.memberId)
         },
       )

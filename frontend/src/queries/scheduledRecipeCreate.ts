@@ -79,11 +79,9 @@ export function useScheduleRecipeCreate() {
       ]
 
       weekIds.forEach((weekId) => {
-        queryClient.setQueryData(
+        queryClient.setQueryData<CalendarResponse>(
           [teamID, "calendar", weekId.getTime()],
-          (
-            data: CalendarResponse | undefined,
-          ): CalendarResponse | undefined => {
+          (data) => {
             if (data == null) {
               return data
             }
@@ -103,11 +101,9 @@ export function useScheduleRecipeCreate() {
         return
       }
       context.weekIds.forEach((weekId) => {
-        queryClient.setQueryData(
+        queryClient.setQueryData<CalendarResponse>(
           [teamID, "calendar", weekId.getTime()],
-          (
-            data: CalendarResponse | undefined,
-          ): CalendarResponse | undefined => {
+          (data) => {
             if (data == null) {
               return data
             }
@@ -131,11 +127,9 @@ export function useScheduleRecipeCreate() {
         return
       }
       context.weekIds.forEach((weekId) => {
-        queryClient.setQueryData(
+        queryClient.setQueryData<CalendarResponse>(
           [teamID, "calendar", weekId.getTime()],
-          (
-            data: CalendarResponse | undefined,
-          ): CalendarResponse | undefined => {
+          (data) => {
             if (data == null) {
               return data
             }

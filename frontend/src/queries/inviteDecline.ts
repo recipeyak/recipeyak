@@ -10,18 +10,14 @@ export function useInviteDecline() {
     mutationFn: ({ inviteId }: { inviteId: number }) =>
       declineInvite(inviteId).then(unwrapResult),
     onSuccess: (_response, vars) => {
-      queryClient.setQueryData(
-        ["invites"],
-        (prev: readonly IInvite[] | undefined) => {
-          // TODO:
-          return prev?.map((x) => {
-            if (x.id === vars.inviteId) {
-              return { ...x, status: "declined" as const }
-            }
-            return x
-          })
-        },
-      )
+      queryClient.setQueryData<readonly IInvite[]>(["invites"], (prev) => {
+        return prev?.map((x) => {
+          if (x.id === vars.inviteId) {
+            return { ...x, status: "declined" as const }
+          }
+          return x
+        })
+      })
     },
   })
 }

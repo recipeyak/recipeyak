@@ -13,12 +13,9 @@ export function useSessionDelete() {
   return useMutation({
     mutationFn: deleteByIdV2,
     onSuccess: (_response, vars) => {
-      queryClient.setQueryData(
-        ["sessions"],
-        (prev: readonly ISession[] | undefined) => {
-          return prev?.filter((x) => x.id !== vars.sessionId)
-        },
-      )
+      queryClient.setQueryData<readonly ISession[]>(["sessions"], (prev) => {
+        return prev?.filter((x) => x.id !== vars.sessionId)
+      })
     },
   })
 }

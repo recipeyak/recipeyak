@@ -32,8 +32,7 @@ export function useRecipeCreate() {
       return createRecipe(data).then(unwrapResult)
     },
     onSuccess: (res) => {
-      // TODO: might want to update the list view cache
-      queryClient.setQueryData([teamId, "recipes", res.id], (): IRecipe => {
+      queryClient.setQueryData<IRecipe>([teamId, "recipes", res.id], () => {
         return res
       })
     },

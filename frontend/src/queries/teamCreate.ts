@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 import { useHistory } from "react-router"
 
-import { createTeam } from "@/api"
+import { createTeam, ITeam } from "@/api"
 import { unwrapResult } from "@/query"
 import { toast } from "@/toast"
 
@@ -20,7 +20,7 @@ export function useTeamCreate() {
       level: "admin" | "contributor" | "read"
     }) => createTeam(name, emails, level).then(unwrapResult),
     onSuccess: (res) => {
-      queryClient.setQueryData(["teams", res.id], () => {
+      queryClient.setQueryData<ITeam>(["teams", res.id], () => {
         return res
       })
       toast.success("Team updated")

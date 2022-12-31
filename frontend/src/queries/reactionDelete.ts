@@ -21,9 +21,9 @@ export function useReactionDelete() {
     }) => deleteReaction({ reactionId }).then(unwrapResult),
     onMutate: (vars) => {
       let previousReaction: Reaction | undefined
-      queryClient.setQueryData(
+      queryClient.setQueryData<IRecipe>(
         [teamId, "recipes", vars.recipeId],
-        (prev: IRecipe | undefined): IRecipe | undefined => {
+        (prev) => {
           if (prev == null) {
             return prev
           }
@@ -50,9 +50,9 @@ export function useReactionDelete() {
       return { previousReaction }
     },
     onError: (_err, vars, context) => {
-      queryClient.setQueryData(
+      queryClient.setQueryData<IRecipe>(
         [teamId, "recipes", vars.recipeId],
-        (prev: IRecipe | undefined): IRecipe | undefined => {
+        (prev) => {
           if (prev == null) {
             return prev
           }

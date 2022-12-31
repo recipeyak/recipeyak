@@ -12,9 +12,9 @@ export function useScheduledRecipeSettingsRegenerateLink() {
       return generateCalendarLink({ teamID }).then(unwrapEither)
     },
     onSuccess: (response) => {
-      queryClient.setQueryData(
+      queryClient.setQueryData<CalendarResponse>(
         [teamID, "calendar-settings"],
-        (prev: CalendarResponse | undefined): CalendarResponse | undefined => {
+        (prev) => {
           if (prev == null) {
             return
           }

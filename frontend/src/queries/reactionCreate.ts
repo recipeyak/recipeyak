@@ -34,9 +34,9 @@ export function useReactionCreate() {
           name: user.name,
         },
       }
-      queryClient.setQueryData(
+      queryClient.setQueryData<IRecipe>(
         [teamId, "recipes", vars.recipeId],
-        (prev: IRecipe | undefined): IRecipe | undefined => {
+        (prev) => {
           if (prev == null) {
             return prev
           }
@@ -58,9 +58,9 @@ export function useReactionCreate() {
       if (context?.newReactionTempId == null) {
         return
       }
-      queryClient.setQueryData(
+      queryClient.setQueryData<IRecipe>(
         [teamId, "recipes", vars.recipeId],
-        (prev: IRecipe | undefined): IRecipe | undefined => {
+        (prev) => {
           if (prev == null) {
             return prev
           }
@@ -84,9 +84,9 @@ export function useReactionCreate() {
       if (context?.newReactionTempId == null) {
         return
       }
-      queryClient.setQueryData(
+      queryClient.setQueryData<IRecipe>(
         [teamId, "recipes", vars.recipeId],
-        (prev: IRecipe | undefined): IRecipe | undefined => {
+        (prev) => {
           if (prev == null) {
             return prev
           }

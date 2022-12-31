@@ -10,17 +10,14 @@ export function useInviteAccept() {
     mutationFn: ({ inviteId }: { inviteId: number }) =>
       acceptInvite(inviteId).then(unwrapResult),
     onSuccess: (_response, vars) => {
-      queryClient.setQueryData(
-        ["invites"],
-        (prev: readonly IInvite[] | undefined) => {
-          return prev?.map((x) => {
-            if (x.id === vars.inviteId) {
-              return { ...x, status: "accepted" as const }
-            }
-            return x
-          })
-        },
-      )
+      queryClient.setQueryData<readonly IInvite[]>(["invites"], (prev) => {
+        return prev?.map((x) => {
+          if (x.id === vars.inviteId) {
+            return { ...x, status: "accepted" as const }
+          }
+          return x
+        })
+      })
     },
   })
 }

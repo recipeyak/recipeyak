@@ -19,9 +19,9 @@ export function useScheduledRecipeSettingsUpdate() {
     },
     onMutate: (variables) => {
       let prevSettings: CalendarResponse["settings"] | undefined
-      queryClient.setQueryData(
+      queryClient.setQueryData<CalendarResponse>(
         [teamID, "calendar-settings"],
-        (prev: CalendarResponse | undefined): CalendarResponse | undefined => {
+        (prev) => {
           if (prev == null) {
             return
           }
@@ -38,9 +38,9 @@ export function useScheduledRecipeSettingsUpdate() {
       return { prevSettings }
     },
     onSuccess: (response) => {
-      queryClient.setQueryData(
+      queryClient.setQueryData<CalendarResponse>(
         [teamID, "calendar-settings"],
-        (prev: CalendarResponse | undefined): CalendarResponse | undefined => {
+        (prev) => {
           if (prev == null) {
             return
           }
@@ -49,9 +49,9 @@ export function useScheduledRecipeSettingsUpdate() {
       )
     },
     onError: (_error, _variables, context) => {
-      queryClient.setQueryData(
+      queryClient.setQueryData<CalendarResponse>(
         [teamID, "calendar-settings"],
-        (prev: CalendarResponse | undefined): CalendarResponse | undefined => {
+        (prev) => {
           if (prev == null || context?.prevSettings == null) {
             return
           }

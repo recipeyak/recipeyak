@@ -2,7 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { addWeeks, endOfWeek, startOfWeek, subWeeks } from "date-fns"
 import parseISO from "date-fns/parseISO"
 
-import { getCalendarRecipeList } from "@/api"
+import { CalendarResponse, getCalendarRecipeList } from "@/api"
 import { useTeamId } from "@/hooks"
 import { unwrapEither } from "@/query"
 
@@ -38,7 +38,10 @@ export function useScheduledRecipeList({
         weekIds.add(weekId)
       })
       weekIds.forEach((weekId) => {
-        queryClient.setQueryData([teamID, "calendar", weekId], response)
+        queryClient.setQueryData<CalendarResponse>(
+          [teamID, "calendar", weekId],
+          response,
+        )
       })
     },
     // Schedule recipes plop in due the way we overlap/prefetch without this

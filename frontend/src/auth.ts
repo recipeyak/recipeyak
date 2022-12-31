@@ -13,7 +13,7 @@ export function login(user: IUser, queryClient: QueryClient) {
     email: user.email,
     id: user.id,
   })
-  queryClient.setQueryData(["user-detail"], (): IUser | undefined => {
+  queryClient.setQueryData<IUser>(["user-detail"], () => {
     return user
   })
 }
