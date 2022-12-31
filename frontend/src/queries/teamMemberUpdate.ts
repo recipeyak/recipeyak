@@ -21,9 +21,9 @@ export function useTeamMemberUpdate() {
     }) => updateTeamMemberLevel(teamId, memberId, level).then(unwrapResult),
     onMutate: (vars) => {
       let prevLevel: Level | undefined
-      queryClient.setQueryData(
+      queryClient.setQueryData<IMember[]>(
         ["team-members-list", vars.teamId],
-        (prev: IMember[] | undefined): IMember[] | undefined => {
+        (prev) => {
           return prev?.map((x) => {
             if (x.id === vars.memberId) {
               prevLevel = x.level
@@ -36,9 +36,9 @@ export function useTeamMemberUpdate() {
       return { prevLevel }
     },
     onSuccess: (res, vars) => {
-      queryClient.setQueryData(
+      queryClient.setQueryData<IMember[]>(
         ["team-members-list", vars.teamId],
-        (prev: IMember[] | undefined): IMember[] | undefined => {
+        (prev) => {
           return prev?.map((x) => {
             if (x.id === vars.memberId) {
               return res
@@ -49,9 +49,9 @@ export function useTeamMemberUpdate() {
       )
     },
     onError: (error, vars, context) => {
-      queryClient.setQueryData(
+      queryClient.setQueryData<IMember[]>(
         ["team-members-list", vars.teamId],
-        (prev: IMember[] | undefined): IMember[] | undefined => {
+        (prev) => {
           return prev?.map((x) => {
             if (x.id === vars.memberId && context?.prevLevel != null) {
               return { ...x, level: context.prevLevel }

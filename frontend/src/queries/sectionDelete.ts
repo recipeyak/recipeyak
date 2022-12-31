@@ -13,10 +13,9 @@ export function useSectionDelete() {
     mutationFn: ({ sectionId }: { recipeId: number; sectionId: number }) =>
       deleteSection({ sectionId }).then(unwrapResult),
     onSuccess: (_res, vars) => {
-      // TODO: might want to update the list view cache
-      queryClient.setQueryData(
+      queryClient.setQueryData<IRecipe>(
         [teamId, "recipes", vars.recipeId],
-        (prev: IRecipe | undefined): IRecipe | undefined => {
+        (prev) => {
           if (prev == null) {
             return prev
           }

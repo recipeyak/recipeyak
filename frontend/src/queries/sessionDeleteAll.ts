@@ -8,12 +8,9 @@ export function useSessionDeleteAll() {
   return useMutation({
     mutationFn: () => deleteAllSessions().then(unwrapResult),
     onSuccess: () => {
-      queryClient.setQueryData(
-        ["sessions"],
-        (prev: readonly ISession[] | undefined) => {
-          return prev?.filter((x) => x.current)
-        },
-      )
+      queryClient.setQueryData<readonly ISession[]>(["sessions"], (prev) => {
+        return prev?.filter((x) => x.current)
+      })
     },
   })
 }

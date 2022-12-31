@@ -25,10 +25,10 @@ export function useStepUpdate() {
       let oldPosition: string | undefined
       if (vars.update.position !== undefined) {
         const newPosition = vars.update.position
-        // TODO: might want to update the list view cache
-        queryClient.setQueryData(
+
+        queryClient.setQueryData<IRecipe>(
           [teamId, "recipes", vars.recipeId],
-          (prev: IRecipe | undefined): IRecipe | undefined => {
+          (prev) => {
             if (prev == null) {
               return prev
             }
@@ -46,10 +46,9 @@ export function useStepUpdate() {
       return { oldPosition }
     },
     onSuccess: (res, vars) => {
-      // TODO: might want to update the list view cache
-      queryClient.setQueryData(
+      queryClient.setQueryData<IRecipe>(
         [teamId, "recipes", vars.recipeId],
-        (prev: IRecipe | undefined): IRecipe | undefined => {
+        (prev) => {
           if (prev == null) {
             return prev
           }
@@ -67,10 +66,10 @@ export function useStepUpdate() {
     onError: (_error, vars, context) => {
       if (vars.update.position !== undefined && context?.oldPosition != null) {
         const oldPos = context?.oldPosition
-        // TODO: might want to update the list view cache
-        queryClient.setQueryData(
+
+        queryClient.setQueryData<IRecipe>(
           [teamId, "recipes", vars.recipeId],
-          (prev: IRecipe | undefined): IRecipe | undefined => {
+          (prev) => {
             if (prev == null) {
               return prev
             }

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 
-import { updateTeam } from "@/api"
+import { ITeam, updateTeam } from "@/api"
 import { unwrapResult } from "@/query"
 import { toast } from "@/toast"
 
@@ -17,7 +17,7 @@ export function useTeamUpdate() {
     }) => updateTeam(teamId, payload).then(unwrapResult),
     onSuccess: (res, vars) => {
       toast.success("Team updated")
-      queryClient.setQueryData(["teams", vars.teamId], () => {
+      queryClient.setQueryData<ITeam>(["teams", vars.teamId], () => {
         return res
       })
     },

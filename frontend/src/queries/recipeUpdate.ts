@@ -50,10 +50,10 @@ export function useRecipeUpdate() {
     onMutate: (vars) => {
       if (vars.update.primaryImageId !== undefined) {
         const primaryImageId = vars.update.primaryImageId
-        // TODO: might want to update the list view cache
-        queryClient.setQueryData(
+
+        queryClient.setQueryData<IRecipe>(
           [teamId, "recipes", vars.recipeId],
-          (prev: IRecipe | undefined): IRecipe | undefined => {
+          (prev) => {
             if (prev == null) {
               return prev
             }
@@ -63,10 +63,9 @@ export function useRecipeUpdate() {
       }
     },
     onSuccess: (res, vars) => {
-      // TODO: might want to update the list view cache
-      queryClient.setQueryData(
+      queryClient.setQueryData<IRecipe>(
         [teamId, "recipes", vars.recipeId],
-        (): IRecipe => {
+        () => {
           return res
         },
       )
@@ -75,10 +74,10 @@ export function useRecipeUpdate() {
       // Feel like we'd need transactions ids essentially to make this fool proof, because you could have concurrent requests to update the star
       if (vars.update.primaryImageId !== undefined) {
         const primaryImageId = vars.update.primaryImageId
-        // TODO: might want to update the list view cache
-        queryClient.setQueryData(
+
+        queryClient.setQueryData<IRecipe>(
           [teamId, "recipes", vars.recipeId],
-          (prev: IRecipe | undefined): IRecipe | undefined => {
+          (prev) => {
             if (prev == null) {
               return prev
             }
