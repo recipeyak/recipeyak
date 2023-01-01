@@ -14,7 +14,7 @@ def migrate(apps: Any, schema_editor: Any) -> None:
     Team = apps.get_model("recipeyak", "Team")
 
     users_without_teams = (
-        User.objects.using(db_alias).filter(schedule_team_id__is_null=True).all()
+        User.objects.using(db_alias).filter(schedule_team_id__isnull=True).all()
     )
 
     logger.info("migrating users", total=users_without_teams.count())
