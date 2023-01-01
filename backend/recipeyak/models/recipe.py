@@ -34,6 +34,9 @@ class Recipe(CommonInfo):
 
     edits = models.IntegerField(default=0, editable=False)
 
+    team = models.ForeignKey["Team"]("Team", on_delete=models.CASCADE, null=True)
+
+    # deprecated
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     owner = GenericForeignKey("content_type", "object_id")
