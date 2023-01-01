@@ -20,6 +20,7 @@ if TYPE_CHECKING:
 class Team(CommonInfo):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
+    # deprecated
     is_public = models.BooleanField(default=False)
     recipes = GenericRelation("Recipe", related_query_name="owner_team")
     # deprecated
@@ -81,14 +82,6 @@ class Team(CommonInfo):
         membership = Membership.objects.filter(user=user).get(team=self)
         # delete membership. By deleting, associated invites will be deleted.
         membership.delete()
-
-    def set_public(self) -> None:
-        self.is_public = True
-        self.save()
-
-    def set_private(self) -> None:
-        self.is_public = False
-        self.save()
 
     def admins(self) -> QuerySet[Membership]:
         return Membership.objects.filter(team=self).filter(

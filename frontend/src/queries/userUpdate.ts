@@ -10,7 +10,7 @@ export function useUserUpdate() {
     mutationFn: (payload: {
       email?: string
       name?: string
-      schedule_team?: number | null
+      schedule_team?: number
     }) => updateUser(payload).then(unwrapResult),
     onSuccess: (res) => {
       login(res, queryClient)

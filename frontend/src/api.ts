@@ -227,13 +227,15 @@ export const getShoppingList = (
   start: Date | number,
   end: Date | number,
 ) => {
-  const id = teamID === "personal" ? "me" : teamID
-  return http.get<IGetShoppingListResponse>(`/api/v1/t/${id}/shoppinglist/`, {
-    params: {
-      start: toISODateString(start),
-      end: toISODateString(end),
+  return http.get<IGetShoppingListResponse>(
+    `/api/v1/t/${teamID}/shoppinglist/`,
+    {
+      params: {
+        start: toISODateString(start),
+        end: toISODateString(end),
+      },
     },
-  })
+  )
 }
 
 export const getSessions = () =>
@@ -550,7 +552,7 @@ export function getCalendarRecipeList({
   start,
   end,
 }: {
-  readonly teamID: number | "personal"
+  readonly teamID: number
   readonly start: Date
   readonly end: Date
 }) {
@@ -570,11 +572,11 @@ export function getCalendarRecipeListRequestBuilder({
   start,
   end,
 }: {
-  readonly teamID: number | "personal"
+  readonly teamID: number
   readonly start: Date
   readonly end: Date
 }) {
-  const id = teamID === "personal" ? "me" : teamID
+  const id = teamID
   return http.obj({
     method: "GET",
     url: `/api/v1/t/${id}/calendar/`,
@@ -700,11 +702,7 @@ export interface ICalRecipe {
   }
 }
 
-export function generateCalendarLink({
-  teamID,
-}: {
-  readonly teamID: number | "personal"
-}) {
+export function generateCalendarLink({ teamID }: { readonly teamID: number }) {
   return http.request({
     method: "POST",
     url: `/api/v1/t/${teamID}/calendar/generate_link/`,
@@ -718,8 +716,7 @@ export const scheduleRecipe = (
   teamID: number | "personal",
   on: Date | string,
 ) => {
-  const id = teamID === "personal" ? "me" : teamID
-  return http.post<ICalRecipe>(`/api/v1/t/${id}/calendar/`, {
+  return http.post<ICalRecipe>(`/api/v1/t/${teamID}/calendar/`, {
     recipe: recipeID,
     on: toISODateString(on),
   })
@@ -728,20 +725,21 @@ export const scheduleRecipe = (
 // TODO(sbdchd): we shouldn't need teamID here
 export const deleteScheduledRecipe = (
   calId: ICalRecipe["id"],
-  teamID: number | "personal",
+  teamID: number,
 ) => {
-  const id = teamID === "personal" ? "me" : teamID
-  return http.delete(`/api/v1/t/${id}/calendar/${calId}/`)
+  return http.delete(`/api/v1/t/${teamID}/calendar/${calId}/`)
 }
 
 // TODO(sbdchd): we shouldn't need teamID here
 export const updateScheduleRecipe = (
   calId: ICalRecipe["id"],
-  teamID: number | "personal",
+  teamID: number,
   recipe: Partial<ICalRecipe>,
 ) => {
-  const id = teamID === "personal" ? "me" : teamID
-  return http.patch<ICalRecipe>(`/api/v1/t/${id}/calendar/${calId}/`, recipe)
+  return http.patch<ICalRecipe>(
+    `/api/v1/t/${teamID}/calendar/${calId}/`,
+    recipe,
+  )
 }
 
 export const findNextOpen = ({

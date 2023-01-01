@@ -25,17 +25,6 @@ def test_user_delete(client: APIClient, user: User, team: Team) -> None:
     url = "/api/v1/user/"
     assert team.is_member(user)
     assert user.has_team()
-
-    # user must leave team before deleting account
-    res = client.delete(url)
-    assert res.status_code == status.HTTP_403_FORBIDDEN
-    assert res.json()["detail"] is not None
-
-    # leave team
-    team.delete()
-    assert not user.has_team()
-
-    # user can delete account once they have left their teams
     res = client.delete(url)
     assert res.status_code == status.HTTP_204_NO_CONTENT
 

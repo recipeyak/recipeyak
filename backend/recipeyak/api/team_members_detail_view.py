@@ -17,7 +17,7 @@ from recipeyak.models import Team
 
 @api_view(["PATCH", "DELETE"])
 @permission_classes([IsAuthenticated, IsTeamMember])
-def team_members_detail_view(request: AuthedRequest, team_pk: str, pk: str) -> Response:
+def team_members_detail_view(request: AuthedRequest, team_pk: int, pk: str) -> Response:
     if request.method == "DELETE":
         team = get_object_or_404(Team, pk=team_pk)
         membership = get_object_or_404(get_team_members(team), pk=pk)

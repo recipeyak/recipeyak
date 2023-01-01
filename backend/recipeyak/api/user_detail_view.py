@@ -1,6 +1,6 @@
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.exceptions import MethodNotAllowed, PermissionDenied
+from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -9,10 +9,7 @@ from recipeyak.api.serializers.user import UserSerializer as UserDetailsSerializ
 
 
 def user_detail_delete_view(request: AuthedRequest) -> Response:
-    if request.user.has_team():
-        raise PermissionDenied(
-            detail="you must leave all your teams to delete your account"
-        )
+    # TODO: probably disable login and then logout user
     request.user.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 

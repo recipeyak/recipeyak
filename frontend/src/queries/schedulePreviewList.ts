@@ -9,7 +9,7 @@ export function useSchedulePreviewList({
   start,
   end,
 }: {
-  teamID: number | "personal"
+  teamID: number
   start: Date
   end: Date
 }) {

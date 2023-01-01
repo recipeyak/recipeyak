@@ -4,6 +4,7 @@ from typing import Any
 
 from django.contrib.auth import login
 from django.contrib.auth.password_validation import validate_password
+from django.db import transaction
 from pydantic import root_validator, validator
 from rest_framework import serializers, status
 from rest_framework.decorators import api_view, permission_classes
@@ -13,6 +14,7 @@ from rest_framework.response import Response
 
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.user import UserSerializer as UserDetailsSerializer
+from recipeyak.models.team import Team
 from recipeyak.models.user import User
 
 
@@ -30,13 +32,15 @@ class RegisterUserDetailView(RequestParams):
     def validate_email(cls, email: str) -> str:
         if User.objects.filter(email=email).first() is not None:
             msg = f"An email/password account is already associated with { email }."
-            raise serializers.ValidationError(msg)
+            raise serializers.ValidationError({"error": {"message": msg}})
         return email
 
     @root_validator
     def validate(cls, data: dict[str, Any]) -> dict[str, Any]:  # type: ignore[override]
         if data["password1"] != data["password2"]:
-            raise serializers.ValidationError("The two password fields didn't match.")
+            raise serializers.ValidationError(
+                {"error": {"message": "The two password fields didn't match."}}
+            )
         return data
 
 
@@ -44,10 +48,14 @@ class RegisterUserDetailView(RequestParams):
 @permission_classes([AllowAny])
 def register_user_detail_view(request: Request) -> Response:
     params = RegisterUserDetailView.parse_obj(request.data)
-    user = User()
-    user.email = params.email
-    user.set_password(params.password1)
-    user.save()
+    with transaction.atomic():
+        team = Team.objects.create(name="Personal")
+        user = User()
+        user.email = params.email
+        user.set_password(params.password1)
+        user.schedule_team = team
+        user.save()
+        team.force_join_admin(user)
 
     login(request._request, user)
 

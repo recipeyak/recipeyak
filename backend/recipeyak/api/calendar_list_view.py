@@ -24,7 +24,7 @@ class CalSettings(TypedDict):
     calendarLink: str
 
 
-def get_cal_settings(*, team_pk: str, request: AuthedRequest) -> CalSettings:
+def get_cal_settings(*, team_pk: int, request: AuthedRequest) -> CalSettings:
     membership = Membership.objects.get(team=team_pk, user=request.user)
 
     method = "https" if request.is_secure() else "http"
@@ -45,15 +45,8 @@ class ScheduledRecipeCreateParams(RequestParams):
     on: date
 
 
-def get_scheduled_recipes(
-    request: AuthedRequest, team_pk: str
-) -> QuerySet[ScheduledRecipe]:
-    pk = team_pk
-    if pk == "me":
-        return ScheduledRecipe.objects.filter(user=request.user).select_related(
-            "recipe", "created_by", "recipe__primary_image"
-        )
-    team = get_object_or_404(Team, pk=pk)
+def get_scheduled_recipes(team_pk: int) -> QuerySet[ScheduledRecipe]:
+    team = get_object_or_404(Team, pk=team_pk)
     return ScheduledRecipe.objects.filter(team=team).select_related(
         "recipe", "created_by", "recipe__primary_image"
     )
@@ -77,7 +70,7 @@ class ScheduledRecipeSerializer(BaseModelSerializer):
         }
 
 
-def calendar_list_post_view(request: AuthedRequest, team_pk: str) -> Response:
+def calendar_list_post_view(request: AuthedRequest, team_pk: int) -> Response:
     params = ScheduledRecipeCreateParams.parse_obj(request.data)
 
     recipe = get_object_or_404(user_and_team_recipes(request.user), id=params.recipe)
@@ -85,10 +78,7 @@ def calendar_list_post_view(request: AuthedRequest, team_pk: str) -> Response:
     scheduled_recipe = recipe.schedule(
         on=params.on,
         user=request.user,
-        # TODO: remove this weird team thing we have where "personal" is a special case
-        team=get_object_or_404(get_teams(request.user), pk=team_pk)
-        if team_pk != "me"
-        else None,
+        team=get_object_or_404(get_teams(request.user), pk=team_pk),
     )
     return Response(
         ScheduledRecipeSerializer(scheduled_recipe, dangerously_allow_db=True).data,
@@ -101,30 +91,16 @@ class StartEndDateSerializer(RequestParams):
     end: date
 
 
-def calendar_list_get_view(request: AuthedRequest, team_pk: str) -> Response:
+def calendar_list_get_view(request: AuthedRequest, team_pk: int) -> Response:
     params = StartEndDateSerializer.parse_obj(request.query_params.dict())
     start = params.start
     end = params.end
 
-    queryset = (
-        get_scheduled_recipes(request, team_pk)
-        .filter(on__gte=start)
-        .filter(on__lte=end)
-    )
+    queryset = get_scheduled_recipes(team_pk).filter(on__gte=start).filter(on__lte=end)
 
     scheduled_recipes = ScheduledRecipeSerializer(
         queryset, many=True, context={"created_by"}
     ).data
-
-    # HACK(sbdchd): we don't support the calendar stuff for personal
-    # schedules due to us storing info on the team membership.
-    if team_pk == "me":
-        return Response(
-            {
-                "scheduledRecipes": scheduled_recipes,
-                "settings": {"syncEnabled": False, "calendarLink": ""},
-            }
-        )
 
     settings = get_cal_settings(request=request, team_pk=team_pk)
 
@@ -133,7 +109,7 @@ def calendar_list_get_view(request: AuthedRequest, team_pk: str) -> Response:
 
 @api_view(["GET", "POST"])
 @permission_classes([IsAuthenticated, IsTeamMember])
-def calendar_list_view(request: AuthedRequest, team_pk: str) -> Response:
+def calendar_list_view(request: AuthedRequest, team_pk: int) -> Response:
     if request.method == "GET":
         return calendar_list_get_view(request, team_pk)
     elif request.method == "POST":

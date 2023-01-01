@@ -45,12 +45,10 @@ class ScheduleRecipeSerializer(pydantic.BaseModel):
 
 
 def calendar_detail_patch_view(
-    request: AuthedRequest, team_pk: str, scheduled_recipe_id: str
+    request: AuthedRequest, team_pk: int, scheduled_recipe_id: int
 ) -> Response:
     params = ScheduledRecipeUpdateParams.parse_obj(request.data)
-    scheduled_recipe = get_scheduled_recipes(request, team_pk).get(
-        id=scheduled_recipe_id
-    )
+    scheduled_recipe = get_scheduled_recipes(team_pk).get(id=scheduled_recipe_id)
     if params.on is not None:
         scheduled_recipe.on = params.on
     scheduled_recipe.save()
@@ -78,15 +76,15 @@ def calendar_detail_patch_view(
 
 
 def calendar_detail_delete_view(
-    request: AuthedRequest, team_pk: str, scheduled_recipe_id: str
+    request: AuthedRequest, team_pk: int, scheduled_recipe_id: int
 ) -> Response:
-    get_scheduled_recipes(request, team_pk).filter(id=scheduled_recipe_id).delete()
+    get_scheduled_recipes(team_pk).filter(id=scheduled_recipe_id).delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(["PATCH", "DELETE"])
 @permission_classes([IsAuthenticated, IsTeamMember])
-def calendar_detail_view(request: AuthedRequest, team_pk: str, pk: str) -> Response:
+def calendar_detail_view(request: AuthedRequest, team_pk: int, pk: int) -> Response:
     if request.method == "PATCH":
         return calendar_detail_patch_view(request, team_pk, pk)
     elif request.method == "DELETE":

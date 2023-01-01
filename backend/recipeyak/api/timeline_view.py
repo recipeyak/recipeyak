@@ -17,6 +17,8 @@ from recipeyak.models import Recipe, ScheduledRecipe, User
 @permission_classes((IsAuthenticated,))
 def get_recipe_timeline(request: AuthedRequest, recipe_pk: int) -> Response:
     user: User = request.user
+    # TODO: we probably don't want to rely on this so we can support multiple
+    # sessions with different teams for a given user.
     team = user.schedule_team
 
     recipe = get_object_or_404(Recipe, pk=recipe_pk)

@@ -7,7 +7,7 @@ import { unwrapResult } from "@/query"
 
 function deleteScheduledRecipeV2(params: {
   scheduledRecipeId: number
-  teamId: number | "personal"
+  teamId: number
 }): Promise<void> {
   return deleteScheduledRecipe(params.scheduledRecipeId, params.teamId).then(
     unwrapResult,

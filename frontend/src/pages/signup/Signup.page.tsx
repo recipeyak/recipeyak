@@ -14,26 +14,18 @@ function formatError(error: unknown) {
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   const err = error as AxiosError | undefined
   if (err == null) {
-    return {}
+    return null
   }
   if (err.response?.status === 400) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const data: {
-      email?: string[]
-      password1?: string[]
-      password2?: string[]
-      non_field_errors?: string[]
+      error?: {
+        message: string
+      }
     } = err.response?.data
-    return {
-      email: data["email"],
-      password1: data["password1"],
-      password2: data["password2"],
-      nonFieldErrors: data["non_field_errors"],
-    }
+    return data.error?.message
   } else {
-    return {
-      nonFieldErrors: ["Something went wrong with the server."],
-    }
+    return "Something went wrong with the server."
   }
 }
 
@@ -80,8 +72,6 @@ function Signup() {
           </ul>
         </div>
 
-        <FormErrorHandler error={errors.nonFieldErrors} />
-
         <form onSubmit={handleSignup}>
           <div className="field">
             <label className="label">Email</label>
@@ -89,12 +79,10 @@ function Signup() {
               onChange={(e) => {
                 setEmail(e.target.value)
               }}
-              error={errors.email != null}
               autoFocus
               name="email"
               placeholder="rick.sanchez@me.com"
             />
-            <FormErrorHandler error={errors.email} />
           </div>
 
           <div className="field">
@@ -105,12 +93,10 @@ function Signup() {
               onChange={(e) => {
                 setPassword1(e.target.value)
               }}
-              error={errors.password1 != null}
               name="password1"
               id="password1"
               placeholder="Super secret password."
             />
-            <FormErrorHandler error={errors.password1} />
           </div>
 
           <div className="field">
@@ -121,13 +107,13 @@ function Signup() {
               onChange={(e) => {
                 setPassword2(e.target.value)
               }}
-              error={errors.password2 != null}
               name="password2"
               id="password2"
               placeholder="Enter your password again."
             />
-            <FormErrorHandler error={errors.password2} />
           </div>
+
+          <FormErrorHandler error={errors != null ? [errors] : null} />
 
           <div className="field d-flex flex-space-between align-items-center">
             <Button variant="primary" type="submit" loading={signup.isLoading}>

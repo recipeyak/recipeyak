@@ -8,6 +8,7 @@ export function Box({
   space,
   m,
   mb,
+  mx,
   mt,
   gap,
   w,
@@ -24,6 +25,7 @@ export function Box({
   m?: 0 | 1 | 2 | 3 | 4
   mb?: 0 | 1 | 2 | 3 | 4
   mt?: 0 | 1 | 2 | 3 | 4
+  mx?: "auto"
   w?: 100
   gap?: 0 | 1 | 2 | 3 | 4
   align?: "center" | "start" | "end"
@@ -54,6 +56,7 @@ export function Box({
         mt === 2 && "mt-2",
         mt === 3 && "mt-3",
         mt === 4 && "mt-4",
+        mx === "auto" && "mx-auto",
         gap === 0 && "gap-0",
         gap === 1 && "gap-1",
         gap === 2 && "gap-2",

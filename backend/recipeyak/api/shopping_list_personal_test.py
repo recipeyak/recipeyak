@@ -18,10 +18,10 @@ from recipeyak.models import Ingredient, Recipe, ShoppingList, Team, User
 
 pytestmark = pytest.mark.django_db
 
-url = "/api/v1/t/me/shoppinglist/"
 
-
-def test_fetching_shoppinglist(client: APIClient, user: User, recipe: Recipe) -> None:
+def test_fetching_shoppinglist(
+    client: APIClient, user: User, team: Team, recipe: Recipe
+) -> None:
     assert ShoppingList.objects.count() == 0
 
     client.force_authenticate(user)
@@ -29,14 +29,14 @@ def test_fetching_shoppinglist(client: APIClient, user: User, recipe: Recipe) ->
     end = start + timedelta(days=1)
     params = dict(start=start, end=end)
 
-    res = client.get(url, params)
+    res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
     assert res.status_code == status.HTTP_200_OK
     assert res.json() == {}
     assert ShoppingList.objects.count() == 1
 
-    recipe.schedule(user=user, on=start)
+    recipe.schedule(user=user, on=start, team=team)
 
-    res = client.get(url, params)
+    res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
     assert res.status_code == status.HTTP_200_OK
     assert res.json() == {
         "egg": {
@@ -69,13 +69,13 @@ def test_fetching_shoppinglist_with_team_recipe(
     end = start + timedelta(days=1)
     params = dict(start=start, end=end)
 
-    res = client.get(url, params)
+    res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
     assert res.status_code == status.HTTP_200_OK
     assert res.json() == {}
 
-    recipe.schedule(user=user, on=start)
+    recipe.schedule(user=user, on=start, team=team)
 
-    res = client.get(url, params)
+    res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
     assert res.status_code == status.HTTP_200_OK
     assert res.json() != []
 
@@ -94,17 +94,17 @@ def test_fetching_shoppinglist_with_team_recipe(
 
 
 def test_fetching_shoppinglist_with_invalid_dates(
-    user: User, client: APIClient
+    user: User, team: Team, client: APIClient
 ) -> None:
     params = {"start": "", "end": "invalid date"}
     client.force_authenticate(user)
-    res = client.get(url, params)
+    res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
     assert res.status_code == status.HTTP_400_BAD_REQUEST
 
 
 @pytest.mark.parametrize("quantity", ["sprinkle", "some"])
 def test_scheduling_multiple_times_some_ingredient(
-    quantity: str, user: User, client: APIClient
+    quantity: str, user: User, team: Team, client: APIClient
 ) -> None:
     """
     with an ingredient of quantity sprinkle that we add to the cart multiple
@@ -120,12 +120,12 @@ def test_scheduling_multiple_times_some_ingredient(
     )
 
     start = date(1976, 7, 6)
-    recipe.schedule(user=user, on=start)
+    recipe.schedule(user=user, on=start, team=team)
 
     end = start + timedelta(days=1)
     params = dict(start=start, end=end)
     client.force_authenticate(user)
-    res = client.get(url, params)
+    res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
     assert res.status_code == status.HTTP_200_OK
     assert res.json() == {
         "black pepper": {
@@ -315,7 +315,9 @@ def test_combine_ingredients(
     assert combine_ingredients(ingres) == expected
 
 
-def test_combining_feta(user: User, client: APIClient, empty_recipe: Recipe) -> None:
+def test_combining_feta(
+    user: User, team: Team, client: APIClient, empty_recipe: Recipe
+) -> None:
     """
     ensure the singularize function doesn't result in feta becoming fetum along
     with some other troublesome examples
@@ -343,12 +345,12 @@ def test_combining_feta(user: User, client: APIClient, empty_recipe: Recipe) -> 
         position += 10
 
     start = date(1976, 7, 6)
-    empty_recipe.schedule(user=user, on=start)
+    empty_recipe.schedule(user=user, on=start, team=team)
 
     end = start + timedelta(days=1)
     params = dict(start=start, end=end)
     client.force_authenticate(user)
-    res = client.get(url, params)
+    res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
     assert res.status_code == status.HTTP_200_OK
 
     assert res.json() == {

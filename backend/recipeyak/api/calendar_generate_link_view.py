@@ -11,7 +11,7 @@ from recipeyak.models import Membership, get_random_ical_id
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated, IsTeamMember])
-def generate_link(request: AuthedRequest, team_pk: str) -> Response:
+def generate_link(request: AuthedRequest, team_pk: int) -> Response:
     membership = get_object_or_404(Membership, team=team_pk, user=request.user)
     membership.calendar_secret_key = get_random_ical_id()
     membership.save()

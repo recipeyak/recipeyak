@@ -89,7 +89,7 @@ const WEEK_DAYS = 7
 interface IDaysProps {
   readonly start: Date
   readonly end: Date
-  readonly teamID: number | "personal"
+  readonly teamID: number
   readonly days: IDays
   readonly isError: boolean
 }
@@ -129,7 +129,7 @@ function Days({ start, end, isError, teamID, days }: IDaysProps) {
 
 interface ITeamSelectProps {
   readonly onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
-  readonly value: number | "personal"
+  readonly value: number
 }
 
 function TeamSelect({ onChange, value }: ITeamSelectProps) {
@@ -141,7 +141,6 @@ function TeamSelect({ onChange, value }: ITeamSelectProps) {
       size="small"
       disabled={teams.isLoading}
     >
-      <option value="personal">Personal</option>
       {teams.isSuccess
         ? teams.data.map((t) => (
             <option key={t.id} value={t.id}>
@@ -158,7 +157,7 @@ interface INavProps {
   readonly onPrev: () => void
   readonly onNext: () => void
   readonly onCurrent: () => void
-  readonly teamID: number | "personal"
+  readonly teamID: number
 }
 
 function Nav({ dayTs, teamID, onPrev, onNext, onCurrent }: INavProps) {
@@ -173,7 +172,7 @@ function Nav({ dayTs, teamID, onPrev, onNext, onCurrent }: INavProps) {
       <Modal
         show={showSettings}
         onClose={() => {
-          setShowSettings(true)
+          setShowSettings(false)
         }}
         title="Calendar Settings"
         content={
@@ -260,9 +259,8 @@ function useTeamSelect() {
   const history = useHistory()
 
   const handleOwnerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const teamID =
-      e.target.value === "personal" ? "personal" : parseInt(e.target.value, 10)
-    const url = teamID === "personal" ? "/schedule/" : `/t/${teamID}/schedule/`
+    const teamID = parseInt(e.target.value, 10)
+    const url = `/t/${teamID}/schedule/`
 
     const ending = "recipes"
 
@@ -278,7 +276,7 @@ function useTeamSelect() {
 }
 
 interface ICalendarProps {
-  readonly teamID: number | "personal"
+  readonly teamID: number
 }
 
 export function Calendar({ teamID }: ICalendarProps) {

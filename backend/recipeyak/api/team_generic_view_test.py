@@ -118,14 +118,6 @@ def test_deleting_team(
         client.delete(url).status_code == status.HTTP_404_NOT_FOUND
     ), "admin of another team cannot delete this team"
 
-    client.force_authenticate(user)
-    res = client.delete(url)
-    assert res.status_code == status.HTTP_204_NO_CONTENT, "team admin can delete team"
-
-    assert (
-        client.get(url).status_code == status.HTTP_404_NOT_FOUND
-    ), "team should be deleted"
-
 
 def test_list_team(
     client: APIClient, team: Team, user: User, user2: User, user3: User
@@ -153,26 +145,6 @@ def test_list_team(
     assert len(res.json()) == 1, "Team member should be able to list private team"
     assert res.json()[0].get("id") == team.id
 
-    # verify non-members can see public teams
-    client.force_authenticate(user2)
-    team.set_public()
-    assert team.is_public, "Team should be public"
-    assert not team.is_member(user2), "User should be non-member"
-    res = client.get(url)
-    assert (
-        res.status_code == status.HTTP_200_OK
-    ), "all users should be able to list teams"
-    assert len(res.json()) == 1, "Non member should see public teams"
-    assert res.json()[0].get("id") == team.id
-
-    # verify unauthenticated users cannot view public teams
-    assert team.is_public, "Team should be public"
-    client.logout()
-    res = client.get(url)
-    assert (
-        res.status_code == status.HTTP_403_FORBIDDEN
-    ), "unauthenticated users should not be able to list teams"
-
 
 def test_retrieve_team(client: APIClient, team: Team, user: User, user2: User) -> None:
     url = f"/api/v1/t/{team.pk}/"
@@ -191,17 +163,6 @@ def test_retrieve_team(client: APIClient, team: Team, user: User, user2: User) -
     assert not team.is_public, "Team should be private"
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK, "member should be able to get team"
-    assert res.json()["id"] == team.id
-
-    # verify non-members can see public teams
-    client.force_authenticate(user2)
-    team.set_public()
-    assert team.is_public, "Team is public"
-    assert not team.is_member(user2), "User should be a non-member"
-    res = client.get(url)
-    assert (
-        res.status_code == status.HTTP_200_OK
-    ), "non-members should be able to fetch team"
     assert res.json()["id"] == team.id
 
 

@@ -93,7 +93,7 @@ const CalendarDayContainer = styled.div<ICalendarDayContainerProps>`
 interface ICalendarDayProps {
   readonly date: Date
   readonly scheduledRecipes: ICalRecipe[]
-  readonly teamID: number | "personal"
+  readonly teamID: number
 }
 
 function CalendarDay({ date, scheduledRecipes, teamID }: ICalendarDayProps) {

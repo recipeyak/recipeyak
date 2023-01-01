@@ -19,7 +19,7 @@ def get_team_members(team: Team) -> QuerySet[Membership]:
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsTeamMember])
-def team_members_list_view(request: AuthedRequest, team_pk: str) -> Response:
+def team_members_list_view(request: AuthedRequest, team_pk: int) -> Response:
     if request.method == "GET":
         team = get_object_or_404(Team, pk=team_pk)
         members = get_team_members(team=team)

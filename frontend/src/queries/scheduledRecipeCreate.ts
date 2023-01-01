@@ -45,7 +45,7 @@ function scheduleRecipeV2({
 }: {
   recipeID: number
   recipeName: string
-  teamID: number | "personal"
+  teamID: number
   on: Date
 }): Promise<ICalRecipe> {
   return scheduleRecipe(recipeID, teamID, on).then(unwrapResult)

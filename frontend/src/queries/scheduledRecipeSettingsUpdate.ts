@@ -12,7 +12,7 @@ export function useScheduledRecipeSettingsUpdate() {
       teamID,
       update,
     }: {
-      teamID: number | "personal"
+      teamID: number
       update: { syncEnabled: boolean }
     }) => {
       return updateCalendarSettings({ teamID, data: update }).then(unwrapEither)
