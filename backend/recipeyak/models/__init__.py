@@ -1,7 +1,8 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 
-from recipeyak.api.base.request import AuthedRequest
 from recipeyak.models.ingredient import Ingredient  # noqa: F401
 from recipeyak.models.invite import Invite  # noqa: F401
 from recipeyak.models.membership import Membership, get_random_ical_id  # noqa: F401
@@ -20,6 +21,9 @@ from recipeyak.models.team import Team  # noqa: F401
 from recipeyak.models.timeline_event import TimelineEvent  # noqa: F401
 from recipeyak.models.upload import Upload  # noqa: F401
 from recipeyak.models.user import User  # noqa: F401
+
+if TYPE_CHECKING:
+    from recipeyak.api.base.request import AuthedRequest
 
 
 def get_team(request: AuthedRequest) -> Team:
