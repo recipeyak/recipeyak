@@ -88,5 +88,6 @@ def note_patch_view(request: AuthedRequest, note_pk: str) -> Response:
 
 
 def note_delete_view(request: AuthedRequest, note_pk: str) -> Response:
-    filter_notes(team).filter(pk=note_pk).delete()
+    team = get_team(request)
+    filter_notes(team).filter(pk=note_pk, created_by=request.user).delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
