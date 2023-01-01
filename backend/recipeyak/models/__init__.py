@@ -1,5 +1,7 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
+
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 
