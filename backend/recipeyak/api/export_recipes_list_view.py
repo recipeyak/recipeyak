@@ -13,7 +13,7 @@ from rest_framework import serializers
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import BaseModelSerializer
 from recipeyak.api.serializers.recipe import IngredientSerializer, OwnerRelatedField
-from recipeyak.models import Recipe, user_and_team_recipes
+from recipeyak.models import Recipe, filter_recipes, get_team
 
 
 def represent_ordereddict(dumper: yaml.Dumper, data: dict[str, Any]) -> yaml.Node:
@@ -82,7 +82,9 @@ def export_recipes_list_view(
     request: AuthedRequest, filetype: str, pk: str | None = None
 ) -> HttpResponse:
 
-    queryset = user_and_team_recipes(request.user).prefetch_related(
+    team = get_team(request)
+
+    queryset = filter_recipes(team=team).prefetch_related(
         "owner", "step_set", "ingredient_set", "scheduledrecipe_set"
     )
 

@@ -177,6 +177,8 @@ def recipe2(user: User) -> Recipe:
 def team(user: User) -> Team:
     team = Team.objects.create(name="Recipe Yak Team")
     team.force_join_admin(user=user)
+    user.schedule_team = team
+    user.save()
     return team
 
 

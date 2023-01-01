@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from recipeyak import config
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
-from recipeyak.models import user_and_team_recipes
+from recipeyak.models import filter_recipes, get_team
 from recipeyak.models.upload import Upload, s3
 
 
@@ -33,7 +33,8 @@ class StartUploadResponse(pydantic.BaseModel):
 def start_upload_view(request: AuthedRequest) -> Response:
     params = StartUploadParams.parse_obj(request.data)
     key = f"{request.user.id}/{uuid4().hex}/{params.file_name}"
-    recipe = user_and_team_recipes(request.user).filter(id=params.recipe_id).first()
+    team = get_team(request)
+    recipe = filter_recipes(team=team).filter(id=params.recipe_id).first()
     if recipe is None:
         raise ValidationError("Could not find recipe with provided ID.")
     upload = Upload(

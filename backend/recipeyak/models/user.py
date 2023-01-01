@@ -63,7 +63,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = CIEmailField(unique=True)
     name = models.TextField(null=True)
 
-    # required for admin
+    # deprecated (previously used by Django Admin)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
@@ -72,7 +72,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     recipes = GenericRelation("Recipe", related_query_name="owner_user")
 
-    # UI settings we wish to sync across sessions
+    # deprecated
     dark_mode_enabled = models.BooleanField(
         default=False, help_text="frontend darkmode setting"
     )
@@ -110,12 +110,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self) -> str:
         return self.email
 
+    # deprecated
     # required for admin
     def has_perm(self, perm: object, obj: object = None) -> bool:
         """Does the user have a specific permission?"""
         # TODO: Add permissions
         return True
 
+    # deprecated
     # required for admin
     def has_module_perms(self, app_label: object) -> bool:
         """Does the user have permissions to view the app `app_label`?"""
@@ -135,6 +137,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     def has_team(self) -> bool:
         return Membership.objects.filter(invite=None, user=self).exists()
 
+    # deprecated
     # required for admin
     @property
     def is_staff(self) -> bool:

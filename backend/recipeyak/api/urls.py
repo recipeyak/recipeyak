@@ -85,6 +85,7 @@ urlpatterns = [
     path("api/v1/sections/<int:section_pk>/", delete_or_update_section_view),
     path("api/v1/sessions/", sessions_list_view),
     path("api/v1/sessions/<str:pk>/", sessions_detail_view),
+    # TODO: remove team param from these
     path("api/v1/t/<int:team_pk>/calendar/", calendar_list_view),
     path("api/v1/t/<int:team_pk>/calendar/settings/", update_settings),
     path("api/v1/t/<int:team_pk>/calendar/next_open/", next_open),

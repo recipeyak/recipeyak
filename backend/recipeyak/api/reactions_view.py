@@ -14,7 +14,7 @@ from typing_extensions import Literal
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import serialize_reactions
-from recipeyak.models import user_and_team_notes, user_reactions
+from recipeyak.models import get_team, filter_notes, user_reactions
 from recipeyak.models.reaction import Reaction
 
 logger = logging.getLogger(__name__)
@@ -31,7 +31,9 @@ class ReactToNoteViewParams(RequestParams):
 def note_reaction_create_view(request: AuthedRequest, note_pk: int) -> Response:
     params = ReactToNoteViewParams.parse_obj(request.data)
 
-    note = get_object_or_404(user_and_team_notes(request.user), pk=note_pk)
+    team = get_team(request)
+
+    note = get_object_or_404(filter_notes(team=team), pk=note_pk)
     reaction = Reaction(emoji=params.type, created_by=request.user, note=note)
     try:
         reaction.save()

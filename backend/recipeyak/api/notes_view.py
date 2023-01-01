@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import serialize_note
-from recipeyak.models import Note, Upload, user_and_team_notes, user_and_team_recipes
+from recipeyak.models import Note, Upload, get_team, filter_notes, filter_recipes
 
 
 class CreateNoteParams(RequestParams):
@@ -36,7 +36,8 @@ class EditNoteParams(RequestParams):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def note_create_view(request: AuthedRequest, recipe_pk: int) -> Response:
-    recipe = get_object_or_404(user_and_team_recipes(request.user), pk=recipe_pk)
+    team = get_team(request)
+    recipe = get_object_or_404(filter_recipes(team=team), pk=recipe_pk)
     params = CreateNoteParams.parse_obj(request.data)
 
     note = Note.objects.create(
@@ -67,7 +68,8 @@ def note_detail_view(request: AuthedRequest, note_pk: str) -> Response:
 
 def note_patch_view(request: AuthedRequest, note_pk: str) -> Response:
     params = EditNoteParams.parse_obj(request.data)
-    note = get_object_or_404(user_and_team_notes(request.user), pk=note_pk)
+    team = get_team(request)
+    note = get_object_or_404(filter_notes(team), pk=note_pk)
     # only allow the note's author to update the note
     if note.created_by.id != request.user.id:
         return Response(status=status.HTTP_403_FORBIDDEN)
@@ -86,5 +88,5 @@ def note_patch_view(request: AuthedRequest, note_pk: str) -> Response:
 
 
 def note_delete_view(request: AuthedRequest, note_pk: str) -> Response:
-    user_and_team_notes(request.user).filter(pk=note_pk).delete()
+    filter_notes(team).filter(pk=note_pk).delete()
     return Response(status=status.HTTP_204_NO_CONTENT)

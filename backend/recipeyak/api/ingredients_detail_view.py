@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import ingredient_to_text, serialize_ingredient
-from recipeyak.models import ChangeType, RecipeChange, user_and_team_ingredients
+from recipeyak.models import ChangeType, RecipeChange, filter_ingredients
 
 
 class IngredientsPatchParams(RequestParams):
@@ -29,7 +29,7 @@ def ingredients_detail_view(
     if request.method == "PATCH":
         params = IngredientsPatchParams.parse_obj(request.data)
         ingredient = get_object_or_404(
-            user_and_team_ingredients(request.user), pk=ingredient_pk
+            filter_ingredients(request.user), pk=ingredient_pk
         )
 
         before = ingredient_to_text(ingredient)
@@ -61,7 +61,7 @@ def ingredients_detail_view(
 
     if request.method == "DELETE":
         ingredient = get_object_or_404(
-            user_and_team_ingredients(request.user), pk=ingredient_pk
+            filter_ingredients(request.user), pk=ingredient_pk
         )
         RecipeChange.objects.create(
             recipe=ingredient.recipe,
@@ -70,6 +70,6 @@ def ingredients_detail_view(
             after="",
             change_type=ChangeType.INGREDIENT_DELETE,
         )
-        user_and_team_ingredients(request.user).filter(pk=ingredient_pk).delete()
+        filter_ingredients(request.user).filter(pk=ingredient_pk).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     raise MethodNotAllowed(request.method or "")
