@@ -51,44 +51,16 @@ export const queryClient = new QueryClient({
 })
 
 const persister = createSyncStoragePersister({
-  storage: {
-    getItem: (key: string): string | null => {
-      return localStorage.getItem(key)
-    },
-    setItem: (key: string, value: string): void => {
-      try {
-        localStorage.setItem(key, value)
-      } catch (e) {
-        raven.captureException(e, {
-          extra: { key },
-        })
-        throw e
-      }
-    },
-    removeItem: (key: string): void => {
-      localStorage.removeItem(key)
-    },
-  },
-  serialize: (client) => {
-    try {
-      return JSON.stringify(client)
-    } catch (e) {
-      raven.captureException(e, {
-        extra: { serializationFailed: true },
-      })
-      throw e
-    }
-  },
-  deserialize: (client) => {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      return JSON.parse(client)
-    } catch (e) {
-      raven.captureException(e, {
-        extra: { deserializingFailed: true },
-      })
-      throw e
-    }
+  storage: localStorage,
+  retry: ({ error }) => {
+    raven.captureException(error, {
+      extra: "problem persisting",
+    })
+    // eslint-disable-next-line no-console
+    console.error("problem persisting")
+    // eslint-disable-next-line no-console
+    console.error(error)
+    return undefined
   },
 })
 

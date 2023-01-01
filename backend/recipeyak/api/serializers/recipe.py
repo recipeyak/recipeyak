@@ -7,11 +7,7 @@ import pydantic
 from rest_framework import serializers
 from typing_extensions import Literal
 
-from recipeyak.api.base.serialization import (
-    BaseModelSerializer,
-    BaseRelatedField,
-    BaseSerializer,
-)
+from recipeyak.api.base.serialization import BaseModelSerializer, BaseRelatedField
 from recipeyak.api.serializers.team import PublicUserSerializer
 from recipeyak.models import (
     Ingredient,
@@ -187,18 +183,6 @@ class RecipeSerializer(BaseModelSerializer):
             existing = set(self.fields)
             for field_name in existing - allowed:
                 self.fields.pop(field_name)
-
-
-class RecipeMoveCopySerializer(BaseSerializer):
-    id = serializers.IntegerField(max_value=None, min_value=0, write_only=True)
-    type = serializers.ChoiceField(choices=["user", "team"], write_only=True)
-
-    def validate(self, data: dict[str, Any]) -> dict[str, Any]:
-        if data["type"] == "team" and not Team.objects.filter(id=data["id"]).exists():
-            raise serializers.ValidationError("team must exist")
-        if data["type"] == "user" and not User.objects.filter(id=data["id"]).exists():
-            raise serializers.ValidationError("user must exist")
-        return data
 
 
 class RecipeTimelineSerializer(BaseModelSerializer):

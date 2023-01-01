@@ -71,17 +71,6 @@ export interface INote {
   readonly created_by: IPublicUser
 }
 
-type IRecipeOwner =
-  | {
-      type: "team"
-      id: number
-      name: string
-    }
-  | {
-      type: "user"
-      id: number
-    }
-
 export type RecipeTimelineItem = {
   type: "recipe"
   id: number
@@ -109,10 +98,7 @@ export interface IRecipe {
   readonly steps: ReadonlyArray<IStep>
   readonly timelineItems: readonly TimelineItem[]
   readonly modified: string
-  readonly last_scheduled: string
-  readonly team: ITeam["id"]
   readonly tags?: string[]
-  readonly owner: IRecipeOwner
   readonly ingredients: ReadonlyArray<IIngredient>
   readonly sections: ReadonlyArray<{
     readonly id: number
