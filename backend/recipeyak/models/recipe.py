@@ -32,6 +32,7 @@ class Recipe(CommonInfo):
     time = models.CharField(max_length=255, blank=True, null=True)
     servings = models.CharField(max_length=255, blank=True, null=True)
 
+    # deprecated
     edits = models.IntegerField(default=0, editable=False)
 
     team = models.ForeignKey["Team"]("Team", on_delete=models.CASCADE, null=True)
@@ -43,18 +44,21 @@ class Recipe(CommonInfo):
 
     archived_at = models.DateTimeField(null=True)
 
+    # deprecated
     cloned_at = models.DateTimeField(
         blank=True,
         null=True,
         default=None,
         help_text="If a clone, when the Recipe was cloned from a parent. Otherwise null.",
     )
+    # deprecated
     cloned_by = models.ForeignKey["User"](
         "User",
         on_delete=models.SET_NULL,
         null=True,
         help_text="If a clone, User who cloned the recipe.",
     )
+    # deprecated
     cloned_from = models.ForeignKey["Recipe"](
         "Recipe",
         on_delete=models.SET_NULL,
@@ -112,13 +116,6 @@ class Recipe(CommonInfo):
     @property
     def section_set(self) -> BaseManager[Section]:
         return Section.objects.filter(recipe=self)
-
-    def get_last_scheduled(self) -> date | None:
-        """Return the most recent date this recipe was scheduled for"""
-        scheduled_recipe = self.scheduledrecipe_set.first()
-        if scheduled_recipe is not None:
-            return scheduled_recipe.on
-        return None
 
     def __str__(self) -> str:
         return f"{self.name} by {self.author}"

@@ -10,7 +10,13 @@ from recipeyak import ordering
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import ingredient_to_text, serialize_ingredient
-from recipeyak.models import ChangeType, Ingredient, RecipeChange, user_and_team_recipes
+from recipeyak.models import (
+    ChangeType,
+    Ingredient,
+    RecipeChange,
+    filter_recipes,
+    get_team,
+)
 
 
 class IngredientCreateParams(RequestParams):
@@ -25,7 +31,8 @@ class IngredientCreateParams(RequestParams):
 @permission_classes([IsAuthenticated])
 def ingredients_list_view(request: AuthedRequest, recipe_pk: int) -> Response:
     params = IngredientCreateParams.parse_obj(request.data)
-    recipe = get_object_or_404(user_and_team_recipes(request.user), pk=recipe_pk)
+    team = get_team(request)
+    recipe = get_object_or_404(filter_recipes(team=team), pk=recipe_pk)
 
     ingredient = Ingredient(
         quantity=params.quantity,

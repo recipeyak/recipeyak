@@ -16,13 +16,15 @@ from recipeyak.models import (
     ChangeType,
     RecipeChange,
     TimelineEvent,
-    user_and_team_recipe_or_404,
+    filter_recipe_or_404,
+    get_team,
 )
 from recipeyak.models.upload import Upload
 
 
 def recipe_get_view(request: AuthedRequest, recipe_pk: str) -> Response:
-    recipe = user_and_team_recipe_or_404(user=request.user, recipe_pk=recipe_pk)
+    team = get_team(request)
+    recipe = filter_recipe_or_404(recipe_pk=recipe_pk, team=team)
     with connection.cursor() as cursor:
         cursor.execute(
             """
@@ -64,7 +66,8 @@ class RecipePatchParams(RequestParams):
 
 
 def recipe_patch_view(request: AuthedRequest, recipe_pk: str) -> Response:
-    recipe = user_and_team_recipe_or_404(user=request.user, recipe_pk=recipe_pk)
+    team = get_team(request)
+    recipe = filter_recipe_or_404(recipe_pk=recipe_pk, team=team)
 
     params = RecipePatchParams.parse_obj(request.data)
     provided_fields = set(params.dict(exclude_unset=True))
@@ -141,12 +144,14 @@ def recipe_patch_view(request: AuthedRequest, recipe_pk: str) -> Response:
             ).save()
     recipe.save()
 
-    recipe = user_and_team_recipe_or_404(user=request.user, recipe_pk=recipe_pk)
+    team = get_team(request)
+    recipe = filter_recipe_or_404(team=team, recipe_pk=recipe_pk)
     return Response(RecipeSerializer(recipe).data)
 
 
 def recipe_delete_view(request: AuthedRequest, recipe_pk: str) -> Response:
-    recipe = user_and_team_recipe_or_404(user=request.user, recipe_pk=recipe_pk)
+    team = get_team(request)
+    recipe = filter_recipe_or_404(team=team, recipe_pk=recipe_pk)
     recipe.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 

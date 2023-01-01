@@ -126,18 +126,17 @@ def test_list_team(
     client.force_authenticate(user2)
 
     # verify non-members cannot see private teams
-    assert not team.is_public, "Team should be private"
     assert not team.is_member(user2), "User should not be team member"
     res = client.get(url)
     assert (
         res.status_code == status.HTTP_200_OK
     ), "all users should be able to list teams"
-    assert not res.json(), "Non member shouldn't see private team"
+    assert len(res.json()) == 1
+    assert res.json()[0]["id"] != team.id
 
     # verify members can see private team
     client.force_authenticate(user)
     assert team.is_member(user), "User should be team member"
-    assert not team.is_public, "Team should be private"
     res = client.get(url)
     assert (
         res.status_code == status.HTTP_200_OK
@@ -151,7 +150,6 @@ def test_retrieve_team(client: APIClient, team: Team, user: User, user2: User) -
     client.force_authenticate(user2)
 
     # verify non-members cannot see private team
-    assert not team.is_public, "Team should be private"
     res = client.get(url)
     assert (
         res.status_code == status.HTTP_404_NOT_FOUND
@@ -160,7 +158,6 @@ def test_retrieve_team(client: APIClient, team: Team, user: User, user2: User) -
     # verify members can see private team
     client.force_authenticate(user)
     assert team.is_member(user), "User should be team member"
-    assert not team.is_public, "Team should be private"
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK, "member should be able to get team"
     assert res.json()["id"] == team.id

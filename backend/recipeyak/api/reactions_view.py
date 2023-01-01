@@ -14,7 +14,7 @@ from typing_extensions import Literal
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import serialize_reactions
-from recipeyak.models import user_and_team_notes, user_reactions
+from recipeyak.models import filter_notes, get_team, user_reactions
 from recipeyak.models.reaction import Reaction
 
 logger = logging.getLogger(__name__)
@@ -31,7 +31,9 @@ class ReactToNoteViewParams(RequestParams):
 def note_reaction_create_view(request: AuthedRequest, note_pk: int) -> Response:
     params = ReactToNoteViewParams.parse_obj(request.data)
 
-    note = get_object_or_404(user_and_team_notes(request.user), pk=note_pk)
+    team = get_team(request)
+
+    note = get_object_or_404(filter_notes(team=team), pk=note_pk)
     reaction = Reaction(emoji=params.type, created_by=request.user, note=note)
     try:
         reaction.save()
@@ -40,7 +42,7 @@ def note_reaction_create_view(request: AuthedRequest, note_pk: int) -> Response:
             isinstance(e.__cause__, UniqueViolation)
             and e.__cause__.diag.constraint_name == "one_reaction_per_user"
         ):
-            reaction = user_reactions(request.user).filter(note=note).get()
+            reaction = user_reactions(user=request.user).filter(note=note).get()
         else:
             raise
     return Response(list(serialize_reactions([reaction]))[0])
@@ -49,5 +51,5 @@ def note_reaction_create_view(request: AuthedRequest, note_pk: int) -> Response:
 @api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
 def note_reaction_delete_view(request: AuthedRequest, reaction_pk: str) -> Response:
-    user_reactions(request.user).filter(pk=reaction_pk).delete()
+    user_reactions(user=request.user).filter(pk=reaction_pk).delete()
     return Response(status=status.HTTP_204_NO_CONTENT)

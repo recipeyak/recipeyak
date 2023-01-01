@@ -116,14 +116,10 @@ IGNORED_TIMELINE_EVENTS = {"set_primary_image", "remove_primary_image"}
 
 class RecipeSerializer(BaseModelSerializer):
     steps = StepSerializer(many=True, source="step_set")
-    last_scheduled = serializers.DateField(source="get_last_scheduled", read_only=True)
     ingredients = IngredientSerializer(many=True, source="ingredient_set")
     timelineItems = serializers.SerializerMethodField(read_only=True)
     sections = SectionSerializer(many=True, source="section_set", read_only=True)
     primaryImage = UploadSerializer(read_only=True, source="primary_image")
-    owner = OwnerRelatedField(read_only=True)
-    # specify default None so we can use this as an optional field
-    team = serializers.IntegerField(write_only=True, default=None)
 
     def get_timelineItems(self, obj: Recipe) -> list[dict[str, Any]]:
         items: list[dict[str, Any]] = [
@@ -161,15 +157,12 @@ class RecipeSerializer(BaseModelSerializer):
             "sections",
             "servings",
             "modified",
-            "owner",
-            "team",
-            "last_scheduled",
             "created",
             "archived_at",
             "tags",
             "primaryImage",
         )
-        read_only_fields = ("owner", "last_scheduled", "primaryImage")
+        read_only_fields = ("primaryImage",)
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         # Don't pass the 'fields' arg up to the superclass

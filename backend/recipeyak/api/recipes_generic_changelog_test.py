@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from recipeyak.models import ChangeType, Ingredient, Recipe, RecipeChange, Step, User
+from recipeyak.models.team import Team
 
 pytestmark = pytest.mark.django_db
 
@@ -21,7 +22,9 @@ def ingredient(recipe: Recipe) -> Ingredient:
     )
 
 
-def test_step_create(client: APIClient, recipe: Recipe, user: User) -> None:
+def test_step_create(client: APIClient, recipe: Recipe, user: User, team: Team) -> None:
+    recipe.team = team
+    recipe.save()
     assert (
         RecipeChange.objects.count() == 0
     ), "We shouldn't have any changes recorded yet."
@@ -41,7 +44,11 @@ def test_step_create(client: APIClient, recipe: Recipe, user: User) -> None:
     assert change.recipe.id == recipe.id
 
 
-def test_step_update(client: APIClient, recipe: Recipe, user: User, step: Step) -> None:
+def test_step_update(
+    client: APIClient, recipe: Recipe, user: User, step: Step, team: Team
+) -> None:
+    recipe.team = team
+    recipe.save()
     assert (
         RecipeChange.objects.count() == 0
     ), "We shouldn't have any changes recorded yet."
@@ -62,7 +69,11 @@ def test_step_update(client: APIClient, recipe: Recipe, user: User, step: Step) 
     assert change.recipe.id == recipe.id
 
 
-def test_step_delete(client: APIClient, recipe: Recipe, user: User, step: Step) -> None:
+def test_step_delete(
+    client: APIClient, recipe: Recipe, user: User, step: Step, team: Team
+) -> None:
+    recipe.team = team
+    recipe.save()
     assert (
         RecipeChange.objects.count() == 0
     ), "We shouldn't have any changes recorded yet."
@@ -80,7 +91,11 @@ def test_step_delete(client: APIClient, recipe: Recipe, user: User, step: Step) 
     assert change.recipe.id == recipe.id
 
 
-def test_recipe_name_update(client: APIClient, recipe: Recipe, user: User) -> None:
+def test_recipe_name_update(
+    client: APIClient, recipe: Recipe, user: User, team: Team
+) -> None:
+    recipe.team = team
+    recipe.save()
     assert (
         RecipeChange.objects.count() == 0
     ), "We shouldn't have any changes recorded yet."
@@ -101,7 +116,11 @@ def test_recipe_name_update(client: APIClient, recipe: Recipe, user: User) -> No
     assert change.recipe.id == recipe.id
 
 
-def test_recipe_source_update(client: APIClient, recipe: Recipe, user: User) -> None:
+def test_recipe_source_update(
+    client: APIClient, recipe: Recipe, user: User, team: Team
+) -> None:
+    recipe.team = team
+    recipe.save()
     assert (
         RecipeChange.objects.count() == 0
     ), "We shouldn't have any changes recorded yet."
@@ -122,7 +141,11 @@ def test_recipe_source_update(client: APIClient, recipe: Recipe, user: User) -> 
     assert change.recipe.id == recipe.id
 
 
-def test_recipe_servings_update(client: APIClient, recipe: Recipe, user: User) -> None:
+def test_recipe_servings_update(
+    client: APIClient, recipe: Recipe, user: User, team: Team
+) -> None:
+    recipe.team = team
+    recipe.save()
     assert (
         RecipeChange.objects.count() == 0
     ), "We shouldn't have any changes recorded yet."
@@ -143,7 +166,11 @@ def test_recipe_servings_update(client: APIClient, recipe: Recipe, user: User) -
     assert change.recipe.id == recipe.id
 
 
-def test_recipe_time_update(client: APIClient, recipe: Recipe, user: User) -> None:
+def test_recipe_time_update(
+    client: APIClient, recipe: Recipe, user: User, team: Team
+) -> None:
+    recipe.team = team
+    recipe.save()
     assert (
         RecipeChange.objects.count() == 0
     ), "We shouldn't have any changes recorded yet."
@@ -164,7 +191,11 @@ def test_recipe_time_update(client: APIClient, recipe: Recipe, user: User) -> No
     assert change.recipe.id == recipe.id
 
 
-def test_ingredient_create(client: APIClient, recipe: Recipe, user: User) -> None:
+def test_ingredient_create(
+    client: APIClient, recipe: Recipe, user: User, team: Team
+) -> None:
+    recipe.team = team
+    recipe.save()
     assert (
         RecipeChange.objects.count() == 0
     ), "We shouldn't have any changes recorded yet."
@@ -188,8 +219,10 @@ def test_ingredient_create(client: APIClient, recipe: Recipe, user: User) -> Non
 
 
 def test_ingredient_update(
-    client: APIClient, recipe: Recipe, user: User, ingredient: Ingredient
+    client: APIClient, recipe: Recipe, user: User, ingredient: Ingredient, team: Team
 ) -> None:
+    recipe.team = team
+    recipe.save()
     assert (
         RecipeChange.objects.count() == 0
     ), "We shouldn't have any changes recorded yet."
@@ -212,8 +245,10 @@ def test_ingredient_update(
 
 
 def test_ingredient_delete(
-    client: APIClient, recipe: Recipe, user: User, ingredient: Ingredient
+    client: APIClient, recipe: Recipe, user: User, ingredient: Ingredient, team: Team
 ) -> None:
+    recipe.team = team
+    recipe.save()
     assert (
         RecipeChange.objects.count() == 0
     ), "We shouldn't have any changes recorded yet."

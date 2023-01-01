@@ -14,6 +14,8 @@ def test_adding_to_team_calendar(
     client: APIClient, user: User, team: Team, recipe: Recipe
 ) -> None:
     url = f"/api/v1/t/{team.pk}/calendar/"
+    recipe.team = team
+    recipe.save()
     data = {"recipe": recipe.id, "on": date(1976, 7, 6)}
     assert team.is_member(user)
     client.force_authenticate(user)

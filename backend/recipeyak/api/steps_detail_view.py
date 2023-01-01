@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import serialize_step
-from recipeyak.models import ChangeType, RecipeChange, user_and_team_steps
+from recipeyak.models import ChangeType, RecipeChange, filter_steps, get_team
 
 
 class StepPatchParams(RequestParams):
@@ -23,9 +23,10 @@ class StepPatchParams(RequestParams):
 def steps_detail_view(
     request: AuthedRequest, step_pk: int, recipe_pk: object = None
 ) -> Response:
+    team = get_team(request)
     if request.method == "PATCH":
         params = StepPatchParams.parse_obj(request.data)
-        step = get_object_or_404(user_and_team_steps(request.user), pk=step_pk)
+        step = get_object_or_404(filter_steps(team=team), pk=step_pk)
         before_text = step.text
 
         if params.text is not None:
@@ -44,7 +45,7 @@ def steps_detail_view(
         )
         return Response(serialize_step(step))
     if request.method == "DELETE":
-        step = get_object_or_404(user_and_team_steps(request.user), pk=step_pk)
+        step = get_object_or_404(filter_steps(team=team), pk=step_pk)
         RecipeChange.objects.create(
             recipe=step.recipe,
             actor=request.user,
