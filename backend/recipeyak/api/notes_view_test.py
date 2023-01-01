@@ -13,8 +13,10 @@ def test_updating_other_users_note(
     """
     Prevent editing notes that other users own
     """
+    recipe.team = team
     recipe.owner = team
     recipe.save()
+
     note = Note.objects.create(text="some note text", created_by=user, recipe=recipe)
 
     client.force_authenticate(user)
@@ -28,4 +30,4 @@ def test_updating_other_users_note(
     team.force_join(user3)
     client.force_authenticate(user3)
     res = client.patch(f"/api/v1/notes/{note.id}/")
-    assert res.status_code == status.HTTP_403_FORBIDDEN
+    assert res.status_code == status.HTTP_404_NOT_FOUND

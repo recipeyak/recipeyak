@@ -39,13 +39,23 @@ def user_with_recipes(recipes: list[Recipe]) -> Any:
 @pytest.fixture
 def user2() -> User:
     email = "james@smith.org"
-    return User.objects.create_user(email=email)
+    user2 = User.objects.create_user(email=email)
+    team = Team.objects.create(name="another team")
+    team.force_join_admin(user=user2)
+    user2.schedule_team = team
+    user2.save()
+    return user2
 
 
 @pytest.fixture
 def user3() -> User:
     email = "john.doe@example.org"
-    return User.objects.create_user(email=email)
+    user3 = User.objects.create_user(email=email)
+    team = Team.objects.create(name="another team")
+    team.force_join_admin(user=user3)
+    user3.schedule_team = team
+    user3.save()
+    return user3
 
 
 @pytest.fixture
@@ -59,7 +69,7 @@ def client_b() -> APIClient:
 
 
 @pytest.fixture
-def recipes(user: User) -> list[Recipe]:
+def recipes(user: User, team: Team) -> list[Recipe]:
     """
     list of empty recipes with different modified times owned by `user`
     note: each item will have a different creation time inherently
@@ -69,7 +79,7 @@ def recipes(user: User) -> list[Recipe]:
     author = "Recipe author"
 
     return Recipe.objects.bulk_create(
-        [Recipe(name=name, author=author, owner=user) for n in range(15)]
+        [Recipe(name=name, author=author, owner=user, team=team) for n in range(15)]
     )
 
 

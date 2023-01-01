@@ -76,6 +76,9 @@ def test_fetching_sections_for_recipe(
     """
     client.force_authenticate(user)
 
+    recipe.team = team
+    recipe.save()
+
     # detail
     res = client.get(f"/api/v1/recipes/{recipe.id}/")
     assert res.status_code == status.HTTP_200_OK

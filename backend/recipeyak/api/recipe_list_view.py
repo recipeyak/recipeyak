@@ -265,7 +265,7 @@ def recipe_post_view(request: AuthedRequest) -> Response:
             position = ordering.position_after(position)
         Step.objects.bulk_create(steps)
     else:
-        recipe = Recipe.objects.create(owner=team, name=params.name)
+        recipe = Recipe.objects.create(owner=team, team=team, name=params.name)
 
     TimelineEvent(
         action="created",

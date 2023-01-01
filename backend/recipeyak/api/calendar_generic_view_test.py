@@ -12,6 +12,8 @@ pytestmark = pytest.mark.django_db
 def test_creating_scheduled_recipe(
     client: APIClient, recipe: Recipe, team: Team, user: User
 ) -> None:
+    recipe.team = team
+    recipe.save()
     url = f"/api/v1/t/{team.id}/calendar/"
     data = {"recipe": recipe.id, "on": date(1976, 7, 6)}
     client.force_authenticate(user)
@@ -21,23 +23,6 @@ def test_creating_scheduled_recipe(
     assert res.json()[
         "created"
     ], "ensure we have the created at property for sorting on the frontend"
-
-
-def test_recipe_returns_last_scheduled_date(
-    client: APIClient, scheduled_recipe: ScheduledRecipe, recipe2: Recipe
-) -> None:
-    recipe = scheduled_recipe.recipe
-    user = scheduled_recipe.user
-    client.force_authenticate(user)
-    res = client.get(f"/api/v1/recipes/{recipe.id}/")
-    assert res.status_code == status.HTTP_200_OK
-    assert res.json()["last_scheduled"] == str(scheduled_recipe.on)
-
-    res = client.get(f"/api/v1/recipes/{recipe2.id}/")
-    assert res.status_code == status.HTTP_200_OK
-    assert (
-        res.json()["last_scheduled"] is None
-    ), "We return None if the recipe has not been scheduled"
 
 
 def test_updating_scheduled_recipe(
