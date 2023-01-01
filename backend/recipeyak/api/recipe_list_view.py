@@ -256,6 +256,7 @@ def recipe_post_view(request: AuthedRequest) -> Response:
             )
 
         recipe = Recipe.objects.create(
+            team=team,
             scrape_id=scrape_result.id,
             owner=team,
             name=normalize_title(scrape_result.title),
