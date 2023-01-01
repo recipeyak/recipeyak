@@ -16,7 +16,7 @@ from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import BaseModelSerializer, RequestParams
 from recipeyak.api.serializers.recipe import RecipeSerializer
 from recipeyak.api.team_detail_view import get_teams
-from recipeyak.models import Membership, ScheduledRecipe, Team, user_and_team_recipes
+from recipeyak.models import Membership, ScheduledRecipe, Team, filter_recipes, get_team
 
 
 class CalSettings(TypedDict):
@@ -73,7 +73,9 @@ class ScheduledRecipeSerializer(BaseModelSerializer):
 def calendar_list_post_view(request: AuthedRequest, team_pk: int) -> Response:
     params = ScheduledRecipeCreateParams.parse_obj(request.data)
 
-    recipe = get_object_or_404(user_and_team_recipes(request.user), id=params.recipe)
+    team = get_team(request)
+
+    recipe = get_object_or_404(filter_recipes(team=team), id=params.recipe)
 
     scheduled_recipe = recipe.schedule(
         on=params.on,

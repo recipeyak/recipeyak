@@ -4,7 +4,7 @@ import pytest
 import yaml
 from django.test import Client
 
-from recipeyak.models import Recipe, User
+from recipeyak.models import Recipe, Team, User
 
 pytestmark = pytest.mark.django_db
 
@@ -15,8 +15,12 @@ def c() -> Client:
 
 
 def test_bulk_export_json(
-    c: Client, user: User, user2: User, recipe: Recipe, recipe2: Recipe
+    c: Client, user: User, user2: User, recipe: Recipe, recipe2: Recipe, team: Team
 ) -> None:
+    recipe.team = team
+    recipe.save()
+    recipe2.team = team
+    recipe2.save()
     url = "/recipes.json"
     res = c.get(url)
     assert res.status_code == 302
@@ -27,7 +31,9 @@ def test_bulk_export_json(
     assert len(recipes) == 2, "user should have two recipes"
 
 
-def test_single_export_json(c: Client, user: User, recipe: Recipe) -> None:
+def test_single_export_json(c: Client, user: User, recipe: Recipe, team: Team) -> None:
+    recipe.team = team
+    recipe.save()
     url = f"/recipes/{recipe.id}.json"
     res = c.get(url)
     assert res.status_code == 302
@@ -39,8 +45,10 @@ def test_single_export_json(c: Client, user: User, recipe: Recipe) -> None:
 
 @pytest.mark.parametrize("filetype", ["yaml", "yml"])
 def test_single_export_yaml(
-    c: Client, filetype: str, user: User, recipe: Recipe
+    c: Client, filetype: str, user: User, recipe: Recipe, team: Team
 ) -> None:
+    recipe.team = team
+    recipe.save()
     url = f"/recipes/{recipe.id}.{filetype}"
     res = c.get(url)
     assert res.status_code == 302
@@ -53,12 +61,13 @@ def test_single_export_yaml(
     assert next(yaml.safe_load_all(res.content)).get("name") == recipe.name
 
 
-def test_unicode_issues(c: Client, user: User, recipe: Recipe) -> None:
+def test_unicode_issues(c: Client, user: User, recipe: Recipe, team: Team) -> None:
     """
     regression to prevent unicode encoding issues with pyyaml
     """
     recipe.name = "foo 🦠"
     recipe.tags = ["foo", "bar"]
+    recipe.team = team
     recipe.save()
     url = f"/recipes/{recipe.id}.yaml"
     c.force_login(user)

@@ -10,7 +10,7 @@ from recipeyak import ordering
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams, StrTrimmed
 from recipeyak.api.serializers.recipe import serialize_step
-from recipeyak.models import ChangeType, RecipeChange, Step, user_and_team_recipes
+from recipeyak.models import ChangeType, RecipeChange, Step, filter_recipes, get_team
 
 
 class StepCreateParams(RequestParams):
@@ -22,7 +22,8 @@ class StepCreateParams(RequestParams):
 @permission_classes([IsAuthenticated])
 def steps_list_view(request: AuthedRequest, recipe_pk: int) -> Response:
     params = StepCreateParams.parse_obj(request.data)
-    recipe = get_object_or_404(user_and_team_recipes(request.user), pk=recipe_pk)
+    team = get_team(request)
+    recipe = get_object_or_404(filter_recipes(team=team), pk=recipe_pk)
 
     step = Step(text=params.text, recipe=recipe)
     if params.position is not None:

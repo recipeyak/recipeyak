@@ -3,11 +3,14 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from recipeyak.models import Recipe, User
+from recipeyak.models.team import Team
 
 
 @pytest.mark.django_db(transaction=True)
-def test_reactions(client: APIClient, user: User, recipe: Recipe) -> None:
+def test_reactions(client: APIClient, user: User, recipe: Recipe, team: Team) -> None:
     client.force_authenticate(user)
+    recipe.team = team
+    recipe.save()
 
     note = recipe.notes.all()[0]
     assert note.reactions.count() == 0

@@ -3,11 +3,16 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from recipeyak.models import Recipe, RecipeView, User
+from recipeyak.models.team import Team
 
 
 @pytest.mark.django_db
-def test_recently_viewed(client: APIClient, user: User, recipe: Recipe) -> None:
+def test_recently_viewed(
+    client: APIClient, user: User, recipe: Recipe, team: Team
+) -> None:
     client.force_authenticate(user)
+    recipe.team = team
+    recipe.save()
 
     assert RecipeView.objects.count() == 0
 

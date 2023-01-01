@@ -26,12 +26,12 @@ from recipeyak.models import (
     Ingredient,
     Note,
     Reaction,
-    ScheduledRecipe,
     Section,
     Step,
     TimelineEvent,
     Upload,
-    user_and_team_recipes,
+    filter_recipes,
+    get_team,
 )
 from recipeyak.models.recipe import Recipe
 from recipeyak.models.team import Team
@@ -50,9 +50,10 @@ def group_by_recipe_id(x: Iterable[dict[str, Any]]) -> dict[str, list[dict[str, 
 
 
 def recipe_get_view(request: AuthedRequest) -> Response:
+    team = get_team(request)
     recipes = {
         x["id"]: x
-        for x in user_and_team_recipes(request.user).values(
+        for x in filter_recipes(team=team).values(
             "id",
             "name",
             "author",
@@ -60,9 +61,6 @@ def recipe_get_view(request: AuthedRequest) -> Response:
             "time",
             "servings",
             "modified",
-            "owner_team",
-            "owner_team__name",
-            "owner_user",
             "created",
             "archived_at",
             "primary_image__id",
@@ -94,15 +92,6 @@ def recipe_get_view(request: AuthedRequest) -> Response:
             "recipe_id",
         )
     )
-
-    schedule_recipe = dict()
-    for schedule in (
-        ScheduledRecipe.objects.filter(recipe_id__in=recipes.keys())
-        .distinct("recipe_id")
-        .order_by("-recipe_id", "-on")
-        .values("recipe_id", "on")
-    ):
-        schedule_recipe[schedule["recipe_id"]] = schedule["on"]
 
     steps = group_by_recipe_id(
         Step.objects.filter(recipe_id__in=recipes.keys()).values(
@@ -197,20 +186,6 @@ def recipe_get_view(request: AuthedRequest) -> Response:
         timeline_events[event["recipe_id"]].append(event)
 
     for recipe_id, recipe in recipes.items():
-        if recipe["owner_team"]:
-            recipe["owner"] = dict(
-                type="team",
-                id=recipe["owner_team"],
-                name=recipe["owner_team__name"],
-            )
-        else:
-            recipe["owner"] = dict(type="user", id=recipe["owner_team"])
-
-        recipe.pop("owner_user", None)
-        recipe.pop("owner_user", None)
-        recipe.pop("owner_team__name", None)
-
-        recipe["last_scheduled_at"] = schedule_recipe.get(recipe_id)
 
         recipe["ingredients"] = ingredients.get(recipe_id) or []
         recipe["steps"] = steps.get(recipe_id) or []
@@ -290,7 +265,7 @@ def recipe_post_view(request: AuthedRequest) -> Response:
             position = ordering.position_after(position)
         Step.objects.bulk_create(steps)
     else:
-        recipe = Recipe.objects.create(owner=team, name=params.name)
+        recipe = Recipe.objects.create(owner=team, team=team, name=params.name)
 
     TimelineEvent(
         action="created",
