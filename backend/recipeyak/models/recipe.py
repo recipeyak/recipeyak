@@ -77,15 +77,7 @@ class Recipe(CommonInfo):
     class Meta:
         db_table = "core_recipe"
 
-    # TODO(sbdchd): this needs an `@overload` for the user case an the team
-    # case since they can't occur at the same time.
-    def schedule(
-        self,
-        *,
-        on: date,
-        user: "User",
-        team: "Team" | None = None,
-    ) -> ScheduledRecipe:
+    def schedule(self, *, on: date, user: "User", team: "Team") -> ScheduledRecipe:
         return ScheduledRecipe.objects.create_scheduled(
             recipe=self, on=on, user=user, team=team
         )

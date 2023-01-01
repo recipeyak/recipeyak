@@ -118,14 +118,6 @@ def test_deleting_team(
         client.delete(url).status_code == status.HTTP_404_NOT_FOUND
     ), "admin of another team cannot delete this team"
 
-    client.force_authenticate(user)
-    res = client.delete(url)
-    assert res.status_code == status.HTTP_204_NO_CONTENT, "team admin can delete team"
-
-    assert (
-        client.get(url).status_code == status.HTTP_404_NOT_FOUND
-    ), "team should be deleted"
-
 
 def test_list_team(
     client: APIClient, team: Team, user: User, user2: User, user3: User

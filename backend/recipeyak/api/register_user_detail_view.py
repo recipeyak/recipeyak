@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from django.db import transaction
 from django.contrib.auth import login
 from django.contrib.auth.password_validation import validate_password
+from django.db import transaction
 from pydantic import root_validator, validator
 from rest_framework import serializers, status
 from rest_framework.decorators import api_view, permission_classes

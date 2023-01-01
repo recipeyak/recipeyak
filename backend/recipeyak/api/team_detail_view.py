@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from django.db import transaction
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 from rest_framework import status
@@ -13,7 +14,6 @@ from recipeyak.api.serializers.team import TeamSerializer
 from recipeyak.models import Team
 from recipeyak.models.membership import Membership
 from recipeyak.models.user import User
-from django.db import transaction
 
 
 def get_teams(user: User) -> QuerySet[Team]:

@@ -18,14 +18,14 @@ class ScheduledRecipeManager(models.Manager["ScheduledRecipe"]):
         self,
         recipe: Recipe,
         on: date,
-        team: Team | None,
+        team: Team,
         user: User,
     ) -> "ScheduledRecipe":
         """
         add to existing scheduled recipe count for dupes
         """
         return ScheduledRecipe.objects.create(
-            recipe=recipe, on=on, team=team, user=user, created_by=user
+            recipe=recipe, on=on, team=team, created_by=user
         )
 
 
@@ -36,7 +36,7 @@ class ScheduledRecipe(CommonInfo):
     recipe_id: int
 
     on = models.DateField(help_text="day when recipe is scheduled")
-    # TODO(sbdchd): add restriction so that only one of these is set
+    # user is deprecated
     user = models.ForeignKey["User"](
         "User", on_delete=models.CASCADE, blank=True, null=True
     )

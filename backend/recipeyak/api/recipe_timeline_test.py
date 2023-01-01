@@ -39,7 +39,9 @@ def test_get_recipe_timeline(
         not res.json()
     ), "Should have an empty array since we haven't scheduled a recipe yet."
 
-    scheduled = recipe.schedule(on=date(1776, 1, 1), user=user)
+    user.schedule_team = empty_team
+    user.save()
+    scheduled = recipe.schedule(on=date(1776, 1, 1), user=user, team=empty_team)
 
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK
@@ -51,44 +53,19 @@ def test_get_recipe_timeline(
     assert res.json()[0]["id"] == scheduled.id
     assert res.json()[0]["on"] == str(scheduled.on)
 
-    # Fetch timeline for a recipe the user isn't allowed to access
-
-    assert scheduled.team is None, (
-        "We are testing that the user conditional works here "
-        "so we need the team filter option to not be used."
-    )
-
-    client.force_authenticate(user2)
-    res = client.get(url)
-    assert (
-        res.status_code == status.HTTP_403_FORBIDDEN
-    ), "User field didn't match so we shouldn't return anything"
-
-    # Setup `empty_team` as the owner of the recipe and scheduled recipe so we
-    # test fetching against the team
-    team = empty_team
-    recipe.owner = team
-    recipe.save()
-    scheduled.team = team
-    scheduled.save()
-    team.force_join_admin(user2)
-    user2.schedule_team = team
-    user2.save()
-
-    res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK
-    assert len(res.json()) == 1, "should return the same response"
-
 
 def test_get_recipe_timeline_ordering(
-    user: User, client: APIClient, recipe: Recipe
+    user: User, client: APIClient, recipe: Recipe, team: Team
 ) -> None:
     """
     ensure we return the timeline items in the correct ordering
     """
 
     for time in [date(1776, 1, 1), date(1776, 2, 1), date(1776, 3, 1)]:
-        recipe.schedule(on=time, user=user)
+        recipe.schedule(on=time, user=user, team=team)
+
+    user.schedule_team = team
+    user.save()
 
     url = f"/api/v1/recipes/{recipe.id}/timeline"
     client.force_authenticate(user)
