@@ -7,10 +7,7 @@ import pydantic
 from rest_framework import serializers
 from typing_extensions import Literal
 
-from recipeyak.api.base.serialization import (
-    BaseModelSerializer,
-    BaseRelatedField,
-)
+from recipeyak.api.base.serialization import BaseModelSerializer, BaseRelatedField
 from recipeyak.api.serializers.team import PublicUserSerializer
 from recipeyak.models import (
     Ingredient,
