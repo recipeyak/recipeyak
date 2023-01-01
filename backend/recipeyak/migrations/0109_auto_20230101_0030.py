@@ -13,6 +13,7 @@ def migrate(apps: Any, schema_editor: Any) -> None:
 
     User = apps.get_model("recipeyak", "User")
     Team = apps.get_model("recipeyak", "Team")
+    Membership = apps.get_model("recipeyak", "Membership")
 
     users_without_teams = (
         User.objects.using(db_alias).filter(schedule_team_id__isnull=True).all()
@@ -22,13 +23,17 @@ def migrate(apps: Any, schema_editor: Any) -> None:
 
     for user in users_without_teams:
         logger.info("migrating user", user_id=users_without_teams.count())
-
         team = Team.objects.create(name="Personal")
+        membership = Membership.objects.create(
+            team=team, user=user, level="admin", is_active=True
+        )
         user.schedule_team = team
         user.save()
-        team.force_join_admin(user)
         logger.info(
-            "migrating user done!", user_id=users_without_teams.count(), team_id=team.id
+            "migrating user done!",
+            user_id=users_without_teams.count(),
+            team_id=team.id,
+            membership_id=membership.id,
         )
 
 
