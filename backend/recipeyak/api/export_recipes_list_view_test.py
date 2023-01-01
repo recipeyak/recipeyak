@@ -4,7 +4,7 @@ import pytest
 import yaml
 from django.test import Client
 
-from recipeyak.models import Recipe, User, Team
+from recipeyak.models import Recipe, Team, User
 
 pytestmark = pytest.mark.django_db
 
