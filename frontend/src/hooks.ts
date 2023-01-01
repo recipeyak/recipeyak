@@ -126,7 +126,8 @@ export function useIsLoggedIn(): boolean {
   return userId != null
 }
 
-export function useTeamId(): number | "personal" {
+export function useTeamId(): number {
   const res = useUserFetch()
-  return res.data?.schedule_team ?? "personal"
+  // TODO: put this in the preload so we can avoid this
+  return res.data?.schedule_team ?? -1
 }

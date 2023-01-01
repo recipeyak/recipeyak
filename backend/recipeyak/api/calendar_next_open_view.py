@@ -20,7 +20,7 @@ def unwrap(arg: _T | None) -> _T:
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsTeamMember])
-def next_open(request: AuthedRequest, team_pk: str) -> Response:
+def next_open(request: AuthedRequest, team_pk: int) -> Response:
     with connection.cursor() as cursor:
         weekday = request.query_params["day"]
         now = request.query_params["now"]

@@ -152,7 +152,7 @@ export function Dropdown({
           recipeId={recipeId}
           recipeName={recipeName}
           onClose={() => {
-            setShowScheduleModal((s) => !s)
+            setShowScheduleModal(false)
           }}
         />
       )}

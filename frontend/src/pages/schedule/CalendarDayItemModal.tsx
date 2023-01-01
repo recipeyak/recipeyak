@@ -36,7 +36,7 @@ export function CalendarDayItemModal({
 }: {
   readonly scheduledId: number
   readonly recipeId: number | string
-  readonly teamID: number | "personal"
+  readonly teamID: number
   readonly recipeName: string
   readonly date: Date
   readonly onClose: () => void

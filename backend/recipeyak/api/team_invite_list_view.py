@@ -11,7 +11,7 @@ from recipeyak.models import Team
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated, IsTeamMember])
-def team_invite_list_view(request: AuthedRequest, team_pk: str) -> Response:
+def team_invite_list_view(request: AuthedRequest, team_pk: int) -> Response:
     """
     for creating, we want: level, user_id
     for response, we want: id, user data, team

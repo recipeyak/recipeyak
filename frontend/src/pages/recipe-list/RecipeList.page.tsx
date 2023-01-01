@@ -3,6 +3,7 @@ import { useHistory } from "react-router"
 
 import { ITeam } from "@/api"
 import cls from "@/classnames"
+import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { CheckBox, TextInput } from "@/components/Forms"
 import { Loader } from "@/components/Loader"
@@ -26,15 +27,12 @@ function Results({ recipes, query }: IResultsProps) {
 
 function AddRecipeCallToAction() {
   return (
-    <div className="d-flex">
-      <section className="d-flex mx-auto">
-        <p className="fs-6 mr-2">No recipes here.</p>
-
-        <Button variant="primary" to="/recipes/add">
-          Add a Recipe
-        </Button>
-      </section>
-    </div>
+    <Box dir="col" mx="auto" mt={2} align="center" gap={1}>
+      <div>No recipes here.</div>
+      <Button variant="primary" size="small" to="/recipes/add">
+        Add a Recipe
+      </Button>
+    </Box>
   )
 }
 
@@ -164,7 +162,7 @@ function RecipesListSearch({
   readonly scroll?: boolean
   readonly drag?: boolean
   readonly noPadding?: boolean
-  readonly teamID?: ITeam["id"] | "personal" | null
+  readonly teamID?: ITeam["id"] | null
 }) {
   const [query, setQuery] = useState(() => getSearch(window.location.search))
   const history = useHistory()

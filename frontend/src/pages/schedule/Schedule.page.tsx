@@ -10,7 +10,7 @@ import { useUserUpdate } from "@/queries/userUpdate"
 import { styled } from "@/theme"
 
 interface ISidebarProps {
-  readonly teamID: number | "personal"
+  readonly teamID: number
 }
 
 function Sidebar({ teamID }: ISidebarProps) {
@@ -23,8 +23,7 @@ function Sidebar({ teamID }: ISidebarProps) {
 
 interface IScheduleProps
   extends RouteComponentProps<{
-    id?: string
-    type: "shopping" | "recipes"
+    id: string
   }> {
   readonly updateTeamID: (id: ITeam["id"] | null) => void
   readonly teamID: ITeam["id"] | null
@@ -47,27 +46,18 @@ function Schedule(props: IScheduleProps) {
     })
   }, [updateUserMutate, teamID])
 
-  const teamID_ = teamID || "personal"
-
   return (
     <ScheduleContainer className="d-flex pl-2 pr-2 flex-grow h-100vh">
       <Helmet title="Schedule" />
-      <Sidebar teamID={teamID_} />
-      <Calendar teamID={teamID_} />
+      <Sidebar teamID={teamID} />
+      <Calendar teamID={teamID} />
       <HelpMenuModal />
     </ScheduleContainer>
   )
 }
 
 const getTeamID = (params: IScheduleProps["match"]["params"]) => {
-  if (params.id == null) {
-    return null
-  }
-  const teamID = parseInt(params.id, 10)
-  if (isNaN(teamID)) {
-    return null
-  }
-  return teamID
+  return parseInt(params.id, 10)
 }
 
 export default Schedule

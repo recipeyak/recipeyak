@@ -11,13 +11,7 @@ interface IModalProps {
   readonly title: string
 }
 
-export function Modal({
-  show,
-  content,
-  onClose: close,
-  title,
-  onClose,
-}: IModalProps) {
+export function Modal({ show, content, onClose, title }: IModalProps) {
   const ref = useRef<HTMLDivElement>(null)
   useGlobalEvent({
     keyUp: (e: KeyboardEvent) => {
@@ -35,7 +29,7 @@ export function Modal({
       className={classNames("modal", { "is-active": show })}
       style={{ alignItems: "flex-start" }}
     >
-      <div className="modal-background" onClick={close} />
+      <div className="modal-background" onClick={onClose} />
       <div
         className="modal-content overflow-y-auto fs-14px"
         style={{
@@ -57,7 +51,7 @@ export function Modal({
       <button
         className="modal-close is-large"
         aria-label="close"
-        onClick={close}
+        onClick={onClose}
       />
     </div>
   )

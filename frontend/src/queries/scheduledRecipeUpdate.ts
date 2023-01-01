@@ -9,7 +9,7 @@ function scheduledRecipeUpdate({
   update,
 }: {
   scheduledRecipeId: number
-  teamID: number | "personal"
+  teamID: number
   update: {
     // ISO date string
     on: string

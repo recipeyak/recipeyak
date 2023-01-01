@@ -41,17 +41,6 @@ def test_team_kick_user(client: APIClient, team: Team, user: User, user2: User) 
     assert not team.is_member(user)
 
 
-def test_team_set_public_private(
-    client: APIClient, team: Team, user: User, user2: User
-) -> None:
-    assert not team.is_public, "Team should not be public"
-    team.set_public()
-    assert team.is_public, "Team should be public"
-
-    team.set_private()
-    assert not team.is_public, "Team should be private"
-
-
 def test_team_is_member(client: APIClient, team: Team, user: User, user2: User) -> None:
     assert not team.is_member(user2), "User2 should not not be a default team member"
     assert team.is_member(user), "User should be a default team member"

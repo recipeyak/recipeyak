@@ -16,7 +16,7 @@ class CalSettingsSerializer(RequestParams):
 
 @api_view(["PATCH"])
 @permission_classes([IsAuthenticated, IsTeamMember])
-def update_settings(request: AuthedRequest, team_pk: str) -> Response:
+def update_settings(request: AuthedRequest, team_pk: int) -> Response:
     params = CalSettingsSerializer.parse_obj(request.data)
     sync_enabled = params.syncEnabled
 

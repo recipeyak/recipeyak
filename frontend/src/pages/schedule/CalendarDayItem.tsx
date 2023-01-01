@@ -53,7 +53,7 @@ export interface ICalendarItemProps {
   readonly recipeID: number | string
   readonly recipeName: string
   readonly scheduledId: number
-  readonly teamID: number | "personal"
+  readonly teamID: number
   readonly createdAt: string
   readonly createdBy: {
     readonly id: number | string

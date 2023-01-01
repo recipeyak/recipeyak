@@ -86,6 +86,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         related_name="+",
     )
 
+    # TODO: this shouldn't be null
     schedule_team = models.ForeignKey["Team"](
         "Team",
         null=True,

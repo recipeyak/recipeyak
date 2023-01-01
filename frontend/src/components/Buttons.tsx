@@ -27,6 +27,7 @@ export const Button = ({
   variant,
   disabled,
   to,
+  type = "button",
   ...props
 }: IButtonProps) => {
   const buttonSize =
@@ -59,6 +60,7 @@ export const Button = ({
     <button
       {...props}
       disabled={loading || disabled}
+      type={type}
       className={classNames("my-button", "br-6", className, buttonSize, {
         "is-primary": variant === "primary",
         "is-danger": variant === "danger",

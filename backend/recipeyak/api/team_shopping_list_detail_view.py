@@ -14,18 +14,15 @@ from recipeyak.models import ScheduledRecipe, ShoppingList, Team
 
 
 def get_scheduled_recipes(
-    *, request: AuthedRequest, team_pk: str
+    *, request: AuthedRequest, team_pk: int
 ) -> QuerySet[ScheduledRecipe] | None:
     start = request.query_params.get("start")
     end = request.query_params.get("end")
 
-    if team_pk in {"personal", "me"}:
-        scheduled_recipes = request.user.scheduled_recipes
-    else:
-        team = Team.objects.filter(pk=team_pk).first()
-        if team is None:
-            return None
-        scheduled_recipes = team.scheduled_recipes
+    team = Team.objects.filter(pk=team_pk).first()
+    if team is None:
+        return None
+    scheduled_recipes = team.scheduled_recipes
 
     try:
         return scheduled_recipes.filter(on__gte=start).filter(on__lte=end)
@@ -35,7 +32,7 @@ def get_scheduled_recipes(
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsTeamMember])
-def get_shopping_list_view(request: AuthedRequest, team_pk: str) -> Response:
+def get_shopping_list_view(request: AuthedRequest, team_pk: int) -> Response:
     scheduled_recipes = get_scheduled_recipes(request=request, team_pk=team_pk)
     if scheduled_recipes is None:
         return Response(status=status.HTTP_400_BAD_REQUEST)

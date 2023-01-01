@@ -8,7 +8,7 @@ const findNextOpenV2 = ({
   day,
   now,
 }: {
-  readonly teamID: number | "personal"
+  readonly teamID: number
   readonly day: string
   readonly now: string
 }) => {

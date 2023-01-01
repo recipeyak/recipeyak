@@ -187,11 +187,7 @@ function AppContent() {
             <Route exact path="/" component={Home} />
             <PrivateRoute
               exact
-              path="/schedule/:type(shopping|recipes)?"
-              component={SchedulePage}
-            />
-            <PrivateRoute
-              exact
+              // TODO: `:type` isn't used anymore
               path="/t/:id(\d+)(.*)/schedule/:type(shopping|recipes)?"
               component={SchedulePage}
             />
