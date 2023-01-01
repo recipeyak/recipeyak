@@ -16,8 +16,8 @@ from recipeyak.models import (
     ChangeType,
     RecipeChange,
     TimelineEvent,
-    get_team,
     filter_recipe_or_404,
+    get_team,
 )
 from recipeyak.models.upload import Upload
 

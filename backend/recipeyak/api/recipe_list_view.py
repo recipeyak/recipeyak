@@ -26,7 +26,6 @@ from recipeyak.models import (
     Ingredient,
     Note,
     Reaction,
-    ScheduledRecipe,
     Section,
     Step,
     TimelineEvent,

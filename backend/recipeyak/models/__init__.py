@@ -1,7 +1,7 @@
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
-from recipeyak.api.base.request import AuthedRequest
 
+from recipeyak.api.base.request import AuthedRequest
 from recipeyak.models.ingredient import Ingredient  # noqa: F401
 from recipeyak.models.invite import Invite  # noqa: F401
 from recipeyak.models.membership import Membership, get_random_ical_id  # noqa: F401
@@ -54,21 +54,21 @@ def filter_recipes(*, team: Team) -> QuerySet[Recipe]:
     )
 
 
-def filter_recipe_or_404(recipe_pk: str, team: Team) -> Recipe:
+def filter_recipe_or_404(*, recipe_pk: str, team: Team) -> Recipe:
     return get_object_or_404(filter_recipes(team=team), pk=recipe_pk)
 
 
-def filter_ingredients(team: Team) -> QuerySet[Ingredient]:
+def filter_ingredients(*, team: Team) -> QuerySet[Ingredient]:
     return Ingredient.objects.filter(recipe__in=filter_recipes(team=team))
 
 
-def filter_steps(team: Team) -> QuerySet[Step]:
+def filter_steps(*, team: Team) -> QuerySet[Step]:
     return Step.objects.filter(recipe__in=filter_recipes(team=team))
 
 
-def filter_notes(team: Team) -> QuerySet[Note]:
+def filter_notes(*, team: Team) -> QuerySet[Note]:
     return Note.objects.filter(recipe__in=filter_recipes(team=team))
 
 
-def user_reactions(user: User) -> QuerySet[Reaction]:
+def user_reactions(*, user: User) -> QuerySet[Reaction]:
     return Reaction.objects.filter(created_by=user)
