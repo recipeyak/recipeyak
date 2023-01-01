@@ -24,7 +24,12 @@ def migrate(apps: Any, schema_editor: Any) -> None:
             django_content_type.model = 'team'
         """
         )
-        (team_content_type_id, team_content_type_name) = conn.fetchone()
+        res = conn.fetchone()
+        if res is None:
+            logger.info("skipping migration")
+            return
+
+        (team_content_type_id, team_content_type_name) = res
         logger.info(
             "fetch content type",
             team_content_type_id=team_content_type_id,
