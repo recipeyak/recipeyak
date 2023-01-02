@@ -6,9 +6,12 @@
     "ms-python.python",
     "ms-vscode.vscode-typescript-tslint-plugin",
     "ms-vsliveshare.vsliveshare",
-    "PeterJausovec.vscode-docker",
+    "peterjausovec.vscode-docker",
     "jpoissonnier.vscode-styled-components",
     "wmaurer.change-case",
-    "chdsbd.githubinator"
+    "chdsbd.githubinator",
+    "charliermarsh.ruff",
+    "dbaeumer.vscode-eslint",
+    "redhat.vscode-yaml"
   ]
 }
