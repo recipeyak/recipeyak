@@ -9,7 +9,7 @@ from rest_framework import serializers
 log = getLogger(__name__)
 
 
-class UnexpectedDatabaseAccess(Exception):
+class UnexpectedDatabaseAccess(Exception):  # noqa: N818
     pass
 
 

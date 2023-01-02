@@ -169,7 +169,7 @@ class HealthCheckMiddleware:
                 row = cursor.fetchone()
                 if row is None:
                     return HttpResponseServerError(ReadinessError.PG_BAD_RESPONSE)
-        except Exception:
+        except Exception:  # noqa: BLE001
             log.exception("could not connect to postgres")
             return HttpResponseServerError(ReadinessError.PG_CANNOT_CONNECT)
 
@@ -199,10 +199,10 @@ class ExceptionMiddleware(MiddlewareMixin):
         if isinstance(exception, pydantic.ValidationError) and issubclass(
             exception.model, RequestParams
         ):
-            return JsonResponse(dict(message=exception.errors()), status=400)
+            return JsonResponse({"message": exception.errors()}, status=400)
         if isinstance(exception, ValidationError):
             return JsonResponse(
-                dict(message=exception.messages, non_field_errors=exception.messages),
+                {"message": exception.messages, "non_field_errors": exception.messages},
                 status=400,
             )
         return None

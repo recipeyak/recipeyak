@@ -76,11 +76,11 @@ def recipe_get_view(request: AuthedRequest) -> Response:
         background_url = recipe.pop("primary_image__background_url", None)
         if image_id is None or image_key is None:
             continue
-        recipe["primaryImage"] = dict(
-            id=str(image_id),
-            url=public_url(key=image_key),
-            backgroundUrl=background_url,
-        )
+        recipe["primaryImage"] = {
+            "id": str(image_id),
+            "url": public_url(key=image_key),
+            "backgroundUrl": background_url,
+        }
 
     ingredients = group_by_recipe_id(
         Ingredient.objects.filter(recipe_id__in=recipes.keys()).values(
@@ -112,7 +112,7 @@ def recipe_get_view(request: AuthedRequest) -> Response:
     )
 
     notes = collections.defaultdict(list)
-    note_map = dict()
+    note_map = {}
     for note in Note.objects.filter(recipe_id__in=recipes.keys()).values(
         "id",
         "text",
@@ -131,12 +131,12 @@ def recipe_get_view(request: AuthedRequest) -> Response:
             if note[name] is not None:
                 display_name = note.get(f"{name}__name") or note[f"{name}__email"]
                 email = note[f"{name}__email"]
-                note[name] = dict(
-                    id=note[name],
-                    email=email,
-                    name=display_name,
-                    avatar_url=get_avatar_url(email),
-                )
+                note[name] = {
+                    "id": note[name],
+                    "email": email,
+                    "name": display_name,
+                    "avatar_url": get_avatar_url(email),
+                }
             else:
                 note.pop(name, None)
             note.pop(f"{name}__email", None)
@@ -176,11 +176,11 @@ def recipe_get_view(request: AuthedRequest) -> Response:
             continue
         if event["created_by"] is not None:
             email = event["created_by__email"]
-            event["created_by"] = dict(
-                id=event["created_by"],
-                email=email,
-                avatar_url=get_avatar_url(email),
-            )
+            event["created_by"] = {
+                "id": event["created_by"],
+                "email": email,
+                "avatar_url": get_avatar_url(email),
+            }
         event.pop("created_by__email", None)
         event["type"] = "recipe"
         timeline_events[event["recipe_id"]].append(event)

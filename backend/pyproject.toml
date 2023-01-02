@@ -24,7 +24,6 @@ pydantic = {extras = ["email"], version = "^1.10.2"}
 yarl = "^1.8.1"
 recipe-scrapers = "14.23.0"
 advocate = "^1.0.0"
-sentry-sdk = {git = "https://github.com/chdsbd/sentry-python.git", rev = "chris/trace-response-render"}
 Pillow = "^9.3.0"
 httpx = "^0.23.1"
 asyncpg = "^0.27.0"
@@ -33,29 +32,24 @@ typer = "^0.7.0"
 structlog = "^22.3.0"
 types-Pillow = "^9.3.0"
 pillow-heif = "^0.9.0"
+ruff = "^0.0.206"
+sentry-sdk = "^1.12.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "7.2.0"
 pytest-cov = "^2.5.1"
 pytest-django = "4.5.2"
 ipdb = "^0.13.9"
-mypy = "^0.910"
-flake8 = "3.8.4"
-pytest-watch = "^4.2"
 mypy_extensions = "^0.4.1"
-flake8-pie = "^0.4.0"
-flake8-print = "^3.1"
-flake8-comprehensions = "^2.1"
 django-types = "^0.16.0"
 types-PyYAML = "^6.0.0"
 types-requests = "^2.25.11"
 syrupy = "^3.0.5"
 black = "^22.6.0"
 boto3-stubs = {extras = ["s3"], version = "^1.24.44"}
-flake8-tidy-imports = "^4.8.0"
 types-urllib3 = "^1.26.23"
-isort = "5.10.1"
 types-dj-database-url = "^1.0.0"
+mypy = "^0.991"
 
 [tool.black]
 exclude = '''
@@ -65,12 +59,50 @@ exclude = '''
 )/
 '''
 
-[tool.isort]
-profile = "black"
-src_paths = ["recipeyak"]
-known_third_party = ["django"]
-known_first_party = ["recipeyak"]
-skip_gitignore = true
+[tool.ruff]
+select = [
+    "E",
+    "F",
+    "TID252",
+    "I001",
+    "T20",
+    "C4",
+    "UP",
+    "N",
+    "BLE",
+    "B",
+    "RET",
+    "SIM",
+    "ARG",
+    "DTZ",
+    "ERA",
+    "RUF",
+]
+src = ["recipeyak"]
+ignore = [
+    "E501", # line length is handled by black
+    "ARG001", # pytest fixtures mess with this
+    "ARG002", # sometimes parent classes require params
+    "N806", # django migrations violate this a lot
+    "B008", # type.Argument violates this
+    "N815", # we mix and match casing in serializers
+    "ARG005", # monkey patching false positive with *args, and **kwargs
+    "N805", # false positive with pydantic
+    "N802", # DRF serializers mess with this
+    "RET505", # if, elif, else are fine with returns
+    "RET507", # if, elif, else with continue is also fine
+    "RET508", # if, elif, else with break is also fine
+]
+update-check = false
+target-version = "py311"
+
+[tool.ruff.isort]
+known-third-party = ["django"]
+known-first-party = ["recipeyak"]
+
+[tool.ruff.flake8-tidy-imports]
+# Disallow all relative imports.
+ban-relative-imports = "all"
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "recipeyak.django.settings"

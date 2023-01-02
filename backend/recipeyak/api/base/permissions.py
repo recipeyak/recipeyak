@@ -1,4 +1,4 @@
-from typing import Any, Union, cast
+from typing import Any, cast
 
 from django.shortcuts import get_object_or_404
 from rest_framework import permissions
@@ -19,7 +19,7 @@ class DisallowAny:
         return False
 
 
-class IsTeamMember(permissions.BasePermission):
+class IsTeamMember(permissions.BasePermission):  # type: ignore[misc]
     def has_permission(self, request: Any, view: Any) -> bool:
         team_pk = view.kwargs["team_pk"]
         team: Team = get_object_or_404(Team, pk=team_pk)
@@ -27,7 +27,7 @@ class IsTeamMember(permissions.BasePermission):
 
 
 def has_recipe_access(*, user: User, recipe: Recipe) -> bool:
-    recipe_owner = cast(Union[User, Team], recipe.owner)
+    recipe_owner = cast(User | Team, recipe.owner)
     return (
         cast(bool, recipe.owner == user)
         if isinstance(recipe_owner, User)

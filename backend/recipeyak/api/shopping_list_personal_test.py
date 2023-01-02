@@ -27,7 +27,7 @@ def test_fetching_shoppinglist(
     client.force_authenticate(user)
     start = date(1976, 7, 6)
     end = start + timedelta(days=1)
-    params = dict(start=start, end=end)
+    params = {"start": start, "end": end}
 
     res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
     assert res.status_code == status.HTTP_200_OK
@@ -67,7 +67,7 @@ def test_fetching_shoppinglist_with_team_recipe(
 
     start = date(1976, 7, 6)
     end = start + timedelta(days=1)
-    params = dict(start=start, end=end)
+    params = {"start": start, "end": end}
 
     res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
     assert res.status_code == status.HTTP_200_OK
@@ -123,7 +123,7 @@ def test_scheduling_multiple_times_some_ingredient(
     recipe.schedule(user=user, on=start, team=team)
 
     end = start + timedelta(days=1)
-    params = dict(start=start, end=end)
+    params = {"start": start, "end": end}
     client.force_authenticate(user)
     res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
     assert res.status_code == status.HTTP_200_OK
@@ -348,7 +348,7 @@ def test_combining_feta(
     empty_recipe.schedule(user=user, on=start, team=team)
 
     end = start + timedelta(days=1)
-    params = dict(start=start, end=end)
+    params = {"start": start, "end": end}
     client.force_authenticate(user)
     res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
     assert res.status_code == status.HTTP_200_OK

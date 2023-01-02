@@ -5,12 +5,12 @@ from typing import TYPE_CHECKING
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 
-from recipeyak.models.ingredient import Ingredient  # noqa: F401
+from recipeyak.models.ingredient import Ingredient
 from recipeyak.models.invite import Invite  # noqa: F401
 from recipeyak.models.membership import Membership, get_random_ical_id  # noqa: F401
 from recipeyak.models.note import Note
-from recipeyak.models.reaction import Reaction  # noqa: F401
-from recipeyak.models.recipe import Recipe  # noqa: F401
+from recipeyak.models.reaction import Reaction
+from recipeyak.models.recipe import Recipe
 from recipeyak.models.recipe_change import ChangeType, RecipeChange  # noqa: F401
 from recipeyak.models.recipe_view import RecipeView  # noqa: F401
 from recipeyak.models.schedule_event import ScheduleEvent  # noqa: F401
@@ -18,11 +18,11 @@ from recipeyak.models.scheduled_recipe import ScheduledRecipe  # noqa: F401
 from recipeyak.models.scrape import Scrape  # noqa: F401
 from recipeyak.models.section import Section  # noqa: F401
 from recipeyak.models.shopping_list import ShoppingList  # noqa: F401
-from recipeyak.models.step import Step  # noqa: F401
-from recipeyak.models.team import Team  # noqa: F401
+from recipeyak.models.step import Step
+from recipeyak.models.team import Team
 from recipeyak.models.timeline_event import TimelineEvent  # noqa: F401
 from recipeyak.models.upload import Upload  # noqa: F401
-from recipeyak.models.user import User  # noqa: F401
+from recipeyak.models.user import User
 
 if TYPE_CHECKING:
     from recipeyak.api.base.request import AuthedRequest

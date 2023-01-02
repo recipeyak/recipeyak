@@ -104,7 +104,7 @@ class Unit(str, Enum):
             return BaseUnit.NONE
         if self == Unit.UNKNOWN:
             return BaseUnit.UNKNOWN
-        raise UnhandledCase(case=self)
+        raise UnhandledCaseError(case=self)
 
     def __lt__(self, other: Unit) -> bool:  # type: ignore[override]
         if self in VOLUME:
@@ -186,14 +186,14 @@ class Quantity:
             return self
         if self.unit.base_unit() == other.unit.base_unit():
             if self.unit == Unit.UNKNOWN:
-                raise IncompatibleUnit(units=(self.unit, other.unit))
+                raise IncompatibleUnitError(units=(self.unit, other.unit))
             unit_lookup = VOLUME if self.unit in VOLUME else MASS
             smallest_unit = self.unit if self.unit < other.unit else other.unit
             quantity = self.to_base_unit().quantity + other.to_base_unit().quantity
             return Quantity(
                 quantity=quantity / unit_lookup[smallest_unit], unit=smallest_unit
             )
-        raise IncompatibleUnit(units=(self.unit, other.unit))
+        raise IncompatibleUnitError(units=(self.unit, other.unit))
 
     def __str__(self) -> str:
         if self.unit == Unit.SOME:
@@ -249,12 +249,12 @@ def _parse_quantity(val: str) -> Quantity:
 
 
 @dataclass
-class UnhandledCase(Exception):
+class UnhandledCaseError(Exception):
     case: "Unit"
 
 
 @dataclass
-class IncompatibleUnit(Exception):
+class IncompatibleUnitError(Exception):
     units: tuple["Unit", "Unit"]
 
 

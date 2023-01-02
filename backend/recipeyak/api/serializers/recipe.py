@@ -128,15 +128,15 @@ class RecipeSerializer(BaseModelSerializer):
         ]
 
         items += [
-            dict(
-                type="recipe",
-                id=x.id,
-                action=x.action,
-                created_by=PublicUserSerializer(x.created_by).data
+            {
+                "type": "recipe",
+                "id": x.id,
+                "action": x.action,
+                "created_by": PublicUserSerializer(x.created_by).data
                 if x.created_by
                 else None,
-                created=x.created,
-            )
+                "created": x.created,
+            }
             for x in cast(Any, obj).timelineevent_set.all()
             if x.action not in IGNORED_TIMELINE_EVENTS
         ]

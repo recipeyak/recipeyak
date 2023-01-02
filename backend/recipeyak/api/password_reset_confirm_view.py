@@ -16,7 +16,7 @@ from recipeyak.models.user import User
 
 if TYPE_CHECKING:
 
-    class default_token_generator:
+    class default_token_generator:  # noqa: N801
         @staticmethod
         def make_token(user: User) -> str:
             ...
