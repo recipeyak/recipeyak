@@ -8,15 +8,15 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import RequestParams, StrTrimmed
 from recipeyak.api.serializers.recipe import ingredient_to_text, serialize_ingredient
 from recipeyak.models import ChangeType, RecipeChange, filter_ingredients, get_team
 
 
 class IngredientsPatchParams(RequestParams):
-    quantity: str | None = None
-    name: str | None = None
-    description: str | None = None
+    quantity: StrTrimmed | None = None
+    name: StrTrimmed | None = None
+    description: StrTrimmed | None = None
     position: str | None = None
     optional: bool | None = None
 

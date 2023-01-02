@@ -14,7 +14,7 @@ from rest_framework.response import Response
 
 from recipeyak import ordering
 from recipeyak.api.base.request import AuthedRequest
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import RequestParams, StrTrimmed
 from recipeyak.api.serializers.recipe import (
     IGNORED_TIMELINE_EVENTS,
     RecipeSerializer,
@@ -199,8 +199,8 @@ def recipe_get_view(request: AuthedRequest) -> Response:
 
 class RecipePostParams(RequestParams):
     team: str
-    from_url: str | None = None
-    name: str | None = None
+    from_url: StrTrimmed | None = None
+    name: StrTrimmed | None = None
 
 
 def normalize_title(title: str | None) -> str | None:

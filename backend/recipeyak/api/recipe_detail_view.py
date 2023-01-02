@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import RequestParams, StrTrimmed
 from recipeyak.api.serializers.recipe import RecipeSerializer
 from recipeyak.models import (
     ChangeType,
@@ -53,12 +53,12 @@ def recipe_get_view(request: AuthedRequest, recipe_pk: str) -> Response:
 
 
 class RecipePatchParams(RequestParams):
-    name: str | None = None
-    author: str | None = None
-    time: str | None = None
-    tags: list[str] | None = None
-    servings: str | None = None
-    source: str | None = None
+    name: StrTrimmed | None = None
+    author: StrTrimmed | None = None
+    time: StrTrimmed | None = None
+    tags: list[StrTrimmed] | None = None
+    servings: StrTrimmed | None = None
+    source: StrTrimmed | None = None
     archived_at: datetime | None = None
 
     # attributes requiring custom handling.
