@@ -40,6 +40,8 @@ def test_recipe_field_trimming(client: APIClient, user: User, team: Team) -> Non
     Trim excess whitespace
     """
     client.force_authenticate(user)
+    user.schedule_team = team
+    user.save()
     payload = dict(
         name="   Chocolate Cake   ",
         team=team.pk,
@@ -69,12 +71,17 @@ def test_recipe_field_trimming(client: APIClient, user: User, team: Team) -> Non
 
 
 def test_ingredient_field_trimming(
-    client: APIClient, user: User, recipe: Recipe
+    client: APIClient, user: User, team: Team, recipe: Recipe
 ) -> None:
     """
     Trim excess whitespace
     """
     client.force_authenticate(user)
+    user.schedule_team = team
+    user.save()
+    recipe.team = team
+    recipe.save()
+
     payload = dict(
         quantity="",
         name=" tomato ",
@@ -96,11 +103,18 @@ def test_ingredient_field_trimming(
     assert res.json()["description"] == "chopped"
 
 
-def test_step_field_trimming(client: APIClient, user: User, recipe: Recipe) -> None:
+def test_step_field_trimming(
+    client: APIClient, user: User, team: Team, recipe: Recipe
+) -> None:
     """
     Trim excess whitespace
     """
     client.force_authenticate(user)
+    user.schedule_team = team
+    user.save()
+    recipe.team = team
+    recipe.save()
+
     payload = dict(
         text=" some test here  ",
         position="$",
