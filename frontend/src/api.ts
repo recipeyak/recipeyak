@@ -255,8 +255,26 @@ export const getRecipeTimeline = (id: IRecipe["id"]) =>
 export const deleteRecipe = (id: IRecipe["id"]) =>
   http.delete(`/api/v1/recipes/${id}/`)
 
+export type RecipeListItem = {
+  readonly id: number
+  readonly name: string
+  readonly author: string | null
+  readonly tags: readonly string[] | null
+  readonly ingredients: readonly {
+    id: number
+    quantity: string
+    name: string
+  }[]
+  readonly archived_at: string | null
+  readonly primaryImage: {
+    id: string
+    url: string
+    backgroundUrl: string | null
+  } | null
+}
+
 export const getRecipeList = () => {
-  return http.get<IRecipe[]>("/api/v1/recipes/")
+  return http.get<RecipeListItem[]>("/api/v1/recipes/")
 }
 
 export const addIngredientToRecipe = (
