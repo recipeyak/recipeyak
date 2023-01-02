@@ -1,7 +1,7 @@
 import { useDrag } from "react-dnd"
 import { Link } from "react-router-dom"
 
-import { IRecipe } from "@/api"
+import { RecipeListItem as TRecipeListItem } from "@/api"
 import { classNames } from "@/classnames"
 import { DragIcon } from "@/components/icons"
 import { Image } from "@/components/Image"
@@ -53,7 +53,7 @@ type IRecipeItemProps = {
   readonly url?: string
   readonly drag?: boolean
   readonly match: Match[]
-} & IRecipe
+} & TRecipeListItem
 
 function RecipeListItem({
   name,
@@ -64,7 +64,7 @@ function RecipeListItem({
 }: {
   readonly url?: string
   readonly match: Match[]
-} & IRecipe) {
+} & TRecipeListItem) {
   const url = props.url || recipeURL(id, name)
 
   const ingredientMatch = matches.find((x) => x.kind === "ingredient")

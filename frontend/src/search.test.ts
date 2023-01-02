@@ -1,21 +1,25 @@
-import { IIngredient, IRecipe } from "@/api"
+import { IIngredient, RecipeListItem } from "@/api"
 import { queryMatchesRecipe } from "@/search"
 
-function createRecipe(properties?: Partial<IRecipe>): IRecipe {
+function createRecipe(properties: {
+  id?: number
+  author?: RecipeListItem["author"]
+  name?: RecipeListItem["name"]
+  tags?: string[]
+  ingredients?: {
+    id: number
+    quantity: string
+    name: string
+  }[]
+}): RecipeListItem {
   return {
     id: 150,
     name: "",
     author: "",
-    source: "",
-    time: "",
-    servings: "",
-    steps: [],
-    modified: "",
-    ingredients: [],
-    sections: [],
-    timelineItems: [],
-    created: "",
+    tags: [],
     archived_at: null,
+    ingredients: [],
+    primaryImage: null,
     ...properties,
   }
 }

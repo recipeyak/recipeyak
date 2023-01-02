@@ -1,4 +1,4 @@
-import { IRecipe } from "@/api"
+import { RecipeListItem } from "@/api"
 import { assertNever } from "@/assert"
 import { parseQuery, QueryNode } from "@/query-parser"
 import { byNameAlphabetical } from "@/sorters"
@@ -20,7 +20,7 @@ export type Match = {
 }
 
 /** Sort archived recipes last, then sort alphabetically */
-function sortArchivedName(a: IRecipe, b: IRecipe) {
+function sortArchivedName(a: RecipeListItem, b: RecipeListItem) {
   if (a.archived_at && !b.archived_at) {
     return 1
   }
@@ -30,7 +30,7 @@ function sortArchivedName(a: IRecipe, b: IRecipe) {
   return byNameAlphabetical(a, b)
 }
 
-function evalField(node: QueryNode, recipe: IRecipe): Match[] | null {
+function evalField(node: QueryNode, recipe: RecipeListItem): Match[] | null {
   switch (node.field) {
     case "author": {
       const res = normalizedIncludes(recipe.author ?? "", node.value)
@@ -93,7 +93,7 @@ function evalField(node: QueryNode, recipe: IRecipe): Match[] | null {
 
 export function queryMatchesRecipe(
   query: QueryNode[],
-  recipe: IRecipe,
+  recipe: RecipeListItem,
 ): { match: boolean; fields: Match[] } {
   let allMatches: Match[] = []
   for (const node of query) {
@@ -111,7 +111,7 @@ export function queryMatchesRecipe(
   return { match: true, fields: allMatches }
 }
 
-function evalQuery(query: QueryNode[], recipes: IRecipe[]) {
+function evalQuery(query: QueryNode[], recipes: RecipeListItem[]) {
   return recipes
     .map((recipe) => {
       return { match: queryMatchesRecipe(query, recipe), recipe }
@@ -120,11 +120,14 @@ function evalQuery(query: QueryNode[], recipes: IRecipe[]) {
 }
 
 export function searchRecipes(params: {
-  readonly recipes: IRecipe[]
+  readonly recipes: RecipeListItem[]
   readonly query: string
   readonly includeArchived?: boolean
 }): {
-  readonly recipes: { readonly recipe: IRecipe; readonly match: Match[] }[]
+  readonly recipes: {
+    readonly recipe: RecipeListItem
+    readonly match: Match[]
+  }[]
 } {
   const query = parseQuery(params.query)
   const matchingRecipes = evalQuery(query, params.recipes)
