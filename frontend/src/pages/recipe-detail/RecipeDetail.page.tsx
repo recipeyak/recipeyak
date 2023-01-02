@@ -915,7 +915,7 @@ function formatImgOpenGraph(x: string): string {
   }
   const u = new URL(x)
   u.searchParams.set("w", "1200")
-  u.searchParams.set("h", "630")
+  u.searchParams.set("h", "910")
   u.searchParams.set("fit", "crop")
   return u.toString()
 }
