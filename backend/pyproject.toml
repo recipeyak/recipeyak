@@ -93,6 +93,7 @@ ignore = [
     "RET507", # if, elif, else with continue is also fine
     "RET508", # if, elif, else with break is also fine
 ]
+unfixable = ["ERA001"] # we want to check ourselves before we delete commented out code. Also this doesn't cleanup all of it.
 update-check = false
 target-version = "py311"
 
