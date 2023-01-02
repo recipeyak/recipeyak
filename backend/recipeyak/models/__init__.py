@@ -57,6 +57,7 @@ def filter_recipes(*, team: Team) -> QuerySet[Recipe]:
         "timelineevent_set__created_by",
         "section_set",
         "primary_image",
+        "primary_image__created_by",
     )
 
 

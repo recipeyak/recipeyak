@@ -8,6 +8,7 @@ import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
+import { Image } from "@/components/Image"
 import { Loader } from "@/components/Loader"
 import { formatHumanDate } from "@/date"
 import { useGlobalEvent } from "@/hooks"
@@ -372,44 +373,12 @@ function Meta({ title, image }: { title: string; image: string }) {
   return null
 }
 
-const HeaderImg = styled.img.attrs({ loading: "eager" })`
-  border-radius: 6px;
-  height: 100%;
-  object-fit: cover;
-  width: 100%;
+const ImageWrapper = styled.div`
   @media (min-width: 800px) {
     grid-area: 1 / 2;
   }
   @media (max-width: 799px) {
     grid-area: 2 / 1;
-  }
-  z-index: 10;
-`
-
-const HeaderImgThumbnail = styled.div<{ backgroundImage: string }>`
-  border-radius: 6px;
-  height: 100%;
-  width: 100%;
-  background-position: center;
-  background-image: url(${(props) => props.backgroundImage});
-  @media (min-width: 800px) {
-    grid-area: 1 / 2;
-  }
-  @media (max-width: 799px) {
-    grid-area: 2 / 1;
-  }
-
-  background-size: cover;
-  position: relative;
-
-  &:after {
-    position: absolute;
-    content: "";
-    height: 100%;
-    width: 100%;
-    border-radius: 6px;
-    backdrop-filter: blur(10px);
-    pointer-events: none;
   }
 `
 
@@ -859,15 +828,33 @@ function RecipeInfo(props: {
       </RecipeDetailsContainer>
       {(props.recipe.primaryImage || props.editingEnabled) && (
         <>
-          <HeaderImg
-            src={imgixFmt(props.recipe.primaryImage?.url ?? "")}
-            onClick={() => {
-              props.openImage()
-            }}
-          />
-          <HeaderImgThumbnail
-            backgroundImage={props.recipe.primaryImage?.backgroundUrl ?? ""}
-          />
+          <ImageWrapper style={{ position: "relative" }}>
+            <Image
+              sources={{
+                url: imgixFmt(props.recipe.primaryImage?.url ?? ""),
+                backgroundUrl: props.recipe.primaryImage?.backgroundUrl ?? "",
+              }}
+              rounded
+              onClick={() => {
+                props.openImage()
+              }}
+              loading="eager"
+            />
+            {props.recipe.primaryImage?.author != null && (
+              <div
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  textAlign: "right",
+                  fontSize: 12,
+                  fontWeight: 500,
+                }}
+                className="text-muted"
+              >
+                {props.recipe.primaryImage.author}
+              </div>
+            )}
+          </ImageWrapper>
           {props.editingEnabled && (
             <>
               <HeaderBgOverlay />
