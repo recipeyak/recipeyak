@@ -59,6 +59,8 @@ export function Image({
   width,
   blur,
   rounded,
+  loading,
+  onClick,
 }: {
   readonly sources:
     | {
@@ -70,13 +72,24 @@ export function Image({
   readonly height?: number
   readonly width?: number
   readonly blur?: "none"
+  readonly loading?: "eager" | "lazy"
   readonly rounded?: boolean
+  readonly onClick?: () => void
 }) {
   return (
-    <CardImgContainer height={height} width={width} rounded={rounded}>
+    <CardImgContainer
+      height={height}
+      width={width}
+      rounded={rounded}
+      onClick={onClick}
+    >
       {sources != null && (
         <>
-          <CardImg src={imgixFmt(sources.url ?? "")} rounded={rounded} />
+          <CardImg
+            src={imgixFmt(sources.url ?? "")}
+            rounded={rounded}
+            loading={loading}
+          />
           <CardImgBg
             backgroundImage={sources.backgroundUrl ?? ""}
             blur={blur}

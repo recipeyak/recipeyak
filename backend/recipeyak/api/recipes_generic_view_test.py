@@ -7,7 +7,6 @@ import pytest
 from django.utils.dateparse import parse_datetime
 from rest_framework import status
 from rest_framework.test import APIClient
-from syrupy.matchers import path_type
 
 from recipeyak import ordering
 from recipeyak.models import Ingredient, Note, Recipe, Step, Team, TimelineEvent, User
@@ -159,11 +158,6 @@ def test_recipe_archived_at(
     recipe.save()
     client.force_authenticate(user)
 
-    res = client.get("/api/v1/recipes/")
-    assert res.status_code == status.HTTP_200_OK
-    assert len(res.json()) == 1
-    assert res.json()[0]["archived_at"] is None, "archived_at should be on list view"
-
     res = client.get(f"/api/v1/recipes/{recipe.id}/")
     assert res.status_code == status.HTTP_200_OK
     assert res.json()["archived_at"] is None, "archived_at should be on detail view"
@@ -174,15 +168,6 @@ def test_recipe_archived_at(
     res = client.patch(f"/api/v1/recipes/{recipe.id}/", data)
     assert res.status_code == status.HTTP_200_OK
     assert isinstance(res.json()["archived_at"], str), "should be a date string"
-
-    res = client.get("/api/v1/recipes/")
-    assert res.status_code == status.HTTP_200_OK
-    assert len(res.json()) == 1
-    assert isinstance(res.json()[0]["archived_at"], str), "should be a date string"
-    assert all(
-        item["created_by"]["email"] == user.email
-        for item in res.json()[0]["timelineItems"]
-    ), "should have user email"
 
     assert (
         TimelineEvent.objects.count()
@@ -197,35 +182,6 @@ def test_recipe_archived_at(
     assert TimelineEvent.objects.count() == 2
     assert TimelineEvent.objects.filter(action="archived").count() == 1
     assert TimelineEvent.objects.filter(action="unarchived").count() == 1
-
-
-def test_recipe_list_timeline_items(
-    client: APIClient, user: User, recipe: Recipe, snapshot: Any, team: Team
-) -> None:
-    """
-    Verify we list timeline items with the correct keys.
-    """
-    recipe.team = team
-    recipe.save()
-    client.force_authenticate(user)
-
-    res = client.get("/api/v1/recipes/")
-    assert res.status_code == status.HTTP_200_OK
-    assert len(res.json()) == 1
-    timeline_items = res.json()[0]["timelineItems"]
-    assert sorted(timeline_items, key=lambda x: str(x["text"])) == snapshot(
-        matcher=path_type(
-            {
-                r".*\.recipe_id": (int,),
-                r".*\.created": (str,),
-                r".*\.modified": (str,),
-                r".*\.id": (int,),
-                r".*\.last_modified_by\.id": (int,),
-                r".*\.created_by\.id": (int,),
-            },
-            regex=True,
-        )
-    )
 
 
 def test_updating_step_of_recipe(

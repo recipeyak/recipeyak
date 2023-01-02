@@ -104,11 +104,17 @@ class UploadSerializer(BaseModelSerializer):
     id = serializers.CharField()
     url = serializers.CharField(source="public_url")
     backgroundUrl = serializers.CharField(source="background_url")
+    author = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Upload
-        read_only_fields = ("id", "url", "backgroundUrl")
+        read_only_fields = ("id", "url", "backgroundUrl", "author")
         fields = read_only_fields
+
+    def get_author(self, obj: Upload) -> str | None:
+        author = obj.created_by
+        assert author is not None
+        return author.name
 
 
 IGNORED_TIMELINE_EVENTS = {"set_primary_image", "remove_primary_image"}

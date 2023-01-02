@@ -108,6 +108,7 @@ export interface IRecipe {
   readonly primaryImage?: {
     id: string
     url: string
+    author?: string
     backgroundUrl: string | null
   }
   readonly created: string
@@ -267,7 +268,7 @@ export type RecipeListItem = {
   }[]
   readonly archived_at: string | null
   readonly primaryImage: {
-    id: string
+    id: number
     url: string
     backgroundUrl: string | null
   } | null
