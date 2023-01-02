@@ -5,16 +5,16 @@ main() {
   if [ "$CI" ]; then
     ./s/check_migrations
   fi
-  ./s/typecheck
-  ./.venv/bin/flake8 .
 
   if [ "$CI" ]; then
     ./.venv/bin/black . --check
-    ./.venv/bin/isort --check-only .
+    ./.venv/bin/ruff .
   else
     ./.venv/bin/black .
-    ./.venv/bin/isort .
+    ./.venv/bin/ruff . --fix
   fi
+
+  ./s/typecheck
 }
 
 main "$@"

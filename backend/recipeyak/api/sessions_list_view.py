@@ -47,6 +47,6 @@ def sessions_list_view(request: AuthedRequest) -> Response:
 
     return Response(
         SessionSerializer(
-            qs, many=True, context=dict(request=request), dangerously_allow_db=True
+            qs, many=True, context={"request": request}, dangerously_allow_db=True
         ).data
     )

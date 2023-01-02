@@ -32,7 +32,7 @@ def combine_ingredients(ingredients: Sequence[Ingredient]) -> IngredientList:
     # being kind of dynamic with the types here so not the easiest on the eyes.
     ingredient_map: dict[str, dict[BaseUnit | str | None, Quantity]] = defaultdict(dict)
 
-    plural_name: dict[str, str] = dict()
+    plural_name = dict[str, str]()
 
     for ingr in ingredients:
         normalized_name = normalize_ingredient_name(name=ingr.name)

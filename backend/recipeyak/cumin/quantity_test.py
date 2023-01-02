@@ -6,7 +6,7 @@ import pytest
 
 from recipeyak.cumin.combine import Quantity
 from recipeyak.cumin.quantity import (
-    IncompatibleUnit,
+    IncompatibleUnitError,
     IngredientResult,
     Unit,
     fraction_to_decimal,
@@ -151,7 +151,7 @@ def test_adding_quantities_with_diff_unknown_units() -> None:
     doesn't match.
     """
 
-    with pytest.raises(IncompatibleUnit):
+    with pytest.raises(IncompatibleUnitError):
         Quantity(quantity=Decimal(1), unit=Unit.UNKNOWN, unknown_unit="bag") + Quantity(
             quantity=Decimal(2), unit=Unit.UNKNOWN, unknown_unit="thing"
         )
@@ -162,7 +162,7 @@ def test_adding_incompatible_units() -> None:
     MASS and VOLUME units should raise an error on addition. We handle this
     error higher up.
     """
-    with pytest.raises(IncompatibleUnit):
+    with pytest.raises(IncompatibleUnitError):
         Quantity(quantity=Decimal(1), unit=Unit.TABLESPOON) + Quantity(
             quantity=Decimal(2), unit=Unit.GRAM
         )

@@ -42,23 +42,23 @@ def test_recipe_field_trimming(client: APIClient, user: User, team: Team) -> Non
     client.force_authenticate(user)
     user.schedule_team = team
     user.save()
-    payload = dict(
-        name="   Chocolate Cake   ",
-        team=team.pk,
-    )
+    payload = {
+        "name": "   Chocolate Cake   ",
+        "team": team.pk,
+    }
     res = client.post("/api/v1/recipes/", payload)
     assert res.status_code == 201
     assert res.json()["name"] == "Chocolate Cake"
 
-    payload = dict(
-        name="   Chocolate Cake   ",
-        author="  J. Doe    ",
-        time="  45min   ",
-        tags=["  my_tag_name  "],
-        servings="  4 servings  ",
-        source=" example.com ",
-        team=team.pk,
-    )
+    payload = {
+        "name": "   Chocolate Cake   ",
+        "author": "  J. Doe    ",
+        "time": "  45min   ",
+        "tags": ["  my_tag_name  "],
+        "servings": "  4 servings  ",
+        "source": " example.com ",
+        "team": team.pk,
+    }
     recipe_id = res.json()["id"]
     res = client.patch(f"/api/v1/recipes/{recipe_id}/", payload)
     assert res.status_code == 200
@@ -82,13 +82,13 @@ def test_ingredient_field_trimming(
     recipe.team = team
     recipe.save()
 
-    payload = dict(
-        quantity="",
-        name=" tomato ",
-        description=" chopped ",
-        position="$",
-        optional=False,
-    )
+    payload = {
+        "quantity": "",
+        "name": " tomato ",
+        "description": " chopped ",
+        "position": "$",
+        "optional": False,
+    }
     res = client.post(f"/api/v1/recipes/{recipe.pk}/ingredients/", payload)
     assert res.status_code == 201
     assert res.json()["name"] == "tomato"
@@ -115,10 +115,10 @@ def test_step_field_trimming(
     recipe.team = team
     recipe.save()
 
-    payload = dict(
-        text=" some test here  ",
-        position="$",
-    )
+    payload = {
+        "text": " some test here  ",
+        "position": "$",
+    }
     res = client.post(f"/api/v1/recipes/{recipe.pk}/steps/", payload)
     assert res.status_code == 201
     assert res.json()["text"] == "some test here"

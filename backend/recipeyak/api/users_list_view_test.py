@@ -58,11 +58,11 @@ def test_detail(client: APIClient, user: User) -> None:
         "dark_mode_enabled": True,
         "name": "John",
     }
-    for key in data.keys():
+    for key in data:
         assert original_data[key] != data[key], "we want different fields to test with"
     res = client.patch("/api/v1/user/", data)
     assert res.status_code == status.HTTP_200_OK
-    for key in data.keys():
+    for key in data:
         assert res.json()[key] == data[key], "fields should be updated"
 
 
@@ -99,7 +99,7 @@ def matches_shape(res: Response, shape: Shape) -> bool:
 
 @pytest.fixture
 def login_info() -> dict[str, str]:
-    return dict(email="john@doe.org", password="testing123")
+    return {"email": "john@doe.org", "password": "testing123"}
 
 
 @pytest.fixture

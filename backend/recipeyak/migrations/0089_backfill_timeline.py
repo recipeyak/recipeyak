@@ -14,9 +14,6 @@ def backfill(apps: Any, schema_editor: Any) -> None:
     Recipe = apps.get_model("recipeyak", "Recipe")
     TimelineEvent = apps.get_model("recipeyak", "TimelineEvent")
 
-    # user_content_type, _ = TimelineEvent.objects.using(db_alias).get_or_create(
-    #     app_label="core", model="user"
-    # )
     timeline_events = []
     for recipe in Recipe.objects.using(db_alias).all():
         timeline_events.append(

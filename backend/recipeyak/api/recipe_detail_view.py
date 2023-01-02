@@ -96,10 +96,7 @@ def recipe_patch_view(request: AuthedRequest, recipe_pk: str) -> Response:
 
     RecipeChange.objects.bulk_create(changes)
 
-    if (
-        "archived_at" in provided_fields
-        and getattr(recipe, "archived_at") != params.archived_at
-    ):
+    if "archived_at" in provided_fields and recipe.archived_at != params.archived_at:
         TimelineEvent(
             action=("archived" if params.archived_at else "unarchived"),
             created_by=request.user,
