@@ -34,7 +34,7 @@ def format_img_open_graph(x: str) -> str:
         URL(x).with_query(
             {
                 "w": "1200",
-                "h": "630",
+                "h": "910",
                 "fit": "crop",
                 "q": "30",
             }
