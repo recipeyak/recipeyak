@@ -8,14 +8,14 @@ from rest_framework.response import Response
 
 from recipeyak import ordering
 from recipeyak.api.base.request import AuthedRequest
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import RequestParams, StrTrimmed
 from recipeyak.api.serializers.recipe import serialize_step
 from recipeyak.models import ChangeType, RecipeChange, Step, filter_recipes, get_team
 
 
 class StepCreateParams(RequestParams):
-    text: str
-    position: str | None = None
+    text: StrTrimmed
+    position: StrTrimmed | None = None
 
 
 @api_view(["POST"])

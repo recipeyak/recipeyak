@@ -8,7 +8,7 @@ from rest_framework.response import Response
 
 from recipeyak import ordering
 from recipeyak.api.base.request import AuthedRequest
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import RequestParams, StrTrimmed
 from recipeyak.api.serializers.recipe import ingredient_to_text, serialize_ingredient
 from recipeyak.models import (
     ChangeType,
@@ -20,9 +20,9 @@ from recipeyak.models import (
 
 
 class IngredientCreateParams(RequestParams):
-    quantity: str
-    name: str
-    description: str
+    quantity: StrTrimmed
+    name: StrTrimmed
+    description: StrTrimmed
     position: str | None = None
     optional: bool | None = None
 
