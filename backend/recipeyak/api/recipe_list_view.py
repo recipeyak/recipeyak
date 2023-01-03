@@ -67,7 +67,7 @@ def recipe_get_view(request: AuthedRequest) -> Response:
         )
     ):
         ingredients = list[RecipeListItemIngredient]()
-        for ingre in recipe.ingredients:
+        for ingre in recipe.ingredient_set.all():
             ingredients.append(
                 RecipeListItemIngredient(
                     id=ingre.id, quantity=ingre.quantity, name=ingre.name

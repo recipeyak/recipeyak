@@ -48,7 +48,10 @@ class ScheduledRecipeCreateParams(RequestParams):
 def get_scheduled_recipes(team_pk: int) -> QuerySet[ScheduledRecipe]:
     team = get_object_or_404(Team, pk=team_pk)
     return ScheduledRecipe.objects.filter(team=team).select_related(
-        "recipe", "created_by", "recipe__primary_image"
+        "recipe",
+        "created_by",
+        "recipe__primary_image",
+        "recipe__primary_image__created_by",
     )
 
 
