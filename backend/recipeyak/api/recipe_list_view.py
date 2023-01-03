@@ -5,7 +5,7 @@ from datetime import datetime
 
 import advocate
 from django.core.exceptions import ValidationError
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import MethodNotAllowed
@@ -42,17 +42,22 @@ class RecipeListItemIngredient(BaseModel):
 class RecipeListItemPrimaryImage(BaseModel):
     id: int
     url: str
-    backgroundUrl: str | None
+    backgroundUrl: str | None = Field(...)
 
 
 class RecipeListItem(BaseModel):
     id: int
     name: str
-    author: str | None
-    tags: list[str] | None
+    # This odd syntax is required by pydantic
+    # see: https://docs.pydantic.dev/usage/models/#required-optional-fields
+    # Until V2 is released:
+    # see: https://github.com/pydantic/pydantic/issues/4887
+    # see: https://docs.pydantic.dev/blog/pydantic-v2/#required-vs-nullable-cleanup
+    author: str | None = Field(...)
+    tags: list[str] | None = Field(...)
     ingredients: list[RecipeListItemIngredient]
-    archived_at: datetime | None
-    primaryImage: RecipeListItemPrimaryImage | None
+    archived_at: datetime | None = Field(...)
+    primaryImage: RecipeListItemPrimaryImage | None = Field(...)
 
 
 def recipe_get_view(request: AuthedRequest) -> Response:
@@ -76,7 +81,9 @@ def recipe_get_view(request: AuthedRequest) -> Response:
 
         primary_image = (
             RecipeListItemPrimaryImage(
-                id=recipe.primary_image.id, url=recipe.primary_image.public_url()
+                id=recipe.primary_image.id,
+                url=recipe.primary_image.public_url(),
+                backgroundUrl=recipe.primary_image.background_url,
             )
             if recipe.primary_image is not None
             else None
@@ -86,6 +93,7 @@ def recipe_get_view(request: AuthedRequest) -> Response:
             RecipeListItem(
                 id=recipe.id,
                 name=recipe.name,
+                author=recipe.author,
                 tags=recipe.tags,
                 ingredients=ingredients,
                 archived_at=recipe.archived_at,
