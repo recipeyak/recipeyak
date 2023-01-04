@@ -195,6 +195,7 @@ type Recipe = {
   readonly id: number | string
   readonly name: string
   readonly author: string | null
+  readonly archivedAt: string | null
   readonly primaryImage: {
     id: number | string
     url: string
@@ -230,6 +231,7 @@ function buildSchedule(
       id: x.recipe.id,
       name: x.recipe.name,
       author: x.recipe.author,
+      archivedAt: x.recipe.archivedAt,
       primaryImage: x.recipe.primaryImage,
     })
   })
@@ -254,6 +256,7 @@ function useSchedulePreview() {
         id: scheduledRecipe.recipe.id.toString(),
         name: scheduledRecipe.recipe.name,
         author: scheduledRecipe.recipe.author,
+        archivedAt: scheduledRecipe.recipe.archivedAt,
         primaryImage: scheduledRecipe.recipe.primaryImage,
       },
     })),
@@ -287,6 +290,7 @@ function RecipeSlide({ recipe: r }: { recipe: Recipe }) {
         <Image
           width={48}
           height={48}
+          grayscale={!!r.archivedAt}
           sources={
             r.primaryImage && {
               url: imgixFmt(r.primaryImage.url),

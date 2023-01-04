@@ -17,6 +17,7 @@ def get_recently_created_recipes(request: AuthedRequest) -> Response:
             "id": r.id,
             "name": r.name,
             "author": r.author,
+            "archivedAt": r.archived_at,
             "primaryImage": {
                 "id": r.primary_image.id,
                 "url": r.primary_image.public_url(),

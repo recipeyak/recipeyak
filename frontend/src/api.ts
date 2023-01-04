@@ -605,6 +605,7 @@ export function getCalendarRecipeListRequestBuilder({
             id: t.number,
             name: t.string,
             author: t.union([t.string, t.null]),
+            archivedAt: t.union([t.string, t.null]),
             primaryImage: t.union([
               t.type({
                 id: t.string,
@@ -657,6 +658,7 @@ export function recentlyViewedRecipes() {
         id: t.number,
         name: t.string,
         author: t.union([t.string, t.null]),
+        archivedAt: t.union([t.string, t.null]),
         primaryImage: t.union([
           t.type({
             id: t.number,
@@ -679,6 +681,7 @@ export function recentlyCreatedRecipes() {
         id: t.number,
         name: t.string,
         author: t.union([t.string, t.null]),
+        archivedAt: t.union([t.string, t.null]),
         primaryImage: t.union([
           t.type({
             id: t.number,
