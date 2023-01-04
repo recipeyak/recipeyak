@@ -56,7 +56,9 @@ def get_scheduled_recipes(team_pk: int) -> QuerySet[ScheduledRecipe]:
 
 
 class ScheduledRecipeSerializer(BaseModelSerializer):
-    recipe = RecipeSerializer(fields=("id", "name", "author", "primaryImage"))
+    recipe = RecipeSerializer(
+        fields=("id", "name", "author", "primaryImage", "archivedAt")
+    )
     createdBy = serializers.SerializerMethodField()
 
     class Meta:

@@ -16,12 +16,16 @@ const CardImgContainer = styled.div<{
   position: relative;
 `
 
-const CardImg = styled.img<{ rounded: boolean | undefined }>`
+const CardImg = styled.img<{
+  rounded: boolean | undefined
+  grayscale: boolean | undefined
+}>`
   height: 100%;
   width: 100%;
   ${(p) => p.rounded && `border-radius: 6px;`}
   object-fit: cover;
   position: absolute;
+  ${(p) => p.grayscale && `filter: grayscale(100%);`}
   z-index: 1;
 `
 
@@ -29,6 +33,7 @@ const CardImgBg = styled.div<{
   backgroundImage: string
   blur: "none" | undefined
   rounded: boolean | undefined
+  grayscale: boolean | undefined
 }>`
   height: 100%;
   width: 100%;
@@ -39,6 +44,7 @@ const CardImgBg = styled.div<{
   background-size: cover;
 
   ${(p) => p.rounded && `border-radius: 6px;`}
+  ${(p) => p.grayscale && `filter: grayscale(100%);`}
 
   ${(p) =>
     p.blur !== "none" &&
@@ -59,6 +65,7 @@ export function Image({
   width,
   blur,
   rounded,
+  grayscale,
   loading,
   onClick,
 }: {
@@ -72,6 +79,7 @@ export function Image({
   readonly height?: number
   readonly width?: number
   readonly blur?: "none"
+  readonly grayscale?: boolean
   readonly loading?: "eager" | "lazy"
   readonly rounded?: boolean
   readonly onClick?: () => void
@@ -88,11 +96,13 @@ export function Image({
           <CardImg
             src={imgixFmt(sources.url ?? "")}
             rounded={rounded}
+            grayscale={grayscale}
             loading={loading}
           />
           <CardImgBg
             backgroundImage={sources.backgroundUrl ?? ""}
             blur={blur}
+            grayscale={grayscale}
             rounded={rounded}
           />
         </>

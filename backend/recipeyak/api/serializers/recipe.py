@@ -124,6 +124,7 @@ class RecipeSerializer(BaseModelSerializer):
     steps = StepSerializer(many=True, source="step_set")
     ingredients = IngredientSerializer(many=True, source="ingredient_set")
     timelineItems = serializers.SerializerMethodField(read_only=True)
+    archivedAt = serializers.DateTimeField(read_only=True, source="archived_at")
     sections = SectionSerializer(many=True, source="section_set", read_only=True)
     primaryImage = UploadSerializer(read_only=True, source="primary_image")
 
@@ -167,8 +168,9 @@ class RecipeSerializer(BaseModelSerializer):
             "archived_at",
             "tags",
             "primaryImage",
+            "archivedAt",
         )
-        read_only_fields = ("primaryImage",)
+        read_only_fields = ("primaryImage", "archivedAt")
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         # Don't pass the 'fields' arg up to the superclass

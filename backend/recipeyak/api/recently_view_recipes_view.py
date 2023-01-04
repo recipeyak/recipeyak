@@ -16,6 +16,7 @@ def get_recently_viewed_recipes(request: AuthedRequest) -> Response:
             "id": rv.recipe.id,
             "name": rv.recipe.name,
             "author": rv.recipe.author,
+            "archivedAt": rv.recipe.archived_at,
             "primaryImage": {
                 "id": rv.recipe.primary_image.id,
                 "url": rv.recipe.primary_image.public_url(),
