@@ -19,7 +19,7 @@ function CreateFromURLForm() {
       },
       {
         onSuccess: (res) => {
-          history.push(`/recipes/${res.id}?edit=1`)
+          history.push(`/recipes/${res.id}`)
         },
       },
     )

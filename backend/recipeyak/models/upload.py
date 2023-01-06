@@ -28,12 +28,15 @@ def public_url(key: str) -> str:
 class Upload(CommonInfo):
     id: int
     created_by = models.ForeignKey["User"](
-        "User", related_name="uploads", on_delete=models.PROTECT
+        "User", related_name="uploads", null=True, on_delete=models.SET_NULL
     )
     bucket = models.TextField()
     key = models.TextField()
     completed = models.BooleanField(default=False)
     background_url = models.TextField(null=True)
+    scraped_by = models.ForeignKey["User"](
+        "User", related_name="scrapes", null=True, on_delete=models.SET_NULL
+    )
 
     note = models.ForeignKey["Note"](
         "Note", related_name="uploads", null=True, on_delete=models.SET_NULL

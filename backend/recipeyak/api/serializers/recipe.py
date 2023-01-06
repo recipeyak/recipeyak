@@ -113,7 +113,8 @@ class UploadSerializer(BaseModelSerializer):
 
     def get_author(self, obj: Upload) -> str | None:
         author = obj.created_by
-        assert author is not None
+        if author is None:
+            return None
         return author.name
 
 
