@@ -28,6 +28,7 @@ from recipeyak.models import (
 )
 from recipeyak.models.recipe import Recipe
 from recipeyak.models.team import Team
+from recipeyak.models.upload import Upload
 from recipeyak.scraper import scrape_recipe
 
 logger = logging.getLogger(__name__)
@@ -130,7 +131,7 @@ def recipe_post_view(request: AuthedRequest) -> Response:
 
     if params.from_url is not None:
         try:
-            scrape_result = scrape_recipe(url=params.from_url)
+            scrape_result = scrape_recipe(url=params.from_url, user=request.user)
         except (advocate.exceptions.UnacceptableAddressException, ValidationError):
             return Response(
                 {"error": True, "message": "invalid url"},
@@ -146,7 +147,12 @@ def recipe_post_view(request: AuthedRequest) -> Response:
             servings=scrape_result.yields,
             time=scrape_result.total_time,
             source=scrape_result.canonical_url,
+            primary_image_id=scrape_result.upload_id,
         )
+        if scrape_result.upload_id is not None:
+            Upload.objects.filter(id=scrape_result.upload_id).update(
+                recipe_id=recipe.id,
+            )
 
         ingredients: list[Ingredient] = []
         position = ordering.FIRST_POSITION
