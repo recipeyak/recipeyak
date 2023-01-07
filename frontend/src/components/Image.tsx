@@ -39,7 +39,8 @@ const CardImgBg = styled.div<{
   width: 100%;
 
   position: relative;
-  background-image: url(${(props) => props.backgroundImage});
+  ${(p) => p.backgroundImage && `background-image: url(${p.backgroundImage});`}
+
   background-position: center;
   background-size: cover;
 
