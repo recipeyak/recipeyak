@@ -64,7 +64,7 @@ async def job(*, dry_run: bool) -> None:
     select id, key from core_upload
     where completed = true
       and background_url is null
-      and note_id is not null
+      and (note_id is not null or recipe_id is not null)
     limit 50;
     """
     )
