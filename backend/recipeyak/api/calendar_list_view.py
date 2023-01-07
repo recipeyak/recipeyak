@@ -52,6 +52,7 @@ def get_scheduled_recipes(team_pk: int) -> QuerySet[ScheduledRecipe]:
         "created_by",
         "recipe__primary_image",
         "recipe__primary_image__created_by",
+        "recipe__primary_image__recipe",
     )
 
 

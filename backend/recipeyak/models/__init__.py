@@ -58,6 +58,7 @@ def filter_recipes(*, team: Team) -> QuerySet[Recipe]:
         "section_set",
         "primary_image",
         "primary_image__created_by",
+        "primary_image__recipe",
     )
 
 
