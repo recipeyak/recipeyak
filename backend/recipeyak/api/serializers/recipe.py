@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import Any, Iterable, cast
 
 import pydantic
+import tldextract
 from rest_framework import serializers
 from typing_extensions import Literal
 
@@ -112,10 +113,18 @@ class UploadSerializer(BaseModelSerializer):
         fields = read_only_fields
 
     def get_author(self, obj: Upload) -> str | None:
-        author = obj.created_by
-        if author is None:
-            return None
-        return author.name
+        # added by scraper
+        if (
+            obj.created_by is None
+            and obj.recipe is not None
+            and obj.recipe.source is not None
+            and obj.recipe.source.startswith("http")
+        ):
+            return tldextract.extract(obj.recipe.source).domain
+        # added by user
+        if obj.created_by is not None:
+            return obj.created_by.name
+        return None
 
 
 IGNORED_TIMELINE_EVENTS = {"set_primary_image", "remove_primary_image"}
