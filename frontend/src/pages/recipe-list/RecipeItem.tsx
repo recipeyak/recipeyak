@@ -72,7 +72,7 @@ function RecipeListItem({
   const authorMatch = matches.find((x) => x.kind === "author")
 
   const recipeContent = (
-    <div className="h-100 p-2 pt-0">
+    <div className="h-100 p-2 pt-0 line-height-tight">
       <div tabIndex={0} className="mb-1">
         {name}
       </div>
