@@ -11,7 +11,7 @@ import RecipeItem from "@/pages/recipe-list/RecipeItem"
 import { parseIntOrNull } from "@/parseIntOrNull"
 import { useRecipeList } from "@/queries/recipeList"
 import { searchRecipes } from "@/search"
-import { setQueryParams } from "@/utils/querystring"
+import { removeQueryParams, setQueryParams } from "@/utils/querystring"
 
 interface IResultsProps {
   readonly recipes: JSX.Element[]
@@ -168,7 +168,11 @@ function RecipesListSearch({
   const history = useHistory()
 
   useEffect(() => {
-    setQueryParams(history, { search: query })
+    if (query === "") {
+      removeQueryParams(history, ["search"])
+    } else {
+      setQueryParams(history, { search: query })
+    }
   }, [query, history])
 
   const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
