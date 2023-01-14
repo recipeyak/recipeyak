@@ -91,6 +91,7 @@ def test_categorize_ingredient_test_cases(snapshot: Any) -> None:
     cloves garlic
     garlic cloves
     graham cracker crumbs
+    fennel seed
     ground ginger
     hamburger buns
     haricot vert fins or green beans

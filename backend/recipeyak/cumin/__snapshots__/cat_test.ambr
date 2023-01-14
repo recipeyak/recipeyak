@@ -221,6 +221,10 @@
       'produce',
     ),
     tuple(
+      'fennel seed',
+      'spices',
+    ),
+    tuple(
       'finely chopped cornichons or small kosher dill pickles',
       'condiments',
     ),
