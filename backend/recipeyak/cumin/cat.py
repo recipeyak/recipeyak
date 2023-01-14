@@ -387,6 +387,7 @@ DEPARTMENT_MAPPING = {
         "bay leaves",
         "miso",
         "cloves",
+        "fennel seed",
         "ground clove",
         "red chile flakes",
         "chile flakes",
