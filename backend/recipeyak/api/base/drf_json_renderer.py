@@ -1,3 +1,4 @@
+from collections.abc import ValuesView
 from decimal import Decimal
 from typing import Any
 
@@ -25,6 +26,8 @@ def default(o: object) -> Any:
         return fmt_decimal(o)
     if isinstance(o, pydantic.BaseModel):
         return o.dict()
+    if isinstance(o, ValuesView):
+        return list(o)
     raise TypeError
 
 

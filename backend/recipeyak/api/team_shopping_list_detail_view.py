@@ -1,3 +1,4 @@
+import pydantic
 from django.core.exceptions import ValidationError
 from django.db.models import QuerySet
 from rest_framework import status
@@ -30,6 +31,12 @@ def get_scheduled_recipes(
         return None
 
 
+class ShoppingListRecipe(pydantic.BaseModel):
+    scheduledRecipeId: int
+    recipeId: int
+    recipeName: str
+
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsTeamMember])
 def get_shopping_list_view(request: AuthedRequest, team_pk: int) -> Response:
@@ -37,9 +44,15 @@ def get_shopping_list_view(request: AuthedRequest, team_pk: int) -> Response:
     if scheduled_recipes is None:
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
+    recipes = dict[int, ShoppingListRecipe]()
     ingredients: list[Ingredient] = []
     for scheduled_recipe in scheduled_recipes:
         ingredients += scheduled_recipe.recipe.ingredients  # type: ignore [arg-type]
+        recipes[scheduled_recipe.recipe.id] = ShoppingListRecipe(
+            scheduledRecipeId=scheduled_recipe.id,
+            recipeId=scheduled_recipe.id,
+            recipeName=scheduled_recipe.recipe.name,
+        )
 
     ingredients = [
         Ingredient(quantity=i.quantity, name=i.name, description=i.description)
@@ -55,4 +68,11 @@ def get_shopping_list_view(request: AuthedRequest, team_pk: int) -> Response:
         ingredients=JSONRenderer().render(ingredient_mapping).decode()
     )
 
+    if request.query_params.get("with_recipes") == "1":
+        return Response(
+            {"ingredients": ingredient_mapping, "recipes": recipes.values()},
+            status=status.HTTP_200_OK,
+        )
+
+    # deprecated 2022-01-16
     return Response(ingredient_mapping, status=status.HTTP_200_OK)
