@@ -205,8 +205,17 @@ export interface IIngredientItem {
   readonly quantities: ReadonlyArray<IQuantity>
 }
 
+type GetShoppingListV2ResponseRecipe = {
+  scheduledRecipeId: number
+  recipeId: number
+  recipeName: string
+}
+
 export interface IGetShoppingListResponse {
-  readonly [_: string]: IIngredientItem | undefined
+  readonly recipes: GetShoppingListV2ResponseRecipe[]
+  readonly ingredients: {
+    readonly [_: string]: IIngredientItem | undefined
+  }
 }
 
 export const getShoppingList = (
@@ -220,6 +229,7 @@ export const getShoppingList = (
       params: {
         start: toISODateString(start),
         end: toISODateString(end),
+        with_recipes: 1,
       },
     },
   )

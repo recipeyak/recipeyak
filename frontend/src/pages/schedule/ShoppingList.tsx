@@ -7,6 +7,7 @@ import isValid from "date-fns/isValid"
 import { groupBy } from "lodash-es"
 import React, { useEffect, useRef, useState } from "react"
 import { useHistory } from "react-router"
+import { Link } from "react-router-dom"
 
 import {
   IGetShoppingListResponse,
@@ -112,7 +113,7 @@ const ShoppingListList = React.forwardRef<
 
   const items =
     props.items.isSuccess || props.items.isRefetchError
-      ? Object.entries(props.items.data)
+      ? Object.entries(props.items.data.ingredients)
       : []
 
   const groups = Object.entries(groupBy(items, (x) => x[1]?.category))
@@ -159,6 +160,50 @@ const ShoppingListList = React.forwardRef<
     </div>
   )
 })
+
+function RecipeAccordian({
+  recipes,
+}: {
+  // null when loading
+  recipes:
+    | {
+        scheduledRecipeId: number
+        recipeId: number
+        recipeName: string
+      }[]
+    | null
+}) {
+  const [show, setShow] = useState(false)
+  return (
+    <Box dir="col" space="between">
+      <Box space="between" align="center" w={100}>
+        <div className="fw-500">
+          {recipes?.length ?? "-"}{" "}
+          {recipes?.length === 1 ? "recipe" : "recipes"}
+        </div>
+        <Button
+          size="small"
+          onClick={() => {
+            setShow(!show)
+          }}
+        >
+          {show ? "hide" : "show"}
+        </Button>
+      </Box>
+      {show && (
+        <Box dir="col">
+          {recipes?.map((r) => {
+            return (
+              <Link key={r.scheduledRecipeId} to={`/recipes/${r.recipeId}`}>
+                {r.recipeName}
+              </Link>
+            )
+          })}
+        </Box>
+      )}
+    </Box>
+  )
+}
 
 function ShoppingList() {
   const ref = useRef<HTMLDivElement>(null)
@@ -211,9 +256,11 @@ function ShoppingList() {
     toast("Shopping list copied to clipboard!")
   }
 
+  const recipes = shoppingList.data?.recipes ?? null
+
   return (
-    <Box dir="col" gap={2} w={100}>
-      <Box dir="col" gap={2} w={100}>
+    <Box dir="col" gap={1} w={100}>
+      <Box dir="col" gap={1} w={100}>
         <Box gap={2} w={100} align="center">
           <DateInput
             onChange={handleSetStartDay}
@@ -227,6 +274,7 @@ function ShoppingList() {
             value={formatMonth(endDay)}
           />
         </Box>
+        <RecipeAccordian recipes={recipes} />
         <Button size="small" onClick={handleCopyToClipboard}>
           Copy to Clipboard
         </Button>
