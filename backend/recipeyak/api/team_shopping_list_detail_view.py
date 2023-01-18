@@ -50,7 +50,7 @@ def get_shopping_list_view(request: AuthedRequest, team_pk: int) -> Response:
         ingredients += scheduled_recipe.recipe.ingredients  # type: ignore [arg-type]
         recipes[scheduled_recipe.recipe.id] = ShoppingListRecipe(
             scheduledRecipeId=scheduled_recipe.id,
-            recipeId=scheduled_recipe.id,
+            recipeId=scheduled_recipe.recipe.id,
             recipeName=scheduled_recipe.recipe.name,
         )
 
