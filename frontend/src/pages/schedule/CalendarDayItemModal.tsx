@@ -195,6 +195,7 @@ export function CalendarDayItemModal({
                   </Button>
                   <Button
                     size="small"
+                    variant="primary"
                     onClick={handleSave}
                     disabled={scheduldRecipeUpdate.isLoading}
                   >
