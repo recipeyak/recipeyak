@@ -17,6 +17,7 @@ import extruct
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from recipe_scrapers import scrape_html
+from recipe_scrapers._exceptions import SchemaOrgException
 
 from recipeyak import config
 from recipeyak.models import Scrape
@@ -141,15 +142,30 @@ def scrape_recipe(*, url: str, user: User) -> ScrapeResult:
         upload.completed = True
         upload.save()
 
+    try:
+        total_time = human_time_duration(parsed.total_time() * 60)
+    except SchemaOrgException:
+        total_time = None
+
+    try:
+        yields = parsed.yields()
+    except SchemaOrgException:
+        yields = None
+
+    try:
+        author = parsed.author()
+    except AttributeError:
+        author = None
+
     scrape_result = ScrapeResult(
         canonical_url=parsed.canonical_url(),
         title=parsed.title(),
-        total_time=human_time_duration(parsed.total_time() * 60),
-        yields=parsed.yields(),
+        total_time=total_time,
+        yields=yields,
         image=image_url,
         ingredients=parsed.ingredients(),
         instructions=parsed.instructions_list(),
-        author=parsed.author(),
+        author=author,
         upload_id=upload.id if upload is not None else None,
     )
     scrape_dict = asdict(scrape_result)
