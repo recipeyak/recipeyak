@@ -297,26 +297,44 @@ workflows:
   version: 2
   test:
     jobs:
-      - squawk
-      - backend_test
-      - backend_lint
-      - frontend_test
-      - frontend_lint
-      - docker_lint
-      - shellcheck
+      # only run tests for PRs
+      - squawk:
+          filters:
+            branches:
+              ignore: master
+      - backend_test:
+          filters:
+            branches:
+              ignore: master
+      - backend_lint:
+          filters:
+            branches:
+              ignore: master
+      - frontend_test:
+          filters:
+            branches:
+              ignore: master
+      - frontend_lint:
+          filters:
+            branches:
+              ignore: master
+      - docker_lint:
+          filters:
+            branches:
+              ignore: master
+      - shellcheck:
+          filters:
+            branches:
+              ignore: master
       - build_api_container:
           context: DockerHub
-          requires:
-            - backend_test
-            - backend_lint
           filters:
             branches:
               only: master
+
+      # only run builds on master
       - build_ui_container:
           context: DockerHub
-          requires:
-            - frontend_test
-            - frontend_lint
           filters:
             branches:
               only: master
