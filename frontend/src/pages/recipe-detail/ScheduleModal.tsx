@@ -44,6 +44,12 @@ export function ScheduleModal({
 
   const teamId = useTeamId()
   const scheduleUrl = scheduleURLFromTeamID(teamId)
+  const params = new URLSearchParams(location.search)
+  params.set("search", `recipeId:${recipeId.toString()}`)
+  const openInCalendarUrl = {
+    pathname: scheduleUrl,
+    search: params.toString(),
+  }
 
   return (
     <Modal
@@ -66,7 +72,7 @@ export function ScheduleModal({
 
           <Box space="between" align="center">
             {!isMobile() ? (
-              <Link to={scheduleUrl} className="text-small">
+              <Link to={openInCalendarUrl} className="text-small">
                 open in calendar
               </Link>
             ) : (

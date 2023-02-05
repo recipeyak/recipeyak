@@ -24,7 +24,7 @@ import { useSchedulePreviewList } from "@/queries/schedulePreviewList"
 import { searchRecipes } from "@/search"
 import { css, styled } from "@/theme"
 import { scheduleURLFromTeamID } from "@/urls"
-import { setQueryParams } from "@/utils/querystring"
+import { removeQueryParams, setQueryParams } from "@/utils/querystring"
 import { imgixFmt } from "@/utils/url"
 
 const SearchInput = styled(forms.SearchInput)`
@@ -374,7 +374,12 @@ const UserHome = () => {
   })
 
   useEffect(() => {
-    setQueryParams(history, { search: searchQuery || "" })
+    const newSearchQuery = searchQuery || ""
+    if (newSearchQuery.length === 0) {
+      removeQueryParams(history, ["search"])
+    } else {
+      setQueryParams(history, { search: newSearchQuery })
+    }
   }, [searchQuery, history])
 
   const filteredRecipes = recipes.isSuccess
