@@ -5,7 +5,7 @@ import { ITeam } from "@/api"
 import cls from "@/classnames"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
-import { CheckBox, TextInput } from "@/components/Forms"
+import { CheckBox, SearchInput } from "@/components/Forms"
 import { Loader } from "@/components/Loader"
 import RecipeItem from "@/pages/recipe-list/RecipeItem"
 import { parseIntOrNull } from "@/parseIntOrNull"
@@ -181,7 +181,7 @@ function RecipesListSearch({
 
   return (
     <div className={cls(noPadding ? "" : "mw-1000px ml-auto mr-auto")}>
-      <TextInput
+      <SearchInput
         value={query}
         className={cls(noPadding ? "" : "mb-2")}
         onChange={handleQueryChange}
