@@ -343,18 +343,13 @@ workflows:
           filters:
             branches:
               only: master
-      - 'ship it?':
-          type: approval
+
+      # auto deploy
+      - deploy:
           requires:
             - build_ui_container
             - build_api_container
             - build_proxy_container
-          filters:
-            branches:
-              only: master
-      - deploy:
-          requires:
-            - 'ship it?'
           filters:
             branches:
               only: master
