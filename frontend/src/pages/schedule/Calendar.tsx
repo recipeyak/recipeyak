@@ -1,17 +1,15 @@
-import { useQueryClient } from "@tanstack/react-query"
 import { addWeeks, endOfWeek, startOfWeek, subWeeks } from "date-fns"
 import eachDayOfInterval from "date-fns/eachDayOfInterval"
 import format from "date-fns/format"
 import isValid from "date-fns/isValid"
 import parseISO from "date-fns/parseISO"
 import { chunk, first } from "lodash-es"
-import React, { useState } from "react"
+import { useState } from "react"
 import { useHistory, useLocation } from "react-router-dom"
 
 import { ICalRecipe } from "@/api"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
-import { Select } from "@/components/Forms"
 import { Modal } from "@/components/Modal"
 import { toISODateString } from "@/date"
 import CalendarDay from "@/pages/schedule/CalendarDay"
@@ -20,7 +18,6 @@ import { IconSettings } from "@/pages/schedule/IconSettings"
 import ShoppingList from "@/pages/schedule/ShoppingList"
 import { useScheduledRecipeList } from "@/queries/scheduledRecipeList"
 import { useScheduledRecipeSettingsFetch } from "@/queries/scheduledRecipeSettingsFetch"
-import { useTeamList } from "@/queries/teamList"
 import { styled } from "@/theme"
 import { removeQueryParams, setQueryParams } from "@/utils/querystring"
 
@@ -127,41 +124,14 @@ function Days({ start, end, isError, teamID, days }: IDaysProps) {
   )
 }
 
-interface ITeamSelectProps {
-  readonly onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
-  readonly value: number
-}
-
-function TeamSelect({ onChange, value }: ITeamSelectProps) {
-  const teams = useTeamList()
-  return (
-    <Select
-      onChange={onChange}
-      value={value}
-      size="small"
-      disabled={teams.isLoading}
-    >
-      {teams.isSuccess
-        ? teams.data.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.name}
-            </option>
-          ))
-        : null}
-    </Select>
-  )
-}
-
 interface INavProps {
   readonly dayTs: number
   readonly onPrev: () => void
   readonly onNext: () => void
   readonly onCurrent: () => void
-  readonly teamID: number
 }
 
-function Nav({ dayTs, teamID, onPrev, onNext, onCurrent }: INavProps) {
-  const { handleOwnerChange } = useTeamSelect()
+function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
   const [showSettings, setShowSettings] = useState(false)
   const [showShopping, setShowShopping] = useState(false)
 
@@ -177,10 +147,6 @@ function Nav({ dayTs, teamID, onPrev, onNext, onCurrent }: INavProps) {
         title="Calendar Settings"
         content={
           <Box gap={2} dir="col">
-            <Box dir="col" align="start" gap={1}>
-              <label className="fw-500">Team</label>
-              <TeamSelect value={teamID} onChange={handleOwnerChange} />
-            </Box>
             <ICalConfig settings={settings} />
           </Box>
         }
@@ -254,27 +220,6 @@ function getToday(search: string): Date {
   return new Date()
 }
 
-function useTeamSelect() {
-  const queryClient = useQueryClient()
-  const history = useHistory()
-
-  const handleOwnerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const teamID = parseInt(e.target.value, 10)
-    const url = `/t/${teamID}/schedule/`
-
-    const ending = "recipes"
-
-    const urlWithEnding = url + ending
-
-    // navTo is async so we can't count on the URL to have changed by the time we refetch the data
-    history.push(urlWithEnding)
-    // TODO: we should abstract this
-    void queryClient.invalidateQueries([teamID])
-  }
-
-  return { handleOwnerChange }
-}
-
 interface ICalendarProps {
   readonly teamID: number
 }
@@ -323,7 +268,6 @@ export function Calendar({ teamID }: ICalendarProps) {
     <Box dir="col" grow={1}>
       <Nav
         dayTs={startOfWeekMs}
-        teamID={teamID}
         onNext={nextPage}
         onPrev={prevPage}
         onCurrent={navCurrent}
