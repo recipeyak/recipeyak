@@ -486,7 +486,7 @@ const UserHome = () => {
             </SearchOptions>
           </SearchInputContainer>
         </SearchInputAligner>
-        <div className="d-flex flex-wrap justify-content-center column-gap-1rem row-gap-1rem">
+        <div className="d-flex flex-wrap justify-content-center column-gap-1rem row-gap-1rem align-items-start">
           <SchedulePreview />
           <RecentlyViewed />
           <RecentlyCreated />

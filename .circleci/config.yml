@@ -326,13 +326,13 @@ workflows:
           filters:
             branches:
               ignore: master
+
+      # only run builds on master
       - build_api_container:
           context: DockerHub
           filters:
             branches:
               only: master
-
-      # only run builds on master
       - build_ui_container:
           context: DockerHub
           filters:
