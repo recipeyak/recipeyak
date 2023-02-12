@@ -2,7 +2,7 @@
 
 $primary: $primary-color;
 
-@import "~bulma/bulma.sass";
+@import "../../bulma.sass";
 
 @import "./buttons.scss";
 @import "./inputs.scss";
@@ -12,7 +12,6 @@ $primary: $primary-color;
 @import "./ListItem.scss";
 @import "./Notification.scss";
 @import "./home.scss";
-@import "./signup-login.scss";
 @import "./Recipe.scss";
 @import "./schedule.scss";
 @import "./search.scss";
@@ -23,6 +22,13 @@ html {
   user-select: none;
   -webkit-user-select: none;
   cursor: default;
+
+  --color-background: rgb(185, 110, 52);
+  --color-text: rgb(74, 74, 74);
+
+  color: var(--color-text);
+
+  background-color: var(--color-background);
 }
 
 body {

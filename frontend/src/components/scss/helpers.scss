@@ -1,5 +1,5 @@
 @import "./variables.scss";
-@import "~bulma/sass/utilities/initial-variables.sass";
+@import "../../sass/utilities/initial-variables.sass";
 
 .d-flex {
   display: flex;
@@ -468,14 +468,6 @@
 
 .fill-white {
   fill: white;
-}
-
-.light-text-color {
-  color: lighten($text-color, 20%);
-  // needed for the dead fish
-  & > * {
-    stroke: lighten($text-color, 20%);
-  }
 }
 
 .text-underline,

@@ -14,10 +14,6 @@ $orange: rgb(255, 182, 79);
 
 $text-color: #4a4a4a;
 
-$font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen",
-  "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-  "Helvetica", "Arial", sans-serif;
-
 $primary-color: adjust-hue(tomato, 5deg);
 $primary-color-dark: darken($primary-color, 10%);
 $primary-color-shadow: transparentize($primary-color, 0.2);
