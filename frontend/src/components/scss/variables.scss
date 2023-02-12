@@ -1,8 +1,5 @@
 $border-color: #dbdbdb;
 
-$base-font-size: 16px;
-$printing-font-size: 14px;
-
 $success: rgb(99, 203, 137);
 $danger: #ff3860;
 $info: #1695a3;
@@ -19,8 +16,6 @@ $primary-color-dark: darken($primary-color, 10%);
 $primary-color-shadow: transparentize($primary-color, 0.2);
 
 $link-color: $text-color;
-
-$accent: $primary-color;
 
 $small: 630px;
 $medium: 992px;

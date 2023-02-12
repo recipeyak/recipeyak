@@ -18,7 +18,7 @@ $primary: $primary-color;
 
 html {
   height: 100%;
-  font-size: $base-font-size;
+  font-size: 16px;
   user-select: none;
   -webkit-user-select: none;
   cursor: default;
@@ -178,7 +178,7 @@ a {
   }
 
   html {
-    font-size: $printing-font-size;
+    font-size: 14px;
   }
 
   a,
