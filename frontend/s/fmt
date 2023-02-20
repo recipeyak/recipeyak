@@ -1,1 +1,1 @@
-node_modules/.bin/prettier '**/*.{js,jsx,scss,sass,css,ts,tsx,json,yaml,yml,md}' --write --cache
+node_modules/.bin/prettier '**/*.{js,jsx,scss,css,ts,tsx,json,yaml,yml,md}' --write --cache

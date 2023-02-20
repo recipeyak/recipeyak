@@ -1,5 +1,4 @@
 @import "./variables.scss";
-@import "../../sass/utilities/initial-variables.sass";
 
 .d-flex {
   display: flex;
@@ -269,10 +268,6 @@
   white-space: nowrap;
 }
 
-.c-danger {
-  color: $danger;
-}
-
 .blurred-filter::after {
   content: "";
   position: absolute;
@@ -419,14 +414,6 @@
   cursor: default;
 }
 
-.bg-whitesmoke {
-  background-color: whitesmoke;
-}
-
-.bg-white {
-  background-color: white;
-}
-
 .bg-highlight {
   animation: bg-highlighted-fade 3s;
   animation-timing-function: ease-out;
@@ -462,14 +449,6 @@
   box-shadow: 0 2px 15px rgba(10, 10, 10, 0.17), 0 0 0 1px rgba(10, 10, 10, 0.1);
 }
 
-.fill-text-color {
-  fill: $text-color;
-}
-
-.fill-white {
-  fill: white;
-}
-
 .text-underline,
 .text-decoration-underline {
   text-decoration: underline;
@@ -480,11 +459,7 @@
 }
 
 .bg-primary {
-  background-color: $primary-color !important;
-}
-
-.bg-primary-shadow {
-  background-color: $primary-color-shadow !important;
+  background-color: var(--color-primary) !important;
 }
 
 .color-white {
@@ -492,7 +467,11 @@
 }
 
 .bg-50-50-primary {
-  background: linear-gradient(to bottom, white 50%, $primary-color 50%);
+  background: linear-gradient(
+    to bottom,
+    var(--color-background) 50%,
+    var(--color-primary) 50%
+  );
 }
 
 .filter-saturate-140 {
@@ -557,7 +536,7 @@
 }
 
 .text-muted {
-  color: $grey;
+  color: var(--color-text-muted);
 }
 
 .z-index-100 {

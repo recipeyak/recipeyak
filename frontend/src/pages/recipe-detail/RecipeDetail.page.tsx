@@ -284,7 +284,7 @@ function RecipeDetails({
 }
 
 const ArchiveMessage = styled.div`
-  background: whitesmoke;
+  background: var(--color-background-card);
   font-weight: bold;
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
@@ -604,7 +604,7 @@ const HeaderImgOverlay = styled.div`
 `
 
 const HeaderImgUploader = styled.div`
-  background: white;
+  background: var(--color-background-card);
   opacity: 1 !important;
   padding: 0.5rem;
   border-radius: 3px;

@@ -37,7 +37,6 @@ body
   line-height: 1.5
 
 // Inline
-
 a
   color: $link
   cursor: pointer
@@ -45,13 +44,6 @@ a
   transition: none $speed $easing
   &:hover
     color: $link-hover
-
-code
-  background-color: $code-background
-  color: $code
-  font-size: 0.8em
-  font-weight: normal
-  padding: 0.25em 0.5em 0.25em
 
 hr
   background-color: $border
@@ -76,31 +68,12 @@ span
   font-weight: inherit
 
 strong
-  color: $text-strong
   font-weight: $weight-bold
 
 // Block
-
-pre
-  background-color: $pre-background
-  color: $pre
-  font-size: 0.8em
-  white-space: pre
-  word-wrap: normal
-  code
-    +overflow-touch
-    background: none
-    color: inherit
-    display: block
-    font-size: 1em
-    overflow-x: auto
-    padding: 1.25rem 1.5rem
-
 table
   width: 100%
   td,
   th
     text-align: left
     vertical-align: top
-  th
-    color: $text-strong

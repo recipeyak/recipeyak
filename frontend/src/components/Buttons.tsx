@@ -8,6 +8,7 @@ interface IButtonProps {
   readonly loading?: boolean
   readonly size?: "small" | "normal"
   readonly active?: boolean
+  readonly style?: React.CSSProperties
   readonly className?: string
   readonly children: React.ReactNode
   readonly variant?: "primary" | "danger" | "secondary" | "link"

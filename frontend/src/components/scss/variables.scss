@@ -1,21 +1,4 @@
-$border-color: #dbdbdb;
-
 $success: rgb(99, 203, 137);
-$danger: #ff3860;
-$info: #1695a3;
-$warning: #eb7f00;
-
-$blue: #316fea;
-$gray: #ddd;
-$orange: rgb(255, 182, 79);
-
-$text-color: #4a4a4a;
-
-$primary-color: adjust-hue(tomato, 5deg);
-$primary-color-dark: darken($primary-color, 10%);
-$primary-color-shadow: transparentize($primary-color, 0.2);
-
-$link-color: $text-color;
 
 $small: 630px;
 $medium: 992px;

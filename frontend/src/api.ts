@@ -239,7 +239,7 @@ export const getSessions = () =>
   http.get<ReadonlyArray<ISession>>("/api/v1/sessions/")
 export const deleteAllSessions = () => http.delete("/api/v1/sessions/")
 export const deleteSessionById = (id: ISession["id"]) =>
-  http.delete(`/api/v1/sessions/${id}`)
+  http.delete(`/api/v1/sessions/${id}/`)
 
 export const createRecipe = (
   recipe:

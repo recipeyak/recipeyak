@@ -12,7 +12,7 @@ const CardImgContainer = styled.div<{
 
   ${(p) => p.rounded && `border-radius: 6px;`}
 
-  background-color: rgb(237, 237, 237);
+  background-color: var(--color-background-empty-image);
   position: relative;
 `
 

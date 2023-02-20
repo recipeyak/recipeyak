@@ -1,4 +1,7 @@
+import { useState } from "react"
+
 import { ISession } from "@/api"
+import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Loader } from "@/components/Loader"
 import { formatDistanceToNow } from "@/date"
@@ -54,36 +57,43 @@ interface IDeviceNameProps {
 }
 
 function DeviceName({ device }: IDeviceNameProps) {
-  return <p>{getDeviceName(device)}</p>
+  return <div>{getDeviceName(device)}</div>
 }
 
 function Session(props: ISession) {
   const lastActivity = formatDistanceToNow(new Date(props.last_activity))
   const sessionDelete = useSessionDelete()
   return (
-    <li className="mb-2">
-      <section className="d-flex">
-        <strong className="mr-2">{props.ip}</strong>
-        <Button
-          size="small"
-          onClick={() => {
-            sessionDelete.mutate({ sessionId: props.id })
-          }}
-          loading={sessionDelete.isLoading}
-        >
-          Logout
-        </Button>
-      </section>
-      <DeviceName device={props.device} />
-      <p>Last used: {lastActivity}</p>
-      {props.current ? <span className="has-text-success">Current</span> : null}
-    </li>
+    <Box dir="row" align="center" space="between">
+      <Box dir="col">
+        <div className="mr-2">{props.ip}</div>
+        <DeviceName device={props.device} />
+        <Box gap={2}>
+          <div>Last used: {lastActivity}</div>
+          {props.current ? (
+            <span className="has-text-success fw-500">Current</span>
+          ) : null}
+        </Box>
+      </Box>
+
+      <Button
+        size="small"
+        onClick={() => {
+          sessionDelete.mutate({ sessionId: props.id })
+        }}
+        loading={sessionDelete.isLoading}
+      >
+        Logout
+      </Button>
+    </Box>
   )
 }
 
 function SessionList() {
   const sessions = useSessionList()
   const sessonsDeleteAll = useSessionDeleteAll()
+  const [showAll, setShowAll] = useState(false)
+  const preview = 5
 
   if (sessions.isLoading) {
     return <Loader />
@@ -92,13 +102,24 @@ function SessionList() {
   if (sessions.isError) {
     return <p className="text-muted">Failure fetching sessions</p>
   }
+
   return (
-    <>
-      <ul>
-        {sessions.data.map((s) => (
+    <Box dir="col" align="start" gap={2}>
+      <Box dir="col" gap={3}>
+        {sessions.data.slice(0, showAll ? undefined : preview).map((s) => (
           <Session key={s.id} {...s} />
         ))}
-      </ul>
+        {!showAll && (
+          <Button
+            size="small"
+            onClick={() => {
+              setShowAll(true)
+            }}
+          >
+            Show All Sessions ({sessions.data.length - preview} hidden)
+          </Button>
+        )}
+      </Box>
       <Button
         size="small"
         className="mb-2"
@@ -109,15 +130,15 @@ function SessionList() {
       >
         Logout Other Sessions
       </Button>
-    </>
+    </Box>
   )
 }
 
 export default function Sessions() {
   return (
-    <>
-      <h1 className="fs-6">Sessions</h1>
+    <Box dir="col">
+      <label className="fw-bold">Sessions</label>
       <SessionList />
-    </>
+    </Box>
   )
 }

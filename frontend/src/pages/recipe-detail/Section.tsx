@@ -155,7 +155,7 @@ export function Section({
     <li
       ref={editingEnabled ? ref : undefined}
       style={style}
-      className="bg-white mt-1 bold text-small"
+      className="mt-1 bold text-small"
       title={editingEnabled ? "click to edit" : undefined}
       onClick={() => {
         if (editingEnabled) {

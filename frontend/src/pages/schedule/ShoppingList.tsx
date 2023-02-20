@@ -122,6 +122,8 @@ const ShoppingListList = React.forwardRef<
     <div
       className={`box p-2 min-height-75px ${loadingClass}`}
       style={{
+        backgroundColor: "var(--color-background-card)",
+        border: "1px solid var(--color-border)",
         overflowY: "auto",
         maxHeight: 425, // looks good on mobile & desktop
       }}

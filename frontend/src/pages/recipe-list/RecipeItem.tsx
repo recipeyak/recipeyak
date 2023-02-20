@@ -128,7 +128,7 @@ interface IMetaProps {
 function Meta({ author, bold }: IMetaProps) {
   return (
     <div
-      className={classNames("content", "d-flex", "align-items-center", {
+      className={classNames("d-flex", "align-items-center", {
         "fw-bold": bold,
       })}
     >

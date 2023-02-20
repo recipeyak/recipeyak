@@ -13,7 +13,7 @@ export const ContainerBase = ({ children }: { children: React.ReactNode }) => (
 
 export const Container = ({ children }: { children: React.ReactNode }) => (
   <>
-    <div className="pb-3 pt-0 container w-100 pl-3 pr-3">
+    <div className="pb-3 pt-0 w-100 pl-3 pr-3">
       <ErrorBoundary>{children}</ErrorBoundary>
     </div>
     <Footer />

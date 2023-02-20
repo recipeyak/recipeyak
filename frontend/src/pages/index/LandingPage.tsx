@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useLayoutEffect } from "react"
 import { Link } from "react-router-dom"
 
 import Footer from "@/components/Footer"
@@ -148,50 +148,53 @@ const howToSteps = [
   },
 ]
 
-const LandingPage = () => (
-  <>
-    <section className="home-container d-grid gap-1rem pb-4 pr-4 pl-4">
-      <section className="d-flex justify-content-center mb-2">
-        <h1 className="home-hero-text">
-          A place to store, share, and create recipes
-        </h1>
+const LandingPage = () => {
+  useLayoutEffect(() => {}, [])
+  return (
+    <div>
+      <section className="home-container d-grid gap-1rem pb-4 pr-4 pl-4">
+        <section className="d-flex justify-content-center mb-2">
+          <h1 className="home-hero-text">
+            A place to store, share, and create recipes
+          </h1>
+        </section>
+
+        <Link
+          to="/signup"
+          className="my-button is-primary is-large justify-self-center"
+        >
+          Create Account
+        </Link>
+      </section>
+      <section className="pt-4 bg-50-50-primary pr-4 pl-4">
+        <section className="home-container">
+          {/* tslint:disable-next-line:no-unsafe-any */}
+          <img className="box-shadow-normal" src={landingImg} alt="" />
+        </section>
       </section>
 
-      <Link
-        to="/signup"
-        className="my-button is-primary is-large justify-self-center"
-      >
-        Create Account
-      </Link>
-    </section>
-    <section className="pt-4 bg-50-50-primary pr-4 pl-4">
-      <section className="home-container">
-        {/* tslint:disable-next-line:no-unsafe-any */}
-        <img className="box-shadow-normal" src={landingImg} alt="" />
-      </section>
-    </section>
+      <FeaturesContainer>
+        {features.map(({ text, imgURL }, i) => (
+          <Feature key={imgURL} text={text} imageURL={imgURL} index={i} />
+        ))}
+      </FeaturesContainer>
 
-    <FeaturesContainer>
-      {features.map(({ text, imgURL }, i) => (
-        <Feature key={imgURL} text={text} imageURL={imgURL} index={i} />
-      ))}
-    </FeaturesContainer>
+      <HowItWorksContainer>
+        {howToSteps.map(({ text, imgURL }, i) => (
+          <HowTo key={imgURL} content={text} imageURL={imgURL} index={i} />
+        ))}
 
-    <HowItWorksContainer>
-      {howToSteps.map(({ text, imgURL }, i) => (
-        <HowTo key={imgURL} content={text} imageURL={imgURL} index={i} />
-      ))}
+        <Link
+          to="/signup"
+          className="my-button is-primary is-large justify-self-center mt-4 mb-2"
+        >
+          Create Account
+        </Link>
+      </HowItWorksContainer>
 
-      <Link
-        to="/signup"
-        className="my-button is-primary is-large justify-self-center mt-4 mb-2"
-      >
-        Create Account
-      </Link>
-    </HowItWorksContainer>
-
-    <Footer />
-  </>
-)
+      <Footer />
+    </div>
+  )
+}
 
 export default LandingPage

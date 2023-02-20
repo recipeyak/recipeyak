@@ -1,26 +1,29 @@
 import React from "react"
 
+import { Box } from "@/components/Box"
+
 interface ITabsProps {
   readonly children: React.ReactElement<ITabProps>[]
-  readonly small?: boolean
-  readonly className?: string
 }
 
-export function Tabs({ children, small = false, className = "" }: ITabsProps) {
-  const cls = !small ? "is-normal" : ""
-  return (
-    <div className={`tabs fs-14px is-boxed ${cls} ${className}`}>
-      <ul>{children}</ul>
-    </div>
-  )
+export function Tabs({ children }: ITabsProps) {
+  return <Box gap={3}>{children}</Box>
 }
 
 interface ITabProps {
-  readonly isActive: boolean
+  readonly isActive?: boolean
   readonly children: React.ReactNode
 }
 
 export function Tab({ isActive, children }: ITabProps) {
-  const cls = isActive ? "is-active" : ""
-  return <li className={cls}>{children}</li>
+  return (
+    <Box
+      style={{
+        fontWeight: isActive ? "bold" : "",
+        paddingBottom: "0.25rem",
+      }}
+    >
+      {children}
+    </Box>
+  )
 }

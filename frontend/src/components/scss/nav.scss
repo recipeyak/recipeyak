@@ -38,14 +38,14 @@
   line-height: 1.5;
   padding: 0.5rem 0.75rem;
   font-weight: 500;
-  color: $nav-item-text-color;
+  color: var(--color-text);
   cursor: pointer;
   text-decoration: none;
   transition: all 0.1s;
 
   @media (hover: hover) {
     &:hover {
-      color: lighten($nav-item-text-color, 15%);
+      color: var(--color-link-hover);
       text-decoration: underline;
     }
   }

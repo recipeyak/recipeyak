@@ -32,7 +32,7 @@ export function useTeamCreate() {
       if (err == null) {
         return
       }
-      let message = "Problem updating team."
+      let message = "Problem creating team."
       if (err?.response?.status === 403) {
         message = "You are not authorized to perform that action"
       }

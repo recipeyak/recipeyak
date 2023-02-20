@@ -4,6 +4,7 @@ import React, { useState } from "react"
 import { Link, RouteComponentProps, useHistory } from "react-router-dom"
 
 import { login } from "@/auth"
+import AuthContainer from "@/components/AuthContainer"
 import { Button } from "@/components/Buttons"
 import { FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
@@ -81,67 +82,61 @@ function PasswordResetConfirmation(props: RouteProps) {
   const errors = formatError(resetPassword.error)
 
   return (
-    <section className="section">
-      <Helmet title="Password Reset" />
-      <div className="container">
-        <div className="columns">
-          <div className="column is-half-tablet is-offset-one-quarter-tablet is-one-third-desktop is-offset-one-third-desktop box">
-            <form onSubmit={handleReset}>
-              <h1 className="title is-5">Password Reset Confirmation</h1>
+    <AuthContainer>
+      <div className="box p-3">
+        <Helmet title="Password Reset" />
+        <form onSubmit={handleReset}>
+          <h1 className="is-5">Password Reset Confirmation</h1>
 
-              <FormErrorHandler error={errors.nonFieldErrors} />
+          <FormErrorHandler error={errors.nonFieldErrors} />
 
-              <div className="field">
-                <label className="label">Password</label>
-                <p className="control">
-                  <PasswordInput
-                    autoFocus
-                    onChange={(e) => {
-                      setNewPassword1(e.target.value)
-                    }}
-                    error={newPassword1 != null}
-                    name="newPassword1"
-                    value={newPassword1}
-                  />
-                </p>
-                <FormErrorHandler error={errors.newPassword1} />
-              </div>
-
-              <div className="field">
-                <label className="label">Password Again</label>
-                <p className="control">
-                  <PasswordInput
-                    onChange={(e) => {
-                      setNewPassword2(e.target.value)
-                    }}
-                    error={newPassword2 != null}
-                    name="newPassword2"
-                    value={newPassword2}
-                  />
-                </p>
-                <FormErrorHandler error={errors.newPassword2} />
-              </div>
-
-              <div className="field d-flex flex-space-between">
-                <p className="control">
-                  <Button
-                    variant="primary"
-                    loading={resetPassword.isLoading}
-                    type="submit"
-                  >
-                    Change Password
-                  </Button>
-                </p>
-
-                <Link to="/login" className="my-button is-link">
-                  To Login
-                </Link>
-              </div>
-            </form>
+          <div className="field">
+            <label className="label">Password</label>
+            <p className="control">
+              <PasswordInput
+                autoFocus
+                onChange={(e) => {
+                  setNewPassword1(e.target.value)
+                }}
+                name="newPassword1"
+                value={newPassword1}
+              />
+            </p>
+            <FormErrorHandler error={errors.newPassword1} />
           </div>
-        </div>
+
+          <div className="field">
+            <label className="label">Password Again</label>
+            <p className="control">
+              <PasswordInput
+                onChange={(e) => {
+                  setNewPassword2(e.target.value)
+                }}
+                name="newPassword2"
+                value={newPassword2}
+              />
+            </p>
+            <FormErrorHandler error={errors.newPassword2} />
+          </div>
+
+          <div className="field d-flex flex-space-between">
+            <p className="control">
+              <Button
+                variant="primary"
+                loading={resetPassword.isLoading}
+                type="submit"
+              >
+                Change Password
+              </Button>
+            </p>
+
+            <Link to="/login" className="my-button is-link">
+              To Login
+            </Link>
+          </div>
+        </form>
       </div>
-    </section>
+    </AuthContainer>
   )
 }
 

@@ -88,19 +88,17 @@ export const DateInput = createInput("date")
 interface ISelectProps
   extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, "size"> {
   readonly size?: "small" | "normal" | "medium" | "large"
-  readonly noBorder?: boolean
 }
 
 export function Select({
   className,
   size = "normal",
   multiple,
-  noBorder,
   ...props
 }: ISelectProps) {
   const inputSize = "is-" + size
   const multipleClass = multiple ? "is-multiple" : ""
-  const selectClass = noBorder ? "my-select" : "br-6"
+  const selectClass = "br-6"
   return (
     <div className={`select ${inputSize} ${multipleClass} ${className}`}>
       <select className={selectClass} multiple={multiple} {...props} />

@@ -90,11 +90,7 @@ function Step({
 
   preview(drop(ref))
   return (
-    <div
-      style={style}
-      ref={isEditing ? ref : undefined}
-      className="bg-white mb-2"
-    >
+    <div style={style} ref={isEditing ? ref : undefined} className="mb-2">
       <label
         className="better-label"
         ref={isEditing ? drag : undefined}

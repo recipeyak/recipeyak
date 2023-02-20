@@ -5,7 +5,7 @@ import { QueryClient, useIsRestoring } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client"
 import raven from "raven-js"
-import React from "react"
+import React, { useLayoutEffect } from "react"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import { HelmetProvider } from "react-helmet-async"
@@ -39,7 +39,7 @@ import TeamCreatePage from "@/pages/team-create/TeamCreate.page"
 import TeamDetailPage from "@/pages/team-detail/TeamDetail.page"
 import TeamInvitePage from "@/pages/team-invite/TeamInvite.page"
 import TeamsListPage from "@/pages/team-list/TeamList.page"
-import { theme, ThemeProvider } from "@/theme"
+import { theme, themeGet, ThemeProvider, themeSet } from "@/theme"
 import { Toaster } from "@/toast"
 
 export const queryClient = new QueryClient({
@@ -154,6 +154,11 @@ function AppContent() {
         <PublicOnlyRoute exact path="/login" component={Login} />
         <PublicOnlyRoute exact path="/signup" component={SignupPage} />
         <Route exact path="/password-reset" component={PasswordResetPage} />
+        <Route
+          exact
+          path="/password-reset/confirm/:uid/:token"
+          component={PasswordResetConfirmPage}
+        />
         <ContainerBase>
           <Switch>
             <Route exact path="/" component={Home} />
@@ -165,11 +170,6 @@ function AppContent() {
             />
             <Container>
               <Switch>
-                <Route
-                  exact
-                  path="/password-reset/confirm/:uid/:token"
-                  component={PasswordResetConfirmPage}
-                />
                 <PrivateRoute
                   exact
                   path="/recipes/add"
@@ -223,6 +223,9 @@ function AppContent() {
 }
 
 function Base() {
+  useLayoutEffect(() => {
+    themeSet(themeGet())
+  }, [])
   return (
     <PersistQueryClientProvider
       client={queryClient}

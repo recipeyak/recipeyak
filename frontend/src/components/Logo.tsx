@@ -6,8 +6,9 @@ interface ILogoProps {
 export function Logo({ light = false, width = "50px" }: ILogoProps) {
   return (
     <svg
-      className={`mr-1 ${light ? "fill-white" : "fill-text-color"} `}
+      className={`mr-1 `}
       width={width}
+      fill={light ? "white" : "currentColor"}
       viewBox="0 0 512 512"
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"

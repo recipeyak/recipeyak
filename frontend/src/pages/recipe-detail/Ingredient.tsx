@@ -228,7 +228,6 @@ export function Ingredient(props: {
     <li
       ref={props.isEditing && dragAndDropEnabled ? ref : undefined}
       style={style}
-      className="bg-white"
     >
       <section
         title={props.isEditing ? "click to edit" : undefined}

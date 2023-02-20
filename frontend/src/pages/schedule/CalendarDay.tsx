@@ -51,7 +51,7 @@ const Title = ({
 }
 
 const isTodayStyle = css`
-  border-bottom: 2px solid ${(p) => p.theme.color.primary};
+  border-bottom: 2px solid var(--color-accent);
 `
 
 const isSelectedDayStyle = css`
@@ -71,7 +71,7 @@ interface ICalendarDayContainerProps {
 const CalendarDayContainer = styled.div<ICalendarDayContainerProps>`
   flex: 1 1 0%;
   padding: 0.25rem;
-  background-color: whitesmoke;
+  background-color: var(--color-background-calendar-day);
   transition: background-color 0.2s;
 
   ${(p) => p.isToday && isTodayStyle}

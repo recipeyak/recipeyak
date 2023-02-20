@@ -14,13 +14,13 @@ const dropdownItemStyle = css`
   width: 100%;
   padding: 0.25rem 0.5rem;
   font-weight: 400;
-  color: #212529;
+  color: var(--color-text);
   white-space: nowrap;
   text-align: left;
 
   @media (hover: hover) {
     :hover {
-      color: #16181b;
+      color: var(--color-text);
       text-decoration: none;
     }
   }
@@ -48,7 +48,9 @@ export const DropdownItemButton = styled.button`
 `
 
 const isOpenStyle = css`
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 `
 
 export const DropdownMenu = styled.div<{
@@ -72,8 +74,8 @@ export const DropdownMenu = styled.div<{
   font-size: 1rem;
   white-space: nowrap;
 
-  background-color: ${(p) => p.theme.color.white};
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
   border-radius: 0.25rem;
   display: none;
 
