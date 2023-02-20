@@ -1,31 +1,32 @@
 import { useQueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
-import React, { useState } from "react"
+import React, { useLayoutEffect, useState } from "react"
 import { Link, useHistory } from "react-router-dom"
 
 import { logout } from "@/auth"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
-import { TextInput } from "@/components/Forms"
+import { RadioButton, TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
 import Sessions from "@/pages/settings/Sessions"
 import { useUserDelete } from "@/queries/userDelete"
 import { useUserFetch } from "@/queries/userFetch"
 import { useUserUpdate } from "@/queries/userUpdate"
+import { themeGet, themeSet } from "@/theme"
 import { toast } from "@/toast"
 
 function Export() {
   return (
-    <>
-      <h1 className="fs-6">Export</h1>
+    <Box dir="col">
+      <label className="fw-bold">Export</label>
       <p>
         <a href="/recipes.yaml">recipes.yaml</a>
       </p>
       <p>
         <a href="/recipes.json">recipes.json</a>
       </p>
-    </>
+    </Box>
   )
 }
 
@@ -65,12 +66,12 @@ function DangerZone() {
     }
   }
   return (
-    <>
-      <h1 className="fs-6">Danger Zone</h1>
-      <a onClick={deleteUserAccount} className="has-text-danger">
+    <Box dir="col" align="start" gap={1}>
+      <label className="fw-bold">Danger Zone</label>
+      <Button size="small" onClick={deleteUserAccount} variant="danger">
         permanently delete my account
-      </a>
-    </>
+      </Button>
+    </Box>
   )
 }
 
@@ -81,11 +82,11 @@ function ProfileImg({ avatarURL }: IProfileImgProps) {
   return (
     <a href="https://secure.gravatar.com" className="justify-self-center mr-3">
       <img
-        width="128px"
-        height="128px"
+        width="72px"
+        height="72px"
         alt="user profile"
         className="br-5"
-        src={avatarURL + "&s=128"}
+        src={avatarURL + "&s=72"}
       />
     </a>
   )
@@ -271,9 +272,56 @@ function ChangePassword() {
   return (
     <Box dir="col">
       <label className="better-label">Password</label>
-      <Link to="/password" className="has-text-primary">
-        Change Password
-      </Link>
+      <Link to="/password">Change Password</Link>
+    </Box>
+  )
+}
+
+function ThemePicker() {
+  const [theme, setTheme] = useState<"light" | "autumn">(themeGet)
+
+  useLayoutEffect(() => {
+    themeSet(theme)
+  }, [theme])
+
+  return (
+    <Box dir="col" align="start">
+      <label className="better-label">Theme</label>
+      <Box dir="col" gap={1} style={{ minWidth: 150 }}>
+        <label
+          className="align-items-center d-flex br-6 p-2 cursor-pointer"
+          style={{
+            border: "1px solid var(--color-border)",
+          }}
+        >
+          <RadioButton
+            name="theme"
+            className="mr-1"
+            checked={theme === "light"}
+            onClick={() => {
+              setTheme("light")
+            }}
+          />
+          Light
+        </label>
+
+        <label
+          className="align-items-center d-flex br-6 p-2 cursor-pointer"
+          style={{
+            border: "1px solid var(--color-border)",
+          }}
+        >
+          <RadioButton
+            name="theme"
+            className="mr-1"
+            checked={theme === "autumn"}
+            onClick={() => {
+              setTheme("autumn")
+            }}
+          />
+          Autumn
+        </label>
+      </Box>
     </Box>
   )
 }
@@ -286,7 +334,15 @@ function Settings() {
   }
 
   return (
-    <div>
+    <Box
+      style={{
+        maxWidth: 800,
+        marginLeft: "auto",
+        marginRight: "auto",
+      }}
+      dir="col"
+      gap={4}
+    >
       <Helmet title="Settings" />
 
       <h1 className="fs-8">User settings</h1>
@@ -294,17 +350,18 @@ function Settings() {
       <Box dir="col" align="start">
         <ProfileImg avatarURL={userInfo.data.avatar_url} />
 
-        <Box dir="col" style={{ maxWidth: 400 }}>
+        <Box dir="col" style={{ maxWidth: 400 }} gap={2}>
           <EmailEditForm email={userInfo.data.email} />
           <NameForm initialValue={userInfo.data.name} />
           <ChangePassword />
         </Box>
       </Box>
+      <ThemePicker />
 
       <Export />
       <Sessions />
       <DangerZone />
-    </div>
+    </Box>
   )
 }
 

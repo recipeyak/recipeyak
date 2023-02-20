@@ -41,7 +41,6 @@
     "@types/react-textarea-autosize": "^4.3.3",
     "@types/styled-components": "^4.4.0",
     "axios": "^0.18.0",
-    "bulma": "^0.4.2",
     "date-fns": "^2.4.1",
     "dnd-core": "^9.3.4",
     "fp-ts": "^2.8.1",

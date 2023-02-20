@@ -1,8 +1,13 @@
 @import "./variables.scss";
 
+$primary-color: adjust-hue(tomato, 5deg);
+$primary-color-shadow: transparentize($primary-color, 0.2);
 $primary: $primary-color;
+$border-color: #dbdbdb;
 
-@import "~bulma/bulma.sass";
+$text-color: #4a4a4a;
+
+@import "../../bulma.sass";
 
 @import "./buttons.scss";
 @import "./inputs.scss";
@@ -10,23 +15,120 @@ $primary: $primary-color;
 
 @import "./nav.scss";
 @import "./ListItem.scss";
-@import "./Notification.scss";
 @import "./home.scss";
-@import "./signup-login.scss";
 @import "./Recipe.scss";
 @import "./schedule.scss";
 @import "./search.scss";
 
+:root {
+  // theme-light
+  --color-background: white;
+
+  --color-primary: #{$primary-color};
+  --color-primary-button-text: var(--color-background);
+  --color-primary-shadow: #{$primary-color-shadow};
+  --color-primary-active: #ff5f2e;
+  --color-primary-disabled: #e03500;
+
+  --color-text: #{$text-color};
+  --color-text-muted: rgba(115, 115, 115, 1);
+  --color-text-disabled: var(--color-text);
+
+  --color-input-placeholder: var(--color-text-muted);
+
+  --color-link: var(--color-text);
+
+  --color-border: #{$border-color};
+
+  --color-accent: rgb(255, 114, 71);
+
+  --color-danger: #ff3860;
+  --color-danger-button-text: white;
+  --color-danger-disabled: #{darken(#fb5274, 20%)};
+
+  --color-background-card: var(--color-background);
+  --color-background-calendar-day: whitesmoke;
+  --color-background-calendar-item: var(--color-background);
+  --color-background-empty-image: rgb(227, 227, 227);
+}
+
+.theme-autumn {
+  --color-background: rgb(185, 110, 52);
+
+  --color-primary: #e37857;
+  --color-primary-button-text: white;
+  --color-primary-shadow: #{$primary-color-shadow};
+  --color-primary-active: var(--color-primary);
+  --color-primary-disabled: var(--color-primary);
+
+  --color-text: rgb(237, 237, 237);
+  --color-text-muted: var(--color-text);
+  --color-text-disabled: var(--color-text);
+
+  --color-input-placeholder: var(--color-text);
+
+  --color-link: var(--color-text);
+
+  --color-border: #{$border-color};
+  --color-accent: hsla(15, 50%, 82%, 0.865);
+
+  --color-danger: #fb5274;
+  --color-danger-button-text: white;
+  --color-danger-disabled: #{darken(#fb5274, 20%)};
+
+  --color-background-card: rgb(188, 133, 92);
+  --color-background-calendar-day: var(--color-background-card);
+  --color-background-calendar-item: rgb(188, 133, 92);
+  --color-background-empty-image: var(--color-background-card);
+}
+
+// TODO: conditionally apply and make light theme work without
+// .theme-autumn {
+//   --color-background: rgb(185, 110, 52);
+//   --color-primary: #e37857;
+//   --color-primary-shadow: #{$primary-color-shadow};
+//   --color-primary-active: var(--color-primary);
+//   --color-primary-disabled: var(--color-primary);
+
+//   --color-text: rgb(237, 237, 237);
+//   --color-text-muted: var(--color-text);
+//   --color-text-disabled: var(--color-text);
+
+//   --color-input-placeholder: var(--color-text);
+
+//   --color-link: var(--color-text);
+
+//   --color-border: #{$border-color};
+//   --color-accent: hsla(15, 50%, 82%, 0.865);
+
+//   --color-danger: #fb5274;
+//   --color-danger-disabled: #{darken(#fb5274, 20%)};
+
+//   --color-background-card: rgb(188, 133, 92);
+//   --color-background-calendar-day: var(--color-background-card);
+//   --color-background-calendar-item: rgb(188, 133, 92);
+//   --color-background-empty-image: var(--color-background-card);
+// }
+
 html {
   height: 100%;
-  font-size: $base-font-size;
+  font-size: 16px;
   user-select: none;
   -webkit-user-select: none;
   cursor: default;
+
+  color: var(--color-text);
+
+  background-color: var(--color-background);
 }
 
 body {
+  color: var(--color-text);
   height: 100%;
+}
+
+::placeholder {
+  color: var(--color-input-placeholder);
 }
 
 #root {
@@ -36,8 +138,9 @@ body {
 }
 
 kbd {
+  color: var(--color-text);
   padding: 0.1rem 0.2rem;
-  background-color: whitesmoke;
+  background-color: var(--color-background);
   border-radius: 4px;
   border: 1px solid lightgray;
   border-bottom-width: 2px;
@@ -62,12 +165,12 @@ section.section {
 }
 
 a {
-  color: $link-color;
-  transition: color 0.2s;
+  color: var(--color-link);
+  // transition: color 0.2s;
 
   @media (hover: hover) {
     &:hover {
-      color: lighten($link-color, 5%);
+      color: var(--color-link-hover);
       text-decoration: underline;
     }
   }
@@ -79,12 +182,12 @@ a {
   .is-active > a {
     color: inherit !important;
 
-    @media (hover: hover) {
-      &:hover {
-        color: darken($text-color, 20%) !important;
-        transition: color 0.2s;
-      }
-    }
+    // @media (hover: hover) {
+    //   &:hover {
+    //     color: darken($text-color, 20%) !important;
+    //     transition: color 0.2s;
+    //   }
+    // }
   }
 
   &:not(.is-normal) {
@@ -172,7 +275,7 @@ a {
   }
 
   html {
-    font-size: $printing-font-size;
+    font-size: 14px;
   }
 
   a,

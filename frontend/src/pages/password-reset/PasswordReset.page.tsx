@@ -65,7 +65,7 @@ function PasswordReset() {
     <AuthContainer>
       <Helmet title="Password Reset" />
       <form className="box p-3" onSubmit={handleReset}>
-        <h1 className="title is-5 mb-2 fw-500">Password Reset</h1>
+        <h1 className="is-5 mb-2 fw-500">Password Reset</h1>
 
         <FormErrorHandler error={errors.nonFieldErrors} />
 
@@ -76,7 +76,6 @@ function PasswordReset() {
             onChange={(e) => {
               setEmail(e.target.value)
             }}
-            error={email != null}
             name="email"
             value={email}
             required

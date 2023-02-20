@@ -2,7 +2,6 @@ import { useQueryClient } from "@tanstack/react-query"
 import { Link, useHistory } from "react-router-dom"
 
 import { Avatar } from "@/components/Avatar"
-import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import {
   DropdownContainer,
@@ -98,21 +97,9 @@ function UserDropdown() {
       <UserAvatar onClick={toggle} url={user.avatarURL} />
       <DropdownMenu isOpen={isOpen} position="right">
         <UserEmail email={user.email} />
-        <Box dir="col" align="start" gap={0} mb={1}>
-          <label className="fw-500 fs-14px">Team</label>
-          <TeamSelect />
-        </Box>
-        <p>
-          <Link to="/settings" className="p-1-0">
-            Settings
-          </Link>
-        </p>
-        <p>
-          <Link to="/t" className="p-1-0">
-            Teams
-          </Link>
-        </p>
-
+        <TeamSelect />
+        <Link to="/settings">Settings</Link>
+        <Link to="/t">Teams</Link>
         <LogoutButton />
       </DropdownMenu>
     </DropdownContainer>

@@ -95,7 +95,7 @@ function AddIngredientForm({
             placeholder="diced at 3cm"
           />
           {createIngredient.isError ? (
-            <p className="fs-4 c-danger">
+            <p className="fs-4 has-text-danger">
               A recipe needs at least one ingredient
             </p>
           ) : null}

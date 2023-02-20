@@ -2,6 +2,31 @@ import { transparentize } from "polished"
 // eslint-disable-next-line no-restricted-imports
 import * as styledComponents from "styled-components"
 
+export function themeGet(): "light" | "autumn" {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  return localStorage.getItem("recipeyak-theme-v1") as "light" | "autumn"
+}
+
+export function themeSet(theme: "light" | "autumn") {
+  const themeToClassName = {
+    light: "",
+    autumn: "theme-autumn",
+  } as const
+  localStorage.setItem("recipeyak-theme-v1", theme)
+  const html = document.documentElement
+  // clear out all the existing themes
+  html.classList.forEach((class_) => {
+    if (class_.startsWith("theme")) {
+      html.classList.remove(class_)
+    }
+  })
+  const newClass = themeToClassName[theme]
+  if (!newClass) {
+    return
+  }
+  html.classList.add(newClass)
+}
+
 export interface ITheme {
   readonly color: {
     readonly white: string

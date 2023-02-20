@@ -48,17 +48,17 @@ const SearchInputContainer = styled.div`
 `
 
 const SearchOptions = styled.div`
-  font-size: 0.85rem;
-  color: ${(props) => props.theme.color.muted};
+  font-size: 12px;
+  color: var(--color-text-muted);
 `
 
 const Code = styled.code`
   margin: 0 2px;
   padding: 0px 5px;
   border: 1px solid #ddd;
-  background-color: #f8f8f8;
+  background-color: var(--color-background-card);
   border-radius: 3px;
-  color: inherit;
+  color: var(--color-text);
   white-space: pre;
 `
 
@@ -74,7 +74,6 @@ const Day = styled.div`
   font-size: 14px;
   min-width: 2.5rem;
   margin-right: 0.5rem;
-  color: hsl(0 0% 40% / 1);
 `
 
 function ScheduledRecipe(props: {
@@ -437,7 +436,7 @@ const UserHome = () => {
 
   return (
     <>
-      <div className="container pr-2 pl-2 pb-2">
+      <div className="pr-2 pl-2 pb-2">
         <Helmet title="Home" />
         <SearchInputAligner>
           <SearchInputContainer ref={ref}>

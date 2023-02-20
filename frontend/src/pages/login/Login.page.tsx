@@ -9,6 +9,7 @@ import AuthContainer from "@/components/AuthContainer"
 import { Button } from "@/components/Buttons"
 import { FormErrorHandler, PasswordInput, TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
+import { Tab, Tabs } from "@/components/Tabs"
 import { useAuthLogin } from "@/queries/authLogin"
 
 function formatError(error: unknown) {
@@ -63,16 +64,18 @@ export default function Login() {
     <AuthContainer>
       <div className="box p-3">
         <Helmet title="Login" />
-        <div className="tabs is-boxed mb-2">
-          <ul>
-            <li className="is-active">
-              <Link to="/login">Login</Link>
-            </li>
-            <li>
-              <Link to="/signup">Sign Up</Link>
-            </li>
-          </ul>
-        </div>
+        <Tabs>
+          <Tab isActive>
+            <Link to="/login" className="text-decoration-none">
+              Login
+            </Link>
+          </Tab>
+          <Tab isActive={false}>
+            <Link to="/signup" className="text-decoration-none">
+              Sign Up
+            </Link>
+          </Tab>
+        </Tabs>
 
         <form onSubmit={handleSubmit}>
           <div className="field">

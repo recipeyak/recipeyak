@@ -1,0 +1,20 @@
+$box-radius: $radius-large !default
+
+$box-link-hover-shadow: 0 2px 3px rgba($black, 0.1), 0 0 0 1px $link
+$box-link-active-shadow: inset 0 1px 2px rgba($black, 0.2), 0 0 0 1px $link
+
+.box
+  background-color: var(--color-background)
+  border-radius: $box-radius
+  color: var(--color-text)
+  display: block
+  padding: 1.25rem
+  &:not(:last-child)
+    margin-bottom: 1.5rem
+
+a.box
+  &:hover,
+  &:focus
+    box-shadow: $box-link-hover-shadow
+  &:active
+    box-shadow: $box-link-active-shadow

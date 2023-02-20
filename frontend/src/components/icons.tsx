@@ -8,7 +8,7 @@ export function DragIcon() {
       height={size}
       viewBox="0 0 24 24"
       fill="none"
-      stroke="#4a4a4a"
+      stroke="currentColor"
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -27,7 +27,7 @@ export function DragIcon() {
 export const Chevron = () => (
   <svg
     style={{ width: "1.5em" }}
-    className="fill-text-color"
+    fill="currentColor"
     viewBox="0 0 20 20"
     xmlns="http://www.w3.org/2000/svg"
   >
