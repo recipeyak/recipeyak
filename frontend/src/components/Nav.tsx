@@ -2,7 +2,6 @@ import { useQueryClient } from "@tanstack/react-query"
 import { Link, useHistory } from "react-router-dom"
 
 import { Avatar } from "@/components/Avatar"
-import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import {
   DropdownContainer,
