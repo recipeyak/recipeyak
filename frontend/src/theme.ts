@@ -3,8 +3,14 @@ import { transparentize } from "polished"
 import * as styledComponents from "styled-components"
 
 export function themeGet(): "light" | "autumn" {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  return localStorage.getItem("recipeyak-theme-v1") as "light" | "autumn"
+  const val = localStorage.getItem("recipeyak-theme-v1")
+  switch (val) {
+    case "autumn":
+      return "autumn"
+    case "light":
+    default:
+      return "light"
+  }
 }
 
 export function themeSet(theme: "light" | "autumn") {

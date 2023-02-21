@@ -2,6 +2,7 @@ import React, { useRef } from "react"
 
 import { classNames } from "@/classnames"
 import { Box } from "@/components/Box"
+import { CloseButton } from "@/components/CloseButton"
 import { useGlobalEvent } from "@/hooks"
 
 interface IModalProps {
@@ -41,18 +42,13 @@ export function Modal({ show, content, onClose, title }: IModalProps) {
         }}
       >
         <div className="box d-flex flex-direction-column h-100">
-          <Box space="between" mb={1}>
+          <Box space="between" mb={2}>
             <h1 className="fs-14px fw-500">{title}</h1>
-            <button className="delete" aria-label="close" onClick={onClose} />
+            <CloseButton onClose={onClose} />
           </Box>
           {content}
         </div>
       </div>
-      <button
-        className="modal-close is-large"
-        aria-label="close"
-        onClick={onClose}
-      />
     </div>
   )
 }

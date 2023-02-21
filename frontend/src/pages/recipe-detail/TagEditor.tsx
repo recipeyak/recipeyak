@@ -1,6 +1,7 @@
 import React from "react"
 
 import cls from "@/classnames"
+import { CloseButton } from "@/components/CloseButton"
 import { TextInput } from "@/components/Forms"
 
 export function TagEditor({
@@ -27,9 +28,8 @@ export function TagEditor({
         {tags?.map((tag) => (
           <span className="tag fw-normal" key={tag}>
             {tag}{" "}
-            <button
-              className="delete is-small"
-              onClick={() => {
+            <CloseButton
+              onClose={() => {
                 onChange(tags.filter((x) => x !== tag))
               }}
             />
