@@ -87,57 +87,6 @@ $colors: ("white": $white, "black": $black, "primary": $primary, "success": $suc
   transform: rotate(-45deg)
   width: 0.5em
 
-=delete
-  +unselectable
-  -moz-appearance: none
-  -webkit-appearance: none
-  background-color: rgba($black, 0.2)
-  border: none
-  border-radius: 290486px
-  cursor: pointer
-  display: inline-block
-  flex-grow: 0
-  flex-shrink: 0
-  font-size: $size-normal
-  height: 20px
-  max-height: 20px
-  max-width: 20px
-  min-height: 20px
-  min-width: 20px
-//   outline: none
-  position: relative
-  vertical-align: top
-  width: 20px
-  &:before,
-  &:after
-    background-color: $white
-    content: ""
-    display: block
-    left: 50%
-    position: absolute
-    top: 50%
-    transform: translateX(-50%) translateY(-50%) rotate(45deg)
-    transform-origin: center center
-  &:before
-    height: 2px
-    width: 50%
-  &:after
-    height: 50%
-    width: 2px
-  &:hover,
-  &:focus
-    background-color: rgba($black, 0.3)
-  &:active
-    background-color: rgba($black, 0.4)
-  // Sizes
-  &.is-small
-    height: 16px
-    max-height: 16px
-    max-width: 16px
-    min-height: 16px
-    min-width: 16px
-    width: 16px
-
 =loader
   animation: spinAround 500ms infinite linear
   border: 2px solid $border
