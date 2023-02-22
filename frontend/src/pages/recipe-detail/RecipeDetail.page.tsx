@@ -374,11 +374,16 @@ function Meta({ title, image }: { title: string; image: string }) {
 }
 
 const ImageWrapper = styled.div`
+  aspect-ratio: 3/2;
   @media (min-width: 800px) {
     grid-area: 1 / 2;
   }
   @media (max-width: 799px) {
     grid-area: 2 / 1;
+  }
+  @media (max-width: 599px) {
+    margin-left: -0.75rem;
+    margin-right: -0.75rem;
   }
 `
 
@@ -717,6 +722,18 @@ function isNote(x: TimelineItem): x is INote {
   return x.type === "note"
 }
 
+const Caption = styled.div.attrs({ className: "text-muted" })`
+  position: absolute;
+  right: 0;
+  text-align: right;
+  font-size: 12;
+  font-weight: 500;
+
+  @media (max-width: 599px) {
+    margin-right: 0.5rem;
+  }
+`
+
 function RecipeInfo(props: {
   recipe: IRecipe
   editingEnabled: boolean
@@ -834,25 +851,14 @@ function RecipeInfo(props: {
                 url: imgixFmt(props.recipe.primaryImage?.url ?? ""),
                 backgroundUrl: props.recipe.primaryImage?.backgroundUrl ?? "",
               }}
-              rounded
+              roundDesktop
               onClick={() => {
                 props.openImage()
               }}
               loading="eager"
             />
             {props.recipe.primaryImage?.author != null && (
-              <div
-                style={{
-                  position: "absolute",
-                  right: 0,
-                  textAlign: "right",
-                  fontSize: 12,
-                  fontWeight: 500,
-                }}
-                className="text-muted"
-              >
-                {props.recipe.primaryImage.author}
-              </div>
+              <Caption>{props.recipe.primaryImage.author}</Caption>
             )}
           </ImageWrapper>
           {props.editingEnabled && (
@@ -882,13 +888,13 @@ const RecipeDetailGrid = styled.div<{ enableLargeImageRow: boolean }>`
 
   @media (max-width: 799px) {
     grid-template-rows: ${(props) =>
-      props.enableLargeImageRow ? " auto 300px auto" : "auto"};
+      props.enableLargeImageRow ? " auto auto auto" : "auto"};
     grid-template-columns: 1fr;
   }
 
   @media (min-width: 800px) {
     grid-template-rows: ${(props) =>
-      props.enableLargeImageRow ? "470px auto auto" : "auto"};
+      props.enableLargeImageRow ? "auto auto auto" : "auto"};
     grid-template-columns: minmax(350px, 3fr) 5fr;
   }
 `

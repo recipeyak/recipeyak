@@ -4,6 +4,7 @@ import { imgixFmt } from "@/utils/url"
 const CardImgContainer = styled.div<{
   height: number | undefined
   width: number | undefined
+  roundDesktop: boolean | undefined
   rounded: boolean | undefined
 }>`
   ${(p) => (p.width != null ? `min-width: ${p.width}px;` : `width: 100%;`)}
@@ -11,18 +12,29 @@ const CardImgContainer = styled.div<{
   ${(p) => (p.height != null ? `min-height: ${p.height}px;` : `height: 100%`)}
 
   ${(p) => p.rounded && `border-radius: 6px;`}
+  ${(p) =>
+    p.roundDesktop &&
+    `@media (min-width: 600px) {
+      border-radius: 6px;
+    }`}
 
   background-color: var(--color-background-empty-image);
   position: relative;
 `
 
 const CardImg = styled.img<{
+  roundDesktop: boolean | undefined
   rounded: boolean | undefined
   grayscale: boolean | undefined
 }>`
   height: 100%;
   width: 100%;
   ${(p) => p.rounded && `border-radius: 6px;`}
+  ${(p) =>
+    p.roundDesktop &&
+    `@media (min-width: 600px) {
+      border-radius: 6px;
+    }`}
   object-fit: cover;
   position: absolute;
   ${(p) => p.grayscale && `filter: grayscale(100%);`}
@@ -32,6 +44,7 @@ const CardImg = styled.img<{
 const CardImgBg = styled.div<{
   backgroundImage: string
   blur: "none" | undefined
+  roundDesktop: boolean | undefined
   rounded: boolean | undefined
   grayscale: boolean | undefined
 }>`
@@ -45,6 +58,11 @@ const CardImgBg = styled.div<{
   background-size: cover;
 
   ${(p) => p.rounded && `border-radius: 6px;`}
+  ${(p) =>
+    p.roundDesktop &&
+    `@media (min-width: 600px) {
+      border-radius: 6px;
+    }`}
   ${(p) => p.grayscale && `filter: grayscale(100%);`}
 
   ${(p) =>
@@ -66,6 +84,7 @@ export function Image({
   width,
   blur,
   rounded,
+  roundDesktop,
   grayscale,
   loading,
   onClick,
@@ -83,10 +102,12 @@ export function Image({
   readonly grayscale?: boolean
   readonly loading?: "eager" | "lazy"
   readonly rounded?: boolean
+  readonly roundDesktop?: boolean
   readonly onClick?: () => void
 }) {
   return (
     <CardImgContainer
+      roundDesktop={roundDesktop}
       height={height}
       width={width}
       rounded={rounded}
@@ -96,6 +117,7 @@ export function Image({
         <>
           <CardImg
             src={imgixFmt(sources.url ?? "")}
+            roundDesktop={roundDesktop}
             rounded={rounded}
             grayscale={grayscale}
             loading={loading}
@@ -104,6 +126,7 @@ export function Image({
             backgroundImage={sources.backgroundUrl ?? ""}
             blur={blur}
             grayscale={grayscale}
+            roundDesktop={roundDesktop}
             rounded={rounded}
           />
         </>
