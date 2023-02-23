@@ -112,14 +112,13 @@ const SuggestionBox = styled.div`
   position: absolute;
   z-index: 10;
   top: 60px;
-  background: white;
+  background: var(--color-background-card);
   max-width: 400px;
   width: 100%;
   border-style: solid;
   border-width: 1px;
-  border-color: #dddd;
+  border-color: var(--color-border);
   border-radius: 5px;
-  box-shadow: 0px 4px 5px 0px hsl(0 0% 90% / 1);
   padding: 0.25rem;
   display: inline-grid;
 `
@@ -173,7 +172,7 @@ const RecipeName = styled.span<{ readonly bold: boolean }>`
   white-space: pre;
 `
 const MatchType = styled.span`
-  color: ${(props) => props.theme.color.muted};
+  color: var(--color-text-muted);
 `
 
 const BrowseRecipesContainer = styled.div`
