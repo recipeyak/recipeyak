@@ -31,7 +31,7 @@ const TimelineItem = styled.li<ITimelineItemProps>`
   padding: 0.5rem;
   margin-bottom: 0.5rem;
   border-radius: 5px;
-  border: 1px solid lightgray;
+  border: 1px solid var(--color-border);
 `
 
 const TimelineContainer = styled.div`

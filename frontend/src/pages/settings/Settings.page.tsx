@@ -278,7 +278,7 @@ function ChangePassword() {
 }
 
 function ThemePicker() {
-  const [theme, setTheme] = useState<"light" | "autumn">(themeGet)
+  const [theme, setTheme] = useState<"light" | "autumn" | "solarized">(themeGet)
 
   useLayoutEffect(() => {
     themeSet(theme)
@@ -320,6 +320,23 @@ function ThemePicker() {
             }}
           />
           Autumn
+        </label>
+
+        <label
+          className="align-items-center d-flex br-6 p-2 cursor-pointer"
+          style={{
+            border: "1px solid var(--color-border)",
+          }}
+        >
+          <RadioButton
+            name="theme"
+            className="mr-1"
+            checked={theme === "solarized"}
+            onClick={() => {
+              setTheme("solarized")
+            }}
+          />
+          Solarized
         </label>
       </Box>
     </Box>

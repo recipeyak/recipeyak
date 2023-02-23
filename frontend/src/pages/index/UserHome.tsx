@@ -104,7 +104,7 @@ const ScheduleContainer = styled.div`
   }
   border-radius: 6px;
   padding: 0.75rem;
-  border: 1px solid lightgray;
+  border: 1px solid var(--color-border);
   font-size: 14px;
 `
 

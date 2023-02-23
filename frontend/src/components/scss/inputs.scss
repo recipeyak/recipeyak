@@ -6,6 +6,10 @@
   color: var(--color-text);
 }
 
+input {
+  background-color: var(--color-background);
+}
+
 .my-textarea,
 .my-input {
   -moz-appearance: none;
