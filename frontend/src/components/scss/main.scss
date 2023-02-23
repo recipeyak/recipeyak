@@ -83,33 +83,6 @@ $text-color: #4a4a4a;
   --color-background-empty-image: var(--color-background-card);
 }
 
-// TODO: conditionally apply and make light theme work without
-// .theme-autumn {
-//   --color-background: rgb(185, 110, 52);
-//   --color-primary: #e37857;
-//   --color-primary-shadow: #{$primary-color-shadow};
-//   --color-primary-active: var(--color-primary);
-//   --color-primary-disabled: var(--color-primary);
-
-//   --color-text: rgb(237, 237, 237);
-//   --color-text-muted: var(--color-text);
-//   --color-text-disabled: var(--color-text);
-
-//   --color-input-placeholder: var(--color-text);
-
-//   --color-link: var(--color-text);
-
-//   --color-border: #{$border-color};
-//   --color-accent: hsla(15, 50%, 82%, 0.865);
-
-//   --color-danger: #fb5274;
-//   --color-danger-disabled: #{darken(#fb5274, 20%)};
-
-//   --color-background-card: rgb(188, 133, 92);
-//   --color-background-calendar-day: var(--color-background-card);
-//   --color-background-calendar-item: rgb(188, 133, 92);
-//   --color-background-empty-image: var(--color-background-card);
-// }
 
 html {
   height: 100%;

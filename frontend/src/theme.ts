@@ -1,4 +1,3 @@
-import { transparentize } from "polished"
 // eslint-disable-next-line no-restricted-imports
 import * as styledComponents from "styled-components"
 
@@ -48,8 +47,8 @@ export interface ITheme {
   readonly small: string
 }
 
-const primary = "#ff7247"
-const muted = "#7a7a7a"
+const primary = "var(--color-primary)"
+const muted = "var(--color-text-muted)"
 
 export const theme: ITheme = {
   color: {
@@ -57,7 +56,7 @@ export const theme: ITheme = {
     background: "white",
     primary,
     muted,
-    primaryShadow: transparentize(0.2, primary),
+    primaryShadow: "var(--color-primary-shadow)",
   },
   text: {
     small: "0.875rem",

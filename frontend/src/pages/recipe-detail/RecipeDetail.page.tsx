@@ -726,7 +726,7 @@ const Caption = styled.div.attrs({ className: "text-muted" })`
   position: absolute;
   right: 0;
   text-align: right;
-  font-size: 12;
+  font-size: 12px;
   font-weight: 500;
 
   @media (max-width: 599px) {
