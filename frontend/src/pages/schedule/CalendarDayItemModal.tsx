@@ -145,7 +145,7 @@ export function CalendarDayItemModal({
                   onChange={handleDateChange}
                   type="date"
                   style={{
-                    border: "1px solid lightgray",
+                    border: "1px solid var(--color-border)",
                     borderRadius: 5,
                     padding: "0.25rem",
                   }}

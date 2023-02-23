@@ -83,6 +83,38 @@ $text-color: #4a4a4a;
   --color-background-empty-image: var(--color-background-card);
 }
 
+.theme-solarized {
+  --color-background: #fdf6e3;
+
+  --color-primary: #b58900;
+  --color-primary-button-text: white;
+  --color-primary-shadow: var(--color-primary);
+  --color-primary-active: var(--color-primary);
+  --color-primary-disabled: var(--color-primary);
+
+  --color-text: #{$text-color};
+  --color-text-muted: rgba(115, 115, 115, 1);
+  --color-text-disabled: var(--color-text);
+
+  --color-input-placeholder: var(--color-text);
+
+  --color-link: var(--color-text);
+
+  --color-border: #93a1a1;
+  --color-accent: #586e75;
+
+  --color-accent: #657b83;
+
+  --color-danger: #dc322f;
+  --color-danger-button-text: white;
+  --color-danger-disabled: #{darken(#dc322f, 20%)};
+
+  --color-background-card: var(--color-background);
+  --color-background-calendar-day: #eee8d5;
+  --color-background-calendar-item: var(--color-background);
+  --color-background-empty-image: var(--color-background-calendar-day);
+}
+
 html {
   height: 100%;
   font-size: 16px;
@@ -115,7 +147,7 @@ kbd {
   padding: 0.1rem 0.2rem;
   background-color: var(--color-background);
   border-radius: 4px;
-  border: 1px solid lightgray;
+  border: 1px solid var(--color-border);
   border-bottom-width: 2px;
 }
 
