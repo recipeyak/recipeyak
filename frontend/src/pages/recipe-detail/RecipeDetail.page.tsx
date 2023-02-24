@@ -10,6 +10,7 @@ import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Image } from "@/components/Image"
 import { Loader } from "@/components/Loader"
+import { Tag } from "@/components/Tag"
 import { formatHumanDate } from "@/date"
 import { useGlobalEvent } from "@/hooks"
 import * as ordering from "@/ordering"
@@ -819,9 +820,8 @@ function RecipeInfo(props: {
                           pathname: "/recipes",
                           search: `search=${encodeURIComponent(`tag:${x}`)}`,
                         }}
-                        className="tag selectable"
                       >
-                        {x}
+                        <Tag selectable>{x}</Tag>
                       </Link>
                     ))}
                   </Box>

@@ -16,6 +16,7 @@ import * as forms from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Image } from "@/components/Image"
 import { Loader } from "@/components/Loader"
+import { Tag } from "@/components/Tag"
 import { useTeamId } from "@/hooks"
 import { useRecentlyCreatedRecipesList } from "@/queries/recentlyCreatedRecipesList"
 import { useRecentlyViewedRecipesList } from "@/queries/recentlyViewedRecipesList"
@@ -414,9 +415,7 @@ const UserHome = () => {
           {ingredientMatch != null ? (
             <RecipeMatchPiece>{ingredientMatch.value}</RecipeMatchPiece>
           ) : null}
-          {tagMatch != null ? (
-            <span className="tag">{tagMatch.value}</span>
-          ) : null}
+          {tagMatch != null ? <Tag>{tagMatch.value}</Tag> : null}
         </SuggestionItem>
       )
     })

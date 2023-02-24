@@ -3,6 +3,7 @@ import React from "react"
 import cls from "@/classnames"
 import { CloseButton } from "@/components/CloseButton"
 import { TextInput } from "@/components/Forms"
+import { Tag } from "@/components/Tag"
 
 export function TagEditor({
   tags,
@@ -26,14 +27,14 @@ export function TagEditor({
     <div className={cls("d-flex", className)}>
       <div className="d-flex align-center">
         {tags?.map((tag) => (
-          <span className="tag fw-normal" key={tag}>
+          <Tag fontWeight="normal" key={tag}>
             {tag}{" "}
             <CloseButton
               onClose={() => {
                 onChange(tags.filter((x) => x !== tag))
               }}
             />
-          </span>
+          </Tag>
         ))}
       </div>
       <TextInput
