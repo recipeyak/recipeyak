@@ -91,7 +91,7 @@ export function Image({
   grayscale,
   loading,
   onClick,
-  forceLoad,
+  loadWhenInView,
 }: {
   readonly sources:
     | {
@@ -108,7 +108,7 @@ export function Image({
   readonly rounded?: boolean
   readonly roundDesktop?: boolean
   readonly onClick?: () => void
-  readonly forceLoad?: boolean
+  readonly loadWhenInView?: boolean
 }) {
   const ref = useRef<HTMLDivElement | null>(null)
   const entry = useIntersectionObserver(ref, {
@@ -118,7 +118,7 @@ export function Image({
     // NOTE: Might need to tweak this, maybe consider scroll velocity?
     rootMargin: "500px",
   })
-  const isVisible = forceLoad || entry?.isIntersecting
+  const isVisible = !loadWhenInView || entry?.isIntersecting
   return (
     <CardImgContainer
       ref={ref}

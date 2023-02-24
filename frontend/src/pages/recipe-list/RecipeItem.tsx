@@ -100,8 +100,8 @@ function RecipeListItem({
     <Link tabIndex={0} to={url} className="card">
       <CardImgContainer>
         <Image
-          // always load the first 20ish
-          forceLoad={index < 20}
+          // lazy load everything after the first 20ish
+          loadWhenInView={index > 20}
           sources={
             props.primaryImage && {
               url: imgixFmt(props.primaryImage.url ?? ""),
