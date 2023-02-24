@@ -54,15 +54,18 @@ type IRecipeItemProps = {
   readonly url?: string
   readonly drag?: boolean
   readonly match: Match[]
+  readonly index: number
 } & TRecipeListItem
 
 function RecipeListItem({
+  index,
   name,
   author,
   id,
   match: matches,
   ...props
 }: {
+  readonly index: number
   readonly url?: string
   readonly match: Match[]
 } & TRecipeListItem) {
@@ -97,6 +100,8 @@ function RecipeListItem({
     <Link tabIndex={0} to={url} className="card">
       <CardImgContainer>
         <Image
+          // always load the first 20ish
+          forceLoad={index < 20}
           sources={
             props.primaryImage && {
               url: imgixFmt(props.primaryImage.url ?? ""),
@@ -138,12 +143,14 @@ export function RecipeItem({
   name,
   author,
   id,
+  index,
   match: matches,
   ...props
 }: IRecipeItemProps) {
   if (!props.drag) {
     return (
       <RecipeListItem
+        index={index}
         name={name}
         author={author}
         id={id}
