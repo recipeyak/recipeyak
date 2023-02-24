@@ -67,9 +67,10 @@ function RecipeList(props: IRecipeList) {
 
   const normalResults = results.recipes
     .filter((result) => !result.recipe.archived_at)
-    .map((result) => (
+    .map((result, index) => (
       <RecipeItem
         {...result.recipe}
+        index={index}
         match={result.match}
         drag={props.drag}
         key={result.recipe.id}
@@ -77,9 +78,10 @@ function RecipeList(props: IRecipeList) {
     ))
   const archivedResults = results.recipes
     .filter((result) => result.recipe.archived_at)
-    .map((result) => (
+    .map((result, index) => (
       <RecipeItem
         {...result.recipe}
+        index={index}
         match={result.match}
         drag={props.drag}
         key={result.recipe.id}

@@ -1,4 +1,7 @@
+import { useRef } from "react"
+
 import { styled } from "@/theme"
+import { useIntersectionObserver } from "@/useIntersectionObserver"
 import { imgixFmt } from "@/utils/url"
 
 const CardImgContainer = styled.div<{
@@ -88,6 +91,7 @@ export function Image({
   grayscale,
   loading,
   onClick,
+  lazyLoad,
 }: {
   readonly sources:
     | {
@@ -104,16 +108,27 @@ export function Image({
   readonly rounded?: boolean
   readonly roundDesktop?: boolean
   readonly onClick?: () => void
+  readonly lazyLoad?: boolean
 }) {
+  const ref = useRef<HTMLDivElement | null>(null)
+  const entry = useIntersectionObserver(ref, {
+    // How much to expand element's margin before calculating intersections
+    // Means we load images before they're in view so there isn't a pop in.
+    //
+    // NOTE: Might need to tweak this, maybe consider scroll velocity?
+    rootMargin: "500px",
+  })
+  const isVisible = !lazyLoad || entry?.isIntersecting
   return (
     <CardImgContainer
+      ref={ref}
       roundDesktop={roundDesktop}
       height={height}
       width={width}
       rounded={rounded}
       onClick={onClick}
     >
-      {sources != null && (
+      {sources != null && isVisible && (
         <>
           <CardImg
             src={imgixFmt(sources.url ?? "")}
