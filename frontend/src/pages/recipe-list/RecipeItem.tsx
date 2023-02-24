@@ -5,6 +5,7 @@ import { RecipeListItem as TRecipeListItem } from "@/api"
 import { classNames } from "@/classnames"
 import { DragIcon } from "@/components/icons"
 import { Image } from "@/components/Image"
+import { Tag } from "@/components/Tag"
 import { DragDrop } from "@/dragDrop"
 import { Match } from "@/search"
 import { styled } from "@/theme"
@@ -88,11 +89,7 @@ function RecipeListItem({
         </small>
       )}
 
-      <div>
-        {tagMatch != null ? (
-          <span className="tag">{tagMatch.value}</span>
-        ) : null}
-      </div>
+      <div>{tagMatch != null ? <Tag>{tagMatch.value}</Tag> : null}</div>
     </div>
   )
 
@@ -189,11 +186,7 @@ export function RecipeItem({
       {ingredientMatch != null ? (
         <Ingredient>{ingredientMatch.value}</Ingredient>
       ) : null}
-      <div>
-        {tagMatch != null ? (
-          <span className="tag">{tagMatch.value}</span>
-        ) : null}
-      </div>
+      <div>{tagMatch != null ? <Tag>{tagMatch.value}</Tag> : null}</div>
       <Meta bold={authorMatch != null} author={author ?? ""} />
     </div>
   )
