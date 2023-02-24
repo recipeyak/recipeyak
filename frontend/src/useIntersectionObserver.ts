@@ -20,9 +20,8 @@ export function useIntersectionObserver(
 
   useEffect(() => {
     const node = elementRef?.current // DOM Ref
-    const hasIOSupport = !!window.IntersectionObserver
 
-    if (!hasIOSupport || frozen || !node) return
+    if (!window.IntersectionObserver || frozen || !node) return
     const observer = new IntersectionObserver(updateEntry, {
       threshold,
       root,
