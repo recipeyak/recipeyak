@@ -101,7 +101,7 @@ function RecipeListItem({
       <CardImgContainer>
         <Image
           // lazy load everything after the first 20ish
-          loadWhenInView={index > 20}
+          lazyLoad={index > 20}
           sources={
             props.primaryImage && {
               url: imgixFmt(props.primaryImage.url ?? ""),
