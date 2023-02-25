@@ -36,6 +36,9 @@ import Textarea from "react-textarea-autosize"
 import { IRecipe } from "@/api"
 import cls from "@/classnames"
 import { Button } from "@/components/Buttons"
+import { FormControl } from "@/components/FormControl"
+import { FormField } from "@/components/FormField"
+import { BetterLabel } from "@/components/Label"
 import { Markdown } from "@/components/Markdown"
 import { DragDrop, handleDndHover } from "@/dragDrop"
 import { useStepDelete } from "@/queries/stepDelete"
@@ -91,13 +94,12 @@ function Step({
   preview(drop(ref))
   return (
     <div style={style} ref={isEditing ? ref : undefined} className="mb-2">
-      <label
-        className="better-label"
+      <BetterLabel
         ref={isEditing ? drag : undefined}
         style={{ cursor: isEditing ? "move" : "" }}
       >
         Step {index + 1}
-      </label>
+      </BetterLabel>
       <StepBody
         stepId={stepId}
         isEditing={isEditing}
@@ -159,8 +161,8 @@ function StepBody({
 
   const inner = isEditing ? (
     <form>
-      <div className="field">
-        <div className="control">
+      <FormField>
+        <FormControl>
           <Textarea
             autoFocus
             onChange={(e) => {
@@ -179,11 +181,11 @@ function StepBody({
             placeholder="Add you text here"
             name="text"
           />
-        </div>
-      </div>
+        </FormControl>
+      </FormField>
       <section className="listitem-button-container">
-        <div className="field is-grouped">
-          <p className="control">
+        <FormField isGrouped>
+          <FormControl>
             <Button
               onClick={removeStep}
               size="small"
@@ -193,15 +195,15 @@ function StepBody({
             >
               Delete
             </Button>
-          </p>
-        </div>
-        <div className="field is-grouped">
-          <p className="control">
+          </FormControl>
+        </FormField>
+        <FormField isGrouped>
+          <FormControl>
             <Button size="small" name="cancel edit" onClick={handleCancel}>
               Cancel
             </Button>
-          </p>
-          <p className="control">
+          </FormControl>
+          <FormControl>
             <Button
               variant="primary"
               size="small"
@@ -211,8 +213,8 @@ function StepBody({
             >
               Save
             </Button>
-          </p>
-        </div>
+          </FormControl>
+        </FormField>
       </section>
     </form>
   ) : (

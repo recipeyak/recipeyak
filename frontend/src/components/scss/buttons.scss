@@ -1,5 +1,14 @@
 @import "./variables.scss";
 
+@keyframes spinAround {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+
 .my-button {
   align-items: center;
   border: 1px solid transparent;

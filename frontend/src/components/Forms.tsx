@@ -1,6 +1,7 @@
 import * as React from "react"
 
 import { classNames } from "@/classnames"
+import { styled } from "@/theme"
 
 type Target = { select: () => void }
 
@@ -15,18 +16,25 @@ interface IFormErrorHandlerProps {
   readonly error: string[] | null | undefined
 }
 
+const Help = styled.div`
+  display: block;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  color: var(--color-danger);
+`
+
 export const FormErrorHandler = ({ error }: IFormErrorHandlerProps) => {
   if (!error) {
     return null
   }
   return (
-    <div className="help is-danger">
+    <Help>
       <ul>
         {error.map((e) => (
           <li key={e}>{e}</li>
         ))}
       </ul>
-    </div>
+    </Help>
   )
 }
 
@@ -85,23 +93,96 @@ export const PasswordInput = createInput("password")
 export const EmailInput = createInput("email")
 export const DateInput = createInput("date")
 
-interface ISelectProps
-  extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, "size"> {
-  readonly size?: "small" | "normal" | "medium" | "large"
-}
+const SelectWrapper = styled.div`
+  display: inline-block;
+  max-width: 100%;
+  position: relative;
+  vertical-align: top;
+  height: 2.25em
+  &::after {
+    border: 1px solid var(--color-border);
+    border-right: 0;
+    border-top: 0;
+    content: " ";
+    display: block;
+    height: 0.5em;
+    pointer-events: none;
+    position: absolute;
+    transform: rotate(-45deg);
+    width: 0.5em;
+    margin-top: -0.375em;
+    right: 1.125em;
+    top: 50%;
+    z-index: 4;
+  }
+  &:hover {
+    &::after {
+      border-color: var(--color-border);
+    }
+  }
+  border-radius: 6px;
+  font-size: 0.75rem;
+`
 
-export function Select({
-  className,
-  size = "normal",
-  multiple,
-  ...props
-}: ISelectProps) {
-  const inputSize = "is-" + size
-  const multipleClass = multiple ? "is-multiple" : ""
-  const selectClass = "br-6"
+const controlPaddingVertical = "calc(0.375em - 1px)"
+const controlPaddingHorizontal = "calc(0.625em - 1px)"
+
+const SelectInner = styled.select`
+  -moz-appearance: none;
+  -webkit-appearance: none;
+
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  box-shadow: none;
+  display: inline-flex;
+  height: 2.25em;
+  justify-content: flex-start;
+  line-height: 1.5;
+  padding-bottom: ${controlPaddingVertical};
+  padding-left: ${controlPaddingHorizontal};
+  padding-right: ${controlPaddingHorizontal};
+  padding-top: ${controlPaddingVertical};
+  position: relative;
+  vertical-align: top;
+  background-color: var(--color-background-card);
+  border-color: var(--color-border);
+  color: var(--color-text);
+  &:hover {
+    border-color: var(--color-border);
+  }
+  &:focus,
+  &:active {
+    border-color: var(--color-border);
+  }
+  cursor: pointer;
+  display: block;
+  max-width: 100%;
+  &:hover {
+    border-color: var(--color-border);
+  }
+  &:focus,
+  &:active {
+    border-color: var(--color-border);
+  }
+  &::-ms-expand {
+    display: none;
+  }
+  padding-right: 2.5em;
+`
+
+export function Select(props: {
+  value: number | string
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
+  disabled?: boolean
+  children?: React.ReactNode
+}) {
   return (
-    <div className={`select ${inputSize} ${multipleClass} ${className}`}>
-      <select className={selectClass} multiple={multiple} {...props} />
-    </div>
+    <SelectWrapper>
+      <SelectInner {...props} />
+    </SelectWrapper>
   )
 }

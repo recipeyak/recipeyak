@@ -7,6 +7,8 @@ $border-color: #dbdbdb;
 
 $text-color: #4a4a4a;
 
+@import "./reset.scss";
+
 @import "../../bulma.sass";
 
 @import "./buttons.scss";
@@ -17,7 +19,6 @@ $text-color: #4a4a4a;
 @import "./ListItem.scss";
 @import "./home.scss";
 @import "./Recipe.scss";
-@import "./schedule.scss";
 @import "./search.scss";
 
 :root {
@@ -184,13 +185,6 @@ a {
 
   .is-active > a {
     color: inherit !important;
-
-    // @media (hover: hover) {
-    //   &:hover {
-    //     color: darken($text-color, 20%) !important;
-    //     transition: color 0.2s;
-    //   }
-    // }
   }
 
   &:not(.is-normal) {
@@ -202,11 +196,6 @@ a {
   a {
     text-decoration: none;
   }
-}
-
-.better-label {
-  font-weight: bold;
-  margin-right: 0.75rem;
 }
 
 .ingredients-preparation-grid {
@@ -234,33 +223,28 @@ a {
 .recipe-grid,
 .grid-container {
   display: grid;
+  gap: 0.5rem;
   // support two columns on iOS.
 
   @media (max-width: 449px) {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 0.5rem;
   }
   @media (min-width: 450px) {
     grid-template-columns: repeat(auto-fill, minmax(225px, 1fr));
-    gap: 1rem;
   }
 }
 
-.card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  margin-bottom: 0;
+// hide native chrome pickers
+input::-webkit-calendar-picker-indicator {
+  display: none;
 }
 
-.card-content {
-  @extend .card-content;
-  padding: 0.5rem;
+input[type="date"]::-webkit-input-placeholder {
+  visibility: hidden !important;
 }
 
 @media print {
   .no-print,
-  .card,
   .my-button,
   .my-input,
   img,

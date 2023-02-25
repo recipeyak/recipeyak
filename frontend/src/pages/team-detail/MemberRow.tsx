@@ -48,7 +48,6 @@ const MemberRow = ({
       <td className="vertical-align-middle pr-4">
         {isTeamAdmin ? (
           <Select
-            size="small"
             value={level}
             onChange={(e) => {
               updateTeamMember.mutate({

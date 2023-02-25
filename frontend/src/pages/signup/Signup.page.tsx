@@ -7,8 +7,10 @@ import { login } from "@/auth"
 import AuthContainer from "@/components/AuthContainer"
 import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
+import { FormField } from "@/components/FormField"
 import { EmailInput, FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
+import { Label } from "@/components/Label"
 import { Tab, Tabs } from "@/components/Tabs"
 import { useAuthSignup } from "@/queries/authSignup"
 
@@ -77,8 +79,8 @@ function Signup() {
         </Tabs>
 
         <form onSubmit={handleSignup}>
-          <div className="field">
-            <label className="label">Email</label>
+          <FormField>
+            <Label>Email</Label>
             <EmailInput
               onChange={(e) => {
                 setEmail(e.target.value)
@@ -87,12 +89,10 @@ function Signup() {
               name="email"
               placeholder="rick.sanchez@me.com"
             />
-          </div>
+          </FormField>
 
-          <div className="field">
-            <label htmlFor="password1" className="label">
-              Password
-            </label>
+          <FormField>
+            <Label htmlFor="password1">Password</Label>
             <PasswordInput
               onChange={(e) => {
                 setPassword1(e.target.value)
@@ -101,12 +101,10 @@ function Signup() {
               id="password1"
               placeholder="Super secret password."
             />
-          </div>
+          </FormField>
 
-          <div className="field">
-            <label htmlFor="password2" className="label">
-              Password Again
-            </label>
+          <FormField>
+            <Label htmlFor="password2">Password Again</Label>
             <PasswordInput
               onChange={(e) => {
                 setPassword2(e.target.value)
@@ -115,17 +113,17 @@ function Signup() {
               id="password2"
               placeholder="Enter your password again."
             />
-          </div>
+          </FormField>
 
           <FormErrorHandler error={errors != null ? [errors] : null} />
 
-          <div className="field d-flex flex-space-between align-items-center">
+          <FormField className="d-flex flex-space-between align-items-center">
             <Button variant="primary" type="submit" loading={signup.isLoading}>
               Submit
             </Button>
 
             <Link to="/password-reset">Forgot Password?</Link>
-          </div>
+          </FormField>
         </form>
       </BorderBox>
     </AuthContainer>

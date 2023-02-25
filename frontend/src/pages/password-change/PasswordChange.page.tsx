@@ -3,8 +3,11 @@ import React, { useState } from "react"
 import { useHistory } from "react-router"
 
 import { Button } from "@/components/Buttons"
+import { FormControl } from "@/components/FormControl"
+import { FormField } from "@/components/FormField"
 import { PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
+import { Label } from "@/components/Label"
 import { useAuthPasswordChange } from "@/queries/authPasswordChange"
 import { toast } from "@/toast"
 
@@ -58,9 +61,9 @@ function PasswordChange() {
       <Helmet title="Password Change" />
       <h2 className="title is-3">Password Change</h2>
 
-      <div className="field">
-        <label className="label">Current Password</label>
-        <div className="control">
+      <FormField>
+        <Label>Current Password</Label>
+        <FormControl>
           <PasswordInput
             autoFocus
             onChange={(e) => {
@@ -70,12 +73,12 @@ function PasswordChange() {
             name="oldPassword"
             required
           />
-        </div>
-      </div>
+        </FormControl>
+      </FormField>
 
-      <div className="field">
-        <label className="label">New Password</label>
-        <div className="control">
+      <FormField>
+        <Label>New Password</Label>
+        <FormControl>
           <PasswordInput
             onChange={(e) => {
               setNewPassword(e.target.value)
@@ -83,12 +86,12 @@ function PasswordChange() {
             name="newPassword"
             required
           />
-        </div>
-      </div>
+        </FormControl>
+      </FormField>
 
-      <div className="field">
-        <label className="label">New Password Again</label>
-        <div className="control">
+      <FormField>
+        <Label>New Password Again</Label>
+        <FormControl>
           <PasswordInput
             onChange={(e) => {
               setNewPasswordAgain(e.target.value)
@@ -96,10 +99,10 @@ function PasswordChange() {
             name="newPasswordAgain"
             required
           />
-        </div>
-      </div>
+        </FormControl>
+      </FormField>
 
-      <p className="control">
+      <FormControl>
         <Button
           variant="primary"
           type="submit"
@@ -108,7 +111,7 @@ function PasswordChange() {
         >
           Update
         </Button>
-      </p>
+      </FormControl>
       {error != null && <div>{error.message}</div>}
     </form>
   )

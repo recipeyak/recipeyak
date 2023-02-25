@@ -7,8 +7,11 @@ import { login } from "@/auth"
 import AuthContainer from "@/components/AuthContainer"
 import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
+import { FormControl } from "@/components/FormControl"
+import { FormField } from "@/components/FormField"
 import { FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
+import { Label } from "@/components/Label"
 import { useAuthPasswordResetConfirm } from "@/queries/authPasswordResetConfirm"
 import { toast } from "@/toast"
 
@@ -91,9 +94,9 @@ function PasswordResetConfirmation(props: RouteProps) {
 
           <FormErrorHandler error={errors.nonFieldErrors} />
 
-          <div className="field">
-            <label className="label">Password</label>
-            <p className="control">
+          <FormField>
+            <Label>Password</Label>
+            <FormControl>
               <PasswordInput
                 autoFocus
                 onChange={(e) => {
@@ -102,13 +105,13 @@ function PasswordResetConfirmation(props: RouteProps) {
                 name="newPassword1"
                 value={newPassword1}
               />
-            </p>
+            </FormControl>
             <FormErrorHandler error={errors.newPassword1} />
-          </div>
+          </FormField>
 
-          <div className="field">
-            <label className="label">Password Again</label>
-            <p className="control">
+          <FormField>
+            <Label>Password Again</Label>
+            <FormControl>
               <PasswordInput
                 onChange={(e) => {
                   setNewPassword2(e.target.value)
@@ -116,12 +119,12 @@ function PasswordResetConfirmation(props: RouteProps) {
                 name="newPassword2"
                 value={newPassword2}
               />
-            </p>
+            </FormControl>
             <FormErrorHandler error={errors.newPassword2} />
-          </div>
+          </FormField>
 
-          <div className="field d-flex flex-space-between">
-            <p className="control">
+          <FormField className="d-flex flex-space-between">
+            <FormControl>
               <Button
                 variant="primary"
                 loading={resetPassword.isLoading}
@@ -129,12 +132,12 @@ function PasswordResetConfirmation(props: RouteProps) {
               >
                 Change Password
               </Button>
-            </p>
+            </FormControl>
 
             <Link to="/login" className="my-button is-link">
               To Login
             </Link>
-          </div>
+          </FormField>
         </form>
       </BorderBox>
     </AuthContainer>

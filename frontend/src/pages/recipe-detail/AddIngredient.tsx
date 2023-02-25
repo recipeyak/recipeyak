@@ -1,6 +1,8 @@
 import React, { useState } from "react"
 
 import { Button } from "@/components/Buttons"
+import { FormControl } from "@/components/FormControl"
+import { FormField } from "@/components/FormField"
 import { CheckBox, TextInput } from "@/components/Forms"
 import { AddSectionForm } from "@/pages/recipe-detail/AddSectionForm"
 import { useIngredientCreate } from "@/queries/ingredientCreate"
@@ -112,18 +114,18 @@ function AddIngredientForm({
         />
         Optional
       </label>
-      <div className="field is-grouped">
+      <FormField isGrouped>
         <div className="flex-grow">
           <Button size="small" type="button" onClick={onChangeSection}>
             Add Section
           </Button>
         </div>
-        <p className="control">
+        <FormControl>
           <Button onClick={cancelAddIngredient} size="small" type="button">
             Cancel
           </Button>
-        </p>
-        <p className="control">
+        </FormControl>
+        <FormControl>
           <Button
             variant="primary"
             disabled={addDisabled}
@@ -133,8 +135,8 @@ function AddIngredientForm({
           >
             Add
           </Button>
-        </p>
-      </div>
+        </FormControl>
+      </FormField>
     </form>
   )
 }
