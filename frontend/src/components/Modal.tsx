@@ -1,6 +1,5 @@
 import React, { useRef } from "react"
 
-import { classNames } from "@/classnames"
 import { BorderBox } from "@/components/BorderBox"
 import { Box } from "@/components/Box"
 import { CloseButton } from "@/components/CloseButton"
