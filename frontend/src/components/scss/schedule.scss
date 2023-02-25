@@ -1,9 +1,5 @@
 @import "./variables.scss";
 
-.has-text-grey-light {
-  color: hsl(0, 0%, 71%);
-}
-
 .d-medium-block {
   @media (max-width: $medium) {
     display: block !important;

@@ -5,6 +5,7 @@ import { Link, RouteComponentProps, useHistory } from "react-router-dom"
 
 import { login } from "@/auth"
 import AuthContainer from "@/components/AuthContainer"
+import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
 import { FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
@@ -83,7 +84,7 @@ function PasswordResetConfirmation(props: RouteProps) {
 
   return (
     <AuthContainer>
-      <div className="box p-3">
+      <BorderBox p={3}>
         <Helmet title="Password Reset" />
         <form onSubmit={handleReset}>
           <h1 className="is-5">Password Reset Confirmation</h1>
@@ -135,7 +136,7 @@ function PasswordResetConfirmation(props: RouteProps) {
             </Link>
           </div>
         </form>
-      </div>
+      </BorderBox>
     </AuthContainer>
   )
 }

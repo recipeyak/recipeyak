@@ -3,6 +3,7 @@ import React, { useState } from "react"
 import { Link } from "react-router-dom"
 
 import AuthContainer from "@/components/AuthContainer"
+import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
 import { EmailInput, FormErrorHandler } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
@@ -64,7 +65,7 @@ function PasswordReset() {
   return (
     <AuthContainer>
       <Helmet title="Password Reset" />
-      <form className="box p-3" onSubmit={handleReset}>
+      <BorderBox p={3} as="form" onSubmit={handleReset}>
         <h1 className="is-5 mb-2 fw-500">Password Reset</h1>
 
         <FormErrorHandler error={errors.nonFieldErrors} />
@@ -91,7 +92,7 @@ function PasswordReset() {
 
           <Link to={redirect.route}>{redirect.name} →</Link>
         </div>
-      </form>
+      </BorderBox>
     </AuthContainer>
   )
 }

@@ -5,6 +5,7 @@ import { Link, useHistory } from "react-router-dom"
 
 import { login } from "@/auth"
 import AuthContainer from "@/components/AuthContainer"
+import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
 import { EmailInput, FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
@@ -60,7 +61,7 @@ function Signup() {
 
   return (
     <AuthContainer>
-      <div className="box p-3">
+      <BorderBox p={3}>
         <Helmet title="Sign Up" />
         <Tabs>
           <Tab>
@@ -126,7 +127,7 @@ function Signup() {
             <Link to="/password-reset">Forgot Password?</Link>
           </div>
         </form>
-      </div>
+      </BorderBox>
     </AuthContainer>
   )
 }
