@@ -5,8 +5,10 @@ import { Link } from "react-router-dom"
 import AuthContainer from "@/components/AuthContainer"
 import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
+import { FormField } from "@/components/FormField"
 import { EmailInput, FormErrorHandler } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
+import { Label } from "@/components/Label"
 import { useIsLoggedIn } from "@/hooks"
 import { useAuthPasswordReset } from "@/queries/authPasswordReset"
 import { toast } from "@/toast"
@@ -70,8 +72,8 @@ function PasswordReset() {
 
         <FormErrorHandler error={errors.nonFieldErrors} />
 
-        <div className="field">
-          <label className="label">Email</label>
+        <FormField>
+          <Label>Email</Label>
           <EmailInput
             autoFocus
             onChange={(e) => {
@@ -83,15 +85,15 @@ function PasswordReset() {
             placeholder="a.person@me.com"
           />
           <FormErrorHandler error={errors.email} />
-        </div>
+        </FormField>
 
-        <div className="field d-flex flex-space-between align-items-center">
+        <FormField className="d-flex flex-space-between align-items-center">
           <Button loading={resetPassword.isLoading} type="submit">
             Send Reset Email
           </Button>
 
           <Link to={redirect.route}>{redirect.name} →</Link>
-        </div>
+        </FormField>
       </BorderBox>
     </AuthContainer>
   )

@@ -71,12 +71,7 @@ function TeamSelect() {
   }
   const teams = useTeamList()
   return (
-    <Select
-      onChange={onChange}
-      value={value}
-      size="small"
-      disabled={teams.isLoading}
-    >
+    <Select onChange={onChange} value={value} disabled={teams.isLoading}>
       {teams.isSuccess
         ? teams.data.map((t) => (
             <option key={t.id} value={t.id}>

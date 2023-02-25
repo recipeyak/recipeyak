@@ -4,6 +4,8 @@ import { useDrag, useDrop } from "react-dnd"
 import { isMobile } from "@/browser"
 import cls from "@/classnames"
 import { Button } from "@/components/Buttons"
+import { FormControl } from "@/components/FormControl"
+import { FormField } from "@/components/FormField"
 import { CheckBox, TextInput } from "@/components/Forms"
 import { DragDrop, handleDndHover } from "@/dragDrop"
 import IngredientView from "@/pages/recipe-detail/IngredientView"
@@ -133,7 +135,7 @@ export function Ingredient(props: {
 
   const inner = editing ? (
     <form onSubmit={handleSubmit}>
-      <div className="field">
+      <FormField>
         <div className="add-ingredient-grid">
           <TextInput
             onChange={(e) => {
@@ -163,7 +165,7 @@ export function Ingredient(props: {
             placeholder="diced at 3cm in width"
           />
         </div>
-      </div>
+      </FormField>
 
       <label className="d-flex align-items-center cursor-pointer mb-2">
         <CheckBox
@@ -177,8 +179,8 @@ export function Ingredient(props: {
       </label>
 
       <section className="listitem-button-container">
-        <div className="field is-grouped">
-          <p className="control">
+        <FormField isGrouped>
+          <FormControl>
             <Button
               type="button"
               onClick={() => {
@@ -192,15 +194,15 @@ export function Ingredient(props: {
             >
               Delete
             </Button>
-          </p>
-        </div>
-        <div className="field is-grouped">
-          <p className="control">
+          </FormControl>
+        </FormField>
+        <FormField isGrouped>
+          <FormControl>
             <Button type="reset" onClick={handleCancelButton} size="small">
               Cancel
             </Button>
-          </p>
-          <p className="control">
+          </FormControl>
+          <FormControl>
             <Button
               variant="primary"
               size="small"
@@ -210,8 +212,8 @@ export function Ingredient(props: {
             >
               Update
             </Button>
-          </p>
-        </div>
+          </FormControl>
+        </FormField>
       </section>
     </form>
   ) : (

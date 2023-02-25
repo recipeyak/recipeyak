@@ -30,7 +30,8 @@ function AuthContainer(props: IAuthContainerProps) {
         flexDirection: "column",
         marginLeft: "auto",
         marginRight: "auto",
-        minWidth: 400,
+        // 2 rem is roughly the padding we want on the side of the panel
+        minWidth: "min(400px, 100% - 2rem)",
       }}
     >
       <Helmet title="Auth" />

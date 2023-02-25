@@ -5,8 +5,10 @@ import { Link } from "react-router-dom"
 
 import { IMember, ITeam } from "@/api"
 import { Button } from "@/components/Buttons"
+import { FormField } from "@/components/FormField"
 import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
+import { Label } from "@/components/Label"
 import { Loader } from "@/components/Loader"
 import { Tab, Tabs } from "@/components/Tabs"
 import { useUserId } from "@/hooks"
@@ -101,8 +103,8 @@ function TeamSettings({ id, name: initialName }: { id: number; name: string }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="field">
-        <label className="label">Team Name</label>
+      <FormField>
+        <Label>Team Name</Label>
         <TextInput
           disabled={false}
           onChange={(e) => {
@@ -112,7 +114,7 @@ function TeamSettings({ id, name: initialName }: { id: number; name: string }) {
           value={name}
           name="name"
         />
-      </div>
+      </FormField>
       <div className="d-flex justify-space-between align-items-center">
         <Button
           variant="danger"

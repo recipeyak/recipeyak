@@ -1,6 +1,8 @@
 import React, { useState } from "react"
 
 import { Button } from "@/components/Buttons"
+import { FormControl } from "@/components/FormControl"
+import { FormField } from "@/components/FormField"
 import { TextInput } from "@/components/Forms"
 import { useSectionCreate } from "@/queries/sectionCreate"
 
@@ -48,8 +50,8 @@ export function AddSectionForm({
           name="section title"
         />
       </div>
-      <div className="field is-grouped">
-        <p className="control flex-grow">
+      <FormField isGrouped>
+        <FormControl className="flex-grow">
           <Button
             size="small"
             type="button"
@@ -58,8 +60,8 @@ export function AddSectionForm({
           >
             Add Ingredient
           </Button>
-        </p>
-        <p className="control">
+        </FormControl>
+        <FormControl>
           <Button
             onClick={onCancel}
             size="small"
@@ -68,8 +70,8 @@ export function AddSectionForm({
           >
             Cancel
           </Button>
-        </p>
-        <p className="control">
+        </FormControl>
+        <FormControl>
           <Button
             variant="primary"
             disabled={addDisabled}
@@ -79,8 +81,8 @@ export function AddSectionForm({
           >
             Save
           </Button>
-        </p>
-      </div>
+        </FormControl>
+      </FormField>
       {createSection.isError && <p>error adding ingredient</p>}
     </form>
   )

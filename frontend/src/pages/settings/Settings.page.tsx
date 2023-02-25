@@ -8,6 +8,7 @@ import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { RadioButton, TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
+import { BetterLabel } from "@/components/Label"
 import { Loader } from "@/components/Loader"
 import Sessions from "@/pages/settings/Sessions"
 import { useUserDelete } from "@/queries/userDelete"
@@ -134,7 +135,7 @@ function EmailEditForm(props: IEmailEditForm) {
       }}
     >
       <Box dir="col">
-        <label className="better-label">Email</label>
+        <BetterLabel>Email</BetterLabel>
         <Box gap={2}>
           {isEditing ? (
             <TextInput
@@ -224,7 +225,7 @@ function NameForm(props: { initialValue: string }) {
       }}
     >
       <Box dir="col">
-        <label className="better-label">Name</label>
+        <BetterLabel>Name</BetterLabel>
         <Box gap={2}>
           {editing ? (
             <TextInput
@@ -271,7 +272,7 @@ function NameForm(props: { initialValue: string }) {
 function ChangePassword() {
   return (
     <Box dir="col">
-      <label className="better-label">Password</label>
+      <BetterLabel>Password</BetterLabel>
       <Link to="/password">Change Password</Link>
     </Box>
   )
@@ -286,7 +287,7 @@ function ThemePicker() {
 
   return (
     <Box dir="col" align="start">
-      <label className="better-label">Theme</label>
+      <BetterLabel>Theme</BetterLabel>
       <Box dir="col" gap={1} style={{ minWidth: 150 }}>
         <label
           className="align-items-center d-flex br-6 p-2 cursor-pointer"

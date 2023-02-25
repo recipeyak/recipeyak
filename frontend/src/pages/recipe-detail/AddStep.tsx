@@ -2,6 +2,9 @@ import { useState } from "react"
 import Textarea from "react-textarea-autosize"
 
 import { Button } from "@/components/Buttons"
+import { FormControl } from "@/components/FormControl"
+import { FormField } from "@/components/FormField"
+import { BetterLabel } from "@/components/Label"
 import { useStepCreate } from "@/queries/stepCreate"
 
 interface IAddStepProps {
@@ -39,9 +42,9 @@ function AddStep({ recipeId, onCancel, index, position }: IAddStepProps) {
         addStepToRecipe()
       }}
     >
-      <div className="field">
-        <label className="better-label">Step {index}</label>
-        <div className="control mt-2">
+      <FormField>
+        <BetterLabel>Step {index}</BetterLabel>
+        <FormControl className="mt-2">
           <Textarea
             onChange={(e) => {
               setStep(e.target.value)
@@ -63,10 +66,10 @@ function AddStep({ recipeId, onCancel, index, position }: IAddStepProps) {
           {addStep.error ? (
             <p className="fs-4 has-text-danger">A step is required</p>
           ) : null}
-        </div>
-      </div>
-      <div className="field is-grouped justify-end">
-        <p className="control">
+        </FormControl>
+      </FormField>
+      <FormField isGrouped className="justify-end">
+        <FormControl>
           <Button
             onClick={onCancel}
             size="small"
@@ -75,8 +78,8 @@ function AddStep({ recipeId, onCancel, index, position }: IAddStepProps) {
           >
             Cancel
           </Button>
-        </p>
-        <p className="control">
+        </FormControl>
+        <FormControl>
           <Button
             variant="primary"
             size="small"
@@ -87,8 +90,8 @@ function AddStep({ recipeId, onCancel, index, position }: IAddStepProps) {
           >
             Add
           </Button>
-        </p>
-      </div>
+        </FormControl>
+      </FormField>
     </form>
   )
 }

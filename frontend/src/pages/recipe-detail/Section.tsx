@@ -2,6 +2,8 @@ import React, { useState } from "react"
 import { useDrag, useDrop } from "react-dnd"
 
 import { Button } from "@/components/Buttons"
+import { FormControl } from "@/components/FormControl"
+import { FormField } from "@/components/FormField"
 import { TextInput } from "@/components/Forms"
 import { DragDrop, handleDndHover } from "@/dragDrop"
 import { useSectionDelete } from "@/queries/sectionDelete"
@@ -107,8 +109,8 @@ export function Section({
               name="section title"
             />
           </div>
-          <div className="field is-grouped">
-            <p className="control flex-grow">
+          <FormField isGrouped>
+            <FormControl className="flex-grow">
               <Button
                 size="small"
                 type="button"
@@ -122,8 +124,8 @@ export function Section({
               >
                 Delete
               </Button>
-            </p>
-            <p className="control">
+            </FormControl>
+            <FormControl>
               <Button
                 onClick={handleCancel}
                 size="small"
@@ -132,8 +134,8 @@ export function Section({
               >
                 Cancel
               </Button>
-            </p>
-            <p className="control">
+            </FormControl>
+            <FormControl>
               <Button
                 variant="primary"
                 disabled={addDisabled}
@@ -143,8 +145,8 @@ export function Section({
               >
                 Save
               </Button>
-            </p>
-          </div>
+            </FormControl>
+          </FormField>
           {updateSection.isError && <p>error adding ingredient</p>}
         </form>
       </li>

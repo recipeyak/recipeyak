@@ -8,8 +8,10 @@ import { login } from "@/auth"
 import AuthContainer from "@/components/AuthContainer"
 import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
+import { FormField } from "@/components/FormField"
 import { FormErrorHandler, PasswordInput, TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
+import { Label } from "@/components/Label"
 import { Tab, Tabs } from "@/components/Tabs"
 import { useAuthLogin } from "@/queries/authLogin"
 
@@ -79,8 +81,8 @@ export default function Login() {
         </Tabs>
 
         <form onSubmit={handleSubmit}>
-          <div className="field">
-            <label className="label">Email</label>
+          <FormField>
+            <Label>Email</Label>
             <TextInput
               onChange={(e) => {
                 setEmail(e.target.value)
@@ -92,12 +94,10 @@ export default function Login() {
               placeholder="rick.sanchez@me.com"
             />
             <FormErrorHandler error={errors?.email} />
-          </div>
+          </FormField>
 
-          <div className="field">
-            <label htmlFor="password" className="label">
-              Password
-            </label>
+          <FormField>
+            <Label htmlFor="password">Password</Label>
             <PasswordInput
               onChange={(e) => {
                 setPassword(e.target.value)
@@ -109,9 +109,9 @@ export default function Login() {
             />
             <FormErrorHandler error={errors?.password} />
             <FormErrorHandler error={errors?.nonFieldErrors} />
-          </div>
+          </FormField>
 
-          <div className="field d-flex flex-space-between align-items-center">
+          <FormField className="d-flex flex-space-between align-items-center">
             <Button
               variant="primary"
               type="submit"
@@ -120,7 +120,7 @@ export default function Login() {
               Submit
             </Button>
             <Link to="/password-reset">Forgot Password?</Link>
-          </div>
+          </FormField>
         </form>
       </BorderBox>
     </AuthContainer>
