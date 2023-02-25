@@ -16,6 +16,7 @@ import {
   Unit,
 } from "@/api"
 import { classNames } from "@/classnames"
+import { BorderBox } from "@/components/BorderBox"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { DateInput } from "@/components/Forms"
@@ -106,10 +107,6 @@ const ShoppingListList = React.forwardRef<
   if (props.items.isError) {
     return <p>error fetching shoppinglist</p>
   }
-  const loadingClass =
-    props.items.isLoading || props.items.isRefetching
-      ? "has-text-grey-light"
-      : ""
 
   const items =
     props.items.isSuccess || props.items.isRefetchError
@@ -119,13 +116,18 @@ const ShoppingListList = React.forwardRef<
   const groups = Object.entries(groupBy(items, (x) => x[1]?.category))
 
   return (
-    <div
-      className={`box p-2 min-height-75px ${loadingClass}`}
+    <BorderBox
+      p={2}
+      minHeight="74px"
       style={{
         backgroundColor: "var(--color-background-card)",
         border: "1px solid var(--color-border)",
         overflowY: "auto",
         maxHeight: 425, // looks good on mobile & desktop
+        color:
+          props.items.isLoading || props.items.isRefetching
+            ? "hsl(0, 0%, 71%)"
+            : "",
       }}
     >
       {props.items.isLoading ? (
@@ -159,7 +161,7 @@ const ShoppingListList = React.forwardRef<
           })}
         </div>
       )}
-    </div>
+    </BorderBox>
   )
 })
 

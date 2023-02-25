@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 
 import { RecipeListItem as TRecipeListItem } from "@/api"
 import { classNames } from "@/classnames"
+import { Card, CardContent } from "@/components/Card"
 import { DragIcon } from "@/components/icons"
 import { Image } from "@/components/Image"
 import { Tag } from "@/components/Tag"
@@ -97,7 +98,7 @@ function RecipeListItem({
   )
 
   return (
-    <Link tabIndex={0} to={url} className="card">
+    <Card as={Link} tabIndex={0} to={url}>
       <CardImgContainer>
         <Image
           // lazy load everything after the first 20ish
@@ -119,7 +120,7 @@ function RecipeListItem({
         />
       </CardImgContainer>
       {recipeContent}
-    </Link>
+    </Card>
   )
 }
 interface IMetaProps {
@@ -188,24 +189,24 @@ export function RecipeItem({
   const authorMatch = matches.find((x) => x.kind === "author")
 
   const recipeContent = (
-    <div className="card-content h-100 d-flex flex-column">
+    <CardContent className="h-100 d-flex flex-column">
       <RecipeTitle name={name} url={url} dragable={!!props.drag} />
       {ingredientMatch != null ? (
         <Ingredient>{ingredientMatch.value}</Ingredient>
       ) : null}
       <div>{tagMatch != null ? <Tag>{tagMatch.value}</Tag> : null}</div>
       <Meta bold={authorMatch != null} author={author ?? ""} />
-    </div>
+    </CardContent>
   )
 
   return (
-    <section
+    <Card
       ref={drag}
-      className="card cursor-move"
+      className="cursor-move"
       style={{ opacity: isDragging ? 0.5 : 1 }}
     >
       {recipeContent}
-    </section>
+    </Card>
   )
 }
 

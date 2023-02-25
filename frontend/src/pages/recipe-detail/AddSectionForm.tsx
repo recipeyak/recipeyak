@@ -19,13 +19,20 @@ export function AddSectionForm({
   const createSection = useSectionCreate()
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    createSection.mutate({
-      recipeId,
-      payload: {
-        title: section,
-        position: newPosition,
+    createSection.mutate(
+      {
+        recipeId,
+        payload: {
+          title: section,
+          position: newPosition,
+        },
       },
-    })
+      {
+        onSuccess: () => {
+          setSection("")
+        },
+      },
+    )
   }
   const addDisabled = section === ""
   return (

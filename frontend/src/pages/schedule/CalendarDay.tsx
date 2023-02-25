@@ -55,7 +55,7 @@ const isTodayStyle = css`
 `
 
 const isSelectedDayStyle = css`
-  background-color: var(--color-primary-shadow);
+  background-color: var(--color-background-card);
 `
 
 const isDroppableStyle = css`
