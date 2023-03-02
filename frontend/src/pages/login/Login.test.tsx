@@ -52,6 +52,7 @@ test("login success", async () => {
               name: "",
               id: 123,
               schedule_team: null,
+              theme: "light",
             },
           }
           return res(ctx.status(200), ctx.json(user))
