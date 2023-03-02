@@ -3,6 +3,7 @@ import * as t from "io-ts"
 import { toISODateString } from "@/date"
 import { http } from "@/http"
 import { Reaction } from "@/pages/recipe-detail/Reactions"
+import { Theme } from "@/queries/userUpdate"
 import { isOk, Ok } from "@/result"
 
 // User state from API
@@ -11,7 +12,7 @@ export interface IUser {
   readonly email: string
   readonly name: string
   readonly id: number
-  readonly dark_mode_enabled: boolean
+  readonly theme: Theme
   readonly schedule_team: number | null
 }
 

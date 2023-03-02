@@ -5,7 +5,7 @@ import { QueryClient, useIsRestoring } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client"
 import raven from "raven-js"
-import React, { useLayoutEffect } from "react"
+import React, { useEffect } from "react"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import { HelmetProvider } from "react-helmet-async"
@@ -39,7 +39,8 @@ import TeamCreatePage from "@/pages/team-create/TeamCreate.page"
 import TeamDetailPage from "@/pages/team-detail/TeamDetail.page"
 import TeamInvitePage from "@/pages/team-invite/TeamInvite.page"
 import TeamsListPage from "@/pages/team-list/TeamList.page"
-import { theme, themeGet, ThemeProvider, themeSet } from "@/theme"
+import { useUserFetch } from "@/queries/userFetch"
+import { theme, ThemeProvider, themeSet } from "@/theme"
 import { Toaster } from "@/toast"
 
 export const queryClient = new QueryClient({
@@ -140,6 +141,13 @@ const Route = ({
 )
 
 function AppContent() {
+  const user = useUserFetch()
+
+  useEffect(() => {
+    if (user.data?.theme) {
+      themeSet(user.data.theme)
+    }
+  }, [user.data?.theme])
   const isRestoring = useIsRestoring()
   if (isRestoring) {
     // NOTE: we don't render the site until react-query finishes hydrating from cache
@@ -223,9 +231,6 @@ function AppContent() {
 }
 
 function Base() {
-  useLayoutEffect(() => {
-    themeSet(themeGet())
-  }, [])
   return (
     <PersistQueryClientProvider
       client={queryClient}

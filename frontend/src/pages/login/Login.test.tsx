@@ -51,7 +51,6 @@ test("login success", async () => {
               email: "foo@example.com",
               name: "",
               id: 123,
-              dark_mode_enabled: false,
               schedule_team: null,
             },
           }

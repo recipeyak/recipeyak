@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
-import React, { useLayoutEffect, useState } from "react"
+import React, { useState } from "react"
 import { Link, useHistory } from "react-router-dom"
 
 import { logout } from "@/auth"
@@ -13,8 +13,8 @@ import { Loader } from "@/components/Loader"
 import Sessions from "@/pages/settings/Sessions"
 import { useUserDelete } from "@/queries/userDelete"
 import { useUserFetch } from "@/queries/userFetch"
-import { useUserUpdate } from "@/queries/userUpdate"
-import { themeGet, themeSet } from "@/theme"
+import { Theme, useUserUpdate } from "@/queries/userUpdate"
+import { themeSet } from "@/theme"
 import { toast } from "@/toast"
 
 function Export() {
@@ -279,11 +279,23 @@ function ChangePassword() {
 }
 
 function ThemePicker() {
-  const [theme, setTheme] = useState<"light" | "autumn" | "solarized">(themeGet)
-
-  useLayoutEffect(() => {
-    themeSet(theme)
-  }, [theme])
+  const updateUser = useUserUpdate()
+  const user = useUserFetch()
+  const [formTheme, setFormTheme] = useState<Theme>(user.data?.theme ?? "light")
+  const setTheme = (newTheme: Theme) => {
+    const oldTheme = formTheme
+    setFormTheme(newTheme)
+    themeSet(newTheme)
+    updateUser.mutate(
+      { theme: newTheme },
+      {
+        onError: () => {
+          setFormTheme(oldTheme)
+          themeSet(oldTheme)
+        },
+      },
+    )
+  }
 
   return (
     <Box dir="col" align="start">
@@ -298,7 +310,7 @@ function ThemePicker() {
           <RadioButton
             name="theme"
             className="mr-1"
-            checked={theme === "light"}
+            checked={formTheme === "light"}
             onClick={() => {
               setTheme("light")
             }}
@@ -315,7 +327,7 @@ function ThemePicker() {
           <RadioButton
             name="theme"
             className="mr-1"
-            checked={theme === "autumn"}
+            checked={formTheme === "autumn"}
             onClick={() => {
               setTheme("autumn")
             }}
@@ -332,7 +344,7 @@ function ThemePicker() {
           <RadioButton
             name="theme"
             className="mr-1"
-            checked={theme === "solarized"}
+            checked={formTheme === "solarized"}
             onClick={() => {
               setTheme("solarized")
             }}

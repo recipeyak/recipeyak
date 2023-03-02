@@ -43,7 +43,7 @@ def test_detail(client: APIClient, user: User) -> None:
         "email",
         "name",
         "avatar_url",
-        "dark_mode_enabled",
+        "theme",
     }
     assert expected.issubset(keys), "sanity test to ensure we have what we expect"
     original_data = res.json()
@@ -55,7 +55,6 @@ def test_detail(client: APIClient, user: User) -> None:
 
     data = {
         "email": "testing123@example.com",
-        "dark_mode_enabled": True,
         "name": "John",
     }
     for key in data:
