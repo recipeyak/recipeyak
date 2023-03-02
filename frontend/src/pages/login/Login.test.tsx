@@ -51,8 +51,8 @@ test("login success", async () => {
               email: "foo@example.com",
               name: "",
               id: 123,
-              dark_mode_enabled: false,
               schedule_team: null,
+              theme: "light",
             },
           }
           return res(ctx.status(200), ctx.json(user))

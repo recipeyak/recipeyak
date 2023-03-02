@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from "react"
+import React from "react"
 import { Link } from "react-router-dom"
 
 import Footer from "@/components/Footer"
@@ -149,7 +149,6 @@ const howToSteps = [
 ]
 
 const LandingPage = () => {
-  useLayoutEffect(() => {}, [])
   return (
     <div>
       <section className="home-container d-grid gap-1rem pb-4 pr-4 pl-4">

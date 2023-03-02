@@ -24,6 +24,6 @@ class UserSerializer(BaseModelSerializer):
             "email",
             "name",
             "avatar_url",
-            "dark_mode_enabled",
+            "theme",
             "schedule_team",
         )

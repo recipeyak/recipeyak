@@ -1,26 +1,12 @@
 // eslint-disable-next-line no-restricted-imports
 import * as styledComponents from "styled-components"
 
-export function themeGet(): "light" | "autumn" | "solarized" {
-  const val = localStorage.getItem("recipeyak-theme-v1")
-  switch (val) {
-    case "autumn":
-      return "autumn"
-    case "solarized":
-      return "solarized"
-    case "light":
-    default:
-      return "light"
-  }
-}
-
 export function themeSet(theme: "light" | "autumn" | "solarized") {
   const themeToClassName = {
     light: "",
     autumn: "theme-autumn",
     solarized: "theme-solarized",
   } as const
-  localStorage.setItem("recipeyak-theme-v1", theme)
   const html = document.documentElement
   // clear out all the existing themes
   html.classList.forEach((class_) => {

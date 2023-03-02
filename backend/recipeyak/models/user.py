@@ -72,9 +72,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     recipes = GenericRelation("Recipe", related_query_name="owner_user")
 
+    theme = models.TextField(default="light")
+
     # deprecated
-    dark_mode_enabled = models.BooleanField(
-        default=False, help_text="frontend darkmode setting"
+    _deprecated_dark_mode_enabled = models.BooleanField(
+        default=False,
+        help_text="frontend darkmode setting",
+        db_column="dark_mode_enabled",
     )
     _deprecated_recipe_team = models.ForeignKey["Team"](
         "Team",
@@ -103,6 +107,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     class Meta:
         db_table = "core_myuser"
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(theme__in=("light", "solarized", "autumn")),
+                name="theme_is_valid",
+            )
+        ]
 
     def get_full_name(self) -> str:
         return self.email
