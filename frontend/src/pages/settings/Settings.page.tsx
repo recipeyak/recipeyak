@@ -10,6 +10,7 @@ import { RadioButton, TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { BetterLabel } from "@/components/Label"
 import { Loader } from "@/components/Loader"
+import { useUserTheme } from "@/hooks"
 import Sessions from "@/pages/settings/Sessions"
 import { useUserDelete } from "@/queries/userDelete"
 import { useUserFetch } from "@/queries/userFetch"
@@ -280,8 +281,8 @@ function ChangePassword() {
 
 function ThemePicker() {
   const updateUser = useUserUpdate()
-  const user = useUserFetch()
-  const [formTheme, setFormTheme] = useState<Theme>(user.data?.theme ?? "light")
+  const theme = useUserTheme()
+  const [formTheme, setFormTheme] = useState<Theme>(theme)
   const setTheme = (newTheme: Theme) => {
     const oldTheme = formTheme
     setFormTheme(newTheme)
