@@ -320,7 +320,6 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
                 </Button>
                 <Box gap={3} space="between" align="center">
                   <Button
-                    variant="secondary"
                     size="small"
                     onClick={() => {
                       onCancel()
@@ -943,7 +942,6 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
       {isEditing && (
         <div className="d-flex justify-end align-center">
           <Button
-            variant="secondary"
             size="small"
             className="mr-3"
             onClick={() => {

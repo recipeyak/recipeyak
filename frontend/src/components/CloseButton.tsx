@@ -4,7 +4,7 @@ import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { styled } from "@/theme"
 
-const CloseButtonInner = styled(Button).attrs({ variant: "secondary" })`
+const CloseButtonInner = styled(Button)`
   background: unset;
   padding: 0;
   border-style: none !important;

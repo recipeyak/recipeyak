@@ -38,7 +38,6 @@ export function ICalConfig({
               className="mr-3 min-width-0 flex-grow-1"
             />
             <Button
-              variant="secondary"
               size="small"
               loading={regenLink.isLoading}
               onClick={() => {
